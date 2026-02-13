@@ -23,11 +23,7 @@ async function initBrowser() {
   testBrowser = await puppeteer.launch({
     ignoreHTTPSErrors: false,
     headless: conf.headless,
-    args: [
-      '--no-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-gpu'
-    ]
+    args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
   });
 
   page = await testBrowser.newPage();
@@ -36,7 +32,7 @@ async function initBrowser() {
   await page.goto('http://localhost:3000/get-help');
   const cookies = idamLogin.xuiCallbackResponse.details.setCookies;
   sessionCookies = cookies;
-  for (const cookie of cookies){
+  for (const cookie of cookies) {
     await page.setCookie({ name: cookie.name, value: cookie.value });
   }
   await page.goto('http://localhost:3000/');
@@ -73,9 +69,13 @@ async function pa11ytestRunner(test, actions, startUrl, roles) {
 
   const startTime = Date.now();
 
-  const token = jwt.sign({
-    data: 'foobar'
-  }, 'secret', { expiresIn: 60 * 60 });
+  const token = jwt.sign(
+    {
+      data: 'foobar',
+    },
+    'secret',
+    { expiresIn: 60 * 60 }
+  );
 
   let result;
 
@@ -90,9 +90,9 @@ async function pa11ytestRunner(test, actions, startUrl, roles) {
       log: {
         debug: console.log,
         error: console.error,
-        info: console.info
+        info: console.info,
       },
-      actions: actions
+      actions: actions,
     });
   } catch (err) {
     await page.screenshot({ path: screenshotPath });
@@ -101,11 +101,13 @@ async function pa11ytestRunner(test, actions, startUrl, roles) {
       documentTitle: 'test name ' + test.test.title,
       pageUrl: '',
       steps: actions,
-      issues: [{
-        code: 'test execution error',
-        message: ''+err.message,
-        selector: ''
-      }]
+      issues: [
+        {
+          code: 'test execution error',
+          message: '' + err.message,
+          selector: '',
+        },
+      ],
     };
 
     result.executionTime = elapsedTime;
@@ -135,7 +137,7 @@ async function pa11ytestRunner(test, actions, startUrl, roles) {
   return result;
 }
 
-function getAuthCookie(){
+function getAuthCookie() {
   return sessionCookies.find((cookie) => cookie.name === '__auth__').value;
 }
 

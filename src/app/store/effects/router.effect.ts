@@ -19,37 +19,54 @@ export class RouterEffects {
     private readonly store: Store<fromCases.State>
   ) {}
 
-  public navigate$ = createEffect(() => this.actions$.pipe(
-    ofType(RouterActions.GO),
-    map((action: RouterActions.Go) => action.payload),
-    mergeMap(({ path, query: queryParams, extras, callback, errorHandler }) =>
-      from(
-        this.router.navigate(path, { queryParams, ...extras })
-          .then(() => callback ? callback() : false)
-          .catch((error) => errorHandler ? errorHandler(error) : false)
-      )
-    )
-  ), { dispatch: false });
+  public navigate$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(RouterActions.GO),
+        map((action: RouterActions.Go) => action.payload),
+        mergeMap(({ path, query: queryParams, extras, callback, errorHandler }) =>
+          from(
+            this.router
+              .navigate(path, { queryParams, ...extras })
+              .then(() => (callback ? callback() : false))
+              .catch((error) => (errorHandler ? errorHandler(error) : false))
+          )
+        )
+      ),
+    { dispatch: false }
+  );
 
-  public navigateNewCase$ = createEffect(() => this.actions$.pipe(
-    ofType(RouterActions.CREATE_CASE_GO),
-    map((action: RouterActions.CreateCaseGo) => action.payload),
-    mergeMap(({ path, query: queryParams, extras, caseId }) =>
-      from(
-        this.router.navigate(path, { queryParams, ...extras }).then(() => {
-          this.store.dispatch(new fromCases.CreateCaseLoaded(caseId));
-        })
-      )
-    )
-  ), { dispatch: false });
+  public navigateNewCase$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(RouterActions.CREATE_CASE_GO),
+        map((action: RouterActions.CreateCaseGo) => action.payload),
+        mergeMap(({ path, query: queryParams, extras, caseId }) =>
+          from(
+            this.router.navigate(path, { queryParams, ...extras }).then(() => {
+              this.store.dispatch(new fromCases.CreateCaseLoaded(caseId));
+            })
+          )
+        )
+      ),
+    { dispatch: false }
+  );
 
-  public navigateBack$ = createEffect(() => this.actions$.pipe(
-    ofType(RouterActions.BACK),
-    tap(() => this.location.back())
-  ), { dispatch: false });
+  public navigateBack$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(RouterActions.BACK),
+        tap(() => this.location.back())
+      ),
+    { dispatch: false }
+  );
 
-  public navigateForward$ = createEffect(() => this.actions$.pipe(
-    ofType(RouterActions.FORWARD),
-    tap(() => this.location.forward())
-  ), { dispatch: false });
+  public navigateForward$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(RouterActions.FORWARD),
+        tap(() => this.location.forward())
+      ),
+    { dispatch: false }
+  );
 }

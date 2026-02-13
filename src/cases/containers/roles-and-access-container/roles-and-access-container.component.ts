@@ -17,7 +17,7 @@ import { Utils } from '../../utils/utils';
 @Component({
   standalone: false,
   selector: 'exui-roles-and-access-container',
-  templateUrl: './roles-and-access-container.component.html'
+  templateUrl: './roles-and-access-container.component.html',
 })
 export class RolesAndAccessContainerComponent implements OnInit {
   public caseDetails: CaseView;
@@ -29,14 +29,16 @@ export class RolesAndAccessContainerComponent implements OnInit {
   public caseJurisdiction: string;
   public caseNotifierSubscription: Subscription;
 
-  constructor(private readonly route: ActivatedRoute,
-              private readonly store: Store<fromRoot.State>,
-              private readonly roleExclusionsService: RoleExclusionsService,
-              private readonly allocateService: AllocateRoleService,
-              private readonly caseworkerDataService: CaseworkerDataService,
-              private readonly sessionStorageService: SessionStorageService,
-              private readonly featureToggleService: FeatureToggleService,
-              private readonly caseNotifier: CaseNotifier) {}
+  constructor(
+    private readonly route: ActivatedRoute,
+    private readonly store: Store<fromRoot.State>,
+    private readonly roleExclusionsService: RoleExclusionsService,
+    private readonly allocateService: AllocateRoleService,
+    private readonly caseworkerDataService: CaseworkerDataService,
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly featureToggleService: FeatureToggleService,
+    private readonly caseNotifier: CaseNotifier
+  ) {}
 
   public ngOnInit(): void {
     this.caseNotifierSubscription = this.caseNotifier.caseView.subscribe((caseNotifDetails) => {
@@ -55,37 +57,46 @@ export class RolesAndAccessContainerComponent implements OnInit {
   }
 
   public loadExclusions(jurisdiction: any): void {
-    this.exclusions$ = this.roleExclusionsService.getCurrentUserRoleExclusions(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id).pipe(
-      mergeMap((exclusions: RoleExclusion[]) => {
-        const userIds = Utils.getJudicialUserIdsFromExclusions(exclusions);
-        if (userIds && userIds.length > 0) {
-          return this.allocateService.getCaseRolesUserDetails(userIds, [jurisdiction.value]).pipe(
-            map((caseRolesWithUserDetails: CaseRoleDetails[]) => Utils.mapCaseRolesForExclusions(exclusions, caseRolesWithUserDetails)
-            )
-          );
-        }
-        return of(exclusions);
-      })
-    );
+    this.exclusions$ = this.roleExclusionsService
+      .getCurrentUserRoleExclusions(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id)
+      .pipe(
+        mergeMap((exclusions: RoleExclusion[]) => {
+          const userIds = Utils.getJudicialUserIdsFromExclusions(exclusions);
+          if (userIds && userIds.length > 0) {
+            return this.allocateService
+              .getCaseRolesUserDetails(userIds, [jurisdiction.value])
+              .pipe(
+                map((caseRolesWithUserDetails: CaseRoleDetails[]) =>
+                  Utils.mapCaseRolesForExclusions(exclusions, caseRolesWithUserDetails)
+                )
+              );
+          }
+          return of(exclusions);
+        })
+      );
   }
 
   public loadRoles(jurisdiction: any): void {
-    this.roles$ = this.allocateService.getCaseRoles(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id).pipe(
-      mergeMap((caseRoles: CaseRole[]) => {
-        const userIds = Utils.getJudicialUserIds(caseRoles);
-        if (userIds && userIds.length > 0) {
-          return this.allocateService.getCaseRolesUserDetails(userIds, [jurisdiction.value]).pipe(
-            map((caseRolesWithUserDetails: CaseRoleDetails[]) => Utils.mapCaseRoles(caseRoles, caseRolesWithUserDetails))
-          );
-        }
-        return of(caseRoles);
-      }),
-      tap((roles) => {
-        if (roles && roles.length > 0) {
-          this.sessionStorageService.setItem('caseRoles', roles.map((role) => role.roleId).toString());
-        }
-      })
-    );
+    this.roles$ = this.allocateService
+      .getCaseRoles(this.caseDetails.case_id, jurisdiction.value, this.caseDetails.case_type.id)
+      .pipe(
+        mergeMap((caseRoles: CaseRole[]) => {
+          const userIds = Utils.getJudicialUserIds(caseRoles);
+          if (userIds && userIds.length > 0) {
+            return this.allocateService
+              .getCaseRolesUserDetails(userIds, [jurisdiction.value])
+              .pipe(
+                map((caseRolesWithUserDetails: CaseRoleDetails[]) => Utils.mapCaseRoles(caseRoles, caseRolesWithUserDetails))
+              );
+          }
+          return of(caseRoles);
+        }),
+        tap((roles) => {
+          if (roles && roles.length > 0) {
+            this.sessionStorageService.setItem('caseRoles', roles.map((role) => role.roleId).toString());
+          }
+        })
+      );
   }
 
   public applyJurisdiction(caseDetails: CaseView): void {
@@ -100,7 +111,9 @@ export class RolesAndAccessContainerComponent implements OnInit {
   public setDisplayAllocateLink(user: UserDetails, caseJurisdiction: any): void {
     /* istanbul ignore else*/
     if (user && user.roleAssignmentInfo) {
-      this.showAllocateRoleLink = user.roleAssignmentInfo.some((roleAssignmentInfo) => roleAssignmentInfo.isCaseAllocator && roleAssignmentInfo.jurisdiction === caseJurisdiction);
+      this.showAllocateRoleLink = user.roleAssignmentInfo.some(
+        (roleAssignmentInfo) => roleAssignmentInfo.isCaseAllocator && roleAssignmentInfo.jurisdiction === caseJurisdiction
+      );
     }
   }
 

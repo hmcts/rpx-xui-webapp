@@ -15,7 +15,7 @@ import { getAssigneeName } from '../../../work-allocation/utils';
   standalone: false,
   selector: 'exui-tasks-container',
   templateUrl: './tasks-container.component.html',
-  styleUrls: ['./tasks-container.component.scss']
+  styleUrls: ['./tasks-container.component.scss'],
 })
 export class TasksContainerComponent implements OnInit {
   public caseDetails: CaseView;
@@ -23,17 +23,19 @@ export class TasksContainerComponent implements OnInit {
   public tasksRefreshed: boolean = false;
   public caseworkers: Caseworker[] = [];
   public warningIncluded: boolean;
-  public showSpinner$ : Observable<boolean>;
+  public showSpinner$: Observable<boolean>;
   public showSpinner: boolean = true;
   public caseNotifierSubscription: Subscription;
 
-  constructor(private readonly waCaseService: WorkAllocationCaseService,
-              private readonly route: ActivatedRoute,
-              private readonly caseworkerService: CaseworkerDataService,
-              private readonly rolesService: AllocateRoleService,
-              private readonly featureToggleService: FeatureToggleService,
-              private readonly loadingService: LoadingService,
-              private readonly caseNotifier: CaseNotifier) { }
+  constructor(
+    private readonly waCaseService: WorkAllocationCaseService,
+    private readonly route: ActivatedRoute,
+    private readonly caseworkerService: CaseworkerDataService,
+    private readonly rolesService: AllocateRoleService,
+    private readonly featureToggleService: FeatureToggleService,
+    private readonly loadingService: LoadingService,
+    private readonly caseNotifier: CaseNotifier
+  ) {}
 
   public ngOnInit(): void {
     this.showSpinner$ = this.loadingService.isLoading as any;
@@ -55,29 +57,42 @@ export class TasksContainerComponent implements OnInit {
             return this.caseworkerService.getUsersFromServices([tasks[0].jurisdiction]);
           }
           return of([]);
-        })).pipe(mergeMap((caseworkers) => {
-        this.caseworkers = caseworkers;
-        return this.tasks && this.tasks.length > 0 ? this.getAssignedNamesForTasks() : of(this.tasks);
-      })).subscribe((tasks) => {
-        this.tasks = tasks;
-        this.loadingService.unregister(loadingToken);
-      }, () => {
-        this.loadingService.unregister(loadingToken);
-      });
+        })
+      )
+      .pipe(
+        mergeMap((caseworkers) => {
+          this.caseworkers = caseworkers;
+          return this.tasks && this.tasks.length > 0 ? this.getAssignedNamesForTasks() : of(this.tasks);
+        })
+      )
+      .subscribe(
+        (tasks) => {
+          this.tasks = tasks;
+          this.loadingService.unregister(loadingToken);
+        },
+        () => {
+          this.loadingService.unregister(loadingToken);
+        }
+      );
     this.caseDetails = this.route.snapshot.data.case as CaseView;
   }
 
   public onTaskRefreshRequired(): void {
     const caseId = this.caseDetails.case_id;
     const tasksSearch$ = this.waCaseService.getTasksByCaseId(caseId);
-    tasksSearch$.pipe(first(), mergeMap((taskList) => {
-      this.tasks = taskList;
-      return this.getAssignedNamesForTasks();
-    })).subscribe((tasks) => {
-      this.tasks = tasks;
-      this.tasksRefreshed = true;
-      this.warningIncluded = this.tasks.some((task) => task.warnings);
-    });
+    tasksSearch$
+      .pipe(
+        first(),
+        mergeMap((taskList) => {
+          this.tasks = taskList;
+          return this.getAssignedNamesForTasks();
+        })
+      )
+      .subscribe((tasks) => {
+        this.tasks = tasks;
+        this.tasksRefreshed = true;
+        this.warningIncluded = this.tasks.some((task) => task.warnings);
+      });
   }
 
   private getAssignedNamesForTasks(): Observable<Task[]> {
@@ -88,9 +103,11 @@ export class TasksContainerComponent implements OnInit {
         assignedJudicialUsers.push(task.assignee);
       }
     });
-    return this.rolesService.getCaseRolesUserDetails(assignedJudicialUsers, [this.tasks[0].jurisdiction]).pipe(switchMap((judicialUserData) => {
-      return this.getJudicialNamedTasks(judicialUserData);
-    }));
+    return this.rolesService.getCaseRolesUserDetails(assignedJudicialUsers, [this.tasks[0].jurisdiction]).pipe(
+      switchMap((judicialUserData) => {
+        return this.getJudicialNamedTasks(judicialUserData);
+      })
+    );
   }
 
   public getJudicialNamedTasks(judicialUserData: CaseRoleDetails[]): Observable<Task[]> {

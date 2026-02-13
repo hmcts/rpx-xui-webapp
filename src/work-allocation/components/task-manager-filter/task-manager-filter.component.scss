@@ -3,11 +3,12 @@
   box-shadow: inset 0 0 0 1px #dee0e2;
   padding: 20px;
 }
-.tasks-container .govuk-select, .tasks-container .govuk-input{
+.tasks-container .govuk-select,
+.tasks-container .govuk-input {
   width: 100% !important;
 }
 .all-work-filter-label {
-  font-weight: 550!important;
+  font-weight: 550 !important;
 }
 
 .tasks-container .hmcts-filter-layout__filter {
@@ -36,7 +37,6 @@
   min-width: 100% !important;
 }
 
-
-#cancelFilter  {
+#cancelFilter {
   background-color: #dddddd !important;
 }

@@ -14,8 +14,8 @@ const AddSupportCommentsPage = require('./addSupportCommentsPage');
 const ManageSupportCommentPage = require('./manageSupportCommentPage');
 const ConfirmFlagStatusPage = require('./confirmFlagStatusPage');
 const UpdateFlagAddTranslationPage = require('./updateFlagAddTranslationPage');
-class CaseFlagsWorkflow{
-  constructor(){
+class CaseFlagsWorkflow {
+  constructor() {
     this.pages = {
       'Where should this flag be added?': new SelectFlagLocationPage(),
       'Select flag type': new SelectFlagTypePage(),
@@ -28,16 +28,15 @@ class CaseFlagsWorkflow{
       'Tell us more about the request': new AddSupportCommentsPage(),
       'Tell us why the support is no longer needed': new ManageSupportCommentPage(),
       'Confirm the status of the flag': new ConfirmFlagStatusPage(),
-      'Add translations to flag': new UpdateFlagAddTranslationPage()
-
+      'Add translations to flag': new UpdateFlagAddTranslationPage(),
     };
   }
 
   get nextButton() {
-    return elementByXpath('//button[contains(text(),\'Next\')]');
+    return elementByXpath("//button[contains(text(),'Next')]");
   }
 
-  addAndGetSelectFlagTypePage(flagType){
+  addAndGetSelectFlagTypePage(flagType) {
     this.pages[flagType] = new SelectFlagTypePage(flagType);
   }
 

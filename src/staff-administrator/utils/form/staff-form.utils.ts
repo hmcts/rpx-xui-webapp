@@ -1,17 +1,7 @@
-import {
-  AbstractControl,
-  FormArray,
-  FormControl,
-  FormGroup,
-  ValidationErrors,
-  ValidatorFn,
-  Validators
-} from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { GroupOptions } from '@hmcts/rpx-xui-common-lib';
 import { MultipleErrorMessage } from '../../../app/models';
-import {
-  StaffAddEditUserFormValidationMessages
-} from '../../components/staff-add-edit-user/staff-add-edit-user-form/staff-add-edit-user-form-validation-messages.enum';
+import { StaffAddEditUserFormValidationMessages } from '../../components/staff-add-edit-user/staff-add-edit-user-form/staff-add-edit-user-form-validation-messages.enum';
 import { StaffFilterOption } from '../../models/staff-filter-option.model';
 
 export function minSelectedValidator<T>(min: number): ValidatorFn {
@@ -45,7 +35,12 @@ export const filterItemsByBoolean = <T>(items: T[], bools: boolean[]): T[] => {
   return items.filter((item, index) => bools[index]);
 };
 
-export const buildCheckboxArray = (options: StaffFilterOption[], min: number, max: number, preselectedValues?: any[]): FormArray => {
+export const buildCheckboxArray = (
+  options: StaffFilterOption[],
+  min: number,
+  max: number,
+  preselectedValues?: any[]
+): FormArray => {
   const validators = addFormValidators(min, max);
   const formArray = new FormArray([], validators);
 
@@ -96,9 +91,10 @@ export const setLocationErrorMessages = (wrongLocations: string[]): string => {
   for (let i = 1; i < wrongLocations.length; i++) {
     locationString = locationString + ', ' + wrongLocations[i];
   }
-  const error = wrongLocations.length === 1 ?
-    `There is a problem. Location ${locationString} is not valid for the services selected` :
-    `There is a problem. Locations ${locationString} are not valid for the services selected`;
+  const error =
+    wrongLocations.length === 1
+      ? `There is a problem. Location ${locationString} is not valid for the services selected`
+      : `There is a problem. Locations ${locationString} are not valid for the services selected`;
   return error;
 };
 

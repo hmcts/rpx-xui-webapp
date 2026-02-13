@@ -25,14 +25,14 @@ const CASE_VIEW: CaseView = {
     name: 'Test Address Book Case',
     jurisdiction: {
       id: 'TEST',
-      name: 'Test'
+      name: 'Test',
     },
-    printEnabled: true
+    printEnabled: true,
   },
   channels: [],
   state: {
     id: 'CaseCreated',
-    name: 'Case created'
+    name: 'Case created',
   },
   tabs: [
     {
@@ -46,12 +46,12 @@ const CASE_VIEW: CaseView = {
           display_context: 'OPTIONAL',
           field_type: {
             id: 'Text',
-            type: 'Text'
+            type: 'Text',
           },
           order: 2,
           value: 'Janet',
           show_condition: '',
-          hint_text: ''
+          hint_text: '',
         }),
         Object.assign(new CaseField(), {
           id: 'PersonLastName',
@@ -59,12 +59,12 @@ const CASE_VIEW: CaseView = {
           display_context: 'OPTIONAL',
           field_type: {
             id: 'Text',
-            type: 'Text'
+            type: 'Text',
           },
           order: 1,
           value: 'Parker',
           show_condition: 'PersonFirstName="Jane*"',
-          hint_text: ''
+          hint_text: '',
         }),
         Object.assign(new CaseField(), {
           id: 'PersonComplex',
@@ -73,42 +73,44 @@ const CASE_VIEW: CaseView = {
           field_type: {
             id: 'Complex',
             type: 'Complex',
-            complex_fields: []
+            complex_fields: [],
           },
           order: 3,
           show_condition: 'PersonFirstName="Park"',
-          hint_text: ''
-        })
+          hint_text: '',
+        }),
       ],
-      show_condition: 'PersonFirstName="Janet"'
+      show_condition: 'PersonFirstName="Janet"',
     },
     {
       id: 'HistoryTab',
       label: 'History',
       order: 1,
-      fields: [Object.assign(new CaseField(), {
-        id: 'CaseHistory',
-        label: 'Case History',
-        display_context: 'OPTIONAL',
-        field_type: {
-          id: 'CaseHistoryViewer',
-          type: 'CaseHistoryViewer'
-        },
-        order: 1,
-        value: null,
-        show_condition: '',
-        hint_text: ''
-      })],
-      show_condition: ''
+      fields: [
+        Object.assign(new CaseField(), {
+          id: 'CaseHistory',
+          label: 'Case History',
+          display_context: 'OPTIONAL',
+          field_type: {
+            id: 'CaseHistoryViewer',
+            type: 'CaseHistoryViewer',
+          },
+          order: 1,
+          value: null,
+          show_condition: '',
+          hint_text: '',
+        }),
+      ],
+      show_condition: '',
     },
     {
       id: 'SomeTab',
       label: 'Some Tab',
       order: 3,
       fields: [],
-      show_condition: ''
-    }
-  ]
+      show_condition: '',
+    },
+  ],
 };
 
 const cv = {
@@ -157,23 +159,22 @@ describe('TasksContainerComponent', () => {
               data: {
                 tasks: {
                   tasks: getMockTasks(),
-                  caseworkers: null
+                  caseworkers: null,
                 },
-                case: CASE_VIEW
+                case: CASE_VIEW,
               },
-              paramMap: convertToParamMap({ cId: '1234567890123456' })
-            }
-          }
+              paramMap: convertToParamMap({ cId: '1234567890123456' }),
+            },
+          },
         },
         {
           provide: CaseNotifier,
           useValue: mockCaseNotifier
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -204,19 +205,21 @@ describe('TasksContainerComponent', () => {
       {
         id: '5f677ab6-ee64-11ec-b9f6-fe3569506667',
         name: 'Review the appeal',
-        assignee: '09f1f25d-7d7e-4481-b8e3-8624227438ef'
-      } as any
+        assignee: '09f1f25d-7d7e-4481-b8e3-8624227438ef',
+      } as any,
     ];
-    const judicialUserData = [{
-      sidam_id: '09f1f25d-7d7e-4481-b8e3-8624227438ef',
-      object_id: 'e97296ca-8182-45ef-82d0-7e4eeb6dab49-test2',
-      known_as: 'Joe',
-      surname: 'Bloggs',
-      full_name: 'Joe Bloggs',
-      post_nominals: 'Judge',
-      email_id: '4920094EMP-@ejudiciary.net',
-      personal_code: '4920094'
-    }];
+    const judicialUserData = [
+      {
+        sidam_id: '09f1f25d-7d7e-4481-b8e3-8624227438ef',
+        object_id: 'e97296ca-8182-45ef-82d0-7e4eeb6dab49-test2',
+        known_as: 'Joe',
+        surname: 'Bloggs',
+        full_name: 'Joe Bloggs',
+        post_nominals: 'Judge',
+        email_id: '4920094EMP-@ejudiciary.net',
+        personal_code: '4920094',
+      },
+    ];
     component.getJudicialNamedTasks(judicialUserData as any).subscribe((task) => {
       expect(task[0].assigneeName).toEqual('Joe Bloggs');
     });

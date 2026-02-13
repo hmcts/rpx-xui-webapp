@@ -17,7 +17,7 @@ import {
   formatAttachmentBody,
   resolveHeader,
   resolveUserInfo,
-  shouldProcessUserDetails
+  shouldProcessUserDetails,
 } from './utils/nodeAppUtils';
 
 import nodeAppDataModels from './data/nodeAppDataModels';
@@ -27,20 +27,14 @@ test.describe('Node app endpoints', () => {
     const response = await anonymousClient.get<Record<string, unknown>>('external/configuration-ui');
     expectStatus(response.status, [200]);
     const expectedKeys = testConfig.configurationUi[testConfig.testEnv] ?? [];
-    assertUiConfigResponse(
-      response.data as Record<string, unknown>,
-      expectedKeys
-    );
+    assertUiConfigResponse(response.data, expectedKeys);
   });
 
   test('serves external config/ui alias', async ({ anonymousClient }) => {
     const response = await anonymousClient.get<Record<string, unknown>>('external/config/ui');
     expectStatus(response.status, [200]);
     const expectedKeys = testConfig.configurationUi[testConfig.testEnv] ?? [];
-    assertUiConfigResponse(
-      response.data as Record<string, unknown>,
-      expectedKeys
-    );
+    assertUiConfigResponse(response.data, expectedKeys);
   });
 
   test('serves external config/check snapshot', async ({ anonymousClient }) => {
@@ -49,7 +43,7 @@ test.describe('Node app endpoints', () => {
     expect(response.data).toEqual(
       expect.objectContaining({
         clientId: expect.any(String),
-        protocol: expect.any(String)
+        protocol: expect.any(String),
       })
     );
   });
@@ -88,18 +82,18 @@ test.describe('Node app endpoints', () => {
     assertUserDetailsKeys(response.data, expected);
 
     const attachment = buildApiAttachment(response.logEntry, {
-      includeRaw: process.env.PLAYWRIGHT_DEBUG_API === '1'
+      includeRaw: process.env.PLAYWRIGHT_DEBUG_API === '1',
     });
     const prettyBody = formatAttachmentBody(attachment);
     await testInfo.attach(`${attachment.name}-pretty`, {
       body: prettyBody,
-      contentType: 'application/json'
+      contentType: 'application/json',
     });
   });
 
   test('rejects unauthenticated calls to user details', async ({ anonymousClient }) => {
     const response = await anonymousClient.get('api/user/details', {
-      throwOnError: false
+      throwOnError: false,
     });
 
     expectStatus(response.status, [401]);
@@ -108,7 +102,7 @@ test.describe('Node app endpoints', () => {
   test('applies security headers on open configuration endpoint', async () => {
     const ctx = await request.newContext({
       baseURL: testConfig.baseUrl.replace(/\/+$/, ''),
-      ignoreHTTPSErrors: true
+      ignoreHTTPSErrors: true,
     });
     const res = await ctx.get('external/configuration-ui', { failOnStatusCode: false });
     expect(res.status()).toBe(200);
@@ -129,9 +123,9 @@ test.describe('Node app endpoints', () => {
 
     const ctx = await request.newContext({
       baseURL: testConfig.baseUrl.replace(/\/+$/, ''),
-      ignoreHTTPSErrors: true
+      ignoreHTTPSErrors: true,
+      storageState: { cookies: expiredCookies, origins: [] },
     });
-    await applyExpiredCookies(ctx, expiredCookies);
     const res = await ctx.get('api/user/details', { failOnStatusCode: false });
     expectStatus(res.status(), [401, 403]);
     await ctx.dispose();
@@ -139,7 +133,10 @@ test.describe('Node app endpoints', () => {
 
   test('returns configuration value for feature flag query', async ({ apiClient }) => {
     const response = await apiClient.get<any>('api/configuration?configurationKey=termsAndConditionsEnabled');
-    expectStatus(response.status, StatusSets.guardedBasic.filter((s) => s !== 403)); // 200 or 401
+    expectStatus(
+      response.status,
+      StatusSets.guardedBasic.filter((s) => s !== 403)
+    ); // 200 or 401
     expect(JSON.stringify(response.data).length).toBeLessThan(6);
   });
 
@@ -159,19 +156,19 @@ test.describe('Node app helper coverage', () => {
       roles: ['role'],
       uid: 'uid-1',
       given_name: 'Given',
-      family_name: 'Family'
+      family_name: 'Family',
     });
     assertUserInfoDetails({
       email: 'user@example.com',
       roles: ['role'],
       id: 'id-1',
       forename: 'Fore',
-      surname: 'Sur'
+      surname: 'Sur',
     });
     assertUserInfoDetails({
       email: 'user@example.com',
       roles: ['role'],
-      id: 'id-2'
+      id: 'id-2',
     });
   });
 
@@ -179,7 +176,7 @@ test.describe('Node app helper coverage', () => {
     assertUserDetailsPayload({
       roleAssignmentInfo: [],
       canShareCases: true,
-      sessionTimeout: { idleModalDisplayTime: 5, pattern: '.*' }
+      sessionTimeout: { idleModalDisplayTime: 5, pattern: '.*' },
     });
   });
 
@@ -191,7 +188,7 @@ test.describe('Node app helper coverage', () => {
 
   test('assertSecurityHeaders tolerates missing headers', () => {
     assertSecurityHeaders('no-store', 'nosniff');
-    assertSecurityHeaders(undefined, undefined);
+    assertSecurityHeaders();
   });
 
   test('shouldProcessUserDetails returns false for non-200 status', () => {
@@ -218,16 +215,16 @@ test.describe('Node app helper coverage', () => {
     const ctx = {
       storageState: async () => {
         calls += 1;
-      }
+      },
     };
     await applyExpiredCookies(ctx, []);
     expect(calls).toBe(0);
-    await applyExpiredCookies(ctx, [{ name: 'cookie' }]);
+    await applyExpiredCookies(ctx, [{ name: 'cookie', value: '1', expires: 0 }]);
     expect(calls).toBe(1);
   });
 
   test('buildExpiredCookies handles missing cookies', () => {
-    expect(buildExpiredCookies({ cookies: [{ name: 'c' }] })).toHaveLength(1);
+    expect(buildExpiredCookies({ cookies: [{ name: 'c', value: '1', expires: 0 }] })).toHaveLength(1);
     expect(buildExpiredCookies({})).toEqual([]);
   });
 });

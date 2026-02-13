@@ -21,12 +21,9 @@ describe('CaseFlagsUtils', () => {
         firstName: 'Jane',
         lastName: 'Smith',
         preferredHearingChannel: 'inPerson',
-        reasonableAdjustments: [
-          'RA0053',
-          'RA0042'
-        ],
-        interpreterLanguage: null
-      }
+        reasonableAdjustments: ['RA0053', 'RA0042'],
+        interpreterLanguage: null,
+      },
     },
     {
       partyID: 'P2',
@@ -39,9 +36,10 @@ describe('CaseFlagsUtils', () => {
         preferredHearingChannel: 'inPerson',
         lastName: 'Representative',
         reasonableAdjustments: [],
-        interpreterLanguage: null
-      }
-    }];
+        interpreterLanguage: null,
+      },
+    },
+  ];
   const servicePartyDetails = [
     {
       partyID: 'P1',
@@ -53,12 +51,9 @@ describe('CaseFlagsUtils', () => {
         firstName: 'Jane',
         lastName: 'Smith',
         preferredHearingChannel: 'inPerson',
-        reasonableAdjustments: [
-          'RA0018',
-          'RA0020'
-        ],
-        interpreterLanguage: null
-      }
+        reasonableAdjustments: ['RA0018', 'RA0020'],
+        interpreterLanguage: null,
+      },
     },
     {
       partyID: 'P2',
@@ -71,9 +66,10 @@ describe('CaseFlagsUtils', () => {
         preferredHearingChannel: 'inPerson',
         lastName: 'Representative',
         reasonableAdjustments: [],
-        interpreterLanguage: null
-      }
-    }];
+        interpreterLanguage: null,
+      },
+    },
+  ];
   const mockFlag1: CaseFlagReferenceModel = {
     name: 'Hearing Loop',
     hearingRelevant: true,
@@ -81,10 +77,12 @@ describe('CaseFlagsUtils', () => {
     flagCode: 'RA0053',
     isParent: false,
     Path: [
-      'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
-      'Hearing Enhancement System (hearing loops infra red receiver)'
+      'Party',
+      'Reasonable adjustment',
+      'Within our buildings and hearing room environment',
+      'Hearing Enhancement System (hearing loops infra red receiver)',
     ],
-    childFlags: []
+    childFlags: [],
   };
 
   const mockFlag2: CaseFlagReferenceModel = {
@@ -94,7 +92,7 @@ describe('CaseFlagsUtils', () => {
     flagCode: 'RA0042',
     isParent: false,
     Path: ['Party', 'Reasonable adjustment', 'Help or support from a third party'],
-    childFlags: []
+    childFlags: [],
   };
 
   const mockFlag3: CaseFlagReferenceModel = {
@@ -103,10 +101,8 @@ describe('CaseFlagsUtils', () => {
     flagComment: true,
     flagCode: 'RA0018',
     isParent: false,
-    Path: [
-      'Party', 'Reasonable adjustment', 'Physical access and facilities'
-    ],
-    childFlags: []
+    Path: ['Party', 'Reasonable adjustment', 'Physical access and facilities'],
+    childFlags: [],
   };
 
   const mockFlag4 = {
@@ -115,19 +111,25 @@ describe('CaseFlagsUtils', () => {
     flagComment: true,
     flagCode: 'RA0020',
     isParent: false,
-    Path: [
-      'Party', 'Reasonable adjustment', 'Physical access and facilities'
-    ],
-    childFlags: []
+    Path: ['Party', 'Reasonable adjustment', 'Physical access and facilities'],
+    childFlags: [],
   };
 
   it('should return true if has the right property', () => {
-    const caseFlagGroup = CaseFlagsUtils.displayCaseFlagsGroup(serviceHearingValuesModel.caseFlags.flags, caseFlagsRefData, CaseFlagType.REASONABLE_ADJUSTMENT);
+    const caseFlagGroup = CaseFlagsUtils.displayCaseFlagsGroup(
+      serviceHearingValuesModel.caseFlags.flags,
+      caseFlagsRefData,
+      CaseFlagType.REASONABLE_ADJUSTMENT
+    );
     expect(caseFlagGroup.length).toBe(2);
   });
 
   it('should return false if has not the right property', () => {
-    const caseFlagGroup = CaseFlagsUtils.displayCaseFlagsGroup(serviceHearingValuesModel.caseFlags.flags, caseFlagsRefData, CaseFlagType.NON_REASONABLE_ADJUSTMENT);
+    const caseFlagGroup = CaseFlagsUtils.displayCaseFlagsGroup(
+      serviceHearingValuesModel.caseFlags.flags,
+      caseFlagsRefData,
+      CaseFlagType.NON_REASONABLE_ADJUSTMENT
+    );
     expect(caseFlagGroup.length).toBe(3);
   });
 
@@ -141,10 +143,8 @@ describe('CaseFlagsUtils', () => {
         individualDetails: {
           firstName: 'Jane',
           lastName: 'Smith',
-          reasonableAdjustments: [
-            'RA0002'
-          ]
-        }
+          reasonableAdjustments: ['RA0002'],
+        },
       },
       {
         partyID: 'P2',
@@ -154,11 +154,9 @@ describe('CaseFlagsUtils', () => {
         individualDetails: {
           firstName: 'Jack',
           lastName: 'Ryan',
-          reasonableAdjustments: [
-            'RA0002'
-          ]
-        }
-      }
+          reasonableAdjustments: ['RA0002'],
+        },
+      },
     ];
 
     const partiesInSHV: PartyDetailsModel[] = [
@@ -170,10 +168,8 @@ describe('CaseFlagsUtils', () => {
         individualDetails: {
           firstName: 'Jane',
           lastName: 'Smith',
-          reasonableAdjustments: [
-            'RA0002'
-          ]
-        }
+          reasonableAdjustments: ['RA0002'],
+        },
       },
       {
         partyID: 'P2',
@@ -183,11 +179,9 @@ describe('CaseFlagsUtils', () => {
         individualDetails: {
           firstName: 'Jack',
           lastName: 'Ryan',
-          reasonableAdjustments: [
-            'RA0002'
-          ],
-          interpreterLanguage: 'spa'
-        }
+          reasonableAdjustments: ['RA0002'],
+          interpreterLanguage: 'spa',
+        },
       },
       {
         partyID: 'P3',
@@ -197,11 +191,9 @@ describe('CaseFlagsUtils', () => {
         individualDetails: {
           firstName: 'Rob',
           lastName: 'Kennedy',
-          reasonableAdjustments: [
-            'RA0002'
-          ]
-        }
-      }
+          reasonableAdjustments: ['RA0002'],
+        },
+      },
     ];
 
     const caseFlags: PartyFlagsModel[] = [
@@ -211,7 +203,7 @@ describe('CaseFlagsUtils', () => {
         flagParentId: 'RA0001',
         flagId: 'RA0002',
         flagDescription: 'Sign language interpreter required',
-        flagStatus: 'ACTIVE'
+        flagStatus: 'ACTIVE',
       },
       {
         partyId: 'P1',
@@ -219,7 +211,7 @@ describe('CaseFlagsUtils', () => {
         flagParentId: 'PF0001',
         flagId: 'PF0015',
         flagDescription: 'Language Interpreter',
-        flagStatus: 'ACTIVE'
+        flagStatus: 'ACTIVE',
       },
       {
         partyId: 'P1',
@@ -227,7 +219,7 @@ describe('CaseFlagsUtils', () => {
         flagParentId: 'CF0001',
         flagId: 'CF0006',
         flagDescription: 'Potential fraud',
-        flagStatus: 'ACTIVE'
+        flagStatus: 'ACTIVE',
       },
       {
         partyId: 'P2',
@@ -235,7 +227,7 @@ describe('CaseFlagsUtils', () => {
         flagParentId: 'RA0001',
         flagId: 'RA0002',
         flagDescription: 'Sign language interpreter required',
-        flagStatus: 'ACTIVE'
+        flagStatus: 'ACTIVE',
       },
       {
         partyId: 'P2',
@@ -243,7 +235,7 @@ describe('CaseFlagsUtils', () => {
         flagParentId: 'RA0008',
         flagId: 'RA0042',
         flagDescription: 'Sign language interpreter required',
-        flagStatus: 'ACTIVE'
+        flagStatus: 'ACTIVE',
       },
       {
         partyId: 'P2',
@@ -251,7 +243,7 @@ describe('CaseFlagsUtils', () => {
         flagParentId: 'PF0001',
         flagId: 'PF0015',
         flagDescription: 'Language Interpreter',
-        flagStatus: 'ACTIVE'
+        flagStatus: 'ACTIVE',
       },
       {
         partyId: 'P3',
@@ -259,8 +251,8 @@ describe('CaseFlagsUtils', () => {
         flagParentId: 'RA0001',
         flagId: 'RA0002',
         flagDescription: 'Sign language interpreter required',
-        flagStatus: 'ACTIVE'
-      }
+        flagStatus: 'ACTIVE',
+      },
     ];
 
     it('should return reasonable adjustment flags', () => {
@@ -289,10 +281,8 @@ describe('CaseFlagsUtils', () => {
         individualDetails: {
           firstName: 'Jane',
           lastName: 'Smith',
-          reasonableAdjustments: [
-            'RA0002'
-          ]
-        }
+          reasonableAdjustments: ['RA0002'],
+        },
       },
       {
         partyID: 'P2',
@@ -301,8 +291,8 @@ describe('CaseFlagsUtils', () => {
         partyRole: 'APPL',
         individualDetails: {
           firstName: 'Jack',
-          lastName: 'Ryan'
-        }
+          lastName: 'Ryan',
+        },
       },
       {
         partyID: 'P3',
@@ -311,9 +301,9 @@ describe('CaseFlagsUtils', () => {
         partyRole: 'APPL',
         individualDetails: {
           firstName: 'Rob',
-          lastName: 'Kennedy'
-        }
-      }
+          lastName: 'Kennedy',
+        },
+      },
     ];
 
     const partiesInSHV: PartyDetailsModel[] = [
@@ -325,10 +315,8 @@ describe('CaseFlagsUtils', () => {
         individualDetails: {
           firstName: 'Jane',
           lastName: 'Smith',
-          reasonableAdjustments: [
-            'RA0002'
-          ]
-        }
+          reasonableAdjustments: ['RA0002'],
+        },
       },
       {
         partyID: 'P2',
@@ -337,8 +325,8 @@ describe('CaseFlagsUtils', () => {
         partyRole: 'APPL',
         individualDetails: {
           firstName: 'Jack',
-          lastName: 'Ryan'
-        }
+          lastName: 'Ryan',
+        },
       },
       {
         partyID: 'P3',
@@ -347,9 +335,9 @@ describe('CaseFlagsUtils', () => {
         partyRole: 'APPL',
         individualDetails: {
           firstName: 'Rob',
-          lastName: 'Kennedy'
-        }
-      }
+          lastName: 'Kennedy',
+        },
+      },
     ];
 
     const caseFlags: PartyFlagsModel[] = [
@@ -359,7 +347,7 @@ describe('CaseFlagsUtils', () => {
         flagParentId: 'RA0001',
         flagId: 'RA0002',
         flagDescription: 'Sign language interpreter required',
-        flagStatus: 'ACTIVE'
+        flagStatus: 'ACTIVE',
       },
       {
         partyId: 'P1',
@@ -367,7 +355,7 @@ describe('CaseFlagsUtils', () => {
         flagParentId: 'PF0001',
         flagId: 'PF0015',
         flagDescription: 'Language Interpreter',
-        flagStatus: 'ACTIVE'
+        flagStatus: 'ACTIVE',
       },
       {
         partyId: 'P1',
@@ -376,7 +364,7 @@ describe('CaseFlagsUtils', () => {
         flagId: 'CF0006',
         flagDescription: 'Potential fraud',
         flagStatus: 'ACTIVE',
-        dateTimeCreated: '2023-12-19T09:00:00.000Z'
+        dateTimeCreated: '2023-12-19T09:00:00.000Z',
       },
       {
         partyId: 'P2',
@@ -385,7 +373,7 @@ describe('CaseFlagsUtils', () => {
         flagId: 'PF0002',
         flagDescription: 'Vulnerable user',
         flagStatus: 'ACTIVE',
-        dateTimeModified: '2023-12-19T09:00:00.000Z'
+        dateTimeModified: '2023-12-19T09:00:00.000Z',
       },
       {
         partyId: 'P2',
@@ -394,7 +382,7 @@ describe('CaseFlagsUtils', () => {
         flagId: 'CF0002',
         flagDescription: 'Complex Case',
         flagStatus: 'ACTIVE',
-        dateTimeCreated: '2023-12-17T09:00:00.000Z'
+        dateTimeCreated: '2023-12-17T09:00:00.000Z',
       },
       {
         partyId: 'P3',
@@ -403,8 +391,8 @@ describe('CaseFlagsUtils', () => {
         flagId: 'CF0007',
         flagDescription: 'Urgent Case',
         flagStatus: 'ACTIVE',
-        dateTimeModified: '2023-12-17T09:00:00.000Z'
-      }
+        dateTimeModified: '2023-12-17T09:00:00.000Z',
+      },
     ];
 
     const partyDetailsWithLanguage = [
@@ -412,15 +400,16 @@ describe('CaseFlagsUtils', () => {
         ...partyDetails[0],
         individualDetails: {
           ...partyDetails[0].individualDetails,
-          interpreterLanguage: 'req'
-        }
+          interpreterLanguage: 'req',
+        },
       },
       {
-        ...partyDetails[1]
-      }];
+        ...partyDetails[1],
+      },
+    ];
     const requestDetails = {
       timestamp: '2023-12-18T09:00:00.000Z',
-      versionNumber: 1
+      versionNumber: 1,
     };
 
     const mockLanguageFlag: CaseFlagReferenceModel = {
@@ -429,10 +418,8 @@ describe('CaseFlagsUtils', () => {
       flagComment: true,
       flagCode: 'PF0015',
       isParent: false,
-      Path: [
-        'Party'
-      ],
-      childFlags: []
+      Path: ['Party'],
+      childFlags: [],
     };
 
     const singleCaseFlagReferenceValue: CaseFlagReferenceModel[] = [
@@ -450,19 +437,23 @@ describe('CaseFlagsUtils', () => {
             flagComment: true,
             flagCode: 'CC0002',
             isParent: false,
-            Path: [
-              'Case'
-            ],
-            childFlags: []
-          }
-        ]
-      }
+            Path: ['Case'],
+            childFlags: [],
+          },
+        ],
+      },
     ];
 
     it('should return non-reasonable adjustment flags with labels', () => {
       spyOn(HearingsUtils, 'hasPartyNameChanged').and.returnValue(true);
-      const flagsGroup = CaseFlagsUtils.getNonReasonableAdjustmentFlagsGroupedByPartyName(caseFlagsRefData, caseFlags,
-        partiesInHMC, partiesInSHV, requestDetails, false);
+      const flagsGroup = CaseFlagsUtils.getNonReasonableAdjustmentFlagsGroupedByPartyName(
+        caseFlagsRefData,
+        caseFlags,
+        partiesInHMC,
+        partiesInSHV,
+        requestDetails,
+        false
+      );
       expect(flagsGroup[0].name).toEqual('Jane Butler');
       expect(flagsGroup[0].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.AMENDED);
       expect(flagsGroup[0].partyFlags[0].flagAmendmentLabelStatus).toEqual(AmendmentLabelStatus.ACTION_NEEDED);
@@ -476,14 +467,12 @@ describe('CaseFlagsUtils', () => {
     });
 
     it('should return empty non-reasonable adjustment flags when case flags is undefined', () => {
-      const partyFlags = CaseFlagsUtils.getNonReasonableAdjustmentFlags(caseFlagsRefData, undefined,
-        partiesInSHV);
+      const partyFlags = CaseFlagsUtils.getNonReasonableAdjustmentFlags(caseFlagsRefData, undefined, partiesInSHV);
       expect(partyFlags.length).toEqual(0);
     });
 
     it('should return non-reasonable adjustment flags when case flags is defined', () => {
-      const partyFlags = CaseFlagsUtils.getNonReasonableAdjustmentFlags(caseFlagsRefData, caseFlags,
-        partiesInSHV);
+      const partyFlags = CaseFlagsUtils.getNonReasonableAdjustmentFlags(caseFlagsRefData, caseFlags, partiesInSHV);
       expect(partyFlags.length).toEqual(4);
       expect(partyFlags[0].flagId).toEqual('CF0006');
       expect(partyFlags[1].flagId).toEqual('PF0002');
@@ -493,8 +482,14 @@ describe('CaseFlagsUtils', () => {
 
     it('should return non-reasonable adjustment flags with no labels', () => {
       spyOn(HearingsUtils, 'hasPartyNameChanged').and.returnValue(false);
-      const flagsGroup = CaseFlagsUtils.getNonReasonableAdjustmentFlagsGroupedByPartyName(caseFlagsRefData, caseFlags,
-        partiesInHMC, partiesInSHV, requestDetails, true);
+      const flagsGroup = CaseFlagsUtils.getNonReasonableAdjustmentFlagsGroupedByPartyName(
+        caseFlagsRefData,
+        caseFlags,
+        partiesInHMC,
+        partiesInSHV,
+        requestDetails,
+        true
+      );
       expect(flagsGroup[0].name).toEqual('Jane Butler');
       expect(flagsGroup[0].partyAmendmentLabelStatus).toEqual(AmendmentLabelStatus.NONE);
       expect(flagsGroup[0].partyFlags[0].flagAmendmentLabelStatus).toBeUndefined();
@@ -508,7 +503,11 @@ describe('CaseFlagsUtils', () => {
     });
 
     it('should set reasonable adjustments from hearing request if found', () => {
-      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetailsWithLanguage, servicePartyDetails);
+      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(
+        caseFlagReferenceModels,
+        partyDetailsWithLanguage,
+        servicePartyDetails
+      );
       expect(partyWithFlags.get('Jane Smith').length).toEqual(2);
       expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag1);
       expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag2);
@@ -516,7 +515,11 @@ describe('CaseFlagsUtils', () => {
 
     it('should set either Language Interpreter or Sign Language Interpreter', () => {
       partyDetailsWithLanguage[0].individualDetails.reasonableAdjustments = ['RA0053'];
-      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(caseFlagReferenceModels, partyDetailsWithLanguage, servicePartyDetails);
+      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(
+        caseFlagReferenceModels,
+        partyDetailsWithLanguage,
+        servicePartyDetails
+      );
       expect(partyWithFlags.get('Jane Smith').length).toEqual(2);
       expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag1);
       expect(partyWithFlags.get('Jane Smith')).toContain(mockLanguageFlag);
@@ -524,14 +527,22 @@ describe('CaseFlagsUtils', () => {
 
     it('should set reasonable adjustments from service hearing values if null in hearing request', () => {
       partyDetails[0].individualDetails.reasonableAdjustments = null;
-      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(CASE_FLAG_REFERENCE_VALUES, partyDetails, servicePartyDetails);
+      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(
+        CASE_FLAG_REFERENCE_VALUES,
+        partyDetails,
+        servicePartyDetails
+      );
       expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag3);
       expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag4);
     });
 
     it('should set reasonable adjustments from service hearing values if empty array in hearing request', () => {
       partyDetails[0].individualDetails.reasonableAdjustments = [];
-      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(CASE_FLAG_REFERENCE_VALUES, partyDetails, servicePartyDetails);
+      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(
+        CASE_FLAG_REFERENCE_VALUES,
+        partyDetails,
+        servicePartyDetails
+      );
       expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag3);
       expect(partyWithFlags.get('Jane Smith')).toContain(mockFlag4);
     });
@@ -549,11 +560,9 @@ describe('CaseFlagsUtils', () => {
               firstName: 'Jane',
               lastName: 'Smith',
               preferredHearingChannel: 'inPerson',
-              reasonableAdjustments: [
-                'RA0053'
-              ]
-            }
-          }
+              reasonableAdjustments: ['RA0053'],
+            },
+          },
         ];
         const expectedResult = {
           name: 'Hearing Loop',
@@ -562,12 +571,17 @@ describe('CaseFlagsUtils', () => {
           flagCode: 'RA0053',
           isParent: false,
           Path: [
-            'Party', 'Reasonable adjustment', 'Within our buildings and hearing room environment',
-            'Hearing Enhancement System (hearing loops infra red receiver)'
+            'Party',
+            'Reasonable adjustment',
+            'Within our buildings and hearing room environment',
+            'Hearing Enhancement System (hearing loops infra red receiver)',
           ],
-          childFlags: []
+          childFlags: [],
         };
-        const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithReasonableAdjustmentFlags(CASE_FLAG_REFERENCE_VALUES, parties);
+        const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithReasonableAdjustmentFlags(
+          CASE_FLAG_REFERENCE_VALUES,
+          parties
+        );
         expect(partyWithFlags.get('Jane Smith')).toContain(expectedResult);
       });
 
@@ -583,24 +597,35 @@ describe('CaseFlagsUtils', () => {
               firstName: 'Jane',
               lastName: 'Smith',
               preferredHearingChannel: 'inPerson',
-              reasonableAdjustments: []
-            }
-          }
+              reasonableAdjustments: [],
+            },
+          },
         ];
-        const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithReasonableAdjustmentFlags(CASE_FLAG_REFERENCE_VALUES, parties);
+        const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithReasonableAdjustmentFlags(
+          CASE_FLAG_REFERENCE_VALUES,
+          parties
+        );
         expect(partyWithFlags.get('Jane Smith').length).toEqual(0);
       });
     });
 
     it('should not set reasonable adjustments for party when missing in case flag', () => {
       partyDetails[0].individualDetails.reasonableAdjustments = [];
-      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(singleCaseFlagReferenceValue, partyDetails, servicePartyDetails);
+      const partyWithFlags = CaseFlagsUtils.convertPartiesToPartyWithFlags(
+        singleCaseFlagReferenceValue,
+        partyDetails,
+        servicePartyDetails
+      );
       expect(partyWithFlags.size).toEqual(0);
     });
 
     it('should return an empty array if partyFlags is undefined', () => {
       const partyFlags: PartyFlagsModel[] = undefined;
-      const activeFlags = CaseFlagsUtils.displayCaseFlagsGroup(partyFlags, singleCaseFlagReferenceValue, CaseFlagType.NON_REASONABLE_ADJUSTMENT);
+      const activeFlags = CaseFlagsUtils.displayCaseFlagsGroup(
+        partyFlags,
+        singleCaseFlagReferenceValue,
+        CaseFlagType.NON_REASONABLE_ADJUSTMENT
+      );
       expect(activeFlags.length).toBe(0);
     });
   });
@@ -630,7 +655,7 @@ describe('CaseFlagsUtils', () => {
   describe('getActiveDisplaysFlags', () => {
     it('should set partyName from SHV if available', () => {
       const caseFlags: PartyFlagsModel[] = [
-        { partyId: 'P1', partyName: 'Flag Party', flagId: 'F1', flagStatus: 'active', flagDescription: 'Active' }
+        { partyId: 'P1', partyName: 'Flag Party', flagId: 'F1', flagStatus: 'active', flagDescription: 'Active' },
       ];
       const caseFlagsRefData: CaseFlagReferenceModel[] = [
         {
@@ -640,20 +665,20 @@ describe('CaseFlagsUtils', () => {
           childFlags: [],
           hearingRelevant: true,
           flagComment: true,
-          isParent: false
-        }
+          isParent: false,
+        },
       ];
       const partiesInSHV: PartyDetailsModel[] = [
-        { partyID: 'P1', partyName: 'SHV Party', partyType: PartyType.IND, partyRole: 'role' }
+        { partyID: 'P1', partyName: 'SHV Party', partyType: PartyType.IND, partyRole: 'role' },
       ];
-      // eslint-disable-next-line dot-notation
+
       const result = (CaseFlagsUtils as any)['getActiveDisplaysFlags'](caseFlags, caseFlagsRefData, partiesInSHV);
       expect(result[0].partyName).toBe('SHV Party');
     });
 
     it('should set partyName from flag if not available in SHV', () => {
       const caseFlags: PartyFlagsModel[] = [
-        { partyId: 'P1', partyName: 'Flag Party', flagId: 'F1', flagStatus: 'active', flagDescription: 'Active' }
+        { partyId: 'P1', partyName: 'Flag Party', flagId: 'F1', flagStatus: 'active', flagDescription: 'Active' },
       ];
       const caseFlagsRefData: CaseFlagReferenceModel[] = [
         {
@@ -663,11 +688,11 @@ describe('CaseFlagsUtils', () => {
           childFlags: [],
           hearingRelevant: true,
           flagComment: true,
-          isParent: false
-        }
+          isParent: false,
+        },
       ];
       const partiesInSHV: PartyDetailsModel[] = [{ partyID: 'P1', partyType: PartyType.IND, partyRole: 'role' }];
-      // eslint-disable-next-line dot-notation
+
       const result = (CaseFlagsUtils as any)['getActiveDisplaysFlags'](caseFlags, caseFlagsRefData, partiesInSHV);
       expect(result[0].partyName).toBe('Flag Party');
     });

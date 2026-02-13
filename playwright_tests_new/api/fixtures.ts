@@ -1,11 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { promises as fs } from 'node:fs';
 
-import {
-  ApiClient as PlaywrightApiClient,
-  type ApiLogEntry,
-  createLogger
-} from '@hmcts/playwright-common';
+import { ApiClient as PlaywrightApiClient, type ApiLogEntry, createLogger } from '@hmcts/playwright-common';
 import { test as base, request } from '@playwright/test';
 
 export { expect } from '@playwright/test';
@@ -25,12 +21,52 @@ export interface ApiFixtures {
   logger: LoggerInstance;
 }
 
+type FailureType =
+  | 'DOWNSTREAM_API_5XX'
+  | 'DOWNSTREAM_API_4XX'
+  | 'SLOW_API_RESPONSE'
+  | 'NETWORK_TIMEOUT'
+  | 'ASSERTION_FAILURE'
+  | 'UNKNOWN';
+
+type ApiError = {
+  url: string;
+  status: number;
+  method: string;
+};
+
+function sanitizeUrl(url: string): string {
+  return url.split('?')[0];
+}
+
+function classifyFailure(
+  error: string,
+  serverErrors: ApiError[],
+  clientErrors: ApiError[],
+  slowCalls: Array<{ url: string; duration: number; method: string }>,
+  networkTimeout: boolean
+): FailureType {
+  if (serverErrors.length > 0) {
+    return 'DOWNSTREAM_API_5XX';
+  }
+  if (clientErrors.length > 0) {
+    return 'DOWNSTREAM_API_4XX';
+  }
+  if (error.toLowerCase().includes('timeout') || networkTimeout) {
+    return slowCalls.length > 0 ? 'SLOW_API_RESPONSE' : 'NETWORK_TIMEOUT';
+  }
+  if (error.includes('expect') || error.includes('Expected') || error.includes('Received')) {
+    return 'ASSERTION_FAILURE';
+  }
+  return 'UNKNOWN';
+}
+
 export const test = base.extend<ApiFixtures>({
   logger: async ({}, use, workerInfo) => {
     const logger = createLogger({
       serviceName: 'rpx-xui-node-api',
       defaultMeta: { workerId: workerInfo.workerIndex },
-      format: 'pretty'
+      format: 'pretty',
     });
     await use(logger);
   },
@@ -43,11 +79,77 @@ export const test = base.extend<ApiFixtures>({
       await fs.writeFile(testInfo.outputPath('node-api-calls.pretty.txt'), pretty, 'utf8');
       await testInfo.attach('node-api-calls.json', {
         body: JSON.stringify(entries, null, 2),
-        contentType: 'application/json'
+        contentType: 'application/json',
       });
       await testInfo.attach('node-api-calls.pretty.txt', {
         body: pretty,
-        contentType: 'text/plain'
+        contentType: 'text/plain',
+      });
+    }
+
+    if (testInfo.status === 'failed' || testInfo.status === 'timedOut') {
+      const errorMessage = testInfo.error?.message || '';
+      const apiErrors = entries
+        .filter((entry) => typeof entry.status === 'number' && entry.status >= 400)
+        .map((entry) => ({
+          url: sanitizeUrl(entry.url),
+          status: entry.status!,
+          method: entry.method,
+        }));
+      const serverErrors = apiErrors.filter((e) => e.status >= 500);
+      const clientErrors = apiErrors.filter((e) => e.status >= 400 && e.status < 500);
+
+      const slowThreshold = Number.parseInt(process.env.API_SLOW_THRESHOLD_MS || '5000', 10);
+      const slowCalls = entries
+        .filter((entry) => typeof entry.durationMs === 'number' && entry.durationMs > slowThreshold)
+        .map((entry) => ({
+          url: sanitizeUrl(entry.url),
+          duration: entry.durationMs!,
+          method: entry.method,
+        }));
+
+      const networkTimeout =
+        /timeout|timed out|ETIMEDOUT|ECONNRESET|socket hang up/i.test(errorMessage) ||
+        entries.some((entry) => /timeout|timed out|ETIMEDOUT/i.test(entry.errorMessage || ''));
+
+      const failureType = classifyFailure(errorMessage, serverErrors, clientErrors, slowCalls, networkTimeout);
+
+      const diagnosis = [
+        `Test failed: ${testInfo.title}`,
+        `Failure type: ${failureType}`,
+        errorMessage ? `Error: ${errorMessage.substring(0, 300)}` : '',
+        `API summary: total=${apiErrors.length + slowCalls.length}, 5xx=${serverErrors.length}, 4xx=${clientErrors.length}, slow>${slowCalls.length}`,
+      ]
+        .filter(Boolean)
+        .join('\n');
+
+      testInfo.annotations.push({
+        type: 'Failure type',
+        description: failureType,
+      });
+
+      if (failureType === 'DOWNSTREAM_API_5XX' || failureType === 'DOWNSTREAM_API_4XX') {
+        const errorList = [...serverErrors, ...clientErrors].map((e) => `${e.method} ${e.url} → HTTP ${e.status}`).join(' | ');
+        testInfo.annotations.push({
+          type: 'API errors',
+          description: errorList.substring(0, 500),
+        });
+      }
+
+      if (slowCalls.length > 0) {
+        const slowList = slowCalls
+          .map((s) => `${s.method} ${s.url} → ${Math.round(s.duration)}ms`)
+          .slice(0, 3)
+          .join(' | ');
+        testInfo.annotations.push({
+          type: 'Slow calls',
+          description: slowList,
+        });
+      }
+
+      await testInfo.attach('Failure diagnosis', {
+        body: diagnosis,
+        contentType: 'text/plain',
       });
     }
   },
@@ -80,7 +182,7 @@ export const test = base.extend<ApiFixtures>({
     } finally {
       await Promise.all(clients.map((client) => client.dispose()));
     }
-  }
+  },
 });
 
 async function createNodeApiClient(
@@ -88,10 +190,7 @@ async function createNodeApiClient(
   logger: LoggerInstance,
   entries: ApiLogEntry[]
 ): Promise<PlaywrightApiClient> {
-  const storageState =
-    role === 'anonymous'
-      ? undefined
-      : await ensureStorageState(role);
+  const storageState = role === 'anonymous' ? undefined : await ensureStorageState(role);
 
   const defaultHeaders = await buildDefaultHeaders(role);
   const context = await buildRequestContext(role, storageState, defaultHeaders);
@@ -116,7 +215,7 @@ async function createNodeApiClient(
           status: entry.status,
           threshold: slowThreshold,
           role,
-          operation: 'api-monitoring'
+          operation: 'api-monitoring',
         });
       }
 
@@ -128,11 +227,11 @@ async function createNodeApiClient(
           status: entry.status,
           duration,
           role,
-          operation: 'api-call'
+          operation: 'api-call',
         });
       }
     },
-    requestFactory: async () => context
+    requestFactory: async () => context,
   });
 }
 
@@ -150,13 +249,10 @@ type HeaderDeps = {
   getStoredCookie?: typeof getStoredCookie;
 };
 
-async function buildDefaultHeaders(
-  role: ApiUserRole | 'anonymous',
-  deps: HeaderDeps = {}
-): Promise<Record<string, string>> {
+async function buildDefaultHeaders(role: ApiUserRole | 'anonymous', deps: HeaderDeps = {}): Promise<Record<string, string>> {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    'X-Correlation-Id': randomUUID()
+    'X-Correlation-Id': randomUUID(),
   };
   const shouldInject = (deps.shouldAutoInjectXsrf ?? shouldAutoInjectXsrf)();
   if (role !== 'anonymous' && shouldInject) {
@@ -189,7 +285,7 @@ async function buildRequestContext(
       baseURL: baseUrl,
       storageState: statePath,
       ignoreHTTPSErrors: true,
-      extraHTTPHeaders: defaultHeaders
+      extraHTTPHeaders: defaultHeaders,
     });
 
   let context;
@@ -218,5 +314,5 @@ export const __test__ = {
   buildDefaultHeaders,
   buildRequestContext,
   shouldAutoInjectXsrf,
-  stripTrailingSlash
+  stripTrailingSlash,
 };

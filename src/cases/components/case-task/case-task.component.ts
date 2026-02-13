@@ -76,8 +76,7 @@ export class CaseTaskComponent implements OnInit {
       return '';
     }
 
-    // Allow decentralised services to request the current user subject be injected into URLs.
-    // We substitute the placeholder once at render-time rather than parsing URLs on click.
+    // Allow decentralised services to substitute the user idam id for session mismatch detection.
     if (expectedSub) {
       task.description = Utils.replaceAll(
         task.description,

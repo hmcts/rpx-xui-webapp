@@ -53,9 +53,9 @@ const caseAssignmentResponseDto: CaseAssignmentResponseDto = {
   case_assignments: somethingLike([
     {
       case_id: somethingLike('1588234985453946'),
-      shared_with: [
+      sharedWith: [
         {
-          idam_id: somethingLike('221a2877-e1ab-4dc4-a9ff-f9424ad58738'),
+          idamId: somethingLike('221a2877-e1ab-4dc4-a9ff-f9424ad58738'),
           first_name: somethingLike('Bill'),
           last_name: somethingLike('Roberts'),
           email: somethingLike('bill.roberts@greatbrsolicitors.co.uk'),
@@ -68,8 +68,8 @@ const caseAssignmentResponseDto: CaseAssignmentResponseDto = {
 
 function assertCaseAssignmentResponses(response: CaseAssignmentResponseDto) {
   expect(response.status_message).to.be.equal('Case-User-Role assignments returned successfully');
-  expect(response.case_assignments[0].shared_with[0].first_name).to.be.equal('Bill');
-  expect(response.case_assignments[0].shared_with[0].last_name).to.be.equal('Roberts');
-  expect(response.case_assignments[0].shared_with[0].case_roles[0]).to.be.equal('[Claimant]');
-  expect(response.case_assignments[0].shared_with[0].case_roles[1]).to.be.equal('[Defendant]');
+  expect(response.case_assignments[0].sharedWith[0].first_name).to.be.equal('Bill');
+  expect(response.case_assignments[0].sharedWith[0].last_name).to.be.equal('Roberts');
+  expect(response.case_assignments[0].sharedWith[0].case_roles[0]).to.be.equal('[Claimant]');
+  expect(response.case_assignments[0].sharedWith[0].case_roles[1]).to.be.equal('[Defendant]');
 }

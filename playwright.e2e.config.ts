@@ -1,8 +1,8 @@
-module.exports = (() => {
-  const { defineConfig, devices } = require('@playwright/test');
-  const { version: appVersion } = require('./package.json');
-  const { cpus } = require('node:os');
+import { defineConfig, devices } from '@playwright/test';
+import { cpus } from 'node:os';
+import { version as appVersion } from './package.json';
 
+export default (() => {
   const headlessMode = process.env.HEAD !== 'true';
   const odhinOutputFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
   const baseUrl = process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';
@@ -57,9 +57,9 @@ module.exports = (() => {
     testIgnore: ['**/test/smoke/smokeTest.spec.ts'],
     fullyParallel: true,
     retries: process.env.CI ? 2 : 0,
-    timeout: 3 * 60 * 1000,
+    timeout: 180_000,
     expect: {
-      timeout: 1 * 60 * 1000,
+      timeout: 60_000,
     },
     workers: workerCount,
     reporter: [

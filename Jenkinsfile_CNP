@@ -149,6 +149,10 @@ withPipeline(type, product, component) {
                         withEnv(["FUNCTIONAL_TESTS_WORKERS=8"]) {
                             try {
                                 yarnBuilder.yarn('test:api:pw:coverage')
+                            } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+                                // If another parallel branch fails and failFast aborts this branch,
+                                // preserve ABORTED status rather than showing as a failure.
+                                throw e
                             } finally {
                                 publishHTML([
                                 allowMissing         : true,
@@ -167,6 +171,8 @@ withPipeline(type, product, component) {
                     stage('Codecept Integration Tests') {
                         try {
                             yarnBuilder.yarn('test:xuiIntegration')
+                        } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+                            throw e
                         } finally {
                             publishHTML([
                                 allowMissing         : true,
@@ -184,6 +190,8 @@ withPipeline(type, product, component) {
                     stage('Playwright Integration Tests') {
                         try {
                             yarnBuilder.yarn('test:playwright:integration')
+                        } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+                            throw e
                         } finally {
                             publishHTML([
                                 allowMissing         : true,
@@ -201,6 +209,8 @@ withPipeline(type, product, component) {
                     stage('Playwright E2E') {
                         try {
                             yarnBuilder.yarn('test:playwrightE2E')
+                        } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+                            throw e
                         } finally {
                             publishHTML([
                                 allowMissing         : true,
@@ -237,6 +247,8 @@ withPipeline(type, product, component) {
                     stage('API Tests') {
                         try {
                             yarnBuilder.yarn('test:api:pw:coverage')
+                        } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+                            throw e
                         } finally {
                             publishHTML([
                               allowMissing         : true,
@@ -254,6 +266,8 @@ withPipeline(type, product, component) {
                     stage('Codecept Integration Tests') {
                         try {
                             yarnBuilder.yarn('test:xuiIntegration')
+                        } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+                            throw e
                         } finally {
                             publishHTML([
                                 allowMissing         : true,
@@ -271,6 +285,8 @@ withPipeline(type, product, component) {
                     stage('Playwright Integration Tests') {
                         try {
                             yarnBuilder.yarn('test:playwright:integration')
+                        } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+                            throw e
                         } finally {
                             publishHTML([
                                 allowMissing         : true,
@@ -288,6 +304,8 @@ withPipeline(type, product, component) {
                     stage('Playwright E2E') {
                         try {
                             yarnBuilder.yarn('test:playwrightE2E')
+                        } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+                            throw e
                         } finally {
                             publishHTML([
                                 allowMissing         : true,

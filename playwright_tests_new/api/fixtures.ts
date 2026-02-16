@@ -73,7 +73,7 @@ function classifyFailure(
 }
 
 export const test = base.extend<ApiFixtures>({
-  logger: async (_fixtures, use, workerInfo) => {
+  logger: async ({ request: _request }, use, workerInfo) => {
     const logger = createLogger({
       serviceName: 'rpx-xui-node-api',
       defaultMeta: { workerId: workerInfo.workerIndex },
@@ -81,7 +81,7 @@ export const test = base.extend<ApiFixtures>({
     });
     await use(logger);
   },
-  apiLogs: async (_fixtures, use, testInfo) => {
+  apiLogs: async ({ request: _request }, use, testInfo) => {
     const entries: ApiLogEntry[] = [];
     await use(entries);
     if (entries.length) {

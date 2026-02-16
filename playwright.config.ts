@@ -1,5 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
-
+import { execSync } from 'node:child_process';
 import { cpus } from 'node:os';
 import { version as appVersion } from './package.json';
 
@@ -15,6 +15,33 @@ const resolveHeadlessMode = (env: EnvMap = process.env) => env.HEAD !== 'true';
 
 const resolveOdhinOutputFolder = (env: EnvMap = process.env) =>
   env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
+
+const resolveBranchName = (env: EnvMap = process.env): string => {
+  const envBranch =
+    env.PLAYWRIGHT_REPORT_BRANCH ||
+    env.GIT_BRANCH ||
+    env.BRANCH_NAME ||
+    env.GITHUB_REF_NAME ||
+    env.GITHUB_HEAD_REF ||
+    env.BUILD_SOURCEBRANCHNAME;
+  if (envBranch) {
+    return envBranch.replace(/^refs\/heads\//, '').trim();
+  }
+  try {
+    const gitBranch = execSync('git rev-parse --abbrev-ref HEAD', {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    })
+      .trim()
+      .replace(/^refs\/heads\//, '');
+    if (gitBranch && gitBranch !== 'HEAD') {
+      return gitBranch;
+    }
+  } catch {
+    // Fall back to local label when branch cannot be resolved.
+  }
+  return 'local';
+};
 
 const resolveWorkerCount = (env: EnvMap = process.env) => {
   // CI should always run with 8 workers for predictable parallelism.
@@ -71,6 +98,7 @@ const buildConfig = (env: EnvMap = process.env) => {
   const workerCount = resolveWorkerCount(env);
   const headlessMode = resolveHeadlessMode(env);
   const odhinOutputFolder = resolveOdhinOutputFolder(env);
+  const reportBranch = resolveBranchName(env);
 
   return defineConfig({
     use: {
@@ -86,8 +114,8 @@ const buildConfig = (env: EnvMap = process.env) => {
     fullyParallel: true,
     /* Fail the build on CI if you accidentally left test.only in the source code. */
     forbidOnly: !!env.CI,
-    /* Retry on CI only */
-    retries: env.CI ? 2 : 0, // Set the number of retries for all projects
+    /* Retry failed tests twice in all environments */
+    retries: 2, // Set the number of retries for all projects
 
     timeout: 3 * 60 * 1000,
     expect: {
@@ -100,6 +128,7 @@ const buildConfig = (env: EnvMap = process.env) => {
 
     reporter: [
       [env.CI ? 'dot' : 'list'],
+      ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs'],
       [
         'odhin-reports-playwright',
         {
@@ -108,7 +137,7 @@ const buildConfig = (env: EnvMap = process.env) => {
           title: 'RPX XUI Playwright',
           testEnvironment: resolveTestEnvironmentLabel(env, workerCount),
           project: env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
-          release: env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${env.GIT_BRANCH ?? 'local'}`,
+          release: env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${reportBranch}`,
           startServer: false,
           consoleLog: true,
           consoleError: true,
@@ -176,7 +205,8 @@ const config = buildConfig(process.env);
 (config as { __test__?: unknown }).__test__ = {
   resolveBaseUrl,
   resolveWorkerCount,
+  resolveBranchName,
   buildConfig,
 };
 
-module.exports = config;
+export default config;

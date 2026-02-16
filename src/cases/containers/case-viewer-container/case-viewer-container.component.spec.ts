@@ -212,6 +212,15 @@ const roles = [
 ];
 
 const rolesWithHearingRoles = ['caseworker', 'hearing-manager'];
+const SESSION_USER_DETAILS = JSON.stringify({ id: AppTestConstants.TEST_USER_ID });
+
+beforeEach(() => {
+  sessionStorage.setItem('userDetails', SESSION_USER_DETAILS);
+});
+
+afterEach(() => {
+  sessionStorage.removeItem('userDetails');
+});
 
 describe('CaseViewerContainerComponent', () => {
   let component: CaseViewerContainerComponent;

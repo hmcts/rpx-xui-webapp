@@ -19,6 +19,56 @@ export type ResolveCaseReferenceOptions = {
 const CASE_REFERENCE_REGEX = /^\d{16}$/;
 const TRANSIENT_GLOBAL_SEARCH_STATUSES = new Set([429, 502, 503, 504]);
 
+type GlobalSearchRequestBody = {
+  searchCriteria: {
+    CCDCaseTypeIds: null;
+    CCDJurisdictionIds: string[] | null;
+    caseManagementBaseLocationIds: null;
+    caseManagementRegionIds: null;
+    caseReferences: string[];
+    otherReferences: null;
+    parties: [];
+    stateIds: null;
+  };
+  sortCriteria: null;
+  maxReturnRecordCount: number;
+  startRecordNumber: 1;
+};
+
+function buildGlobalSearchRequestBody(
+  caseReferencePattern: string,
+  jurisdictionIds: string[] | null,
+  maxReturnRecordCount: number
+): GlobalSearchRequestBody {
+  return {
+    searchCriteria: {
+      CCDCaseTypeIds: null,
+      CCDJurisdictionIds: jurisdictionIds,
+      caseManagementBaseLocationIds: null,
+      caseManagementRegionIds: null,
+      caseReferences: [caseReferencePattern],
+      otherReferences: null,
+      parties: [],
+      stateIds: null,
+    },
+    sortCriteria: null,
+    maxReturnRecordCount,
+    startRecordNumber: 1,
+  };
+}
+
+async function executeGlobalSearchRequest(
+  page: Page,
+  caseReferencePattern: string,
+  jurisdictionIds: string[] | null,
+  maxReturnRecordCount = 10
+) {
+  return page.request.post('/api/globalsearch/results', {
+    data: buildGlobalSearchRequestBody(caseReferencePattern, jurisdictionIds, maxReturnRecordCount),
+    failOnStatusCode: false,
+  });
+}
+
 function randomDigitString(length: number): string {
   let value = '';
   for (let index = 0; index < length; index += 1) {

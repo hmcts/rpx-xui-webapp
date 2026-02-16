@@ -1,7 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
 import { execSync } from 'node:child_process';
 import { cpus } from 'node:os';
-import { version as appVersion } from './package.json' assert { type: 'json' };
+import * as packageJson from './package.json';
+
+const appVersion = packageJson.version;
 
 type EnvMap = NodeJS.ProcessEnv;
 

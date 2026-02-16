@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 import { execSync } from 'node:child_process';
 import { cpus } from 'node:os';
-import packageJson from './package.json';
+import * as packageJson from './package.json';
 
 const appVersion = packageJson.version;
 

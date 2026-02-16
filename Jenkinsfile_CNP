@@ -195,21 +195,26 @@ withPipeline(type, product, component) {
                             steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
                         }
                     }
+                },
+                playwrightE2E: {
+                    stage('Playwright E2E') {
+                        try {
+                            yarnBuilder.yarn('test:playwrightE2E')
+                        } finally {
+                            publishHTML([
+                                allowMissing         : true,
+                                alwaysLinkToLastBuild: true,
+                                keepAll              : true,
+                                reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
+                                reportFiles          : 'xui-playwright.html',
+                                reportName           : 'PREVIEW Playwright E2E'
+                            ])
+                            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
+                        }
+                    }
                 }
             )
         }
-    }
-
-    afterAlways('functionalTest:preview') {
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
-            reportFiles          : 'xui-playwright.html',
-            reportName           : 'PREVIEW Playwright E2E'
-        ])
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
     }
 
     afterAlways('smoketest:aat') {
@@ -276,20 +281,25 @@ withPipeline(type, product, component) {
                             steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
                         }
                     }
+                },
+                playwrightE2E: {
+                    stage('Playwright E2E') {
+                        try {
+                            yarnBuilder.yarn('test:playwrightE2E')
+                        } finally {
+                            publishHTML([
+                                allowMissing         : true,
+                                alwaysLinkToLastBuild: true,
+                                keepAll              : true,
+                                reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
+                                reportFiles          : 'xui-playwright.html',
+                                reportName           : 'AAT Playwright E2E'
+                            ])
+                        }
+                    }
                 }
             )
         }
-    }
-
-    afterAlways('functionalTest:aat') {
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
-            reportFiles          : 'xui-playwright.html',
-            reportName           : 'AAT Playwright E2E'
-        ])
     }
 }
 

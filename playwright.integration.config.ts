@@ -107,7 +107,7 @@ export default (() => {
         },
       ],
     ],
-    globalSetup: new URL('./playwright_tests_new/common/playwright.global.setup.ts', import.meta.url).pathname,
+    globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
     use: {
       baseURL: baseUrl,
       trace: 'on-first-retry',

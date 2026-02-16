@@ -143,6 +143,7 @@ withPipeline(type, product, component) {
 
         stage('Preview Functional Tests (Parallel)') {
             parallel(
+                failFast: true,
                 api: {
                     stage('API Tests') {
                         withEnv(["FUNCTIONAL_TESTS_WORKERS=8"]) {

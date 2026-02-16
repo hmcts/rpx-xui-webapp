@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const { cpus } = require('node:os');
-const { version: appVersion } = require('./package.json');
+import { cpus } from 'node:os';
+import { version as appVersion } from './package.json';
 
 type EnvMap = NodeJS.ProcessEnv;
 

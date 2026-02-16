@@ -566,10 +566,11 @@ describe('Index', () => {
       const mockResponse = {
         data: { roleAssignmentResponse: [] },
         headers: {},
+        status: 200,
       };
 
       sandbox.stub(config, 'getConfigValue').returns('http://role-assignment-api');
-      const setHeadersStub = sandbox.stub(proxy, 'setHeaders').returns({ accept: 'application/json' });
+      sandbox.stub(proxy, 'setHeaders').returns({ accept: 'application/json' });
       const httpGetStub = sandbox.stub(http, 'get').resolves(mockResponse);
 
       // setUserRoles is called internally and doesn't need to be stubbed
@@ -577,12 +578,16 @@ describe('Index', () => {
       await refreshRoleAssignmentForUser(mockUserInfo, req);
 
       const expectedHeaders = { 'If-None-Match': 'existing-etag' };
-      expect(httpGetStub).to.have.been.calledWith(sinon.match.string, { headers: expectedHeaders });
+      expect(httpGetStub).to.have.been.calledWith(
+        sinon.match.string,
+        sinon.match({
+          headers: expectedHeaders,
+        })
+      );
     });
 
     it('should handle 304 Not Modified response', async () => {
       const mockUserInfo = { id: 'user123', roles: ['caseworker'] };
-      const error304 = { status: 304 };
 
       // Set up cached role assignments in session
       req.session.roleAssignmentResponse = [
@@ -596,7 +601,11 @@ describe('Index', () => {
 
       sandbox.stub(config, 'getConfigValue').returns('http://role-assignment-api');
       sandbox.stub(proxy, 'setHeaders').returns({});
-      sandbox.stub(http, 'get').rejects(error304);
+      sandbox.stub(http, 'get').resolves({
+        status: 304,
+        data: undefined,
+        headers: {},
+      } as any);
       sandbox.stub(userUtils, 'isCurrentUserCaseAllocator').returns(false);
 
       const result = await refreshRoleAssignmentForUser(mockUserInfo, req);

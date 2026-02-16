@@ -87,7 +87,6 @@ export default (() => {
     testIgnore: ['**/test/smoke/smokeTest.spec.ts'],
     fullyParallel: true,
     retries: 2,
-    retries: 2,
     timeout: 180_000,
     expect: {
       timeout: 60_000,

@@ -782,10 +782,10 @@ export class CreateCasePage extends Base {
       person1Gender: overrides.person1Gender ?? gender,
       person1JobTitle: overrides.person1JobTitle ?? faker.person.jobTitle(),
       person1JobDescription: overrides.person1JobDescription ?? faker.lorem.sentence(),
-      textField0: overrides.textField0 ?? faker.lorem.word(),
-      textField1: overrides.textField1 ?? faker.lorem.word(),
-      textField2: overrides.textField2 ?? faker.lorem.word(),
-      textField3: overrides.textField3 ?? faker.lorem.word(),
+      textField0: overrides.textField0 ?? faker.lorem.sentence() + faker.date.soon().getTime(),
+      textField1: overrides.textField1 ?? faker.lorem.sentence() + faker.date.soon().getTime(),
+      textField2: overrides.textField2 ?? faker.lorem.sentence() + faker.date.soon().getTime(),
+      textField3: overrides.textField3 ?? faker.lorem.sentence() + faker.date.soon().getTime(),
       generatedAt,
     };
   }

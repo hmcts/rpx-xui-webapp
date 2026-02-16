@@ -57,6 +57,8 @@ export class CaseDetailsPage extends Base {
   readonly caseTab1Table = this.page.locator('table.tab1');
   readonly caseDocumentsTable = this.page.locator('table.complex-panel-table');
   readonly someMoreDataTable = this.page.locator('table.SomeMoreData');
+  readonly divorceDataTable = this.page.locator('table.Data');
+  readonly divorceDataSubTable = this.divorceDataTable.locator('table.complex-panel-table table');
 
   constructor(page: Page) {
     super(page);
@@ -208,24 +210,31 @@ export class CaseDetailsPage extends Base {
           continue;
         }
 
-        const rawKey = findFirstText(cells[0])
+        // Clone the key cell and strip nested tables so nested content is ignored
+        const keyCellClone = (cells[0] as Element).cloneNode(true) as Element;
+        keyCellClone.querySelectorAll('table').forEach((t) => t.remove());
+        const rawKey = findFirstText(keyCellClone)
           .replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '')
           .trim();
         if (!rawKey) {
           continue;
         }
-
         const valueParts = cells
           .slice(1)
-          .map((c) =>
-            findFirstText(c)
+          .map((c) => {
+            const clone = (c as Element).cloneNode(true) as Element;
+            clone.querySelectorAll('table').forEach((t) => t.remove());
+            return findFirstText(clone)
               .replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '')
-              .trim()
-          )
+              .trim();
+          })
           .filter(Boolean);
         const value = valueParts.join(' ').replace(/\s+/g, ' ').trim();
 
-        out[rawKey] = value;
+        // Preserve the first occurrence of a repeated key (do not overwrite)
+        if (!Object.prototype.hasOwnProperty.call(out, rawKey)) {
+          out[rawKey] = value;
+        }
       }
       return out;
     };
@@ -252,7 +261,11 @@ export class CaseDetailsPage extends Base {
       // header is first tr
       const headerRow = rows[0];
       const sanitize = (s: string) => (s || '').replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim();
-      const headers = Array.from(headerRow.querySelectorAll('th, td')).map((h) => sanitize(h.textContent || ''));
+      const headers = Array.from(headerRow.querySelectorAll('th, td')).map((h) => {
+        const clone = (h as Element).cloneNode(true) as Element;
+        clone.querySelectorAll('table').forEach((t) => t.remove());
+        return sanitize(clone.textContent || '');
+      });
 
       // data rows are after header; filter hidden rows
       const dataRows = Array.from(rows)
@@ -282,9 +295,14 @@ export class CaseDetailsPage extends Base {
         const obj: Record<string, string> = {};
         for (let i = 0; i < cells.length; i++) {
           const key = headers[i] || `column_${i + 1}`;
-          const cellText = cells[i].textContent || '';
+          const cellClone = (cells[i] as Element).cloneNode(true) as Element;
+          cellClone.querySelectorAll('table').forEach((t) => t.remove());
+          const cellText = cellClone.textContent || '';
           const value = sanitize(cellText).replace(/\s+/g, ' ');
-          obj[key] = value;
+          // Preserve the first occurrence of a repeated header key in the row
+          if (!Object.prototype.hasOwnProperty.call(obj, key)) {
+            obj[key] = value;
+          }
         }
         arr.push(obj);
       }
@@ -317,14 +335,14 @@ export class CaseDetailsPage extends Base {
     return data;
   }
 
-  async getUpdateCaseHistoryInfo(): Promise<{
+  async getCaseHistoryByEvent(event: string): Promise<{
     updateRow: Record<string, string> | undefined;
     updateDate: string;
     updateAuthor: string;
     expectedDate: string;
   }> {
     const rows = await this.mapHistoryTable();
-    const updateRow = rows.find((r) => r.Event === 'Update case');
+    const updateRow = rows.find((r) => r.Event === event);
     const updateDate = updateRow?.Date || '';
     const updateAuthor = updateRow?.Author || '';
     const expectedDate = await this.todaysDateFormatted();

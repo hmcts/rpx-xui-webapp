@@ -81,6 +81,19 @@
     "payments": "http://localhost:8080",
     "judicialBookingApi": "http://localhost:8080"
   },
+  "secrets": {
+    "rpx": {
+      "appinsights-instrumentationkey-mc": "mock-appinsights-key",
+      "appinsights-connection-string-mc": "InstrumentationKey=mock;IngestionEndpoint=http://localhost",
+      "launch-darkly-client-id": "local-test-client-id",
+      "mc-session-secret": "local-mock-session-secret",
+      "mc-s2s-client-secret": "mock-s2s-secret",
+      "mc-idam-client-secret": "mock-idam-secret",
+      "webapp-redis-connection-string": "redis://localhost:6379",
+      "system-user-name": "mock-system-user@mailinator.com",
+      "system-user-password": "Password123"
+    }
+  },
   "feature": {
     "appInsightsEnabled": false,
     "proxyEnabled": false,

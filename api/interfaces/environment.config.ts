@@ -16,7 +16,6 @@ export interface EnvironmentConfig {
   proxy: EnvironmentConfigProxy;
   secureCookie: boolean;
   services: EnvironmentConfigServices;
-  sessionSecret: string;
 }
 
 export interface EnvironmentConfigCookies {

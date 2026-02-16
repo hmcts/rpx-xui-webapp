@@ -1,10 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 import { execSync } from 'node:child_process';
 import { cpus } from 'node:os';
-import * as packageJson from './package.json';
-
-const appVersion = packageJson.version;
-
+import { version as appVersion } from './package.json';
 export default (() => {
   const headlessMode = process.env.HEAD !== 'true';
   const odhinOutputFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-integration/odhin-report';
@@ -110,7 +107,7 @@ export default (() => {
         },
       ],
     ],
-    globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
+    globalSetup: new URL('./playwright_tests_new/common/playwright.global.setup.ts', import.meta.url).pathname,
     use: {
       baseURL: baseUrl,
       trace: 'on-first-retry',

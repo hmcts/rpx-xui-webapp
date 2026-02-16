@@ -90,9 +90,9 @@ module.exports = defineConfig({
   /* Retry failed tests twice in all environments */
   retries: 2, // Set the number of retries for all projects
 
-  timeout: 5 * 60 * 1000, // 5 minutes per test maximum as on first nightly run tests were taking too long
+  timeout: 300_000, // 5 minutes per test maximum as on first nightly run tests were taking too long
   expect: {
-    timeout: 2 * 60 * 1000, // Same reason as above
+    timeout: 120_000, // Same reason as above
   },
   reportSlowTests: null,
 

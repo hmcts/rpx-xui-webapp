@@ -1,10 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 import { execSync } from 'node:child_process';
 import { cpus } from 'node:os';
-import * as packageJson from './package.json';
-
-const appVersion = packageJson.version;
-
+import { version as appVersion } from './package.json';
 export default (() => {
   const headlessMode = process.env.HEAD !== 'true';
   const odhinOutputFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';

@@ -7,11 +7,7 @@ import { AxiosResponse } from 'axios';
 import * as noCService from './noCService';
 import * as errorCodeConverter from './errorCodeConverter';
 import { NoCQuestions } from './models/noCQuestions.interface';
-import {
-  getNoCQuestions,
-  validateNoCQuestions,
-  submitNoCEvents
-} from './';
+import { getNoCQuestions, validateNoCQuestions, submitNoCEvents } from './';
 
 // Import sinon-chai using require to avoid ES module issues
 const sinonChai = require('sinon-chai');
@@ -23,7 +19,7 @@ const createMockResponse = (status: number, data: any, statusText: string = 'OK'
   statusText,
   headers: {},
   config: { headers: {} } as any,
-  request: {}
+  request: {},
 });
 
 describe('NoC API', (): void => {
@@ -63,12 +59,12 @@ describe('NoC API', (): void => {
             regular_expression: null,
             fixed_list_items: [],
             complex_fields: [],
-            collection_field_type: null
+            collection_field_type: null,
           },
           display_context_parameter: '1',
           challenge_question_id: 'NoC',
           answer_field: null,
-          question_id: 'QuestionId123'
+          question_id: 'QuestionId123',
         },
         {
           case_type_id: 'AAT',
@@ -82,21 +78,21 @@ describe('NoC API', (): void => {
             regular_expression: null,
             fixed_list_items: [],
             complex_fields: [],
-            collection_field_type: null
+            collection_field_type: null,
           },
           display_context_parameter: '1',
           challenge_question_id: 'NoC',
           answer_field: null,
-          question_id: 'QuestionId456'
-        }
-      ]
+          question_id: 'QuestionId456',
+        },
+      ],
     };
 
     beforeEach(() => {
       req = mockReq({
         query: {
-          caseId: '1234567890123456'
-        }
+          caseId: '1234567890123456',
+        },
       });
     });
 
@@ -163,15 +159,15 @@ describe('NoC API', (): void => {
       const originalError = {
         response: {
           status: 500,
-          data: { message: 'Internal server error' }
-        }
+          data: { message: 'Internal server error' },
+        },
       };
       const transformedError = {
         ...originalError,
         data: {
           ...originalError.response.data,
-          code: 'generic-error'
-        }
+          code: 'generic-error',
+        },
       };
 
       handleGetStub.rejects(originalError);
@@ -191,8 +187,8 @@ describe('NoC API', (): void => {
         ...networkError,
         data: {
           message: 'Network Error',
-          code: 'generic-error'
-        }
+          code: 'generic-error',
+        },
       };
 
       handleGetStub.rejects(networkError);
@@ -207,14 +203,14 @@ describe('NoC API', (): void => {
     it('should handle timeout errors', async () => {
       const timeoutError = {
         code: 'ECONNABORTED',
-        message: 'timeout of 30000ms exceeded'
+        message: 'timeout of 30000ms exceeded',
       };
       const transformedError = {
         ...timeoutError,
         data: {
           message: 'timeout of 30000ms exceeded',
-          code: 'generic-error'
-        }
+          code: 'generic-error',
+        },
       };
 
       handleGetStub.rejects(timeoutError);
@@ -233,26 +229,26 @@ describe('NoC API', (): void => {
       answers: [
         {
           question_id: 'QuestionId123',
-          value: 'John'
+          value: 'John',
         },
         {
           question_id: 'QuestionId456',
-          value: 'Doe'
-        }
-      ]
+          value: 'Doe',
+        },
+      ],
     };
 
     const mockValidationResponse = {
       OrganisationPolicy: {
-        Organisation: 'orgId123'
+        Organisation: 'orgId123',
       },
       code: '',
-      status_message: 'success'
+      status_message: 'success',
     };
 
     beforeEach(() => {
       req = mockReq({
-        body: mockValidationRequest
+        body: mockValidationRequest,
       });
     });
 
@@ -298,7 +294,7 @@ describe('NoC API', (): void => {
     it('should handle validation failure response', async () => {
       const failureResponse = {
         code: 'answers-not-identify-litigant',
-        status_message: 'The answers did not uniquely identify a litigant'
+        status_message: 'The answers did not uniquely identify a litigant',
       };
       const mockResponse = createMockResponse(400, failureResponse, 'Bad Request');
       handlePostStub.resolves(mockResponse);
@@ -315,16 +311,16 @@ describe('NoC API', (): void => {
           status: 400,
           data: {
             code: 'case-id-invalid',
-            message: 'Invalid case reference number'
-          }
-        }
+            message: 'Invalid case reference number',
+          },
+        },
       };
       const transformedError = {
         ...invalidCaseError,
         data: {
           ...invalidCaseError.response.data,
-          code: 'case-id-invalid'
-        }
+          code: 'case-id-invalid',
+        },
       };
 
       handlePostStub.rejects(invalidCaseError);
@@ -341,16 +337,16 @@ describe('NoC API', (): void => {
         response: {
           status: 400,
           data: {
-            message: 'Answers match more than one party on the case'
-          }
-        }
+            message: 'Answers match more than one party on the case',
+          },
+        },
       };
       const transformedError = {
         ...litigantError,
         data: {
           ...litigantError.response.data,
-          code: 'answers-not-identify-litigant'
-        }
+          code: 'answers-not-identify-litigant',
+        },
       };
 
       handlePostStub.rejects(litigantError);
@@ -366,15 +362,15 @@ describe('NoC API', (): void => {
       const serviceError = {
         response: {
           status: 503,
-          data: { message: 'Service temporarily unavailable' }
-        }
+          data: { message: 'Service temporarily unavailable' },
+        },
       };
       const transformedError = {
         ...serviceError,
         data: {
           ...serviceError.response.data,
-          code: 'generic-error'
-        }
+          code: 'generic-error',
+        },
       };
 
       handlePostStub.rejects(serviceError);
@@ -391,30 +387,30 @@ describe('NoC API', (): void => {
     const mockSubmissionRequest = {
       case_id: '1234567890123456',
       organisation_policy: {
-        Organisation: 'orgId123'
+        Organisation: 'orgId123',
       },
       answers: [
         {
           question_id: 'QuestionId123',
-          value: 'John'
+          value: 'John',
         },
         {
           question_id: 'QuestionId456',
-          value: 'Doe'
-        }
-      ]
+          value: 'Doe',
+        },
+      ],
     };
 
     const mockSubmissionResponse = {
       approval_status: 'APPROVED',
       case_role: 'Claimant',
       code: '',
-      status_message: 'success'
+      status_message: 'success',
     };
 
     beforeEach(() => {
       req = mockReq({
-        body: mockSubmissionRequest
+        body: mockSubmissionRequest,
       });
     });
 
@@ -435,7 +431,7 @@ describe('NoC API', (): void => {
 
     it('should handle submission with minimal data', async () => {
       const minimalRequest = {
-        case_id: '1234567890123456'
+        case_id: '1234567890123456',
       };
       req.body = minimalRequest;
       const mockResponse = createMockResponse(201, mockSubmissionResponse, 'Created');
@@ -465,7 +461,7 @@ describe('NoC API', (): void => {
         approval_status: 'PENDING',
         case_role: 'Respondent',
         code: '',
-        status_message: 'pending approval'
+        status_message: 'pending approval',
       };
       const mockResponse = createMockResponse(201, pendingResponse, 'Created');
       handlePostStub.resolves(mockResponse);
@@ -482,16 +478,16 @@ describe('NoC API', (): void => {
           status: 500,
           data: {
             code: 'noc-in-progress',
-            message: 'internal error'
-          }
-        }
+            message: 'internal error',
+          },
+        },
       };
       const transformedError = {
         ...progressError,
         data: {
           ...progressError.response.data,
-          code: 'noc-in-progress'
-        }
+          code: 'noc-in-progress',
+        },
       };
 
       handlePostStub.rejects(progressError);
@@ -509,16 +505,16 @@ describe('NoC API', (): void => {
           status: 400,
           data: {
             code: 'case-id-invalid',
-            message: 'Invalid case reference number'
-          }
-        }
+            message: 'Invalid case reference number',
+          },
+        },
       };
       const transformedError = {
         ...invalidCaseError,
         data: {
           ...invalidCaseError.response.data,
-          code: 'case-id-invalid'
-        }
+          code: 'case-id-invalid',
+        },
       };
 
       handlePostStub.rejects(invalidCaseError);
@@ -536,16 +532,16 @@ describe('NoC API', (): void => {
           status: 400,
           data: {
             code: 'more-than-one-litigant',
-            message: 'You already have access to the case'
-          }
-        }
+            message: 'You already have access to the case',
+          },
+        },
       };
       const transformedError = {
         ...multipleRequestsError,
         data: {
           ...multipleRequestsError.response.data,
-          code: 'more-than-one-litigant'
-        }
+          code: 'more-than-one-litigant',
+        },
       };
 
       handlePostStub.rejects(multipleRequestsError);
@@ -563,16 +559,16 @@ describe('NoC API', (): void => {
           status: 400,
           data: {
             code: 'noc-in-progress',
-            message: 'Another NOC request has been actioned'
-          }
-        }
+            message: 'Another NOC request has been actioned',
+          },
+        },
       };
       const transformedError = {
         ...anotherNocError,
         data: {
           ...anotherNocError.response.data,
-          code: 'noc-in-progress'
-        }
+          code: 'noc-in-progress',
+        },
       };
 
       handlePostStub.rejects(anotherNocError);
@@ -588,15 +584,15 @@ describe('NoC API', (): void => {
       const unauthorizedError = {
         response: {
           status: 401,
-          data: { message: 'Unauthorized' }
-        }
+          data: { message: 'Unauthorized' },
+        },
       };
       const transformedError = {
         ...unauthorizedError,
         data: {
           ...unauthorizedError.response.data,
-          code: 'generic-error'
-        }
+          code: 'generic-error',
+        },
       };
 
       handlePostStub.rejects(unauthorizedError);
@@ -612,15 +608,15 @@ describe('NoC API', (): void => {
       const forbiddenError = {
         response: {
           status: 403,
-          data: { message: 'Forbidden' }
-        }
+          data: { message: 'Forbidden' },
+        },
       };
       const transformedError = {
         ...forbiddenError,
         data: {
           ...forbiddenError.response.data,
-          code: 'generic-error'
-        }
+          code: 'generic-error',
+        },
       };
 
       handlePostStub.rejects(forbiddenError);
@@ -635,14 +631,14 @@ describe('NoC API', (): void => {
     it('should handle connection timeout', async () => {
       const timeoutError = {
         code: 'ETIMEDOUT',
-        message: 'Connection timeout'
+        message: 'Connection timeout',
       };
       const transformedError = {
         ...timeoutError,
         data: {
           message: 'Connection timeout',
-          code: 'generic-error'
-        }
+          code: 'generic-error',
+        },
       };
 
       handlePostStub.rejects(timeoutError);
@@ -659,7 +655,7 @@ describe('NoC API', (): void => {
     beforeEach(() => {
       req = mockReq({
         query: { caseId: '1234567890123456' },
-        body: { case_id: '1234567890123456' }
+        body: { case_id: '1234567890123456' },
       });
     });
 
@@ -726,10 +722,10 @@ describe('NoC API', (): void => {
           nested: {
             field: 'value',
             array: [1, 2, 3],
-            boolean: true
-          }
+            boolean: true,
+          },
         },
-        answers: []
+        answers: [],
       };
       req.body = complexRequest;
 

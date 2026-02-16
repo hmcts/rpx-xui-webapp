@@ -1,4 +1,3 @@
-
 import { test, expect } from '@playwright/test';
 
 import { loadConfig, resolveConfigModule, type EnvMap, type TestableConfigModule } from './utils/playwrightConfigUtils';
@@ -7,6 +6,17 @@ let configModule: TestableConfigModule;
 
 const buildConfig = (env: EnvMap) => configModule.__test__.buildConfig(env);
 const resolveWorkerCount = (env: EnvMap) => configModule.__test__.resolveWorkerCount(env);
+const getReporterTuple = (reporter: unknown, name: string): [string, Record<string, unknown> | undefined] => {
+  if (!Array.isArray(reporter)) {
+    throw new TypeError('Unexpected reporter config shape');
+  }
+  const match = reporter.find((entry) => Array.isArray(entry) && entry[0] === name);
+  if (!match || !Array.isArray(match)) {
+    throw new TypeError(`Reporter "${name}" not found`);
+  }
+  const [, options] = match as [string, Record<string, unknown> | undefined];
+  return [name, options];
+};
 
 test.describe.configure({ mode: 'serial' });
 
@@ -30,9 +40,9 @@ test.describe('Playwright config coverage', () => {
     const withTest = resolveConfigModule({
       __test__: {
         buildConfig: () => ({}),
-        resolveWorkerCount: () => 1
+        resolveWorkerCount: () => 1,
       },
-      default: { name: 'default' }
+      default: { name: 'default' },
     });
     expect(withTest.__test__).toBeDefined();
 
@@ -51,15 +61,16 @@ test.describe('Playwright config coverage', () => {
       PLAYWRIGHT_REPORT_RELEASE: 'Custom Release',
       TEST_URL: 'https://example.test',
       TEST_TYPE: undefined,
-      HEAD: 'true'
+      HEAD: 'true',
     });
     expect(config.workers).toBe(8);
     expect(config.use.baseURL).toBe('https://example.test');
     expect(config.reporter[0][0]).toBe('dot');
-    expect(config.reporter[1][1].outputFolder).toBe('custom-report');
-    expect(config.reporter[1][1].project).toBe('Custom Project');
-    expect(config.reporter[1][1].release).toBe('Custom Release');
-    expect(config.reporter[1][1].testEnvironment).toContain('ci');
+    const [, odhinOptions] = getReporterTuple(config.reporter, 'odhin-reports-playwright');
+    expect(odhinOptions?.outputFolder).toBe('custom-report');
+    expect(odhinOptions?.project).toBe('Custom Project');
+    expect(odhinOptions?.release).toBe('Custom Release');
+    expect(odhinOptions?.testEnvironment).toContain('ci');
     expect(config.projects[0].use.headless).toBe(false);
 
     const nodeApiProject = config.projects.find((p) => p.name === 'node-api');
@@ -76,13 +87,31 @@ test.describe('Playwright config coverage', () => {
       GIT_BRANCH: undefined,
       TEST_URL: undefined,
       TEST_TYPE: undefined,
-      HEAD: undefined
+      HEAD: undefined,
     });
     expect(config.reporter[0][0]).toBe('list');
-    expect(config.reporter[1][1].outputFolder).toContain('playwright-e2e/odhin-report');
-    expect(config.reporter[1][1].project).toBe('RPX XUI Webapp');
-    expect(config.reporter[1][1].release).toContain('branch=local');
-    expect(config.reporter[1][1].testEnvironment).toContain('local');
+    const [, odhinOptions] = getReporterTuple(config.reporter, 'odhin-reports-playwright');
+    expect(odhinOptions?.outputFolder).toContain('playwright-e2e/odhin-report');
+    expect(odhinOptions?.project).toBe('RPX XUI Webapp');
+    expect(odhinOptions?.release).toContain('branch=');
+    expect(odhinOptions?.testEnvironment).toContain('aat');
+    expect(odhinOptions?.testEnvironment).toContain('local-run');
     expect(config.use.baseURL).toContain('manage-case');
+  });
+
+  test('config uses branch from environment when provided', async () => {
+    const config = buildConfig({
+      CI: undefined,
+      PLAYWRIGHT_REPORT_FOLDER: undefined,
+      PLAYWRIGHT_REPORT_PROJECT: undefined,
+      PLAYWRIGHT_REPORT_RELEASE: undefined,
+      PLAYWRIGHT_REPORT_BRANCH: undefined,
+      GIT_BRANCH: 'feat/EXUI-3618-case-search-e2e',
+      TEST_URL: undefined,
+      TEST_TYPE: undefined,
+      HEAD: undefined,
+    });
+    const [, odhinOptions] = getReporterTuple(config.reporter, 'odhin-reports-playwright');
+    expect(odhinOptions?.release).toContain('branch=feat/EXUI-3618-case-search-e2e');
   });
 });

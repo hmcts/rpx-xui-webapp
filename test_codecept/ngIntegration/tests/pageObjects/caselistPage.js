@@ -88,7 +88,7 @@ class CaseListPage {
     const id = fieldConfig.field.id;
     let inputValue = input;
 
-    if (!await this.isWorkbasketFilterDisplayed(fieldConfig)) return null;
+    if (!(await this.isWorkbasketFilterDisplayed(fieldConfig))) return null;
 
     if (type === 'Text') {
       inputValue = inputValue || `${fieldConfig.label} test`;
@@ -129,7 +129,7 @@ class CaseListPage {
     const caseValues = await this.validateCaseValues();
     for (const val of caseValues) {
       if (caseFields.includes(val)) {
-        const col = cases.columns.find(c => c.label === val);
+        const col = cases.columns.find((c) => c.label === val);
         const key = col.case_field_id;
         const expectedValue = cases.results[0].case_fields[key] || '';
         expect(caseValues).to.include(expectedValue.toString());

@@ -36,35 +36,41 @@ export async function challengedAccessUpdateAttributes(req: EnhancedRequest, res
     const actorId = userInfo.id ? userInfo.id : userInfo.uid;
     const caseId = req.body.caseId;
 
-    const roleAssignmentQueryResponse = await http.post(queryPath, {
-      actorId: [actorId],
-      attributes: {
-        caseId: [caseId]
-      }
-    }, { headers });
+    const roleAssignmentQueryResponse = await http.post(
+      queryPath,
+      {
+        actorId: [actorId],
+        attributes: {
+          caseId: [caseId],
+        },
+      },
+      { headers }
+    );
 
     const singleRoleAssignment = roleAssignmentQueryResponse.data.roleAssignmentResponse[0];
 
     delete singleRoleAssignment.id;
     singleRoleAssignment.attributes = {
       ...singleRoleAssignment.attributes,
-      ...req.body.attributesToUpdate
+      ...req.body.attributesToUpdate,
     };
 
-    singleRoleAssignment.notes = [{
-      userId: actorId,
-      time: new Date(),
-      comment: singleRoleAssignment.attributes.accessReason
-    }];
+    singleRoleAssignment.notes = [
+      {
+        userId: actorId,
+        time: new Date(),
+        comment: singleRoleAssignment.attributes.accessReason,
+      },
+    ];
 
     const roleAssignmentUpdate = {
       roleRequest: {
         assignerId: actorId,
         process: 'challenged-access',
         reference: `${caseId}/${singleRoleAssignment.roleName}/${actorId}`,
-        replaceExisting: true
+        replaceExisting: true,
       },
-      requestedRoles: [singleRoleAssignment]
+      requestedRoles: [singleRoleAssignment],
     };
 
     const response = await http.post(updatePath, { ...roleAssignmentUpdate }, { headers });

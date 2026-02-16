@@ -15,11 +15,9 @@ describe('RolesAndAccessComponent', () => {
   const mockCaseView: CaseView = {
     case_id: 'CASE123',
     case_type: {
-      id: 'XUI Case PoC'
+      id: 'XUI Case PoC',
     },
-    metadataFields: [
-      { id: '[JURISDICTION]', value: 'DIVORCE' }
-    ]
+    metadataFields: [{ id: '[JURISDICTION]', value: 'DIVORCE' }],
   } as CaseView;
 
   const mockCaseworkers: Caseworker[] = [
@@ -29,7 +27,7 @@ describe('RolesAndAccessComponent', () => {
       lastName: 'Doe',
       email: 'john.doe@test.com',
       location: null,
-      roleCategory: RoleCategory.LEGAL_OPERATIONS
+      roleCategory: RoleCategory.LEGAL_OPERATIONS,
     },
     {
       idamId: 'user2',
@@ -37,7 +35,7 @@ describe('RolesAndAccessComponent', () => {
       lastName: 'Smith',
       email: 'jane.smith@test.com',
       location: null,
-      roleCategory: RoleCategory.ADMIN
+      roleCategory: RoleCategory.ADMIN,
     },
     {
       idamId: 'user3',
@@ -45,8 +43,8 @@ describe('RolesAndAccessComponent', () => {
       lastName: 'Johnson',
       email: 'bob.johnson@test.com',
       location: null,
-      roleCategory: RoleCategory.CTSC
-    }
+      roleCategory: RoleCategory.CTSC,
+    },
   ];
 
   const mockRoles: CaseRole[] = [
@@ -60,7 +58,7 @@ describe('RolesAndAccessComponent', () => {
       location: 'Location 1',
       start: '2023-01-01',
       end: '2023-12-31',
-      email: 'john.doe@test.com'
+      email: 'john.doe@test.com',
     },
     {
       actorId: 'user2',
@@ -72,7 +70,7 @@ describe('RolesAndAccessComponent', () => {
       location: 'Location 2',
       start: '2023-01-01',
       end: '2023-12-31',
-      email: 'jane.smith@test.com'
+      email: 'jane.smith@test.com',
     },
     {
       actorId: 'user3',
@@ -84,7 +82,7 @@ describe('RolesAndAccessComponent', () => {
       location: 'Location 3',
       start: '2023-01-01',
       end: '2023-12-31',
-      email: 'bob.johnson@test.com'
+      email: 'bob.johnson@test.com',
     },
     {
       actorId: 'user4',
@@ -96,8 +94,8 @@ describe('RolesAndAccessComponent', () => {
       location: 'Location 4',
       start: '2023-01-01',
       end: '2023-12-31',
-      email: 'judge@test.com'
-    }
+      email: 'judge@test.com',
+    },
   ];
 
   const mockExclusions: RoleExclusion[] = [
@@ -108,7 +106,7 @@ describe('RolesAndAccessComponent', () => {
       notes: 'Test exclusion',
       added: new Date('2023-01-01'),
       type: 'EXCLUDE',
-      name: 'John Doe'
+      name: 'John Doe',
     },
     {
       actorId: 'user2',
@@ -117,8 +115,8 @@ describe('RolesAndAccessComponent', () => {
       notes: 'Test exclusion 2',
       added: new Date('2023-01-02'),
       type: 'EXCLUDE',
-      name: 'Jane Smith'
-    }
+      name: 'Jane Smith',
+    },
   ];
 
   beforeEach(() => {
@@ -126,10 +124,8 @@ describe('RolesAndAccessComponent', () => {
 
     TestBed.configureTestingModule({
       declarations: [RolesAndAccessComponent],
-      providers: [
-        { provide: CaseNotifier, useValue: mockCaseNotifier }
-      ],
-      schemas: [NO_ERRORS_SCHEMA]
+      providers: [{ provide: CaseNotifier, useValue: mockCaseNotifier }],
+      schemas: [NO_ERRORS_SCHEMA],
     });
 
     fixture = TestBed.createComponent(RolesAndAccessComponent);
@@ -173,9 +169,9 @@ describe('RolesAndAccessComponent', () => {
       component.caseDetails = {
         case_id: 'CASE456',
         case_type: {
-          id: 'XUI Case PoC'
+          id: 'XUI Case PoC',
         },
-        metadataFields: []
+        metadataFields: [],
       } as CaseView;
 
       component.ngOnInit();
@@ -186,7 +182,7 @@ describe('RolesAndAccessComponent', () => {
     it('should handle null metadataFields', () => {
       component.caseDetails = {
         case_id: 'CASE789',
-        metadataFields: null
+        metadataFields: null,
       } as CaseView;
 
       expect(() => component.ngOnInit()).toThrow();
@@ -223,8 +219,8 @@ describe('RolesAndAccessComponent', () => {
           location: 'Location 2',
           start: '2023-01-01',
           end: '2023-12-31',
-          email: 'jane.smith@test.com'
-        }
+          email: 'jane.smith@test.com',
+        },
       ];
 
       component.roles = rolesWithDuplicates;
@@ -244,8 +240,8 @@ describe('RolesAndAccessComponent', () => {
           location: 'Location 3',
           start: '2023-01-01',
           end: '2023-12-31',
-          email: 'bob.johnson@test.com'
-        }
+          email: 'bob.johnson@test.com',
+        },
       ];
 
       component.roles = rolesWithDuplicates;
@@ -300,72 +296,80 @@ describe('RolesAndAccessComponent', () => {
     });
 
     it('should set legalRolesNotNamed when legal ops roles have no name', () => {
-      component.legalOpsRoles = [{
-        actorId: 'user1',
-        roleCategory: RoleCategory.LEGAL_OPERATIONS,
-        roleName: 'role1',
-        created: '2023-01-01',
-        id: 'id1',
-        name: '',
-        location: 'Location 1',
-        start: '2023-01-01',
-        end: '2023-12-31',
-        email: 'user1@test.com'
-      }];
+      component.legalOpsRoles = [
+        {
+          actorId: 'user1',
+          roleCategory: RoleCategory.LEGAL_OPERATIONS,
+          roleName: 'role1',
+          created: '2023-01-01',
+          id: 'id1',
+          name: '',
+          location: 'Location 1',
+          start: '2023-01-01',
+          end: '2023-12-31',
+          email: 'user1@test.com',
+        },
+      ];
 
       component.ngOnChanges();
       expect(component.legalRolesNotNamed).toBe(true);
     });
 
     it('should not set legalRolesNotNamed when legal ops roles have names', () => {
-      component.legalOpsRoles = [{
-        actorId: 'user1',
-        roleCategory: RoleCategory.LEGAL_OPERATIONS,
-        roleName: 'role1',
-        created: '2023-01-01',
-        id: 'id1',
-        name: 'John Doe',
-        location: 'Location 1',
-        start: '2023-01-01',
-        end: '2023-12-31',
-        email: 'user1@test.com'
-      }];
+      component.legalOpsRoles = [
+        {
+          actorId: 'user1',
+          roleCategory: RoleCategory.LEGAL_OPERATIONS,
+          roleName: 'role1',
+          created: '2023-01-01',
+          id: 'id1',
+          name: 'John Doe',
+          location: 'Location 1',
+          start: '2023-01-01',
+          end: '2023-12-31',
+          email: 'user1@test.com',
+        },
+      ];
 
       component.ngOnChanges();
       expect(component.legalRolesNotNamed).toBe(false);
     });
 
     it('should set ctscRolesNotNamed when CTSC roles have no name', () => {
-      component.ctscRoles = [{
-        actorId: 'user3',
-        roleCategory: RoleCategory.CTSC,
-        roleName: 'role3',
-        created: '2023-01-01',
-        id: 'id3',
-        name: '',
-        location: 'Location 3',
-        start: '2023-01-01',
-        end: '2023-12-31',
-        email: 'user3@test.com'
-      }];
+      component.ctscRoles = [
+        {
+          actorId: 'user3',
+          roleCategory: RoleCategory.CTSC,
+          roleName: 'role3',
+          created: '2023-01-01',
+          id: 'id3',
+          name: '',
+          location: 'Location 3',
+          start: '2023-01-01',
+          end: '2023-12-31',
+          email: 'user3@test.com',
+        },
+      ];
 
       component.ngOnChanges();
       expect(component.ctscRolesNotNamed).toBe(true);
     });
 
     it('should set adminRolesNotNamed when admin roles have no name', () => {
-      component.adminRoles = [{
-        actorId: 'user2',
-        roleCategory: RoleCategory.ADMIN,
-        roleName: 'role2',
-        created: '2023-01-01',
-        id: 'id2',
-        name: '',
-        location: 'Location 2',
-        start: '2023-01-01',
-        end: '2023-12-31',
-        email: 'user2@test.com'
-      }];
+      component.adminRoles = [
+        {
+          actorId: 'user2',
+          roleCategory: RoleCategory.ADMIN,
+          roleName: 'role2',
+          created: '2023-01-01',
+          id: 'id2',
+          name: '',
+          location: 'Location 2',
+          start: '2023-01-01',
+          end: '2023-12-31',
+          email: 'user2@test.com',
+        },
+      ];
 
       component.ngOnChanges();
       expect(component.adminRolesNotNamed).toBe(true);
@@ -380,8 +384,8 @@ describe('RolesAndAccessComponent', () => {
           notes: 'Test',
           added: new Date('2023-01-01'),
           type: 'EXCLUDE',
-          name: ''
-        }
+          name: '',
+        },
       ];
 
       component.ngOnChanges();
@@ -397,8 +401,8 @@ describe('RolesAndAccessComponent', () => {
           notes: 'Test',
           added: new Date('2023-01-01'),
           type: 'EXCLUDE',
-          name: ''
-        }
+          name: '',
+        },
       ];
 
       component.ngOnChanges();
@@ -414,8 +418,8 @@ describe('RolesAndAccessComponent', () => {
           notes: 'Test',
           added: new Date('2023-01-01'),
           type: 'EXCLUDE',
-          name: 'John Doe'
-        }
+          name: 'John Doe',
+        },
       ];
 
       component.ngOnChanges();
@@ -423,18 +427,20 @@ describe('RolesAndAccessComponent', () => {
     });
 
     it('should call checkSetNamedRoles for legal ops roles when needed', () => {
-      component.legalOpsRoles = [{
-        actorId: 'user1',
-        roleCategory: RoleCategory.LEGAL_OPERATIONS,
-        roleName: 'role1',
-        created: '2023-01-01',
-        id: 'id1',
-        name: '',
-        location: 'Location 1',
-        start: '2023-01-01',
-        end: '2023-12-31',
-        email: 'user1@test.com'
-      }];
+      component.legalOpsRoles = [
+        {
+          actorId: 'user1',
+          roleCategory: RoleCategory.LEGAL_OPERATIONS,
+          roleName: 'role1',
+          created: '2023-01-01',
+          id: 'id1',
+          name: '',
+          location: 'Location 1',
+          start: '2023-01-01',
+          end: '2023-12-31',
+          email: 'user1@test.com',
+        },
+      ];
       component.legalRolesNotNamed = true;
 
       component.ngOnChanges();
@@ -444,18 +450,20 @@ describe('RolesAndAccessComponent', () => {
     });
 
     it('should call checkSetNamedRoles for CTSC roles when needed', () => {
-      component.ctscRoles = [{
-        actorId: 'user3',
-        roleCategory: RoleCategory.CTSC,
-        roleName: 'role3',
-        created: '2023-01-01',
-        id: 'id3',
-        name: '',
-        location: 'Location 3',
-        start: '2023-01-01',
-        end: '2023-12-31',
-        email: 'user3@test.com'
-      }];
+      component.ctscRoles = [
+        {
+          actorId: 'user3',
+          roleCategory: RoleCategory.CTSC,
+          roleName: 'role3',
+          created: '2023-01-01',
+          id: 'id3',
+          name: '',
+          location: 'Location 3',
+          start: '2023-01-01',
+          end: '2023-12-31',
+          email: 'user3@test.com',
+        },
+      ];
       component.ctscRolesNotNamed = true;
 
       component.ngOnChanges();
@@ -465,18 +473,20 @@ describe('RolesAndAccessComponent', () => {
     });
 
     it('should call checkSetNamedRoles for admin roles when needed', () => {
-      component.adminRoles = [{
-        actorId: 'user2',
-        roleCategory: RoleCategory.ADMIN,
-        roleName: 'role2',
-        created: '2023-01-01',
-        id: 'id2',
-        name: '',
-        location: 'Location 2',
-        start: '2023-01-01',
-        end: '2023-12-31',
-        email: 'user2@test.com'
-      }];
+      component.adminRoles = [
+        {
+          actorId: 'user2',
+          roleCategory: RoleCategory.ADMIN,
+          roleName: 'role2',
+          created: '2023-01-01',
+          id: 'id2',
+          name: '',
+          location: 'Location 2',
+          start: '2023-01-01',
+          end: '2023-12-31',
+          email: 'user2@test.com',
+        },
+      ];
       component.adminRolesNotNamed = true;
 
       component.ngOnChanges();
@@ -486,15 +496,17 @@ describe('RolesAndAccessComponent', () => {
     });
 
     it('should call checkSetNamedRoles for exclusions when needed', () => {
-      component.exclusions = [{
-        actorId: 'user1',
-        userType: RoleCategory.LEGAL_OPERATIONS,
-        id: 'exclusion1',
-        notes: 'Test',
-        added: new Date('2023-01-01'),
-        type: 'EXCLUDE',
-        name: ''
-      }];
+      component.exclusions = [
+        {
+          actorId: 'user1',
+          userType: RoleCategory.LEGAL_OPERATIONS,
+          id: 'exclusion1',
+          notes: 'Test',
+          added: new Date('2023-01-01'),
+          type: 'EXCLUDE',
+          name: '',
+        },
+      ];
       component.exclusionsNotNamed = true;
 
       component.ngOnChanges();
@@ -514,18 +526,20 @@ describe('RolesAndAccessComponent', () => {
 
     it('should handle null caseworkers in ngOnChanges', () => {
       component.caseworkers = null;
-      component.legalOpsRoles = [{
-        actorId: 'user1',
-        roleCategory: RoleCategory.LEGAL_OPERATIONS,
-        roleName: 'role1',
-        created: '2023-01-01',
-        id: 'id1',
-        name: '',
-        location: 'Location 1',
-        start: '2023-01-01',
-        end: '2023-12-31',
-        email: 'user1@test.com'
-      }];
+      component.legalOpsRoles = [
+        {
+          actorId: 'user1',
+          roleCategory: RoleCategory.LEGAL_OPERATIONS,
+          roleName: 'role1',
+          created: '2023-01-01',
+          id: 'id1',
+          name: '',
+          location: 'Location 1',
+          start: '2023-01-01',
+          end: '2023-12-31',
+          email: 'user1@test.com',
+        },
+      ];
 
       component.ngOnChanges();
       expect(component.namedLegalRoles).toBeUndefined();
@@ -538,10 +552,7 @@ describe('RolesAndAccessComponent', () => {
     });
 
     it('should add names to roles when notNamed is true', () => {
-      const roles = [
-        { actorId: 'user1' },
-        { actorId: 'user2' }
-      ];
+      const roles = [{ actorId: 'user1' }, { actorId: 'user2' }];
 
       const result = (component as any).checkSetNamedRoles(roles, true);
 
@@ -550,9 +561,7 @@ describe('RolesAndAccessComponent', () => {
     });
 
     it('should not modify roles when notNamed is false', () => {
-      const roles = [
-        { actorId: 'user1', name: 'Existing Name' }
-      ];
+      const roles = [{ actorId: 'user1', name: 'Existing Name' }];
 
       const result = (component as any).checkSetNamedRoles(roles, false);
 
@@ -560,9 +569,7 @@ describe('RolesAndAccessComponent', () => {
     });
 
     it('should handle roles with unknown actor IDs', () => {
-      const roles = [
-        { actorId: 'unknown-user' }
-      ];
+      const roles = [{ actorId: 'unknown-user' }];
 
       const result = (component as any).checkSetNamedRoles(roles, true);
 
@@ -575,14 +582,16 @@ describe('RolesAndAccessComponent', () => {
     });
 
     it('should handle null caseworker names', () => {
-      component.caseworkers = [{
-        idamId: 'user1',
-        firstName: null,
-        lastName: null,
-        email: 'test@test.com',
-        location: null,
-        roleCategory: RoleCategory.LEGAL_OPERATIONS
-      }];
+      component.caseworkers = [
+        {
+          idamId: 'user1',
+          firstName: null,
+          lastName: null,
+          email: 'test@test.com',
+          location: null,
+          roleCategory: RoleCategory.LEGAL_OPERATIONS,
+        },
+      ];
 
       const roles = [{ actorId: 'user1' }];
       const result = (component as any).checkSetNamedRoles(roles, true);
@@ -591,14 +600,16 @@ describe('RolesAndAccessComponent', () => {
     });
 
     it('should handle caseworker with missing names', () => {
-      component.caseworkers = [{
-        idamId: 'user1',
-        firstName: undefined,
-        lastName: undefined,
-        email: 'test@test.com',
-        location: null,
-        roleCategory: RoleCategory.LEGAL_OPERATIONS
-      }];
+      component.caseworkers = [
+        {
+          idamId: 'user1',
+          firstName: undefined,
+          lastName: undefined,
+          email: 'test@test.com',
+          location: null,
+          roleCategory: RoleCategory.LEGAL_OPERATIONS,
+        },
+      ];
 
       const roles = [{ actorId: 'user1' }];
       const result = (component as any).checkSetNamedRoles(roles, true);
@@ -632,11 +643,7 @@ describe('RolesAndAccessComponent', () => {
 
   describe('Edge cases and error scenarios', () => {
     it('should handle roles with missing properties', () => {
-      const incompleteRoles = [
-        { actorId: 'user1' },
-        { roleCategory: RoleCategory.ADMIN },
-        {}
-      ] as CaseRole[];
+      const incompleteRoles = [{ actorId: 'user1' }, { roleCategory: RoleCategory.ADMIN }, {}] as CaseRole[];
 
       component.roles = incompleteRoles;
 
@@ -655,7 +662,7 @@ describe('RolesAndAccessComponent', () => {
         location: `Location ${i}`,
         start: '2023-01-01',
         end: '2023-12-31',
-        email: `user${i}@test.com`
+        email: `user${i}@test.com`,
       }));
 
       component.roles = largeRolesArray;
@@ -673,7 +680,7 @@ describe('RolesAndAccessComponent', () => {
           notes: 'Test',
           added: new Date('2023-01-01'),
           type: 'EXCLUDE',
-          name: 'Has Name'
+          name: 'Has Name',
         },
         {
           actorId: 'user2',
@@ -682,8 +689,8 @@ describe('RolesAndAccessComponent', () => {
           notes: 'Test',
           added: new Date('2023-01-01'),
           type: 'EXCLUDE',
-          name: ''
-        }
+          name: '',
+        },
       ];
 
       component.ngOnChanges();

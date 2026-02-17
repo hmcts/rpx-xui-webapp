@@ -4,7 +4,7 @@ import { CaseRole, TypeOfRole } from '../../role-access/models';
 
 @Directive({
   standalone: false,
-  selector: '[exuiShowAllocateLink]'
+  selector: '[exuiShowAllocateLink]',
 })
 export class ShowAllocateLinkDirective implements OnInit {
   private static readonly CASE_MANAGERS_LIMIT = 1;
@@ -17,7 +17,10 @@ export class ShowAllocateLinkDirective implements OnInit {
 
   private static canDisplayLink(roles: CaseRole[], roleCategory: RoleCategory, showAllocateRoleLink: boolean): boolean {
     const show = false;
-    if (!showAllocateRoleLink || roleCategory === RoleCategory.LEGAL_OPERATIONS && ShowAllocateLinkDirective.hasExceededNumberCaseManagerRoles(roles)) {
+    if (
+      !showAllocateRoleLink ||
+      (roleCategory === RoleCategory.LEGAL_OPERATIONS && ShowAllocateLinkDirective.hasExceededNumberCaseManagerRoles(roles))
+    ) {
       return show;
     }
     return true;

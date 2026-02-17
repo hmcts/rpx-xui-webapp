@@ -14,9 +14,11 @@ export class HearingsFeatureService {
   public static readonly JURISDICTION: string = 'jurisdictionId';
   public static readonly CASE_TYPE: string = 'caseType';
 
-  constructor(protected readonly hearingStore: Store<fromAppStore.State>,
+  constructor(
+    protected readonly hearingStore: Store<fromAppStore.State>,
     protected readonly featureToggleService: FeatureToggleService,
-    private readonly hearingJurisdictionConfigService: HearingJurisdictionConfigService) {}
+    private readonly hearingJurisdictionConfigService: HearingJurisdictionConfigService
+  ) {}
 
   public isFeatureEnabled(featureName: string): Observable<boolean> {
     return this.featureToggleService.getValueOnce<FeatureVariation[]>(featureName, []).pipe(
@@ -61,7 +63,8 @@ export class HearingsFeatureService {
             if (!jurisdiction || !caseType) {
               return false;
             }
-            return featureVariations.some((featureVariation) => Utils.hasMatchedJurisdictionAndCaseType(featureVariation, jurisdiction, caseType)
+            return featureVariations.some((featureVariation) =>
+              Utils.hasMatchedJurisdictionAndCaseType(featureVariation, jurisdiction, caseType)
             );
           })
         );

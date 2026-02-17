@@ -18,12 +18,12 @@ describe('TypeFromRequestAnswerConverter', () => {
           useValue: {
             snapshot: {
               data: {
-                caseType: caseTypeRefData
-              }
-            }
-          }
-        }
-      ]
+                caseType: caseTypeRefData,
+              },
+            },
+          },
+        },
+      ],
     });
     router = TestBed.inject(ActivatedRoute);
     typeFromRequestAnswerConverter = new TypeFromRequestAnswerConverter(router);
@@ -32,7 +32,8 @@ describe('TypeFromRequestAnswerConverter', () => {
   it('should transform type from request', () => {
     const STATE: State = initialState.hearings;
     const result$ = typeFromRequestAnswerConverter.transformAnswer(of(STATE));
-    const type = 'PERSONAL INDEPENDENT PAYMENT (NEW CLAIM) \n<ul><li>- CONDITIONS OF ENTITLEMENT - COMPLEX</li><li>- GOOD CAUSE</li><li>- RATE OF ASSESSMENT/PAYABILITY ISSUES - COMPLEX</li></ul>';
+    const type =
+      'PERSONAL INDEPENDENT PAYMENT (NEW CLAIM) \n<ul><li>- CONDITIONS OF ENTITLEMENT - COMPLEX</li><li>- GOOD CAUSE</li><li>- RATE OF ASSESSMENT/PAYABILITY ISSUES - COMPLEX</li></ul>';
     const expected = cold('(b|)', { b: type });
     expect(result$).toBeObservable(expected);
   });

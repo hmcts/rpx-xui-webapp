@@ -8,7 +8,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 
 describe('Loader Component', () => {
   let component: CaseLoaderComponent;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let fixture: ComponentFixture<CaseLoaderComponent>;
 
   beforeEach(waitForAsync(() => {
@@ -16,7 +16,7 @@ describe('Loader Component', () => {
       declarations: [CaseLoaderComponent, PhaseBannerComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [RouterTestingModule],
-      providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+      providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     }).compileComponents();
   }));
 

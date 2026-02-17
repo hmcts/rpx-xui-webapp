@@ -13,7 +13,6 @@ describe('Documents Uploading', () => {
   let req;
   let proxyRes;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let json;
 
   beforeEach(() => {
@@ -24,11 +23,10 @@ describe('Documents Uploading', () => {
     res = {
       session: {
         lastUploadTime: 1705066299756,
-        nextTimeout: 10000
-      }
+        nextTimeout: 10000,
+      },
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     json = [
       {
         classification: 'PUBLIC',
@@ -42,8 +40,8 @@ describe('Documents Uploading', () => {
         modifiedOn: '2024-01-12T14:30:10.000+00:00',
         ttl: '2024-01-13T14:30:10.000+00:00',
         metadata: [Object],
-        _links: [Object]
-      }
+        _links: [Object],
+      },
     ];
   });
 
@@ -63,8 +61,8 @@ describe('Documents Uploading', () => {
       method: 'POST',
       session: {
         lastUploadTime: Date.now(),
-        nextTimeout: nextTimeout
-      }
+        nextTimeout: nextTimeout,
+      },
     };
 
     const result = handleRequest(req, rateLimitedReq, proxyRes);
@@ -77,9 +75,9 @@ describe('Documents Uploading', () => {
       method: 'POST',
       session: {
         lastUploadTime: Date.now(),
-        nextTimeout: nextTimeout
+        nextTimeout: nextTimeout,
       },
-      headers: { cookie: 'test1' }
+      headers: { cookie: 'test1' },
     };
     handleRequest(req, mainReq, proxyRes);
     expect(mainReq?.headers?.cookie).to.be.an('undefined');

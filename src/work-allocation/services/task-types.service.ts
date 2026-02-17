@@ -6,7 +6,7 @@ import { tap } from 'rxjs/operators';
 import { SessionStorageService } from '../../app/services';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TaskTypesService {
   public static readonly typesOfWorkStorageKey: string = 'typesOfWork_cache';
@@ -17,9 +17,12 @@ export class TaskTypesService {
       const typesOfWork = JSON.parse(this.sessionStorage.getItem(TaskTypesService.typesOfWorkStorageKey));
       return of(typesOfWork);
     }
-    return this.http.get<any[]>('/workallocation/task/types-of-work')
+    return this.http
+      .get<any[]>('/workallocation/task/types-of-work')
       .pipe(
-        tap((typesOfWork: any[]) => this.sessionStorage.setItem(TaskTypesService.typesOfWorkStorageKey, JSON.stringify(typesOfWork)))
+        tap((typesOfWork: any[]) =>
+          this.sessionStorage.setItem(TaskTypesService.typesOfWorkStorageKey, JSON.stringify(typesOfWork))
+        )
       );
   }
 }

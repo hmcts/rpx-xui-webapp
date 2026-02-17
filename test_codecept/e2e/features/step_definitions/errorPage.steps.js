@@ -1,6 +1,5 @@
 'use strict';
 
-
 const BrowserUtil = require('../../../ngIntegration/util/browserUtil');
 const errorPage = require('../pageObjects/common/errorPage');
 const validationError = require('../pageObjects/common/exuiErrorMessage');
@@ -19,4 +18,3 @@ Then('I see field with text {string} display validation message {string}', async
   const actualMessage = await validationError.getFieldLevelErrorMessage(fieldText);
   expect(actualMessage).to.include(errorMessage);
 });
-

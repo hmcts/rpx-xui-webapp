@@ -16,7 +16,7 @@ function getPageObject(page) {
   return pageObj;
 }
 
-When('I setup a case for case flags version {string}', async function(version, datatable){
+When('I setup a case for case flags version {string}', async function (version, datatable) {
   await caseSetup.createCase(version, datatable.parse().hashes());
 });
 
@@ -160,7 +160,11 @@ Then('In create case flag workflow, I validate Review details displayed', async 
   const datatableHash = datatable.parse().hashes();
   for (const row of datatableHash) {
     reportLogger.AddMessage(`Validating ${row.field}=${row.value}`);
-    await reviewDetailsPage.validateSummaryFieldWithValueDisplayed(row.field, row.value, row.isChangeLinkDisplayed.includes('true'));
+    await reviewDetailsPage.validateSummaryFieldWithValueDisplayed(
+      row.field,
+      row.value,
+      row.isChangeLinkDisplayed.includes('true')
+    );
   }
 });
 
@@ -168,13 +172,17 @@ Then('In manage case flag workflow, I validate Review details displayed', async 
   const datatableHash = datatable.parse().hashes();
   for (const row of datatableHash) {
     reportLogger.AddMessage(`Validating ${row.field}=${row.value}`);
-    await reviewDetailsPage.validateSummaryFieldWithValueDisplayed(row.field, row.value, row.isChangeLinkDisplayed.includes('true'));
+    await reviewDetailsPage.validateSummaryFieldWithValueDisplayed(
+      row.field,
+      row.value,
+      row.isChangeLinkDisplayed.includes('true')
+    );
   }
 });
 
 When('In create case flag workflow, I click submit', async function () {
   await browserWaits.retryWithActionCallback(async () => {
-    await element(by.xpath('//button[contains(text(),\'Submit\')]')).click();
+    await element(by.xpath("//button[contains(text(),'Submit')]")).click();
     const caseDetailsPageContainer = $('ccd-case-full-access-view');
     await browserWaits.waitForElement(caseDetailsPageContainer);
   });
@@ -182,13 +190,13 @@ When('In create case flag workflow, I click submit', async function () {
 
 When('In manage case flag workflow, I click submit', async function () {
   await browserWaits.retryWithActionCallback(async () => {
-    await element(by.xpath('//button[contains(text(),\'Submit\')]')).click();
+    await element(by.xpath("//button[contains(text(),'Submit')]")).click();
     const caseDetailsPageContainer = $('ccd-case-full-access-view');
     await browserWaits.waitForElement(caseDetailsPageContainer);
   });
 });
 
-Then('I see case details page and I see case flags banner with message {string}', async function(message){
+Then('I see case details page and I see case flags banner with message {string}', async function (message) {
   const caseDetailsPageContainer = $('ccd-case-full-access-view');
   await browserWaits.waitForElement(caseDetailsPageContainer);
   const ele = $('ccd-notification-banner .govuk-notification-banner__content');
@@ -209,9 +217,9 @@ Then('I am on manage case update flag page {string}', async function (page) {
   expect(await pageObj.container.isDisplayed(), `${page} not displayed`).to.be.true;
 });
 
-Then('I validate case flags table for {string} has {int} flags', async function(tableFor, flagsCount){
+Then('I validate case flags table for {string} has {int} flags', async function (tableFor, flagsCount) {
   const caseFlagsTablePage = caseFlagsTabPage.getFlagTableFor(tableFor);
-  if (flagsCount === 0){
+  if (flagsCount === 0) {
     const tableDataNone = await caseFlagsTablePage.isTableDataNone();
     expect(tableDataNone, `Flags count for ${tableFor} does not match expected`).to.be.true;
   } else {
@@ -222,16 +230,16 @@ Then('I validate case flags table for {string} has {int} flags', async function(
   }
 });
 
-Then('I validate case flags tab table data for {string}', async function(tableFor, datatable){
+Then('I validate case flags tab table data for {string}', async function (tableFor, datatable) {
   const isCaseFlagPresent = (expectedCaseFlag, caseFlags) => {
     const expectedkeys = Object.keys(expectedCaseFlag);
-    for (const actualFlag of caseFlags){
+    for (const actualFlag of caseFlags) {
       actualFlag['Flag status'] = actualFlag['Flag status'].toUpperCase();
       const matchingFields = expectedkeys.filter((key) => {
-        reportLogger.AddMessage(`${expectedCaseFlag[key]} === ${actualFlag[key] }`);
+        reportLogger.AddMessage(`${expectedCaseFlag[key]} === ${actualFlag[key]}`);
         return actualFlag[key].includes(expectedCaseFlag[key]);
       });
-      if (matchingFields.length === expectedkeys.length){
+      if (matchingFields.length === expectedkeys.length) {
         return true;
       }
     }
@@ -243,8 +251,8 @@ Then('I validate case flags tab table data for {string}', async function(tableFo
   const tableData = await caseFlagsTablePage.getTableData();
 
   reportLogger.AddMessage(`Case flags displayed for ${tableFor} : ${JSON.stringify(tableData, null, 2)}`);
-  for (const expected of expectedTableData){
-    if (expected['Creation date'] === 'today'){
+  for (const expected of expectedTableData) {
+    if (expected['Creation date'] === 'today') {
       expected['Creation date'] = moment().format('DD MMM YYYY');
     }
     if (expected['Last modified'] === 'today') {
@@ -255,4 +263,3 @@ Then('I validate case flags tab table data for {string}', async function(tableFo
   }
   reportLogger.AddMessage(`Table data : ${JSON.stringify(tableData, null, 2)}`);
 });
-

@@ -1,15 +1,29 @@
 const { $, elementByXpath } = require('../../../helpers/globals');
 
 class CaseFileViewPage {
-  get container() { return $('#case-file-view'); }
-  get header() { return elementByXpath("//div[contains(@id,'case-file-view')]/../h2"); }
+  get container() {
+    return $('#case-file-view');
+  }
+  get header() {
+    return elementByXpath("//div[contains(@id,'case-file-view')]/../h2");
+  }
 
-  get docTreeContainer() { return $('.document-tree-container').first(); }
-  get mediaViewContainer() { return $('.media-viewer-container'); }
+  get docTreeContainer() {
+    return $('.document-tree-container').first();
+  }
+  get mediaViewContainer() {
+    return $('.media-viewer-container');
+  }
 
-  get documentFolderHeader() { return $('.document-folders-header .document-folders-header__title'); }
-  get folderViewSortBtn() { return $('ccd-case-file-view-folder-sort button'); }
-  get sortDocumentsIcon() { return $('ccd-case-file-view-folder-sort button'); }
+  get documentFolderHeader() {
+    return $('.document-folders-header .document-folders-header__title');
+  }
+  get folderViewSortBtn() {
+    return $('ccd-case-file-view-folder-sort button');
+  }
+  get sortDocumentsIcon() {
+    return $('ccd-case-file-view-folder-sort button');
+  }
   get sortDocumentsMenuContainer() {
     return elementByXpath("//div[contains(@class,'cdk-overlay-pane')]//div[contains(text(),'Sort documents by name')]");
   }
@@ -29,7 +43,9 @@ class CaseFileViewPage {
   }
 
   async isSortMenuOptionDisplayed(option) {
-    const ele = elementByXpath(`//div[contains(@class,'cdk-overlay-pane')]//span[contains(@class,'overlay-menu__actionText')][contains(text(),'${option}')]`);
+    const ele = elementByXpath(
+      `//div[contains(@class,'cdk-overlay-pane')]//span[contains(@class,'overlay-menu__actionText')][contains(text(),'${option}')]`
+    );
     return await ele.isVisible();
   }
 
@@ -89,7 +105,9 @@ class DocumentContainer {
     this.treeContainerNode = `${fileXpath}/../..`;
 
     this.fileElement = elementByXpath(`${fileXpath}`).first();
-    this.fileUploadTimestamp = elementByXpath(`${this.treeContainerNode}//span[contains(@class,'node__document-upload-timestamp')]`).first();
+    this.fileUploadTimestamp = elementByXpath(
+      `${this.treeContainerNode}//span[contains(@class,'node__document-upload-timestamp')]`
+    ).first();
   }
 }
 

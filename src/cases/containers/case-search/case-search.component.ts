@@ -19,11 +19,12 @@ import * as fromCasesFeature from '../../store';
   selector: 'exui-search-case',
   templateUrl: 'case-search.component.html',
   styleUrls: ['case-search.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class CaseSearchComponent implements OnInit, OnDestroy {
   public caseSearchFilterEventsBindings: ActionBindingModel[];
-  public fromCasesFeature; public any;
+  public fromCasesFeature;
+  public any;
 
   public jurisdiction$: Observable<Jurisdiction>;
   public caseType$: Observable<CaseType>;
@@ -64,16 +65,14 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   constructor(
     public store: Store<fromCasesFeature.State>,
     private readonly appConfig: AppConfig,
-    private readonly featureToggleService: FeatureToggleService,
+    private readonly featureToggleService: FeatureToggleService
   ) {}
 
   public ngOnInit(): void {
     this.page = 1;
     this.resultView = null;
     this.fromCasesFeature = fromCasesFeature;
-    this.caseSearchFilterEventsBindings = [
-      { type: 'onReset', action: 'Reset' }
-    ];
+    this.caseSearchFilterEventsBindings = [{ type: 'onReset', action: 'Reset' }];
 
     this.paginationSize = this.appConfig.getPaginationPageSize();
 
@@ -87,19 +86,19 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
       this.jurisdiction$,
       this.caseType$,
       this.caseState$,
-      this.metadataFields$
+      this.metadataFields$,
     ]).subscribe((result) => {
       this.jurisdiction = {
-        ...result[0]
+        ...result[0],
       };
       this.caseType = {
-        ...result[1]
+        ...result[1],
       };
       this.caseState = {
-        ...result[2]
+        ...result[2],
       };
       this.metadataFields = {
-        ...result[3]
+        ...result[3],
       };
     });
 
@@ -118,7 +117,8 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
   public listenToPaginationMetadata = () => {
     this.paginationMetadata$ = this.store.pipe(select(fromCasesFeature.getSearchFilterPaginationMetadata));
     this.paginationSubscription = this.paginationMetadata$.subscribe((paginationMetadata) =>
-      this.onPaginationSubscribeHandler(paginationMetadata));
+      this.onPaginationSubscribeHandler(paginationMetadata)
+    );
   };
 
   /**
@@ -143,7 +143,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     if (this.elasticSearchFlag) {
       const paginationDataFromResult: PaginationMetadata = {
         totalResultsCount: resultViewForCaseSearch.total,
-        totalPagesCount: Math.ceil(resultViewForCaseSearch.total / this.appConfig.getPaginationPageSize())
+        totalPagesCount: Math.ceil(resultViewForCaseSearch.total / this.appConfig.getPaginationPageSize()),
       };
       this.onPaginationSubscribeHandler(paginationDataFromResult);
     }
@@ -156,20 +156,23 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     this.resultView = {
       ...resultViewForCaseSearch,
       columns: resultViewForCaseSearch.columns ? resultViewForCaseSearch.columns : [],
-      results: resultViewForCaseSearch.results ? resultViewForCaseSearch.results.map((item) => {
-        return {
-          ...item,
-          hydrated_case_fields: null
-        };
-      }) : [],
-      hasDrafts: resultViewForCaseSearch.hasDrafts ? resultViewForCaseSearch.hasDrafts : () => false
+      results: resultViewForCaseSearch.results
+        ? resultViewForCaseSearch.results.map((item) => {
+            return {
+              ...item,
+              hydrated_case_fields: null,
+            };
+          })
+        : [],
+      hasDrafts: resultViewForCaseSearch.hasDrafts ? resultViewForCaseSearch.hasDrafts : () => false,
     };
   };
 
   private getCompressedLSItem(key: string): string {
     const item = localStorage.getItem(key);
     if (item && item.length > 0) {
-      if (item.startsWith('{')) { // probably not compressed
+      if (item.startsWith('{')) {
+        // probably not compressed
         return item;
       }
       try {
@@ -196,12 +199,12 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
           caseType: caseTypeGroupFromLS,
           metadataFields: metadataFieldsGroupFromLS,
           formGroup: {
-            value: formGroupFromLS
+            value: formGroupFromLS,
           },
           page: this.page,
-          view: 'SEARCH'
+          view: 'SEARCH',
         },
-        sortParameters: this.sortParameters
+        sortParameters: this.sortParameters,
       };
     }
     return event;
@@ -244,7 +247,7 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
       ...this.sortParameters,
       column: sortParameters.column,
       order: sortParameters.order,
-      type: sortParameters.type
+      type: sortParameters.type,
     };
     this.getElasticSearchResults();
   }

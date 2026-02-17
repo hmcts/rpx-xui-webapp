@@ -12,19 +12,19 @@ import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-cas
   standalone: false,
   selector: 'exui-all-work-cases',
   templateUrl: 'all-work-case.component.html',
-  styleUrls: ['all-work-case.component.scss']
+  styleUrls: ['all-work-case.component.scss'],
 })
 export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implements OnInit {
   public sortedBy: SortField = {
     fieldName: '',
-    order: SortOrder.NONE
+    order: SortOrder.NONE,
   };
 
   public isFirsTimeLoad = true;
   public isCasesFiltered = false;
   public pagination: PaginationParameter = {
     page_number: 1,
-    page_size: 25
+    page_size: 25,
   };
 
   public jurisdictions: string[];
@@ -33,7 +33,7 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
   private readonly selectedLocation: Location = {
     id: '231596',
     locationName: 'Birmingham',
-    services: []
+    services: [],
   };
 
   public get emptyMessage(): string {
@@ -74,11 +74,11 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
           { key: 'jurisdiction', operator: 'EQUAL', values: this.selectedServices[0] },
           { key: 'location_id', operator: 'EQUAL', values: this.selectedLocation.id },
           { key: 'actorId', operator: 'EQUAL', values: this.selectedPerson },
-          { key: 'role', operator: 'EQUAL', values: this.selectedRole }
+          { key: 'role', operator: 'EQUAL', values: this.selectedRole },
         ],
         sorting_parameters: [this.getSortParameter()],
         search_by: userRole,
-        pagination_parameters: this.getPaginationParameter()
+        pagination_parameters: this.getPaginationParameter(),
       };
     }
   }

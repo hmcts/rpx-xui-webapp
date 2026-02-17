@@ -1,9 +1,4 @@
-import {
-  Actions,
-  AllocateRoleState,
-  AllocateRoleStateData,
-  DurationOfRole
-} from '../../models';
+import { Actions, AllocateRoleState, AllocateRoleStateData, DurationOfRole } from '../../models';
 import { AllocateRoleAction, AllocateRoleActionTypes } from '../actions';
 
 export const allocateRoleInitialState: AllocateRoleStateData = {
@@ -17,21 +12,20 @@ export const allocateRoleInitialState: AllocateRoleStateData = {
   action: Actions.Allocate,
   period: null,
   lastError: null,
-  roles: null
+  roles: null,
 };
 
-export function allocateRoleReducer(currentState = allocateRoleInitialState,
-  action: AllocateRoleAction): AllocateRoleStateData {
+export function allocateRoleReducer(currentState = allocateRoleInitialState, action: AllocateRoleAction): AllocateRoleStateData {
   switch (action.type) {
     case AllocateRoleActionTypes.CHANGE_NAVIGATION: {
       return {
         ...currentState,
-        state: action.payload
+        state: action.payload,
       };
     }
     case AllocateRoleActionTypes.RESET: {
       return {
-        ...allocateRoleInitialState
+        ...allocateRoleInitialState,
       };
     }
     case AllocateRoleActionTypes.SET_INITIAL_DATA: {
@@ -39,7 +33,7 @@ export function allocateRoleReducer(currentState = allocateRoleInitialState,
         ...currentState,
         caseId: action.payload.caseId,
         jurisdiction: action.payload.jurisdiction,
-        roleCategory: action.payload.roleCategory
+        roleCategory: action.payload.roleCategory,
       };
     }
     case AllocateRoleActionTypes.ALLOCATE_ROLE_INSTANTIATE: {
@@ -55,21 +49,21 @@ export function allocateRoleReducer(currentState = allocateRoleInitialState,
         durationOfRole: action.payload.durationOfRole,
         roleCategory: action.payload.roleCategory,
         action: action.payload.action,
-        roles: action.payload.roles
+        roles: action.payload.roles,
       };
     }
     case AllocateRoleActionTypes.CHOOSE_ROLE_AND_GO: {
       return {
         ...currentState,
         typeOfRole: action.payload.typeOfRole,
-        state: action.payload.allocateRoleState
+        state: action.payload.allocateRoleState,
       };
     }
     case AllocateRoleActionTypes.CHOOSE_ALLOCATE_TO_AND_GO: {
       return {
         ...currentState,
         allocateTo: action.payload.allocateTo,
-        state: action.payload.allocateRoleState
+        state: action.payload.allocateRoleState,
       };
     }
     case AllocateRoleActionTypes.CHOOSE_PERSON_AND_GO: {
@@ -77,7 +71,7 @@ export function allocateRoleReducer(currentState = allocateRoleInitialState,
         ...currentState,
         allocateTo: action.payload.allocateTo,
         person: action.payload.person,
-        state: action.payload.allocateRoleState
+        state: action.payload.allocateRoleState,
       };
     }
     case AllocateRoleActionTypes.CHOOSE_DURATION_AND_GO: {
@@ -85,25 +79,25 @@ export function allocateRoleReducer(currentState = allocateRoleInitialState,
         ...currentState,
         durationOfRole: action.payload.durationOfRole,
         period: action.payload.period,
-        state: action.payload.allocateRoleState
+        state: action.payload.allocateRoleState,
       };
     }
     case AllocateRoleActionTypes.LOAD_ROLES_COMPLETE: {
       return {
         ...currentState,
         roles: action.payload.roles,
-        state: AllocateRoleState.CHOOSE_ROLE
+        state: AllocateRoleState.CHOOSE_ROLE,
       };
     }
     case AllocateRoleActionTypes.NO_ROLES_FOUND: {
       return {
         ...currentState,
-        state: AllocateRoleState.NO_ROLES_FOUND
+        state: AllocateRoleState.NO_ROLES_FOUND,
       };
     }
     default: {
       return {
-        ...currentState
+        ...currentState,
       };
     }
   }

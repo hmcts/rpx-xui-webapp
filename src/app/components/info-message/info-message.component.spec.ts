@@ -7,7 +7,7 @@ import { InfoMessageComponent } from './info-message.component';
 
 @Component({
   standalone: false,
-  template: '<exui-info-message [type]="type" [message]="message"></exui-info-message>'
+  template: '<exui-info-message [type]="type" [message]="message"></exui-info-message>',
 })
 class WrapperComponent {
   @ViewChild(InfoMessageComponent, { static: true }) public appComponentRef: InfoMessageComponent;
@@ -25,11 +25,8 @@ describe('SharedModule', () => {
     beforeEach(async () => {
       TestBed.configureTestingModule({
         declarations: [WrapperComponent, InfoMessageComponent, MockRpxTranslatePipe],
-        schemas: [
-          CUSTOM_ELEMENTS_SCHEMA
-        ]
-      })
-        .compileComponents();
+        schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      }).compileComponents();
 
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
@@ -58,31 +55,34 @@ describe('SharedModule', () => {
      * the 'warning' message visual if the InfoMessageType is 'warning', and
      * the 'success' message visual if the InfoMessageType is 'success'.
      */
-    it('should take in an info message type ie.\'success\', and the correct Information Message Visual should be shown' +
-      'to the user.', () => {
-      component.type = InfoMessageType.SUCCESS;
-      component.message = InfoMessage.TASK_NO_LONGER_AVAILABLE;
+    it(
+      "should take in an info message type ie.'success', and the correct Information Message Visual should be shown" +
+        'to the user.',
+      () => {
+        component.type = InfoMessageType.SUCCESS;
+        component.message = InfoMessage.TASK_NO_LONGER_AVAILABLE;
 
-      fixture.detectChanges();
+        fixture.detectChanges();
 
-      expect(fixture.debugElement.nativeElement.innerText).toContain(InfoMessageType.SUCCESS);
-      expect(translatePipeSpy).toHaveBeenCalledWith(InfoMessageType.SUCCESS);
+        expect(fixture.debugElement.nativeElement.innerText).toContain(InfoMessageType.SUCCESS);
+        expect(translatePipeSpy).toHaveBeenCalledWith(InfoMessageType.SUCCESS);
 
-      component.type = InfoMessageType.WARNING;
-      component.message = InfoMessage.TASK_NO_LONGER_AVAILABLE;
+        component.type = InfoMessageType.WARNING;
+        component.message = InfoMessage.TASK_NO_LONGER_AVAILABLE;
 
-      fixture.detectChanges();
+        fixture.detectChanges();
 
-      expect(fixture.debugElement.nativeElement.innerText).toContain(InfoMessageType.WARNING);
-      expect(translatePipeSpy).toHaveBeenCalledWith(InfoMessageType.WARNING);
+        expect(fixture.debugElement.nativeElement.innerText).toContain(InfoMessageType.WARNING);
+        expect(translatePipeSpy).toHaveBeenCalledWith(InfoMessageType.WARNING);
 
-      component.type = InfoMessageType.INFO;
-      component.message = InfoMessage.TASK_NO_LONGER_AVAILABLE;
+        component.type = InfoMessageType.INFO;
+        component.message = InfoMessage.TASK_NO_LONGER_AVAILABLE;
 
-      fixture.detectChanges();
+        fixture.detectChanges();
 
-      expect(fixture.debugElement.nativeElement.innerText).toContain(InfoMessageType.INFO);
-      expect(translatePipeSpy).toHaveBeenCalledWith('information');
-    });
+        expect(fixture.debugElement.nativeElement.innerText).toContain(InfoMessageType.INFO);
+        expect(translatePipeSpy).toHaveBeenCalledWith('information');
+      }
+    );
   });
 });

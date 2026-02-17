@@ -3,7 +3,7 @@ name: Automated update of known-issue suppression
 on:
   schedule:
     # At 7am and 5pm, Monday to Friday
-      - cron: "0 7,17 * * 1-5"
+    - cron: '0 7,17 * * 1-5'
   workflow_dispatch:
 
 jobs:
@@ -26,4 +26,4 @@ jobs:
       - name: Commit
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Automated update of known-issue suppression"
+          commit_message: 'Automated update of known-issue suppression'

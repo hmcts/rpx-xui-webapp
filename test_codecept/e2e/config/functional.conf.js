@@ -18,18 +18,16 @@ if (!argv.head) {
 apptTestConfig.testEnv = apptTestConfig.getTestEnvFromEnviornment();
 
 const jenkinsConfig = [
-
   {
     browserName: 'chrome',
     acceptInsecureCerts: true,
     nogui: true,
-    chromeOptions: { args: chromeOptArgs }
-  }
+    chromeOptions: { args: chromeOptArgs },
+  },
 ];
 
 const localConfig = [
   {
-
     browserName: 'chrome',
     acceptInsecureCerts: true,
     chromeOptions: { args: chromeOptArgs },
@@ -37,9 +35,9 @@ const localConfig = [
       proxyType: 'manual',
       httpProxy: 'proxyout.reform.hmcts.net:8080',
       sslProxy: 'proxyout.reform.hmcts.net:8080',
-      noProxy: 'localhost:3000'
-    }
-  }
+      noProxy: 'localhost:3000',
+    },
+  },
 ];
 
 if (isParallelExecution) {
@@ -47,7 +45,7 @@ if (isParallelExecution) {
   jenkinsConfig[0].maxInstances = 7;
 }
 
-const cap = (argv.local) ? localConfig : jenkinsConfig;
+const cap = argv.local ? localConfig : jenkinsConfig;
 
 const config = {
   SELENIUM_PROMISE_MANAGER: false,
@@ -64,8 +62,7 @@ const config = {
     fr_judge_username: process.env.FR_EMAIL,
     fr_judge_password: process.env.FR_PASSWORD,
     sscs_username: process.env.SSCS_EMAIL,
-    sscs_password: process.env.SSCS_PASSWORD
-
+    sscs_password: process.env.SSCS_PASSWORD,
   },
   directConnect: true,
   // seleniumAddress: 'http://localhost:4444/wd/hub',
@@ -80,7 +77,7 @@ const config = {
     global.should = chai.should;
 
     global.screenShotUtils = new screenShotUtils({
-      browserInstance: browser
+      browserInstance: browser,
     });
     browser.get(config.baseUrl);
   },
@@ -97,12 +94,12 @@ const config = {
       '../support/*.js',
       '../features/step_definitions/setup.steps.js',
       '../features/step_definitions/*.steps.js',
-      '../features/step_definitions/**/*.steps.js'
-    ] }
-
+      '../features/step_definitions/**/*.steps.js',
+    ],
+  },
 };
 
-function getBDDTags(){
+function getBDDTags() {
   let tags = [];
   if (argv.tags) {
     tags = argv.tags.split(',');

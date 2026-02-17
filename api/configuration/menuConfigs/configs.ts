@@ -8,7 +8,7 @@ export function setupMenuConfig(environment) {
   } else if (environment === 'aat' || environment === 'preview') {
     let aatConfig = { ...baseConfig };
     const rolesRegexChanges = {
-      '(judge)|(judiciary)': '(judge)|(judiciary)|(panelmember)'
+      '(judge)|(judiciary)': '(judge)|(judiciary)|(panelmember)',
     };
     aatConfig = replaceRolesRegex(baseConfig, rolesRegexChanges);
     aatConfig = mergeConfigs(baseConfig, aatDifferences);
@@ -35,7 +35,7 @@ function mergeConfigs(baseConfig, aatConfig) {
     if (aatConfig.hasOwnProperty(key)) {
       if (mergedConfig[key]) {
         aatConfig[key].forEach((aatItem) => {
-          const baseItem = mergedConfig[key].find((item) => (item.text === aatItem.text) && item.roles);
+          const baseItem = mergedConfig[key].find((item) => item.text === aatItem.text && item.roles);
           if (baseItem) {
             baseItem.roles = Array.from(new Set([...baseItem.roles, ...aatItem.roles]));
           } else {
@@ -49,4 +49,3 @@ function mergeConfigs(baseConfig, aatConfig) {
   }
   return mergedConfig;
 }
-

@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import * as moment from 'moment';
+import moment from 'moment';
 import { HearingConditions } from '../models/hearingConditions';
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
@@ -18,8 +18,11 @@ export class HearingsUtils {
 
   public static flattenArray(models: LovRefDataModel[]): LovRefDataModel[] {
     if (Array.isArray(models)) {
-      return models.concat(...models.map((lovData) => lovData.child_nodes && lovData.child_nodes.length ?
-        this.flattenArray(lovData.child_nodes) : []));
+      return models.concat(
+        ...models.map((lovData) =>
+          lovData.child_nodes && lovData.child_nodes.length ? this.flattenArray(lovData.child_nodes) : []
+        )
+      );
     }
 
     return models;
@@ -33,19 +36,25 @@ export class HearingsUtils {
 
   public static getValues(keys: string[], lovRefDataModels: LovRefDataModel[]): string[] {
     const flatChannels = HearingsUtils.flattenArray(lovRefDataModels);
-    return keys && keys.length && keys.map((key) => {
-      const foundChannel = flatChannels.find((channel) => channel.key === key);
-      return foundChannel ? foundChannel.value_en : key;
-    });
+    return (
+      keys &&
+      keys.length &&
+      keys.map((key) => {
+        const foundChannel = flatChannels.find((channel) => channel.key === key);
+        return foundChannel ? foundChannel.value_en : key;
+      })
+    );
   }
 
   public static sortHearingDaySchedule(hearingDaySchedule: HearingDayScheduleModel[]): HearingDayScheduleModel[] {
     if (!hearingDaySchedule || hearingDaySchedule.length === 0) {
       return hearingDaySchedule;
     }
-    return hearingDaySchedule.slice().sort((schedule1, schedule2) =>
-      moment.utc(schedule1.hearingStartDateTime).diff(moment.utc(schedule2.hearingStartDateTime))
-    );
+    return hearingDaySchedule
+      .slice()
+      .sort((schedule1, schedule2) =>
+        moment.utc(schedule1.hearingStartDateTime).diff(moment.utc(schedule2.hearingStartDateTime))
+      );
   }
 
   public static getHearingLength(duration: number): string {
@@ -55,7 +64,7 @@ export class HearingsUtils {
     if (duration > 0) {
       minutes = duration % 60;
       duration = duration - minutes;
-      days = Math.floor((duration / 60) / 6);
+      days = Math.floor(duration / 60 / 6);
       hours = Math.floor((duration / 60) % 6);
       let formattedHearingLength = '';
       if (days > 0) {
@@ -64,11 +73,15 @@ export class HearingsUtils {
       }
       if (hours > 0) {
         const hoursLabel = hours > 1 ? 'Hours' : 'Hour';
-        formattedHearingLength = formattedHearingLength.length > 0 ? `${formattedHearingLength} ${hours} ${hoursLabel}` : `${hours} ${hoursLabel}`;
+        formattedHearingLength =
+          formattedHearingLength.length > 0 ? `${formattedHearingLength} ${hours} ${hoursLabel}` : `${hours} ${hoursLabel}`;
       }
       if (minutes > 0) {
         const minutesLabel = 'Minutes';
-        formattedHearingLength = formattedHearingLength.length > 0 ? `${formattedHearingLength} ${minutes} ${minutesLabel}` : `${minutes} ${minutesLabel}`;
+        formattedHearingLength =
+          formattedHearingLength.length > 0
+            ? `${formattedHearingLength} ${minutes} ${minutesLabel}`
+            : `${minutes} ${minutesLabel}`;
       }
       if (formattedHearingLength.length > 0) {
         return formattedHearingLength;
@@ -78,15 +91,14 @@ export class HearingsUtils {
   }
 
   public static getHRMHearingWindow(hearingRequestMainModel: HearingRequestMainModel): HearingWindowModel {
-    return hearingRequestMainModel.hearingDetails.hearingWindow && Object.keys(hearingRequestMainModel.hearingDetails.hearingWindow).length === 0
+    return hearingRequestMainModel.hearingDetails.hearingWindow &&
+      Object.keys(hearingRequestMainModel.hearingDetails.hearingWindow).length === 0
       ? null
       : hearingRequestMainModel.hearingDetails.hearingWindow;
   }
 
   public static getHearingWindow(hearingWindow: HearingWindowModel): HearingWindowModel {
-    return hearingWindow && Object.keys(hearingWindow).length === 0
-      ? null
-      : hearingWindow;
+    return hearingWindow && Object.keys(hearingWindow).length === 0 ? null : hearingWindow;
   }
 
   public static getPartiesNotAvailableDates(parties: PartyDetailsModel[]): string[] {
@@ -129,8 +141,10 @@ export class HearingsUtils {
    */
   public static hasPartyNameChanged(partyInHMC: PartyDetailsModel, partyInSHV: PartyDetailsModel): boolean {
     if (partyInHMC.individualDetails && partyInSHV.individualDetails) {
-      if ((partyInHMC.individualDetails.firstName !== partyInSHV.individualDetails.firstName) ||
-        (partyInHMC.individualDetails.lastName !== partyInSHV.individualDetails.lastName)) {
+      if (
+        partyInHMC.individualDetails.firstName !== partyInSHV.individualDetails.firstName ||
+        partyInHMC.individualDetails.lastName !== partyInSHV.individualDetails.lastName
+      ) {
         return true;
       }
     }
@@ -147,7 +161,10 @@ export class HearingsUtils {
    * @returns {*} {boolean}
    * @memberof HearingsUtils
    */
-  public static hasPartyUnavailabilityDatesChanged(partiesInHMC: PartyDetailsModel[], partiesInSHV: PartyDetailsModel[]): boolean {
+  public static hasPartyUnavailabilityDatesChanged(
+    partiesInHMC: PartyDetailsModel[],
+    partiesInSHV: PartyDetailsModel[]
+  ): boolean {
     const partiesNotAvailableDatesHMC = HearingsUtils.getPartiesNotAvailableDates(partiesInHMC);
     const partiesNotAvailableDatesSHV = HearingsUtils.getPartiesNotAvailableDates(partiesInSHV);
 
@@ -183,13 +200,19 @@ export class HearingsUtils {
   }
 
   private static isDateRangeChanged(hearingWindow: HearingWindowModel, hearingWindowToCompare: HearingWindowModel): boolean {
-    const hasStartDateChanged = hearingWindow?.dateRangeStart && this.hasDateChanged(hearingWindowToCompare?.dateRangeStart, hearingWindow?.dateRangeStart);
-    const hasEndDateChanged = hearingWindow?.dateRangeEnd && HearingsUtils.hasDateChanged(hearingWindowToCompare?.dateRangeEnd, hearingWindow?.dateRangeEnd);
+    const hasStartDateChanged =
+      hearingWindow?.dateRangeStart && this.hasDateChanged(hearingWindowToCompare?.dateRangeStart, hearingWindow?.dateRangeStart);
+    const hasEndDateChanged =
+      hearingWindow?.dateRangeEnd &&
+      HearingsUtils.hasDateChanged(hearingWindowToCompare?.dateRangeEnd, hearingWindow?.dateRangeEnd);
     if (hasStartDateChanged || hasEndDateChanged) {
       return true;
     }
-    if (!hearingWindow?.dateRangeStart && !hearingWindow?.dateRangeEnd &&
-      (hearingWindowToCompare?.dateRangeStart || hearingWindowToCompare?.dateRangeEnd)) {
+    if (
+      !hearingWindow?.dateRangeStart &&
+      !hearingWindow?.dateRangeEnd &&
+      (hearingWindowToCompare?.dateRangeStart || hearingWindowToCompare?.dateRangeEnd)
+    ) {
       return true;
     }
     return false;
@@ -213,8 +236,8 @@ export class HearingsUtils {
    * @memberof HearingsUtils
    */
   public static hasDateChanged(inputDateString: string, dateToCompareString: string): boolean {
-    const inputDate = inputDateString ? HearingsUtils.convertStringToDate(inputDateString): null;
-    const dateToCompare = dateToCompareString ? HearingsUtils.convertStringToDate(dateToCompareString): null;
+    const inputDate = inputDateString ? HearingsUtils.convertStringToDate(inputDateString) : null;
+    const dateToCompare = dateToCompareString ? HearingsUtils.convertStringToDate(dateToCompareString) : null;
 
     return !_.isEqual(inputDate, dateToCompare);
   }
@@ -223,7 +246,10 @@ export class HearingsUtils {
     return new Date(date).setHours(0, 0, 0, 0);
   }
 
-  public static checkHearingPartiesConsistency(hearingRequestMainModel: HearingRequestMainModel, serviceHearingValuesModel: ServiceHearingValuesModel): boolean {
+  public static checkHearingPartiesConsistency(
+    hearingRequestMainModel: HearingRequestMainModel,
+    serviceHearingValuesModel: ServiceHearingValuesModel
+  ): boolean {
     const individualPartiesInHMC = hearingRequestMainModel.partyDetails.filter((party) => party.partyType === PartyType.IND);
     const individualHMCPartyIds = individualPartiesInHMC.map((party) => party.partyID);
     const individualPartiesInSHV = serviceHearingValuesModel.parties.filter((party) => party.partyType === PartyType.IND);
@@ -237,13 +263,19 @@ export class HearingsUtils {
 
   public static modifyHearingDetailsYear(hearingDetails: HearingWindowModel): void {
     if (hearingDetails?.dateRangeStart) {
-      hearingDetails.dateRangeStart = moment(hearingDetails.dateRangeStart).year(moment().year() + 1).toISOString();
+      hearingDetails.dateRangeStart = moment(hearingDetails.dateRangeStart)
+        .year(moment().year() + 1)
+        .toISOString();
     }
     if (hearingDetails?.dateRangeEnd) {
-      hearingDetails.dateRangeEnd = moment(hearingDetails.dateRangeEnd).year(moment().year() + 1).toISOString();
+      hearingDetails.dateRangeEnd = moment(hearingDetails.dateRangeEnd)
+        .year(moment().year() + 1)
+        .toISOString();
     }
     if (hearingDetails?.firstDateTimeMustBe) {
-      hearingDetails.firstDateTimeMustBe = moment(hearingDetails.firstDateTimeMustBe).year(moment().year() + 1).toISOString();
+      hearingDetails.firstDateTimeMustBe = moment(hearingDetails.firstDateTimeMustBe)
+        .year(moment().year() + 1)
+        .toISOString();
     }
     // return modifiedHearingDetails;
   }
@@ -262,9 +294,11 @@ export class HearingsUtils {
   }
 
   private static standardiseStringArray(array: string[] | null | undefined): string[] | undefined {
-    return array && array.length > 0 ? [...array].sort((a, b) => {
-      return a > b ? 1 : (a === b ? 0 : -1);
-    }) : undefined;
+    return array && array.length > 0
+      ? [...array].sort((a, b) => {
+          return a > b ? 1 : a === b ? 0 : -1;
+        })
+      : undefined;
   }
 
   public static haveAdditionalFacilitiesChanged(

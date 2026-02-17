@@ -15,9 +15,8 @@ import * as fromFeature from '../../../store';
 @Component({
   standalone: false,
   selector: 'exui-choose-exclusion',
-  templateUrl: './choose-exclusion.component.html'
+  templateUrl: './choose-exclusion.component.html',
 })
-
 export class ChooseExclusionComponent implements OnInit, OnDestroy {
   public ERROR_MESSAGE = ERROR_MESSAGE;
   @Input() public navEvent: ExclusionNavigation;
@@ -36,12 +35,12 @@ export class ChooseExclusionComponent implements OnInit, OnDestroy {
 
   public excludeMe: OptionsModel = {
     optionId: EnumUtil(ExcludeOption).getKeyOrDefault(ExcludeOption.EXCLUDE_ME),
-    optionValue: ExcludeOption.EXCLUDE_ME
+    optionValue: ExcludeOption.EXCLUDE_ME,
   };
 
   public excludeOther: OptionsModel = {
     optionId: EnumUtil(ExcludeOption).getKeyOrDefault(ExcludeOption.EXCLUDE_ANOTHER_PERSON),
-    optionValue: ExcludeOption.EXCLUDE_ANOTHER_PERSON
+    optionValue: ExcludeOption.EXCLUDE_ANOTHER_PERSON,
   };
 
   public optionsList: OptionsModel[] = [this.excludeMe, this.excludeOther];
@@ -63,9 +62,11 @@ export class ChooseExclusionComponent implements OnInit, OnDestroy {
     // Todo: Need to add check for
     // Case Jurisdiction and LocationId
     // with User's Jurisdiction and LocationId
-    const caseJurisdictionAndLocation = userDetails.roleAssignmentInfo
-    &&
-    userDetails.roleAssignmentInfo.some((roleAssignment) => roleAssignment.isCaseAllocator && roleAssignment.jurisdiction === jurisdiction);
+    const caseJurisdictionAndLocation =
+      userDetails.roleAssignmentInfo &&
+      userDetails.roleAssignmentInfo.some(
+        (roleAssignment) => roleAssignment.isCaseAllocator && roleAssignment.jurisdiction === jurisdiction
+      );
     this.optionsList = caseJurisdictionAndLocation ? [this.excludeMe, this.excludeOther] : [this.excludeMe];
   }
 
@@ -73,7 +74,7 @@ export class ChooseExclusionComponent implements OnInit, OnDestroy {
     this.submitted = true;
     if (this.radioOptionControl.invalid) {
       this.radioOptionControl.setErrors({
-        invalid: true
+        invalid: true,
       });
       return;
     }
@@ -86,16 +87,20 @@ export class ChooseExclusionComponent implements OnInit, OnDestroy {
         const exclusionSelection = this.radioOptionControl.value;
         switch (exclusionSelection) {
           case ExcludeOption.EXCLUDE_ME:
-            this.store.dispatch(new fromFeature.SaveExclusionOptionAndGo({
-              exclusionOption: ExcludeOption.EXCLUDE_ME,
-              exclusionState: ExclusionState.DESCRIBE_EXCLUSION
-            }));
+            this.store.dispatch(
+              new fromFeature.SaveExclusionOptionAndGo({
+                exclusionOption: ExcludeOption.EXCLUDE_ME,
+                exclusionState: ExclusionState.DESCRIBE_EXCLUSION,
+              })
+            );
             break;
           case ExcludeOption.EXCLUDE_ANOTHER_PERSON:
-            this.store.dispatch(new fromFeature.SaveExclusionOptionAndGo({
-              exclusionOption: ExcludeOption.EXCLUDE_ANOTHER_PERSON,
-              exclusionState: ExclusionState.CHOOSE_PERSON_ROLE
-            }));
+            this.store.dispatch(
+              new fromFeature.SaveExclusionOptionAndGo({
+                exclusionOption: ExcludeOption.EXCLUDE_ANOTHER_PERSON,
+                exclusionState: ExclusionState.CHOOSE_PERSON_ROLE,
+              })
+            );
             break;
           default:
             break;

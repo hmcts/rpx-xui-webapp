@@ -9,7 +9,7 @@ import * as fromFeature from '../../../store';
 @Component({
   standalone: false,
   selector: 'exui-add-exclusion-check-answers',
-  templateUrl: './add-exclusion-check-answers.component.html'
+  templateUrl: './add-exclusion-check-answers.component.html',
 })
 export class AddExclusionCheckAnswersComponent implements OnDestroy {
   @Input() public navEvent: ExclusionNavigation;
@@ -23,8 +23,9 @@ export class AddExclusionCheckAnswersComponent implements OnDestroy {
   private exclusionStateData: ExclusionStateData;
 
   constructor(private readonly store: Store<fromFeature.State>) {
-    this.storeSubscription = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe(
-      (exclusion) => this.setAnswersFromExclusionStore(exclusion));
+    this.storeSubscription = this.store
+      .pipe(select(fromFeature.getRoleAccessState))
+      .subscribe((exclusion) => this.setAnswersFromExclusionStore(exclusion));
   }
 
   public ngOnDestroy(): void {
@@ -50,16 +51,27 @@ export class AddExclusionCheckAnswersComponent implements OnDestroy {
   private setAnswersFromExclusionStore(exclusion: ExclusionStateData): void {
     this.exclusionStateData = exclusion;
     this.answers = [];
-    this.answers.push({ label: AnswerLabelText.WhoFor, value: exclusion.exclusionOption, action: ExclusionState.CHOOSE_EXCLUSION });
+    this.answers.push({
+      label: AnswerLabelText.WhoFor,
+      value: exclusion.exclusionOption,
+      action: ExclusionState.CHOOSE_EXCLUSION,
+    });
     if (exclusion.exclusionOption === ExcludeOption.EXCLUDE_ANOTHER_PERSON) {
-      this.answers.push({ label: AnswerLabelText.PersonRole, value: exclusion.personRole, action: ExclusionState.CHOOSE_PERSON_ROLE });
+      this.answers.push({
+        label: AnswerLabelText.PersonRole,
+        value: exclusion.personRole,
+        action: ExclusionState.CHOOSE_PERSON_ROLE,
+      });
       let personDetails = exclusion.person.name;
       if (exclusion.person.email) {
         personDetails += `\n${exclusion.person.email}`;
       }
       this.answers.push({ label: AnswerLabelText.Person, value: personDetails, action: ExclusionState.FIND_PERSON });
     }
-    this.answers.push({ label: AnswerLabelText.DescribeExclusion, value: exclusion.exclusionDescription, action: ExclusionState.DESCRIBE_EXCLUSION });
+    this.answers.push({
+      label: AnswerLabelText.DescribeExclusion,
+      value: exclusion.exclusionDescription,
+      action: ExclusionState.DESCRIBE_EXCLUSION,
+    });
   }
 }
-

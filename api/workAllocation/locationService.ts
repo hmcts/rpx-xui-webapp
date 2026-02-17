@@ -29,8 +29,11 @@ export async function commonGetFullLocation(req, allLocations: boolean) {
   for (const serviceCode of serviceCodes) {
     const path: string = prepareGetLocationsUrl(basePath, serviceCode);
     const response = await handleLocationGet(path, req);
-    const filteredCourtVenues = allLocations ? response.data.court_venues.filter((venue) => venue.is_case_management_location === 'Y').
-      map((venue) => ({ id: venue.epimms_id, locationName: venue.site_name })) : response.data.court_venues;
+    const filteredCourtVenues = allLocations
+      ? response.data.court_venues
+          .filter((venue) => venue.is_case_management_location === 'Y')
+          .map((venue) => ({ id: venue.epimms_id, locationName: venue.site_name }))
+      : response.data.court_venues;
     courtVenues = [...courtVenues, ...filteredCourtVenues];
   }
   courtVenues = allLocations ? courtVenues : courtVenues.filter((value, index, self) =>

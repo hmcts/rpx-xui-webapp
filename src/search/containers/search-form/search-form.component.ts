@@ -2,7 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib';
-import { DateCategoryType, SearchFormControl, SearchFormErrorMessage, SearchFormErrorType, SearchStatePersistenceKey } from '../../enums';
+import {
+  DateCategoryType,
+  SearchFormControl,
+  SearchFormErrorMessage,
+  SearchFormErrorType,
+  SearchStatePersistenceKey,
+} from '../../enums';
 import { SearchParameters, SearchValidationError } from '../../models';
 import { SearchService } from '../../services/search.service';
 import { SearchValidators } from '../../utils';
@@ -11,7 +17,7 @@ import { SearchValidators } from '../../utils';
   standalone: false,
   selector: 'exui-search-form',
   templateUrl: './search-form.component.html',
-  styleUrls: ['./search-form.component.scss']
+  styleUrls: ['./search-form.component.scss'],
 })
 export class SearchFormComponent implements OnInit {
   public formGroup: FormGroup;
@@ -32,16 +38,18 @@ export class SearchFormComponent implements OnInit {
   public dateOfBirthErrorMessage: ErrorMessagesModel;
   public dateOfDeathErrorMessage: ErrorMessagesModel;
 
-  constructor(private readonly fb: FormBuilder,
-              private readonly searchService: SearchService,
-              private readonly router: Router,
-              private readonly route: ActivatedRoute) {
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly searchService: SearchService,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute
+  ) {
     this.caseRefConfig = {
       id: 'caseRef',
       name: 'caseRef',
       classes: 'govuk-input--width-10',
       label: '16-digit case reference',
-      type: 'text'
+      type: 'text',
     };
     this.otherRefConfig = {
       id: 'otherRef',
@@ -49,7 +57,7 @@ export class SearchFormComponent implements OnInit {
       hint: 'Any other reference to identify a case, for example National Insurance number or system reference.',
       classes: 'govuk-input--width-10',
       label: 'Other reference',
-      type: 'text'
+      type: 'text',
     };
     this.fullNameConfig = {
       id: 'fullName',
@@ -58,69 +66,70 @@ export class SearchFormComponent implements OnInit {
       classes: 'govuk-input--width-20',
       // Label change to just 'Name' requested under EUI-5303
       label: 'Name',
-      type: 'text'
+      type: 'text',
     };
     this.addressLine1Config = {
       id: 'addressLine1',
       name: 'addressLine1',
       classes: 'govuk-input--width-20',
       label: 'First line of address',
-      type: 'text'
+      type: 'text',
     };
     this.postcodeConfig = {
       id: 'postcode',
       name: 'postcode',
       label: 'Postcode',
-      type: 'text'
+      type: 'text',
     };
     this.emailConfig = {
       id: 'email',
       name: 'email',
       classes: 'govuk-input--width-20',
       label: 'Email address',
-      type: 'email'
+      type: 'email',
     };
     this.dateOfBirthConfig = {
       id: 'dateOfBirth',
       name: 'dateOfBirth',
       hint: '',
-      label: 'Date of birth'
+      label: 'Date of birth',
     };
     this.dateOfDeathConfig = {
       id: 'dateOfDeath',
       name: 'dateOfDeath',
       hint: '',
-      label: 'Date of death'
+      label: 'Date of death',
     };
     this.servicesConfig = {
       id: 'servicesList',
       name: 'servicesList',
       classes: 'govuk-label--m',
-      label: 'Services'
+      label: 'Services',
     };
-    this.services = [
-      { label: 'All', value: 'ALL', id: 'ALL' }
-    ];
+    this.services = [{ label: 'All', value: 'ALL', id: 'ALL' }];
   }
 
   public ngOnInit(): void {
-    this.formGroup = this.fb.group({
-      [SearchFormControl.CASE_REF]: ['', SearchValidators.caseReferenceWithWildcardsValidator()],
-      [SearchFormControl.OTHER_REF]: '',
-      [SearchFormControl.FULL_NAME]: '',
-      [SearchFormControl.ADDRESS_LINE_1]: '',
-      [SearchFormControl.POSTCODE]: ['', SearchValidators.postcodeValidator()],
-      [SearchFormControl.EMAIL]: ['', Validators.email],
-      [SearchFormControl.DATE_OF_BIRTH_DAY]: '',
-      [SearchFormControl.DATE_OF_BIRTH_MONTH]: '',
-      [SearchFormControl.DATE_OF_BIRTH_YEAR]: '',
-      [SearchFormControl.DATE_OF_DEATH_DAY]: '',
-      [SearchFormControl.DATE_OF_DEATH_MONTH]: '',
-      [SearchFormControl.DATE_OF_DEATH_YEAR]: '',
-      [SearchFormControl.SERVICES_LIST]: ''
-    }, {
-      validators: [SearchValidators.dateComparisonValidator(), SearchValidators.searchFormValidator()]
-    });
+    this.formGroup = this.fb.group(
+      {
+        [SearchFormControl.CASE_REF]: ['', SearchValidators.caseReferenceWithWildcardsValidator()],
+        [SearchFormControl.OTHER_REF]: '',
+        [SearchFormControl.FULL_NAME]: '',
+        [SearchFormControl.ADDRESS_LINE_1]: '',
+        [SearchFormControl.POSTCODE]: ['', SearchValidators.postcodeValidator()],
+        [SearchFormControl.EMAIL]: ['', Validators.email],
+        [SearchFormControl.DATE_OF_BIRTH_DAY]: '',
+        [SearchFormControl.DATE_OF_BIRTH_MONTH]: '',
+        [SearchFormControl.DATE_OF_BIRTH_YEAR]: '',
+        [SearchFormControl.DATE_OF_DEATH_DAY]: '',
+        [SearchFormControl.DATE_OF_DEATH_MONTH]: '',
+        [SearchFormControl.DATE_OF_DEATH_YEAR]: '',
+        [SearchFormControl.SERVICES_LIST]: '',
+      },
+      {
+        validators: [SearchValidators.dateComparisonValidator(), SearchValidators.searchFormValidator()],
+      }
+    );
 
     this.searchService.getServices().subscribe((services) => {
       services.forEach((service) => {
@@ -135,7 +144,7 @@ export class SearchFormComponent implements OnInit {
     const searchParameters: SearchParameters = this.searchService.retrieveState(SearchStatePersistenceKey.SEARCH_PARAMS);
     if (searchParameters) {
       // Note: Intentional use of != throughout this if block, to check for search parameter values being not null and not undefined
-      /* eslint-disable eqeqeq */
+
       const caseReferences = searchParameters.caseReferences;
       if (caseReferences != null) {
         this.formGroup.get(SearchFormControl.CASE_REF).setValue(caseReferences[0] || '');
@@ -168,7 +177,6 @@ export class SearchFormComponent implements OnInit {
       if (serviceSelection != null && serviceSelection.length === 1) {
         this.formGroup.get(SearchFormControl.SERVICES_LIST).setValue(serviceSelection[0]);
       }
-      /* eslint-enable eqeqeq */
     }
   }
 
@@ -186,41 +194,69 @@ export class SearchFormComponent implements OnInit {
     if (!this.formGroup.valid) {
       // Case reference
       if (!this.formGroup.get(SearchFormControl.CASE_REF).valid) {
-        this.searchValidationErrors.push({ controlId: SearchFormControl.CASE_REF, documentHRef: SearchFormControl.CASE_REF, errorMessage: SearchFormErrorMessage.CASE_REF });
+        this.searchValidationErrors.push({
+          controlId: SearchFormControl.CASE_REF,
+          documentHRef: SearchFormControl.CASE_REF,
+          errorMessage: SearchFormErrorMessage.CASE_REF,
+        });
         this.caseRefErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.CASE_REF] };
       }
       // Postcode
       if (!this.formGroup.get(SearchFormControl.POSTCODE).valid) {
-        this.searchValidationErrors.push({ controlId: SearchFormControl.POSTCODE, documentHRef: SearchFormControl.POSTCODE, errorMessage: SearchFormErrorMessage.POSTCODE });
+        this.searchValidationErrors.push({
+          controlId: SearchFormControl.POSTCODE,
+          documentHRef: SearchFormControl.POSTCODE,
+          errorMessage: SearchFormErrorMessage.POSTCODE,
+        });
         this.postcodeErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.POSTCODE] };
       }
       // Email
       if (!this.formGroup.get(SearchFormControl.EMAIL).valid) {
-        this.searchValidationErrors.push({ controlId: SearchFormControl.EMAIL, documentHRef: SearchFormControl.EMAIL, errorMessage: SearchFormErrorMessage.EMAIL });
+        this.searchValidationErrors.push({
+          controlId: SearchFormControl.EMAIL,
+          documentHRef: SearchFormControl.EMAIL,
+          errorMessage: SearchFormErrorMessage.EMAIL,
+        });
         this.emailErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.EMAIL] };
       }
       // Date of birth
       // In the latest version of the XUI Common Library Date component, the validator is attached to the day field but covers the month and year, too
       if (!this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).valid) {
-        this.searchValidationErrors.push({ controlId: SearchFormControl.DATE_OF_BIRTH_DAY, documentHRef: 'dateOfBirth', errorMessage: SearchFormErrorMessage.DATE_OF_BIRTH });
+        this.searchValidationErrors.push({
+          controlId: SearchFormControl.DATE_OF_BIRTH_DAY,
+          documentHRef: 'dateOfBirth',
+          errorMessage: SearchFormErrorMessage.DATE_OF_BIRTH,
+        });
         this.dateOfBirthErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.DATE_OF_BIRTH] };
       }
       // Date of death
       // As above for date of birth
       if (!this.formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).valid) {
-        this.searchValidationErrors.push({ controlId: SearchFormControl.DATE_OF_DEATH_DAY, documentHRef: 'dateOfDeath', errorMessage: SearchFormErrorMessage.DATE_OF_DEATH });
+        this.searchValidationErrors.push({
+          controlId: SearchFormControl.DATE_OF_DEATH_DAY,
+          documentHRef: 'dateOfDeath',
+          errorMessage: SearchFormErrorMessage.DATE_OF_DEATH,
+        });
         this.dateOfDeathErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.DATE_OF_DEATH] };
       }
       // Search cases form
       if (this.formGroup.errors) {
         // Date comparison
         if (this.formGroup.errors.errorType === SearchFormErrorType.DATE_COMPARISON) {
-          this.searchValidationErrors.push({ controlId: null, documentHRef: 'dateOfDeath', errorMessage: SearchFormErrorMessage.DATE_COMPARISON_FAILED });
+          this.searchValidationErrors.push({
+            controlId: null,
+            documentHRef: 'dateOfDeath',
+            errorMessage: SearchFormErrorMessage.DATE_COMPARISON_FAILED,
+          });
           this.dateOfDeathErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.DATE_COMPARISON_FAILED] };
         }
         // No search criteria
         if (this.formGroup.errors.errorType === SearchFormErrorType.NO_SEARCH_CRITERIA) {
-          this.searchValidationErrors.push({ controlId: null, documentHRef: null, errorMessage: SearchFormErrorMessage.NO_SEARCH_CRITERIA });
+          this.searchValidationErrors.push({
+            controlId: null,
+            documentHRef: null,
+            errorMessage: SearchFormErrorMessage.NO_SEARCH_CRITERIA,
+          });
         }
       }
 
@@ -239,10 +275,11 @@ export class SearchFormComponent implements OnInit {
   public resetValidationErrorMessages(): void {
     this.searchValidationErrors = [];
     this.caseRefErrorMessage =
-    this.emailErrorMessage =
-    this.postcodeErrorMessage =
-    this.dateOfBirthErrorMessage =
-    this.dateOfDeathErrorMessage = null;
+      this.emailErrorMessage =
+      this.postcodeErrorMessage =
+      this.dateOfBirthErrorMessage =
+      this.dateOfDeathErrorMessage =
+        null;
   }
 
   /**
@@ -274,7 +311,7 @@ export class SearchFormComponent implements OnInit {
         emailAddress: this.formGroup.get(SearchFormControl.EMAIL).value === '' ? null : this.formGroup.get(SearchFormControl.EMAIL).value,
         // Date format expected by API endpoint is yyyy-mm-dd
         dateOfBirth: this.getDateFormatted(DateCategoryType.DATE_OF_BIRTH),
-        dateOfDeath: this.getDateFormatted(DateCategoryType.DATE_OF_DEATH)
+        dateOfDeath: this.getDateFormatted(DateCategoryType.DATE_OF_DEATH),
       };
 
       // Store the search parameters to session
@@ -297,17 +334,20 @@ export class SearchFormComponent implements OnInit {
    */
   private getDateFormatted(dateCategoryType: string): string {
     // Set values to empty strings if they are not truthy
-    const day = dateCategoryType === DateCategoryType.DATE_OF_BIRTH
-      ? (this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).value || '')
-      : (this.formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).value || '');
+    const day =
+      dateCategoryType === DateCategoryType.DATE_OF_BIRTH
+        ? this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).value || ''
+        : this.formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).value || '';
 
-    const month = dateCategoryType === DateCategoryType.DATE_OF_BIRTH
-      ? (this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).value || '')
-      : (this.formGroup.get(SearchFormControl.DATE_OF_DEATH_MONTH).value || '');
+    const month =
+      dateCategoryType === DateCategoryType.DATE_OF_BIRTH
+        ? this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_MONTH).value || ''
+        : this.formGroup.get(SearchFormControl.DATE_OF_DEATH_MONTH).value || '';
 
-    const year = dateCategoryType === DateCategoryType.DATE_OF_BIRTH
-      ? (this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).value || '')
-      : (this.formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).value || '');
+    const year =
+      dateCategoryType === DateCategoryType.DATE_OF_BIRTH
+        ? this.formGroup.get(SearchFormControl.DATE_OF_BIRTH_YEAR).value || ''
+        : this.formGroup.get(SearchFormControl.DATE_OF_DEATH_YEAR).value || '';
 
     if (day === '' || month === '' || year === '') {
       return null;

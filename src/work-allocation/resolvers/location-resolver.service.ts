@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { LocationModel } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
-import * as moment from 'moment';
+import moment from 'moment';
 import { EMPTY } from 'rxjs';
 import { Observable } from 'rxjs';
 import { of } from 'rxjs';
@@ -19,7 +19,7 @@ import { LocationDataService } from '../services';
 import { WILDCARD_SERVICE_DOWN, addLocationToLocationsByService, handleFatalErrors, locationWithinRegion } from '../utils';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 // Note: used before my work and booking screens
 export class LocationResolver {
@@ -42,30 +42,30 @@ export class LocationResolver {
     private readonly sessionStorageService: SessionStorageService,
     private readonly locationService: LocationDataService,
     private readonly userService: UserService
-  ) { }
+  ) {}
 
   public resolve(): Observable<LocationModel[]> {
-    return this.userDetails()
-      .pipe(
-        filter((userDetails: UserDetails) => !!userDetails.userInfo),
-        first(),
-        mergeMap((userDetails: UserDetails) => this.getRegionLocations(userDetails)
-          .pipe(
-            map((regionLocations) => this.getJudicialWorkersOrCaseWorkers(regionLocations, userDetails))
-          )
-        ),
-        mergeMap((locations: Location[]) => this.getLocations(locations)),
-        catchError((error) => {
-          handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
-          return EMPTY;
-        })
-      );
+    return this.userDetails().pipe(
+      filter((userDetails: UserDetails) => !!userDetails.userInfo),
+      first(),
+      mergeMap((userDetails: UserDetails) =>
+        this.getRegionLocations(userDetails).pipe(
+          map((regionLocations) => this.getJudicialWorkersOrCaseWorkers(regionLocations, userDetails))
+        )
+      ),
+      mergeMap((locations: Location[]) => this.getLocations(locations)),
+      catchError((error) => {
+        handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
+        return EMPTY;
+      })
+    );
   }
 
   private userDetails(): Observable<UserDetails> {
-    const newBookingCreated = (this.router.getCurrentNavigation() &&
+    const newBookingCreated =
+      this.router.getCurrentNavigation() &&
       this.router.getCurrentNavigation().extras.state &&
-      this.router.getCurrentNavigation().extras.state.newBooking === true);
+      this.router.getCurrentNavigation().extras.state.newBooking === true;
     return newBookingCreated ? this.updateAndGetUserDetails() : this.store.pipe(select(fromRoot.getUserDetails));
   }
 
@@ -92,29 +92,52 @@ export class LocationResolver {
     let feePaidUserLocationsByService: LocationsByService[] = [];
     userDetails.roleAssignmentInfo.forEach((roleAssignment) => {
       const roleJurisdiction = roleAssignment.jurisdiction;
-      if (roleJurisdiction && !this.bookableServices.includes(roleJurisdiction) && roleAssignment.roleType === 'ORGANISATION'
-        && (roleAssignment.bookable === true || roleAssignment.bookable === 'true')
+      if (
+        roleJurisdiction &&
+        !this.bookableServices.includes(roleJurisdiction) &&
+        roleAssignment.roleType === 'ORGANISATION' &&
+        (roleAssignment.bookable === true || roleAssignment.bookable === 'true')
       ) {
         this.bookableServices.push(roleJurisdiction);
       }
-      if (roleJurisdiction && !this.allLocationServices.includes(roleJurisdiction) && roleAssignment.roleType === 'ORGANISATION'
-        && roleAssignment.substantive.toLocaleLowerCase() === 'y' && this.checkDatesValid(roleAssignment)
+      if (
+        roleJurisdiction &&
+        !this.allLocationServices.includes(roleJurisdiction) &&
+        roleAssignment.roleType === 'ORGANISATION' &&
+        roleAssignment.substantive.toLocaleLowerCase() === 'y' &&
+        this.checkDatesValid(roleAssignment) &&
         // temporary fix as fee-paid-jedge-roles currently substantive
-        && roleAssignment.roleName !== 'fee-paid-judge') {
+        roleAssignment.roleName !== 'fee-paid-judge'
+      ) {
         this.setRegionsAndBaseLocations(roleAssignment, roleJurisdiction, regionLocations, false);
-      } else if (roleJurisdiction && !this.allFeePaidLocationServices.includes(roleJurisdiction) && roleAssignment.roleType === 'ORGANISATION'
-        && (roleAssignment.bookable === true || roleAssignment.bookable === 'true') && this.checkDatesValid(roleAssignment)) {
+      } else if (
+        roleJurisdiction &&
+        !this.allFeePaidLocationServices.includes(roleJurisdiction) &&
+        roleAssignment.roleType === 'ORGANISATION' &&
+        (roleAssignment.bookable === true || roleAssignment.bookable === 'true') &&
+        this.checkDatesValid(roleAssignment)
+      ) {
         this.setRegionsAndBaseLocations(roleAssignment, roleJurisdiction, regionLocations, true);
       }
     });
     this.locations.forEach((location) => {
       location.services.map((service) => {
-        userLocationsByService = addLocationToLocationsByService(userLocationsByService, location, service, this.allLocationServices);
+        userLocationsByService = addLocationToLocationsByService(
+          userLocationsByService,
+          location,
+          service,
+          this.allLocationServices
+        );
       });
     });
     this.feePaidLocations.forEach((location) => {
       location.services.map((service) => {
-        feePaidUserLocationsByService = addLocationToLocationsByService(feePaidUserLocationsByService, location, service, this.allFeePaidLocationServices);
+        feePaidUserLocationsByService = addLocationToLocationsByService(
+          feePaidUserLocationsByService,
+          location,
+          service,
+          this.allFeePaidLocationServices
+        );
       });
     });
     this.sessionStorageService.setItem('userLocations', JSON.stringify(userLocationsByService));
@@ -138,7 +161,12 @@ export class LocationResolver {
     return locations;
   }
 
-  private setRegionsAndBaseLocations(roleAssignment: RoleAssignmentInfo, roleJurisdiction: string, regionLocations: LocationsByRegion[], feePaid: boolean): void {
+  private setRegionsAndBaseLocations(
+    roleAssignment: RoleAssignmentInfo,
+    roleJurisdiction: string,
+    regionLocations: LocationsByRegion[],
+    feePaid: boolean
+  ): void {
     if (!roleAssignment.region && !roleAssignment.baseLocation) {
       // if there are no restrictions, via union logic, all locations selectable
       if (feePaid) {
@@ -151,27 +179,29 @@ export class LocationResolver {
         this.setBaseLocationForAdding(roleAssignment, roleJurisdiction, feePaid);
       } else {
         if (!this.locations.find((location) => location.services.includes(roleJurisdiction))) {
-          const location =
-          {
+          const location = {
             id: null,
             userId: this.userId,
             locationId: null,
             locationName: '',
-            services: [roleAssignment.jurisdiction]
+            services: [roleAssignment.jurisdiction],
           };
           this.setAllLocations(location, roleAssignment, feePaid);
         }
       }
     } else if (roleAssignment.region) {
-      if (!this.locations.find((location) => location.regionId === roleAssignment.region && location.services.includes(roleJurisdiction))) {
-        const location =
-        {
+      if (
+        !this.locations.find(
+          (location) => location.regionId === roleAssignment.region && location.services.includes(roleJurisdiction)
+        )
+      ) {
+        const location = {
           id: undefined,
           userId: this.userId,
           locationId: undefined,
           locationName: '',
           services: [roleAssignment.jurisdiction],
-          regionId: roleAssignment.region
+          regionId: roleAssignment.region,
         };
         this.setAllLocations(location, roleAssignment, feePaid);
       }
@@ -208,16 +238,18 @@ export class LocationResolver {
 
   private setBaseLocationForAdding(roleAssignment: RoleAssignmentInfo, service: string, feePaid: boolean): void {
     // check to see if the location is a new location
-    const newLocation = feePaid ? !this.feePaidLocations.find((location) => location.id === roleAssignment.baseLocation && location.services.includes(service))
+    const newLocation = feePaid
+      ? !this.feePaidLocations.find(
+          (location) => location.id === roleAssignment.baseLocation && location.services.includes(service)
+        )
       : !this.locations.find((location) => location.id === roleAssignment.baseLocation && location.services.includes(service));
     if (newLocation) {
-      const location =
-      {
+      const location = {
         id: roleAssignment.baseLocation,
         userId: this.userId,
         locationId: roleAssignment.baseLocation,
         locationName: '',
-        services: [roleAssignment.jurisdiction]
+        services: [roleAssignment.jurisdiction],
       };
       this.setAllLocations(location, roleAssignment, feePaid);
     }

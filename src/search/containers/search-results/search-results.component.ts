@@ -11,7 +11,7 @@ import { SearchService } from '../../services/search.service';
   standalone: false,
   selector: 'exui-search-results',
   templateUrl: './search-results.component.html',
-  styleUrls: ['./search-results.component.scss']
+  styleUrls: ['./search-results.component.scss'],
 })
 export class SearchResultsComponent implements OnInit, OnDestroy {
   public searchSubscription$: Subscription;
@@ -21,10 +21,12 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
   public moreResultsToGo: boolean = false;
   public caseStartRecord: number = 1;
 
-  constructor(private readonly searchService: SearchService,
-              private readonly jurisdictionService: JurisdictionService,
-              private readonly router: Router,
-              private readonly route: ActivatedRoute) {}
+  constructor(
+    private readonly searchService: SearchService,
+    private readonly jurisdictionService: JurisdictionService,
+    private readonly router: Router,
+    private readonly route: ActivatedRoute
+  ) {}
 
   public ngOnInit(): void {
     this.retrieveSearchResults();
@@ -39,7 +41,10 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
     const searchResult = results[0];
     // Navigate to no results page if case list is empty
     if (searchResult.resultInfo.casesReturned === 0) {
-      this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS }, relativeTo: this.route });
+      this.router.navigate(['/search/noresults'], {
+        state: { messageId: NoResultsMessageId.NO_RESULTS },
+        relativeTo: this.route,
+      });
     }
 
     // Get the jurisdiction list from the results
@@ -55,7 +60,7 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
         state: this.getStateName(result.stateId, result.CCDJurisdictionId, result.CCDCaseTypeId),
         location: result.baseLocationName,
         actionLink: `/cases/case-details/${result.CCDJurisdictionId}/${result.CCDCaseTypeId}/${result.caseReference}`,
-        actionLinkText: this.getActionLinkText(result.processForAccess)
+        actionLinkText: this.getActionLinkText(result.processForAccess),
       };
 
       this.searchResultDisplay.push(searchResultDisplay);
@@ -88,10 +93,11 @@ export class SearchResultsComponent implements OnInit, OnDestroy {
     this.showSpinner = true;
     this.searchSubscription$ = combineLatest([
       this.searchService.getResults(),
-      this.jurisdictionService.getJurisdictions()
+      this.jurisdictionService.getJurisdictions(),
     ]).subscribe(
       (results) => this.onSearchSubscriptionHandler(results),
-      () => this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.ERROR }, relativeTo: this.route })
+      () =>
+        this.router.navigate(['/search/noresults'], { state: { messageId: NoResultsMessageId.ERROR }, relativeTo: this.route })
     );
   }
 

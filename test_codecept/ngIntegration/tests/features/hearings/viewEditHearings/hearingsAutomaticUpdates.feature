@@ -45,7 +45,7 @@ Feature: Hearings CR84: Automatic updates
             | IND  | Party2 name     | 1234-uytr-7654-asdf-0002 |
             | ORG  | party3 org name | 1234-uytr-7654-asdf-0003 |
 
-        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
+        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings-ce"
         Then I am on hearings tab page
         Then I see hearings table for "Current and upcoming" in hearings tab page
 

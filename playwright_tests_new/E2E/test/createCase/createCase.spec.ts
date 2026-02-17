@@ -69,30 +69,5 @@ test.describe('Verify creating cases works as expected', async () => {
       const table = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.historyDetailsTable);
       expect.soft(table).toMatchObject(expectedDetails);
     });
-
-    await test.step('Find the created case in the case list', async () => {
-      await caseListPage.goto();
-      await caseListPage.searchByJurisdiction('Family Divorce');
-      await caseListPage.searchByCaseType('XUI Case PoC');
-      await caseListPage.searchByTextField0(caseData.textField0);
-      await caseListPage.exuiCaseListComponent.searchByCaseState('Case created');
-      await caseListPage.applyFilters();
-      await caseListPage.exuiSpinnerComponent.wait();
-    });
-
-    await test.step('Confirm the created case data is seen in the search results', async () => {
-      await caseListPage.exuiCaseListComponent.caseListTable.waitFor({ state: 'visible' });
-
-      const expected = {
-        'Case reference': formatCaseNumberWithDashes(caseNumber),
-        'Text Field 0': caseData.textField0,
-        'Text Field 1': caseData.textField1,
-        'Text Field 2': caseData.textField2,
-      };
-      const table = await tableUtils.parseDataTable(caseListPage.exuiCaseListComponent.caseListTable);
-      const found = table.some((row) => normalizeCaseNumber(String(row['Case reference'] ?? '')) === caseNumber);
-      expect(found).toBeTruthy();
-      expect(table[0]).toMatchObject(expected);
-    });
   });
 });

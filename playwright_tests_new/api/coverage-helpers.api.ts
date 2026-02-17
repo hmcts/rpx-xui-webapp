@@ -9,7 +9,12 @@ import { test, expect } from '@playwright/test';
 import { expectStatus, withRetry, __test__ as apiTestUtilsTest } from './utils/apiTestUtils';
 import { resolveRoleAccessCaseId } from './data/testIds';
 import { __test__ as fixturesTest } from './fixtures';
-import { __test__ as e2eFixturesTest } from '../E2E/fixtures';
+import {
+  sanitizeUrl,
+  collectDependencySignals,
+  classifyFailure,
+  classifyFailureCategory,
+} from '../common/failureClassification';
 import { buildTaskSearchRequest, seedTaskId } from './utils/work-allocation';
 import { seedRoleAccessCaseId } from './utils/role-access';
 
@@ -101,14 +106,7 @@ function tryParseJsonReport(output: string): JsonReport | undefined {
 }
 
 async function runPlaywrightJsonReport(repoRoot: string, testFile: string): Promise<JsonReport> {
-  const args = [
-    PLAYWRIGHT_CLI_PATH,
-    'test',
-    '--config=playwright.config.ts',
-    '--project=node-api',
-    testFile,
-    '--reporter=json',
-  ];
+  const args = [PLAYWRIGHT_CLI_PATH, 'test', '--config=playwright.config.ts', '--project=node-api', testFile, '--reporter=json'];
 
   try {
     const { stdout, stderr } = await execFileAsync(process.execPath, args, {
@@ -129,8 +127,8 @@ async function runPlaywrightJsonReport(repoRoot: string, testFile: string): Prom
     );
   } catch (error) {
     const failure = error as ExecFileFailure;
-    const stdout = typeof failure.stdout === 'string' ? failure.stdout : failure.stdout?.toString('utf8') ?? '';
-    const stderr = typeof failure.stderr === 'string' ? failure.stderr : failure.stderr?.toString('utf8') ?? '';
+    const stdout = typeof failure.stdout === 'string' ? failure.stdout : (failure.stdout?.toString('utf8') ?? '');
+    const stderr = typeof failure.stderr === 'string' ? failure.stderr : (failure.stderr?.toString('utf8') ?? '');
     const parsed = tryParseJsonReport(stdout) ?? tryParseJsonReport(stderr);
     if (parsed) {
       return parsed;
@@ -382,7 +380,7 @@ test.describe('Helper utilities and retry logic', () => {
 
 test.describe('E2E failure classification utilities', () => {
   test('prioritises downstream API signals over timeout/network signatures', () => {
-    const failureType = e2eFixturesTest.classifyFailure(
+    const failureType = classifyFailure(
       'request timeout while service returned 503',
       [{ url: '/api/downstream', status: 503, method: 'GET' }],
       [{ url: '/api/downstream', status: 404, method: 'GET' }],
@@ -395,7 +393,7 @@ test.describe('E2E failure classification utilities', () => {
   });
 
   test('does not classify transport-abort failures as UNKNOWN when dependency signals exist', () => {
-    const failureType = e2eFixturesTest.classifyFailure(
+    const failureType = classifyFailure(
       'net::ERR_ABORTED while fetching backend dependency',
       [],
       [],
@@ -409,7 +407,7 @@ test.describe('E2E failure classification utilities', () => {
   });
 
   test('produces dependency category and clear signal details for network/downstream failures', () => {
-    const signals = e2eFixturesTest.collectDependencySignals(
+    const signals = collectDependencySignals(
       'net::ERR_ABORTED from dependency call',
       [{ url: '/api/5xx', status: 503, method: 'GET' }],
       [],
@@ -423,15 +421,15 @@ test.describe('E2E failure classification utilities', () => {
     expect(signals.join(' | ')).toContain('Network failure signal detected');
     expect(signals.join(' | ')).toContain('Network/dependency signature detected in test error');
 
-    const dependencyCategory = e2eFixturesTest.classifyFailureCategory('UNKNOWN', signals);
+    const dependencyCategory = classifyFailureCategory('UNKNOWN', signals);
     expect(dependencyCategory).toBe('DEPENDENCY_ENVIRONMENT_FAILURE');
 
-    const nonDependencyCategory = e2eFixturesTest.classifyFailureCategory('ASSERTION_FAILURE', []);
+    const nonDependencyCategory = classifyFailureCategory('ASSERTION_FAILURE', []);
     expect(nonDependencyCategory).toBe('NON_DEPENDENCY_FAILURE');
   });
 
   test('sanitises URLs in diagnostics helper', () => {
-    expect(e2eFixturesTest.sanitizeUrl('https://example.test/api/resource?token=secret&foo=bar')).toBe(
+    expect(sanitizeUrl('https://example.test/api/resource?token=secret&foo=bar')).toBe(
       'https://example.test/api/resource'
     );
   });

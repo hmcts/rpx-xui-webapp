@@ -3,151 +3,20 @@ import { createLogger } from '@hmcts/playwright-common';
 import getPort from 'get-port';
 import { PageFixtures, pageFixtures } from './page-objects/pages/page.fixtures.js';
 import { UtilsFixtures, utilsFixtures } from './utils/utils.fixtures.js';
+import {
+  type SlowCall,
+  type FailedRequest,
+  sanitizeUrl,
+  hasNetworkErrorSignal,
+  collectDependencySignals,
+  classifyFailure,
+  classifyFailureCategory,
+} from '../common/failureClassification';
 
 const logger = createLogger({ serviceName: 'test-framework', format: 'pretty' });
 
-type FailureType =
-  | 'DOWNSTREAM_API_5XX'
-  | 'DOWNSTREAM_API_4XX'
-  | 'SLOW_API_RESPONSE'
-  | 'NETWORK_TIMEOUT'
-  | 'UI_ELEMENT_MISSING'
-  | 'ASSERTION_FAILURE'
-  | 'UNKNOWN';
-
-interface ApiError {
-  url: string;
-  status: number;
-  method: string;
-}
-
-interface SlowCall {
-  url: string;
-  duration: number;
-  method: string;
-}
-
-interface FailedRequest {
-  url: string;
-  method: string;
-  errorText: string;
-}
-
-type FailureCategory = 'DEPENDENCY_ENVIRONMENT_FAILURE' | 'NON_DEPENDENCY_FAILURE';
-
-const NETWORK_ERROR_PATTERNS: RegExp[] = [
-  /timeout/i,
-  /timed out/i,
-  /net::err_/i,
-  /econnreset/i,
-  /econnrefused/i,
-  /etimedout/i,
-  /enotfound/i,
-  /eai_again/i,
-  /socket hang up/i,
-  /connection reset/i,
-  /connection refused/i,
-  /name not resolved/i,
-];
-
-const DEPENDENCY_FAILURE_TYPES: ReadonlySet<FailureType> = new Set([
-  'DOWNSTREAM_API_5XX',
-  'DOWNSTREAM_API_4XX',
-  'SLOW_API_RESPONSE',
-  'NETWORK_TIMEOUT',
-]);
-
-/**
- * Sanitize URL by removing query parameters to prevent logging sensitive data.
- * Query params may contain tokens, session IDs, or PII.
- * @param url - Full URL with potential query parameters
- * @returns URL without query parameters
- */
-function sanitizeUrl(url: string): string {
-  return url.split('?')[0];
-}
-
 function truncate(value: string, max = 500): string {
   return value.length > max ? value.substring(0, max) : value;
-}
-
-function hasNetworkErrorSignal(value: string): boolean {
-  return NETWORK_ERROR_PATTERNS.some((pattern) => pattern.test(value));
-}
-
-function collectDependencySignals(
-  errorMessage: string,
-  serverErrors: ApiError[],
-  clientErrors: ApiError[],
-  slowCalls: SlowCall[],
-  failedRequests: FailedRequest[],
-  networkFailureSignal: boolean
-): string[] {
-  const signals: string[] = [];
-
-  if (serverErrors.length > 0) {
-    signals.push(`Downstream API 5xx responses=${serverErrors.length}`);
-  }
-  if (clientErrors.length > 0) {
-    signals.push(`Downstream API 4xx responses=${clientErrors.length}`);
-  }
-  if (slowCalls.length > 0) {
-    signals.push(`Slow backend API calls=${slowCalls.length}`);
-  }
-  if (failedRequests.length > 0) {
-    const reasons = Array.from(new Set(failedRequests.map((request) => request.errorText))).slice(0, 3);
-    signals.push(`Failed backend requests=${failedRequests.length}${reasons.length > 0 ? ` (${reasons.join('; ')})` : ''}`);
-  }
-  if (networkFailureSignal) {
-    signals.push('Network failure signal detected');
-  }
-  if (hasNetworkErrorSignal(errorMessage)) {
-    signals.push('Network/dependency signature detected in test error');
-  }
-
-  return signals;
-}
-
-/**
- * Classify test failure type based on error message and API call patterns.
- * Follows HMCTS observability standards for instant root cause diagnosis.
- */
-function classifyFailure(
-  error: string,
-  serverErrors: ApiError[],
-  clientErrors: ApiError[],
-  slowCalls: SlowCall[],
-  failedRequests: FailedRequest[],
-  networkFailureSignal: boolean
-): FailureType {
-  if (serverErrors.length > 0) {
-    return 'DOWNSTREAM_API_5XX';
-  }
-  if (clientErrors.length > 0) {
-    return 'DOWNSTREAM_API_4XX';
-  }
-  if (
-    error.toLowerCase().includes('timeout') ||
-    networkFailureSignal ||
-    failedRequests.length > 0 ||
-    hasNetworkErrorSignal(error)
-  ) {
-    return slowCalls.length > 0 ? 'SLOW_API_RESPONSE' : 'NETWORK_TIMEOUT';
-  }
-  if (error.includes('locator') || error.includes('element') || error.includes('waiting for')) {
-    return 'UI_ELEMENT_MISSING';
-  }
-  if (error.includes('expect') || error.includes('Expected') || error.includes('Received')) {
-    return 'ASSERTION_FAILURE';
-  }
-  return 'UNKNOWN';
-}
-
-function classifyFailureCategory(failureType: FailureType, dependencySignals: string[]): FailureCategory {
-  if (DEPENDENCY_FAILURE_TYPES.has(failureType) || dependencySignals.length > 0) {
-    return 'DEPENDENCY_ENVIRONMENT_FAILURE';
-  }
-  return 'NON_DEPENDENCY_FAILURE';
 }
 
 // Gather all fixture types into a common type

@@ -25,7 +25,7 @@
     "@hmcts/properties-volume": "^1.2.0",
     "@hmcts/rpx-xui-common-lib": "3.2.0",
     "@hmcts/rpx-xui-node-lib": "2.30.7-csp-final-change-3",
-    "applicationinsights": "1.8.10",
+    "applicationinsights": "3.13.0",
     "axios": "1.8.4",
     "axios-mock-adapter": "^1.22.0",
     "body-parser": "^1.20.3",

@@ -77,7 +77,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected rolesService: AllocateRoleService,
     protected store: Store<fromActions.State>,
     protected stateLocation: StateLocation
-  ) { }
+  ) {}
 
   public get tasks(): Task[] {
     return this.pTasks;

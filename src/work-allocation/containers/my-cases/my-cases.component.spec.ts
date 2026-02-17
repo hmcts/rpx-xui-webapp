@@ -53,26 +53,27 @@ describe('MyCasesComponent', () => {
     store = {},
     location = {},
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    checkReleaseVersionService = {}
-  }) => new MyCasesComponent(
-    changeDetectorRef as ChangeDetectorRef,
-    workAllocationTaskService as WorkAllocationCaseService,
-    filterService as FilterService,
-    router as Router,
-    infoMessageCommService as InfoMessageCommService,
-    sessionStorageService as SessionStorageService,
-    alertService as AlertService,
-    caseworkerDataService as CaseworkerDataService,
-    loadingService as LoadingService,
-    locationDataService as LocationDataService,
-    featureToggleService as FeatureToggleService,
-    waSupportedJurisdictionsService as WASupportedJurisdictionsService,
-    jurisdictionsService as JurisdictionsService,
-    allocateRoleService as AllocateRoleService,
-    httpClient as HttpClient,
-    store as Store<fromActions.State>,
-    location as Location
-  );
+    checkReleaseVersionService = {},
+  }) =>
+    new MyCasesComponent(
+      changeDetectorRef as ChangeDetectorRef,
+      workAllocationTaskService as WorkAllocationCaseService,
+      filterService as FilterService,
+      router as Router,
+      infoMessageCommService as InfoMessageCommService,
+      sessionStorageService as SessionStorageService,
+      alertService as AlertService,
+      caseworkerDataService as CaseworkerDataService,
+      loadingService as LoadingService,
+      locationDataService as LocationDataService,
+      featureToggleService as FeatureToggleService,
+      waSupportedJurisdictionsService as WASupportedJurisdictionsService,
+      jurisdictionsService as JurisdictionsService,
+      allocateRoleService as AllocateRoleService,
+      httpClient as HttpClient,
+      store as Store<fromActions.State>,
+      location as Location
+    );
 
   it('should create', () => {
     component = initializeComponent({ checkReleaseVersionService: mockCheckReleaseVersionService });

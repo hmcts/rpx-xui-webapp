@@ -16,9 +16,11 @@ export class NoResultsComponent implements OnInit {
   public messageId: number;
   public noResultsMessageId = NoResultsMessageId;
 
-  constructor(private readonly store: Store<fromActions.State>,
-              private readonly router: Router,
-              private readonly location: Location) {
+  constructor(
+    private readonly store: Store<fromActions.State>,
+    private readonly router: Router,
+    private readonly location: Location
+  ) {
     // Get current navigation
     const currentNavigation = this.router.getCurrentNavigation();
     if (currentNavigation) {

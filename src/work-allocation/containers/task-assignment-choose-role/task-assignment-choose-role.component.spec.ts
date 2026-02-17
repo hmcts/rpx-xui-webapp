@@ -20,7 +20,7 @@ describe('TaskAssignmentChooseRoleComponent', () => {
     navigate: jasmine.createSpy('navigate'),
   };
   const mockLocation: any = {
-    getState: jasmine.createSpy('getState')
+    getState: jasmine.createSpy('getState'),
   };
 
   mockSessionStorageService.getItem.and.returnValue(
@@ -89,9 +89,9 @@ describe('TaskAssignmentChooseRoleComponent', () => {
     const expectedState = { returnUrl: '/case-details/123243430403904/IA/Appeal-864/tasks' };
     mockLocation.getState.and.returnValue(expectedState);
     component.submit(component.form.value, component.form.valid);
-    expect(router.navigate).toHaveBeenCalledWith(
-      ['work', 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', 'reassign', 'person'],
-      { queryParams: { role: 'LEGAL_OPERATIONS', service: null }, state: jasmine.objectContaining({ returnUrl: jasmine.any(String) }) }
-    );
+    expect(router.navigate).toHaveBeenCalledWith(['work', 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', 'reassign', 'person'], {
+      queryParams: { role: 'LEGAL_OPERATIONS', service: null },
+      state: jasmine.objectContaining({ returnUrl: jasmine.any(String) }),
+    });
   });
 });

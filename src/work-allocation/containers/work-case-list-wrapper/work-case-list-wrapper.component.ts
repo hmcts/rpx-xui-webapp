@@ -91,7 +91,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     protected readonly httpClient: HttpClient,
     protected store: Store<fromActions.State>,
     protected stateLocation: StateLocation
-  ) { }
+  ) {}
 
   public get cases(): Case[] {
     return this.pCases;

@@ -62,7 +62,7 @@ describe('TaskAssignmentContainerComponent', () => {
     domain: PersonRole.LEGAL_OPERATIONS,
   };
   const locationStub: any = {
-    getState: jasmine.createSpy('getState')
+    getState: jasmine.createSpy('getState'),
   };
   const mockTasks = getMockTasks();
   const mockRouter = jasmine.createSpyObj('router', ['navigate']);
@@ -171,7 +171,7 @@ describe('TaskAssignmentContainerComponent', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith(['all-work/tasks']);
   });
 
-  it('should redirect to the fallback URL (\'\') on cancelling task assignment, if the return URL is not in the history', () => {
+  it("should redirect to the fallback URL ('') on cancelling task assignment, if the return URL is not in the history", () => {
     locationStub.getState.and.returnValue({});
     const findPersonControl = new FormControl('test');
     component.formGroup.addControl('findPersonControl', findPersonControl);

@@ -36,7 +36,8 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     private readonly router: Router,
     private readonly messageService: InfoMessageCommService,
     private readonly sessionStorageService: SessionStorageService,
-    private readonly location: Location) {
+    private readonly location: Location
+  ) {
     const navigation = this.router.getCurrentNavigation();
     if (navigation && navigation.extras && navigation.extras.state) {
       this.selectedPerson = navigation.extras.state.selectedPerson;

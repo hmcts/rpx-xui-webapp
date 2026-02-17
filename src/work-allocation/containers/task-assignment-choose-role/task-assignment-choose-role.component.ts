@@ -27,11 +27,13 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
   public form: FormGroup;
   public roles: OptionsModel[];
 
-  constructor(private readonly fb: FormBuilder,
-              private readonly router: Router,
-              private readonly sessionStorageService: SessionStorageService,
-              private readonly route: ActivatedRoute,
-              private readonly location: Location) {}
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly router: Router,
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly route: ActivatedRoute,
+    private readonly location: Location
+  ) {}
 
   private get returnUrl(): string {
     // Default URL is '' because this is the only sensible return navigation if the user has used browser navigation
@@ -70,7 +72,10 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
       const role = values.role;
       const taskId = values.taskId;
       const state = this.location.getState();
-      this.router.navigate(['work', taskId, this.verb.toLowerCase(), 'person'], { queryParams: { role, service: this.service }, state });
+      this.router.navigate(['work', taskId, this.verb.toLowerCase(), 'person'], {
+        queryParams: { role, service: this.service },
+        state,
+      });
     }
   }
 

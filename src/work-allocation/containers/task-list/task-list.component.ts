@@ -55,9 +55,10 @@ export class TaskListComponent implements OnChanges {
   public defaultSortElement: HTMLElement;
   public newUrl: string;
 
-  constructor(private readonly router: Router,
-              private readonly sessionStorageService: SessionStorageService,
-              private readonly location: Location
+  constructor(
+    private readonly router: Router,
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly location: Location
   ) {}
 
   public get showResetSortButton(): boolean {

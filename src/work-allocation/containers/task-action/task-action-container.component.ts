@@ -39,7 +39,7 @@ export class TaskActionContainerComponent implements OnInit {
     private readonly sessionStorageService: SessionStorageService,
     private readonly roleService: AllocateRoleService,
     private readonly location: Location
-  ) { }
+  ) {}
 
   public get fields(): FieldConfig[] {
     return this.isJudicial

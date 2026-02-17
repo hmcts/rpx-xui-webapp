@@ -64,7 +64,7 @@ describe('TaskAssignmentConfirmComponent', () => {
   let mockInfoMessageCommService: jasmine.SpyObj<InfoMessageCommService>;
   let mockRouter: any;
   const mockLocation: any = {
-    getState: jasmine.createSpy('getState')
+    getState: jasmine.createSpy('getState'),
   };
 
   beforeEach(() => {
@@ -109,7 +109,7 @@ describe('TaskAssignmentConfirmComponent', () => {
         },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
-        { provide: Location, useValue: mockLocation }
+        { provide: Location, useValue: mockLocation },
       ],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
@@ -175,7 +175,7 @@ describe('TaskAssignmentConfirmComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['all-work/tasks']);
   });
 
-  it('should redirect to the fallback URL (\'\') on cancelling task assignment, if the return URL is not in the history', () => {
+  it("should redirect to the fallback URL ('') on cancelling task assignment, if the return URL is not in the history", () => {
     Object.defineProperty(component, 'returnUrl', {
       get: () => '',
     });

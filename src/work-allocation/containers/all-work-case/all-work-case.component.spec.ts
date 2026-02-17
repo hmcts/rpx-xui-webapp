@@ -88,26 +88,27 @@ describe('AllWorkCaseComponent', () => {
     store = {},
     stateLocation = {},
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    checkReleaseVersionService = {}
-  }) => new AllWorkCaseComponent(
-    changeDetectorRef as ChangeDetectorRef,
-    workAllocationTaskService as WorkAllocationCaseService,
-    filterService as FilterService,
-    router as Router,
-    infoMessageCommService as InfoMessageCommService,
-    sessionStorageService as SessionStorageService,
-    alertService as AlertService,
-    caseworkerDataService as CaseworkerDataService,
-    loadingService as LoadingService,
-    locationDataService as LocationDataService,
-    featureToggleService as FeatureToggleService,
-    waSupportedJurisdictionsService as WASupportedJurisdictionsService,
-    jurisdictionsService as JurisdictionsService,
-    allocateRoleService as AllocateRoleService,
-    httpClient as HttpClient,
-    store as Store<fromActions.State>,
-    stateLocation as StateLocation
-  );
+    checkReleaseVersionService = {},
+  }) =>
+    new AllWorkCaseComponent(
+      changeDetectorRef as ChangeDetectorRef,
+      workAllocationTaskService as WorkAllocationCaseService,
+      filterService as FilterService,
+      router as Router,
+      infoMessageCommService as InfoMessageCommService,
+      sessionStorageService as SessionStorageService,
+      alertService as AlertService,
+      caseworkerDataService as CaseworkerDataService,
+      loadingService as LoadingService,
+      locationDataService as LocationDataService,
+      featureToggleService as FeatureToggleService,
+      waSupportedJurisdictionsService as WASupportedJurisdictionsService,
+      jurisdictionsService as JurisdictionsService,
+      allocateRoleService as AllocateRoleService,
+      httpClient as HttpClient,
+      store as Store<fromActions.State>,
+      stateLocation as StateLocation
+    );
 
   const cases: Case[] = getMockCases();
   const caseRoles: CaseRoleDetails[] = getMockCaseRoles();

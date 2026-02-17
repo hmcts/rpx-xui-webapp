@@ -54,8 +54,9 @@ export class WorkCaseListComponent implements OnChanges {
   private selectedCase: Case;
   public newUrl: string;
 
-  constructor(private readonly router: Router,
-              private readonly stateLocation: StateLocation
+  constructor(
+    private readonly router: Router,
+    private readonly stateLocation: StateLocation
   ) {}
 
   public get showResetSortButton(): boolean {

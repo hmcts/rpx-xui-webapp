@@ -18,8 +18,8 @@ export class CreateCasePage extends Base {
   readonly caseTypeSelect = this.page.locator('#cc-case-type');
   readonly eventTypeSelect = this.page.locator('#cc-event');
   readonly startButton = this.page.locator('button[type="submit"]');
-  readonly submitButton = this.page.getByRole('button', { name: /^submit$/i });
-  readonly continueButton = this.page.getByRole('button', { name: /continue/i });
+  readonly submitButton = this.page.getByRole('button', { name: /submit/i });
+  readonly continueButton = this.page.getByRole('button', { name: /^continue\b/i });
 
   // Locators for the Divorce - XUI Case flags V2
   readonly legalRepParty1Block = this.page.locator('#LegalRepParty1Flags_LegalRepParty1Flags');
@@ -267,7 +267,14 @@ export class CreateCasePage extends Base {
   }
 
   private async getVisibleSubmitButton(): Promise<Locator | null> {
-    return this.getFirstVisibleActionButton(this.submitButton);
+    const submitButtonByName = await this.getFirstVisibleActionButton(this.submitButton);
+    if (submitButtonByName) {
+      return submitButtonByName;
+    }
+
+    // Fallback for CCD variants where accessible name matching is inconsistent (e.g. "Test submit").
+    // Avoid generic type=submit lookup because Update Case uses Continue as type=submit and causes false-positive submit clicks.
+    return this.getVisibleSubmitButtonByLabel();
   }
 
   private async getVisibleActionButtonsSummary(): Promise<string[]> {
@@ -291,6 +298,32 @@ export class CreateCasePage extends Base {
       }
     }
     return visibleActionButtons;
+  }
+
+  private async getVisibleSubmitButtonByLabel(): Promise<Locator | null> {
+    const actionButtons = this.page.locator('button, input[type="button"], input[type="submit"]');
+    const buttonCount = await actionButtons.count();
+    for (let index = 0; index < buttonCount; index += 1) {
+      const button = actionButtons.nth(index);
+      const isVisible = await button.isVisible().catch(() => false);
+      if (!isVisible) {
+        continue;
+      }
+      const label = await this.getActionButtonLabel(button);
+      if (/\bsubmit\b/i.test(label)) {
+        return button;
+      }
+    }
+    return null;
+  }
+
+  private async getActionButtonLabel(button: Locator): Promise<string> {
+    const [text, ariaLabel, value] = await Promise.all([
+      button.innerText().catch(() => ''),
+      button.getAttribute('aria-label').catch(() => ''),
+      button.getAttribute('value').catch(() => ''),
+    ]);
+    return `${text ?? ''} ${ariaLabel ?? ''} ${value ?? ''}`.trim();
   }
 
   /**

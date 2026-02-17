@@ -369,12 +369,15 @@ test.describe('@journeys API user journey monitor', () => {
         name: 'Load valid allocate-role options',
         method: 'POST',
         endpoint: 'api/role-access/allocate-role/valid-roles',
-        allowedStatuses: readGuardedStatuses,
+        allowedStatuses: guardedExtendedStatuses,
         execute: () =>
-          apiClient.post<Array<{ roleId: string; roleName: string }>>('api/role-access/allocate-role/valid-roles', {
-            data: { requestedRoles: [], jurisdiction: 'IA' },
-            throwOnError: false,
-          }),
+          apiClient.post<Array<{ service: string; roles: Array<{ roleId: string; roleName: string }> }>>(
+            'api/role-access/allocate-role/valid-roles',
+            {
+              data: { serviceIds: ['IA'] },
+              throwOnError: false,
+            }
+          ),
       },
       latencyPolicy.stepWarnMs
     );

@@ -109,7 +109,22 @@ export function assertRoleAccessGetResponse(status: number, data: unknown): void
 
 export function assertValidRolesResponse(status: number, data: unknown): void {
   if (status === 200 && Array.isArray(data) && data.length > 0) {
-    expect(data[0]).toEqual(
+    const first = data[0] as { service?: unknown; roles?: unknown[]; roleId?: unknown; roleName?: unknown };
+    if (Array.isArray(first?.roles)) {
+      expect(first).toEqual(expect.objectContaining({ service: expect.any(String), roles: expect.any(Array) }));
+      if (first.roles.length > 0) {
+        const firstRole = first.roles[0] as { roleId?: unknown; roleName?: unknown };
+        expect(firstRole).toEqual(
+          expect.objectContaining({
+            roleId: expect.any(String),
+            roleName: expect.any(String),
+          })
+        );
+      }
+      return;
+    }
+
+    expect(first).toEqual(
       expect.objectContaining({
         roleId: expect.any(String),
         roleName: expect.any(String),

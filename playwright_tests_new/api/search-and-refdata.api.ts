@@ -7,6 +7,7 @@ import { ensureStorageState } from './utils/auth';
 import { test, expect } from './fixtures';
 import { ROLE_ACCESS_CASE_ID, resolveRoleAccessCaseId } from './data/testIds';
 import { expectStatus, StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
+import { AuthenticationError } from './utils/errors';
 import { seedRoleAccessCaseId } from './utils/role-access';
 import { RoleAssignmentContainer } from './utils/types';
 import {
@@ -167,10 +168,13 @@ test.describe('Role access / AM', () => {
   });
 
   test('allocate-role/valid-roles responds', async ({ apiClient }) => {
-    const res = await apiClient.post<Array<{ roleId: string; roleName: string }>>('api/role-access/allocate-role/valid-roles', {
-      data: { requestedRoles: [], jurisdiction: 'IA' },
-      throwOnError: false,
-    });
+    const res = await apiClient.post<Array<{ service: string; roles: Array<{ roleId: string; roleName: string }> }>>(
+      'api/role-access/allocate-role/valid-roles',
+      {
+        data: { serviceIds: ['IA'] },
+        throwOnError: false,
+      }
+    );
     expectStatus(res.status, [200, 400, 401, 403, 404, 502, 504]);
     assertValidRolesResponse(res.status, res.data);
   });
@@ -275,12 +279,39 @@ test.describe('Role access / AM', () => {
       expect(hasCaseOfficer).toBe(false);
       return;
     }
-    const client = await apiClientFor('caseOfficer_r1');
-    const res = await client.post('api/role-access/allocate-role/confirm', {
-      data: { caseId: roleAccessCaseId, caseType: 'xuiTestCaseType', jurisdiction: 'DIVORCE' },
-      throwOnError: false,
-    });
-    expectStatus(res.status, [401, 403]);
+    try {
+      const client = await apiClientFor('caseOfficer_r1');
+      await withXsrf('caseOfficer_r1', async (headers) => {
+        const res = await client.post('api/role-access/allocate-role/confirm', {
+          data: {
+            caseId: roleAccessCaseId,
+            jurisdiction: 'DIVORCE',
+            roleCategory: 'LEGAL_OPERATIONS',
+            allocateTo: 'Allocate to me',
+            typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
+            period: {
+              startDate: new Date().toISOString(),
+              endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+            },
+          },
+          headers,
+          throwOnError: false,
+        });
+        expectStatus(res.status, [401, 403]);
+      });
+    } catch (error) {
+      const authError = error instanceof AuthenticationError || (error instanceof Error && error.name === 'AuthenticationError');
+      if (authError) {
+        testInfo.annotations.push({
+          type: 'notice',
+          description: `Skipping case officer validation due to authentication failure: ${
+            error instanceof Error ? error.message : 'unknown'
+          }`,
+        });
+        test.skip(true, 'caseOfficer_r1 authentication failed in this environment');
+      }
+      throw error;
+    }
   });
 
   test('role access confirm returns guarded status for stale session', async () => {

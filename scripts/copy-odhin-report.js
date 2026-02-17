@@ -420,6 +420,11 @@ function redactSecrets(value) {
     .replace(/("cookie"\s*:\s*")[^"]*(")/gi, '$1[REDACTED]$2')
     .replace(/(XSRF-TOKEN=)[^;\s'"]+/gi, '$1[REDACTED]')
     .replace(/(__auth__=)[^;\s'"]+/gi, '$1[REDACTED]')
+    .replace(/(ServiceAuthorization:\s*Bearer\s+)[A-Za-z0-9._-]+/gi, '$1[REDACTED]')
+    .replace(/(ServiceAuthorization:\s*)[A-Za-z0-9._-]+/gi, '$1[REDACTED]')
+    .replace(/('ServiceAuthorization'\s*:\s*')[^']*(')/gi, '$1[REDACTED]$2')
+    .replace(/("ServiceAuthorization"\s*:\s*")[^"]*(")/gi, '$1[REDACTED]$2')
+    .replace(/(ServiceAuthorization=)(Bearer%20)?[^&\s'"]+/gi, '$1[REDACTED]')
     .replace(/(Authorization:\s*Bearer\s+)[A-Za-z0-9._-]+/gi, '$1[REDACTED]')
     .replace(/\beyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}\b/g, '[REDACTED_JWT]');
 }
@@ -839,12 +844,12 @@ function extractEndpointFromRawUrl(rawUrl) {
   if (/^https?:\/\//i.test(rawUrl)) {
     try {
       const parsed = new URL(rawUrl);
-      endpoint = `${parsed.pathname}${parsed.search}`;
+      endpoint = parsed.pathname;
     } catch {
       endpoint = rawUrl;
     }
   }
-  endpoint = endpoint.replace(/^\/+/, '');
+  endpoint = stripQueryAndHash(endpoint.replace(/^\/+/, ''));
   return normalizeEndpoint(endpoint);
 }
 
@@ -856,15 +861,23 @@ function normalizeMethod(method) {
 }
 
 function normalizeEndpoint(endpoint) {
+  const sanitizedEndpoint = stripQueryAndHash(endpoint);
   const uuidRe = /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi;
   const hexRe = /\b[0-9a-f]{32,}\b/gi;
   const caseIdRe = /\b\d{16}\b/g;
   const longNumberRe = /\b\d{6,}\b/g;
-  return endpoint
+  return sanitizedEndpoint
     .replace(uuidRe, '${uuid}')
     .replace(hexRe, '${id}')
     .replace(caseIdRe, '${caseId}')
     .replace(longNumberRe, '${id}');
+}
+
+function stripQueryAndHash(value) {
+  if (typeof value !== 'string' || !value) {
+    return '';
+  }
+  return value.split(/[?#]/, 1)[0];
 }
 
 function resolveStatusKey(status, timedOut, hasError) {

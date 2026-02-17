@@ -1,5 +1,6 @@
 import { Page } from '@playwright/test';
 import { Base } from '../../base';
+import { EXUI_TIMEOUTS } from './exui-timeouts';
 
 export class GlobalSearchPage extends Base {
   // Locators
@@ -23,17 +24,18 @@ export class GlobalSearchPage extends Base {
 
   async performGlobalSearchWithCase(caseId: string, caseType: string, applicantOrPartyName?: string): Promise<void> {
     await this.searchLinkOnMenuBar.click();
-    await this.page.waitForURL(/\/search/, { timeout: 60000 });
-    await this.searchForm.waitFor({ state: 'visible', timeout: 60000 });
-    await this.caseIdTextBox.waitFor({ state: 'visible', timeout: 60000 });
+    await this.page.waitForURL(/\/search/, { timeout: EXUI_TIMEOUTS.CASE_DETAILS_VISIBLE });
+    await this.searchForm.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.CASE_DETAILS_VISIBLE });
+    await this.caseIdTextBox.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
     await this.caseIdTextBox.click();
     await this.caseIdTextBox.fill(caseId);
     if (applicantOrPartyName) {
       await this.applicantOrPartyName.fill(applicantOrPartyName);
     }
     await this.servicesOption.selectOption(caseType);
-    await this.searchButton.click();
+    await this.searchButton.click({ timeout: EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK });
     await this.exuiSpinnerComponent.wait();
+    await this.waitForSearchResults(caseId);
   }
 
   async performGlobalSearchWithRetry(caseId: string, caseType: string, applicantOrPartyName?: string): Promise<void> {
@@ -49,8 +51,29 @@ export class GlobalSearchPage extends Base {
     }
   }
 
-  async viewCaseDetails() {
-    await this.viewLink.click();
+  async waitForSearchResults(caseId?: string): Promise<void> {
+    await this.searchResultsHeader.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_SPINNER_RESULT_HIDDEN });
+    await this.searchResultTable.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_SPINNER_RESULT_HIDDEN });
+    await this.searchResultRows.first().waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_SPINNER_RESULT_HIDDEN });
+
+    if (caseId && /^\d{16}$/.test(caseId)) {
+      await this.getSearchResultRowByCase(caseId).waitFor({
+        state: 'visible',
+        timeout: EXUI_TIMEOUTS.SEARCH_SPINNER_RESULT_HIDDEN,
+      });
+    }
+  }
+
+  async viewCaseDetails(caseId?: string) {
+    const viewLink = caseId
+      ? this.getSearchResultRowByCase(caseId).locator('a.govuk-link[href*="/cases/case-details/"]').first()
+      : this.viewLink;
+    await viewLink.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.CASE_DETAILS_VISIBLE });
+    await viewLink.click();
+  }
+
+  private getSearchResultRowByCase(caseId: string) {
+    return this.searchResultRows.filter({ hasText: caseId }).first();
   }
 
   constructor(page: Page) {

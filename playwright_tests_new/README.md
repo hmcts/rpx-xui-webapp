@@ -55,6 +55,9 @@ yarn test:api:pw:journeys
 - Copied to `functional-output/tests/api_functional/odhin-report/` for Jenkins publishing
 - Journey Odhin report: `functional-output/tests/playwright-api-journeys/odhin-report/xui-playwright.html`
 - Journey report copy: `functional-output/tests/api_functional_journeys/odhin-report/`
+- CI publish targets:
+- `functional-output/tests/api_functional/odhin-report/xui-playwright.html`
+- `functional-output/tests/api_functional_journeys/odhin-report/xui-playwright.html`
 - API call logs attached automatically per test as `node-api-calls.json`
 - Fetch-level failures (for example request timeouts) are also captured in API logs with `status=0`
 - API performance summary attached automatically per test:

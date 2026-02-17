@@ -54,7 +54,7 @@ test.describe('IDAM login using credentials for Global Search', () => {
     });
 
     await test.step('Check that case details page is shown. ', async () => {
-      await globalSearchPage.viewCaseDetails();
+      await globalSearchPage.viewCaseDetails(caseNumber);
       await expect(page).toHaveURL(/\/cases\/case-details\//);
       const caseNumberFromUrl = await caseDetailsPage.getCaseNumberFromUrl();
       await expect.soft(caseNumberFromUrl).toContain(caseNumber);

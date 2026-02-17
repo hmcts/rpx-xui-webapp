@@ -4,6 +4,9 @@ import type { Page, Request } from '@playwright/test';
 const logger = createLogger({ serviceName: 'api-monitor', format: 'pretty' });
 const MAX_TRACKED = 500;
 const TIMEOUT_ERROR_PATTERN = /timeout|timed out|ETIMEDOUT/i;
+const TLS_HANDSHAKE_ERROR_PATTERN = /secure TLS connection was established|TLS/i;
+const CONNECTION_RESET_PATTERN = /ECONNRESET|socket hang up|network socket disconnected/i;
+const DNS_ERROR_PATTERN = /ENOTFOUND|EAI_AGAIN|getaddrinfo/i;
 
 type BenignApiErrorRule = {
   method: string;
@@ -130,6 +133,22 @@ function pushBounded<T>(items: T[], value: T): void {
   }
 }
 
+function classifyTransportFailure(errorText: string): string {
+  if (TIMEOUT_ERROR_PATTERN.test(errorText)) {
+    return 'timeout';
+  }
+  if (TLS_HANDSHAKE_ERROR_PATTERN.test(errorText)) {
+    return 'tls_handshake';
+  }
+  if (CONNECTION_RESET_PATTERN.test(errorText)) {
+    return 'connection_reset';
+  }
+  if (DNS_ERROR_PATTERN.test(errorText)) {
+    return 'dns_resolution';
+  }
+  return 'network_error';
+}
+
 export function ensureApiTracker(page: Page): void {
   getOrCreateState(page);
   if (monitoredPages.has(page)) {
@@ -216,17 +235,30 @@ export function ensureApiTracker(page: Page): void {
 
     const failure = request.failure();
     const failureText = failure?.errorText || 'Unknown request failure';
+    const failureType = classifyTransportFailure(failureText);
+    const initiatedFrom = getInitiatedFrom(request);
+    const resourceType = request.resourceType();
     const state = getOrCreateState(page);
     pushBounded(state.failedRequests, {
       url: sanitizeUrl(rawUrl),
       method: request.method(),
       errorText: failureText,
-      initiatedFrom: getInitiatedFrom(request),
-      resourceType: request.resourceType(),
+      initiatedFrom,
+      resourceType,
     });
     if (TIMEOUT_ERROR_PATTERN.test(failureText)) {
       state.networkTimeout = true;
     }
+    logger.error('DOWNSTREAM_TRANSPORT_FAILURE', {
+      url: sanitizeUrl(rawUrl),
+      method: request.method(),
+      status: 'none',
+      duration: 'unknown',
+      failureType,
+      errorText: failureText,
+      initiatedFrom,
+      resourceType,
+    });
   });
 }
 

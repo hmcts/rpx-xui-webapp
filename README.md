@@ -192,6 +192,9 @@ Playwright E2E runs now emit an [Odhin report](https://playwright-odhin-reports-
 Key behaviour:
 
 - Jenkins automatically publishes the HTML artefact for preview/AAT functional and nightly cross-browser jobs.
+- Jenkins also publishes API Odhin dashboards for:
+- `functional-output/tests/api_functional/odhin-report/xui-playwright.html` (API Functional)
+- `functional-output/tests/api_functional_journeys/odhin-report/xui-playwright.html` (API Journeys)
 - Run info shows project, release, environment, branch and worker count. Branch defaults to the current git branch (`git rev-parse --abbrev-ref HEAD`) and can be overridden via `PLAYWRIGHT_REPORT_BRANCH` or `GIT_BRANCH`. Other overrides: `PLAYWRIGHT_REPORT_PROJECT`, `PLAYWRIGHT_REPORT_RELEASE`, `TEST_TYPE`, `FUNCTIONAL_TESTS_WORKERS`.
 - Skipped tests are included in totals; the reporter is patched locally so the dashboard reflects them even when retries are enabled.
 - Chromium runs keep the Playwright trace, failure screenshot and video when a test fails; successful runs discard these artefacts to limit noise.

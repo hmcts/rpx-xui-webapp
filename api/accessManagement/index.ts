@@ -2,10 +2,7 @@ import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
 import { handlePost } from '../common/crudService';
 import { getConfigValue } from '../configuration';
-import {
-  SERVICES_JUDICIAL_BOOKING_API_PATH,
-  SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH
-} from '../configuration/references';
+import { SERVICES_JUDICIAL_BOOKING_API_PATH, SERVICES_ROLE_ASSIGNMENT_MAPPING_API_PATH } from '../configuration/references';
 import { http } from '../lib/http';
 import { setHeaders } from '../lib/proxy';
 import { createSpecificAccessApprovalRole, deleteRoleByAssignmentId, restoreSpecificAccessRequestRole } from '../roleAccess';
@@ -28,15 +25,14 @@ export async function getBookings(req, resp: Response, next: NextFunction) {
   delete headers.accept;
 
   try {
-    const bookings = await http.post(fullPath, { 'queryRequest': { 'userIds': [req.body.userId] } }, { headers });
+    const bookings = await http.post(fullPath, { queryRequest: { userIds: [req.body.userId] } }, { headers });
     const fullLocations = await getFullLocationsForServices(req);
     const bookingAndLocationName = bookings.data.bookings.map((booking) => {
-      const location = fullLocations.filter((thisLocation) =>
-        booking.locationId === thisLocation.epimms_id);
+      const location = fullLocations.filter((thisLocation) => booking.locationId === thisLocation.epimms_id);
       const locationName = location && location.length !== 0 ? location[0].site_name : null;
       return {
         ...booking,
-        locationName
+        locationName,
       };
     });
     return resp.status(bookings.status).send(bookingAndLocationName);
@@ -52,7 +48,7 @@ export async function createBooking(req, resp: Response, next: NextFunction): Pr
   delete headers.accept;
 
   try {
-    const response = await http.post(fullPath, { 'bookingRequest': req.body }, { headers });
+    const response = await http.post(fullPath, { bookingRequest: req.body }, { headers });
     return resp.status(response.status).send(response.data);
   } catch (error) {
     next(error);
@@ -64,7 +60,7 @@ export async function refreshRoleAssignments(req, res: Response, next: NextFunct
   const fullPath = `${basePath}/am/role-mapping/judicial/refresh`;
 
   try {
-    const response = await handlePost(fullPath, { 'refreshRequest': { 'userIds': [req.body.userId] } }, req);
+    const response = await handlePost(fullPath, { refreshRequest: { userIds: [req.body.userId] } }, req);
     return res.status(response.status).send(response.data);
   } catch (error) {
     logger.error('getSearchResults error: ' + error.status + ' ' + fullPath, error.statusText, JSON.stringify(error.data));
@@ -107,7 +103,13 @@ export async function approveSpecificAccessRequest(req, res: Response, next: Nex
 }
 
 // attempts to delete
-export async function deleteSpecificAccessRoles(req, res: Response, next: NextFunction, previousResponse: AxiosResponse<any>, rolesToDelete: RoleAssignment[]): Promise<Response> {
+export async function deleteSpecificAccessRoles(
+  req,
+  res: Response,
+  next: NextFunction,
+  previousResponse: AxiosResponse<any>,
+  rolesToDelete: RoleAssignment[]
+): Promise<Response> {
   try {
     const specificAccessDeletionResponse = await deleteRoleByAssignmentId(req, res, next, rolesToDelete[1].id);
     if (specificAccessDeletionResponse?.status !== 204) {
@@ -131,7 +133,13 @@ export async function deleteSpecificAccessRoles(req, res: Response, next: NextFu
 }
 
 // attempts to restore the deleted specific access requested role on task completion failure
-export async function restoreDeletedRole(req, res: Response, next: NextFunction, previousResponse: AxiosResponse<any>, rolesToDelete: RoleAssignment[]): Promise<Response> {
+export async function restoreDeletedRole(
+  req,
+  res: Response,
+  next: NextFunction,
+  previousResponse: AxiosResponse<any>,
+  rolesToDelete: RoleAssignment[]
+): Promise<Response> {
   try {
     const restoreResponse = await restoreSpecificAccessRequestRole(req, res, next);
     if (restoreResponse?.status !== 201) {

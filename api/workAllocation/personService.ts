@@ -38,9 +38,7 @@ export async function postFindPersonSearch(req: EnhancedRequest, res: Response) 
     try {
       for (const serviceCode of serviceCodes) {
         // Judicial User search API version to be used depends upon the config entry FEATURE_JRD_E_LINKS_V2_ENABLED's value
-        req.headers.accept = showFeature(FEATURE_JRD_E_LINKS_V2_ENABLED)
-          ? HEADER_ACCEPT_V2
-          : HEADER_ACCEPT_V1;
+        req.headers.accept = showFeature(FEATURE_JRD_E_LINKS_V2_ENABLED) ? HEADER_ACCEPT_V2 : HEADER_ACCEPT_V1;
         const headers = setHeaders(req);
         const body = { searchString, serviceCode };
         const response = await http.post(`${JUDICIAL_REF_URL}/refdata/judicial/users/search`, body, { headers });

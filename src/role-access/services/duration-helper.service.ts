@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import * as moment from 'moment';
+import moment from 'moment';
 import { CheckDatesResult } from '../models';
 
 @Injectable({ providedIn: 'root' })
@@ -14,11 +14,7 @@ export class DurationHelperService {
    * @param yearControl year form control
    * @return date object
    */
-  public getDateFromControls(
-    dayControl: FormControl,
-    monthControl: FormControl,
-    yearControl: FormControl
-  ): Date {
+  public getDateFromControls(dayControl: FormControl, monthControl: FormControl, yearControl: FormControl): Date {
     const day = parseInt(dayControl.value, 10);
     const month = parseInt(monthControl.value, 10) - 1;
     const year = parseInt(yearControl.value, 10);
@@ -28,11 +24,7 @@ export class DurationHelperService {
     return new Date(year, month, day);
   }
 
-  public getRawFromControlsValues(
-    dayControl: FormControl,
-    monthControl: FormControl,
-    yearControl: FormControl
-  ): any {
+  public getRawFromControlsValues(dayControl: FormControl, monthControl: FormControl, yearControl: FormControl): any {
     const day = parseInt(dayControl.value, 10);
     const month = parseInt(monthControl.value, 10);
     const year = parseInt(yearControl.value, 10);
@@ -66,12 +58,10 @@ export class DurationHelperService {
    * @param endDate the end date string e.g. YYYY-MM-DD
    * @return object representing date validity
    */
-  public checkDates(
-    endDate: string
-  ): CheckDatesResult {
+  public checkDates(endDate: string): CheckDatesResult {
     const isEndDateValid = moment(endDate, this.dateFormat, true).isValid();
     return {
-      isEndDateValid
+      isEndDateValid,
     };
   }
 
@@ -82,11 +72,7 @@ export class DurationHelperService {
    * @param yearControl the day form control
    * @return string representation of date: YYYY-MM-DD
    */
-  public convertDateControlsToString(
-    dayControl: FormControl,
-    monthControl: FormControl,
-    yearControl: FormControl
-  ): string {
+  public convertDateControlsToString(dayControl: FormControl, monthControl: FormControl, yearControl: FormControl): string {
     const dayStart = this.formatString(dayControl.value);
     const monthStart = this.formatString(monthControl.value);
     const yearStart = yearControl.value;

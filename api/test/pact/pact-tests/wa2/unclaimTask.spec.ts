@@ -29,13 +29,13 @@ describe('Task management api, Unclaim a task', () => {
           headers: {
             Authorization: 'Bearer someAuthorizationToken',
             ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
-          }
+            'content-type': 'application/json',
+          },
         },
         willRespondWith: {
           status: 204,
-          headers: {}
-        }
+          headers: {},
+        },
       };
       pactSetUp.provider.addInteraction(interaction);
     });
@@ -57,12 +57,12 @@ describe('Task management api, Unclaim a task', () => {
           headers: {
             Authorization: 'Bearer someAuthorizationToken',
             ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            'content-type': 'application/json',
           },
           params: {
             taskId: taskId,
-            action: 'unclaim'
-          }
+            action: 'unclaim',
+          },
         });
         let resStatus = null;
         const response = mockRes();
@@ -81,4 +81,3 @@ describe('Task management api, Unclaim a task', () => {
     });
   });
 });
-

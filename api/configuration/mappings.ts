@@ -6,5 +6,5 @@ export const caseMetaDataFiledsMapping = {
   last_modified_date: 'last_modified',
   last_state_modified_date: 'last_state_modified_date',
   security_classification: 'security_classification',
-  state: 'state'
+  state: 'state',
 };

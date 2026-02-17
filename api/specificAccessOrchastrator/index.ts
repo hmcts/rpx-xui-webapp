@@ -79,7 +79,11 @@ export async function specificAccessRequestCreateAmRole(req, res): Promise<Axios
   }
 }
 
-export async function postCreateTask(req: EnhancedRequest, next: NextFunction, createTask: { caseId, jurisdiction, caseType, taskType, dueDate, name, roleAssignmentId }): Promise<any> {
+export async function postCreateTask(
+  req: EnhancedRequest,
+  next: NextFunction,
+  createTask: { caseId; jurisdiction; caseType; taskType; dueDate; name; roleAssignmentId }
+): Promise<any> {
   try {
     const waWorkFlowApi = getConfigValue(SERVICES_WA_WORKFLOW_API_URL);
     const id = uuidv4();
@@ -89,39 +93,39 @@ export async function postCreateTask(req: EnhancedRequest, next: NextFunction, c
       processVariables: {
         idempotencyKey: {
           value: id,
-          type: 'String'
+          type: 'String',
         },
         dueDate: {
           value: createTask.dueDate,
-          type: 'String'
+          type: 'String',
         },
         jurisdiction: {
           value: createTask.jurisdiction,
-          type: 'String'
+          type: 'String',
         },
         caseId: {
           value: createTask.caseId,
-          type: 'String'
+          type: 'String',
         },
         name: {
           value: createTask.name,
-          type: 'String'
+          type: 'String',
         },
         taskType: {
           value: createTask.taskType,
-          type: 'String'
+          type: 'String',
         },
         caseType: {
           value: createTask.caseType,
-          type: 'String'
+          type: 'String',
         },
         roleAssignmentId: {
           value: createTask.roleAssignmentId,
-          type: 'String'
-        }
+          type: 'String',
+        },
       },
       correlationKeys: null,
-      all: false
+      all: false,
     };
 
     const headers = setHeaders(req);
@@ -190,15 +194,20 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
     const actorId = userInfo.id ? userInfo.id : userInfo.uid;
     const caseId = req.body.caseId;
 
-    const roleAssignmentQueryResponse = await http.post(queryPath, {
-      actorId: [actorId],
-      attributes: {
-        caseId: [caseId]
-      }
-    }, { headers });
+    const roleAssignmentQueryResponse = await http.post(
+      queryPath,
+      {
+        actorId: [actorId],
+        attributes: {
+          caseId: [caseId],
+        },
+      },
+      { headers }
+    );
 
-    const singleRoleAssignment = roleAssignmentQueryResponse.data.roleAssignmentResponse
-      .find((role) => role.roleName === 'specific-access-granted' || role.roleName === 'specific-access-denied');
+    const singleRoleAssignment = roleAssignmentQueryResponse.data.roleAssignmentResponse.find(
+      (role) => role.roleName === 'specific-access-granted' || role.roleName === 'specific-access-denied'
+    );
 
     //Delete secondary role assignment
     if (singleRoleAssignment.roleName === 'specific-access-granted') {
@@ -207,11 +216,13 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
 
     //Create new role assignment
     if (singleRoleAssignment.roleName === 'specific-access-denied') {
-      singleRoleAssignment.notes = [{
-        userId: actorId,
-        time: new Date(),
-        comment: JSON.stringify(singleRoleAssignment.attributes.specificAccessReason)
-      }];
+      singleRoleAssignment.notes = [
+        {
+          userId: actorId,
+          time: new Date(),
+          comment: JSON.stringify(singleRoleAssignment.attributes.specificAccessReason),
+        },
+      ];
 
       singleRoleAssignment.attributes.isNew = req.body.attributesToUpdate.isNew;
 
@@ -220,9 +231,9 @@ export async function specificAccessRequestUpdateAttributes(req: EnhancedRequest
           assignerId: actorId,
           process: 'specific-access',
           reference: `${caseId}/${singleRoleAssignment.attributes.requestedRole}/${actorId}`,
-          replaceExisting: true
+          replaceExisting: true,
         },
-        requestedRoles: [singleRoleAssignment]
+        requestedRoles: [singleRoleAssignment],
       };
 
       delete roleAssignmentUpdate.requestedRoles[0].id;

@@ -37,11 +37,10 @@ Then('I see task event validation error page', async function (datatable) {
   });
 });
 
-When('I click continue in task event validation message page', async function(){
+When('I click continue in task event validation message page', async function () {
   await taskForEventCompletionValidationPage.continueButton.click();
 });
 
 When('I click cancel in task event validation message page', async function () {
   await taskForEventCompletionValidationPage.cancelButton.click();
 });
-

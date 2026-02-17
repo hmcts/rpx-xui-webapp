@@ -22,7 +22,7 @@ Then('I validate find person request body from reference {string}', async functi
     for (const key of Object.keys(datatableHashes)) {
       expect(res.searchOptions[key], `${key} value is mismatched`).to.equal(datatableHashes[key]);
     }
-  } catch (err){
+  } catch (err) {
     global.scenarioData[requesrRef] = null;
     throw new Error(err);
   }

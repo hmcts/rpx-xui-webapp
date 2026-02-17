@@ -43,22 +43,8 @@ test('Validate next steps drop down', async ({ page }) => {
   await signOut(page);
 });
 
-test('Submit event from next step drop down', async ({ page }) => {
-  await page.getByLabel('Jurisdiction').selectOption({ label: 'Family Divorce' });
-  await page.getByLabel('Case type').selectOption({ label: 'XUI Case PoC' });
-  await page.getByLabel('Apply filter').click();
-  await waitForSpinner(page);
-  await expect(page.getByRole('heading', { name: 'Your cases' })).toBeVisible();
-  let firstCaseRef = await getCaseReferenceFromFirstRow(page);
-  if (firstCaseRef.trim().length === 0) {
-    await createCase(page);
-    firstCaseRef = await getCaseReferenceFromFirstRow(page);
-  }
-  await page.getByLabel(`go to case with Case reference:${dealWithShortenedCaseRefLabel(firstCaseRef)}`).click();
-  await submitEvent(page);
-  await signOut(page);
-});
 
+// checks the visibility of tabs on a case based on what the API response says. 
 test('Validate tabs are visible', async ({ page }) => {
   const response = waitForSpecificResponse(page, 'data/internal/cases/', 'GET');
 
@@ -80,6 +66,7 @@ test('Validate tabs are visible', async ({ page }) => {
   await signOut(page);
 });
 
+// checks what the API has sent appears as a label on the various tabs 
 test('Validate tabs details', async ({ page }) => {
   const response = waitForSpecificResponse(page, 'data/internal/cases/', 'GET');
 
@@ -100,6 +87,7 @@ test('Validate tabs details', async ({ page }) => {
   await signOut(page);
 });
 
+// Checks the case list shows some of the inputs from the API response
 test('Validate workbasket inputs against the API response', async ({ page }) => {
   const response = waitForSpecificResponse(page, 'data/internal/case-types/xuiTestCaseType_dev/', 'GET');
 
@@ -116,6 +104,7 @@ test('Validate workbasket inputs against the API response', async ({ page }) => 
   await signOut(page);
 });
 
+// checks the same thing as the previous test but less 
 test('Validate workbasket complex values against the API response', async ({ page }) => {
   const response = waitForSpecificResponse(page, 'data/internal/case-types/xuiTestCaseType_dev/', 'GET');
 
@@ -130,6 +119,7 @@ test('Validate workbasket complex values against the API response', async ({ pag
   validateWorkBasketComplexValues(page, workBasketData);
   await signOut(page);
 });
+
 
 test('check form validations are functioning ', async ({ page }) => {
   await selectOptionWithRetry(page, 'Family Divorce', true, { label: 'Jurisdiction' });

@@ -7,7 +7,7 @@ import { select, Store } from '@ngrx/store';
 import { combineLatest, forkJoin, Observable, of, Subscription } from 'rxjs';
 import { debounceTime, filter, map, mergeMap, switchMap } from 'rxjs/operators';
 import { HMCTSServiceDetails, UserInfo } from '../../../app/models';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { safeJsonParseFallback } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -235,7 +235,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
         this.caseworkers = caseworkers;
         const userInfoStr = this.sessionStorageService.getItem('userDetails');
         if (userInfoStr) {
-          const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+          const userInfo = safeJsonParseFallback<UserInfo>(userInfoStr, null);
           if (!userInfo) {
             return;
           }
@@ -253,7 +253,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     // Try to get the sort order out of the session.
     const stored = this.sessionStorageService.getItem(this.sortSessionKey);
     if (stored) {
-      const parsed = safeJsonParse<{ fieldName: string; order: SortOrder }>(stored, null);
+      const parsed = safeJsonParseFallback<{ fieldName: string; order: SortOrder }>(stored, null);
       if (parsed) {
         const { fieldName, order } = parsed;
         this.sortedBy = {

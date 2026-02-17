@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { SessionStorageService } from '../../app/services';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { safeJsonParseFallback } from '@hmcts/ccd-case-ui-toolkit';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +18,7 @@ export class TaskTypesService {
 
   public getTypesOfWork(): Observable<any[]> {
     if (this.sessionStorage.getItem(TaskTypesService.typesOfWorkStorageKey)) {
-      const typesOfWork = safeJsonParse<any[]>(
+      const typesOfWork = safeJsonParseFallback<any[]>(
         this.sessionStorage.getItem(TaskTypesService.typesOfWorkStorageKey),
         []
       );

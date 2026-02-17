@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { safeJsonParseFallback } from '@hmcts/ccd-case-ui-toolkit';
 import { ListConstants } from '../../components/constants';
 import { SortOrder } from '../../enums';
 import { Case, CaseAction, InvokedCaseAction } from '../../models/cases';
@@ -205,7 +205,7 @@ export class WorkCaseListComponent implements OnChanges {
   }
 
   private addPersonInfoAndLocationInfo(cases: Case[]): Case[] {
-    const caseworkers = safeJsonParse<any[]>(sessionStorage.getItem('caseworkers'), []);
+    const caseworkers = safeJsonParseFallback<any[]>(sessionStorage.getItem('caseworkers'), []);
     return cases.map((c: Case) => {
       if (c.assignee && c.assignee.length && caseworkers && caseworkers.length > 0) {
         const actorName = caseworkers.find((caseworker) => caseworker.idamId === c.assignee);

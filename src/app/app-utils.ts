@@ -11,7 +11,7 @@ import {
 import { Theme } from './models/theme.model';
 import { NavigationItem } from './models/theming.model';
 import { UserDetails, UserRole } from './models/user-details.model';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { safeJsonParseFallback } from '@hmcts/ccd-case-ui-toolkit';
 
 export class AppUtils {
   public static getEnvironment(url: string): string {
@@ -70,7 +70,7 @@ export class AppUtils {
    * @return - ['pui-organisation-manager', 'caseworker-publiclaw', 'caseworker', 'etc...']
    */
   public static getCookieRolesAsArray(userRoles: string): string[] {
-    return safeJsonParse<string[]>(userRoles, []);
+    return safeJsonParseFallback<string[]>(userRoles, []);
   }
 
   /**

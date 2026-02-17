@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { UserInfo } from '../../../app/models';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { safeJsonParseFallback } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { Utils } from '../../../cases/utils/utils';
@@ -96,7 +96,7 @@ export class CaseTaskComponent implements OnInit {
   public isTaskAssignedToCurrentUser(task: Task): boolean {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
-      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      const userInfo = safeJsonParseFallback<UserInfo>(userInfoStr, null);
       if (!userInfo) {
         return false;
       }

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { SessionStorageService } from '../../app/services';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { safeJsonParseFallback } from '@hmcts/ccd-case-ui-toolkit';
 import {
   Actions,
   AllocateRoleStateData,
@@ -70,7 +70,7 @@ export class AllocateRoleService {
         storedServices.push(serviceId);
         storedRolesByService.push({
           service: serviceId,
-          roles: safeJsonParse<Role[]>(this.sessionStorageService.getItem(serviceKey), []),
+          roles: safeJsonParseFallback<Role[]>(this.sessionStorageService.getItem(serviceKey), []),
         });
       } else {
         newServices.push(serviceId);

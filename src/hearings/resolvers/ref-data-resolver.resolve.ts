@@ -4,7 +4,7 @@ import { select, Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
 import { SessionStorageService } from '../../app/services';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { safeJsonParseFallback } from '@hmcts/ccd-case-ui-toolkit';
 import { HearingCategory } from '../models/hearings.enum';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { LovRefDataService } from '../services/lov-ref-data.service';
@@ -78,7 +78,7 @@ export class RefDataResolver extends ServiceIdResolverResolve {
   public getLovRefDataFromSession(sessionKey): LovRefDataModel[] {
     const lovDataStr = this.sessionStorageService.getItem(sessionKey);
     if (lovDataStr) {
-      const lovData = safeJsonParse<LovRefDataModel[]>(lovDataStr, []);
+      const lovData = safeJsonParseFallback<LovRefDataModel[]>(lovDataStr, []);
       return lovData as LovRefDataModel[];
     }
     return [];

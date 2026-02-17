@@ -5,7 +5,7 @@ import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import moment from 'moment';
 import { Subscription } from 'rxjs';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { safeJsonParseFallback } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
 import { TaskListFilterComponent } from '../../../work-allocation/components';
 import { Booking, BookingNavigationEvent, BookingProcess } from '../../models';
@@ -41,7 +41,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
     this.bookingTypeForm = this.fb.group({
       bookingType: new FormControl(null),
     });
-    const bookableServices = safeJsonParse<string[]>(
+    const bookableServices = safeJsonParseFallback<string[]>(
       this.sessionStorageService.getItem('bookableServices'),
       []
     );

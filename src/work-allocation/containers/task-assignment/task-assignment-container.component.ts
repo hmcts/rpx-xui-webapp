@@ -6,7 +6,7 @@ import { Person, PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Subscription } from 'rxjs';
 
 import { ErrorMessage, UserInfo } from '../../../app/models';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { safeJsonParseFallback } from '@hmcts/ccd-case-ui-toolkit';
 import { ConfigConstants } from '../../components/constants';
 import { SortOrder, TaskActionType, TaskService } from '../../enums';
 import { FieldConfig } from '../../models/common';
@@ -99,7 +99,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   public isCurrentUserJudicial(): boolean {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
-      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      const userInfo = safeJsonParseFallback<UserInfo>(userInfoStr, null);
       if (!userInfo) {
         return false;
       }

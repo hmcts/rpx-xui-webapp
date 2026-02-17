@@ -4,7 +4,7 @@ import { select } from '@ngrx/store';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { safeJsonParseFallback } from '@hmcts/ccd-case-ui-toolkit';
 import { HMCTSServiceDetails, UserInfo, UserRole } from '../../../app/models';
 import * as fromActions from '../../../app/store';
 import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
@@ -96,7 +96,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   public getSearchTaskRequestPagination(): SearchTaskRequest {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
-      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      const userInfo = safeJsonParseFallback<UserInfo>(userInfoStr, null);
       if (!userInfo) {
         return;
       }

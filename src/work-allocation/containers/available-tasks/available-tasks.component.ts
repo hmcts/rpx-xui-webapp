@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { safeJsonParseFallback } from '@hmcts/ccd-case-ui-toolkit';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { TaskActionIds, TaskContext } from '../../enums';
 import { FieldConfig } from '../../models/common';
@@ -45,7 +45,7 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
   public getSearchTaskRequestPagination(): SearchTaskRequest {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
-      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      const userInfo = safeJsonParseFallback<UserInfo>(userInfoStr, null);
       if (!userInfo) {
         return;
       }

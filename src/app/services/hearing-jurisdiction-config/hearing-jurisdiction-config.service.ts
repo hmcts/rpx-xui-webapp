@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { EnvironmentService } from '../../shared/services/environment.service';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { safeJsonParseFallback } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '../session-storage/session-storage.service';
 import { FeatureVariation } from 'src/cases/models/feature-variation.model';
 
@@ -28,7 +28,7 @@ export class HearingJurisdictionConfigService {
   }
 
   private filterConfigs(configs): Observable<Array<FeatureVariation>> {
-    const userDetails = safeJsonParse<any>(this.sessionStorageService.getItem('userDetails'), null);
+    const userDetails = safeJsonParseFallback<any>(this.sessionStorageService.getItem('userDetails'), null);
     const userId = userDetails?.id ? userDetails.id : userDetails?.uid;
     if (!userId) {
       return of(null);

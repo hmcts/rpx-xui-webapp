@@ -7,7 +7,7 @@ import { Observable, Subscription, of } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
 
 import { HMCTSServiceDetails, UserInfo } from '../../../app/models';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { safeJsonParseFallback } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
@@ -217,7 +217,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     // Try to get the sort order out of the session.
     const sortStored = this.sessionStorageService.getItem(this.sortSessionKey);
     if (sortStored) {
-      const parsed = safeJsonParse<{ fieldName: string; order: SortOrder }>(sortStored, null);
+      const parsed = safeJsonParseFallback<{ fieldName: string; order: SortOrder }>(sortStored, null);
       if (parsed) {
         const { fieldName, order } = parsed;
         this.sortedBy = {
@@ -298,7 +298,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public getPaginationParameter(): PaginationParameter {
-    const savedPaginationNumber = safeJsonParse<number>(
+    const savedPaginationNumber = safeJsonParseFallback<number>(
       this.sessionStorageService.getItem(this.pageSessionKey),
       null
     );
@@ -426,7 +426,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   private doLoad(): void {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
-      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      const userInfo = safeJsonParseFallback<UserInfo>(userInfoStr, null);
       if (!userInfo) {
         return;
       }
@@ -505,7 +505,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public getCurrentUserRoleCategory(): string {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
-      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      const userInfo = safeJsonParseFallback<UserInfo>(userInfoStr, null);
       if (!userInfo) {
         return;
       }

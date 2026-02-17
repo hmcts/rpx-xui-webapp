@@ -2,7 +2,7 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { safeJsonParseFallback } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '../../services/session-storage/session-storage.service';
 import { Title } from '@angular/platform-browser';
 
@@ -47,7 +47,7 @@ export class MediaViewerWrapperComponent implements OnInit {
     }
 
     if (sessionStorageMedia) {
-      const media = safeJsonParse<{
+      const media = safeJsonParseFallback<{
         document_binary_url: string;
         document_filename: string;
         content_type: string;

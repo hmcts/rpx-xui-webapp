@@ -17,7 +17,7 @@ import { Subscription, combineLatest } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import * as _ from 'underscore';
 import { ErrorMessage } from '../../../app/models';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { safeJsonParseFallback } from '@hmcts/ccd-case-ui-toolkit';
 import * as fromAppStore from '../../../app/store';
 import { Location, LocationByEpimmsModel } from '../../models/dtos';
 import Task from '../../models/tasks/task.model';
@@ -268,8 +268,8 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     const availableLocations =
       filterService && filterService.fields && filterService.fields.find((field) => field.name === 'locations');
     const isLocationsAvailable: boolean = availableLocations && availableLocations.value && availableLocations.value.length > 0;
-    const regionLocations = safeJsonParse<any[]>(this.sessionStorageService.getItem('regionLocations'), []);
-    const bookableServices = safeJsonParse<string[]>(this.sessionStorageService.getItem('bookableServices'), []);
+    const regionLocations = safeJsonParseFallback<any[]>(this.sessionStorageService.getItem('regionLocations'), []);
+    const bookableServices = safeJsonParseFallback<string[]>(this.sessionStorageService.getItem('bookableServices'), []);
     // get booking locations
     if (this.bookingLocations && this.bookingLocations.length > 0) {
       this.defaultLocations = this.bookingLocations;

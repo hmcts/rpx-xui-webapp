@@ -9,7 +9,7 @@ import { Observable } from 'rxjs';
 import { of } from 'rxjs';
 import { catchError, filter, first, map, mergeMap } from 'rxjs/operators';
 import { RoleAssignmentInfo, UserDetails } from '../../app/models';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { safeJsonParseFallback } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '../../app/services';
 import { UserService } from '../../app/services/user/user.service';
 import * as fromRoot from '../../app/store';
@@ -226,7 +226,7 @@ export class LocationResolver {
     const stored: string = this.sessionStorageService.getItem('bookingLocations');
     let bookingLocations = new Set<string>();
     if (stored) {
-      const parsed = safeJsonParse<string[]>(stored, []);
+      const parsed = safeJsonParseFallback<string[]>(stored, []);
       bookingLocations = new Set(parsed);
     }
     newBookingLocations.forEach((location) => {

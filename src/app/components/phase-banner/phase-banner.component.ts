@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 import { Subscription } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { safeJsonParseFallback } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
   standalone: false,
@@ -61,7 +61,7 @@ export class PhaseBannerComponent implements OnInit, OnDestroy {
   }
 
   private updateClientContextLanguage(language: RpxLanguage): void {
-    const clientContextObj = safeJsonParse<any>(this.sessionStorageService.getItem('clientContext'), {}) || {};
+    const clientContextObj = safeJsonParseFallback<any>(this.sessionStorageService.getItem('clientContext'), {}) || {};
     const clientContextAddLanguage = {
       ...clientContextObj,
       client_context: {

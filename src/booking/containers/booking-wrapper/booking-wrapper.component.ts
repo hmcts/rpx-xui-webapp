@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserInfo } from '../../../app/models';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { safeJsonParseFallback } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '../../../app/services/session-storage/session-storage.service';
 import {
   bookingBackButtonVisibilityStates,
@@ -41,7 +41,7 @@ export class BookingWrapperComponent implements OnInit {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
 
     if (userInfoStr) {
-      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      const userInfo = safeJsonParseFallback<UserInfo>(userInfoStr, null);
       if (!userInfo) {
         return;
       }

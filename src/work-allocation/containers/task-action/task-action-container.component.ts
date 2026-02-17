@@ -4,7 +4,7 @@ import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
 import { UserInfo } from '../../../app/models';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
+import { safeJsonParseFallback } from '@hmcts/ccd-case-ui-toolkit';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../app/shared/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -96,7 +96,7 @@ export class TaskActionContainerComponent implements OnInit {
   public isCurrentUserJudicial(): boolean {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
-      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      const userInfo = safeJsonParseFallback<UserInfo>(userInfoStr, null);
       if (!userInfo) {
         return false;
       }
@@ -120,7 +120,7 @@ export class TaskActionContainerComponent implements OnInit {
         const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
         let userId: string;
         if (userInfoStr) {
-          const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+          const userInfo = safeJsonParseFallback<UserInfo>(userInfoStr, null);
           if (!userInfo) {
             break;
           }
@@ -171,7 +171,7 @@ export class TaskActionContainerComponent implements OnInit {
     }
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
-      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      const userInfo = safeJsonParseFallback<UserInfo>(userInfoStr, null);
       if (!userInfo) {
         return true;
       }

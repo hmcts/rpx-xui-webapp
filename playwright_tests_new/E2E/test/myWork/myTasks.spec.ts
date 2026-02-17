@@ -1,4 +1,3 @@
-import { faker } from '@faker-js/faker';
 import { expect, test } from '../../fixtures';
 import { ensureSessionCookies } from '../../../common/sessionCapture';
 
@@ -34,11 +33,11 @@ test.describe('Verify the my tasks page tabs appear as expected', () => {
     await test.step('Verify tasks actions are shown as expected', async () => {
       await taskListPage.manageCaseButtons.nth(0).click();
       await expect(taskListPage.taskActionsRow).toBeVisible();
-      expect(taskListPage.taskActionCancel).toBeVisible();
-      expect(taskListPage.taskActionGoTo).toBeVisible();
-      expect(taskListPage.taskActionMarkAsDone).toBeVisible();
-      expect(taskListPage.taskActionReassign).toBeVisible();
-      expect(taskListPage.taskActionUnassign).toBeVisible();
+      await expect(taskListPage.taskActionCancel).toBeVisible();
+      await expect(taskListPage.taskActionGoTo).toBeVisible();
+      await expect(taskListPage.taskActionMarkAsDone).toBeVisible();
+      await expect(taskListPage.taskActionReassign).toBeVisible();
+      await expect(taskListPage.taskActionUnassign).toBeVisible();
     });
   });
 
@@ -58,8 +57,8 @@ test.describe('Verify the my tasks page tabs appear as expected', () => {
     await test.step('Verify tasks actions are shown as expected', async () => {
       await taskListPage.manageCaseButtons.nth(0).click();
       await expect(taskListPage.taskActionsRow).toBeVisible();
-      expect(taskListPage.taskActionClaim).toBeVisible();
-      expect(taskListPage.taskActionClaimAndGo).toBeVisible();
+      await expect(taskListPage.taskActionClaim).toBeVisible();
+      await expect(taskListPage.taskActionClaimAndGo).toBeVisible();
     });
   });
 });

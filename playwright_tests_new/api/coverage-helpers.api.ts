@@ -9,12 +9,7 @@ import { test, expect } from '@playwright/test';
 import { expectStatus, withRetry, __test__ as apiTestUtilsTest } from './utils/apiTestUtils';
 import { resolveRoleAccessCaseId } from './data/testIds';
 import { __test__ as fixturesTest } from './fixtures';
-import {
-  sanitizeUrl,
-  collectDependencySignals,
-  classifyFailure,
-  classifyFailureCategory,
-} from '../common/failureClassification';
+import { sanitizeUrl, collectDependencySignals, classifyFailure, classifyFailureCategory } from '../common/failureClassification';
 import { buildTaskSearchRequest, seedTaskId } from './utils/work-allocation';
 import { seedRoleAccessCaseId } from './utils/role-access';
 
@@ -429,9 +424,7 @@ test.describe('E2E failure classification utilities', () => {
   });
 
   test('sanitises URLs in diagnostics helper', () => {
-    expect(sanitizeUrl('https://example.test/api/resource?token=secret&foo=bar')).toBe(
-      'https://example.test/api/resource'
-    );
+    expect(sanitizeUrl('https://example.test/api/resource?token=secret&foo=bar')).toBe('https://example.test/api/resource');
   });
 });
 

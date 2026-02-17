@@ -89,7 +89,9 @@ test.describe('Work allocation (read-only)', () => {
       sampleTaskId = resolvedSeed.sampleTaskId;
       sampleMyTaskId = resolvedSeed.sampleMyTaskId;
     } catch (error) {
-      appendSetupNotice(`Task seeding failed (${error instanceof Error ? error.message : 'unknown error'}); using fallback task ids.`);
+      appendSetupNotice(
+        `Task seeding failed (${error instanceof Error ? error.message : 'unknown error'}); using fallback task ids.`
+      );
     }
 
     if (!sampleTaskId && !sampleMyTaskId) {
@@ -330,7 +332,9 @@ test.describe('Work allocation (read-only)', () => {
     }
 
     for (const action of actions) {
-      test(`POST /workallocation/task/:id/${action} rejects requests without XSRF-TOKEN header`, async ({ apiClient }, testInfo) => {
+      test(`POST /workallocation/task/:id/${action} rejects requests without XSRF-TOKEN header`, async ({
+        apiClient,
+      }, testInfo) => {
         annotateTaskSeedNotice(testInfo);
         // Given: An authenticated user with valid session
         // When: Attempting task action without XSRF protection header

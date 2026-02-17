@@ -62,10 +62,7 @@ export class LocationDataService {
     if (!locationIds || locationIds.length === 0) {
       return of([]);
     }
-    const bookableServices = safeJsonParseFallback<string[]>(
-      this.sessionStorageService.getItem('bookableServices'),
-      []
-    );
+    const bookableServices = safeJsonParseFallback<string[]>(this.sessionStorageService.getItem('bookableServices'), []);
     const serviceCodes: string[] = bookableServices.length ? bookableServices : locationServices;
     const options = {
       params: new HttpParams().set('serviceCodes', serviceCodes.join()),
@@ -78,10 +75,7 @@ export class LocationDataService {
 
   public getRegions(): Observable<Region[]> {
     if (this.sessionStorageService.getItem(LocationDataService.regionsKey)) {
-      const regions = safeJsonParseFallback<Region[]>(
-        this.sessionStorageService.getItem(LocationDataService.regionsKey),
-        []
-      );
+      const regions = safeJsonParseFallback<Region[]>(this.sessionStorageService.getItem(LocationDataService.regionsKey), []);
       return of(regions);
     }
     return this.http

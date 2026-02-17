@@ -41,10 +41,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
     this.bookingTypeForm = this.fb.group({
       bookingType: new FormControl(null),
     });
-    const bookableServices = safeJsonParseFallback<string[]>(
-      this.sessionStorageService.getItem('bookableServices'),
-      []
-    );
+    const bookableServices = safeJsonParseFallback<string[]>(this.sessionStorageService.getItem('bookableServices'), []);
     if (this.userId) {
       this.existingBookingsSubscription = this.bookingService.getBookings(this.userId, bookableServices).subscribe(
         (bookings) => {

@@ -298,10 +298,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public getPaginationParameter(): PaginationParameter {
-    const savedPaginationNumber = safeJsonParseFallback<number>(
-      this.sessionStorageService.getItem(this.pageSessionKey),
-      null
-    );
+    const savedPaginationNumber = safeJsonParseFallback<number>(this.sessionStorageService.getItem(this.pageSessionKey), null);
     if (savedPaginationNumber && typeof savedPaginationNumber === 'number') {
       return { ...this.pagination, page_number: savedPaginationNumber };
     }

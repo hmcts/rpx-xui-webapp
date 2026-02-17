@@ -20,10 +20,7 @@ export class JurisdictionsService {
       Accept: 'application/json',
     });
     if (this.sessionStorageService.getItem('JURISDICTIONS')) {
-      const jurisdictions = safeJsonParseFallback<Jurisdiction[]>(
-        this.sessionStorageService.getItem('JURISDICTIONS'),
-        []
-      );
+      const jurisdictions = safeJsonParseFallback<Jurisdiction[]>(this.sessionStorageService.getItem('JURISDICTIONS'), []);
       return of(jurisdictions);
     }
     return this.http

@@ -18,10 +18,7 @@ export class TaskTypesService {
 
   public getTypesOfWork(): Observable<any[]> {
     if (this.sessionStorage.getItem(TaskTypesService.typesOfWorkStorageKey)) {
-      const typesOfWork = safeJsonParseFallback<any[]>(
-        this.sessionStorage.getItem(TaskTypesService.typesOfWorkStorageKey),
-        []
-      );
+      const typesOfWork = safeJsonParseFallback<any[]>(this.sessionStorage.getItem(TaskTypesService.typesOfWorkStorageKey), []);
       return of(typesOfWork);
     }
     return this.http

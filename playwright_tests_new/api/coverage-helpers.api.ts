@@ -1,5 +1,6 @@
 import { execFile } from 'node:child_process';
 import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { createRequire } from 'node:module';
 import { join, relative } from 'node:path';
 import { promisify } from 'node:util';
 
@@ -13,6 +14,9 @@ import { buildTaskSearchRequest, seedTaskId } from './utils/work-allocation';
 import { seedRoleAccessCaseId } from './utils/role-access';
 
 const execFileAsync = promisify(execFile);
+const requireFromHere = createRequire(import.meta.url);
+const PLAYWRIGHT_CLI_PATH = requireFromHere.resolve('@playwright/test/cli');
+const PLAYWRIGHT_JSON_MAX_BUFFER = 20 * 1024 * 1024;
 
 type JsonAnnotation = {
   type: string;
@@ -48,6 +52,13 @@ type JsonReport = {
   suites?: JsonSuite[];
 };
 
+type ExecFileFailure = Error & {
+  stdout?: string | Buffer;
+  stderr?: string | Buffer;
+  code?: number;
+  signal?: NodeJS.Signals | null;
+};
+
 function collectSpecs(suites: JsonSuite[] | undefined): JsonSpec[] {
   if (!suites || suites.length === 0) {
     return [];
@@ -63,6 +74,77 @@ function decodeAttachmentBody(attachment?: JsonAttachment): string {
     return '';
   }
   return Buffer.from(attachment.body, 'base64').toString('utf8');
+}
+
+function tryParseJsonReport(output: string): JsonReport | undefined {
+  const trimmed = output.trim();
+  if (!trimmed) {
+    return undefined;
+  }
+  try {
+    return JSON.parse(trimmed) as JsonReport;
+  } catch {
+    // Some CI wrappers may prefix/suffix lines around JSON reporter output.
+  }
+
+  const firstBrace = trimmed.indexOf('{');
+  const lastBrace = trimmed.lastIndexOf('}');
+  if (firstBrace < 0 || lastBrace <= firstBrace) {
+    return undefined;
+  }
+
+  try {
+    return JSON.parse(trimmed.slice(firstBrace, lastBrace + 1)) as JsonReport;
+  } catch {
+    return undefined;
+  }
+}
+
+async function runPlaywrightJsonReport(repoRoot: string, testFile: string): Promise<JsonReport> {
+  const args = [
+    PLAYWRIGHT_CLI_PATH,
+    'test',
+    '--config=playwright.config.ts',
+    '--project=node-api',
+    testFile,
+    '--reporter=json',
+  ];
+
+  try {
+    const { stdout, stderr } = await execFileAsync(process.execPath, args, {
+      cwd: repoRoot,
+      env: process.env,
+      maxBuffer: PLAYWRIGHT_JSON_MAX_BUFFER,
+    });
+    const parsed = tryParseJsonReport(stdout) ?? tryParseJsonReport(stderr);
+    if (parsed) {
+      return parsed;
+    }
+    throw new Error(
+      [
+        'Nested Playwright run completed but JSON reporter output could not be parsed.',
+        `stdout:\n${stdout || '<empty>'}`,
+        `stderr:\n${stderr || '<empty>'}`,
+      ].join('\n\n')
+    );
+  } catch (error) {
+    const failure = error as ExecFileFailure;
+    const stdout = typeof failure.stdout === 'string' ? failure.stdout : failure.stdout?.toString('utf8') ?? '';
+    const stderr = typeof failure.stderr === 'string' ? failure.stderr : failure.stderr?.toString('utf8') ?? '';
+    const parsed = tryParseJsonReport(stdout) ?? tryParseJsonReport(stderr);
+    if (parsed) {
+      return parsed;
+    }
+
+    const details = [
+      `exitCode=${failure.code ?? 'unknown'}`,
+      `signal=${failure.signal ?? 'none'}`,
+      `message=${failure.message}`,
+      `stdout:\n${stdout || '<empty>'}`,
+      `stderr:\n${stderr || '<empty>'}`,
+    ].join('\n\n');
+    throw new Error(`Nested Playwright run failed before producing JSON report.\n\n${details}`);
+  }
 }
 
 test.describe('Helper utilities and retry logic', () => {
@@ -409,17 +491,7 @@ test('regression::transport abort with 5xx signal is not UNKNOWN', async ({ apiL
     const relativeTempFile = relative(repoRoot, tempFile);
 
     try {
-      const { stdout } = await execFileAsync(
-        'npx',
-        ['playwright', 'test', '--config=playwright.config.ts', '--project=node-api', relativeTempFile, '--reporter=json'],
-        {
-          cwd: repoRoot,
-          env: process.env,
-          maxBuffer: 20 * 1024 * 1024,
-        }
-      );
-
-      const report = JSON.parse(stdout) as JsonReport;
+      const report = await runPlaywrightJsonReport(repoRoot, relativeTempFile);
       const specs = collectSpecs(report.suites);
 
       const expectedCases = [

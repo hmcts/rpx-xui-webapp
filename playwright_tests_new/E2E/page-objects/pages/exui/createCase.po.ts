@@ -442,8 +442,8 @@ export class CreateCasePage extends Base {
           return !!txt && txt.includes(message);
         }
         return true;
-      } catch (error: unknown) {
-        // Element not found or timeout - expected when no error present
+      } catch {
+        // Element not found or timeout - expected when no error present; ignore error and return false
         return false;
       }
     };

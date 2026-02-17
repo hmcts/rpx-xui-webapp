@@ -61,7 +61,7 @@ html = html.replace(/<meta\s+http-equiv=["']Content-Security-Policy["'][^>]*>/i,
 fs.writeFileSync(indexPath, html, 'utf8');
 
 /* 4) fixtures (unchanged) */
-const cfgDir  = path.join(distRoot, 'external', 'config/ui');
+const cfgDir = path.join(distRoot, 'external', 'config/ui');
 fs.mkdirSync(cfgDir, { recursive: true });
 const cfgText = JSON.stringify(cfg, null, 2);
 fs.writeFileSync(path.join(cfgDir, 'index.json'), cfgText, 'utf8');

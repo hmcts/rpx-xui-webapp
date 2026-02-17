@@ -37,10 +37,11 @@ describe('log4jui', () => {
         addContext: sandbox.spy(),
         error: sandbox.spy(),
         info: sandbox.spy(),
-        warn: sandbox.spy()
+        warn: sandbox.spy(),
       };
       sandbox.stub(log4js, 'getLogger').callsFake((cat: string) => {
-        spyObj.category = cat; return spyObj;
+        spyObj.category = cat;
+        return spyObj;
       });
     });
 

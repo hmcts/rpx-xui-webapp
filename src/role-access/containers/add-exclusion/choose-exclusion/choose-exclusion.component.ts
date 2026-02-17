@@ -60,9 +60,11 @@ export class ChooseExclusionComponent implements OnInit, OnDestroy {
 
   public setOptionsList(userDetails: UserDetails, jurisdiction: string) {
     // EXUI-3967 - Location could be added to this check later if needed
-    const caseJurisdictionAndLocation = userDetails.roleAssignmentInfo
-    &&
-    userDetails.roleAssignmentInfo.some((roleAssignment) => roleAssignment.isCaseAllocator && roleAssignment.jurisdiction === jurisdiction);
+    const caseJurisdictionAndLocation =
+      userDetails.roleAssignmentInfo &&
+      userDetails.roleAssignmentInfo.some(
+        (roleAssignment) => roleAssignment.isCaseAllocator && roleAssignment.jurisdiction === jurisdiction
+      );
     this.optionsList = caseJurisdictionAndLocation ? [this.excludeMe, this.excludeOther] : [this.excludeMe];
   }
 

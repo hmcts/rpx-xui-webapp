@@ -26,14 +26,15 @@
         <span class="govuk-visually-hidden">Error:</span> Enter a valid location
       </span>
       <div class="govuk-hint">Enter the location name, for example, Taylor House Tribunal Hearing Centre.</div>
-        <exui-search-location
-          class="search-location"
-          [selectedLocations]="selectedLocations"
-          [singleMode]="true"
-          [bookingCheck]="bookingCheckType"
-          [serviceIds]="jurisdictions"
-          locationType=""
-          (locationSelected)="onLocationChanged($event)"></exui-search-location>
+      <exui-search-location
+        class="search-location"
+        [selectedLocations]="selectedLocations"
+        [singleMode]="true"
+        [bookingCheck]="bookingCheckType"
+        [serviceIds]="jurisdictions"
+        locationType=""
+        (locationSelected)="onLocationChanged($event)"
+      ></exui-search-location>
     </div>
   </div>
   <button class="govuk-button govuk-!-margin-right-3" type="button" (click)="onContinueClick()">Continue</button>

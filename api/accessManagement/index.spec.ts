@@ -20,7 +20,7 @@ import {
   deleteSpecificAccessRoles,
   restoreDeletedRole,
   removeAcceptHeader,
-  retryUntilStatus
+  retryUntilStatus,
 } from './';
 
 // Import sinon-chai using require to avoid ES module issues
@@ -698,7 +698,7 @@ describe('Access Management', (): void => {
         data: {},
         statusText: 'OK',
         headers: {},
-        config: {} as any
+        config: {} as any,
       });
 
       const response = await retryUntilStatus(callStub as any, 3, 0);
@@ -714,14 +714,14 @@ describe('Access Management', (): void => {
         data: { error: 'Temporary failure' },
         statusText: 'Internal Server Error',
         headers: {},
-        config: {} as any
+        config: {} as any,
       });
       callStub.onSecondCall().resolves({
         status: 200,
         data: {},
         statusText: 'OK',
         headers: {},
-        config: {} as any
+        config: {} as any,
       });
 
       const response = await retryUntilStatus(callStub as any, 3, 0);
@@ -736,7 +736,7 @@ describe('Access Management', (): void => {
         data: { error: 'Service Unavailable' },
         statusText: 'Service Unavailable',
         headers: {},
-        config: {} as any
+        config: {} as any,
       };
       const callStub = sandbox.stub().rejects({ response: lastErrorResponse });
 

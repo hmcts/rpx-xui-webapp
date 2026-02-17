@@ -34,13 +34,13 @@ export class AppEffects {
     )
   );
 
-  public featureToggleConfig = createEffect(() => this.actions$.pipe(
-    ofType(fromActions.LOAD_FEATURE_TOGGLE_CONFIG),
-    switchMap(() => {
-      // TODO: this should be replaced by the feature toggle service once its ready.
-      // EXUI-3967 - should be done as part of separate ticket
-      return this.termsService.isTermsConditionsFeatureEnabled()
-        .pipe(
+  public featureToggleConfig = createEffect(() =>
+    this.actions$.pipe(
+      ofType(fromActions.LOAD_FEATURE_TOGGLE_CONFIG),
+      switchMap(() => {
+        // TODO: this should be replaced by the feature toggle service once its ready.
+        // EXUI-3967 - should be done as part of separate ticket
+        return this.termsService.isTermsConditionsFeatureEnabled().pipe(
           map((isTandCFeatureToggleEnabled) => new fromActions.LoadFeatureToggleConfigSuccess(isTandCFeatureToggleEnabled)),
           catchError((error) => of(new fromActions.LoadFeatureToggleConfigFail(error)))
         );

@@ -49,7 +49,7 @@ import {
   prepareRoleApiRequest,
   prepareSearchCaseUrl,
   prepareSearchTaskUrl,
-  searchAndReturnRefinedUsers
+  searchAndReturnRefinedUsers,
 } from './util';
 
 import * as util from './util';
@@ -343,7 +343,7 @@ describe('workAllocation.utils', () => {
       const jurisdictions: string[] = ['IA', 'Not-IA'];
       const expectedResult = {
         attributes: {
-          jurisdiction: jurisdictions
+          jurisdiction: jurisdictions,
         },
         roleName: [
           'hearing-centre-admin',

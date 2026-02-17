@@ -319,11 +319,13 @@ export function getRoleCategory(roleAssignments: RoleAssignment[], caseWorkerApi
 }
 
 export function getUserRoleCategory(roleAssignments: RoleAssignment[], user: StaffProfile, services: string[]): string {
-  const roleAssignment = roleAssignments.find((roleAssign) =>
-    roleAssign.actorId === user.id && roleAssign.roleCategory &&
-    // added line below to stop irrelevant role setting role category
-    // note - we know services are already capitalised
-    (!roleAssign.attributes?.jurisdiction || services.includes(roleAssign.attributes.jurisdiction.toUpperCase()))
+  const roleAssignment = roleAssignments.find(
+    (roleAssign) =>
+      roleAssign.actorId === user.id &&
+      roleAssign.roleCategory &&
+      // added line below to stop irrelevant role setting role category
+      // note - we know services are already capitalised
+      (!roleAssign.attributes?.jurisdiction || services.includes(roleAssign.attributes.jurisdiction.toUpperCase()))
   );
   return roleAssignment ? roleAssignment.roleCategory : null;
 }
@@ -379,16 +381,25 @@ export function mapUserLocation(baseLocation: LocationApi[]): Location {
 
 export function prepareRoleApiRequest(jurisdictions: string[]): any {
   const attributes: any = {
-    jurisdiction: jurisdictions
+    jurisdiction: jurisdictions,
   };
   const payload = {
     attributes,
     // TODO: This should not be hard-coded list
     // EXUI-3967 - needs review as to where roles should come from
-    roleName: ['hearing-centre-admin', 'case-manager', 'ctsc', 'tribunal-caseworker',
-      'hmcts-legal-operations', 'task-supervisor', 'hmcts-admin',
-      'national-business-centre', 'senior-tribunal-caseworker', 'case-allocator',
-      'regional-centre-admin'],
+    roleName: [
+      'hearing-centre-admin',
+      'case-manager',
+      'ctsc',
+      'tribunal-caseworker',
+      'hmcts-legal-operations',
+      'task-supervisor',
+      'hmcts-admin',
+      'national-business-centre',
+      'senior-tribunal-caseworker',
+      'case-allocator',
+      'regional-centre-admin',
+    ],
     roleType: ['ORGANISATION'],
     validAt: Date.UTC,
   };
@@ -666,12 +677,8 @@ export async function searchCasesById(queryParams: string, query: any, req: expr
   return null;
 }
 
-export function constructRoleAssignmentQuery(
-  searchTaskParameters: SearchTaskParameter[]
-): any {
-  searchTaskParameters = [...searchTaskParameters,
-    { key: 'roleType', values: 'CASE', operator: '' }
-  ];
+export function constructRoleAssignmentQuery(searchTaskParameters: SearchTaskParameter[]): any {
+  searchTaskParameters = [...searchTaskParameters, { key: 'roleType', values: 'CASE', operator: '' }];
   return {
     queryRequests: [
       searchTaskParameters

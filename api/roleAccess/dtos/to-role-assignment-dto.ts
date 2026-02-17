@@ -62,15 +62,14 @@ export function toSARoleAssignmentBody(
         actorIdType: 'IDAM',
         actorId: allocateRoleData.actorId,
         beginTime: period.startDate,
-        endTime: period.endDate
-          ? period.endDate : new Date(todayDate.setMonth(todayDate.getMonth() + 1)),
+        endTime: period.endDate ? period.endDate : new Date(todayDate.setMonth(todayDate.getMonth() + 1)),
         notes: [
           {
             comment: `{"specificReason":${allocateRoleData.accessReason}}`,
             time: new Date().toISOString(),
-            userId: allocateRoleData.actorId
-          }
-        ]
+            userId: allocateRoleData.actorId,
+          },
+        ],
       },
       {
         roleType: 'CASE',
@@ -80,7 +79,7 @@ export function toSARoleAssignmentBody(
         attributes: {
           caseId: allocateRoleData.caseId,
           requestedRole,
-          ...extraAttributesForSpecificRole
+          ...extraAttributesForSpecificRole,
         },
         roleName: requestedRole,
         roleCategory: allocateRoleData.roleCategory,
@@ -92,10 +91,11 @@ export function toSARoleAssignmentBody(
           {
             comment: '{"specificReason":"Request approved"}',
             time: new Date().toISOString,
-            userId: allocateRoleData.actorId
-          }
-        ]
-      }]
+            userId: allocateRoleData.actorId,
+          },
+        ],
+      },
+    ],
   };
 }
 
@@ -207,14 +207,19 @@ export function toSARequestRoleAssignmentBody(
         actorIdType: 'IDAM',
         actorId: allocateRoleData.person.id,
         beginTime: new Date(),
-        endTime: allocateRoleData.period && allocateRoleData.period.endDate ? allocateRoleData.period.endDate
-          : new Date(todayDate.setMonth(todayDate.getMonth() + 1)),
-        notes: [{
-          comment: `{"specificReason":${allocateRoleData.specificReason}}`,
-          time: new Date().toISOString(),
-          userId: allocateRoleData.person.id
-        }]
-      }]
+        endTime:
+          allocateRoleData.period && allocateRoleData.period.endDate
+            ? allocateRoleData.period.endDate
+            : new Date(todayDate.setMonth(todayDate.getMonth() + 1)),
+        notes: [
+          {
+            comment: `{"specificReason":${allocateRoleData.specificReason}}`,
+            time: new Date().toISOString(),
+            userId: allocateRoleData.person.id,
+          },
+        ],
+      },
+    ],
   };
 }
 

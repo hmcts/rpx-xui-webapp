@@ -29,17 +29,18 @@ export class CasesCreateComponent implements OnInit, OnDestroy {
     this.fromCasesFeature = fromCases;
     // TODO try to be nice and remove subscription use pipe | instead
     // EXUI-3967 - Needs investigation
-    this.$inputSubscription = this.store.pipe(select(fromCases.getCreateCaseFilterState))
-      .subscribe((caseFilterInput) => {
-        // if state is reseated then redirect
-        if (!caseFilterInput.jurisdictionId) {
-          this.store.dispatch(new fromRoot.Go({
-            path: ['/cases/case-list']
-          }));
-          return;
-        }
-        this.caseCreateInputs = caseFilterInput;
-      });
+    this.$inputSubscription = this.store.pipe(select(fromCases.getCreateCaseFilterState)).subscribe((caseFilterInput) => {
+      // if state is reseated then redirect
+      if (!caseFilterInput.jurisdictionId) {
+        this.store.dispatch(
+          new fromRoot.Go({
+            path: ['/cases/case-list'],
+          })
+        );
+        return;
+      }
+      this.caseCreateInputs = caseFilterInput;
+    });
     /**
      * Mapping CCD components eventsBindings to ExUI Actions
      */

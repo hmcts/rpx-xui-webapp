@@ -38,7 +38,7 @@ export class LocationResolver {
     private readonly http: HttpClient,
     private readonly sessionStorageService: SessionStorageService,
     private readonly locationService: LocationDataService
-  ) { }
+  ) {}
 
   public resolve(): Observable<LocationModel[]> {
     return this.userDetails().pipe(
@@ -142,7 +142,12 @@ export class LocationResolver {
     return this.locations;
   }
 
-  private setRegionsAndBaseLocations(roleAssignment: RoleAssignmentInfo, roleJurisdiction: string, regionLocations: LocationsByRegion[], feePaid: boolean): void {
+  private setRegionsAndBaseLocations(
+    roleAssignment: RoleAssignmentInfo,
+    roleJurisdiction: string,
+    regionLocations: LocationsByRegion[],
+    feePaid: boolean
+  ): void {
     if (!roleAssignment.region && !roleAssignment.baseLocation) {
       // if there are no restrictions, via union logic, all locations selectable
       if (feePaid) {

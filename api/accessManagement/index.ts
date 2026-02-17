@@ -20,8 +20,7 @@ export async function retryUntilStatus(call: () => Promise<AxiosResponse>, attem
   for (let i = 0; i < attempts; i++) {
     try {
       lastResponse = await call();
-      if (lastResponse && lastResponse.status >= 200 && lastResponse.status < 300
-      ) {
+      if (lastResponse && lastResponse.status >= 200 && lastResponse.status < 300) {
         return lastResponse;
       }
     } catch (err: any) {
@@ -130,19 +129,21 @@ export async function deleteSpecificAccessRoles(
 ): Promise<Response> {
   try {
     const specificAccessDeletionResponse = await retryUntilStatus(
-      () => deleteRoleByAssignmentId(req, res, next, rolesToDelete[1].id), 3, 300
+      () => deleteRoleByAssignmentId(req, res, next, rolesToDelete[1].id),
+      3,
+      300
     );
     if (!specificAccessDeletionResponse || specificAccessDeletionResponse.status !== 204) {
-      return previousResponse && previousResponse.status
-        ? res.status(previousResponse.status) : res.status(400);
+      return previousResponse && previousResponse.status ? res.status(previousResponse.status) : res.status(400);
     }
     // Note - the functionality is present but this does not currently work due to AM team restrictions - gives 422 error
     const grantedDeletionResponse = await retryUntilStatus(
-      () => deleteRoleByAssignmentId(req, res, next, rolesToDelete[0].id), 3, 300
+      () => deleteRoleByAssignmentId(req, res, next, rolesToDelete[0].id),
+      3,
+      300
     );
     if (!grantedDeletionResponse || grantedDeletionResponse.status !== 204) {
-      return previousResponse && previousResponse.status
-        ? res.status(previousResponse.status) : res.status(400);
+      return previousResponse && previousResponse.status ? res.status(previousResponse.status) : res.status(400);
     }
     return previousResponse && previousResponse.status ? res.status(previousResponse.status) : res.status(400);
   } catch (error) {
@@ -160,12 +161,9 @@ export async function restoreDeletedRole(
   rolesToDelete: RoleAssignment[]
 ): Promise<Response> {
   try {
-    const restoreResponse = await retryUntilStatus(
-      () => restoreSpecificAccessRequestRole(req, res, next), 3, 300
-    );
+    const restoreResponse = await retryUntilStatus(() => restoreSpecificAccessRequestRole(req, res, next), 3, 300);
     if (!restoreResponse || restoreResponse.status !== 201) {
-      return previousResponse && previousResponse.status
-        ? res.status(previousResponse.status) : res.status(400);
+      return previousResponse && previousResponse.status ? res.status(previousResponse.status) : res.status(400);
     }
     return deleteSpecificAccessRoles(req, res, next, previousResponse, rolesToDelete);
   } catch (error) {

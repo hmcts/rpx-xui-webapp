@@ -5,6 +5,7 @@ import { Person, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../app/shared/models';
 import { UserInfo } from '../../../app/models';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
 import { InfoMessageType } from '../../../role-access/models/enums';
 import { AssignHintText, TaskActionType } from '../../enums';
@@ -58,7 +59,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
   public ngOnInit(): void {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
       if (userInfo) {
         // EXUI-2907 - Use roleCategory instead of roles
         this.isUserJudicial = userInfo.roleCategory === RoleCategory.JUDICIAL;

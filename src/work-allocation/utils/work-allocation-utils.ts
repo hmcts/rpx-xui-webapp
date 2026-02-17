@@ -1,6 +1,7 @@
 import { NavigationExtras } from '@angular/router';
 import { PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { HMCTSServiceDetails, UserInfo } from '../../app/models';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { OptionsModel } from '../../role-access/models/options-model';
 import { ISessionStorageService } from '../interfaces/common';
 import { Caseworker, CaseworkersByService, LocationsByRegion, LocationsByService } from '../models/dtos';
@@ -115,8 +116,9 @@ export const getCaseworkers = (serviceId: string, sessionStorageService: ISessio
   const sessionKey = getCaseworkerSessionStorageKeyForServiceId(serviceId);
   const value = sessionStorageService.getItem(sessionKey);
   if (value) {
-    return JSON.parse(value) as Caseworker[];
+    return safeJsonParse<Caseworker[]>(value, []);
   }
+  return [];
 };
 
 export const setCaseworkers = (
@@ -254,7 +256,10 @@ export function getDestinationUrl(url: string): string {
 export function getCurrentUserRoleCategory(sessionStorageService: ISessionStorageService): RoleCategory {
   const userInfoStr = sessionStorageService.getItem('userDetails');
   if (userInfoStr) {
-    const userInfo: UserInfo = JSON.parse(userInfoStr);
+    const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+    if (!userInfo) {
+      return null;
+    }
     return userInfo.roleCategory as RoleCategory;
   }
   return null;

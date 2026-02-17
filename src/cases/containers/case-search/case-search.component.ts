@@ -6,6 +6,7 @@ import { Store, select } from '@ngrx/store';
 import { decompressFromUTF16 } from 'lz-string';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { ActionBindingModel } from '../../../cases/models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
 
@@ -168,16 +169,16 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
     };
   };
 
-  private getCompressedLSItem(key: string): string {
+  private getCompressedLSItem(key: string): any {
     const item = localStorage.getItem(key);
     if (item && item.length > 0) {
       if (item.startsWith('{')) {
         // probably not compressed
-        return item;
+        return safeJsonParse(item, null);
       }
       try {
         const decomp = decompressFromUTF16(item);
-        return JSON.parse(decomp);
+        return safeJsonParse(decomp, null);
       } catch (e) {
         console.log('error decompressing data of length' + item.length, e);
       }
@@ -187,10 +188,10 @@ export class CaseSearchComponent implements OnInit, OnDestroy {
 
   public getEvent() {
     let event = null;
-    const formGroupFromLS = JSON.parse(localStorage.getItem('search-form-group-value'));
+    const formGroupFromLS = safeJsonParse(localStorage.getItem('search-form-group-value'), null);
     const jurisdictionFromLS = this.getCompressedLSItem('search-jurisdiction');
-    const caseTypeGroupFromLS = JSON.parse(localStorage.getItem('search-caseType'));
-    const metadataFieldsGroupFromLS = JSON.parse(localStorage.getItem('search-metadata-fields'));
+    const caseTypeGroupFromLS = safeJsonParse(localStorage.getItem('search-caseType'), null);
+    const metadataFieldsGroupFromLS = safeJsonParse(localStorage.getItem('search-metadata-fields'), null);
 
     if (formGroupFromLS && jurisdictionFromLS && caseTypeGroupFromLS && metadataFieldsGroupFromLS) {
       event = {

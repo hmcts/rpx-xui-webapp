@@ -7,6 +7,7 @@ import { select, Store } from '@ngrx/store';
 import { combineLatest, forkJoin, Observable, of, Subscription } from 'rxjs';
 import { debounceTime, filter, map, mergeMap, switchMap } from 'rxjs/operators';
 import { HMCTSServiceDetails, UserInfo } from '../../../app/models';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
@@ -234,7 +235,10 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
         this.caseworkers = caseworkers;
         const userInfoStr = this.sessionStorageService.getItem('userDetails');
         if (userInfoStr) {
-          const userInfo: UserInfo = JSON.parse(userInfoStr);
+          const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+          if (!userInfo) {
+            return;
+          }
           const userId = userInfo.id ? userInfo.id : userInfo.uid;
           const currentCW = this.caseworkers.find((cw) => cw.idamId === userId);
           if (currentCW && currentCW.location && currentCW.location.id) {
@@ -249,12 +253,16 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     // Try to get the sort order out of the session.
     const stored = this.sessionStorageService.getItem(this.sortSessionKey);
     if (stored) {
-      const { fieldName, order } = JSON.parse(stored);
-      this.sortedBy = {
-        fieldName,
-        order: order as SortOrder,
-      };
-    } else {
+      const parsed = safeJsonParse<{ fieldName: string; order: SortOrder }>(stored, null);
+      if (parsed) {
+        const { fieldName, order } = parsed;
+        this.sortedBy = {
+          fieldName,
+          order: order as SortOrder,
+        };
+      }
+    }
+    if (!this.sortedBy?.fieldName) {
       // Otherwise, set up the default sorting.
       this.sortedBy = {
         fieldName: this.caseServiceConfig.defaultSortFieldName,

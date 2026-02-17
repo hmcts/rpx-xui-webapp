@@ -6,6 +6,7 @@ import moment from 'moment';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { UserRole } from '../../../app/models';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import * as fromAppStore from '../../../app/store';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
 import { HearingListModel } from '../../../hearings/models/hearingList.model';
@@ -136,7 +137,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     this.userRoles = [];
     const detailsStr = this.sessionSvc.getItem('userDetails');
     if (detailsStr) {
-      const details = JSON.parse(detailsStr) as object;
+      const details = safeJsonParse<any>(detailsStr, null);
       if (details && details.hasOwnProperty('roles')) {
         this.userRoles = details['roles'] as string[];
       }

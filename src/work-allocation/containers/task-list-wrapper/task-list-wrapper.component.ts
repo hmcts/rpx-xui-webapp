@@ -7,6 +7,7 @@ import { Observable, Subscription, of } from 'rxjs';
 import { debounceTime, filter, mergeMap, switchMap } from 'rxjs/operators';
 
 import { HMCTSServiceDetails, UserInfo } from '../../../app/models';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '../../../app/services';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InfoMessageType } from '../../../app/shared/enums/info-message-type';
@@ -216,12 +217,16 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     // Try to get the sort order out of the session.
     const sortStored = this.sessionStorageService.getItem(this.sortSessionKey);
     if (sortStored) {
-      const { fieldName, order } = JSON.parse(sortStored);
-      this.sortedBy = {
-        fieldName,
-        order: order as SortOrder,
-      };
-    } else {
+      const parsed = safeJsonParse<{ fieldName: string; order: SortOrder }>(sortStored, null);
+      if (parsed) {
+        const { fieldName, order } = parsed;
+        this.sortedBy = {
+          fieldName,
+          order: order as SortOrder,
+        };
+      }
+    }
+    if (!this.sortedBy?.fieldName) {
       // Otherwise, set up the default sorting.
       this.sortedBy = {
         fieldName: this.taskServiceConfig.defaultSortFieldName,
@@ -293,7 +298,10 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public getPaginationParameter(): PaginationParameter {
-    const savedPaginationNumber = JSON.parse(this.sessionStorageService.getItem(this.pageSessionKey));
+    const savedPaginationNumber = safeJsonParse<number>(
+      this.sessionStorageService.getItem(this.pageSessionKey),
+      null
+    );
     if (savedPaginationNumber && typeof savedPaginationNumber === 'number') {
       return { ...this.pagination, page_number: savedPaginationNumber };
     }
@@ -418,7 +426,10 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   private doLoad(): void {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      if (!userInfo) {
+        return;
+      }
       this.currentUser = userInfo.uid ? userInfo.uid : userInfo.id;
     }
     this.showSpinner$ = this.loadingService.isLoading as any;
@@ -494,7 +505,10 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public getCurrentUserRoleCategory(): string {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      if (!userInfo) {
+        return;
+      }
       return userInfo.roleCategory;
     }
   }

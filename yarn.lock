@@ -19145,7 +19145,7 @@ __metadata:
     otplib: "npm:^12.0.1"
     qs: "npm:^6.14.0"
     sinon: "npm:^7.3.2"
-    sinon-chai: "npm:^3.3.0"
+    sinon-chai: "npm:^4.0.0"
     sinon-express-mock: "npm:^2.2.0"
     source-map-support: "npm:^0.5.21"
     striptags: "npm:^3.1.1"
@@ -24385,7 +24385,7 @@ __metadata:
     rxjs: "npm:^7.8.1"
     sass: "npm:^1.66.1"
     sinon: "npm:^7.3.2"
-    sinon-chai: "npm:^3.3.0"
+    sinon-chai: "npm:^4.0.0"
     sinon-express-mock: "npm:^2.2.0"
     smoothscroll-polyfill: "npm:^0.4.3"
     sonar-scanner: "npm:^3.1.0"
@@ -25026,13 +25026,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sinon-chai@npm:^3.3.0":
-  version: 3.7.0
-  resolution: "sinon-chai@npm:3.7.0"
+"sinon-chai@npm:^4.0.0":
+  version: 4.0.1
+  resolution: "sinon-chai@npm:4.0.1"
   peerDependencies:
-    chai: ^4.0.0
+    chai: ^5.0.0 || ^6.0.0
     sinon: ">=4.0.0"
-  checksum: 10/028853eb8a545ca613c6863014a40f07d1e6b81467e20939fefcd13f170206d24165b91099fb297aeb4d137745e321da25daa8e2d665cc0a78f90d5b877e8bbe
+  checksum: 10/cc417d196133353cfd08775a6b259264d06bf8b4dea135de1f601d295726010660f20cbeb601c281504935810fcb7781aef1c56596edc0eaaff57be52717bbc8
   languageName: node
   linkType: hard
 

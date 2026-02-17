@@ -61,11 +61,20 @@ export interface SeededTaskResult {
   type: 'assigned' | 'unassigned';
 }
 
+export interface SeedTaskIdOptions {
+  timeoutMs?: number;
+}
+
 /**
  * Attempts to fetch a deterministic task id for tests.
  * Falls back to undefined if no task is found.
  */
-export async function seedTaskId(apiClient: any, locationId?: string): Promise<SeededTaskResult | undefined> {
+export async function seedTaskId(
+  apiClient: any,
+  locationId?: string,
+  options: SeedTaskIdOptions = {}
+): Promise<SeededTaskResult | undefined> {
+  const timeoutMs = options.timeoutMs;
   const candidateStates: Array<{ type: SeededTaskResult['type']; states: string[]; view: 'MyTasks' | 'AvailableTasks' }> = [
     { type: 'assigned', states: ['assigned'], view: 'MyTasks' },
     { type: 'unassigned', states: ['unassigned'], view: 'AvailableTasks' },
@@ -81,6 +90,7 @@ export async function seedTaskId(apiClient: any, locationId?: string): Promise<S
     const response = (await apiClient.post('workallocation/task', {
       data: body,
       throwOnError: false,
+      timeoutMs,
     })) as { data?: TaskListResponse; status: number };
     if (response.status === 200 && Array.isArray(response.data?.tasks) && response.data.tasks.length > 0) {
       const id = response.data.tasks[0]?.id;

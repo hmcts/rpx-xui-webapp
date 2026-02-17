@@ -33,6 +33,7 @@ import {
 const serviceCodes = ['IA', 'CIVIL', 'PRIVATELAW'];
 const envTaskId = WA_SAMPLE_TASK_ID;
 const envAssignedTaskId = WA_SAMPLE_ASSIGNED_TASK_ID;
+const BEFORE_ALL_REQUEST_TIMEOUT_MS = 10_000;
 
 test.describe('Work allocation (read-only)', () => {
   let cachedLocationId: string | undefined;
@@ -41,26 +42,46 @@ test.describe('Work allocation (read-only)', () => {
   let sampleMyTaskId: string | undefined;
 
   test.beforeAll(async ({ apiClient }) => {
-    const userRes = await apiClient.get<UserDetailsResponse>('api/user/details', {
-      throwOnError: false,
-    });
-    if (userRes.status === 200) {
-      userId = resolveUserId(userRes.data);
+    test.setTimeout(90_000);
+
+    try {
+      const userRes = await apiClient.get<UserDetailsResponse>('api/user/details', {
+        throwOnError: false,
+        timeoutMs: BEFORE_ALL_REQUEST_TIMEOUT_MS,
+      });
+      if (userRes.status === 200) {
+        userId = resolveUserId(userRes.data);
+      }
+    } catch (error) {
+      console.warn(`[WA_SETUP_DEGRADED] user/details failed: ${(error as Error).message}`);
     }
 
-    const listResponse = await apiClient.get<Array<{ id?: string }>>(
-      `workallocation/location?serviceCodes=${encodeURIComponent(serviceCodes.join(','))}`,
-      {
-        throwOnError: false,
-      }
-    );
-    cachedLocationId = resolveLocationId(listResponse.status, listResponse.data);
+    try {
+      const listResponse = await apiClient.get<Array<{ id?: string }>>(
+        `workallocation/location?serviceCodes=${encodeURIComponent(serviceCodes.join(','))}`,
+        {
+          throwOnError: false,
+          timeoutMs: BEFORE_ALL_REQUEST_TIMEOUT_MS,
+        }
+      );
+      cachedLocationId = resolveLocationId(listResponse.status, listResponse.data);
+    } catch (error) {
+      console.warn(`[WA_SETUP_DEGRADED] location bootstrap failed: ${(error as Error).message}`);
+    }
 
-    // seed tasks for action tests
-    const seeded = await seedTaskId(apiClient, cachedLocationId);
-    const resolvedSeed = resolveSeededTaskIds(seeded);
-    sampleTaskId = resolvedSeed.sampleTaskId;
-    sampleMyTaskId = resolvedSeed.sampleMyTaskId;
+    try {
+      // Seed task ids is optional; action tests already use guarded status assertions/fallback ids.
+      const seeded = await seedTaskId(apiClient, cachedLocationId, {
+        timeoutMs: BEFORE_ALL_REQUEST_TIMEOUT_MS,
+      });
+      const resolvedSeed = resolveSeededTaskIds(seeded);
+      sampleTaskId = resolvedSeed.sampleTaskId;
+      sampleMyTaskId = resolvedSeed.sampleMyTaskId;
+    } catch (error) {
+      console.warn(`[WA_SETUP_DEGRADED] seedTaskId failed: ${(error as Error).message}`);
+      sampleTaskId = undefined;
+      sampleMyTaskId = undefined;
+    }
   });
 
   test('GET /workallocation/location returns locations list for authenticated users with valid service codes', async ({

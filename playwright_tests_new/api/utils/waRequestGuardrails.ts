@@ -36,9 +36,7 @@ export function ensureCcdCaseReference(caseId: string, context: string): string 
     throw new Error(`[TEST_DATA_INVALID] ${context}: caseId is required.`);
   }
   if (UUID_REGEX.test(trimmed) || !CCD_CASE_REFERENCE_REGEX.test(trimmed)) {
-    throw new Error(
-      `[TEST_DATA_INVALID] ${context}: caseId must be a 16-digit CCD reference (numeric), received "${trimmed}".`
-    );
+    throw new Error(`[TEST_DATA_INVALID] ${context}: caseId must be a 16-digit CCD reference (numeric), received "${trimmed}".`);
   }
   return trimmed;
 }

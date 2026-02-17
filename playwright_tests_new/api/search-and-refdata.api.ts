@@ -7,6 +7,7 @@ import { ensureStorageState } from './utils/auth';
 import { test, expect } from './fixtures';
 import { ROLE_ACCESS_CASE_ID, resolveRoleAccessCaseId } from './data/testIds';
 import { expectStatus, StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
+import { AuthenticationError } from './utils/errors';
 import { seedRoleAccessCaseId } from './utils/role-access';
 import { RoleAssignmentContainer } from './utils/types';
 import {
@@ -256,12 +257,24 @@ test.describe('Role access / AM', () => {
       expect(hasCaseOfficer).toBe(false);
       return;
     }
-    const client = await apiClientFor('caseOfficer_r1');
-    const res = await client.post('api/role-access/allocate-role/confirm', {
-      data: { caseId: roleAccessCaseId, caseType: 'xuiTestCaseType', jurisdiction: 'DIVORCE' },
-      throwOnError: false,
-    });
-    expectStatus(res.status, [401, 403, 500]);
+    try {
+      const client = await apiClientFor('caseOfficer_r1');
+      const res = await client.post('api/role-access/allocate-role/confirm', {
+        data: { caseId: roleAccessCaseId, caseType: 'xuiTestCaseType', jurisdiction: 'DIVORCE' },
+        throwOnError: false,
+      });
+      expectStatus(res.status, [401, 403, 500]);
+    } catch (error) {
+      if (error instanceof AuthenticationError) {
+        testInfo.annotations.push({
+          type: 'notice',
+          description: `Skipping case-officer role check in ${config.testEnv}: ${error.message}`,
+        });
+        test.skip(true, `caseOfficer_r1 cannot authenticate in ${config.testEnv}`);
+        return;
+      }
+      throw error;
+    }
   });
 
   test('role access confirm returns guarded status for stale session', async () => {

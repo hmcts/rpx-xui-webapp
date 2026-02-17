@@ -973,27 +973,55 @@ export class CreateCasePage extends Base {
   }
 
   async createDivorceCasePoC(jurisdiction: string, caseType: string, data?: DivorcePoCData) {
-    const gender = data?.gender ?? faker.helpers.arrayElement(['Male', 'Female', 'Not given']);
-    await this.createCase(jurisdiction, caseType, '');
-    await this.page.getByLabel(gender, { exact: true }).check();
-    await this.person1Title.click();
-    await this.person1Title.fill(data?.person1Title ?? faker.person.prefix());
-    await this.person1FirstNameInput.fill(data?.person1FirstName ?? faker.person.firstName());
-    await this.person1LastNameInput.fill(data?.person1LastName ?? faker.person.lastName());
-    await this.person1GenderSelect.selectOption(data?.person1Gender ?? gender);
-    await this.person1JobTitleInput.fill(data?.person1JobTitle ?? faker.person.jobTitle());
-    await this.person1JobDescriptionInput.fill(data?.person1JobDescription ?? faker.lorem.sentence());
-    await this.clickContinueAndWait('after PoC personal details');
-    await this.textField0Input.waitFor({ state: 'visible', timeout: 30000 });
-    await this.textField0Input.fill(data?.textField0 ?? faker.lorem.word());
-    await this.textField3Input.fill(data?.textField3 ?? faker.lorem.word());
-    await this.textField1Input.fill(data?.textField1 ?? faker.lorem.word());
-    await this.textField2Input.fill(data?.textField2 ?? faker.lorem.word());
-    await this.clickContinueAndWait('after PoC text fields');
-    await this.checkYourAnswersHeading.waitFor({ state: 'visible', timeout: 30000 });
-    await this.testSubmitButton.click();
-    await this.waitForSpinnerToComplete('after submitting divorce PoC case');
-    await this.waitForCaseDetails('after submitting divorce PoC case');
+    const maxAttempts = 2;
+    const preferredGenders = data?.gender ? [data.gender] : ['Male', 'Female', 'Not given'];
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        await this.createCase(jurisdiction, caseType, '');
+        const availableGender = await this.person1GenderSelect.evaluate((select) => {
+          const options = Array.from((select as HTMLSelectElement).options).map((option) => option.label.trim());
+          return options;
+        });
+        const gender = preferredGenders.find((candidate) => availableGender.includes(candidate)) ?? 'Male';
+        const genderRadio = this.page.getByLabel(gender, { exact: true });
+        if (await genderRadio.isVisible().catch(() => false)) {
+          await genderRadio.check();
+        }
+        await this.person1Title.click();
+        await this.person1Title.fill(data?.person1Title ?? faker.person.prefix());
+        await this.person1FirstNameInput.fill(data?.person1FirstName ?? faker.person.firstName());
+        await this.person1LastNameInput.fill(data?.person1LastName ?? faker.person.lastName());
+        await this.person1GenderSelect.selectOption(data?.person1Gender ?? gender);
+        await this.person1JobTitleInput.fill(data?.person1JobTitle ?? faker.person.jobTitle());
+        await this.person1JobDescriptionInput.fill(data?.person1JobDescription ?? faker.lorem.sentence());
+        await this.clickContinueAndWait('after PoC personal details');
+        await this.textField0Input.waitFor({ state: 'visible', timeout: 30000 });
+        await this.textField0Input.fill(data?.textField0 ?? faker.lorem.word());
+        await this.textField3Input.fill(data?.textField3 ?? faker.lorem.word());
+        await this.textField1Input.fill(data?.textField1 ?? faker.lorem.word());
+        await this.textField2Input.fill(data?.textField2 ?? faker.lorem.word());
+        await this.clickContinueAndWait('after PoC text fields');
+        await this.checkYourAnswersHeading.waitFor({ state: 'visible', timeout: 30000 });
+        await this.testSubmitButton.click();
+        await this.waitForSpinnerToComplete('after submitting divorce PoC case');
+        await this.waitForCaseDetails('after submitting divorce PoC case');
+        return;
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        const isTransientCreationFailure =
+          message.includes('Validation error after after PoC text fields') ||
+          message.includes('The event could not be created') ||
+          (await this.eventCreationErrorHeading.isVisible().catch(() => false));
+        if (isTransientCreationFailure && attempt < maxAttempts) {
+          logger.warn('Divorce PoC case creation failed; retrying', { attempt, maxAttempts });
+          if (!this.page.isClosed()) {
+            await this.page.goto('/cases/case-filter');
+          }
+          continue;
+        }
+        throw error;
+      }
+    }
   }
 
   async generateDivorcePoCData(overrides: Partial<DivorcePoCData> = {}): Promise<DivorcePoCData> {

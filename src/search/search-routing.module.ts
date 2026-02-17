@@ -1,11 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { RoleGuard, RoleMatching } from '@hmcts/rpx-xui-common-lib';
-import {
-  NoResultsComponent,
-  SearchFormComponent,
-  SearchResultsComponent
-} from './containers';
+import { NoResultsComponent, SearchFormComponent, SearchResultsComponent } from './containers';
 
 const routes: Routes = [
   {
@@ -17,8 +13,8 @@ const routes: Routes = [
       // TODO: Roles will need replacing with actual ones to be granted access, or loaded from configuration
       needsRole: ['pui-case-manager', 'caseworker'],
       roleMatching: RoleMatching.ANY,
-      noRoleMatchRedirect: '/'
-    }
+      noRoleMatchRedirect: '/',
+    },
   },
   {
     path: 'noresults',
@@ -28,8 +24,8 @@ const routes: Routes = [
       // TODO: Roles will need replacing with actual ones to be granted access, or loaded from configuration
       needsRole: ['pui-case-manager', 'caseworker'],
       roleMatching: RoleMatching.ANY,
-      noRoleMatchRedirect: '/'
-    }
+      noRoleMatchRedirect: '/',
+    },
   },
   {
     path: 'results',
@@ -39,13 +35,13 @@ const routes: Routes = [
       // TODO: Roles will need replacing with actual ones to be granted access, or loaded from configuration
       needsRole: ['pui-case-manager', 'caseworker'],
       roleMatching: RoleMatching.ANY,
-      noRoleMatchRedirect: '/'
-    }
-  }
+      noRoleMatchRedirect: '/',
+    },
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class SearchRoutingModule {}

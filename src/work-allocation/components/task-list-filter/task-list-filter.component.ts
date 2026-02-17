@@ -10,7 +10,7 @@ import {
   FilterFieldConfig,
   FilterPersistence,
   FilterService,
-  FilterSetting
+  FilterSetting,
 } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { Subscription, combineLatest } from 'rxjs';
@@ -27,7 +27,7 @@ import { locationWithinRegion, servicesMap } from '../../utils';
 export const LOCATION_ERROR: ErrorMessage = {
   title: 'There is a problem',
   description: 'At least one location is required',
-  fieldId: 'myWork'
+  fieldId: 'myWork',
 };
 
 @Component({
@@ -35,7 +35,7 @@ export const LOCATION_ERROR: ErrorMessage = {
   selector: 'exui-task-list-filter',
   templateUrl: './task-list-filter.component.html',
   styleUrls: ['task-list-filter.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class TaskListFilterComponent implements OnInit, OnDestroy {
   public static readonly FILTER_NAME = 'my-work-tasks-filter';
@@ -53,7 +53,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     cancelButtonText: 'Reset to default',
     applyButtonText: 'Apply',
     cancelSetting: null,
-    showCancelFilterButton: false
+    showCancelFilterButton: false,
   };
 
   public allLocations: string[] = [];
@@ -63,7 +63,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   public defaultTypesOfWork: string[] = [];
   public fieldsSettings: FilterSetting = {
     id: TaskListFilterComponent.FILTER_NAME,
-    fields: []
+    fields: [],
   };
 
   public selectedLocations: string[] = [];
@@ -89,22 +89,26 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     private readonly taskTypesService: TaskTypesService,
     private readonly sessionStorageService: SessionStorageService,
     private readonly appStore: Store<fromAppStore.State>,
-    private readonly featureToggleService: FeatureToggleService) {
-    if (this.router.getCurrentNavigation() &&
+    private readonly featureToggleService: FeatureToggleService
+  ) {
+    if (
+      this.router.getCurrentNavigation() &&
       this.router.getCurrentNavigation().extras.state &&
-      this.router.getCurrentNavigation().extras.state.location) {
+      this.router.getCurrentNavigation().extras.state.location
+    ) {
       this.bookingLocations = this.router.getCurrentNavigation().extras.state.location.ids;
     }
-    this.router.events.pipe(
-      filter((event) => event instanceof NavigationEnd),
-      map(() => this.route.snapshot),
-      map((activatedRoute: ActivatedRouteSnapshot) => {
-        while (activatedRoute.firstChild) {
-          activatedRoute = activatedRoute.firstChild;
-        }
-        return activatedRoute;
-      })
-    )
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        map(() => this.route.snapshot),
+        map((activatedRoute: ActivatedRouteSnapshot) => {
+          while (activatedRoute.firstChild) {
+            activatedRoute = activatedRoute.firstChild;
+          }
+          return activatedRoute;
+        })
+      )
       .subscribe((activatedRouteSnapshot: ActivatedRouteSnapshot) => {
         this.hideFilter = activatedRouteSnapshot.url[0].path && activatedRouteSnapshot.url[0].path.includes('my-access');
         if (this.hideFilter) {
@@ -114,7 +118,13 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       });
   }
 
-  private static hasBeenFiltered(f: FilterSetting, cancelSetting: FilterSetting, assignedTasks: Task[], currentTasks: Task[], pathname): boolean {
+  private static hasBeenFiltered(
+    f: FilterSetting,
+    cancelSetting: FilterSetting,
+    assignedTasks: Task[],
+    currentTasks: Task[],
+    pathname
+  ): boolean {
     const baseLocations = cancelSetting.fields.find((field) => field.name === 'locations');
     const locations = f.fields.find((field) => field.name === 'locations');
     const fieldsNoLocations = f.fields.filter((field) => field.name !== 'locations');
@@ -122,14 +132,19 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     if (pathname.includes('work/my-work/list')) {
       return assignedTasks.length !== currentTasks.length;
     }
-    return !_.isEqual(fieldsNoLocations, cancelFieldsNoLocations) || !TaskListFilterComponent.hasBaseLocations(locations, baseLocations);
+    return (
+      !_.isEqual(fieldsNoLocations, cancelFieldsNoLocations) ||
+      !TaskListFilterComponent.hasBaseLocations(locations, baseLocations)
+    );
   }
 
   private static hasBaseLocations(locations, baseLocations): boolean {
     if (!(locations.value && locations.value.length > 0)) {
       return false;
     }
-    const result = locations.value.filter((location) => baseLocations.value.find((baseLocation) => _.isEqual(location, baseLocation)));
+    const result = locations.value.filter((location) =>
+      baseLocations.value.find((baseLocation) => _.isEqual(location, baseLocation))
+    );
     return result.length >= baseLocations.value.length;
   }
 
@@ -145,14 +160,22 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       this.service.getWASupportedJurisdictions(),
       this.taskService.getUsersAssignedTasks(),
       this.locationService.getSpecificLocations(this.defaultLocations, this.baseLocationServices),
-      this.featureToggleService.getValue('ServiceNames', servicesMap)
-    ]).subscribe(([typesOfWork, services, assignedTasks, locations, serviceNamesMap]: [any[], string[], Task[], LocationByEpimmsModel[], any]) => {
-      this.setUpServicesFilter(services, serviceNamesMap);
-      this.setUpLocationFilter(locations);
-      this.setUpTypesOfWorkFilter(typesOfWork);
-      this.persistFirstSetting();
-      this.subscribeToFilters(assignedTasks);
-    });
+      this.featureToggleService.getValue('ServiceNames', servicesMap),
+    ]).subscribe(
+      ([typesOfWork, services, assignedTasks, locations, serviceNamesMap]: [
+        any[],
+        string[],
+        Task[],
+        LocationByEpimmsModel[],
+        any,
+      ]) => {
+        this.setUpServicesFilter(services, serviceNamesMap);
+        this.setUpLocationFilter(locations);
+        this.setUpTypesOfWorkFilter(typesOfWork);
+        this.persistFirstSetting();
+        this.subscribeToFilters(assignedTasks);
+      }
+    );
 
     this.setErrors();
     this.setAllowTypesOfWorkFilter(this.router.url);
@@ -189,7 +212,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   private subscribeToFilters(assignedTasks: Task[]): void {
     this.selectedLocationsSubscription = combineLatest([
       this.filterService.getStream(TaskListFilterComponent.FILTER_NAME),
-      this.taskService.currentTasks$
+      this.taskService.currentTasks$,
     ])
       .pipe(
         map(([f, tasks]: [FilterSetting, Task[]]) => {
@@ -197,7 +220,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
             f = {
               id: TaskListFilterComponent.FILTER_NAME,
               reset: false,
-              fields: this.fieldsConfig.cancelSetting.fields
+              fields: this.fieldsConfig.cancelSetting.fields,
             };
           }
           return [f, tasks];
@@ -205,7 +228,13 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
         filter(([f]: [FilterSetting, Task[]]) => f && f.hasOwnProperty('fields'))
       )
       .subscribe(([f, currentTasks]: [FilterSetting, Task[]]) => {
-        this.showFilteredText = TaskListFilterComponent.hasBeenFiltered(f, this.fieldsConfig.cancelSetting, assignedTasks, currentTasks, this.location.path());
+        this.showFilteredText = TaskListFilterComponent.hasBeenFiltered(
+          f,
+          this.fieldsConfig.cancelSetting,
+          assignedTasks,
+          currentTasks,
+          this.location.path()
+        );
         this.toggleFilter = false;
       });
   }
@@ -213,7 +242,8 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   private setPersistenceAndDefaultLocations(): void {
     this.fieldsConfig.persistence = this.persistence || 'session';
     const filterService = this.filterService.get(TaskListFilterComponent.FILTER_NAME);
-    const availableLocations = filterService && filterService.fields && filterService.fields.find((field) => field.name === 'locations');
+    const availableLocations =
+      filterService && filterService.fields && filterService.fields.find((field) => field.name === 'locations');
     const isLocationsAvailable: boolean = availableLocations && availableLocations.value && availableLocations.value.length > 0;
     const regionLocations = JSON.parse(this.sessionStorageService.getItem('regionLocations'));
     const bookableServices = JSON.parse(this.sessionStorageService.getItem('bookableServices'));
@@ -224,31 +254,38 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       const location: Location = history.state.location;
       this.defaultLocations = [location.id];
     }
-    this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
-      (userDetails) => {
-        const isFeePaidJudgeWithNoBooking: boolean = this.bookingLocations.length === 0
-         && userDetails.roleAssignmentInfo.filter((p) => p.roleType && p.roleType === 'ORGANISATION'
-          && !p.bookable).length === 0;
-        if (isFeePaidJudgeWithNoBooking) {
-          localStorage.removeItem(TaskListFilterComponent.FILTER_NAME);
-        } else if (!isLocationsAvailable) {
-          const baseLocations: string[] = [];
-          userDetails.roleAssignmentInfo.forEach((roleAssignment) => {
-            const roleJurisdiction = roleAssignment.jurisdiction;
-            if (roleJurisdiction && roleAssignment.roleType === 'ORGANISATION' && !bookableServices.includes(roleAssignment.jurisdiction)
-              && roleAssignment.baseLocation && roleAssignment.substantive.toLocaleLowerCase() === 'y') {
-              // EUI-7339 - Added to ensure default locations are actually selectable
-              if (!roleAssignment.region || locationWithinRegion(regionLocations, roleAssignment.region, roleAssignment.baseLocation)) {
-                baseLocations.push(roleAssignment.baseLocation);
-                this.baseLocationServices = [...this.baseLocationServices, roleAssignment.jurisdiction];
-              }
+    this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe((userDetails) => {
+      const isFeePaidJudgeWithNoBooking: boolean =
+        this.bookingLocations.length === 0 &&
+        userDetails.roleAssignmentInfo.filter((p) => p.roleType && p.roleType === 'ORGANISATION' && !p.bookable).length === 0;
+      if (isFeePaidJudgeWithNoBooking) {
+        localStorage.removeItem(TaskListFilterComponent.FILTER_NAME);
+      } else if (!isLocationsAvailable) {
+        const baseLocations: string[] = [];
+        userDetails.roleAssignmentInfo.forEach((roleAssignment) => {
+          const roleJurisdiction = roleAssignment.jurisdiction;
+          if (
+            roleJurisdiction &&
+            roleAssignment.roleType === 'ORGANISATION' &&
+            !bookableServices.includes(roleAssignment.jurisdiction) &&
+            roleAssignment.baseLocation &&
+            roleAssignment.substantive.toLocaleLowerCase() === 'y'
+          ) {
+            // EUI-7339 - Added to ensure default locations are actually selectable
+            if (
+              !roleAssignment.region ||
+              locationWithinRegion(regionLocations, roleAssignment.region, roleAssignment.baseLocation)
+            ) {
+              baseLocations.push(roleAssignment.baseLocation);
+              this.baseLocationServices = [...this.baseLocationServices, roleAssignment.jurisdiction];
             }
-          });
-          this.baseLocationServices = Array.from(new Set(this.baseLocationServices));
-          this.defaultLocations = this.defaultLocations && this.defaultLocations.length > 0
-            ? this.defaultLocations : Array.from(new Set(baseLocations));
-        }
-      });
+          }
+        });
+        this.baseLocationServices = Array.from(new Set(this.baseLocationServices));
+        this.defaultLocations =
+          this.defaultLocations && this.defaultLocations.length > 0 ? this.defaultLocations : Array.from(new Set(baseLocations));
+      }
+    });
   }
 
   private persistFirstSetting(): void {
@@ -287,18 +324,21 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       displayMinSelectedError: true,
       type: 'find-location',
       enableAddButton: true,
-      bookingCheckType: BookingCheckType.BOOKINGS_AND_BASE
+      bookingCheckType: BookingCheckType.BOOKINGS_AND_BASE,
     };
     let baseLocation = null;
     // if there are no booking locations selected then check for base location for salary judge
-    if ((locations.length === 0) && this.route.snapshot.data && this.route.snapshot.data.locations) {
+    if (locations.length === 0 && this.route.snapshot.data && this.route.snapshot.data.locations) {
       baseLocation = this.route.snapshot.data.locations;
     }
 
-    this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
-      name: 'locations',
-      value: baseLocation ? baseLocation : locations
-    }];
+    this.fieldsSettings.fields = [
+      ...this.fieldsSettings.fields,
+      {
+        name: 'locations',
+        value: baseLocation ? baseLocation : locations,
+      },
+    ];
     this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
     this.fieldsConfig.fields.push(field);
   }
@@ -313,9 +353,9 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
         {
           key: 'types_of_work_all',
           label: 'All work types',
-          selectAll: true
+          selectAll: true,
         },
-        ...typesOfWork
+        ...typesOfWork,
       ],
       minSelected: 1,
       maxSelected: null,
@@ -323,76 +363,79 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       displayMinSelectedError: true,
       minSelectedError: 'Select a type of work',
       title: 'Types of work',
-      type: 'checkbox'
+      type: 'checkbox',
     };
     const defaultFields = typesOfWork.map((typeOfWork) => typeOfWork.key);
-    this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
-      name: 'types-of-work',
-      value: ['types_of_work_all', ...defaultFields]
-    }];
+    this.fieldsSettings.fields = [
+      ...this.fieldsSettings.fields,
+      {
+        name: 'types-of-work',
+        value: ['types_of_work_all', ...defaultFields],
+      },
+    ];
     this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
     this.fieldsConfig.fields.push(field);
   }
 
   private setUpServicesFilter(services: any[], serviceNamesMap: { [key: string]: string }): void {
     // Available services need to be added to work-allocation-utils.ts -> servicesMap
-    this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
-      (userDetails) => {
-        if (!services.length) {
-          return;
-        }
-        if (!userDetails.roleAssignmentInfo || !userDetails.roleAssignmentInfo.some((p) => p.jurisdiction !== undefined)) {
-          return;
-        }
-        const filteredServices = _.intersection.apply(_, [
-          userDetails.roleAssignmentInfo
-            .filter((p) => p.roleType && p.roleType === 'ORGANISATION')
-            .map((item) => item.jurisdiction)
-            .filter((value, index, self) => self.indexOf(value) === index && value !== undefined),
-          services
-        ]);
-        const field: FilterFieldConfig = {
-          name: 'services',
-          options: [
-            {
-              key: 'services_all',
-              label: 'Select all',
-              selectAll: true
-            },
-            ...filteredServices
-              .sort()
-              .map((service) => {
-                return {
-                  key: service,
-                  label: serviceNamesMap[service] || service
-                };
-              })
-          ],
-          minSelected: 1,
-          maxSelected: null,
-          lineBreakBefore: false,
-          displayMinSelectedError: true,
-          minSelectedError: 'Select a service',
-          title: 'Services',
-          type: 'checkbox-large'
-        };
+    this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe((userDetails) => {
+      if (!services.length) {
+        return;
+      }
+      if (!userDetails.roleAssignmentInfo || !userDetails.roleAssignmentInfo.some((p) => p.jurisdiction !== undefined)) {
+        return;
+      }
+      const filteredServices = _.intersection.apply(_, [
+        userDetails.roleAssignmentInfo
+          .filter((p) => p.roleType && p.roleType === 'ORGANISATION')
+          .map((item) => item.jurisdiction)
+          .filter((value, index, self) => self.indexOf(value) === index && value !== undefined),
+        services,
+      ]);
+      const field: FilterFieldConfig = {
+        name: 'services',
+        options: [
+          {
+            key: 'services_all',
+            label: 'Select all',
+            selectAll: true,
+          },
+          ...filteredServices.sort().map((service) => {
+            return {
+              key: service,
+              label: serviceNamesMap[service] || service,
+            };
+          }),
+        ],
+        minSelected: 1,
+        maxSelected: null,
+        lineBreakBefore: false,
+        displayMinSelectedError: true,
+        minSelectedError: 'Select a service',
+        title: 'Services',
+        type: 'checkbox-large',
+      };
 
-        const fieldSetting = this.fieldsSettings.fields.find((f) => f.name === 'services');
-        if (fieldSetting) {
-          fieldSetting.value = ['services_all', ...filteredServices];
-        } else {
-          this.fieldsSettings.fields = [...this.fieldsSettings.fields, {
+      const fieldSetting = this.fieldsSettings.fields.find((f) => f.name === 'services');
+      if (fieldSetting) {
+        fieldSetting.value = ['services_all', ...filteredServices];
+      } else {
+        this.fieldsSettings.fields = [
+          ...this.fieldsSettings.fields,
+          {
             name: 'services',
-            value: ['services_all', ...filteredServices]
-          }];
-        }
+            value: ['services_all', ...filteredServices],
+          },
+        ];
+      }
 
-        this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
-        const fieldConfig = this.fieldsConfig.fields.find((f) => f.name === 'services');
-        if (!fieldConfig) {
-          this.fieldsConfig.fields.push(field);
-        }
-      });
+      this.fieldsConfig.cancelSetting = JSON.parse(JSON.stringify(this.fieldsSettings));
+      const fieldConfig = this.fieldsConfig.fields.find((f) => f.name === 'services');
+      if (!fieldConfig) {
+        this.fieldsConfig.fields.push(field);
+      }
+    });
   }
 
   /**

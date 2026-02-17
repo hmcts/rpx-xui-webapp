@@ -57,10 +57,8 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
     // added line below to ensure any locations from non-used services are removes
     // (API occasionally sending irrelevant location previously)
     results = results.filter((location) => courtTypeIds.includes(location.court_type_id));
-    response.data.results = results.filter((locationInfo, index, self) =>
-      index === self.findIndex((location) => (
-        location.epimms_id === locationInfo.epimms_id
-      ))
+    response.data.results = results.filter(
+      (locationInfo, index, self) => index === self.findIndex((location) => location.epimms_id === locationInfo.epimms_id)
     );
 
     res.status(response.status).send(response.data.results);
@@ -69,10 +67,18 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   }
 }
 
-export function filterOutResults(locations: LocationModel[], locationIds: string[],
-  regions: string[], courtTypes: string[]): LocationModel[] {
-  return locations.filter((location) => !(courtTypes.includes(location.court_type_id))
-|| (locationIds.includes(location.epimms_id) || regions.includes(location.region_id)));
+export function filterOutResults(
+  locations: LocationModel[],
+  locationIds: string[],
+  regions: string[],
+  courtTypes: string[]
+): LocationModel[] {
+  return locations.filter(
+    (location) =>
+      !courtTypes.includes(location.court_type_id) ||
+      locationIds.includes(location.epimms_id) ||
+      regions.includes(location.region_id)
+  );
 }
 
 /**
@@ -90,9 +96,7 @@ export async function getLocationsById(req: EnhancedRequest, res: Response, next
       const path: string = prepareGetSpecificLocationUrl(basePath, id);
       // no longer LocationResponse but CourtVenue
       const response: AxiosResponse<CourtVenue[]> = await handleLocationGet(path, req);
-      const filteredResults = response.data.filter((courtVenue) =>
-        courtVenue.epimms_id === id.toString()
-      );
+      const filteredResults = response.data.filter((courtVenue) => courtVenue.epimms_id === id.toString());
       const mappedLocationModel = mapCourtVenuesToLocationModels(filteredResults);
       locationModels.push(mappedLocationModel);
       responseStatus = response.status;
@@ -130,7 +134,8 @@ function getRegionIdsFromLocationList(locations: any): string[] {
 }
 
 function getCourtTypeIdsByService(serviceIdArray: string[]): string[] {
-  const courtTypeIdsArray = serviceIdArray.map((serviceId) => SERVICES_COURT_TYPE_MAPPINGS[serviceId])
+  const courtTypeIdsArray = serviceIdArray
+    .map((serviceId) => SERVICES_COURT_TYPE_MAPPINGS[serviceId])
     .reduce(concatCourtTypeWithoutDuplicates, []);
   if (courtTypeIdsArray) {
     return courtTypeIdsArray;

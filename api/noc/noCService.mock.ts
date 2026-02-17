@@ -11,21 +11,22 @@ export const generator = (schema, min = 1, max) => {
   return Array.from({
     length: faker.number.int({
       min,
-      max
-    })
+      max,
+    }),
   }).map(() => {
-    const innerGen = (anySchema) => Object.keys(anySchema).reduce((entity, key) => {
-      if (anySchema[key] instanceof Array || anySchema[key] === null) {
-        entity[key] = anySchema[key];
+    const innerGen = (anySchema) =>
+      Object.keys(anySchema).reduce((entity, key) => {
+        if (anySchema[key] instanceof Array || anySchema[key] === null) {
+          entity[key] = anySchema[key];
+          return entity;
+        }
+        if (Object.prototype.toString.call(anySchema[key]) === '[object Object]') {
+          entity[key] = innerGen(anySchema[key]);
+          return entity;
+        }
+        entity[key] = faker.helpers.fake(anySchema[key]);
         return entity;
-      }
-      if (Object.prototype.toString.call(anySchema[key]) === '[object Object]') {
-        entity[key] = innerGen(anySchema[key]);
-        return entity;
-      }
-      entity[key] = faker.helpers.fake(anySchema[key]);
-      return entity;
-    }, {});
+      }, {});
 
     return innerGen(schema);
   });
@@ -48,12 +49,12 @@ export const init = () => {
         regular_expression: null,
         fixed_list_items: [],
         complex_fields: [],
-        collection_field_type: null
+        collection_field_type: null,
       },
       display_context_parameter: '1',
       challenge_question_id: 'NoC',
       answer_field: null,
-      question_id: 'QuestionId{{random.number}}'
+      question_id: 'QuestionId{{random.number}}',
     },
     {
       case_type_id: 'AAT',
@@ -67,12 +68,12 @@ export const init = () => {
         regular_expression: null,
         fixed_list_items: [],
         complex_fields: [],
-        collection_field_type: null
+        collection_field_type: null,
       },
       display_context_parameter: '1',
       challenge_question_id: 'NoC',
       answer_field: null,
-      question_id: 'QuestionId{{random.number}}'
+      question_id: 'QuestionId{{random.number}}',
     },
     {
       case_type_id: 'AAT',
@@ -86,12 +87,12 @@ export const init = () => {
         regular_expression: null,
         fixed_list_items: [],
         complex_fields: [],
-        collection_field_type: null
+        collection_field_type: null,
       },
       display_context_parameter: '1',
       challenge_question_id: 'NoC',
       answer_field: null,
-      question_id: 'QuestionId{{random.number}}'
+      question_id: 'QuestionId{{random.number}}',
     },
     {
       case_type_id: 'AAT',
@@ -105,12 +106,12 @@ export const init = () => {
         regular_expression: null,
         fixed_list_items: [],
         complex_fields: [],
-        collection_field_type: null
+        collection_field_type: null,
       },
       display_context_parameter: '1',
       challenge_question_id: 'NoC',
       answer_field: null,
-      question_id: 'QuestionId{{random.number}}'
+      question_id: 'QuestionId{{random.number}}',
     },
     {
       case_type_id: 'AAT',
@@ -124,12 +125,12 @@ export const init = () => {
         regular_expression: null,
         fixed_list_items: [],
         complex_fields: [],
-        collection_field_type: null
+        collection_field_type: null,
       },
       display_context_parameter: '1',
       challenge_question_id: 'NoC',
       answer_field: null,
-      question_id: 'QuestionId{{random.number}}'
+      question_id: 'QuestionId{{random.number}}',
     },
     {
       case_type_id: 'AAT',
@@ -143,12 +144,12 @@ export const init = () => {
         regular_expression: null,
         fixed_list_items: [],
         complex_fields: [],
-        collection_field_type: null
+        collection_field_type: null,
       },
       display_context_parameter: '1',
       challenge_question_id: 'NoC',
       answer_field: null,
-      question_id: 'QuestionId{{random.number}}'
+      question_id: 'QuestionId{{random.number}}',
     },
     {
       case_type_id: 'AAT',
@@ -162,12 +163,12 @@ export const init = () => {
         regular_expression: null,
         fixed_list_items: [],
         complex_fields: [],
-        collection_field_type: null
+        collection_field_type: null,
       },
       display_context_parameter: '1',
       challenge_question_id: 'NoC',
       answer_field: null,
-      question_id: 'QuestionId{{random.number}}'
+      question_id: 'QuestionId{{random.number}}',
     },
     {
       case_type_id: 'AAT',
@@ -181,12 +182,12 @@ export const init = () => {
         regular_expression: null,
         fixed_list_items: [],
         complex_fields: [],
-        collection_field_type: null
+        collection_field_type: null,
       },
       display_context_parameter: '1',
       challenge_question_id: 'NoC',
       answer_field: null,
-      question_id: 'QuestionId{{random.number}}'
+      question_id: 'QuestionId{{random.number}}',
     },
     {
       case_type_id: 'AAT',
@@ -200,12 +201,12 @@ export const init = () => {
         regular_expression: null,
         fixed_list_items: [],
         complex_fields: [],
-        collection_field_type: null
+        collection_field_type: null,
       },
       display_context_parameter: '1',
       challenge_question_id: 'NoC',
       answer_field: null,
-      question_id: 'QuestionId{{random.number}}'
+      question_id: 'QuestionId{{random.number}}',
     },
     {
       case_type_id: 'AAT',
@@ -219,13 +220,13 @@ export const init = () => {
         regular_expression: null,
         fixed_list_items: [],
         complex_fields: [],
-        collection_field_type: null
+        collection_field_type: null,
       },
       display_context_parameter: '1',
       challenge_question_id: 'NoC',
       answer_field: null,
-      question_id: 'QuestionId{{random.number}}'
-    }
+      question_id: 'QuestionId{{random.number}}',
+    },
   ];
 
   const getNoCQuestionsUrl = /\/api\/noc\/nocQuestions\?caseId/;
@@ -236,80 +237,81 @@ export const init = () => {
   // mock.onGet(url).networkErrorOnce()
   // mock.onGet(getNoCQuestionsUrl).timeoutOnce()
 
-  mock.onGet(getNoCQuestionsUrl).reply(() => {
-    let questions = [];
+  mock
+    .onGet(getNoCQuestionsUrl)
+    .reply(() => {
+      let questions = [];
 
-    questionsSchema.map((schema) => {
-      questions = [...questions, ...generator(schema, 1, 1)];
-    });
+      questionsSchema.map((schema) => {
+        questions = [...questions, ...generator(schema, 1, 1)];
+      });
 
-    questions.sort((a, b) => a.order > b.order ? 1 : -1);
+      questions.sort((a, b) => (a.order > b.order ? 1 : -1));
 
-    // return an array in the form of [status, data, headers]
-    return [
-      200,
-      questions
-    ];
-  })
-  // success
-    .onPost(validateNoCQuestionsUrl).reply(200, {
+      // return an array in the form of [status, data, headers]
+      return [200, questions];
+    })
+    // success
+    .onPost(validateNoCQuestionsUrl)
+    .reply(200, {
       OrganisationPolicy: {
-        Organisation: 'orgId'
+        Organisation: 'orgId',
       },
       code: '',
-      status_message: 'success'
+      status_message: 'success',
     })
-  // EUI-2397: scenario 1
-  // answers are incomplete/incorrect
-  /*  .onPost(validateNoCQuestionsUrl).reply(400, {
+    // EUI-2397: scenario 1
+    // answers are incomplete/incorrect
+    /*  .onPost(validateNoCQuestionsUrl).reply(400, {
     code: 'answers-not-matched-any-litigant',
     status_message: 'Answers are incorrect and do not match system record',
   })*/
-  // EUI-2397: scenario 2
-  // matched more than one party
-  /*  .onPost(validateNoCQuestionsUrl).reply(400, {
+    // EUI-2397: scenario 2
+    // matched more than one party
+    /*  .onPost(validateNoCQuestionsUrl).reply(400, {
     code: 'answers-not-identify-litigant',
     status_message: 'Answers match more than one party on the case',
   })*/
-  // EUI-2397: scenario 3
-  // invalid case reference
-  /*  .onPost(validateNoCQuestionsUrl).reply(400, {
+    // EUI-2397: scenario 3
+    // invalid case reference
+    /*  .onPost(validateNoCQuestionsUrl).reply(400, {
     code: 'case-id-invalid',
     status_message: 'invalid case reference',
   })*/
-  // EUI-2397: scenario 4
-  // organisation already has access to this case
-  /*  .onPost(validateNoCQuestionsUrl).reply(400, {
+    // EUI-2397: scenario 4
+    // organisation already has access to this case
+    /*  .onPost(validateNoCQuestionsUrl).reply(400, {
     code: 'has-represented',
     status_message: 'Your organisation already has access to this case',
   })*/
-  // EUI-2397: scenario 5
-  // noc in progress
-  /*  .onPost(validateNoCQuestionsUrl).reply(400, {
+    // EUI-2397: scenario 5
+    // noc in progress
+    /*  .onPost(validateNoCQuestionsUrl).reply(400, {
       code: 'noc-in-progress',
       status_message: 'The case has an ongoing NoC Request',
   })*/
-  // EUI-2401
-  // any other server errors
-  /*  .onPost(validateNoCQuestionsUrl).reply(500, {
+    // EUI-2401
+    // any other server errors
+    /*  .onPost(validateNoCQuestionsUrl).reply(500, {
       code: 'generic-error',
       status_message: 'internal error',
   })*/
-  // EUI-2322
-  // Scenario 1
-  /* .onPost(postNoCEventsUrl).reply(201, {
+    // EUI-2322
+    // Scenario 1
+    /* .onPost(postNoCEventsUrl).reply(201, {
     approval_status: 'PENDING',
     case_role: 'Claimant',
     code: '',
     status_message: 'success',
   }) */
-  // EUI-2322
-  // Scenario 2
-    .onPost(postNoCEventsUrl).reply(201, {
+    // EUI-2322
+    // Scenario 2
+    .onPost(postNoCEventsUrl)
+    .reply(201, {
       approval_status: 'APPROVED',
       case_role: 'Claimant',
       code: '',
-      status_message: 'success'
+      status_message: 'success',
     });
   // EUI-2323
   // Scenario 1

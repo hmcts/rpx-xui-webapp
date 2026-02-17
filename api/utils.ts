@@ -22,7 +22,8 @@ export function allContainOnlySafeCharacters(values: string[]): boolean {
 // TODO - EXUI-3967 - <script> without a closing tag is not dangerous? Review and fix if needed
 export function containsDangerousCode(input: string): boolean {
   // Regular expressions to detect common dangerous patterns
-  const jsPattern = /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>|javascript:|on\w+=|eval\(|new Function\(|document\.cookie|<\s*iframe.*?>.*?<\s*\//i;
+  const jsPattern =
+    /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>|javascript:|on\w+=|eval\(|new Function\(|document\.cookie|<\s*iframe.*?>.*?<\s*\//i;
   const cssPattern = /<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>|expression\(|url\(/i;
   const urlSchemePattern = /data:|vbscript:/i;
   const jsonPattern = /callback=|jsonp=/i;

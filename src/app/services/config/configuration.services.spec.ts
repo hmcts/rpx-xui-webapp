@@ -14,7 +14,7 @@ describe('Configuration Service', () => {
     TestBed.configureTestingModule({
       teardown: { destroyAfterEach: false },
       imports: [StoreModule.forRoot({})],
-      providers: [AppConfigService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+      providers: [AppConfigService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     service = TestBed.inject(AppConfigService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -33,7 +33,7 @@ describe('Configuration Service', () => {
     const mockConfig = {
       features: { someFeature: true },
       caseEditorConfig: { someConfig: 'value' },
-      urls: { someUrl: '/api' }
+      urls: { someUrl: '/api' },
     };
 
     service.load().subscribe((data) => {
@@ -52,7 +52,7 @@ describe('Configuration Service', () => {
       next: () => fail('should have failed with 404 error'),
       error: (error) => {
         expect(error).toEqual(errorMessage);
-      }
+      },
     });
 
     const req = httpMock.expectOne('assets/config/config.json');
@@ -66,7 +66,7 @@ describe('Configuration Service', () => {
       next: () => fail('should have failed with network error'),
       error: (error) => {
         expect(error).toEqual(errorMessage);
-      }
+      },
     });
 
     const req = httpMock.expectOne('assets/config/config.json');
@@ -77,7 +77,7 @@ describe('Configuration Service', () => {
     const mockConfig = {
       features: { testFeature: true },
       caseEditorConfig: { editor: 'config' },
-      urls: { api: '/test' }
+      urls: { api: '/test' },
     };
 
     spyOn(store, 'pipe').and.returnValue(of(mockConfig));

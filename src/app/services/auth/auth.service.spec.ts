@@ -10,12 +10,7 @@ describe('AuthService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [StoreModule.forRoot({})],
-      providers: [
-        AuthService,
-        SessionStorageService,
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+      providers: [AuthService, SessionStorageService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
   });
 
@@ -58,15 +53,12 @@ describe('AuthService', () => {
   });
 
   describe('logOutAndRedirect', () => {
-    it('should work', inject(
-      [AuthService],
-      async (service: AuthService) => {
-        const spyOnSetWindowLocation = spyOn(service, 'setWindowLocationHref');
-        spyOn(service, 'logOut').and.returnValue(of(false));
-        service.logOutAndRedirect();
-        expect(spyOnSetWindowLocation).toHaveBeenCalledWith('/idle-sign-out');
-      }
-    ));
+    it('should work', inject([AuthService], async (service: AuthService) => {
+      const spyOnSetWindowLocation = spyOn(service, 'setWindowLocationHref');
+      spyOn(service, 'logOut').and.returnValue(of(false));
+      service.logOutAndRedirect();
+      expect(spyOnSetWindowLocation).toHaveBeenCalledWith('/idle-sign-out');
+    }));
   });
 
   describe('signOut', () => {

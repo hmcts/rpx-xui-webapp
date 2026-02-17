@@ -10,10 +10,8 @@ describe('HearingStageSectionComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
-      declarations: [
-        HearingStageSectionComponent
-      ],
-      providers: [provideMockStore({ initialState })]
+      declarations: [HearingStageSectionComponent],
+      providers: [provideMockStore({ initialState })],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingStageSectionComponent);
@@ -38,7 +36,8 @@ describe('HearingStageSectionComponent', () => {
     spyOn(component.changeEditHearing, 'emit');
     component.onChange('stage');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
-      fragmentId: 'stage', changeLink: '/hearings/request/hearing-stage#initial'
+      fragmentId: 'stage',
+      changeLink: '/hearings/request/hearing-stage#initial',
     });
   });
 });

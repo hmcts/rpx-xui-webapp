@@ -13,18 +13,22 @@ const pactSetUp = new PactV3TestSetup({ provider: 'am_judicialBooking', port: 80
 const MockApp = require('../../../../../test_codecept/nodeMock/app');
 
 const REQUEST_BODY = {
-  queryRequest: { userIds: ['018a0310-f122-4377-9504-f635301f39ed-test2'] }
+  queryRequest: { userIds: ['018a0310-f122-4377-9504-f635301f39ed-test2'] },
 };
 
-const RESPONSE_BODY = { bookings: [{
-  beginTime: somethingLike('01-01-2000'),
-  endTime: somethingLike('01-01-3000'),
-  created: somethingLike('01-01-1999'),
-  id: somethingLike('123456789'),
-  locationId: somethingLike('123'),
-  regionId: somethingLike('1'),
-  userId: somethingLike('018a0310-f122-4377-9504-f635301f39ed-test2'),
-  locationName: somethingLike('Test Location') }]
+const RESPONSE_BODY = {
+  bookings: [
+    {
+      beginTime: somethingLike('01-01-2000'),
+      endTime: somethingLike('01-01-3000'),
+      created: somethingLike('01-01-1999'),
+      id: somethingLike('123456789'),
+      locationId: somethingLike('123'),
+      regionId: somethingLike('1'),
+      userId: somethingLike('018a0310-f122-4377-9504-f635301f39ed-test2'),
+      locationName: somethingLike('Test Location'),
+    },
+  ],
 };
 
 describe('Access management api, get bookings', () => {
@@ -44,19 +48,19 @@ describe('Access management api, get bookings', () => {
           method: 'POST',
           path: '/am/bookings/query',
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
-          body: REQUEST_BODY
+          body: REQUEST_BODY,
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: RESPONSE_BODY
-        }
+          body: RESPONSE_BODY,
+        },
       };
       pactSetUp.provider.addInteraction(interaction);
     });
@@ -73,9 +77,7 @@ describe('Access management api, get bookings', () => {
 
       MockApp.onGet('/refdata/location/court-venues/services', (req, res) => {
         res.send({
-          court_venues: [
-            { epimms_id: '1234', location: [{ site_name: 'Test location' }] }
-          ]
+          court_venues: [{ epimms_id: '1234', location: [{ site_name: 'Test location' }] }],
         });
       });
       await MockApp.startServer();
@@ -84,9 +86,9 @@ describe('Access management api, get bookings', () => {
         const configValues = getJudicialBookingAPIOverrides(mockServer.url);
         configValues['services.location_api'] = 'http://localhost:8080';
 
-        // @ts-ignore
         configValues.serviceRefDataMapping = [
-          { 'service': 'IA', 'serviceCodes': ['BFA1'] }, { 'service': 'CIVIL', 'serviceCodes': ['AAA6', 'AAA7'] }
+          { service: 'IA', serviceCodes: ['BFA1'] },
+          { service: 'CIVIL', serviceCodes: ['AAA6', 'AAA7'] },
         ];
 
         sandbox.stub(config, 'get').callsFake((prop) => {
@@ -97,15 +99,14 @@ describe('Access management api, get bookings', () => {
 
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
           body: {
             userId: '018a0310-f122-4377-9504-f635301f39ed-test2',
-            bookableServices: ['IA']
-          }
-
+            bookableServices: ['IA'],
+          },
         });
         let returnedResponse = null;
         const response = mockRes();

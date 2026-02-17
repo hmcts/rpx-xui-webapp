@@ -25,7 +25,7 @@ Then('I see hearing actuals page with details', async function (datatable) {
   }
 });
 
-Then('I validate hearing actuals details in CYA', async function (datatable){
+Then('I validate hearing actuals details in CYA', async function (datatable) {
   const details = datatable.parse().hashes();
   for (const row of details) {
     const expectedField = row.field;
@@ -81,13 +81,13 @@ Then('In hearing actuals, hearing date {string} displayed with values and action
 
   const rows = datatable.parse().hashes();
 
-  for (const row of rows){
+  for (const row of rows) {
     const field = row.field;
     const value = row.value;
     const actions = row.actions.split(',');
 
     const actualValue = await hearingDateObj.getValue(field);
-    if (value === ''){
+    if (value === '') {
       expect(actualValue, ` ${field} Expected value ${value} did not match actual ${actualValue}`).to.equal('');
     } else {
       expect(actualValue, `${field} Expected value ${value} did not match actual ${actualValue}`).to.includes(value);
@@ -95,30 +95,36 @@ Then('In hearing actuals, hearing date {string} displayed with values and action
 
     const actualActions = await hearingDateObj.getActions(field);
 
-    for (const action of actions){
+    for (const action of actions) {
       expect(actualActions, `Expected action ${action} not present in actual actions ${actualActions}`).to.includes(action);
     }
   }
 });
 
-When('In hearing actual for date {string}, I click action link {string} for field {string}', async function (hearingDate, actionLink, field) {
-  const hearingDateObj = hearingActualsPage.getHearingDateObject(hearingDate);
-  expect(await hearingDateObj.isDisplayed(), `Hearing actuals for date ${hearingDate} not displayed`).to.be.true;
+When(
+  'In hearing actual for date {string}, I click action link {string} for field {string}',
+  async function (hearingDate, actionLink, field) {
+    const hearingDateObj = hearingActualsPage.getHearingDateObject(hearingDate);
+    expect(await hearingDateObj.isDisplayed(), `Hearing actuals for date ${hearingDate} not displayed`).to.be.true;
 
-  await hearingDateObj.clickAction(field, actionLink);
-});
+    await hearingDateObj.clickAction(field, actionLink);
+  }
+);
 
-Then('In hearing actuals, I see hearing start and finsih times page', async function(){
+Then('In hearing actuals, I see hearing start and finsih times page', async function () {
   expect(await hearingStartFinishTimesPage.container.isVisible()).to.be.true;
 });
 
-When('In hearing actuals start finish times page, I select radio option {string} for Do you need to record times the hearing was paused?', async function (option) {
-  await hearingStartFinishTimesPage.selectRecordTimesRadioOption(option);
-});
+When(
+  'In hearing actuals start finish times page, I select radio option {string} for Do you need to record times the hearing was paused?',
+  async function (option) {
+    await hearingStartFinishTimesPage.selectRecordTimesRadioOption(option);
+  }
+);
 
-When('In hearing actuals start and finish times page I input values', async function(datatable){
+When('In hearing actuals start and finish times page I input values', async function (datatable) {
   const rows = datatable.parse().hashes();
-  for (const row of rows){
+  for (const row of rows) {
     const field = row.field;
     const value = row.value;
     await hearingStartFinishTimesPage.inputField(field, value);
@@ -128,4 +134,3 @@ When('In hearing actuals start and finish times page I input values', async func
 When('In hearing actuals start finish times page, I click save and continue', async function (option) {
   await hearingStartFinishTimesPage.saveAndContinueButton.click();
 });
-

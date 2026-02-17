@@ -4,12 +4,12 @@ import { Observable } from 'rxjs';
 import { UserDetails } from '../../../app/models/user-details.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UserService {
   constructor(private readonly http: HttpClient) {}
 
-  public getUserDetails(refreshRoleAssignments: boolean=false): Observable<UserDetails> {
+  public getUserDetails(refreshRoleAssignments: boolean = false): Observable<UserDetails> {
     return this.http.get<UserDetails>(`api/user/details?refreshRoleAssignments=${refreshRoleAssignments}`);
   }
 }

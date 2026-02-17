@@ -1,7 +1,13 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { NavigationStart, Router, RoutesRecognized } from '@angular/router';
-import { CookieService, FeatureToggleService, FeatureUser, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
+import {
+  CookieService,
+  FeatureToggleService,
+  FeatureUser,
+  GoogleTagManagerService,
+  TimeoutNotificationsService,
+} from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { combineLatest, Subscription } from 'rxjs';
 import { propsExist } from '../../../../api/lib/objectUtilities';
@@ -17,12 +23,12 @@ import { InitialisationSyncService } from '../../services/ccd-config/initialisat
   selector: 'exui-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class AppComponent implements OnInit, OnDestroy {
   public timeoutModalConfig = {
     countdown: '0 seconds',
-    isVisible: false
+    isVisible: false,
   };
 
   private userId: string = null;
@@ -97,11 +103,10 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   public handleCookieBannerFeatureToggle(): void {
-    this.cookieBannerEnabledSubscription = this.featureService.isEnabled('mc-cookie-banner-enabled')
-      .subscribe((flag) => {
-        this.cookieBannerEnabled = flag;
-        this.setCookieBannerVisibility();
-      });
+    this.cookieBannerEnabledSubscription = this.featureService.isEnabled('mc-cookie-banner-enabled').subscribe((flag) => {
+      this.cookieBannerEnabled = flag;
+      this.setCookieBannerVisibility();
+    });
   }
 
   /**
@@ -156,7 +161,7 @@ export class AppComponent implements OnInit, OnDestroy {
       const featureUser: FeatureUser = {
         key: userInfo.id || userInfo.uid,
         roles: userInfo?.roles,
-        orgId: '-1'
+        orgId: '-1',
       };
       console.log(`LD Client: ${ldClientId}`);
       this.featureService.initialize(featureUser, ldClientId);
@@ -167,7 +172,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
   public setUserAndCheckCookie(userId) {
     this.userId = userId;
-    if (this.userId) { // check if cookie selection has been made *after* user id is available
+    if (this.userId) {
+      // check if cookie selection has been made *after* user id is available
       this.cookieName = `hmcts-exui-cookies-${this.userId}-mc-accepted`;
       this.setCookieBannerVisibility();
     }
@@ -252,7 +258,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public updateTimeoutModal(countdown: string, isVisible: boolean): void {
     this.timeoutModalConfig = {
       countdown,
-      isVisible
+      isVisible,
     };
   }
 
@@ -303,7 +309,7 @@ export class AppComponent implements OnInit, OnDestroy {
     const idleModalDisplayTimeInSeconds = idleModalDisplayTime * 60;
 
     this.idleModalDisplayTimeInMilliseconds = idleModalDisplayTimeInSeconds * 1000;
-    this.totalIdleTimeInMilliseconds = (totalIdleTime * 60) * 1000;
+    this.totalIdleTimeInMilliseconds = totalIdleTime * 60 * 1000;
 
     this.setupTimeoutNotificationService();
   }
@@ -312,7 +318,7 @@ export class AppComponent implements OnInit, OnDestroy {
     const timeoutNotificationConfig: any = {
       idleModalDisplayTime: this.idleModalDisplayTimeInMilliseconds,
       totalIdleTime: this.totalIdleTimeInMilliseconds,
-      idleServiceName: 'idleSession'
+      idleServiceName: 'idleSession',
     };
 
     this.timeoutNotificationsService.notificationOnChange().subscribe((event) => {

@@ -7,5 +7,5 @@ export enum BookingNavigationEvent {
   CHANGELOCATIONCLICK,
   CHANGEDURATIONCLICK,
   CONFIRM,
-  CANCEL
+  CANCEL,
 }

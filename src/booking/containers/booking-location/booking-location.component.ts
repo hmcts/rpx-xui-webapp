@@ -10,7 +10,7 @@ import { BookingNavigationEvent, BookingProcess } from '../../models';
   standalone: false,
   selector: 'exui-booking-location',
   templateUrl: './booking-location.component.html',
-  styleUrls: ['./booking-location.component.scss']
+  styleUrls: ['./booking-location.component.scss'],
 })
 export class BookingLocationComponent implements AfterViewInit, OnInit {
   @Input() public bookingProcess: BookingProcess;
@@ -28,10 +28,10 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
 
   constructor(
     private readonly fb: FormBuilder,
-    private readonly store: Store<fromRoot.State>,
+    private readonly store: Store<fromRoot.State>
   ) {
     this.findLocationFormGroup = this.fb.group({
-      locationSelectedFormControl: [null, Validators.required]
+      locationSelectedFormControl: [null, Validators.required],
     });
   }
 
@@ -70,7 +70,9 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
   // get a comma separated list of unique jurisdictions from the user role assignment info
   private getJurisdictions(): void {
     this.store.pipe(select(fromRoot.getUserDetails)).subscribe((user) => {
-      this.jurisdictions = Array.from(new Set(user.roleAssignmentInfo.filter((role) => role.bookable).map((a) => a.jurisdiction))).toString();
+      this.jurisdictions = Array.from(
+        new Set(user.roleAssignmentInfo.filter((role) => role.bookable).map((a) => a.jurisdiction))
+      ).toString();
     });
   }
 }

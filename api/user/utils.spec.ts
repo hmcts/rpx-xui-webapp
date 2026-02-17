@@ -18,8 +18,8 @@ describe('user.utils', () => {
         created: new Date(2021, 9, 8),
         attributes: {
           baseLocation: '231596',
-          jurisdiction: 'IA'
-        }
+          jurisdiction: 'IA',
+        },
       };
       expect(isCurrentUserCaseAllocator(ROLE_ASSIGNMENT_EXAMPLE)).to.equal(true);
     });
@@ -38,8 +38,8 @@ describe('user.utils', () => {
         created: new Date(2021, 9, 8),
         attributes: {
           baseLocation: '231596',
-          jurisdiction: 'IA'
-        }
+          jurisdiction: 'IA',
+        },
       };
       expect(isCurrentUserCaseAllocator(ROLE_ASSIGNMENT_EXAMPLE)).to.equal(false);
     });
@@ -60,8 +60,8 @@ describe('user.utils', () => {
         created: new Date(2021, 9, 8),
         attributes: {
           baseLocation: '231596',
-          jurisdiction: 'IA'
-        }
+          jurisdiction: 'IA',
+        },
       };
       expect(isCurrentUserCaseAllocator(ROLE_ASSIGNMENT_EXAMPLE, 'IA', '231596')).to.equal(true);
     });
@@ -80,8 +80,8 @@ describe('user.utils', () => {
         created: new Date(2021, 9, 8),
         attributes: {
           baseLocation: '231596',
-          jurisdiction: 'IA'
-        }
+          jurisdiction: 'IA',
+        },
       };
       expect(isCurrentUserCaseAllocator(ROLE_ASSIGNMENT_EXAMPLE, 'DIVORCE', '123123')).to.equal(false);
     });
@@ -101,38 +101,40 @@ describe('user.utils', () => {
     });
 
     it('should return 1 row', () => {
-      const roleAssignmentInfo = [{
-        id: '478c83f8-0ed0-4651-b8bf-cd2b1e206ac2',
-        actorIdType: 'IDAM',
-        actorId: 'c5a983be-ca99-4b8a-97f7-23be33c3fd22',
-        roleType: 'CASE',
-        roleName: 'SOME_ROLE',
-        classification: 'PUBLIC',
-        grantType: 'STANDARD',
-        roleCategory: LEGAL_OPS_TYPE,
-        readOnly: false,
-        created: new Date(2021, 9, 8),
-        attributes: {
-          baseLocation: '231596',
-          jurisdiction: 'IA'
-        }
-      },
-      {
-        id: '478c83f8-0ed0-4651-b8bf-cd2b1e206ac3',
-        actorIdType: 'IDAM',
-        actorId: 'c5a983be-ca99-4b8a-97f7-23be33c3fd22',
-        roleType: 'ORGANISATION',
-        roleName: CASE_ALLOCATOR_ROLE,
-        classification: 'PUBLIC',
-        grantType: 'STANDARD',
-        roleCategory: LEGAL_OPS_TYPE,
-        readOnly: false,
-        created: new Date(2021, 9, 8),
-        attributes: {
-          baseLocation: '231596',
-          jurisdiction: 'IA'
-        }
-      }];
+      const roleAssignmentInfo = [
+        {
+          id: '478c83f8-0ed0-4651-b8bf-cd2b1e206ac2',
+          actorIdType: 'IDAM',
+          actorId: 'c5a983be-ca99-4b8a-97f7-23be33c3fd22',
+          roleType: 'CASE',
+          roleName: 'SOME_ROLE',
+          classification: 'PUBLIC',
+          grantType: 'STANDARD',
+          roleCategory: LEGAL_OPS_TYPE,
+          readOnly: false,
+          created: new Date(2021, 9, 8),
+          attributes: {
+            baseLocation: '231596',
+            jurisdiction: 'IA',
+          },
+        },
+        {
+          id: '478c83f8-0ed0-4651-b8bf-cd2b1e206ac3',
+          actorIdType: 'IDAM',
+          actorId: 'c5a983be-ca99-4b8a-97f7-23be33c3fd22',
+          roleType: 'ORGANISATION',
+          roleName: CASE_ALLOCATOR_ROLE,
+          classification: 'PUBLIC',
+          grantType: 'STANDARD',
+          roleCategory: LEGAL_OPS_TYPE,
+          readOnly: false,
+          created: new Date(2021, 9, 8),
+          attributes: {
+            baseLocation: '231596',
+            jurisdiction: 'IA',
+          },
+        },
+      ];
       const response = getOrganisationRoles(roleAssignmentInfo);
       expect(response.length).to.equal(1);
       expect(response[0]).to.equal(CASE_ALLOCATOR_ROLE);
@@ -141,10 +143,16 @@ describe('user.utils', () => {
 
   describe('getUserRoleCategory', () => {
     it('should return UserRoleCategory', () => {
-      const roles = ['ADMIN', 'caseworker-ia',
-        'caseworker-ia-caseofficer', 'cwd-user',
-        'case-allocator', 'tribunal-caseworker',
-        'hmcts-legal-operations', 'task-supervisor'];
+      const roles = [
+        'ADMIN',
+        'caseworker-ia',
+        'caseworker-ia-caseofficer',
+        'cwd-user',
+        'case-allocator',
+        'tribunal-caseworker',
+        'hmcts-legal-operations',
+        'task-supervisor',
+      ];
       expect(getUserRoleCategory(roles)).to.equal('admin');
     });
   });
@@ -158,14 +166,10 @@ describe('user.utils', () => {
       ssoProvider: 'testing-support',
       uid: '12345-45678-567890',
       identity: 'id=12345-45678-567890,ou=test-config',
-      roles: [
-        'test-role',
-        'caseworker-role',
-        'judge-role'
-      ],
+      roles: ['test-role', 'caseworker-role', 'judge-role'],
       sub: 'test@ejudiciary.net',
       subname: 'test@ejudiciary.net',
-      iss: 'https://test-url.com?test=1'
+      iss: 'https://test-url.com?test=1',
     };
     it('should ensure user details are valid', () => {
       expect(userDetailsValid(null)).to.equal(true);

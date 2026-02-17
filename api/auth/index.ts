@@ -25,13 +25,13 @@ import {
   SESSION_SECRET,
   SYSTEM_USER_NAME,
   SYSTEM_USER_PASSWORD,
-  FEATURE_QUERY_IDAM_SERVICE_OVERRIDE
+  FEATURE_QUERY_IDAM_SERVICE_OVERRIDE,
 } from '../configuration/references';
 import { client } from '../lib/appInsights';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest } from '../lib/models';
 import axios from 'axios';
-import qs = require('qs');
+import * as qs from 'qs';
 
 const logger = log4jui.getLogger('auth');
 
@@ -87,10 +87,10 @@ export const getXuiNodeMiddleware = async () => {
       '/workallocation/getJudicialUsers',
       '/workallocation/caseworker/getUsersByServiceName',
       '/api/prd/judicial/searchJudicialUserByPersonalCodes',
-      '/api/prd/judicial/searchJudicialUserByIdamId'
+      '/api/prd/judicial/searchJudicialUserByIdamId',
     ],
     scope: 'openid profile roles manage-user create-user search-user',
-    userName
+    userName,
   };
 
   //TODO: we can move these out into proper config at some point to tidy up even further
@@ -112,41 +112,43 @@ export const getXuiNodeMiddleware = async () => {
     tokenURL: tokenUrl,
     useRoutes: true,
     serviceOverride: getConfigValue(SERVICES_IDAM_SERVICE_OVERRIDE),
-    ssoLogoutURL: `${idamWebUrl}/o/endSession`
+    ssoLogoutURL: `${idamWebUrl}/o/endSession`,
   };
 
   const baseStoreOptions = {
     cookie: {
       httpOnly: true,
       sameSite: 'Lax',
-      secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED)
+      secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
     },
     name: 'xui-webapp',
     resave: false,
     saveUninitialized: false,
-    secret: getConfigValue(SESSION_SECRET)
+    secret: getConfigValue(SESSION_SECRET),
   } as SessionMetadata;
 
   const redisStoreOptions = {
     redisStore: {
-      ...baseStoreOptions, ...{
+      ...baseStoreOptions,
+      ...{
         redisStoreOptions: {
           redisCloudUrl: getConfigValue(REDIS_CLOUD_URL),
           redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX),
-          redisTtl: getConfigValue(REDIS_TTL)
-        }
-      }
-    }
+          redisTtl: getConfigValue(REDIS_TTL),
+        },
+      },
+    },
   };
 
   const fileStoreOptions = {
     fileStore: {
-      ...baseStoreOptions, ...{
+      ...baseStoreOptions,
+      ...{
         fileStoreOptions: {
-          filePath: getConfigValue(NOW) ? '/tmp/sessions' : '.sessions'
-        }
-      }
-    }
+          filePath: getConfigValue(NOW) ? '/tmp/sessions' : '.sessions',
+        },
+      },
+    },
   };
 
   const nodeLibOptions = {
@@ -154,10 +156,10 @@ export const getXuiNodeMiddleware = async () => {
       s2s: {
         microservice: getConfigValue(MICROSERVICE),
         s2sEndpointUrl: `${getConfigValue(SERVICE_S2S_PATH)}/lease`,
-        s2sSecret: s2sSecret.trim()
-      }
+        s2sSecret: s2sSecret.trim(),
+      },
     },
-    session: showFeature(FEATURE_REDIS_ENABLED) ? redisStoreOptions : fileStoreOptions
+    session: showFeature(FEATURE_REDIS_ENABLED) ? redisStoreOptions : fileStoreOptions,
   };
 
   const getToken = async () => {
@@ -165,13 +167,13 @@ export const getXuiNodeMiddleware = async () => {
       grant_type: 'client_credentials',
       client_id: idamClient,
       client_secret: secret,
-      scope: 'profile roles view-service-provider'
+      scope: 'profile roles view-service-provider',
     });
     try {
       const response = await axios.post(tokenUrl, data, {
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
       });
       return response.data.access_token;
     } catch (error) {
@@ -185,9 +187,11 @@ export const getXuiNodeMiddleware = async () => {
       if (!accessToken) {
         throw new Error('Failed to get access token');
       }
-      const response = await axios.get(clientServiceDetailsUrl, { headers: {
-        'Authorization': `Bearer ${accessToken}`
-      } });
+      const response = await axios.get(clientServiceDetailsUrl, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
       logger.info('Successfully retrieved service override from API');
       return response.data.oauth2.issuerOverride;
     } catch (error) {

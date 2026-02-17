@@ -5,9 +5,7 @@ import { environment } from './environments/environment';
 import { ENVIRONMENT_CONFIG } from './models/environmentConfig.model';
 
 /* ①  Read the <meta name="csp-nonce"> placed by the server template */
-const nonce =
-  document.querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')?.content ||
-  '';
+const nonce = document.querySelector<HTMLMetaElement>('meta[name="csp-nonce"]')?.content || '';
 
 if (environment.production) {
   enableProdMode();
@@ -19,7 +17,7 @@ fetch('/external/config/ui/')
   .then((config) =>
     platformBrowserDynamic([
       { provide: ENVIRONMENT_CONFIG, useValue: config },
-      { provide: CSP_NONCE, useValue: nonce }
+      { provide: CSP_NONCE, useValue: nonce },
     ]).bootstrapModule(AppModule)
   )
   .catch((err) => console.error(err));

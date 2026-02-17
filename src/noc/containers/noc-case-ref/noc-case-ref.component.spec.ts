@@ -10,7 +10,7 @@ import { NocCaseRefComponent } from './noc-case-ref.component';
 
 @Pipe({
   standalone: false,
-  name: 'rpxTranslate'
+  name: 'rpxTranslate',
 })
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
@@ -26,20 +26,10 @@ describe('NocCaseRefComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        ReactiveFormsModule,
-        UtilsModule
-      ],
-      schemas: [
-        NO_ERRORS_SCHEMA
-      ],
-      declarations: [
-        NocCaseRefComponent,
-        RpxTranslateMockPipe
-      ],
-      providers: [
-        provideMockStore()
-      ]
+      imports: [ReactiveFormsModule, UtilsModule],
+      schemas: [NO_ERRORS_SCHEMA],
+      declarations: [NocCaseRefComponent, RpxTranslateMockPipe],
+      providers: [provideMockStore()],
     }).compileComponents();
 
     store = TestBed.inject(Store);
@@ -57,7 +47,7 @@ describe('NocCaseRefComponent', () => {
       component.nocNavigationCurrentState = NocState.START;
       component.navEvent = {
         event: NocNavigationEvent.CONTINUE,
-        timestamp: 0
+        timestamp: 0,
       };
       component.onSubmit();
       expect(navigationHandlerSpy).toHaveBeenCalledWith(NocNavigationEvent.CONTINUE);

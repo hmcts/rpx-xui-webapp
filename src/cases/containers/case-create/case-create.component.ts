@@ -14,10 +14,10 @@ import * as fromCaseCreate from '../../store';
   standalone: false,
   selector: 'exui-create-case',
   templateUrl: './case-create.component.html',
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class CasesCreateComponent implements OnInit, OnDestroy {
-  public caseCreateInputs: {jurisdictionId: string; caseTypeId: string; eventId: string};
+  public caseCreateInputs: { jurisdictionId: string; caseTypeId: string; eventId: string };
 
   public caseCreateEventsBindings: ActionBindingModel[];
   public fromCasesFeature: any;
@@ -45,7 +45,7 @@ export class CasesCreateComponent implements OnInit, OnDestroy {
      */
     this.caseCreateEventsBindings = [
       { type: 'cancelled', action: 'CreateCaseReset' },
-      { type: 'submitted', action: 'ApplyChange' }
+      { type: 'submitted', action: 'ApplyChange' },
     ];
   }
 

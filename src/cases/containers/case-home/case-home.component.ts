@@ -5,7 +5,7 @@ import {
   HttpError,
   LoadingService as CCDLoadingService,
   NavigationNotifierService,
-  NavigationOrigin
+  NavigationOrigin,
 } from '@hmcts/ccd-case-ui-toolkit';
 import { LoadingService as CommonLibLoadingService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
@@ -20,7 +20,7 @@ import * as fromFeature from '../../store';
   standalone: false,
   selector: 'exui-case-home',
   templateUrl: 'case-home.component.html',
-  styleUrls: ['case-home.component.scss']
+  styleUrls: ['case-home.component.scss'],
 })
 export class CaseHomeComponent implements OnInit, OnDestroy {
   public static readonly CASE_CREATED_MSG = 'The case has been created successfully';
@@ -36,7 +36,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
     private readonly navigationNotifier: NavigationNotifierService,
     private readonly store: Store<fromFeature.State>,
     private readonly commonLibLoadingService: CommonLibLoadingService,
-    private readonly ccdLibLoadingService: CCDLoadingService,
+    private readonly ccdLibLoadingService: CCDLoadingService
   ) {}
 
   /**
@@ -53,12 +53,12 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
       }
     }) as any;
 
-    const libServices$ = combineLatest([
-      this.ccdLibLoadingService.isLoading,
-      this.commonLibLoadingService.isLoading
-    ]);
+    const libServices$ = combineLatest([this.ccdLibLoadingService.isLoading, this.commonLibLoadingService.isLoading]);
 
-    this.showSpinner$ = libServices$.pipe(delay(0), map((states) => states.reduce((c, s) => c || s, false)));
+    this.showSpinner$ = libServices$.pipe(
+      delay(0),
+      map((states) => states.reduce((c, s) => c || s, false))
+    );
   }
 
   public ngOnDestroy(): void {
@@ -80,36 +80,36 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
           callback: () => {
             this.alertService.setPreserveAlerts(true);
             this.alertService.success({ phrase: CaseHomeComponent.DRAFT_DELETED_MSG });
-          }
+          },
         };
         break;
       case NavigationOrigin.ERROR_DELETING_DRAFT:
         params = {
-          path: ['cases']
+          path: ['cases'],
         };
         break;
       case NavigationOrigin.DRAFT_RESUMED:
         params = {
-          path: ['create/case',
-            navigation.jid,
-            navigation.ctid,
-            navigation.etid],
+          path: ['create/case', navigation.jid, navigation.ctid, navigation.etid],
           query: navigation.queryParams,
-          errorHandler: (error) => this.handleErrorWithTriggerId(error, navigation.etid)
+          errorHandler: (error) => this.handleErrorWithTriggerId(error, navigation.etid),
         };
         break;
       case NavigationOrigin.EVENT_TRIGGERED:
         const query = navigation.queryParams;
         params = {
-          path: ['cases',
+          path: [
+            'cases',
             'case-details',
-            navigation.relativeTo.snapshot.params.jurisdiction ?? navigation.relativeTo.data?.value?.case?.case_type?.jurisdiction?.id,
+            navigation.relativeTo.snapshot.params.jurisdiction ??
+              navigation.relativeTo.data?.value?.case?.case_type?.jurisdiction?.id,
             navigation.relativeTo.snapshot.params.caseType ?? navigation.relativeTo.data?.value?.case?.case_type?.id,
             navigation.relativeTo.snapshot.params.cid,
             'trigger',
-            navigation.etid],
+            navigation.etid,
+          ],
           query: { ...query },
-          errorHandler: (error) => this.handleErrorWithTriggerId(error, navigation.etid)
+          errorHandler: (error) => this.handleErrorWithTriggerId(error, navigation.etid),
         };
         break;
       case NavigationOrigin.NO_READ_ACCESS_REDIRECTION:
@@ -117,18 +117,19 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
           path: ['cases'],
           callback: () => {
             this.alertService.success({ phrase: CaseHomeComponent.CASE_CREATED_MSG });
-          }
+          },
         };
         break;
       default:
         params = {
-          path: ['cases',
+          path: [
+            'cases',
             'case-details',
             navigation.relativeTo.snapshot.params.jurisdiction,
             navigation.relativeTo.snapshot.params.caseType,
-            navigation.relativeTo.snapshot.params.cid
+            navigation.relativeTo.snapshot.params.cid,
           ],
-          errorHandler: (error) => this.handleCaseViewError(error)
+          errorHandler: (error) => this.handleCaseViewError(error),
         };
     }
     return params;

@@ -2,7 +2,13 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { AlertService, DefinitionsService, PaginationMetadata, SearchResultViewItem, WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import {
+  AlertService,
+  DefinitionsService,
+  PaginationMetadata,
+  SearchResultViewItem,
+  WindowService,
+} from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
@@ -13,7 +19,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 
 @Pipe({
   standalone: false,
-  name: 'rpxTranslate'
+  name: 'rpxTranslate',
 })
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
@@ -46,28 +52,28 @@ describe('CaseListComponent', () => {
       providers: [
         {
           provide: AppConfig,
-          useValue: mockAppConfig
+          useValue: mockAppConfig,
         },
         {
           provide: DefinitionsService,
-          useValue: mockDefinitionsService
+          useValue: mockDefinitionsService,
         },
         {
           provide: WindowService,
-          useValue: mockWindowService
+          useValue: mockWindowService,
         },
         {
           provide: FeatureToggleService,
-          useValue: mockFeatureToggleService
+          useValue: mockFeatureToggleService,
         },
         {
           provide: AlertService,
-          useValue: mockAlertService
+          useValue: mockAlertService,
         },
         provideMockStore({}),
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
 
     store = TestBed.inject(Store);
@@ -93,13 +99,23 @@ describe('CaseListComponent', () => {
       spyOn(component, 'setCaseListFilterDefaults').and.callThrough();
       spyOn(component, 'listenToPaginationMetadata').and.callThrough();
 
-      mockDefinitionsService.getJurisdictions.and.returnValue(of([{
-        id: 'some id',
-        caseTypes: [{
-          id: 'some id',
-          states: [{
-            id: 'some id'
-          }] }] }]));
+      mockDefinitionsService.getJurisdictions.and.returnValue(
+        of([
+          {
+            id: 'some id',
+            caseTypes: [
+              {
+                id: 'some id',
+                states: [
+                  {
+                    id: 'some id',
+                  },
+                ],
+              },
+            ],
+          },
+        ])
+      );
 
       component.ngOnInit();
 
@@ -109,11 +125,11 @@ describe('CaseListComponent', () => {
   });
 
   describe('getToggleButtonName()', () => {
-    it('should return the toggle button name as \'Hide Filter\' if we have shown the filter', () => {
+    it("should return the toggle button name as 'Hide Filter' if we have shown the filter", () => {
       expect(component.getToggleButtonName(true)).toEqual('Hide Filter');
     });
 
-    it('should return the toggle button name as \'Show Filter\' if we do not show the filter', () => {
+    it("should return the toggle button name as 'Show Filter' if we do not show the filter", () => {
       expect(component.getToggleButtonName(false)).toEqual('Show Filter');
     });
   });
@@ -124,7 +140,7 @@ describe('CaseListComponent', () => {
      */
     it('should dispatch an action to find the case list pagination metadata.', () => {
       const event = {
-        test: 'test'
+        test: 'test',
       };
       component.findCaseListPaginationMetadata(event);
       expect(spyOnDispatchToStore).toHaveBeenCalled();
@@ -134,7 +150,7 @@ describe('CaseListComponent', () => {
   describe('getElasticSearchResults', () => {
     it('should dispatch an action to get results from elastic search endpoint.', () => {
       const event = {
-        test: 'test'
+        test: 'test',
       };
       component.getElasticSearchResults(event);
       expect(spyOnDispatchToStore).toHaveBeenCalled();
@@ -163,8 +179,7 @@ describe('CaseListComponent', () => {
       const formGroupValues = {};
       const page = 1;
 
-      const event = component.createEvent(jurisdiction, caseType, caseState, metadataFields,
-        formGroupValues, page, null);
+      const event = component.createEvent(jurisdiction, caseType, caseState, metadataFields, formGroupValues, page, null);
 
       expect(event.selected.jurisdiction).toEqual(jurisdiction);
       expect(event.selected.caseType).toEqual(caseType);
@@ -189,8 +204,8 @@ describe('CaseListComponent', () => {
 
       const event = {
         selected: {
-          page: 1
-        }
+          page: 1,
+        },
       };
 
       component.applyChangePage(event);
@@ -207,8 +222,8 @@ describe('CaseListComponent', () => {
 
       const event = {
         selected: {
-          page: 1
-        }
+          page: 1,
+        },
       };
 
       component.elasticSearchFlag = false;
@@ -225,8 +240,8 @@ describe('CaseListComponent', () => {
 
       const event = {
         selected: {
-          page: 1
-        }
+          page: 1,
+        },
       };
       component.elasticSearchFlag = true;
       component.applyChangePage(event);
@@ -240,17 +255,15 @@ describe('CaseListComponent', () => {
 
       const event = {
         selected: {
-          page: 1
-        }
+          page: 1,
+        },
       };
 
       const localStorageGetItemSpy = spyOn(localStorage, 'getItem');
       component.savedQueryParams = { id: '' };
-      localStorageGetItemSpy.and.returnValue('{' +
-        '"jurisdiction": "Probate", ' +
-        '"case-type": "GrantOfRepresentation", ' +
-        '"case-state": "BOReadyToIssue"' +
-        '}');
+      localStorageGetItemSpy.and.returnValue(
+        '{' + '"jurisdiction": "Probate", ' + '"case-type": "GrantOfRepresentation", ' + '"case-state": "BOReadyToIssue"' + '}'
+      );
       component.elasticSearchFlag = false;
 
       fixture.detectChanges();
@@ -272,8 +285,7 @@ describe('CaseListComponent', () => {
       const formGroupValues = {};
       const page = 1;
 
-      event = component.createEvent(jurisdiction, caseType, caseState, metadataFields,
-        formGroupValues, page, null);
+      event = component.createEvent(jurisdiction, caseType, caseState, metadataFields, formGroupValues, page, null);
     });
 
     it('should call findCaseListPaginationMetadata() on apply of filter.', async () => {
@@ -336,12 +348,7 @@ describe('CaseListComponent', () => {
 
   describe('onFilterSubscriptionHandler()', () => {
     it('should update the components jurisdiction property, on return of the filter subscription.', async () => {
-      const filterResult = [
-        { id: 'PROBATE' },
-        { id: 'GrantOfRepresentation' },
-        { id: 'SolAppUpdated' },
-        ['[CASE_REFERENCE]']
-      ];
+      const filterResult = [{ id: 'PROBATE' }, { id: 'GrantOfRepresentation' }, { id: 'SolAppUpdated' }, ['[CASE_REFERENCE]']];
 
       component.onFilterSubscriptionHandler(filterResult);
 
@@ -358,10 +365,10 @@ describe('CaseListComponent', () => {
         columns: [],
         results: [
           {
-            case_id: 'DRAFT274146'
-          }
+            case_id: 'DRAFT274146',
+          },
         ],
-        result_error: null
+        result_error: null,
       };
 
       component.onResultsViewHandler(resultView);
@@ -374,10 +381,10 @@ describe('CaseListComponent', () => {
         columns: [],
         results: [
           {
-            case_id: 'DRAFT274146'
-          }
+            case_id: 'DRAFT274146',
+          },
         ],
-        result_error: null
+        result_error: null,
       };
 
       component.onResultsViewHandler(resultView);
@@ -389,10 +396,10 @@ describe('CaseListComponent', () => {
         columns: [],
         results: [
           {
-            case_id: 'DRAFT274146'
-          }
+            case_id: 'DRAFT274146',
+          },
         ],
-        result_error: null
+        result_error: null,
       };
 
       component.onResultsViewHandler(resultView);
@@ -402,47 +409,27 @@ describe('CaseListComponent', () => {
 
   describe('caseShareIsVisible', () => {
     it('should return true when case share available and jurisdiction is shareable', async () => {
-      const result = [
-        { canShareCases: true },
-        ['dummy'],
-        { id: 'dummy' }
-      ];
+      const result = [{ canShareCases: true }, ['dummy'], { id: 'dummy' }];
       expect(component.caseShareIsVisible(result)).toBeTruthy();
     });
 
     it('should return false when jurisdiction is not shareable.', async () => {
-      const result = [
-        { canShareCases: true },
-        ['dummy1'],
-        { id: 'dummy' }
-      ];
+      const result = [{ canShareCases: true }, ['dummy1'], { id: 'dummy' }];
       expect(component.caseShareIsVisible(result)).toBeFalsy();
     });
 
     it('should return false when there are no shareable jurisdictions.', async () => {
-      const result = [
-        { canShareCases: true },
-        [],
-        { id: 'dummy' }
-      ];
+      const result = [{ canShareCases: true }, [], { id: 'dummy' }];
       expect(component.caseShareIsVisible(result)).toBeFalsy();
     });
 
     it('should return false when the jurisdiction is shareable but sharing is disabled.', async () => {
-      const result = [
-        { canShareCases: false },
-        ['dummy'],
-        { id: 'dummy' }
-      ];
+      const result = [{ canShareCases: false }, ['dummy'], { id: 'dummy' }];
       expect(component.caseShareIsVisible(result)).toBeFalsy();
     });
 
     it('should return false when there are no shareable jurisdictions and sharing is disabled.', async () => {
-      const result = [
-        { canShareCases: false },
-        [],
-        { id: 'dummy' }
-      ];
+      const result = [{ canShareCases: false }, [], { id: 'dummy' }];
       expect(component.caseShareIsVisible(result)).toBeFalsy();
     });
   });
@@ -457,22 +444,28 @@ describe('CaseListComponent', () => {
 
   describe('setCaseListFilterDefaults()', () => {
     it('should set the defaults.', async () => {
-      component.jurisdictionsBehaviourSubject$.next([{
-        id: 'some id',
-        name: 'some name',
-        description: 'some desc',
-        caseTypes: [{
+      component.jurisdictionsBehaviourSubject$.next([
+        {
           id: 'some id',
-          events: null,
           name: 'some name',
           description: 'some desc',
-          states: [{
-            id: 'some state id',
-            name: 'some name',
-            description: 'some desc'
-          }]
-        }]
-      }]);
+          caseTypes: [
+            {
+              id: 'some id',
+              events: null,
+              name: 'some name',
+              description: 'some desc',
+              states: [
+                {
+                  id: 'some state id',
+                  name: 'some name',
+                  description: 'some desc',
+                },
+              ],
+            },
+          ],
+        },
+      ]);
 
       component.jurisdictionsBehaviourSubject$.subscribe(() => {
         component.setCaseListFilterDefaults();
@@ -484,27 +477,31 @@ describe('CaseListComponent', () => {
 
     it('should set the defaults from localStorage.', async () => {
       const localStorageGetItemSpy = spyOn(localStorage, 'getItem');
-      localStorageGetItemSpy.and.returnValue('{' +
-        '"jurisdiction": "Probate", ' +
-        '"case-type": "GrantOfRepresentation", ' +
-        '"case-state": null' +
-        '}');
-      component.jurisdictionsBehaviourSubject$.next([{
-        id: 'Probate',
-        name: 'some name',
-        description: 'some desc',
-        caseTypes: [{
-          id: 'GrantOfRepresentation',
-          events: null,
+      localStorageGetItemSpy.and.returnValue(
+        '{' + '"jurisdiction": "Probate", ' + '"case-type": "GrantOfRepresentation", ' + '"case-state": null' + '}'
+      );
+      component.jurisdictionsBehaviourSubject$.next([
+        {
+          id: 'Probate',
           name: 'some name',
           description: 'some desc',
-          states: [{
-            id: 'BOReadyToIssue',
-            name: 'some name',
-            description: 'some desc'
-          }]
-        }]
-      }]);
+          caseTypes: [
+            {
+              id: 'GrantOfRepresentation',
+              events: null,
+              name: 'some name',
+              description: 'some desc',
+              states: [
+                {
+                  id: 'BOReadyToIssue',
+                  name: 'some name',
+                  description: 'some desc',
+                },
+              ],
+            },
+          ],
+        },
+      ]);
 
       component.jurisdictionsBehaviourSubject$.subscribe(() => {
         component.setCaseListFilterDefaults();
@@ -520,27 +517,31 @@ describe('CaseListComponent', () => {
       fixture.detectChanges();
 
       const localStorageGetItemSpy = spyOn(localStorage, 'getItem');
-      localStorageGetItemSpy.and.returnValue('{' +
-        '"jurisdiction": "Probate", ' +
-        '"case-type": "GrantOfRepresentation", ' +
-        '"case-state": "BOReadyToIssue"' +
-        '}');
-      component.jurisdictionsBehaviourSubject$.next([{
-        id: 'Probate',
-        name: 'some name',
-        description: 'some desc',
-        caseTypes: [{
-          id: 'GrantOfRepresentation',
-          events: null,
+      localStorageGetItemSpy.and.returnValue(
+        '{' + '"jurisdiction": "Probate", ' + '"case-type": "GrantOfRepresentation", ' + '"case-state": "BOReadyToIssue"' + '}'
+      );
+      component.jurisdictionsBehaviourSubject$.next([
+        {
+          id: 'Probate',
           name: 'some name',
           description: 'some desc',
-          states: [{
-            id: 'BOReadyToIssue',
-            name: 'some name',
-            description: 'some desc'
-          }]
-        }]
-      }]);
+          caseTypes: [
+            {
+              id: 'GrantOfRepresentation',
+              events: null,
+              name: 'some name',
+              description: 'some desc',
+              states: [
+                {
+                  id: 'BOReadyToIssue',
+                  name: 'some name',
+                  description: 'some desc',
+                },
+              ],
+            },
+          ],
+        },
+      ]);
 
       component.jurisdictionsBehaviourSubject$.subscribe(() => {
         component.setCaseListFilterDefaults();
@@ -554,7 +555,8 @@ describe('CaseListComponent', () => {
     });
 
     it('jurisdiction matches createEvent jurisdiction.', () => {
-      const data = { metadataFieldsGroupFromLS: undefined,
+      const data = {
+        metadataFieldsGroupFromLS: undefined,
         jurisdictionFromLS: { id: 'PUBLICLAW' },
         caseStateGroupFromLS: { id: null },
         caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
@@ -564,15 +566,24 @@ describe('CaseListComponent', () => {
           caseName: null,
           dateSubmitted: null,
           evidenceHandled: null,
-          familyManCaseNumber: null
-        }
+          familyManCaseNumber: null,
+        },
       };
-      const event = component.createEvent(data.jurisdictionFromLS, data.caseTypeGroupFromLS, data.caseStateGroupFromLS, data.metadataFieldsGroupFromLS, data.formGroupFromLS, 1, undefined);
+      const event = component.createEvent(
+        data.jurisdictionFromLS,
+        data.caseTypeGroupFromLS,
+        data.caseStateGroupFromLS,
+        data.metadataFieldsGroupFromLS,
+        data.formGroupFromLS,
+        1,
+        undefined
+      );
       expect(event.selected.jurisdiction).toEqual(data.jurisdictionFromLS);
     });
 
     it('case type matches createEvent case type.', () => {
-      const data = { metadataFieldsGroupFromLS: undefined,
+      const data = {
+        metadataFieldsGroupFromLS: undefined,
         jurisdictionFromLS: { id: 'PUBLICLAW' },
         caseStateGroupFromLS: { id: null },
         caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
@@ -582,15 +593,24 @@ describe('CaseListComponent', () => {
           caseName: null,
           dateSubmitted: null,
           evidenceHandled: null,
-          familyManCaseNumber: null
-        }
+          familyManCaseNumber: null,
+        },
       };
-      const event = component.createEvent(data.jurisdictionFromLS, data.caseTypeGroupFromLS, data.caseStateGroupFromLS, data.metadataFieldsGroupFromLS, data.formGroupFromLS, 1, undefined);
+      const event = component.createEvent(
+        data.jurisdictionFromLS,
+        data.caseTypeGroupFromLS,
+        data.caseStateGroupFromLS,
+        data.metadataFieldsGroupFromLS,
+        data.formGroupFromLS,
+        1,
+        undefined
+      );
       expect(event.selected.caseType).toEqual(data.caseTypeGroupFromLS);
     });
 
     it('form group matches createEvent formgroup.', () => {
-      const data = { metadataFieldsGroupFromLS: undefined,
+      const data = {
+        metadataFieldsGroupFromLS: undefined,
         jurisdictionFromLS: { id: 'PUBLICLAW' },
         caseStateGroupFromLS: { id: null },
         caseTypeGroupFromLS: { id: 'CARE_SUPERVISION_EPO' },
@@ -600,10 +620,18 @@ describe('CaseListComponent', () => {
           caseName: null,
           dateSubmitted: null,
           evidenceHandled: null,
-          familyManCaseNumber: null
-        }
+          familyManCaseNumber: null,
+        },
       };
-      const event = component.createEvent(data.jurisdictionFromLS, data.caseTypeGroupFromLS, data.caseStateGroupFromLS, data.metadataFieldsGroupFromLS, data.formGroupFromLS, 1, undefined);
+      const event = component.createEvent(
+        data.jurisdictionFromLS,
+        data.caseTypeGroupFromLS,
+        data.caseStateGroupFromLS,
+        data.metadataFieldsGroupFromLS,
+        data.formGroupFromLS,
+        1,
+        undefined
+      );
       expect(event.selected.formGroup.value).toEqual(data.formGroupFromLS);
     });
   });
@@ -612,17 +640,20 @@ describe('CaseListComponent', () => {
     let selectedCases: SearchResultViewItem[] = [];
 
     beforeEach(() => {
-      selectedCases = [{
-        case_id: '1',
-        case_fields: {
-          solsSolicitorAppReference: 'James123'
-        }
-      }, {
-        case_id: '2',
-        case_fields: {
-          solsSolicitorAppReference: 'Steve321'
-        }
-      }];
+      selectedCases = [
+        {
+          case_id: '1',
+          case_fields: {
+            solsSolicitorAppReference: 'James123',
+          },
+        },
+        {
+          case_id: '2',
+          case_fields: {
+            solsSolicitorAppReference: 'Steve321',
+          },
+        },
+      ];
     });
 
     it('Should receive selected cases', async () => {
@@ -630,16 +661,18 @@ describe('CaseListComponent', () => {
       expect(component.selectedCases.length).toEqual(2);
     });
 
-    it('Should see the \'Share case\' button greyed out', async () => {
+    it("Should see the 'Share case' button greyed out", async () => {
       selectedCases = [];
       component.retrieveSelections(selectedCases);
-      spyOnPipeToStore.and.returnValue(of({
-        sessionTimeout: {
-          idleModalDisplayTime: 1,
-          totalIdleTime: 1
-        },
-        canShareCases: true
-      }));
+      spyOnPipeToStore.and.returnValue(
+        of({
+          sessionTimeout: {
+            idleModalDisplayTime: 1,
+            totalIdleTime: 1,
+          },
+          canShareCases: true,
+        })
+      );
       spyOnProperty(component, 'isCaseShareVisible$').and.returnValue(of(true));
       fixture.detectChanges();
       expect(fixture.debugElement.nativeElement.querySelector('#btn-share-button').textContent).toContain('Share Case');
@@ -671,15 +704,23 @@ describe('CaseListComponent', () => {
   describe('Should see cases unselectable information', () => {
     beforeEach(async () => {
       spyOnPipeToStore.and.returnValue(of({}));
-      mockDefinitionsService.getJurisdictions.and.returnValue(of([{
-        id: 'some id',
-        caseTypes: [{
-          id: 'some id',
-          states: [{
-            id: 'some id'
-          }]
-        }]
-      }]));
+      mockDefinitionsService.getJurisdictions.and.returnValue(
+        of([
+          {
+            id: 'some id',
+            caseTypes: [
+              {
+                id: 'some id',
+                states: [
+                  {
+                    id: 'some id',
+                  },
+                ],
+              },
+            ],
+          },
+        ])
+      );
     });
 
     it('should see why are some cases unselectable', async () => {
@@ -687,18 +728,20 @@ describe('CaseListComponent', () => {
         columns: [],
         results: [
           {
-            case_id: 'case_123'
-          }
+            case_id: 'case_123',
+          },
         ],
-        result_error: null
+        result_error: null,
       };
-      spyOnPipeToStore.and.returnValue(of({
-        sessionTimeout: {
-          idleModalDisplayTime: 1,
-          totalIdleTime: 1
-        },
-        canShareCases: true
-      }));
+      spyOnPipeToStore.and.returnValue(
+        of({
+          sessionTimeout: {
+            idleModalDisplayTime: 1,
+            totalIdleTime: 1,
+          },
+          canShareCases: true,
+        })
+      );
       component.onResultsViewHandler(resultView);
       expect(component.hasResults()).toBeTruthy();
       spyOn(component, 'hasResults').and.returnValue(true);
@@ -707,14 +750,16 @@ describe('CaseListComponent', () => {
       const infoHeader = fixture.debugElement.query(By.css('#sp-msg-unselected-case-header')).nativeElement;
       expect(infoHeader.innerHTML).toContain('Why are some cases unselectable?');
       const infoContent = fixture.debugElement.query(By.css('#sp-msg-unselected-case-content')).nativeElement;
-      expect(infoContent.innerHTML).toContain('You might not be able to select and share some cases in your current case list. However, you\'ll be able to select any new cases you create and share them.');
+      expect(infoContent.innerHTML).toContain(
+        "You might not be able to select and share some cases in your current case list. However, you'll be able to select any new cases you create and share them."
+      );
     });
 
     it('should not see why are some cases unselectable', async () => {
       const resultView = {
         columns: [],
         results: [],
-        result_error: null
+        result_error: null,
       };
       component.onResultsViewHandler(resultView);
       expect(component.hasResults()).toBeFalsy();
@@ -750,7 +795,7 @@ describe('CaseListComponent', () => {
       const sortParameters = {
         column: 'dummy',
         order: 0,
-        type: 'Text'
+        type: 'Text',
       };
 
       component.sort(sortParameters);

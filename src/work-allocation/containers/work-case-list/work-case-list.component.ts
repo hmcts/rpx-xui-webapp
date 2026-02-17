@@ -12,7 +12,7 @@ import { Location, PaginationParameter } from '../../models/dtos';
   standalone: false,
   selector: 'exui-work-case-list',
   templateUrl: './work-case-list.component.html',
-  styleUrls: ['work-case-list.component.scss']
+  styleUrls: ['work-case-list.component.scss'],
 })
 export class WorkCaseListComponent implements OnChanges {
   /**
@@ -125,7 +125,7 @@ export class WorkCaseListComponent implements OnChanges {
   public onActionHandler(caseItem: Case, action: CaseAction): void {
     const invokedCaseAction: InvokedCaseAction = {
       invokedCase: caseItem,
-      action
+      action,
     };
 
     this.actionEvent.emit(invokedCaseAction);
@@ -195,11 +195,11 @@ export class WorkCaseListComponent implements OnChanges {
   }
 
   public getFirstResult(): number {
-    return ((this.getCurrentPageIndex() * this.pagination.page_size) + (this.cases ? 1 : 0));
+    return this.getCurrentPageIndex() * this.pagination.page_size + (this.cases ? 1 : 0);
   }
 
   public getLastResult(): number {
-    return ((this.getCurrentPageIndex() * this.pagination.page_size) + this.getCurrentCaseCount());
+    return this.getCurrentPageIndex() * this.pagination.page_size + this.getCurrentCaseCount();
   }
 
   private addPersonInfoAndLocationInfo(cases: Case[]): Case[] {

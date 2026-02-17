@@ -13,16 +13,17 @@ import * as fromApp from '../../store';
  */
 @Injectable()
 export class AppConfigService {
-  constructor(private readonly http: HttpClient, private readonly store: Store<fromApp.State>) {}
+  constructor(
+    private readonly http: HttpClient,
+    private readonly store: Store<fromApp.State>
+  ) {}
   private configuration: ConfigurationModel | any;
   /**
    * Loading configuration json file
    */
   public load(): Observable<any> {
     const jsonFile = 'assets/config/config.json';
-    return this.http.get(jsonFile).pipe(
-      catchError(this.handleError)
-    );
+    return this.http.get(jsonFile).pipe(catchError(this.handleError));
   }
 
   /**
@@ -64,12 +65,9 @@ export class AppConfigService {
     } else {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong,
-      console.error(
-        `Backend returned code ${error.status}, ` +
-        `body was: ${error.error}`);
+      console.error(`Backend returned code ${error.status}, ` + `body was: ${error.error}`);
     }
     // return an observable with a user-facing error message
-    return throwError(
-      'Something bad happened; please try again later.');
+    return throwError('Something bad happened; please try again later.');
   }
 }

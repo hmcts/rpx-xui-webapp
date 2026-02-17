@@ -126,7 +126,12 @@ function classifyFailure(
   if (clientErrors.length > 0) {
     return 'DOWNSTREAM_API_4XX';
   }
-  if (error.toLowerCase().includes('timeout') || networkFailureSignal || failedRequests.length > 0 || hasNetworkErrorSignal(error)) {
+  if (
+    error.toLowerCase().includes('timeout') ||
+    networkFailureSignal ||
+    failedRequests.length > 0 ||
+    hasNetworkErrorSignal(error)
+  ) {
     return slowCalls.length > 0 ? 'SLOW_API_RESPONSE' : 'NETWORK_TIMEOUT';
   }
   if (error.includes('locator') || error.includes('element') || error.includes('waiting for')) {
@@ -257,14 +262,7 @@ export const test = baseTest.extend<CustomFixtures, { lighthousePort: number }>(
         networkFailureSignal
       );
 
-      const failureType = classifyFailure(
-        error,
-        serverErrors,
-        clientErrors,
-        slowCalls,
-        failedRequests,
-        networkFailureSignal
-      );
+      const failureType = classifyFailure(error, serverErrors, clientErrors, slowCalls, failedRequests, networkFailureSignal);
       const failureCategory = classifyFailureCategory(failureType, dependencySignals);
 
       const diagnosis = [

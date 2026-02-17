@@ -15,7 +15,12 @@ test.describe('IDAM login using credentials for Global Search', () => {
     availableCaseReference = await resolveCaseReferenceFromGlobalSearch(page, PUBLIC_LAW_CASE_REFERENCE_OPTIONS);
   });
 
-  test('Global Search - using case id and FPL jurisdiction', async ({ globalSearchPage, caseDetailsPage, tableUtils, page }, testInfo) => {
+  test('Global Search - using case id and FPL jurisdiction', async ({
+    globalSearchPage,
+    caseDetailsPage,
+    tableUtils,
+    page,
+  }, testInfo) => {
     const caseNumber = availableCaseReference;
 
     await test.step('Initiate Global Search', async () => {

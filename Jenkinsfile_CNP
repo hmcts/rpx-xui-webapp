@@ -46,10 +46,10 @@ def handleFailFastAbort = { Exception e ->
     def abortedByFailFast = false
     if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
         def fie = (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) e
-        abortedByFailFast = (fie.getResult() == hudson.model.Result.ABORTED) && isFailFastInterruption(fie)
+        abortedByFailFast = (fie.getResult() == hudson.model.Result.ABORTED)
     } else if (e instanceof hudson.AbortException) {
         def executor = currentBuild?.rawBuild?.getExecutor()
-        abortedByFailFast = (executor != null && executor.isInterrupted())
+        abortedByFailFast = (executor != null && executor.isInterrupted()) || (currentBuild?.result == 'ABORTED')
     }
     if (abortedByFailFast) {
         catchError(buildResult: 'ABORTED', stageResult: 'ABORTED') { throw e }

@@ -6,12 +6,14 @@ import { IsAmendedConverter } from './is-amended.converter';
 
 export class JudgeTypesAmendedConverter implements IsAmendedConverter {
   public transformIsAmended(hearingState$?: Observable<State>): Observable<boolean> {
-    return hearingState$.pipe(map((state) => {
-      const objAPanelRequirements = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements;
-      const objBPanelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
-      const objA = objAPanelRequirements?.roleType;
-      const objB = objBPanelRequirements?.roleType;
-      return !_.isEqual(objA, objB);
-    }));
+    return hearingState$.pipe(
+      map((state) => {
+        const objAPanelRequirements = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements;
+        const objBPanelRequirements = state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
+        const objA = objAPanelRequirements?.roleType;
+        const objB = objBPanelRequirements?.roleType;
+        return !_.isEqual(objA, objB);
+      })
+    );
   }
 }

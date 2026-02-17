@@ -89,7 +89,8 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     private readonly taskTypesService: TaskTypesService,
     private readonly sessionStorageService: SessionStorageService,
     private readonly appStore: Store<fromAppStore.State>,
-    private readonly featureToggleService: FeatureToggleService) {
+    private readonly featureToggleService: FeatureToggleService
+  ) {
     if (this.router.getCurrentNavigation()?.extras?.state?.location) {
       this.bookingLocations = this.router.getCurrentNavigation().extras.state.location.ids;
     }
@@ -344,7 +345,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     };
     let baseLocation = null;
     // if there are no booking locations selected then check for base location for salary judge
-    if ((locations.length === 0) && this.route.snapshot.data?.locations) {
+    if (locations.length === 0 && this.route.snapshot.data?.locations) {
       baseLocation = this.route.snapshot.data.locations;
     }
 
@@ -395,46 +396,43 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
 
   private setUpServicesFilter(services: any[], serviceNamesMap: { [key: string]: string }): void {
     // Available services need to be added to work-allocation-utils.ts -> servicesMap
-    this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
-      (userDetails) => {
-        if (!services.length) {
-          return;
-        }
-        if (!userDetails.roleAssignmentInfo?.some((p) => p.jurisdiction !== undefined)) {
-          return;
-        }
-        const filteredServices = _.intersection.apply(_, [
-          userDetails.roleAssignmentInfo
-            .filter((p) => p.roleType && p.roleType === 'ORGANISATION')
-            .map((item) => item.jurisdiction)
-            .filter((value, index, self) => self.indexOf(value) === index && value !== undefined),
-          services
-        ]);
-        const field: FilterFieldConfig = {
-          name: 'services',
-          options: [
-            {
-              key: 'services_all',
-              label: 'Select all',
-              selectAll: true
-            },
-            ...filteredServices
-              .sort()
-              .map((service) => {
-                return {
-                  key: service,
-                  label: serviceNamesMap[service] || service
-                };
-              })
-          ],
-          minSelected: 1,
-          maxSelected: null,
-          lineBreakBefore: false,
-          displayMinSelectedError: true,
-          minSelectedError: 'Select a service',
-          title: 'Services',
-          type: 'checkbox-large'
-        };
+    this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe((userDetails) => {
+      if (!services.length) {
+        return;
+      }
+      if (!userDetails.roleAssignmentInfo?.some((p) => p.jurisdiction !== undefined)) {
+        return;
+      }
+      const filteredServices = _.intersection.apply(_, [
+        userDetails.roleAssignmentInfo
+          .filter((p) => p.roleType && p.roleType === 'ORGANISATION')
+          .map((item) => item.jurisdiction)
+          .filter((value, index, self) => self.indexOf(value) === index && value !== undefined),
+        services,
+      ]);
+      const field: FilterFieldConfig = {
+        name: 'services',
+        options: [
+          {
+            key: 'services_all',
+            label: 'Select all',
+            selectAll: true,
+          },
+          ...filteredServices.sort().map((service) => {
+            return {
+              key: service,
+              label: serviceNamesMap[service] || service,
+            };
+          }),
+        ],
+        minSelected: 1,
+        maxSelected: null,
+        lineBreakBefore: false,
+        displayMinSelectedError: true,
+        minSelectedError: 'Select a service',
+        title: 'Services',
+        type: 'checkbox-large',
+      };
 
       const fieldSetting = this.fieldsSettings.fields.find((f) => f.name === 'services');
       if (fieldSetting) {

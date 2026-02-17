@@ -131,7 +131,10 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
     });
   }
 
-  public NavigationErrorHandler = (error: any, navigator: { navigate(commands: any[], extras?: NavigationExtras): Promise<boolean> }): void => {
+  public NavigationErrorHandler = (
+    error: any,
+    navigator: { navigate(commands: any[], extras?: NavigationExtras): Promise<boolean> }
+  ): void => {
     if (error?.status) {
       if (error.status >= 500 && error.status < 600) {
         navigator.navigate(['/service-down']);

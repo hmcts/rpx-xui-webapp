@@ -25,7 +25,7 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private staffDataFilterService: StaffDataFilterService,
     private filterService: FilterService
-  ) { }
+  ) {}
 
   public ngOnInit(): void {
     const staffFilters = {
@@ -192,18 +192,18 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
           advancedSearchFilters.jobTitle = jobTitle;
         }
 
-        if (Object.keys(advancedSearchFilters)?.length > 0
-          && !(advancedSearchFilters.status && Object.keys(advancedSearchFilters).length === 1)) {
+        if (
+          Object.keys(advancedSearchFilters)?.length > 0 &&
+          !(advancedSearchFilters.status && Object.keys(advancedSearchFilters).length === 1)
+        ) {
           this.staffDataFilterService.search({
             advancedSearchFilters,
             pageNumber: 1,
-            pageSize: StaffDataFilterService.PAGE_SIZE
+            pageSize: StaffDataFilterService.PAGE_SIZE,
           });
           // This makes sure that the error are set only on pressing the search button
         } else if (this.genericFilterComponent.submitted) {
-          this.staffDataFilterService.setErrors(
-            [{ name: this.FILTER_NAME, error: this.ERROR_MESSAGE_MIN_ONE_CRITERIA }]
-          );
+          this.staffDataFilterService.setErrors([{ name: this.FILTER_NAME, error: this.ERROR_MESSAGE_MIN_ONE_CRITERIA }]);
         }
 
         window.scrollTo(0, 0);

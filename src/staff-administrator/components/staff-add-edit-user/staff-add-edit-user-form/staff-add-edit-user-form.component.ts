@@ -92,7 +92,9 @@ export class StaffAddEditUserFormComponent implements OnInit, AfterViewInit {
     const serviceList = this.selectedServiceCodes;
     const incorrectLocationList = [];
     selectedLocationList.forEach((location) => {
-      const uneligibleLocation = location?.service_codes ? location.service_codes.filter((serviceCode) => serviceList.includes(serviceCode)).length === 0 : true;
+      const uneligibleLocation = location?.service_codes
+        ? location.service_codes.filter((serviceCode) => serviceList.includes(serviceCode)).length === 0
+        : true;
       if (uneligibleLocation) {
         incorrectLocationList.push(location.location);
       }

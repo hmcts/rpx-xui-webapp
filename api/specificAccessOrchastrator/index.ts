@@ -40,8 +40,15 @@ export async function orchestrationSpecificAccessRequest(req: EnhancedRequest, r
       dueDateWork.setMonth(dueDateWork.getMonth() + 1);
       const dueDate = dueDateWork.toISOString();
       const taskName = 'Review Specific Access Request';
-      const taskResponse = await postCreateTask(req, next,
-        { caseId, jurisdiction, caseType, taskType, dueDate, name: taskName, roleAssignmentId });
+      const taskResponse = await postCreateTask(req, next, {
+        caseId,
+        jurisdiction,
+        caseType,
+        taskType,
+        dueDate,
+        name: taskName,
+        roleAssignmentId,
+      });
       if (taskResponse?.status !== 204) {
         const assignmentId = data.roleAssignmentResponse.roleRequest.id;
         const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
@@ -142,8 +149,7 @@ export async function orchestrationRequestMoreInformation(req: EnhancedRequest, 
   try {
     const creationOfDenyRoleResponse: AxiosResponse = await createSpecificAccessDenyRole(req, res, next);
     if (creationOfDenyRoleResponse?.status !== 201) {
-      return creationOfDenyRoleResponse?.status
-        ? res.status(creationOfDenyRoleResponse.status) : res.status(400);
+      return creationOfDenyRoleResponse?.status ? res.status(creationOfDenyRoleResponse.status) : res.status(400);
     }
     const deletionResponse = await deleteSpecificAccessRequestedRole(req, res, next);
     const rolesToDelete: RoleAssignment[] = creationOfDenyRoleResponse.data.roleAssignmentResponse.requestedRoles;

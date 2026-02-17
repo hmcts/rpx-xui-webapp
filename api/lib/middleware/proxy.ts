@@ -11,7 +11,8 @@ export const onProxyError = (err, req, res) => {
   logger.error(err);
 
   if (req.baseUrl && req.baseUrl === '/activity' && req.user?.userinfo) {
-    logger.info('ActivityTrackerResponseFailed => ',
+    logger.info(
+      'ActivityTrackerResponseFailed => ',
       `id: ${req.user.userinfo.id} forename:${req.user.userinfo.forename} surname:${req.user.userinfo.surname}`
     );
   }

@@ -186,10 +186,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.jurisdictionsBehaviourSubject$.asObservable().subscribe((jurisdictions) => {
       if (jurisdictions.length > 0) {
         this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
-        if (
-          this.savedQueryParams?.jurisdiction &&
-          !this.doesIdExist(this.jurisdictions, this.savedQueryParams.jurisdiction)
-        ) {
+        if (this.savedQueryParams?.jurisdiction && !this.doesIdExist(this.jurisdictions, this.savedQueryParams.jurisdiction)) {
           this.windowService.removeLocalStorage('savedQueryParams');
         }
         if (this.savedQueryParams) {
@@ -198,9 +195,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
             case_type_id: this.savedQueryParams['case-type'],
             state_id: null,
           };
-        } else if (
-          jurisdictions[0]?.id && jurisdictions[0].caseTypes[0]?.states[0]
-        ) {
+        } else if (jurisdictions[0]?.id && jurisdictions[0].caseTypes[0]?.states[0]) {
           this.defaults = {
             jurisdiction_id: jurisdictions[0].id,
             case_type_id: jurisdictions[0].caseTypes[0].id,

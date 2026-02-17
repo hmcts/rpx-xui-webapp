@@ -32,9 +32,11 @@ export function modifyRequest(proxyReq, req) {
 
 export function userCanPerformWildCardSearch(userInfo: UserInfo): boolean {
   const allowedRoles: string[] = getConfigValue(WILDCARD_SEARCH_ROLES) as string[];
-  return userInfo?.roles?.filter((role: string) => allowedRoles
-    .map((allowedRole: string) => allowedRole.toLowerCase())
-    .indexOf(role.toLowerCase()) >= 0).length > 0;
+  return (
+    userInfo?.roles?.filter(
+      (role: string) => allowedRoles.map((allowedRole: string) => allowedRole.toLowerCase()).indexOf(role.toLowerCase()) >= 0
+    ).length > 0
+  );
 }
 
 export function prepareElasticQuery(queryParams: { page? }, body: any, user: UserInfo): ElasticSearchQuery {

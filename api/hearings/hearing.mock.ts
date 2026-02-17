@@ -147,10 +147,7 @@ export const init = () => {
     // so that even the failure scenarios can be verified
     const jsonData = JSON.parse(config.data);
     if (jsonData?.hearingsInGroup?.[0]?.hearingId === 'h100014') {
-      return [
-        500,
-        null
-      ];
+      return [500, null];
     }
     // END
     return [

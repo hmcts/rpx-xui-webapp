@@ -182,10 +182,10 @@ export function mapResponseToCaseRoles(
     roleName: roleAssignment.roleName,
     start: roleAssignment.beginTime ? roleAssignment.beginTime.toString() : null,
     created: roleAssignment.created ? roleAssignment.created : null,
-    notes: roleAssignment.attributes?.specificAccessReason ?
-      getSpecificReason(roleAssignment.attributes.specificAccessReason) : 'No reason for case access given',
-    requestedRole: roleAssignment.attributes?.requestedRole ?
-      roleAssignment.attributes.requestedRole : null
+    notes: roleAssignment.attributes?.specificAccessReason
+      ? getSpecificReason(roleAssignment.attributes.specificAccessReason)
+      : 'No reason for case access given',
+    requestedRole: roleAssignment.attributes?.requestedRole ? roleAssignment.attributes.requestedRole : null,
   }));
 }
 

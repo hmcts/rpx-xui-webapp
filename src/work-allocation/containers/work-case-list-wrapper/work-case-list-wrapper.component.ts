@@ -204,16 +204,19 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   }
 
   public addSelectedLocationsSubscriber() {
-    this.selectedLocationsSubscription = this.filterService.getStream('locations').pipe(
-      debounceTime(200),
-      filter((f: FilterSetting) => f?.hasOwnProperty('fields'))
-    ).subscribe((f: FilterSetting) => {
-      const newLocations = f.fields.find((field) => field.name === 'locations').value;
-      this.selectedLocations = (newLocations).map((l) => l.epimms_id);
-      if (this.selectedLocations.length) {
-        this.doLoad();
-      }
-    });
+    this.selectedLocationsSubscription = this.filterService
+      .getStream('locations')
+      .pipe(
+        debounceTime(200),
+        filter((f: FilterSetting) => f?.hasOwnProperty('fields'))
+      )
+      .subscribe((f: FilterSetting) => {
+        const newLocations = f.fields.find((field) => field.name === 'locations').value;
+        this.selectedLocations = newLocations.map((l) => l.epimms_id);
+        if (this.selectedLocations.length) {
+          this.doLoad();
+        }
+      });
   }
 
   public setupCaseWorkers(): void {

@@ -196,7 +196,7 @@ test.describe('Test Data Builders Validation', () => {
       .build();
 
     // Then: Task matches expected structure
-    expect(task.id).toBe('task-123');
+    expect(task.id).toBe('task-123456');
     expect(task.task_title).toBe('Review application');
     expect(task.task_state).toBe('assigned');
     expect(task.assignee).toBe('user-456');

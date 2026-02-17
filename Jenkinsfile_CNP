@@ -24,6 +24,21 @@ def vault = "rpx"
 def channel   = '#xui-pipeline'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+// In `parallel(failFast: true, ...)`, non-failing branches are stopped by Jenkins via a
+// FlowInterruptedException. We only want those *interrupted* branches to show as ABORTED.
+// The genuinely failing branch should remain FAILED.
+def isFailFastInterruption = { org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e ->
+    try {
+        return (e.getCauses() ?: []).any { c ->
+            // FailFastCause exists under different packages across Jenkins versions.
+            def name = c?.getClass()?.getName()
+            return name?.endsWith('FailFastCause')
+        }
+    } catch (ignored) {
+        return false
+    }
+}
+
 def archivePlaywrightDiagnostics = {
     steps.sh '''
         set +e
@@ -170,11 +185,11 @@ withPipeline(type, product, component) {
                             try {
                                 yarnBuilder.yarn('test:api:pw:coverage')
                             } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
-                                // If another parallel branch fails and `failFast` interrupts this branch,
-                                // mark it as ABORTED (not FAILED) so the UI matches intent.
-                                catchError(buildResult: 'ABORTED', stageResult: 'ABORTED') {
-                                    throw e
+                                // Only mark as ABORTED when this branch was interrupted by `failFast`.
+                                if (isFailFastInterruption(e)) {
+                                    catchError(buildResult: 'ABORTED', stageResult: 'ABORTED') { throw e }
                                 }
+                                throw e
                             } finally {
                                 publishHTML([
                                 allowMissing         : true,
@@ -195,9 +210,10 @@ withPipeline(type, product, component) {
                         try {
                             yarnBuilder.yarn('test:xuiIntegration')
                         } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
-                            catchError(buildResult: 'ABORTED', stageResult: 'ABORTED') {
-                                throw e
+                            if (isFailFastInterruption(e)) {
+                                catchError(buildResult: 'ABORTED', stageResult: 'ABORTED') { throw e }
                             }
+                            throw e
                         } finally {
                             publishHTML([
                                 allowMissing         : true,
@@ -216,9 +232,10 @@ withPipeline(type, product, component) {
                         try {
                             yarnBuilder.yarn('test:playwright:integration')
                         } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
-                            catchError(buildResult: 'ABORTED', stageResult: 'ABORTED') {
-                                throw e
+                            if (isFailFastInterruption(e)) {
+                                catchError(buildResult: 'ABORTED', stageResult: 'ABORTED') { throw e }
                             }
+                            throw e
                         } finally {
                             publishHTML([
                                 allowMissing         : true,
@@ -238,9 +255,10 @@ withPipeline(type, product, component) {
                         try {
                             yarnBuilder.yarn('test:playwrightE2E')
                         } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
-                            catchError(buildResult: 'ABORTED', stageResult: 'ABORTED') {
-                                throw e
+                            if (isFailFastInterruption(e)) {
+                                catchError(buildResult: 'ABORTED', stageResult: 'ABORTED') { throw e }
                             }
+                            throw e
                         } finally {
                             publishHTML([
                                 allowMissing         : true,
@@ -279,9 +297,10 @@ withPipeline(type, product, component) {
                         try {
                             yarnBuilder.yarn('test:api:pw:coverage')
                         } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
-                            catchError(buildResult: 'ABORTED', stageResult: 'ABORTED') {
-                                throw e
+                            if (isFailFastInterruption(e)) {
+                                catchError(buildResult: 'ABORTED', stageResult: 'ABORTED') { throw e }
                             }
+                            throw e
                         } finally {
                             publishHTML([
                               allowMissing         : true,
@@ -301,9 +320,10 @@ withPipeline(type, product, component) {
                         try {
                             yarnBuilder.yarn('test:xuiIntegration')
                         } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
-                            catchError(buildResult: 'ABORTED', stageResult: 'ABORTED') {
-                                throw e
+                            if (isFailFastInterruption(e)) {
+                                catchError(buildResult: 'ABORTED', stageResult: 'ABORTED') { throw e }
                             }
+                            throw e
                         } finally {
                             publishHTML([
                                 allowMissing         : true,
@@ -322,9 +342,10 @@ withPipeline(type, product, component) {
                         try {
                             yarnBuilder.yarn('test:playwright:integration')
                         } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
-                            catchError(buildResult: 'ABORTED', stageResult: 'ABORTED') {
-                                throw e
+                            if (isFailFastInterruption(e)) {
+                                catchError(buildResult: 'ABORTED', stageResult: 'ABORTED') { throw e }
                             }
+                            throw e
                         } finally {
                             publishHTML([
                                 allowMissing         : true,
@@ -344,9 +365,10 @@ withPipeline(type, product, component) {
                         try {
                             yarnBuilder.yarn('test:playwrightE2E')
                         } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
-                            catchError(buildResult: 'ABORTED', stageResult: 'ABORTED') {
-                                throw e
+                            if (isFailFastInterruption(e)) {
+                                catchError(buildResult: 'ABORTED', stageResult: 'ABORTED') { throw e }
                             }
+                            throw e
                         } finally {
                             publishHTML([
                                 allowMissing         : true,

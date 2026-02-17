@@ -24,6 +24,24 @@ test.beforeEach(async ({ page }) => {
     const body = JSON.stringify(caseMockResponse);
     await route.fulfill({ status: 200, contentType: 'application/json', body });
   });
+
+  await page.route(`**/workallocation/caseworker/getUsersByServiceName*`, async (route) => {
+    const body = JSON.stringify([
+      {
+        email: 'test@example.com',
+        firstName: 'Test',
+        idamId: assigneeId,
+        lastName: 'User',
+        location: {
+          id: 227101,
+          locationName: 'Newport (South Wales) Immigration and Asylum Tribunal',
+        },
+        roleCategory: 'LEGAL_OPERATIONS',
+        service: 'IA',
+      },
+    ]);
+    await route.fulfill({ status: 200, contentType: 'application/json', body });
+  });
 });
 
 test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {

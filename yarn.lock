@@ -11796,14 +11796,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chai-as-promised@npm:7.1.2":
-  version: 7.1.2
-  resolution: "chai-as-promised@npm:7.1.2"
+"chai-as-promised@npm:8.0.2":
+  version: 8.0.2
+  resolution: "chai-as-promised@npm:8.0.2"
   dependencies:
-    check-error: "npm:^1.0.2"
+    check-error: "npm:^2.1.1"
   peerDependencies:
-    chai: ">= 2.1.2 < 6"
-  checksum: 10/be372540dad92ef85cde3954bc0e9b0b33e4e6454f3740b17bfb16e36eda638911619089c05a4e4f2bf6722563bf893bb78c2af59b318c23abb2199e5c20ca1f
+    chai: ">= 2.1.2 < 7"
+  checksum: 10/9723b6cda34ef511b48d525ff86a730323f1287728e78918833350718e8b5da58783ebf314ad01e07cca4edcf6df42b2c4bf6b9cfebc886c54ce93b587a1183f
   languageName: node
   linkType: hard
 
@@ -11941,6 +11941,13 @@ __metadata:
   dependencies:
     get-func-name: "npm:^2.0.2"
   checksum: 10/e2131025cf059b21080f4813e55b3c480419256914601750b0fee3bd9b2b8315b531e551ef12560419b8b6d92a3636511322752b1ce905703239e7cc451b6399
+  languageName: node
+  linkType: hard
+
+"check-error@npm:^2.1.1":
+  version: 2.1.3
+  resolution: "check-error@npm:2.1.3"
+  checksum: 10/f1868d3db60f5a7da92e140ccf33e9152bf6124161fa9b7a4ae8eafdb05e66e1f13570401e56f314f037b0f1b71eaf38ad0c7256310d82c6105e9d85ded0f202
   languageName: node
   linkType: hard
 
@@ -19123,7 +19130,7 @@ __metadata:
     body-parser: "npm:^1.20.3"
     c8: "npm:^9.1.0"
     chai: "npm:^4.3.10"
-    chai-as-promised: "npm:7.1.2"
+    chai-as-promised: "npm:8.0.2"
     class-transformer: "npm:^0.5.0"
     compression: "npm:^1.7.4"
     config: "npm:^3.2.5"
@@ -24303,7 +24310,7 @@ __metadata:
     baseline-browser-mapping: "npm:^2.9.15"
     c8: "npm:^9.1.0"
     chai: "npm:^4.3.10"
-    chai-as-promised: "npm:7.1.2"
+    chai-as-promised: "npm:8.0.2"
     class-transformer: "npm:^0.5.0"
     codeceptjs: "npm:3.5.6"
     codeceptjs-cucumber-json-reporter: "npm:^1.0.14"

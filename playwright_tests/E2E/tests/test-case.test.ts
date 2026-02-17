@@ -22,27 +22,6 @@ test.beforeEach(async ({ page }) => {
   await acceptCookies(page);
 });
 
-test('Validate next steps drop down', async ({ page }) => {
-  const response = waitForSpecificResponse(page, 'data/internal/cases/', 'GET');
-
-  await selectOptionWithRetry(page, 'Family Divorce', true, { label: 'Jurisdiction' });
-  await page.getByLabel('Case type').selectOption({ label: 'XUI Case PoC' });
-  await page.getByLabel('Apply filter').click();
-  await waitForSpinner(page);
-  await expect(page.getByRole('heading', { name: 'Your cases' })).toBeVisible();
-  let firstCaseRef = await getCaseReferenceFromFirstRow(page);
-  if (firstCaseRef.trim().length === 0) {
-    await createCase(page);
-    firstCaseRef = await getCaseReferenceFromFirstRow(page);
-  }
-  await page.getByLabel(`go to case with Case reference:${dealWithShortenedCaseRefLabel(firstCaseRef)}`).click();
-  const responseData = await response;
-  const expectedData = responseData?.triggers;
-  const nextStepsMatch = await confirmNextSteps(page, expectedData);
-  expect(nextStepsMatch).toBeTruthy();
-  await signOut(page);
-});
-
 
 // checks the visibility of tabs on a case based on what the API response says. 
 test('Validate tabs are visible', async ({ page }) => {

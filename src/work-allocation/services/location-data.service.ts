@@ -15,7 +15,10 @@ export class LocationDataService {
   public static readonly allLocationsKey: string = 'allLocations';
   public static readonly regionLocationsKey: string = 'regionLocations';
   public static readonly regionsKey: string = 'regions';
-  public constructor(private readonly http: HttpClient, private readonly sessionStorageService: SessionStorageService) {}
+  public constructor(
+    private readonly http: HttpClient,
+    private readonly sessionStorageService: SessionStorageService
+  ) {}
 
   public getLocations(jurisdictions?: string[]): Observable<Location[]> {
     if (this.sessionStorageService.getItem(LocationDataService.allLocationsKey)) {

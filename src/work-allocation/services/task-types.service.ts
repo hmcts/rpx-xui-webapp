@@ -10,7 +10,10 @@ import { SessionStorageService } from '../../app/services';
 })
 export class TaskTypesService {
   public static readonly typesOfWorkStorageKey: string = 'typesOfWork_cache';
-  public constructor(private readonly http: HttpClient, private readonly sessionStorage: SessionStorageService) { }
+  public constructor(
+    private readonly http: HttpClient,
+    private readonly sessionStorage: SessionStorageService
+  ) {}
 
   public getTypesOfWork(): Observable<any[]> {
     if (this.sessionStorage.getItem(TaskTypesService.typesOfWorkStorageKey)) {

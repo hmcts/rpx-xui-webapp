@@ -26,6 +26,10 @@ export class CaseDetailsPage extends Base {
 
   readonly caseActionGoButton = this.page.locator('.event-trigger button');
 
+  readonly caseSummaryHeading = this.page.getByRole('heading', { name: 'Case information' }).first();
+
+  readonly extend26WeekTimelineLink = this.page.getByRole('link', { name: /extend\s*26\s*week\s*timeline/i }).first();
+
   readonly submitCaseFlagButton = this.page.locator('.button[type="submit"]');
   readonly continueButton = this.page.getByRole('button', { name: 'Continue' });
   readonly submitButton = this.page.getByRole('button', { name: 'Submit' });

@@ -23,6 +23,7 @@ import {
   maybeAssertStateTransition,
   resolveLocationId,
   resolveSeededTaskIds,
+  resolveTaskIdWithEnvFallback,
   resolveUserId,
   runSeededAction,
   selectTaskId,
@@ -492,6 +493,23 @@ test.describe('Work allocation helper coverage', () => {
     expect(selectTaskId(['first', 'second'], 'fallback')).toBe('first');
     expect(selectTaskId([undefined, 'second'], 'fallback')).toBe('second');
     expect(selectTaskId([undefined, undefined], 'fallback')).toBe('fallback');
+
+    expect(resolveTaskIdWithEnvFallback('dynamic-task', 'env-assigned-task', 'env-unassigned-task', 'fallback-task')).toEqual({
+      taskId: 'dynamic-task',
+      source: 'dynamic',
+    });
+    expect(resolveTaskIdWithEnvFallback(undefined, 'env-assigned-task', 'env-unassigned-task', 'fallback-task')).toEqual({
+      taskId: 'env-assigned-task',
+      source: 'env-assigned',
+    });
+    expect(resolveTaskIdWithEnvFallback(undefined, undefined, 'env-unassigned-task', 'fallback-task')).toEqual({
+      taskId: 'env-unassigned-task',
+      source: 'env-unassigned',
+    });
+    expect(resolveTaskIdWithEnvFallback(undefined, undefined, undefined, 'fallback-task')).toEqual({
+      taskId: 'fallback-task',
+      source: 'none',
+    });
 
     expect(hasSeededEnvTasks()).toBe(false);
     expect(hasSeededEnvTasks('task')).toBe(true);

@@ -1,10 +1,11 @@
 import { test, expect } from './fixtures';
+import { WA_SAMPLE_ASSIGNED_TASK_ID, WA_SAMPLE_TASK_ID } from './data/testIds';
 import { expectStatus, StatusSets, withXsrf } from './utils/apiTestUtils';
-import { fetchFirstTask } from './utils/workAllocationUtils';
+import { fetchFirstTask, resolveTaskIdWithEnvFallback } from './utils/workAllocationUtils';
 
 const fallbackTaskId = '00000000-0000-0000-0000-000000000000';
 let taskId = fallbackTaskId;
-let hasTask = false;
+let taskSource: 'dynamic' | 'env-assigned' | 'env-unassigned' | 'none' = 'none';
 
 const cancellationProcessMatrix = [
   {
@@ -20,20 +21,32 @@ const cancellationProcessMatrix = [
 test.describe('Work allocation cancellation API coverage', () => {
   test.beforeAll(async ({ apiClient }) => {
     const firstTask = await fetchFirstTask(apiClient, undefined, ['assigned', 'unassigned'], 'AllWork');
-    hasTask = Boolean(firstTask?.id);
-    taskId = firstTask?.id ?? fallbackTaskId;
+    const resolution = resolveTaskIdWithEnvFallback(
+      firstTask?.id,
+      WA_SAMPLE_ASSIGNED_TASK_ID,
+      WA_SAMPLE_TASK_ID,
+      fallbackTaskId
+    );
+    taskId = resolution.taskId;
+    taskSource = resolution.source;
   });
 
   test('POST /workallocation/task/:id/cancel accepts the UI manual cancellation payload', async ({
     apiClient,
     apiLogs,
   }, testInfo) => {
-    if (!hasTask) {
+    if (taskSource === 'env-assigned' || taskSource === 'env-unassigned') {
       testInfo.annotations.push({
         type: 'notice',
-        description: 'No tasks returned from AllWork search; cancellation endpoint checks skipped.',
+        description: `Using ${taskSource} task id from WA_SAMPLE_* because AllWork search returned no tasks.`,
       });
-      test.skip(true, 'No tasks available for cancellation coverage.');
+    }
+    if (taskSource === 'none') {
+      testInfo.annotations.push({
+        type: 'notice',
+        description:
+          'Using deterministic fallback task id (00000000-0000-0000-0000-000000000000) because AllWork and WA_SAMPLE_* task ids were unavailable.',
+      });
     }
     const endpoint = `workallocation/task/${taskId}/cancel`;
     const startLogIndex = apiLogs.length;
@@ -90,12 +103,18 @@ test.describe('Work allocation cancellation API coverage', () => {
       apiClient,
       apiLogs,
     }, testInfo) => {
-      if (!hasTask) {
+      if (taskSource === 'env-assigned' || taskSource === 'env-unassigned') {
         testInfo.annotations.push({
           type: 'notice',
-          description: 'No tasks returned from AllWork search; cancellation endpoint checks skipped.',
+          description: `Using ${taskSource} task id from WA_SAMPLE_* because AllWork search returned no tasks.`,
         });
-        test.skip(true, 'No tasks available for cancellation coverage.');
+      }
+      if (taskSource === 'none') {
+        testInfo.annotations.push({
+          type: 'notice',
+          description:
+            'Using deterministic fallback task id (00000000-0000-0000-0000-000000000000) because AllWork and WA_SAMPLE_* task ids were unavailable.',
+        });
       }
       const endpoint = `workallocation/task/${taskId}/cancel?cancellation_process=${processCase.value}`;
       const startLogIndex = apiLogs.length;

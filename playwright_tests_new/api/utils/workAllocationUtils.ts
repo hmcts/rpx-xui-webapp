@@ -250,6 +250,26 @@ export function selectTaskId(candidates: Array<string | undefined>, fallback: st
   return fallback;
 }
 
+type TaskIdResolutionSource = 'dynamic' | 'env-assigned' | 'env-unassigned' | 'none';
+
+export function resolveTaskIdWithEnvFallback(
+  primaryTaskId: string | undefined,
+  envAssignedTaskId: string | undefined,
+  envTaskId: string | undefined,
+  fallback: string
+): { taskId: string; source: TaskIdResolutionSource } {
+  if (primaryTaskId) {
+    return { taskId: primaryTaskId, source: 'dynamic' };
+  }
+  if (envAssignedTaskId) {
+    return { taskId: envAssignedTaskId, source: 'env-assigned' };
+  }
+  if (envTaskId) {
+    return { taskId: envTaskId, source: 'env-unassigned' };
+  }
+  return { taskId: fallback, source: 'none' };
+}
+
 type SeededActionDeps = {
   apiClient: WorkAllocationApiClient;
   envTaskId?: string;

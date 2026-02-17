@@ -65,7 +65,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
 
     await test.step('Verify the task table shows the expected results', async () => {
       const table = await caseDetailsPage.getTaskKeyValueRows();
-      await page.waitForLoadState('domcontentloaded');
+
       expect.soft(table.length).toBe(taskData.titles.length);
       taskData.titles.forEach((title, i) => {
         expect.soft(table[i]['Title']).toContain(title);
@@ -93,7 +93,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     });
   });
 
-  test(`Priority labels render as in orderfor each task depending on major priority rate and date`, async ({
+  test(`Priority labels render as in order for each task depending on major priority rate and date`, async ({
     caseDetailsPage,
     page,
   }) => {
@@ -127,7 +127,6 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
 
     await test.step('Verify the expected priority labels are shown', async () => {
       const table = await caseDetailsPage.getTaskKeyValueRows();
-      await page.waitForLoadState('domcontentloaded');
 
       taskData.titles.forEach((title, i) => {
         const expectedPriority = title.toUpperCase();

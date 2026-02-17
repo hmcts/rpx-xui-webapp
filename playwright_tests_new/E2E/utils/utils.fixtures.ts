@@ -8,15 +8,17 @@ import {
   TableUtils,
   WaitUtils,
   ServiceAuthUtils,
+  type Logger,
 } from '@hmcts/playwright-common';
-import * as fs from 'fs';
-import * as os from 'os';
-import * as path from 'path';
+import * as fs from 'node:fs';
+import * as os from 'node:os';
+import * as path from 'node:path';
 import { chromium, Page } from 'playwright/test';
 import { config, Config } from './config.utils.js';
 import { CookieUtils } from './cookie.utils.js';
 import { ValidatorUtils } from './validator.utils.js';
 import { UserUtils } from './user.utils.js';
+import { logger } from './logger.utils.js';
 
 export interface UtilsFixtures {
   config: Config;
@@ -33,6 +35,7 @@ export interface UtilsFixtures {
   localeUtils: LocaleUtils;
   serviceAuthUtils: ServiceAuthUtils;
   userUtils: UserUtils;
+  logger: Logger;
 }
 
 export const utilsFixtures = {
@@ -126,5 +129,8 @@ export const utilsFixtures = {
       // no-op: keep the destructured arg in use to satisfy lint rules
     }
     await use(new UserUtils());
+  },
+  logger: async ({}, use) => {
+    await use(logger);
   },
 };

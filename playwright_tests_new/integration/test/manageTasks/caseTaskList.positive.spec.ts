@@ -186,9 +186,9 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
       const body = JSON.stringify([
         {
           email: 'test@example.com',
-          firstName: 'fun',
+          firstName: 'User',
           idamId: otherUser,
-          lastName: 'test',
+          lastName: 'Test',
           location: {
             id: 227101,
             locationName: 'Newport (South Wales) Immigration and Asylum Tribunal',
@@ -218,13 +218,13 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
         expect.soft(table[i]['Title']).toContain(title);
         expect.soft(table[i]['Priority']).toContain('LOW');
         expect.soft(table[i]['Due date']).toBe(formatUiDate(in90Days));
-        expect.soft(table[i]['Assigned to']).toContain('fun test');
+        expect.soft(table[i]['Assigned to']).toContain('User Test');
         expect.soft(table[i]['Next steps']).toBeFalsy();
       });
     });
   });
 
-  test(`Tasks with task alerts show above all  tasks`, async ({ caseDetailsPage, page }) => {
+  test(`Tasks with task alerts show above all tasks`, async ({ caseDetailsPage, page }) => {
     const otherUser = faker.string.uuid();
 
     const taskData = {

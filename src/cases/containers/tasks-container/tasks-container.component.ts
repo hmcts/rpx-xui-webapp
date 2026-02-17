@@ -26,6 +26,7 @@ export class TasksContainerComponent implements OnInit {
   public showSpinner$: Observable<boolean>;
   public showSpinner: boolean = true;
   public caseNotifierSubscription: Subscription;
+  public caseId: string;
 
   constructor(
     private readonly waCaseService: WorkAllocationCaseService,
@@ -44,6 +45,7 @@ export class TasksContainerComponent implements OnInit {
     this.caseNotifierSubscription = this.caseNotifier.caseView.subscribe((caseNotifDetails) => {
       if (caseNotifDetails) {
         caseId = caseNotifDetails.case_id;
+        this.caseId = caseId;
       }
     });
     const tasksSearch$ = this.waCaseService.getTasksByCaseId(caseId);
@@ -78,7 +80,7 @@ export class TasksContainerComponent implements OnInit {
   }
 
   public onTaskRefreshRequired(): void {
-    const caseId = this.caseDetails.case_id;
+    const caseId = this.caseId;
     const tasksSearch$ = this.waCaseService.getTasksByCaseId(caseId);
     tasksSearch$
       .pipe(

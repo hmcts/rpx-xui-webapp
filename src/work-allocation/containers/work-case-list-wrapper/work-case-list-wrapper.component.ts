@@ -25,14 +25,14 @@ import {
   CaseworkerDataService,
   LocationDataService,
   WASupportedJurisdictionsService,
-  WorkAllocationCaseService
+  WorkAllocationCaseService,
 } from '../../services';
 import { JurisdictionsService } from '../../services/juridictions.service';
 import { getAssigneeName, handleFatalErrors, servicesMap, setServiceList, WILDCARD_SERVICE_DOWN } from '../../utils';
 
 @Component({
   standalone: false,
-  templateUrl: 'work-case-list-wrapper.component.html'
+  templateUrl: 'work-case-list-wrapper.component.html',
 })
 export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   public specificPage: string = '';
@@ -60,7 +60,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     service: CaseService.IAC,
     defaultSortDirection: SortOrder.ASC,
     defaultSortFieldName: 'startDate',
-    fields: this.fields
+    fields: this.fields,
   };
 
   private pCasesTotal: number;
@@ -166,33 +166,35 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
 
   public loadSupportedJurisdictions(): void {
     // get supported jurisdictions on initialisation in order to get caseworkers by these services
-    const userRoles$ = this.store.pipe(select(fromActions.getUserDetails)).pipe(map((userDetails) =>
-      userDetails.roleAssignmentInfo.filter((role) => role.roleName && role.roleName === 'task-supervisor').map((role) => role.jurisdiction || null)
-    ));
+    const userRoles$ = this.store
+      .pipe(select(fromActions.getUserDetails))
+      .pipe(
+        map((userDetails) =>
+          userDetails.roleAssignmentInfo
+            .filter((role) => role.roleName && role.roleName === 'task-supervisor')
+            .map((role) => role.jurisdiction || null)
+        )
+      );
 
     // for all case lists other than all work
     const waJurisdictions$ = this.waSupportedJurisdictionsService.getWASupportedJurisdictions();
-    this.waSupportedJurisdictions$ = combineLatest(
-      [userRoles$,
-        waJurisdictions$]
-    ).pipe(
+    this.waSupportedJurisdictions$ = combineLatest([userRoles$, waJurisdictions$]).pipe(
       map((jurisdictions) => {
         const areasOfJurisdiction = jurisdictions[0].includes(null) ? jurisdictions[1] : jurisdictions[0];
         const uniqueJurisdictionsValue = [...new Set(areasOfJurisdiction)];
         return uniqueJurisdictionsValue;
-      }));
+      })
+    );
 
     // for all work cases (need detailed service information)
     const waDetailedJurisdictions$ = this.waSupportedJurisdictionsService.getDetailedWASupportedJurisdictions();
-    this.waSupportedDetailedServices$ = combineLatest(
-      [userRoles$,
-        waDetailedJurisdictions$]
-    ).pipe(
+    this.waSupportedDetailedServices$ = combineLatest([userRoles$, waDetailedJurisdictions$]).pipe(
       map((jurisdictions) => {
         const fullServiceDetails = setServiceList(jurisdictions[0], jurisdictions[1]);
         this.supportedJurisdictions = fullServiceDetails.supportedJurisdictions;
         return fullServiceDetails.detailedWAServices;
-      }));
+      })
+    );
   }
 
   public ngOnDestroy(): void {
@@ -202,61 +204,67 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   }
 
   public addSelectedLocationsSubscriber() {
-    this.selectedLocationsSubscription = this.filterService.getStream('locations').pipe(
-      debounceTime(200),
-      filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
-    ).subscribe((f: FilterSetting) => {
-      const newLocations = f.fields.find((field) => field.name === 'locations').value;
-      this.selectedLocations = (newLocations).map((l) => l.epimms_id);
-      if (this.selectedLocations.length) {
-        this.doLoad();
-      }
-    });
+    this.selectedLocationsSubscription = this.filterService
+      .getStream('locations')
+      .pipe(
+        debounceTime(200),
+        filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
+      )
+      .subscribe((f: FilterSetting) => {
+        const newLocations = f.fields.find((field) => field.name === 'locations').value;
+        this.selectedLocations = newLocations.map((l) => l.epimms_id);
+        if (this.selectedLocations.length) {
+          this.doLoad();
+        }
+      });
   }
 
   public setupCaseWorkers(): void {
-    const caseworkersByService$ = this.waSupportedJurisdictions$.pipe(switchMap((jurisdictions) =>
-      this.caseworkerService.getUsersFromServices(jurisdictions)
-    ));
-    this.waSupportedJurisdictions$.pipe(switchMap((jurisdictions) =>
-      this.rolesService.getValidRoles(jurisdictions)
-    )).subscribe((roles) => this.allRoles = roles);
+    const caseworkersByService$ = this.waSupportedJurisdictions$.pipe(
+      switchMap((jurisdictions) => this.caseworkerService.getUsersFromServices(jurisdictions))
+    );
+    this.waSupportedJurisdictions$
+      .pipe(switchMap((jurisdictions) => this.rolesService.getValidRoles(jurisdictions)))
+      .subscribe((roles) => (this.allRoles = roles));
     // currently get caseworkers for all supported services
     // in future change, could get caseworkers by specific service from filter changes
     // however regrdless would likely need this initialisation
-    caseworkersByService$.subscribe((caseworkers) => {
-      this.caseworkers = caseworkers;
-      const userInfoStr = this.sessionStorageService.getItem('userDetails');
-      if (userInfoStr) {
-        const userInfo: UserInfo = JSON.parse(userInfoStr);
-        const userId = userInfo.id ? userInfo.id : userInfo.uid;
-        const currentCW = this.caseworkers.find((cw) => cw.idamId === userId);
-        if (currentCW && currentCW.location && currentCW.location.id) {
-          this.defaultLocation = currentCW.location.id;
+    caseworkersByService$.subscribe(
+      (caseworkers) => {
+        this.caseworkers = caseworkers;
+        const userInfoStr = this.sessionStorageService.getItem('userDetails');
+        if (userInfoStr) {
+          const userInfo: UserInfo = JSON.parse(userInfoStr);
+          const userId = userInfo.id ? userInfo.id : userInfo.uid;
+          const currentCW = this.caseworkers.find((cw) => cw.idamId === userId);
+          if (currentCW && currentCW.location && currentCW.location.id) {
+            this.defaultLocation = currentCW.location.id;
+          }
         }
+      },
+      (error) => {
+        handleFatalErrors(error.status, this.router);
       }
-    }, (error) => {
-      handleFatalErrors(error.status, this.router);
-    });
+    );
     // Try to get the sort order out of the session.
     const stored = this.sessionStorageService.getItem(this.sortSessionKey);
     if (stored) {
       const { fieldName, order } = JSON.parse(stored);
       this.sortedBy = {
         fieldName,
-        order: order as SortOrder
+        order: order as SortOrder,
       };
     } else {
       // Otherwise, set up the default sorting.
       this.sortedBy = {
         fieldName: this.caseServiceConfig.defaultSortFieldName,
-        order: this.caseServiceConfig.defaultSortDirection
+        order: this.caseServiceConfig.defaultSortDirection,
       };
     }
 
     this.pagination = {
       page_number: 1,
-      page_size: 25
+      page_size: 25,
     };
   }
 
@@ -277,7 +285,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   public refreshCases(): void {
     this.infoMessageCommService.addMessage({
       type: InfoMessageType.INFO,
-      message: InfoMessage.LIST_OF_CASES_REFRESHED
+      message: InfoMessage.LIST_OF_CASES_REFRESHED,
     });
     this.doLoad();
   }
@@ -306,14 +314,14 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     return {
       search_parameters: [],
       sorting_parameters: [this.getSortParameter()],
-      pagination_parameters: this.getPaginationParameter()
+      pagination_parameters: this.getPaginationParameter(),
     };
   }
 
   public getSortParameter(): SortParameter {
     return {
       sort_by: this.sortedBy.fieldName,
-      sort_order: this.sortedBy.order
+      sort_order: this.sortedBy.order,
     };
   }
 
@@ -367,63 +375,72 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();
     const casesSearch$ = this.performSearchPagination();
-    const mappedSearchResult$ = casesSearch$.pipe(mergeMap((result) => {
-      if (result && result.cases) {
-        const judicialUserIds = result.cases.filter((theCase) => theCase.role_category === 'JUDICIAL').map((thisCase) => thisCase.assignee);
-        if (judicialUserIds && judicialUserIds.length > 0 && this.view !== 'MyCases') {
-          // may want to determine judicial workers by services in filter
-          return this.rolesService.getCaseRolesUserDetails(judicialUserIds, this.selectedServices).pipe(switchMap((judicialUserData) => {
-            const judicialNamedCases = result.cases.map((judicialCase) => {
-              const currentCase = judicialCase;
-              const theJUser = judicialUserData.find((judicialUser) => judicialUser.sidam_id === judicialCase.assignee);
-              if (theJUser) {
-                currentCase.actorName = theJUser.known_as;
-                return currentCase;
-              }
-              return currentCase;
-            });
-            result.cases = judicialNamedCases;
-            return of(result);
-          }));
+    const mappedSearchResult$ = casesSearch$.pipe(
+      mergeMap((result) => {
+        if (result && result.cases) {
+          const judicialUserIds = result.cases
+            .filter((theCase) => theCase.role_category === 'JUDICIAL')
+            .map((thisCase) => thisCase.assignee);
+          if (judicialUserIds && judicialUserIds.length > 0 && this.view !== 'MyCases') {
+            // may want to determine judicial workers by services in filter
+            return this.rolesService.getCaseRolesUserDetails(judicialUserIds, this.selectedServices).pipe(
+              switchMap((judicialUserData) => {
+                const judicialNamedCases = result.cases.map((judicialCase) => {
+                  const currentCase = judicialCase;
+                  const theJUser = judicialUserData.find((judicialUser) => judicialUser.sidam_id === judicialCase.assignee);
+                  if (theJUser) {
+                    currentCase.actorName = theJUser.known_as;
+                    return currentCase;
+                  }
+                  return currentCase;
+                });
+                result.cases = judicialNamedCases;
+                return of(result);
+              })
+            );
+          }
+
+          return of(result);
         }
 
         return of(result);
+      })
+    );
+
+    forkJoin([mappedSearchResult$, this.jurisdictionsService.getJurisdictions()]).subscribe(
+      (results) => {
+        const result = results[0];
+        this.allJurisdictions = results[1];
+        this.loadingService.unregister(loadingToken);
+        this.cases = result.cases;
+        this.casesTotal = result.total_records;
+        this.uniqueCases = result.unique_cases;
+        this.cases.forEach((item) => {
+          if (item.role_category !== RoleCategory.JUDICIAL) {
+            item.actorName = getAssigneeName(this.caseworkers, item.assignee);
+          }
+          if (this.allJurisdictions && this.allJurisdictions.find((jur) => jur.id === item.jurisdiction)) {
+            item.jurisdiction = this.allJurisdictions.find((jur) => jur.id === item.jurisdiction).name;
+          } else if (servicesMap[item.jurisdiction]) {
+            item.jurisdiction = servicesMap[item.jurisdiction];
+          }
+          if (this.allRoles && this.allRoles.find((role) => role.roleId === item.case_role)) {
+            item.role = this.allRoles.find((role) => role.roleId === item.case_role).roleName;
+          }
+        });
+        this.ref.detectChanges();
+      },
+      (error) => {
+        this.loadingService.unregister(loadingToken);
+        handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
       }
-
-      return of(result);
-    }));
-
-    forkJoin([mappedSearchResult$, this.jurisdictionsService.getJurisdictions()]).subscribe((results) => {
-      const result = results[0];
-      this.allJurisdictions = results[1];
-      this.loadingService.unregister(loadingToken);
-      this.cases = result.cases;
-      this.casesTotal = result.total_records;
-      this.uniqueCases = result.unique_cases;
-      this.cases.forEach((item) => {
-        if (item.role_category !== RoleCategory.JUDICIAL) {
-          item.actorName = getAssigneeName(this.caseworkers, item.assignee);
-        }
-        if (this.allJurisdictions && this.allJurisdictions.find((jur) => jur.id === item.jurisdiction)) {
-          item.jurisdiction = this.allJurisdictions.find((jur) => jur.id === item.jurisdiction).name;
-        } else if (servicesMap[item.jurisdiction]) {
-          item.jurisdiction = servicesMap[item.jurisdiction];
-        }
-        if (this.allRoles && this.allRoles.find((role) => role.roleId === item.case_role)) {
-          item.role = this.allRoles.find((role) => role.roleId === item.case_role).roleName;
-        }
-      });
-      this.ref.detectChanges();
-    }, (error) => {
-      this.loadingService.unregister(loadingToken);
-      handleFatalErrors(error.status, this.router, WILDCARD_SERVICE_DOWN);
-    });
+    );
   }
 
   protected setUpLocationsAndJurisdictions(): void {
     this.loadSupportedJurisdictions();
-    this.locations$ = this.waSupportedJurisdictions$.pipe(switchMap((jurisdictions) =>
-      this.locationService.getLocations(jurisdictions)
-    ));
+    this.locations$ = this.waSupportedJurisdictions$.pipe(
+      switchMap((jurisdictions) => this.locationService.getLocations(jurisdictions))
+    );
   }
 }

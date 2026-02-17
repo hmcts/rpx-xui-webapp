@@ -1,4 +1,3 @@
-
 const express = require('express');
 const minimist = require('minimist');
 
@@ -56,8 +55,8 @@ router.post('/', (req, res) => {
 
   res.status(201).send({
     roleAssignmentResponse: {
-      requestedRoles: newRoles
-    }
+      requestedRoles: newRoles,
+    },
   });
 });
 

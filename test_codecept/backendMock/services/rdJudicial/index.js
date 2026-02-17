@@ -1,15 +1,14 @@
-
 const { v4 } = require('uuid');
 
-class RDJudicialService{
-  constructor(){
+class RDJudicialService {
+  constructor() {
     this.methods = {
-      OnFindperson: 'ON_FIND_PERSON'
+      OnFindperson: 'ON_FIND_PERSON',
     };
 
     this.persons = [];
     let sidamId = 123456781234;
-    for (let i = 0; i< 10; i++){
+    for (let i = 0; i < 10; i++) {
       sidamId += 1;
       const personTemplate = this.getPersonTemplate();
       personTemplate.sidam_id = v4();
@@ -33,24 +32,26 @@ class RDJudicialService{
     }
   }
 
-  findPerson(reqBody){
-    if (reqBody.searchString){
+  findPerson(reqBody) {
+    if (reqBody.searchString) {
       return this.persons.filter((person) => person.full_name.includes(reqBody.searchString));
-    } else if (reqBody.personal_code){
-      const usersWithPersonalCode = reqBody.personal_code.map((code) => this.persons.find((person) => person.personal_code === code));
+    } else if (reqBody.personal_code) {
+      const usersWithPersonalCode = reqBody.personal_code.map((code) =>
+        this.persons.find((person) => person.personal_code === code)
+      );
       return usersWithPersonalCode;
     }
   }
 
-  getPersonTemplate(){
+  getPersonTemplate() {
     return {
-      'title': 'string',
-      'known_as': 'string',
-      'surname': 'string',
-      'full_name': 'string',
-      'email_id': 'string',
-      'sidam_id': 'string',
-      'personal_code': 'string'
+      title: 'string',
+      known_as: 'string',
+      surname: 'string',
+      full_name: 'string',
+      email_id: 'string',
+      sidam_id: 'string',
+      personal_code: 'string',
     };
   }
 }

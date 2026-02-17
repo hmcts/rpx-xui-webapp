@@ -23,8 +23,7 @@ import { TaskAssignmentConfirmComponent } from './task-assignment-confirm.compon
 
 @Component({
   standalone: false,
-  template: `
-    <exui-task-assignment-confirm></exui-task-assignment-confirm>`
+  template: ` <exui-task-assignment-confirm></exui-task-assignment-confirm>`,
 })
 class WrapperComponent {
   @ViewChild(TaskAssignmentConfirmComponent, { static: true }) public appComponentRef: TaskAssignmentConfirmComponent;
@@ -39,7 +38,7 @@ describe('TaskAssignmentConfirmComponent', () => {
     id: 'id123',
     name: 'John Smith',
     email: 'john.smith@email.com',
-    domain: PersonRole.LEGAL_OPERATIONS
+    domain: PersonRole.LEGAL_OPERATIONS,
   };
   const mockTasks = getMockTasks();
   // Provide a fake implementation of assignTask(), which returns different responses based on the task ID
@@ -74,19 +73,14 @@ describe('TaskAssignmentConfirmComponent', () => {
     const navigation = {
       extras: {
         state: {
-          selectedPerson: SELECTED_PERSON
-        }
-      }
+          selectedPerson: SELECTED_PERSON,
+        },
+      },
     };
     mockRouter.getCurrentNavigation.and.returnValue(navigation);
     mockRouter.url = 'localhost/test';
     TestBed.configureTestingModule({
-      imports: [
-        CdkTableModule,
-        RouterTestingModule,
-        WorkAllocationComponentsModule,
-        ExuiCommonLibModule
-      ],
+      imports: [CdkTableModule, RouterTestingModule, WorkAllocationComponentsModule, ExuiCommonLibModule],
       declarations: [TaskAssignmentConfirmComponent, WrapperComponent],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
@@ -96,26 +90,28 @@ describe('TaskAssignmentConfirmComponent', () => {
             snapshot: {
               data: {
                 taskAndCaseworkers: {
-                  task: { task: mockTasks[0] }, caseworkers: []
+                  task: { task: mockTasks[0] },
+                  caseworkers: [],
                 },
-                ...TaskActionConstants.Reassign
+                ...TaskActionConstants.Reassign,
               },
               params: {
-                taskId: 'task1111111'
-              }
+                taskId: 'task1111111',
+              },
             },
             params: of({ task: mockTasks[0] }),
-            paramMap: of({ selectedPerson: SELECTED_PERSON })
-          }
+            paramMap: of({ selectedPerson: SELECTED_PERSON }),
+          },
         },
         {
-          provide: Router, useValue: mockRouter
+          provide: Router,
+          useValue: mockRouter,
         },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: Location, useValue: mockLocation }
       ],
-      schemas: [NO_ERRORS_SCHEMA]
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
@@ -137,7 +133,7 @@ describe('TaskAssignmentConfirmComponent', () => {
       id: 'id123',
       name: 'John Smith',
       email: 'john.smith@email.com',
-      domain: '2'
+      domain: '2',
     };
     fixture.detectChanges();
 
@@ -154,25 +150,25 @@ describe('TaskAssignmentConfirmComponent', () => {
     fixture.detectChanges();
 
     Object.defineProperty(component, 'returnUrl', {
-      get: () => 'all-work/tasks'
+      get: () => 'all-work/tasks',
     });
 
     component.onChange();
     expect(router.navigate).toHaveBeenCalledWith(['test', 'task1111111', 'assign'], {
       state: {
         returnUrl: 'all-work/tasks',
-        person: SELECTED_PERSON
+        person: SELECTED_PERSON,
       },
       queryParams: {
         roleCategory: undefined,
-        service: 'IA'
-      }
+        service: 'IA',
+      },
     });
   });
 
   it('should redirect to the "All work" page on cancelling task assignment', () => {
     Object.defineProperty(component, 'returnUrl', {
-      get: () => 'all-work/tasks'
+      get: () => 'all-work/tasks',
     });
 
     component.onCancel();
@@ -181,7 +177,7 @@ describe('TaskAssignmentConfirmComponent', () => {
 
   it('should redirect to the fallback URL (\'\') on cancelling task assignment, if the return URL is not in the history', () => {
     Object.defineProperty(component, 'returnUrl', {
-      get: () => ''
+      get: () => '',
     });
 
     component.onCancel();
@@ -190,7 +186,7 @@ describe('TaskAssignmentConfirmComponent', () => {
 
   it('should return to the "All work" page on successful task assignment', () => {
     Object.defineProperty(component, 'returnUrl', {
-      get: () => 'all-work/tasks'
+      get: () => 'all-work/tasks',
     });
 
     component.onSubmit();
@@ -198,8 +194,8 @@ describe('TaskAssignmentConfirmComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['all-work/tasks'], {
       state: {
         badRequest: false,
-        retainMessages: true
-      }
+        retainMessages: true,
+      },
     });
   });
 
@@ -208,7 +204,7 @@ describe('TaskAssignmentConfirmComponent', () => {
     fixture.detectChanges();
     const message = {
       type: InfoMessageType.SUCCESS,
-      message: InfoMessage.ASSIGNED_TASK
+      message: InfoMessage.ASSIGNED_TASK,
     } as InformationMessage;
     component.onSubmit();
     expect(mockInfoMessageCommService.nextMessage).toHaveBeenCalledWith(message);
@@ -216,12 +212,12 @@ describe('TaskAssignmentConfirmComponent', () => {
 
   it('should return the correct message/state for case', () => {
     Object.defineProperty(component, 'returnUrl', {
-      get: () => 'case/case-details'
+      get: () => 'case/case-details',
     });
 
     const message = {
       type: InfoMessageType.SUCCESS,
-      message: InfoMessage.REASSIGNED_TASK
+      message: InfoMessage.REASSIGNED_TASK,
     } as InformationMessage;
     component.onSubmit();
     expect(mockInfoMessageCommService.nextMessage).not.toHaveBeenCalledWith(message);
@@ -229,14 +225,14 @@ describe('TaskAssignmentConfirmComponent', () => {
       state: {
         showMessage: true,
         messageText: InfoMessage.REASSIGNED_TASK,
-        retainMessages: true
-      }
+        retainMessages: true,
+      },
     });
   });
 
   it('should return to the "My work" page on successful task reassignment', () => {
     Object.defineProperty(component, 'returnUrl', {
-      get: () => 'my-work/list'
+      get: () => 'my-work/list',
     });
 
     component.onSubmit();
@@ -244,8 +240,8 @@ describe('TaskAssignmentConfirmComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['my-work/list'], {
       state: {
         badRequest: false,
-        retainMessages: true
-      }
+        retainMessages: true,
+      },
     });
   });
 
@@ -254,7 +250,7 @@ describe('TaskAssignmentConfirmComponent', () => {
     fixture.detectChanges();
     const message = {
       type: InfoMessageType.SUCCESS,
-      message: InfoMessage.REASSIGNED_TASK
+      message: InfoMessage.REASSIGNED_TASK,
     } as InformationMessage;
     component.onSubmit();
     expect(mockInfoMessageCommService.nextMessage).toHaveBeenCalledWith(message);
@@ -264,14 +260,14 @@ describe('TaskAssignmentConfirmComponent', () => {
     component.taskId = '401';
 
     Object.defineProperty(component, 'returnUrl', {
-      get: () => 'my-work/list'
+      get: () => 'my-work/list',
     });
 
     fixture.detectChanges();
     component.onSubmit();
     expect(mockInfoMessageCommService.nextMessage).not.toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith([REDIRECTS.NotAuthorised], {
-      state: { returnUrl: 'my-work/list' }
+      state: { returnUrl: 'my-work/list' },
     });
   });
 
@@ -287,21 +283,21 @@ describe('TaskAssignmentConfirmComponent', () => {
     component.taskId = '999';
 
     Object.defineProperty(component, 'returnUrl', {
-      get: () => 'my-work/list'
+      get: () => 'my-work/list',
     });
 
     fixture.detectChanges();
     const message = {
       type: InfoMessageType.WARNING,
-      message: InfoMessage.TASK_NO_LONGER_AVAILABLE
+      message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
     } as InformationMessage;
     component.onSubmit();
     expect(mockInfoMessageCommService.nextMessage).toHaveBeenCalledWith(message);
     expect(router.navigate).toHaveBeenCalledWith(['my-work/list'], {
       state: {
         badRequest: true,
-        retainMessages: true
-      }
+        retainMessages: true,
+      },
     });
   });
 });
@@ -311,31 +307,33 @@ describe('TaskAssignmentConfirmComponent', () => {
     let component: TaskAssignmentConfirmComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     let router: Router;
     const SELECTED_PERSON = {
       id: 'id123',
       name: 'John Smith',
       email: 'john.smith@email.com',
-      domain: PersonRole.LEGAL_OPERATIONS
+      domain: PersonRole.LEGAL_OPERATIONS,
     };
     const mockTasks = getMockTasks();
     const mockTaskService = jasmine.createSpyObj('mockTaskService', ['assignTask']);
     const mockRouter = jasmine.createSpyObj('mockRouter', ['getCurrentNavigation', 'navigate']);
 
     const mockSessionStorageService = {
-      getItem: jasmine.createSpy('getItem').and.returnValue(JSON.stringify({
-        roles: [role],
-        roleCategory: role === AppTestConstants.IA_JUDGE_ROLE ? RoleCategory.JUDICIAL : RoleCategory.LEGAL_OPERATIONS
-      }))
+      getItem: jasmine.createSpy('getItem').and.returnValue(
+        JSON.stringify({
+          roles: [role],
+          roleCategory: role === AppTestConstants.IA_JUDGE_ROLE ? RoleCategory.JUDICIAL : RoleCategory.LEGAL_OPERATIONS,
+        })
+      ),
     };
 
     const navigation = {
       extras: {
         state: {
-          selectedPerson: SELECTED_PERSON
-        }
-      }
+          selectedPerson: SELECTED_PERSON,
+        },
+      },
     };
     mockRouter.getCurrentNavigation.and.returnValue(navigation);
 
@@ -344,12 +342,7 @@ describe('TaskAssignmentConfirmComponent', () => {
     beforeEach(() => {
       mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['nextMessage']);
       TestBed.configureTestingModule({
-        imports: [
-          CdkTableModule,
-          RouterTestingModule,
-          WorkAllocationComponentsModule,
-          ExuiCommonLibModule
-        ],
+        imports: [CdkTableModule, RouterTestingModule, WorkAllocationComponentsModule, ExuiCommonLibModule],
         declarations: [TaskAssignmentConfirmComponent, WrapperComponent],
         providers: [
           { provide: WorkAllocationTaskService, useValue: mockTaskService },
@@ -359,23 +352,24 @@ describe('TaskAssignmentConfirmComponent', () => {
               snapshot: {
                 data: {
                   taskAndCaseworkers: { task: { task: mockTasks[0] }, caseworkers: [] },
-                  ...TaskActionConstants.Reassign
+                  ...TaskActionConstants.Reassign,
                 },
                 params: {
-                  taskId: 'task1111111'
-                }
+                  taskId: 'task1111111',
+                },
               },
               params: of({ task: mockTasks[0] }),
-              paramMap: of({ selectedPerson: SELECTED_PERSON })
-            }
+              paramMap: of({ selectedPerson: SELECTED_PERSON }),
+            },
           },
           {
-            provide: Router, useValue: mockRouter
+            provide: Router,
+            useValue: mockRouter,
           },
           { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
-          { provide: SessionStorageService, useValue: mockSessionStorageService }
+          { provide: SessionStorageService, useValue: mockSessionStorageService },
         ],
-        schemas: [NO_ERRORS_SCHEMA]
+        schemas: [NO_ERRORS_SCHEMA],
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;

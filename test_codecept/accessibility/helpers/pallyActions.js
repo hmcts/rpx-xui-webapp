@@ -1,14 +1,14 @@
-class Actions{
-  waitForurl(url){
-    return ['wait for url to be '+url];
+class Actions {
+  waitForurl(url) {
+    return ['wait for url to be ' + url];
   }
 
   navigateTourl(url) {
-    return ['navigate to '+url, 'wait for url to be ' + url];
+    return ['navigate to ' + url, 'wait for url to be ' + url];
   }
 
   waitForPageWithCssLocator(cssLocator) {
-    return ['wait for element ' + cssLocator+' to be visible'];
+    return ['wait for element ' + cssLocator + ' to be visible'];
   }
 
   waitForPageWithCssLocatorPresent(cssLocator) {
@@ -16,7 +16,11 @@ class Actions{
   }
 
   inputField(cssLocator, inputText) {
-    return ['wait for element ' + cssLocator + ' to be visible', 'click element ' + cssLocator, 'set field ' + cssLocator+' to ' + inputText];
+    return [
+      'wait for element ' + cssLocator + ' to be visible',
+      'click element ' + cssLocator,
+      'set field ' + cssLocator + ' to ' + inputText,
+    ];
   }
 
   clickElement(cssLocator) {
@@ -27,7 +31,7 @@ class Actions{
     return ['click element ' + cssLocator];
   }
 
-  checkOption(cssLocator){
+  checkOption(cssLocator) {
     return [...this.clickElement(cssLocator), 'check field ' + cssLocator];
   }
 
@@ -35,10 +39,9 @@ class Actions{
     return ['uncheck field ' + cssLocator];
   }
 
-  waitForUrlNotTobe(url){
+  waitForUrlNotTobe(url) {
     return ['wait for url to not be ' + url];
   }
 }
 
 module.exports = new Actions();
-

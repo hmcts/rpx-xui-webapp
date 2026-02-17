@@ -14,7 +14,7 @@ export const initialMockState: State = {
     userDetails: {
       sessionTimeout: {
         idleModalDisplayTime: 0,
-        totalIdleTime: 0
+        totalIdleTime: 0,
       },
       canShareCases: true,
       userInfo: {
@@ -24,26 +24,26 @@ export const initialMockState: State = {
         forename: 'XUI test',
         roles: [AppTestConstants.IA_JUDGE_ROLE],
         uid: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
-        surname: 'judge'
+        surname: 'judge',
       },
       roleAssignmentInfo: [
         {
           baseLocation: '231596',
           jurisdiction: 'IA',
-          isCaseAllocator: true
+          isCaseAllocator: true,
         },
         {
           baseLocation: '',
           jurisdiction: 'JUDICIAL',
-          isCaseAllocator: true
+          isCaseAllocator: true,
         },
         {
           baseLocation: '',
           jurisdiction: 'DIVORCE',
-          isCaseAllocator: false
-        }
-      ]
+          isCaseAllocator: false,
+        },
+      ],
     },
-    decorate16digitCaseReferenceSearchBoxInHeader: false
-  }
+    decorate16digitCaseReferenceSearchBoxInHeader: false,
+  },
 };

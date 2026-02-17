@@ -30,12 +30,10 @@ export const reducers: ActionReducerMap<State> = {
   hearingRequest: fromHearingRequest.hearingRequestReducer,
   hearingConditions: fromHearingConditions.hearingConditionsReducer,
   hearingActuals: fromHearingActuals.hearingActualsReducer,
-  hearingLinks: fromHearingLinks.hearingLinksReducer
+  hearingLinks: fromHearingLinks.hearingLinksReducer,
 };
 
-export const getHearingsFeatureState = createFeatureSelector<State>(
-  'hearings'
-);
+export const getHearingsFeatureState = createFeatureSelector<State>('hearings');
 
 export * from './hearing-list.reducer';
 export * from './hearing-request-to-compare.reducer';

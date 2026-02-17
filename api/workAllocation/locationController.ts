@@ -64,11 +64,13 @@ export async function getLocationsByRegion(req: EnhancedRequest, res: Response, 
   }
 }
 
-export function mapLocations(venues: CourtVenue []): Location [] {
+export function mapLocations(venues: CourtVenue[]): Location[] {
   const locations = [];
-  venues.forEach((venue) => locations.push({
-    id: venue.epimms_id,
-    locationName: venue.site_name
-  }));
+  venues.forEach((venue) =>
+    locations.push({
+      id: venue.epimms_id,
+      locationName: venue.site_name,
+    })
+  );
   return locations;
 }

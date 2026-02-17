@@ -9,7 +9,7 @@ import { NoResultsMessageId } from '../../enums';
   standalone: false,
   selector: 'exui-no-results',
   templateUrl: './no-results.component.html',
-  styleUrls: ['./no-results.component.scss']
+  styleUrls: ['./no-results.component.scss'],
 })
 export class NoResultsComponent implements OnInit {
   private readonly extras: NavigationExtras;

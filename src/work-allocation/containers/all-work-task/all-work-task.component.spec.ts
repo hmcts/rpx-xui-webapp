@@ -20,15 +20,20 @@ import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortCon
 import { SortOrder, TaskContext } from '../../../work-allocation/enums';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Task } from '../../models/tasks';
-import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationTaskService } from '../../services';
+import {
+  CaseworkerDataService,
+  LocationDataService,
+  WASupportedJurisdictionsService,
+  WorkAllocationTaskService,
+} from '../../services';
 import { getMockCaseRoles, getMockTasks } from '../../tests/utils.spec';
 import { AllWorkTaskComponent } from './all-work-task.component';
 
 @Component({
   standalone: false,
-  template: '<div>Nothing</div>'
+  template: '<div>Nothing</div>',
 })
-class NothingComponent { }
+class NothingComponent {}
 const USER_DETAILS = {
   canShareCases: true,
   userInfo: {
@@ -37,15 +42,15 @@ const USER_DETAILS = {
     surname: 'surName',
     email: 'email@email.com',
     active: true,
-    roles: ['pui-case-manager']
+    roles: ['pui-case-manager'],
   },
   roleAssignmentInfo: [
     {
       roleName: 'test',
       jurisdiction: 'service',
-      roleType: 'type'
-    }
-  ]
+      roleType: 'type',
+    },
+  ],
 };
 describe('AllWorkTaskComponent', () => {
   let component: AllWorkTaskComponent;
@@ -56,9 +61,16 @@ describe('AllWorkTaskComponent', () => {
   const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
-  const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions', 'getDetailedWASupportedJurisdictions']);
+  const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', [
+    'getWASupportedJurisdictions',
+    'getDetailedWASupportedJurisdictions',
+  ]);
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
-  const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['addInfoMessage', 'getInfoMessage$', 'removeAllMessages']);
+  const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', [
+    'addInfoMessage',
+    'getInfoMessage$',
+    'removeAllMessages',
+  ]);
   const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['getValue', 'getValueOnce']);
   const mockFilterService = jasmine.createSpyObj('mockFilterService', ['persist', 'getStream', 'get']);
   const mockRouter = jasmine.createSpyObj('router', ['navigate']);
@@ -69,12 +81,7 @@ describe('AllWorkTaskComponent', () => {
     storeMock = jasmine.createSpyObj('store', ['dispatch', 'pipe']);
     storeMock.pipe.and.returnValue(of(USER_DETAILS));
     TestBed.configureTestingModule({
-      imports: [
-        CdkTableModule,
-        RouterTestingModule,
-        PaginationModule,
-        StoreModule.forRoot({ ...fromActions.reducers })
-      ],
+      imports: [CdkTableModule, RouterTestingModule, PaginationModule, StoreModule.forRoot({ ...fromActions.reducers })],
       schemas: [NO_ERRORS_SCHEMA],
       declarations: [AllWorkTaskComponent, TaskListComponent],
       providers: [
@@ -91,8 +98,8 @@ describe('AllWorkTaskComponent', () => {
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: FilterService, useValue: mockFilterService },
         { provide: Router, useValue: mockRouter },
-        { provide: RpxTranslationService, useValue: mockRpxTranslationService }
-      ]
+        { provide: RpxTranslationService, useValue: mockRpxTranslationService },
+      ],
     }).compileComponents();
   }));
 
@@ -108,55 +115,70 @@ describe('AllWorkTaskComponent', () => {
     component.locations = [{ id: 'loc123', locationName: 'Test', services: [] }];
     mockLocationService.getLocations.and.returnValue(of([{ id: 'loc123', locationName: 'Test', services: [] }]));
     mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
-    mockWASupportedJurisdictionService.getDetailedWASupportedJurisdictions.and.returnValue(of([
-      { serviceId: 'IA', serviceName: 'Immigration and Asylum' }
-    ]));
+    mockWASupportedJurisdictionService.getDetailedWASupportedJurisdictions.and.returnValue(
+      of([{ serviceId: 'IA', serviceName: 'Immigration and Asylum' }])
+    );
     mockInfoMessageCommService.getInfoMessage$.and.returnValue(of(null));
     mockFeatureToggleService.getValue.and.returnValue(of(false));
     mockFilterService.getStream.and.returnValue(of({}));
     fixture.detectChanges();
   });
   it('getSearchTaskRequestPagination caseworker', () => {
-    mockSessionStorageService.getItem.and.returnValue(JSON.stringify({
-      id: 'someId',
-      forename: 'fore',
-      surname: 'surName',
-      email: 'email',
-      active: true,
-      roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
-      uid: '1233434'
-    }));
+    mockSessionStorageService.getItem.and.returnValue(
+      JSON.stringify({
+        id: 'someId',
+        forename: 'fore',
+        surname: 'surName',
+        email: 'email',
+        active: true,
+        roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
+        uid: '1233434',
+      })
+    );
     const searchRequest = component.getSearchTaskRequestPagination();
     expect(searchRequest.search_by).toEqual('caseworker');
     expect(searchRequest.request_context).toEqual(TaskContext.ALL_WORK);
     expect(searchRequest.pagination_parameters).toEqual({ page_number: 1, page_size: 25 });
   });
   it('getSearchTaskRequestPagination judge', () => {
-    mockSessionStorageService.getItem.and.returnValue(JSON.stringify({
-      id: 'someId',
-      forename: 'fore',
-      surname: 'surName',
-      email: 'email',
-      active: true,
-      roles: [AppTestConstants.IA_JUDGE_ROLE],
-      uid: '1233434'
-    }));
+    mockSessionStorageService.getItem.and.returnValue(
+      JSON.stringify({
+        id: 'someId',
+        forename: 'fore',
+        surname: 'surName',
+        email: 'email',
+        active: true,
+        roles: [AppTestConstants.IA_JUDGE_ROLE],
+        uid: '1233434',
+      })
+    );
     const searchRequest = component.getSearchTaskRequestPagination();
     expect(searchRequest.search_by).toEqual('judge');
     expect(searchRequest.request_context).toEqual(TaskContext.ALL_WORK);
     expect(searchRequest.pagination_parameters).toEqual({ page_number: 1, page_size: 25 });
   });
   it('should correctly get filter selections', () => {
-    mockSessionStorageService.getItem.and.returnValue(JSON.stringify({
-      id: 'someId',
-      forename: 'fore',
-      surname: 'surName',
-      email: 'email',
-      active: true,
-      roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
-      uid: '1233434'
-    }));
-    const selection = { findTaskNameControl: 'Process Application', location: 'exampleLocation', service: 'IA', selectPerson: 'All', person: null, taskType: 'JUDICIAL', priority: 'High', taskName: 'Review Hearing bundle' };
+    mockSessionStorageService.getItem.and.returnValue(
+      JSON.stringify({
+        id: 'someId',
+        forename: 'fore',
+        surname: 'surName',
+        email: 'email',
+        active: true,
+        roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
+        uid: '1233434',
+      })
+    );
+    const selection = {
+      findTaskNameControl: 'Process Application',
+      location: 'exampleLocation',
+      service: 'IA',
+      selectPerson: 'All',
+      person: null,
+      taskType: 'JUDICIAL',
+      priority: 'High',
+      taskName: 'Review Hearing bundle',
+    };
     component.onSelectionChanged(selection);
     const searchRequest = component.getSearchTaskRequestPagination();
     expect(searchRequest.search_parameters).toContain({ key: 'jurisdiction', operator: 'IN', values: ['IA'] });
@@ -234,14 +256,14 @@ describe('AllWorkTaskComponent', () => {
       );
       expect(freshComponent.sortedBy).toEqual({
         fieldName: '',
-        order: SortOrder.NONE
+        order: SortOrder.NONE,
       });
     });
 
     it('should have default pagination values', () => {
       expect(component.pagination).toEqual({
         page_number: 1,
-        page_size: 25
+        page_size: 25,
       });
     });
   });
@@ -253,16 +275,18 @@ describe('AllWorkTaskComponent', () => {
         roleAssignmentInfo: [
           { roleName: 'task-supervisor', jurisdiction: 'IA', roleType: 'type' },
           { roleName: 'task-supervisor', jurisdiction: 'SSCS', roleType: 'type' },
-          { roleName: 'other-role', jurisdiction: 'CIVIL', roleType: 'type' }
-        ]
+          { roleName: 'other-role', jurisdiction: 'CIVIL', roleType: 'type' },
+        ],
       };
 
       // Update the mock to return multiple services
-      mockWASupportedJurisdictionService.getDetailedWASupportedJurisdictions.and.returnValue(of([
-        { serviceId: 'IA', serviceName: 'Immigration and Asylum' },
-        { serviceId: 'SSCS', serviceName: 'Social Security' },
-        { serviceId: 'CIVIL', serviceName: 'Civil' }
-      ]));
+      mockWASupportedJurisdictionService.getDetailedWASupportedJurisdictions.and.returnValue(
+        of([
+          { serviceId: 'IA', serviceName: 'Immigration and Asylum' },
+          { serviceId: 'SSCS', serviceName: 'Social Security' },
+          { serviceId: 'CIVIL', serviceName: 'Civil' },
+        ])
+      );
 
       storeMock.pipe.and.returnValue(of(mockUserDetails));
 
@@ -280,12 +304,10 @@ describe('AllWorkTaskComponent', () => {
     it('should handle user without roleAssignmentInfo', () => {
       const mockUserDetails = {
         ...USER_DETAILS,
-        roleAssignmentInfo: null
+        roleAssignmentInfo: null,
       };
 
-      const mockDetailedServices: HMCTSServiceDetails[] = [
-        { serviceId: 'IA', serviceName: 'Immigration and Asylum' }
-      ];
+      const mockDetailedServices: HMCTSServiceDetails[] = [{ serviceId: 'IA', serviceName: 'Immigration and Asylum' }];
 
       storeMock.pipe.and.returnValue(of(mockUserDetails));
 
@@ -300,14 +322,10 @@ describe('AllWorkTaskComponent', () => {
     it('should handle task-supervisor role without jurisdiction', () => {
       const mockUserDetails = {
         ...USER_DETAILS,
-        roleAssignmentInfo: [
-          { roleName: 'task-supervisor', jurisdiction: null, roleType: 'type' }
-        ]
+        roleAssignmentInfo: [{ roleName: 'task-supervisor', jurisdiction: null, roleType: 'type' }],
       };
 
-      const mockDetailedServices: HMCTSServiceDetails[] = [
-        { serviceId: 'IA', serviceName: 'Immigration and Asylum' }
-      ];
+      const mockDetailedServices: HMCTSServiceDetails[] = [{ serviceId: 'IA', serviceName: 'Immigration and Asylum' }];
 
       storeMock.pipe.and.returnValue(of(mockUserDetails));
 
@@ -329,15 +347,17 @@ describe('AllWorkTaskComponent', () => {
     });
 
     it('should handle empty selectedServices', () => {
-      mockSessionStorageService.getItem.and.returnValue(JSON.stringify({
-        id: 'someId',
-        forename: 'fore',
-        surname: 'surName',
-        email: 'email',
-        active: true,
-        roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
-        uid: '1233434'
-      }));
+      mockSessionStorageService.getItem.and.returnValue(
+        JSON.stringify({
+          id: 'someId',
+          forename: 'fore',
+          surname: 'surName',
+          email: 'email',
+          active: true,
+          roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
+          uid: '1233434',
+        })
+      );
 
       component.selectedServices = [];
       const searchRequest = component.getSearchTaskRequestPagination();
@@ -347,15 +367,17 @@ describe('AllWorkTaskComponent', () => {
     });
 
     it('should include all search parameters when all filters are selected', () => {
-      mockSessionStorageService.getItem.and.returnValue(JSON.stringify({
-        id: 'someId',
-        forename: 'fore',
-        surname: 'surName',
-        email: 'email',
-        active: true,
-        roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
-        uid: '1233434'
-      }));
+      mockSessionStorageService.getItem.and.returnValue(
+        JSON.stringify({
+          id: 'someId',
+          forename: 'fore',
+          surname: 'surName',
+          email: 'email',
+          active: true,
+          roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
+          uid: '1233434',
+        })
+      );
 
       // Set all filter values
       component.selectedServices = ['IA', 'SSCS'];
@@ -395,7 +417,7 @@ describe('AllWorkTaskComponent', () => {
         selectPerson: 'Specific',
         person: { id: 'person789', name: 'Test Person' } as Person,
         taskType: 'ADMIN',
-        taskName: { task_type_id: 'task456', task_type_name: 'Test Task' }
+        taskName: { task_type_id: 'task456', task_type_name: 'Test Task' },
       };
 
       component.onSelectionChanged(selection);
@@ -419,7 +441,7 @@ describe('AllWorkTaskComponent', () => {
         selectPerson: 'All',
         person: null,
         taskType: 'ADMIN',
-        taskName: null
+        taskName: null,
       };
 
       component.onSelectionChanged(selection);
@@ -434,7 +456,7 @@ describe('AllWorkTaskComponent', () => {
       it('should handle roleServiceIds with null values', () => {
         const detailedServices: HMCTSServiceDetails[] = [
           { serviceId: 'IA', serviceName: 'Immigration' },
-          { serviceId: 'SSCS', serviceName: 'Social Security' }
+          { serviceId: 'SSCS', serviceName: 'Social Security' },
         ];
 
         const result = (component as any).setServiceList([null], detailedServices);
@@ -446,21 +468,19 @@ describe('AllWorkTaskComponent', () => {
       it('should handle matching role jurisdictions', () => {
         const detailedServices: HMCTSServiceDetails[] = [
           { serviceId: 'IA', serviceName: 'Immigration' },
-          { serviceId: 'SSCS', serviceName: 'Social Security' }
+          { serviceId: 'SSCS', serviceName: 'Social Security' },
         ];
 
         const result = (component as any).setServiceList(['IA', 'CIVIL'], detailedServices);
 
         expect(result).toEqual([
           { serviceId: 'IA', serviceName: 'Immigration' },
-          { serviceId: 'CIVIL', serviceName: 'CIVIL' }
+          { serviceId: 'CIVIL', serviceName: 'CIVIL' },
         ]);
       });
 
       it('should handle empty roleServiceIds', () => {
-        const detailedServices: HMCTSServiceDetails[] = [
-          { serviceId: 'IA', serviceName: 'Immigration' }
-        ];
+        const detailedServices: HMCTSServiceDetails[] = [{ serviceId: 'IA', serviceName: 'Immigration' }];
 
         const result = (component as any).setServiceList([], detailedServices);
 
@@ -599,7 +619,7 @@ describe('AllWorkTaskComponent', () => {
   { statusCode: 403, routeUrl: '/not-authorised' },
   { statusCode: 401, routeUrl: '/not-authorised' },
   { statusCode: 500, routeUrl: '/service-down' },
-  { statusCode: 400, routeUrl: '/service-down' }
+  { statusCode: 400, routeUrl: '/service-down' },
 ].forEach((scr) => {
   describe('AllWorkTaskComponent negative cases', () => {
     let component: AllWorkTaskComponent;
@@ -611,8 +631,15 @@ describe('AllWorkTaskComponent', () => {
     const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
     const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
     const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
-    const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions', 'getDetailedWASupportedJurisdictions']);
-    const mockInfoMessageCommService = jasmine.createSpyObj('InfoMessageCommService', ['addInfoMessage', 'getInfoMessage$', 'removeAllMessages']);
+    const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', [
+      'getWASupportedJurisdictions',
+      'getDetailedWASupportedJurisdictions',
+    ]);
+    const mockInfoMessageCommService = jasmine.createSpyObj('InfoMessageCommService', [
+      'addInfoMessage',
+      'getInfoMessage$',
+      'removeAllMessages',
+    ]);
     const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue', 'getValueOnce']);
     const mockFilterService = jasmine.createSpyObj('FilterService', ['persist', 'getStream', 'get']);
     const mockRpxTranslationService = jasmine.createSpyObj('RpxTranslationService', ['translate', 'getTranslation$']);
@@ -626,9 +653,9 @@ describe('AllWorkTaskComponent', () => {
       mockTaskService.searchTask.and.returnValue(throwError({ status: scr.statusCode }));
       mockCaseworkerService.getAll.and.returnValue(of([]));
       mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
-      mockWASupportedJurisdictionService.getDetailedWASupportedJurisdictions.and.returnValue(of([
-        { serviceId: 'IA', serviceName: 'Immigration and Asylum' }
-      ]));
+      mockWASupportedJurisdictionService.getDetailedWASupportedJurisdictions.and.returnValue(
+        of([{ serviceId: 'IA', serviceName: 'Immigration and Asylum' }])
+      );
       mockInfoMessageCommService.getInfoMessage$.and.returnValue(of(null));
       mockFeatureToggleService.getValue.and.returnValue(of(false));
       mockFilterService.getStream.and.returnValue(of({}));
@@ -639,12 +666,10 @@ describe('AllWorkTaskComponent', () => {
           RouterTestingModule,
           PaginationModule,
           StoreModule.forRoot({ ...fromActions.reducers }),
-          RouterTestingModule.withRoutes(
-            [
-              { path: 'service-down', component: NothingComponent },
-              { path: 'not-authorised', component: NothingComponent }
-            ]
-          )
+          RouterTestingModule.withRoutes([
+            { path: 'service-down', component: NothingComponent },
+            { path: 'not-authorised', component: NothingComponent },
+          ]),
         ],
         schemas: [NO_ERRORS_SCHEMA],
         declarations: [AllWorkTaskComponent, TaskListComponent, NothingComponent],
@@ -661,8 +686,8 @@ describe('AllWorkTaskComponent', () => {
           { provide: FeatureToggleService, useValue: mockFeatureToggleService },
           { provide: FilterService, useValue: mockFilterService },
           { provide: RpxTranslationService, useValue: mockRpxTranslationService },
-          { provide: AllocateRoleService, useValue: mockAllocateRoleService }
-        ]
+          { provide: AllocateRoleService, useValue: mockAllocateRoleService },
+        ],
       }).compileComponents();
       fixture = TestBed.createComponent(AllWorkTaskComponent);
       component = fixture.componentInstance;
@@ -675,15 +700,17 @@ describe('AllWorkTaskComponent', () => {
       const navigateSpy = spyOn(router, 'navigate');
 
       // Ensure session storage returns valid user data
-      mockSessionStorageService.getItem.and.returnValue(JSON.stringify({
-        id: 'someId',
-        forename: 'fore',
-        surname: 'surName',
-        email: 'email',
-        active: true,
-        roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
-        uid: '1233434'
-      }));
+      mockSessionStorageService.getItem.and.returnValue(
+        JSON.stringify({
+          id: 'someId',
+          forename: 'fore',
+          surname: 'surName',
+          email: 'email',
+          active: true,
+          roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
+          uid: '1233434',
+        })
+      );
 
       // Call onPaginationEvent which should trigger the search and error handling
       component.onPaginationEvent(1);

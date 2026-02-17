@@ -13,7 +13,7 @@ import { TaskPermission, TaskRole } from '../../models/tasks';
   standalone: false,
   selector: 'exui-task-assignment-choose-role',
   templateUrl: './task-assignment-choose-role.component.html',
-  styleUrls: ['./task-assignment-choose-role.component.scss']
+  styleUrls: ['./task-assignment-choose-role.component.scss'],
 })
 export class TaskAssignmentChooseRoleComponent implements OnInit {
   private static readonly userDetails: string = 'userDetails';
@@ -57,7 +57,7 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
     this.setCaptionAndDescription(this.verb);
     this.form = this.fb.group({
       role: [this.setUpDefaultRoleType(this.getCurrentUserRoleCategory(), this.taskRoles), Validators.required],
-      taskId: [taskId, Validators.required]
+      taskId: [taskId, Validators.required],
     });
   }
 
@@ -99,10 +99,10 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
       // if there is only one role with relevant permissions, use that role
       if (roleCategories && roleCategories.length === 1) {
         return roleCategories[0].toUpperCase();
-      // if the user has a role that matches the relevant task role category
+        // if the user has a role that matches the relevant task role category
       } else if (roleCategories.includes(userRoleCategory)) {
         return userRoleCategory;
-      // else return simply the first role with an own permission
+        // else return simply the first role with an own permission
       }
 
       return roleCategories[0];

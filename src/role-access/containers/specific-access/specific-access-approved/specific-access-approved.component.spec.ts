@@ -5,10 +5,10 @@ describe('SpecificAccessApprovedComponent', () => {
   let component: SpecificAccessApprovedComponent;
   let mockStore: any;
 
-  beforeEach((() => {
+  beforeEach(() => {
     mockStore = jasmine.createSpyObj('mockStore', ['pipe', 'dispatch']);
     component = new SpecificAccessApprovedComponent(mockStore);
-  }));
+  });
 
   describe('navigationHandler', () => {
     it('should correctly navigate on click of return to my tasks button when dispatching the event', () => {

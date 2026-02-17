@@ -170,8 +170,16 @@ withPipeline(type, product, component) {
                             try {
                                 yarnBuilder.yarn('test:api:pw:coverage')
                             } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
-                                // If another parallel branch fails and failFast aborts this branch,
-                                // preserve ABORTED status rather than showing as a failure.
+                                // When failFast aborts a parallel branch, Jenkins interrupts it.
+                                // In that case we want the branch to show ABORTED (not FAILED).
+                                // If this interruption wasn't due to failFast (no causes), rethrow
+                                // so the branch remains a genuine FAILURE.
+                                if (e.causes != null && !e.causes.isEmpty()) {
+                                    catchError(buildResult: 'FAILURE', stageResult: 'ABORTED') {
+                                        error("Aborted due to failFast: ${e}")
+                                    }
+                                    return
+                                }
                                 throw e
                             } finally {
                                 publishHTML([
@@ -193,6 +201,12 @@ withPipeline(type, product, component) {
                         try {
                             yarnBuilder.yarn('test:xuiIntegration')
                         } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+                            if (e.causes != null && !e.causes.isEmpty()) {
+                                catchError(buildResult: 'FAILURE', stageResult: 'ABORTED') {
+                                    error("Aborted due to failFast: ${e}")
+                                }
+                                return
+                            }
                             throw e
                         } finally {
                             publishHTML([
@@ -212,6 +226,12 @@ withPipeline(type, product, component) {
                         try {
                             yarnBuilder.yarn('test:playwright:integration')
                         } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+                            if (e.causes != null && !e.causes.isEmpty()) {
+                                catchError(buildResult: 'FAILURE', stageResult: 'ABORTED') {
+                                    error("Aborted due to failFast: ${e}")
+                                }
+                                return
+                            }
                             throw e
                         } finally {
                             publishHTML([
@@ -232,6 +252,12 @@ withPipeline(type, product, component) {
                         try {
                             yarnBuilder.yarn('test:playwrightE2E')
                         } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+                            if (e.causes != null && !e.causes.isEmpty()) {
+                                catchError(buildResult: 'FAILURE', stageResult: 'ABORTED') {
+                                    error("Aborted due to failFast: ${e}")
+                                }
+                                return
+                            }
                             throw e
                         } finally {
                             publishHTML([
@@ -271,6 +297,12 @@ withPipeline(type, product, component) {
                         try {
                             yarnBuilder.yarn('test:api:pw:coverage')
                         } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+                            if (e.causes != null && !e.causes.isEmpty()) {
+                                catchError(buildResult: 'FAILURE', stageResult: 'ABORTED') {
+                                    error("Aborted due to failFast: ${e}")
+                                }
+                                return
+                            }
                             throw e
                         } finally {
                             publishHTML([
@@ -291,6 +323,12 @@ withPipeline(type, product, component) {
                         try {
                             yarnBuilder.yarn('test:xuiIntegration')
                         } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+                            if (e.causes != null && !e.causes.isEmpty()) {
+                                catchError(buildResult: 'FAILURE', stageResult: 'ABORTED') {
+                                    error("Aborted due to failFast: ${e}")
+                                }
+                                return
+                            }
                             throw e
                         } finally {
                             publishHTML([
@@ -310,6 +348,12 @@ withPipeline(type, product, component) {
                         try {
                             yarnBuilder.yarn('test:playwright:integration')
                         } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+                            if (e.causes != null && !e.causes.isEmpty()) {
+                                catchError(buildResult: 'FAILURE', stageResult: 'ABORTED') {
+                                    error("Aborted due to failFast: ${e}")
+                                }
+                                return
+                            }
                             throw e
                         } finally {
                             publishHTML([
@@ -330,6 +374,12 @@ withPipeline(type, product, component) {
                         try {
                             yarnBuilder.yarn('test:playwrightE2E')
                         } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+                            if (e.causes != null && !e.causes.isEmpty()) {
+                                catchError(buildResult: 'FAILURE', stageResult: 'ABORTED') {
+                                    error("Aborted due to failFast: ${e}")
+                                }
+                                return
+                            }
                             throw e
                         } finally {
                             publishHTML([

@@ -1,0 +1,127 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+/dist
+/tmp
+/out-tsc
+# Only exists if Bazel was run
+/bazel-out
+/reports
+
+# dependencies
+node_modules
+api/node_modules
+api/.nyc_output
+api/.yarn
+
+
+# profiling files
+chrome-profiler-events.json
+speed-measure-plugin.json
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
+.last-run.json
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+/typings
+/reports
+api/.nyc_output
+/api/test/pact/logs/
+/api/test/pact/pacts/
+/api/test/pacts/
+
+# Do not commit local files
+/config/local*.*
+.env
+.tool-versions
+/.agent
+execplan-api-pw-coverage.md
+/.ssr.lock
+/.sonar
+/.scannerwork
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Test credentials and auth state (HMCTS Security Policy)
+**/storage-states/**/*.json
+**/*-session*.json
+**/*-credentials*.json
+.env.test.local
+playwright/.auth/
+.sessions
+package-lock.json
+local-only-tools
+/test/reports/
+reports/
+functional-output/
+mochawesome-report/
+
+/local-only-tools
+
+reports_json/
+.nyc_output/
+cb_reports/
+report.json
+stryker-tmp/
+
+# stryker temp files
+.stryker-tmp
+stryker.log
+/test/.local-test.env
+# yalc
+.yalc/
+yalc.lock
+
+ignore/
+
+/functional_output/
+.agent/
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+/infrastructure/.terraform/
+.angular/cache/*
+.yarn/install-state.gz
+
+.nx/cache/
+
+#playwright
+test-results/
+
+# Accidental duplicates (do not commit)
+/.c8rc.json
+/playwright_tests_new/api/auth.ts
+/playwright_tests_new/api/auth-coverage.api.ts
+
+*.zip
+# Fortify scan artifacts
+Fortify Scan/

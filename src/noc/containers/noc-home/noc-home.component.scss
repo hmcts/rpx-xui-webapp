@@ -1,0 +1,23 @@
+:host ::ng-deep .screen-990 {
+  width: inherit;
+}
+
+:host ::ng-deep ccpay-payment-view .govuk-grid-row,
+:host ::ng-deep ccpay-payment-view .grid-row {
+  .heading-medium {
+    margin-left: 15px;
+  }
+}
+
+.page {
+  width: 100%;
+}
+
+.govuk-main-wrapper {
+  padding-top: 30px;
+  padding-bottom: 5px;
+}
+
+#content {
+  padding-left: 15px;
+}

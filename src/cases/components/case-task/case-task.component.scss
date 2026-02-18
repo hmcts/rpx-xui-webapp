@@ -1,0 +1,23 @@
+.hmcts-badge_right {
+  float: right;
+}
+.row-padding {
+  padding-left: 25px;
+}
+strong {
+  font-weight: bold;
+}
+.right {
+  text-align: right;
+  margin-right: 40px;
+  display: inline-block;
+}
+
+.govuk-summary-list__value a {
+  cursor: pointer;
+  color: #4c2c92;
+
+  &:visited {
+    color: #4c2c92;
+  }
+}

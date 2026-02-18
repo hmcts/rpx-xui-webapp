@@ -1,0 +1,114 @@
+'use strict';
+const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
+const { $, elementByXpath, getXUITestPage } = require('../../../helpers/globals');
+const { LONG_DELAY } = require('../../support/constants');
+const BrowserWaits = require('../../support/customWaits');
+
+class LoginLogout {
+  get emailAddress() {
+    return $('#username');
+  }
+
+  get password() {
+    return $('#password');
+  }
+
+  get signinTitle() {
+    return elementByXpath('//*[@id="authorizeCommand"]/h1');
+  }
+
+  get signinBtn() {
+    return $('input.button');
+  }
+
+  get signOutlink() {
+    return elementByXpath('//a[@class="hmcts-header__navigation-link"]');
+  }
+
+  get failure_error_heading() {
+    return $('#validation-error-summary-heading');
+  }
+
+  get dashboard_header() {
+    return $('.govuk-heading-xl');
+  }
+
+  get incorrectCredentialsErrorHeader() {
+    return elementByXpath('//h2[@id = "validation-error-summary-heading"][contains(text(),"Incorrect email or password")]');
+  }
+
+  async reuseLoginSession(email) {
+    const { users = [], reuseCounter = 0 } = inject();
+    const matchingSession = users.filter((user) => user.email === email);
+    CucumberReportLogger.AddMessage(`Users sessions available ${users.length}`);
+    CucumberReportLogger.AddMessage(`User ${email} session ${matchingSession.length > 0 ? 'exists' : 'does not exist'}`);
+    share({ reuseCounter: matchingSession.length > 0 ? reuseCounter + 1 : reuseCounter });
+  }
+
+  async givenIAmLoggedIn(email, password) {
+    await this.reuseLoginSession(email);
+    await BrowserWaits.waitForElement(this.signinTitle);
+    await this.loginWithCredentials(email, password);
+  }
+
+  async isLoginCredentialsErrorDisplayed() {
+    return await this.incorrectCredentialsErrorHeader.isVisible();
+  }
+
+  async givenIAmUnauthenticatedUser() {
+    await this.enterUrEmail('test_nonexisting_or_invalid@gmail.com');
+    await this.enterPassword('123');
+    await this.clickSignIn();
+    await BrowserWaits.waitForElement($('.error-summary'));
+  }
+
+  async enterUrEmail(email) {
+    await BrowserWaits.waitForElement(this.emailAddress);
+    await this.emailAddress.fill('');
+    await this.emailAddress.type(email);
+  }
+
+  async enterPassword(password) {
+    await BrowserWaits.waitForElement(this.password);
+    await this.password.fill('');
+    await this.password.type(password);
+  }
+
+  async clickSignIn() {
+    await BrowserWaits.retryWithActionCallback(async () => {
+      await this.signinBtn.click();
+    });
+  }
+
+  async waitFor(selector) {
+    return await page.waitForSelector(selector, { timeout: LONG_DELAY });
+  }
+
+  defaultTime() {
+    this.setDefaultTimeout(60 * 1000);
+  }
+
+  async getEmailFieldValue() {
+    return await this.emailAddress.getAttribute('value');
+  }
+
+  async loginWithCredentials(username, password) {
+    await BrowserWaits.waitForElement(this.emailAddress);
+    await this.enterUrEmail(username);
+    await this.enterPassword(password);
+    await this.clickSignIn();
+
+    try {
+      await BrowserWaits.waitForElement($('exui-app-header'));
+      const { users = [] } = inject();
+      const cookies = await getXUITestPage().context().cookies();
+      users.push({ email: username, cookies });
+      share({ users });
+    } catch (err) {
+      // Log login redirect failure without re-throwing to allow test continuation
+      CucumberReportLogger.AddMessage(`Login redirect failure: ${err.message}`);
+    }
+  }
+}
+
+module.exports = new LoginLogout();

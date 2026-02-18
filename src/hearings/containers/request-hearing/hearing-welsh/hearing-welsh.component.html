@@ -1,0 +1,52 @@
+<exui-error-message *ngIf="error" [error]="error"></exui-error-message>
+
+<div>
+  <form class="form" [formGroup]="welshForm" [ngClass]="{ 'govuk-form-group--error': error }">
+    <div class="govuk-form-group">
+      <exui-hearing-parties-title></exui-hearing-parties-title>
+      <fieldset class="govuk-fieldset">
+        <legend>
+          <h1 class="govuk-heading-l">
+            {{ 'Does this hearing need to be in Welsh?' | rpxTranslate }}
+          </h1>
+        </legend>
+        <div id="welsh-hint" class="govuk-hint">
+          {{ 'This means the entire hearing will be carried out in Welsh.' | rpxTranslate }}
+        </div>
+        <span id="hearing-welsh-location" [ngClass]="{ 'govuk-error-message': error }" *ngIf="error">
+          <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span
+          >{{ 'Select hearing need to be in Welsh or not' | rpxTranslate }}
+        </span>
+
+        <div class="govuk-radios govuk-radios--inline" data-module="govuk-radios">
+          <div class="govuk-radios__item">
+            <input
+              class="govuk-radios__input"
+              id="welsh_hearing_yes"
+              name="hearingInWelshFlag"
+              formControlName="hearingInWelshFlag"
+              type="radio"
+              [value]="true"
+            />
+            <label class="govuk-label govuk-radios__label" for="welsh_hearing_yes">
+              {{ 'Does this hearing need to be in Welsh?' | rpxTranslate: null : 'Yes' }}
+            </label>
+          </div>
+          <div class="govuk-radios__item">
+            <input
+              class="govuk-radios__input"
+              id="welsh_hearing_no"
+              name="hearingInWelshFlag"
+              formControlName="hearingInWelshFlag"
+              type="radio"
+              [value]="false"
+            />
+            <label class="govuk-label govuk-radios__label" for="welsh_hearing_no">
+              {{ 'Does this hearing need to be in Welsh?' | rpxTranslate: null : 'No' }}
+            </label>
+          </div>
+        </div>
+      </fieldset>
+    </div>
+  </form>
+</div>

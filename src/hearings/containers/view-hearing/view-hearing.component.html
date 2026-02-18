@@ -1,0 +1,10 @@
+<exui-app-header></exui-app-header>
+<div class="govuk-width-container">
+  <div class="page">
+    <main id="content" role="main">
+      <a href="#" (click)="onBack(); $event.preventDefault()" class="govuk-back-link">{{ 'Back' | rpxTranslate }}</a>
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
+<exui-app-footer></exui-app-footer>

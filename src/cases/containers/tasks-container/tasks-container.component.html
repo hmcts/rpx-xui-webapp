@@ -1,0 +1,20 @@
+<xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
+<exui-task-alert-banner [tasks]="tasks" *ngIf="warningIncluded" alertTitle="Task alert"> </exui-task-alert-banner>
+<div class="govuk-tabs__panel active-tasks-container" id="event">
+  <div>
+    <div class="govuk-grid-row">
+      <div class="govuk-grid-column-two-thirds govuk-!-padding-4">
+        <h2 class="govuk-heading-m">Active tasks</h2>
+        <ng-container *ngIf="tasks">
+          <ng-container *ngFor="let task of tasks">
+            <exui-case-task
+              [task]="task"
+              [caseworkers]="caseworkers"
+              (taskRefreshRequired)="onTaskRefreshRequired($event)"
+            ></exui-case-task>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

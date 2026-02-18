@@ -1,0 +1,13 @@
+{
+  "printWidth": 130,
+  "singleQuote": true,
+  "trailingComma": "es5",
+  "overrides": [
+    {
+      "files": [".prettierrc", "package,json"],
+      "options": {
+        "parser": "json"
+      }
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+import { Component, DebugElement, Input, Pipe, PipeTransform, ViewChild } from '@angular/core';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { RpxTranslationService } from 'rpx-xui-translation';
+import { AppConstants } from '../../app.constants';
+import { Helper, Navigation } from '../../containers/footer/footer.model';
+import { HmctsGlobalFooterComponent } from './hmcts-global-footer.component';
+
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate',
+})
+class RpxTranslateMockPipe implements PipeTransform {
+  public transform(value: string): string {
+    return value;
+  }
+}
+
+describe('HmctsGlobalFooterComponent', () => {
+  @Component({
+    standalone: false,
+    selector: 'exui-app-host-dummy-component',
+    template: `<exui-app-hmcts-global-footer
+      [reference]="iconFallbackText"
+      [title]="type"
+      [items]="text"
+    ></exui-app-hmcts-global-footer>`,
+  })
+  class TestDummyHostComponent {
+    @Input() public help: Helper;
+    @Input() public navigation: Navigation;
+    @ViewChild(HmctsGlobalFooterComponent, { static: false })
+    public hmctsGlobalFooterComponent: HmctsGlobalFooterComponent;
+  }
+
+  const testHostComponent = TestDummyHostComponent;
+
+  let testHostFixture: ComponentFixture<TestDummyHostComponent>;
+
+  let el: DebugElement;
+
+  let de: any;
+  let component: HmctsGlobalFooterComponent;
+  let fixture: ComponentFixture<HmctsGlobalFooterComponent>;
+
+  const helpData: Helper = AppConstants.FOOTER_DATA;
+  const navigationData: Navigation = AppConstants.FOOTER_DATA_NAVIGATION;
+
+  beforeEach(waitForAsync(() => {
+    const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {} });
+
+    TestBed.configureTestingModule({
+      declarations: [HmctsGlobalFooterComponent, RpxTranslateMockPipe],
+      imports: [RouterTestingModule],
+      providers: [
+        {
+          provide: RpxTranslationService,
+          useFactory: rpxTranslationServiceStub,
+        },
+      ],
+    }).compileComponents();
+  }));
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(HmctsGlobalFooterComponent);
+    component = fixture.componentInstance;
+    component.help = helpData;
+    component.navigation = navigationData;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+
+  it('should be created by angular', () => {
+    expect(fixture).not.toBeNull();
+  });
+
+  it('should change the language', () => {
+    component.toggleLanguage('en');
+    expect(component.currentLang).toBe('en');
+  });
+});

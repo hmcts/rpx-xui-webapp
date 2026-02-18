@@ -1,0 +1,18 @@
+<exui-header
+  [navItems]="navItems"
+  [title]="appHeaderTitle"
+  [userNav]="userNav"
+  [showNavItems]="showNavItems"
+  [backgroundColor]="backgroundColor"
+  [logo]="logo"
+  [logoIsUsed]="logoIsUsed"
+  [currentUrl]="router.url"
+  [decorate16DigitCaseReferenceSearchBoxInHeader]="decorate16DigitCaseReferenceSearchBoxInHeader"
+  (navigate)="onNavigate($event)"
+>
+</exui-header>
+<xuilib-service-messages
+  [userRoles]="userRoles"
+  [featureToggleKey]="featureToggleKey"
+  [serviceMessageCookie]="serviceMessageCookie"
+></xuilib-service-messages>

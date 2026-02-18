@@ -1,0 +1,1229 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "hmi-apim-api",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "https://sds-api-mgmt.staging.platform.hmcts.net/hmi"
+    }
+  ],
+  "paths": {
+    "/hearings": {
+      "post": {
+        "description": "Request Hearing",
+        "operationId": "request-hearing",
+        "summary": "Request Hearing",
+        "tags": ["hearings"],
+        "parameters": [
+          {
+            "name": "Source-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "CFT"
+            }
+          },
+          {
+            "name": "Destination-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "MOCK"
+            }
+          },
+          {
+            "name": "Request-Created-At",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "2019-10-12T07:20:00Z"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": "The request was received successfully."
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hearings/{hearing-id}": {
+      "delete": {
+        "description": "Delete a Hearing",
+        "operationId": "delete-hearing",
+        "summary": "Delete Hearing",
+        "tags": ["hearings"],
+        "parameters": [
+          {
+            "name": "hearing-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Source-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "CFT"
+            }
+          },
+          {
+            "name": "Destination-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "MOCK"
+            }
+          },
+          {
+            "name": "Request-Created-At",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "2019-10-12T07:20:00Z"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": "The request was received successfully."
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "Update Hearing",
+        "operationId": "update-hearing",
+        "summary": "Update Hearing",
+        "tags": ["hearings"],
+        "parameters": [
+          {
+            "name": "hearing-id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Source-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "CFT"
+            }
+          },
+          {
+            "name": "Destination-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "MOCK"
+            }
+          },
+          {
+            "name": "Request-Created-At",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "2019-10-12T07:20:00Z"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": "The request was received successfully."
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "description": "Health check for HMI",
+        "operationId": "hmi-health-check",
+        "summary": "HMI Health Check",
+        "tags": ["health-check"],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Up"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "description": "Private health check for HMI",
+        "operationId": "hmi-auth-health-check",
+        "summary": "HMI Private Health Check",
+        "tags": ["health-check"],
+        "parameters": [
+          {
+            "name": "Source-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "CFT"
+            }
+          },
+          {
+            "name": "Destination-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "HMI"
+            }
+          },
+          {
+            "name": "Request-Created-At",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "2019-10-12T07:20:00Z"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": "Up"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access denied due to invalid OAuth information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "example": ""
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/schedules": {
+      "post": {
+        "description": "Create Schedules",
+        "operationId": "create-schedule",
+        "summary": "Create Schedule",
+        "tags": ["schedules"],
+        "parameters": [
+          {
+            "name": "Source-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "CFT"
+            }
+          },
+          {
+            "name": "Destination-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "MOCK"
+            }
+          },
+          {
+            "name": "Request-Created-At",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "2019-10-12T07:20:00Z"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/sessions": {
+      "get": {
+        "description": "Get Sessions",
+        "operationId": "get-sessions",
+        "summary": "Get Sessions",
+        "tags": ["sessions"],
+        "parameters": [
+          {
+            "name": "requestStartDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "01/29/2018 20:36:01"
+            }
+          },
+          {
+            "name": "requestEndDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "01/29/2018 20:36:01"
+            }
+          },
+          {
+            "name": "requestJudgeType",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "AC"
+            }
+          },
+          {
+            "name": "requestLocationId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "354"
+            }
+          },
+          {
+            "name": "requestDuration",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "360"
+            }
+          },
+          {
+            "name": "requestSessionType",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "example": "ADHOC"
+            }
+          },
+          {
+            "name": "Source-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "CFT"
+            }
+          },
+          {
+            "name": "Destination-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "MOCK"
+            }
+          },
+          {
+            "name": "Request-Created-At",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "2019-10-12T07:20:00Z"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/listings": {
+      "post": {
+        "operationId": "direct-listing",
+        "description": "Direct Listing",
+        "summary": "Direct Listing",
+        "tags": ["direct-listing"],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/people/{id}": {
+      "get": {
+        "description": "Get People By ID",
+        "operationId": "get-people",
+        "summary": "Get People By ID",
+        "tags": ["eLinks"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "PID012"
+            }
+          },
+          {
+            "name": "Source-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "CFT"
+            }
+          },
+          {
+            "name": "Destination-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "MOCK"
+            }
+          },
+          {
+            "name": "Request-Created-At",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "2019-10-12T07:20:00Z"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "put": {
+        "description": "Update People",
+        "operationId": "update-people",
+        "summary": "Update People",
+        "tags": ["eLinks"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "PID012"
+            }
+          },
+          {
+            "name": "Source-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "CFT"
+            }
+          },
+          {
+            "name": "Destination-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "MOCK"
+            }
+          },
+          {
+            "name": "Request-Created-At",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "2019-10-12T07:20:00Z"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/people": {
+      "get": {
+        "description": "Get People By Params",
+        "operationId": "get-people-by-params",
+        "summary": "Get People By Params",
+        "tags": ["eLinks"],
+        "parameters": [
+          {
+            "name": "updated_since",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "2018-04-10"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "2"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "100"
+            }
+          },
+          {
+            "name": "Source-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "100"
+            }
+          },
+          {
+            "name": "Destination-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "MOCK"
+            }
+          },
+          {
+            "name": "Request-Created-At",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "2019-10-12T07:20:00Z"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {}
+            }
+          }
+        }
+      }
+    },
+    "/snl-health": {
+      "get": {
+        "description": "Health check for SNL",
+        "operationId": "snl-health",
+        "summary": "SNL Health Check",
+        "tags": ["health-check"],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/crime-health": {
+      "get": {
+        "description": "Health check for Crime",
+        "operationId": "crime-health",
+        "summary": "Crime Health Check",
+        "tags": ["health-check"],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/hmc-health": {
+      "get": {
+        "description": "Health check for HMC",
+        "operationId": "hmc-health",
+        "summary": "HMC Health Check",
+        "tags": ["health-check"],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/elinks-health": {
+      "get": {
+        "description": "Health check for eLinks API",
+        "operationId": "elinks-health",
+        "summary": "eLinks API Health Check",
+        "tags": ["health-check"],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/hearings/sessions/{sessionId}": {
+      "put": {
+        "description": "Direct Hearing",
+        "operationId": "direct-hearing",
+        "summary": "Direct Hearings",
+        "tags": ["hearings"],
+        "parameters": [
+          {
+            "name": "sessionId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Source-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "CFT"
+            }
+          },
+          {
+            "name": "Destination-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "MOCK"
+            }
+          },
+          {
+            "name": "Request-Created-At",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "2019-10-12T07:20:00Z"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/resources/linked-hearing-group": {
+      "post": {
+        "tags": ["resources"],
+        "summary": "Create Linked Hearing Group",
+        "description": "Create Linked Hearing Group",
+        "operationId": "create-linked-hearing-group",
+        "parameters": [
+          {
+            "name": "Source-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "CFT"
+            }
+          },
+          {
+            "name": "Destination-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "MOCK"
+            }
+          },
+          {
+            "name": "Request-Created-At",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "2019-10-12T07:20:00Z"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/resources/linked-hearing-group/{groupClientReference}": {
+      "put": {
+        "tags": ["resources"],
+        "summary": "Update Linked Hearing Group",
+        "description": "Update Linked Hearing Group",
+        "operationId": "update-linked-hearing-group",
+        "parameters": [
+          {
+            "name": "Source-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "CFT"
+            }
+          },
+          {
+            "name": "Destination-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "MOCK"
+            }
+          },
+          {
+            "name": "Request-Created-At",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "2019-10-12T07:20:00Z"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          },
+          {
+            "name": "groupClientReference",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": ""
+          }
+        }
+      },
+      "delete": {
+        "tags": ["resources"],
+        "summary": "Delete Linked Hearing Group",
+        "description": "Delete Linked Hearing Group",
+        "operationId": "delete-linked-hearing-group",
+        "parameters": [
+          {
+            "name": "Source-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "CFT"
+            }
+          },
+          {
+            "name": "Destination-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "MOCK"
+            }
+          },
+          {
+            "name": "Request-Created-At",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "2019-10-12T07:20:00Z"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          },
+          {
+            "name": "groupClientReference",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/pih/publication": {
+      "post": {
+        "tags": ["CaTH"],
+        "summary": "Publication",
+        "description": "Publication of an artefact",
+        "operationId": "update-publication",
+        "parameters": [
+          {
+            "name": "Source-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "CFT"
+            }
+          },
+          {
+            "name": "Destination-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "PIH"
+            }
+          },
+          {
+            "name": "Request-Created-At",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "2019-10-12T07:20:00Z"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/pih/health": {
+      "get": {
+        "tags": ["health-check"],
+        "summary": "Publication Health",
+        "description": "Health check for CaTH",
+        "operationId": "publication-health",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/reservations": {
+      "get": {
+        "tags": ["hearings"],
+        "summary": "Reservations",
+        "description": "Reservations",
+        "operationId": "reservations",
+        "parameters": [
+          {
+            "name": "requestStartDate",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "requestEndDate",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "requestDuration",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "requestLocationType",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "requestLocationReferenceType",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "requestLocationId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "requestComments",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "requestExternalId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Source-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "CFT"
+            }
+          },
+          {
+            "name": "Destination-System",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "MOCK"
+            }
+          },
+          {
+            "name": "Request-Created-At",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "2019-10-12T07:20:00Z"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": "application/json"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/liveness": {
+      "get": {
+        "description": "Liveness Check",
+        "operationId": "liveness-check",
+        "summary": "Liveness Check",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "key": "value"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "OAuth2": {
+        "type": "oauth2",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://login.microsoftonline.com/531ff96d-0ae9-462a-8d2d-bec7c0b42082/oauth2/v2.0/token",
+            "scopes": {
+              "api://d49d7fa2-6904-4223-a907-3b8992af4190/.default": "hmiGateway"
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "hearings",
+      "description": "Everything about your Hearing information"
+    },
+    {
+      "name": "direct-listing",
+      "description": "Everything about Listings"
+    },
+    {
+      "name": "sessions",
+      "description": "Everything about Sessions for Hearings"
+    },
+    {
+      "name": "resources",
+      "description": "Everything about Resources for Hearings"
+    },
+    {
+      "name": "eLinks",
+      "description": "Everything about e-Links interaction"
+    },
+    {
+      "name": "schedules",
+      "description": "Everything about Schedules for Hearings"
+    },
+    {
+      "name": "health-check",
+      "description": "Everything about Health Check"
+    },
+    {
+      "name": "CaTH",
+      "description": "Everything about CaTH publishing hub"
+    }
+  ]
+}

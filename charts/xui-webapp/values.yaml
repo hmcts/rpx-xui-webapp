@@ -1,0 +1,171 @@
+redis:
+  enabled: false
+  architecture: standalone
+  master:
+    persistence:
+      enabled: false
+  auth:
+    enabled: false
+  image:
+    registry: hmctspublic.azurecr.io
+    repository: imported/bitnami/redis
+
+global:
+  security:
+    allowInsecureImages: true
+
+nodejs:
+  applicationPort: 3000
+  cpuRequests: 250m
+  cpuLimits: 2000m
+  memoryRequests: 512Mi
+  memoryLimits: 2048Mi
+  autoscaling: # Default is false
+    enabled: false
+    maxReplicas: 16 # Required setting
+    targetCPUUtilizationPercentage: 80 # Default is 80% target CPU utilization
+  environment:
+    REFORM_TEAM: rpx
+    REFORM_SERVICE_NAME: xui-webapp
+    NODE_ENV: production
+    NODE_CONFIG_ENV: production
+    NODE_OPTIONS: --max-old-space-size=8192
+    UV_THREADPOOL_SIZE: 64
+    XUI_ENV: preview
+    LOGGING: debug
+    MAX_LOG_LINE: 80
+    PROTOCOL: https
+    MICROSERVICE: xui_webapp
+    SESSION_SECRET: secretSauce
+    ALLOW_CONFIG_MUTATIONS: 1
+    MC_HTTP_PROXY: http://172.16.0.7:8080
+    MC_NO_PROXY: localhost
+    NOW: false
+    STUB: false
+    # Whitelist - most involve acceptable access-control-allow-origin so are unneccessary
+    CORS_ALLOWED_ORIGINS: https://www.googletagmanager.com,https://region1.google-analytics.com,https://uksouth-0.in.applicationinsights.azure.com,https://clientstream.launchdarkly.com,https://app.launchdarkly.com,https://events.launchdarkly.com,https://gateway.ccd.platform.hmcts.net,https://js.monitor.azure.com,https://www.google-analytics.com,https://manage-case.platform.hmcts.net
+    # Health Endpoints
+    HEALTH_CCD_COMPONENT_API: https://gateway-ccd.{{ .Values.global.environment }}.platform.hmcts.net/health
+    HEALTH_CCD_ACTIVITY_API: http://ccd-case-activity-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
+    HEALTH_CCD_DATA_API: http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
+    HEALTH_DOCUMENTS_API: http://dm-store-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
+    HEALTH_EM_ANNO_API: http://em-anno-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
+    HEALTH_EM_DOCASSEMBLY_API: http://dg-docassembly-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
+    HEALTH_S2S_SERVICE: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
+    HEALTH_TERMS_AND_CONDITIONS_API: http://xui-terms-and-conditions-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
+    HEALTH_WORK_ALLOCATION_TASK_API: http://wa-task-management-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
+    HEALTH_ROLE_ASSIGNMENT_API: http://am-role-assignment-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
+    HEALTH_CASE_CASEWORKER_API: http://rd-caseworker-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
+    # Services CCD Endpoints
+    SERVICES_CCD_COMPONENT_API: https://gateway-ccd.{{ .Values.global.environment }}.platform.hmcts.net
+    SERVICES_CCD_ACTIVITY_API: http://ccd-case-activity-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    SERVICES_CCD_DATA_STORE_API: http://ccd-data-store-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    SERVICES_CCD_CASE_ASSIGNMENT_API: http://aac-manage-case-assignment-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    SERVICES_LOCATION_API: http://rd-location-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services Hearings endpoints
+    SERVICES_HEARINGS_COMPONENT_API_SSCS: http://sscs-tribunals-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    SERVICES_HEARINGS_COMPONENT_API_PRIVATELAW: http://fis-hmc-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    SERVICES_HMC_HEARINGS_COMPONENT_API: http://hmc-cft-hearing-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    SERVICES_HEARINGS_COMPONENT_API_CIVIL: http://civil-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    SERVICES_HEARINGS_COMPONENT_API_IAC: http://ia-hearings-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services work allocation endpoints
+    SERVICES_WORK_ALLOCATION_TASK_API: http://wa-task-management-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services role  endpoints
+    SERVICES_ROLE_ASSIGNMENT_API: http://am-role-assignment-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services role assignment endpoints
+    SERVICES_ROLE_ASSIGNMENT_MAPPING_API: http://am-org-role-mapping-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services judicial api endpoints
+    SERVICES_CASE_JUDICIAL_API: http://rd-judicial-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services refunds  endpoints
+    SERVICES_REFUNDS_API_URL: http://ccpay-refunds-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services Notification Url (for Ways To Pay)
+    SERVICES_NOTIFICATIONS_API_URL: http://ccpay-notifications-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services case endpoints
+    SERVICES_CASE_CASEWORKER_API: http://rd-caseworker-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services judicial endpoints
+    SERVICES_CASE_JUDICALWORKER_API: http://rd-judicial-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services Documents Endpoints
+    SERVICES_DOCUMENTS_API: http://dm-store-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services Secure Documents Endpoints
+    SERVICES_DOCUMENTS_API_V2: http://ccd-case-document-am-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services Documents Endpoints
+    SERVICES_EM_HRS_API: http://em-hrs-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services PRD
+    SERVICES_PRD_API: http://rd-professional-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    SERVICES_PRD_LOCATION_API: http://rd-location-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    SERVICES_PRD_JUDICIAL_API: http://rd-judicial-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    SERVICES_PRD_COMMONDATA_API: http://rd-commondata-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services Location Ref
+    SERVICES_LOCATION_REF_API_URL: http://rd-location-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services Em Anno
+    SERVICES_EM_ANNO_API: http://em-anno-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services Markup
+    SERVICES_MARKUP_API: http://em-npa-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services Em docassembly
+    SERVICES_EM_DOCASSEMBLY_API: http://dg-docassembly-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services Wa Workflow
+    SERVICES_WA_WORKFLOW_API_URL: http://wa-workflow-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services ICP
+    SERVICES_ICP_API: http://em-icp-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services Idam
+    SERVICES_IDAM_API_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
+    SERVICES_IDAM_CLIENT_ID: xuiwebapp
+    SERVICES_IDAM_LOGIN_URL: https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net
+    SERVICES_IDAM_INDEX_URL: /
+    SERVICES_IDAM_OAUTH_CALLBACK_URL: /oauth2/callback
+    # Services payments
+    SERVICES_PAYMENTS_URL: http://payment-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services S2s
+    SERVICES_S2S: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services T&Cs
+    SERVICES_TERMS_AND_CONDITIONS: http://xui-terms-and-conditions-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # OpenId ISS
+    SERVICES_IDAM_ISS_URL: https://forgerock-am.service.core-compute-idam-{{ .Values.global.environment }}2.internal:8443/openam/oauth2/hmcts
+    # Card Payment Return Url (for Ways To Pay)
+    SERVICES_PAYMENT_RETURN_URL: https://paymentoutcome-web.{{ .Values.global.environment }}.platform.hmcts.net
+    # Judicial Booking Url
+    SERVICES_JUDICIAL_BOOKING_API_PATH: http://am-judicial-booking-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services Welsh Translation endpoints
+    SERVICES_TRANSLATION_API_URL: http://ts-translation-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Services LAU Challenged access
+    SERVICES_LAU_SPECIFIC_CHALLENGED_ACCESS_API_PATH: http://lau-case-backend-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    # Pub Sub API fpr Content Security Policy
+    WEBPUBSUB_URL: wss://em-icp-webpubsub.{{ .Values.global.environment }}.platform.hmcts.net
+    #Feature Flags
+    FEATURE_APP_INSIGHTS_ENABLED: true
+    FEATURE_SECURE_COOKIE_ENABLED: true
+    FEATURE_PROXY_ENABLED: false
+    FEATURE_TERMS_AND_CONDITIONS_ENABLED: false
+    FEATURE_HELMET_ENABLED: true
+    FEATURE_REDIS_ENABLED: true
+    FEATURE_OIDC_ENABLED: false
+    FEATURE_UPDATED_TASK_PERMISSIONS_ENABLED: true
+    FEATURE_WORKALLOCATION_ENABLED: false
+    FEATURE_JRD_E_LINKS_V2_ENABLED: true
+    FEATURE_SUBSTANTIVE_ROLE_ENABLED: true
+    FEATURE_ACCESS_MANAGEMENT_ENABLED: false
+    FEATURE_LAU_SPECIFIC_CHALLENGED_ENABLED: false
+    FEATURE_QUERY_IDAM_SERVICE_OVERRIDE: true
+
+    # Redis
+    REDIS_KEY_PREFIX: 'activity:'
+    REDIS_TTL: 6000
+
+  keyVaults:
+    rpx:
+      resourceGroup: rpx
+      secrets:
+        - mc-s2s-client-secret
+        - mc-idam-client-secret
+        - appinsights-instrumentationkey-mc
+        - appinsights-connection-string-mc
+        - name: webapp-redis6-connection-string
+          alias: webapp-redis-connection-string
+        - launch-darkly-client-id
+        - system-user-name
+        - system-user-password
+  # Don't modify below here
+  image: ${IMAGE_NAME}
+  ingressHost: ${SERVICE_FQDN}
+idam-pr:
+  enabled: false

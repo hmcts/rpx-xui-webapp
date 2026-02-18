@@ -1,0 +1,19 @@
+.all-work-filter {
+  max-width: 260px;
+}
+.all-work-filter-label {
+  font-weight: 550 !important;
+}
+
+.cases-container {
+  display: flex;
+  justify-content: space-between;
+  exui-case-manager-filter {
+    margin-right: 40px;
+    width: 25%;
+  }
+
+  .exui-task-list {
+    width: 70%;
+  }
+}

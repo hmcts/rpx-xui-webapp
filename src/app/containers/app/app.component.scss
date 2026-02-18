@@ -1,0 +1,115 @@
+$govuk-global-styles: true;
+$hmcts-images-path: '/assets/images/';
+
+// Width of main container
+$hmcts-page-width: 1920px;
+
+// TODO temporary solution to extend the width of the page until is addressed through govuk-frontend"
+header,
+footer.govuk-footer {
+  min-width: 1020px;
+}
+
+.govuk-footer__meta {
+  max-width: 1860px;
+  min-width: 960px;
+  padding-right: 15px;
+  padding-left: 15px;
+}
+
+body .govuk-width-container {
+  padding-right: 30px;
+  padding-left: 30px;
+  max-width: 1920px;
+  min-width: 900px;
+  margin: auto;
+}
+
+#content {
+  max-width: 1920px;
+  min-width: 900px;
+}
+
+.govuk-phase-banner {
+  max-width: 1920px;
+  min-width: 900px;
+}
+
+.govuk-phase-banner .language {
+  float: right;
+}
+
+.govuk-notification-banner__header .close {
+  float: right;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+@import 'govuk-frontend/govuk/all';
+@import 'node_modules/@hmcts/frontend/all';
+
+// TODO move this in more appropriate place - perhaps get it from govuk-frontend
+// Find case button START
+a.hmcts-search-toggle__button {
+  color: govuk-colour('white');
+}
+
+.hmcts-search-toggle__button {
+  @include govuk-font($size: 19, $weight: bold);
+  background-color: govuk-colour('black');
+  border: none;
+  color: govuk-colour('white');
+  cursor: pointer;
+  display: inline-block;
+  padding-top: 12px;
+  padding-bottom: 13px;
+  padding-left: 0;
+  padding-right: 0;
+  -webkit-font-smoothing: antialiased;
+  -webkit-appearance: none;
+
+  &:after {
+    background-repeat: no-repeat;
+    background-image: url(#{$hmcts-images-path}icon-search-white.svg);
+    content: '';
+    display: inline-block;
+    height: 20px;
+    margin-left: govuk-spacing(2);
+    vertical-align: middle;
+    width: 20px;
+  }
+
+  &:focus::after {
+    background-image: url(#{$hmcts-images-path}icon-search-black.svg);
+  }
+}
+
+table,
+td {
+  vertical-align: middle;
+}
+
+.hmcts-primary-navigation__search {
+  float: right;
+}
+
+.hmcts-primary-navigation__container {
+  text-align: initial;
+}
+
+// gov uk frond-end template is not installed on this
+.js-hidden {
+  display: none;
+  visibility: hidden;
+}
+
+// Find case button END
+
+.hmcts-header__navigation-link:hover {
+  color: inherit;
+}
+
+a.hmcts-header__navigation-link {
+  cursor: pointer;
+}

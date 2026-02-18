@@ -1,0 +1,23 @@
+<exui-app-header></exui-app-header>
+<div class="govuk-width-container">
+  <div class="page">
+    <main id="content" role="main">
+      <xuilib-loading-spinner *ngIf="!userDataLoaded"></xuilib-loading-spinner>
+      <ccpay-payment-lib
+        *ngIf="userDataLoaded"
+        [CCD_CASE_NUMBER]="ccdCaseNumber"
+        VIEW="refund-list"
+        [TAKEPAYMENT]="false"
+        [REFUNDS_API_ROOT]="refundsApiRoot"
+        [NOTIFICATION_API_ROOT]="notificationsApiRoot"
+        [REFUNDLIST]="true"
+        [LOGGEDINUSERROLES]="userRoles"
+        [LOGGEDINUSEREMAIL]="userEmail"
+        [API_ROOT]="apiRoot"
+        [ISPAYMENTSTATUSENABLED]="'Enable'"
+      >
+      </ccpay-payment-lib>
+    </main>
+  </div>
+</div>
+<exui-app-footer></exui-app-footer>

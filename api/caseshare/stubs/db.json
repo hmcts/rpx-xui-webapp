@@ -1,0 +1,126 @@
+{
+  "organisations": [
+    {
+      "orgId": "o111111",
+      "orgName": "Woodford solicitors ltd.",
+      "users": [
+        {
+          "idamId": "u111111",
+          "firstName": "Joe",
+          "lastName": "Elliott",
+          "email": "joe.elliott@woodford.com"
+        },
+        {
+          "idamId": "u222222",
+          "firstName": "Steve",
+          "lastName": "Harrison",
+          "email": "steve.harrison@woodford.com"
+        },
+        {
+          "idamId": "u333333",
+          "firstName": "James",
+          "lastName": "Priest",
+          "email": "james.priest@woodford.com"
+        },
+        {
+          "idamId": "u444444",
+          "firstName": "Shaun",
+          "lastName": "Coldwell",
+          "email": "shaun.coldwell@woodford.com"
+        }
+      ]
+    },
+    {
+      "orgId": "o222222",
+      "orgName": "Lamb brooks solicitors ltd.",
+      "users": [
+        {
+          "idamId": "u555555",
+          "firstName": "Anne",
+          "lastName": "Deller",
+          "email": "anne.deller@lambbrooks.com"
+        },
+        {
+          "idamId": "u666666",
+          "firstName": "Kate",
+          "lastName": "Grant",
+          "email": "kate.grant@lambbrooks.com"
+        },
+        {
+          "idamId": "u777777",
+          "firstName": "Nick",
+          "lastName": "Rodrigues",
+          "email": "nick.rodrigues@lambbrooks.com"
+        },
+        {
+          "idamId": "u888888",
+          "firstName": "Joel",
+          "lastName": "Molloy",
+          "email": "joel.molloy@lambbrooks.com"
+        }
+      ]
+    }
+  ],
+  "sharedCases": [
+    {
+      "caseId": "1573922332670942",
+      "caseTitle": "Paul Saddlebrook Vs Jennifer Saddlebrook",
+      "sharedWith": [
+        {
+          "idamId": "u111111",
+          "firstName": "Joe",
+          "lastName": "Elliott",
+          "email": "joe.elliott@woodford.com"
+        },
+        {
+          "idamId": "u222222",
+          "firstName": "Steve",
+          "lastName": "Harrison",
+          "email": "steve.harrison@woodford.com"
+        }
+      ]
+    },
+    {
+      "caseId": "1573925439311211",
+      "caseTitle": "Neha Venkatanarasimharaj Vs Sanjet Venkatanarasimharaj",
+      "sharedWith": [
+        {
+          "idamId": "u333333",
+          "firstName": "James",
+          "lastName": "Priest",
+          "email": "james.priest@woodford.com"
+        },
+        {
+          "idamId": "u444444",
+          "firstName": "Shaun",
+          "lastName": "Coldwell",
+          "email": "shaun.coldwell@woodford.com"
+        }
+      ]
+    },
+    {
+      "caseId": "1574006431043307",
+      "caseTitle": "Sam Green Vs Williams Lee",
+      "sharedWith": [
+        {
+          "idamId": "u666666",
+          "firstName": "Kate",
+          "lastName": "Grant",
+          "email": "kate.grant@lambbrooks.com"
+        },
+        {
+          "idamId": "u777777",
+          "firstName": "Nick",
+          "lastName": "Rodrigues",
+          "email": "nick.rodrigues@lambbrooks.com"
+        },
+        {
+          "idamId": "u888888",
+          "firstName": "Joel",
+          "lastName": "Molloy",
+          "email": "joel.molloy@lambbrooks.com"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,233 @@
+{
+  "environment": "NODE_CONFIG_ENV",
+  "cookies": {
+    "token": "COOKIE_TOKEN",
+    "userId": "COOKIES_USER_ID",
+    "sessionId": "COOKIES_SESSION_ID",
+    "roles": "COOKIES_ROLES"
+  },
+  "logging": "LOGGING",
+  "now": "NOW",
+  "maxLogLine": "MAX_LOG_LINE",
+  "stub": {
+    "__name": "STUB",
+    "__format": "json"
+  },
+  "health": {
+    "ccdComponentApi": "HEALTH_CCD_COMPONENT_API",
+    "ccdDataApi": "HEALTH_CCD_DATA_API",
+    "ccdActivityApi": "HEALTH_CCD_ACTIVITY_API",
+    "documentsApi": "HEALTH_DOCUMENTS_API",
+    "em_hrs_api": "HEALTH_EM_HRS_API",
+    "em_anno_api": "HEALTH_EM_ANNO_API",
+    "em_docassembly_api": "HEALTH_EM_DOCASSEMBLY_API",
+    "s2s": "HEALTH_S2S_SERVICE",
+    "termsAndConditions": "HEALTH_TERMS_AND_CONDITIONS_API",
+    "taskApi": "HEALTH_WORK_ALLOCATION_TASK_API",
+    "roleApi": "HEALTH_ROLE_ASSIGNMENT_API",
+    "caseworkerApi": "HEALTH_CASE_CASEWORKER_API"
+  },
+  "services": {
+    "ccd": {
+      "componentApi": "SERVICES_CCD_COMPONENT_API",
+      "activityApi": "SERVICES_CCD_ACTIVITY_API",
+      "dataApi": "SERVICES_CCD_DATA_STORE_API",
+      "caseAssignmentApi": "SERVICES_CCD_CASE_ASSIGNMENT_API"
+    },
+    "hearings": {
+      "hearingsJurisdictions": "HEARINGS_JURISDICTIONS",
+      "sscs": {
+        "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_SSCS",
+        "caseTypes": "SERVICES_HEARINGS_CASETYPES_SSCS"
+      },
+      "privatelaw": {
+        "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_PRIVATELAW",
+        "caseTypes": "SERVICES_HEARINGS_CASETYPES_PRIVATELAW"
+      },
+      "civil": {
+        "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_CIVIL",
+        "caseTypes": "SERVICES_HEARINGS_CASETYPES_CIVIL"
+      },
+      "ia": {
+        "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_IAC",
+        "caseTypes": "SERVICES_HEARINGS_CASETYPES_IAC"
+      },
+      "employment": {
+        "serviceApi": "SERVICES_HEARINGS_COMPONENT_API_ET",
+        "caseTypes": "SERVICES_HEARINGS_CASETYPES_ET"
+      },
+      "hmcApi": "SERVICES_HMC_HEARINGS_COMPONENT_API",
+      "enableHearingDataSourceHeaders": "ENABLE_HEARING_DATA_SOURCE_HEADERS"
+    },
+    "documents": {
+      "api": "SERVICES_DOCUMENTS_API"
+    },
+    "documentsv2": {
+      "api": "SERVICES_DOCUMENTS_API_V2"
+    },
+    "em_hrs_api": "SERVICES_EM_HRS_API",
+    "prd": {
+      "api": "SERVICES_PRD_API",
+      "locationApi": "SERVICES_PRD_LOCATION_API",
+      "judicialApi": "SERVICES_PRD_JUDICIAL_API",
+      "commondataApi": "SERVICES_PRD_COMMONDATA_API"
+    },
+    "locationref": {
+      "api": "SERVICES_LOCATION_REF_API_URL"
+    },
+    "caseShare": {
+      "api": "SERVICES_CASE_SHARE_API"
+    },
+    "em_anno_api": "SERVICES_EM_ANNO_API",
+    "em_docassembly_api": "SERVICES_EM_DOCASSEMBLY_API",
+    "waWorkflowApi": "SERVICES_WA_WORKFLOW_API_URL",
+    "idam": {
+      "idamApiUrl": "SERVICES_IDAM_API_URL",
+      "idamClientID": "SERVICES_IDAM_CLIENT_ID",
+      "idamLoginUrl": "SERVICES_IDAM_LOGIN_URL",
+      "oauthCallbackUrl": "SERVICES_IDAM_OAUTH_CALLBACK_URL",
+      "serviceOverride": {
+        "__name": "SERVICES_IDAM_SERVICE_OVERRIDE",
+        "__format": "json"
+      },
+      "iss": "SERVICES_IDAM_ISS_URL"
+    },
+    "location_api": "SERVICES_LOCATION_API",
+    "work_allocation": {
+      "taskApi": "SERVICES_WORK_ALLOCATION_TASK_API"
+    },
+    "refunds": "SERVICES_REFUNDS_API_URL",
+    "notifications": "SERVICES_NOTIFICATIONS_API_URL",
+    "role_assignment": {
+      "roleApi": "SERVICES_ROLE_ASSIGNMENT_API",
+      "roleMappingApi": "SERVICES_ROLE_ASSIGNMENT_MAPPING_API"
+    },
+    "case": {
+      "caseworkerApi": "SERVICES_CASE_CASEWORKER_API",
+      "judicialApi": "SERVICES_CASE_JUDICIAL_API",
+      "judicialworkerApi": "SERVICES_CASE_JUDICIALWORKER_API"
+    },
+    "markup_api": "SERVICES_MARKUP_API",
+    "icp_api": "SERVICES_ICP_API",
+    "payments": "SERVICES_PAYMENTS_URL",
+    "s2s": "SERVICES_S2S",
+    "termsAndConditions": "SERVICES_TERMS_AND_CONDITIONS",
+    "payment_return_url": "SERVICES_PAYMENT_RETURN_URL",
+    "judicialBookingApi": "SERVICES_JUDICIAL_BOOKING_API_PATH",
+    "translation": "SERVICES_TRANSLATION_API_URL",
+    "lau": {
+      "specificChallengedAccessApi": "SERVICES_LAU_SPECIFIC_CHALLENGED_ACCESS_API_PATH"
+    }
+  },
+  "protocol": "PROTOCOL",
+  "secureCookie": "SECURE_COOKIE",
+  "microservice": "MICROSERVICE",
+  "sessionSecret": "SESSION_SECRET",
+  "secrets": {
+    "rpx": {
+      "appinsights-instrumentationkey-mc": "APPINSIGHTS_INSTRUMENTATIONKEY",
+      "appinsights-connection-string-mc": "APPINSIGHTS_CONNECTION_STRING",
+      "mc-s2s-client-secret": "S2S_SECRET",
+      "mc-idam-client-secret": "IDAM_SECRET",
+      "webapp-redis-connection-string": "REDISCLOUD_URL",
+      "launch-darkly-client-id": "LAUNCH_DARKLY_CLIENT_ID",
+      "system-user-name": "SYSTEM_USER_NAME",
+      "system-user-password": "SYSTEM_USER_PASSWORD"
+    }
+  },
+  "caseworkerPageSize": "CASEWORKER_PAGE_SIZE",
+  "jurisdictions": "JURISDICTIONS",
+  "staffSupportedJurisdictions": "STAFF_SUPPORTED_JURISDICTIONS",
+  "waSupportedJurisdictions": "WA_SUPPORTED_JURISDICTIONS",
+  "globalSearchServices": "GLOBAL_SEARCH_SERVICES",
+  "serviceRefDataMapping": {
+    "__name": "SERVICE_REF_DATA_MAPPING",
+    "__format": "json"
+  },
+  "log4JConfig": {
+    "__name": "LOG_4JS_CONFIG",
+    "__format": "json"
+  },
+  "feature": {
+    "appInsightsEnabled": {
+      "__name": "FEATURE_APP_INSIGHTS_ENABLED",
+      "__format": "json"
+    },
+    "proxyEnabled": {
+      "__name": "FEATURE_PROXY_ENABLED",
+      "__format": "json"
+    },
+    "secureCookieEnabled": {
+      "__name": "FEATURE_SECURE_COOKIE_ENABLED",
+      "__format": "json"
+    },
+    "termsAndConditionsEnabled": {
+      "__name": "FEATURE_TERMS_AND_CONDITIONS_ENABLED",
+      "__format": "json"
+    },
+    "helmetEnabled": {
+      "__name": "FEATURE_HELMET_ENABLED",
+      "__format": "json"
+    },
+    "redisEnabled": {
+      "__name": "FEATURE_REDIS_ENABLED",
+      "__format": "json"
+    },
+    "oidcEnabled": {
+      "__name": "FEATURE_OIDC_ENABLED",
+      "__format": "json"
+    },
+    "workAllocationEnabled": {
+      "__name": "FEATURE_WORKALLOCATION_ENABLED",
+      "__format": "json"
+    },
+    "jrdELinksV2Enabled": {
+      "__name": "FEATURE_JRD_E_LINKS_V2_ENABLED",
+      "__format": "json"
+    },
+    "lauSpecificChallengedEnabled": {
+      "__name": "FEATURE_LAU_SPECIFIC_CHALLENGED_ENABLED",
+      "__format": "json"
+    },
+    "substantiveRoleEnabled": {
+      "__name": "FEATURE_SUBSTANTIVE_ROLE_ENABLED",
+      "__format": "json"
+    },
+    "accessManagementEnabled": {
+      "__name": "FEATURE_ACCESS_MANAGEMENT_ENABLED",
+      "__format": "json"
+    },
+    "compressionEnabled": {
+      "__name": "FEATURE_COMPRESSION_ENABLED",
+      "__format": "json"
+    },
+    "docsEnabled": {
+      "__name": "FEATURE_DOCS_ENABLED",
+      "__format": "json"
+    },
+    "queryIdamServiceOverride": {
+      "__name": "FEATURE_QUERY_IDAM_SERVICE_OVERRIDE",
+      "__format": "json"
+    }
+  },
+  "helmet": {
+    "__name": "HELMET_CONFIG",
+    "__format": "json"
+  },
+  "redis": {
+    "prefix": "REDIS_KEY_PREFIX",
+    "ttl": "REDIS_TTL"
+  },
+  "sessionTimeouts": {
+    "__name": "SESSION_TIMEOUTS",
+    "__format": "json"
+  },
+  "pact": {
+    "brokerUrl": "PACT_BROKER_URL",
+    "branchName": "PACT_BRANCH_NAME",
+    "consumerVersion": "PACT_CONSUMER_VERSION",
+    "brokerUsername": "PACT_BROKER_USERNAME",
+    "brokerPassword": "PACT_BROKER_PASSWORD"
+  },
+  "headerConfig": "HEADER_CONFIG"
+}

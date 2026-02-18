@@ -1,0 +1,31 @@
+td.govuk-table__cell {
+  white-space: normal;
+  vertical-align: top;
+}
+.xui-image-field__container {
+  height: 30px;
+  position: relative;
+  img {
+    height: 100%;
+  }
+}
+.xui-case-name-field {
+  word-break: break-word !important;
+  white-space: break-spaces !important;
+  max-width: 180px !important;
+  width: 100%;
+}
+
+.cdk-column-task_title {
+  display: -webkit-inline-box;
+  max-width: 280px !important;
+}
+
+.cdk-column-case_name {
+  display: -webkit-inline-box;
+  max-width: 200px !important;
+}
+
+.cdk-column-priority {
+  width: 4.2em !important;
+}

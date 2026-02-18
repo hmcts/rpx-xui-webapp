@@ -1,0 +1,23 @@
+// TODO - needs to be clarified wehre the css is coming form
+.notification {
+  padding: 30px;
+  font-size: 24px;
+  font-weight: bold;
+  width: 100%;
+  color: $page-colour;
+  background: $turquoise;
+}
+
+.small_notification {
+  padding: 30px;
+  font-size: 30px;
+  font-weight: bold;
+  width: 60%;
+  text-align: center;
+  color: $page-colour;
+  background: $turquoise;
+}
+
+.alert-message-but {
+  background-color: #912b88;
+}

@@ -1,0 +1,10 @@
+{
+  "status": "UP",
+  "hostname": "localhost",
+  "buildInfo": {
+    "environment": "local",
+    "project": "ccdata",
+    "name": "case-management-web",
+    "version": "1.0.0"
+  }
+}

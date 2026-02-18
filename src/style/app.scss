@@ -1,0 +1,576 @@
+@import '_typography';
+@import 'govuk-frontend/govuk/all';
+@import 'shims';
+@import 'conditionals';
+@import 'measurements';
+@import 'material-design-icons/iconfont/material-icons.css';
+
+$black: #323232;
+
+$path: '/assets/';
+
+$fa-font-path: '/node_modules/font-awesome/fonts';
+$govuk-frontend-toolkit-image-path: '/assets';
+$govuk-template-image-path: '/assets';
+
+$govuk-compatibility-govukelements: true;
+$govuk-compatibility-govuktemplate: true;
+$govuk-compatibility-govukfrontendtoolkit: true;
+
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_buttons.scss';
+// @import 'node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_breadcrumbs.scss';
+
+// @import 'node_modules/govuk_frontend_toolkit/stylesheets/_grid_layout.scss';
+// @import 'node_modules/govuk-elements-sass/public/sass/_elements.scss';
+
+@import 'govuk-elements';
+
+// Organise SASS (TODO / TS)
+@import './buttons';
+@import './forms';
+@import './markdown';
+@import './print';
+@import './vendor/prism.scss';
+@import './material';
+
+// Ensure Media Viewer CSS styles and icons are available globally across Manage Cases. Required for correct display
+// of the Media Viewer toolbar when this component is embedded in another CCD Case UI Toolkit component
+@import '@hmcts/media-viewer/assets/all';
+
+body {
+  margin: 0;
+  font-family: 'nta', Arial, sans-serif;
+}
+
+// Bootstrap
+
+main {
+  font-size: inherit;
+}
+
+.container-fluid {
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-bottom: 30px;
+}
+
+.column-three-quarters {
+  float: left;
+  width: 75%;
+  padding: 0 15px;
+  box-sizing: border-box;
+}
+
+.side-padding {
+  padding-left: 210px;
+  padding-right: 210px;
+}
+
+.mat-autocomplete-panel-extend {
+  max-height: 470px !important;
+}
+
+@media (max-width: 991px) {
+  // Add bottom margin when column are stacked up
+  [class*='col-md'] {
+    margin-bottom: 30px;
+  }
+}
+
+@import './notifications';
+
+table.form-table {
+  td.form-cell {
+    padding-top: 5px;
+    padding-bottom: 4px;
+
+    .form-group {
+      margin-bottom: 0;
+    }
+  }
+
+  margin-bottom: 30px;
+}
+
+@media (min-width: 641px) {
+  a[rel='external']:after {
+    content: '\A0\A0\A0\A0';
+    background-position: right 4px;
+  }
+
+  a[rel='external']:hover:after {
+    background-position: right -384px;
+  }
+}
+
+.plain-message {
+  @include core-12pt;
+  color: $black;
+  margin-bottom: 4px;
+  font-weight: 100;
+}
+
+.field-label {
+  font-weight: 900;
+}
+
+.dialog {
+  mat-dialog-container {
+    padding: 0;
+    background: #cecccc;
+  }
+}
+
+.tooltip {
+  position: relative;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  background-color: #005ea5;
+  color: #fff;
+  font-size: 12px;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px 10px;
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 0%;
+}
+
+.tooltip .tooltiptext::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #005ea5 transparent transparent transparent;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+.ccd-error-summary-li {
+  margin-left: 40px;
+}
+
+select::-ms-expand {
+  display: none;
+}
+
+.ccd-dropdown {
+  background: url('../assets/img/dropdown-arrow.PNG') no-repeat 98%;
+  background-size: 9px;
+  font-size: 16px;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  -webkit-border-radius: 0px;
+  height: 31px;
+  border-radius: 3px;
+  border: solid 1px #122337;
+  padding: 2px 30px 0 10px;
+  margin: 0 0 30px 0;
+}
+
+.cancel {
+  margin: 25px 0px 25px 0px;
+}
+
+.form-money {
+  position: relative;
+  width: 41%;
+}
+
+.form-money input {
+  text-indent: 25px;
+}
+
+.form-money .form-currency {
+  position: absolute;
+  top: 3px;
+  left: 7px;
+  font-size: 19px;
+  font-weight: bold;
+}
+
+.search-left {
+  float: left;
+  padding-left: 15px;
+  width: 17%;
+}
+
+.search-right {
+  float: right;
+  width: 80%;
+  padding-right: 15px;
+  box-sizing: border-box;
+  padding-left: 1.3%;
+  border-left: 1px solid #bfc1c3;
+}
+
+.screen-990 {
+  width: 990px;
+  margin: 0 auto;
+}
+
+%headers {
+  font-weight: bold;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.heading-h1 {
+  @extend %headers;
+  font-size: 32px;
+}
+
+.heading-h2 {
+  @extend %headers;
+  font-size: 24px;
+}
+
+.heading-h3 {
+  @extend %headers;
+  font-size: 18px;
+}
+
+.heading-h4 {
+  @extend %headers;
+  font-size: 16px;
+}
+
+.heading-span {
+  @extend %headers;
+  font-size: 24px;
+  display: block;
+}
+
+.form-group,
+.bottom-0 {
+  margin-bottom: 0;
+}
+
+.bottom-30 {
+  margin-bottom: 30px;
+}
+
+.panel .form-group {
+  margin-bottom: 15px;
+}
+
+.form-label {
+  font-size: 16px;
+  margin-bottom: 5px;
+  padding-bottom: 0px;
+}
+
+.form-hint {
+  font-size: 16px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-family: 'nta', Arial, sans-serif;
+}
+
+.multiple-choice {
+  [type='checkbox'] + label::before {
+    border: 1px solid;
+  }
+}
+
+.form-control {
+  border: 1px solid;
+  font-size: 16px;
+  width: 100%;
+}
+
+.dropdown-50 {
+  width: 50%;
+}
+
+.dropdown-100 {
+  width: 100%;
+}
+
+.width-50 {
+  width: 50%;
+}
+
+.text-16,
+.error-message {
+  font-size: 16px;
+  font-family: 'nta', Arial, sans-serif;
+  white-space: normal;
+}
+
+.postcodeinput {
+  width: 49%;
+}
+
+.button-30 {
+  height: 30px;
+}
+
+.markdown {
+  h1 {
+    @extend %headers;
+    font-size: 32px;
+  }
+
+  h2 {
+    @extend %headers;
+    font-size: 24px;
+  }
+
+  h3 {
+    @extend %headers;
+    font-size: 18px;
+  }
+
+  h4 {
+    @extend %headers;
+    font-size: 16px;
+  }
+
+  p {
+    font-size: 19px;
+    margin-bottom: 25px;
+    white-space: normal;
+  }
+
+  .qm-service-message {
+    strong {
+      font-size: 19px;
+      line-height: 25px;
+    }
+  }
+
+  ul {
+    font-size: 16px;
+    margin-bottom: 25px;
+    white-space: normal;
+
+    li {
+      margin-bottom: 5px;
+      list-style-type: disc;
+    }
+  }
+}
+
+tr.compound-field .markdown ul,
+tr.compound-field .markdown p,
+form.check-your-answers table td .markdown ul,
+form.check-your-answers table td .markdown p {
+  margin: 10px 0px;
+}
+
+#fileInputWrapper {
+  position: absolute;
+  width: 50%;
+  height: 41px;
+}
+
+.footer-menu {
+  float: left;
+  margin-bottom: 30px;
+  padding-right: 30px;
+  font-size: 16px;
+}
+
+.label-text {
+  font-size: 16px;
+  font-family: 'nta', Arial, sans-serif;
+  font-weight: bold;
+}
+
+.pagination-top {
+  float: left;
+  margin-bottom: 10px;
+}
+
+.caption {
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+.govuk-skip-link {
+  display: block;
+  font-size: 0px;
+  height: 0px;
+
+  &:focus {
+    font-size: 16px;
+    padding-left: 15px;
+    width: 100%;
+    height: 41px;
+    display: flex;
+    align-items: center;
+    text-decoration: underline;
+  }
+}
+
+header {
+  .govuk-skip-link {
+    &:link,
+    &:visited {
+      background-color: #ffdd00;
+      color: #0b0c0c;
+    }
+  }
+}
+
+.show-condition-grey-bar {
+  border-left: 10px solid #bfc1c3;
+  padding-left: 15px;
+  margin-bottom: 30px !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+button:focus {
+  outline: 3px solid #ffbf47;
+  outline-offset: 0;
+}
+
+.stay-signed-in-button {
+  margin-right: 15px;
+}
+
+/**
+ * We require a dynamic background-color for EXUI users. ie. Red for Judicial users, Black for Case Manager,
+ * and other users.
+ *
+ * The Judicial Branding is off brand to usual HMCTS branding, as it's red.
+ *
+ * The HMCTS branding is always one color.
+ *
+ * We need to over-ride the background-color within the HMCTS components, as its not dynamic therefore
+ * we use !important.
+ *
+ * Other options would be 1. We use [ngStyle] as a property for all HMCTS components, where background-color is used or 2.
+ * Ask them to change their library to use transparent.
+ *
+ * The better option for us now is to use !important.
+ */
+.transparent-background {
+  background-color: transparent !important;
+
+  a:focus {
+    background-color: #ffdd00 !important;
+  }
+}
+
+/** Error Summary 
+* Make border color consistent with other error messages for HMCTS
+*/
+.query-container .error-summary {
+  border-color: #d4351c;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.qm-qualifying-question__divider {
+  margin-bottom: 10px;
+  font-size: 19px;
+}
+
+.qm-confirmation markdown * {
+  font-size: 36px;
+  font-weight: 400;
+  color: #fff;
+}
+
+/**
+ * The "Manage +" button should mirror the GDS accordion functionality. However,
+ * it still needs to be in keeping with the styling within the table.
+ * EXUI-477 - Change from govuk-accordion to xui custom styling
+ */
+.xui-manage-header {
+  padding-top: 5px;
+}
+.xui-manage-button {
+  background: none;
+  border: none;
+  font-family: inherit;
+  font-size: 19px;
+  color: #1d70b8;
+  text-decoration: underline;
+  font-weight: 400;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  margin: 0 40px 0 0;
+  padding: 0;
+  border-width: 0;
+  text-align: left;
+  margin-right: 20px;
+  padding-right: 20px;
+
+  &:focus {
+    text-decoration: none;
+    outline: none;
+  }
+
+  &:focus .xui-manage-text {
+    outline: 3px solid transparent;
+    color: #0b0c0c;
+    background-color: #fd0;
+    box-shadow:
+      0 -2px #fd0,
+      0 4px #0b0c0c;
+  }
+}
+.xui-manage-text {
+  display: inline-block;
+}
+.xui-manage-icon {
+  position: absolute;
+  right: 0;
+  top: 6px;
+  width: 14px;
+  height: 14px;
+  margin-top: 0;
+  pointer-events: none;
+  transform: rotate(45deg);
+
+  &:before,
+  &:after {
+    content: '';
+    position: absolute;
+    height: 14px;
+    width: 4px;
+    background-color: black;
+    left: 5px;
+  }
+
+  &:before {
+    transform: rotate(45deg);
+  }
+
+  &:after {
+    transform: rotate(-45deg);
+  }
+}
+.xui-manage-button[aria-expanded='true'] .xui-manage-icon {
+  &:after {
+    width: 0px;
+  }
+}

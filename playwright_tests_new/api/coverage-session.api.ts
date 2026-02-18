@@ -1,0 +1,334 @@
+import { test, expect } from '@playwright/test';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
+import { promises as fsp } from 'node:fs';
+
+import { CookieUtils } from '../E2E/utils/cookie.utils.js';
+import { UserUtils } from '../E2E/utils/user.utils.js';
+import type { IdamPage } from '@hmcts/playwright-common';
+import { isSessionFresh, loadSessionCookies, __test__ as sessionCaptureTest } from '../common/sessionCapture.js';
+import type { Cookie } from 'playwright-core';
+import appTestConfig from '../common/appTestConfig';
+
+test.describe.configure({ mode: 'serial' });
+
+const mockPassword = process.env.PW_MOCK_PASSWORD ?? String(Date.now());
+const baseCookie = (name: string, value: string): Cookie => ({
+  name,
+  value,
+  domain: 'example.test',
+  path: '/',
+  expires: -1,
+  httpOnly: false,
+  secure: false,
+  sameSite: 'Lax',
+});
+
+test.describe('Session and cookie utilities coverage', () => {
+  test('isSessionFresh returns false when stat fails', () => {
+    const fsStub = {
+      existsSync: () => true,
+      statSync: () => {
+        throw new Error('boom');
+      },
+    } as any;
+    expect(isSessionFresh('session.json', 1000, { fs: fsStub, now: () => 1000 })).toBe(false);
+  });
+
+  test('UserUtils returns credentials for known users and errors on unknown', () => {
+    const userUtils = new UserUtils();
+    const configuredUsers = appTestConfig.users[appTestConfig.testEnv];
+    const userWithPassword = configuredUsers.find((user) => typeof user.key === 'string' && user.key.length > 0);
+    expect(userWithPassword).toBeDefined();
+    if (!userWithPassword) {
+      return;
+    }
+
+    const creds = userUtils.getUserCredentials(userWithPassword.userIdentifier);
+    expect(creds.email).toContain('@');
+    expect(creds.password).toBeTruthy();
+    expect(() => userUtils.getUserCredentials('UNKNOWN_USER')).toThrow('User "UNKNOWN_USER" not found');
+  });
+
+  test('CookieUtils writes and updates session files', async () => {
+    const cookieUtils = new CookieUtils();
+    const tmpDir = await fsp.mkdtemp(path.join(process.cwd(), 'test-results', 'cookie-utils-'));
+    const sessionPath = path.join(tmpDir, 'session.json');
+
+    const initial = { cookies: [baseCookie('__userid__', 'user-1')] };
+    await fsp.writeFile(sessionPath, JSON.stringify(initial), 'utf8');
+    await cookieUtils.addManageCasesAnalyticsCookie(sessionPath);
+    const updated = JSON.parse(await fsp.readFile(sessionPath, 'utf8'));
+    const added = updated.cookies.find((cookie: any) => cookie.name === 'hmcts-exui-cookies-user-1-mc-accepted');
+    expect(added).toBeDefined();
+    expect(added.value).toBe('true');
+
+    const noUserPath = path.join(tmpDir, 'no-user.json');
+    cookieUtils.writeManageCasesSession(noUserPath, [baseCookie('other', '1')]);
+    const noUserState = JSON.parse(await fsp.readFile(noUserPath, 'utf8'));
+    expect(noUserState.cookies).toHaveLength(1);
+
+    const withUserPath = path.join(tmpDir, 'with-user.json');
+    cookieUtils.writeManageCasesSession(withUserPath, [baseCookie('__userid__', 'user-2')]);
+    const withUserState = JSON.parse(await fsp.readFile(withUserPath, 'utf8'));
+    const withUserCookie = withUserState.cookies.find((cookie: any) => cookie.name === 'hmcts-exui-cookies-user-2-mc-accepted');
+    expect(withUserCookie).toBeDefined();
+    expect(withUserCookie.value).toBe('true');
+
+    const nestedPath = path.join(tmpDir, 'nested', 'session.json');
+    cookieUtils.writeManageCasesSession(nestedPath, [baseCookie('__userid__', 'user-3')]);
+    const nestedState = JSON.parse(await fsp.readFile(nestedPath, 'utf8'));
+    expect(nestedState.cookies.find((cookie: any) => cookie.name === 'hmcts-exui-cookies-user-3-mc-accepted')).toBeDefined();
+
+    const noUserAnalyticsPath = path.join(tmpDir, 'no-user-analytics.json');
+    await fsp.writeFile(noUserAnalyticsPath, JSON.stringify({ cookies: [baseCookie('other', '1')] }), 'utf8');
+    await cookieUtils.addManageCasesAnalyticsCookie(noUserAnalyticsPath);
+    const noUserAnalytics = JSON.parse(await fsp.readFile(noUserAnalyticsPath, 'utf8'));
+    expect(noUserAnalytics.cookies.length).toBe(2);
+  });
+
+  test('CookieUtils surfaces errors when session data is invalid', async () => {
+    const cookieUtils = new CookieUtils();
+    const tmpDir = await fsp.mkdtemp(path.join(process.cwd(), 'test-results', 'cookie-utils-error-'));
+    const badPath = path.join(tmpDir, 'bad.json');
+    await fsp.writeFile(badPath, '{bad-json', 'utf8');
+    await expect(cookieUtils.addManageCasesAnalyticsCookie(badPath)).rejects.toThrow('Failed to read or write session data');
+
+    const failingFs = {
+      readFileSync: fs.readFileSync,
+      writeFileSync: () => {
+        throw new Error('write failed');
+      },
+      existsSync: fs.existsSync,
+      mkdirSync: fs.mkdirSync,
+    };
+    const cookieUtilsFailing = new CookieUtils(failingFs);
+    expect(() => cookieUtilsFailing.writeManageCasesSession(path.join(tmpDir, 'fail.json'), [])).toThrow(
+      'Failed to write session file'
+    );
+  });
+
+  test('sessionCapture helpers handle fresh, stale, and missing sessions', async () => {
+    const tmpDir = await fsp.mkdtemp(path.join(process.cwd(), 'test-results', 'session-utils-'));
+    const originalCwd = process.cwd();
+    process.chdir(tmpDir);
+    try {
+      const sessionsDir = path.join(tmpDir, '.sessions');
+      await fsp.mkdir(sessionsDir, { recursive: true });
+
+      const userUtils = new UserUtils();
+      const creds = userUtils.getUserCredentials('IAC_CaseOfficer_R1');
+      const storagePath = path.join(sessionsDir, `${creds.email}.storage.json`);
+
+      expect(isSessionFresh(storagePath)).toBe(false);
+
+      await fsp.writeFile(storagePath, JSON.stringify({ cookies: [baseCookie('a', 'b')] }), 'utf8');
+      expect(isSessionFresh(storagePath, 60 * 1000)).toBe(true);
+
+      const oldTime = Date.now() - 10 * 60 * 1000;
+      await fsp.utimes(storagePath, oldTime / 1000, oldTime / 1000);
+      expect(isSessionFresh(storagePath, 60 * 1000)).toBe(false);
+
+      const loaded = loadSessionCookies('IAC_CaseOfficer_R1');
+      expect(loaded.cookies.length).toBe(1);
+
+      await fsp.writeFile(storagePath, JSON.stringify({ cookies: {} }), 'utf8');
+      const invalidCookies = loadSessionCookies('IAC_CaseOfficer_R1');
+      expect(invalidCookies.cookies).toHaveLength(0);
+
+      await fsp.writeFile(storagePath, '{bad-json', 'utf8');
+      expect(() => loadSessionCookies('IAC_CaseOfficer_R1')).toThrow('Storage file corrupted');
+
+      await fsp.rm(storagePath, { force: true });
+      expect(() => loadSessionCookies('IAC_CaseOfficer_R1')).toThrow('Failed parsing storage file');
+    } finally {
+      process.chdir(originalCwd);
+    }
+  });
+
+  test('persistSession writes cookies and surfaces errors', async () => {
+    const tmpDir = await fsp.mkdtemp(path.join(process.cwd(), 'test-results', 'session-persist-'));
+    const sessionPath = path.join(tmpDir, 'session.json');
+    const ctx = {
+      addCookies: async (_cookies: Cookie[]) => {
+        void _cookies;
+      },
+      storageState: async (_options: { path: string }) => {
+        void _options;
+        return {};
+      },
+    };
+    const cookieUtils = {
+      writeManageCasesSession: (pathValue: string, cookies: any[]) => {
+        fs.writeFileSync(pathValue, JSON.stringify({ cookies }), 'utf8');
+      },
+    } as any;
+
+    await sessionCaptureTest.persistSession(sessionPath, [baseCookie('a', 'b')], ctx as any, 'user', {
+      cookieUtils,
+      fs,
+    });
+
+    await expect(
+      sessionCaptureTest.persistSession(sessionPath, [], ctx as any, 'user', {
+        cookieUtils: {
+          writeManageCasesSession: () => {
+            throw new Error('boom');
+          },
+        } as any,
+        fs,
+      })
+    ).rejects.toThrow('boom');
+  });
+
+  test('sessionCaptureWith skips fresh sessions and handles header wait failures', async () => {
+    let mkdirCalls = 0;
+    const fsStub = {
+      existsSync: () => false,
+      mkdirSync: () => {
+        mkdirCalls += 1;
+      },
+      writeFileSync: () => {},
+    } as any;
+
+    const lockfileStub = {
+      lock: async () => async () => {},
+    } as any;
+
+    const userUtils = {
+      getUserCredentials: () => ({ email: 'user@example.com', password: mockPassword }),
+    } as any;
+
+    await sessionCaptureTest.sessionCaptureWith(['USER'], {
+      fs: fsStub,
+      userUtils,
+      isSessionFresh: () => true,
+      lockfile: lockfileStub,
+    });
+    expect(mkdirCalls).toBe(2); // Called once per sessionCaptureWith invocation
+
+    let persistCalls = 0;
+    const page = {
+      goto: async () => {},
+      waitForSelector: async (selector: string) => {
+        if (selector === 'exui-header') {
+          throw new Error('missing header');
+        }
+      },
+    } as any;
+    const context = {
+      newPage: async () => page,
+      cookies: async () => [],
+      addCookies: async () => {},
+      storageState: async (_options: { path: string }) => {
+        void _options;
+        return {};
+      },
+    } as any;
+    const browser = {
+      newContext: async () => context,
+      close: async () => {},
+    } as any;
+    const chromiumOk = {
+      launch: async () => browser,
+    } as any;
+    const idamPageFactory = (() => ({
+      usernameInput: { waitFor: async () => {} },
+      login: async () => {},
+    })) as unknown as (page: any) => IdamPage;
+    await sessionCaptureTest.sessionCaptureWith(['USER'], {
+      fs: fsStub,
+      userUtils,
+      isSessionFresh: () => false,
+      chromiumLauncher: chromiumOk,
+      idamPageFactory,
+      persistSession: async () => {
+        persistCalls += 1;
+      },
+      env: { TEST_URL: 'https://example.test' } as NodeJS.ProcessEnv,
+      config: { urls: { exuiDefaultUrl: 'https://example.test' } } as any,
+      lockfile: lockfileStub,
+    });
+    expect(persistCalls).toBe(1);
+  });
+
+  test('sessionCaptureWith surfaces launch failures', async () => {
+    const fsStub = {
+      existsSync: () => true,
+      mkdirSync: () => {},
+      writeFileSync: () => {},
+    } as any;
+    const lockfileStub = {
+      lock: async () => async () => {},
+    } as any;
+    const userUtils = {
+      getUserCredentials: () => ({ email: 'user@example.com', password: mockPassword }),
+    } as any;
+    const chromiumLauncher = {
+      launch: async () => {
+        throw new Error('launch failed');
+      },
+    } as any;
+    await expect(
+      sessionCaptureTest.sessionCaptureWith(['USER'], {
+        fs: fsStub,
+        userUtils,
+        isSessionFresh: () => false,
+        chromiumLauncher,
+        lockfile: lockfileStub,
+      })
+    ).rejects.toThrow('launch failed');
+  });
+
+  test('sessionCaptureWith surfaces login failures', async () => {
+    const fsStub = {
+      existsSync: () => true,
+      mkdirSync: () => {},
+      writeFileSync: () => {},
+    } as any;
+    const lockfileStub = {
+      lock: async () => async () => {},
+    } as any;
+    const userUtils = {
+      getUserCredentials: () => ({ email: 'user@example.com', password: mockPassword }),
+    } as any;
+    const page = {
+      goto: async () => {},
+      waitForSelector: async () => {},
+    } as any;
+    const context = {
+      newPage: async () => page,
+      cookies: async () => [],
+      addCookies: async () => {},
+      storageState: async (_options: { path: string }) => {
+        void _options;
+        return {};
+      },
+    } as any;
+    const browser = {
+      newContext: async () => context,
+      close: async () => {},
+    } as any;
+    const chromiumOk = {
+      launch: async () => browser,
+    } as any;
+    const idamPageFactory = (() => ({
+      login: async () => {
+        throw new Error('login failed');
+      },
+    })) as unknown as (page: any) => IdamPage;
+    await expect(
+      sessionCaptureTest.sessionCaptureWith(['USER'], {
+        fs: fsStub,
+        userUtils,
+        isSessionFresh: () => false,
+        chromiumLauncher: chromiumOk,
+        idamPageFactory,
+        persistSession: async () => {},
+        env: { TEST_URL: 'https://example.test' } as NodeJS.ProcessEnv,
+        config: { urls: { exuiDefaultUrl: 'https://example.test' } } as any,
+        lockfile: lockfileStub,
+      })
+    ).rejects.toThrow(/login failed/i);
+  });
+});

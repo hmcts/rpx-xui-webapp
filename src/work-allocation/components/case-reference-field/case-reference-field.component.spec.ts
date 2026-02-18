@@ -1,0 +1,195 @@
+import { Component, Input, ViewChild } from '@angular/core';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
+import { AppConstants } from '../../../app/app.constants';
+import { WorkAllocationComponentsModule } from '../work-allocation.components.module';
+import { CaseReferenceFieldComponent } from './case-reference-field.component';
+
+@Component({
+  standalone: false,
+  template:
+    '<exui-case-reference-field [jurisdiction]="jurisdiction" [caseType]="caseType" [caseReference]="caseReference"></exui-case-reference-field>',
+})
+class WrapperComponent {
+  @ViewChild(CaseReferenceFieldComponent, { static: true }) public appComponentRef: CaseReferenceFieldComponent;
+  @Input() public caseReference: string;
+  @Input() public jurisdiction: string;
+  @Input() public caseType: string;
+}
+
+describe('WorkAllocation', () => {
+  describe('CaseReferenceFieldComponent', () => {
+    const CASE_DETAILS_URL: string = AppConstants.CASE_DETAILS_URL;
+    const CASE_REFERENCE: string = 'Casereference';
+    const JURISDICTION: string = 'IA';
+    const CASETYPE: string = 'Asylum';
+
+    let component: CaseReferenceFieldComponent;
+    let wrapper: WrapperComponent;
+    let fixture: ComponentFixture<WrapperComponent>;
+
+    beforeEach(async () => {
+      TestBed.configureTestingModule({
+        declarations: [WrapperComponent],
+        imports: [WorkAllocationComponentsModule, RouterTestingModule],
+      }).compileComponents();
+
+      fixture = TestBed.createComponent(WrapperComponent);
+      wrapper = fixture.componentInstance;
+      component = wrapper.appComponentRef;
+      fixture.detectChanges();
+    });
+
+    it('should only show a link when it has a case reference', () => {
+      // No anchor shown yet.
+      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+
+      // Add the caseReference and it should work (showing the link).
+      wrapper.caseReference = CASE_REFERENCE;
+      wrapper.jurisdiction = JURISDICTION;
+      wrapper.caseType = CASETYPE;
+      fixture.detectChanges();
+      const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
+      expect(element).not.toBeNull();
+      expect(element.textContent.trim()).toBe(CASE_REFERENCE);
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${JURISDICTION}/${CASETYPE}/${CASE_REFERENCE}`); // No spaces
+    });
+
+    // Test no longer necessary but if formatting to case reference requires removal of spaces in future this may be useful again
+    /* it('should allow the case reference to be changed', () => {
+      const NEW_CASE_REFERENCE: string = 'n3w C@53    REFERENCE';
+
+      // No anchor shown yet.
+      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+
+      // Add the caseReference and it should work (showing the link).
+      wrapper.caseReference = CASE_REFERENCE;
+      fixture.detectChanges();
+      let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
+      expect(element).not.toBeNull();
+      expect(element.textContent.trim()).toBe(CASE_REFERENCE);
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${CASE_REFERENCE}`); // No spaces
+
+      // Change the value of caseReference.
+      wrapper.caseReference = NEW_CASE_REFERENCE;
+      fixture.detectChanges();
+      expect(element).not.toBeNull();
+      element = fixture.debugElement.nativeElement.querySelector('a');
+      expect(element.textContent.trim()).toBe(NEW_CASE_REFERENCE);
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}n3wC@53REFERENCE`); // No spaces
+    }); */
+
+    it('should remove the link if case reference is changed to undefined', () => {
+      // No anchor shown yet.
+      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+
+      // Add the caseReference and it should work (showing the link).
+      wrapper.caseReference = CASE_REFERENCE;
+      wrapper.jurisdiction = JURISDICTION;
+      wrapper.caseType = CASETYPE;
+      fixture.detectChanges();
+      const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
+      expect(element).not.toBeNull();
+      expect(element.textContent.trim()).toBe(CASE_REFERENCE);
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${JURISDICTION}/${CASETYPE}/${CASE_REFERENCE}`); // No spaces
+
+      // Clear out the value of caseReference and we should no longer have the anchor.
+      wrapper.caseReference = undefined;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+    });
+
+    it('should remove the link if case reference is changed to null', () => {
+      // No anchor shown yet.
+      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+
+      // Add the caseReference and it should work (showing the link).
+      wrapper.caseReference = CASE_REFERENCE;
+      wrapper.jurisdiction = JURISDICTION;
+      wrapper.caseType = CASETYPE;
+      fixture.detectChanges();
+      const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
+      expect(element).not.toBeNull();
+      expect(element.textContent.trim()).toBe(CASE_REFERENCE);
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${JURISDICTION}/${CASETYPE}/${CASE_REFERENCE}`); // No spaces
+
+      // Make caseReference undefined and we should no longer have the anchor.
+      wrapper.caseReference = null;
+      fixture.detectChanges();
+      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+    });
+
+    it('should not show the link if case reference is simply a bunch of spaces', () => {
+      // No anchor shown yet.
+      expect(fixture.debugElement.nativeElement.querySelector('a')).toBeNull();
+
+      // Add the caseReference and it should work (showing the link).
+      wrapper.caseReference = CASE_REFERENCE;
+      wrapper.jurisdiction = JURISDICTION;
+      wrapper.caseType = CASETYPE;
+      fixture.detectChanges();
+      const element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
+      expect(element).not.toBeNull();
+      expect(element.textContent.trim()).toBe(CASE_REFERENCE);
+      expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${JURISDICTION}/${CASETYPE}/${CASE_REFERENCE}`); // No spaces
+    });
+
+    describe('ngOnChanges', () => {
+      const CASE_DETAILS_URL: string = AppConstants.CASE_DETAILS_URL;
+
+      let component: CaseReferenceFieldComponent;
+
+      beforeEach(() => {
+        component = new CaseReferenceFieldComponent();
+      });
+
+      it('should set href with jurisdiction and caseType when all inputs are provided', () => {
+        component.caseReference = '123456';
+        component.jurisdiction = 'IA';
+        component.caseType = 'Asylum';
+        component.ngOnChanges();
+        expect(component.href).toBe(`${CASE_DETAILS_URL}IA/Asylum/123456`);
+      });
+
+      it('should set href with only caseReference when jurisdiction and caseType are missing', () => {
+        component.caseReference = '654321';
+        component.jurisdiction = undefined;
+        component.caseType = undefined;
+        component.ngOnChanges();
+        expect(component.href).toBe(`${CASE_DETAILS_URL}654321`);
+      });
+
+      it('should set href with only caseReference when jurisdiction and caseType are empty strings', () => {
+        component.caseReference = '654321';
+        component.jurisdiction = '';
+        component.caseType = '';
+        component.ngOnChanges();
+        expect(component.href).toBe(`${CASE_DETAILS_URL}654321`);
+      });
+
+      it('should not set href if caseReference is undefined', () => {
+        component.caseReference = undefined;
+        component.jurisdiction = 'IA';
+        component.caseType = 'Asylum';
+        component.ngOnChanges();
+        expect(component.href).toBeUndefined();
+      });
+
+      it('should not set href if caseReference is null', () => {
+        component.caseReference = null;
+        component.jurisdiction = 'IA';
+        component.caseType = 'Asylum';
+        component.ngOnChanges();
+        expect(component.href).toBeUndefined();
+      });
+
+      it('should not set href if caseReference is an empty string', () => {
+        component.caseReference = '';
+        component.jurisdiction = 'IA';
+        component.caseType = 'Asylum';
+        component.ngOnChanges();
+        expect(component.href).toBeUndefined();
+      });
+    });
+  });
+});

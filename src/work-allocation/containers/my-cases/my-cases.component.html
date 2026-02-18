@@ -1,0 +1,13 @@
+<xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
+<exui-work-case-list
+  [caseServiceConfig]="caseServiceConfig"
+  [cases]="cases"
+  [fields]="fields"
+  [casesTotal]="casesTotal"
+  [uniqueCases]="uniqueCases"
+  [sortedBy]="sortedBy"
+  [emptyMessage]="emptyMessage"
+  (sortEvent)="onSortHandler($event)"
+  (actionEvent)="onActionHandler($event)"
+>
+</exui-work-case-list>

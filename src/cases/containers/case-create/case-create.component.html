@@ -1,0 +1,18 @@
+<exui-page-wrapper>
+  <div *ngIf="caseCreateInputs.jurisdictionId">
+    <exui-ccd-connector
+      *exuiFeatureToggle="'ccdCaseCreate'"
+      [eventsBindings]="caseCreateEventsBindings"
+      [store]="store"
+      [fromFeatureStore]="fromCasesFeature"
+    >
+      <ccd-case-create
+        #ccdComponent
+        [jurisdiction]="caseCreateInputs.jurisdictionId"
+        [caseType]="caseCreateInputs.caseTypeId"
+        [event]="caseCreateInputs.eventId"
+      >
+      </ccd-case-create>
+    </exui-ccd-connector>
+  </div>
+</exui-page-wrapper>

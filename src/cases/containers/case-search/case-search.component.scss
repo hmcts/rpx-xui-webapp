@@ -1,0 +1,14 @@
+.search-block {
+  clear: both;
+
+  .filter-block {
+    float: left;
+    width: 22%;
+  }
+  .results-block {
+    float: right;
+    width: 70%;
+    margin-left: 2vw;
+    overflow: auto;
+  }
+}

@@ -1,0 +1,264 @@
+const { $$, getXUITestPage, waitForElement } = require('../../helpers/globals');
+const { toLocator } = require('../../helpers/elementWrap');
+
+const CucumberReporter = require('../../codeceptCommon/reportLogger');
+const BrowserLogs = require('./browserLogs');
+const reportLogger = require('../../codeceptCommon/reportLogger');
+
+let instance = null;
+
+class BrowserWaits {
+  constructor() {
+    this.waitTime = 15000;
+    this.retriesCount = 3;
+
+    this.logLevel = 'DEBUG';
+  }
+
+  get page() {
+    return getXUITestPage();
+  }
+
+  get pageErrors() {
+    return $$('.error-summary');
+  }
+
+  setLoglevelINFO() {
+    this.logLevel = 'INFO';
+  }
+
+  setDefaultWaitTime(defaultWait) {
+    this.waitTime = defaultWait;
+  }
+
+  setRetryCount(count) {
+    this.retriesCount = count;
+  }
+
+  async waitForSeconds(waitInSec) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve();
+      }, waitInSec * 1000);
+    });
+  }
+
+  async waitForElementTime(element, waitTime) {
+    await browser.wait(
+      EC.presenceOf(element),
+      waitTime ? waitTime : 10000,
+      'Error waitForElementTime : ' + JSON.stringify(element.selector)
+    );
+  }
+
+  async waitForElement(element, message, waitForSeconds) {
+    CucumberReporter.AddMessage('ELEMENT_WAIT: … ' + (element.selector || element));
+
+    const target = element?.locator && element.getText ? toLocator(element) : element;
+
+    await waitForElement(target, { timeout: this.waitTime });
+  }
+
+  async waitForPresenceOfElement(element) {
+    await this.waitForElement(element);
+  }
+
+  async waitForElementClickable(element, waitInSec) {
+    const startTime = Date.now();
+    const waitTimeInMilliSec = waitInSec ? waitInSec * 1000 : this.waitTime;
+    CucumberReporter.AddMessage(
+      'starting wait for element clickable max in sec ' + waitTimeInMilliSec + ' : ' + JSON.stringify(element.selector)
+    );
+    const locator = element?.locator && element.getText ? toLocator(element) : element;
+
+    await locator.waitFor({ state: 'visible', timeout: waitTimeInMilliSec });
+    await locator.waitFor({ state: 'attached', timeout: waitTimeInMilliSec });
+    const isEnabled = await locator.isEnabled();
+
+    CucumberReporter.AddMessage('wait done in sec ' + (Date.now() - startTime) / 1000);
+    if (!isEnabled) {
+      throw Error(`element is not enabled : ${JSON.stringify(element.selector)}`);
+    }
+  }
+
+  async waitForCondition(condition, message) {
+    await this.waitForConditionAsync(condition, this.waitTime, message);
+  }
+
+  async waitForConditionAsync(condition, waitInMillisec, waitMessage) {
+    const waitForMillisec = waitInMillisec ? waitInMillisec : this.waitTime;
+    await new Promise((resolve, reject) => {
+      const conditionCheckInterval = setInterval(async () => {
+        let isConditionMet = false;
+        try {
+          isConditionMet = await condition();
+          console.log(`Wait for condition stateus : ${isConditionMet}`);
+        } catch (err) {
+          CucumberReporter.AddMessage('Error waiting for condition ' + err);
+        }
+        if (isConditionMet) {
+          clearInterval(conditionCheckInterval);
+          resolve(true);
+        }
+      }, 500);
+
+      setTimeout(() => {
+        clearInterval(conditionCheckInterval);
+        reject(
+          new Error(`wait condition not satisfied after total wait time ${waitForMillisec} : ${waitMessage ? waitMessage : ''}`)
+        );
+      }, waitForMillisec);
+    });
+  }
+
+  async waitForSelector(selector) {
+    const selectorElement = $(selector);
+    await browser.wait(EC.presenceOf($(selector)), this.waitTime, 'Error find element with selector: ' + selector);
+  }
+
+  async waitForstalenessOf(element) {
+    await browser.wait(EC.stalenessOf(element), this.waitTime);
+  }
+
+  async waitForPageNavigation(currentPageUrl) {
+    let nextPage = '';
+    for (let i = 0; i < 20; i++) {
+      await this.waitForSeconds(1);
+      nextPage = await browser.getCurrentUrl();
+      reportLogger.AddMessage('waiting for page nav');
+      reportLogger.AddMessage(`From   : ${currentPageUrl}`);
+      reportLogger.AddMessage(`Current: ${nextPage}`);
+      if (currentPageUrl !== nextPage) {
+        break;
+      }
+    }
+
+    if (currentPageUrl === nextPage) {
+      throw Error(`Failed Waiting for page navigation from ${currentPageUrl}`);
+    }
+    return nextPage;
+  }
+
+  async waitForPageNavigationOnAction(callback) {
+    const beforeActionUrl = await browser.getCurrentUrl();
+    await callback();
+    await this.waitForPageNavigation(beforeActionUrl);
+
+    return await browser.getCurrentUrl();
+  }
+
+  async waitForBrowserReadyState(waitInSec) {
+    const resolvedWaitTime = waitInSec ? waitInSec * 1000 : this.waitTime;
+
+    CucumberReporter.AddMessage('Started step');
+    await this.waitForCondition(async () => {
+      const browserState = await browser.executeScript('return document.readyState;');
+      CucumberReporter.AddMessage('browser readyState value  "' + browserState + '"');
+      return browserState === 'complete';
+    }, resolvedWaitTime);
+  }
+
+  async retryForPageLoad(element, callback) {
+    let retryCounter = 0;
+
+    while (retryCounter < 3) {
+      try {
+        await element.wait();
+        retryCounter += 3;
+      } catch (err) {
+        retryCounter += 1;
+        if (callback) {
+          callback(retryCounter + '');
+        }
+        console.log(element.selector + ' .    Retry attempt for page load : ' + retryCounter);
+
+        await browser.refresh();
+      }
+    }
+  }
+
+  async retryWithActionCallback(callback, actionMessage, retryTryAttempts) {
+    const functionName = this.__getCallingFunctionName();
+
+    let retryCounter = 0;
+    let isSuccess = false;
+    let error = null;
+    while (retryCounter <= this.retriesCount) {
+      const waitSec = retryCounter * 2;
+      if (retryCounter > 0) {
+        CucumberReporter.AddMessage(`ACTION_WARNING: retrying ${retryCounter} ${functionName}`);
+      }
+      await this.waitForSeconds(waitSec);
+
+      try {
+        const retVal = await callback();
+        isSuccess = true;
+        return retVal;
+      } catch (err) {
+        if (this.logLevel === 'DEBUG') {
+          await BrowserLogs.printBrowserLogs();
+        }
+        CucumberReporter.AddMessage(`Actions success Condition ${actionMessage ? actionMessage : ''} failed ${err}. `);
+
+        error = err;
+        console.log(err);
+
+        const currentRoute = await browser.getCurrentUrl();
+        if (currentRoute.includes('service-down')) {
+          throw new Error('Generic system error displayed: "Sorry, there is a problem with the service"');
+        }
+      }
+      retryCounter += 1;
+    }
+    if (!isSuccess) {
+      CucumberReporter.AddMessage(
+        `ACTION_FAILURE: Action failed to meet success condition after ${this.retriesCount} retry attempts. ${functionName}`
+      );
+      throw error;
+    }
+  }
+
+  async waitForSpinnerToDissappear() {
+    let status = true;
+    let counter = 0;
+    do {
+      status = await $('div.spinner-container').isDisplayed();
+      CucumberReporter.AddMessage('waiting for spinner to disappear');
+
+      await this.waitForSeconds(2);
+      counter++;
+      null;
+    } while (status && counter < 10);
+    CucumberReporter.AddMessage(status ? 'spinner closed' : 'spinner still displayed');
+
+    // const isSpinnerPresent = await $("div.spinner-container").isPresent();
+
+    // await this.waitForCondition(async () => {
+    //     const isSpinnerPresent = await $("div.spinner-container").isPresent();
+    //     CucumberReporter.AddMessage('Waiting for spinner to dissappear.');
+    //     return !isSpinnerPresent;
+    // }, 'Spinner is still displayed after waiting ');
+  }
+
+  __getCallingFunctionName() {
+    const e = new Error();
+    const frame = e.stack.split('\n')[3]; // change to 3 for grandparent func
+    const lineNumber = frame.split(':').reverse()[1];
+    let functionName = frame.split(' ')[5];
+
+    if (functionName.includes('/')) {
+      functionName = functionName.split('/').reverse()[0];
+    }
+    functionName + ':' + lineNumber;
+    return functionName;
+  }
+}
+
+function getBrowserWaits() {
+  if (!instance) {
+    instance = new BrowserWaits();
+  }
+  return instance;
+}
+
+module.exports = getBrowserWaits();

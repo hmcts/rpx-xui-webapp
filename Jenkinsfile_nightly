@@ -1,0 +1,213 @@
+#!groovy
+
+properties([
+    [
+        $class       : 'GithubProjectProperty',
+        displayName  : 'Expert UI Webapp',
+        projectUrlStr: 'https://github.com/hmcts/rpx-xui-webapp/'
+    ],
+    pipelineTriggers([
+    cron('30 17 * * *')
+    ])
+])
+
+@Library("Infrastructure")
+
+def type      = "nodejs"
+def product   = "xui"
+def component = "webapp"
+def vault     = "rpx"
+def channel   = '#xui-pipeline'
+
+def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+def archivePlaywrightDiagnostics = {
+    steps.sh '''
+        set +e
+        out_dir="functional-output/tests/playwright-diagnostics/failure-data"
+        mkdir -p "${out_dir}"
+        if [ -d test-results ]; then
+          find test-results -type f -name 'failure-data.json' | while read -r file; do
+            rel="${file#test-results/}"
+            safe_name=$(echo "${rel}" | tr '/ ' '__')
+            cp "${file}" "${out_dir}/${safe_name}"
+          done
+        fi
+    '''
+    steps.archiveArtifacts(
+        allowEmptyArchive: true,
+        artifacts: 'functional-output/tests/**/odhin-report/**/*,test-results/**/*,functional-output/tests/playwright-diagnostics/failure-data/**/*,**/failure-data.json'
+    )
+}
+
+def secrets = [
+  'rpx-${env}': [
+    secret('mc-s2s-client-secret', 'S2S_SECRET'),
+    secret('mc-idam-client-secret', 'IDAM_SECRET'),
+    secret('webapp-redis6-connection-string', 'REDISCLOUD_URL'),
+    secret('test-email', 'TEST_EMAIL'),
+    secret('test-password', 'TEST_PASSWORD'),
+    secret('appinsights-instrumentationkey-mc', 'APPINSIGHTS_INSTRUMENTATIONKEY'),
+    secret('appinsights-connection-string-mc', 'APPINSIGHTS_CONNECTION_STRING'),
+    secret('system-user-name', 'SYSTEM_USER_NAME'),
+    secret('system-user-password', 'SYSTEM_USER_PASSWORD'),
+    secret('launch-darkly-client-id', 'LAUNCH_DARKLY_CLIENT_ID'),
+  ],
+  ]
+
+static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
+    [ $class: 'AzureKeyVaultSecret',
+      secretType: 'Secret',
+      name: secretName,
+      version: '',
+      envVariable: envVar
+    ]
+}
+
+withNightlyPipeline(type, product, component) {
+    enableSlackNotifications(channel)
+    loadVaultSecrets(secrets)
+    env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
+    enableFortifyScan('rpx-aat')
+    
+      afterSuccess('checkout') {
+        yarnBuilder.yarn('cache clean')
+    }
+
+    afterAlways('fortify-scan') {
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
+    }
+
+  afterSuccess('build') {
+        yarnBuilder.yarn('build')
+
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "test/reports/lint/node/",
+            reportFiles          : 'index.html',
+            reportName           : 'node lint Report'
+        ])
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "test/reports/lint/ng/",
+            reportFiles          : 'index.html',
+            reportName           : 'ng lint Report'
+        ])
+     }
+    afterSuccess('fortify-scan') {
+  
+      stage('API Tests') {
+        try {
+          yarnBuilder.yarn('test:api:pw:coverage')
+        } finally {
+          publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : 'functional-output/tests/api_functional/odhin-report/',
+            reportFiles          : 'xui-playwright.html',
+            reportName           : 'API Functional Test'
+          ])
+          steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
+          archivePlaywrightDiagnostics()
+        }
+      }
+      
+      stage('Playwright Install All Browsers') {
+            try {
+              yarnBuilder.yarn('test:setup:playwright-install-all')
+            } catch (Error) {
+              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            }  
+        }
+
+        stage('Codecept Integration Tests') {
+            try {
+                yarnBuilder.yarn('test:xuiIntegration')
+            } finally {
+                publishHTML([
+                    allowMissing         : true,
+                    alwaysLinkToLastBuild: true,
+                    keepAll              : true,
+                    reportDir            : 'functional-output/tests/codecept-ngIntegration/',
+                    reportFiles          : 'cucumber_report.html',
+                    reportName           : 'Codecept Integration Test'
+                ])
+                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
+            }
+        }
+
+        stage('Playwright Integration Tests') {
+                try {
+                    yarnBuilder.yarn('test:playwright:integration')
+                } finally {
+                    publishHTML([
+                      allowMissing         : true,
+                      alwaysLinkToLastBuild: true,
+                      keepAll              : true,
+                      reportDir            : 'functional-output/tests/playwright-integration/odhin-report/',
+                      reportFiles          : 'xui-playwright.html',
+                      reportName           : 'Playwright Integration Test'
+                    ])
+                    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
+                    archivePlaywrightDiagnostics()
+                }
+        }
+
+      stage('Cross Browser Test') {
+            try {
+              yarnBuilder.yarn('test:crossbrowser')
+            } catch (Error) {
+              unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            } finally {
+              publishHTML([
+              allowMissing         : true,
+              alwaysLinkToLastBuild: true,
+              keepAll              : true,
+              reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
+              reportFiles          : 'xui-playwright.html',
+              reportName           : 'XUI Manage Cases Playwright Cross Browser Tests'
+              ])
+              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
+              archivePlaywrightDiagnostics()
+            }
+        }
+
+        // yarnBuilder.yarn('test:a11y')
+        // publishHTML([
+        //     allowMissing         : true,
+        //     alwaysLinkToLastBuild: true,
+        //     keepAll              : true,
+        //     reportDir            : "reports/tests/a11y/",
+        //     reportFiles          : 'Report.html',
+        //     reportName           : 'Manage Cases a11y Test Report'
+        // ])
+    }
+
+
+
+    afterSuccess('mutationTest') {
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "reports/tests/mutation/node/",
+            reportFiles          : 'index.html',
+            reportName           : 'XUI Manage Cases Mutation tests'
+        ])
+    }
+
+  afterSuccess('securityScan') {
+    publishHTML([
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "reports/tests/",
+      reportFiles          : 'activescan.html',
+      reportName           : 'XUIMC ZAP Security Scan Report'
+    ])
+  }
+}

@@ -1,0 +1,13 @@
+<xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
+<exui-hearing-confirmation
+  *ngIf="caseId"
+  [caseId]="caseId"
+  [heading]="heading"
+  [headingDescription]="headingDescription"
+  [subheading]="subheading"
+  [subheadingDescription]="subheadingDescription"
+  [additionalDescription]="additionalDescription"
+  [jurisdiction]="jurisdiction"
+  [caseType]="caseType"
+>
+</exui-hearing-confirmation>

@@ -1,0 +1,200 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "cli": {
+    "cache": {
+      "enabled": true,
+      "environment": "all",
+      "path": ".angular/cache"
+    }
+  },
+  "projects": {
+    "rpx-exui": {
+      "root": "",
+      "sourceRoot": "src",
+      "projectType": "application",
+      "prefix": "exui",
+      "schematics": {},
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "outputPath": "dist/rpx-exui",
+            "sourceMap": true,
+            "index": "src/index.html",
+            "browser": "src/main.ts",
+            "polyfills": ["zone.js"],
+            "tsConfig": "src/tsconfig.app.json",
+            "allowedCommonJsDependencies": ["hammerjs"],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                ".",
+                "node_modules/govuk_frontend_toolkit/stylesheets",
+                "node_modules/govuk-elements-sass/public/sass",
+                "node_modules"
+              ]
+            },
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "node_modules/@hmcts/media-viewer/assets/",
+                "ignore": ["**/*.sass"],
+                "output": "/assets"
+              },
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": ["src/styles.scss"],
+            "scripts": [],
+            "preserveSymlinks": true
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": {
+                "scripts": true,
+                "styles": {
+                  "minify": true,
+                  "inlineCritical": false
+                },
+                "fonts": true
+              },
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "10mb",
+                  "maximumError": "15mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
+                }
+              ]
+            },
+            "development": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": false,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "namedChunks": false,
+              "extractLicenses": false
+            }
+          }
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "proxyConfig": "./proxy.config.json",
+            "buildTarget": "rpx-exui:build"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "rpx-exui:build:production"
+            }
+          }
+        },
+        "serveTest": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "proxyConfig": "./proxyTest.config.json",
+            "buildTarget": "rpx-exui:build"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "rpx-exui:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "buildTarget": "rpx-exui:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "codeCoverage": true,
+            "codeCoverageExclude": [
+              "**/*.spec.ts",
+              "**/*.spec.js",
+              "test/**",
+              "config/**",
+              "src/environments/**",
+              "src/app/app.routes.ts"
+            ],
+            "main": "src/test.ts",
+            "polyfills": ["zone.js", "zone.js/testing"],
+            "tsConfig": "src/tsconfig.spec.json",
+            "karmaConfig": "src/karma.conf.js",
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "node_modules/govuk_frontend_toolkit/stylesheets",
+                "node_modules/govuk-elements-sass/public/sass",
+                "node_modules"
+              ]
+            },
+            "styles": ["src/styles.scss"],
+            "include": ["src/**/*.spec.*"],
+            "exclude": [],
+            "scripts": [],
+            "assets": ["src/favicon.ico", "src/assets"]
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "eslintConfig": "eslint.config.ts",
+            "lintFilePatterns": ["src/**/*.ts"]
+          }
+        }
+      }
+    },
+    "rpx-exui-e2e": {
+      "root": "e2e/",
+      "projectType": "application",
+      "prefix": "",
+      "architect": {
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "eslintConfig": "eslint.config.ts",
+            "tsConfig": "e2e/tsconfig.e2e.json",
+            "exclude": ["**/node_modules/**"]
+          }
+        }
+      }
+    }
+  },
+  "schematics": {
+    "@schematics/angular:component": {
+      "style": "scss",
+      "standalone": false
+    },
+    "@schematics/angular:directive": {
+      "standalone": false
+    },
+    "@schematics/angular:pipe": {
+      "standalone": false
+    }
+  },
+  "cli": {
+    "analytics": false
+  }
+}

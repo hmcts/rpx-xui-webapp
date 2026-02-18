@@ -1,0 +1,34 @@
+<a
+  class="govuk-back-link"
+  href="#"
+  *ngIf="isVisible(nocNavigationCurrentState$ | async, backVisibilityStates)"
+  (click)="onEventTrigger(nocNavigationEvent.BACK); $event.preventDefault()"
+  >{{ 'Back' | rpxTranslate }}</a
+>
+<div>
+  <ng-content></ng-content>
+</div>
+<button
+  class="button"
+  type="button"
+  *ngIf="isVisible(nocNavigationCurrentState$ | async, continueVisibilityStates)"
+  (click)="onEventTrigger(nocNavigationEvent.CONTINUE)"
+>
+  {{ 'Continue' | rpxTranslate }}
+</button>
+<button
+  class="button"
+  type="button"
+  *ngIf="isVisible(nocNavigationCurrentState$ | async, setAnswersButtonVisibilityStates)"
+  (click)="onEventTrigger(nocNavigationEvent.SET_ANSWERS)"
+>
+  {{ 'Continue' | rpxTranslate }}
+</button>
+<button
+  class="button"
+  type="button"
+  *ngIf="isVisible(nocNavigationCurrentState$ | async, checkAnswersButtonVisibilityStates)"
+  (click)="onEventTrigger(nocNavigationEvent.CHECK_ANSWERS)"
+>
+  {{ 'Submit' | rpxTranslate }}
+</button>

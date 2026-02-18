@@ -278,7 +278,9 @@ export function addLocationToLocationsByService(
     locationsByServices = finalDataWithoutService.concat([locationsByService]);
   } else {
     // check to ensure that if service present with null location (i.e. a base location not within region), we register this
-    !location.id && !location.regionId ? locationsByServices.push({ service, locations: [] }) : locationsByServices.push({ service, locations: [location] });
+    !location.id && !location.regionId
+      ? locationsByServices.push({ service, locations: [] })
+      : locationsByServices.push({ service, locations: [location] });
   }
   return locationsByServices;
 }

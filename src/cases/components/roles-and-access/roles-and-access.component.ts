@@ -92,7 +92,11 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
     if (this.exclusions && this.exclusions.length > 0) {
       for (const exclusion of this.exclusions) {
         // some exclusions are judicial so this checks whether any exclusion is missing a name
-        if (exclusion.userType === RoleCategory.LEGAL_OPERATIONS || exclusion.userType === RoleCategory.ADMIN || exclusion.userType === RoleCategory.CTSC) {
+        if (
+          exclusion.userType === RoleCategory.LEGAL_OPERATIONS ||
+          exclusion.userType === RoleCategory.ADMIN ||
+          exclusion.userType === RoleCategory.CTSC
+        ) {
           if (exclusion?.name) {
             break;
           } else {

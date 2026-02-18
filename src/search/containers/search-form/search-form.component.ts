@@ -298,17 +298,33 @@ export class SearchFormComponent implements OnInit {
     if (this.validateForm()) {
       // Populate a SearchParameters instance with the form inputs and persist via the SearchService
       const searchParameters: SearchParameters = {
-        caseReferences: this.formGroup.get(SearchFormControl.CASE_REF).value === '' ? null : [this.formGroup.get(SearchFormControl.CASE_REF).value],
+        caseReferences:
+          this.formGroup.get(SearchFormControl.CASE_REF).value === ''
+            ? null
+            : [this.formGroup.get(SearchFormControl.CASE_REF).value],
         CCDJurisdictionIds:
           // If the selected value is not "All", use it; else, use the entire Services list (except the "All") item
           this.formGroup.get(SearchFormControl.SERVICES_LIST).value === 'ALL'
             ? this.services.slice(1).map((service) => service.id)
             : [this.formGroup.get(SearchFormControl.SERVICES_LIST).value],
-        otherReferences: this.formGroup.get(SearchFormControl.OTHER_REF).value === '' ? null : [this.formGroup.get(SearchFormControl.OTHER_REF).value],
-        fullName: this.formGroup.get(SearchFormControl.FULL_NAME).value === '' ? null : this.formGroup.get(SearchFormControl.FULL_NAME).value,
-        address: this.formGroup.get(SearchFormControl.ADDRESS_LINE_1).value === '' ? null : this.formGroup.get(SearchFormControl.ADDRESS_LINE_1).value,
-        postcode: this.formGroup.get(SearchFormControl.POSTCODE).value === '' ? null : this.formGroup.get(SearchFormControl.POSTCODE).value,
-        emailAddress: this.formGroup.get(SearchFormControl.EMAIL).value === '' ? null : this.formGroup.get(SearchFormControl.EMAIL).value,
+        otherReferences:
+          this.formGroup.get(SearchFormControl.OTHER_REF).value === ''
+            ? null
+            : [this.formGroup.get(SearchFormControl.OTHER_REF).value],
+        fullName:
+          this.formGroup.get(SearchFormControl.FULL_NAME).value === ''
+            ? null
+            : this.formGroup.get(SearchFormControl.FULL_NAME).value,
+        address:
+          this.formGroup.get(SearchFormControl.ADDRESS_LINE_1).value === ''
+            ? null
+            : this.formGroup.get(SearchFormControl.ADDRESS_LINE_1).value,
+        postcode:
+          this.formGroup.get(SearchFormControl.POSTCODE).value === ''
+            ? null
+            : this.formGroup.get(SearchFormControl.POSTCODE).value,
+        emailAddress:
+          this.formGroup.get(SearchFormControl.EMAIL).value === '' ? null : this.formGroup.get(SearchFormControl.EMAIL).value,
         // Date format expected by API endpoint is yyyy-mm-dd
         dateOfBirth: this.getDateFormatted(DateCategoryType.DATE_OF_BIRTH),
         dateOfDeath: this.getDateFormatted(DateCategoryType.DATE_OF_DEATH),

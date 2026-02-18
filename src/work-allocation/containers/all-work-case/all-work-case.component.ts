@@ -90,7 +90,13 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
     this.onPaginationHandler(pageNumber);
   }
 
-  public onSelectionChanged(selection: { location: string, jurisdiction: string, actorId: string, role: string, person: any }): void {
+  public onSelectionChanged(selection: {
+    location: string;
+    jurisdiction: string;
+    actorId: string;
+    role: string;
+    person: any;
+  }): void {
     this.selectedLocation.id = selection.location ? selection.location : '';
     this.selectedServices = [selection.jurisdiction];
     this.selectedPerson = selection.actorId === 'All' ? '' : selection.person.id;

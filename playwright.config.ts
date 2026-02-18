@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 import { execSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { cpus } from 'node:os';
-import path from 'node:path';
+import * as path from 'node:path';
 import { version as appVersion } from './package.json';
 
 type EnvMap = NodeJS.ProcessEnv;

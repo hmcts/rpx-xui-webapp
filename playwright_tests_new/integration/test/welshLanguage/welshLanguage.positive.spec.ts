@@ -1,7 +1,6 @@
 import { welshTranslationsSmall } from 'playwright_tests_new/integration/mocks/welshLanguage';
 import { expect, test } from '../../../E2E/fixtures';
 import { ensureSessionCookies } from '../../../common/sessionCapture';
-import { createCase } from 'playwright_tests/E2E/steps/create-xui-case-poc-steps';
 let sessionCookies: any[] = [];
 
 test.describe('Verify users can switch the language', () => {

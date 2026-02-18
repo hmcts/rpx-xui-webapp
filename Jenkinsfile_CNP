@@ -8,6 +8,18 @@ properties([
     ],
     pipelineTriggers([
         [$class: 'GitHubPushTrigger']
+    ]),
+    parameters([
+        string(
+            name: 'API_PW_INCLUDE_TAGS',
+            defaultValue: '',
+            description: 'Optional comma/space separated Playwright service tags to include for API tests, for example @svc-ccd,@svc-work-allocation'
+        ),
+        string(
+            name: 'API_PW_EXCLUDED_TAGS_OVERRIDE',
+            defaultValue: '',
+            description: 'Optional comma/space separated Playwright service tags to exclude; when set this overrides playwright_tests_new/api/service-tag-filter.json'
+        )
     ])
 ])
 
@@ -213,7 +225,11 @@ withPipeline(type, product, component) {
                 failFast: true,
                 api: {
                     stage('API Tests') {
-                        withEnv(["FUNCTIONAL_TESTS_WORKERS=8"]) {
+                        withEnv([
+                            "FUNCTIONAL_TESTS_WORKERS=8",
+                            "API_PW_INCLUDE_TAGS=${params.API_PW_INCLUDE_TAGS ?: ''}",
+                            "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
+                        ]) {
                             try {
                                 yarnBuilder.yarn('test:api:pw:coverage')
                             } catch (Exception e) {
@@ -320,23 +336,28 @@ withPipeline(type, product, component) {
                 failFast: true,
                 api: {
                     stage('API Tests') {
-                        try {
-                            yarnBuilder.yarn('test:api:pw:coverage')
-                        } catch (Exception e) {
-                            echo "[failFast] API Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
-                            if (handleFailFastAbort(e)) { return }
-                            throw e
-                        } finally {
-                            publishHTML([
-                              allowMissing         : true,
-                              alwaysLinkToLastBuild: true,
-                              keepAll              : true,
-                              reportDir            : 'functional-output/tests/api_functional/odhin-report/',
-                              reportFiles          : 'xui-playwright.html',
-                              reportName           : 'AAT API Functional Test'
-                            ])
-                            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
-                            archivePlaywrightDiagnostics()
+                        withEnv([
+                            "API_PW_INCLUDE_TAGS=${params.API_PW_INCLUDE_TAGS ?: ''}",
+                            "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
+                        ]) {
+                            try {
+                                yarnBuilder.yarn('test:api:pw:coverage')
+                            } catch (Exception e) {
+                                echo "[failFast] API Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
+                                if (handleFailFastAbort(e)) { return }
+                                throw e
+                            } finally {
+                                publishHTML([
+                                  allowMissing         : true,
+                                  alwaysLinkToLastBuild: true,
+                                  keepAll              : true,
+                                  reportDir            : 'functional-output/tests/api_functional/odhin-report/',
+                                  reportFiles          : 'xui-playwright.html',
+                                  reportName           : 'AAT API Functional Test'
+                                ])
+                                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
+                                archivePlaywrightDiagnostics()
+                            }
                         }
                     }
                 },

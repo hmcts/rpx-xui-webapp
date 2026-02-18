@@ -44,6 +44,7 @@ def isFailFastInterruption = { org.jenkinsci.plugins.workflow.steps.FlowInterrup
 // Normalize those to ABORTED so truly failing branches stay FAILED.
 def handleFailFastAbort = { Exception e ->
     def abortedByFailFast = false
+    def failFastExitCodes = ['129', '137', '143']
     if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
         try {
             def fie = (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) e
@@ -54,8 +55,10 @@ def handleFailFastAbort = { Exception e ->
             echo "[failFast] FlowInterruptedException: causes=<unavailable>"
         }
     } else if (e instanceof hudson.AbortException) {
-        abortedByFailFast = (currentBuild?.result == 'ABORTED')
-        echo "[failFast] AbortException: buildResult=${currentBuild?.result}"
+        def msg = e.getMessage() ?: ''
+        def exitCode = (msg =~ /exit code (\d+)/)?.with { it.find() ? it.group(1) : null }
+        abortedByFailFast = (currentBuild?.result == 'ABORTED') || (exitCode in failFastExitCodes)
+        echo "[failFast] AbortException: buildResult=${currentBuild?.result}, exitCode=${exitCode}"
     } else {
         echo "[failFast] Non-abort exception: ${e.getClass().getName()}: ${e.getMessage()}"
     }

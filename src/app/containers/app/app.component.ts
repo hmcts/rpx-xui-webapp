@@ -18,6 +18,7 @@ import { LoggerService } from '../../services/logger/logger.service';
 import { EnvironmentService } from '../../shared/services/environment.service';
 import * as fromRoot from '../../store';
 import { InitialisationSyncService } from '../../services/ccd-config/initialisation-sync-service';
+import { SessionTelemetryService } from 'src/app/services/session-telemetry.service';
 @Component({
   standalone: false,
   selector: 'exui-root',
@@ -41,6 +42,8 @@ export class AppComponent implements OnInit, OnDestroy {
   private timeoutNotificationServiceInitialised: boolean = false;
   private idleModalDisplayTimeInMilliseconds: number;
   private totalIdleTimeInMilliseconds: number;
+  private timeoutNotificationSubscription: Subscription;
+
 
   constructor(
     private readonly store: Store<fromRoot.State>,
@@ -53,7 +56,8 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly cookieService: CookieService,
     private readonly environmentService: EnvironmentService,
     private readonly sessionStorageService: SessionStorageService,
-    private readonly initialisationSyncService: InitialisationSyncService
+    private readonly initialisationSyncService: InitialisationSyncService,
+    private readonly sessionTelemetryService: SessionTelemetryService
   ) {
     this.router.events.subscribe((data) => {
       if (data instanceof RoutesRecognized) {
@@ -77,11 +81,47 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit() {
+    let lastVisibleAt = Date.now();
+
+    document.addEventListener('visibilitychange', () => {
+      const now = Date.now();
+      const hidden = document.visibilityState === 'hidden';
+
+      this.safeLog('visibility_change', this.userId, {
+        hidden,
+        visibilityState: document.visibilityState,
+        deltaMsSinceLastVisible: hidden ? 0 : (now - lastVisibleAt),
+        ts: new Date().toISOString(),
+      });
+
+      if (!hidden) {
+        // back to visible
+        const gapMs = now - lastVisibleAt;
+        // if big gap, likely sleep/throttle
+        if (gapMs > 30 * 60 * 1000) {
+          this.safeLog('suspected_sleep_or_throttle', this.userId, {
+            gapMs,
+            gapMinutes: Math.round(gapMs / 60000),
+            ts: new Date().toISOString(),
+          });
+        }
+        lastVisibleAt = now;
+      } else {
+        lastVisibleAt = now;
+      }
+    });
+
+    window.addEventListener('focus', () => {
+      this.safeLog('window_focus', this.userId, { ts: new Date().toISOString() });
+    });
+
     this.store.pipe(select(fromRoot.getUseIdleSessionTimeout)).subscribe((useIdleTimeout) => {
       if (useIdleTimeout) {
         this.loadAndListenForUserDetails();
       }
     });
+    // after you get user info or in app init
+    this.sessionTelemetryService && console.info('TRACE_ID:', this.sessionTelemetryService.traceId);
 
     // Moved here from CaseHomeComponent as this needs to be app-wide, and
     // not just happening for the Case view. Moreover, it has an impact on
@@ -99,6 +139,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
     if (this.subscription) {
       this.subscription.unsubscribe();
+    }
+
+    if (this.timeoutNotificationSubscription) {
+      this.timeoutNotificationSubscription.unsubscribe();
     }
   }
 
@@ -153,6 +197,13 @@ export class AppComponent implements OnInit, OnDestroy {
          */
         const uid = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
         this.setUserAndCheckCookie(uid);
+        this.safeLog('user_session_timeout_config', this.userId, {
+          email: userDetails.userInfo?.email,
+          idleModalDisplayTimeMinutes: idleModalDisplayTime,
+          totalIdleTimeMinutes: totalIdleTime,
+          ts: new Date().toISOString(),
+        });
+
         this.initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime);
       }
     }
@@ -232,6 +283,28 @@ export class AppComponent implements OnInit, OnDestroy {
    * }
    */
   public timeoutNotificationEventHandler(event) {
+    if (!event || !event.eventType) {
+    // defensive: log and ignore unexpected events
+      try {
+        this.safeLog('timeout_event_received_malformed', this.userId, {
+          event,
+          ts: new Date().toISOString(),
+        });
+      } catch (_) {}
+      return;
+    }
+    try {
+      this.safeLog('timeout_event_received', this.userId, {
+        eventType: event.eventType,
+        readableCountdown: event.readableCountdown,
+        ts: new Date().toISOString(),
+        pageReloading: this.pageReloading,
+      });
+    } catch (e) {
+      // swallow telemetry errors
+      console.warn('telemetry log failed in timeoutNotificationEventHandler', e);
+    }
+
     switch (event.eventType) {
       case 'countdown': {
         this.updateTimeoutModal(event.readableCountdown, true);
@@ -268,11 +341,19 @@ export class AppComponent implements OnInit, OnDestroy {
    * Stay Signed in Handler
    */
   public staySignedInHandler() {
+    this.safeLog('timeout_stay_signed_in_clicked', this.userId, {
+      ts: new Date().toISOString(),
+    });
+
     this.updateTimeoutModal(undefined, false);
     this.timeoutNotificationsService.reset();
   }
 
   public signOutHandler() {
+    this.safeLog('timeout_sign_out_triggered', this.userId, {
+      ts: new Date().toISOString(),
+    });
+
     this.timeoutNotificationsService.close();
     this.store.dispatch(new fromRoot.StopIdleSessionTimeout());
     this.store.dispatch(new fromRoot.Logout());
@@ -313,6 +394,12 @@ export class AppComponent implements OnInit, OnDestroy {
     this.idleModalDisplayTimeInMilliseconds = idleModalDisplayTimeInSeconds * 1000;
     this.totalIdleTimeInMilliseconds = totalIdleTime * 60 * 1000;
 
+    this.safeLog('timeout_config_converted', this.userId, {
+      idleModalDisplayTimeInMilliseconds: this.idleModalDisplayTimeInMilliseconds,
+      totalIdleTimeInMilliseconds: this.totalIdleTimeInMilliseconds,
+      ts: new Date().toISOString(),
+    });
+
     this.setupTimeoutNotificationService();
   }
 
@@ -321,14 +408,32 @@ export class AppComponent implements OnInit, OnDestroy {
       idleModalDisplayTime: this.idleModalDisplayTimeInMilliseconds,
       totalIdleTime: this.totalIdleTimeInMilliseconds,
       idleServiceName: 'idleSession',
+      // optional hint for library telemetry to attach a trace id
+      traceId: this.sessionTelemetryService?.traceId,
     };
 
-    this.timeoutNotificationsService.notificationOnChange().subscribe((event) => {
+    this.timeoutNotificationSubscription = this.timeoutNotificationsService
+    .notificationOnChange().subscribe((event) => {
       this.timeoutNotificationEventHandler(event);
     });
     this.loggerService.log('Initialising TimeoutNotificationService');
+    this.safeLog('timeout_service_initialising', this.userId, {
+      idleServiceName: timeoutNotificationConfig.idleServiceName,
+      idleModalDisplayTime: timeoutNotificationConfig.idleModalDisplayTime,
+      totalIdleTime: timeoutNotificationConfig.totalIdleTime,
+      ts: new Date().toISOString(),
+    });
+
     this.timeoutNotificationsService.initialise(timeoutNotificationConfig);
     this.timeoutNotificationServiceInitialised = true;
+  }
+
+  private safeLog(event: string, userId: string | null, details?: any) {
+    try {
+      this.sessionTelemetryService?.log(event, userId, details);
+    } catch (e) {
+      console.warn('telemetry.log failed for', event, e);
+    }
   }
 
   public setCookieBannerVisibility(): void {

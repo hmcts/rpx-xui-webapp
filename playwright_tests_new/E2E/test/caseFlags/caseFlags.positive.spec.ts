@@ -157,12 +157,9 @@ test.describe('Party level case flags', () => {
           { timeout: 45000, intervals: [1000, 2000, 3000] }
         )
         .toBe(true);
-      if (await caseDetailsPage.caseNotificationBannerTitle.isVisible()) {
-        expect.soft(await caseDetailsPage.caseNotificationBannerTitle.innerText()).toContain('Important');
-      }
-      if (await caseDetailsPage.caseNotificationBannerBody.isVisible()) {
-        expect.soft(await caseDetailsPage.caseNotificationBannerBody.innerText()).toMatch(/active flag/i);
-      }
+      expect.soft(await caseDetailsPage.caseNotificationBannerTitle.isVisible()).toBe(true);
+      expect.soft(await caseDetailsPage.caseNotificationBannerTitle.innerText()).toContain('Important');
+      expect.soft(await caseDetailsPage.caseNotificationBannerBody.innerText()).toContain('There is 1 active flag on this case.');
     });
 
     await test.step('Verify the party level case flag is shown in the flags tab', async () => {

@@ -64,6 +64,12 @@ export class CaseDetailsPage extends Base {
   readonly caseDocumentsTable = this.page.locator('table.complex-panel-table');
   readonly someMoreDataTable = this.page.locator('table.SomeMoreData');
 
+  // Task List tab
+  readonly taskListContainer = this.page.locator('exui-tasks-container');
+  readonly taskItem = this.taskListContainer.locator('exui-case-task');
+  readonly taskKeyPairRow = this.taskItem.locator('.govuk-summary-list__row');
+  readonly taskTitle = this.taskItem.locator('p.govuk-body');
+  readonly taskAlerts = this.taskListContainer.locator('#alertMessage');
   // Search case (16 Digit Search)
   readonly caseProgressMessage = this.page.locator('#progress_legalOfficer_updateTrib_dismissed_under_rule_31');
   readonly resultsNotFoundHeading = this.page.locator('exui-no-results').getByRole('heading', { level: 1 });
@@ -608,5 +614,64 @@ export class CaseDetailsPage extends Base {
     }
 
     await tabPanel.locator('*').first().waitFor({ state: 'attached', timeout: timeoutMs });
+  }
+
+  /**
+   * Returns task key/value rows for each task as an array of objects.
+   * Each object maps row label -> row value for a single task.
+   */
+  async getTaskKeyValueRows(): Promise<Record<string, string>[]> {
+    const taskCount = await this.taskItem.count();
+    if (taskCount === 0) {
+      return [];
+    }
+
+    await this.taskItem.first().waitFor({ state: 'visible' });
+
+    const results: Record<string, string>[] = [];
+
+    for (let i = 0; i < taskCount; i++) {
+      const task = this.taskItem.nth(i);
+      const title = (await task.locator('p.govuk-body').innerText()).replace(/\s+/g, ' ').trim();
+      const rows = task.locator('.govuk-summary-list__row');
+      const rowCount = await rows.count();
+      const taskData: Record<string, string> = {};
+
+      if (title) {
+        taskData['Title'] = title;
+      }
+
+      for (let j = 0; j < rowCount; j++) {
+        const row = rows.nth(j);
+        const key = (await row.locator('.govuk-summary-list__key .row-padding').innerText()).trim();
+        const valueEl = row.locator('.govuk-summary-list__value');
+        const rawText = (await valueEl.innerText()).replace(/\s+/g, ' ').trim();
+        // Also capture the rendered HTML so tests can assert on links and markdown output
+        const rawHtml = (await valueEl.evaluate((el: HTMLElement) => el.innerHTML || '')).trim();
+        // If markdown rendered as headings, prefer returning value starting with the first heading
+        let value = rawText;
+        // Prefer a rendered heading if present; use evaluate to avoid locator timeouts
+        const heading = await valueEl.evaluate((el: HTMLElement) => {
+          const h = el.querySelector('h1,h2,h3') as HTMLElement | null;
+          return h ? (h.textContent || '').trim() : '';
+        });
+        if (heading) {
+          if (!value.startsWith(heading)) {
+            value = `${heading}${value ? ' ' + value : ''}`.trim();
+          }
+        }
+        if (key) {
+          taskData[key] = value;
+          // expose HTML for assertions (e.g. verify anchor hrefs rendered from markdown)
+          taskData[`${key} HTML`] = rawHtml;
+        }
+      }
+
+      if (Object.keys(taskData).length > 0) {
+        results.push(taskData);
+      }
+    }
+
+    return results;
   }
 }

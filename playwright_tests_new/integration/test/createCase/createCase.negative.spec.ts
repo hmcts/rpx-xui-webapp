@@ -12,8 +12,13 @@ test.beforeEach(async ({ page }) => {
   sessionCookies = cookies;
 });
 
-// TODO : Enable and complete negative test case when functionality is available
-test.describe.skip(`Case List as ${userIdentifier}`, () => {
+test.beforeEach(async ({ page, config }) => {
+  if (sessionCookies.length) {
+    await page.context().addCookies(sessionCookies);
+  }
+});
+
+test.describe(`Case List as ${userIdentifier}`, () => {
   test(`User ${userIdentifier} should not be able to submit a case without filling in required fields`, async ({
     createCasePage,
     page,

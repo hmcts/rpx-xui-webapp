@@ -86,7 +86,9 @@ export default (() => {
     testMatch: ['**/test/**/*.spec.ts'],
     retries: 2,
     timeout: 120_000,
-    expect: { timeout: 45_000 },
+    expect: {
+      timeout: 60_000,
+    },
     workers: workerCount,
     reporter: [
       [process.env.CI ? 'dot' : 'list'],
@@ -111,8 +113,16 @@ export default (() => {
     use: {
       baseURL: baseUrl,
       trace: 'on-first-retry',
-      screenshot: 'only-on-failure',
+      screenshot: {
+        mode: 'only-on-failure',
+        fullPage: true,
+      },
       video: 'retain-on-failure',
+      timezoneId: 'Europe/London',
+      viewport: { width: 1366, height: 1024 },
+      launchOptions: {
+        args: ['--window-size=1366,1024'],
+      },
       headless: headlessMode,
     },
     projects: [

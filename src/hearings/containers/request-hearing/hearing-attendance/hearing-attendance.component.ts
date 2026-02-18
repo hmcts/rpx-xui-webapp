@@ -196,8 +196,8 @@ export class HearingAttendanceComponent extends RequestHearingPageFlow implement
         ...this.hearingRequestMainModel.hearingDetails,
         hearingChannels: this.getHearingChannels(),
         numberOfPhysicalAttendees: Number.parseInt(this.attendanceFormGroup.controls.estimation.value, 0),
-        isPaperHearing: this.attendanceFormGroup.controls.paperHearing.value === RadioOptions.YES
-      }
+        isPaperHearing: this.attendanceFormGroup.controls.paperHearing.value === RadioOptions.YES,
+      },
     };
     if (
       this.hearingCondition.mode === Mode.VIEW_EDIT &&

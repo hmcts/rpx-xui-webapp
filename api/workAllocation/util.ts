@@ -984,12 +984,11 @@ export function formatDate(date: Date) {
 }
 
 export function getAccessType(roleAssignment: RoleAssignment) {
-  return roleAssignment.grantType ?
-    roleAssignment.grantType.replaceAll(/\w+/g, (replacableString) => {
-      return replacableString[0].toUpperCase() + replacableString.slice(1).toLowerCase();
-    })
-    :
-    undefined;
+  return roleAssignment.grantType
+    ? roleAssignment.grantType.replaceAll(/\w+/g, (replacableString) => {
+        return replacableString[0].toUpperCase() + replacableString.slice(1).toLowerCase();
+      })
+    : undefined;
 }
 
 export function getCaseName(caseDetail: Case): string {

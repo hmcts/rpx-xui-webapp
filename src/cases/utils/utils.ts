@@ -8,8 +8,7 @@ export class Utils {
   }
 
   public static getFilterType(fieldName: string, metadataFields): string {
-    return (metadataFields && (metadataFields.includes(fieldName))) ?
-      'metadataFilter' : 'caseFilter';
+    return metadataFields && metadataFields.includes(fieldName) ? 'metadataFilter' : 'caseFilter';
   }
 
   public static sanitiseMetadataFieldName(filterType: string, fieldName: string): string {

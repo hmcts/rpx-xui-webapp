@@ -29,15 +29,20 @@ export const init = () => {
     }
     const courTypeIdStartIdx = config.url.lastIndexOf('=');
     const courTypeIdsStr = requestURL.substring(courTypeIdStartIdx + 1);
-    const searchResult = ALL_COURT_LOCATIONS
-      .filter((locationWithCourtType) => courTypeIdsStr.includes(locationWithCourtType.court_type_id))
-      .filter((location) =>
-        (location.court_name ? location.court_name.toLowerCase().includes(searchTerm.toLowerCase()) : false)
-        || (location.site_name ? location.site_name.toLowerCase().includes(searchTerm.toLowerCase()) : false)
-        || (location.venue_name ? location.venue_name.toLowerCase().includes(searchTerm.toLowerCase()) : false)
-        || (location.postcode ? location.postcode.replaceAll(/\s+/g, '').toLowerCase().includes(searchTerm.toLowerCase()) : false)
-        || (location.postcode ? location.postcode.toLowerCase().includes(searchTerm.toLowerCase()) : false)
-        || (location.court_address ? location.court_address.toLowerCase().includes(searchTerm.toLowerCase()) : false))
+    const searchResult = ALL_COURT_LOCATIONS.filter((locationWithCourtType) =>
+      courTypeIdsStr.includes(locationWithCourtType.court_type_id)
+    )
+      .filter(
+        (location) =>
+          (location.court_name ? location.court_name.toLowerCase().includes(searchTerm.toLowerCase()) : false) ||
+          (location.site_name ? location.site_name.toLowerCase().includes(searchTerm.toLowerCase()) : false) ||
+          (location.venue_name ? location.venue_name.toLowerCase().includes(searchTerm.toLowerCase()) : false) ||
+          (location.postcode
+            ? location.postcode.replaceAll(/\s+/g, '').toLowerCase().includes(searchTerm.toLowerCase())
+            : false) ||
+          (location.postcode ? location.postcode.toLowerCase().includes(searchTerm.toLowerCase()) : false) ||
+          (location.court_address ? location.court_address.toLowerCase().includes(searchTerm.toLowerCase()) : false)
+      )
       .map((locationModel) => toEpimmsLocation(locationModel))
       .filter(
         (locationByEPIMSModel, index, locationByEPIMSModelArray) =>

@@ -12,8 +12,10 @@ const baseLocationRefUrl = getConfigValue(SERVICES_LOCATION_REF_API_URL);
 
 export async function getServices(req, res, next: NextFunction) {
   const apiPath = `${baseLocationRefUrl}/refdata/location/orgServices`;
-  const enabledServiceCodes = getConfigValue<Service[]>(SERVICE_REF_DATA_MAPPING)
-    .reduce((prevValue, currentValue) => [...prevValue, ...currentValue.serviceCodes], [] as string[]);
+  const enabledServiceCodes = getConfigValue<Service[]>(SERVICE_REF_DATA_MAPPING).reduce(
+    (prevValue, currentValue) => [...prevValue, ...currentValue.serviceCodes],
+    [] as string[]
+  );
 
   try {
     const { status, data }: { status: number; data: RefDataHMCTSService[] } = await http.get(`${apiPath}`, {

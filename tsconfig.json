@@ -16,11 +16,7 @@
     "target": "ES2020",
     "typeRoots": ["node_modules/@types"],
     "skipLibCheck": true,
-    "lib": [
-      "ES2020",
-      "ES2021.String",
-      "dom"
-    ]
+    "lib": ["ES2020", "ES2021.String", "dom"]
   },
   "ts-node": {
     "transpileOnly": true,

@@ -8,7 +8,7 @@
     "resolveJsonModule": true,
     "types": ["node", "mocha", "rxjs"],
     "baseUrl": ".",
-    "lib": ["es2017", "ES2021.String", "dom"],
+    "lib": ["es2017", "ES2021.String", "dom"]
   },
   "include": ["**/*.ts", "../*.ts"],
   "exclude": ["**/*.spec.ts", "test/**"]

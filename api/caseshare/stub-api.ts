@@ -21,10 +21,13 @@ export function getUsers(req: EnhancedRequest, res: Response) {
   }
 
   const users = org.users;
-  const filterUser = users.filter((aUser) => aUser.idamId.toLowerCase().includes(searchText.toLowerCase()) ||
-        aUser.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
-        aUser.lastName.toLowerCase().includes(searchText.toLowerCase()) ||
-        aUser.email.toLowerCase().includes(searchText.toLowerCase()));
+  const filterUser = users.filter(
+    (aUser) =>
+      aUser.idamId.toLowerCase().includes(searchText.toLowerCase()) ||
+      aUser.firstName.toLowerCase().includes(searchText.toLowerCase()) ||
+      aUser.lastName.toLowerCase().includes(searchText.toLowerCase()) ||
+      aUser.email.toLowerCase().includes(searchText.toLowerCase())
+  );
   if (!filterUser || filterUser.length === 0) {
     return res.status(404).send('{"errorMessage": "User is not found}"');
   }

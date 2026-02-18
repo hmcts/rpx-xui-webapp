@@ -101,17 +101,21 @@ export class CaseViewerContainerComponent implements OnInit {
     this.caseDetails = this.route.snapshot.data.case as CaseView;
     this.retryCount = 0;
     this.allocateRoleService.manageLabellingRoleAssignment(this.caseDetails.case_id).subscribe();
-    this.router.events.pipe(
-      filter((event) => event instanceof NavigationEnd),
-      takeUntil(this.destroy$)
-    ).subscribe((event: NavigationEnd) => {
-      if (!event.url.includes(`/cases/case-details/${this.caseDetails.case_type.jurisdiction.id}/${this.caseDetails.case_type.id}/${this.caseDetails.case_id}`)){
-        window.location.href = `/cases/case-details/${event.url.split('/')[5]}`;
-      }
-    });
-    this.userRoles$.pipe(
-      takeUntil(this.destroy$)
-    ).subscribe((userRoles) => {
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((event: NavigationEnd) => {
+        if (
+          !event.url.includes(
+            `/cases/case-details/${this.caseDetails.case_type.jurisdiction.id}/${this.caseDetails.case_type.id}/${this.caseDetails.case_id}`
+          )
+        ) {
+          window.location.href = `/cases/case-details/${event.url.split('/')[5]}`;
+        }
+      });
+    this.userRoles$.pipe(takeUntil(this.destroy$)).subscribe((userRoles) => {
       const noOfUserRoles = userRoles?.length ?? 0;
       if (noOfUserRoles === 0 && this.retryCount < 3) {
         this.retryCount++;

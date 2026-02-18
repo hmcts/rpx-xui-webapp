@@ -34,7 +34,7 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
         items: statusFilter ? filteredData : data,
         pageSize: Number.parseInt(pageSize, 10),
         pageNumber: Number.parseInt(pageNumber, 10),
-        totalItems: Number.parseInt(headers['total-records'], 10)
+        totalItems: Number.parseInt(headers['total-records'], 10),
       });
     } catch (error) {
       next(error);
@@ -135,7 +135,7 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
         items: data,
         pageSize: Number.parseInt(pageSize, 10),
         pageNumber: Number.parseInt(pageNumber, 10),
-        totalItems: Number.parseInt(headers['total-records'], 10)
+        totalItems: Number.parseInt(headers['total-records'], 10),
       });
     } catch (error) {
       next(error);

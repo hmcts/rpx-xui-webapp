@@ -14,11 +14,7 @@ export class DurationHelperService {
    * @param yearControl year form control
    * @return date object
    */
-  public getDateFromControls(
-    dayControl: FormControl,
-    monthControl: FormControl,
-    yearControl: FormControl
-  ): Date {
+  public getDateFromControls(dayControl: FormControl, monthControl: FormControl, yearControl: FormControl): Date {
     const day = Number.parseInt(dayControl.value, 10);
     const month = Number.parseInt(monthControl.value, 10) - 1;
     const year = Number.parseInt(yearControl.value, 10);
@@ -28,11 +24,7 @@ export class DurationHelperService {
     return new Date(year, month, day);
   }
 
-  public getRawFromControlsValues(
-    dayControl: FormControl,
-    monthControl: FormControl,
-    yearControl: FormControl
-  ): any {
+  public getRawFromControlsValues(dayControl: FormControl, monthControl: FormControl, yearControl: FormControl): any {
     const day = Number.parseInt(dayControl.value, 10);
     const month = Number.parseInt(monthControl.value, 10);
     const year = Number.parseInt(yearControl.value, 10);

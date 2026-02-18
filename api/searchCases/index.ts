@@ -32,9 +32,13 @@ export function modifyRequest(proxyReq, req) {
 
 export function userCanPerformWildCardSearch(userInfo: UserInfo): boolean {
   const allowedRoles: string[] = getConfigValue(WILDCARD_SEARCH_ROLES);
-  return userInfo && userInfo.roles && userInfo.roles.filter((role: string) => allowedRoles
-    .map((allowedRole: string) => allowedRole.toLowerCase())
-    .includes(role.toLowerCase())).length > 0;
+  return (
+    userInfo &&
+    userInfo.roles &&
+    userInfo.roles.filter((role: string) =>
+      allowedRoles.map((allowedRole: string) => allowedRole.toLowerCase()).includes(role.toLowerCase())
+    ).length > 0
+  );
 }
 
 export function prepareElasticQuery(queryParams: { page? }, body: any, user: UserInfo): ElasticSearchQuery {
@@ -244,15 +248,13 @@ export function handleElasticSearchResponse(proxyRes, req, res, json): object {
   return {};
 }
 
-function canApplyWildCardSearch(
-  wildcardSearchFields: { [key: string]: string[] },
-  caseType: string,
-  criterion: string
-): boolean {
-  return wildcardSearchFields
-    && wildcardSearchFields.hasOwnProperty(caseType)
-    && Array.isArray(wildcardSearchFields[caseType])
-    && wildcardSearchFields[caseType].includes(criterion);
+function canApplyWildCardSearch(wildcardSearchFields: { [key: string]: string[] }, caseType: string, criterion: string): boolean {
+  return (
+    wildcardSearchFields &&
+    wildcardSearchFields.hasOwnProperty(caseType) &&
+    Array.isArray(wildcardSearchFields[caseType]) &&
+    wildcardSearchFields[caseType].includes(criterion)
+  );
 }
 
 function phraseHasSpecialCharacters(phrase: string): boolean {

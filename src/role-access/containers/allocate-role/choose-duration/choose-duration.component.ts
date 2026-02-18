@@ -192,13 +192,21 @@ export class ChooseDurationComponent implements OnInit {
 
   public datesMissing(): boolean {
     let dateMissing = true;
-    if (!Number.parseInt(this.dayStartDate.value, 10) || !Number.parseInt(this.monthStartDate.value, 10) || !Number.parseInt(this.yearStartDate.value, 10)) {
+    if (
+      !Number.parseInt(this.dayStartDate.value, 10) ||
+      !Number.parseInt(this.monthStartDate.value, 10) ||
+      !Number.parseInt(this.yearStartDate.value, 10)
+    ) {
       this.startDateErrorMessage = 'Please enter some value';
       this.isStartDateError = true;
       dateMissing = false;
     }
 
-    if (!Number.parseInt(this.dayEndDate.value, 10) || !Number.parseInt(this.monthEndDate.value, 10) || !Number.parseInt(this.yearEndDate.value, 10)) {
+    if (
+      !Number.parseInt(this.dayEndDate.value, 10) ||
+      !Number.parseInt(this.monthEndDate.value, 10) ||
+      !Number.parseInt(this.yearEndDate.value, 10)
+    ) {
       this.endDateErrorMessage = 'Please enter some value';
       this.isEndDateError = true;
       dateMissing = false;

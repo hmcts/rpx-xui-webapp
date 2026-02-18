@@ -54,7 +54,6 @@ describe('TaskAssignmentContainerComponent2', () => {
   let component: TaskAssignmentContainerComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
-  let historyStateSpy: jasmine.Spy;
   const SELECTED_PERSON = {
     id: 'id123',
     name: 'John Smith',
@@ -137,12 +136,9 @@ describe('TaskAssignmentContainerComponent2', () => {
     // data with a different verb ("Assign")
   }));
 
-  const setHistoryState = (state: unknown) => {
-    if (!historyStateSpy) {
-      historyStateSpy = spyOnProperty(window.history, 'state', 'get').and.returnValue(state);
-      return;
-    }
-    historyStateSpy.and.returnValue(state);
+  const setHistoryState = (state: { returnUrl?: string; showAssigneeColumn?: boolean } | null) => {
+    const url = state?.returnUrl ?? window.location.pathname;
+    window.history.pushState(state, '', url);
   };
 
   afterEach(() => {

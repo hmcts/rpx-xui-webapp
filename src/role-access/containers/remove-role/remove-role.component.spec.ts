@@ -45,7 +45,6 @@ describe('RemoveRoleComponent', () => {
   const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getAll']);
   const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
   const allworkUrl = 'work/all-work/cases';
-  window.history.pushState({ backUrl: allworkUrl }, '', allworkUrl);
 
   class AllocateRoleMockService extends AllocateRoleService {
     public confirmAllocation(allocateRoleStateData: AllocateRoleStateData): Observable<any> {
@@ -156,6 +155,7 @@ describe('RemoveRoleComponent', () => {
   }));
 
   beforeEach(() => {
+    window.history.pushState({ backUrl: allworkUrl }, '', allworkUrl);
     routerMock.getCurrentNavigation.and.returnValue({ extras: { state: { backUrl: allworkUrl } } });
     mockCaseworkerDataService.getAll.and.returnValue(of([mockCaseworker]));
     fixture = TestBed.createComponent(WrapperComponent);

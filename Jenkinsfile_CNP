@@ -45,18 +45,17 @@ def isFailFastInterruption = { org.jenkinsci.plugins.workflow.steps.FlowInterrup
 def handleFailFastAbort = { Exception e ->
     def abortedByFailFast = false
     if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
-        def fie = (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) e
-        abortedByFailFast = (fie.getResult() == hudson.model.Result.ABORTED)
         try {
+            def fie = (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) e
             def causes = (fie.getCauses() ?: []).collect { c -> c?.getClass()?.getName() }.findAll { it }
-            echo "[failFast] FlowInterruptedException: result=${fie.getResult()} causes=${causes}"
+            abortedByFailFast = causes.any { it?.endsWith('FailFastCause') }
+            echo "[failFast] FlowInterruptedException: causes=${causes}"
         } catch (ignored) {
-            echo "[failFast] FlowInterruptedException: result=${fie.getResult()} causes=<unavailable>"
+            echo "[failFast] FlowInterruptedException: causes=<unavailable>"
         }
     } else if (e instanceof hudson.AbortException) {
-        def executor = currentBuild?.rawBuild?.getExecutor()
-        abortedByFailFast = (executor != null && executor.isInterrupted()) || (currentBuild?.result == 'ABORTED')
-        echo "[failFast] AbortException: executorInterrupted=${executor?.isInterrupted()} buildResult=${currentBuild?.result}"
+        abortedByFailFast = (currentBuild?.result == 'ABORTED')
+        echo "[failFast] AbortException: buildResult=${currentBuild?.result}"
     } else {
         echo "[failFast] Non-abort exception: ${e.getClass().getName()}: ${e.getMessage()}"
     }

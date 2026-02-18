@@ -47,14 +47,25 @@ def handleFailFastAbort = { Exception e ->
     if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
         def fie = (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) e
         abortedByFailFast = (fie.getResult() == hudson.model.Result.ABORTED)
+        try {
+            def causes = (fie.getCauses() ?: []).collect { c -> c?.getClass()?.getName() }.findAll { it }
+            echo "[failFast] FlowInterruptedException: result=${fie.getResult()} causes=${causes}"
+        } catch (ignored) {
+            echo "[failFast] FlowInterruptedException: result=${fie.getResult()} causes=<unavailable>"
+        }
     } else if (e instanceof hudson.AbortException) {
         def executor = currentBuild?.rawBuild?.getExecutor()
         abortedByFailFast = (executor != null && executor.isInterrupted()) || (currentBuild?.result == 'ABORTED')
+        echo "[failFast] AbortException: executorInterrupted=${executor?.isInterrupted()} buildResult=${currentBuild?.result}"
+    } else {
+        echo "[failFast] Non-abort exception: ${e.getClass().getName()}: ${e.getMessage()}"
     }
     if (abortedByFailFast) {
+        echo "[failFast] Marking stage as ABORTED due to failFast interruption"
         catchError(buildResult: 'ABORTED', stageResult: 'ABORTED') { throw e }
         return true
     }
+    echo "[failFast] Not a failFast interruption; rethrowing"
     return false
 }
 

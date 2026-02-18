@@ -1,6 +1,6 @@
 import { ExuiCaseDetailsComponent, ExuiCaseListComponent, ExuiSpinnerComponent, createLogger } from '@hmcts/playwright-common';
 import { Page } from '@playwright/test';
-import { ExuiHeaderComponent } from './components/index.js';
+import { ExuiFooterComponent, ExuiHeaderComponent } from './components/index.js';
 
 const logger = createLogger({ serviceName: 'api-monitor', format: 'pretty' });
 
@@ -31,6 +31,7 @@ export abstract class Base {
   readonly exuiCaseListComponent = new ExuiCaseListComponent(this.page);
   readonly exuiCaseDetailsComponent = new ExuiCaseDetailsComponent(this.page);
   readonly exuiHeader = new ExuiHeaderComponent(this.page);
+  readonly exuiFooter = new ExuiFooterComponent(this.page);
   readonly exuiSpinnerComponent = new ExuiSpinnerComponent(this.page);
   private static readonly monitoredPages = new WeakSet<Page>();
   private apiCalls: ApiCall[] = [];

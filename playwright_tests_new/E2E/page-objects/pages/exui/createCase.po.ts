@@ -19,7 +19,9 @@ const CRITICAL_WIZARD_API_PATTERNS: RegExp[] = [
 export class CreateCasePage extends Base {
   readonly container = this.page.locator('exui-case-home');
   readonly caseDetailsContainer = this.page.locator('exui-case-details-home');
-  readonly createCaseButton = this.page.getByRole('link', { name: 'Create case' });
+  readonly createCaseButton = this.page
+    .getByRole('link', { name: 'Create case' })
+    .or(this.page.locator('a[href="/cases/case-filter"].hmcts-primary-navigation__link'));
   readonly jurisdictionSelect = this.page.locator('#cc-jurisdiction');
   readonly caseTypeSelect = this.page.locator('#cc-case-type');
   readonly eventTypeSelect = this.page.locator('#cc-event');

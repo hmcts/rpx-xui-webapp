@@ -1,17 +1,13 @@
-import { faker } from '@faker-js/faker';
 import { expect, test } from '../../fixtures';
-import { formatCaseNumberWithDashes, normalizeCaseNumber } from '../../utils';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
-import { caseDetails } from 'test_codecept/backendMock/services/hearings/mockData/completedHearing.data';
-import { table } from 'console';
 const jurisdiction = 'DIVORCE';
 const caseType = 'XUI Case PoC';
 let caseNumber: string;
 
-test.describe('Verify creating cases works as expected', async () => {
+test.describe('Verify creating cases works as expected', () => {
   let caseData;
 
-  test.beforeEach(async ({ page, caseDetailsPage, createCasePage, tableUtils }) => {
+  test.beforeEach(async ({ page, caseDetailsPage, createCasePage }) => {
     await ensureAuthenticatedPage(page, 'SOLICITOR', { waitForSelector: 'exui-header' });
     caseData = await createCasePage.generateDivorcePoCData();
     await createCasePage.createDivorceCasePoC(jurisdiction, caseType, caseData);
@@ -21,8 +17,6 @@ test.describe('Verify creating cases works as expected', async () => {
   test('Verify creating a case in the divorce jurisdiction works as expected', async ({
     page,
     validatorUtils,
-    caseListPage,
-    tableUtils,
     caseDetailsPage,
   }) => {
     await test.step('Validate the case number format and URL', async () => {

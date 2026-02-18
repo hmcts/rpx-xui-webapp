@@ -2,21 +2,180 @@ diff --git a/lib/generate.js b/lib/generate.js
 index e36b904dbedea1a34a9aa2367a3636aacc46f16e..a4679f3122e76eb27f18b7019666cf129b3f2b56 100644
 --- a/lib/generate.js
 +++ b/lib/generate.js
-@@ -377,8 +377,15 @@ class Generate {
+@@ -377,8 +377,13 @@ class Generate {
          if (result.status === "passed" && result.retry > 0) {
              result.status = "flaky";
          }
 -        if (result.status === "passed" ||
 -            result.status === "flaky" ||
-+        const terminalStatuses = [
++        const terminalStatusesNoRetry = [
 +            "passed",
-+            "failed",
 +            "flaky",
 +            "skipped",
-+            "timedOut",
 +            "interrupted",
 +        ];
-+        if (terminalStatuses.includes(result.status) ||
++        if (terminalStatusesNoRetry.includes(result.status) ||
              result.retry === testCase.retries) {
              // Update Files
              let fileUpdate = false;
+diff --git a/lib/html/content.html b/lib/html/content.html
+index 6db0ad6e2c3d9f78b6dd6a8f178a3b0c31a0c7f9..25a2f86d6a2f82bfb9f0f5b2585a1c9a0a7a2c1a 100644
+--- a/lib/html/content.html
++++ b/lib/html/content.html
+@@ -1,4 +1,16 @@
+ <div>
++    <div class="d-flex align-items-center mb-2" id="status-filter-row">
++        <label for="status-filter" class="me-2 mb-0">Status</label>
++        <select id="status-filter" class="form-select form-select-sm" style="width: 180px;">
++            <option value="">All</option>
++            <option value="failed">Failed</option>
++            <option value="timedOut">Timed Out</option>
++            <option value="skipped">Skipped</option>
++            <option value="passed">Passed</option>
++            <option value="flaky">Flaky</option>
++            <option value="interrupted">Interrupted</option>
++        </select>
++    </div>
+     <div class="table-responsive">
+         <table id="test-list-table" class="table table-sm table-hover">
+             <thead>
+diff --git a/lib/html/assets/js/dataTables.min.js b/lib/html/assets/js/dataTables.min.js
+index 3d971e6dbb7f8f7b9c736a85c7cfe2b8b6b6e3a1..4b7e5c5f6e4c3d2f1a0b9c8d7e6f5a4b3c2d1e0f 100644
+--- a/lib/html/assets/js/dataTables.min.js
++++ b/lib/html/assets/js/dataTables.min.js
+@@ -1 +1 @@
+-$(document).ready(function(){$("#test-list-table").DataTable({})});
++$(document).ready(function(){var t=$("#test-list-table").DataTable({}),e=$("#status-filter");e.length&&e.on("change",function(){var e=$(this).val();if(!e)return t.column(1).search("").draw();var a=$.fn.dataTable.util.escapeRegex(e);return t.column(1).search("^"+a+"$",!0,!1).draw()})});
+diff --git a/lib/html/chartStatus.html b/lib/html/chartStatus.html
+index b631af70f15c2a4c7b76f6a8d9d4f6a2c9d8e4a1..3005ca02f4f85dfaf1f4f179f430f9b6de84f7dd 100644
+--- a/lib/html/chartStatus.html
++++ b/lib/html/chartStatus.html
+@@ -38,5 +38,5 @@
+ 							<tr>
+-								<th class="odhin-text-2 px-2">Status</th>
++								<th class="odhin-text-2 px-2">Status (Final Outcomes)</th>
+ 								<th class="odhin-text-2 px-2">Tests</th>
+ 								<th class="odhin-text-2 px-2">Percentage</th>
+ 							</tr>
+@@ -87,6 +87,54 @@
+ 									{{.TestFlakyPercentage}}%
+ 								</td>
+ 							</tr>
++							<tr>
++								<th class="odhin-text-2 px-2 pt-3" colspan="3">Execution Detail</th>
++							</tr>
++							<tr>
++								<td class="chart-status-passed fs-6">Unique Tests (Final Outcomes)</td>
++								<td class="chart-status-passed-info">{{.UniqueTests}}</td>
++								<td></td>
++							</tr>
++							<tr>
++								<td class="chart-status-interrupted fs-6">Execution Attempts (Including Retries)</td>
++								<td class="chart-status-interrupted-info">{{.TotalAttempts}}</td>
++								<td></td>
++							</tr>
++							<tr>
++								<td class="chart-status-flaky fs-6">Retry Attempts Consumed</td>
++								<td class="chart-status-flaky-info">{{.RetryAttempts}}</td>
++								<td></td>
++							</tr>
++							<tr>
++								<td class="chart-status-flaky fs-6">Tests With Retries</td>
++								<td class="chart-status-flaky-info">{{.TestsWithRetries}}</td>
++								<td></td>
++							</tr>
++							<tr>
++								<td class="chart-status-flaky fs-6">Flaky (Recovered on Retry)</td>
++								<td class="chart-status-flaky-info">{{.RecoveredFlakyTests}}</td>
++								<td></td>
++							</tr>
++							<tr>
++								<td class="chart-status-failed fs-6">Transient Failed/Timed Out/Interrupted Attempts</td>
++								<td class="chart-status-failed-info">{{.TransientFailureAttempts}}</td>
++								<td></td>
++							</tr>
++							<tr>
++								<td class="chart-status-failed fs-6">Transient Failed Attempts</td>
++								<td class="chart-status-failed-info">{{.TransientFailedAttempts}}</td>
++								<td></td>
++							</tr>
++							<tr>
++								<td class="chart-status-timedOut fs-6">Transient Timed Out Attempts</td>
++								<td class="chart-status-timedOut-info">{{.TransientTimedOutAttempts}}</td>
++								<td></td>
++							</tr>
++							<tr>
++								<td class="chart-status-interrupted fs-6">Transient Interrupted Attempts</td>
++								<td class="chart-status-interrupted-info">{{.TransientInterruptedAttempts}}</td>
++								<td></td>
++							</tr>
+ 						</table>
+ 					</td>
+ 				</tr>
+diff --git a/lib/generate.js b/lib/generate.js
+index a4679f3122e76eb27f18b7019666cf129b3f2b56..0ee54f845b6f2e4574e2d24a2c14ddae2f1ff8d8 100644
+--- a/lib/generate.js
++++ b/lib/generate.js
+@@ -721,12 +721,62 @@ class Generate {
+         // Edit RunInfo
+         this.runInfo = this.runInfo.replaceAll("{{.Project}}", this.execOptions.project);
+         this.runInfo = this.runInfo.replaceAll("{{.Release}}", this.execOptions.release);
+         this.runInfo = this.runInfo.replaceAll("{{.TestEnvironment}}", this.execOptions.testEnvironment);
+         this.runInfo = this.runInfo.replaceAll("{{.StartTime}}", this.execInfo.startTime);
+         this.runInfo = this.runInfo.replaceAll("{{.EndTime}}", this.execInfo.endTime);
+         this.runInfo = this.runInfo.replaceAll("{{.TotalExecutionTime}}", this.help.convertMsToTime(new Date(this.execInfo.endTime).getTime() -
+             new Date(this.execInfo.startTime).getTime()));
++        const attemptsByTestId = new Map();
++        this.testCases.forEach((entry) => {
++            const key = `${(entry.testCase.projectId || "default")}:${entry.testCase.id}`;
++            const attempts = attemptsByTestId.get(key) || [];
++            attempts.push(entry.result);
++            attemptsByTestId.set(key, attempts);
++        });
++        const uniqueTests = attemptsByTestId.size;
++        let totalAttempts = 0;
++        let retryAttempts = 0;
++        let testsWithRetries = 0;
++        let recoveredFlakyTests = 0;
++        let transientFailureAttempts = 0;
++        let transientFailedAttempts = 0;
++        let transientTimedOutAttempts = 0;
++        let transientInterruptedAttempts = 0;
++        attemptsByTestId.forEach((attempts) => {
++            const sortedAttempts = attempts
++                .slice()
++                .sort((left, right) => left.retry - right.retry);
++            const finalAttempt = sortedAttempts[sortedAttempts.length - 1];
++            const finalRetry = Math.max(finalAttempt === null || finalAttempt === void 0 ? void 0 : finalAttempt.retry, 0);
++            totalAttempts += sortedAttempts.length;
++            retryAttempts += finalRetry;
++            if (finalRetry > 0) {
++                testsWithRetries++;
++            }
++            if ((finalAttempt === null || finalAttempt === void 0 ? void 0 : finalAttempt.status) === "flaky") {
++                recoveredFlakyTests++;
++            }
++            transientFailedAttempts += sortedAttempts.filter((attempt, index) => index < sortedAttempts.length - 1 &&
++                attempt.status === "failed").length;
++            transientTimedOutAttempts += sortedAttempts.filter((attempt, index) => index < sortedAttempts.length - 1 &&
++                attempt.status === "timedOut").length;
++            transientInterruptedAttempts += sortedAttempts.filter((attempt, index) => index < sortedAttempts.length - 1 &&
++                attempt.status === "interrupted").length;
++            transientFailureAttempts += sortedAttempts.filter((attempt, index) => index < sortedAttempts.length - 1 &&
++                (attempt.status === "failed" ||
++                    attempt.status === "timedOut" ||
++                    attempt.status === "interrupted")).length;
++        });
++        this.chartStatus = this.chartStatus.replaceAll("{{.UniqueTests}}", uniqueTests.toString());
++        this.chartStatus = this.chartStatus.replaceAll("{{.TotalAttempts}}", totalAttempts.toString());
++        this.chartStatus = this.chartStatus.replaceAll("{{.RetryAttempts}}", retryAttempts.toString());
++        this.chartStatus = this.chartStatus.replaceAll("{{.TestsWithRetries}}", testsWithRetries.toString());
++        this.chartStatus = this.chartStatus.replaceAll("{{.RecoveredFlakyTests}}", recoveredFlakyTests.toString());
++        this.chartStatus = this.chartStatus.replaceAll("{{.TransientFailureAttempts}}", transientFailureAttempts.toString());
++        this.chartStatus = this.chartStatus.replaceAll("{{.TransientFailedAttempts}}", transientFailedAttempts.toString());
++        this.chartStatus = this.chartStatus.replaceAll("{{.TransientTimedOutAttempts}}", transientTimedOutAttempts.toString());
++        this.chartStatus = this.chartStatus.replaceAll("{{.TransientInterruptedAttempts}}", transientInterruptedAttempts.toString());
+         // Prepara test data
+         let testCases = "";
+         let testCasesDetails = "";
+         let showRetries = false;

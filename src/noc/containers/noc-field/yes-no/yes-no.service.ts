@@ -2,15 +2,9 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class YesNoService {
-  private static readonly YES_INPUTS: string[] = [
-    'Y',
-    'YES'
-  ];
+  private static readonly YES_INPUTS: string[] = ['Y', 'YES'];
 
-  private static readonly NO_INPUTS: string[] = [
-    'N',
-    'NO'
-  ];
+  private static readonly NO_INPUTS: string[] = ['N', 'NO'];
 
   private static readonly YES = 'Yes';
   private static readonly NO = 'No';
@@ -27,7 +21,7 @@ export class YesNoService {
   }
 
   private isYes(value: any): boolean {
-    switch (typeof(value)) {
+    switch (typeof value) {
       case 'boolean':
         return value;
       case 'string':
@@ -38,7 +32,7 @@ export class YesNoService {
   }
 
   private isNo(value: any): boolean {
-    switch (typeof(value)) {
+    switch (typeof value) {
       case 'boolean':
         return !value;
       case 'string':

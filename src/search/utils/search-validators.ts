@@ -57,7 +57,13 @@ export class SearchValidators {
       if (control.value === null || control.value === '') {
         return;
       }
-      if (!control.value.toString().match(/^(([A-Za-z]{1,2}[0-9][A-Za-z0-9]?|ASCN|STHL|TDCU|BBND|[BFS]IQQ|PCRN|TKCA) ?[0-9][A-Za-z]{2}|BFPO ?[0-9]{1,4}|(KY[0-9]|MSR|VG|AI)[ -]?[0-9]{4}|[A-Za-z]{2} ?[0-9]{2}|GE ?CX|GIR ?0A{2}|SAN ?TA1)$/)) {
+      if (
+        !control.value
+          .toString()
+          .match(
+            /^(([A-Za-z]{1,2}[0-9][A-Za-z0-9]?|ASCN|STHL|TDCU|BBND|[BFS]IQQ|PCRN|TKCA) ?[0-9][A-Za-z]{2}|BFPO ?[0-9]{1,4}|(KY[0-9]|MSR|VG|AI)[ -]?[0-9]{4}|[A-Za-z]{2} ?[0-9]{2}|GE ?CX|GIR ?0A{2}|SAN ?TA1)$/
+          )
+      ) {
         return { postcode: true };
       }
       return null;
@@ -76,10 +82,12 @@ export class SearchValidators {
 
       // No comparison possible if either date is invalid (check validation status of day field, since XUI Common Library Date component
       // attaches the validator to this field), or either date is completely empty (valid because both date fields are optional)
-      if (formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).invalid ||
-          formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).invalid ||
-          (dateOfBirthDay === '' && dateOfBirthMonth === '' && dateOfBirthYear === '') ||
-          (dateOfDeathDay === '' && dateOfDeathMonth === '' && dateOfDeathYear === '')) {
+      if (
+        formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).invalid ||
+        formGroup.get(SearchFormControl.DATE_OF_DEATH_DAY).invalid ||
+        (dateOfBirthDay === '' && dateOfBirthMonth === '' && dateOfBirthYear === '') ||
+        (dateOfDeathDay === '' && dateOfDeathMonth === '' && dateOfDeathYear === '')
+      ) {
         return null;
       }
 
@@ -101,8 +109,11 @@ export class SearchValidators {
    */
   public static searchFormValidator(): ValidatorFn {
     return (formGroup: AbstractControl): ValidationErrors | null => {
-      if (!Object.keys((formGroup as FormGroup).controls).filter((key) => key !== SearchFormControl.SERVICES_LIST)
-        .some((key) => !!(formGroup as FormGroup).controls[key].value)) {
+      if (
+        !Object.keys((formGroup as FormGroup).controls)
+          .filter((key) => key !== SearchFormControl.SERVICES_LIST)
+          .some((key) => !!(formGroup as FormGroup).controls[key].value)
+      ) {
         return { searchForm: true, errorType: SearchFormErrorType.NO_SEARCH_CRITERIA };
       }
       return null;

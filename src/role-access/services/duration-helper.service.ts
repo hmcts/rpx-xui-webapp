@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import * as moment from 'moment';
+import moment from 'moment';
 import { CheckDatesResult } from '../models';
 
 @Injectable({ providedIn: 'root' })
@@ -66,12 +66,10 @@ export class DurationHelperService {
    * @param endDate the end date string e.g. YYYY-MM-DD
    * @return object representing date validity
    */
-  public checkDates(
-    endDate: string
-  ): CheckDatesResult {
+  public checkDates(endDate: string): CheckDatesResult {
     const isEndDateValid = moment(endDate, this.dateFormat, true).isValid();
     return {
-      isEndDateValid
+      isEndDateValid,
     };
   }
 
@@ -82,11 +80,7 @@ export class DurationHelperService {
    * @param yearControl the day form control
    * @return string representation of date: YYYY-MM-DD
    */
-  public convertDateControlsToString(
-    dayControl: FormControl,
-    monthControl: FormControl,
-    yearControl: FormControl
-  ): string {
+  public convertDateControlsToString(dayControl: FormControl, monthControl: FormControl, yearControl: FormControl): string {
     const dayStart = this.formatString(dayControl.value);
     const monthStart = this.formatString(monthControl.value);
     const yearStart = yearControl.value;

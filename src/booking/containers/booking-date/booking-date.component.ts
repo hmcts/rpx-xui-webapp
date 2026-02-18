@@ -3,23 +3,18 @@ import { ErrorMessagesModel, GovUiConfigModel } from '@hmcts/rpx-xui-common-lib'
 import { BookingDateValidationError, BookingNavigationEvent, BookingProcess } from '../../models';
 import { DateValidators } from '../utils';
 
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators
-} from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   BookingDateFormErrorMessage,
   BookingDateOption,
   BookingDatePageText,
-  DateFormControl
+  DateFormControl,
 } from '../../models/booking-date.enum';
 
 @Component({
   standalone: false,
   selector: 'exui-booking-date',
-  templateUrl: './booking-date.component.html'
+  templateUrl: './booking-date.component.html',
 })
 export class BookingDateComponent implements OnInit {
   @Input() public bookingProcess: BookingProcess;
@@ -38,27 +33,25 @@ export class BookingDateComponent implements OnInit {
   public endDateErrorMessage: ErrorMessagesModel;
   public formStatus: string;
 
-  constructor(
-    private readonly fb: FormBuilder
-  ) {
+  constructor(private readonly fb: FormBuilder) {
     this.dateInterval = [
       { date: BookingDateOption.TODAY, checked: false },
       { date: BookingDateOption.WEEK, checked: false },
-      { date: BookingDateOption.DATERANGE, checked: false }
+      { date: BookingDateOption.DATERANGE, checked: false },
     ];
     this.configStart = {
       id: 'startDate',
       name: 'startDate',
       hint: 'For example, 19 11 2021',
       label: 'Booking Starts',
-      isPageHeading: false
+      isPageHeading: false,
     };
     this.configEnd = {
       id: 'endDate',
       name: 'endDate',
       hint: 'For example, 19 12 2021',
       label: 'Booking Ends',
-      isPageHeading: false
+      isPageHeading: false,
     };
   }
 
@@ -72,14 +65,19 @@ export class BookingDateComponent implements OnInit {
       startDate_day: new FormControl(null, null),
       endDate_year: new FormControl(null, null),
       endDate_month: new FormControl(null, null),
-      endDate_day: new FormControl(null, null)
+      endDate_day: new FormControl(null, null),
     });
     this.formGroup.get('dateOption').patchValue(this.bookingProcess.selectedDateOption);
     if (typeof this.bookingProcess.selectedDateOption === 'number') {
       this.dateInterval[this.bookingProcess.selectedDateOption].checked = true;
       // convert the numeric index into the enumerated value
-      this.formGroup.get(DateFormControl.BOOKING_DATE_TYPE).setValue(Object.values(BookingDateOption)[this.bookingProcess.selectedDateOption]);
-      if (this.formGroup.get(DateFormControl.BOOKING_DATE_TYPE).value === BookingDateOption.DATERANGE && this.bookingProcess.startDate) {
+      this.formGroup
+        .get(DateFormControl.BOOKING_DATE_TYPE)
+        .setValue(Object.values(BookingDateOption)[this.bookingProcess.selectedDateOption]);
+      if (
+        this.formGroup.get(DateFormControl.BOOKING_DATE_TYPE).value === BookingDateOption.DATERANGE &&
+        this.bookingProcess.startDate
+      ) {
         this.displayBookingDates();
       }
     }
@@ -87,11 +85,19 @@ export class BookingDateComponent implements OnInit {
   }
 
   private displayBookingDates(): void {
-    this.formGroup.get(DateFormControl.BOOKING_START_DAY).setValue(this.bookingProcess.startDate.getDate().toString().padStart(2, '0'));
-    this.formGroup.get(DateFormControl.BOOKING_START_MONTH).setValue((this.bookingProcess.startDate.getMonth() + 1).toString().padStart(2, '0'));
+    this.formGroup
+      .get(DateFormControl.BOOKING_START_DAY)
+      .setValue(this.bookingProcess.startDate.getDate().toString().padStart(2, '0'));
+    this.formGroup
+      .get(DateFormControl.BOOKING_START_MONTH)
+      .setValue((this.bookingProcess.startDate.getMonth() + 1).toString().padStart(2, '0'));
     this.formGroup.get(DateFormControl.BOOKING_START_YEAR).setValue(this.bookingProcess.startDate.getFullYear());
-    this.formGroup.get(DateFormControl.BOOKING_END_DAY).setValue(this.bookingProcess.endDate.getDate().toString().padStart(2, '0'));
-    this.formGroup.get(DateFormControl.BOOKING_END_MONTH).setValue((this.bookingProcess.endDate.getMonth() + 1).toString().padStart(2, '0'));
+    this.formGroup
+      .get(DateFormControl.BOOKING_END_DAY)
+      .setValue(this.bookingProcess.endDate.getDate().toString().padStart(2, '0'));
+    this.formGroup
+      .get(DateFormControl.BOOKING_END_MONTH)
+      .setValue((this.bookingProcess.endDate.getMonth() + 1).toString().padStart(2, '0'));
     this.formGroup.get(DateFormControl.BOOKING_END_YEAR).setValue(this.bookingProcess.endDate.getFullYear());
   }
 
@@ -112,40 +118,94 @@ export class BookingDateComponent implements OnInit {
     this.formGroup.get(DateFormControl.BOOKING_END_DAY).updateValueAndValidity();
 
     if (!this.formGroup.valid) {
-      if (this.formGroup.errors && this.formGroup.errors.errorType === BookingDateFormErrorMessage.BOOKING_BOTH_DATE_EMPTY_CHECK) {
-        this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_START_DAY, documentHRef: this.configStart.id, errorMessage: BookingDateFormErrorMessage.BOOKING_START_DATE_EMPTY_CHECK_FAILED });
-        this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_END_DAY, documentHRef: this.configEnd.id, errorMessage: BookingDateFormErrorMessage.BOOKING_END_DATE_EMPTY_CHECK_FAILED });
-        this.startDateErrorMessage = { isInvalid: true, messages: [BookingDateFormErrorMessage.BOOKING_START_DATE_EMPTY_CHECK_FAILED] };
-        this.endDateErrorMessage = { isInvalid: true, messages: [BookingDateFormErrorMessage.BOOKING_END_DATE_EMPTY_CHECK_FAILED] };
+      if (
+        this.formGroup.errors &&
+        this.formGroup.errors.errorType === BookingDateFormErrorMessage.BOOKING_BOTH_DATE_EMPTY_CHECK
+      ) {
+        this.dateValidationErrors.push({
+          controlId: DateFormControl.BOOKING_START_DAY,
+          documentHRef: this.configStart.id,
+          errorMessage: BookingDateFormErrorMessage.BOOKING_START_DATE_EMPTY_CHECK_FAILED,
+        });
+        this.dateValidationErrors.push({
+          controlId: DateFormControl.BOOKING_END_DAY,
+          documentHRef: this.configEnd.id,
+          errorMessage: BookingDateFormErrorMessage.BOOKING_END_DATE_EMPTY_CHECK_FAILED,
+        });
+        this.startDateErrorMessage = {
+          isInvalid: true,
+          messages: [BookingDateFormErrorMessage.BOOKING_START_DATE_EMPTY_CHECK_FAILED],
+        };
+        this.endDateErrorMessage = {
+          isInvalid: true,
+          messages: [BookingDateFormErrorMessage.BOOKING_END_DATE_EMPTY_CHECK_FAILED],
+        };
         return false;
       }
-      if (this.formGroup.errors && this.formGroup.errors.errorType === BookingDateFormErrorMessage.BOOKING_START_DATE_EMPTY_CHECK) {
-        this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_START_DAY, documentHRef: this.configStart.id, errorMessage: BookingDateFormErrorMessage.BOOKING_START_DATE_EMPTY_CHECK_FAILED });
-        this.startDateErrorMessage = { isInvalid: true, messages: [BookingDateFormErrorMessage.BOOKING_START_DATE_EMPTY_CHECK_FAILED] };
+      if (
+        this.formGroup.errors &&
+        this.formGroup.errors.errorType === BookingDateFormErrorMessage.BOOKING_START_DATE_EMPTY_CHECK
+      ) {
+        this.dateValidationErrors.push({
+          controlId: DateFormControl.BOOKING_START_DAY,
+          documentHRef: this.configStart.id,
+          errorMessage: BookingDateFormErrorMessage.BOOKING_START_DATE_EMPTY_CHECK_FAILED,
+        });
+        this.startDateErrorMessage = {
+          isInvalid: true,
+          messages: [BookingDateFormErrorMessage.BOOKING_START_DATE_EMPTY_CHECK_FAILED],
+        };
         return false;
       }
       if (this.formGroup.errors && this.formGroup.errors.errorType === BookingDateFormErrorMessage.BOOKING_END_DATE_EMPTY_CHECK) {
-        this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_END_DAY, documentHRef: this.configEnd.id, errorMessage: BookingDateFormErrorMessage.BOOKING_END_DATE_EMPTY_CHECK_FAILED });
-        this.endDateErrorMessage = { isInvalid: true, messages: [BookingDateFormErrorMessage.BOOKING_END_DATE_EMPTY_CHECK_FAILED] };
+        this.dateValidationErrors.push({
+          controlId: DateFormControl.BOOKING_END_DAY,
+          documentHRef: this.configEnd.id,
+          errorMessage: BookingDateFormErrorMessage.BOOKING_END_DATE_EMPTY_CHECK_FAILED,
+        });
+        this.endDateErrorMessage = {
+          isInvalid: true,
+          messages: [BookingDateFormErrorMessage.BOOKING_END_DATE_EMPTY_CHECK_FAILED],
+        };
         return false;
       }
-      if (! this.formGroup.get(DateFormControl.BOOKING_START_DAY).valid) {
-        this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_START_DAY, documentHRef: this.configStart.id, errorMessage: BookingDateFormErrorMessage.BOOKING_START_DATE_FAILED });
+      if (!this.formGroup.get(DateFormControl.BOOKING_START_DAY).valid) {
+        this.dateValidationErrors.push({
+          controlId: DateFormControl.BOOKING_START_DAY,
+          documentHRef: this.configStart.id,
+          errorMessage: BookingDateFormErrorMessage.BOOKING_START_DATE_FAILED,
+        });
         this.startDateErrorMessage = { isInvalid: true, messages: [BookingDateFormErrorMessage.BOOKING_START_DATE_FAILED] };
       }
       if (!this.formGroup.get(DateFormControl.BOOKING_END_DAY).valid) {
-        this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_END_DAY, documentHRef: this.configEnd.id, errorMessage: BookingDateFormErrorMessage.BOOKING_END_DATE_FAILED });
+        this.dateValidationErrors.push({
+          controlId: DateFormControl.BOOKING_END_DAY,
+          documentHRef: this.configEnd.id,
+          errorMessage: BookingDateFormErrorMessage.BOOKING_END_DATE_FAILED,
+        });
         this.endDateErrorMessage = { isInvalid: true, messages: [BookingDateFormErrorMessage.BOOKING_END_DATE_FAILED] };
       }
       if (!this.formGroup.get(DateFormControl.BOOKING_DATE_TYPE).valid) {
-        this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_START_DAY, documentHRef: this.configStart.id, errorMessage: BookingDateFormErrorMessage.NO_SELECTION });
+        this.dateValidationErrors.push({
+          controlId: DateFormControl.BOOKING_START_DAY,
+          documentHRef: this.configStart.id,
+          errorMessage: BookingDateFormErrorMessage.NO_SELECTION,
+        });
       }
       switch (this.formGroup.errors && this.formGroup.errors.errorType) {
         case BookingDateFormErrorMessage.PAST_DATE_CHECK:
-          this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_START_DAY, documentHRef: this.configStart.id, errorMessage: BookingDateFormErrorMessage.PAST_DATE_CHECK_FAILED });
+          this.dateValidationErrors.push({
+            controlId: DateFormControl.BOOKING_START_DAY,
+            documentHRef: this.configStart.id,
+            errorMessage: BookingDateFormErrorMessage.PAST_DATE_CHECK_FAILED,
+          });
           break;
         case BookingDateFormErrorMessage.DATE_COMPARISON:
-          this.dateValidationErrors.push({ controlId: DateFormControl.BOOKING_START_DAY, documentHRef: this.configStart.id, errorMessage: BookingDateFormErrorMessage.BOOKING_DATE_COMPARISON_FAILED });
+          this.dateValidationErrors.push({
+            controlId: DateFormControl.BOOKING_START_DAY,
+            documentHRef: this.configStart.id,
+            errorMessage: BookingDateFormErrorMessage.BOOKING_DATE_COMPARISON_FAILED,
+          });
           break;
         default:
           break;
@@ -160,8 +220,7 @@ export class BookingDateComponent implements OnInit {
 
   public resetValidationErrorMessages(): void {
     this.dateValidationErrors = [];
-    this.startDateErrorMessage =
-    this.endDateErrorMessage = null;
+    this.startDateErrorMessage = this.endDateErrorMessage = null;
   }
 
   public isAnyError(): boolean {
@@ -178,7 +237,7 @@ export class BookingDateComponent implements OnInit {
     this.bookingProcess.selectedDateOption = selectedOption;
   }
 
-  public getStartEndDate(bookingDateOption: BookingDateOption): {startDate: Date, endDate: Date} {
+  public getStartEndDate(bookingDateOption: BookingDateOption): { startDate: Date; endDate: Date } {
     let startDate: Date;
     let endDate: Date;
     switch (bookingDateOption) {
@@ -217,7 +276,7 @@ export class BookingDateComponent implements OnInit {
 
     return {
       startDate,
-      endDate
+      endDate,
     };
   }
 
@@ -246,4 +305,3 @@ export interface DisplayedDateInterval {
   date: BookingDateOption;
   checked: boolean;
 }
-

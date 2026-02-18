@@ -18,7 +18,7 @@ import { HearingStageComponent } from './hearing-stage.component';
 @Component({
   standalone: false,
   selector: 'exui-hearing-parties-title',
-  template: ''
+  template: '',
 })
 class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
@@ -44,7 +44,7 @@ describe('HearingStageComponent', () => {
       category_key: 'HearingType',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       key: 'final',
@@ -57,7 +57,7 @@ describe('HearingStageComponent', () => {
       category_key: 'HearingType',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       key: 'substantial',
@@ -70,7 +70,7 @@ describe('HearingStageComponent', () => {
       category_key: 'HearingType',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       key: 'case-management',
@@ -83,8 +83,8 @@ describe('HearingStageComponent', () => {
       category_key: 'HearingType',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null
-    }
+      child_nodes: null,
+    },
   ];
 
   beforeEach(() => {
@@ -99,17 +99,16 @@ describe('HearingStageComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                hearingStages: source
-              }
+                hearingStages: source,
+              },
             },
-            fragment: of('point-to-me')
-          }
+            fragment: of('point-to-me'),
+          },
         },
-        FormBuilder
+        FormBuilder,
       ],
-      schemas: [NO_ERRORS_SCHEMA]
-    })
-      .compileComponents();
+      schemas: [NO_ERRORS_SCHEMA],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(HearingStageComponent);
     component = fixture.componentInstance;
@@ -124,13 +123,17 @@ describe('HearingStageComponent', () => {
 
   it('should set hearing type', () => {
     fixture.detectChanges();
-    expect(component.hearingType).toEqual(initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.hearingType);
+    expect(component.hearingType).toEqual(
+      initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.hearingType
+    );
   });
 
   it('should initialise control value to hearing type from store', () => {
     fixture.detectChanges();
     component.ngAfterViewInit();
-    expect(component.stageForm.controls['stage-option'].value).toEqual(initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.hearingType);
+    expect(component.stageForm.controls['stage-option'].value).toEqual(
+      initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails.hearingType
+    );
   });
 
   it('should call unsubscribe', () => {

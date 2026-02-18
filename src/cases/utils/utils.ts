@@ -4,7 +4,7 @@ import { FeatureVariation } from '../models/feature-variation.model';
 
 export class Utils {
   public static isStringOrNumber(value: any): boolean {
-    return (typeof value === 'string' && value.length !== 0) || (typeof value === 'number');
+    return (typeof value === 'string' && value.length !== 0) || typeof value === 'number';
   }
 
   public static getFilterType(fieldName: string, metadataFields): string {
@@ -32,10 +32,15 @@ export class Utils {
   }
 
   public static getJudicialUserIdsFromExclusions(exclusions: RoleExclusion[]): string[] {
-    return exclusions.filter((role) => role.userType.toUpperCase() === RoleCategory.JUDICIAL).map((exclusionRole) => exclusionRole.actorId);
+    return exclusions
+      .filter((role) => role.userType.toUpperCase() === RoleCategory.JUDICIAL)
+      .map((exclusionRole) => exclusionRole.actorId);
   }
 
-  public static mapCaseRolesForExclusions(exclusions: RoleExclusion[], caseRolesWithUserDetails: CaseRoleDetails[]): RoleExclusion[] {
+  public static mapCaseRolesForExclusions(
+    exclusions: RoleExclusion[],
+    caseRolesWithUserDetails: CaseRoleDetails[]
+  ): RoleExclusion[] {
     exclusions.forEach((exclusion) => {
       if (caseRolesWithUserDetails.find((detail) => detail.sidam_id === exclusion.actorId)) {
         exclusion.name = caseRolesWithUserDetails.find((detail) => detail.sidam_id === exclusion.actorId).known_as;
@@ -53,16 +58,22 @@ export class Utils {
       return {
         ...role,
         name: userDetails.full_name,
-        email: userDetails.email_id
+        email: userDetails.email_id,
       };
     });
   }
 
-  public static hasMatchedJurisdictionAndCaseType(featureVariation: FeatureVariation, jurisdictionId: string, caseType: string): boolean {
+  public static hasMatchedJurisdictionAndCaseType(
+    featureVariation: FeatureVariation,
+    jurisdictionId: string,
+    caseType: string
+  ): boolean {
     if (featureVariation.jurisdiction === jurisdictionId) {
-      if ((featureVariation?.caseType === caseType) ||
+      if (
+        featureVariation?.caseType === caseType ||
         (featureVariation?.includeCaseTypes?.length > 0 &&
-          featureVariation?.includeCaseTypes.some((ct) => ct === caseType || new RegExp('^'+ ct + '$').test(caseType)))) {
+          featureVariation?.includeCaseTypes.some((ct) => ct === caseType || new RegExp('^' + ct + '$').test(caseType)))
+      ) {
         return true;
       }
     }

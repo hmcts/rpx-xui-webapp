@@ -10,7 +10,7 @@ import {
   toDenySADletionRequestedRoleBody,
   toRoleAssignmentBody,
   toSARoleAssignmentBody,
-  toSARequestRoleAssignmentBody
+  toSARequestRoleAssignmentBody,
 } from './to-role-assignment-dto';
 
 describe('to-role-assignment-dto', () => {
@@ -39,10 +39,10 @@ describe('to-role-assignment-dto', () => {
         durationOfRole: DurationOfRole.SEVEN_DAYS,
         period: {
           startDate: new Date('2029-01-01'),
-          endDate: new Date('2029-01-08')
+          endDate: new Date('2029-01-08'),
         },
         jurisdiction: 'IA',
-        roleCategory: RoleCategory.JUDICIAL
+        roleCategory: RoleCategory.JUDICIAL,
       };
 
       const result = toRoleAssignmentBody(currentUserId, allocateRoleData);
@@ -50,23 +50,25 @@ describe('to-role-assignment-dto', () => {
       expect(result).to.deep.equal({
         roleRequest: {
           assignerId: 'user123',
-          replaceExisting: false
+          replaceExisting: false,
         },
-        requestedRoles: [{
-          roleType: 'CASE',
-          grantType: 'SPECIFIC',
-          classification: 'RESTRICTED',
-          attributes: {
-            caseId: 'case123',
-            jurisdiction: 'IA'
+        requestedRoles: [
+          {
+            roleType: 'CASE',
+            grantType: 'SPECIFIC',
+            classification: 'RESTRICTED',
+            attributes: {
+              caseId: 'case123',
+              jurisdiction: 'IA',
+            },
+            roleName: 'lead-judge',
+            roleCategory: RoleCategory.JUDICIAL,
+            actorIdType: 'IDAM',
+            actorId: 'user123',
+            beginTime: new Date('2029-01-01'),
+            endTime: new Date('2029-01-08'),
           },
-          roleName: 'lead-judge',
-          roleCategory: RoleCategory.JUDICIAL,
-          actorIdType: 'IDAM',
-          actorId: 'user123',
-          beginTime: new Date('2029-01-01'),
-          endTime: new Date('2029-01-08')
-        }]
+        ],
       });
     });
 
@@ -80,10 +82,10 @@ describe('to-role-assignment-dto', () => {
         person: { id: 'user456', name: 'John Doe', email: 'john@example.com', domain: PersonRole.LEGAL_OPERATIONS },
         durationOfRole: DurationOfRole.INDEFINITE,
         period: {
-          startDate: new Date('2029-02-01')
+          startDate: new Date('2029-02-01'),
         },
         jurisdiction: 'SSCS',
-        roleCategory: RoleCategory.LEGAL_OPERATIONS
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
       };
 
       const result = toRoleAssignmentBody(currentUserId, allocateRoleData);
@@ -110,13 +112,13 @@ describe('to-role-assignment-dto', () => {
           allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON,
           durationOfRole: DurationOfRole.SEVEN_DAYS,
           period: {
-            startDate: new Date('2029-01-20')
-          }
+            startDate: new Date('2029-01-20'),
+          },
         },
         period: {
           startDate: new Date('2029-01-20'),
-          endDate: new Date('2029-01-27')
-        }
+          endDate: new Date('2029-01-27'),
+        },
       };
 
       const result = toSARoleAssignmentBody(currentUserId, specificAccessData);
@@ -125,7 +127,7 @@ describe('to-role-assignment-dto', () => {
         assignerId: 'user123',
         replaceExisting: true,
         process: 'specific-access',
-        reference: 'case789/specific-access-legal-ops/user789'
+        reference: 'case789/specific-access-legal-ops/user789',
       });
       expect(result.requestedRoles).to.have.lengthOf(2);
       expect(result.requestedRoles[0].roleName).to.equal('specific-access-granted');
@@ -149,12 +151,12 @@ describe('to-role-assignment-dto', () => {
           allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON,
           durationOfRole: DurationOfRole.ANOTHER_PERIOD,
           period: {
-            startDate: new Date('2029-01-15')
-          }
+            startDate: new Date('2029-01-15'),
+          },
         },
         period: {
-          startDate: new Date('2029-01-15')
-        }
+          startDate: new Date('2029-01-15'),
+        },
       };
 
       const result = toSARoleAssignmentBody(currentUserId, specificAccessData);
@@ -178,12 +180,12 @@ describe('to-role-assignment-dto', () => {
           allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON,
           durationOfRole: DurationOfRole.INDEFINITE,
           period: {
-            startDate: new Date('2029-01-15')
-          }
+            startDate: new Date('2029-01-15'),
+          },
         },
         period: {
-          startDate: new Date('2029-01-15')
-        }
+          startDate: new Date('2029-01-15'),
+        },
       };
 
       const result = toSARoleAssignmentBody(currentUserId, specificAccessData);
@@ -206,13 +208,13 @@ describe('to-role-assignment-dto', () => {
           allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON,
           durationOfRole: DurationOfRole.SEVEN_DAYS,
           period: {
-            startDate: new Date('2029-01-15')
-          }
+            startDate: new Date('2029-01-15'),
+          },
         },
         period: {
           startDate: new Date('2029-01-15'),
-          endDate: new Date('2029-01-22')
-        }
+          endDate: new Date('2029-01-22'),
+        },
       };
       const extraAttributesForBasicRole = { customField1: 'value1', isUrgent: true };
       const extraAttributesForSpecificRole = { customField2: 'value2', priority: 'high' };
@@ -228,13 +230,13 @@ describe('to-role-assignment-dto', () => {
         caseId: 'case222',
         requestedRole: 'specific-access-ctsc',
         customField1: 'value1',
-        isUrgent: true
+        isUrgent: true,
       });
       expect(result.requestedRoles[1].attributes).to.include({
         caseId: 'case222',
         requestedRole: 'specific-access-ctsc',
         customField2: 'value2',
-        priority: 'high'
+        priority: 'high',
       });
     });
 
@@ -252,13 +254,13 @@ describe('to-role-assignment-dto', () => {
           allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON,
           durationOfRole: DurationOfRole.SEVEN_DAYS,
           period: {
-            startDate: new Date('2029-01-15')
-          }
+            startDate: new Date('2029-01-15'),
+          },
         },
         period: {
           startDate: new Date('2029-01-15'),
-          endDate: new Date('2029-01-22')
-        }
+          endDate: new Date('2029-01-22'),
+        },
       };
 
       const result = toSARoleAssignmentBody(currentUserId, specificAccessData);
@@ -274,7 +276,7 @@ describe('to-role-assignment-dto', () => {
       const currentUser: UserInfo = {
         id: 'reviewer123',
         roleCategory: 'JUDICIAL',
-        name: 'Judge Reviewer'
+        name: 'Judge Reviewer',
       };
       const allocateRoleData: AllocateRoleData = {
         caseId: 'case444',
@@ -289,8 +291,8 @@ describe('to-role-assignment-dto', () => {
         allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON,
         durationOfRole: DurationOfRole.SEVEN_DAYS,
         period: {
-          startDate: new Date('2029-01-15')
-        }
+          startDate: new Date('2029-01-15'),
+        },
       };
 
       const result = toDenySARoleAssignmentBody(currentUser, allocateRoleData);
@@ -306,7 +308,7 @@ describe('to-role-assignment-dto', () => {
       const currentUser: UserInfo = {
         uid: 'reviewer456',
         roleCategory: 'LEGAL_OPERATIONS',
-        name: 'Legal Ops Reviewer'
+        name: 'Legal Ops Reviewer',
       };
       const allocateRoleData: AllocateRoleData = {
         caseId: 'case555',
@@ -321,8 +323,8 @@ describe('to-role-assignment-dto', () => {
         allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON,
         durationOfRole: DurationOfRole.SEVEN_DAYS,
         period: {
-          startDate: new Date('2029-01-15')
-        }
+          startDate: new Date('2029-01-15'),
+        },
       };
 
       const result = toDenySARoleAssignmentBody(currentUser, allocateRoleData);
@@ -337,7 +339,7 @@ describe('to-role-assignment-dto', () => {
       const currentUser: UserInfo = {
         id: 'reviewer789',
         roleCategory: 'ADMIN',
-        name: 'Admin Reviewer'
+        name: 'Admin Reviewer',
       };
       const allocateRoleData: AllocateRoleData = {
         caseId: 'case666',
@@ -352,8 +354,8 @@ describe('to-role-assignment-dto', () => {
         allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON,
         durationOfRole: DurationOfRole.SEVEN_DAYS,
         period: {
-          startDate: new Date('2029-01-15')
-        }
+          startDate: new Date('2029-01-15'),
+        },
       };
 
       const result = toDenySARoleAssignmentBody(currentUser, allocateRoleData);
@@ -365,7 +367,7 @@ describe('to-role-assignment-dto', () => {
       const currentUser: UserInfo = {
         id: 'reviewer012',
         roleCategory: 'CTSC',
-        name: 'CTSC Reviewer'
+        name: 'CTSC Reviewer',
       };
       const allocateRoleData: AllocateRoleData = {
         caseId: 'case777',
@@ -380,8 +382,8 @@ describe('to-role-assignment-dto', () => {
         allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON,
         durationOfRole: DurationOfRole.SEVEN_DAYS,
         period: {
-          startDate: new Date('2029-01-15')
-        }
+          startDate: new Date('2029-01-15'),
+        },
       };
 
       const result = toDenySARoleAssignmentBody(currentUser, allocateRoleData);
@@ -393,7 +395,7 @@ describe('to-role-assignment-dto', () => {
       const currentUser: UserInfo = {
         id: 'reviewer345',
         roleCategory: 'UNKNOWN',
-        name: 'Unknown Reviewer'
+        name: 'Unknown Reviewer',
       };
       const allocateRoleData: AllocateRoleData = {
         caseId: 'case888',
@@ -408,8 +410,8 @@ describe('to-role-assignment-dto', () => {
         allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON,
         durationOfRole: DurationOfRole.SEVEN_DAYS,
         period: {
-          startDate: new Date('2029-01-15')
-        }
+          startDate: new Date('2029-01-15'),
+        },
       };
 
       const result = toDenySARoleAssignmentBody(currentUser, allocateRoleData);
@@ -421,7 +423,7 @@ describe('to-role-assignment-dto', () => {
       const currentUser: UserInfo = {
         id: 'reviewer678',
         roleCategory: 'JUDICIAL',
-        name: 'Judge Reviewer'
+        name: 'Judge Reviewer',
       };
       const allocateRoleData: AllocateRoleData = {
         caseId: 'case999',
@@ -436,8 +438,8 @@ describe('to-role-assignment-dto', () => {
         allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON,
         durationOfRole: DurationOfRole.SEVEN_DAYS,
         period: {
-          startDate: new Date('2029-01-15')
-        }
+          startDate: new Date('2029-01-15'),
+        },
       };
       const extraAttributes = { additionalInfo: 'test', priority: 'low' };
 
@@ -445,7 +447,7 @@ describe('to-role-assignment-dto', () => {
 
       expect(result.requestedRoles[0].attributes).to.include({
         additionalInfo: 'test',
-        priority: 'low'
+        priority: 'low',
       });
     });
 
@@ -453,7 +455,7 @@ describe('to-role-assignment-dto', () => {
       const currentUser: UserInfo = {
         id: 'reviewer901',
         roleCategory: 'JUDICIAL',
-        name: 'Judge Reviewer'
+        name: 'Judge Reviewer',
       };
       const allocateRoleData: AllocateRoleData = {
         caseId: 'case101',
@@ -468,8 +470,8 @@ describe('to-role-assignment-dto', () => {
         allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON,
         durationOfRole: DurationOfRole.SEVEN_DAYS,
         period: {
-          startDate: new Date('2029-01-15')
-        }
+          startDate: new Date('2029-01-15'),
+        },
       };
 
       const result = toDenySARoleAssignmentBody(currentUser, allocateRoleData);
@@ -489,13 +491,13 @@ describe('to-role-assignment-dto', () => {
       expect(result).to.deep.equal({
         pathVariables: {
           process: 'staff-organisational-role-mapping',
-          reference: 'request123'
+          reference: 'request123',
         },
         queryParams: null,
         body: {
-          userIds: ['request123']
+          userIds: ['request123'],
         },
-        multipart: false
+        multipart: false,
       });
     });
 
@@ -520,11 +522,11 @@ describe('to-role-assignment-dto', () => {
         specificReason: 'Need access for review',
         period: {
           startDate: new Date('2029-01-20'),
-          endDate: new Date('2029-01-27')
+          endDate: new Date('2029-01-27'),
         },
         typeOfRole: { id: 'specific-access', name: 'Specific Access' },
         allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON,
-        durationOfRole: DurationOfRole.SEVEN_DAYS
+        durationOfRole: DurationOfRole.SEVEN_DAYS,
       };
 
       const result = toSARequestRoleAssignmentBody(allocateRoleData);
@@ -533,7 +535,7 @@ describe('to-role-assignment-dto', () => {
         assignerId: 'person202',
         replaceExisting: true,
         process: 'specific-access',
-        reference: 'case202/specific-access-legal-ops/person202'
+        reference: 'case202/specific-access-legal-ops/person202',
       });
       expect(result.requestedRoles[0].roleName).to.equal('specific-access-requested');
       expect(result.requestedRoles[0].beginTime).to.deep.equal(mockDate);
@@ -549,11 +551,11 @@ describe('to-role-assignment-dto', () => {
         roleCategory: RoleCategory.ADMIN,
         specificReason: 'Admin access required',
         period: {
-          startDate: new Date('2029-01-15')
+          startDate: new Date('2029-01-15'),
         },
         typeOfRole: { id: 'specific-access', name: 'Specific Access' },
         allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON,
-        durationOfRole: DurationOfRole.INDEFINITE
+        durationOfRole: DurationOfRole.INDEFINITE,
       };
 
       const result = toSARequestRoleAssignmentBody(allocateRoleData);
@@ -573,7 +575,7 @@ describe('to-role-assignment-dto', () => {
         period: null as any,
         typeOfRole: { id: 'specific-access', name: 'Specific Access' },
         allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON,
-        durationOfRole: DurationOfRole.ANOTHER_PERIOD
+        durationOfRole: DurationOfRole.ANOTHER_PERIOD,
       };
 
       const result = toSARequestRoleAssignmentBody(allocateRoleData);
@@ -592,11 +594,11 @@ describe('to-role-assignment-dto', () => {
         specificReason: 'Judicial review',
         period: {
           startDate: new Date('2029-01-20'),
-          endDate: new Date('2029-01-25')
+          endDate: new Date('2029-01-25'),
         },
         typeOfRole: { id: 'specific-access', name: 'Specific Access' },
         allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON,
-        durationOfRole: DurationOfRole.SEVEN_DAYS
+        durationOfRole: DurationOfRole.SEVEN_DAYS,
       };
       const extraAttributes = { urgency: 'high', department: 'legal' };
 
@@ -606,7 +608,7 @@ describe('to-role-assignment-dto', () => {
         caseId: 'case505',
         requestedRole: 'specific-access-judicial',
         urgency: 'high',
-        department: 'legal'
+        department: 'legal',
       });
     });
 
@@ -620,11 +622,11 @@ describe('to-role-assignment-dto', () => {
         specificReason: 'Complex case requiring specialist review',
         period: {
           startDate: new Date('2029-01-20'),
-          endDate: new Date('2029-01-27')
+          endDate: new Date('2029-01-27'),
         },
         typeOfRole: { id: 'specific-access', name: 'Specific Access' },
         allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON,
-        durationOfRole: DurationOfRole.SEVEN_DAYS
+        durationOfRole: DurationOfRole.SEVEN_DAYS,
       };
 
       const result = toSARequestRoleAssignmentBody(allocateRoleData);
@@ -645,8 +647,8 @@ describe('to-role-assignment-dto', () => {
         typeOfRole: { id: 'lead-judge', name: 'Lead Judge' },
         durationOfRole: DurationOfRole.SEVEN_DAYS,
         period: {
-          startDate: new Date('2029-01-15')
-        }
+          startDate: new Date('2029-01-15'),
+        },
       };
 
       const result = getActorId(currentUserId, allocateRoleData);
@@ -664,8 +666,8 @@ describe('to-role-assignment-dto', () => {
         typeOfRole: { id: 'case-manager', name: 'Case Manager' },
         durationOfRole: DurationOfRole.INDEFINITE,
         period: {
-          startDate: new Date('2029-01-15')
-        }
+          startDate: new Date('2029-01-15'),
+        },
       };
 
       const result = getActorId(currentUserId, allocateRoleData);
@@ -682,8 +684,8 @@ describe('to-role-assignment-dto', () => {
         typeOfRole: { id: 'hearing-judge', name: 'Hearing Judge' },
         durationOfRole: DurationOfRole.ANOTHER_PERIOD,
         period: {
-          startDate: new Date('2029-01-15')
-        }
+          startDate: new Date('2029-01-15'),
+        },
       };
 
       expect(() => getActorId(currentUserId, allocateRoleData)).to.throw(TypeError);

@@ -22,7 +22,7 @@ import { EnvironmentService } from '../../../app/shared/services/environment.ser
   standalone: false,
   selector: 'exui-case-viewer-container',
   templateUrl: './case-viewer-container.component.html',
-  styleUrls: ['./case-viewer-container.component.scss']
+  styleUrls: ['./case-viewer-container.component.scss'],
 })
 export class CaseViewerContainerComponent implements OnInit {
   public caseDetails: CaseView;
@@ -37,14 +37,14 @@ export class CaseViewerContainerComponent implements OnInit {
       id: 'tasks',
       label: 'Tasks',
       fields: [],
-      show_condition: null
+      show_condition: null,
     },
     {
       id: 'roles-and-access',
       label: 'Roles and access',
       fields: [],
-      show_condition: null
-    }
+      show_condition: null,
+    },
   ];
 
   private readonly appendedTabs: CaseTab[] = [
@@ -52,14 +52,15 @@ export class CaseViewerContainerComponent implements OnInit {
       id: 'hearings',
       label: 'Hearings',
       fields: [],
-      show_condition: null
-    }
+      show_condition: null,
+    },
   ];
 
   private deploymentEnv = DeploymentEnvironmentEnum.PROD;
   private waServiceConfig$!: Observable<WAFeatureConfig>;
 
-  constructor(private readonly route: ActivatedRoute,
+  constructor(
+    private readonly route: ActivatedRoute,
     private readonly store: Store<fromRoot.State>,
     private readonly featureToggleService: FeatureToggleService,
     private readonly allocateRoleService: AllocateRoleService,
@@ -67,20 +68,20 @@ export class CaseViewerContainerComponent implements OnInit {
     private readonly loggerService: LoggerService,
     private readonly waService: WASupportedJurisdictionsService,
     private readonly environmentService: EnvironmentService,
-    private readonly router: Router){
-    this.userRoles$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(
-      map((userDetails) => userDetails?.userInfo?.roles)
-    );
+    private readonly router: Router
+  ) {
+    this.userRoles$ = this.store.pipe(select(fromRoot.getUserDetails)).pipe(map((userDetails) => userDetails?.userInfo?.roles));
 
     this.deploymentEnv = this.environmentService.getDeploymentEnv();
 
-    this.waServiceConfig$ = of(
-      LaunchDarklyDefaultsConstants.getWaServiceConfig(this.deploymentEnv)
-    ).pipe(shareReplay(1)); // cache for all subscribers
+    this.waServiceConfig$ = of(LaunchDarklyDefaultsConstants.getWaServiceConfig(this.deploymentEnv)).pipe(shareReplay(1)); // cache for all subscribers
   }
 
   private enablePrependedTabs(features: WAFeatureConfig, userRoles: string[], supportedServices: string[]): boolean {
-    const caseJurisdiction = this.caseDetails && this.caseDetails.case_type && this.caseDetails.case_type.jurisdiction ? this.caseDetails.case_type.jurisdiction.id : null;
+    const caseJurisdiction =
+      this.caseDetails && this.caseDetails.case_type && this.caseDetails.case_type.jurisdiction
+        ? this.caseDetails.case_type.jurisdiction.id
+        : null;
     const caseType = this.caseDetails && this.caseDetails.case_type ? this.caseDetails.case_type.id : null;
     let requiredFeature = false;
     features.configurations.forEach((serviceConfig) => {
@@ -89,7 +90,11 @@ export class CaseViewerContainerComponent implements OnInit {
         requiredFeature = parseFloat(serviceConfig.releaseVersion) >= 2;
       }
     });
-    return requiredFeature && !!AppUtils.getUserRole(userRoles) && !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles);
+    return (
+      requiredFeature &&
+      !!AppUtils.getUserRole(userRoles) &&
+      !!AppUtils.showWATabs(supportedServices, caseJurisdiction, userRoles)
+    );
   }
 
   public ngOnInit(): void {
@@ -110,7 +115,10 @@ export class CaseViewerContainerComponent implements OnInit {
       const noOfUserRoles = userRoles?.length ?? 0;
       if (noOfUserRoles === 0 && this.retryCount < 3) {
         this.retryCount++;
-        this.loggerService.log('case-viewer-container - userRoles length is null or undefined or 0 so calling LoadUserDetails. Retry count: ', this.retryCount);
+        this.loggerService.log(
+          'case-viewer-container - userRoles length is null or undefined or 0 so calling LoadUserDetails. Retry count: ',
+          this.retryCount
+        );
         this.store.dispatch(new fromRoot.LoadUserDetails(true));
       } else {
         this.setPrependedCaseViewTabs();
@@ -120,43 +128,41 @@ export class CaseViewerContainerComponent implements OnInit {
   }
 
   private setPrependedCaseViewTabs(): void {
-    combineLatest([
-      this.waServiceConfig$,
-      this.userRoles$,
-      this.waService.getWASupportedJurisdictions()
-    ]).pipe(
-      map(([feature, userRoles, supportedServices]: [WAFeatureConfig, string[], string[]]) =>
-        this.enablePrependedTabs(feature, userRoles, supportedServices) ? this.prependedTabs : []
-      ),
-      catchError((error) => {
-        this.loggerService.log('case-viewer-container - Error in setPrependedCaseViewTabs', error);
-        return of([]);
-      }),
-      takeUntil(this.destroy$)
-    ).subscribe((tabs) => {
-      this.prependedTabs$ = of(tabs);
-    });
+    combineLatest([this.waServiceConfig$, this.userRoles$, this.waService.getWASupportedJurisdictions()])
+      .pipe(
+        map(([feature, userRoles, supportedServices]: [WAFeatureConfig, string[], string[]]) =>
+          this.enablePrependedTabs(feature, userRoles, supportedServices) ? this.prependedTabs : []
+        ),
+        catchError((error) => {
+          this.loggerService.log('case-viewer-container - Error in setPrependedCaseViewTabs', error);
+          return of([]);
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((tabs) => {
+        this.prependedTabs$ = of(tabs);
+      });
   }
 
   private setAppendedCaseViewTabs(): void {
-    combineLatest([
-      this.hearingJurisdictionConfigService.getHearingJurisdictionsConfig(),
-      this.userRoles$
-    ]).pipe(
-      map(([featureVariations, userRoles]) => {
-        const jurisdictionId = this.caseDetails.case_type.jurisdiction.id;
-        const caseTypeId = this.caseDetails.case_type.id;
-        const hasMatchedPermissions = featureVariations.some((featureVariation) =>
-          Utils.hasMatchedJurisdictionAndCaseType(featureVariation, jurisdictionId, caseTypeId)
-        );
-        const hasHearingRole = userRoles.includes(UserRole.HearingViewer) ||
-          userRoles.includes(UserRole.ListedHearingViewer) ||
-          userRoles.includes(UserRole.HearingManager);
-        return (hasMatchedPermissions && hasHearingRole) ? this.appendedTabs : [];
-      })
-    ).subscribe((tabs) => {
-      this.appendedTabs$ = of(tabs);
-    });
+    combineLatest([this.hearingJurisdictionConfigService.getHearingJurisdictionsConfig(), this.userRoles$])
+      .pipe(
+        map(([featureVariations, userRoles]) => {
+          const jurisdictionId = this.caseDetails.case_type.jurisdiction.id;
+          const caseTypeId = this.caseDetails.case_type.id;
+          const hasMatchedPermissions = featureVariations.some((featureVariation) =>
+            Utils.hasMatchedJurisdictionAndCaseType(featureVariation, jurisdictionId, caseTypeId)
+          );
+          const hasHearingRole =
+            userRoles.includes(UserRole.HearingViewer) ||
+            userRoles.includes(UserRole.ListedHearingViewer) ||
+            userRoles.includes(UserRole.HearingManager);
+          return hasMatchedPermissions && hasHearingRole ? this.appendedTabs : [];
+        })
+      )
+      .subscribe((tabs) => {
+        this.appendedTabs$ = of(tabs);
+      });
   }
 
   public ngOnDestroy(): void {

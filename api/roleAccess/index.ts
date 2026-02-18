@@ -16,7 +16,7 @@ import {
   toDenySARoleAssignmentBody,
   toRoleAssignmentBody,
   toSARequestRoleAssignmentBody,
-  toSARoleAssignmentBody
+  toSARoleAssignmentBody,
 } from './dtos/to-role-assignment-dto';
 import { getEmail, getJudicialUsersFromApi, getUserName, mapRoleCategory } from './exclusionService';
 import { CaseRoleRequestPayload } from './models/caseRoleRequestPayload';
@@ -62,11 +62,7 @@ export async function getAccessRoles(req: EnhancedRequest, res: Response, next: 
   const headers = setHeaders(req, release2ContentType);
   try {
     const response: AxiosResponse = await http.post(fullPath, requestPayload, { headers });
-    const finalRoles: CaseRole[] = mapResponseToCaseRoles(
-      response.data.roleAssignmentResponse,
-      req.body.assignmentId,
-      req
-    );
+    const finalRoles: CaseRole[] = mapResponseToCaseRoles(response.data.roleAssignmentResponse, req.body.assignmentId, req);
     return res.status(response.status).send(finalRoles);
   } catch (error) {
     next(error);
@@ -80,11 +76,7 @@ export async function getAccessRolesByCaseId(req: EnhancedRequest, res: Response
   const headers = setHeaders(req, release2ContentType);
   try {
     const response: AxiosResponse = await http.post(fullPath, requestPayload, { headers });
-    const finalRoles: CaseRole[] = mapResponseToCaseRoles(
-      response.data.roleAssignmentResponse,
-      req.body.assignmentId,
-      req
-    );
+    const finalRoles: CaseRole[] = mapResponseToCaseRoles(response.data.roleAssignmentResponse, req.body.assignmentId, req);
     if (finalRoles) {
       const rolesResponse = await getAllRoles(req);
       const roles = rolesResponse.data;
@@ -149,10 +141,11 @@ export async function getMyAccessNewCount(req, resp, next) {
 export async function manageLabellingRoleAssignment(req: EnhancedRequest, resp: Response, next: NextFunction) {
   try {
     await refreshRoleAssignmentForUser(req.session.passport.user.userinfo, req);
-    const currentUserAssignments = (req.session.roleAssignmentResponse as RoleAssignment[]);
-    const challengedAccessRequest = currentUserAssignments.find((roleAssignment) => roleAssignment.attributes
-      && roleAssignment.attributes.caseId === req.params.caseId
-      && roleAssignment.attributes.isNew);
+    const currentUserAssignments = req.session.roleAssignmentResponse as RoleAssignment[];
+    const challengedAccessRequest = currentUserAssignments.find(
+      (roleAssignment) =>
+        roleAssignment.attributes && roleAssignment.attributes.caseId === req.params.caseId && roleAssignment.attributes.isNew
+    );
 
     if (!challengedAccessRequest) {
       return resp.status(204).send();
@@ -174,8 +167,8 @@ export function mapResponseToCaseRoles(
   }
   return roleAssignments.map((roleAssignment) => ({
     actions: [
-      { 'id': 'reallocate', 'title': 'Reallocate' },
-      { 'id': 'remove', 'title': 'Remove Allocation' }
+      { id: 'reallocate', title: 'Reallocate' },
+      { id: 'remove', title: 'Remove Allocation' },
     ],
     actorId: roleAssignment.actorId,
     email: roleAssignment.actorId ? getEmail(roleAssignment.actorId, req) : null,
@@ -188,10 +181,12 @@ export function mapResponseToCaseRoles(
     roleName: roleAssignment.roleName,
     start: roleAssignment.beginTime ? roleAssignment.beginTime.toString() : null,
     created: roleAssignment.created ? roleAssignment.created : null,
-    notes: roleAssignment.attributes && roleAssignment.attributes.specificAccessReason ?
-      getSpecificReason(roleAssignment.attributes.specificAccessReason) : 'No reason for case access given',
-    requestedRole: roleAssignment.attributes && roleAssignment.attributes.requestedRole ?
-      roleAssignment.attributes.requestedRole : null
+    notes:
+      roleAssignment.attributes && roleAssignment.attributes.specificAccessReason
+        ? getSpecificReason(roleAssignment.attributes.specificAccessReason)
+        : 'No reason for case access given',
+    requestedRole:
+      roleAssignment.attributes && roleAssignment.attributes.requestedRole ? roleAssignment.attributes.requestedRole : null,
   }));
 }
 
@@ -212,7 +207,11 @@ export async function confirmAllocateRole(req: EnhancedRequest, res: Response, n
 }
 
 // this creates the two specific access approved roles
-export async function createSpecificAccessApprovalRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
+export async function createSpecificAccessApprovalRole(
+  req: EnhancedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<AxiosResponse> {
   try {
     const body = req.body;
     const currentUser = req.session.passport.user.userinfo;
@@ -228,7 +227,11 @@ export async function createSpecificAccessApprovalRole(req: EnhancedRequest, res
   }
 }
 
-export async function createSpecificAccessDenyRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
+export async function createSpecificAccessDenyRole(
+  req: EnhancedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<AxiosResponse> {
   try {
     const currentUser = req.session.passport.user.userinfo;
     const roleAssignmentsBody = toDenySARoleAssignmentBody(currentUser, req.body, { isNew: true });
@@ -240,7 +243,11 @@ export async function createSpecificAccessDenyRole(req: EnhancedRequest, res: Re
   }
 }
 
-export async function deleteSpecificAccessRequestedRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
+export async function deleteSpecificAccessRequestedRole(
+  req: EnhancedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<AxiosResponse> {
   try {
     const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
     const requestId = req.body.requestId;
@@ -251,7 +258,7 @@ export async function deleteSpecificAccessRequestedRole(req: EnhancedRequest, re
     delete headers.accept;
     return await http.delete(fullPath, {
       data: body,
-      headers
+      headers,
     });
   } catch (error) {
     next(error);
@@ -259,7 +266,11 @@ export async function deleteSpecificAccessRequestedRole(req: EnhancedRequest, re
 }
 
 // this restores the specific access request role if task completion goes wrong
-export async function restoreSpecificAccessRequestRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<AxiosResponse> {
+export async function restoreSpecificAccessRequestRole(
+  req: EnhancedRequest,
+  res: Response,
+  next: NextFunction
+): Promise<AxiosResponse> {
   try {
     const body = req.body;
     const roleAssignmentsBody = toSARequestRoleAssignmentBody(body);
@@ -310,7 +321,12 @@ export async function deleteRoleByCaseAndRoleId(req: EnhancedRequest, res: Respo
 }
 
 // Same as above but for node layer use
-export async function deleteRoleByAssignmentId(req: EnhancedRequest, res: Response, next: NextFunction, assignmentId: string): Promise<AxiosResponse> {
+export async function deleteRoleByAssignmentId(
+  req: EnhancedRequest,
+  res: Response,
+  next: NextFunction,
+  assignmentId: string
+): Promise<AxiosResponse> {
   const basePath = `${baseRoleAccessUrl}/am/role-assignments`;
   const body = req.body;
   try {
@@ -330,28 +346,26 @@ export function getRoleCategoryRequestPayload(caseId: string, jurisdiction: stri
         attributes: {
           caseId: [caseId],
           caseType: [caseType],
-          jurisdiction: [jurisdiction]
+          jurisdiction: [jurisdiction],
         },
-        roleCategory: SUPPORTED_ROLE_CATEGORIES
-      }
-    ]
+        roleCategory: SUPPORTED_ROLE_CATEGORIES,
+      },
+    ],
   };
 }
 
-export function getAccessRolesRequestPayload(caseId: string,
-  jurisdiction: string,
-  caseType: string): CaseRoleRequestPayload {
+export function getAccessRolesRequestPayload(caseId: string, jurisdiction: string, caseType: string): CaseRoleRequestPayload {
   return {
     queryRequests: [
       {
         attributes: {
           caseId: [caseId],
           caseType: [caseType],
-          jurisdiction: [jurisdiction]
+          jurisdiction: [jurisdiction],
         },
-        roleName: ['specific-access-requested']
-      }
-    ]
+        roleName: ['specific-access-requested'],
+      },
+    ],
   };
 }
 
@@ -360,10 +374,10 @@ export function getAccessRolesRequestPayloadForCaseId(caseId: string): CaseRoleR
     queryRequests: [
       {
         attributes: {
-          caseId: [caseId]
-        }
-      }
-    ]
+          caseId: [caseId],
+        },
+      },
+    ],
   };
 }
 

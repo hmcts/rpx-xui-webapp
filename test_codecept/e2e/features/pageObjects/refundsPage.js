@@ -2,14 +2,26 @@ const { $, $$, elementByXpath } = require('../../../helpers/globals');
 const BrowserWaits = require('../../support/customWaits');
 
 class RefundsPage {
-  get header() { return $('#content h1'); }
+  get header() {
+    return $('#content h1');
+  }
 
-  get refundsToBeApproved() { return elementByXpath('//h2[contains(text(),"Refunds to be approved")]'); }
-  get refundsReturnedToCaseworker() { return elementByXpath('//h2[contains(text(),"Refunds returned to caseworker")]'); }
+  get refundsToBeApproved() {
+    return elementByXpath('//h2[contains(text(),"Refunds to be approved")]');
+  }
+  get refundsReturnedToCaseworker() {
+    return elementByXpath('//h2[contains(text(),"Refunds returned to caseworker")]');
+  }
 
-  get reviewCase() { return $('a:has-text("Review case")'); }
-  get processRefundLink() { return $('a:has-text("Process refund")'); }
-  get reviewRefundLink() { return $('a:has-text("Review refund")'); }
+  get reviewCase() {
+    return $('a:has-text("Review case")');
+  }
+  get processRefundLink() {
+    return $('a:has-text("Process refund")');
+  }
+  get reviewRefundLink() {
+    return $('a:has-text("Review refund")');
+  }
 
   get processRefundPage() {
     return {
@@ -20,8 +32,8 @@ class RefundsPage {
       whatDoYouWantToDoWithThisRefundInfo: {
         refundActionsLables: $$('#main-content .process-refund__panel label'),
         refundActionsLinks: $$('#sign-in-item-hint'),
-        returnToCaseWorkerRadioButton: $('#refundAction-2')
-      }
+        returnToCaseWorkerRadioButton: $('#refundAction-2'),
+      },
     };
   }
 
@@ -30,7 +42,7 @@ class RefundsPage {
       refundDetailsHeading: elementByXpath('//h2[contains(text(),"Refund details")]'),
       refundStatusHistoryHeading: elementByXpath('//h2[contains(text(),"Refund status history")]'),
       refundDetailsTableColumns: $$('ccpay-refund-status table tr td:nth-child(1)'),
-      refundStatusHistoryColumns: $$('ccpay-refund-status table thead td')
+      refundStatusHistoryColumns: $$('ccpay-refund-status table thead td'),
     };
   }
 
@@ -80,14 +92,20 @@ class RefundsPage {
   }
 
   async getProcessRefundsInfo() {
-    await BrowserWaits.waitForElementClickable(this.processRefundPage.whatDoYouWantToDoWithThisRefundInfo.returnToCaseWorkerRadioButton);
+    await BrowserWaits.waitForElementClickable(
+      this.processRefundPage.whatDoYouWantToDoWithThisRefundInfo.returnToCaseWorkerRadioButton
+    );
     const reviewRefundDetailsTableColumns = await this._gettAllText(this.processRefundPage.reviewRefundDetailsTableColumns);
-    const refundActionsLabels = await this._gettAllText(this.processRefundPage.whatDoYouWantToDoWithThisRefundInfo.refundActionsLables);
-    const refundActionsHints = await this._gettAllText(this.processRefundPage.whatDoYouWantToDoWithThisRefundInfo.refundActionsLinks);
+    const refundActionsLabels = await this._gettAllText(
+      this.processRefundPage.whatDoYouWantToDoWithThisRefundInfo.refundActionsLables
+    );
+    const refundActionsHints = await this._gettAllText(
+      this.processRefundPage.whatDoYouWantToDoWithThisRefundInfo.refundActionsLinks
+    );
     return {
       reviewRefundDetailsTableColumns: reviewRefundDetailsTableColumns,
       refundActionsLabels: refundActionsLabels,
-      refundActionsHints: refundActionsHints
+      refundActionsHints: refundActionsHints,
     };
   }
 
@@ -97,7 +115,7 @@ class RefundsPage {
     const refundStatusHistoryColumns = await this._gettAllText(this.reviewRefundPage.refundStatusHistoryColumns);
     return {
       refundDetailsTableColumns: refundDetailsTableColumns,
-      refundStatusHistoryColumns: refundStatusHistoryColumns
+      refundStatusHistoryColumns: refundStatusHistoryColumns,
     };
   }
 

@@ -13,10 +13,7 @@ export const init = () => {
     const epimmsIDIdx = config.url.lastIndexOf('=');
     const epimmsID = requestURL.substring(epimmsIDIdx + 1);
     const searchResult = ALL_COURT_LOCATIONS.find((location) => location.epimms_id === epimmsID);
-    return [
-      200,
-      searchResult
-    ];
+    return [200, searchResult];
   });
 
   mock.onGet(getLocationsUrl).reply((config) => {
@@ -42,11 +39,10 @@ export const init = () => {
         || (location.postcode ? location.postcode.toLowerCase().includes(searchTerm.toLowerCase()) : false)
         || (location.court_address ? location.court_address.toLowerCase().includes(searchTerm.toLowerCase()) : false))
       .map((locationModel) => toEpimmsLocation(locationModel))
-      .filter((locationByEPIMSModel, index, locationByEPIMSModelArray) =>
-        locationByEPIMSModelArray.findIndex((t) => (t.epimms_id === locationByEPIMSModel.epimms_id)) === index);
-    return [
-      200,
-      searchResult
-    ];
+      .filter(
+        (locationByEPIMSModel, index, locationByEPIMSModelArray) =>
+          locationByEPIMSModelArray.findIndex((t) => t.epimms_id === locationByEPIMSModel.epimms_id) === index
+      );
+    return [200, searchResult];
   });
 };

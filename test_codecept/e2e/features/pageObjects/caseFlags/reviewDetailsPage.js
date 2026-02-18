@@ -2,7 +2,6 @@ const { $, elementByXpath, getText } = require('../../../../helpers/globals');
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
 
 class ReviewDetailsPage {
-
   get container() {
     return $('ccd-case-edit-submit');
   }
@@ -24,12 +23,12 @@ class ReviewDetailsPage {
 
     switch (field) {
       case 'special fields':
-
         break;
       default:
         nameELement = `//div[contains(@class,'govuk-summary-list')]//dt[contains(@class,'govuk-summary-list__key')][contains(text(),'${field}')]`;
         valueElement = `//div[contains(@class,'govuk-summary-list')]//dt[contains(@class,'govuk-summary-list__key')][contains(text(),'${field}')]/../dd[contains(@class,'govuk-summary-list__value')]`;
-        changeLinkElement = `//div[contains(@class,'govuk-summary-list')]` +
+        changeLinkElement =
+          `//div[contains(@class,'govuk-summary-list')]` +
           `//dt[contains(@class,'govuk-summary-list__key')][contains(text(),'${field}')]` +
           `/../dd[contains(@class,'govuk-summary-list__actions')]/a` +
           ` | ` +
@@ -41,7 +40,7 @@ class ReviewDetailsPage {
     return {
       nameElement: nameELement,
       valueElement: valueElement,
-      changeLinkElement: changeLinkElement
+      changeLinkElement: changeLinkElement,
     };
   }
 
@@ -51,10 +50,15 @@ class ReviewDetailsPage {
     expect(await elementByXpath(fieldLevelLocators.nameElement).first().isVisible(), `field ${field} not displayed`).to.be.true;
     const valuesList = value.split(',');
     for (const val of valuesList) {
-      expect(await getText(elementByXpath(fieldLevelLocators.valueElement).first()), `field ${field} value ${val} not included`).includes(val.trim());
+      expect(
+        await getText(elementByXpath(fieldLevelLocators.valueElement).first()),
+        `field ${field} value ${val} not included`
+      ).includes(val.trim());
     }
 
-    expect(await elementByXpath(fieldLevelLocators.changeLinkElement).first()).isVisible().to.equal(isChangeLinkDisplayed);
+    expect(await elementByXpath(fieldLevelLocators.changeLinkElement).first())
+      .isVisible()
+      .to.equal(isChangeLinkDisplayed);
   }
 
   async validateSummaryFieldNotDisplayed(field) {

@@ -7,7 +7,7 @@ import { StaffAddEditFormService } from '../../services/staff-add-edit-form/staf
   selector: 'exui-staff-add-edit-user-container',
   templateUrl: './staff-add-edit-user-container.component.html',
   styleUrls: ['./staff-add-edit-user-container.component.scss'],
-  providers: [StaffAddEditFormService]
+  providers: [StaffAddEditFormService],
 })
 export class StaffAddEditUserContainerComponent {
   constructor(

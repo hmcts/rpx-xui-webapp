@@ -4,7 +4,6 @@ import { Response } from 'express';
 import { EnhancedRequest } from '../lib/models';
 import { DataBaseModel } from './models/data-base.model';
 import { OrganisationModel } from './models/organisation.model';
-// @ts-ignore
 import * as dbJson from './stubs/db.json';
 
 const dbModule = plainToClass(DataBaseModel, dbJson);
@@ -58,7 +57,7 @@ export function assignCases(req: EnhancedRequest, res: Response) {
     const newSharedCase = {
       ...aCase,
       pendingShares: newPendingShares,
-      sharedWith: newSharedWith
+      sharedWith: newSharedWith,
     };
     updatedSharedCases.push(newSharedCase);
   }

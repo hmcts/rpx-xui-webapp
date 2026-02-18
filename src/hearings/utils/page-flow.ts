@@ -12,8 +12,10 @@ import { AbstractPageFlow } from './abstract-page-flow';
 @Injectable()
 export class PageFlow implements AbstractPageFlow {
   public hearingConditions$: Observable<HearingConditions>;
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly router: Router) {
+  constructor(
+    private readonly hearingStore: Store<fromHearingStore.State>,
+    private readonly router: Router
+  ) {
     this.hearingConditions$ = this.hearingStore.pipe(select(fromHearingStore.getHearingConditions));
   }
 
@@ -29,10 +31,12 @@ export class PageFlow implements AbstractPageFlow {
   public getNextPage(screensNavigations$: Observable<ScreenNavigationModel[]>): string {
     const currentPage = this.getCurrentPage();
     let nextPage = '';
-    combineLatest([this.hearingConditions$, screensNavigations$]).pipe(take(1))
+    combineLatest([this.hearingConditions$, screensNavigations$])
+      .pipe(take(1))
       .subscribe(([hearingConditions, screenNavigationModels]: [HearingConditions, ScreenNavigationModel[]]) => {
-        const screenModel = screenNavigationModels.find((screenNavigationModel) =>
-          screenNavigationModel.screenName === currentPage);
+        const screenModel = screenNavigationModels.find(
+          (screenNavigationModel) => screenNavigationModel.screenName === currentPage
+        );
         if (screenModel) {
           if (!screenModel.conditionKey) {
             nextPage = screenModel.navigation[0].resultValue;
@@ -62,10 +66,12 @@ export class PageFlow implements AbstractPageFlow {
 
   public getLastPage(screensNavigations$: Observable<ScreenNavigationModel[]>): string {
     let lastPage = '';
-    combineLatest([this.hearingConditions$, screensNavigations$]).pipe(take(1))
+    combineLatest([this.hearingConditions$, screensNavigations$])
+      .pipe(take(1))
       .subscribe(([hearingConditions, screenNavigationModels]: [HearingConditions, ScreenNavigationModel[]]) => {
-        const defaultScreen = screenNavigationModels.find((model) => !model.conditionKey
-          && model.navigation[0].resultValue === this.getCurrentPage());
+        const defaultScreen = screenNavigationModels.find(
+          (model) => !model.conditionKey && model.navigation[0].resultValue === this.getCurrentPage()
+        );
         lastPage = defaultScreen ? defaultScreen.screenName : '';
         if (Object.keys(hearingConditions) && Object.keys(hearingConditions).length > 0) {
           for (const navModel of screenNavigationModels) {
@@ -88,8 +94,9 @@ export class PageFlow implements AbstractPageFlow {
             }
           }
         } else {
-          const screenModel = screenNavigationModels.find((screenNavigationModel) =>
-            screenNavigationModel.navigation[0].resultValue === this.getCurrentPage());
+          const screenModel = screenNavigationModels.find(
+            (screenNavigationModel) => screenNavigationModel.navigation[0].resultValue === this.getCurrentPage()
+          );
           lastPage = screenModel ? screenModel.screenName : '';
         }
       });

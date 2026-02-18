@@ -86,7 +86,7 @@ export class SearchService {
         : null,
       otherReferences: searchParameters.otherReferences,
       parties,
-      stateIds: null
+      stateIds: null,
     };
   }
 }

@@ -68,22 +68,6 @@ def handleFailFastAbort = { Exception e ->
     return false
 }
 
-def runFailFastStep = { String label, Closure work, Closure always ->
-    def caught = null
-    try {
-        work()
-    } catch (Exception e) {
-        echo "[failFast] ${label} catch: ${e.getClass().getName()}: ${e.getMessage()}"
-        caught = e
-    } finally {
-        always()
-    }
-    if (caught != null) {
-        if (handleFailFastAbort(caught)) { return }
-        throw caught
-    }
-}
-
 def archivePlaywrightDiagnostics = {
     steps.sh '''
         set +e
@@ -226,11 +210,14 @@ withPipeline(type, product, component) {
                 failFast: true,
                 api: {
                     stage('API Tests') {
-                        runFailFastStep('API Tests', {
-                            withEnv(["FUNCTIONAL_TESTS_WORKERS=8"]) {
+                        withEnv(["FUNCTIONAL_TESTS_WORKERS=8"]) {
+                            try {
                                 yarnBuilder.yarn('test:api:pw:coverage')
-                            }
-                        }, {
+                            } catch (Exception e) {
+                                echo "[failFast] API Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
+                                if (handleFailFastAbort(e)) { return }
+                                throw e
+                            } finally {
                                 publishHTML([
                                 allowMissing         : true,
                                 alwaysLinkToLastBuild: true,
@@ -241,14 +228,19 @@ withPipeline(type, product, component) {
                               ])
                               steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
                               archivePlaywrightDiagnostics()
-                        })
+                            }
+                        }
                     }
                 },
                 codecept: {
                     stage('Codecept Integration Tests') {
-                        runFailFastStep('Codecept Integration Tests', {
+                        try {
                             yarnBuilder.yarn('test:xuiIntegration')
-                        }, {
+                        } catch (Exception e) {
+                            echo "[failFast] Codecept Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
+                            if (handleFailFastAbort(e)) { return }
+                            throw e
+                        } finally {
                             publishHTML([
                                 allowMissing         : true,
                                 alwaysLinkToLastBuild: true,
@@ -258,14 +250,18 @@ withPipeline(type, product, component) {
                                 reportName           : 'PREVIEW Integration Test'
                             ])
                             steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
-                        })
+                        }
                     }
                 },
                 playwrightIntegration: {
                     stage('Playwright Integration Tests') {
-                        runFailFastStep('Playwright Integration Tests', {
+                        try {
                             yarnBuilder.yarn('test:playwright:integration')
-                        }, {
+                        } catch (Exception e) {
+                            echo "[failFast] Playwright Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
+                            if (handleFailFastAbort(e)) { return }
+                            throw e
+                        } finally {
                             publishHTML([
                                 allowMissing         : true,
                                 alwaysLinkToLastBuild: true,
@@ -276,14 +272,18 @@ withPipeline(type, product, component) {
                             ])
                             steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
                             archivePlaywrightDiagnostics()
-                        })
+                        }
                     }
                 },
                 playwrightE2E: {
                     stage('Playwright E2E') {
-                        runFailFastStep('Playwright E2E', {
+                        try {
                             yarnBuilder.yarn('test:playwrightE2E')
-                        }, {
+                        } catch (Exception e) {
+                            echo "[failFast] Playwright E2E catch: ${e.getClass().getName()}: ${e.getMessage()}"
+                            if (handleFailFastAbort(e)) { return }
+                            throw e
+                        } finally {
                             publishHTML([
                                 allowMissing         : true,
                                 alwaysLinkToLastBuild: true,
@@ -293,7 +293,7 @@ withPipeline(type, product, component) {
                                 reportName           : 'PREVIEW Playwright E2E'
                             ])
                             steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
-                        })
+                        }
                     }
                 }
             )
@@ -318,9 +318,13 @@ withPipeline(type, product, component) {
                 failFast: true,
                 api: {
                     stage('API Tests') {
-                        runFailFastStep('API Tests', {
+                        try {
                             yarnBuilder.yarn('test:api:pw:coverage')
-                        }, {
+                        } catch (Exception e) {
+                            echo "[failFast] API Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
+                            if (handleFailFastAbort(e)) { return }
+                            throw e
+                        } finally {
                             publishHTML([
                               allowMissing         : true,
                               alwaysLinkToLastBuild: true,
@@ -331,14 +335,18 @@ withPipeline(type, product, component) {
                             ])
                             steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
                             archivePlaywrightDiagnostics()
-                        })
+                        }
                     }
                 },
                 codecept: {
                     stage('Codecept Integration Tests') {
-                        runFailFastStep('Codecept Integration Tests', {
+                        try {
                             yarnBuilder.yarn('test:xuiIntegration')
-                        }, {
+                        } catch (Exception e) {
+                            echo "[failFast] Codecept Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
+                            if (handleFailFastAbort(e)) { return }
+                            throw e
+                        } finally {
                             publishHTML([
                                 allowMissing         : true,
                                 alwaysLinkToLastBuild: true,
@@ -348,14 +356,18 @@ withPipeline(type, product, component) {
                                 reportName           : 'AAT Integration Test'
                             ])
                             steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
-                        })
+                        }
                     }
                 },
                 playwrightIntegration: {
                     stage('Playwright Integration Tests') {
-                        runFailFastStep('Playwright Integration Tests', {
+                        try {
                             yarnBuilder.yarn('test:playwright:integration')
-                        }, {
+                        } catch (Exception e) {
+                            echo "[failFast] Playwright Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
+                            if (handleFailFastAbort(e)) { return }
+                            throw e
+                        } finally {
                             publishHTML([
                                 allowMissing         : true,
                                 alwaysLinkToLastBuild: true,
@@ -366,14 +378,18 @@ withPipeline(type, product, component) {
                             ])
                             steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
                             archivePlaywrightDiagnostics()
-                        })
+                        }
                     }
                 },
                 playwrightE2E: {
                     stage('Playwright E2E') {
-                        runFailFastStep('Playwright E2E', {
+                        try {
                             yarnBuilder.yarn('test:playwrightE2E')
-                        }, {
+                        } catch (Exception e) {
+                            echo "[failFast] Playwright E2E catch: ${e.getClass().getName()}: ${e.getMessage()}"
+                            if (handleFailFastAbort(e)) { return }
+                            throw e
+                        } finally {
                             publishHTML([
                                 allowMissing         : true,
                                 alwaysLinkToLastBuild: true,
@@ -382,7 +398,7 @@ withPipeline(type, product, component) {
                                 reportFiles          : 'xui-playwright.html',
                                 reportName           : 'AAT Playwright E2E'
                             ])
-                        })
+                        }
                     }
                 }
             )

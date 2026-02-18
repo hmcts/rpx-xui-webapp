@@ -44,6 +44,7 @@ export class HearingTimingSectionComponent implements OnInit {
   public dateRangeStartChanged: boolean;
   public dateRangeEndChanged: boolean;
   public hearingDateChanged: boolean;
+  public specificDateOptionChanged: boolean;
   public firstDateTimeMustBeChanged: boolean;
   public amendmentLabelEnum = AmendmentLabelStatus;
   public radioOptions = RadioOptions;
@@ -158,7 +159,7 @@ export class HearingTimingSectionComponent implements OnInit {
   }
 
   private setAmendmentLabels(): void {
-    this.hearingLengthChanged = HearingsUtils.hasHearingDurationChanged(
+    this.hearingLengthChanged = HearingsUtils.hasHearingNumberChanged(
       this.hearingRequestToCompareMainModel.hearingDetails.duration,
       this.hearingRequestMainModel.hearingDetails.duration
     );
@@ -178,9 +179,14 @@ export class HearingTimingSectionComponent implements OnInit {
       this.hearingRequestMainModel.hearingDetails.hearingWindow?.firstDateTimeMustBe
     );
 
-    this.hearingPriorityChanged = HearingsUtils.hasHearingPriorityChanged(
+    this.hearingPriorityChanged = HearingsUtils.hasHearingStringChanged(
       this.hearingRequestToCompareMainModel.hearingDetails.hearingPriorityType,
       this.hearingRequestMainModel.hearingDetails.hearingPriorityType
+    );
+
+    this.specificDateOptionChanged = HearingsUtils.hasSpecificDateChanged(
+      this.hearingRequestToCompareMainModel.hearingDetails?.hearingWindow,
+      this.hearingRequestMainModel.hearingDetails?.hearingWindow
     );
 
     this.hearingUnavailabilityDatesChanged = !_.isEqual(
@@ -194,12 +200,14 @@ export class HearingTimingSectionComponent implements OnInit {
       (!this.hearingUnavailabilityDatesConfirmed && this.hearingUnavailabilityDatesChanged) ||
       (!this.hearingUnavailabilityDatesConfirmed && this.partyDetailsAnyChangesRequired);
 
-    this.showAmendedLabelForPageTitle =
-      !this.showActionNeededLabelForPageTitle &&
-      ((this.hearingWindowChangesConfirmed && this.hearingWindowChangesRequired) ||
+    if (!this.showActionNeededLabelForPageTitle) {
+      this.showAmendedLabelForPageTitle =
         this.hearingLengthChanged ||
         this.hearingDateChanged ||
         this.hearingPriorityChanged ||
-        this.hearingUnavailabilityDatesConfirmed);
+        this.hearingUnavailabilityDatesConfirmed;
+    } else {
+      this.showAmendedLabelForPageTitle = false;
+    }
   }
 }

@@ -33,6 +33,10 @@
               <label class="govuk-label govuk-radios__label" for="paperHearingNo">
                 {{ 'Will this be a paper hearing?' | rpxTranslate: null : 'No' }}
               </label>
+              <exui-amendment-label
+                *ngIf="!partyDetailsChangesConfirmed && partyDetailsChangesRequired && paperHearingChanged"
+                [displayLabel]="amendmentLabelEnum.AMENDED"
+              ></exui-amendment-label>
             </div>
           </div>
         </fieldset>
@@ -74,6 +78,11 @@
                       <label class="govuk-label govuk-checkboxes__label" for="{{ attendance.key }}">{{
                         attendance.value_en
                       }}</label>
+                      <exui-amendment-label
+                        *ngIf="!partyDetailsChangesConfirmed && partyDetailsChangesRequired && attendance.showAmendedLabel"
+                        [displayLabel]="amendmentLabelEnum.AMENDED"
+                      >
+                      </exui-amendment-label>
                     </div>
                   </div>
                 </div>
@@ -93,15 +102,15 @@
               {{ 'Select how each party will attend the hearing' | rpxTranslate }}
             </span>
             <div *ngFor="let partyControl of partiesFormArray.controls; let i = index" class="party-row" [formGroupName]="i">
-              <label class="govuk-label govuk-!-font-weight-bold" [for]="'partyChannel' + i">
+              <label class="govuk-label govuk-!-font-weight-bold party-label-block" [for]="'partyChannel' + i">
                 {{ partyControl.value.partyName }}
                 <exui-amendment-label
                   *ngIf="
                     !partyDetailsChangesConfirmed &&
                     partyDetailsChangesRequired &&
-                    partyControl.value.partyAmendmentStatus !== 'NONE'
+                    (partyNameAmendmentStatusById[partyControl.value.partyID] || 'NONE') !== 'NONE'
                   "
-                  [displayLabel]="partyControl.value.partyAmendmentStatus"
+                  [displayLabel]="partyNameAmendmentStatusById[partyControl.value.partyID]"
                 >
                 </exui-amendment-label>
               </label>
@@ -115,6 +124,15 @@
                   <option value="" selected>{{ 'Please select' | rpxTranslate }}</option>
                   <option *ngFor="let party of partyChannels" [ngValue]="party.key">{{ party.value_en }}</option>
                 </select>
+                <exui-amendment-label
+                  *ngIf="
+                    !partyDetailsChangesConfirmed &&
+                    partyDetailsChangesRequired &&
+                    (partyChannelAmendmentStatusById[partyControl.value.partyID] || 'NONE') !== 'NONE'
+                  "
+                  [displayLabel]="partyChannelAmendmentStatusById[partyControl.value.partyID]"
+                >
+                </exui-amendment-label>
               </ng-container>
             </div>
           </div>
@@ -152,6 +170,11 @@
               aria-labelledby="attendance-number-header"
               aria-describedby="attendance-number-hint"
             />
+            <exui-amendment-label
+              *ngIf="!partyDetailsChangesConfirmed && partyDetailsChangesRequired && noOfPhysicalAttendeesChanged"
+              [displayLabel]="amendmentLabelEnum.AMENDED"
+            >
+            </exui-amendment-label>
           </div>
         </fieldset>
       </ng-container>

@@ -57,8 +57,8 @@ export interface AfterPageVisitProperties {
   reasonableAdjustmentChangesConfirmed?: boolean;
   nonReasonableAdjustmentChangesRequired: boolean;
   nonReasonableAdjustmentChangesConfirmed?: boolean;
-  partyDetailsChangesRequired: boolean;
-  partyDetailsChangesConfirmed?: boolean;
+  participantAttendanceChangesRequired: boolean;
+  participantAttendanceChangesConfirmed?: boolean;
   partyDetailsAnyChangesRequired?: boolean;
   hearingWindowChangesRequired: boolean;
   hearingWindowChangesConfirmed?: boolean;
@@ -66,6 +66,8 @@ export interface AfterPageVisitProperties {
   hearingFacilitiesChangesConfirmed?: boolean;
   hearingUnavailabilityDatesChanged: boolean;
   hearingUnavailabilityDatesConfirmed?: boolean;
+  additionalInstructionsChangesRequired: boolean;
+  additionalInstructionsChangesConfirmed?: boolean;
 }
 
 export interface PropertiesUpdatedAutomatically {
@@ -89,6 +91,7 @@ export enum AmendmentLabelStatus {
   AMENDED = 'AMENDED',
   WARNING = 'WARNING',
   NONE = 'NONE',
+  EMPTY = '',
 }
 
 export interface ParticipantAttendanceMode {
@@ -96,4 +99,9 @@ export interface ParticipantAttendanceMode {
   channel: string;
   partyNameChanged: boolean;
   partyChannelChanged: boolean;
+}
+
+export interface HearingChannelMode {
+  hearingChannel: string;
+  hearingChannelChanged: boolean;
 }

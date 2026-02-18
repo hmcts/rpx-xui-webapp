@@ -68,7 +68,8 @@ def handleFailFastAbort = { Exception e ->
         }
     } else if (e instanceof hudson.AbortException) {
         def msg = e.getMessage() ?: ''
-        def exitCode = (msg =~ /exit code (\d+)/)?.with { it.find() ? it.group(1) : null }
+        def matcher = (msg =~ /(exit code|status)\s+(\d+)/)
+        def exitCode = matcher.find() ? matcher.group(2) : null
         abortedByFailFast = (currentBuild?.result == 'ABORTED') || (exitCode in failFastExitCodes)
         echo "[failFast] AbortException: buildResult=${currentBuild?.result}, exitCode=${exitCode}"
     } else {

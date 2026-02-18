@@ -215,6 +215,7 @@ withPipeline(type, product, component) {
                             try {
                                 yarnBuilder.yarn('test:api:pw:coverage')
                             } catch (Exception e) {
+                                echo "[failFast] API Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
                                 if (handleFailFastAbort(e)) { return }
                                 throw e
                             } finally {
@@ -237,6 +238,7 @@ withPipeline(type, product, component) {
                         try {
                             yarnBuilder.yarn('test:xuiIntegration')
                         } catch (Exception e) {
+                            echo "[failFast] Codecept Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
                             if (handleFailFastAbort(e)) { return }
                             throw e
                         } finally {
@@ -257,6 +259,7 @@ withPipeline(type, product, component) {
                         try {
                             yarnBuilder.yarn('test:playwright:integration')
                         } catch (Exception e) {
+                            echo "[failFast] Playwright Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
                             if (handleFailFastAbort(e)) { return }
                             throw e
                         } finally {
@@ -278,6 +281,7 @@ withPipeline(type, product, component) {
                         try {
                             yarnBuilder.yarn('test:playwrightE2E')
                         } catch (Exception e) {
+                            echo "[failFast] Playwright E2E catch: ${e.getClass().getName()}: ${e.getMessage()}"
                             if (handleFailFastAbort(e)) { return }
                             throw e
                         } finally {
@@ -318,6 +322,7 @@ withPipeline(type, product, component) {
                         try {
                             yarnBuilder.yarn('test:api:pw:coverage')
                         } catch (Exception e) {
+                            echo "[failFast] API Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
                             if (handleFailFastAbort(e)) { return }
                             throw e
                         } finally {
@@ -339,6 +344,7 @@ withPipeline(type, product, component) {
                         try {
                             yarnBuilder.yarn('test:xuiIntegration')
                         } catch (Exception e) {
+                            echo "[failFast] Codecept Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
                             if (handleFailFastAbort(e)) { return }
                             throw e
                         } finally {
@@ -359,6 +365,7 @@ withPipeline(type, product, component) {
                         try {
                             yarnBuilder.yarn('test:playwright:integration')
                         } catch (Exception e) {
+                            echo "[failFast] Playwright Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
                             if (handleFailFastAbort(e)) { return }
                             throw e
                         } finally {
@@ -380,6 +387,7 @@ withPipeline(type, product, component) {
                         try {
                             yarnBuilder.yarn('test:playwrightE2E')
                         } catch (Exception e) {
+                            echo "[failFast] Playwright E2E catch: ${e.getClass().getName()}: ${e.getMessage()}"
                             if (handleFailFastAbort(e)) { return }
                             throw e
                         } finally {

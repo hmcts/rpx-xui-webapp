@@ -54,6 +54,7 @@ describe('TaskAssignmentContainerComponent2', () => {
   let component: TaskAssignmentContainerComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
+  let historyStateSpy: jasmine.Spy;
   const SELECTED_PERSON = {
     id: 'id123',
     name: 'John Smith',
@@ -135,6 +136,14 @@ describe('TaskAssignmentContainerComponent2', () => {
     // Deliberately defer fixture.detectChanges() call to each test, to allow overriding the ActivatedRoute snapshot
     // data with a different verb ("Assign")
   }));
+
+  const setHistoryState = (state: unknown) => {
+    if (!historyStateSpy) {
+      historyStateSpy = spyOnProperty(window.history, 'state', 'get').and.returnValue(state);
+      return;
+    }
+    historyStateSpy.and.returnValue(state);
+  };
 
   afterEach(() => {
     fixture.destroy();
@@ -402,7 +411,7 @@ describe('TaskAssignmentContainerComponent2', () => {
 
   describe('returnUrl getter', () => {
     it('should return the returnUrl from window.history.state', () => {
-      window.history.pushState({ returnUrl: '/my-work/list' }, '', '');
+      setHistoryState({ returnUrl: '/my-work/list' });
 
       const returnUrl = (component as any).returnUrl;
 
@@ -410,7 +419,7 @@ describe('TaskAssignmentContainerComponent2', () => {
     });
 
     it('should truncate URL at # character', () => {
-      window.history.pushState({ returnUrl: '/all-work/tasks#manage_123' }, '', '');
+      setHistoryState({ returnUrl: '/all-work/tasks#manage_123' });
 
       const returnUrl = (component as any).returnUrl;
 
@@ -436,7 +445,7 @@ describe('TaskAssignmentContainerComponent2', () => {
 
   describe('showAssigneeColumn getter', () => {
     it('should return true when showAssigneeColumn is true in history state', () => {
-      window.history.pushState({ showAssigneeColumn: true }, '', '');
+      setHistoryState({ showAssigneeColumn: true });
 
       const showAssigneeColumn = (component as any).showAssigneeColumn;
 

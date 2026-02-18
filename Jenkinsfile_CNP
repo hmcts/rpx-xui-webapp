@@ -271,7 +271,6 @@ withPipeline(type, product, component) {
                                 reportName           : 'PREVIEW Playwright Integration Test'
                             ])
                             steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
-                            archivePlaywrightDiagnostics()
                         }
                     }
                 },
@@ -377,7 +376,6 @@ withPipeline(type, product, component) {
                                 reportName           : 'AAT Playwright Integration Test'
                             ])
                             steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
-                            archivePlaywrightDiagnostics()
                         }
                     }
                 },

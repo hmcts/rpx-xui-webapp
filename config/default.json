@@ -160,7 +160,7 @@
     "helmetEnabled": true,
     "termsAndConditionsEnabled": false,
     "redisEnabled": false,
-    "oidcEnabled": true,
+    "oidcEnabled": false,
     "workAllocationEnabled": false,
     "jrdELinksV2Enabled": true,
     "lauSpecificChallengedEnabled": false,

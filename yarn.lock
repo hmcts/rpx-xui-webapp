@@ -3823,6 +3823,34 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hmcts/rpx-xui-node-lib@https://github.com/hmcts/rpx-xui-node-lib/releases/download/v2.30.7-exui-4185-2/hmcts-rpx-xui-node-lib-2.30.7-exui-4185-2.tgz":
+  version: 2.30.7-exui-4185-2
+  resolution: "@hmcts/rpx-xui-node-lib@https://github.com/hmcts/rpx-xui-node-lib/releases/download/v2.30.7-exui-4185-2/hmcts-rpx-xui-node-lib-2.30.7-exui-4185-2.tgz"
+  dependencies:
+    "@hapi/joi": "npm:^17.1.1"
+    axios: "npm:^1.11.0"
+    caller-path: "npm:^3.0.0"
+    connect-redis: "npm:^4.0.4"
+    csurf: "npm:^1.11.0"
+    debug: "npm:^4.3.7"
+    deepmerge: "npm:^4.2.2"
+    express: "npm:^4.20.0"
+    express-session: "npm:^1.17.0"
+    jest-mock-axios: "npm:^4.8.0"
+    jest-ts-auto-mock: "npm:^2.1.0"
+    jwt-decode: "npm:^3.1.2"
+    openid-client: "npm:^3.10.0"
+    otplib: "npm:^12.0.1"
+    passport: "npm:^0.5.3"
+    passport-oauth2: "npm:^1.5.0"
+    redis: "npm:^3.0.2"
+    session-file-store: "npm:^1.5.0"
+  peerDependencies:
+    helmet: ^7.0.0
+  checksum: 10/6bb9e7630d6bf630745d3492ed151281b89c4dc098465bf6614c9d2f913e062f18e8a4c0ac075182b54082df9129aa6e808f4d1815f4107838169b74f298202a
+  languageName: node
+  linkType: hard
+
 "@hmcts/rpx-xui-node-lib@npm:2.30.7-csp-final-change-3":
   version: 2.30.7-csp-final-change-3
   resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.7-csp-final-change-3"
@@ -24258,7 +24286,7 @@ __metadata:
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.2.0"
     "@hmcts/rpx-xui-common-lib": "https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.3/hmcts-rpx-xui-common-lib-3.2.3.tgz"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.7-csp-final-change-3"
+    "@hmcts/rpx-xui-node-lib": "https://github.com/hmcts/rpx-xui-node-lib/releases/download/v2.30.7-exui-4185-2/hmcts-rpx-xui-node-lib-2.30.7-exui-4185-2.tgz"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"

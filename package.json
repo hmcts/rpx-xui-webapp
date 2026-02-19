@@ -301,7 +301,6 @@
     "loader-utils": "~2.0.3",
     "minimist": "^1.2.8",
     "typed-rest-client": "^2.0.0",
-    "lodash": "^4.17.23",
     "lodash-es": "^4.17.23",
     "braces": "^3.0.3",
     "ws": "^8.18.0",

@@ -51,10 +51,6 @@ router.use('/am', accessManagementRouter);
 
 router.use('/role-access', roleAccessRouter);
 
-router.use('/am', accessManagementRouter);
-
-router.use('/role-access', roleAccessRouter);
-
 router.use('/locations', locationsRouter);
 // TODO: potentially can be moved to proxy but with onRes callback
 router.use('/caseshare', caseShareRoutes);

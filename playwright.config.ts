@@ -160,7 +160,7 @@ const buildConfig = (env: EnvMap = process.env) => {
             mode: 'only-on-failure',
             fullPage: true,
           },
-          video: 'retain-on-failure',
+          video: 'off',
         },
       },
       {
@@ -176,7 +176,7 @@ const buildConfig = (env: EnvMap = process.env) => {
             mode: 'only-on-failure',
             fullPage: true,
           },
-          video: 'retain-on-failure',
+          video: 'off',
         },
       },
       {

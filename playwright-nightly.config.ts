@@ -130,7 +130,7 @@ module.exports = defineConfig({
           mode: 'only-on-failure',
           fullPage: true,
         },
-        video: 'retain-on-failure',
+        video: 'off',
       },
     },
     {
@@ -143,7 +143,7 @@ module.exports = defineConfig({
           mode: 'only-on-failure',
           fullPage: true,
         },
-        video: 'retain-on-failure',
+        video: 'off',
       },
     },
     {
@@ -155,7 +155,7 @@ module.exports = defineConfig({
           mode: 'only-on-failure',
           fullPage: true,
         },
-        video: 'retain-on-failure',
+        video: 'off',
       },
     },
     // {

@@ -21650,7 +21650,7 @@ __metadata:
 
 "odhin-reports-playwright@patch:odhin-reports-playwright@npm%3A1.1.8#~/.yarn/patches/odhin-reports-playwright-npm-1.1.8-a445ed88b7.patch":
   version: 1.1.8
-  resolution: "odhin-reports-playwright@patch:odhin-reports-playwright@npm%3A1.1.8#~/.yarn/patches/odhin-reports-playwright-npm-1.1.8-a445ed88b7.patch::version=1.1.8&hash=a35ec1"
+  resolution: "odhin-reports-playwright@patch:odhin-reports-playwright@npm%3A1.1.8#~/.yarn/patches/odhin-reports-playwright-npm-1.1.8-a445ed88b7.patch::version=1.1.8&hash=42863d"
   dependencies:
     ansi-to-html: "npm:^0.7.2"
     autoprefixer: "npm:^10.4.14"
@@ -21676,7 +21676,7 @@ __metadata:
     typescript: "npm:^5.1.6"
     xhr2: "npm:^0.2.1"
     xmlhttprequest: "npm:^1.8.0"
-  checksum: 10/a4a7de3a92ac6ce8aef7b18357090e1a164219cbe5b6222ff59bff26aa3f675408407edd64672d68b92240a1c709955498378a45a86a0d00cc04f1ce574110f0
+  checksum: 10/715c492966120f4d66178e04f82797a6af29fa93991c33d18929fc9a8726fb8ce03ba3defb3a6c5f03c4d50f4cdead67a3eca97f8a312d928b6e8a98c0ea8835
   languageName: node
   linkType: hard
 

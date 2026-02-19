@@ -1,6 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
 
-import { execSync } from 'node:child_process';
 import { cpus } from 'node:os';
 import { version as appVersion } from './package.json';
 
@@ -48,35 +47,7 @@ const resolveWorkerCount = () => {
   const suggested = Math.min(8, Math.max(2, approxPhysical));
   return suggested;
 };
-
-const resolveBranchName = (): string => {
-  const envBranch =
-    process.env.PLAYWRIGHT_REPORT_BRANCH ||
-    process.env.GIT_BRANCH ||
-    process.env.BRANCH_NAME ||
-    process.env.GITHUB_REF_NAME ||
-    process.env.GITHUB_HEAD_REF ||
-    process.env.BUILD_SOURCEBRANCHNAME;
-  if (envBranch) {
-    return envBranch.replace(/^refs\/heads\//, '').trim();
-  }
-  try {
-    const gitBranch = execSync('git rev-parse --abbrev-ref HEAD', {
-      encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'ignore'],
-    })
-      .trim()
-      .replace(/^refs\/heads\//, '');
-    if (gitBranch && gitBranch !== 'HEAD') {
-      return gitBranch;
-    }
-  } catch {
-    // Fall back to local label when branch cannot be resolved.
-  }
-  return 'local';
-};
 const workerCount = resolveWorkerCount();
-const reportBranch = resolveBranchName();
 const targetEnv = process.env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
 const runContext = process.env.CI ? 'ci' : 'local-run';
 const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount}`;
@@ -87,12 +58,12 @@ module.exports = defineConfig({
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry failed tests twice in all environments */
-  retries: 2, // Set the number of retries for all projects
+  /* Retry on CI only */
+  retries: 1, // Set the number of retries for all projects
 
-  timeout: 300_000, // 5 minutes per test maximum as on first nightly run tests were taking too long
+  timeout: 5 * 60 * 1000, // 5 minutes per test maximum as on first nightly run tests were taking too long
   expect: {
-    timeout: 120_000, // Same reason as above
+    timeout: 2 * 60 * 1000, // Same reason as above
   },
   reportSlowTests: null,
 
@@ -110,7 +81,7 @@ module.exports = defineConfig({
         title: 'RPX XUI Playwright',
         testEnvironment,
         project: process.env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
-        release: process.env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${reportBranch}`,
+        release: process.env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${process.env.GIT_BRANCH ?? 'local'}`,
         startServer: false,
         consoleLog: true,
         consoleError: true,

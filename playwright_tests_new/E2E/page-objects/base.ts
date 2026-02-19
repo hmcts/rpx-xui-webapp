@@ -4,17 +4,6 @@ import { ExuiHeaderComponent } from './components/index.js';
 
 const logger = createLogger({ serviceName: 'api-monitor', format: 'pretty' });
 
-type BenignApiErrorRule = {
-  method: string;
-  status: number;
-  urlPattern: RegExp;
-};
-
-const benignApiErrorRules: BenignApiErrorRule[] = [
-  { method: 'GET', status: 403, urlPattern: /\/api\/organisation$/ },
-  { method: 'GET', status: 400, urlPattern: /\/data\/internal\/cases\/\d+$/ },
-];
-
 interface ApiCall {
   url: string;
   method: string;
@@ -54,12 +43,10 @@ export abstract class Base {
         const timing = request.timing();
         const duration = timing.responseEnd;
         const status = response.status();
-        const method = request.method();
-        const sanitizedUrl = this.sanitizeUrl(url);
 
         const call: ApiCall = {
-          url: sanitizedUrl,
-          method,
+          url: this.sanitizeUrl(url),
+          method: request.method(),
           status,
           duration,
           timestamp: new Date().toISOString(),
@@ -80,22 +67,22 @@ export abstract class Base {
             url: call.url,
             status,
             duration: duration === -1 ? 'unknown' : `${duration}ms`,
-            method,
+            method: request.method(),
           });
         } else if (duration !== -1 && duration > 5000) {
           logger.warn('SLOW_API_RESPONSE', {
             url: call.url,
             duration: `${duration}ms`,
             status,
-            method,
+            method: request.method(),
           });
-        } else if (status >= 400 && status < 500 && !this.isKnownBenignApiError(sanitizedUrl, method, status)) {
+        } else if (status >= 400 && status < 500) {
           // DO NOT log response body - may contain PII or sensitive error details
           call.error = `HTTP ${status} - Client Error`;
           logger.warn('CLIENT_ERROR', {
             url: call.url,
             status,
-            method,
+            method: request.method(),
           });
         }
       }
@@ -114,13 +101,6 @@ export abstract class Base {
       !url.includes('.css') &&
       !url.includes('.woff')
     );
-  }
-
-  private isKnownBenignApiError(url: string, method: string, status: number): boolean {
-    const requestMethod = method.toUpperCase();
-    return benignApiErrorRules.some((rule) => {
-      return rule.status === status && rule.method === requestMethod && rule.urlPattern.test(url);
-    });
   }
 
   private sanitizeUrl(url: string): string {

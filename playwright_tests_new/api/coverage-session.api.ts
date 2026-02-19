@@ -8,7 +8,6 @@ import { UserUtils } from '../E2E/utils/user.utils.js';
 import type { IdamPage } from '@hmcts/playwright-common';
 import { isSessionFresh, loadSessionCookies, __test__ as sessionCaptureTest } from '../common/sessionCapture.js';
 import type { Cookie } from 'playwright-core';
-import appTestConfig from '../common/appTestConfig';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -37,14 +36,7 @@ test.describe('Session and cookie utilities coverage', () => {
 
   test('UserUtils returns credentials for known users and errors on unknown', () => {
     const userUtils = new UserUtils();
-    const configuredUsers = appTestConfig.users[appTestConfig.testEnv];
-    const userWithPassword = configuredUsers.find((user) => typeof user.key === 'string' && user.key.length > 0);
-    expect(userWithPassword).toBeDefined();
-    if (!userWithPassword) {
-      return;
-    }
-
-    const creds = userUtils.getUserCredentials(userWithPassword.userIdentifier);
+    const creds = userUtils.getUserCredentials('IAC_CaseOfficer_R1');
     expect(creds.email).toContain('@');
     expect(creds.password).toBeTruthy();
     expect(() => userUtils.getUserCredentials('UNKNOWN_USER')).toThrow('User "UNKNOWN_USER" not found');
@@ -150,13 +142,8 @@ test.describe('Session and cookie utilities coverage', () => {
     const tmpDir = await fsp.mkdtemp(path.join(process.cwd(), 'test-results', 'session-persist-'));
     const sessionPath = path.join(tmpDir, 'session.json');
     const ctx = {
-      addCookies: async (_cookies: Cookie[]) => {
-        void _cookies;
-      },
-      storageState: async (_options: { path: string }) => {
-        void _options;
-        return {};
-      },
+      addCookies: async (_cookies: Cookie[]) => {},
+      storageState: async (_options: { path: string }) => ({}),
     };
     const cookieUtils = {
       writeManageCasesSession: (pathValue: string, cookies: any[]) => {
@@ -220,10 +207,7 @@ test.describe('Session and cookie utilities coverage', () => {
       newPage: async () => page,
       cookies: async () => [],
       addCookies: async () => {},
-      storageState: async (_options: { path: string }) => {
-        void _options;
-        return {};
-      },
+      storageState: async (_options: { path: string }) => ({}),
     } as any;
     const browser = {
       newContext: async () => context,
@@ -300,10 +284,7 @@ test.describe('Session and cookie utilities coverage', () => {
       newPage: async () => page,
       cookies: async () => [],
       addCookies: async () => {},
-      storageState: async (_options: { path: string }) => {
-        void _options;
-        return {};
-      },
+      storageState: async (_options: { path: string }) => ({}),
     } as any;
     const browser = {
       newContext: async () => context,

@@ -1324,19 +1324,46 @@ describe('workAllocation', () => {
         expect(calledUrl).to.include('completion_process=EXUI_USER_COMPLETION');
       });
 
-      it('should use manual cancellation mode by default', async () => {
+      it('should use manual cancellation mode for cancel action by default', async () => {
         spy = sandbox.stub(http, 'post').resolves({ status: 200, data: 'ok' });
 
         const req = mockReq({
           body: { someData: 'test' },
-          params: { action: 'cancel', taskId: '123456' }, // Changed to cancel action
+          params: { action: 'cancel', taskId: '123456' },
         });
         const response = mockRes();
 
         await postTaskAction(req, response, next);
 
         const calledUrl = spy.getCall(0).args[0];
+        console.log(
+          '\x1b[43m\x1b[30m\x1b[1m EXUI-3662 cancellation evidence \x1b[0m',
+          `expected contains "cancellation_process=EXUI_USER_CANCELLATION", actual="${calledUrl}"`
+        );
         expect(calledUrl).to.include('cancellation_process=EXUI_USER_CANCELLATION');
+      });
+
+      it('should use event cancellation mode for cancel action when actionByEvent=true', async () => {
+        spy = sandbox.stub(http, 'post').resolves({ status: 200, data: 'ok' });
+
+        const req = mockReq({
+          body: {
+            actionByEvent: true,
+            eventName: 'sendToGatekeeper',
+            someOtherData: 'test',
+          },
+          params: { action: 'cancel', taskId: '123456' },
+        });
+        const response = mockRes();
+
+        await postTaskAction(req, response, next);
+
+        const calledUrl = spy.getCall(0).args[0];
+        console.log(
+          '\x1b[43m\x1b[30m\x1b[1m EXUI-3662 cancellation evidence \x1b[0m',
+          `expected contains "cancellation_process=EXUI_CASE_EVENT_CANCELLATION", actual="${calledUrl}"`
+        );
+        expect(calledUrl).to.include('cancellation_process=EXUI_CASE_EVENT_CANCELLATION');
       });
     });
   });

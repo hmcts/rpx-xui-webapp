@@ -3,24 +3,15 @@ import { Base } from '../../base';
 
 export class CaseListPage extends Base {
   readonly container = this.page.locator('exui-case-home');
-  readonly caseListHeading = this.page.locator('main h1');
-  readonly filtersContainer = this.page.locator('.search-block .hmcts-filter-layout__filter');
-  readonly showHideFilterButton = this.page.locator('.search-block button[aria-controls]').first();
-  readonly applyFilterButton = this.page.locator('.search-block button[type="submit"]');
-  readonly resetFilterButton = this.page.locator('.search-block button[type="reset"]');
+
   readonly jurisdictionSelect = this.page.locator('#wb-jurisdiction');
 
   readonly caseTypeSelect = this.page.locator('#wb-case-type');
 
   readonly textField0Input = this.page.locator('#TextField0');
-  readonly textField0FallbackInput = this.page
-    .locator('input[id*="TextField0"], input[name*="TextField0"], input[formcontrolname*="TextField0"]')
-    .first();
-  readonly quickSearchContainer = this.page.locator('.hmcts-primary-navigation__global-search');
-  readonly quickSearchCaseReferenceInput = this.page.locator('#exuiCaseReferenceSearch');
-  readonly quickSearchFindButton = this.quickSearchContainer.getByRole('button', { name: 'Find', exact: true });
+
   readonly caseSearchResultsMessage = this.page.locator('#search-result');
-  readonly caseResultsTable = this.page.locator('#search-result table');
+
   readonly pagination = this.page.locator('.ngx-pagination');
 
   // Some case list views use an id, others a data-test attribute for the summary
@@ -38,37 +29,8 @@ export class CaseListPage extends Base {
     await this.caseTypeSelect.selectOption(caseType);
   }
 
-  public async searchByTextField0(textField0: string): Promise<boolean> {
-    let input = this.textField0Input;
-    if (!(await input.isVisible().catch(() => false))) {
-      const canToggleFilters = await this.showHideFilterButton.isVisible().catch(() => false);
-      if (canToggleFilters) {
-        await this.showHideFilterButton.click();
-      }
-    }
-
-    if (!(await input.isVisible().catch(() => false))) {
-      input = this.textField0FallbackInput;
-    }
-
-    const isVisible = await input.isVisible().catch(() => false);
-    if (!isVisible) {
-      return false;
-    }
-    await input.fill(textField0);
-    return true;
-  }
-
-  public async quickSearchByCaseReference(caseReference: string): Promise<boolean> {
-    const inputVisible = await this.quickSearchCaseReferenceInput.isVisible().catch(() => false);
-    const buttonVisible = await this.quickSearchFindButton.isVisible().catch(() => false);
-    if (!inputVisible || !buttonVisible) {
-      return false;
-    }
-    await this.quickSearchCaseReferenceInput.fill(caseReference);
-    await this.quickSearchFindButton.click();
-    await this.exuiSpinnerComponent.wait();
-    return true;
+  public async searchByTextField0(textField0: string): Promise<void> {
+    await this.textField0Input.fill(textField0);
   }
 
   public async applyFilters(): Promise<void> {
@@ -77,8 +39,7 @@ export class CaseListPage extends Base {
   }
 
   async goto() {
-    await this.page.goto('/cases');
-    await this.exuiSpinnerComponent.wait();
+    await this.exuiHeader.selectHeaderMenuItem('Case list');
   }
 
   async navigateTo() {

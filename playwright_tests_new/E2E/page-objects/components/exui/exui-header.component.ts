@@ -1,6 +1,5 @@
 import { WaitUtils } from '@hmcts/playwright-common';
 import { expect, Page } from '@playwright/test';
-import { logger } from '../../../utils/logger.utils';
 
 export class ExuiHeaderComponent {
   readonly header = this.page.locator('exui-header');
@@ -34,7 +33,6 @@ export class ExuiHeaderComponent {
   public async switchLanguage(language: string): Promise<void> {
     const toggleText = (await this.languageToggle.innerText()).trim();
     if (!toggleText.includes(language)) {
-      logger.debug(`Language is already set to ${language}`, { language });
       return;
     }
 

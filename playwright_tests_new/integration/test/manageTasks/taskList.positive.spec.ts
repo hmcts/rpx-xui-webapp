@@ -3,7 +3,6 @@ import { applySessionCookies } from '../../../common/sessionCapture';
 import { buildMyTaskListMock, buildDeterministicMyTasksListMock } from '../../mocks/taskList.mock';
 import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
 import { formatUiDate } from '../../utils/tableUtils';
-import { retryOnTransientFailure } from '../../../E2E/utils/transient-failure.utils';
 
 const userIdentifier = 'STAFF_ADMIN';
 let sessionCookies: any[] = [];
@@ -32,7 +31,7 @@ test.describe(`Task List as ${userIdentifier}`, () => {
     });
 
     await test.step('Verify user can see a list shows the expected layout and data, given the mock response', async () => {
-      expect(await taskListPage.getResultsText()).toBe(
+      expect(await taskListPage.taskListResultsAmount.textContent()).toBe(
         `Showing 1 to ${Math.min(taskListMockResponse.tasks.length, 25)} of ${taskListMockResponse.total_records} results`
       );
       const table = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
@@ -87,35 +86,20 @@ test.describe(`Task List as ${userIdentifier}`, () => {
       await taskListPage.exuiSpinnerComponent.wait();
     });
     await test.step('Verify table shows deterministic priority tasks and due dates', async () => {
-      await retryOnTransientFailure(
-        async () => {
-          expect(await taskListPage.getResultsText()).toBe(`Showing 1 to 4 of 4 results`);
-          const table = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
-          expect(table.length).toBe(4);
-          for (let i = 0; i < table.length; i++) {
-            const expected = deterministicMockResponse.tasks[i];
-            expect(table[i]['Case name']).toBe(expected.case_name);
-            expect(table[i]['Case category']).toBe(expected.case_category);
-            expect(table[i]['Location']).toBe(expected.location_name);
-            expect(table[i]['Task']).toBe(expected.task_title);
-            expect(table[i]['Due date']).toBe(formatUiDate(expected.due_date));
-            const actualPriority = table[i]['Priority']?.toLowerCase() ?? '';
-            const expectedPriority = String(expected.priority_field ?? '').toLowerCase();
-            expect(actualPriority).toBe(expectedPriority);
-          }
-        },
-        {
-          maxAttempts: 2,
-          onRetry: async () => {
-            if (page.isClosed()) {
-              return;
-            }
-            await taskListPage.goto();
-            await expect(taskListPage.taskListTable).toBeVisible();
-            await taskListPage.exuiSpinnerComponent.wait();
-          },
-        }
-      );
+      expect(await taskListPage.taskListResultsAmount.textContent()).toBe(`Showing 1 to 4 of 4 results`);
+      const table = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
+      expect(table.length).toBe(4);
+      for (let i = 0; i < table.length; i++) {
+        const expected = deterministicMockResponse.tasks[i];
+        expect(table[i]['Case name']).toBe(expected.case_name);
+        expect(table[i]['Case category']).toBe(expected.case_category);
+        expect(table[i]['Location']).toBe(expected.location_name);
+        expect(table[i]['Task']).toBe(expected.task_title);
+        expect(table[i]['Due date']).toBe(formatUiDate(expected.due_date));
+        const actualPriority = table[i]['Priority']?.toLowerCase() ?? '';
+        const expectedPriority = String(expected.priority_field ?? '').toLowerCase();
+        expect(actualPriority).toBe(expectedPriority);
+      }
     });
   });
 });

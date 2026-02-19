@@ -70,6 +70,9 @@ withNightlyPipeline(type, product, component) {
     enableFortifyScan('rpx-aat')
     
       afterSuccess('checkout') {
+        stage('Yarn Install') {
+          yarnBuilder.yarn('install --immutable')
+        }
         yarnBuilder.yarn('cache clean')
     }
 

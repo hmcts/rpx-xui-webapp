@@ -1,4 +1,3 @@
-
 const CaseManager = require('./common/CaseManager');
 
 class ProbateCase {
@@ -7,8 +6,7 @@ class ProbateCase {
   }
 
   async createCase(isAccessibilityTest) {
-    const caseData = {
-    };
+    const caseData = {};
 
     await this.caseManager.createCase(caseData, isAccessibilityTest);
   }

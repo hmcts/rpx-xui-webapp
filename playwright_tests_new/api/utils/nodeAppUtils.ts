@@ -4,7 +4,7 @@ export function assertUserInfoDetails(userInfo: Record<string, any>) {
   expect(userInfo).toEqual(
     expect.objectContaining({
       email: expect.any(String),
-      roles: expect.arrayContaining([expect.any(String)])
+      roles: expect.arrayContaining([expect.any(String)]),
     })
   );
   expect(userInfo.uid ?? userInfo.id).toBeDefined();
@@ -22,7 +22,7 @@ export function assertUiConfigResponse(data: Record<string, unknown>, expectedKe
   expect(data).toEqual(
     expect.objectContaining({
       protocol: expect.any(String),
-      oAuthCallback: expect.any(String)
+      oAuthCallback: expect.any(String),
     })
   );
 }
@@ -34,8 +34,8 @@ export function assertUserDetailsPayload(payload: Record<string, any>) {
       canShareCases: expect.any(Boolean),
       sessionTimeout: expect.objectContaining({
         idleModalDisplayTime: expect.any(Number),
-        pattern: expect.any(String)
-      })
+        pattern: expect.any(String),
+      }),
     })
   );
 }
@@ -80,9 +80,7 @@ export function resolveHeader(headers: Record<string, string>, key: string): str
 }
 
 export function buildExpiredCookies(state: any) {
-  return Array.isArray(state.cookies)
-    ? state.cookies.map((c: any) => ({ ...c, expires: 0 }))
-    : [];
+  return Array.isArray(state.cookies) ? state.cookies.map((c: any) => ({ ...c, expires: 0 })) : [];
 }
 
 export async function applyExpiredCookies(ctx: { storageState: (opts: any) => Promise<void> }, cookies: any[]) {

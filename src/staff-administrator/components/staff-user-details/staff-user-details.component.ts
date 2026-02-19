@@ -15,7 +15,7 @@ import { StaffDataAccessService } from '../../services/staff-data-access/staff-d
   standalone: false,
   selector: 'exui-staff-user-details',
   templateUrl: './staff-user-details.component.html',
-  styleUrls: ['./staff-user-details.component.scss']
+  styleUrls: ['./staff-user-details.component.scss'],
 })
 export class StaffUserDetailsComponent {
   public userDetails: StaffUser;
@@ -29,7 +29,7 @@ export class StaffUserDetailsComponent {
     private route: ActivatedRoute,
     private readonly router: Router,
     private staffDataAccessService: StaffDataAccessService,
-    private readonly messageService: InfoMessageCommService,
+    private readonly messageService: InfoMessageCommService
   ) {
     const userDetailsFromSnapshot = this.route.snapshot.data.staffUserDetails;
 
@@ -46,14 +46,19 @@ export class StaffUserDetailsComponent {
       const staffUser = new StaffUser();
       Object.assign(staffUser, this.userDetails);
       staffUser.suspended = !staffUser.suspended;
-      this.staffDataAccessService.updateUser(staffUser).pipe(
-        switchMap(() => this.staffDataAccessService.fetchSingleUserById(this.userDetails.case_worker_id).pipe(
-          finalize(() => {
-            this.loading = false;
-            window.scrollTo(0, 0);
-          })
-        )),
-        tap((user) => this.userDetails = StaffUser.from(user)))
+      this.staffDataAccessService
+        .updateUser(staffUser)
+        .pipe(
+          switchMap(() =>
+            this.staffDataAccessService.fetchSingleUserById(this.userDetails.case_worker_id).pipe(
+              finalize(() => {
+                this.loading = false;
+                window.scrollTo(0, 0);
+              })
+            )
+          ),
+          tap((user) => (this.userDetails = StaffUser.from(user)))
+        )
         .subscribe(
           () => {
             if (this.userDetails.up_idam_status !== StaffUserIDAMStatus.PENDING) {
@@ -83,8 +88,7 @@ export class StaffUserDetailsComponent {
 
   public onUpdateUser() {
     const formValues = this.userDetails;
-    this.router.navigateByUrl(`/staff/user-details/${this.route.snapshot.params.id}/update`,
-      { state: { formValues } });
+    this.router.navigateByUrl(`/staff/user-details/${this.route.snapshot.params.id}/update`, { state: { formValues } });
   }
 
   public onCopyUser() {
@@ -94,10 +98,9 @@ export class StaffUserDetailsComponent {
       last_name: '',
       email_id: '',
       suspended: false,
-      up_idam_status: StaffUserIDAMStatus.PENDING
+      up_idam_status: StaffUserIDAMStatus.PENDING,
     };
-    this.router.navigateByUrl(`/staff/user-details/${this.route.snapshot.params.id}/copy`,
-      { state: { formValues } });
+    this.router.navigateByUrl(`/staff/user-details/${this.route.snapshot.params.id}/copy`, { state: { formValues } });
   }
 
   public resendInvite(): void {
@@ -106,35 +109,40 @@ export class StaffUserDetailsComponent {
       const staffUser = new StaffUser();
       Object.assign(staffUser, this.userDetails);
       staffUser.is_resend_invite = true;
-      this.staffDataAccessService.updateUser(staffUser).pipe(
-        finalize(() => {
-          this.loading = false;
-          window.scrollTo(0, 0);
-        })
-      )
-        .subscribe(() => {
-          this.messageService.nextMessage({
-            message: InfoMessage.ACTIVATION_EMAIL_SENT,
-            type: InfoMessageType.SUCCESS
-          } as InformationMessage);
-        },
-        (err) => {
-          console.log(err);
-          this.messageService.nextMessage({
-            message: InfoMessage.ACTIVATION_EMAIL_ERROR,
-            type: InfoMessageType.WARNING
-          } as InformationMessage);
-        });
+      this.staffDataAccessService
+        .updateUser(staffUser)
+        .pipe(
+          finalize(() => {
+            this.loading = false;
+            window.scrollTo(0, 0);
+          })
+        )
+        .subscribe(
+          () => {
+            this.messageService.nextMessage({
+              message: InfoMessage.ACTIVATION_EMAIL_SENT,
+              type: InfoMessageType.SUCCESS,
+            } as InformationMessage);
+          },
+          (err) => {
+            console.log(err);
+            this.messageService.nextMessage({
+              message: InfoMessage.ACTIVATION_EMAIL_ERROR,
+              type: InfoMessageType.WARNING,
+            } as InformationMessage);
+          }
+        );
     }
   }
 
   public getServiceNameFromSkillId(skillId: number) {
     const skillGroupOptions = this.route.snapshot.data.skills as GroupOptions[];
-    const serviceCode = skillGroupOptions.find((group) => group.options.find((option) => {
-      return Number(option.key) === skillId;
-    }))?.group;
+    const serviceCode = skillGroupOptions.find((group) =>
+      group.options.find((option) => {
+        return Number(option.key) === skillId;
+      })
+    )?.group;
 
-    return this.route.snapshot.data.services
-      .find((service) => service.key === serviceCode)?.label;
+    return this.route.snapshot.data.services.find((service) => service.key === serviceCode)?.label;
   }
 }

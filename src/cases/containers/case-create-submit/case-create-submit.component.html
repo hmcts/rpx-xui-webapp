@@ -3,13 +3,15 @@
     *exuiFeatureToggle="'ccdCaseCreate'"
     [eventsBindings]="caseCreateSubmitEventsBindings"
     [store]="store"
-    [fromFeatureStore]="fromCasesFeature">
+    [fromFeatureStore]="fromCasesFeature"
+  >
     <ccd-case-edit
-      #ccdComponent 
+      #ccdComponent
       [submit]="submit()"
       [validate]="validate()"
       [saveDraft]="saveDraft()"
-      [eventTrigger]="eventTrigger">
+      [eventTrigger]="eventTrigger"
+    >
     </ccd-case-edit>
   </exui-ccd-connector>
 </exui-page-wrapper>

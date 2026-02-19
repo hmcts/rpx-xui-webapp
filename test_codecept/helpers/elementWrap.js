@@ -1,6 +1,6 @@
 const { $ } = require('./globals');
 
-function toLocator (elementFinder) {
+function toLocator(elementFinder) {
   if (!elementFinder?.locator) {
     throw new Error('toLocator: argument is not an ElementFinder');
   }

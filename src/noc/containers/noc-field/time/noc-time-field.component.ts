@@ -6,7 +6,7 @@ import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
 @Component({
   standalone: false,
   selector: 'exui-noc-time-field',
-  templateUrl: './noc-time-field.component.html'
+  templateUrl: './noc-time-field.component.html',
 })
 export class NocTimeFieldComponent extends AbstractFieldWriteComponent implements OnInit, AfterViewInit {
   public timeControl: FormControl;
@@ -22,7 +22,7 @@ export class NocTimeFieldComponent extends AbstractFieldWriteComponent implement
     this.timeGroup = this.formBuilder.group({
       hour: [null, Validators.required],
       minute: [null, Validators.required],
-      second: [null, Validators.required]
+      second: [null, Validators.required],
     });
     if (this.timeControl.value) {
       const timeParts = this.timeControl.value.split(':');
@@ -37,7 +37,7 @@ export class NocTimeFieldComponent extends AbstractFieldWriteComponent implement
       const val = [
         this.timeGroup.value.hour !== null ? AppUtils.pad(this.timeGroup.value.hour) : '',
         this.timeGroup.value.minute !== null ? AppUtils.pad(this.timeGroup.value.minute) : '',
-        this.timeGroup.value.second !== null ? AppUtils.pad(this.timeGroup.value.second) : ''
+        this.timeGroup.value.second !== null ? AppUtils.pad(this.timeGroup.value.second) : '',
       ].join(':');
       this.timeControl.setValue(val);
     });

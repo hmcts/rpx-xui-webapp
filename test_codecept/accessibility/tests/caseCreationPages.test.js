@@ -1,4 +1,3 @@
-
 const AppActions = require('../helpers/applicationActions');
 const PallyActions = require('../helpers/pallyActions');
 
@@ -35,7 +34,7 @@ describe('Pa11y Accessibility tests', function () {
 
   const mockCaseType = getTestJurisdiction().getCase();
   mockCaseType.wizard_pages.forEach((page) => {
-    if (!page.show_condition){
+    if (!page.show_condition) {
       it.skip('Mock case type Case Page ' + page.id, async function () {
         // //await MockApp.startServer();
         const actions = [];
@@ -46,4 +45,3 @@ describe('Pa11y Accessibility tests', function () {
     }
   });
 });
-

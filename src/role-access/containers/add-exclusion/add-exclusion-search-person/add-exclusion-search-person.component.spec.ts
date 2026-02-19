@@ -8,10 +8,10 @@ describe('AddExclusionSearchPersonComponent', () => {
   let component: AddExclusionSearchPersonComponent;
   let mockStore: any;
 
-  beforeEach((() => {
+  beforeEach(() => {
     mockStore = jasmine.createSpyObj('mockStore', ['pipe', 'dispatch']);
     component = new AddExclusionSearchPersonComponent(mockStore);
-  }));
+  });
 
   it('navigationHandler raises invalid Error when person not selected', () => {
     expect(component).toBeTruthy();
@@ -37,13 +37,13 @@ describe('AddExclusionSearchPersonComponent', () => {
       id: '123',
       name: 'Person 1',
       email: 'P1@something.com',
-      domain: PersonRole.ADMIN
+      domain: PersonRole.ADMIN,
     };
     const secondPerson: Person = {
       id: '456',
       name: 'Person 2',
       email: 'P2@something.com',
-      domain: PersonRole.JUDICIAL
+      domain: PersonRole.JUDICIAL,
     };
     component.selectedPerson(firstPerson);
     expect(component.person).toBe(firstPerson);

@@ -6,7 +6,7 @@ import { SessionStorageService } from '../../../app/services';
 @Component({
   standalone: false,
   selector: 'exui-phase-banner',
-  templateUrl: './phase-banner.component.html'
+  templateUrl: './phase-banner.component.html',
 })
 export class PhaseBannerComponent implements OnInit, OnDestroy {
   @Input() public type: string;
@@ -18,8 +18,10 @@ export class PhaseBannerComponent implements OnInit, OnDestroy {
     return this.langService.language;
   }
 
-  constructor(private readonly langService: RpxTranslationService,
-              private readonly sessionStorageService: SessionStorageService) { }
+  constructor(
+    private readonly langService: RpxTranslationService,
+    private readonly sessionStorageService: SessionStorageService
+  ) {}
 
   public ngOnInit(): void {
     this.applyLanguageChanges(this.currentLang);
@@ -64,9 +66,9 @@ export class PhaseBannerComponent implements OnInit, OnDestroy {
       client_context: {
         ...clientContextObj.client_context,
         user_language: {
-          language: language
-        }
-      }
+          language: language,
+        },
+      },
     };
     this.sessionStorageService.setItem('clientContext', JSON.stringify(clientContextAddLanguage));
   }

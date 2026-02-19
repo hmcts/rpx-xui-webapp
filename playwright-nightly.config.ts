@@ -1,10 +1,36 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const { cpus } = require('node:os');
-const { version: appVersion } = require('./package.json');
+import { execSync } from 'node:child_process';
+import { cpus } from 'node:os';
+import { version as appVersion } from './package.json';
 
 const headlessMode = process.env.HEAD !== 'true';
+const baseUrl = process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
+
+const resolveEnvironmentFromUrl = (url: string): string => {
+  try {
+    const hostname = new URL(url).hostname.toLowerCase();
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'local';
+    }
+    if (hostname.includes('.aat.')) {
+      return 'aat';
+    }
+    if (hostname.includes('.ithc.')) {
+      return 'ithc';
+    }
+    if (hostname.includes('.demo.')) {
+      return 'demo';
+    }
+    if (hostname.includes('.perftest.')) {
+      return 'perftest';
+    }
+    return hostname;
+  } catch {
+    return 'unknown';
+  }
+};
 
 const resolveWorkerCount = () => {
   const configured = process.env.FUNCTIONAL_TESTS_WORKERS;
@@ -22,7 +48,38 @@ const resolveWorkerCount = () => {
   const suggested = Math.min(8, Math.max(2, approxPhysical));
   return suggested;
 };
+
+const resolveBranchName = (): string => {
+  const envBranch =
+    process.env.PLAYWRIGHT_REPORT_BRANCH ||
+    process.env.GIT_BRANCH ||
+    process.env.BRANCH_NAME ||
+    process.env.GITHUB_REF_NAME ||
+    process.env.GITHUB_HEAD_REF ||
+    process.env.BUILD_SOURCEBRANCHNAME;
+  if (envBranch) {
+    return envBranch.replace(/^refs\/heads\//, '').trim();
+  }
+  try {
+    const gitBranch = execSync('git rev-parse --abbrev-ref HEAD', {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    })
+      .trim()
+      .replace(/^refs\/heads\//, '');
+    if (gitBranch && gitBranch !== 'HEAD') {
+      return gitBranch;
+    }
+  } catch {
+    // Fall back to local label when branch cannot be resolved.
+  }
+  return 'local';
+};
 const workerCount = resolveWorkerCount();
+const reportBranch = resolveBranchName();
+const targetEnv = process.env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
+const runContext = process.env.CI ? 'ci' : 'local-run';
+const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount}`;
 
 module.exports = defineConfig({
   testDir: './playwright_tests/E2E',
@@ -30,12 +87,12 @@ module.exports = defineConfig({
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: 1, // Set the number of retries for all projects
+  /* Retry failed tests twice in all environments */
+  retries: 2, // Set the number of retries for all projects
 
-  timeout: 5 * 60 * 1000, // 5 minutes per test maximum as on first nightly run tests were taking too long
+  timeout: 300_000, // 5 minutes per test maximum as on first nightly run tests were taking too long
   expect: {
-    timeout: 2 * 60 * 1000 // Same reason as above
+    timeout: 120_000, // Same reason as above
   },
   reportSlowTests: null,
 
@@ -45,18 +102,21 @@ module.exports = defineConfig({
 
   reporter: [
     [process.env.CI ? 'dot' : 'list'],
-    ['odhin-reports-playwright', {
-      outputFolder: 'functional-output/tests/playwright-e2e/odhin-report',
-      indexFilename: 'xui-playwright.html',
-      title: 'RPX XUI Playwright',
-      testEnvironment: `${process.env.TEST_TYPE ?? (process.env.CI ? 'ci' : 'local')} | workers=${workerCount}`,
-      project: process.env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
-      release: process.env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${process.env.GIT_BRANCH ?? 'local'}`,
-      startServer: false,
-      consoleLog: true,
-      consoleError: true,
-      testOutput: 'only-on-failure'
-    }]
+    [
+      'odhin-reports-playwright',
+      {
+        outputFolder: 'functional-output/tests/playwright-e2e/odhin-report',
+        indexFilename: 'xui-playwright.html',
+        title: 'RPX XUI Playwright',
+        testEnvironment,
+        project: process.env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
+        release: process.env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${reportBranch}`,
+        startServer: false,
+        consoleLog: true,
+        consoleError: true,
+        testOutput: 'only-on-failure',
+      },
+    ],
   ],
 
   projects: [
@@ -68,10 +128,10 @@ module.exports = defineConfig({
         trace: 'on-first-retry',
         screenshot: {
           mode: 'only-on-failure',
-          fullPage: true
+          fullPage: true,
         },
-        video: 'retain-on-failure'
-      }
+        video: 'retain-on-failure',
+      },
     },
     {
       name: 'firefox',
@@ -81,10 +141,10 @@ module.exports = defineConfig({
         trace: 'on-first-retry',
         screenshot: {
           mode: 'only-on-failure',
-          fullPage: true
+          fullPage: true,
         },
-        video: 'retain-on-failure'
-      }
+        video: 'retain-on-failure',
+      },
     },
     {
       name: 'webkit',
@@ -93,11 +153,11 @@ module.exports = defineConfig({
         trace: 'on-first-retry',
         screenshot: {
           mode: 'only-on-failure',
-          fullPage: true
+          fullPage: true,
         },
-        video: 'retain-on-failure'
-      }
-    }
+        video: 'retain-on-failure',
+      },
+    },
     // {
     //   name: 'MicrosoftEdge',
     //   use: { ...devices['Desktop Edge'],
@@ -107,5 +167,5 @@ module.exports = defineConfig({
     //     trace: 'off'
     //   }
     // }
-  ]
+  ],
 });

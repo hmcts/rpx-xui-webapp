@@ -6,29 +6,31 @@ import { State } from '../store/reducers';
 import { VenueAnswerConverter } from './venue.answer.converter';
 
 describe('VenueAnswerConverter', () => {
-  const FOUND_LOCATIONS: LocationByEpimmsModel[] = [{
-    epimms_id: '196538',
-    site_name: 'Liverpool Social Security and Child Support Tribunal',
-    court_name: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
-    open_for_public: 'YES',
-    region_id: '5',
-    region: 'North West',
-    cluster_id: '3',
-    cluster_name: 'Cheshire and Merseyside',
-    court_status: 'Open',
-    court_open_date: null,
-    closed_date: null,
-    postcode: 'L2 5UZ',
-    court_address: 'PRUDENTIAL BUILDING, 36 DALE STREET, LIVERPOOL',
-    phone_number: '',
-    court_location_code: '',
-    dx_address: '',
-    welsh_site_name: '',
-    welsh_court_address: '',
-    venue_name: 'Liverpool',
-    is_case_management_location: 'Y',
-    is_hearing_location: 'Y'
-  }];
+  const FOUND_LOCATIONS: LocationByEpimmsModel[] = [
+    {
+      epimms_id: '196538',
+      site_name: 'Liverpool Social Security and Child Support Tribunal',
+      court_name: 'LIVERPOOL SOCIAL SECURITY AND CHILD SUPPORT TRIBUNAL',
+      open_for_public: 'YES',
+      region_id: '5',
+      region: 'North West',
+      cluster_id: '3',
+      cluster_name: 'Cheshire and Merseyside',
+      court_status: 'Open',
+      court_open_date: null,
+      closed_date: null,
+      postcode: 'L2 5UZ',
+      court_address: 'PRUDENTIAL BUILDING, 36 DALE STREET, LIVERPOOL',
+      phone_number: '',
+      court_location_code: '',
+      dx_address: '',
+      welsh_site_name: '',
+      welsh_court_address: '',
+      venue_name: 'Liverpool',
+      is_case_management_location: 'Y',
+      is_hearing_location: 'Y',
+    },
+  ];
   let venueAnswerConverter: VenueAnswerConverter;
   const locationsDataService = jasmine.createSpyObj('LocationsDataService', ['getLocationById']);
 

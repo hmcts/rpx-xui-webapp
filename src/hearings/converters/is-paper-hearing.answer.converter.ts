@@ -12,11 +12,11 @@ export class IsPaperHearingAnswerConverter implements AnswerConverter {
           ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.hearingChannels
           : state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels;
 
-        return (hearingChannels.includes(HearingChannelEnum.ONPPR)
-          || !!state.hearingRequest.hearingRequestMainModel.hearingDetails.isPaperHearing)
-          ? 'Yes' : 'No';
+        return hearingChannels.includes(HearingChannelEnum.ONPPR) ||
+          !!state.hearingRequest.hearingRequestMainModel.hearingDetails.isPaperHearing
+          ? 'Yes'
+          : 'No';
       })
     );
   }
 }
-

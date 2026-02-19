@@ -8,7 +8,7 @@ import { HearingsUtils } from './hearings.utils';
 import { UnavailabilityRangeModel } from '../models/unavailabilityRange.model';
 import { HearingWindowModel } from '../models/hearingWindow.model';
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
-import * as moment from 'moment';
+import moment from 'moment';
 
 describe('HearingsUtils', () => {
   it('should return true if has the right property', () => {
@@ -35,10 +35,10 @@ describe('HearingsUtils', () => {
             hearingSubChannel: 'APEL',
             partyID: '1',
             partyRole: null,
-            partyType: null
-          }
+            partyType: null,
+          },
         ],
-        listAssistSessionID: null
+        listAssistSessionID: null,
       },
       {
         hearingStartDateTime: '2022-08-17T09:00:00',
@@ -52,10 +52,10 @@ describe('HearingsUtils', () => {
             hearingSubChannel: 'APEL',
             partyID: '1',
             partyRole: null,
-            partyType: null
-          }
+            partyType: null,
+          },
         ],
-        listAssistSessionID: null
+        listAssistSessionID: null,
       },
       {
         hearingStartDateTime: '2022-08-16T09:00:00',
@@ -69,47 +69,48 @@ describe('HearingsUtils', () => {
             hearingSubChannel: 'APEL',
             partyID: '1',
             partyRole: null,
-            partyType: null
-          }
+            partyType: null,
+          },
         ],
-        listAssistSessionID: null
-      }
+        listAssistSessionID: null,
+      },
     ];
-    const expectedResult: HearingDayScheduleModel[] = [
-      hearingDaySchedule[0],
-      hearingDaySchedule[2],
-      hearingDaySchedule[1]
-    ];
+    const expectedResult: HearingDayScheduleModel[] = [hearingDaySchedule[0], hearingDaySchedule[2], hearingDaySchedule[1]];
     const sortedResult = HearingsUtils.sortHearingDaySchedule(hearingDaySchedule);
     expect(sortedResult).toEqual(expectedResult);
   });
 
   it('should return the unavailability date ranges for parties', () => {
-    const UnavailabilityDatesParty1: UnavailabilityRangeModel[] = [{
-      unavailableFromDate: '2021-12-10T09:00:00.000Z',
-      unavailableToDate: '2021-12-31T09:00:00.000Z',
-      unavailabilityType: UnavailabilityType.ALL_DAY
-    }];
-    const UnavailabilityDatesParty2: UnavailabilityRangeModel[] = [{
-      unavailableFromDate: '2021-12-20T09:00:00.000Z',
-      unavailableToDate: '2021-12-31T09:00:00.000Z',
-      unavailabilityType: UnavailabilityType.ALL_DAY
-    }];
-    const party1: PartyDetailsModel[] = [{
-      partyID: 'party1',
-      partyType: PartyType.IND,
-      partyRole: 'partyRole',
-      unavailabilityRanges: UnavailabilityDatesParty1
-    },
-    {
-      partyID: 'party2',
-      partyType: PartyType.ORG,
-      partyRole: 'partyRole',
-      unavailabilityRanges: UnavailabilityDatesParty2
-    }];
+    const UnavailabilityDatesParty1: UnavailabilityRangeModel[] = [
+      {
+        unavailableFromDate: '2021-12-10T09:00:00.000Z',
+        unavailableToDate: '2021-12-31T09:00:00.000Z',
+        unavailabilityType: UnavailabilityType.ALL_DAY,
+      },
+    ];
+    const UnavailabilityDatesParty2: UnavailabilityRangeModel[] = [
+      {
+        unavailableFromDate: '2021-12-20T09:00:00.000Z',
+        unavailableToDate: '2021-12-31T09:00:00.000Z',
+        unavailabilityType: UnavailabilityType.ALL_DAY,
+      },
+    ];
+    const party1: PartyDetailsModel[] = [
+      {
+        partyID: 'party1',
+        partyType: PartyType.IND,
+        partyRole: 'partyRole',
+        unavailabilityRanges: UnavailabilityDatesParty1,
+      },
+      {
+        partyID: 'party2',
+        partyType: PartyType.ORG,
+        partyRole: 'partyRole',
+        unavailabilityRanges: UnavailabilityDatesParty2,
+      },
+    ];
 
-    const partiesNotAvailableDates = HearingsUtils.getPartiesNotAvailableDates(party1
-    );
+    const partiesNotAvailableDates = HearingsUtils.getPartiesNotAvailableDates(party1);
     expect(partiesNotAvailableDates.length).toEqual(22);
   });
 
@@ -137,12 +138,10 @@ describe('HearingsUtils', () => {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         hearingDetails: {
           ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-          hearingWindow: null
-        }
+          hearingWindow: null,
+        },
       };
-      expect(
-        HearingsUtils.getHRMHearingWindow(hearingRequestMainModel)
-      ).toBeNull();
+      expect(HearingsUtils.getHRMHearingWindow(hearingRequestMainModel)).toBeNull();
     });
 
     it('should return HearingWindowModel from ServiceHearingVaulesModel when hearingWindow is not empty', () => {
@@ -153,13 +152,13 @@ describe('HearingsUtils', () => {
           hearingWindow: {
             dateRangeStart: '2022-11-23T09:00:00.000Z',
             dateRangeEnd: '2022-11-30T09:00:00.000Z',
-            firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
-          }
-        }
+            firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
+          },
+        },
       };
-      expect(
-        HearingsUtils.getHRMHearingWindow(hearingRequestMainModel)
-      ).toEqual(hearingRequestMainModel.hearingDetails.hearingWindow);
+      expect(HearingsUtils.getHRMHearingWindow(hearingRequestMainModel)).toEqual(
+        hearingRequestMainModel.hearingDetails.hearingWindow
+      );
     });
   });
 
@@ -186,8 +185,8 @@ describe('HearingsUtils', () => {
           title: 'Mrs',
           firstName: 'Jane',
           lastName: 'Smith',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       };
       const partyInSHV: PartyDetailsModel = {
         partyID: 'P1',
@@ -198,8 +197,8 @@ describe('HearingsUtils', () => {
           title: 'Mrs',
           firstName: 'Jane',
           lastName: 'Rogers',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       };
       const hasPartyNameChangedResult = HearingsUtils.hasPartyNameChanged(partyInHMC, partyInSHV);
       expect(hasPartyNameChangedResult).toEqual(true);
@@ -215,8 +214,8 @@ describe('HearingsUtils', () => {
           title: 'Mrs',
           firstName: 'Jane',
           lastName: 'Smith',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       };
       const partyInSHV: PartyDetailsModel = {
         partyID: 'P1',
@@ -227,8 +226,8 @@ describe('HearingsUtils', () => {
           title: 'Mrs',
           firstName: 'Jane',
           lastName: 'Smith',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       };
       const hasPartyNameChangedResult = HearingsUtils.hasPartyNameChanged(partyInHMC, partyInSHV);
       expect(hasPartyNameChangedResult).toEqual(false);
@@ -287,101 +286,125 @@ describe('HearingsUtils', () => {
   });
   describe('Test of change of unavailability dates', () => {
     it('should return no difference to the date unavailability dates supplied.', () => {
-      const UnavailabilityDatesParty1: UnavailabilityRangeModel[] = [{
-        unavailableFromDate: '2021-12-10T09:00:00.000Z',
-        unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }];
-      const UnavailabilityDatesParty2: UnavailabilityRangeModel[] = [{
-        unavailableFromDate: '2021-12-20T09:00:00.000Z',
-        unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }];
-      const party1: PartyDetailsModel[] = [{
-        partyID: 'party1',
-        partyType: PartyType.IND,
-        partyRole: 'partyRole',
-        unavailabilityRanges: UnavailabilityDatesParty1
-      },
-      {
-        partyID: 'party2',
-        partyType: PartyType.ORG,
-        partyRole: 'partyRole',
-        unavailabilityRanges: UnavailabilityDatesParty2
-      }];
+      const UnavailabilityDatesParty1: UnavailabilityRangeModel[] = [
+        {
+          unavailableFromDate: '2021-12-10T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY,
+        },
+      ];
+      const UnavailabilityDatesParty2: UnavailabilityRangeModel[] = [
+        {
+          unavailableFromDate: '2021-12-20T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY,
+        },
+      ];
+      const party1: PartyDetailsModel[] = [
+        {
+          partyID: 'party1',
+          partyType: PartyType.IND,
+          partyRole: 'partyRole',
+          unavailabilityRanges: UnavailabilityDatesParty1,
+        },
+        {
+          partyID: 'party2',
+          partyType: PartyType.ORG,
+          partyRole: 'partyRole',
+          unavailabilityRanges: UnavailabilityDatesParty2,
+        },
+      ];
 
-      const UnavailabilityDatesParty3: UnavailabilityRangeModel[] = [{
-        unavailableFromDate: '2021-12-10T09:00:00.000Z',
-        unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }];
-      const UnavailabilityDatesParty4: UnavailabilityRangeModel[] = [{
-        unavailableFromDate: '2021-12-20T09:00:00.000Z',
-        unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }];
-      const party2: PartyDetailsModel[] = [{
-        partyID: 'party1',
-        partyType: PartyType.IND,
-        partyRole: 'partyRole',
-        unavailabilityRanges: UnavailabilityDatesParty3
-      },
-      {
-        partyID: 'party2',
-        partyType: PartyType.ORG,
-        partyRole: 'partyRole',
-        unavailabilityRanges: UnavailabilityDatesParty4
-      }];
+      const UnavailabilityDatesParty3: UnavailabilityRangeModel[] = [
+        {
+          unavailableFromDate: '2021-12-10T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY,
+        },
+      ];
+      const UnavailabilityDatesParty4: UnavailabilityRangeModel[] = [
+        {
+          unavailableFromDate: '2021-12-20T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY,
+        },
+      ];
+      const party2: PartyDetailsModel[] = [
+        {
+          partyID: 'party1',
+          partyType: PartyType.IND,
+          partyRole: 'partyRole',
+          unavailabilityRanges: UnavailabilityDatesParty3,
+        },
+        {
+          partyID: 'party2',
+          partyType: PartyType.ORG,
+          partyRole: 'partyRole',
+          unavailabilityRanges: UnavailabilityDatesParty4,
+        },
+      ];
 
       expect(HearingsUtils.hasPartyUnavailabilityDatesChanged(party1, party2)).toEqual(false);
     });
 
     it('should return a difference to the date unavailability dates supplied.', () => {
-      const UnavailabilityDatesParty1: UnavailabilityRangeModel[] = [{
-        unavailableFromDate: '2021-12-09T09:00:00.000Z',
-        unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }];
-      const UnavailabilityDatesParty2: UnavailabilityRangeModel[] = [{
-        unavailableFromDate: '2021-12-20T09:00:00.000Z',
-        unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }];
-      const party1: PartyDetailsModel[] = [{
-        partyID: 'party1',
-        partyType: PartyType.IND,
-        partyRole: 'partyRole',
-        unavailabilityRanges: UnavailabilityDatesParty1
-      },
-      {
-        partyID: 'party2',
-        partyType: PartyType.ORG,
-        partyRole: 'partyRole',
-        unavailabilityRanges: UnavailabilityDatesParty2
-      }];
+      const UnavailabilityDatesParty1: UnavailabilityRangeModel[] = [
+        {
+          unavailableFromDate: '2021-12-09T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY,
+        },
+      ];
+      const UnavailabilityDatesParty2: UnavailabilityRangeModel[] = [
+        {
+          unavailableFromDate: '2021-12-20T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY,
+        },
+      ];
+      const party1: PartyDetailsModel[] = [
+        {
+          partyID: 'party1',
+          partyType: PartyType.IND,
+          partyRole: 'partyRole',
+          unavailabilityRanges: UnavailabilityDatesParty1,
+        },
+        {
+          partyID: 'party2',
+          partyType: PartyType.ORG,
+          partyRole: 'partyRole',
+          unavailabilityRanges: UnavailabilityDatesParty2,
+        },
+      ];
 
-      const UnavailabilityDatesParty3: UnavailabilityRangeModel[] = [{
-        unavailableFromDate: '2021-12-10T09:00:00.000Z',
-        unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }];
-      const UnavailabilityDatesParty4: UnavailabilityRangeModel[] = [{
-        unavailableFromDate: '2021-12-20T09:00:00.000Z',
-        unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }];
-      const party2: PartyDetailsModel[] = [{
-        partyID: 'party1',
-        partyType: PartyType.IND,
-        partyRole: 'partyRole',
-        unavailabilityRanges: UnavailabilityDatesParty3
-      },
-      {
-        partyID: 'party2',
-        partyType: PartyType.ORG,
-        partyRole: 'partyRole',
-        unavailabilityRanges: UnavailabilityDatesParty4
-      }];
+      const UnavailabilityDatesParty3: UnavailabilityRangeModel[] = [
+        {
+          unavailableFromDate: '2021-12-10T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY,
+        },
+      ];
+      const UnavailabilityDatesParty4: UnavailabilityRangeModel[] = [
+        {
+          unavailableFromDate: '2021-12-20T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY,
+        },
+      ];
+      const party2: PartyDetailsModel[] = [
+        {
+          partyID: 'party1',
+          partyType: PartyType.IND,
+          partyRole: 'partyRole',
+          unavailabilityRanges: UnavailabilityDatesParty3,
+        },
+        {
+          partyID: 'party2',
+          partyType: PartyType.ORG,
+          partyRole: 'partyRole',
+          unavailabilityRanges: UnavailabilityDatesParty4,
+        },
+      ];
 
       expect(HearingsUtils.hasPartyUnavailabilityDatesChanged(party1, party2)).toEqual(true);
     });
@@ -390,52 +413,52 @@ describe('HearingsUtils', () => {
   describe('Test of change of hearing window dates', () => {
     it('no difference in first date time must be, no change in hearing window found', () => {
       const hearingWindow1: HearingWindowModel = {
-        firstDateTimeMustBe: '2021-12-20T09:00:00.000Z'
+        firstDateTimeMustBe: '2021-12-20T09:00:00.000Z',
       };
       const hearingWindow2: HearingWindowModel = {
-        firstDateTimeMustBe: '2021-12-20T09:00:00.000Z'
+        firstDateTimeMustBe: '2021-12-20T09:00:00.000Z',
       };
       expect(HearingsUtils.hasHearingDatesChanged(hearingWindow1, hearingWindow2)).toEqual(false);
     });
     it('A difference in first date time must be, change in hearing window found', () => {
       const hearingWindow1: HearingWindowModel = {
-        firstDateTimeMustBe: '2021-12-21T09:00:00.000Z'
+        firstDateTimeMustBe: '2021-12-21T09:00:00.000Z',
       };
       const hearingWindow2: HearingWindowModel = {
-        firstDateTimeMustBe: '2021-12-20T09:00:00.000Z'
+        firstDateTimeMustBe: '2021-12-20T09:00:00.000Z',
       };
       expect(HearingsUtils.hasHearingDatesChanged(hearingWindow1, hearingWindow2)).toEqual(true);
     });
     it('no difference in hearing date range, no change in hearing window found', () => {
       const hearingWindow1: HearingWindowModel = {
         dateRangeStart: '2021-12-20T09:00:00.000Z',
-        dateRangeEnd: '2021-12-20T09:00:00.000Z'
+        dateRangeEnd: '2021-12-20T09:00:00.000Z',
       };
       const hearingWindow2: HearingWindowModel = {
         dateRangeStart: '2021-12-20T09:00:00.000Z',
-        dateRangeEnd: '2021-12-20T09:00:00.000Z'
+        dateRangeEnd: '2021-12-20T09:00:00.000Z',
       };
       expect(HearingsUtils.hasHearingDatesChanged(hearingWindow1, hearingWindow2)).toEqual(false);
     });
     it('a difference in hearing end date, a change in hearing window found', () => {
       const hearingWindow1: HearingWindowModel = {
         dateRangeStart: '2021-12-20T09:00:00.000Z',
-        dateRangeEnd: '2021-12-21T09:00:00.000Z'
+        dateRangeEnd: '2021-12-21T09:00:00.000Z',
       };
       const hearingWindow2: HearingWindowModel = {
         dateRangeStart: '2021-12-20T09:00:00.000Z',
-        dateRangeEnd: '2021-12-20T09:00:00.000Z'
+        dateRangeEnd: '2021-12-20T09:00:00.000Z',
       };
       expect(HearingsUtils.hasHearingDatesChanged(hearingWindow1, hearingWindow2)).toEqual(true);
     });
     it('a difference in hearing start date, a change in hearing window found', () => {
       const hearingWindow1: HearingWindowModel = {
         dateRangeStart: '2021-12-20T09:00:00.000Z',
-        dateRangeEnd: '2021-12-21T09:00:00.000Z'
+        dateRangeEnd: '2021-12-21T09:00:00.000Z',
       };
       const hearingWindow2: HearingWindowModel = {
         dateRangeStart: '2021-12-18T09:00:00.000Z',
-        dateRangeEnd: '2021-12-20T09:00:00.000Z'
+        dateRangeEnd: '2021-12-20T09:00:00.000Z',
       };
       expect(HearingsUtils.hasHearingDatesChanged(hearingWindow1, hearingWindow2)).toEqual(true);
     });
@@ -445,141 +468,140 @@ describe('HearingsUtils', () => {
     it('should return true if SHV contains same partyIDs as HMC', () => {
       const hearingRequestMainModel: HearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-        partyDetails: [{
-          partyID: 'testParty1',
-          partyType: PartyType.IND,
-          partyRole: 'partyRole'
-        },
-        {
-          partyID: 'testParty2',
-          partyType: PartyType.IND,
-          partyRole: 'partyRole'
-        }]
+        partyDetails: [
+          {
+            partyID: 'testParty1',
+            partyType: PartyType.IND,
+            partyRole: 'partyRole',
+          },
+          {
+            partyID: 'testParty2',
+            partyType: PartyType.IND,
+            partyRole: 'partyRole',
+          },
+        ],
       };
       const serviceHearingValuesModel: ServiceHearingValuesModel = {
         ...initialState.hearings.hearingValues.serviceHearingValuesModel,
-        parties: [{
-          partyID: 'testParty1',
-          partyType: PartyType.IND,
-          partyRole: 'partyRole'
-        },
-        {
-          partyID: 'testParty2',
-          partyType: PartyType.IND,
-          partyRole: 'partyRole'
-        }]
+        parties: [
+          {
+            partyID: 'testParty1',
+            partyType: PartyType.IND,
+            partyRole: 'partyRole',
+          },
+          {
+            partyID: 'testParty2',
+            partyType: PartyType.IND,
+            partyRole: 'partyRole',
+          },
+        ],
       };
-      expect(
-        HearingsUtils.checkHearingPartiesConsistency(hearingRequestMainModel, serviceHearingValuesModel)
-      ).toBeTruthy();
+      expect(HearingsUtils.checkHearingPartiesConsistency(hearingRequestMainModel, serviceHearingValuesModel)).toBeTruthy();
     });
 
     it('should return false if SHV contains no matching partyIDs in HMC', () => {
       const hearingRequestMainModel: HearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-        partyDetails: [{
-          partyID: 'testParty1',
-          partyType: PartyType.IND,
-          partyRole: 'partyRole'
-        },
-        {
-          partyID: 'testParty2',
-          partyType: PartyType.IND,
-          partyRole: 'partyRole'
-        }]
+        partyDetails: [
+          {
+            partyID: 'testParty1',
+            partyType: PartyType.IND,
+            partyRole: 'partyRole',
+          },
+          {
+            partyID: 'testParty2',
+            partyType: PartyType.IND,
+            partyRole: 'partyRole',
+          },
+        ],
       };
       const serviceHearingValuesModel: ServiceHearingValuesModel = {
         ...initialState.hearings.hearingValues.serviceHearingValuesModel,
-        parties: [{
-          partyID: 'testParty3',
-          partyType: PartyType.IND,
-          partyRole: 'partyRole'
-        },
-        {
-          partyID: 'testParty4',
-          partyType: PartyType.IND,
-          partyRole: 'partyRole'
-        }]
+        parties: [
+          {
+            partyID: 'testParty3',
+            partyType: PartyType.IND,
+            partyRole: 'partyRole',
+          },
+          {
+            partyID: 'testParty4',
+            partyType: PartyType.IND,
+            partyRole: 'partyRole',
+          },
+        ],
       };
-      expect(
-        HearingsUtils.checkHearingPartiesConsistency(hearingRequestMainModel, serviceHearingValuesModel)
-      ).toBeFalsy();
+      expect(HearingsUtils.checkHearingPartiesConsistency(hearingRequestMainModel, serviceHearingValuesModel)).toBeFalsy();
     });
   });
-  describe('Update the hearing window static data to a future date\'', () => {
+  describe("Update the hearing window static data to a future date'", () => {
     const mochSHVData = {
-      'hmctsServiceID': 'ABA5',
-      'hmctsInternalCaseName': '1234567812345678 update case internal name',
-      'publicCaseName': 'Case public name',
-      'caseAdditionalSecurityFlag': false,
-      'caseCategories': [
+      hmctsServiceID: 'ABA5',
+      hmctsInternalCaseName: '1234567812345678 update case internal name',
+      publicCaseName: 'Case public name',
+      caseAdditionalSecurityFlag: false,
+      caseCategories: [
         {
-          'categoryType': 'caseType',
-          'categoryValue': 'ABA5-PRL',
-          'categoryParent': null
+          categoryType: 'caseType',
+          categoryValue: 'ABA5-PRL',
+          categoryParent: null,
         },
         {
-          'categoryType': 'caseSubType',
-          'categoryValue': 'ABA5-PRL',
-          'categoryParent': 'ABA5-PRL'
-        }
+          categoryType: 'caseSubType',
+          categoryValue: 'ABA5-PRL',
+          categoryParent: 'ABA5-PRL',
+        },
       ],
-      'caseDeepLink': 'https://manage-case-hearings-int.demo.platform.hmcts.net/cases/case-details/IA/Asylum/1690807693531270#Case File View',
-      'externalCaseReference': '',
-      'caseManagementLocationCode': '283922',
-      'autoListFlag': false,
-      'hearingType': '',
-      'hearingWindow': {
-        'dateRangeStart': '',
-        'dateRangeEnd': '',
-        'firstDateTimeMustBe': '2024-12-18T00:00:00'
+      caseDeepLink:
+        'https://manage-case-hearings-int.demo.platform.hmcts.net/cases/case-details/IA/Asylum/1690807693531270#Case File View',
+      externalCaseReference: '',
+      caseManagementLocationCode: '283922',
+      autoListFlag: false,
+      hearingType: '',
+      hearingWindow: {
+        dateRangeStart: '',
+        dateRangeEnd: '',
+        firstDateTimeMustBe: '2024-12-18T00:00:00',
       },
-      'duration': 120,
-      'hearingPriorityType': 'Standard',
-      'numberOfPhysicalAttendees': 0
+      duration: 120,
+      hearingPriorityType: 'Standard',
+      numberOfPhysicalAttendees: 0,
     };
     const mockHMCData = {
-      'requestDetails': {
-        'status': 'LISTED',
-        'timestamp': '2023-11-06T14:01:32.836316',
-        'versionNumber': 1,
-        'hearingRequestID': '2000007311'
+      requestDetails: {
+        status: 'LISTED',
+        timestamp: '2023-11-06T14:01:32.836316',
+        versionNumber: 1,
+        hearingRequestID: '2000007311',
       },
-      'hearingDetails': {
-        'hearingType': 'ABA1-ABC',
-        'hearingWindow': {
-          'dateRangeStart': '2025-12-15T00:00:00',
-          'dateRangeEnd': '2025-12-17T00:00:00',
-          'firstDateTimeMustBe': ''
+      hearingDetails: {
+        hearingType: 'ABA1-ABC',
+        hearingWindow: {
+          dateRangeStart: '2025-12-15T00:00:00',
+          dateRangeEnd: '2025-12-17T00:00:00',
+          firstDateTimeMustBe: '',
         },
-        'duration': 125,
-        'hearingPriorityType': 'ABA1-HPR',
-        'numberOfPhysicalAttendees': 0,
-        'hearingInWelshFlag': false,
-        'hearingLocations': [
+        duration: 125,
+        hearingPriorityType: 'ABA1-HPR',
+        numberOfPhysicalAttendees: 0,
+        hearingInWelshFlag: false,
+        hearingLocations: [
           {
-            'locationType': 'court',
-            'locationId': '827534'
-          }
+            locationType: 'court',
+            locationId: '827534',
+          },
         ],
-        'privateHearingRequiredFlag': false,
-        'panelRequirements': {
-          'roleType': [
-            '19',
-            '30'
-          ],
-          'authorisationTypes': [],
-          'authorisationSubType': [],
-          'panelPreferences': [],
-          'panelSpecialisms': []
+        privateHearingRequiredFlag: false,
+        panelRequirements: {
+          roleType: ['19', '30'],
+          authorisationTypes: [],
+          authorisationSubType: [],
+          panelPreferences: [],
+          panelSpecialisms: [],
         },
-        'hearingIsLinkedFlag': false,
-        'hearingChannels': [
-          'INTER',
-          'VID'
-        ],
-        'autolistFlag': false
-      }
+        hearingIsLinkedFlag: false,
+        hearingChannels: ['INTER', 'VID'],
+        autolistFlag: false,
+      },
     };
     it('SHV static data updated with future dates', () => {
       const response = mochSHVData;
@@ -598,10 +620,10 @@ describe('HearingsUtils', () => {
   });
   it('should return true if additional facilities have changed', () => {
     const hearingRequestMainModel = {
-      hearingDetails: { facilitiesRequired: ['facility1', 'facility2'] }
+      hearingDetails: { facilitiesRequired: ['facility1', 'facility2'] },
     } as any;
     const hearingRequestToCompareMainModel = {
-      hearingDetails: { facilitiesRequired: ['facility1'] }
+      hearingDetails: { facilitiesRequired: ['facility1'] },
     } as any;
 
     const { facilitiesChanged } = HearingsUtils.haveAdditionalFacilitiesChanged(
@@ -613,10 +635,10 @@ describe('HearingsUtils', () => {
 
   it('should return false if additional facilities have not changed', () => {
     const hearingRequestMainModel = {
-      hearingDetails: { facilitiesRequired: ['facility1', 'facility2'] }
+      hearingDetails: { facilitiesRequired: ['facility1', 'facility2'] },
     } as any;
     const hearingRequestToCompareMainModel = {
-      hearingDetails: { facilitiesRequired: ['facility1', 'facility2'] }
+      hearingDetails: { facilitiesRequired: ['facility1', 'facility2'] },
     } as any;
 
     const { facilitiesChanged } = HearingsUtils.haveAdditionalFacilitiesChanged(
@@ -628,10 +650,10 @@ describe('HearingsUtils', () => {
 
   it('should return true if case additional security flag has changed', () => {
     const hearingRequestMainModel = {
-      caseDetails: { caseAdditionalSecurityFlag: true }
+      caseDetails: { caseAdditionalSecurityFlag: true },
     } as any;
     const hearingRequestToCompareMainModel = {
-      caseDetails: { caseAdditionalSecurityFlag: false }
+      caseDetails: { caseAdditionalSecurityFlag: false },
     } as any;
 
     const { caseAdditionalSecurityFlagChanged } = HearingsUtils.haveAdditionalFacilitiesChanged(
@@ -643,10 +665,10 @@ describe('HearingsUtils', () => {
 
   it('should return false if case additional security flag has not changed', () => {
     const hearingRequestMainModel = {
-      caseDetails: { caseAdditionalSecurityFlag: true }
+      caseDetails: { caseAdditionalSecurityFlag: true },
     } as any;
     const hearingRequestToCompareMainModel = {
-      caseDetails: { caseAdditionalSecurityFlag: true }
+      caseDetails: { caseAdditionalSecurityFlag: true },
     } as any;
 
     const { caseAdditionalSecurityFlagChanged } = HearingsUtils.haveAdditionalFacilitiesChanged(
@@ -699,35 +721,35 @@ describe('HearingsUtils', () => {
 
   it('should return sorted array when given an unsorted array', () => {
     const array = ['b', 'a', 'c'];
-    // eslint-disable-next-line dot-notation
+
     const result = HearingsUtils['standardiseStringArray'](array);
     expect(result).toEqual(['a', 'b', 'c']);
   });
 
   it('should return undefined when given a null array', () => {
     const array = null;
-    // eslint-disable-next-line dot-notation
+
     const result = HearingsUtils['standardiseStringArray'](array);
     expect(result).toBeUndefined();
   });
 
   it('should return undefined when given an undefined array', () => {
     const array = undefined;
-    // eslint-disable-next-line dot-notation
+
     const result = HearingsUtils['standardiseStringArray'](array);
     expect(result).toBeUndefined();
   });
 
   it('should return undefined when given an empty array', () => {
     const array: string[] = [];
-    // eslint-disable-next-line dot-notation
+
     const result = HearingsUtils['standardiseStringArray'](array);
     expect(result).toBeUndefined();
   });
 
   it('should return sorted array when given an already sorted array', () => {
     const array = ['a', 'b', 'c'];
-    // eslint-disable-next-line dot-notation
+
     const result = HearingsUtils['standardiseStringArray'](array);
     expect(result).toEqual(['a', 'b', 'c']);
   });

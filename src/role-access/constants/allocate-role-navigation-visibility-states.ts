@@ -4,24 +4,19 @@ export const backButtonVisibilityStates = [
   AllocateRoleState.CHOOSE_ALLOCATE_TO,
   AllocateRoleState.SEARCH_PERSON,
   AllocateRoleState.CHOOSE_DURATION,
-  AllocateRoleState.CHECK_ANSWERS
+  AllocateRoleState.CHECK_ANSWERS,
 ];
 
-export const backButtonVisibilityStatesIfReallocate = [
-  AllocateRoleState.CHOOSE_DURATION,
-  AllocateRoleState.CHECK_ANSWERS
-];
+export const backButtonVisibilityStatesIfReallocate = [AllocateRoleState.CHOOSE_DURATION, AllocateRoleState.CHECK_ANSWERS];
 
 export const continueButtonVisibilityStates = [
   AllocateRoleState.CHOOSE_ROLE,
   AllocateRoleState.CHOOSE_ALLOCATE_TO,
   AllocateRoleState.SEARCH_PERSON,
-  AllocateRoleState.CHOOSE_DURATION
+  AllocateRoleState.CHOOSE_DURATION,
 ];
 
-export const confirmButtonVisibilityStates = [
-  AllocateRoleState.CHECK_ANSWERS
-];
+export const confirmButtonVisibilityStates = [AllocateRoleState.CHECK_ANSWERS];
 
 export const cancelButtonVisibilityStates = [
   AllocateRoleState.CHOOSE_ROLE,
@@ -30,5 +25,5 @@ export const cancelButtonVisibilityStates = [
   AllocateRoleState.CHOOSE_DURATION,
   AllocateRoleState.CHECK_ANSWERS,
   AllocateRoleState.CONFIRM_ALLOCATION,
-  AllocateRoleState.NO_ROLES_FOUND
+  AllocateRoleState.NO_ROLES_FOUND,
 ];

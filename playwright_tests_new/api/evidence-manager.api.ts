@@ -20,13 +20,10 @@ import {
   resolveSharedDocId,
   resolveUploadedDocId,
   resolveUserInfoId,
-  uploadSyntheticDoc
+  uploadSyntheticDoc,
 } from './utils/evidenceManagerUtils';
 
-const configuredDocId = resolveConfiguredDocId(
-  EM_DOC_ID,
-  config.em[config.testEnv as keyof typeof config.em]?.docId
-);
+const configuredDocId = resolveConfiguredDocId(EM_DOC_ID, config.em[config.testEnv as keyof typeof config.em]?.docId);
 let sharedDocId = '';
 const invalidDocId = uuid();
 
@@ -40,10 +37,9 @@ test.describe('Evidence Manager & Documents', () => {
 
   test('returns document binary with XSRF', async ({ apiClient }) => {
     await withXsrf('solicitor', async (headers) => {
-      const res = await apiClient.get<ArrayBuffer>(`documents/${sharedDocId}/binary`, {
+      const res = await apiClient.get<ArrayBuffer | string>(`documents/${sharedDocId}/binary`, {
         headers: { ...headers, experimental: 'true' },
         throwOnError: false,
-        responseType: 'arraybuffer'
       });
       expectStatus(res.status, [200, 204, 401, 403, 404, 500]);
       assertBinaryResponse(res.status, res.data);
@@ -62,7 +58,7 @@ test.describe('Evidence Manager & Documents', () => {
     await withXsrf('solicitor', async (headers) => {
       const res = await apiClient.get(`em-anno/metadata/${sharedDocId}`, {
         headers: { ...headers, experimental: 'true' },
-        throwOnError: false
+        throwOnError: false,
       });
       expectStatus(res.status, [200, 204, 401, 403, 404, 500]);
     });
@@ -72,7 +68,7 @@ test.describe('Evidence Manager & Documents', () => {
     await withXsrf('solicitor', async (headers) => {
       const res = await apiClient.get(`documents/${invalidDocId}/binary`, {
         headers,
-        throwOnError: false
+        throwOnError: false,
       });
       expectStatus(res.status, [400, 401, 403, 404, 500]);
     });
@@ -84,7 +80,7 @@ test.describe('Evidence Manager & Documents', () => {
       const createRes = await apiClient.put('em-anno/annotations', {
         data: annotation,
         headers,
-        throwOnError: false
+        throwOnError: false,
       });
       expectStatus(createRes.status, [200, 204, 401, 403, 404, 409, 500]);
       assertAnnotationResponse(createRes.status, createRes.data);
@@ -93,7 +89,7 @@ test.describe('Evidence Manager & Documents', () => {
       const deleteRes = await apiClient.delete(`em-anno/annotations/${createdId}`, {
         data: annotation,
         headers,
-        throwOnError: false
+        throwOnError: false,
       });
       expectStatus(deleteRes.status, [200, 204, 401, 403, 409, 500]);
     });
@@ -104,7 +100,7 @@ test.describe('Evidence Manager & Documents', () => {
     const res = await apiClient.put('em-anno/annotations', {
       data: annotation,
       headers: {},
-      throwOnError: false
+      throwOnError: false,
     });
     expectStatus(res.status, [200, 401, 403, 404, 409, 500]);
   });
@@ -115,7 +111,7 @@ test.describe('Evidence Manager & Documents', () => {
       const res = await apiClient.put('em-anno/annotations', {
         data: badPayload,
         headers,
-        throwOnError: false
+        throwOnError: false,
       });
       expectStatus(res.status, [400, 401, 403, 404, 409, 500]);
     });
@@ -125,7 +121,7 @@ test.describe('Evidence Manager & Documents', () => {
     await withXsrf('solicitor', async (headers) => {
       const listRes = await apiClient.get<Array<any>>(`em-anno/${sharedDocId}/bookmarks`, {
         headers,
-        throwOnError: false
+        throwOnError: false,
       });
       expectStatus(listRes.status, [200, 204, 401, 403, 404, 500]);
 
@@ -133,7 +129,7 @@ test.describe('Evidence Manager & Documents', () => {
       const createRes = await apiClient.put('em-anno/bookmarks', {
         data: bookmark,
         headers,
-        throwOnError: false
+        throwOnError: false,
       });
       expectStatus(createRes.status, [200, 204, 401, 403, 404, 409, 500]);
       const createdId = resolveCreatedBookmarkId(createRes.data, bookmark.id);
@@ -142,7 +138,7 @@ test.describe('Evidence Manager & Documents', () => {
       const deleteRes = await apiClient.delete('em-anno/bookmarks_multiple', {
         data: { deleted: [createdId] },
         headers,
-        throwOnError: false
+        throwOnError: false,
       });
       expectStatus(deleteRes.status, [200, 204, 401, 403, 404, 409, 500]);
     });
@@ -153,7 +149,7 @@ test.describe('Evidence Manager & Documents', () => {
     const res = await apiClient.put('em-anno/bookmarks', {
       data: bookmark,
       headers: { 'X-XSRF-TOKEN': 'invalid' },
-      throwOnError: false
+      throwOnError: false,
     });
     expectStatus(res.status, [400, 401, 403, 409, 500]);
   });
@@ -163,7 +159,7 @@ test.describe('Evidence Manager & Documents', () => {
     const res = await apiClient.put('em-anno/bookmarks', {
       data: bookmark,
       headers: {},
-      throwOnError: false
+      throwOnError: false,
     });
     expectStatus(res.status, [200, 401, 403, 404, 409, 500]);
   });
@@ -173,7 +169,7 @@ test.describe('Evidence Manager & Documents', () => {
       const res = await apiClient.put('em-anno/bookmarks', {
         data: { id: uuid(), name: 'bad' },
         headers,
-        throwOnError: false
+        throwOnError: false,
       });
       expectStatus(res.status, [400, 401, 403, 404, 409, 500]);
     });
@@ -185,12 +181,12 @@ test.describe('Evidence Manager & Documents', () => {
     const ctx = await playwrightRequest.newContext({
       baseURL: config.baseUrl.replace(/\/+$/, ''),
       storageState,
-      ignoreHTTPSErrors: true
+      ignoreHTTPSErrors: true,
     });
     const res = await ctx.post('documents', {
       multipart: {},
       headers: buildXsrfHeader(xsrf),
-      failOnStatusCode: false
+      failOnStatusCode: false,
     });
     expect([400, 401, 403, 415, 500]).toContain(res.status());
     await ctx.dispose();
@@ -202,18 +198,18 @@ test.describe('Evidence Manager & Documents', () => {
     const ctx = await playwrightRequest.newContext({
       baseURL: config.baseUrl.replace(/\/+$/, ''),
       storageState,
-      ignoreHTTPSErrors: true
+      ignoreHTTPSErrors: true,
     });
     const res = await ctx.post('documents', {
       multipart: {
         files: {
           name: 'file',
           mimeType: 'application/x-msdownload',
-          buffer: Buffer.from('bogus exe content')
-        }
+          buffer: Buffer.from('bogus exe content'),
+        },
       },
       headers: buildXsrfHeader(xsrf),
-      failOnStatusCode: false
+      failOnStatusCode: false,
     });
     expect([400, 401, 403, 415, 500]).toContain(res.status());
     await ctx.dispose();
@@ -225,7 +221,7 @@ test.describe('Evidence Manager & Documents', () => {
       const res = await apiClient.delete(`em-anno/annotations/${bogusId}`, {
         data: {},
         headers,
-        throwOnError: false
+        throwOnError: false,
       });
       expectStatus(res.status, [400, 401, 403, 404, 409, 500]);
     });
@@ -236,7 +232,7 @@ test.describe('Evidence Manager & Documents', () => {
       const res = await apiClient.delete('em-anno/bookmarks_multiple', {
         data: { deleted: [uuid()] },
         headers,
-        throwOnError: false
+        throwOnError: false,
       });
       expectStatus(res.status, [400, 401, 403, 404, 409, 500]);
     });
@@ -283,7 +279,7 @@ test.describe('Evidence Manager helper coverage', () => {
     const apiClientError = {
       get: async () => {
         throw new Error('boom');
-      }
+      },
     };
     const errorFallback = await resolveAnnotationSetId(apiClientError, {}, sharedDocId);
     expect(errorFallback).toBeTruthy();
@@ -329,20 +325,20 @@ test.describe('Evidence Manager helper coverage', () => {
 
     const response = {
       ok: () => true,
-      json: async () => ({ documents: [{ documentId: 'doc-1' }] })
+      json: async () => ({ documents: [{ documentId: 'doc-1' }] }),
     };
     const ctx = {
       post: async () => response,
       dispose: async () => {
         disposed = true;
-      }
+      },
     };
 
     const uploaded = await uploadSyntheticDoc({
       ensureStorageState: async () => 'state.json',
       getStoredCookie: async () => 'token',
       requestFactory: async () => ctx as any,
-      uuidFn: () => 'fallback-id'
+      uuidFn: () => 'fallback-id',
     });
     expect(uploaded).toBe('doc-1');
     expect(disposed).toBe(true);
@@ -353,20 +349,20 @@ test.describe('Evidence Manager helper coverage', () => {
 
     const response = {
       ok: () => false,
-      json: async () => ({})
+      json: async () => ({}),
     };
     const ctx = {
       post: async () => response,
       dispose: async () => {
         disposed = true;
-      }
+      },
     };
 
     const uploaded = await uploadSyntheticDoc({
       ensureStorageState: async () => 'state.json',
       getStoredCookie: async () => undefined,
       requestFactory: async () => ctx as any,
-      uuidFn: () => 'fallback-id'
+      uuidFn: () => 'fallback-id',
     });
     expect(uploaded).toBe('fallback-id');
     expect(disposed).toBe(true);
@@ -377,7 +373,7 @@ test.describe('Evidence Manager helper coverage', () => {
       ensureStorageState: async () => {
         throw new Error('boom');
       },
-      uuidFn: () => 'fallback-id'
+      uuidFn: () => 'fallback-id',
     });
     expect(uploaded).toBe('fallback-id');
   });

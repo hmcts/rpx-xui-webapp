@@ -25,7 +25,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
       parent_key: null,
       category_key: 'facilities',
       parent_category: '',
-      active_flag: 'Y'
+      active_flag: 'Y',
     },
     {
       key: 'inCameraCourt',
@@ -37,7 +37,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
       parent_key: null,
       category_key: 'facilities',
       parent_category: '',
-      active_flag: 'Y'
+      active_flag: 'Y',
     },
     {
       key: 'sameSexCourtroom',
@@ -49,7 +49,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
       parent_key: null,
       category_key: 'facilities',
       parent_category: '',
-      active_flag: 'Y'
+      active_flag: 'Y',
     },
     {
       key: 'secureDock',
@@ -61,7 +61,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
       parent_key: null,
       category_key: 'facilities',
       parent_category: '',
-      active_flag: 'Y'
+      active_flag: 'Y',
     },
     {
       key: 'witnessScreen',
@@ -73,7 +73,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
       parent_key: null,
       category_key: 'facilities',
       parent_category: '',
-      active_flag: 'Y'
+      active_flag: 'Y',
     },
     {
       key: 'witnessRoom',
@@ -85,7 +85,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
       parent_key: null,
       category_key: 'facilities',
       parent_category: '',
-      active_flag: 'Y'
+      active_flag: 'Y',
     },
     {
       key: 'videoConferencing',
@@ -97,7 +97,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
       parent_key: null,
       category_key: 'facilities',
       parent_category: '',
-      active_flag: 'Y'
+      active_flag: 'Y',
     },
     {
       key: 'VideoFacility',
@@ -109,7 +109,7 @@ describe('AdditionalFacilitiesSectionComponent', () => {
       parent_key: null,
       category_key: 'facilities',
       parent_category: '',
-      active_flag: 'Y'
+      active_flag: 'Y',
     },
     {
       key: 'prisonVideoLink',
@@ -121,21 +121,16 @@ describe('AdditionalFacilitiesSectionComponent', () => {
       parent_key: null,
       category_key: 'facilities',
       parent_category: '',
-      active_flag: 'Y'
-    }
+      active_flag: 'Y',
+    },
   ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
-      declarations: [
-        AdditionalFacilitiesSectionComponent
-      ],
+      declarations: [AdditionalFacilitiesSectionComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        provideMockStore({ initialState }),
-        { provide: HearingsService, useValue: hearingsService }
-      ]
+      providers: [provideMockStore({ initialState }), { provide: HearingsService, useValue: hearingsService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AdditionalFacilitiesSectionComponent);
@@ -175,11 +170,13 @@ describe('AdditionalFacilitiesSectionComponent', () => {
     spyOn(component.changeEditHearing, 'emit');
     component.onChange('additionalSecurityRequired');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
-      fragmentId: 'additionalSecurityRequired', changeLink: '/hearings/request/hearing-facilities#addition-security-confirmation'
+      fragmentId: 'additionalSecurityRequired',
+      changeLink: '/hearings/request/hearing-facilities#addition-security-confirmation',
     });
     component.onChange('additionalFacilitiesRequired');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
-      fragmentId: 'additionalFacilitiesRequired', changeLink: '/hearings/request/hearing-facilities#immigrationDetentionCentre'
+      fragmentId: 'additionalFacilitiesRequired',
+      changeLink: '/hearings/request/hearing-facilities#immigrationDetentionCentre',
     });
   });
 
@@ -196,8 +193,8 @@ describe('AdditionalFacilitiesSectionComponent', () => {
           partyDetailsChangesRequired: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
-          hearingUnavailabilityDatesChanged: false
-        }
+          hearingUnavailabilityDatesChanged: false,
+        },
       };
       component.ngOnInit();
       expect(component.pageTitleDisplayLabel).toBeUndefined();
@@ -215,15 +212,15 @@ describe('AdditionalFacilitiesSectionComponent', () => {
           partyDetailsChangesRequired: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
-          hearingUnavailabilityDatesChanged: false
-        }
+          hearingUnavailabilityDatesChanged: false,
+        },
       };
       component.hearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         caseDetails: {
           ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
-          caseAdditionalSecurityFlag: true
-        }
+          caseAdditionalSecurityFlag: true,
+        },
       };
       component.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag = true;
       component.ngOnInit();
@@ -242,15 +239,15 @@ describe('AdditionalFacilitiesSectionComponent', () => {
           partyDetailsChangesRequired: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
-          hearingUnavailabilityDatesChanged: false
-        }
+          hearingUnavailabilityDatesChanged: false,
+        },
       };
       component.hearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         hearingDetails: {
           ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-          facilitiesRequired: ['some facility']
-        }
+          facilitiesRequired: ['some facility'],
+        },
       };
       component.ngOnInit();
       expect(component.pageTitleDisplayLabel).toEqual(AmendmentLabelStatus.AMENDED);
@@ -269,8 +266,8 @@ describe('AdditionalFacilitiesSectionComponent', () => {
           partyDetailsChangesRequired: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
-          hearingUnavailabilityDatesChanged: false
-        }
+          hearingUnavailabilityDatesChanged: false,
+        },
       };
       component.ngOnInit();
       expect(component.pageTitleDisplayLabel).toEqual(AmendmentLabelStatus.ACTION_NEEDED);
@@ -289,8 +286,8 @@ describe('AdditionalFacilitiesSectionComponent', () => {
           partyDetailsChangesRequired: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: false,
-          hearingUnavailabilityDatesChanged: false
-        }
+          hearingUnavailabilityDatesChanged: false,
+        },
       };
       component.ngOnInit();
       expect(component.pageTitleDisplayLabel).toEqual(AmendmentLabelStatus.AMENDED);
@@ -309,8 +306,8 @@ describe('AdditionalFacilitiesSectionComponent', () => {
           partyDetailsChangesRequired: false,
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: true,
-          hearingUnavailabilityDatesChanged: false
-        }
+          hearingUnavailabilityDatesChanged: false,
+        },
       };
       component.ngOnInit();
       expect(component.pageTitleDisplayLabel).toEqual(AmendmentLabelStatus.ACTION_NEEDED);
@@ -330,8 +327,8 @@ describe('AdditionalFacilitiesSectionComponent', () => {
           hearingWindowChangesRequired: false,
           hearingFacilitiesChangesRequired: true,
           hearingFacilitiesChangesConfirmed: true,
-          hearingUnavailabilityDatesChanged: false
-        }
+          hearingUnavailabilityDatesChanged: false,
+        },
       };
       component.ngOnInit();
       expect(component.pageTitleDisplayLabel).toEqual(AmendmentLabelStatus.AMENDED);

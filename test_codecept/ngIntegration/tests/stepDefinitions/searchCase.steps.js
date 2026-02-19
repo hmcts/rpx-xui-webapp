@@ -23,14 +23,14 @@ When('I select jurisdiction {string} case type {string}', async function (jurisd
   });
 });
 
-Then('I validate search case {string} fields displayed', async function(searchCaseConfigReference){
-  const searchCaseConfig= global.scenarioData[searchCaseConfigReference];
+Then('I validate search case {string} fields displayed', async function (searchCaseConfigReference) {
+  const searchCaseConfig = global.scenarioData[searchCaseConfigReference];
   for (const dynamicfield of searchCaseConfig.getConfig().searchInputs) {
     expect(await searchCasePage.isWorkbasketFilterDisplayed(dynamicfield)).to.be.true;
   }
 });
 
-Then('I Validate case search request to contain filters from search case {string}', async function(searchCaseConfigReference){
+Then('I Validate case search request to contain filters from search case {string}', async function (searchCaseConfigReference) {
   await BrowserWaits.retryWithActionCallback(async () => {
     const searchCaseConfig = global.scenarioData[searchCaseConfigReference].getConfig();
     let caseListReq = null;
@@ -42,7 +42,7 @@ Then('I Validate case search request to contain filters from search case {string
     await MockApp.stopServer();
     await MockApp.startServer();
     const searchCaseInputValues = {};
-    if (!(await caseListPage.isDynamicFilterDisplayed())){
+    if (!(await caseListPage.isDynamicFilterDisplayed())) {
       throw new Error('Dynamic filters not displayed to proced with scenario.');
     }
 
@@ -67,7 +67,7 @@ Then('I Validate case search request to contain filters from search case {string
   });
 });
 
-Then('I validate searchcase fixed list items for searchcase {string}', async function(searchCaseConfigRef){
+Then('I validate searchcase fixed list items for searchcase {string}', async function (searchCaseConfigRef) {
   const searchCaseConfig = global.scenarioData[searchCaseConfigRef].getConfig();
 
   for (const dynamicfield of searchCaseConfig.searchInputs) {
@@ -77,7 +77,7 @@ Then('I validate searchcase fixed list items for searchcase {string}', async fun
   }
 });
 
-Then('I Validate case headers and values {string}', async function(searchCaseConfigRef){
+Then('I Validate case headers and values {string}', async function (searchCaseConfigRef) {
   const searchCaseConfig = global.scenarioData[searchCaseConfigRef].getConfig();
   const searchCaseInputValues = {};
   for (const dynamicfield of searchCaseConfig.searchInputs) {
@@ -88,7 +88,7 @@ Then('I Validate case headers and values {string}', async function(searchCaseCon
   await caseListPage.caseDataValidation();
 });
 
-Then('I Validate search case total cases count {string}', async function(searchCaseConfigRef){
+Then('I Validate search case total cases count {string}', async function (searchCaseConfigRef) {
   const searchCaseConfig = global.scenarioData[searchCaseConfigRef].getConfig();
 
   let reqData = { size: 25 };
@@ -102,9 +102,9 @@ Then('I Validate search case total cases count {string}', async function(searchC
 });
 
 When('I click search case pagination {string} page', async function (prevnext) {
-  if (prevnext.toLowerCase() === 'next'){
+  if (prevnext.toLowerCase() === 'next') {
     await searchCasePage.clickPaginationNextPage();
-  } else if (prevnext.toLowerCase() === 'previous'){
+  } else if (prevnext.toLowerCase() === 'previous') {
     await searchCasePage.clickPaginationPreviousPage();
   }
 });
@@ -131,11 +131,10 @@ Then('I Validate case event trigger actions listed {string}', async function (se
   await searchCasePage.clickApplySearchCaseFilters();
   await searchCasePage.openFirstCaseInResults();
   let nextStepDropDownData = await searchCasePage.nextStepTriggerActions();
-  console.log('nextStepDropDownData::'+JSON.stringify(nextStepDropDownData));
-  console.log('caseDetailsData.triggers::'+JSON.stringify(caseDetailsData.triggers));
+  console.log('nextStepDropDownData::' + JSON.stringify(nextStepDropDownData));
+  console.log('caseDetailsData.triggers::' + JSON.stringify(caseDetailsData.triggers));
   for (const eventObj in caseDetailsData.triggers) {
-    console.log('eventObj::'+JSON.stringify(caseDetailsData.triggers[eventObj]));
+    console.log('eventObj::' + JSON.stringify(caseDetailsData.triggers[eventObj]));
     expect(nextStepDropDownData).to.be.contain(caseDetailsData.triggers[eventObj].name);
   }
 });
-

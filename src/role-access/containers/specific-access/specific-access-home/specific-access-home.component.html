@@ -5,35 +5,42 @@
       <div class="govuk-grid-row">
         <exui-specific-access-navigation (eventTrigger)="onNavEvent($event)">
           <div class="govuk-main-wrapper">
-            <exui-specific-access-review #specificAccessReview
+            <exui-specific-access-review
+              #specificAccessReview
               *ngIf="isComponentVisible(navigationCurrentState, specificAccessReviewVisibilityStates)"
-              [navEvent]="navEvent">
+              [navEvent]="navEvent"
+            >
             </exui-specific-access-review>
             <exui-specific-access-duration
               #specificAccessDuration
               *ngIf="isComponentVisible(navigationCurrentState, specificAccessDurationVisibilityStates)"
-              [navEvent]="navEvent">
+              [navEvent]="navEvent"
+            >
             </exui-specific-access-duration>
             <exui-specific-access-approved
               #specificAccessApproved
               *ngIf="isComponentVisible(navigationCurrentState, specificAccessApprovedVisibilityStates)"
-              [navEvent]="navEvent">
+              [navEvent]="navEvent"
+            >
             </exui-specific-access-approved>
             <exui-specific-access-information
               #specificAccessInformation
               *ngIf="isComponentVisible(navigationCurrentState, specificAccessInformationVisibilityStates)"
-              [navEvent]="navEvent">
+              [navEvent]="navEvent"
+            >
             </exui-specific-access-information>
             <exui-specific-access-denied
               #specificAccessDenied
               *ngIf="isComponentVisible(navigationCurrentState, specificAccessDeniedVisibilityStates)"
-              [navEvent]="navEvent">
+              [navEvent]="navEvent"
+            >
             </exui-specific-access-denied>
           </div>
           <exui-specific-access-duplicate-record
             #specificAccessDuplicateRecord
             *ngIf="isComponentVisible(navigationCurrentState, specificAccessDuplicateRecordVisibilityStates)"
-            [navEvent]="navEvent">
+            [navEvent]="navEvent"
+          >
           </exui-specific-access-duplicate-record>
         </exui-specific-access-navigation>
       </div>

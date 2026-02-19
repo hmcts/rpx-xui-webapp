@@ -8,7 +8,13 @@ import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { ActualHearingsUtils } from '../../../../hearings/utils/actual-hearings.utils';
-import { hearingActualsMainModel, hearingStageRefData, initialState, partyChannelsRefData, partySubChannelsRefData } from '../../../hearing.test.data';
+import {
+  hearingActualsMainModel,
+  hearingStageRefData,
+  initialState,
+  partyChannelsRefData,
+  partySubChannelsRefData,
+} from '../../../hearing.test.data';
 import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
 import { ACTION, HearingResult } from '../../../models/hearings.enum';
 import { ConvertToValuePipe } from '../../../pipes/convert-to-value.pipe';
@@ -19,10 +25,9 @@ import { DatePipe, FormatTranslatorService } from '@hmcts/ccd-case-ui-toolkit';
 
 @Pipe({
   standalone: false,
-  name: 'transformAnswer'
+  name: 'transformAnswer',
 })
 export class MockHearingAnswersPipe implements PipeTransform {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public transform(answerSource, hearingState$, index?: number): string {
     return '';
   }
@@ -30,11 +35,9 @@ export class MockHearingAnswersPipe implements PipeTransform {
 
 @Component({
   standalone: false,
-  template: `
-    <div>Nothing</div>`
+  template: ` <div>Nothing</div>`,
 })
-class NothingComponent {
-}
+class NothingComponent {}
 
 describe('HearingActualSummaryComponent', () => {
   let component: HearingActualsEditSummaryComponent;
@@ -56,7 +59,7 @@ describe('HearingActualSummaryComponent', () => {
       parent_category: 'Applicant',
       parent_key: 'APPL',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'EntityRoleCode',
@@ -69,7 +72,7 @@ describe('HearingActualSummaryComponent', () => {
       parent_category: 'Support',
       parent_key: 'SUPP',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'EntityRoleCode',
@@ -82,43 +85,51 @@ describe('HearingActualSummaryComponent', () => {
       parent_category: 'Applicant',
       parent_key: 'APPL',
       active_flag: 'Y',
-      child_nodes: null
-    }
+      child_nodes: null,
+    },
   ];
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualsEditSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe, MockRpxTranslatePipe, DatePipe],
-      imports: [RouterTestingModule.withRoutes(
-        [
-          { path: 'hearings/actuals/1000000/hearing-actual-edit-summary', component: NothingComponent }
-        ]
-      )],
+      declarations: [
+        HearingActualsEditSummaryComponent,
+        ConvertToValuePipe,
+        MockHearingAnswersPipe,
+        MockRpxTranslatePipe,
+        DatePipe,
+      ],
+      imports: [
+        RouterTestingModule.withRoutes([
+          { path: 'hearings/actuals/1000000/hearing-actual-edit-summary', component: NothingComponent },
+        ]),
+      ],
       providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },
         {
           provide: ActivatedRoute,
           useValue: {
-            paramMap: of(convertToParamMap({
-              id: '1'
-            })),
+            paramMap: of(
+              convertToParamMap({
+                id: '1',
+              })
+            ),
             snapshot: {
               params: {
-                id: '1'
+                id: '1',
               },
               data: {
                 partyChannels: partyChannelsRefData,
                 partySubChannels: partySubChannelsRefData,
-                hearingRole
-              }
-            }
-          }
+                hearingRole,
+              },
+            },
+          },
         },
         DatePipe,
-        FormatTranslatorService
+        FormatTranslatorService,
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   }));
 
@@ -204,7 +215,9 @@ describe('HearingActualSummaryComponent', () => {
 
   it('should return updated notRequired', () => {
     const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals(
-      component.hearingActualsMainModel, component.actualHearingDays[0].hearingDate, { notRequired: true } as ActualHearingDayModel
+      component.hearingActualsMainModel,
+      component.actualHearingDays[0].hearingDate,
+      { notRequired: true } as ActualHearingDayModel
     );
     expect(patchedHearingActuals.actualHearingDays[0].notRequired).toBe(true);
   });
@@ -217,7 +230,7 @@ describe('HearingActualSummaryComponent', () => {
     // same-origin referrer
     Object.defineProperty(document, 'referrer', {
       value: window.location.origin + '/previous',
-      configurable: true
+      configurable: true,
     });
 
     // ensure history.length > 1
@@ -240,7 +253,7 @@ describe('HearingActualSummaryComponent', () => {
     // different-origin referrer to force the else path
     Object.defineProperty(document, 'referrer', {
       value: 'https://other.example/path',
-      configurable: true
+      configurable: true,
     });
 
     // stub the URL used by the fallback navigate

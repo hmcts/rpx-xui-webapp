@@ -1,9 +1,13 @@
 const { $, elementByXpath } = require('../../../../../helpers/globals');
 
 class HearingVenueDetailsPage {
-  get pageContainer() { return $('exui-hearing-venue'); }
+  get pageContainer() {
+    return $('exui-hearing-venue');
+  }
 
-  get locationSearchInput() { return $('xuilib-search-venue input'); }
+  get locationSearchInput() {
+    return $('xuilib-search-venue input');
+  }
 
   get addLocationBtn() {
     return elementByXpath("//exui-hearing-venue//a[contains(text(),'Add location')]");
@@ -11,7 +15,7 @@ class HearingVenueDetailsPage {
 
   get fieldMapping() {
     return {
-      'Search for a location by name': $('div.search-location')
+      'Search for a location by name': $('div.search-location'),
     };
   }
 
@@ -39,8 +43,7 @@ class HearingVenueDetailsPage {
 
     // 2. wait for the specific option inside the panel
     const option = elementByXpath(
-      `//div[contains(@class,'mat-autocomplete-panel')]` +
-      `//mat-option//span[normalize-space(text())='${location}']`
+      `//div[contains(@class,'mat-autocomplete-panel')]` + `//mat-option//span[normalize-space(text())='${location}']`
     );
     await option.waitFor({ state: 'visible', timeout: 10_000 });
 

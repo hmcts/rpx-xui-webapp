@@ -15,7 +15,7 @@ import { getRoleCategory } from '../../utils';
   selector: 'exui-task-manager-filter',
   templateUrl: './task-manager-filter.component.html',
   styleUrls: ['./task-manager-filter.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class TaskManagerFilterComponent implements OnInit, OnDestroy {
   private static readonly FILTER_NAME: string = 'all-work-tasks-filter';
@@ -41,27 +41,29 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       fields: [
         {
           name: 'selectLocation',
-          value: ['location_all']
+          value: ['location_all'],
         },
         {
           name: 'selectPerson',
-          value: ['All']
+          value: ['All'],
         },
         {
           name: 'taskName',
-          value: [{ task_type_id: '', task_type_name: '' }]
+          value: [{ task_type_id: '', task_type_name: '' }],
         },
         {
           name: 'findTaskNameControl',
-          value: ['']
-        }
-      ]
-    }
+          value: [''],
+        },
+      ],
+    },
   };
 
-  constructor(private readonly filterService: FilterService,
-              private featureToggleService: FeatureToggleService,
-              private readonly appStore: Store<fromAppStore.State>) {}
+  constructor(
+    private readonly filterService: FilterService,
+    private featureToggleService: FeatureToggleService,
+    private readonly appStore: Store<fromAppStore.State>
+  ) {}
 
   private static initServiceFilter(jurisdictions: HMCTSServiceDetails[]): FilterFieldConfig {
     return {
@@ -71,9 +73,17 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       maxSelected: 1,
       minSelectedError: 'You must select a service',
       maxSelectedError: null,
-      changeResetFields: ['selectLocation', 'selectPerson', 'role', 'person', 'findPersonControl', 'taskType', 'findTaskNameControl'],
+      changeResetFields: [
+        'selectLocation',
+        'selectPerson',
+        'role',
+        'person',
+        'findPersonControl',
+        'taskType',
+        'findTaskNameControl',
+      ],
       title: 'Service',
-      type: 'select'
+      type: 'select',
     };
   }
 
@@ -90,7 +100,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       enableAddButton: false,
       type: 'find-location',
       radioSelectionChange: 'selectLocation=search',
-      bookingCheckType: BookingCheckType.NO_CHECK
+      bookingCheckType: BookingCheckType.NO_CHECK,
     };
   }
 
@@ -99,14 +109,14 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       name: 'selectLocation',
       options: [
         { key: 'location_all', label: 'All' },
-        { key: 'search', label: 'Search for a location' }
+        { key: 'search', label: 'Search for a location' },
       ],
       minSelected: 1,
       maxSelected: 1,
       minSelectedError: 'You must select a location',
       maxSelectedError: null,
       title: 'Location',
-      type: 'radio'
+      type: 'radio',
     };
   }
 
@@ -116,16 +126,16 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       options: [
         {
           key: 'All',
-          label: 'All'
+          label: 'All',
         },
         {
           key: 'None / Available tasks',
-          label: 'Unassigned'
+          label: 'Unassigned',
         },
         {
           key: 'Specific person',
-          label: 'Assigned to a person'
-        }
+          label: 'Assigned to a person',
+        },
       ],
       minSelected: 1,
       maxSelected: 1,
@@ -135,7 +145,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       lineBreakBefore: true,
       findPersonField: 'person',
       title: 'Tasks',
-      type: 'radio'
+      type: 'radio',
     };
   }
 
@@ -145,20 +155,20 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       options: [
         {
           key: PersonRole.JUDICIAL,
-          label: PersonRole.JUDICIAL
+          label: PersonRole.JUDICIAL,
         },
         {
           key: PersonRole.LEGAL_OPERATIONS,
-          label: PersonRole.LEGAL_OPERATIONS
+          label: PersonRole.LEGAL_OPERATIONS,
         },
         {
           key: PersonRole.ADMIN,
-          label: PersonRole.ADMIN
+          label: PersonRole.ADMIN,
         },
         {
           key: PersonRole.CTSC,
-          label: PersonRole.CTSC
-        }
+          label: PersonRole.CTSC,
+        },
       ],
       minSelected: 1,
       maxSelected: 1,
@@ -168,7 +178,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       enableCondition: 'selectPerson=Specific person',
       findPersonField: 'person',
       disabledText: 'Select a role type',
-      type: 'select'
+      type: 'select',
     };
   }
 
@@ -185,7 +195,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       type: 'find-person',
       radioSelectionChange: 'selectPerson=Specific person',
       servicesField: 'service',
-      services: waSupportedJurisdictions
+      services: waSupportedJurisdictions,
     };
   }
 
@@ -195,24 +205,24 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       options: [
         {
           key: 'All',
-          label: 'All'
+          label: 'All',
         },
         {
           key: 'JUDICIAL',
-          label: 'Judicial'
+          label: 'Judicial',
         },
         {
           key: 'LEGAL_OPERATIONS',
-          label: 'Legal Ops'
+          label: 'Legal Ops',
         },
         {
           key: 'ADMIN',
-          label: 'Admin'
+          label: 'Admin',
         },
         {
           key: 'CTSC',
-          label: 'CTSC'
-        }
+          label: 'CTSC',
+        },
       ],
       minSelected: 1,
       maxSelected: 1,
@@ -220,7 +230,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       maxSelectedError: null,
       lineBreakBefore: true,
       title: 'Tasks by role type',
-      type: 'select'
+      type: 'select',
     };
   }
 
@@ -235,32 +245,31 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       minSelectedError: 'You must select a task name',
       maxSelectedError: null,
       enableAddTaskNameButton: false,
-      type: 'find-task-name'
+      type: 'find-task-name',
     };
   }
 
   public ngOnInit(): void {
-    this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
-      (userDetails) => {
-        // get jurisdiction key from detailed service list
-        const jurisdiction = this.jurisdictions?.length > 0 ? this.jurisdictions[0].serviceId : '';
-        this.userRole = AppUtils.getUserRole(userDetails?.userInfo?.roles || []);
-        this.roleType = AppUtils.convertDomainToLabel(this.userRole);
-        this.fieldsConfig.cancelSetting.fields.push({
+    this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe((userDetails) => {
+      // get jurisdiction key from detailed service list
+      const jurisdiction = this.jurisdictions?.length > 0 ? this.jurisdictions[0].serviceId : '';
+      this.userRole = AppUtils.getUserRole(userDetails?.userInfo?.roles || []);
+      this.roleType = AppUtils.convertDomainToLabel(this.userRole);
+      this.fieldsConfig.cancelSetting.fields.push(
+        {
           name: 'taskType',
-          value: [getRoleCategory(this.roleType)]
+          value: [getRoleCategory(this.roleType)],
         },
         {
           name: 'role',
-          value: [this.roleType]
+          value: [this.roleType],
         },
         {
           name: 'service',
-          value: [jurisdiction]
+          value: [jurisdiction],
         }
-        );
-      }
-    );
+      );
+    });
     this.fieldsConfig.fields = [
       TaskManagerFilterComponent.initServiceFilter(this.jurisdictions),
       TaskManagerFilterComponent.initSelectLocationFilter(),
@@ -270,28 +279,31 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
       TaskManagerFilterComponent.initRoleTypeFilter(),
       TaskManagerFilterComponent.findPersonFilter(this.waSupportedJurisdictions),
       TaskManagerFilterComponent.initTaskTypeFilter(),
-      TaskManagerFilterComponent.initTaskNameFilter()
+      TaskManagerFilterComponent.initTaskNameFilter(),
     ];
 
-    this.filterSub = this.filterService.getStream(TaskManagerFilterComponent.FILTER_NAME)
+    this.filterSub = this.filterService
+      .getStream(TaskManagerFilterComponent.FILTER_NAME)
       .pipe(
         map((f: FilterSetting) => {
           if (f === null) {
             f = {
               id: TaskManagerFilterComponent.FILTER_NAME,
               reset: false,
-              fields: this.fieldsConfig.cancelSetting.fields
+              fields: this.fieldsConfig.cancelSetting.fields,
             };
             return f;
           }
           return f;
         }),
         filter((f: FilterSetting) => f && f.hasOwnProperty('fields')),
-        filter((f: FilterSetting) => !f.reset),
-      ).subscribe((f: FilterSetting) => {
-        const fields = f.fields.reduce((acc, field: { name: string, value: string[] }) => {
+        filter((f: FilterSetting) => !f.reset)
+      )
+      .subscribe((f: FilterSetting) => {
+        const fields = f.fields.reduce((acc, field: { name: string; value: string[] }) => {
           if (field.name === 'location') {
-            const value: any = field.value && field.value.length > 0 ? (field.value[0] as unknown as LocationByEpimmsModel).epimms_id : '';
+            const value: any =
+              field.value && field.value.length > 0 ? (field.value[0] as unknown as LocationByEpimmsModel).epimms_id : '';
             return { ...acc, [field.name]: value };
           }
           return { ...acc, [field.name]: field.value[0] };

@@ -8,9 +8,8 @@ describe('PriorityFieldComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [PriorityFieldComponent]
-    })
-      .compileComponents();
+      declarations: [PriorityFieldComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -71,4 +70,3 @@ describe('PriorityFieldComponent', () => {
     expect(component.priority).toBe(TaskPriority.HIGH);
   });
 });
-

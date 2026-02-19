@@ -1,17 +1,16 @@
-
 const { v4 } = require('uuid');
 const userApiData = require('../userApiData');
 
 const categoriesAndDocumentsResponse = require('./categoriesAndDocuments');
 
-class CategoriesAndDocumentsApi{
-  constructor(){
+class CategoriesAndDocumentsApi {
+  constructor() {
     this.docIdsAndFileMapping = this.getDocumentsInCategory(categoriesAndDocumentsResponse.categories);
   }
 
-  getDocumentsInCategory(categories){
+  getDocumentsInCategory(categories) {
     let documents = {};
-    for (const category of categories){
+    for (const category of categories) {
       if (category.documents) {
         for (const document of category.documents) {
           const doc_url = document.document_url;
@@ -28,14 +27,13 @@ class CategoriesAndDocumentsApi{
     return documents;
   }
 
-  getCategoriesAndDocumentsForCase(){
+  getCategoriesAndDocumentsForCase() {
     return categoriesAndDocumentsResponse;
   }
 
-  getDocNameWithId(docId){
+  getDocNameWithId(docId) {
     return this.docIdsAndFileMapping[docId];
   }
 }
 
 module.exports = new CategoriesAndDocumentsApi();
-

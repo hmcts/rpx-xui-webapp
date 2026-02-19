@@ -9,7 +9,7 @@ import { CaseTypesUtils } from '../../../../utils/case-types.utils';
 @Component({
   standalone: false,
   selector: 'exui-case-details-section',
-  templateUrl: './case-details-section.component.html'
+  templateUrl: './case-details-section.component.html',
 })
 export class CaseDetailsSectionComponent implements OnInit {
   @Input() public caseTypeRefData: LovRefDataModel[];
@@ -19,10 +19,13 @@ export class CaseDetailsSectionComponent implements OnInit {
   public withinPage: WithinPageProperties;
   public amendmentLabelEnum = AmendmentLabelStatus;
 
-  constructor (protected readonly hearingsService: HearingsService) {}
+  constructor(protected readonly hearingsService: HearingsService) {}
 
   public ngOnInit(): void {
     this.withinPage = this.hearingsService.propertiesUpdatedAutomatically.withinPage;
-    this.caseTypes = CaseTypesUtils.getCaseCategoryDisplayModels(this.caseTypeRefData, this.hearingRequestMainModel.caseDetails?.caseCategories);
+    this.caseTypes = CaseTypesUtils.getCaseCategoryDisplayModels(
+      this.caseTypeRefData,
+      this.hearingRequestMainModel.caseDetails?.caseCategories
+    );
   }
 }

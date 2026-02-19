@@ -16,9 +16,28 @@ properties([
 def type      = "nodejs"
 def product   = "xui"
 def component = "webapp"
+def vault     = "rpx"
 def channel   = '#xui-pipeline'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+def archivePlaywrightDiagnostics = {
+    steps.sh '''
+        set +e
+        out_dir="functional-output/tests/playwright-diagnostics/failure-data"
+        mkdir -p "${out_dir}"
+        if [ -d test-results ]; then
+          find test-results -type f -name 'failure-data.json' | while read -r file; do
+            rel="${file#test-results/}"
+            safe_name=$(echo "${rel}" | tr '/ ' '__')
+            cp "${file}" "${out_dir}/${safe_name}"
+          done
+        fi
+    '''
+    steps.archiveArtifacts(
+        allowEmptyArchive: true,
+        artifacts: 'functional-output/tests/**/odhin-report/**/*,test-results/**/*,functional-output/tests/playwright-diagnostics/failure-data/**/*,**/failure-data.json'
+    )
+}
 
 def secrets = [
   'rpx-${env}': [
@@ -93,6 +112,7 @@ withNightlyPipeline(type, product, component) {
             reportName           : 'API Functional Test'
           ])
           steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
+          archivePlaywrightDiagnostics()
         }
       }
       
@@ -133,6 +153,7 @@ withNightlyPipeline(type, product, component) {
                       reportName           : 'Playwright Integration Test'
                     ])
                     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
+                    archivePlaywrightDiagnostics()
                 }
         }
 
@@ -151,6 +172,7 @@ withNightlyPipeline(type, product, component) {
               reportName           : 'XUI Manage Cases Playwright Cross Browser Tests'
               ])
               steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
+              archivePlaywrightDiagnostics()
             }
         }
 

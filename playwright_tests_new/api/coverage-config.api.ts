@@ -1,4 +1,3 @@
-
 import { test, expect } from '@playwright/test';
 
 import appTestConfig, { __test__ as appTestConfigTest } from '../common/appTestConfig';
@@ -26,7 +25,9 @@ test.describe('Configuration resolution coverage', () => {
     );
     expect(preview).toEqual(expect.objectContaining({ demoUrl: 'https://demo.example' }));
     expect(appTestConfigTest.resolvePreviewConfig([], 'https://preview.example/path')).toBeUndefined();
-    expect(appTestConfigTest.resolvePreviewConfig([{ previewUrl: 'preview.example', demoUrl: 'https://demo.example' }], undefined)).toBeUndefined();
+    expect(
+      appTestConfigTest.resolvePreviewConfig([{ previewUrl: 'preview.example', demoUrl: 'https://demo.example' }], undefined)
+    ).toBeUndefined();
 
     const env = {} as NodeJS.ProcessEnv;
     expect(appTestConfigTest.applyPreviewConfig({ demoUrl: 'https://demo.example' }, env)).toBe(true);

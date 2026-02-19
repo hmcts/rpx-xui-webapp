@@ -74,7 +74,9 @@ export class TaskListPage extends Base {
       await this.page.waitForTimeout(pollMs);
     }
 
-    const latestTaskCall = this.getApiCalls().filter((call) => call.url.includes('/workallocation/task')).at(-1);
+    const latestTaskCall = this.getApiCalls()
+      .filter((call) => call.url.includes('/workallocation/task'))
+      .at(-1);
     const latestTaskCallSummary = latestTaskCall
       ? `${latestTaskCall.method} ${latestTaskCall.url} -> HTTP ${latestTaskCall.status}`
       : 'none captured';

@@ -112,7 +112,7 @@ export default (() => {
       baseURL: baseUrl,
       trace: 'on-first-retry',
       screenshot: 'only-on-failure',
-      video: 'retain-on-failure',
+      video: 'off',
       headless: headlessMode,
     },
     projects: [

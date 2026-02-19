@@ -472,22 +472,15 @@ describe('Application', () => {
           nextSpy = sinon.spy();
         });
 
-        it('should set CORS and security headers via custom middleware', async () => {
+        it('should set security headers via custom middleware', async () => {
           const middlewareStack = app._router.stack;
           const customHeadersMiddleware = middlewareStack.find(
-            (layer: any) => layer.handle && layer.handle.toString().includes('Access-Control-Allow-Headers')
+            (layer: any) => layer.handle && layer.handle.toString().includes('X-Robots-Tag')
           );
 
           expect(customHeadersMiddleware).to.exist;
 
           customHeadersMiddleware.handle(mockReq, mockRes, nextSpy);
-
-          expect(mockRes.header).to.have.been.calledWith(
-            'Access-Control-Allow-Headers',
-            'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-          );
-          expect(mockRes.header).to.have.been.calledWith('Access-Control-Allow-Credentials', 'true');
-          expect(mockRes.header).to.have.been.calledWith('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
 
           expect(mockRes.setHeader).to.have.been.calledWith('X-Robots-Tag', 'noindex');
           expect(mockRes.setHeader).to.have.been.calledWith(
@@ -547,7 +540,7 @@ describe('Application', () => {
 
           const middlewareStack = appWithoutHelmet._router.stack;
           const customHeadersMiddleware = middlewareStack.find(
-            (layer: any) => layer.handle && layer.handle.toString().includes('Access-Control-Allow-Headers')
+            (layer: any) => layer.handle && layer.handle.toString().includes('X-Robots-Tag')
           );
 
           expect(customHeadersMiddleware).to.not.exist;

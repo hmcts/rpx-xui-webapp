@@ -1,6 +1,7 @@
 import { Page } from '@playwright/test';
-import { loadSessionCookies } from '../../../common/sessionCapture';
+import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 import { ResolveCaseReferenceOptions } from '../../../E2E/utils/case-reference.utils';
+import { EXUI_TIMEOUTS } from '../../page-objects/pages/exui/exui-timeouts';
 
 export const PUBLIC_LAW_CASE_REFERENCE_OPTIONS: ResolveCaseReferenceOptions = {
   jurisdictionIds: ['PUBLICLAW'],
@@ -8,9 +9,8 @@ export const PUBLIC_LAW_CASE_REFERENCE_OPTIONS: ResolveCaseReferenceOptions = {
 };
 
 export async function openHomeWithCapturedSession(page: Page, userIdentifier: string): Promise<void> {
-  const { cookies } = loadSessionCookies(userIdentifier);
-  if (cookies.length) {
-    await page.context().addCookies(cookies);
-  }
-  await page.goto('/');
+  await ensureAuthenticatedPage(page, userIdentifier, {
+    waitForSelector: 'exui-header',
+    timeoutMs: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE,
+  });
 }

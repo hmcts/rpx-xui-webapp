@@ -4,7 +4,7 @@ import { withXsrf, expectStatus, withRetry } from './utils/apiTestUtils';
 import { assertJurisdictionsForUser } from './utils/ccdUtils';
 import { stringifyCaseTypeId } from './utils/caseTypeIdUtils';
 
-test.describe('CCD endpoints', () => {
+test.describe('CCD endpoints', { tag: '@svc-ccd' }, () => {
   test('lists jurisdictions for current user', async ({ apiClient }) => {
     const expectedNames = testConfig.jurisdictionNames[testConfig.testEnv] ?? [];
     await assertJurisdictionsForUser(apiClient, expectedNames);
@@ -87,7 +87,7 @@ test.describe('CCD endpoints', () => {
   });
 });
 
-test.describe('CCD helper coverage', () => {
+test.describe('CCD helper coverage', { tag: '@svc-ccd' }, () => {
   test('stringifyCaseTypeId handles basic variants', () => {
     expect(stringifyCaseTypeId('XUI-1')).toBe('XUI-1');
     expect(stringifyCaseTypeId(123)).toBe('123');

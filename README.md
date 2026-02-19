@@ -188,9 +188,10 @@ The `playwright_tests_new` folder contains the beginnings of the updated framewo
 
 ### Playwright reporting
 
-Playwright E2E runs now emit an [Odhin report](https://playwright-odhin-reports-1f6b7a95ad42468d7d90f7962fbe172f83b229.gitlab.io/#/) under `functional-output/tests/playwright-e2e/odhin-report/xui-playwright.html`.  
+Playwright E2E runs now emit an [Odhin report](https://playwright-odhin-reports-1f6b7a95ad42468d7d90f7962fbe172f83b229.gitlab.io/#/) under `functional-output/tests/playwright-e2e/odhin-report/xui-playwright-e2e.html`.  
 Key behaviour:
 
+- Suite-specific Odhin filenames are used: `xui-playwright-e2e.html`, `xui-playwright-api.html`, `xui-playwright-integration.html`.
 - Jenkins automatically publishes the HTML artefact for preview/AAT functional and nightly cross-browser jobs.
 - Run info shows project, release, environment, branch and worker count. Branch defaults to the current git branch (`git rev-parse --abbrev-ref HEAD`) and can be overridden via `PLAYWRIGHT_REPORT_BRANCH` or `GIT_BRANCH`. Other overrides: `PLAYWRIGHT_REPORT_PROJECT`, `PLAYWRIGHT_REPORT_RELEASE`, `TEST_TYPE`, `FUNCTIONAL_TESTS_WORKERS`.
 - Skipped tests are included in totals; the reporter is patched locally so the dashboard reflects them even when retries are enabled.

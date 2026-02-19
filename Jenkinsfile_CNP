@@ -8,6 +8,18 @@ properties([
     ],
     pipelineTriggers([
         [$class: 'GitHubPushTrigger']
+    ]),
+    parameters([
+        string(
+            name: 'API_PW_INCLUDE_TAGS',
+            defaultValue: '',
+            description: 'Optional comma/space separated Playwright service tags to include for API tests, for example @svc-ccd,@svc-work-allocation'
+        ),
+        string(
+            name: 'API_PW_EXCLUDED_TAGS_OVERRIDE',
+            defaultValue: '',
+            description: 'Optional comma/space separated Playwright service tags to exclude; when set this overrides playwright_tests_new/api/service-tag-filter.json'
+        )
     ])
 ])
 
@@ -70,6 +82,10 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 }
 
 withPipeline(type, product, component) {
+
+    env.PLAYWRIGHT_SKIP_INSTALL = env.PLAYWRIGHT_SKIP_INSTALL ?: (env.CHANGE_ID ? 'false' : 'true')
+    env.PW_E2E_RETRIES = env.PW_E2E_RETRIES ?: '1'
+    env.PW_E2E_GLOBAL_TIMEOUT_MS = env.PW_E2E_GLOBAL_TIMEOUT_MS ?: '1500000'
 
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
@@ -142,7 +158,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
-            reportFiles          : 'xui-playwright.html',
+            reportFiles          : 'xui-playwright-e2e.html',
             reportName           : 'DEMO Playwright Smoke'
         ])
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
@@ -155,14 +171,18 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
-            reportFiles          : 'xui-playwright.html',
+            reportFiles          : 'xui-playwright-e2e.html',
             reportName           : 'PREVIEW Playwright Smoke'
         ])
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
         archivePlaywrightDiagnostics()
 
           stage('API Tests') {
-              withEnv(["FUNCTIONAL_TESTS_WORKERS=8"]) {
+              withEnv([
+                  "FUNCTIONAL_TESTS_WORKERS=8",
+                  "API_PW_INCLUDE_TAGS=${params.API_PW_INCLUDE_TAGS ?: ''}",
+                  "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
+              ]) {
                   try {
                       yarnBuilder.yarn('test:api:pw:coverage')
                   } finally {
@@ -171,7 +191,7 @@ withPipeline(type, product, component) {
                       alwaysLinkToLastBuild: true,
                       keepAll              : true,
                       reportDir            : 'functional-output/tests/api_functional/odhin-report/',
-                      reportFiles          : 'xui-playwright.html',
+                      reportFiles          : 'xui-playwright-api.html',
                       reportName           : 'PREVIEW API Functional Test'
                     ])
                     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
@@ -205,11 +225,25 @@ withPipeline(type, product, component) {
                         alwaysLinkToLastBuild: true,
                         keepAll              : true,
                         reportDir            : 'functional-output/tests/playwright-integration/odhin-report/',
-                        reportFiles          : 'xui-playwright.html',
+                        reportFiles          : 'xui-playwright-integration.html',
                         reportName           : 'PREVIEW Playwright Integration Test'
                     ])
                     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
                     archivePlaywrightDiagnostics()
+            }
+        }
+    }
+
+    before('functionalTest:preview') {
+        stage('Playwright E2E Tests - preview') {
+            echo 'Playwright E2E execution is triggered by shared stage "Functional Test - preview" via yarn test:functional.'
+        }
+    }
+
+    afterFailure('functionalTest:preview') {
+        stage('Playwright E2E Tests - preview (failed)') {
+            catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                error('Playwright E2E Tests failed in functionalTest:preview. Open report "PREVIEW Playwright E2E Tests" and stage logs for failing specs.')
             }
         }
     }
@@ -220,8 +254,8 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
-            reportFiles          : 'xui-playwright.html',
-            reportName           : 'PREVIEW Playwright E2E'
+            reportFiles          : 'xui-playwright-e2e.html',
+            reportName           : 'PREVIEW Playwright E2E Tests'
         ])
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
         archivePlaywrightDiagnostics()
@@ -234,14 +268,17 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
-            reportFiles          : 'xui-playwright.html',
+            reportFiles          : 'xui-playwright-e2e.html',
             reportName           : 'AAT Playwright Smoke'
         ])
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
         archivePlaywrightDiagnostics()
 
         stage('API Tests') {
-            
+            withEnv([
+                "API_PW_INCLUDE_TAGS=${params.API_PW_INCLUDE_TAGS ?: ''}",
+                "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
+            ]) {
                 try {
                     yarnBuilder.yarn('test:api:pw:coverage')
                 } finally {
@@ -250,13 +287,13 @@ withPipeline(type, product, component) {
                       alwaysLinkToLastBuild: true,
                       keepAll              : true,
                       reportDir            : 'functional-output/tests/api_functional/odhin-report/',
-                      reportFiles          : 'xui-playwright.html',
+                      reportFiles          : 'xui-playwright-api.html',
                       reportName           : 'AAT API Functional Test'
                     ])
                     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
                     archivePlaywrightDiagnostics()
                 }
-         
+            }
         }
 
     stage('Codecept Integration Tests') {
@@ -284,7 +321,7 @@ withPipeline(type, product, component) {
                     alwaysLinkToLastBuild: true,
                     keepAll              : true,
                     reportDir            : 'functional-output/tests/playwright-integration/odhin-report/',
-                    reportFiles          : 'xui-playwright.html',
+                    reportFiles          : 'xui-playwright-integration.html',
                     reportName           : 'AAT Playwright Integration Test'
                 ])
                 steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
@@ -298,7 +335,7 @@ withPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
-            reportFiles          : 'xui-playwright.html',
+            reportFiles          : 'xui-playwright-e2e.html',
             reportName           : 'AAT Playwright E2E'
         ])
         archivePlaywrightDiagnostics()

@@ -16,9 +16,17 @@ const CRITICAL_WIZARD_API_PATTERNS: RegExp[] = [
   /\/event-triggers\/[^/]+\/validate/,
 ];
 
+type CreateDivorceCaseOptions = {
+  maxAttempts?: number;
+  createCaseMaxAttempts?: number;
+};
+
 export class CreateCasePage extends Base {
   readonly container = this.page.locator('exui-case-home');
   readonly caseDetailsContainer = this.page.locator('exui-case-details-home');
+  readonly caseAlertSuccessMessage = this.page
+    .locator('.hmcts-banner--success .alert-message, .exui-alert .alert-message')
+    .first();
   readonly createCaseButton = this.page.getByRole('link', { name: 'Create case' });
   readonly jurisdictionSelect = this.page.locator('#cc-jurisdiction');
   readonly caseTypeSelect = this.page.locator('#cc-case-type');
@@ -263,7 +271,82 @@ export class CreateCasePage extends Base {
    */
   private async waitForCaseDetails(context: string) {
     await this.assertNoEventCreationError(context);
-    await this.caseDetailsContainer.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.CASE_DETAILS_VISIBLE });
+    try {
+      await this.caseDetailsContainer.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.CASE_DETAILS_VISIBLE });
+    } catch (error) {
+      const recovered = await this.recoverCaseDetailsFromCreatedBanner(context, error);
+      if (recovered) {
+        return;
+      }
+      throw error;
+    }
+  }
+
+  private extractCaseNumberFromCurrentUrl(): string | null {
+    const currentUrl = this.page.url();
+    try {
+      const pathname = new URL(currentUrl).pathname;
+      const detailsPathMatch = pathname.match(/\/cases\/case-details\/(\d{16})(?:$|\/)/);
+      if (detailsPathMatch?.[1]) {
+        return detailsPathMatch[1];
+      }
+
+      const trailingDigitsMatch = pathname.match(/(\d{16})(?:$|\/)/);
+      return trailingDigitsMatch?.[1] ?? null;
+    } catch {
+      return null;
+    }
+  }
+
+  private async extractCreatedCaseNumberFromBanner(): Promise<string | null> {
+    const bannerVisible = await this.caseAlertSuccessMessage.isVisible().catch(() => false);
+    if (!bannerVisible) {
+      return null;
+    }
+
+    const bannerText = await this.caseAlertSuccessMessage.innerText().catch(() => '');
+    if (!/has been created/i.test(bannerText)) {
+      return null;
+    }
+
+    const numericMatch = bannerText.replace(/\D/g, '').match(/\d{16}/);
+    return numericMatch?.[0] ?? null;
+  }
+
+  private async recoverCaseDetailsFromCreatedBanner(context: string, initialError: unknown): Promise<boolean> {
+    if (this.page.isClosed()) {
+      return false;
+    }
+
+    const caseNumber = this.extractCaseNumberFromCurrentUrl() ?? (await this.extractCreatedCaseNumberFromBanner());
+    if (!caseNumber) {
+      return false;
+    }
+
+    const caseDetailsUrl = `/cases/case-details/${caseNumber}`;
+    const initialErrorMessage = initialError instanceof Error ? initialError.message : String(initialError);
+    this.logger.warn('Case details did not render after submit; trying direct case details URL', {
+      context,
+      caseNumber,
+      caseDetailsUrl,
+      initialError: initialErrorMessage.slice(0, 220),
+    });
+
+    try {
+      await this.page.goto(caseDetailsUrl);
+      await this.assertNoEventCreationError(`${context} (after direct case details navigation)`);
+      await this.caseDetailsContainer.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.CASE_DETAILS_VISIBLE });
+      return true;
+    } catch (recoveryError) {
+      const recoveryErrorMessage = recoveryError instanceof Error ? recoveryError.message : String(recoveryError);
+      this.logger.warn('Direct case details recovery failed', {
+        context,
+        caseNumber,
+        caseDetailsUrl,
+        recoveryError: recoveryErrorMessage.slice(0, 220),
+      });
+      return false;
+    }
   }
 
   private async getVisibleActionButton(buttons: Locator): Promise<Locator | null> {
@@ -320,7 +403,8 @@ export class CreateCasePage extends Base {
     }
     await visibleContinueButton.scrollIntoViewIfNeeded();
     await expect(visibleContinueButton).toBeEnabled();
-    const clickTimeout = options.timeoutMs ?? EXUI_TIMEOUTS.CONTINUE_CLICK_DEFAULT;
+    const stepTimeout = options.timeoutMs ?? EXUI_TIMEOUTS.CONTINUE_CLICK_DEFAULT;
+    const clickTimeout = Math.min(stepTimeout, EXUI_TIMEOUTS.CONTINUE_CLICK_DEFAULT);
     try {
       await visibleContinueButton.click({ force: options.force, timeout: clickTimeout });
     } catch (error) {
@@ -328,18 +412,27 @@ export class CreateCasePage extends Base {
       if (!message.includes('intercepts pointer events')) {
         throw error;
       }
-      this.logger.warn('Continue click intercepted by spinner; retrying with force', { context });
-      const spinnerSettleTimeout = Math.min(clickTimeout, 5_000);
+      this.logger.warn('Continue click intercepted by spinner; waiting and retrying click', { context });
+      const spinnerSettleTimeout = Math.max(5_000, Math.min(stepTimeout, EXUI_TIMEOUTS.SUBMIT_AUTO_ADVANCE_MAX));
       await this.page
         .locator('xuilib-loading-spinner')
         .first()
         .waitFor({ state: 'hidden', timeout: spinnerSettleTimeout })
         .catch(() => {
-          // Best-effort wait; if spinner persists, we still attempt force click.
+          // Best-effort wait; retry click below handles residual spinner overlays.
         });
-      await visibleContinueButton.click({ force: true, timeout: clickTimeout });
+      try {
+        await visibleContinueButton.click({ force: options.force, timeout: clickTimeout });
+      } catch (retryError) {
+        const retryMessage = String(retryError);
+        if (!retryMessage.includes('intercepts pointer events') || options.force === true) {
+          throw retryError;
+        }
+        this.logger.warn('Continue click still intercepted after wait; retrying with force', { context });
+        await visibleContinueButton.click({ force: true, timeout: clickTimeout });
+      }
     }
-    await this.waitForSpinnerToComplete(`after ${context}`, clickTimeout);
+    await this.waitForSpinnerToComplete(`after ${context}`, stepTimeout);
     await this.assertNoEventCreationError(context);
     const hasValidationError = await this.checkForErrorMessage();
     if (hasValidationError) {
@@ -403,6 +496,16 @@ export class CreateCasePage extends Base {
         throw new Error(`Case event failed ${context}: Something went wrong page was displayed.`);
       }
 
+      const onCaseDetailsSummaryPage =
+        !this.page.url().includes('/trigger/') &&
+        (await this.page
+          .locator('#next-step')
+          .isVisible()
+          .catch(() => false));
+      if (onCaseDetailsSummaryPage) {
+        return;
+      }
+
       const visibleSubmitButton = await this.getVisibleActionButton(this.submitButton);
       if (visibleSubmitButton) {
         await this.clickSubmitButtonWithRetry(context, visibleSubmitButton);
@@ -462,7 +565,7 @@ export class CreateCasePage extends Base {
       .catch(() => []);
 
     throw new Error(
-      `Submit button did not become available ${context}. URL=${this.page.url()} visibleActionButtons=${visibleActionButtons.join(' | ') || 'none'}`
+      `Submit button did not become available ${context}. URL=${this.page.url()} autoAdvance=${autoAdvanceCount}/${maxAutoAdvanceAttempts} visibleActionButtons=${visibleActionButtons.join(' | ') || 'none'}`
     );
   }
 
@@ -661,8 +764,15 @@ export class CreateCasePage extends Base {
     return false;
   }
 
-  async createCase(jurisdiction: string, caseType: string, eventType: string | undefined) {
-    const maxAttempts = 2;
+  async createCase(
+    jurisdiction: string,
+    caseType: string,
+    eventType: string | undefined,
+    options: {
+      maxAttempts?: number;
+    } = {}
+  ) {
+    const maxAttempts = options.maxAttempts ?? 2;
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
         if (!this.page.url().includes('/cases/case-filter')) {
@@ -863,12 +973,12 @@ export class CreateCasePage extends Base {
     }
   }
 
-  async createDivorceCase(jurisdiction: string, caseType: string, testInput: string) {
+  async createDivorceCase(jurisdiction: string, caseType: string, testInput: string, options: CreateDivorceCaseOptions = {}) {
     switch (caseType) {
       case 'xuiCaseFlagsV1':
         return this.createDivorceCaseFlag(testInput, jurisdiction, caseType);
       case 'XUI Case PoC':
-        return this.createDivorceCasePoC(jurisdiction, caseType, testInput);
+        return this.createDivorceCasePoC(jurisdiction, caseType, testInput, options);
       case 'xuiTestCaseType':
         return this.createDivorceCaseTest(testInput, jurisdiction, caseType);
       default:
@@ -936,7 +1046,9 @@ export class CreateCasePage extends Base {
         const shouldRetry = (eventErrorVisible || isTransientWorkflowFailure(error)) && attempt < maxAttempts;
         if (shouldRetry) {
           logger.warn('Divorce test case creation failed; retrying', { attempt, maxAttempts });
-          await this.page.goto('/cases/case-filter');
+          if (!this.page.isClosed()) {
+            await this.page.goto('/cases/case-filter');
+          }
           continue;
         }
         throw error;
@@ -956,12 +1068,14 @@ export class CreateCasePage extends Base {
     await this.waitForCaseDetails('after submitting divorce case flags');
   }
 
-  async createDivorceCasePoC(jurisdiction: string, caseType: string, textField0: string) {
-    const maxAttempts = 2;
+  async createDivorceCasePoC(jurisdiction: string, caseType: string, textField0: string, options: CreateDivorceCaseOptions = {}) {
+    const maxAttempts = options.maxAttempts ?? 2;
     const preferredGenders = ['Male', 'Female', 'Not given', 'Not Known', 'Unknown'];
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
-        await this.createCase(jurisdiction, caseType, '');
+        await this.createCase(jurisdiction, caseType, '', {
+          maxAttempts: options.createCaseMaxAttempts,
+        });
         const availableGender = await this.person1GenderSelect.evaluate((select) => {
           const options = Array.from((select as HTMLSelectElement).options).map((option) => option.label.trim());
           return options;

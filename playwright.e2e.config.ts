@@ -7,6 +7,31 @@ export default (() => {
   const odhinOutputFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
   const baseUrl = process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';
 
+  const parsePositiveInt = (raw: string | undefined): number | undefined => {
+    if (!raw) {
+      return undefined;
+    }
+    const parsed = Number.parseInt(raw, 10);
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+      return undefined;
+    }
+    return parsed;
+  };
+
+  const parseNonNegativeInt = (raw: string | undefined): number | undefined => {
+    if (!raw) {
+      return undefined;
+    }
+    const parsed = Number.parseInt(raw, 10);
+    if (!Number.isFinite(parsed) || parsed < 0) {
+      return undefined;
+    }
+    return parsed;
+  };
+
+  const retries = parseNonNegativeInt(process.env.PW_E2E_RETRIES) ?? 2;
+  const globalTimeoutMs = parsePositiveInt(process.env.PW_E2E_GLOBAL_TIMEOUT_MS);
+
   const resolveEnvironmentFromUrl = (url) => {
     try {
       const hostname = new URL(url).hostname.toLowerCase();
@@ -86,11 +111,12 @@ export default (() => {
     testMatch: ['**/test/**/*.spec.ts'],
     testIgnore: ['**/test/smoke/smokeTest.spec.ts'],
     fullyParallel: true,
-    retries: 2,
+    retries,
     timeout: 180_000,
     expect: {
       timeout: 60_000,
     },
+    ...(globalTimeoutMs ? { globalTimeout: globalTimeoutMs } : {}),
     workers: workerCount,
     reporter: [
       [process.env.CI ? 'dot' : 'list'],
@@ -99,7 +125,7 @@ export default (() => {
         'odhin-reports-playwright',
         {
           outputFolder: odhinOutputFolder,
-          indexFilename: 'xui-playwright.html',
+          indexFilename: 'xui-playwright-e2e.html',
           title: 'RPX-XUI-WEBAPP Playwright E2E',
           testEnvironment,
           project: process.env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp - E2E',
@@ -118,7 +144,7 @@ export default (() => {
         mode: 'only-on-failure',
         fullPage: true,
       },
-      video: 'retain-on-failure',
+      video: 'off',
       headless: headlessMode,
     },
     projects: [

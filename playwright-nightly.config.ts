@@ -106,7 +106,7 @@ module.exports = defineConfig({
       'odhin-reports-playwright',
       {
         outputFolder: 'functional-output/tests/playwright-e2e/odhin-report',
-        indexFilename: 'xui-playwright.html',
+        indexFilename: 'xui-playwright-e2e.html',
         title: 'RPX XUI Playwright',
         testEnvironment,
         project: process.env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
@@ -130,7 +130,7 @@ module.exports = defineConfig({
           mode: 'only-on-failure',
           fullPage: true,
         },
-        video: 'retain-on-failure',
+        video: 'off',
       },
     },
     {
@@ -143,7 +143,7 @@ module.exports = defineConfig({
           mode: 'only-on-failure',
           fullPage: true,
         },
-        video: 'retain-on-failure',
+        video: 'off',
       },
     },
     {
@@ -155,7 +155,7 @@ module.exports = defineConfig({
           mode: 'only-on-failure',
           fullPage: true,
         },
-        video: 'retain-on-failure',
+        video: 'off',
       },
     },
     // {

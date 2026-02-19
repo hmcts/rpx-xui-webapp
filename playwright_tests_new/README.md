@@ -44,6 +44,22 @@ yarn test:api:pw
 yarn test:api:pw:coverage
 ```
 
+### API Service Tag Filtering
+
+- API suites are tagged per downstream service using Playwright tags (for example `@svc-ccd`, `@svc-work-allocation`).
+- Default excluded tags are read from `playwright_tests_new/api/service-tag-filter.json` (`excludedTags` array).
+- Override excludes at runtime with `API_PW_EXCLUDED_TAGS_OVERRIDE`.
+- Optionally run only selected service tags with `API_PW_INCLUDE_TAGS`.
+- Tag inputs accept comma or space separated values, with or without `@`.
+
+```bash
+# Exclude one service for this run (overrides file excludes)
+API_PW_EXCLUDED_TAGS_OVERRIDE=@svc-ccd yarn test:api:pw
+
+# Run only work allocation API tests
+API_PW_INCLUDE_TAGS=@svc-work-allocation yarn test:api:pw:coverage
+```
+
 ### API Test Parallelism
 
 - In CI, Playwright runs with **8 workers** for predictable parallelism
@@ -59,7 +75,7 @@ yarn test:api:pw:coverage
 
 ### API Reports
 
-- Odhin report: `functional-output/tests/playwright-api/odhin-report/xui-playwright.html`
+- Odhin report: `functional-output/tests/playwright-api/odhin-report/xui-playwright-api.html`
 - Copied to `functional-output/tests/api_functional/odhin-report/` for Jenkins publishing
 - API call logs attached automatically per test as `node-api-calls.json`
 - Jenkins archives Playwright diagnostics artifacts including:
@@ -266,6 +282,7 @@ expect(visibleRows.length).toBeGreaterThan(0);
 - Locks coordinate across **all Playwright worker processes** (API + E2E) using `proper-lockfile`
 - When Worker A logs in user X, Workers B-H **and parallel API tests** wait for lock release and reuse the session
 - After acquiring lock, workers recheck freshness to ensure session is still valid
+- `ensureSession()` intentionally avoids forced recapture so lock waiters can reuse the newly refreshed session instead of logging in again
 
 ### Usage in E2E Tests
 
@@ -438,6 +455,7 @@ Sessions are stored in `.sessions/` directory with filesystem-based locking:
 - Released in `finally` block to prevent deadlocks
 - Other workers wait up to 30 retries × 1-5s = ~2.5 minutes max
 - After lock released, waiting workers recheck session freshness
+- Waiting workers skip login if session became fresh while waiting (prevents duplicate recapture storms)
 - Stale threshold: 60 seconds (if lock held longer, considered abandoned)
 
 ### Implementation Details

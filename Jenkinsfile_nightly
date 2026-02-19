@@ -64,7 +64,11 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
 }
 
 withNightlyPipeline(type, product, component) {
-    enableSlackNotifications(channel)
+  env.PLAYWRIGHT_SKIP_INSTALL = env.PLAYWRIGHT_SKIP_INSTALL ?: 'true'
+  env.PW_E2E_RETRIES = env.PW_E2E_RETRIES ?: '1'
+  env.PW_E2E_GLOBAL_TIMEOUT_MS = env.PW_E2E_GLOBAL_TIMEOUT_MS ?: '1500000'
+
+  enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
     enableFortifyScan('rpx-aat')
@@ -108,7 +112,7 @@ withNightlyPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : 'functional-output/tests/api_functional/odhin-report/',
-            reportFiles          : 'xui-playwright.html',
+            reportFiles          : 'xui-playwright-api.html',
             reportName           : 'API Functional Test'
           ])
           steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
@@ -149,7 +153,7 @@ withNightlyPipeline(type, product, component) {
                       alwaysLinkToLastBuild: true,
                       keepAll              : true,
                       reportDir            : 'functional-output/tests/playwright-integration/odhin-report/',
-                      reportFiles          : 'xui-playwright.html',
+                      reportFiles          : 'xui-playwright-integration.html',
                       reportName           : 'Playwright Integration Test'
                     ])
                     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
@@ -168,7 +172,7 @@ withNightlyPipeline(type, product, component) {
               alwaysLinkToLastBuild: true,
               keepAll              : true,
               reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
-              reportFiles          : 'xui-playwright.html',
+              reportFiles          : 'xui-playwright-e2e.html',
               reportName           : 'XUI Manage Cases Playwright Cross Browser Tests'
               ])
               steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'

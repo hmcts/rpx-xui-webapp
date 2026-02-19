@@ -10,6 +10,8 @@ export class TaskListPage extends Base {
   readonly taskListResultsAmount = this.page.locator('#search-result-summary__text, [data-test="search-result-summary__text"]');
   readonly manageCaseButtons = this.taskListTable.getByRole('button', { name: 'Manage' });
   readonly taskActionsRow = this.taskListTable.locator('tr.actions-row[aria-hidden="false"]');
+
+  readonly taskTableTabs = this.page.locator('.hmcts-sub-navigation .hmcts-sub-navigation__link');
   // Action links have stable IDs: action_{taskActionId}
   readonly taskActionCancel = this.taskListTable.locator('#action_cancel');
   readonly taskActionGoTo = this.taskListTable.locator('#action_go');

@@ -85,7 +85,7 @@ export const PROTOCOL = 'protocol';
 export const MICROSERVICE = 'microservice';
 export const NOW = 'now';
 
-export const SESSION_SECRET = 'sessionSecret';
+export const SESSION_SECRET = 'secrets.rpx.mc-session-secret';
 
 export const ENVIRONMENT = 'environment';
 

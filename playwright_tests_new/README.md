@@ -44,6 +44,22 @@ yarn test:api:pw
 yarn test:api:pw:coverage
 ```
 
+### API Service Tag Filtering
+
+- API suites are tagged per downstream service using Playwright tags (for example `@svc-ccd`, `@svc-work-allocation`).
+- Default excluded tags are read from `playwright_tests_new/api/service-tag-filter.json` (`excludedTags` array).
+- Override excludes at runtime with `API_PW_EXCLUDED_TAGS_OVERRIDE`.
+- Optionally run only selected service tags with `API_PW_INCLUDE_TAGS`.
+- Tag inputs accept comma or space separated values, with or without `@`.
+
+```bash
+# Exclude one service for this run (overrides file excludes)
+API_PW_EXCLUDED_TAGS_OVERRIDE=@svc-ccd yarn test:api:pw
+
+# Run only work allocation API tests
+API_PW_INCLUDE_TAGS=@svc-work-allocation yarn test:api:pw:coverage
+```
+
 ### API Test Parallelism
 
 - In CI, Playwright runs with **8 workers** for predictable parallelism

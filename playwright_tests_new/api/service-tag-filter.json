@@ -1,0 +1,17 @@
+{
+  "excludedTags": ["@svc-work-allocation"],
+  "availableServiceTags": [
+    "@svc-auth",
+    "@svc-case-share",
+    "@svc-ccd",
+    "@svc-cors",
+    "@svc-evidence-manager",
+    "@svc-global-search",
+    "@svc-node-app",
+    "@svc-postcode-lookup",
+    "@svc-ref-data",
+    "@svc-role-assignment",
+    "@svc-work-allocation",
+    "@svc-internal"
+  ]
+}

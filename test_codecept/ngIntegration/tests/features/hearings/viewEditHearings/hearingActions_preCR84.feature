@@ -29,7 +29,7 @@ Feature: Hearings CR84 OFF: View or edit action
 
         Given I set mock hearings service hearing values with ref "partiesUpdated"
 
-        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
+        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings-ce"
         Then I am on hearings tab page
         Then I see hearings table for "Current and upcoming" in hearings tab page
 

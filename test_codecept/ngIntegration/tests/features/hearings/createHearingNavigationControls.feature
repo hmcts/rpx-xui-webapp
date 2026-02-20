@@ -23,7 +23,7 @@ Feature: Create hearings workflow navigation controls
         When I open first case in case list page
         Then I see case details page
         Then I see case details tab label "Hearings" is displayed is "true"
-        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
+        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings-ce"
         When I click Request a hearing button
         Then I see create hearing workflow container
 

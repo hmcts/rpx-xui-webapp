@@ -6,3 +6,9 @@ export interface HearingValuesStateData {
   caseInfo: any;
   lastError?: HttpError;
 }
+
+export interface HearingValuesCaseContext {
+  jurisdictionId: string;
+  caseReference: string;
+  caseType?: string;
+}

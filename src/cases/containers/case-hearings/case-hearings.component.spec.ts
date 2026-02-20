@@ -423,12 +423,19 @@ describe('CaseHearingsComponent', () => {
       },
     },
   } as CaseView;
+  const DEFAULT_CASE_INFO = { caseId: '1234', jurisdiction: 'CIVIL', caseType: 'CIVIL' };
 
   beforeEach(() => {
     mockLovRefDataService = jasmine.createSpyObj('LovRefDataService', ['getListOfValues']);
     mockLovRefDataService.getListOfValues.and.returnValue(of(HEARING_TYPES_REF_DATA));
 
     mockSessionStore = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+    mockSessionStore.getItem.and.callFake((key: string) => {
+      if (key === 'caseInfo') {
+        return JSON.stringify(DEFAULT_CASE_INFO);
+      }
+      return null;
+    });
     const mockCasesService = jasmine.createSpyObj<CasesService>('mockCasesService', ['getCaseView']);
     const mockCaseNotifier = new CaseNotifier(mockCasesService);
     mockCaseNotifier.caseView = new BehaviorSubject(cv).asObservable();
@@ -483,7 +490,9 @@ describe('CaseHearingsComponent', () => {
     expect(component).toBeTruthy();
     expect(component.hearingValuesSubscription).toBeDefined();
     expect(component.refDataSubscription).toBeDefined();
-    expect(dispatchSpy).toHaveBeenCalledWith(new fromHearingStore.LoadHearingValues());
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      new fromHearingStore.LoadHearingValues({ jurisdictionId: 'CIVIL', caseReference: '1234', caseType: 'CIVIL' })
+    );
   });
 
   it('should unsubscribe', () => {

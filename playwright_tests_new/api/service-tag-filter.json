@@ -1,5 +1,5 @@
 {
-  "excludedTags": ["@svc-work-allocation"],
+  "excludedTags": ["@wa-action"],
   "availableServiceTags": [
     "@svc-auth",
     "@svc-case-share",

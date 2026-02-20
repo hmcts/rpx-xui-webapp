@@ -1,4 +1,4 @@
-import { chromium, type BrowserContext, type Page } from '@playwright/test';
+import { chromium, type BrowserContext, type Locator, type Page } from '@playwright/test';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as lockfile from 'proper-lockfile';
@@ -37,6 +37,42 @@ type SessionCaptureDeps = {
   force?: boolean;
 };
 
+const setupMarkerByPage = new WeakMap<Page, string>();
+const setupMarkerValues = [
+  'none',
+  'other',
+  'setup-start',
+  'cookies-ready',
+  'navigated-app',
+  'waiting-shell',
+  'shell-ready',
+  'shell-timeout',
+  'session-refresh',
+  'idam-login',
+  'setup-ready',
+] as const;
+
+type SetupMarker = (typeof setupMarkerValues)[number];
+const allowedSetupMarkers = new Set<string>(setupMarkerValues);
+const DEFAULT_SETUP_MARKER: SetupMarker = 'none';
+const OTHER_SETUP_MARKER: SetupMarker = 'other';
+
+function normalizeSetupMarker(marker: string | undefined): string {
+  const value = marker?.trim();
+  if (!value) {
+    return DEFAULT_SETUP_MARKER;
+  }
+  return allowedSetupMarkers.has(value) ? value : OTHER_SETUP_MARKER;
+}
+
+export function setSetupMarker(page: Page, marker: string): void {
+  setupMarkerByPage.set(page, normalizeSetupMarker(marker));
+}
+
+export function getSetupMarker(page: Page): string {
+  return setupMarkerByPage.get(page) ?? DEFAULT_SETUP_MARKER;
+}
+
 /**
  * Ensure session is captured for a given userIdentifier before tests run.
  * Call this in test.beforeAll() to lazily capture only needed sessions.
@@ -63,7 +99,9 @@ export async function ensureSession(userIdentifier: string): Promise<void> {
     operation: 'lazy-capture',
     metric: 'session-miss',
   });
-  await sessionCapture([userIdentifier], { force: true });
+  // Do not force recapture here: when many workers race on a stale session,
+  // lock waiters should be able to reuse the freshly captured session.
+  await sessionCapture([userIdentifier]);
 }
 
 /**
@@ -171,6 +209,67 @@ async function isIdamLoginPage(page: Page): Promise<boolean> {
   return usernameVisible && passwordVisible;
 }
 
+function getAppShellMarkers(page: Page, preferredSelector?: string): Array<{ name: string; locator: Locator }> {
+  const markers: Array<{ name: string; locator: Locator }> = [];
+
+  if (preferredSelector?.trim()) {
+    markers.push({
+      name: `preferred:${preferredSelector}`,
+      locator: page.locator(preferredSelector).first(),
+    });
+  }
+
+  markers.push(
+    { name: 'exui-header', locator: page.locator('exui-header').first() },
+    { name: 'create-case-link', locator: page.getByRole('link', { name: 'Create case' }).first() },
+    { name: 'case-list-link', locator: page.getByRole('link', { name: 'Case list' }).first() },
+    { name: 'case-action-dropdown', locator: page.locator('#next-step').first() },
+    { name: 'jurisdiction-select', locator: page.locator('#cc-jurisdiction').first() }
+  );
+
+  return markers;
+}
+
+async function waitForAuthenticatedShell(
+  page: Page,
+  userIdentifier: string,
+  preferredSelector: string | undefined,
+  timeoutMs: number
+): Promise<string> {
+  const markers = getAppShellMarkers(page, preferredSelector);
+  const deadline = Date.now() + timeoutMs;
+
+  while (Date.now() < deadline) {
+    if (await isIdamLoginPage(page)) {
+      setSetupMarker(page, 'idam-login');
+      throw new SessionCaptureError(`Login page detected while waiting for app shell for ${userIdentifier}`, userIdentifier, {
+        currentUrl: page.url(),
+        preferredSelector: preferredSelector ?? 'none',
+      });
+    }
+
+    for (const marker of markers) {
+      const visible = await marker.locator.isVisible().catch(() => false);
+      if (visible) {
+        return marker.name;
+      }
+    }
+
+    const remainingMs = deadline - Date.now();
+    if (remainingMs <= 0) {
+      break;
+    }
+    await page.waitForTimeout(Math.min(500, remainingMs));
+  }
+
+  setSetupMarker(page, 'shell-timeout');
+  throw new Error(
+    `App shell not detected within ${timeoutMs}ms (preferred=${preferredSelector ?? 'none'}, url=${page.url()}, markers=${markers
+      .map((marker) => marker.name)
+      .join(',')})`
+  );
+}
+
 /**
  * Ensure the page is authenticated for the given user and on the target URL.
  * If the session is invalid, refresh the stored session and retry once.
@@ -180,16 +279,23 @@ export async function ensureAuthenticatedPage(
   userIdentifier: string,
   options: { targetUrl?: string; waitForSelector?: string; timeoutMs?: number } = {}
 ): Promise<LoadedSession> {
+  const markSetup = (marker: string) => setSetupMarker(page, marker);
+  markSetup('setup-start');
   const targetUrl = options.targetUrl ?? process.env.TEST_URL ?? config.urls.exuiDefaultUrl;
   const timeoutMs = options.timeoutMs ?? 60000;
   let session = await ensureSessionCookies(userIdentifier);
   if (session.cookies.length) {
     await page.context().addCookies(session.cookies);
+    markSetup('cookies-ready');
+  } else {
+    markSetup('cookies-ready');
   }
 
   await page.goto(targetUrl);
+  markSetup('navigated-app');
 
   if (await isIdamLoginPage(page)) {
+    markSetup('idam-login');
     logger.warn('Session appears invalid; refreshing', {
       userIdentifier,
       email: session.email,
@@ -210,14 +316,17 @@ export async function ensureAuthenticatedPage(
     }
 
     await sessionCapture([userIdentifier]);
+    markSetup('session-refresh');
     session = loadSessionCookies(userIdentifier);
     await page.context().clearCookies();
     if (session.cookies.length) {
       await page.context().addCookies(session.cookies);
     }
     await page.goto(targetUrl);
+    markSetup('navigated-app');
 
     if (await isIdamLoginPage(page)) {
+      markSetup('idam-login');
       throw new SessionCaptureError(`Login failed for ${userIdentifier}`, userIdentifier, { email: session.email, targetUrl });
     }
   }
@@ -225,12 +334,23 @@ export async function ensureAuthenticatedPage(
   if (options.waitForSelector) {
     const selectors = options.waitForSelector;
     const waitForAppShell = async () => {
+      markSetup('waiting-shell');
       await page.waitForLoadState('domcontentloaded');
-      await page.waitForSelector(selectors, { timeout: timeoutMs });
+      const marker = await waitForAuthenticatedShell(page, userIdentifier, selectors, timeoutMs);
+      markSetup('shell-ready');
+      logger.info('Authenticated app shell detected', {
+        userIdentifier,
+        marker,
+        selector: selectors,
+        timeoutMs,
+        currentUrl: page.url(),
+        operation: 'wait-for-shell',
+      });
     };
     try {
       await waitForAppShell();
     } catch (error) {
+      markSetup('waiting-shell');
       logger.warn('App shell not detected; retrying once', {
         userIdentifier,
         selector: selectors,
@@ -239,8 +359,11 @@ export async function ensureAuthenticatedPage(
         operation: 'wait-for-shell',
       });
       await page.goto(targetUrl);
+      markSetup('navigated-app');
       await waitForAppShell();
     }
+  } else {
+    markSetup('setup-ready');
   }
 
   return session;

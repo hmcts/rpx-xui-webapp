@@ -11,6 +11,8 @@ const targetRoot = path.resolve('functional-output', 'tests', 'api_functional');
 const target = path.join(targetRoot, 'odhin-report');
 const coverageRoot = path.resolve('reports', 'tests', 'coverage', 'api-playwright');
 const coverageLinkFlag = process.env.PW_ODHIN_LINK_COVERAGE === 'true';
+const LEGACY_ODHIN_REPORT_FILENAME = 'xui-playwright.html';
+const API_ODHIN_REPORT_FILENAME = 'xui-playwright-api.html';
 
 try {
   if (!fs.existsSync(source)) {
@@ -21,6 +23,9 @@ try {
   // Best-effort clean copy
   fs.rmSync(target, { recursive: true, force: true });
   fs.cpSync(source, target, { recursive: true, force: true });
+
+  normalizeApiOdhinFilename(source);
+  normalizeApiOdhinFilename(target);
 
   // Support both report publish locations (source and legacy copied target).
   const reportFolders = [source, target];
@@ -45,6 +50,15 @@ try {
 } catch (error) {
   console.warn(`copy-odhin-report: ${error.message}`);
   process.exit(0); // do not fail the build if copy fails
+}
+
+function normalizeApiOdhinFilename(reportFolder) {
+  const legacyFile = path.join(reportFolder, LEGACY_ODHIN_REPORT_FILENAME);
+  const apiFile = path.join(reportFolder, API_ODHIN_REPORT_FILENAME);
+  if (!fs.existsSync(legacyFile) || fs.existsSync(apiFile)) {
+    return;
+  }
+  fs.renameSync(legacyFile, apiFile);
 }
 
 function findCoverageIndex(rootDir) {

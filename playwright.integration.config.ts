@@ -95,7 +95,7 @@ export default (() => {
         'odhin-reports-playwright',
         {
           outputFolder: odhinOutputFolder,
-          indexFilename: 'xui-playwright.html',
+          indexFilename: 'xui-playwright-integration.html',
           title: 'RPX XUI Playwright Integration',
           testEnvironment,
           project: process.env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',

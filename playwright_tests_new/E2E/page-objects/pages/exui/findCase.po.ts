@@ -16,6 +16,7 @@ export class FindCasePage extends Base {
     .locator(String.raw`#dynamicFilters #\[CASE_REFERENCE\], input[id*="CASE_REFERENCE"]`)
     .first();
   readonly pagination = this.page.locator('.ngx-pagination');
+  readonly searchResultsContainer = this.page.locator('#search-result');
   readonly searchResultsSummary = this.page.locator('#search-result .pagination-top');
   readonly searchResultsTable = this.page.locator('ccd-search-result#search-result');
   readonly searchResultsDataTable = this.searchResultsTable.locator('table').first();
@@ -28,25 +29,88 @@ export class FindCasePage extends Base {
     .locator('.hmcts-primary-navigation__search .hmcts-primary-navigation__link[href*="case-search"]')
     .first();
 
+  /**
+   * Opens the Find Case page from the main navigation menu.
+   */
   public async openFromMainMenu(): Promise<void> {
     await this.openFindCaseVia(this.findCaseLinkOnMenu);
   }
 
+  /**
+   * Opens the Find Case page from the top-right navigation link.
+   */
   public async openFromTopRight(): Promise<void> {
     await this.openFindCaseVia(this.findCaseLinkOnTopRight);
   }
 
-  async startFindCaseJourney(caseNumber: string, caseType: string, jurisdiction: string): Promise<void> {
-    await this.openFromMainMenu();
-    await this.ensureFiltersVisible();
+  /**
+   * Navigates to the Find Case page and ensures filter panel is visible.
+   */
+  public async navigateToFindCase(): Promise<void> {
+    for (let attempt = 1; attempt <= MAX_NAVIGATION_RETRY_ATTEMPTS; attempt++) {
+      await this.openFromMainMenu();
+      try {
+        await this.ensureFiltersVisible();
+        return;
+      } catch (error) {
+        const jurisdictionBootstrapFailed = this.hasJurisdictionBootstrapFailure();
+        const filterTimeout = this.isFindCaseFilterTimeout(error);
+        const shouldRetry = attempt < MAX_NAVIGATION_RETRY_ATTEMPTS && (jurisdictionBootstrapFailed || filterTimeout);
+        if (!shouldRetry) {
+          throw error;
+        }
 
+        this.logger.warn('Find case filter bootstrap failed; retrying case search page', {
+          attempt,
+          maxAttempts: MAX_NAVIGATION_RETRY_ATTEMPTS,
+          jurisdictionBootstrapFailed,
+          filterTimeout,
+          error: error instanceof Error ? error.message : JSON.stringify(error),
+        });
+        await this.page.waitForTimeout(EXUI_TIMEOUTS.CREATE_CASE_RETRY_BACKOFF);
+        await this.page.goto('/cases');
+        await this.exuiSpinnerComponent.wait();
+      }
+    }
+  }
+
+  /**
+   * Fills the Find Case search criteria fields.
+   *
+   * @param caseNumber - 16-digit CCD case reference
+   * @param caseType - Case type display label (e.g., "Public Law Applications")
+   * @param jurisdiction - Jurisdiction display label (e.g., "Public Law")
+   */
+  public async fillSearchCriteria(caseNumber: string, caseType: string, jurisdiction: string): Promise<void> {
     await this.jurisdictionSelect.selectOption({ label: jurisdiction });
-
     await this.caseTypeSelect.selectOption({ label: caseType });
-
     await this.ccdCaseReference.fill(caseNumber);
+  }
 
+  /**
+   * Submits the Find Case search form.
+   */
+  public async submitSearch(): Promise<void> {
     await this.applyFilters();
+  }
+
+  /**
+   * Complete Find Case journey: navigate, fill criteria, and submit search.
+   *
+   * This is a convenience method that orchestrates the full search flow.
+   * For more control, use the individual methods:
+   * - navigateToFindCase()
+   * - fillSearchCriteria()
+   * - submitSearch()
+   *
+   * @param caseNumber - 16-digit CCD case reference
+   * @param caseType - Case type display label
+   * @param jurisdiction - Jurisdiction display label
+   */
+  public async startFindCaseJourney(caseNumber: string, caseType: string, jurisdiction: string): Promise<void> {
+    await this.navigateToFindCase();
+    await this.fillSearchCriteria(caseNumber, caseType, jurisdiction);
+    await this.submitSearch();
   }
 
   public async applyFilters(): Promise<void> {
@@ -54,7 +118,16 @@ export class FindCasePage extends Base {
     await this.exuiSpinnerComponent.wait();
   }
 
-  async displayCaseDetailsFor(caseNumber: string): Promise<void> {
+  /**
+   * Clicks on a case in the search results table and navigates to its details page.
+   *
+   * Validates case reference format, waits for search results table,
+   * and uses retry logic for navigation reliability.
+   *
+   * @param caseNumber - 16-digit CCD case reference (may include formatting)
+   * @throws {Error} If case number format is invalid or navigation fails
+   */
+  public async displayCaseDetailsFor(caseNumber: string): Promise<void> {
     const normalizedCaseNumber = caseNumber.replaceAll(/\D/g, '');
     if (normalizedCaseNumber.length !== CCD_CASE_REFERENCE_LENGTH) {
       throw new Error(`Expected ${CCD_CASE_REFERENCE_LENGTH}-digit case reference, received "${caseNumber}"`);
@@ -81,6 +154,23 @@ export class FindCasePage extends Base {
     await this.exuiCaseListComponent.filters.applyFilterBtn.waitFor({ state: 'visible' });
   }
 
+  private hasJurisdictionBootstrapFailure(): boolean {
+    return this.getApiCalls()
+      .slice(-30)
+      .some(
+        (call) =>
+          call.method === 'GET' &&
+          call.status >= 500 &&
+          call.url.includes('/aggregated/caseworkers/') &&
+          call.url.includes('/jurisdictions')
+      );
+  }
+
+  private isFindCaseFilterTimeout(error: unknown): boolean {
+    const message = error instanceof Error ? error.message : (JSON.stringify(error) ?? '');
+    return /locator\('#s-jurisdiction, #wb-jurisdiction, #cc-jurisdiction'\).*to be visible/i.test(message);
+  }
+
   private async openFindCaseVia(link: Locator): Promise<void> {
     await link.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
     await link.click();
@@ -88,12 +178,24 @@ export class FindCasePage extends Base {
     await this.exuiSpinnerComponent.wait();
   }
 
+  /**
+   * Attempts to navigate to case details from search result with retry logic.
+   *
+   * CCD navigation can occasionally fail due to timing issues.
+   * This method retries the click operation up to MAX_NAVIGATION_RETRY_ATTEMPTS times.
+   *
+   * @private
+   * @param searchResultCaseLink - Locator for the case link in search results
+   * @param caseNumberFromUrl - Normalized case number to verify in URL
+   * @param originalCaseNumber - Original case number for error messages
+   * @throws {Error} If navigation fails after all retry attempts
+   */
   private async openCaseDetailsFromSearchResult(
     searchResultCaseLink: Locator,
     caseNumberFromUrl: string,
     originalCaseNumber: string
   ): Promise<void> {
-    for (let attempt = 1; attempt <= MAX_NAVIGATION_RETRY_ATTEMPTS; attempt++) {
+    for (let attemptIndex = 0; attemptIndex < MAX_NAVIGATION_RETRY_ATTEMPTS; attemptIndex++) {
       await searchResultCaseLink.scrollIntoViewIfNeeded();
       await searchResultCaseLink.click();
       await this.exuiSpinnerComponent.wait();

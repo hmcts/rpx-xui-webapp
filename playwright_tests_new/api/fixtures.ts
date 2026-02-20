@@ -153,7 +153,9 @@ export const test = base.extend<ApiFixtures>({
     const requestContext = request.constructor?.name ?? 'unknown';
     const entries: ApiLogEntry[] = [];
     await use(entries);
-    if (entries.length) {
+    const isFailure = testInfo.status === 'failed' || testInfo.status === 'timedOut';
+
+    if (entries.length && isFailure) {
       const pretty = entries.map((entry) => JSON.stringify(entry, null, 2)).join('\n\n---\n\n');
       await fs.writeFile(testInfo.outputPath('node-api-calls.json'), JSON.stringify(entries, null, 2), 'utf8');
       await fs.writeFile(testInfo.outputPath('node-api-calls.pretty.txt'), pretty, 'utf8');
@@ -167,7 +169,7 @@ export const test = base.extend<ApiFixtures>({
       });
     }
 
-    if (testInfo.status === 'failed' || testInfo.status === 'timedOut') {
+    if (isFailure) {
       const errorMessage = testInfo.error?.message || '';
       const apiErrors = entries
         .filter((entry) => typeof entry.status === 'number' && entry.status >= 400)

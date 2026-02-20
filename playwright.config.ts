@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { cpus } from 'node:os';
 import * as path from 'node:path';
 import { version as appVersion } from './package.json';
+import { parseNonNegativeInt, resolveDefaultReporter } from './playwright-config-utils';
 
 type EnvMap = NodeJS.ProcessEnv;
 
@@ -31,6 +32,21 @@ const resolveHeadlessMode = (env: EnvMap = process.env) => env.HEAD !== 'true';
 
 const resolveOdhinOutputFolder = (env: EnvMap = process.env) =>
   env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
+
+const resolveOdhinIndexFilename = (env: EnvMap = process.env): string => {
+  const configured = env.PLAYWRIGHT_REPORT_INDEX_FILENAME?.trim();
+  if (configured) {
+    return configured;
+  }
+  const outputFolder = resolveOdhinOutputFolder(env).toLowerCase();
+  if (outputFolder.includes('playwright-api') || outputFolder.includes('api_functional')) {
+    return 'xui-playwright-api.html';
+  }
+  if (outputFolder.includes('playwright-integration')) {
+    return 'xui-playwright-integration.html';
+  }
+  return 'xui-playwright-e2e.html';
+};
 
 const resolveBranchName = (env: EnvMap = process.env): string => {
   const envBranch =
@@ -79,6 +95,9 @@ const resolveWorkerCount = (env: EnvMap = process.env) => {
   const suggested = Math.min(8, Math.max(2, approxPhysical));
   return suggested;
 };
+
+const resolveApiRetries = (env: EnvMap = process.env) =>
+  parseNonNegativeInt(env.PW_API_RETRIES) ?? parseNonNegativeInt(env.PW_E2E_RETRIES) ?? 2;
 
 const resolveEnvironmentFromUrl = (baseUrl: string): string => {
   try {
@@ -135,7 +154,7 @@ const splitTagInput = (raw?: string): string[] => {
   return tags;
 };
 
-const escapeRegex = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const escapeRegex = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`); // NOSONAR typescript:S5852 — replaceAll requires ES2021; tsconfig targets ES2020
 
 const buildTagRegex = (tags: string[]): RegExp | undefined => {
   if (!tags.length) {
@@ -190,6 +209,7 @@ const buildConfig = (env: EnvMap = process.env) => {
   const odhinOutputFolder = resolveOdhinOutputFolder(env);
   const reportBranch = resolveBranchName(env);
   const apiTagFilters = resolveApiTagFilters(env);
+  const apiRetries = resolveApiRetries(env);
 
   return defineConfig({
     use: {
@@ -218,13 +238,13 @@ const buildConfig = (env: EnvMap = process.env) => {
     workers: workerCount,
 
     reporter: [
-      [env.CI ? 'dot' : 'list'],
+      [resolveDefaultReporter(env)],
       ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs'],
       [
         'odhin-reports-playwright',
         {
           outputFolder: odhinOutputFolder,
-          indexFilename: 'xui-playwright.html',
+          indexFilename: resolveOdhinIndexFilename(env),
           title: 'RPX XUI Playwright',
           testEnvironment: resolveTestEnvironmentLabel(env, workerCount),
           project: env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
@@ -276,8 +296,8 @@ const buildConfig = (env: EnvMap = process.env) => {
         grep: apiTagFilters.grep,
         grepInvert: apiTagFilters.grepInvert,
         fullyParallel: true,
-        workers: env.CI ? 8 : Math.max(1, Math.min(8, cpus()?.length ?? 4)),
-        retries: 0,
+        workers: env.CI ? 4 : Math.max(1, Math.min(8, cpus()?.length ?? 4)),
+        retries: apiRetries,
         timeout: 60 * 1000,
         expect: {
           timeout: 10 * 1000,
@@ -301,6 +321,8 @@ const config = buildConfig(process.env);
   resolveBranchName,
   splitTagInput,
   resolveApiTagFilters,
+  resolveApiRetries,
+  resolveDefaultReporter,
   buildConfig,
 };
 

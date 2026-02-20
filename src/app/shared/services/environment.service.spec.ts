@@ -98,10 +98,7 @@ describe('EnvironmentService', () => {
   it('should be created', () => {
     TestBed.configureTestingModule({
       imports: [],
-      providers: [
-        { provide: Window, useValue: dummyWindowAat },
-        EnvironmentService,
-      ],
+      providers: [{ provide: Window, useValue: dummyWindowAat }, EnvironmentService],
     });
     const service = TestBed.inject(EnvironmentService);
     expect(service).toBeTruthy();
@@ -110,10 +107,7 @@ describe('EnvironmentService', () => {
   it('should detect the prod environment correctly', () => {
     TestBed.configureTestingModule({
       imports: [],
-      providers: [
-        { provide: Window, useValue: dummyWindowProd },
-        EnvironmentService,
-      ],
+      providers: [{ provide: Window, useValue: dummyWindowProd }, EnvironmentService],
     });
     const service = TestBed.inject(EnvironmentService);
     expect(service.getDeploymentEnv()).toBe(DeploymentEnvironmentEnum.PROD);
@@ -122,10 +116,7 @@ describe('EnvironmentService', () => {
   it('should detect the aat environment correctly', () => {
     TestBed.configureTestingModule({
       imports: [],
-      providers: [
-        { provide: Window, useValue: dummyWindowAat },
-        EnvironmentService,
-      ],
+      providers: [{ provide: Window, useValue: dummyWindowAat }, EnvironmentService],
     });
     const service = TestBed.inject(EnvironmentService);
     expect(service.getDeploymentEnv()).toBe(DeploymentEnvironmentEnum.AAT);
@@ -134,10 +125,7 @@ describe('EnvironmentService', () => {
   it('should detect the demo environment correctly', () => {
     TestBed.configureTestingModule({
       imports: [],
-      providers: [
-        { provide: Window, useValue: dummyWindowDemo },
-        EnvironmentService,
-      ],
+      providers: [{ provide: Window, useValue: dummyWindowDemo }, EnvironmentService],
     });
     const service = TestBed.inject(EnvironmentService);
     expect(service.getDeploymentEnv()).toBe(DeploymentEnvironmentEnum.DEMO);
@@ -146,10 +134,7 @@ describe('EnvironmentService', () => {
   it('should detect the perftest environment correctly', () => {
     TestBed.configureTestingModule({
       imports: [],
-      providers: [
-        { provide: Window, useValue: dummyWindowPerftest },
-        EnvironmentService,
-      ],
+      providers: [{ provide: Window, useValue: dummyWindowPerftest }, EnvironmentService],
     });
     const service = TestBed.inject(EnvironmentService);
     expect(service.getDeploymentEnv()).toBe(DeploymentEnvironmentEnum.PERFTEST);
@@ -158,10 +143,7 @@ describe('EnvironmentService', () => {
   it('should detect the ithc environment correctly', () => {
     TestBed.configureTestingModule({
       imports: [],
-      providers: [
-        { provide: Window, useValue: dummyWindowIthc },
-        EnvironmentService,
-      ],
+      providers: [{ provide: Window, useValue: dummyWindowIthc }, EnvironmentService],
     });
     const service = TestBed.inject(EnvironmentService);
     expect(service.getDeploymentEnv()).toBe(DeploymentEnvironmentEnum.ITHC);
@@ -170,10 +152,7 @@ describe('EnvironmentService', () => {
   it('should detect the preview environment correctly', () => {
     TestBed.configureTestingModule({
       imports: [],
-      providers: [
-        { provide: Window, useValue: dummyWindowPreview },
-        EnvironmentService,
-      ],
+      providers: [{ provide: Window, useValue: dummyWindowPreview }, EnvironmentService],
     });
     const service = TestBed.inject(EnvironmentService);
     expect(service.getDeploymentEnv()).toBe(DeploymentEnvironmentEnum.PREVIEW);
@@ -182,10 +161,7 @@ describe('EnvironmentService', () => {
   it('should detect the local environment correctly', () => {
     TestBed.configureTestingModule({
       imports: [],
-      providers: [
-        { provide: Window, useValue: dummyWindowLocalhost },
-        EnvironmentService,
-      ],
+      providers: [{ provide: Window, useValue: dummyWindowLocalhost }, EnvironmentService],
     });
     const service = TestBed.inject(EnvironmentService);
     expect(service.getDeploymentEnv()).toBe(DeploymentEnvironmentEnum.LOCAL);

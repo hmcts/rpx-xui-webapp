@@ -29,6 +29,14 @@ const resolveBaseUrl = (env: EnvMap = process.env) => env.TEST_URL || defaultBas
 
 const resolveHeadlessMode = (env: EnvMap = process.env) => env.HEAD !== 'true';
 
+const resolveDefaultReporter = (env: EnvMap = process.env): string => {
+  const configured = env.PLAYWRIGHT_DEFAULT_REPORTER?.trim();
+  if (configured && ['dot', 'list', 'line'].includes(configured)) {
+    return configured;
+  }
+  return env.CI ? 'dot' : 'list';
+};
+
 const parseNonNegativeInt = (raw: string | undefined): number | undefined => {
   if (!raw) {
     return undefined;
@@ -248,7 +256,7 @@ const buildConfig = (env: EnvMap = process.env) => {
     workers: workerCount,
 
     reporter: [
-      [env.CI ? 'dot' : 'list'],
+      [resolveDefaultReporter(env)],
       ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs'],
       [
         'odhin-reports-playwright',
@@ -332,6 +340,7 @@ const config = buildConfig(process.env);
   splitTagInput,
   resolveApiTagFilters,
   resolveApiRetries,
+  resolveDefaultReporter,
   buildConfig,
 };
 

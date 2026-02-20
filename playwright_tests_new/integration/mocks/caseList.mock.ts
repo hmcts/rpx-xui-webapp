@@ -114,4 +114,25 @@ export function buildCaseListMock(rowCount: number = 2) {
   };
 }
 
+export function buildCaseListJurisdictionsMock() {
+  return [
+    {
+      id: 'DIVORCE',
+      name: 'Family Divorce',
+      caseTypes: [
+        {
+          id: 'xuiTestJurisdiction',
+          name: 'XUI Case PoC',
+          states: [
+            {
+              id: 'CaseCreated',
+              name: 'Case Created',
+            },
+          ],
+        },
+      ],
+    },
+  ];
+}
+
 export default buildCaseListMock;

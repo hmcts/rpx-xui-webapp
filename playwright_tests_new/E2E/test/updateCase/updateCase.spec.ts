@@ -1,41 +1,89 @@
 import { faker } from '@faker-js/faker';
 import { expect, test } from '../../fixtures';
-import { loadSessionCookies } from '../../../common/sessionCapture';
-
-let sessionCookies: any[] = [];
+import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
+import { caseBannerMatches, getTodayFormats, matchesToday } from '../../utils';
+import { DEFAULT_TRANSIENT_MAX_ATTEMPTS, retryOnTransientFailure } from '../../utils/transient-failure.utils';
 let caseNumber: string;
 const updatedFirstName = faker.person.firstName();
 const updatedLastName = faker.person.lastName();
 const testField = faker.lorem.word() + new Date().toLocaleTimeString();
+const UPDATE_CASE_ACTION_TIMEOUT_MS = 60_000;
+const UPDATE_CASE_SUBMIT_TIMEOUT_MS = 60_000;
+const UPDATE_CASE_MAX_AUTO_ADVANCE_ATTEMPTS = Math.max(2, Math.min(8, Math.floor(UPDATE_CASE_SUBMIT_TIMEOUT_MS / 15_000)));
 
 test.describe('Verify creating and updating a case works as expected', () => {
-  test.beforeEach(async ({ page, createCasePage }) => {
-    const { cookies } = loadSessionCookies('SOLICITOR');
-    sessionCookies = cookies;
-    if (sessionCookies.length) {
-      await page.context().addCookies(sessionCookies);
-    }
-    await page.goto('/');
-    await createCasePage.createDivorceCase('DIVORCE', 'XUI Case PoC', testField);
-    caseNumber = await createCasePage.exuiCaseDetailsComponent.caseHeader.innerText();
+  test.describe.configure({ timeout: 300_000 });
+  test.beforeEach(async ({ page, createCasePage, caseDetailsPage }) => {
+    await retryOnTransientFailure(
+      async () => {
+        await ensureAuthenticatedPage(page, 'SOLICITOR', { waitForSelector: 'exui-header' });
+        await createCasePage.createDivorceCase('DIVORCE', 'XUI Case PoC', testField);
+        // Always collect case number from URL for consistency
+        caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
+      },
+      {
+        maxAttempts: DEFAULT_TRANSIENT_MAX_ATTEMPTS,
+        onRetry: async () => {
+          if (page.isClosed()) {
+            return;
+          }
+          await page.goto('/').catch(() => undefined);
+        },
+      }
+    );
   });
 
-  test('Create, update and verify case history', async ({ createCasePage, caseDetailsPage }) => {
+  test('Create, update and verify case history', async ({ page, createCasePage, caseDetailsPage }) => {
     await test.step('Start Update Case event', async () => {
-      await caseDetailsPage.selectCaseAction('Update case');
+      await caseDetailsPage.selectCaseAction('Update case', {
+        expectedLocator: createCasePage.person2FirstNameInput,
+        timeoutMs: UPDATE_CASE_ACTION_TIMEOUT_MS,
+      });
     });
 
     await test.step('Update case fields', async () => {
-      await createCasePage.person2FirstNameInput.fill(updatedFirstName);
-      await createCasePage.person2LastNameInput.fill(updatedLastName);
-      await createCasePage.continueButton.click();
-      await createCasePage.submitButton.click();
+      const caseDetailsUrl = await caseDetailsPage.getCurrentPageUrl();
+
+      await retryOnTransientFailure(
+        async () => {
+          await createCasePage.person2FirstNameInput.fill(updatedFirstName);
+          await createCasePage.person2LastNameInput.fill(updatedLastName);
+          await createCasePage.clickSubmitAndWait('after updating case fields', {
+            timeoutMs: UPDATE_CASE_SUBMIT_TIMEOUT_MS,
+            maxAutoAdvanceAttempts: UPDATE_CASE_MAX_AUTO_ADVANCE_ATTEMPTS,
+          });
+        },
+        {
+          maxAttempts: DEFAULT_TRANSIENT_MAX_ATTEMPTS,
+          onRetry: async () => {
+            if (page.isClosed()) {
+              return;
+            }
+            await page.goto(caseDetailsUrl).catch(() => undefined);
+            await caseDetailsPage.selectCaseAction('Update case', {
+              expectedLocator: createCasePage.person2FirstNameInput,
+              timeoutMs: UPDATE_CASE_ACTION_TIMEOUT_MS,
+            });
+          },
+        }
+      );
+
+      await caseDetailsPage.exuiSpinnerComponent.wait();
+      // Soft assertion - visibility verified by poll below, but helps with debugging if banner missing
+      await expect.soft(caseDetailsPage.caseAlertSuccessMessage).toBeVisible();
     });
 
     await test.step('Verify update success banner', async () => {
-      expect
-        .soft(await caseDetailsPage.caseAlertSuccessMessage.innerText())
-        .toContain(`Case ${caseNumber} has been updated with event: Update case`);
+      const expectedMessage = 'has been updated with event: Update case';
+      await expect
+        .poll(
+          async () => {
+            const bannerText = await caseDetailsPage.caseAlertSuccessMessage.innerText();
+            return caseBannerMatches(bannerText, caseNumber, expectedMessage);
+          },
+          { timeout: 45_000, intervals: [1_000, 2_000, 3_000] }
+        )
+        .toBe(true);
     });
 
     await test.step("Verify the 'Some more data' tab has updated names correctly", async () => {
@@ -52,10 +100,14 @@ test.describe('Verify creating and updating a case works as expected', () => {
 
     await test.step('Verify that event details are shown on the History tab', async () => {
       await caseDetailsPage.selectCaseDetailsTab('History');
-      const { updateRow, updateDate, updateAuthor, expectedDate } = await caseDetailsPage.getUpdateCaseHistoryInfo('Update case');
+      const { updateRow, updateDate, updateAuthor, expectedDate } = await caseDetailsPage.getUpdateCaseHistoryInfo();
 
       expect.soft(updateRow, 'Update case row should be present').toBeTruthy();
-      expect.soft(updateDate.startsWith(expectedDate), 'Update case date should match today (ignore time)').toBe(true);
+
+      const { numericFormat } = getTodayFormats();
+      const dateMatches = matchesToday(updateDate, expectedDate, numericFormat);
+
+      expect.soft(dateMatches, 'Update case date should match today (ignore time)').toBe(true);
       expect.soft(updateAuthor, 'Update case author should be present').not.toBe('');
 
       const expectedDetails = {

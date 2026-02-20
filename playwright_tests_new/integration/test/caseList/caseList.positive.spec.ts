@@ -1,20 +1,25 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { loadSessionCookies } from '../../../common/sessionCapture';
-import { buildCaseListMock } from '../../mocks/caseList.mock';
+import { applySessionCookies } from '../../../common/sessionCapture';
+import { buildCaseListMock, buildCaseListJurisdictionsMock } from '../../mocks/caseList.mock';
 
 const userIdentifier = 'SOLICITOR';
 let sessionCookies: any[] = [];
 const caseListMockResponse = buildCaseListMock(124);
+const caseListJurisdictionsMock = buildCaseListJurisdictionsMock();
 
-test.beforeAll(() => {
-  const { cookies } = loadSessionCookies(userIdentifier);
+test.beforeEach(async ({ page }) => {
+  const { cookies } = await applySessionCookies(page, userIdentifier);
   sessionCookies = cookies;
-});
 
-test.beforeEach(async ({ page, config }) => {
-  if (sessionCookies.length) {
-    await page.context().addCookies(sessionCookies);
-  }
+  await page.route('**/caseworkers/**/jurisdictions*', async (route) => {
+    const body = JSON.stringify(caseListJurisdictionsMock);
+    await route.fulfill({ status: 200, contentType: 'application/json', body });
+  });
+
+  await page.route('**/caseworkers/**/jurisdictions/**/case-types/**/work-basket-inputs*', async (route) => {
+    const body = JSON.stringify({ workbasketInputs: [] });
+    await route.fulfill({ status: 200, contentType: 'application/json', body });
+  });
 });
 
 test.describe(`Case List as ${userIdentifier}`, () => {
@@ -34,7 +39,7 @@ test.describe(`Case List as ${userIdentifier}`, () => {
       expect(await caseListPage.caseListResultsAmount.textContent()).toBe(
         `Showing 1 to ${Math.min(caseListMockResponse.results.length, 25)} of ${caseListMockResponse.total} results`
       );
-      const table = await tableUtils.mapExuiTable(caseListPage.exuiCaseListComponent.caseListTable);
+      const table = await tableUtils.parseDataTable(caseListPage.exuiCaseListComponent.caseListTable);
       expect(table.length).toBe(caseListMockResponse.results.length);
       for (let i = 0; i < caseListMockResponse.results.length; i++) {
         const expectedFields = caseListMockResponse.results[i].case_fields;

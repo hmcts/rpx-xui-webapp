@@ -7,6 +7,7 @@ import { ensureStorageState } from './utils/auth';
 import { test, expect } from './fixtures';
 import { ROLE_ACCESS_CASE_ID, resolveRoleAccessCaseId } from './data/testIds';
 import { expectStatus, StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
+import { AuthenticationError } from './utils/errors';
 import { seedRoleAccessCaseId } from './utils/role-access';
 import { RoleAssignmentContainer } from './utils/types';
 import {
@@ -26,7 +27,7 @@ import {
   buildExpiredCookies,
 } from './utils/searchRefDataUtils';
 
-test.describe('Global search', () => {
+test.describe('Global search', { tag: '@svc-global-search' }, () => {
   test('lists available services', async ({ apiClient }) => {
     const response = await withRetry(
       () =>
@@ -62,7 +63,7 @@ test.describe('Global search', () => {
   });
 });
 
-test.describe('Ref data and supported jurisdictions', () => {
+test.describe('Ref data and supported jurisdictions', { tag: '@svc-ref-data' }, () => {
   test('wa-supported jurisdictions', async ({ apiClient }) => {
     const res = await apiClient.get<string[]>('api/wa-supported-jurisdiction', { throwOnError: false });
     expectStatus(res.status, StatusSets.guardedBasic);
@@ -96,7 +97,7 @@ test.describe('Ref data and supported jurisdictions', () => {
   });
 });
 
-test.describe('Role access / AM', () => {
+test.describe('Role access / AM', { tag: '@svc-role-assignment' }, () => {
   let roleAccessCaseId = ROLE_ACCESS_CASE_ID;
   const hasCaseOfficer = !!config.users?.[config.testEnv as keyof typeof config.users]?.caseOfficer_r1;
   test.beforeAll(async ({ apiClient }) => {
@@ -256,12 +257,24 @@ test.describe('Role access / AM', () => {
       expect(hasCaseOfficer).toBe(false);
       return;
     }
-    const client = await apiClientFor('caseOfficer_r1');
-    const res = await client.post('api/role-access/allocate-role/confirm', {
-      data: { caseId: roleAccessCaseId, caseType: 'xuiTestCaseType', jurisdiction: 'DIVORCE' },
-      throwOnError: false,
-    });
-    expectStatus(res.status, [401, 403, 500]);
+    try {
+      const client = await apiClientFor('caseOfficer_r1');
+      const res = await client.post('api/role-access/allocate-role/confirm', {
+        data: { caseId: roleAccessCaseId, caseType: 'xuiTestCaseType', jurisdiction: 'DIVORCE' },
+        throwOnError: false,
+      });
+      expectStatus(res.status, [401, 403, 500]);
+    } catch (error) {
+      if (error instanceof AuthenticationError) {
+        testInfo.annotations.push({
+          type: 'notice',
+          description: `Skipping case-officer role check in ${config.testEnv}: ${error.message}`,
+        });
+        test.skip(true, `caseOfficer_r1 cannot authenticate in ${config.testEnv}`);
+        return;
+      }
+      throw error;
+    }
   });
 
   test('role access confirm returns guarded status for stale session', async () => {
@@ -273,8 +286,8 @@ test.describe('Role access / AM', () => {
     const ctx = await request.newContext({
       baseURL: config.baseUrl.replace(/\/+$/, ''),
       ignoreHTTPSErrors: true,
+      storageState: { cookies: expiredCookies as any, origins: [] },
     });
-    await applyExpiredCookies(ctx, expiredCookies);
     const res = await ctx.post('api/role-access/allocate-role/confirm', {
       data: { caseId: roleAccessCaseId },
       failOnStatusCode: false,
@@ -300,7 +313,7 @@ test.describe('Role access / AM', () => {
   });
 });
 
-test.describe('Search/refdata helper coverage', () => {
+test.describe('Search/refdata helper coverage', { tag: ['@svc-global-search', '@svc-ref-data'] }, () => {
   test('assertGlobalSearchServices covers results and empty', () => {
     assertGlobalSearchServices(200, [{ serviceId: 'svc', serviceName: 'Service' }]);
     assertGlobalSearchServices(200, []);
@@ -388,12 +401,12 @@ test.describe('Search/refdata helper coverage', () => {
     };
     await applyExpiredCookies(ctx, []);
     expect(calls).toBe(0);
-    await applyExpiredCookies(ctx, [{ name: 'cookie' }]);
+    await applyExpiredCookies(ctx, [{ name: 'cookie', value: '1', expires: 0 }]);
     expect(calls).toBe(1);
   });
 
   test('buildExpiredCookies handles missing cookies', () => {
-    expect(buildExpiredCookies({ cookies: [{ name: 'c' }] })).toHaveLength(1);
+    expect(buildExpiredCookies({ cookies: [{ name: 'c', value: '1', expires: 0 }] })).toHaveLength(1);
     expect(buildExpiredCookies({})).toEqual([]);
   });
 });

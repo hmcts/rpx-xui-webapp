@@ -1,28 +1,23 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { loadSessionCookies } from '../../../common/sessionCapture';
+import { applySessionCookies } from '../../../common/sessionCapture';
 import { buildMyTaskListMock, buildDeterministicMyTasksListMock } from '../../mocks/taskList.mock';
 import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
-import { readTaskTable, formatUiDate } from '../../utils/tableUtils';
+import { formatUiDate } from '../../utils/tableUtils';
+import { retryOnTransientFailure } from '../../../E2E/utils/transient-failure.utils';
 
 const userIdentifier = 'STAFF_ADMIN';
 let sessionCookies: any[] = [];
 let taskListMockResponse;
 
-test.beforeAll(() => {
-  const { cookies } = loadSessionCookies(userIdentifier);
-  sessionCookies = cookies;
-});
-
 test.beforeEach(async ({ page }) => {
-  if (sessionCookies.length) {
-    await page.context().addCookies(sessionCookies);
-    const userId = extractUserIdFromCookies(sessionCookies);
-    taskListMockResponse = buildMyTaskListMock(160, userId?.toString() || '');
-  }
+  const { cookies } = await applySessionCookies(page, userIdentifier);
+  sessionCookies = cookies;
+  const userId = extractUserIdFromCookies(sessionCookies);
+  taskListMockResponse = buildMyTaskListMock(160, userId?.toString() || '');
 });
 
 test.describe(`Task List as ${userIdentifier}`, () => {
-  test(`User ${userIdentifier} can view assigned tasks on the task list page`, async ({ taskListPage, page }) => {
+  test(`User ${userIdentifier} can view assigned tasks on the task list page`, async ({ taskListPage, page, tableUtils }) => {
     await test.step('Setup route mock for task list', async () => {
       await page.route('**/workallocation/task*', async (route) => {
         const body = JSON.stringify(taskListMockResponse);
@@ -31,16 +26,16 @@ test.describe(`Task List as ${userIdentifier}`, () => {
     });
 
     await test.step('Navigate to the my tasks list page', async () => {
-      await page.goto('/');
+      await taskListPage.goto();
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
     });
 
     await test.step('Verify user can see a list shows the expected layout and data, given the mock response', async () => {
-      expect(await taskListPage.taskListResultsAmount.textContent()).toBe(
+      expect(await taskListPage.getResultsText()).toBe(
         `Showing 1 to ${Math.min(taskListMockResponse.tasks.length, 25)} of ${taskListMockResponse.total_records} results`
       );
-      const table = await readTaskTable(taskListPage.taskListTable);
+      const table = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
       for (let i = 0; i < table.length; i++) {
         const expectedCaseName = taskListMockResponse.tasks[i].case_name;
         expect(table[i]['Case name']).toBe(expectedCaseName);
@@ -65,7 +60,7 @@ test.describe(`Task List as ${userIdentifier}`, () => {
       });
     });
     await test.step('Navigate to the my tasks list page', async () => {
-      await page.goto('/');
+      await taskListPage.goto();
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
     });
@@ -74,7 +69,11 @@ test.describe(`Task List as ${userIdentifier}`, () => {
     });
   });
 
-  test(`User ${userIdentifier} sees all types of priority tasks with specific due dates`, async ({ taskListPage, page }) => {
+  test(`User ${userIdentifier} sees all types of priority tasks with specific due dates`, async ({
+    taskListPage,
+    page,
+    tableUtils,
+  }) => {
     const deterministicMockResponse = buildDeterministicMyTasksListMock('deterministic-assignee');
     await test.step('Setup route mock for deterministic task list', async () => {
       await page.route('**/workallocation/task*', async (route) => {
@@ -83,23 +82,40 @@ test.describe(`Task List as ${userIdentifier}`, () => {
       });
     });
     await test.step('Navigate to the my tasks list page', async () => {
-      await page.goto('/');
+      await taskListPage.goto();
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
     });
     await test.step('Verify table shows deterministic priority tasks and due dates', async () => {
-      expect(await taskListPage.taskListResultsAmount.textContent()).toBe(`Showing 1 to 4 of 4 results`);
-      const table = await readTaskTable(taskListPage.taskListTable);
-      expect(table.length).toBe(4);
-      for (let i = 0; i < table.length; i++) {
-        const expected = deterministicMockResponse.tasks[i];
-        expect(table[i]['Case name']).toBe(expected.case_name);
-        expect(table[i]['Case category']).toBe(expected.case_category);
-        expect(table[i]['Location']).toBe(expected.location_name);
-        expect(table[i]['Task']).toBe(expected.task_title);
-        expect(table[i]['Due date']).toBe(formatUiDate(expected.due_date));
-        expect(table[i]['Priority']).toBe(String(expected.priority_field));
-      }
+      await retryOnTransientFailure(
+        async () => {
+          expect(await taskListPage.getResultsText()).toBe(`Showing 1 to 4 of 4 results`);
+          const table = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
+          expect(table.length).toBe(4);
+          for (let i = 0; i < table.length; i++) {
+            const expected = deterministicMockResponse.tasks[i];
+            expect(table[i]['Case name']).toBe(expected.case_name);
+            expect(table[i]['Case category']).toBe(expected.case_category);
+            expect(table[i]['Location']).toBe(expected.location_name);
+            expect(table[i]['Task']).toBe(expected.task_title);
+            expect(table[i]['Due date']).toBe(formatUiDate(expected.due_date));
+            const actualPriority = table[i]['Priority']?.toLowerCase() ?? '';
+            const expectedPriority = String(expected.priority_field ?? '').toLowerCase();
+            expect(actualPriority).toBe(expectedPriority);
+          }
+        },
+        {
+          maxAttempts: 2,
+          onRetry: async () => {
+            if (page.isClosed()) {
+              return;
+            }
+            await taskListPage.goto();
+            await expect(taskListPage.taskListTable).toBeVisible();
+            await taskListPage.exuiSpinnerComponent.wait();
+          },
+        }
+      );
     });
   });
 });

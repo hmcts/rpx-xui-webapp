@@ -21,7 +21,6 @@ test.describe('Verify the my tasks page tabs appear as expected', () => {
   test('Verify My tasks actions appear as expected', async ({ taskListPage, tableUtils }) => {
     await test.step('Navigate to the task list page', async () => {
       await expect(taskListPage.taskListTable).toBeVisible();
-      await taskListPage.exuiSpinnerComponent.wait();
       await taskListPage.waitForManageButton('my tasks tab', { timeoutMs: 60_000 });
     });
 
@@ -45,7 +44,6 @@ test.describe('Verify the my tasks page tabs appear as expected', () => {
     await test.step('Navigate to the task list page', async () => {
       await taskListPage.selectWorkMenuItem('Available tasks');
       await expect(taskListPage.taskListTable).toBeVisible();
-      await taskListPage.exuiSpinnerComponent.wait();
       await taskListPage.waitForManageButton('available tasks tab', { timeoutMs: 60_000 });
     });
 

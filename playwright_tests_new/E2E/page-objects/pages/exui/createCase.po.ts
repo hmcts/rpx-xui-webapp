@@ -1092,8 +1092,12 @@ export class CreateCasePage extends Base {
         await this.person1GenderSelect.selectOption(gender);
         await this.person1JobTitleInput.fill(faker.person.jobTitle());
         await this.person1JobDescriptionInput.fill(faker.lorem.sentence());
+        const personalDetailsUrl = this.page.url();
         await this.clickContinueAndWait('after PoC personal details');
-        await this.textField0Input.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
+        await this.ensureWizardAdvanced('after PoC personal details', personalDetailsUrl, {
+          expectedLocator: this.textField0Input,
+          timeoutMs: EXUI_TIMEOUTS.POC_FIELD_VISIBLE,
+        });
         await this.textField0Input.fill(textField0);
         await this.textField3Input.fill(faker.lorem.word());
         await this.textField1Input.fill(faker.lorem.word());
@@ -1107,6 +1111,7 @@ export class CreateCasePage extends Base {
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         const isTransientCreationFailure =
+          isTransientWorkflowFailure(error) ||
           message.includes('Validation error after after PoC text fields') ||
           message.includes('The event could not be created') ||
           (await this.eventCreationErrorHeading.isVisible().catch(() => false));

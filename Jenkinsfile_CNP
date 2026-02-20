@@ -234,20 +234,6 @@ withPipeline(type, product, component) {
         }
     }
 
-    before('functionalTest:preview') {
-        stage('Playwright E2E Tests - preview') {
-            echo 'Playwright E2E execution is triggered by shared stage "Functional Test - preview" via yarn test:functional.'
-        }
-    }
-
-    afterFailure('functionalTest:preview') {
-        stage('Playwright E2E Tests - preview (failed)') {
-            catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                error('Playwright E2E Tests failed in functionalTest:preview. Open report "PREVIEW Playwright E2E Tests" and stage logs for failing specs.')
-            }
-        }
-    }
-
     afterAlways('functionalTest:preview') {
         publishHTML([
             allowMissing         : true,
@@ -255,7 +241,7 @@ withPipeline(type, product, component) {
             keepAll              : true,
             reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
             reportFiles          : 'xui-playwright-e2e.html',
-            reportName           : 'PREVIEW Playwright E2E Tests'
+            reportName           : 'PREVIEW Playwright E2E'
         ])
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
         archivePlaywrightDiagnostics()

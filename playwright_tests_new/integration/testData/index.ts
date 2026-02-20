@@ -9,3 +9,4 @@
  * ```
  */
 export * from './caseReferences';
+export * from './searchCaseNegativeScenarios';

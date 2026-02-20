@@ -24,7 +24,7 @@ export class TaskListPage extends Base {
   readonly paginationControls = this.page.locator('.ngx-pagination');
   readonly paginationNextButton = this.paginationControls.locator('.pagination-next');
   readonly paginationEllipsisButton = this.paginationControls.locator('.ellipsis');
-  readonly paginationPreviousButton = this.paginationControls.locator('.pagination-previous')
+  readonly paginationPreviousButton = this.paginationControls.locator('.pagination-previous');
   readonly paginationCurrentPage = this.paginationControls.locator('.current');
 
   constructor(page: Page) {

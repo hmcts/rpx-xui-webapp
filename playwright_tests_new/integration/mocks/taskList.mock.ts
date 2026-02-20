@@ -13,7 +13,7 @@ export const myActionsList: TaskActions[] = [
   { id: 'unclaim', title: 'Unassign task' },
 ];
 
-export const avilableActionsList: TaskActions[] = [
+export const availableActionsList: TaskActions[] = [
   { id: 'claim', title: 'Assign to me' },
   { id: 'claim-and-go', title: 'Assign to me and go to task' },
 ];

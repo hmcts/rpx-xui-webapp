@@ -315,7 +315,9 @@
     "superagent": "^10.2.2",
     "glob@npm:*": "npm:10.5.0",
     "cookie": "^0.7.2",
-    "min-document": "^2.19.1"
+    "min-document": "^2.19.1",
+    "@types/jsdom": "^27",
+    "jsdom": "^27.4.0"
   },
   "packageManager": "yarn@4.7.0"
 }

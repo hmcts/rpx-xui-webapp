@@ -102,4 +102,28 @@ test.describe(`Task List as ${userIdentifier}`, () => {
       }
     });
   });
+
+  test(`User ${userIdentifier} can see all table sorting buttons on the table`, async ({ taskListPage, page, tableUtils }) => {
+    const emptyMockResponse = { tasks: [], total_records: 0 };
+    await test.step('Setup route mock for deterministic task list', async () => {
+      await page.route('**/workallocation/task*', async (route) => {
+        const body = JSON.stringify(emptyMockResponse);
+        await route.fulfill({ status: 200, contentType: 'application/json', body });
+      });
+    });
+    await test.step('Navigate to the my tasks list page', async () => {
+      await taskListPage.goto();
+      await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.exuiSpinnerComponent.wait();
+    });
+
+    await test.step('Verify all table sorting buttons are visible', async () => {
+      await expect(taskListPage.sortByCaseNameTableHeader).toBeVisible();
+      await expect(taskListPage.sortByCaseCategoryTableHeader).toBeVisible();
+      await expect(taskListPage.sortByLocationTableHeader).toBeVisible();
+      await expect(taskListPage.sortByTaskTableHeader).toBeVisible();
+      await expect(taskListPage.sortByDueDateTableHeader).toBeVisible();
+      await expect(taskListPage.sortByHearingDateTableHeader).toBeVisible();
+    });
+  });
 });

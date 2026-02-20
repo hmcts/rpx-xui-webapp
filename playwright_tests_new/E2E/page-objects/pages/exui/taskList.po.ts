@@ -22,6 +22,13 @@ export class TaskListPage extends Base {
   readonly taskActionClaim = this.taskListTable.locator('#action_claim');
   readonly taskActionClaimAndGo = this.taskListTable.locator('#action_claim-and-go');
 
+  readonly sortByCaseNameTableHeader = this.taskListTable.locator('#sort_by_caseName');
+  readonly sortByCaseCategoryTableHeader = this.taskListTable.locator('#sort_by_caseCategory');
+  readonly sortByLocationTableHeader = this.taskListTable.locator('#sort_by_locationName');
+  readonly sortByTaskTableHeader = this.taskListTable.locator('#sort_by_taskTitle');
+  readonly sortByDueDateTableHeader = this.taskListTable.locator('#sort_by_dueDate');
+  readonly sortByHearingDateTableHeader = this.taskListTable.locator('#sort_by_next_hearing_date');
+
   readonly paginationControls = this.page.locator('.ngx-pagination');
   readonly paginationNextButton = this.paginationControls.locator('.pagination-next');
   readonly paginationEllipsisButton = this.paginationControls.locator('.ellipsis');

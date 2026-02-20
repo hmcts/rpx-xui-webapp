@@ -56,7 +56,10 @@ describe('Hearing Actuals Reducer', () => {
 
       it('should reset the last error', () => {
         const { initialHearingActualsState } = fromHearingActualsReducer;
-        const action = new fromHearingActualsActions.SubmitHearingActuals('1111222233334444');
+        const action = new fromHearingActualsActions.SubmitHearingActuals({
+          id: '1111222233334444',
+          caseRef: '5555666677778888',
+        });
         const state = fromHearingActualsReducer.hearingActualsReducer(initialHearingActualsState, action);
         expect(state.lastError).toEqual(null);
       });

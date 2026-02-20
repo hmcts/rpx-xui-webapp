@@ -25,7 +25,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   const strCourtTypeIds = courtTypeIdsArray ? courtTypeIdsArray.join(',') : '';
   const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${strCourtTypeIds}`;
   try {
-    const { status, data }: { status: number; data: LocationModel[] } = await handleGet(markupPath, req, next);
+    const { status, data }: { status: number; data: LocationModel[] } = await handleGet(markupPath, req);
     let result: LocationModel[] = data;
     if (locationType === LocationTypeEnum.HEARING) {
       result = data.filter((location) => location.is_hearing_location === 'Y');
@@ -51,7 +51,7 @@ export async function getLocationById(req: EnhancedRequest, res: Response, next:
   const courtTypeIdsArray: string[] = getCourtTypeIdsByServices([serviceCode]);
   const markupPath: string = `${url}/refdata/location/court-venues?epimms_id=${epimmsID}`;
   try {
-    const { status, data }: { status: number; data: LocationModel[] } = await handleGet(markupPath, req, next);
+    const { status, data }: { status: number; data: LocationModel[] } = await handleGet(markupPath, req);
     const courtLocations = serviceCode && courtTypeIdsArray?.length > 0 ? getLocationsByCourtType(data, courtTypeIdsArray) : data;
     const identicalLocationByEpimmsId = getIdenticalLocationByEpimmsId(courtLocations);
     res.status(status).send(identicalLocationByEpimmsId);

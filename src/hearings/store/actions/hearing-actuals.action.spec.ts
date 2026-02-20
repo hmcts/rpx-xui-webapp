@@ -23,6 +23,7 @@ describe('Hearing Actuals Actions', () => {
       const action = new fromHearingActualsAction.UpdateHearingActuals({
         hearingId: '1',
         hearingActuals: payload.hearingActuals,
+        caseId: '1234',
       });
       expect(action.type).toBe(fromHearingActualsAction.UPDATE_HEARING_ACTUALS);
     });
@@ -30,7 +31,7 @@ describe('Hearing Actuals Actions', () => {
 
   describe('SubmitHearingActuals', () => {
     it('should submit hearing actuals action', () => {
-      const action = new fromHearingActualsAction.SubmitHearingActuals('1');
+      const action = new fromHearingActualsAction.SubmitHearingActuals({ id: '1', caseRef: '1234' });
       expect(action.type).toBe(fromHearingActualsAction.SUBMIT_HEARING_ACTUALS);
     });
 

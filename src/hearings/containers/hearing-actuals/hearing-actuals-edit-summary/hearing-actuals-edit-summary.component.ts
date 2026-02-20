@@ -32,7 +32,9 @@ export class HearingActualsEditSummaryComponent extends HearingActualsSummaryBas
   }
 
   public onSubmitHearingDetails(): void {
-    this.hearingStore.dispatch(new fromHearingStore.SubmitHearingActuals(this.id));
+    const navState = this.router.getCurrentNavigation()?.extras?.state ?? history.state;
+    console.log(navState);
+    this.hearingStore.dispatch(new fromHearingStore.SubmitHearingActuals({ id: this.id, caseRef: navState.caseId }));
   }
 
   // Note: Already onBack on extended component but does not work for this use case

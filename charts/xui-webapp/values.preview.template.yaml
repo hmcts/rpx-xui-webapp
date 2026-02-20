@@ -39,6 +39,7 @@ nodejs:
         - system-user-password
         - name: launch-darkly-client-id-preview
           alias: launch-darkly-client-id
+        - mc-session-secret
   autoscaling:
     enabled: false
   devmemoryRequests: 512Mi

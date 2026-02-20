@@ -44,7 +44,7 @@ describe('Application', () => {
     showFeatureStub.returns(false); // default for other features
 
     const getConfigStub = sandbox.stub(require('./configuration'), 'getConfigValue');
-    getConfigStub.withArgs('sessionSecret').returns('test-session-secret-12345');
+    getConfigStub.withArgs('secrets.rpx.mc-session-secret').returns('test-session-secret-12345');
     getConfigStub.withArgs('protocol').returns('https');
     getConfigStub.withArgs('HELMET').returns({
       contentSecurityPolicy: {
@@ -247,7 +247,7 @@ describe('Application', () => {
 
         expect(app).to.exist;
         const getConfigValue = require('./configuration').getConfigValue;
-        expect(getConfigValue).to.have.been.calledWith('sessionSecret');
+        expect(getConfigValue).to.have.been.calledWith('secrets.rpx.mc-session-secret');
         expect(getConfigValue).to.have.been.calledWith('protocol');
       });
     });
@@ -355,7 +355,7 @@ describe('Application', () => {
         expect(cookieParserMiddleware.handle).to.be.a('function');
 
         // Verify session secret was retrieved
-        expect(getConfigValue).to.have.been.calledWith('sessionSecret');
+        expect(getConfigValue).to.have.been.calledWith('secrets.rpx.mc-session-secret');
 
         // Test cookie parser functionality
         const req = mockReq({

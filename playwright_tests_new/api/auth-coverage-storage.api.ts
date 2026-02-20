@@ -17,7 +17,7 @@ test.describe.configure({ mode: 'serial' });
 const mockPassword = process.env.PW_MOCK_PASSWORD ?? String(Date.now());
 const mockCredentials = { username: 'test-user', password: mockPassword };
 
-test.describe('Auth helper coverage - storage operations', () => {
+test.describe('Auth helper coverage - storage operations', { tag: '@svc-auth' }, () => {
   test('tryReadState returns parsed state or undefined for invalid content', async () => {
     const tmpDir = path.join(process.cwd(), 'test-results', 'tmp-auth-state');
     await fs.mkdir(tmpDir, { recursive: true });

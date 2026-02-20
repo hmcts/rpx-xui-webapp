@@ -1,14 +1,12 @@
 import * as express from 'express';
-import getAppConfigCheckRouter from './configuration/appConfigCheckRouter';
 import getUiConfigRouter from './configuration/uiConfigRouter';
 
 const router = express.Router({ mergeParams: true });
 
 /**
- * TODO: Deprecate due to naming
+ * // TODO: Consolidate duplicate config routes. Keep both for now as multiple teams use them both for performance testing.
  */
 router.use('/configuration-ui', getUiConfigRouter);
 router.use('/config/ui', getUiConfigRouter);
-router.use('/config/check', getAppConfigCheckRouter);
 
 export default router;

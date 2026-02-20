@@ -37,17 +37,6 @@ test.describe('Node app endpoints', { tag: '@svc-node-app' }, () => {
     assertUiConfigResponse(response.data, expectedKeys);
   });
 
-  test('serves external config/check snapshot', async ({ anonymousClient }) => {
-    const response = await anonymousClient.get<Record<string, unknown>>('external/config/check');
-    expectStatus(response.status, [200]);
-    expect(response.data).toEqual(
-      expect.objectContaining({
-        clientId: expect.any(String),
-        protocol: expect.any(String),
-      })
-    );
-  });
-
   test('auth/isAuthenticated returns session status', async ({ apiClient }) => {
     const response = await apiClient.get<boolean>('auth/isAuthenticated', { throwOnError: false });
     expectStatus(response.status, StatusSets.guardedBasic);

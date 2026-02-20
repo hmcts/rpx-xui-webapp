@@ -22,7 +22,7 @@ import {
 
 import nodeAppDataModels from './data/nodeAppDataModels';
 
-test.describe('Node app endpoints', () => {
+test.describe('Node app endpoints', { tag: '@svc-node-app' }, () => {
   test('serves external configuration without authentication', async ({ anonymousClient }) => {
     const response = await anonymousClient.get<Record<string, unknown>>('external/configuration-ui');
     expectStatus(response.status, [200]);
@@ -149,7 +149,7 @@ test.describe('Node app endpoints', () => {
   });
 });
 
-test.describe('Node app helper coverage', () => {
+test.describe('Node app helper coverage', { tag: '@svc-node-app' }, () => {
   test('assertUserInfoDetails covers name variants', () => {
     assertUserInfoDetails({
       email: 'user@example.com',

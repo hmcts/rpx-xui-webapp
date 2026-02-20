@@ -65,7 +65,15 @@ export interface SeededTaskResult {
  * Attempts to fetch a deterministic task id for tests.
  * Falls back to undefined if no task is found.
  */
-export async function seedTaskId(apiClient: any, locationId?: string): Promise<SeededTaskResult | undefined> {
+export async function seedTaskId(
+  apiClient: {
+    post: (
+      endpoint: string,
+      options: { data: unknown; throwOnError: boolean }
+    ) => Promise<{ data?: TaskListResponse; status: number }>;
+  },
+  locationId?: string
+): Promise<SeededTaskResult | undefined> {
   const candidateStates: Array<{ type: SeededTaskResult['type']; states: string[]; view: 'MyTasks' | 'AvailableTasks' }> = [
     { type: 'assigned', states: ['assigned'], view: 'MyTasks' },
     { type: 'unassigned', states: ['unassigned'], view: 'AvailableTasks' },

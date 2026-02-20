@@ -136,6 +136,11 @@ describe('TaskAssignmentContainerComponent2', () => {
     // data with a different verb ("Assign")
   }));
 
+  const setHistoryState = (state: { returnUrl?: string; showAssigneeColumn?: boolean } | null) => {
+    const url = state?.returnUrl ?? window.location.pathname;
+    window.history.pushState(state, '', url);
+  };
+
   afterEach(() => {
     fixture.destroy();
   });
@@ -402,7 +407,7 @@ describe('TaskAssignmentContainerComponent2', () => {
 
   describe('returnUrl getter', () => {
     it('should return the returnUrl from window.history.state', () => {
-      window.history.pushState({ returnUrl: '/my-work/list' }, '', '');
+      setHistoryState({ returnUrl: '/my-work/list' });
 
       const returnUrl = (component as any).returnUrl;
 
@@ -410,7 +415,7 @@ describe('TaskAssignmentContainerComponent2', () => {
     });
 
     it('should truncate URL at # character', () => {
-      window.history.pushState({ returnUrl: '/all-work/tasks#manage_123' }, '', '');
+      setHistoryState({ returnUrl: '/all-work/tasks#manage_123' });
 
       const returnUrl = (component as any).returnUrl;
 
@@ -436,7 +441,7 @@ describe('TaskAssignmentContainerComponent2', () => {
 
   describe('showAssigneeColumn getter', () => {
     it('should return true when showAssigneeColumn is true in history state', () => {
-      window.history.pushState({ showAssigneeColumn: true }, '', '');
+      setHistoryState({ showAssigneeColumn: true });
 
       const showAssigneeColumn = (component as any).showAssigneeColumn;
 

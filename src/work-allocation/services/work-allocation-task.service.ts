@@ -1,13 +1,14 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { of } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { Injectable, Optional } from '@angular/core';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 import { AppUtils } from '../../app/app-utils';
 import { UserInfo, UserRole } from '../../app/models';
+import { LoggerService } from '../../app/services/logger/logger.service';
 import { SearchTaskRequest, TaskNamesResponse, TaskSearchParameters } from '../models/dtos';
 import { Task, TaskRole } from '../models/tasks';
 import { TaskResponse } from '../models/tasks/task.model';
+import { logAndRethrow } from './work-allocation-error.utils';
 
 const BASE_URL: string = '/workallocation/task';
 
@@ -24,7 +25,10 @@ export enum ACTION {
 export class WorkAllocationTaskService {
   public currentTasks$: BehaviorSubject<Task[]> = new BehaviorSubject<Task[]>([]);
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(
+    private readonly http: HttpClient,
+    @Optional() private readonly logger?: LoggerService
+  ) {}
 
   /**
    * Call the API to complete a task.
@@ -43,13 +47,29 @@ export class WorkAllocationTaskService {
    * @param taskId specifies which task should be assigned.
    * @param user specifies who this task should be assigned to.
    */
-  public assignTask(taskId: string, user: any): Observable<Response> {
+  public assignTask(taskId: string, user: Record<string, unknown>): Observable<Response> {
     // Make a POST with the specified assignee in the payload.
-    return this.http.post<any>(this.getActionUrl(taskId, ACTION.ASSIGN), user);
+    return this.http
+      .post<Response>(this.getActionUrl(taskId, ACTION.ASSIGN), user)
+      .pipe(
+        catchError((error) =>
+          logAndRethrow(
+            this.logger,
+            `WorkAllocationTaskService.assignTask downstream failure; taskId=${taskId}; endpoint=${this.getActionUrl(taskId, ACTION.ASSIGN)}`,
+            error
+          )
+        )
+      );
   }
 
   public postTask(task: TaskSearchParameters): Observable<Response> {
-    return this.http.post<any>(`${BASE_URL}`, task);
+    return this.http
+      .post<Response>(`${BASE_URL}`, task)
+      .pipe(
+        catchError((error) =>
+          logAndRethrow(this.logger, `WorkAllocationTaskService.postTask downstream failure; endpoint=${BASE_URL}`, error)
+        )
+      );
   }
 
   public searchTask(body: {
@@ -58,7 +78,16 @@ export class WorkAllocationTaskService {
     currentUser: string;
     refined: boolean;
   }): Observable<TaskResponse> {
-    return this.http.post<any>(`${BASE_URL}`, body).pipe(tap((response) => this.currentTasks$.next(response.tasks)));
+    return this.http.post<TaskResponse>(`${BASE_URL}`, body).pipe(
+      catchError((error) =>
+        logAndRethrow(
+          this.logger,
+          `WorkAllocationTaskService.searchTask downstream failure; view=${body.view}; endpoint=${BASE_URL}`,
+          error
+        )
+      ),
+      tap((response) => this.currentTasks$.next(response.tasks || []))
+    );
   }
 
   public claimTask(taskId: string): Observable<Response> {
@@ -71,17 +100,47 @@ export class WorkAllocationTaskService {
 
   public getTask(taskId: string): Observable<Task> {
     const url = `${BASE_URL}/${taskId}`;
-    return this.http.get<Task>(url);
+    return this.http
+      .get<Task>(url)
+      .pipe(
+        catchError((error) =>
+          logAndRethrow(
+            this.logger,
+            `WorkAllocationTaskService.getTask downstream failure; taskId=${taskId}; endpoint=${url}`,
+            error
+          )
+        )
+      );
   }
 
   public getTaskRoles(taskId: string): Observable<TaskRole[]> {
     const url = `${BASE_URL}/${taskId}/roles`;
-    return this.http.get<TaskRole[]>(url);
+    return this.http
+      .get<TaskRole[]>(url)
+      .pipe(
+        catchError((error) =>
+          logAndRethrow(
+            this.logger,
+            `WorkAllocationTaskService.getTaskRoles downstream failure; taskId=${taskId}; endpoint=${url}`,
+            error
+          )
+        )
+      );
   }
 
   public performActionOnTask(taskId: string, action: ACTION, hasNoAssigneeOnComplete?: boolean): Observable<Response> {
     // Make a POST with an empty payload.
-    return this.http.post<any>(this.getActionUrl(taskId, action), { hasNoAssigneeOnComplete });
+    return this.http
+      .post<Response>(this.getActionUrl(taskId, action), { hasNoAssigneeOnComplete })
+      .pipe(
+        catchError((error) =>
+          logAndRethrow(
+            this.logger,
+            `WorkAllocationTaskService.performActionOnTask downstream failure; taskId=${taskId}; action=${action}; endpoint=${this.getActionUrl(taskId, action)}`,
+            error
+          )
+        )
+      );
   }
 
   public getActionUrl(taskId: string, action: ACTION): string {
@@ -103,12 +162,31 @@ export class WorkAllocationTaskService {
         sorting_parameters: [],
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
       };
-      return this.http.post<any>(`${BASE_URL}`, { searchRequest, view: 'MyTasks' }).pipe(map((response) => response.tasks));
+      return this.http.post<{ tasks: Task[] }>(`${BASE_URL}`, { searchRequest, view: 'MyTasks' }).pipe(
+        map((response) => response.tasks),
+        catchError((error) =>
+          logAndRethrow(
+            this.logger,
+            `WorkAllocationTaskService.getUsersAssignedTasks downstream failure; endpoint=${BASE_URL}`,
+            error
+          )
+        )
+      );
     }
-    return of(null);
+    return of([]);
   }
 
   public getTaskTypeNamesFromService(): Observable<TaskNamesResponse[]> {
-    return this.http.get<TaskNamesResponse[]>('/workallocation2/taskNames');
+    return this.http
+      .get<TaskNamesResponse[]>('/workallocation2/taskNames')
+      .pipe(
+        catchError((error) =>
+          logAndRethrow(
+            this.logger,
+            'WorkAllocationTaskService.getTaskTypeNamesFromService downstream failure; endpoint=/workallocation2/taskNames',
+            error
+          )
+        )
+      );
   }
 }

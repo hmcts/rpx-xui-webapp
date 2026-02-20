@@ -83,7 +83,7 @@ test.describe('Case level case flags', () => {
               return false;
             }
             try {
-              const table = await tableUtils.parseDataTable(await caseDetailsPage.getTableByName('Case level flags'));
+              const table = await tableUtils.parseDataTable(caseDetailsPage.getTableByName('Case level flags'));
               const visibleRows = filterEmptyRows(table);
               return visibleRows.some((row) => rowMatchesExpected(row, expectedFlag));
             } catch (error) {

@@ -5,7 +5,7 @@ export type TaskActions = {
   title: string;
 };
 
-export const actionsList: TaskActions[] = [
+export const myActionsList: TaskActions[] = [
   { id: 'cancel', title: 'Cancel task' },
   { id: 'complete', title: 'Mark as done' },
   { id: 'go', title: 'Go to task' },
@@ -15,10 +15,7 @@ export const actionsList: TaskActions[] = [
 
 export const avilableActionsList: TaskActions[] = [
   { id: 'claim', title: 'Assign to me' },
-  {
-    id: 'claim-and-go',
-    title: 'Assign to me and go to task',
-  },
+  { id: 'claim-and-go', title: 'Assign to me and go to task' },
 ];
 
 export const permissions = {
@@ -43,11 +40,7 @@ export const dateOptions = [
   { label: 'future', value: faker.date.soon({ days: faker.number.int({ min: 14, max: 180 }) }) },
 ];
 
-export function buildAvailableTasksListMock(rowCount: number = 3, actions: TaskActions[] = avilableActionsList) {
-  return buildMyTaskListMock(rowCount, '', actions);
-}
-
-export function buildMyTaskListMock(rowCount: number = 3, assignee: string, actions: TaskActions[] = actionsList) {
+export function buildTaskListMock(rowCount: number, assignee: string, actions: TaskActions[] = myActionsList) {
   const maxResults = 25;
   const tasks = Array.from({ length: Math.min(rowCount, maxResults) }, (_, i) => {
     // Created date: always in the past (up to 90 days ago)
@@ -215,7 +208,7 @@ export function buildDeterministicMyTasksListMock(assignee: string) {
       major_priority: t.major_priority,
       priority_date: t.due_date,
       dueDate: t.due_date,
-      actions: actionsList,
+      actions: myActionsList,
       // Flattened case fields
       case_name_field: t.case_name,
       case_category_field: t.case_category,

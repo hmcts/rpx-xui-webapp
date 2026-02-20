@@ -1,9 +1,8 @@
 import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookies } from '../../../common/sessionCapture';
-import { buildMyTaskListMock, buildDeterministicMyTasksListMock } from '../../mocks/taskList.mock';
+import { buildTaskListMock, buildDeterministicMyTasksListMock, myActionsList } from '../../mocks/taskList.mock';
 import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
 import { formatUiDate } from '../../utils/tableUtils';
-import { retryOnTransientFailure } from '../../../E2E/utils/transient-failure.utils';
 
 const userIdentifier = 'STAFF_ADMIN';
 let sessionCookies: any[] = [];
@@ -13,7 +12,7 @@ test.beforeEach(async ({ page }) => {
   const { cookies } = await applySessionCookies(page, userIdentifier);
   sessionCookies = cookies;
   const userId = extractUserIdFromCookies(sessionCookies);
-  taskListMockResponse = buildMyTaskListMock(160, userId?.toString() || '');
+  taskListMockResponse = buildTaskListMock(160, userId?.toString() || '', myActionsList);
 });
 
 test.describe(`Task List as ${userIdentifier}`, () => {

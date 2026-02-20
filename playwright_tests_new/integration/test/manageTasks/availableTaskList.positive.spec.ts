@@ -1,11 +1,10 @@
 import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookies } from '../../../common/sessionCapture';
-import { buildDeterministicMyTasksListMock, buildAvailableTasksListMock } from '../../mocks/taskList.mock';
+import { avilableActionsList, buildTaskListMock } from '../../mocks/taskList.mock';
 import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
 import { formatUiDate } from '../../utils/tableUtils';
 import { retryOnTransientFailure } from '../../../E2E/utils/transient-failure.utils';
 
-const errorStates = [400, 401, 403, 404, 500, 502, 503];
 const userIdentifier = 'STAFF_ADMIN';
 let sessionCookies: any[] = [];
 let taskListMockResponse;
@@ -14,7 +13,7 @@ test.beforeEach(async ({ page }) => {
   const { cookies } = await applySessionCookies(page, userIdentifier);
   sessionCookies = cookies;
   const userId = extractUserIdFromCookies(sessionCookies);
-  taskListMockResponse = buildAvailableTasksListMock(160);
+  taskListMockResponse = buildTaskListMock(3000, '', avilableActionsList);
 });
 
 test.describe(`Available Task List as ${userIdentifier}`, () => {
@@ -34,22 +33,32 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
     });
 
     await test.step('Verify the UI shows the expected layout and data, given the mock response', async () => {
-      expect(await taskListPage.getResultsText()).toBe(
-        `Showing 1 to ${Math.min(taskListMockResponse.tasks.length, 25)} of ${taskListMockResponse.total_records} results`
-      );
+      expect
+        .soft(await taskListPage.getResultsText())
+        .toBe(`Showing 1 to ${Math.min(taskListMockResponse.tasks.length, 25)} of ${taskListMockResponse.total_records} results`);
       const table = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
       for (let i = 0; i < table.length; i++) {
         const expectedCaseName = taskListMockResponse.tasks[i].case_name;
-        expect(table[i]['Case name']).toBe(expectedCaseName);
+        expect.soft(table[i]['Case name']).toBe(expectedCaseName);
         // Check additional columns
-        expect(table[i]['Case category']).toBe(taskListMockResponse.tasks[i].case_category);
-        expect(table[i]['Location']).toBe(taskListMockResponse.tasks[i].location_name);
-        expect(table[i]['Task']).toBe(taskListMockResponse.tasks[i].task_title);
-        expect(table[i]['Due date']).toBe(formatUiDate(taskListMockResponse.tasks[i].due_date));
+        expect.soft(table[i]['Case category']).toBe(taskListMockResponse.tasks[i].case_category);
+        expect.soft(table[i]['Location']).toBe(taskListMockResponse.tasks[i].location_name);
+        expect.soft(table[i]['Task']).toBe(taskListMockResponse.tasks[i].task_title);
+        expect.soft(table[i]['Due date']).toBe(formatUiDate(taskListMockResponse.tasks[i].due_date));
         // Hearing date: allow empty string or null
         const expectedHearingDate = taskListMockResponse.tasks[i].next_hearing_date || '';
-        expect(table[i]['Hearing date']).toBe(formatUiDate(expectedHearingDate));
+        expect.soft(table[i]['Hearing date']).toBe(formatUiDate(expectedHearingDate));
       }
+    });
+    await test.step('Verify the pagination controls behave and display as expected for large result sets', async () => {
+      await expect.soft(taskListPage.paginationPreviousButton).not.toBeVisible();
+      await expect.soft(taskListPage.paginationNextButton).toBeVisible();
+      await expect.soft(taskListPage.paginationEllipsisButton).toBeVisible();
+      expect.soft(await taskListPage.paginationCurrentPage.textContent()).toContain('1');
+      await taskListPage.paginationNextButton.click();
+      expect.soft(await taskListPage.paginationCurrentPage.textContent()).toContain('2');
+      await expect.soft(taskListPage.paginationPreviousButton).toBeVisible();
+      expect.soft(await taskListPage.getResultsText()).toBe(`Showing 26 to 50 of ${taskListMockResponse.total_records} results`);
     });
   });
 
@@ -74,6 +83,7 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
       expect(await taskListPage.taskListTable.textContent()).toContain(
         'There are no available tasks. Use the location filter to view available tasks at other locations.'
       );
+      await expect(taskListPage.paginationControls).not.toBeVisible();
     });
   });
 });

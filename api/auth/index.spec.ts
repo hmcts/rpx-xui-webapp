@@ -100,8 +100,16 @@ describe('Auth Module', () => {
 
       expect(loggerStub.info).to.have.been.calledWith('Setting session and cookies');
       expect(res.cookie).to.have.been.calledTwice;
-      expect(res.cookie).to.have.been.calledWith('xui-mo-webapp-userId', 'test-user-id', { sameSite: 'strict', httpOnly: true, secure: false });
-      expect(res.cookie).to.have.been.calledWith('xui-mo-webapp-token', 'test-access-token', { sameSite: 'strict', httpOnly: true, secure: false });
+      expect(res.cookie).to.have.been.calledWith('xui-mo-webapp-userId', 'test-user-id', {
+        sameSite: 'strict',
+        httpOnly: true,
+        secure: false,
+      });
+      expect(res.cookie).to.have.been.calledWith('xui-mo-webapp-token', 'test-access-token', {
+        sameSite: 'strict',
+        httpOnly: true,
+        secure: false,
+      });
     });
 
     it('should redirect to root when not refresh', () => {
@@ -128,8 +136,16 @@ describe('Auth Module', () => {
 
       successCallback(req, res, next);
 
-      expect(res.cookie).to.have.been.calledWith('xui-mo-webapp-userId', undefined, { sameSite: 'strict', httpOnly: true, secure: false });
-      expect(res.cookie).to.have.been.calledWith('xui-mo-webapp-token', undefined, { sameSite: 'strict', httpOnly: true, secure: false });
+      expect(res.cookie).to.have.been.calledWith('xui-mo-webapp-userId', undefined, {
+        sameSite: 'strict',
+        httpOnly: true,
+        secure: false,
+      });
+      expect(res.cookie).to.have.been.calledWith('xui-mo-webapp-token', undefined, {
+        sameSite: 'strict',
+        httpOnly: true,
+        secure: false,
+      });
     });
   });
 

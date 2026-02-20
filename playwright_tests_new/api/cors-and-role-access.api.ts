@@ -11,7 +11,7 @@ const origins = [
   { label: 'disallowed', origin: 'https://example.invalid', expected: StatusSets.corsDisallowed },
 ];
 
-test.describe('CORS and OPTIONS', () => {
+test.describe('CORS and OPTIONS', { tag: '@svc-cors' }, () => {
   origins.forEach(({ label, origin, expected }) => {
     test(`OPTIONS /api/user/details (${label} origin)`, async () => {
       const ctx = await request.newContext({ baseURL, ignoreHTTPSErrors: true });
@@ -55,7 +55,7 @@ test.describe('CORS and OPTIONS', () => {
   });
 });
 
-test.describe('CORS helper coverage', () => {
+test.describe('CORS helper coverage', { tag: '@svc-cors' }, () => {
   test('assertCorsHeaders handles allowed and disallowed origins', () => {
     assertCorsHeaders(
       StatusSets.corsAllowed,

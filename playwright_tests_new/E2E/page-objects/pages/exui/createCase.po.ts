@@ -5,6 +5,22 @@ import { faker } from '@faker-js/faker';
 import { EXUI_TIMEOUTS } from './exui-timeouts';
 import { isTransientWorkflowFailure } from '../../../utils/transient-failure.utils';
 
+export type DivorcePoCData = {
+  gender?: string;
+  person1Title?: string;
+  person1FirstName?: string;
+  person1LastName?: string;
+  person1Gender?: string;
+  person1JobTitle?: string;
+  person1JobDescription?: string;
+  textField0?: string;
+  textField1?: string;
+  textField2?: string;
+  textField3?: string;
+  // timestamp useful for tests to assert against
+  generatedAt?: string;
+};
+
 const logger = createLogger({
   serviceName: 'create-case',
   format: 'pretty',
@@ -870,7 +886,7 @@ export class CreateCasePage extends Base {
       case 'xuiCaseFlagsV1':
         return this.createDivorceCaseFlag(testInput, jurisdiction, caseType);
       case 'XUI Case PoC':
-        return this.createDivorceCasePoC(jurisdiction, caseType, testInput);
+        return this.createDivorceCasePoC(jurisdiction, caseType);
       case 'xuiTestCaseType':
         return this.createDivorceCaseTest(testInput, jurisdiction, caseType);
       default:
@@ -958,9 +974,9 @@ export class CreateCasePage extends Base {
     await this.waitForCaseDetails('after submitting divorce case flags');
   }
 
-  async createDivorceCasePoC(jurisdiction: string, caseType: string, textField0: string) {
+  async createDivorceCasePoC(jurisdiction: string, caseType: string, data?: DivorcePoCData) {
     const maxAttempts = 2;
-    const preferredGenders = ['Male', 'Female', 'Not given', 'Not Known', 'Unknown'];
+    const preferredGenders = data?.gender ? [data.gender] : ['Male', 'Female', 'Not given'];
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
         await this.createCase(jurisdiction, caseType, '');
@@ -974,20 +990,20 @@ export class CreateCasePage extends Base {
           await genderRadio.check();
         }
         await this.person1Title.click();
-        await this.person1Title.fill(faker.person.prefix());
-        await this.person1FirstNameInput.fill(faker.person.firstName());
-        await this.person1LastNameInput.fill(faker.person.lastName());
-        await this.person1GenderSelect.selectOption(gender);
-        await this.person1JobTitleInput.fill(faker.person.jobTitle());
-        await this.person1JobDescriptionInput.fill(faker.lorem.sentence());
+        await this.person1Title.fill(data?.person1Title ?? faker.person.prefix());
+        await this.person1FirstNameInput.fill(data?.person1FirstName ?? faker.person.firstName());
+        await this.person1LastNameInput.fill(data?.person1LastName ?? faker.person.lastName());
+        await this.person1GenderSelect.selectOption(data?.person1Gender ?? gender);
+        await this.person1JobTitleInput.fill(data?.person1JobTitle ?? faker.person.jobTitle());
+        await this.person1JobDescriptionInput.fill(data?.person1JobDescription ?? faker.lorem.sentence());
         await this.clickContinueAndWait('after PoC personal details');
-        await this.textField0Input.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
-        await this.textField0Input.fill(textField0);
-        await this.textField3Input.fill(faker.lorem.word());
-        await this.textField1Input.fill(faker.lorem.word());
-        await this.textField2Input.fill(faker.lorem.word());
+        await this.textField0Input.waitFor({ state: 'visible', timeout: 30000 });
+        await this.textField0Input.fill(data?.textField0 ?? faker.lorem.word());
+        await this.textField3Input.fill(data?.textField3 ?? faker.lorem.word());
+        await this.textField1Input.fill(data?.textField1 ?? faker.lorem.word());
+        await this.textField2Input.fill(data?.textField2 ?? faker.lorem.word());
         await this.clickContinueAndWait('after PoC text fields');
-        await this.checkYourAnswersHeading.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
+        await this.checkYourAnswersHeading.waitFor({ state: 'visible', timeout: 30000 });
         await this.testSubmitButton.click();
         await this.waitForSpinnerToComplete('after submitting divorce PoC case');
         await this.waitForCaseDetails('after submitting divorce PoC case');
@@ -1008,5 +1024,24 @@ export class CreateCasePage extends Base {
         throw error;
       }
     }
+  }
+
+  async generateDivorcePoCData(overrides: Partial<DivorcePoCData> = {}): Promise<DivorcePoCData> {
+    const gender = overrides.gender ?? faker.helpers.arrayElement(['Male', 'Female', 'Not given']);
+    const generatedAt = overrides.generatedAt ?? new Date().toISOString();
+    return {
+      gender,
+      person1Title: overrides.person1Title ?? faker.person.prefix(),
+      person1FirstName: overrides.person1FirstName ?? faker.person.firstName(),
+      person1LastName: overrides.person1LastName ?? faker.person.lastName(),
+      person1Gender: overrides.person1Gender ?? gender,
+      person1JobTitle: overrides.person1JobTitle ?? faker.person.jobTitle(),
+      person1JobDescription: overrides.person1JobDescription ?? faker.lorem.sentence(),
+      textField0: overrides.textField0 ?? faker.lorem.sentence() + faker.date.soon().getTime(),
+      textField1: overrides.textField1 ?? faker.lorem.sentence() + faker.date.soon().getTime(),
+      textField2: overrides.textField2 ?? faker.lorem.sentence() + faker.date.soon().getTime(),
+      textField3: overrides.textField3 ?? faker.lorem.sentence() + faker.date.soon().getTime(),
+      generatedAt,
+    };
   }
 }

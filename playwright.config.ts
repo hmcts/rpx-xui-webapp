@@ -29,6 +29,17 @@ const resolveBaseUrl = (env: EnvMap = process.env) => env.TEST_URL || defaultBas
 
 const resolveHeadlessMode = (env: EnvMap = process.env) => env.HEAD !== 'true';
 
+const parseNonNegativeInt = (raw: string | undefined): number | undefined => {
+  if (!raw) {
+    return undefined;
+  }
+  const parsed = Number.parseInt(raw, 10);
+  if (!Number.isFinite(parsed) || parsed < 0) {
+    return undefined;
+  }
+  return parsed;
+};
+
 const resolveOdhinOutputFolder = (env: EnvMap = process.env) =>
   env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
 
@@ -94,6 +105,9 @@ const resolveWorkerCount = (env: EnvMap = process.env) => {
   const suggested = Math.min(8, Math.max(2, approxPhysical));
   return suggested;
 };
+
+const resolveApiRetries = (env: EnvMap = process.env) =>
+  parseNonNegativeInt(env.PW_API_RETRIES) ?? parseNonNegativeInt(env.PW_E2E_RETRIES) ?? 2;
 
 const resolveEnvironmentFromUrl = (baseUrl: string): string => {
   try {
@@ -205,6 +219,7 @@ const buildConfig = (env: EnvMap = process.env) => {
   const odhinOutputFolder = resolveOdhinOutputFolder(env);
   const reportBranch = resolveBranchName(env);
   const apiTagFilters = resolveApiTagFilters(env);
+  const apiRetries = resolveApiRetries(env);
 
   return defineConfig({
     use: {
@@ -292,7 +307,7 @@ const buildConfig = (env: EnvMap = process.env) => {
         grepInvert: apiTagFilters.grepInvert,
         fullyParallel: true,
         workers: env.CI ? 4 : Math.max(1, Math.min(8, cpus()?.length ?? 4)),
-        retries: 0,
+        retries: apiRetries,
         timeout: 60 * 1000,
         expect: {
           timeout: 10 * 1000,
@@ -316,6 +331,7 @@ const config = buildConfig(process.env);
   resolveBranchName,
   splitTagInput,
   resolveApiTagFilters,
+  resolveApiRetries,
   buildConfig,
 };
 

@@ -224,8 +224,10 @@ describe('roleAssignmentService', () => {
   });
 
   describe('getPossibleRoles', () => {
+    let safeCharactersStub: sinon.SinonStub;
+
     beforeEach(() => {
-      sandbox.stub(utils, 'allContainOnlySafeCharacters').returns(true);
+      safeCharactersStub = sandbox.stub(utils, 'allContainOnlySafeCharacters').returns(true);
     });
 
     it('should return roles filtered by service ids', async () => {
@@ -265,19 +267,36 @@ describe('roleAssignmentService', () => {
 
     it('should handle request with no service ids', async () => {
       req.body = {};
-      sandbox.stub(http, 'get').resolves({ data: mockRoles });
+      const httpGetStub = sandbox.stub(http, 'get').resolves({ data: mockRoles });
 
       await getPossibleRoles(req, res, next);
 
       expect(res.send).to.have.been.calledWith([]);
       expect(res.status).to.have.been.calledWith(200);
+      expect(httpGetStub).not.to.have.been.called;
     });
 
     it('should handle invalid service ids', async () => {
       req.body = { serviceIds: ['<script>alert("xss")</script>'] };
-      sandbox.restore();
-      sandbox = sinon.createSandbox();
-      sandbox.stub(utils, 'allContainOnlySafeCharacters').returns(false);
+      safeCharactersStub.returns(false);
+
+      await getPossibleRoles(req, res, next);
+
+      expect(res.send).to.have.been.calledWith('Invalid service id');
+      expect(res.status).to.have.been.calledWith(400);
+    });
+
+    it('should reject malformed payload without serviceIds', async () => {
+      req.body = { requestedRoles: [], jurisdiction: 'IA' };
+
+      await getPossibleRoles(req, res, next);
+
+      expect(res.send).to.have.been.calledWith('Invalid service id');
+      expect(res.status).to.have.been.calledWith(400);
+    });
+
+    it('should reject non-array service ids payload', async () => {
+      req.body = { serviceIds: 'IA' };
 
       await getPossibleRoles(req, res, next);
 

@@ -1,6 +1,5 @@
-import { Locator, Page } from '@playwright/test';
+import { Page } from '@playwright/test';
 import { Base } from '../../base';
-import { EXUI_TIMEOUTS, CCD_CASE_REFERENCE_LENGTH, MAX_NAVIGATION_RETRY_ATTEMPTS } from './exui-timeouts';
 
 export class FindCasePage extends Base {
   // Locators
@@ -12,9 +11,7 @@ export class FindCasePage extends Base {
   readonly applyFilterButton = this.page.locator('.search-block button[type="submit"]');
   readonly jurisdictionSelect = this.page.locator('#s-jurisdiction, #wb-jurisdiction, #cc-jurisdiction').first();
   readonly caseTypeSelect = this.page.locator('#s-case-type, #wb-case-type, #cc-case-type').first();
-  readonly ccdCaseReference = this.page
-    .locator(String.raw`#dynamicFilters #\[CASE_REFERENCE\], input[id*="CASE_REFERENCE"]`)
-    .first();
+  readonly ccdCaseReference = this.page.locator('#dynamicFilters #\\[CASE_REFERENCE\\], input[id*="CASE_REFERENCE"]').first();
   readonly pagination = this.page.locator('.ngx-pagination');
   readonly searchResultsSummary = this.page.locator('#search-result .pagination-top');
   readonly searchResultsTable = this.page.locator('ccd-search-result#search-result');
@@ -29,11 +26,17 @@ export class FindCasePage extends Base {
     .first();
 
   public async openFromMainMenu(): Promise<void> {
-    await this.openFindCaseVia(this.findCaseLinkOnMenu);
+    await this.findCaseLinkOnMenu.waitFor({ state: 'visible', timeout: 60000 });
+    await this.findCaseLinkOnMenu.click();
+    await this.page.waitForURL(/\/cases\/case-search/, { timeout: 60000 });
+    await this.exuiSpinnerComponent.wait();
   }
 
   public async openFromTopRight(): Promise<void> {
-    await this.openFindCaseVia(this.findCaseLinkOnTopRight);
+    await this.findCaseLinkOnTopRight.waitFor({ state: 'visible', timeout: 60000 });
+    await this.findCaseLinkOnTopRight.click();
+    await this.page.waitForURL(/\/cases\/case-search/, { timeout: 60000 });
+    await this.exuiSpinnerComponent.wait();
   }
 
   async startFindCaseJourney(caseNumber: string, caseType: string, jurisdiction: string): Promise<void> {
@@ -55,18 +58,8 @@ export class FindCasePage extends Base {
   }
 
   async displayCaseDetailsFor(caseNumber: string): Promise<void> {
-    const normalizedCaseNumber = caseNumber.replaceAll(/\D/g, '');
-    if (normalizedCaseNumber.length !== CCD_CASE_REFERENCE_LENGTH) {
-      throw new Error(`Expected ${CCD_CASE_REFERENCE_LENGTH}-digit case reference, received "${caseNumber}"`);
-    }
-
-    await this.searchResultsDataTable.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_SPINNER_RESULT_HIDDEN });
-
-    const caseDetailsLink = this.searchResultsTable
-      .locator(`a.govuk-link[href*="/cases/case-details/"][href*="${normalizedCaseNumber}"]`)
-      .first();
-    await caseDetailsLink.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_SPINNER_RESULT_HIDDEN });
-    await this.openCaseDetailsFromSearchResult(caseDetailsLink, normalizedCaseNumber, caseNumber);
+    await this.page.locator(`#search-result a.govuk-link[href*="${caseNumber}"]`).first().click();
+    await this.exuiSpinnerComponent.wait();
   }
 
   private async ensureFiltersVisible() {
@@ -75,45 +68,10 @@ export class FindCasePage extends Base {
       await this.showHideFilterButton.click();
     }
 
-    await this.jurisdictionSelect.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
-    await this.caseTypeSelect.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
-    await this.ccdCaseReference.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
+    await this.jurisdictionSelect.waitFor({ state: 'visible', timeout: 60000 });
+    await this.caseTypeSelect.waitFor({ state: 'visible', timeout: 60000 });
+    await this.ccdCaseReference.waitFor({ state: 'visible', timeout: 60000 });
     await this.exuiCaseListComponent.filters.applyFilterBtn.waitFor({ state: 'visible' });
-  }
-
-  private async openFindCaseVia(link: Locator): Promise<void> {
-    await link.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
-    await link.click();
-    await this.page.waitForURL(/\/cases\/case-search/, { timeout: EXUI_TIMEOUTS.GLOBAL_SEARCH_NAVIGATION });
-    await this.exuiSpinnerComponent.wait();
-  }
-
-  private async openCaseDetailsFromSearchResult(
-    searchResultCaseLink: Locator,
-    caseNumberFromUrl: string,
-    originalCaseNumber: string
-  ): Promise<void> {
-    for (let attempt = 1; attempt <= MAX_NAVIGATION_RETRY_ATTEMPTS; attempt++) {
-      await searchResultCaseLink.scrollIntoViewIfNeeded();
-      await searchResultCaseLink.click();
-      await this.exuiSpinnerComponent.wait();
-      if (await this.waitForCaseDetailsUrl(caseNumberFromUrl, EXUI_TIMEOUTS.CASE_DETAILS_NAVIGATION)) {
-        return;
-      }
-    }
-
-    throw new Error(`Navigation to case details did not complete for ${originalCaseNumber}. Current URL: ${this.page.url()}`);
-  }
-
-  private async waitForCaseDetailsUrl(caseNumber: string, timeoutMs: number): Promise<boolean> {
-    try {
-      await this.page.waitForURL((url) => url.pathname.includes('/cases/case-details/') && url.pathname.includes(caseNumber), {
-        timeout: timeoutMs,
-      });
-      return true;
-    } catch {
-      return false;
-    }
   }
 
   constructor(page: Page) {

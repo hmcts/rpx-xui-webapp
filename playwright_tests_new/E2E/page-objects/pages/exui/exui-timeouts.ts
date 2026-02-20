@@ -21,22 +21,4 @@ export const EXUI_TIMEOUTS = {
   SEARCH_BUTTON_VISIBLE: 30_000,
   SEARCH_BUTTON_CLICK: 15_000,
   SEARCH_SPINNER_RESULT_HIDDEN: 60_000,
-  GLOBAL_SEARCH_NAVIGATION: 60_000,
-  CASE_DETAILS_NAVIGATION: 20_000,
 } as const;
-
-/**
- * CCD case references are always 16 digits
- * Format: DDDDDDDDDDDDDDDD (no dashes, spaces, or formatting)
- */
-export const CCD_CASE_REFERENCE_LENGTH = 16;
-
-/**
- * Regex pattern for validating 16-digit CCD case references
- */
-export const CCD_CASE_REFERENCE_PATTERN = /^\d{16}$/;
-
-/**
- * Maximum number of retry attempts for navigation operations
- */
-export const MAX_NAVIGATION_RETRY_ATTEMPTS = 2;

@@ -80,6 +80,8 @@ const reportBranch = resolveBranchName();
 const targetEnv = process.env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
 const runContext = process.env.CI ? 'ci' : 'local-run';
 const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount}`;
+const odhinOutputFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
+process.env.PLAYWRIGHT_REPORT_FOLDER = process.env.PLAYWRIGHT_REPORT_FOLDER ?? odhinOutputFolder;
 
 module.exports = defineConfig({
   testDir: './playwright_tests/E2E',
@@ -105,7 +107,7 @@ module.exports = defineConfig({
     [
       'odhin-reports-playwright',
       {
-        outputFolder: 'functional-output/tests/playwright-e2e/odhin-report',
+        outputFolder: odhinOutputFolder,
         indexFilename: 'xui-playwright.html',
         title: 'RPX XUI Playwright',
         testEnvironment,
@@ -117,6 +119,7 @@ module.exports = defineConfig({
         testOutput: 'only-on-failure',
       },
     ],
+    ['./playwright_tests_new/common/reporters/odhin-postprocess.reporter.cjs'],
   ],
 
   projects: [

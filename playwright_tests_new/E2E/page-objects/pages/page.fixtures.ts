@@ -4,9 +4,9 @@ import { CaseListPage } from './exui/caseList.po';
 import { CreateCasePage } from './exui/createCase.po';
 import { Page } from '@playwright/test';
 import { TaskListPage } from './exui/taskList.po';
-import { SearchCasePage } from './exui/searchCase.po';
-import { GlobalSearchPage } from './exui/globalSearch.po';
-import { FindCasePage } from './exui/findCase.po';
+import { SearchCasePage } from './exui/searchCase.po.ts';
+import { GlobalSearchPage } from './exui/globalSearch.po.ts';
+import { FindCasePage } from './exui/findCase.po.ts';
 
 export interface PageFixtures {
   determinePage: Page;

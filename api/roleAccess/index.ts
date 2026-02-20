@@ -19,6 +19,8 @@ import {
   toSARoleAssignmentBody,
 } from './dtos/to-role-assignment-dto';
 import { getEmail, getJudicialUsersFromApi, getUserName, mapRoleCategory } from './exclusionService';
+import { AllocateRoleData } from './models/allocate-role-state-data.interface';
+import { AllocateTo } from './models/allocate-role.enum';
 import { CaseRoleRequestPayload } from './models/caseRoleRequestPayload';
 import { release2ContentType } from './models/release2ContentType';
 import { Role } from './models/roleType';
@@ -191,9 +193,69 @@ export function mapResponseToCaseRoles(
   }));
 }
 
+type AllocateRolePayload = Partial<AllocateRoleData> & {
+  caseId?: unknown;
+  jurisdiction?: unknown;
+  roleCategory?: unknown;
+  allocateTo?: unknown;
+  typeOfRole?: { id?: unknown } | null;
+  person?: { id?: unknown } | null;
+  period?: { startDate?: unknown } | null;
+};
+
+function isNonEmptyString(value: unknown): value is string {
+  return typeof value === 'string' && value.trim().length > 0;
+}
+
+function hasValidStartDate(period: { startDate?: unknown } | null | undefined): boolean {
+  if (!period || period.startDate === undefined || period.startDate === null) {
+    return false;
+  }
+  return !(typeof period.startDate === 'string' && period.startDate.trim().length === 0);
+}
+
+function isAllocateTo(value: unknown): value is AllocateTo {
+  return value === AllocateTo.ALLOCATE_TO_ME || value === AllocateTo.ALLOCATE_TO_ANOTHER_PERSON;
+}
+
+function isAllocateRolePayloadValid(body: unknown): body is AllocateRoleData {
+  if (!body || typeof body !== 'object') {
+    return false;
+  }
+
+  const payload = body as AllocateRolePayload;
+  if (!isNonEmptyString(payload.caseId)) {
+    return false;
+  }
+  if (!isNonEmptyString(payload.jurisdiction)) {
+    return false;
+  }
+  if (!isNonEmptyString(payload.roleCategory)) {
+    return false;
+  }
+  if (!payload.typeOfRole || !isNonEmptyString(payload.typeOfRole.id)) {
+    return false;
+  }
+  if (!hasValidStartDate(payload.period)) {
+    return false;
+  }
+  if (!isAllocateTo(payload.allocateTo)) {
+    return false;
+  }
+
+  const allocatingToAnotherPerson = payload.allocateTo === AllocateTo.ALLOCATE_TO_ANOTHER_PERSON;
+  if (allocatingToAnotherPerson && !isNonEmptyString(payload.person?.id)) {
+    return false;
+  }
+  return true;
+}
+
 export async function confirmAllocateRole(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
   try {
     const body = req.body;
+    if (!isAllocateRolePayloadValid(body)) {
+      return res.status(400).send('Invalid allocate role payload');
+    }
     const currentUser = req.session.passport.user.userinfo;
     const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
     const roleAssignmentsBody = toRoleAssignmentBody(currentUserId, body);

@@ -547,6 +547,86 @@ describe('roleAccess/index', () => {
       expect(res.send).to.have.been.calledWith({ roleAssignmentId: 'specific-access-assignment-123' });
     });
 
+    it('should return 400 for malformed allocate role payload', async () => {
+      req.body = {
+        caseId: '1234567890123456',
+        jurisdiction: 'SSCS',
+      };
+
+      const sendPostStub = sandbox.stub(crudService, 'sendPost');
+
+      await index.confirmAllocateRole(req, res, next);
+
+      expect(res.status).to.have.been.calledWith(400);
+      expect(res.send).to.have.been.calledWith('Invalid allocate role payload');
+      expect(sendPostStub).not.to.have.been.called;
+      expect(next).not.to.have.been.called;
+    });
+
+    it('should return 400 for unknown allocateTo option', async () => {
+      req.body = createMockAllocateRoleData({
+        allocateTo: 'invalid-allocate-to' as unknown as AllocateTo,
+      });
+
+      const sendPostStub = sandbox.stub(crudService, 'sendPost');
+
+      await index.confirmAllocateRole(req, res, next);
+
+      expect(res.status).to.have.been.calledWith(400);
+      expect(res.send).to.have.been.calledWith('Invalid allocate role payload');
+      expect(sendPostStub).not.to.have.been.called;
+      expect(next).not.to.have.been.called;
+    });
+
+    it('should allow allocate-to-me payload without person details', async () => {
+      const mockAllocateData = createMockAllocateRoleData({
+        allocateTo: AllocateTo.ALLOCATE_TO_ME,
+        person: undefined,
+      });
+      req.body = mockAllocateData;
+      req.session.passport.user.userinfo.id = 'assigner-123';
+
+      const toRoleAssignmentBodyStub = sandbox.stub(dtos, 'toRoleAssignmentBody');
+      toRoleAssignmentBodyStub.returns({
+        roleRequest: {
+          assignerId: 'assigner-123',
+          replaceExisting: false,
+        },
+        requestedRoles: [
+          {
+            roleType: 'CASE',
+            grantType: 'SPECIFIC',
+            classification: 'RESTRICTED',
+            attributes: {
+              caseId: mockAllocateData.caseId,
+              jurisdiction: mockAllocateData.jurisdiction,
+            },
+            roleName: mockAllocateData.typeOfRole.id,
+            roleCategory: mockAllocateData.roleCategory,
+            actorIdType: 'IDAM',
+            actorId: 'assigner-123',
+            beginTime: mockAllocateData.period.startDate,
+            endTime: mockAllocateData.period.endDate,
+          },
+        ],
+      });
+
+      sandbox.stub(crudService, 'sendPost').resolves({
+        status: 201,
+        data: { roleAssignmentId: 'allocate-to-me-assignment-123' },
+        statusText: 'Created',
+        headers: {},
+        config: { headers: new AxiosHeaders() },
+      });
+      sandbox.stub(userModule, 'refreshRoleAssignmentForUser').resolves();
+
+      await index.confirmAllocateRole(req, res, next);
+
+      expect(toRoleAssignmentBodyStub).to.have.been.calledWith('assigner-123', mockAllocateData);
+      expect(res.status).to.have.been.calledWith(201);
+      expect(res.send).to.have.been.calledWith({ roleAssignmentId: 'allocate-to-me-assignment-123' });
+    });
+
     it('should handle errors in role allocation', async () => {
       const error = new Error('Allocation failed');
       req.body = createMockAllocateRoleData();

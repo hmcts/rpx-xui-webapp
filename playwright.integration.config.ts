@@ -1,10 +1,12 @@
-import { defineConfig, devices } from '@playwright/test';
-import { execSync } from 'node:child_process';
-import { cpus } from 'node:os';
-import { version as appVersion } from './package.json';
-export default (() => {
+module.exports = (() => {
+  const { defineConfig, devices } = require('@playwright/test');
+  const { version: appVersion } = require('./package.json');
+  const { execSync } = require('node:child_process');
+  const { cpus } = require('node:os');
+
   const headlessMode = process.env.HEAD !== 'true';
   const odhinOutputFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-integration/odhin-report';
+  process.env.PLAYWRIGHT_REPORT_FOLDER = process.env.PLAYWRIGHT_REPORT_FOLDER ?? odhinOutputFolder;
   const baseUrl = process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';
 
   const resolveEnvironmentFromUrl = (url) => {
@@ -106,6 +108,7 @@ export default (() => {
           testOutput: 'only-on-failure',
         },
       ],
+      ['./playwright_tests_new/common/reporters/odhin-postprocess.reporter.cjs'],
     ],
     globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
     use: {

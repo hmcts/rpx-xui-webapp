@@ -3,18 +3,12 @@ import { createLogger } from '@hmcts/playwright-common';
 import { Base } from '../../base';
 import { faker } from '@faker-js/faker';
 import { EXUI_TIMEOUTS } from './exui-timeouts';
-import { isTransientWorkflowFailure } from '../../../utils/transient-failure.utils';
+import { buildLastBackendCallContext } from '../../../utils/api-tracker';
 
 const logger = createLogger({
   serviceName: 'create-case',
   format: 'pretty',
 });
-
-const CRITICAL_WIZARD_API_PATTERNS: RegExp[] = [
-  /\/cases\/\d+\/event-triggers\//,
-  /\/cases\/\d+\/events/,
-  /\/event-triggers\/[^/]+\/validate/,
-];
 
 export class CreateCasePage extends Base {
   readonly container = this.page.locator('exui-case-home');
@@ -24,7 +18,7 @@ export class CreateCasePage extends Base {
   readonly caseTypeSelect = this.page.locator('#cc-case-type');
   readonly eventTypeSelect = this.page.locator('#cc-event');
   readonly startButton = this.page.locator('button[type="submit"]');
-  readonly submitButton = this.page.getByRole('button', { name: /^submit\b/i });
+  readonly submitButton = this.page.getByRole('button', { name: /submit/i });
   readonly continueButton = this.page.getByRole('button', { name: /^continue\b/i });
 
   // Locators for the Divorce - XUI Case flags V2
@@ -93,13 +87,14 @@ export class CreateCasePage extends Base {
   );
 
   readonly fileUploadInput = this.page.locator('#DocumentUrl');
-  readonly fileUploadStatusLabel = this.page.locator('ccd-write-document-field .error-message');
+  readonly fileUploadStatusLabel = this.page.locator(
+    'ccd-write-document-field .govuk-error-message, ccd-write-document-field .error-message, ccd-write-document-field .upload-progress'
+  );
   readonly textField0Input = this.page.locator('#TextField0');
   readonly textField1Input = this.page.locator('#TextField1');
   readonly textField2Input = this.page.locator('#TextField2');
   readonly textField3Input = this.page.locator('#TextField3');
-  readonly checkYourAnswersHeading = this.page.locator('.check-your-answers h2');
-  readonly testSubmitButton = this.page.locator('.check-your-answers [type="submit"]');
+  readonly checkYourAnswersHeading = this.page.getByRole('heading', { name: /check your answers/i });
 
   // Employment case locators
   readonly receiptDayInput = this.page.locator('#receiptDate-day');
@@ -124,17 +119,21 @@ export class CreateCasePage extends Base {
   readonly hearingPreferenceVideo = this.page.locator('#claimantHearingPreference_hearing_preferences-Video');
 
   // Address lookup locators
-  readonly manualEntryLink = this.page.locator('.manual-link');
+  readonly manualEntryLink = this.page.locator(
+    '[data-testid="manual-entry-link"], .manual-link, a:has-text("Enter address manually"), button:has-text("Enter address manually"), a:has-text("Manual entry"), button:has-text("Manual entry")'
+  );
   readonly claimantAddressLine1Input = this.page.locator('#claimantType_claimant_addressUK__detailAddressLine1');
-  readonly postCodeSearchInput = this.page.locator('.postcodeLookup input');
-  readonly postCodeSearchButton = this.page.locator('.postcodeLookup').getByRole('button');
-  readonly addressSelect = this.page.locator('.postcodeLookup select');
+  readonly postCodeSearchInput = this.page.locator(
+    '[data-testid="postcode-lookup-input"] input, [data-testid="postcode-lookup-input"], .postcodeLookup input'
+  );
+  readonly postCodeSearchButton = this.page.locator('[data-testid="postcode-lookup-button"], .postcodeLookup button');
+  readonly addressSelect = this.page.locator('[data-testid="postcode-lookup-select"], .postcodeLookup select');
 
   // Warning modal
   readonly refreshModal = this.page.locator('.refresh-modal');
   readonly refreshModalConfirmButton = this.refreshModal.getByRole('button', { name: 'Ok' });
-  readonly errorMessage = this.page.locator('.form-group-error .error-message, .govuk-error-message');
-  readonly errorSummary = this.page.locator('.error-summary, .govuk-error-summary');
+  readonly errorMessage = this.page.locator('.govuk-error-message, [role="alert"].error-message, .error-message');
+  readonly errorSummary = this.page.locator('.govuk-error-summary, [role="alert"][class*="error-summary"], .error-summary');
   readonly eventCreationErrorHeading = this.page.getByRole('heading', { name: 'The event could not be created' });
   readonly somethingWentWrongHeading = this.page.getByRole('heading', { name: /something went wrong/i });
 
@@ -158,15 +157,14 @@ export class CreateCasePage extends Base {
    * @throws {Error} If dropdown doesn't populate within timeout
    * @private
    */
-  private async waitForSelectReady(selector: string, timeoutMs?: number) {
-    const effectiveTimeoutMs = timeoutMs ?? EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_DEFAULT;
+  private async waitForSelectReady(selector: string, timeoutMs: number = EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_DEFAULT) {
     await this.page.waitForFunction(
       (sel) => {
         const el = document.querySelector(sel);
-        return el instanceof HTMLSelectElement && el.options.length > 1 && !el.disabled;
+        return !!el && (el as HTMLSelectElement).options.length > 1 && !(el as HTMLSelectElement).disabled;
       },
       selector,
-      { timeout: effectiveTimeoutMs }
+      { timeout: timeoutMs }
     );
   }
 
@@ -252,6 +250,82 @@ export class CreateCasePage extends Base {
     return new URL(url, this.page.url()).pathname;
   }
 
+  private async getFirstVisibleActionButton(buttonLocator: Locator): Promise<Locator | null> {
+    const count = await buttonLocator.count();
+    for (let index = 0; index < count; index += 1) {
+      const candidate = buttonLocator.nth(index);
+      const isVisible = await candidate.isVisible().catch(() => false);
+      if (isVisible) {
+        return candidate;
+      }
+    }
+    return null;
+  }
+
+  private async getVisibleContinueButton(): Promise<Locator | null> {
+    return this.getFirstVisibleActionButton(this.continueButton);
+  }
+
+  private async getVisibleSubmitButton(): Promise<Locator | null> {
+    const submitButtonByName = await this.getFirstVisibleActionButton(this.submitButton);
+    if (submitButtonByName) {
+      return submitButtonByName;
+    }
+
+    // Fallback for CCD variants where accessible name matching is inconsistent (e.g. "Test submit").
+    // Avoid generic type=submit lookup because Update Case uses Continue as type=submit and causes false-positive submit clicks.
+    return this.getVisibleSubmitButtonByLabel();
+  }
+
+  private async getVisibleActionButtonsSummary(): Promise<string[]> {
+    const visibleActionButtons: string[] = [];
+    const allButtons = this.page.getByRole('button');
+    const buttonCount = await allButtons.count();
+    for (let index = 0; index < buttonCount; index += 1) {
+      const button = allButtons.nth(index);
+      const isVisible = await button.isVisible().catch(() => false);
+      if (!isVisible) {
+        continue;
+      }
+      const text = (await button.innerText().catch(() => '')).trim();
+      if (!text || !/(continue|submit|save)/i.test(text)) {
+        continue;
+      }
+      const isEnabled = await button.isEnabled().catch(() => false);
+      visibleActionButtons.push(`${text} (${isEnabled ? 'enabled' : 'disabled'})`);
+      if (visibleActionButtons.length >= 10) {
+        break;
+      }
+    }
+    return visibleActionButtons;
+  }
+
+  private async getVisibleSubmitButtonByLabel(): Promise<Locator | null> {
+    const actionButtons = this.page.locator('button, input[type="button"], input[type="submit"]');
+    const buttonCount = await actionButtons.count();
+    for (let index = 0; index < buttonCount; index += 1) {
+      const button = actionButtons.nth(index);
+      const isVisible = await button.isVisible().catch(() => false);
+      if (!isVisible) {
+        continue;
+      }
+      const label = await this.getActionButtonLabel(button);
+      if (/\bsubmit\b/i.test(label)) {
+        return button;
+      }
+    }
+    return null;
+  }
+
+  private async getActionButtonLabel(button: Locator): Promise<string> {
+    const [text, ariaLabel, value] = await Promise.all([
+      button.innerText().catch(() => ''),
+      button.getAttribute('aria-label').catch(() => ''),
+      button.getAttribute('value').catch(() => ''),
+    ]);
+    return `${text ?? ''} ${ariaLabel ?? ''} ${value ?? ''}`.trim();
+  }
+
   /**
    * Wait for case details page to load with error detection
    *
@@ -264,26 +338,6 @@ export class CreateCasePage extends Base {
   private async waitForCaseDetails(context: string) {
     await this.assertNoEventCreationError(context);
     await this.caseDetailsContainer.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.CASE_DETAILS_VISIBLE });
-  }
-
-  private async getVisibleActionButton(buttons: Locator): Promise<Locator | null> {
-    let fallbackVisibleButton: Locator | null = null;
-    const count = await buttons.count();
-    for (let index = count - 1; index >= 0; index -= 1) {
-      const candidate = buttons.nth(index);
-      const isVisible = await candidate.isVisible().catch(() => false);
-      if (!isVisible) {
-        continue;
-      }
-      if (!fallbackVisibleButton) {
-        fallbackVisibleButton = candidate;
-      }
-      const isEnabled = await candidate.isEnabled().catch(() => false);
-      if (isEnabled) {
-        return candidate;
-      }
-    }
-    return fallbackVisibleButton;
   }
 
   /**
@@ -310,37 +364,45 @@ export class CreateCasePage extends Base {
    * @throws {Error} If button disabled, CCD event fails, or validation error occurs
    * @private
    */
-  private async clickContinueAndWait(
-    context: string,
-    options: { force?: boolean; timeoutMs?: number; continueButton?: Locator } = {}
-  ) {
-    const visibleContinueButton = options.continueButton ?? (await this.getVisibleActionButton(this.continueButton));
-    if (!visibleContinueButton) {
-      throw new Error(`Continue button not visible ${context}`);
-    }
-    await visibleContinueButton.scrollIntoViewIfNeeded();
-    await expect(visibleContinueButton).toBeEnabled();
+  private async clickContinueAndWait(context: string, options: { force?: boolean; timeoutMs?: number } = {}) {
     const clickTimeout = options.timeoutMs ?? EXUI_TIMEOUTS.CONTINUE_CLICK_DEFAULT;
+    const continueButton = await this.getVisibleContinueButton();
+    if (!continueButton) {
+      throw new Error(`Continue button not visible ${context}. URL=${this.page.url()}`);
+    }
+    await continueButton.scrollIntoViewIfNeeded();
+    await expect(continueButton).toBeEnabled({ timeout: clickTimeout });
+    await this.waitForSpinnerToComplete(`before ${context}`, clickTimeout).catch(() => {
+      // Best-effort pre-click sync; fallback click strategy below still handles spinner interception.
+    });
+    await this.clickContinueButtonWithRetry(continueButton, context, clickTimeout, options.force);
+    await this.waitForSpinnerCycle(`after ${context}`, clickTimeout);
+    await this.assertNoEventCreationError(context);
+    await this.assertNoValidationErrorAfterContinue(context);
+  }
+
+  private async clickContinueButtonWithRetry(continueButton: Locator, context: string, clickTimeout: number, force?: boolean) {
     try {
-      await visibleContinueButton.click({ force: options.force, timeout: clickTimeout });
+      await continueButton.click({ force, timeout: clickTimeout });
     } catch (error) {
       const message = String(error);
       if (!message.includes('intercepts pointer events')) {
         throw error;
       }
       this.logger.warn('Continue click intercepted by spinner; retrying with force', { context });
-      const spinnerSettleTimeout = Math.min(clickTimeout, 5_000);
       await this.page
         .locator('xuilib-loading-spinner')
         .first()
-        .waitFor({ state: 'hidden', timeout: spinnerSettleTimeout })
+        .waitFor({ state: 'hidden', timeout: clickTimeout })
         .catch(() => {
           // Best-effort wait; if spinner persists, we still attempt force click.
         });
-      await visibleContinueButton.click({ force: true, timeout: clickTimeout });
+      const retryContinueButton = (await this.getVisibleContinueButton()) ?? continueButton;
+      await retryContinueButton.click({ force: true, timeout: clickTimeout });
     }
-    await this.waitForSpinnerToComplete(`after ${context}`, clickTimeout);
-    await this.assertNoEventCreationError(context);
+  }
+
+  private async assertNoValidationErrorAfterContinue(context: string) {
     const hasValidationError = await this.checkForErrorMessage();
     if (hasValidationError) {
       throw new Error(`Validation error after ${context}`);
@@ -351,117 +413,169 @@ export class CreateCasePage extends Base {
     await this.clickContinueAndWait(context, options);
   }
 
-  /**
-   * Click submit button with retry on pointer interception
-   *
-   * **Defensive Pattern**: Handles spinner overlay blocking submit click
-   *
-   * @param context - Description of the operation for error messages
-   * @throws {Error} If click fails or button not enabled
-   * @private
-   */
-  private async clickSubmitButtonWithRetry(context: string, submitButton?: Locator) {
-    const visibleSubmitButton = submitButton ?? (await this.getVisibleActionButton(this.submitButton));
-    if (!visibleSubmitButton) {
-      throw new Error(`Submit button not visible ${context}`);
+  async clickSubmitAndWait(context: string, options: { timeoutMs?: number } = {}) {
+    const timeoutMs = options.timeoutMs ?? this.getRecommendedTimeoutMs();
+    const deadline = Date.now() + timeoutMs;
+    let autoAdvanceCount = 0;
+    const autoAdvanceTimeoutMs = Math.max(
+      EXUI_TIMEOUTS.SUBMIT_AUTO_ADVANCE_MIN,
+      Math.min(EXUI_TIMEOUTS.SUBMIT_AUTO_ADVANCE_MAX, Math.floor(timeoutMs / 2))
+    );
+
+    while (Date.now() < deadline) {
+      const iterationState = await this.performSubmitWaitIteration(context, autoAdvanceCount, autoAdvanceTimeoutMs);
+      autoAdvanceCount = iterationState.autoAdvanceCount;
+      if (iterationState.shouldReturn) {
+        return;
+      }
+      if (iterationState.shouldContinue) {
+        continue;
+      }
+      await this.waitForSubmitPollInterval();
     }
-    await visibleSubmitButton.scrollIntoViewIfNeeded();
-    await expect(visibleSubmitButton).toBeEnabled();
+
+    throw await this.buildSubmitUnavailableError(context);
+  }
+
+  private async performSubmitWaitIteration(context: string, autoAdvanceCount: number, autoAdvanceTimeoutMs: number) {
+    await this.assertSubmitWaitIsHealthy(context);
+
+    const spinnerHandled = await this.waitForSubmitSpinnerIfVisible(context, autoAdvanceTimeoutMs);
+    if (spinnerHandled) {
+      return { shouldReturn: false, shouldContinue: true, autoAdvanceCount };
+    }
+
+    const submitOutcome = await this.trySubmitWhenReady(context);
+    const submitAction = this.resolveSubmitLoopAction(submitOutcome);
+    if (submitAction === 'return') {
+      return { shouldReturn: true, shouldContinue: false, autoAdvanceCount };
+    }
+    if (submitAction === 'continue') {
+      return { shouldReturn: false, shouldContinue: true, autoAdvanceCount };
+    }
+
+    const advanceOutcome = await this.tryAutoAdvanceToSubmit(context, autoAdvanceCount, autoAdvanceTimeoutMs);
+    const advanceLoopState = this.resolveAdvanceLoopState(advanceOutcome, autoAdvanceCount);
+    return {
+      shouldReturn: false,
+      shouldContinue: advanceLoopState.shouldContinue,
+      autoAdvanceCount: advanceLoopState.autoAdvanceCount,
+    };
+  }
+
+  private resolveSubmitLoopAction(submitOutcome: 'submitted' | 'waiting' | 'none'): 'return' | 'continue' | 'next' {
+    if (submitOutcome === 'submitted') {
+      return 'return';
+    }
+    if (submitOutcome === 'waiting') {
+      return 'continue';
+    }
+    return 'next';
+  }
+
+  private resolveAdvanceLoopState(
+    advanceOutcome: 'advanced' | 'waiting' | 'none',
+    autoAdvanceCount: number
+  ): { shouldContinue: boolean; autoAdvanceCount: number } {
+    if (advanceOutcome === 'advanced') {
+      return { shouldContinue: true, autoAdvanceCount: autoAdvanceCount + 1 };
+    }
+    if (advanceOutcome === 'waiting') {
+      return { shouldContinue: true, autoAdvanceCount };
+    }
+    return { shouldContinue: false, autoAdvanceCount };
+  }
+
+  private async assertSubmitWaitIsHealthy(context: string) {
+    if (this.page.isClosed()) {
+      throw new Error(`Page closed while waiting for submit button ${context}`);
+    }
+    await this.assertNoEventCreationError(`while waiting for submit ${context}`);
+    const onSomethingWentWrongPage = await this.somethingWentWrongHeading.isVisible().catch(() => false);
+    if (onSomethingWentWrongPage) {
+      throw new Error(`Case event failed ${context}: Something went wrong page was displayed.`);
+    }
+  }
+
+  private async waitForSubmitSpinnerIfVisible(context: string, timeoutMs: number): Promise<boolean> {
+    const spinnerVisible = await this.page
+      .locator('xuilib-loading-spinner')
+      .first()
+      .isVisible()
+      .catch(() => false);
+    if (!spinnerVisible) {
+      return false;
+    }
+    await this.waitForSpinnerToComplete(`while waiting for submit ${context}`, timeoutMs).catch(() => {
+      // Keep polling in the main loop even when spinner is slow or intermittent.
+    });
+    await this.page.waitForTimeout(EXUI_TIMEOUTS.SUBMIT_SPINNER_STABILIZE_WAIT);
+    return true;
+  }
+
+  private async trySubmitWhenReady(context: string): Promise<'submitted' | 'waiting' | 'none'> {
+    const submitButton = await this.getVisibleSubmitButton();
+    if (!submitButton) {
+      return 'none';
+    }
+
+    const submitEnabled = await submitButton.isEnabled().catch(() => false);
+    if (!submitEnabled) {
+      await this.waitForSubmitPollInterval();
+      return 'waiting';
+    }
+
+    await submitButton.scrollIntoViewIfNeeded();
+    await this.clickSubmitButtonWithRetry(submitButton, context);
+    await this.waitForSpinnerToComplete(`after submit ${context}`);
+    return 'submitted';
+  }
+
+  private async clickSubmitButtonWithRetry(submitButton: Locator, context: string) {
     try {
-      await visibleSubmitButton.click({ timeout: EXUI_TIMEOUTS.SUBMIT_CLICK });
+      await submitButton.click({ timeout: EXUI_TIMEOUTS.SUBMIT_CLICK });
     } catch (error) {
       const message = String(error);
       if (!message.includes('intercepts pointer events')) {
         throw error;
       }
       this.logger.warn('Submit click intercepted; retrying with force', { context });
-      await visibleSubmitButton.click({ force: true, timeout: EXUI_TIMEOUTS.SUBMIT_CLICK });
+      const retrySubmitButton = (await this.getVisibleSubmitButton()) ?? submitButton;
+      await retrySubmitButton.click({ force: true, timeout: EXUI_TIMEOUTS.SUBMIT_CLICK });
     }
   }
 
-  async clickSubmitAndWait(context: string, options: { timeoutMs?: number; maxAutoAdvanceAttempts?: number } = {}) {
-    const timeoutMs = options.timeoutMs ?? this.getRecommendedTimeoutMs();
-    const deadline = Date.now() + timeoutMs;
-    const apiCallsBaseline = this.getApiCalls().length;
-    let autoAdvanceCount = 0;
-    const autoAdvanceTimeoutMs = Math.max(
-      EXUI_TIMEOUTS.SUBMIT_AUTO_ADVANCE_MIN,
-      Math.min(EXUI_TIMEOUTS.SUBMIT_AUTO_ADVANCE_MAX, Math.floor(timeoutMs / 2))
-    );
-    const maxAutoAdvanceAttempts =
-      options.maxAutoAdvanceAttempts ?? Math.max(2, Math.min(8, Math.floor(timeoutMs / EXUI_TIMEOUTS.SUBMIT_AUTO_ADVANCE_MIN)));
-
-    while (Date.now() < deadline) {
-      if (this.page.isClosed()) {
-        throw new Error(`Page closed while waiting for submit button ${context}`);
-      }
-
-      await this.assertNoEventCreationError(`while waiting for submit ${context}`);
-      this.failFastOnCriticalWizardEndpointFailure(context, apiCallsBaseline);
-      const onSomethingWentWrongPage = await this.somethingWentWrongHeading.isVisible().catch(() => false);
-      if (onSomethingWentWrongPage) {
-        throw new Error(`Case event failed ${context}: Something went wrong page was displayed.`);
-      }
-
-      const visibleSubmitButton = await this.getVisibleActionButton(this.submitButton);
-      if (visibleSubmitButton) {
-        await this.clickSubmitButtonWithRetry(context, visibleSubmitButton);
-        await this.waitForSpinnerToComplete(`after submit ${context}`, timeoutMs);
-        await this.assertNoEventCreationError(`after submit ${context}`);
-        const onSomethingWentWrongPage = await this.somethingWentWrongHeading.isVisible().catch(() => false);
-        if (onSomethingWentWrongPage) {
-          throw new Error(`Case event failed after submit ${context}: Something went wrong page was displayed.`);
-        }
-        const hasValidationError = await this.checkForErrorMessage();
-        if (hasValidationError) {
-          throw new Error(`Validation error after submit ${context}`);
-        }
-        return;
-      }
-
-      const visibleContinueButton = await this.getVisibleActionButton(this.continueButton);
-      if (visibleContinueButton) {
-        const nextAutoAdvanceAttempt = autoAdvanceCount + 1;
-        if (nextAutoAdvanceAttempt > maxAutoAdvanceAttempts) {
-          throw new Error(`Exceeded ${maxAutoAdvanceAttempts} auto-advance attempts before submit ${context}`);
-        }
-        autoAdvanceCount = nextAutoAdvanceAttempt;
-        await this.clickContinueAndWait(`auto-advance ${autoAdvanceCount} before submit ${context}`, {
-          continueButton: visibleContinueButton,
-          timeoutMs: autoAdvanceTimeoutMs,
-        });
-        continue;
-      }
-
-      const spinnerVisible = await this.page
-        .locator('xuilib-loading-spinner')
-        .first()
-        .isVisible()
-        .catch(() => false);
-      if (spinnerVisible) {
-        await this.waitForSpinnerToComplete(`while waiting for submit ${context}`, autoAdvanceTimeoutMs).catch(() => {
-          // Keep polling in the main loop even when spinner is slow or intermittent.
-        });
-        await this.page.waitForTimeout(EXUI_TIMEOUTS.SUBMIT_SPINNER_STABILIZE_WAIT);
-        continue;
-      }
-
-      await this.page.waitForTimeout(EXUI_TIMEOUTS.SUBMIT_POLL_INTERVAL);
+  private async tryAutoAdvanceToSubmit(
+    context: string,
+    autoAdvanceCount: number,
+    timeoutMs: number
+  ): Promise<'advanced' | 'waiting' | 'none'> {
+    const continueButton = await this.getVisibleContinueButton();
+    if (!continueButton) {
+      return 'none';
     }
 
-    const visibleActionButtons = await this.page
-      .getByRole('button')
-      .allInnerTexts()
-      .then((texts) =>
-        texts
-          .map((text) => text.trim())
-          .filter((text) => text.length > 0)
-          .filter((text) => /(continue|submit|save)/i.test(text))
-          .slice(0, 10)
-      )
-      .catch(() => []);
+    const continueEnabled = await continueButton.isEnabled().catch(() => false);
+    if (!continueEnabled) {
+      await this.waitForSubmitPollInterval();
+      return 'waiting';
+    }
 
-    throw new Error(
+    const nextAutoAdvanceCount = autoAdvanceCount + 1;
+    await this.clickContinueAndWait(`auto-advance ${nextAutoAdvanceCount} before submit ${context}`, {
+      timeoutMs,
+    });
+    return 'advanced';
+  }
+
+  private async waitForSubmitPollInterval() {
+    await this.page.waitForTimeout(EXUI_TIMEOUTS.SUBMIT_POLL_INTERVAL);
+  }
+
+  private async buildSubmitUnavailableError(context: string): Promise<Error> {
+    const visibleActionButtons = await this.getVisibleActionButtonsSummary().catch(() => []);
+
+    return new Error(
       `Submit button did not become available ${context}. URL=${this.page.url()} visibleActionButtons=${visibleActionButtons.join(' | ') || 'none'}`
     );
   }
@@ -480,18 +594,13 @@ export class CreateCasePage extends Base {
     }
   }
 
-  private failFastOnCriticalWizardEndpointFailure(context: string, baselineIndex = 0) {
-    // Only inspect calls seen during the current submit cycle to avoid stale failures from earlier actions.
-    const recentCalls = this.getApiCalls().slice(Math.max(0, baselineIndex));
-    const criticalFailure = recentCalls.find(
-      (call) => call.status >= 500 && CRITICAL_WIZARD_API_PATTERNS.some((pattern) => pattern.test(call.url))
-    );
-
-    if (criticalFailure) {
-      throw new Error(
-        `Critical wizard endpoint failure ${context}: ${criticalFailure.method} ${criticalFailure.url} returned HTTP ${criticalFailure.status}`
-      );
-    }
+  private async waitForSpinnerCycle(context: string, timeoutMs?: number) {
+    const effectiveTimeoutMs = timeoutMs ?? this.getRecommendedTimeoutMs();
+    const spinner = this.page.locator('xuilib-loading-spinner').first();
+    await spinner.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SPINNER_APPEAR_BRIEF }).catch(() => {
+      // Spinner may already have completed before visibility wait.
+    });
+    await this.waitForSpinnerToComplete(context, effectiveTimeoutMs);
   }
 
   /**
@@ -534,41 +643,80 @@ export class CreateCasePage extends Base {
     const initialPath = this.normalizePath(initialUrl);
     const expectedPathIncludes = options.expectedPathIncludes;
     const expectedLocator = options.expectedLocator;
-    const waitForAdvance = async () => {
-      if (expectedPathIncludes) {
-        await this.page.waitForURL((url) => url.pathname.includes(expectedPathIncludes), { timeout: timeoutMs });
-      } else {
-        await this.page.waitForURL((url) => this.normalizePath(url.toString()) !== initialPath, { timeout: timeoutMs });
-      }
-      if (expectedLocator) {
-        await expectedLocator.waitFor({ state: 'visible', timeout: timeoutMs });
-      }
-    };
+    const waitStartedAtMs = Date.now();
+    const timeoutContext = () =>
+      this.buildWizardAdvanceTimeoutContext(initialPath, expectedPathIncludes, Boolean(expectedLocator), waitStartedAtMs);
 
     try {
-      await waitForAdvance();
+      await this.waitForWizardAdvance(initialPath, expectedPathIncludes, expectedLocator, timeoutMs);
       return;
     } catch {
-      if (this.page.isClosed()) {
-        throw new Error(`Page closed while waiting for wizard to advance after ${context}`);
-      }
-      const hasValidationError = await this.checkForErrorMessage();
-      if (hasValidationError) {
-        throw new Error(`Validation error after ${context}`);
-      }
-      if (this.page.isClosed()) {
-        throw new Error(`Page closed before retrying wizard advance after ${context}`);
-      }
-      const visibleContinueButton = await this.getVisibleActionButton(this.continueButton);
-      if (!visibleContinueButton) {
-        throw new Error(`Continue button not visible while retrying wizard advance after ${context}`);
-      }
-      await this.clickContinueAndWait(`while retrying wizard advance after ${context}`, {
-        continueButton: visibleContinueButton,
-        timeoutMs,
-      });
-      await waitForAdvance();
+      await this.retryWizardAdvanceAfterFailure(
+        context,
+        timeoutContext,
+        initialPath,
+        expectedPathIncludes,
+        expectedLocator,
+        timeoutMs
+      );
     }
+  }
+
+  private async retryWizardAdvanceAfterFailure(
+    context: string,
+    timeoutContext: () => string,
+    initialPath: string,
+    expectedPathIncludes: string | undefined,
+    expectedLocator: Locator | undefined,
+    timeoutMs: number
+  ) {
+    if (this.page.isClosed()) {
+      throw new Error(`Page closed while waiting for wizard to advance after ${context}. ${timeoutContext()}`);
+    }
+    const hasValidationError = await this.checkForErrorMessage();
+    if (hasValidationError) {
+      throw new Error(`Validation error after ${context}`);
+    }
+    if (this.page.isClosed()) {
+      throw new Error(`Page closed before retrying wizard advance after ${context}. ${timeoutContext()}`);
+    }
+    await this.clickContinueAndWait(`when retrying wizard advance ${context}`);
+    try {
+      await this.waitForWizardAdvance(initialPath, expectedPathIncludes, expectedLocator, timeoutMs);
+    } catch {
+      throw new Error(`Wizard did not advance after retry ${context}. ${timeoutContext()}`);
+    }
+  }
+
+  private async waitForWizardAdvance(
+    initialPath: string,
+    expectedPathIncludes: string | undefined,
+    expectedLocator: Locator | undefined,
+    timeoutMs: number
+  ) {
+    if (expectedPathIncludes) {
+      await this.page.waitForURL((url) => url.pathname.includes(expectedPathIncludes), { timeout: timeoutMs });
+    } else {
+      await this.page.waitForURL((url) => this.normalizePath(url.toString()) !== initialPath, { timeout: timeoutMs });
+    }
+    if (!expectedLocator) {
+      return;
+    }
+    await expectedLocator.waitFor({ state: 'visible', timeout: timeoutMs });
+  }
+
+  private buildWizardAdvanceTimeoutContext(
+    initialPath: string,
+    expectedPathIncludes: string | undefined,
+    hasExpectedLocator: boolean,
+    waitStartedAtMs: number
+  ): string {
+    const waitedMs = Date.now() - waitStartedAtMs;
+    const expectation = expectedPathIncludes
+      ? `URL path to include "${expectedPathIncludes}"`
+      : `URL path to change from "${initialPath}"`;
+    const locatorExpectation = hasExpectedLocator ? ' and expected locator to be visible' : '';
+    return `Waited ${waitedMs}ms for ${expectation}${locatorExpectation}. ${buildLastBackendCallContext(this.page)}`;
   }
 
   /**
@@ -583,7 +731,7 @@ export class CreateCasePage extends Base {
    */
   async clickContinueMultipleTimes(count: number, options: { force?: boolean } = {}) {
     for (let i = 0; i < count; i++) {
-      const visibleContinueButton = await this.getVisibleActionButton(this.continueButton);
+      const visibleContinueButton = await this.getVisibleContinueButton();
       if (!visibleContinueButton) {
         logger.info('Continue button not visible; stopping early', {
           iteration: i + 1,
@@ -591,10 +739,7 @@ export class CreateCasePage extends Base {
         });
         break;
       }
-      await this.clickContinueAndWait(`after continue ${i + 1} of ${count}`, {
-        continueButton: visibleContinueButton,
-        force: options.force,
-      });
+      await this.clickContinueAndWait(`after continue ${i + 1} of ${count}`, options);
       logger.info('Clicked continue button', { iteration: i + 1, total: count });
     }
   }
@@ -612,112 +757,135 @@ export class CreateCasePage extends Base {
    * @returns true if error found, false otherwise
    */
   async checkForErrorMessage(message?: string, timeout = EXUI_TIMEOUTS.VALIDATION_ERROR_VISIBLE): Promise<boolean> {
-    const check = async (sel: Locator) => {
-      try {
-        await sel.waitFor({ state: 'visible', timeout });
-        if (message) {
-          const txt = await sel.textContent();
-          return !!txt && txt.includes(message);
-        }
-        return true;
-      } catch {
-        // Element not found or timeout - expected when no error present
-        return false;
-      }
-    };
-
-    const [a, b] = await Promise.all([check(this.errorMessage), check(this.errorSummary)]);
-
-    const safeErrorMeta = async (
-      sel: Locator
-    ): Promise<{ present: boolean; length: number; containsCaseReference: boolean; containsEmail: boolean } | null> => {
-      const visible = await sel.isVisible().catch(() => false);
-      if (!visible) {
-        return null;
-      }
-      return sel
-        .first()
-        .innerText({ timeout: EXUI_TIMEOUTS.ERROR_META_TEXT_READ })
-        .then((text) => {
-          const trimmed = text.trim();
-          return {
-            present: true,
-            length: trimmed.length,
-            containsCaseReference: /\b\d{16}\b/.test(trimmed),
-            containsEmail: /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.test(trimmed),
-          };
-        })
-        .catch(() => null);
-    };
-
-    if (a || b) {
-      logger.error('Error message displayed on page', {
-        errorMessageMeta: a ? await safeErrorMeta(this.errorMessage) : null,
-        errorSummaryMeta: b ? await safeErrorMeta(this.errorSummary) : null,
-      });
-      return true;
+    const [hasErrorMessage, hasErrorSummary] = await Promise.all([
+      this.hasVisibleValidationError(this.errorMessage, timeout, message),
+      this.hasVisibleValidationError(this.errorSummary, timeout, message),
+    ]);
+    if (!hasErrorMessage && !hasErrorSummary) {
+      return false;
     }
+    await this.logValidationErrorMeta(hasErrorMessage, hasErrorSummary);
+    return true;
+  }
 
-    return false;
+  private async hasVisibleValidationError(selector: Locator, timeout: number, message?: string): Promise<boolean> {
+    try {
+      await selector.waitFor({ state: 'visible', timeout });
+      if (!message) {
+        return true;
+      }
+      const text = await selector.textContent();
+      return !!text && text.includes(message);
+    } catch {
+      // Element not found or timeout - expected when no error present
+      return false;
+    }
+  }
+
+  private async getValidationErrorMeta(
+    selector: Locator
+  ): Promise<{ present: boolean; length: number; containsCaseReference: boolean; containsEmail: boolean } | null> {
+    const visible = await selector.isVisible().catch(() => false);
+    if (!visible) {
+      return null;
+    }
+    return selector
+      .first()
+      .innerText({ timeout: EXUI_TIMEOUTS.ERROR_META_TEXT_READ })
+      .then((text) => {
+        const trimmed = text.trim();
+        return {
+          present: true,
+          length: trimmed.length,
+          containsCaseReference: /\b\d{16}\b/.test(trimmed),
+          containsEmail: /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.test(trimmed),
+        };
+      })
+      .catch(() => null);
+  }
+
+  private async logValidationErrorMeta(hasErrorMessage: boolean, hasErrorSummary: boolean) {
+    logger.error('Error message displayed on page', {
+      errorMessageMeta: hasErrorMessage ? await this.getValidationErrorMeta(this.errorMessage) : null,
+      errorSummaryMeta: hasErrorSummary ? await this.getValidationErrorMeta(this.errorSummary) : null,
+    });
   }
 
   async createCase(jurisdiction: string, caseType: string, eventType: string | undefined) {
     const maxAttempts = 2;
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
-        if (!this.page.url().includes('/cases/case-filter')) {
-          try {
-            await this.createCaseButton.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.CREATE_CASE_BUTTON_VISIBLE });
-            await this.createCaseButton.click();
-          } catch (error: unknown) {
-            // Button not visible - navigate directly to filter page
-            logger.debug('Create case button not visible, navigating to filter page', {
-              error: error instanceof Error ? error.message : JSON.stringify(error),
-            });
-            await this.page.goto('/cases/case-filter');
-          }
-        }
-        await this.jurisdictionSelect.waitFor({ state: 'visible' });
-        await this.waitForSelectReady('#cc-jurisdiction', EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED);
-        await this.selectOptionSmart(this.jurisdictionSelect, jurisdiction);
-
-        await this.caseTypeSelect.waitFor({ state: 'visible' });
-        await this.waitForSelectReady('#cc-case-type', EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED);
-        await this.selectOptionSmart(this.caseTypeSelect, caseType);
-        if (eventType) {
-          await this.eventTypeSelect.click();
-          await this.waitForSelectReady('#cc-event', EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED);
-          await this.selectOptionSmart(this.eventTypeSelect, eventType);
-        }
+        await this.openCreateCaseForm();
+        await this.selectCreateCaseOptions(jurisdiction, caseType, eventType);
         await this.startButton.click();
         return;
       } catch (error) {
-        const jurisdictionBootstrapFailed = this.getApiCalls().some(
-          (call) =>
-            call.method === 'GET' &&
-            call.status >= 400 &&
-            call.url.includes('/aggregated/caseworkers/') &&
-            call.url.includes('/jurisdictions')
-        );
-        const onSomethingWentWrongPage = await this.somethingWentWrongHeading.isVisible().catch(() => false);
-
         if (attempt === maxAttempts) {
           throw error;
         }
-        if (jurisdictionBootstrapFailed || onSomethingWentWrongPage) {
-          logger.warn('Jurisdiction bootstrap failed; retrying case filter', {
-            attempt,
-            maxAttempts,
-            jurisdictionBootstrapFailed,
-            onSomethingWentWrongPage,
-          });
-          await this.page.waitForTimeout(EXUI_TIMEOUTS.CREATE_CASE_RETRY_BACKOFF);
-        } else {
-          logger.warn('Create case selection failed; retrying case filter', { attempt, maxAttempts });
-        }
-        await this.page.goto('/cases/case-filter');
+        await this.retryCreateCaseAfterFailure(attempt, maxAttempts);
       }
     }
+  }
+
+  private async openCreateCaseForm() {
+    if (this.page.url().includes('/cases/case-filter')) {
+      return;
+    }
+    try {
+      await this.createCaseButton.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.CREATE_CASE_BUTTON_VISIBLE });
+      await this.createCaseButton.click();
+    } catch (error: unknown) {
+      logger.debug('Create case button not visible, navigating to filter page', {
+        error: error instanceof Error ? error.message : JSON.stringify(error),
+      });
+      await this.page.goto('/cases/case-filter');
+    }
+  }
+
+  private async selectCreateCaseOptions(jurisdiction: string, caseType: string, eventType: string | undefined) {
+    await this.jurisdictionSelect.waitFor({ state: 'visible' });
+    await this.waitForSelectReady('#cc-jurisdiction', EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED);
+    await this.selectOptionSmart(this.jurisdictionSelect, jurisdiction);
+
+    await this.caseTypeSelect.waitFor({ state: 'visible' });
+    await this.waitForSelectReady('#cc-case-type', EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED);
+    await this.selectOptionSmart(this.caseTypeSelect, caseType);
+
+    if (!eventType) {
+      return;
+    }
+    await this.eventTypeSelect.click();
+    await this.waitForSelectReady('#cc-event', EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED);
+    await this.selectOptionSmart(this.eventTypeSelect, eventType);
+  }
+
+  private hasJurisdictionBootstrapFailure(): boolean {
+    return this.getApiCalls().some(
+      (call) =>
+        call.method === 'GET' &&
+        call.status >= 400 &&
+        call.url.includes('/aggregated/caseworkers/') &&
+        call.url.includes('/jurisdictions')
+    );
+  }
+
+  private async retryCreateCaseAfterFailure(attempt: number, maxAttempts: number) {
+    const jurisdictionBootstrapFailed = this.hasJurisdictionBootstrapFailure();
+    const onSomethingWentWrongPage = await this.somethingWentWrongHeading.isVisible().catch(() => false);
+
+    if (jurisdictionBootstrapFailed || onSomethingWentWrongPage) {
+      logger.warn('Jurisdiction bootstrap failed; retrying case filter', {
+        attempt,
+        maxAttempts,
+        jurisdictionBootstrapFailed,
+        onSomethingWentWrongPage,
+      });
+      await this.page.waitForTimeout(EXUI_TIMEOUTS.CREATE_CASE_RETRY_BACKOFF);
+    } else {
+      logger.warn('Create case selection failed; retrying case filter', { attempt, maxAttempts });
+    }
+    await this.page.goto('/cases/case-filter');
   }
 
   async addressLookup(postCode: string, addressOption: string) {
@@ -731,13 +899,12 @@ export class CreateCasePage extends Base {
     await this.uploadFile(fileName, mimeType, fileContent);
     await this.page.locator('#documentCollection_0_topLevelDocuments').selectOption('Misc');
     await this.page.locator('#documentCollection_0_miscDocuments').selectOption('Other');
-    await this.clickSubmitButtonWithRetry('after uploading employment document');
+    await this.clickSubmitAndWait('after uploading employment file');
   }
 
-  async uploadFile(fileName: string, mimeType: string, fileContent: string, fileInput?: Locator) {
+  async uploadFile(fileName: string, mimeType: string, fileContent: string) {
     const maxRetries = 3;
     const baseDelayMs = 3000; // initial backoff
-    const resolvedFileInput = fileInput ?? this.page.locator('input[type="file"]').first();
     const safeBackoff = async (attempt: number) => {
       if (this.page.isClosed()) {
         throw new Error('Page closed during upload retry backoff');
@@ -749,16 +916,18 @@ export class CreateCasePage extends Base {
       if (this.page.isClosed()) {
         throw new Error('Page closed before upload retry attempt');
       }
-      const responsePromise = this.page.waitForResponse((r) => r.url().includes('/document') && r.request().method() === 'POST', {
-        timeout: EXUI_TIMEOUTS.UPLOAD_RESPONSE,
-      });
-      await resolvedFileInput.setInputFiles({
+      // set the file directly on the input element (no filechooser needed)
+      await this.page.setInputFiles('input[type="file"]', {
         name: fileName,
         mimeType,
         buffer: Buffer.from(fileContent),
       });
 
-      const res = await responsePromise.catch(() => null);
+      const res = await this.page
+        .waitForResponse((r) => r.url().includes('/document') && r.request().method() === 'POST', {
+          timeout: EXUI_TIMEOUTS.UPLOAD_RESPONSE,
+        })
+        .catch(() => null);
 
       if (!res) {
         // no response within timeout — treat as failure or retry depending on policy
@@ -847,8 +1016,7 @@ export class CreateCasePage extends Base {
         await this.hearingPreferenceVideo.waitFor({ state: 'visible' });
         await this.hearingPreferenceVideo.click();
 
-        await this.clickSubmitButtonWithRetry('after hearing preference selection');
-        await this.waitForSpinnerToComplete('after submitting employment case');
+        await this.clickSubmitAndWait('after completing employment case form');
         await this.waitForCaseDetails('after submitting employment case');
         return;
       } catch (error) {
@@ -910,7 +1078,7 @@ export class CreateCasePage extends Base {
         await this.manualEntryLink.click();
         await this.complexType2AddressLine1Input.fill('10 Test Street');
         await this.complexType2EmailInput.fill(faker.internet.email({ provider: 'example.com' }));
-        await this.uploadFile('sample.pdf', 'application/pdf', '%PDF-1.4\n%test\n%%EOF', this.complexType3FileUploadInput);
+        await this.uploadFile('sample.pdf', 'application/pdf', '%PDF-1.4\n%test\n%%EOF');
         await this.complexType3ComplianceButton.click();
         await this.complexType3ComplianceInput.fill('Compliant response');
         await this.complexType3DateOfBirthDay.fill('15');
@@ -928,13 +1096,12 @@ export class CreateCasePage extends Base {
         await this.clickContinueAndWait('after complex type fields');
 
         await this.assertNoEventCreationError('before submitting divorce test case');
-        await this.clickSubmitAndWait('before submitting divorce test case', { timeoutMs: 60_000 });
+        await this.clickSubmitAndWait('after completing divorce test case form');
         await this.waitForCaseDetails('after submitting divorce test case');
         return;
       } catch (error) {
         const eventErrorVisible = await this.eventCreationErrorHeading.isVisible().catch(() => false);
-        const shouldRetry = (eventErrorVisible || isTransientWorkflowFailure(error)) && attempt < maxAttempts;
-        if (shouldRetry) {
+        if (eventErrorVisible && attempt < maxAttempts) {
           logger.warn('Divorce test case creation failed; retrying', { attempt, maxAttempts });
           await this.page.goto('/cases/case-filter');
           continue;
@@ -950,10 +1117,73 @@ export class CreateCasePage extends Base {
     await this.party1Name.fill(testData);
     await this.party2RoleOnCase.fill(`${testData}2`);
     await this.party2Name.fill(`${testData}2`);
-    await this.clickContinueAndWait('after submitting divorce case flags (continue)');
-    await this.testSubmitButton.click();
-    await this.waitForSpinnerToComplete('after submitting divorce case flags (submit)');
+    await this.clickContinueAndWait('after entering divorce case flags');
+    await this.clickSubmitAndWait('after entering divorce case flags');
     await this.waitForCaseDetails('after submitting divorce case flags');
+  }
+
+  private async resolvePreferredPoCGender(preferredGenders: string[]): Promise<string> {
+    const availableGender = await this.person1GenderSelect.evaluate((select) => {
+      const options = Array.from((select as HTMLSelectElement).options).map((option) => option.label.trim());
+      return options;
+    });
+    return preferredGenders.find((candidate) => availableGender.includes(candidate)) ?? 'Male';
+  }
+
+  private async selectPoCGenderRadioIfVisible(gender: string) {
+    const genderRadio = this.page.getByLabel(gender, { exact: true });
+    const genderRadioVisible = await genderRadio.isVisible().catch(() => false);
+    if (genderRadioVisible) {
+      await genderRadio.check();
+    }
+  }
+
+  private async completePoCPersonalDetails(gender: string) {
+    await this.selectPoCGenderRadioIfVisible(gender);
+    await this.person1Title.click();
+    await this.person1Title.fill(faker.person.prefix());
+    await this.person1FirstNameInput.fill(faker.person.firstName());
+    await this.person1LastNameInput.fill(faker.person.lastName());
+    await this.person1GenderSelect.selectOption(gender);
+    await this.person1JobTitleInput.fill(faker.person.jobTitle());
+    await this.person1JobDescriptionInput.fill(faker.lorem.sentence());
+    await this.clickContinueAndWait('after PoC personal details');
+  }
+
+  private async completePoCTextDetails(textField0: string) {
+    await this.textField0Input.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
+    await this.textField0Input.fill(textField0);
+    await this.textField3Input.fill(faker.lorem.word());
+    await this.textField1Input.fill(faker.lorem.word());
+    await this.textField2Input.fill(faker.lorem.word());
+    await this.clickContinueAndWait('after PoC text fields');
+    await this.checkYourAnswersHeading.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
+  }
+
+  private async isTransientPoCCaseCreationFailure(error: unknown): Promise<boolean> {
+    const message = error instanceof Error ? error.message : JSON.stringify(error);
+    if (message.includes('Validation error after after PoC text fields')) {
+      return true;
+    }
+    if (message.includes('The event could not be created')) {
+      return true;
+    }
+    return this.eventCreationErrorHeading.isVisible().catch(() => false);
+  }
+
+  private async shouldRetryPoCCaseCreation(error: unknown, attempt: number, maxAttempts: number): Promise<boolean> {
+    if (attempt >= maxAttempts) {
+      return false;
+    }
+    const transientCreationFailure = await this.isTransientPoCCaseCreationFailure(error);
+    if (!transientCreationFailure) {
+      return false;
+    }
+    logger.warn('Divorce PoC case creation failed; retrying', { attempt, maxAttempts });
+    if (!this.page.isClosed()) {
+      await this.page.goto('/cases/case-filter');
+    }
+    return true;
   }
 
   async createDivorceCasePoC(jurisdiction: string, caseType: string, textField0: string) {
@@ -962,45 +1192,15 @@ export class CreateCasePage extends Base {
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
         await this.createCase(jurisdiction, caseType, '');
-        const availableGender = await this.person1GenderSelect.evaluate((select) => {
-          const options = Array.from((select as HTMLSelectElement).options).map((option) => option.label.trim());
-          return options;
-        });
-        const gender = preferredGenders.find((candidate) => availableGender.includes(candidate)) ?? 'Male';
-        const genderRadio = this.page.getByLabel(gender, { exact: true });
-        if (await genderRadio.isVisible().catch(() => false)) {
-          await genderRadio.check();
-        }
-        await this.person1Title.click();
-        await this.person1Title.fill(faker.person.prefix());
-        await this.person1FirstNameInput.fill(faker.person.firstName());
-        await this.person1LastNameInput.fill(faker.person.lastName());
-        await this.person1GenderSelect.selectOption(gender);
-        await this.person1JobTitleInput.fill(faker.person.jobTitle());
-        await this.person1JobDescriptionInput.fill(faker.lorem.sentence());
-        await this.clickContinueAndWait('after PoC personal details');
-        await this.textField0Input.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
-        await this.textField0Input.fill(textField0);
-        await this.textField3Input.fill(faker.lorem.word());
-        await this.textField1Input.fill(faker.lorem.word());
-        await this.textField2Input.fill(faker.lorem.word());
-        await this.clickContinueAndWait('after PoC text fields');
-        await this.checkYourAnswersHeading.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
-        await this.testSubmitButton.click();
-        await this.waitForSpinnerToComplete('after submitting divorce PoC case');
+        const gender = await this.resolvePreferredPoCGender(preferredGenders);
+        await this.completePoCPersonalDetails(gender);
+        await this.completePoCTextDetails(textField0);
+        await this.clickSubmitAndWait('after PoC check your answers');
         await this.waitForCaseDetails('after submitting divorce PoC case');
         return;
       } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
-        const isTransientCreationFailure =
-          message.includes('Validation error after after PoC text fields') ||
-          message.includes('The event could not be created') ||
-          (await this.eventCreationErrorHeading.isVisible().catch(() => false));
-        if (isTransientCreationFailure && attempt < maxAttempts) {
-          logger.warn('Divorce PoC case creation failed; retrying', { attempt, maxAttempts });
-          if (!this.page.isClosed()) {
-            await this.page.goto('/cases/case-filter');
-          }
+        const shouldRetry = await this.shouldRetryPoCCaseCreation(error, attempt, maxAttempts);
+        if (shouldRetry) {
           continue;
         }
         throw error;

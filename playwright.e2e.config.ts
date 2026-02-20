@@ -1,10 +1,12 @@
-import { defineConfig, devices } from '@playwright/test';
-import { execSync } from 'node:child_process';
-import { cpus } from 'node:os';
-import { version as appVersion } from './package.json';
-export default (() => {
+module.exports = (() => {
+  const { defineConfig, devices } = require('@playwright/test');
+  const { version: appVersion } = require('./package.json');
+  const { execSync } = require('node:child_process');
+  const { cpus } = require('node:os');
+
   const headlessMode = process.env.HEAD !== 'true';
   const odhinOutputFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
+  process.env.PLAYWRIGHT_REPORT_FOLDER = process.env.PLAYWRIGHT_REPORT_FOLDER ?? odhinOutputFolder;
   const baseUrl = process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';
 
   const resolveEnvironmentFromUrl = (url) => {
@@ -87,9 +89,9 @@ export default (() => {
     testIgnore: ['**/test/smoke/smokeTest.spec.ts'],
     fullyParallel: true,
     retries: 2,
-    timeout: 180_000,
+    timeout: 3 * 60 * 1000,
     expect: {
-      timeout: 60_000,
+      timeout: 1 * 60 * 1000,
     },
     workers: workerCount,
     reporter: [
@@ -100,7 +102,7 @@ export default (() => {
         {
           outputFolder: odhinOutputFolder,
           indexFilename: 'xui-playwright.html',
-          title: 'RPX-XUI-WEBAPP Playwright E2E',
+          title: 'RPX XUI Playwright E2E',
           testEnvironment,
           project: process.env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp - E2E',
           release: process.env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${reportBranch}`,
@@ -110,6 +112,7 @@ export default (() => {
           testOutput: 'only-on-failure',
         },
       ],
+      ['./playwright_tests_new/common/reporters/odhin-postprocess.reporter.cjs'],
     ],
     use: {
       baseURL: baseUrl,

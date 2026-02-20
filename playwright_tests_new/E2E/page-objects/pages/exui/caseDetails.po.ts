@@ -1,3 +1,5 @@
+/* eslint-disable unicorn/prefer-string-replace-all */
+// Note: Using replace() with global regex instead of replaceAll() for ES2020 compatibility
 import { Locator, Page } from '@playwright/test';
 import { Base } from '../../base';
 import { ValidatorUtils } from '../../../utils/validator.utils';
@@ -57,7 +59,6 @@ export class CaseDetailsPage extends Base {
   readonly caseNotificationBannerBody = this.page.locator('.govuk-notification-banner__heading');
 
   readonly eventCreationErrorHeading = this.page.getByRole('heading', { name: 'The event could not be created' });
-  readonly caseViewerTable = this.page.getByRole('table', { name: 'case viewer table' });
 
   // Table locators
   readonly caseTab1Table = this.page.locator('table.tab1');
@@ -95,22 +96,8 @@ export class CaseDetailsPage extends Base {
     return this.page.$$eval(`${selector} tr`, fn);
   }
 
-  getTableByName(tableName: string) {
+  async getTableByName(tableName: string) {
     return this.page.getByRole('table', { name: tableName, exact: true });
-  }
-
-  async waitForTableByName(tableName: string, options?: { timeoutMs?: number }) {
-    const timeoutMs =
-      options?.timeoutMs ??
-      this.getRecommendedTimeoutMs({
-        min: TIMEOUTS.TABLE_VISIBLE,
-        max: 30_000,
-        multiplier: 2,
-        fallback: 20_000,
-      });
-    const table = this.getTableByName(tableName);
-    await table.waitFor({ state: 'visible', timeout: timeoutMs });
-    return table;
   }
 
   /**
@@ -331,7 +318,7 @@ export class CaseDetailsPage extends Base {
     if ((await this.historyTable.count()) === 0) {
       throw new Error('History table not found on page');
     }
-    const headers = (await this.historyTable.locator('thead tr th').allInnerTexts()).map((h) => h.replaceAll(/\t.*/g, ''));
+    const headers = (await this.historyTable.locator('thead tr th').allInnerTexts()).map((h) => h.replace(/\t.*/g, ''));
     const rows = this.historyTable.locator('tbody tr');
     const rowCount = await rows.count();
     const data: Record<string, string>[] = [];
@@ -389,40 +376,6 @@ export class CaseDetailsPage extends Base {
       throw new Error('Failed to extract valid case number from URL');
     }
     return caseNumberMatch;
-  }
-
-  async getCurrentPageUrl(): Promise<string> {
-    return this.page.url();
-  }
-
-  async reopenCaseDetails(caseDetailsUrl: string): Promise<void> {
-    await this.page.goto(caseDetailsUrl);
-    await this.caseActionsDropdown.waitFor({ state: 'visible', timeout: 60000 });
-    await this.caseActionGoButton.waitFor({ state: 'visible', timeout: 60000 });
-  }
-
-  async getCaseViewerRowByName(rowName: string): Promise<Locator> {
-    await this.caseViewerTable.waitFor({ state: 'visible', timeout: TIMEOUTS.TABLE_VISIBLE });
-
-    const rows = this.caseViewerTable.locator('tr');
-    const rowCount = await rows.count();
-    const normalizedTarget = rowName.trim();
-
-    for (let index = 0; index < rowCount; index += 1) {
-      const row = rows.nth(index);
-      const firstCell = row.locator('th:first-child, td:first-child').first();
-      const firstCellCount = await firstCell.count();
-      if (!firstCellCount) {
-        continue;
-      }
-
-      const firstCellText = (await firstCell.innerText()).trim();
-      if (firstCellText === normalizedTarget) {
-        return row;
-      }
-    }
-
-    throw new Error(`Unable to find case viewer row with first-cell label "${rowName}"`);
   }
 
   async selectCaseAction(
@@ -511,12 +464,13 @@ export class CaseDetailsPage extends Base {
   }
 
   async selectPartyFlagTarget(target: string, flagType: string) {
-    if (await this.hasCallbackValidationErrorAlert()) {
+    const callbackError = this.page.getByText('callback data failed validation', { exact: false });
+    if (await callbackError.isVisible({ timeout: 1000 }).catch(() => false)) {
       throw new Error('Callback data failed validation before selecting party flag target.');
     }
     const exactLabel = this.page.getByLabel(`${target} (${target})`);
     // Escape regex special characters to prevent unintended matches
-    const escapedTarget = target.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+    const escapedTarget = target.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
     const fallbackLabel = this.page.getByLabel(new RegExp(escapedTarget, 'i'));
     try {
       await exactLabel.waitFor({ state: 'visible', timeout: 15000 });
@@ -554,14 +508,6 @@ export class CaseDetailsPage extends Base {
     await this.waitForSpinnerToComplete('after final case flag submit');
   }
 
-  async hasCallbackValidationErrorAlert(timeoutMs = 1000): Promise<boolean> {
-    const callbackValidationAlert = this.page
-      .getByRole('alert')
-      .filter({ hasText: /callback data failed validation/i })
-      .first();
-    return callbackValidationAlert.isVisible({ timeout: timeoutMs }).catch(() => false);
-  }
-
   async selectCaseDetailsTab(tabName: string) {
     const tabLoadTimeoutMs = this.getRecommendedTimeoutMs({
       min: TIMEOUTS.TAB_LOAD,
@@ -569,8 +515,7 @@ export class CaseDetailsPage extends Base {
       multiplier: 3,
       fallback: 15_000,
     });
-    const escapedTabName = tabName.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
-    const tab = this.page.getByRole('tab', { name: new RegExp(escapedTabName, 'i') }).first();
+    const tab = this.caseDetailsTabs.filter({ hasText: tabName }).first();
     await tab.waitFor({ state: 'visible', timeout: tabLoadTimeoutMs });
     await tab.click();
     await this.waitForSpinnerToComplete(`after selecting "${tabName}" tab`, tabLoadTimeoutMs).catch(() => {
@@ -580,33 +525,46 @@ export class CaseDetailsPage extends Base {
     const controlledPanelId = await tab.getAttribute('aria-controls');
     if (controlledPanelId) {
       const controlledPanel = this.page.locator(`#${controlledPanelId}`);
-      await this.waitForTabPanelReadiness(controlledPanel, tabLoadTimeoutMs);
+      await controlledPanel.waitFor({ state: 'visible', timeout: tabLoadTimeoutMs });
+      await this.page.waitForFunction(
+        (panelId: string) => {
+          const panel = document.getElementById(panelId);
+          if (!panel) {
+            return false;
+          }
+          const hasTextContent = (panel.textContent || '').trim().length > 0;
+          const hasStructuredContent = panel.querySelector('table, form, ccd-read-collection-field, ccd-read-complex-type-field');
+          return hasTextContent || Boolean(hasStructuredContent);
+        },
+        controlledPanelId,
+        { timeout: tabLoadTimeoutMs }
+      );
       return;
     }
 
-    const visibleTabPanel = this.page.locator('[role="tabpanel"]:visible').first();
-    await this.waitForTabPanelReadiness(visibleTabPanel, tabLoadTimeoutMs);
+    await this.page.waitForFunction(
+      (selectedTabName: string) => {
+        const selectedTab = Array.from(document.querySelectorAll('div[role="tab"]')).find((candidate) => {
+          const label = (candidate.textContent || '').trim();
+          return label.includes(selectedTabName) && candidate.getAttribute('aria-selected') === 'true';
+        });
+        if (!selectedTab) {
+          return false;
+        }
+        return Array.from(document.querySelectorAll('[role="tabpanel"]')).some((panel) => {
+          const style = window.getComputedStyle(panel);
+          const isVisible = style.display !== 'none' && style.visibility !== 'hidden';
+          const hasText = (panel.textContent || '').trim().length > 0;
+          return isVisible && hasText;
+        });
+      },
+      tabName,
+      { timeout: tabLoadTimeoutMs }
+    );
   }
 
   async getTabCount() {
     const tabsCount = await this.tablist2.count();
     return tabsCount;
-  }
-
-  private async waitForTabPanelReadiness(tabPanel: Locator, timeoutMs: number): Promise<void> {
-    await tabPanel.waitFor({ state: 'visible', timeout: timeoutMs });
-    const structuredContent = tabPanel.locator('table, form, ccd-read-collection-field, ccd-read-complex-type-field');
-    const structuredContentCount = await structuredContent.count();
-    if (structuredContentCount > 0) {
-      await structuredContent.first().waitFor({ state: 'visible', timeout: timeoutMs });
-      return;
-    }
-
-    const panelText = (await tabPanel.innerText()).trim();
-    if (panelText.length > 0) {
-      return;
-    }
-
-    await tabPanel.locator('*').first().waitFor({ state: 'attached', timeout: timeoutMs });
   }
 }

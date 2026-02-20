@@ -1,10 +1,8 @@
 import { faker } from '@faker-js/faker';
 import { expect, test } from '../../fixtures';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
-import { filterEmptyRows } from '../../utils';
+import { filterEmptyRows, isPlaywrightContextClosedError, rowMatchesExpectedColumns } from '../../utils';
 import { caseBannerMatches } from '../../utils/banner.utils';
-import { isPageClosingError, rowMatchesExpected } from '../../utils/case-flags.utils';
-import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
 
 test.describe('Case level case flags', () => {
   test.describe.configure({ timeout: 180000 });
@@ -12,31 +10,20 @@ test.describe('Case level case flags', () => {
   const jurisdiction = 'EMPLOYMENT';
   const caseType = 'ET_EnglandWales';
   test.beforeEach(async ({ page, createCasePage, caseDetailsPage }) => {
-    await retryOnTransientFailure(
-      async () => {
-        await ensureAuthenticatedPage(page, 'SEARCH_EMPLOYMENT_CASE', { waitForSelector: 'exui-header' });
-        await createCasePage.createCaseEmployment(jurisdiction, caseType);
-        caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
-      },
-      {
-        maxAttempts: 2,
-        onRetry: async () => {
-          if (page.isClosed()) {
-            return;
-          }
-          await page.goto('/').catch(() => undefined);
-        },
-      }
-    );
+    await ensureAuthenticatedPage(page, 'SEARCH_EMPLOYMENT_CASE', { waitForSelector: 'exui-header' });
+    await createCasePage.createCaseEmployment(jurisdiction, caseType);
+    caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
   });
 
   test('Create a new case level flag and verify the flag is displayed on the case', async ({ caseDetailsPage, tableUtils }) => {
     await test.step('Record existing case level flags', async () => {
       await caseDetailsPage.selectCaseDetailsTab('Flags');
-      const flagsTable = await caseDetailsPage.waitForTableByName('Case level flags');
-      const table = await tableUtils.parseDataTable(flagsTable);
+      const table = await tableUtils.parseDataTable(await caseDetailsPage.getTableByName('Case level flags'));
       const visibleRows = filterEmptyRows(table);
-      expect.soft(visibleRows.length).toBeGreaterThanOrEqual(0);
+      test.info().annotations.push({
+        type: 'existing-case-level-flags',
+        description: `${visibleRows.length}`,
+      });
     });
 
     await test.step('Create a new case level flag', async () => {
@@ -48,7 +35,8 @@ test.describe('Case level case flags', () => {
     await test.step('Check the case flag creation messages are seen', async () => {
       await expect
         .poll(async () => {
-          if (await caseDetailsPage.hasCallbackValidationErrorAlert()) {
+          const callbackError = caseDetailsPage.page.getByText('callback data failed validation', { exact: false });
+          if (await callbackError.isVisible().catch(() => false)) {
             throw new Error('Callback data failed validation while creating case-level case flag.');
           }
           const bannerVisible = await caseDetailsPage.caseAlertSuccessMessage.isVisible().catch(() => false);
@@ -85,9 +73,9 @@ test.describe('Case level case flags', () => {
             try {
               const table = await tableUtils.parseDataTable(await caseDetailsPage.getTableByName('Case level flags'));
               const visibleRows = filterEmptyRows(table);
-              return visibleRows.some((row) => rowMatchesExpected(row, expectedFlag));
+              return visibleRows.some((row) => rowMatchesExpectedColumns(row, expectedFlag));
             } catch (error) {
-              if (isPageClosingError(error)) {
+              if (isPlaywrightContextClosedError(error)) {
                 return false;
               }
               throw error;
@@ -107,31 +95,20 @@ test.describe('Party level case flags', () => {
   const jurisdiction = 'DIVORCE';
   const caseType = 'xuiCaseFlagsV1';
   test.beforeEach(async ({ page, createCasePage, caseDetailsPage }) => {
-    await retryOnTransientFailure(
-      async () => {
-        await ensureAuthenticatedPage(page, 'USER_WITH_FLAGS', { waitForSelector: 'exui-header' });
-        await createCasePage.createDivorceCaseFlag(testValue, jurisdiction, caseType);
-        caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
-      },
-      {
-        maxAttempts: 2,
-        onRetry: async () => {
-          if (page.isClosed()) {
-            return;
-          }
-          await page.goto('/').catch(() => undefined);
-        },
-      }
-    );
+    await ensureAuthenticatedPage(page, 'USER_WITH_FLAGS', { waitForSelector: 'exui-header' });
+    await createCasePage.createDivorceCaseFlag(testValue, jurisdiction, caseType);
+    caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
   });
 
   test('Create a new party level flag and verify the flag is displayed on the case', async ({ caseDetailsPage, tableUtils }) => {
     await test.step('Record existing party level flags', async () => {
       await caseDetailsPage.selectCaseDetailsTab('Flags');
-      const flagsTable = await caseDetailsPage.waitForTableByName(testValue);
-      const table = await tableUtils.parseDataTable(flagsTable);
+      const table = await tableUtils.parseDataTable(await caseDetailsPage.getTableByName(testValue));
       const visibleRows = filterEmptyRows(table);
-      expect.soft(visibleRows.length).toBeGreaterThanOrEqual(0);
+      test.info().annotations.push({
+        type: 'existing-party-level-flags',
+        description: `${visibleRows.length}`,
+      });
     });
 
     await test.step('Create a new party level flag', async () => {
@@ -144,7 +121,8 @@ test.describe('Party level case flags', () => {
       await expect
         .poll(
           async () => {
-            if (await caseDetailsPage.hasCallbackValidationErrorAlert()) {
+            const callbackError = caseDetailsPage.page.getByText('callback data failed validation', { exact: false });
+            if (await callbackError.isVisible().catch(() => false)) {
               throw new Error('Callback data failed validation while creating party-level case flag.');
             }
             if (await caseDetailsPage.eventCreationErrorHeading.isVisible().catch(() => false)) {
@@ -183,28 +161,21 @@ test.describe('Party level case flags', () => {
             if (caseDetailsPage.page.isClosed()) {
               return false;
             }
-            if (await caseDetailsPage.hasCallbackValidationErrorAlert()) {
-              throw new Error('Callback data failed validation while creating party-level case flag.');
-            }
-            if (await caseDetailsPage.eventCreationErrorHeading.isVisible().catch(() => false)) {
-              throw new Error('CCD event creation failed while creating party-level case flag.');
-            }
             try {
-              const partyFlagsTable = await caseDetailsPage.waitForTableByName(testValue, {
-                timeoutMs: 15_000,
+              const partyFlagsTables = caseDetailsPage.page.locator('table').filter({
+                has: caseDetailsPage.page.locator('th', { hasText: 'Party level flags' }),
               });
-              await partyFlagsTable.waitFor({ state: 'visible' });
-              const table = await tableUtils.parseDataTable(partyFlagsTable);
+              const table = await tableUtils.parseDataTable(partyFlagsTables);
               const visibleRows = filterEmptyRows(table);
-              return visibleRows.some((row) => rowMatchesExpected(row, expectedFlag));
+              return visibleRows.some((row) => rowMatchesExpectedColumns(row, expectedFlag));
             } catch (error) {
-              if (isPageClosingError(error)) {
+              if (isPlaywrightContextClosedError(error)) {
                 return false;
               }
               throw error;
             }
           },
-          { timeout: 60_000, intervals: [1000, 2000, 3000] }
+          { timeout: 45000, intervals: [1000, 2000, 3000] }
         )
         .toBe(true);
     });

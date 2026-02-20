@@ -3,6 +3,15 @@ import { createLogger } from '@hmcts/playwright-common';
 import getPort from 'get-port';
 import { PageFixtures, pageFixtures } from './page-objects/pages/page.fixtures.js';
 import { UtilsFixtures, utilsFixtures } from './utils/utils.fixtures.js';
+import {
+  ensureApiTracker,
+  formatLastBackendCallContext,
+  getApiTrackingSnapshot,
+  type LastBackendCall,
+  type TrackedApiError,
+  type TrackedFailedRequest,
+  type TrackedSlowCall,
+} from './utils/api-tracker';
 
 const logger = createLogger({ serviceName: 'test-framework', format: 'pretty' });
 
@@ -15,22 +24,6 @@ type FailureType =
   | 'ASSERTION_FAILURE'
   | 'UNKNOWN';
 
-interface ApiError {
-  url: string;
-  status: number;
-  method: string;
-  initiatedFrom: string;
-  resourceType: string;
-}
-
-interface FailedRequest {
-  url: string;
-  method: string;
-  errorText: string;
-  initiatedFrom: string;
-  resourceType: string;
-}
-
 interface ApiFailureAggregate {
   count: number;
   method: string;
@@ -40,54 +33,19 @@ interface ApiFailureAggregate {
   resourceType: string;
 }
 
-type BenignApiErrorRule = {
-  method: string;
-  status: number;
-  urlPattern: RegExp;
-};
-
-const benignApiErrorRules: BenignApiErrorRule[] = [
-  { method: 'GET', status: 403, urlPattern: /\/api\/organisation$/ },
-  { method: 'GET', status: 400, urlPattern: /\/data\/internal\/cases\/\d+$/ },
-];
-
 const MAX_API_ERRORS_DETAILS_CHARS = 420;
-const DEFAULT_API_SLOW_THRESHOLD_MS = 5_000;
 const ANSI_ESCAPE = String.fromCodePoint(27);
 const ANSI_ESCAPE_PATTERN = new RegExp(String.raw`${ANSI_ESCAPE}\[[0-?]*[ -/]*[@-~]`, 'g');
-
-/**
- * Sanitize URL by removing query parameters to prevent logging sensitive data.
- * Query params may contain tokens, session IDs, or PII.
- * @param url - Full URL with potential query parameters
- * @returns URL without query parameters
- */
-function sanitizeUrl(url: string): string {
-  return url.split('?')[0];
-}
 
 function stripAnsi(value: string): string {
   return value.replaceAll(ANSI_ESCAPE_PATTERN, '');
 }
 
-function getApiSlowThresholdMs(): number {
-  const rawThreshold = process.env.API_SLOW_THRESHOLD_MS;
-  if (!rawThreshold) {
-    return DEFAULT_API_SLOW_THRESHOLD_MS;
-  }
-
-  const parsedThreshold = Number.parseInt(rawThreshold, 10);
-  return Number.isFinite(parsedThreshold) && parsedThreshold > 0 ? parsedThreshold : DEFAULT_API_SLOW_THRESHOLD_MS;
-}
-
-function isKnownBenignApiError(url: string, method: string, status: number): boolean {
-  const requestMethod = method.toUpperCase();
-  return benignApiErrorRules.some((rule) => {
-    return rule.status === status && rule.method === requestMethod && rule.urlPattern.test(url);
-  });
-}
-
-function summarizeApiFailures(serverErrors: ApiError[], clientErrors: ApiError[], failedRequests: FailedRequest[]): string[] {
+function summarizeApiFailures(
+  serverErrors: TrackedApiError[],
+  clientErrors: TrackedApiError[],
+  failedRequests: TrackedFailedRequest[]
+): string[] {
   const aggregates = new Map<string, ApiFailureAggregate>();
 
   const add = (method: string, url: string, outcome: string, initiatedFrom: string, resourceType: string) => {
@@ -156,10 +114,7 @@ function buildBoundedApiDetails(entries: string[], maxChars: number): string {
   return overflow > 0 ? `${details} | +${overflow} more (see failure-data.json)` : details;
 }
 
-function buildTimeoutSuspects(
-  slowCalls: Array<{ url: string; duration: number; method: string }>,
-  failedRequests: FailedRequest[]
-): string[] {
+function buildTimeoutSuspects(slowCalls: TrackedSlowCall[], failedRequests: TrackedFailedRequest[]): string[] {
   const timeoutFailures = failedRequests.filter((request) => /timeout|timed out|ETIMEDOUT/i.test(request.errorText));
   const suspectsFromFailed = timeoutFailures.map(
     (request) => `${request.method} ${request.url} -> REQUEST_FAILED (${stripAnsi(request.errorText).substring(0, 120)})`
@@ -172,10 +127,11 @@ function buildTimeoutSuspects(
 function buildTopSuspect(
   failureType: FailureType,
   timeoutSuspects: string[],
-  serverErrors: ApiError[],
-  clientErrors: ApiError[],
-  failedRequests: FailedRequest[],
-  slowCalls: Array<{ url: string; duration: number; method: string }>
+  serverErrors: TrackedApiError[],
+  clientErrors: TrackedApiError[],
+  failedRequests: TrackedFailedRequest[],
+  slowCalls: TrackedSlowCall[],
+  lastBackendCall?: LastBackendCall | null
 ): string {
   if ((failureType === 'NETWORK_TIMEOUT' || failureType === 'SLOW_API_RESPONSE') && timeoutSuspects.length > 0) {
     return timeoutSuspects[0];
@@ -191,7 +147,19 @@ function buildTopSuspect(
     return `${firstSlow.method} ${firstSlow.url} -> SLOW (${Math.round(firstSlow.duration)}ms)`;
   }
 
+  if (lastBackendCall) {
+    const durationText = lastBackendCall.durationMs === null ? 'unknown' : `${lastBackendCall.durationMs}ms`;
+    return `${lastBackendCall.method} ${lastBackendCall.url} -> HTTP ${lastBackendCall.status} (${durationText})`;
+  }
+
   return 'No backend/API suspect identified';
+}
+
+function buildLastBackendTimeoutContext(lastBackendCall: LastBackendCall | null): string {
+  if (!lastBackendCall) {
+    return 'No backend timeout call captured and no backend API calls were observed before failure.';
+  }
+  return `No backend timeout call captured. ${formatLastBackendCallContext(lastBackendCall, 'before failure.')}`;
 }
 
 /**
@@ -200,9 +168,9 @@ function buildTopSuspect(
  */
 function classifyFailure(
   error: string,
-  serverErrors: ApiError[],
-  clientErrors: ApiError[],
-  slowCalls: Array<{ url: string; duration: number; method: string }>,
+  serverErrors: TrackedApiError[],
+  clientErrors: TrackedApiError[],
+  slowCalls: TrackedSlowCall[],
   networkTimeout: boolean
 ): FailureType {
   if (serverErrors.length > 0) {
@@ -232,99 +200,19 @@ export const test = baseTest.extend<CustomFixtures, { lighthousePort: number }>(
   ...utilsFixtures,
 
   page: async ({ page }, use, testInfo) => {
-    const apiErrors: ApiError[] = [];
-    const failedRequests: FailedRequest[] = [];
-    const slowCalls: Array<{ url: string; duration: number; method: string }> = [];
-    let networkTimeout = false;
-    const maxTracked = 500;
-    const slowThreshold = getApiSlowThresholdMs();
-
-    const isBackendApi = (url: string) =>
-      (url.includes('/api/') ||
-        url.includes('/data/') ||
-        url.includes('/auth/') ||
-        url.includes('/workallocation/') ||
-        url.includes('/caseworkers/')) &&
-      !url.includes('.js') &&
-      !url.includes('.css');
-
-    // Monitor API calls for failure diagnosis
-    page.on('response', async (response) => {
-      try {
-        const url = response.url();
-        if (!isBackendApi(url)) {
-          return;
-        }
-
-        const status = response.status();
-        const request = response.request();
-        const method = request.method();
-        const refererHeader = request.headers()['referer'] || '';
-        const frameUrl = request.frame()?.url() || '';
-        const initiatedFrom = sanitizeUrl(refererHeader || frameUrl || 'unknown');
-        const resourceType = request.resourceType();
-        const sanitizedUrl = sanitizeUrl(url);
-
-        // Track all 4xx and 5xx errors
-        if (status >= 400 && !isKnownBenignApiError(sanitizedUrl, method, status)) {
-          apiErrors.push({ url: sanitizedUrl, status, method, initiatedFrom, resourceType });
-          if (apiErrors.length > maxTracked) {
-            apiErrors.shift();
-          }
-        }
-      } catch (err) {
-        // Ignore response parsing errors - test should not fail due to monitoring
-        logger.warn('Failed to process response in monitoring', { error: err });
-      }
-    });
-
-    page.on('requestfinished', (request) => {
-      const url = request.url();
-      if (!isBackendApi(url)) {
-        return;
-      }
-
-      const timing = request.timing();
-      if (timing.responseEnd !== -1 && timing.responseEnd > slowThreshold) {
-        slowCalls.push({
-          url: sanitizeUrl(url),
-          duration: timing.responseEnd,
-          method: request.method(),
-        });
-        if (slowCalls.length > maxTracked) {
-          slowCalls.shift();
-        }
-      }
-    });
-
-    page.on('requestfailed', (request) => {
-      const url = request.url();
-      if (isBackendApi(url)) {
-        const failure = request.failure();
-        const refererHeader = request.headers()['referer'] || '';
-        const frameUrl = request.frame()?.url() || '';
-        const initiatedFrom = sanitizeUrl(refererHeader || frameUrl || 'unknown');
-        const resourceType = request.resourceType();
-        failedRequests.push({
-          url: sanitizeUrl(url),
-          method: request.method(),
-          errorText: failure?.errorText || 'Unknown request failure',
-          initiatedFrom,
-          resourceType,
-        });
-        if (failedRequests.length > maxTracked) {
-          failedRequests.shift();
-        }
-        if (failure?.errorText?.includes('Timeout') || failure?.errorText?.includes('timeout')) {
-          networkTimeout = true;
-        }
-      }
-    });
+    ensureApiTracker(page);
 
     await use(page);
 
     // On test failure, classify the root cause and attach diagnosis
     if (testInfo.status === 'failed' || testInfo.status === 'timedOut') {
+      const snapshot = getApiTrackingSnapshot(page);
+      const apiErrors = snapshot.apiErrors;
+      const failedRequests = snapshot.failedRequests;
+      const slowCalls = snapshot.slowCalls;
+      const lastBackendCall = snapshot.lastBackendCall;
+      const networkTimeout = snapshot.networkTimeout;
+
       // Only use error message, not stack trace to prevent PII leakage
       const error = testInfo.error?.message || '';
 
@@ -333,18 +221,26 @@ export const test = baseTest.extend<CustomFixtures, { lighthousePort: number }>(
       const clientErrors = apiErrors.filter((e) => e.status >= 400 && e.status < 500);
       const failureType = classifyFailure(error, serverErrors, clientErrors, slowCalls, networkTimeout);
       const timeoutSuspects = buildTimeoutSuspects(slowCalls, failedRequests);
-      const topSuspect = buildTopSuspect(failureType, timeoutSuspects, serverErrors, clientErrors, failedRequests, slowCalls);
+      const topSuspect = buildTopSuspect(
+        failureType,
+        timeoutSuspects,
+        serverErrors,
+        clientErrors,
+        failedRequests,
+        slowCalls,
+        lastBackendCall
+      );
       const timeoutSummary =
         failureType === 'NETWORK_TIMEOUT' || failureType === 'SLOW_API_RESPONSE'
           ? buildBoundedApiDetails(timeoutSuspects, MAX_API_ERRORS_DETAILS_CHARS) ||
-            'No backend timeout call captured (likely UI timeout or non-API wait)'
+            buildLastBackendTimeoutContext(lastBackendCall)
           : '';
 
       const diagnosis = [
         `Test failed: ${testInfo.title}`,
         `Failure type: ${failureType}`,
         error ? `Error: ${error.substring(0, 300)}` : '',
-        `API summary: total=${apiErrors.length + failedRequests.length + slowCalls.length}, 5xx=${serverErrors.length}, 4xx=${clientErrors.length}, requestfailed=${failedRequests.length}, slow>${slowThreshold}ms=${slowCalls.length}`,
+        `API summary: total=${apiErrors.length + failedRequests.length + slowCalls.length}, 5xx=${serverErrors.length}, 4xx=${clientErrors.length}, requestfailed=${failedRequests.length}, slow>${slowCalls.length}`,
         timeoutSummary ? `Timeout suspects: ${timeoutSummary}` : '',
       ]
         .filter(Boolean)
@@ -400,6 +296,7 @@ export const test = baseTest.extend<CustomFixtures, { lighthousePort: number }>(
             apiErrors,
             failedRequests,
             slowCalls,
+            lastBackendCall,
             networkTimeout,
             timestamp: new Date().toISOString(),
           },

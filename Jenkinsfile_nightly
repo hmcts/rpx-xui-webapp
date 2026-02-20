@@ -115,6 +115,23 @@ withNightlyPipeline(type, product, component) {
           archivePlaywrightDiagnostics()
         }
       }
+
+      stage('API Journey Tests') {
+        try {
+          yarnBuilder.yarn('test:api:pw:journeys')
+        } finally {
+          publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : 'functional-output/tests/api_functional_journeys/odhin-report/',
+            reportFiles          : 'xui-playwright.html',
+            reportName           : 'API Journey Test'
+          ])
+          steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional_journeys/**/*'
+          archivePlaywrightDiagnostics()
+        }
+      }
       
       stage('Playwright Install All Browsers') {
             try {
@@ -171,7 +188,7 @@ withNightlyPipeline(type, product, component) {
               reportFiles          : 'xui-playwright.html',
               reportName           : 'XUI Manage Cases Playwright Cross Browser Tests'
               ])
-              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
+              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/**/*'
               archivePlaywrightDiagnostics()
             }
         }

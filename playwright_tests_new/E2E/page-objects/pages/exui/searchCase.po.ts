@@ -1,6 +1,6 @@
 import { Page } from '@playwright/test';
 import { Base } from '../../base';
-import { EXUI_TIMEOUTS, CCD_CASE_REFERENCE_LENGTH, CCD_CASE_REFERENCE_PATTERN } from './exui-timeouts';
+import { EXUI_TIMEOUTS } from './exui-timeouts';
 
 export class SearchCasePage extends Base {
   // Locators
@@ -17,8 +17,8 @@ export class SearchCasePage extends Base {
   readonly backLink = this.page.locator('exui-no-results .govuk-back-link');
 
   public async searchWith16DigitCaseId(caseId: string): Promise<void> {
-    if (!CCD_CASE_REFERENCE_PATTERN.test(caseId)) {
-      throw new Error(`Expected ${CCD_CASE_REFERENCE_LENGTH}-digit case reference, received "${caseId}"`);
+    if (!/^\d{16}$/.test(caseId)) {
+      throw new Error(`Expected 16-digit case reference, received "${caseId}"`);
     }
     await this.caseIdTextBox.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
     await this.caseIdTextBox.click();
@@ -30,8 +30,7 @@ export class SearchCasePage extends Base {
     try {
       await findButton.click({ timeout: EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK });
     } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : JSON.stringify(error);
-      if (!errorMsg.includes('intercepts pointer events')) {
+      if (!String(error).includes('intercepts pointer events')) {
         throw error;
       }
       await findButton.click({ force: true, timeout: EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK });

@@ -11,26 +11,55 @@ import { substantiveRolesValid } from './utils';
 
 export async function getPossibleRoles(req: EnhancedRequest, res: Response, next: NextFunction): Promise<any> {
   try {
-    const serviceIds = req.body && req.body.serviceIds ? req.body.serviceIds : null;
-    if (!allContainOnlySafeCharacters(serviceIds)) {
-      return res.send('Invalid service id').status(400);
+    const parsedServiceIds = parseServiceIds(req.body);
+    if (!parsedServiceIds.isValid) {
+      return res.status(400).send('Invalid service id');
     }
+
+    const serviceIds = parsedServiceIds.serviceIds;
+    if (!allContainOnlySafeCharacters(serviceIds)) {
+      return res.status(400).send('Invalid service id');
+    }
+    if (serviceIds.length === 0) {
+      return res.status(200).send([]);
+    }
+
     const roles = await getSubstantiveRoles(req);
     const rolesByService: RolesByService[] = [];
-    if (serviceIds) {
-      serviceIds.forEach((serviceId) => {
-        // note: if service obtained, check role either includes service or does not specify service
-        const serviceRoles = roles.filter(
-          (role) => role.roleJurisdiction && role.roleJurisdiction.values && role.roleJurisdiction.values.includes(serviceId)
-        );
-        rolesByService.push({ service: serviceId, roles: serviceRoles });
-      });
-    }
-    return res.send(rolesByService).status(200);
+    serviceIds.forEach((serviceId) => {
+      // note: if service obtained, check role either includes service or does not specify service
+      const serviceRoles = roles.filter(
+        (role) => role.roleJurisdiction && role.roleJurisdiction.values && role.roleJurisdiction.values.includes(serviceId)
+      );
+      rolesByService.push({ service: serviceId, roles: serviceRoles });
+    });
+    return res.status(200).send(rolesByService);
   } catch (error) {
     next(error);
   }
 }
+
+function parseServiceIds(body: unknown): { isValid: boolean; serviceIds: string[] } {
+  if (!body || typeof body !== 'object') {
+    return { isValid: true, serviceIds: [] };
+  }
+
+  const payload = body as Record<string, unknown>;
+  const hasServiceIds = Object.prototype.hasOwnProperty.call(payload, 'serviceIds');
+  if (!hasServiceIds) {
+    return Object.keys(payload).length === 0 ? { isValid: true, serviceIds: [] } : { isValid: false, serviceIds: [] };
+  }
+
+  const rawServiceIds = payload.serviceIds;
+  if (!Array.isArray(rawServiceIds)) {
+    return { isValid: false, serviceIds: [] };
+  }
+  if (!rawServiceIds.every((serviceId) => typeof serviceId === 'string')) {
+    return { isValid: false, serviceIds: [] };
+  }
+  return { isValid: true, serviceIds: rawServiceIds };
+}
+
 export async function getSubstantiveRoles(req: EnhancedRequest) {
   if (req.session.subStantiveRoles && substantiveRolesValid(req.session.substantiveRoles)) {
     return req.session.subStantiveRoles as [];

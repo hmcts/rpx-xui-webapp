@@ -145,7 +145,7 @@ withPipeline(type, product, component) {
             reportFiles          : 'xui-playwright.html',
             reportName           : 'DEMO Playwright Smoke'
         ])
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/**/*'
         archivePlaywrightDiagnostics()
     }
 
@@ -158,7 +158,7 @@ withPipeline(type, product, component) {
             reportFiles          : 'xui-playwright.html',
             reportName           : 'PREVIEW Playwright Smoke'
         ])
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/**/*'
         archivePlaywrightDiagnostics()
 
           stage('API Tests') {
@@ -196,6 +196,25 @@ withPipeline(type, product, component) {
             }
         }
 
+        stage('API Journey Tests') {
+            withEnv(["FUNCTIONAL_TESTS_WORKERS=4"]) {
+                try {
+                    yarnBuilder.yarn('test:api:pw:journeys')
+                } finally {
+                    publishHTML([
+                      allowMissing         : true,
+                      alwaysLinkToLastBuild: true,
+                      keepAll              : true,
+                      reportDir            : 'functional-output/tests/api_functional_journeys/odhin-report/',
+                      reportFiles          : 'xui-playwright.html',
+                      reportName           : 'PREVIEW API Journey Test'
+                    ])
+                    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional_journeys/**/*'
+                    archivePlaywrightDiagnostics()
+                }
+            }
+        }
+
         stage('Playwright Integration Tests') {
                 try {
                     yarnBuilder.yarn('test:playwright:integration')
@@ -223,7 +242,7 @@ withPipeline(type, product, component) {
             reportFiles          : 'xui-playwright.html',
             reportName           : 'PREVIEW Playwright E2E'
         ])
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/**/*'
         archivePlaywrightDiagnostics()
     }
 
@@ -237,7 +256,7 @@ withPipeline(type, product, component) {
             reportFiles          : 'xui-playwright.html',
             reportName           : 'AAT Playwright Smoke'
         ])
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/**/*'
         archivePlaywrightDiagnostics()
 
         stage('API Tests') {
@@ -272,6 +291,25 @@ withPipeline(type, product, component) {
                 reportName           : 'AAT Integration Test'
             ])
             steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
+        }
+    }
+
+    stage('API Journey Tests') {
+        withEnv(["FUNCTIONAL_TESTS_WORKERS=4"]) {
+            try {
+                yarnBuilder.yarn('test:api:pw:journeys')
+            } finally {
+                publishHTML([
+                  allowMissing         : true,
+                  alwaysLinkToLastBuild: true,
+                  keepAll              : true,
+                  reportDir            : 'functional-output/tests/api_functional_journeys/odhin-report/',
+                  reportFiles          : 'xui-playwright.html',
+                  reportName           : 'AAT API Journey Test'
+                ])
+                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional_journeys/**/*'
+                archivePlaywrightDiagnostics()
+            }
         }
     }
 

@@ -28,6 +28,11 @@ import {
 } from './utils/searchRefDataUtils';
 
 test.describe('Global search', () => {
+  const globalSearchJurisdictions = (process.env.API_JOURNEY_GLOBAL_SEARCH_JURISDICTIONS ?? 'PUBLICLAW')
+    .split(',')
+    .map((value) => value.trim())
+    .filter((value) => value.length > 0);
+
   test('lists available services', async ({ apiClient }) => {
     const response = await withRetry(
       () =>
@@ -42,10 +47,24 @@ test.describe('Global search', () => {
 
   test('returns results payload or guarded status', async ({ apiClient }) => {
     const response = await apiClient.post<{ results?: unknown }>('api/globalSearch/results', {
-      data: { searchRequest: { caseReferences: ['1234567890123456'] } },
+      data: {
+        searchCriteria: {
+          CCDCaseTypeIds: null,
+          CCDJurisdictionIds: globalSearchJurisdictions,
+          caseManagementBaseLocationIds: null,
+          caseManagementRegionIds: null,
+          caseReferences: ['1234567890123456'],
+          otherReferences: null,
+          parties: [],
+          stateIds: null,
+        },
+        sortCriteria: null,
+        maxReturnRecordCount: 25,
+        startRecordNumber: 1,
+      },
       throwOnError: false,
     });
-    expectStatus(response.status, StatusSets.globalSearch);
+    expectStatus(response.status, [200, 400, 401, 403, 502, 504]);
     assertGlobalSearchResults(response.status, response.data);
   });
 
@@ -58,7 +77,7 @@ test.describe('Global search', () => {
         }),
       { retries: 1, retryStatuses: [502, 504] }
     );
-    expectStatus(response.status, [200, 400, 401, 403, 404, 500, 502, 504]);
+    expectStatus(response.status, [200, 400, 401, 403, 404, 502, 504]);
     assertSearchCasesResponse(response.status, response.data);
   });
 });
@@ -92,7 +111,7 @@ test.describe('Ref data and supported jurisdictions', () => {
       data: { attributes: ['email'], searchString: 'test' },
       throwOnError: false,
     });
-    expectStatus(res.status, [200, 400, 401, 403, 500]);
+    expectStatus(res.status, [200, 400, 401, 403]);
     assertStaffRefDataResponse(res.status, res.data);
   });
 });
@@ -131,7 +150,7 @@ test.describe('Role access / AM', () => {
         }),
       { retries: 1, retryStatuses: [502, 504] }
     );
-    expectStatus(res.status, [200, 401, 403, 500, 502, 504]);
+    expectStatus(res.status, [200, 401, 403, 502, 504]);
     assertMyAccessCount(res.status, res.data);
   });
 
@@ -144,16 +163,19 @@ test.describe('Role access / AM', () => {
         }),
       { retries: 1, retryStatuses: [502, 504] }
     );
-    expectStatus(res.status, [200, 400, 401, 403, 404, 500]);
+    expectStatus(res.status, [200, 400, 401, 403, 404]);
     assertRoleAccessGetResponse(res.status, res.data);
   });
 
   test('allocate-role/valid-roles responds', async ({ apiClient }) => {
-    const res = await apiClient.post<Array<{ roleId: string; roleName: string }>>('api/role-access/allocate-role/valid-roles', {
-      data: { requestedRoles: [], jurisdiction: 'IA' },
-      throwOnError: false,
-    });
-    expectStatus(res.status, [200, 400, 401, 403, 404, 500, 502, 504]);
+    const res = await apiClient.post<Array<{ service: string; roles: Array<{ roleId: string; roleName: string }> }>>(
+      'api/role-access/allocate-role/valid-roles',
+      {
+        data: { serviceIds: ['IA'] },
+        throwOnError: false,
+      }
+    );
+    expectStatus(res.status, [200, 400, 401, 403, 404, 502, 504]);
     assertValidRolesResponse(res.status, res.data);
   });
 
@@ -162,7 +184,7 @@ test.describe('Role access / AM', () => {
       data: { case_id: roleAccessCaseId },
       throwOnError: false,
     });
-    expectStatus(res.status, [200, 400, 401, 403, 404, 500]);
+    expectStatus(res.status, [200, 400, 401, 403, 404]);
     assertRoleAccessByCaseIdResponse(res.status, res.data);
   });
 
@@ -259,19 +281,34 @@ test.describe('Role access / AM', () => {
     }
     try {
       const client = await apiClientFor('caseOfficer_r1');
-      const res = await client.post('api/role-access/allocate-role/confirm', {
-        data: { caseId: roleAccessCaseId, caseType: 'xuiTestCaseType', jurisdiction: 'DIVORCE' },
-        throwOnError: false,
+      await withXsrf('caseOfficer_r1', async (headers) => {
+        const res = await client.post('api/role-access/allocate-role/confirm', {
+          data: {
+            caseId: roleAccessCaseId,
+            jurisdiction: 'DIVORCE',
+            roleCategory: 'LEGAL_OPERATIONS',
+            allocateTo: 'Allocate to me',
+            typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
+            period: {
+              startDate: new Date().toISOString(),
+              endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+            },
+          },
+          headers,
+          throwOnError: false,
+        });
+        expectStatus(res.status, [401, 403]);
       });
-      expectStatus(res.status, [401, 403, 500]);
     } catch (error) {
-      if (error instanceof AuthenticationError) {
+      const authError = error instanceof AuthenticationError || (error instanceof Error && error.name === 'AuthenticationError');
+      if (authError) {
         testInfo.annotations.push({
           type: 'notice',
-          description: `Skipping case-officer role check in ${config.testEnv}: ${error.message}`,
+          description: `Skipping case officer validation due to authentication failure: ${
+            error instanceof Error ? error.message : 'unknown'
+          }`,
         });
-        test.skip(true, `caseOfficer_r1 cannot authenticate in ${config.testEnv}`);
-        return;
+        test.skip(true, 'caseOfficer_r1 authentication failed in this environment');
       }
       throw error;
     }

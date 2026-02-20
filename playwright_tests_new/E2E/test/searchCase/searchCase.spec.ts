@@ -1,7 +1,6 @@
 import { expect, test } from '../../fixtures';
-import { ensureSession } from '../../../common/sessionCapture';
-import { resolveCaseReferenceFromGlobalSearch, resolveNonExistentCaseReference } from '../../../E2E/utils/case-reference.utils';
-import { openHomeWithCapturedSession, PUBLIC_LAW_CASE_REFERENCE_OPTIONS } from './searchCase.setup';
+import { ensureSession, loadSessionCookies } from '../../../common/sessionCapture.ts';
+import { resolveCaseReferenceWithFallback, resolveNonExistentCaseReference } from '../../../E2E/utils/case-reference.utils.ts';
 
 test.describe('IDAM login to trigger For 16 digit Case Search', () => {
   let availableCaseReference = '';
@@ -9,9 +8,31 @@ test.describe('IDAM login to trigger For 16 digit Case Search', () => {
     await ensureSession('FPL_GLOBAL_SEARCH');
   });
 
-  test.beforeEach(async ({ page }) => {
-    await openHomeWithCapturedSession(page, 'FPL_GLOBAL_SEARCH');
-    availableCaseReference = await resolveCaseReferenceFromGlobalSearch(page, PUBLIC_LAW_CASE_REFERENCE_OPTIONS);
+  test.beforeEach(async ({ page, caseListPage }) => {
+    const { cookies } = loadSessionCookies('FPL_GLOBAL_SEARCH');
+    if (cookies.length) {
+      await page.context().addCookies(cookies);
+    }
+
+    await page.goto('/');
+    availableCaseReference = await resolveCaseReferenceWithFallback(
+      page,
+      async () => {
+        await caseListPage.goto();
+        const caseReference = await caseListPage.getRandomCaseReferenceFromResults([
+          'Case management',
+          'Submitted',
+          'Gatekeeping',
+          'Closed',
+        ]);
+        await page.goto('/');
+        return caseReference;
+      },
+      {
+        jurisdictionIds: ['PUBLICLAW'],
+        preferredStates: ['Case management', 'Submitted', 'Gatekeeping', 'Closed'],
+      }
+    );
   });
 
   test('Search by 16-digit case reference', async ({ caseDetailsPage, searchCasePage, page }) => {
@@ -22,19 +43,16 @@ test.describe('IDAM login to trigger For 16 digit Case Search', () => {
     });
     await expect(page).toHaveURL(/\/cases\/case-details\//);
     const caseNumberFromUrl = await caseDetailsPage.getCaseNumberFromUrl();
-    expect.soft(caseNumberFromUrl).toContain(caseNumber);
+    await expect.soft(caseNumberFromUrl).toContain(caseNumber);
     await expect(caseDetailsPage.caseActionsDropdown).toBeVisible();
 
-    await test.step('Verify optional case details notifications and progress panel', async () => {
-      // These elements are conditionally rendered based on case state and configuration
-      // Notification banner appears when case has active flags
+    await test.step('On successful search - Check case details messages are seen', async () => {
       if (await caseDetailsPage.caseNotificationBannerTitle.isVisible()) {
         await expect.soft(caseDetailsPage.caseNotificationBannerTitle).toContainText('Important');
       }
       if (await caseDetailsPage.caseNotificationBannerBody.isVisible()) {
         await expect.soft(caseDetailsPage.caseNotificationBannerBody).toContainText('active flags on this case');
       }
-      // Progress panel displays when case has timeline tracking enabled
       if (await searchCasePage.caseProgressPanel.isVisible()) {
         await expect.soft(caseDetailsPage.caseProgressMessage).toContainText('Current progress of the case');
       }

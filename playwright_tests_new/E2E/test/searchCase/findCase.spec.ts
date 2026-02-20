@@ -1,7 +1,6 @@
 import { test, expect } from '../../fixtures';
-import { ensureSession } from '../../../common/sessionCapture';
-import { resolveCaseReferenceFromGlobalSearch } from '../../../E2E/utils/case-reference.utils';
-import { openHomeWithCapturedSession, PUBLIC_LAW_CASE_REFERENCE_OPTIONS } from './searchCase.setup';
+import { ensureSession, loadSessionCookies } from '../../../common/sessionCapture.ts';
+import { resolveCaseReferenceFromGlobalSearch } from '../../../E2E/utils/case-reference.utils.ts';
 
 test.describe('IDAM login for Find Search page', () => {
   let availableCaseReference = '';
@@ -9,9 +8,32 @@ test.describe('IDAM login for Find Search page', () => {
     await ensureSession('FPL_GLOBAL_SEARCH');
   });
 
-  test.beforeEach(async ({ page }) => {
-    await openHomeWithCapturedSession(page, 'FPL_GLOBAL_SEARCH');
-    availableCaseReference = await resolveCaseReferenceFromGlobalSearch(page, PUBLIC_LAW_CASE_REFERENCE_OPTIONS);
+  test.beforeEach(async ({ page, caseListPage }) => {
+    const { cookies } = loadSessionCookies('FPL_GLOBAL_SEARCH');
+    if (cookies.length) {
+      await page.context().addCookies(cookies);
+    }
+
+    await page.goto('/');
+    try {
+      const caseReference = await (async () => {
+        await caseListPage.goto();
+        const selectedCaseReference = await caseListPage.getRandomCaseReferenceFromResults([
+          'Case management',
+          'Submitted',
+          'Gatekeeping',
+          'Closed',
+        ]);
+        await page.goto('/');
+        return selectedCaseReference;
+      })();
+      availableCaseReference = caseReference;
+    } catch {
+      availableCaseReference = await resolveCaseReferenceFromGlobalSearch(page, {
+        jurisdictionIds: ['PUBLICLAW'],
+        preferredStates: ['Case management', 'Submitted', 'Gatekeeping', 'Closed'],
+      });
+    }
   });
 
   test('Find case using Public Law jurisdiction', async ({ tableUtils, findCasePage, caseDetailsPage, page }) => {
@@ -39,14 +61,14 @@ test.describe('IDAM login for Find Search page', () => {
       expect(searchTable[0]).toMatchObject(rowContent);
 
       await findCasePage.displayCaseDetailsFor(caseNumber);
-      await expect(page).toHaveURL(/\/cases\/case-details\//);
+      await expect(page).toHaveURL(new RegExp(`/cases/case-details/.*/${caseNumber}`));
     });
 
-    await test.step('Verify case details page displays correct case', async () => {
+    await test.step('Check Case Details page and ensure case is present', async () => {
       await expect.soft(caseDetailsPage.caseActionsDropdown).toBeVisible();
       await expect.soft(caseDetailsPage.caseActionGoButton).toBeVisible();
       const caseNumberFromUrl = await caseDetailsPage.getCaseNumberFromUrl();
-      expect(caseNumberFromUrl).toContain(caseNumber);
+      expect.soft(caseNumberFromUrl).toContain(caseNumber);
     });
   });
 
@@ -65,7 +87,11 @@ test.describe('Solicitor navigation to Find case (top-right)', () => {
   });
 
   test.beforeEach(async ({ page }) => {
-    await openHomeWithCapturedSession(page, 'SOLICITOR');
+    const { cookies } = loadSessionCookies('SOLICITOR');
+    if (cookies.length) {
+      await page.context().addCookies(cookies);
+    }
+    await page.goto('/');
   });
 
   test('Find case link appears on top-right and opens Find case page', async ({ findCasePage, page }) => {

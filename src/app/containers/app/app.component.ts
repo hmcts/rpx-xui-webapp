@@ -14,6 +14,7 @@ import { propsExist } from '../../../../api/lib/objectUtilities';
 import { SessionStorageService } from '../../services';
 import { environment as config } from '../../../environments/environment';
 import { UserDetails, UserInfo } from '../../models';
+import { AuthService } from '../../services/auth/auth.service';
 import { LoggerService } from '../../services/logger/logger.service';
 import { EnvironmentService } from '../../shared/services/environment.service';
 import * as fromRoot from '../../store';
@@ -50,6 +51,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly titleService: Title,
     private readonly featureService: FeatureToggleService,
     private readonly loggerService: LoggerService,
+    private readonly authService: AuthService,
     private readonly cookieService: CookieService,
     private readonly environmentService: EnvironmentService,
     private readonly sessionStorageService: SessionStorageService,
@@ -221,7 +223,7 @@ export class AppComponent implements OnInit, OnDestroy {
    *
    * If the 'countdown' timer is above a minute this event is dispatched every minute.
    *
-   * The 'keep-alive' event dispatches when the User has interacted with the page again.
+   * The 'keep-alive' event dispatches on keepalive pings from the timeout library.
    *
    * The 'sign-out' event dispatches when the countdown timer has come to an end - when the User
    * should be signed out.
@@ -243,7 +245,11 @@ export class AppComponent implements OnInit, OnDestroy {
         return;
       }
       case 'keep-alive': {
-        this.updateTimeoutModal('0 seconds', false);
+        this.authService.keepAlive().subscribe({
+          error: () => {
+            this.loggerService.log('Failed to call /auth/keepalive');
+          },
+        });
         return;
       }
       default: {
@@ -320,6 +326,7 @@ export class AppComponent implements OnInit, OnDestroy {
     const timeoutNotificationConfig: any = {
       idleModalDisplayTime: this.idleModalDisplayTimeInMilliseconds,
       totalIdleTime: this.totalIdleTimeInMilliseconds,
+      keepAliveInSeconds: 300,
       idleServiceName: 'idleSession',
     };
 

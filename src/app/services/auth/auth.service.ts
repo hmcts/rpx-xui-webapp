@@ -19,6 +19,10 @@ export class AuthService {
     return this.httpService.get<boolean>('/auth/isAuthenticated');
   }
 
+  public keepAlive(): Observable<boolean> {
+    return this.httpService.get<boolean>('/auth/keepalive');
+  }
+
   public signOut() {
     // Clear out the SessionStorage.
     this.clearSessionStorage();

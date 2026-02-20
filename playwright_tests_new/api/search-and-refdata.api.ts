@@ -27,7 +27,7 @@ import {
   buildExpiredCookies,
 } from './utils/searchRefDataUtils';
 
-test.describe('Global search', () => {
+test.describe('Global search', { tag: '@svc-global-search' }, () => {
   test('lists available services', async ({ apiClient }) => {
     const response = await withRetry(
       () =>
@@ -63,7 +63,7 @@ test.describe('Global search', () => {
   });
 });
 
-test.describe('Ref data and supported jurisdictions', () => {
+test.describe('Ref data and supported jurisdictions', { tag: '@svc-ref-data' }, () => {
   test('wa-supported jurisdictions', async ({ apiClient }) => {
     const res = await apiClient.get<string[]>('api/wa-supported-jurisdiction', { throwOnError: false });
     expectStatus(res.status, StatusSets.guardedBasic);
@@ -97,7 +97,7 @@ test.describe('Ref data and supported jurisdictions', () => {
   });
 });
 
-test.describe('Role access / AM', () => {
+test.describe('Role access / AM', { tag: '@svc-role-assignment' }, () => {
   let roleAccessCaseId = ROLE_ACCESS_CASE_ID;
   const hasCaseOfficer = !!config.users?.[config.testEnv as keyof typeof config.users]?.caseOfficer_r1;
   test.beforeAll(async ({ apiClient }) => {
@@ -313,7 +313,7 @@ test.describe('Role access / AM', () => {
   });
 });
 
-test.describe('Search/refdata helper coverage', () => {
+test.describe('Search/refdata helper coverage', { tag: ['@svc-global-search', '@svc-ref-data'] }, () => {
   test('assertGlobalSearchServices covers results and empty', () => {
     assertGlobalSearchServices(200, [{ serviceId: 'svc', serviceName: 'Service' }]);
     assertGlobalSearchServices(200, []);

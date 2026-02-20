@@ -20,7 +20,7 @@ const getReporterTuple = (reporter: unknown, name: string): [string, Record<stri
 
 test.describe.configure({ mode: 'serial' });
 
-test.describe('Playwright config coverage', () => {
+test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
   test.beforeAll(async () => {
     configModule = await loadConfig();
   });
@@ -113,5 +113,22 @@ test.describe('Playwright config coverage', () => {
     });
     const [, odhinOptions] = getReporterTuple(config.reporter, 'odhin-reports-playwright');
     expect(odhinOptions?.release).toContain('branch=feat/EXUI-3618-case-search-e2e');
+  });
+
+  test('node-api resolves include and exclude service tags from environment', () => {
+    const config = buildConfig({
+      API_PW_INCLUDE_TAGS: 'svc-auth,@svc-ccd',
+      API_PW_EXCLUDED_TAGS_OVERRIDE: '@svc-work-allocation',
+      CI: undefined,
+    });
+    const nodeApiProject = config.projects.find((project) => project.name === 'node-api') as
+      | { grep?: RegExp; grepInvert?: RegExp }
+      | undefined;
+    expect(nodeApiProject).toBeDefined();
+    expect(nodeApiProject?.grep).toBeInstanceOf(RegExp);
+    expect(nodeApiProject?.grep?.test('@svc-auth')).toBe(true);
+    expect(nodeApiProject?.grep?.test('@svc-ccd')).toBe(true);
+    expect(nodeApiProject?.grepInvert).toBeInstanceOf(RegExp);
+    expect(nodeApiProject?.grepInvert?.test('@svc-work-allocation')).toBe(true);
   });
 });

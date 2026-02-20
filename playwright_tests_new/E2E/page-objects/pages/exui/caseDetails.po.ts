@@ -1,5 +1,3 @@
-/* eslint-disable unicorn/prefer-string-replace-all */
-// Note: Using replace() with global regex instead of replaceAll() for ES2020 compatibility
 import { Locator, Page } from '@playwright/test';
 import { Base } from '../../base';
 import { ValidatorUtils } from '../../../utils/validator.utils';
@@ -27,7 +25,7 @@ export class CaseDetailsPage extends Base {
   readonly caseActionGoButton = this.page.locator('.event-trigger button');
 
   readonly submitCaseFlagButton = this.page.locator('.button[type="submit"]');
-  readonly continueButton = this.page.getByRole('button', { name: 'Continue' });
+  readonly continueButton = this.container.getByRole('button', { name: 'Continue', exact: true });
   readonly submitButton = this.page.getByRole('button', { name: 'Submit' });
   readonly eventTable = this.page.locator('EventLogTable');
   readonly firstNameCell = this.page.locator('tr:has-text("First Name") + td');
@@ -36,6 +34,13 @@ export class CaseDetailsPage extends Base {
   readonly historyTable = this.page.locator('table.EventLogTable');
   readonly historyDetailsTable = this.page.locator('table.EventLogDetails');
 
+  // Case details - FindSearch FPL
+  readonly caseDetailsTab1 = this.page.locator('div[role="tablist"]');
+  readonly ccdCaseReference = this.page.locator('ccd-case-header').getByRole('heading', { level: 2 }).locator('strong');
+  readonly tabList = this.page.locator('div[role="tablist"]');
+  readonly tablist2 = this.page.getByRole('tab');
+
+  //Case flags
   // Case flags
   readonly caseFlagCommentBox = this.page.locator('#flagComments');
 
@@ -52,11 +57,27 @@ export class CaseDetailsPage extends Base {
   readonly caseNotificationBannerBody = this.page.locator('.govuk-notification-banner__heading');
 
   readonly eventCreationErrorHeading = this.page.getByRole('heading', { name: 'The event could not be created' });
+  readonly caseViewerTable = this.page.getByRole('table', { name: 'case viewer table' });
 
   // Table locators
   readonly caseTab1Table = this.page.locator('table.tab1');
   readonly caseDocumentsTable = this.page.locator('table.complex-panel-table');
   readonly someMoreDataTable = this.page.locator('table.SomeMoreData');
+  readonly divorceDataTable = this.page.locator('table.Data');
+  readonly divorceDataSubTable = this.divorceDataTable.locator('table.complex-panel-table table');
+
+  // Search case (16 Digit Search)
+  readonly caseProgressMessage = this.page.locator('#progress_legalOfficer_updateTrib_dismissed_under_rule_31');
+  readonly resultsNotFoundHeading = this.page.locator('exui-no-results').getByRole('heading', { level: 1 });
+  readonly backLink = this.page.locator('exui-no-results .govuk-width-container .govuk-back-link');
+
+  // GlobalSearch
+  readonly tabsCount = this.page.locator('.mat-tab-label-container .mat-tab-list');
+  readonly caseSummaryHeading = this.page.locator('#case-viewer-field-read--caseSummaryTabHeading');
+  readonly addOrRemoveFlagsLink = this.page.locator('#addCaseFlagEventLink');
+  readonly extend26WeekTimelineLink = this.page.locator('#extend26WeekTimelineLink');
+  //Find Search
+  readonly findSearchTabsCount = this.page.locator('.mat-tab-list');
 
   constructor(page: Page) {
     super(page);
@@ -76,8 +97,22 @@ export class CaseDetailsPage extends Base {
     return this.page.$$eval(`${selector} tr`, fn);
   }
 
-  async getTableByName(tableName: string) {
+  getTableByName(tableName: string) {
     return this.page.getByRole('table', { name: tableName, exact: true });
+  }
+
+  async waitForTableByName(tableName: string, options?: { timeoutMs?: number }) {
+    const timeoutMs =
+      options?.timeoutMs ??
+      this.getRecommendedTimeoutMs({
+        min: TIMEOUTS.TABLE_VISIBLE,
+        max: 30_000,
+        multiplier: 2,
+        fallback: 20_000,
+      });
+    const table = this.getTableByName(tableName);
+    await table.waitFor({ state: 'visible', timeout: timeoutMs });
+    return table;
   }
 
   /**
@@ -208,24 +243,31 @@ export class CaseDetailsPage extends Base {
           continue;
         }
 
-        const rawKey = findFirstText(cells[0])
+        // Clone the key cell and strip nested tables so nested content is ignored
+        const keyCellClone = (cells[0] as Element).cloneNode(true) as Element;
+        keyCellClone.querySelectorAll('table').forEach((t) => t.remove());
+        const rawKey = findFirstText(keyCellClone)
           .replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '')
           .trim();
         if (!rawKey) {
           continue;
         }
-
         const valueParts = cells
           .slice(1)
-          .map((c) =>
-            findFirstText(c)
+          .map((c) => {
+            const clone = (c as Element).cloneNode(true) as Element;
+            clone.querySelectorAll('table').forEach((t) => t.remove());
+            return findFirstText(clone)
               .replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '')
-              .trim()
-          )
+              .trim();
+          })
           .filter(Boolean);
-        const value = valueParts.join(' ').replace(/\s+/g, ' ').trim();
+        const value = valueParts.join(' ').replaceAll(/\s+/g, ' ').trim();
 
-        out[rawKey] = value;
+        // Preserve the first occurrence of a repeated key (do not overwrite)
+        if (!Object.prototype.hasOwnProperty.call(out, rawKey)) {
+          out[rawKey] = value;
+        }
       }
       return out;
     };
@@ -252,7 +294,11 @@ export class CaseDetailsPage extends Base {
       // header is first tr
       const headerRow = rows[0];
       const sanitize = (s: string) => (s || '').replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim();
-      const headers = Array.from(headerRow.querySelectorAll('th, td')).map((h) => sanitize(h.textContent || ''));
+      const headers = Array.from(headerRow.querySelectorAll('th, td')).map((h) => {
+        const clone = (h as Element).cloneNode(true) as Element;
+        clone.querySelectorAll('table').forEach((t) => t.remove());
+        return sanitize(clone.textContent || '');
+      });
 
       // data rows are after header; filter hidden rows
       const dataRows = Array.from(rows)
@@ -282,9 +328,14 @@ export class CaseDetailsPage extends Base {
         const obj: Record<string, string> = {};
         for (let i = 0; i < cells.length; i++) {
           const key = headers[i] || `column_${i + 1}`;
-          const cellText = cells[i].textContent || '';
+          const cellClone = (cells[i] as Element).cloneNode(true) as Element;
+          cellClone.querySelectorAll('table').forEach((t) => t.remove());
+          const cellText = cellClone.textContent || '';
           const value = sanitize(cellText).replace(/\s+/g, ' ');
-          obj[key] = value;
+          // Preserve the first occurrence of a repeated header key in the row
+          if (!Object.prototype.hasOwnProperty.call(obj, key)) {
+            obj[key] = value;
+          }
         }
         arr.push(obj);
       }
@@ -298,7 +349,7 @@ export class CaseDetailsPage extends Base {
     if ((await this.historyTable.count()) === 0) {
       throw new Error('History table not found on page');
     }
-    const headers = (await this.historyTable.locator('thead tr th').allInnerTexts()).map((h) => h.replace(/\t.*/g, ''));
+    const headers = (await this.historyTable.locator('thead tr th').allInnerTexts()).map((h) => h.replaceAll(/\t.*/g, ''));
     const rows = this.historyTable.locator('tbody tr');
     const rowCount = await rows.count();
     const data: Record<string, string>[] = [];
@@ -317,14 +368,14 @@ export class CaseDetailsPage extends Base {
     return data;
   }
 
-  async getUpdateCaseHistoryInfo(): Promise<{
+  async getCaseHistoryByEvent(event: string): Promise<{
     updateRow: Record<string, string> | undefined;
     updateDate: string;
     updateAuthor: string;
     expectedDate: string;
   }> {
     const rows = await this.mapHistoryTable();
-    const updateRow = rows.find((r) => r.Event === 'Update case');
+    const updateRow = rows.find((r) => r.Event === event);
     const updateDate = updateRow?.Date || '';
     const updateAuthor = updateRow?.Author || '';
     const expectedDate = await this.todaysDateFormatted();
@@ -356,6 +407,40 @@ export class CaseDetailsPage extends Base {
       throw new Error('Failed to extract valid case number from URL');
     }
     return caseNumberMatch;
+  }
+
+  async getCurrentPageUrl(): Promise<string> {
+    return this.page.url();
+  }
+
+  async reopenCaseDetails(caseDetailsUrl: string): Promise<void> {
+    await this.page.goto(caseDetailsUrl);
+    await this.caseActionsDropdown.waitFor({ state: 'visible', timeout: 60000 });
+    await this.caseActionGoButton.waitFor({ state: 'visible', timeout: 60000 });
+  }
+
+  async getCaseViewerRowByName(rowName: string): Promise<Locator> {
+    await this.caseViewerTable.waitFor({ state: 'visible', timeout: TIMEOUTS.TABLE_VISIBLE });
+
+    const rows = this.caseViewerTable.locator('tr');
+    const rowCount = await rows.count();
+    const normalizedTarget = rowName.trim();
+
+    for (let index = 0; index < rowCount; index += 1) {
+      const row = rows.nth(index);
+      const firstCell = row.locator('th:first-child, td:first-child').first();
+      const firstCellCount = await firstCell.count();
+      if (!firstCellCount) {
+        continue;
+      }
+
+      const firstCellText = (await firstCell.innerText()).trim();
+      if (firstCellText === normalizedTarget) {
+        return row;
+      }
+    }
+
+    throw new Error(`Unable to find case viewer row with first-cell label "${rowName}"`);
   }
 
   async selectCaseAction(
@@ -444,13 +529,12 @@ export class CaseDetailsPage extends Base {
   }
 
   async selectPartyFlagTarget(target: string, flagType: string) {
-    const callbackError = this.page.getByText('callback data failed validation', { exact: false });
-    if (await callbackError.isVisible({ timeout: 1000 }).catch(() => false)) {
+    if (await this.hasCallbackValidationErrorAlert()) {
       throw new Error('Callback data failed validation before selecting party flag target.');
     }
     const exactLabel = this.page.getByLabel(`${target} (${target})`);
     // Escape regex special characters to prevent unintended matches
-    const escapedTarget = target.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+    const escapedTarget = target.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
     const fallbackLabel = this.page.getByLabel(new RegExp(escapedTarget, 'i'));
     try {
       await exactLabel.waitFor({ state: 'visible', timeout: 15000 });
@@ -488,12 +572,59 @@ export class CaseDetailsPage extends Base {
     await this.waitForSpinnerToComplete('after final case flag submit');
   }
 
+  async hasCallbackValidationErrorAlert(timeoutMs = 1000): Promise<boolean> {
+    const callbackValidationAlert = this.page
+      .getByRole('alert')
+      .filter({ hasText: /callback data failed validation/i })
+      .first();
+    return callbackValidationAlert.isVisible({ timeout: timeoutMs }).catch(() => false);
+  }
+
   async selectCaseDetailsTab(tabName: string) {
-    const tab = this.caseDetailsTabs.filter({ hasText: tabName });
-    await tab.click();
-    // Wait for tab content to load
-    await this.page.waitForLoadState('networkidle', { timeout: TIMEOUTS.TAB_LOAD }).catch(() => {
-      // Swallow timeout - some tabs don't trigger network activity
+    const tabLoadTimeoutMs = this.getRecommendedTimeoutMs({
+      min: TIMEOUTS.TAB_LOAD,
+      max: 30_000,
+      multiplier: 3,
+      fallback: 15_000,
     });
+    const escapedTabName = tabName.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+    const tab = this.page.getByRole('tab', { name: new RegExp(escapedTabName, 'i') }).first();
+    await tab.waitFor({ state: 'visible', timeout: tabLoadTimeoutMs });
+    await tab.click();
+    await this.waitForSpinnerToComplete(`after selecting "${tabName}" tab`, tabLoadTimeoutMs).catch(() => {
+      // Some tabs render without spinner; readiness is verified via tabpanel checks below.
+    });
+
+    const controlledPanelId = await tab.getAttribute('aria-controls');
+    if (controlledPanelId) {
+      const controlledPanel = this.page.locator(`#${controlledPanelId}`);
+      await this.waitForTabPanelReadiness(controlledPanel, tabLoadTimeoutMs);
+      return;
+    }
+
+    const visibleTabPanel = this.page.locator('[role="tabpanel"]:visible').first();
+    await this.waitForTabPanelReadiness(visibleTabPanel, tabLoadTimeoutMs);
+  }
+
+  async getTabCount() {
+    const tabsCount = await this.tablist2.count();
+    return tabsCount;
+  }
+
+  private async waitForTabPanelReadiness(tabPanel: Locator, timeoutMs: number): Promise<void> {
+    await tabPanel.waitFor({ state: 'visible', timeout: timeoutMs });
+    const structuredContent = tabPanel.locator('table, form, ccd-read-collection-field, ccd-read-complex-type-field');
+    const structuredContentCount = await structuredContent.count();
+    if (structuredContentCount > 0) {
+      await structuredContent.first().waitFor({ state: 'visible', timeout: timeoutMs });
+      return;
+    }
+
+    const panelText = (await tabPanel.innerText()).trim();
+    if (panelText.length > 0) {
+      return;
+    }
+
+    await tabPanel.locator('*').first().waitFor({ state: 'attached', timeout: timeoutMs });
   }
 }

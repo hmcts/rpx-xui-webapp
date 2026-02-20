@@ -21,6 +21,12 @@ export class TaskListPage extends Base {
   readonly taskActionClaim = this.taskListTable.locator('#action_claim');
   readonly taskActionClaimAndGo = this.taskListTable.locator('#action_claim-and-go');
 
+  readonly paginationControls = this.page.locator('.ngx-pagination');
+  readonly paginationNextButton = this.paginationControls.locator('.pagination-next');
+  readonly paginationEllipsisButton = this.paginationControls.locator('.ellipsis');
+  readonly paginationPreviousButton = this.paginationControls.locator('.pagination-previous')
+  readonly paginationCurrentPage = this.paginationControls.locator('.current');
+
   constructor(page: Page) {
     super(page);
   }

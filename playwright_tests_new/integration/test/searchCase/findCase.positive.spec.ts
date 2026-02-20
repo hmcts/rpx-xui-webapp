@@ -10,8 +10,8 @@ import {
   FIND_CASE_JURISDICTION_LABEL,
   getCaseReferenceFromFindCaseSearchPayload,
 } from '../../mocks/findCase.mock';
-import { setupFindCaseMockRoutes } from '../../helpers/caseSearchMockRoutes.helper';
-import { TEST_CASE_REFERENCES, TEST_USERS } from '../../testData/caseReferences';
+import { createFindCaseSearchResultsRouteHandler, setupFindCaseMockRoutes } from '../../helpers';
+import { TEST_CASE_REFERENCES, TEST_USERS } from '../../testData';
 
 const userIdentifier = TEST_USERS.FPL_GLOBAL_SEARCH;
 const existingCaseReference = TEST_CASE_REFERENCES.FIND_CASE_EXISTING;
@@ -25,32 +25,12 @@ test.beforeEach(async ({ page }) => {
   await setupFindCaseMockRoutes(page, {
     jurisdictions: jurisdictionMock,
     workBasketInputs: workBasketInputsMock,
-    searchResultsHandler: async (route) => {
-      const requestUrl = route.request().url();
-      const rawPayload = route.request().postData();
-      let searchPayload: unknown;
-      if (rawPayload) {
-        try {
-          searchPayload = JSON.parse(rawPayload) as unknown;
-        } catch {
-          searchPayload = undefined;
-        }
-      }
-      const requestedCaseReference = getCaseReferenceFromFindCaseSearchPayload(searchPayload);
-      const decodedUrl = decodeURIComponent(requestUrl);
-      const caseRefPattern = /\d{16}/;
-      const caseReferenceFromUrl = caseRefPattern.exec(decodedUrl)?.[0];
-      const isExistingCaseSearch =
-        requestedCaseReference === existingCaseReference ||
-        Boolean(rawPayload?.includes(existingCaseReference)) ||
-        caseReferenceFromUrl === existingCaseReference ||
-        decodedUrl.includes(existingCaseReference);
-      const response = isExistingCaseSearch
-        ? buildFindCaseSearchResultsMock(existingCaseReference)
-        : buildFindCaseEmptySearchResultsMock();
-
-      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(response) });
-    },
+    searchResultsHandler: createFindCaseSearchResultsRouteHandler({
+      existingCaseReference,
+      matchingResponse: buildFindCaseSearchResultsMock(existingCaseReference),
+      noMatchResponse: buildFindCaseEmptySearchResultsMock(),
+      getCaseReferenceFromPayload: getCaseReferenceFromFindCaseSearchPayload,
+    }),
     caseDetailsHandler: async (route) => {
       const requestUrl = route.request().url();
       const caseReference = requestUrl.split('/').pop() ?? existingCaseReference;

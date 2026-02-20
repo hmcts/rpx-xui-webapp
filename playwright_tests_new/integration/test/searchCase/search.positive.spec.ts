@@ -9,8 +9,8 @@ import {
   INVALID_SEARCH_CASE_REFERENCE,
   VALID_SEARCH_CASE_REFERENCE,
 } from '../../mocks/search.mock';
-import { createGlobalSearchResultsRouteHandler, setupGlobalSearchMockRoutes } from '../../helpers/caseSearchMockRoutes.helper';
-import { TEST_USERS } from '../../testData/caseReferences';
+import { createGlobalSearchResultsRouteHandler, setupGlobalSearchMockRoutes } from '../../helpers';
+import { TEST_USERS } from '../../testData';
 
 const userIdentifier = TEST_USERS.FPL_GLOBAL_SEARCH;
 const searchCaseJurisdictionsMock = buildSearchCaseJurisdictionsMock();
@@ -28,6 +28,23 @@ test.beforeEach(async ({ page }) => {
     jurisdictions: searchCaseJurisdictionsMock,
     services: globalSearchServicesMock,
     searchResultsHandler: globalSearchResultsHandler,
+    caseDetailsHandler: async (route) => {
+      const requestUrl = decodeURIComponent(route.request().url());
+      const caseReference = /\d{16}/.exec(requestUrl)?.[0];
+      if (!caseReference || caseReference !== VALID_SEARCH_CASE_REFERENCE) {
+        await route.fulfill({
+          status: 404,
+          contentType: 'application/json',
+          body: JSON.stringify({ message: 'Not Found' }),
+        });
+        return;
+      }
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(buildCaseDetailsMock(caseReference)),
+      });
+    },
   });
 });
 
@@ -38,16 +55,6 @@ test.describe(`Search quick find as ${userIdentifier}`, () => {
     caseDetailsPage,
     page,
   }) => {
-    await page.route('**/data/internal/cases/**', async (route) => {
-      const requestUrl = route.request().url();
-      const caseReference = requestUrl.split('/').pop() ?? VALID_SEARCH_CASE_REFERENCE;
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify(buildCaseDetailsMock(caseReference)),
-      });
-    });
-
     await caseListPage.navigateTo();
     await expect(searchCasePage.caseIdTextBox).toBeVisible();
 
@@ -60,7 +67,7 @@ test.describe(`Search quick find as ${userIdentifier}`, () => {
     expect(caseNumberFromUrl).toBe(VALID_SEARCH_CASE_REFERENCE);
   });
 
-  test('User sees no results for non-existent 16-digit case reference from header search', async ({
+  test('User remains on case list with no cases message for non-existent 16-digit header search', async ({
     caseListPage,
     searchCasePage,
     page,
@@ -70,7 +77,8 @@ test.describe(`Search quick find as ${userIdentifier}`, () => {
 
     await searchCasePage.searchWith16DigitCaseId(INVALID_SEARCH_CASE_REFERENCE);
 
-    await expect(searchCasePage.noResultsHeading).toBeVisible();
-    await expect(searchCasePage.backLink).toBeVisible();
+    await expect(page).not.toHaveURL(/\/cases\/case-details\//);
+    await expect(page).toHaveURL(/\/cases(?:[/?#]|$)/);
+    await expect(page.getByText('No cases found. Try using different filters.')).toBeVisible();
   });
 });

@@ -2,6 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 import { execSync } from 'node:child_process';
 import { cpus } from 'node:os';
 import { version as appVersion } from './package.json';
+import { parseNonNegativeInt, resolveDefaultReporter } from './playwright-config-utils';
 export default (() => {
   const headlessMode = process.env.HEAD !== 'true';
   const odhinOutputFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
@@ -13,17 +14,6 @@ export default (() => {
     }
     const parsed = Number.parseInt(raw, 10);
     if (!Number.isFinite(parsed) || parsed <= 0) {
-      return undefined;
-    }
-    return parsed;
-  };
-
-  const parseNonNegativeInt = (raw: string | undefined): number | undefined => {
-    if (!raw) {
-      return undefined;
-    }
-    const parsed = Number.parseInt(raw, 10);
-    if (!Number.isFinite(parsed) || parsed < 0) {
       return undefined;
     }
     return parsed;
@@ -119,7 +109,7 @@ export default (() => {
     ...(globalTimeoutMs ? { globalTimeout: globalTimeoutMs } : {}),
     workers: workerCount,
     reporter: [
-      [process.env.CI ? 'dot' : 'list'],
+      [resolveDefaultReporter(process.env)],
       ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs'],
       [
         'odhin-reports-playwright',

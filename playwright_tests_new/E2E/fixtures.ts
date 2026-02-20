@@ -302,7 +302,7 @@ function extractFailureLocation(error: string, testInfo: TestInfo): string {
     }
   }
 
-  const directMatch = error.match(/at\s+([^\s()]+:\d+:\d+)/);
+  const directMatch = /at\s+([^\s()]+:\d+:\d+)/.exec(error);
   if (directMatch?.[1]) {
     return directMatch[1];
   }
@@ -339,14 +339,15 @@ function deriveBackendWaitFlag(
   return 'no';
 }
 
-function derivePhaseMarker(
-  failureType: FailureType,
-  error: string,
-  executionSignals: ExecutionSignals,
-  backendWait: 'yes' | 'no'
-): string {
-  const inSetupHook = /beforeEach|beforeAll|hook/i.test(error);
+function isSlowOrNetworkTimeout(failureType: FailureType): boolean {
+  return failureType === 'SLOW_API_RESPONSE' || failureType === 'NETWORK_TIMEOUT';
+}
 
+function deriveTimeoutPhaseMarker(
+  failureType: 'TIMEOUT_NO_API_ACTIVITY' | 'GLOBAL_TIMEOUT_UI_STALL',
+  inSetupHook: boolean,
+  executionSignals: ExecutionSignals
+): string {
   if (failureType === 'TIMEOUT_NO_API_ACTIVITY') {
     if (inSetupHook) {
       return 'setup-pre-backend';
@@ -359,15 +360,25 @@ function derivePhaseMarker(
     }
     return 'ui-timeout-no-backend';
   }
-
-  if (failureType === 'GLOBAL_TIMEOUT_UI_STALL') {
-    if (inSetupHook) {
-      return 'setup-ui-timeout';
-    }
-    return executionSignals.backendRequestsObserved > 0 ? 'ui-timeout-post-backend' : 'ui-timeout-pre-backend';
+  // GLOBAL_TIMEOUT_UI_STALL
+  if (inSetupHook) {
+    return 'setup-ui-timeout';
   }
+  return executionSignals.backendRequestsObserved > 0 ? 'ui-timeout-post-backend' : 'ui-timeout-pre-backend';
+}
 
-  if (failureType === 'SLOW_API_RESPONSE' || failureType === 'NETWORK_TIMEOUT') {
+function derivePhaseMarker(
+  failureType: FailureType,
+  error: string,
+  executionSignals: ExecutionSignals,
+  backendWait: 'yes' | 'no'
+): string {
+  const inSetupHook = /beforeEach|beforeAll|hook/i.test(error);
+
+  if (failureType === 'TIMEOUT_NO_API_ACTIVITY' || failureType === 'GLOBAL_TIMEOUT_UI_STALL') {
+    return deriveTimeoutPhaseMarker(failureType, inSetupHook, executionSignals);
+  }
+  if (isSlowOrNetworkTimeout(failureType)) {
     return backendWait === 'yes' ? 'backend-wait-timeout' : 'timeout-unknown-wait';
   }
   if (failureType === 'DOWNSTREAM_API_5XX') {
@@ -437,52 +448,89 @@ function collectErrorContext(testInfo: TestInfo): ErrorContext {
   };
 }
 
-function deriveLikelyRootCause(
-  failureType: FailureType,
-  testStatus: TestInfo['status'],
-  error: string,
-  timeoutSummary: string,
-  dominantSlowEndpoint: SlowCallAggregate | null,
-  topSuspect: string,
-  executionSignals: ExecutionSignals,
-  failureLocation: string,
-  actionableErrorLine: string
-): string {
-  const pageClosedPattern = /Target page, context or browser has been closed/i;
-  const isPageClosed = pageClosedPattern.test(error);
+interface TimeoutRootCauseContext {
+  failureType: 'TIMEOUT_NO_API_ACTIVITY' | 'GLOBAL_TIMEOUT_UI_STALL';
+  error: string;
+  dominantSlowEndpoint: SlowCallAggregate | null;
+  executionSignals: ExecutionSignals;
+  failureLocation: string;
+  actionableErrorLine: string;
+}
+
+function deriveTimeoutRootCause({
+  failureType,
+  error,
+  dominantSlowEndpoint,
+  executionSignals,
+  failureLocation,
+  actionableErrorLine,
+}: TimeoutRootCauseContext): string {
   const locationHint = failureLocation && failureLocation !== 'unknown:0:0' ? ` Location: ${failureLocation}.` : '';
   const actionableHint = actionableErrorLine ? ` Last actionable error: ${actionableErrorLine}.` : '';
+  const isPageClosed = /Target page, context or browser has been closed/i.test(error);
+  const closureHint = isPageClosed
+    ? ' Page/context was then closed by Playwright timeout teardown; locator/page-closed errors are secondary.'
+    : '';
 
   if (failureType === 'TIMEOUT_NO_API_ACTIVITY') {
     const inSetupHook = /beforeEach|beforeAll|hook/i.test(error);
     const phaseHint = inSetupHook
       ? 'Likely stuck in session bootstrap, navigation, or UI wait before backend calls.'
       : 'Likely spent timeout budget in UI-only steps/retries before backend calls were triggered.';
-    const closureHint = isPageClosed
-      ? ' Page/context was then closed by Playwright timeout teardown; locator/page-closed errors are secondary.'
-      : '';
     return `Global test timeout with no backend API activity (${summarizeExecutionSignals(executionSignals)}). ${phaseHint}${closureHint}${locationHint}${actionableHint}`;
   }
 
-  if (failureType === 'GLOBAL_TIMEOUT_UI_STALL') {
-    const closureHint = isPageClosed
-      ? ' Page/context was then closed by Playwright timeout teardown; locator/page-closed errors are secondary.'
-      : '';
-    const slowHint = dominantSlowEndpoint
-      ? ` Observed isolated slow backend call (${summarizeSlowEndpoint(dominantSlowEndpoint)}), but not enough evidence to treat backend latency as dominant root cause.`
-      : '';
-    return `Global test timeout during UI workflow (${summarizeExecutionSignals(executionSignals)}). Backend activity occurred, but no dominant backend failure/timeout pattern was captured.${slowHint}${closureHint}${locationHint}${actionableHint}`;
+  // GLOBAL_TIMEOUT_UI_STALL
+  const slowHint = dominantSlowEndpoint
+    ? ` Observed isolated slow backend call (${summarizeSlowEndpoint(dominantSlowEndpoint)}), but not enough evidence to treat backend latency as dominant root cause.`
+    : '';
+  return `Global test timeout during UI workflow (${summarizeExecutionSignals(executionSignals)}). Backend activity occurred, but no dominant backend failure/timeout pattern was captured.${slowHint}${closureHint}${locationHint}${actionableHint}`;
+}
+
+interface RootCauseContext {
+  failureType: FailureType;
+  testStatus: TestInfo['status'];
+  error: string;
+  timeoutSummary: string;
+  dominantSlowEndpoint: SlowCallAggregate | null;
+  topSuspect: string;
+  executionSignals: ExecutionSignals;
+  failureLocation: string;
+  actionableErrorLine: string;
+}
+
+function deriveLikelyRootCause({
+  failureType,
+  testStatus,
+  error,
+  timeoutSummary,
+  dominantSlowEndpoint,
+  topSuspect,
+  executionSignals,
+  failureLocation,
+  actionableErrorLine,
+}: RootCauseContext): string {
+  const isPageClosed = /Target page, context or browser has been closed/i.test(error);
+
+  if (failureType === 'TIMEOUT_NO_API_ACTIVITY' || failureType === 'GLOBAL_TIMEOUT_UI_STALL') {
+    return deriveTimeoutRootCause({
+      failureType,
+      error,
+      dominantSlowEndpoint,
+      executionSignals,
+      failureLocation,
+      actionableErrorLine,
+    });
   }
 
-  if ((failureType === 'SLOW_API_RESPONSE' || failureType === 'NETWORK_TIMEOUT') && dominantSlowEndpoint) {
+  if (isSlowOrNetworkTimeout(failureType) && dominantSlowEndpoint) {
     const endpointSummary = summarizeSlowEndpoint(dominantSlowEndpoint);
-    if (testStatus === 'timedOut' || isPageClosed) {
-      return `Global test timeout reached while backend dependency remained slow: ${endpointSummary}`;
-    }
-    return `Backend dependency latency likely caused failure: ${endpointSummary}`;
+    return testStatus === 'timedOut' || isPageClosed
+      ? `Global test timeout reached while backend dependency remained slow: ${endpointSummary}`
+      : `Backend dependency latency likely caused failure: ${endpointSummary}`;
   }
 
-  if ((failureType === 'SLOW_API_RESPONSE' || failureType === 'NETWORK_TIMEOUT') && timeoutSummary) {
+  if (isSlowOrNetworkTimeout(failureType) && timeoutSummary) {
     return `Timeout-related failure with backend/network suspects: ${timeoutSummary}`;
   }
 
@@ -505,20 +553,31 @@ function deriveLikelyRootCause(
   return 'No dominant backend suspect identified; inspect stack/location and trace';
 }
 
+interface ClassifyFailureContext {
+  error: string;
+  serverErrors: ApiError[];
+  clientErrors: ApiError[];
+  slowCalls: Array<{ url: string; duration: number; method: string }>;
+  failedRequests: FailedRequest[];
+  networkTimeout: boolean;
+  testStatus: TestInfo['status'];
+  executionSignals: ExecutionSignals;
+}
+
 /**
  * Classify test failure type based on error message and API call patterns.
  * Follows HMCTS observability standards for instant root cause diagnosis.
  */
-function classifyFailure(
-  error: string,
-  serverErrors: ApiError[],
-  clientErrors: ApiError[],
-  slowCalls: Array<{ url: string; duration: number; method: string }>,
-  failedRequests: FailedRequest[],
-  networkTimeout: boolean,
-  testStatus: TestInfo['status'],
-  executionSignals: ExecutionSignals
-): FailureType {
+function classifyFailure({
+  error,
+  serverErrors,
+  clientErrors,
+  slowCalls,
+  failedRequests,
+  networkTimeout,
+  testStatus,
+  executionSignals,
+}: ClassifyFailureContext): FailureType {
   const normalizedError = error.toLowerCase();
   const hasTimeoutKeyword = normalizedError.includes('timeout') || normalizedError.includes('timed out');
   const hasBackendFailureSignals = serverErrors.length + clientErrors.length + slowCalls.length + failedRequests.length > 0;
@@ -702,7 +761,7 @@ async function attachFailureDiagnosis(context: FailureDiagnosisContext): Promise
   } = context;
   const serverErrors = apiErrors.filter((e) => e.status >= 500);
   const clientErrors = apiErrors.filter((e) => e.status >= 400 && e.status < 500);
-  const failureType = classifyFailure(
+  const failureType = classifyFailure({
     error,
     serverErrors,
     clientErrors,
@@ -710,8 +769,8 @@ async function attachFailureDiagnosis(context: FailureDiagnosisContext): Promise
     failedRequests,
     networkTimeout,
     testStatus,
-    executionSignals
-  );
+    executionSignals,
+  });
   const timeoutSuspects = buildTimeoutSuspects(slowCalls, failedRequests);
   const slowCallAggregates = aggregateSlowCalls(slowCalls);
   const dominantSlowEndpoint = slowCallAggregates[0] ?? null;
@@ -725,7 +784,7 @@ async function attachFailureDiagnosis(context: FailureDiagnosisContext): Promise
   const backendWait = deriveBackendWaitFlag(failureType, serverErrors, clientErrors, slowCalls, failedRequests);
   const phaseMarker = derivePhaseMarker(failureType, error, executionSignals, backendWait);
   const failureLocation = extractFailureLocation(error, testInfo);
-  const likelyRootCause = deriveLikelyRootCause(
+  const likelyRootCause = deriveLikelyRootCause({
     failureType,
     testStatus,
     error,
@@ -734,8 +793,8 @@ async function attachFailureDiagnosis(context: FailureDiagnosisContext): Promise
     topSuspect,
     executionSignals,
     failureLocation,
-    actionableError
-  );
+    actionableErrorLine: actionableError,
+  });
   const executionSignalSummary = summarizeExecutionSignals(executionSignals);
   const slowEndpointDetails = buildBoundedApiDetails(slowEndpointSummary, MAX_API_ERRORS_DETAILS_CHARS);
 

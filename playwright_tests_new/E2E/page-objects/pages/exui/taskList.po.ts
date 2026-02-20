@@ -82,8 +82,8 @@ export class TaskListPage extends Base {
     }
 
     const latestTaskCall = this.getApiCalls()
-      .filter((call) => call.url.includes('/workallocation/task'))
-      .at(-1);
+      .reverse()
+      .find((call) => call.url.includes('/workallocation/task'));
     const latestTaskCallSummary = latestTaskCall
       ? `${latestTaskCall.method} ${latestTaskCall.url} -> HTTP ${latestTaskCall.status}`
       : 'none captured';

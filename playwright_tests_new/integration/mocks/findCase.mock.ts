@@ -100,7 +100,7 @@ export function buildFindCaseSearchResultsMock(caseReference: string) {
           '[STATE]': 'CaseCreated',
           '[JURISDICTION]': 'PUBLICLAW',
           '[CASE_TYPE]': 'PRLAPPS',
-          '[LAST_MODIFIED_DATE]': new Date().toISOString(),
+          '[LAST_MODIFIED_DATE]': '2025-01-15T10:30:00.000Z',
         },
         case_fields_formatted: {
           '[CASE_REFERENCE]': caseReference,
@@ -108,7 +108,7 @@ export function buildFindCaseSearchResultsMock(caseReference: string) {
           '[STATE]': 'CaseCreated',
           '[JURISDICTION]': 'PUBLICLAW',
           '[CASE_TYPE]': 'PRLAPPS',
-          '[LAST_MODIFIED_DATE]': new Date().toISOString(),
+          '[LAST_MODIFIED_DATE]': '2025-01-15T10:30:00.000Z',
         },
       },
     ],

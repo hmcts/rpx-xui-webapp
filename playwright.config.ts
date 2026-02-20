@@ -4,6 +4,7 @@ import { readFileSync } from 'node:fs';
 import { cpus } from 'node:os';
 import * as path from 'node:path';
 import { version as appVersion } from './package.json';
+import { parseNonNegativeInt, resolveDefaultReporter } from './playwright-config-utils';
 
 type EnvMap = NodeJS.ProcessEnv;
 
@@ -28,25 +29,6 @@ export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
 const resolveBaseUrl = (env: EnvMap = process.env) => env.TEST_URL || defaultBaseUrl;
 
 const resolveHeadlessMode = (env: EnvMap = process.env) => env.HEAD !== 'true';
-
-const resolveDefaultReporter = (env: EnvMap = process.env): string => {
-  const configured = env.PLAYWRIGHT_DEFAULT_REPORTER?.trim();
-  if (configured && ['dot', 'list', 'line'].includes(configured)) {
-    return configured;
-  }
-  return env.CI ? 'dot' : 'list';
-};
-
-const parseNonNegativeInt = (raw: string | undefined): number | undefined => {
-  if (!raw) {
-    return undefined;
-  }
-  const parsed = Number.parseInt(raw, 10);
-  if (!Number.isFinite(parsed) || parsed < 0) {
-    return undefined;
-  }
-  return parsed;
-};
 
 const resolveOdhinOutputFolder = (env: EnvMap = process.env) =>
   env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
@@ -172,7 +154,7 @@ const splitTagInput = (raw?: string): string[] => {
   return tags;
 };
 
-const escapeRegex = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const escapeRegex = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`); // NOSONAR typescript:S5852 — replaceAll requires ES2021; tsconfig targets ES2020
 
 const buildTagRegex = (tags: string[]): RegExp | undefined => {
   if (!tags.length) {

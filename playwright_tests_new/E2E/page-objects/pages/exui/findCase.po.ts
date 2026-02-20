@@ -65,7 +65,7 @@ export class FindCasePage extends Base {
           maxAttempts: MAX_NAVIGATION_RETRY_ATTEMPTS,
           jurisdictionBootstrapFailed,
           filterTimeout,
-          error: error instanceof Error ? error.message : String(error),
+          error: error instanceof Error ? error.message : JSON.stringify(error),
         });
         await this.page.waitForTimeout(EXUI_TIMEOUTS.CREATE_CASE_RETRY_BACKOFF);
         await this.page.goto('/cases');
@@ -167,7 +167,7 @@ export class FindCasePage extends Base {
   }
 
   private isFindCaseFilterTimeout(error: unknown): boolean {
-    const message = error instanceof Error ? error.message : String(error);
+    const message = error instanceof Error ? error.message : (JSON.stringify(error) ?? '');
     return /locator\('#s-jurisdiction, #wb-jurisdiction, #cc-jurisdiction'\).*to be visible/i.test(message);
   }
 

@@ -1,6 +1,6 @@
 import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookies } from '../../../common/sessionCapture';
-import { TEST_USERS } from '../../testData/caseReferences';
+import { TEST_USERS } from '../../testData';
 
 const userIdentifier = TEST_USERS.SOLICITOR;
 const jurisdiction = 'DIVORCE';
@@ -16,7 +16,7 @@ test.beforeEach(async ({ page }) => {
   await applySessionCookies(page, userIdentifier);
 });
 
-test.describe(`Case List as ${userIdentifier}`, () => {
+test.describe(`Create case as ${userIdentifier}`, () => {
   test(`User ${userIdentifier} should not be able to submit a case without filling in required fields`, async ({
     createCasePage,
     caseListPage,

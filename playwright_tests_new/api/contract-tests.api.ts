@@ -10,7 +10,6 @@ import { TaskBuilder, TaskListBuilder, LocationBuilder, TestData } from './utils
 import { z } from 'zod';
 
 const serviceCodes = ['IA', 'CIVIL', 'PRIVATELAW'];
-const waReadOnlyStatuses = [200, 401, 403, 500, 502, 504] as const;
 const locationSchema = z.object({
   id: z.string(),
   locationName: z.string(),
@@ -111,7 +110,7 @@ test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, 
     );
 
     // Then: Response status is guarded for downstream resilience
-    expectStatus(response.status, waReadOnlyStatuses);
+    expectStatus(response.status, StatusSets.waReadOnly);
 
     // And: Response may be defined or undefined (API may return empty body)
     // Note: API may return array, {task_names: []}, {taskNames: []}, string, or empty body
@@ -130,7 +129,7 @@ test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, 
     );
 
     // Then: Response status is guarded for downstream resilience
-    expectStatus(response.status, waReadOnlyStatuses);
+    expectStatus(response.status, StatusSets.waReadOnly);
 
     // And: Response is an array or object containing work types
     if (response.status === 200) {

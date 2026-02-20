@@ -1,8 +1,6 @@
 import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookies } from '../../../common/sessionCapture';
-import type { CaseListPage } from '../../../E2E/page-objects/pages/exui/caseList.po';
-import type { SearchCasePage } from '../../../E2E/page-objects/pages/exui/searchCase.po';
-import { createGlobalSearchResultsRouteHandler, setupGlobalSearchMockRoutes } from '../../helpers/caseSearchMockRoutes.helper';
+import { createGlobalSearchResultsRouteHandler, setupGlobalSearchMockRoutes, submitHeaderQuickSearch } from '../../helpers';
 import {
   buildGlobalSearchNoResultsMock,
   buildGlobalSearchServicesMock,
@@ -15,17 +13,14 @@ const userIdentifier = TEST_USERS.FPL_GLOBAL_SEARCH;
 
 const searchCaseJurisdictionsMock = buildSearchCaseJurisdictionsMock();
 const globalSearchServicesMock = buildGlobalSearchServicesMock();
+// Both handler branches return no-results: this suite tests case-details errors,
+// not search-results errors. The search result always succeeds; only the subsequent
+// case-details response is varied per test.
 const globalSearchResultsHandler = createGlobalSearchResultsRouteHandler({
   matchingCaseReference: VALID_SEARCH_CASE_REFERENCE,
   successResponse: buildGlobalSearchNoResultsMock(),
   noResultsResponse: buildGlobalSearchNoResultsMock(),
 });
-
-async function runHeaderQuickSearch(caseListPage: CaseListPage, searchCasePage: SearchCasePage) {
-  await caseListPage.navigateTo();
-  await expect(searchCasePage.caseIdTextBox).toBeVisible();
-  await searchCasePage.searchWith16DigitCaseId(VALID_SEARCH_CASE_REFERENCE);
-}
 
 test.beforeEach(async ({ page }) => {
   await applySessionCookies(page, userIdentifier);
@@ -64,7 +59,7 @@ test.describe(`Header quick search negative flows as ${userIdentifier}`, () => {
         });
       });
 
-      await runHeaderQuickSearch(caseListPage, searchCasePage);
+      await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, caseListPage, searchCasePage);
 
       expect(caseDetailsRequestSeen).toBeTruthy();
 
@@ -74,6 +69,7 @@ test.describe(`Header quick search negative flows as ${userIdentifier}`, () => {
           page.getByText('This case is restricted. The details of the users with access are provided below.')
         ).toBeVisible();
       } else {
+        // timeout: 20_000 — failed auth/access redirect can take up to 15s in AAT when the error page resolves
         await expect(page).not.toHaveURL(/\/cases\/case-details\//);
         await expect.poll(() => page.url(), { timeout: 20_000 }).toMatch(/\/(cases(?:[/?#]|$)|work\/my-work\/list(?:[/?#]|$))/);
       }
@@ -91,7 +87,7 @@ test.describe(`Header quick search negative flows as ${userIdentifier}`, () => {
       });
     });
 
-    await runHeaderQuickSearch(caseListPage, searchCasePage);
+    await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, caseListPage, searchCasePage);
 
     expect(caseDetailsRequestSeen).toBeTruthy();
     await expect(page).not.toHaveURL(/\/cases\/case-details\//);
@@ -105,9 +101,10 @@ test.describe(`Header quick search negative flows as ${userIdentifier}`, () => {
       await route.abort('timedout');
     });
 
-    await runHeaderQuickSearch(caseListPage, searchCasePage);
+    await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, caseListPage, searchCasePage);
 
     expect(caseDetailsRequestSeen).toBeTruthy();
+    // timeout: 20_000 — aborted/timed-out request triggers error-page redirect which can take up to 15s in AAT
     await expect(page).not.toHaveURL(/\/cases\/case-details\//);
     await expect.poll(() => page.url(), { timeout: 20_000 }).toMatch(/\/(cases(?:[/?#]|$)|work\/my-work\/list(?:[/?#]|$))/);
   });

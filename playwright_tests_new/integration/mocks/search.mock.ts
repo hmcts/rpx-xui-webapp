@@ -1,5 +1,8 @@
-export const VALID_SEARCH_CASE_REFERENCE = '1111222233334444';
-export const INVALID_SEARCH_CASE_REFERENCE = '9999888877776666';
+import { TEST_CASE_REFERENCES } from '../testData';
+
+/** Single source of truth: sourced from testData to avoid cross-file duplication */
+export const VALID_SEARCH_CASE_REFERENCE = TEST_CASE_REFERENCES.QUICK_SEARCH_VALID;
+export const INVALID_SEARCH_CASE_REFERENCE = TEST_CASE_REFERENCES.QUICK_SEARCH_INVALID;
 
 export function buildSearchCaseJurisdictionsMock() {
   return [

@@ -8,12 +8,9 @@ const updatedFirstName = faker.person.firstName();
 const updatedLastName = faker.person.lastName();
 const testField = faker.lorem.word() + new Date().toLocaleTimeString();
 const UPDATE_CASE_ACTION_TIMEOUT_MS = 60_000;
-const UPDATE_CASE_SUBMIT_TIMEOUT_MS = 60_000;
 const UPDATE_CASE_MAX_AUTO_ADVANCE_ATTEMPTS = 3;
 const UPDATE_CASE_FIELDS_MAX_ATTEMPTS = 2;
 const UPDATE_CASE_TEST_TIMEOUT_MS = 240_000;
-const UPDATE_CASE_SETUP_MAX_ATTEMPTS = 1;
-const UPDATE_CASE_SETUP_SHELL_TIMEOUT_MS = 30_000;
 const UPDATE_CASE_SETUP_CREATE_MAX_ATTEMPTS = 1;
 
 test.describe('Verify creating and updating a case works as expected', () => {
@@ -23,7 +20,7 @@ test.describe('Verify creating and updating a case works as expected', () => {
       async () => {
         await ensureAuthenticatedPage(page, 'SOLICITOR', {
           waitForSelector: 'exui-header',
-          timeoutMs: UPDATE_CASE_SETUP_SHELL_TIMEOUT_MS,
+          timeoutMs: 30_000,
         });
         await createCasePage.createDivorceCase('DIVORCE', 'XUI Case PoC', testField, {
           maxAttempts: UPDATE_CASE_SETUP_CREATE_MAX_ATTEMPTS,
@@ -33,7 +30,7 @@ test.describe('Verify creating and updating a case works as expected', () => {
         caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
       },
       {
-        maxAttempts: UPDATE_CASE_SETUP_MAX_ATTEMPTS,
+        maxAttempts: 1,
         onRetry: async () => {
           if (page.isClosed()) {
             return;
@@ -61,7 +58,7 @@ test.describe('Verify creating and updating a case works as expected', () => {
           await createCasePage.person2FirstNameInput.fill(updatedFirstName);
           await createCasePage.person2LastNameInput.fill(updatedLastName);
           await createCasePage.clickSubmitAndWait('after updating case fields', {
-            timeoutMs: UPDATE_CASE_SUBMIT_TIMEOUT_MS,
+            timeoutMs: 60_000,
             maxAutoAdvanceAttempts: UPDATE_CASE_MAX_AUTO_ADVANCE_ATTEMPTS,
           });
         },

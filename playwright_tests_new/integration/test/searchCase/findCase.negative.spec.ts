@@ -1,6 +1,6 @@
 import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookies } from '../../../common/sessionCapture';
-import { setupFindCaseMockRoutes } from '../../helpers/caseSearchMockRoutes.helper';
+import { overrideFindCaseSearchResultsRoute, setupFindCaseMockRoutes } from '../../helpers';
 import {
   buildFindCaseEmptySearchResultsMock,
   buildFindCaseJurisdictionsMock,
@@ -17,13 +17,15 @@ import {
 
 const userIdentifier = TEST_USERS.FPL_GLOBAL_SEARCH;
 const existingCaseReference = TEST_CASE_REFERENCES.FIND_CASE_EXISTING;
+const jurisdictionMock = buildFindCaseJurisdictionsMock();
+const workBasketInputsMock = buildFindCaseWorkBasketInputsMock();
 
 test.beforeEach(async ({ page }) => {
   await applySessionCookies(page, userIdentifier);
 
   await setupFindCaseMockRoutes(page, {
-    jurisdictions: buildFindCaseJurisdictionsMock(),
-    workBasketInputs: buildFindCaseWorkBasketInputsMock(),
+    jurisdictions: jurisdictionMock,
+    workBasketInputs: workBasketInputsMock,
     searchResultsHandler: async (route) => {
       await route.fulfill({
         status: 200,
@@ -42,8 +44,7 @@ test.describe(`Find Case negative flows as ${userIdentifier}`, () => {
       page,
     }) => {
       let searchRequestSeen = false;
-      await page.unroute('**/data/internal/searchCases*');
-      await page.route('**/data/internal/searchCases*', async (route) => {
+      await overrideFindCaseSearchResultsRoute(page, async (route) => {
         searchRequestSeen = true;
         await route.fulfill({
           status,
@@ -68,8 +69,7 @@ test.describe(`Find Case negative flows as ${userIdentifier}`, () => {
     page,
   }) => {
     let searchRequestSeen = false;
-    await page.unroute('**/data/internal/searchCases*');
-    await page.route('**/data/internal/searchCases*', async (route) => {
+    await overrideFindCaseSearchResultsRoute(page, async (route) => {
       searchRequestSeen = true;
       await route.fulfill({
         status: 200,
@@ -89,8 +89,7 @@ test.describe(`Find Case negative flows as ${userIdentifier}`, () => {
 
   test('does not navigate to case details when searchCases request times out', async ({ caseListPage, findCasePage, page }) => {
     let searchRequestSeen = false;
-    await page.unroute('**/data/internal/searchCases*');
-    await page.route('**/data/internal/searchCases*', async (route) => {
+    await overrideFindCaseSearchResultsRoute(page, async (route) => {
       searchRequestSeen = true;
       await route.abort('timedout');
     });

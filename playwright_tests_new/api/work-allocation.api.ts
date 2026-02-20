@@ -33,7 +33,6 @@ import {
 const serviceCodes = ['IA', 'CIVIL', 'PRIVATELAW'];
 const envTaskId = WA_SAMPLE_TASK_ID;
 const envAssignedTaskId = WA_SAMPLE_ASSIGNED_TASK_ID;
-const waReadOnlyStatuses = [200, 401, 403, 500, 502, 504] as const;
 const BEFORE_ALL_REQUEST_TIMEOUT_MS = 10_000;
 
 test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, () => {
@@ -142,7 +141,7 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
     );
 
     // Then: API returns success or guarded downstream status
-    expectStatus(response.status, waReadOnlyStatuses);
+    expectStatus(response.status, StatusSets.waReadOnly);
 
     // And: Response contains valid task names array
     assertTaskNamesResponse(response.status, response.data);
@@ -161,7 +160,7 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
     );
 
     // Then: API returns success or guarded downstream status
-    expectStatus(response.status, waReadOnlyStatuses);
+    expectStatus(response.status, StatusSets.waReadOnly);
 
     // And: Response contains valid work types array
     assertTypesOfWorkResponse(response.status, response.data);

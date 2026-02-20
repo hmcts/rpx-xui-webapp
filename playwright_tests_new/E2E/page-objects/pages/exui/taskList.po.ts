@@ -2,17 +2,18 @@ import { Page } from '@playwright/test';
 import { Base } from '../../base';
 
 export class TaskListPage extends Base {
-  readonly taskListFilterToggle = this.page.locator('.govuk-button.hmcts-button--secondary');
+  readonly taskListFilterToggle = this.page.locator('exui-task-list-filter .govuk-button.hmcts-button--secondary');
   readonly selectAllServicesFilter = this.page.locator('input#checkbox_servicesservices_all');
+  readonly selectServicesError = this.page.locator('#services-error');
   readonly selectAllTypesOfWorksFilter = this.page.locator('input#checkbox_types-of-worktypes_of_work_all');
+  readonly selectTypesOfWorksError = this.page.locator('#types-of-work-error');
   readonly applyFilterButton = this.page.locator('button#applyFilter');
   readonly taskListTable = this.page.locator('.cdk-table.govuk-table');
   readonly taskListResultsAmount = this.page.locator('#search-result-summary__text, [data-test="search-result-summary__text"]');
   readonly manageCaseButtons = this.taskListTable.getByRole('button', { name: 'Manage' });
   readonly taskActionsRow = this.taskListTable.locator('tr.actions-row[aria-hidden="false"]');
-
   readonly taskTableTabs = this.page.locator('.hmcts-sub-navigation .hmcts-sub-navigation__link');
-  // Action links have stable IDs: action_{taskActionId}
+
   readonly taskActionCancel = this.taskListTable.locator('#action_cancel');
   readonly taskActionGoTo = this.taskListTable.locator('#action_go');
   readonly taskActionMarkAsDone = this.taskListTable.locator('#action_complete');

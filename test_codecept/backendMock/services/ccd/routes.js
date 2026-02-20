@@ -37,6 +37,25 @@ router.get('/aggregated/caseworkers/:uid/jurisdictions', (req, res) => {
   }, 2000);
 });
 
+router.get('/aggregated/caseworkers/:uid/jurisdictions-lite', (req, res) => {
+  const responseData = JSON.parse(JSON.stringify(ccdMockData.getJurisdictions()));
+
+  // responseData[0].description = 'Div '+Date.now()
+  // res.set('Content-Type', 'application/json');
+  // res.setEncoding('gzip');
+  // console.log('jurisdictions response size: '+JSON.stringify(responseData).length)
+  // res.set('Cache-control', 'public, max-age=0')
+  if (req.query.access === 'read') {
+    responseData.data[0].description = 'read request';
+  } else {
+    responseData.data[0].description = 'create request';
+  }
+  res.removeHeader('etag');
+  setTimeout(() => {
+    res.send(responseData.data);
+  }, 2000);
+});
+
 router.get('/data/internal/case-types/:jurisdiction/work-basket-inputs', (req, res) => {
   res.send(ccdMockData.getWorkbasketInputs(req.params.jurisdiction));
 });

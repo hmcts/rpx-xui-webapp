@@ -34,7 +34,7 @@ const serviceCodes = ['IA', 'CIVIL', 'PRIVATELAW'];
 const envTaskId = WA_SAMPLE_TASK_ID;
 const envAssignedTaskId = WA_SAMPLE_ASSIGNED_TASK_ID;
 
-test.describe('Work allocation (read-only)', () => {
+test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, () => {
   let cachedLocationId: string | undefined;
   let userId: string | undefined;
   let sampleTaskId: string | undefined;
@@ -459,7 +459,7 @@ test.describe('Work allocation (read-only)', () => {
   });
 });
 
-test.describe('Work allocation helper coverage', () => {
+test.describe('Work allocation helper coverage', { tag: '@svc-work-allocation' }, () => {
   test('toArray utility normalizes API response formats (arrays, task_names, taskNames, typesOfWork) to consistent array output', () => {
     // Given: Various API response payload formats from work allocation endpoints
     // When: Normalizing different response shapes to arrays

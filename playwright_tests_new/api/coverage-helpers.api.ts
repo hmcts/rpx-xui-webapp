@@ -6,7 +6,7 @@ import { __test__ as fixturesTest } from './fixtures';
 import { buildTaskSearchRequest, seedTaskId } from './utils/work-allocation';
 import { seedRoleAccessCaseId } from './utils/role-access';
 
-test.describe('Helper utilities and retry logic', () => {
+test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () => {
   test('expectStatus and withRetry cover success and retry paths', async () => {
     expectStatus(200, [200, 201]);
     expect(() => expectStatus(500, [200])).toThrow();

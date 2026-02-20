@@ -18,7 +18,8 @@ RUN corepack enable
 USER hmcts
 
 # Copy only dependency files for better layer caching
-COPY --chown=hmcts:hmcts .yarn package.json yarn.lock .yarnrc.yml ./
+COPY --chown=hmcts:hmcts .yarn/ ./.yarn/
+COPY --chown=hmcts:hmcts package.json yarn.lock .yarnrc.yml ./
 
 # Install dependencies once
 RUN yarn install
@@ -41,7 +42,8 @@ RUN corepack enable
 USER hmcts
 
 # Copy only production dependencies from build stage
-COPY --from=build --chown=hmcts:hmcts $WORKDIR/.yarn $WORKDIR/node_modules $WORKDIR/package.json $WORKDIR/yarn.lock $WORKDIR/.yarnrc.yml ./
+COPY --from=build --chown=hmcts:hmcts $WORKDIR/.yarn/ ./.yarn/
+COPY --from=build --chown=hmcts:hmcts $WORKDIR/node_modules $WORKDIR/package.json $WORKDIR/yarn.lock $WORKDIR/.yarnrc.yml ./
 
 # Copy built artifacts from build stage
 COPY --from=build --chown=hmcts:hmcts $WORKDIR/dist $WORKDIR/api $WORKDIR/config ./

@@ -123,7 +123,7 @@
   "serviceRefDataMapping": [
     { "service": "IA", "serviceCodes": ["BFA1"] },
     { "service": "CIVIL", "serviceCodes": ["AAA6", "AAA7"] },
-    { "service": "PRIVATELAW", "serviceCodes": ["ABA5"] },
+    { "service": "PRIVATELAW", "serviceCodes": ["ABA5", "AAA6", "AAA7"] },
     { "service": "PUBLICLAW", "serviceCodes": ["ABA3"] },
     { "service": "SSCS", "serviceCodes": ["BBA3"] },
     { "service": "ST_CIC", "serviceCodes": ["BBA2"] },

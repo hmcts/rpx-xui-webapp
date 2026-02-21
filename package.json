@@ -257,7 +257,7 @@
     "ngrx-store-freeze": "^0.2.4",
     "node-fetch": "^3.0.0",
     "node-html-parser": "^7.0.0",
-    "nodemon": "^2.0.19",
+    "nodemon": "^3.0.0",
     "npm-run-all2": "^7.0.0",
     "odhin-reports-playwright": "patch:odhin-reports-playwright@npm%3A1.1.8#~/.yarn/patches/odhin-reports-playwright-npm-1.1.8-a445ed88b7.patch",
     "pa11y": "^8.0.0",

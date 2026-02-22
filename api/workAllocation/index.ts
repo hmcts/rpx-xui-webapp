@@ -463,7 +463,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
     );
 
     // get cases using either filteredRoleAssignments array or roleAssignments array if no serviceId filters are applied
-    const cases = await getCaseIdListFromRoles(!serviceIds.length ? roleAssignments : filteredRoleAssignments, req);
+    const cases = await getCaseIdListFromRoles(serviceIds?.length > 0 ? filteredRoleAssignments : roleAssignments, req);
 
     // search parameters passed in as null as there are no parameters for my cases
     const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);

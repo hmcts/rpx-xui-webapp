@@ -211,12 +211,12 @@ export class LocationResolver {
   }
 
   private setAllLocations(location: Location, roleAssignment: RoleAssignmentInfo, feePaid: boolean): void {
-    if (!feePaid) {
-      this.locations.push(location);
-      this.locationServices.add(roleAssignment.jurisdiction);
-    } else {
+    if (feePaid) {
       this.feePaidLocations.push(location);
       this.feePaidLocationServices.add(roleAssignment.jurisdiction);
+    } else {
+      this.locations.push(location);
+      this.locationServices.add(roleAssignment.jurisdiction);
     }
   }
 

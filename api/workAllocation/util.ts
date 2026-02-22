@@ -580,13 +580,13 @@ export function getActionsByPermissions(view, permissions: TaskPermission[]): Ac
 
 export function getActionsFromMatrix(view, permission: TaskPermission, currentActionList: Action[]): Action[] {
   const newActionList = currentActionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][permission]);
-  currentActionList = !newActionList.includes(undefined) ? newActionList : currentActionList;
+  currentActionList = newActionList.includes(undefined) ? currentActionList : newActionList;
   return currentActionList;
 }
 
 export function getActionsFromRefinedMatrix(view, permission: TaskPermission, currentActionList: Action[]): Action[] {
   const newActionList = currentActionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX_REFINED[view][permission]);
-  currentActionList = !newActionList.includes(undefined) ? newActionList : currentActionList;
+  currentActionList = newActionList.includes(undefined) ? currentActionList : newActionList;
   return currentActionList;
 }
 

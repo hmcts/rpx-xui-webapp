@@ -33,10 +33,10 @@ export class StaffUserDetailsComponent {
   ) {
     const userDetailsFromSnapshot = this.route.snapshot.data.staffUserDetails;
 
-    if (!userDetailsFromSnapshot) {
-      this.router.navigateByUrl('/staff');
-    } else {
+    if (userDetailsFromSnapshot) {
       this.userDetails = StaffUser.from(userDetailsFromSnapshot);
+    } else {
+      this.router.navigateByUrl('/staff');
     }
   }
 

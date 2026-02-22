@@ -46,7 +46,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
  */
 export async function getLocationById(req: EnhancedRequest, res: Response, next: NextFunction) {
   const epimmsID = req.query.epimms_id;
-  const serviceCode = req.query.serviceCode ? (req.query.serviceCode as string) : null;
+  const serviceCode = req.query.serviceCode && req.query.serviceCode !== '' ? (req.query.serviceCode as string) : null;
   delete req.query.serviceCode;
   const courtTypeIdsArray: string[] = getCourtTypeIdsByServices([serviceCode]);
   const markupPath: string = `${url}/refdata/location/court-venues?epimms_id=${epimmsID}`;

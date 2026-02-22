@@ -79,7 +79,7 @@ function doShareCase(req: EnhancedRequest, shareCases: SharedCase[]): any[] {
   const path = `${ccdUrl}/case-assignments?use_user_token=true`;
   const promises = [];
   shareCases.flatMap((sharedCase) => {
-    if (sharedCase && sharedCase.pendingShares && sharedCase.pendingShares.length > 0) {
+    if (sharedCase?.pendingShares?.length > 0) {
       sharedCase.pendingShares.flatMap((pendingShare) => {
         const caseAssigneeMappingModel: CaseAssigneeMappingModel = {
           assignee_id: pendingShare.idamId,

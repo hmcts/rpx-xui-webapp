@@ -73,8 +73,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
     let actualPauseStartTime: string;
     if (actualIndex >= 0) {
       actualPauseStartTime =
-        hearingActuals?.hearingActuals?.actualHearingDays &&
-        hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes?.length &&
+        hearingActuals?.hearingActuals?.actualHearingDays?.[actualIndex]?.pauseDateTimes?.length &&
         hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0]?.pauseStartTime;
     }
     return actualPauseStartTime ? this.getTime(actualPauseStartTime) : null;
@@ -85,8 +84,7 @@ export class HearingActualsTimingComponent implements OnInit, OnDestroy {
 
     if (actualIndex >= 0) {
       actualPauseEndTime =
-        hearingActuals?.hearingActuals?.actualHearingDays &&
-        hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes?.length &&
+        hearingActuals?.hearingActuals?.actualHearingDays?.[actualIndex]?.pauseDateTimes?.length &&
         hearingActuals.hearingActuals.actualHearingDays[actualIndex].pauseDateTimes[0]?.pauseEndTime;
     }
     return actualPauseEndTime ? this.getTime(actualPauseEndTime) : null;

@@ -120,7 +120,7 @@ export function mapResponseToExclusions(
 }
 
 export function getEmail(actorId: string, req: EnhancedRequest): string {
-  if (req && req.session && req.session.caseworkers) {
+  if (req?.session?.caseworkers) {
     const caseWorker = req.session.caseworkers.find((caseworker) => caseworker.idamId === actorId);
     if (caseWorker) {
       return caseWorker.email;
@@ -129,7 +129,7 @@ export function getEmail(actorId: string, req: EnhancedRequest): string {
 }
 
 export function getUserName(actorId: string, req: EnhancedRequest): string {
-  if (req && req.session && req.session.caseworkers) {
+  if (req?.session?.caseworkers) {
     const caseWorker = req.session.caseworkers.find((caseworker) => caseworker.idamId === actorId);
     if (caseWorker) {
       return `${caseWorker.firstName}-${caseWorker.lastName}`;

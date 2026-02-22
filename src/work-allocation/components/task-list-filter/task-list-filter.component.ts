@@ -91,11 +91,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     private readonly appStore: Store<fromAppStore.State>,
     private readonly featureToggleService: FeatureToggleService
   ) {
-    if (
-      this.router.getCurrentNavigation() &&
-      this.router.getCurrentNavigation().extras.state &&
-      this.router.getCurrentNavigation().extras.state.location
-    ) {
+    if (this.router.getCurrentNavigation()?.extras?.state?.location) {
       this.bookingLocations = this.router.getCurrentNavigation().extras.state.location.ids;
     }
     this.router.events
@@ -110,7 +106,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
         })
       )
       .subscribe((activatedRouteSnapshot: ActivatedRouteSnapshot) => {
-        this.hideFilter = activatedRouteSnapshot.url[0].path && activatedRouteSnapshot.url[0].path.includes('my-access');
+        this.hideFilter = activatedRouteSnapshot.url[0].path?.includes('my-access');
         if (this.hideFilter) {
           this.toggleFilter = false;
           this.onToggleFilter(this.toggleFilter);
@@ -247,7 +243,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
           }
           return [f, tasks];
         }),
-        filter(([f]: [FilterSetting, Task[]]) => f && f.hasOwnProperty('fields'))
+        filter(([f]: [FilterSetting, Task[]]) => f?.hasOwnProperty('fields'))
       )
       .subscribe(([f, currentTasks]: [FilterSetting, Task[]]) => {
         this.showFilteredText = TaskListFilterComponent.hasBeenFiltered(
@@ -264,15 +260,14 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   private setPersistenceAndDefaultLocations(): void {
     this.fieldsConfig.persistence = this.persistence || 'session';
     const filterService = this.filterService.get(TaskListFilterComponent.FILTER_NAME);
-    const availableLocations =
-      filterService && filterService.fields && filterService.fields.find((field) => field.name === 'locations');
-    const isLocationsAvailable: boolean = availableLocations && availableLocations.value && availableLocations.value.length > 0;
+    const availableLocations = filterService?.fields?.find((field) => field.name === 'locations');
+    const isLocationsAvailable: boolean = availableLocations?.value?.length > 0;
     const regionLocations = JSON.parse(this.sessionStorageService.getItem('regionLocations'));
     const bookableServices = JSON.parse(this.sessionStorageService.getItem('bookableServices'));
     // get booking locations
     if (this.bookingLocations && this.bookingLocations.length > 0) {
       this.defaultLocations = this.bookingLocations;
-    } else if (history.state && history.state.location && history.state.location.id) {
+    } else if (history.state?.location?.id) {
       const location: Location = history.state.location;
       this.defaultLocations = [location.id];
     }
@@ -350,7 +345,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     };
     let baseLocation = null;
     // if there are no booking locations selected then check for base location for salary judge
-    if (locations.length === 0 && this.route.snapshot.data && this.route.snapshot.data.locations) {
+    if (locations.length === 0 && this.route.snapshot.data?.locations) {
       baseLocation = this.route.snapshot.data.locations;
     }
 
@@ -405,7 +400,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
       if (!services.length) {
         return;
       }
-      if (!userDetails.roleAssignmentInfo || !userDetails.roleAssignmentInfo.some((p) => p.jurisdiction !== undefined)) {
+      if (!userDetails.roleAssignmentInfo?.some((p) => p.jurisdiction !== undefined)) {
         return;
       }
       const filteredServices = _.intersection.apply(_, [

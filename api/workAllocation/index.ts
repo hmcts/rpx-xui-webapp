@@ -89,7 +89,7 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
     // Adding log in app insights for task completion journey
     trackTrace(`get task Id: ${taskId}`, { functionCall: 'getTask' });
     const jsonResponse = await handleTaskGet(getTaskPath, req);
-    if (jsonResponse && jsonResponse.task && jsonResponse.task.due_date) {
+    if (jsonResponse?.task?.due_date) {
       jsonResponse.task.dueDate = jsonResponse.task.due_date;
     }
     res.status(200);
@@ -108,7 +108,7 @@ export async function getTypesOfWork(req: EnhancedRequest, res: Response, next: 
     const path: string = `${baseWorkAllocationTaskUrl}/work-types?filter-by-user=true`;
     const response = await getTypesOfWorkByUserId(path, req);
     let typesOfWork = [];
-    if (response && response.work_types) {
+    if (response?.work_types) {
       typesOfWork = response.work_types.map((work) => ({ key: work.id, label: work.label }));
     }
     res.status(200);
@@ -450,10 +450,10 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
 
     let serviceIds = [];
     let locationIds = [];
-    if (services && services.hasOwnProperty('values')) {
+    if (services?.hasOwnProperty('values')) {
       serviceIds = services.values;
     }
-    if (locations && locations.hasOwnProperty('values')) {
+    if (locations?.hasOwnProperty('values')) {
       locationIds = locations.values;
     }
 
@@ -467,7 +467,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
 
     // search parameters passed in as null as there are no parameters for my cases
     const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
-    let checkedRoles = req && req.session && req.session.roleAssignmentResponse ? req.session.roleAssignmentResponse : null;
+    let checkedRoles = req?.session?.roleAssignmentResponse ? req.session.roleAssignmentResponse : null;
     if (showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED)) {
       checkedRoles = getSubstantiveRoles(roleAssignments as any) as any;
     }

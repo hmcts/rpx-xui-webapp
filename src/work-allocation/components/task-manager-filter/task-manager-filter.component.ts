@@ -296,7 +296,7 @@ export class TaskManagerFilterComponent implements OnInit, OnDestroy {
           }
           return f;
         }),
-        filter((f: FilterSetting) => f && f.hasOwnProperty('fields')),
+        filter((f: FilterSetting) => f?.hasOwnProperty('fields')),
         filter((f: FilterSetting) => !f.reset)
       )
       .subscribe((f: FilterSetting) => {

@@ -46,7 +46,7 @@ export class TaskActionContainerComponent implements OnInit {
   }
 
   private get returnUrl(): string {
-    if (window && window.history && window.history.state) {
+    if (window?.history?.state) {
       const url = window.history.state.returnUrl;
       if (window.history.state.keepUrl) {
         return url;

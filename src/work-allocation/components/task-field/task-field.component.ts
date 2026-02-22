@@ -55,7 +55,7 @@ export class TaskFieldComponent implements OnInit {
       // EXUI-2907 - Use roleCategory instead of roles
       this.isUserJudicial = userInfo.roleCategory === RoleCategory.JUDICIAL;
     }
-    if (this.task && this.task.major_priority) {
+    if (this.task?.major_priority) {
       this.isTaskUrgent = this.task.major_priority <= PriorityLimits.Urgent ? true : false;
     }
   }

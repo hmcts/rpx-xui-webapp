@@ -135,7 +135,7 @@ export async function handlePostJudicialWorkersRefData(path: string, userIds: an
 
 export function getUserIdsFromRoleApiResponse(response: any): string[] {
   let userIds = new Array<string>();
-  if (response && response.roleAssignmentResponse) {
+  if (response?.roleAssignmentResponse) {
     response.roleAssignmentResponse.forEach((roleAssignment) => {
       userIds = [...userIds, roleAssignment.actorId];
     });

@@ -174,7 +174,7 @@ export class SearchFormComponent implements OnInit {
       const serviceSelection = searchParameters.CCDJurisdictionIds;
       // Set service selection if there is exactly one service present. The value defaults to "All" if no service is present, or if
       // more than one service is present (in this case, it is "All" because the user can choose either a single service or "All" only)
-      if (serviceSelection != null && serviceSelection.length === 1) {
+      if (serviceSelection?.length === 1) {
         this.formGroup.get(SearchFormControl.SERVICES_LIST).setValue(serviceSelection[0]);
       }
     }

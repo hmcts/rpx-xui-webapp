@@ -27,7 +27,7 @@ export class NoResultsComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    if (this.extras && this.extras.state && this.extras.state.messageId) {
+    if (this.extras?.state?.messageId) {
       // Get message id from current navigation extras state
       this.messageId = this.extras.state.messageId;
     } else {

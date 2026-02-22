@@ -11,8 +11,12 @@ import {
 } from '@hmcts/ccd-case-ui-toolkit';
 import { LoadingService as CommonLibLoadingService } from '@hmcts/rpx-xui-common-lib';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
+import { of } from 'rxjs';
 import { CaseHomeComponent } from '..';
 import { reducers } from '../../../app/store';
+import { SessionStorageService } from '../../../app/services';
+import { EnvironmentService } from '../../../app/shared/services/environment.service';
+import { DecentralisedEventRedirectService } from '../../services/decentralised-event-redirect.service';
 import * as fromFeature from '../../store';
 
 describe('CaseHomeComponent', () => {
@@ -20,9 +24,12 @@ describe('CaseHomeComponent', () => {
   let fixture: ComponentFixture<CaseHomeComponent>;
   const mockAlertService = jasmine.createSpyObj('alertService', ['success', 'setPreserveAlerts', 'error']);
   const mockErrorNotifierService = jasmine.createSpyObj('ErrorNotifierService', ['announceError']);
+  const mockEnvironmentService = jasmine.createSpyObj('EnvironmentService', ['get']);
+  const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem']);
+  const mockWindow = { location: { assign: jasmine.createSpy('assign') } };
   let navigationNotifierService: NavigationNotifierService;
-  const mockCommonLibLoadingService = jasmine.createSpyObj('CommonLibLoadingService', ['']);
-  const mockCCDLoadingService = jasmine.createSpyObj('CCDLoadingService', ['']);
+  const mockCommonLibLoadingService = { isLoading: of(false) };
+  const mockCCDLoadingService = { isLoading: of(false) };
   let store: Store<fromFeature.State>;
   let storeDispatchMock: any;
 
@@ -38,11 +45,16 @@ describe('CaseHomeComponent', () => {
         { provide: ErrorNotifierService, useValue: mockErrorNotifierService },
         { provide: CommonLibLoadingService, useValue: mockCommonLibLoadingService },
         { provide: CCDLoadingService, useValue: mockCCDLoadingService },
+        DecentralisedEventRedirectService,
+        { provide: EnvironmentService, useValue: mockEnvironmentService },
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
+        { provide: Window, useValue: mockWindow },
       ],
     }).compileComponents();
   }));
 
   beforeEach(() => {
+    mockEnvironmentService.get.and.returnValue({});
     store = TestBed.inject(Store);
     storeDispatchMock = spyOn(store, 'dispatch');
 
@@ -154,6 +166,35 @@ describe('CaseHomeComponent', () => {
       component.actionDispatcher(params);
 
       expect(storeDispatchMock).toHaveBeenCalled();
+    });
+  });
+
+  describe('decentralised event redirect', () => {
+    it('should redirect and avoid dispatch when a decentralised event is triggered', () => {
+      mockEnvironmentService.get.and.returnValue({
+        PCS: 'https://pcs-frontend.service.gov.uk',
+      });
+      mockSessionStorageService.getItem.and.returnValue(JSON.stringify({ id: 'user-123' }));
+
+      navigationNotifierService.announceNavigation({
+        action: NavigationOrigin.EVENT_TRIGGERED,
+        etid: 'ext:fooEvent',
+        queryParams: { tid: 'task-1' },
+        relativeTo: {
+          snapshot: {
+            params: {
+              jurisdiction: 'IA',
+              caseType: 'PCS',
+              cid: '1234567890',
+            },
+          },
+        },
+      });
+
+      expect(mockWindow.location.assign).toHaveBeenCalledWith(
+        'https://pcs-frontend.service.gov.uk/cases/1234567890/event/ext%3AfooEvent?tid=task-1&expected_sub=user-123'
+      );
+      expect(storeDispatchMock).not.toHaveBeenCalled();
     });
   });
 

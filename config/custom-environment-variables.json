@@ -144,6 +144,10 @@
     "__name": "SERVICE_REF_DATA_MAPPING",
     "__format": "json"
   },
+  "decentralisedEventBaseUrls": {
+    "__name": "DECENTRALISED_EVENT_BASE_URLS",
+    "__format": "json"
+  },
   "log4JConfig": {
     "__name": "LOG_4JS_CONFIG",
     "__format": "json"

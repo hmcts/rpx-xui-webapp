@@ -104,7 +104,7 @@ def archivePlaywrightDiagnostics = {
     )
 }
 
-def branchesToSync = ['perftest', 'ithc']
+def branchesToSync = ['demo', 'perftest', 'ithc']
 
 def secrets = [
   'rpx-${env}': [

@@ -13,6 +13,7 @@ import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
+import { FullUserDetailCache } from '../workAllocation/fullUserDetailCache';
 import { JudicialUserDto } from './dtos/judicial-user-dto';
 import { RoleCategory } from './models/allocate-role.enum';
 import { CaseRoleRequestPayload, RoleExclusion } from './models/caseRoleRequestPayload';
@@ -30,7 +31,7 @@ export async function findExclusionsForCaseId(req: EnhancedRequest, res: Respons
   const headers = setHeaders(req, release2ContentType);
   try {
     const response: AxiosResponse = await http.post(fullPath, requestPayload, { headers });
-    const roleExclusions = mapResponseToExclusions(response.data.roleAssignmentResponse, req.body.exclusionId, req);
+    const roleExclusions = mapResponseToExclusions(response.data.roleAssignmentResponse, req.body.exclusionId);
     return res.status(response.status).send(roleExclusions);
   } catch (error) {
     next(error);
@@ -99,41 +100,35 @@ export async function deleteUserExclusion(req: EnhancedRequest, res: Response, n
   }
 }
 
-export function mapResponseToExclusions(
-  roleAssignments: RoleAssignment[],
-  assignmentId: string,
-  req: EnhancedRequest
-): RoleExclusion[] {
+export function mapResponseToExclusions(roleAssignments: RoleAssignment[], assignmentId: string): RoleExclusion[] {
   if (assignmentId) {
     roleAssignments = roleAssignments.filter((roleAssignment) => roleAssignment.id === assignmentId);
   }
   return roleAssignments.map((roleAssignment) => ({
     added: roleAssignment.created,
     actorId: roleAssignment.actorId,
-    email: roleAssignment.actorId ? getEmail(roleAssignment.actorId, req) : null,
+    email: roleAssignment.actorId ? getEmail(roleAssignment.actorId) : null,
     id: roleAssignment.id,
-    name: roleAssignment.actorId ? getUserName(roleAssignment.actorId, req) : null,
+    name: roleAssignment.actorId ? getUserName(roleAssignment.actorId) : null,
     type: roleAssignment.roleType,
     userType: roleAssignment.roleCategory,
     notes: roleAssignment.attributes.notes as string,
   }));
 }
 
-export function getEmail(actorId: string, req: EnhancedRequest): string {
-  if (req && req.session && req.session.caseworkers) {
-    const caseWorker = req.session.caseworkers.find((caseworker) => caseworker.idamId === actorId);
-    if (caseWorker) {
-      return caseWorker.email;
-    }
+export function getEmail(actorId: string): string {
+  const cachedCaseworker = FullUserDetailCache.getUserByIdamId(actorId);
+  if (cachedCaseworker) {
+    return cachedCaseworker.email;
   }
 }
 
-export function getUserName(actorId: string, req: EnhancedRequest): string {
-  if (req && req.session && req.session.caseworkers) {
-    const caseWorker = req.session.caseworkers.find((caseworker) => caseworker.idamId === actorId);
-    if (caseWorker) {
-      return `${caseWorker.firstName}-${caseWorker.lastName}`;
-    }
+export function getUserName(actorId: string): string {
+  const cachedCaseworker = FullUserDetailCache.getUserByIdamId(actorId);
+  if (cachedCaseworker) {
+    // Note: Seems to be discrepancy between whether dash or space between names on different screens
+    // EXUI-2071 - Removed dash from name concatenation
+    return `${cachedCaseworker.firstName} ${cachedCaseworker.lastName}`;
   }
 }
 

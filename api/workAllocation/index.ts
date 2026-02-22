@@ -14,6 +14,7 @@ import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { refreshRoleAssignmentForUser } from '../user';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
+import { PUI_CASE_MANAGER } from '../user/utils';
 import { getWASupportedJurisdictionsList } from '../waSupportedJurisdictions';
 import * as caseServiceMock from './caseService.mock';
 import {
@@ -31,9 +32,10 @@ import {
 } from './caseWorkerUserDataCacheService';
 import { ViewType } from './constants/actions';
 import { FullUserDetailCache } from './fullUserDetailCache';
-import { CaseList } from './interfaces/case';
+import { Case, CaseList } from './interfaces/case';
 import { PaginationParameter } from './interfaces/caseSearchParameter';
 import { CaseDataType } from './interfaces/common';
+import { Task } from './interfaces/task';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { checkIfCaseAllocator } from './roleService';
 import * as roleServiceMock from './roleService.mock';
@@ -44,6 +46,8 @@ import {
   constructElasticSearchQuery,
   constructRoleAssignmentQuery,
   filterByLocationId,
+  getAssigneeIdsFromCases,
+  getAssigneeIdsFromTasks,
   getCaseIdListFromRoles,
   getMyAccessMappedCaseList,
   getRoleAssignmentsByQuery,
@@ -65,7 +69,6 @@ import {
   searchAndReturnRefinedUsers,
   searchCasesById,
 } from './util';
-import { PUI_CASE_MANAGER } from '../user/utils';
 
 caseServiceMock.init();
 roleServiceMock.init();
@@ -157,11 +160,16 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
     const { status, data } = await handleTaskSearch(postTaskPath, searchRequest, req);
     const currentUser = req.body.currentUser ? req.body.currentUser : '';
     res.status(status);
+    let tasksWithActions = assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser);
     // Assign actions to the tasks on the data from the API.
     let returnData;
     if (data) {
+      const assigneeIds = getAssigneeIdsFromTasks(tasksWithActions);
+      if (assigneeIds.length > 0) {
+        tasksWithActions = await setAssigneeNamesInTasks(tasksWithActions, assigneeIds, req, next);
+      }
       returnData = {
-        tasks: assignActionsToUpdatedTasks(data.tasks, req.body.view, currentUser),
+        tasks: tasksWithActions,
         total_records: data.total_records,
       };
     }
@@ -169,6 +177,41 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
   } catch (error) {
     next(error);
   }
+}
+
+// This will put assignee names in tasks based on cached user details
+// Note: Judges will not have their names populated until refresh within the Angular layer
+export async function setAssigneeNamesInTasks(
+  tasks: Task[],
+  assigneeIds: string[],
+  req: EnhancedRequest,
+  next: NextFunction
+): Promise<Task[]> {
+  let assigneeDetails = [];
+  if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
+    assigneeDetails = FullUserDetailCache.getUsersByIdamIds(assigneeIds);
+  } else {
+    try {
+      // EXUI-2645 - populate / refresh cache then retrieve only if there is no alternative
+      // if either call fails we revert back to proceeding without assignee names similar to previous Angular behaviours
+      const cachedUserData = await fetchUserData(req, next);
+      await fetchRoleAssignments(cachedUserData, req, next);
+      assigneeDetails = FullUserDetailCache.getUsersByIdamIds(assigneeIds);
+    } catch (error) {
+      trackTrace(`Error fetching user data for assignees: ${error.toString()}, proceeding without assignee names`);
+      assigneeDetails = []; // proceed without assignee names
+    }
+  }
+  if (assigneeDetails.length > 0) {
+    const nameMap = new Map(assigneeDetails.map((assignee) => [assignee.idamId, `${assignee.firstName} ${assignee.lastName}`]));
+    tasks.forEach((taskWithAssignee) => {
+      const userId = taskWithAssignee.assignee;
+      if (userId && nameMap.has(userId)) {
+        taskWithAssignee.assigneeName = nameMap.get(userId);
+      }
+    });
+  }
+  return tasks;
 }
 
 export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
@@ -537,12 +580,50 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
     result.total_records = mappedCases.length;
     result.unique_cases = getUniqueCasesCount(mappedCases);
     const roleCaseList = pagination ? paginate(mappedCases, pagination.page_number, pagination.page_size) : mappedCases;
-    result.cases = assignActionsToCases(roleCaseList, userIsCaseAllocator);
+    let casesWithActions = assignActionsToCases(roleCaseList, userIsCaseAllocator);
+    const assigneeIds = getAssigneeIdsFromCases(casesWithActions);
+    if (assigneeIds.length > 0) {
+      casesWithActions = await setAssigneeNamesInCases(casesWithActions, assigneeIds);
+    }
+    result.cases = casesWithActions;
     return res.send(result).status(200);
   } catch (error) {
     console.error(error);
     next(error);
   }
+}
+
+// This will put assignee names in cases based on cached user details
+// Note: Judges will not have their names populated until refresh within the Angular layer
+export async function setAssigneeNamesInCases(cases: Case[], assigneeIds: string[]): Promise<Case[]> {
+  let assigneeDetails = [];
+  if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
+    assigneeDetails = FullUserDetailCache.getUsersByIdamIds(assigneeIds);
+  } else {
+    // Names are not actually needed for all work cases (as they will be filtered by individual) so commenting out to improve performance
+    /* try {
+      // EXUI-2645 - populate / refresh cache then retrieve only if there is no alternative
+      // if either call fails we revert back to proceeding without assignee names similar to previous Angular behaviours
+      const cachedUserData = await fetchUserData(req, next);
+      await fetchRoleAssignments(cachedUserData, req, next);
+      assigneeDetails = FullUserDetailCache.getUsersByIdamIds(assigneeIds);
+    } catch (error) {
+      trackTrace(`Error fetching user data for assignees: ${error.toString()}, proceeding without assignee names`);
+      assigneeDetails = []; // proceed without assignee names
+    } */
+  }
+  if (assigneeDetails.length > 0) {
+    const nameMap = new Map(assigneeDetails.map((assignee) => [assignee.idamId, `${assignee.firstName} ${assignee.lastName}`]));
+    cases.forEach((caseWithAssignee) => {
+      const userId = caseWithAssignee.assignee;
+      if (userId && nameMap.has(userId)) {
+        caseWithAssignee.assigneeName = nameMap.get(userId);
+        // references to actor name in filters and components so added below
+        caseWithAssignee.actorName = nameMap.get(userId);
+      }
+    });
+  }
+  return cases;
 }
 
 export async function getTaskNames(req: EnhancedRequest, res: Response): Promise<Response> {
@@ -581,6 +662,72 @@ export async function getUsersByServiceName(req: EnhancedRequest, res: Response,
         // note: this is now only a safeguard to ensure caching (caching should have run pre login)
         cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
         res.send(cachedUsers).status(200);
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getUsersByIdamIds(req: EnhancedRequest, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const currentUser: UserInfo = req.session.passport.user.userinfo;
+    const services = req.body.services;
+    const idamIds = req.body.idamIds;
+    let idamUsers = [];
+    let firstEntry = true;
+    if (currentUser.roles.includes(PUI_CASE_MANAGER)) {
+      res.status(403).send('Forbidden');
+    } else {
+      if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
+        // if cache exists, use it
+        firstEntry = false;
+        idamUsers = FullUserDetailCache.getUsersByIdamIds(idamIds);
+        idamUsers = searchAndReturnRefinedUsers(services, null, idamUsers);
+        res.send(idamUsers).status(200);
+      }
+      // always update the cache after getting the cache if needed
+      const cachedUserData = await fetchUserData(req, next);
+      await fetchRoleAssignments(cachedUserData, req, next);
+      if (firstEntry) {
+        // if not previously ran ensure the new values are given back to angular layer
+        // note: this is now only a safeguard to ensure caching (caching should have run pre login)
+        idamUsers = FullUserDetailCache.getUsersByIdamIds(idamIds);
+        idamUsers = searchAndReturnRefinedUsers(services, null, idamUsers);
+        res.send(idamUsers).status(200);
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getUserByIdamId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<void> {
+  try {
+    const currentUser: UserInfo = req.session.passport.user.userinfo;
+    const idamId = req.body.idamId;
+    let idamUser = null;
+    let firstEntry = true;
+    if (currentUser.roles.includes(PUI_CASE_MANAGER)) {
+      res.status(403).send('Forbidden');
+    } else {
+      if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
+        // if cache exists, use it
+        firstEntry = false;
+        idamUser = FullUserDetailCache.getUserByIdamId(idamId);
+        // Below to get correct location and service details - not strictly necessary depending on usage
+        idamUser = searchAndReturnRefinedUsers(null, null, [idamUser])[0];
+        res.send(idamUser).status(200);
+      }
+      // always update the cache after getting the cache if needed
+      const cachedUserData = await fetchUserData(req, next);
+      await fetchRoleAssignments(cachedUserData, req, next);
+      if (firstEntry) {
+        // if not previously ran ensure the new values are given back to angular layer
+        // note: this is now only a safeguard to ensure caching (caching should have run pre login)
+        idamUser = FullUserDetailCache.getUserByIdamId(idamId);
+        idamUser = searchAndReturnRefinedUsers(null, null, [idamUser])[0];
+        res.send(idamUser).status(200);
       }
     }
   } catch (error) {

@@ -40,6 +40,7 @@ import { Person, PersonRole } from './interfaces/person';
 import { RoleCaseData } from './interfaces/roleCaseData';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { StaffProfile, StaffUserDetails } from './interfaces/staffUserDetails';
+import { Task } from './interfaces/task';
 
 export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
   return `${baseUrl}/task/${taskId}`;
@@ -1100,4 +1101,20 @@ export function searchAndReturnRefinedUsers(services: string[], term: string, us
     });
   }
   return filteredCaseworkers;
+}
+
+export function getAssigneeIdsFromTasks(tasks: Task[]): string[] {
+  if (!tasks?.length) {
+    return [];
+  }
+  const assignees = tasks.map((task) => task.assignee).filter((id) => !!id);
+  return [...new Set(assignees)];
+}
+
+export function getAssigneeIdsFromCases(cases: Case[]): string[] {
+  if (!cases?.length) {
+    return [];
+  }
+  const assignees = cases.map((caseItem) => caseItem.assignee).filter((id) => !!id);
+  return [...new Set(assignees)];
 }

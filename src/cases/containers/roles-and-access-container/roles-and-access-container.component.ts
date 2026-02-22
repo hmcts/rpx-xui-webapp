@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 import { first, map, mergeMap, tap } from 'rxjs/operators';
@@ -34,18 +33,15 @@ export class RolesAndAccessContainerComponent implements OnInit {
     private readonly roleExclusionsService: RoleExclusionsService,
     private readonly allocateService: AllocateRoleService,
     private readonly caseworkerDataService: CaseworkerDataService,
-    private readonly sessionStorageService: SessionStorageService,
-    private readonly featureToggleService: FeatureToggleService
+    private readonly sessionStorageService: SessionStorageService
   ) {}
 
   public ngOnInit(): void {
     this.caseDetails = this.route.snapshot.data.case as CaseView;
     this.applyJurisdiction(this.caseDetails);
     const jurisdiction = this.caseDetails.metadataFields.find((field) => field.id === this.jurisdictionFieldId);
-    // We need this call. No active subscribers are needed
-    // as this will enable the loading caseworkers if not
-    // present in session storage
-    this.caseworkers$ = this.caseworkerDataService.getUsersFromServices([jurisdiction.value]).pipe(first());
+    // Keeping call for now - in unlikely event exclusion has missing details
+    // Will look to redesign this (EXUI-2645) for only users within exclusions (if names are actually missing)
     this.setRolesAndExclusions(jurisdiction);
   }
 
@@ -83,6 +79,10 @@ export class RolesAndAccessContainerComponent implements OnInit {
               );
           }
           return of(caseRoles);
+        }),
+        tap((roles: CaseRole[]) => {
+          const userIds = Utils.getNonJudicialUserIds(roles);
+          this.caseworkers$ = this.caseworkerDataService.getUsersByIdamIds(userIds, [jurisdiction.value]).pipe(first());
         }),
         tap((roles) => {
           if (roles && roles.length > 0) {

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CaseView, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
-import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable, of } from 'rxjs';
 import { first, mergeMap, switchMap } from 'rxjs/operators';
 import { CaseRoleDetails } from '../../../role-access/models';
@@ -9,7 +8,7 @@ import { AllocateRoleService } from '../../../role-access/services';
 import { Caseworker } from '../../../work-allocation/models/dtos';
 import { Task } from '../../../work-allocation/models/tasks';
 import { CaseworkerDataService, WorkAllocationCaseService } from '../../../work-allocation/services';
-import { getAssigneeName } from '../../../work-allocation/utils';
+import { getAssigneeIdsFromTasks, getAssigneeNameFromList } from '../../../work-allocation/utils';
 
 @Component({
   standalone: false,
@@ -31,7 +30,6 @@ export class TasksContainerComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly caseworkerService: CaseworkerDataService,
     private readonly rolesService: AllocateRoleService,
-    private readonly featureToggleService: FeatureToggleService,
     private readonly loadingService: LoadingService
   ) {}
 
@@ -49,15 +47,17 @@ export class TasksContainerComponent implements OnInit {
           this.tasks = tasks;
           this.warningIncluded = this.tasks.some((task) => task.warnings);
           if (tasks && tasks.length > 0) {
-            return this.caseworkerService.getUsersFromServices([tasks[0].jurisdiction]);
+            const assigneeIds = getAssigneeIdsFromTasks(tasks);
+            return this.caseworkerService.getUsersByIdamIds(assigneeIds, [this.tasks[0].jurisdiction]).pipe(
+              first(),
+              switchMap((caseworkers) => {
+                this.caseworkers = caseworkers;
+                return this.getAssignedNamesForTasks();
+              })
+            );
           }
+          this.caseworkers = [];
           return of([]);
-        })
-      )
-      .pipe(
-        mergeMap((caseworkers) => {
-          this.caseworkers = caseworkers;
-          return this.tasks && this.tasks.length > 0 ? this.getAssignedNamesForTasks() : of(this.tasks);
         })
       )
       .subscribe(
@@ -80,7 +80,18 @@ export class TasksContainerComponent implements OnInit {
         first(),
         mergeMap((taskList) => {
           this.tasks = taskList;
-          return this.getAssignedNamesForTasks();
+          if (taskList && taskList.length > 0) {
+            const assigneeIds = getAssigneeIdsFromTasks(taskList);
+            return this.caseworkerService.getUsersByIdamIds(assigneeIds, [taskList[0].jurisdiction]).pipe(
+              first(),
+              switchMap((caseworkers) => {
+                this.caseworkers = caseworkers;
+                return this.getAssignedNamesForTasks();
+              })
+            );
+          }
+          this.caseworkers = [];
+          return of(taskList);
         })
       )
       .subscribe((tasks) => {
@@ -93,7 +104,7 @@ export class TasksContainerComponent implements OnInit {
   private getAssignedNamesForTasks(): Observable<Task[]> {
     const assignedJudicialUsers: string[] = [];
     this.tasks.forEach((task) => {
-      task.assigneeName = getAssigneeName(this.caseworkers, task.assignee);
+      task.assigneeName = getAssigneeNameFromList(this.caseworkers, task.assignee);
       if (!task.assigneeName && task.assignee) {
         assignedJudicialUsers.push(task.assignee);
       }

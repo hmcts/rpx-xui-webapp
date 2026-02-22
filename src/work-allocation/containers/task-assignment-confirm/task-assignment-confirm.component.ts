@@ -69,7 +69,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     if (this.router && this.router.url) {
       this.rootPath = this.router.url.split('/')[1];
     }
-    this.task = this.route.snapshot.data.taskAndCaseworkers.task.task;
+    this.task = this.route.snapshot.data.taskAndCaseworker.task.task;
     this.assignHintText = this.verb === 'Assign' ? AssignHintText.CHECK_ASSIGNING : AssignHintText.CHECK_REASSIGNING;
   }
 

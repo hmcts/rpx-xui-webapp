@@ -34,7 +34,11 @@ export class CaseworkerDataService {
     return this.http.get<Caseworker>(`${CaseworkerDataService.caseWorkerUrl}/${caseworkerId}`);
   }
 
-  public getUsersFromServices(services: string[], term?: string): Observable<Caseworker[]> {
-    return this.http.post<Caseworker[]>(`${CaseworkerDataService.caseWorkerUrl}/getUsersByServiceName`, { services, term });
+  public getUsersByIdamIds(idamIds: string[], services: string[]): Observable<Caseworker[]> {
+    return this.http.post<Caseworker[]>(`${CaseworkerDataService.caseWorkerUrl}/getUsersByIdamIds`, { idamIds, services });
+  }
+
+  public getUserByIdamId(idamId: string): Observable<Caseworker> {
+    return this.http.post<Caseworker>(`${CaseworkerDataService.caseWorkerUrl}/getUserByIdamId`, { idamId });
   }
 }

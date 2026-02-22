@@ -72,16 +72,13 @@ export class TaskActionContainerComponent implements OnInit {
     };
 
     // Get the task from the route, which will have been put there by the resolver.
-    this.tasks = [this.route.snapshot.data.taskAndCaseworkers.task.task];
+    this.tasks = [this.route.snapshot.data.taskAndCaseworker.task.task];
     this.routeData = this.route.snapshot.data as RouteData;
     if (!this.routeData.actionTitle) {
       this.routeData.actionTitle = `${this.routeData.verb} task`;
     }
     if (this.tasks[0].assignee) {
-      this.tasks[0].assigneeName = getAssigneeName(
-        this.route.snapshot.data.taskAndCaseworkers.caseworkers,
-        this.tasks[0].assignee
-      );
+      this.tasks[0].assigneeName = getAssigneeName(this.route.snapshot.data.taskAndCaseworker.caseworker, this.tasks[0].assignee);
       if (!this.tasks[0].assigneeName) {
         this.roleService
           .getCaseRolesUserDetails([this.tasks[0].assignee], this.tasks[0].jurisdiction)

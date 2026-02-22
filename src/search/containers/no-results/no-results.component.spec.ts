@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
@@ -11,7 +12,8 @@ describe('NoResultsComponent', () => {
   let component: NoResultsComponent;
   let fixture: ComponentFixture<NoResultsComponent>;
   let mockRouter: any;
-
+  let mockLocation: Location;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let store: Store<fromActions.State>;
   const storeMock = jasmine.createSpyObj('Store', ['dispatch']);
 
@@ -30,16 +32,17 @@ describe('NoResultsComponent', () => {
     fixture.detectChanges();
     mockRouter = TestBed.inject(Router);
     store = TestBed.inject(Store);
+    mockLocation = TestBed.inject(Location);
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should call window history back when back link is clicked', () => {
-    spyOn(window.history, 'back');
+  it('should call location back when back link is clicked', () => {
+    spyOn(mockLocation, 'back');
     fixture.debugElement.nativeElement.querySelector('.govuk-back-link').click();
-    expect(window.history.back).toHaveBeenCalled();
+    expect(mockLocation.back).toHaveBeenCalled();
   });
 
   it('should display no results content if no error', () => {

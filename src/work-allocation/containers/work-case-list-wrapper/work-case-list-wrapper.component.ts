@@ -1,3 +1,4 @@
+import { Location as StateLocation } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -88,7 +89,8 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     protected readonly jurisdictionsService: JurisdictionsService,
     protected readonly rolesService: AllocateRoleService,
     protected readonly httpClient: HttpClient,
-    protected store: Store<fromActions.State>
+    protected store: Store<fromActions.State>,
+    protected stateLocation: StateLocation
   ) {}
 
   public get cases(): Case[] {
@@ -148,13 +150,11 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   /**
    * Flag to indicate whether or not we've arrived here following a bad
    * request with a flag having been set on another route. The flag is
-   * passed through the router and so is held in window.history.state.
+   * passed through the router and so is held in location state.
    */
   private get wasBadRequest(): boolean {
-    if (window && window.history && window.history.state) {
-      return !!window.history.state.badRequest;
-    }
-    return false;
+    const state = this.stateLocation.getState() as { badRequest?: boolean } | null;
+    return !!state?.badRequest;
   }
 
   public ngOnInit(): void {

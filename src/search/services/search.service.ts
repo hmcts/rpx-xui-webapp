@@ -31,11 +31,15 @@ export class SearchService {
   }
 
   public storeState(key: string, value: any): void {
-    window.sessionStorage.setItem(key, JSON.stringify(value));
+    const sessionStorageObj = globalThis?.sessionStorage;
+    if (sessionStorageObj) {
+      sessionStorageObj.setItem(key, JSON.stringify(value));
+    }
   }
 
   public retrieveState(key: string): any {
-    return window.sessionStorage.getItem(key) ? JSON.parse(window.sessionStorage.getItem(key)) : null;
+    const sessionStorageObj = globalThis?.sessionStorage;
+    return sessionStorageObj?.getItem(key) ? JSON.parse(sessionStorageObj.getItem(key)) : null;
   }
 
   public decrementStartRecord(): number {

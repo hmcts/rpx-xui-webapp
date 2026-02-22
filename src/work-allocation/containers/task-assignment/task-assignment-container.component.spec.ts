@@ -1,5 +1,6 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { Location } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, Pipe, PipeTransform, ViewChild } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -50,7 +51,7 @@ class RpxTranslateMockPipe implements PipeTransform {
   }
 }
 
-describe('TaskAssignmentContainerComponent2', () => {
+describe('TaskAssignmentContainerComponent', () => {
   let component: TaskAssignmentContainerComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
@@ -61,7 +62,7 @@ describe('TaskAssignmentContainerComponent2', () => {
     domain: PersonRole.LEGAL_OPERATIONS,
   };
   const locationStub: any = {
-    back: jasmine.createSpy('back'),
+    getState: jasmine.createSpy('getState'),
   };
   const mockTasks = getMockTasks();
   const mockRouter = jasmine.createSpyObj('router', ['navigate']);
@@ -130,7 +131,7 @@ describe('TaskAssignmentContainerComponent2', () => {
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
     wrapper.tasks = null;
-    window.history.pushState({ returnUrl: 'my-work/list', showAssigneeColumn: false }, '', 'my-work/list');
+    locationStub.getState.and.returnValue({ returnUrl: 'my-work/list', showAssigneeColumn: false });
 
     // Deliberately defer fixture.detectChanges() call to each test, to allow overriding the ActivatedRoute snapshot
     // data with a different verb ("Assign")
@@ -163,11 +164,7 @@ describe('TaskAssignmentContainerComponent2', () => {
   });
 
   it('should redirect to the "All work" page on cancelling task assignment', () => {
-    window.history.pushState(
-      { returnUrl: 'all-work/tasks#manage_0d22d838', showAssigneeColumn: false },
-      '',
-      'all-work/tasks#manage_0d22d838'
-    );
+    locationStub.getState.and.returnValue({ returnUrl: 'all-work/tasks#manage_0d22d838', showAssigneeColumn: false });
     const findPersonControl = new FormControl('test');
     component.formGroup.addControl('findPersonControl', findPersonControl);
     component.cancel();
@@ -175,7 +172,7 @@ describe('TaskAssignmentContainerComponent2', () => {
   });
 
   it("should redirect to the fallback URL ('') on cancelling task assignment, if the return URL is not in the history", () => {
-    window.history.pushState({}, '');
+    locationStub.getState.and.returnValue({});
     const findPersonControl = new FormControl('test');
     component.formGroup.addControl('findPersonControl', findPersonControl);
     component.cancel();
@@ -366,7 +363,8 @@ describe('TaskAssignmentContainerComponent2', () => {
 
   describe('fields getter', () => {
     it('should return TaskActionsWithAssigneeForJudicial when showAssigneeColumn is true and user is judicial', () => {
-      window.history.pushState({ showAssigneeColumn: true }, '', '');
+      locationStub.getState.and.returnValue({ showAssigneeColumn: true });
+
       component.isJudicial = true;
 
       const fields = component.fields;
@@ -375,7 +373,8 @@ describe('TaskAssignmentContainerComponent2', () => {
     });
 
     it('should return TaskActionsWithAssigneeForLegalOps when showAssigneeColumn is true and user is not judicial', () => {
-      window.history.pushState({ showAssigneeColumn: true }, '', '');
+      locationStub.getState.and.returnValue({ showAssigneeColumn: true });
+
       component.isJudicial = false;
 
       const fields = component.fields;
@@ -384,15 +383,15 @@ describe('TaskAssignmentContainerComponent2', () => {
     });
 
     it('should return AllWorkTasksForLegalOps when showAssigneeColumn is false', () => {
-      window.history.pushState({ showAssigneeColumn: false }, '', '');
+      locationStub.getState.and.returnValue({ showAssigneeColumn: false });
 
       const fields = component.fields;
 
       expect(fields).toEqual(ConfigConstants.AllWorkTasksForLegalOps);
     });
 
-    it('should handle when window.history.state is null', () => {
-      window.history.pushState(null, '', '');
+    it('should handle when location.state is null', () => {
+      locationStub.getState.and.returnValue(null);
 
       const fields = component.fields;
 
@@ -401,8 +400,8 @@ describe('TaskAssignmentContainerComponent2', () => {
   });
 
   describe('returnUrl getter', () => {
-    it('should return the returnUrl from window.history.state', () => {
-      window.history.pushState({ returnUrl: '/my-work/list' }, '', '');
+    it('should return the returnUrl from location.state', () => {
+      locationStub.getState.and.returnValue({ returnUrl: '/my-work/list' });
 
       const returnUrl = (component as any).returnUrl;
 
@@ -410,15 +409,15 @@ describe('TaskAssignmentContainerComponent2', () => {
     });
 
     it('should truncate URL at # character', () => {
-      window.history.pushState({ returnUrl: '/all-work/tasks#manage_123' }, '', '');
+      locationStub.getState.and.returnValue({ returnUrl: '/all-work/tasks#manage_123' });
 
       const returnUrl = (component as any).returnUrl;
 
       expect(returnUrl).toBe('/all-work/tasks');
     });
 
-    it('should return empty string when window.history.state is null', () => {
-      window.history.pushState(null, '', '');
+    it('should return empty string when location.state is null', () => {
+      locationStub.getState.and.returnValue(null);
 
       const returnUrl = (component as any).returnUrl;
 
@@ -426,7 +425,7 @@ describe('TaskAssignmentContainerComponent2', () => {
     });
 
     it('should return empty string when returnUrl is undefined', () => {
-      window.history.pushState({}, '', '');
+      locationStub.getState.and.returnValue({});
 
       const returnUrl = (component as any).returnUrl;
 
@@ -436,7 +435,7 @@ describe('TaskAssignmentContainerComponent2', () => {
 
   describe('showAssigneeColumn getter', () => {
     it('should return true when showAssigneeColumn is true in history state', () => {
-      window.history.pushState({ showAssigneeColumn: true }, '', '');
+      locationStub.getState.and.returnValue({ showAssigneeColumn: true });
 
       const showAssigneeColumn = (component as any).showAssigneeColumn;
 
@@ -444,7 +443,7 @@ describe('TaskAssignmentContainerComponent2', () => {
     });
 
     it('should return false when showAssigneeColumn is false in history state', () => {
-      window.history.pushState({ showAssigneeColumn: false }, '', '');
+      locationStub.getState.and.returnValue({ showAssigneeColumn: false });
 
       const showAssigneeColumn = (component as any).showAssigneeColumn;
 
@@ -452,15 +451,15 @@ describe('TaskAssignmentContainerComponent2', () => {
     });
 
     it('should return false when showAssigneeColumn is not in history state', () => {
-      window.history.pushState({}, '', '');
+      locationStub.getState.and.returnValue({});
 
       const showAssigneeColumn = (component as any).showAssigneeColumn;
 
       expect(showAssigneeColumn).toBe(false);
     });
 
-    it('should return false when window.history.state is null', () => {
-      window.history.pushState(null, '', '');
+    it('should return false when location.state is null', () => {
+      locationStub.getState.and.returnValue(null);
 
       const showAssigneeColumn = (component as any).showAssigneeColumn;
 
@@ -694,7 +693,8 @@ describe('TaskAssignmentContainerComponent2', () => {
       const newComponent = new TaskAssignmentContainerComponent(
         TestBed.inject(ActivatedRoute),
         mockRouter,
-        mockSessionStorageService
+        mockSessionStorageService,
+        locationStub
       );
 
       expect(newComponent.error).toBeNull();

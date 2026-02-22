@@ -1,3 +1,4 @@
+import { Location as StateLocation } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -53,7 +54,10 @@ export class WorkCaseListComponent implements OnChanges {
   private selectedCase: Case;
   public newUrl: string;
 
-  constructor(private readonly router: Router) {}
+  constructor(
+    private readonly router: Router,
+    private readonly stateLocation: StateLocation
+  ) {}
 
   public get showResetSortButton(): boolean {
     if (!this.sortedBy) {
@@ -232,7 +236,7 @@ export class WorkCaseListComponent implements OnChanges {
       const currentPath = this.router.url || '';
       const basePath = currentPath.split('#')[0];
       this.newUrl = this.selectedCase ? `${basePath}#manage_${this.selectedCase.id}` : basePath;
-      window.history.pushState('object', document.title, this.newUrl);
+      this.stateLocation.go(this.newUrl);
     }
   }
 

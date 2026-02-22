@@ -265,6 +265,7 @@ describe('AllWorkTaskComponent', () => {
         null,
         null,
         null,
+        null,
         null
       );
       expect(freshComponent.sortedBy).toEqual({

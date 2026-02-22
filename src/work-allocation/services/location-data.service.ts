@@ -8,13 +8,13 @@ import { Location, LocationByEpimmsModel, LocationsByRegion, Region } from '../m
 
 @Injectable({ providedIn: 'root' })
 export class LocationDataService {
-  public static locationUrl: string = '/workallocation/location';
-  public static fullLocationUrl: string = '/workallocation/full-location';
-  public static regionLocationUrl: string = '/workallocation/region-location';
-  public static regionUrl: string = '/workallocation/region';
-  public static allLocationsKey: string = 'allLocations';
-  public static regionLocationsKey: string = 'regionLocations';
-  public static regionsKey: string = 'regions';
+  public static readonly locationUrl: string = '/workallocation/location';
+  public static readonly fullLocationUrl: string = '/workallocation/full-location';
+  public static readonly regionLocationUrl: string = '/workallocation/region-location';
+  public static readonly regionUrl: string = '/workallocation/region';
+  public static readonly allLocationsKey: string = 'allLocations';
+  public static readonly regionLocationsKey: string = 'regionLocations';
+  public static readonly regionsKey: string = 'regions';
   public constructor(
     private readonly http: HttpClient,
     private readonly sessionStorageService: SessionStorageService

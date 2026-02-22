@@ -10,7 +10,7 @@ describe('WorkAllocationAccessGuard', () => {
 
   beforeEach(async () => {
     routerMock = jasmine.createSpyObj<Router>('router', ['navigate']);
-    guard = new WorkAllocationAccessGuard(featureToggleMock, routerMock);
+    guard = new WorkAllocationAccessGuard();
   });
 
   it('can activate with feature toggle on', () => {

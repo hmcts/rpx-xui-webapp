@@ -11,8 +11,8 @@ import * as fromHearingReducers from '../store/reducers';
 
 @Injectable()
 export class HearingsFeatureService {
-  public static JURISDICTION: string = 'jurisdictionId';
-  public static CASE_TYPE: string = 'caseType';
+  public static readonly JURISDICTION: string = 'jurisdictionId';
+  public static readonly CASE_TYPE: string = 'caseType';
 
   constructor(
     protected readonly hearingStore: Store<fromAppStore.State>,

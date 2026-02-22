@@ -2,17 +2,12 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { SessionStorageService } from '../../app/services';
 import { Caseworker } from '../models/dtos';
 
 @Injectable({ providedIn: 'root' })
 export class CaseworkerDataService {
-  public static caseWorkerUrl: string = '/workallocation/caseworker';
-  public static caseworkersKey: string = 'caseworkers';
-  public constructor(
-    private readonly http: HttpClient,
-    private readonly sessionStorageService: SessionStorageService
-  ) {}
+  public static readonly caseWorkerUrl: string = '/workallocation/caseworker';
+  public constructor(private readonly http: HttpClient) {}
 
   public getForLocation(locationId: string): Observable<Caseworker[]> {
     return this.http.get<Caseworker[]>(`${CaseworkerDataService.caseWorkerUrl}/location/${locationId}`);

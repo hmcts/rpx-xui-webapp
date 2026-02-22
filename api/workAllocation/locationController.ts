@@ -1,29 +1,7 @@
 import { NextFunction, Response } from 'express';
 import { EnhancedRequest } from '../lib/models';
 import { CourtVenue, Location } from './interfaces/location';
-import { commonGetFullLocation, getRegionLocationsForServices, handleLocationGet } from './locationService';
-import { prepareGetSpecificLocationUrl } from './util';
-import { getConfigValue } from '../configuration';
-import { SERVICES_LOCATION_API_PATH } from '../configuration/references';
-
-// TODO: Get rid of this - does not connect with API and cannot see it used elsewhere
-/**
- * getLocation
- *
- * Get the location using the location id.
- */
-export async function getLocationById(req: EnhancedRequest, res: Response, next: NextFunction) {
-  try {
-    const locationBaseUrl = getConfigValue(SERVICES_LOCATION_API_PATH);
-    const path: string = prepareGetSpecificLocationUrl(locationBaseUrl, req.params.locationId);
-    const locationById = await handleLocationGet(path, req);
-
-    res.status(200);
-    res.send(locationById.data);
-  } catch (error) {
-    next(error);
-  }
-}
+import { commonGetFullLocation, getRegionLocationsForServices } from './locationService';
 
 /**
  * Get locations

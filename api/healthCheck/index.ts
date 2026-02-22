@@ -47,6 +47,7 @@ export function getPromises(path): any[] {
   if (healthCheckEndpointDictionary[path]) {
     healthCheckEndpointDictionary[path].forEach((endpoint) => {
       // TODO: Have health config for this.
+      // EXUI-3967 - the above ask requires further investigation and config changes
       logger.info('healthEndpoints', endpoint);
       logger.info(healthEndpoints()[endpoint]);
       Promises.push(http.get(healthEndpoints()[endpoint]));

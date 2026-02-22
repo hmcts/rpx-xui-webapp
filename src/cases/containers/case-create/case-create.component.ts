@@ -28,6 +28,7 @@ export class CasesCreateComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.fromCasesFeature = fromCases;
     // TODO try to be nice and remove subscription use pipe | instead
+    // EXUI-3967 - Needs investigation
     this.$inputSubscription = this.store.pipe(select(fromCases.getCreateCaseFilterState)).subscribe((caseFilterInput) => {
       // if state is reseated then redirect
       if (!caseFilterInput.jurisdictionId) {

@@ -10,7 +10,6 @@ export interface UserInfo {
 }
 
 export interface RoleAssignmentInfo {
-  // TODO: Review model changes
   primaryLocation?: string;
   baseLocation?: string;
   jurisdiction: string;

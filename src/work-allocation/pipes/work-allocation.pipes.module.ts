@@ -16,7 +16,7 @@ import { TwoDPPipe } from './two-dp.pipe';
   imports: [
     CommonModule,
     ExuiCommonLibModule,
-    FormsModule, // TODO: Remove this as it's only needed for testing.
+    FormsModule, // TODO: Remove this as it's only needed for testing. // EXUI-3967 - Potential removal to be investigated
     PipesModule,
   ],
   providers: [provideHttpClient(withInterceptorsFromDi())],

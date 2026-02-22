@@ -15,6 +15,24 @@ import { JUILogger } from '../lib/models';
 
 const logger: JUILogger = log4jui.getLogger('global-search');
 
+export async function retryUntilStatus(call: () => Promise<AxiosResponse>, attempts = 3, delayMs = 300): Promise<AxiosResponse> {
+  let lastResponse: AxiosResponse;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      lastResponse = await call();
+      if (lastResponse && lastResponse.status >= 200 && lastResponse.status < 300) {
+        return lastResponse;
+      }
+    } catch (err: any) {
+      lastResponse = err?.response;
+    }
+    if (i < attempts - 1) {
+      await new Promise((r) => setTimeout(r, delayMs));
+    }
+  }
+  return lastResponse;
+}
+
 export async function getBookings(req, resp: Response, next: NextFunction) {
   if (req.body.bookableServices && req.body.bookableServices.length === 0) {
     return resp.status(200).send([]);
@@ -110,15 +128,21 @@ export async function deleteSpecificAccessRoles(
   rolesToDelete: RoleAssignment[]
 ): Promise<Response> {
   try {
-    const specificAccessDeletionResponse = await deleteRoleByAssignmentId(req, res, next, rolesToDelete[1].id);
+    const specificAccessDeletionResponse = await retryUntilStatus(
+      () => deleteRoleByAssignmentId(req, res, next, rolesToDelete[1].id),
+      3,
+      300
+    );
     if (!specificAccessDeletionResponse || specificAccessDeletionResponse.status !== 204) {
-      // TODO: retry x 3
       return previousResponse && previousResponse.status ? res.status(previousResponse.status) : res.status(400);
     }
     // Note - the functionality is present but this does not currently work due to AM team restrictions - gives 422 error
-    const grantedDeletionResponse = await deleteRoleByAssignmentId(req, res, next, rolesToDelete[0].id);
+    const grantedDeletionResponse = await retryUntilStatus(
+      () => deleteRoleByAssignmentId(req, res, next, rolesToDelete[0].id),
+      3,
+      300
+    );
     if (!grantedDeletionResponse || grantedDeletionResponse.status !== 204) {
-      // TODO: retry x 3
       return previousResponse && previousResponse.status ? res.status(previousResponse.status) : res.status(400);
     }
     return previousResponse && previousResponse.status ? res.status(previousResponse.status) : res.status(400);
@@ -137,9 +161,8 @@ export async function restoreDeletedRole(
   rolesToDelete: RoleAssignment[]
 ): Promise<Response> {
   try {
-    const restoreResponse = await restoreSpecificAccessRequestRole(req, res, next);
+    const restoreResponse = await retryUntilStatus(() => restoreSpecificAccessRequestRole(req, res, next), 3, 300);
     if (!restoreResponse || restoreResponse.status !== 201) {
-      // TODO: retry x 3
       return previousResponse && previousResponse.status ? res.status(previousResponse.status) : res.status(400);
     }
     return deleteSpecificAccessRoles(req, res, next, previousResponse, rolesToDelete);

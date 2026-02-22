@@ -14,7 +14,6 @@ import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import { release2ContentType } from '../roleAccess/models/release2ContentType';
 import { Role } from '../roleAccess/models/roleType';
 import { ElasticSearchQuery } from '../searchCases/interfaces/ElasticSearchQuery';
-import { CASE_ALLOCATOR_ROLE } from '../user/constants';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { exists, reflect } from '../lib/util';
 import {
@@ -25,7 +24,7 @@ import {
 } from './constants/actions';
 import { getCaseListPromises } from './index';
 import { Case, CaseList } from './interfaces/case';
-import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
+import { ServiceCaseworkerData } from './interfaces/caseworkerPayload';
 import {
   Action,
   CachedCaseworker,
@@ -320,7 +319,6 @@ export function getRoleCategory(roleAssignments: RoleAssignment[], caseWorkerApi
 }
 
 export function getUserRoleCategory(roleAssignments: RoleAssignment[], user: StaffProfile, services: string[]): string {
-  // TODO: Will need to be updated
   const roleAssignment = roleAssignments.find(
     (roleAssign) =>
       roleAssign.actorId === user.id &&
@@ -381,17 +379,14 @@ export function mapUserLocation(baseLocation: LocationApi[]): Location {
   return thisBaseLocation;
 }
 
-export function prepareRoleApiRequest(jurisdictions: string[], locationId?: number, allRoles?: boolean): any {
-  let attributes: any = {};
-  if (!allRoles) {
-    attributes = {
-      jurisdiction: jurisdictions,
-    };
-  }
-
+export function prepareRoleApiRequest(jurisdictions: string[]): any {
+  const attributes: any = {
+    jurisdiction: jurisdictions,
+  };
   const payload = {
     attributes,
     // TODO: This should not be hard-coded list
+    // EXUI-3967 - needs review as to where roles should come from
     roleName: [
       'hearing-centre-admin',
       'case-manager',
@@ -408,34 +403,7 @@ export function prepareRoleApiRequest(jurisdictions: string[], locationId?: numb
     roleType: ['ORGANISATION'],
     validAt: Date.UTC,
   };
-  if (locationId) {
-    // TODO: Not sure whether this is even being used
-    payload.attributes.baseLocation = [locationId];
-  }
   return payload;
-}
-
-export function prepareServiceRoleApiRequest(jurisdictions: string[], roles: Role[], locationId?: number): CaseworkerPayload[] {
-  // note that this could be moved to index method if required
-  const roleIds = getRoleIdsFromRoles(roles);
-  const payloads: CaseworkerPayload[] = [];
-  jurisdictions.forEach((jurisdiction) => {
-    const attributes: any = {
-      jurisdiction: [jurisdiction],
-    };
-    if (locationId) {
-      // TODO: Again does not seem to be being used
-      attributes.baseLocation = [locationId];
-    }
-    const payload = {
-      attributes,
-      roleName: roleIds,
-      roleType: ['ORGANISATION'],
-      validAt: Date.UTC,
-    };
-    payloads.push(payload);
-  });
-  return payloads;
 }
 
 export function getRoleIdsFromRoles(roles: Role[]): string[] {
@@ -707,19 +675,6 @@ export async function searchCasesById(queryParams: string, query: any, req: expr
     console.error(e);
   }
   return null;
-}
-
-// Only called in test function - why is it here?
-export function getCaseAllocatorLocations(roleAssignments: RoleAssignment[]): string[] {
-  return roleAssignments
-    .filter(
-      (roleAssignment) =>
-        roleAssignment.attributes && roleAssignment.attributes.baseLocation && roleAssignment.roleName === CASE_ALLOCATOR_ROLE
-    )
-    .map((roleAssignment) => roleAssignment.attributes.baseLocation)
-    .reduce((acc, locationId) => (acc.includes(locationId) ? acc : `${acc}${locationId},`), '')
-    .split(',')
-    .filter((location) => location.length);
 }
 
 export function constructRoleAssignmentQuery(searchTaskParameters: SearchTaskParameter[]): any {

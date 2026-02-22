@@ -227,7 +227,7 @@
     "baseline-browser-mapping": "^2.9.15",
     "c8": "^9.1.0",
     "chai": "^4.3.10",
-    "chai-as-promised": "7.1.2",
+    "chai-as-promised": "8.0.2",
     "codeceptjs": "3.5.6",
     "codeceptjs-cucumber-json-reporter": "^1.0.14",
     "codelyzer": "^6.0.0",

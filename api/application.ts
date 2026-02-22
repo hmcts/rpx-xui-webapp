@@ -116,6 +116,51 @@ export async function createApp() {
   app.use(bodyParser.json({ limit: '5mb' }));
   app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
 
+    /**
+   * Frontend telemetry endpoint
+   *
+   * Accepts navigator.sendBeacon() (may arrive as a Blob with non-JSON content-type)
+   * and normal fetch POSTs with JSON. Logs payload using the existing JUILogger.
+   */
+  app.post('/internal/log', express.text({ type: '*/*', limit: '50kb' }) as unknown as express.RequestHandler, (req, res) => {
+    let payload: any = {};
+
+    // Try to parse JSON safely (sendBeacon may not set application/json)
+    try {
+      if (req.body && typeof req.body === 'string') {
+        payload = JSON.parse(req.body);
+      } else {
+        payload = req.body || {};
+      }
+    } catch (err) {
+      // fallback if not JSON: store raw text under rawBody
+      payload = { rawBody: req.body };
+    }
+
+    // Attach some server-side metadata for correlation/search
+    const logEntry = {
+      ...payload,
+      server_received_at: new Date().toISOString(),
+      ip: req.ip,
+      trace_header: req.header('x-trace-id') || null,
+      url: req.originalUrl,
+      method: req.method,
+      userAgent: req.get('User-Agent'),
+    };
+
+    // Use your existing logger instance so logs go to the same place as other app logs
+    try {
+      logger.info('FRONTEND_TELEMETRY', logEntry);
+    } catch (e) {
+      // conservative fallback
+      // eslint-disable-next-line no-console
+      console.log('FRONTEND_TELEMETRY', logEntry);
+    }
+
+    // respond 204 No Content so sendBeacon / fetch resolves quickly
+    res.status(204).end();
+  });
+
   app.use('/am', amRoutes);
   app.use('/api', routes);
   app.use('/external', openRoutes);

@@ -12,7 +12,7 @@ const baseLocationRefUrl = getConfigValue(SERVICES_LOCATION_REF_API_URL);
 
 export async function getServices(req, res, next: NextFunction) {
   const apiPath = `${baseLocationRefUrl}/refdata/location/orgServices`;
-  const enabledServiceCodes = (getConfigValue(SERVICE_REF_DATA_MAPPING) as Service[]).reduce(
+  const enabledServiceCodes = getConfigValue<Service[]>(SERVICE_REF_DATA_MAPPING).reduce(
     (prevValue, currentValue) => [...prevValue, ...currentValue.serviceCodes],
     [] as string[]
   );

@@ -15,9 +15,9 @@ export class DurationHelperService {
    * @return date object
    */
   public getDateFromControls(dayControl: FormControl, monthControl: FormControl, yearControl: FormControl): Date {
-    const day = parseInt(dayControl.value, 10);
-    const month = parseInt(monthControl.value, 10) - 1;
-    const year = parseInt(yearControl.value, 10);
+    const day = Number.parseInt(dayControl.value, 10);
+    const month = Number.parseInt(monthControl.value, 10) - 1;
+    const year = Number.parseInt(yearControl.value, 10);
     if (typeof day !== 'number' || typeof month !== 'number' || typeof year !== 'number') {
       throw new Error('Invalid values provided');
     }
@@ -25,9 +25,9 @@ export class DurationHelperService {
   }
 
   public getRawFromControlsValues(dayControl: FormControl, monthControl: FormControl, yearControl: FormControl): any {
-    const day = parseInt(dayControl.value, 10);
-    const month = parseInt(monthControl.value, 10);
-    const year = parseInt(yearControl.value, 10);
+    const day = Number.parseInt(dayControl.value, 10);
+    const month = Number.parseInt(monthControl.value, 10);
+    const year = Number.parseInt(yearControl.value, 10);
     return { day, month, year };
   }
 

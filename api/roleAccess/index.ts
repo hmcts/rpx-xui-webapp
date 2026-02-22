@@ -21,7 +21,6 @@ import {
 import { getEmail, getJudicialUsersFromApi, getUserName, mapRoleCategory } from './exclusionService';
 import { CaseRoleRequestPayload } from './models/caseRoleRequestPayload';
 import { release2ContentType } from './models/release2ContentType';
-import { Role } from './models/roleType';
 import { getAllRoles, getSubstantiveRoles } from './roleAssignmentService';
 
 const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
@@ -80,7 +79,7 @@ export async function getAccessRolesByCaseId(req: EnhancedRequest, res: Response
     const finalRoles: CaseRole[] = mapResponseToCaseRoles(response.data.roleAssignmentResponse, req.body.assignmentId, req);
     if (finalRoles) {
       const rolesResponse = await getAllRoles(req);
-      const roles = rolesResponse.data as Role[];
+      const roles = rolesResponse.data;
       finalRoles?.forEach((finalRole) => {
         const role = roles?.find((role) => role.name === finalRole.roleName);
         if (role) {

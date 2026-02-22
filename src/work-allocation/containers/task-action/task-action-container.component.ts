@@ -105,13 +105,15 @@ export class TaskActionContainerComponent implements OnInit {
   public performAction(): void {
     let action: ACTION;
     switch (this.routeData.verb) {
-      case TaskActionType.Cancel:
+      case TaskActionType.Cancel: {
         action = ACTION.CANCEL;
         break;
-      case TaskActionType.MarkAsDone:
+      }
+      case TaskActionType.MarkAsDone: {
         action = ACTION.COMPLETE;
         break;
-      case TaskActionType.Unassign:
+      }
+      case TaskActionType.Unassign: {
         action = ACTION.UNCLAIM;
         const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
         let userId: string;
@@ -123,10 +125,12 @@ export class TaskActionContainerComponent implements OnInit {
           }
         }
         break;
-      default:
+      }
+      default: {
         // If we get here, something has gone wrong as the only actions that should
         // be possible are the ones above.
         break;
+      }
     }
     // add hasNoAssigneeOnComplete - only false if complete action and assignee not present
     const hasNoAssigneeOnComplete =

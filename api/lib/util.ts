@@ -14,7 +14,7 @@ export function some(array, predicate) {
 
 export function dotNotation(nestled: string): string {
   // eslint-disable-next-line no-useless-escape
-  return nestled.replace(/[\[\]]/g, '.');
+  return nestled.replaceAll(/[\[\]]/g, '.');
 }
 
 export function valueOrNull(object: any, nestled: string) {

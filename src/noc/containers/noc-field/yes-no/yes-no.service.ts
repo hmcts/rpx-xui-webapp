@@ -25,7 +25,7 @@ export class YesNoService {
       case 'boolean':
         return value;
       case 'string':
-        return YesNoService.YES_INPUTS.indexOf(value.toUpperCase()) !== -1;
+        return YesNoService.YES_INPUTS.includes(value.toUpperCase());
       default:
         return false;
     }

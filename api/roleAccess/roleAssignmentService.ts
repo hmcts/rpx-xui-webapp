@@ -36,7 +36,7 @@ export async function getSubstantiveRoles(req: EnhancedRequest) {
     return req.session.subStantiveRoles as [];
   }
   const response = await getAllRoles(req);
-  const results = response.data as Role[];
+  const results = response.data;
   const filteredResults = results.filter(filterRoleAssignments());
   const substantiveRoles = filteredResults.map((roleApi) => ({
     roleCategory: roleApi.category,

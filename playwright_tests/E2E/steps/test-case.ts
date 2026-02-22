@@ -5,7 +5,7 @@ export async function confirmNextSteps(page, responseBody) {
   const responseOptions = responseBody.map((item) => item.name);
   const options = await eventTriggerOptions.locator('option').allTextContents();
   responseOptions.forEach((element) => {
-    if (options.indexOf(element) === -1) {
+    if (options.includes(element)) {
       return false;
     }
   });

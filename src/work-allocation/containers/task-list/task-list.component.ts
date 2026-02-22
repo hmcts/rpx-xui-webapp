@@ -193,7 +193,7 @@ export class TaskListComponent implements OnChanges {
     this.pagination.page_number = 1;
     this.sessionStorageService.setItem(this.pageSessionKey, this.pagination.page_number.toString());
     if (!this.defaultSortElement) {
-      this.defaultSortElement = document.getElementById(`sort_by_${this.taskServiceConfig.defaultSortFieldName}`) as HTMLElement;
+      this.defaultSortElement = document.getElementById(`sort_by_${this.taskServiceConfig.defaultSortFieldName}`);
     }
     this.defaultSortElement.click();
   }

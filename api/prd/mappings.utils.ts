@@ -5,5 +5,5 @@ export function getCourtTypeIdsByServices(ServicesIdArray: string[]): string[] {
 }
 
 function concatWithoutDuplicates(array1: number[], array2: number[]) {
-  return array1.concat(array2.filter((item) => array1.indexOf(item) < 0));
+  return array1.concat(array2.filter((item) => !array1.includes(item)));
 }

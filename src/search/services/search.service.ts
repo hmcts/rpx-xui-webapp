@@ -24,7 +24,7 @@ export class SearchService {
       searchCriteria: searchRequestCriteria,
       sortCriteria: null,
       maxReturnRecordCount: this.RECORD_PAGE_SIZE,
-      startRecordNumber: startRecord ? parseInt(startRecord, 10) : 1,
+      startRecordNumber: startRecord ? Number.parseInt(startRecord, 10) : 1,
     };
 
     return this.http.post<SearchResult>('api/globalsearch/results', searchRequest);
@@ -68,8 +68,8 @@ export class SearchService {
       parties = [
         {
           addressLine1: address,
-          dateOfBirth: dateOfBirth ? dateOfBirth.replace(/\b(\d)\b/g, '0$1') : null,
-          dateOfDeath: dateOfDeath ? dateOfDeath.replace(/\b(\d)\b/g, '0$1') : null,
+          dateOfBirth: dateOfBirth ? dateOfBirth.replaceAll(/\b(\d)\b/g, '0$1') : null,
+          dateOfDeath: dateOfDeath ? dateOfDeath.replaceAll(/\b(\d)\b/g, '0$1') : null,
           emailAddress,
           partyName: fullName,
           postCode: postcode,
@@ -84,7 +84,7 @@ export class SearchService {
       caseManagementRegionIds: null,
       // Ensure case references are sanitised, i.e. have been stripped of separators (spaces and '-' characters)
       caseReferences: searchParameters.caseReferences
-        ? searchParameters.caseReferences.map((caseRef) => caseRef.replace(/[\s-]/g, ''))
+        ? searchParameters.caseReferences.map((caseRef) => caseRef.replaceAll(/[\s-]/g, ''))
         : null,
       otherReferences: searchParameters.otherReferences,
       parties,

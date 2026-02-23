@@ -105,6 +105,9 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
       if (this.selectedServices?.length) {
         searchParameters.push({ key: 'jurisdiction', operator: 'IN', values: this.selectedServices });
       }
+      if (this.selectedWorkTypes?.length) {
+        searchParameters.push({ key: 'work_type', operator: 'IN', values: this.selectedWorkTypes });
+      }
       if (this.selectedPerson) {
         searchParameters.push(personParameter);
       }
@@ -145,6 +148,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     person: Person;
     taskType: string;
     taskName: any;
+    workTypes: string[];
   }): void {
     this.selectedLocation.id = selection.location;
     this.selectedServices = [selection.service];
@@ -152,6 +156,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     this.selectedPerson = selection.person ? selection.person.id : null;
     this.selectedTaskType = selection.taskType;
     this.selectedTaskName = selection.taskName ? selection.taskName.task_type_id : null;
+    this.selectedWorkTypes = selection.workTypes;
     this.loadBasedOnFilter();
   }
 

@@ -1,7 +1,13 @@
 import { randomUUID } from 'node:crypto';
 import { promises as fs } from 'node:fs';
 
-import { ApiClient as PlaywrightApiClient, type ApiLogEntry, createLogger } from '@hmcts/playwright-common';
+import {
+  ApiClient as PlaywrightApiClient,
+  type ApiLogEntry,
+  type ApiRequestOptions,
+  type ApiResponsePayload,
+  createLogger,
+} from '@hmcts/playwright-common';
 import { test as base, request } from '@playwright/test';
 
 export { expect } from '@playwright/test';
@@ -12,6 +18,56 @@ import { ensureStorageState, getStoredCookie, type ApiUserRole } from './utils/a
 
 const baseUrl = stripTrailingSlash(config.baseUrl);
 type LoggerInstance = ReturnType<typeof createLogger>;
+const DEFAULT_API_SLOW_THRESHOLD_MS = 10_000;
+const DEFAULT_API_REQUEST_TIMEOUT_MS = 60_000;
+
+class TimeoutAwareApiClient extends PlaywrightApiClient {
+  public constructor(
+    private readonly defaultRequestTimeoutMs: number,
+    options: ConstructorParameters<typeof PlaywrightApiClient>[0]
+  ) {
+    super(options);
+  }
+
+  public override get<T = unknown>(path: string, options?: ApiRequestOptions): Promise<ApiResponsePayload<T>> {
+    return super.get<T>(path, this.withDefaultTimeout(options));
+  }
+
+  public override post<T = unknown, TBody = unknown>(
+    path: string,
+    options?: ApiRequestOptions<TBody>
+  ): Promise<ApiResponsePayload<T>> {
+    return super.post<T, TBody>(path, this.withDefaultTimeout(options));
+  }
+
+  public override put<T = unknown, TBody = unknown>(
+    path: string,
+    options?: ApiRequestOptions<TBody>
+  ): Promise<ApiResponsePayload<T>> {
+    return super.put<T, TBody>(path, this.withDefaultTimeout(options));
+  }
+
+  public override patch<T = unknown, TBody = unknown>(
+    path: string,
+    options?: ApiRequestOptions<TBody>
+  ): Promise<ApiResponsePayload<T>> {
+    return super.patch<T, TBody>(path, this.withDefaultTimeout(options));
+  }
+
+  public override delete<T = unknown>(path: string, options?: ApiRequestOptions): Promise<ApiResponsePayload<T>> {
+    return super.delete<T>(path, this.withDefaultTimeout(options));
+  }
+
+  private withDefaultTimeout<TBody = unknown>(options?: ApiRequestOptions<TBody>): ApiRequestOptions<TBody> {
+    if (typeof options?.timeoutMs === 'number' && options.timeoutMs > 0) {
+      return options;
+    }
+    if (options) {
+      return { ...options, timeoutMs: this.defaultRequestTimeoutMs };
+    }
+    return { timeoutMs: this.defaultRequestTimeoutMs };
+  }
+}
 
 export interface ApiFixtures {
   apiClient: PlaywrightApiClient;
@@ -21,16 +77,80 @@ export interface ApiFixtures {
   logger: LoggerInstance;
 }
 
+type FailureType =
+  | 'DOWNSTREAM_API_5XX'
+  | 'DOWNSTREAM_API_4XX'
+  | 'SLOW_API_RESPONSE'
+  | 'NETWORK_TIMEOUT'
+  | 'ASSERTION_FAILURE'
+  | 'UNKNOWN';
+
+type ApiError = {
+  url: string;
+  status: number;
+  method: string;
+};
+
+function sanitizeUrl(url: string): string {
+  return url.split('?')[0];
+}
+
+function getApiSlowThresholdMs(): number {
+  const rawThreshold = process.env.API_SLOW_THRESHOLD_MS;
+  if (!rawThreshold) {
+    return DEFAULT_API_SLOW_THRESHOLD_MS;
+  }
+
+  const parsedThreshold = Number.parseInt(rawThreshold, 10);
+  return Number.isFinite(parsedThreshold) && parsedThreshold > 0 ? parsedThreshold : DEFAULT_API_SLOW_THRESHOLD_MS;
+}
+
+function getApiRequestTimeoutMs(): number {
+  const rawTimeout = process.env.API_REQUEST_TIMEOUT_MS ?? process.env.PLAYWRIGHT_API_REQUEST_TIMEOUT_MS;
+  if (!rawTimeout) {
+    return DEFAULT_API_REQUEST_TIMEOUT_MS;
+  }
+
+  const parsedTimeout = Number.parseInt(rawTimeout, 10);
+  return Number.isFinite(parsedTimeout) && parsedTimeout > 0 ? parsedTimeout : DEFAULT_API_REQUEST_TIMEOUT_MS;
+}
+
+function classifyFailure(
+  error: string,
+  serverErrors: ApiError[],
+  clientErrors: ApiError[],
+  slowCalls: Array<{ url: string; duration: number; method: string }>,
+  networkTimeout: boolean
+): FailureType {
+  if (serverErrors.length > 0) {
+    return 'DOWNSTREAM_API_5XX';
+  }
+  if (clientErrors.length > 0) {
+    return 'DOWNSTREAM_API_4XX';
+  }
+  if (error.toLowerCase().includes('timeout') || networkTimeout) {
+    return slowCalls.length > 0 ? 'SLOW_API_RESPONSE' : 'NETWORK_TIMEOUT';
+  }
+  if (error.includes('expect') || error.includes('Expected') || error.includes('Received')) {
+    return 'ASSERTION_FAILURE';
+  }
+  return 'UNKNOWN';
+}
+
 export const test = base.extend<ApiFixtures>({
-  logger: async ({}, use, workerInfo) => {
+  logger: async ({ request }, use, workerInfo) => {
     const logger = createLogger({
       serviceName: 'rpx-xui-node-api',
-      defaultMeta: { workerId: workerInfo.workerIndex },
+      defaultMeta: {
+        workerId: workerInfo.workerIndex,
+        requestContext: request.constructor?.name ?? 'unknown',
+      },
       format: 'pretty',
     });
     await use(logger);
   },
-  apiLogs: async ({}, use, testInfo) => {
+  apiLogs: async ({ request }, use, testInfo) => {
+    const requestContext = request.constructor?.name ?? 'unknown';
     const entries: ApiLogEntry[] = [];
     await use(entries);
     if (entries.length) {
@@ -43,6 +163,73 @@ export const test = base.extend<ApiFixtures>({
       });
       await testInfo.attach('node-api-calls.pretty.txt', {
         body: pretty,
+        contentType: 'text/plain',
+      });
+    }
+
+    if (testInfo.status === 'failed' || testInfo.status === 'timedOut') {
+      const errorMessage = testInfo.error?.message || '';
+      const apiErrors = entries
+        .filter((entry) => typeof entry.status === 'number' && entry.status >= 400)
+        .map((entry) => ({
+          url: sanitizeUrl(entry.url),
+          status: entry.status,
+          method: entry.method,
+        }));
+      const serverErrors = apiErrors.filter((e) => e.status >= 500);
+      const clientErrors = apiErrors.filter((e) => e.status >= 400 && e.status < 500);
+
+      const slowThreshold = getApiSlowThresholdMs();
+      const slowCalls = entries
+        .filter((entry) => typeof entry.durationMs === 'number' && entry.durationMs > slowThreshold)
+        .map((entry) => ({
+          url: sanitizeUrl(entry.url),
+          duration: entry.durationMs,
+          method: entry.method,
+        }));
+
+      const networkTimeout =
+        /timeout|timed out|ETIMEDOUT|ECONNRESET|socket hang up/i.test(errorMessage) ||
+        entries.some((entry) => /timeout|timed out|ETIMEDOUT/i.test(entry.errorMessage || ''));
+
+      const failureType = classifyFailure(errorMessage, serverErrors, clientErrors, slowCalls, networkTimeout);
+
+      const diagnosis = [
+        `Test failed: ${testInfo.title}`,
+        `Failure type: ${failureType}`,
+        `Request context: ${requestContext}`,
+        errorMessage ? `Error: ${errorMessage.substring(0, 300)}` : '',
+        `API summary: total=${apiErrors.length + slowCalls.length}, 5xx=${serverErrors.length}, 4xx=${clientErrors.length}, slow>${slowThreshold}ms=${slowCalls.length}`,
+      ]
+        .filter(Boolean)
+        .join('\n');
+
+      testInfo.annotations.push({
+        type: 'Failure type',
+        description: failureType,
+      });
+
+      if (failureType === 'DOWNSTREAM_API_5XX' || failureType === 'DOWNSTREAM_API_4XX') {
+        const errorList = [...serverErrors, ...clientErrors].map((e) => `${e.method} ${e.url} → HTTP ${e.status}`).join(' | ');
+        testInfo.annotations.push({
+          type: 'API errors',
+          description: errorList.substring(0, 500),
+        });
+      }
+
+      if (slowCalls.length > 0) {
+        const slowList = slowCalls
+          .map((s) => `${s.method} ${s.url} → ${Math.round(s.duration)}ms`)
+          .slice(0, 3)
+          .join(' | ');
+        testInfo.annotations.push({
+          type: 'Slow calls',
+          description: slowList,
+        });
+      }
+
+      await testInfo.attach('Failure diagnosis', {
+        body: diagnosis,
         contentType: 'text/plain',
       });
     }
@@ -88,8 +275,9 @@ async function createNodeApiClient(
 
   const defaultHeaders = await buildDefaultHeaders(role);
   const context = await buildRequestContext(role, storageState, defaultHeaders);
+  const defaultRequestTimeoutMs = getApiRequestTimeoutMs();
 
-  return new PlaywrightApiClient({
+  return new TimeoutAwareApiClient(defaultRequestTimeoutMs, {
     baseUrl,
     name: `node-api-${role}`,
     logger,
@@ -99,7 +287,7 @@ async function createNodeApiClient(
 
       // Monitor API response times and log slow requests
       const duration = entry.durationMs;
-      const slowThreshold = Number.parseInt(process.env.API_SLOW_THRESHOLD_MS || '5000', 10);
+      const slowThreshold = getApiSlowThresholdMs();
 
       if (duration > slowThreshold) {
         logger.warn('Slow API response detected', {

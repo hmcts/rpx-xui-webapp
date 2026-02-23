@@ -10,7 +10,6 @@ const source = path.resolve('functional-output', 'tests', 'playwright-api', 'odh
 const targetRoot = path.resolve('functional-output', 'tests', 'api_functional');
 const target = path.join(targetRoot, 'odhin-report');
 const coverageRoot = path.resolve('reports', 'tests', 'coverage', 'api-playwright');
-const coverageTarget = path.join(target, 'coverage');
 const coverageLinkFlag = process.env.PW_ODHIN_LINK_COVERAGE === 'true';
 
 try {
@@ -23,20 +22,25 @@ try {
   fs.rmSync(target, { recursive: true, force: true });
   fs.cpSync(source, target, { recursive: true, force: true });
 
+  // Support both report publish locations (source and legacy copied target).
+  const reportFolders = [source, target];
   const { endpoints, totalHits, logFiles } = collectApiEndpointsFromLogs(resolveNodeApiLogRoots());
-  injectNodeApiTab(target, endpoints, totalHits, logFiles);
+  reportFolders.forEach((folder) => injectNodeApiTab(folder, endpoints, totalHits, logFiles));
 
   if (coverageLinkFlag && fs.existsSync(coverageRoot)) {
-    fs.rmSync(coverageTarget, { recursive: true, force: true });
-    fs.cpSync(coverageRoot, coverageTarget, { recursive: true, force: true });
-    const coverageIndex = renameCoverageIndex(findCoverageIndex(coverageTarget));
-    const coverageSummary = loadCoverageSummary(coverageTarget);
-    if (coverageIndex) {
-      injectCoverageLink(target, path.relative(target, coverageIndex), coverageSummary);
-      injectCoverageTab(target, path.relative(target, coverageIndex));
-    } else {
-      console.warn('copy-odhin-report: coverage index not found; skipping coverage block injection.');
-    }
+    reportFolders.forEach((folder) => {
+      const coverageTarget = path.join(folder, 'coverage');
+      fs.rmSync(coverageTarget, { recursive: true, force: true });
+      fs.cpSync(coverageRoot, coverageTarget, { recursive: true, force: true });
+      const coverageIndex = renameCoverageIndex(findCoverageIndex(coverageTarget));
+      const coverageSummary = loadCoverageSummary(coverageTarget);
+      if (coverageIndex) {
+        injectCoverageLink(folder, path.relative(folder, coverageIndex), coverageSummary);
+        injectCoverageTab(folder, path.relative(folder, coverageIndex));
+      } else {
+        console.warn(`copy-odhin-report: coverage index not found for ${folder}; skipping coverage block injection.`);
+      }
+    });
   }
 } catch (error) {
   console.warn(`copy-odhin-report: ${error.message}`);

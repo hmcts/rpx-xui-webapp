@@ -89,7 +89,8 @@ export class LaunchDarklyDefaultsConstants {
     },
     {
       "caseTypes": [
-        "Asylum"
+        "Asylum",
+        "Bail"
       ],
       "releaseVersion": "4",
       "serviceName": "IA"

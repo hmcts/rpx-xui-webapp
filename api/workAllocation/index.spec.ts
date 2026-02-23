@@ -1323,6 +1323,21 @@ describe('workAllocation', () => {
         const calledUrl = spy.getCall(0).args[0];
         expect(calledUrl).to.include('completion_process=EXUI_USER_COMPLETION');
       });
+
+      it('should use manual cancellation mode by default', async () => {
+        spy = sandbox.stub(http, 'post').resolves({ status: 200, data: 'ok' });
+
+        const req = mockReq({
+          body: { someData: 'test' },
+          params: { action: 'cancel', taskId: '123456' }, // Changed to cancel action
+        });
+        const response = mockRes();
+
+        await postTaskAction(req, response, next);
+
+        const calledUrl = spy.getCall(0).args[0];
+        expect(calledUrl).to.include('cancellation_process=EXUI_USER_CANCELLATION');
+      });
     });
   });
 });

@@ -263,7 +263,7 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
         traceProps
       );
     } else {
-      mode = 'EXUI_USER_COMPLETION';
+      mode = req.params.action === 'cancel' ? 'EXUI_USER_CANCELLATION' : 'EXUI_USER_COMPLETION';
       trackTrace(`${req.params.action} on task Id: ${req.params.taskId} due to manual task action`, traceProps);
     }
     const getTaskPath: string = preparePostTaskUrlAction(baseWorkAllocationTaskUrl, req.params.taskId, req.params.action, mode);

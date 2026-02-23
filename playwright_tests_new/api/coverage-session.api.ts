@@ -24,7 +24,7 @@ const baseCookie = (name: string, value: string): Cookie => ({
   sameSite: 'Lax',
 });
 
-test.describe('Session and cookie utilities coverage', () => {
+test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' }, () => {
   test('isSessionFresh returns false when stat fails', () => {
     const fsStub = {
       existsSync: () => true,

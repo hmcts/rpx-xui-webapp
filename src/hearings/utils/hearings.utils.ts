@@ -12,6 +12,9 @@ import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model'
 import { PartyType } from 'api/hearings/models/hearings.enum';
 
 export class HearingsUtils {
+  public static readonly DISCREPANCY_MESSAGE =
+    'The Party IDs and/or case information for this request appear mismatched, please reload and start the request again.';
+
   public static hasPropertyAndValue(conditions: HearingConditions, propertyName: string, propertyValue: any): boolean {
     return conditions && conditions.hasOwnProperty(propertyName) && conditions[propertyName] === propertyValue;
   }
@@ -244,6 +247,52 @@ export class HearingsUtils {
 
   static convertStringToDate(date: string): number {
     return new Date(date).setHours(0, 0, 0, 0);
+  }
+
+  public static checkHearingConsistency(
+    hearingRequestMainModel: HearingRequestMainModel,
+    serviceHearingValuesModel: ServiceHearingValuesModel,
+    caseReference?: string
+  ): boolean {
+    const dataMatches =
+      this.checkHearingPartiesConsistency(hearingRequestMainModel, serviceHearingValuesModel) &&
+      this.checkHearingCaseConsistency(hearingRequestMainModel, serviceHearingValuesModel, caseReference);
+    return dataMatches;
+  }
+
+  // EXUI-4080 - Ensure case data is also checked for consistency
+  public static checkHearingCaseConsistency(
+    hearingRequestMainModel: HearingRequestMainModel,
+    serviceHearingValuesModel: ServiceHearingValuesModel,
+    caseReference?: string
+  ): boolean {
+    const hrmCaseDetails = hearingRequestMainModel?.caseDetails;
+    const shv = serviceHearingValuesModel;
+
+    const hrmCaseRef = hrmCaseDetails?.caseRef;
+    const itemCaseRef = caseReference;
+
+    // Check against case reference if present
+    if (itemCaseRef && hrmCaseRef && itemCaseRef !== hrmCaseRef) {
+      return false;
+    }
+
+    // If either side is missing, don't block
+    if (!hrmCaseDetails || !shv) {
+      return true;
+    }
+
+    const hrmServiceCode = hrmCaseDetails.hmctsServiceCode;
+    const shvServiceCode = shv.hmctsServiceID;
+
+    // Service code mismatch
+    if (hrmServiceCode && shvServiceCode && hrmServiceCode !== shvServiceCode) {
+      return false;
+    }
+
+    // Note: Check for case name removed - case name can change during hearing journey
+
+    return true;
   }
 
   public static checkHearingPartiesConsistency(

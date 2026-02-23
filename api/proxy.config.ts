@@ -57,7 +57,7 @@ export const initProxy = (app: Express) => {
       onReq: documents.handleRequest,
       onRes: documents.handleResponse,
       rewrite: true,
-      rewriteUrl: '/cases/documents',
+      rewriteUrl: (path: string) => '/cases/documents' + (path === '/' ? '' : path),
       source: '/documentsv2',
       target: getConfigValue(SERVICES_DOCUMENTS_API_PATH_V2),
     },
@@ -82,7 +82,7 @@ export const initProxy = (app: Express) => {
 
   applyProxy(app, {
     rewrite: true,
-    rewriteUrl: '/addresses',
+    rewriteUrl: (path: string) => '/addresses' + (path === '/' ? '' : path),
     source: '/api/addresses',
     target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
   });
@@ -103,15 +103,14 @@ export const initProxy = (app: Express) => {
   });
 
   applyProxy(app, {
-    rewrite: true,
-    rewriteUrl: '/api',
+    rewriteUrl: (path: string) => `/api${path}`,
     source: '/em-anno',
     target: getConfigValue(SERVICES_EM_ANNO_API_URL),
   });
 
   applyProxy(app, {
     rewrite: true,
-    rewriteUrl: '/api',
+    rewriteUrl: (path: string) => `/api${path}`,
     source: '/doc-assembly',
     target: getConfigValue(SERVICES_EM_DOCASSEMBLY_API_URL),
   });
@@ -124,29 +123,23 @@ export const initProxy = (app: Express) => {
 
   applyProxy(app, {
     rewrite: true,
-    rewriteUrl: '',
+    rewriteUrl: (path: string) => (path === '/' ? '/' : path),
     source: '/payments',
     target: getConfigValue(SERVICES_PAYMENTS_URL),
   });
 
   applyProxy(app, {
     rewrite: true,
-    rewriteUrl: '/refund',
+    rewriteUrl: (path: string) => '/refund' + (path === '/' ? '' : path.startsWith('/?') ? path.substring(1) : path),
     source: '/api/refund',
     target: getConfigValue(SERVICES_REFUNDS_API_URL),
   });
 
   applyProxy(app, {
     rewrite: true,
-    rewriteUrl: '/notifications',
+    rewriteUrl: (path: string) => '/notifications' + (path === '/' ? '' : path),
     source: '/api/notification',
     target: getConfigValue(SERVICES_NOTIFICATIONS_API_URL),
-  });
-
-  applyProxy(app, {
-    rewrite: false,
-    source: '/refdata/location',
-    target: getConfigValue(SERVICES_LOCATION_REF_API_URL),
   });
 
   applyProxy(app, {
@@ -181,8 +174,8 @@ export const initProxy = (app: Express) => {
 
   applyProxy(app, {
     rewrite: true,
+    rewriteUrl: (path: string) => '/translation' + (path === '/' ? '' : path),
     source: '/api/translation',
-    rewriteUrl: '/translation',
     target: getConfigValue(SERVICES_TRANSLATION_API_URL),
   });
 

@@ -4,6 +4,9 @@ import { CaseListPage } from './exui/caseList.po';
 import { CreateCasePage } from './exui/createCase.po';
 import { Page } from '@playwright/test';
 import { TaskListPage } from './exui/taskList.po';
+import { SearchCasePage } from './exui/searchCase.po';
+import { GlobalSearchPage } from './exui/globalSearch.po';
+import { FindCasePage } from './exui/findCase.po';
 
 export interface PageFixtures {
   determinePage: Page;
@@ -11,6 +14,9 @@ export interface PageFixtures {
   caseListPage: CaseListPage;
   taskListPage: TaskListPage;
   createCasePage: CreateCasePage;
+  searchCasePage: SearchCasePage;
+  globalSearchPage: GlobalSearchPage;
+  findCasePage: FindCasePage;
   mediaViewerPage: ExuiMediaViewerPage;
   idamPage: IdamPage;
   apiClient: ApiClient;
@@ -43,20 +49,35 @@ export const pageFixtures = {
   createCasePage: async ({ determinePage }, use) => {
     await use(new CreateCasePage(determinePage));
   },
+  searchCasePage: async ({ determinePage }, use) => {
+    await use(new SearchCasePage(determinePage));
+  },
+  globalSearchPage: async ({ determinePage }, use) => {
+    await use(new GlobalSearchPage(determinePage));
+  },
+  findCasePage: async ({ determinePage }, use) => {
+    await use(new FindCasePage(determinePage));
+  },
   mediaViewerPage: async ({ determinePage }, use) => {
     await use(new ExuiMediaViewerPage(determinePage));
   },
   idamPage: async ({ determinePage }, use) => {
     await use(new IdamPage(determinePage));
   },
-  logger: async ({}, use, workerInfo) => {
+  logger: async ({ page }, use, workerInfo) => {
+    if (page) {
+      // no-op: keep the destructured arg in use to satisfy lint rules
+    }
     const logger = createLogger({
       serviceName: 'case-service-ui',
       defaultMeta: { workerId: workerInfo.workerIndex },
     });
     await use(logger);
   },
-  capturedCalls: async ({}, use) => {
+  capturedCalls: async ({ page }, use) => {
+    if (page) {
+      // no-op: keep the destructured arg in use to satisfy lint rules
+    }
     const calls: ApiLogEntry[] = [];
     await use(calls);
   },

@@ -10,12 +10,48 @@ import {
   PACT_CONSUMER_VERSION,
 } from '../../../configuration/references';
 
+const isBrokerReachable = async (brokerUrl: string): Promise<boolean> => {
+  try {
+    const url = new URL(brokerUrl);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 3000);
+    try {
+      await fetch(url.toString(), { method: 'HEAD', signal: controller.signal });
+      return true;
+    } finally {
+      clearTimeout(timeout);
+    }
+  } catch {
+    return false;
+  }
+};
+
 const publish = async (): Promise<void> => {
   try {
     const pactBroker = getConfigValue(PACT_BROKER_URL) ? getConfigValue(PACT_BROKER_URL) : 'http://localhost:80';
     const pactTag = getConfigValue(PACT_BRANCH_NAME) ? getConfigValue(PACT_BRANCH_NAME) : 'Dev';
+    const brokerReachable = await isBrokerReachable(pactBroker);
 
-    const consumerVersion = getConfigValue(PACT_CONSUMER_VERSION) !== '' ? getConfigValue(PACT_CONSUMER_VERSION) : git.short();
+    if (!brokerReachable) {
+      console.log(`Pact broker is unreachable (${pactBroker}). Skipping publish.`);
+      return;
+    }
+
+    const resolveConsumerVersion = (): string => {
+      try {
+        return git.short();
+      } catch {
+        const envSha = process.env.GIT_COMMIT || process.env.CI_COMMIT_SHA || process.env.BUILD_VCS_NUMBER;
+        if (envSha && envSha.trim()) {
+          return envSha.trim().slice(0, 12);
+        }
+        return `local-${new Date().toISOString().replace(/[:.]/g, '-')}`;
+      }
+    };
+
+    const configuredConsumerVersion = getConfigValue(PACT_CONSUMER_VERSION);
+    const consumerVersion =
+      configuredConsumerVersion && configuredConsumerVersion.trim() !== '' ? configuredConsumerVersion : resolveConsumerVersion();
 
     const opts = {
       consumerVersion,

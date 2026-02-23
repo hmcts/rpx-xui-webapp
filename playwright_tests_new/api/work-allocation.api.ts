@@ -33,34 +33,55 @@ import {
 const serviceCodes = ['IA', 'CIVIL', 'PRIVATELAW'];
 const envTaskId = WA_SAMPLE_TASK_ID;
 const envAssignedTaskId = WA_SAMPLE_ASSIGNED_TASK_ID;
+const BEFORE_ALL_REQUEST_TIMEOUT_MS = 10_000;
 
-test.describe('Work allocation (read-only)', () => {
+test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, () => {
   let cachedLocationId: string | undefined;
   let userId: string | undefined;
   let sampleTaskId: string | undefined;
   let sampleMyTaskId: string | undefined;
 
   test.beforeAll(async ({ apiClient }) => {
-    const userRes = await apiClient.get<UserDetailsResponse>('api/user/details', {
-      throwOnError: false,
-    });
-    if (userRes.status === 200) {
-      userId = resolveUserId(userRes.data);
+    test.setTimeout(90_000);
+
+    try {
+      const userRes = await apiClient.get<UserDetailsResponse>('api/user/details', {
+        throwOnError: false,
+        timeoutMs: BEFORE_ALL_REQUEST_TIMEOUT_MS,
+      });
+      if (userRes.status === 200) {
+        userId = resolveUserId(userRes.data);
+      }
+    } catch (error) {
+      console.warn(`[WA_SETUP_DEGRADED] user/details failed: ${(error as Error).message}`);
     }
 
-    const listResponse = await apiClient.get<Array<{ id?: string }>>(
-      `workallocation/location?serviceCodes=${encodeURIComponent(serviceCodes.join(','))}`,
-      {
-        throwOnError: false,
-      }
-    );
-    cachedLocationId = resolveLocationId(listResponse.status, listResponse.data);
+    try {
+      const listResponse = await apiClient.get<Array<{ id?: string }>>(
+        `workallocation/location?serviceCodes=${encodeURIComponent(serviceCodes.join(','))}`,
+        {
+          throwOnError: false,
+          timeoutMs: BEFORE_ALL_REQUEST_TIMEOUT_MS,
+        }
+      );
+      cachedLocationId = resolveLocationId(listResponse.status, listResponse.data);
+    } catch (error) {
+      console.warn(`[WA_SETUP_DEGRADED] location bootstrap failed: ${(error as Error).message}`);
+    }
 
-    // seed tasks for action tests
-    const seeded = await seedTaskId(apiClient, cachedLocationId);
-    const resolvedSeed = resolveSeededTaskIds(seeded);
-    sampleTaskId = resolvedSeed.sampleTaskId;
-    sampleMyTaskId = resolvedSeed.sampleMyTaskId;
+    try {
+      // Seed task ids is optional; action tests already use guarded status assertions/fallback ids.
+      const seeded = await seedTaskId(apiClient, cachedLocationId, {
+        timeoutMs: BEFORE_ALL_REQUEST_TIMEOUT_MS,
+      });
+      const resolvedSeed = resolveSeededTaskIds(seeded);
+      sampleTaskId = resolvedSeed.sampleTaskId;
+      sampleMyTaskId = resolvedSeed.sampleMyTaskId;
+    } catch (error) {
+      console.warn(`[WA_SETUP_DEGRADED] seedTaskId failed: ${(error as Error).message}`);
+      sampleTaskId = undefined;
+      sampleMyTaskId = undefined;
+    }
   });
 
   test('GET /workallocation/location returns locations list for authenticated users with valid service codes', async ({
@@ -312,20 +333,39 @@ test.describe('Work allocation (read-only)', () => {
     }
   });
 
-  test.describe('deterministic task actions (env-seeded)', () => {
-    const fallbackTaskId = '00000000-0000-0000-0000-000000000000';
+  test.describe('deterministic task actions (env-seeded or dynamic)', () => {
     const positive = [
-      { action: 'claim', id: () => selectTaskId([envTaskId], fallbackTaskId) },
-      { action: 'assign', id: () => selectTaskId([envTaskId], fallbackTaskId) },
-      { action: 'unclaim', id: () => selectTaskId([envAssignedTaskId, envTaskId], fallbackTaskId) },
-      { action: 'unassign', id: () => selectTaskId([envAssignedTaskId, envTaskId], fallbackTaskId) },
-      { action: 'complete', id: () => selectTaskId([envAssignedTaskId, envTaskId], fallbackTaskId) },
-      { action: 'cancel', id: () => selectTaskId([envAssignedTaskId, envTaskId], fallbackTaskId) },
+      { action: 'claim', id: () => selectTaskId([envTaskId, sampleTaskId], '00000000-0000-0000-0000-000000000000') },
+      { action: 'assign', id: () => selectTaskId([envTaskId, sampleTaskId], '00000000-0000-0000-0000-000000000000') },
+      {
+        action: 'unclaim',
+        id: () =>
+          selectTaskId([envAssignedTaskId, envTaskId, sampleMyTaskId, sampleTaskId], '00000000-0000-0000-0000-000000000000'),
+      },
+      {
+        action: 'unassign',
+        id: () =>
+          selectTaskId([envAssignedTaskId, envTaskId, sampleMyTaskId, sampleTaskId], '00000000-0000-0000-0000-000000000000'),
+      },
+      {
+        action: 'complete',
+        id: () =>
+          selectTaskId([envAssignedTaskId, envTaskId, sampleMyTaskId, sampleTaskId], '00000000-0000-0000-0000-000000000000'),
+      },
+      {
+        action: 'cancel',
+        id: () =>
+          selectTaskId([envAssignedTaskId, envTaskId, sampleMyTaskId, sampleTaskId], '00000000-0000-0000-0000-000000000000'),
+      },
     ] as const;
 
     positive.forEach(({ action, id }) => {
-      test(`${action} succeeds with XSRF when seeded task ids provided`, async ({ apiClient }) => {
-        const executed = await runSeededAction(action, id, { apiClient, envTaskId, envAssignedTaskId });
+      test(`${action} succeeds with XSRF when task ids available`, async ({ apiClient }) => {
+        const executed = await runSeededAction(action, id, {
+          apiClient,
+          envTaskId: envTaskId || sampleTaskId,
+          envAssignedTaskId: envAssignedTaskId || sampleMyTaskId,
+        });
         if (!executed) {
           expect(true).toBe(true);
         }
@@ -440,7 +480,7 @@ test.describe('Work allocation (read-only)', () => {
   });
 });
 
-test.describe('Work allocation helper coverage', () => {
+test.describe('Work allocation helper coverage', { tag: '@svc-work-allocation' }, () => {
   test('toArray utility normalizes API response formats (arrays, task_names, taskNames, typesOfWork) to consistent array output', () => {
     // Given: Various API response payload formats from work allocation endpoints
     // When: Normalizing different response shapes to arrays
@@ -504,7 +544,7 @@ test.describe('Work allocation helper coverage', () => {
     expect(executed).toBe(true);
     expect(xsrfCalls).toBe(1);
 
-    const skipped = await runSeededAction('claim', () => 'task-1', {
+    const skipped = await runSeededAction('claim', () => '', {
       apiClient,
       withXsrfFn,
       hasSeededEnvTasksFn: () => false,

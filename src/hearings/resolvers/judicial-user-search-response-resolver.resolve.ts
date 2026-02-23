@@ -9,7 +9,7 @@ import * as fromHearingStore from '../store';
 import { getHearingJudgeIds } from '../store/selectors/hearing-judges.selectors';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class JudicialUserSearchResponseResolver {
   constructor(
@@ -18,15 +18,17 @@ export class JudicialUserSearchResponseResolver {
   ) {}
 
   public resolve(): Observable<JudicialUserModel[]> {
-    return this.getUsersByPanelRequirements$()
-      .pipe(
-        switchMap((judicialMemberIds) => {
-          return of(judicialMemberIds);
-        }), take(1),
-        switchMap((judicialMemberIds) => {
-          return judicialMemberIds && judicialMemberIds.length && judicialMemberIds[0] ? this.getUsersData$(judicialMemberIds) : of([]);
-        })
-      );
+    return this.getUsersByPanelRequirements$().pipe(
+      switchMap((judicialMemberIds) => {
+        return of(judicialMemberIds);
+      }),
+      take(1),
+      switchMap((judicialMemberIds) => {
+        return judicialMemberIds && judicialMemberIds.length && judicialMemberIds[0]
+          ? this.getUsersData$(judicialMemberIds)
+          : of([]);
+      })
+    );
   }
 
   public getUsersByPanelRequirements$(): Observable<string[]> {

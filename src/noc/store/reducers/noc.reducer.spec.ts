@@ -42,26 +42,28 @@ describe('Noc Reducer', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.initialState;
         const action = new fromActions.SetQuestions({
-          questions: [{
-            case_type_id: 'AAT',
-            order: '1',
-            question_text: 'What is their Email?',
-            answer_field_type: {
-              id: 'Email',
-              type: 'Email',
-              min: null,
-              max: null,
-              regular_expression: null,
-              fixed_list_items: [],
-              complex_fields: [],
-              collection_field_type: null
+          questions: [
+            {
+              case_type_id: 'AAT',
+              order: '1',
+              question_text: 'What is their Email?',
+              answer_field_type: {
+                id: 'Email',
+                type: 'Email',
+                min: null,
+                max: null,
+                regular_expression: null,
+                fixed_list_items: [],
+                complex_fields: [],
+                collection_field_type: null,
+              },
+              display_context_parameter: '1',
+              challenge_question_id: 'NoC',
+              answer_field: '',
+              question_id: 'QuestionId67745',
             },
-            display_context_parameter: '1',
-            challenge_question_id: 'NoC',
-            answer_field: '',
-            question_id: 'QuestionId67745'
-          }],
-          caseReference: 'abcd'
+          ],
+          caseReference: 'abcd',
         });
         const nocState = fromReducer.nocReducer(initialState, action);
         expect(nocState.state).toEqual(NocState.QUESTION);
@@ -75,7 +77,7 @@ describe('Noc Reducer', () => {
         const initialState = fromReducer.initialState;
         const action = new fromActions.SetCaseRefSubmissionFailure({
           status: 400,
-          message: 'dummy'
+          message: 'dummy',
         });
         const nocState = fromReducer.nocReducer(initialState, action);
         expect(nocState.state).toEqual(NocState.CASE_REF_SUBMISSION_FAILURE);
@@ -96,10 +98,12 @@ describe('Noc Reducer', () => {
     describe('CheckAnswers action', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.initialState;
-        const action = new fromActions.CheckAnswers([{
-          question_id: '0',
-          value: 'dummy'
-        }]);
+        const action = new fromActions.CheckAnswers([
+          {
+            question_id: '0',
+            value: 'dummy',
+          },
+        ]);
         const nocState = fromReducer.nocReducer(initialState, action);
         expect(nocState.state).toEqual(NocState.CHECK_ANSWERS);
         expect(nocState.answers[0].value).toEqual('dummy');
@@ -138,7 +142,7 @@ describe('Noc Reducer', () => {
         const initialState = fromReducer.initialState;
         const action = new fromActions.SetSubmissionFailure({
           status: 400,
-          message: 'dummy'
+          message: 'dummy',
         });
         const nocState = fromReducer.nocReducer(initialState, action);
         expect(nocState.state).toEqual(NocState.SUBMISSION_FAILURE);
@@ -151,7 +155,7 @@ describe('Noc Reducer', () => {
   describe('Get functions', () => {
     it('should get state properties', () => {
       const nocState = {
-        state: NocState.ANSWER_INCOMPLETE
+        state: NocState.ANSWER_INCOMPLETE,
       };
       expect(fromReducer.getNocActiveState(nocState)).toEqual(NocState.ANSWER_INCOMPLETE);
     });
@@ -160,12 +164,12 @@ describe('Noc Reducer', () => {
       const nocState = {
         lastError: {
           responseCode: 400,
-          message: 'dada'
-        }
+          message: 'dada',
+        },
       };
       const expected = {
         responseCode: 400,
-        message: 'dada'
+        message: 'dada',
       };
       expect(fromReducer.getLastError(nocState)).toEqual(expected);
     });
@@ -173,50 +177,58 @@ describe('Noc Reducer', () => {
     it('should get validation error', () => {
       const nocState = {
         validationErrors: {
-          test: 'dummy'
-        }
+          test: 'dummy',
+        },
       };
       const expected = {
-        test: 'dummy'
+        test: 'dummy',
       };
       expect(fromReducer.getValidationErrors(nocState)).toEqual(expected);
     });
 
     it('should get questions', () => {
       const nocState = {
-        questions: [{
+        questions: [
+          {
+            displayOrder: 0,
+            answerType: null,
+            displayContext: null,
+            questionLabel: 'dummy',
+          },
+        ],
+      };
+      const expected = [
+        {
           displayOrder: 0,
           answerType: null,
           displayContext: null,
-          questionLabel: 'dummy'
-        }]
-      };
-      const expected = [{
-        displayOrder: 0,
-        answerType: null,
-        displayContext: null,
-        questionLabel: 'dummy'
-      }];
+          questionLabel: 'dummy',
+        },
+      ];
       expect(fromReducer.getQuestions(nocState)).toEqual(expected);
     });
 
     it('should get answers', () => {
       const nocState = {
-        answers: [{
-          displayOrder: 0,
-          answer: 'dummy'
-        }]
+        answers: [
+          {
+            displayOrder: 0,
+            answer: 'dummy',
+          },
+        ],
       };
-      const expected = [{
-        displayOrder: 0,
-        answer: 'dummy'
-      }];
+      const expected = [
+        {
+          displayOrder: 0,
+          answer: 'dummy',
+        },
+      ];
       expect(fromReducer.getAnswers(nocState)).toEqual(expected);
     });
 
     it('should get Affirmation Agreed', () => {
       const nocState = {
-        affirmationAgreed: false
+        affirmationAgreed: false,
       };
       const expected = false;
       expect(fromReducer.getAffirmationAgreed(nocState)).toEqual(expected);
@@ -225,61 +237,65 @@ describe('Noc Reducer', () => {
 
   describe('Order questions', () => {
     it('should order questions before save to store', () => {
-      const nocQuestionsBeforeSort: NocQuestion[] = [{
-        case_type_id: 'AAT',
-        order: '1',
-        question_text: 'What is their first name?',
-        answer_field_type: {
-          id: 'Text',
-          type: 'Text',
-          min: null,
-          max: null,
-          regular_expression: null,
-          fixed_list_items: [],
-          complex_fields: [],
-          collection_field_type: null
+      const nocQuestionsBeforeSort: NocQuestion[] = [
+        {
+          case_type_id: 'AAT',
+          order: '1',
+          question_text: 'What is their first name?',
+          answer_field_type: {
+            id: 'Text',
+            type: 'Text',
+            min: null,
+            max: null,
+            regular_expression: null,
+            fixed_list_items: [],
+            complex_fields: [],
+            collection_field_type: null,
+          },
+          display_context_parameter: '1',
+          challenge_question_id: 'NoC',
+          answer_field: null,
+          question_id: 'QuestionId-1',
         },
-        display_context_parameter: '1',
-        challenge_question_id: 'NoC',
-        answer_field: null,
-        question_id: 'QuestionId-1'
-      }, {
-        case_type_id: 'AAT',
-        order: '10',
-        question_text: 'What is the current time?',
-        answer_field_type: {
-          id: 'Time',
-          type: 'Time',
-          min: null,
-          max: null,
-          regular_expression: null,
-          fixed_list_items: [],
-          complex_fields: [],
-          collection_field_type: null
+        {
+          case_type_id: 'AAT',
+          order: '10',
+          question_text: 'What is the current time?',
+          answer_field_type: {
+            id: 'Time',
+            type: 'Time',
+            min: null,
+            max: null,
+            regular_expression: null,
+            fixed_list_items: [],
+            complex_fields: [],
+            collection_field_type: null,
+          },
+          display_context_parameter: '1',
+          challenge_question_id: 'NoC',
+          answer_field: null,
+          question_id: 'QuestionId-10',
         },
-        display_context_parameter: '1',
-        challenge_question_id: 'NoC',
-        answer_field: null,
-        question_id: 'QuestionId-10'
-      }, {
-        case_type_id: 'AAT',
-        order: '5',
-        question_text: 'What is their telephone number?',
-        answer_field_type: {
-          id: 'PhoneUK',
-          type: 'PhoneUK',
-          min: null,
-          max: null,
-          regular_expression: null,
-          fixed_list_items: [],
-          complex_fields: [],
-          collection_field_type: null
+        {
+          case_type_id: 'AAT',
+          order: '5',
+          question_text: 'What is their telephone number?',
+          answer_field_type: {
+            id: 'PhoneUK',
+            type: 'PhoneUK',
+            min: null,
+            max: null,
+            regular_expression: null,
+            fixed_list_items: [],
+            complex_fields: [],
+            collection_field_type: null,
+          },
+          display_context_parameter: '1',
+          challenge_question_id: 'NoC',
+          answer_field: null,
+          question_id: 'QuestionId-5',
         },
-        display_context_parameter: '1',
-        challenge_question_id: 'NoC',
-        answer_field: null,
-        question_id: 'QuestionId-5'
-      }];
+      ];
       const nocQuestionsAfterSort = fromReducer.orderQuestions(nocQuestionsBeforeSort);
       expect(nocQuestionsAfterSort[0].question_id).toBe('QuestionId-1');
       expect(nocQuestionsAfterSort[1].question_id).toBe('QuestionId-5');

@@ -21,7 +21,7 @@ describe('log4jui', () => {
       addContext: sandbox.spy(),
       error: sandbox.spy(),
       info: sandbox.spy(),
-      warn: sandbox.spy()
+      warn: sandbox.spy(),
     };
     sandbox.stub(log4js, 'getLogger').returns(spyObj);
   });

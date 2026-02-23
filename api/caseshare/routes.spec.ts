@@ -23,7 +23,7 @@ describe('Case Share Routes', () => {
       post: sandbox.stub(),
       put: sandbox.stub(),
       delete: sandbox.stub(),
-      use: sandbox.stub()
+      use: sandbox.stub(),
     };
 
     expressStub = sandbox.stub(express, 'Router').returns(mockRouter);

@@ -9,9 +9,11 @@ import { setHeaders } from '../lib/proxy';
 import { exists } from '../lib/util';
 import { LocationInfo, RoleAssignment } from './interfaces/roleAssignment';
 import {
-  getOrganisationRoles, getRoleCategoryFromRoleAssignments,
-  getUserRoleCategory, isCurrentUserCaseAllocator,
-  userDetailsValid
+  getOrganisationRoles,
+  getRoleCategoryFromRoleAssignments,
+  getUserRoleCategory,
+  isCurrentUserCaseAllocator,
+  userDetailsValid,
 } from './utils';
 import { trackTrace } from '../lib/appInsights';
 import { containsDangerousCode } from '../utils';
@@ -45,26 +47,24 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
       canShareCases,
       roleAssignmentInfo,
       sessionTimeout,
-      userInfo
+      userInfo,
     });
   } catch (error) {
     next(error);
   }
 }
 
-export function getSyntheticRoles(roleAssignments: RoleAssignment[]): string [] {
+export function getSyntheticRoles(roleAssignments: RoleAssignment[]): string[] {
   let syntheticRoles = [];
   const activeRoleAssignments = getActiveRoleAssignments(roleAssignments, new Date());
   activeRoleAssignments?.forEach((roleAssignment) => {
-    if (roleAssignment?.substantive === 'Y'
-        &&
-        roleAssignment?.jurisdiction
-        &&
-        roleAssignment?.roleName
-        &&
-        roleAssignment?.roleType
-        &&
-        roleAssignment?.roleType.toUpperCase() === 'ORGANISATION') {
+    if (
+      roleAssignment?.substantive === 'Y' &&
+      roleAssignment?.jurisdiction &&
+      roleAssignment?.roleName &&
+      roleAssignment?.roleType &&
+      roleAssignment?.roleType.toUpperCase() === 'ORGANISATION'
+    ) {
       syntheticRoles = [...syntheticRoles, getSyntheticRole(roleAssignment.jurisdiction, roleAssignment.roleName)];
     }
   });
@@ -97,7 +97,9 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
     } catch (error) {
       if (error.status === 304) {
         // as user role assignments are not returned use session to send expected results
-        trackTrace(`user ${id} details from session:- ${JSON.stringify(req?.session?.userRoleAssignments)}`, { functionCall: 'refreshRoleAssignmentForUser' });
+        trackTrace(`user ${id} details from session:- ${JSON.stringify(req?.session?.userRoleAssignments)}`, {
+          functionCall: 'refreshRoleAssignmentForUser',
+        });
         userRoleAssignments = setUserRoles(userInfo, req, id);
         return userRoleAssignments;
       }
@@ -142,9 +144,7 @@ export function addUserRolesIfUnique(userInfo: UserInfo, amRoles: string[]): voi
 }
 
 export function extractRoleCategories(userRoleAssignments: any[]): string[] {
-  return userRoleAssignments
-    ?.filter((role) => role && !!role.roleCategory)
-    .map((role) => role.roleCategory);
+  return userRoleAssignments?.filter((role) => role && !!role.roleCategory).map((role) => role.roleCategory);
 }
 
 export function getActiveRoleAssignments(roleAssignments: RoleAssignment[], filterDate: Date): RoleAssignment[] {
@@ -171,10 +171,10 @@ export function getRoleAssignmentInfo(roleAssignmentResponse: RoleAssignment[]):
 }
 
 export async function getUserRoleAssignments(userInfo: UserInfo, req): Promise<any[]> {
-  const refreshRoleAssignments = req?.query?.refreshRoleAssignments
-    ? req.query.refreshRoleAssignments === 'true' : false;
+  const refreshRoleAssignments = req?.query?.refreshRoleAssignments ? req.query.refreshRoleAssignments === 'true' : false;
   const roleAssignmentInfo =
-    req?.session?.roleAssignmentResponse && !refreshRoleAssignments ? getRoleAssignmentInfo(req.session.roleAssignmentResponse)
+    req?.session?.roleAssignmentResponse && !refreshRoleAssignments
+      ? getRoleAssignmentInfo(req.session.roleAssignmentResponse)
       : await refreshRoleAssignmentForUser(userInfo, req);
   return roleAssignmentInfo;
 }

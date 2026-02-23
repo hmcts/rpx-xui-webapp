@@ -12,7 +12,7 @@ import { JudgeTypesAnswerConverter } from './judge-types.answer.converter';
 
 describe('JudgeTypesAnswerConverter', () => {
   let converter: AnswerConverter;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let store: Store<any>;
   let router: any;
   const ROLE_TYPE = ['initial'];
@@ -25,12 +25,12 @@ describe('JudgeTypesAnswerConverter', () => {
           useValue: {
             snapshot: {
               data: {
-                judgeTypes: hearingStageRefData
-              }
-            }
-          }
-        }
-      ]
+                judgeTypes: hearingStageRefData,
+              },
+            },
+          },
+        },
+      ],
     });
     store = TestBed.inject(Store);
     router = TestBed.inject(ActivatedRoute);
@@ -40,7 +40,7 @@ describe('JudgeTypesAnswerConverter', () => {
   it('should transform hearing judge types', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
-      roleType: ROLE_TYPE
+      roleType: ROLE_TYPE,
     };
     const result$ = converter.transformAnswer(of(STATE));
     const option = 'Initial';

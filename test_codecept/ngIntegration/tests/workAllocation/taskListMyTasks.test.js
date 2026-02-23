@@ -5,7 +5,9 @@ const MockUtil = require('../../util/mockUtil');
 const BrowserUtil = require('../../util/browserUtil');
 const BrowserWaits = require('../../../e2e/support/customWaits');
 
-function headerPage () { return require('../../../e2e/features/pageObjects/headerPage')(); }
+function headerPage() {
+  return require('../../../e2e/features/pageObjects/headerPage')();
+}
 const taskListPage = require('../../../e2e/features/pageObjects/workAllocation/taskListPage');
 const CaselistPage = require('../../../e2e/features/pageObjects/CaseListPage');
 const errorPage = require('../../../e2e/features/pageObjects/errorPage');
@@ -34,29 +36,34 @@ describe('Task list page', function () {
   async function navigatetoTaskListPage() {
     await BrowserUtil.browserInitWithAuth(['caseworker-ia-caseofficer', 'caseworker-ia-admofficer']);
 
-    await headerPage().waitForPrimaryNavDisplay()
+    await headerPage().waitForPrimaryNavDisplay();
     await BrowserUtil.waitForLD();
     await browser.get('tasks/list/');
     await headerPage().waitForPrimaryNavDisplay();
     await taskListPage.amOnPage();
   }
 
-  describe('My tasks :', function(){
+  describe('My tasks :', function () {
     [22, 0].forEach((tasksCount) => {
       it(`Display tasks count in Task list - showing ${tasksCount} tasks`, async function () {
-        MockUtil.setMockResponse('POST', '/workallocation/task/',(req,res)=>{
+        MockUtil.setMockResponse('POST', '/workallocation/task/', (req, res) => {
           res.send(workAllocationMockData.getMyTasks(tasksCount));
         });
 
         await navigatetoTaskListPage();
         await taskListPage.clickMyTasks();
-        expect(await taskListPage.isMyTasksDisplayed(),'My tasks not dispplayed').to.be.true;
+        expect(await taskListPage.isMyTasksDisplayed(), 'My tasks not dispplayed').to.be.true;
 
-        expect(parseInt(await taskListPage.getTaskListCountInTable()), 'Task count does not match expected ').to.equal(tasksCount);
+        expect(parseInt(await taskListPage.getTaskListCountInTable()), 'Task count does not match expected ').to.equal(
+          tasksCount
+        );
         // expect(parseInt(await taskListPage.getTaskCountInDisplayLabel()), 'Task count does not match expected ').to.equal(tasksCount);
         if (tasksCount === 0) {
           expect(await taskListPage.isTableFooterDisplayed(), 'task list table footer is not displayed').to.be.true;
-          expect(await taskListPage.getTableFooterMessage(), 'task list table footer message when 0 tasks are displayed').to.equal('You have no assigned tasks.');
+          expect(
+            await taskListPage.getTableFooterMessage(),
+            'task list table footer message when 0 tasks are displayed'
+          ).to.equal('You have no assigned tasks.');
         } else {
           expect(await taskListPage.isTableFooterDisplayed(), 'task list table footer is displayed').to.be.false;
         }
@@ -85,14 +92,18 @@ describe('Task list page', function () {
         expect(await taskListPage.getColumnSortState(headerName)).to.equal('none');
 
         await taskListPage.clickColumnHeader(headerName);
-        await BrowserWaits.waitForCondition(async () => { return tasksRequested });
+        await BrowserWaits.waitForCondition(async () => {
+          return tasksRequested;
+        });
         expect(headerColId).to.contains(sortColumnInRequestParam);
         tasksRequested = false;
         sortColumnInRequestParam = '';
         expect(await taskListPage.getColumnSortState(headerName)).to.equal('ascending');
 
         await taskListPage.clickColumnHeader(headerName);
-        await BrowserWaits.waitForCondition(async () => { return tasksRequested });
+        await BrowserWaits.waitForCondition(async () => {
+          return tasksRequested;
+        });
         expect(headerColId).to.contains(sortColumnInRequestParam);
         sortColumnInRequestParam = '';
         tasksRequested = false;
@@ -134,14 +145,20 @@ describe('Task list page', function () {
         await headerPage().clickManageCases();
         MockUtil.setMockResponse('POST', '/workallocation/task/', (req, res) => {
           res.status(responseCode).send(workAllocationMockData.getMyTasks(10));
-        })
+        });
         await headerPage().clickTaskList();
 
         const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
-        await softAssertion.assert(async () => expect(isErrorPageDisplayed, 'Error page not displayed on error ' + responseCode).to.be.true);
+        await softAssertion.assert(
+          async () => expect(isErrorPageDisplayed, 'Error page not displayed on error ' + responseCode).to.be.true
+        );
         if (isErrorPageDisplayed) {
           const errorMessageDisplayed = await errorPage.getErrorMessage();
-          await softAssertion.assert(async () => expect(errorMessageDisplayed, 'Error message does not match on error ' + responseCode).to.contains(errorMessageForResponseCode(responseCode)));
+          await softAssertion.assert(async () =>
+            expect(errorMessageDisplayed, 'Error message does not match on error ' + responseCode).to.contains(
+              errorMessageForResponseCode(responseCode)
+            )
+          );
         }
       }
 
@@ -149,4 +166,3 @@ describe('Task list page', function () {
     });
   });
 });
-

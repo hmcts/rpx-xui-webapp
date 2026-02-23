@@ -2,7 +2,18 @@ const date = require('moment');
 const path = require('path');
 const cucumberReporter = require('../../../../codeceptCommon/reportLogger');
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
-const { $, currentUrl, elementsByCss, elementByXpath, getTagName, getText, isPresent, navigate, selectOption, waitForElement } = require('../../../../helpers/globals');
+const {
+  $,
+  currentUrl,
+  elementsByCss,
+  elementByXpath,
+  getTagName,
+  getText,
+  isPresent,
+  navigate,
+  selectOption,
+  waitForElement,
+} = require('../../../../helpers/globals');
 const config = require('../../../config/functional.conf');
 const BrowserLogs = require('../../../support/browserLogs');
 const { LOG_LEVELS } = require('../../../support/constants');
@@ -11,7 +22,9 @@ const CaseEditPage = require('../caseEditPage');
 const CreateCaseStartPage = require('../createCaseStartPage');
 const App = require('./application');
 
-function headerPage() { return require('../headerPage')(); }
+function headerPage() {
+  return require('../headerPage')();
+}
 
 class CaseManager {
   constructor() {
@@ -20,26 +33,60 @@ class CaseManager {
     this.caseEditPage = new CaseEditPage();
   }
 
-  get manageCasesHeaderLink() { return $('.hmcts-header__link'); }
-  get caseListContainer() { return $('exui-case-list'); }
+  get manageCasesHeaderLink() {
+    return $('.hmcts-header__link');
+  }
+  get caseListContainer() {
+    return $('exui-case-list');
+  }
   get caseCreateheaderLink() {
     return elementByXpath('//a[contains(@class,"hmcts-primary-navigation__link")][contains(text(),"Create case")]');
   }
-  get continueBtn() { return $('button:has-text("Continue")'); }
-  get submitBtn() { return elementByXpath('//button[contains(text(),"Submit")]'); }
-  get previousBtn() { return $('form .button-secondary'); }
-  get cancelLink() { return $('form .cancel a'); }
-  get formFields() { return 'ccd-case-edit-form>div'; }
-  get ccdCaseDetails() { return $('ccd-case-viewer'); }
-  get ccdCaseEdit() { return $('ccd-case-edit'); }
-  get caseDetailsPage() { return $('exui-case-details-home'); }
-  get exuiCaseHomeComp() { return $('exui-case-home'); }
-  get checkYourAnswers() { return $('.check-your-answers'); }
-  get caseNextStepSelect() { return $('select#next-step'); }
-  get nextStepGoButton() { return $('.event-trigger button'); }
-  get createCaseContainer() { return $('ccd-create-case-filters form'); }
-  get eventTimestamp() { return elementByXpath('//tbody/tr[1]/td[2]/div[1]'); }
-  get errorsContainer() { return $('.govuk-error-summary'); }
+  get continueBtn() {
+    return $('button:has-text("Continue")');
+  }
+  get submitBtn() {
+    return elementByXpath('//button[contains(text(),"Submit")]');
+  }
+  get previousBtn() {
+    return $('form .button-secondary');
+  }
+  get cancelLink() {
+    return $('form .cancel a');
+  }
+  get formFields() {
+    return 'ccd-case-edit-form>div';
+  }
+  get ccdCaseDetails() {
+    return $('ccd-case-viewer');
+  }
+  get ccdCaseEdit() {
+    return $('ccd-case-edit');
+  }
+  get caseDetailsPage() {
+    return $('exui-case-details-home');
+  }
+  get exuiCaseHomeComp() {
+    return $('exui-case-home');
+  }
+  get checkYourAnswers() {
+    return $('.check-your-answers');
+  }
+  get caseNextStepSelect() {
+    return $('select#next-step');
+  }
+  get nextStepGoButton() {
+    return $('.event-trigger button');
+  }
+  get createCaseContainer() {
+    return $('ccd-create-case-filters form');
+  }
+  get eventTimestamp() {
+    return elementByXpath('//tbody/tr[1]/td[2]/div[1]');
+  }
+  get errorsContainer() {
+    return $('.govuk-error-summary');
+  }
 
   async cancelCaseCreation() {
     await BrowserWaits.waitForElement(this.ccdCaseEdit);
@@ -78,7 +125,10 @@ class CaseManager {
           await this.createCaseStartPage.selectJurisdiction(jurisdiction);
         } catch (error) {
           await BrowserLogs.printBrowserLogs();
-          cucumberReporter.AddMessage('Jurisdiction option not found after 30sec. Retrying again with browser refresh', LOG_LEVELS.Warn);
+          cucumberReporter.AddMessage(
+            'Jurisdiction option not found after 30sec. Retrying again with browser refresh',
+            LOG_LEVELS.Warn
+          );
           retryOnJurisdiction++;
           await headerPage().refreshBrowser();
           throw new Error(error);
@@ -182,13 +232,13 @@ class CaseManager {
     await BrowserWaits.waitForElement(this.exuiCaseHomeComp);
     await BrowserWaits.waitForElement(this.caseNextStepSelect);
 
-    const nextStepSelect = elementByXpath('//*[@id=\'next-step\']');
+    const nextStepSelect = elementByXpath("//*[@id='next-step']");
     let nextStepSelectoption = null;
     if (stepName) {
       cucumberReporter.AddMessage('About to select ' + stepName, LOG_LEVELS.Debug);
       await selectOption(nextStepSelect, stepName);
     } else {
-      nextStepSelectoption = elementByXpath('//option[text() = \'\' + stepName + \'\']');
+      nextStepSelectoption = elementByXpath("//option[text() = '' + stepName + '']");
       const someStepEventName = await getText(nextStepSelectoption);
       cucumberReporter.AddMessage('Using logic to select ' + someStepEventName, LOG_LEVELS.Debug);
       await selectOption(nextStepSelect, someStepEventName);
@@ -237,7 +287,7 @@ class CaseManager {
       await this.caseEditPage.wizardPageFormFieldValidations(pageCounter);
     }
     const fields = elementsByCss(this.formFields);
-    for (let count = 0; count < await fields.count(); count++) {
+    for (let count = 0; count < (await fields.count()); count++) {
       const isHiddenElement = await fields.nth(count);
 
       const isHidden = await isHiddenElement.getAttribute('hidden');
@@ -285,7 +335,15 @@ class CaseManager {
   }
 
   async excludeFieldValues(fieldName) {
-    const excludedValues = ['Building and Street', 'Address Line 2', 'Address Line 3', 'Town or City', 'County', 'Postcode/Zipcode', 'Country'];
+    const excludedValues = [
+      'Building and Street',
+      'Address Line 2',
+      'Address Line 3',
+      'Town or City',
+      'County',
+      'Postcode/Zipcode',
+      'Country',
+    ];
     const found = excludedValues.includes(fieldName);
     return found;
   }
@@ -380,7 +438,7 @@ class CaseManager {
               throw new Error('');
             }
           });
-          await selectOption(addressSelectionField, { index: 1});
+          await selectOption(addressSelectionField, { index: 1 });
           cucumberReporter.AddMessage(fieldName + ' : 2nd option selected', LOG_LEVELS.Debug);
         });
 
@@ -483,13 +541,13 @@ class CaseManager {
         }
         const multipleChoiceLabels = await ccdField.locator('.multiple-choice label');
         const mcFirstLabel = await multipleChoiceLabels.nth(0);
-        cucumberReporter.AddMessage(fieldName + ' : first option selected : ' + await getText(mcFirstLabel), LOG_LEVELS.Debug);
+        cucumberReporter.AddMessage(fieldName + ' : first option selected : ' + (await getText(mcFirstLabel)), LOG_LEVELS.Debug);
         this._appendFormPageValues(fieldName1, await getText(mcFirstLabel));
         break;
       case 'ccd-write-complex-type-field':
         cucumberReporter.AddMessage(fieldName + ' : complex field values');
         var writeFields = await ccdField.locator('ccd-field-write');
-        for (let fieldcounter = 0; fieldcounter < await writeFields.count(); fieldcounter++) {
+        for (let fieldcounter = 0; fieldcounter < (await writeFields.count()); fieldcounter++) {
           const isHidden = await (await writeFields.nth(fieldcounter)).getAttribute('hidden');
           if (isHidden) {
             continue;
@@ -520,7 +578,13 @@ class CaseManager {
       default:
         console.log('Unknown field type : ' + ccdFileTagName);
 
-        cucumberReporter.AddMessage(fieldName + ' : unknown ccd field container ' + ccdFileTagName + '. Please check if container is missing in test config or changed', LOG_LEVELS.Debug);
+        cucumberReporter.AddMessage(
+          fieldName +
+            ' : unknown ccd field container ' +
+            ccdFileTagName +
+            '. Please check if container is missing in test config or changed',
+          LOG_LEVELS.Debug
+        );
     }
   }
 
@@ -547,7 +611,7 @@ class CaseManager {
       }
       const objKey = label ? label[0] : key;
 
-      if (typeof (value) === 'number') {
+      if (typeof value === 'number') {
         keyVal = value.toString();
       }
       const objValue = keyVal ? keyVal : value;

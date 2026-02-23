@@ -124,7 +124,7 @@ describe('SearchValidators', () => {
       [SearchFormControl.DATE_OF_BIRTH_YEAR]: '',
       [SearchFormControl.DATE_OF_DEATH_DAY]: '',
       [SearchFormControl.DATE_OF_DEATH_MONTH]: '',
-      [SearchFormControl.DATE_OF_DEATH_YEAR]: ''
+      [SearchFormControl.DATE_OF_DEATH_YEAR]: '',
     });
 
     formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).setValue('1');
@@ -146,7 +146,7 @@ describe('SearchValidators', () => {
       [SearchFormControl.DATE_OF_BIRTH_YEAR]: '',
       [SearchFormControl.DATE_OF_DEATH_DAY]: '',
       [SearchFormControl.DATE_OF_DEATH_MONTH]: '',
-      [SearchFormControl.DATE_OF_DEATH_YEAR]: ''
+      [SearchFormControl.DATE_OF_DEATH_YEAR]: '',
     });
 
     formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).setValue('10');
@@ -168,7 +168,7 @@ describe('SearchValidators', () => {
       [SearchFormControl.DATE_OF_BIRTH_YEAR]: '',
       [SearchFormControl.DATE_OF_DEATH_DAY]: '',
       [SearchFormControl.DATE_OF_DEATH_MONTH]: '',
-      [SearchFormControl.DATE_OF_DEATH_YEAR]: ''
+      [SearchFormControl.DATE_OF_DEATH_YEAR]: '',
     });
 
     formGroup.get(SearchFormControl.DATE_OF_BIRTH_DAY).setValue('10');
@@ -190,7 +190,7 @@ describe('SearchValidators', () => {
       [SearchFormControl.DATE_OF_BIRTH_YEAR]: '',
       [SearchFormControl.DATE_OF_DEATH_DAY]: '',
       [SearchFormControl.DATE_OF_DEATH_MONTH]: '',
-      [SearchFormControl.DATE_OF_DEATH_YEAR]: ''
+      [SearchFormControl.DATE_OF_DEATH_YEAR]: '',
     });
 
     // Set an error on date of birth day field deliberately, to simulate invalidity
@@ -207,7 +207,7 @@ describe('SearchValidators', () => {
       [SearchFormControl.DATE_OF_BIRTH_YEAR]: null,
       [SearchFormControl.DATE_OF_DEATH_DAY]: '15',
       [SearchFormControl.DATE_OF_DEATH_MONTH]: '12',
-      [SearchFormControl.DATE_OF_DEATH_YEAR]: '2021'
+      [SearchFormControl.DATE_OF_DEATH_YEAR]: '2021',
     });
 
     const dateComparisonValidator = SearchValidators.dateComparisonValidator();
@@ -218,7 +218,7 @@ describe('SearchValidators', () => {
     const formGroup = new FormBuilder().group({
       [SearchFormControl.CASE_REF]: null,
       [SearchFormControl.OTHER_REF]: null,
-      [SearchFormControl.SERVICES_LIST]: 'ALL'
+      [SearchFormControl.SERVICES_LIST]: 'ALL',
     });
 
     const searchFormValidator = SearchValidators.searchFormValidator();
@@ -229,7 +229,7 @@ describe('SearchValidators', () => {
     const formGroup = new FormBuilder().group({
       [SearchFormControl.CASE_REF]: '0',
       [SearchFormControl.OTHER_REF]: null,
-      [SearchFormControl.SERVICES_LIST]: 'ALL'
+      [SearchFormControl.SERVICES_LIST]: 'ALL',
     });
 
     const searchFormValidator = SearchValidators.searchFormValidator();

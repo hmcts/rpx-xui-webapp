@@ -1,4 +1,3 @@
-
 const express = require('express');
 var bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -22,15 +21,15 @@ const nodeMockConfig = require('./config');
 
 const nodeMockPort = require('./availablePortFinder').getAvailablePort();
 const parallelProxyStartPort = parseInt(nodeMockPort) + 1;
-class MockApp{
-  constructor(){
+class MockApp {
+  constructor() {
     this.logMessageCallback = null;
     this.logJSONCallback = null;
     this.routesLogFile = `${__dirname}/RUNTIME_ROUTES.txt`;
     this.uniqueRoutesCalled = new Set();
   }
 
-  init(clientPortStart){
+  init(clientPortStart) {
     this.requestLogs = [];
     this.clientPortCounter = clientPortStart ? clientPortStart : parallelProxyStartPort;
     this.scenarios = {};
@@ -39,12 +38,12 @@ class MockApp{
 
     this.scenarioRequestCallbacks = { proxyReqCount: 0 };
 
-    this.intercepts =[];
+    this.intercepts = [];
     this.conf = {
       get: { ...requestMapping.get },
       post: { ...requestMapping.post },
       put: { ...requestMapping.put },
-      delete: { ...requestMapping.delete }
+      delete: { ...requestMapping.delete },
     };
     // this.configurations = Object.assign({}, configurations)
 
@@ -57,15 +56,15 @@ class MockApp{
     return 'done';
   }
 
-  initialiseMockDataServices(){
+  initialiseMockDataServices() {
     waMockDataService.init();
   }
 
-  setServerPort(port){
+  setServerPort(port) {
     this.serverPort = port;
   }
 
-  setLogMessageCallback(callback){
+  setLogMessageCallback(callback) {
     this.logMessageCallback = callback;
   }
 
@@ -73,9 +72,9 @@ class MockApp{
     this.logJSONCallback = callback;
   }
 
-  logMessage(message){
+  logMessage(message) {
     const msg = '[NODE_MOCK] ' + message;
-    if (this.logMessageCallback){
+    if (this.logMessageCallback) {
       this.logMessageCallback(msg);
     }
     console.log(msg);
@@ -88,16 +87,16 @@ class MockApp{
     console.log(json);
   }
 
-  logRequestDetails(req){
+  logRequestDetails(req) {
     this.logMessage(`${req.method} : ${req.originalUrl}`);
-    if (req.method === 'POST' || req.method === 'PUT'){
+    if (req.method === 'POST' || req.method === 'PUT') {
       this.logJSON(req.body);
     }
   }
 
-  async onRequest(endPoint, method, req, res, callback){
+  async onRequest(endPoint, method, req, res, callback) {
     let scenarioMockPort;
-    try{
+    try {
       const scenarioId = this.getCookieFromRequest(req, 'scenarioId');
       scenarioMockPort = this.getCookieFromRequest(req, 'scenarioMockPort');
       const path = req.path;
@@ -112,26 +111,28 @@ class MockApp{
       } else {
         callback(req, res);
       }
-    }catch(err){
-      if (scenarioMockPort !== nodeMockPort){
+    } catch (err) {
+      if (scenarioMockPort !== nodeMockPort) {
         await http.post(`http://localhost:${nodeMockPort}/mockerror`, { error: err });
       }
       console.log(err);
       const logErrorMessge = { message: 'MOCK onRequest error', err: err.message, stack: err.stack };
-      this.logMessage(`*********************** Mock onRequest error occured  on server with port ${this.serverPort} ******************** `);
+      this.logMessage(
+        `*********************** Mock onRequest error occured  on server with port ${this.serverPort} ******************** `
+      );
       this.logJSON(logErrorMessge);
       this.logMessage('*************************************************************** ');
       res.status(550).send(logErrorMessge);
     }
   }
 
-  async proxyRequest(req, res, port){
+  async proxyRequest(req, res, port) {
     const headers = req.headers;
     const urlPath = req.originalUrl;
 
     let reqCallback = null;
     //this.logMessage(`${this.serverPort} proxying request to ${port} ${req.method.toUpperCase()}  ${urlPath} `);
-    switch (req.method.toLowerCase()){
+    switch (req.method.toLowerCase()) {
       case 'get':
         reqCallback = () => http.get(`http://localhost:${port}${urlPath}`, { headers });
         break;
@@ -146,50 +147,56 @@ class MockApp{
         break;
       default:
         await http.post(`http://localhost:${port}/mockerror`, { error: err }, { headers });
-        CucumberReporter.AddMessage(`*********************** Mock onProxy unknown method  error occured  on server with port ${this.serverPort} ******************** `);
+        CucumberReporter.AddMessage(
+          `*********************** Mock onProxy unknown method  error occured  on server with port ${this.serverPort} ******************** `
+        );
         CucumberReporter.AddMessage(err);
         CucumberReporter.AddMessage('*************************************************************** ');
         res.status(551).send({ error: 'mock proxy error, unknown req method ' + req.method });
     }
     let response = null;
-    try{
+    try {
       response = await reqCallback();
       res.status(response.status).send(response.data);
-    } catch(err){
-      if (err.response && err.response.status < 510){
+    } catch (err) {
+      if (err.response && err.response.status < 510) {
         res.status(err.response.status).send(err.response.body);
         return;
       }
 
       await http.post(`http://localhost:${port}/mockerror`, { error: err }, { headers });
       console.log(err);
-      CucumberReporter.AddMessage(`*********************** Mock onProxy error occured  on server with port ${this.serverPort} ******************** `);
+      CucumberReporter.AddMessage(
+        `*********************** Mock onProxy error occured  on server with port ${this.serverPort} ******************** `
+      );
       CucumberReporter.AddMessage(err);
       CucumberReporter.AddMessage('*************************************************************** ');
       res.status(552).send({ message: 'MOCK onProxy error', err: err.message });
     }
   }
 
-  getCookieFromRequest(req, cookieName){
+  getCookieFromRequest(req, cookieName) {
     const cookie = req.cookies[cookieName];
     this.scenarios[cookie] = this.scenarios[cookie] ? this.scenarios[cookie] : '';
     return cookie;
   }
 
-  deleteScenarioSession(scenarioId){
-    if (scenarioId){
+  deleteScenarioSession(scenarioId) {
+    if (scenarioId) {
       delete this.scenarioRequestCallbacks[scenarioId];
     }
   }
 
-  getScenarioCallBack(scenarioId, method, path){
-    const sessionRequestMapping = this.scenarioRequestCallbacks[scenarioId] ? this.scenarioRequestCallbacks[scenarioId].callbacks : null;
-    if (sessionRequestMapping && sessionRequestMapping[method] && sessionRequestMapping[method][path]){
+  getScenarioCallBack(scenarioId, method, path) {
+    const sessionRequestMapping = this.scenarioRequestCallbacks[scenarioId]
+      ? this.scenarioRequestCallbacks[scenarioId].callbacks
+      : null;
+    if (sessionRequestMapping && sessionRequestMapping[method] && sessionRequestMapping[method][path]) {
       return sessionRequestMapping[method][path];
-    }else{
+    } else {
       if (this.serverPort !== nodeMockPort) {
         this.logMessage(Object.keys(this.scenarioRequestCallbacks));
-        if (this.scenarioRequestCallbacks[scenarioId]){
+        if (this.scenarioRequestCallbacks[scenarioId]) {
           this.logMessage(Object.keys(this.scenarioRequestCallbacks[scenarioId]['callbacks'][method]));
         }
       }
@@ -197,11 +204,11 @@ class MockApp{
     }
   }
 
-  getNextAvailableClientPort(){
+  getNextAvailableClientPort() {
     return http.get(`http://localhost:${nodeMockPort}/proxy/port`, {});
   }
 
-  async startServer(){
+  async startServer() {
     const app = express();
     app.disable('etag');
     app.use(bodyParser.urlencoded({ extended: false }));
@@ -215,8 +222,12 @@ class MockApp{
     });
 
     app.post('/mockerror', (req, res) => {
-      CucumberReporter.AddMessage(`*********************** Mock main server reporting error to server with port ${this.serverPort} ******************** `);
-      console.log(`*********************** Mock main server reporting error to server with port ${this.serverPort} ******************** `);
+      CucumberReporter.AddMessage(
+        `*********************** Mock main server reporting error to server with port ${this.serverPort} ******************** `
+      );
+      console.log(
+        `*********************** Mock main server reporting error to server with port ${this.serverPort} ******************** `
+      );
 
       console.log(req.body);
       CucumberReporter.AddMessage(req.body);
@@ -253,7 +264,9 @@ class MockApp{
         const logJSONCallbackLocal = this.logJSONCallback;
 
         res.send = function (body) {
-          logMessagesCallBackLocal(` ------------------------------Mock response intercept from server with port "${MockApp.serverPort}" ---------------------------`);
+          logMessagesCallBackLocal(
+            ` ------------------------------Mock response intercept from server with port "${MockApp.serverPort}" ---------------------------`
+          );
           logMessagesCallBackLocal('Intercept response on MOCK api ' + url);
           logMessagesCallBackLocal('response code ' + res.statusCode);
           try {
@@ -287,7 +300,7 @@ class MockApp{
     await this.stopServer();
     this.server = await app.listen(this.serverPort);
 
-    if (nodeMockPort === this.serverPort){
+    if (nodeMockPort === this.serverPort) {
       fs.writeFileSync(this.routesLogFile, '');
     }
 
@@ -295,12 +308,12 @@ class MockApp{
     // return "Mock started successfully"
   }
 
-  async stopServer(){
-    if (this.server){
+  async stopServer() {
+    if (this.server) {
       await this.server.close();
       this.server = null;
       console.log('Mock server stopped');
-    }else{
+    } else {
       console.log('Mock server is null or undefined');
     }
   }
@@ -309,23 +322,23 @@ class MockApp{
     this.intercepts.push({ url: url, callback: callback });
   }
 
-  async onGet(path, callback){
+  async onGet(path, callback) {
     this.conf.get[path] = callback;
   }
 
-  async onPost(path, callback){
+  async onPost(path, callback) {
     this.conf.post[path] = callback;
   }
 
-  async onPut(path, callback){
+  async onPut(path, callback) {
     this.conf.put[path] = callback;
   }
 
-  async onDelete(path, callback){
+  async onDelete(path, callback) {
     this.conf.delete[path] = callback;
   }
 
-  async setConfig(configKey, value){
+  async setConfig(configKey, value) {
     //this.configurations[configKey] = value;
   }
 }
@@ -335,10 +348,13 @@ module.exports = mockInstance;
 
 const bookingsMockData = require('./workAllocation/bookingsData');
 const args = minimist(process.argv);
-if (args.standalone){
+if (args.standalone) {
   mockInstance.setServerPort(3001);
   mockInstance.init();
-  nodeAppMock.userDetails = nodeAppMock.getMockLoginUserWithidentifierAndRoles('IAC_CaseOfficer_R2', 'caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator');
+  nodeAppMock.userDetails = nodeAppMock.getMockLoginUserWithidentifierAndRoles(
+    'IAC_CaseOfficer_R2',
+    'caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor,case-allocator'
+  );
   // bookingsMockData.bookingResponse = [];
   // setUpcaseConfig();
   // getDLCaseConfig();
@@ -373,15 +389,23 @@ function setUpcaseConfig() {
   });
 }
 
-function caseDetailsLabelShowCondition(){
+function caseDetailsLabelShowCondition() {
   const caseDetail = new CCDCaseDetails('Mock Label show condition case type');
-  caseDetail.addHistoryTab()
+  caseDetail
+    .addHistoryTab()
     .addTab('Simple Conditional show of labels')
     .addFieldWithConfigToTab({ id: 'item', type: 'Text', label: 'Item text', value: 'yes' })
-    .addFieldWithConfigToTab({ id: 'label1ForItem1', type: 'Label', label: 'Item 1 text', props: { show_condition: 'item="yes"' } })
+    .addFieldWithConfigToTab({
+      id: 'label1ForItem1',
+      type: 'Label',
+      label: 'Item 1 text',
+      props: { show_condition: 'item="yes"' },
+    })
     .addTab('Complex Conditional show of labels')
     .addFieldWithConfigToTab({
-      id: 'complexFieldWithLabels', type: 'Complex', label: 'Conditional show labels complex type',
+      id: 'complexFieldWithLabels',
+      type: 'Complex',
+      label: 'Conditional show labels complex type',
       complex_fields: [
         { id: 'item', type: 'Text', label: 'Item text', value: '1' },
         { id: 'text1', type: 'Text', label: 'Item 1 text input', value: 'sample', props: { show_condition: 'item="yes"' } },
@@ -390,40 +414,52 @@ function caseDetailsLabelShowCondition(){
         { id: 'label3ForItem1', type: 'Label', label: 'Show label if item= 3', props: { show_condition: 'item="3"' } },
         { id: 'label4ForItem1', type: 'Label', label: 'Show label if item= 1', props: { show_condition: 'item="1"' } },
         { id: 'label5ForItem1', type: 'Label', label: 'Show label if item= 2', props: { show_condition: 'item="2"' } },
-        { id: 'label5ForItem1', type: 'Label', label: 'Show condition is null', props: { show_condition: null } }
-      ]
+        { id: 'label5ForItem1', type: 'Label', label: 'Show condition is null', props: { show_condition: null } },
+      ],
     })
     .addMetadata();
   return caseDetail;
 }
 
-function labelstestConfig(){
+function labelstestConfig() {
   const labelsEventConfig = new CCDCaseConfig('testCaseType', 'Test jurisdiction', 'test description');
   labelsEventConfig.addWizardPage('testPage1', 'Applicant details');
   labelsEventConfig.addCaseField({ id: 'applicantName', type: 'Text', label: 'Applicant name' });
   labelsEventConfig.addWizardPage('testPage2', 'More details of applicant ');
-  labelsEventConfig.addCaseField({ id: 'printApplicantName', type: 'Label', label: 'Below are more details for  ->${applicantName}<-' });
-  labelsEventConfig.addCaseField({ id: 'familyDetails', type: 'Complex', label: 'provide more details for applicant: ->${applicantName}<-',
+  labelsEventConfig.addCaseField({
+    id: 'printApplicantName',
+    type: 'Label',
+    label: 'Below are more details for  ->${applicantName}<-',
+  });
+  labelsEventConfig.addCaseField({
+    id: 'familyDetails',
+    type: 'Complex',
+    label: 'provide more details for applicant: ->${applicantName}<-',
     complex_fields: [
       { id: 'applicantFamilyDetailsMsgid', type: 'Label', label: 'Provide ->${applicantName}<- family history' },
       { id: 'familyHistoryText', type: 'Text', Label: 'History ref' },
-      { id: 'historyRefPrint', type: 'Label', label: 'Provided ->${familyHistoryText}<- is here' }
+      { id: 'historyRefPrint', type: 'Label', label: 'Provided ->${familyHistoryText}<- is here' },
     ],
-    value: { familyHistoryText: 'Pre set value' }
+    value: { familyHistoryText: 'Pre set value' },
   });
   labelsEventConfig.addWizardPage('testPage3', 'Applicant addresses ');
-  labelsEventConfig.addCaseField({
-    id: 'addressDetauls', type: 'Collection', label: 'provide address for applicant: ->${applicantName}<-',
-    collection_field_type: {
-      id: 'addressess', type: 'Complex', label: 'Address', complex_fields: [
-        { id: 'pastAddressid', type: 'Label', label: '->${applicantName}-< past address' },
-        { id: 'pastAddressText', type: 'Text', label: 'Address text' },
-        { id: 'pastAddressidPrint', type: 'Label', label: '->${pastAddressText}-< past address is here' }
-      ]
-    }
-  })
+  labelsEventConfig
+    .addCaseField({
+      id: 'addressDetauls',
+      type: 'Collection',
+      label: 'provide address for applicant: ->${applicantName}<-',
+      collection_field_type: {
+        id: 'addressess',
+        type: 'Complex',
+        label: 'Address',
+        complex_fields: [
+          { id: 'pastAddressid', type: 'Label', label: '->${applicantName}-< past address' },
+          { id: 'pastAddressText', type: 'Text', label: 'Address text' },
+          { id: 'pastAddressidPrint', type: 'Label', label: '->${pastAddressText}-< past address is here' },
+        ],
+      },
+    })
     .setFieldProps({ display_context_parameter: '#COLLECTION(allowInsert,allowDelete)' });
 
   return labelsEventConfig;
 }
-

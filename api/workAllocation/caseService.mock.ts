@@ -11,7 +11,8 @@ export const init = () => {
   const caseworkerMyCaseUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/myCases\?view=legalops/;
 
   const judicialAllCaseUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/allWorkCases\?view=judicial/;
-  const caseworkerAllCaseUrl = /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/allWorkCases\?view=legalops/;
+  const caseworkerAllCaseUrl =
+    /http:\/\/wa-task-management-api-aat.service.core-compute-aat.internal\/allWorkCases\?view=legalops/;
 
   // simulate some error if needed
   // mock.onGet(url).networkErrorOnce()
@@ -20,14 +21,13 @@ export const init = () => {
     const body = JSON.parse(config.data);
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
-    const caseList = sort(JUDICIAL_MY_CASES.cases,
-      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+    const caseList = sort(JUDICIAL_MY_CASES.cases, getSortName(sortingConfig[0].sort_by), sortingConfig[0].sort_order === 'asc');
     return [
       200,
       {
         cases: paginate(caseList, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: JUDICIAL_MY_CASES.cases.length
-      }
+        total_records: JUDICIAL_MY_CASES.cases.length,
+      },
     ];
   });
 
@@ -36,14 +36,17 @@ export const init = () => {
     const body = JSON.parse(config.data);
     const paginationConfig = body.pagination_parameters;
     const sortingConfig = body.sorting_parameters;
-    const caseList = sort(CASEWORKER_ALL_CASES.cases,
-      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+    const caseList = sort(
+      CASEWORKER_ALL_CASES.cases,
+      getSortName(sortingConfig[0].sort_by),
+      sortingConfig[0].sort_order === 'asc'
+    );
     return [
       200,
       {
         cases: paginate(caseList, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: CASEWORKER_MY_CASES.cases.length
-      }
+        total_records: CASEWORKER_MY_CASES.cases.length,
+      },
     ];
   });
 
@@ -54,14 +57,13 @@ export const init = () => {
     const sortingConfig = body.sorting_parameters;
     const searchParameters: SearchTaskParameter[] = body.search_parameters as SearchTaskParameter[];
     const filteredList = filterAllWorkCases(JUDICIAL_ALL_CASES.cases, searchParameters);
-    const caseList = sort(filteredList,
-      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+    const caseList = sort(filteredList, getSortName(sortingConfig[0].sort_by), sortingConfig[0].sort_order === 'asc');
     return [
       200,
       {
         cases: paginate(caseList, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: filteredList.length
-      }
+        total_records: filteredList.length,
+      },
     ];
   });
 
@@ -72,14 +74,13 @@ export const init = () => {
     const sortingConfig = body.sorting_parameters;
     const filteringConfig = body.search_parameters;
     const filteredList = filterAllWorkCases(CASEWORKER_ALL_CASES.cases, filteringConfig);
-    const caseList = sort(filteredList,
-      getSortName(sortingConfig[0].sort_by), (sortingConfig[0].sort_order === 'asc'));
+    const caseList = sort(filteredList, getSortName(sortingConfig[0].sort_by), sortingConfig[0].sort_order === 'asc');
     return [
       200,
       {
         cases: paginate(caseList, paginationConfig.page_number, paginationConfig.page_size),
-        total_records: filteredList.length
-      }
+        total_records: filteredList.length,
+      },
     ];
   });
 };

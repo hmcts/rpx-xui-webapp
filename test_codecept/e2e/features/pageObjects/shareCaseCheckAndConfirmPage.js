@@ -4,14 +4,26 @@ const BrowserWaits = require('../../support/customWaits');
 
 const ShareCaseData = require('../../utils/shareCaseData');
 class ShareCaseCheckAndConfirmPage {
-  get pageContainer() { return $('xuilib-share-case-confirm'); }
-  get summarySelectionContainer() { return $('#summarySections'); }
+  get pageContainer() {
+    return $('xuilib-share-case-confirm');
+  }
+  get summarySelectionContainer() {
+    return $('#summarySections');
+  }
 
-  get selectedCaseConfirmList() { return $$('xuilib-selected-case-confirm #user-access-block'); }
-  get backLink() { return $('.govuk-back-link'); }
-  get confirmBtn() { return $('#share-case-nav button'); }
+  get selectedCaseConfirmList() {
+    return $$('xuilib-selected-case-confirm #user-access-block');
+  }
+  get backLink() {
+    return $('.govuk-back-link');
+  }
+  get confirmBtn() {
+    return $('#share-case-nav button');
+  }
 
-  get changesSubmissionConfirmationContainer() { return $('.govuk-panel--confirmation'); }
+  get changesSubmissionConfirmationContainer() {
+    return $('.govuk-panel--confirmation');
+  }
 
   async waitForPageToLoad() {
     await BrowserWaits.waitForElement(this.pageContainer, 'Share Case Conform your selection page not displayed.');
@@ -28,7 +40,10 @@ class ShareCaseCheckAndConfirmPage {
     if (!caseContainer) {
       throw Error('no Case at position ' + containerIndex);
     }
-    await BrowserWaits.waitForElement(caseContainer.locator('.case-share-confirm__caption-area .case-share-confirm__caption'), 'case sub title not displayed for case at pos ' + containerIndex);
+    await BrowserWaits.waitForElement(
+      caseContainer.locator('.case-share-confirm__caption-area .case-share-confirm__caption'),
+      'case sub title not displayed for case at pos ' + containerIndex
+    );
     const caseId = await caseContainer.locator('.case-share-confirm__caption-area .case-share-confirm__caption').textContent();
     return caseId;
   }
@@ -37,7 +52,10 @@ class ShareCaseCheckAndConfirmPage {
     const casesCount = await this.selectedCaseConfirmList.count();
     for (let caseCounter = 0; caseCounter < casesCount; caseCounter++) {
       const caseContainer = await this.selectedCaseConfirmList.nth(caseCounter);
-      await BrowserWaits.waitForElement(caseContainer.locator('.case-share-confirm__caption-area .case-share-confirm__caption'), 'case sub title not displayed for case at pos ' + caseCounter);
+      await BrowserWaits.waitForElement(
+        caseContainer.locator('.case-share-confirm__caption-area .case-share-confirm__caption'),
+        'case sub title not displayed for case at pos ' + caseCounter
+      );
       const caseId = await caseContainer.locator('.case-share-confirm__caption-area .case-share-confirm__caption').textContent();
       if (caseId.includes(caseid)) {
         return caseContainer;

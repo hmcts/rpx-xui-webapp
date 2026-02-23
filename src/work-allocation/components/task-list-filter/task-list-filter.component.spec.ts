@@ -19,8 +19,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 
 @Component({
   standalone: false,
-  template: `
-    <exui-task-list-filter></exui-task-list-filter>`
+  template: ` <exui-task-list-filter></exui-task-list-filter>`,
 })
 class WrapperComponent {
   @ViewChild(TaskListFilterComponent, { static: true }) public appComponentRef: TaskListFilterComponent;
@@ -33,36 +32,36 @@ describe('TaskListFilterComponent', () => {
   const typesOfWork = [
     {
       key: 'hearing_work',
-      label: 'Hearing work'
+      label: 'Hearing work',
     },
     {
       key: 'upper_tribunal',
-      label: 'Upper Tribunal'
+      label: 'Upper Tribunal',
     },
     {
       key: 'routine_work',
-      label: 'Routine work'
+      label: 'Routine work',
     },
     {
       key: 'decision_making_work',
-      label: 'Decision-making work'
+      label: 'Decision-making work',
     },
     {
       key: 'applications',
-      label: 'Applications'
+      label: 'Applications',
     },
     {
       key: 'priority',
-      label: 'Priority'
+      label: 'Priority',
     },
     {
       key: 'access_requests',
-      label: 'Access requests'
+      label: 'Access requests',
     },
     {
       key: 'error_management',
-      label: 'Error management'
-    }
+      label: 'Error management',
+    },
   ];
   const LOCATION = {
     court_venue_id: '100',
@@ -78,12 +77,14 @@ describe('TaskListFilterComponent', () => {
     court_type: 'Employment Tribunal',
     open_for_public: 'Yes',
     court_address: 'AB1, 48 HUNTLY STREET, ABERDEEN test1',
-    postcode: 'AB11 6LT'
+    postcode: 'AB11 6LT',
   };
   const mockStore = jasmine.createSpyObj('mockStore', ['pipe']);
   const mockTaskService = jasmine.createSpyObj('mockTaskService', ['searchTask', 'getUsersAssignedTasks', 'currentTasks$']);
   const locationService = jasmine.createSpyObj('locationService', ['path', 'getSpecificLocations']);
-  const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', ['getWASupportedJurisdictions']);
+  const mockWASupportedJurisdictionService = jasmine.createSpyObj('mockWASupportedJurisdictionService', [
+    'getWASupportedJurisdictions',
+  ]);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
   mockWASupportedJurisdictionService.getWASupportedJurisdictions.and.returnValue(of(['IA', 'SSCS']));
   const mockFeatureToggleService = jasmine.createSpyObj('featureToggleService', ['getValue']);
@@ -91,38 +92,40 @@ describe('TaskListFilterComponent', () => {
   locationService.getSpecificLocations.and.returnValue(of([]));
   mockTaskService.currentTasks$.and.returnValue(of([null]));
   mockStore.pipe.and.returnValue(of({ roleAssignmentInfo: [{ jurisdiction: 'IA', roleType: 'ORGANISATION' }] }));
-  const roleAssignmentInfo = [{
-    id: '478c83f8-0ed0-4651-b8bf-cd2b1e206ac2',
-    actorIdType: 'IDAM',
-    actorId: 'c5a983be-ca99-4b8a-97f7-23be33c3fd22',
-    roleType: 'CASE',
-    roleName: 'SOME_ROLE',
-    classification: 'PUBLIC',
-    grantType: 'STANDARD',
-    roleCategory: 'LEGAL_OPERATIONS',
-    readOnly: false,
-    created: new Date(2021, 9, 8),
-    attributes: {
-      primaryLocation: '231596',
-      jurisdiction: 'IA'
-    }
-  }];
+  const roleAssignmentInfo = [
+    {
+      id: '478c83f8-0ed0-4651-b8bf-cd2b1e206ac2',
+      actorIdType: 'IDAM',
+      actorId: 'c5a983be-ca99-4b8a-97f7-23be33c3fd22',
+      roleType: 'CASE',
+      roleName: 'SOME_ROLE',
+      classification: 'PUBLIC',
+      grantType: 'STANDARD',
+      roleCategory: 'LEGAL_OPERATIONS',
+      readOnly: false,
+      created: new Date(2021, 9, 8),
+      attributes: {
+        primaryLocation: '231596',
+        jurisdiction: 'IA',
+      },
+    },
+  ];
   const filterSettings = {
     id: 'locations',
     fields: [
       {
         id: 'services',
-        value: ['services_all', 'IA', 'SSCS']
+        value: ['services_all', 'IA', 'SSCS'],
       },
       {
         name: 'locations',
-        value: [LOCATION]
+        value: [LOCATION],
       },
       {
         name: 'types-of-work',
-        value: ['types_of_work_all', ...typesOfWork.map((t) => t.key)]
-      }
-    ]
+        value: ['types_of_work_all', ...typesOfWork.map((t) => t.key)],
+      },
+    ],
   };
   const mockFilterService: any = {
     getStream: () => of(filterSettings),
@@ -131,8 +134,8 @@ describe('TaskListFilterComponent', () => {
     givenErrors: {
       subscribe: jasmine.createSpy(),
       next: () => null,
-      unsubscribe: () => null
-    }
+      unsubscribe: () => null,
+    },
   };
   let mockRouter: any;
   let storeMock: jasmine.SpyObj<Store<fromAppStore.State>>;
@@ -142,11 +145,7 @@ describe('TaskListFilterComponent', () => {
     storeMock.pipe.and.returnValue(of(roleAssignmentInfo));
     TestBed.configureTestingModule({
       declarations: [TaskListFilterComponent, WrapperComponent],
-      imports: [CdkTableModule,
-        ExuiCommonLibModule,
-        RouterTestingModule,
-        ExuiCommonLibModule,
-        StoreModule],
+      imports: [CdkTableModule, ExuiCommonLibModule, RouterTestingModule, ExuiCommonLibModule, StoreModule],
       providers: [
         { provide: Store, useValue: mockStore },
         {
@@ -154,10 +153,10 @@ describe('TaskListFilterComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                location: LOCATION
-              }
-            }
-          }
+                location: LOCATION,
+              },
+            },
+          },
         },
         { provide: AngularLocation, useValue: locationService },
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
@@ -168,8 +167,8 @@ describe('TaskListFilterComponent', () => {
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
@@ -177,7 +176,12 @@ describe('TaskListFilterComponent', () => {
     component.persistence = 'local';
     mockFilterService.get.and.returnValue(null);
     mockFeatureToggleService.getValue.and.returnValue(of(servicesMap));
-    mockSessionStorageService.getItem.and.returnValue(JSON.stringify([{ regionId: '1', locations: ['219164'] }, { regionId: '9', locations: ['123456'] }]));
+    mockSessionStorageService.getItem.and.returnValue(
+      JSON.stringify([
+        { regionId: '1', locations: ['219164'] },
+        { regionId: '9', locations: ['123456'] },
+      ])
+    );
     fixture.detectChanges();
   });
 
@@ -222,11 +226,23 @@ describe('TaskListFilterComponent', () => {
   });
 
   xit('should not get the base location as default location if not within region', () => {
-    mockStore.pipe.and.returnValue(of({ roleAssignmentInfo: [{ jurisdiction: 'IA', roleType: 'ORGANISATION', substantive: 'y', region: '9', baseLocation: '123456' }] }));
+    mockStore.pipe.and.returnValue(
+      of({
+        roleAssignmentInfo: [
+          { jurisdiction: 'IA', roleType: 'ORGANISATION', substantive: 'y', region: '9', baseLocation: '123456' },
+        ],
+      })
+    );
     component.ngOnInit();
     expect(component.defaultLocations).toEqual(['123456']);
     component.defaultLocations = [];
-    mockStore.pipe.and.returnValue(of({ roleAssignmentInfo: [{ jurisdiction: 'IA', roleType: 'ORGANISATION', substantive: 'y', region: '1', baseLocation: '123456' }] }));
+    mockStore.pipe.and.returnValue(
+      of({
+        roleAssignmentInfo: [
+          { jurisdiction: 'IA', roleType: 'ORGANISATION', substantive: 'y', region: '1', baseLocation: '123456' },
+        ],
+      })
+    );
     component.ngOnInit();
     expect(component.defaultLocations).toEqual([]);
   });

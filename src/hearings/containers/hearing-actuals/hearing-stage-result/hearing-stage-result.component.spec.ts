@@ -32,7 +32,7 @@ describe('HearingStageResultComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'ActualCancellationReasonCodes',
@@ -45,7 +45,7 @@ describe('HearingStageResultComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'ActualCancellationReasonCodes',
@@ -58,24 +58,22 @@ describe('HearingStageResultComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
-    }
+      child_nodes: null,
+    },
   ];
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [HearingStageResultComponent, MockRpxTranslatePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [ReactiveFormsModule,
-        RouterTestingModule],
+      imports: [ReactiveFormsModule, RouterTestingModule],
       providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

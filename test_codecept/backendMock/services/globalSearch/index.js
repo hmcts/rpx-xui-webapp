@@ -1,19 +1,18 @@
-
 const { v4 } = require('uuid');
 
-class GlobalSearch{
-  getDefaultResponse(){
+class GlobalSearch {
+  getDefaultResponse() {
     return this.getGlobalSearchResponseTemplate();
   }
 
-  getGlobalSearchResponseTemplate(){
+  getGlobalSearchResponseTemplate() {
     return {
       resultInfo: {
         casesReturned: 0,
         caseStartRecord: 1,
-        moreResulsToGo: false
+        moreResulsToGo: false,
       },
-      results: []
+      results: [],
     };
   }
 }

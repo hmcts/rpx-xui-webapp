@@ -15,36 +15,36 @@ describe('access management service, get role assignments of actor', () => {
   const RESPONSE_BODY = {
     roleAssignmentResponse: [
       {
-        'id': somethingLike('3ed4f960-e50b-4127-af30-47821d5799f7'),
-        'actorIdType': somethingLike('IDAM'),
-        'actorId': somethingLike('23486'),
-        'roleType': somethingLike('ORGANISATION'),
-        'roleName': somethingLike('senior-tribunal-caseworker'),
-        'classification': somethingLike('PRIVATE'),
-        'grantType': somethingLike('STANDARD'),
-        'roleCategory': somethingLike('LEGAL_OPERATIONS'),
-        'readOnly': somethingLike(false),
-        'beginTime': somethingLike(1646762003.936321),
-        'endTime': somethingLike(1646934803.936321),
-        'process': somethingLike('process'),
-        'reference': somethingLike('reference'),
-        'statusSequence': somethingLike(10),
-        'status': somethingLike('LIVE'),
-        'created': somethingLike(1646675603.936321),
-        'log': null,
-        'attributes': {
-          'baseLocation': somethingLike('500A2S'),
-          'jurisdiction': somethingLike('IA')
+        id: somethingLike('3ed4f960-e50b-4127-af30-47821d5799f7'),
+        actorIdType: somethingLike('IDAM'),
+        actorId: somethingLike('23486'),
+        roleType: somethingLike('ORGANISATION'),
+        roleName: somethingLike('senior-tribunal-caseworker'),
+        classification: somethingLike('PRIVATE'),
+        grantType: somethingLike('STANDARD'),
+        roleCategory: somethingLike('LEGAL_OPERATIONS'),
+        readOnly: somethingLike(false),
+        beginTime: somethingLike(1646762003.936321),
+        endTime: somethingLike(1646934803.936321),
+        process: somethingLike('process'),
+        reference: somethingLike('reference'),
+        statusSequence: somethingLike(10),
+        status: somethingLike('LIVE'),
+        created: somethingLike(1646675603.936321),
+        log: null,
+        attributes: {
+          baseLocation: somethingLike('500A2S'),
+          jurisdiction: somethingLike('IA'),
         },
-        'notes': null,
-        'authorisations': []
-      }
-    ]
+        notes: null,
+        authorisations: [],
+      },
+    ],
   };
 
   describe('get /am/role-assignments/actors/${actorId}', () => {
     const sandbox: sinon.SinonSandbox = sinon.createSandbox();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     let next;
 
     beforeEach(() => {
@@ -59,18 +59,18 @@ describe('access management service, get role assignments of actor', () => {
           method: 'GET',
           path: `/am/role-assignments/actors/${actorId}`,
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
-          }
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
+          },
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/vnd.uk.gov.hmcts.role-assignment-service.get-assignments+json;charset=UTF-8;version=1.0'
+            'Content-Type': 'application/vnd.uk.gov.hmcts.role-assignment-service.get-assignments+json;charset=UTF-8;version=1.0',
           },
-          body: RESPONSE_BODY
-        }
+          body: RESPONSE_BODY,
+        },
       };
 
       pactSetUp.provider.addInteraction(interaction);
@@ -92,18 +92,18 @@ describe('access management service, get role assignments of actor', () => {
 
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'Content-Type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'Content-Type': 'application/json',
           },
           params: {
-            actorId: actorId
-          }
+            actorId: actorId,
+          },
         });
 
         const userInfo = {
           uid: '12345',
-          roles: []
+          roles: [],
         };
 
         try {

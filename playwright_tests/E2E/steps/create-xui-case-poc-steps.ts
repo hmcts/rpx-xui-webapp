@@ -14,7 +14,10 @@ export async function createCase(page) {
   await page.getByRole('group', { name: 'Person 1 - retained (Optional)' }).getByLabel('First Name (Optional)').press('Tab');
   await page.getByRole('group', { name: 'Person 1 - retained (Optional)' }).getByLabel('Last Name (Optional)').fill('Vaz');
   await page.getByRole('group', { name: 'Person 1 - retained (Optional)' }).getByLabel('Last Name (Optional)').press('Tab');
-  await page.getByRole('group', { name: 'Person 1 - retained (Optional)' }).getByLabel('Gender (Optional)').selectOption('1: male');
+  await page
+    .getByRole('group', { name: 'Person 1 - retained (Optional)' })
+    .getByLabel('Gender (Optional)')
+    .selectOption('1: male');
   await page.getByRole('group', { name: 'Job (Optional)' }).getByLabel('Title (Optional)').click();
   await page.getByRole('group', { name: 'Job (Optional)' }).getByLabel('Title (Optional)').fill('Musician');
   await page.getByRole('textbox', { name: 'Description (Optional)' }).click();
@@ -34,4 +37,4 @@ export async function createCase(page) {
   await page.getByRole('button', { name: 'Test submit' }).click();
   await expect(page.getByText(' has been created.')).toBeVisible();
   await page.getByRole('link', { name: 'Case list' }).click();
-};
+}

@@ -29,4 +29,3 @@ class SpecificAccessRequestPage {
 }
 
 module.exports = new SpecificAccessRequestPage();
-

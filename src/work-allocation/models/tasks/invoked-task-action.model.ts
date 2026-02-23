@@ -1,4 +1,3 @@
-/* eslint-disable semi */
 import { Task, TaskAction } from '.';
 
 export default interface InvokedTaskAction {

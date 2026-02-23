@@ -24,7 +24,7 @@ describe('Access Management Routes', () => {
       post: sandbox.stub(),
       put: sandbox.stub(),
       delete: sandbox.stub(),
-      patch: sandbox.stub()
+      patch: sandbox.stub(),
     };
 
     expressStub = sandbox.stub(express, 'Router').returns(mockRouter);

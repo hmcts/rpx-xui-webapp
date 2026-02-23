@@ -5,7 +5,9 @@ const MockApp = require('../../nodeMock/app');
 const BrowserUtil = require('../util/browserUtil');
 const BrowserWaits = require('../../e2e/support/customWaits');
 
-function headerPage () { return require('../../e2e/features/pageObjects/headerPage')(); }
+function headerPage() {
+  return require('../../e2e/features/pageObjects/headerPage')();
+}
 const exuiTestCaseType = require('../../nodeMock/ccd/solicitorCreate/exuiTestCaseType');
 
 describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
@@ -15,7 +17,7 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
   });
   afterEach(async function (done) {
     await MockApp.stopServer();
-    // await BrowserUtil.addScreenshot(this, browser); 
+    // await BrowserUtil.addScreenshot(this, browser);
 
     done();
   });
@@ -32,12 +34,12 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
     await browser.get(`cases/case-create/exui/casetype_1/submitDraft/page1`);
 
     await BrowserWaits.waitForElement(addNewButton);
-    expect(await addNewButton.isEnabled()).to.be.false
-    expect(await removeButton.isEnabled()).to.be.false
+    expect(await addNewButton.isEnabled()).to.be.false;
+    expect(await removeButton.isEnabled()).to.be.false;
   });
 
   it('display_context_parameter with collection(allowInsert,allowDelete)', async function () {
-    setUpcaseConfig("#COLLECTION(allowInsert,allowDelete)");
+    setUpcaseConfig('#COLLECTION(allowInsert,allowDelete)');
 
     await MockApp.startServer();
     await BrowserUtil.gotoHomePage();
@@ -46,12 +48,12 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
     await browser.get(`cases/case-create/exui/casetype_1/submitDraft/page1`);
 
     await BrowserWaits.waitForElement(addNewButton);
-    expect(await addNewButton.isEnabled()).to.be.true
-    expect(await removeButton.isEnabled()).to.be.true
+    expect(await addNewButton.isEnabled()).to.be.true;
+    expect(await removeButton.isEnabled()).to.be.true;
   });
 
   it('display_context_parameter with collection(allowInsert)', async function () {
-    setUpcaseConfig("#COLLECTION(allowInsert)");
+    setUpcaseConfig('#COLLECTION(allowInsert)');
 
     await MockApp.startServer();
     await BrowserUtil.gotoHomePage();
@@ -59,12 +61,12 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
     await browser.get(`cases/case-create/exui/casetype_1/submitDraft/page1`);
 
     await BrowserWaits.waitForElement(addNewButton);
-    expect(await addNewButton.isEnabled()).to.be.true
-    expect(await removeButton.isEnabled()).to.be.false
+    expect(await addNewButton.isEnabled()).to.be.true;
+    expect(await removeButton.isEnabled()).to.be.false;
   });
 
   it('display_context_parameter with collection(allowDelete)', async function () {
-    setUpcaseConfig("#COLLECTION(allowDelete)");
+    setUpcaseConfig('#COLLECTION(allowDelete)');
 
     await MockApp.startServer();
     await BrowserUtil.gotoHomePage();
@@ -72,12 +74,12 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
     await browser.get(`cases/case-create/exui/casetype_1/submitDraft/page1`);
 
     await BrowserWaits.waitForElement(addNewButton);
-    expect(await addNewButton.isEnabled()).to.be.false
-    expect(await removeButton.isEnabled()).to.be.true
+    expect(await addNewButton.isEnabled()).to.be.false;
+    expect(await removeButton.isEnabled()).to.be.true;
   });
 
-  it('display_context_parameter combination of conditions' , async function () {
-    setUpcaseConfig("#TABLE(AddressLine1,AddressLine2),#COLLECTION(allowInsert,allowDelete)");
+  it('display_context_parameter combination of conditions', async function () {
+    setUpcaseConfig('#TABLE(AddressLine1,AddressLine2),#COLLECTION(allowInsert,allowDelete)');
 
     await MockApp.startServer();
     await BrowserUtil.gotoHomePage();
@@ -85,12 +87,12 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
     await browser.get(`cases/case-create/exui/casetype_1/submitDraft/page1`);
 
     await BrowserWaits.waitForElement(addNewButton);
-    expect(await addNewButton.isEnabled()).to.be.true
-    expect(await removeButton.isEnabled()).to.be.true
+    expect(await addNewButton.isEnabled()).to.be.true;
+    expect(await removeButton.isEnabled()).to.be.true;
   });
 
   it('display_context_parameter with no permission in collection ', async function () {
-    setUpcaseConfig("#COLLECTION()");
+    setUpcaseConfig('#COLLECTION()');
     await MockApp.startServer();
 
     await BrowserUtil.gotoHomePage();
@@ -98,11 +100,11 @@ describe('CCD-CASE-UI-TOOLKIT collection field permissions', function () {
     await browser.get(`cases/case-create/exui/casetype_1/submitDraft/page1`);
 
     await BrowserWaits.waitForElement(addNewButton);
-    expect(await addNewButton.isEnabled()).to.be.false
-    expect(await removeButton.isEnabled()).to.be.false
+    expect(await addNewButton.isEnabled()).to.be.false;
+    expect(await removeButton.isEnabled()).to.be.false;
   });
 
-  function setUpcaseConfig(displaContextparameter){
+  function setUpcaseConfig(displaContextparameter) {
     const caseConfig = Object.assign({}, exuiTestCaseType);
     caseConfig.case_fields[1].display_context_parameter = displaContextparameter;
 

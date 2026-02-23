@@ -8,15 +8,17 @@ import { NoResultsMessageId } from '../../enums';
   standalone: false,
   selector: 'exui-no-results',
   templateUrl: './no-results.component.html',
-  styleUrls: ['./no-results.component.scss']
+  styleUrls: ['./no-results.component.scss'],
 })
 export class NoResultsComponent implements OnInit {
   private readonly extras: NavigationExtras;
   public messageId: number;
   public noResultsMessageId = NoResultsMessageId;
 
-  constructor(private readonly store: Store<fromActions.State>,
-              private readonly router: Router) {
+  constructor(
+    private readonly store: Store<fromActions.State>,
+    private readonly router: Router
+  ) {
     // Get current navigation
     const currentNavigation = this.router.getCurrentNavigation();
     if (currentNavigation) {

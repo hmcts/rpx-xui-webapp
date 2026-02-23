@@ -1,7 +1,7 @@
 /* helpers/globals.js  – CLEAN, PAGE-SAFE VERSION */
 'use strict';
 
-const { container, recorder } = require('codeceptjs'); 
+const { container, recorder } = require('codeceptjs');
 
 /* ------------------------------------------------------------------ */
 /*  Always ask CodeceptJS for the current Playwright page.            */
@@ -13,32 +13,31 @@ function resolvePage() {
   if (pw && pw.page) return pw.page;
 
   throw new Error(
-    '[globals] Playwright page is not yet available. ' +
-    'This helper must be called from inside a running scenario.'
+    '[globals] Playwright page is not yet available. ' + 'This helper must be called from inside a running scenario.'
   );
 }
 
-async function ensurePage () {
+async function ensurePage() {
   const pw = container.helpers().Playwright;
 
   /* 1️⃣  Browser -------------------------------------------------- */
   if (!pw.browser) {
     await recorder.add('launch Playwright browser', async () => {
-      await pw._startBrowser();             // private but stable
+      await pw._startBrowser(); // private but stable
     });
   }
 
   /* 2️⃣  Page ----------------------------------------------------- */
   if (!pw.page) {
     await recorder.add('open blank page', async () => {
-      await pw._createContextPage();        // now safe: browser exists
+      await pw._createContextPage(); // now safe: browser exists
     });
   }
   return pw.page;
 }
 
 async function refresh() {
-  const page = await ensurePage(); 
+  const page = await ensurePage();
   await page.reload({ waitUntil: 'load' });
 }
 
@@ -53,19 +52,25 @@ async function currentUrl() {
 /* ------------------------------------------------------------------ */
 /*  Shorthand element helpers – each call re-resolves the page        */
 /* ------------------------------------------------------------------ */
-function $(selector) { return resolvePage().locator(selector); }
-function $$(selector) { return resolvePage().locator(selector); }
-function elementByXpath(xpath) { return resolvePage().locator(`xpath=${xpath}`); }
+function $(selector) {
+  return resolvePage().locator(selector);
+}
+function $$(selector) {
+  return resolvePage().locator(selector);
+}
+function elementByXpath(xpath) {
+  return resolvePage().locator(`xpath=${xpath}`);
+}
 
 /* ------------------------------------------------------------------ */
 /*  Utility helpers                                                   */
 /* ------------------------------------------------------------------ */
 async function isPresent(locator) {
-  const count = await locator.count?.() ?? 0;
+  const count = (await locator.count?.()) ?? 0;
   return count > 0;
 }
 
-async function navigate (url, options = {}) {
+async function navigate(url, options = {}) {
   const page = await ensurePage();
   await page.goto(url, { waitUntil: 'domcontentloaded', ...options });
 }
@@ -79,9 +84,9 @@ async function waitForElement(selectorOrLocator, options = {}) {
   if (typeof selectorOrLocator === 'string') {
     locator = page.locator(selectorOrLocator);
   } else if (selectorOrLocator?.locator) {
-    locator = selectorOrLocator;                     // already a Locator
+    locator = selectorOrLocator; // already a Locator
   } else if (typeof selectorOrLocator.then === 'function') {
-    const h = await selectorOrLocator;               // maybe ElementHandle
+    const h = await selectorOrLocator; // maybe ElementHandle
     locator = h?.locator ? h.locator() : h;
   } else {
     throw new Error('waitForElement: invalid selector / locator');
@@ -90,7 +95,7 @@ async function waitForElement(selectorOrLocator, options = {}) {
 }
 
 async function getTagName(locator) {
-  return await locator.evaluate(el => el.tagName.toLowerCase());
+  return await locator.evaluate((el) => el.tagName.toLowerCase());
 }
 
 async function selectOption(selectLoc, opts) {
@@ -132,5 +137,5 @@ module.exports = {
   selectOption,
   getSelectOptions,
   getText,
-  getTagName
+  getTagName,
 };

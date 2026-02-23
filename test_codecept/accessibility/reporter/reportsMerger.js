@@ -1,4 +1,3 @@
-
 const fs = require('fs');
 const { conf } = require('../config/config');
 
@@ -7,7 +6,8 @@ const { conf } = require('../config/config');
 async function generateMergedReport() {
   const destDir = conf.reportPath;
   console.log('destDir ' + destDir);
-  const results = fs.readdirSync(destDir, { withFileTypes: true })
+  const results = fs
+    .readdirSync(destDir, { withFileTypes: true })
     .filter((item) => !item.isDirectory())
     .map((item) => item.name);
 
@@ -15,14 +15,14 @@ async function generateMergedReport() {
     appName: 'EXUI Manage Cases a11y Test Report',
     passed: 0,
     failed: 0,
-    tests: []
+    tests: [],
   };
 
   for (const result of results) {
     if (!result.includes('.json')) {
       continue;
     }
-    console.log('reading individual json '+result);
+    console.log('reading individual json ' + result);
     const reportData = fs.readFileSync(destDir + result);
     const jsonObj = JSON.parse(reportData);
 
@@ -57,4 +57,3 @@ async function generateMergedReport() {
 }
 
 module.exports = generateMergedReport;
-

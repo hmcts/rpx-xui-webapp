@@ -4,6 +4,7 @@ import { Base } from '../../base';
 import { faker } from '@faker-js/faker';
 import { EXUI_TIMEOUTS } from './exui-timeouts';
 import { isTransientWorkflowFailure } from '../../../utils/transient-failure.utils';
+import { extractCaseNumberFromUrl } from './caseDetails.po';
 
 export type DivorcePoCData = {
   gender?: string;
@@ -300,22 +301,6 @@ export class CreateCasePage extends Base {
     }
   }
 
-  private extractCaseNumberFromCurrentUrl(): string | null {
-    const currentUrl = this.page.url();
-    try {
-      const pathname = new URL(currentUrl).pathname;
-      const detailsPathMatch = /\/cases\/case-details\/(\d{16})(?:$|\/)/.exec(pathname);
-      if (detailsPathMatch?.[1]) {
-        return detailsPathMatch[1];
-      }
-
-      const trailingDigitsMatch = /(\d{16})(?:$|\/)/.exec(pathname);
-      return trailingDigitsMatch?.[1] ?? null;
-    } catch {
-      return null;
-    }
-  }
-
   private async extractCreatedCaseNumberFromBanner(): Promise<string | null> {
     const bannerVisible = await this.caseAlertSuccessMessage.isVisible().catch(() => false);
     if (!bannerVisible) {
@@ -351,7 +336,7 @@ export class CreateCasePage extends Base {
       return false;
     }
 
-    const caseNumber = this.extractCaseNumberFromCurrentUrl() ?? (await this.extractCreatedCaseNumberFromBanner());
+    const caseNumber = extractCaseNumberFromUrl(this.page.url()) ?? (await this.extractCreatedCaseNumberFromBanner());
     if (!caseNumber) {
       return false;
     }

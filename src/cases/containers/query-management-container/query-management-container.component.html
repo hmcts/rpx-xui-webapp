@@ -131,7 +131,8 @@
       (backClicked)="showResponseForm()"
       (querySubmitted)="showConfirmationPage()"
       (callbackConfirmationMessage)="callbackConfirmationMessage($event)"
-      (createEventResponse)="createEventResponse($event)">
+      (createEventResponse)="createEventResponse($event)"
+    >
     </ccd-query-check-your-answers>
 
     <!-- Query submission confirmation page -->
@@ -140,7 +141,8 @@
       [callbackConfirmationMessageText]="callbackConfirmationMessageText"
       [callbackConfirmationHeaderText]="callbackConfirmationHeaderText"
       [queryCreateContext]="queryCreateContext"
-      [eventResponseData]="eventResponseData">
+      [eventResponseData]="eventResponseData"
+    >
     </ccd-query-confirmation>
 
     <!-- Do not show the cancel link on query submission confirmation page -->

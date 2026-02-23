@@ -118,7 +118,7 @@ export default (() => {
         mode: 'only-on-failure',
         fullPage: true,
       },
-      video: 'retain-on-failure',
+      video: 'off',
       headless: headlessMode,
     },
     projects: [

@@ -4,9 +4,89 @@ This directory contains both **API tests** (`node-api` project) and **E2E UI tes
 
 ## Table of Contents
 
+- [Quick Command Reference (AAT vs LOCAL)](#quick-command-reference-aat-vs-local)
 - [API Tests](#api-tests)
 - [E2E Tests](#e2e-tests)
 - [Session Management](#session-management)
+
+---
+
+## Quick Command Reference (AAT vs LOCAL)
+
+By default, Playwright tests run against **AAT** from your local machine. Use `TEST_URL=http://localhost:3000` for LOCAL runs.
+
+### Start EXUI locally (for LOCAL runs)
+
+Follow **Startup the Node service locally** in the project root `README.md`, then run:
+
+```bash
+yarn start:ng
+```
+
+### E2E commands
+
+```bash
+# AAT: run all E2E
+yarn test:playwrightE2E
+
+# LOCAL: run all E2E
+TEST_URL=http://localhost:3000 yarn test:playwrightE2E
+
+# LOCAL: single spec file
+TEST_URL=http://localhost:3000 yarn test:playwrightE2E -- playwright_tests_new/E2E/test/documentUpload/documentUpload.positive.spec.ts
+
+# LOCAL: single test title inside spec
+TEST_URL=http://localhost:3000 yarn test:playwrightE2E -- playwright_tests_new/E2E/test/documentUpload/documentUpload.positive.spec.ts -g "upload"
+
+# LOCAL: headed mode
+TEST_URL=http://localhost:3000 yarn test:playwrightE2E -- playwright_tests_new/E2E/test/searchCase/findCase.spec.ts --headed --workers=1
+
+# LOCAL: debug mode
+TEST_URL=http://localhost:3000 PWDEBUG=1 yarn test:playwrightE2E -- playwright_tests_new/E2E/test/myWork/myTasks.spec.ts -g "My tasks"
+
+# LOCAL: single spec in UI mode
+TEST_URL=http://localhost:3000 yarn test:playwrightE2E --ui playwright_tests_new/E2E/test/documentUpload/documentUpload.positive.spec.ts
+
+# LOCAL: single test title in UI mode
+TEST_URL=http://localhost:3000 yarn test:playwrightE2E --ui playwright_tests_new/E2E/test/searchCase/findCase.spec.ts -g "find case"
+
+# LOCAL: single E2E by title/substring
+TEST_URL=http://localhost:3000 yarn test:playwrightE2E --project=chromium --workers=1 --grep "My tasks"
+```
+
+### API commands
+
+```bash
+# AAT: include work-allocation tests only, disable excludes
+API_PW_INCLUDE_TAGS=@svc-work-allocation API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
+
+# LOCAL
+TEST_URL=http://localhost:3000 yarn test:api:pw
+
+# LOCAL with coverage
+TEST_URL=http://localhost:3000 yarn test:api:pw:coverage
+```
+
+### Integration commands
+
+```bash
+# LOCAL
+TEST_URL=http://localhost:3000 yarn test:playwright:integration
+
+# AAT
+yarn test:playwright:integration
+```
+
+### Odhin report locations
+
+- API: `functional-output/tests/playwright-api/odhin-report/xui-playwright-api.html`
+- Integration: `functional-output/tests/playwright-integration/odhin-report/xui-playwright-integration.html`
+- E2E: `functional-output/tests/playwright-e2e/odhin-report/xui-playwright-e2e.html`
+
+### Notes
+
+- Replace `"My tasks"` with the exact test name, unique substring, or regex.
+- For LOCAL runs, set `TEST_URL=http://localhost:3000`.
 
 ---
 

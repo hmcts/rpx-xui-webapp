@@ -140,6 +140,11 @@ describe('HearingEditSummaryComponent', () => {
     hearingsFeatureServiceMock.isFeatureEnabled.and.returnValue(of(true));
     hearingsFeatureServiceMock.hearingAmendmentsEnabled.and.returnValue(of(true));
     spyOn(locationsDataService, 'getLocationById').and.returnValue(of(locations));
+    const injectedHearingsService = TestBed.inject(HearingsService);
+    injectedHearingsService.propertiesUpdatedAutomatically = {
+      withinPage: {},
+      pageless: {},
+    };
     fixture = TestBed.createComponent(HearingEditSummaryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
@@ -805,6 +810,51 @@ describe('HearingEditSummaryComponent', () => {
     component.ngOnInit();
     // @ts-expect-error - inspecting protected field for test
     expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.caseCategories).toEqual(['BBA3-002']);
+  });
+
+  it('should keep auto updated case categories after categories match on second init', () => {
+    const hmcCaseCategories = [
+      {
+        categoryType: CategoryType.CaseType,
+        categoryValue: 'BBA3-002',
+      },
+      {
+        categoryType: CategoryType.CaseSubType,
+        categoryValue: 'BBA3-002CC',
+        categoryParent: 'BBA3-002',
+      },
+    ];
+    const shvCaseCategories = [
+      {
+        categoryType: CategoryType.CaseType,
+        categoryValue: 'BBA3-003',
+      },
+      {
+        categoryType: CategoryType.CaseSubType,
+        categoryValue: 'BBA3-002CC',
+        categoryParent: 'BBA3-003',
+      },
+    ];
+
+    component.hearingRequestMainModel = {
+      ...component.hearingRequestMainModel,
+      caseDetails: {
+        ...component.hearingRequestMainModel.caseDetails,
+        caseCategories: hmcCaseCategories,
+      },
+    };
+    component.serviceHearingValuesModel = {
+      ...component.serviceHearingValuesModel,
+      caseCategories: shvCaseCategories,
+    };
+
+    component.ngOnInit();
+    // @ts-expect-error - inspecting protected field for test
+    expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.caseCategories).toEqual(['BBA3-003', 'BBA3-002']);
+
+    component.ngOnInit();
+    // @ts-expect-error - inspecting protected field for test
+    expect(component.hearingsService.propertiesUpdatedAutomatically.withinPage.caseCategories).toEqual(['BBA3-003', 'BBA3-002']);
   });
 
   it('should set auto updated pageless properties to true', () => {

@@ -185,6 +185,7 @@ Run `HEAD=true TEST_URL=https://manage-case.aat.platform.hmcts.net yarn test:pla
 Add `ENABLE_AXE_TESTS=true` to activate Axe Accessibility testing.
 
 The `playwright_tests_new` folder contains the beginnings of the updated framework structure and test form. Tests are now structured by functionality with step containers for each stage of the test. A page object pattern has been introduced in place of using selectors in the tests themselves. Follow this pattern for any new tests, or ones you wish to migrate.
+Detailed framework architecture (with diagrams): [`playwright_tests_new/TEST_FRAMEWORK_ARCHITECTURE.md`](playwright_tests_new/TEST_FRAMEWORK_ARCHITECTURE.md).
 
 ### Playwright reporting
 

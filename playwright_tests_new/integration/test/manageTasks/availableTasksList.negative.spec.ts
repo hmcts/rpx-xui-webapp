@@ -1,13 +1,10 @@
 import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookies } from '../../../common/sessionCapture';
-import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
-
 let sessionCookies: any[] = [];
 
 test.beforeEach(async ({ page }) => {
   const { cookies } = await applySessionCookies(page, userIdentifier);
   sessionCookies = cookies;
-  const userId = extractUserIdFromCookies(sessionCookies);
 });
 
 const errorStates = [400, 401, 403, 404, 500, 502, 503];

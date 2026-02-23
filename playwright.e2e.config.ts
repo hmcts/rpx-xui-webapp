@@ -1,11 +1,12 @@
-module.exports = (() => {
-  const { defineConfig, devices } = require('@playwright/test');
-  const { version: appVersion } = require('./package.json');
-  const { cpus } = require('node:os');
-
+import { defineConfig, devices } from '@playwright/test';
+import { execSync } from 'node:child_process';
+import { cpus } from 'node:os';
+import { version as appVersion } from './package.json';
+export default (() => {
   const headlessMode = process.env.HEAD !== 'true';
   const odhinOutputFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
   const baseUrl = process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';
+
   const resolveEnvironmentFromUrl = (url) => {
     try {
       const hostname = new URL(url).hostname.toLowerCase();
@@ -30,6 +31,33 @@ module.exports = (() => {
     }
   };
 
+  const resolveBranchName = () => {
+    const envBranch =
+      process.env.PLAYWRIGHT_REPORT_BRANCH ||
+      process.env.GIT_BRANCH ||
+      process.env.BRANCH_NAME ||
+      process.env.GITHUB_REF_NAME ||
+      process.env.GITHUB_HEAD_REF ||
+      process.env.BUILD_SOURCEBRANCHNAME;
+    if (envBranch) {
+      return envBranch.replace(/^refs\/heads\//, '').trim();
+    }
+    try {
+      const gitBranch = execSync('git rev-parse --abbrev-ref HEAD', {
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'ignore'],
+      })
+        .trim()
+        .replace(/^refs\/heads\//, '');
+      if (gitBranch && gitBranch !== 'HEAD') {
+        return gitBranch;
+      }
+    } catch {
+      // Fall back to local label when branch cannot be resolved.
+    }
+    return 'local';
+  };
+
   const resolveWorkerCount = () => {
     const configured = process.env.FUNCTIONAL_TESTS_WORKERS;
     if (process.env.CI) {
@@ -46,33 +74,36 @@ module.exports = (() => {
     const suggested = Math.min(8, Math.max(2, approxPhysical));
     return suggested;
   };
+
   const workerCount = resolveWorkerCount();
   const targetEnv = process.env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
   const runContext = process.env.CI ? 'ci' : 'local-run';
   const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount}`;
+  const reportBranch = resolveBranchName();
 
   return defineConfig({
     testDir: 'playwright_tests_new/E2E',
     testMatch: ['**/test/**/*.spec.ts'],
     testIgnore: ['**/test/smoke/smokeTest.spec.ts'],
     fullyParallel: true,
-    retries: process.env.CI ? 2 : 0,
-    timeout: 3 * 60 * 1000,
+    retries: 2,
+    timeout: 180_000,
     expect: {
-      timeout: 1 * 60 * 1000,
+      timeout: 60_000,
     },
     workers: workerCount,
     reporter: [
       [process.env.CI ? 'dot' : 'list'],
+      ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs'],
       [
         'odhin-reports-playwright',
         {
           outputFolder: odhinOutputFolder,
           indexFilename: 'xui-playwright.html',
-          title: 'RPX XUI Playwright E2E',
+          title: 'RPX-XUI-WEBAPP Playwright E2E',
           testEnvironment,
           project: process.env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp - E2E',
-          release: process.env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${process.env.GIT_BRANCH ?? 'local'}`,
+          release: process.env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${reportBranch}`,
           startServer: false,
           consoleLog: true,
           consoleError: true,
@@ -87,7 +118,7 @@ module.exports = (() => {
         mode: 'only-on-failure',
         fullPage: true,
       },
-      video: 'retain-on-failure',
+      video: 'off',
       headless: headlessMode,
     },
     projects: [

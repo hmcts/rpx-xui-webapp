@@ -223,6 +223,20 @@ const data: AppTestConfig = {
         userIdentifier: 'USER_WITH_FLAGS',
         key: 'Nagoya0102',
       },
+      {
+        idamId: '900a7ad4-3295-4e00-bf7b-20a7e4ea52a6',
+        email: 'fpl-ctsc-admin@justice.gov.uk',
+        release: 'fpl_global_search',
+        userIdentifier: 'FPL_GLOBAL_SEARCH',
+        key: 'Password12',
+      },
+      {
+        idamId: '33333333-3333-3333-3333-333333333333',
+        email: 'probatecaseworker@gmail.com',
+        release: 'probate',
+        userIdentifier: 'PROBATE_CW',
+        key: 'Monday01',
+      },
     ],
     demo: [
       {

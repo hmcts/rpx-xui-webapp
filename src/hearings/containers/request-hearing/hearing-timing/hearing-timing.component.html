@@ -155,7 +155,10 @@
               class="govuk-radios__conditional govuk-!-padding-bottom-1 govuk-!-padding-top-3"
               [ngClass]="{ 'js-hidden': checkedHearingAvailability !== 'Choose a date range' }"
             >
-              <div class="govuk-hint">{{ 'You can enter either or both dates.' | rpxTranslate }}</div>
+              <div class="govuk-hint">
+                {{ 'Dates are not inclusive, e.g. if the date range is 01/01 to 10/01, enter 31/12 to 11/01.' | rpxTranslate }}
+              </div>
+              <div class="govuk-hint">{{ 'Start date: minus 1 day  End date: plus 1 day' | rpxTranslate }}</div>
               <div [ngClass]="{ 'govuk-form-group--error': dateRangeWeekendError }">
                 <span class="govuk-error-message" *ngIf="dateRangeWeekendError">
                   <span class="govuk-visually-hidden">{{ 'Error:' | rpxTranslate }}</span>

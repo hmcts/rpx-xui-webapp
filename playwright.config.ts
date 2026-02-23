@@ -1,11 +1,27 @@
 import { defineConfig, devices } from '@playwright/test';
 import { execSync } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { cpus } from 'node:os';
+import * as path from 'node:path';
 import { version as appVersion } from './package.json';
 
 type EnvMap = NodeJS.ProcessEnv;
 
 const defaultBaseUrl = 'https://manage-case.aat.platform.hmcts.net';
+const defaultApiTagFilterConfigPath = 'playwright_tests_new/api/service-tag-filter.json';
+
+type ApiTagFilterConfig = {
+  excludedTags?: string[];
+};
+
+type ApiTagFilters = {
+  includeTags: string[];
+  excludedTags: string[];
+  grep?: RegExp;
+  grepInvert?: RegExp;
+  excludedTagsSource: 'file' | 'env';
+  configPath: string;
+};
 
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
 
@@ -94,11 +110,86 @@ const resolveTestEnvironmentLabel = (env: EnvMap, workerCount: number): string =
   return `${targetEnv} | ${runContext} | workers=${workerCount}`;
 };
 
+const ensureTagPrefix = (value: string): string => {
+  const normalized = value.trim();
+  if (!normalized) {
+    return '';
+  }
+  return normalized.startsWith('@') ? normalized : `@${normalized}`;
+};
+
+const splitTagInput = (raw?: string): string[] => {
+  if (!raw) {
+    return [];
+  }
+  const seen = new Set<string>();
+  const tags: string[] = [];
+  for (const token of raw.split(/[\s,]+/)) {
+    const tag = ensureTagPrefix(token);
+    if (!tag || seen.has(tag)) {
+      continue;
+    }
+    seen.add(tag);
+    tags.push(tag);
+  }
+  return tags;
+};
+
+const escapeRegex = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const buildTagRegex = (tags: string[]): RegExp | undefined => {
+  if (!tags.length) {
+    return undefined;
+  }
+  return new RegExp(`(${tags.map(escapeRegex).join('|')})`);
+};
+
+const resolveApiTagFilterConfigPath = (env: EnvMap): string => {
+  const configuredPath = env.API_PW_TAG_FILTER_CONFIG?.trim();
+  const candidatePath = configuredPath && configuredPath.length > 0 ? configuredPath : defaultApiTagFilterConfigPath;
+  return path.isAbsolute(candidatePath) ? candidatePath : path.resolve(process.cwd(), candidatePath);
+};
+
+const readApiTagFilterConfig = (configPath: string): ApiTagFilterConfig => {
+  try {
+    const raw = readFileSync(configPath, 'utf8');
+    const parsed = JSON.parse(raw) as ApiTagFilterConfig;
+    if (!parsed || typeof parsed !== 'object') {
+      throw new TypeError('Config must be a JSON object');
+    }
+    if (parsed.excludedTags !== undefined && !Array.isArray(parsed.excludedTags)) {
+      throw new TypeError('excludedTags must be an array');
+    }
+    return parsed;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`Failed to read API tag filter config at "${configPath}": ${message}`);
+  }
+};
+
+const resolveApiTagFilters = (env: EnvMap = process.env): ApiTagFilters => {
+  const includeTags = splitTagInput(env.API_PW_INCLUDE_TAGS);
+  const overrideExcludedTags = splitTagInput(env.API_PW_EXCLUDED_TAGS_OVERRIDE);
+  const configPath = resolveApiTagFilterConfigPath(env);
+  const configuredExcludedTags = splitTagInput(readApiTagFilterConfig(configPath).excludedTags?.join(','));
+  const excludedTags = overrideExcludedTags.length > 0 ? overrideExcludedTags : configuredExcludedTags;
+
+  return {
+    includeTags,
+    excludedTags,
+    grep: buildTagRegex(includeTags),
+    grepInvert: buildTagRegex(excludedTags),
+    excludedTagsSource: overrideExcludedTags.length > 0 ? 'env' : 'file',
+    configPath,
+  };
+};
+
 const buildConfig = (env: EnvMap = process.env) => {
   const workerCount = resolveWorkerCount(env);
   const headlessMode = resolveHeadlessMode(env);
   const odhinOutputFolder = resolveOdhinOutputFolder(env);
   const reportBranch = resolveBranchName(env);
+  const apiTagFilters = resolveApiTagFilters(env);
 
   return defineConfig({
     use: {
@@ -160,7 +251,7 @@ const buildConfig = (env: EnvMap = process.env) => {
             mode: 'only-on-failure',
             fullPage: true,
           },
-          video: 'retain-on-failure',
+          video: 'off',
         },
       },
       {
@@ -176,12 +267,14 @@ const buildConfig = (env: EnvMap = process.env) => {
             mode: 'only-on-failure',
             fullPage: true,
           },
-          video: 'retain-on-failure',
+          video: 'off',
         },
       },
       {
         name: 'node-api',
         testMatch: ['playwright_tests_new/api/**/*.api.ts'],
+        grep: apiTagFilters.grep,
+        grepInvert: apiTagFilters.grepInvert,
         fullyParallel: true,
         workers: env.CI ? 8 : Math.max(1, Math.min(8, cpus()?.length ?? 4)),
         retries: 0,
@@ -206,6 +299,8 @@ const config = buildConfig(process.env);
   resolveBaseUrl,
   resolveWorkerCount,
   resolveBranchName,
+  splitTagInput,
+  resolveApiTagFilters,
   buildConfig,
 };
 

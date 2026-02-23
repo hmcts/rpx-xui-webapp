@@ -8,13 +8,10 @@ const updatedFirstName = faker.person.firstName();
 const updatedLastName = faker.person.lastName();
 const testField = faker.lorem.word() + new Date().toLocaleTimeString();
 const UPDATE_CASE_ACTION_TIMEOUT_MS = 60_000;
-const UPDATE_CASE_MAX_AUTO_ADVANCE_ATTEMPTS = 3;
-const UPDATE_CASE_FIELDS_MAX_ATTEMPTS = 2;
-const UPDATE_CASE_TEST_TIMEOUT_MS = 240_000;
 const UPDATE_CASE_SETUP_CREATE_MAX_ATTEMPTS = 1;
 
 test.describe('Verify creating and updating a case works as expected', () => {
-  test.describe.configure({ timeout: UPDATE_CASE_TEST_TIMEOUT_MS });
+  test.describe.configure({ timeout: 240_000 });
   test.beforeEach(async ({ page, createCasePage, caseDetailsPage }) => {
     await retryOnTransientFailure(
       async () => {
@@ -59,11 +56,11 @@ test.describe('Verify creating and updating a case works as expected', () => {
           await createCasePage.person2LastNameInput.fill(updatedLastName);
           await createCasePage.clickSubmitAndWait('after updating case fields', {
             timeoutMs: 60_000,
-            maxAutoAdvanceAttempts: UPDATE_CASE_MAX_AUTO_ADVANCE_ATTEMPTS,
+            maxAutoAdvanceAttempts: 3,
           });
         },
         {
-          maxAttempts: UPDATE_CASE_FIELDS_MAX_ATTEMPTS,
+          maxAttempts: 2,
           onRetry: async () => {
             if (page.isClosed()) {
               return;

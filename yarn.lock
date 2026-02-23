@@ -3692,12 +3692,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.29-srt-4155-rc1/hmcts-ccd-case-ui-toolkit-7.3.29-srt-4155-rc1.tgz":
-  version: 7.3.29-srt-4155-rc1
-  resolution: "@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.29-srt-4155-rc1/hmcts-ccd-case-ui-toolkit-7.3.29-srt-4155-rc1.tgz"
+"@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.30/hmcts-ccd-case-ui-toolkit-7.3.30.tgz":
+  version: 7.3.30
+  resolution: "@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.30/hmcts-ccd-case-ui-toolkit-7.3.30.tgz"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/7cc84c2df2df82f09e1bb9c5b6891273ff3755d3022b70a3bae584497204c8dad83f122ecc2a67e029f1bdc5d734be0c6f200042f4a228ddc68178b2d0a41c0f
+  checksum: 10/625d383ef85da6826939ad575ef07f12ef91ef9dcef949c67d103bfedaae39ec02cb77f7158b9aa13849b3c8e398caf34c7a19b9ab876fd2027b8089aa701539
   languageName: node
   linkType: hard
 
@@ -3809,16 +3809,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.3-find-work-type/hmcts-rpx-xui-common-lib-3.2.3-find-work-type.tgz":
-  version: 3.2.3-find-work-type
-  resolution: "@hmcts/rpx-xui-common-lib@https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.3-find-work-type/hmcts-rpx-xui-common-lib-3.2.3-find-work-type.tgz"
+"@hmcts/rpx-xui-common-lib@https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.4/hmcts-rpx-xui-common-lib-3.2.4.tgz":
+  version: 3.2.4
+  resolution: "@hmcts/rpx-xui-common-lib@https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.4/hmcts-rpx-xui-common-lib-3.2.4.tgz"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: 1.1.2-CME-780-9
-  checksum: 10/b0d255c1f5ba3d0f51d6cc0fa8d138f8517f6023fd8c542b0611d1be6ae377d317d36bc574452cf7471b5ad5db1fd405baf2f487c080975a8b7416e7c9caa9f9
+  checksum: 10/752c5dda523b51ff59adeeb79c0cb868d7f58ef612c634af23f712e02208767284e85f6c11a2c6ed0762efe1e52ebdcb07ad93498bc5a90f7dcb3b1637c3a58c
   languageName: node
   linkType: hard
 
@@ -24128,14 +24128,14 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.29-srt-4155-rc1/hmcts-ccd-case-ui-toolkit-7.3.29-srt-4155-rc1.tgz"
+    "@hmcts/ccd-case-ui-toolkit": "https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.30/hmcts-ccd-case-ui-toolkit-7.3.30.tgz"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "https://github.com/hmcts/em-media-viewer/releases/download/v4.2.10/hmcts-media-viewer-4.2.10.tgz"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.2.0"
-    "@hmcts/rpx-xui-common-lib": "https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.3-find-work-type/hmcts-rpx-xui-common-lib-3.2.3-find-work-type.tgz"
+    "@hmcts/rpx-xui-common-lib": "https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.4/hmcts-rpx-xui-common-lib-3.2.4.tgz"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7-csp-final-change-3"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"

@@ -7,13 +7,11 @@ const caseType = 'xuiTestJurisdiction';
 let sessionCookies: any[] = [];
 
 test.beforeEach(async ({ page }) => {
-  // Lazy capture: only log in SOLICITOR when this test suite runs
   const { cookies } = await applySessionCookies(page, userIdentifier);
   sessionCookies = cookies;
 });
 
-// TODO : Enable and complete negative test case when functionality is available
-test.describe.skip(`Case List as ${userIdentifier}`, () => {
+test.describe(`Create Case as ${userIdentifier}`, () => {
   test(`User ${userIdentifier} should not be able to submit a case without filling in required fields`, async ({
     createCasePage,
     page,

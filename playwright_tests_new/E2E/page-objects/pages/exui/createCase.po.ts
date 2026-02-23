@@ -43,7 +43,9 @@ export class CreateCasePage extends Base {
   readonly caseAlertSuccessMessage = this.page
     .locator('.hmcts-banner--success .alert-message, .exui-alert .alert-message')
     .first();
-  readonly createCaseButton = this.page.getByRole('link', { name: 'Create case' });
+  readonly createCaseButton = this.page
+    .getByRole('link', { name: 'Create case' })
+    .or(this.page.locator('a[href="/cases/case-filter"].hmcts-primary-navigation__link'));
   readonly jurisdictionSelect = this.page.locator('#cc-jurisdiction');
   readonly caseTypeSelect = this.page.locator('#cc-case-type');
   readonly eventTypeSelect = this.page.locator('#cc-event');

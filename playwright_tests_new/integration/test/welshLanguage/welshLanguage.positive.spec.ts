@@ -52,6 +52,9 @@ test.describe('Verify users can switch the language', () => {
       await caseListPage.exuiHeader.switchLanguage('English');
       await caseListPage.exuiSpinnerComponent.wait();
       expect.soft(await caseListPage.exuiHeader.header.isVisible()).toBe(true);
+      await expect.soft(caseListPage.exuiHeader.headerAppLink).not.toContainText('[Translation in progress]');
+      await expect.soft(caseListPage.exuiHeader.languageToggle).not.toContainText('[Translation in progress]');
+      await expect.soft(caseListPage.exuiHeader.signOutLink).not.toContainText('[Translation in progress]');
       expect.soft(await caseListPage.exuiHeader.headerAppLink.innerText()).toContain('Manage Cases');
       expect.soft(await caseListPage.exuiHeader.languageToggle.innerText()).toContain('Cymraeg');
       expect.soft(await caseListPage.exuiHeader.signOutLink.innerText()).toContain('Sign out');

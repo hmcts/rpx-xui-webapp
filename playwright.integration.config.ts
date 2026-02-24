@@ -97,7 +97,7 @@ export default (() => {
         'odhin-reports-playwright',
         {
           outputFolder: odhinOutputFolder,
-          indexFilename: 'xui-playwright.html',
+          indexFilename: 'xui-playwright-integration.html',
           title: 'RPX XUI Playwright Integration',
           testEnvironment,
           project: process.env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
@@ -117,7 +117,7 @@ export default (() => {
         mode: 'only-on-failure',
         fullPage: true,
       },
-      video: 'retain-on-failure',
+      video: 'off',
       timezoneId: 'Europe/London',
       viewport: { width: 1366, height: 1024 },
       launchOptions: {

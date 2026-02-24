@@ -1,5 +1,5 @@
 import { WaitUtils } from '@hmcts/playwright-common';
-import { expect, Page } from '@playwright/test';
+import { Page } from '@playwright/test';
 import { logger } from '../../../utils/logger.utils';
 
 export class ExuiHeaderComponent {
@@ -14,6 +14,15 @@ export class ExuiHeaderComponent {
   readonly languageToggle = this.header
     .locator('button.language')
     .or(this.page.getByRole('banner').getByRole('button', { name: /Cymraeg|English/ }));
+
+  readonly signOutLink = this.header
+    .locator('.hmcts-header .hmcts-header__navigation-link')
+    .or(this.page.getByRole('banner').getByRole('link', { name: /Sign out|Allgofnodi/ }));
+
+  readonly notificationBanner = this.page.locator('.govuk-notification-banner');
+  readonly notificationBannerTitle = this.notificationBanner.locator('.govuk-notification-banner__title');
+  readonly notificationBannerContent = this.notificationBanner.locator('.govuk-notification-banner__content');
+
   private readonly waitUtils = new WaitUtils();
 
   constructor(private readonly page: Page) {}
@@ -22,13 +31,6 @@ export class ExuiHeaderComponent {
     const menuItem = this.headerMenuItems.filter({ hasText: menuItemText });
     await this.waitUtils.waitForLocatorVisibility(menuItem, { visibility: true });
     await menuItem.click();
-  }
-
-  public async checkIsVisible(): Promise<void> {
-    await this.waitUtils.waitForLocatorVisibility(this.results, {
-      visibility: true,
-    });
-    await expect(this.header).toBeVisible();
   }
 
   public async switchLanguage(language: string): Promise<void> {

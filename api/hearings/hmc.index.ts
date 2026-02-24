@@ -99,7 +99,7 @@ export async function getHearing(req: EnhancedRequest, res: Response, next: Next
 export async function submitHearingRequest(req: EnhancedRequest, res: Response, next: NextFunction) {
   const reqBody = req.body;
   const markupPath: string = `${hmcHearingsUrl}/hearing`;
-  req.body.caseDetails.caseRef = null; // TESTING PURPOSES ONLY - to be removed when front end is sending case ref
+  //req.body.caseDetails.caseRef = null; // TESTING PURPOSES ONLY - to be removed when front end is sending case ref
   try {
     trackTrace('submitting hearing request');
     const { status, data }: { status: number; data: any } = await handlePost(markupPath, reqBody, req);
@@ -116,7 +116,7 @@ export async function cancelHearingRequest(req: EnhancedRequest, res: Response, 
   const hearingId = req.query.hearingId;
   const caseId = req.query.caseId as string;
   const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}`;
-  // req.body.cancellationReasonCodes = null; // TESTING PURPOSES ONLY - to be removed when front end is sending reason codes
+  req.body.cancellationReasonCodes = null; // TESTING PURPOSES ONLY - to be removed when front end is sending reason codes
   try {
     const reqBody = req.body;
     const { status, data }: { status: number; data: any } = await handleDelete(markupPath, reqBody, req);

@@ -116,7 +116,7 @@ export async function cancelHearingRequest(req: EnhancedRequest, res: Response, 
   const hearingId = req.query.hearingId;
   const caseId = req.query.caseId as string;
   const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}`;
-  req.body.cancellationReasonCodes = null; // TESTING PURPOSES ONLY - to be removed when front end is sending reason codes
+  //req.body.cancellationReasonCodes = null; // TESTING PURPOSES ONLY - to be removed when front end is sending reason codes
   try {
     const reqBody = req.body;
     const { status, data }: { status: number; data: any } = await handleDelete(markupPath, reqBody, req);
@@ -132,7 +132,7 @@ export async function cancelHearingRequest(req: EnhancedRequest, res: Response, 
 export async function updateHearingRequest(req: EnhancedRequest, res: Response, next: NextFunction) {
   const hearingId = req.query.hearingId;
   const reqBody = req.body;
-  // reqBody.caseDetails.caseRef = null; // TESTING PURPOSES ONLY - to be removed when front end is sending case ref
+  reqBody.caseDetails.caseRef = null; // TESTING PURPOSES ONLY - to be removed when front end is sending case ref
   const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}`;
   try {
     const { status, data }: { status: number; data: any } = await handlePut(markupPath, reqBody, req);

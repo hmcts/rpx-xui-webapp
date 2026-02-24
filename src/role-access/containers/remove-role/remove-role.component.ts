@@ -44,8 +44,7 @@ export class RemoveRoleComponent implements OnInit {
   ) {}
 
   public ngOnInit(): void {
-    const navigationBackUrl = this.router.getCurrentNavigation()?.extras?.state?.backUrl as string | undefined;
-    this.backUrl = navigationBackUrl || globalThis.history.state?.backUrl || '';
+    this.backUrl = window.history.state && window.history.state.backUrl ? window.history.state.backUrl : '';
     const paramMap$ = this.route.queryParamMap;
     paramMap$
       .pipe(
@@ -71,7 +70,8 @@ export class RemoveRoleComponent implements OnInit {
 
   public populateAnswers(assignment: CaseRole): void {
     const person = assignment.email ? `${assignment.name}\n${assignment.email}` : 'Awaiting person details';
-    this.answers.push({ label: 'Type of role', value: assignment.roleName }, { label: 'Person', value: person });
+    this.answers.push({ label: 'Type of role', value: assignment.roleName });
+    this.answers.push({ label: 'Person', value: person });
   }
 
   public getRoleAssignmentFromQuery(queryMap: ParamMap): Observable<CaseRole[]> {
@@ -94,8 +94,8 @@ export class RemoveRoleComponent implements OnInit {
     switch (navEvent) {
       case RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION: {
         this.showSpinner = true;
-        this.allocateRoleService.removeAllocation(this.assignmentId).subscribe({
-          next: () => {
+        this.allocateRoleService.removeAllocation(this.assignmentId).subscribe(
+          () => {
             const message: any = { type: 'success', message: RemoveRoleText.infoMessage };
             this.router
               .navigate([this.backUrl], {
@@ -108,10 +108,10 @@ export class RemoveRoleComponent implements OnInit {
               })
               .catch((err) => this.loggerService.error(`Error navigating to ${this.backUrl} `, err));
           },
-          error: (error) => {
+          (error) => {
             handleFatalErrors(error.status, this.router);
-          },
-        });
+          }
+        );
         break;
       }
       case RemoveAllocationNavigationEvent.CANCEL: {

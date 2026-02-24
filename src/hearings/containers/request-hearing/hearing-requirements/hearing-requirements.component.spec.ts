@@ -33,6 +33,7 @@ import { ServiceHearingValuesModel } from '../../../models/serviceHearingValues.
 import { HearingsService } from '../../../services/hearings.service';
 import { LocationsDataService } from '../../../services/locations-data.service';
 import { CaseFlagsUtils } from '../../../utils/case-flags.utils';
+import { HearingsUtils } from '../../../utils/hearings.utils';
 import * as fromHearingStore from '../../../store';
 import { HearingRequirementsComponent } from './hearing-requirements.component';
 import * as _ from 'lodash';
@@ -2117,7 +2118,9 @@ describe('HearingRequirementsComponent', () => {
     component.lostFocus = true;
     component.onFocus();
     expect(component.lostFocus).toBeFalsy();
-    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.LoadHearingValues());
+    expect(storeDispatchSpy).toHaveBeenCalledWith(
+      new fromHearingStore.LoadHearingValues({ jurisdictionId: undefined, caseReference: '1111222233334444' })
+    );
   });
 
   it('should window onblur', () => {
@@ -3016,9 +3019,6 @@ describe('HearingRequirementsComponent', () => {
     component.serviceHearingValuesModel = serviceHearingValuesModel;
     component.ngOnInit();
     expect(component.showMismatchErrorMessage).toBeTruthy();
-    expect(component.validationErrors).toEqual({
-      id: 'reload-error-message',
-      message: 'The Party IDs for this request appear mismatched, please reload and start the request again.',
-    });
+    expect(component.validationErrors).toEqual({ id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE });
   });
 });

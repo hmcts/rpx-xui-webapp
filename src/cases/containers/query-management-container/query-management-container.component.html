@@ -131,6 +131,7 @@
       (backClicked)="showResponseForm()"
       (querySubmitted)="showConfirmationPage()"
       (callbackConfirmationMessage)="callbackConfirmationMessage($event)"
+      (createEventResponse)="createEventResponse($event)"
     >
     </ccd-query-check-your-answers>
 
@@ -140,6 +141,7 @@
       [callbackConfirmationMessageText]="callbackConfirmationMessageText"
       [callbackConfirmationHeaderText]="callbackConfirmationHeaderText"
       [queryCreateContext]="queryCreateContext"
+      [eventResponseData]="eventResponseData"
     >
     </ccd-query-confirmation>
 

@@ -82,8 +82,8 @@ export async function getHearings(req: EnhancedRequest, res: Response, next: Nex
 export async function getHearing(req: EnhancedRequest, res: Response, next: NextFunction) {
   const hearingId: string = req.query.hearingId as string;
   const caseRef = req.query.caseRef as string;
-  //const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}`;
-  const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}123`; // TESTING PURPOSES ONLY - to be removed when backend is fixed
+  const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}`;
+  //const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}123`; // TESTING PURPOSES ONLY - to be removed when backend is fixed
   console.log(req.query);
   try {
     const { status, data }: { status: number; data: HearingRequestMainModel } = await handleGet(markupPath, req);
@@ -99,7 +99,7 @@ export async function getHearing(req: EnhancedRequest, res: Response, next: Next
 export async function submitHearingRequest(req: EnhancedRequest, res: Response, next: NextFunction) {
   const reqBody = req.body;
   const markupPath: string = `${hmcHearingsUrl}/hearing`;
-  // req.body.caseDetails.caseRef = null; // TESTING PURPOSES ONLY - to be removed when front end is sending case ref
+  req.body.caseDetails.caseRef = null; // TESTING PURPOSES ONLY - to be removed when front end is sending case ref
   try {
     trackTrace('submitting hearing request');
     const { status, data }: { status: number; data: any } = await handlePost(markupPath, reqBody, req);

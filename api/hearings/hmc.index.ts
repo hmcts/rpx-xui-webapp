@@ -82,8 +82,8 @@ export async function getHearings(req: EnhancedRequest, res: Response, next: Nex
 export async function getHearing(req: EnhancedRequest, res: Response, next: NextFunction) {
   const hearingId: string = req.query.hearingId as string;
   const caseRef = req.query.caseRef as string;
-  const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}`;
-  // const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}123`; // TESTING PURPOSES ONLY - to be removed when backend is fixed
+  //const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}`;
+  const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}123`; // TESTING PURPOSES ONLY - to be removed when backend is fixed
   console.log(req.query);
   try {
     const { status, data }: { status: number; data: HearingRequestMainModel } = await handleGet(markupPath, req);

@@ -42,7 +42,7 @@ export const dateOptions = [
 
 export function buildTaskListMock(rowCount: number, assignee: string, actions: TaskActions[] = myActionsList) {
   const maxResults = 25;
-  const tasks = Array.from({ length: Math.min(rowCount, maxResults) }, (_, i) => {
+  const tasks = Array.from({ length: Math.min(rowCount, maxResults) }, () => {
     // Created date: always in the past (up to 90 days ago)
     const createdDate = faker.date.past({ years: 0.25 });
     // Due date: pick from options
@@ -77,7 +77,7 @@ export function buildTaskListMock(rowCount: number, assignee: string, actions: T
       jurisdiction: 'IA',
       region: '1',
       case_type_id: 'Asylum',
-      case_id: faker.number.int({ min: 1000000000000000, max: 9999999999999999 }).toString(),
+      case_id: faker.string.numeric(16),
       case_category: caseCategory,
       case_name: caseName,
       auto_assigned: false,
@@ -87,7 +87,7 @@ export function buildTaskListMock(rowCount: number, assignee: string, actions: T
       work_type_id: 'applications',
       work_type_label: 'Applications',
       permissions,
-      description: `[Decide an application](/case/IA/Asylum/${faker.number.int({ min: 1000000000000000, max: 9999999999999999 })}/trigger/decideAnApplication)`,
+      description: `[Decide an application](/case/IA/Asylum/${faker.string.numeric(16)}/trigger/decideAnApplication)`,
       role_category: 'LEGAL_OPERATIONS',
       minor_priority: priority,
       major_priority: priority * 1000,
@@ -117,8 +117,6 @@ export function buildTaskListMock(rowCount: number, assignee: string, actions: T
  * Priority is the same for all.
  */
 export function buildDeterministicMyTasksListMock(assignee: string) {
-  const priority = 5;
-  const highPriority = 10;
   const baseTasks = [
     {
       case_name: 'Smith & Co',
@@ -171,7 +169,6 @@ export function buildDeterministicMyTasksListMock(assignee: string) {
   };
 
   const tasks = baseTasks.map((t, i) => {
-    const itemPriority = t.minor_priority;
     const warnings = i === 0;
     const warning_list = i === 0 ? staticWarningList : { values: [] };
     const priority_field = t.priority_field;

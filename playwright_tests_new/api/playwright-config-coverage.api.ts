@@ -75,7 +75,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
 
     const nodeApiProject = config.projects.find((p) => p.name === 'node-api');
     expect(nodeApiProject).toBeDefined();
-    expect(nodeApiProject?.workers).toBe(8);
+    expect(nodeApiProject?.workers).toBe(4);
   });
 
   test('config defaults to local reporter values', async () => {

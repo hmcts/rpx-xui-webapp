@@ -3,10 +3,12 @@ import { applySessionCookies } from '../../../common/sessionCapture';
 import { buildTaskListMock, buildDeterministicMyTasksListMock, myActionsList } from '../../mocks/taskList.mock';
 import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
 import { formatUiDate } from '../../utils/tableUtils';
+import { retryOnTransientFailure } from '../../../E2E/utils/transient-failure.utils';
+import { setupTaskListMockRoutes } from '../../helpers';
 
 const userIdentifier = 'STAFF_ADMIN';
 let sessionCookies: any[] = [];
-let taskListMockResponse;
+let taskListMockResponse: ReturnType<typeof buildTaskListMock>;
 
 test.beforeEach(async ({ page }) => {
   const { cookies } = await applySessionCookies(page, userIdentifier);
@@ -18,10 +20,7 @@ test.beforeEach(async ({ page }) => {
 test.describe(`Task List as ${userIdentifier}`, () => {
   test(`User ${userIdentifier} can view assigned tasks on the task list page`, async ({ taskListPage, page, tableUtils }) => {
     await test.step('Setup route mock for task list', async () => {
-      await page.route('**/workallocation/task*', async (route) => {
-        const body = JSON.stringify(taskListMockResponse);
-        await route.fulfill({ status: 200, contentType: 'application/json', body });
-      });
+      await setupTaskListMockRoutes(page, taskListMockResponse);
     });
 
     await test.step('Navigate to the my tasks list page', async () => {
@@ -53,10 +52,7 @@ test.describe(`Task List as ${userIdentifier}`, () => {
   test(`User ${userIdentifier} sees the expected message if there are no assigned tasks`, async ({ taskListPage, page }) => {
     const emptyMockResponse = { tasks: [], total_records: 0 };
     await test.step('Setup route mock for empty task list', async () => {
-      await page.route('**/workallocation/task*', async (route) => {
-        const body = JSON.stringify(emptyMockResponse);
-        await route.fulfill({ status: 200, contentType: 'application/json', body });
-      });
+      await setupTaskListMockRoutes(page, emptyMockResponse);
     });
     await test.step('Navigate to the my tasks list page', async () => {
       await taskListPage.goto();
@@ -75,10 +71,7 @@ test.describe(`Task List as ${userIdentifier}`, () => {
   }) => {
     const deterministicMockResponse = buildDeterministicMyTasksListMock('deterministic-assignee');
     await test.step('Setup route mock for deterministic task list', async () => {
-      await page.route('**/workallocation/task*', async (route) => {
-        const body = JSON.stringify(deterministicMockResponse);
-        await route.fulfill({ status: 200, contentType: 'application/json', body });
-      });
+      await setupTaskListMockRoutes(page, deterministicMockResponse);
     });
     await test.step('Navigate to the my tasks list page', async () => {
       await taskListPage.goto();

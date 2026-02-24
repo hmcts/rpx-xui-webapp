@@ -20,7 +20,7 @@ import {
   handlePostCaseWorkersRefData,
   handlePostJudicialWorkersRefData,
   getUserIdsFromRoleApiResponse,
-  getUserIdsFromJurisdictionRoleResponse
+  getUserIdsFromJurisdictionRoleResponse,
 } from './caseWorkerService';
 
 // Import sinon-chai using require to avoid ES module issues
@@ -35,7 +35,7 @@ describe('CaseWorker Service', () => {
     sandbox.stub(console, 'warn');
     sandbox.stub(proxy, 'setHeaders').returns({
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer token'
+      Authorization: 'Bearer token',
     });
   });
 
@@ -45,7 +45,10 @@ describe('CaseWorker Service', () => {
 
   describe('handleUsersGet', () => {
     it('should make a get request and return users data', async () => {
-      const mockUsers = [{ id: '1', name: 'User 1' }, { id: '2', name: 'User 2' }];
+      const mockUsers = [
+        { id: '1', name: 'User 1' },
+        { id: '2', name: 'User 2' },
+      ];
       const mockResponse = { status: 200, data: mockUsers };
       sandbox.stub(http, 'get').resolves(mockResponse);
       const path = '/users';
@@ -74,7 +77,7 @@ describe('CaseWorker Service', () => {
       const mockResponse = { status: 200, data: mockUsers };
       sandbox.stub(http, 'get').resolves(mockResponse);
       const path = '/new-users';
-      const headers = { 'Authorization': 'Bearer custom-token' };
+      const headers = { Authorization: 'Bearer custom-token' };
 
       const data = await handleNewUsersGet(path, headers);
 
@@ -237,8 +240,8 @@ describe('CaseWorker Service', () => {
       const mockResponse = {
         status: 200,
         data: {
-          roleAssignmentResponse: [{ id: '1' }, { id: '2' }]
-        }
+          roleAssignmentResponse: [{ id: '1' }, { id: '2' }],
+        },
       };
       sandbox.stub(http, 'post').resolves(mockResponse);
       const path = '/role-assignments';
@@ -261,8 +264,8 @@ describe('CaseWorker Service', () => {
       const mockResponse = {
         status: 200,
         data: {
-          roleAssignmentResponse: roleAssignments
-        }
+          roleAssignmentResponse: roleAssignments,
+        },
       };
       sandbox.stub(http, 'post').resolves(mockResponse);
       const path = '/role-assignments';
@@ -280,8 +283,8 @@ describe('CaseWorker Service', () => {
       const mockResponse = {
         status: 200,
         data: {
-          roleAssignmentResponse: []
-        }
+          roleAssignmentResponse: [],
+        },
       };
       sandbox.stub(http, 'post').resolves(mockResponse);
       const path = '/role-assignments';
@@ -299,13 +302,13 @@ describe('CaseWorker Service', () => {
       const mockResponse = {
         status: 200,
         data: {
-          roleAssignmentResponse: [{ id: '1' }]
-        }
+          roleAssignmentResponse: [{ id: '1' }],
+        },
       };
       sandbox.stub(http, 'post').resolves(mockResponse);
       const path = '/role-assignments';
       const payload = { jurisdiction: 'SSCS' };
-      const headers = { 'Authorization': 'Bearer token' };
+      const headers = { Authorization: 'Bearer token' };
 
       const response = await handlePostRoleAssignmentsWithNewUsers(path, payload, headers);
 
@@ -318,8 +321,8 @@ describe('CaseWorker Service', () => {
       const mockResponse = {
         status: 200,
         data: {
-          roleAssignmentResponse: roleAssignments
-        }
+          roleAssignmentResponse: roleAssignments,
+        },
       };
       sandbox.stub(http, 'post').resolves(mockResponse);
       const path = '/role-assignments';
@@ -341,18 +344,18 @@ describe('CaseWorker Service', () => {
           attributes: { jurisdiction: ['SSCS'] },
           roleName: ['caseworker'],
           roleType: ['ctsc'],
-          validAt: new Date().toISOString()
+          validAt: new Date().toISOString(),
         },
         {
           attributes: { jurisdiction: ['IA'] },
           roleName: ['caseworker'],
           roleType: ['ctsc'],
-          validAt: new Date().toISOString()
-        }
+          validAt: new Date().toISOString(),
+        },
       ];
       const mockResponses = [
         { status: 200, data: { roleAssignmentResponse: [{ id: '1' }] } },
-        { status: 200, data: { roleAssignmentResponse: [{ id: '2' }] } }
+        { status: 200, data: { roleAssignmentResponse: [{ id: '2' }] } },
       ];
       const httpStub = sandbox.stub(http, 'post');
       httpStub.onCall(0).resolves(mockResponses[0]);
@@ -384,13 +387,13 @@ describe('CaseWorker Service', () => {
           attributes: { jurisdiction: ['SSCS'] },
           roleName: ['caseworker'],
           roleType: ['ctsc'],
-          validAt: new Date().toISOString()
-        }
+          validAt: new Date().toISOString(),
+        },
       ];
       const roleAssignments = Array(100000).fill({ id: 'test' });
       const mockResponse = {
         status: 200,
-        data: { roleAssignmentResponse: roleAssignments }
+        data: { roleAssignmentResponse: roleAssignments },
       };
       sandbox.stub(http, 'post').resolves(mockResponse);
       const path = '/caseworkers';
@@ -410,14 +413,14 @@ describe('CaseWorker Service', () => {
           attributes: { jurisdiction: ['SSCS'] },
           roleName: ['caseworker'],
           roleType: ['ctsc'],
-          validAt: new Date().toISOString()
+          validAt: new Date().toISOString(),
         },
         {
           attributes: { jurisdiction: ['IA'] },
           roleName: ['caseworker'],
           roleType: ['ctsc'],
-          validAt: new Date().toISOString()
-        }
+          validAt: new Date().toISOString(),
+        },
       ];
       const httpStub = sandbox.stub(http, 'post');
       httpStub.onCall(0).resolves({ status: 200, data: { roleAssignmentResponse: [] } });
@@ -433,11 +436,11 @@ describe('CaseWorker Service', () => {
     it('should make post requests for each jurisdiction with userIds', async () => {
       const userIdsByJurisdiction = [
         { jurisdiction: 'SSCS', userIds: ['user1', 'user2'] },
-        { jurisdiction: 'IA', userIds: ['user3'] }
+        { jurisdiction: 'IA', userIds: ['user3'] },
       ];
       const mockResponses = [
         { status: 200, data: [{ id: 'user1', name: 'User 1' }] },
-        { status: 200, data: [{ id: 'user3', name: 'User 3' }] }
+        { status: 200, data: [{ id: 'user3', name: 'User 3' }] },
       ];
       const httpStub = sandbox.stub(http, 'post');
       httpStub.onCall(0).resolves(mockResponses[0]);
@@ -459,7 +462,7 @@ describe('CaseWorker Service', () => {
       const userIdsByJurisdiction = [
         { jurisdiction: 'SSCS', userIds: ['user1'] },
         { jurisdiction: 'IA', userIds: [] },
-        { jurisdiction: 'CIVIL', userIds: null }
+        { jurisdiction: 'CIVIL', userIds: null },
       ];
       const mockResponse = { status: 200, data: [{ id: 'user1' }] };
       sandbox.stub(http, 'post').resolves(mockResponse);
@@ -536,8 +539,8 @@ describe('CaseWorker Service', () => {
         roleAssignmentResponse: [
           { actorId: 'user1', roleId: 'role1' },
           { actorId: 'user2', roleId: 'role2' },
-          { actorId: 'user3', roleId: 'role3' }
-        ]
+          { actorId: 'user3', roleId: 'role3' },
+        ],
       };
 
       const userIds = getUserIdsFromRoleApiResponse(response);
@@ -550,8 +553,8 @@ describe('CaseWorker Service', () => {
         roleAssignmentResponse: [
           { actorId: 'user1', roleId: 'role1' },
           { actorId: 'user1', roleId: 'role2' },
-          { actorId: 'user2', roleId: 'role3' }
-        ]
+          { actorId: 'user2', roleId: 'role3' },
+        ],
       };
 
       const userIds = getUserIdsFromRoleApiResponse(response);
@@ -604,18 +607,16 @@ describe('CaseWorker Service', () => {
           data: {
             roleAssignmentResponse: [
               { actorId: 'user1', roleId: 'role1' },
-              { actorId: 'user2', roleId: 'role2' }
-            ]
-          }
+              { actorId: 'user2', roleId: 'role2' },
+            ],
+          },
         },
         {
           jurisdiction: 'IA',
           data: {
-            roleAssignmentResponse: [
-              { actorId: 'user3', roleId: 'role3' }
-            ]
-          }
-        }
+            roleAssignmentResponse: [{ actorId: 'user3', roleId: 'role3' }],
+          },
+        },
       ];
 
       const result = getUserIdsFromJurisdictionRoleResponse(response);
@@ -638,9 +639,9 @@ describe('CaseWorker Service', () => {
         {
           jurisdiction: 'SSCS',
           data: {
-            roleAssignmentResponse: []
-          }
-        }
+            roleAssignmentResponse: [],
+          },
+        },
       ];
 
       const result = getUserIdsFromJurisdictionRoleResponse(response);
@@ -653,8 +654,8 @@ describe('CaseWorker Service', () => {
       const response = [
         {
           jurisdiction: 'SSCS',
-          data: null
-        }
+          data: null,
+        },
       ];
 
       expect(() => getUserIdsFromJurisdictionRoleResponse(response)).to.throw();

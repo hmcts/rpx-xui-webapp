@@ -1,23 +1,22 @@
 import { promises as fs } from 'node:fs';
+import * as fsSync from 'node:fs';
 import * as path from 'node:path';
+import * as lockfile from 'proper-lockfile';
 
 import { IdamUtils, ServiceAuthUtils, createLogger } from '@hmcts/playwright-common';
 import { request } from '@playwright/test';
 
 import { config } from '../../common/apiTestConfig';
 import { AuthenticationError, ConfigurationError } from './errors';
-type UsersConfig = typeof config.users[keyof typeof config.users];
+type UsersConfig = (typeof config.users)[keyof typeof config.users];
 export type ApiUserRole = keyof UsersConfig;
 
 const baseUrl = stripTrailingSlash(config.baseUrl);
-const storageRoot = path.resolve(
-  process.cwd(),
-  'functional-output',
-  'tests',
-  'playwright-api',
-  'storage-states'
-);
-const storagePromises = new Map<string, Promise<string>>();
+// Unified storage location: share .sessions/ with E2E tests
+// API sessions use 'api-' prefix to distinguish from E2E browser sessions
+const storageRoot = path.resolve(process.cwd(), '.sessions');
+// Note: storagePromises Map removed - replaced with filesystem-based locking
+// for proper cross-worker coordination (same approach as E2E sessionCapture.ts)
 
 const logger = createLogger({ serviceName: 'node-api-auth', format: 'pretty' });
 type LoggerInstance = ReturnType<typeof createLogger>;
@@ -43,10 +42,10 @@ function toError(error: unknown): Error {
 type StorageState = { cookies?: Array<{ name?: string; value?: string }> };
 
 type StorageDeps = {
-  storagePromises: Map<string, Promise<string>>;
   createStorageState: (role: ApiUserRole) => Promise<string>;
   tryReadState: (storagePath: string) => Promise<StorageState | undefined>;
   unlink: (path: string) => Promise<void>;
+  lockfile?: typeof lockfile;
 };
 
 type CreateStorageDeps = {
@@ -73,10 +72,10 @@ type FormLoginDeps = {
 };
 
 const defaultStorageDeps: StorageDeps = {
-  storagePromises,
   createStorageState,
   tryReadState,
-  unlink: fs.unlink
+  unlink: fs.unlink,
+  lockfile,
 };
 
 export async function ensureStorageState(role: ApiUserRole): Promise<string> {
@@ -85,29 +84,53 @@ export async function ensureStorageState(role: ApiUserRole): Promise<string> {
 
 async function ensureStorageStateWith(role: ApiUserRole, deps: StorageDeps = defaultStorageDeps): Promise<string> {
   const cacheKey = getCacheKey(role);
-  if (!deps.storagePromises.has(cacheKey)) {
-    deps.storagePromises.set(cacheKey, deps.createStorageState(role));
+  const lockFilePath = path.join(storageRoot, `api-${cacheKey}.lock`);
+  const lock = deps.lockfile ?? lockfile;
+
+  // Ensure lock directory exists
+  await fs.mkdir(storageRoot, { recursive: true });
+
+  // Create lock file if it doesn't exist (required by proper-lockfile)
+  if (!fsSync.existsSync(lockFilePath)) {
+    fsSync.writeFileSync(lockFilePath, '', 'utf8');
   }
-  const storagePromise = deps.storagePromises.get(cacheKey);
-  if (storagePromise === undefined) {
-    throw new Error(`Storage promise not found for role "${role}" after initialisation`);
-  }
-  const storagePath = await storagePromise;
-  const state = await deps.tryReadState(storagePath);
-  if (!state) {
-    try {
-      await deps.unlink(storagePath);
-    } catch {
-      // ignore unlink errors
+
+  // Acquire filesystem lock to coordinate across all workers (and with E2E tests)
+  const release = await lock.lock(lockFilePath, {
+    retries: {
+      retries: 30,
+      minTimeout: 1000,
+      maxTimeout: 5000,
+    },
+    stale: 60000,
+  });
+
+  try {
+    // Double-check freshness after acquiring lock (another worker/test suite may have logged in)
+    const storagePath = path.join(storageRoot, `api-${config.testEnv}-${role}.storage.json`);
+    let state = await deps.tryReadState(storagePath);
+
+    if (state && isStorageStateFresh(storagePath)) {
+      logger.info('Storage state is fresh (another worker logged in)', { role, cacheKey });
+      return storagePath;
     }
-    deps.storagePromises.set(cacheKey, deps.createStorageState(role));
-    const rebuilt = deps.storagePromises.get(cacheKey);
-    if (rebuilt === undefined) {
-      throw new Error(`Storage promise not found for role "${role}" after rebuild`);
+
+    // State missing, stale, or corrupted - create new one
+    if (!state) {
+      logger.info('Storage state missing or corrupted, creating new one', { role, cacheKey });
+      try {
+        await deps.unlink(storagePath);
+      } catch {
+        // ignore unlink errors
+      }
+    } else {
+      logger.info('Storage state stale, refreshing', { role, cacheKey });
     }
-    return rebuilt;
+
+    return await deps.createStorageState(role);
+  } finally {
+    await release();
   }
-  return storagePath;
 }
 
 export async function getStoredCookie(role: ApiUserRole, cookieName: string): Promise<string | undefined> {
@@ -119,23 +142,14 @@ async function getStoredCookieWith(
   cookieName: string,
   deps: StorageDeps = defaultStorageDeps
 ): Promise<string | undefined> {
-  let storagePath = await ensureStorageStateWith(role, deps);
-  let state = await deps.tryReadState(storagePath);
+  const storagePath = await ensureStorageStateWith(role, deps);
+  const state = await deps.tryReadState(storagePath);
 
   if (!state) {
-    // corrupted or empty state – rebuild
-    deps.storagePromises.delete(getCacheKey(role));
-    storagePath = await ensureStorageStateWith(role, deps);
-    state = await deps.tryReadState(storagePath);
+    throw new Error(`Unable to read storage state for role "${role}" after ensure.`);
   }
 
-  if (!state) {
-    throw new Error(`Unable to read storage state for role "${role}".`);
-  }
-
-  const cookie = Array.isArray(state.cookies)
-    ? state.cookies.find((c: { name?: string }) => c.name === cookieName)
-    : undefined;
+  const cookie = Array.isArray(state.cookies) ? state.cookies.find((c: { name?: string }) => c.name === cookieName) : undefined;
   return cookie?.value;
 }
 
@@ -151,12 +165,11 @@ async function createStorageStateWith(role: ApiUserRole, deps: CreateStorageDeps
   const tryBootstrap = deps.tryTokenBootstrap ?? tryTokenBootstrap;
   const loginViaForm = deps.createStorageStateViaForm ?? createStorageStateViaForm;
 
-  const storagePath = path.join(root, config.testEnv, `${role}.json`);
+  // Use 'api-' prefix to distinguish from E2E browser sessions in same directory
+  const storagePath = path.join(root, `api-${config.testEnv}-${role}.storage.json`);
   await mkdir(path.dirname(storagePath), { recursive: true });
 
-  const tokenLoginSucceeded = shouldTokenBootstrap
-    ? await tryBootstrap(role, credentials, storagePath)
-    : false;
+  const tokenLoginSucceeded = shouldTokenBootstrap ? await tryBootstrap(role, credentials, storagePath) : false;
 
   if (!tokenLoginSucceeded) {
     await loginViaForm(credentials, storagePath, role);
@@ -199,7 +212,7 @@ async function tryTokenBootstrap(
       scope,
       username: credentials.username,
       password: credentials.password,
-      redirectUri: env.IDAM_RETURN_URL ?? `${baseUrl}/oauth2/callback`
+      redirectUri: env.IDAM_RETURN_URL ?? `${baseUrl}/oauth2/callback`,
     });
     const serviceToken = await serviceAuthUtils.retrieveToken({ microservice });
 
@@ -208,8 +221,8 @@ async function tryTokenBootstrap(
       ignoreHTTPSErrors: true,
       extraHTTPHeaders: {
         Authorization: `Bearer ${accessToken}`,
-        ServiceAuthorization: `Bearer ${serviceToken}`
-      }
+        ServiceAuthorization: `Bearer ${serviceToken}`,
+      },
     });
 
     // Touch auth endpoints so the gateway can create a session + xsrf cookies.
@@ -247,17 +260,16 @@ async function createStorageStateViaForm(
   const context = await requestFactory({
     baseURL: baseUrl,
     ignoreHTTPSErrors: true,
-    maxRedirects: 10
+    maxRedirects: 10,
   });
 
   try {
     const loginPage = await context.get('auth/login');
     if (loginPage.status() >= 400) {
-      throw new AuthenticationError(
-        `GET /auth/login responded with ${loginPage.status()}`,
-        role,
-        { endpoint: 'auth/login', status: loginPage.status() }
-      );
+      throw new AuthenticationError(`GET /auth/login responded with ${loginPage.status()}`, role, {
+        endpoint: 'auth/login',
+        status: loginPage.status(),
+      });
     }
 
     const loginUrl = loginPage.url();
@@ -265,7 +277,7 @@ async function createStorageStateViaForm(
     const formPayload: Record<string, string> = {
       username: credentials.username,
       password: credentials.password,
-      save: 'Sign in'
+      save: 'Sign in',
     };
     if (csrfToken) {
       formPayload._csrf = csrfToken;
@@ -273,11 +285,11 @@ async function createStorageStateViaForm(
 
     const loginResponse = await context.post(loginUrl, { form: formPayload });
     if (loginResponse.status() >= 400) {
-      throw new AuthenticationError(
-        `POST ${loginUrl} responded with ${loginResponse.status()}`,
-        role,
-        { endpoint: loginUrl, status: loginResponse.status(), method: 'POST' }
-      );
+      throw new AuthenticationError(`POST ${loginUrl} responded with ${loginResponse.status()}`, role, {
+        endpoint: loginUrl,
+        status: loginResponse.status(),
+        method: 'POST',
+      });
     }
 
     // Ensure XSRF/session cookies are refreshed on the application domain
@@ -318,7 +330,7 @@ function getCredentials(role: ApiUserRole): { username: string; password: string
 
   return {
     username: userConfig.e,
-    password: userConfig.sec
+    password: userConfig.sec,
   };
 }
 
@@ -362,16 +374,31 @@ function isTokenBootstrapEnabled(): boolean {
   return hasIdamEnv && hasS2S;
 }
 
+/**
+ * Check if storage state is fresh (within 15 minutes TTL).
+ * Matches E2E session freshness check for consistency.
+ */
+function isStorageStateFresh(storagePath: string, ttlMs: number = 15 * 60 * 1000): boolean {
+  try {
+    const stats = fsSync.statSync(storagePath);
+    const age = Date.now() - stats.mtimeMs;
+    return age < ttlMs;
+  } catch {
+    return false;
+  }
+}
+
 export const __test__ = {
   extractCsrf,
   stripTrailingSlash,
   getCacheKey,
   isTokenBootstrapEnabled,
+  isStorageStateFresh,
   tryReadState,
   ensureStorageStateWith,
   getStoredCookieWith,
   createStorageStateWith,
   tryTokenBootstrap,
   createStorageStateViaForm,
-  getCredentials
+  getCredentials,
 };

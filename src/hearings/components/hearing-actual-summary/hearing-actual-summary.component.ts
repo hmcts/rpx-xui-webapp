@@ -11,7 +11,7 @@ import moment from 'moment';
   standalone: false,
   selector: 'exui-hearing-actual-summary',
   templateUrl: './hearing-actual-summary.component.html',
-  styleUrls: ['./hearing-actual-summary.component.scss']
+  styleUrls: ['./hearing-actual-summary.component.scss'],
 })
 export class HearingActualSummaryComponent implements OnInit {
   @Input() public hearingState$: Observable<fromHearingStore.State>;
@@ -52,9 +52,9 @@ export class HearingActualSummaryComponent implements OnInit {
   }
 
   public actualHearingDate(): string {
-    return this.hearingActualsMainModel?.hearingActuals?.actualHearingDays[0]?.hearingStartTime ?
-      this.hearingActualsMainModel?.hearingActuals?.actualHearingDays[0]?.hearingStartTime :
-      this.hearingActualsMainModel?.hearingActuals?.actualHearingDays[0]?.hearingDate;
+    return this.hearingActualsMainModel?.hearingActuals?.actualHearingDays[0]?.hearingStartTime
+      ? this.hearingActualsMainModel?.hearingActuals?.actualHearingDays[0]?.hearingStartTime
+      : this.hearingActualsMainModel?.hearingActuals?.actualHearingDays[0]?.hearingDate;
   }
 
   private convertUTCDateToLocalDate(date): Date {
@@ -62,7 +62,8 @@ export class HearingActualSummaryComponent implements OnInit {
   }
 
   private applyActualsModel(): void {
-    const hearingOutcome = this.hearingActualsMainModel &&
+    const hearingOutcome =
+      this.hearingActualsMainModel &&
       this.hearingActualsMainModel.hearingActuals &&
       this.hearingActualsMainModel.hearingActuals.hearingOutcome;
     this.isCompleted = hearingOutcome && hearingOutcome.hearingResult === HearingResult.COMPLETED;
@@ -72,9 +73,13 @@ export class HearingActualSummaryComponent implements OnInit {
       this.adjournReasonTypeValue = adjournReasonType ? adjournReasonType.value_en : hearingOutcome.hearingResultReasonType;
     }
 
-    this.isPaperHearing$ = this.hearingState$ && this.hearingState$.pipe(
-      map((state) => state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR))
-    );
+    this.isPaperHearing$ =
+      this.hearingState$ &&
+      this.hearingState$.pipe(
+        map((state) =>
+          state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels.includes(HearingChannelEnum.ONPPR)
+        )
+      );
     this.hearingTypeDescription = hearingOutcome?.hearingType && this.getHearingTypeDescription(hearingOutcome.hearingType);
     this.hearingId = history.state?.hearingId ?? '';
     this.caseReference = history.state?.caseRef ?? '';

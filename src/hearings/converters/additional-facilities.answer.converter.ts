@@ -22,7 +22,8 @@ export class AdditionalFacilitiesAnswerConverter implements AnswerConverter {
           ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails?.facilitiesRequired
           : state.hearingRequest.hearingRequestMainModel.hearingDetails?.facilitiesRequired;
         facilitiesRequired?.forEach(
-          (facility: string) => result += `<li>${AdditionalFacilitiesAnswerConverter.getFacilityValue(facilities, facility)}</li>`
+          (facility: string) =>
+            (result += `<li>${AdditionalFacilitiesAnswerConverter.getFacilityValue(facilities, facility)}</li>`)
         );
         result += '</ul>';
         return result;

@@ -1,14 +1,12 @@
 import * as exceptionFormatter from 'exception-formatter';
 import { getConfigValue } from '../configuration';
-import {
-  MAX_LOG_LINE
-} from '../configuration/references';
+import { MAX_LOG_LINE } from '../configuration/references';
 
 import { shorten, valueOrNull } from '../lib/util';
 import * as log4jui from './log4jui';
 
 const exceptionOptions = {
-  maxLines: 1
+  maxLines: 1,
 };
 
 export function requestInterceptor(request) {
@@ -36,7 +34,7 @@ export function successInterceptor(response) {
     name: `Service ${response.config.method.toUpperCase()} call`,
     resultCode: response.status,
     success: true,
-    url: response.config.url
+    url: response.config.url,
   });
   return response;
 }
@@ -67,7 +65,7 @@ export function errorInterceptor(error) {
     name: `Service ${error.config.method.toUpperCase()} call`,
     resultCode: error.status,
     success: true,
-    url: error.config.url
+    url: error.config.url,
   });
 
   return Promise.reject(error.response);

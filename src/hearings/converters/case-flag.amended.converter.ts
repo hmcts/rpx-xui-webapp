@@ -16,15 +16,23 @@ export class CaseFlagAmendedConverter implements IsAmendedConverter {
   }
 
   public transformIsAmended(hearingState$?: Observable<State>): Observable<boolean> {
-    return hearingState$.pipe(map((state) => {
-      const partiesFromServiceValue: PartyDetailsModel[] = state.hearingValues.serviceHearingValuesModel.parties;
-      const partyDetailsA = state.hearingRequestToCompare.hearingRequestMainModel.partyDetails;
-      const partyWithFlagsA = CaseFlagsUtils.convertPartiesToPartyWithFlags(this.caseFlagsRefData,
-        partyDetailsA, partiesFromServiceValue);
-      const partyDetailsB = state.hearingRequest.hearingRequestMainModel.partyDetails;
-      const partyWithFlagsB = CaseFlagsUtils.convertPartiesToPartyWithFlags(this.caseFlagsRefData,
-        partyDetailsB, partiesFromServiceValue);
-      return !_.isEqual(partyWithFlagsA, partyWithFlagsB);
-    }));
+    return hearingState$.pipe(
+      map((state) => {
+        const partiesFromServiceValue: PartyDetailsModel[] = state.hearingValues.serviceHearingValuesModel.parties;
+        const partyDetailsA = state.hearingRequestToCompare.hearingRequestMainModel.partyDetails;
+        const partyWithFlagsA = CaseFlagsUtils.convertPartiesToPartyWithFlags(
+          this.caseFlagsRefData,
+          partyDetailsA,
+          partiesFromServiceValue
+        );
+        const partyDetailsB = state.hearingRequest.hearingRequestMainModel.partyDetails;
+        const partyWithFlagsB = CaseFlagsUtils.convertPartiesToPartyWithFlags(
+          this.caseFlagsRefData,
+          partyDetailsB,
+          partiesFromServiceValue
+        );
+        return !_.isEqual(partyWithFlagsA, partyWithFlagsB);
+      })
+    );
   }
 }

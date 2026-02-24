@@ -5,7 +5,7 @@ export async function confirmNextSteps(page, responseBody) {
   const responseOptions = responseBody.map((item) => item.name);
   const options = await eventTriggerOptions.locator('option').allTextContents();
   responseOptions.forEach((element) => {
-    if (options.indexOf(element) === -1){
+    if (options.indexOf(element) === -1) {
       return false;
     }
   });
@@ -16,13 +16,11 @@ export async function confirmTabsVisible(page, responseBody) {
   const tabLabels = page.locator('.mat-tab-list .mat-tab-labels .mat-tab-label');
   const responseTabsSet = new Set(responseBody.map((tab) => tab.label));
   const count = await tabLabels.count();
-  const pageTabs = await Promise.all(
-    Array.from({ length: count }, (_, i) => tabLabels.nth(i).innerText())
-  );
+  const pageTabs = await Promise.all(Array.from({ length: count }, (_, i) => tabLabels.nth(i).innerText()));
   return Array.from(responseTabsSet).every((tab) => pageTabs.includes(tab));
 }
 
-async function getKeyVal(field: any): Promise < string > {
+async function getKeyVal(field: any): Promise<string> {
   return field.value;
 }
 
@@ -73,7 +71,7 @@ export async function caseDetailsCheck(page, apiResponse) {
   }
 }
 
-export async function validateWorkBasketComplexValues(page, response){
+export async function validateWorkBasketComplexValues(page, response) {
   response.forEach((input) => {
     complexFieldVal(page, input);
   });
@@ -82,7 +80,6 @@ export async function validateWorkBasketComplexValues(page, response){
 async function complexFieldVal(page, WBField) {
   switch (WBField.field_type?.type) {
     case 'FixedRadioList':
-
       const radioLabels = page.locator('.multiple-choice label');
 
       await expect(radioLabels).toBeVisible({ timeout: 5000 });

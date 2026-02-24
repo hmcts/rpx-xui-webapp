@@ -22,7 +22,10 @@ export class TypeFromRequestAnswerConverter implements AnswerConverter {
           ? state.hearingRequestToCompare?.hearingRequestMainModel?.caseDetails?.caseCategories
           : state.hearingRequest?.hearingRequestMainModel?.caseDetails?.caseCategories;
         if (caseCategories) {
-          const caseTypes: CaseCategoryDisplayModel[] = CaseTypesUtils.getCaseCategoryDisplayModels(this.caseTypeRefData, caseCategories);
+          const caseTypes: CaseCategoryDisplayModel[] = CaseTypesUtils.getCaseCategoryDisplayModels(
+            this.caseTypeRefData,
+            caseCategories
+          );
           caseTypes.forEach((caseCategory) => {
             result += `${caseCategory.categoryDisplayValue} \n<ul>`;
             if (caseCategory.childNodes?.length) {

@@ -12,14 +12,16 @@ import { PanelMembersAnswerConverter } from './panel-members.answer.converter';
 
 describe('PanelMembersAnswerConverter', () => {
   let converter: PanelMembersAnswerConverter;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let store: Store<any>;
   let router: any;
-  const PANEL_MEMBER_DETAILS = [{
-    memberID: 'P0000001',
-    memberType: MemberType.PANEL_MEMBER,
-    requirementType: RequirementType.MUSTINC
-  }];
+  const PANEL_MEMBER_DETAILS = [
+    {
+      memberID: 'P0000001',
+      memberType: MemberType.PANEL_MEMBER,
+      requirementType: RequirementType.MUSTINC,
+    },
+  ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -30,12 +32,12 @@ describe('PanelMembersAnswerConverter', () => {
           useValue: {
             snapshot: {
               data: {
-                judicialUsers: panelMembersRefData
-              }
-            }
-          }
-        }
-      ]
+                judicialUsers: panelMembersRefData,
+              },
+            },
+          },
+        },
+      ],
     });
     store = TestBed.inject(Store);
     router = TestBed.inject(ActivatedRoute);
@@ -45,7 +47,7 @@ describe('PanelMembersAnswerConverter', () => {
   it('should transform hearing judge name', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
-      panelPreferences: PANEL_MEMBER_DETAILS
+      panelPreferences: PANEL_MEMBER_DETAILS,
     };
     const result$ = converter.transformAnswer(of(STATE));
     const option = '';

@@ -31,11 +31,11 @@ class ApplicationServer {
     // Serve static assets only (don’t let static serve index)
     this.app.use([
       removeCacheHeaders,
-      express.static(path.join(__dirname, '../dist/rpx-exui/browser', 'assets'), { index: false, cacheControl: false })
+      express.static(path.join(__dirname, '../dist/rpx-exui/browser', 'assets'), { index: false, cacheControl: false }),
     ]);
     this.app.use([
       removeCacheHeaders,
-      express.static(path.join(__dirname, '../dist/rpx-exui/browser'), { index: false, cacheControl: false })
+      express.static(path.join(__dirname, '../dist/rpx-exui/browser'), { index: false, cacheControl: false }),
     ]);
 
     // Catch-all → send the nonce-injected HTML

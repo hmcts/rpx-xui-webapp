@@ -21,7 +21,7 @@ import {
   RequestOptionsBuilder,
   SearchService,
   SessionStorageService,
-  WorkAllocationService
+  WorkAllocationService,
 } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
@@ -37,10 +37,10 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 
 class MockSortService {
   public features = {};
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  public getFeatureToggle() { }
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  public getEditorConfiguration() { }
+
+  public getFeatureToggle() {}
+
+  public getEditorConfiguration() {}
 }
 
 const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(
@@ -49,18 +49,18 @@ const EVENT_TRIGGER: CaseEventTrigger = createCaseEventTrigger(
   'caseId',
   false,
   [
-    ({
+    {
       id: 'PersonFirstName',
       label: 'First name',
       field_type: null,
-      display_context: 'READONLY'
-    }) as CaseField,
-    ({
+      display_context: 'READONLY',
+    } as CaseField,
+    {
       id: 'PersonLastName',
       label: 'Last name',
       field_type: null,
-      display_context: 'OPTIONAL'
-    }) as CaseField
+      display_context: 'OPTIONAL',
+    } as CaseField,
   ],
   [],
   true
@@ -71,19 +71,18 @@ const SANITISED_EDIT_FORM: CaseEventData = {
   event: {
     id: null,
     summary: 'Some summary',
-    description: 'Some description'
+    description: 'Some description',
   },
   event_token: 'test-token',
-  ignore_warning: false
+  ignore_warning: false,
 };
 
 @Component({
   standalone: false,
   selector: 'exui-ccd-connector',
-  template: '<div></div>'
+  template: '<div></div>',
 })
-
-class FakeExuidCcdConnectorComponent { }
+class FakeExuidCcdConnectorComponent {}
 
 describe('CaseCreateSubmitComponent', () => {
   let component: CaseCreateSubmitComponent;
@@ -104,10 +103,12 @@ describe('CaseCreateSubmitComponent', () => {
     TestBed.configureTestingModule({
       declarations: [CaseCreateSubmitComponent, FakeExuidCcdConnectorComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [RouterTestingModule,
+      imports: [
+        RouterTestingModule,
         ExuiCommonLibModule,
         StoreModule.forRoot({ ...fromCases.reducers, cases: combineReducers(fromCases.reducers) }),
-        EffectsModule.forRoot([])],
+        EffectsModule.forRoot([]),
+      ],
       providers: [
         {
           provide: ActivatedRoute,
@@ -120,13 +121,13 @@ describe('CaseCreateSubmitComponent', () => {
                 {},
                 {
                   data: {
-                    profile: {}
-                  }
-                }
-              ]
+                    profile: {},
+                  },
+                },
+              ],
             },
-            params: of({ jid: 'jid', ctid: 'ctid' })
-          }
+            params: of({ jid: 'jid', ctid: 'ctid' }),
+          },
         },
         CasesService,
         RetryUtil,
@@ -146,28 +147,27 @@ describe('CaseCreateSubmitComponent', () => {
         {
           provide: SearchService,
           useValue: {
-            requestOptionsBuilder: RequestOptionsBuilder
-          }
+            requestOptionsBuilder: RequestOptionsBuilder,
+          },
         },
         {
           provide: AbstractAppConfig,
-          useExisting: AppConfig
+          useExisting: AppConfig,
         },
         {
           provide: AppConfigService,
-          useClass: MockSortService
+          useClass: MockSortService,
         },
         {
           provide: AlertService,
-          useValue: mockAlertService
+          useValue: mockAlertService,
         },
         { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: LoggerService, useValue: mockLoggerService },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(waitForAsync(() => {

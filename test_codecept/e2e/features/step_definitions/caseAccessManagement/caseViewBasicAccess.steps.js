@@ -99,4 +99,3 @@ Then('I see specific access request success page', async () => {
     expect(await specificAccessRequestPage.requestSuccessPageContainer.isVisible()).to.be.true;
   });
 });
-

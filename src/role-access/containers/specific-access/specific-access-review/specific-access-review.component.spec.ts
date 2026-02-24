@@ -20,12 +20,13 @@ describe('SpecificAccessReviewComponent', () => {
   let mockStore: any;
   const FORM_GROUP: FormGroup = new FormGroup({});
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let spyOnPipeToStore = jasmine.createSpy();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let spyOnStoreDispatch = jasmine.createSpy();
 
-  const mockSupportedJurisdictionsService = jasmine.createSpyObj('WASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
+  const mockSupportedJurisdictionsService = jasmine.createSpyObj('WASupportedJurisdictionsService', [
+    'getWASupportedJurisdictions',
+  ]);
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -37,10 +38,9 @@ describe('SpecificAccessReviewComponent', () => {
         FormBuilder,
         { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -58,11 +58,9 @@ describe('SpecificAccessReviewComponent', () => {
       accessReason: null,
       period: { startDate: new Date('01-01-2001'), endDate: null },
       person: null,
-      requestId: 'requestId'
+      requestId: 'requestId',
     };
-    spyOnPipeToStore = spyOn(mockStore, 'pipe').and.returnValue(
-      of(mockSpecificAccessStateData)
-    );
+    spyOnPipeToStore = spyOn(mockStore, 'pipe').and.returnValue(of(mockSpecificAccessStateData));
     spyOnStoreDispatch = spyOn(mockStore, 'dispatch');
     fixture = TestBed.createComponent(SpecificAccessReviewComponent);
     component = fixture.componentInstance;
@@ -81,18 +79,10 @@ describe('SpecificAccessReviewComponent', () => {
 
   describe('navigation', () => {
     it('should create component and show the "review access" info message banner', () => {
-      const headingElement = fixture.debugElement.nativeElement.querySelector(
-        '.govuk-fieldset__heading'
-      );
-      expect(headingElement.textContent).toContain(
-        SpecificAccessText.TITLE
-      );
-      const hintElement = fixture.debugElement.nativeElement.querySelector(
-        '.govuk-fieldset__legend--m'
-      );
-      expect(hintElement.textContent).toContain(
-        SpecificAccessText.HINT
-      );
+      const headingElement = fixture.debugElement.nativeElement.querySelector('.govuk-fieldset__heading');
+      expect(headingElement.textContent).toContain(SpecificAccessText.TITLE);
+      const hintElement = fixture.debugElement.nativeElement.querySelector('.govuk-fieldset__legend--m');
+      expect(hintElement.textContent).toContain(SpecificAccessText.HINT);
     });
 
     it('should show validation error when any radio button selected and the form submitted', () => {
@@ -116,7 +106,11 @@ describe('SpecificAccessReviewComponent', () => {
       component.reviewOptionControl.setValue(AccessReason.APPROVE_REQUEST);
       component.navigationHandler(SpecificAccessNavigationEvent.CONTINUE);
       expect(mockStore.dispatch).toHaveBeenCalledWith(
-        new DecideSpecificAccessAndGo({ accessReason: AccessReason.APPROVE_REQUEST, specificAccessState: SpecificAccessState.SPECIFIC_ACCESS_DURATION }));
+        new DecideSpecificAccessAndGo({
+          accessReason: AccessReason.APPROVE_REQUEST,
+          specificAccessState: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
+        })
+      );
     });
 
     it('should correctly navigate on click of continue button for reject request', () => {
@@ -129,7 +123,11 @@ describe('SpecificAccessReviewComponent', () => {
       component.reviewOptionControl.setValue(AccessReason.REQUEST_MORE_INFORMATION);
       component.navigationHandler(SpecificAccessNavigationEvent.CONTINUE);
       expect(mockStore.dispatch).toHaveBeenCalledWith(
-        new DecideSpecificAccessAndGo({ accessReason: AccessReason.REQUEST_MORE_INFORMATION, specificAccessState: SpecificAccessState.SPECIFIC_ACCESS_INFORMATION }));
+        new DecideSpecificAccessAndGo({
+          accessReason: AccessReason.REQUEST_MORE_INFORMATION,
+          specificAccessState: SpecificAccessState.SPECIFIC_ACCESS_INFORMATION,
+        })
+      );
     });
   });
 

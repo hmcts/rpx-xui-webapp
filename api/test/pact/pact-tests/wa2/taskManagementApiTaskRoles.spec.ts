@@ -12,12 +12,14 @@ const pactSetUp = new PactV3TestSetup({ provider: 'wa_task_management_api_task_r
 const taskId = '4d4b6fgh-c91f-433f-92ac-e800ae34f88c';
 
 describe('WA Task management api, given taskId get the roles associated with the task', () => {
-  const RESPONSE_BODY = { roles: eachLike({
-    role_category: somethingLike('JUDICIAL'),
-    role_name: somethingLike('lead-judge'),
-    permissions: eachLike(somethingLike('EXECUTE')),
-    authorisations: eachLike(somethingLike(('IAC')))
-  }) };
+  const RESPONSE_BODY = {
+    roles: eachLike({
+      role_category: somethingLike('JUDICIAL'),
+      role_name: somethingLike('lead-judge'),
+      permissions: eachLike(somethingLike('EXECUTE')),
+      authorisations: eachLike(somethingLike('IAC')),
+    }),
+  };
 
   describe('get /task/taskId/roles', () => {
     const sandbox: sinon.SinonSandbox = sinon.createSandbox();
@@ -36,14 +38,14 @@ describe('WA Task management api, given taskId get the roles associated with the
           path: `/task/${taskId}/roles`,
           headers: {
             Authorization: 'Bearer someAuthorizationToken',
-            ServiceAuthorization: 'Bearer someServiceAuthorizationToken'
-          }
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+          },
         },
         willRespondWith: {
           status: 200,
           headers: {},
-          body: RESPONSE_BODY
-        }
+          body: RESPONSE_BODY,
+        },
       };
       pactSetUp.provider.addInteraction(interaction);
     });
@@ -63,13 +65,13 @@ describe('WA Task management api, given taskId get the roles associated with the
         const { getTaskRoles } = requireReloaded('../../../../workAllocation/index');
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
             // 'content-Type': 'application/json'
           },
           params: {
-            taskId: taskId
-          }
+            taskId: taskId,
+          },
         });
         let returnedResponse = null;
         const response = mockRes();

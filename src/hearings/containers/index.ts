@@ -9,5 +9,5 @@ export const containers: any[] = [
   ...fromRequestHearing.containers,
   ...fromViewHearing.containers,
   ...fromHearingActuals.containers,
-  ...fromLinkedHearings.containers
+  ...fromLinkedHearings.containers,
 ];

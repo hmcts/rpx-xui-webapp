@@ -14,14 +14,16 @@ import { JudgeExclusionAnswerConverter } from './judge-exclusion.answer.converte
 
 describe('JudgeExclusionAnswerConverter', () => {
   let converter: AnswerConverter;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let store: Store<any>;
   let router: any;
-  const JUDICAIL_USER_DETAILS = [{
-    memberID: 'P0000001',
-    memberType: MemberType.JUDGE,
-    requirementType: RequirementType.EXCLUDE
-  }];
+  const JUDICAIL_USER_DETAILS = [
+    {
+      memberID: 'P0000001',
+      memberType: MemberType.JUDGE,
+      requirementType: RequirementType.EXCLUDE,
+    },
+  ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -32,12 +34,12 @@ describe('JudgeExclusionAnswerConverter', () => {
           useValue: {
             snapshot: {
               data: {
-                judicialUsers: judicialUsersRefData
-              }
-            }
-          }
-        }
-      ]
+                judicialUsers: judicialUsersRefData,
+              },
+            },
+          },
+        },
+      ],
     });
     store = TestBed.inject(Store);
     router = TestBed.inject(ActivatedRoute);
@@ -47,7 +49,7 @@ describe('JudgeExclusionAnswerConverter', () => {
   it('should transform hearing judge exclusion', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
-      panelPreferences: JUDICAIL_USER_DETAILS
+      panelPreferences: JUDICAIL_USER_DETAILS,
     };
     const result$ = converter.transformAnswer(of(STATE));
     const option = judgeRefData[0].knownAs;

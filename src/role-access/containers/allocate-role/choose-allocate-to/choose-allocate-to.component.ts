@@ -4,7 +4,14 @@ import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import { $enum as EnumUtil } from 'ts-enum-util';
 import { CHOOSE_ALLOCATE_TO, ERROR_MESSAGE } from '../../../constants';
-import { Actions, AllocateRoleNavigation, AllocateRoleNavigationEvent, AllocateRoleState, AllocateTo, SpecificRole } from '../../../models';
+import {
+  Actions,
+  AllocateRoleNavigation,
+  AllocateRoleNavigationEvent,
+  AllocateRoleState,
+  AllocateTo,
+  SpecificRole,
+} from '../../../models';
 import { RoleAllocationTitleText } from '../../../models/enums';
 import { OptionsModel } from '../../../models/options-model';
 import * as fromFeature from '../../../store';
@@ -13,7 +20,7 @@ import { getTitleText } from '../../../utils';
 @Component({
   standalone: false,
   selector: 'exui-choose-allocate-to',
-  templateUrl: './choose-allocate-to.component.html'
+  templateUrl: './choose-allocate-to.component.html',
 })
 export class ChooseAllocateToComponent implements OnInit {
   public ERROR_MESSAGE = ERROR_MESSAGE;
@@ -36,26 +43,26 @@ export class ChooseAllocateToComponent implements OnInit {
   constructor(private readonly store: Store<fromFeature.State>) {}
 
   public ngOnInit(): void {
-    this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(
-      (allocateRoleStateData) => {
+    this.allocateRoleStateDataSub = this.store
+      .pipe(select(fromFeature.getAllocateRoleState))
+      .subscribe((allocateRoleStateData) => {
         this.typeOfRole = allocateRoleStateData.typeOfRole;
         this.allocateTo = allocateRoleStateData.allocateTo;
         const action = EnumUtil(Actions).getKeyOrDefault(allocateRoleStateData.action);
         this.caption = getTitleText(this.typeOfRole, action, allocateRoleStateData.roleCategory);
-      }
-    );
+      });
 
     this.radioOptionControl = new FormControl(this.allocateTo ? this.allocateTo : '', [Validators.required]);
     this.formGroup = new FormGroup({ [this.radioControlName]: this.radioOptionControl });
     this.optionsList = [
       {
         optionId: EnumUtil(AllocateTo).getKeyOrDefault(AllocateTo.ALLOCATE_TO_ME),
-        optionValue: AllocateTo.ALLOCATE_TO_ME
+        optionValue: AllocateTo.ALLOCATE_TO_ME,
       },
       {
         optionId: EnumUtil(AllocateTo).getKeyOrDefault(AllocateTo.ALLOCATE_TO_ANOTHER_PERSON),
-        optionValue: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON
-      }
+        optionValue: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON,
+      },
     ];
   }
 
@@ -63,7 +70,7 @@ export class ChooseAllocateToComponent implements OnInit {
     this.submitted = true;
     if (this.radioOptionControl.invalid) {
       this.radioOptionControl.setErrors({
-        invalid: true
+        invalid: true,
       });
       return;
     }
@@ -80,10 +87,12 @@ export class ChooseAllocateToComponent implements OnInit {
         } else {
           allocateRoleState = AllocateRoleState.CHOOSE_DURATION;
         }
-        this.store.dispatch(new fromFeature.ChooseAllocateToAndGo({
-          allocateTo,
-          allocateRoleState
-        }));
+        this.store.dispatch(
+          new fromFeature.ChooseAllocateToAndGo({
+            allocateTo,
+            allocateRoleState,
+          })
+        );
         break;
       default:
         throw new Error('Invalid option');

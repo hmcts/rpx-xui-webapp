@@ -4,13 +4,13 @@ CustomError = require('../../../utils/errors/custom-error.js');
  * WebDriver Button component class
  */
 const DEFAULT_TIMEOUT = 5000;
-class Button{
+class Button {
   /**
    * This css and content should be an <button> tag
    * @param css
    * @param content
    */
-  constructor(css, content){
+  constructor(css, content) {
     this.css = css;
     this.content = content;
     this.xpath = `.//*[contains(text(), '${this.content}')]`;
@@ -20,7 +20,7 @@ class Button{
    * Checks if the button is present
    * @returns {Promise<Boolean>}
    */
-  async isPresent(){
+  async isPresent() {
     const button = await this._getElementFinder();
     return await isPresent(button);
   }
@@ -29,17 +29,17 @@ class Button{
    * Checks if the button is enabled
    * @returns {Promise<Boolean>}
    */
-  async isEnabled(){
+  async isEnabled() {
     const button = await this._getElementFinder();
     return await button.isEnabled();
   }
 
-  async isDisplayed(){
+  async isDisplayed() {
     let displayed = null;
     try {
       displayed = await $(this.css).isVisible();
     } catch (e) {
-      if (e.name === 'NoSuchElementError'){
+      if (e.name === 'NoSuchElementError') {
         displayed = false; //element not present so not displayed
       } else {
         throw new CustomError(e);
@@ -52,7 +52,7 @@ class Button{
   /**
    * Click Button element
    */
-  async click(){
+  async click() {
     const button = await this._getElementFinder();
     await button.click();
   }
@@ -61,7 +61,7 @@ class Button{
    * Gets button text
    * @returns {Promise<String>}
    */
-  async getText(){
+  async getText() {
     return await getText($(this.css));
   }
 

@@ -14,7 +14,7 @@ describe('Fee Pay Judge', () => {
   const GET = 'get';
 
   let sandbox: sinon.SinonSandbox;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let spy: sinon.SinonSpy;
   const res = mockRes({ status: 200, data: mockLocations });
   let next: any;
@@ -36,13 +36,16 @@ describe('Fee Pay Judge', () => {
           searchTerm: 'Gla',
           serviceIds: ['IA', 'CIVIL', 'SSCS', 'BHA1', 'ABA1', 'AAA1'],
           locationType: 'hearing',
-          userLocations: [{ service: 'IA', locations: [{ id: '1234' }] }, { service: 'CIVIL', locations: [{ id: '2345' }] }],
-          bookingLocations: ['1234', '2343']
-        }
+          userLocations: [
+            { service: 'IA', locations: [{ id: '1234' }] },
+            { service: 'CIVIL', locations: [{ id: '2345' }] },
+          ],
+          bookingLocations: ['1234', '2343'],
+        },
       });
 
       const response = mockRes({
-        data: mockLocations
+        data: mockLocations,
       });
 
       try {
@@ -63,12 +66,12 @@ describe('Fee Pay Judge', () => {
           serviceIds: ['IA', 'CIVIL', 'SSCS', 'BHA1', 'ABA1', 'AAA1'],
           locationType: 'hearing',
           userLocations: [],
-          bookingLocations: ['1234', '2343']
-        }
+          bookingLocations: ['1234', '2343'],
+        },
       });
 
       const response = mockRes({
-        data: mockLocations
+        data: mockLocations,
       });
 
       try {
@@ -89,12 +92,12 @@ describe('Fee Pay Judge', () => {
           serviceIds: ['IA', 'CIVIL', 'BHA1', 'ABA1', 'AAA1'],
           locationType: 'hearing',
           userLocations: [{ service: 'IA', locations: [] }],
-          bookingLocations: []
-        }
+          bookingLocations: [],
+        },
       });
 
       const response = mockRes({
-        data: mockLocations
+        data: mockLocations,
       });
 
       try {
@@ -115,12 +118,12 @@ describe('Fee Pay Judge', () => {
           serviceIds: ['IA', 'CIVIL', 'BHA1', 'ABA1', 'AAA1'],
           locationType: 'hearing',
           userLocations: [{ service: 'IA', locations: [{ regionId: '11' }] }],
-          bookingLocations: []
-        }
+          bookingLocations: [],
+        },
       });
 
       const response = mockRes({
-        data: mockLocations
+        data: mockLocations,
       });
 
       try {
@@ -141,12 +144,12 @@ describe('Fee Pay Judge', () => {
           serviceIds: ['IA', 'CIVIL', 'BHA1', 'ABA1', 'AAA1'],
           locationType: 'hearing',
           userLocations: [{ service: 'IA', locations: [] }],
-          bookingLocations: []
-        }
+          bookingLocations: [],
+        },
       });
 
       const response = mockRes({
-        data: mockLocations
+        data: mockLocations,
       });
 
       try {
@@ -167,12 +170,12 @@ describe('Fee Pay Judge', () => {
           serviceIds: ['IA', 'CIVIL', 'BHA1', 'ABA1', 'AAA1'],
           locationType: 'hearing',
           userLocations: [{ service: 'IA', locations: [{ regionId: '11' }] }],
-          bookingLocations: []
-        }
+          bookingLocations: [],
+        },
       });
 
       const response = mockRes({
-        data: mockLocations
+        data: mockLocations,
       });
 
       try {
@@ -193,12 +196,12 @@ describe('Fee Pay Judge', () => {
           serviceIds: ['IA', 'CIVIL', 'SCSS', 'BHA1', 'ABA1', 'AAA1'],
           locationType: 'hearing',
           userLocations: [{ service: 'IA', locations: [{ id: '1234' }] }],
-          bookingLocations: null
-        }
+          bookingLocations: null,
+        },
       });
 
       const response = mockRes({
-        data: mockLocations
+        data: mockLocations,
       });
 
       try {

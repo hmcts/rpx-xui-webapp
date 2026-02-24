@@ -52,7 +52,7 @@ Then('In case file view tab, I see tree view displays folder {string}', async fu
 Then('In case file view tab, I see tree view displays folders', async function (datatable) {
   const datatableHash = datatable.parse().hashes();
 
-  for (const row of datatableHash){
+  for (const row of datatableHash) {
     const folderContainer = await caseFileViewPageObject.getFolderContainer(row.folderPath);
     expect(await folderContainer.isDisplayed()).to.be.true;
   }
@@ -89,16 +89,19 @@ Then('In case file view tab, I see file upload stamp for files under folder {str
   }
 });
 
-Then('In case file view tab, I dont see file upload stamp for files under folder {string}', async function (folderPath, datatable) {
-  const datatableHash = datatable.parse().hashes();
-  const folderContainer = await caseFileViewPageObject.getFolderContainer(folderPath);
+Then(
+  'In case file view tab, I dont see file upload stamp for files under folder {string}',
+  async function (folderPath, datatable) {
+    const datatableHash = datatable.parse().hashes();
+    const folderContainer = await caseFileViewPageObject.getFolderContainer(folderPath);
 
-  for (const row of datatableHash) {
-    const fileContainer = await folderContainer.getChildFileContainer(row.file);
-    expect(await fileContainer.fileElement.isVisible()).to.be.true;
-    expect(await fileContainer.fileUploadTimestamp.textContent()).to.equal('');
+    for (const row of datatableHash) {
+      const fileContainer = await folderContainer.getChildFileContainer(row.file);
+      expect(await fileContainer.fileElement.isVisible()).to.be.true;
+      expect(await fileContainer.fileUploadTimestamp.textContent()).to.equal('');
+    }
   }
-});
+);
 
 When('In case file view tab, I select file {string} under folder {string}', async function (fileName, folderPath) {
   const folderContainer = await caseFileViewPageObject.getFolderContainer(folderPath);
@@ -113,13 +116,15 @@ Then('In case file view tab, I see file {string} in media viewer', async functio
   });
 });
 
-When('In case file view tab, I select file {string} under folder {string}, I see file in media viewer', async function (fileName, folderPath) {
-  const folderContainer = await caseFileViewPageObject.getFolderContainer(folderPath);
-  const fileContainer = await folderContainer.getChildFileContainer(fileName);
-  await fileContainer.fileElement.click();
-  await browserWaits.retryWithActionCallback(async () => {
-    const fileDisplayed = await caseFileViewPageObject.getFileDisplayedInMediaViewer();
-    expect(fileDisplayed !== '').to.be.true;
-  });
-});
-
+When(
+  'In case file view tab, I select file {string} under folder {string}, I see file in media viewer',
+  async function (fileName, folderPath) {
+    const folderContainer = await caseFileViewPageObject.getFolderContainer(folderPath);
+    const fileContainer = await folderContainer.getChildFileContainer(fileName);
+    await fileContainer.fileElement.click();
+    await browserWaits.retryWithActionCallback(async () => {
+      const fileDisplayed = await caseFileViewPageObject.getFileDisplayedInMediaViewer();
+      expect(fileDisplayed !== '').to.be.true;
+    });
+  }
+);

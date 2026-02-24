@@ -4,7 +4,7 @@ import { Section } from '../models/section';
 export const HEARING_REQUEST_FAILED_SUMMARY_TEMPLATE: Section[] = [
   {
     sectionHTMLTitle: '<h1 class="govuk-heading-l">Details of error</h1>',
-    isHiddenMargin: true
+    isHiddenMargin: true,
   },
   {
     sectionHTMLTitle: '',
@@ -12,19 +12,18 @@ export const HEARING_REQUEST_FAILED_SUMMARY_TEMPLATE: Section[] = [
       {
         id: 'dateRequestFailed',
         answerTitle: 'Time of error',
-        answerSource: AnswerSource.ERROR_TIME_STAMP
+        answerSource: AnswerSource.ERROR_TIME_STAMP,
       },
       {
         id: 'caseNumber',
         answerTitle: 'Case reference',
-        answerSource: AnswerSource.CASE_NUMBER
+        answerSource: AnswerSource.CASE_NUMBER,
       },
       {
         id: 'hearingRequestId',
         answerTitle: 'Hearing Id',
-        answerSource: AnswerSource.HEARING_ID
-      }
-    ]
-  }
+        answerSource: AnswerSource.HEARING_ID,
+      },
+    ],
+  },
 ];
-

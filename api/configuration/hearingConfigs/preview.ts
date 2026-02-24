@@ -1,53 +1,30 @@
 export const previewEnableHearingAmendments = {
   '.+': [
     {
-      includeCaseTypes: [
-        'CIVIL',
-        '(Civil-|CIVIL-)\\d+'
-      ],
-      jurisdiction: 'CIVIL'
+      includeCaseTypes: ['CIVIL', '(Civil-|CIVIL-)\\d+'],
+      jurisdiction: 'CIVIL',
     },
     {
-      includeCaseTypes: [
-        'Asylum',
-        'Bail'
-      ],
-      jurisdiction: 'IA'
-    }
-  ]
+      includeCaseTypes: ['Asylum', 'Bail'],
+      jurisdiction: 'IA',
+    },
+  ],
 };
 
 export const previewHearingJurisdictions = {
   '.+': [
     {
-      includeCaseTypes: [
-        'Benefit',
-        'Benefit_SCSS',
-        '(Benefit-|BENEFIT-)\\d+',
-        '(sscs-pr-|SSCS-PR-)\\d+'
-      ],
+      includeCaseTypes: ['Benefit', 'Benefit_SCSS', '(Benefit-|BENEFIT-)\\d+', '(sscs-pr-|SSCS-PR-)\\d+'],
       jurisdiction: 'SSCS',
-      roles: [
-        'caseworker-sscs',
-        'caseworker-sscs-judge'
-      ]
+      roles: ['caseworker-sscs', 'caseworker-sscs-judge'],
     },
     {
-      includeCaseTypes: [
-        'PRLAPPS'
-      ],
+      includeCaseTypes: ['PRLAPPS'],
       jurisdiction: 'PRIVATELAW',
-      roles: [
-        'caseworker-privatelaw',
-        'caseworker-privatelaw-courtadmin',
-        'caseworker-privatelaw-judge'
-      ]
+      roles: ['caseworker-privatelaw', 'caseworker-privatelaw-courtadmin', 'caseworker-privatelaw-judge'],
     },
     {
-      includeCaseTypes: [
-        'Bail',
-        'Asylum'
-      ],
+      includeCaseTypes: ['Bail', 'Asylum'],
       jurisdiction: 'IA',
       roles: [
         'caseworker-ia-caseofficer',
@@ -57,26 +34,17 @@ export const previewHearingJurisdictions = {
         'hmcts-legal-operations',
         'hmcts-judiciary',
         'caseworker-ia-admofficer',
-        'caseworker-ia-iacjudge'
-      ]
+        'caseworker-ia-iacjudge',
+      ],
     },
     {
-      includeCaseTypes: [
-        'GENERALAPPLICATION',
-        'CIVIL',
-        '(Civil-|CIVIL-)\\d+'
-      ],
-      jurisdiction: 'CIVIL'
+      includeCaseTypes: ['GENERALAPPLICATION', 'CIVIL', '(Civil-|CIVIL-)\\d+'],
+      jurisdiction: 'CIVIL',
     },
     {
-      includeCaseTypes: [
-        'ET_EnglandWales',
-        'ET_Scotland'
-      ],
+      includeCaseTypes: ['ET_EnglandWales', 'ET_Scotland'],
       jurisdiction: 'EMPLOYMENT',
-      roles: [
-        'caseworker-employment'
-      ]
-    }
-  ]
+      roles: ['caseworker-employment'],
+    },
+  ],
 };

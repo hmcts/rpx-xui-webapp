@@ -2,18 +2,28 @@ const reportLogger = require('../../../../codeceptCommon/reportLogger');
 const BrowserWaits = require('../../../support/customWaits');
 const workFlowPage = require('../../pageObjects/workAllocation/workFlow');
 
-Then('I see Allocate role work flow page {string} with caption {string} is displayed', async function (workFlowPageType, captionHeader) {
-  const workFlowPageObject = getWorkflowPageObject(workFlowPageType);
-  await BrowserWaits.retryWithActionCallback(async () => {
-    reportLogger.AddMessage(`getWorkflowPageObject : ${workFlowPageType} with header text ${await workFlowPageObject.getHeaderText()}`);
-    expect(await workFlowPageObject.isDisplayed(), `${workFlowPageType} work flow page not displayed`).to.be.true;
-    expect(await workFlowPageObject.getHeaderText(), `${workFlowPageType} work flow page header not matching`).to.include(workFlowPageType);
-    expect((await workFlowPageObject.getHeaderCaption()).toLowerCase(), `${workFlowPageType} work flow page header caption not matching`).to.include(captionHeader.toLowerCase());
-  });
-});
+Then(
+  'I see Allocate role work flow page {string} with caption {string} is displayed',
+  async function (workFlowPageType, captionHeader) {
+    const workFlowPageObject = getWorkflowPageObject(workFlowPageType);
+    await BrowserWaits.retryWithActionCallback(async () => {
+      reportLogger.AddMessage(
+        `getWorkflowPageObject : ${workFlowPageType} with header text ${await workFlowPageObject.getHeaderText()}`
+      );
+      expect(await workFlowPageObject.isDisplayed(), `${workFlowPageType} work flow page not displayed`).to.be.true;
+      expect(await workFlowPageObject.getHeaderText(), `${workFlowPageType} work flow page header not matching`).to.include(
+        workFlowPageType
+      );
+      expect(
+        (await workFlowPageObject.getHeaderCaption()).toLowerCase(),
+        `${workFlowPageType} work flow page header caption not matching`
+      ).to.include(captionHeader.toLowerCase());
+    });
+  }
+);
 
-When('I enter find person search input {string} in work flow', async function(searchInput){
-  if (searchInput === ''){
+When('I enter find person search input {string} in work flow', async function (searchInput) {
+  if (searchInput === '') {
     return;
   }
 
@@ -25,11 +35,11 @@ When('I enter find person search input {string} in work flow', async function(se
   });
 });
 
-Then('I see find person search results in work flow', async function(resulEmails){
+Then('I see find person search results in work flow', async function (resulEmails) {
   reportLogger.reportDatatable(resulEmails);
   let counter = 0;
   await BrowserWaits.retryWithActionCallback(async () => {
-    if (counter > 0){
+    if (counter > 0) {
       await BrowserWaits.waitForSeconds(5);
     }
     counter++;
@@ -38,7 +48,7 @@ Then('I see find person search results in work flow', async function(resulEmails
 
     const expectedResultsArr = [];
     for (const expectedHash of expectedResultsHashes) {
-      if (expectedHash.Person !== ''){
+      if (expectedHash.Person !== '') {
         expectedResultsArr.push(expectedHash.Person);
       }
     }
@@ -50,8 +60,8 @@ Then('I see find person search results in work flow', async function(resulEmails
   });
 });
 
-When('I select find person result {string} in work flow', async function(person){
-  if (person !== ''){
+When('I select find person result {string} in work flow', async function (person) {
+  if (person !== '') {
     await workFlowPage.findPersonPage.selectPerson(person);
   }
 });
@@ -68,21 +78,24 @@ When('I select Choose how to allocate option {string} in work flow', async funct
   await workFlowPage.chooseHowToAllocateRolePage.selectRadioOption(howTo);
 });
 
-When('I select duration option {string} in work flow', async function(durationOption){
+When('I select duration option {string} in work flow', async function (durationOption) {
   await workFlowPage.durationOfRolePage.selectRadioOption(durationOption);
 });
 
-Then('I validate duration option {string} in work flow has caption text {string}', async function (durationOption, caption){
+Then('I validate duration option {string} in work flow has caption text {string}', async function (durationOption, caption) {
   const actualCaption = await workFlowPage.durationOfRolePage.getRadioOptionCaptionText(durationOption);
   expect(actualCaption).to.include(caption);
 });
 
-Then('I validate date input field {string} is displayed {string} in work flow page', async function (dateInputLabel, displayStatus) {
-  const isDisplayed = await workFlowPage.durationOfRolePage.isDateInputWithLabelDisplayed(dateInputLabel);
-  expect(isDisplayed).to.equal(displayStatus.toLowerCase().includes('yes'));
-});
+Then(
+  'I validate date input field {string} is displayed {string} in work flow page',
+  async function (dateInputLabel, displayStatus) {
+    const isDisplayed = await workFlowPage.durationOfRolePage.isDateInputWithLabelDisplayed(dateInputLabel);
+    expect(isDisplayed).to.equal(displayStatus.toLowerCase().includes('yes'));
+  }
+);
 
-Then('I validate date input field {string} displayed in work flow page', async function(dateInputLabel){
+Then('I validate date input field {string} displayed in work flow page', async function (dateInputLabel) {
   const isDisplayed = await workFlowPage.durationOfRolePage.isDateInputWithLabelDisplayed(dateInputLabel);
   expect(isDisplayed).to.be.true;
 });
@@ -92,24 +105,32 @@ Then('I validate date input field {string} NOT displayed in work flow page', asy
   expect(isDisplayed).to.be.false;
 });
 
-When('I enter duration date for field {string} with current date plus {int} days in work flow', async function(dateInputField, bydays){
-  const dateToEnter = new Date();
-  dateToEnter.setDate(dateToEnter.getDate() + bydays);
-  await workFlowPage.durationOfRolePage.enterDayInDateInputWithLabel(dateInputField, dateToEnter.getDate());
-  await workFlowPage.durationOfRolePage.enterMonthInDateInputWithLabel(dateInputField, dateToEnter.getMonth()+1);
-  await workFlowPage.durationOfRolePage.enterYearInDateInputWithLabel(dateInputField, dateToEnter.getFullYear());
-});
+When(
+  'I enter duration date for field {string} with current date plus {int} days in work flow',
+  async function (dateInputField, bydays) {
+    const dateToEnter = new Date();
+    dateToEnter.setDate(dateToEnter.getDate() + bydays);
+    await workFlowPage.durationOfRolePage.enterDayInDateInputWithLabel(dateInputField, dateToEnter.getDate());
+    await workFlowPage.durationOfRolePage.enterMonthInDateInputWithLabel(dateInputField, dateToEnter.getMonth() + 1);
+    await workFlowPage.durationOfRolePage.enterYearInDateInputWithLabel(dateInputField, dateToEnter.getFullYear());
+  }
+);
 
-When('I enter duration date for field {string} with current date minus {int} days in work flow', async function (dateInputField, bydays) {
-  const dateToEnter = new Date();
-  dateToEnter.setDate(dateToEnter.getDate() - bydays);
-  await workFlowPage.durationOfRolePage.enterDayInDateInputWithLabel(dateInputField, dateToEnter.getDay());
-  await workFlowPage.durationOfRolePage.enterMonthInDateInputWithLabel(dateInputField, dateToEnter.getMonth()+1);
-  await workFlowPage.durationOfRolePage.enterYearInDateInputWithLabel(dateInputField, dateToEnter.getFullYear());
-});
+When(
+  'I enter duration date for field {string} with current date minus {int} days in work flow',
+  async function (dateInputField, bydays) {
+    const dateToEnter = new Date();
+    dateToEnter.setDate(dateToEnter.getDate() - bydays);
+    await workFlowPage.durationOfRolePage.enterDayInDateInputWithLabel(dateInputField, dateToEnter.getDay());
+    await workFlowPage.durationOfRolePage.enterMonthInDateInputWithLabel(dateInputField, dateToEnter.getMonth() + 1);
+    await workFlowPage.durationOfRolePage.enterYearInDateInputWithLabel(dateInputField, dateToEnter.getFullYear());
+  }
+);
 
-Then('I validate another period field {string} validation error displayed is {string}', async function(field, isDisplayed){
-  expect(await workFlowPage.durationOfRolePage.isValidationErrorDisplayedForDateInput(field)).to.equal(isDisplayed.toLowerCase().includes('true'));
+Then('I validate another period field {string} validation error displayed is {string}', async function (field, isDisplayed) {
+  expect(await workFlowPage.durationOfRolePage.isValidationErrorDisplayedForDateInput(field)).to.equal(
+    isDisplayed.toLowerCase().includes('true')
+  );
 });
 
 Then('I validate another period field {string} validation error message is {string}', async function (field, validationMessage) {
@@ -135,8 +156,7 @@ function getWorkflowPageObject(workFlowPageType) {
   return workFlowPageObject;
 }
 
-Then('I see option {string} selected in page duration of role', async function(durationOption){
+Then('I see option {string} selected in page duration of role', async function (durationOption) {
   const durationOptionInput = workFlowPage.durationOfRolePage.getRadioOptionInputElement(durationOption);
   expect(await durationOptionInput.isSelected()).to.be.true;
 });
-

@@ -3,7 +3,7 @@ import * as fromActions from '../actions';
 
 export const initialHearingActualsState: HearingActualsStateData = {
   hearingActualsMainModel: null,
-  lastError: null
+  lastError: null,
 };
 
 export function hearingActualsReducer(
@@ -13,13 +13,13 @@ export function hearingActualsReducer(
   switch (action.type) {
     case fromActions.RESET_HEARING_ACTUALS: {
       return {
-        ...initialHearingActualsState
+        ...initialHearingActualsState,
       };
     }
     case fromActions.GET_HEARING_ACTUALS_SUCCESS: {
       return {
         ...currentState,
-        hearingActualsMainModel: action.payload
+        hearingActualsMainModel: action.payload,
       };
     }
     case fromActions.SAVE_HEARING_ACTUALS_PLANNED_DAYS: {
@@ -29,9 +29,9 @@ export function hearingActualsReducer(
           ...currentState.hearingActualsMainModel,
           hearingActuals: {
             ...currentState.hearingActualsMainModel.hearingActuals,
-            actualHearingDays: action.actualHearingDays
-          }
-        }
+            actualHearingDays: action.actualHearingDays,
+          },
+        },
       };
     }
     case fromActions.UPDATE_HEARING_ACTUALS_SUCCESS: {
@@ -39,36 +39,36 @@ export function hearingActualsReducer(
         ...currentState,
         hearingActualsMainModel: {
           ...currentState.hearingActualsMainModel,
-          hearingActuals: action.payload
-        }
+          hearingActuals: action.payload,
+        },
       };
     }
     case fromActions.SUBMIT_HEARING_ACTUALS: {
       return {
         ...initialHearingActualsState,
-        lastError: null
+        lastError: null,
       };
     }
     case fromActions.SUBMIT_HEARING_ACTUALS_SUCCESS: {
       return {
-        ...initialHearingActualsState
+        ...initialHearingActualsState,
       };
     }
     case fromActions.SUBMIT_HEARING_ACTUALS_FAILURE: {
       return {
         ...initialHearingActualsState,
-        lastError: action.payload
+        lastError: action.payload,
       };
     }
     case fromActions.RESET_HEARING_ACTUALS_LAST_ERROR: {
       return {
         ...currentState,
-        lastError: null
+        lastError: null,
       };
     }
     default: {
       return {
-        ...currentState
+        ...currentState,
       };
     }
   }

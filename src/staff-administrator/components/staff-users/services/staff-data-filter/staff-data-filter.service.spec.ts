@@ -10,26 +10,29 @@ describe('StaffDataFilterService', () => {
   let mockStaffDataAccessService: jasmine.SpyObj<StaffDataAccessService>;
 
   beforeEach(() => {
-    mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>(
-      'mockStaffDataAccessService', ['getFilteredUsers', 'getUsersByPartialName']
+    mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>('mockStaffDataAccessService', [
+      'getFilteredUsers',
+      'getUsersByPartialName',
+    ]);
+    mockStaffDataAccessService.getFilteredUsers.and.returnValue(
+      of({
+        items: [] as StaffUsersFilterResult[],
+        pageNumber: 1,
+        pageSize: 1,
+        totalItems: 0,
+      })
     );
-    mockStaffDataAccessService.getFilteredUsers.and.returnValue(of({
-      items: [] as StaffUsersFilterResult[],
-      pageNumber: 1,
-      pageSize: 1,
-      totalItems: 0
-    }));
-    mockStaffDataAccessService.getUsersByPartialName.and.returnValue(of({
-      items: [] as StaffUsersFilterResult[],
-      pageNumber: 1,
-      pageSize: 1,
-      totalItems: 0
-    }));
+    mockStaffDataAccessService.getUsersByPartialName.and.returnValue(
+      of({
+        items: [] as StaffUsersFilterResult[],
+        pageNumber: 1,
+        pageSize: 1,
+        totalItems: 0,
+      })
+    );
 
     TestBed.configureTestingModule({
-      providers: [
-        { provide: StaffDataAccessService, useValue: mockStaffDataAccessService }
-      ]
+      providers: [{ provide: StaffDataAccessService, useValue: mockStaffDataAccessService }],
     });
     service = TestBed.inject(StaffDataFilterService);
   });
@@ -39,9 +42,11 @@ describe('StaffDataFilterService', () => {
   });
 
   it('should set and emit errors', () => {
-    const errorsToSet = [{
-      error: 'Error 1'
-    }];
+    const errorsToSet = [
+      {
+        error: 'Error 1',
+      },
+    ];
     service.setErrors(errorsToSet);
 
     service.errors$.pipe(take(1)).subscribe((errors) => {
@@ -50,15 +55,17 @@ describe('StaffDataFilterService', () => {
   });
 
   it('should empty errors on calling filterByPartialName', () => {
-    const errorsToSet = [{
-      error: 'Error 1'
-    }];
+    const errorsToSet = [
+      {
+        error: 'Error 1',
+      },
+    ];
     service.setErrors(errorsToSet);
 
     service.search({
       partialName: 'Kevin',
       pageNumber: 1,
-      pageSize: StaffDataFilterService.PAGE_SIZE
+      pageSize: StaffDataFilterService.PAGE_SIZE,
     });
 
     service.errors$.pipe(take(1)).subscribe((errors) => {
@@ -87,10 +94,10 @@ describe('StaffDataFilterService', () => {
           jobTitle: '',
           skill: [],
           role: [],
-          status: []
+          status: [],
         },
         pageSize: 1,
-        pageNumber: 1
+        pageNumber: 1,
       };
       service.search(filters);
 
@@ -112,13 +119,16 @@ describe('StaffDataFilterService', () => {
       });
     });
 
-    it('should catch error and set errors when searching for a user by partial name and ' +
-      'getUsersByPartialName is returning 400', () => {
-      mockStaffDataAccessService.getUsersByPartialName.and.returnValue(throwError({ status: 400 }));
-      spyOn(service, 'setErrors').and.callThrough();
+    it(
+      'should catch error and set errors when searching for a user by partial name and ' +
+        'getUsersByPartialName is returning 400',
+      () => {
+        mockStaffDataAccessService.getUsersByPartialName.and.returnValue(throwError({ status: 400 }));
+        spyOn(service, 'setErrors').and.callThrough();
 
-      service.search({ partialName: '123$', pageSize: 10, pageNumber: 1 });
-      expect(service.setErrors).toHaveBeenCalled();
-    });
+        service.search({ partialName: '123$', pageSize: 10, pageNumber: 1 });
+        expect(service.setErrors).toHaveBeenCalled();
+      }
+    );
   });
 });

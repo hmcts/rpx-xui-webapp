@@ -14,11 +14,11 @@ describe('Hearing Request Actions', () => {
       const payload = {
         requestDetails: null,
         hearingDetails: null,
-        partyDetails: null
+        partyDetails: null,
       };
       const hearingConditions = {
         isInit: false,
-        region: 'Wales'
+        region: 'Wales',
       };
       const action = new fromHearingRequestAction.UpdateHearingRequest(payload, hearingConditions);
       expect(action.type).toBe(fromHearingRequestAction.UPDATE_HEARING_REQUEST);
@@ -30,7 +30,7 @@ describe('Hearing Request Actions', () => {
       const payload = {
         requestDetails: null,
         hearingDetails: null,
-        partyDetails: null
+        partyDetails: null,
       };
       const action = new fromHearingRequestAction.SubmitHearingRequest(payload);
       expect(action.type).toBe(fromHearingRequestAction.SUBMIT_HEARING_REQUEST);
@@ -42,7 +42,7 @@ describe('Hearing Request Actions', () => {
       const payload = {
         status: 403,
         errors: null,
-        message: 'Http failure response: 403 Forbidden'
+        message: 'Http failure response: 403 Forbidden',
       };
       const action = new fromHearingRequestAction.SubmitHearingRequestFailure(payload);
       expect(action.type).toBe(fromHearingRequestAction.SUBMIT_HEARING_REQUEST_FAILURE);
@@ -63,7 +63,7 @@ describe('Hearing Request Actions', () => {
         status: 'Not Found',
         errorDescription: 'Something went wrong',
         errorMessage: 'Error',
-        timeStamp: '2020-01-01T00:00:00'
+        timeStamp: '2020-01-01T00:00:00',
       };
       const action = new fromHearingRequestAction.GetHearingJudicialUsersFailure(payload);
       expect(action.type).toBe(fromHearingRequestAction.GET_JUDICIAL_USER_FAILURE);

@@ -2,8 +2,8 @@ const { $, elementByXpath } = require('../../../../helpers/globals');
 
 const BrowserWaits = require('../../../support/customWaits');
 
-class SARActionConfirmationPage{
-  constructor(action){
+class SARActionConfirmationPage {
+  constructor(action) {
     this.tag = this.getContainerTagForAction(action);
   }
 
@@ -20,25 +20,21 @@ class SARActionConfirmationPage{
   }
 
   get returnToMyTasksBtn() {
-    return elementByXpath(
-      `//${this.tag}/../../*[contains(@class,'govuk-button-group')]//button`
-    );
+    return elementByXpath(`//${this.tag}/../../*[contains(@class,'govuk-button-group')]//button`);
   }
 
   get returnToTasksTabLink() {
-    return elementByXpath(
-      `//${this.tag}/../../*[contains(@class,'govuk-button-group')]//a`
-    );
+    return elementByXpath(`//${this.tag}/../../*[contains(@class,'govuk-button-group')]//a`);
   }
 
-  async waitForContainer(){
+  async waitForContainer() {
     await BrowserWaits.waitForElement(this.header);
   }
 
-  getContainerTagForAction(action){
+  getContainerTagForAction(action) {
     let tag = '';
     action = action.toLowerCase();
-    switch (action){
+    switch (action) {
       case 'reject':
       case 'denied':
         tag = 'exui-specific-access-denied';
@@ -48,7 +44,7 @@ class SARActionConfirmationPage{
         break;
       default:
     }
-    if (tag === ''){
+    if (tag === '') {
       throw Error(`SAR action "${action}" not recognised or not implemented in test`);
     }
     return tag;

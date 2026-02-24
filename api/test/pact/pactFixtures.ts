@@ -1,4 +1,3 @@
-
 /**
  * A Utility Class that holds all Request and Responses that get used in the pact-tests .
  * Request usually represent the body.Request and Responses are those that are returned from the downstream call.
@@ -9,13 +8,13 @@ export interface Organisation {
   name: string;
   organisationIdentifier: string;
   contactInformation: {
-    addressLine1: string,
-    addressLine2: string,
-    addressLine3: string,
-    country: string,
-    county: string,
-    postCode: string,
-    townCity: string,
+    addressLine1: string;
+    addressLine2: string;
+    addressLine3: string;
+    country: string;
+    county: string;
+    postCode: string;
+    townCity: string;
   };
 }
 

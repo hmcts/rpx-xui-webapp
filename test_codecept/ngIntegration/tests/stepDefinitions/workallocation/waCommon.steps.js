@@ -12,7 +12,9 @@ const nodeAppMock = require('../../../mockData/nodeApp/mockData');
 
 const waMockData = require('../../../mockData/workAllocation/mockData');
 
-function headerPage () { return require('../../../../e2e/features/pageObjects/headerPage')(); }
+function headerPage() {
+  return require('../../../../e2e/features/pageObjects/headerPage')();
+}
 const SoftAssert = require('../../../util/softAssert');
 const CucumberReporter = require('../../../../codeceptCommon/reportLogger');
 const taskListPage = require('../../../../e2e/features/pageObjects/workAllocation/taskListPage');
@@ -64,7 +66,7 @@ async function loginattemptCheckAndRelogin(username, password, world) {
       });
       await browser.sleep(2);
       const currentUrl = await browser.getCurrentUrl();
-      if (currentUrl.includes('idam')){
+      if (currentUrl.includes('idam')) {
         preLoginUrl = await browser.getCurrentUrl();
         throw new Error('Login failed');
       }
@@ -97,10 +99,10 @@ async function loginattemptCheckAndRelogin(username, password, world) {
   // console.log("TWO ATTEMPT: EUI-1856 issue occured / total logins => " + secondAttemptFailedLogins + " / " );
 }
 
-async function mockLoginWithRoles(roles, userIdentifier){
+async function mockLoginWithRoles(roles, userIdentifier) {
   const testUser = testData.users.aat.filter((testUser) => testUser.userIdentifier === userIdentifier)[0];
   let loginUser = '';
-  if (userIdentifier){
+  if (userIdentifier) {
     idamLogin.withCredentials(testUser.email, testUser.key);
     loginUser = testUser.email;
   } else {
@@ -116,7 +118,7 @@ async function mockLoginWithRoles(roles, userIdentifier){
     await idamLogin.do();
     userDetails = idamLogin.userDetailsResponse.details.data;
     const sessionUserName = userDetails.userInfo ? userDetails.userInfo.email : '';
-    if (sessionUserName !== loginUser){
+    if (sessionUserName !== loginUser) {
       throw new Error('session not updated with user, retrying');
     }
   });
@@ -148,7 +150,7 @@ Given('I set MOCK with {string} release user and roles {string}', async function
   await mockLoginWithRoles(roles);
 });
 
-Given('I set MOCK locations for release {string}', async function(release, locationsDatatbale){
+Given('I set MOCK locations for release {string}', async function (release, locationsDatatbale) {
   const locations = locationsDatatbale.hashes();
   let apiUrl = '/';
   if (release === 'wa_release_1') {
@@ -157,39 +159,42 @@ Given('I set MOCK locations for release {string}', async function(release, locat
     apiUrl = apiUrl + 'workallocation2';
   }
 
-  MockApp.onGet(apiUrl+'/location', (req, res) => {
+  MockApp.onGet(apiUrl + '/location', (req, res) => {
     res.send(locations);
   });
 });
 
-Given('I set MOCK location for person of type {string} in release {string}', async function (userType, release, locationDetailsDataTable) {
-  const testUser = testData.users[testData.testEnv].filter((testUser) => testUser.release === release)[0];
-  if (!testUser) {
-    throw new Error('Provided release user is not configured in test data. ' + release);
-  }
+Given(
+  'I set MOCK location for person of type {string} in release {string}',
+  async function (userType, release, locationDetailsDataTable) {
+    const testUser = testData.users[testData.testEnv].filter((testUser) => testUser.release === release)[0];
+    if (!testUser) {
+      throw new Error('Provided release user is not configured in test data. ' + release);
+    }
 
-  let apiUrl = '/';
-  if (release === 'wa_release_1'){
-    apiUrl = apiUrl+'workallocation';
-  } else if (release === 'wa_release_2') {
-    apiUrl = apiUrl + 'workallocation2';
-  }
+    let apiUrl = '/';
+    if (release === 'wa_release_1') {
+      apiUrl = apiUrl + 'workallocation';
+    } else if (release === 'wa_release_2') {
+      apiUrl = apiUrl + 'workallocation2';
+    }
 
-  if (userType === 'caseworker'){
-    apiUrl = apiUrl + '/caseworker';
-  } else if (userType === 'judge') {
-    apiUrl = apiUrl + '/judge';
-  }
-  const persons = waMockData.getPersonList(80);
-  const locationInputDetails = locationDetailsdatatable.parse().hashes()[0];
+    if (userType === 'caseworker') {
+      apiUrl = apiUrl + '/caseworker';
+    } else if (userType === 'judge') {
+      apiUrl = apiUrl + '/judge';
+    }
+    const persons = waMockData.getPersonList(80);
+    const locationInputDetails = locationDetailsdatatable.parse().hashes()[0];
 
-  persons[0].idamId = testUser.idamId;
-  persons[0].location.id = locationInputDetails.id;
-  persons[0].location.locationName = locationInputDetails.locationName;
-  MockApp.onGet(apiUrl, (req, res) => {
-    res.send(persons);
-  });
-});
+    persons[0].idamId = testUser.idamId;
+    persons[0].location.id = locationInputDetails.id;
+    persons[0].location.locationName = locationInputDetails.locationName;
+    MockApp.onGet(apiUrl, (req, res) => {
+      res.send(persons);
+    });
+  }
+);
 
 When('I set MOCK with user roles', async function (rolesTable) {
   const roles = [];
@@ -200,24 +205,30 @@ When('I set MOCK with user roles', async function (rolesTable) {
   await mockLoginWithRoles(roles);
 });
 
-Given('I set MOCK with user {string} and roles {string} with reference {string}', async function (useridentifier, roles, mockUserRef) {
-  const userDetails = await mockLoginWithRoles(roles.split(','));
-  global.scenarioData[mockUserRef] = userDetails;
-  const auth = await browser.driver.manage().getCookie('__auth__');
-  await mockClient.setUserApiData(auth, '', { status: 200, data: global.scenarioData[mockUserRef] });
-});
-
-Given('I set MOCK with user {string} and userInfo with roles {string} with reference {string}', async function (useridentifier, roles, mockUserRef, datatable) {
-  const userDetails = await mockLoginWithRoles(roles.split(','));
-  const rows = datatable.parse().hashes();
-  const properties = rows[0];
-  for (const key of Object.keys(properties)) {
-    userDetails.userInfo[key] = properties[key];
+Given(
+  'I set MOCK with user {string} and roles {string} with reference {string}',
+  async function (useridentifier, roles, mockUserRef) {
+    const userDetails = await mockLoginWithRoles(roles.split(','));
+    global.scenarioData[mockUserRef] = userDetails;
+    const auth = await browser.driver.manage().getCookie('__auth__');
+    await mockClient.setUserApiData(auth, '', { status: 200, data: global.scenarioData[mockUserRef] });
   }
-  global.scenarioData[mockUserRef] = userDetails;
-  const auth = await browser.driver.manage().getCookie('__auth__');
-  await mockClient.updateAuthSessionWithUserInfo(auth.value, userDetails.userInfo);
-});
+);
+
+Given(
+  'I set MOCK with user {string} and userInfo with roles {string} with reference {string}',
+  async function (useridentifier, roles, mockUserRef, datatable) {
+    const userDetails = await mockLoginWithRoles(roles.split(','));
+    const rows = datatable.parse().hashes();
+    const properties = rows[0];
+    for (const key of Object.keys(properties)) {
+      userDetails.userInfo[key] = properties[key];
+    }
+    global.scenarioData[mockUserRef] = userDetails;
+    const auth = await browser.driver.manage().getCookie('__auth__');
+    await mockClient.updateAuthSessionWithUserInfo(auth.value, userDetails.userInfo);
+  }
+);
 
 Given('I set MOCK with user details', async function (datatable) {
   CucumberReporter.reportDatatable(datatable);
@@ -225,7 +236,7 @@ Given('I set MOCK with user details', async function (datatable) {
   const userDetails = await mockLoginWithRoles(rowsHash.roles.split(','));
   const properties = rowsHash;
   for (const key of Object.keys(properties)) {
-    if (key === 'roles'){
+    if (key === 'roles') {
       userDetails.userInfo[key] = properties[key].split(',').map((v) => v.trim());
     } else {
       userDetails.userInfo[key] = properties[key];
@@ -241,7 +252,7 @@ Given('I set MOCK with user details with user identifier {string}', async functi
   const userDetails = await mockLoginWithRoles(rowsHash.roles.split(','), userIdentifier);
   const properties = rowsHash;
   for (const key of Object.keys(properties)) {
-    if (key === 'roles'){
+    if (key === 'roles') {
       userDetails.userInfo[key] = properties[key].split(',').map((v) => v.trim());
     } else {
       userDetails.userInfo[key] = properties[key];
@@ -251,15 +262,15 @@ Given('I set MOCK with user details with user identifier {string}', async functi
   await mockClient.updateAuthSessionWithUserInfo(auth.value, userDetails.userInfo);
 });
 
-Given('I add roleAssignmentInfo to MOCK user with reference {string}', async function(userDetailsRef, roleAssignments){
+Given('I add roleAssignmentInfo to MOCK user with reference {string}', async function (userDetailsRef, roleAssignments) {
   const boolAttributes = ['isCaseAllocator', 'bookable'];
   const userDetails = global.scenarioData[userDetailsRef];
   const roleAssignmentArr = [];
-  for (const roleAssignment of roleAssignments.hashes()){
+  for (const roleAssignment of roleAssignments.hashes()) {
     const roleKeys = Object.keys(roleAssignment);
 
     boolAttributes.forEach((attr) => {
-      if (roleKeys.includes(attr)){
+      if (roleKeys.includes(attr)) {
         roleAssignment[attr] = roleAssignment[attr] === 'true';
       }
     });
@@ -269,13 +280,12 @@ Given('I add roleAssignmentInfo to MOCK user with reference {string}', async fun
   userDetails.roleAssignmentInfo.push(...roleAssignmentArr);
 });
 
-Given('I set Mock user with ref {string}, reset role assignments', async function (userDetailsRef){
+Given('I set Mock user with ref {string}, reset role assignments', async function (userDetailsRef) {
   // const userDetails = global.scenarioData[userDetailsRef];
   // userDetails.roleAssignmentInfo =[];
-
 });
 
-async function addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, services, roleAttributesDataTable){
+async function addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, services, roleAttributesDataTable) {
   // const userDetails = global.scenarioData[userDetailsRef];
   const roleAssignmentArr = [];
   const roleAttributes = roleAttributesDataTable.parse().rowsHash();
@@ -306,16 +316,22 @@ async function addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, service
   await browser.get('http://localhost:3000');
 }
 
-Given('I set Mock user with ref {string}, ORGANISATION roles for services {string}', async function (userDetailsRef, services, roleAttributesDataTable){
-  if (services === ''){
-    return;
+Given(
+  'I set Mock user with ref {string}, ORGANISATION roles for services {string}',
+  async function (userDetailsRef, services, roleAttributesDataTable) {
+    if (services === '') {
+      return;
+    }
+    await addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, services, roleAttributesDataTable);
   }
-  await addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, services, roleAttributesDataTable);
-});
+);
 
-Given('I set Mock user with ref {string}, ORGANISATION roles for services {string} allow empty service', async function (userDetailsRef, services, roleAttributesDataTable) {
-  await addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, services, roleAttributesDataTable);
-});
+Given(
+  'I set Mock user with ref {string}, ORGANISATION roles for services {string} allow empty service',
+  async function (userDetailsRef, services, roleAttributesDataTable) {
+    await addRoleAssignmentsWithOrgRolesForServices(userDetailsRef, services, roleAttributesDataTable);
+  }
+);
 
 Given('I set MOCK user with reference {string} roleAssignmentInfo', async function (userDetailsRef, roleAssignments) {
   reportLogger.reportDatatable(roleAssignments);
@@ -325,11 +341,20 @@ Given('I set MOCK user with reference {string} roleAssignmentInfo', async functi
     const roleAssignmentTemplate = roleAssignmentMock.getRoleAssignmentTemplate();
     const roleKeys = Object.keys(roleAssignment);
 
-    const attributeProperties = ['jurisdiction', 'substantive', 'caseType', 'caseId', 'baseLocation', 'primaryLocation', 'bookable', 'specificAccessReason'];
+    const attributeProperties = [
+      'jurisdiction',
+      'substantive',
+      'caseType',
+      'caseId',
+      'baseLocation',
+      'primaryLocation',
+      'bookable',
+      'specificAccessReason',
+    ];
 
-    for (const attr of roleKeys){
+    for (const attr of roleKeys) {
       const value = boolAttributes.includes(attr) ? roleAssignment[attr].includes('true') : roleAssignment[attr];
-      if (attributeProperties.includes(attr) && value !== ''){
+      if (attributeProperties.includes(attr) && value !== '') {
         roleAssignmentTemplate.attributes[attr] = value;
       } else {
         roleAssignmentTemplate[attr] = value;
@@ -365,15 +390,29 @@ Given('I set MOCK roleAssignments', async function (roleAssignments) {
     const roleAssignmentTemplate = roleAssignmentMock.getRoleAssignmentTemplate();
     const roleKeys = Object.keys(roleAssignment);
 
-    const attributeProperties = ['jurisdiction', 'substantive', 'caseType', 'caseId', 'baseLocation', 'primaryLocation', 'bookable', 'notes'];
+    const attributeProperties = [
+      'jurisdiction',
+      'substantive',
+      'caseType',
+      'caseId',
+      'baseLocation',
+      'primaryLocation',
+      'bookable',
+      'notes',
+    ];
 
-    for (const attr of roleKeys){
+    for (const attr of roleKeys) {
       const value = boolAttributes.includes(attr) ? roleAssignment[attr].includes('true') : roleAssignment[attr];
-      if (attributeProperties.includes(attr) && value !== ''){
+      if (attributeProperties.includes(attr) && value !== '') {
         roleAssignmentTemplate.attributes[attr] = value;
       } else if (attr.includes('beginTime') || attr.includes('endTime') || attr.includes('created')) {
         const valInt = parseInt(value);
-        roleAssignmentTemplate[attr] = valInt >= 0 ? moment().add(valInt, 'days').valueOf() : moment().subtract(valInt*-1, 'days').valueOf();
+        roleAssignmentTemplate[attr] =
+          valInt >= 0
+            ? moment().add(valInt, 'days').valueOf()
+            : moment()
+                .subtract(valInt * -1, 'days')
+                .valueOf();
       } else {
         roleAssignmentTemplate[attr] = value;
       }
@@ -385,36 +424,39 @@ Given('I set MOCK roleAssignments', async function (roleAssignments) {
   await mockService.addRoleAssignments(roleAssignmentArr);
 });
 
-Given('I set MOCK with user identifer {string} role type {string} and role identifiers {string}', async function (useridentifier, roleType, roleIdentifiers) {
-  const roles = [];
-  const testUserIdamId = testData.users[testData.testEnv].filter((testUser) => testUser.userIdentifier === useridentifier)[0];
-  if (!testUserIdamId) {
-    throw new Error('Provided user identifer is not configured in test data. ' + useridentifier);
-  }
-
-  const userIdamID = testUserIdamId.idamId;
-
-  const rolesIdentifiersArr = roleIdentifiers.split(',');
-  const roleidentifersForRoleType = userRolesConfig[roleType.toLowerCase()];
-  if (!roleidentifersForRoleType){
-    throw new Error(`Role type not recognized ${roleType}`);
-  }
-
-  for (const roleIdentifier of rolesIdentifiersArr){
-    const rolesForIdentifier = roleidentifersForRoleType[roleIdentifier];
-    if (!rolesForIdentifier) {
-      throw new Error(`Role identifer not recognized ${roleType} ${roleIdentifier}`);
+Given(
+  'I set MOCK with user identifer {string} role type {string} and role identifiers {string}',
+  async function (useridentifier, roleType, roleIdentifiers) {
+    const roles = [];
+    const testUserIdamId = testData.users[testData.testEnv].filter((testUser) => testUser.userIdentifier === useridentifier)[0];
+    if (!testUserIdamId) {
+      throw new Error('Provided user identifer is not configured in test data. ' + useridentifier);
     }
-    roles.push(...rolesForIdentifier);
-  }
-  const userDetails = nodeAppMock.setUserDetailsWithRolesAndIdamId(roles, userIdamID);
-  // if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
-  //     workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
-  // }
-  await mockLoginWithRoles(roles);
-});
 
-Then('I validate primary navigation tabs for user {string} in release {string}', async function(userType, release){
+    const userIdamID = testUserIdamId.idamId;
+
+    const rolesIdentifiersArr = roleIdentifiers.split(',');
+    const roleidentifersForRoleType = userRolesConfig[roleType.toLowerCase()];
+    if (!roleidentifersForRoleType) {
+      throw new Error(`Role type not recognized ${roleType}`);
+    }
+
+    for (const roleIdentifier of rolesIdentifiersArr) {
+      const rolesForIdentifier = roleidentifersForRoleType[roleIdentifier];
+      if (!rolesForIdentifier) {
+        throw new Error(`Role identifer not recognized ${roleType} ${roleIdentifier}`);
+      }
+      roles.push(...rolesForIdentifier);
+    }
+    const userDetails = nodeAppMock.setUserDetailsWithRolesAndIdamId(roles, userIdamID);
+    // if (userUtil.getUserRoleType(roles) === 'LEGAL_OPS') {
+    //     workallocationMockData.addCaseworkerWithIdamId(userIdamID, "IA");
+    // }
+    await mockLoginWithRoles(roles);
+  }
+);
+
+Then('I validate primary navigation tabs for user {string} in release {string}', async function (userType, release) {
   await BrowserUtil.stepWithRetry(async () => {
     const softAssert = new SoftAssert(this);
     const tabsExpected = testData.appFeatures.primaryTabs[userType][release];
@@ -422,10 +464,21 @@ Then('I validate primary navigation tabs for user {string} in release {string}',
     for (let i = 0; i < tabsExpected.length; i++) {
       const tabExpected = tabsExpected[i];
       softAssert.setScenario('Is tab displayed ' + tabExpected);
-      await softAssert.assert(async () => expect(tabsActual.includes(tabExpected), `${tabExpected} is not displayed for ${userType} in release ${release} : Actual ${tabsActual}`).to.be.true);
+      await softAssert.assert(
+        async () =>
+          expect(
+            tabsActual.includes(tabExpected),
+            `${tabExpected} is not displayed for ${userType} in release ${release} : Actual ${tabsActual}`
+          ).to.be.true
+      );
     }
 
-    await softAssert.assert(async () => expect(tabsActual.length, `Expected and actuals tabs dsplayed does not match:\n expected${tabsExpected}\n actual ${tabsActual} `).to.equal(tabsExpected.length));
+    await softAssert.assert(async () =>
+      expect(
+        tabsActual.length,
+        `Expected and actuals tabs dsplayed does not match:\n expected${tabsExpected}\n actual ${tabsActual} `
+      ).to.equal(tabsExpected.length)
+    );
     softAssert.finally();
   });
 });
@@ -438,10 +491,21 @@ Then('I validate primary navigation main items for user {string} in release {str
     for (let i = 0; i < tabsExpected.length; i++) {
       const tabExpected = tabsExpected[i];
       softAssert.setScenario('Is tab displayed ' + tabExpected);
-      await softAssert.assert(async () => expect(tabsActual.includes(tabExpected), `${tabExpected} is not displayed for ${userType} in release ${release} : Actual ${tabsActual}`).to.be.true);
+      await softAssert.assert(
+        async () =>
+          expect(
+            tabsActual.includes(tabExpected),
+            `${tabExpected} is not displayed for ${userType} in release ${release} : Actual ${tabsActual}`
+          ).to.be.true
+      );
     }
 
-    await softAssert.assert(async () => expect(tabsActual.length, `Expected and actuals tabs dsplayed does not match:\n expected${tabsExpected}\n actual ${tabsActual} `).to.equal(tabsExpected.length));
+    await softAssert.assert(async () =>
+      expect(
+        tabsActual.length,
+        `Expected and actuals tabs dsplayed does not match:\n expected${tabsExpected}\n actual ${tabsActual} `
+      ).to.equal(tabsExpected.length)
+    );
     softAssert.finally();
   });
 });
@@ -454,15 +518,26 @@ Then('I validate primary navigation right side items for user {string} in releas
     for (let i = 0; i < tabsExpected.length; i++) {
       const tabExpected = tabsExpected[i];
       softAssert.setScenario('Is tab displayed ' + tabExpected);
-      await softAssert.assert(async () => expect(tabsActual.includes(tabExpected), `${tabExpected} is not displayed for ${userType} in release ${release} : Actual ${tabsActual}`).to.be.true);
+      await softAssert.assert(
+        async () =>
+          expect(
+            tabsActual.includes(tabExpected),
+            `${tabExpected} is not displayed for ${userType} in release ${release} : Actual ${tabsActual}`
+          ).to.be.true
+      );
     }
 
-    await softAssert.assert(async () => expect(tabsActual.length, `Expected and actuals tabs dsplayed does not match:\n expected${tabsExpected}\n actual ${tabsActual} `).to.equal(tabsExpected.length));
+    await softAssert.assert(async () =>
+      expect(
+        tabsActual.length,
+        `Expected and actuals tabs dsplayed does not match:\n expected${tabsExpected}\n actual ${tabsActual} `
+      ).to.equal(tabsExpected.length)
+    );
     softAssert.finally();
   });
 });
 
-Then('I validate task list column displayed for user {string} in release {string}', async function(user, release){
+Then('I validate task list column displayed for user {string} in release {string}', async function (user, release) {
   await BrowserWaits.waitForSeconds(20);
   await BrowserUtil.stepWithRetry(async () => {
     const softAssert = new SoftAssert(this);
@@ -472,10 +547,21 @@ Then('I validate task list column displayed for user {string} in release {string
     for (let i = 0; i < taskListColumnsExpected.length; i++) {
       const columnExpected = taskListColumnsExpected[i];
       softAssert.setScenario('Is column displayed ' + columnExpected);
-      await softAssert.assert(async () => expect(taskListColumnsActual.includes(columnExpected), `${columnExpected} is not displayed for ${user} in release ${release} : Actual ${taskListColumnsActual}`).to.be.true);
+      await softAssert.assert(
+        async () =>
+          expect(
+            taskListColumnsActual.includes(columnExpected),
+            `${columnExpected} is not displayed for ${user} in release ${release} : Actual ${taskListColumnsActual}`
+          ).to.be.true
+      );
     }
     softAssert.setScenario('Columns displayed ');
-    await softAssert.assert(async () => expect(taskListColumnsActual.length, `for ${user} in release ${release} \n Expected and actuals column dsplayed does not match:\n expected${taskListColumnsExpected}\n actual ${taskListColumnsActual} `).to.equal(taskListColumnsExpected.length));
+    await softAssert.assert(async () =>
+      expect(
+        taskListColumnsActual.length,
+        `for ${user} in release ${release} \n Expected and actuals column dsplayed does not match:\n expected${taskListColumnsExpected}\n actual ${taskListColumnsActual} `
+      ).to.equal(taskListColumnsExpected.length)
+    );
 
     softAssert.finally();
     await CucumberReporter.AddScreenshot();
@@ -491,27 +577,38 @@ Then('I validate available task list column displayed for user {string} in relea
     for (let i = 0; i < taskListColumnsExpected.length; i++) {
       const columnExpected = taskListColumnsExpected[i];
       softAssert.setScenario('Is column displayed ' + columnExpected);
-      await softAssert.assert(async () => expect(taskListColumnsActual.includes(columnExpected), `${columnExpected} is not displayed for ${userType} in release ${release} : Actual ${taskListColumnsActual}`).to.be.true);
+      await softAssert.assert(
+        async () =>
+          expect(
+            taskListColumnsActual.includes(columnExpected),
+            `${columnExpected} is not displayed for ${userType} in release ${release} : Actual ${taskListColumnsActual}`
+          ).to.be.true
+      );
     }
 
-    await softAssert.assert(async () => expect(taskListColumnsActual.length, `Expected and actuals column dsplayed does not match:\n expected${taskListColumnsExpected}\n actual ${taskListColumnsActual} `).to.equal(taskListColumnsExpected.length));
+    await softAssert.assert(async () =>
+      expect(
+        taskListColumnsActual.length,
+        `Expected and actuals column dsplayed does not match:\n expected${taskListColumnsExpected}\n actual ${taskListColumnsActual} `
+      ).to.equal(taskListColumnsExpected.length)
+    );
     softAssert.finally();
   });
 });
 
-Then('I validate task request body in reference {string} has locations set', async function(reference, locationsDatatable){
+Then('I validate task request body in reference {string} has locations set', async function (reference, locationsDatatable) {
   const reqBody = global.scenarioData[reference];
   return 'Pending';
 });
 
-Given('I clear all MOCK location', function(){
+Given('I clear all MOCK location', function () {
   workallocationMockData.locationsByServices = [];
 });
 
-Given('I set MOCK locations with names in service {string}', async function(service, locationNamesDatatable){
+Given('I set MOCK locations with names in service {string}', async function (service, locationNamesDatatable) {
   const locationNamesHashes = locationNamesDatatable.parse().hashes();
   const locationNames = [];
-  for (const locationNameHash of locationNamesHashes){
+  for (const locationNameHash of locationNamesHashes) {
     locationNames.push({ locationName: locationNameHash.locationName, id: locationNameHash.id });
   }
 
@@ -522,7 +619,7 @@ Given('I set MOCK locations with names in service {string}', async function(serv
   workallocationMockData.locationsByServices.push(locationForThisService);
 });
 
-Given('I set MOCK person with user {string} and roles {string}', async function(userIdentifier, roles, datatable){
+Given('I set MOCK person with user {string} and roles {string}', async function (userIdentifier, roles, datatable) {
   const rolesArr = roles.split(',');
   const testUserIdamId = testData.users[testData.testEnv].filter((testUser) => testUser.userIdentifier === userIdentifier)[0];
 
@@ -532,11 +629,11 @@ Given('I set MOCK person with user {string} and roles {string}', async function(
 
   const roleCategory = userUtil.getUserRoleType(rolesArr);
   let person = null;
-  if (roleCategory === 'LEGAL_OPS'){
+  if (roleCategory === 'LEGAL_OPS') {
     person = workallocationMockData.addCaseworkerWithIdamId(testUserIdamId.idamId, 'IA');
     person.location.id = locationId;
     person.location.locationName = locationName;
-  } else if (roleCategory === 'JUDICIAL'){
+  } else if (roleCategory === 'JUDICIAL') {
     person = workallocationMockData.addJudgeUsers(testUserIdamId.idamId, 'testMockUserFN', 'test', 'testjudge@hmcts.net');
     person.appointments[0].location_id = locationId;
     person.appointments[0].base_location_id = locationId;
@@ -546,7 +643,7 @@ Given('I set MOCK person with user {string} and roles {string}', async function(
   CucumberReporter.AddJson(person);
 });
 
-Given('I set role assignment query response', async function (roleAssignments){
+Given('I set role assignment query response', async function (roleAssignments) {
   reportLogger.reportDatatable(roleAssignments);
   const boolAttributes = ['isCaseAllocator', 'contractType', 'bookable'];
   const roleAssignmentArr = [];
@@ -554,7 +651,16 @@ Given('I set role assignment query response', async function (roleAssignments){
     const roleAssignmentTemplate = roleAssignmentMock.getRoleAssignmentTemplate();
     const roleKeys = Object.keys(roleAssignment);
 
-    const attributeProperties = ['jurisdiction', 'substantive', 'caseType', 'caseId', 'baseLocation', 'primaryLocation', 'bookable', 'specificAccessReason'];
+    const attributeProperties = [
+      'jurisdiction',
+      'substantive',
+      'caseType',
+      'caseId',
+      'baseLocation',
+      'primaryLocation',
+      'bookable',
+      'specificAccessReason',
+    ];
 
     for (const attr of roleKeys) {
       const value = boolAttributes.includes(attr) ? roleAssignment[attr].includes('true') : roleAssignment[attr];
@@ -570,4 +676,3 @@ Given('I set role assignment query response', async function (roleAssignments){
 
   await mockService.setRoleAssignmentsQuery({ roleAssignmentResponse: roleAssignmentArr }, 200);
 });
-

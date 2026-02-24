@@ -10,13 +10,13 @@ import * as fromActions from '../../app/store';
 export class BookingGuard {
   public static defaultUrl: string = '/cases';
 
-  constructor(private readonly router: Router,
-              private readonly store: Store<fromActions.State>) {}
+  constructor(
+    private readonly router: Router,
+    private readonly store: Store<fromActions.State>
+  ) {}
 
   public canActivate(): Observable<boolean> {
-    const userDetails$ = this.store.pipe(
-      select(fromActions.getUserDetails)
-    );
+    const userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
 
     return userDetails$.pipe(
       // ignore falsy/partial emissions
@@ -25,14 +25,12 @@ export class BookingGuard {
         const roleCategory = user.userInfo.roleCategory;
         const roles = user.userInfo.roles ?? [];
 
-        const isJudicial =
-          roleCategory === 'JUDICIAL' || roles.includes('caseworker-judge');
+        const isJudicial = roleCategory === 'JUDICIAL' || roles.includes('caseworker-judge');
 
-        const hasBookable =
-          (user.roleAssignmentInfo ?? []).some((ra: any) => {
-            const b = ra?.bookable;
-            return b === true || (typeof b === 'string' && b.toLowerCase() === 'true');
-          });
+        const hasBookable = (user.roleAssignmentInfo ?? []).some((ra: any) => {
+          const b = ra?.bookable;
+          return b === true || (typeof b === 'string' && b.toLowerCase() === 'true');
+        });
 
         return isJudicial && hasBookable;
       }),

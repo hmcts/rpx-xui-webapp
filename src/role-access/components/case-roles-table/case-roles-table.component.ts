@@ -12,7 +12,7 @@ interface Item extends CaseRole {
   standalone: false,
   selector: 'exui-case-roles-table',
   templateUrl: './case-roles-table.component.html',
-  styleUrls: ['./case-roles-table.component.scss']
+  styleUrls: ['./case-roles-table.component.scss'],
 })
 export class CaseRolesTableComponent implements OnInit {
   public backUrl: string;
@@ -77,7 +77,7 @@ export class CaseRolesTableComponent implements OnInit {
       jurisdiction: this.caseDetails.case_type.jurisdiction.id,
       typeOfRole: caseRole.roleId,
       roleCategory: caseRole.roleCategory,
-      actorId: caseRole.actorId
+      actorId: caseRole.actorId,
     };
   }
 

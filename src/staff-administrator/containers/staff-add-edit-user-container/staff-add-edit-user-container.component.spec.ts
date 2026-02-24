@@ -24,14 +24,13 @@ describe('StaffAddEditUserContainerComponent', () => {
                 userTypes: staffFilterOptionsTestData.userTypes,
                 jobTitles: staffFilterOptionsTestData.jobTitles,
                 skills: staffFilterOptionsTestData.skills,
-                services: staffFilterOptionsTestData.services
-              }
-            }
-          }
-        }
-      ]
-    })
-      .compileComponents();
+                services: staffFilterOptionsTestData.services,
+              },
+            },
+          },
+        },
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -50,9 +49,9 @@ describe('StaffAddEditUserContainerComponent', () => {
       mockRouter.getCurrentNavigation.and.returnValue({
         extras: {
           state: {
-            formValues: formValuesFromState
-          }
-        }
+            formValues: formValuesFromState,
+          },
+        },
       } as unknown as Navigation);
 
       // @ts-expect-error - private property

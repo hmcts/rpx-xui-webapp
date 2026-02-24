@@ -1,22 +1,22 @@
 const ASSIGN = {
   id: 'assign',
-  title: 'Assign task'
+  title: 'Assign task',
 };
 const CANCEL = {
   id: 'cancel',
-  title: 'Cancel task'
+  title: 'Cancel task',
 };
 const CLAIM = {
   id: 'claim',
-  title: 'Assign to me'
+  title: 'Assign to me',
 };
 const COMPLETE = {
   id: 'complete',
-  title: 'Mark as done'
+  title: 'Mark as done',
 };
 const RELEASE = {
   id: 'unclaim',
-  title: 'Unassign task'
+  title: 'Unassign task',
 };
 // const CLAIM_AND_GO = {
 //   id: 'claim-and-go',
@@ -32,7 +32,7 @@ const RELEASE = {
  */
 const REASSIGN = {
   id: 'reassign',
-  title: 'Reassign task'
+  title: 'Reassign task',
 };
 
 export const ACTIONS = {
@@ -41,5 +41,5 @@ export const ACTIONS = {
   CLAIM,
   COMPLETE,
   REASSIGN,
-  RELEASE
+  RELEASE,
 };

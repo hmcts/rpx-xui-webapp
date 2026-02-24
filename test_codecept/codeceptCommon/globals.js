@@ -1,4 +1,3 @@
-
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
@@ -9,7 +8,7 @@ global.should = chai.should;
 
 const browser = require('./browser');
 
-const { Element, ElementCollection }= require('./elements');
+const { Element, ElementCollection } = require('./elements');
 
 global.$$ = () => {
   function length() {
@@ -17,26 +16,24 @@ global.$$ = () => {
   }
 };
 
-global.$ = (locator) => new Element({ 'css': locator });
+global.$ = (locator) => new Element({ css: locator });
 
-global.$$ = (locator) => new ElementCollection({ 'css': locator });
+global.$$ = (locator) => new ElementCollection({ css: locator });
 
 global.element = (locator) => new Element(locator);
 global.element.all = (locator) => new ElementCollection(locator);
 
 global.by = {
   xpath: (locator) => {
-    return { 'xpath': locator };
+    return { xpath: locator };
   },
   css: (locator) => {
-    return { 'css': locator };
+    return { css: locator };
   },
   linkText: (text) => {
-    const linkLocator = locate('//')
-      .find('a')
-      .withText(text);
+    const linkLocator = locate('//').find('a').withText(text);
     return linkLocator.locator;
-  }
+  },
 };
 
 global.browser = browser;

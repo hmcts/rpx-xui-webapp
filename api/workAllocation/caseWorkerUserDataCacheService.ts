@@ -2,11 +2,26 @@ import { NextFunction } from 'express';
 import { authenticator } from 'otplib';
 
 import { getConfigValue } from '../configuration';
-import { IDAM_SECRET, MICROSERVICE, S2S_SECRET, SERVICES_IDAM_API_URL, SERVICES_IDAM_CLIENT_ID, SERVICE_S2S_PATH, STAFF_SUPPORTED_JURISDICTIONS, SYSTEM_USER_NAME, SYSTEM_USER_PASSWORD } from '../configuration/references';
+import {
+  IDAM_SECRET,
+  MICROSERVICE,
+  S2S_SECRET,
+  SERVICES_IDAM_API_URL,
+  SERVICES_IDAM_CLIENT_ID,
+  SERVICE_S2S_PATH,
+  STAFF_SUPPORTED_JURISDICTIONS,
+  SYSTEM_USER_NAME,
+  SYSTEM_USER_PASSWORD,
+} from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { getStaffSupportedJurisdictionsList } from '../staffSupportedJurisdictions';
-import { handleNewUsersGet, handlePostRoleAssignments, handlePostRoleAssignmentsWithNewUsers, handleUsersGet } from './caseWorkerService';
+import {
+  handleNewUsersGet,
+  handlePostRoleAssignments,
+  handlePostRoleAssignmentsWithNewUsers,
+  handleUsersGet,
+} from './caseWorkerService';
 import { FullUserDetailCache } from './fullUserDetailCache';
 import { baseCaseWorkerRefUrl, baseRoleAssignmentUrl } from './index';
 import { CachedCaseworker, LocationApi } from './interfaces/common';
@@ -26,7 +41,7 @@ let cachedUsersWithRoles: CachedCaseworker[];
 
 export async function fetchUserData(req: EnhancedRequest, next: NextFunction): Promise<StaffUserDetails[]> {
   try {
-    if (hasTTLExpired() || (!cachedUsers || cachedUsers.length === 0)) {
+    if (hasTTLExpired() || !cachedUsers || cachedUsers.length === 0) {
       // hasTTLExpired to determine whether roles require refreshing
       // cachedUsers to ensure rerun if user restarts request early
       refreshRoles = true;
@@ -63,6 +78,7 @@ export async function fetchNewUserData(): Promise<StaffUserDetails[]> {
     const userResponse = await handleNewUsersGet(getUsersPath, caseworkerHeaders);
     cachedUsers = getUniqueUsersFromResponse(userResponse);
     return cachedUsers;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     if (cachedUsers) {
       return cachedUsers;
@@ -73,7 +89,11 @@ export async function fetchNewUserData(): Promise<StaffUserDetails[]> {
   }
 }
 
-export async function fetchRoleAssignments(cachedUserData: StaffUserDetails[], req: EnhancedRequest, next: NextFunction): Promise<CachedCaseworker[]> {
+export async function fetchRoleAssignments(
+  cachedUserData: StaffUserDetails[],
+  req: EnhancedRequest,
+  next: NextFunction
+): Promise<CachedCaseworker[]> {
   // note: this has been done to cache role categories
   // it is separate from the above as above caching will be done by backend
   try {
@@ -110,7 +130,7 @@ export async function fetchRoleAssignmentsForNewUsers(cachedUserData: StaffUserD
       const roleAssignmentHeaders = {
         ...getRequestHeaders(),
         pageNumber: 0,
-        size: 10000
+        size: 10000,
       };
       const { data } = await handlePostRoleAssignmentsWithNewUsers(roleApiPath, payload, roleAssignmentHeaders);
       const roleAssignments = data.roleAssignmentResponse;
@@ -118,6 +138,7 @@ export async function fetchRoleAssignmentsForNewUsers(cachedUserData: StaffUserD
       FullUserDetailCache.setUserDetails(cachedUsersWithRoles);
     }
     return FullUserDetailCache.getAllUserDetails();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     if (FullUserDetailCache.getAllUserDetails()) {
       return FullUserDetailCache.getAllUserDetails();
@@ -135,17 +156,18 @@ export async function getAuthTokens(): Promise<void> {
     const idamPath = getConfigValue(SERVICES_IDAM_API_URL);
     const authURL = `${idamPath}/o/token`;
     const axiosConfig = {
-      headers: { 'content-type': 'application/x-www-form-urlencoded' }
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
     };
     const authBody = getRequestBody();
     // get auth token to use for pre-sign-in API calls
     const serviceAuthResponse = await http.post(`${s2sEndpointUrl}`, {
       microservice,
-      oneTimePassword
+      oneTimePassword,
     });
     initialServiceAuthToken = serviceAuthResponse.data;
     const authResponse = await http.post(authURL, authBody, axiosConfig);
     initialAuthToken = authResponse.data.access_token;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     console.log('Cannot get auth tokens');
   }
@@ -156,7 +178,7 @@ export function hasTTLExpired(): boolean {
     // started caching
     timestamp = new Date();
     return true;
-  } else if (Date.now() < timestamp.getTime() + (TTL * 1000)) {
+  } else if (Date.now() < timestamp.getTime() + TTL * 1000) {
     // use cache if the time is not more than the TTL
     return false;
   }
@@ -186,7 +208,8 @@ export function getUniqueUsersFromResponse(userResponse: StaffUserDetails[]): St
       // this should find all duplicates
       for (let matchIndex = userIndex + 1; matchIndex < userResponse.length; matchIndex++) {
         const matchingUser = userResponse[matchIndex];
-        const isOfSameUser = matchingUser.staff_profile.id === memberProfile.id &&
+        const isOfSameUser =
+          matchingUser.staff_profile.id === memberProfile.id &&
           !userServices.includes(matchingUser.ccd_service_name.toUpperCase());
         if (isOfSameUser) {
           // putting this here to avoid checking base location unless absolutely necessary
@@ -226,7 +249,7 @@ export function getFirstBaseLocation(memberProfile: StaffProfile, matchingUser: 
         location_id: location.location_id,
         location: location.location,
         is_primary: true,
-        services: [matchingUser.ccd_service_name]
+        services: [matchingUser.ccd_service_name],
       };
       return firstBaseLocation;
     }
@@ -243,7 +266,7 @@ export function getNewBaseLocation(baseLocationList: LocationApi[], matchingUser
         location_id: location.location_id,
         location: location.location,
         is_primary: true,
-        services: [matchingUser.ccd_service_name]
+        services: [matchingUser.ccd_service_name],
       };
       break;
     }
@@ -270,8 +293,8 @@ export function getNewBaseLocation(baseLocationList: LocationApi[], matchingUser
 export function getRequestHeaders(): any {
   return {
     'content-type': 'application/json',
-    'serviceAuthorization': `Bearer ${initialServiceAuthToken}`,
-    'authorization': `Bearer ${initialAuthToken}`
+    serviceAuthorization: `Bearer ${initialServiceAuthToken}`,
+    authorization: `Bearer ${initialAuthToken}`,
   };
 }
 

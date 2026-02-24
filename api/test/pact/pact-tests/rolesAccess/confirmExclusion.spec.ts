@@ -18,15 +18,15 @@ const REQUEST_BODY = {
   person: {
     id: '123',
     name: 'Test user',
-    domain: 'Judicial'
+    domain: 'Judicial',
   },
-  exclusionDescription: ['testing exclusion']
+  exclusionDescription: ['testing exclusion'],
 };
 
 const ROLE_ASSIGNMENTS_BODY = {
   roleRequest: somethingLike({
     assignerId: somethingLike('123'),
-    replaceExisting: somethingLike(false)
+    replaceExisting: somethingLike(false),
   }),
   requestedRoles: somethingLike([
     {
@@ -36,18 +36,18 @@ const ROLE_ASSIGNMENTS_BODY = {
       attributes: somethingLike({
         caseId: somethingLike('123456789'),
         jurisdiction: somethingLike('IA'),
-        notes: somethingLike(['testing exclusion'])
+        notes: somethingLike(['testing exclusion']),
       }),
       roleCategory: 'JUDICIAL',
       roleName: somethingLike('conflict-of-interest'),
       actorIdType: somethingLike('IDAM'),
-      actorId: somethingLike('123')
-    }
-  ])
+      actorId: somethingLike('123'),
+    },
+  ]),
 };
 
 const RESPONSE_BODY = {
-  data: { exclusionDescription: somethingLike(['exclusion confirmed']) }
+  data: { exclusionDescription: somethingLike(['exclusion confirmed']) },
 };
 
 describe('access management service, confirm exclusion', () => {
@@ -67,19 +67,20 @@ describe('access management service, confirm exclusion', () => {
           method: 'POST',
           path: '/am/role-assignments',
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
-          body: ROLE_ASSIGNMENTS_BODY
+          body: ROLE_ASSIGNMENTS_BODY,
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
+            'content-type':
+              'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0',
           },
-          body: RESPONSE_BODY
-        }
+          body: RESPONSE_BODY,
+        },
       };
 
       pactSetUp.provider.addInteraction(interaction);
@@ -100,12 +101,12 @@ describe('access management service, confirm exclusion', () => {
         const { confirmUserExclusion } = requireReloaded('../../../../roleAccess/exclusionService');
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
           session: { passport: { user: { userinfo: { id: '123' } } } },
-          body: REQUEST_BODY
+          body: REQUEST_BODY,
         });
 
         let returnedResponse = null;

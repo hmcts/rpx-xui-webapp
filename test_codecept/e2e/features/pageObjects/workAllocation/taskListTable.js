@@ -1,16 +1,16 @@
 const { isPresent } = require('../../../../helpers/globals');
 const WATable = require('./waTable');
 
-class TaskListTable extends WATable{
-  constructor(){
+class TaskListTable extends WATable {
+  constructor() {
     super('exui-task-list');
   }
 
-  async getTaskListCountInTable(){
+  async getTaskListCountInTable() {
     return await this.getListCountInTable();
   }
 
-  async getColumnValueForTaskAt(columnName, taskAtPos){
+  async getColumnValueForTaskAt(columnName, taskAtPos) {
     return await this.getColumnValueAt(columnName, taskAtPos);
   }
 
@@ -18,7 +18,7 @@ class TaskListTable extends WATable{
     return this.isColValALink(columnName, taskAtPos);
   }
 
-  async clickTaskColLink(columnName, taskAtPos){
+  async clickTaskColLink(columnName, taskAtPos) {
     await this.clickColLink(columnName, taskAtPos);
   }
 
@@ -33,7 +33,7 @@ class TaskListTable extends WATable{
     return isLink;
   }
 
-  async clickTaskColLink(columnName, taskAtPos){
+  async clickTaskColLink(columnName, taskAtPos) {
     const taskRow = await this.getTableRowAt(taskAtPos);
     const columnPos = await this.getHeaderPositionWithName(columnName);
     await taskRow.locator(`td:nth-of-type(${columnPos}) exui-url-field a`).click();
@@ -45,31 +45,31 @@ class TaskListTable extends WATable{
     return taskRow.locator(`td:nth-of-type(${columnPos})`);
   }
 
-  async getTaskRowWithColumnValue(columnName, columnValue){
+  async getTaskRowWithColumnValue(columnName, columnValue) {
     return this.getRowWithColumnValue(columnName, columnValue);
   }
 
-  async clickManageLinkForTaskAt(position){
+  async clickManageLinkForTaskAt(position) {
     await this.clickManageLinkForRowAt(position);
   }
 
-  async isManageLinkOpenForTaskAtPos(position){
+  async isManageLinkOpenForTaskAtPos(position) {
     return await this.isManageLinkOpenAtPos(position);
   }
 
-  async isTaskActionPresent(taskAction){
+  async isTaskActionPresent(taskAction) {
     return this.isRowActionPresent(taskAction);
   }
 
-  async clickTaskAction(action){
+  async clickTaskAction(action) {
     await this.clickRowAction(action);
   }
 
-  async isTaskActionRowForTaskDisplayed(position){
+  async isTaskActionRowForTaskDisplayed(position) {
     return await this.isRowActionRowForRowDisplayed();
   }
 
-  async isTaskActionBarDisplayed(){
+  async isTaskActionBarDisplayed() {
     return await this.isRowActionBarDisplayed();
   }
 
@@ -77,7 +77,7 @@ class TaskListTable extends WATable{
     return await this.isRowActionBarDisplayedForAtPos(row);
   }
 
-  async getTaskActions(){
+  async getTaskActions() {
     return await this.getRowActions();
   }
 }

@@ -9,9 +9,7 @@ import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { SharedModule } from '../app/shared/shared.module';
 import { StaffAddEditUserFormComponent } from './components/staff-add-edit-user/staff-add-edit-user-form/staff-add-edit-user-form.component';
-import {
-  StaffSelectLocationComponent
-} from './components/staff-add-edit-user/staff-add-edit-user-form/staff-select-location/staff-select-location.component';
+import { StaffSelectLocationComponent } from './components/staff-add-edit-user/staff-add-edit-user-form/staff-select-location/staff-select-location.component';
 import { StaffUserCheckAnswersComponent } from './components/staff-add-edit-user/staff-user-check-answers/staff-user-check-answers.component';
 import { StaffStatusComponent } from './components/staff-user-details/staff-status/staff-status.component';
 import { StaffUserDetailsComponent } from './components/staff-user-details/staff-user-details.component';
@@ -47,7 +45,7 @@ import { staffSelectReducer } from './store/reducers/staff-select.reducer';
     StaffAddEditUserContainerComponent,
     StaffAddEditUserFormComponent,
     StaffSelectLocationComponent,
-    StaffUserCheckAnswersComponent
+    StaffUserCheckAnswersComponent,
   ],
   imports: [
     CommonModule,
@@ -59,7 +57,7 @@ import { staffSelectReducer } from './store/reducers/staff-select.reducer';
     NgxPaginationModule,
     StoreModule.forFeature('staffUI', staffSelectReducer),
     MatTooltipModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
   ],
   providers: [
     StaffDataAccessService,
@@ -67,8 +65,8 @@ import { staffSelectReducer } from './store/reducers/staff-select.reducer';
     StaffFilterOptionsSkillsResolver,
     StaffFilterOptionsJobTitlesResolver,
     StaffFilterOptionsUserTypesResolver,
-    StaffUserDetailsResolverService
+    StaffUserDetailsResolverService,
   ],
-  exports: []
+  exports: [],
 })
 export class StaffAdministratorModule {}

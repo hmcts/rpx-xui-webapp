@@ -8,16 +8,16 @@ import { LoggerService } from '../app/services/logger/logger.service';
 import * as fromServices from './services';
 import { effects, reducers } from './store';
 
-@NgModule({ imports: [CommonModule,
-  StoreModule.forFeature('org', reducers),
-  EffectsModule.forFeature(effects),
-  LoggerModule.forRoot({
-    level: NgxLoggerLevel.TRACE,
-    disableConsoleLogging: false
-  })], providers: [
-  fromServices.services,
-  LoggerService,
-  provideHttpClient(withInterceptorsFromDi())
-] })
-
+@NgModule({
+  imports: [
+    CommonModule,
+    StoreModule.forFeature('org', reducers),
+    EffectsModule.forFeature(effects),
+    LoggerModule.forRoot({
+      level: NgxLoggerLevel.TRACE,
+      disableConsoleLogging: false,
+    }),
+  ],
+  providers: [fromServices.services, LoggerService, provideHttpClient(withInterceptorsFromDi())],
+})
 export class OrganisationModule {}

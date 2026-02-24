@@ -12,18 +12,18 @@ export const ROUTES: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        component: QueryManagementContainerComponent
+        component: QueryManagementContainerComponent,
       },
       {
         path: ':qid',
-        component: QueryManagementContainerComponent
+        component: QueryManagementContainerComponent,
       },
       {
         path: ':qid/:dataid',
-        component: QueryManagementContainerComponent
-      }
-    ]
-  }
+        component: QueryManagementContainerComponent,
+      },
+    ],
+  },
 ];
 
 export const queryManagementRouting: ModuleWithProviders<RouterModule> = RouterModule.forChild(ROUTES);

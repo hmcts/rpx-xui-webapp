@@ -15,7 +15,8 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 // tslint:disable-next-line:component-selector -- this is a stub component -- it is imported from common lib which has a different prefix
 @Component({
   standalone: false,
-  selector: 'xuilib-generic-filter', template: ''
+  selector: 'xuilib-generic-filter',
+  template: '',
 })
 class GenericFilterStubComponent {
   public submitted = false;
@@ -31,30 +32,30 @@ describe('StaffAdvFilterComponent', () => {
     fields: [
       {
         value: ['AAA7'],
-        name: 'user-services'
+        name: 'user-services',
       },
       {
         value: [],
-        name: 'user-location'
+        name: 'user-location',
       },
       {
         value: ['All'],
-        name: 'user-type'
+        name: 'user-type',
       },
       {
         value: ['All'],
-        name: 'user-job-title'
+        name: 'user-job-title',
       },
       {
         value: ['All'],
-        name: 'user-skills'
+        name: 'user-skills',
       },
       {
         value: [],
-        name: 'user-role'
-      }
+        name: 'user-role',
+      },
     ],
-    reset: false
+    reset: false,
   };
   let mockFilterStreamSubject: BehaviorSubject<FilterSetting>;
   let mockFilterErrorsSubject: BehaviorSubject<FilterError[]>;
@@ -68,11 +69,14 @@ describe('StaffAdvFilterComponent', () => {
       get: jasmine.createSpy(),
       persist: jasmine.createSpy(),
       givenErrors: mockFilterErrorsSubject,
-      clearSessionAndLocalPersistance: jasmine.createSpy()
+      clearSessionAndLocalPersistance: jasmine.createSpy(),
     };
 
-    mockStaffDataFilterService = jasmine.createSpyObj<StaffDataFilterService>('mockStaffDataFilterService',
-      ['search', 'changePage', 'setErrors']);
+    mockStaffDataFilterService = jasmine.createSpyObj<StaffDataFilterService>('mockStaffDataFilterService', [
+      'search',
+      'changePage',
+      'setErrors',
+    ]);
     mockStaffDataFilterService.search.and.callThrough();
 
     TestBed.configureTestingModule({
@@ -90,16 +94,15 @@ describe('StaffAdvFilterComponent', () => {
                 userTypes: staffFilterOptionsTestData.userTypes,
                 jobTitles: staffFilterOptionsTestData.jobTitles,
                 skills: staffFilterOptionsTestData.skills,
-                services: staffFilterOptionsTestData.services
-              }
-            }
-          }
+                services: staffFilterOptionsTestData.services,
+              },
+            },
+          },
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -123,6 +126,11 @@ describe('StaffAdvFilterComponent', () => {
     expect(field.defaultOption.key).toBe('All');
   });
 
+  it('should have All by default in user status', () => {
+    const field = component.filterConfig.fields.find((f) => f.name === 'user-status');
+    expect(field.defaultOption.key).toBe('All');
+  });
+
   describe('filterSub', () => {
     it('should unsubscribe from filterService on destroy', () => {
       // @ts-expect-error -- private property
@@ -140,32 +148,36 @@ describe('StaffAdvFilterComponent', () => {
             value: [
               { key: 'AAA7', label: 'Service A' },
               { key: 'BFA1', label: 'Service B' },
-              { key: 'CDA3', label: 'Service C' }
+              { key: 'CDA3', label: 'Service C' },
             ],
-            name: 'user-services'
+            name: 'user-services',
           },
           {
             value: [],
-            name: 'user-location'
+            name: 'user-location',
           },
           {
             value: ['All'],
-            name: 'user-type'
+            name: 'user-type',
           },
           {
             value: ['All'],
-            name: 'user-job-title'
+            name: 'user-job-title',
           },
           {
             value: ['All'],
-            name: 'user-skills'
+            name: 'user-skills',
           },
           {
             value: [],
-            name: 'user-role'
-          }
+            name: 'user-role',
+          },
+          {
+            value: ['ACTIVE'],
+            name: 'user-status',
+          },
         ],
-        reset: false
+        reset: false,
       };
       mockFilterStreamSubject.next(filterSetting);
 
@@ -173,10 +185,10 @@ describe('StaffAdvFilterComponent', () => {
       expect(component.staffDataFilterService.search).toHaveBeenCalledWith(
         jasmine.objectContaining({
           advancedSearchFilters: jasmine.objectContaining({
-            serviceCode: ['AAA7', 'BFA1', 'CDA3']
+            serviceCode: ['AAA7', 'BFA1', 'CDA3'],
           }),
           pageNumber: 1,
-          pageSize: 15
+          pageSize: 15,
         })
       );
     });
@@ -190,30 +202,34 @@ describe('StaffAdvFilterComponent', () => {
           fields: [
             {
               value: [],
-              name: 'user-services'
+              name: 'user-services',
             },
             {
               value: [],
-              name: 'user-location'
+              name: 'user-location',
             },
             {
               value: ['All'],
-              name: 'user-type'
+              name: 'user-type',
             },
             {
               value: ['All'],
-              name: 'user-job-title'
+              name: 'user-job-title',
             },
             {
               value: ['All'],
-              name: 'user-skills'
+              name: 'user-skills',
             },
             {
               value: [],
-              name: 'user-role'
-            }
+              name: 'user-role',
+            },
+            {
+              value: [],
+              name: 'user-status',
+            },
           ],
-          reset: false
+          reset: false,
         };
       });
 
@@ -223,6 +239,63 @@ describe('StaffAdvFilterComponent', () => {
       });
 
       it('should set an error when filterService emits no values the genericFilter is submitted', () => {
+        component.genericFilterComponent.submitted = true;
+        fixture.detectChanges();
+        mockFilterStreamSubject.next(filterSetting);
+        // @ts-expect-error - private property
+        expect(component.staffDataFilterService.setErrors).toHaveBeenCalledWith(
+          // @ts-expect-error - private property
+          [{ name: component.FILTER_NAME, error: component.ERROR_MESSAGE_MIN_ONE_CRITERIA }]
+        );
+      });
+    });
+
+    describe('when filterService only has a status filter', () => {
+      let filterSetting: FilterSetting;
+
+      beforeEach(() => {
+        filterSetting = {
+          id: 'staff-advanced-filters',
+          fields: [
+            {
+              value: [],
+              name: 'user-services',
+            },
+            {
+              value: [],
+              name: 'user-location',
+            },
+            {
+              value: ['All'],
+              name: 'user-type',
+            },
+            {
+              value: ['All'],
+              name: 'user-job-title',
+            },
+            {
+              value: ['All'],
+              name: 'user-skills',
+            },
+            {
+              value: [],
+              name: 'user-role',
+            },
+            {
+              value: ['ACTIVE'],
+              name: 'user-status',
+            },
+          ],
+          reset: false,
+        };
+      });
+
+      it('should call setErrors null initially after subscription', () => {
+        // @ts-expect-error - private property
+        expect(component.staffDataFilterService.setErrors).toHaveBeenCalledWith([]);
+      });
+
+      it('should set an error when only a user status is set', () => {
         component.genericFilterComponent.submitted = true;
         fixture.detectChanges();
         mockFilterStreamSubject.next(filterSetting);

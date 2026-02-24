@@ -16,7 +16,7 @@ import { AppConstants } from 'src/app/app.constants';
   standalone: false,
   selector: 'exui-hmcts-global-header',
   templateUrl: './hmcts-global-header.component.html',
-  styleUrls: ['./hmcts-global-header.component.scss']
+  styleUrls: ['./hmcts-global-header.component.scss'],
 })
 export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   private static readonly GLOBAL_SEARCH_FEATURE_CONFIG = 'feature-global-search';
@@ -50,7 +50,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
 
   private readonly menuItems = {
     left: new BehaviorSubject<NavigationItem[]>([]),
-    right: new BehaviorSubject<NavigationItem[]>([])
+    right: new BehaviorSubject<NavigationItem[]>([]),
   };
 
   constructor(
@@ -67,7 +67,14 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
       skipWhile((details) => !('userInfo' in details)),
       map((details) => details?.userInfo?.roles),
       map((roles) => {
-        const givenRoles = ['pui-case-manager', 'caseworker-ia-legalrep-solicitor', 'caseworker-ia-homeofficeapc', 'caseworker-ia-respondentofficer', 'caseworker-ia-homeofficelart', 'caseworker-ia-homeofficepou'];
+        const givenRoles = [
+          'pui-case-manager',
+          'caseworker-ia-legalrep-solicitor',
+          'caseworker-ia-homeofficeapc',
+          'caseworker-ia-respondentofficer',
+          'caseworker-ia-homeofficelart',
+          'caseworker-ia-homeofficepou',
+        ];
         return givenRoles.filter((x) => roles.includes(x)).length > 0;
       })
     );
@@ -99,21 +106,23 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
 
   private splitAndFilterNavItems(items: NavigationItem[]): void {
     items = items || [];
-    of(items).pipe(
-      switchMap((unfilteredItems) => this.filterNavItemsOnRole(unfilteredItems)),
-      switchMap((roleFilteredItems) => this.filterNavItemsOnFlag(roleFilteredItems)),
-      map((filteredItems) => this.splitNavItems(filteredItems))
-    ).subscribe((sortedItems) => {
-      this.menuItems.left.next(sortedItems.left);
-      this.menuItems.right.next(sortedItems.right);
-    });
+    of(items)
+      .pipe(
+        switchMap((unfilteredItems) => this.filterNavItemsOnRole(unfilteredItems)),
+        switchMap((roleFilteredItems) => this.filterNavItemsOnFlag(roleFilteredItems)),
+        map((filteredItems) => this.splitNavItems(filteredItems))
+      )
+      .subscribe((sortedItems) => {
+        this.menuItems.left.next(sortedItems.left);
+        this.menuItems.right.next(sortedItems.right);
+      });
   }
 
-  private splitNavItems(items: NavigationItem[]): { right: NavigationItem[], left: NavigationItem[] } {
+  private splitNavItems(items: NavigationItem[]): { right: NavigationItem[]; left: NavigationItem[] } {
     items = items || [];
     return {
       right: items.filter((item) => item.align && item.align === 'right'),
-      left: items.filter((item) => !item.align || item.align !== 'right')
+      left: items.filter((item) => !item.align || item.align !== 'right'),
     };
   }
 
@@ -124,8 +133,12 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
       skipWhile((details) => !('userInfo' in details)),
       map((details) => details?.userInfo?.roles),
       map((roles) => {
-        const i = items.filter((item) => (item.roles && item.roles.length > 0 ? item.roles.some((role) => roles.includes(role)) : true));
-        return i.filter((item) => (item.notRoles && item.notRoles.length > 0 ? item.notRoles.every((role) => !roles.includes(role)) : true));
+        const i = items.filter((item) =>
+          item.roles && item.roles.length > 0 ? item.roles.some((role) => roles.includes(role)) : true
+        );
+        return i.filter((item) =>
+          item.notRoles && item.notRoles.length > 0 ? item.notRoles.every((role) => !roles.includes(role)) : true
+        );
       })
     );
   }
@@ -133,29 +146,31 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   private filterNavItemsOnFlag(items: NavigationItem[]): Observable<NavigationItem[]> {
     items = items || [];
     return of(
-      items.filter((item) => {
-        // If item.flags exists, check every flag against AppConstants.MENU_FLAGS
-        if (item.flags && item.flags.length > 0) {
-          return item.flags.every((flag) => {
-            const flagName = this.isPlainFlag(flag) ? flag : flag.flagName;
-            const flagValue = this.isPlainFlag(flag)
-              ? AppConstants.MENU_FLAGS[flagName]
-              : AppConstants.MENU_FLAGS[flagName] === flag.value;
-            return flagValue;
-          });
-        }
-        return true;
-      }).filter((item) =>
-        item.notFlags && item.notFlags.length > 0
-          ? item.notFlags.every((flag) => {
-            const flagName = this.isPlainFlag(flag) ? flag : flag.flagName;
-            const flagValue = this.isPlainFlag(flag)
-              ? AppConstants.MENU_FLAGS[flagName]
-              : AppConstants.MENU_FLAGS[flagName] !== flag.value;
-            return !flagValue;
-          })
-          : true
-      )
+      items
+        .filter((item) => {
+          // If item.flags exists, check every flag against AppConstants.MENU_FLAGS
+          if (item.flags && item.flags.length > 0) {
+            return item.flags.every((flag) => {
+              const flagName = this.isPlainFlag(flag) ? flag : flag.flagName;
+              const flagValue = this.isPlainFlag(flag)
+                ? AppConstants.MENU_FLAGS[flagName]
+                : AppConstants.MENU_FLAGS[flagName] === flag.value;
+              return flagValue;
+            });
+          }
+          return true;
+        })
+        .filter((item) =>
+          item.notFlags && item.notFlags.length > 0
+            ? item.notFlags.every((flag) => {
+                const flagName = this.isPlainFlag(flag) ? flag : flag.flagName;
+                const flagValue = this.isPlainFlag(flag)
+                  ? AppConstants.MENU_FLAGS[flagName]
+                  : AppConstants.MENU_FLAGS[flagName] !== flag.value;
+                return !flagValue;
+              })
+            : true
+        )
     );
   }
 

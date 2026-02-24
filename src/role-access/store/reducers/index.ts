@@ -14,12 +14,10 @@ export interface State {
 export const reducers: ActionReducerMap<State> = {
   exclusion: fromExclusion.exclusionReducer,
   allocateRole: fromAllocateRole.allocateRoleReducer,
-  specificAccess: fromSpecificAccess.specificAccessReducer
+  specificAccess: fromSpecificAccess.specificAccessReducer,
 };
 
-export const getRoleAccessFeatureState = createFeatureSelector<State>(
-  'role-access'
-);
+export const getRoleAccessFeatureState = createFeatureSelector<State>('role-access');
 
 export * from './exclusion.reducer';
 export * from './allocate-role.reducer';

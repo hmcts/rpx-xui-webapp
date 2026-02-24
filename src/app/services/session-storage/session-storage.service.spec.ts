@@ -8,7 +8,7 @@ describe('Session storage service', () => {
       return mockStore[key];
     });
     spyOn(sessionStorage, 'setItem').and.callFake((key, value) => {
-      return mockStore[key] = `${value}`;
+      return (mockStore[key] = `${value}`);
     });
     spyOn(sessionStorage, 'clear').and.callFake(() => {
       mockStore = {};

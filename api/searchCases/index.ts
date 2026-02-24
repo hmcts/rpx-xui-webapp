@@ -229,7 +229,16 @@ function isKeywordSuffixNeeded(columnName, type): string {
   return isText ? '.keyword' : '';
 }
 
-export function handleElasticSearchResponse(proxyRes, req, res, json): object {
+export function handleElasticSearchResponse(json): object {
+  if (typeof json === 'string') {
+    try {
+      const parsed = JSON.parse(json);
+      json = parsed;
+    } catch (e) {
+      console.warn('handleElasticSearchResponse: failed to parse JSON string', e);
+      return {};
+    }
+  }
   if (json.cases) {
     const results = json.cases.map((caseObj) => {
       caseObj.case_fields = caseObj.fields;

@@ -41,8 +41,9 @@ catch {
     throw $_
 }
 
-# Import required module
+# Import required modules
 Import-Module Az.Communication -ErrorAction SilentlyContinue
+Import-Module PSWritePDF -ErrorAction SilentlyContinue
 
 # Main Welsh translation query
 $query = @"
@@ -136,14 +137,15 @@ else {
     $htmlChart = "<div class='chart-container'>"
     $htmlChart += "<h3>Visual Trend:</h3>"
     $htmlChart += "<div class='chart-wrapper'>"
+    $chartMaxHeight = 250
     foreach ($row in $dataRows) {
         if ($null -ne $row) {
             $dateValue = if ($null -ne $row.Date) { $row.Date } else { "N/A" }
             $sessionValue = if ($null -ne $row.Sessions) { [int]$row.Sessions } else { 0 }
-            # Use absolute values: 10px per session for vertical bars
-            $barHeight = ([int]$sessionValue * 10)
-            # Show at least 5px for zero values so they're visible
-            if ($barHeight -eq 0) { $barHeight = 5 }
+            # Scale bar height proportionally to the max value so chart always fits
+            $barHeight = if ($maxSessions -gt 0) { [Math]::Round(($sessionValue / $maxSessions) * $chartMaxHeight) } else { 0 }
+            # Show at least 5px for zero/trace values so they're visible
+            if ($barHeight -lt 5) { $barHeight = 5 }
 
             $htmlChart += "<div class='bar-column'>"
             $htmlChart += "<div class='bar-value-top'>$sessionValue</div>"
@@ -158,6 +160,155 @@ else {
     $htmlChart += "</div>"
 
     Write-Output "Report contains $($dataRows.Count) days with $totalSessions total sessions."
+}
+
+# Generate PDF attachment
+$pdfPath = Join-Path ([System.IO.Path]::GetTempPath()) "WelshReport_$(Get-Date -Format 'yyyyMM').pdf"
+$pdfBase64 = $null
+try {
+    Write-Output "Generating PDF report..."
+
+    # Pre-build content lines outside the scriptblock to avoid PS 5.1 pipeline issues inside scriptblocks
+    $pdfLines = [System.Collections.Generic.List[string]]::new()
+    $pdfLines.Add("Monthly Welsh Language Usage Report")
+    $pdfLines.Add("Environment: $($env:MODULE_PROJECT) $($env:MODULE_ENV)")
+    $pdfLines.Add("Reporting Period: $([DateTime]::UtcNow.AddMonths(-1).ToString('MMMM yyyy'))")
+    $pdfLines.Add("")
+    $pdfLines.Add("Daily Welsh Translation Usage (unique sessions per /api/translation/cy):")
+    $pdfLines.Add("Date                 | Unique Sessions")
+    $pdfLines.Add("---------------------+----------------")
+    if ($dataRows -and $dataRows.Count -gt 0) {
+        foreach ($row in $dataRows) {
+            if ($null -ne $row) {
+                $pdfDate     = if ($null -ne $row.Date)     { $row.Date }                  else { 'N/A' }
+                $pdfSessions = if ($null -ne $row.Sessions) { $row.Sessions.ToString() }   else { '0' }
+                $pdfLines.Add(("{0,-21}| {1}" -f $pdfDate, $pdfSessions))
+            }
+        }
+        $pdfLines.Add("---------------------+----------------")
+        $pdfLines.Add(("Total                | {0}" -f $totalSessions))
+    }
+    else {
+        $pdfLines.Add("No Welsh language translation usage was recorded in the reporting period.")
+    }
+    $pdfLines.Add("")
+    $pdfLines.Add("Generated: $(Get-Date -Format 'dd MMM yyyy HH:mm:ss') UTC")
+
+    # Capture list as plain array so it can be closed over cleanly in the scriptblock
+    $pdfLinesArray = $pdfLines.ToArray()
+
+    # Generate bar chart image for the PDF using System.Drawing
+    $pdfChartImagePath = $null
+    if ($dataRows -and $dataRows.Count -gt 0) {
+        try {
+            Add-Type -AssemblyName System.Drawing
+            $chartWidth   = 700
+            $chartHeight  = 380
+            $marginLeft   = 65
+            $marginRight  = 20
+            $marginTop    = 45
+            $marginBottom = 70
+            $plotWidth    = $chartWidth  - $marginLeft - $marginRight
+            $plotHeight   = $chartHeight - $marginTop  - $marginBottom
+
+            $bitmap  = New-Object System.Drawing.Bitmap($chartWidth, $chartHeight)
+            $graphic = [System.Drawing.Graphics]::FromImage($bitmap)
+            $graphic.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
+            $graphic.Clear([System.Drawing.Color]::White)
+
+            $gridPen   = New-Object System.Drawing.Pen([System.Drawing.Color]::FromArgb(220, 220, 220), 1)
+            $axesPen   = New-Object System.Drawing.Pen([System.Drawing.Color]::FromArgb(80, 90, 95),    2)
+            $barBrush  = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(0, 94, 165))
+            $fontSmall = New-Object System.Drawing.Font("Arial",  8)
+            $fontTitle = New-Object System.Drawing.Font("Arial", 11, [System.Drawing.FontStyle]::Bold)
+            $textBrush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(11, 12, 12))
+
+            # Centred title
+            $titleStr  = "Daily Welsh Translation Usage"
+            $titleSize = $graphic.MeasureString($titleStr, $fontTitle)
+            $graphic.DrawString($titleStr, $fontTitle, $textBrush, [int](($chartWidth - $titleSize.Width) / 2), 12)
+
+            # Y-axis gridlines and labels — cap levels to maxSessions so labels are always unique integers
+            $yLevels  = [Math]::Min(5, $maxSessions)
+            if ($yLevels -lt 1) { $yLevels = 1 }
+            $yStep    = [Math]::Ceiling($maxSessions / $yLevels)   # integer step >= 1, guarantees distinct labels
+            for ($lvl = 0; $lvl -le $yLevels; $lvl++) {
+                $yVal  = [int]($yStep * $lvl)
+                if ($yVal -gt $maxSessions) { $yVal = $maxSessions }
+                $yPos  = $marginTop + $plotHeight - [int]($plotHeight * $yVal / $maxSessions)
+                $graphic.DrawLine($gridPen, $marginLeft, $yPos, ($marginLeft + $plotWidth), $yPos)
+                $yLabel = $yVal.ToString()
+                $ySz    = $graphic.MeasureString($yLabel, $fontSmall)
+                $graphic.DrawString($yLabel, $fontSmall, $textBrush, ($marginLeft - $ySz.Width - 4), ($yPos - $ySz.Height / 2))
+            }
+
+            # Axes
+            $graphic.DrawLine($axesPen, $marginLeft, $marginTop,                       $marginLeft,                ($marginTop + $plotHeight))
+            $graphic.DrawLine($axesPen, $marginLeft, ($marginTop + $plotHeight), ($marginLeft + $plotWidth), ($marginTop + $plotHeight))
+
+            # Bars
+            $barCount     = $dataRows.Count
+            $barSlotWidth = if ($barCount -gt 0) { [int]($plotWidth / $barCount) } else { 1 }
+            $barWidth     = [Math]::Max(4, $barSlotWidth - 6)
+
+            for ($bi = 0; $bi -lt $dataRows.Count; $bi++) {
+                $rowItem  = $dataRows[$bi]
+                $sessVal  = if ($null -ne $rowItem.Sessions) { [int]$rowItem.Sessions } else { 0 }
+                $barH     = if ($maxSessions -gt 0) { [int]($plotHeight * $sessVal / $maxSessions) } else { 0 }
+                if ($barH -lt 2 -and $sessVal -gt 0) { $barH = 2 }
+
+                $xBar = $marginLeft + $bi * $barSlotWidth + [int](($barSlotWidth - $barWidth) / 2)
+                $yBar = $marginTop + $plotHeight - $barH
+                if ($barH -gt 0) {
+                    $graphic.FillRectangle($barBrush, [int]$xBar, [int]$yBar, $barWidth, $barH)
+                }
+
+                # Value label above bar
+                $valLabel = $sessVal.ToString()
+                $valSz    = $graphic.MeasureString($valLabel, $fontSmall)
+                $graphic.DrawString($valLabel, $fontSmall, $textBrush, ([int]$xBar + ($barWidth - $valSz.Width) / 2), [Math]::Max($marginTop, $yBar - 14))
+
+                # X-axis date label (MM-dd)
+                $dateLabel = if ($null -ne $rowItem.Date -and $rowItem.Date.Length -ge 10) { $rowItem.Date.Substring(5) } else { "" }
+                $dateSz    = $graphic.MeasureString($dateLabel, $fontSmall)
+                $graphic.DrawString($dateLabel, $fontSmall, $textBrush, ([int]$xBar + ($barWidth - $dateSz.Width) / 2), ($marginTop + $plotHeight + 6))
+            }
+
+            $pdfChartImagePath = Join-Path ([System.IO.Path]::GetTempPath()) "WelshChart_$(Get-Date -Format 'yyyyMM').png"
+            $bitmap.Save($pdfChartImagePath, [System.Drawing.Imaging.ImageFormat]::Png)
+            $graphic.Dispose()
+            $bitmap.Dispose()
+            Write-Output "Chart image generated: $pdfChartImagePath"
+        }
+        catch {
+            Write-Warning "Failed to generate chart image for PDF: $_"
+            $pdfChartImagePath = $null
+        }
+    }
+
+    New-PDF -FilePath $pdfPath {
+        New-PDFPage {
+            foreach ($line in $pdfLinesArray) {
+                New-PDFText -Text $line
+            }
+            if ($pdfChartImagePath) {
+                New-PDFText -Text ""
+                New-PDFImage -Image $pdfChartImagePath -Width 500
+            }
+        }
+    }
+
+    if (Test-Path $pdfPath) {
+        $pdfBase64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes($pdfPath))
+        Write-Output "PDF generated successfully ($([Math]::Round((Get-Item $pdfPath).Length / 1KB, 1)) KB)."
+        if ($pdfChartImagePath -and (Test-Path $pdfChartImagePath)) { Remove-Item $pdfChartImagePath -Force -ErrorAction SilentlyContinue }
+    }
+    else {
+        Write-Warning "PDF was not created at $pdfPath — attachment will be omitted."
+    }
+}
+catch {
+    Write-Warning "Failed to generate PDF: $_. Email will be sent without PDF attachment."
 }
 
 $reportMonth = [DateTime]::UtcNow.AddMonths(-1).ToString("MMMM yyyy")
@@ -221,14 +372,24 @@ try {
 
     $emailPayload = @{
         senderAddress = $senderaddress
-        recipients = @{
+        recipients    = @{
             to = $recipientAddrList
         }
-        content = @{
+        content       = @{
             subject = "Monthly Welsh Language Usage Report - $($env:MODULE_ENV)"
-            html = $emailBody
+            html    = $emailBody
         }
-    } | ConvertTo-Json -Depth 10
+    }
+    if ($pdfBase64) {
+        $emailPayload.attachments = @(
+            @{
+                name            = "WelshLanguageReport_$([DateTime]::UtcNow.AddMonths(-1).ToString('yyyy-MM')).pdf"
+                contentType     = "application/pdf"
+                contentInBase64 = $pdfBase64
+            }
+        )
+    }
+    $emailPayload = $emailPayload | ConvertTo-Json -Depth 10
 
     $headers = @{
         "Content-Type" = "application/json"
@@ -267,7 +428,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   automation_account_name = azurerm_automation_account.welsh_reporting.0.name
   frequency               = "Month"
   interval                = 1
-  start_time              = "2026-02-12T15:00:00Z"
+  start_time              = "2026-03-01T09:00:00Z"
   timezone                = "UTC"
 }
 
@@ -289,7 +450,8 @@ resource "azurerm_automation_job_schedule" "welsh_report_job" {
   depends_on = [
     azurerm_automation_runbook.welsh_report_runbook,
     azurerm_automation_schedule.welsh_monthly_schedule,
-    azurerm_automation_module.az_communication
+    azurerm_automation_module.az_communication,
+    azurerm_automation_module.ps_write_pdf
   ]
 }
 
@@ -301,5 +463,16 @@ resource "azurerm_automation_module" "az_communication" {
 
   module_link {
     uri = "https://www.powershellgallery.com/api/v2/package/Az.Communication/1.2.0"
+  }
+}
+
+resource "azurerm_automation_module" "ps_write_pdf" {
+  count                   = var.welsh_reporting_enabled ? 1 : 0
+  name                    = "PSWritePDF"
+  resource_group_name     = azurerm_resource_group.rg.name
+  automation_account_name = azurerm_automation_account.welsh_reporting.0.name
+
+  module_link {
+    uri = "https://www.powershellgallery.com/api/v2/package/PSWritePDF"
   }
 }

@@ -326,7 +326,7 @@ export class AppComponent implements OnInit, OnDestroy {
     const timeoutNotificationConfig: any = {
       idleModalDisplayTime: this.idleModalDisplayTimeInMilliseconds,
       totalIdleTime: this.totalIdleTimeInMilliseconds,
-      keepAliveInSeconds: 300,
+      keepAliveInSeconds: 900,
       idleServiceName: 'idleSession',
     };
 

@@ -3809,19 +3809,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.3-exui-4123-rc-1/hmcts-rpx-xui-common-lib-3.2.3-exui-4123-rc-1.tgz":
-  version: 3.2.3-exui-4123-rc-1
-  resolution: "@hmcts/rpx-xui-common-lib@https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.3-exui-4123-rc-1/hmcts-rpx-xui-common-lib-3.2.3-exui-4123-rc-1.tgz"
-  dependencies:
-    tslib: "npm:^2.0.0"
-  peerDependencies:
-    launchdarkly-js-client-sdk: ^3.3.0
-    ngx-pagination: ^3.2.1
-    rpx-xui-translation: 1.1.2-CME-780-9
-  checksum: 10/958bfcd9cc3cf2ad09b0da6d44ccb3fb173520d1e33f18005fe719d477d1c782870fc2be29b8f53e7464e1b1417b6df6e7f354418a4b48afbb694edf4ffee725
-  languageName: node
-  linkType: hard
-
 "@hmcts/rpx-xui-common-lib@npm:3.2.0":
   version: 3.2.0
   resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.0"
@@ -3832,6 +3819,19 @@ __metadata:
     ngx-pagination: ^3.2.1
     rpx-xui-translation: 1.1.2-CME-780-9
   checksum: 10/dffc0fd583699505076a68a718e11e82412eec8784669d6cfc55d4d6d11206bbcf333a2957605c6296252d52e0bc782327b8d1be8544b5b366d7458a545e9485
+  languageName: node
+  linkType: hard
+
+"@hmcts/rpx-xui-common-lib@npm:3.2.3-exui-4123-rc-2":
+  version: 3.2.3-exui-4123-rc-2
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.3-exui-4123-rc-2"
+  dependencies:
+    tslib: "npm:^2.0.0"
+  peerDependencies:
+    launchdarkly-js-client-sdk: ^3.3.0
+    ngx-pagination: ^3.2.1
+    rpx-xui-translation: 1.1.2-CME-780-9
+  checksum: 10/54e673667ae293d3569d08d7f13dabf2a943b46970f9d50a82186a7c40a2647da8674bddaa574b380050eaa07c52b79b1afced44ceba52f3bf1f95534419122a
   languageName: node
   linkType: hard
 
@@ -24135,7 +24135,7 @@ __metadata:
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.2.0"
-    "@hmcts/rpx-xui-common-lib": "https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.3-exui-4123-rc-1/hmcts-rpx-xui-common-lib-3.2.3-exui-4123-rc-1.tgz"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.3-exui-4123-rc-2"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7-csp-final-change-3"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"

@@ -17,11 +17,7 @@ const LEGACY_HTML_CSP = [
   "media-src 'self' data: blob:",
 ].join('; ');
 
-const LEGACY_CSP_HEADERS_TO_REMOVE = [
-  'Content-Security-Policy-Report-Only',
-  'X-Content-Security-Policy',
-  'X-WebKit-CSP',
-];
+const LEGACY_CSP_HEADERS_TO_REMOVE = ['Content-Security-Policy-Report-Only', 'X-Content-Security-Policy', 'X-WebKit-CSP'];
 
 function isTextHtmlResponse(proxyRes): boolean {
   const rawContentType = proxyRes?.headers?.['content-type'] ?? proxyRes?.headers?.['Content-Type'];

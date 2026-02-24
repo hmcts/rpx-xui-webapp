@@ -52,6 +52,10 @@ export function setHeaders(req: express.Request, contentType?: string) {
     if (enableHearingDataSourceHeaders && exists(req, 'headers.Role-Assignment-Url')) {
       headers['Role-Assignment-Url'] = req.headers['Role-Assignment-Url'];
     }
+
+    if (enableHearingDataSourceHeaders && exists(req, 'headers.Role-Assignment-Url')) {
+      headers['hmctsDeploymentId'] = req.headers['Hmcts-Deployment-Id'];
+    }
   }
 
   return headers;

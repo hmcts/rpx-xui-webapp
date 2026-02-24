@@ -552,6 +552,32 @@ describe('Application', () => {
 
           expect(customHeadersMiddleware).to.not.exist;
         });
+
+        it('should serve empty javascript for Jira Dynatrace agent requests', async () => {
+          const middlewareStack = app._router.stack;
+          const jiraAgentRoute = middlewareStack.find(
+            (layer: any) =>
+              layer.route &&
+              layer.route.path instanceof RegExp &&
+              layer.route.path.test('/jira/ruxitagentjs_ICA7NVfhqrux_10329260206100503.js')
+          );
+
+          expect(jiraAgentRoute).to.exist;
+
+          const response = {
+            status: sinon.stub().returnsThis(),
+            type: sinon.stub().returnsThis(),
+            set: sinon.stub().returnsThis(),
+            send: sinon.stub(),
+          };
+
+          jiraAgentRoute.route.stack[0].handle({}, response);
+
+          expect(response.status).to.have.been.calledWith(200);
+          expect(response.type).to.have.been.calledWith('application/javascript');
+          expect(response.set).to.have.been.calledWith('Cache-Control', 'no-store, max-age=0');
+          expect(response.send).to.have.been.calledWith('');
+        });
       });
     });
   });

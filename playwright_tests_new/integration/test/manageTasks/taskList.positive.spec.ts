@@ -3,7 +3,6 @@ import { applySessionCookies } from '../../../common/sessionCapture';
 import { buildTaskListMock, buildDeterministicMyTasksListMock, myActionsList } from '../../mocks/taskList.mock';
 import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
 import { formatUiDate } from '../../utils/tableUtils';
-import { retryOnTransientFailure } from '../../../E2E/utils/transient-failure.utils';
 import { setupTaskListMockRoutes } from '../../helpers';
 
 const userIdentifier = 'STAFF_ADMIN';

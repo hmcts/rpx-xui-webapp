@@ -1,7 +1,6 @@
 import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookies } from '../../../common/sessionCapture';
 import { availableActionsList, buildTaskListMock } from '../../mocks/taskList.mock';
-import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
 import { formatUiDate } from '../../utils/tableUtils';
 
 const userIdentifier = 'STAFF_ADMIN';
@@ -10,7 +9,6 @@ let sessionCookies: any[] = [];
 test.beforeEach(async ({ page }) => {
   const { cookies } = await applySessionCookies(page, userIdentifier);
   sessionCookies = cookies;
-  const userId = extractUserIdFromCookies(sessionCookies);
 });
 
 test.describe(`Available Task List as ${userIdentifier}`, () => {

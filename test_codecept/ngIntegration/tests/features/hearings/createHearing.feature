@@ -44,7 +44,7 @@ Feature: Create hearings workflow
         #     | party_1 | Party1 name | PARENT_0     | RA0053 | Party1 comment  | ACTIVE     |
         #     | party_2 | Party2 name | PARENT_0     | RA0053 | Party2 comment  | ACTIVE     |
 
-        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
+        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings-ce"
 
 
         When I click Request a hearing button
@@ -205,7 +205,7 @@ Feature: Create hearings workflow
         When I open first case in case list page
         Then I see case details page
         Then I see case details tab label "Hearings" is displayed is "true"
-        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
+        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings-ce"
         When I click Request a hearing button
         Then I see create hearing workflow container
 
@@ -346,7 +346,7 @@ Feature: Create hearings workflow
         When I open first case in case list page
         Then I see case details page
         Then I see case details tab label "Hearings" is displayed is "true"
-        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
+        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings-ce"
         When I click Request a hearing button
         Then I see create hearing workflow container
 
@@ -496,7 +496,7 @@ Feature: Create hearings workflow
         When I open first case in case list page
         Then I see case details page
         Then I see case details tab label "Hearings" is displayed is "true"
-        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
+        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings-ce"
         When I click Request a hearing button
         Then I see create hearing workflow container
 

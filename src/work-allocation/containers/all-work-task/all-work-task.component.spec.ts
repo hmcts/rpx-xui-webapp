@@ -178,6 +178,7 @@ describe('AllWorkTaskComponent', () => {
       taskType: 'JUDICIAL',
       priority: 'High',
       taskName: 'Review Hearing bundle',
+      workTypes: ['Type1', 'Type2'],
     };
     component.onSelectionChanged(selection);
     const searchRequest = component.getSearchTaskRequestPagination();
@@ -431,6 +432,7 @@ describe('AllWorkTaskComponent', () => {
         person: { id: 'person789', name: 'Test Person' } as Person,
         taskType: 'ADMIN',
         taskName: { task_type_id: 'task456', task_type_name: 'Test Task' },
+        workTypes: ['Type1', 'Type2'],
       };
 
       component.onSelectionChanged(selection);
@@ -455,6 +457,7 @@ describe('AllWorkTaskComponent', () => {
         person: null,
         taskType: 'ADMIN',
         taskName: null,
+        workTypes: [],
       };
 
       component.onSelectionChanged(selection);

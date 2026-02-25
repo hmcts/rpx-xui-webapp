@@ -6,6 +6,7 @@ import {
   SERVICES_HEARINGS_ENABLE_DATA_SOURCE_HEADERS,
   SERVICES_HMC_HEARINGS_COMPONENT_API,
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
+  SERVICES_HEARINGS_PREVIEW_DEPLOYMENT_ID,
 } from '../configuration/references';
 import { EnhancedRequest, JUILogger } from '../lib/models';
 import { HearingActualsMainModel, HearingActualsModel } from './models/hearingActualsMainModel';
@@ -235,6 +236,7 @@ export function injectHearingsHeaders(req: EnhancedRequest, res: Response, next:
   if (getConfigValue(SERVICES_HEARINGS_ENABLE_DATA_SOURCE_HEADERS) === 'true') {
     req.headers['Role-Assignment-Url'] = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
     req.headers['Data-Store-Url'] = getConfigValue(SERVICES_CCD_DATA_STORE_API_PATH);
+    req.headers['Hmcts-Deployment-Id'] = getConfigValue(SERVICES_HEARINGS_PREVIEW_DEPLOYMENT_ID);
   }
 
   next();

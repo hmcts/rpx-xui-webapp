@@ -74,7 +74,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
         this.caseType = caseDetails?.case_type?.id;
       }
     });
-    this.caseId = this.activatedRoute.snapshot.params.cid;
+    this.caseId = JSON.parse(this.sessionSvc.getItem('caseInfo')).caseId;
     this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
     this.hearingListLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingListLastError));
     this.hearingValuesLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesLastError));
@@ -82,7 +82,13 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
 
   public reloadHearings() {
     this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues());
+    this.hearingStore.dispatch(
+      new fromHearingStore.LoadHearingValues({
+        jurisdictionId: this.jurisdiction,
+        caseReference: this.caseId,
+        caseType: this.caseType,
+      })
+    );
   }
 
   public ngOnInit(): void {
@@ -96,7 +102,13 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
       })
     );
     this.hearingStore.dispatch(new fromHearingStore.ResetHearingValues());
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues());
+    this.hearingStore.dispatch(
+      new fromHearingStore.LoadHearingValues({
+        jurisdictionId: this.jurisdiction,
+        caseReference: this.caseId,
+        caseType: this.caseType,
+      })
+    );
 
     this.hearingValuesSubscription = this.hearingStore
       .pipe(select(fromHearingStore.getHearingValuesModel))

@@ -5,13 +5,26 @@ import { promises as fsp } from 'node:fs';
 
 import { CookieUtils } from '../E2E/utils/cookie.utils.js';
 import { UserUtils } from '../E2E/utils/user.utils.js';
+import type { IdamPage } from '@hmcts/playwright-common';
 import { isSessionFresh, loadSessionCookies, __test__ as sessionCaptureTest } from '../common/sessionCapture.js';
+import type { Cookie } from 'playwright-core';
+import appTestConfig from '../common/appTestConfig';
 
 test.describe.configure({ mode: 'serial' });
 
 const mockPassword = process.env.PW_MOCK_PASSWORD ?? String(Date.now());
+const baseCookie = (name: string, value: string): Cookie => ({
+  name,
+  value,
+  domain: 'example.test',
+  path: '/',
+  expires: -1,
+  httpOnly: false,
+  secure: false,
+  sameSite: 'Lax',
+});
 
-test.describe('Session and cookie utilities coverage', () => {
+test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' }, () => {
   test('isSessionFresh returns false when stat fails', () => {
     const fsStub = {
       existsSync: () => true,
@@ -24,7 +37,14 @@ test.describe('Session and cookie utilities coverage', () => {
 
   test('UserUtils returns credentials for known users and errors on unknown', () => {
     const userUtils = new UserUtils();
-    const creds = userUtils.getUserCredentials('IAC_CaseOfficer_R1');
+    const configuredUsers = appTestConfig.users[appTestConfig.testEnv];
+    const userWithPassword = configuredUsers.find((user) => typeof user.key === 'string' && user.key.length > 0);
+    expect(userWithPassword).toBeDefined();
+    if (!userWithPassword) {
+      return;
+    }
+
+    const creds = userUtils.getUserCredentials(userWithPassword.userIdentifier);
     expect(creds.email).toContain('@');
     expect(creds.password).toBeTruthy();
     expect(() => userUtils.getUserCredentials('UNKNOWN_USER')).toThrow('User "UNKNOWN_USER" not found');
@@ -35,7 +55,7 @@ test.describe('Session and cookie utilities coverage', () => {
     const tmpDir = await fsp.mkdtemp(path.join(process.cwd(), 'test-results', 'cookie-utils-'));
     const sessionPath = path.join(tmpDir, 'session.json');
 
-    const initial = { cookies: [{ name: '__userid__', value: 'user-1' }] };
+    const initial = { cookies: [baseCookie('__userid__', 'user-1')] };
     await fsp.writeFile(sessionPath, JSON.stringify(initial), 'utf8');
     await cookieUtils.addManageCasesAnalyticsCookie(sessionPath);
     const updated = JSON.parse(await fsp.readFile(sessionPath, 'utf8'));
@@ -44,24 +64,24 @@ test.describe('Session and cookie utilities coverage', () => {
     expect(added.value).toBe('true');
 
     const noUserPath = path.join(tmpDir, 'no-user.json');
-    cookieUtils.writeManageCasesSession(noUserPath, [{ name: 'other', value: '1' }] as any);
+    cookieUtils.writeManageCasesSession(noUserPath, [baseCookie('other', '1')]);
     const noUserState = JSON.parse(await fsp.readFile(noUserPath, 'utf8'));
     expect(noUserState.cookies).toHaveLength(1);
 
     const withUserPath = path.join(tmpDir, 'with-user.json');
-    cookieUtils.writeManageCasesSession(withUserPath, [{ name: '__userid__', value: 'user-2' }] as any);
+    cookieUtils.writeManageCasesSession(withUserPath, [baseCookie('__userid__', 'user-2')]);
     const withUserState = JSON.parse(await fsp.readFile(withUserPath, 'utf8'));
     const withUserCookie = withUserState.cookies.find((cookie: any) => cookie.name === 'hmcts-exui-cookies-user-2-mc-accepted');
     expect(withUserCookie).toBeDefined();
     expect(withUserCookie.value).toBe('true');
 
     const nestedPath = path.join(tmpDir, 'nested', 'session.json');
-    cookieUtils.writeManageCasesSession(nestedPath, [{ name: '__userid__', value: 'user-3' }] as any);
+    cookieUtils.writeManageCasesSession(nestedPath, [baseCookie('__userid__', 'user-3')]);
     const nestedState = JSON.parse(await fsp.readFile(nestedPath, 'utf8'));
     expect(nestedState.cookies.find((cookie: any) => cookie.name === 'hmcts-exui-cookies-user-3-mc-accepted')).toBeDefined();
 
     const noUserAnalyticsPath = path.join(tmpDir, 'no-user-analytics.json');
-    await fsp.writeFile(noUserAnalyticsPath, JSON.stringify({ cookies: [{ name: 'other', value: '1' }] }), 'utf8');
+    await fsp.writeFile(noUserAnalyticsPath, JSON.stringify({ cookies: [baseCookie('other', '1')] }), 'utf8');
     await cookieUtils.addManageCasesAnalyticsCookie(noUserAnalyticsPath);
     const noUserAnalytics = JSON.parse(await fsp.readFile(noUserAnalyticsPath, 'utf8'));
     expect(noUserAnalytics.cookies.length).toBe(2);
@@ -102,7 +122,7 @@ test.describe('Session and cookie utilities coverage', () => {
 
       expect(isSessionFresh(storagePath)).toBe(false);
 
-      await fsp.writeFile(storagePath, JSON.stringify({ cookies: [{ name: 'a', value: 'b' }] }), 'utf8');
+      await fsp.writeFile(storagePath, JSON.stringify({ cookies: [baseCookie('a', 'b')] }), 'utf8');
       expect(isSessionFresh(storagePath, 60 * 1000)).toBe(true);
 
       const oldTime = Date.now() - 10 * 60 * 1000;
@@ -117,7 +137,7 @@ test.describe('Session and cookie utilities coverage', () => {
       expect(invalidCookies.cookies).toHaveLength(0);
 
       await fsp.writeFile(storagePath, '{bad-json', 'utf8');
-      expect(() => loadSessionCookies('IAC_CaseOfficer_R1')).toThrow('Storage file missing');
+      expect(() => loadSessionCookies('IAC_CaseOfficer_R1')).toThrow('Storage file corrupted');
 
       await fsp.rm(storagePath, { force: true });
       expect(() => loadSessionCookies('IAC_CaseOfficer_R1')).toThrow('Failed parsing storage file');
@@ -130,8 +150,13 @@ test.describe('Session and cookie utilities coverage', () => {
     const tmpDir = await fsp.mkdtemp(path.join(process.cwd(), 'test-results', 'session-persist-'));
     const sessionPath = path.join(tmpDir, 'session.json');
     const ctx = {
-      addCookies: async () => {},
-      storageState: async () => {},
+      addCookies: async (_cookies: Cookie[]) => {
+        void _cookies;
+      },
+      storageState: async (_options: { path: string }) => {
+        void _options;
+        return {};
+      },
     };
     const cookieUtils = {
       writeManageCasesSession: (pathValue: string, cookies: any[]) => {
@@ -139,13 +164,13 @@ test.describe('Session and cookie utilities coverage', () => {
       },
     } as any;
 
-    await sessionCaptureTest.persistSession(sessionPath, [{ name: 'a', value: 'b' }], ctx, 'user', {
+    await sessionCaptureTest.persistSession(sessionPath, [baseCookie('a', 'b')], ctx as any, 'user', {
       cookieUtils,
       fs,
     });
 
     await expect(
-      sessionCaptureTest.persistSession(sessionPath, [], ctx, 'user', {
+      sessionCaptureTest.persistSession(sessionPath, [], ctx as any, 'user', {
         cookieUtils: {
           writeManageCasesSession: () => {
             throw new Error('boom');
@@ -163,6 +188,11 @@ test.describe('Session and cookie utilities coverage', () => {
       mkdirSync: () => {
         mkdirCalls += 1;
       },
+      writeFileSync: () => {},
+    } as any;
+
+    const lockfileStub = {
+      lock: async () => async () => {},
     } as any;
 
     const userUtils = {
@@ -173,8 +203,9 @@ test.describe('Session and cookie utilities coverage', () => {
       fs: fsStub,
       userUtils,
       isSessionFresh: () => true,
+      lockfile: lockfileStub,
     });
-    expect(mkdirCalls).toBe(1);
+    expect(mkdirCalls).toBe(2); // Called once per sessionCaptureWith invocation
 
     let persistCalls = 0;
     const page = {
@@ -189,7 +220,10 @@ test.describe('Session and cookie utilities coverage', () => {
       newPage: async () => page,
       cookies: async () => [],
       addCookies: async () => {},
-      storageState: async () => {},
+      storageState: async (_options: { path: string }) => {
+        void _options;
+        return {};
+      },
     } as any;
     const browser = {
       newContext: async () => context,
@@ -198,7 +232,10 @@ test.describe('Session and cookie utilities coverage', () => {
     const chromiumOk = {
       launch: async () => browser,
     } as any;
-    const idamPageFactory = () => ({ login: async () => {} });
+    const idamPageFactory = (() => ({
+      usernameInput: { waitFor: async () => {} },
+      login: async () => {},
+    })) as unknown as (page: any) => IdamPage;
     await sessionCaptureTest.sessionCaptureWith(['USER'], {
       fs: fsStub,
       userUtils,
@@ -210,6 +247,7 @@ test.describe('Session and cookie utilities coverage', () => {
       },
       env: { TEST_URL: 'https://example.test' } as NodeJS.ProcessEnv,
       config: { urls: { exuiDefaultUrl: 'https://example.test' } } as any,
+      lockfile: lockfileStub,
     });
     expect(persistCalls).toBe(1);
   });
@@ -218,6 +256,10 @@ test.describe('Session and cookie utilities coverage', () => {
     const fsStub = {
       existsSync: () => true,
       mkdirSync: () => {},
+      writeFileSync: () => {},
+    } as any;
+    const lockfileStub = {
+      lock: async () => async () => {},
     } as any;
     const userUtils = {
       getUserCredentials: () => ({ email: 'user@example.com', password: mockPassword }),
@@ -233,6 +275,7 @@ test.describe('Session and cookie utilities coverage', () => {
         userUtils,
         isSessionFresh: () => false,
         chromiumLauncher,
+        lockfile: lockfileStub,
       })
     ).rejects.toThrow('launch failed');
   });
@@ -241,6 +284,10 @@ test.describe('Session and cookie utilities coverage', () => {
     const fsStub = {
       existsSync: () => true,
       mkdirSync: () => {},
+      writeFileSync: () => {},
+    } as any;
+    const lockfileStub = {
+      lock: async () => async () => {},
     } as any;
     const userUtils = {
       getUserCredentials: () => ({ email: 'user@example.com', password: mockPassword }),
@@ -253,7 +300,10 @@ test.describe('Session and cookie utilities coverage', () => {
       newPage: async () => page,
       cookies: async () => [],
       addCookies: async () => {},
-      storageState: async () => {},
+      storageState: async (_options: { path: string }) => {
+        void _options;
+        return {};
+      },
     } as any;
     const browser = {
       newContext: async () => context,
@@ -262,11 +312,11 @@ test.describe('Session and cookie utilities coverage', () => {
     const chromiumOk = {
       launch: async () => browser,
     } as any;
-    const idamPageFactory = () => ({
+    const idamPageFactory = (() => ({
       login: async () => {
         throw new Error('login failed');
       },
-    });
+    })) as unknown as (page: any) => IdamPage;
     await expect(
       sessionCaptureTest.sessionCaptureWith(['USER'], {
         fs: fsStub,
@@ -277,6 +327,7 @@ test.describe('Session and cookie utilities coverage', () => {
         persistSession: async () => {},
         env: { TEST_URL: 'https://example.test' } as NodeJS.ProcessEnv,
         config: { urls: { exuiDefaultUrl: 'https://example.test' } } as any,
+        lockfile: lockfileStub,
       })
     ).rejects.toThrow(/login failed/i);
   });

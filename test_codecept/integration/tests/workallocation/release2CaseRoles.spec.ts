@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-// import mocha from 'mocha';
 import { config } from '../config/config';
 import { getAuthorisation, getXSRFToken } from '../utils/authUtil';
 import { reporterMsg, setTestContext } from '../utils/helper';
@@ -9,9 +8,6 @@ import CaseRequestBody from '../utils/wa/caseRequestBody';
 const workAllocationDataModels = require('../../../dataModels/workAllocation');
 
 describe('Work allocation Release 2:  Case roles', () => {
-  const userName = config.users[config.testEnv].solicitor.e;
-  const password = config.users[config.testEnv].solicitor.sec;
-
   const caseOfficer = config.users[config.testEnv].caseOfficer_r2.e;
   const caseofficerPass = config.users[config.testEnv].caseOfficer_r2.sec;
 
@@ -47,7 +43,7 @@ describe('Work allocation Release 2:  Case roles', () => {
       };
       const headers = {
         'X-XSRF-TOKEN': xsrfToken,
-        'content-length': JSON.stringify(caseRolesRequest).length,
+        'content-length': JSON.stringify(caseRolesRequest).length.toString(),
       };
       const caseRolesResponse = await Request.post('api/role-access/roles/post', caseRolesRequest, headers, 200);
       const expectedCaseRoleKeys = Object.keys(workAllocationDataModels.getCaseRole());
@@ -65,7 +61,6 @@ describe('Work allocation Release 2:  Case roles', () => {
     this.timeout(60000);
     await Request.withSession(caseOfficer, caseofficerPass);
     const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
-    const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
 
     const caseRolesRequest = {
       caseId: caseId,
@@ -74,7 +69,7 @@ describe('Work allocation Release 2:  Case roles', () => {
     };
     const headers = {
       'X-XSRF-TOKEN': xsrfToken,
-      'content-length': JSON.stringify(caseRolesRequest).length,
+      'content-length': JSON.stringify(caseRolesRequest).length.toString(),
     };
     const caseExclusionResponse = await Request.post('api/role-access/exclusions/post', caseRolesRequest, headers, 200);
     const expectedCaseRoleKeys = Object.keys(workAllocationDataModels.getCaseExclusion());
@@ -89,7 +84,6 @@ describe('Work allocation Release 2:  Case roles', () => {
     this.timeout(60000);
     await Request.withSession(caseOfficer, caseofficerPass);
     const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
-    const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
 
     const caseRolesRequest = {
       caseId: caseId.toString(),
@@ -111,7 +105,7 @@ describe('Work allocation Release 2:  Case roles', () => {
     };
     const headers = {
       'X-XSRF-TOKEN': xsrfToken,
-      'content-length': JSON.stringify(caseRolesRequest).length,
+      'content-length': JSON.stringify(caseRolesRequest).length.toString(),
     };
     const caseExclusionResponse = await Request.post('api/role-access/allocate-role/confirm', caseRolesRequest, headers, 201);
     addAssignmentIdToCleanUp(caseExclusionResponse);
@@ -128,7 +122,6 @@ describe('Work allocation Release 2:  Case roles', () => {
     this.timeout(60000);
     await Request.withSession(caseOfficer, caseofficerPass);
     const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
-    const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
 
     const caseRolesRequest = {
       caseId: caseId,
@@ -137,7 +130,7 @@ describe('Work allocation Release 2:  Case roles', () => {
     };
     const headers = {
       'X-XSRF-TOKEN': xsrfToken,
-      'content-length': JSON.stringify(caseRolesRequest).length,
+      'content-length': JSON.stringify(caseRolesRequest).length.toString(),
     };
     const caseRolesResponse = await Request.post('api/role-access/roles/post', caseRolesRequest, headers, 200);
     if (caseRolesResponse.data.length > 0) {
@@ -146,14 +139,9 @@ describe('Work allocation Release 2:  Case roles', () => {
       };
       const headersForRemoveAllocate = {
         'X-XSRF-TOKEN': xsrfToken,
-        'content-length': JSON.stringify(removeAllocateRequestBody).length,
+        'content-length': JSON.stringify(removeAllocateRequestBody).length.toString(),
       };
-      const caseREmoveRolesResponse = await Request.post(
-        'api/role-access/allocate-role/delete',
-        removeAllocateRequestBody,
-        headersForRemoveAllocate,
-        204
-      );
+      await Request.post('api/role-access/allocate-role/delete', removeAllocateRequestBody, headersForRemoveAllocate, 204);
     } else {
       reporterMsg('No cases roles returned');
     }
@@ -163,7 +151,6 @@ describe('Work allocation Release 2:  Case roles', () => {
     this.timeout(60000);
     await Request.withSession(caseOfficer, caseofficerPass);
     const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
-    const userDetailsRes = await Request.get('api/user/details', { 'X-XSRF-TOKEN': xsrfToken }, 200);
 
     const caseExclusionAddRequest = {
       caseId: caseId.toString(),
@@ -177,7 +164,7 @@ describe('Work allocation Release 2:  Case roles', () => {
     };
     const headers = {
       'X-XSRF-TOKEN': xsrfToken,
-      'content-length': JSON.stringify(caseExclusionAddRequest).length,
+      'content-length': JSON.stringify(caseExclusionAddRequest).length.toString(),
     };
     const caseRoleExclusion = await Request.post('api/role-access/exclusions/confirm', caseExclusionAddRequest, headers, 201);
     addAssignmentIdToCleanUp(caseRoleExclusion);
@@ -190,71 +177,48 @@ describe('Work allocation Release 2:  Case roles', () => {
     caseRequestObj.withSearchBy('caseworker').sortWith('startDate', 'asc').withPageNumber(1);
     const headers = {
       'X-XSRF-TOKEN': xsrfToken,
-      'content-length': JSON.stringify(caseRequestObj.getRequestBody()).length,
+      'content-length': JSON.stringify(caseRequestObj.getRequestBody()).length.toString(),
     };
 
     const response = await Request.post('workallocation/my-work/cases', caseRequestObj.getRequestBody(), headers, 200);
     return response;
   }
-
-  function getSearchCaseReqBody(view, users, locations, userType) {
-    // const response = await Request.get('api/user/details', null, 200);
-
-    const caseRequestBody = new CaseRequestBody();
-    caseRequestBody.inView(view);
-    if (locations) {
-      locations.forEach((loc) => {
-        caseRequestBody.searchWithlocation(loc);
-      });
-    }
-
-    switch (view) {
-      case 'MyCases':
-        if (users) {
-          users.forEach((user) => {
-            caseRequestBody.searchWithUser(user);
-          });
-        } else {
-          caseRequestBody.searchWithUser(null);
-        }
-        caseRequestBody.withSearchBy(userType ? userType : 'caseworker');
-        break;
-
-      case 'AllWorkCases':
-        caseRequestBody.searchWithlocation(null);
-        caseRequestBody.searchWithUser(null);
-        break;
-      default:
-        throw new Error(`${view} is not recognized or not implemented in test`);
-    }
-
-    return caseRequestBody;
-  }
-
-  function addAssignmentIdToCleanUp(assignmentResponse) {
-    const roleAssignmentCleanUp = require('../../../dataCleanup/roleAssignments');
-    const assignmentId = assignmentResponse.data.roleAssignmentResponse.requestedRoles[0].id;
-    roleAssignmentCleanUp.addRoleAssignmentid(assignmentId);
-  }
-
-  async function getIACases() {
-    const xsrfToken = await getXSRFToken(caseOfficer, caseofficerPass);
-
-    const body = { size: 25 };
-
-    const headers = {
-      'x-xsrf-token': xsrfToken,
-      'content-length': JSON.stringify(body).length,
-      accept: 'application/json',
-      'content-type': 'application/json',
-    };
-    const response = await Request.post(
-      'data/internal/searchCases?ctid=Asylum&use_case=WORKBASKET&view=WORKBASKET&state=Any&page=1',
-      body,
-      headers,
-      200
-    );
-
-    return response;
-  }
 });
+
+function getSearchCaseReqBody(view, users, locations, userType) {
+  const caseRequestBody = new CaseRequestBody();
+  caseRequestBody.inView(view);
+  if (locations) {
+    locations.forEach((loc) => {
+      caseRequestBody.searchWithlocation(loc);
+    });
+  }
+
+  switch (view) {
+    case 'MyCases':
+      if (users) {
+        users.forEach((user) => {
+          caseRequestBody.searchWithUser(user);
+        });
+      } else {
+        caseRequestBody.searchWithUser(null);
+      }
+      caseRequestBody.withSearchBy(userType || 'caseworker');
+      break;
+
+    case 'AllWorkCases':
+      caseRequestBody.searchWithlocation(null);
+      caseRequestBody.searchWithUser(null);
+      break;
+    default:
+      throw new Error(`${view} is not recognized or not implemented in test`);
+  }
+
+  return caseRequestBody;
+}
+
+function addAssignmentIdToCleanUp(assignmentResponse) {
+  const roleAssignmentCleanUp = require('../../../dataCleanup/roleAssignments');
+  const assignmentId = assignmentResponse.data.roleAssignmentResponse.requestedRoles[0].id;
+  roleAssignmentCleanUp.addRoleAssignmentid(assignmentId);
+}

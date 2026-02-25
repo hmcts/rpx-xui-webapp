@@ -99,6 +99,7 @@ test.describe('Auth helper coverage - storage operations', { tag: '@svc-auth' },
 
   test('createStorageStateWith honors token bootstrap and falls back to form login', async () => {
     const storageRoot = path.join(process.cwd(), 'test-results', 'auth-storage');
+    const expectedStorageStateSuffix = `api-${config.testEnv}-solicitor.storage.json`;
     let formCalls = 0;
     const onForm = async () => {
       formCalls += 1;
@@ -111,7 +112,7 @@ test.describe('Auth helper coverage - storage operations', { tag: '@svc-auth' },
       tryTokenBootstrap: async () => true,
       createStorageStateViaForm: onForm,
     });
-    expect(tokenSuccess).toContain('api-aat-solicitor.storage.json');
+    expect(tokenSuccess).toContain(expectedStorageStateSuffix);
     expect(formCalls).toBe(0);
 
     const tokenFallback = await authTest.createStorageStateWith('solicitor', {
@@ -122,7 +123,7 @@ test.describe('Auth helper coverage - storage operations', { tag: '@svc-auth' },
       tryTokenBootstrap: async () => false,
       createStorageStateViaForm: onForm,
     });
-    expect(tokenFallback).toContain('api-aat-solicitor.storage.json');
+    expect(tokenFallback).toContain(expectedStorageStateSuffix);
     expect(formCalls).toBe(1);
   });
 });

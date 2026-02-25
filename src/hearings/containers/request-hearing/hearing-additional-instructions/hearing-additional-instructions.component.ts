@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
-import { ACTION, HearingInstructionsEnum } from '../../../models/hearings.enum';
+import { ACTION, HearingInstructionsEnum, Mode } from '../../../models/hearings.enum';
 import { HearingsService } from '../../../services/hearings.service';
 import * as fromHearingStore from '../../../store';
 import { RequestHearingPageFlow } from '../request-hearing.page.flow';
@@ -12,10 +12,13 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
   standalone: false,
   selector: 'exui-hearing-additional-instructions',
   templateUrl: './hearing-additional-instructions.component.html',
+  styleUrls: ['./hearing-additional-instructions.component.scss'],
 })
 export class HearingAdditionalInstructionsComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public instructionsForm: FormGroup;
+  public instructionsFormViewOnly: FormGroup;
   public instructionLength: number = HearingInstructionsEnum.InstructionLength;
+  public showReviewBox: boolean = false;
 
   constructor(
     private readonly formBuilder: FormBuilder,
@@ -32,9 +35,22 @@ export class HearingAdditionalInstructionsComponent extends RequestHearingPageFl
   }
 
   public initForm(): void {
-    this.instructionsForm = this.formBuilder.group({
-      instructions: [this.hearingRequestMainModel.hearingDetails.listingComments],
-    });
+    if (
+      this.hearingCondition.mode === Mode.VIEW_EDIT &&
+      this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.additionalInstructionsChangesRequired
+    ) {
+      this.showReviewBox = true;
+      this.instructionsForm = this.formBuilder.group({
+        instructions: [this.serviceHearingValuesModel?.listingComments],
+      });
+      this.instructionsFormViewOnly = this.formBuilder.group({
+        instructionsViewOnly: [this.hearingRequestMainModel.hearingDetails.listingComments],
+      });
+    } else {
+      this.instructionsForm = this.formBuilder.group({
+        instructions: [this.hearingRequestMainModel.hearingDetails.listingComments],
+      });
+    }
   }
 
   public executeAction(action: ACTION): void {
@@ -49,15 +65,23 @@ export class HearingAdditionalInstructionsComponent extends RequestHearingPageFl
   }
 
   public prepareHearingRequestData(): void {
+    const listingComments = this.instructionsForm.value.instructions
+      ? this.santiseHTML(this.instructionsForm.value.instructions)
+      : undefined;
     this.hearingRequestMainModel = {
       ...this.hearingRequestMainModel,
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
-        listingComments: this.santiseHTML(this.instructionsForm.value.instructions),
+        listingComments: listingComments,
         autolistFlag: this.getAutoListFlag(),
         listingAutoChangeReasonCode: this.getListingAutoChangeReasonCode(),
       },
     };
+    if (this.hearingCondition.mode === Mode.VIEW_EDIT) {
+      if (this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.additionalInstructionsChangesRequired != null) {
+        this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.additionalInstructionsChangesConfirmed = true;
+      }
+    }
   }
 
   public santiseHTML(string: string) {

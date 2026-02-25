@@ -9,7 +9,10 @@ const errorStates = [400, 401, 403, 404, 500, 502, 503];
 const userIdentifier = 'STAFF_ADMIN';
 test.describe(`Available Task List as ${userIdentifier}`, () => {
   errorStates.forEach((errorStatus) => {
-    test(`User ${userIdentifier} sees the no tasks message if the api returns ${errorStatus}`, async ({ taskListPage, page }) => {
+    test(`User ${userIdentifier} sees the no tasks message on my tasks, if the api returns ${errorStatus}`, async ({
+      taskListPage,
+      page,
+    }) => {
       const emptyMockResponse = {};
       await test.step('Setup route mock for empty task list', async () => {
         await page.route('**/workallocation/task*', async (route) => {

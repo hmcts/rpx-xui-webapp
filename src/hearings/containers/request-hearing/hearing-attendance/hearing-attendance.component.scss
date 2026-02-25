@@ -5,6 +5,25 @@
 
 .party-row {
   margin-bottom: 20px;
+
+  // Override for party-label-block to ensure it's on its own line
+  .party-label-block {
+    display: block !important;
+    margin-bottom: 0.5rem;
+
+    // Amendment label inside the label should be inline with consistent spacing
+    exui-amendment-label {
+      display: inline-block;
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+  }
+
+  // Select dropdown should be inline
+  .govuk-select {
+    display: inline-block;
+    margin-right: 0;
+  }
 }
 
 strong {
@@ -15,6 +34,32 @@ strong {
   width: 80px;
 }
 
+/* Checkbox row layout */
 .checkbox-row {
   display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Keep GOV.UK radio layout intact; only control spacing to the amendment label */
+.govuk-radios__label + exui-amendment-label {
+  display: inline-block;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+/* Keep GOV.UK checkbox layout intact; only control spacing to the amendment label */
+.govuk-checkboxes__label + exui-amendment-label {
+  display: inline-block;
+  margin-left: 10px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* Party dropdown + attendance number: amendment label immediately after the control */
+.party-row .govuk-select + exui-amendment-label,
+.govuk-input + exui-amendment-label {
+  display: inline-block;
+  margin-left: 10px;
+  vertical-align: middle;
 }

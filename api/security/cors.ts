@@ -19,4 +19,4 @@ const opts: cors.CorsOptions = {
   credentials: true,
 };
 
-export const corsMw = cors.default(opts);
+export const corsMw = cors(opts);

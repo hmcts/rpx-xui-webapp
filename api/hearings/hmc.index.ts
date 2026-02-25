@@ -133,7 +133,7 @@ export async function cancelHearingRequest(req: EnhancedRequest, res: Response, 
 export async function updateHearingRequest(req: EnhancedRequest, res: Response, next: NextFunction) {
   const hearingId = req.query.hearingId;
   const reqBody = req.body;
-  reqBody.caseDetails.caseRef = null; // TESTING PURPOSES ONLY - to be removed when front end is sending case ref
+  //reqBody.caseDetails.caseRef = null; // TESTING PURPOSES ONLY - to be removed when front end is sending case ref
   const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}`;
   try {
     const { status, data }: { status: number; data: any } = await handlePut(markupPath, reqBody, req);
@@ -155,7 +155,7 @@ export async function getHearingActuals(req: EnhancedRequest, res: Response, nex
       `${hmcHearingsUrl}/hearingActuals/${hearingId}`,
       req
     );
-    // await handleGet(`${hmcHearingsUrl}/hearingActuals/${hearingId}1234`, req, next); // TESTING PURPOSES ONLY - to be removed when backend is fixed
+    await handleGet(`${hmcHearingsUrl}/hearingActuals/${hearingId}1234`, req, next); // TESTING PURPOSES ONLY - to be removed when backend is fixed
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, caseId, 'getHearingActuals', req, markupPath, next);

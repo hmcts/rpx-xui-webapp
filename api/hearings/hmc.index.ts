@@ -152,10 +152,9 @@ export async function getHearingActuals(req: EnhancedRequest, res: Response, nex
   const markupPath = `${hmcHearingsUrl}/hearingActuals/${hearingId}`;
   try {
     const { status, data }: { status: number; data: HearingActualsMainModel } = await handleGet(
-      `${hmcHearingsUrl}/hearingActuals/${hearingId}`,
+      `${hmcHearingsUrl}/hearingActuals/${hearingId}1234`, // TESTING PURPOSES ONLY - remove 1234
       req
     );
-    await handleGet(`${hmcHearingsUrl}/hearingActuals/${hearingId}1234`, req, next); // TESTING PURPOSES ONLY - to be removed when backend is fixed
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, caseId, 'getHearingActuals', req, markupPath, next);

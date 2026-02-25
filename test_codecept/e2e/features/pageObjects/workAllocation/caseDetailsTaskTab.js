@@ -3,10 +3,10 @@ const browserUtil = require('../../../../ngIntegration/util/browserUtil');
 
 class CaseDetailsTaskTab {
   get container() {
-    return $('exui-tasks-container');
+    return $('exui-tasks-ce');
   }
   get alertBanner() {
-    return $('exui-tasks-container exui-task-alert-banner');
+    return $('exui-tasks-ce exui-task-alert-banner');
   }
   get alertBannerHeading() {
     return $('.task-alert-banner h2');
@@ -16,14 +16,14 @@ class CaseDetailsTaskTab {
   }
 
   get activeTasksContainer() {
-    return $('exui-tasks-container .active-tasks-container');
+    return $('exui-tasks-ce .active-tasks-container');
   }
   get activeTasksHeading() {
-    return $('exui-tasks-container .active-tasks-container h2');
+    return $('exui-tasks-ce .active-tasks-container h2');
   }
 
   get tasks() {
-    return $$('exui-tasks-container .active-tasks-container exui-case-task');
+    return $$('exui-tasks-ce .active-tasks-container exui-case-task');
   }
 
   get taskNameLocator() {

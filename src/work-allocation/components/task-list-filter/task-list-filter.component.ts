@@ -1,7 +1,7 @@
 import { Location as AngularLocation } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
-import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
+import { SessionStorageService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import {
   BookingCheckType,
   FeatureToggleService,
@@ -17,7 +17,6 @@ import { Subscription, combineLatest } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import * as _ from 'underscore';
 import { ErrorMessage } from '../../../app/models';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import * as fromAppStore from '../../../app/store';
 import { Location, LocationByEpimmsModel } from '../../models/dtos';
 import Task from '../../models/tasks/task.model';

@@ -1,12 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CaseNotifier, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { CaseNotifier, LoadingService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { Store, select } from '@ngrx/store';
 import moment from 'moment';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { UserRole } from '../../../app/models';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import * as fromAppStore from '../../../app/store';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
 import { HearingListModel } from '../../../hearings/models/hearingList.model';

@@ -1,12 +1,18 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { CaseState, CaseType, Jurisdiction, PaginationMetadata, SearchResultView } from '@hmcts/ccd-case-ui-toolkit';
+import {
+  CaseState,
+  CaseType,
+  Jurisdiction,
+  PaginationMetadata,
+  SearchResultView,
+  safeJsonParse,
+} from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { decompressFromUTF16 } from 'lz-string';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { ActionBindingModel } from '../../../cases/models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
 

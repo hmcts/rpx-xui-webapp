@@ -1,5 +1,4 @@
 import type { TaskListResponse } from './types';
-import type { ApiClient } from '@hmcts/playwright-common';
 
 export interface TaskSearchOptions {
   userIds?: string[];
@@ -62,13 +61,20 @@ export interface SeededTaskResult {
   type: 'assigned' | 'unassigned';
 }
 
-type WorkAllocationApiClient = Pick<ApiClient, 'post'>;
+export interface SeedTaskIdOptions {
+  timeoutMs?: number;
+}
 
 /**
  * Attempts to fetch a deterministic task id for tests.
  * Falls back to undefined if no task is found.
  */
-export async function seedTaskId(apiClient: WorkAllocationApiClient, locationId?: string): Promise<SeededTaskResult | undefined> {
+export async function seedTaskId(
+  apiClient: any,
+  locationId?: string,
+  options: SeedTaskIdOptions = {}
+): Promise<SeededTaskResult | undefined> {
+  const timeoutMs = options.timeoutMs;
   const candidateStates: Array<{ type: SeededTaskResult['type']; states: string[]; view: 'MyTasks' | 'AvailableTasks' }> = [
     { type: 'assigned', states: ['assigned'], view: 'MyTasks' },
     { type: 'unassigned', states: ['unassigned'], view: 'AvailableTasks' },
@@ -81,20 +87,11 @@ export async function seedTaskId(apiClient: WorkAllocationApiClient, locationId?
       searchBy: 'caseworker',
       pageSize: 5,
     });
-    let response: { data?: TaskListResponse; status: number } | undefined;
-    try {
-      response = (await apiClient.post('workallocation/task', {
-        data: body,
-        throwOnError: false,
-      })) as { data?: TaskListResponse; status: number };
-    } catch {
-      continue;
-    }
-
-    if (!response) {
-      continue;
-    }
-
+    const response = (await apiClient.post('workallocation/task', {
+      data: body,
+      throwOnError: false,
+      timeoutMs,
+    })) as { data?: TaskListResponse; status: number };
     if (response.status === 200 && Array.isArray(response.data?.tasks) && response.data.tasks.length > 0) {
       const id = response.data.tasks[0]?.id;
       if (id) {

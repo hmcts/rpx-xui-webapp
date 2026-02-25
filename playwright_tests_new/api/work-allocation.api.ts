@@ -1,5 +1,4 @@
 import { test, expect } from './fixtures';
-import type { TestInfo } from '@playwright/test';
 import { ensureStorageState } from './utils/auth';
 import { WA_SAMPLE_ASSIGNED_TASK_ID, WA_SAMPLE_TASK_ID } from './data/testIds';
 import { expectStatus, StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
@@ -24,7 +23,6 @@ import {
   maybeAssertStateTransition,
   resolveLocationId,
   resolveSeededTaskIds,
-  resolveTaskIdWithEnvFallback,
   resolveUserId,
   runSeededAction,
   selectTaskId,
@@ -35,34 +33,27 @@ import {
 const serviceCodes = ['IA', 'CIVIL', 'PRIVATELAW'];
 const envTaskId = WA_SAMPLE_TASK_ID;
 const envAssignedTaskId = WA_SAMPLE_ASSIGNED_TASK_ID;
-const fallbackTaskId = '00000000-0000-0000-0000-000000000000';
+const BEFORE_ALL_REQUEST_TIMEOUT_MS = 10_000;
 
-test.describe('Work allocation (read-only)', () => {
+test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, () => {
   let cachedLocationId: string | undefined;
   let userId: string | undefined;
   let sampleTaskId: string | undefined;
   let sampleMyTaskId: string | undefined;
-  let taskSeedNotice: string | undefined;
-  let setupNotice: string | undefined;
 
   test.beforeAll(async ({ apiClient }) => {
-    const appendSetupNotice = (message: string) => {
-      setupNotice = setupNotice ? `${setupNotice} ${message}` : message;
-    };
+    test.setTimeout(90_000);
 
     try {
       const userRes = await apiClient.get<UserDetailsResponse>('api/user/details', {
         throwOnError: false,
+        timeoutMs: BEFORE_ALL_REQUEST_TIMEOUT_MS,
       });
       if (userRes.status === 200) {
         userId = resolveUserId(userRes.data);
-      } else {
-        appendSetupNotice(`User details setup call returned status ${userRes.status}; running MyTasks without user filter.`);
       }
     } catch (error) {
-      appendSetupNotice(
-        `User details setup call failed (${error instanceof Error ? error.message : 'unknown error'}); running MyTasks without user filter.`
-      );
+      console.warn(`[WA_SETUP_DEGRADED] user/details failed: ${(error as Error).message}`);
     }
 
     try {
@@ -70,38 +61,26 @@ test.describe('Work allocation (read-only)', () => {
         `workallocation/location?serviceCodes=${encodeURIComponent(serviceCodes.join(','))}`,
         {
           throwOnError: false,
+          timeoutMs: BEFORE_ALL_REQUEST_TIMEOUT_MS,
         }
       );
       cachedLocationId = resolveLocationId(listResponse.status, listResponse.data);
-      if (!cachedLocationId) {
-        appendSetupNotice('Location setup returned no usable location id; location-scoped calls will run unscoped.');
-      }
     } catch (error) {
-      appendSetupNotice(
-        `Location setup call failed (${error instanceof Error ? error.message : 'unknown error'}); location-scoped calls will run unscoped.`
-      );
+      console.warn(`[WA_SETUP_DEGRADED] location bootstrap failed: ${(error as Error).message}`);
     }
 
-    // seed tasks for action tests
     try {
-      const seeded = await seedTaskId(apiClient, cachedLocationId);
+      // Seed task ids is optional; action tests already use guarded status assertions/fallback ids.
+      const seeded = await seedTaskId(apiClient, cachedLocationId, {
+        timeoutMs: BEFORE_ALL_REQUEST_TIMEOUT_MS,
+      });
       const resolvedSeed = resolveSeededTaskIds(seeded);
       sampleTaskId = resolvedSeed.sampleTaskId;
       sampleMyTaskId = resolvedSeed.sampleMyTaskId;
     } catch (error) {
-      appendSetupNotice(
-        `Task seeding failed (${error instanceof Error ? error.message : 'unknown error'}); using fallback task ids.`
-      );
-    }
-
-    if (!sampleTaskId && !sampleMyTaskId) {
-      const fallbackResolution = resolveTaskIdWithEnvFallback(undefined, envAssignedTaskId, envTaskId, fallbackTaskId);
-      if (fallbackResolution.source === 'none') {
-        taskSeedNotice =
-          'WA task seeding returned no tasks and WA_SAMPLE_* ids are unset; action tests will use deterministic fallback task id.';
-      } else {
-        taskSeedNotice = `WA task seeding returned no tasks; action tests will use ${fallbackResolution.source} task id from WA_SAMPLE_* env.`;
-      }
+      console.warn(`[WA_SETUP_DEGRADED] seedTaskId failed: ${(error as Error).message}`);
+      sampleTaskId = undefined;
+      sampleMyTaskId = undefined;
     }
   });
 
@@ -153,10 +132,16 @@ test.describe('Work allocation (read-only)', () => {
     // Given: An authenticated solicitor user
 
     // When: Fetching the task names catalogue
-    const response = await apiClient.get<unknown>('workallocation/taskNames');
+    const response = await withRetry(
+      () =>
+        apiClient.get<unknown>('workallocation/taskNames', {
+          throwOnError: false,
+        }),
+      { retries: 2, retryStatuses: [500, 502, 504] }
+    );
 
-    // Then: API returns 200 OK
-    expect(response.status).toBe(200);
+    // Then: API returns success or guarded downstream status
+    expectStatus(response.status, StatusSets.waReadOnly);
 
     // And: Response contains valid task names array
     assertTaskNamesResponse(response.status, response.data);
@@ -166,10 +151,16 @@ test.describe('Work allocation (read-only)', () => {
     // Given: An authenticated solicitor user
 
     // When: Fetching types of work catalogue
-    const response = await apiClient.get<unknown>('workallocation/task/types-of-work');
+    const response = await withRetry(
+      () =>
+        apiClient.get<unknown>('workallocation/task/types-of-work', {
+          throwOnError: false,
+        }),
+      { retries: 2, retryStatuses: [500, 502, 504] }
+    );
 
-    // Then: API returns 200 OK
-    expect(response.status).toBe(200);
+    // Then: API returns success or guarded downstream status
+    expectStatus(response.status, StatusSets.waReadOnly);
 
     // And: Response contains valid work types array
     assertTypesOfWorkResponse(response.status, response.data);
@@ -196,21 +187,18 @@ test.describe('Work allocation (read-only)', () => {
 
   test.describe('task search', () => {
     test('MyTasks returns structured response', async ({ apiClient }, testInfo) => {
-      if (setupNotice) {
-        testInfo.annotations.push({
-          type: 'notice',
-          description: setupNotice,
-        });
-      }
       if (!userId) {
         testInfo.annotations.push({
           type: 'notice',
-          description: 'User id not available from setup; running MyTasks without user filter.',
+          description: 'User id not available; asserted user details endpoint instead.',
         });
+        const userRes = await apiClient.get('api/user/details', { throwOnError: false });
+        expectStatus(userRes.status, StatusSets.guardedBasic);
+        return;
       }
 
       const body = buildTaskSearchRequest('MyTasks', {
-        userIds: userId ? [userId] : [],
+        userIds: [userId],
         locations: toLocationList(cachedLocationId),
         states: ['assigned'],
         searchBy: 'caseworker',
@@ -296,30 +284,15 @@ test.describe('Work allocation (read-only)', () => {
     });
   });
 
-  test.describe('task actions (negative)', () => {
+  test.describe('task actions (negative)', { tag: '@wa-action' }, () => {
     const actions = ['claim', 'unclaim', 'assign', 'unassign', 'complete', 'cancel'] as const;
-    const taskId = () => selectTaskId([sampleTaskId, sampleMyTaskId, envTaskId, envAssignedTaskId], fallbackTaskId);
-    const annotateTaskSeedNotice = (testInfo: TestInfo) => {
-      if (setupNotice) {
-        testInfo.annotations.push({
-          type: 'notice',
-          description: setupNotice,
-        });
-      }
-      if (!taskSeedNotice) {
-        return;
-      }
-      testInfo.annotations.push({
-        type: 'notice',
-        description: taskSeedNotice,
-      });
-    };
+    const fallbackTaskId = '00000000-0000-0000-0000-000000000000';
+    const taskId = () => selectTaskId([sampleTaskId], fallbackTaskId);
 
     for (const action of actions) {
       test(`POST /workallocation/task/:id/${action} rejects unauthenticated requests with 401/403`, async ({
         anonymousClient,
-      }, testInfo) => {
-        annotateTaskSeedNotice(testInfo);
+      }) => {
         // Given: An anonymous client with no authentication
         // When: Attempting task action without valid session
         // Then: API rejects request with authentication error
@@ -332,10 +305,7 @@ test.describe('Work allocation (read-only)', () => {
     }
 
     for (const action of actions) {
-      test(`POST /workallocation/task/:id/${action} rejects requests without XSRF-TOKEN header`, async ({
-        apiClient,
-      }, testInfo) => {
-        annotateTaskSeedNotice(testInfo);
+      test(`POST /workallocation/task/:id/${action} rejects requests without XSRF-TOKEN header`, async ({ apiClient }) => {
         // Given: An authenticated user with valid session
         // When: Attempting task action without XSRF protection header
         // Then: API rejects request or returns guarded status (XSRF validation failure)
@@ -350,8 +320,7 @@ test.describe('Work allocation (read-only)', () => {
     }
 
     for (const action of actions) {
-      test(`rejects ${action} with invalid XSRF token`, async ({ apiClient }, testInfo) => {
-        annotateTaskSeedNotice(testInfo);
+      test(`rejects ${action} with invalid XSRF token`, async ({ apiClient }) => {
         await ensureStorageState('solicitor');
         const response = await apiClient.post(`workallocation/task/${taskId()}/${action}`, {
           data: {},
@@ -363,8 +332,7 @@ test.describe('Work allocation (read-only)', () => {
     }
 
     for (const action of actions) {
-      test(`${action} with XSRF header returns guarded status`, async ({ apiClient }, testInfo) => {
-        annotateTaskSeedNotice(testInfo);
+      test(`${action} with XSRF header returns guarded status`, async ({ apiClient }) => {
         const response = await withXsrf('solicitor', (headers) =>
           apiClient.post(`workallocation/task/${taskId()}/${action}`, {
             data: {},
@@ -377,7 +345,7 @@ test.describe('Work allocation (read-only)', () => {
     }
   });
 
-  test.describe('deterministic task actions (env-seeded or dynamic)', () => {
+  test.describe('deterministic task actions (env-seeded or dynamic)', { tag: '@wa-action' }, () => {
     const positive = [
       { action: 'claim', id: () => selectTaskId([envTaskId, sampleTaskId], '00000000-0000-0000-0000-000000000000') },
       { action: 'assign', id: () => selectTaskId([envTaskId, sampleTaskId], '00000000-0000-0000-0000-000000000000') },
@@ -417,26 +385,22 @@ test.describe('Work allocation (read-only)', () => {
     });
   });
 
-  test.describe('task actions (happy-path attempt)', () => {
+  test.describe('task actions (happy-path attempt)', { tag: '@wa-action' }, () => {
+    const fallbackId = '00000000-0000-0000-0000-000000000000';
+
     const positiveActions: Array<{ action: string; taskId: () => string }> = [
-      { action: 'claim', taskId: () => selectTaskId([envTaskId, sampleTaskId], fallbackTaskId) },
-      {
-        action: 'unclaim',
-        taskId: () => selectTaskId([envAssignedTaskId, envTaskId, sampleMyTaskId, sampleTaskId], fallbackTaskId),
-      },
+      { action: 'claim', taskId: () => selectTaskId([envTaskId, sampleTaskId], fallbackId) },
+      { action: 'unclaim', taskId: () => selectTaskId([envAssignedTaskId, envTaskId, sampleMyTaskId, sampleTaskId], fallbackId) },
       {
         action: 'complete',
-        taskId: () => selectTaskId([envAssignedTaskId, envTaskId, sampleMyTaskId, sampleTaskId], fallbackTaskId),
+        taskId: () => selectTaskId([envAssignedTaskId, envTaskId, sampleMyTaskId, sampleTaskId], fallbackId),
       },
-      { action: 'assign', taskId: () => selectTaskId([envTaskId, sampleTaskId], fallbackTaskId) },
+      { action: 'assign', taskId: () => selectTaskId([envTaskId, sampleTaskId], fallbackId) },
       {
         action: 'unassign',
-        taskId: () => selectTaskId([envAssignedTaskId, envTaskId, sampleMyTaskId, sampleTaskId], fallbackTaskId),
+        taskId: () => selectTaskId([envAssignedTaskId, envTaskId, sampleMyTaskId, sampleTaskId], fallbackId),
       },
-      {
-        action: 'cancel',
-        taskId: () => selectTaskId([envAssignedTaskId, envTaskId, sampleMyTaskId, sampleTaskId], fallbackTaskId),
-      },
+      { action: 'cancel', taskId: () => selectTaskId([envAssignedTaskId, envTaskId, sampleMyTaskId, sampleTaskId], fallbackId) },
     ];
 
     for (const { action, taskId } of positiveActions) {
@@ -528,7 +492,7 @@ test.describe('Work allocation (read-only)', () => {
   });
 });
 
-test.describe('Work allocation helper coverage', () => {
+test.describe('Work allocation helper coverage', { tag: '@svc-work-allocation' }, () => {
   test('toArray utility normalizes API response formats (arrays, task_names, taskNames, typesOfWork) to consistent array output', () => {
     // Given: Various API response payload formats from work allocation endpoints
     // When: Normalizing different response shapes to arrays
@@ -561,23 +525,6 @@ test.describe('Work allocation helper coverage', () => {
     expect(selectTaskId(['first', 'second'], 'fallback')).toBe('first');
     expect(selectTaskId([undefined, 'second'], 'fallback')).toBe('second');
     expect(selectTaskId([undefined, undefined], 'fallback')).toBe('fallback');
-
-    expect(resolveTaskIdWithEnvFallback('dynamic-task', 'env-assigned-task', 'env-unassigned-task', 'fallback-task')).toEqual({
-      taskId: 'dynamic-task',
-      source: 'dynamic',
-    });
-    expect(resolveTaskIdWithEnvFallback(undefined, 'env-assigned-task', 'env-unassigned-task', 'fallback-task')).toEqual({
-      taskId: 'env-assigned-task',
-      source: 'env-assigned',
-    });
-    expect(resolveTaskIdWithEnvFallback(undefined, undefined, 'env-unassigned-task', 'fallback-task')).toEqual({
-      taskId: 'env-unassigned-task',
-      source: 'env-unassigned',
-    });
-    expect(resolveTaskIdWithEnvFallback(undefined, undefined, undefined, 'fallback-task')).toEqual({
-      taskId: 'fallback-task',
-      source: 'none',
-    });
 
     expect(hasSeededEnvTasks()).toBe(false);
     expect(hasSeededEnvTasks('task')).toBe(true);

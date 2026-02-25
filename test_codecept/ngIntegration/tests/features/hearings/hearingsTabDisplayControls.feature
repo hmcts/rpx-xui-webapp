@@ -20,7 +20,7 @@ Feature: Hearings: Hearings tab display controls
         When I open first case in case list page
         Then I see case details page
         Then I see case details tab label "Hearings" is displayed is "true"
-        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
+        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings-ce"
         Then I see Request a hearing button in hearings tab page
 
     Scenario: Request hearing button not displayed with missing roles
@@ -41,7 +41,7 @@ Feature: Hearings: Hearings tab display controls
         When I open first case in case list page
         Then I see case details page
         Then I see case details tab label "Hearings" is displayed is "true"
-        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
+        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings-ce"
         Then I do not see Request a hearing button in hearings tab page
 
 

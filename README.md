@@ -21,7 +21,7 @@ NODE_CONFIG_ENV=development sets the machine so that the config that is used is 
 
 ## Startup the Angular service locally
 
-Run `yarn start:ng` to start up the UI.
+Run `yarn start:ng` to start up the UI
 
 ## API docs (Swagger UI)
 

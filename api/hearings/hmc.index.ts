@@ -169,7 +169,7 @@ export async function updateHearingActuals(req: EnhancedRequest, res: Response, 
   const hearingId = req.query.hearingId;
   const caseId = req.query.caseId as string;
   const markupPath = `${hmcHearingsUrl}/hearingActuals/${hearingId}`;
-  // reqBody.actualHearingDays[0].hearingDate = null; // Testing purposes only - to be removed when front end is sending hearing date
+  reqBody.actualHearingDays[0].hearingDate = null; // Testing purposes only - to be removed when front end is sending hearing date
   try {
     const { status, data }: { status: number; data: HearingActualsModel } = await sendPut(markupPath, reqBody, req);
     res.status(status).send(data);

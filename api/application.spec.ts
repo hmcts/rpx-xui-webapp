@@ -552,7 +552,6 @@ describe('Application', () => {
 
           expect(customHeadersMiddleware).to.not.exist;
         });
-
       });
     });
   });

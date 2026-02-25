@@ -23,10 +23,7 @@ export class LocationDataService {
 
   public getLocations(jurisdictions?: string[]): Observable<Location[]> {
     if (this.sessionStorageService.getItem(LocationDataService.allLocationsKey)) {
-      const locations = safeJsonParse<Location[]>(
-        this.sessionStorageService.getItem(LocationDataService.allLocationsKey),
-        []
-      );
+      const locations = safeJsonParse<Location[]>(this.sessionStorageService.getItem(LocationDataService.allLocationsKey), []);
       return of(locations);
     }
     const options = {

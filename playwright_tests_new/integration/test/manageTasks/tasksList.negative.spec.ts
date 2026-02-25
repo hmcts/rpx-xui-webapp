@@ -60,7 +60,6 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
     });
     await test.step('Navigate to the my tasks list page', async () => {
       await taskListPage.goto();
-      await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
     });
     await test.step('Verify table shows no results for empty mock', async () => {

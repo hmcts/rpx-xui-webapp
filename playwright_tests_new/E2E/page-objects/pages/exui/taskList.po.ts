@@ -9,6 +9,8 @@ export class TaskListPage extends Base {
   readonly selectTypesOfWorksError = this.page.locator('#types-of-work-error');
   readonly applyFilterButton = this.page.locator('button#applyFilter');
   readonly taskListTable = this.page.locator('.cdk-table.govuk-table');
+  readonly taskTableHeader = this.taskListTable.locator('thead');
+  readonly taskTableFooter = this.taskListTable.locator('tfoot');
   readonly taskListResultsAmount = this.page.locator('#search-result-summary__text, [data-test="search-result-summary__text"]');
   readonly manageCaseButtons = this.taskListTable.getByRole('button', { name: 'Manage' });
   readonly errorPageHeading = this.page.getByRole('heading', { name: /something went wrong/i });

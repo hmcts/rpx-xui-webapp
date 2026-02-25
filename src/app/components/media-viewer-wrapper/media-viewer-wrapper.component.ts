@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
-import { safeJsonParseFallback } from '@hmcts/ccd-case-ui-toolkit';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '../../services/session-storage/session-storage.service';
 import { Title } from '@angular/platform-browser';
 
@@ -54,7 +54,7 @@ export class MediaViewerWrapperComponent implements OnInit {
     }
 
     if (sessionStorageMedia) {
-      const media = safeJsonParseFallback<{
+      const media = safeJsonParse<{
         document_binary_url: string;
         document_filename: string;
         content_type: string;

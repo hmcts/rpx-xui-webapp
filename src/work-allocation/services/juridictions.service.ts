@@ -4,7 +4,7 @@ import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { SessionStorageService } from '../../app/services';
-import { safeJsonParseFallback } from '@hmcts/ccd-case-ui-toolkit';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +20,7 @@ export class JurisdictionsService {
       Accept: 'application/json',
     });
     if (this.sessionStorageService.getItem('JURISDICTIONS')) {
-      const jurisdictions = safeJsonParseFallback<Jurisdiction[]>(this.sessionStorageService.getItem('JURISDICTIONS'), []);
+      const jurisdictions = safeJsonParse<Jurisdiction[]>(this.sessionStorageService.getItem('JURISDICTIONS'), []);
       return of(jurisdictions);
     }
     return this.http

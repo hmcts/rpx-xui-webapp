@@ -4,7 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { AppUtils } from '../../app/app-utils';
-import { safeJsonParseFallback } from '@hmcts/ccd-case-ui-toolkit';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { UserInfo, UserRole } from '../../app/models';
 import { SearchTaskRequest, TaskNamesResponse, TaskSearchParameters } from '../models/dtos';
 import { Task, TaskRole } from '../models/tasks';
@@ -92,7 +92,7 @@ export class WorkAllocationTaskService {
   public getUsersAssignedTasks(): Observable<Task[]> {
     const userInfoStr = sessionStorage.getItem('userDetails');
     if (userInfoStr) {
-      const userInfo = safeJsonParseFallback<UserInfo>(userInfoStr, null);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
       if (!userInfo) {
         return of(null);
       }

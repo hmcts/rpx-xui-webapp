@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
 import { SessionStorageService } from '../../app/services';
-import { safeJsonParseFallback } from '@hmcts/ccd-case-ui-toolkit';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { Location, LocationByEpimmsModel, LocationsByRegion, Region } from '../models/dtos';
 
 @Injectable({ providedIn: 'root' })
@@ -23,7 +23,7 @@ export class LocationDataService {
 
   public getLocations(jurisdictions?: string[]): Observable<Location[]> {
     if (this.sessionStorageService.getItem(LocationDataService.allLocationsKey)) {
-      const locations = safeJsonParseFallback<Location[]>(
+      const locations = safeJsonParse<Location[]>(
         this.sessionStorageService.getItem(LocationDataService.allLocationsKey),
         []
       );
@@ -43,7 +43,7 @@ export class LocationDataService {
 
   public getLocationsByRegion(serviceIds?: string[]): Observable<LocationsByRegion[]> {
     if (this.sessionStorageService.getItem(LocationDataService.regionLocationsKey)) {
-      const locationRegions = safeJsonParseFallback<LocationsByRegion[]>(
+      const locationRegions = safeJsonParse<LocationsByRegion[]>(
         this.sessionStorageService.getItem(LocationDataService.regionLocationsKey),
         []
       );
@@ -62,7 +62,7 @@ export class LocationDataService {
     if (!locationIds || locationIds.length === 0) {
       return of([]);
     }
-    const bookableServices = safeJsonParseFallback<string[]>(this.sessionStorageService.getItem('bookableServices'), []);
+    const bookableServices = safeJsonParse<string[]>(this.sessionStorageService.getItem('bookableServices'), []);
     const serviceCodes: string[] = bookableServices.length ? bookableServices : locationServices;
     const options = {
       params: new HttpParams().set('serviceCodes', serviceCodes.join()),
@@ -75,7 +75,7 @@ export class LocationDataService {
 
   public getRegions(): Observable<Region[]> {
     if (this.sessionStorageService.getItem(LocationDataService.regionsKey)) {
-      const regions = safeJsonParseFallback<Region[]>(this.sessionStorageService.getItem(LocationDataService.regionsKey), []);
+      const regions = safeJsonParse<Region[]>(this.sessionStorageService.getItem(LocationDataService.regionsKey), []);
       return of(regions);
     }
     return this.http

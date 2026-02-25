@@ -13,7 +13,7 @@ const LEGACY_HTML_CSP = [
   "img-src 'self' data: blob:",
   "font-src 'self' data:",
   "style-src 'self' 'unsafe-inline'",
-  "script-src 'self' 'unsafe-inline'",
+  "script-src 'none'",
   "media-src 'self' data: blob:",
 ].join('; ');
 

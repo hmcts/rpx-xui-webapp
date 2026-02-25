@@ -83,7 +83,7 @@ describe('Documents Uploading', () => {
 
     expect(response.setHeader).to.have.been.calledWith(
       'Content-Security-Policy',
-      "default-src 'none'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'none'; connect-src 'none'; img-src 'self' data: blob:; font-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; media-src 'self' data: blob:"
+      "default-src 'none'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; form-action 'none'; connect-src 'none'; img-src 'self' data: blob:; font-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'none'; media-src 'self' data: blob:"
     );
     expect(response.removeHeader).to.have.been.calledWith('Content-Security-Policy-Report-Only');
     expect(response.removeHeader).to.have.been.calledWith('X-Content-Security-Policy');

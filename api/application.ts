@@ -133,11 +133,6 @@ export async function createApp() {
   });
   // runs for every incoming request in the order middleware are declared
   app.use(express.static(staticRoot, { index: false }));
-  // Legacy HTML documents can reference Jira Dynatrace agents that do not exist in XUI.
-  // Return an empty JavaScript response to avoid falling through to the below HTML catch-all handler.
-  app.get(/^\/jira\/ruxitagentjs_[^/]+\.js$/, (req, res) => {
-    res.status(200).type('application/javascript').set('Cache-Control', 'no-store, max-age=0').send('');
-  });
   // Catch-all handler for every URL that the static middleware didn’t serve
   app.use('/*', (req, res) => {
     const html = injectNonce(indexHtmlRaw, res.locals.cspNonce as string);

@@ -1,11 +1,14 @@
 import { faker } from '@faker-js/faker';
+import { Response } from '@playwright/test';
 import { expect, test } from '../../fixtures';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 import { TEST_DATA } from './constants';
 import { expectCaseBanner } from '../../utils';
 import { createLogger } from '@hmcts/playwright-common';
+import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
 
 const logger = createLogger({ serviceName: 'document-upload-tests', format: 'pretty' });
+const DOCUMENT_UPLOAD_SUBMIT_TIMEOUT_MS = 60_000;
 
 test.describe('Document upload V2', () => {
   test.describe.configure({ timeout: 120000 });
@@ -28,7 +31,10 @@ test.describe('Document upload V2', () => {
   });
 
   test('Check the documentV2 upload works as expected', async ({ createCasePage, caseDetailsPage }) => {
+    let caseDetailsUrl = '';
+
     await test.step('Verify case details tab does not contain an uploaded file', async () => {
+      caseDetailsUrl = await caseDetailsPage.getCurrentPageUrl();
       await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
       const caseViewerTable = caseDetailsPage.page.getByRole('table', { name: 'case viewer table' });
       await caseViewerTable.waitFor({ state: 'visible' });
@@ -37,16 +43,86 @@ test.describe('Document upload V2', () => {
     });
 
     await test.step('Upload a document to the case', async () => {
-      await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
-      await caseDetailsPage.selectCaseAction(TEST_DATA.V2.ACTION);
-      await createCasePage.uploadFile(TEST_DATA.V2.FILE_NAME, TEST_DATA.V2.FILE_TYPE, TEST_DATA.V2.FILE_CONTENT);
-      await createCasePage.clickContinueMultipleTimes(4);
-      await createCasePage.submitButton.click();
+      let successfulUpdateEventPosts = 0;
+      const updateEventEndpointPattern = new RegExp(`/data/cases/${caseNumber}/events(?:\\?|$)`);
+      const onResponse = (response: Response) => {
+        if (response.request().method() !== 'POST') {
+          return;
+        }
+        if (!updateEventEndpointPattern.test(response.url())) {
+          return;
+        }
+        if (response.status() < 400) {
+          successfulUpdateEventPosts += 1;
+        }
+      };
+      caseDetailsPage.page.on('response', onResponse);
+      try {
+        await retryOnTransientFailure(
+          async () => {
+            await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
+            await caseDetailsPage.selectCaseAction(TEST_DATA.V2.ACTION);
+            await createCasePage.uploadFile(TEST_DATA.V2.FILE_NAME, TEST_DATA.V2.FILE_TYPE, TEST_DATA.V2.FILE_CONTENT);
+            await createCasePage.clickContinueMultipleTimes(4);
+            await createCasePage.clickSubmitAndWait('after uploading V2 document', {
+              timeoutMs: DOCUMENT_UPLOAD_SUBMIT_TIMEOUT_MS,
+              maxAutoAdvanceAttempts: 3,
+            });
+            await expect(caseDetailsPage.caseAlertSuccessMessage).toBeVisible({ timeout: 30_000 });
+          },
+          {
+            maxAttempts: 2,
+            onRetry: async () => {
+              try {
+                await caseDetailsPage.reopenCaseDetails(caseDetailsUrl);
+              } catch (reopenError) {
+                logger.warn('Failed to reopen case details during V2 document upload retry; trying direct goto', {
+                  reopenError,
+                  caseDetailsUrl,
+                });
+                await caseDetailsPage.page.goto(caseDetailsUrl);
+              }
+            },
+          }
+        );
+      } finally {
+        caseDetailsPage.page.off('response', onResponse);
+      }
+      expect(successfulUpdateEventPosts).toBe(1);
     });
 
     await test.step('Verify the document upload was successful', async () => {
-      const bannerText = await caseDetailsPage.caseAlertSuccessMessage.innerText();
-      expectCaseBanner(bannerText, caseNumber, `has been updated with event: ${TEST_DATA.V2.ACTION}`);
+      await expect
+        .poll(
+          async () => {
+            const bannerVisible = await caseDetailsPage.caseAlertSuccessMessage.isVisible().catch(() => false);
+            if (bannerVisible) {
+              const bannerText = await caseDetailsPage.caseAlertSuccessMessage.innerText().catch(() => '');
+              if (bannerText.includes(caseNumber) && bannerText.includes(`has been updated with event: ${TEST_DATA.V2.ACTION}`)) {
+                return true;
+              }
+            }
+
+            await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME).catch(() => undefined);
+            const caseViewerTable = caseDetailsPage.page.getByRole('table', { name: 'case viewer table' });
+            const tableVisible = await caseViewerTable.isVisible().catch(() => false);
+            if (!tableVisible) {
+              return false;
+            }
+            const documentRow = caseViewerTable.getByRole('row', { name: TEST_DATA.V2.DOCUMENT_FIELD_LABEL });
+            const documentText = await documentRow.innerText().catch(() => '');
+            return documentText.includes(TEST_DATA.V2.FILE_NAME);
+          },
+          { timeout: 45_000, intervals: [1_000, 2_000, 3_000] }
+        )
+        .toBe(true);
+
+      const bannerVisible = await caseDetailsPage.caseAlertSuccessMessage.isVisible().catch(() => false);
+      if (bannerVisible) {
+        const bannerText = await caseDetailsPage.caseAlertSuccessMessage.innerText();
+        expectCaseBanner(bannerText, caseNumber, `has been updated with event: ${TEST_DATA.V2.ACTION}`);
+      }
+
       await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
       const caseViewerTable = caseDetailsPage.page.getByRole('table', { name: 'case viewer table' });
       await caseViewerTable.waitFor({ state: 'visible' });

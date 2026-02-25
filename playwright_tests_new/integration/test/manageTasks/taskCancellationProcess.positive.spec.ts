@@ -31,7 +31,7 @@ test.describe(`Task cancellation integration as ${userIdentifier}`, () => {
       const { cookies } = await applySessionCookies(page, userIdentifier);
       const userId = extractUserIdFromCookies(cookies) || 'test-user-id';
 
-      const taskListMockResponse = buildMyTaskListMock(1, userId);
+      const taskListMockResponse = buildMyTaskListMock(userId, 1);
       const task = {
         ...taskListMockResponse.tasks[0],
         id: taskId,

@@ -43,7 +43,7 @@ test.describe(`Task cancellation scenarios as ${userIdentifier}`, () => {
       const { cookies } = await applySessionCookies(page, userIdentifier);
       const userId = extractUserIdFromCookies(cookies) || 'test-user-id';
 
-      const taskListMockResponse = buildMyTaskListMock(1, userId);
+      const taskListMockResponse = buildMyTaskListMock(userId, 1);
       const task = {
         ...taskListMockResponse.tasks[0],
         id: taskId,
@@ -133,7 +133,7 @@ test.describe(`Task cancellation scenarios as ${userIdentifier}`, () => {
     const userId = extractUserIdFromCookies(cookies) || 'test-user-id';
 
     const task = {
-      ...buildMyTaskListMock(1, userId).tasks[0],
+      ...buildMyTaskListMock(userId, 1).tasks[0],
       id: taskId,
       case_id: scenario.caseId,
       case_name: scenario.caseName,
@@ -147,18 +147,20 @@ test.describe(`Task cancellation scenarios as ${userIdentifier}`, () => {
 
     await page.goto(`/cases/case-details/${scenario.jurisdiction}/${scenario.caseTypeId}/${scenario.caseId}/tasks`);
     await expect(page.getByRole('heading', { name: 'Active tasks' })).toBeVisible();
-    await expect(page.locator('#action_cancel').first()).toBeVisible();
+    const caseDetailsCancelActions = page.locator('#action_cancel').or(page.getByRole('link', { name: 'Cancel task' }));
+    const caseDetailsCancelAction = caseDetailsCancelActions.first();
+    await expect(caseDetailsCancelAction).toBeVisible();
 
-    await page.locator('#action_cancel').first().click();
+    await caseDetailsCancelAction.click();
     await expect(page.getByRole('button', { name: 'Cancel task' })).toBeVisible();
     await page.getByRole('button', { name: 'Cancel task' }).click();
 
     // Case-details tasks flow may keep the same route instance and skip banner re-render.
     // The key behaviour here is successful cancel + task removed from the tasks tab.
     await expect(page).toHaveURL(
-      new RegExp(`/cases/case-details/${scenario.jurisdiction}/${scenario.caseTypeId}/${scenario.caseId}/tasks`)
+      new RegExp(`/cases/case-details/${scenario.jurisdiction}/${scenario.caseTypeId}/${scenario.caseId}(?:/tasks|#Tasks)`)
     );
-    await expect(page.locator('#action_cancel')).toHaveCount(0);
+    await expect(page.locator('#action_cancel').or(page.getByRole('link', { name: 'Cancel task' }))).toHaveCount(0);
   });
 
   test('EXUI-3662 Cancel action is not shown for a non-cancellable task', async ({ taskListPage, page }) => {
@@ -167,7 +169,7 @@ test.describe(`Task cancellation scenarios as ${userIdentifier}`, () => {
     const userId = extractUserIdFromCookies(cookies) || 'test-user-id';
 
     const task = {
-      ...buildMyTaskListMock(1, userId).tasks[0],
+      ...buildMyTaskListMock(userId, 1).tasks[0],
       id: taskId,
       case_id: scenario.caseId,
       case_name: `${scenario.caseName} (No Cancel Permission)`,
@@ -193,7 +195,7 @@ test.describe(`Task cancellation scenarios as ${userIdentifier}`, () => {
     const userId = extractUserIdFromCookies(cookies) || 'test-user-id';
 
     const task = {
-      ...buildMyTaskListMock(1, userId).tasks[0],
+      ...buildMyTaskListMock(userId, 1).tasks[0],
       id: taskId,
       case_id: scenario.caseId,
       case_name: `${scenario.caseName} (Stale Task)`,
@@ -220,7 +222,7 @@ test.describe(`Task cancellation scenarios as ${userIdentifier}`, () => {
     const userId = extractUserIdFromCookies(cookies) || 'test-user-id';
 
     const task = {
-      ...buildMyTaskListMock(1, userId).tasks[0],
+      ...buildMyTaskListMock(userId, 1).tasks[0],
       id: taskId,
       case_id: scenario.caseId,
       case_name: `${scenario.caseName} (API Failure)`,

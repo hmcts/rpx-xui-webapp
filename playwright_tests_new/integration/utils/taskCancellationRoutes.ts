@@ -131,12 +131,19 @@ export async function routeCaseDetailsTaskCancellationFlow(
     });
   });
 
-  await page.route(`**/workallocation/case/task/${scenario.caseId}`, async (route: Route) => {
+  // Case-details task loading has drifted across GET/POST and optional query/proxy prefixes in different builds.
+  // Keep the interceptor broad so this test stays focused on cancellation behavior, not transport shape.
+  await page.route(`**/workallocation/case/task/${scenario.caseId}*`, async (route: Route) => {
     const tasks = cancelInvoked ? [] : [task];
     await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(tasks) });
   });
 
-  await page.route('**/workallocation/caseworker/getUsersByServiceName', async (route: Route) => {
+  await page.route(`**/api/workallocation/case/task/${scenario.caseId}*`, async (route: Route) => {
+    const tasks = cancelInvoked ? [] : [task];
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(tasks) });
+  });
+
+  await page.route('**/workallocation/caseworker/getUsersByServiceName*', async (route: Route) => {
     const assignee = typeof task.assignee === 'string' ? task.assignee : '';
     await route.fulfill({
       status: 200,

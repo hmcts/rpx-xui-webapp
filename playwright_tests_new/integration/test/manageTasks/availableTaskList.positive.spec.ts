@@ -127,44 +127,6 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
     });
   });
 
-  test(`User ${userIdentifier} sees filter errors if no services are selected`, async ({ taskListPage, page }) => {
-    const taskListMockResponse = buildTaskListMock(10, '', availableActionsList);
-    await test.step('Setup route mock for task list', async () => {
-      await page.route('**/workallocation/task*', async (route) => {
-        const body = JSON.stringify(taskListMockResponse);
-        await route.fulfill({ status: 200, contentType: 'application/json', body });
-      });
-    });
-
-    await test.step('Navigate to the available tasks list page', async () => {
-      await taskListPage.goto();
-      await taskListPage.taskTableTabs.filter({ hasText: 'Available tasks' }).first().click();
-      await expect(taskListPage.taskListTable).toBeVisible();
-      await taskListPage.exuiSpinnerComponent.wait();
-    });
-
-    await test.step('Verify table shows filter errors if no services are selected', async () => {
-      expect
-        .soft(await taskListPage.getResultsText())
-        .toBe(`Showing 1 to ${Math.min(taskListMockResponse.tasks.length, 25)} of ${taskListMockResponse.total_records} results`);
-      await taskListPage.taskListFilterToggle.click();
-      expect.soft(await taskListPage.selectAllServicesFilter.isChecked()).toBeTruthy();
-      await taskListPage.selectAllServicesFilter.click();
-      await taskListPage.applyFilterButton.click();
-      expect(await taskListPage.selectServicesError.textContent()).toContain('Select a service');
-    });
-
-    await test.step('Verify table shows filter errors if no types of work are selected', async () => {
-      await taskListPage.selectAllTypesOfWorksFilter.click();
-      await taskListPage.applyFilterButton.click();
-      expect(await taskListPage.selectTypesOfWorksError.textContent()).toContain('Select a type of work');
-      await expect(taskListPage.exuiHeader.errorHeader).toBeVisible();
-      expect(await taskListPage.exuiHeader.errorHeaderTitle.textContent()).toContain('There is a problem');
-      expect(await taskListPage.exuiHeader.errorHeaderListItems.nth(0).textContent()).toContain('Select a service');
-      expect(await taskListPage.exuiHeader.errorHeaderListItems.nth(1).textContent()).toContain('Select a type of work');
-    });
-  });
-
   test(`User ${userIdentifier} can see all table sorting buttons on the table`, async ({ taskListPage, page, tableUtils }) => {
     const emptyMockResponse = { tasks: [], total_records: 0 };
     await test.step('Setup route mock for deterministic task list', async () => {

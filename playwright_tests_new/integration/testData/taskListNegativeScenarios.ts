@@ -1,4 +1,4 @@
-export const MALFORMED_MOCK_RESPONSE = `{ {
+export const TASK_LIST_MALFORMED_JSON_BODY = `{ {
   "tasks": [
     {
       "id": "13}],

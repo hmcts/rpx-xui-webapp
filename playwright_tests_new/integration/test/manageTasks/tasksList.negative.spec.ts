@@ -52,7 +52,7 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
     taskListPage,
     page,
   }) => {
-    await test.step('Setup route mock for empty task list', async () => {
+    await test.step('Setup route mock for malformed task list response', async () => {
       await page.route('**/workallocation/task*', async (route) => {
         const body = JSON.stringify(TASK_LIST_MALFORMED_JSON_BODY);
         await route.fulfill({ status: 200, contentType: 'application/json', body });
@@ -62,7 +62,7 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
       await taskListPage.goto();
       await taskListPage.exuiSpinnerComponent.wait();
     });
-    await test.step('Verify table shows no results for empty mock', async () => {
+    await test.step('Verify the service down message is shown ', async () => {
       expect(await taskListPage.exuiBodyComponent.serviceDownError.textContent()).toContain(
         'Sorry, there is a problem with the service'
       );

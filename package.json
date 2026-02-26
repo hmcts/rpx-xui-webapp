@@ -108,7 +108,7 @@
     "@dr.pogodin/csurf": "^1.16.5",
     "@edium/fsm": "^2.1.2",
     "@faker-js/faker": "^9.2.0",
-    "@hmcts/ccd-case-ui-toolkit": "7.3.33",
+    "@hmcts/ccd-case-ui-toolkit": "7.3.34",
     "@hmcts/ccpay-web-component": "6.5.17",
     "@hmcts/frontend": "0.0.50-alpha",
     "@hmcts/media-viewer": "4.2.12",
@@ -304,7 +304,8 @@
     "superagent": "^10.2.2",
     "glob@npm:*": "npm:10.5.0",
     "cookie": "^0.7.2",
-    "min-document": "^2.19.1"
+    "min-document": "^2.19.1",
+    "qs": "^6.15.0"
   },
   "packageManager": "yarn@4.7.0"
 }

@@ -63,7 +63,7 @@ test.describe.configure({ mode: 'serial' });
 const mockPassword = process.env.PW_MOCK_PASSWORD ?? String(Date.now());
 const mockCredentials = { username: 'test-user', password: mockPassword };
 
-test.describe('Auth helper coverage - token bootstrap', () => {
+test.describe('Auth helper coverage - token bootstrap', { tag: '@svc-auth' }, () => {
   test('isTokenBootstrapEnabled respects env overrides', async () => {
     // SECURITY: Use non-sensitive mock values only - no real secrets in tests
     const mockAuthEnv: AuthEnvironmentConfig = {

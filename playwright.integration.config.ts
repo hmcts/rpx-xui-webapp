@@ -92,7 +92,7 @@ module.exports = (() => {
   const targetEnv = process.env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
   const runContext = process.env.CI ? 'ci' : 'local-run';
   const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
-  const reporter = [[process.env.CI ? 'dot' : 'list']];
+  const reporter: [string, unknown?][] = [[process.env.CI ? 'dot' : 'list']];
   if (enableOdhinReporter) {
     reporter.push([
       './playwright_tests_new/common/reporters/odhin-progress.reporter.cjs',

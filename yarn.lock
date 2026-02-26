@@ -304,7 +304,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< exui-2657-typescript-upgrade
 "@angular-devkit/core@npm:20.3.16, @angular-devkit/core@npm:>= 20.0.0 < 21.0.0":
+  version: 20.3.16
+  resolution: "@angular-devkit/core@npm:20.3.16"
+=======
+"@angular-devkit/core@npm:20.3.16":
   version: 20.3.16
   resolution: "@angular-devkit/core@npm:20.3.16"
   dependencies:
@@ -323,9 +328,48 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@angular-devkit/core@npm:20.3.6, @angular-devkit/core@npm:>= 20.0.0 < 21.0.0":
+  version: 20.3.6
+  resolution: "@angular-devkit/core@npm:20.3.6"
+>>>>>>> cve-bundle
+  dependencies:
+    ajv: "npm:8.17.1"
+    ajv-formats: "npm:3.0.1"
+    jsonc-parser: "npm:3.3.1"
+    picomatch: "npm:4.0.3"
+    rxjs: "npm:7.8.2"
+    source-map: "npm:0.7.6"
+  peerDependencies:
+    chokidar: ^4.0.0
+  peerDependenciesMeta:
+    chokidar:
+      optional: true
+  checksum: 10/d053955f95176dc7bc96d1ccbf74f2c711b6b02291bf85bf26367f20b9b2f39971b99f3a69276be9bf24a78ec804de31cbccbc68e1bf8ba0ccc7e79e3428ff57
+  languageName: node
+  linkType: hard
+
+<<<<<<< exui-2657-typescript-upgrade
 "@angular-devkit/schematics@npm:20.3.16, @angular-devkit/schematics@npm:>= 20.0.0 < 21.0.0":
   version: 20.3.16
   resolution: "@angular-devkit/schematics@npm:20.3.16"
+=======
+"@angular-devkit/schematics@npm:20.3.16":
+  version: 20.3.16
+  resolution: "@angular-devkit/schematics@npm:20.3.16"
+  dependencies:
+    "@angular-devkit/core": "npm:20.3.16"
+    jsonc-parser: "npm:3.3.1"
+    magic-string: "npm:0.30.17"
+    ora: "npm:8.2.0"
+    rxjs: "npm:7.8.2"
+  checksum: 10/cf0d1ce2c336e37acbc10874ab195b52589174855f58c8ce2e1f04ebac313d3e07a674e523063c63ff07993b4f142dfb65e062639d77c9682b6db2befb48b957
+  languageName: node
+  linkType: hard
+
+"@angular-devkit/schematics@npm:>= 20.0.0 < 21.0.0":
+  version: 20.3.6
+  resolution: "@angular-devkit/schematics@npm:20.3.6"
+>>>>>>> cve-bundle
   dependencies:
     "@angular-devkit/core": "npm:20.3.16"
     jsonc-parser: "npm:3.3.1"
@@ -567,7 +611,11 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< exui-2657-typescript-upgrade
 "@angular/cli@npm:^20.3.14":
+=======
+"@angular/cli@npm:^20.3.15":
+>>>>>>> cve-bundle
   version: 20.3.16
   resolution: "@angular/cli@npm:20.3.16"
   dependencies:
@@ -3579,12 +3627,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.33":
-  version: 7.3.33
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.33"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.34":
+  version: 7.3.34
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.34"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/f1b9ab694f82045d21a5ff0c6d4fb4a1865d4e6ca5723d163ae0f6e9577100a1f0f07a746596587400d67e067c23cf7ed540c8cb3eba26c99572fe0e97a3f969
+  checksum: 10/454710a4536a64d8f83f94815e36ae9faf60b03467318f22495c08279a0f330daf4a3d8b422330ac9da2f072f65ec6643d30aed0041a7f8bfb9d7bab8059cb9a
   languageName: node
   linkType: hard
 
@@ -3683,7 +3731,11 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< exui-2657-typescript-upgrade
 "@hmcts/properties-volume@npm:^1.2.0":
+=======
+"@hmcts/properties-volume@npm:^1.3.1":
+>>>>>>> cve-bundle
   version: 1.3.1
   resolution: "@hmcts/properties-volume@npm:1.3.1"
   dependencies:
@@ -4260,6 +4312,15 @@ __metadata:
   version: 4.0.1
   resolution: "@isaacs/balanced-match@npm:4.0.1"
   checksum: 10/102fbc6d2c0d5edf8f6dbf2b3feb21695a21bc850f11bc47c4f06aa83bd8884fde3fe9d6d797d619901d96865fdcb4569ac2a54c937992c48885c5e3d9967fe8
+  languageName: node
+  linkType: hard
+
+"@isaacs/brace-expansion@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "@isaacs/brace-expansion@npm:5.0.1"
+  dependencies:
+    "@isaacs/balanced-match": "npm:^4.0.1"
+  checksum: 10/aec226065bc4285436a27379e08cc35bf94ef59f5098ac1c026495c9ba4ab33d851964082d3648d56d63eb90f2642867bd15a3e1b810b98beb1a8c14efce6a94
   languageName: node
   linkType: hard
 
@@ -6638,6 +6699,40 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< exui-2657-typescript-upgrade
+"@npmcli/fs@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "@npmcli/fs@npm:5.0.0"
+=======
+"@npmcli/agent@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@npmcli/agent@npm:4.0.0"
+  dependencies:
+    agent-base: "npm:^7.1.0"
+    http-proxy-agent: "npm:^7.0.0"
+    https-proxy-agent: "npm:^7.0.1"
+    lru-cache: "npm:^11.2.1"
+    socks-proxy-agent: "npm:^8.0.3"
+  checksum: 10/1a81573becc60515031accc696e6405e9b894e65c12b98ef4aeee03b5617c41948633159dbf6caf5dde5b47367eeb749bdc7b7dfb21960930a9060a935c6f636
+  languageName: node
+  linkType: hard
+
+"@npmcli/fs@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@npmcli/fs@npm:4.0.0"
+>>>>>>> cve-bundle
+  dependencies:
+    semver: "npm:^7.3.5"
+  checksum: 10/4935c7719d17830d0f9fa46c50be17b2a3c945cec61760f6d0909bce47677c42e1810ca673305890f9e84f008ec4d8e841182f371e42100a8159d15f22249208
+  languageName: node
+  linkType: hard
+
+<<<<<<< exui-2657-typescript-upgrade
+"@npmcli/git@npm:^7.0.0":
+  version: 7.0.1
+  resolution: "@npmcli/git@npm:7.0.1"
+  dependencies:
+=======
 "@npmcli/fs@npm:^5.0.0":
   version: 5.0.0
   resolution: "@npmcli/fs@npm:5.0.0"
@@ -6651,6 +6746,7 @@ __metadata:
   version: 7.0.1
   resolution: "@npmcli/git@npm:7.0.1"
   dependencies:
+>>>>>>> cve-bundle
     "@npmcli/promise-spawn": "npm:^9.0.0"
     ini: "npm:^6.0.0"
     lru-cache: "npm:^11.2.1"
@@ -9439,6 +9535,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@typescript-eslint/eslint-plugin@npm:8.55.0":
+  version: 8.55.0
+  resolution: "@typescript-eslint/eslint-plugin@npm:8.55.0"
+  dependencies:
+    "@eslint-community/regexpp": "npm:^4.12.2"
+    "@typescript-eslint/scope-manager": "npm:8.55.0"
+    "@typescript-eslint/type-utils": "npm:8.55.0"
+    "@typescript-eslint/utils": "npm:8.55.0"
+    "@typescript-eslint/visitor-keys": "npm:8.55.0"
+    ignore: "npm:^7.0.5"
+    natural-compare: "npm:^1.4.0"
+    ts-api-utils: "npm:^2.4.0"
+  peerDependencies:
+    "@typescript-eslint/parser": ^8.55.0
+    eslint: ^8.57.0 || ^9.0.0
+    typescript: ">=4.8.4 <6.0.0"
+  checksum: 10/b654130700b45077c6892f703c14e964d1facb76e1816e38d0707501e7f331ff0acf2b0b88daa2c5f4fffeabd2f04a5a723e1a28ff4e88bc267e60515584ce3a
+  languageName: node
+  linkType: hard
+
 "@typescript-eslint/eslint-plugin@npm:^7.2.0":
   version: 7.18.0
   resolution: "@typescript-eslint/eslint-plugin@npm:7.18.0"
@@ -9465,6 +9581,22 @@ __metadata:
 "@typescript-eslint/parser@npm:8.54.0":
   version: 8.54.0
   resolution: "@typescript-eslint/parser@npm:8.54.0"
+  dependencies:
+    "@typescript-eslint/scope-manager": "npm:8.55.0"
+    "@typescript-eslint/types": "npm:8.55.0"
+    "@typescript-eslint/typescript-estree": "npm:8.55.0"
+    "@typescript-eslint/visitor-keys": "npm:8.55.0"
+    debug: "npm:^4.4.3"
+  peerDependencies:
+    eslint: ^8.57.0 || ^9.0.0
+    typescript: ">=4.8.4 <6.0.0"
+  checksum: 10/f6140b163ce1fd460fbcc51c79fdaf2825d95764741c2d73271416e13d2302c25fa578fc1e46cb0f4a78867264f7df5ed424c500737cc49084fe0af8ad33c541
+  languageName: node
+  linkType: hard
+
+"@typescript-eslint/parser@npm:8.55.0":
+  version: 8.55.0
+  resolution: "@typescript-eslint/parser@npm:8.55.0"
   dependencies:
     "@typescript-eslint/scope-manager": "npm:8.55.0"
     "@typescript-eslint/types": "npm:8.55.0"
@@ -10156,6 +10288,13 @@ __metadata:
   version: 1.1.1
   resolution: "abbrev@npm:1.1.1"
   checksum: 10/2d882941183c66aa665118bafdab82b7a177e9add5eb2776c33e960a4f3c89cff88a1b38aba13a456de01d0dd9d66a8bea7c903268b21ea91dd1097e1e2e8243
+  languageName: node
+  linkType: hard
+
+"abbrev@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "abbrev@npm:4.0.0"
+  checksum: 10/e2f0c6a6708ad738b3e8f50233f4800de31ad41a6cdc50e0cbe51b76fed69fd0213516d92c15ce1a9985fca71a14606a9be22bf00f8475a58987b9bfb671c582
   languageName: node
   linkType: hard
 
@@ -11364,7 +11503,48 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< exui-2657-typescript-upgrade
 "body-parser@npm:^1.19.0, body-parser@npm:^1.20.3, body-parser@npm:~1.20.3":
+=======
+"body-parser@npm:1.20.3, body-parser@npm:^1.19.0, body-parser@npm:^1.20.3":
+  version: 1.20.3
+  resolution: "body-parser@npm:1.20.3"
+  dependencies:
+    bytes: "npm:3.1.2"
+    content-type: "npm:~1.0.5"
+    debug: "npm:2.6.9"
+    depd: "npm:2.0.0"
+    destroy: "npm:1.2.0"
+    http-errors: "npm:2.0.0"
+    iconv-lite: "npm:0.4.24"
+    on-finished: "npm:2.4.1"
+    qs: "npm:6.13.0"
+    raw-body: "npm:2.5.2"
+    type-is: "npm:~1.6.18"
+    unpipe: "npm:1.0.0"
+  checksum: 10/8723e3d7a672eb50854327453bed85ac48d045f4958e81e7d470c56bf111f835b97e5b73ae9f6393d0011cc9e252771f46fd281bbabc57d33d3986edf1e6aeca
+  languageName: node
+  linkType: hard
+
+"body-parser@npm:^2.2.1":
+  version: 2.2.2
+  resolution: "body-parser@npm:2.2.2"
+  dependencies:
+    bytes: "npm:^3.1.2"
+    content-type: "npm:^1.0.5"
+    debug: "npm:^4.4.3"
+    http-errors: "npm:^2.0.0"
+    iconv-lite: "npm:^0.7.0"
+    on-finished: "npm:^2.4.1"
+    qs: "npm:^6.14.1"
+    raw-body: "npm:^3.0.1"
+    type-is: "npm:^2.0.1"
+  checksum: 10/69671f67d4d5ae5974593901a92d639757231da1725ed6de4d35e86cde9ce7650afdf1cd28df9b6f7892ea7f9eb03ccb30c70fe27d679275ae4cb4aae5ce1b21
+  languageName: node
+  linkType: hard
+
+"body-parser@npm:~1.20.3":
+>>>>>>> cve-bundle
   version: 1.20.4
   resolution: "body-parser@npm:1.20.4"
   dependencies:
@@ -11607,6 +11787,31 @@ __metadata:
   bin:
     c8: bin/c8.js
   checksum: 10/6c11f156960181ef069d9bb33f67c108088d09671934e273cb8a25453e9d5030f61f9b74b72bea3236d5bb8bfeb8d59b359d2eb488c2d378c9491d725cec4574
+  languageName: node
+  linkType: hard
+
+<<<<<<< exui-2657-typescript-upgrade
+"cacache@npm:^20.0.0, cacache@npm:^20.0.1":
+  version: 20.0.3
+  resolution: "cacache@npm:20.0.3"
+=======
+"cacache@npm:^19.0.1":
+  version: 19.0.1
+  resolution: "cacache@npm:19.0.1"
+>>>>>>> cve-bundle
+  dependencies:
+    "@npmcli/fs": "npm:^5.0.0"
+    fs-minipass: "npm:^3.0.0"
+    glob: "npm:^13.0.0"
+    lru-cache: "npm:^11.1.0"
+    minipass: "npm:^7.0.3"
+    minipass-collect: "npm:^2.0.1"
+    minipass-flush: "npm:^1.0.5"
+    minipass-pipeline: "npm:^1.2.4"
+    p-map: "npm:^7.0.2"
+    ssri: "npm:^13.0.0"
+    unique-filename: "npm:^5.0.0"
+  checksum: 10/388a0169970df9d051da30437f93f81b7e91efb570ad0ff2b8fde33279fbe726c1bc8e8e2b9c05053ffb4f563854c73db395e8712e3b62347a1bc4f7fb8899ff
   languageName: node
   linkType: hard
 
@@ -15376,6 +15581,16 @@ __metadata:
     type-is: "npm:^2.0.1"
     vary: "npm:^1.1.2"
   checksum: 10/4aa545d89702ac83f645c77abda1b57bcabe288f0b380fb5580fac4e323ea0eb533005c8e666b4e19152fb16d4abf11ba87b22aa9a10857a0485cd86b94639bd
+<<<<<<< exui-2657-typescript-upgrade
+=======
+  languageName: node
+  linkType: hard
+
+"exsolve@npm:^1.0.7":
+  version: 1.0.7
+  resolution: "exsolve@npm:1.0.7"
+  checksum: 10/0c9fc0964da0154f38b55e612ed29bf5040f753d5d2db3a63559762237d0a86290e2f18997973343bb9900c07ab1e48596321de9d9d338e373b1f3f1a015e4c9
+>>>>>>> cve-bundle
   languageName: node
   linkType: hard
 
@@ -15863,20 +16078,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"form-data@npm:2.5.5, form-data@npm:^2.5.5":
-  version: 2.5.5
-  resolution: "form-data@npm:2.5.5"
-  dependencies:
-    asynckit: "npm:^0.4.0"
-    combined-stream: "npm:^1.0.8"
-    es-set-tostringtag: "npm:^2.1.0"
-    hasown: "npm:^2.0.2"
-    mime-types: "npm:^2.1.35"
-    safe-buffer: "npm:^5.2.1"
-  checksum: 10/4b6a8d07bb67089da41048e734215f68317a8e29dd5385a972bf5c458a023313c69d3b5d6b8baafbb7f808fa9881e0e2e030ffe61e096b3ddc894c516401271d
-  languageName: node
-  linkType: hard
-
 "form-data@npm:4.0.4":
   version: 4.0.4
   resolution: "form-data@npm:4.0.4"
@@ -15887,19 +16088,6 @@ __metadata:
     hasown: "npm:^2.0.2"
     mime-types: "npm:^2.1.12"
   checksum: 10/a4b62e21932f48702bc468cc26fb276d186e6b07b557e3dd7cc455872bdbb82db7db066844a64ad3cf40eaf3a753c830538183570462d3649fdfd705601cbcfb
-  languageName: node
-  linkType: hard
-
-"form-data@npm:^4.0.4, form-data@npm:^4.0.5":
-  version: 4.0.5
-  resolution: "form-data@npm:4.0.5"
-  dependencies:
-    asynckit: "npm:^0.4.0"
-    combined-stream: "npm:^1.0.8"
-    es-set-tostringtag: "npm:^2.1.0"
-    hasown: "npm:^2.0.2"
-    mime-types: "npm:^2.1.12"
-  checksum: 10/52ecd6e927c8c4e215e68a7ad5e0f7c1031397439672fd9741654b4a94722c4182e74cc815b225dcb5be3f4180f36428f67c6dd39eaa98af0dcfdd26c00c19cd
   languageName: node
   linkType: hard
 
@@ -16332,6 +16520,17 @@ __metadata:
     minipass: "npm:^7.1.2"
     path-scurry: "npm:^2.0.0"
   checksum: 10/4dc7e3c4570a5626f93c284c9877424c35ffe092730afa5d09aec3bc4230af09795130d389bb76ffbc049ba3283c58d92ca45316684c51c1b9d525ef4b1eed22
+  languageName: node
+  linkType: hard
+
+"glob@npm:^13.0.0":
+  version: 13.0.1
+  resolution: "glob@npm:13.0.1"
+  dependencies:
+    minimatch: "npm:^10.1.2"
+    minipass: "npm:^7.1.2"
+    path-scurry: "npm:^2.0.0"
+  checksum: 10/465e8cc269ab88d7415a3906cdc0f4543a2ae54df99207204af5bc28a944396d8d893822f546a8056a78ec714e608ab4f3502532c4d6b9cc5e113adf0fe5109e
   languageName: node
   linkType: hard
 
@@ -17018,6 +17217,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"iconv-lite@npm:~0.7.0":
+  version: 0.7.2
+  resolution: "iconv-lite@npm:0.7.2"
+  dependencies:
+    safer-buffer: "npm:>= 2.1.2 < 3.0.0"
+  checksum: 10/24c937b532f868e938386b62410b303b7c767ce3d08dc2829cbe59464d5a26ef86ae5ad1af6b34eec43ddfea39e7d101638644b0178d67262fa87015d59f983a
+  languageName: node
+  linkType: hard
+
 "icss-utils@npm:^5.0.0, icss-utils@npm:^5.1.0":
   version: 5.1.0
   resolution: "icss-utils@npm:5.1.0"
@@ -17248,7 +17456,11 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< exui-2657-typescript-upgrade
 "ip-address@npm:10.0.1":
+=======
+"ip-address@npm:10.0.1, ip-address@npm:^10.0.1":
+>>>>>>> cve-bundle
   version: 10.0.1
   resolution: "ip-address@npm:10.0.1"
   checksum: 10/09731acda32cd8e14c46830c137e7e5940f47b36d63ffb87c737331270287d631cf25aa95570907a67d3f919fdb25f4470c404eda21e62f22e0a55927f4dd0fb
@@ -18527,8 +18739,8 @@ __metadata:
   linkType: hard
 
 "joi@npm:^18.0.1":
-  version: 18.0.1
-  resolution: "joi@npm:18.0.1"
+  version: 18.0.2
+  resolution: "joi@npm:18.0.2"
   dependencies:
     "@hapi/address": "npm:^5.1.1"
     "@hapi/formula": "npm:^3.0.2"
@@ -18537,7 +18749,7 @@ __metadata:
     "@hapi/tlds": "npm:^1.1.1"
     "@hapi/topo": "npm:^6.0.2"
     "@standard-schema/spec": "npm:^1.0.0"
-  checksum: 10/d8e391c0e93ca1e83836bd8eb3562004a038d5184e74b9e6c6877fc60c782cbc549dcaa003e41ddb12c10899be3c4da175e7dc290e9457e92f2f4d28b46094df
+  checksum: 10/0cf4980cafff311696cfb80618e1725c317153e927947ecb06e452142b89981979b50fca432d4d5e9f321b28ffc8bcbed96872a3a62aa704323055d8295c9b5a
   languageName: node
   linkType: hard
 
@@ -18633,7 +18845,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:3.14.2":
+"js-yaml@npm:4.1.0":
+  version: 4.1.0
+  resolution: "js-yaml@npm:4.1.0"
+  dependencies:
+    argparse: "npm:^2.0.1"
+  bin:
+    js-yaml: bin/js-yaml.js
+  checksum: 10/c138a34a3fd0d08ebaf71273ad4465569a483b8a639e0b118ff65698d257c2791d3199e3f303631f2cb98213fa7b5f5d6a4621fd0fff819421b990d30d967140
+  languageName: node
+  linkType: hard
+
+"js-yaml@npm:^3.13.1":
   version: 3.14.2
   resolution: "js-yaml@npm:3.14.2"
   dependencies:
@@ -18645,7 +18868,11 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< exui-2657-typescript-upgrade
 "js-yaml@npm:4.1.1, js-yaml@npm:^4.1.1":
+=======
+"js-yaml@npm:^4.0.0, js-yaml@npm:^4.1.0, js-yaml@npm:^4.1.1":
+>>>>>>> cve-bundle
   version: 4.1.1
   resolution: "js-yaml@npm:4.1.1"
   dependencies:
@@ -18867,7 +19094,11 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< exui-2657-typescript-upgrade
 "jsonwebtoken@npm:^9.0.0, jsonwebtoken@npm:^9.0.2":
+=======
+"jsonwebtoken@npm:9.0.3, jsonwebtoken@npm:^9.0.3":
+>>>>>>> cve-bundle
   version: 9.0.3
   resolution: "jsonwebtoken@npm:9.0.3"
   dependencies:
@@ -18904,7 +19135,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@faker-js/faker": "npm:^9.2.0"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
-    "@hmcts/properties-volume": "npm:^1.2.0"
+    "@hmcts/properties-volume": "npm:^1.3.1"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.0"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7-csp-final-change-3"
     "@pact-foundation/pact": "npm:^15.0.1"
@@ -18945,7 +19176,7 @@ __metadata:
     node-http-proxy-json: "npm:^0.1.9"
     nodemon: "npm:^2.0.19"
     otplib: "npm:^12.0.1"
-    qs: "npm:^6.14.0"
+    qs: "npm:^6.15.0"
     sinon: "npm:^7.3.2"
     sinon-chai: "npm:^3.3.0"
     sinon-express-mock: "npm:^2.2.0"
@@ -19897,6 +20128,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lru-cache@npm:^11.2.1":
+  version: 11.2.5
+  resolution: "lru-cache@npm:11.2.5"
+  checksum: 10/be50f66c6e23afeaab9c7eefafa06344dd13cde7b3528809c2660c4ad70d93b9ba537366634623cbb2eb411671f526b5a4af2c602507b9258aead0fa8d713f6c
+  languageName: node
+  linkType: hard
+
 "lru-cache@npm:^5.1.1":
   version: 5.1.1
   resolution: "lru-cache@npm:5.1.1"
@@ -19977,6 +20215,31 @@ __metadata:
   version: 1.3.6
   resolution: "make-error@npm:1.3.6"
   checksum: 10/b86e5e0e25f7f777b77fabd8e2cbf15737972869d852a22b7e73c17623928fccb826d8e46b9951501d3f20e51ad74ba8c59ed584f610526a48f8ccf88aaec402
+  languageName: node
+  linkType: hard
+
+<<<<<<< exui-2657-typescript-upgrade
+"make-fetch-happen@npm:^15.0.0, make-fetch-happen@npm:^15.0.1, make-fetch-happen@npm:^15.0.3":
+  version: 15.0.3
+  resolution: "make-fetch-happen@npm:15.0.3"
+=======
+"make-fetch-happen@npm:^14.0.3":
+  version: 14.0.3
+  resolution: "make-fetch-happen@npm:14.0.3"
+>>>>>>> cve-bundle
+  dependencies:
+    "@npmcli/agent": "npm:^4.0.0"
+    cacache: "npm:^20.0.1"
+    http-cache-semantics: "npm:^4.1.1"
+    minipass: "npm:^7.0.2"
+    minipass-fetch: "npm:^5.0.0"
+    minipass-flush: "npm:^1.0.5"
+    minipass-pipeline: "npm:^1.2.4"
+    negotiator: "npm:^1.0.0"
+    proc-log: "npm:^6.0.0"
+    promise-retry: "npm:^2.0.1"
+    ssri: "npm:^13.0.0"
+  checksum: 10/78da4fc1df83cb596e2bae25aa0653b8a9c6cbdd6674a104894e03be3acfcd08c70b78f06ef6407fbd6b173f6a60672480d78641e693d05eb71c09c13ee35278
   languageName: node
   linkType: hard
 
@@ -20206,7 +20469,11 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< exui-2657-typescript-upgrade
 "mime-types@npm:^2.1.12, mime-types@npm:^2.1.17, mime-types@npm:^2.1.27, mime-types@npm:^2.1.31, mime-types@npm:^2.1.35, mime-types@npm:~2.1.24, mime-types@npm:~2.1.34, mime-types@npm:~2.1.35":
+=======
+"mime-types@npm:^2.1.12, mime-types@npm:^2.1.17, mime-types@npm:^2.1.27, mime-types@npm:^2.1.31, mime-types@npm:~2.1.17, mime-types@npm:~2.1.24, mime-types@npm:~2.1.34":
+>>>>>>> cve-bundle
   version: 2.1.35
   resolution: "mime-types@npm:2.1.35"
   dependencies:
@@ -20341,6 +20608,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"minimatch@npm:^10.1.1, minimatch@npm:^10.1.2":
+  version: 10.1.2
+  resolution: "minimatch@npm:10.1.2"
+  dependencies:
+    "@isaacs/brace-expansion": "npm:^5.0.1"
+  checksum: 10/6f0ef975463739207144e411bdd54f7205ce38770b162fa3bc4c9be4987a16cb20d0962a82f26c2372598cfba90faa97b327239d303b529b774f17681c163b46
+  languageName: node
+  linkType: hard
+
 "minimatch@npm:^5.0.1, minimatch@npm:^5.1.0, minimatch@npm:^5.1.6":
   version: 5.1.6
   resolution: "minimatch@npm:5.1.6"
@@ -20390,6 +20666,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"minipass-fetch@npm:^5.0.0":
+  version: 5.0.1
+  resolution: "minipass-fetch@npm:5.0.1"
+  dependencies:
+    encoding: "npm:^0.1.13"
+    minipass: "npm:^7.0.3"
+    minipass-sized: "npm:^2.0.0"
+    minizlib: "npm:^3.0.1"
+  dependenciesMeta:
+    encoding:
+      optional: true
+  checksum: 10/08bf0c9866e7f344bf1863ce0d99c0a6fe96b43ef5a4119e23d84a21e613a3f55ecf302adf28d9e228b4ebd50e81d5e84c397e0535089090427319379f478d94
+  languageName: node
+  linkType: hard
+
 "minipass-flush@npm:^1.0.5":
   version: 1.0.5
   resolution: "minipass-flush@npm:1.0.5"
@@ -20405,6 +20696,15 @@ __metadata:
   dependencies:
     minipass: "npm:^3.0.0"
   checksum: 10/b14240dac0d29823c3d5911c286069e36d0b81173d7bdf07a7e4a91ecdef92cdff4baaf31ea3746f1c61e0957f652e641223970870e2353593f382112257971b
+  languageName: node
+  linkType: hard
+
+"minipass-sized@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "minipass-sized@npm:2.0.0"
+  dependencies:
+    minipass: "npm:^7.1.2"
+  checksum: 10/3b89adf64ca705662f77481e278eff5ec0a57aeffb5feba7cc8843722b1e7770efc880f2a17d1d4877b2d7bf227873cd46afb4da44c0fd18088b601ea50f96bb
   languageName: node
   linkType: hard
 
@@ -21165,9 +21465,35 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< exui-2657-typescript-upgrade
 "node-gyp@npm:^12.1.0, node-gyp@npm:latest":
   version: 12.2.0
   resolution: "node-gyp@npm:12.2.0"
+=======
+"node-gyp@npm:^12.1.0":
+  version: 12.2.0
+  resolution: "node-gyp@npm:12.2.0"
+  dependencies:
+    env-paths: "npm:^2.2.0"
+    exponential-backoff: "npm:^3.1.1"
+    graceful-fs: "npm:^4.2.6"
+    make-fetch-happen: "npm:^15.0.0"
+    nopt: "npm:^9.0.0"
+    proc-log: "npm:^6.0.0"
+    semver: "npm:^7.3.5"
+    tar: "npm:^7.5.4"
+    tinyglobby: "npm:^0.2.12"
+    which: "npm:^6.0.0"
+  bin:
+    node-gyp: bin/node-gyp.js
+  checksum: 10/4ebab5b77585a637315e969c2274b5520562473fe75de850639a580c2599652fb9f33959ec782ea45a2e149d8f04b548030f472eeeb3dbdf19a7f2ccbc30b908
+  languageName: node
+  linkType: hard
+
+"node-gyp@npm:latest":
+  version: 11.5.0
+  resolution: "node-gyp@npm:11.5.0"
+>>>>>>> cve-bundle
   dependencies:
     env-paths: "npm:^2.2.0"
     exponential-backoff: "npm:^3.1.1"
@@ -21275,6 +21601,17 @@ __metadata:
   bin:
     nopt: bin/nopt.js
   checksum: 10/3c1128e07cd0241ae66d6e6a472170baa9f3e84dd4203950ba8df5bafac4efa2166ce917a57ef02b01ba7c40d18b2cc64b29b225fd3640791fe07b24f0b33a32
+  languageName: node
+  linkType: hard
+
+"nopt@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "nopt@npm:9.0.0"
+  dependencies:
+    abbrev: "npm:^4.0.0"
+  bin:
+    nopt: bin/nopt.js
+  checksum: 10/56a1ccd2ad711fb5115918e2c96828703cddbe12ba2c3bd00591758f6fa30e6f47dd905c59dbfcf9b773f3a293b45996609fb6789ae29d6bfcc3cf3a6f7d9fda
   languageName: node
   linkType: hard
 
@@ -23094,12 +23431,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< exui-2657-typescript-upgrade
 "qs@npm:^6.14.0, qs@npm:^6.14.1, qs@npm:^6.4.0, qs@npm:~6.14.0":
   version: 6.14.1
   resolution: "qs@npm:6.14.1"
+=======
+"qs@npm:^6.15.0":
+  version: 6.15.0
+  resolution: "qs@npm:6.15.0"
+>>>>>>> cve-bundle
   dependencies:
     side-channel: "npm:^1.1.0"
-  checksum: 10/34b5ab00a910df432d55180ef39c1d1375e550f098b5ec153b41787f1a6a6d7e5f9495593c3b112b77dbc6709d0ae18e55b82847a4c2bbbb0de1e8ccbb1794c5
+  checksum: 10/a3458f2f389285c3512e0ebc55522ee370ac7cb720ba9f0eff3e30fb2bb07631caf556c08e2a3d4481a371ac14faa9ceb7442a0610c5a7e55b23a5bdee7b701c
   languageName: node
   linkType: hard
 
@@ -23172,6 +23515,18 @@ __metadata:
   linkType: hard
 
 "raw-body@npm:^3.0.0, raw-body@npm:^3.0.1":
+  version: 3.0.2
+  resolution: "raw-body@npm:3.0.2"
+  dependencies:
+    bytes: "npm:~3.1.2"
+    http-errors: "npm:~2.0.1"
+    iconv-lite: "npm:~0.7.0"
+    unpipe: "npm:~1.0.0"
+  checksum: 10/4168c82157bd69175d5bd960e59b74e253e237b358213694946a427a6f750a18b8e150f036fed3421b3e83294b071a4e2bb01037a79ccacdac05360c63d3ebba
+  languageName: node
+  linkType: hard
+
+"raw-body@npm:^3.0.1":
   version: 3.0.2
   resolution: "raw-body@npm:3.0.2"
   dependencies:
@@ -23927,7 +24282,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "rpx-exui@workspace:."
   dependencies:
-    "@angular-devkit/build-angular": "npm:^20.3.14"
+    "@angular-devkit/build-angular": "npm:^20.3.15"
     "@angular-eslint/builder": "npm:20.4.0"
     "@angular-eslint/eslint-plugin": "npm:20.4.0"
     "@angular-eslint/eslint-plugin-template": "npm:20.4.0"
@@ -23937,7 +24292,7 @@ __metadata:
     "@angular-material-components/moment-adapter": "npm:^16.0.1"
     "@angular/animations": "npm:^20.3.16"
     "@angular/cdk": "npm:^16.2.0"
-    "@angular/cli": "npm:^20.3.14"
+    "@angular/cli": "npm:^20.3.15"
     "@angular/common": "npm:^20.3.16"
     "@angular/compiler": "npm:^20.3.16"
     "@angular/compiler-cli": "npm:^20.3.16"
@@ -23955,13 +24310,13 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.33"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.34"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.12"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.2"
-    "@hmcts/properties-volume": "npm:^1.2.0"
+    "@hmcts/properties-volume": "npm:^1.3.1"
     "@hmcts/rpx-xui-common-lib": "https://github.com/hmcts/rpx-xui-common-lib/releases/download/v3.2.4/hmcts-rpx-xui-common-lib-3.2.4.tgz"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7-csp-final-change-3"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
@@ -24045,7 +24400,7 @@ __metadata:
     jasmine-spec-reporter: "npm:~7.0.0"
     jiti: "npm:^2.6.1"
     jsonpath-plus: "npm:^10.3.0"
-    jsonwebtoken: "npm:^9.0.2"
+    jsonwebtoken: "npm:^9.0.3"
     karma: "npm:~6.4.2"
     karma-chrome-launcher: "npm:3.2.0"
     karma-coverage: "npm:~2.2.0"
@@ -24087,7 +24442,7 @@ __metadata:
     rpx-xui-translation: "https://github.com/hmcts/rpx-xui-translation/releases/download/v1.2.1/rpx-xui-translation-1.2.1.tgz"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
-    sass: "npm:^1.66.1"
+    sass: "npm:^1.97.3"
     sinon: "npm:^7.3.2"
     sinon-chai: "npm:^3.3.0"
     sinon-express-mock: "npm:^2.2.0"
@@ -24206,7 +24561,11 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< exui-2657-typescript-upgrade
 "safe-buffer@npm:5.2.1, safe-buffer@npm:>=5.1.0, safe-buffer@npm:^5.0.1, safe-buffer@npm:^5.1.0, safe-buffer@npm:^5.2.1, safe-buffer@npm:~5.2.0, safe-buffer@npm:~5.2.1":
+=======
+"safe-buffer@npm:5.2.1, safe-buffer@npm:>=5.1.0, safe-buffer@npm:^5.0.1, safe-buffer@npm:^5.1.0, safe-buffer@npm:~5.2.0":
+>>>>>>> cve-bundle
   version: 5.2.1
   resolution: "safe-buffer@npm:5.2.1"
   checksum: 10/32872cd0ff68a3ddade7a7617b8f4c2ae8764d8b7d884c651b74457967a9e0e886267d3ecc781220629c44a865167b61c375d2da6c720c840ecd73f45d5d9451
@@ -24288,7 +24647,11 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< exui-2657-typescript-upgrade
 "sass@npm:^1.66.1":
+=======
+"sass@npm:^1.97.3":
+>>>>>>> cve-bundle
   version: 1.97.3
   resolution: "sass@npm:1.97.3"
   dependencies:
@@ -25049,6 +25412,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"ssri@npm:^13.0.0":
+  version: 13.0.0
+  resolution: "ssri@npm:13.0.0"
+  dependencies:
+    minipass: "npm:^7.0.3"
+  checksum: 10/fd59bfedf0659c1b83f6e15459162da021f08ec0f5834dd9163296f8b77ee82f9656aa1d415c3d3848484293e0e6aefdd482e863e52ddb53d520bb73da1eeec1
+  languageName: node
+  linkType: hard
+
 "stack-chain@npm:^1.3.7":
   version: 1.3.7
   resolution: "stack-chain@npm:1.3.7"
@@ -25555,6 +25927,7 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< exui-2657-typescript-upgrade
 "tar@npm:7.5.4":
   version: 7.5.4
   resolution: "tar@npm:7.5.4"
@@ -25568,6 +25941,8 @@ __metadata:
   languageName: node
   linkType: hard
 
+=======
+>>>>>>> cve-bundle
 "tar@npm:^6.1.13":
   version: 6.2.1
   resolution: "tar@npm:6.2.1"
@@ -25582,7 +25957,11 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< exui-2657-typescript-upgrade
 "tar@npm:^7.4.3":
+=======
+"tar@npm:^7.4.3, tar@npm:^7.5.4":
+>>>>>>> cve-bundle
   version: 7.5.7
   resolution: "tar@npm:7.5.7"
   dependencies:
@@ -26247,7 +26626,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+<<<<<<< exui-2657-typescript-upgrade
 "typescript-eslint@npm:^8.53.1, typescript-eslint@npm:^8.54.0":
+  version: 8.55.0
+  resolution: "typescript-eslint@npm:8.55.0"
+=======
+"typescript-eslint@npm:^8.53.1":
+  version: 8.54.0
+  resolution: "typescript-eslint@npm:8.54.0"
+>>>>>>> cve-bundle
+  dependencies:
+    "@typescript-eslint/eslint-plugin": "npm:8.55.0"
+    "@typescript-eslint/parser": "npm:8.55.0"
+    "@typescript-eslint/typescript-estree": "npm:8.55.0"
+    "@typescript-eslint/utils": "npm:8.55.0"
+  peerDependencies:
+    eslint: ^8.57.0 || ^9.0.0
+    typescript: ">=4.8.4 <6.0.0"
+  checksum: 10/60f8c9a57a5ce2b1ce74a4287ce03171440a911c451755a5c8192a2f0770e89b629836e6ab455ffbf165e64c18e254926156627ff314bcd8e4fd3d7badfc40be
+  languageName: node
+  linkType: hard
+
+<<<<<<< exui-2657-typescript-upgrade
+"typescript@npm:^5.1.6, typescript@npm:^5.9.3, typescript@npm:~5.9.0":
+=======
+"typescript-eslint@npm:^8.54.0":
   version: 8.55.0
   resolution: "typescript-eslint@npm:8.55.0"
   dependencies:
@@ -26262,7 +26665,8 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.1.6, typescript@npm:^5.9.3, typescript@npm:~5.9.0":
+"typescript@npm:^5.1.6, typescript@npm:^5.9.3":
+>>>>>>> cve-bundle
   version: 5.9.3
   resolution: "typescript@npm:5.9.3"
   bin:
@@ -26459,6 +26863,30 @@ __metadata:
   dependencies:
     unique-slug: "npm:^6.0.0"
   checksum: 10/a5f67085caef74bdd2a6869a200ed5d68d171f5cc38435a836b5fd12cce4e4eb55e6a190298035c325053a5687ed7a3c96f0a91e82215fd14729769d9ac57d9b
+  languageName: node
+  linkType: hard
+
+<<<<<<< exui-2657-typescript-upgrade
+"unique-slug@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "unique-slug@npm:6.0.0"
+=======
+"unique-filename@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "unique-filename@npm:5.0.0"
+  dependencies:
+    unique-slug: "npm:^6.0.0"
+  checksum: 10/a5f67085caef74bdd2a6869a200ed5d68d171f5cc38435a836b5fd12cce4e4eb55e6a190298035c325053a5687ed7a3c96f0a91e82215fd14729769d9ac57d9b
+  languageName: node
+  linkType: hard
+
+"unique-slug@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "unique-slug@npm:5.0.0"
+>>>>>>> cve-bundle
+  dependencies:
+    imurmurhash: "npm:^0.1.4"
+  checksum: 10/b78ed9d5b01ff465f80975f17387750ed3639909ac487fa82c4ae4326759f6de87c2131c0c39eca4c68cf06c537a8d104fba1dfc8a30308f99bc505345e1eba3
   languageName: node
   linkType: hard
 
@@ -26777,6 +27205,16 @@ __metadata:
   version: 7.0.2
   resolution: "validate-npm-package-name@npm:7.0.2"
   checksum: 10/2a9bdc6fd5e4284c8e02279446bfd3c38c0c01222555fd3b00b4765d9d47b217d4a200910be71b80b958f6baf40d2d32e812a8632633a2ce376a9b3b74811072
+<<<<<<< exui-2657-typescript-upgrade
+=======
+  languageName: node
+  linkType: hard
+
+"validator@npm:^13.6.0":
+  version: 13.15.15
+  resolution: "validator@npm:13.15.15"
+  checksum: 10/a43d9271c879468b1ad6dd5d2597b71719a185d2c7ceb3d68f3c9c8c17c25af0d90a53edfa7efaa6ac0d4425ba0345684b9c7d8111bde0d06d915a634a287018
+>>>>>>> cve-bundle
   languageName: node
   linkType: hard
 
@@ -27355,6 +27793,7 @@ __metadata:
   linkType: hard
 
 "which@npm:^6.0.0":
+<<<<<<< exui-2657-typescript-upgrade
   version: 6.0.1
   resolution: "which@npm:6.0.1"
   dependencies:
@@ -27362,6 +27801,15 @@ __metadata:
   bin:
     node-which: bin/which.js
   checksum: 10/dbea77c7d3058bf6c78bf9659d2dce4d2b57d39a15b826b2af6ac2e5a219b99dc8a831b79fdbc453c0598adb4f3f84cf9c2491fd52beb9f5d2dececcad117f68
+=======
+  version: 6.0.0
+  resolution: "which@npm:6.0.0"
+  dependencies:
+    isexe: "npm:^3.1.1"
+  bin:
+    node-which: bin/which.js
+  checksum: 10/df19b2cd8aac94b333fa29b42e8e371a21e634a742a3b156716f7752a5afe1d73fb5d8bce9b89326f453d96879e8fe626eb421e0117eb1a3ce9fd8c97f6b7db9
+>>>>>>> cve-bundle
   languageName: node
   linkType: hard
 

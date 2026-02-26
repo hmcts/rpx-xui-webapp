@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures';
 
-test('IDAM login page is up and displays username and password fields', async ({ idamPage , page}) => {
+test('IDAM login page is up and displays username and password fields', async ({ idamPage, page }) => {
   await page.goto('');
 
   // Check page title contains expected text

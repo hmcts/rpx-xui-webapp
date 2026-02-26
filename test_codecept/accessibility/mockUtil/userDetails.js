@@ -1,4 +1,3 @@
-
 const nodeAppDataModels = require('../../dataModels/nodeApp');
 const workAllocationDataModels = require('../../dataModels/workAllocation');
 
@@ -8,13 +7,25 @@ const MockApp = require('../../nodeMock/app');
 const { getAuthCookie } = require('../helpers/pa11yUtil');
 const backendMockClient = require('../../backendMock/client/index');
 
-class UserDetails{
+class UserDetails {
   async withIACJudicialUser() {
-    return await this.mockUserDetailsWithIdentifierAndRoles(['caseworker', 'caseworker-ia', 'caseworker-ia-iacjudge', 'case-allocator', 'task-supervisor']);
+    return await this.mockUserDetailsWithIdentifierAndRoles([
+      'caseworker',
+      'caseworker-ia',
+      'caseworker-ia-iacjudge',
+      'case-allocator',
+      'task-supervisor',
+    ]);
   }
 
   async withIACLegalOpsUser() {
-    return await this.mockUserDetailsWithIdentifierAndRoles(['caseworker', 'caseworker-ia', 'caseworker-ia-caseofficer', 'case-allocator', 'task-supervisor']);
+    return await this.mockUserDetailsWithIdentifierAndRoles([
+      'caseworker',
+      'caseworker-ia',
+      'caseworker-ia-caseofficer',
+      'case-allocator',
+      'task-supervisor',
+    ]);
   }
 
   async mockUserDetailsWithIdentifierAndRoles(roles) {

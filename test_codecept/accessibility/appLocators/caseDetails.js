@@ -1,16 +1,14 @@
-
 module.exports = {
   container: 'exui-case-details-home mat-tab-header',
   tasksTab: tabWithLabel('Tasks'),
   rolesAndAccessTab: tabWithLabel('Roles and access'),
   tasksContainer: 'exui-case-details-home exui-tasks-container',
-  rolesAndAccessContainer: 'exui-case-details-home exui-roles-and-access-container'
-
+  rolesAndAccessContainer: 'exui-case-details-home exui-roles-and-access-container',
 };
 
-function tabWithLabel(label){
+function tabWithLabel(label) {
   let tabWithLabelPos = -1;
-  switch (label){
+  switch (label) {
     case 'Tasks':
       tabWithLabelPos = '1';
       break;
@@ -21,4 +19,3 @@ function tabWithLabel(label){
 
   return `exui-case-details-home mat-tab-group .mat-tab-label[aria-posinset="${tabWithLabelPos}"] .mat-tab-label-content`;
 }
-

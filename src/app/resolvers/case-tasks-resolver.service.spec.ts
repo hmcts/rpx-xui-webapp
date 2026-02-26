@@ -18,40 +18,40 @@ describe('CaseTasksResolverService', () => {
       {
         assignee: {
           userId: 'user123',
-          userName: 'John Doe'
+          userName: 'John Doe',
         },
         caseData: {
           category: 'EEA',
           location: {
             id: '231596',
-            locationName: 'Birmingham'
+            locationName: 'Birmingham',
           },
           name: 'Kimberly Julian',
-          reference: '1620409659381330'
+          reference: '1620409659381330',
         },
         dueDate: new Date('2029-05-05T16:00:00.000+0000'),
         name: 'Review FTPA application',
-        state: 'assigned'
+        state: 'assigned',
       },
       {
         assignee: {
           userId: 'user456',
-          userName: 'Jane Smith'
+          userName: 'Jane Smith',
         },
         caseData: {
           category: 'Protection',
           location: {
             id: '366559',
-            locationName: 'Glasgow'
+            locationName: 'Glasgow',
           },
           name: 'James Carter',
-          reference: '1620409659381330'
+          reference: '1620409659381330',
         },
         dueDate: new Date('2029-05-12T16:00:00.000+0000'),
         name: 'Review FTPA application',
-        state: 'unassigned'
-      }
-    ]
+        state: 'unassigned',
+      },
+    ],
   };
 
   beforeEach(() => {
@@ -61,8 +61,8 @@ describe('CaseTasksResolverService', () => {
         CaseTasksResolverService,
         { provide: APP_BASE_HREF, useValue: '/' },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     });
     service = TestBed.inject(CaseTasksResolverService);
     httpClient = TestBed.inject(HttpClient) as HttpClient;
@@ -77,7 +77,7 @@ describe('CaseTasksResolverService', () => {
       activatedRoute = new ActivatedRouteSnapshot();
       mockParamMap = new Map<string, string>();
       spyOnProperty(activatedRoute, 'paramMap', 'get').and.returnValue({
-        get: (key: string) => mockParamMap.get(key)
+        get: (key: string) => mockParamMap.get(key),
       } as any);
     });
 
@@ -87,9 +87,7 @@ describe('CaseTasksResolverService', () => {
 
       service.resolve(activatedRoute).subscribe((tasks: TaskList) => {
         expect(tasks.tasks.length).toBe(2);
-        expect(httpClient.get).toHaveBeenCalledWith(
-          '/workallocation/case/task/1620409659381330'
-        );
+        expect(httpClient.get).toHaveBeenCalledWith('/workallocation/case/task/1620409659381330');
         done();
       });
     });
@@ -100,9 +98,7 @@ describe('CaseTasksResolverService', () => {
       spyOn(httpClient, 'get').and.returnValue(of(TASKS));
 
       service.resolve(activatedRoute).subscribe(() => {
-        expect(httpClient.get).toHaveBeenCalledWith(
-          `/workallocation/case/task/${caseId}`
-        );
+        expect(httpClient.get).toHaveBeenCalledWith(`/workallocation/case/task/${caseId}`);
         done();
       });
     });
@@ -123,9 +119,7 @@ describe('CaseTasksResolverService', () => {
       spyOn(httpClient, 'get').and.returnValue(of(TASKS));
 
       service.resolve(activatedRoute).subscribe(() => {
-        expect(httpClient.get).toHaveBeenCalledWith(
-          '/workallocation/case/task/null'
-        );
+        expect(httpClient.get).toHaveBeenCalledWith('/workallocation/case/task/null');
         done();
       });
     });
@@ -135,9 +129,7 @@ describe('CaseTasksResolverService', () => {
       spyOn(httpClient, 'get').and.returnValue(of(TASKS));
 
       service.resolve(activatedRoute).subscribe(() => {
-        expect(httpClient.get).toHaveBeenCalledWith(
-          '/workallocation/case/task/undefined'
-        );
+        expect(httpClient.get).toHaveBeenCalledWith('/workallocation/case/task/undefined');
         done();
       });
     });
@@ -158,7 +150,7 @@ describe('CaseTasksResolverService', () => {
           complete: () => {
             expect(router.navigate).toHaveBeenCalledWith(['/service-down']);
             done();
-          }
+          },
         });
       });
 
@@ -172,7 +164,7 @@ describe('CaseTasksResolverService', () => {
           complete: () => {
             expect(router.navigate).toHaveBeenCalledWith(['/not-authorised']);
             done();
-          }
+          },
         });
       });
 
@@ -186,7 +178,7 @@ describe('CaseTasksResolverService', () => {
           complete: () => {
             expect(router.navigate).toHaveBeenCalledWith(['/not-authorised']);
             done();
-          }
+          },
         });
       });
 
@@ -201,7 +193,7 @@ describe('CaseTasksResolverService', () => {
             // With WILDCARD_SERVICE_DOWN, all errors redirect to service-down
             expect(router.navigate).toHaveBeenCalledWith(['/service-down']);
             done();
-          }
+          },
         });
       });
 
@@ -215,7 +207,7 @@ describe('CaseTasksResolverService', () => {
           complete: () => {
             expect(router.navigate).toHaveBeenCalledWith(['/service-down']);
             done();
-          }
+          },
         });
       });
 
@@ -229,7 +221,7 @@ describe('CaseTasksResolverService', () => {
           complete: () => {
             expect(router.navigate).toHaveBeenCalledWith(['/service-down']);
             done();
-          }
+          },
         });
       });
 
@@ -244,7 +236,7 @@ describe('CaseTasksResolverService', () => {
             // With WILDCARD_SERVICE_DOWN, undefined status triggers wildcard redirect
             expect(router.navigate).toHaveBeenCalledWith(['/service-down']);
             done();
-          }
+          },
         });
       });
 
@@ -260,7 +252,7 @@ describe('CaseTasksResolverService', () => {
           complete: () => {
             expect(router.navigate).toHaveBeenCalled();
             done();
-          }
+          },
         });
       });
     });
@@ -275,19 +267,17 @@ describe('CaseTasksResolverService', () => {
               category: 'Other',
               location: { id: '123', locationName: 'London' },
               name: 'Test Case',
-              reference: '9999999999999999'
+              reference: '9999999999999999',
             },
             dueDate: new Date('2029-06-01T00:00:00.000Z'),
             name: 'Another Task',
-            state: 'pending'
-          }
-        ]
+            state: 'pending',
+          },
+        ],
       };
       let emissionCount = 0;
 
-      spyOn(httpClient, 'get').and.returnValue(
-        of(TASKS, secondTaskList)
-      );
+      spyOn(httpClient, 'get').and.returnValue(of(TASKS, secondTaskList));
 
       service.resolve(activatedRoute).subscribe({
         next: (tasks: TaskList) => {
@@ -297,7 +287,7 @@ describe('CaseTasksResolverService', () => {
         complete: () => {
           expect(emissionCount).toBe(1);
           done();
-        }
+        },
       });
     });
   });

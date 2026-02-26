@@ -1,5 +1,3 @@
 import JsonConfig from './json-config';
 
-export {
-  JsonConfig
-};
+export { JsonConfig };

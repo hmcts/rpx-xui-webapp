@@ -14,7 +14,7 @@ describe('HearingsViewGuard', () => {
     canShareCases: true,
     sessionTimeout: {
       idleModalDisplayTime: 10,
-      totalIdleTime: 50
+      totalIdleTime: 50,
     },
     userInfo: {
       id: AppTestConstants.TEST_USER_ID,
@@ -22,19 +22,15 @@ describe('HearingsViewGuard', () => {
       surname: 'Wilson',
       email: 'lukesuperuserxui@mailnesia.com',
       active: true,
-      roles: [
-        'caseworker',
-        'caseworker-sscs',
-        'hearing-manager'
-      ]
-    }
+      roles: ['caseworker', 'caseworker-sscs', 'hearing-manager'],
+    },
   };
 
   const USER_2: UserDetails = {
     canShareCases: true,
     sessionTimeout: {
       idleModalDisplayTime: 10,
-      totalIdleTime: 50
+      totalIdleTime: 50,
     },
     userInfo: {
       id: AppTestConstants.TEST_USER_ID,
@@ -42,19 +38,15 @@ describe('HearingsViewGuard', () => {
       surname: 'Wilson',
       email: 'lukesuperuserxui@mailnesia.com',
       active: true,
-      roles: [
-        'caseworker',
-        'caseworker-sscs',
-        'hearing-viewer'
-      ]
-    }
+      roles: ['caseworker', 'caseworker-sscs', 'hearing-viewer'],
+    },
   };
 
   const USER_3: UserDetails = {
     canShareCases: true,
     sessionTimeout: {
       idleModalDisplayTime: 10,
-      totalIdleTime: 50
+      totalIdleTime: 50,
     },
     userInfo: {
       id: AppTestConstants.TEST_USER_ID,
@@ -62,19 +54,15 @@ describe('HearingsViewGuard', () => {
       surname: 'Wilson',
       email: 'lukesuperuserxui@mailnesia.com',
       active: true,
-      roles: [
-        'caseworker',
-        'caseworker-sscs',
-        'listed-hearing-viewer'
-      ]
-    }
+      roles: ['caseworker', 'caseworker-sscs', 'listed-hearing-viewer'],
+    },
   };
 
   const USER_4: UserDetails = {
     canShareCases: true,
     sessionTimeout: {
       idleModalDisplayTime: 10,
-      totalIdleTime: 50
+      totalIdleTime: 50,
     },
     userInfo: {
       id: AppTestConstants.TEST_USER_ID,
@@ -82,20 +70,15 @@ describe('HearingsViewGuard', () => {
       surname: 'Wilson',
       email: 'lukesuperuserxui@mailnesia.com',
       active: true,
-      roles: [
-        'caseworker',
-        'caseworker-sscs'
-      ]
-    }
+      roles: ['caseworker', 'caseworker-sscs'],
+    },
   };
 
   const FEATURE_FLAG: FeatureVariation[] = [
     {
       jurisdiction: 'SSCS',
-      includeCaseTypes: [
-        'Benefit'
-      ]
-    }
+      includeCaseTypes: ['Benefit'],
+    },
   ];
 
   const CASE_INFO = { caseReference: '1546518523959179', caseType: 'Benefit', jurisdictionId: 'SSCS' };
@@ -108,7 +91,9 @@ describe('HearingsViewGuard', () => {
   beforeEach(() => {
     routerMock = jasmine.createSpyObj<Router>('router', ['navigate']);
     storeMock = jasmine.createSpyObj<Store<fromAppStore.State>>('store', ['pipe', 'select']);
-    hearingJurisdictionConfigMock = jasmine.createSpyObj<HearingJurisdictionConfigService>('hearingJurisdictionConfigService', ['getHearingJurisdictionsConfig']);
+    hearingJurisdictionConfigMock = jasmine.createSpyObj<HearingJurisdictionConfigService>('hearingJurisdictionConfigService', [
+      'getHearingJurisdictionsConfig',
+    ]);
   });
 
   it('should view hearings be enabled for user with hearing manager role', () => {

@@ -13,16 +13,16 @@ redis:
 global:
   security:
     allowInsecureImages: true
-    
+
 nodejs:
   applicationPort: 3000
   cpuRequests: 250m
   cpuLimits: 2000m
   memoryRequests: 512Mi
   memoryLimits: 2048Mi
-  autoscaling:        # Default is false
+  autoscaling: # Default is false
     enabled: false
-    maxReplicas: 16    # Required setting
+    maxReplicas: 16 # Required setting
     targetCPUUtilizationPercentage: 80 # Default is 80% target CPU utilization
   environment:
     REFORM_TEAM: rpx
@@ -79,7 +79,7 @@ nodejs:
     # Services refunds  endpoints
     SERVICES_REFUNDS_API_URL: http://ccpay-refunds-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services Notification Url (for Ways To Pay)
-    SERVICES_NOTIFICATIONS_API_URL:  http://ccpay-notifications-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    SERVICES_NOTIFICATIONS_API_URL: http://ccpay-notifications-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services case endpoints
     SERVICES_CASE_CASEWORKER_API: http://rd-caseworker-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services judicial endpoints
@@ -169,4 +169,3 @@ nodejs:
   ingressHost: ${SERVICE_FQDN}
 idam-pr:
   enabled: false
-

@@ -25,7 +25,7 @@ export const components: any[] = [
   TaskManagerFilterComponent,
   TaskNameFieldComponent,
   UrlFieldComponent,
-  WorkFieldComponent
+  WorkFieldComponent,
 ];
 
 export * from './case-manager-filter/case-manager-filter.component';

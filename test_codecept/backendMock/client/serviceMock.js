@@ -1,4 +1,3 @@
-
 const client = require('./index');
 const reportLogger = require('../../codeceptCommon/reportLogger');
 
@@ -22,7 +21,7 @@ class ServiceMock {
     // make sure data is safe for JSON
     const sanitized = {
       status: response.status ?? 200,
-      data: safeBody(response.data)
+      data: safeBody(response.data),
     };
     return client.setUserApiData(authToken, apiMethod, sanitized);
   }

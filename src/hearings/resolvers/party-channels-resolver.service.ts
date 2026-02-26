@@ -10,7 +10,7 @@ import * as fromHearingStore from '../store';
 import { RefDataResolver } from './ref-data-resolver.resolve';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PartyChannelsResolverService extends RefDataResolver {
   constructor(

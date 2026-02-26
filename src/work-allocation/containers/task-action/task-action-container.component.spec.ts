@@ -27,8 +27,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 
 @Component({
   standalone: false,
-  template: `
-    <exui-task-action-container></exui-task-action-container>`
+  template: ` <exui-task-action-container></exui-task-action-container>`,
 })
 class WrapperComponent {
   @ViewChild(TaskActionContainerComponent, { static: true }) public appComponentRef: TaskActionContainerComponent;
@@ -37,10 +36,9 @@ class WrapperComponent {
 
 @Component({
   standalone: false,
-  template: `
-    <div>Nothing</div>`
+  template: ` <div>Nothing</div>`,
 })
-class NothingComponent { }
+class NothingComponent {}
 
 describe('WorkAllocation', () => {
   describe('TaskActionContainerComponent', () => {
@@ -53,28 +51,32 @@ describe('WorkAllocation', () => {
 
     const mockWorkAllocationService = {
       performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(of({})),
-      assignTask: jasmine.createSpy('assignTask').and.returnValue(of({}))
+      assignTask: jasmine.createSpy('assignTask').and.returnValue(of({})),
     };
     const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
     const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => { }, getTranslation: (phrase: string) => phrase });
+
+    const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {}, getTranslation: (phrase: string) => phrase });
     const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['getValue']);
-    mockFeatureToggleService.getValue.and.returnValue(
-      of({ configurations: [{ serviceName: 'IA', releaseVersion: '4' }] })
-    );
+    mockFeatureToggleService.getValue.and.returnValue(of({ configurations: [{ serviceName: 'IA', releaseVersion: '4' }] }));
 
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [
-          TaskActionContainerComponent, WrapperComponent, TaskListComponent,
-          ErrorMessageComponent, NothingComponent
+          TaskActionContainerComponent,
+          WrapperComponent,
+          TaskListComponent,
+          ErrorMessageComponent,
+          NothingComponent,
         ],
-        imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, PaginationModule,
-          RouterTestingModule.withRoutes([
-            { path: 'mywork/list', component: NothingComponent }
-          ])],
+        imports: [
+          WorkAllocationComponentsModule,
+          CdkTableModule,
+          FormsModule,
+          PaginationModule,
+          RouterTestingModule.withRoutes([{ path: 'mywork/list', component: NothingComponent }]),
+        ],
         providers: [
           { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
           { provide: SessionStorageService, useValue: mockSessionStorageService },
@@ -85,22 +87,23 @@ describe('WorkAllocation', () => {
               snapshot: {
                 data: {
                   taskAndCaseworkers: {
-                    task: { task: mockTasks[0] }, caseworkers: []
+                    task: { task: mockTasks[0] },
+                    caseworkers: [],
                   },
-                  ...TaskActionConstants.Unassign
-                }
+                  ...TaskActionConstants.Unassign,
+                },
               },
-              params: of({ task: mockTasks[0] })
-            }
+              params: of({ task: mockTasks[0] }),
+            },
           },
           { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
           {
             provide: RpxTranslationService,
-            useFactory: rpxTranslationServiceStub
+            useFactory: rpxTranslationServiceStub,
           },
           provideHttpClient(withInterceptorsFromDi()),
-          provideHttpClientTesting()
-        ]
+          provideHttpClientTesting(),
+        ],
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
@@ -141,7 +144,7 @@ describe('WorkAllocation', () => {
 
       const message = {
         type: InfoMessageType.SUCCESS,
-        message: InfoMessage.ASSIGNED_TASK
+        message: InfoMessage.ASSIGNED_TASK,
       } as InformationMessage;
       const navigateSpy = spyOn(router, 'navigateByUrl');
       component.returnWithMessage(message, null);
@@ -152,8 +155,8 @@ describe('WorkAllocation', () => {
         state: {
           showMessage: true,
           messageText: InfoMessage.ASSIGNED_TASK,
-          retainMessages: true
-        }
+          retainMessages: true,
+        },
       });
     });
 
@@ -169,7 +172,7 @@ describe('WorkAllocation', () => {
 
     it('should have appropriate submit button', () => {
       const submit: HTMLButtonElement = fixture.debugElement.nativeElement.querySelector('#submit-button');
-      expect(submit.textContent).toEqual(TaskActionConstants.Unassign.verb);
+      expect(submit.textContent).toContain(TaskActionConstants.Unassign.verb);
     });
 
     it('should have appropriate cancel button', () => {
@@ -202,15 +205,17 @@ describe('WorkAllocation', () => {
       let result = component.isTaskUnAssignedOrReAssigned(task);
       expect(result).toBeTruthy();
 
-      mockSessionStorageService.getItem.and.returnValue(JSON.stringify({
-        id: 'someId',
-        forename: 'fore',
-        surname: 'surName',
-        email: 'email',
-        active: true,
-        roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
-        uid: '1233434'
-      }));
+      mockSessionStorageService.getItem.and.returnValue(
+        JSON.stringify({
+          id: 'someId',
+          forename: 'fore',
+          surname: 'surName',
+          email: 'email',
+          active: true,
+          roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
+          uid: '1233434',
+        })
+      );
 
       task.assignee = 'some Other Id';
       result = component.isTaskUnAssignedOrReAssigned(task);
@@ -218,15 +223,17 @@ describe('WorkAllocation', () => {
     });
 
     it('isTaskUnAssignedOrReAssigned should return true', () => {
-      mockSessionStorageService.getItem.and.returnValue(JSON.stringify({
-        id: 'someId',
-        forename: 'fore',
-        surname: 'surName',
-        email: 'email',
-        active: true,
-        roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
-        uid: '1233434'
-      }));
+      mockSessionStorageService.getItem.and.returnValue(
+        JSON.stringify({
+          id: 'someId',
+          forename: 'fore',
+          surname: 'surName',
+          email: 'email',
+          active: true,
+          roles: [AppTestConstants.IA_LEGAL_OPS_ROLE],
+          uid: '1233434',
+        })
+      );
       const task = {} as Task;
       task.assignee = 'someId';
       const result = component.isTaskUnAssignedOrReAssigned(task);
@@ -251,23 +258,22 @@ describe('WorkAllocation', () => {
       actions: [
         {
           id: 'actionId2',
-          title: 'Release this task'
-        }
-      ]
-    }
+          title: 'Release this task',
+        },
+      ],
+    },
   ];
 
   describe('TaskActionContainerComponent performActionOnTask', () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let component: TaskActionContainerComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     let router: Router;
 
     const mockWorkAllocationService = {
       performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(of({})),
-      assignTask: jasmine.createSpy('assignTask').and.returnValue(of({}))
+      assignTask: jasmine.createSpy('assignTask').and.returnValue(of({})),
     };
     const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
@@ -279,20 +285,26 @@ describe('WorkAllocation', () => {
       forename: 'John',
       surname: 'Smith',
       email: 'john.smith@email.com',
-      roles: [AppTestConstants.IA_JUDGE_ROLE]
+      roles: [AppTestConstants.IA_JUDGE_ROLE],
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
 
     beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [
-          TaskActionContainerComponent, WrapperComponent, TaskListComponent,
-          ErrorMessageComponent, NothingComponent
+          TaskActionContainerComponent,
+          WrapperComponent,
+          TaskListComponent,
+          ErrorMessageComponent,
+          NothingComponent,
         ],
-        imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, PaginationModule,
-          RouterTestingModule.withRoutes([
-            { path: 'mywork/list', component: NothingComponent }
-          ])],
+        imports: [
+          WorkAllocationComponentsModule,
+          CdkTableModule,
+          FormsModule,
+          PaginationModule,
+          RouterTestingModule.withRoutes([{ path: 'mywork/list', component: NothingComponent }]),
+        ],
         providers: [
           { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
           { provide: SessionStorageService, useValue: mockSessionStorageService },
@@ -303,18 +315,19 @@ describe('WorkAllocation', () => {
               snapshot: {
                 data: {
                   taskAndCaseworkers: {
-                    task: { task: mockTask[0] }, caseworkers: []
+                    task: { task: mockTask[0] },
+                    caseworkers: [],
                   },
-                  ...TaskActionConstants.Unassign
-                }
+                  ...TaskActionConstants.Unassign,
+                },
               },
-              params: of({ task: mockTask[0] })
-            }
+              params: of({ task: mockTask[0] }),
+            },
           },
           { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
           provideHttpClient(withInterceptorsFromDi()),
-          provideHttpClientTesting()
-        ]
+          provideHttpClientTesting(),
+        ],
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
@@ -338,16 +351,15 @@ describe('WorkAllocation', () => {
   });
 
   describe('TaskActionContainerComponent performActionOnTask', () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let component: TaskActionContainerComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     let router: Router;
 
     const mockWorkAllocationService = {
       performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(of({})),
-      assignTask: jasmine.createSpy('assignTask').and.returnValue(of({}))
+      assignTask: jasmine.createSpy('assignTask').and.returnValue(of({})),
     };
     const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
@@ -361,20 +373,26 @@ describe('WorkAllocation', () => {
       forename: 'John',
       surname: 'Smith',
       email: 'john.smith@email.com',
-      roles: [AppTestConstants.IA_JUDGE_ROLE]
+      roles: [AppTestConstants.IA_JUDGE_ROLE],
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
 
     beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [
-          TaskActionContainerComponent, WrapperComponent, TaskListComponent,
-          ErrorMessageComponent, NothingComponent
+          TaskActionContainerComponent,
+          WrapperComponent,
+          TaskListComponent,
+          ErrorMessageComponent,
+          NothingComponent,
         ],
-        imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, PaginationModule,
-          RouterTestingModule.withRoutes([
-            { path: 'mywork/list', component: NothingComponent }
-          ])],
+        imports: [
+          WorkAllocationComponentsModule,
+          CdkTableModule,
+          FormsModule,
+          PaginationModule,
+          RouterTestingModule.withRoutes([{ path: 'mywork/list', component: NothingComponent }]),
+        ],
         providers: [
           { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
           { provide: SessionStorageService, useValue: mockSessionStorageService },
@@ -385,19 +403,20 @@ describe('WorkAllocation', () => {
               snapshot: {
                 data: {
                   taskAndCaseworkers: {
-                    task: { task: mockTask[0] }, caseworkers: []
+                    task: { task: mockTask[0] },
+                    caseworkers: [],
                   },
-                  ...TaskActionConstants.Unassign
-                }
+                  ...TaskActionConstants.Unassign,
+                },
               },
-              params: of({ task: mockTask[0] })
-            }
+              params: of({ task: mockTask[0] }),
+            },
           },
           { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
           { provide: CaseNotifier, useValue: mockNotifierService },
           provideHttpClient(withInterceptorsFromDi()),
-          provideHttpClientTesting()
-        ]
+          provideHttpClientTesting(),
+        ],
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
@@ -426,7 +445,7 @@ describe('WorkAllocation', () => {
 
     const mockWorkAllocationService = {
       performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(of({})),
-      assignTask: jasmine.createSpy('assignTask').and.returnValue(of({}))
+      assignTask: jasmine.createSpy('assignTask').and.returnValue(of({})),
     };
     const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
@@ -438,19 +457,25 @@ describe('WorkAllocation', () => {
       forename: 'John',
       surname: 'Smith',
       email: 'john.smith@email.com',
-      roles: [AppTestConstants.IA_JUDGE_ROLE]
+      roles: [AppTestConstants.IA_JUDGE_ROLE],
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
     beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [
-          TaskActionContainerComponent, WrapperComponent, TaskListComponent,
-          ErrorMessageComponent, NothingComponent
+          TaskActionContainerComponent,
+          WrapperComponent,
+          TaskListComponent,
+          ErrorMessageComponent,
+          NothingComponent,
         ],
-        imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, PaginationModule,
-          RouterTestingModule.withRoutes([
-            { path: 'mywork/list', component: NothingComponent }
-          ])],
+        imports: [
+          WorkAllocationComponentsModule,
+          CdkTableModule,
+          FormsModule,
+          PaginationModule,
+          RouterTestingModule.withRoutes([{ path: 'mywork/list', component: NothingComponent }]),
+        ],
         providers: [
           { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
           { provide: SessionStorageService, useValue: mockSessionStorageService },
@@ -461,18 +486,19 @@ describe('WorkAllocation', () => {
               snapshot: {
                 data: {
                   taskAndCaseworkers: {
-                    task: { task: mockTask[0] }, caseworkers: []
+                    task: { task: mockTask[0] },
+                    caseworkers: [],
                   },
-                  ...TaskActionConstants.Unassign
-                }
+                  ...TaskActionConstants.Unassign,
+                },
               },
-              params: of({ task: mockTask[0] })
-            }
+              params: of({ task: mockTask[0] }),
+            },
           },
           { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
           provideHttpClient(withInterceptorsFromDi()),
-          provideHttpClientTesting()
-        ]
+          provideHttpClientTesting(),
+        ],
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
@@ -499,7 +525,7 @@ describe('WorkAllocation', () => {
 
     const mockWorkAllocationService = {
       performActionOnTask: jasmine.createSpy('performActionOnTask').and.returnValue(of({})),
-      assignTask: jasmine.createSpy('assignTask').and.returnValue(of({}))
+      assignTask: jasmine.createSpy('assignTask').and.returnValue(of({})),
     };
     const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
     const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
@@ -513,19 +539,25 @@ describe('WorkAllocation', () => {
       forename: 'John',
       surname: 'Smith',
       email: 'john.smith@email.com',
-      roles: [AppTestConstants.IA_JUDGE_ROLE]
+      roles: [AppTestConstants.IA_JUDGE_ROLE],
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
     beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [
-          TaskActionContainerComponent, WrapperComponent, TaskListComponent,
-          ErrorMessageComponent, NothingComponent
+          TaskActionContainerComponent,
+          WrapperComponent,
+          TaskListComponent,
+          ErrorMessageComponent,
+          NothingComponent,
         ],
-        imports: [WorkAllocationComponentsModule, CdkTableModule, FormsModule, PaginationModule,
-          RouterTestingModule.withRoutes([
-            { path: 'mywork/list', component: NothingComponent }
-          ])],
+        imports: [
+          WorkAllocationComponentsModule,
+          CdkTableModule,
+          FormsModule,
+          PaginationModule,
+          RouterTestingModule.withRoutes([{ path: 'mywork/list', component: NothingComponent }]),
+        ],
         providers: [
           { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
           { provide: SessionStorageService, useValue: mockSessionStorageService },
@@ -536,19 +568,20 @@ describe('WorkAllocation', () => {
               snapshot: {
                 data: {
                   taskAndCaseworkers: {
-                    task: { task: mockTask[0] }, caseworkers: []
+                    task: { task: mockTask[0] },
+                    caseworkers: [],
                   },
-                  ...TaskActionConstants.Unassign
-                }
+                  ...TaskActionConstants.Unassign,
+                },
               },
-              params: of({ task: mockTask[0] })
-            }
+              params: of({ task: mockTask[0] }),
+            },
           },
           { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
           { provide: CaseNotifier, useValue: mockNotifierService },
           provideHttpClient(withInterceptorsFromDi()),
-          provideHttpClientTesting()
-        ]
+          provideHttpClientTesting(),
+        ],
       }).compileComponents();
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;

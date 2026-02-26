@@ -12,11 +12,11 @@ export const ROUTES: Routes = [
         component: null,
         data: {
           title: 'HMCTS Manage cases | Notice of Change',
-          featureDisabledRedirect: '/'
-        }
-      }
-    ]
-  }
+          featureDisabledRedirect: '/',
+        },
+      },
+    ],
+  },
 ];
 
 export const nocRouting: ModuleWithProviders<RouterModule> = RouterModule.forChild(ROUTES);

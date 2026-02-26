@@ -9,13 +9,13 @@ describe('StaffSelect Actions', () => {
         errorCode: 404,
         errorDescription: 'A description of the error.',
         status: 'Failed',
-        timeStamp: new Date().toISOString()
+        timeStamp: new Date().toISOString(),
       };
       const action = new SetError(error);
 
       expect({ ...action }).toEqual({
         type: SET_STAFF_SELECT_ERROR,
-        payload: error
+        payload: error,
       });
     });
   });
@@ -25,7 +25,7 @@ describe('StaffSelect Actions', () => {
       const action = new ResetStaffSelect();
 
       expect({ ...action }).toEqual({
-        type: RESET_STAFF_SELECT_ERROR
+        type: RESET_STAFF_SELECT_ERROR,
       });
     });
   });

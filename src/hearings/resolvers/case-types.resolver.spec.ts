@@ -25,10 +25,9 @@ describe('CaseTypesResolver', () => {
         LovRefDataService,
         { provide: APP_BASE_HREF, useValue: '/' },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    }
-    );
+        provideHttpClientTesting(),
+      ],
+    });
     lovRefDataService = TestBed.inject(LovRefDataService) as LovRefDataService;
   });
 
@@ -42,7 +41,7 @@ describe('CaseTypesResolver', () => {
     spyOn(service, 'getReferenceData$').and.callThrough();
     const route = new ActivatedRouteSnapshot();
     route.data = {
-      title: 'HMCTS Manage cases | Request Hearing | Hearing requirements'
+      title: 'HMCTS Manage cases | Request Hearing | Hearing requirements',
     };
     service.resolve(route).subscribe((refData: LovRefDataModel[]) => {
       expect(service.getReferenceData$).toHaveBeenCalled();

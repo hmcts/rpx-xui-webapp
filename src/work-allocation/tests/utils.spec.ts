@@ -24,7 +24,7 @@ export function getMockCaseworkers(): Caseworker[] {
       idamId: '1',
       email: 'j.s@caseworkers.gov.uk',
       location: LOCATION_A,
-      roleCategory: RoleCategory.LEGAL_OPERATIONS
+      roleCategory: RoleCategory.LEGAL_OPERATIONS,
     },
     {
       firstName: 'Jane',
@@ -32,8 +32,8 @@ export function getMockCaseworkers(): Caseworker[] {
       idamId: '2',
       email: 'j.doe@caseworkers.gov.uk',
       location: LOCATION_B,
-      roleCategory: RoleCategory.LEGAL_OPERATIONS
-    }
+      roleCategory: RoleCategory.LEGAL_OPERATIONS,
+    },
   ];
 }
 
@@ -45,7 +45,7 @@ export function getMockCaseRoles(): CaseRoleDetails[] {
       full_name: 'Mr Test',
       surname: 'Test',
       idam_id: null,
-      email_id: 'test@test.com'
+      email_id: 'test@test.com',
     },
     {
       sidam_id: null,
@@ -53,8 +53,8 @@ export function getMockCaseRoles(): CaseRoleDetails[] {
       full_name: 'Sir Testing',
       surname: 'Testing',
       idam_id: '023456780',
-      email_id: 'test@test.com'
-    }
+      email_id: 'test@test.com',
+    },
   ];
 }
 
@@ -77,13 +77,13 @@ export function getMockCases(): Case[] {
       actions: [
         {
           id: 'reallocate',
-          title: 'Reallocate'
+          title: 'Reallocate',
         },
         {
           id: 'remove',
-          title: 'Remove Allocation'
-        }
-      ]
+          title: 'Remove Allocation',
+        },
+      ],
     },
     {
       id: '1549476532065587',
@@ -98,14 +98,14 @@ export function getMockCases(): Case[] {
       actions: [
         {
           id: 'reallocate',
-          title: 'Reallocate'
+          title: 'Reallocate',
         },
         {
           id: 'remove',
-          title: 'Remove Allocation'
-        }
-      ]
-    }
+          title: 'Remove Allocation',
+        },
+      ],
+    },
   ];
 }
 
@@ -133,19 +133,20 @@ export function getMockTasks(): Task[] {
         values: [
           {
             code: '125',
-            warningText: 'this is a warning message 3'
-          }
-        ] },
+            warningText: 'this is a warning message 3',
+          },
+        ],
+      },
       actions: [
         {
           id: 'actionId1',
-          title: 'Reassign task'
+          title: 'Reassign task',
         },
         {
           id: 'actionId2',
-          title: 'Release this task'
-        }
-      ]
+          title: 'Release this task',
+        },
+      ],
     },
     {
       assignee: null,
@@ -164,10 +165,10 @@ export function getMockTasks(): Task[] {
       actions: [
         {
           id: 'actionId2',
-          title: 'Release this task'
-        }
-      ]
-    }
+          title: 'Release this task',
+        },
+      ],
+    },
   ];
 }
 
@@ -191,7 +192,7 @@ export function getMockCaseServiceConfig(): CaseServiceConfig {
     service: CaseService.IAC,
     defaultSortDirection: SortOrder.ASC,
     defaultSortFieldName: 'dueDate',
-    fields: getMockCaseFieldConfig()
+    fields: getMockCaseFieldConfig(),
   };
 }
 
@@ -203,15 +204,17 @@ export function getMockTaskServiceConfig(): TaskServiceConfig {
     service: TaskService.IAC,
     defaultSortDirection: SortOrder.ASC,
     defaultSortFieldName: 'dueDate',
-    fields: getMockTaskFieldConfig()
+    fields: getMockTaskFieldConfig(),
   };
 }
 
 export class MockRouter {
   public navigateByUrl = jasmine.createSpy();
-  public events = { subscribe(): Observable<RouterEvent> {
-    return of(null);
-  } };
+  public events = {
+    subscribe(): Observable<RouterEvent> {
+      return of(null);
+    },
+  };
 
   private pUrl: string = 'bob';
   public get url(): string {

@@ -22,12 +22,14 @@ describe('SpecificAccessDeniedComponent', () => {
       imports: [RouterTestingModule],
       providers: [
         {
-          provide: Store, useValue: mockStore
+          provide: Store,
+          useValue: mockStore,
         },
         {
-          provide: Router, useValue: mockRouter
-        }
-      ]
+          provide: Router,
+          useValue: mockRouter,
+        },
+      ],
     }).compileComponents();
     fixture = TestBed.createComponent(SpecificAccessDeniedComponent);
     component = fixture.componentInstance;

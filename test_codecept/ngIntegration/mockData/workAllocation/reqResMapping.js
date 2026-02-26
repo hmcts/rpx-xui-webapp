@@ -7,7 +7,6 @@ const MockApp = require('../app');
 module.exports = {
   mockServiceResetCallbacks: [() => workAllocationMockData.setDefaultData()],
   get: {
-
     '/workallocation/task/types-of-work': (req, res) => {
       const typeOfWorks = workAllocationMockData.getTypeOfWorks();
       res.send(typeOfWorks);
@@ -60,8 +59,8 @@ module.exports = {
     '/workallocation/full-location': (req, res) => {
       const servicesRequested = req.query.serviceCodes;
       const allLocations = [];
-      for (const locationsByService of workAllocationMockData.locationsByServices){
-        if (servicesRequested.includes(locationsByService.service)){
+      for (const locationsByService of workAllocationMockData.locationsByServices) {
+        if (servicesRequested.includes(locationsByService.service)) {
           allLocations.push(...locationsByService.locations);
         }
       }
@@ -72,7 +71,7 @@ module.exports = {
     },
     '/api/role-access/roles/get-my-access-new-count': (req, res) => {
       res.send({ count: 0 });
-    }
+    },
   },
   post: {
     '/workallocation/my-cases': (req, res) => {
@@ -82,15 +81,19 @@ module.exports = {
 
       let cases = [];
       if (requestedView === 'mycases' || requestedView === 'allworkcases') {
-        cases = global.scenarioData && global.scenarioData[`workallocation2.${requestedView}`] ? global.scenarioData[`workallocation2.${requestedView}`] : workAllocationMockData.getMyCases(pageSize ? pageSize * 5 : 125);
+        cases =
+          global.scenarioData && global.scenarioData[`workallocation2.${requestedView}`]
+            ? global.scenarioData[`workallocation2.${requestedView}`]
+            : workAllocationMockData.getMyCases(pageSize ? pageSize * 5 : 125);
       } else {
         throw new Error('Unrecognised case list view : ' + requestedView);
       }
       try {
         const thisPageCases = [];
 
-        const startIndexForPage = ((pageNum - 1) * pageSize);
-        const endIndexForPage = (startIndexForPage + pageSize) < cases.total_records ? startIndexForPage + pageSize - 1 : cases.total_records - 1;
+        const startIndexForPage = (pageNum - 1) * pageSize;
+        const endIndexForPage =
+          startIndexForPage + pageSize < cases.total_records ? startIndexForPage + pageSize - 1 : cases.total_records - 1;
         for (let i = startIndexForPage; i <= endIndexForPage; i++) {
           thisPageCases.push(cases.cases[i]);
         }
@@ -142,13 +145,22 @@ module.exports = {
       const requestedView = req.body.view;
       let tasks = [];
       if (requestedView === 'MyTasks') {
-        tasks = global.scenarioData && global.scenarioData['workallocation2.mytasks'] ? global.scenarioData['workallocation2.mytasks'] : workAllocationMockData.getMyWorkMyTasks(pageSize * 5);
+        tasks =
+          global.scenarioData && global.scenarioData['workallocation2.mytasks']
+            ? global.scenarioData['workallocation2.mytasks']
+            : workAllocationMockData.getMyWorkMyTasks(pageSize * 5);
         // global.scenarioData['workallocation2.mytasks'] = tasks;
       } else if (requestedView === 'AvailableTasks') {
-        tasks = global.scenarioData && global.scenarioData['workallocation2.availabletasks'] ? global.scenarioData['workallocation2.availabletasks'] : workAllocationMockData.getMyWorkAvailableTasks(pageSize * 5);
+        tasks =
+          global.scenarioData && global.scenarioData['workallocation2.availabletasks']
+            ? global.scenarioData['workallocation2.availabletasks']
+            : workAllocationMockData.getMyWorkAvailableTasks(pageSize * 5);
         // global.scenarioData['workallocation2.availabletasks'] = tasks;
       } else if (requestedView === 'TaskManager' || requestedView.includes('AllWork')) {
-        tasks = global.scenarioData && global.scenarioData['workallocation2.allwork'] ? global.scenarioData['workallocation2.allwork'] : workAllocationMockData.getAllWorkTasks(pageSize * 5);
+        tasks =
+          global.scenarioData && global.scenarioData['workallocation2.allwork']
+            ? global.scenarioData['workallocation2.allwork']
+            : workAllocationMockData.getAllWorkTasks(pageSize * 5);
         // global.scenarioData['workallocation2.allwork'] = tasks;
       } else {
         throw new Error('Unrecognised task list view : ' + requestedView);
@@ -206,7 +218,7 @@ module.exports = {
     },
     '/api/role-access/roles/post': (req, res) => {
       const caseRolesAssignment = [];
-      if (Object.keys(req.body).includes('assignmentId')){
+      if (Object.keys(req.body).includes('assignmentId')) {
         const reqAssignmentId = req.body.assignmentId;
 
         const caseRole = workAllocationMockData.caseRoles[0];
@@ -238,7 +250,9 @@ module.exports = {
         let i = 0;
         for (const userid of userids) {
           i++;
-          returnUsers.push(workAllocationMockData.addJudgeUsers(userid, 'someJudgefn_' + i, 'judicialln_' + i, i + '_judicial_test@hmcts.net'));
+          returnUsers.push(
+            workAllocationMockData.addJudgeUsers(userid, 'someJudgefn_' + i, 'judicialln_' + i, i + '_judicial_test@hmcts.net')
+          );
         }
       }
       res.send(returnUsers);
@@ -249,18 +263,20 @@ module.exports = {
       const userids = req.body.userIds;
 
       const returnUsers = [];
-      for (const userid of userids){
-        for (const mockedUser of allJudicialUsers){
-          if (mockedUser.sidam_id === userid){
+      for (const userid of userids) {
+        for (const mockedUser of allJudicialUsers) {
+          if (mockedUser.sidam_id === userid) {
             returnUsers.push(mockedUser);
           }
         }
       }
-      if (returnUsers.length === 0){
+      if (returnUsers.length === 0) {
         let i = 0;
         for (const userid of userids) {
           i++;
-          returnUsers.push(workAllocationMockData.addJudgeUsers(userid, 'someJudgefn_'+i, 'judicialln_'+i, i+'_judicial_test@hmcts.net'));
+          returnUsers.push(
+            workAllocationMockData.addJudgeUsers(userid, 'someJudgefn_' + i, 'judicialln_' + i, i + '_judicial_test@hmcts.net')
+          );
         }
       }
       res.send(returnUsers);
@@ -288,7 +304,7 @@ module.exports = {
       res.send({});
     },
     '/am/role-mapping/judicial/refresh': (req, res) => {
-      res.send({ 'message': 'Role assignments have been refreshed successfully' });
+      res.send({ message: 'Role assignments have been refreshed successfully' });
     },
     '/api/specific-access-request/request-more-information': (req, res) => {
       res.send('');
@@ -301,17 +317,17 @@ module.exports = {
     },
     '/workallocation/region-location': (req, res) => {
       res.send([]);
-    }
-  }
-
+    },
+  },
 };
 
 function getTaskPageRecords(totalRecords, pageNum, pageSize) {
   let responseData = null;
   const thisPageTasks = [];
 
-  const startIndexForPage = pageNum === 1 ? 0 : ((pageNum - 1) * pageSize) - 1;
-  const endIndexForPage = (startIndexForPage + pageSize) < totalRecords.total_records ? startIndexForPage + pageSize - 1 : totalRecords.total_records - 1;
+  const startIndexForPage = pageNum === 1 ? 0 : (pageNum - 1) * pageSize - 1;
+  const endIndexForPage =
+    startIndexForPage + pageSize < totalRecords.total_records ? startIndexForPage + pageSize - 1 : totalRecords.total_records - 1;
   for (let i = startIndexForPage; i <= endIndexForPage; i++) {
     thisPageTasks.push(totalRecords.tasks[i]);
   }
@@ -323,8 +339,9 @@ function getCasePageRecords(totalRecords, pageNum, pageSize) {
   let responseData = null;
   const thisPageTasks = [];
 
-  const startIndexForPage = pageNum === 1 ? 0 : ((pageNum - 1) * pageSize) - 1;
-  const endIndexForPage = (startIndexForPage + pageSize) < totalRecords.total_records ? startIndexForPage + pageSize - 1 : totalRecords.total_records - 1;
+  const startIndexForPage = pageNum === 1 ? 0 : (pageNum - 1) * pageSize - 1;
+  const endIndexForPage =
+    startIndexForPage + pageSize < totalRecords.total_records ? startIndexForPage + pageSize - 1 : totalRecords.total_records - 1;
   for (let i = startIndexForPage; i <= endIndexForPage; i++) {
     thisPageTasks.push(totalRecords.cases[i]);
   }

@@ -8,7 +8,8 @@ import { CaseNameFieldComponent } from './case-name-field.component';
 
 @Component({
   standalone: false,
-  template: '<exui-case-name-field [caseName]="caseName" [jurisdiction]="jurisdiction" [caseType]="caseType" [caseId]="caseId" [hasAccess]="hasAccess"></exui-case-name-field>'
+  template:
+    '<exui-case-name-field [caseName]="caseName" [jurisdiction]="jurisdiction" [caseType]="caseType" [caseId]="caseId" [hasAccess]="hasAccess"></exui-case-name-field>',
 })
 class WrapperComponent {
   @ViewChild(CaseNameFieldComponent) public appComponentRef: CaseNameFieldComponent;
@@ -27,7 +28,6 @@ describe('WorkAllocation', () => {
     const CASETYPE: string = 'Asylum';
     const CASE_ID: string = 'CaseId';
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let component: CaseNameFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
@@ -35,9 +35,8 @@ describe('WorkAllocation', () => {
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [WrapperComponent],
-        imports: [WorkAllocationComponentsModule, RouterTestingModule]
-      })
-        .compileComponents();
+        imports: [WorkAllocationComponentsModule, RouterTestingModule],
+      }).compileComponents();
     }));
 
     beforeEach(() => {
@@ -134,8 +133,9 @@ describe('WorkAllocation', () => {
 });
 
 @Component({
-  template: '<exui-case-name-field [caseName]="caseName" [jurisdiction]="jurisdiction" [caseType]="caseType" [caseId]="caseId" ></exui-case-name-field>',
-  standalone: false
+  template:
+    '<exui-case-name-field [caseName]="caseName" [jurisdiction]="jurisdiction" [caseType]="caseType" [caseId]="caseId" ></exui-case-name-field>',
+  standalone: false,
 })
 class Wrapper1Component {
   @ViewChild(CaseNameFieldComponent) public appComponentRef: CaseNameFieldComponent;
@@ -154,7 +154,6 @@ describe('WorkAllocation', () => {
     const CASETYPE: string = 'Asylum';
     const CASE_ID: string = 'CaseId';
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let component: CaseNameFieldComponent;
     let wrapper: Wrapper1Component;
     let fixture: ComponentFixture<WrapperComponent>;
@@ -162,9 +161,8 @@ describe('WorkAllocation', () => {
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [Wrapper1Component],
-        imports: [WorkAllocationComponentsModule, RouterTestingModule]
-      })
-        .compileComponents();
+        imports: [WorkAllocationComponentsModule, RouterTestingModule],
+      }).compileComponents();
     }));
 
     beforeEach(() => {

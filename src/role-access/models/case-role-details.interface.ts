@@ -1,5 +1,5 @@
 export interface CaseRoleDetails {
-  appointments?: JudicialAppointment [];
+  appointments?: JudicialAppointment[];
   known_as: string;
   full_name: string;
   surname: string;

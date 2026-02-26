@@ -1,4 +1,3 @@
-import { faker } from '@faker-js/faker';
 import { expect, test } from '../../fixtures';
 import { ensureSessionCookies } from '../../../common/sessionCapture';
 
@@ -19,11 +18,10 @@ test.describe('Verify the my tasks page tabs appear as expected', () => {
     });
   });
 
-  test('Verify My tasks actions appear as expected', async ({ taskListPage, tableUtils, page }) => {
+  test('Verify My tasks actions appear as expected', async ({ taskListPage, tableUtils }) => {
     await test.step('Navigate to the task list page', async () => {
       await expect(taskListPage.taskListTable).toBeVisible();
-      await taskListPage.exuiSpinnerComponent.wait();
-      await taskListPage.manageCaseButtons.nth(0).waitFor();
+      await taskListPage.waitForManageButton('my tasks tab', { timeoutMs: 60_000 });
     });
 
     await test.step('Check my available tasks has data in the table', async () => {
@@ -34,20 +32,19 @@ test.describe('Verify the my tasks page tabs appear as expected', () => {
     await test.step('Verify tasks actions are shown as expected', async () => {
       await taskListPage.manageCaseButtons.nth(0).click();
       await expect(taskListPage.taskActionsRow).toBeVisible();
-      expect(taskListPage.taskActionCancel).toBeVisible();
-      expect(taskListPage.taskActionGoTo).toBeVisible();
-      expect(taskListPage.taskActionMarkAsDone).toBeVisible();
-      expect(taskListPage.taskActionReassign).toBeVisible();
-      expect(taskListPage.taskActionUnassign).toBeVisible();
+      await expect(taskListPage.taskActionCancel).toBeVisible();
+      await expect(taskListPage.taskActionGoTo).toBeVisible();
+      await expect(taskListPage.taskActionMarkAsDone).toBeVisible();
+      await expect(taskListPage.taskActionReassign).toBeVisible();
+      await expect(taskListPage.taskActionUnassign).toBeVisible();
     });
   });
 
-  test('Verify Available tasks actions appear as expected', async ({ taskListPage, tableUtils, page }) => {
+  test('Verify Available tasks actions appear as expected', async ({ taskListPage, tableUtils }) => {
     await test.step('Navigate to the task list page', async () => {
       await taskListPage.selectWorkMenuItem('Available tasks');
       await expect(taskListPage.taskListTable).toBeVisible();
-      await taskListPage.exuiSpinnerComponent.wait();
-      await taskListPage.manageCaseButtons.nth(0).waitFor();
+      await taskListPage.waitForManageButton('available tasks tab', { timeoutMs: 60_000 });
     });
 
     await test.step('Check my available tasks has data in the table', async () => {
@@ -58,8 +55,8 @@ test.describe('Verify the my tasks page tabs appear as expected', () => {
     await test.step('Verify tasks actions are shown as expected', async () => {
       await taskListPage.manageCaseButtons.nth(0).click();
       await expect(taskListPage.taskActionsRow).toBeVisible();
-      expect(taskListPage.taskActionClaim).toBeVisible();
-      expect(taskListPage.taskActionClaimAndGo).toBeVisible();
+      await expect(taskListPage.taskActionClaim).toBeVisible();
+      await expect(taskListPage.taskActionClaimAndGo).toBeVisible();
     });
   });
 });

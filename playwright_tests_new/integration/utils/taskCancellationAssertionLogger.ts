@@ -59,7 +59,7 @@ export function logTaskCancellationAssertion(input: CancellationAssertionInput):
   const expectedPayloadPretty = JSON.stringify(input.expectedPayload, null, 2);
   const actualPayloadWithHighlights = highlightExpectedPairsInActual(input.expectedPayload, input.actualPayload);
 
-  const highlightedHeader = `${ansi.yellowBg}${ansi.black}${ansi.bold} EXUI-3662 Assertion Evidence ${ansi.reset}`;
+  const highlightedHeader = `${ansi.yellowBg}${ansi.black}${ansi.bold} Task Cancellation Assertion Evidence ${ansi.reset}`;
   const lines = [
     highlightedHeader,
     `${ansi.cyan}Scenario:${ansi.reset} ${input.scenario}`,
@@ -73,7 +73,7 @@ export function logTaskCancellationAssertion(input: CancellationAssertionInput):
     `${ansi.bold}Overall:${ansi.reset} ${status(allChecksPassed)}`,
   ];
 
-  // Visible in Playwright list/dot stdout so engineers can prove EXUI-3662 behavior from logs.
+  // Visible in Playwright list/dot stdout so engineers can prove cancellation request behavior from logs.
   console.log(lines.join('\n'));
 
   return {

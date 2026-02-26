@@ -61,6 +61,26 @@ describe('Amended Jurisdiction', () => {
     expect(response).to.eql(expected);
   });
 
+  it('should filter jurisdictions for the jurisdictions-lite endpoint', () => {
+    const data = [
+      {
+        id: 'PROBATE',
+      },
+      {
+        id: 'RANDOM',
+      },
+    ];
+    req.url = 'aggregated/caseworkers/:uid/jurisdictions-lite?access=read';
+    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data);
+    // Unknown jurisdiction should be filtered
+    const expected = [
+      {
+        id: 'PROBATE',
+      },
+    ];
+    expect(response).to.eql(expected);
+  });
+
   it('should not filter jurisdictions for non-jurisdictions endpoint', () => {
     const expected = [
       {
@@ -129,6 +149,13 @@ describe('Amended Jurisdiction', () => {
 
     it('should return cached jurisdictions for access=read', () => {
       req.url = 'aggregated/caseworkers/123/jurisdictions?access=read';
+      req.session.readJurisdictions = [{ id: 'PROBATE' }];
+      const result = amendedJurisdictions.checkCachedJurisdictions(proxyRes, req);
+      expect(result).to.eql([{ id: 'PROBATE' }]);
+    });
+
+    it('should return cached jurisdictions for access=read with jurisdictions-lite endpoint', () => {
+      req.url = 'aggregated/caseworkers/123/jurisdictions-lite?access=read';
       req.session.readJurisdictions = [{ id: 'PROBATE' }];
       const result = amendedJurisdictions.checkCachedJurisdictions(proxyRes, req);
       expect(result).to.eql([{ id: 'PROBATE' }]);

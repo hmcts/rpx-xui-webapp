@@ -73,7 +73,7 @@ describe('HearingTimingSectionComponent', () => {
     component.ngOnInit();
     expect(component.hearingLength).toEqual('1 Hour');
     expect(component.specificDate).toEqual(
-      'Choose a date range<br>Earliest start date: 12 December 2022<br>Latest end date: 12 December 2022'
+      'Choose a date range<br>Must list after: 12 December 2022<br>Must list before: 12 December 2022'
     );
     expect(component.hearingPriority).toEqual('Standard');
   });
@@ -87,10 +87,11 @@ describe('HearingTimingSectionComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        partyDetailsChangesRequired: false,
+        participantAttendanceChangesRequired: false,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false,
       },
     };
     component.ngOnInit();
@@ -109,12 +110,13 @@ describe('HearingTimingSectionComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        partyDetailsChangesRequired: false,
+        participantAttendanceChangesRequired: false,
         hearingWindowChangesRequired: true,
         hearingWindowChangesConfirmed: true,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
         hearingUnavailabilityDatesConfirmed: true,
+        additionalInstructionsChangesRequired: false,
       },
     };
     component.ngOnInit();
@@ -134,10 +136,11 @@ describe('HearingTimingSectionComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
-        partyDetailsChangesRequired: true,
+        participantAttendanceChangesRequired: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false,
       },
     };
     component.ngOnInit();
@@ -162,12 +165,13 @@ describe('HearingTimingSectionComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        partyDetailsChangesRequired: false,
+        participantAttendanceChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingWindowChangesConfirmed: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: true,
         hearingUnavailabilityDatesConfirmed: true,
+        additionalInstructionsChangesRequired: false,
       },
     };
     component.ngOnInit();
@@ -194,12 +198,13 @@ describe('HearingTimingSectionComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        partyDetailsChangesRequired: false,
+        participantAttendanceChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingWindowChangesConfirmed: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: true,
         hearingUnavailabilityDatesConfirmed: false,
+        additionalInstructionsChangesRequired: false,
       },
     };
     component.ngOnInit();

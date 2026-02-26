@@ -315,7 +315,8 @@
     "superagent": "^10.2.2",
     "glob@npm:*": "npm:10.5.0",
     "cookie": "^0.7.2",
-    "min-document": "^2.19.1"
+    "min-document": "^2.19.1",
+    "openid-client": "4.9.1"
   },
   "packageManager": "yarn@4.7.0"
 }

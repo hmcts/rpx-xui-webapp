@@ -13,6 +13,12 @@ export type MyTaskRouteOptions = {
   cancelResponseStatus?: number;
 };
 
+export type MyTaskActionRouteOptions = {
+  actionId?: string;
+  includeAction?: boolean;
+  actionResponseStatus?: number;
+};
+
 type TaskAction = { id?: string };
 
 export type TaskRecord = Record<string, unknown> & {
@@ -53,25 +59,31 @@ type MyTaskCancellationRouteResult = {
   getCancelRequestBody: () => Record<string, unknown> | null;
 };
 
-export async function routeMyTaskCancellationFlow(
+type MyTaskActionRouteResult = {
+  getActionRequestUrl: () => string;
+  getActionRequestBody: () => Record<string, unknown> | null;
+};
+
+export async function routeMyTaskActionFlow(
   page: Page,
   taskId: string,
   task: TaskRecord,
-  options: MyTaskRouteOptions = {}
-): Promise<MyTaskCancellationRouteResult> {
-  const includeCancelAction = options.includeCancelAction ?? true;
-  const cancelResponseStatus = options.cancelResponseStatus ?? 200;
+  options: MyTaskActionRouteOptions = {}
+): Promise<MyTaskActionRouteResult> {
+  const actionId = options.actionId ?? 'cancel';
+  const includeAction = options.includeAction ?? true;
+  const actionResponseStatus = options.actionResponseStatus ?? 200;
 
-  let cancelRequestUrl = '';
-  let cancelRequestBody: Record<string, unknown> | null = null;
-  let cancelInvoked = false;
+  let actionRequestUrl = '';
+  let actionRequestBody: Record<string, unknown> | null = null;
+  let actionInvoked = false;
 
   const actions = Array.isArray(task.actions) ? task.actions : [];
-  const taskWithActions = includeCancelAction
+  const taskWithActions = includeAction
     ? task
     : {
         ...task,
-        actions: actions.filter((action) => action?.id !== 'cancel'),
+        actions: actions.filter((action) => action?.id !== actionId),
       };
 
   await page.route(/\/workallocation\/task(?:\?.*)?$/, async (route: Route) => {
@@ -80,7 +92,7 @@ export async function routeMyTaskCancellationFlow(
       return;
     }
 
-    const tasks = cancelInvoked ? [] : [taskWithActions];
+    const tasks = actionInvoked ? [] : [taskWithActions];
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -100,28 +112,54 @@ export async function routeMyTaskCancellationFlow(
     await route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
   });
 
-  await page.route(`**/workallocation/task/${taskId}/cancel*`, async (route: Route) => {
-    cancelInvoked = true;
-    cancelRequestUrl = route.request().url();
+  await page.route(`**/workallocation/task/${taskId}/${actionId}*`, async (route: Route) => {
+    actionInvoked = true;
+    actionRequestUrl = route.request().url();
     const postData = route.request().postDataJSON();
-    cancelRequestBody = postData && typeof postData === 'object' ? (postData as Record<string, unknown>) : null;
-    await route.fulfill({ status: cancelResponseStatus, contentType: 'application/json', body: '{}' });
+    actionRequestBody = postData && typeof postData === 'object' ? (postData as Record<string, unknown>) : null;
+    await route.fulfill({ status: actionResponseStatus, contentType: 'application/json', body: '{}' });
   });
 
   return {
-    getCancelRequestUrl: () => cancelRequestUrl,
-    getCancelRequestBody: () => cancelRequestBody,
+    getActionRequestUrl: () => actionRequestUrl,
+    getActionRequestBody: () => actionRequestBody,
   };
 }
 
-export async function routeCaseDetailsTaskCancellationFlow(
+export async function routeMyTaskCancellationFlow(
+  page: Page,
+  taskId: string,
+  task: TaskRecord,
+  options: MyTaskRouteOptions = {}
+): Promise<MyTaskCancellationRouteResult> {
+  const { getActionRequestUrl, getActionRequestBody } = await routeMyTaskActionFlow(page, taskId, task, {
+    actionId: 'cancel',
+    includeAction: options.includeCancelAction,
+    actionResponseStatus: options.cancelResponseStatus,
+  });
+
+  return {
+    getCancelRequestUrl: getActionRequestUrl,
+    getCancelRequestBody: getActionRequestBody,
+  };
+}
+
+export type CaseDetailsTaskActionRouteOptions = {
+  actionId?: string;
+  actionResponseStatus?: number;
+};
+
+export async function routeCaseDetailsTaskActionFlow(
   page: Page,
   taskId: string,
   scenario: CancellationScenario,
   task: TaskRecord,
-  caseDetailsTemplate: CaseDetailsTemplate
+  caseDetailsTemplate: CaseDetailsTemplate,
+  options: CaseDetailsTaskActionRouteOptions = {}
 ): Promise<void> {
-  let cancelInvoked = false;
+  const actionId = options.actionId ?? 'cancel';
+  const actionResponseStatus = options.actionResponseStatus ?? 200;
+  let actionInvoked = false;
 
   await page.route('**/data/internal/cases/**', async (route: Route) => {
     await route.fulfill({
@@ -132,14 +170,14 @@ export async function routeCaseDetailsTaskCancellationFlow(
   });
 
   // Case-details task loading has drifted across GET/POST and optional query/proxy prefixes in different builds.
-  // Keep the interceptor broad so this test stays focused on cancellation behavior, not transport shape.
+  // Keep the interceptor broad so this test stays focused on task-action behavior, not transport shape.
   await page.route(`**/workallocation/case/task/${scenario.caseId}*`, async (route: Route) => {
-    const tasks = cancelInvoked ? [] : [task];
+    const tasks = actionInvoked ? [] : [task];
     await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(tasks) });
   });
 
   await page.route(`**/api/workallocation/case/task/${scenario.caseId}*`, async (route: Route) => {
-    const tasks = cancelInvoked ? [] : [task];
+    const tasks = actionInvoked ? [] : [task];
     await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(tasks) });
   });
 
@@ -170,8 +208,18 @@ export async function routeCaseDetailsTaskCancellationFlow(
     await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ task }) });
   });
 
-  await page.route(`**/workallocation/task/${taskId}/cancel*`, async (route: Route) => {
-    cancelInvoked = true;
-    await route.fulfill({ status: 200, contentType: 'application/json', body: '{}' });
+  await page.route(`**/workallocation/task/${taskId}/${actionId}*`, async (route: Route) => {
+    actionInvoked = true;
+    await route.fulfill({ status: actionResponseStatus, contentType: 'application/json', body: '{}' });
   });
+}
+
+export async function routeCaseDetailsTaskCancellationFlow(
+  page: Page,
+  taskId: string,
+  scenario: CancellationScenario,
+  task: TaskRecord,
+  caseDetailsTemplate: CaseDetailsTemplate
+): Promise<void> {
+  await routeCaseDetailsTaskActionFlow(page, taskId, scenario, task, caseDetailsTemplate, { actionId: 'cancel' });
 }

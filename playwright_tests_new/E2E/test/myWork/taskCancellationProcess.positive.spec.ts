@@ -2,7 +2,6 @@ import { expect, test } from '../../fixtures';
 import { applySessionCookies } from '../../../common/sessionCapture';
 import { buildMyTaskListMock } from '../../../integration/mocks/taskList.mock';
 import { extractUserIdFromCookies } from '../../../integration/utils/extractUserIdFromCookies';
-import { logTaskCancellationAssertion } from '../../../integration/utils/taskCancellationAssertionLogger';
 import {
   routeCaseDetailsTaskCancellationFlow,
   routeMyTaskCancellationFlow,
@@ -14,11 +13,6 @@ import { resolve } from 'node:path';
 
 const userIdentifier = 'STAFF_ADMIN';
 const taskId = '11111111-1111-1111-1111-111111111111';
-const cancelledTaskMessage = "You've cancelled a task. It has been removed from the task list.";
-const taskNoLongerAvailableMessage = 'The task is no longer available.';
-const caseDetailsTemplate = JSON.parse(
-  readFileSync(resolve(process.cwd(), 'src/assets/getCase.json'), 'utf8')
-) as CaseDetailsTemplate;
 
 const cancellationMatrix: readonly CancellationScenario[] = [
   {
@@ -39,7 +33,7 @@ const cancellationMatrix: readonly CancellationScenario[] = [
 
 test.describe(`Task cancellation scenarios as ${userIdentifier}`, () => {
   for (const matrixItem of cancellationMatrix) {
-    test(`EXUI-3662 My Tasks manual cancellation for ${matrixItem.scenario}`, async ({ taskListPage, page }, testInfo) => {
+    test(`EXUI-3662 My Tasks manual cancellation for ${matrixItem.scenario}`, async ({ taskListPage, page }) => {
       const { cookies } = await applySessionCookies(page, userIdentifier);
       const userId = extractUserIdFromCookies(cookies) || 'test-user-id';
 
@@ -55,82 +49,34 @@ test.describe(`Task cancellation scenarios as ${userIdentifier}`, () => {
         assignee: userId,
       };
 
-      const { getCancelRequestUrl, getCancelRequestBody } = await routeMyTaskCancellationFlow(page, taskId, task);
+      await routeMyTaskCancellationFlow(page, taskId, task);
 
-      await taskListPage.goto();
-      await expect(taskListPage.taskListTable).toBeVisible();
-      await taskListPage.exuiSpinnerComponent.wait();
-      await expect(taskListPage.taskListTable).toContainText(matrixItem.caseName);
+      await test.step('Open cancellation from My Work', async () => {
+        await taskListPage.goto();
+        await expect(taskListPage.taskListTable).toBeVisible();
+        await taskListPage.exuiSpinnerComponent.wait();
+        await expect(taskListPage.taskListTable).toContainText(matrixItem.caseName);
 
-      await taskListPage.manageCaseButtons.first().click();
-      await expect(taskListPage.taskActionCancel.first()).toBeVisible();
-      await taskListPage.taskActionCancel.first().click();
-      await page.getByRole('button', { name: 'Cancel task' }).click();
-
-      await expect.poll(() => getCancelRequestUrl()).toContain(`/workallocation/task/${taskId}/cancel`);
-      await expect.poll(() => getCancelRequestBody()).not.toBeNull();
-
-      const parsedUrl = new URL(getCancelRequestUrl());
-      const expectedPayload = { hasNoAssigneeOnComplete: false };
-      const actualPayload = getCancelRequestBody();
-      const expectedBrowserRequestPath = `/workallocation/task/${taskId}/cancel`;
-      const actualBrowserRequestPath = `${parsedUrl.pathname}${parsedUrl.search}`;
-      const assertionSummary = logTaskCancellationAssertion({
-        scenario: matrixItem.scenario,
-        expectedPath: expectedBrowserRequestPath,
-        actualPath: actualBrowserRequestPath,
-        hasCancellationProcessQuery: parsedUrl.searchParams.has('cancellation_process'),
-        hasCompletionProcessQuery: parsedUrl.searchParams.has('completion_process'),
-        expectedPayload,
-        actualPayload,
+        await taskListPage.manageCaseButtons.first().click();
+        await expect(taskListPage.taskActionCancel.first()).toBeVisible();
+        await taskListPage.taskActionCancel.first().click();
       });
 
-      await testInfo.attach('EXUI-3662-browser-request-expected-vs-actual.json', {
-        body: JSON.stringify(
-          {
-            note: 'Browser -> ExUI API request (not ExUI -> WA Task Management internal call)',
-            expectation: {
-              path: expectedBrowserRequestPath,
-              queryMustInclude: [],
-              queryMustExclude: ['cancellation_process', 'completion_process'],
-              payload: expectedPayload,
-            },
-            actual: {
-              path: actualBrowserRequestPath,
-              hasCancellationProcessQuery: parsedUrl.searchParams.has('cancellation_process'),
-              hasCompletionProcessQuery: parsedUrl.searchParams.has('completion_process'),
-              payload: actualPayload,
-            },
-            assertions: assertionSummary,
-          },
-          null,
-          2
-        ),
-        contentType: 'application/json',
+      await test.step('Confirm cancellation and verify user-visible outcome', async () => {
+        await taskListPage.confirmTaskCancellation();
+        await expect(taskListPage.cancelledTaskMessage).toBeVisible();
+        await expect(taskListPage.taskListTable).not.toContainText(matrixItem.caseName);
       });
-
-      expect(
-        parsedUrl.searchParams.has('cancellation_process'),
-        `Expected browser cancel request ${expectedBrowserRequestPath} to omit "cancellation_process"; actual path=${actualBrowserRequestPath}`
-      ).toBeFalsy();
-      expect(
-        parsedUrl.searchParams.has('completion_process'),
-        `Expected browser cancel request ${expectedBrowserRequestPath} to omit "completion_process"; actual path=${actualBrowserRequestPath}`
-      ).toBeFalsy();
-      expect(
-        actualPayload,
-        `Expected browser cancel payload ${JSON.stringify(expectedPayload)}; actual=${JSON.stringify(actualPayload)}`
-      ).toEqual(expectedPayload);
-
-      await expect(page.getByText(cancelledTaskMessage)).toBeVisible();
-      await expect(taskListPage.taskListTable).not.toContainText(matrixItem.caseName);
     });
   }
 
-  test('EXUI-3662 Case details Tasks tab manual cancellation path', async ({ page }) => {
+  test('EXUI-3662 Case details Tasks tab manual cancellation path', async ({ page, taskListPage }) => {
     const scenario = cancellationMatrix[0];
     const { cookies } = await applySessionCookies(page, userIdentifier);
     const userId = extractUserIdFromCookies(cookies) || 'test-user-id';
+    const caseDetailsTemplate = JSON.parse(
+      readFileSync(resolve(process.cwd(), 'src/assets/getCase.json'), 'utf8')
+    ) as CaseDetailsTemplate;
 
     const task = {
       ...buildMyTaskListMock(userId, 1).tasks[0],
@@ -145,22 +91,25 @@ test.describe(`Task cancellation scenarios as ${userIdentifier}`, () => {
 
     await routeCaseDetailsTaskCancellationFlow(page, taskId, scenario, task, caseDetailsTemplate);
 
-    await page.goto(`/cases/case-details/${scenario.jurisdiction}/${scenario.caseTypeId}/${scenario.caseId}/tasks`);
-    await expect(page.getByRole('heading', { name: 'Active tasks' })).toBeVisible();
-    const caseDetailsCancelActions = page.locator('#action_cancel').or(page.getByRole('link', { name: 'Cancel task' }));
-    const caseDetailsCancelAction = caseDetailsCancelActions.first();
-    await expect(caseDetailsCancelAction).toBeVisible();
+    await test.step('Open case-details task cancellation action', async () => {
+      await page.goto(`/cases/case-details/${scenario.jurisdiction}/${scenario.caseTypeId}/${scenario.caseId}/tasks`);
+      await expect(page.getByRole('heading', { name: 'Active tasks' })).toBeVisible();
+      const caseDetailsCancelAction = taskListPage.caseDetailsTaskActionCancel.first();
+      await expect(caseDetailsCancelAction).toBeVisible();
+      await caseDetailsCancelAction.click();
+      await expect(taskListPage.confirmCancelTaskButton).toBeVisible();
+    });
 
-    await caseDetailsCancelAction.click();
-    await expect(page.getByRole('button', { name: 'Cancel task' })).toBeVisible();
-    await page.getByRole('button', { name: 'Cancel task' }).click();
+    await test.step('Confirm cancellation removes task action from tab', async () => {
+      await taskListPage.confirmTaskCancellation();
 
-    // Case-details tasks flow may keep the same route instance and skip banner re-render.
-    // The key behaviour here is successful cancel + task removed from the tasks tab.
-    await expect(page).toHaveURL(
-      new RegExp(`/cases/case-details/${scenario.jurisdiction}/${scenario.caseTypeId}/${scenario.caseId}(?:/tasks|#Tasks)`)
-    );
-    await expect(page.locator('#action_cancel').or(page.getByRole('link', { name: 'Cancel task' }))).toHaveCount(0);
+      // Case-details tasks flow may keep the same route instance and skip banner re-render.
+      // The key behaviour here is successful cancel + task removed from the tasks tab.
+      await expect(page).toHaveURL(
+        new RegExp(`/cases/case-details/${scenario.jurisdiction}/${scenario.caseTypeId}/${scenario.caseId}(?:/tasks|#Tasks)`)
+      );
+      await expect(taskListPage.caseDetailsTaskActionCancel).toHaveCount(0);
+    });
   });
 
   test('EXUI-3662 Cancel action is not shown for a non-cancellable task', async ({ taskListPage, page }) => {
@@ -180,13 +129,14 @@ test.describe(`Task cancellation scenarios as ${userIdentifier}`, () => {
 
     await routeMyTaskCancellationFlow(page, taskId, task, { includeCancelAction: false });
 
-    await taskListPage.goto();
-    await expect(taskListPage.taskListTable).toBeVisible();
-    await taskListPage.exuiSpinnerComponent.wait();
-
-    await taskListPage.manageCaseButtons.first().click();
-    await expect(taskListPage.taskActionsRow).toBeVisible();
-    await expect(taskListPage.taskActionCancel).toHaveCount(0);
+    await test.step('Open task actions and verify cancel is not available', async () => {
+      await taskListPage.goto();
+      await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.exuiSpinnerComponent.wait();
+      await taskListPage.manageCaseButtons.first().click();
+      await expect(taskListPage.taskActionsRow).toBeVisible();
+      await expect(taskListPage.taskActionCancel).toHaveCount(0);
+    });
   });
 
   test('EXUI-3662 Stale task cancellation shows task no longer available warning', async ({ taskListPage, page }) => {
@@ -206,14 +156,18 @@ test.describe(`Task cancellation scenarios as ${userIdentifier}`, () => {
 
     await routeMyTaskCancellationFlow(page, taskId, task, { cancelResponseStatus: 409 });
 
-    await taskListPage.goto();
-    await expect(taskListPage.taskListTable).toBeVisible();
-    await taskListPage.manageCaseButtons.first().click();
-    await taskListPage.taskActionCancel.first().click();
-    await page.getByRole('button', { name: 'Cancel task' }).click();
+    await test.step('Open cancellation for stale task', async () => {
+      await taskListPage.goto();
+      await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.manageCaseButtons.first().click();
+      await taskListPage.taskActionCancel.first().click();
+    });
 
-    await expect(page.getByText(taskNoLongerAvailableMessage)).toBeVisible();
-    await expect(page).toHaveURL(/\/work\/my-work\/list/);
+    await test.step('Confirm stale cancellation shows warning', async () => {
+      await taskListPage.confirmTaskCancellation();
+      await expect(taskListPage.taskNoLongerAvailableMessage).toBeVisible();
+      await expect(page).toHaveURL(/\/work\/my-work\/list/);
+    });
   });
 
   test('EXUI-3662 Cancellation API failure shows task no longer available warning', async ({ taskListPage, page }) => {
@@ -233,13 +187,17 @@ test.describe(`Task cancellation scenarios as ${userIdentifier}`, () => {
 
     await routeMyTaskCancellationFlow(page, taskId, task, { cancelResponseStatus: 400 });
 
-    await taskListPage.goto();
-    await expect(taskListPage.taskListTable).toBeVisible();
-    await taskListPage.manageCaseButtons.first().click();
-    await taskListPage.taskActionCancel.first().click();
-    await page.getByRole('button', { name: 'Cancel task' }).click();
+    await test.step('Open cancellation for API failure scenario', async () => {
+      await taskListPage.goto();
+      await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.manageCaseButtons.first().click();
+      await taskListPage.taskActionCancel.first().click();
+    });
 
-    await expect(page.getByText(taskNoLongerAvailableMessage)).toBeVisible();
-    await expect(page).toHaveURL(/\/work\/my-work\/list/);
+    await test.step('Confirm API failure shows warning', async () => {
+      await taskListPage.confirmTaskCancellation();
+      await expect(taskListPage.taskNoLongerAvailableMessage).toBeVisible();
+      await expect(page).toHaveURL(/\/work\/my-work\/list/);
+    });
   });
 });

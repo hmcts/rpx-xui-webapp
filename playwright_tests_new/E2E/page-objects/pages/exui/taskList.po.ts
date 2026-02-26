@@ -19,6 +19,12 @@ export class TaskListPage extends Base {
   readonly taskActionUnassign = this.taskListTable.locator('#action_unclaim');
   readonly taskActionClaim = this.taskListTable.locator('#action_claim');
   readonly taskActionClaimAndGo = this.taskListTable.locator('#action_claim-and-go');
+  readonly confirmCancelTaskButton = this.page.getByRole('button', { name: 'Cancel task' });
+  readonly caseDetailsTaskActionCancel = this.page
+    .locator('#action_cancel')
+    .or(this.page.getByRole('link', { name: 'Cancel task' }));
+  readonly cancelledTaskMessage = this.page.getByText("You've cancelled a task. It has been removed from the task list.");
+  readonly taskNoLongerAvailableMessage = this.page.getByText('The task is no longer available.');
 
   constructor(page: Page) {
     super(page);
@@ -44,6 +50,10 @@ export class TaskListPage extends Base {
 
   async getResultsText() {
     return await this.taskListResultsAmount.textContent();
+  }
+
+  async confirmTaskCancellation() {
+    await this.confirmCancelTaskButton.click();
   }
 
   async waitForManageButton(

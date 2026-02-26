@@ -185,20 +185,26 @@
         var screenshots = Array.isArray(test.screenshots) ? test.screenshots : [];
         var steps = Array.isArray(result.steps) ? result.steps : [];
 
-        var stepsHtml = steps.map(function (step) {
-          return '<div><code>' + escapeHtml(step) + '</code></div>';
-        }).join('');
+        var stepsHtml = steps
+          .map(function (step) {
+            return '<div><code>' + escapeHtml(step) + '</code></div>';
+          })
+          .join('');
 
         var issuesHtml = issues.map(renderIssue).join('');
         var screenshotsHtml = screenshots.map(renderScreenshot).join('');
 
-        var errorHtml = test.status === 'failed'
-          ? '<div><pre><code>' + escapeHtml(test.error) + '</code></pre></div>'
-          : '';
+        var errorHtml = test.status === 'failed' ? '<div><pre><code>' + escapeHtml(test.error) + '</code></pre></div>' : '';
 
         return [
           '<div class="testResult">',
-          '<div class="testTitle ' + statusClass + ' toggleDetails" data-target="detail-' + index + '">' + escapeHtml(test.name) + '</div>',
+          '<div class="testTitle ' +
+            statusClass +
+            ' toggleDetails" data-target="detail-' +
+            index +
+            '">' +
+            escapeHtml(test.name) +
+            '</div>',
           errorHtml,
           '<div class="a11yResult hide" id="detail-' + index + '">',
           '<div><h3>Test Steps</h3>' + stepsHtml + '</div>',

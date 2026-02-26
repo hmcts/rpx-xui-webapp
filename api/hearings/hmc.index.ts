@@ -184,8 +184,8 @@ export async function updateHearingActuals(req: EnhancedRequest, res: Response, 
 export async function submitHearingActuals(req: EnhancedRequest, res: Response, next: NextFunction) {
   const hearingId = req.params.hearingId;
   const caseId = req.query.caseRef as string;
-  //const markupPath = `${hmcHearingsUrl}/hearingActualsCompletion/${hearingId}`;
-  const markupPath = `${hmcHearingsUrl}/hearingActualsCompletion/${hearingId}123`; // TESTING PURPOSES ONLY - to be removed when backend is fixed
+  const markupPath = `${hmcHearingsUrl}/hearingActualsCompletion/${hearingId}`;
+  //const markupPath = `${hmcHearingsUrl}/hearingActualsCompletion/${hearingId}123`; // TESTING PURPOSES ONLY - to be removed when backend is fixed
   try {
     const { status }: { status: number } = await handlePost(markupPath, null, req);
     res.status(status).send(null);
@@ -200,8 +200,8 @@ export async function submitHearingActuals(req: EnhancedRequest, res: Response, 
 export async function getLinkedHearingGroup(req: EnhancedRequest, res: Response, next: NextFunction) {
   const groupId: string = req.query.groupId as string;
   const caseId = req.query.caseId as string;
-  const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup/${groupId}`;
-  // const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup/${groupId}123`; // TESTING PURPOSES ONLY - to be removed when backend is fixed
+  //const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup/${groupId}`;
+  const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup/${groupId}123`; // TESTING PURPOSES ONLY - to be removed when backend is fixed
   try {
     const { status, data }: { status: number; data: LinkedHearingGroupMainModel } = await handleGet(markupPath, req);
     res.status(status).send(data);

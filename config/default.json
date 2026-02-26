@@ -116,8 +116,8 @@
   "microservice": "xui_webapp",
   "sessionSecret": "secretSauce",
   "caseworkerPageSize": "30000",
-  "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT,ST_CIC",
-  "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT,ST_CIC",
+  "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT,ST_CIC,PROBATE",
+  "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT,ST_CIC,PROBATE",
   "staffSupportedJurisdictions": "ST_CIC,CIVIL,EMPLOYMENT,PRIVATELAW,PUBLICLAW,IA,SSCS,DIVORCE,FR,PROBATE",
   "jurisdictions": "DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,HRS,CIVIL,CMC,PRIVATELAW",
   "serviceRefDataMapping": [
@@ -132,6 +132,36 @@
     { "service": "FR", "serviceCodes": ["ABA2"] },
     { "service": "PROBATE", "serviceCodes": ["ABA6"] }
   ],
+  "waSupportedServiceandCaseTypes": {
+    "IA": {
+      "caseTypes": "Asylum",
+      "releaseVersion": "3.5"
+    },
+    "CIVIL": {
+      "caseTypes": "CIVIL,GENERALAPPLICATION",
+      "releaseVersion": "3.5"
+    },
+    "PRIVATELAW": {
+      "caseTypes": "PRIVATELAW,PRLAPPS",
+      "releaseVersion": "3.5"
+    },
+    "PUBLICLAW": {
+      "caseTypes": "PUBLICLAW",
+      "releaseVersion": "3.5"
+    },
+    "SSCS": {
+      "caseTypes": "Benefit,SSCS_ExceptionRecord",
+      "releaseVersion": "3.5"
+    },
+    "EMPLOYMENT": {
+      "caseTypes": "ET_EnglandWales,ET_EnglandWales_Listings,ET_EnglandWales_Multiple,ET_Scotland,ET_Scotland_Listings,ET_Scotland_Multiple",
+      "releaseVersion": "4.0"
+    },
+    "PROBATE": {
+      "caseTypes": "GrantOfRepresentation",
+      "releaseVersion": "4.0"
+    }
+  },
   "wildcardSearchFields": {
     "Benefit": ["generatedSurname", "appeal.appellant.name.lastName"],
     "HearingRecordings": ["recordingReference"],

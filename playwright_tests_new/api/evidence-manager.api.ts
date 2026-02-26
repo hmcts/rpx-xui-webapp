@@ -27,7 +27,7 @@ const configuredDocId = resolveConfiguredDocId(EM_DOC_ID, config.em[config.testE
 let sharedDocId = '';
 const invalidDocId = uuid();
 
-test.describe('Evidence Manager & Documents', () => {
+test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, () => {
   test.beforeAll(async () => {
     sharedDocId = await resolveSharedDocId(configuredDocId, uploadSyntheticDoc);
     if (!sharedDocId) {
@@ -239,7 +239,7 @@ test.describe('Evidence Manager & Documents', () => {
   });
 });
 
-test.describe('Evidence Manager helper coverage', () => {
+test.describe('Evidence Manager helper coverage', { tag: '@svc-evidence-manager' }, () => {
   test('resolveConfiguredDocId and resolveSharedDocId handle overrides', async () => {
     expect(resolveConfiguredDocId('env-doc', 'fallback-doc')).toBe('env-doc');
     expect(resolveConfiguredDocId(undefined, 'fallback-doc')).toBe('fallback-doc');

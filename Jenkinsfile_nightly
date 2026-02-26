@@ -109,7 +109,7 @@ withNightlyPipeline(type, product, component) {
             alwaysLinkToLastBuild: true,
             keepAll              : true,
             reportDir            : 'functional-output/tests/api_functional/odhin-report/',
-            reportFiles          : 'xui-playwright.html',
+            reportFiles          : 'xui-playwright-api.html',
             reportName           : 'API Functional Test'
           ])
           steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
@@ -150,7 +150,7 @@ withNightlyPipeline(type, product, component) {
                       alwaysLinkToLastBuild: true,
                       keepAll              : true,
                       reportDir            : 'functional-output/tests/playwright-integration/odhin-report/',
-                      reportFiles          : 'xui-playwright.html',
+                      reportFiles          : 'xui-playwright-integration.html',
                       reportName           : 'Playwright Integration Test'
                     ])
                     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
@@ -169,7 +169,7 @@ withNightlyPipeline(type, product, component) {
               alwaysLinkToLastBuild: true,
               keepAll              : true,
               reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
-              reportFiles          : 'xui-playwright.html',
+              reportFiles          : 'xui-playwright-e2e.html',
               reportName           : 'XUI Manage Cases Playwright Cross Browser Tests'
               ])
               steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'

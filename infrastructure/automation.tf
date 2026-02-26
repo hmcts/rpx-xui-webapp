@@ -47,7 +47,7 @@ Import-Module PSWritePDF -ErrorAction SilentlyContinue
 
 # Main Welsh translation query
 $query = @"
-let startTime = startofmonth(datetime_add('month', -1, startofmonth(now())));
+let startTime = startofmonth(datetime_add('month', -2, startofmonth(now())));
 let endTime = startofmonth(now());
 requests
 | where timestamp >= startTime and timestamp < endTime
@@ -168,34 +168,100 @@ $pdfBase64 = $null
 try {
     Write-Output "Generating PDF report..."
 
-    # Pre-build content lines outside the scriptblock to avoid PS 5.1 pipeline issues inside scriptblocks
+    # Pre-build header/meta lines (plain text, rendered above the table image)
     $pdfLines = [System.Collections.Generic.List[string]]::new()
     $pdfLines.Add("Monthly Welsh Language Usage Report")
     $pdfLines.Add("Environment: $($env:MODULE_PROJECT) $($env:MODULE_ENV)")
     $pdfLines.Add("Reporting Period: $([DateTime]::UtcNow.AddMonths(-1).ToString('MMMM yyyy'))")
     $pdfLines.Add("")
     $pdfLines.Add("Daily Welsh Translation Usage (unique sessions per /api/translation/cy):")
-    $pdfLines.Add("Date                 | Unique Sessions")
-    $pdfLines.Add("---------------------+----------------")
-    if ($dataRows -and $dataRows.Count -gt 0) {
-        foreach ($row in $dataRows) {
-            if ($null -ne $row) {
-                $pdfDate     = if ($null -ne $row.Date)     { $row.Date }                  else { 'N/A' }
-                $pdfSessions = if ($null -ne $row.Sessions) { $row.Sessions.ToString() }   else { '0' }
-                $pdfLines.Add(("{0,-21}| {1}" -f $pdfDate, $pdfSessions))
-            }
-        }
-        $pdfLines.Add("---------------------+----------------")
-        $pdfLines.Add(("Total                | {0}" -f $totalSessions))
-    }
-    else {
-        $pdfLines.Add("No Welsh language translation usage was recorded in the reporting period.")
-    }
     $pdfLines.Add("")
     $pdfLines.Add("Generated: $(Get-Date -Format 'dd MMM yyyy HH:mm:ss') UTC")
-
-    # Capture list as plain array so it can be closed over cleanly in the scriptblock
     $pdfLinesArray = $pdfLines.ToArray()
+
+    # Generate styled table image using System.Drawing
+    $pdfTableImagePath = $null
+    try {
+        Add-Type -AssemblyName System.Drawing
+
+        $colWidths   = @(260, 180)   # Date col, Sessions col
+        $rowHeight   = 28
+        $paddingX    = 10
+        $tableWidth  = ($colWidths | Measure-Object -Sum).Sum
+
+        # Total rows = header + data rows + (total footer if data exists)
+        $dataCount   = if ($dataRows -and $dataRows.Count -gt 0) { $dataRows.Count } else { 0 }
+        $footerRows  = if ($dataCount -gt 0) { 1 } else { 0 }
+        $totalRows   = 1 + $dataCount + $footerRows   # header + data + optional total
+        $tableHeight = $totalRows * $rowHeight
+
+        $tBitmap  = New-Object System.Drawing.Bitmap($tableWidth, $tableHeight)
+        $tGraphic = [System.Drawing.Graphics]::FromImage($tBitmap)
+        $tGraphic.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
+        $tGraphic.Clear([System.Drawing.Color]::White)
+
+        $headerBrush  = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(11,  12,  12))
+        $footerBrush  = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(0,   94, 165))
+        $altRowBrush  = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(242, 242, 242))
+        $whiteBrush   = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::White)
+        $darkTextB    = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(11,  12,  12))
+        $lightTextB   = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::White)
+        $borderPen    = New-Object System.Drawing.Pen([System.Drawing.Color]::FromArgb(180, 180, 180), 1)
+        $outerPen     = New-Object System.Drawing.Pen([System.Drawing.Color]::FromArgb(80,  90,  95),  2)
+        $fontNormal   = New-Object System.Drawing.Font("Arial",  9)
+        $fontBold     = New-Object System.Drawing.Font("Arial",  9, [System.Drawing.FontStyle]::Bold)
+        $sfLeft       = New-Object System.Drawing.StringFormat
+        $sfLeft.Alignment     = [System.Drawing.StringAlignment]::Near
+        $sfLeft.LineAlignment = [System.Drawing.StringAlignment]::Center
+        $sfRight      = New-Object System.Drawing.StringFormat
+        $sfRight.Alignment     = [System.Drawing.StringAlignment]::Far
+        $sfRight.LineAlignment = [System.Drawing.StringAlignment]::Center
+
+        # Inline helper scriptblock — avoids PS 5.1 scoping issues with nested functions in try blocks
+        $drawRow = {
+            param($rowIdx, $col0, $col1, $bgBrush, $fgBrush, $font, $c0sf, $c1sf)
+            $ry = $rowIdx * $rowHeight
+            $tGraphic.FillRectangle($bgBrush, 0, $ry, $tableWidth, $rowHeight)
+            $tGraphic.DrawRectangle($borderPen, 0, $ry, $colWidths[0], $rowHeight)
+            $tGraphic.DrawRectangle($borderPen, $colWidths[0], $ry, $colWidths[1], $rowHeight)
+            $r0 = New-Object System.Drawing.RectangleF(([float]$paddingX), ([float]$ry), ([float]($colWidths[0] - $paddingX * 2)), ([float]$rowHeight))
+            $r1 = New-Object System.Drawing.RectangleF(([float]($colWidths[0] + $paddingX)), ([float]$ry), ([float]($colWidths[1] - $paddingX * 2)), ([float]$rowHeight))
+            $tGraphic.DrawString($col0, $font, $fgBrush, $r0, $c0sf)
+            $tGraphic.DrawString($col1, $font, $fgBrush, $r1, $c1sf)
+        }
+
+        # Header row
+        & $drawRow 0 "Date" "Unique Sessions" $headerBrush $lightTextB $fontBold $sfLeft $sfRight
+
+        if ($dataCount -gt 0) {
+            for ($ri = 0; $ri -lt $dataCount; $ri++) {
+                $rowItem = $dataRows[$ri]
+                $dVal    = if ($null -ne $rowItem.Date)     { $rowItem.Date }                    else { 'N/A' }
+                $sVal    = if ($null -ne $rowItem.Sessions) { $rowItem.Sessions.ToString() } else { '0' }
+                $bg      = if ($ri % 2 -eq 0) { $whiteBrush } else { $altRowBrush }
+                & $drawRow ($ri + 1) $dVal $sVal $bg $darkTextB $fontNormal $sfLeft $sfRight
+            }
+            # Total footer
+            & $drawRow ($dataCount + 1) "Total" $totalSessions.ToString() $footerBrush $lightTextB $fontBold $sfLeft $sfRight
+        }
+        else {
+            # No-data row
+            & $drawRow 1 "No Welsh language translation usage was recorded in the reporting period." "" $altRowBrush $darkTextB $fontNormal $sfLeft $sfLeft
+        }
+
+        # Outer border
+        $tGraphic.DrawRectangle($outerPen, 0, 0, ($tableWidth - 1), ($tableHeight - 1))
+
+        $pdfTableImagePath = Join-Path ([System.IO.Path]::GetTempPath()) "WelshTable_$(Get-Date -Format 'yyyyMM').png"
+        $tBitmap.Save($pdfTableImagePath, [System.Drawing.Imaging.ImageFormat]::Png)
+        $tGraphic.Dispose()
+        $tBitmap.Dispose()
+        Write-Output "Table image generated: $pdfTableImagePath"
+    }
+    catch {
+        Write-Warning "Failed to generate table image for PDF: $_"
+        $pdfTableImagePath = $null
+    }
 
     # Generate bar chart image for the PDF using System.Drawing
     $pdfChartImagePath = $null
@@ -291,6 +357,9 @@ try {
             foreach ($line in $pdfLinesArray) {
                 New-PDFText -Text $line
             }
+            if ($pdfTableImagePath) {
+                New-PDFImage -Image $pdfTableImagePath -Width 440
+            }
             if ($pdfChartImagePath) {
                 New-PDFText -Text ""
                 New-PDFImage -Image $pdfChartImagePath -Width 500
@@ -301,6 +370,7 @@ try {
     if (Test-Path $pdfPath) {
         $pdfBase64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes($pdfPath))
         Write-Output "PDF generated successfully ($([Math]::Round((Get-Item $pdfPath).Length / 1KB, 1)) KB)."
+        if ($pdfTableImagePath -and (Test-Path $pdfTableImagePath)) { Remove-Item $pdfTableImagePath -Force -ErrorAction SilentlyContinue }
         if ($pdfChartImagePath -and (Test-Path $pdfChartImagePath)) { Remove-Item $pdfChartImagePath -Force -ErrorAction SilentlyContinue }
     }
     else {
@@ -426,9 +496,9 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   name                    = "monthly-welsh-schedule"
   resource_group_name     = azurerm_resource_group.rg.name
   automation_account_name = azurerm_automation_account.welsh_reporting.0.name
-  frequency               = "Month"
+  frequency               = "Hour"
   interval                = 1
-  start_time              = "2026-03-01T09:00:00Z"
+  start_time              = "2026-02-26T11:10:00Z"
   timezone                = "UTC"
 }
 

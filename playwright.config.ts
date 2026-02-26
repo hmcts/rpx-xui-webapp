@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 import { execSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
-import { cpus } from 'node:os';
+import { cpus, totalmem } from 'node:os';
 import * as path from 'node:path';
 import { version as appVersion } from './package.json';
 import { parseNonNegativeInt, resolveDefaultReporter } from './playwright-config-utils';
@@ -126,7 +126,9 @@ const resolveEnvironmentFromUrl = (baseUrl: string): string => {
 const resolveTestEnvironmentLabel = (env: EnvMap, workerCount: number): string => {
   const targetEnv = env.TEST_TYPE ?? resolveEnvironmentFromUrl(resolveBaseUrl(env));
   const runContext = env.CI ? 'ci' : 'local-run';
-  return `${targetEnv} | ${runContext} | workers=${workerCount}`;
+  const cpuCores = cpus()?.length ?? 'unknown';
+  const totalRamGiB = Math.round((totalmem() / 1024 ** 3) * 10) / 10;
+  return `${targetEnv} | ${runContext} | workers=${workerCount} | agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
 };
 
 const ensureTagPrefix = (value: string): string => {

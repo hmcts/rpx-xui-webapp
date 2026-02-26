@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
-import { cpus } from 'node:os';
+import { cpus, totalmem } from 'node:os';
 import { version as appVersion } from './package.json';
 
 const headlessMode = process.env.HEAD !== 'true';
@@ -48,9 +48,14 @@ const resolveWorkerCount = () => {
   return suggested;
 };
 const workerCount = resolveWorkerCount();
+const resolveAgentHardware = () => {
+  const cpuCores = cpus()?.length ?? 'unknown';
+  const totalRamGiB = Math.round((totalmem() / 1024 ** 3) * 10) / 10;
+  return `agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
+};
 const targetEnv = process.env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
 const runContext = process.env.CI ? 'ci' : 'local-run';
-const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount}`;
+const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
 
 module.exports = defineConfig({
   testDir: './playwright_tests/E2E',

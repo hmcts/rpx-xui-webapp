@@ -140,9 +140,6 @@ export class ActualHearingsUtils {
       });
     }
 
-    hearingActuals.actualHearingDays = hearingActuals.actualHearingDays
-      ?.filter((day) => day.hearingDate === hearingDate) || [];
-
     return hearingActuals;
   }
 

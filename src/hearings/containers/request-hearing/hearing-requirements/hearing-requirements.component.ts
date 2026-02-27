@@ -32,6 +32,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   public readonly caseFlagType = CaseFlagType.REASONABLE_ADJUSTMENT;
   public caseFlagsRefData: CaseFlagReferenceModel[];
   public reasonableAdjustmentFlags: CaseFlagGroup[] = [];
+  public allAdjustmentFlags: CaseFlagGroup[] = [];
   public lostFocus = false;
   public referenceId: string;
   public strRegions: string;
@@ -118,6 +119,8 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         ? this.serviceHearingValuesModel.caseSLAStartDate
         : moment(new Date()).format('YYYY-MM-DD');
 
+
+    console.log('maybe use this::', this.allAdjustmentFlags)    
     const hearingRequestMainModel: HearingRequestMainModel = {
       hearingDetails: {
         duration: this.serviceHearingValuesModel.duration,
@@ -193,7 +196,7 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
   }
 
   public getAllPartyFlagsByPartyId(partyID: string): string[] {
-    const allRAFs: PartyFlagsDisplayModel[] = this.reasonableAdjustmentFlags.reduce(
+    const allRAFs: PartyFlagsDisplayModel[] = this.allAdjustmentFlags.reduce(
       (previousValue, currentValue) => [...previousValue, ...currentValue.partyFlags],
       []
     );
@@ -276,6 +279,12 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         partyDetails,
         this.serviceHearingValuesModel.parties
       );
+      this.allAdjustmentFlags = CaseFlagsUtils.getAllAdjustmentFlags(
+        this.caseFlagsRefData,
+        propertiesUpdatedOnPageVisit.caseFlags?.flags,
+        partyDetails,
+        this.serviceHearingValuesModel.parties
+      );
       this.showReasonableAdjustmentFlagsWarningMessage = this.reasonableAdjustmentFlags
         .map((flag) => flag.partyFlags.map((partyFlag) => partyFlag.flagAmendmentLabelStatus))
         .join()
@@ -286,6 +295,12 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         this.serviceHearingValuesModel?.caseFlags?.flags,
         this.caseFlagsRefData,
         this.caseFlagType
+      );
+      this.allAdjustmentFlags = CaseFlagsUtils.getAllAdjustmentFlags(
+        this.caseFlagsRefData,
+        this.serviceHearingValuesModel?.caseFlags?.flags,
+        this.hearingRequestMainModel?.partyDetails || [],
+        this.serviceHearingValuesModel?.parties || []
       );
     }
   }

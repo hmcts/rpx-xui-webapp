@@ -3692,12 +3692,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.34":
-  version: 7.3.34
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.34"
+"@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.34-exui-4177-tar-cve-fix/hmcts-ccd-case-ui-toolkit-7.3.34-exui-4177-tar-cve-fix.tgz":
+  version: 7.3.34-exui-4177-tar-cve-fix
+  resolution: "@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.34-exui-4177-tar-cve-fix/hmcts-ccd-case-ui-toolkit-7.3.34-exui-4177-tar-cve-fix.tgz"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/454710a4536a64d8f83f94815e36ae9faf60b03467318f22495c08279a0f330daf4a3d8b422330ac9da2f072f65ec6643d30aed0041a7f8bfb9d7bab8059cb9a
+  checksum: 10/061e6cf3a459bf175adb736c6b48ca9385c756fac5d647eaf8df614ce67c7af82130d9bbb58293ba37e8aef86d9b4c02581cad91fa03061d5ef1fb67c8346c6f
   languageName: node
   linkType: hard
 
@@ -3720,9 +3720,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.12":
-  version: 4.2.12
-  resolution: "@hmcts/media-viewer@npm:4.2.12"
+"@hmcts/media-viewer@npm:4.2.12-exui-4177":
+  version: 4.2.12-exui-4177
+  resolution: "@hmcts/media-viewer@npm:4.2.12-exui-4177"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3741,7 +3741,7 @@ __metadata:
     "@ngrx/router-store": ^20
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
-  checksum: 10/7511a7fa756d465715ef99451ad4fbcfbbd4a0b65df8edc1c523bcdf342465f5e96332ef87c944f9339feb504739e8293dae81fddb64a5a809c2cc4720392228
+  checksum: 10/3266cff1c849433f7490164d5a12c809434d497e6e1f039fee385c8ff02b4231abefa122c45b5fd70ccb1a002dfec5fc800c095b98ad5bf80dd4a5f0a0714f6c
   languageName: node
   linkType: hard
 
@@ -24438,10 +24438,10 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.34"
+    "@hmcts/ccd-case-ui-toolkit": "https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.34-exui-4177-tar-cve-fix/hmcts-ccd-case-ui-toolkit-7.3.34-exui-4177-tar-cve-fix.tgz"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.2.12"
+    "@hmcts/media-viewer": "npm:4.2.12-exui-4177"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.3.1"

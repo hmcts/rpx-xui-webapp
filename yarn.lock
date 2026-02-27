@@ -3661,12 +3661,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.34":
-  version: 7.3.34
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.34"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.34-exui-3995-rc-1":
+  version: 7.3.34-exui-3995-rc-1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.34-exui-3995-rc-1"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/454710a4536a64d8f83f94815e36ae9faf60b03467318f22495c08279a0f330daf4a3d8b422330ac9da2f072f65ec6643d30aed0041a7f8bfb9d7bab8059cb9a
+  checksum: 10/db4fa16c4167142160c75e5644346650db5f346960ce8fee659b665e290138ed4cab234250c38c065a825ae360c01dbba33b9193d7ef1eae08d357c3bba307f2
   languageName: node
   linkType: hard
 
@@ -3775,19 +3775,6 @@ __metadata:
     js-yaml: "npm:^4.1.1"
     lodash: "npm:^4.17.23"
   checksum: 10/ec3a8be6010221dd66016056eac876a65f2eca6e94d4e382b4d47db6603e8d27ef1699762cc6b9fed2cf7ce180f03561e35e4e029ea1c14e7ae9163e071b1ad6
-  languageName: node
-  linkType: hard
-
-"@hmcts/rpx-xui-common-lib@npm:3.2.0":
-  version: 3.2.0
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.0"
-  dependencies:
-    tslib: "npm:^2.0.0"
-  peerDependencies:
-    launchdarkly-js-client-sdk: ^3.3.0
-    ngx-pagination: ^3.2.1
-    rpx-xui-translation: 1.1.2-CME-780-9
-  checksum: 10/dffc0fd583699505076a68a718e11e82412eec8784669d6cfc55d4d6d11206bbcf333a2957605c6296252d52e0bc782327b8d1be8544b5b366d7458a545e9485
   languageName: node
   linkType: hard
 
@@ -24024,7 +24011,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.34"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.34-exui-3995-rc-1"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.12"

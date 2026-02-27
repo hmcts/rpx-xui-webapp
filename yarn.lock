@@ -25304,11 +25304,11 @@ __metadata:
   linkType: hard
 
 "swagger-ui-dist@npm:>=5.0.0":
-  version: 5.31.2
-  resolution: "swagger-ui-dist@npm:5.31.2"
+  version: 5.32.0
+  resolution: "swagger-ui-dist@npm:5.32.0"
   dependencies:
     "@scarf/scarf": "npm:=1.4.0"
-  checksum: 10/c9c242d8944b21d5254ddceaa73547392fc3441273f0a2af54b7f2446fef272c96d2b1e0be329f6dc375a332648eb13b5cc82d804c6d6ee3f2b7a49945678edd
+  checksum: 10/99b6aec6a222d3a3b6352fb36dd2785baeac7a3611d2e4a177dedf45b96c40af6d55008ad2ee18dee141de9804d79a55a3e558b358755d664eaa398c3d004a77
   languageName: node
   linkType: hard
 

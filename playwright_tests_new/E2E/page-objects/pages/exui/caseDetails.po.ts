@@ -263,22 +263,18 @@ export class CaseDetailsPage extends Base {
         }
 
         // Clone the key cell and strip nested tables so nested content is ignored
-        const keyCellClone = (cells[0]).cloneNode(true) as Element;
+        const keyCellClone = cells[0].cloneNode(true) as Element;
         keyCellClone.querySelectorAll('table').forEach((t) => t.remove());
-        const rawKey = findFirstText(keyCellClone)
-          .replace(trailingSortIndicatorRegex, '')
-          .trim();
+        const rawKey = findFirstText(keyCellClone).replace(trailingSortIndicatorRegex, '').trim();
         if (!rawKey) {
           continue;
         }
         const valueParts = cells
           .slice(1)
           .map((c) => {
-            const clone = (c).cloneNode(true) as Element;
+            const clone = c.cloneNode(true) as Element;
             clone.querySelectorAll('table').forEach((t) => t.remove());
-            return findFirstText(clone)
-              .replace(trailingSortIndicatorRegex, '')
-              .trim();
+            return findFirstText(clone).replace(trailingSortIndicatorRegex, '').trim();
           })
           .filter(Boolean);
         const value = valueParts.join(' ').replaceAll(/\s+/g, ' ').trim();

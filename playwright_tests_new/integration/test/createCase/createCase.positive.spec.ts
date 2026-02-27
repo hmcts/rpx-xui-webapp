@@ -21,6 +21,7 @@ test.describe(`Create case as ${userIdentifier}`, () => {
   test(`User ${userIdentifier} can create a ${jurisdiction} case and updates persist when editing previous steps`, async ({
     createCasePage,
     caseListPage,
+    tableUtils,
     timeouts,
     page,
   }) => {
@@ -52,7 +53,13 @@ test.describe(`Create case as ${userIdentifier}`, () => {
       await createCasePage.checkYourAnswersHeading.waitFor({ state: 'visible', timeout: timeouts.POC_FIELD_VISIBLE });
     });
 
-    await test.step('Move back, check previous step edits', async () => {
+    await test.step('Check the answers shown match the entered data', async () => {
+      const table = await tableUtils.parseDataTable(createCasePage.checkYourAnswersTable);
+
+      console.log(JSON.stringify(table, null, 2));
+    });
+
+    await test.step('Submit the case for creation and capture the request body', async () => {
       await page.route('**/data/case-types/xuiTestJurisdiction/cases?ignore-warning=false*', async (route) => {
         const request = route.request();
         if (request.method() === 'POST') {
@@ -73,7 +80,7 @@ test.describe(`Create case as ${userIdentifier}`, () => {
       await createCasePage.testSubmitButton.click();
     });
 
-    await test.step('Fill out some of the form', async () => {
+    await test.step('Check the JSON sent in the creation request matches the expected data', async () => {
       expect(interceptedCreateCaseRequestBody).toBeTruthy();
 
       const submittedData = interceptedCreateCaseRequestBody?.data;
@@ -87,7 +94,7 @@ test.describe(`Create case as ${userIdentifier}`, () => {
       expect(submittedData.Person1?.Title).toBe(caseData.person1Title);
       expect(submittedData.Person1?.FirstName).toBe(caseData.person1FirstName);
       expect(submittedData.Person1?.LastName).toBe(caseData.person1LastName);
-      expect(submittedData.Person1?.PersonGender).toBe(caseData.person1Gender?.toLowerCase());
+      expect(submittedData.Person1?.PersonGender).toBe(caseData.person1Gender?.toLowerCase()); //notGiven issue
       expect(submittedData.Person1?.PersonJob?.Title).toBe(caseData.person1JobTitle);
       expect(submittedData.Person1?.PersonJob?.Description).toBe(caseData.person1JobDescription);
 

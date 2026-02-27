@@ -120,14 +120,18 @@ export class CreateCasePage extends Base {
   );
   readonly additionalPeople = this.page.locator('#People');
   readonly addNewPersonButton = this.additionalPeople.locator('button.write-collection-add-item__top');
-
   readonly fileUploadInput = this.page.locator('#DocumentUrl');
   readonly fileUploadStatusLabel = this.page.locator('ccd-write-document-field .error-message');
   readonly textField0Input = this.page.locator('#TextField0');
   readonly textField1Input = this.page.locator('#TextField1');
   readonly textField2Input = this.page.locator('#TextField2');
   readonly textField3Input = this.page.locator('#TextField3');
-  readonly checkYourAnswersHeading = this.page.locator('.check-your-answers h2');
+
+
+  readonly checkYourAnswers = this.page.locator('.check-your-answers');
+  readonly checkYourAnswersHeading = this.checkYourAnswers.locator('h2');
+  readonly checkYourAnswersTable = this.checkYourAnswers.locator('table');
+
   readonly testSubmitButton = this.page.locator('.check-your-answers [type="submit"]');
 
   // Employment case locators

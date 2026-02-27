@@ -7,6 +7,21 @@ import { TIMEOUTS } from '../../../test/documentUpload/constants';
 const validatorUtils = new ValidatorUtils();
 const tableUtils = new TableUtils();
 
+export function extractCaseNumberFromUrl(url: string): string | null {
+  try {
+    const pathname = new URL(url).pathname;
+    const detailsPathMatch = /\/cases\/case-details\/(\d{16})(?:$|\/)/.exec(pathname);
+    if (detailsPathMatch?.[1]) {
+      return detailsPathMatch[1];
+    }
+
+    const trailingDigitsMatch = /(\d{16})(?:$|\/)/.exec(pathname);
+    return trailingDigitsMatch?.[1] ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export interface CaseFlagItem {
   flagType: string;
   comments: string;
@@ -395,14 +410,10 @@ export class CaseDetailsPage extends Base {
   }
 
   async getCaseNumberFromUrl(): Promise<string> {
-    const url = this.page.url();
-    const pathname = new URL(url).pathname;
-    const caseNumberMatch = pathname.slice(pathname.lastIndexOf('/') + 1);
-    // Validate format: EXUI case numbers are typically 16 digits
-    if (!caseNumberMatch || !/^\d{16}$/.test(caseNumberMatch)) {
+    const caseNumberMatch = extractCaseNumberFromUrl(this.page.url());
+    if (!caseNumberMatch) {
       this.logger.error('Failed to extract valid case number from URL', {
-        pathnameLength: pathname.length,
-        extractedLength: caseNumberMatch?.length,
+        urlLength: this.page.url().length,
       });
       throw new Error('Failed to extract valid case number from URL');
     }

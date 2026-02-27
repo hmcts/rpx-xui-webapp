@@ -7,9 +7,11 @@ import { TaskListPage } from './exui/taskList.po';
 import { SearchCasePage } from './exui/searchCase.po';
 import { GlobalSearchPage } from './exui/globalSearch.po';
 import { FindCasePage } from './exui/findCase.po';
+import { EXUI_TIMEOUTS } from './exui/exui-timeouts';
 
 export interface PageFixtures {
   determinePage: Page;
+  timeouts: typeof EXUI_TIMEOUTS;
   caseDetailsPage: CaseDetailsPage;
   caseListPage: CaseListPage;
   taskListPage: TaskListPage;
@@ -29,6 +31,7 @@ export interface PageFixtures {
  * This is the same behaviour as a beforeEach/afterEach hook
  */
 export const pageFixtures = {
+  timeouts: EXUI_TIMEOUTS,
   // If a performance test is executed, use the lighthouse created page instead
   determinePage: async ({ page, lighthousePage }, use, testInfo) => {
     if (testInfo.tags.includes('@performance')) {

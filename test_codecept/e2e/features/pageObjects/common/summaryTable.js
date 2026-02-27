@@ -1,7 +1,7 @@
 const { $, elementByXpath, elementsByXpath, getText } = require('../../../../helpers/globals');
 
-class SummaryTable{
-  constructor(pageElementTag){
+class SummaryTable {
+  constructor(pageElementTag) {
     this.pageElementTag = pageElementTag;
   }
 
@@ -20,8 +20,10 @@ class SummaryTable{
 
   getTableChangeLinkElementXpath(forKey) {
     const keyElement = this.getTableKeyElementXpath(forKey);
-    return (`${keyElement}/../*[contains(@class,'govuk-summary-list__actions')]//button` +
-    ` | ${keyElement}/../*[contains(@class,'govuk-summary-list__actions')]//a`);
+    return (
+      `${keyElement}/../*[contains(@class,'govuk-summary-list__actions')]//button` +
+      ` | ${keyElement}/../*[contains(@class,'govuk-summary-list__actions')]//a`
+    );
   }
 
   getTableActionsElementXpath(forKey) {
@@ -46,9 +48,9 @@ class SummaryTable{
 
   async getValuesForField(forKey) {
     const values = [];
-    const elements = elementsByXpath(this.getTableValueElementXpath(forKey)+'/div');
+    const elements = elementsByXpath(this.getTableValueElementXpath(forKey) + '/div');
     const count = await elements.count();
-    for (let i = 0; i < count; i++){
+    for (let i = 0; i < count; i++) {
       const e = await elements.nth(i);
       values.push(await getText(e));
     }
@@ -60,12 +62,12 @@ class SummaryTable{
     return await e.isVisible();
   }
 
-  async clickChangeLinkForField(forKey){
+  async clickChangeLinkForField(forKey) {
     const e = elementByXpath(this.getTableChangeLinkElementXpath(forKey)).first();
     await e.click();
   }
 
-  async isAmendedFlagDisplayedForField(forKey){
+  async isAmendedFlagDisplayedForField(forKey) {
     const e = elementByXpath(this.getTableAmendedElementXpath(forKey)).first();
     return await e.isVisible();
   }

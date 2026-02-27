@@ -15,5 +15,5 @@ export {
   RoleAllocationCaptionText,
   RoleAllocationTitleText,
   SpecificAccessText,
-  SpecificAccessErrors
+  SpecificAccessErrors,
 };

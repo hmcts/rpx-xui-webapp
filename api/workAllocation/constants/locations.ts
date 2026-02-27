@@ -8,5 +8,5 @@ export const ALL_LOCATIONS = [
   { id: '366559', locationName: 'Glasgow' },
   { id: '562808', locationName: 'North Shields' },
   { id: '386417', locationName: 'Hatton Cross' },
-  { id: '765324', locationName: 'Taylor House' }
+  { id: '765324', locationName: 'Taylor House' },
 ];

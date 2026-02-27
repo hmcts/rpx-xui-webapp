@@ -12,7 +12,7 @@ interface Navigator {
 
 export enum REDIRECTS {
   NotAuthorised = '/not-authorised',
-  ServiceDown = '/service-down'
+  ServiceDown = '/service-down',
 }
 
 export const vowels = ['a', 'e', 'i', 'o', 'u'];
@@ -21,7 +21,9 @@ export const vowels = ['a', 'e', 'i', 'o', 'u'];
 export const getTitleText = (role: SpecificRole, action: string, roleCategory: string): string => {
   if (role && role.name) {
     const aOrAn = vowels.includes(role.name.toLowerCase().charAt(0)) ? 'an' : 'a';
-    return role.name === TypeOfRole.CaseManager ? `${action} ${RoleCaptionText.ALegalOpsCaseManager}` : `${action} ${aOrAn} ${role.name}`;
+    return role.name === TypeOfRole.CaseManager
+      ? `${action} ${RoleCaptionText.ALegalOpsCaseManager}`
+      : `${action} ${aOrAn} ${role.name}`;
   }
 
   if (roleCategory === RoleCategory.ADMIN) {
@@ -86,8 +88,8 @@ export const handleError = (error: RoleAccessHttpError, navigator: Navigator, de
           state: {
             showMessage: true,
             // show message based on error
-            message: { type: InfoMessageType.WARNING, message: error.message }
-          }
+            message: { type: InfoMessageType.WARNING, message: error.message },
+          },
         });
       }
     }

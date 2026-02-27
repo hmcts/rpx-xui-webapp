@@ -20,7 +20,9 @@ Then('I validate Review specific access page access request details', async func
     const actualRowHeaders = Object.keys(actualRequestDetails);
     expectedRowHeaders.forEach((expectedRowKey) => {
       expect(actualRowHeaders, 'Missing request details row').to.includes(expectedRowKey);
-      expect(actualRequestDetails[expectedRowKey], `${expectedRowKey} request details missmatch `).to.includes(requestDetails[expectedRowKey]);
+      expect(actualRequestDetails[expectedRowKey], `${expectedRowKey} request details missmatch `).to.includes(
+        requestDetails[expectedRowKey]
+      );
     });
   });
 });
@@ -33,18 +35,26 @@ Then('I validate Review specific access page radio options for actions', async f
   await BrowserWaits.retryWithActionCallback(async () => {
     expect(await reviewSARPage.chooseRadioOptionsContainer.isDisplayed(), 'Action radio options not displayed').to.be.true;
     expectedOptions.forEach(async (expectedOption) => {
-      expect(await reviewSARPage.chooseRadioOptionsContainer.isRadioOptionPresent(expectedOption), `${expectedOption} not present`).to.be.true;
+      expect(
+        await reviewSARPage.chooseRadioOptionsContainer.isRadioOptionPresent(expectedOption),
+        `${expectedOption} not present`
+      ).to.be.true;
     });
   });
 });
 
-Then('I see Approve specific access work flow page {string} with caption {string} is displayed', async function (header, captionHeader) {
-  await BrowserWaits.retryWithActionCallback(async () => {
-    expect(await durationSelectionPage.isDisplayed(), `${header} work flow page not displayed`).to.be.true;
-    expect(await durationSelectionPage.getHeaderText(), `${header} work flow page header not matching`).to.include(header);
-    expect(await durationSelectionPage.getHeaderCaption(), `${header} work flow page header caption not matching`).to.include(captionHeader);
-  });
-});
+Then(
+  'I see Approve specific access work flow page {string} with caption {string} is displayed',
+  async function (header, captionHeader) {
+    await BrowserWaits.retryWithActionCallback(async () => {
+      expect(await durationSelectionPage.isDisplayed(), `${header} work flow page not displayed`).to.be.true;
+      expect(await durationSelectionPage.getHeaderText(), `${header} work flow page header not matching`).to.include(header);
+      expect(await durationSelectionPage.getHeaderCaption(), `${header} work flow page header caption not matching`).to.include(
+        captionHeader
+      );
+    });
+  }
+);
 
 When('I click continue in specific access request work flow', async function () {
   await workFlowPage.continueBtn.click();
@@ -54,64 +64,96 @@ When('I select duration option {string} in approve speific access request work f
   await durationSelectionPage.selectRadioOption(durationOption);
 });
 
-Then('I validate duration option {string} has caption text {string} in approve speific access request work flow', async function (durationOption, caption) {
-  const actualCaption = await durationSelectionPage.getRadioOptionCaptionText(durationOption);
-  expect(actualCaption).to.include(caption);
+Then(
+  'I validate duration option {string} has caption text {string} in approve speific access request work flow',
+  async function (durationOption, caption) {
+    const actualCaption = await durationSelectionPage.getRadioOptionCaptionText(durationOption);
+    expect(actualCaption).to.include(caption);
+  }
+);
+
+Then(
+  'I validate date input field {string} is displayed {string} in approve pecific access  request work flow page',
+  async function (dateInputLabel, displayStatus) {
+    const isDisplayed = await durationSelectionPage.isDateInputWithLabelDisplayed(dateInputLabel);
+    expect(isDisplayed).to.equal(displayStatus.toLowerCase().includes('yes'));
+  }
+);
+
+Then(
+  'I validate date input field {string} displayed in approve pecific access request work flow page',
+  async function (dateInputLabel) {
+    const isDisplayed = await durationSelectionPage.isDateInputWithLabelDisplayed(dateInputLabel);
+    expect(isDisplayed).to.be.true;
+  }
+);
+
+Then(
+  'I validate date input field {string} NOT displayed in approve pecific access request work flow page',
+  async function (dateInputLabel) {
+    const isDisplayed = await durationSelectionPage.isDateInputWithLabelDisplayed(dateInputLabel);
+    expect(isDisplayed).to.be.false;
+  }
+);
+
+When(
+  'I enter duration date for field {string} with current date plus {int} days in SAR work flow',
+  async function (dateInputField, bydays) {
+    const dateToEnter = new Date();
+    dateToEnter.setDate(dateToEnter.getDate() + bydays);
+    await durationSelectionPage.enterDayInDateInputWithLabel(dateInputField, dateToEnter.getDate());
+    await durationSelectionPage.enterMonthInDateInputWithLabel(dateInputField, dateToEnter.getMonth() + 1);
+    await durationSelectionPage.enterYearInDateInputWithLabel(dateInputField, dateToEnter.getFullYear());
+  }
+);
+
+When(
+  'I enter duration date for field {string} with current date minus {int} days in SAR work flow',
+  async function (dateInputField, bydays) {
+    const dateToEnter = new Date();
+    dateToEnter.setDate(dateToEnter.getDate() - bydays);
+    await durationSelectionPage.enterDayInDateInputWithLabel(dateInputField, dateToEnter.getDay());
+    await durationSelectionPage.enterMonthInDateInputWithLabel(dateInputField, dateToEnter.getMonth() + 1);
+    await durationSelectionPage.enterYearInDateInputWithLabel(dateInputField, dateToEnter.getFullYear());
+  }
+);
+
+Then(
+  'I validate another period field {string} validation error displayed is {string} in SAR work flow',
+  async function (field, isDisplayed) {
+    expect(await durationSelectionPage.isValidationErrorDisplayedForDateInput(field)).to.equal(
+      isDisplayed.toLowerCase().includes('true')
+    );
+  }
+);
+
+Then(
+  'I validate another period field {string} validation error message is {string} in SAR work flow',
+  async function (field, validationMessage) {
+    expect(await durationSelectionPage.getAnotherPeriodValidationMessageForField(field)).to.contains(validationMessage);
+  }
+);
+
+Then(
+  'I see option {string} selected in duration selection of approve speific access request work flow',
+  async function (durationOption) {
+    const durationOptionInput = durationSelectionPage.getRadioOptionInputElement(durationOption);
+    expect(await durationOptionInput.isSelected()).to.be.true;
+  }
+);
+
+Then('I validate SAR page, error message displayed for option to select', async function () {
+  expect(
+    await reviewSARPage.chooseRadioOptionsContainer.isValidationErrorMessageDisplayed(),
+    'Inline error message not displayed'
+  ).to.be.true;
 });
 
-Then('I validate date input field {string} is displayed {string} in approve pecific access  request work flow page', async function (dateInputLabel, displayStatus) {
-  const isDisplayed = await durationSelectionPage.isDateInputWithLabelDisplayed(dateInputLabel);
-  expect(isDisplayed).to.equal(displayStatus.toLowerCase().includes('yes'));
-});
-
-Then('I validate date input field {string} displayed in approve pecific access request work flow page', async function (dateInputLabel) {
-  const isDisplayed = await durationSelectionPage.isDateInputWithLabelDisplayed(dateInputLabel);
-  expect(isDisplayed).to.be.true;
-});
-
-Then('I validate date input field {string} NOT displayed in approve pecific access request work flow page', async function (dateInputLabel) {
-  const isDisplayed = await durationSelectionPage.isDateInputWithLabelDisplayed(dateInputLabel);
-  expect(isDisplayed).to.be.false;
-});
-
-When('I enter duration date for field {string} with current date plus {int} days in SAR work flow', async function (dateInputField, bydays) {
-  const dateToEnter = new Date();
-  dateToEnter.setDate(dateToEnter.getDate() + bydays);
-  await durationSelectionPage.enterDayInDateInputWithLabel(dateInputField, dateToEnter.getDate());
-  await durationSelectionPage.enterMonthInDateInputWithLabel(dateInputField, dateToEnter.getMonth() + 1);
-  await durationSelectionPage.enterYearInDateInputWithLabel(dateInputField, dateToEnter.getFullYear());
-});
-
-When('I enter duration date for field {string} with current date minus {int} days in SAR work flow', async function (dateInputField, bydays) {
-  const dateToEnter = new Date();
-  dateToEnter.setDate(dateToEnter.getDate() - bydays);
-  await durationSelectionPage.enterDayInDateInputWithLabel(dateInputField, dateToEnter.getDay());
-  await durationSelectionPage.enterMonthInDateInputWithLabel(dateInputField, dateToEnter.getMonth() + 1);
-  await durationSelectionPage.enterYearInDateInputWithLabel(dateInputField, dateToEnter.getFullYear());
-});
-
-Then('I validate another period field {string} validation error displayed is {string} in SAR work flow', async function (field, isDisplayed) {
-  expect(await durationSelectionPage.isValidationErrorDisplayedForDateInput(field)).to.equal(isDisplayed.toLowerCase().includes('true'));
-});
-
-Then('I validate another period field {string} validation error message is {string} in SAR work flow', async function (field, validationMessage) {
-  expect(await durationSelectionPage.getAnotherPeriodValidationMessageForField(field)).to.contains(validationMessage);
-});
-
-Then('I see option {string} selected in duration selection of approve speific access request work flow', async function (durationOption) {
-  const durationOptionInput = durationSelectionPage.getRadioOptionInputElement(durationOption);
-  expect(await durationOptionInput.isSelected()).to.be.true;
-});
-
-Then('I validate SAR page, error message displayed for option to select', async function(){
-  expect(await reviewSARPage.chooseRadioOptionsContainer.isValidationErrorMessageDisplayed(), 'Inline error message not displayed').to.be.true;
-});
-
-When('I select SAR action radio option {string}', async function(option){
+When('I select SAR action radio option {string}', async function (option) {
   await reviewSARPage.chooseRadioOptionsContainer.selectRadioOption(option);
 });
 
-Then('I validate date input field {string} is displayed {string} in SAR work flow page', async function(datInputField, state){
+Then('I validate date input field {string} is displayed {string} in SAR work flow page', async function (datInputField, state) {
   const expectedVisibility = state.toLowerCase().includes('yes') || state.toLowerCase().includes('true');
   await BrowserWaits.retryWithActionCallback(async () => {
     expect(await durationSelectionPage.isDateInputWithLabelDisplayed(datInputField)).to.equal(expectedVisibility);
@@ -125,9 +167,9 @@ Then('I validate date input field {string} is displayed {string} in SAR work flo
   });
 });
 
-Then('I see SAR action {string} confirmation page', async function(action){
+Then('I see SAR action {string} confirmation page', async function (action) {
   // step definition code here
-  if (action.toLowerCase() === 'approved'){
+  if (action.toLowerCase() === 'approved') {
     await workFlowPage.approveConfirmationPage.waitForContainer();
     const header = await workFlowPage.approveConfirmationPage.header.textContent();
     const detailsParaText = await workFlowPage.approveConfirmationPage.detailsPara.textContent();
@@ -154,4 +196,3 @@ Then('I validate SAR, request more information page displayed', async function (
 When('I am in SAR request more information page, enter in text area {string}', async function (moreInfotext) {
   await workFlowPage.requestMoreInfoPage.enterInTextArea(moreInfotext);
 });
-

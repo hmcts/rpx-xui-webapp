@@ -27,8 +27,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 
 @Component({
   standalone: false,
-  template: `
-    <exui-task-container-assignment></exui-task-container-assignment>`
+  template: ` <exui-task-container-assignment></exui-task-container-assignment>`,
 })
 class WrapperComponent {
   @ViewChild(TaskAssignmentContainerComponent, { static: true }) public appComponentRef: TaskAssignmentContainerComponent;
@@ -37,15 +36,13 @@ class WrapperComponent {
 
 @Component({
   standalone: false,
-  template: `
-    <div>Nothing</div>`
+  template: ` <div>Nothing</div>`,
 })
-class NothingComponent {
-}
+class NothingComponent {}
 
 @Pipe({
   standalone: false,
-  name: 'rpxTranslate'
+  name: 'rpxTranslate',
 })
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
@@ -61,21 +58,21 @@ describe('TaskAssignmentContainerComponent2', () => {
     id: 'id123',
     name: 'John Smith',
     email: 'john.smith@email.com',
-    domain: PersonRole.LEGAL_OPERATIONS
+    domain: PersonRole.LEGAL_OPERATIONS,
   };
   const locationStub: any = {
-    back: jasmine.createSpy('back')
+    back: jasmine.createSpy('back'),
   };
   const mockTasks = getMockTasks();
   const mockRouter = jasmine.createSpyObj('router', ['navigate']);
   const mockWorkAllocationService = {
-    assignTask: jasmine.createSpy('assignTask').and.returnValue(of({}))
+    assignTask: jasmine.createSpy('assignTask').and.returnValue(of({})),
   };
   const mockSessionStorageService = jasmine.createSpyObj('SessionStorageService', ['getItem']);
 
   const MESSAGE_SERVICE_METHODS = ['addMessage', 'emitMessages', 'getMessages', 'nextMessage', 'removeAllMessages'];
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', MESSAGE_SERVICE_METHODS);
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+
   const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {}, getTranslation: (phrase: string) => phrase });
 
   beforeEach(waitForAsync(() => {
@@ -86,19 +83,19 @@ describe('TaskAssignmentContainerComponent2', () => {
         TaskListComponent,
         ErrorMessageComponent,
         NothingComponent,
-        RpxTranslateMockPipe
+        RpxTranslateMockPipe,
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [ReactiveFormsModule,
+      imports: [
+        ReactiveFormsModule,
         CdkTableModule,
         FormsModule,
         MatAutocompleteModule,
         EffectsModule.forRoot([]),
         PaginationModule,
         StoreModule.forRoot({}),
-        RouterTestingModule.withRoutes([
-          { path: 'my-work/list', component: NothingComponent }
-        ])],
+        RouterTestingModule.withRoutes([{ path: 'my-work/list', component: NothingComponent }]),
+      ],
       providers: [
         { provide: Location, useValue: locationStub },
         { provide: WorkAllocationTaskService, useValue: mockWorkAllocationService },
@@ -109,24 +106,25 @@ describe('TaskAssignmentContainerComponent2', () => {
             snapshot: {
               data: {
                 taskAndCaseworkers: {
-                  task: { task: mockTasks[0] }, caseworkers: []
+                  task: { task: mockTasks[0] },
+                  caseworkers: [],
                 },
-                ...TaskActionConstants.Reassign
+                ...TaskActionConstants.Reassign,
               },
               params: {
-                taskId: 'task1111111'
-              }
+                taskId: 'task1111111',
+              },
             },
             params: of({ task: mockTasks[0] }),
-            paramMap: of({ selectedPerson: SELECTED_PERSON })
-          }
+            paramMap: of({ selectedPerson: SELECTED_PERSON }),
+          },
         },
         { provide: InfoMessageCommService, useValue: mockInfoMessageCommService },
         { provide: Router, useValue: mockRouter },
         { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
@@ -165,15 +163,18 @@ describe('TaskAssignmentContainerComponent2', () => {
   });
 
   it('should redirect to the "All work" page on cancelling task assignment', () => {
-    window.history.pushState({ returnUrl: 'all-work/tasks#manage_0d22d838', showAssigneeColumn: false }, '',
-      'all-work/tasks#manage_0d22d838');
+    window.history.pushState(
+      { returnUrl: 'all-work/tasks#manage_0d22d838', showAssigneeColumn: false },
+      '',
+      'all-work/tasks#manage_0d22d838'
+    );
     const findPersonControl = new FormControl('test');
     component.formGroup.addControl('findPersonControl', findPersonControl);
     component.cancel();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['all-work/tasks']);
   });
 
-  it('should redirect to the fallback URL (\'\') on cancelling task assignment, if the return URL is not in the history', () => {
+  it("should redirect to the fallback URL ('') on cancelling task assignment, if the return URL is not in the history", () => {
     window.history.pushState({}, '');
     const findPersonControl = new FormControl('test');
     component.formGroup.addControl('findPersonControl', findPersonControl);
@@ -188,7 +189,7 @@ describe('TaskAssignmentContainerComponent2', () => {
       surname: 'Smith',
       email: 'john.smith@email.com',
       roles: [AppTestConstants.IA_JUDGE_ROLE],
-      roleCategory: 'JUDICIAL'
+      roleCategory: 'JUDICIAL',
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
     component.isCurrentUserJudicial();
@@ -201,7 +202,7 @@ describe('TaskAssignmentContainerComponent2', () => {
       forename: 'John',
       surname: 'Smith',
       email: 'john.smith@email.com',
-      roles: ['caseworker-allocator']
+      roles: ['caseworker-allocator'],
     };
     mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
     component.isCurrentUserJudicial();
@@ -215,20 +216,22 @@ describe('TaskAssignmentContainerComponent2', () => {
         data: {
           taskAndCaseworkers: {
             task: { task: mockTasks[0] },
-            caseworkers: []
+            caseworkers: [],
           },
-          verb: TaskActionType.Reassign
+          verb: TaskActionType.Reassign,
         },
         paramMap: {
-          get: jasmine.createSpy('get').and.returnValue('task1111111')
+          get: jasmine.createSpy('get').and.returnValue('task1111111'),
         },
         queryParamMap: {
-          get: jasmine.createSpy('get').and.returnValues('LEGAL_OPERATIONS', 'IAC')
-        }
+          get: jasmine.createSpy('get').and.returnValues('LEGAL_OPERATIONS', 'IAC'),
+        },
       };
-      mockSessionStorageService.getItem.and.returnValue(JSON.stringify({
-        roleCategory: 'LEGAL_OPERATIONS'
-      }));
+      mockSessionStorageService.getItem.and.returnValue(
+        JSON.stringify({
+          roleCategory: 'LEGAL_OPERATIONS',
+        })
+      );
       mockRouter.url = '/work/task1111111/reassign';
 
       component.ngOnInit();
@@ -250,20 +253,22 @@ describe('TaskAssignmentContainerComponent2', () => {
         data: {
           taskAndCaseworkers: {
             task: { task: mockTasks[0] },
-            caseworkers: []
+            caseworkers: [],
           },
-          verb: TaskActionType.Reassign
+          verb: TaskActionType.Reassign,
         },
         paramMap: {
-          get: jasmine.createSpy('get').and.returnValue('task1111111')
+          get: jasmine.createSpy('get').and.returnValue('task1111111'),
         },
         queryParamMap: {
-          get: jasmine.createSpy('get').and.returnValues('LEGAL_OPERATIONS', 'IAC')
-        }
+          get: jasmine.createSpy('get').and.returnValues('LEGAL_OPERATIONS', 'IAC'),
+        },
       };
-      mockSessionStorageService.getItem.and.returnValue(JSON.stringify({
-        roleCategory: 'JUDICIAL'
-      }));
+      mockSessionStorageService.getItem.and.returnValue(
+        JSON.stringify({
+          roleCategory: 'JUDICIAL',
+        })
+      );
       mockRouter.url = '/work/task1111111/reassign';
 
       component.ngOnInit();
@@ -277,20 +282,22 @@ describe('TaskAssignmentContainerComponent2', () => {
         data: {
           taskAndCaseworkers: {
             task: { task: mockTasks[0] },
-            caseworkers: []
+            caseworkers: [],
           },
-          verb: TaskActionType.Reassign
+          verb: TaskActionType.Reassign,
         },
         paramMap: {
-          get: jasmine.createSpy('get').and.returnValue('task1111111')
+          get: jasmine.createSpy('get').and.returnValue('task1111111'),
         },
         queryParamMap: {
-          get: jasmine.createSpy('get').and.returnValues('JUDICIAL', 'IAC')
-        }
+          get: jasmine.createSpy('get').and.returnValues('JUDICIAL', 'IAC'),
+        },
       };
-      mockSessionStorageService.getItem.and.returnValue(JSON.stringify({
-        roleCategory: 'LEGAL_OPERATIONS'
-      }));
+      mockSessionStorageService.getItem.and.returnValue(
+        JSON.stringify({
+          roleCategory: 'LEGAL_OPERATIONS',
+        })
+      );
       mockRouter.url = '/work/task1111111/reassign';
 
       component.ngOnInit();
@@ -304,20 +311,22 @@ describe('TaskAssignmentContainerComponent2', () => {
         data: {
           taskAndCaseworkers: {
             task: { task: mockTasks[0] },
-            caseworkers: []
+            caseworkers: [],
           },
-          verb: TaskActionType.Reassign
+          verb: TaskActionType.Reassign,
         },
         paramMap: {
-          get: jasmine.createSpy('get').and.returnValue('task1111111')
+          get: jasmine.createSpy('get').and.returnValue('task1111111'),
         },
         queryParamMap: {
-          get: jasmine.createSpy('get').and.returnValues('ADMIN', 'IAC')
-        }
+          get: jasmine.createSpy('get').and.returnValues('ADMIN', 'IAC'),
+        },
       };
-      mockSessionStorageService.getItem.and.returnValue(JSON.stringify({
-        roleCategory: 'LEGAL_OPERATIONS'
-      }));
+      mockSessionStorageService.getItem.and.returnValue(
+        JSON.stringify({
+          roleCategory: 'LEGAL_OPERATIONS',
+        })
+      );
       mockRouter.url = '/work/task1111111/reassign';
 
       component.ngOnInit();
@@ -331,20 +340,22 @@ describe('TaskAssignmentContainerComponent2', () => {
         data: {
           taskAndCaseworkers: {
             task: { task: mockTasks[0] },
-            caseworkers: []
+            caseworkers: [],
           },
-          verb: TaskActionType.Reassign
+          verb: TaskActionType.Reassign,
         },
         paramMap: {
-          get: jasmine.createSpy('get').and.returnValue('task1111111')
+          get: jasmine.createSpy('get').and.returnValue('task1111111'),
         },
         queryParamMap: {
-          get: jasmine.createSpy('get').and.returnValues(null, 'IAC')
-        }
+          get: jasmine.createSpy('get').and.returnValues(null, 'IAC'),
+        },
       };
-      mockSessionStorageService.getItem.and.returnValue(JSON.stringify({
-        roleCategory: 'LEGAL_OPERATIONS'
-      }));
+      mockSessionStorageService.getItem.and.returnValue(
+        JSON.stringify({
+          roleCategory: 'LEGAL_OPERATIONS',
+        })
+      );
       mockRouter.url = '/work/task1111111/reassign';
 
       component.ngOnInit();
@@ -463,7 +474,7 @@ describe('TaskAssignmentContainerComponent2', () => {
         id: '123',
         name: 'Test Person',
         email: 'test@example.com',
-        domain: PersonRole.JUDICIAL
+        domain: PersonRole.JUDICIAL,
       };
 
       component.selectedPerson(person);
@@ -516,10 +527,7 @@ describe('TaskAssignmentContainerComponent2', () => {
 
       component.assign();
 
-      expect(mockRouter.navigate).toHaveBeenCalledWith(
-        ['tasks', 'task456', 'assign', 'confirm'],
-        jasmine.any(Object)
-      );
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['tasks', 'task456', 'assign', 'confirm'], jasmine.any(Object));
     });
   });
 
@@ -530,7 +538,7 @@ describe('TaskAssignmentContainerComponent2', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
-        location: { id: 'loc1', locationName: 'Location 1' }
+        location: { id: 'loc1', locationName: 'Location 1' },
       } as any;
 
       component.onCaseworkerChanged(caseworker);
@@ -628,7 +636,7 @@ describe('TaskAssignmentContainerComponent2', () => {
         id: 'id123',
         forename: 'John',
         surname: 'Smith',
-        email: 'john.smith@email.com'
+        email: 'john.smith@email.com',
       };
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
 
@@ -639,7 +647,7 @@ describe('TaskAssignmentContainerComponent2', () => {
 
     it('should return false when roleCategory is not JUDICIAL', () => {
       const userDetails = {
-        roleCategory: 'LEGAL_OPERATIONS'
+        roleCategory: 'LEGAL_OPERATIONS',
       };
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userDetails));
 
@@ -672,7 +680,7 @@ describe('TaskAssignmentContainerComponent2', () => {
       const errorMessage = {
         title: 'Error',
         description: 'An error occurred',
-        fieldId: 'field1'
+        fieldId: 'field1',
       };
 
       component.error = errorMessage;

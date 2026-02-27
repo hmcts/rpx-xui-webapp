@@ -29,8 +29,8 @@ describe('EnvironmentService', () => {
         { provide: Window, useValue: dummyWindowAat },
         EnvironmentService,
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     });
     const service = TestBed.inject(EnvironmentService);
     expect(service).toBeTruthy();
@@ -43,8 +43,8 @@ describe('EnvironmentService', () => {
         { provide: Window, useValue: dummyWindowProd },
         EnvironmentService,
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     });
     const service = TestBed.inject(EnvironmentService);
     expect(service.getDeploymentEnv()).toBe(DeploymentEnvironmentEnum.PROD);
@@ -57,8 +57,8 @@ describe('EnvironmentService', () => {
         { provide: Window, useValue: dummyWindowAat },
         EnvironmentService,
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     });
     const service = TestBed.inject(EnvironmentService);
     expect(service.getDeploymentEnv()).toBe(DeploymentEnvironmentEnum.AAT);
@@ -71,8 +71,8 @@ describe('EnvironmentService', () => {
         { provide: Window, useValue: dummyWindowDemo },
         EnvironmentService,
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     });
     const service = TestBed.inject(EnvironmentService);
     expect(service.getDeploymentEnv()).toBe(DeploymentEnvironmentEnum.DEMO);
@@ -85,8 +85,8 @@ describe('EnvironmentService', () => {
         { provide: Window, useValue: dummyWindowPerftest },
         EnvironmentService,
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     });
     const service = TestBed.inject(EnvironmentService);
     expect(service.getDeploymentEnv()).toBe(DeploymentEnvironmentEnum.PERFTEST);
@@ -99,8 +99,8 @@ describe('EnvironmentService', () => {
         { provide: Window, useValue: dummyWindowIthc },
         EnvironmentService,
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     });
     const service = TestBed.inject(EnvironmentService);
     expect(service.getDeploymentEnv()).toBe(DeploymentEnvironmentEnum.ITHC);
@@ -113,8 +113,8 @@ describe('EnvironmentService', () => {
         { provide: Window, useValue: dummyWindowPreview },
         EnvironmentService,
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     });
     const service = TestBed.inject(EnvironmentService);
     expect(service.getDeploymentEnv()).toBe(DeploymentEnvironmentEnum.PREVIEW);
@@ -127,8 +127,8 @@ describe('EnvironmentService', () => {
         { provide: Window, useValue: dummyWindowLocalhost },
         EnvironmentService,
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     });
     const service = TestBed.inject(EnvironmentService);
     expect(service.getDeploymentEnv()).toBe(DeploymentEnvironmentEnum.LOCAL);

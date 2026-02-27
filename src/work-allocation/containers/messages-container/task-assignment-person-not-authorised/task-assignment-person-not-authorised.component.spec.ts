@@ -16,14 +16,15 @@ describe('TaskAssignmentPersonNotAuthorised', () => {
       declarations: [TaskAssignmentPersonNotAuthorisedComponent],
       schemas: [NO_ERRORS_SCHEMA],
       imports: [RouterTestingModule],
-      providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-    })
-      .compileComponents();
+      providers: [provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
     mockRouter = TestBed.inject(Router);
-    spyOn(mockRouter, 'getCurrentNavigation').and.returnValue({ extras: { state: { returnUrl: '/work' } } } as unknown as Navigation);
+    spyOn(mockRouter, 'getCurrentNavigation').and.returnValue({
+      extras: { state: { returnUrl: '/work' } },
+    } as unknown as Navigation);
     fixture = TestBed.createComponent(TaskAssignmentPersonNotAuthorisedComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

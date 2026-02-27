@@ -1,4 +1,3 @@
-
 import { test, expect } from '@playwright/test';
 
 import appTestConfig, { __test__ as appTestConfigTest } from '../common/appTestConfig';
@@ -8,7 +7,7 @@ import { withEnv } from './utils/testEnv';
 
 test.describe.configure({ mode: 'serial' });
 
-test.describe('Configuration resolution coverage', () => {
+test.describe('Configuration resolution coverage', { tag: '@svc-internal' }, () => {
   test('apiTestConfig helpers resolve env values', () => {
     expect(apiTestConfigTest.resolveBaseUrl(undefined)).toBe('https://manage-case.aat.platform.hmcts.net/');
     expect(apiTestConfigTest.resolveBaseUrl('https://example.test')).toBe('https://example.test');
@@ -26,7 +25,9 @@ test.describe('Configuration resolution coverage', () => {
     );
     expect(preview).toEqual(expect.objectContaining({ demoUrl: 'https://demo.example' }));
     expect(appTestConfigTest.resolvePreviewConfig([], 'https://preview.example/path')).toBeUndefined();
-    expect(appTestConfigTest.resolvePreviewConfig([{ previewUrl: 'preview.example', demoUrl: 'https://demo.example' }], undefined)).toBeUndefined();
+    expect(
+      appTestConfigTest.resolvePreviewConfig([{ previewUrl: 'preview.example', demoUrl: 'https://demo.example' }], undefined)
+    ).toBeUndefined();
 
     const env = {} as NodeJS.ProcessEnv;
     expect(appTestConfigTest.applyPreviewConfig({ demoUrl: 'https://demo.example' }, env)).toBe(true);

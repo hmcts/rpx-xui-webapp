@@ -26,7 +26,7 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'Immigration detention centre',
       hintTextCY: '',
       order: 1,
-      parentKey: null
+      parentKey: null,
     },
     {
       key: 'inCameraCourt',
@@ -35,7 +35,7 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'In camera court',
       hintTextCY: '',
       order: 2,
-      parentKey: null
+      parentKey: null,
     },
     {
       key: 'sameSexCourtroom',
@@ -44,7 +44,7 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'Same sex courtroom',
       hintTextCY: '',
       order: 3,
-      parentKey: null
+      parentKey: null,
     },
     {
       key: 'secureDock',
@@ -53,7 +53,7 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'Secure Dock',
       hintTextCY: '',
       order: 4,
-      parentKey: null
+      parentKey: null,
     },
     {
       key: 'witnessScreen',
@@ -62,7 +62,7 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'Witness Screen',
       hintTextCY: '',
       order: 4,
-      parentKey: null
+      parentKey: null,
     },
     {
       key: 'witnessRoom',
@@ -71,7 +71,7 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'Witness Room',
       hintTextCY: '',
       order: 5,
-      parentKey: null
+      parentKey: null,
     },
     {
       key: 'videoConferencing',
@@ -80,7 +80,7 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'Video Conferencing',
       hintTextCY: '',
       order: 5,
-      parentKey: null
+      parentKey: null,
     },
     {
       key: 'VideoFacility',
@@ -89,7 +89,7 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'Video Facility',
       hintTextCY: '',
       order: 5,
-      parentKey: null
+      parentKey: null,
     },
     {
       key: 'prisonVideoLink',
@@ -98,8 +98,8 @@ describe('HearingFacilitiesComponent', () => {
       hintText_EN: 'Prison Video Link',
       hintTextCY: '',
       order: 5,
-      parentKey: null
-    }
+      parentKey: null,
+    },
   ];
 
   const caseFlagsFromLatestSHV: PartyFlagsModel[] = [
@@ -109,7 +109,7 @@ describe('HearingFacilitiesComponent', () => {
       flagParentId: 'RA0008',
       flagId: 'RA0042',
       flagDescription: 'Sign language interpreter required',
-      flagStatus: 'ACTIVE'
+      flagStatus: 'ACTIVE',
     },
     {
       partyId: '1234-uytr-7654-asdf-0001',
@@ -117,7 +117,7 @@ describe('HearingFacilitiesComponent', () => {
       flagParentId: 'CF0001',
       flagId: 'CF0006',
       flagDescription: 'Potential fraud',
-      flagStatus: 'ACTIVE'
+      flagStatus: 'ACTIVE',
     },
     {
       partyId: '1234-uytr-7654-asdf-0002',
@@ -125,8 +125,8 @@ describe('HearingFacilitiesComponent', () => {
       flagParentId: 'CF0001',
       flagId: 'CF0007',
       flagDescription: 'Urgent flag',
-      flagStatus: 'ACTIVE'
-    }
+      flagStatus: 'ACTIVE',
+    },
   ];
 
   const partiesInSHV: PartyDetailsModel[] = [
@@ -139,10 +139,8 @@ describe('HearingFacilitiesComponent', () => {
         firstName: 'Party1 name FN',
         lastName: 'Party1 name LN',
         interpreterLanguage: '',
-        reasonableAdjustments: [
-          'RA001'
-        ]
-      }
+        reasonableAdjustments: ['RA001'],
+      },
     },
     {
       partyID: '1234-uytr-7654-asdf-0002',
@@ -153,11 +151,9 @@ describe('HearingFacilitiesComponent', () => {
         firstName: 'Party2 name FN',
         lastName: 'Party2 name LN',
         interpreterLanguage: '',
-        reasonableAdjustments: [
-          'RA001'
-        ]
-      }
-    }
+        reasonableAdjustments: ['RA001'],
+      },
+    },
   ];
 
   const partiesInHMC: PartyDetailsModel[] = [
@@ -170,10 +166,8 @@ describe('HearingFacilitiesComponent', () => {
         firstName: 'Party1 name FN',
         lastName: 'Party1 name LN',
         interpreterLanguage: '',
-        reasonableAdjustments: [
-          'RA001'
-        ]
-      }
+        reasonableAdjustments: ['RA001'],
+      },
     },
     {
       partyID: '1234-uytr-7654-asdf-0002',
@@ -184,11 +178,9 @@ describe('HearingFacilitiesComponent', () => {
         firstName: 'Party2 name FN',
         lastName: 'Party2 name LN',
         interpreterLanguage: '',
-        reasonableAdjustments: [
-          'RA001'
-        ]
-      }
-    }
+        reasonableAdjustments: ['RA001'],
+      },
+    },
   ];
 
   beforeEach(() => {
@@ -205,14 +197,14 @@ describe('HearingFacilitiesComponent', () => {
             snapshot: {
               data: {
                 caseFlags: caseFlagsRefData,
-                additionFacilitiesOptions: ADDITIONAL_FACILITIES_OPTIONS
-              }
+                additionFacilitiesOptions: ADDITIONAL_FACILITIES_OPTIONS,
+              },
             },
-            fragment: of('point-to-me')
-          }
-        }
+            fragment: of('point-to-me'),
+          },
+        },
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingFacilitiesComponent);
@@ -250,7 +242,7 @@ describe('HearingFacilitiesComponent', () => {
 
   it('should prepareHearingRequestData set hearingFacilitiesChangesConfirmed to true', () => {
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -260,11 +252,12 @@ describe('HearingFacilitiesComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: true,
-        partyDetailsChangesRequired: false,
+        participantAttendanceChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: true,
-        hearingUnavailabilityDatesChanged: false
-      }
+        hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false,
+      },
     };
     component.prepareHearingRequestData();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesConfirmed).toEqual(true);
@@ -297,7 +290,7 @@ describe('HearingFacilitiesComponent', () => {
 
   it('should not consider the case flags from in-memory object for create new hearing request journey', () => {
     component.hearingCondition = {
-      mode: 'create'
+      mode: 'create',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -307,11 +300,12 @@ describe('HearingFacilitiesComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        partyDetailsChangesRequired: false,
+        participantAttendanceChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
-      }
+        hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false,
+      },
     };
     component.ngOnInit();
     expect(component.nonReasonableAdjustmentFlags.length).toEqual(3);
@@ -319,7 +313,7 @@ describe('HearingFacilitiesComponent', () => {
 
   it('should set the case flags from in-memory object when viewing or editing existing hearing request', () => {
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -329,27 +323,28 @@ describe('HearingFacilitiesComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: true,
-        partyDetailsChangesRequired: false,
+        participantAttendanceChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
-      }
+        hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false,
+      },
     };
     component.hearingRequestMainModel = {
       ...component.hearingRequestMainModel,
-      partyDetails: partiesInHMC
+      partyDetails: partiesInHMC,
     };
     component.serviceHearingValuesModel = {
       ...component.serviceHearingValuesModel,
-      parties: partiesInSHV
+      parties: partiesInSHV,
     };
     component.ngOnInit();
     expect(component.nonReasonableAdjustmentFlags.length).toEqual(2);
   });
 
-  it('should prepareHearingRequestData set nonReasonableAdjustmentChangesConfirmed property to true', () => {
+  it('should set the additionalSecurityRequiredChanged to true where differing in SHV', () => {
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -359,11 +354,80 @@ describe('HearingFacilitiesComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: true,
-        partyDetailsChangesRequired: false,
+        participantAttendanceChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
-      }
+        hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false,
+      },
+    };
+    component.hearingRequestMainModel = {
+      ...component.hearingRequestMainModel,
+      partyDetails: partiesInHMC,
+    };
+    component.serviceHearingValuesModel = {
+      ...component.serviceHearingValuesModel,
+      parties: partiesInSHV,
+      caseAdditionalSecurityFlag: true,
+      facilitiesRequired: ['immigrationDetentionCentre', 'inCameraCourt'],
+    };
+    component.ngOnInit();
+    expect(component.additionalSecurityRequiredChanged).toEqual(true);
+    expect(component.additionalFacilitiesChanged).toEqual(false);
+  });
+
+  it('should set the additionalFacilitiesChanged to true where differing in SHV', () => {
+    component.hearingCondition = {
+      mode: 'view-edit',
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: true,
+        participantAttendanceChangesRequired: false,
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false,
+      },
+    };
+    component.hearingRequestMainModel = {
+      ...component.hearingRequestMainModel,
+      partyDetails: partiesInHMC,
+    };
+    component.serviceHearingValuesModel = {
+      ...component.serviceHearingValuesModel,
+      parties: partiesInSHV,
+      caseAdditionalSecurityFlag: false,
+      facilitiesRequired: ['immigrationDetentionCentre'],
+    };
+    component.ngOnInit();
+    expect(component.additionalSecurityRequiredChanged).toEqual(false);
+    expect(component.additionalFacilitiesChanged).toEqual(true);
+  });
+
+  it('should prepareHearingRequestData set nonReasonableAdjustmentChangesConfirmed property to true', () => {
+    component.hearingCondition = {
+      mode: 'view-edit',
+    };
+    hearingsService.propertiesUpdatedOnPageVisit = {
+      hearingId: 'h000001',
+      caseFlags: { flags: caseFlagsFromLatestSHV, flagAmendURL: '/' },
+      parties: null,
+      hearingWindow: null,
+      afterPageVisit: {
+        reasonableAdjustmentChangesRequired: false,
+        nonReasonableAdjustmentChangesRequired: true,
+        participantAttendanceChangesRequired: false,
+        hearingWindowChangesRequired: false,
+        hearingFacilitiesChangesRequired: false,
+        hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false,
+      },
     };
     component.prepareHearingRequestData();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesConfirmed).toEqual(true);
@@ -371,7 +435,7 @@ describe('HearingFacilitiesComponent', () => {
 
   it('should prepareHearingRequestData not set nonReasonableAdjustmentChangesConfirmed property to true', () => {
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -381,11 +445,12 @@ describe('HearingFacilitiesComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        partyDetailsChangesRequired: false,
+        participantAttendanceChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
-        hearingUnavailabilityDatesChanged: false
-      }
+        hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false,
+      },
     };
     component.prepareHearingRequestData();
     expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesConfirmed).toBeUndefined();
@@ -393,7 +458,7 @@ describe('HearingFacilitiesComponent', () => {
 
   it('should prepareHearingRequestData', () => {
     component.hearingCondition = {
-      mode: 'view-edit'
+      mode: 'view-edit',
     };
     hearingsService.propertiesUpdatedOnPageVisit = {
       hearingId: 'h000001',
@@ -403,119 +468,173 @@ describe('HearingFacilitiesComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        partyDetailsChangesRequired: false,
+        participantAttendanceChangesRequired: false,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: true,
         hearingFacilitiesChangesConfirmed: false,
-        hearingUnavailabilityDatesChanged: false
-      }
+        hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false,
+      },
     };
     component.serviceHearingValuesModel = {
       ...component.serviceHearingValuesModel,
-      facilitiesRequired: ['facility']
+      facilitiesRequired: ['facility'],
     };
     component.ngOnInit();
     expect(component.additionalFacilities[0].showAmendedLabel).toBe(true);
   });
 
-  it('should return true if additional facilities have changed', () => {
-    component.hearingRequestMainModel = {
-      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-      caseDetails: { ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
-        caseAdditionalSecurityFlag: true },
-      hearingDetails: {
-        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-        facilitiesRequired: ['Some facility']
-      }
-    };
-    component.hearingRequestToCompareMainModel = {
-      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-      caseDetails: { ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
-        caseAdditionalSecurityFlag: true },
-      hearingDetails: {
-        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-        facilitiesRequired: ['Some facility', 'Some other facility']
-      }
-    };
-    // eslint-disable-next-line dot-notation
-    const result = component['haveUpdatesMadeToSelections']();
-    expect(result).toBe(true);
-  });
-
-  it('should return false if additional facilities have not changed', () => {
-    component.hearingRequestMainModel = {
-      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-      caseDetails: { ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
-        caseAdditionalSecurityFlag: true },
-      hearingDetails: {
-        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-        facilitiesRequired: ['Some facility']
-      }
-    };
-    component.hearingRequestToCompareMainModel = {
-      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-      caseDetails: { ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
-        caseAdditionalSecurityFlag: true },
-      hearingDetails: {
-        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-        facilitiesRequired: ['Some facility']
-      }
-    };
-
-    // eslint-disable-next-line dot-notation
-    const result = component['haveUpdatesMadeToSelections']();
-    expect(result).toBe(false);
-  });
-
-  it('should return true if caseAdditionalSecurityFlag has changed', () => {
-    component.hearingRequestMainModel = {
-      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-      caseDetails: { ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
-        caseAdditionalSecurityFlag: false },
-      hearingDetails: {
-        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-        facilitiesRequired: ['Some facility']
-      }
-    };
-    component.hearingRequestToCompareMainModel = {
-      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-      caseDetails: { ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
-        caseAdditionalSecurityFlag: true },
-      hearingDetails: {
-        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-        facilitiesRequired: ['Some facility']
-      }
-    };
-    // eslint-disable-next-line dot-notation
-    const result = component['haveUpdatesMadeToSelections']();
-    expect(result).toBe(true);
-  });
-
-  it('should return false if caseAdditionalSecurityFlag has not changed', () => {
-    component.hearingRequestMainModel = {
-      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-      caseDetails: { ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
-        caseAdditionalSecurityFlag: true },
-      hearingDetails: {
-        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-        facilitiesRequired: ['Some facility']
-      }
-    };
-    component.hearingRequestToCompareMainModel = {
-      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-      caseDetails: { ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
-        caseAdditionalSecurityFlag: true },
-      hearingDetails: {
-        ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-        facilitiesRequired: ['Some facility']
-      }
-    };
-    // eslint-disable-next-line dot-notation
-    const result = component['haveUpdatesMadeToSelections']();
-    expect(result).toBe(false);
-  });
-
   afterEach(() => {
     fixture.destroy();
+  });
+
+  describe('getHearingFacilitiesFormArray', () => {
+    beforeEach(() => {
+      // Reset state before each test
+      component.additionalFacilities = [...ADDITIONAL_FACILITIES_OPTIONS].map((facility) => ({
+        key: facility.key,
+        value_en: facility.value_en,
+        value_cy: facility.value_cy,
+        hint_text_en: facility.hintText_EN,
+        hint_text_cy: facility.hintTextCY,
+        lov_order: facility.order,
+        category_key: 'FACILITIES',
+        active_flag: 'Y',
+        parent_key: facility.parentKey,
+        lov_display_order: facility.order,
+        parent_category: 'HEARING_FACILITIES', // Add this missing required property
+      }));
+
+      component.hearingRequestMainModel = {
+        ...component.hearingRequestMainModel,
+        hearingDetails: {
+          ...component.hearingRequestMainModel.hearingDetails,
+          facilitiesRequired: [],
+        },
+      };
+      component.serviceHearingValuesModel = {
+        ...component.serviceHearingValuesModel,
+        facilitiesRequired: [],
+      };
+      component.hearingFacilitiesChangesRequired = false;
+      component.hearingFacilitiesChangesConfirmed = false;
+    });
+
+    function getControlByKey(formArray, key) {
+      return formArray.controls.find((control) => control.get('key').value === key);
+    }
+
+    function checkFacilityInModel(key) {
+      return component.additionalFacilities.find((f) => f.key === key);
+    }
+
+    it('should create FormArray with selected facilities based on hearingRequestMainModel', () => {
+      // Setup
+      component.hearingRequestMainModel.hearingDetails.facilitiesRequired = ['secureDock', 'witnessScreen'];
+
+      // Act
+      const formArray = component.getHearingFacilitiesFormArray;
+
+      // Assert
+      expect(formArray.length).toEqual(ADDITIONAL_FACILITIES_OPTIONS.length);
+      expect(getControlByKey(formArray, 'secureDock').get('selected').value).toBe(true);
+      expect(getControlByKey(formArray, 'witnessScreen').get('selected').value).toBe(true);
+      expect(getControlByKey(formArray, 'inCameraCourt').get('selected').value).toBe(false);
+    });
+
+    it('should use serviceHearingValuesModel when changes required but not confirmed', () => {
+      // Setup
+      component.hearingCondition = { mode: 'view-edit' };
+      component.hearingFacilitiesChangesRequired = true;
+      component.hearingFacilitiesChangesConfirmed = false;
+      component.serviceHearingValuesModel.facilitiesRequired = ['secureDock'];
+      component.hearingRequestMainModel.hearingDetails.facilitiesRequired = ['witnessScreen'];
+
+      // Act
+      const formArray = component.getHearingFacilitiesFormArray;
+
+      // Assert
+      expect(getControlByKey(formArray, 'secureDock').get('selected').value).toBe(true);
+      expect(getControlByKey(formArray, 'witnessScreen').get('selected').value).toBe(false);
+    });
+
+    it('should mark facilities with amended labels when changes required but not confirmed', () => {
+      // Setup
+      component.hearingCondition = { mode: 'view-edit' };
+      component.hearingFacilitiesChangesRequired = true;
+      component.hearingFacilitiesChangesConfirmed = false;
+      component.serviceHearingValuesModel.facilitiesRequired = ['secureDock'];
+      component.hearingRequestMainModel.hearingDetails.facilitiesRequired = ['witnessScreen'];
+
+      // Act
+      // eslint-disable-next-line no-unused-expressions
+      component.getHearingFacilitiesFormArray;
+
+      // Assert
+      expect(checkFacilityInModel('secureDock').showAmendedLabel).toBe(true);
+      expect(checkFacilityInModel('witnessScreen').showAmendedLabel).toBe(true);
+    });
+
+    it('should not mark facilities with amended labels when changes are confirmed', () => {
+      // Setup
+      component.hearingCondition = { mode: 'view-edit' };
+      component.hearingFacilitiesChangesRequired = true;
+      component.hearingFacilitiesChangesConfirmed = true;
+      component.serviceHearingValuesModel.facilitiesRequired = ['secureDock'];
+      component.hearingRequestMainModel.hearingDetails.facilitiesRequired = ['witnessScreen'];
+
+      // Act
+      // eslint-disable-next-line no-unused-expressions
+      component.getHearingFacilitiesFormArray;
+
+      // Assert
+      expect(checkFacilityInModel('secureDock').showAmendedLabel).toBeUndefined();
+      expect(checkFacilityInModel('witnessScreen').showAmendedLabel).toBeUndefined();
+    });
+
+    it('should use hearingRequestMainModel when changes are confirmed', () => {
+      // Setup
+      component.hearingCondition = { mode: 'view-edit' };
+      component.hearingFacilitiesChangesRequired = true;
+      component.hearingFacilitiesChangesConfirmed = true;
+      component.serviceHearingValuesModel.facilitiesRequired = ['secureDock'];
+      component.hearingRequestMainModel.hearingDetails.facilitiesRequired = ['witnessScreen'];
+
+      // Act
+      const formArray = component.getHearingFacilitiesFormArray;
+
+      // Assert
+      expect(getControlByKey(formArray, 'secureDock').get('selected').value).toBe(false);
+      expect(getControlByKey(formArray, 'witnessScreen').get('selected').value).toBe(true);
+    });
+
+    it('should handle empty facilities arrays', () => {
+      // Setup - already handled in beforeEach
+
+      // Act
+      const formArray = component.getHearingFacilitiesFormArray;
+
+      // Assert
+      expect(formArray.length).toEqual(ADDITIONAL_FACILITIES_OPTIONS.length);
+      formArray.controls.forEach((control) => {
+        expect(control.get('selected').value).toBe(false);
+      });
+    });
+
+    it('should preserve all form control properties from additionalFacilities', () => {
+      // Setup
+      component.hearingRequestMainModel.hearingDetails.facilitiesRequired = ['secureDock'];
+
+      // Act
+      const formArray = component.getHearingFacilitiesFormArray;
+      const secureDockControl = getControlByKey(formArray, 'secureDock');
+
+      // Assert
+      expect(secureDockControl.get('key').value).toBe('secureDock');
+      expect(secureDockControl.get('value_en').value).toBe('secure dock');
+      expect(secureDockControl.get('hint_text_en').value).toBe('Secure Dock');
+      expect(secureDockControl.get('lov_order').value).toBe(4);
+      expect(secureDockControl.get('selected').value).toBe(true);
+    });
   });
 });

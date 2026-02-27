@@ -4,16 +4,22 @@ const testData = require('../../e2e/config/appTestConfig');
 const userUtil = require('../../ngIntegration/util/userRole');
 
 class NodeAppMockData {
-  constructor(){
+  constructor() {}
 
-  }
-
-  init(){
-    const roles = ['task-supervisor', 'case-allocator', 'caseworker', 'caseworker-ia', 'caseworker-ia-caseofficer', 'task-supervisor', 'case-allocator'];
+  init() {
+    const roles = [
+      'task-supervisor',
+      'case-allocator',
+      'caseworker',
+      'caseworker-ia',
+      'caseworker-ia-caseofficer',
+      'task-supervisor',
+      'case-allocator',
+    ];
     this.userDetails = this.getUserDetailsWithRoles(roles);
   }
 
-  getMockLoginUserWithidentifierAndRoles(useridentifier, roles){
+  getMockLoginUserWithidentifierAndRoles(useridentifier, roles) {
     const testUserIdamId = testData.users[testData.testEnv].filter((testUser) => testUser.userIdentifier === useridentifier)[0];
     if (!testUserIdamId) {
       throw new Error('Provided user identifer is not configured in test data. ' + releaseUer);
@@ -70,32 +76,32 @@ class NodeAppMockData {
 
   getUIConfiguration() {
     return {
-      'accessManagementEnabled': true,
-      'googleAnalyticsKey': 'UA-124734893-4',
-      'idamWeb': 'https://idam-web-public.aat.platform.hmcts.net',
-      'launchDarklyClientId': '5de6610b23ce5408280f2268',
-      'manageCaseLink': 'https://xui-webapp-aat.service.core-compute-aat.internal/cases',
-      'manageOrgLink': 'https://xui-mo-webapp-aat.service.core-compute-aat.internal',
-      'protocol': 'http',
-      'ccdGatewayUrl': 'http://localhost:3001'
+      accessManagementEnabled: true,
+      googleAnalyticsKey: 'UA-124734893-4',
+      idamWeb: 'https://idam-web-public.aat.platform.hmcts.net',
+      launchDarklyClientId: '5de6610b23ce5408280f2268',
+      manageCaseLink: 'https://xui-webapp-aat.service.core-compute-aat.internal/cases',
+      manageOrgLink: 'https://xui-mo-webapp-aat.service.core-compute-aat.internal',
+      protocol: 'http',
+      ccdGatewayUrl: 'http://localhost:3001',
     };
   }
 
   getUserDetailsTemplate() {
     return {
-      'canShareCases': true,
-      'sessionTimeout': {
-        'idleModalDisplayTime': 10,
-        'pattern': '-solicitor',
-        'totalIdleTime': 50
+      canShareCases: true,
+      sessionTimeout: {
+        idleModalDisplayTime: 10,
+        pattern: '-solicitor',
+        totalIdleTime: 50,
       },
-      'userInfo': {
-        'id': '02d1f898-4109-4a28-a978-2ba14f42de22',
-        'forename': 'Luke',
-        'surname': 'Wilson',
-        'email': 'lukesuperuserxui@mailnesia.com',
-        'active': true,
-        'roles': [
+      userInfo: {
+        id: '02d1f898-4109-4a28-a978-2ba14f42de22',
+        forename: 'Luke',
+        surname: 'Wilson',
+        email: 'lukesuperuserxui@mailnesia.com',
+        active: true,
+        roles: [
           'caseworker-ia-caseofficer',
           'caseworker',
           'caseworker-divorce',
@@ -114,18 +120,16 @@ class NodeAppMockData {
           'pui-case-manager',
           'pui-finance-manager',
           'pui-organisation-manager',
-          'pui-user-manager'
-        ]
-      }
+          'pui-user-manager',
+        ],
+      },
     };
   }
 }
 
 const configurations = {
   'feature.termsAndConditionsEnabled': false,
-  'termsAndConditionsEnabled': false
-
+  termsAndConditionsEnabled: false,
 };
 
 module.exports = new NodeAppMockData();
-

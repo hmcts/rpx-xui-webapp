@@ -6,7 +6,7 @@ import { switchMap } from 'rxjs/operators';
 import * as fromApp from '../store';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AcceptTermsGuard {
   constructor(private readonly store: Store<fromApp.State>) {}
@@ -14,7 +14,8 @@ export class AcceptTermsGuard {
   public canActivate(): Observable<boolean> {
     try {
       const isTandCEnabled$ = this.store.pipe(select(fromApp.getIsTermsAndConditionsFeatureEnabled));
-      return isTandCEnabled$.pipe(switchMap((enabled) => enabled ? this.enableTermsAndConditions() : of(true)));
+      return isTandCEnabled$.pipe(switchMap((enabled) => (enabled ? this.enableTermsAndConditions() : of(true))));
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       return of(true);
     }

@@ -7,9 +7,7 @@
 import * as express from 'express';
 import * as striptags from 'striptags';
 import { getConfigValue } from '../configuration';
-import {
-  SERVICES_CCD_COMPONENT_API_PATH, SERVICES_HEARINGS_ENABLE_DATA_SOURCE_HEADERS
-} from '../configuration/references';
+import { SERVICES_CCD_COMPONENT_API_PATH, SERVICES_HEARINGS_ENABLE_DATA_SOURCE_HEADERS } from '../configuration/references';
 
 import { http } from './http';
 import { EnhancedRequest } from './models';
@@ -53,6 +51,10 @@ export function setHeaders(req: express.Request, contentType?: string) {
 
     if (enableHearingDataSourceHeaders && exists(req, 'headers.Role-Assignment-Url')) {
       headers['Role-Assignment-Url'] = req.headers['Role-Assignment-Url'];
+    }
+
+    if (enableHearingDataSourceHeaders && exists(req, 'headers.Role-Assignment-Url')) {
+      headers['hmctsDeploymentId'] = req.headers['Hmcts-Deployment-Id'];
     }
   }
 

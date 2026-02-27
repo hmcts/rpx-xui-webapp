@@ -1,4 +1,3 @@
-
 const fs = require('fs');
 const path = require('path');
 var portfinder = require('portfinder');
@@ -6,13 +5,13 @@ var portfinder = require('portfinder');
 portfinder.basePort = 3001; // default: 8000
 portfinder.highestPort = 3200; // default: 65535
 
-function getAvailablePort(){
+function getAvailablePort() {
   const portData = fs.readFileSync(`${__dirname}/NODEMOCK_PORT.txt`, 'utf8');
   console.log(`${portData}`);
   return portData;
 }
 
-function updateAngularProxyTestConfig(availablePort){
+function updateAngularProxyTestConfig(availablePort) {
   const proxyFilePath = path.resolve(__dirname, '../../proxy.config.json');
   const proxyTestPath = path.resolve(__dirname, '../../proxyTest.config.json');
 
@@ -31,17 +30,18 @@ function updateAngularProxyTestConfig(availablePort){
   });
 }
 
-function configureTestProxyPort(){
+function configureTestProxyPort() {
   return portfinder.getPort(function (err, port) {
     if (err) {
       throw Error('No free port available');
     }
-    console.log(`************ First port available in range: ${port} of [${portfinder.basePort} - ${portfinder.highestPort}] ************`);
-    fs.writeFileSync(`${__dirname}/NODEMOCK_PORT.txt`, port+'');
+    console.log(
+      `************ First port available in range: ${port} of [${portfinder.basePort} - ${portfinder.highestPort}] ************`
+    );
+    fs.writeFileSync(`${__dirname}/NODEMOCK_PORT.txt`, port + '');
     // getAvailablePort();
     updateAngularProxyTestConfig(port);
   });
 }
 
 module.exports = { configureTestProxyPort, getAvailablePort };
-

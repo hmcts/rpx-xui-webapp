@@ -1,12 +1,11 @@
-
 const RolesAccessDataModel = require('../../dataModels/roleAccess');
-class RoleAccess{
-  constructor(){
+class RoleAccess {
+  constructor() {
     this.dataModel = RolesAccessDataModel;
     this.caseRoles = [];
   }
 
-  getAccessRolesByCaseId(mockRoles){
+  getAccessRolesByCaseId(mockRoles) {
     RolesAccessDataModel.getCaseRole();
     const response = [];
     response.push(RolesAccessDataModel.getCaseRole());
@@ -17,4 +16,3 @@ class RoleAccess{
 }
 
 module.exports = new RoleAccess();
-

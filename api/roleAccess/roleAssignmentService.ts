@@ -20,8 +20,9 @@ export async function getPossibleRoles(req: EnhancedRequest, res: Response, next
     if (serviceIds) {
       serviceIds.forEach((serviceId) => {
         // note: if service obtained, check role either includes service or does not specify service
-        const serviceRoles = roles.filter((role) =>
-          role.roleJurisdiction && (role.roleJurisdiction.values && role.roleJurisdiction.values.includes(serviceId)));
+        const serviceRoles = roles.filter(
+          (role) => role.roleJurisdiction && role.roleJurisdiction.values && role.roleJurisdiction.values.includes(serviceId)
+        );
         rolesByService.push({ service: serviceId, roles: serviceRoles });
       });
     }
@@ -35,14 +36,13 @@ export async function getSubstantiveRoles(req: EnhancedRequest) {
     return req.session.subStantiveRoles as [];
   }
   const response = await getAllRoles(req);
-  const results = (response.data as Role[]);
+  const results = response.data as Role[];
   const filteredResults = results.filter(filterRoleAssignments());
   const substantiveRoles = filteredResults.map((roleApi) => ({
     roleCategory: roleApi.category,
     roleId: roleApi.name,
     roleName: roleApi.label,
-    roleJurisdiction: roleApi.patterns && roleApi.patterns[0].attributes
-      ? roleApi.patterns[0].attributes.jurisdiction : null
+    roleJurisdiction: roleApi.patterns && roleApi.patterns[0].attributes ? roleApi.patterns[0].attributes.jurisdiction : null,
   }));
   req.session.subStantiveRoles = substantiveRoles;
   return substantiveRoles;

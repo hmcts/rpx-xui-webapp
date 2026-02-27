@@ -9,7 +9,7 @@ import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper
 @Component({
   standalone: false,
   selector: 'exui-my-tasks',
-  templateUrl: 'my-tasks.component.html'
+  templateUrl: 'my-tasks.component.html',
 })
 export class MyTasksComponent extends TaskListWrapperComponent implements OnInit {
   public get emptyMessage(): string {
@@ -40,7 +40,7 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
       const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
       const searchParameters: SearchTaskParameter[] = [
         { key: 'user', operator: 'IN', values: [id] },
-        { key: 'state', operator: 'IN', values: ['assigned'] }
+        { key: 'state', operator: 'IN', values: ['assigned'] },
       ];
       const locationParameter = this.getLocationParameter();
       const typesOfWorkParameter = this.getTypesOfWorkParameter();
@@ -57,7 +57,7 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
         search_parameters: searchParameters,
         sorting_parameters: [...this.getSortParameter()],
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
-        pagination_parameters: this.getPaginationParameter()
+        pagination_parameters: this.getPaginationParameter(),
       };
       return searchTaskParameter;
     }
@@ -81,7 +81,11 @@ export class MyTasksComponent extends TaskListWrapperComponent implements OnInit
   private getTypesOfWorkParameter(): SearchTaskParameter {
     const typeOfWorkInfo = this.sessionStorageService.getItem('typesOfWork_cache');
     const totalWorkTypes = typeOfWorkInfo ? JSON.parse(typeOfWorkInfo) : undefined;
-    if (this.selectedWorkTypes && this.selectedWorkTypes.length > 0 && (!totalWorkTypes || this.selectedWorkTypes.length < totalWorkTypes.length)) {
+    if (
+      this.selectedWorkTypes &&
+      this.selectedWorkTypes.length > 0 &&
+      (!totalWorkTypes || this.selectedWorkTypes.length < totalWorkTypes.length)
+    ) {
       return { key: 'work_type', operator: 'IN', values: this.selectedWorkTypes };
     }
 

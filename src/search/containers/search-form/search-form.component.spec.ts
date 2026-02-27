@@ -24,18 +24,24 @@ describe('SearchFormComponent', () => {
 
   beforeEach(waitForAsync(() => {
     searchService = createSpyObj<SearchService>('searchService', ['getServices', 'storeState', 'retrieveState']);
-    searchService.getServices.and.returnValue(of([
-      { serviceName: 'Test service', serviceId: 'TEST' },
-      { serviceName: 'Another test service', serviceId: 'TEST2' }
-    ]));
+    searchService.getServices.and.returnValue(
+      of([
+        { serviceName: 'Test service', serviceId: 'TEST' },
+        { serviceName: 'Another test service', serviceId: 'TEST2' },
+      ])
+    );
 
     jurisdictionsService = createSpyObj<JurisdictionsService>('jurisdictionsService', ['getJurisdictions']);
-    jurisdictionsService.getJurisdictions.and.returnValue(of([{
-      id: 'IA',
-      name: 'Immigration & Asylum',
-      description: 'Immigration & Asylum',
-      caseTypes: []
-    }]));
+    jurisdictionsService.getJurisdictions.and.returnValue(
+      of([
+        {
+          id: 'IA',
+          name: 'Immigration & Asylum',
+          description: 'Immigration & Asylum',
+          caseTypes: [],
+        },
+      ])
+    );
 
     TestBed.configureTestingModule({
       declarations: [SearchFormComponent],
@@ -46,10 +52,9 @@ describe('SearchFormComponent', () => {
         { provide: SearchService, useValue: searchService },
         { provide: JurisdictionsService, useValue: jurisdictionsService },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -72,7 +77,7 @@ describe('SearchFormComponent', () => {
     expect(component.services).toEqual([
       { label: 'All', value: 'ALL', id: 'ALL' },
       { label: 'Test service', value: 'TEST', id: 'TEST' },
-      { label: 'Another test service', value: 'TEST2', id: 'TEST2' }
+      { label: 'Another test service', value: 'TEST2', id: 'TEST2' },
     ]);
     expect(component.formGroup.get(SearchFormControl.SERVICES_LIST).value).toEqual('ALL');
   });
@@ -108,7 +113,7 @@ describe('SearchFormComponent', () => {
       postcode: 'SW1H 9AJ',
       emailAddress: 'test@example.com',
       dateOfBirth: '1980-10-1',
-      dateOfDeath: '2020-2-2'
+      dateOfDeath: '2020-2-2',
     } as SearchParameters);
     expect(searchService.storeState.calls.all()[1].args[0]).toEqual(SearchStatePersistenceKey.START_RECORD);
     expect(searchService.storeState.calls.all()[1].args[1]).toEqual(1);
@@ -135,21 +140,41 @@ describe('SearchFormComponent', () => {
       postcode: null,
       emailAddress: null,
       dateOfBirth: null,
-      dateOfDeath: null
+      dateOfDeath: null,
     } as SearchParameters);
   });
 
   it('should reset validation error messages', () => {
     component.searchValidationErrors = [];
-    component.searchValidationErrors.push({ controlId: SearchFormControl.CASE_REF, documentHRef: SearchFormControl.CASE_REF, errorMessage: SearchFormErrorMessage.CASE_REF });
+    component.searchValidationErrors.push({
+      controlId: SearchFormControl.CASE_REF,
+      documentHRef: SearchFormControl.CASE_REF,
+      errorMessage: SearchFormErrorMessage.CASE_REF,
+    });
     component.caseRefErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.CASE_REF] };
-    component.searchValidationErrors.push({ controlId: SearchFormControl.EMAIL, documentHRef: SearchFormControl.EMAIL, errorMessage: SearchFormErrorMessage.EMAIL });
+    component.searchValidationErrors.push({
+      controlId: SearchFormControl.EMAIL,
+      documentHRef: SearchFormControl.EMAIL,
+      errorMessage: SearchFormErrorMessage.EMAIL,
+    });
     component.emailErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.EMAIL] };
-    component.searchValidationErrors.push({ controlId: SearchFormControl.POSTCODE, documentHRef: SearchFormControl.POSTCODE, errorMessage: SearchFormErrorMessage.POSTCODE });
+    component.searchValidationErrors.push({
+      controlId: SearchFormControl.POSTCODE,
+      documentHRef: SearchFormControl.POSTCODE,
+      errorMessage: SearchFormErrorMessage.POSTCODE,
+    });
     component.postcodeErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.POSTCODE] };
-    component.searchValidationErrors.push({ controlId: SearchFormControl.DATE_OF_BIRTH_DAY, documentHRef: 'dateOfBirth', errorMessage: SearchFormErrorMessage.DATE_OF_BIRTH });
+    component.searchValidationErrors.push({
+      controlId: SearchFormControl.DATE_OF_BIRTH_DAY,
+      documentHRef: 'dateOfBirth',
+      errorMessage: SearchFormErrorMessage.DATE_OF_BIRTH,
+    });
     component.dateOfBirthErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.DATE_OF_BIRTH] };
-    component.searchValidationErrors.push({ controlId: SearchFormControl.DATE_OF_DEATH_DAY, documentHRef: 'dateOfDeath', errorMessage: SearchFormErrorMessage.DATE_OF_DEATH });
+    component.searchValidationErrors.push({
+      controlId: SearchFormControl.DATE_OF_DEATH_DAY,
+      documentHRef: 'dateOfDeath',
+      errorMessage: SearchFormErrorMessage.DATE_OF_DEATH,
+    });
     component.dateOfDeathErrorMessage = { isInvalid: true, messages: [SearchFormErrorMessage.DATE_OF_DEATH] };
     component.resetValidationErrorMessages();
 
@@ -197,7 +222,7 @@ describe('SearchFormComponent', () => {
     expect(component.searchValidationErrors).toContain({
       controlId: null,
       documentHRef: null,
-      errorMessage: SearchFormErrorMessage.NO_SEARCH_CRITERIA
+      errorMessage: SearchFormErrorMessage.NO_SEARCH_CRITERIA,
     });
     expect(window.scrollTo).toHaveBeenCalled();
     expect(searchService.storeState).not.toHaveBeenCalled();
@@ -212,7 +237,7 @@ describe('SearchFormComponent', () => {
     expect(component.searchValidationErrors).toContain({
       controlId: SearchFormControl.EMAIL,
       documentHRef: SearchFormControl.EMAIL,
-      errorMessage: SearchFormErrorMessage.EMAIL
+      errorMessage: SearchFormErrorMessage.EMAIL,
     });
     expect(window.scrollTo).toHaveBeenCalled();
     expect(searchService.storeState).not.toHaveBeenCalled();
@@ -224,23 +249,26 @@ describe('SearchFormComponent', () => {
     component.formGroup.get(SearchFormControl.EMAIL).setValue('WRONGEMAIL');
     component.onSubmit();
     // Check that the array of errors for displaying the error summary contains the expected errors
-    expect(component.searchValidationErrors).toContain({
-      controlId: SearchFormControl.CASE_REF,
-      documentHRef: SearchFormControl.CASE_REF,
-      errorMessage: SearchFormErrorMessage.CASE_REF
-    }, {
-      controlId: SearchFormControl.EMAIL,
-      documentHRef: SearchFormControl.EMAIL,
-      errorMessage: SearchFormErrorMessage.EMAIL
-    });
+    expect(component.searchValidationErrors).toContain(
+      {
+        controlId: SearchFormControl.CASE_REF,
+        documentHRef: SearchFormControl.CASE_REF,
+        errorMessage: SearchFormErrorMessage.CASE_REF,
+      },
+      {
+        controlId: SearchFormControl.EMAIL,
+        documentHRef: SearchFormControl.EMAIL,
+        errorMessage: SearchFormErrorMessage.EMAIL,
+      }
+    );
     // Check that field error messages on the component have been set (for display by the xuilib-gov-uk-error-message component)
     expect(component.caseRefErrorMessage).toEqual({
       isInvalid: true,
-      messages: [SearchFormErrorMessage.CASE_REF]
+      messages: [SearchFormErrorMessage.CASE_REF],
     });
     expect(component.emailErrorMessage).toEqual({
       isInvalid: true,
-      messages: [SearchFormErrorMessage.EMAIL]
+      messages: [SearchFormErrorMessage.EMAIL],
     });
   });
 
@@ -254,7 +282,7 @@ describe('SearchFormComponent', () => {
       postcode: 'SW1H 9AJ',
       emailAddress: 'test@example.com',
       dateOfBirth: '1980-10-1',
-      dateOfDeath: '2020-2-2'
+      dateOfDeath: '2020-2-2',
     } as SearchParameters);
     component.ngOnInit();
     expect(searchService.retrieveState).toHaveBeenCalledWith(SearchStatePersistenceKey.SEARCH_PARAMS);
@@ -283,7 +311,7 @@ describe('SearchFormComponent', () => {
       postcode: null,
       emailAddress: null,
       dateOfBirth: null,
-      dateOfDeath: null
+      dateOfDeath: null,
     } as SearchParameters);
     component.ngOnInit();
     expect(searchService.retrieveState).toHaveBeenCalledWith(SearchStatePersistenceKey.SEARCH_PARAMS);
@@ -317,7 +345,7 @@ describe('SearchFormComponent', () => {
       postcode: null,
       emailAddress: null,
       dateOfBirth: null,
-      dateOfDeath: null
+      dateOfDeath: null,
     } as SearchParameters);
   });
 });

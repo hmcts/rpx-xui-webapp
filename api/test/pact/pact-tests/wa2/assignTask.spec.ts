@@ -11,7 +11,7 @@ const pactSetUp = new PactV3TestSetup({ provider: 'wa_task_management_api_assign
 describe('Task management api, assign a task to user', () => {
   let next;
   const mockRequest = {
-    user_id: '004b7164-0943-41b5-95fc-39794af4a9fe'
+    user_id: '004b7164-0943-41b5-95fc-39794af4a9fe',
   };
   const taskId = 'f782bde3-8d51-11eb-a9a4-06d032acc76d';
 
@@ -31,15 +31,14 @@ describe('Task management api, assign a task to user', () => {
           path: `/task/${taskId}/assign`,
           headers: {
             Authorization: 'Bearer someAuthorizationToken',
-            ServiceAuthorization: 'Bearer someServiceAuthorizationToken'
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
           },
-          body: mockRequest
-
+          body: mockRequest,
         },
         willRespondWith: {
           status: 204,
-          headers: {}
-        }
+          headers: {},
+        },
       };
       pactSetUp.provider.addInteraction(interaction);
     });
@@ -60,16 +59,15 @@ describe('Task management api, assign a task to user', () => {
 
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
           params: {
             taskId: taskId,
-            action: 'assign'
+            action: 'assign',
           },
-          body: mockRequest
-
+          body: mockRequest,
         });
         let resStatus = null;
         const response = mockRes();
@@ -88,4 +86,3 @@ describe('Task management api, assign a task to user', () => {
     });
   });
 });
-

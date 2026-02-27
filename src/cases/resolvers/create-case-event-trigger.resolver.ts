@@ -14,13 +14,13 @@ export class CreateCaseEventTriggerResolver {
 
   public cachedEventTrigger: CaseEventTrigger;
 
-  constructor(
-    private readonly casesService: CasesService,
-  ) {}
+  constructor(private readonly casesService: CasesService) {}
 
   public resolve(route: ActivatedRouteSnapshot): Observable<CaseEventTrigger> {
-    return this.isRootCreateRoute(route) ? this.getAndCacheEventTrigger(route)
-      : this.cachedEventTrigger ? of(this.cachedEventTrigger)
+    return this.isRootCreateRoute(route)
+      ? this.getAndCacheEventTrigger(route)
+      : this.cachedEventTrigger
+        ? of(this.cachedEventTrigger)
         : this.getAndCacheEventTrigger(route);
   }
 
@@ -38,9 +38,9 @@ export class CreateCaseEventTriggerResolver {
       caseId = draftId;
     }
 
-    return ((this.casesService.getEventTrigger(caseTypeId, eventTriggerId, caseId, ignoreWarning) as any) as Observable<CaseEventTrigger>).pipe(
-      tap((eventTrigger) => this.cachedEventTrigger = eventTrigger)
-    );
+    return (
+      this.casesService.getEventTrigger(caseTypeId, eventTriggerId, caseId, ignoreWarning) as any as Observable<CaseEventTrigger>
+    ).pipe(tap((eventTrigger) => (this.cachedEventTrigger = eventTrigger)));
   }
 
   private isRootCreateRoute(route: ActivatedRouteSnapshot) {

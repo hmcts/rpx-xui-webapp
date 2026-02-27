@@ -29,15 +29,19 @@ export async function commonGetFullLocation(req, allLocations: boolean) {
   for (const serviceCode of serviceCodes) {
     const path: string = prepareGetLocationsUrl(basePath, serviceCode);
     const response = await handleLocationGet(path, req);
-    const filteredCourtVenues = allLocations ? response.data.court_venues.filter((venue) => venue.is_case_management_location === 'Y').
-      map((venue) => ({ id: venue.epimms_id, locationName: venue.site_name })) : response.data.court_venues;
+    const filteredCourtVenues = allLocations
+      ? response.data.court_venues
+          .filter((venue) => venue.is_case_management_location === 'Y')
+          .map((venue) => ({ id: venue.epimms_id, locationName: venue.site_name }))
+      : response.data.court_venues;
     courtVenues = [...courtVenues, ...filteredCourtVenues];
   }
-  courtVenues = !allLocations ? courtVenues.filter((value, index, self) =>
-    index === self.findIndex((location) => (
-      location.epimms_id === value.epimms_id && location.site_name === value.site_name
-    ))
-  ) : courtVenues;
+  courtVenues = !allLocations
+    ? courtVenues.filter(
+        (value, index, self) =>
+          index === self.findIndex((location) => location.epimms_id === value.epimms_id && location.site_name === value.site_name)
+      )
+    : courtVenues;
   return courtVenues;
 }
 
@@ -84,8 +88,9 @@ export async function getRegionLocationsForServices(req: EnhancedRequest) {
         regions.push(courtVenue.region_id);
         regionLocations.push({ regionId: courtVenue.region_id, locations: [courtVenue.epimms_id] });
       } else {
-        regionLocations.find((locationList) =>
-          locationList.regionId === courtVenue.region_id).locations.push(courtVenue.epimms_id);
+        regionLocations
+          .find((locationList) => locationList.regionId === courtVenue.region_id)
+          .locations.push(courtVenue.epimms_id);
       }
     });
   }

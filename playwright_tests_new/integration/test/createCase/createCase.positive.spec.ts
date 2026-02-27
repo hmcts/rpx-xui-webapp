@@ -41,15 +41,12 @@ test.describe(`Create case as ${userIdentifier}`, () => {
       await createCasePage.clickContinueAndWait('after PoC text fields');
     });
     await test.step('Fill out some of the form', async () => {
-      await page.locator('#FixedRadioList-customOption2').selectOption('blue');
       await createCasePage.person1Title.fill(caseData?.person1Title);
       await createCasePage.person1FirstNameInput.fill(caseData.person1FirstName);
       await createCasePage.person1LastNameInput.fill(caseData.person1LastName);
       await createCasePage.person1GenderSelect.selectOption(caseData.person1Gender);
       await createCasePage.person1JobTitleInput.fill(caseData.person1JobTitle);
       await createCasePage.person1JobDescriptionInput.fill(caseData.person1JobDescription);
-
-      
 
       await createCasePage.clickContinueAndWait('after PoC personal details');
       await createCasePage.checkYourAnswersHeading.waitFor({ state: 'visible', timeout: timeouts.POC_FIELD_VISIBLE });
@@ -90,7 +87,7 @@ test.describe(`Create case as ${userIdentifier}`, () => {
       expect(submittedData.Person1?.Title).toBe(caseData.person1Title);
       expect(submittedData.Person1?.FirstName).toBe(caseData.person1FirstName);
       expect(submittedData.Person1?.LastName).toBe(caseData.person1LastName);
-      expect(submittedData.Person1?.PersonGender).toBe(caseData.person1Gender);
+      expect(submittedData.Person1?.PersonGender).toBe(caseData.person1Gender?.toLowerCase());
       expect(submittedData.Person1?.PersonJob?.Title).toBe(caseData.person1JobTitle);
       expect(submittedData.Person1?.PersonJob?.Description).toBe(caseData.person1JobDescription);
 
@@ -99,7 +96,8 @@ test.describe(`Create case as ${userIdentifier}`, () => {
     });
   });
 
-  // test(`User ${userIdentifier} can create a ${jurisdiction} case and hidden fields are not shown but sent`, async ({}) => {});
+  // test(`User ${userIdentifier} can create a ${jurisdiction} case with all hidden fields are not shown but sent`, async ({}) => {});
+  // test(`User ${userIdentifier} can create a ${jurisdiction} case with one hidden field are not shown but sent`, async ({}) => {});
 
   // test(`User ${userIdentifier} can create a ${jurisdiction} case and navigate back using the Change links on check your answers`, async ({}) => {});
 });

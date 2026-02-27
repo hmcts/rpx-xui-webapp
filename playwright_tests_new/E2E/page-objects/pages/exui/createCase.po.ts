@@ -120,7 +120,6 @@ export class CreateCasePage extends Base {
   );
   readonly additionalPeople = this.page.locator('#People');
   readonly addNewPersonButton = this.additionalPeople.locator('button.write-collection-add-item__top');
-  
 
   readonly fileUploadInput = this.page.locator('#DocumentUrl');
   readonly fileUploadStatusLabel = this.page.locator('ccd-write-document-field .error-message');

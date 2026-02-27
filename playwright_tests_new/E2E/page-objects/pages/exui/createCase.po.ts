@@ -127,10 +127,10 @@ export class CreateCasePage extends Base {
   readonly textField2Input = this.page.locator('#TextField2');
   readonly textField3Input = this.page.locator('#TextField3');
 
-
   readonly checkYourAnswers = this.page.locator('.check-your-answers');
   readonly checkYourAnswersHeading = this.checkYourAnswers.locator('h2');
   readonly checkYourAnswersTable = this.checkYourAnswers.locator('table');
+  readonly checkYourAnswersSubTable = this.checkYourAnswersTable.locator('table.complex-panel-table table');
 
   readonly testSubmitButton = this.page.locator('.check-your-answers [type="submit"]');
 

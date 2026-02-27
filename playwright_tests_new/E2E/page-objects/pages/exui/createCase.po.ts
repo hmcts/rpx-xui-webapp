@@ -118,6 +118,9 @@ export class CreateCasePage extends Base {
   readonly person2LastNameInput = this.page.locator(
     '[data-testid="Person2_LastName"] input, [data-testid="Person2_LastName"], #Person2_LastName, [name="Person2_LastName"]'
   );
+  readonly additionalPeople = this.page.locator('#People');
+  readonly addNewPersonButton = this.additionalPeople.locator('button.write-collection-add-item__top');
+  
 
   readonly fileUploadInput = this.page.locator('#DocumentUrl');
   readonly fileUploadStatusLabel = this.page.locator('ccd-write-document-field .error-message');
@@ -411,7 +414,7 @@ export class CreateCasePage extends Base {
    * @throws {Error} If button disabled, CCD event fails, or validation error occurs
    * @private
    */
-  private async clickContinueAndWait(
+  public async clickContinueAndWait(
     context: string,
     options: { force?: boolean; timeoutMs?: number; continueButton?: Locator } = {}
   ) {
@@ -1160,7 +1163,7 @@ export class CreateCasePage extends Base {
     return {
       gender,
       person1Title: overrides.person1Title ?? faker.person.prefix(),
-      person1FirstName: overrides.person1FirstName ?? faker.person.firstName(),
+      person1FirstName: overrides.person1FirstName ?? `${faker.person.firstName()} ${faker.person.middleName()}`,
       person1LastName: overrides.person1LastName ?? faker.person.lastName(),
       person1Gender: overrides.person1Gender ?? gender,
       person1JobTitle: overrides.person1JobTitle ?? faker.person.jobTitle(),

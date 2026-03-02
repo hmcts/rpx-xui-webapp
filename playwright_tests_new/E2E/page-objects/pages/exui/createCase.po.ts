@@ -18,6 +18,7 @@ export type DivorcePoCData = {
   textField1?: string;
   textField2?: string;
   textField3?: string;
+  divorceReasons?: string[];
   // timestamp useful for tests to assert against
   generatedAt?: string;
 };
@@ -36,7 +37,6 @@ const CRITICAL_WIZARD_API_PATTERNS: RegExp[] = [
 type CreateDivorceCaseOptions = {
   maxAttempts?: number;
   createCaseMaxAttempts?: number;
-  skipCaseSubmit?: boolean;
 };
 
 export class CreateCasePage extends Base {
@@ -106,19 +106,20 @@ export class CreateCasePage extends Base {
   readonly complexType4SelectList = this.page.locator('#ComplexType_4_FixedListField');
 
   // Locators for the Divorce - XUI Case PoC
-  readonly person1Title = this.page.locator('#Person1_Title');
+  readonly genderRadioButtons = this.page.locator('#Gender .multiple-choice');
+  readonly person1TitleInput = this.page.locator('#Person1_Title');
   readonly person1FirstNameInput = this.page.locator('#Person1_FirstName');
   readonly person1LastNameInput = this.page.locator('#Person1_LastName');
   readonly person1GenderSelect = this.page.locator('#Person1_PersonGender');
   readonly person1JobTitleInput = this.page.locator('#Person1_PersonJob_Title');
   readonly person1JobDescriptionInput = this.page.locator('#Person1_PersonJob_Description');
-  readonly person2FirstNameInput = this.page.locator(
-    '[data-testid="Person2_FirstName"] input, [data-testid="Person2_FirstName"], #Person2_FirstName, [name="Person2_FirstName"]'
-  );
-
-  readonly person2LastNameInput = this.page.locator(
-    '[data-testid="Person2_LastName"] input, [data-testid="Person2_LastName"], #Person2_LastName, [name="Person2_LastName"]'
-  );
+  readonly person2 = this.page.locator('#Person2_Person2');
+  readonly person2TitleInput = this.page.locator('#Person2_Title');
+  readonly person2FirstNameInput = this.page.locator('#Person2_FirstName');
+  readonly person2LastNameInput = this.page.locator('#Person2_LastName');
+  readonly person2GenderSelect = this.page.locator('#Person2_PersonGender');
+  readonly person2JobTitleInput = this.page.locator('#Person2_PersonJob_Title');
+  readonly person2JobDescriptionInput = this.page.locator('#Person2_PersonJob_Description');
   readonly additionalPeople = this.page.locator('#People');
   readonly addNewPersonButton = this.additionalPeople.locator('button.write-collection-add-item__top');
   readonly fileUploadInput = this.page.locator('#DocumentUrl');
@@ -127,6 +128,7 @@ export class CreateCasePage extends Base {
   readonly textField1Input = this.page.locator('#TextField1');
   readonly textField2Input = this.page.locator('#TextField2');
   readonly textField3Input = this.page.locator('#TextField3');
+  readonly divorceReasons = this.page.locator('#DivorceReason .multiple-choice');
 
   readonly checkYourAnswers = this.page.locator('.check-your-answers');
   readonly checkYourAnswersHeading = this.checkYourAnswers.locator('h2');
@@ -650,7 +652,7 @@ export class CreateCasePage extends Base {
    * @throws {Error} If wizard doesn't advance after retry or validation error occurs
    * @private
    */
-  private async ensureWizardAdvanced(
+  async ensureWizardAdvanced(
     context: string,
     initialUrl: string,
     options: {
@@ -1095,6 +1097,12 @@ export class CreateCasePage extends Base {
     await this.waitForCaseDetails('after submitting divorce case flags');
   }
 
+  async selectDivorceReasons(reasons: string[]) {
+    for (const reason of reasons) {
+      await this.divorceReasons.filter({ hasText: reason }).first().click();
+    }
+  }
+
   async createDivorceCasePoC(
     // NOSONAR typescript:S3776 — Cognitive Complexity acceptable per agents.md §6.2.10: multi-attempt Divorce PoC creation with retry and data-variant handling
     jurisdiction: string,
@@ -1119,8 +1127,8 @@ export class CreateCasePage extends Base {
         if (await genderRadio.isVisible().catch(() => false)) {
           await genderRadio.check();
         }
-        await this.person1Title.click();
-        await this.person1Title.fill(data?.person1Title ?? faker.person.prefix());
+        await this.person1TitleInput.click();
+        await this.person1TitleInput.fill(data?.person1Title ?? faker.person.prefix());
         await this.person1FirstNameInput.fill(data?.person1FirstName ?? faker.person.firstName());
         await this.person1LastNameInput.fill(data?.person1LastName ?? faker.person.lastName());
         await this.person1GenderSelect.selectOption(data?.person1Gender ?? gender);
@@ -1139,11 +1147,9 @@ export class CreateCasePage extends Base {
         await this.clickContinueAndWait('after PoC text fields');
         await this.checkYourAnswersHeading.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
 
-        if (!options.skipCaseSubmit) {
-          await this.testSubmitButton.click();
-          await this.waitForSpinnerToComplete('after submitting divorce PoC case');
-          await this.waitForCaseDetails('after submitting divorce PoC case');
-        }
+        await this.testSubmitButton.click();
+        await this.waitForSpinnerToComplete('after submitting divorce PoC case');
+        await this.waitForCaseDetails('after submitting divorce PoC case');
 
         return;
       } catch (error) {
@@ -1167,6 +1173,9 @@ export class CreateCasePage extends Base {
 
   async generateDivorcePoCData(overrides: Partial<DivorcePoCData> = {}): Promise<DivorcePoCData> {
     const gender = overrides.gender ?? faker.helpers.arrayElement(['Male', 'Female', 'Not given']);
+    const reasonsForDivorce = overrides.divorceReasons ?? [
+      faker.helpers.arrayElement(['Behaviour', 'Adultery', 'Desertion', '2-year separation (with consent)', '5-year separation']),
+    ];
     const generatedAt = overrides.generatedAt ?? new Date().toISOString();
     return {
       gender,
@@ -1180,6 +1189,7 @@ export class CreateCasePage extends Base {
       textField1: overrides.textField1 ?? faker.lorem.sentence() + faker.date.soon().getTime(),
       textField2: overrides.textField2 ?? faker.lorem.sentence() + faker.date.soon().getTime(),
       textField3: overrides.textField3 ?? faker.lorem.sentence() + faker.date.soon().getTime(),
+      divorceReasons: overrides.divorceReasons ?? reasonsForDivorce,
       generatedAt,
     };
   }

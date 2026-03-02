@@ -36,6 +36,7 @@ const CRITICAL_WIZARD_API_PATTERNS: RegExp[] = [
 type CreateDivorceCaseOptions = {
   maxAttempts?: number;
   createCaseMaxAttempts?: number;
+  skipCaseSubmit?: boolean;
 };
 
 export class CreateCasePage extends Base {
@@ -1137,9 +1138,13 @@ export class CreateCasePage extends Base {
         await this.textField2Input.fill(data?.textField2 ?? faker.lorem.word());
         await this.clickContinueAndWait('after PoC text fields');
         await this.checkYourAnswersHeading.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
-        await this.testSubmitButton.click();
-        await this.waitForSpinnerToComplete('after submitting divorce PoC case');
-        await this.waitForCaseDetails('after submitting divorce PoC case');
+
+        if (!options.skipCaseSubmit) {
+          await this.testSubmitButton.click();
+          await this.waitForSpinnerToComplete('after submitting divorce PoC case');
+          await this.waitForCaseDetails('after submitting divorce PoC case');
+        }
+
         return;
       } catch (error) {
         const message = this.normalizeUnknownError(error);

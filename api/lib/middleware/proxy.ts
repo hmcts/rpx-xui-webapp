@@ -93,7 +93,7 @@ export const applyProxy = (app: any, config: ProxyConfig, modifyBody: boolean = 
       proxyRes: (proxyRes, req, res) => {
         if (isDocumentsSource) {
           if (config.onRes) {
-            config.onRes('', req, res);
+            config.onRes(proxyRes, req, res);
           }
           return proxyRes;
         }

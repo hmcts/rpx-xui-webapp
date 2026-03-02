@@ -125,3 +125,10 @@ test-results/
 *.zip
 # Fortify scan artifacts
 Fortify Scan/
+
+# Local orchestration artifacts
+/docs/DECISIONS.md
+/docs/NODE_API_SERVICES_REVIEW_RECOMMENDATIONS.md
+/docs/PLAN.md
+/docs/RESULT.md
+/docs/TODO.md

@@ -5,6 +5,25 @@ import { filterEmptyRows } from '../../utils';
 import { caseBannerMatches } from '../../utils/banner.utils';
 import { isPageClosingError, rowMatchesExpected } from '../../utils/case-flags.utils';
 import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
+import { setupCaseForJourney } from '../_helpers/caseSetup';
+import { DIVORCE_FLAGS_DYNAMIC_SOLICITOR_ROLES, provisionDynamicSolicitorForAlias } from '../_helpers/dynamicSolicitorSession';
+
+function asMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+function isDependencyEnvironmentFailure(error: unknown): boolean {
+  const message = asMessage(error);
+  return (
+    /returned HTTP 5\d\d/i.test(message) ||
+    /status\s+5\d\d/i.test(message) ||
+    /something went wrong page/i.test(message) ||
+    /network timeout/i.test(message) ||
+    /ECONNRESET|ETIMEDOUT/i.test(message) ||
+    /Target page, context or browser has been closed/i.test(message) ||
+    /setup exceeded \d+ms/i.test(message)
+  );
+}
 
 test.describe('Case level case flags', () => {
   test.describe.configure({ timeout: 180000 });
@@ -98,28 +117,70 @@ test.describe('Case level case flags', () => {
 });
 
 test.describe('Party level case flags', () => {
-  test.describe.configure({ timeout: 180000 });
+  test.describe.configure({ timeout: 600000 });
   const testValue = faker.person.firstName();
   let caseNumber: string;
   const jurisdiction = 'DIVORCE';
   const caseType = 'xuiCaseFlagsV1';
-  test.beforeEach(async ({ page, createCasePage, caseDetailsPage }) => {
-    await retryOnTransientFailure(
-      async () => {
-        await ensureAuthenticatedPage(page, 'USER_WITH_FLAGS', { waitForSelector: 'exui-header' });
-        await createCasePage.createDivorceCaseFlag(testValue, jurisdiction, caseType);
-        caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
+  let dynamicHandle: Awaited<ReturnType<typeof provisionDynamicSolicitorForAlias>> | undefined;
+
+  test.beforeEach(async ({ page, createCasePage, caseDetailsPage, professionalUserUtils }, testInfo) => {
+    dynamicHandle = await provisionDynamicSolicitorForAlias({
+      alias: 'USER_WITH_FLAGS',
+      professionalUserUtils,
+      roleNames: DIVORCE_FLAGS_DYNAMIC_SOLICITOR_ROLES,
+      roleContext: {
+        jurisdiction: 'divorce',
+        testType: 'case-create',
       },
-      {
-        maxAttempts: 2,
-        onRetry: async () => {
-          if (page.isClosed()) {
-            return;
-          }
-          await page.goto('/').catch(() => undefined);
+      testInfo,
+    });
+
+    try {
+      await retryOnTransientFailure(
+        async () => {
+          await ensureAuthenticatedPage(page, 'USER_WITH_FLAGS', { waitForSelector: 'exui-header' });
+          const setup = await setupCaseForJourney({
+            scenario: 'case-flags-divorce-party-level',
+            jurisdiction,
+            caseType,
+            mode: 'api-required',
+            apiPayload: {
+              fieldValues: {
+                testValue,
+              },
+            },
+            uiCreate: async () => {
+              await createCasePage.createDivorceCaseFlag(testValue, jurisdiction, caseType);
+            },
+            page,
+            createCasePage,
+            caseDetailsPage,
+            testInfo,
+          });
+          caseNumber = setup.caseNumber;
         },
+        {
+          maxAttempts: 2,
+          onRetry: async () => {
+            if (page.isClosed()) {
+              return;
+            }
+            await page.goto('/').catch(() => undefined);
+          },
+        }
+      );
+    } catch (error) {
+      if (isDependencyEnvironmentFailure(error)) {
+        throw new Error(`Party-level case-flags setup failed due to dependency environment instability: ${asMessage(error)}`);
       }
-    );
+      throw error;
+    }
+  });
+
+  test.afterEach(async () => {
+    await dynamicHandle?.cleanup();
+    dynamicHandle = undefined;
   });
 
   test('Create a new party level flag and verify the flag is displayed on the case', async ({ caseDetailsPage, tableUtils }) => {

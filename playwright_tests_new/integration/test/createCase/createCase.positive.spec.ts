@@ -56,6 +56,7 @@ test.describe(`Create case as ${userIdentifier}`, () => {
     });
 
     await test.step('Check the answers shown match the entered data', async () => {
+      expect(createCasePage.checkYourAnswersHeading).toBeVisible();
       const table = await caseDetailsPage.trRowsToObjectInPage(createCasePage.checkYourAnswersTable);
       const expected = {
         'Text Field 0': caseData.textField0,
@@ -101,7 +102,7 @@ test.describe(`Create case as ${userIdentifier}`, () => {
     });
   });
 
-  test(`User ${userIdentifier} can create a ${jurisdiction} case with hidden fields that are not shown but sent`, async ({
+  test(`User ${userIdentifier} can create a ${jurisdiction} with hidden and omitted fields`, async ({
     createCasePage,
     caseDetailsPage,
     page,
@@ -134,6 +135,7 @@ test.describe(`Create case as ${userIdentifier}`, () => {
     });
 
     await test.step('Check the answers shown match the entered data', async () => {
+      expect(createCasePage.checkYourAnswersHeading).toBeVisible();
       const table = await caseDetailsPage.trRowsToObjectInPage(createCasePage.checkYourAnswersTable);
       const expected = {
         'Text Field 0': caseData.textField0,
@@ -176,7 +178,60 @@ test.describe(`Create case as ${userIdentifier}`, () => {
     });
   });
 
-  // test(`User ${userIdentifier} can create a ${jurisdiction} case with one hidden field are not shown but sent`, async ({}) => {});
+  test(`User ${userIdentifier} can create a ${jurisdiction} case and navigate back and answers persist`, async ({
+    createCasePage,
+    caseDetailsPage,
+  }) => {
+    await test.step('User fills out the form', async () => {
+      caseData = await createCasePage.generateDivorcePoCData({
+        person1Gender: 'Male',
+        divorceReasons: ['Adultery'],
+      });
 
-  // test(`User ${userIdentifier} can create a ${jurisdiction} case and navigate back using the Change links on check your answers`, async ({}) => {});
+      await createCasePage.genderRadioButtons.filter({ hasText: caseData.person1Gender }).first().click();
+
+      await createCasePage.person1TitleInput.fill(caseData.person1Title);
+      await createCasePage.person1FirstNameInput.fill(caseData.person1FirstName);
+      await createCasePage.person1LastNameInput.fill(caseData.person1LastName);
+      await createCasePage.person1GenderSelect.selectOption(caseData.person1Gender);
+      await createCasePage.person1JobTitleInput.fill(caseData.person1JobTitle);
+      await createCasePage.person1JobDescriptionInput.fill(caseData.person1JobDescription);
+      await createCasePage.clickContinueAndWait('after PoC personal details');
+
+      await createCasePage.textField0Input.fill(caseData.textField0);
+      await createCasePage.textField1Input.fill(caseData.textField1);
+      await createCasePage.textField2Input.fill(caseData.textField2);
+      await createCasePage.textField3Input.fill(caseData.textField3);
+      await createCasePage.selectDivorceReasons(caseData.divorceReasons);
+
+      await createCasePage.clickContinueAndWait('after hidden field details');
+    });
+
+    await test.step('Check the answers shown match the entered data', async () => {
+      expect(createCasePage.checkYourAnswersHeading).toBeVisible();
+      const table = await caseDetailsPage.trRowsToObjectInPage(createCasePage.checkYourAnswersTable);
+      const expected = {
+        'Text Field 0': caseData.textField0,
+        'Text Field 3': caseData.textField3,
+        Title: caseData.person1Title,
+        'First Name': caseData.person1FirstName,
+        'Last Name': caseData.person1LastName,
+        Gender: caseData.person1Gender,
+      };
+
+      const jobSubTable = await caseDetailsPage.trRowsToObjectInPage(createCasePage.checkYourAnswersSubTable);
+      expect(jobSubTable).toMatchObject({ Title: caseData.person1JobTitle, Description: caseData.person1JobDescription });
+      expect(table).toMatchObject(expected);
+    });
+
+    await test.step('Check the answers shown match the entered data', async () => {
+      await createCasePage.checkYourAnswersChangeLinks.first().click();
+      await expect(createCasePage.person1FirstNameInput).toHaveValue(caseData.person1FirstName);
+      await expect(createCasePage.person1LastNameInput).toHaveValue(caseData.person1LastName);
+      await expect(createCasePage.person1TitleInput).toHaveValue(caseData.person1Title);
+      await expect(createCasePage.person1GenderSelect).toHaveValue(caseData.person1Gender);
+      await expect(createCasePage.person1JobTitleInput).toHaveValue(caseData.person1JobTitle);
+      await expect(createCasePage.person1JobDescriptionInput).toHaveValue(caseData.person1JobDescription);
+    });
+  });
 });

@@ -134,6 +134,7 @@ export class CreateCasePage extends Base {
   readonly checkYourAnswersHeading = this.checkYourAnswers.locator('h2');
   readonly checkYourAnswersTable = this.checkYourAnswers.locator('table');
   readonly checkYourAnswersSubTable = this.checkYourAnswersTable.locator('table.complex-panel-table table');
+  readonly checkYourAnswersChangeLinks = this.checkYourAnswers.locator('.case-field-change');
 
   readonly testSubmitButton = this.page.locator('.check-your-answers [type="submit"]');
 

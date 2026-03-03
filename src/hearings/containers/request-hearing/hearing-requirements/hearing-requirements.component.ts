@@ -119,8 +119,6 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
         ? this.serviceHearingValuesModel.caseSLAStartDate
         : moment(new Date()).format('YYYY-MM-DD');
 
-
-    console.log('maybe use this::', this.allAdjustmentFlags)    
     const hearingRequestMainModel: HearingRequestMainModel = {
       hearingDetails: {
         duration: this.serviceHearingValuesModel.duration,

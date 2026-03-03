@@ -3,7 +3,6 @@ import { test, expect } from '../../../E2E/fixtures';
 import { applySessionCookies } from '../../../common/sessionCapture';
 import { routeCaseCreationFlow } from '../../utils/caseCreationRoutes';
 import { TEST_USERS } from '../../testData';
-import { timeout } from 'rxjs';
 
 const userIdentifier = TEST_USERS.SOLICITOR;
 const jurisdiction = 'DIVORCE';
@@ -32,16 +31,16 @@ test.describe(`Create case as ${userIdentifier}`, () => {
   }) => {
     await test.step('User fills out the form', async () => {
       caseData = await createCasePage.generateDivorcePoCData({
-        person1Gender: 'Male',
+        personGender: 'Male',
         divorceReasons: ['Adultery'],
       });
 
-      await createCasePage.genderRadioButtons.filter({ hasText: caseData.person1Gender }).first().click();
+      await createCasePage.genderRadioButtons.filter({ hasText: caseData.personGender }).first().click();
 
-      await createCasePage.person1TitleInput.fill(caseData.person1Title);
-      await createCasePage.person1FirstNameInput.fill(caseData.person1FirstName);
-      await createCasePage.person1LastNameInput.fill(caseData.person1LastName);
-      await createCasePage.person1GenderSelect.selectOption(caseData.person1Gender);
+      await createCasePage.person1TitleInput.fill(caseData.personTitle);
+      await createCasePage.person1FirstNameInput.fill(caseData.personFirstName);
+      await createCasePage.person1LastNameInput.fill(caseData.personLastName);
+      await createCasePage.person1GenderSelect.selectOption(caseData.personGender);
       await createCasePage.person1JobTitleInput.fill(caseData.person1JobTitle);
       await createCasePage.person1JobDescriptionInput.fill(caseData.person1JobDescription);
       await createCasePage.clickContinueAndWait('after PoC personal details');
@@ -93,12 +92,12 @@ test.describe(`Create case as ${userIdentifier}`, () => {
       expect(submittedData.TextField3).toBe(caseData.textField3);
       expect(submittedData.DivorceReason[0]).toEqual(caseData.divorceReasons[0].toLowerCase());
 
-      expect(submittedData.Person1?.Title).toBe(caseData.person1Title);
-      expect(submittedData.Person1?.FirstName).toBe(caseData.person1FirstName);
-      expect(submittedData.Person1?.LastName).toBe(caseData.person1LastName);
-      expect(submittedData.Person1?.PersonGender).toBe(caseData.person1Gender?.toLowerCase());
-      expect(submittedData.Person1?.PersonJob?.Title).toBe(caseData.person1JobTitle);
-      expect(submittedData.Person1?.PersonJob?.Description).toBe(caseData.person1JobDescription);
+      expect(submittedData.Person1?.Title).toBe(caseData.personTitle);
+      expect(submittedData.Person1?.FirstName).toBe(caseData.personFirstName);
+      expect(submittedData.Person1?.LastName).toBe(caseData.personLastName);
+      expect(submittedData.Person1?.PersonGender).toBe(caseData.personGender?.toLowerCase());
+      expect(submittedData.Person1?.PersonJob?.Title).toBe(caseData.personJobTitle);
+      expect(submittedData.Person1?.PersonJob?.Description).toBe(caseData.personJobDescription);
     });
   });
 
@@ -110,19 +109,19 @@ test.describe(`Create case as ${userIdentifier}`, () => {
   }) => {
     await test.step('User fills out the first page of the form', async () => {
       caseData = await createCasePage.generateDivorcePoCData({
-        person1Gender: 'Male',
+        personGender: 'Male',
         textField0: 'Hide all',
         divorceReasons: ['Adultery'],
       });
 
-      await createCasePage.genderRadioButtons.filter({ hasText: caseData.person1Gender }).first().click();
+      await createCasePage.genderRadioButtons.filter({ hasText: caseData.personGender }).first().click();
 
-      await createCasePage.person1TitleInput.fill(caseData.person1Title);
-      await createCasePage.person1FirstNameInput.fill(caseData.person1FirstName);
-      await createCasePage.person1LastNameInput.fill(caseData.person1LastName);
-      await createCasePage.person1GenderSelect.selectOption(caseData.person1Gender);
-      await createCasePage.person1JobTitleInput.fill(caseData.person1JobTitle);
-      await createCasePage.person1JobDescriptionInput.fill(caseData.person1JobDescription);
+      await createCasePage.person1TitleInput.fill(caseData.personTitle);
+      await createCasePage.person1FirstNameInput.fill(caseData.personFirstName);
+      await createCasePage.person1LastNameInput.fill(caseData.personLastName);
+      await createCasePage.person1GenderSelect.selectOption(caseData.personGender);
+      await createCasePage.person1JobTitleInput.fill(caseData.personJobTitle);
+      await createCasePage.person1JobDescriptionInput.fill(caseData.personJobDescription);
       await createCasePage.clickContinueAndWait('after PoC personal details');
 
       await createCasePage.textField0Input.fill(caseData.textField0);
@@ -140,14 +139,14 @@ test.describe(`Create case as ${userIdentifier}`, () => {
       const expected = {
         'Text Field 0': caseData.textField0,
         'Text Field 3': caseData.textField3,
-        Title: caseData.person1Title,
-        'First Name': caseData.person1FirstName,
-        'Last Name': caseData.person1LastName,
-        Gender: caseData.person1Gender,
+        Title: caseData.personTitle,
+        'First Name': caseData.personFirstName,
+        'Last Name': caseData.personLastName,
+        Gender: caseData.personGender,
       };
 
       const jobSubTable = await caseDetailsPage.trRowsToObjectInPage(createCasePage.checkYourAnswersSubTable);
-      expect(jobSubTable).toMatchObject({ Title: caseData.person1JobTitle, Description: caseData.person1JobDescription });
+      expect(jobSubTable).toMatchObject({ Title: caseData.personJobTitle, Description: caseData.personJobDescription });
       expect(table).toMatchObject(expected);
     });
 
@@ -167,12 +166,12 @@ test.describe(`Create case as ${userIdentifier}`, () => {
       expect(submittedData.TextField2).toBe(caseData.textField2);
       expect(submittedData.TextField3).toBe(caseData.textField3);
 
-      expect(submittedData.Person1?.Title).toBe(caseData.person1Title);
-      expect(submittedData.Person1?.FirstName).toBe(caseData.person1FirstName);
-      expect(submittedData.Person1?.LastName).toBe(caseData.person1LastName);
-      expect(submittedData.Person1?.PersonGender).toBe(caseData.person1Gender?.toLowerCase());
-      expect(submittedData.Person1?.PersonJob?.Title).toBe(caseData.person1JobTitle);
-      expect(submittedData.Person1?.PersonJob?.Description).toBe(caseData.person1JobDescription);
+      expect(submittedData.Person1?.Title).toBe(caseData.personTitle);
+      expect(submittedData.Person1?.FirstName).toBe(caseData.personFirstName);
+      expect(submittedData.Person1?.LastName).toBe(caseData.personLastName);
+      expect(submittedData.Person1?.PersonGender).toBe(caseData.personGender?.toLowerCase());
+      expect(submittedData.Person1?.PersonJob?.Title).toBe(caseData.personJobTitle);
+      expect(submittedData.Person1?.PersonJob?.Description).toBe(caseData.personJobDescription);
       expect(submittedData).not.toHaveProperty('DivorceReason');
       expect(submittedData).not.toHaveProperty('TextField1');
     });
@@ -184,18 +183,19 @@ test.describe(`Create case as ${userIdentifier}`, () => {
   }) => {
     await test.step('User fills out the form', async () => {
       caseData = await createCasePage.generateDivorcePoCData({
-        person1Gender: 'Male',
+        personGender: 'Female',
         divorceReasons: ['Adultery'],
       });
 
-      await createCasePage.genderRadioButtons.filter({ hasText: caseData.person1Gender }).first().click();
+      await createCasePage.genderRadioButtons.filter({ hasText: caseData.personGender }).first().click();
 
-      await createCasePage.person1TitleInput.fill(caseData.person1Title);
-      await createCasePage.person1FirstNameInput.fill(caseData.person1FirstName);
-      await createCasePage.person1LastNameInput.fill(caseData.person1LastName);
-      await createCasePage.person1GenderSelect.selectOption(caseData.person1Gender);
-      await createCasePage.person1JobTitleInput.fill(caseData.person1JobTitle);
-      await createCasePage.person1JobDescriptionInput.fill(caseData.person1JobDescription);
+      await createCasePage.person1TitleInput.fill(caseData.personTitle);
+      await createCasePage.person1FirstNameInput.fill(caseData.personFirstName);
+      await createCasePage.person1LastNameInput.fill(caseData.personLastName);
+      await createCasePage.person1GenderSelect.selectOption(caseData.personGender);
+      await createCasePage.person1MaidenNameInput.fill(caseData.personMaidenName);
+      await createCasePage.person1JobTitleInput.fill(caseData.personJobTitle);
+      await createCasePage.person1JobDescriptionInput.fill(caseData.personJobDescription);
       await createCasePage.clickContinueAndWait('after PoC personal details');
 
       await createCasePage.textField0Input.fill(caseData.textField0);
@@ -213,24 +213,24 @@ test.describe(`Create case as ${userIdentifier}`, () => {
       const expected = {
         'Text Field 0': caseData.textField0,
         'Text Field 3': caseData.textField3,
-        Title: caseData.person1Title,
-        'First Name': caseData.person1FirstName,
-        'Last Name': caseData.person1LastName,
-        Gender: caseData.person1Gender,
+        Title: caseData.personTitle,
+        'First Name': caseData.personFirstName,
+        'Last Name': caseData.personLastName,
+        Gender: caseData.personGender,
       };
 
       const jobSubTable = await caseDetailsPage.trRowsToObjectInPage(createCasePage.checkYourAnswersSubTable);
-      expect(jobSubTable).toMatchObject({ Title: caseData.person1JobTitle, Description: caseData.person1JobDescription });
+      expect(jobSubTable).toMatchObject({ Title: caseData.personJobTitle, Description: caseData.personJobDescription });
       expect(table).toMatchObject(expected);
     });
 
     await test.step('Check the answers shown match the entered data', async () => {
       await createCasePage.checkYourAnswersChangeLinks.first().click();
-      await expect(createCasePage.person1FirstNameInput).toHaveValue(caseData.person1FirstName);
-      await expect(createCasePage.person1LastNameInput).toHaveValue(caseData.person1LastName);
-      await expect(createCasePage.person1TitleInput).toHaveValue(caseData.person1Title);
-      await expect(createCasePage.person1GenderSelect).toHaveValue(caseData.person1Gender);
-      await expect(createCasePage.person1JobTitleInput).toHaveValue(caseData.person1JobTitle);
+      await expect(createCasePage.person1FirstNameInput).toHaveValue(caseData.personFirstName);
+      await expect(createCasePage.person1LastNameInput).toHaveValue(caseData.personLastName);
+      await expect(createCasePage.person1TitleInput).toHaveValue(caseData.personTitle);
+      expect(await createCasePage.person1GenderSelect.innerText()).toBe(caseData.personGender);
+      await expect(createCasePage.person1JobTitleInput).toHaveValue(caseData.personJobTitle);
       await expect(createCasePage.person1JobDescriptionInput).toHaveValue(caseData.person1JobDescription);
     });
   });

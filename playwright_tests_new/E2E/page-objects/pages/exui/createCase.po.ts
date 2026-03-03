@@ -8,12 +8,13 @@ import { extractCaseNumberFromUrl } from './caseDetails.po';
 
 export type DivorcePoCData = {
   gender?: string;
-  person1Title?: string;
-  person1FirstName?: string;
-  person1LastName?: string;
-  person1Gender?: string;
-  person1JobTitle?: string;
-  person1JobDescription?: string;
+  personTitle?: string;
+  personFirstName?: string;
+  personLastName?: string;
+  personMaidenName?: string;
+  personGender?: string;
+  personJobTitle?: string;
+  personJobDescription?: string;
   textField0?: string;
   textField1?: string;
   textField2?: string;
@@ -109,6 +110,7 @@ export class CreateCasePage extends Base {
   readonly genderRadioButtons = this.page.locator('#Gender .multiple-choice');
   readonly person1TitleInput = this.page.locator('#Person1_Title');
   readonly person1FirstNameInput = this.page.locator('#Person1_FirstName');
+  readonly person1MaidenNameInput = this.page.locator('#Person1_MaidenName');
   readonly person1LastNameInput = this.page.locator('#Person1_LastName');
   readonly person1GenderSelect = this.page.locator('#Person1_PersonGender');
   readonly person1JobTitleInput = this.page.locator('#Person1_PersonJob_Title');
@@ -116,6 +118,7 @@ export class CreateCasePage extends Base {
   readonly person2 = this.page.locator('#Person2_Person2');
   readonly person2TitleInput = this.page.locator('#Person2_Title');
   readonly person2FirstNameInput = this.page.locator('#Person2_FirstName');
+  readonly person2MaidenNameInput = this.page.locator('#Person2_MaidenName');
   readonly person2LastNameInput = this.page.locator('#Person2_LastName');
   readonly person2GenderSelect = this.page.locator('#Person2_PersonGender');
   readonly person2JobTitleInput = this.page.locator('#Person2_PersonJob_Title');
@@ -1129,12 +1132,12 @@ export class CreateCasePage extends Base {
           await genderRadio.check();
         }
         await this.person1TitleInput.click();
-        await this.person1TitleInput.fill(data?.person1Title ?? faker.person.prefix());
-        await this.person1FirstNameInput.fill(data?.person1FirstName ?? faker.person.firstName());
-        await this.person1LastNameInput.fill(data?.person1LastName ?? faker.person.lastName());
-        await this.person1GenderSelect.selectOption(data?.person1Gender ?? gender);
-        await this.person1JobTitleInput.fill(data?.person1JobTitle ?? faker.person.jobTitle());
-        await this.person1JobDescriptionInput.fill(data?.person1JobDescription ?? faker.lorem.sentence());
+        await this.person1TitleInput.fill(data?.personTitle ?? faker.person.prefix());
+        await this.person1FirstNameInput.fill(data?.personFirstName ?? faker.person.firstName());
+        await this.person1LastNameInput.fill(data?.personLastName ?? faker.person.lastName());
+        await this.person1GenderSelect.selectOption(data?.personGender ?? gender);
+        await this.person1JobTitleInput.fill(data?.personJobTitle ?? faker.person.jobTitle());
+        await this.person1JobDescriptionInput.fill(data?.personJobDescription ?? faker.lorem.sentence());
         const personalDetailsUrl = this.page.url();
         await this.clickContinueAndWait('after PoC personal details');
         await this.ensureWizardAdvanced('after PoC personal details', personalDetailsUrl, {
@@ -1180,12 +1183,13 @@ export class CreateCasePage extends Base {
     const generatedAt = overrides.generatedAt ?? new Date().toISOString();
     return {
       gender,
-      person1Title: overrides.person1Title ?? faker.person.prefix(),
-      person1FirstName: overrides.person1FirstName ?? `${faker.person.firstName()} ${faker.person.middleName()}`,
-      person1LastName: overrides.person1LastName ?? faker.person.lastName(),
-      person1Gender: overrides.person1Gender ?? gender,
-      person1JobTitle: overrides.person1JobTitle ?? faker.person.jobTitle(),
-      person1JobDescription: overrides.person1JobDescription ?? faker.lorem.sentence(),
+      personTitle: overrides.personTitle ?? faker.person.prefix(),
+      personFirstName: overrides.personFirstName ?? `${faker.person.firstName()} ${faker.person.middleName()}`,
+      personMaidenName: overrides.personMaidenName ?? faker.person.lastName(),
+      personLastName: overrides.personLastName ?? faker.person.lastName(),
+      personGender: overrides.personGender ?? gender,
+      personJobTitle: overrides.personJobTitle ?? faker.person.jobTitle(),
+      personJobDescription: overrides.personJobDescription ?? faker.lorem.sentence(),
       textField0: overrides.textField0 ?? faker.lorem.sentence() + faker.date.soon().getTime(),
       textField1: overrides.textField1 ?? faker.lorem.sentence() + faker.date.soon().getTime(),
       textField2: overrides.textField2 ?? faker.lorem.sentence() + faker.date.soon().getTime(),

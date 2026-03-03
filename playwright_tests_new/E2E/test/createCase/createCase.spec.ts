@@ -31,12 +31,12 @@ test.describe('Verify creating cases works as expected', () => {
         'Text Field 2': caseData.textField2,
         'Text Field 3': caseData.textField3,
         'Select your gender': caseData.gender,
-        Title: caseData.person1Title,
-        'First Name': caseData.person1FirstName,
-        'Last Name': caseData.person1LastName,
-        Gender: caseData.person1Gender,
+        Title: caseData.personTitle,
+        'First Name': caseData.personFirstName,
+        'Last Name': caseData.personLastName,
+        Gender: caseData.personGender,
       };
-      const expectedJob = { Title: caseData.person1JobTitle, Description: caseData.person1JobDescription };
+      const expectedJob = { Title: caseData.personJobTitle, Description: caseData.personJobDescription };
 
       const table1 = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.divorceDataTable);
       expect.soft(table1).toMatchObject(expected);

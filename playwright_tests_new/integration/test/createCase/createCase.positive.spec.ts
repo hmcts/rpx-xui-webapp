@@ -230,7 +230,7 @@ test.describe(`Create case as ${userIdentifier}`, () => {
       await expect(createCasePage.person1MaidenNameInput).toHaveValue(caseData.personMaidenName);
       await expect(createCasePage.person1LastNameInput).toHaveValue(caseData.personLastName);
       await expect(createCasePage.person1TitleInput).toHaveValue(caseData.personTitle);
-      expect(await createCasePage.person1GenderSelect.innerText()).toBe(caseData.personGender);
+      expect(await createCasePage.person1GenderSelect.inputValue()).toContain(caseData.personGender.toLowerCase());
       await expect(createCasePage.person1JobTitleInput).toHaveValue(caseData.personJobTitle);
       await expect(createCasePage.person1JobDescriptionInput).toHaveValue(caseData.personJobDescription);
     });

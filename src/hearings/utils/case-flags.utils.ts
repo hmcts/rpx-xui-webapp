@@ -348,6 +348,9 @@ export class CaseFlagsUtils {
     partiesInHMC: PartyDetailsModel[],
     partiesInSHV: PartyDetailsModel[]
   ): PartyFlagsDisplayModel[] {
+    if (!flags || flags.length === 0) {
+      return flags;
+    }
     const partyInHMC = partiesInHMC.find((party) => party.partyID === flags[0].partyId);
     const partyInSHV = partiesInSHV.find((party) => party.partyID === flags[0].partyId);
     for (const flag of flags) {
@@ -358,7 +361,7 @@ export class CaseFlagsUtils {
         continue;
       }
       if (!partyInHMC.individualDetails?.reasonableAdjustments?.includes(flag.flagId)) {
-        if (partyInSHV.individualDetails?.reasonableAdjustments?.includes(flag.flagId)) {
+        if (partyInSHV?.individualDetails?.reasonableAdjustments?.includes(flag.flagId)) {
           flag.flagAmendmentLabelStatus = AmendmentLabelStatus.ACTION_NEEDED;
         } else {
           if (flag.flagId !== this.LANGUAGE_INTERPRETER_FLAG_ID) {

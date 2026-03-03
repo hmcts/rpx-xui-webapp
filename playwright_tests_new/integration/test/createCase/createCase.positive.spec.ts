@@ -41,8 +41,8 @@ test.describe(`Create case as ${userIdentifier}`, () => {
       await createCasePage.person1FirstNameInput.fill(caseData.personFirstName);
       await createCasePage.person1LastNameInput.fill(caseData.personLastName);
       await createCasePage.person1GenderSelect.selectOption(caseData.personGender);
-      await createCasePage.person1JobTitleInput.fill(caseData.person1JobTitle);
-      await createCasePage.person1JobDescriptionInput.fill(caseData.person1JobDescription);
+      await createCasePage.person1JobTitleInput.fill(caseData.personJobTitle);
+      await createCasePage.person1JobDescriptionInput.fill(caseData.personJobDescription);
       await createCasePage.clickContinueAndWait('after PoC personal details');
 
       await createCasePage.textField0Input.fill(caseData.textField0);
@@ -62,16 +62,16 @@ test.describe(`Create case as ${userIdentifier}`, () => {
         'Text Field 1': caseData.textField1,
         'Text Field 2': caseData.textField2,
         'Text Field 3': caseData.textField3,
-        Title: caseData.person1Title,
-        'First Name': caseData.person1FirstName,
-        'Last Name': caseData.person1LastName,
-        Gender: caseData.person1Gender,
-        'Select your gender': caseData.person1Gender,
+        Title: caseData.personTitle,
+        'First Name': caseData.personFirstName,
+        'Last Name': caseData.personLastName,
+        Gender: caseData.personGender,
+        'Select your gender': caseData.personGender,
         'Choose divorce reasons': caseData.divorceReasons.toString().replaceAll(',', ' '),
       };
 
       const jobSubTable = await caseDetailsPage.trRowsToObjectInPage(createCasePage.checkYourAnswersSubTable);
-      expect(jobSubTable).toMatchObject({ Title: caseData.person1JobTitle, Description: caseData.person1JobDescription });
+      expect(jobSubTable).toMatchObject({ Title: caseData.personJobTitle, Description: caseData.personJobDescription });
       expect(table).toMatchObject(expected);
     });
 
@@ -227,11 +227,12 @@ test.describe(`Create case as ${userIdentifier}`, () => {
     await test.step('Check the answers shown match the entered data', async () => {
       await createCasePage.checkYourAnswersChangeLinks.first().click();
       await expect(createCasePage.person1FirstNameInput).toHaveValue(caseData.personFirstName);
+      await expect(createCasePage.person1MaidenNameInput).toHaveValue(caseData.personMaidenName);
       await expect(createCasePage.person1LastNameInput).toHaveValue(caseData.personLastName);
       await expect(createCasePage.person1TitleInput).toHaveValue(caseData.personTitle);
       expect(await createCasePage.person1GenderSelect.innerText()).toBe(caseData.personGender);
       await expect(createCasePage.person1JobTitleInput).toHaveValue(caseData.personJobTitle);
-      await expect(createCasePage.person1JobDescriptionInput).toHaveValue(caseData.person1JobDescription);
+      await expect(createCasePage.person1JobDescriptionInput).toHaveValue(caseData.personJobDescription);
     });
   });
 });

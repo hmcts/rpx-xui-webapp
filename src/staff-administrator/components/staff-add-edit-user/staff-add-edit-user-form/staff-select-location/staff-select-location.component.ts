@@ -10,7 +10,7 @@ import { StaffUserLocation } from '../../../../models/staff-user-location.model'
   standalone: false,
   selector: 'exui-staff-select-location',
   templateUrl: './staff-select-location.component.html',
-  styleUrls: ['./staff-select-location.component.scss']
+  styleUrls: ['./staff-select-location.component.scss'],
 })
 export class StaffSelectLocationComponent implements OnInit {
   @Input() public isPrimaryMode = false;
@@ -29,38 +29,35 @@ export class StaffSelectLocationComponent implements OnInit {
     return this.locationsControl?.value;
   }
 
-  constructor(private readonly refDataService: RefDataService) { }
+  constructor(private readonly refDataService: RefDataService) {}
 
   public ngOnInit() {
-    this.filteredList$ = combineLatest([
-      this.searchTermFormControl.valueChanges.pipe(startWith('')),
-      this.serviceCodes$
-    ]).pipe(
+    this.filteredList$ = combineLatest([this.searchTermFormControl.valueChanges.pipe(startWith('')), this.serviceCodes$]).pipe(
       tap(([term]: [string, string[]]) => {
         if (this.autocompleteSelectedLocation && term !== this.autocompleteSelectedLocation?.venue_name) {
           this.autocompleteSelectedLocation = false;
         }
       }),
-      switchMap(([term, serviceCodes]: [string, string[]]) => iif(
-        () => ((!!term && term.length >= 0) || !this.initialLocationServicesSet),
-        this.refDataService.getLocationsByServiceCodes(
-          serviceCodes
-        ).pipe(
-          // Filter locations by the search input term and the chosen property name
-          map((locations) => locations
-            .filter((location) => location.venue_name.toLowerCase().includes(term.toLowerCase()))),
-          // Filter out locations that are already selected
-          map((locations) => this.filterUnselectedLocations(locations, this.selectedLocations)),
-          // Filter out duplicate locations (by propertyNameFilter)
-          map((locations) => locations.filter((location, index, array) =>
-            index === array.findIndex((item) => item.venue_name === location.venue_name)
-          )),
-          // Give each location a respective list of service codes
-          map((locations) => this.setLocationServiceCodes(locations)),
-        ),
-        // Returns false if the search term is empty to not show the autocomplete field i.e. ngIf should be false
-        of(false)
-      )
+      switchMap(([term, serviceCodes]: [string, string[]]) =>
+        iif(
+          () => (!!term && term.length >= 0) || !this.initialLocationServicesSet,
+          this.refDataService.getLocationsByServiceCodes(serviceCodes).pipe(
+            // Filter locations by the search input term and the chosen property name
+            map((locations) => locations.filter((location) => location.venue_name.toLowerCase().includes(term.toLowerCase()))),
+            // Filter out locations that are already selected
+            map((locations) => this.filterUnselectedLocations(locations, this.selectedLocations)),
+            // Filter out duplicate locations (by propertyNameFilter)
+            map((locations) =>
+              locations.filter(
+                (location, index, array) => index === array.findIndex((item) => item.venue_name === location.venue_name)
+              )
+            ),
+            // Give each location a respective list of service codes
+            map((locations) => this.setLocationServiceCodes(locations))
+          ),
+          // Returns false if the search term is empty to not show the autocomplete field i.e. ngIf should be false
+          of(false)
+        )
       )
     );
   }
@@ -85,7 +82,9 @@ export class StaffSelectLocationComponent implements OnInit {
   }
 
   private getAllServiceCodes(serviceCodes: string[], currentId: string): string[] {
-    const duplicateServiceLocations = this.fullLocations.filter((duplicateLocation) => duplicateLocation.epimms_id === currentId && duplicateLocation.serviceCodes[0] !== serviceCodes[0]);
+    const duplicateServiceLocations = this.fullLocations.filter(
+      (duplicateLocation) => duplicateLocation.epimms_id === currentId && duplicateLocation.serviceCodes[0] !== serviceCodes[0]
+    );
     duplicateServiceLocations.forEach((duplicateLocation) => {
       if (!serviceCodes.includes(duplicateLocation.serviceCodes[0])) {
         serviceCodes.push(duplicateLocation.serviceCodes[0]);
@@ -104,14 +103,12 @@ export class StaffSelectLocationComponent implements OnInit {
         location_id: this.autocompleteSelectedLocation.epimms_id,
         location: this.autocompleteSelectedLocation.venue_name,
         is_primary: this.isPrimaryMode,
-        service_codes: this.autocompleteSelectedLocation.serviceCodes
+        service_codes: this.autocompleteSelectedLocation.serviceCodes,
       };
       // If Primary, we need to remove the other primary location first
       let currentSelectedLocations = this.selectedLocations;
       if (this.isPrimaryMode) {
-        currentSelectedLocations = this.selectedLocations.filter(
-          (selectedLocation) => !selectedLocation.is_primary
-        );
+        currentSelectedLocations = this.selectedLocations.filter((selectedLocation) => !selectedLocation.is_primary);
       }
 
       this.locationsControl.setValue([...currentSelectedLocations, locationToBeAdded]);
@@ -130,11 +127,13 @@ export class StaffSelectLocationComponent implements OnInit {
 
   private filterUnselectedLocations(
     locations: LocationByEpimmsModelWithServiceCodes[],
-    selectedLocations: StaffUserLocation[],
+    selectedLocations: StaffUserLocation[]
   ): LocationByEpimmsModelWithServiceCodes[] {
     this.fullLocations = locations;
     return locations.filter(
-      (location) => !selectedLocations.map((selectedLocation) => selectedLocation.location_id).includes(location.epimms_id) && location.venue_name
+      (location) =>
+        !selectedLocations.map((selectedLocation) => selectedLocation.location_id).includes(location.epimms_id) &&
+        location.venue_name
     );
   }
 }

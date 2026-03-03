@@ -59,9 +59,9 @@ describe('Application', () => {
       // keep it simple and valid for Helmet; object-ness is what matters for the crash
       contentSecurityPolicy: {
         directives: {
-          defaultSrc: ['\'self\''],
-          scriptSrc: ['\'self\'', '\'unsafe-inline\'']
-        }
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'", "'unsafe-inline'"],
+        },
       },
       hsts: { maxAge: 31536000, includeSubDomains: true, preload: true }
     };
@@ -287,9 +287,7 @@ describe('Application', () => {
         const app = await createApp();
 
         const middlewareStack = app._router.stack;
-        const amRoute = middlewareStack.find((layer: any) =>
-          layer.regexp && layer.regexp.test('/am')
-        );
+        const amRoute = middlewareStack.find((layer: any) => layer.regexp && layer.regexp.test('/am'));
 
         expect(amRoute).to.exist;
         expect(amRoute.handle).to.be.a('function');
@@ -306,9 +304,7 @@ describe('Application', () => {
         const app = await createApp();
 
         const middlewareStack = app._router.stack;
-        const apiRoute = middlewareStack.find((layer: any) =>
-          layer.regexp && layer.regexp.test('/api')
-        );
+        const apiRoute = middlewareStack.find((layer: any) => layer.regexp && layer.regexp.test('/api'));
 
         expect(apiRoute).to.exist;
         expect(apiRoute.handle).to.be.a('function');
@@ -325,9 +321,7 @@ describe('Application', () => {
         const app = await createApp();
 
         const middlewareStack = app._router.stack;
-        const externalRoute = middlewareStack.find((layer: any) =>
-          layer.regexp && layer.regexp.test('/external')
-        );
+        const externalRoute = middlewareStack.find((layer: any) => layer.regexp && layer.regexp.test('/external'));
 
         expect(externalRoute).to.exist;
         expect(externalRoute.handle).to.be.a('function');
@@ -344,9 +338,7 @@ describe('Application', () => {
         const app = await createApp();
 
         const middlewareStack = app._router.stack;
-        const workAllocationRoute = middlewareStack.find((layer: any) =>
-          layer.regexp && layer.regexp.test('/workallocation')
-        );
+        const workAllocationRoute = middlewareStack.find((layer: any) => layer.regexp && layer.regexp.test('/workallocation'));
 
         expect(workAllocationRoute).to.exist;
         expect(workAllocationRoute.handle).to.be.a('function');
@@ -389,7 +381,7 @@ describe('Application', () => {
         expect(getConfigValue).to.have.been.calledWith('sessionSecret');
 
         const req = mockReq({
-          headers: { cookie: 'test=value; session=abc123' }
+          headers: { cookie: 'test=value; session=abc123' },
         });
         const res = mockRes();
         const next = sinon.stub();
@@ -414,14 +406,15 @@ describe('Application', () => {
 
         // Verify that helmet middleware is present
         const middlewareStack = app._router.stack;
-        const helmetMiddleware = middlewareStack.filter((layer: any) =>
-          layer.handle && layer.handle.name && (
-            layer.handle.name.includes('helmet') ||
-            layer.handle.name === 'hidePoweredBy' ||
-            layer.handle.name === 'noSniff' ||
-            layer.handle.name === 'frameguard' ||
-            layer.handle.name === 'xssFilter'
-          )
+        const helmetMiddleware = middlewareStack.filter(
+          (layer: any) =>
+            layer.handle &&
+            layer.handle.name &&
+            (layer.handle.name.includes('helmet') ||
+              layer.handle.name === 'hidePoweredBy' ||
+              layer.handle.name === 'noSniff' ||
+              layer.handle.name === 'frameguard' ||
+              layer.handle.name === 'xssFilter')
         );
 
         expect(helmetMiddleware.length).to.be.greaterThan(0);
@@ -440,14 +433,15 @@ describe('Application', () => {
         expect(app.get('X-Powered-By')).to.not.be.false;
 
         const middlewareStack = app._router.stack;
-        const helmetMiddleware = middlewareStack.filter((layer: any) =>
-          layer.handle && layer.handle.name && (
-            layer.handle.name.includes('helmet') ||
-            layer.handle.name === 'hidePoweredBy' ||
-            layer.handle.name === 'noSniff' ||
-            layer.handle.name === 'frameguard' ||
-            layer.handle.name === 'xssFilter'
-          )
+        const helmetMiddleware = middlewareStack.filter(
+          (layer: any) =>
+            layer.handle &&
+            layer.handle.name &&
+            (layer.handle.name.includes('helmet') ||
+              layer.handle.name === 'hidePoweredBy' ||
+              layer.handle.name === 'noSniff' ||
+              layer.handle.name === 'frameguard' ||
+              layer.handle.name === 'xssFilter')
         );
 
         expect(helmetMiddleware.length).to.equal(0);
@@ -488,7 +482,7 @@ describe('Application', () => {
             header: sinon.spy(),
             setHeader: sinon.spy(),
             type: sinon.spy(),
-            send: sinon.spy()
+            send: sinon.spy(),
           };
           nextSpy = sinon.spy();
         });
@@ -526,9 +520,7 @@ describe('Application', () => {
           const robotsReq = { url: '/robots.txt', method: 'GET' };
 
           const middlewareStack = app._router.stack;
-          const robotsRoute = middlewareStack.find((layer: any) =>
-            layer.route && layer.route.path === '/robots.txt'
-          );
+          const robotsRoute = middlewareStack.find((layer: any) => layer.route && layer.route.path === '/robots.txt');
 
           expect(robotsRoute).to.exist;
 
@@ -542,9 +534,7 @@ describe('Application', () => {
           const sitemapReq = { url: '/sitemap.xml', method: 'GET' };
 
           const middlewareStack = app._router.stack;
-          const sitemapRoute = middlewareStack.find((layer: any) =>
-            layer.route && layer.route.path === '/sitemap.xml'
-          );
+          const sitemapRoute = middlewareStack.find((layer: any) => layer.route && layer.route.path === '/sitemap.xml');
 
           expect(sitemapRoute).to.exist;
 
@@ -561,12 +551,8 @@ describe('Application', () => {
 
           const middlewareStack = appWithoutHelmet._router.stack;
 
-          const robotsRoute = middlewareStack.find((layer: any) =>
-            layer.route && layer.route.path === '/robots.txt'
-          );
-          const sitemapRoute = middlewareStack.find((layer: any) =>
-            layer.route && layer.route.path === '/sitemap.xml'
-          );
+          const robotsRoute = middlewareStack.find((layer: any) => layer.route && layer.route.path === '/robots.txt');
+          const sitemapRoute = middlewareStack.find((layer: any) => layer.route && layer.route.path === '/sitemap.xml');
 
           expect(robotsRoute).to.not.exist;
           expect(sitemapRoute).to.not.exist;

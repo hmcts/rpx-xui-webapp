@@ -8,7 +8,7 @@ import * as fromFeature from '../../store';
 @Component({
   standalone: false,
   selector: 'exui-noc-error',
-  templateUrl: 'noc-error.component.html'
+  templateUrl: 'noc-error.component.html',
 })
 export class NocErrorComponent implements OnChanges {
   @Input() public navEvent: NocNavigation;
@@ -17,7 +17,7 @@ export class NocErrorComponent implements OnChanges {
   constructor(private readonly store: Store<fromFeature.State>) {
     this.navEvent = {
       event: null,
-      timestamp: null
+      timestamp: null,
     };
   }
 

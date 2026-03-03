@@ -1,22 +1,16 @@
-
 const BookingDataModel = require('../../dataModels/bookings');
-class BookingsData{
-  constructor(){
+class BookingsData {
+  constructor() {
     this.bookingResponse = [];
     this.allLocations = [];
-    this.setUpBookings([
-      { appointmentId: '100' },
-      { appointmentId: '101' },
-      { appointmentId: '102' },
-      { appointmentId: '103' }
-    ]);
+    this.setUpBookings([{ appointmentId: '100' }, { appointmentId: '101' }, { appointmentId: '102' }, { appointmentId: '103' }]);
   }
 
-  getBookings(){
+  getBookings() {
     return this.bookingResponse;
   }
 
-  setupLocations(inputLocations){
+  setupLocations(inputLocations) {
     this.allLocations = inputLocations.map((location) => {
       const locationModel = BookingDataModel.getLocationDetails();
       for (const locationKey of Object.keys(location)) {
@@ -26,17 +20,17 @@ class BookingsData{
     });
   }
 
-  setUpBookings(bookings){
+  setUpBookings(bookings) {
     this.bookingResponse = bookings.map((booking) => {
       const bookingModel = BookingDataModel.getBooking();
-      for (const bookingKey of Object.keys(booking)){
+      for (const bookingKey of Object.keys(booking)) {
         bookingModel[bookingKey] = booking[bookingKey];
       }
       return bookingModel;
     });
   }
 
-  updateAllLocationsFromBookings(){
+  updateAllLocationsFromBookings() {
     const locationIds = this.bookingResponse.bookings.map((booking) => booking.base_location_id);
     this.allLocations = locationIds.map((locationId) => {
       const locationDetailsTemplate = BookingDataModel.getLocationDetails();
@@ -45,7 +39,7 @@ class BookingsData{
     });
   }
 
-  getAllLocationDetails(){
+  getAllLocationDetails() {
     return this.allLocations;
   }
 }

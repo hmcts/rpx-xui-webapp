@@ -1,8 +1,10 @@
 const { elementsByXpath, getText } = require('../../../../../helpers/globals');
 
-class PartyCaseFlags{
+class PartyCaseFlags {
   async getPartiesWithCaseFlagsDisplayed() {
-    const partiesElements = elementsByXpath('//table[contains(@class,\'govuk-table\')]//th[contains(@class,\'govuk-table__header_name\')]');
+    const partiesElements = elementsByXpath(
+      "//table[contains(@class,'govuk-table')]//th[contains(@class,'govuk-table__header_name')]"
+    );
     const count = await partiesElements.count();
     const partNames = [];
     for (let i = 0; i < count; i++) {

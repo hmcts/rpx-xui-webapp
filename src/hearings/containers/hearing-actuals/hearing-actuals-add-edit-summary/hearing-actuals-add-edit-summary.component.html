@@ -3,9 +3,13 @@
 </xuilib-hmcts-error-summary>
 <xuilib-hmcts-error-summary [errorMessages]="serverErrors" [header]="'There is a problem' | rpxTranslate" *ngIf="errors$ | async">
 </xuilib-hmcts-error-summary>
-<div class="govuk-notification-banner govuk-notification-banner--success" role="alert"
-  aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner"
-  *ngIf="validationErrors.length == 0 && successBanner">
+<div
+  class="govuk-notification-banner govuk-notification-banner--success"
+  role="alert"
+  aria-labelledby="govuk-notification-banner-title"
+  data-module="govuk-notification-banner"
+  *ngIf="validationErrors.length == 0 && successBanner"
+>
   <div class="govuk-notification-banner__header">
     <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
       {{ 'Success' | rpxTranslate }}
@@ -22,49 +26,55 @@
     <dl class="govuk-summary-list">
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Case Reference</dt>
-        <dd class="govuk-summary-list__value">{{hearingActualsCaseRef | caseReference}}</dd>
+        <dd class="govuk-summary-list__value">{{ hearingActualsCaseRef | caseReference }}</dd>
       </div>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">Hearing Id</dt>
-        <dd class="govuk-summary-list__value">{{hearingRequestID}}</dd>
+        <dd class="govuk-summary-list__value">{{ hearingRequestID }}</dd>
       </div>
       <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">{{getHearingDateText()}}</dt>
-        <dd class="govuk-summary-list__value">{{hearingDateRange}}</dd>
+        <dt class="govuk-summary-list__key">{{ getHearingDateText() }}</dt>
+        <dd class="govuk-summary-list__value">{{ hearingDateRange }}</dd>
       </div>
       <div class="govuk-summary-list__row">
         <dt class="govuk-summary-list__key">{{ 'Paper hearing' | rpxTranslate }}</dt>
-        <dd class="govuk-summary-list__value">{{ 'Paper hearing' | rpxTranslate : null : isPaperHearing ? 'Yes' : 'No' }}</dd>
+        <dd class="govuk-summary-list__value">{{ 'Paper hearing' | rpxTranslate: null : (isPaperHearing ? 'Yes' : 'No') }}</dd>
       </div>
       <div class="govuk-summary-list__row govuk-summary-list__row--no-actions" *ngIf="!isPaperHearing">
         <dt class="govuk-summary-list__key">{{ 'Hearing methods' | rpxTranslate }}</dt>
-        <dd class="govuk-summary-list__value" [innerHtml]="answerSource.HOW_PARTICIPANTS_ATTEND | transformAnswer:hearingState$ | async">
-        </dd>
+        <dd
+          class="govuk-summary-list__value"
+          [innerHtml]="answerSource.HOW_PARTICIPANTS_ATTEND | transformAnswer: hearingState$ | async"
+        ></dd>
       </div>
     </dl>
-    <br>
+    <br />
 
     <h1 class="govuk-heading-m" id="hearingStageResult">{{ 'Hearing stage and result' | rpxTranslate }}</h1>
     <span class="govuk-body align-right">
-      <a [routerLink]="['/', 'hearings', 'actuals', id, 'hearing-stage-result']"
-        id="hearing-stage-result-update-link" class="govuk-link">{{ 'Update' | rpxTranslate }}</a>
+      <a
+        [routerLink]="['/', 'hearings', 'actuals', id, 'hearing-stage-result']"
+        id="hearing-stage-result-update-link"
+        class="govuk-link"
+        >{{ 'Update' | rpxTranslate }}</a
+      >
     </span>
     <div class="govuk-error-message" *ngIf="hearingStageResultErrorMessage !== ''">
-      {{hearingStageResultErrorMessage | rpxTranslate }}
+      {{ hearingStageResultErrorMessage | rpxTranslate }}
     </div>
-    <div [ngClass]="{'govuk-form-group govuk-form-group--error': hearingStageResultErrorMessage !== ''}">
+    <div [ngClass]="{ 'govuk-form-group govuk-form-group--error': hearingStageResultErrorMessage !== '' }">
       <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">{{ 'Hearing stage' | rpxTranslate }}</dt>
-          <dd class="govuk-summary-list__value">{{hearingTypeDescription}}</dd>
+          <dd class="govuk-summary-list__value">{{ hearingTypeDescription }}</dd>
         </div>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">{{ 'Hearing result' | rpxTranslate }}</dt>
-          <dd class="govuk-summary-list__value">{{hearingResult}}</dd>
+          <dd class="govuk-summary-list__value">{{ hearingResult }}</dd>
         </div>
       </dl>
     </div>
-    <br>
+    <br />
     <h1 class="govuk-heading-m" id="hearingDate">{{ 'Hearing date(s)' | rpxTranslate }}</h1>
   </div>
 </div>
@@ -73,80 +83,118 @@
   <div class="govuk-grid-column-two-thirds">
     <div *ngIf="actualHearingDays">
       <div id="actual-hearing-dates">
-        <details *ngFor="let actualHearingDay of actualHearingDays; let i = index" class="govuk-details"
-          data-module="govuk-details" [open]="hearingDatesAccordion[actualHearingDay.hearingDate]">
-          <summary class="govuk-details__summary"
-            (click)="$event.preventDefault(); hearingDatesAccordion[actualHearingDay.hearingDate] = !hearingDatesAccordion[actualHearingDay.hearingDate]">
+        <details
+          *ngFor="let actualHearingDay of actualHearingDays; let i = index"
+          class="govuk-details"
+          data-module="govuk-details"
+          [open]="hearingDatesAccordion[actualHearingDay.hearingDate]"
+        >
+          <summary
+            class="govuk-details__summary"
+            (click)="
+              $event.preventDefault();
+              hearingDatesAccordion[actualHearingDay.hearingDate] = !hearingDatesAccordion[actualHearingDay.hearingDate]
+            "
+          >
             <div class="govuk-details__summary-text govuk-!-padding-bottom-1">
-              {{actualHearingDay?.hearingStartTime | ccdDate: 'local' | date: "dd MMMM yyyy"}}
+              {{ actualHearingDay?.hearingStartTime | ccdDate: 'local' | date: 'dd MMMM yyyy' }}
             </div>
             <ng-container *ngIf="!hearingIsInFuture(actualHearingDay.hearingDate)">
               <div class="govuk-tag" [class.govuk-tag--grey]="!isDetailsProvidedForDay(actualHearingDay)">
-                {{isDetailsProvidedForDay(actualHearingDay) ? 'DETAILS PROVIDED' : 'AWAITING CONFIRMATION' | rpxTranslate}}
+                {{ isDetailsProvidedForDay(actualHearingDay) ? 'DETAILS PROVIDED' : ('AWAITING CONFIRMATION' | rpxTranslate) }}
               </div>
             </ng-container>
             <ng-container *ngIf="hearingIsInFuture(actualHearingDay.hearingDate)">
-              <div class="govuk-tag" [class.govuk-tag--grey]="!isDetailsProvidedForDay(actualHearingDay)">
-                FUTURE HEARING DAY
-              </div>
+              <div class="govuk-tag" [class.govuk-tag--grey]="!isDetailsProvidedForDay(actualHearingDay)">FUTURE HEARING DAY</div>
             </ng-container>
           </summary>
 
           <div class="govuk-details__text listing-info">
             <dl class="govuk-summary-list govuk-!-margin-bottom-0 govuk-!-padding-right-2">
               <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key ">{{ 'Was this hearing day required?' | rpxTranslate }}</dt>
+                <dt class="govuk-summary-list__key">{{ 'Was this hearing day required?' | rpxTranslate }}</dt>
                 <dd class="govuk-summary-list__value">
                   <div>
-                    {{ 'Was this hearing day required?' | rpxTranslate :  null : actualHearingDay.notRequired ? 'No' : 'Yes' }}
+                    {{ 'Was this hearing day required?' | rpxTranslate: null : (actualHearingDay.notRequired ? 'No' : 'Yes') }}
                   </div>
                 </dd>
                 <dd class="govuk-summary-list__actions">
                   <ng-container *ngIf="!hearingIsInFuture(actualHearingDay.hearingDate)">
-                    <button type="button" id="hearing-stage-result-change-link" class="govuk-js-link"
-                      (click)="changeWasThisHearingDayRequired(actualHearingDay)">{{ 'Change' | rpxTranslate }}</button>
+                    <button
+                      type="button"
+                      id="hearing-stage-result-change-link"
+                      class="govuk-js-link"
+                      (click)="changeWasThisHearingDayRequired(actualHearingDay)"
+                    >
+                      {{ 'Change' | rpxTranslate }}
+                    </button>
                   </ng-container>
                 </dd>
               </div>
               <ng-container *ngIf="!actualHearingDay.notRequired">
-                <br>
+                <br />
                 <div class="hearing-table-row">
                   <div class="govuk-summary-list__row">
                     <div class="govuk-summary-list__key">
                       <h2 class="govuk-heading-m govuk-!-margin-bottom-0">{{ 'Hearing timings' | rpxTranslate }}</h2>
                     </div>
                     <dd class="govuk-summary-list__value"></dd>
-                      <dd class="govuk-summary-list__actions">
-                        <ng-container *ngIf="!hearingIsInFuture(actualHearingDay.hearingDate)">
-                          <button type="button" (click)="confirmActualHearingTimeForDay(actualHearingDay)"
-                            id="hearing-timing-result-confirm-link" class="govuk-js-link">{{ 'Confirm' | rpxTranslate }}</button>&nbsp;
-                          <a [routerLink]="['/', 'hearings', 'actuals' , id, 'hearing-timing', actualHearingDay.hearingDate]"
-                            class="govuk-link">{{ 'Update' | rpxTranslate }}</a>
-                        </ng-container>
-                      </dd>
+                    <dd class="govuk-summary-list__actions">
+                      <ng-container *ngIf="!hearingIsInFuture(actualHearingDay.hearingDate)">
+                        <button
+                          type="button"
+                          (click)="confirmActualHearingTimeForDay(actualHearingDay)"
+                          id="hearing-timing-result-confirm-link"
+                          class="govuk-js-link"
+                        >
+                          {{ 'Confirm' | rpxTranslate }}</button
+                        >&nbsp;
+                        <a
+                          [routerLink]="['/', 'hearings', 'actuals', id, 'hearing-timing', actualHearingDay.hearingDate]"
+                          class="govuk-link"
+                          >{{ 'Update' | rpxTranslate }}</a
+                        >
+                      </ng-container>
+                    </dd>
                   </div>
                   <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">{{ 'Start time' | rpxTranslate }}</dt>
-                    <dd class="govuk-summary-list__value">{{actualHearingUtils.formatTime(actualHearingDay.hearingStartTime | ccdDate: 'local')}}</dd>
+                    <dd class="govuk-summary-list__value">
+                      {{ actualHearingUtils.formatTime(actualHearingDay.hearingStartTime | ccdDate: 'local') }}
+                    </dd>
                     <dd class="govuk-summary-list__actions"></dd>
                   </div>
                   <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">{{ 'Finish time' | rpxTranslate }}</dt>
-                    <dd class="govuk-summary-list__value">{{actualHearingUtils.formatTime(actualHearingDay.hearingEndTime | ccdDate: 'local')}}</dd>
+                    <dd class="govuk-summary-list__value">
+                      {{ actualHearingUtils.formatTime(actualHearingDay.hearingEndTime | ccdDate: 'local') }}
+                    </dd>
                     <dd class="govuk-summary-list__actions"></dd>
                   </div>
                   <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">{{ 'Pause time' | rpxTranslate }}</dt>
-                    <dd class="govuk-summary-list__value">{{actualHearingUtils.formatTime(actualHearingUtils.getPauseDateTime(actualHearingDay, 'start') | ccdDate: 'local')}}</dd>
+                    <dd class="govuk-summary-list__value">
+                      {{
+                        actualHearingUtils.formatTime(
+                          actualHearingUtils.getPauseDateTime(actualHearingDay, 'start') | ccdDate: 'local'
+                        )
+                      }}
+                    </dd>
                     <dd class="govuk-summary-list__actions"></dd>
                   </div>
                   <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">{{ 'Resume time' | rpxTranslate }}</dt>
-                    <dd class="govuk-summary-list__value">{{actualHearingUtils.formatTime(actualHearingUtils.getPauseDateTime(actualHearingDay, 'end') | ccdDate: 'local')}}</dd>
+                    <dd class="govuk-summary-list__value">
+                      {{
+                        actualHearingUtils.formatTime(
+                          actualHearingUtils.getPauseDateTime(actualHearingDay, 'end') | ccdDate: 'local'
+                        )
+                      }}
+                    </dd>
                     <dd class="govuk-summary-list__actions"></dd>
                   </div>
                 </div>
-                <br>
+                <br />
                 <div class="hearing-table-row">
                   <div class="govuk-summary-list__row">
                     <div class="govuk-summary-list__key">
@@ -156,11 +204,21 @@
                     <ng-container *ngIf="!actualHearingDay.notRequired">
                       <dd class="govuk-summary-list__actions">
                         <ng-container *ngIf="!hearingIsInFuture(actualHearingDay.hearingDate)">
-                          <button type="button" (click)="confirmActualPartiesForDay(actualHearingDay)" *ngIf="!haveParticipantsBeenAdded((actualHearingDay))"
-                            id="hearing-parties-result-confirm-link" class="govuk-js-link">{{ 'Confirm' | rpxTranslate }}</button>&nbsp;
-                          <a *ngIf="!isPaperHearing"
+                          <button
+                            type="button"
+                            (click)="confirmActualPartiesForDay(actualHearingDay)"
+                            *ngIf="!haveParticipantsBeenAdded(actualHearingDay)"
+                            id="hearing-parties-result-confirm-link"
+                            class="govuk-js-link"
+                          >
+                            {{ 'Confirm' | rpxTranslate }}</button
+                          >&nbsp;
+                          <a
+                            *ngIf="!isPaperHearing"
                             [routerLink]="['/', 'hearings', 'actuals', id, 'actuals-parties', actualHearingDay.hearingDate]"
-                            class="govuk-link">{{ 'Update' | rpxTranslate }}</a>
+                            class="govuk-link"
+                            >{{ 'Update' | rpxTranslate }}</a
+                          >
                         </ng-container>
                       </dd>
                     </ng-container>
@@ -169,9 +227,10 @@
                     <dt class="govuk-summary-list__key">{{ 'Names' | rpxTranslate }}</dt>
                     <dd class="govuk-summary-list__value">
                       <div
-                        *ngFor="let party of actualHearingUtils.getParties(hearingActualsMainModel, actualHearingDay.hearingDate)">
+                        *ngFor="let party of actualHearingUtils.getParties(hearingActualsMainModel, actualHearingDay.hearingDate)"
+                      >
                         <span *ngIf="party.individualDetails">
-                          {{party.individualDetails.firstName}} {{party.individualDetails.lastName}}
+                          {{ party.individualDetails.firstName }} {{ party.individualDetails.lastName }}
                         </span>
                       </div>
                     </dd>
@@ -182,27 +241,42 @@
                       <dt class="govuk-summary-list__key">{{ 'How participants will attend' | rpxTranslate }}</dt>
                       <dd class="govuk-summary-list__value">
                         <div
-                          *ngFor="let party of actualHearingUtils.getParties(hearingActualsMainModel, actualHearingDay.hearingDate)">
+                          *ngFor="
+                            let party of actualHearingUtils.getParties(hearingActualsMainModel, actualHearingDay.hearingDate)
+                          "
+                        >
                           <span *ngIf="party.individualDetails">
-                            {{party.individualDetails.firstName}} {{party.individualDetails.lastName}}:
-                            {{party.partyChannelSubType | convertToValue: partyChannels}}
+                            {{ party.individualDetails.firstName }} {{ party.individualDetails.lastName }}:
+                            {{ party.partyChannelSubType | convertToValue: partyChannels }}
                           </span>
                         </div>
                       </dd>
                       <dd class="govuk-summary-list__actions"></dd>
                     </div>
-                    <div class="govuk-summary-list__row"
-                      *ngFor="let attendee of actualHearingUtils.getAttendees(hearingActualsMainModel, actualHearingDay.hearingDate); let i = index;">
-                      <dt class="govuk-summary-list__key">{{ 'Attendee' | rpxTranslate }} {{i + 1}}</dt>
+                    <div
+                      class="govuk-summary-list__row"
+                      *ngFor="
+                        let attendee of actualHearingUtils.getAttendees(hearingActualsMainModel, actualHearingDay.hearingDate);
+                        let i = index
+                      "
+                    >
+                      <dt class="govuk-summary-list__key">{{ 'Attendee' | rpxTranslate }} {{ i + 1 }}</dt>
                       <dd class="govuk-summary-list__value">
-                        Role: {{attendee.partyRole | convertToValue: hearingRoles}}<br>
-                        First name: {{attendee.individualDetails.firstName}}<br>
-                        Last name: {{attendee.individualDetails.lastName}}<br>
-                        Organisation: {{attendee.actualOrganisationName}}<br>
-                        Attendee Type: {{attendee.partyChannelSubType | convertToValue: partyChannels}} <br>
-                        Attendee representing: {{attendee.representedParty &&
-                        actualHearingUtils.getRepresentingAttendee(attendee.representedParty, hearingActualsMainModel,
-                        actualHearingDay.hearingDate) || "N/A"}}
+                        Role: {{ attendee.partyRole | convertToValue: hearingRoles }}<br />
+                        First name: {{ attendee.individualDetails.firstName }}<br />
+                        Last name: {{ attendee.individualDetails.lastName }}<br />
+                        Organisation: {{ attendee.actualOrganisationName }}<br />
+                        Attendee Type: {{ attendee.partyChannelSubType | convertToValue: partyChannels }} <br />
+                        Attendee representing:
+                        {{
+                          (attendee.representedParty &&
+                            actualHearingUtils.getRepresentingAttendee(
+                              attendee.representedParty,
+                              hearingActualsMainModel,
+                              actualHearingDay.hearingDate
+                            )) ||
+                            'N/A'
+                        }}
                       </dd>
                       <dd class="govuk-summary-list__actions"></dd>
                     </div>

@@ -1,7 +1,7 @@
 const CucumberReporter = require('./reportLogger');
 const BrowserLogs = require('./browserLogs');
-class BrowserWaits{
-  constructor(){
+class BrowserWaits {
+  constructor() {
     this.waitTime = 45000;
     this.pageErrors = $$('.error-summary');
     this.retriesCount = 3;
@@ -9,61 +9,79 @@ class BrowserWaits{
     this.logLevel = 'DEBUG';
   }
 
-  setLoglevelINFO(){
+  setLoglevelINFO() {
     this.logLevel = 'INFO';
   }
 
-  setDefaultWaitTime(defaultWait){
+  setDefaultWaitTime(defaultWait) {
     this.waitTime = defaultWait;
   }
 
-  setRetryCount(count){
+  setRetryCount(count) {
     this.retriesCount = count;
   }
 
-  async waitForSeconds(waitInSec){
+  async waitForSeconds(waitInSec) {
     await browser.sleep(waitInSec);
   }
 
   async waitForElementTime(element, waitTime) {
-    await browser.wait(EC.presenceOf(element), waitTime ? waitTime : 10000, 'Error waitForElementTime : ' + element.locator().toString());
+    await browser.wait(
+      EC.presenceOf(element),
+      waitTime ? waitTime : 10000,
+      'Error waitForElementTime : ' + element.locator().toString()
+    );
   }
 
-  async waitForElement(element, message, waitForSeconds){
+  async waitForElement(element, message, waitForSeconds) {
     const startTime = Date.now();
-    CucumberReporter.AddMessage('starting wait for element max in sec ' + this.waitTime / 1000 + ' : ' + element.locator().toString());
-    await browser.wait(EC.visibilityOf(element), waitForSeconds ? waitForSeconds * 1000 : this.waitTime, 'Error waitForElement : '+element.locator().toString() + ' => '+message);
+    CucumberReporter.AddMessage(
+      'starting wait for element max in sec ' + this.waitTime / 1000 + ' : ' + element.locator().toString()
+    );
+    await browser.wait(
+      EC.visibilityOf(element),
+      waitForSeconds ? waitForSeconds * 1000 : this.waitTime,
+      'Error waitForElement : ' + element.locator().toString() + ' => ' + message
+    );
     CucumberReporter.AddMessage('wait done in sec ' + (Date.now() - startTime) / 1000);
   }
 
-  async waitForPresenceOfElement(element){
+  async waitForPresenceOfElement(element) {
     await browser.wait(EC.presenceOf(element), this.waitTime, 'Error waitForPresenceOfElement : ' + element.locator().toString());
   }
 
   async waitForElementClickable(element, waitInSec) {
     const startTime = Date.now();
     const waitTimeInMilliSec = waitInSec ? waitInSec * 1000 : this.waitTime;
-    CucumberReporter.AddMessage('starting wait for element clickable max in sec ' + waitTimeInMilliSec+ ' : ' + element.locator().toString());
+    CucumberReporter.AddMessage(
+      'starting wait for element clickable max in sec ' + waitTimeInMilliSec + ' : ' + element.locator().toString()
+    );
     try {
-      await browser.wait(EC.elementToBeClickable(element), waitTimeInMilliSec, 'Error waitForElementClickable : ' + element.locator().toString());
-    } catch (err){
-      CucumberReporter.AddMessage(`Wait for element clikable failed ${element.locator().toString()}, not throwing exception to let test fail in next step if required state not met`);
+      await browser.wait(
+        EC.elementToBeClickable(element),
+        waitTimeInMilliSec,
+        'Error waitForElementClickable : ' + element.locator().toString()
+      );
+    } catch (err) {
+      CucumberReporter.AddMessage(
+        `Wait for element clikable failed ${element.locator().toString()}, not throwing exception to let test fail in next step if required state not met`
+      );
     }
     CucumberReporter.AddMessage('wait done in sec ' + (Date.now() - startTime) / 1000);
   }
 
-  async waitForCondition(condition, message){
+  async waitForCondition(condition, message) {
     await this.waitForConditionAsync(condition, this.waitTime, message);
   }
 
-  async waitForConditionAsync(condition, waitInMillisec, waitMessage){
+  async waitForConditionAsync(condition, waitInMillisec, waitMessage) {
     const waitForMillisec = waitInMillisec ? waitInMillisec : this.waitTime;
     await new Promise((resolve, reject) => {
       const conditionCheckInterval = setInterval(async () => {
         let isConditionMet = false;
         try {
           isConditionMet = await condition();
-        } catch (err){
+        } catch (err) {
           CucumberReporter.AddMessage('Error waiting for condition ' + err.stack);
         }
         if (isConditionMet) {
@@ -74,7 +92,9 @@ class BrowserWaits{
 
       setTimeout(() => {
         clearInterval(conditionCheckInterval);
-        reject(new Error(`wait condition not satisfied after total wait time ${waitForMillisec} : ${waitMessage ? waitMessage : ''}`));
+        reject(
+          new Error(`wait condition not satisfied after total wait time ${waitForMillisec} : ${waitMessage ? waitMessage : ''}`)
+        );
       }, waitForMillisec);
     });
   }
@@ -84,22 +104,31 @@ class BrowserWaits{
     await browser.wait(EC.presenceOf($(selector)), this.waitTime, 'Error find element with selector: ' + selector);
   }
 
-  async waitForstalenessOf(element){
+  async waitForstalenessOf(element) {
     await browser.wait(EC.stalenessOf(element), this.waitTime);
   }
 
   async waitForPageNavigation(currentPageUrl) {
     let nextPage = '';
     let pageErrors = '';
-    await browser.wait(async () => {
-      nextPage = await browser.getCurrentUrl();
+    await browser.wait(
+      async () => {
+        nextPage = await browser.getCurrentUrl();
 
-      for (let errorMsgCounter = 0; errorMsgCounter < this.pageErrors.length; errorMsgCounter++){
-        pageErrors = pageErrors + ' | '+ this.pageErrors[errorMsgCounter].getText();
-      }
+        for (let errorMsgCounter = 0; errorMsgCounter < this.pageErrors.length; errorMsgCounter++) {
+          pageErrors = pageErrors + ' | ' + this.pageErrors[errorMsgCounter].getText();
+        }
 
-      return currentPageUrl !== nextPage;
-    }, this.waitTime, 'Navigation to next page taking too long ' + this.waitTime + '. Current page ' + currentPageUrl + '. Errors => ' + pageErrors);
+        return currentPageUrl !== nextPage;
+      },
+      this.waitTime,
+      'Navigation to next page taking too long ' +
+        this.waitTime +
+        '. Current page ' +
+        currentPageUrl +
+        '. Errors => ' +
+        pageErrors
+    );
     return await browser.getCurrentUrl();
   }
 
@@ -147,34 +176,36 @@ class BrowserWaits{
     let error = null;
     while (retryCounter <= this.retriesCount) {
       CucumberReporter.AddMessage(`Sleeping for ${retryCounter * 2}sec before performing action.`);
-      await this.waitForSeconds(retryCounter*2);
+      await this.waitForSeconds(retryCounter * 2);
 
       try {
         const retVal = await callback();
         isSuccess = true;
         return retVal;
       } catch (err) {
-        if (this.logLevel === 'DEBUG'){
+        if (this.logLevel === 'DEBUG') {
           await BrowserLogs.printBrowserLogs();
         }
-        CucumberReporter.AddMessage(`Actions success Condition ${actionMessage ? actionMessage : ''} failed ${err.message} ${err.stack}. `);
+        CucumberReporter.AddMessage(
+          `Actions success Condition ${actionMessage ? actionMessage : ''} failed ${err.message} ${err.stack}. `
+        );
 
         error = err;
 
         const currentRoute = await browser.getCurrentUrl();
-        if (currentRoute.includes('service-down')){
+        if (currentRoute.includes('service-down')) {
           throw new Error('Generic system error displayed: "Sorry, there is a problem with the service"');
         }
       }
       retryCounter += 1;
       CucumberReporter.AddMessage(`************** [ Retrying attempt ${retryCounter}. ] **************`);
     }
-    if (!isSuccess){
+    if (!isSuccess) {
       throw new Error(`Action failed to meet success condition after ${this.retriesCount} retry attempts.`, error.stack);
     }
   }
 
-  async waitForSpinnerToDissappear(){
+  async waitForSpinnerToDissappear() {
     await this.waitForCondition(async () => {
       const isSpinnerPresent = await $('div.spinner-container').isPresent();
       CucumberReporter.AddMessage('Waiting for spinner to dissappear.');
@@ -183,4 +214,4 @@ class BrowserWaits{
   }
 }
 
-module.exports =new BrowserWaits();
+module.exports = new BrowserWaits();

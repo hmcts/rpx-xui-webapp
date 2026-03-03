@@ -1,4 +1,3 @@
-
 const CaseListPage = require('../pageObjects/CaseListPage');
 const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 

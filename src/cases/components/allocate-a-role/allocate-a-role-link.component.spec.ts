@@ -9,7 +9,7 @@ describe('AllocateARoleLinkComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [AllocateARoleLinkComponent],
-      imports: [RouterTestingModule]
+      imports: [RouterTestingModule],
     }).compileComponents();
     fixture = TestBed.createComponent(AllocateARoleLinkComponent);
     component = fixture.componentInstance;

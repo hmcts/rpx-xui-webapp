@@ -27,7 +27,7 @@ Feature: Hearings : Summary page validations EUI-9097
 
     Scenario: No changes,EUI-9097 scr 1 and scr 5
         cenario: SCR_1: CAT1 and CAT 2 ,Ameded and ACTION NEEDED labels  (Conditions (1) & (4))
-        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
+        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings-ce"
         Then I am on hearings tab page
         Then I see hearings table for "Current and upcoming" in hearings tab page
 
@@ -40,7 +40,7 @@ Feature: Hearings : Summary page validations EUI-9097
         Then I validate Edit hearing page displayed
 
         When I click button with label "Submit updated request"
-        Then In edit hearing page error banner displayed with message "The request has not been updated"
+        Then In edit hearing page error banner displayed with message "The request has not been updated as there is no change in hearing requirements"
 
         # hearing stage start
         When In view or edit hearing page, I click change link for field "What stage is this hearing at?"
@@ -53,12 +53,16 @@ Feature: Hearings : Summary page validations EUI-9097
         When I click continue in hearing workflow
         Then I validate Edit hearing page displayed
 
+        When In view or edit hearing page, I click change link for field "Will this be a paper hearing?"
+        Then I am on hearings workflow page "Participant attendance"
+        When I click continue in hearing workflow
+
         When I click button with label "Submit updated request"
         Then I am on hearings workflow page "Provide a reason for changing this hearing"
 
     Scenario: changes to CAT1 only, EUI-9097 scr 2
         cenario: SCR_1: CAT1 and CAT 2 ,Ameded and ACTION NEEDED labels  (Conditions (1) & (4))
-        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
+        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings-ce"
         Then I am on hearings tab page
         Then I see hearings table for "Current and upcoming" in hearings tab page
 
@@ -70,12 +74,16 @@ Feature: Hearings : Summary page validations EUI-9097
         When In view hearing page, I click Edit hearing button
         Then I validate Edit hearing page displayed
 
+        When In view or edit hearing page, I click change link for field "Will this be a paper hearing?"
+        Then I am on hearings workflow page "Participant attendance"
+        When I click continue in hearing workflow
+
         When I click button with label "Submit updated request"
         Then I am on hearings workflow page "Provide a reason for changing this hearing"
 
     Scenario: changes to CAT2 only, EUI-9097 scr 3 and scr 4
         cenario: SCR_1: CAT1 and CAT 2 ,Ameded and ACTION NEEDED labels  (Conditions (1) & (4))
-        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
+        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings-ce"
         Then I am on hearings tab page
         Then I see hearings table for "Current and upcoming" in hearings tab page
 

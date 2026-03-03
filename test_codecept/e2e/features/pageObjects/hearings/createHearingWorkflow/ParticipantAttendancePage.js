@@ -1,30 +1,43 @@
-
 const { $, elementByXpath, elementsByXpath, getText, selectOption, getXUITestPage } = require('../../../../../helpers/globals');
 const reportLogger = require('../../../../../codeceptCommon/reportLogger');
 const partyCaseFlags = require('./partyCaseFlagsTable');
 
 class ParticipantAttendancePage {
-  get pageContainer() { return $('exui-hearing-attendance'); }
-  get partiesContainer() { return $('div[formGroupName="parties"]'); }
+  get pageContainer() {
+    return $('exui-hearing-attendance');
+  }
+  get partiesContainer() {
+    return $('div[formGroupName="parties"]');
+  }
 
-  get paperHearingYes() { return $('#paperHearingYes'); }
-  get paperHearingNo() { return $('#paperHearingNo'); }
-  get methodOfAttendance() { return $('#checkbox-addition-facility'); }
-  get attendanceNumber() { return $('#attendance-number'); }
+  get paperHearingYes() {
+    return $('#paperHearingYes');
+  }
+  get paperHearingNo() {
+    return $('#paperHearingNo');
+  }
+  get methodOfAttendance() {
+    return $('#checkbox-addition-facility');
+  }
+  get attendanceNumber() {
+    return $('#attendance-number');
+  }
 
   get fieldMapping() {
     return {
-      'Will this be a paper hearing?':
-        elementByXpath('//h3[contains(text(), "Will this be a paper hearing?")]'),
+      'Will this be a paper hearing?': elementByXpath('//h3[contains(text(), "Will this be a paper hearing?")]'),
 
-      'What will be the methods of attendance for this hearing?':
-        elementByXpath('//h1[contains(text(), "What will be the methods of attendance for this hearing?")]'),
+      'What will be the methods of attendance for this hearing?': elementByXpath(
+        '//h1[contains(text(), "What will be the methods of attendance for this hearing?")]'
+      ),
 
-      'How will each participant attend the hearing?':
-        elementByXpath('//label[contains(text(), "How will each participant attend the hearing?")]'),
+      'How will each participant attend the hearing?': elementByXpath(
+        '//label[contains(text(), "How will each participant attend the hearing?")]'
+      ),
 
-      'How many people will attend the hearing in person?':
-        elementByXpath('//label[contains(text(), "How many people will attend the hearing in person?")]')
+      'How many people will attend the hearing in person?': elementByXpath(
+        '//label[contains(text(), "How many people will attend the hearing in person?")]'
+      ),
     };
   }
 
@@ -64,7 +77,10 @@ class ParticipantAttendancePage {
   async validateFieldsDisplayed() {
     expect(await this.paperHearingYes.isVisible(), 'Radio button not displayed').to.be.true;
     expect(await this.paperHearingNo.isVisible(), 'Radio button not displayed').to.be.true;
-    expect(await this.methodOfAttendanceForHearing.isVisible(), 'not displayed: What will be the methods of attendance for this hearing?').to.be.true;
+    expect(
+      await this.methodOfAttendanceForHearing.isVisible(),
+      'not displayed: What will be the methods of attendance for this hearing?'
+    ).to.be.true;
     expect(await this.partiesContainer.isVisible(), 'Parties list not displayed').to.be.true;
     expect(await this.attendanceNumber.isVisible(), 'attendance count not displayed').to.be.true;
   }
@@ -88,7 +104,7 @@ class ParticipantAttendancePage {
   }
 
   async getPartiesDisplayed() {
-    const elements = elementsByXpath('//div[contains(@class,\'party-row\')]//label');
+    const elements = elementsByXpath("//div[contains(@class,'party-row')]//label");
     const parties = [];
     const count = await elements.count();
     for (let i = 0; i < count; i++) {

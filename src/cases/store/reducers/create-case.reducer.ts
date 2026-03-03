@@ -16,20 +16,16 @@ export const initialState: CasesState = {
   createdCase: {},
   createCaseFilters: {},
   loaded: false,
-  loading: false
+  loading: false,
 };
 
-export function reducerCreateCase(
-  state = initialState,
-  action: fromCases.CreateCasesAction
-): CasesState {
-  // tslint:disable-next-line:switch-default
+export function reducerCreateCase(state = initialState, action: fromCases.CreateCasesAction): CasesState {
   switch (action.type) {
     case fromCases.CREATE_CASE_APPLY: {
       return {
         ...state,
         createdCase: action.payload,
-        loaded: true
+        loaded: true,
       };
     }
 
@@ -37,14 +33,14 @@ export function reducerCreateCase(
       return {
         ...state,
         createCaseFilters: action.payload,
-        loaded: true
+        loaded: true,
       };
     }
 
     case fromCases.CREATE_CASE_RESET: {
       return {
         ...state,
-        ...initialState
+        ...initialState,
       };
     }
   }

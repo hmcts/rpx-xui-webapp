@@ -103,4 +103,3 @@ describe('Work allocation Release 2: locations search', () => {
   //     });
   // });
 });
-

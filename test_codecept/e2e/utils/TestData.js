@@ -17,5 +17,5 @@ module.exports = {
   event: 'Appeal created',
   eventSummary: 'Appeal Created Event Summary Tribunals',
   eventDescription: 'Appeal Created Event Description Tribunals',
-  caseTypeIndex: 3
+  caseTypeIndex: 3,
 };

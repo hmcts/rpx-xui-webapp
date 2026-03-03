@@ -7,9 +7,8 @@ describe('StaffStatusComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [StaffStatusComponent]
-    })
-      .compileComponents();
+      declarations: [StaffStatusComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

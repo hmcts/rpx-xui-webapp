@@ -50,8 +50,8 @@ export const applyProxy = (app, config, modifyBody: boolean = true) => {
       if (modifyBody) {
         modifyResponse(res, proxyRes, (body) => {
           if (body) {
-            // modify some information
-            body = config.onRes(proxyRes, req, res, body);
+            // Pass parsed body first so body-transforming handlers don't receive proxyRes socket object.
+            body = config.onRes(body, req, res, proxyRes);
           }
           return body; // return value can be a promise
         });

@@ -37,7 +37,6 @@ test.describe(`Create a ${jurisdiction} case as ${userIdentifier}`, () => {
     });
 
     await test.step('User fills out the form', async () => {
-      await createCasePage.genderRadioButtons.filter({ hasText: person1Data.gender }).first().click();
       await createCasePage.fillDivorcePocSections({
         data: [person1Data, person2Data],
         textFields: {
@@ -129,7 +128,6 @@ test.describe(`Create a ${jurisdiction} case as ${userIdentifier}`, () => {
     });
 
     await test.step('User fills out the case pages', async () => {
-      await createCasePage.genderRadioButtons.filter({ hasText: caseData.gender }).first().click();
       await createCasePage.fillDivorcePocSections({
         data: person1Data,
         textFields: {
@@ -139,6 +137,7 @@ test.describe(`Create a ${jurisdiction} case as ${userIdentifier}`, () => {
           textField3: caseData.textField3,
         },
         divorceReasons: caseData.divorceReasons,
+        gender: caseData.gender,
       });
     });
 
@@ -162,9 +161,8 @@ test.describe(`Create a ${jurisdiction} case as ${userIdentifier}`, () => {
       interceptedCreateCaseRequestBody = await interceptedCreateCaseRequestBodyPromise;
     });
 
-    await test.step('Check the JSON sent in the creation request matches the expected data, and no ommited items are sent', async () => {
+    await test.step('Check the JSON sent in the creation request matches the expected data, and no omitted items are sent', async () => {
       expect(interceptedCreateCaseRequestBody).toBeTruthy();
-      console.log('Intercepted create case request body:', interceptedCreateCaseRequestBody);
 
       const submittedData = interceptedCreateCaseRequestBody?.data;
       expect(submittedData).toBeTruthy();
@@ -195,7 +193,6 @@ test.describe(`Create a ${jurisdiction} case as ${userIdentifier}`, () => {
     });
 
     await test.step('User fills out the form', async () => {
-      await createCasePage.genderRadioButtons.filter({ hasText: caseData.gender }).first().click();
       await createCasePage.fillDivorcePocSections({
         data: person1Data,
         textFields: {
@@ -204,6 +201,7 @@ test.describe(`Create a ${jurisdiction} case as ${userIdentifier}`, () => {
           textField2: caseData.textField2,
           textField3: caseData.textField3,
         },
+        gender: caseData.gender,
       });
     });
 
@@ -247,7 +245,6 @@ test.describe(`Create a ${jurisdiction} case as ${userIdentifier}`, () => {
 
     await test.step(`Check the JSON sent in the creation request doesn't contain 'maiden name' and shows the updated gender field`, async () => {
       expect(interceptedCreateCaseRequestBody).toBeTruthy();
-      console.log('Intercepted create case request body:', interceptedCreateCaseRequestBody);
 
       const submittedData = interceptedCreateCaseRequestBody?.data;
       expect(submittedData).toBeTruthy();

@@ -14,7 +14,7 @@ const createCaseSubmissionEndpointPatterns: RegExp[] = [
 const apiErrorStatusCodes = [500, 503, 401];
 // Returned error code 403 resolve expected outcome
 
-test.describe(`Submitting cases as a ${userIdentifier}`, () => {
+test.describe(`Create case - submit flow validation as ${userIdentifier}`, () => {
   test.beforeEach(async ({ page, createCasePage }) => {
     // Lazy capture: only log in SOLICITOR when this test suite runs
     await applySessionCookies(page, userIdentifier);
@@ -96,7 +96,6 @@ test.describe(`Submitting cases as a ${userIdentifier}`, () => {
       });
 
       await test.step('User fills out the form', async () => {
-        await createCasePage.genderRadioButtons.filter({ hasText: caseData.gender }).first().click();
         await createCasePage.fillDivorcePocSections({
           data: person1Data,
           textFields: {
@@ -105,10 +104,11 @@ test.describe(`Submitting cases as a ${userIdentifier}`, () => {
             textField2: caseData.textField2,
             textField3: caseData.textField3,
           },
+          gender: caseData.gender,
         });
       });
 
-      await test.step('Mock the create case submission API to return an error', async () => {
+      await test.step('Verify error message is displayed', async () => {
         await createCasePage.testSubmitButton.click();
         await createCasePage.errorSummary.waitFor({ state: 'visible' });
         await expect(createCasePage.errorSummaryTitle).toHaveText('The event could not be created');
@@ -119,7 +119,7 @@ test.describe(`Submitting cases as a ${userIdentifier}`, () => {
 });
 
 // Skipped until EXUI-4272 is resolved and the error handling behaviour can be tested reliably
-test.describe.skip('Create case - API error handling', () => {
+test.describe.skip('Create case - bootstrap/load API error handling', () => {
   test.beforeEach(async ({ page }) => {
     await applySessionCookies(page, userIdentifier);
   });

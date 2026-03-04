@@ -82,7 +82,7 @@ export class CaseDetailsPage extends Base {
   readonly divorceDataSubTable = this.divorceDataTable.locator('table.complex-panel-table table');
 
   // Task List tab
-  readonly taskListContainer = this.page.locator('exui-tasks-container');
+  readonly taskListContainer = this.page.locator('.active-tasks-container');
   readonly taskItem = this.taskListContainer.locator('exui-case-task');
   readonly taskKeyPairRow = this.taskItem.locator('.govuk-summary-list__row');
   readonly taskTitle = this.taskItem.locator('p.govuk-body');

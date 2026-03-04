@@ -6,11 +6,16 @@ let caseNumber: string;
 
 test.describe('Verify creating cases works as expected', () => {
   let caseData;
+  let person1Data;
 
   test.beforeEach(async ({ page, caseDetailsPage, createCasePage }) => {
     await ensureAuthenticatedPage(page, 'SOLICITOR', { waitForSelector: 'exui-header' });
-    caseData = await createCasePage.generateDivorcePoCData();
-    await createCasePage.createDivorceCasePoC(jurisdiction, caseType, caseData);
+    caseData = await createCasePage.generateDivorcePoCData({ gender: 'Male', textField0: 'Hide all' });
+    person1Data = await createCasePage.generateDivorcePoCPersonData({
+      gender: 'Male',
+    });
+    console.log('Generated case data:', { caseData, person1Data });
+    await createCasePage.createDivorceCasePoC(jurisdiction, caseType, { ...caseData, ...person1Data });
     caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
   });
 
@@ -25,23 +30,20 @@ test.describe('Verify creating cases works as expected', () => {
     });
 
     await test.step('Check the case tab Data, matches previously entered data', async () => {
-      const expected = {
+      const table1 = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.divorceDataTable);
+      expect.soft(table1).toMatchObject({
         'Text Field 0': caseData.textField0,
-        'Text Field 1': caseData.textField1,
         'Text Field 2': caseData.textField2,
         'Text Field 3': caseData.textField3,
         'Select your gender': caseData.gender,
-        Title: caseData.personTitle,
-        'First Name': caseData.personFirstName,
-        'Last Name': caseData.personLastName,
-        Gender: caseData.personGender,
-      };
-      const expectedJob = { Title: caseData.personJobTitle, Description: caseData.personJobDescription };
-
-      const table1 = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.divorceDataTable);
-      expect.soft(table1).toMatchObject(expected);
+        Title: person1Data.title,
+        'First Name': person1Data.firstName,
+        'Last Name': person1Data.lastName,
+        Gender: person1Data.gender,
+      });
+      expect.soft(table1).not.toHaveProperty('Text Field 1');
       const table2 = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.divorceDataSubTable);
-      expect.soft(table2).toMatchObject(expectedJob);
+      expect.soft(table2).toMatchObject({ Title: person1Data.jobTitle, Description: person1Data.jobDescription });
     });
 
     await test.step('Check the History tab shows the case creation event', async () => {

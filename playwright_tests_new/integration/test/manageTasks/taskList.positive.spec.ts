@@ -12,14 +12,12 @@ let taskListMockResponse: ReturnType<typeof buildMyTaskListMock>;
 test.beforeEach(async ({ page }) => {
   const { cookies } = await applySessionCookies(page, userIdentifier);
   const userId = extractUserIdFromCookies(cookies);
-  taskListMockResponse = buildMyTaskListMock(userId?.toString() || '', 160);
+  taskListMockResponse = buildMyTaskListMock(160, userId?.toString() || '');
 });
 
 test.describe(`Task List as ${userIdentifier}`, () => {
   test(`User ${userIdentifier} can view assigned tasks on the task list page`, async ({ taskListPage, page, tableUtils }) => {
     await test.step('Setup route mock for task list', async () => {
-      const userId = extractUserIdFromCookies(sessionCookies);
-      taskListMockResponse = buildMyTaskListMock(160, userId?.toString());
       await page.route('**/workallocation/task*', async (route) => {
         const body = JSON.stringify(taskListMockResponse);
         await route.fulfill({ status: 200, contentType: 'application/json', body });

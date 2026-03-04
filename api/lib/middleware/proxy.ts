@@ -1,5 +1,4 @@
-import { legacyCreateProxyMiddleware as proxy, LegacyOptions } from 'http-proxy-middleware';
-import * as modifyResponse from 'node-http-proxy-json';
+import { legacyCreateProxyMiddleware as proxy, LegacyOptions, responseInterceptor } from 'http-proxy-middleware';
 import { getConfigValue } from '../../configuration';
 import { LOGGING } from '../../configuration/references';
 import * as log4jui from '../log4jui';
@@ -47,19 +46,34 @@ export const applyProxy = (app, config, modifyBody: boolean = true) => {
   }
 
   if (config.onRes) {
-    options.onProxyRes = (proxyRes, req, res) => {
-      if (modifyBody) {
-        modifyResponse(res, proxyRes, (body) => {
-          if (body) {
-            // Pass parsed body first so body-transforming handlers don't receive proxyRes socket object.
-            body = config.onRes(body, req, res, proxyRes);
+    if (modifyBody) {
+      options.selfHandleResponse = true;
+      options.onProxyRes = responseInterceptor(async (responseBuffer, proxyRes, req, res) => {
+        const rawBody = responseBuffer ? responseBuffer.toString('utf8') : '';
+        let body: unknown = rawBody;
+
+        if (rawBody) {
+          try {
+            body = JSON.parse(rawBody);
+          } catch {
+            body = rawBody;
           }
-          return body; // return value can be a promise
-        });
-      } else {
+        }
+
+        const updatedBody = await config.onRes(body, req, res, proxyRes);
+        if (Buffer.isBuffer(updatedBody) || typeof updatedBody === 'string') {
+          return updatedBody;
+        }
+        if (updatedBody === undefined || updatedBody === null) {
+          return '';
+        }
+        return JSON.stringify(updatedBody);
+      });
+    } else {
+      options.onProxyRes = (proxyRes, req, res) => {
         config.onRes(proxyRes, req, res);
-      }
-    };
+      };
+    }
   }
 
   if (config.ws) {

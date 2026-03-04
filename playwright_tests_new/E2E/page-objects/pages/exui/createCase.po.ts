@@ -6,15 +6,18 @@ import { EXUI_TIMEOUTS } from './exui-timeouts';
 import { isTransientWorkflowFailure } from '../../../utils/transient-failure.utils';
 import { extractCaseNumberFromUrl } from './caseDetails.po';
 
-export type DivorcePoCData = {
+export type PersonData = {
+  title?: string;
+  firstName?: string;
+  lastName?: string;
+  maidenName?: string;
   gender?: string;
-  personTitle?: string;
-  personFirstName?: string;
-  personLastName?: string;
-  personMaidenName?: string;
-  personGender?: string;
-  personJobTitle?: string;
-  personJobDescription?: string;
+  jobTitle?: string;
+  jobDescription?: string;
+};
+
+export type DivorcePoCData = PersonData & {
+  gender?: string;
   textField0?: string;
   textField1?: string;
   textField2?: string;
@@ -133,11 +136,12 @@ export class CreateCasePage extends Base {
   readonly textField3Input = this.page.locator('#TextField3');
   readonly divorceReasons = this.page.locator('#DivorceReason .multiple-choice');
 
-  readonly checkYourAnswers = this.page.locator('.check-your-answers');
+  readonly checkYourAnswers = this.page.locator('form.check-your-answers');
   readonly checkYourAnswersHeading = this.checkYourAnswers.locator('h2');
   readonly checkYourAnswersTable = this.checkYourAnswers.locator('table');
   readonly checkYourAnswersSubTable = this.checkYourAnswersTable.locator('table.complex-panel-table table');
-  readonly checkYourAnswersChangeLinks = this.checkYourAnswers.locator('.case-field-change');
+  readonly checkYourAnswersFieldLabels = this.checkYourAnswers.locator('.check-your-answers__field-label');
+  readonly checkYourAnswersChangeLinks = this.checkYourAnswers.getByRole('link', { name: 'Change' });  
 
   readonly testSubmitButton = this.page.locator('.check-your-answers [type="submit"]');
 
@@ -180,6 +184,13 @@ export class CreateCasePage extends Base {
 
   constructor(page: Page) {
     super(page);
+  }
+
+  public async findTableInCheckAnswers(name: string) {
+    return this.checkYourAnswers.locator(`.complex-panel:has(.complex-panel-title:has-text("${name}")) table`);
+  }
+  public async findSubTableInCheckAnswers(name: string) {
+    return this.checkYourAnswers.locator(`.complex-panel:has(.complex-panel-title:has-text("${name}")) table table`);
   }
 
   /**
@@ -1107,6 +1118,82 @@ export class CreateCasePage extends Base {
     }
   }
 
+  async fillDivorcePocSections(
+    options: {
+      data?: Partial<DivorcePoCData> | Array<Partial<DivorcePoCData>>;
+      textFields?: Pick<DivorcePoCData, 'textField0' | 'textField1' | 'textField2' | 'textField3'>;
+      gender?: string;
+      divorceReasons?: string[];
+    } = {}
+  ): Promise<void> {
+    const fillPerson = async (person: 'person1' | 'person2', data?: Partial<DivorcePoCData>) => {
+      if (!data) {
+        return;
+      }
+
+      const titleInput = person === 'person1' ? this.person1TitleInput : this.person2TitleInput;
+      const firstNameInput = person === 'person1' ? this.person1FirstNameInput : this.person2FirstNameInput;
+      const lastNameInput = person === 'person1' ? this.person1LastNameInput : this.person2LastNameInput;
+      const genderSelect = person === 'person1' ? this.person1GenderSelect : this.person2GenderSelect;
+      const maidenNameInput = person === 'person1' ? this.person1MaidenNameInput : this.person2MaidenNameInput;
+      const jobTitleInput = person === 'person1' ? this.person1JobTitleInput : this.person2JobTitleInput;
+      const jobDescriptionInput = person === 'person1' ? this.person1JobDescriptionInput : this.person2JobDescriptionInput;
+
+      const fieldsToFill: Array<[Locator, string | undefined]> = [
+        [titleInput, data.title],
+        [firstNameInput, data.firstName],
+        [lastNameInput, data.lastName],
+        [jobTitleInput, data.jobTitle],
+        [jobDescriptionInput, data.jobDescription],
+      ];
+      for (const [locator, value] of fieldsToFill) {
+        if (value) {
+          await locator.fill(value);
+        }
+      }
+
+      if (data.gender) {
+        await genderSelect.selectOption(data.gender);
+      }
+
+      if (data.gender?.toLowerCase() === 'female') {
+        await maidenNameInput.fill(data.maidenName ?? '');
+      }
+    };
+
+    let peopleData: Array<Partial<DivorcePoCData>> = [];
+    if (Array.isArray(options.data)) {
+      peopleData = options.data;
+    } else if (options.data) {
+      peopleData = [options.data];
+    }
+    await this.genderRadioButtons.getByLabel(options.gender ?? 'Male', { exact: true }).first().click();
+    await fillPerson('person1', peopleData[0]);
+    if (peopleData[1]) {
+      await fillPerson('person2', peopleData[1]);
+    }
+
+    await this.clickContinueAndWait('after PoC personal details');
+    if (options.textFields?.textField1 !== undefined) {
+      await this.textField1Input.fill(options.textFields.textField1);
+    }
+    if (options.textFields?.textField2 !== undefined) {
+      await this.textField2Input.fill(options.textFields.textField2);
+    }
+    if (options.textFields?.textField3 !== undefined) {
+      await this.textField3Input.fill(options.textFields.textField3);
+    }
+    if (options.textFields?.textField0 !== undefined) {
+      await this.textField0Input.fill(options.textFields.textField0);
+    }
+
+    if (options.divorceReasons?.length) {
+      await this.selectDivorceReasons(options.divorceReasons);
+    }
+
+    await this.clickContinueAndWait('after hidden field details');
+  }
+
   async createDivorceCasePoC(
     // NOSONAR typescript:S3776 — Cognitive Complexity acceptable per agents.md §6.2.10: multi-attempt Divorce PoC creation with retry and data-variant handling
     jurisdiction: string,
@@ -1132,12 +1219,12 @@ export class CreateCasePage extends Base {
           await genderRadio.check();
         }
         await this.person1TitleInput.click();
-        await this.person1TitleInput.fill(data?.personTitle ?? faker.person.prefix());
-        await this.person1FirstNameInput.fill(data?.personFirstName ?? faker.person.firstName());
-        await this.person1LastNameInput.fill(data?.personLastName ?? faker.person.lastName());
-        await this.person1GenderSelect.selectOption(data?.personGender ?? gender);
-        await this.person1JobTitleInput.fill(data?.personJobTitle ?? faker.person.jobTitle());
-        await this.person1JobDescriptionInput.fill(data?.personJobDescription ?? faker.lorem.sentence());
+        await this.person1TitleInput.fill(data?.title ?? faker.person.prefix());
+        await this.person1FirstNameInput.fill(data?.firstName ?? faker.person.firstName());
+        await this.person1LastNameInput.fill(data?.lastName ?? faker.person.lastName());
+        await this.person1GenderSelect.selectOption(data?.gender ?? gender);
+        await this.person1JobTitleInput.fill(data?.jobTitle ?? faker.person.jobTitle());
+        await this.person1JobDescriptionInput.fill(data?.jobDescription ?? faker.lorem.sentence());
         const personalDetailsUrl = this.page.url();
         await this.clickContinueAndWait('after PoC personal details');
         await this.ensureWizardAdvanced('after PoC personal details', personalDetailsUrl, {
@@ -1175,6 +1262,18 @@ export class CreateCasePage extends Base {
     }
   }
 
+  async generateDivorcePoCPersonData(overrides: Partial<PersonData>): Promise<PersonData> {
+    return {
+      title: overrides.title ?? faker.person.prefix(),
+      firstName: overrides.firstName ?? `${faker.person.firstName()} ${faker.person.middleName()}`,
+      maidenName: overrides.maidenName ?? faker.person.lastName(),
+      lastName: overrides.lastName ?? faker.person.lastName(),
+      gender: overrides.gender ?? 'Male',
+      jobTitle: overrides.jobTitle ?? faker.person.jobTitle(),
+      jobDescription: overrides.jobDescription ?? faker.lorem.sentence(),
+    };
+  }
+
   async generateDivorcePoCData(overrides: Partial<DivorcePoCData> = {}): Promise<DivorcePoCData> {
     const gender = overrides.gender ?? faker.helpers.arrayElement(['Male', 'Female', 'Not given']);
     const reasonsForDivorce = overrides.divorceReasons ?? [
@@ -1183,13 +1282,6 @@ export class CreateCasePage extends Base {
     const generatedAt = overrides.generatedAt ?? new Date().toISOString();
     return {
       gender,
-      personTitle: overrides.personTitle ?? faker.person.prefix(),
-      personFirstName: overrides.personFirstName ?? `${faker.person.firstName()} ${faker.person.middleName()}`,
-      personMaidenName: overrides.personMaidenName ?? faker.person.lastName(),
-      personLastName: overrides.personLastName ?? faker.person.lastName(),
-      personGender: overrides.personGender ?? gender,
-      personJobTitle: overrides.personJobTitle ?? faker.person.jobTitle(),
-      personJobDescription: overrides.personJobDescription ?? faker.lorem.sentence(),
       textField0: overrides.textField0 ?? faker.lorem.sentence() + faker.date.soon().getTime(),
       textField1: overrides.textField1 ?? faker.lorem.sentence() + faker.date.soon().getTime(),
       textField2: overrides.textField2 ?? faker.lorem.sentence() + faker.date.soon().getTime(),

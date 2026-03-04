@@ -31,7 +31,7 @@ export const initProxy = (app: Express) => {
     skipAuth: true, // WebSocket upgrades don't work with standard HTTP auth middleware
     source: '/socket.io',
     target: getConfigValue(SERVICES_CCD_ACTIVITY_API),
-    ws: true
+    ws: true,
   });
 
   applyProxy(app, {

@@ -12,11 +12,12 @@ export class ActivityResolver implements Resolve<boolean> {
     private readonly activityService: ActivityService,
     private readonly featureToggleService: FeatureToggleService
   ) {
-    this.featureToggleService.getValue<string>(AppConstants.ACTIVITY_TRACKER_MODE, undefined)
+    this.featureToggleService
+      .getValue<string>(AppConstants.ACTIVITY_TRACKER_MODE, undefined)
       .pipe(filter((mode) => !!mode))
       .subscribe((mode) => {
         this.activityService.mode = ActivityService.MODES[mode] || ActivityService.MODES.off;
-        if (this.isActivityEnabled){
+        if (this.isActivityEnabled) {
           this.activityService.verifyUserIsAuthorized();
         }
       });

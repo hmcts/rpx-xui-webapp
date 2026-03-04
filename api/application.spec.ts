@@ -22,7 +22,7 @@ describe('Application', () => {
       info: sandbox.spy(),
       error: sandbox.spy(),
       warn: sandbox.spy(),
-      debug: sandbox.spy()
+      debug: sandbox.spy(),
     };
     setupDefaultStubs();
   });
@@ -32,13 +32,15 @@ describe('Application', () => {
   });
 
   // ---------- helper ----------
-  function setupDefaultStubs(options: {
-    helmetEnabled?: boolean;
-    compressionEnabled?: boolean;
-    idamCheckRejects?: boolean;
-    workAllocationRejects?: boolean;
-    xuiMiddlewareRejects?: boolean;
-  } = {}) {
+  function setupDefaultStubs(
+    options: {
+      helmetEnabled?: boolean;
+      compressionEnabled?: boolean;
+      idamCheckRejects?: boolean;
+      workAllocationRejects?: boolean;
+      xuiMiddlewareRejects?: boolean;
+    } = {}
+  ) {
     const cfg = require('./configuration');
 
     // --- Feature flags from your configuration module ---
@@ -63,7 +65,7 @@ describe('Application', () => {
           scriptSrc: ["'self'", "'unsafe-inline'"],
         },
       },
-      hsts: { maxAge: 31536000, includeSubDomains: true, preload: true }
+      hsts: { maxAge: 31536000, includeSubDomains: true, preload: true },
     };
 
     const getConfigStub = sandbox.stub(require('./configuration'), 'getConfigValue');
@@ -355,10 +357,9 @@ describe('Application', () => {
         const app = await createApp();
 
         const middlewareStack = app._router.stack;
-        const csrfMiddleware = middlewareStack.find((layer: any) =>
-          layer.name === 'csrf' ||
-          layer.handle?.name === 'csrf' ||
-          (layer.handle && layer.handle.toString().includes('csrf'))
+        const csrfMiddleware = middlewareStack.find(
+          (layer: any) =>
+            layer.name === 'csrf' || layer.handle?.name === 'csrf' || (layer.handle && layer.handle.toString().includes('csrf'))
         );
 
         expect(csrfMiddleware).to.exist;
@@ -371,8 +372,8 @@ describe('Application', () => {
         const app = await createApp();
 
         const middlewareStack = app._router.stack;
-        const cookieParserMiddleware = middlewareStack.find((layer: any) =>
-          layer.name === 'cookieParser' || layer.handle?.name === 'cookieParser'
+        const cookieParserMiddleware = middlewareStack.find(
+          (layer: any) => layer.name === 'cookieParser' || layer.handle?.name === 'cookieParser'
         );
 
         expect(cookieParserMiddleware).to.exist;
@@ -489,8 +490,8 @@ describe('Application', () => {
 
         it('should set CORS and security headers via custom middleware', async () => {
           const middlewareStack = app._router.stack;
-          const customHeadersMiddleware = middlewareStack.find((layer: any) =>
-            layer.handle && layer.handle.toString().includes('Access-Control-Allow-Headers')
+          const customHeadersMiddleware = middlewareStack.find(
+            (layer: any) => layer.handle && layer.handle.toString().includes('Access-Control-Allow-Headers')
           );
 
           expect(customHeadersMiddleware).to.exist;
@@ -502,10 +503,7 @@ describe('Application', () => {
             'Origin, X-Requested-With, Content-Type, Accept, Authorization'
           );
           expect(resObj.header).to.have.been.calledWith('Access-Control-Allow-Credentials', 'true');
-          expect(resObj.header).to.have.been.calledWith(
-            'Access-Control-Allow-Methods',
-            'GET, POST, PUT, DELETE, OPTIONS'
-          );
+          expect(resObj.header).to.have.been.calledWith('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
 
           expect(resObj.setHeader).to.have.been.calledWith('X-Robots-Tag', 'noindex');
           expect(resObj.setHeader).to.have.been.calledWith(
@@ -564,8 +562,8 @@ describe('Application', () => {
           const appWithoutHelmet = await createApp();
 
           const middlewareStack = appWithoutHelmet._router.stack;
-          const customHeadersMiddleware = middlewareStack.find((layer: any) =>
-            layer.handle && layer.handle.toString().includes('Access-Control-Allow-Headers')
+          const customHeadersMiddleware = middlewareStack.find(
+            (layer: any) => layer.handle && layer.handle.toString().includes('Access-Control-Allow-Headers')
           );
 
           expect(customHeadersMiddleware).to.not.exist;

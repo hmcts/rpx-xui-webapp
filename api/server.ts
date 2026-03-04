@@ -20,59 +20,57 @@ import { legacyCreateProxyMiddleware } from 'http-proxy-middleware';
 import { getConfigValue } from './configuration';
 import { SERVICES_CCD_ACTIVITY_API } from './configuration/references';
 
-createApp()
-  .then((app: express.Application) => {
-    app.engine('html', ejs.renderFile);
-    app.set('view engine', 'html');
-    app.set('views', __dirname);
+createApp().then((app: express.Application) => {
+  app.engine('html', ejs.renderFile);
+  app.set('view engine', 'html');
+  app.set('views', __dirname);
 
-    app.use(corsMw);
+  app.use(corsMw);
 
-    app.use([removeCacheHeaders, express.static(path.join(__dirname, '..', 'assets'), { index: false, cacheControl: false })]);
-    app.use([removeCacheHeaders, express.static(path.join(__dirname, '..'), { index: false, cacheControl: false })]);
+  app.use([removeCacheHeaders, express.static(path.join(__dirname, '..', 'assets'), { index: false, cacheControl: false })]);
+  app.use([removeCacheHeaders, express.static(path.join(__dirname, '..'), { index: false, cacheControl: false })]);
 
-    app.use('/*', (req, res) => {
-      res.set('Cache-Control', 'no-store, s-maxage=0, max-age=0, must-revalidate, proxy-revalidate');
-      res.render('../index', {
-        providers: [
-          { provide: 'REQUEST', useValue: req },
-          { provide: 'RESPONSE', useValue: res }
-        ],
-        req,
-        res
-      });
-    });
-
-    app.use(appInsights);
-    app.use(errorHandler);
-
-    const server = http.createServer(app);
-
-    // Create a dedicated WebSocket proxy for socket.io
-    // This bypasses the auth middleware which doesn't work with WebSocket upgrades
-    const wsProxy = legacyCreateProxyMiddleware({
-      target: getConfigValue(SERVICES_CCD_ACTIVITY_API),
-      ws: true,
-      changeOrigin: true,
-      pathRewrite: {
-        '^/socket.io': '/socket.io'
-      }
-    });
-
-    // Handle WebSocket upgrade requests
-    server.on('upgrade', (req, socket: net.Socket, head) => {
-      console.log('🔧 UPGRADE EVENT TRIGGERED:', req.url, req.headers);
-      if (req.url && req.url.startsWith('/socket.io')) {
-        console.log('✅ Upgrading socket.io connection');
-        wsProxy.upgrade(req, socket, head);
-      } else {
-        console.log('❌ Non-socket.io upgrade request, destroying:', req.url);
-        socket.destroy();
-      }
-    });
-
-    server.listen(process.env.PORT || 3000, () => {
-      console.log('Server listening on port 3000!');
+  app.use('/*', (req, res) => {
+    res.set('Cache-Control', 'no-store, s-maxage=0, max-age=0, must-revalidate, proxy-revalidate');
+    res.render('../index', {
+      providers: [
+        { provide: 'REQUEST', useValue: req },
+        { provide: 'RESPONSE', useValue: res },
+      ],
+      req,
+      res,
     });
   });
-  
+
+  app.use(appInsights);
+  app.use(errorHandler);
+
+  const server = http.createServer(app);
+
+  // Create a dedicated WebSocket proxy for socket.io
+  // This bypasses the auth middleware which doesn't work with WebSocket upgrades
+  const wsProxy = legacyCreateProxyMiddleware({
+    target: getConfigValue(SERVICES_CCD_ACTIVITY_API),
+    ws: true,
+    changeOrigin: true,
+    pathRewrite: {
+      '^/socket.io': '/socket.io',
+    },
+  });
+
+  // Handle WebSocket upgrade requests
+  server.on('upgrade', (req, socket: net.Socket, head) => {
+    console.log('🔧 UPGRADE EVENT TRIGGERED:', req.url, req.headers);
+    if (req.url && req.url.startsWith('/socket.io')) {
+      console.log('✅ Upgrading socket.io connection');
+      wsProxy.upgrade(req, socket, head);
+    } else {
+      console.log('❌ Non-socket.io upgrade request, destroying:', req.url);
+      socket.destroy();
+    }
+  });
+
+  server.listen(process.env.PORT || 3000, () => {
+    console.log('Server listening on port 3000!');
+  });
+});

@@ -141,7 +141,7 @@ export class CreateCasePage extends Base {
   readonly checkYourAnswersTable = this.checkYourAnswers.locator('table');
   readonly checkYourAnswersSubTable = this.checkYourAnswersTable.locator('table.complex-panel-table table');
   readonly checkYourAnswersFieldLabels = this.checkYourAnswers.locator('.check-your-answers__field-label');
-  readonly checkYourAnswersChangeLinks = this.checkYourAnswers.getByRole('link', { name: 'Change' });  
+  readonly checkYourAnswersChangeLinks = this.checkYourAnswers.getByRole('link', { name: 'Change' });
 
   readonly testSubmitButton = this.page.locator('.check-your-answers [type="submit"]');
 
@@ -178,9 +178,12 @@ export class CreateCasePage extends Base {
   readonly refreshModal = this.page.locator('.refresh-modal');
   readonly refreshModalConfirmButton = this.refreshModal.getByRole('button', { name: 'Ok' });
   readonly errorMessage = this.page.locator('.form-group-error .error-message, .govuk-error-message');
-  readonly errorSummary = this.page.locator('.error-summary, .govuk-error-summary');
   readonly eventCreationErrorHeading = this.page.getByRole('heading', { name: 'The event could not be created' });
   readonly somethingWentWrongHeading = this.page.getByRole('heading', { name: /something went wrong/i });
+  readonly errorSummary = this.page.locator('div.error-summary');
+  readonly errorSummaryTitle = this.errorSummary.locator('h3');
+  readonly errorSummaryMessage = this.errorSummary.locator('p');
+  readonly validationErrorMessage = this.page.locator('.validation-error');
 
   constructor(page: Page) {
     super(page);
@@ -1167,7 +1170,10 @@ export class CreateCasePage extends Base {
     } else if (options.data) {
       peopleData = [options.data];
     }
-    await this.genderRadioButtons.getByLabel(options.gender ?? 'Male', { exact: true }).first().click();
+    await this.genderRadioButtons
+      .getByLabel(options.gender ?? 'Male', { exact: true })
+      .first()
+      .click();
     await fillPerson('person1', peopleData[0]);
     if (peopleData[1]) {
       await fillPerson('person2', peopleData[1]);

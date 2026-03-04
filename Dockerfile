@@ -1,4 +1,4 @@
-FROM hmctspublic.azurecr.io/base/node:20-alpine AS dependencies
+FROM hmctspublic.azurecr.io/base/node:20-alpine AS base
 LABEL maintainer="HMCTS Expert UI <https://github.com/hmcts>"
 
 ENV PUPPETEER_SKIP_DOWNLOAD=1 \
@@ -17,6 +17,8 @@ USER root
 RUN corepack enable
 USER hmcts
 
+FROM base AS dependencies
+
 # Copy only dependency files for better layer caching
 COPY --chown=hmcts:hmcts .yarn ./.yarn
 COPY --chown=hmcts:hmcts package.json yarn.lock .yarnrc.yml ./
@@ -32,12 +34,8 @@ COPY --chown=hmcts:hmcts . .
 # Build the application (dependencies already installed)
 RUN yarn build
 
-FROM hmctspublic.azurecr.io/base/node:20-alpine AS runtime
+FROM base AS runtime
 LABEL maintainer="HMCTS Expert UI <https://github.com/hmcts>"
-
-USER root
-RUN corepack enable
-USER hmcts
 
 # Copy only production dependencies
 COPY --chown=hmcts:hmcts .yarn ./.yarn

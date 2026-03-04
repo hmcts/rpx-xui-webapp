@@ -444,8 +444,7 @@ export function divorcePocCaseData() {
         acls: CREATE_CASE_SHARED_ACLS,
       },
     ],
-    event_token:
-     faker.string.uuid(),
+    event_token: faker.string.uuid(),
     wizard_pages: [
       {
         id: 'createCasePage_1',

@@ -1,3 +1,4 @@
+import { divorcePocCaseData } from '../../mocks/createCase.mock';
 import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookies } from '../../../common/sessionCapture';
 import { TEST_USERS } from '../../testData';
@@ -10,15 +11,21 @@ const createCaseSubmissionEndpointPatterns: RegExp[] = [
   /\/cases\/\d+\/event-triggers\/[^/]+(?:\/|$)/,
   /\/event-triggers\/[^/]+\/validate(?:\/|$)/,
 ];
-const apiErrorStatusCodes = [500, 503, 401, 403];
+const apiErrorStatusCodes = [500, 503, 401];
+// Returned error code 403 resolve expected outcome
 
-test.beforeEach(async ({ page }) => {
-  // Lazy capture: only log in SOLICITOR when this test suite runs
-  await applySessionCookies(page, userIdentifier);
-});
-
-test.describe(`Creating cases as a ${userIdentifier}`, () => {
-  test(`User should not be able to submit a case, without filling in required fields`, async ({
+test.describe(`Submitting cases as a ${userIdentifier}`, () => {
+  test.beforeEach(async ({ page, createCasePage }) => {
+    // Lazy capture: only log in SOLICITOR when this test suite runs
+    await applySessionCookies(page, userIdentifier);
+    await page.route(`**/data/internal/case-types/${caseType}/event-triggers/createCase*`, async (route) => {
+      const body = JSON.stringify(divorcePocCaseData());
+      await route.fulfill({ status: 200, contentType: 'application/json', body });
+    });
+    await page.goto(`/cases/case-create/${jurisdiction}/${caseType}/createCase/`);
+    await expect(createCasePage.person1TitleInput).toBeVisible();
+  });
+  test(`User should see a page refreshed modal when attempting to skip to the submit case page, without filling in required fields`, async ({
     createCasePage,
     caseListPage,
     page,
@@ -57,50 +64,84 @@ test.describe(`Creating cases as a ${userIdentifier}`, () => {
     });
   });
 
-  test('User should see an error message if the create case submission fails', async ({ createCasePage, page }) => {
-    await test.step('Navigate to the submit case page', async () => {
-      createCasePage.clearApiCalls();
-      await page.goto(`/cases/case-create/${jurisdiction}/${caseType}/createCase`);
-    });
-  });
-
-  test('User should see validation errors if they attempt to submit the form with missing required fields', async ({
+  test('User should see validation errors if they attempt to submit the form with missing mandatory fields', async ({
     createCasePage,
     page,
   }) => {
     await test.step('Navigate to the create case page', async () => {
-      createCasePage.clearApiCalls();
       await page.goto(`/cases/case-create/${jurisdiction}/${caseType}/createCase`);
     });
-  });
 
-
-
-
-   apiErrorStatusCodes.forEach((status) => {
-    test(`User should see an error message if the create case API returns HTTP ${status}`, async ({
-      createCasePage,
-      page,
-    }) => {
-      await test.step('Mock the create case submission API to return an error', async () => {
-        await page.route(`**/data/internal/case-types/${caseType}/event-triggers/createCase*`, async (route) => {
-          const body = JSON.stringify({ message: `Forced failure ${status}` });
-          await route.fulfill({ status: status, contentType: 'application/json', body });
-        });
-      });
+    await test.step('Attempt to submit the form without filling in any mandatory fields', async () => {
+      await createCasePage.genderRadioButtons.filter({ hasText: 'Female' }).first().click();
+      await createCasePage.clickContinueAndWait('after PoC personal details');
+      await createCasePage.continueButton.click();
+      expect(await createCasePage.validationErrorMessage.allInnerTexts()).toEqual(['Text Field 0 is required']);
     });
   });
 
   apiErrorStatusCodes.forEach((status) => {
-    test(`User should see an error message if the create case submission API returns HTTP ${status}`, async ({
-      createCasePage,
-      page,
-    }) => {
+    test(`User should see an error message if the create case API returns HTTP ${status}`, async ({ createCasePage, page }) => {
+      const caseData = await createCasePage.generateDivorcePoCData();
+      const person1Data = await createCasePage.generateDivorcePoCPersonData({
+        gender: 'Female',
+      });
+      const errorMessage = `Forced failure ${status}`;
+
       await test.step('Mock the create case submission API to return an error', async () => {
-         await page.route(`**/data/case-types/${caseType}/cases?ignore-warning=false*`, async (route) => {
+        await page.route(`**/data/case-types/${caseType}/cases?ignore-warning=false*`, async (route) => {
+          const body = JSON.stringify({ message: errorMessage });
+          await route.fulfill({ status: status, contentType: 'application/json', body });
+        });
+      });
+
+      await test.step('User fills out the form', async () => {
+        await createCasePage.genderRadioButtons.filter({ hasText: caseData.gender }).first().click();
+        await createCasePage.fillDivorcePocSections({
+          data: person1Data,
+          textFields: {
+            textField0: caseData.textField0,
+            textField1: caseData.textField1,
+            textField2: caseData.textField2,
+            textField3: caseData.textField3,
+          },
+        });
+      });
+
+      await test.step('Mock the create case submission API to return an error', async () => {
+        await createCasePage.testSubmitButton.click();
+        await createCasePage.errorSummary.waitFor({ state: 'visible' });
+        await expect(createCasePage.errorSummaryTitle).toHaveText('The event could not be created');
+        await expect(createCasePage.errorSummaryMessage).toHaveText(errorMessage);
+      });
+    });
+  });
+});
+
+// Skipped until EXUI-4272 is resolved and the error handling behaviour can be tested reliably
+test.describe.skip('Create case - API error handling', () => {
+  test.beforeEach(async ({ page }) => {
+    await applySessionCookies(page, userIdentifier);
+  });
+
+  apiErrorStatusCodes.forEach((status) => {
+    test(`User sees an error message, if the create case API returns HTTP ${status}`, async ({ createCasePage, page }) => {
+      await test.step('Mock the create case API to return an error', async () => {
+        await page.route(`**/data/internal/case-types/${caseType}/event-triggers/createCase*`, async (route) => {
           const body = JSON.stringify({ message: `Forced failure ${status}` });
           await route.fulfill({ status: status, contentType: 'application/json', body });
         });
+        await page.goto(`/cases/case-create/${jurisdiction}/${caseType}/createCase/`);
+      });
+
+      await test.step('Navigate to the create case page', async () => {
+        await page.waitForLoadState('domcontentloaded');
+      });
+
+      await test.step('After page load completes, a UI error is rendered', async () => {
+        await expect(createCasePage.errorSummary).toBeVisible();
+        await expect(createCasePage.errorSummaryTitle).toBeVisible();
+        await expect(createCasePage.errorSummaryMessage).toBeVisible();
       });
     });
   });

@@ -8,7 +8,6 @@ const userIdentifier = TEST_USERS.SOLICITOR;
 const jurisdiction = 'DIVORCE';
 const caseType = 'xuiTestJurisdiction';
 
-let caseData;
 let interceptedCreateCaseRequestBody;
 
 test.beforeEach(async ({ page, createCasePage }) => {
@@ -29,7 +28,7 @@ test.describe(`Create a ${jurisdiction} case as ${userIdentifier}`, () => {
     caseDetailsPage,
     page,
   }) => {
-    caseData = await createCasePage.generateDivorcePoCData({ divorceReasons: ['Adultery'] });
+    const caseData = await createCasePage.generateDivorcePoCData({ divorceReasons: ['Adultery'] });
     const person1Data = await createCasePage.generateDivorcePoCPersonData({
       gender: 'Male',
     });
@@ -60,7 +59,7 @@ test.describe(`Create a ${jurisdiction} case as ${userIdentifier}`, () => {
         'Text Field 2': caseData.textField2,
         'Text Field 3': caseData.textField3,
         'Select your gender': caseData.gender,
-        'Choose divorce reasons': caseData.divorceReasons[0],
+        'Choose divorce reasons': caseData.divorceReasons?.[0],
       });
       const person1 = await caseDetailsPage.trRowsToObjectInPage(await createCasePage.findTableInCheckAnswers('Person 1'));
       const person2 = await caseDetailsPage.trRowsToObjectInPage(await createCasePage.findTableInCheckAnswers('Person 2'));
@@ -124,13 +123,13 @@ test.describe(`Create a ${jurisdiction} case as ${userIdentifier}`, () => {
     caseDetailsPage,
     page,
   }) => {
-    caseData = await createCasePage.generateDivorcePoCData({ textField0: 'Hide all', divorceReasons: ['Adultery'] });
+    const caseData = await createCasePage.generateDivorcePoCData({ textField0: 'Hide all', divorceReasons: ['Adultery'] });
     const person1Data = await createCasePage.generateDivorcePoCPersonData({
       gender: 'Male',
     });
 
     await test.step('User fills out the case pages', async () => {
-      await createCasePage.genderRadioButtons.filter({ hasText: caseData.Gender }).first().click();
+      await createCasePage.genderRadioButtons.filter({ hasText: caseData.gender }).first().click();
       await createCasePage.fillDivorcePocSections({
         data: person1Data,
         textFields: {
@@ -190,7 +189,7 @@ test.describe(`Create a ${jurisdiction} case as ${userIdentifier}`, () => {
     caseDetailsPage,
     page,
   }) => {
-    caseData = await createCasePage.generateDivorcePoCData();
+    const caseData = await createCasePage.generateDivorcePoCData();
     const person1Data = await createCasePage.generateDivorcePoCPersonData({
       gender: 'Female',
     });

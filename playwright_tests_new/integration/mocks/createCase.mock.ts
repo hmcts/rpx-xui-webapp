@@ -292,7 +292,7 @@ export function divorcePocCaseData() {
           type: 'MultiSelectList',
           fixedListItems: [
             {
-              code: 'behaviour',
+              code: 'unreasonable-behaviour',
               label: 'Behaviour',
               order: null,
             },
@@ -307,12 +307,12 @@ export function divorcePocCaseData() {
               order: null,
             },
             {
-              code: '2-year',
+              code: 'separation-2-years',
               label: '2-year separation (with consent)',
               order: null,
             },
             {
-              code: '5-year',
+              code: 'separation-5-years',
               label: '5-year separation',
               order: null,
             },
@@ -444,7 +444,8 @@ export function divorcePocCaseData() {
         acls: CREATE_CASE_SHARED_ACLS,
       },
     ],
-    event_token: faker.string.uuid(),
+    event_token:
+     faker.string.uuid(),
     wizard_pages: [
       {
         id: 'createCasePage_1',

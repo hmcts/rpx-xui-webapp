@@ -2,16 +2,32 @@ import { Page } from '@playwright/test';
 import { Base } from '../../base';
 
 export class TaskListPage extends Base {
-  readonly taskListFilterToggle = this.page.locator('.govuk-button.hmcts-button--secondary');
-  readonly selectAllServicesFilter = this.page.locator('input#checkbox_servicesservices_all');
-  readonly selectAllTypesOfWorksFilter = this.page.locator('input#checkbox_types-of-worktypes_of_work_all');
+  readonly taskListFilterToggle = this.page.locator('exui-task-list-filter .govuk-button.hmcts-button--secondary');
+  readonly filterPanel = this.page.locator('xuilib-generic-filter');
+  readonly selectAllServicesFilter = this.filterPanel.locator('input#checkbox_servicesservices_all');
+  readonly selectServicesError = this.filterPanel.locator('#services-error');
+  readonly typesOfWorkCheckBoxes = this.filterPanel.locator('#types-of-work #checkbox_types-of-work .govuk-checkboxes__item');
+  readonly selectAllTypesOfWorksFilter = this.filterPanel.locator('input#checkbox_types-of-worktypes_of_work_all');
+
+  readonly selectTypesOfWorksError = this.page.locator('#types-of-work-error');
   readonly applyFilterButton = this.page.locator('button#applyFilter');
+
+  readonly taskTableTabs = this.page.locator('.hmcts-sub-navigation .hmcts-sub-navigation__link');
+
   readonly taskListTable = this.page.locator('.cdk-table.govuk-table');
-  readonly taskListResultsAmount = this.page.locator('[data-test="search-result-summary__text"]');
+  readonly sortByCaseNameTableHeader = this.taskListTable.locator('#sort_by_caseName');
+  readonly sortByCaseCategoryTableHeader = this.taskListTable.locator('#sort_by_caseCategory');
+  readonly sortByLocationTableHeader = this.taskListTable.locator('#sort_by_locationName');
+  readonly sortByTaskTableHeader = this.taskListTable.locator('#sort_by_taskTitle');
+  readonly sortByDueDateTableHeader = this.taskListTable.locator('#sort_by_dueDate');
+  readonly sortByHearingDateTableHeader = this.taskListTable.locator('#sort_by_next_hearing_date');
+  readonly taskTableHeader = this.taskListTable.locator('thead');
+  readonly taskTableFooter = this.taskListTable.locator('tfoot');
+  readonly taskListResultsAmount = this.page.locator('#search-result-summary__text, [data-test="search-result-summary__text"]');
   readonly manageCaseButtons = this.taskListTable.getByRole('button', { name: 'Manage' });
   readonly errorPageHeading = this.page.getByRole('heading', { name: /something went wrong/i });
   readonly taskActionsRow = this.taskListTable.locator('tr.actions-row[aria-hidden="false"]');
-  // Action links have stable IDs: action_{taskActionId}
+
   readonly taskActionCancel = this.taskListTable.locator('#action_cancel');
   readonly taskActionGoTo = this.taskListTable.locator('#action_go');
   readonly taskActionMarkAsDone = this.taskListTable.locator('#action_complete');
@@ -25,6 +41,12 @@ export class TaskListPage extends Base {
     .or(this.page.getByRole('link', { name: 'Cancel task' }));
   readonly cancelledTaskMessage = this.page.getByText("You've cancelled a task. It has been removed from the task list.");
   readonly taskNoLongerAvailableMessage = this.page.getByText('The task is no longer available.');
+
+  readonly paginationControls = this.page.locator('.ngx-pagination');
+  readonly paginationNextButton = this.paginationControls.locator('.pagination-next');
+  readonly paginationEllipsisButton = this.paginationControls.locator('.ellipsis');
+  readonly paginationPreviousButton = this.paginationControls.locator('.pagination-previous');
+  readonly paginationCurrentPage = this.paginationControls.locator('.current');
 
   constructor(page: Page) {
     super(page);

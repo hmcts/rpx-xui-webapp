@@ -58,7 +58,9 @@ const runContext = process.env.CI ? 'ci' : 'local-run';
 const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
 
 module.exports = defineConfig({
-  testDir: './playwright_tests/E2E',
+  testDir: 'playwright_tests_new/E2E',
+  testMatch: ['**/test/**/*.spec.ts'],
+  testIgnore: ['**/test/smoke/smokeTest.spec.ts'],
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */

@@ -130,7 +130,10 @@ module.exports = (() => {
     use: {
       baseURL: baseUrl,
       trace: 'on-first-retry',
-      screenshot: 'only-on-failure',
+      screenshot: {
+        mode: 'only-on-failure',
+        fullPage: true,
+      },
       video: 'off',
       headless: headlessMode,
     },

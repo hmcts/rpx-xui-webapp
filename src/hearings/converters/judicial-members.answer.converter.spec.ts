@@ -12,14 +12,16 @@ import { JudicialMembersAnswerConverter } from './judicial-members.answer.conver
 
 describe('JudicialMembersAnswerConverter', () => {
   let converter: JudicialMembersAnswerConverter;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let store: Store<any>;
   let router: any;
-  const JUDICAIL_USER_DETAILS = [{
-    memberID: 'P0000001',
-    memberType: MemberType.JUDGE,
-    requirementType: RequirementType.MUSTINC
-  }];
+  const JUDICAIL_USER_DETAILS = [
+    {
+      memberID: 'P0000001',
+      memberType: MemberType.JUDGE,
+      requirementType: RequirementType.MUSTINC,
+    },
+  ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -30,12 +32,12 @@ describe('JudicialMembersAnswerConverter', () => {
           useValue: {
             snapshot: {
               data: {
-                judicialUsers: judicialUsersRefData
-              }
-            }
-          }
-        }
-      ]
+                judicialUsers: judicialUsersRefData,
+              },
+            },
+          },
+        },
+      ],
     });
     store = TestBed.inject(Store);
     router = TestBed.inject(ActivatedRoute);
@@ -45,7 +47,7 @@ describe('JudicialMembersAnswerConverter', () => {
   it('should transform hearing judge name', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
-      panelPreferences: JUDICAIL_USER_DETAILS
+      panelPreferences: JUDICAIL_USER_DETAILS,
     };
     const result$ = converter.transformAnswer(of(STATE), 0);
     const option = '';

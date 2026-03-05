@@ -11,19 +11,21 @@ describe('Hearing Request To Compare Reducer', () => {
           hearingRequestMainModel: {
             requestDetails: {
               timestamp: null,
-              versionNumber: 1
+              versionNumber: 1,
             },
             hearingDetails: {
               duration: null,
               hearingType: null,
               hearingChannels: [],
-              hearingLocations: [{
-                locationId: '196538',
-                locationType: HMCLocationType.COURT
-              }, {
-                locationId: '219164',
-                locationType: HMCLocationType.COURT
-              }
+              hearingLocations: [
+                {
+                  locationId: '196538',
+                  locationType: HMCLocationType.COURT,
+                },
+                {
+                  locationId: '219164',
+                  locationType: HMCLocationType.COURT,
+                },
               ],
               hearingIsLinkedFlag: false,
               hearingWindow: null,
@@ -39,7 +41,7 @@ describe('Hearing Request To Compare Reducer', () => {
               hearingRequester: null,
               leadJudgeContractType: null,
               amendReasonCodes: null,
-              listingAutoChangeReasonCode: null
+              listingAutoChangeReasonCode: null,
             },
             caseDetails: {
               hmctsServiceCode: 'BBA3',
@@ -55,14 +57,19 @@ describe('Hearing Request To Compare Reducer', () => {
               caseCategories: [],
               caseManagementLocationCode: null,
               caserestrictedFlag: false,
-              caseSLAStartDate: null
+              caseSLAStartDate: null,
             },
-            partyDetails: []
+            partyDetails: [],
           },
-          lastError: null
+          lastError: null,
         };
-        const action = new fromHearingRequestToCompareActions.InitializeHearingRequestToCompare(initialHearingRequestState.hearingRequestMainModel);
-        const hearingsState = fromHearingRequestToCompareReducer.hearingRequestToCompareReducer(initialHearingRequestState, action);
+        const action = new fromHearingRequestToCompareActions.InitializeHearingRequestToCompare(
+          initialHearingRequestState.hearingRequestMainModel
+        );
+        const hearingsState = fromHearingRequestToCompareReducer.hearingRequestToCompareReducer(
+          initialHearingRequestState,
+          action
+        );
         expect(hearingsState).toEqual(initialHearingRequestState);
       });
     });

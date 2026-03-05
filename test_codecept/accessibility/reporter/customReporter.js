@@ -15,7 +15,7 @@ function report(runner) {
       onPass(test);
     } else {
       test.state = 'failed';
-      onFail(test, { 'message': 'Accesibility issues reported' });
+      onFail(test, { message: 'Accesibility issues reported' });
     }
   });
   function onPass(test) {
@@ -56,7 +56,7 @@ function generateReport(passCount, failCount, tests, suiteFilename) {
     appName: conf.appName,
     passed: passCount,
     failed: failCount,
-    tests: tests
+    tests: tests,
   };
   consoleReport(reportJson);
 
@@ -85,7 +85,7 @@ function getTestDetails(test) {
     status: test.state,
     error: test.err ? test.err.message : '',
     a11yResult: test.ctx ? test.ctx.a11yResult : '',
-    screenshots: test.ctx ? test.ctx.screenshots : ''
+    screenshots: test.ctx ? test.ctx.screenshots : '',
   };
 }
 
@@ -115,7 +115,7 @@ function consoleReport(reportjson) {
     if (test.status === 'failed') {
       const a11yResult = test.a11yResult;
       console.log('\t \t Test Case : ' + test.name);
-      if (a11yResult === undefined){
+      if (a11yResult === undefined) {
         console.log('\t Test execution failed and no a11y test result returned');
         continue;
       }

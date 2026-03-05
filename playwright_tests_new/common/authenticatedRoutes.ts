@@ -82,5 +82,5 @@ export const authenticatedRoutes = [
   { endpoint: 'workallocation/case/tasks/:caseId/event/:eventId/caseType/:caseType/jurisdiction/:jurisdiction' },
   { endpoint: 'workallocation/roles/:caseId/show-allocate-role-link' },
   { endpoint: 'workallocation/all-work/cases' },
-  { endpoint: 'workallocation/getJudicialUsers' }
+  { endpoint: 'workallocation/getJudicialUsers' },
 ];

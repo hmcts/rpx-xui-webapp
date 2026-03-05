@@ -19,11 +19,8 @@ describe('ErrorPageComponent', () => {
       declarations: [ErrorPageComponent, MockRpxTranslatePipe],
       imports: [RouterTestingModule],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [
-        provideMockStore({ initialState })
-      ]
-    })
-      .compileComponents();
+      providers: [provideMockStore({ initialState })],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

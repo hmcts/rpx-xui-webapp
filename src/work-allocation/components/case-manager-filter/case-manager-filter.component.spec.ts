@@ -17,7 +17,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 @Component({
   standalone: false,
   selector: 'xuilib-generic-filter',
-  template: '<span></span>'
+  template: '<span></span>',
 })
 class MockGenericFilterComponent {
   @Input() public config;
@@ -37,27 +37,27 @@ describe('CaseManagerFilterComponent', () => {
     givenErrors: {
       subscribe: jasmine.createSpy(),
       next: () => null,
-      unsubscribe: () => null
-    }
+      unsubscribe: () => null,
+    },
   };
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
       declarations: [CaseManagerFilterComponent, MockGenericFilterComponent],
-      imports: [CdkTableModule,
-        RouterTestingModule,
-        RpxTranslationModule.forChild()],
+      imports: [CdkTableModule, RouterTestingModule, RpxTranslationModule.forChild()],
       providers: [
-        RpxTranslationService, RpxTranslationConfig,
+        RpxTranslationService,
+        RpxTranslationConfig,
         provideMockStore(),
         { provide: WorkAllocationCaseService, useValue: mockCaseService },
         { provide: LocationDataService, useValue: { getLocations: () => of(ALL_LOCATIONS) } },
         {
-          provide: FilterService, useValue: mockFilterService
+          provide: FilterService,
+          useValue: mockFilterService,
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
     store = TestBed.inject(Store);
     storePipeMock = spyOn(store, 'pipe');

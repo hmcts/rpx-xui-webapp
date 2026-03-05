@@ -9,7 +9,7 @@ import { ActualHearingsUtils } from '../../utils/actual-hearings.utils';
   standalone: false,
   selector: 'exui-hearing-actual-summary-single-day',
   templateUrl: './hearing-actual-summary-single-day.component.html',
-  styleUrls: ['./hearing-actual-summary-single-day.component.scss']
+  styleUrls: ['./hearing-actual-summary-single-day.component.scss'],
 })
 export class HearingActualSummarySingleDayComponent {
   @Input() public hearingActualsMainModel: HearingActualsMainModel;

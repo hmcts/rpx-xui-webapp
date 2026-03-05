@@ -23,15 +23,15 @@ export async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Res
 export async function handleOrganisationRoute(req: EnhancedRequest, res: Response) {
   try {
     const path = `${getConfigValue(SERVICES_PRD_API_URL)}/refdata/external/v1/organisations`;
-    const response = await handleGet(path, req, ((err) => {
+    const response = await handleGet(path, req, (err) => {
       throw err;
-    }));
+    });
     res.send(response.data);
   } catch (error) {
     const errReport = {
       apiError: exists(error, 'data.message') ? error.data.message : 'Unknown Error Occurred',
       apiStatusCode: exists(error, 'status') ? error.status : 500,
-      message: 'Organisation route error'
+      message: 'Organisation route error',
     };
     res.status(errReport.apiStatusCode).send(errReport);
   }

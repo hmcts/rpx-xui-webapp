@@ -13,14 +13,14 @@ Then('I see case list page displayed', async function () {
   expect(await caseListPage.amOnPage(), 'Case list page is not displayed').to.be.true;
 });
 
-Then('I validate workbasket {string} fields displayed', async function(workbasketConfigReference){
+Then('I validate workbasket {string} fields displayed', async function (workbasketConfigReference) {
   const workbasketConfigurator = global.scenarioData[workbasketConfigReference];
   for (const dynamicfield of workbasketConfigurator.getConfig().workbasketInputs) {
     expect(await caseListPage.isWorkbasketFilterDisplayed(dynamicfield)).to.be.true;
   }
 });
 
-Then('I Validate case search request to contain filters from workbasket {string}', async function(workbasketConfigRef){
+Then('I Validate case search request to contain filters from workbasket {string}', async function (workbasketConfigRef) {
   const workbasketConfig = global.scenarioData[workbasketConfigRef].getConfig();
   let caseListReq = null;
   MockApp.addIntercept('/data/internal/searchCases', (req, res, next) => {
@@ -39,7 +39,10 @@ Then('I Validate case search request to contain filters from workbasket {string}
 
   caseListReq = null;
   await caseListPage.clickApplyWorkbasketFilters();
-  await BrowserWaits.waitForCondition(async () => caseListReq !== null, 'Case list search tequest not received /data/internal/searchCases');
+  await BrowserWaits.waitForCondition(
+    async () => caseListReq !== null,
+    'Case list search tequest not received /data/internal/searchCases'
+  );
 
   for (const key of Object.keys(workbasketInputValues)) {
     if (workbasketInputValues[key] instanceof Array) {
@@ -52,7 +55,7 @@ Then('I Validate case search request to contain filters from workbasket {string}
   }
 });
 
-Then('I validate workbasket fixed list items for workbasket {string}', async function(workbasketConfigRef){
+Then('I validate workbasket fixed list items for workbasket {string}', async function (workbasketConfigRef) {
   const workbasketConfig = global.scenarioData[workbasketConfigRef].getConfig();
 
   for (const dynamicfield of workbasketConfig.workbasketInputs) {
@@ -62,7 +65,7 @@ Then('I validate workbasket fixed list items for workbasket {string}', async fun
   }
 });
 
-Then('I Validate case fields displayed and values {string}', async function(workbasketConfigRef){
+Then('I Validate case fields displayed and values {string}', async function (workbasketConfigRef) {
   const workbasketConfig = global.scenarioData[workbasketConfigRef].getConfig();
   const workbasketInputValues = {};
   for (const dynamicfield of workbasketConfig.workbasketInputs) {
@@ -73,7 +76,7 @@ Then('I Validate case fields displayed and values {string}', async function(work
   await caseListPage.caseDataValidation();
 });
 
-Then('I Validate total cases count {string}', async function(workbasketConfigRef){
+Then('I Validate total cases count {string}', async function (workbasketConfigRef) {
   const workbasketConfig = global.scenarioData[workbasketConfigRef].getConfig();
   const reqData = { size: 25 };
 

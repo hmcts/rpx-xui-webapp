@@ -17,31 +17,32 @@ import {
   SERVICES_ROLE_ASSIGNMENT_API_PATH,
   SERVICES_TERMS_AND_CONDITIONS_URL,
   SERVICES_WORK_ALLOCATION_TASK_API_PATH,
-  SERVICE_S2S_PATH
+  SERVICE_S2S_PATH,
 } from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
 import { JUILogger } from '../lib/models';
 const logger: JUILogger = log4jui.getLogger('health');
 
-export const checkServiceHealth = (service) => HealthCheck.web(`${service}/health`, {
-  deadline: 6000,
-  timeout: 6000
-});
+export const checkServiceHealth = (service) =>
+  HealthCheck.web(`${service}/health`, {
+    deadline: 6000,
+    timeout: 6000,
+  });
 
 export interface HealthChecks {
   checks: {
-    ccdComponentApi: any,
-    ccdDataApi: any,
-    documentsApi: any,
-    documentsApiV2: any,
-    docassemblyApi: any,
-    idamApi: any,
-    idamWeb: any,
+    ccdComponentApi: any;
+    ccdDataApi: any;
+    documentsApi: any;
+    documentsApiV2: any;
+    docassemblyApi: any;
+    idamApi: any;
+    idamWeb: any;
     judicialApi?: any;
-    s2s: any,
-    workAllocationApi?: any,
-    roleApi?: any,
-    caseworkerRefApi?: any,
+    s2s: any;
+    workAllocationApi?: any;
+    roleApi?: any;
+    caseworkerRefApi?: any;
   };
 }
 
@@ -54,8 +55,8 @@ const config: HealthChecks = {
     documentsApiV2: checkServiceHealth(getConfigValue(SERVICES_DOCUMENTS_API_PATH_V2)),
     idamApi: checkServiceHealth(getConfigValue(SERVICES_IDAM_LOGIN_URL)),
     idamWeb: checkServiceHealth(getConfigValue(SERVICES_IDAM_API_URL)),
-    s2s: checkServiceHealth(getConfigValue(SERVICE_S2S_PATH))
-  }
+    s2s: checkServiceHealth(getConfigValue(SERVICE_S2S_PATH)),
+  },
 };
 
 if (showFeature(FEATURE_WORKALLOCATION_ENABLED)) {
@@ -68,9 +69,10 @@ if (showFeature(FEATURE_WORKALLOCATION_ENABLED)) {
 export const addReformHealthCheck = (app) => {
   if (showFeature(FEATURE_TERMS_AND_CONDITIONS_ENABLED)) {
     config.checks = {
-      ...config.checks, ...{
-        termsAndConditions: checkServiceHealth(getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL))
-      }
+      ...config.checks,
+      ...{
+        termsAndConditions: checkServiceHealth(getConfigValue(SERVICES_TERMS_AND_CONDITIONS_URL)),
+      },
     };
   }
   if (showFeature(FEATURE_REDIS_ENABLED)) {
@@ -81,8 +83,8 @@ export const addReformHealthCheck = (app) => {
         ...{
           redis: HealthCheck.raw(() => {
             return redisClient.connected ? HealthCheck.up() : HealthCheck.down();
-          })
-        }
+          }),
+        },
       };
     });
     xuiNode.on(SESSION.EVENT.REDIS_CLIENT_ERROR, (error: any) => {

@@ -19,9 +19,9 @@ export async function getAuthCode() {
   const otherParam = {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      Authorization: `Basic ${encode}`
+      Authorization: `Basic ${encode}`,
     },
-    body: ''
+    body: '',
   };
 
   console.log('authcode req ', urlPost);
@@ -39,8 +39,8 @@ export async function getAuthToken() {
   const options = {
     headers: {
       Authorization: `Basic ${Buffer.from(`${idamClient}:${idamSecret}`).toString('base64')}`,
-      'Content-Type': 'application/x-www-form-urlencoded'
-    }
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
   };
 
   const response = await axiosInstance.post(tokenUrlPost, {}, options);

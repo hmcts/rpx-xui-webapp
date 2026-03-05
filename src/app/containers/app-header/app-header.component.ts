@@ -18,7 +18,7 @@ import * as fromActions from '../../store';
 @Component({
   standalone: false,
   selector: 'exui-app-header',
-  templateUrl: './app-header.component.html'
+  templateUrl: './app-header.component.html',
 })
 
 /**
@@ -89,21 +89,22 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     this.serviceMessageCookie = AppConstants.SERVICE_MESSAGE_COOKIE;
 
     this.userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
-    const decorate16DigitCaseReferenceSearchBoxInHeader$ = this.store.pipe(select(fromActions.getDecorate16digitCaseReferenceSearchBoxInHeader));
-    combineLatest([
-      this.userDetails$,
-      decorate16DigitCaseReferenceSearchBoxInHeader$
-    ]).subscribe(([userDetails, decorate16DigitCaseReferenceSearchBoxInHeader]) => {
-      this.userDetails = userDetails;
-      this.setAppHeaderProperties(this.defaultTheme, this.defaultMenuItems);
-      this.setHeaderContent(userDetails);
-      this.decorate16DigitCaseReferenceSearchBoxInHeader = decorate16DigitCaseReferenceSearchBoxInHeader;
+    const decorate16DigitCaseReferenceSearchBoxInHeader$ = this.store.pipe(
+      select(fromActions.getDecorate16digitCaseReferenceSearchBoxInHeader)
+    );
+    combineLatest([this.userDetails$, decorate16DigitCaseReferenceSearchBoxInHeader$]).subscribe(
+      ([userDetails, decorate16DigitCaseReferenceSearchBoxInHeader]) => {
+        this.userDetails = userDetails;
+        this.setAppHeaderProperties(this.defaultTheme, this.defaultMenuItems);
+        this.setHeaderContent(userDetails);
+        this.decorate16DigitCaseReferenceSearchBoxInHeader = decorate16DigitCaseReferenceSearchBoxInHeader;
 
-      // Set up the active link whenever we detect that navigation has completed.
-      this.router.events.subscribe((event) => {
-        this.setNavigationEnd(event);
-      });
-    });
+        // Set up the active link whenever we detect that navigation has completed.
+        this.router.events.subscribe((event) => {
+          this.setNavigationEnd(event);
+        });
+      }
+    );
   }
 
   public async setHeaderContent(userDetails) {
@@ -135,7 +136,7 @@ export class AppHeaderComponent implements OnInit, OnDestroy {
     this.appHeaderTitle = applicationTheme.appTitle;
     this.userNav = {
       label: 'Account navigation',
-      items: this.userRoles.length > 0 ? [{ text: 'Sign out', emit: 'sign-out' }] : []
+      items: this.userRoles.length > 0 ? [{ text: 'Sign out', emit: 'sign-out' }] : [],
     };
     this.backgroundColor = applicationTheme.backgroundColor;
     this.logo = applicationTheme.logo;

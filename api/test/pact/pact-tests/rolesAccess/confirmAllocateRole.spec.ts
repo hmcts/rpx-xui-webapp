@@ -9,7 +9,7 @@ import { requireReloaded } from '../utils/moduleUtil';
 
 const pact = new PactV3TestSetup({
   provider: 'am_roleAssignment_confirmAllocateRole',
-  port: 8000
+  port: 8000,
 });
 
 const REQUEST_BODY = {
@@ -19,48 +19,50 @@ const REQUEST_BODY = {
   state: 1,
   typeOfRole: {
     id: 'lead-judge',
-    name: 'Lead judge'
+    name: 'Lead judge',
   },
   allocateTo: 'Allocate to me',
   personToBeRemoved: {
     id: 'p111111',
     name: 'test1',
-    domain: ''
+    domain: '',
   },
   person: {
     id: 'p222222',
     name: 'test2',
-    domain: ''
+    domain: '',
   },
   durationOfRole: '7 days',
   action: 'allocate',
   period: {
     startDate: '11-07-2023',
-    endDate: '18-07-2023'
+    endDate: '18-07-2023',
   },
-  roleCategory: 'LEGAL_OPERATIONS'
+  roleCategory: 'LEGAL_OPERATIONS',
 };
 
 const ROLE_ASSIGNMENTS_BODY = {
   roleRequest: somethingLike({
     assignerId: somethingLike('123'),
-    replaceExisting: somethingLike(false)
+    replaceExisting: somethingLike(false),
   }),
-  requestedRoles: somethingLike([{
-    roleType: somethingLike('CASE'),
-    grantType: somethingLike('SPECIFIC'),
-    classification: somethingLike('PUBLIC'),
-    attributes: {
-      caseId: somethingLike('1234123412341234'),
-      jurisdiction: somethingLike('IA')
+  requestedRoles: somethingLike([
+    {
+      roleType: somethingLike('CASE'),
+      grantType: somethingLike('SPECIFIC'),
+      classification: somethingLike('PUBLIC'),
+      attributes: {
+        caseId: somethingLike('1234123412341234'),
+        jurisdiction: somethingLike('IA'),
+      },
+      roleName: somethingLike('lead-judge'),
+      roleCategory: somethingLike('LEGAL_OPERATIONS'),
+      actorIdType: somethingLike('IDAM'),
+      actorId: somethingLike('123'),
+      beginTime: somethingLike('11-07-2023'),
+      endTime: somethingLike('18-07-2023'),
     },
-    roleName: somethingLike('lead-judge'),
-    roleCategory: somethingLike('LEGAL_OPERATIONS'),
-    actorIdType: somethingLike('IDAM'),
-    actorId: somethingLike('123'),
-    beginTime: somethingLike('11-07-2023'),
-    endTime: somethingLike('18-07-2023')
-  }])
+  ]),
 };
 
 describe('access management service, confirm allocate role', () => {
@@ -72,7 +74,7 @@ describe('access management service, confirm allocate role', () => {
       next = sandbox.spy();
     });
 
-    before(async() => {
+    before(async () => {
       const roleAssignmentInteraction = {
         states: [{ description: 'Confirm allocate role for user' }],
         uponReceiving: 'confirm role allocation',
@@ -80,19 +82,20 @@ describe('access management service, confirm allocate role', () => {
           method: 'POST',
           path: '/am/role-assignments',
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
-          body: ROLE_ASSIGNMENTS_BODY
+          body: ROLE_ASSIGNMENTS_BODY,
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
+            'content-type':
+              'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0',
           },
-          body: {}
-        }
+          body: {},
+        },
       };
       const refreshRoleAssignmentInteraction = {
         states: [{ description: 'An actor with provided id is available in role assignment service' }],
@@ -101,17 +104,18 @@ describe('access management service, confirm allocate role', () => {
           method: 'GET',
           path: '/am/role-assignments/actors/123',
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
-          }
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
+          },
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
-          }
-        }
+            'content-type':
+              'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0',
+          },
+        },
       };
 
       pact.provider.addInteraction(roleAssignmentInteraction);
@@ -125,9 +129,7 @@ describe('access management service, confirm allocate role', () => {
 
     it('returns the correct response', async () => {
       return pact.provider.executeTest(async (mockServer) => {
-        const configValues = getAccessManagementServiceAPIOverrides(
-          mockServer.url
-        );
+        const configValues = getAccessManagementServiceAPIOverrides(mockServer.url);
         sandbox.stub(config, 'get').callsFake((prop) => {
           return configValues[prop];
         });
@@ -135,12 +137,12 @@ describe('access management service, confirm allocate role', () => {
         const { confirmAllocateRole } = requireReloaded('../../../../roleAccess/index');
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
           session: { passport: { user: { userinfo: { id: '123' } } } },
-          body: REQUEST_BODY
+          body: REQUEST_BODY,
         });
 
         let returnedResponse = null;

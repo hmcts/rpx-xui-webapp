@@ -52,8 +52,8 @@ describe('ActualHearingsUtils', () => {
     day.pauseDateTimes = [
       {
         pauseStartTime: '2021-03-12T09:20:00.000Z',
-        pauseEndTime: '2021-03-12T09:30:00.000Z'
-      }
+        pauseEndTime: '2021-03-12T09:30:00.000Z',
+      },
     ];
     const result = ActualHearingsUtils.getPauseDateTime(day, 'start');
     expect(result).toBe('2021-03-12T09:20:00.000Z');
@@ -65,8 +65,8 @@ describe('ActualHearingsUtils', () => {
     day.pauseDateTimes = [
       {
         pauseStartTime: '2021-03-12T09:20:00.000Z',
-        pauseEndTime: '2021-03-12T09:30:00.000Z'
-      }
+        pauseEndTime: '2021-03-12T09:30:00.000Z',
+      },
     ];
     const result = ActualHearingsUtils.getPauseDateTime(day, 'end');
     expect(result).toBe('2021-03-12T09:30:00.000Z');

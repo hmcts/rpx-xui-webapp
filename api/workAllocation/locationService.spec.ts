@@ -9,7 +9,7 @@ import {
   handleLocationGet,
   commonGetFullLocation,
   getFullLocationsForServices,
-  getRegionLocationsForServices
+  getRegionLocationsForServices,
 } from './locationService';
 import * as configurationModule from '../configuration';
 import * as refDataUtils from '../ref-data/ref-data-utils';
@@ -27,18 +27,18 @@ describe('Location Service', () => {
   const mockCourtVenues = [
     { epimms_id: '123456', site_name: 'Test Court 1', is_case_management_location: 'Y', region_id: 'region1' },
     { epimms_id: '789012', site_name: 'Test Court 2', is_case_management_location: 'N', region_id: 'region1' },
-    { epimms_id: '345678', site_name: 'Test Court 3', is_case_management_location: 'Y', region_id: 'region2' }
+    { epimms_id: '345678', site_name: 'Test Court 3', is_case_management_location: 'Y', region_id: 'region2' },
   ];
 
   const mockLocationResponse = {
     data: {
-      court_venues: mockCourtVenues
-    }
+      court_venues: mockCourtVenues,
+    },
   };
 
   const mockServiceRefDataMapping = [
     { service: 'IA', serviceCodes: ['BFA1', 'BFA2'] },
-    { service: 'CIVIL', serviceCodes: ['AAA6', 'AAA7'] }
+    { service: 'CIVIL', serviceCodes: ['AAA6', 'AAA7'] },
   ];
 
   beforeEach(() => {
@@ -77,16 +77,19 @@ describe('Location Service', () => {
       const req = mockReq({
         headers: {
           authorization: 'Bearer token123',
-          'user-roles': 'caseworker'
-        }
+          'user-roles': 'caseworker',
+        },
       });
       const httpStub = sandbox.stub(http, 'get').resolves(res);
 
       await handleLocationGet(path, req);
 
-      expect(httpStub).to.have.been.calledWith(path, sinon.match({
-        headers: sinon.match.object
-      }));
+      expect(httpStub).to.have.been.calledWith(
+        path,
+        sinon.match({
+          headers: sinon.match.object,
+        })
+      );
     });
   });
 
@@ -98,14 +101,16 @@ describe('Location Service', () => {
 
     beforeEach(() => {
       getConfigValueStub = sandbox.stub(configurationModule, 'getConfigValue').returns('http://localhost:8080');
-      getServiceRefDataMappingListStub = sandbox.stub(refDataUtils, 'getServiceRefDataMappingList').returns(mockServiceRefDataMapping);
+      getServiceRefDataMappingListStub = sandbox
+        .stub(refDataUtils, 'getServiceRefDataMappingList')
+        .returns(mockServiceRefDataMapping);
       prepareGetLocationsUrlStub = sandbox.stub(util, 'prepareGetLocationsUrl').returns('http://localhost:8080/locations/BFA1');
       httpStub = sandbox.stub(http, 'get').resolves(mockLocationResponse);
     });
 
     it('should return filtered case management locations when allLocations is true', async () => {
       const req = mockReq({
-        query: { serviceCodes: 'IA' }
+        query: { serviceCodes: 'IA' },
       });
 
       const result = await commonGetFullLocation(req, true);
@@ -119,7 +124,7 @@ describe('Location Service', () => {
 
     it('should return all locations when allLocations is false', async () => {
       const req = mockReq({
-        query: { serviceCodes: 'IA' }
+        query: { serviceCodes: 'IA' },
       });
 
       const result = await commonGetFullLocation(req, false);
@@ -131,7 +136,7 @@ describe('Location Service', () => {
 
     it('should handle multiple service codes', async () => {
       const req = mockReq({
-        query: { serviceCodes: 'IA,CIVIL' }
+        query: { serviceCodes: 'IA,CIVIL' },
       });
 
       await commonGetFullLocation(req, false);
@@ -145,14 +150,14 @@ describe('Location Service', () => {
         data: {
           court_venues: [
             { epimms_id: '123456', site_name: 'Test Court 1', is_case_management_location: 'Y', region_id: 'region1' },
-            { epimms_id: '123456', site_name: 'Test Court 1', is_case_management_location: 'Y', region_id: 'region1' }
-          ]
-        }
+            { epimms_id: '123456', site_name: 'Test Court 1', is_case_management_location: 'Y', region_id: 'region1' },
+          ],
+        },
       };
       httpStub.resolves(duplicateResponse);
 
       const req = mockReq({
-        query: { serviceCodes: 'IA' }
+        query: { serviceCodes: 'IA' },
       });
 
       const result = await commonGetFullLocation(req, false);
@@ -162,7 +167,7 @@ describe('Location Service', () => {
 
     it('should handle empty service codes', async () => {
       const req = mockReq({
-        query: { serviceCodes: '' }
+        query: { serviceCodes: '' },
       });
 
       const result = await commonGetFullLocation(req, false);
@@ -173,7 +178,7 @@ describe('Location Service', () => {
 
     it('should handle HTTP errors gracefully', async () => {
       const req = mockReq({
-        query: { serviceCodes: 'IA' }
+        query: { serviceCodes: 'IA' },
       });
       httpStub.rejects(new Error('Service unavailable'));
 
@@ -194,14 +199,16 @@ describe('Location Service', () => {
 
     beforeEach(() => {
       getConfigValueStub = sandbox.stub(configurationModule, 'getConfigValue').returns('http://localhost:8080');
-      getServiceRefDataMappingListStub = sandbox.stub(refDataUtils, 'getServiceRefDataMappingList').returns(mockServiceRefDataMapping);
+      getServiceRefDataMappingListStub = sandbox
+        .stub(refDataUtils, 'getServiceRefDataMappingList')
+        .returns(mockServiceRefDataMapping);
       prepareGetLocationsUrlStub = sandbox.stub(util, 'prepareGetLocationsUrl').returns('http://localhost:8080/locations/BFA1');
       httpStub = sandbox.stub(http, 'get').resolves(mockLocationResponse);
     });
 
     it('should return court venues for bookable services', async () => {
       const req = mockReq({
-        body: { bookableServices: ['IA'] }
+        body: { bookableServices: ['IA'] },
       });
 
       const result = await getFullLocationsForServices(req);
@@ -212,7 +219,7 @@ describe('Location Service', () => {
 
     it('should handle multiple bookable services', async () => {
       const req = mockReq({
-        body: { bookableServices: ['IA', 'CIVIL'] }
+        body: { bookableServices: ['IA', 'CIVIL'] },
       });
 
       const result = await getFullLocationsForServices(req);
@@ -223,7 +230,7 @@ describe('Location Service', () => {
 
     it('should handle empty bookable services', async () => {
       const req = mockReq({
-        body: { bookableServices: [] }
+        body: { bookableServices: [] },
       });
 
       const result = await getFullLocationsForServices(req);
@@ -234,7 +241,7 @@ describe('Location Service', () => {
 
     it('should handle services not in mapping', async () => {
       const req = mockReq({
-        body: { bookableServices: ['UNKNOWN_SERVICE'] }
+        body: { bookableServices: ['UNKNOWN_SERVICE'] },
       });
 
       const result = await getFullLocationsForServices(req);
@@ -245,7 +252,7 @@ describe('Location Service', () => {
 
     it('should handle HTTP errors', async () => {
       const req = mockReq({
-        body: { bookableServices: ['IA'] }
+        body: { bookableServices: ['IA'] },
       });
       httpStub.rejects(new Error('API Error'));
 
@@ -266,14 +273,16 @@ describe('Location Service', () => {
 
     beforeEach(() => {
       getConfigValueStub = sandbox.stub(configurationModule, 'getConfigValue').returns('http://localhost:8080');
-      getServiceRefDataMappingListStub = sandbox.stub(refDataUtils, 'getServiceRefDataMappingList').returns(mockServiceRefDataMapping);
+      getServiceRefDataMappingListStub = sandbox
+        .stub(refDataUtils, 'getServiceRefDataMappingList')
+        .returns(mockServiceRefDataMapping);
       prepareGetLocationsUrlStub = sandbox.stub(util, 'prepareGetLocationsUrl').returns('http://localhost:8080/locations/BFA1');
       httpStub = sandbox.stub(http, 'get').resolves(mockLocationResponse);
     });
 
     it('should return region locations mapping', async () => {
       const req = mockReq({
-        body: { serviceIds: ['IA'] }
+        body: { serviceIds: ['IA'] },
       });
 
       const result = await getRegionLocationsForServices(req);
@@ -281,17 +290,17 @@ describe('Location Service', () => {
       expect(result).to.have.length(2); // 2 unique regions
       expect(result).to.deep.include({
         regionId: 'region1',
-        locations: ['123456', '789012', '123456', '789012'] // Duplicated for each service code
+        locations: ['123456', '789012', '123456', '789012'], // Duplicated for each service code
       });
       expect(result).to.deep.include({
         regionId: 'region2',
-        locations: ['345678', '345678'] // Duplicated for each service code
+        locations: ['345678', '345678'], // Duplicated for each service code
       });
     });
 
     it('should handle multiple service IDs', async () => {
       const req = mockReq({
-        body: { serviceIds: ['IA', 'CIVIL'] }
+        body: { serviceIds: ['IA', 'CIVIL'] },
       });
 
       const result = await getRegionLocationsForServices(req);
@@ -302,7 +311,7 @@ describe('Location Service', () => {
 
     it('should handle empty service IDs', async () => {
       const req = mockReq({
-        body: { serviceIds: [] }
+        body: { serviceIds: [] },
       });
 
       const result = await getRegionLocationsForServices(req);
@@ -313,7 +322,7 @@ describe('Location Service', () => {
 
     it('should handle services not in mapping', async () => {
       const req = mockReq({
-        body: { serviceIds: ['UNKNOWN_SERVICE'] }
+        body: { serviceIds: ['UNKNOWN_SERVICE'] },
       });
 
       const result = await getRegionLocationsForServices(req);
@@ -329,14 +338,14 @@ describe('Location Service', () => {
           court_venues: [
             { epimms_id: '111', site_name: 'Court A', region_id: 'region1' },
             { epimms_id: '222', site_name: 'Court B', region_id: 'region1' },
-            { epimms_id: '333', site_name: 'Court C', region_id: 'region2' }
-          ]
-        }
+            { epimms_id: '333', site_name: 'Court C', region_id: 'region2' },
+          ],
+        },
       };
       httpStub.resolves(sameRegionResponse);
 
       const req = mockReq({
-        body: { serviceIds: ['IA'] }
+        body: { serviceIds: ['IA'] },
       });
 
       const result = await getRegionLocationsForServices(req);
@@ -352,7 +361,7 @@ describe('Location Service', () => {
 
     it('should handle HTTP errors', async () => {
       const req = mockReq({
-        body: { serviceIds: ['IA'] }
+        body: { serviceIds: ['IA'] },
       });
       httpStub.rejects(new Error('Network Error'));
 
@@ -367,13 +376,13 @@ describe('Location Service', () => {
     it('should handle empty court venues response', async () => {
       const emptyResponse = {
         data: {
-          court_venues: []
-        }
+          court_venues: [],
+        },
       };
       httpStub.resolves(emptyResponse);
 
       const req = mockReq({
-        body: { serviceIds: ['IA'] }
+        body: { serviceIds: ['IA'] },
       });
 
       const result = await getRegionLocationsForServices(req);

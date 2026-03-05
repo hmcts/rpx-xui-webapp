@@ -8,32 +8,34 @@ const axios = require('axios');
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 axios.defaults.headers.common['Content-Type'] = 'application/json';
-const axiosOptions = {
-
-};
+const axiosOptions = {};
 axios.defaults.withCredentials = true;
 
 const http = axios.create(axiosOptions);
 const nodeAppMockData = require('../mockData/nodeApp/mockData');
-class BrowserUtil{
-  async gotoHomePage(){
+class BrowserUtil {
+  async gotoHomePage() {
     const baseUrl = process.env.TEST_TYPE === 'e2e' ? process.env.TEST_URL : 'http://localhost:3000/';
     await browser.get(baseUrl);
   }
 
-  setAuthCookie(){
-    const token = jwt.sign({
-      data: 'foobar'
-    }, 'secret', { expiresIn: 60 * 60 });
+  setAuthCookie() {
+    const token = jwt.sign(
+      {
+        data: 'foobar',
+      },
+      'secret',
+      { expiresIn: 60 * 60 }
+    );
     this.addCookie('__auth__', token);
   }
 
-  async getAuthCookieValue(){
+  async getAuthCookieValue() {
     const cookies = await browser.driver.manage().getCookies();
     return cookies.find((cookie) => cookie.name === '__auth__').value;
   }
 
-  addCookie(cookieName, cookieVal){
+  addCookie(cookieName, cookieVal) {
     const cookie = {
       name: cookieName,
       value: cookieVal,
@@ -41,16 +43,16 @@ class BrowserUtil{
       path: '/',
       httpOnly: false,
       secure: false,
-      session: true
+      session: true,
     };
     browser.manage().addCookie(cookie);
   }
 
-  async browserInitWithAuth(roles){
+  async browserInitWithAuth(roles) {
     await this.gotoHomePage();
     this.setAuthCookie();
 
-    if (roles){
+    if (roles) {
       console.log('j:' + JSON.stringify(roles));
       const encodedRoles = encodeURIComponent('j:' + JSON.stringify(roles));
       console.log(encodedRoles);
@@ -64,42 +66,46 @@ class BrowserUtil{
     nodeAppMockData.getUserDetailsWithRoles(rolesArray);
   }
 
-  async waitForLD(){
+  async waitForLD() {
     try {
       return await this.waitForNetworkResponse('app.launchdarkly.com/sdk/evalx');
-    } catch (err){
+    } catch (err) {
       reportLogger.AddMessage(err);
       console.log(err);
       return false;
     }
   }
 
-  onLDReceivedLogFeatureValue(name){
+  onLDReceivedLogFeatureValue(name) {
     let togglesToLogs = global.scenarioData.featureToggleToLog;
-    if (!togglesToLogs){
+    if (!togglesToLogs) {
       global.scenarioData.featureToggleToLog = [];
       togglesToLogs = global.scenarioData.featureToggleToLog;
     }
     togglesToLogs.push(name);
   }
 
-  async waitForNetworkResponse(url){
+  async waitForNetworkResponse(url) {
     const startTime = new Date();
     let elapsedTime = 0;
     let ldDone = false;
     // let logs = await browser.browserLogs()
     while (!ldDone && elapsedTime < 15) {
-      let perf = await browser.executeScript(function(){
+      let perf = await browser.executeScript(function () {
         return JSON.stringify(window.performance.getEntriesByType('resource'));
       });
-      if (!perf){
+      if (!perf) {
         break;
       }
       perf = JSON.parse(perf);
       for (let i = 0; i < perf.length; i++) {
         if (perf[i].name.includes(url)) {
           ldDone = true;
-          await this.stepWithRetry(async () => global.scenarioData.featureToggles = (await http.get(perf[i].name, {})).data, 3, 'Get LD feature toggles request');
+          await this.stepWithRetry(
+            async () => (global.scenarioData.featureToggles = (await http.get(perf[i].name, {})).data),
+            3,
+            'Get LD feature toggles request'
+          );
           // await browser.sleep(2000);
           reportLogger.AddMessage('LD response received');
           // this.logFeatureToggleForScenario();
@@ -114,12 +120,12 @@ class BrowserUtil{
     return false;
   }
 
-  logFeatureToggleForScenario(){
+  logFeatureToggleForScenario() {
     const ldfeatureToggles = global.scenarioData.featureToggles;
     const togglesToLogs = global.scenarioData.featureToggleToLog;
     reportLogger.AddMessage(`LOgging scenario features toggle values ${JSON.stringify(togglesToLogs)}`);
 
-    if (!togglesToLogs){
+    if (!togglesToLogs) {
       return;
     }
     const toggleValuesToLog = {};
@@ -131,12 +137,11 @@ class BrowserUtil{
     reportLogger.AddJson(toggleValuesToLog);
   }
 
-  async addScreenshot(thisTest, onBrowser){
+  async addScreenshot(thisTest, onBrowser) {
     // addContext(thisTest, {
     //     title: "screenshot",
     //     // value: await reportLogger.getScreenshot(global.screenShotUtils),
     //     value: "test"
-
     // });
   }
 
@@ -154,36 +159,41 @@ class BrowserUtil{
     }
   }
 
-  async getScenarioIdCookieValue(){
+  async getScenarioIdCookieValue() {
     const scenarioId = await browser.manage().getCookie('scenarioId');
     return scenarioId ? scenarioId.value : null;
   }
 
-  async isTextPresentInElementWithCssSelector(cssSelector, text){
+  async isTextPresentInElementWithCssSelector(cssSelector, text) {
     const elementtext = await $(cssSelector).getText();
     return elementtext.includes(text);
   }
 
-  async addTextToElementWithCssSelector(cssSelector, text, append){
-    return await browser.executeScript(() => {
-      const div = document.querySelector(arguments[0]);
-      if (div === undefined || div == null){
-        return `no element found with query selector ${arguments[0]}`;
-      }
-      if (arguments[2]){
-        div.innerHTML += arguments[1];
-      } else {
-        div.innerHTML = arguments[1];
-      }
-      return 'success';
-    }, cssSelector, text, append);
+  async addTextToElementWithCssSelector(cssSelector, text, append) {
+    return await browser.executeScript(
+      () => {
+        const div = document.querySelector(arguments[0]);
+        if (div === undefined || div == null) {
+          return `no element found with query selector ${arguments[0]}`;
+        }
+        if (arguments[2]) {
+          div.innerHTML += arguments[1];
+        } else {
+          div.innerHTML = arguments[1];
+        }
+        return 'success';
+      },
+      cssSelector,
+      text,
+      append
+    );
   }
 
-  async scrollToElement(element){
+  async scrollToElement(element) {
     await browser.scrollToElement(element);
   }
 
-  async getFromSessionStorage(key){
+  async getFromSessionStorage(key) {
     return await browser.getSessionStorage(key);
   }
 

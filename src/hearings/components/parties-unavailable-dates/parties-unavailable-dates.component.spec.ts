@@ -8,9 +8,8 @@ describe('PartiesUnavailableDatesComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [PartiesUnavailableDatesComponent, MockRpxTranslatePipe]
-    })
-      .compileComponents();
+      declarations: [PartiesUnavailableDatesComponent, MockRpxTranslatePipe],
+    }).compileComponents();
     fixture = TestBed.createComponent(PartiesUnavailableDatesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

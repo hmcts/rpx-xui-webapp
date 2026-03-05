@@ -41,148 +41,192 @@ export class HearingRequestEffects {
     private readonly appStore: Store<fromAppReducers.State>,
     private readonly loggerService: LoggerService
   ) {
-    this.screenNavigations$ = this.hearingStore.pipe(select(fromHearingSelectors.getHearingValuesModel)).pipe(
-      map((hearingValuesModel) => hearingValuesModel ? hearingValuesModel.screenFlow : []));
-    this.hearingStore.pipe(select(fromHearingReducers.getHearingsFeatureState)).subscribe(
-      (state) => {
-        this.caseId = state.hearingList.hearingListMainModel ? state.hearingList.hearingListMainModel.caseRef : '';
-        this.hearingId = state.hearingRequest.hearingRequestMainModel?.requestDetails?.hearingRequestID;
-        this.mode = state.hearingConditions.hasOwnProperty(KEY_MODE) ? state.hearingConditions[KEY_MODE] : Mode.CREATE;
-        this.isHearingAmendmentsEnabled = state.hearingConditions.hasOwnProperty(KEY_IS_HEARING_AMENDMENTS_ENABLED) ? state.hearingConditions[KEY_IS_HEARING_AMENDMENTS_ENABLED] : false;
-        this.fragmentId = state.hearingConditions.hasOwnProperty(KEY_FRAGMENT_ID) ? state.hearingConditions[KEY_FRAGMENT_ID] : '';
-        this.jurisdiction = state?.hearingValues?.caseInfo?.jurisdictionId;
-        this.caseType = state?.hearingValues?.caseInfo?.caseType;
-      }
-    );
+    this.screenNavigations$ = this.hearingStore
+      .pipe(select(fromHearingSelectors.getHearingValuesModel))
+      .pipe(map((hearingValuesModel) => (hearingValuesModel ? hearingValuesModel.screenFlow : [])));
+    this.hearingStore.pipe(select(fromHearingReducers.getHearingsFeatureState)).subscribe((state) => {
+      this.caseId = state.hearingList.hearingListMainModel ? state.hearingList.hearingListMainModel.caseRef : '';
+      this.hearingId = state.hearingRequest.hearingRequestMainModel?.requestDetails?.hearingRequestID;
+      this.mode = state.hearingConditions.hasOwnProperty(KEY_MODE) ? state.hearingConditions[KEY_MODE] : Mode.CREATE;
+      this.isHearingAmendmentsEnabled = state.hearingConditions.hasOwnProperty(KEY_IS_HEARING_AMENDMENTS_ENABLED)
+        ? state.hearingConditions[KEY_IS_HEARING_AMENDMENTS_ENABLED]
+        : false;
+      this.fragmentId = state.hearingConditions.hasOwnProperty(KEY_FRAGMENT_ID) ? state.hearingConditions[KEY_FRAGMENT_ID] : '';
+      this.jurisdiction = state?.hearingValues?.caseInfo?.jurisdictionId;
+      this.caseType = state?.hearingValues?.caseInfo?.caseType;
+    });
   }
 
-  public backNavigation$ = createEffect(() => this.actions$.pipe(
-    ofType(hearingRequestActions.NAVIGATE_BACK_HEARING_REQUEST),
-    switchMap(() => {
-      switch (this.mode) {
-        case Mode.CREATE:
-        case Mode.CREATE_EDIT:
-        case Mode.VIEW:
-        case Mode.VIEW_EDIT:
-          this.location.back();
-          return of(null); // Return an observable that emits null and then completes
-        default:
-          return from(this.router.navigate(['cases', 'case-details', this.jurisdiction, this.caseType, this.caseId, 'hearings']));
-      }
-    })
-  ), { dispatch: false });
-
-  public continueNavigation$ = createEffect(() => this.actions$.pipe(
-    ofType(hearingRequestActions.UPDATE_HEARING_REQUEST),
-    tap(() => {
-      const nextPage = this.isHearingAmendmentsEnabled
-        ? ''
-        : this.pageFlow.getNextPage(this.screenNavigations$);
-      switch (this.mode) {
-        case Mode.CREATE:
-          if (nextPage) {
-            this.router.navigate(['hearings', 'request', nextPage])
-              .catch((err) => this.loggerService.error(`Error navigating to hearings/request/${nextPage} `, err));
-          } else {
-            throw new Error('Next page not found');
+  public backNavigation$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(hearingRequestActions.NAVIGATE_BACK_HEARING_REQUEST),
+        switchMap(() => {
+          switch (this.mode) {
+            case Mode.CREATE:
+            case Mode.CREATE_EDIT:
+            case Mode.VIEW:
+            case Mode.VIEW_EDIT:
+              this.location.back();
+              return of(null); // Return an observable that emits null and then completes
+            default:
+              return from(
+                this.router.navigate(['cases', 'case-details', this.jurisdiction, this.caseType, this.caseId, 'hearings'])
+              );
           }
-          break;
-
-        case Mode.CREATE_EDIT:
-          if (nextPage === HearingRequestEffects.WELSH_PAGE) {
-            this.router.navigate(['hearings', 'request', nextPage])
-              .catch((err) => this.loggerService.error(`Error navigating to hearings/request/${nextPage} `, err));
-          } else {
-            this.router.navigate(['hearings', 'request', 'hearing-create-edit-summary'], { fragment: this.fragmentId })
-              .catch((err) => this.loggerService.error(`Error navigating to hearings/request/hearing-create-edit-summary#${this.fragmentId} `, err));
-          }
-          break;
-
-        case Mode.VIEW_EDIT:
-          if (nextPage === HearingRequestEffects.WELSH_PAGE) {
-            this.router.navigate(['hearings', 'request', nextPage])
-              .catch((err) => this.loggerService.error(`Error navigating to hearings/request/${nextPage} `, err));
-          } else {
-            const pageRouteName = this.isHearingAmendmentsEnabled
-              ? HearingRequestPageRouteNames.HEARING_EDIT_SUMMARY
-              : HearingRequestPageRouteNames.HEARING_VIEW_EDIT_SUMMARY;
-            this.router.navigate(['hearings', 'request', pageRouteName], { fragment: this.fragmentId })
-              .catch((err) => this.loggerService.error(`Error navigating to hearings/request/${pageRouteName}#${this.fragmentId} `, err));
-          }
-          break;
-
-        default:
-          this.router.navigate(['cases', 'case-details', this.jurisdiction, this.caseType, this.caseId, 'hearings'])
-            .catch((err) => this.loggerService.error('Error navigating to cases/case-details/jurisdiction/caseType/caseId/hearings ', err));
-          break;
-      }
-    })
-  ), { dispatch: false });
-
-  public loadHearingRequest$ = createEffect(() => this.actions$.pipe(
-    ofType(hearingRequestActions.LOAD_HEARING_REQUEST),
-    map((action: hearingRequestActions.LoadHearingRequest) => action.payload),
-    switchMap((payload) => {
-      return this.hearingsService.loadHearingRequest(payload.hearingID).pipe(
-        tap((hearingRequestMainModel) => {
-          this.hearingStore.dispatch(new hearingRequestToCompareActions.InitializeHearingRequestToCompare(hearingRequestMainModel));
-          this.hearingStore.dispatch(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
-          if (payload.targetURL) {
-            this.router.navigateByUrl(payload.targetURL, { state: { hearingId: payload.hearingID, caseRef: payload.caseRef } })
-              .catch((err) => this.loggerService.error(`Error navigating to ${payload.targetURL}`, err));
-          }
-        }),
-        catchError((error) => {
-          this.appStore.dispatch(new fromAppStoreActions.Go({ path: ['/hearings/error'] }));
-          return of(error);
         })
-      );
-    })
-  ), { dispatch: false });
+      ),
+    { dispatch: false }
+  );
 
-  public submitHearingRequest$ = createEffect(() => this.actions$.pipe(
-    ofType(hearingRequestActions.SUBMIT_HEARING_REQUEST),
-    map((action: hearingRequestActions.SubmitHearingRequest) => action.payload),
-    switchMap((payload) => {
-      return this.hearingsService.submitHearingRequest(payload).pipe(
-        tap(
-          () => {
-            this.router.navigate(['hearings', 'request', 'hearing-confirmation'])
-              .catch((err) => this.loggerService.error('Error navigating to /hearings/request/hearing-confirmation', err));
-          }),
-        catchError((error) => {
-          this.hearingStore.dispatch(new hearingRequestActions.SubmitHearingRequestFailure(error));
-          return of(error);
+  public continueNavigation$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(hearingRequestActions.UPDATE_HEARING_REQUEST),
+        tap(() => {
+          const nextPage = this.isHearingAmendmentsEnabled ? '' : this.pageFlow.getNextPage(this.screenNavigations$);
+          switch (this.mode) {
+            case Mode.CREATE:
+              if (nextPage) {
+                this.router
+                  .navigate(['hearings', 'request', nextPage])
+                  .catch((err) => this.loggerService.error(`Error navigating to hearings/request/${nextPage} `, err));
+              } else {
+                throw new Error('Next page not found');
+              }
+              break;
+
+            case Mode.CREATE_EDIT:
+              if (nextPage === HearingRequestEffects.WELSH_PAGE) {
+                this.router
+                  .navigate(['hearings', 'request', nextPage])
+                  .catch((err) => this.loggerService.error(`Error navigating to hearings/request/${nextPage} `, err));
+              } else {
+                this.router
+                  .navigate(['hearings', 'request', 'hearing-create-edit-summary'], { fragment: this.fragmentId })
+                  .catch((err) =>
+                    this.loggerService.error(
+                      `Error navigating to hearings/request/hearing-create-edit-summary#${this.fragmentId} `,
+                      err
+                    )
+                  );
+              }
+              break;
+
+            case Mode.VIEW_EDIT:
+              if (nextPage === HearingRequestEffects.WELSH_PAGE) {
+                this.router
+                  .navigate(['hearings', 'request', nextPage])
+                  .catch((err) => this.loggerService.error(`Error navigating to hearings/request/${nextPage} `, err));
+              } else {
+                const pageRouteName = this.isHearingAmendmentsEnabled
+                  ? HearingRequestPageRouteNames.HEARING_EDIT_SUMMARY
+                  : HearingRequestPageRouteNames.HEARING_VIEW_EDIT_SUMMARY;
+                this.router
+                  .navigate(['hearings', 'request', pageRouteName], { fragment: this.fragmentId })
+                  .catch((err) =>
+                    this.loggerService.error(`Error navigating to hearings/request/${pageRouteName}#${this.fragmentId} `, err)
+                  );
+              }
+              break;
+
+            default:
+              this.router
+                .navigate(['cases', 'case-details', this.jurisdiction, this.caseType, this.caseId, 'hearings'])
+                .catch((err) =>
+                  this.loggerService.error('Error navigating to cases/case-details/jurisdiction/caseType/caseId/hearings ', err)
+                );
+              break;
+          }
         })
-      );
-    })
-  ), { dispatch: false });
+      ),
+    { dispatch: false }
+  );
 
-  public submitHearingReason$ = createEffect(() => this.actions$.pipe(
-    ofType(hearingRequestActions.VIEW_EDIT_SUBMIT_HEARING_REASON),
-    tap(() => {
-      this.router.navigate(['hearings', 'request', 'hearing-change-reason'])
-        .catch((err) => this.loggerService.error('Error navigating to /hearings/request/hearing-change-reason', err));
-    })
-  ), { dispatch: false });
-
-  public viewEditSubmitHearingRequest$ = createEffect(() => this.actions$.pipe(
-    ofType(hearingRequestActions.VIEW_EDIT_SUBMIT_HEARING_REQUEST),
-    map((action: hearingRequestActions.ViewEditSubmitHearingRequest) => action.payload),
-    switchMap((payload) => {
-      return this.hearingsService.updateHearingRequest(payload).pipe(
-        tap(
-          () => {
-            this.router.navigate(['hearings', 'request', 'hearing-confirmation'])
-              .catch((err) => this.loggerService.error('Error navigating to /hearings/request/hearing-confirmation', err));
-          }),
-        catchError((error) => {
-          this.hearingStore.dispatch(new hearingRequestActions.UpdateHearingRequestFailure(error));
-          return of(error);
+  public loadHearingRequest$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(hearingRequestActions.LOAD_HEARING_REQUEST),
+        map((action: hearingRequestActions.LoadHearingRequest) => action.payload),
+        switchMap((payload) => {
+          return this.hearingsService.loadHearingRequest(payload.hearingID).pipe(
+            tap((hearingRequestMainModel) => {
+              this.hearingStore.dispatch(
+                new hearingRequestToCompareActions.InitializeHearingRequestToCompare(hearingRequestMainModel)
+              );
+              this.hearingStore.dispatch(new hearingRequestActions.InitializeHearingRequest(hearingRequestMainModel));
+              if (payload.targetURL) {
+                this.router
+                  .navigateByUrl(payload.targetURL, { state: { hearingId: payload.hearingID, caseRef: payload.caseRef } })
+                  .catch((err) => this.loggerService.error(`Error navigating to ${payload.targetURL}`, err));
+              }
+            }),
+            catchError((error) => {
+              this.appStore.dispatch(new fromAppStoreActions.Go({ path: ['/hearings/error'] }));
+              return of(error);
+            })
+          );
         })
-      );
-    })
-  ), { dispatch: false });
+      ),
+    { dispatch: false }
+  );
+
+  public submitHearingRequest$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(hearingRequestActions.SUBMIT_HEARING_REQUEST),
+        map((action: hearingRequestActions.SubmitHearingRequest) => action.payload),
+        switchMap((payload) => {
+          return this.hearingsService.submitHearingRequest(payload).pipe(
+            tap(() => {
+              this.router
+                .navigate(['hearings', 'request', 'hearing-confirmation'])
+                .catch((err) => this.loggerService.error('Error navigating to /hearings/request/hearing-confirmation', err));
+            }),
+            catchError((error) => {
+              this.hearingStore.dispatch(new hearingRequestActions.SubmitHearingRequestFailure(error));
+              return of(error);
+            })
+          );
+        })
+      ),
+    { dispatch: false }
+  );
+
+  public submitHearingReason$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(hearingRequestActions.VIEW_EDIT_SUBMIT_HEARING_REASON),
+        tap(() => {
+          this.router
+            .navigate(['hearings', 'request', 'hearing-change-reason'])
+            .catch((err) => this.loggerService.error('Error navigating to /hearings/request/hearing-change-reason', err));
+        })
+      ),
+    { dispatch: false }
+  );
+
+  public viewEditSubmitHearingRequest$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(hearingRequestActions.VIEW_EDIT_SUBMIT_HEARING_REQUEST),
+        map((action: hearingRequestActions.ViewEditSubmitHearingRequest) => action.payload),
+        switchMap((payload) => {
+          return this.hearingsService.updateHearingRequest(payload).pipe(
+            tap(() => {
+              this.router
+                .navigate(['hearings', 'request', 'hearing-confirmation'])
+                .catch((err) => this.loggerService.error('Error navigating to /hearings/request/hearing-confirmation', err));
+            }),
+            catchError((error) => {
+              this.hearingStore.dispatch(new hearingRequestActions.UpdateHearingRequestFailure(error));
+              return of(error);
+            })
+          );
+        })
+      ),
+    { dispatch: false }
+  );
 
   public static handleError(error: HttpError): Observable<Action> {
     if (error && error.status) {

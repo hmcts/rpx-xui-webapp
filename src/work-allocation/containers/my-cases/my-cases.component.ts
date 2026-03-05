@@ -9,7 +9,7 @@ import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-cas
 @Component({
   standalone: false,
   selector: 'exui-my-cases',
-  templateUrl: 'my-cases.component.html'
+  templateUrl: 'my-cases.component.html',
 })
 export class MyCasesComponent extends WorkCaseListWrapperComponent {
   public get emptyMessage(): string {
@@ -59,10 +59,10 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
         search_parameters: [
           { key: 'user', operator: 'IN', values: [id] },
           { key: 'services', operator: 'IN', values: serviceFilters },
-          { key: 'locations', operator: 'IN', values: locationFilters }
+          { key: 'locations', operator: 'IN', values: locationFilters },
         ],
         sorting_parameters: [this.getSortParameter()],
-        search_by: userRole
+        search_by: userRole,
       };
     }
   }

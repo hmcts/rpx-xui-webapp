@@ -19,22 +19,22 @@ describe('WorkAllocation', () => {
     let component: InfoMessageContainerComponent;
     let fixture: ComponentFixture<InfoMessageContainerComponent>;
     const mockMessageService = {
-      infoMessageChangeEmitted$: of([{ type: InfoMessageType.SUCCESS, message: InfoMessage.ASSIGNED_TASK }] as InformationMessage[]),
+      infoMessageChangeEmitted$: of([
+        { type: InfoMessageType.SUCCESS, message: InfoMessage.ASSIGNED_TASK },
+      ] as InformationMessage[]),
       removeAllMessages: () => {
         return undefined;
-      }
+      },
     };
     beforeEach(() => {
       TestBed.configureTestingModule({
         declarations: [InfoMessageContainerComponent],
-        imports: [
-          RouterTestingModule],
+        imports: [RouterTestingModule],
         providers: [
           { provide: InfoMessageCommService, useValue: mockMessageService },
-          { provide: Router, useClass: MockRouteServices }
-        ]
-      })
-        .compileComponents();
+          { provide: Router, useClass: MockRouteServices },
+        ],
+      }).compileComponents();
 
       fixture = TestBed.createComponent(InfoMessageContainerComponent);
       component = fixture.componentInstance;

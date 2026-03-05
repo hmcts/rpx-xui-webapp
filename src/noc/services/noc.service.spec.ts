@@ -8,11 +8,7 @@ describe('NocService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [StoreModule.forRoot({})],
-      providers: [
-        NocService,
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+      providers: [NocService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
   });
 
@@ -21,38 +17,47 @@ describe('NocService', () => {
   }));
 
   describe('getNoCQuestions', () => {
-    it('should get getNoCQuestions', inject([HttpTestingController, NocService], (httpMock: HttpTestingController, service: NocService) => {
-      service.getNoCQuestions('123456').subscribe((response) => {
-        expect(response).toBeNull();
-      });
+    it('should get getNoCQuestions', inject(
+      [HttpTestingController, NocService],
+      (httpMock: HttpTestingController, service: NocService) => {
+        service.getNoCQuestions('123456').subscribe((response) => {
+          expect(response).toBeNull();
+        });
 
-      const req = httpMock.expectOne('api/noc/nocQuestions?caseId=123456');
-      expect(req.request.method).toEqual('GET');
-      req.flush(null);
-    }));
+        const req = httpMock.expectOne('api/noc/nocQuestions?caseId=123456');
+        expect(req.request.method).toEqual('GET');
+        req.flush(null);
+      }
+    ));
   });
 
   describe('validateNoCAnswers', () => {
-    it('should validateNoCAnswers', inject([HttpTestingController, NocService], (httpMock: HttpTestingController, service: NocService) => {
-      service.validateNoCAnswers({ case_id: '123', answers: [] }).subscribe((response) => {
-        expect(response).toBeNull();
-      });
+    it('should validateNoCAnswers', inject(
+      [HttpTestingController, NocService],
+      (httpMock: HttpTestingController, service: NocService) => {
+        service.validateNoCAnswers({ case_id: '123', answers: [] }).subscribe((response) => {
+          expect(response).toBeNull();
+        });
 
-      const req = httpMock.expectOne('api/noc/validateNoCQuestions');
-      expect(req.request.method).toEqual('POST');
-      req.flush(null);
-    }));
+        const req = httpMock.expectOne('api/noc/validateNoCQuestions');
+        expect(req.request.method).toEqual('POST');
+        req.flush(null);
+      }
+    ));
   });
 
   describe('submitNoCEvent', () => {
-    it('should submitNoCEvent', inject([HttpTestingController, NocService], (httpMock: HttpTestingController, service: NocService) => {
-      service.submitNoCEvent({ case_id: '123', answers: [] }).subscribe((response) => {
-        expect(response).toBeNull();
-      });
+    it('should submitNoCEvent', inject(
+      [HttpTestingController, NocService],
+      (httpMock: HttpTestingController, service: NocService) => {
+        service.submitNoCEvent({ case_id: '123', answers: [] }).subscribe((response) => {
+          expect(response).toBeNull();
+        });
 
-      const req = httpMock.expectOne('api/noc/submitNoCEvents');
-      expect(req.request.method).toEqual('POST');
-      req.flush(null);
-    }));
+        const req = httpMock.expectOne('api/noc/submitNoCEvents');
+        expect(req.request.method).toEqual('POST');
+        req.flush(null);
+      }
+    ));
   });
 });

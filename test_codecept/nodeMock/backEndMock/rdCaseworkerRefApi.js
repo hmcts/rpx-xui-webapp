@@ -16,8 +16,7 @@ function getUserDataTemplate() {
     last_updated_time: '2022-10-05T12:08:49.684012',
     email_id: 'crd_func_test_demo_tcwuser2@justice.gov.uk',
     region: 'National',
-    base_location: [
-    ],
+    base_location: [],
     user_type_id: 3,
     role: [
       {
@@ -25,13 +24,11 @@ function getUserDataTemplate() {
         created_time: '2022-11-24T11:22:36.562719',
         last_updated_time: '2022-11-24T11:22:36.562722',
         role: 'Legal Caseworker',
-        is_primary: true
-      }
+        is_primary: true,
+      },
     ],
-    skills: [
-    ],
-    work_area: [
-    ]
+    skills: [],
+    work_area: [],
   };
 }
 
@@ -41,8 +38,8 @@ const serviceBaseLocations = {
     last_updated_time: '2022-11-24T11:22:36.555697',
     location_id: 231596,
     location: 'BIRMINGHAM CIVIL AND FAMILY JUSTICE CENTRE',
-    is_primary: true
-  }
+    is_primary: true,
+  },
 };
 
 const serviceWorkArea = {
@@ -50,21 +47,21 @@ const serviceWorkArea = {
     service_code: 'BFA1',
     area_of_work: 'Immigration and Asylum Appeals',
     created_time: '2022-11-24T11:22:36.570527',
-    last_updated_time: '2022-11-24T11:22:36.57053'
-  }
+    last_updated_time: '2022-11-24T11:22:36.57053',
+  },
 };
 
 class RdCaseworkerApi {
-  constructor(){
+  constructor() {
     this.iacCTSCUsers = [];
     this.setupMockData();
   }
 
-  setupMockData(){
-    for (let i = 0; i<= 5; i++){
+  setupMockData() {
+    for (let i = 0; i <= 5; i++) {
       const iacUser = getUserDataTemplate();
       iacUser.id = v4();
-      iacUser.first_name = 'IAC'+i;
+      iacUser.first_name = 'IAC' + i;
       iacUser.last_name = 'mock';
       iacUser.email_id = `mockCtsc_${i}@test.com`;
       iacUser.base_location.push(serviceBaseLocations.iac);

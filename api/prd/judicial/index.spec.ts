@@ -63,8 +63,8 @@ describe('PRD Judicial Service', () => {
       req = mockReq({
         headers: {},
         body: {
-          personal_code: ['p1000000', 'p1000001']
-        }
+          personal_code: ['p1000000', 'p1000001'],
+        },
       });
       res = mockRes();
     });
@@ -73,7 +73,7 @@ describe('PRD Judicial Service', () => {
       showFeatureStub.withArgs(FEATURE_JRD_E_LINKS_V2_ENABLED).returns(true);
       const mockResponse = {
         status: 200,
-        data: [RAW_JUDICIAL_USERS[0], RAW_JUDICIAL_USERS[1]]
+        data: [RAW_JUDICIAL_USERS[0], RAW_JUDICIAL_USERS[1]],
       };
       httpPostStub.resolves(mockResponse);
 
@@ -81,11 +81,9 @@ describe('PRD Judicial Service', () => {
 
       expect(req.headers.accept).to.equal('application/vnd.jrd.api+json;Version=2.0');
       expect(setHeadersStub).to.have.been.calledWith(req);
-      expect(httpPostStub).to.have.been.calledWith(
-        `${mockPrdUrl}/refdata/judicial/users`,
-        req.body,
-        { headers: { 'content-type': 'application/json' } }
-      );
+      expect(httpPostStub).to.have.been.calledWith(`${mockPrdUrl}/refdata/judicial/users`, req.body, {
+        headers: { 'content-type': 'application/json' },
+      });
 
       const expectedResult = mockResponse.data.map(transformToJudicialUserModel);
       expect(res.status).to.have.been.calledWith(200);
@@ -97,7 +95,7 @@ describe('PRD Judicial Service', () => {
       showFeatureStub.withArgs(FEATURE_JRD_E_LINKS_V2_ENABLED).returns(false);
       const mockResponse = {
         status: 200,
-        data: [RAW_JUDICIAL_USERS[0]]
+        data: [RAW_JUDICIAL_USERS[0]],
       };
       httpPostStub.resolves(mockResponse);
 
@@ -105,11 +103,9 @@ describe('PRD Judicial Service', () => {
 
       expect(req.headers.accept).to.equal('application/json');
       expect(setHeadersStub).to.have.been.calledWith(req);
-      expect(httpPostStub).to.have.been.calledWith(
-        `${mockPrdUrl}/refdata/judicial/users`,
-        req.body,
-        { headers: { 'content-type': 'application/json' } }
-      );
+      expect(httpPostStub).to.have.been.calledWith(`${mockPrdUrl}/refdata/judicial/users`, req.body, {
+        headers: { 'content-type': 'application/json' },
+      });
 
       const expectedResult = mockResponse.data.map(transformToJudicialUserModel);
       expect(res.status).to.have.been.calledWith(200);
@@ -121,7 +117,7 @@ describe('PRD Judicial Service', () => {
       showFeatureStub.withArgs(FEATURE_JRD_E_LINKS_V2_ENABLED).returns(true);
       const mockResponse = {
         status: 200,
-        data: []
+        data: [],
       };
       httpPostStub.resolves(mockResponse);
 
@@ -136,7 +132,7 @@ describe('PRD Judicial Service', () => {
       showFeatureStub.withArgs(FEATURE_JRD_E_LINKS_V2_ENABLED).returns(true);
       const mockResponse = {
         status: 404,
-        data: []
+        data: [],
       };
       httpPostStub.resolves(mockResponse);
 
@@ -164,17 +160,15 @@ describe('PRD Judicial Service', () => {
       req.body = null;
       const mockResponse = {
         status: 200,
-        data: []
+        data: [],
       };
       httpPostStub.resolves(mockResponse);
 
       await searchJudicialUserByPersonalCodes(req, res, next);
 
-      expect(httpPostStub).to.have.been.calledWith(
-        `${mockPrdUrl}/refdata/judicial/users`,
-        null,
-        { headers: { 'content-type': 'application/json' } }
-      );
+      expect(httpPostStub).to.have.been.calledWith(`${mockPrdUrl}/refdata/judicial/users`, null, {
+        headers: { 'content-type': 'application/json' },
+      });
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith([]);
       expect(next).to.not.have.been.called;
@@ -186,8 +180,8 @@ describe('PRD Judicial Service', () => {
       req = mockReq({
         headers: {},
         body: {
-          sidam_ids: ['38eb0c5e-29c7-453e-b92d-f2029aaed6c1']
-        }
+          sidam_ids: ['38eb0c5e-29c7-453e-b92d-f2029aaed6c1'],
+        },
       });
       res = mockRes();
     });
@@ -195,7 +189,7 @@ describe('PRD Judicial Service', () => {
     it('should search judicial users by idam id with V2 header', async () => {
       const mockResponse = {
         status: 200,
-        data: [RAW_JUDICIAL_USERS[0]]
+        data: [RAW_JUDICIAL_USERS[0]],
       };
       httpPostStub.resolves(mockResponse);
 
@@ -203,11 +197,9 @@ describe('PRD Judicial Service', () => {
 
       expect(req.headers.accept).to.equal('application/vnd.jrd.api+json;Version=2.0');
       expect(setHeadersStub).to.have.been.calledWith(req);
-      expect(httpPostStub).to.have.been.calledWith(
-        `${mockPrdUrl}/refdata/judicial/users`,
-        req.body,
-        { headers: { 'content-type': 'application/json' } }
-      );
+      expect(httpPostStub).to.have.been.calledWith(`${mockPrdUrl}/refdata/judicial/users`, req.body, {
+        headers: { 'content-type': 'application/json' },
+      });
 
       const expectedResult = mockResponse.data.map(transformToJudicialUserModel);
       expect(res.status).to.have.been.calledWith(200);
@@ -217,11 +209,11 @@ describe('PRD Judicial Service', () => {
 
     it('should handle multiple idam ids', async () => {
       req.body = {
-        sidam_ids: ['38eb0c5e-29c7-453e-b92d-f2029aaed6c1', '38eb0c5e-29c7-453e-b92d-f2029aaed6c2']
+        sidam_ids: ['38eb0c5e-29c7-453e-b92d-f2029aaed6c1', '38eb0c5e-29c7-453e-b92d-f2029aaed6c2'],
       };
       const mockResponse = {
         status: 200,
-        data: [RAW_JUDICIAL_USERS[0], RAW_JUDICIAL_USERS[1]]
+        data: [RAW_JUDICIAL_USERS[0], RAW_JUDICIAL_USERS[1]],
       };
       httpPostStub.resolves(mockResponse);
 
@@ -236,7 +228,7 @@ describe('PRD Judicial Service', () => {
     it('should handle empty array response', async () => {
       const mockResponse = {
         status: 200,
-        data: []
+        data: [],
       };
       httpPostStub.resolves(mockResponse);
 
@@ -262,8 +254,8 @@ describe('PRD Judicial Service', () => {
       const error = {
         response: {
           status: 400,
-          data: { error: 'Bad Request' }
-        }
+          data: { error: 'Bad Request' },
+        },
       };
       httpPostStub.rejects(error);
 
@@ -278,8 +270,8 @@ describe('PRD Judicial Service', () => {
       const error = {
         response: {
           status: 500,
-          data: { error: 'Internal Server Error' }
-        }
+          data: { error: 'Internal Server Error' },
+        },
       };
       httpPostStub.rejects(error);
 
@@ -296,8 +288,8 @@ describe('PRD Judicial Service', () => {
       req = mockReq({
         headers: {},
         body: {
-          searchString: 'jam'
-        }
+          searchString: 'jam',
+        },
       });
       res = mockRes();
     });
@@ -306,7 +298,7 @@ describe('PRD Judicial Service', () => {
       showFeatureStub.withArgs(FEATURE_JRD_E_LINKS_V2_ENABLED).returns(true);
       const mockResponse = {
         status: 200,
-        data: [ALL_JUDICIAL_USERS[2], ALL_JUDICIAL_USERS[3]]
+        data: [ALL_JUDICIAL_USERS[2], ALL_JUDICIAL_USERS[3]],
       };
       httpPostStub.resolves(mockResponse);
 
@@ -314,11 +306,9 @@ describe('PRD Judicial Service', () => {
 
       expect(req.headers.accept).to.equal('application/vnd.jrd.api+json;Version=2.0');
       expect(setHeadersStub).to.have.been.calledWith(req);
-      expect(httpPostStub).to.have.been.calledWith(
-        `${mockPrdUrl}/refdata/judicial/users/search`,
-        req.body,
-        { headers: { 'content-type': 'application/json' } }
-      );
+      expect(httpPostStub).to.have.been.calledWith(`${mockPrdUrl}/refdata/judicial/users/search`, req.body, {
+        headers: { 'content-type': 'application/json' },
+      });
 
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
@@ -329,7 +319,7 @@ describe('PRD Judicial Service', () => {
       showFeatureStub.withArgs(FEATURE_JRD_E_LINKS_V2_ENABLED).returns(false);
       const mockResponse = {
         status: 200,
-        data: [ALL_JUDICIAL_USERS[0]]
+        data: [ALL_JUDICIAL_USERS[0]],
       };
       httpPostStub.resolves(mockResponse);
 
@@ -337,11 +327,9 @@ describe('PRD Judicial Service', () => {
 
       expect(req.headers.accept).to.equal('application/json');
       expect(setHeadersStub).to.have.been.calledWith(req);
-      expect(httpPostStub).to.have.been.calledWith(
-        `${mockPrdUrl}/refdata/judicial/users/search`,
-        req.body,
-        { headers: { 'content-type': 'application/json' } }
-      );
+      expect(httpPostStub).to.have.been.calledWith(`${mockPrdUrl}/refdata/judicial/users/search`, req.body, {
+        headers: { 'content-type': 'application/json' },
+      });
 
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
@@ -352,7 +340,7 @@ describe('PRD Judicial Service', () => {
       showFeatureStub.withArgs(FEATURE_JRD_E_LINKS_V2_ENABLED).returns(true);
       const mockResponse = {
         status: 200,
-        data: []
+        data: [],
       };
       httpPostStub.resolves(mockResponse);
 
@@ -368,7 +356,7 @@ describe('PRD Judicial Service', () => {
       req.body = { searchString: 'JAM' };
       const mockResponse = {
         status: 200,
-        data: [ALL_JUDICIAL_USERS[2]]
+        data: [ALL_JUDICIAL_USERS[2]],
       };
       httpPostStub.resolves(mockResponse);
 
@@ -388,7 +376,7 @@ describe('PRD Judicial Service', () => {
       req.body = { searchString: 'ack' };
       const mockResponse = {
         status: 200,
-        data: [ALL_JUDICIAL_USERS[0]]
+        data: [ALL_JUDICIAL_USERS[0]],
       };
       httpPostStub.resolves(mockResponse);
 
@@ -415,7 +403,7 @@ describe('PRD Judicial Service', () => {
       req.body = { searchString: '' };
       const mockResponse = {
         status: 200,
-        data: ALL_JUDICIAL_USERS
+        data: ALL_JUDICIAL_USERS,
       };
       httpPostStub.resolves(mockResponse);
 
@@ -430,7 +418,7 @@ describe('PRD Judicial Service', () => {
       showFeatureStub.withArgs(FEATURE_JRD_E_LINKS_V2_ENABLED).returns(true);
       const mockResponse = {
         status: 404,
-        data: { message: 'Not found' }
+        data: { message: 'Not found' },
       };
       httpPostStub.resolves(mockResponse);
 
@@ -446,17 +434,15 @@ describe('PRD Judicial Service', () => {
       req.body = undefined;
       const mockResponse = {
         status: 200,
-        data: []
+        data: [],
       };
       httpPostStub.resolves(mockResponse);
 
       await getJudicialUsersSearch(req, res, next);
 
-      expect(httpPostStub).to.have.been.calledWith(
-        `${mockPrdUrl}/refdata/judicial/users/search`,
-        undefined,
-        { headers: { 'content-type': 'application/json' } }
-      );
+      expect(httpPostStub).to.have.been.calledWith(`${mockPrdUrl}/refdata/judicial/users/search`, undefined, {
+        headers: { 'content-type': 'application/json' },
+      });
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith([]);
       expect(next).to.not.have.been.called;

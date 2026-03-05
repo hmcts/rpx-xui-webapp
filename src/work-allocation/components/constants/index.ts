@@ -13,5 +13,5 @@ export {
   ListConstants,
   PageConstants,
   SortConstants,
-  TaskActionConstants
+  TaskActionConstants,
 };

@@ -1,4 +1,3 @@
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -42,19 +41,20 @@ const users = require('./services/users');
 const userApiData = require('./services/userApiData');
 
 const tolerantJson = express.json({
-  type: ['application/json'],   // only when Content-Type is JSON
+  type: ['application/json'], // only when Content-Type is JSON
   strict: false,
   verify: (req, res, buf) => {
     if (!buf.length) req.body = {}; // {} instead of empty buffer
-  }
+  },
 });
 
 if (process.env.MOCK_ALREADY_RUNNING === 'true') {
-  module.exports = {         // dummy stub with the same API
+  module.exports = {
+    // dummy stub with the same API
     startServer: () => Promise.resolve(),
-    stopServer: () => Promise.resolve()
+    stopServer: () => Promise.resolve(),
   };
-  return;                    // skip the real implementation
+  return; // skip the real implementation
 }
 
 class MockApp {
@@ -64,13 +64,11 @@ class MockApp {
     this.routesLogFile = `${__dirname}/RUNTIME_ROUTES.txt`;
     this.uniqueRoutesCalled = new Set();
 
-    this.server = null;   // the live Server object
-    this.starting = null;   // Promise while first worker is binding
+    this.server = null; // the live Server object
+    this.starting = null; // Promise while first worker is binding
   }
 
-  init(clientPortStart) {
-
-  }
+  init(clientPortStart) {}
 
   logRequestDetails(req) {
     this.logMessage(`${req.method} : ${req.originalUrl}`);
@@ -88,9 +86,13 @@ class MockApp {
   async startServer() {
     try {
       const probe = await new Promise((ok, fail) => {
-        const s = require('net').createServer()
-          .once('error', fail)      // EADDRINUSE if busy
-          .once('listening', () => { s.close(); ok(); })
+        const s = require('net')
+          .createServer()
+          .once('error', fail) // EADDRINUSE if busy
+          .once('listening', () => {
+            s.close();
+            ok();
+          })
           .listen(8080, '::');
       });
     } catch (err) {
@@ -111,7 +113,7 @@ class MockApp {
         origin: [/^http:\/\/localhost:(3000|8080)$/],
         credentials: true,
         allowedHeaders: ['Content-Type', 'Authorization'],
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
       })
     );
 
@@ -166,7 +168,7 @@ class MockApp {
       res.json({
         launchDarklyClientId: 'local-test',
         appInsightsKey: '',
-        buildVersion: 'test-run'
+        buildVersion: 'test-run',
       });
     });
 
@@ -201,8 +203,8 @@ class MockApp {
     this.starting = new Promise((resolve, reject) => {
       const srv = app.listen(8080, '::', () => {
         console.log('[mock] server listening on 8080');
-        this.server = srv;   // ready for next calls
-        this.starting = null;  // clear “starting” flag
+        this.server = srv; // ready for next calls
+        this.starting = null; // clear “starting” flag
         resolve(srv);
       });
       srv.on('error', (err) => {

@@ -13,7 +13,7 @@ import { SortField } from '../../models/common';
   standalone: false,
   selector: 'exui-task-home',
   templateUrl: 'task-home.component.html',
-  styleUrls: ['task-home.component.scss']
+  styleUrls: ['task-home.component.scss'],
 })
 export class TaskHomeComponent implements OnInit, OnDestroy {
   public persistence$: Observable<FilterPersistence> = of('local' as FilterPersistence);
@@ -30,7 +30,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
    */
   public subNavigationItems: SubNavigation[] = [
     this.MY_TASKS,
-    { text: 'Available tasks', href: '/work/my-work/available', active: false }
+    { text: 'Available tasks', href: '/work/my-work/available', active: false },
   ];
 
   private routeSubscription: Subscription;
@@ -39,7 +39,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
     private readonly router: Router,
     private readonly allocateRoleService: AllocateRoleService,
     private readonly featureToggleService: FeatureToggleService
-  ) { }
+  ) {}
 
   public ngOnInit(): void {
     this.subNavigationItems.push({ text: 'My cases', href: '/work/my-work/my-cases', active: false });

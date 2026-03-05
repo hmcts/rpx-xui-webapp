@@ -84,9 +84,7 @@ export class CaseDetailsPage extends Base {
   // Task List tab
   readonly taskListContainer = this.page.locator('.active-tasks-container');
   readonly taskItem = this.taskListContainer.locator('exui-case-task');
-  readonly taskKeyPairRow = this.taskItem.locator('.govuk-summary-list__row');
-  readonly taskTitle = this.taskItem.locator('p.govuk-body');
-  readonly taskAlerts = this.taskListContainer.locator('#alertMessage');
+  readonly taskAlerts = this.page.locator('#alertMessage');
   // Search case (16 Digit Search)
   readonly caseProgressMessage = this.page.locator('#progress_legalOfficer_updateTrib_dismissed_under_rule_31');
   readonly resultsNotFoundHeading = this.page.locator('exui-no-results').getByRole('heading', { level: 1 });
@@ -650,6 +648,11 @@ export class CaseDetailsPage extends Base {
    * Each object maps row label -> row value for a single task.
    */
   async getTaskKeyValueRows(): Promise<Record<string, string>[]> {
+    try {
+      await this.taskItem.first().waitFor({ state: 'visible' });
+    } catch {
+      return [];
+    }
     const taskCount = await this.taskItem.count();
     if (taskCount === 0) {
       return [];

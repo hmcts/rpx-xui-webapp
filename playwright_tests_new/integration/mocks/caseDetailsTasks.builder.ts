@@ -47,7 +47,6 @@ export type CaseDetailsTaskMock = {
   dueDate: string;
   assignee: string;
   actions: TaskAction[];
-  [key: string]: any;
 };
 
 export type TaskDetailsOverrides = Partial<CaseDetailsTaskMock> & {

@@ -5,7 +5,6 @@ import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookies } from '../../../common/sessionCapture';
 import { buildCaseDetailsTasksMinimal } from '../../mocks/caseDetailsTasks.builder';
 import { buildAsylumCaseMock } from '../../mocks/cases/asylumCase.mock';
-import { warn } from 'console';
 
 const userIdentifier = 'STAFF_ADMIN';
 const inSixHours = faker.date.soon({ days: 0.25 }).toISOString();
@@ -317,7 +316,6 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     });
 
     await test.step('Verify Next steps elements are shown as expected', async () => {
-      const table = await caseDetailsPage.getTaskKeyValueRows();
       const content = await caseDetailsPage.getTaskKeyValueRows();
       expect.soft(content[0]['Next steps']).toMatch(/^Overview/);
       expect

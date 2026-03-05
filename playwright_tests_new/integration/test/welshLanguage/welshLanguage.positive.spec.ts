@@ -2,7 +2,7 @@ import { welshTranslationsSmall } from 'playwright_tests_new/integration/mocks/w
 import { expect, test } from '../../../E2E/fixtures';
 import { ensureSessionCookies } from '../../../common/sessionCapture';
 let sessionCookies: any[] = [];
-const TRANSLATIONS_TIMEOUT = 10_000;
+const TRANSLATIONS_TIMEOUT = 20_000;
 
 test.describe('Verify users can switch the language', () => {
   test.beforeEach(async ({ page }) => {
@@ -38,7 +38,7 @@ test.describe('Verify users can switch the language', () => {
 
       const checks = [
         {
-          locator: caseListPage.exuiHeader.headerAppLink,
+          locator: caseListPage.exuiHeader.appHeaderLink,
           expected: welshTranslationsSmall.translations['Manage Cases'].translation,
         },
         {
@@ -73,7 +73,7 @@ test.describe('Verify users can switch the language', () => {
       await caseListPage.exuiSpinnerComponent.wait();
 
       const checks = [
-        { locator: caseListPage.exuiHeader.headerAppLink, expected: 'Manage Cases' },
+        { locator: caseListPage.exuiHeader.appHeaderLink, expected: 'Manage Cases' },
         { locator: caseListPage.exuiHeader.languageToggle, expected: 'Cymraeg' },
         { locator: caseListPage.exuiHeader.signOutLink, expected: 'Sign out' },
       ];

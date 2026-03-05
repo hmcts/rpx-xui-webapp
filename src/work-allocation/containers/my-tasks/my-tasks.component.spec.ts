@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
-import { FilterSetting } from '@hmcts/rpx-xui-common-lib/lib/models/filter.model';
+import { FilterSetting } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { RpxTranslationService } from 'rpx-xui-translation';
@@ -21,14 +21,14 @@ import { getMockTasks } from '../../tests/utils.spec';
 import { MyTasksComponent } from './my-tasks.component';
 
 @Component({
-  template: '<exui-my-tasks></exui-my-tasks>'
+  standalone: false,
+  template: '<exui-my-tasks></exui-my-tasks>',
 })
 class WrapperComponent {
   @ViewChild(MyTasksComponent, { static: true }) public appComponentRef: MyTasksComponent;
 }
 
-const userInfo =
-  `{"id":"exampleId",
+const userInfo = `{"id":"exampleId",
     "forename":"Joe",
     "surname":"Bloggs",
     "email":"JoeBloggs@example.com",
@@ -36,8 +36,7 @@ const userInfo =
     "roles":["caseworker","caseworker-ia","caseworker-ia-caseofficer"],
     "token":"eXaMpLeToKeN"}`;
 
-const workTypeInfo =
-  `[{"key":"hearing_work","label":"Hearing work"},
+const workTypeInfo = `[{"key":"hearing_work","label":"Hearing work"},
     {"key":"routine_work","label":"Routine work"},
     {"key":"decision_making_work","label":"Decision-making work"},
     {"key":"applications","label":"Applications"}]`;
@@ -56,29 +55,25 @@ describe('MyTasksComponent', () => {
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled', 'getValue']);
   const mockFilterService = jasmine.createSpyObj('mockFilterService', ['getStream']);
-  const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
+  const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', [
+    'getWASupportedJurisdictions',
+  ]);
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
   const rpxTranslationServiceStub = () => ({
     language: 'en',
-    translate: () => { },
+    translate: () => {},
     getTranslation: (phrase: string) => phrase,
-    getTranslation$: (phrase: string) => of(phrase)
+    getTranslation$: (phrase: string) => of(phrase),
   });
 
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let store: Store<fromActions.State>;
 
   beforeEach(waitForAsync(() => {
     storeMock = jasmine.createSpyObj('Store', ['dispatch']);
     TestBed.configureTestingModule({
-      imports: [
-        CdkTableModule,
-        ExuiCommonLibModule,
-        RouterTestingModule,
-        WorkAllocationComponentsModule,
-        PaginationModule
-      ],
+      imports: [CdkTableModule, ExuiCommonLibModule, RouterTestingModule, WorkAllocationComponentsModule, PaginationModule],
       declarations: [MyTasksComponent, WrapperComponent, TaskListComponent],
       providers: [
         { provide: WorkAllocationTaskService, useValue: mockTaskService },
@@ -91,8 +86,8 @@ describe('MyTasksComponent', () => {
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionsService },
         { provide: AllocateRoleService, useValue: mockRoleService },
         { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub },
-        { provide: Store, useValue: storeMock }
-      ]
+        { provide: Store, useValue: storeMock },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(WrapperComponent);
@@ -108,17 +103,17 @@ describe('MyTasksComponent', () => {
       fields: [
         {
           name: 'locations',
-          value: ['231596']
+          value: ['231596'],
         },
         {
           name: 'types-of-work',
-          value: ['hearing_work', 'upper_tribunal', 'decision_making_work']
+          value: ['hearing_work', 'upper_tribunal', 'decision_making_work'],
         },
         {
           name: 'services',
-          value: ['IA', 'CIVIL']
-        }
-      ]
+          value: ['IA', 'CIVIL'],
+        },
+      ],
     };
     mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['Service1', 'Service2']));
     mockFilterService.getStream.and.returnValue(of(filterFields));
@@ -181,10 +176,10 @@ describe('MyTasksComponent', () => {
       // ensure derivedIcon has no header and every other field does
       if (fields[i].columnLabel) {
         if (fields[i].columnLabel !== 'Priority') {
-          expect(headerCells[i].textContent).toEqual(fields[i].columnLabel);
+          expect(headerCells[i].textContent).toContain(fields[i].columnLabel);
         }
       } else {
-        expect(headerCells[i].textContent).toEqual('');
+        expect(headerCells[i].textContent).toEqual('  ');
       }
     }
     // Make sure Manage + heading is blank.

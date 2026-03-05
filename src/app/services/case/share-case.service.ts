@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { SharedCase } from '@hmcts/rpx-xui-common-lib/lib/models/case-share.model';
-import { UserDetails } from '@hmcts/rpx-xui-common-lib/lib/models/user-details.model';
+import { SharedCase } from '@hmcts/rpx-xui-common-lib';
+import { UserDetails } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
 
 @Injectable()
@@ -16,8 +16,8 @@ export class CaseShareService {
     const caseIds = shareCases.map((aCase) => aCase.caseId).join(',');
     const options = {
       params: {
-        case_ids: caseIds
-      }
+        case_ids: caseIds,
+      },
     };
     return this.http.get<SharedCase[]>('api/caseshare/cases', options);
   }

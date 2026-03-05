@@ -11,10 +11,7 @@ describe('OrganisationService', () => {
     mockHttpClient = jasmine.createSpyObj('HttpClient', ['get']);
 
     TestBed.configureTestingModule({
-      providers: [
-        OrganisationService,
-        { provide: HttpClient, useValue: mockHttpClient }
-      ]
+      providers: [OrganisationService, { provide: HttpClient, useValue: mockHttpClient }],
     });
 
     service = TestBed.inject(OrganisationService);
@@ -30,7 +27,7 @@ describe('OrganisationService', () => {
       const mockOrganisationData = {
         id: '123',
         name: 'Test Organisation',
-        address: '123 Test Street'
+        address: '123 Test Street',
       };
       mockHttpClient.get.and.returnValue(of(mockOrganisationData));
 
@@ -66,7 +63,7 @@ describe('OrganisationService', () => {
       const errorResponse = new HttpErrorResponse({
         error: 'Test error',
         status: 500,
-        statusText: 'Internal Server Error'
+        statusText: 'Internal Server Error',
       });
       mockHttpClient.get.and.returnValue(throwError(errorResponse));
 
@@ -91,10 +88,10 @@ describe('OrganisationService', () => {
 
     it('should handle client-side error with ErrorEvent', (done) => {
       const errorEvent = new ErrorEvent('Network error', {
-        message: 'Failed to fetch'
+        message: 'Failed to fetch',
       });
       const httpError = new HttpErrorResponse({
-        error: errorEvent
+        error: errorEvent,
       });
 
       service.handleError(httpError).subscribe(
@@ -111,17 +108,16 @@ describe('OrganisationService', () => {
       const httpError = new HttpErrorResponse({
         error: { message: 'Backend error message' },
         status: 404,
-        statusText: 'Not Found'
+        statusText: 'Not Found',
       });
 
       service.handleError(httpError).subscribe(
         () => fail('should have failed'),
         (error) => {
           expect(error).toBe('error please try again later.');
-          expect(consoleErrorSpy).toHaveBeenCalledWith(
-            'Backend returned code 404, body was:',
-            { message: 'Backend error message' }
-          );
+          expect(consoleErrorSpy).toHaveBeenCalledWith('Backend returned code 404, body was:', {
+            message: 'Backend error message',
+          });
           done();
         }
       );
@@ -131,17 +127,14 @@ describe('OrganisationService', () => {
       const httpError = new HttpErrorResponse({
         error: 'Unauthorized',
         status: 401,
-        statusText: 'Unauthorized'
+        statusText: 'Unauthorized',
       });
 
       service.handleError(httpError).subscribe(
         () => fail('should have failed'),
         (error) => {
           expect(error).toBe('error please try again later.');
-          expect(consoleErrorSpy).toHaveBeenCalledWith(
-            'Backend returned code 401, body was:',
-            'Unauthorized'
-          );
+          expect(consoleErrorSpy).toHaveBeenCalledWith('Backend returned code 401, body was:', 'Unauthorized');
           done();
         }
       );
@@ -151,17 +144,16 @@ describe('OrganisationService', () => {
       const httpError = new HttpErrorResponse({
         error: { detail: 'Internal server error occurred' },
         status: 500,
-        statusText: 'Internal Server Error'
+        statusText: 'Internal Server Error',
       });
 
       service.handleError(httpError).subscribe(
         () => fail('should have failed'),
         (error) => {
           expect(error).toBe('error please try again later.');
-          expect(consoleErrorSpy).toHaveBeenCalledWith(
-            'Backend returned code 500, body was:',
-            { detail: 'Internal server error occurred' }
-          );
+          expect(consoleErrorSpy).toHaveBeenCalledWith('Backend returned code 500, body was:', {
+            detail: 'Internal server error occurred',
+          });
           done();
         }
       );
@@ -171,17 +163,14 @@ describe('OrganisationService', () => {
       const httpError = new HttpErrorResponse({
         error: undefined,
         status: 400,
-        statusText: 'Bad Request'
+        statusText: 'Bad Request',
       });
 
       service.handleError(httpError).subscribe(
         () => fail('should have failed'),
         (error) => {
           expect(error).toBe('error please try again later.');
-          expect(consoleErrorSpy).toHaveBeenCalledWith(
-            'Backend returned code 400, body was:',
-            null
-          );
+          expect(consoleErrorSpy).toHaveBeenCalledWith('Backend returned code 400, body was:', null);
           done();
         }
       );
@@ -191,17 +180,14 @@ describe('OrganisationService', () => {
       const httpError = new HttpErrorResponse({
         error: undefined,
         status: 403,
-        statusText: 'Forbidden'
+        statusText: 'Forbidden',
       });
 
       service.handleError(httpError).subscribe(
         () => fail('should have failed'),
         (error) => {
           expect(error).toBe('error please try again later.');
-          expect(consoleErrorSpy).toHaveBeenCalledWith(
-            'Backend returned code 403, body was:',
-            null
-          );
+          expect(consoleErrorSpy).toHaveBeenCalledWith('Backend returned code 403, body was:', null);
           done();
         }
       );
@@ -209,10 +195,10 @@ describe('OrganisationService', () => {
 
     it('should handle error with empty error message', (done) => {
       const errorEvent = new ErrorEvent('Network error', {
-        message: ''
+        message: '',
       });
       const httpError = new HttpErrorResponse({
-        error: errorEvent
+        error: errorEvent,
       });
 
       service.handleError(httpError).subscribe(

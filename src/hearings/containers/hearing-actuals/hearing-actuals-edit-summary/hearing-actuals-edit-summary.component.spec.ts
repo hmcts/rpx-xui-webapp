@@ -1,6 +1,6 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
@@ -8,7 +8,13 @@ import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
 import { ActualHearingsUtils } from '../../../../hearings/utils/actual-hearings.utils';
-import { hearingActualsMainModel, hearingStageRefData, initialState, partyChannelsRefData, partySubChannelsRefData } from '../../../hearing.test.data';
+import {
+  hearingActualsMainModel,
+  hearingStageRefData,
+  initialState,
+  partyChannelsRefData,
+  partySubChannelsRefData,
+} from '../../../hearing.test.data';
 import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
 import { ACTION, HearingResult } from '../../../models/hearings.enum';
 import { ConvertToValuePipe } from '../../../pipes/convert-to-value.pipe';
@@ -17,20 +23,21 @@ import * as fromHearingStore from '../../../store';
 import { HearingActualsEditSummaryComponent } from './hearing-actuals-edit-summary.component';
 import { DatePipe, FormatTranslatorService } from '@hmcts/ccd-case-ui-toolkit';
 
-@Pipe({ name: 'transformAnswer' })
+@Pipe({
+  standalone: false,
+  name: 'transformAnswer',
+})
 export class MockHearingAnswersPipe implements PipeTransform {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public transform(answerSource, hearingState$, index?: number): string {
     return '';
   }
 }
 
 @Component({
-  template: `
-    <div>Nothing</div>`
+  standalone: false,
+  template: ` <div>Nothing</div>`,
 })
-class NothingComponent {
-}
+class NothingComponent {}
 
 describe('HearingActualSummaryComponent', () => {
   let component: HearingActualsEditSummaryComponent;
@@ -52,7 +59,7 @@ describe('HearingActualSummaryComponent', () => {
       parent_category: 'Applicant',
       parent_key: 'APPL',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'EntityRoleCode',
@@ -65,7 +72,7 @@ describe('HearingActualSummaryComponent', () => {
       parent_category: 'Support',
       parent_key: 'SUPP',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'EntityRoleCode',
@@ -78,43 +85,51 @@ describe('HearingActualSummaryComponent', () => {
       parent_category: 'Applicant',
       parent_key: 'APPL',
       active_flag: 'Y',
-      child_nodes: null
-    }
+      child_nodes: null,
+    },
   ];
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualsEditSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe, MockRpxTranslatePipe, DatePipe],
-      imports: [RouterTestingModule.withRoutes(
-        [
-          { path: 'hearings/actuals/1000000/hearing-actual-edit-summary', component: NothingComponent }
-        ]
-      )],
+      declarations: [
+        HearingActualsEditSummaryComponent,
+        ConvertToValuePipe,
+        MockHearingAnswersPipe,
+        MockRpxTranslatePipe,
+        DatePipe,
+      ],
+      imports: [
+        RouterTestingModule.withRoutes([
+          { path: 'hearings/actuals/1000000/hearing-actual-edit-summary', component: NothingComponent },
+        ]),
+      ],
       providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },
         {
           provide: ActivatedRoute,
           useValue: {
-            paramMap: of(convertToParamMap({
-              id: '1'
-            })),
+            paramMap: of(
+              convertToParamMap({
+                id: '1',
+              })
+            ),
             snapshot: {
               params: {
-                id: '1'
+                id: '1',
               },
               data: {
                 partyChannels: partyChannelsRefData,
                 partySubChannels: partySubChannelsRefData,
-                hearingRole
-              }
-            }
-          }
+                hearingRole,
+              },
+            },
+          },
         },
         DatePipe,
-        FormatTranslatorService
+        FormatTranslatorService,
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   }));
 
@@ -200,9 +215,58 @@ describe('HearingActualSummaryComponent', () => {
 
   it('should return updated notRequired', () => {
     const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals(
-      component.hearingActualsMainModel, component.actualHearingDays[0].hearingDate, { notRequired: true } as ActualHearingDayModel
+      component.hearingActualsMainModel,
+      component.actualHearingDays[0].hearingDate,
+      { notRequired: true } as ActualHearingDayModel
     );
     expect(patchedHearingActuals.actualHearingDays[0].notRequired).toBe(true);
+  });
+
+  it('onBackPage should use Location.back() when same-origin referrer and history > 1', () => {
+    const router = TestBed.inject(Router);
+    const backSpy = spyOn((component as any).location, 'back').and.stub();
+    const navSpy = spyOn(router, 'navigate').and.stub();
+
+    // same-origin referrer
+    Object.defineProperty(document, 'referrer', {
+      value: window.location.origin + '/previous',
+      configurable: true,
+    });
+
+    // ensure history.length > 1
+    history.pushState({}, '', '/now');
+
+    component.onBackPage();
+
+    expect(backSpy).toHaveBeenCalled();
+    expect(navSpy).not.toHaveBeenCalled();
+
+    // clean up referrer for other tests
+    Object.defineProperty(document, 'referrer', { value: '', configurable: true });
+  });
+
+  it('onBackPage should navigate to hearingActualAddEditUrl() when no same-origin referrer', () => {
+    const router = TestBed.inject(Router);
+    const backSpy = spyOn((component as any).location, 'back').and.stub();
+    const navSpy = spyOn(router, 'navigate').and.stub();
+
+    // different-origin referrer to force the else path
+    Object.defineProperty(document, 'referrer', {
+      value: 'https://other.example/path',
+      configurable: true,
+    });
+
+    // stub the URL used by the fallback navigate
+    const target = '/hearings/actuals/1000000/hearing-actual-edit-summary';
+    spyOn(component as any, 'hearingActualAddEditUrl').and.returnValue(target);
+
+    component.onBackPage();
+
+    expect(backSpy).not.toHaveBeenCalled();
+    expect(navSpy).toHaveBeenCalledWith([target]);
+
+    // clean up
+    Object.defineProperty(document, 'referrer', { value: '', configurable: true });
   });
 
   afterEach(() => {

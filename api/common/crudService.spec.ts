@@ -3,12 +3,13 @@ import { expect } from 'chai';
 import { NextFunction } from 'express';
 import 'mocha';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { http } from '../lib/http';
 import * as log4jui from '../lib/log4jui';
 import * as proxyLib from '../lib/proxy';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('crudService', () => {
@@ -16,7 +17,7 @@ describe('crudService', () => {
     crudId: 'dummy',
     documentId: 'dummy',
     page: 1,
-    rectangles: []
+    rectangles: [],
   };
 
   let sandbox;
@@ -24,7 +25,7 @@ describe('crudService', () => {
   let crudService;
   const req = mockReq();
   const res = mockRes({
-    data: 'ok'
+    data: 'ok',
   });
 
   beforeEach(() => {
@@ -34,7 +35,7 @@ describe('crudService', () => {
       info: sandbox.stub(),
       error: sandbox.stub(),
       warn: sandbox.stub(),
-      debug: sandbox.stub()
+      debug: sandbox.stub(),
     };
 
     // Stub log4jui.getLogger BEFORE importing the module to ensure our mock is used
@@ -42,7 +43,7 @@ describe('crudService', () => {
 
     sandbox.stub(proxyLib, 'setHeaders').returns({
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer token'
+      Authorization: 'Bearer token',
     });
 
     // Clear the module cache to ensure fresh import
@@ -80,7 +81,7 @@ describe('crudService', () => {
       const error = {
         status: 404,
         statusText: 'Not Found',
-        data: { message: 'Resource not found' }
+        data: { message: 'Resource not found' },
       };
       sandbox.stub(http, 'get').rejects(error);
       const crudPath = '/crud/12345';
@@ -101,7 +102,7 @@ describe('crudService', () => {
     it('should handle error with missing status', async () => {
       const error = {
         statusText: 'Internal Server Error',
-        data: {}
+        data: {},
       };
       sandbox.stub(http, 'get').rejects(error);
       const crudPath = '/crud/12345';
@@ -142,8 +143,8 @@ describe('crudService', () => {
       expect(postStub).to.have.been.calledWith(crudPath, dummyData, {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer token'
-        }
+          Authorization: 'Bearer token',
+        },
       });
     });
   });
@@ -225,9 +226,9 @@ describe('crudService', () => {
       expect(getStub).to.have.been.calledWith(crudPath, {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer token',
-          'X-Custom': 'header'
-        }
+          Authorization: 'Bearer token',
+          'X-Custom': 'header',
+        },
       });
     });
 
@@ -245,7 +246,7 @@ describe('crudService', () => {
       const error = {
         status: 500,
         statusText: 'Internal Server Error',
-        data: { error: 'Server error' }
+        data: { error: 'Server error' },
       };
       sandbox.stub(http, 'get').rejects(error);
       const crudPath = '/crud/12345';
@@ -289,7 +290,7 @@ describe('crudService', () => {
       const error = {
         status: 400,
         statusText: 'Bad Request',
-        data: { validation: 'failed' }
+        data: { validation: 'failed' },
       };
       sandbox.stub(http, 'post').rejects(error);
       const crudPath = '/crud/12345';
@@ -310,7 +311,7 @@ describe('crudService', () => {
       const error = {
         status: 403,
         statusText: 'Forbidden',
-        data: null
+        data: null,
       };
       sandbox.stub(http, 'post').rejects(error);
       const crudPath = '/crud/12345';
@@ -337,9 +338,9 @@ describe('crudService', () => {
       expect(postStub).to.have.been.calledWith(crudPath, dummyData, {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer token'
+          Authorization: 'Bearer token',
         },
-        responseType: 'arraybuffer'
+        responseType: 'arraybuffer',
       });
     });
 
@@ -390,7 +391,7 @@ describe('crudService', () => {
       const error = {
         status: 409,
         statusText: 'Conflict',
-        data: { conflict: 'Version mismatch' }
+        data: { conflict: 'Version mismatch' },
       };
       sandbox.stub(http, 'put').rejects(error);
       const crudPath = '/crud/12345';
@@ -401,11 +402,7 @@ describe('crudService', () => {
       } catch (e) {
         expect(e).to.equal(error);
         expect(mockLogger.error).to.have.been.calledOnce;
-        expect(mockLogger.error).to.have.been.calledWith(
-          409,
-          'Conflict',
-          JSON.stringify({ conflict: 'Version mismatch' })
-        );
+        expect(mockLogger.error).to.have.been.calledWith(409, 'Conflict', JSON.stringify({ conflict: 'Version mismatch' }));
       }
     });
 
@@ -413,7 +410,7 @@ describe('crudService', () => {
       const error = {
         status: 422,
         statusText: 'Unprocessable Entity',
-        data: undefined
+        data: undefined,
       };
       sandbox.stub(http, 'put').rejects(error);
       const crudPath = '/crud/12345';
@@ -442,8 +439,8 @@ describe('crudService', () => {
       // Mock setHeaders to return headers with accept
       (proxyLib.setHeaders as sinon.SinonStub).returns({
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer token',
-        'accept': 'application/json'
+        Authorization: 'Bearer token',
+        accept: 'application/json',
       });
 
       const response = await crudService.sendDelete(crudPath, body, req);
@@ -453,8 +450,8 @@ describe('crudService', () => {
         data: body,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer token'
-        }
+          Authorization: 'Bearer token',
+        },
       });
     });
 
@@ -472,7 +469,7 @@ describe('crudService', () => {
       const error = {
         status: 401,
         statusText: 'Unauthorized',
-        data: { message: 'Invalid token' }
+        data: { message: 'Invalid token' },
       };
       sandbox.stub(http, 'delete').rejects(error);
       const crudPath = '/crud/12345';
@@ -483,11 +480,7 @@ describe('crudService', () => {
       } catch (e) {
         expect(e).to.equal(error);
         expect(mockLogger.error).to.have.been.calledOnce;
-        expect(mockLogger.error).to.have.been.calledWith(
-          401,
-          'Unauthorized',
-          JSON.stringify({ message: 'Invalid token' })
-        );
+        expect(mockLogger.error).to.have.been.calledWith(401, 'Unauthorized', JSON.stringify({ message: 'Invalid token' }));
       }
     });
 
@@ -495,7 +488,7 @@ describe('crudService', () => {
       const error = {
         status: 500,
         statusText: 'Server Error',
-        data: null
+        data: null,
       };
       sandbox.stub(http, 'delete').rejects(error);
       const crudPath = '/crud/12345';
@@ -505,11 +498,7 @@ describe('crudService', () => {
         expect.fail('Should have thrown error');
       } catch (e) {
         expect(e).to.equal(error);
-        expect(mockLogger.error).to.have.been.calledWith(
-          500,
-          'Server Error',
-          'null'
-        );
+        expect(mockLogger.error).to.have.been.calledWith(500, 'Server Error', 'null');
       }
     });
   });

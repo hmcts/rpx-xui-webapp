@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
-import { BehaviorSubject, Observable, combineLatest, of } from 'rxjs';
-import { map, skipWhile, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { map, skipWhile, switchMap } from 'rxjs/operators';
 import { UserDetails } from '../../../app/models/user-details.model';
 import * as fromAppStore from '../../../app/store';
 import * as fromNocStore from '../../../noc/store';
@@ -10,11 +10,13 @@ import { SearchStatePersistenceKey } from '../../../search/enums';
 import { SearchService } from '../../../search/services/search.service';
 import { FlagDefinition, NavigationItem, UserNavModel } from '../../models';
 import { UserService } from '../../services/user/user.service';
+import { AppConstants } from 'src/app/app.constants';
 
 @Component({
+  standalone: false,
   selector: 'exui-hmcts-global-header',
   templateUrl: './hmcts-global-header.component.html',
-  styleUrls: ['./hmcts-global-header.component.scss']
+  styleUrls: ['./hmcts-global-header.component.scss'],
 })
 export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   private static readonly GLOBAL_SEARCH_FEATURE_CONFIG = 'feature-global-search';
@@ -37,7 +39,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   public tab;
   public userDetails$: Observable<UserDetails>;
   public isUserCaseManager$: Observable<boolean>;
-  public isGlobalSearchEnabled$: Observable<boolean>;
+  public isGlobalSearchEnabled: boolean;
   public get leftItems(): Observable<NavigationItem[]> {
     return this.menuItems.left.asObservable();
   }
@@ -48,7 +50,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
 
   private readonly menuItems = {
     left: new BehaviorSubject<NavigationItem[]>([]),
-    right: new BehaviorSubject<NavigationItem[]>([])
+    right: new BehaviorSubject<NavigationItem[]>([]),
   };
 
   constructor(
@@ -65,11 +67,18 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
       skipWhile((details) => !('userInfo' in details)),
       map((details) => details?.userInfo?.roles),
       map((roles) => {
-        const givenRoles = ['pui-case-manager', 'caseworker-ia-legalrep-solicitor', 'caseworker-ia-homeofficeapc', 'caseworker-ia-respondentofficer', 'caseworker-ia-homeofficelart', 'caseworker-ia-homeofficepou'];
+        const givenRoles = [
+          'pui-case-manager',
+          'caseworker-ia-legalrep-solicitor',
+          'caseworker-ia-homeofficeapc',
+          'caseworker-ia-respondentofficer',
+          'caseworker-ia-homeofficelart',
+          'caseworker-ia-homeofficepou',
+        ];
         return givenRoles.filter((x) => roles.includes(x)).length > 0;
       })
     );
-    this.isGlobalSearchEnabled$ = this.featureToggleService.isEnabled(HmctsGlobalHeaderComponent.GLOBAL_SEARCH_FEATURE_CONFIG);
+    this.isGlobalSearchEnabled = AppConstants.MENU_FLAGS['feature-global-search'];
     this.splitAndFilterNavItems(this.items);
   }
 
@@ -97,21 +106,23 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
 
   private splitAndFilterNavItems(items: NavigationItem[]): void {
     items = items || [];
-    of(items).pipe(
-      switchMap((unfilteredItems) => this.filterNavItemsOnRole(unfilteredItems)),
-      switchMap((roleFilteredItems) => this.filterNavItemsOnFlag(roleFilteredItems)),
-      map((filteredItems) => this.splitNavItems(filteredItems))
-    ).subscribe((sortedItems) => {
-      this.menuItems.left.next(sortedItems.left);
-      this.menuItems.right.next(sortedItems.right);
-    });
+    of(items)
+      .pipe(
+        switchMap((unfilteredItems) => this.filterNavItemsOnRole(unfilteredItems)),
+        switchMap((roleFilteredItems) => this.filterNavItemsOnFlag(roleFilteredItems)),
+        map((filteredItems) => this.splitNavItems(filteredItems))
+      )
+      .subscribe((sortedItems) => {
+        this.menuItems.left.next(sortedItems.left);
+        this.menuItems.right.next(sortedItems.right);
+      });
   }
 
-  private splitNavItems(items: NavigationItem[]): { right: NavigationItem[], left: NavigationItem[] } {
+  private splitNavItems(items: NavigationItem[]): { right: NavigationItem[]; left: NavigationItem[] } {
     items = items || [];
     return {
       right: items.filter((item) => item.align && item.align === 'right'),
-      left: items.filter((item) => !item.align || item.align !== 'right')
+      left: items.filter((item) => !item.align || item.align !== 'right'),
     };
   }
 
@@ -122,38 +133,44 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
       skipWhile((details) => !('userInfo' in details)),
       map((details) => details?.userInfo?.roles),
       map((roles) => {
-        const i = items.filter((item) => (item.roles && item.roles.length > 0 ? item.roles.some((role) => roles.includes(role)) : true));
-        return i.filter((item) => (item.notRoles && item.notRoles.length > 0 ? item.notRoles.every((role) => !roles.includes(role)) : true));
+        const i = items.filter((item) =>
+          item.roles && item.roles.length > 0 ? item.roles.some((role) => roles.includes(role)) : true
+        );
+        return i.filter((item) =>
+          item.notRoles && item.notRoles.length > 0 ? item.notRoles.every((role) => !roles.includes(role)) : true
+        );
       })
     );
   }
 
   private filterNavItemsOnFlag(items: NavigationItem[]): Observable<NavigationItem[]> {
     items = items || [];
-    const flags: { [flag: string]: boolean | string } = {};
-    const obs: Observable<boolean>[] = [];
-    items.forEach(
-      (item) => (item.flags || []).concat(item.notFlags || []).forEach(
-        (flag) => {
-          const flagName = this.isPlainFlag(flag) ? flag : flag.flagName;
-          obs.push(
-            this.featureToggleService.isEnabled(flagName).pipe(
-              tap((state) => flags[flagName] = state)
-            )
-          );
-        }
-      )
-    );
-
-    if (obs.length === 0) {
-      return of(items);
-    }
-    return ((obs.length > 1 ? combineLatest([obs[0], combineLatest(obs.slice(1))]) : obs[0]) as Observable<any>).pipe(
-      map(() => {
-        let i = items.filter((item) => item.flags && item.flags.length > 0 ? item.flags.every((flag) => this.isPlainFlag(flag) ? (flags[flag] as boolean) : (flags[flag.flagName] as string) === flag.value) : true);
-        i = i || [];
-        return i.filter((item) => item.notFlags && item.notFlags.length > 0 ? item.notFlags.every((flag) => this.isPlainFlag(flag) ? !(flags[flag] as boolean) : (flags[flag.flagName] as string) !== flag.value) : true);
-      })
+    return of(
+      items
+        .filter((item) => {
+          // If item.flags exists, check every flag against AppConstants.MENU_FLAGS
+          if (item.flags && item.flags.length > 0) {
+            return item.flags.every((flag) => {
+              const flagName = this.isPlainFlag(flag) ? flag : flag.flagName;
+              const flagValue = this.isPlainFlag(flag)
+                ? AppConstants.MENU_FLAGS[flagName]
+                : AppConstants.MENU_FLAGS[flagName] === flag.value;
+              return flagValue;
+            });
+          }
+          return true;
+        })
+        .filter((item) =>
+          item.notFlags && item.notFlags.length > 0
+            ? item.notFlags.every((flag) => {
+                const flagName = this.isPlainFlag(flag) ? flag : flag.flagName;
+                const flagValue = this.isPlainFlag(flag)
+                  ? AppConstants.MENU_FLAGS[flagName]
+                  : AppConstants.MENU_FLAGS[flagName] !== flag.value;
+                return !flagValue;
+              })
+            : true
+        )
     );
   }
 

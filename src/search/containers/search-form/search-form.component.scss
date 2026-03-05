@@ -1,8 +1,11 @@
-:host ::ng-deep #caseRef, :host ::ng-deep #otherRef {
+:host ::ng-deep #caseRef,
+:host ::ng-deep #otherRef {
   max-width: 23ex;
 }
 
-:host ::ng-deep #fullName, :host ::ng-deep #addressLine1, :host ::ng-deep #email {
+:host ::ng-deep #fullName,
+:host ::ng-deep #addressLine1,
+:host ::ng-deep #email {
   max-width: 41ex;
 }
 

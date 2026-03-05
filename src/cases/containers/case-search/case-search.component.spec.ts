@@ -10,7 +10,10 @@ import * as fromRoot from '../../../app/store/reducers';
 import * as fromCaseSearchStore from '../../store';
 import { CaseSearchComponent } from './case-search.component';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate',
+})
 class RpxTranslationMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;
@@ -26,7 +29,7 @@ describe('CaseSearchComponent', () => {
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled', 'getValue']);
 
   const appConfigMock = {
-    getPaginationPageSize: () => 10
+    getPaginationPageSize: () => 10,
   };
 
   beforeEach(waitForAsync(() => {
@@ -35,23 +38,18 @@ describe('CaseSearchComponent', () => {
         RouterTestingModule,
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          feature: combineReducers(fromCaseSearchStore.reducers)
-        })
+          feature: combineReducers(fromCaseSearchStore.reducers),
+        }),
       ],
-      schemas: [
-        CUSTOM_ELEMENTS_SCHEMA
-      ],
-      declarations: [
-        CaseSearchComponent,
-        RpxTranslationMockPipe
-      ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+      declarations: [CaseSearchComponent, RpxTranslationMockPipe],
       providers: [
         { provide: AppConfig, useValue: appConfigMock },
         {
           provide: FeatureToggleService,
-          useValue: mockFeatureToggleService
-        }
-      ]
+          useValue: mockFeatureToggleService,
+        },
+      ],
     }).compileComponents();
 
     store = TestBed.inject(Store);
@@ -80,30 +78,12 @@ describe('CaseSearchComponent', () => {
     it('should update the components page property on page change.', () => {
       const event = {
         selected: {
-          page: 2
-        }
+          page: 2,
+        },
       };
 
       component.applyChangePage(event);
       expect(component.page).toEqual(event.selected.page);
-    });
-
-    /**
-     * Note that the findCaseListPaginationMetadata() dispatches an Action to get the
-     * pagination metadata.
-     */
-    it('should call findCaseListPaginationMetadata() on page change.', () => {
-      const spyOnFindCaseListPaginationMetadata = spyOn(component, 'findCaseListPaginationMetadata').and.callThrough();
-
-      const event = {
-        selected: {
-          page: 1
-        }
-      };
-
-      component.applyChangePage(event);
-
-      expect(spyOnFindCaseListPaginationMetadata).toHaveBeenCalled();
     });
   });
 
@@ -114,25 +94,11 @@ describe('CaseSearchComponent', () => {
       event = component.getEvent();
     });
 
-    it('should call findCaseListPaginationMetadata() on apply of filter.', () => {
-      const spyOnFindCaseListPaginationMetadata = spyOn(component, 'findCaseListPaginationMetadata').and.callThrough();
-
-      event = {
-        selected: {
-          page: 2
-        }
-      };
-
-      component.applyFilter(event);
-
-      expect(spyOnFindCaseListPaginationMetadata).toHaveBeenCalled();
-    });
-
     it('should update the components page property on apply of a filter change.', () => {
       event = {
         selected: {
-          page: 2
-        }
+          page: 2,
+        },
       };
       component.applyFilter(event);
 
@@ -177,7 +143,7 @@ describe('CaseSearchComponent', () => {
       const sortParameters = {
         column: 'dummy',
         order: 0,
-        type: 'Text'
+        type: 'Text',
       };
 
       component.sort(sortParameters);

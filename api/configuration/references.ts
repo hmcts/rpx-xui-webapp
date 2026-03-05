@@ -44,6 +44,7 @@ export const SERVICES_JUDICIAL_BOOKING_API_PATH = 'services.judicialBookingApi';
 export const SERVICES_HEARINGS_COMPONENT_API = 'services.hearings.serviceApi';
 export const SERVICES_HMC_HEARINGS_COMPONENT_API = 'services.hearings.hmcApi';
 export const SERVICES_HEARINGS_ENABLE_DATA_SOURCE_HEADERS = 'services.hearings.enableHearingDataSourceHeaders';
+export const SERVICES_HEARINGS_PREVIEW_DEPLOYMENT_ID = 'services.hearings.previewDeploymentId';
 
 export const SERVICES_DOCUMENTS_API_PATH = 'services.documents.api';
 export const SERVICES_DOCUMENTS_API_PATH_V2 = 'services.documentsv2.api';
@@ -125,6 +126,7 @@ export const FEATURE_OIDC_ENABLED = 'oidcEnabled';
 export const FEATURE_SUBSTANTIVE_ROLE_ENABLED = 'substantiveRoleEnabled';
 export const FEATURE_ACCESS_MANAGEMENT_ENABLED = 'accessManagementEnabled';
 export const FEATURE_COMPRESSION_ENABLED = 'compressionEnabled';
+export const FEATURE_DOCS_ENABLED = 'docsEnabled';
 export const FEATURE_QUERY_IDAM_SERVICE_OVERRIDE = 'queryIdamServiceOverride';
 
 export const FEATURE_WORKALLOCATION_ENABLED = 'workAllocationEnabled';

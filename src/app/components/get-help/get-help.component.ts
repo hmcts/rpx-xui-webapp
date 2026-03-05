@@ -7,17 +7,16 @@ import { UserDetails } from '../../../app/models/user-details.model';
 import * as fromRoot from '../../store';
 
 @Component({
+  standalone: false,
   selector: 'exui-get-help',
-  templateUrl: './get-help.component.html'
+  templateUrl: './get-help.component.html',
 })
 export class GetHelpComponent implements OnInit {
   public userDetails$: Observable<any>;
   public helpContactDetails: ContactDetailsDataModel[] = AppConstants.HELP_CONTACT_DETAILS;
   public caseManager = false;
 
-  constructor(
-      private readonly store: Store<fromRoot.State>,
-  ) {}
+  constructor(private readonly store: Store<fromRoot.State>) {}
 
   public ngOnInit() {
     this.userDetails$ = this.store.pipe(select(fromRoot.getUserDetails));

@@ -18,10 +18,12 @@ describe('RejectedRequestViewComponent', () => {
   let fixture: ComponentFixture<RejectedRequestViewComponent>;
 
   const router = {
-    navigate: jasmine.createSpy('navigate')
+    navigate: jasmine.createSpy('navigate'),
   };
 
-  const mockSupportedJurisdictionsService = jasmine.createSpyObj('WASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
+  const mockSupportedJurisdictionsService = jasmine.createSpyObj('WASupportedJurisdictionsService', [
+    'getWASupportedJurisdictions',
+  ]);
   const mockAllocateRoleService = jasmine.createSpyObj('allocateRoleService', ['getCaseRolesUserDetails']);
   const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getUsersFromServices']);
 
@@ -44,21 +46,21 @@ describe('RejectedRequestViewComponent', () => {
                 caseReference: '123456789',
                 roleCategory: RoleCategory.JUDICIAL,
                 jurisdiction: 'IA',
+                caseType: 'Appeal',
                 // date of role created is actually date rejected, not originally requested
                 dateRejected: '01-01-2020',
                 infoRequired: false,
                 reviewer: 'example',
                 dateSubmitted: '01-01-2019',
-                specificAccessReason: 'I would like access'
-              }
-            }
-          }
+                specificAccessReason: 'I would like access',
+              },
+            },
+          },
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -86,7 +88,7 @@ describe('RejectedRequestViewComponent', () => {
 
   it('should allow the user to go to request again', () => {
     component.goToRequest();
-    expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/123456789/specific-access-request']);
+    expect(router.navigate).toHaveBeenCalledWith(['/cases/case-details/IA/Appeal/123456789/specific-access-request']);
   });
 
   it('should show default message if infoRequired is false', () => {

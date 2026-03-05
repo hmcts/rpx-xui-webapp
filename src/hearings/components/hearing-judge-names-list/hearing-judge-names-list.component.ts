@@ -5,9 +5,10 @@ import { JudicialUserModel } from '../../models/judicialUser.model';
 import { ValidatorsUtils } from '../../utils/validators.utils';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-judge-names-list',
   templateUrl: './hearing-judge-names-list.component.html',
-  styleUrls: ['./hearing-judge-names-list.component.scss']
+  styleUrls: ['./hearing-judge-names-list.component.scss'],
 })
 export class HearingJudgeNamesListComponent {
   @Input() public subTitle: string;
@@ -17,12 +18,14 @@ export class HearingJudgeNamesListComponent {
   @Input() public submitButtonName: string = '';
   @Input() public isColumnView: boolean;
   @Input() public judgeList: JudicialUserModel[];
-  public validationError: { id: string, message: string };
+  public validationError: { id: string; message: string };
   public selectedJudge: JudicialUserModel;
   public personFormGroup: FormGroup;
 
-  constructor(private readonly formBuilder: FormBuilder,
-              private readonly validatorsUtils: ValidatorsUtils) {
+  constructor(
+    private readonly formBuilder: FormBuilder,
+    private readonly validatorsUtils: ValidatorsUtils
+  ) {
     this.personFormGroup = this.formBuilder.group({ selectedFormControl: '' });
   }
 

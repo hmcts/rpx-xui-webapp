@@ -5,7 +5,7 @@ import * as fromHearingStore from '../store';
 import * as actions from '../store/actions/hearing-actuals.action';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ActualSummaryResponseResolver {
   constructor(private readonly store: Store<fromHearingStore.State>) {}

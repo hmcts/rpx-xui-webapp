@@ -5,23 +5,22 @@ import { Subscription } from 'rxjs';
 import { AppUtils } from '../../../app/app-utils';
 
 @Component({
+  standalone: false,
   selector: 'exui-all-work-home',
   templateUrl: 'all-work-home.component.html',
-  styleUrls: ['all-work-home.component.scss']
+  styleUrls: ['all-work-home.component.scss'],
 })
 export class AllWorkHomeComponent implements OnInit, OnDestroy {
   public pageTitle: string;
 
   public subNavigationItems: SubNavigation[] = [
     { text: 'Tasks', href: '/work/all-work/tasks', active: true },
-    { text: 'Cases', href: '/work/all-work/cases', active: false }
+    { text: 'Cases', href: '/work/all-work/cases', active: false },
   ];
 
   private routeSubscription: Subscription;
 
-  constructor(
-    private readonly router: Router
-  ) {}
+  constructor(private readonly router: Router) {}
 
   public ngOnInit(): void {
     this.routeSubscription = this.router.events.subscribe((event) => {

@@ -28,5 +28,5 @@ export enum RemoveAllocationNavigationEvent {
   BACK,
   CANCEL,
   CONTINUE,
-  REMOVE_ROLE_ALLOCATION
+  REMOVE_ROLE_ALLOCATION,
 }

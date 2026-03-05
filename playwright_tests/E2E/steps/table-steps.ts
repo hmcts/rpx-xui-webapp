@@ -7,7 +7,13 @@ export async function checkTableCellContent(page, tableName: string, rowId: numb
   console.log(tableName + '[' + rowId + ',' + colID + ']' + text);
 }
 
-export async function checkTableRowContent(page, tableClass: string, tableName: string, rowTextRef: string, textsToCheck: RegExp[]) {
+export async function checkTableRowContent(
+  page,
+  tableClass: string,
+  tableName: string,
+  rowTextRef: string,
+  textsToCheck: RegExp[]
+) {
   const respondantTable = page.locator(`.${tableClass}:has-text("${tableName}")`);
   await expect(respondantTable.locator('td', { hasText: `${rowTextRef}` })).toBeVisible();
   const rowToCheck = respondantTable.locator(`tr:has-text("${rowTextRef}")`);
@@ -29,7 +35,14 @@ export async function getCaseReferenceFromFirstRow(page) {
   return caseID;
 }
 
-export function dealWithShortenedCaseRefLabel(caseId): string{
+export async function getCaseReferenceFromFirstRowForEmployment(page) {
+  const cellXPath = '//*[@id="search-result"]/ccd-search-result/table/tbody/tr[2]/td[3]';
+  const cell = page.locator(cellXPath);
+  const caseID = await cell.textContent();
+  return caseID;
+}
+
+export function dealWithShortenedCaseRefLabel(caseId): string {
   //label has last 4 digits of case ref cut off, do the same so navigation can occur
   return caseId.trim(4);
 }

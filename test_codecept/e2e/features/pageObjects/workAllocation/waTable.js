@@ -115,9 +115,7 @@ class WAListTable {
   }
 
   getHeaderSortElementWithName(headerName) {
-    return $(
-      `${this.baseCssLocator} table thead th:has(button:has-text("${headerName}"))`
-    );
+    return $(`${this.baseCssLocator} table thead th:has(button:has-text("${headerName}"))`);
   }
 
   getNonClickableHeaderElementWithName(headerName) {
@@ -167,7 +165,7 @@ class WAListTable {
 
   async getTableRowAt(position) {
     await BrowserWaits.waitForConditionAsync(async () => {
-      return await this.tableRows.count() > 0;
+      return (await this.tableRows.count()) > 0;
     });
     return await this.tableRows.nth(position - 1);
   }
@@ -232,7 +230,7 @@ class WAListTable {
   }
 
   async isManageLinkOpenAtPos(position) {
-    const waRows = elementsByXpath('//tr[(contains(@class,\'actions-row\'))]');
+    const waRows = elementsByXpath("//tr[(contains(@class,'actions-row'))]");
     const row = await waRows.nth(position - 1);
     try {
       return await row.isVisible();
@@ -243,14 +241,18 @@ class WAListTable {
 
   async isRowActionPresent(rowAction) {
     await BrowserWaits.waitForElement(this.displayedActionRow);
-    const actionLink = this.displayedActionRow.locator(`//div[contains(@class,"task-action") or contains(@class,"case-action")]//a[contains(text(),"${rowAction}" )]`);
+    const actionLink = this.displayedActionRow.locator(
+      `//div[contains(@class,"task-action") or contains(@class,"case-action")]//a[contains(text(),"${rowAction}" )]`
+    );
     return await isPresent(actionLink);
   }
 
   async clickRowAction(action) {
     expect(await this.isRowActionPresent(action), 'action row not displayed').to.be.true;
     await reportLogger.AddMessage(`Manage links displayed : ${await this.displayedActionRow.textContent()}`, LOG_LEVELS.Debug);
-    const actionLink = this.displayedActionRow.locator(`//div[contains(@class,"task-action") or contains(@class,"case-action")]//a[contains(text(),"${action}" )]`).first();
+    const actionLink = this.displayedActionRow
+      .locator(`//div[contains(@class,"task-action") or contains(@class,"case-action")]//a[contains(text(),"${action}" )]`)
+      .first();
     await actionLink.scrollIntoViewIfNeeded();
     await actionLink.click();
   }
@@ -296,8 +298,12 @@ class WAListTable {
   }
 
   async isPaginationPageNumEnabled(pageNum) {
-    const pageNumWithoutLink = elementByXpath(`//${this.baseCssLocator}//pagination-template//li//span[contains(text(),'${pageNum}')]`);
-    const pageNumWithLink = elementByXpath(`//${this.baseCssLocator}//pagination-template//li//a//span[contains(text(),'${pageNum}')]`);
+    const pageNumWithoutLink = elementByXpath(
+      `//${this.baseCssLocator}//pagination-template//li//span[contains(text(),'${pageNum}')]`
+    );
+    const pageNumWithLink = elementByXpath(
+      `//${this.baseCssLocator}//pagination-template//li//a//span[contains(text(),'${pageNum}')]`
+    );
 
     return (await isPresent(pageNumWithLink)) && (await isPresent(pageNumWithoutLink));
   }
@@ -306,7 +312,9 @@ class WAListTable {
     if (!(await this.isPaginationPageNumEnabled(pageNum))) {
       throw new Error('Page num is not present or not enabled: ' + pageNum);
     }
-    const pageNumWithLink = elementByXpath(`//${this.baseCssLocator}//pagination-template//li//a//span[contains(text(),'${pageNum}')]`);
+    const pageNumWithLink = elementByXpath(
+      `//${this.baseCssLocator}//pagination-template//li//a//span[contains(text(),'${pageNum}')]`
+    );
     await pageNumWithLink.click();
   }
 

@@ -3,11 +3,15 @@ import { ActivatedRoute } from '@angular/router';
 import { RpxTranslationService } from 'rpx-xui-translation';
 
 @Component({
+  standalone: false,
   selector: 'exui-privacy-policy',
-  templateUrl: './privacy-policy.component.html'
+  templateUrl: './privacy-policy.component.html',
 })
 export class PrivacyPolicyComponent implements OnInit {
-  constructor(private readonly route: ActivatedRoute, private readonly langService: RpxTranslationService) {}
+  constructor(
+    private readonly route: ActivatedRoute,
+    private readonly langService: RpxTranslationService
+  ) {}
 
   public get showWelshTranslation(): boolean {
     return this.langService.language === 'cy';
@@ -17,7 +21,7 @@ export class PrivacyPolicyComponent implements OnInit {
     this.route.fragment.subscribe((fragment) => {
       try {
         document.querySelector(`#${fragment}`).scrollIntoView();
-        // eslint-disable-next-line no-empty
+        // eslint-disable-next-line no-empty, @typescript-eslint/no-unused-vars
       } catch (e) {}
     });
   }

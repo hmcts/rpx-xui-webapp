@@ -10,10 +10,8 @@ describe('LanguageRequirementsSectionComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
-      declarations: [
-        LanguageRequirementsSectionComponent
-      ],
-      providers: [provideMockStore({ initialState })]
+      declarations: [LanguageRequirementsSectionComponent],
+      providers: [provideMockStore({ initialState })],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LanguageRequirementsSectionComponent);
@@ -43,7 +41,8 @@ describe('LanguageRequirementsSectionComponent', () => {
     spyOn(component.changeEditHearing, 'emit');
     component.onChange('needWelsh');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
-      fragmentId: 'needWelsh', changeLink: '/hearings/request/hearing-welsh#welsh_hearing_yes'
+      fragmentId: 'needWelsh',
+      changeLink: '/hearings/request/hearing-welsh#welsh_hearing_yes',
     });
   });
 });

@@ -17,9 +17,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 describe('ExclusionHomeComponent', () => {
   let component: AddExclusionHomeComponent;
   let fixture: ComponentFixture<AddExclusionHomeComponent>;
-  const routerMock = jasmine.createSpyObj('Router', [
-    'navigateByUrl'
-  ]);
+  const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl']);
   let store;
   let storePipeMock: any;
   let storeDispatchMock: any;
@@ -31,41 +29,36 @@ describe('ExclusionHomeComponent', () => {
     exclusionOption: ExcludeOption.EXCLUDE_ANOTHER_PERSON,
     personRole: null,
     person: null,
-    exclusionDescription: ''
+    exclusionDescription: '',
   };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      schemas: [
-        NO_ERRORS_SCHEMA
-      ],
-      declarations: [
-        ...fromContainers.containers
-      ],
-      imports: [ReactiveFormsModule,
-        UtilsModule,
-        RouterTestingModule],
+      schemas: [NO_ERRORS_SCHEMA],
+      declarations: [...fromContainers.containers],
+      imports: [ReactiveFormsModule, UtilsModule, RouterTestingModule],
       providers: [
         provideMockStore(),
         {
           provide: Router,
-          useValue: routerMock
+          useValue: routerMock,
         },
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               queryParams: {
-                caseId: '111111'
-              }
-            }
-          }
+                caseId: '111111',
+                jurisdiction: 'IA',
+                caseType: 'Asylum',
+              },
+            },
+          },
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
     store = TestBed.inject(Store);
 
     storePipeMock = spyOn(store, 'pipe');
@@ -178,7 +171,7 @@ describe('ExclusionHomeComponent', () => {
   describe('Click cancel button', () => {
     it('should navigate to role and access tab when click cancel button', () => {
       component.navigationHandler(ExclusionNavigationEvent.CANCEL);
-      expect(routerMock.navigateByUrl).toHaveBeenCalledWith('cases/case-details/111111/roles-and-access');
+      expect(routerMock.navigateByUrl).toHaveBeenCalledWith('cases/case-details/IA/Asylum/111111/roles-and-access');
     });
   });
 

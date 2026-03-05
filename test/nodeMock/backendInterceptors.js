@@ -1,4 +1,3 @@
-
 const rolesAssignmentsMock = require('./backEndMock/roleAssignment');
 const refDataCaseWorkers = require('./backEndMock/rdCaseworkerRefApi');
 const http = require('axios/lib/adapters/http');
@@ -21,7 +20,7 @@ function mockTestDataResponseInterceptor(response) {
     if (response.config.url.includes('rd-caseworker-ref-api')) {
       refDataCaseWorkers.processResponse(response);
     }
-  } catch (err){
+  } catch (err) {
     console.log(err);
     throw err;
   }
@@ -35,4 +34,3 @@ module.exports = { mockTestDataRequestInterceptor, mockTestDataResponseIntercept
 
 // const { mockTestDataRequestInterceptor, mockTestDataResponseInterceptor } = require('../../../test/nodeMock/backendInterceptors')
 // http.interceptors.response.use(mockTestDataResponseInterceptor, mockTestDataResponseInterceptor)
-

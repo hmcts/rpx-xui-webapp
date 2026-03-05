@@ -1,0 +1,533 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "description": "API manages the assignment of roles with attributes to actors, to support both ccd access control and work allocation requirements.",
+    "title": "AM Role Assignment Service"
+  },
+  "externalDocs": { "description": "README", "url": "https://github.com/hmcts/am-role-assignment-service#readme" },
+  "servers": [{ "url": "http://localhost", "description": "Generated server url" }],
+  "paths": {
+    "/am/role-assignments": {
+      "delete": {
+        "operationId": "deleteRoleAssignment",
+        "parameters": [
+          { "in": "header", "name": "x-correlation-id", "required": false, "schema": { "type": "string" } },
+          { "in": "query", "name": "process", "required": false, "schema": { "type": "string" } },
+          { "in": "query", "name": "reference", "required": false, "schema": { "type": "string" } },
+          {
+            "description": "Keyword `Bearer` followed by a valid IDAM user token",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "description": "Valid Service-to-Service JWT token for a whitelisted micro-service",
+            "in": "header",
+            "name": "ServiceAuthorization",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "No Content" },
+          "400": { "description": "One of the following reasons:\n1. Invalid Parameter\n2. Mandatory Parameters are missing\n" },
+          "422": { "description": "Unprocessable entity as request has been rejected" }
+        },
+        "security": [{ "Authorization": [] }, { "ServiceAuthorization": [] }],
+        "summary": "Delete role assignments",
+        "tags": ["delete-assignment-controller"]
+      },
+      "post": {
+        "operationId": "createRoleAssignment",
+        "parameters": [
+          { "in": "header", "name": "x-correlation-id", "required": false, "schema": { "type": "string" } },
+          {
+            "description": "Keyword `Bearer` followed by a valid IDAM user token",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "description": "Valid Service-to-Service JWT token for a whitelisted micro-service",
+            "in": "header",
+            "name": "ServiceAuthorization",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AssignmentRequest" } } },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/vnd.uk.gov.hmcts.role-assignment-service.create-assignments+json;charset=UTF-8;version=1.0": {
+                "schema": { "$ref": "#/components/schemas/RoleAssignmentRequestResource" }
+              }
+            },
+            "description": "Created"
+          },
+          "400": {
+            "description": "One of the following reasons:\n1. Invalid role name in the request\n2. Request is not valid as per validation rule\n"
+          },
+          "422": { "description": "Unprocessable entity as request has been rejected" }
+        },
+        "security": [{ "Authorization": [] }, { "ServiceAuthorization": [] }],
+        "summary": "Creates role assignments",
+        "tags": ["create-assignment-controller"]
+      }
+    },
+    "/am/role-assignments/actors/{actorId}": {
+      "get": {
+        "operationId": "retrieveRoleAssignmentsByActorId",
+        "parameters": [
+          { "in": "header", "name": "x-correlation-id", "required": false, "schema": { "type": "string" } },
+          { "in": "header", "name": "If-None-Match", "required": false, "schema": { "type": "string" } },
+          { "in": "path", "name": "actorId", "required": true, "schema": { "type": "string" } },
+          {
+            "description": "Keyword `Bearer` followed by a valid IDAM user token",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "description": "Valid Service-to-Service JWT token for a whitelisted micro-service",
+            "in": "header",
+            "name": "ServiceAuthorization",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/vnd.uk.gov.hmcts.role-assignment-service.get-assignments+json;charset=UTF-8;version=1.0": {
+                "schema": { "$ref": "#/components/schemas/RoleAssignmentResource" }
+              }
+            },
+            "description": "Success"
+          },
+          "400": { "description": "Request is not valid as per validation rule" }
+        },
+        "security": [{ "Authorization": [] }, { "ServiceAuthorization": [] }],
+        "summary": "Get role assignments by actor Id",
+        "tags": ["get-assignment-controller"]
+      }
+    },
+    "/am/role-assignments/ld/endpoint": {
+      "get": {
+        "operationId": "getIdLdDemo",
+        "parameters": [
+          { "in": "header", "name": "x-correlation-id", "required": false, "schema": { "type": "string" } },
+          {
+            "description": "Keyword `Bearer` followed by a valid IDAM user token",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "description": "Valid Service-to-Service JWT token for a whitelisted micro-service",
+            "in": "header",
+            "name": "ServiceAuthorization",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "content": { "*/*": { "schema": { "type": "object" } } }, "description": "OK" } },
+        "tags": ["query-assignment-controller"]
+      }
+    },
+    "/am/role-assignments/query": {
+      "post": {
+        "operationId": "retrieveRoleAssignmentsByQueryRequest_1",
+        "parameters": [
+          { "in": "header", "name": "x-correlation-id", "required": false, "schema": { "type": "string" } },
+          { "in": "header", "name": "pageNumber", "required": false, "schema": { "type": "integer", "format": "int32" } },
+          { "in": "header", "name": "size", "required": false, "schema": { "type": "integer", "format": "int32" } },
+          { "in": "header", "name": "sort", "required": false, "schema": { "type": "string" } },
+          { "in": "header", "name": "direction", "required": false, "schema": { "type": "string" } },
+          { "in": "query", "name": "includeLabels", "required": false, "schema": { "type": "boolean", "default": false } },
+          {
+            "description": "Keyword `Bearer` followed by a valid IDAM user token",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "description": "Valid Service-to-Service JWT token for a whitelisted micro-service",
+            "in": "header",
+            "name": "ServiceAuthorization",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "description": "Keyword `Bearer` followed by a valid IDAM user token",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "description": "Valid Service-to-Service JWT token for a whitelisted micro-service",
+            "in": "header",
+            "name": "ServiceAuthorization",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": { "schema": { "$ref": "#/components/schemas/QueryRequest" } },
+            "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0": {
+              "schema": { "$ref": "#/components/schemas/MultipleQueryRequest" }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=1.0": {
+                "schema": { "$ref": "#/components/schemas/RoleAssignmentResource" }
+              },
+              "application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0": {
+                "schema": { "$ref": "#/components/schemas/RoleAssignmentResource" }
+              }
+            },
+            "description": "Success"
+          },
+          "400": { "description": "Invalid Parameter" }
+        },
+        "security": [{ "Authorization": [] }, { "ServiceAuthorization": [] }],
+        "summary": "Query role assignments v2",
+        "tags": ["query-assignment-controller"]
+      }
+    },
+    "/am/role-assignments/query/delete": {
+      "post": {
+        "description": "&#9888; **Note: Please consult the LLD documentation for information on the safe use of this API, see [POST /am/role-assignments/query/delete](https://tools.hmcts.net/confluence/pages/viewpage.action?pageId=1504216881).**",
+        "operationId": "deleteRoleAssignmentsByQuery",
+        "parameters": [
+          { "in": "header", "name": "x-correlation-id", "required": false, "schema": { "type": "string" } },
+          {
+            "description": "Keyword `Bearer` followed by a valid IDAM user token",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "description": "Valid Service-to-Service JWT token for a whitelisted micro-service",
+            "in": "header",
+            "name": "ServiceAuthorization",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/MultipleQueryRequest" } } },
+          "required": true
+        },
+        "responses": {
+          "200": { "description": "The assignment records have been deleted." },
+          "400": { "description": "One of the following reasons:\n1. Invalid Parameter\n2. Mandatory Parameters are missing\n" },
+          "422": { "description": "Unprocessable entity as request has been rejected" }
+        },
+        "security": [{ "Authorization": [] }, { "ServiceAuthorization": [] }],
+        "summary": "Delete role assignments by query",
+        "tags": ["delete-assignment-controller"]
+      }
+    },
+    "/am/role-assignments/roles": {
+      "get": {
+        "operationId": "getListOfRoles",
+        "parameters": [
+          { "in": "header", "name": "x-correlation-id", "required": false, "schema": { "type": "string" } },
+          {
+            "description": "Keyword `Bearer` followed by a valid IDAM user token",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "description": "Valid Service-to-Service JWT token for a whitelisted micro-service",
+            "in": "header",
+            "name": "ServiceAuthorization",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/vnd.uk.gov.hmcts.role-assignment-service.get-roles+json;charset=UTF-8;version=1.0": {
+                "schema": { "type": "object" }
+              }
+            },
+            "description": "Ok"
+          }
+        },
+        "security": [{ "Authorization": [] }, { "ServiceAuthorization": [] }],
+        "summary": "Get roles",
+        "tags": ["get-assignment-controller"]
+      }
+    },
+    "/am/role-assignments/user-count": {
+      "get": {
+        "operationId": "getOrgUserCount",
+        "parameters": [
+          {
+            "description": "Keyword `Bearer` followed by a valid IDAM user token",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "description": "Valid Service-to-Service JWT token for a whitelisted micro-service",
+            "in": "header",
+            "name": "ServiceAuthorization",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": { "*/*": { "schema": { "type": "object", "additionalProperties": { "type": "object" } } } },
+            "description": "OK"
+          }
+        },
+        "security": [{ "Authorization": [] }, { "ServiceAuthorization": [] }],
+        "summary": "Get User Count",
+        "tags": ["user-count-controller"]
+      }
+    },
+    "/am/role-assignments/{assignmentId}": {
+      "delete": {
+        "operationId": "deleteRoleAssignmentById",
+        "parameters": [
+          { "in": "header", "name": "x-correlation-id", "required": false, "schema": { "type": "string" } },
+          { "in": "path", "name": "assignmentId", "required": true, "schema": { "type": "string" } },
+          {
+            "description": "Keyword `Bearer` followed by a valid IDAM user token",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "description": "Valid Service-to-Service JWT token for a whitelisted micro-service",
+            "in": "header",
+            "name": "ServiceAuthorization",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "204": { "description": "No Content" },
+          "400": { "description": "One of the following reasons:\n1. Invalid Parameter\n2. Mandatory Parameters are missing\n" },
+          "422": { "description": "Unprocessable entity as request has been rejected" }
+        },
+        "security": [{ "Authorization": [] }, { "ServiceAuthorization": [] }],
+        "summary": "Delete role assignments by assignment Id",
+        "tags": ["delete-assignment-controller"]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Assignment": {
+        "type": "object",
+        "properties": {
+          "actorId": { "type": "string" },
+          "actorIdType": { "type": "string", "enum": ["IDAM", "CASEPARTY"] },
+          "attributes": { "type": "object", "additionalProperties": { "$ref": "#/components/schemas/JsonNode" } },
+          "authorisations": { "type": "array", "items": { "type": "string" } },
+          "beginTime": { "type": "string", "format": "date-time" },
+          "classification": { "type": "string", "enum": ["PUBLIC", "PRIVATE", "RESTRICTED"] },
+          "created": { "type": "string", "format": "date-time" },
+          "endTime": { "type": "string", "format": "date-time" },
+          "grantType": { "type": "string", "enum": ["BASIC", "SPECIFIC", "STANDARD", "CHALLENGED", "EXCLUDED"] },
+          "id": { "type": "string", "format": "uuid" },
+          "log": { "type": "string" },
+          "notes": { "$ref": "#/components/schemas/JsonNode" },
+          "process": { "type": "string" },
+          "readOnly": { "type": "boolean" },
+          "reference": { "type": "string" },
+          "roleCategory": {
+            "type": "string",
+            "enum": ["JUDICIAL", "LEGAL_OPERATIONS", "ADMIN", "PROFESSIONAL", "CITIZEN", "SYSTEM", "OTHER_GOV_DEPT", "CTSC"]
+          },
+          "roleLabel": { "type": "string" },
+          "roleName": { "type": "string" },
+          "roleType": { "type": "string", "enum": ["CASE", "ORGANISATION"] },
+          "status": {
+            "type": "string",
+            "enum": [
+              "CREATE_REQUESTED",
+              "CREATED",
+              "REQUEST_VALIDATED",
+              "REQUEST_NOT_VALIDATED",
+              "ROLE_VALIDATED",
+              "CREATE_APPROVED",
+              "ROLE_NOT_VALIDATED",
+              "APPROVED",
+              "REJECTED",
+              "LIVE",
+              "DELETE_REQUESTED",
+              "DELETE_APPROVED",
+              "DELETE_REJECTED",
+              "DELETED",
+              "EXPIRED"
+            ]
+          },
+          "statusSequence": { "type": "integer", "format": "int32" }
+        }
+      },
+      "AssignmentRequest": {
+        "type": "object",
+        "properties": {
+          "requestedRoles": { "type": "array", "items": { "$ref": "#/components/schemas/RoleAssignment" } },
+          "roleRequest": { "$ref": "#/components/schemas/Request" }
+        }
+      },
+      "JsonNode": { "type": "object" },
+      "MultipleQueryRequest": {
+        "type": "object",
+        "properties": { "queryRequests": { "type": "array", "items": { "$ref": "#/components/schemas/QueryRequest" } } }
+      },
+      "QueryRequest": {
+        "type": "object",
+        "properties": {
+          "actorId": { "type": "array", "items": { "type": "string" } },
+          "attributes": { "type": "object", "additionalProperties": { "type": "array", "items": { "type": "string" } } },
+          "authorisations": { "type": "array", "items": { "type": "string" } },
+          "classification": { "type": "array", "items": { "type": "string" } },
+          "grantType": { "type": "array", "items": { "type": "string" } },
+          "hasAttributes": { "type": "array", "items": { "type": "string" } },
+          "readOnly": { "type": "boolean" },
+          "roleCategory": { "type": "array", "items": { "type": "string" } },
+          "roleName": { "type": "array", "items": { "type": "string" } },
+          "roleType": { "type": "array", "items": { "type": "string" } },
+          "validAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "Request": {
+        "type": "object",
+        "properties": {
+          "assignerId": { "type": "string" },
+          "authenticatedUserId": { "type": "string" },
+          "byPassOrgDroolRule": { "type": "boolean" },
+          "clientId": { "type": "string" },
+          "correlationId": { "type": "string" },
+          "created": { "type": "string", "format": "date-time" },
+          "id": { "type": "string", "format": "uuid" },
+          "log": { "type": "string" },
+          "process": { "type": "string" },
+          "reference": { "type": "string" },
+          "replaceExisting": { "type": "boolean" },
+          "requestType": { "type": "string", "enum": ["CREATE", "DELETE"] },
+          "roleAssignmentId": { "type": "string", "format": "uuid" },
+          "status": {
+            "type": "string",
+            "enum": [
+              "CREATE_REQUESTED",
+              "CREATED",
+              "REQUEST_VALIDATED",
+              "REQUEST_NOT_VALIDATED",
+              "ROLE_VALIDATED",
+              "CREATE_APPROVED",
+              "ROLE_NOT_VALIDATED",
+              "APPROVED",
+              "REJECTED",
+              "LIVE",
+              "DELETE_REQUESTED",
+              "DELETE_APPROVED",
+              "DELETE_REJECTED",
+              "DELETED",
+              "EXPIRED"
+            ]
+          }
+        }
+      },
+      "RoleAssignment": {
+        "type": "object",
+        "properties": {
+          "actorId": { "type": "string" },
+          "actorIdType": { "type": "string", "enum": ["IDAM", "CASEPARTY"] },
+          "attributes": { "type": "object", "additionalProperties": { "$ref": "#/components/schemas/JsonNode" } },
+          "authorisations": { "type": "array", "items": { "type": "string" } },
+          "beginTime": { "type": "string", "format": "date-time" },
+          "classification": { "type": "string", "enum": ["PUBLIC", "PRIVATE", "RESTRICTED"] },
+          "created": { "type": "string", "format": "date-time" },
+          "endTime": { "type": "string", "format": "date-time" },
+          "grantType": { "type": "string", "enum": ["BASIC", "SPECIFIC", "STANDARD", "CHALLENGED", "EXCLUDED"] },
+          "id": { "type": "string", "format": "uuid" },
+          "log": { "type": "string" },
+          "notes": { "$ref": "#/components/schemas/JsonNode" },
+          "process": { "type": "string" },
+          "readOnly": { "type": "boolean" },
+          "reference": { "type": "string" },
+          "roleCategory": {
+            "type": "string",
+            "enum": ["JUDICIAL", "LEGAL_OPERATIONS", "ADMIN", "PROFESSIONAL", "CITIZEN", "SYSTEM", "OTHER_GOV_DEPT", "CTSC"]
+          },
+          "roleLabel": { "type": "string" },
+          "roleName": { "type": "string" },
+          "roleType": { "type": "string", "enum": ["CASE", "ORGANISATION"] },
+          "status": {
+            "type": "string",
+            "enum": [
+              "CREATE_REQUESTED",
+              "CREATED",
+              "REQUEST_VALIDATED",
+              "REQUEST_NOT_VALIDATED",
+              "ROLE_VALIDATED",
+              "CREATE_APPROVED",
+              "ROLE_NOT_VALIDATED",
+              "APPROVED",
+              "REJECTED",
+              "LIVE",
+              "DELETE_REQUESTED",
+              "DELETE_APPROVED",
+              "DELETE_REJECTED",
+              "DELETED",
+              "EXPIRED"
+            ]
+          },
+          "statusSequence": { "type": "integer", "format": "int32" }
+        }
+      },
+      "RoleAssignmentRequestResource": {
+        "type": "object",
+        "properties": { "roleAssignmentResponse": { "$ref": "#/components/schemas/AssignmentRequest" } }
+      },
+      "RoleAssignmentResource": {
+        "type": "object",
+        "properties": { "roleAssignmentResponse": { "type": "array", "items": { "$ref": "#/components/schemas/Assignment" } } }
+      }
+    },
+    "securitySchemes": {
+      "Authorization": {
+        "bearerFormat": "JWT",
+        "description": "Valid IDAM user token, (Bearer keyword is added automatically)",
+        "scheme": "bearer",
+        "type": "http"
+      },
+      "ServiceAuthorization": {
+        "bearerFormat": "JWT",
+        "description": "Valid Service-to-Service JWT token for a whitelisted micro-service",
+        "in": "header",
+        "name": "ServiceAuthorization",
+        "type": "apiKey"
+      }
+    }
+  }
+}

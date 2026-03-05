@@ -9,8 +9,9 @@ import { NavigationItems } from './footer.model';
 
 describe('FooterComponent', () => {
   @Component({
+    standalone: false,
     selector: 'exui-app-host-dummy-component',
-    template: '<exui-app-footer></exui-app-footer>'
+    template: '<exui-app-footer></exui-app-footer>',
   })
   class TestDummyHostComponent {
     @ViewChild(FooterComponent, { static: false })
@@ -26,8 +27,8 @@ describe('FooterComponent', () => {
     items: [
       { text: 'Terms and conditions', href: '/terms-and-conditions' },
       { text: 'Privacy policy', href: '/privacy-policy' },
-      { text: 'Cookies', href: '/cookies' }
-    ]
+      { text: 'Cookies', href: '/cookies' },
+    ],
   };
 
   beforeEach(waitForAsync(() => {
@@ -35,17 +36,16 @@ describe('FooterComponent', () => {
     mockStore.pipe.and.returnValue(of(true));
 
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ],
+      imports: [RouterTestingModule],
       declarations: [FooterComponent, TestDummyHostComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [{
-        provide: Store,
-        useValue: mockStore
-      }]
-    })
-      .compileComponents();
+      providers: [
+        {
+          provide: Store,
+          useValue: mockStore,
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -97,8 +97,8 @@ describe('FooterComponent', () => {
       component.navigationData = {
         items: [
           { text: 'Privacy policy', href: '/privacy-policy' },
-          { text: 'Cookies', href: '/cookies' }
-        ]
+          { text: 'Cookies', href: '/cookies' },
+        ],
       };
 
       expect(() => component.ngOnInit()).not.toThrow();
@@ -131,7 +131,7 @@ describe('FooterComponent', () => {
       const navigationItems: NavigationItems[] = [
         { text: 'Privacy policy', href: '/privacy' },
         { text: 'Terms and conditions', href: '/terms' },
-        { text: 'Cookies', href: '/cookies' }
+        { text: 'Cookies', href: '/cookies' },
       ];
 
       const result = component.getNavigationItemForTandC(navigationItems);
@@ -142,7 +142,7 @@ describe('FooterComponent', () => {
     it('should return null when Terms and conditions item does not exist', () => {
       const navigationItems: NavigationItems[] = [
         { text: 'Privacy policy', href: '/privacy' },
-        { text: 'Cookies', href: '/cookies' }
+        { text: 'Cookies', href: '/cookies' },
       ];
 
       const result = component.getNavigationItemForTandC(navigationItems);
@@ -169,7 +169,7 @@ describe('FooterComponent', () => {
     it('should return the last Terms and conditions item when multiple exist', () => {
       const navigationItems: NavigationItems[] = [
         { text: 'Terms and conditions', href: '/terms1' },
-        { text: 'Terms and conditions', href: '/terms2' }
+        { text: 'Terms and conditions', href: '/terms2' },
       ];
 
       const result = component.getNavigationItemForTandC(navigationItems);

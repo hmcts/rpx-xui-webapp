@@ -20,26 +20,21 @@ describe('StaffUserListComponent', () => {
 
   beforeEach(waitForAsync(() => {
     mockStaffDataFilterService = {
-      tableData$: of(null)
+      tableData$: of(null),
     };
 
     TestBed.configureTestingModule({
       declarations: [StaffUserListComponent],
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [CdkTableModule,
-        RouterTestingModule,
-        NgxPaginationModule,
-        ExuiCommonLibModule,
-        RpxTranslationModule.forChild()],
+      imports: [CdkTableModule, RouterTestingModule, NgxPaginationModule, ExuiCommonLibModule, RpxTranslationModule.forChild()],
       providers: [
         RpxTranslationService,
         RpxTranslationConfig,
         { provide: StaffDataFilterService, useValue: mockStaffDataFilterService },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -60,8 +55,7 @@ describe('StaffUserListComponent', () => {
     expect(element).toBeFalsy();
   });
 
-  it('should display data if tableData$ returns { results: StaffUser[] }' +
-    ' and length of results is greater than 0', () => {
+  it('should display data if tableData$ returns { results: StaffUser[] }' + ' and length of results is greater than 0', () => {
     // @ts-expect-error - tableData$ is readonly
     mockStaffDataFilterService.tableData$ = of({ items: [{} as StaffUsersFilterResult] });
     fixture.detectChanges();
@@ -69,8 +63,7 @@ describe('StaffUserListComponent', () => {
     expect(element).toBeTruthy();
   });
 
-  it('should display "No results found" when tableData$ returns { results: [] }' +
-    ' and length of results is equal to 0', () => {
+  it('should display "No results found" when tableData$ returns { results: [] }' + ' and length of results is equal to 0', () => {
     // @ts-expect-error - tableData$ is readonly
     mockStaffDataFilterService.tableData$ = of({ items: [] });
     fixture.detectChanges();

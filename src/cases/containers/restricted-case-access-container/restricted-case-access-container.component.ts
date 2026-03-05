@@ -1,5 +1,6 @@
+import { Location } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable, Subscription, of } from 'rxjs';
 import { catchError, switchMap, take, tap } from 'rxjs/operators';
@@ -12,8 +13,9 @@ import { RestrictedCase } from '../../models/restricted-case.model';
 import { JudicialRefDataService } from 'src/hearings/services/judicial-ref-data.service';
 
 @Component({
+  standalone: false,
   selector: 'exui-restricted-case-access-container',
-  templateUrl: './restricted-case-access-container.component.html'
+  templateUrl: './restricted-case-access-container.component.html',
 })
 export class RestrictedCaseAccessContainerComponent implements OnInit, OnDestroy {
   public caseId: string;
@@ -24,40 +26,61 @@ export class RestrictedCaseAccessContainerComponent implements OnInit, OnDestroy
   public allocateServiceSubscription: Subscription;
   public showSpinner$: Observable<boolean>;
 
-  constructor(private readonly route: ActivatedRoute,
-              private readonly allocateService: AllocateRoleService,
-              private readonly caseworkerDataService: CaseworkerDataService,
-              private readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService,
-              private readonly loadingService: LoadingService,
-              private readonly judicialRefDataService: JudicialRefDataService) {
-  }
+  constructor(
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly allocateService: AllocateRoleService,
+    private readonly caseworkerDataService: CaseworkerDataService,
+    private readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService,
+    private readonly loadingService: LoadingService,
+    private readonly judicialRefDataService: JudicialRefDataService,
+    private readonly location: Location
+  ) {}
 
   public ngOnInit(): void {
     this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();
     this.caseId = this.route.snapshot.params.cid;
-    this.allocateServiceSubscription = this.allocateService.getCaseAccessRolesByCaseId(this.caseId).pipe(
-      switchMap((usersWithAccess) => {
-        this.usersWithAccess = usersWithAccess;
-        return of(this.getUniqueIdamIds());
-      }), take(1),
-      switchMap(() => this.waSupportedJurisdictionsService.getWASupportedJurisdictions()),
-      take(1),
-      switchMap((jurisdictions) => this.caseworkerDataService.getUsersFromServices(jurisdictions)),
-      take(1),
-      switchMap((caseworkers) => of(this.getRestrictedCases(caseworkers)))
-    ).subscribe(
-      (restrictedCases) => {
-        this.restrictedCases = restrictedCases;
-        this.loadingService.unregister(loadingToken);
-      }, () => {
-        this.loadingService.unregister(loadingToken);
-      }
-    );
+    this.allocateServiceSubscription = this.allocateService
+      .getCaseAccessRolesByCaseId(this.caseId)
+      .pipe(
+        switchMap((usersWithAccess) => {
+          this.usersWithAccess = usersWithAccess;
+          return of(this.getUniqueIdamIds());
+        }),
+        take(1),
+        switchMap(() => this.waSupportedJurisdictionsService.getWASupportedJurisdictions()),
+        take(1),
+        switchMap((jurisdictions) => this.caseworkerDataService.getUsersFromServices(jurisdictions)),
+        take(1),
+        switchMap((caseworkers) => of(this.getRestrictedCases(caseworkers)))
+      )
+      .subscribe(
+        (restrictedCases) => {
+          this.restrictedCases = restrictedCases;
+          this.loadingService.unregister(loadingToken);
+        },
+        () => {
+          this.loadingService.unregister(loadingToken);
+        }
+      );
   }
 
   public ngOnDestroy(): void {
     this.allocateServiceSubscription?.unsubscribe();
+  }
+
+  public onBack(): void {
+    // Prefer an in-app back when we can
+    const sameOriginReferrer = document.referrer && new URL(document.referrer).origin === location.origin;
+
+    if (sameOriginReferrer && history.length > 1) {
+      this.location.back();
+    } else {
+      // Fallback when opened in a new tab/deep link (no useful history)
+      // This can be changed if unsuitable
+      this.router.navigateByUrl('/cases/case-search');
+    }
   }
 
   private getUniqueIdamIds(): string[] {
@@ -74,14 +97,15 @@ export class RestrictedCaseAccessContainerComponent implements OnInit, OnDestroy
       if (!user) {
         // EXUI-2907 - Multiple users check for judicial
         if (userWithAccess.roleCategory === 'JUDICIAL') {
-          this.judicialRefDataService.searchJudicialUserByIdamID([id])
+          this.judicialRefDataService
+            .searchJudicialUserByIdamID([id])
             .pipe(
               tap((judge) => {
                 if (judge && judge.length > 0) {
                   restrictedCases.push({
                     user: judge[0].fullName,
                     email: judge[0].emailId,
-                    role: userWithAccess.roleName
+                    role: userWithAccess.roleName,
                   });
                 }
               }),
@@ -97,7 +121,7 @@ export class RestrictedCaseAccessContainerComponent implements OnInit, OnDestroy
         restrictedCases.push({
           user: `${user.firstName} ${user.lastName}`,
           email: user.email,
-          role: userWithAccess.roleName
+          role: userWithAccess.roleName,
         });
       }
     });

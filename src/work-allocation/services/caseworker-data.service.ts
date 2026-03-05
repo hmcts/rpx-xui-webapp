@@ -9,7 +9,10 @@ import { Caseworker } from '../models/dtos';
 export class CaseworkerDataService {
   public static caseWorkerUrl: string = '/workallocation/caseworker';
   public static caseworkersKey: string = 'caseworkers';
-  public constructor(private readonly http: HttpClient, private readonly sessionStorageService: SessionStorageService) {}
+  public constructor(
+    private readonly http: HttpClient,
+    private readonly sessionStorageService: SessionStorageService
+  ) {}
 
   public getForLocation(locationId: string): Observable<Caseworker[]> {
     return this.http.get<Caseworker[]>(`${CaseworkerDataService.caseWorkerUrl}/location/${locationId}`);

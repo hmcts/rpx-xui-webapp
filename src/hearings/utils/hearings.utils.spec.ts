@@ -8,7 +8,7 @@ import { HearingsUtils } from './hearings.utils';
 import { UnavailabilityRangeModel } from '../models/unavailabilityRange.model';
 import { HearingWindowModel } from '../models/hearingWindow.model';
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
-import * as moment from 'moment';
+import moment from 'moment';
 
 describe('HearingsUtils', () => {
   it('should return true if has the right property', () => {
@@ -35,10 +35,10 @@ describe('HearingsUtils', () => {
             hearingSubChannel: 'APEL',
             partyID: '1',
             partyRole: null,
-            partyType: null
-          }
+            partyType: null,
+          },
         ],
-        listAssistSessionID: null
+        listAssistSessionID: null,
       },
       {
         hearingStartDateTime: '2022-08-17T09:00:00',
@@ -52,10 +52,10 @@ describe('HearingsUtils', () => {
             hearingSubChannel: 'APEL',
             partyID: '1',
             partyRole: null,
-            partyType: null
-          }
+            partyType: null,
+          },
         ],
-        listAssistSessionID: null
+        listAssistSessionID: null,
       },
       {
         hearingStartDateTime: '2022-08-16T09:00:00',
@@ -69,47 +69,48 @@ describe('HearingsUtils', () => {
             hearingSubChannel: 'APEL',
             partyID: '1',
             partyRole: null,
-            partyType: null
-          }
+            partyType: null,
+          },
         ],
-        listAssistSessionID: null
-      }
+        listAssistSessionID: null,
+      },
     ];
-    const expectedResult: HearingDayScheduleModel[] = [
-      hearingDaySchedule[0],
-      hearingDaySchedule[2],
-      hearingDaySchedule[1]
-    ];
+    const expectedResult: HearingDayScheduleModel[] = [hearingDaySchedule[0], hearingDaySchedule[2], hearingDaySchedule[1]];
     const sortedResult = HearingsUtils.sortHearingDaySchedule(hearingDaySchedule);
     expect(sortedResult).toEqual(expectedResult);
   });
 
   it('should return the unavailability date ranges for parties', () => {
-    const UnavailabilityDatesParty1: UnavailabilityRangeModel[] = [{
-      unavailableFromDate: '2021-12-10T09:00:00.000Z',
-      unavailableToDate: '2021-12-31T09:00:00.000Z',
-      unavailabilityType: UnavailabilityType.ALL_DAY
-    }];
-    const UnavailabilityDatesParty2: UnavailabilityRangeModel[] = [{
-      unavailableFromDate: '2021-12-20T09:00:00.000Z',
-      unavailableToDate: '2021-12-31T09:00:00.000Z',
-      unavailabilityType: UnavailabilityType.ALL_DAY
-    }];
-    const party1: PartyDetailsModel[] = [{
-      partyID: 'party1',
-      partyType: PartyType.IND,
-      partyRole: 'partyRole',
-      unavailabilityRanges: UnavailabilityDatesParty1
-    },
-    {
-      partyID: 'party2',
-      partyType: PartyType.ORG,
-      partyRole: 'partyRole',
-      unavailabilityRanges: UnavailabilityDatesParty2
-    }];
+    const UnavailabilityDatesParty1: UnavailabilityRangeModel[] = [
+      {
+        unavailableFromDate: '2021-12-10T09:00:00.000Z',
+        unavailableToDate: '2021-12-31T09:00:00.000Z',
+        unavailabilityType: UnavailabilityType.ALL_DAY,
+      },
+    ];
+    const UnavailabilityDatesParty2: UnavailabilityRangeModel[] = [
+      {
+        unavailableFromDate: '2021-12-20T09:00:00.000Z',
+        unavailableToDate: '2021-12-31T09:00:00.000Z',
+        unavailabilityType: UnavailabilityType.ALL_DAY,
+      },
+    ];
+    const party1: PartyDetailsModel[] = [
+      {
+        partyID: 'party1',
+        partyType: PartyType.IND,
+        partyRole: 'partyRole',
+        unavailabilityRanges: UnavailabilityDatesParty1,
+      },
+      {
+        partyID: 'party2',
+        partyType: PartyType.ORG,
+        partyRole: 'partyRole',
+        unavailabilityRanges: UnavailabilityDatesParty2,
+      },
+    ];
 
-    const partiesNotAvailableDates = HearingsUtils.getPartiesNotAvailableDates(party1
-    );
+    const partiesNotAvailableDates = HearingsUtils.getPartiesNotAvailableDates(party1);
     expect(partiesNotAvailableDates.length).toEqual(22);
   });
 
@@ -137,12 +138,10 @@ describe('HearingsUtils', () => {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         hearingDetails: {
           ...initialState.hearings.hearingRequest.hearingRequestMainModel.hearingDetails,
-          hearingWindow: null
-        }
+          hearingWindow: null,
+        },
       };
-      expect(
-        HearingsUtils.getHRMHearingWindow(hearingRequestMainModel)
-      ).toBeNull();
+      expect(HearingsUtils.getHRMHearingWindow(hearingRequestMainModel)).toBeNull();
     });
 
     it('should return HearingWindowModel from ServiceHearingVaulesModel when hearingWindow is not empty', () => {
@@ -153,13 +152,13 @@ describe('HearingsUtils', () => {
           hearingWindow: {
             dateRangeStart: '2022-11-23T09:00:00.000Z',
             dateRangeEnd: '2022-11-30T09:00:00.000Z',
-            firstDateTimeMustBe: '2022-12-01T09:00:00.000Z'
-          }
-        }
+            firstDateTimeMustBe: '2022-12-01T09:00:00.000Z',
+          },
+        },
       };
-      expect(
-        HearingsUtils.getHRMHearingWindow(hearingRequestMainModel)
-      ).toEqual(hearingRequestMainModel.hearingDetails.hearingWindow);
+      expect(HearingsUtils.getHRMHearingWindow(hearingRequestMainModel)).toEqual(
+        hearingRequestMainModel.hearingDetails.hearingWindow
+      );
     });
   });
 
@@ -186,8 +185,8 @@ describe('HearingsUtils', () => {
           title: 'Mrs',
           firstName: 'Jane',
           lastName: 'Smith',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       };
       const partyInSHV: PartyDetailsModel = {
         partyID: 'P1',
@@ -198,8 +197,8 @@ describe('HearingsUtils', () => {
           title: 'Mrs',
           firstName: 'Jane',
           lastName: 'Rogers',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       };
       const hasPartyNameChangedResult = HearingsUtils.hasPartyNameChanged(partyInHMC, partyInSHV);
       expect(hasPartyNameChangedResult).toEqual(true);
@@ -215,8 +214,8 @@ describe('HearingsUtils', () => {
           title: 'Mrs',
           firstName: 'Jane',
           lastName: 'Smith',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       };
       const partyInSHV: PartyDetailsModel = {
         partyID: 'P1',
@@ -227,8 +226,8 @@ describe('HearingsUtils', () => {
           title: 'Mrs',
           firstName: 'Jane',
           lastName: 'Smith',
-          preferredHearingChannel: 'inPerson'
-        }
+          preferredHearingChannel: 'inPerson',
+        },
       };
       const hasPartyNameChangedResult = HearingsUtils.hasPartyNameChanged(partyInHMC, partyInSHV);
       expect(hasPartyNameChangedResult).toEqual(false);
@@ -263,125 +262,149 @@ describe('HearingsUtils', () => {
     it('Prioritys entered are the same ', () => {
       const priority1 = 'Standard';
       const priority2 = 'Standard';
-      expect(HearingsUtils.hasHearingPriorityChanged(priority1, priority2)).toEqual(false);
+      expect(HearingsUtils.hasHearingStringChanged(priority1, priority2)).toEqual(false);
     });
 
     it('Prioritys entered differ', () => {
       const priority1 = 'Standard';
       const priority2 = 'standard';
-      expect(HearingsUtils.hasHearingPriorityChanged(priority1, priority2)).toEqual(true);
+      expect(HearingsUtils.hasHearingStringChanged(priority1, priority2)).toEqual(true);
     });
   });
   describe('Test of hasDurationChanged functionality', () => {
     it('Durations entered are the same ', () => {
       const duration1 = 120;
       const duration2 = 120;
-      expect(HearingsUtils.hasHearingDurationChanged(duration1, duration2)).toEqual(false);
+      expect(HearingsUtils.hasHearingNumberChanged(duration1, duration2)).toEqual(false);
     });
 
     it('Durations entered differ.', () => {
       const duration1 = 120;
       const duration2 = 121;
-      expect(HearingsUtils.hasHearingDurationChanged(duration1, duration2)).toEqual(true);
+      expect(HearingsUtils.hasHearingNumberChanged(duration1, duration2)).toEqual(true);
     });
   });
   describe('Test of change of unavailability dates', () => {
     it('should return no difference to the date unavailability dates supplied.', () => {
-      const UnavailabilityDatesParty1: UnavailabilityRangeModel[] = [{
-        unavailableFromDate: '2021-12-10T09:00:00.000Z',
-        unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }];
-      const UnavailabilityDatesParty2: UnavailabilityRangeModel[] = [{
-        unavailableFromDate: '2021-12-20T09:00:00.000Z',
-        unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }];
-      const party1: PartyDetailsModel[] = [{
-        partyID: 'party1',
-        partyType: PartyType.IND,
-        partyRole: 'partyRole',
-        unavailabilityRanges: UnavailabilityDatesParty1
-      },
-      {
-        partyID: 'party2',
-        partyType: PartyType.ORG,
-        partyRole: 'partyRole',
-        unavailabilityRanges: UnavailabilityDatesParty2
-      }];
+      const UnavailabilityDatesParty1: UnavailabilityRangeModel[] = [
+        {
+          unavailableFromDate: '2021-12-10T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY,
+        },
+      ];
+      const UnavailabilityDatesParty2: UnavailabilityRangeModel[] = [
+        {
+          unavailableFromDate: '2021-12-20T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY,
+        },
+      ];
+      const party1: PartyDetailsModel[] = [
+        {
+          partyID: 'party1',
+          partyType: PartyType.IND,
+          partyRole: 'partyRole',
+          unavailabilityRanges: UnavailabilityDatesParty1,
+        },
+        {
+          partyID: 'party2',
+          partyType: PartyType.ORG,
+          partyRole: 'partyRole',
+          unavailabilityRanges: UnavailabilityDatesParty2,
+        },
+      ];
 
-      const UnavailabilityDatesParty3: UnavailabilityRangeModel[] = [{
-        unavailableFromDate: '2021-12-10T09:00:00.000Z',
-        unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }];
-      const UnavailabilityDatesParty4: UnavailabilityRangeModel[] = [{
-        unavailableFromDate: '2021-12-20T09:00:00.000Z',
-        unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }];
-      const party2: PartyDetailsModel[] = [{
-        partyID: 'party1',
-        partyType: PartyType.IND,
-        partyRole: 'partyRole',
-        unavailabilityRanges: UnavailabilityDatesParty3
-      },
-      {
-        partyID: 'party2',
-        partyType: PartyType.ORG,
-        partyRole: 'partyRole',
-        unavailabilityRanges: UnavailabilityDatesParty4
-      }];
+      const UnavailabilityDatesParty3: UnavailabilityRangeModel[] = [
+        {
+          unavailableFromDate: '2021-12-10T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY,
+        },
+      ];
+      const UnavailabilityDatesParty4: UnavailabilityRangeModel[] = [
+        {
+          unavailableFromDate: '2021-12-20T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY,
+        },
+      ];
+      const party2: PartyDetailsModel[] = [
+        {
+          partyID: 'party1',
+          partyType: PartyType.IND,
+          partyRole: 'partyRole',
+          unavailabilityRanges: UnavailabilityDatesParty3,
+        },
+        {
+          partyID: 'party2',
+          partyType: PartyType.ORG,
+          partyRole: 'partyRole',
+          unavailabilityRanges: UnavailabilityDatesParty4,
+        },
+      ];
 
       expect(HearingsUtils.hasPartyUnavailabilityDatesChanged(party1, party2)).toEqual(false);
     });
 
     it('should return a difference to the date unavailability dates supplied.', () => {
-      const UnavailabilityDatesParty1: UnavailabilityRangeModel[] = [{
-        unavailableFromDate: '2021-12-09T09:00:00.000Z',
-        unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }];
-      const UnavailabilityDatesParty2: UnavailabilityRangeModel[] = [{
-        unavailableFromDate: '2021-12-20T09:00:00.000Z',
-        unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }];
-      const party1: PartyDetailsModel[] = [{
-        partyID: 'party1',
-        partyType: PartyType.IND,
-        partyRole: 'partyRole',
-        unavailabilityRanges: UnavailabilityDatesParty1
-      },
-      {
-        partyID: 'party2',
-        partyType: PartyType.ORG,
-        partyRole: 'partyRole',
-        unavailabilityRanges: UnavailabilityDatesParty2
-      }];
+      const UnavailabilityDatesParty1: UnavailabilityRangeModel[] = [
+        {
+          unavailableFromDate: '2021-12-09T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY,
+        },
+      ];
+      const UnavailabilityDatesParty2: UnavailabilityRangeModel[] = [
+        {
+          unavailableFromDate: '2021-12-20T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY,
+        },
+      ];
+      const party1: PartyDetailsModel[] = [
+        {
+          partyID: 'party1',
+          partyType: PartyType.IND,
+          partyRole: 'partyRole',
+          unavailabilityRanges: UnavailabilityDatesParty1,
+        },
+        {
+          partyID: 'party2',
+          partyType: PartyType.ORG,
+          partyRole: 'partyRole',
+          unavailabilityRanges: UnavailabilityDatesParty2,
+        },
+      ];
 
-      const UnavailabilityDatesParty3: UnavailabilityRangeModel[] = [{
-        unavailableFromDate: '2021-12-10T09:00:00.000Z',
-        unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }];
-      const UnavailabilityDatesParty4: UnavailabilityRangeModel[] = [{
-        unavailableFromDate: '2021-12-20T09:00:00.000Z',
-        unavailableToDate: '2021-12-31T09:00:00.000Z',
-        unavailabilityType: UnavailabilityType.ALL_DAY
-      }];
-      const party2: PartyDetailsModel[] = [{
-        partyID: 'party1',
-        partyType: PartyType.IND,
-        partyRole: 'partyRole',
-        unavailabilityRanges: UnavailabilityDatesParty3
-      },
-      {
-        partyID: 'party2',
-        partyType: PartyType.ORG,
-        partyRole: 'partyRole',
-        unavailabilityRanges: UnavailabilityDatesParty4
-      }];
+      const UnavailabilityDatesParty3: UnavailabilityRangeModel[] = [
+        {
+          unavailableFromDate: '2021-12-10T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY,
+        },
+      ];
+      const UnavailabilityDatesParty4: UnavailabilityRangeModel[] = [
+        {
+          unavailableFromDate: '2021-12-20T09:00:00.000Z',
+          unavailableToDate: '2021-12-31T09:00:00.000Z',
+          unavailabilityType: UnavailabilityType.ALL_DAY,
+        },
+      ];
+      const party2: PartyDetailsModel[] = [
+        {
+          partyID: 'party1',
+          partyType: PartyType.IND,
+          partyRole: 'partyRole',
+          unavailabilityRanges: UnavailabilityDatesParty3,
+        },
+        {
+          partyID: 'party2',
+          partyType: PartyType.ORG,
+          partyRole: 'partyRole',
+          unavailabilityRanges: UnavailabilityDatesParty4,
+        },
+      ];
 
       expect(HearingsUtils.hasPartyUnavailabilityDatesChanged(party1, party2)).toEqual(true);
     });
@@ -390,52 +413,52 @@ describe('HearingsUtils', () => {
   describe('Test of change of hearing window dates', () => {
     it('no difference in first date time must be, no change in hearing window found', () => {
       const hearingWindow1: HearingWindowModel = {
-        firstDateTimeMustBe: '2021-12-20T09:00:00.000Z'
+        firstDateTimeMustBe: '2021-12-20T09:00:00.000Z',
       };
       const hearingWindow2: HearingWindowModel = {
-        firstDateTimeMustBe: '2021-12-20T09:00:00.000Z'
+        firstDateTimeMustBe: '2021-12-20T09:00:00.000Z',
       };
       expect(HearingsUtils.hasHearingDatesChanged(hearingWindow1, hearingWindow2)).toEqual(false);
     });
     it('A difference in first date time must be, change in hearing window found', () => {
       const hearingWindow1: HearingWindowModel = {
-        firstDateTimeMustBe: '2021-12-21T09:00:00.000Z'
+        firstDateTimeMustBe: '2021-12-21T09:00:00.000Z',
       };
       const hearingWindow2: HearingWindowModel = {
-        firstDateTimeMustBe: '2021-12-20T09:00:00.000Z'
+        firstDateTimeMustBe: '2021-12-20T09:00:00.000Z',
       };
       expect(HearingsUtils.hasHearingDatesChanged(hearingWindow1, hearingWindow2)).toEqual(true);
     });
     it('no difference in hearing date range, no change in hearing window found', () => {
       const hearingWindow1: HearingWindowModel = {
         dateRangeStart: '2021-12-20T09:00:00.000Z',
-        dateRangeEnd: '2021-12-20T09:00:00.000Z'
+        dateRangeEnd: '2021-12-20T09:00:00.000Z',
       };
       const hearingWindow2: HearingWindowModel = {
         dateRangeStart: '2021-12-20T09:00:00.000Z',
-        dateRangeEnd: '2021-12-20T09:00:00.000Z'
+        dateRangeEnd: '2021-12-20T09:00:00.000Z',
       };
       expect(HearingsUtils.hasHearingDatesChanged(hearingWindow1, hearingWindow2)).toEqual(false);
     });
     it('a difference in hearing end date, a change in hearing window found', () => {
       const hearingWindow1: HearingWindowModel = {
         dateRangeStart: '2021-12-20T09:00:00.000Z',
-        dateRangeEnd: '2021-12-21T09:00:00.000Z'
+        dateRangeEnd: '2021-12-21T09:00:00.000Z',
       };
       const hearingWindow2: HearingWindowModel = {
         dateRangeStart: '2021-12-20T09:00:00.000Z',
-        dateRangeEnd: '2021-12-20T09:00:00.000Z'
+        dateRangeEnd: '2021-12-20T09:00:00.000Z',
       };
       expect(HearingsUtils.hasHearingDatesChanged(hearingWindow1, hearingWindow2)).toEqual(true);
     });
     it('a difference in hearing start date, a change in hearing window found', () => {
       const hearingWindow1: HearingWindowModel = {
         dateRangeStart: '2021-12-20T09:00:00.000Z',
-        dateRangeEnd: '2021-12-21T09:00:00.000Z'
+        dateRangeEnd: '2021-12-21T09:00:00.000Z',
       };
       const hearingWindow2: HearingWindowModel = {
         dateRangeStart: '2021-12-18T09:00:00.000Z',
-        dateRangeEnd: '2021-12-20T09:00:00.000Z'
+        dateRangeEnd: '2021-12-20T09:00:00.000Z',
       };
       expect(HearingsUtils.hasHearingDatesChanged(hearingWindow1, hearingWindow2)).toEqual(true);
     });
@@ -445,141 +468,261 @@ describe('HearingsUtils', () => {
     it('should return true if SHV contains same partyIDs as HMC', () => {
       const hearingRequestMainModel: HearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-        partyDetails: [{
-          partyID: 'testParty1',
-          partyType: PartyType.IND,
-          partyRole: 'partyRole'
-        },
-        {
-          partyID: 'testParty2',
-          partyType: PartyType.IND,
-          partyRole: 'partyRole'
-        }]
+        partyDetails: [
+          {
+            partyID: 'testParty1',
+            partyType: PartyType.IND,
+            partyRole: 'partyRole',
+          },
+          {
+            partyID: 'testParty2',
+            partyType: PartyType.IND,
+            partyRole: 'partyRole',
+          },
+        ],
       };
       const serviceHearingValuesModel: ServiceHearingValuesModel = {
         ...initialState.hearings.hearingValues.serviceHearingValuesModel,
-        parties: [{
-          partyID: 'testParty1',
-          partyType: PartyType.IND,
-          partyRole: 'partyRole'
-        },
-        {
-          partyID: 'testParty2',
-          partyType: PartyType.IND,
-          partyRole: 'partyRole'
-        }]
+        parties: [
+          {
+            partyID: 'testParty1',
+            partyType: PartyType.IND,
+            partyRole: 'partyRole',
+          },
+          {
+            partyID: 'testParty2',
+            partyType: PartyType.IND,
+            partyRole: 'partyRole',
+          },
+        ],
       };
-      expect(
-        HearingsUtils.checkHearingPartiesConsistency(hearingRequestMainModel, serviceHearingValuesModel)
-      ).toBeTruthy();
+      expect(HearingsUtils.checkHearingPartiesConsistency(hearingRequestMainModel, serviceHearingValuesModel)).toBeTruthy();
     });
 
     it('should return false if SHV contains no matching partyIDs in HMC', () => {
       const hearingRequestMainModel: HearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
-        partyDetails: [{
-          partyID: 'testParty1',
-          partyType: PartyType.IND,
-          partyRole: 'partyRole'
-        },
-        {
-          partyID: 'testParty2',
-          partyType: PartyType.IND,
-          partyRole: 'partyRole'
-        }]
+        partyDetails: [
+          {
+            partyID: 'testParty1',
+            partyType: PartyType.IND,
+            partyRole: 'partyRole',
+          },
+          {
+            partyID: 'testParty2',
+            partyType: PartyType.IND,
+            partyRole: 'partyRole',
+          },
+        ],
       };
       const serviceHearingValuesModel: ServiceHearingValuesModel = {
         ...initialState.hearings.hearingValues.serviceHearingValuesModel,
-        parties: [{
-          partyID: 'testParty3',
-          partyType: PartyType.IND,
-          partyRole: 'partyRole'
-        },
-        {
-          partyID: 'testParty4',
-          partyType: PartyType.IND,
-          partyRole: 'partyRole'
-        }]
+        parties: [
+          {
+            partyID: 'testParty3',
+            partyType: PartyType.IND,
+            partyRole: 'partyRole',
+          },
+          {
+            partyID: 'testParty4',
+            partyType: PartyType.IND,
+            partyRole: 'partyRole',
+          },
+        ],
       };
-      expect(
-        HearingsUtils.checkHearingPartiesConsistency(hearingRequestMainModel, serviceHearingValuesModel)
-      ).toBeFalsy();
+      expect(HearingsUtils.checkHearingPartiesConsistency(hearingRequestMainModel, serviceHearingValuesModel)).toBeFalsy();
     });
   });
-  describe('Update the hearing window static data to a future date\'', () => {
+
+  describe('checkHearingCaseConsistency', () => {
+    it('should return true when HRM case details match SHV and caseReference matches HRM caseRef', () => {
+      const hearingRequestMainModel: HearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        caseDetails: {
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+          caseRef: '1234567890123456',
+          hmctsServiceCode: 'ABA5',
+          hmctsInternalCaseName: 'Internal Name',
+          publicCaseName: 'Public Name',
+        },
+      };
+
+      const serviceHearingValuesModel: ServiceHearingValuesModel = {
+        ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+        hmctsServiceID: 'ABA5',
+        hmctsInternalCaseName: 'Internal Name',
+        publicCaseName: 'Public Name',
+      };
+
+      expect(
+        HearingsUtils.checkHearingCaseConsistency(hearingRequestMainModel, serviceHearingValuesModel, '1234567890123456')
+      ).toBeTruthy();
+    });
+
+    it('should return false when caseReference differs from HRM caseRef', () => {
+      const hearingRequestMainModel: HearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        caseDetails: {
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+          caseRef: '1111111111111111',
+          hmctsServiceCode: 'ABA5',
+          hmctsInternalCaseName: 'Internal Name',
+          publicCaseName: 'Public Name',
+        },
+      };
+
+      const serviceHearingValuesModel: ServiceHearingValuesModel = {
+        ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+        hmctsServiceID: 'ABA5',
+        hmctsInternalCaseName: 'Internal Name',
+        publicCaseName: 'Public Name',
+      };
+
+      expect(
+        HearingsUtils.checkHearingCaseConsistency(hearingRequestMainModel, serviceHearingValuesModel, '2222222222222222')
+      ).toBeFalsy();
+    });
+
+    it('should return false when service code differs between HRM and SHV', () => {
+      const hearingRequestMainModel: HearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        caseDetails: {
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+          caseRef: '1234567890123456',
+          hmctsServiceCode: 'ABA5',
+          hmctsInternalCaseName: 'Internal Name',
+          publicCaseName: 'Public Name',
+        },
+      };
+
+      const serviceHearingValuesModel: ServiceHearingValuesModel = {
+        ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+        hmctsServiceID: 'BBA3',
+        hmctsInternalCaseName: 'Internal Name',
+        publicCaseName: 'Public Name',
+      };
+
+      expect(
+        HearingsUtils.checkHearingCaseConsistency(hearingRequestMainModel, serviceHearingValuesModel, '1234567890123456')
+      ).toBeFalsy();
+    });
+
+    it('should return true even if hmctsInternalCaseName differs between HRM and SHV', () => {
+      const hearingRequestMainModel: HearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        caseDetails: {
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+          caseRef: '1234567890123456',
+          hmctsServiceCode: 'ABA5',
+          hmctsInternalCaseName: 'Internal Name A',
+          publicCaseName: 'Public Name',
+        },
+      };
+
+      const serviceHearingValuesModel: ServiceHearingValuesModel = {
+        ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+        hmctsServiceID: 'ABA5',
+        hmctsInternalCaseName: 'Internal Name B',
+        publicCaseName: 'Public Name',
+      };
+
+      expect(
+        HearingsUtils.checkHearingCaseConsistency(hearingRequestMainModel, serviceHearingValuesModel, '1234567890123456')
+      ).toBeTrue();
+    });
+
+    it('should ignore empty-string caseReference and still return true when names/service match', () => {
+      const hearingRequestMainModel: HearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        caseDetails: {
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+          caseRef: '1234567890123456',
+          hmctsServiceCode: 'ABA5',
+          hmctsInternalCaseName: 'Internal Name',
+          publicCaseName: 'Public Name',
+        },
+      };
+
+      const serviceHearingValuesModel: ServiceHearingValuesModel = {
+        ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+        hmctsServiceID: 'ABA5',
+        hmctsInternalCaseName: 'Internal Name',
+        publicCaseName: 'Public Name',
+      };
+
+      expect(HearingsUtils.checkHearingCaseConsistency(hearingRequestMainModel, serviceHearingValuesModel, '')).toBeTruthy();
+    });
+  });
+
+  describe("Update the hearing window static data to a future date'", () => {
     const mochSHVData = {
-      'hmctsServiceID': 'ABA5',
-      'hmctsInternalCaseName': '1234567812345678 update case internal name',
-      'publicCaseName': 'Case public name',
-      'caseAdditionalSecurityFlag': false,
-      'caseCategories': [
+      hmctsServiceID: 'ABA5',
+      hmctsInternalCaseName: '1234567812345678 update case internal name',
+      publicCaseName: 'Case public name',
+      caseAdditionalSecurityFlag: false,
+      caseCategories: [
         {
-          'categoryType': 'caseType',
-          'categoryValue': 'ABA5-PRL',
-          'categoryParent': null
+          categoryType: 'caseType',
+          categoryValue: 'ABA5-PRL',
+          categoryParent: null,
         },
         {
-          'categoryType': 'caseSubType',
-          'categoryValue': 'ABA5-PRL',
-          'categoryParent': 'ABA5-PRL'
-        }
+          categoryType: 'caseSubType',
+          categoryValue: 'ABA5-PRL',
+          categoryParent: 'ABA5-PRL',
+        },
       ],
-      'caseDeepLink': 'https://manage-case-hearings-int.demo.platform.hmcts.net/cases/case-details/1690807693531270#Case File View',
-      'externalCaseReference': '',
-      'caseManagementLocationCode': '283922',
-      'autoListFlag': false,
-      'hearingType': '',
-      'hearingWindow': {
-        'dateRangeStart': '',
-        'dateRangeEnd': '',
-        'firstDateTimeMustBe': '2024-12-18T00:00:00'
+      caseDeepLink:
+        'https://manage-case-hearings-int.demo.platform.hmcts.net/cases/case-details/IA/Asylum/1690807693531270#Case File View',
+      externalCaseReference: '',
+      caseManagementLocationCode: '283922',
+      autoListFlag: false,
+      hearingType: '',
+      hearingWindow: {
+        dateRangeStart: '',
+        dateRangeEnd: '',
+        firstDateTimeMustBe: '2024-12-18T00:00:00',
       },
-      'duration': 120,
-      'hearingPriorityType': 'Standard',
-      'numberOfPhysicalAttendees': 0
+      duration: 120,
+      hearingPriorityType: 'Standard',
+      numberOfPhysicalAttendees: 0,
     };
     const mockHMCData = {
-      'requestDetails': {
-        'status': 'LISTED',
-        'timestamp': '2023-11-06T14:01:32.836316',
-        'versionNumber': 1,
-        'hearingRequestID': '2000007311'
+      requestDetails: {
+        status: 'LISTED',
+        timestamp: '2023-11-06T14:01:32.836316',
+        versionNumber: 1,
+        hearingRequestID: '2000007311',
       },
-      'hearingDetails': {
-        'hearingType': 'ABA1-ABC',
-        'hearingWindow': {
-          'dateRangeStart': '2025-12-15T00:00:00',
-          'dateRangeEnd': '2025-12-17T00:00:00',
-          'firstDateTimeMustBe': ''
+      hearingDetails: {
+        hearingType: 'ABA1-ABC',
+        hearingWindow: {
+          dateRangeStart: '2025-12-15T00:00:00',
+          dateRangeEnd: '2025-12-17T00:00:00',
+          firstDateTimeMustBe: '',
         },
-        'duration': 125,
-        'hearingPriorityType': 'ABA1-HPR',
-        'numberOfPhysicalAttendees': 0,
-        'hearingInWelshFlag': false,
-        'hearingLocations': [
+        duration: 125,
+        hearingPriorityType: 'ABA1-HPR',
+        numberOfPhysicalAttendees: 0,
+        hearingInWelshFlag: false,
+        hearingLocations: [
           {
-            'locationType': 'court',
-            'locationId': '827534'
-          }
+            locationType: 'court',
+            locationId: '827534',
+          },
         ],
-        'privateHearingRequiredFlag': false,
-        'panelRequirements': {
-          'roleType': [
-            '19',
-            '30'
-          ],
-          'authorisationTypes': [],
-          'authorisationSubType': [],
-          'panelPreferences': [],
-          'panelSpecialisms': []
+        privateHearingRequiredFlag: false,
+        panelRequirements: {
+          roleType: ['19', '30'],
+          authorisationTypes: [],
+          authorisationSubType: [],
+          panelPreferences: [],
+          panelSpecialisms: [],
         },
-        'hearingIsLinkedFlag': false,
-        'hearingChannels': [
-          'INTER',
-          'VID'
-        ],
-        'autolistFlag': false
-      }
+        hearingIsLinkedFlag: false,
+        hearingChannels: ['INTER', 'VID'],
+        autolistFlag: false,
+      },
     };
     it('SHV static data updated with future dates', () => {
       const response = mochSHVData;
@@ -598,10 +741,10 @@ describe('HearingsUtils', () => {
   });
   it('should return true if additional facilities have changed', () => {
     const hearingRequestMainModel = {
-      hearingDetails: { facilitiesRequired: ['facility1', 'facility2'] }
+      hearingDetails: { facilitiesRequired: ['facility1', 'facility2'] },
     } as any;
     const hearingRequestToCompareMainModel = {
-      hearingDetails: { facilitiesRequired: ['facility1'] }
+      hearingDetails: { facilitiesRequired: ['facility1'] },
     } as any;
 
     const { facilitiesChanged } = HearingsUtils.haveAdditionalFacilitiesChanged(
@@ -613,10 +756,10 @@ describe('HearingsUtils', () => {
 
   it('should return false if additional facilities have not changed', () => {
     const hearingRequestMainModel = {
-      hearingDetails: { facilitiesRequired: ['facility1', 'facility2'] }
+      hearingDetails: { facilitiesRequired: ['facility1', 'facility2'] },
     } as any;
     const hearingRequestToCompareMainModel = {
-      hearingDetails: { facilitiesRequired: ['facility1', 'facility2'] }
+      hearingDetails: { facilitiesRequired: ['facility1', 'facility2'] },
     } as any;
 
     const { facilitiesChanged } = HearingsUtils.haveAdditionalFacilitiesChanged(
@@ -628,10 +771,10 @@ describe('HearingsUtils', () => {
 
   it('should return true if case additional security flag has changed', () => {
     const hearingRequestMainModel = {
-      caseDetails: { caseAdditionalSecurityFlag: true }
+      caseDetails: { caseAdditionalSecurityFlag: true },
     } as any;
     const hearingRequestToCompareMainModel = {
-      caseDetails: { caseAdditionalSecurityFlag: false }
+      caseDetails: { caseAdditionalSecurityFlag: false },
     } as any;
 
     const { caseAdditionalSecurityFlagChanged } = HearingsUtils.haveAdditionalFacilitiesChanged(
@@ -643,10 +786,10 @@ describe('HearingsUtils', () => {
 
   it('should return false if case additional security flag has not changed', () => {
     const hearingRequestMainModel = {
-      caseDetails: { caseAdditionalSecurityFlag: true }
+      caseDetails: { caseAdditionalSecurityFlag: true },
     } as any;
     const hearingRequestToCompareMainModel = {
-      caseDetails: { caseAdditionalSecurityFlag: true }
+      caseDetails: { caseAdditionalSecurityFlag: true },
     } as any;
 
     const { caseAdditionalSecurityFlagChanged } = HearingsUtils.haveAdditionalFacilitiesChanged(
@@ -699,36 +842,960 @@ describe('HearingsUtils', () => {
 
   it('should return sorted array when given an unsorted array', () => {
     const array = ['b', 'a', 'c'];
-    // eslint-disable-next-line dot-notation
+
     const result = HearingsUtils['standardiseStringArray'](array);
     expect(result).toEqual(['a', 'b', 'c']);
   });
 
   it('should return undefined when given a null array', () => {
     const array = null;
-    // eslint-disable-next-line dot-notation
+
     const result = HearingsUtils['standardiseStringArray'](array);
     expect(result).toBeUndefined();
   });
 
   it('should return undefined when given an undefined array', () => {
     const array = undefined;
-    // eslint-disable-next-line dot-notation
+
     const result = HearingsUtils['standardiseStringArray'](array);
     expect(result).toBeUndefined();
   });
 
   it('should return undefined when given an empty array', () => {
     const array: string[] = [];
-    // eslint-disable-next-line dot-notation
+
     const result = HearingsUtils['standardiseStringArray'](array);
     expect(result).toBeUndefined();
   });
 
   it('should return sorted array when given an already sorted array', () => {
     const array = ['a', 'b', 'c'];
-    // eslint-disable-next-line dot-notation
+
     const result = HearingsUtils['standardiseStringArray'](array);
     expect(result).toEqual(['a', 'b', 'c']);
+  });
+
+  describe('hasPartyHearingChannelChanged', () => {
+    it('should return true when preferred hearing channel differs', () => {
+      const partyInHMC: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+        },
+      };
+
+      const partyInSHV: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'video',
+        },
+      };
+
+      expect(HearingsUtils.hasPartyHearingChannelChanged(partyInHMC, partyInSHV)).toBeTrue();
+    });
+
+    it('should return false when preferred hearing channel is the same', () => {
+      const partyInHMC: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+        },
+      };
+
+      const partyInSHV: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+        },
+      };
+
+      expect(HearingsUtils.hasPartyHearingChannelChanged(partyInHMC, partyInSHV)).toBeFalse();
+    });
+
+    it('should handle case when individualDetails is missing from one party', () => {
+      const partyInHMC: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: null,
+      };
+
+      const partyInSHV: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+        },
+      };
+
+      expect(HearingsUtils.hasPartyHearingChannelChanged(partyInHMC, partyInSHV)).toBeFalse();
+    });
+
+    it('should handle case when individualDetails is missing from both parties', () => {
+      const partyInHMC: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: null,
+      };
+
+      const partyInSHV: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: null,
+      };
+
+      expect(HearingsUtils.hasPartyHearingChannelChanged(partyInHMC, partyInSHV)).toBeFalse();
+    });
+
+    it('should handle case when preferred hearing channel is undefined in one party', () => {
+      const partyInHMC: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'inPerson',
+        },
+      };
+
+      const partyInSHV: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          title: 'Mrs',
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: undefined,
+        },
+      };
+
+      expect(HearingsUtils.hasPartyHearingChannelChanged(partyInHMC, partyInSHV)).toBeTrue();
+    });
+  });
+
+  describe('isPaperHearing', () => {
+    it('should return true when hearingChannel includes ONPPR', () => {
+      const hearingChannel = ['INTER', 'ONPPRS', 'TEL'];
+      const isPaperHearingFlag = false;
+
+      expect(HearingsUtils.isPaperHearing(hearingChannel, isPaperHearingFlag)).toBeTrue();
+    });
+
+    it('should return false when hearingChannel does not include ONPPR and isPaperHearing is false', () => {
+      const hearingChannel = ['INTER', 'TEL', 'VID'];
+      const isPaperHearingFlag = false;
+
+      expect(HearingsUtils.isPaperHearing(hearingChannel, isPaperHearingFlag)).toBeFalse();
+    });
+
+    it('should return true when isPaperHearing flag is true regardless of hearingChannel', () => {
+      const hearingChannel = ['INTER', 'TEL', 'VID'];
+      const isPaperHearingFlag = true;
+
+      expect(HearingsUtils.isPaperHearing(hearingChannel, isPaperHearingFlag)).toBeTrue();
+    });
+
+    it('should return true by default when isPaperHearing is not provided', () => {
+      const hearingChannel = ['INTER', 'TEL', 'VID'];
+
+      // Default isPaperHearing value is true
+      expect(HearingsUtils.isPaperHearing(hearingChannel)).toBeTrue();
+    });
+
+    it('should handle null hearingChannel', () => {
+      const hearingChannel = null;
+      const isPaperHearingFlag = true;
+
+      expect(HearingsUtils.isPaperHearing(hearingChannel, isPaperHearingFlag)).toBeTrue();
+    });
+
+    it('should handle undefined hearingChannel', () => {
+      const hearingChannel = undefined;
+      const isPaperHearingFlag = false;
+
+      expect(HearingsUtils.isPaperHearing(hearingChannel, isPaperHearingFlag)).toBeFalse();
+    });
+
+    it('should handle empty hearingChannel array', () => {
+      const hearingChannel = [];
+      const isPaperHearingFlag = false;
+
+      expect(HearingsUtils.isPaperHearing(hearingChannel, isPaperHearingFlag)).toBeFalse();
+    });
+
+    it('should return false when isPaperHearing is null and no ONPPR in hearingChannel', () => {
+      const hearingChannel = ['INTER', 'TEL'];
+      const isPaperHearingFlag = null;
+
+      expect(HearingsUtils.isPaperHearing(hearingChannel, isPaperHearingFlag)).toBeFalse();
+    });
+
+    it('should return true when isPaperHearing is null but ONPPR is in hearingChannel', () => {
+      const hearingChannel = ['INTER', 'ONPPRS'];
+      const isPaperHearingFlag = null;
+
+      expect(HearingsUtils.isPaperHearing(hearingChannel, isPaperHearingFlag)).toBeTrue();
+    });
+  });
+
+  describe('hasPaperHearingChanged', () => {
+    it('should return true when one array includes ONPPR and the other does not', () => {
+      const hearingChannels = ['INTER', 'ONPPRS', 'TEL'];
+      const hearingChannelToCompare = ['INTER', 'TEL', 'VID'];
+
+      expect(HearingsUtils.hasPaperHearingChanged(hearingChannels, hearingChannelToCompare)).toBeTrue();
+    });
+
+    it('should return false when both arrays include ONPPR', () => {
+      const hearingChannels = ['INTER', 'ONPPRS', 'TEL'];
+      const hearingChannelToCompare = ['VID', 'ONPPRS'];
+
+      expect(HearingsUtils.hasPaperHearingChanged(hearingChannels, hearingChannelToCompare)).toBeFalse();
+    });
+
+    it('should return false when neither array includes ONPPR', () => {
+      const hearingChannels = ['INTER', 'TEL'];
+      const hearingChannelToCompare = ['VID', 'INTER'];
+
+      expect(HearingsUtils.hasPaperHearingChanged(hearingChannels, hearingChannelToCompare)).toBeFalse();
+    });
+
+    it('should handle null arrays', () => {
+      const hearingChannels = null;
+      const hearingChannelToCompare = ['INTER', 'TEL', 'VID'];
+
+      expect(HearingsUtils.hasPaperHearingChanged(hearingChannels, hearingChannelToCompare)).toBeFalse();
+    });
+
+    it('should handle both null arrays', () => {
+      const hearingChannels = null;
+      const hearingChannelToCompare = null;
+
+      expect(HearingsUtils.hasPaperHearingChanged(hearingChannels, hearingChannelToCompare)).toBeFalse();
+    });
+
+    it('should handle empty arrays', () => {
+      const hearingChannels = [];
+      const hearingChannelToCompare = ['INTER', 'TEL', 'VID'];
+
+      expect(HearingsUtils.hasPaperHearingChanged(hearingChannels, hearingChannelToCompare)).toBeFalse();
+    });
+
+    it('should return true when one array is null and the other has ONPPR', () => {
+      const hearingChannels = null;
+      const hearingChannelToCompare = ['INTER', 'ONPPRS'];
+
+      expect(HearingsUtils.hasPaperHearingChanged(hearingChannels, hearingChannelToCompare)).toBeTrue();
+    });
+
+    it('should handle one array with ONPPR and one empty array', () => {
+      const hearingChannels = ['INTER', 'ONPPRS', 'TEL'];
+      const hearingChannelToCompare = [];
+
+      expect(HearingsUtils.hasPaperHearingChanged(hearingChannels, hearingChannelToCompare)).toBeTrue();
+    });
+  });
+
+  describe('hasSpecificDateChanged', () => {
+    it('should return false when both hearing windows are empty', () => {
+      const hearingWindow1: HearingWindowModel = {};
+      const hearingWindow2: HearingWindowModel = {};
+
+      expect(HearingsUtils.hasSpecificDateChanged(hearingWindow1, hearingWindow2)).toBeFalsy();
+    });
+
+    it('should return false when both hearing windows are null or undefined', () => {
+      expect(HearingsUtils.hasSpecificDateChanged(null, undefined)).toBeFalsy();
+    });
+
+    it('should return false when both have firstDateTimeMustBe values', () => {
+      const hearingWindow1: HearingWindowModel = {
+        firstDateTimeMustBe: '2023-05-15T09:00:00.000Z',
+      };
+      const hearingWindow2: HearingWindowModel = {
+        firstDateTimeMustBe: '2023-06-20T10:00:00.000Z',
+      };
+
+      expect(HearingsUtils.hasSpecificDateChanged(hearingWindow1, hearingWindow2)).toBeFalsy();
+    });
+
+    it('should return true when one has firstDateTimeMustBe and the other does not', () => {
+      const hearingWindow1: HearingWindowModel = {
+        firstDateTimeMustBe: '2023-05-15T09:00:00.000Z',
+      };
+      const hearingWindow2: HearingWindowModel = {
+        dateRangeStart: '2023-05-10T09:00:00.000Z',
+        dateRangeEnd: '2023-05-20T09:00:00.000Z',
+      };
+
+      expect(HearingsUtils.hasSpecificDateChanged(hearingWindow1, hearingWindow2)).toBeTruthy();
+    });
+
+    it('should return true when one hearing window is empty and the other is not', () => {
+      const hearingWindow1: HearingWindowModel = {};
+      const hearingWindow2: HearingWindowModel = {
+        firstDateTimeMustBe: '2023-05-15T09:00:00.000Z',
+      };
+
+      expect(HearingsUtils.hasSpecificDateChanged(hearingWindow1, hearingWindow2)).toBeTruthy();
+    });
+
+    it('should return true when one hearing window is undefined and the other has data', () => {
+      const hearingWindow1: HearingWindowModel = undefined;
+      const hearingWindow2: HearingWindowModel = {
+        firstDateTimeMustBe: '2023-05-15T09:00:00.000Z',
+      };
+
+      expect(HearingsUtils.hasSpecificDateChanged(hearingWindow1, hearingWindow2)).toBeTruthy();
+    });
+  });
+  describe('determineDateOption', () => {
+    // We need to access the private method for testing
+    const determineDateOption = (hearingWindow: HearingWindowModel | undefined) => {
+      // eslint-disable-next-line dot-notation
+      return HearingsUtils['determineDateOption'](hearingWindow);
+    };
+
+    it('should return noDate when hearing window is undefined', () => {
+      const result = determineDateOption(undefined);
+      expect(result).toBe('noDate');
+    });
+
+    it('should return noDate when hearing window is empty object', () => {
+      const result = determineDateOption({});
+      expect(result).toBe('noDate');
+    });
+
+    it('should return specificDate when firstDateTimeMustBe is present', () => {
+      const hearingWindow: HearingWindowModel = {
+        firstDateTimeMustBe: '2023-05-15T09:00:00.000Z',
+      };
+      const result = determineDateOption(hearingWindow);
+      expect(result).toBe('specificDate');
+    });
+
+    it('should return dateRange when dateRangeStart is present', () => {
+      const hearingWindow: HearingWindowModel = {
+        dateRangeStart: '2023-05-15T09:00:00.000Z',
+      };
+      const result = determineDateOption(hearingWindow);
+      expect(result).toBe('dateRange');
+    });
+
+    it('should return dateRange when dateRangeEnd is present', () => {
+      const hearingWindow: HearingWindowModel = {
+        dateRangeEnd: '2023-05-15T09:00:00.000Z',
+      };
+      const result = determineDateOption(hearingWindow);
+      expect(result).toBe('dateRange');
+    });
+
+    it('should return dateRange when both dateRangeStart and dateRangeEnd are present', () => {
+      const hearingWindow: HearingWindowModel = {
+        dateRangeStart: '2023-05-10T09:00:00.000Z',
+        dateRangeEnd: '2023-05-20T09:00:00.000Z',
+      };
+      const result = determineDateOption(hearingWindow);
+      expect(result).toBe('dateRange');
+    });
+
+    it('should prioritize specificDate over dateRange when both are present', () => {
+      const hearingWindow: HearingWindowModel = {
+        firstDateTimeMustBe: '2023-05-15T09:00:00.000Z',
+        dateRangeStart: '2023-05-10T09:00:00.000Z',
+        dateRangeEnd: '2023-05-20T09:00:00.000Z',
+      };
+      const result = determineDateOption(hearingWindow);
+      expect(result).toBe('specificDate');
+    });
+  });
+  describe('HearingsUtils.havePartyDetailsChanged', () => {
+    it('returns true when parties arrays have different lengths', () => {
+      const partiesSHV: PartyDetailsModel[] = [
+        {
+          partyID: '1',
+          partyType: PartyType.IND,
+          individualDetails: { firstName: 'John', lastName: 'Smith' },
+          partyRole: '',
+        },
+      ];
+      const partiesHMC: PartyDetailsModel[] = [
+        { partyID: '1', partyType: PartyType.IND, individualDetails: { firstName: 'John', lastName: 'Smith' }, partyRole: '' },
+        { partyID: '2', partyType: PartyType.ORG, individualDetails: undefined, partyRole: '' },
+      ];
+      expect(HearingsUtils.havePartyDetailsChanged(partiesSHV, partiesHMC)).toBe(true);
+    });
+
+    it('returns true when a party is missing in HMC', () => {
+      const partiesSHV: PartyDetailsModel[] = [
+        { partyID: '1', partyType: PartyType.IND, individualDetails: { firstName: 'John', lastName: 'Smith' }, partyRole: '' },
+        { partyID: '2', partyType: PartyType.ORG, individualDetails: undefined, partyRole: '' },
+      ];
+      const partiesHMC: PartyDetailsModel[] = [
+        { partyID: '1', partyType: PartyType.IND, individualDetails: { firstName: 'John', lastName: 'Smith' }, partyRole: '' },
+      ];
+      expect(HearingsUtils.havePartyDetailsChanged(partiesSHV, partiesHMC)).toBe(true);
+    });
+
+    it('returns true when partyType differs', () => {
+      const partiesSHV: PartyDetailsModel[] = [
+        { partyID: '1', partyType: PartyType.IND, individualDetails: { firstName: 'John', lastName: 'Smith' }, partyRole: '' },
+      ];
+      const partiesHMC: PartyDetailsModel[] = [
+        { partyID: '1', partyType: PartyType.ORG, individualDetails: { firstName: 'John', lastName: 'Smith' }, partyRole: '' },
+      ];
+      expect(HearingsUtils.havePartyDetailsChanged(partiesSHV, partiesHMC)).toBe(true);
+    });
+
+    it('returns true when party name differs', () => {
+      const partiesSHV: PartyDetailsModel[] = [
+        { partyID: '1', partyType: PartyType.IND, individualDetails: { firstName: 'Jane', lastName: 'Smith' }, partyRole: '' },
+      ];
+      const partiesHMC: PartyDetailsModel[] = [
+        { partyID: '1', partyType: PartyType.IND, individualDetails: { firstName: 'John', lastName: 'Smith' }, partyRole: '' },
+      ];
+      expect(HearingsUtils.havePartyDetailsChanged(partiesSHV, partiesHMC)).toBe(true);
+    });
+
+    it('returns false when all parties match in id, type, and name', () => {
+      const partiesSHV: PartyDetailsModel[] = [
+        { partyID: '1', partyType: PartyType.IND, individualDetails: { firstName: 'John', lastName: 'Smith' }, partyRole: '' },
+        { partyID: '2', partyType: PartyType.ORG, individualDetails: undefined, partyRole: '' },
+      ];
+      const partiesHMC: PartyDetailsModel[] = [
+        { partyID: '1', partyType: PartyType.IND, individualDetails: { firstName: 'John', lastName: 'Smith' }, partyRole: '' },
+        { partyID: '2', partyType: PartyType.ORG, individualDetails: undefined, partyRole: '' },
+      ];
+      expect(HearingsUtils.havePartyDetailsChanged(partiesSHV, partiesHMC)).toBe(false);
+    });
+  });
+
+  describe('HearingsUtils.havePartyHearingChannelChanged', () => {
+    it('returns true when parties arrays have different lengths', () => {
+      const partiesSHV: PartyDetailsModel[] = [
+        {
+          partyID: '1',
+          partyType: PartyType.IND,
+          individualDetails: { firstName: 'John', lastName: 'Smith', preferredHearingChannel: 'inPerson' },
+          partyRole: '',
+        },
+      ];
+      const partiesHMC: PartyDetailsModel[] = [
+        {
+          partyID: '1',
+          partyType: PartyType.IND,
+          individualDetails: { firstName: 'John', lastName: 'Smith', preferredHearingChannel: 'inPerson' },
+          partyRole: '',
+        },
+        { partyID: '2', partyType: PartyType.ORG, individualDetails: undefined, partyRole: '' },
+      ];
+      expect(HearingsUtils.havePartyHearingChannelChanged(partiesSHV, partiesHMC)).toBe(true);
+    });
+
+    it('returns true when a party is missing in HMC', () => {
+      const partiesSHV: PartyDetailsModel[] = [
+        {
+          partyID: '1',
+          partyType: PartyType.IND,
+          individualDetails: { firstName: 'John', lastName: 'Smith', preferredHearingChannel: 'inPerson' },
+          partyRole: '',
+        },
+        { partyID: '2', partyType: PartyType.ORG, individualDetails: undefined, partyRole: '' },
+      ];
+      const partiesHMC: PartyDetailsModel[] = [
+        {
+          partyID: '1',
+          partyType: PartyType.IND,
+          individualDetails: { firstName: 'John', lastName: 'Smith', preferredHearingChannel: 'inPerson' },
+          partyRole: '',
+        },
+      ];
+      expect(HearingsUtils.havePartyHearingChannelChanged(partiesSHV, partiesHMC)).toBe(true);
+    });
+
+    it('returns true when partyType differs', () => {
+      const partiesSHV: PartyDetailsModel[] = [
+        {
+          partyID: '1',
+          partyType: PartyType.IND,
+          individualDetails: { firstName: 'John', lastName: 'Smith', preferredHearingChannel: 'inPerson' },
+          partyRole: '',
+        },
+      ];
+      const partiesHMC: PartyDetailsModel[] = [
+        {
+          partyID: '1',
+          partyType: PartyType.ORG,
+          individualDetails: { firstName: 'John', lastName: 'Smith', preferredHearingChannel: 'inPerson' },
+          partyRole: '',
+        },
+      ];
+      expect(HearingsUtils.havePartyHearingChannelChanged(partiesSHV, partiesHMC)).toBe(true);
+    });
+
+    it('returns true when preferred hearing channel differs', () => {
+      const partiesSHV: PartyDetailsModel[] = [
+        {
+          partyID: '1',
+          partyType: PartyType.IND,
+          individualDetails: { firstName: 'John', lastName: 'Smith', preferredHearingChannel: 'inPerson' },
+          partyRole: '',
+        },
+      ];
+      const partiesHMC: PartyDetailsModel[] = [
+        {
+          partyID: '1',
+          partyType: PartyType.IND,
+          individualDetails: { firstName: 'John', lastName: 'Smith', preferredHearingChannel: 'video' },
+          partyRole: '',
+        },
+      ];
+      expect(HearingsUtils.havePartyHearingChannelChanged(partiesSHV, partiesHMC)).toBe(true);
+    });
+
+    it('returns true when preferred hearing channel is undefined in one party', () => {
+      const partiesSHV: PartyDetailsModel[] = [
+        {
+          partyID: '1',
+          partyType: PartyType.IND,
+          individualDetails: { firstName: 'John', lastName: 'Smith', preferredHearingChannel: 'inPerson' },
+          partyRole: '',
+        },
+      ];
+      const partiesHMC: PartyDetailsModel[] = [
+        {
+          partyID: '1',
+          partyType: PartyType.IND,
+          individualDetails: { firstName: 'John', lastName: 'Smith', preferredHearingChannel: undefined },
+          partyRole: '',
+        },
+      ];
+      expect(HearingsUtils.havePartyHearingChannelChanged(partiesSHV, partiesHMC)).toBe(true);
+    });
+
+    it('returns false when all parties match in id, type, and preferred hearing channel', () => {
+      const partiesSHV: PartyDetailsModel[] = [
+        {
+          partyID: '1',
+          partyType: PartyType.IND,
+          individualDetails: { firstName: 'John', lastName: 'Smith', preferredHearingChannel: 'inPerson' },
+          partyRole: '',
+        },
+        {
+          partyID: '2',
+          partyType: PartyType.IND,
+          individualDetails: { firstName: 'Jane', lastName: 'Doe', preferredHearingChannel: 'video' },
+          partyRole: '',
+        },
+      ];
+      const partiesHMC: PartyDetailsModel[] = [
+        {
+          partyID: '1',
+          partyType: PartyType.IND,
+          individualDetails: { firstName: 'John', lastName: 'Smith', preferredHearingChannel: 'inPerson' },
+          partyRole: '',
+        },
+        {
+          partyID: '2',
+          partyType: PartyType.IND,
+          individualDetails: { firstName: 'Jane', lastName: 'Doe', preferredHearingChannel: 'video' },
+          partyRole: '',
+        },
+      ];
+      expect(HearingsUtils.havePartyHearingChannelChanged(partiesSHV, partiesHMC)).toBe(false);
+    });
+
+    it('returns false when parties have no individualDetails', () => {
+      const partiesSHV: PartyDetailsModel[] = [
+        { partyID: '1', partyType: PartyType.ORG, individualDetails: undefined, partyRole: '' },
+      ];
+      const partiesHMC: PartyDetailsModel[] = [
+        { partyID: '1', partyType: PartyType.ORG, individualDetails: undefined, partyRole: '' },
+      ];
+      expect(HearingsUtils.havePartyHearingChannelChanged(partiesSHV, partiesHMC)).toBe(false);
+    });
+
+    it('returns false when preferred hearing channels are both undefined', () => {
+      const partiesSHV: PartyDetailsModel[] = [
+        {
+          partyID: '1',
+          partyType: PartyType.IND,
+          individualDetails: { firstName: 'John', lastName: 'Smith', preferredHearingChannel: undefined },
+          partyRole: '',
+        },
+      ];
+      const partiesHMC: PartyDetailsModel[] = [
+        {
+          partyID: '1',
+          partyType: PartyType.IND,
+          individualDetails: { firstName: 'John', lastName: 'Smith', preferredHearingChannel: undefined },
+          partyRole: '',
+        },
+      ];
+      expect(HearingsUtils.havePartyHearingChannelChanged(partiesSHV, partiesHMC)).toBe(false);
+    });
+  });
+
+  describe('HearingsUtils.setHearingChannelsForPaperHearing', () => {
+    it('should set preferredHearingChannel to NA for individual parties', () => {
+      const partyDetails: PartyDetailsModel[] = [
+        {
+          partyID: 'P1',
+          partyType: PartyType.IND,
+          partyRole: 'appellant',
+          individualDetails: {
+            firstName: 'John',
+            lastName: 'Doe',
+            preferredHearingChannel: 'inPerson',
+          },
+        },
+      ];
+
+      const result = HearingsUtils.setHearingChannelsForPaperHearing(partyDetails);
+
+      expect(result.length).toBe(1);
+      expect(result[0].individualDetails.preferredHearingChannel).toBe('NA');
+      expect(result[0].individualDetails.firstName).toBe('John');
+      expect(result[0].individualDetails.lastName).toBe('Doe');
+    });
+
+    it('should not modify organisation parties', () => {
+      const partyDetails: PartyDetailsModel[] = [
+        {
+          partyID: 'P1',
+          partyType: PartyType.ORG,
+          partyRole: 'respondent',
+          organisationDetails: {
+            name: 'Test Organisation',
+            organisationType: 'GOV',
+            cftOrganisationID: 'O100000',
+          },
+        },
+      ];
+
+      const result = HearingsUtils.setHearingChannelsForPaperHearing(partyDetails);
+
+      expect(result.length).toBe(1);
+      expect(result[0].partyType).toBe(PartyType.ORG);
+      expect(result[0].organisationDetails.name).toBe('Test Organisation');
+      expect(result[0].individualDetails).toBeUndefined();
+    });
+
+    it('should handle mixed party types correctly', () => {
+      const partyDetails: PartyDetailsModel[] = [
+        {
+          partyID: 'P1',
+          partyType: PartyType.IND,
+          partyRole: 'appellant',
+          individualDetails: {
+            firstName: 'John',
+            lastName: 'Doe',
+            preferredHearingChannel: 'video',
+          },
+        },
+        {
+          partyID: 'P2',
+          partyType: PartyType.ORG,
+          partyRole: 'respondent',
+          organisationDetails: {
+            name: 'Test Organisation',
+            organisationType: 'GOV',
+            cftOrganisationID: 'O100000',
+          },
+        },
+        {
+          partyID: 'P3',
+          partyType: PartyType.IND,
+          partyRole: 'witness',
+          individualDetails: {
+            firstName: 'Jane',
+            lastName: 'Smith',
+            preferredHearingChannel: 'telephone',
+          },
+        },
+      ];
+
+      const result = HearingsUtils.setHearingChannelsForPaperHearing(partyDetails);
+
+      expect(result.length).toBe(3);
+      expect(result[0].individualDetails.preferredHearingChannel).toBe('NA');
+      expect(result[1].partyType).toBe(PartyType.ORG);
+      expect(result[1].individualDetails).toBeUndefined();
+      expect(result[2].individualDetails.preferredHearingChannel).toBe('NA');
+    });
+
+    it('should not mutate the original array', () => {
+      const partyDetails: PartyDetailsModel[] = [
+        {
+          partyID: 'P1',
+          partyType: PartyType.IND,
+          partyRole: 'appellant',
+          individualDetails: {
+            firstName: 'John',
+            lastName: 'Doe',
+            preferredHearingChannel: 'inPerson',
+          },
+        },
+      ];
+
+      const originalChannel = partyDetails[0].individualDetails.preferredHearingChannel;
+      HearingsUtils.setHearingChannelsForPaperHearing(partyDetails);
+
+      expect(partyDetails[0].individualDetails.preferredHearingChannel).toBe(originalChannel);
+    });
+
+    it('should handle empty party details array', () => {
+      const partyDetails: PartyDetailsModel[] = [];
+
+      const result = HearingsUtils.setHearingChannelsForPaperHearing(partyDetails);
+
+      expect(result).toEqual([]);
+    });
+
+    it('should preserve other individual details properties', () => {
+      const partyDetails: PartyDetailsModel[] = [
+        {
+          partyID: 'P1',
+          partyType: PartyType.IND,
+          partyRole: 'appellant',
+          individualDetails: {
+            firstName: 'John',
+            lastName: 'Doe',
+            preferredHearingChannel: 'inPerson',
+            interpreterLanguage: 'Spanish',
+            reasonableAdjustments: ['RA001', 'RA002'],
+            vulnerableFlag: true,
+            vulnerabilityDetails: 'Test details',
+          },
+        },
+      ];
+
+      const result = HearingsUtils.setHearingChannelsForPaperHearing(partyDetails);
+
+      expect(result[0].individualDetails.preferredHearingChannel).toBe('NA');
+      expect(result[0].individualDetails.interpreterLanguage).toBe('Spanish');
+      expect(result[0].individualDetails.reasonableAdjustments).toEqual(['RA001', 'RA002']);
+      expect(result[0].individualDetails.vulnerableFlag).toBe(true);
+      expect(result[0].individualDetails.vulnerabilityDetails).toBe('Test details');
+    });
+
+    it('should handle individual parties with undefined preferredHearingChannel', () => {
+      const partyDetails: PartyDetailsModel[] = [
+        {
+          partyID: 'P1',
+          partyType: PartyType.IND,
+          partyRole: 'appellant',
+          individualDetails: {
+            firstName: 'John',
+            lastName: 'Doe',
+            preferredHearingChannel: undefined,
+          },
+        },
+      ];
+
+      const result = HearingsUtils.setHearingChannelsForPaperHearing(partyDetails);
+
+      expect(result[0].individualDetails.preferredHearingChannel).toBe('NA');
+    });
+
+    it('should handle individual parties with null preferredHearingChannel', () => {
+      const partyDetails: PartyDetailsModel[] = [
+        {
+          partyID: 'P1',
+          partyType: PartyType.IND,
+          partyRole: 'appellant',
+          individualDetails: {
+            firstName: 'John',
+            lastName: 'Doe',
+            preferredHearingChannel: null,
+          },
+        },
+      ];
+
+      const result = HearingsUtils.setHearingChannelsForPaperHearing(partyDetails);
+
+      expect(result[0].individualDetails.preferredHearingChannel).toBe('NA');
+    });
+
+    it('should preserve unavailability ranges and other party properties', () => {
+      const partyDetails: PartyDetailsModel[] = [
+        {
+          partyID: 'P1',
+          partyType: PartyType.IND,
+          partyRole: 'appellant',
+          individualDetails: {
+            firstName: 'John',
+            lastName: 'Doe',
+            preferredHearingChannel: 'video',
+          },
+          unavailabilityRanges: [
+            {
+              unavailableFromDate: '2023-12-01T00:00:00.000Z',
+              unavailableToDate: '2023-12-10T00:00:00.000Z',
+              unavailabilityType: UnavailabilityType.ALL_DAY,
+            },
+          ],
+          unavailabilityDOW: null,
+        },
+      ];
+
+      const result = HearingsUtils.setHearingChannelsForPaperHearing(partyDetails);
+
+      expect(result[0].individualDetails.preferredHearingChannel).toBe('NA');
+      expect(result[0].unavailabilityRanges).toEqual(partyDetails[0].unavailabilityRanges);
+      expect(result[0].unavailabilityDOW).toBeNull();
+    });
+
+    it('should handle multiple individual parties with different hearing channels', () => {
+      const partyDetails: PartyDetailsModel[] = [
+        {
+          partyID: 'P1',
+          partyType: PartyType.IND,
+          partyRole: 'appellant',
+          individualDetails: {
+            firstName: 'John',
+            lastName: 'Doe',
+            preferredHearingChannel: 'inPerson',
+          },
+        },
+        {
+          partyID: 'P2',
+          partyType: PartyType.IND,
+          partyRole: 'respondent',
+          individualDetails: {
+            firstName: 'Jane',
+            lastName: 'Smith',
+            preferredHearingChannel: 'video',
+          },
+        },
+        {
+          partyID: 'P3',
+          partyType: PartyType.IND,
+          partyRole: 'witness',
+          individualDetails: {
+            firstName: 'Bob',
+            lastName: 'Johnson',
+            preferredHearingChannel: 'telephone',
+          },
+        },
+      ];
+
+      const result = HearingsUtils.setHearingChannelsForPaperHearing(partyDetails);
+
+      expect(result.length).toBe(3);
+      expect(result[0].individualDetails.preferredHearingChannel).toBe('NA');
+      expect(result[1].individualDetails.preferredHearingChannel).toBe('NA');
+      expect(result[2].individualDetails.preferredHearingChannel).toBe('NA');
+      expect(result[0].individualDetails.firstName).toBe('John');
+      expect(result[1].individualDetails.firstName).toBe('Jane');
+      expect(result[2].individualDetails.firstName).toBe('Bob');
+    });
+  });
+
+  describe('toCompareServiceHearingValueField', () => {
+    it('should return false for null value', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField(null)).toBe(false);
+    });
+
+    it('should return false for undefined value', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField(undefined)).toBe(false);
+    });
+
+    it('should return false for empty string', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField('')).toBe(false);
+    });
+
+    it('should return false for string with only whitespace', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField('   ')).toBe(false);
+    });
+
+    it('should return false for empty array', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField([])).toBe(false);
+    });
+
+    it('should return false for empty object', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField({})).toBe(false);
+    });
+
+    it('should return true for non-empty string', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField('test')).toBe(true);
+    });
+
+    it('should return true for string with spaces and characters', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField('  test  ')).toBe(true);
+    });
+
+    it('should return true for array with elements', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField(['item1', 'item2'])).toBe(true);
+    });
+
+    it('should return true for object with properties', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField({ key: 'value' })).toBe(true);
+    });
+
+    it('should return true for number zero', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField(0)).toBe(true);
+    });
+
+    it('should return true for positive number', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField(42)).toBe(true);
+    });
+
+    it('should return true for negative number', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField(-10)).toBe(true);
+    });
+
+    it('should return true for boolean false', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField(false)).toBe(true);
+    });
+
+    it('should return true for boolean true', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField(true)).toBe(true);
+    });
+
+    it('should return true for array with single element', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField([1])).toBe(true);
+    });
+
+    it('should return true for nested object', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField({ nested: { key: 'value' } })).toBe(true);
+    });
+
+    it('should return true for Date object', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField(new Date())).toBe(true);
+    });
+
+    it('should return false for string with tabs and newlines only', () => {
+      expect(HearingsUtils.toCompareServiceHearingValueField('\t\n\r')).toBe(false);
+    });
   });
 });

@@ -22,7 +22,7 @@ import {
   CaseQueriesCollection,
   CaseEventData,
   CaseViewTrigger,
-  QmCaseQueriesCollection
+  QmCaseQueriesCollection,
 } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, GoogleTagManagerService, LoadingService } from '@hmcts/rpx-xui-common-lib';
 import { map, switchMap, take } from 'rxjs/operators';
@@ -36,9 +36,10 @@ import { ServiceAttachmentHintTextResponse } from '../../models/service-message/
 import { ServiceMessagesResponse } from '../../models/service-message/service-message.model';
 
 @Component({
+  standalone: false,
   selector: 'exui-query-management-container',
   templateUrl: './query-management-container.component.html',
-  styleUrls: ['./query-management-container.component.scss']
+  styleUrls: ['./query-management-container.component.scss'],
 })
 export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   private readonly LD_QUALIFYING_QUESTIONS = 'qm-qualifying-questions';
@@ -98,6 +99,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   private targetRoutePrefix = '/query-management/query/';
   public showForm: boolean;
   public jurisdictionId: string;
+  public caseType: string;
 
   public triggerTextStart = QueryManagementContainerComponent.TRIGGER_TEXT_START;
   public triggerTextIgnoreWarnings = QueryManagementContainerComponent.TRIGGER_TEXT_CONTINUE;
@@ -115,6 +117,8 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
 
   public qmCaseQueriesCollectionData: QmCaseQueriesCollection;
   public caseData: CaseEventData;
+  public eventResponseData: CaseQueriesCollection;
+
   private caseViewTrigger: CaseViewTrigger;
 
   private validateCaseSubscription: Subscription;
@@ -138,6 +142,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     this.caseId = this.activatedRoute.snapshot.params.cid;
     this.queryItemId = this.activatedRoute.snapshot.params.qid;
     this.jurisdictionId = this.activatedRoute.snapshot?.data?.case?.case_type?.jurisdiction?.id;
+    this.caseType = this.activatedRoute.snapshot?.data?.case?.case_type?.id;
     this.queryCreateContext = this.getQueryCreateContext();
     this.qualifyingQuestions$ = this.getQualifyingQuestions();
     this.qualifyingQuestionsControl = new FormControl(null, Validators.required);
@@ -150,7 +155,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
       isHearingRelated: new FormControl(null),
       hearingDate: new FormControl(null),
       attachments: new FormControl([] as Document[]),
-      closeQuery: new FormControl(false)
+      closeQuery: new FormControl(false),
     });
 
     if (this.queryItemId && this.queryItemId !== QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION) {
@@ -201,7 +206,8 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   public callbackConfirmationMessage(event: { body: string; header: string }): void {
     this.callbackConfirmationMessageText = {
       body: event?.body || QueryManagementContainerComponent.CONFIRMATION_MESSAGE_BODY,
-      header: event?.header || QueryManagementContainerComponent.CONFIRMATION_MESSAGE_HEAD };
+      header: event?.header || QueryManagementContainerComponent.CONFIRMATION_MESSAGE_HEAD,
+    };
   }
 
   public submitForm(): void {
@@ -268,15 +274,15 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
         event: {
           id: this.eventData?.id,
           summary: '',
-          description: this.eventData?.description
+          description: this.eventData?.description,
         },
         event_token: this.eventData?.event_token,
-        ignore_warning: false
+        ignore_warning: false,
       };
       const validate$ = this.validate(queryData);
       this.validateCaseSubscription = validate$.subscribe({
         next: () => {
-          this.showSummary= true;
+          this.showSummary = true;
           this.qmCaseQueriesCollectionData = data;
         },
         error: (error: HttpError) => {
@@ -291,25 +297,23 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
           }
 
           window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
-        }
+        },
       });
     }
   }
 
   public onDocumentCollectionUpdate(uploadedDocuments: FormDocument[]): void {
-    const attachments: Document[] = uploadedDocuments.map(
-      (document) => ({
-        _links: {
-          self: {
-            href: document.document_url
-          },
-          binary: {
-            href: document.document_binary_url
-          }
+    const attachments: Document[] = uploadedDocuments.map((document) => ({
+      _links: {
+        self: {
+          href: document.document_url,
         },
-        originalDocumentName: document.document_filename
-      })
-    );
+        binary: {
+          href: document.document_binary_url,
+        },
+      },
+      originalDocumentName: document.document_filename,
+    }));
 
     this.formGroup.get('attachments').setValue(attachments);
   }
@@ -339,8 +343,8 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
           {
             title: '',
             description: QualifyingQuestionsErrorMessage.SELECT_AN_OPTION,
-            fieldId: 'qualifyingQuestionsOption'
-          }
+            fieldId: 'qualifyingQuestionsOption',
+          },
         ];
         window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
         return false;
@@ -357,16 +361,17 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     }
 
     if (!this.formGroup.get('body').valid) {
-      const raiseQueryErrorMessage = this.queryCreateContext === QueryCreateContext.RESPOND ?
-        RaiseQueryErrorMessage.RESPOND_QUERY_BODY : RaiseQueryErrorMessage.QUERY_BODY;
+      const raiseQueryErrorMessage =
+        this.queryCreateContext === QueryCreateContext.RESPOND
+          ? RaiseQueryErrorMessage.RESPOND_QUERY_BODY
+          : RaiseQueryErrorMessage.QUERY_BODY;
       this.addError(raiseQueryErrorMessage, 'body');
     }
 
     if (!this.formGroup.get('isHearingRelated').valid) {
       this.addError(RaiseQueryErrorMessage.QUERY_HEARING_RELATED, 'isHearingRelated-yes');
     } else {
-      if (this.formGroup.get('isHearingRelated').value === true &&
-        this.formGroup.get('hearingDate').value === null) {
+      if (this.formGroup.get('isHearingRelated').value === true && this.formGroup.get('hearingDate').value === null) {
         this.addError(RaiseQueryErrorMessage.QUERY_HEARING_DATE, 'hearingDate-day');
       }
     }
@@ -377,7 +382,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     this.errorMessages.push({
       title: '',
       description: message,
-      fieldId: field
+      fieldId: field,
     });
   }
 
@@ -416,7 +421,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   private getQualifyingQuestions(): Observable<QualifyingQuestion[]> {
     return combineLatest([
       this.caseNotifier.caseView as unknown as Observable<CaseView>,
-      this.featureToggleService.getValue<CaseTypeQualifyingQuestions[]>(this.LD_QUALIFYING_QUESTIONS, [])
+      this.featureToggleService.getValue<CaseTypeQualifyingQuestions[]>(this.LD_QUALIFYING_QUESTIONS, []),
     ]).pipe(
       map(([caseView, caseTypeQualifyingQuestions]: [CaseView, CaseTypeQualifyingQuestions[]]) => {
         const caseId = caseView.case_id;
@@ -445,13 +450,21 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
             ...question,
             url,
             markdown,
-            markdown_cy
+            markdown_cy,
           };
         });
 
         // Add Extra options to qualifying question
-        this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, 'Follow-up on an existing query', `/cases/case-details/${caseId}#Queries`);
-        this.addExtraOptionsToQualifyingQuestion(qualifyingQuestions, this.RAISE_A_QUERY_NAME, `/query-management/query/${caseId}/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`);
+        this.addExtraOptionsToQualifyingQuestion(
+          qualifyingQuestions,
+          'Follow-up on an existing query',
+          `/cases/case-details/${this.jurisdictionId}/${this.caseType}/${caseId}#Queries`
+        );
+        this.addExtraOptionsToQualifyingQuestion(
+          qualifyingQuestions,
+          this.RAISE_A_QUERY_NAME,
+          `/query-management/query/${caseId}/${QueryManagementContainerComponent.RAISE_A_QUERY_QUESTION_OPTION}`
+        );
 
         return qualifyingQuestions;
       })
@@ -459,22 +472,21 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   }
 
   public getAttachmentHintText(): Observable<string | null> {
-    const hintText$ = this.featureToggleService.getValue<ServiceAttachmentHintTextResponse>(
-      this.LD_SERVICE_MESSAGE,
-      { attachment: [] }
-    );
+    const hintText$ = this.featureToggleService.getValue<ServiceAttachmentHintTextResponse>(this.LD_SERVICE_MESSAGE, {
+      attachment: [],
+    });
 
-    return combineLatest([
-      this.caseNotifier.caseView as unknown as Observable<CaseView>,
-      hintText$
-    ]).pipe(
+    return combineLatest([this.caseNotifier.caseView as unknown as Observable<CaseView>, hintText$]).pipe(
       map(([caseView, hintText]: [CaseView, ServiceAttachmentHintTextResponse]) => {
         const jurisdictionId = caseView.case_type.jurisdiction.id;
         const caseTypeId = caseView.case_type.id;
         const messages = hintText?.attachment || [];
 
         // Return empty string if jurisdiction is 'CIVIL' and queryCreateContext is 'RESPOND'
-        if (jurisdictionId.toUpperCase() === this.CIVIL_JURISDICTION.toUpperCase() && this.queryCreateContext === QueryCreateContext.RESPOND) {
+        if (
+          jurisdictionId.toUpperCase() === this.CIVIL_JURISDICTION.toUpperCase() &&
+          this.queryCreateContext === QueryCreateContext.RESPOND
+        ) {
           return '';
         }
 
@@ -502,12 +514,11 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   }
 
   private getServiceMessage(): Observable<string | null> {
-    const serviceMessages$ = this.featureToggleService.getValue<ServiceMessagesResponse>(this.LD_SERVICE_MESSAGE, { messages: [] });
+    const serviceMessages$ = this.featureToggleService.getValue<ServiceMessagesResponse>(this.LD_SERVICE_MESSAGE, {
+      messages: [],
+    });
 
-    return combineLatest([
-      this.caseNotifier.caseView as unknown as Observable<CaseView>,
-      serviceMessages$
-    ]).pipe(
+    return combineLatest([this.caseNotifier.caseView as unknown as Observable<CaseView>, serviceMessages$]).pipe(
       map(([caseView, serviceMessages]: [CaseView, ServiceMessagesResponse]) => {
         const jurisdictionId = caseView.case_type.jurisdiction.id;
         const caseTypeId = caseView.case_type.id;
@@ -539,9 +550,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
           return null;
         }
 
-        const combinedMarkdown = filteredMessages
-          .map((msg) => msg.markdown)
-          .join('\n\n');
+        const combinedMarkdown = filteredMessages.map((msg) => msg.markdown).join('\n\n');
 
         return combinedMarkdown;
       })
@@ -553,25 +562,25 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
       qualifyingQuestions.push({
         name,
         markdown: '',
-        url
+        url,
       });
     }
   }
 
   public async goToQueryList(): Promise<void> {
-    await this.router.navigate(['cases', 'case-details', this.caseId],
-      { fragment: 'Queries' }
-    );
+    await this.router.navigate(['cases', 'case-details', this.jurisdictionId, this.caseType, this.caseId], {
+      fragment: 'Queries',
+    });
   }
 
   public async navigateToCaseOverviewTab(): Promise<void> {
-    await this.router.navigate(['cases', 'case-details', this.caseId],
-      { fragment: 'Overview' }
-    );
+    await this.router.navigate(['cases', 'case-details', this.jurisdictionId, this.caseType, this.caseId], {
+      fragment: 'Overview',
+    });
   }
 
   public async navigateToCaseTaskTab(): Promise<void> {
-    await this.router.navigate(['cases', 'case-details', this.caseId, 'tasks']);
+    await this.router.navigate(['cases', 'case-details', this.jurisdictionId, this.caseType, this.caseId, 'tasks']);
   }
 
   public hasRespondedToQueryTask(value: boolean): void {
@@ -581,7 +590,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
 
   public logSelection(qualifyingQuestion: QualifyingQuestion) {
     const isQualifyingQuestions =
-    this.RAISE_A_QUERY_NAME === qualifyingQuestion.name || this.FOLLOW_UP_ON_EXISTING_QUERY === qualifyingQuestion.name;
+      this.RAISE_A_QUERY_NAME === qualifyingQuestion.name || this.FOLLOW_UP_ON_EXISTING_QUERY === qualifyingQuestion.name;
 
     const url = isQualifyingQuestions
       ? qualifyingQuestion.url.replace('${[CASE_REFERENCE]}', this.caseId)
@@ -592,7 +601,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
       caseJurisdiction: this.jurisdictionId,
       name: qualifyingQuestion.name,
       url,
-      selectionType: this.getQuestionType(qualifyingQuestion.name)
+      selectionType: this.getQuestionType(qualifyingQuestion.name),
     };
     this.googleTagManagerService.event('QM_QualifyingQuestion_Selection', eventParams);
   }
@@ -614,51 +623,55 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   private getEventTrigger(): void {
     const loadingToken = this.loadingService.register();
 
-    this.caseNotifier.fetchAndRefresh(this.caseId).pipe(
-      take(1),
-      switchMap((caseDetails) => {
-        this.caseDetails = caseDetails;
+    this.caseNotifier
+      .fetchAndRefresh(this.caseId)
+      .pipe(
+        take(1),
+        switchMap((caseDetails) => {
+          this.caseDetails = caseDetails;
 
-        const eventId = this.queryCreateContext !== QueryCreateContext.RESPOND
-          ? this.RAISE_A_QUERY_EVENT_TRIGGER_ID
-          : this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID;
+          const eventId =
+            this.queryCreateContext !== QueryCreateContext.RESPOND
+              ? this.RAISE_A_QUERY_EVENT_TRIGGER_ID
+              : this.RESPOND_TO_QUERY_EVENT_TRIGGER_ID;
 
-        this.eventTrigger$ = this.casesService.getEventTrigger(undefined, eventId, caseDetails.case_id);
-        return this.eventTrigger$;
-      })
-    ).subscribe({
-      next: (eventTrigger) => {
-        this.eventTrigger = eventTrigger;
-        this.showForm = true;
-        this.loadingService.unregister(loadingToken);
+          this.eventTrigger$ = this.casesService.getEventTrigger(undefined, eventId, caseDetails.case_id);
+          return this.eventTrigger$;
+        })
+      )
+      .subscribe({
+        next: (eventTrigger) => {
+          this.eventTrigger = eventTrigger;
+          this.showForm = true;
+          this.loadingService.unregister(loadingToken);
 
-        if ([QueryCreateContext.FOLLOWUP, QueryCreateContext.RESPOND].includes(this.queryCreateContext)) {
-          this.processFilteredMessages();
-        }
-      },
-      error: (err: HttpError) => {
-        this.loadingService.unregister(loadingToken);
+          if ([QueryCreateContext.FOLLOWUP, QueryCreateContext.RESPOND].includes(this.queryCreateContext)) {
+            this.processFilteredMessages();
+          }
+        },
+        error: (err: HttpError) => {
+          this.loadingService.unregister(loadingToken);
 
-        if (err.status !== 401 && err.status !== 403) {
-          this.errorNotifierService.announceError(err);
-          this.alertService.error({ phrase: err.message });
-          console.error('Error occurred while fetching event data:', err);
-          this.callbackErrorsSubject.next(err);
+          if (err.status !== 401 && err.status !== 403) {
+            this.errorNotifierService.announceError(err);
+            this.alertService.error({ phrase: err.message });
+            console.error('Error occurred while fetching event data:', err);
+            this.callbackErrorsSubject.next(err);
 
-          this.showContinueButton = false;
-          this.showForm = this.ignoreWarning;
-        } else {
-          this.eventDataError = true;
-          this.addError('Something unexpected happened. Please try again later.', 'eventDataError');
-        }
+            this.showContinueButton = false;
+            this.showForm = this.ignoreWarning;
+          } else {
+            this.eventDataError = true;
+            this.addError('Something unexpected happened. Please try again later.', 'eventDataError');
+          }
 
-        window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
-      }
-    });
+          window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
+        },
+      });
   }
 
   // Function to filter and process the messages based on the event data
-  private processFilteredMessages():void {
+  private processFilteredMessages(): void {
     const messageId = this.activatedRoute.snapshot.params.dataid;
     let caseQueriesCollections = [];
 
@@ -677,7 +690,7 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
     this.caseQueriesCollections = caseQueriesCollections;
     const allMessages = caseQueriesCollections
       .map((caseData) => caseData.caseMessages) // Extract the caseMessages arrays
-      .flat();// Flatten into a single array of messages
+      .flat(); // Flatten into a single array of messages
 
     let filteredMessages = [];
 
@@ -720,7 +733,11 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
 
     // Handle Complex type fields
     if (field_type.type === QueryManagementContainerComponent.FIELD_TYPE_COMPLEX) {
-      if (field_type.id === QueryManagementContainerComponent.caseLevelCaseFieldId && display_context !== QueryManagementContainerComponent.DISPLAY_CONTEXT_READONLY && this.isNonEmptyObject(value)) {
+      if (
+        field_type.id === QueryManagementContainerComponent.caseLevelCaseFieldId &&
+        display_context !== QueryManagementContainerComponent.DISPLAY_CONTEXT_READONLY &&
+        this.isNonEmptyObject(value)
+      ) {
         return value;
       }
       return null;
@@ -747,9 +764,10 @@ export class QueryManagementContainerComponent implements OnInit, OnDestroy {
   }
 
   public validate(data): Observable<any> {
-    return this.casesService.validateCase(
-      this.caseDetails.case_type.id,
-      data,
-      this.RAISE_A_QUERY_EVENT_TRIGGER_ID) as any;
+    return this.casesService.validateCase(this.caseDetails.case_type.id, data, this.RAISE_A_QUERY_EVENT_TRIGGER_ID) as any;
+  }
+
+  public createEventResponse(data: CaseQueriesCollection): void {
+    this.eventResponseData = data;
   }
 }

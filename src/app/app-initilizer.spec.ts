@@ -14,6 +14,7 @@ describe('initApplication', () => {
     mockStore = jasmine.createSpyObj<Store<fromApp.State>>('store', ['dispatch', 'pipe']);
     mockStore.dispatch.and.callFake((action) => {
       dispatchedActions.push(action);
+      return { destroy: () => {} };
     });
 
     // Create BehaviorSubject after test setup to avoid timing issues
@@ -38,27 +39,33 @@ describe('initApplication', () => {
       const initFunc = initApplication(mockStore);
       initFunc();
 
-      expect(dispatchedActions).toContain(jasmine.objectContaining({
-        type: fromApp.START_APP_INITIALIZER
-      }));
+      expect(dispatchedActions).toContain(
+        jasmine.objectContaining({
+          type: fromApp.START_APP_INITIALIZER,
+        })
+      );
     });
 
     it('should dispatch LoadConfig action', async () => {
       const initFunc = initApplication(mockStore);
       initFunc();
 
-      expect(dispatchedActions).toContain(jasmine.objectContaining({
-        type: fromApp.APP_LOAD_CONFIG
-      }));
+      expect(dispatchedActions).toContain(
+        jasmine.objectContaining({
+          type: fromApp.APP_LOAD_CONFIG,
+        })
+      );
     });
 
     it('should dispatch LoadFeatureToggleConfig action', async () => {
       const initFunc = initApplication(mockStore);
       initFunc();
 
-      expect(dispatchedActions).toContain(jasmine.objectContaining({
-        type: fromApp.LOAD_FEATURE_TOGGLE_CONFIG
-      }));
+      expect(dispatchedActions).toContain(
+        jasmine.objectContaining({
+          type: fromApp.LOAD_FEATURE_TOGGLE_CONFIG,
+        })
+      );
     });
 
     it('should dispatch all three initial actions in correct order', async () => {
@@ -66,15 +73,21 @@ describe('initApplication', () => {
       initFunc();
 
       expect(dispatchedActions.length).toBeGreaterThanOrEqual(3);
-      expect(dispatchedActions[0]).toEqual(jasmine.objectContaining({
-        type: fromApp.START_APP_INITIALIZER
-      }));
-      expect(dispatchedActions[1]).toEqual(jasmine.objectContaining({
-        type: fromApp.APP_LOAD_CONFIG
-      }));
-      expect(dispatchedActions[2]).toEqual(jasmine.objectContaining({
-        type: fromApp.LOAD_FEATURE_TOGGLE_CONFIG
-      }));
+      expect(dispatchedActions[0]).toEqual(
+        jasmine.objectContaining({
+          type: fromApp.START_APP_INITIALIZER,
+        })
+      );
+      expect(dispatchedActions[1]).toEqual(
+        jasmine.objectContaining({
+          type: fromApp.APP_LOAD_CONFIG,
+        })
+      );
+      expect(dispatchedActions[2]).toEqual(
+        jasmine.objectContaining({
+          type: fromApp.LOAD_FEATURE_TOGGLE_CONFIG,
+        })
+      );
     });
   });
 
@@ -87,9 +100,9 @@ describe('initApplication', () => {
         config: {
           features: {
             feature1: true,
-            feature2: false
-          }
-        }
+            feature2: false,
+          },
+        },
       });
 
       const result = await promise;
@@ -103,16 +116,18 @@ describe('initApplication', () => {
       appConfigSubject.next({
         config: {
           features: {
-            feature1: true
-          }
-        }
+            feature1: true,
+          },
+        },
       });
 
       await promise;
 
-      expect(dispatchedActions).toContain(jasmine.objectContaining({
-        type: fromApp.FINISH_APP_INITIALIZER
-      }));
+      expect(dispatchedActions).toContain(
+        jasmine.objectContaining({
+          type: fromApp.FINISH_APP_INITIALIZER,
+        })
+      );
     });
 
     it('should not resolve when features object is empty', () => {
@@ -121,8 +136,8 @@ describe('initApplication', () => {
 
       appConfigSubject.next({
         config: {
-          features: {}
-        }
+          features: {},
+        },
       });
 
       // The promise should not resolve synchronously
@@ -141,7 +156,7 @@ describe('initApplication', () => {
       const promise = initFunc();
 
       appConfigSubject.next({
-        config: {}
+        config: {},
       });
 
       // Verify the promise hasn't resolved
@@ -159,8 +174,8 @@ describe('initApplication', () => {
 
       appConfigSubject.next({
         config: {
-          features: undefined
-        }
+          features: undefined,
+        },
       });
 
       // Check promise is still pending
@@ -195,9 +210,9 @@ describe('initApplication', () => {
       appConfigSubject.next({
         config: {
           features: {
-            feature1: true
-          }
-        }
+            feature1: true,
+          },
+        },
       });
 
       // Promise should resolve
@@ -213,8 +228,8 @@ describe('initApplication', () => {
 
       appConfigSubject.next({
         config: {
-          features: null
-        }
+          features: null,
+        },
       });
 
       // Promise should remain pending
@@ -233,14 +248,14 @@ describe('initApplication', () => {
       // Send multiple emissions with empty features
       appConfigSubject.next({
         config: {
-          features: {}
-        }
+          features: {},
+        },
       });
 
       appConfigSubject.next({
         config: {
-          features: {}
-        }
+          features: {},
+        },
       });
 
       // Promise should still be pending after multiple empty emissions
@@ -264,9 +279,9 @@ describe('initApplication', () => {
       appConfigSubject.next({
         config: {
           features: {
-            feature1: true
-          }
-        }
+            feature1: true,
+          },
+        },
       });
 
       await promise;
@@ -277,9 +292,9 @@ describe('initApplication', () => {
         config: {
           features: {
             feature1: true,
-            feature2: false
-          }
-        }
+            feature2: false,
+          },
+        },
       });
 
       // Resolve count should still be 1 as promises can only resolve once
@@ -293,8 +308,8 @@ describe('initApplication', () => {
       // First emit empty features
       appConfigSubject.next({
         config: {
-          features: {}
-        }
+          features: {},
+        },
       });
 
       // Verify promise is still pending
@@ -308,17 +323,19 @@ describe('initApplication', () => {
       appConfigSubject.next({
         config: {
           features: {
-            newFeature: true
-          }
-        }
+            newFeature: true,
+          },
+        },
       });
 
       // Promise should now resolve
       const result = await promise;
       expect(result).toBe(true);
-      expect(dispatchedActions).toContain(jasmine.objectContaining({
-        type: fromApp.FINISH_APP_INITIALIZER
-      }));
+      expect(dispatchedActions).toContain(
+        jasmine.objectContaining({
+          type: fromApp.FINISH_APP_INITIALIZER,
+        })
+      );
     });
   });
 });

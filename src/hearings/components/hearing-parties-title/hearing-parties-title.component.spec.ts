@@ -25,15 +25,14 @@ describe('HearingPartiesTitleComponent', () => {
         provideMockStore({ initialState }),
         {
           provide: FeatureToggleService,
-          useValue: featureToggleServiceMock
+          useValue: featureToggleServiceMock,
         },
         {
           provide: HearingsFeatureService,
-          useValue: hearingsFeatureServiceMock
-        }
-      ]
-    })
-      .compileComponents();
+          useValue: hearingsFeatureServiceMock,
+        },
+      ],
+    }).compileComponents();
     fixture = TestBed.createComponent(HearingPartiesTitleComponent);
     storeMock = TestBed.inject(Store);
     spyOn(storeMock, 'pipe').and.returnValue(of(initialState.hearings.hearingValues.serviceHearingValuesModel));

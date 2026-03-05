@@ -6,7 +6,9 @@ const ProbatePage = require('../pageObjects/probatePage.js');
 const DivorcesPage = require('../pageObjects/divorcesPage.js');
 const FrUserPage = require('../pageObjects/frUserPage.js');
 const ApplyForProbatePage = require('../pageObjects/applyForProbatePage.js');
-function headerPage () { return require('../pageObjects/headerPage')(); }
+function headerPage() {
+  return require('../pageObjects/headerPage')();
+}
 const { AMAZING_DELAY, SHORT_DELAY, MID_DELAY, LONG_DELAY } = require('../../support/constants');
 const TestData = require('../../utils/TestData.js');
 
@@ -76,15 +78,14 @@ Then(/^case should be created successfully$/, async function () {
 When(/^I click on cancel button$/, async function () {
   await appealCreatedPage.clickCancelButton();
 });
-Then(/^I should be display the expert ui case list page$/, async function (){
+Then(/^I should be display the expert ui case list page$/, async function () {
   //await caseListPage.clickCreateNewCaseButton();
-
 });
-When(/^I click on previous button$/, async function (){
+When(/^I click on previous button$/, async function () {
   await appealCreatedPage.clickPreviousButton();
 });
 
-Then(/^I should be display the Case details page$/, async function (){
+Then(/^I should be display the Case details page$/, async function () {
   expect(await new CreateCaseWizardPage().amOnPage()).to.be.true;
 });
 
@@ -116,9 +117,7 @@ When(/^I click on save and continue button$/, async function () {
   await applyForProbatePage.clickOnSaveAndContinue();
 });
 
-Then(/^I should navigate to reason for the divorce page$/, async function () {
-
-});
+Then(/^I should navigate to reason for the divorce page$/, async function () {});
 When(/^I enter mandatory divorces fields jurisdiction,case type,event and click on start button$/, async function () {
   browser.sleep(AMAZING_DELAY);
   await createCaseStartPage.selectJurisdiction(TestData.divorcesjurisdiction);
@@ -133,4 +132,3 @@ When(/^I enter mandatory fr fields jurisdiction,case type,event and click on sta
   await createCaseStartPage.selectEvent('Consent Order Application');
   await createCaseStartPage.clickStartButton();
 });
-

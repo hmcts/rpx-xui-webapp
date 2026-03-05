@@ -38,17 +38,14 @@ export const initialSearchState: SearchState = {
   results: new SearchStateResults(),
   paginationMetadata: {
     totalPagesCount: 0,
-    totalResultsCount: 0
+    totalResultsCount: 0,
   },
   showFilter: true,
   loading: false,
-  loaded: false
+  loaded: false,
 };
 
-export function reducer(
-  state = initialSearchState,
-  action: fromCases.CaseSearchAction
-): SearchState {
+export function reducer(state = initialSearchState, action: fromCases.CaseSearchAction): SearchState {
   switch (action.type) {
     case fromCases.APPLY_SEARCH_FILTER:
     case fromCases.APPLY_SEARCH_FILTER_FOR_ES: {
@@ -59,10 +56,10 @@ export function reducer(
           jurisdiction: action.payload.selected.jurisdiction,
           caseType: action.payload.selected.caseType,
           caseState: action.payload.selected.caseState ? action.payload.selected.caseState : null,
-          page: action.payload.selected.page
+          page: action.payload.selected.page,
         },
         loading: true,
-        loaded: false
+        loaded: false,
       };
     }
 
@@ -71,10 +68,10 @@ export function reducer(
         ...state,
         paginationMetadata: {
           totalPagesCount: action.payload.totalPagesCount,
-          totalResultsCount: action.payload.totalResultsCount
+          totalResultsCount: action.payload.totalResultsCount,
         },
         loading: true,
-        loaded: false
+        loaded: false,
       };
     }
 
@@ -82,17 +79,17 @@ export function reducer(
       return {
         ...state,
         results: {
-          resultView: action.payload
+          resultView: action.payload,
         },
         loading: true,
-        loaded: false
+        loaded: false,
       };
     }
 
     case fromCases.SEARCH_FILTER_DISPLAY_TOGGLE_SUCCESS: {
       return {
         ...state,
-        showFilter: action.payload
+        showFilter: action.payload,
       };
     }
 

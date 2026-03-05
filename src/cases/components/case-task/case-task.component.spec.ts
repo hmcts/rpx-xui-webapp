@@ -22,45 +22,37 @@ describe('CaseTaskComponent', () => {
     mockRouter = jasmine.createSpyObj('router', ['navigate', 'url']);
     mockTaskService = jasmine.createSpyObj('taskService', ['claimTask']);
     mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue']);
-    mockRouter.url = '/case-details/123243430403904/tasks';
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    mockRouter.url = '/case-details/IA/Asylum/123243430403904/tasks';
+
     mockRouter.navigate.and.callFake(() => new Promise((resolve, reject) => resolve(true)));
     mockWindow = { location: new URL('https://manage-case.hmcts.platform.net') };
     component = new CaseTaskComponent(mockAlertService, mockRouter, mockSessionStorage, mockTaskService, mockWindow);
-    mockFeatureToggleService.getValue.and.returnValue(of({
-      configurations: [
-        {
-          caseTypes: [
-            'Asylum'
-          ],
-          releaseVersion: '3.5',
-          serviceName: 'IA'
-        },
-        {
-          caseTypes: [
-            'PRIVATELAW',
-            'PRLAPPS'
-          ],
-          releaseVersion: '2.1',
-          serviceName: 'PRIVATELAW'
-        },
-        {
-          caseTypes: [
-            'CIVIL',
-            'GENERALAPPLICATION'
-          ],
-          releaseVersion: '2.1',
-          serviceName: 'CIVIL'
-        },
-        {
-          caseTypes: [
-            'Test'
-          ],
-          releaseVersion: '4',
-          serviceName: 'TEST'
-        }
-      ]
-    }));
+    mockFeatureToggleService.getValue.and.returnValue(
+      of({
+        configurations: [
+          {
+            caseTypes: ['Asylum'],
+            releaseVersion: '3.5',
+            serviceName: 'IA',
+          },
+          {
+            caseTypes: ['PRIVATELAW', 'PRLAPPS'],
+            releaseVersion: '2.1',
+            serviceName: 'PRIVATELAW',
+          },
+          {
+            caseTypes: ['CIVIL', 'GENERALAPPLICATION'],
+            releaseVersion: '2.1',
+            serviceName: 'CIVIL',
+          },
+          {
+            caseTypes: ['Test'],
+            releaseVersion: '4',
+            serviceName: 'TEST',
+          },
+        ],
+      })
+    );
   });
 
   it('ngOnInit', () => {
@@ -86,7 +78,7 @@ describe('CaseTaskComponent', () => {
       dueDate: new Date(),
       actions: [],
       warnings: false,
-      derivedIcon: null
+      derivedIcon: null,
     };
     const result = component.isTaskAssignedToCurrentUser(task);
     expect(result).toBeFalsy();
@@ -107,14 +99,18 @@ describe('CaseTaskComponent', () => {
       dueDate: new Date(),
       actions: [],
       warnings: false,
-      derivedIcon: null
+      derivedIcon: null,
     };
     let userIdType = 'uid';
-    mockSessionStorage.getItem.and.returnValue(`{"sub":"juser8@mailinator.com","${userIdType}":"44d5d2c2-7112-4bef-8d05-baaa610bf463","roles":["caseworker","caseworker-ia","caseworker-ia-iacjudge"],"name":"XUI test Judge","given_name":"XUI test","family_name":"Judge","token":""}`);
+    mockSessionStorage.getItem.and.returnValue(
+      `{"sub":"juser8@mailinator.com","${userIdType}":"44d5d2c2-7112-4bef-8d05-baaa610bf463","roles":["caseworker","caseworker-ia","caseworker-ia-iacjudge"],"name":"XUI test Judge","given_name":"XUI test","family_name":"Judge","token":""}`
+    );
     let result = component.isTaskAssignedToCurrentUser(task);
     expect(result).toBeTruthy();
     userIdType = 'id';
-    mockSessionStorage.getItem.and.returnValue(`{"sub":"juser8@mailinator.com","${userIdType}":"44d5d2c2-7112-4bef-8d05-baaa610bf463","roles":["caseworker","caseworker-ia","caseworker-ia-iacjudge"],"name":"XUI test Judge","given_name":"XUI test","family_name":"Judge","token":""}`);
+    mockSessionStorage.getItem.and.returnValue(
+      `{"sub":"juser8@mailinator.com","${userIdType}":"44d5d2c2-7112-4bef-8d05-baaa610bf463","roles":["caseworker","caseworker-ia","caseworker-ia-iacjudge"],"name":"XUI test Judge","given_name":"XUI test","family_name":"Judge","token":""}`
+    );
     result = component.isTaskAssignedToCurrentUser(task);
     expect(result).toBeTruthy();
   });
@@ -134,7 +130,7 @@ describe('CaseTaskComponent', () => {
       dueDate: new Date(),
       actions: [],
       warnings: false,
-      derivedIcon: null
+      derivedIcon: null,
     };
     const caseworkers: Caseworker[] = [
       {
@@ -146,9 +142,9 @@ describe('CaseTaskComponent', () => {
         location: {
           id: '1',
           locationName: 'TestLocation',
-          services: null
-        }
-      }
+          services: null,
+        },
+      },
     ];
     component.caseworkers = caseworkers;
     let name = component.getAssigneeName(task);
@@ -169,7 +165,8 @@ describe('CaseTaskComponent', () => {
       assignee: '44d5d2c2-7112-4bef-8d05-baaa610bf463',
       assigneeName: 'Judicial User',
       id: '0d22d838-b25a-11eb-a18c-f2d58a9b7bc1',
-      description: '[Link the appeal](/cases/case-details/${[CASE_REFERENCE]}/trigger/linkAppeal/linkAppealreasonForLinkAppealPageId)',
+      description:
+        '[Link the appeal](/cases/case-details/${[CASE_REFERENCE]}/trigger/linkAppeal/linkAppealreasonForLinkAppealPageId)',
       task_title: 'Link the appeal',
       dueDate: new Date(),
       location_name: 'Birmingham',
@@ -178,10 +175,12 @@ describe('CaseTaskComponent', () => {
       case_category: 'EEA',
       case_name: 'William Priest',
       warnings: true,
-      permissions: ['Own', 'Execute', 'Manage']
+      permissions: ['Own', 'Execute', 'Manage'],
     };
     const result = CaseTaskComponent.replaceVariablesWithRealValues(task);
-    expect(result).toBe(`[Link the appeal](/cases/case-details/1620409659381330/trigger/linkAppeal/linkAppealreasonForLinkAppealPageId?tid=${task.id})`);
+    expect(result).toBe(
+      `[Link the appeal](/cases/case-details/1620409659381330/trigger/linkAppeal/linkAppealreasonForLinkAppealPageId?tid=${task.id})`
+    );
   });
 
   it('should set isTaskUrgent based on the task priority', () => {
@@ -200,7 +199,7 @@ describe('CaseTaskComponent', () => {
       actions: [],
       warnings: false,
       derivedIcon: null,
-      major_priority: PriorityLimits.Urgent
+      major_priority: PriorityLimits.Urgent,
     };
     expect(component.isTaskUrgent).toBe(true);
     component.task = {
@@ -218,7 +217,7 @@ describe('CaseTaskComponent', () => {
       actions: [],
       warnings: false,
       derivedIcon: null,
-      major_priority: PriorityLimits.High
+      major_priority: PriorityLimits.High,
     };
     expect(component.isTaskUrgent).toBe(false);
   });
@@ -235,15 +234,17 @@ describe('CaseTaskComponent', () => {
       description: null,
       case_id: '1111222233334444',
       caseName: null,
+      jurisdiction: 'IA',
+      case_type_id: 'Asylum',
       caseCategory: null,
       location: null,
       taskName: null,
       dueDate: new Date(),
       actions: [],
       warnings: false,
-      derivedIcon: null
+      derivedIcon: null,
     };
-    expect(component.returnUrl).toEqual('case-details/1111222233334444/tasks');
+    expect(component.returnUrl).toEqual('case-details/IA/Asylum/1111222233334444/tasks');
   });
 
   it('getDueDateTitle should be Task created', () => {
@@ -286,7 +287,7 @@ describe('CaseTaskComponent', () => {
     });
 
     it('should handle an action that redirects', () => {
-      const state = { returnUrl: '/case-details/123243430403904/tasks', keepUrl: true, showAssigneeColumn: true };
+      const state = { returnUrl: '/case-details/IA/Asylum/123243430403904/tasks', keepUrl: true, showAssigneeColumn: true };
       const queryParams = { service: 'IA' };
 
       // need to check that navigate has been called
@@ -295,7 +296,7 @@ describe('CaseTaskComponent', () => {
 
       // need to verify correct properties were called
       expect(mockRouter.navigate).toHaveBeenCalledWith([`/work/${exampleTask.id}/${secondOption.id}`], { queryParams, state });
-      expect(component.returnUrl).toBe('/case-details/123243430403904/tasks');
+      expect(component.returnUrl).toBe('/case-details/IA/Asylum/123243430403904/tasks');
     });
   });
 
@@ -363,7 +364,9 @@ describe('CaseTaskComponent', () => {
   describe('onClick() with relative URL and tid', () => {
     it('should navigate correctly on click', () => {
       component.onClick('exampleUrl(/firsturlpart/?tid=1234)end');
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['https://manage-case.hmcts.platform.net/firsturlpart/'], { queryParams: { tid: '1234' } });
+      expect(mockRouter.navigate).toHaveBeenCalledWith(['https://manage-case.hmcts.platform.net/firsturlpart/'], {
+        queryParams: { tid: '1234' },
+      });
     });
   });
 });

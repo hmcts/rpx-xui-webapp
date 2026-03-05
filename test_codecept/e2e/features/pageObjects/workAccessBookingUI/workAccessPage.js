@@ -3,9 +3,13 @@ const BrowserWaits = require('../../../support/customWaits');
 const cucumberReporter = require('../../../../codeceptCommon/reportLogger');
 
 class WorkAccessPage {
-  get dateFormat() { return 'YYYY-MM-DD'; }
+  get dateFormat() {
+    return 'YYYY-MM-DD';
+  }
 
-  get pageContainer() { return $('exui-booking-home'); }
+  get pageContainer() {
+    return $('exui-booking-home');
+  }
 
   get radioChooseExistingBooking() {
     return elementByXpath(this.getRadiobuttonXPathWithLabel('Choose an existing booking'));
@@ -25,7 +29,7 @@ class WorkAccessPage {
   }
 
   get continueButton() {
-    return elementByXpath('//exui-booking-home//form/button[contains(text(),\'Continue\')]');
+    return elementByXpath("//exui-booking-home//form/button[contains(text(),'Continue')]");
   }
 
   getRadiobuttonXPathWithLabel(label) {
@@ -62,7 +66,7 @@ class WorkAccessPage {
     return {
       location: bookingAtIndex.location,
       fromDate: bookingAtIndex.fromDate,
-      toDate: bookingAtIndex.toDate
+      toDate: bookingAtIndex.toDate,
     };
   }
 
@@ -71,8 +75,7 @@ class WorkAccessPage {
     const matchingBookings = allBookings.filter((booking) => {
       cucumberReporter.AddMessage(`${location} ${fromDate} to ${toDate}`);
       return booking.location.includes(location) && booking.fromDate.includes(fromDate) && booking.toDate.includes(toDate);
-    }
-    );
+    });
     return matchingBookings;
   }
 
@@ -93,7 +96,7 @@ class WorkAccessPage {
         location: await getText(booking.locator('span[class*="font-weight-bold"]')),
         fromDate: bookingDateSplit[0],
         toDate: bookingDateSplit[1],
-        continueBtnElement: booking.locator('.govuk-button-group button')
+        continueBtnElement: booking.locator('.govuk-button-group button'),
       });
     }
     return bookings;

@@ -2,7 +2,6 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 
 import * as crudService from '../../common/crudService';
@@ -14,9 +13,11 @@ import {
   DEFAULT_STAGES_REF,
   DEFAULT_PRIORITIES_REF,
   DEFAULT_PARTYCHANNEL_REF,
-  ALL_REF_DATA
+  ALL_REF_DATA,
 } from './data/lov.mock.data';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('LOV Service', () => {
@@ -47,17 +48,17 @@ describe('LOV Service', () => {
         query: {
           serviceId: 'BBA3',
           categoryId: 'JudgeType',
-          isChildRequired: 'Y'
-        }
+          isChildRequired: 'Y',
+        },
       });
 
       const mockResponseData: LovRefDataByServiceModel = {
-        list_of_values: DEFAULT_JUDGE_TYPES_REF
+        list_of_values: DEFAULT_JUDGE_TYPES_REF,
       };
 
       sendGetStub.resolves({
         status: 200,
-        data: mockResponseData
+        data: mockResponseData,
       });
 
       await getLovRefData(req, res, next);
@@ -76,17 +77,17 @@ describe('LOV Service', () => {
         query: {
           serviceId: 'BBA3',
           categoryId: 'HearingChannel',
-          isChildRequired: 'Y'
-        }
+          isChildRequired: 'Y',
+        },
       });
 
       const mockResponseData: LovRefDataByServiceModel = {
-        list_of_values: DEFAULT_PARTYCHANNEL_REF
+        list_of_values: DEFAULT_PARTYCHANNEL_REF,
       };
 
       sendGetStub.resolves({
         status: 200,
-        data: mockResponseData
+        data: mockResponseData,
       });
 
       await getLovRefData(req, res, next);
@@ -107,17 +108,17 @@ describe('LOV Service', () => {
         query: {
           serviceId: 'BBA3',
           categoryId: 'HearingPriority',
-          isChildRequired: 'N'
-        }
+          isChildRequired: 'N',
+        },
       });
 
       const mockResponseData: LovRefDataByServiceModel = {
-        list_of_values: DEFAULT_PRIORITIES_REF
+        list_of_values: DEFAULT_PRIORITIES_REF,
       };
 
       sendGetStub.resolves({
         status: 200,
-        data: mockResponseData
+        data: mockResponseData,
       });
 
       await getLovRefData(req, res, next);
@@ -134,17 +135,17 @@ describe('LOV Service', () => {
         query: {
           serviceId: 'TEST',
           categoryId: 'EmptyCategory',
-          isChildRequired: 'Y'
-        }
+          isChildRequired: 'Y',
+        },
       });
 
       const mockResponseData: LovRefDataByServiceModel = {
-        list_of_values: []
+        list_of_values: [],
       };
 
       sendGetStub.resolves({
         status: 200,
-        data: mockResponseData
+        data: mockResponseData,
       });
 
       await getLovRefData(req, res, next);
@@ -158,8 +159,8 @@ describe('LOV Service', () => {
         query: {
           serviceId: 'INVALID',
           categoryId: 'InvalidCategory',
-          isChildRequired: 'Y'
-        }
+          isChildRequired: 'Y',
+        },
       });
 
       const error = new Error('Not Found') as Error & { status: number };
@@ -178,8 +179,8 @@ describe('LOV Service', () => {
         query: {
           serviceId: 'BBA3',
           categoryId: 'TestCategory',
-          isChildRequired: 'Y'
-        }
+          isChildRequired: 'Y',
+        },
       });
 
       const mockResponseData: LovRefDataByServiceModel = {
@@ -195,14 +196,14 @@ describe('LOV Service', () => {
             parent_category: '',
             parent_key: '',
             active_flag: 'Y',
-            child_nodes: null
-          }
-        ]
+            child_nodes: null,
+          },
+        ],
       };
 
       sendGetStub.resolves({
         status: 201,
-        data: mockResponseData
+        data: mockResponseData,
       });
 
       await getLovRefData(req, res, next);
@@ -216,8 +217,8 @@ describe('LOV Service', () => {
         query: {
           serviceId: 'BBA3',
           categoryId: 'JudgeType',
-          isChildRequired: 'Y'
-        }
+          isChildRequired: 'Y',
+        },
       });
 
       const error = new Error('API Error');
@@ -235,8 +236,8 @@ describe('LOV Service', () => {
         query: {
           serviceId: 'BBA3',
           categoryId: 'JudgeType',
-          isChildRequired: 'Y'
-        }
+          isChildRequired: 'Y',
+        },
       });
 
       const networkError = new Error('ECONNREFUSED');
@@ -252,13 +253,13 @@ describe('LOV Service', () => {
         query: {
           serviceId: 'BBA3',
           categoryId: 'JudgeType',
-          isChildRequired: 'Y'
-        }
+          isChildRequired: 'Y',
+        },
       });
 
       sendGetStub.resolves({
         status: 200,
-        data: null
+        data: null,
       });
 
       await getLovRefData(req, res, next);
@@ -276,13 +277,13 @@ describe('LOV Service', () => {
         query: {
           serviceId: 'BBA3',
           categoryId: 'JudgeType',
-          isChildRequired: 'Y'
-        }
+          isChildRequired: 'Y',
+        },
       });
 
       sendGetStub.resolves({
         status: 200,
-        data: {} // data exists but no list_of_values property
+        data: {}, // data exists but no list_of_values property
       });
 
       await getLovRefData(req, res, next);
@@ -296,24 +297,26 @@ describe('LOV Service', () => {
         query: {
           serviceId: 'Service With Spaces',
           categoryId: 'Category&Special',
-          isChildRequired: 'Y'
-        }
+          isChildRequired: 'Y',
+        },
       });
 
       const mockResponseData: LovRefDataByServiceModel = {
-        list_of_values: []
+        list_of_values: [],
       };
 
       sendGetStub.resolves({
         status: 200,
-        data: mockResponseData
+        data: mockResponseData,
       });
 
       await getLovRefData(req, res, next);
 
       // URLSearchParams should properly encode special characters
       const actualCallArgs = sendGetStub.getCall(0).args;
-      expect(actualCallArgs[0]).to.include('/refdata/commondata/lov/categories/Category&Special?serviceId=Service+With+Spaces&isChildRequired=Y');
+      expect(actualCallArgs[0]).to.include(
+        '/refdata/commondata/lov/categories/Category&Special?serviceId=Service+With+Spaces&isChildRequired=Y'
+      );
       expect(actualCallArgs[1]).to.equal(req);
     });
 
@@ -322,8 +325,8 @@ describe('LOV Service', () => {
         query: {
           serviceId: 'BBA3',
           categoryId: 'JudgeType',
-          isChildRequired: 'Y'
-        }
+          isChildRequired: 'Y',
+        },
       });
 
       const timeoutError = new Error('Request timeout');

@@ -8,7 +8,7 @@ import {
   AllocateRoleState,
   AllocateRoleStateData,
   AllocateTo,
-  DurationOfRole
+  DurationOfRole,
 } from '../../../models';
 import { ChoosePersonAndGo } from '../../../store';
 import { AllocateRoleSearchPersonComponent } from './allocate-role-search-person.component';
@@ -18,10 +18,10 @@ describe('AllocateRolePersonComponent', () => {
   let mockStore: any;
   let mockRoute: ActivatedRoute;
 
-  beforeEach((() => {
+  beforeEach(() => {
     mockStore = jasmine.createSpyObj('mockStore', ['pipe', 'dispatch']);
     component = new AllocateRoleSearchPersonComponent(mockStore, mockRoute);
-  }));
+  });
 
   it('navigationHandler raises invalid Error when person not selected', () => {
     expect(component).toBeTruthy();
@@ -39,11 +39,13 @@ describe('AllocateRolePersonComponent', () => {
     const continueEvent = AllocateRoleNavigationEvent.CONTINUE;
     component.navigationHandler(continueEvent);
     expect(component.formGroup.valid).toBeTruthy();
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new ChoosePersonAndGo({
-      person: examplePerson,
-      allocateRoleState: AllocateRoleState.CHOOSE_DURATION,
-      allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON
-    }));
+    expect(mockStore.dispatch).toHaveBeenCalledWith(
+      new ChoosePersonAndGo({
+        person: examplePerson,
+        allocateRoleState: AllocateRoleState.CHOOSE_DURATION,
+        allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON,
+      })
+    );
   });
 
   it('should set person correctly when given by child component', () => {
@@ -51,13 +53,13 @@ describe('AllocateRolePersonComponent', () => {
       id: '123',
       name: 'Person 1',
       email: 'P1@something.com',
-      domain: PersonRole.ADMIN
+      domain: PersonRole.ADMIN,
     };
     const secondPerson: Person = {
       id: '456',
       name: 'Person 2',
       email: 'P2@something.com',
-      domain: PersonRole.JUDICIAL
+      domain: PersonRole.JUDICIAL,
     };
     component.selectedPerson(firstPerson);
     expect(component.person).toBe(firstPerson);
@@ -76,20 +78,20 @@ describe('AllocateRolePersonComponent', () => {
       personToBeRemoved: {
         id: 'p111111',
         name: 'test1',
-        domain: ''
+        domain: '',
       },
       person: {
         id: 'p222222',
         name: 'test2',
-        domain: ''
+        domain: '',
       },
       durationOfRole: DurationOfRole.SEVEN_DAYS,
       action: Actions.Allocate,
       period: {
         startDate: new Date(),
-        endDate: new Date()
+        endDate: new Date(),
       },
-      roleCategory: RoleCategory.CTSC
+      roleCategory: RoleCategory.CTSC,
     };
     mockStore.pipe.and.returnValue(of(ALLOCATE_ROLE_STATE_DATA));
     component.ngOnInit();
@@ -111,20 +113,20 @@ describe('AllocateRolePersonComponent', () => {
       personToBeRemoved: {
         id: 'p111111',
         name: 'test1',
-        domain: ''
+        domain: '',
       },
       person: {
         id: 'p222222',
         name: 'test2',
-        domain: ''
+        domain: '',
       },
       durationOfRole: DurationOfRole.SEVEN_DAYS,
       action: Actions.Allocate,
       period: {
         startDate: new Date(),
-        endDate: new Date()
+        endDate: new Date(),
       },
-      roleCategory: null
+      roleCategory: null,
     };
     mockStore.pipe.and.returnValue(of(ALLOCATE_ROLE_STATE_DATA));
     component.ngOnInit();
@@ -146,20 +148,20 @@ describe('AllocateRolePersonComponent', () => {
       personToBeRemoved: {
         id: 'p111111',
         name: 'test1',
-        domain: ''
+        domain: '',
       },
       person: {
         id: 'p222222',
         name: 'test2',
-        domain: ''
+        domain: '',
       },
       durationOfRole: DurationOfRole.SEVEN_DAYS,
       action: Actions.Allocate,
       period: {
         startDate: new Date(),
-        endDate: new Date()
+        endDate: new Date(),
       },
-      roleCategory: RoleCategory.ADMIN
+      roleCategory: RoleCategory.ADMIN,
     };
     mockStore.pipe.and.returnValue(of(ALLOCATE_ROLE_STATE_DATA));
     component.ngOnInit();
@@ -181,20 +183,20 @@ describe('AllocateRolePersonComponent', () => {
       personToBeRemoved: {
         id: 'p111111',
         name: 'test1',
-        domain: ''
+        domain: '',
       },
       person: {
         id: 'p222222',
         name: 'test2',
-        domain: ''
+        domain: '',
       },
       durationOfRole: DurationOfRole.SEVEN_DAYS,
       action: Actions.Allocate,
       period: {
         startDate: new Date(),
-        endDate: new Date()
+        endDate: new Date(),
       },
-      roleCategory: RoleCategory.LEGAL_OPERATIONS
+      roleCategory: RoleCategory.LEGAL_OPERATIONS,
     };
     mockStore.pipe.and.returnValue(of(ALLOCATE_ROLE_STATE_DATA));
     component.ngOnInit();

@@ -6,9 +6,10 @@ import { AFFIRMATION_DEFAULT_DISAGREE_ERROR, AFFIRMATION_NOTIFY_EVERY_PARTY_ERRO
 import * as fromFeature from '../../store';
 
 @Component({
+  standalone: false,
   selector: 'exui-noc-affirmation',
   templateUrl: './noc-affirmation.component.html',
-  styleUrls: ['./noc-affirmation.component.scss']
+  styleUrls: ['./noc-affirmation.component.scss'],
 })
 export class NocAffirmationComponent implements OnInit {
   @Input()
@@ -25,12 +26,16 @@ export class NocAffirmationComponent implements OnInit {
 
   public ngOnInit() {
     this.validationErrors$ = this.store.pipe(select(fromFeature.validationErrors));
-    this.hasDisagreeError$ = this.validationErrors$.pipe(map((errors) => {
-      return errors ? errors.hasOwnProperty(AFFIRMATION_DEFAULT_DISAGREE_ERROR.code) : false;
-    }));
-    this.hasNotifyEveryPartyError$ = this.validationErrors$.pipe(map((errors) => {
-      return errors ? errors.hasOwnProperty(AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR.code) : false;
-    }));
+    this.hasDisagreeError$ = this.validationErrors$.pipe(
+      map((errors) => {
+        return errors ? errors.hasOwnProperty(AFFIRMATION_DEFAULT_DISAGREE_ERROR.code) : false;
+      })
+    );
+    this.hasNotifyEveryPartyError$ = this.validationErrors$.pipe(
+      map((errors) => {
+        return errors ? errors.hasOwnProperty(AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR.code) : false;
+      })
+    );
   }
 
   public onChangeAffirmation(event: any) {

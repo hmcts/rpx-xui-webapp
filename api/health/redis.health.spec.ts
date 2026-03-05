@@ -2,10 +2,11 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import * as application from '../application';
 import * as log4jui from '../lib/log4jui';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('Redis Health', () => {
@@ -27,7 +28,7 @@ describe('Redis Health', () => {
       error: loggerErrorStub,
       info: sandbox.stub(),
       trackRequest: sandbox.stub(),
-      warn: sandbox.stub()
+      warn: sandbox.stub(),
     };
     getLoggerStub = sandbox.stub(log4jui, 'getLogger').returns(mockLogger);
 
@@ -36,13 +37,13 @@ describe('Redis Health', () => {
     redisHealth = require('./redis.health').redisHealth;
 
     mockRedisClient = {
-      ping: sandbox.stub()
+      ping: sandbox.stub(),
     };
 
     mockApp = {
       locals: {
-        redisClient: mockRedisClient
-      }
+        redisClient: mockRedisClient,
+      },
     };
 
     createAppStub = sandbox.stub(application, 'createApp');
@@ -182,8 +183,8 @@ describe('Redis Health', () => {
     it('should return false when app.locals.redisClient is null', async () => {
       createAppStub.resolves({
         locals: {
-          redisClient: null
-        }
+          redisClient: null,
+        },
       });
 
       const result = await redisHealth();
@@ -196,8 +197,8 @@ describe('Redis Health', () => {
     it('should return false when app.locals.redisClient is undefined', async () => {
       createAppStub.resolves({
         locals: {
-          redisClient: undefined
-        }
+          redisClient: undefined,
+        },
       });
 
       const result = await redisHealth();
@@ -238,8 +239,8 @@ describe('Redis Health', () => {
     it('should return false when Redis client is not an object', async () => {
       createAppStub.resolves({
         locals: {
-          redisClient: 'not an object'
-        }
+          redisClient: 'not an object',
+        },
       });
 
       const result = await redisHealth();
@@ -252,8 +253,8 @@ describe('Redis Health', () => {
     it('should return false when Redis client does not have ping method', async () => {
       createAppStub.resolves({
         locals: {
-          redisClient: {} // Object without ping method
-        }
+          redisClient: {}, // Object without ping method
+        },
       });
 
       const result = await redisHealth();

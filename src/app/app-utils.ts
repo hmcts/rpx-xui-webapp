@@ -1,6 +1,13 @@
 import { ActivatedRouteSnapshot } from '@angular/router';
 import { FilterPersistence, RoleCategory } from '@hmcts/rpx-xui-common-lib';
-import { ADMIN_ROLE_LIST, AppConstants, CTSC_ROLE_LIST, JUDICIAL_ROLE_LIST, LEGAL_OPS_ROLE_LIST, PUI_CASE_MANAGER } from './app.constants';
+import {
+  ADMIN_ROLE_LIST,
+  AppConstants,
+  CTSC_ROLE_LIST,
+  JUDICIAL_ROLE_LIST,
+  LEGAL_OPS_ROLE_LIST,
+  PUI_CASE_MANAGER,
+} from './app.constants';
 import { Theme } from './models/theme.model';
 import { NavigationItem } from './models/theming.model';
 import { UserDetails, UserRole } from './models/user-details.model';
@@ -75,7 +82,7 @@ export class AppUtils {
     return items.map((item) => {
       return {
         ...item,
-        active: fullUrl ? item.href === currentUrl : item.href === matchingUrl
+        active: fullUrl ? item.href === currentUrl : item.href === matchingUrl,
       };
     });
   }
@@ -131,7 +138,7 @@ export class AppUtils {
    * @return - 01
    */
   public static pad(num: string, padNum = 2): string {
-    const val = (num !== undefined && num !== null) ? num.toString() : '';
+    const val = num !== undefined && num !== null ? num.toString() : '';
     return val.length >= padNum ? val : new Array(padNum - val.length + 1).join('0') + val;
   }
 
@@ -151,20 +158,20 @@ export class AppUtils {
     return isFeatureEnabled ? workAllocationUrl : null;
   }
 
-  public static showWATabs(waSupportedJurisdictions: string[], caseJurisdiction: string, userRoles: string[], excludedRoles: string[]): boolean {
+  public static showWATabs(waSupportedJurisdictions: string[], caseJurisdiction: string, userRoles: string[]): boolean {
     // isWA enabled for this jurisdiction
-    return waSupportedJurisdictions.includes(caseJurisdiction) && !userRoles.includes(PUI_CASE_MANAGER) && userRoles.every((userRole) => !excludedRoles.includes(userRole));
+    return waSupportedJurisdictions.includes(caseJurisdiction) && !userRoles.includes(PUI_CASE_MANAGER);
     // check that userRoles do not have pui-case-manager
   }
 
   public static getUserRole(userRoles: string[]): UserRole {
-    if (userRoles.some((userRole) => JUDICIAL_ROLE_LIST.some((role) => userRole.includes(role)))) {
+    if (userRoles.some((userRole) => JUDICIAL_ROLE_LIST.includes(userRole))) {
       return UserRole.Judicial;
-    } else if (userRoles.some((userRole) => ADMIN_ROLE_LIST.some((role) => userRole.includes(role)))) {
+    } else if (userRoles.some((userRole) => ADMIN_ROLE_LIST.includes(userRole))) {
       return UserRole.Admin;
-    } else if (userRoles.some((userRole) => CTSC_ROLE_LIST.some((role) => userRole.includes(role)))) {
-      return UserRole.Ctsc;
-    } else if (userRoles.some((userRole) => LEGAL_OPS_ROLE_LIST.some((role) => userRole.includes(role)))) {
+    } else if (userRoles.some((userRole) => CTSC_ROLE_LIST.includes(userRole))) {
+      return UserRole.CTSC;
+    } else if (userRoles.some((userRole) => LEGAL_OPS_ROLE_LIST.includes(userRole))) {
       return UserRole.LegalOps;
     }
     return null;
@@ -184,7 +191,7 @@ export class AppUtils {
         userRole = 'Admin';
         break;
       }
-      case UserRole.Ctsc: {
+      case UserRole.CTSC: {
         userRole = 'CTSC';
         break;
       }
@@ -232,9 +239,13 @@ export class AppUtils {
 
   public static isBookableAndJudicialRole(userDetails: UserDetails): boolean {
     const { roleAssignmentInfo, userInfo } = userDetails;
-    return userInfo?.roleCategory === RoleCategory.JUDICIAL
-      && roleAssignmentInfo.some((roleAssignment) => 'bookable' in roleAssignment
-        && (roleAssignment.bookable === true || roleAssignment.bookable === 'true'));
+    return (
+      userInfo?.roleCategory === RoleCategory.JUDICIAL &&
+      roleAssignmentInfo.some(
+        (roleAssignment) =>
+          'bookable' in roleAssignment && (roleAssignment.bookable === true || roleAssignment.bookable === 'true')
+      )
+    );
   }
 
   public static isPriorityDateTimePast(newDate: Date, currentDate: Date = new Date()): boolean {

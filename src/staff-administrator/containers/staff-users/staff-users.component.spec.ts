@@ -6,9 +6,7 @@ import SpyObj = jasmine.SpyObj;
 import { of } from 'rxjs';
 import { ErrorMessage } from '../../../app/models';
 import { InfoMessageCommService } from '../../../app/shared/services/info-message-comms.service';
-import {
-  StaffDataFilterService
-} from '../../components/staff-users/services/staff-data-filter/staff-data-filter.service';
+import { StaffDataFilterService } from '../../components/staff-users/services/staff-data-filter/staff-data-filter.service';
 import { StaffUsersComponent } from './staff-users.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
@@ -26,16 +24,14 @@ describe('StaffUsersComponent', () => {
         title: 'There is a problem',
         description: '',
         multiple: true,
-        errors: []
-      } as ErrorMessage)
+        errors: [],
+      } as ErrorMessage),
     };
     storeMock = jasmine.createSpyObj('Store', ['pipe']);
     storeMock.pipe.and.returnValue(of([]));
 
     TestBed.configureTestingModule({
-      declarations: [
-        StaffUsersComponent
-      ],
+      declarations: [StaffUsersComponent],
       schemas: [NO_ERRORS_SCHEMA],
       imports: [],
       providers: [
@@ -43,10 +39,9 @@ describe('StaffUsersComponent', () => {
         { provide: InfoMessageCommService, useValue: infoMessageCommMock },
         { provide: Store, useValue: storeMock },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

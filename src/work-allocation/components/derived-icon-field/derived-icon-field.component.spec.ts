@@ -6,7 +6,9 @@ import { WorkAllocationComponentsModule } from '../work-allocation.components.mo
 import { DerivedIconFieldComponent } from './derived-icon-field.component';
 
 @Component({
-  template: '<exui-derived-icon-field [task]="task" [sourceColumn]="sourceColumn" [matchValue]="matchValue"></exui-derived-icon-field>'
+  standalone: false,
+  template:
+    '<exui-derived-icon-field [task]="task" [sourceColumn]="sourceColumn" [matchValue]="matchValue"></exui-derived-icon-field>',
 })
 class WrapperComponent {
   @ViewChild(DerivedIconFieldComponent, { static: true }) public appComponentRef: DerivedIconFieldComponent;
@@ -31,9 +33,8 @@ describe('WorkAllocation', () => {
     beforeEach(async () => {
       TestBed.configureTestingModule({
         declarations: [WrapperComponent],
-        imports: [WorkAllocationComponentsModule]
-      })
-        .compileComponents();
+        imports: [WorkAllocationComponentsModule],
+      }).compileComponents();
 
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;

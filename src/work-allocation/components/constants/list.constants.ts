@@ -11,7 +11,7 @@ export const LIST_CONSTANTS = {
     MyTasks: 'You have no assigned tasks.',
     TaskManager: DEFAULT_EMPTY_MESSAGE,
     AllWork: 'Change your selection to view tasks.',
-    AllWorkCases: 'Change your selection to view cases.'
+    AllWorkCases: 'Change your selection to view cases.',
   },
   View: {
     AllWork: 'AllWork',
@@ -20,6 +20,6 @@ export const LIST_CONSTANTS = {
     MyCases: 'MyCases',
     MyAccess: 'MyAccess',
     MyTasks: 'MyTasks',
-    TaskManager: 'TaskManager'
-  }
+    TaskManager: 'TaskManager',
+  },
 };

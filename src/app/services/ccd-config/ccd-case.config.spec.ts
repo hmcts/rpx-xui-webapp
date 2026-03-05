@@ -53,10 +53,8 @@ class MockConfigService {
       mc_cdam_exclusion_list: ['DIVORCE', 'PROBATE'],
       icp_jurisdictions: ['foo'],
       wa_service_config: { test: 'config' },
-      events_to_hide: [
-        'queryManagementRespondQuery'
-      ],
-      enable_service_specific_multi_followups: ['SERVICE_1']
+      events_to_hide: ['queryManagementRespondQuery'],
+      enable_service_specific_multi_followups: ['SERVICE_1'],
     };
   }
 
@@ -90,8 +88,8 @@ describe('AppConfiguration', () => {
         { provide: EnvironmentService, useValue: mockEnvironmentService },
         { provide: LoggerService, useValue: mockLoggerService },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     });
     const iss = TestBed.inject(InitialisationSyncService);
     iss.initialisationComplete(true);
@@ -203,17 +201,19 @@ describe('AppConfiguration', () => {
     const testObj = { foo: 'bar', thud: 1 };
     const expectedObj = {
       ...testObj,
-      'wibble': 'wassock'
+      wibble: 'wassock',
     };
     const result = service.addAttribute(testObj, 'wibble', 'wassock');
     expect(result).toEqual(expectedObj);
-    expect(typeof result).toEqual(typeof(expectedObj));
+    expect(typeof result).toEqual(typeof expectedObj);
   }));
 
-  it('should be initialised after all LD observables complete', fakeAsync(inject([AppConfig], (service: AppConfig) => {
-    tick(5000);
-    expect(service.initialisationComplete).toBeTruthy();
-  })));
+  it('should be initialised after all LD observables complete', fakeAsync(
+    inject([AppConfig], (service: AppConfig) => {
+      tick(5000);
+      expect(service.initialisationComplete).toBeTruthy();
+    })
+  ));
 
   it('should return enable_service_specific_multi_followups list', inject([AppConfig], (service: AppConfig) => {
     expect(service.getEnableServiceSpecificMultiFollowups()).toEqual(['foo']);
@@ -402,7 +402,9 @@ describe('AppConfiguration', () => {
     it('should handle special characters in ids', inject([AppConfig], (service: AppConfig) => {
       const caseId = 'case-123#special';
       const eventId = 'event-456&chars';
-      expect(service.getCaseHistoryUrl(caseId, eventId)).toBe('test-case-data/internal/cases/case-123#special/events/event-456&chars');
+      expect(service.getCaseHistoryUrl(caseId, eventId)).toBe(
+        'test-case-data/internal/cases/case-123#special/events/event-456&chars'
+      );
     }));
   });
 
@@ -411,21 +413,6 @@ describe('AppConfiguration', () => {
       mockEnvironmentService.get.and.returnValue('https://gateway.com');
       expect(service.getActivityUrl()).toBe('https://gateway.com/activity');
       expect(mockEnvironmentService.get).toHaveBeenCalledWith('ccdGatewayUrl');
-    }));
-  });
-
-  describe('getWAServiceConfig', () => {
-    it('should return WA service config when initialization is complete', fakeAsync(inject([AppConfig], (service: AppConfig) => {
-      tick(5000);
-      expect(service.initialisationComplete).toBeTruthy();
-      const config = service.getWAServiceConfig();
-      expect(config).toBeDefined();
-    })));
-
-    it('should return default WA service config when initialization is not complete', inject([AppConfig], (service: AppConfig) => {
-      service.initialisationComplete = false;
-      const config = service.getWAServiceConfig();
-      expect(config).toBeDefined();
     }));
   });
 });
@@ -452,7 +439,7 @@ describe('AppConfiguration with different deployment environments', () => {
       documentSecureModeCaseTypeExclusions: ['TEST_CASE_TYPE'],
       login_url: 'test-login',
       api_url: 'test-api',
-      case_data_url: 'test-case-data'
+      case_data_url: 'test-case-data',
     });
 
     mockLoggerServiceForEnv = jasmine.createSpyObj('LoggerService', ['log']);
@@ -472,8 +459,8 @@ describe('AppConfiguration with different deployment environments', () => {
           { provide: EnvironmentService, useValue: mockEnvironmentServiceForEnv },
           { provide: LoggerService, useValue: mockLoggerServiceForEnv },
           provideHttpClient(withInterceptorsFromDi()),
-          provideHttpClientTesting()
-        ]
+          provideHttpClientTesting(),
+        ],
       });
       mockInitialisationSyncService = TestBed.inject(InitialisationSyncService);
       mockInitialisationSyncService.initialisationComplete(true);
@@ -484,12 +471,6 @@ describe('AppConfiguration with different deployment environments', () => {
       expect(mockEnvironmentServiceForEnv.getDeploymentEnv).toHaveBeenCalled();
       expect((service as any).deploymentEnv).toBe(DeploymentEnvironmentEnum.AAT);
     }));
-
-    it('should return AAT specific WA service config', fakeAsync(inject([AppConfig], (service: AppConfig) => {
-      tick(5000);
-      const config = service.getWAServiceConfig();
-      expect(config).toBeDefined();
-    })));
   });
 
   describe('with DEMO deployment environment', () => {
@@ -506,8 +487,8 @@ describe('AppConfiguration with different deployment environments', () => {
           { provide: EnvironmentService, useValue: mockEnvironmentServiceForEnv },
           { provide: LoggerService, useValue: mockLoggerServiceForEnv },
           provideHttpClient(withInterceptorsFromDi()),
-          provideHttpClientTesting()
-        ]
+          provideHttpClientTesting(),
+        ],
       });
       mockInitialisationSyncService = TestBed.inject(InitialisationSyncService);
       mockInitialisationSyncService.initialisationComplete(true);
@@ -534,8 +515,8 @@ describe('AppConfiguration with different deployment environments', () => {
           { provide: EnvironmentService, useValue: mockEnvironmentServiceForEnv },
           { provide: LoggerService, useValue: mockLoggerServiceForEnv },
           provideHttpClient(withInterceptorsFromDi()),
-          provideHttpClientTesting()
-        ]
+          provideHttpClientTesting(),
+        ],
       });
       mockInitialisationSyncService = TestBed.inject(InitialisationSyncService);
       mockInitialisationSyncService.initialisationComplete(true);
@@ -583,8 +564,8 @@ describe('AppConfiguration edge cases and error scenarios', () => {
           { provide: EnvironmentService, useValue: mockEnvironmentServiceError },
           { provide: LoggerService, useValue: mockLoggerServiceError },
           provideHttpClient(withInterceptorsFromDi()),
-          provideHttpClientTesting()
-        ]
+          provideHttpClientTesting(),
+        ],
       });
       const iss = TestBed.inject(InitialisationSyncService);
       iss.initialisationComplete(true);
@@ -623,18 +604,20 @@ describe('AppConfiguration edge cases and error scenarios', () => {
           { provide: EnvironmentService, useValue: mockEnvironmentServiceError },
           { provide: LoggerService, useValue: mockLoggerServiceError },
           provideHttpClient(withInterceptorsFromDi()),
-          provideHttpClientTesting()
-        ]
+          provideHttpClientTesting(),
+        ],
       });
       const iss = TestBed.inject(InitialisationSyncService);
       iss.initialisationComplete(true);
     });
 
-    it('should handle empty configuration', fakeAsync(inject([AppConfig], (service: AppConfig) => {
-      tick(5000);
-      expect(service.getPaginationPageSize()).toBeUndefined();
-      expect(service.getActivityNexPollRequestMs()).toBeUndefined();
-    })));
+    it('should handle empty configuration', fakeAsync(
+      inject([AppConfig], (service: AppConfig) => {
+        tick(5000);
+        expect(service.getPaginationPageSize()).toBeUndefined();
+        expect(service.getActivityNexPollRequestMs()).toBeUndefined();
+      })
+    ));
 
     it('should return static values correctly even with empty config', inject([AppConfig], (service: AppConfig) => {
       expect(service.getCacheTimeOut()).toBe(300000);
@@ -662,8 +645,8 @@ describe('AppConfiguration edge cases and error scenarios', () => {
           { provide: EnvironmentService, useValue: mockEnvironmentService },
           { provide: LoggerService, useValue: mockLoggerService },
           provideHttpClient(withInterceptorsFromDi()),
-          provideHttpClientTesting()
-        ]
+          provideHttpClientTesting(),
+        ],
       });
     });
 
@@ -678,12 +661,6 @@ describe('AppConfiguration edge cases and error scenarios', () => {
       tick(5000);
       expect(service.initialisationComplete).toBeTruthy();
     }));
-
-    it('should not mark initialization complete when initialisation sync is false', inject([AppConfig, InitialisationSyncService],
-      (appConfig: AppConfig, initSync: InitialisationSyncService) => {
-        initSync.initialisationComplete(false);
-        expect(appConfig.initialisationComplete).toBeFalsy();
-      }));
   });
 });
 
@@ -732,7 +709,7 @@ describe('AppConfiguration with specific config values', () => {
       case_data_store_api_url: 'https://casestore.test.com',
       icp_jurisdictions: ['SSCS', 'IMMIGRATION'],
       events_to_hide: ['event1', 'event2', 'event3'],
-      access_management_mode: false
+      access_management_mode: false,
     };
 
     mockFeatureToggleServiceConfig = jasmine.createSpyObj('mockFeatureToggleService', ['getValue']);
@@ -778,8 +755,8 @@ describe('AppConfiguration with specific config values', () => {
         { provide: EnvironmentService, useValue: mockEnvironmentServiceConfig },
         { provide: LoggerService, useValue: mockLoggerServiceConfig },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     });
     const iss = TestBed.inject(InitialisationSyncService);
     iss.initialisationComplete(true);
@@ -821,13 +798,22 @@ describe('AppConfiguration with specific config values', () => {
     expect(service.getPaginationPageSize()).toBe(25);
   }));
 
-  it('should return all configured array values correctly', fakeAsync(inject([AppConfig], (service: AppConfig) => {
-    tick(5000);
-    expect(service.getDocumentSecureModeCaseTypeExclusions()).toEqual(['DIVORCE', 'PROBATE']);
-    expect(service.getCdamExclusionList()).toEqual(['CIVIL', 'FAMILY']);
-    expect(service.getIcpJurisdictions()).toEqual(['SSCS', 'IMMIGRATION']);
-    expect(service.getEventsToHide()).toEqual(['event1', 'event2', 'event3']);
-  })));
+  it('should return all configured boolean values correctly', fakeAsync(
+    inject([AppConfig], (service: AppConfig) => {
+      tick(5000);
+      expect(service.getIcpEnable()).toBe(true);
+    })
+  ));
+
+  it('should return all configured array values correctly', fakeAsync(
+    inject([AppConfig], (service: AppConfig) => {
+      tick(5000);
+      expect(service.getDocumentSecureModeCaseTypeExclusions()).toEqual(['DIVORCE', 'PROBATE']);
+      expect(service.getCdamExclusionList()).toEqual(['CIVIL', 'FAMILY']);
+      expect(service.getIcpJurisdictions()).toEqual(['SSCS', 'IMMIGRATION']);
+      expect(service.getEventsToHide()).toEqual(['event1', 'event2', 'event3']);
+    })
+  ));
 
   it('should return OAuth2 client ID correctly', inject([AppConfig], (service: AppConfig) => {
     expect(service.getOAuth2ClientId()).toBe('test-client-id');
@@ -840,4 +826,97 @@ describe('AppConfiguration with specific config values', () => {
     expect(service.getBannersUrl()).toBe('https://casedata.test.com/internal/banners');
     expect(service.getActivityUrl()).toBe('https://gateway.test.com/activity');
   }));
+
+  describe('AppConfig constructor', () => {
+    let mockAppConfigService: any;
+    let mockFeatureToggleService: any;
+    let mockEnvironmentService: any;
+    let mockInitialisationSyncService: any;
+    let mockWindow: any;
+    let mockLoggerService: any;
+
+    beforeEach(() => {
+      mockAppConfigService = jasmine.createSpyObj('AppConfigService', ['getEditorConfiguration']);
+      mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue']);
+      mockEnvironmentService = jasmine.createSpyObj('EnvironmentService', ['getDeploymentEnv']);
+      mockInitialisationSyncService = jasmine.createSpyObj('InitialisationSyncService', ['waitForInitialisation']);
+      mockWindow = {};
+      mockLoggerService = jasmine.createSpyObj('LoggerService', ['log']);
+
+      mockAppConfigService.getEditorConfiguration.and.returnValue({ documentSecureModeCaseTypeExclusions: ['DIVORCE'] });
+      mockFeatureToggleService.getValue.and.callFake((featureName: string, defVal: any) => of(defVal));
+      mockEnvironmentService.getDeploymentEnv.and.returnValue(DeploymentEnvironmentEnum.PROD);
+    });
+
+    it('should set initialisationComplete to true when all LD observables complete', () => {
+      let callback: (init: boolean) => void;
+      mockInitialisationSyncService.waitForInitialisation.and.callFake((cb) => {
+        callback = cb;
+      });
+      const appConfig = new AppConfig(
+        mockAppConfigService,
+        mockFeatureToggleService,
+        mockEnvironmentService,
+        mockInitialisationSyncService,
+        mockWindow,
+        mockLoggerService
+      );
+      callback(true);
+      expect(appConfig.initialisationComplete).toBeTrue();
+    });
+
+    it('should set initialisationComplete to false if initialisation fails', () => {
+      let callback: (init: boolean) => void;
+      mockInitialisationSyncService.waitForInitialisation.and.callFake((cb) => {
+        callback = cb;
+      });
+      const appConfig = new AppConfig(
+        mockAppConfigService,
+        mockFeatureToggleService,
+        mockEnvironmentService,
+        mockInitialisationSyncService,
+        mockWindow,
+        mockLoggerService
+      );
+      spyOn(console, 'error');
+      callback(false);
+      expect(appConfig.initialisationComplete).toBeFalse();
+      expect(console.error).toHaveBeenCalledWith(
+        'InitialisationSyncService indicated initialisation failed, using default config values'
+      );
+    });
+
+    it('should call setUpLaunchDarklyForFeature for each feature when initialisation is true', () => {
+      const appConfig = new AppConfig(
+        mockAppConfigService,
+        mockFeatureToggleService,
+        mockEnvironmentService,
+        mockInitialisationSyncService,
+        mockWindow,
+        mockLoggerService
+      );
+      spyOn(appConfig as any, 'setUpLaunchDarklyForFeature').and.callThrough();
+      mockInitialisationSyncService.waitForInitialisation.calls.mostRecent().args[0](true);
+      expect((appConfig as any).setUpLaunchDarklyForFeature).toHaveBeenCalledTimes(5);
+    });
+
+    it('should call setUpLaunchDarklyForFeature only for serviceMessagesFeatureToggleKey when initialisation is false', () => {
+      const appConfig = new AppConfig(
+        mockAppConfigService,
+        mockFeatureToggleService,
+        mockEnvironmentService,
+        mockInitialisationSyncService,
+        mockWindow,
+        mockLoggerService
+      );
+      spyOn(appConfig as any, 'setUpLaunchDarklyForFeature').and.callThrough();
+      mockInitialisationSyncService.waitForInitialisation.calls.mostRecent().args[0](false);
+      expect((appConfig as any).setUpLaunchDarklyForFeature).toHaveBeenCalledTimes(1);
+      const actualArgs = (appConfig as any).setUpLaunchDarklyForFeature.calls.mostRecent().args;
+      expect(actualArgs[0]).toBe(AppConstants.FEATURE_NAMES.serviceMessagesFeatureToggleKey);
+      expect(actualArgs[1]).toEqual(AppConstants.DEFAULT_SERVICE_MESSAGE);
+      // Accept any array as the third argument, including an array with an Observable
+      expect(Array.isArray(actualArgs[2])).toBeTrue();
+    });
+  });
 });

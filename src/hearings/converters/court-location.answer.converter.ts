@@ -1,5 +1,5 @@
 import { ActivatedRoute } from '@angular/router';
-import { LocationModel } from '@hmcts/rpx-xui-common-lib/lib/models/location.model';
+import { LocationModel } from '@hmcts/rpx-xui-common-lib';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { State } from '../store';

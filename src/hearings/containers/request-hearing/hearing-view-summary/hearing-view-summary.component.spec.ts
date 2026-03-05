@@ -30,7 +30,7 @@ describe('HearingViewSummaryComponent', () => {
     canShareCases: true,
     sessionTimeout: {
       idleModalDisplayTime: 10,
-      totalIdleTime: 50
+      totalIdleTime: 50,
     },
     userInfo: {
       id: AppTestConstants.TEST_USER_ID,
@@ -38,21 +38,27 @@ describe('HearingViewSummaryComponent', () => {
       surname: 'Wilson',
       email: 'lukesuperuserxui@mailnesia.com',
       active: true,
-      roles: [
-        'caseworker',
-        'caseworker-sscs'
-      ]
-    }
+      roles: ['caseworker', 'caseworker-sscs'],
+    },
   };
 
   const httpClientMock = jasmine.createSpyObj('HttpClient', ['get', 'post', 'delete']);
   const hearingsService = new HearingsService(httpClientMock);
+  let hearingStoreMock: jasmine.SpyObj<Store<any>>;
 
   beforeEach(() => {
     storeMock = jasmine.createSpyObj<Store<fromAppStore.State>>('store', ['pipe']);
     featureToggleServiceMock = jasmine.createSpyObj('featureToggleService', ['isEnabled']);
     hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled', 'hearingAmendmentsEnabled']);
     routerMock = jasmine.createSpyObj('Router', ['navigate']);
+    hearingStoreMock = jasmine.createSpyObj<Store<any>>('hearingStore', ['pipe']);
+    const mockHearingValues = {
+      caseInfo: {
+        jurisdictionId: 'JURIS',
+        caseType: 'CASETYPE',
+      },
+    };
+    hearingStoreMock.pipe.and.returnValue(of(mockHearingValues));
     TestBed.configureTestingModule({
       declarations: [HearingViewSummaryComponent, MockRpxTranslatePipe],
       imports: [RouterTestingModule],
@@ -61,36 +67,36 @@ describe('HearingViewSummaryComponent', () => {
         provideMockStore({ initialState }),
         {
           provide: Store,
-          useValue: storeMock
+          useValue: storeMock,
         },
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                caseFlags: caseFlagsRefData
-              }
+                caseFlags: caseFlagsRefData,
+              },
             },
-            fragment: of('point-to-me')
-          }
+            fragment: of('point-to-me'),
+          },
         },
         {
           provide: Router,
-          useValue: routerMock
+          useValue: routerMock,
         },
         {
           provide: FeatureToggleService,
-          useValue: featureToggleServiceMock
+          useValue: featureToggleServiceMock,
         },
         {
           provide: HearingsService,
-          useValue: hearingsService
+          useValue: hearingsService,
         },
         {
           provide: HearingsFeatureService,
-          useValue: hearingsFeatureServiceMock
-        }
-      ]
+          useValue: hearingsFeatureServiceMock,
+        },
+      ],
     }).compileComponents();
 
     storeMock.pipe.and.returnValue(of(USER));
@@ -99,6 +105,8 @@ describe('HearingViewSummaryComponent', () => {
     hearingsFeatureServiceMock.hearingAmendmentsEnabled.and.returnValue(of(false));
     fixture = TestBed.createComponent(HearingViewSummaryComponent);
     component = fixture.componentInstance;
+    // Replace the hearingStore on the component with the mock
+    (component as any).hearingStore = hearingStoreMock;
     fixture.detectChanges();
   });
 
@@ -129,7 +137,21 @@ describe('HearingViewSummaryComponent', () => {
   it('should navigate to case details page', () => {
     component.hearingRequestMainModel = initialState.hearings.hearingRequest.hearingRequestMainModel;
     component.executeAction(ACTION.BACK);
-    expect(routerMock.navigate).toHaveBeenCalledWith(['/', 'cases', 'case-details', '1234123412341234', 'hearings']);
+    expect(routerMock.navigate).toHaveBeenCalledWith([
+      '/',
+      'cases',
+      'case-details',
+      'JURIS',
+      'CASETYPE',
+      '1234123412341234',
+      'hearings',
+    ]);
+  });
+
+  it('should set jurisdiction and caseType from hearingStore', () => {
+    component.ngOnInit();
+    expect(component.jurisdiction).toBe('JURIS');
+    expect(component.caseType).toBe('CASETYPE');
   });
 
   afterEach(() => {

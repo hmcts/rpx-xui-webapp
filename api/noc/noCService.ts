@@ -20,7 +20,7 @@ export async function handleGet(noCPath: string, req: EnhancedRequest): Promise<
     const headers = setHeaders(req);
     return await http.get(noCPath, { headers });
   } catch (e) {
-    exists(e, 'message') ? logger.error(e.message) : logger.error('Error in get response');
+    logger.error(exists(e, 'message') ? e.message : 'Error in get response');
     throw e;
   }
 }
@@ -39,7 +39,7 @@ export async function handlePost(noCPath: string, body: any, req: EnhancedReques
     const headers = setHeaders(req);
     return await http.post(noCPath, body, { headers });
   } catch (e) {
-    exists(e, 'message') ? logger.error(e.message) : logger.error('Error in post response');
+    logger.error(exists(e, 'message') ? e.message : 'Error in post response');
     throw e;
   }
 }

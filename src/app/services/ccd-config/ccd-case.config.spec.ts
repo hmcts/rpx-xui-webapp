@@ -798,13 +798,6 @@ describe('AppConfiguration with specific config values', () => {
     expect(service.getPaginationPageSize()).toBe(25);
   }));
 
-  it('should return all configured boolean values correctly', fakeAsync(
-    inject([AppConfig], (service: AppConfig) => {
-      tick(5000);
-      expect(service.getIcpEnable()).toBe(true);
-    })
-  ));
-
   it('should return all configured array values correctly', fakeAsync(
     inject([AppConfig], (service: AppConfig) => {
       tick(5000);

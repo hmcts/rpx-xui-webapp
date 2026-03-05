@@ -3,13 +3,11 @@ import { applySessionCookies } from '../../../common/sessionCapture';
 import { buildCaseListMock, buildCaseListJurisdictionsMock } from '../../mocks/caseList.mock';
 
 const userIdentifier = 'SOLICITOR';
-let sessionCookies: any[] = [];
 const caseListMockResponse = buildCaseListMock(124);
 const caseListJurisdictionsMock = buildCaseListJurisdictionsMock();
 
 test.beforeEach(async ({ page }) => {
-  const { cookies } = await applySessionCookies(page, userIdentifier);
-  sessionCookies = cookies;
+  await applySessionCookies(page, userIdentifier);
 
   await page.route('**/caseworkers/**/jurisdictions*', async (route) => {
     const body = JSON.stringify(caseListJurisdictionsMock);

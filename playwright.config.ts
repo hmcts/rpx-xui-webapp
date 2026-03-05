@@ -230,9 +230,9 @@ const buildConfig = (env: EnvMap = process.env) => {
     /* Retry failed tests twice in all environments */
     retries: 2, // Set the number of retries for all projects
 
-    timeout: 3 * 60 * 1000,
+    timeout: 180_000,
     expect: {
-      timeout: 1 * 60 * 1000,
+      timeout: 60_000,
     },
     reportSlowTests: null,
 
@@ -300,9 +300,9 @@ const buildConfig = (env: EnvMap = process.env) => {
         fullyParallel: true,
         workers: env.CI ? 4 : Math.max(1, Math.min(8, cpus()?.length ?? 4)),
         retries: apiRetries,
-        timeout: 60 * 1000,
+        timeout: 60_000,
         expect: {
-          timeout: 10 * 1000,
+          timeout: 10_000,
         },
         use: {
           headless: true,

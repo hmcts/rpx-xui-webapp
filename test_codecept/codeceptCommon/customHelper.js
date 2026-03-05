@@ -158,7 +158,7 @@ class CustomHelper extends Helper {
     await page
       .locator(selectorString)
       .first()
-      .waitFor({ timeout: 20 * 1000 });
+      .waitFor({ timeout: 20_000 });
   }
 
   async waitForPlaywrightLocatorState(selector, state) {
@@ -168,7 +168,7 @@ class CustomHelper extends Helper {
     await page
       .locator(selectorString)
       .first()
-      .waitFor({ state: state, timeout: 20 * 1000 });
+      .waitFor({ state: state, timeout: 20_000 });
   }
 }
 

@@ -34,9 +34,11 @@ test.describe('Verify users can switch the language', () => {
       await expect(caseListPage.exuiHeader.notificationBanner).toBeVisible();
       await expect(caseListPage.exuiHeader.notificationBannerTitle).toContainText('Pwysig');
 
+      await page.waitForTimeout(10_000);
+
       const checks = [
         {
-          locator: caseListPage.exuiHeader.appHeaderLink,
+          locator: caseListPage.exuiHeader.headerAppLink,
           expected: welshTranslationsSmall.translations['Manage Cases'].translation,
         },
         {
@@ -71,7 +73,7 @@ test.describe('Verify users can switch the language', () => {
       await caseListPage.exuiSpinnerComponent.wait();
 
       const checks = [
-        { locator: caseListPage.exuiHeader.appHeaderLink, expected: 'Manage Cases' },
+        { locator: caseListPage.exuiHeader.headerAppLink, expected: 'Manage Cases' },
         { locator: caseListPage.exuiHeader.languageToggle, expected: 'Cymraeg' },
         { locator: caseListPage.exuiHeader.signOutLink, expected: 'Sign out' },
       ];

@@ -123,19 +123,6 @@ module.exports = defineConfig({
 
   projects: [
     {
-      name: 'chromium',
-      use: {
-        ...devices['Desktop Chrome'],
-        headless: headlessMode,
-        trace: 'on-first-retry',
-        screenshot: {
-          mode: 'only-on-failure',
-          fullPage: true,
-        },
-        video: 'off',
-      },
-    },
-    {
       name: 'firefox',
       use: {
         ...devices['Desktop Firefox'],
@@ -160,14 +147,5 @@ module.exports = defineConfig({
         video: 'off',
       },
     },
-    // {
-    //   name: 'MicrosoftEdge',
-    //   use: { ...devices['Desktop Edge'],
-    //     channel: 'msedge',
-    //     screenshot: 'only-on-failure',
-    //     headless: headlessMode,
-    //     trace: 'off'
-    //   }
-    // }
   ],
 });

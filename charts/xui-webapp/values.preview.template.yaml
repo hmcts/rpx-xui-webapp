@@ -51,6 +51,11 @@ redis:
   enabled: true
   master:
     resourcesPreset: medium
+    persistence:
+      enabled: false
+  replica:
+    persistence:
+      enabled: false
 idam-pr:
   enabled: true
   redirect_uris:

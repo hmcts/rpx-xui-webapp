@@ -247,5 +247,6 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     if (this.caseNotifierSubscription) {
       this.caseNotifierSubscription.unsubscribe();
     }
+    this.hearingStore.dispatch(new fromHearingStore.ResetHearingList());
   }
 }

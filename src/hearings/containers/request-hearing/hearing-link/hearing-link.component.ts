@@ -40,7 +40,7 @@ export class HearingLinkComponent extends RequestHearingPageFlow implements OnIn
     protected readonly route: ActivatedRoute
   ) {
     super(hearingStore, hearingsService, featureToggleService, route);
-    this.caseId = this.hearingListMainModel.caseRef || '';
+    this.caseId = this.hearingRequestMainModel.caseDetails.caseRef || '';
     this.jurisdictionId = '';
     this.caseName = this.serviceHearingValuesModel.hmctsInternalCaseName || '';
   }

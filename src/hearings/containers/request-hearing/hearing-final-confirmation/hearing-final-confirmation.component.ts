@@ -29,9 +29,9 @@ export class HearingFinalConfirmationComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();
-    this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingList)).subscribe(
-      (hearingList) => {
-        this.caseId = hearingList.hearingListMainModel ? hearingList.hearingListMainModel.caseRef : '';
+    this.sub = this.hearingStore.pipe(select(fromHearingStore.getHearingValues)).subscribe(
+      (hearingValues) => {
+        this.caseId = hearingValues.caseInfo.caseReference ? hearingValues.caseInfo.caseReference : '';
         this.heading = 'Hearing request submitted';
         this.headingDescription = 'Your hearing request will now be processed';
         this.subheading = 'What happens next';

@@ -42,6 +42,8 @@ export class TaskListPage extends Base {
   readonly paginationPreviousButton = this.paginationControls.locator('.pagination-previous');
   readonly paginationCurrentPage = this.paginationControls.locator('.current');
 
+  readonly submitButton = this.page.locator('#submit-button');
+
   constructor(page: Page) {
     super(page);
   }

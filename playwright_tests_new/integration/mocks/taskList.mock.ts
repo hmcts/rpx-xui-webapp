@@ -111,6 +111,12 @@ export function buildTaskListMock(rowCount: number, assignee: string, actions: T
   };
 }
 
+// Backward-compatible helper used by manage-tasks integration specs.
+// Signature intentionally matches existing call sites: (assignee, rowCount).
+export function buildMyTaskListMock(assignee: string, rowCount: number, actions: TaskActions[] = myActionsList) {
+  return buildTaskListMock(rowCount, assignee, actions);
+}
+
 /**
  * Deterministic mock builder: always returns the same data except for due dates.
  * Due dates: one in the past, one today, one tomorrow, one next month.

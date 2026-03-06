@@ -56,23 +56,3 @@ variable "welsh_email_address_key" {
 
 
 
-# Environment-specific Log Analytics workspace mappings
-variable "env_log_analytics_workspace_map" {
-  type        = map(string)
-  description = "Mapping of environment to Log Analytics workspace names"
-  default = {
-    prod     = "hmcts-prod"
-    aat      = "hmcts-aat"
-    perftest = "hmcts-perftest"
-  }
-}
-
-variable "env_log_analytics_rg_map" {
-  type        = map(string)
-  description = "Mapping of environment to Log Analytics resource groups"
-  default = {
-    prod     = "oms-automation"
-    aat      = "oms-automation-aat"
-    perftest = "oms-automation-perftest"
-  }
-}

@@ -143,6 +143,12 @@ withPipeline(type, product, component) {
         AppPipelineDsl.PactRoles.CONSUMER
     ])   
 
+    afterSuccess('checkout') {
+        stage('Yarn Install') {
+            yarnBuilder.yarn('install --immutable')
+        }
+    }
+
     afterSuccess('build') {
         yarnBuilder.yarn('build:dev')  
     }

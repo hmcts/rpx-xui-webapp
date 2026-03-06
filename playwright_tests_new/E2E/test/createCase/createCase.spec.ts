@@ -1,22 +1,42 @@
 import { expect, test } from '../../fixtures';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
+import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
+import { createLogger } from '@hmcts/playwright-common';
 const jurisdiction = 'DIVORCE';
 const caseType = 'XUI Case PoC';
 let caseNumber: string;
+const logger = createLogger({ serviceName: 'create-case-e2e', format: 'pretty' });
 
 test.describe('Verify creating cases works as expected', () => {
   let caseData;
   let person1Data;
 
   test.beforeEach(async ({ page, caseDetailsPage, createCasePage }) => {
-    await ensureAuthenticatedPage(page, 'SOLICITOR', { waitForSelector: 'exui-header' });
-    caseData = await createCasePage.generateDivorcePoCData({ gender: 'Male', textField0: 'Hide all' });
-    person1Data = await createCasePage.generateDivorcePoCPersonData({
-      gender: 'Male',
-    });
-    console.log('Generated case data:', { caseData, person1Data });
-    await createCasePage.createDivorceCasePoC(jurisdiction, caseType, { ...caseData, ...person1Data });
-    caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
+    await retryOnTransientFailure(
+      async () => {
+        await ensureAuthenticatedPage(page, 'SOLICITOR', { waitForSelector: 'exui-header' });
+        caseData = await createCasePage.generateDivorcePoCData();
+        await createCasePage.createDivorceCasePoC(jurisdiction, caseType, caseData, {
+          maxAttempts: 1,
+          createCaseMaxAttempts: 1,
+        });
+        caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
+      },
+      {
+        maxAttempts: 2,
+        onRetry: async () => {
+          if (page.isClosed()) {
+            return;
+          }
+          try {
+            await page.goto('/');
+          } catch (error) {
+            logger.warn('Retry reset navigation failed before create-case beforeEach retry', { error });
+            throw error;
+          }
+        },
+      }
+    );
   });
 
   test('Verify creating a case in the divorce jurisdiction works as expected', async ({

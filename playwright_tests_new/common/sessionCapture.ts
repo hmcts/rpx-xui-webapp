@@ -481,49 +481,62 @@ async function loginAndPersistSession({
   userIdentifier: string;
 }) {
   const browser = await chromiumLauncher.launch();
-  const context = await browser.newContext();
-  const page = await context.newPage();
-  const idamPage = idamFactory(page);
   const targetUrl = env.TEST_URL || activeConfig.urls.exuiDefaultUrl;
-  logger.info('Logging in to EXUI', {
-    userIdentifier,
-    email,
-    targetUrl,
-    operation: 'session-capture',
-  });
   try {
-    await page.goto(targetUrl);
-    await idamPage.usernameInput.waitFor({ state: 'visible', timeout: 60000 });
-    await idamPage.login({ username: email, password });
-    // Wait for presence of the standard EXUI header component to confirm the app shell loaded.
-    try {
-      await page.waitForSelector('exui-header', { timeout: 60000 });
-      logger.info('EXUI header detected', {
-        userIdentifier,
-        operation: 'session-capture',
-      });
-    } catch (error_) {
-      logger.warn('EXUI header not detected within timeout', {
-        userIdentifier,
-        timeout: 60000,
-        error: (error_ as Error).message,
-        operation: 'session-capture',
-      });
-    }
-  } catch (e) {
-    logger.error('Login failed', {
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    const idamPage = idamFactory(page);
+    logger.info('Logging in to EXUI', {
       userIdentifier,
       email,
       targetUrl,
-      error: (e as Error).message,
       operation: 'session-capture',
     });
-    throw new SessionCaptureError(`Login failed for ${userIdentifier}`, userIdentifier, { email, targetUrl }, e as Error);
-  }
+    try {
+      await page.goto(targetUrl);
+      await idamPage.usernameInput.waitFor({ state: 'visible', timeout: 60000 });
+      await idamPage.login({ username: email, password });
+      // Wait for presence of the standard EXUI header component to confirm the app shell loaded.
+      try {
+        await page.waitForSelector('exui-header', { timeout: 60000 });
+        logger.info('EXUI header detected', {
+          userIdentifier,
+          operation: 'session-capture',
+        });
+      } catch (error_) {
+        logger.warn('EXUI header not detected within timeout', {
+          userIdentifier,
+          timeout: 60000,
+          error: (error_ as Error).message,
+          operation: 'session-capture',
+        });
+      }
+    } catch (e) {
+      logger.error('Login failed', {
+        userIdentifier,
+        email,
+        targetUrl,
+        error: (e as Error).message,
+        operation: 'session-capture',
+      });
+      throw new SessionCaptureError(`Login failed for ${userIdentifier}`, userIdentifier, { email, targetUrl }, e as Error);
+    }
 
-  const cookies = await context.cookies();
-  await persist(sessionPath, cookies, context, userIdentifier);
-  await browser.close();
+    const cookies = await context.cookies();
+    await persist(sessionPath, cookies, context, userIdentifier);
+  } finally {
+    try {
+      await browser.close();
+    } catch (closeError) {
+      logger.warn('Failed to close browser after session capture', {
+        userIdentifier,
+        email,
+        targetUrl,
+        error: (closeError as Error).message,
+        operation: 'session-capture',
+      });
+    }
+  }
 }
 
 export async function sessionCapture(identifiers: string[], options: { force?: boolean } = {}) {

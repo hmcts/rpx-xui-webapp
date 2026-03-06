@@ -3692,12 +3692,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.29-pofcc-107/hmcts-ccd-case-ui-toolkit-7.3.29-pofcc-107.tgz":
-  version: 7.3.29-pofcc-107
-  resolution: "@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.29-pofcc-107/hmcts-ccd-case-ui-toolkit-7.3.29-pofcc-107.tgz"
+"@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.35-pofcc-107/hmcts-ccd-case-ui-toolkit-7.3.35-pofcc-107.tgz":
+  version: 7.3.35-pofcc-107
+  resolution: "@hmcts/ccd-case-ui-toolkit@https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.35-pofcc-107/hmcts-ccd-case-ui-toolkit-7.3.35-pofcc-107.tgz"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/e2d7aa69131c34da6798233df6acb04c2e5da9a4650aeab47554cec1ea9459c23c627cce70cd53a19603b9df61af4219f540ddd9deb387457320173e7de5d292
+  checksum: 10/8d0ddf74ee70767b982a48dfcbf39df9b38f2576eef6c6e48cff431828e201f28d9dd1662dcbaf3c9667c7c51256fb8015be0b6153c8c065cfefd4b63ddc6114
   languageName: node
   linkType: hard
 
@@ -24438,7 +24438,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.29-pofcc-107/hmcts-ccd-case-ui-toolkit-7.3.29-pofcc-107.tgz"
+    "@hmcts/ccd-case-ui-toolkit": "https://github.com/hmcts/ccd-case-ui-toolkit/releases/download/v7.3.35-pofcc-107/hmcts-ccd-case-ui-toolkit-7.3.35-pofcc-107.tgz"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.12"

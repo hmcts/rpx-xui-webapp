@@ -197,6 +197,11 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
             this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ROLE));
             break;
           case AllocateRoleState.SEARCH_PERSON:
+            // TODO(EXUI-2073): Decision needed for roleCategory === <NEW_CATEGORY>.
+            // QUESTION: For <NEW_CATEGORY>, what should the user journey do when users select Back at each step, based on who is allocating and whether they allocate to themselves or another person?
+            // CONTEXT: This block controls BACK navigation in the allocate/reallocate journey and decides which previous screen to show for each combination of userRole, roleCategory, action, and allocateTo.
+            // CONTEXT: The same decision pattern is repeated in CHOOSE_DURATION, so each supported category must have complete branch coverage across both SEARCH_PERSON and CHOOSE_DURATION states.
+            // CONTEXT: Any missing combination falls into throw paths (Invalid user role/type/category/allocate to), which interrupts the journey at runtime instead of routing the user to a safe previous step.
             switch (this.roleCategory) {
               case RoleCategory.JUDICIAL:
                 switch (this.userRole) {

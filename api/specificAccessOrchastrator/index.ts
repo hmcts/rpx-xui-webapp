@@ -179,6 +179,11 @@ export async function orchestrationRequestMoreInformation(req: EnhancedRequest, 
 }
 
 export function getTaskType(roleCategory: string): string {
+  // TODO(EXUI-2073): Decision needed for roleCategory === <NEW_CATEGORY>.
+  // QUESTION: On the Work Allocation task list in the UI, where should reviewers receive Specific Access requests for <NEW_CATEGORY>?
+  // CONTEXT: orchestrationSpecificAccessRequest reads roleCategory from the created role assignment (requestedRoles[0].roleCategory) and maps it here.
+  // CONTEXT: The mapped value is sent as createTaskMessage.processVariables.taskType in postCreateTask, which the Work Allocation workflow service uses to route the review task.
+  // CONTEXT: Without a mapping, role-assignment service creation can succeed but task creation receives undefined taskType; rollback then attempts to delete the created role and can still leave partial failure.
   switch (roleCategory) {
     case 'JUDICIAL': {
       return 'reviewSpecificAccessRequestJudiciary';

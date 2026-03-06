@@ -54,6 +54,11 @@ export class ChooseRoleComponent implements OnInit, OnDestroy {
       this.route.snapshot.queryParams && this.route.snapshot.queryParams.jurisdiction
         ? this.route.snapshot.queryParams.jurisdiction
         : '';
+    // TODO(EXUI-2073): Decision needed for roleCategory === <NEW_CATEGORY>.
+    // QUESTION: What user-friendly wording should be shown for <NEW_CATEGORY> in the page heading and role-selection instructions?
+    // CONTEXT: roleCategory is read from route query params and used immediately to build the page caption via getLabel() before role options are loaded.
+    // CONTEXT: Unsupported categories throw in getLabel(), which can break component initialization before users see selectable role options.
+    // CONTEXT: The same roleCategory then filters available roles from store data (roles.filter(roleCategory)), so unmatched categories produce empty radio options and a blocked/invalid continue path.
     const userTypePlaceHolder = getLabel(this.roleCategory as RoleCategory).toLowerCase();
     if (this.roleCategory === RoleCategory.ADMIN) {
       this.caption = 'Allocate an admin role';

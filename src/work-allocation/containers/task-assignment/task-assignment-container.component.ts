@@ -147,6 +147,12 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   }
 
   private setDomain(role: RoleCategory): PersonRole {
+    // TODO(EXUI-2073): Decision needed for roleCategory === <NEW_CATEGORY>.
+    // QUESTION: On the Assign/Reassign Task screen, for <NEW_CATEGORY>, should the "Find person" field allow selection from all user groups or only a specific group?
+    // CONTEXT: role is read from route query params and mapped here to [domain] for xuilib-find-person, which determines which user directory is searchable on assign/reassign.
+    // CONTEXT: JUDICIAL/LEGAL_OPERATIONS/ADMIN are explicitly scoped; anything else falls through to PersonRole.ALL and broadens the searchable population.
+    // CONTEXT: The selected person is carried to the confirm step with the original roleCategory in navigation state/query params, so an unmapped category can combine broad search results with category-specific downstream behavior.
+    // CONTEXT: This can create policy mismatch: users may be selectable in this step even if they would not be valid for the intended category.
     if (role === RoleCategory.JUDICIAL) {
       return PersonRole.JUDICIAL;
     } else if (role === RoleCategory.LEGAL_OPERATIONS) {

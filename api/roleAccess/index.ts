@@ -25,6 +25,10 @@ import { Role } from './models/roleType';
 import { getAllRoles, getSubstantiveRoles } from './roleAssignmentService';
 
 const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
+// TODO(EXUI-2073): Decision needed for roleCategory === <NEW_CATEGORY>.
+// QUESTION: On the case "Roles and access" screen, and in the related "Remove allocation" journey, should users be able to see and manage <NEW_CATEGORY> assignments, or should these stay hidden?
+// CONTEXT: This list is the first gate for getRolesByCaseId; categories not included here are never returned from the role-assignment query, so downstream roles-and-access/remove flows cannot see them.
+// CONTEXT: If a category is added here without matching mapRoleCategory/substantive-role handling, mapping can throw or roles can be silently dropped before the frontend renders them.
 const SUPPORTED_ROLE_CATEGORIES = ['LEGAL_OPERATIONS', 'JUDICIAL', 'CTSC', 'ADMIN'];
 
 export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {

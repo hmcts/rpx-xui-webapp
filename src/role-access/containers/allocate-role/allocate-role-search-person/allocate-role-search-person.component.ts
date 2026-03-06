@@ -56,6 +56,12 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
 
   private setData(allocateRoleStateData: AllocateRoleStateData): void {
     const action = EnumUtil(Actions).getKeyOrDefault(allocateRoleStateData.action);
+    // TODO(EXUI-2073): Decision needed for roleCategory === <NEW_CATEGORY>.
+    // QUESTION: For <NEW_CATEGORY>, which user group should users be allowed to search when selecting a person for role allocation?
+    // CONTEXT: setData() reads roleCategory from allocate-role state and maps it to the [domain] input of xuilib-find-person, which determines which user directory is searched.
+    // CONTEXT: domain defaults to PersonRole.JUDICIAL and is only remapped for LEGAL_OPERATIONS/ADMIN/CTSC, so an unmapped category inherits judicial search scope.
+    // CONTEXT: The chosen person is then saved and used by later allocation steps, meaning an incorrect domain can block valid users for that category or allow selecting users from the wrong population.
+    // CONTEXT: Title text and journey state still use the original roleCategory, so users can see one category in the journey while search results are sourced from a different domain.
     if (allocateRoleStateData.roleCategory === RoleCategory.LEGAL_OPERATIONS) {
       this.domain = PersonRole.LEGAL_OPERATIONS;
     } else if (allocateRoleStateData.roleCategory === RoleCategory.ADMIN) {

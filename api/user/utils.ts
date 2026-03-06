@@ -62,6 +62,11 @@ export function getOrganisationRoles(roleAssignments: RoleAssignment[]): string[
 }
 
 export function getRoleCategoryFromRoleAssignments(roleAssignments: string[]): string {
+  // TODO(EXUI-2073): Decision needed for roleCategory === <NEW_CATEGORY>.
+  // QUESTION: If a user has <NEW_CATEGORY>, should this be their primary role category, and what category should we use if it cannot be determined from role assignments?
+  // CONTEXT: setUserRoles() calls this only when userInfo.roleCategory is missing, using categories extracted from active role assignments.
+  // CONTEXT: Matching uses a hard-coded precedence (JUDICIAL -> LEGAL_OPERATIONS -> CTSC -> ADMIN); categories outside this list return undefined even if present on assignments.
+  // CONTEXT: On undefined, caller falls back to getUserRoleCategory(userInfo.roles), a role-name heuristic path with different defaults, so the final userInfo.roleCategory can diverge from role-assignment categories used elsewhere for access/journey logic.
   const roleCategories = [JUDGE_ROLE_CATEGORY, LEGAL_OPERATIONS_ROLE_CATEGORY, CTSC_ROLE_CATEGORY, ADMIN_ROLE_CATEGORY];
   for (const roleCategory of roleCategories) {
     if (hasRoleCategory(roleAssignments, roleCategory)) {

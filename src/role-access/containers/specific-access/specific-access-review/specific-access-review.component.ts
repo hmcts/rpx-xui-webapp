@@ -74,6 +74,12 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
       .subscribe((specificAccessStateData) => {
         this.specificAccessStateData = specificAccessStateData;
       });
+    // TODO(EXUI-2073): Decision needed for roleCategory === <NEW_CATEGORY>.
+    // QUESTION: For <NEW_CATEGORY>, which user record should we trust to populate "Request from" on the Specific Access request review page?
+    // CONTEXT: requesterName is shown in the review summary row "Request from", so this branch controls which person name reviewers see before they approve/reject/request more information.
+    // CONTEXT: JUDICIAL category resolves actorId through getCaseRolesUserDetails scoped to the request jurisdiction and reads full_name from the returned judicial profile.
+    // CONTEXT: All non-judicial categories resolve actorId by loading users from Work Allocation supported services via caseworkerDataService and matching idamId.
+    // CONTEXT: Any new/unmapped category follows the non-judicial path by default; if that source does not contain the actorId, requesterName can be blank or incorrect on decision screens.
     if (this.specificAccessStateData.roleCategory === RoleCategory.JUDICIAL) {
       this.allocateRoleService
         .getCaseRolesUserDetails([this.specificAccessStateData.actorId], [this.specificAccessStateData.jurisdiction])

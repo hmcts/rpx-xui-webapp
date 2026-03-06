@@ -46,6 +46,11 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
   public set roles(value: CaseRole[]) {
     this.pRoles = value;
     if (this.roles) {
+      // TODO(EXUI-2073): Decision needed for roleCategory === <NEW_CATEGORY>.
+      // QUESTION: On the case "Roles and access" page, how should <NEW_CATEGORY> assignments be presented to users: in a new section or grouped under an existing section?
+      // CONTEXT: The roles setter is the single partition point for this page: each filtered array is passed to a dedicated exui-role-access-section in the template.
+      // CONTEXT: Those sections drive both table rendering and per-category allocate/manage links, including fixed roleCategory query params used to enter allocation journeys.
+      // CONTEXT: Any role with a category outside these four filters never reaches a section, so it is absent from page counts/content and has no route to manage/reallocate/remove from this entry point.
       this.legalOpsRoles = this.roles.filter((role) => role.roleCategory === RoleCategory.LEGAL_OPERATIONS);
       this.judicialRoles = this.roles.filter((role) => role.roleCategory === RoleCategory.JUDICIAL);
       this.adminRoles = this.roles.filter((role) => role.roleCategory === RoleCategory.ADMIN);

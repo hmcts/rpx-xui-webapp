@@ -108,6 +108,11 @@ export function toDenySARoleAssignmentBody(
 ) {
   const currentUserId = currentUser.id ? currentUser.id : currentUser.uid;
   let requestedrole;
+  // TODO(EXUI-2073): Decision needed for roleCategory === <NEW_CATEGORY>.
+  // QUESTION: On the Specific Access review journey (when a request is rejected or more information is requested), which requested role code should we record for <NEW_CATEGORY>?
+  // CONTEXT: This switch maps roleCategory to the canonical specific-access-* slug used in deny payload correlation and metadata.
+  // CONTEXT: The slug is written into roleRequest.reference (<caseId>/<requestedRole>/<assigneeId>) and attributes.requestedRole; later orchestration/update flows reuse that value to rebuild references and complete the request-more-information journey.
+  // CONTEXT: Without an explicit mapping, requestedrole is undefined, yielding invalid reference/attributes and causing downstream role-assignment/workflow operations to fail.
   switch (allocateRoleData.roleCategory) {
     case RoleCategory.JUDICIAL:
       requestedrole = 'specific-access-judiciary';

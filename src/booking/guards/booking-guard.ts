@@ -25,6 +25,11 @@ export class BookingGuard {
         const roleCategory = user.userInfo.roleCategory;
         const roles = user.userInfo.roles ?? [];
 
+        // TODO(EXUI-2073): Decision needed for roleCategory === <NEW_CATEGORY>.
+        // QUESTION: Should users in <NEW_CATEGORY> have access to booking functionality in the UI?
+        // CONTEXT: This guard controls route activation for booking pages; denied users are immediately redirected to BookingGuard.defaultUrl (/cases).
+        // CONTEXT: Access requires two checks: user is treated as judicial (roleCategory === JUDICIAL or IDAM role includes caseworker-judge)
+        // CONTEXT: and at least one roleAssignmentInfo item has bookable=true (boolean or "true" string). Non-judicial categories fail even when bookable assignments exist.
         const isJudicial = roleCategory === 'JUDICIAL' || roles.includes('caseworker-judge');
 
         const hasBookable = (user.roleAssignmentInfo ?? []).some((ra: any) => {

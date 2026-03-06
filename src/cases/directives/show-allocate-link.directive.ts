@@ -17,6 +17,11 @@ export class ShowAllocateLinkDirective implements OnInit {
 
   private static canDisplayLink(roles: CaseRole[], roleCategory: RoleCategory, showAllocateRoleLink: boolean): boolean {
     const show = false;
+    // TODO(EXUI-2073): Decision needed for roleCategory === <NEW_CATEGORY>.
+    // QUESTION: On the case "Roles and access" page, should the "Allocate role" link be shown for <NEW_CATEGORY> now, or hidden until the full allocation journey is ready?
+    // CONTEXT: This directive runs on the allocate-role anchor and is the last UI gate before navigation into /role-access/allocate-role routes.
+    // CONTEXT: Logic currently blocks only when showAllocateRoleLink is false or LEGAL_OPERATIONS already has a case-manager; every other category is allowed through.
+    // CONTEXT: The check does not validate downstream journey support, so a new/unhandled category can still expose the link and then fail later in category-based switches (for example invalid role category/user type branches).
     if (
       !showAllocateRoleLink ||
       (roleCategory === RoleCategory.LEGAL_OPERATIONS && ShowAllocateLinkDirective.hasExceededNumberCaseManagerRoles(roles))

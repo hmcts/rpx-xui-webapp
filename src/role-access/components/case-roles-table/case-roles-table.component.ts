@@ -44,6 +44,10 @@ export class CaseRolesTableComponent implements OnInit {
   }
 
   public getRoleCategoryTitle(roleCategory: string): string {
+    // TODO(EXUI-2073): Decision needed for roleCategory === <NEW_CATEGORY>.
+    // QUESTION: What user-facing name should we show for <NEW_CATEGORY> in page headings and messages (for example, "There are no ... roles for this case")?
+    // CONTEXT: This title is rendered in the empty-state copy ("There are no {{ roleCategoryTitle }} roles for this case.").
+    // CONTEXT: The switch handles known categories only; unknown values default to "legal Ops", which mislabels unsupported/new categories as Legal Ops.
     switch (roleCategory) {
       case RoleCategory.LEGAL_OPERATIONS: {
         roleCategory = 'legal Ops';

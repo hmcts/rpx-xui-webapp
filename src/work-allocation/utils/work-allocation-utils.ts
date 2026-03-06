@@ -200,6 +200,12 @@ export function getRoleCategoryToBeSelectedByDefault(
 }
 
 export function getLabel(roleCategory: RoleCategory): PersonRole {
+  // TODO(EXUI-2073): Decision needed for roleCategory === <NEW_CATEGORY>.
+  // QUESTION: On the Task Assignment "Choose a role type" screen, if <NEW_CATEGORY> appears in task data, should it be shown as a selectable option or hidden until support is agreed?
+  // CONTEXT: getOptions() is used by the Task Assignment "Choose a role type" page to build radio options from task role categories with OWN/EXECUTE permissions.
+  // CONTEXT: getLabel() provides the user-facing label for each category; without a valid label, that category cannot be rendered as a selectable option in the UI.
+  // CONTEXT: Unknown categories throw here; getOptions() swallows the error, leaves label undefined, and silently skips adding the option.
+  // CONTEXT: This means task data may include a category but users never see it as a role-type choice, which can force a default to another visible category and hide the missing support.
   switch (roleCategory) {
     case RoleCategory.ADMIN:
       return PersonRole.ADMIN;

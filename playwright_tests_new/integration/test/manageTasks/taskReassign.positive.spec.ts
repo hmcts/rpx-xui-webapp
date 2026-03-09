@@ -2,7 +2,7 @@ import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookies } from '../../../common/sessionCapture';
 import { buildTaskListMock, myActionsList } from '../../mocks/taskList.mock';
 import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
-import { setupTaskActionEndpointMocks } from '../../helpers/taskActionApiMocks.helper';
+import { setupTaskActionEndpointMocks, singleUsersGetByRoleMockResponse } from '../../helpers/taskActionApiMocks.helper';
 
 const userIdentifier = 'STAFF_ADMIN';
 let sessionCookies: any[] = [];
@@ -16,7 +16,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe(`Task Reassign as ${userIdentifier}`, () => {
-  test(`User can open reassign flow from task list`, async ({ taskListPage, page }) => {
+  test(`User can reassign a task from the task list`, async ({ taskListPage, page }) => {
     const firstTask = taskListMockResponse.tasks[0];
 
     await test.step('Setup route mock for task list and reassign action endpoints', async () => {
@@ -32,6 +32,14 @@ test.describe(`Task Reassign as ${userIdentifier}`, () => {
         caseTypeId: firstTask.case_type_id,
         assigneeId: firstTask.assignee,
       });
+
+      await page.route('**/workallocation/caseworker/getUsersByServiceName*', async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(singleUsersGetByRoleMockResponse),
+        });
+      });
     });
 
     await test.step('Navigate to task list and open reassign action', async () => {
@@ -46,6 +54,31 @@ test.describe(`Task Reassign as ${userIdentifier}`, () => {
       await expect(page).toHaveURL(new RegExp(`/work/${firstTask.id}/reassign`));
       await expect(page.locator('main')).toContainText('Choose a role type');
       await expect(page.locator('main')).toContainText('Reassign task');
+    });
+
+    await test.step('Navigate to task list and open reassign action', async () => {
+      await taskListPage.continueButton.click();
+      await taskListPage.reassignUserSearchInput.fill('test');
+      await expect(page.locator('.cdk-overlay-pane')).toBeVisible();
+      await page.getByRole('option').first().click();
+
+      await taskListPage.continueButton.click();
+    });
+
+    await test.step('Submit reassign action and verify expected API response', async () => {
+      const reassignResponsePromise = page.waitForResponse(
+        (response) =>
+          response.request().method() === 'POST' &&
+          response.url().includes(`/workallocation/task/${firstTask.id}/assign`) &&
+          response.status() === 204
+      );
+      await taskListPage.reassignButton.click();
+      await reassignResponsePromise;
+    });
+
+    await test.step('Verify user is returned to task list with success message', async () => {
+      await expect(taskListPage.taskListTable).toBeVisible();
+      await expect(taskListPage.exuiBodyComponent.message).toContainText(`You've reassigned a task to somebody else.`);
     });
   });
 });

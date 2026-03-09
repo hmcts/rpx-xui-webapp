@@ -49,6 +49,10 @@ export class TaskListPage extends Base {
   readonly paginationCurrentPage = this.paginationControls.locator('.current');
 
   readonly submitButton = this.page.locator('#submit-button');
+  readonly continueButton = this.page.locator('.govuk-button').filter({ hasText: 'Continue' });
+
+  readonly reassignUserSearchInput = this.page.locator('#inputSelectPerson');
+  readonly reassignButton = this.page.getByRole('button', { name: 'Reassign' });
 
   constructor(page: Page) {
     super(page);

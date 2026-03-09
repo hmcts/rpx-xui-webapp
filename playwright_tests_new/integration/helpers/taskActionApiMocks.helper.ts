@@ -1,3 +1,4 @@
+import { faker } from '@faker-js/faker';
 import type { Page } from '@playwright/test';
 
 export type UiTaskAction = 'cancel' | 'complete' | 'go' | 'reassign' | 'unassign';
@@ -304,3 +305,32 @@ export const testTaskActionMockContract = async (
 ): Promise<TaskActionExpectation> => {
   return setupTaskActionEndpointMocks(page, action, options);
 };
+
+export const singleUsersGetByRoleMockResponse = [
+  {
+    email: 'auto_test1@example.com',
+    firstName: 'test',
+    idamId: faker.string.uuid(),
+    lastName: 'Legal Operations',
+    location: {
+      id: 231596,
+      locationName: 'Birmingham',
+      services: ['CIVIL', 'PUBLICLAW', 'PRIVATELAW', 'IA'],
+    },
+    roleCategory: 'LEGAL_OPERATIONS',
+    service: 'IA',
+  },
+  {
+    email: 'auto_test2@example.com',
+    firstName: 'test',
+    idamId: faker.string.uuid(),
+    lastName: 'Judiciary',
+    location: {
+      id: 231596,
+      locationName: 'Birmingham',
+      services: ['CIVIL', 'PUBLICLAW', 'PRIVATELAW', 'IA'],
+    },
+    roleCategory: 'JUDICIARY',
+    service: 'IA',
+  },
+];

@@ -5,6 +5,7 @@ import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
 import { formatUiDate } from '../../utils/tableUtils';
 import { setupTaskListMockRoutes } from '../../helpers';
 
+let userId: string | null;
 const userIdentifier = 'STAFF_ADMIN';
 let sessionCookies: any[] = [];
 let taskListMockResponse: ReturnType<typeof buildTaskListMock>;
@@ -12,12 +13,12 @@ let taskListMockResponse: ReturnType<typeof buildTaskListMock>;
 test.beforeEach(async ({ page }) => {
   const { cookies } = await applySessionCookies(page, userIdentifier);
   sessionCookies = cookies;
-  const userId = extractUserIdFromCookies(sessionCookies);
-  taskListMockResponse = buildTaskListMock(160, userId?.toString() || '', myActionsList);
+  userId = extractUserIdFromCookies(sessionCookies);
+  taskListMockResponse = buildTaskListMock(6, userId?.toString() || '', myActionsList);
 });
 
 test.describe(`Task List as ${userIdentifier}`, () => {
-  test(`User ${userIdentifier} can see all assigned tasks on the task list page`, async ({ taskListPage, page, tableUtils }) => {
+  test(`User can see all assigned tasks on the task list page sent from the API`, async ({ taskListPage, page, tableUtils }) => {
     await test.step('Setup route mock for task list', async () => {
       await setupTaskListMockRoutes(page, taskListMockResponse);
     });
@@ -48,7 +49,7 @@ test.describe(`Task List as ${userIdentifier}`, () => {
     });
   });
 
-  test(`User ${userIdentifier} sees the expected message if there are no assigned tasks`, async ({ taskListPage, page }) => {
+  test(`User sees the expected message if there are no assigned tasks`, async ({ taskListPage, page }) => {
     const emptyMockResponse = { tasks: [], total_records: 0 };
     await test.step('Setup route mock for empty task list', async () => {
       await setupTaskListMockRoutes(page, emptyMockResponse);
@@ -63,11 +64,7 @@ test.describe(`Task List as ${userIdentifier}`, () => {
     });
   });
 
-  test(`User ${userIdentifier} sees all priority type tasks with specific due dates`, async ({
-    taskListPage,
-    page,
-    tableUtils,
-  }) => {
+  test(`User sees all priority type tasks with specific due dates`, async ({ taskListPage, page, tableUtils }) => {
     const deterministicMockResponse = buildDeterministicMyTasksListMock('deterministic-assignee');
     await test.step('Setup route mock for deterministic task list', async () => {
       await setupTaskListMockRoutes(page, deterministicMockResponse);
@@ -97,10 +94,10 @@ test.describe(`Task List as ${userIdentifier}`, () => {
     });
   });
 
-  test(`User ${userIdentifier} can see all expected table elements`, async ({ taskListPage, page, tableUtils }) => {
+  test(`User can see all expected table elements with a large results set`, async ({ taskListPage, page, tableUtils }) => {
     await test.step('Setup route mock for deterministic task list', async () => {
       await page.route('**/workallocation/task*', async (route) => {
-        const body = JSON.stringify(taskListMockResponse);
+        const body = JSON.stringify(buildTaskListMock(1000, userId?.toString() || '', myActionsList));
         await route.fulfill({ status: 200, contentType: 'application/json', body });
       });
     });
@@ -120,7 +117,14 @@ test.describe(`Task List as ${userIdentifier}`, () => {
       await expect(taskListPage.sortByHearingDateTableHeader).toBeVisible();
     });
 
-    await test.step('Verify pagination buttons are visible', async () => {
+    await test.step('Verify pagination button visibility', async () => {
+      await expect(taskListPage.paginationNextButton).toBeVisible();
+      await expect(taskListPage.paginationPreviousButton).not.toBeVisible();
+      await expect(taskListPage.paginationEllipsisButton).toBeVisible();
+    });
+
+    await test.step('Verify the first page of results shows expected data', async () => {
+      await taskListPage.paginationNextButton.click();
       await expect(taskListPage.paginationNextButton).toBeVisible();
       await expect(taskListPage.paginationPreviousButton).toBeVisible();
       await expect(taskListPage.paginationEllipsisButton).toBeVisible();

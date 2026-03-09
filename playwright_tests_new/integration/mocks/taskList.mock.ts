@@ -50,8 +50,14 @@ export function buildTaskListMock(rowCount: number, assignee: string, actions: T
     const dueDate = dueOpt.value;
     // Hearing date: random future date (or null)
     const hearingDate = faker.datatype.boolean() ? faker.date.soon({ days: faker.number.int({ min: 1, max: 90 }) }) : null;
-    // Format as ISO8601 with timezone
-    const formatDate = (d: Date | null) => (d ? d.toISOString().replace(/\.\d{3}Z$/, '+0000') : '');
+    const formatDate = (d: Date | null) => {
+      if (!d) {
+        return '';
+      }
+      const normalized = new Date(d);
+      normalized.setUTCHours(12, 0, 0, 0);
+      return normalized.toISOString();
+    };
     // Priority: random int 1-10
     const priority = faker.number.int({ min: 1, max: 10 });
     // Case name/category/location/task
@@ -123,13 +129,15 @@ export function buildMyTaskListMock(assignee: string, rowCount: number, actions:
  * Priority is the same for all.
  */
 export function buildDeterministicMyTasksListMock(assignee: string) {
+  const now = new Date();
+  const todayAtUtcNoon = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 12, 0, 0, 0));
   const baseTasks = [
     {
       case_name: 'Smith & Co',
       case_category: 'Protection',
       location_name: 'Taylor House',
       task_title: 'Review documents',
-      due_date: new Date(Date.now() - 86400000 * 7).toISOString(), // 7 days ago
+      due_date: new Date(todayAtUtcNoon.getTime() - 86400000 * 7).toISOString(), // 7 days ago
       priority_field: 'urgent',
       minor_priority: 5,
       major_priority: 1000,
@@ -139,7 +147,7 @@ export function buildDeterministicMyTasksListMock(assignee: string) {
       case_category: 'Human rights',
       location_name: 'Manchester',
       task_title: 'Prepare hearing',
-      due_date: new Date().toISOString(), // today
+      due_date: todayAtUtcNoon.toISOString(), // today
       priority_field: 'high',
       minor_priority: 500,
       major_priority: 5000,
@@ -149,7 +157,7 @@ export function buildDeterministicMyTasksListMock(assignee: string) {
       case_category: 'EUSS',
       location_name: 'Liverpool',
       task_title: 'Send notification',
-      due_date: new Date(Date.now() + 86400000).toISOString(), // tomorrow
+      due_date: new Date(todayAtUtcNoon.getTime() + 86400000).toISOString(), // tomorrow
       priority_field: 'medium',
       minor_priority: 500,
       major_priority: 5000,
@@ -159,7 +167,7 @@ export function buildDeterministicMyTasksListMock(assignee: string) {
       case_category: 'Protection',
       location_name: 'Birmingham',
       task_title: 'Update records',
-      due_date: new Date(Date.now() + 86400000 * 25).toISOString(), // next month
+      due_date: new Date(todayAtUtcNoon.getTime() + 86400000 * 25).toISOString(), // next month
       priority_field: 'low',
       minor_priority: 500,
       major_priority: 5000,

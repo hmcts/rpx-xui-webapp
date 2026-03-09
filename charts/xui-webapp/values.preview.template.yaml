@@ -48,10 +48,10 @@ nodejs:
   devmemoryLimits: 2Gi
   devcpuLimits: 2
   readinessDelay: 45
-  readinessTimeout: 5
+  readinessTimeout: 15
   readinessPeriod: 15
   livenessDelay: 45
-  livenessTimeout: 5
+  livenessTimeout: 15
   livenessPeriod: 15
 redis:
   enabled: true

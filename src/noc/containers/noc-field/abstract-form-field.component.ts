@@ -4,7 +4,8 @@ import { Observable } from 'rxjs';
 import { NocQuestion } from '../../models';
 
 @Component({
-  template: ''
+  standalone: false,
+  template: '',
 })
 export abstract class AbstractFormFieldComponent {
   @Input()
@@ -17,7 +18,7 @@ export abstract class AbstractFormFieldComponent {
   public formGroup?: FormGroup;
 
   @Input()
-  public registerControl?: <T extends AbstractControl> (control: T) => T;
+  public registerControl?: <T extends AbstractControl>(control: T) => T;
 
   public answerValue: string = '';
 
@@ -41,6 +42,6 @@ export abstract class AbstractFormFieldComponent {
   }
 
   protected setAnswer(): void {
-    this.answerValue$.subscribe((answer) => this.answerValue = answer);
+    this.answerValue$.subscribe((answer) => (this.answerValue = answer));
   }
 }

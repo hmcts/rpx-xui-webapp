@@ -6,12 +6,13 @@ import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { CaseRole } from '../../../role-access/models';
 
 @Component({
+  standalone: false,
   selector: 'exui-role-access-section',
-  templateUrl: './role-access-section.component.html'
+  templateUrl: './role-access-section.component.html',
 })
 export class RoleAccessSectionComponent {
   @Input() public title: string;
-  @Input() public roles: CaseRole [];
+  @Input() public roles: CaseRole[];
   @Input() public caseDetails: CaseView;
   @Input() public showAllocateRoleLink = false;
   @Input() public roleRouterLink: string;

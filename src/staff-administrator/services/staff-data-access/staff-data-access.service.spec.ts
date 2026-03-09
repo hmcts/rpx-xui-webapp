@@ -1,7 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import {
-  StaffDataFilterService
-} from '../../components/staff-users/services/staff-data-filter/staff-data-filter.service';
+import { StaffDataFilterService } from '../../components/staff-users/services/staff-data-filter/staff-data-filter.service';
 
 import { StaffDataAccessService } from './staff-data-access.service';
 
@@ -26,10 +24,11 @@ describe('StaffDataAccessService', () => {
         userType: '',
         jobTitle: '',
         skill: ['Skill 1'],
-        role: ['Role 1']
+        role: ['Role 1'],
+        status: [],
       },
       pageSize: StaffDataFilterService.PAGE_SIZE,
-      pageNumber: 1
+      pageNumber: 1,
     });
     expect(mockHttpClient.get).toHaveBeenCalledTimes(1);
   });
@@ -49,4 +48,3 @@ describe('StaffDataAccessService', () => {
     expect(mockHttpClient.get).toHaveBeenCalledTimes(1);
   });
 });
-

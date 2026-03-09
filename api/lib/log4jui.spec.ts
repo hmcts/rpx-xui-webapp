@@ -3,11 +3,12 @@ import { expect } from 'chai';
 import * as log4js from 'log4js';
 import 'mocha';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import * as log4jui from './log4jui';
 import { leftPad } from './log4jui';
 import { isJUILogger } from './models';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('log4jui', () => {
@@ -20,7 +21,7 @@ describe('log4jui', () => {
       addContext: sandbox.spy(),
       error: sandbox.spy(),
       info: sandbox.spy(),
-      warn: sandbox.spy()
+      warn: sandbox.spy(),
     };
     sandbox.stub(log4js, 'getLogger').returns(spyObj);
   });

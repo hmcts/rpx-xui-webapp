@@ -12,7 +12,7 @@ describe('HearingRequestFailedSummaryComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [HearingRequestFailedSummaryComponent, MockRpxTranslatePipe],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingRequestFailedSummaryComponent);

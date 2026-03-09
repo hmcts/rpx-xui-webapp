@@ -57,7 +57,8 @@
         "caseTypes": "SERVICES_HEARINGS_CASETYPES_ET"
       },
       "hmcApi": "SERVICES_HMC_HEARINGS_COMPONENT_API",
-      "enableHearingDataSourceHeaders": "ENABLE_HEARING_DATA_SOURCE_HEADERS"
+      "enableHearingDataSourceHeaders": "ENABLE_HEARING_DATA_SOURCE_HEADERS",
+      "previewDeploymentId": "PREVIEW_DEPLOYMENT_ID"
     },
     "documents": {
       "api": "SERVICES_DOCUMENTS_API"
@@ -199,6 +200,10 @@
     },
     "compressionEnabled": {
       "__name": "FEATURE_COMPRESSION_ENABLED",
+      "__format": "json"
+    },
+    "docsEnabled": {
+      "__name": "FEATURE_DOCS_ENABLED",
       "__format": "json"
     },
     "queryIdamServiceOverride": {

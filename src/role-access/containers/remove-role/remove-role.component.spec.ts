@@ -19,8 +19,8 @@ import { RemoveRoleComponent } from './remove-role.component';
 import { LoggerService } from '../../../app/services/logger/logger.service';
 
 @Component({
-  template: `
-    <exui-remove-role></exui-remove-role>`
+  standalone: false,
+  template: ` <exui-remove-role></exui-remove-role>`,
 })
 class WrapperComponent {
   @ViewChild(RemoveRoleComponent, { static: true }) public appComponentRef: RemoveRoleComponent;
@@ -32,32 +32,26 @@ const mockCaseworker: Caseworker = {
   lastName: 'testing',
   email: 'test@test.com',
   location: null,
-  roleCategory: RoleCategory.LEGAL_OPERATIONS
+  roleCategory: RoleCategory.LEGAL_OPERATIONS,
 };
 
 describe('RemoveRoleComponent', () => {
   let component: RemoveRoleComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
-  const routerMock = jasmine.createSpyObj('Router', [
-    'navigateByUrl', 'navigate', 'getCurrentNavigation'
-  ]);
+  const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate', 'getCurrentNavigation']);
   routerMock.navigate.and.returnValue(Promise.resolve(true));
-  const locationMock = jasmine.createSpyObj('Location', [
-    'back'
-  ]);
+  const locationMock = jasmine.createSpyObj('Location', ['back']);
   const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getAll']);
   const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
   const allworkUrl = 'work/all-work/cases';
   window.history.pushState({ backUrl: allworkUrl }, '', allworkUrl);
 
   class AllocateRoleMockService extends AllocateRoleService {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public confirmAllocation(allocateRoleStateData: AllocateRoleStateData): Observable<any> {
       return of(null);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public getCaseRoles(caseId: string, jurisdiction: string, caseType: string, assignmentId?: string): Observable<CaseRole[]> {
       return of([
         {
@@ -68,8 +62,8 @@ describe('RemoveRoleComponent', () => {
           notes: 'Test exclusion',
           roleName: TypeOfRole.CaseManager,
           roleCategory: RoleCategory.JUDICIAL,
-          email: 'user@test.com'
-        }
+          email: 'user@test.com',
+        },
       ] as unknown as CaseRole[]);
     }
 
@@ -77,12 +71,10 @@ describe('RemoveRoleComponent', () => {
       return of(null);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public removeAllocation(assigmentId: string): Observable<any> {
       return of(null);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public getCaseRolesUserDetails(caseRoles: string[]): Observable<CaseRoleDetails[]> {
       const caseRoleDetail: CaseRoleDetails = {
         idam_id: '999999999',
@@ -90,7 +82,7 @@ describe('RemoveRoleComponent', () => {
         email_id: 'user@test.com',
         full_name: 'Mr Test',
         known_as: '',
-        sidam_id: '999999999'
+        sidam_id: '999999999',
       };
       return of([caseRoleDetail]);
     }
@@ -98,9 +90,7 @@ describe('RemoveRoleComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      schemas: [
-        NO_ERRORS_SCHEMA
-      ],
+      schemas: [NO_ERRORS_SCHEMA],
       declarations: [AnswersComponent, RemoveRoleComponent, WrapperComponent],
       imports: [RouterTestingModule],
       providers: [
@@ -120,51 +110,53 @@ describe('RemoveRoleComponent', () => {
                     id: '999999999',
                     actorId: '1234567',
                     actions: [],
-                    email: 'user@test.com'
-                  }
-                ]
+                    email: 'user@test.com',
+                  },
+                ],
               },
               queryParams: {
                 caseId: '123456789',
-                assignmentId: '999999999'
-              }
+                assignmentId: '999999999',
+              },
             },
-            queryParamMap: of(convertToParamMap({
-              caseId: '123456789',
-              assignmentId: '999999999',
-              jurisdiction: 'IA',
-              caseType: 'Alsyum'
-            }))
-          }
+            queryParamMap: of(
+              convertToParamMap({
+                caseId: '123456789',
+                assignmentId: '999999999',
+                jurisdiction: 'IA',
+                caseType: 'Alsyum',
+              })
+            ),
+          },
         },
         {
           provide: Router,
-          useValue: routerMock
+          useValue: routerMock,
         },
         {
           provide: Location,
-          useValue: locationMock
+          useValue: locationMock,
         },
         {
           provide: AllocateRoleService,
-          useClass: AllocateRoleMockService
+          useClass: AllocateRoleMockService,
         },
         {
           provide: CaseworkerDataService,
-          useValue: mockCaseworkerDataService
+          useValue: mockCaseworkerDataService,
         },
         {
           provide: LoggerService,
-          useValue: loggerServiceMock
+          useValue: loggerServiceMock,
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
+    window.history.pushState({ backUrl: allworkUrl }, '', allworkUrl);
     routerMock.getCurrentNavigation.and.returnValue({ extras: { state: { backUrl: allworkUrl } } });
     mockCaseworkerDataService.getAll.and.returnValue(of([mockCaseworker]));
     fixture = TestBed.createComponent(WrapperComponent);
@@ -196,11 +188,14 @@ describe('RemoveRoleComponent', () => {
   });
 
   it('should navigate correctly on click', () => {
+    (component as any).backUrl = allworkUrl;
     component.onNavEvent(RemoveAllocationNavigationEvent.CANCEL);
     expect(locationMock.back).toHaveBeenCalled();
     component.onNavEvent(RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION);
     const message: any = { type: 'success', message: RemoveRoleText.infoMessage };
-    const additionalState = { state: { showMessage: true, retainMessages: true, message, messageText: RemoveRoleText.infoMessage } };
+    const additionalState = {
+      state: { showMessage: true, retainMessages: true, message, messageText: RemoveRoleText.infoMessage },
+    };
     expect(routerMock.navigate).toHaveBeenCalledWith([allworkUrl], additionalState);
   });
 

@@ -22,7 +22,7 @@ Given('I set Mock WA case {string} property values', async function (view, datat
   const datatableHashes = datatable.parse().hashes();
 
   const cases = waMockData[view];
-  for (const wacase of datatableHashes){
+  for (const wacase of datatableHashes) {
     cases.cases[parseInt(wacase.index)][wacase.key] = wacase.value;
   }
 });

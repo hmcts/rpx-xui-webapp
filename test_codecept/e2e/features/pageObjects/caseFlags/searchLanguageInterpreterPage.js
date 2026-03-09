@@ -1,16 +1,17 @@
 const { $, elementByXpath } = require('../../../../helpers/globals');
 
 class SearchLanguageInterpreterPage {
-
   get container() {
     return $('ccd-search-language-interpreter');
   }
 
   get fieldMapping() {
     return {
-      'Language Interpreter': elementByXpath('//ccd-search-language-interpreter//label[contains(text(),\'Language Interpreter\')]/../..//div[contains(@class,\'auto-complete-container\')]//input'),
-      'Enter the language manually': elementByXpath('//label[contains(text(),\'Enter the language manually\')]/..//input'),
-      'Enter the language': elementByXpath('//label[text()=\'Enter the language\']/..//input')
+      'Language Interpreter': elementByXpath(
+        "//ccd-search-language-interpreter//label[contains(text(),'Language Interpreter')]/../..//div[contains(@class,'auto-complete-container')]//input"
+      ),
+      'Enter the language manually': elementByXpath("//label[contains(text(),'Enter the language manually')]/..//input"),
+      'Enter the language': elementByXpath("//label[text()='Enter the language']/..//input"),
     };
   }
 

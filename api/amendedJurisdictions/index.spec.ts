@@ -2,10 +2,11 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import * as amendedJurisdictions from './index';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('Amended Jurisdiction', () => {
@@ -25,14 +26,14 @@ describe('Amended Jurisdiction', () => {
       headers: {
         accept: '*/*',
         'content-type': 'text/test',
-        experimental: 'experiment/test'
+        experimental: 'experiment/test',
       },
       session: {
         save: (fun) => {
           fun();
-        }
+        },
       },
-      url: 'fdafu4543543/binary'
+      url: 'fdafu4543543/binary',
     });
   });
 
@@ -43,19 +44,19 @@ describe('Amended Jurisdiction', () => {
   it('should filter jurisdictions for the jurisdictions endpoint', () => {
     const data = [
       {
-        id: 'PROBATE'
+        id: 'PROBATE',
       },
       {
-        id: 'RANDOM'
-      }
+        id: 'RANDOM',
+      },
     ];
     req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=read';
-    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data);
+    const response = amendedJurisdictions.getJurisdictions(data, req);
     // Unknown jurisdiction should be filtered
     const expected = [
       {
-        id: 'PROBATE'
-      }
+        id: 'PROBATE',
+      },
     ];
     expect(response).to.eql(expected);
   });
@@ -63,22 +64,22 @@ describe('Amended Jurisdiction', () => {
   it('should not filter jurisdictions for non-jurisdictions endpoint', () => {
     const expected = [
       {
-        id: 'PROBATE'
+        id: 'PROBATE',
       },
       {
-        id: 'RANDOM'
-      }
+        id: 'RANDOM',
+      },
     ];
     req.url = '/aggregated/some/other/url';
 
-    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, expected);
+    const response = amendedJurisdictions.getJurisdictions(expected, req);
     expect(response).to.eql(expected);
   });
 
   it('should send empty array', () => {
     const expected = [];
 
-    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, expected);
+    const response = amendedJurisdictions.getJurisdictions(expected, req);
     expect(response).to.eql(expected);
   });
 
@@ -86,7 +87,7 @@ describe('Amended Jurisdiction', () => {
     const data = 'not an array';
     req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=read';
 
-    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data as any);
+    const response = amendedJurisdictions.getJurisdictions(data as any, req);
     expect(response).to.equal(data);
   });
 
@@ -94,7 +95,7 @@ describe('Amended Jurisdiction', () => {
     const data = null;
     req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=read';
 
-    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data);
+    const response = amendedJurisdictions.getJurisdictions(data, req);
     expect(response).to.equal(null);
   });
 
@@ -102,25 +103,18 @@ describe('Amended Jurisdiction', () => {
     const data = undefined;
     req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=read';
 
-    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data);
+    const response = amendedJurisdictions.getJurisdictions(data, req);
     expect(response).to.equal(undefined);
   });
 
   it('should store filtered jurisdictions in session', () => {
-    const data = [
-      { id: 'PROBATE' },
-      { id: 'DIVORCE' },
-      { id: 'UNKNOWN' }
-    ];
+    const data = [{ id: 'PROBATE' }, { id: 'DIVORCE' }, { id: 'UNKNOWN' }];
     const sessionKey = 'readJurisdictions';
     req.url = 'aggregated/caseworkers/:uid/jurisdictions?access=read';
 
-    const response = amendedJurisdictions.getJurisdictions(proxyRes, req, res, data);
+    const response = amendedJurisdictions.getJurisdictions(data, req);
 
-    expect(req.session[sessionKey]).to.deep.equal([
-      { id: 'PROBATE' },
-      { id: 'DIVORCE' }
-    ]);
+    expect(req.session[sessionKey]).to.deep.equal([{ id: 'PROBATE' }, { id: 'DIVORCE' }]);
     expect(response).to.equal(req.session[sessionKey]);
   });
 
@@ -129,7 +123,7 @@ describe('Amended Jurisdiction', () => {
 
     beforeEach(() => {
       proxyReq = {
-        end: sinon.stub()
+        end: sinon.stub(),
       };
     });
 

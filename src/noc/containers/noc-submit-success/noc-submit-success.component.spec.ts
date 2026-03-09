@@ -5,7 +5,10 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocSubmitSuccessComponent } from './noc-submit-success.component';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate',
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;
@@ -20,14 +23,9 @@ describe('NocSubmitSuccessComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [NocSubmitSuccessComponent, RpxTranslateMockPipe],
-      imports: [
-        UtilsModule
-      ],
-      providers: [
-        provideMockStore()
-      ]
-    })
-      .compileComponents();
+      imports: [UtilsModule],
+      providers: [provideMockStore()],
+    }).compileComponents();
     store = TestBed.inject(Store);
     spyOn(store, 'pipe').and.callThrough();
   }));

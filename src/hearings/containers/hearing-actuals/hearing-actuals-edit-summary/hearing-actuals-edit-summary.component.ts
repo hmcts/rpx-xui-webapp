@@ -8,10 +8,11 @@ import * as fromHearingStore from '../../../store';
 import { HearingActualsSummaryBaseComponent } from '../hearing-actuals-summary-base/hearing-actuals-summary-base.component';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-actuals-edit-summary',
   templateUrl: './hearing-actuals-edit-summary.component.html',
   styleUrls: ['./hearing-actuals-edit-summary.component.scss'],
-  providers: [DatePipe]
+  providers: [DatePipe],
 })
 export class HearingActualsEditSummaryComponent extends HearingActualsSummaryBaseComponent {
   constructor(
@@ -21,7 +22,6 @@ export class HearingActualsEditSummaryComponent extends HearingActualsSummaryBas
     public readonly route: ActivatedRoute,
     public readonly router: Router,
     public readonly ccdDatePipe: DatePipe
-
   ) {
     super(hearingStore, hearingsService, route, router, ccdDatePipe);
     this.partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];
@@ -38,8 +38,7 @@ export class HearingActualsEditSummaryComponent extends HearingActualsSummaryBas
   // Note: Already onBack on extended component but does not work for this use case
   public onBackPage(): void {
     // Prefer an in-app back when we can
-    const sameOriginReferrer =
-      document.referrer && new URL(document.referrer).origin === location.origin;
+    const sameOriginReferrer = document.referrer && new URL(document.referrer).origin === location.origin;
 
     if (sameOriginReferrer && history.length > 1) {
       this.location.back();

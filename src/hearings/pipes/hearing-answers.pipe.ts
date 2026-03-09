@@ -56,11 +56,15 @@ import { State } from '../store';
 import { HearingIdAnswerConverter } from '../converters/hearing-id.converter';
 
 @Pipe({
-  name: 'transformAnswer'
+  standalone: false,
+
+  name: 'transformAnswer',
 })
 export class HearingAnswersPipe implements PipeTransform {
-  constructor(protected readonly route: ActivatedRoute,
-              protected readonly locationsDataService: LocationsDataService) {}
+  constructor(
+    protected readonly route: ActivatedRoute,
+    protected readonly locationsDataService: LocationsDataService
+  ) {}
 
   public transform(answerSource: AnswerSource, hearingState$: Observable<State>, index?: number): Observable<string> {
     let converter: AnswerConverter = new DefaultAnswerConverter();

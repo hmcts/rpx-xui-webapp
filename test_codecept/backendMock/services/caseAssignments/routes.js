@@ -1,4 +1,3 @@
-
 const express = require('express');
 
 const router = express.Router({ mergeParams: true });
@@ -14,7 +13,7 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res) => {
   res.status(201).send({
-    'status_message': 'Role [Defendant] from the organisation policy successfully assigned to the assignee.'
+    status_message: 'Role [Defendant] from the organisation policy successfully assigned to the assignee.',
   });
   // userApiData.sendResponse(req, res, "onSearchLocations", () => service.searchLocations(searchTerm, serviceIds ))
 });

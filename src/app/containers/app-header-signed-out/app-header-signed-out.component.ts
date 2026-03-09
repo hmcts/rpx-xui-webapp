@@ -7,8 +7,9 @@ import { ApplicationTheme } from '../../models/theming.model';
 import { UserNavModel } from '../../models/user-nav.model';
 
 @Component({
+  standalone: false,
   selector: 'exui-app-header-signed-out',
-  templateUrl: './app-header-signed-out.component.html'
+  templateUrl: './app-header-signed-out.component.html',
 })
 export class AppHeaderSignedOutComponent implements OnInit {
   public navItems: NavItemsModel[];
@@ -28,11 +29,7 @@ export class AppHeaderSignedOutComponent implements OnInit {
    * Set the app header properties, in one function that takes in the application theme.
    */
   public setAppHeaderProperties(applicationTheme: ApplicationTheme): void {
-    const {
-      appTitle,
-      backgroundColor,
-      logo
-    } = applicationTheme;
+    const { appTitle, backgroundColor, logo } = applicationTheme;
 
     this.appHeaderTitle = appTitle;
     this.navItems = [];

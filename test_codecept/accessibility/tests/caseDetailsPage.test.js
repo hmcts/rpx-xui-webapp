@@ -1,4 +1,3 @@
-
 const AppActions = require('../helpers/applicationActions');
 const PallyActions = require('../helpers/pallyActions');
 
@@ -21,7 +20,7 @@ describe('Case details page', function () {
   before(async function (done) {
     // MockApp.init()
     ccdApi.caseDetailsResponse.defaultCase.case_type.id = 'Asylum';
-    ccdApi.caseDetailsResponse.defaultCase.case_type.name ='Immigration & Asylum';
+    ccdApi.caseDetailsResponse.defaultCase.case_type.name = 'Immigration & Asylum';
     ccdApi.caseDetailsResponse.defaultCase.case_type.jurisdiction.id = 'IA';
     ccdApi.caseDetailsResponse.defaultCase.case_type.jurisdiction.name = 'Immigration & Asylu';
     ccdApi.caseDetailsResponse.defaultCase.case_type.jurisdiction.description = 'Immigration & Asylu';
@@ -65,4 +64,3 @@ describe('Case details page', function () {
 
   // });
 });
-

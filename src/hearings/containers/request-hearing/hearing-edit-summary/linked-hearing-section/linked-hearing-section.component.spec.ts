@@ -10,10 +10,8 @@ describe('LinkedHearingSectionComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
-      declarations: [
-        LinkedHearingSectionComponent
-      ],
-      providers: [provideMockStore({ initialState })]
+      declarations: [LinkedHearingSectionComponent],
+      providers: [provideMockStore({ initialState })],
     }).compileComponents();
 
     fixture = TestBed.createComponent(LinkedHearingSectionComponent);
@@ -29,7 +27,8 @@ describe('LinkedHearingSectionComponent', () => {
     spyOn(component.changeEditHearing, 'emit');
     component.onChange('linkedHearings');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
-      fragmentId: 'linkedHearings', changeLink: '/hearings/request/hearing-link#yes'
+      fragmentId: 'linkedHearings',
+      changeLink: '/hearings/request/hearing-link#yes',
     });
     expect(component.showAmmended).toEqual(false);
   });

@@ -9,24 +9,25 @@ import * as fromCaseCreate from '../../store/reducers';
  * injected by the root
  */
 @Component({
+  standalone: false,
   selector: 'exui-filter-case',
-  template: `
-    <exui-page-wrapper [title]="'Create Case' | rpxTranslate">
-      <div class="width-50">
-        <exui-ccd-connector
-          *exuiFeatureToggle="'ccdCaseCreate'"
-          [eventsBindings]="caseCreatFilterBindings"
-          [store]="store"
-          [fromFeatureStore]="fromCasesFeature">
-          <ccd-create-case-filters
-            #ccdComponent
-            [attr.isDisabled]="false"
-            [startButtonText]="startButtonText"
-          ></ccd-create-case-filters>
-        </exui-ccd-connector>
-      </div>
-    </exui-page-wrapper>`,
-  encapsulation: ViewEncapsulation.None
+  template: ` <exui-page-wrapper [title]="'Create Case' | rpxTranslate">
+    <div class="width-50">
+      <exui-ccd-connector
+        *exuiFeatureToggle="'ccdCaseCreate'"
+        [eventsBindings]="caseCreatFilterBindings"
+        [store]="store"
+        [fromFeatureStore]="fromCasesFeature"
+      >
+        <ccd-create-case-filters
+          #ccdComponent
+          [attr.isDisabled]="false"
+          [startButtonText]="startButtonText"
+        ></ccd-create-case-filters>
+      </exui-ccd-connector>
+    </div>
+  </exui-page-wrapper>`,
+  encapsulation: ViewEncapsulation.None,
 })
 export class CaseFilterComponent implements OnInit {
   public startButtonText: string;
@@ -42,7 +43,7 @@ export class CaseFilterComponent implements OnInit {
      */
     this.caseCreatFilterBindings = [
       { type: 'selectionSubmitted', action: 'CaseCreateFilterApply' },
-      { type: 'selectionChanged', action: 'CaseCreateFilterChanged' }
+      { type: 'selectionChanged', action: 'CaseCreateFilterChanged' },
     ];
   }
 }

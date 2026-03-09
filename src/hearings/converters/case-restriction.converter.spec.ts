@@ -11,9 +11,7 @@ describe('PrivateHearingAnswerConverter', () => {
   let converter: AnswerConverter;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-
-    });
+    TestBed.configureTestingModule({});
     converter = new CaseRestrictedAnswerConverter();
   });
 
@@ -40,7 +38,7 @@ describe('PrivateHearingAnswerConverter', () => {
       ...initialState.hearings,
       hearingConditions: {
         ...initialState.hearings.hearingConditions,
-        isHearingAmendmentsEnabled: true
+        isHearingAmendmentsEnabled: true,
       },
       hearingRequestToCompare: {
         ...initialState.hearings.hearingRequestToCompare,
@@ -48,10 +46,10 @@ describe('PrivateHearingAnswerConverter', () => {
           ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
           caseDetails: {
             ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.caseDetails,
-            caserestrictedFlag: true
-          }
-        }
-      }
+            caserestrictedFlag: true,
+          },
+        },
+      },
     };
     const result$ = converter.transformAnswer(of(STATE));
     const option = RadioOptions.YES;
@@ -64,7 +62,7 @@ describe('PrivateHearingAnswerConverter', () => {
       ...initialState.hearings,
       hearingConditions: {
         ...initialState.hearings.hearingConditions,
-        isHearingAmendmentsEnabled: true
+        isHearingAmendmentsEnabled: true,
       },
       hearingRequestToCompare: {
         ...initialState.hearings.hearingRequestToCompare,
@@ -72,10 +70,10 @@ describe('PrivateHearingAnswerConverter', () => {
           ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
           caseDetails: {
             ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.caseDetails,
-            caserestrictedFlag: false
-          }
-        }
-      }
+            caserestrictedFlag: false,
+          },
+        },
+      },
     };
     const result$ = converter.transformAnswer(of(STATE));
     const option = RadioOptions.NO;

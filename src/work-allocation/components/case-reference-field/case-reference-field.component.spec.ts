@@ -6,7 +6,9 @@ import { WorkAllocationComponentsModule } from '../work-allocation.components.mo
 import { CaseReferenceFieldComponent } from './case-reference-field.component';
 
 @Component({
-  template: '<exui-case-reference-field [jurisdiction]="jurisdiction" [caseType]="caseType" [caseReference]="caseReference"></exui-case-reference-field>'
+  standalone: false,
+  template:
+    '<exui-case-reference-field [jurisdiction]="jurisdiction" [caseType]="caseType" [caseReference]="caseReference"></exui-case-reference-field>',
 })
 class WrapperComponent {
   @ViewChild(CaseReferenceFieldComponent, { static: true }) public appComponentRef: CaseReferenceFieldComponent;
@@ -22,7 +24,6 @@ describe('WorkAllocation', () => {
     const JURISDICTION: string = 'IA';
     const CASETYPE: string = 'Asylum';
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let component: CaseReferenceFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
@@ -30,9 +31,8 @@ describe('WorkAllocation', () => {
     beforeEach(async () => {
       TestBed.configureTestingModule({
         declarations: [WrapperComponent],
-        imports: [WorkAllocationComponentsModule, RouterTestingModule]
-      })
-        .compileComponents();
+        imports: [WorkAllocationComponentsModule, RouterTestingModule],
+      }).compileComponents();
 
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;
@@ -132,6 +132,64 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(CASE_REFERENCE);
       expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${JURISDICTION}/${CASETYPE}/${CASE_REFERENCE}`); // No spaces
+    });
+
+    describe('ngOnChanges', () => {
+      const CASE_DETAILS_URL: string = AppConstants.CASE_DETAILS_URL;
+
+      let component: CaseReferenceFieldComponent;
+
+      beforeEach(() => {
+        component = new CaseReferenceFieldComponent();
+      });
+
+      it('should set href with jurisdiction and caseType when all inputs are provided', () => {
+        component.caseReference = '123456';
+        component.jurisdiction = 'IA';
+        component.caseType = 'Asylum';
+        component.ngOnChanges();
+        expect(component.href).toBe(`${CASE_DETAILS_URL}IA/Asylum/123456`);
+      });
+
+      it('should set href with only caseReference when jurisdiction and caseType are missing', () => {
+        component.caseReference = '654321';
+        component.jurisdiction = undefined;
+        component.caseType = undefined;
+        component.ngOnChanges();
+        expect(component.href).toBe(`${CASE_DETAILS_URL}654321`);
+      });
+
+      it('should set href with only caseReference when jurisdiction and caseType are empty strings', () => {
+        component.caseReference = '654321';
+        component.jurisdiction = '';
+        component.caseType = '';
+        component.ngOnChanges();
+        expect(component.href).toBe(`${CASE_DETAILS_URL}654321`);
+      });
+
+      it('should not set href if caseReference is undefined', () => {
+        component.caseReference = undefined;
+        component.jurisdiction = 'IA';
+        component.caseType = 'Asylum';
+        component.ngOnChanges();
+        expect(component.href).toBeUndefined();
+      });
+
+      it('should not set href if caseReference is null', () => {
+        component.caseReference = null;
+        component.jurisdiction = 'IA';
+        component.caseType = 'Asylum';
+        component.ngOnChanges();
+        expect(component.href).toBeUndefined();
+      });
+
+      it('should not set href if caseReference is an empty string', () => {
+        component.caseReference = '';
+        component.jurisdiction = 'IA';
+        component.caseType = 'Asylum';
+        component.ngOnChanges();
+        expect(component.href).toBeUndefined();
+      });
     });
   });
 });

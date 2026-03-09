@@ -19,7 +19,8 @@ import { StaffUserDetailsComponent } from './staff-user-details.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 @Component({
-  template: ''
+  standalone: false,
+  template: '',
 })
 class StubComponent {}
 
@@ -30,22 +31,19 @@ describe('StaffUserDetailsComponent', () => {
   let mockMessageService: jasmine.SpyObj<InfoMessageCommService>;
   let mockStaffAddEditFormService: jasmine.SpyObj<StaffAddEditFormService>;
   let location: Location;
-  let router: jasmine.SpyObj<Router>;
+  let router: Router;
   let testStaffUserData: Partial<StaffUser>;
   const caseWorkerId = '123456';
 
   beforeEach(waitForAsync(() => {
-    mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>(
-      'mockStaffDataAccessService', ['updateUser', 'fetchSingleUserById']
-    );
+    mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>('mockStaffDataAccessService', [
+      'updateUser',
+      'fetchSingleUserById',
+    ]);
 
-    mockMessageService = jasmine.createSpyObj<InfoMessageCommService>(
-      'mockMessageService', ['nextMessage']
-    );
+    mockMessageService = jasmine.createSpyObj<InfoMessageCommService>('mockMessageService', ['nextMessage']);
 
-    mockStaffAddEditFormService = jasmine.createSpyObj<StaffAddEditFormService>(
-      'staffAddEditFormService', ['patchFormValues']
-    );
+    mockStaffAddEditFormService = jasmine.createSpyObj<StaffAddEditFormService>('staffAddEditFormService', ['patchFormValues']);
 
     testStaffUserData = {
       case_worker_id: '123',
@@ -61,46 +59,44 @@ describe('StaffUserDetailsComponent', () => {
         {
           role_id: '1',
           role: 'Role',
-          is_primary: true
-        }
+          is_primary: true,
+        },
       ],
       skills: [
         {
           skill_id: 1,
-          description: 'SKILLCODE'
-        }
+          description: 'SKILLCODE',
+        },
       ],
       services: [
         {
           service: 'service',
-          service_code: 'SERVICE_CODE'
-        }
+          service_code: 'SERVICE_CODE',
+        },
       ],
       base_locations: [
         {
           location_id: '333',
           location: 'Location',
-          is_primary: true
-        }
+          is_primary: true,
+        },
       ],
       region: 'West Midlands',
       region_id: 12,
-      up_idam_status: StaffUserIDAMStatus.ACTIVE
+      up_idam_status: StaffUserIDAMStatus.ACTIVE,
     };
 
     TestBed.configureTestingModule({
-      declarations: [
-        StaffUserDetailsComponent,
-        StaffStatusComponent,
-        StubComponent
-      ],
+      declarations: [StaffUserDetailsComponent, StaffStatusComponent, StubComponent],
       schemas: [NO_ERRORS_SCHEMA],
-      imports: [RouterTestingModule.withRoutes([
-        { path: 'service-down', component: StubComponent },
-        { path: 'staff/user-details/:id/update', component: StubComponent },
-        { path: 'staff/user-details/:id/copy', component: StubComponent },
-        { path: 'staff/add-user', component: StubComponent }
-      ])],
+      imports: [
+        RouterTestingModule.withRoutes([
+          { path: 'service-down', component: StubComponent },
+          { path: 'staff/user-details/:id/update', component: StubComponent },
+          { path: 'staff/user-details/:id/copy', component: StubComponent },
+          { path: 'staff/add-user', component: StubComponent },
+        ]),
+      ],
       providers: [
         { provide: StaffDataAccessService, useValue: mockStaffDataAccessService },
         {
@@ -108,27 +104,27 @@ describe('StaffUserDetailsComponent', () => {
           useValue: {
             snapshot: {
               params: {
-                id: caseWorkerId
+                id: caseWorkerId,
               },
               data: {
                 staffUserDetails: testStaffUserData,
                 services: [
                   {
                     key: 'ABC1',
-                    label: 'Service A'
+                    label: 'Service A',
                   },
                   {
                     key: 'BCD2',
-                    label: 'Service B'
+                    label: 'Service B',
                   },
                   {
                     key: 'CDE3',
-                    label: 'Service C'
+                    label: 'Service C',
                   },
                   {
                     key: 'DEF4',
-                    label: 'Service D'
-                  }
+                    label: 'Service D',
+                  },
                 ],
                 skills: [
                   {
@@ -136,53 +132,52 @@ describe('StaffUserDetailsComponent', () => {
                     options: [
                       {
                         key: '1',
-                        label: 'Underwriter'
+                        label: 'Underwriter',
                       },
                       {
                         key: '2',
-                        label: 'Caseworker'
-                      }
-                    ]
+                        label: 'Caseworker',
+                      },
+                    ],
                   },
                   {
                     group: 'BCD2',
                     options: [
                       {
                         key: '3',
-                        label: 'Caseworker'
+                        label: 'Caseworker',
                       },
                       {
                         key: '4',
-                        label: 'Case manager'
-                      }
-                    ]
+                        label: 'Case manager',
+                      },
+                    ],
                   },
                   {
                     group: 'CDE3',
                     options: [
                       {
                         key: '5',
-                        label: 'Underwriter'
-                      }
-                    ]
-                  }
-                ]
-              }
-            }
-          }
+                        label: 'Underwriter',
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
+          },
         },
         { provide: StaffAddEditFormService, useValue: mockStaffAddEditFormService },
         { provide: InfoMessageCommService, useValue: mockMessageService },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(StaffUserDetailsComponent);
-    router = TestBed.get(Router);
+    router = TestBed.inject(Router);
     component = fixture.componentInstance;
     fixture.detectChanges();
     location = TestBed.inject(Location);
@@ -206,17 +201,21 @@ describe('StaffUserDetailsComponent', () => {
     expect(location.path()).toBe('/service-down');
   }));
 
-  it('should set suspendedStatus to "error" to show the error banner and it shouldn\'t modify suspended status' + ' ' +
-    'when calling updateUserStatus', () => {
-    mockStaffDataAccessService.updateUser.and.returnValue(throwError({ status: 403 }));
-    const userSuspendedStatusBefore = component.userDetails.suspended;
-    component.updateUserStatus();
-    fixture.detectChanges();
+  it(
+    'should set suspendedStatus to "error" to show the error banner and it shouldn\'t modify suspended status' +
+      ' ' +
+      'when calling updateUserStatus',
+    () => {
+      mockStaffDataAccessService.updateUser.and.returnValue(throwError({ status: 403 }));
+      const userSuspendedStatusBefore = component.userDetails.suspended;
+      component.updateUserStatus();
+      fixture.detectChanges();
 
-    expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
-    expect(component.userDetails.suspended).toBe(userSuspendedStatusBefore);
-    expect(component.status).toBe('warning');
-  });
+      expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
+      expect(component.userDetails.suspended).toBe(userSuspendedStatusBefore);
+      expect(component.status).toBe('warning');
+    }
+  );
 
   it('should set suspendedStatus to "suspended" to show the banner when calling updateUserStatus with isSuspended true', () => {
     expect(component.userDetails.suspended).toBe(false);
@@ -255,8 +254,7 @@ describe('StaffUserDetailsComponent', () => {
     expect(component.onCopyUser).toHaveBeenCalled();
   }));
 
-  it('should call navigateByUrl when calling onUpdateUser ' +
-    'with state set as the userDetails present', () => {
+  it('should call navigateByUrl when calling onUpdateUser ' + 'with state set as the userDetails present', () => {
     spyOn(router, 'navigateByUrl').and.callThrough();
     component.onUpdateUser();
     expect(router.navigateByUrl).toHaveBeenCalledWith(
@@ -264,8 +262,8 @@ describe('StaffUserDetailsComponent', () => {
       `/staff/user-details/${component.route.snapshot.params.id}/update`,
       {
         state: {
-          formValues: component.userDetails
-        }
+          formValues: component.userDetails,
+        },
       }
     );
   });
@@ -277,8 +275,7 @@ describe('StaffUserDetailsComponent', () => {
     expect(component.onCopyUser).toHaveBeenCalled();
   }));
 
-  it('should call navigateByUrl when calling onCopyUser ' +
-    'with modified user details as state', () => {
+  it('should call navigateByUrl when calling onCopyUser ' + 'with modified user details as state', () => {
     spyOn(router, 'navigateByUrl').and.callThrough();
     component.onCopyUser();
     expect(router.navigateByUrl).toHaveBeenCalledWith(
@@ -292,9 +289,9 @@ describe('StaffUserDetailsComponent', () => {
             last_name: '',
             email_id: '',
             suspended: false,
-            up_idam_status: StaffUserIDAMStatus.PENDING
-          }
-        }
+            up_idam_status: StaffUserIDAMStatus.PENDING,
+          },
+        },
       }
     );
   });
@@ -319,7 +316,7 @@ describe('StaffUserDetailsComponent', () => {
       expect(mockStaffDataAccessService.updateUser).toHaveBeenCalledWith(staffUser);
       expect(mockMessageService.nextMessage).toHaveBeenCalledWith({
         message: InfoMessage.ACTIVATION_EMAIL_SENT,
-        type: InfoMessageType.SUCCESS
+        type: InfoMessageType.SUCCESS,
       } as InformationMessage);
     });
 
@@ -334,7 +331,7 @@ describe('StaffUserDetailsComponent', () => {
       expect(mockStaffDataAccessService.updateUser).toHaveBeenCalledWith(staffUser);
       expect(mockMessageService.nextMessage).toHaveBeenCalledWith({
         message: InfoMessage.ACTIVATION_EMAIL_ERROR,
-        type: InfoMessageType.WARNING
+        type: InfoMessageType.WARNING,
       } as InformationMessage);
     });
   });

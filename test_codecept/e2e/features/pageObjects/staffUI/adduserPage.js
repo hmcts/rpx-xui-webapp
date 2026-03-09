@@ -2,7 +2,7 @@ const { $, $$, elementByXpath, getText } = require('../../../../helpers/globals'
 
 const BrowserWaits = require('../../../support/customWaits');
 
-class AddUserPage{
+class AddUserPage {
   get container() {
     return $('exui-staff-add-edit-user-form');
   }
@@ -71,15 +71,15 @@ class AddUserPage{
     return elementByXpath('//button[contains(text(),"Cancel")]');
   }
 
-  async getPageTitle(){
+  async getPageTitle() {
     return await getText(this.headerTitle);
   }
 
-  async isDisplayed(){
+  async isDisplayed() {
     return await this.container.isVisible();
   }
 
-  async clickContinue(){
+  async clickContinue() {
     await this.continue.click();
   }
 
@@ -91,12 +91,12 @@ class AddUserPage{
     await this.cancel.click();
   }
 
-  async enterDetails(userDetails){
+  async enterDetails(userDetails) {
     const keys = Object.keys(userDetails);
 
-    for (const key of keys){
+    for (const key of keys) {
       const inputVal = userDetails[key];
-      switch (key){
+      switch (key) {
         case 'First name':
           await this.firstName.fill(inputVal);
           break;
@@ -113,7 +113,7 @@ class AddUserPage{
           const checkBoxElements = await checkBoxes(this.services);
           const labels = Object.keys(checkBoxElements);
           for (const service of inputVal) {
-            if (!labels.includes(service)){
+            if (!labels.includes(service)) {
               throw new Error(`input ${service} not in the services list`);
             } else {
               await checkBoxElements[service].click();
@@ -129,7 +129,7 @@ class AddUserPage{
           await BrowserWaits.retryWithActionCallback(async () => {
             await BrowserWaits.waitForSeconds(2);
             e = await searchResults.getItemWithText(inputVal);
-            if (e === null){
+            if (e === null) {
               throw new Error('locations not found, retry waiting');
             }
           });
@@ -137,7 +137,7 @@ class AddUserPage{
           await this.primaryLocationAddBtn.click();
           break;
         case 'Additional locations':
-          inputVal.forEach(async(loc) => {
+          inputVal.forEach(async (loc) => {
             await this.additionalLocations.fill(loc);
             const additionaLocationResults = $$('.mat-option-text');
             let ale = null;
@@ -168,7 +168,6 @@ class AddUserPage{
           }
           break;
         case 'Job title':
-
           const jobTitleCheckBoxElements = await checkBoxes(this.jobTitles);
           const jobTitleLabels = Object.keys(jobTitleCheckBoxElements);
           for (const title of inputVal) {
@@ -184,11 +183,11 @@ class AddUserPage{
   }
 }
 
-async function checkBoxes(parent){
+async function checkBoxes(parent) {
   const checkBoxes = {};
   const elements = parent.locator('.govuk-checkboxes__item');
   const count = await elements.count();
-  for (let i = 0; i< count; i++){
+  for (let i = 0; i < count; i++) {
     const e = elements.nth(i);
     const label = await getText(e.locator('label'));
     checkBoxes[label] = e.locator('input');

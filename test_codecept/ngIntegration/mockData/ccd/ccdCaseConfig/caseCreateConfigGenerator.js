@@ -1,32 +1,32 @@
-
 const CCDCaseField = require('./CCDCaseField');
 const configTemplate = {
-  'id': 'FR_solicitorCreate',
-  'name': 'EXUI Test CaseType',
-  'description': 'Create an application for EXUI Test Casetype 1',
-  'case_id': null,
-  'case_fields': [],
-  'event_token': 'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJpcTlxNWs5NW85cWllNTk5NnU1MmEyNGhqYiIsInN1YiI6IjQxYTkwYzM5LWQ3NTYtNGViYS04ZTg1LTViNWJmNTZiMzFmNSIsImlhdCI6MTU5NjU0NzA2NSwiZXZlbnQtaWQiOiJGUl9zb2xpY2l0b3JDcmVhdGUiLCJjYXNlLXR5cGUtaWQiOiJGaW5hbmNpYWxSZW1lZHlDb250ZXN0ZWQiLCJqdXJpc2RpY3Rpb24taWQiOiJESVZPUkNFIiwiY2FzZS12ZXJzaW9uIjoiYmYyMWE5ZThmYmM1YTM4NDZmYjA1YjRmYTA4NTllMDkxN2IyMjAyZiJ9.QXtddQWsWbl8H8tKvM-SViK-E9JrFeU6bS0wlt5eJ0o',
-  'wizard_pages': [],
-  'show_summary': true,
-  'show_event_notes': false,
-  'end_button_label': null,
-  'can_save_draft': null,
-  '_links': {
-    'self': {
-      'href': 'http://gateway-ccd.aat.platform.hmcts.net/internal/case-types/FinancialRemedyContested/event-triggers/FR_solicitorCreate?ignore-warning=false'
-    }
-  }
+  id: 'FR_solicitorCreate',
+  name: 'EXUI Test CaseType',
+  description: 'Create an application for EXUI Test Casetype 1',
+  case_id: null,
+  case_fields: [],
+  event_token:
+    'eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiJpcTlxNWs5NW85cWllNTk5NnU1MmEyNGhqYiIsInN1YiI6IjQxYTkwYzM5LWQ3NTYtNGViYS04ZTg1LTViNWJmNTZiMzFmNSIsImlhdCI6MTU5NjU0NzA2NSwiZXZlbnQtaWQiOiJGUl9zb2xpY2l0b3JDcmVhdGUiLCJjYXNlLXR5cGUtaWQiOiJGaW5hbmNpYWxSZW1lZHlDb250ZXN0ZWQiLCJqdXJpc2RpY3Rpb24taWQiOiJESVZPUkNFIiwiY2FzZS12ZXJzaW9uIjoiYmYyMWE5ZThmYmM1YTM4NDZmYjA1YjRmYTA4NTllMDkxN2IyMjAyZiJ9.QXtddQWsWbl8H8tKvM-SViK-E9JrFeU6bS0wlt5eJ0o',
+  wizard_pages: [],
+  show_summary: true,
+  show_event_notes: false,
+  end_button_label: null,
+  can_save_draft: null,
+  _links: {
+    self: {
+      href: 'http://gateway-ccd.aat.platform.hmcts.net/internal/case-types/FinancialRemedyContested/event-triggers/FR_solicitorCreate?ignore-warning=false',
+    },
+  },
 };
 
 const wizardPageTemplate = {
-  'id': 'page1',
-  'label': null,
-  'order': 1,
-  'wizard_page_fields': [],
-  'show_condition': null,
-  'callback_url_mid_event': 'http://finrem-cos-aat.service.core-compute-aat.internal/case-orchestration/contested/set-defaults',
-  'retries_timeout_mid_event': []
+  id: 'page1',
+  label: null,
+  order: 1,
+  wizard_page_fields: [],
+  show_condition: null,
+  callback_url_mid_event: 'http://finrem-cos-aat.service.core-compute-aat.internal/case-orchestration/contested/set-defaults',
+  retries_timeout_mid_event: [],
 };
 
 class CCDCaseConfig extends CCDCaseField {
@@ -59,10 +59,10 @@ class CCDCaseConfig extends CCDCaseField {
     const ccdField = this.getCCDFieldTemplateCopy(fieldConfig);
     this.caseConfigTemplate.case_fields.push(ccdField);
     wizardPage.wizard_page_fields.push({
-      'case_field_id': fieldConfig.id,
-      'order': wizardPage.wizard_page_fields.length,
-      'page_column_no': 1,
-      'complex_field_overrides': []
+      case_field_id: fieldConfig.id,
+      order: wizardPage.wizard_page_fields.length,
+      page_column_no: 1,
+      complex_field_overrides: [],
     });
     return ccdField;
   }
@@ -87,10 +87,10 @@ class CCDCaseConfig extends CCDCaseField {
 
     this.caseConfigTemplate.case_fields.push(ccdField);
     this.currentWizardPage.wizard_page_fields.push({
-      'case_field_id': ccdField.id,
-      'order': this.currentWizardPage.wizard_page_fields.length,
-      'page_column_no': 1,
-      'complex_field_overrides': []
+      case_field_id: ccdField.id,
+      order: this.currentWizardPage.wizard_page_fields.length,
+      page_column_no: 1,
+      complex_field_overrides: [],
     });
     this.currentCaseField = ccdField;
     return this;
@@ -227,12 +227,12 @@ class CCDCaseConfig extends CCDCaseField {
         if (caseField.case_field_id === caseFieldId) {
           for (let overridesCtr = 0; overridesCtr < overrides.length; overridesCtr++) {
             const complexFieldOverride = {
-              'complex_field_element_id': '',
-              'display_context': '',
-              'label': null,
-              'hint_text': null,
-              'show_condition': '',
-              'retain_hidden_value': null
+              complex_field_element_id: '',
+              display_context: '',
+              label: null,
+              hint_text: null,
+              show_condition: '',
+              retain_hidden_value: null,
             };
 
             this.setObjectProps(complexFieldOverride, overrides[overridesCtr]);
@@ -362,7 +362,9 @@ class CCDCaseConfig extends CCDCaseField {
         const complexFields = fieldConfig.field_type ? fieldConfig.field_type.complex_fields : fieldConfig.complex_fields;
         fieldConfig = complexFields.filter((complexField) => complexField.id === childFieldId)[0];
       } else if (thisFieldType === 'Collection') {
-        const colletionField = fieldConfig.field_type ? fieldConfig.field_type.collection_field_type : fieldConfig.collection_field_type;
+        const colletionField = fieldConfig.field_type
+          ? fieldConfig.field_type.collection_field_type
+          : fieldConfig.collection_field_type;
         fieldConfig = colletionField;
       } else {
         fieldConfig = fieldConfig;
@@ -373,4 +375,3 @@ class CCDCaseConfig extends CCDCaseField {
 }
 
 module.exports = CCDCaseConfig;
-

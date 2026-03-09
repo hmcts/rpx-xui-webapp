@@ -6,14 +6,18 @@ import * as hearingActualsActions from '../../store/actions/hearing-actuals.acti
 import * as hearingRequestActions from '../../store/actions/hearing-request.action';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-actuals',
   templateUrl: './hearing-actuals.component.html',
-  styleUrls: ['./hearing-actuals.component.scss']
+  styleUrls: ['./hearing-actuals.component.scss'],
 })
 export class HearingActualsComponent implements OnInit, OnDestroy {
   private sub: Subscription;
 
-  public constructor(private readonly store: Store<any>, private readonly route: ActivatedRoute) {}
+  public constructor(
+    private readonly store: Store<any>,
+    private readonly route: ActivatedRoute
+  ) {}
 
   public ngOnInit(): void {
     this.sub = this.route.params.subscribe((params) => {

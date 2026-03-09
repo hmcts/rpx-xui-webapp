@@ -14,13 +14,13 @@ const serviceCode = 'BFA1';
 
 describe('Locations ref data api, get all locations for service', () => {
   const RESPONSE_BODY = {
-    'court_venues': [
+    court_venues: [
       {
-        'is_case_management_location': somethingLike('Y'),
-        'epimms_id': somethingLike('12345'),
-        'site_name': somethingLike('siteName1')
-      }
-    ]
+        is_case_management_location: somethingLike('Y'),
+        epimms_id: somethingLike('12345'),
+        site_name: somethingLike('siteName1'),
+      },
+    ],
   };
 
   xdescribe('get /locations}', () => {
@@ -39,21 +39,21 @@ describe('Locations ref data api, get all locations for service', () => {
           method: 'GET',
           path: '/refdata/location/court-venues/services',
           query: {
-            'service_code': serviceCode
+            service_code: serviceCode,
           },
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
-          }
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
+          },
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: RESPONSE_BODY
-        }
+          body: RESPONSE_BODY,
+        },
       };
       pactSetUp.provider.addInteraction(interaction);
     });
@@ -74,11 +74,10 @@ describe('Locations ref data api, get all locations for service', () => {
 
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
-          }
-
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
+          },
         });
         let returnedResponse = null;
         const response = mockRes();

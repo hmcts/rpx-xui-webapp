@@ -1,4 +1,3 @@
-
 const express = require('express');
 
 const router = express.Router({ mergeParams: true });
@@ -40,4 +39,3 @@ router.get('/caseflags/:service-id=ABA5', (req, res) => {
 });
 
 module.exports = router;
-

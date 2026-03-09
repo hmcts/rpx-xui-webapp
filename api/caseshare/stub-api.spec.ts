@@ -2,10 +2,11 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { getUsers, getCases, assignCases } from './stub-api';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('Case Share Stub API', () => {
@@ -25,7 +26,7 @@ describe('Case Share Stub API', () => {
   describe('getUsers', () => {
     it('should return all users when empty search text is provided', () => {
       req = mockReq({
-        query: { q: '' }
+        query: { q: '' },
       });
 
       getUsers(req, res);
@@ -39,7 +40,7 @@ describe('Case Share Stub API', () => {
 
     it('should filter users by idamId', () => {
       req = mockReq({
-        query: { q: 'u111111' }
+        query: { q: 'u111111' },
       });
 
       getUsers(req, res);
@@ -52,7 +53,7 @@ describe('Case Share Stub API', () => {
 
     it('should filter users by firstName (case insensitive)', () => {
       req = mockReq({
-        query: { q: 'steve' }
+        query: { q: 'steve' },
       });
 
       getUsers(req, res);
@@ -65,7 +66,7 @@ describe('Case Share Stub API', () => {
 
     it('should filter users by lastName (case insensitive)', () => {
       req = mockReq({
-        query: { q: 'ELLIOTT' }
+        query: { q: 'ELLIOTT' },
       });
 
       getUsers(req, res);
@@ -78,7 +79,7 @@ describe('Case Share Stub API', () => {
 
     it('should filter users by email', () => {
       req = mockReq({
-        query: { q: '@woodford.com' }
+        query: { q: '@woodford.com' },
       });
 
       getUsers(req, res);
@@ -93,7 +94,7 @@ describe('Case Share Stub API', () => {
 
     it('should return 404 when no users match search criteria', () => {
       req = mockReq({
-        query: { q: 'nonexistent' }
+        query: { q: 'nonexistent' },
       });
 
       getUsers(req, res);
@@ -104,7 +105,7 @@ describe('Case Share Stub API', () => {
 
     it('should handle partial matches in search', () => {
       req = mockReq({
-        query: { q: 'har' }
+        query: { q: 'har' },
       });
 
       getUsers(req, res);
@@ -146,12 +147,12 @@ describe('Case Share Stub API', () => {
                   idamId: 'u222222',
                   firstName: 'Steve',
                   lastName: 'Harrison',
-                  email: 'steve@test.com'
-                }
-              ]
-            }
-          ]
-        }
+                  email: 'steve@test.com',
+                },
+              ],
+            },
+          ],
+        },
       });
 
       assignCases(req, res);
@@ -177,12 +178,12 @@ describe('Case Share Stub API', () => {
                   idamId: 'u333333',
                   firstName: 'James',
                   lastName: 'Priest',
-                  email: 'james@test.com'
-                }
-              ]
-            }
-          ]
-        }
+                  email: 'james@test.com',
+                },
+              ],
+            },
+          ],
+        },
       });
 
       assignCases(req, res);
@@ -208,12 +209,12 @@ describe('Case Share Stub API', () => {
                   idamId: 'u999999',
                   firstName: 'Unknown',
                   lastName: 'User',
-                  email: 'unknown@test.com'
-                }
-              ]
-            }
-          ]
-        }
+                  email: 'unknown@test.com',
+                },
+              ],
+            },
+          ],
+        },
       });
 
       assignCases(req, res);
@@ -234,9 +235,9 @@ describe('Case Share Stub API', () => {
                 {
                   idamId: 'u222222',
                   firstName: 'Steve',
-                  lastName: 'Harrison'
-                }
-              ]
+                  lastName: 'Harrison',
+                },
+              ],
             },
             {
               caseId: 'case-456',
@@ -246,12 +247,12 @@ describe('Case Share Stub API', () => {
                 {
                   idamId: 'u333333',
                   firstName: 'James',
-                  lastName: 'Priest'
-                }
-              ]
-            }
-          ]
-        }
+                  lastName: 'Priest',
+                },
+              ],
+            },
+          ],
+        },
       });
 
       assignCases(req, res);
@@ -280,19 +281,19 @@ describe('Case Share Stub API', () => {
                 {
                   idamId: 'u111111',
                   firstName: 'Joe',
-                  lastName: 'Elliott'
-                }
+                  lastName: 'Elliott',
+                },
               ],
               pendingShares: [
                 {
                   idamId: 'u222222',
                   firstName: 'Steve',
-                  lastName: 'Harrison'
-                }
-              ]
-            }
-          ]
-        }
+                  lastName: 'Harrison',
+                },
+              ],
+            },
+          ],
+        },
       });
 
       assignCases(req, res);
@@ -312,10 +313,10 @@ describe('Case Share Stub API', () => {
               caseId: 'case-123',
               caseTitle: 'Test Case',
               sharedWith: [],
-              pendingShares: []
-            }
-          ]
-        }
+              pendingShares: [],
+            },
+          ],
+        },
       });
 
       assignCases(req, res);
@@ -340,12 +341,12 @@ describe('Case Share Stub API', () => {
                 {
                   idamId: 'u222222',
                   firstName: 'Steve',
-                  lastName: 'Harrison'
-                }
-              ]
-            }
-          ]
-        }
+                  lastName: 'Harrison',
+                },
+              ],
+            },
+          ],
+        },
       });
 
       assignCases(req, res);

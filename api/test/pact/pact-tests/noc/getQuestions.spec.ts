@@ -30,10 +30,10 @@ describe('getNoCQuestions API', () => {
 
   const req = mockReq({
     headers: {
-      'Authorization': 'Bearer someAuthorizationToken',
-      'ServiceAuthorization': 'Bearer someServiceAuthorizationToken'
+      Authorization: 'Bearer someAuthorizationToken',
+      ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
     },
-    query: { caseId: '1234567890123452' }
+    query: { caseId: '1234567890123452' },
   });
 
   describe('when a request is made to retrieve NoC questions', () => {
@@ -47,15 +47,15 @@ describe('getNoCQuestions API', () => {
           type: somethingLike('Email'),
           min: somethingLike('0'),
           max: somethingLike('10'),
-          regular_expression: somethingLike('asdsa')
+          regular_expression: somethingLike('asdsa'),
         },
         display_context_parameter: somethingLike('1'),
         challenge_question_id: somethingLike('NoC'),
         answer_field: somethingLike(''),
-        question_id: somethingLike('QuestionId67745')
-      })
+        question_id: somethingLike('QuestionId67745'),
+      }),
     };
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     let next;
     before(async () => {
       next = sandbox.spy();
@@ -66,13 +66,13 @@ describe('getNoCQuestions API', () => {
           method: 'GET',
           path: '/noc/noc-questions',
           query: {
-            case_id: caseId
-          }
+            case_id: caseId,
+          },
         },
         willRespondWith: {
           status: 200,
-          body: expectedResponse
-        }
+          body: expectedResponse,
+        },
       });
     });
 

@@ -8,7 +8,10 @@ import * as fromFeature from '../../store';
 import { UtilsModule } from '../noc-field/utils/utils.module';
 import { NocCheckYourAnswersComponent } from './noc-check-your-answers.component';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate',
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;
@@ -26,14 +29,9 @@ describe('NocCheckYourAnswersComponent', () => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [NocCheckYourAnswersComponent, RpxTranslateMockPipe],
-      imports: [
-        UtilsModule
-      ],
-      providers: [
-        provideMockStore()
-      ]
-    })
-      .compileComponents();
+      imports: [UtilsModule],
+      providers: [provideMockStore()],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -52,11 +50,18 @@ describe('NocCheckYourAnswersComponent', () => {
   });
 
   it('should assign the input value of our component', () => {
-    const answers: NocAnswer[] = [{
-      question_id: 'Question_123456', value: 'bob', question_text: of('What is your first name?')
-    }, {
-      question_id: 'Question_678910', value: 'the builder', question_text: of('What is your last name?')
-    }];
+    const answers: NocAnswer[] = [
+      {
+        question_id: 'Question_123456',
+        value: 'bob',
+        question_text: of('What is your first name?'),
+      },
+      {
+        question_id: 'Question_678910',
+        value: 'the builder',
+        question_text: of('What is your last name?'),
+      },
+    ];
     const answers$ = of(answers);
     component.qAndA$ = answers$;
     fixture.detectChanges();
@@ -72,7 +77,7 @@ describe('NocCheckYourAnswersComponent', () => {
     const answer: NocAnswer = {
       question_id: 'q1',
       question_text: of('name'),
-      value: 'James'
+      value: 'James',
     };
     component.navToQAndA(answer);
     expect(spyOnDispatchToStore).toHaveBeenCalledWith(new fromFeature.ChangeNavigation(NocState.QUESTION));

@@ -1,7 +1,6 @@
 import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
-import * as sinonChai from 'sinon-chai';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { AxiosResponse } from 'axios';
@@ -20,9 +19,11 @@ import {
   approveSpecificAccessRequest,
   deleteSpecificAccessRoles,
   restoreDeletedRole,
-  removeAcceptHeader
+  removeAcceptHeader,
 } from './';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('Access Management', (): void => {
@@ -51,8 +52,8 @@ describe('Access Management', (): void => {
       req = mockReq({
         body: {
           userId: '21334a2b-79ce-44eb-9168-2d49a744be9c',
-          bookableServices: ['service-1', 'service-2']
-        }
+          bookableServices: ['service-1', 'service-2'],
+        },
       });
       res = mockRes();
       getFullLocationsStub = sandbox.stub(locationService, 'getFullLocationsForServices');
@@ -71,17 +72,17 @@ describe('Access Management', (): void => {
     });
 
     it('should fetch bookings and enrich with location names', async () => {
-    // Note: The external API returns 'base_location_id' but we need to map it to 'LocationId'
-    // for the enrichment logic to work correctly.
+      // Note: The external API returns 'base_location_id' but we need to map it to 'LocationId'
+      // for the enrichment logic to work correctly.
       const mockBookings = {
         status: 200,
         data: {
           bookings: [
             { ...bookings.bookings[0], locationId: bookings.bookings[0].base_location_id },
             { ...bookings.bookings[1], locationId: bookings.bookings[1].base_location_id },
-            { ...bookings.bookings[2], locationId: bookings.bookings[2].base_location_id }
-          ]
-        }
+            { ...bookings.bookings[2], locationId: bookings.bookings[2].base_location_id },
+          ],
+        },
       };
 
       httpPostStub.resolves(mockBookings);
@@ -91,7 +92,7 @@ describe('Access Management', (): void => {
 
       expect(httpPostStub).to.have.been.calledOnce;
       expect(httpPostStub.firstCall.args[1]).to.deep.equal({
-        queryRequest: { userIds: ['21334a2b-79ce-44eb-9168-2d49a744be9c'] }
+        queryRequest: { userIds: ['21334a2b-79ce-44eb-9168-2d49a744be9c'] },
       });
       expect(setHeadersStub).to.have.been.calledWith(req);
       expect(getFullLocationsStub).to.have.been.calledWith(req);
@@ -102,15 +103,15 @@ describe('Access Management', (): void => {
       expect(sentData).to.be.an('array').that.has.lengthOf(3);
       expect(sentData[0]).to.deep.include({
         locationId: '765324',
-        locationName: null // not found in mockLocations
+        locationName: null, // not found in mockLocations
       });
       expect(sentData[1]).to.deep.include({
         locationId: '231596',
-        locationName: 'Glasgow New Central Court' // found in mockLocations
+        locationName: 'Glasgow New Central Court', // found in mockLocations
       });
       expect(sentData[2]).to.deep.include({
         locationId: '512401',
-        locationName: null // not found in mockLocations
+        locationName: null, // not found in mockLocations
       });
       expect(next).to.not.have.been.called;
     });
@@ -127,7 +128,7 @@ describe('Access Management', (): void => {
     });
 
     it('should remove accept header from headers', async () => {
-      const headers = { 'accept': 'application/json', 'content-type': 'application/json' };
+      const headers = { accept: 'application/json', 'content-type': 'application/json' };
       setHeadersStub.returns(headers);
       httpPostStub.resolves({ status: 200, data: { bookings: [] } });
       getFullLocationsStub.resolves([]);
@@ -147,8 +148,8 @@ describe('Access Management', (): void => {
           locationId: '366796',
           regionId: '104',
           beginDate: new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString(),
-          endDate: new Date(now.getTime() + 25 * 60 * 60 * 1000).toISOString()
-        }
+          endDate: new Date(now.getTime() + 25 * 60 * 60 * 1000).toISOString(),
+        },
       });
       res = mockRes();
       setHeadersStub.returns({ 'content-type': 'application/json' });
@@ -157,7 +158,7 @@ describe('Access Management', (): void => {
     it('should create a booking successfully', async () => {
       const mockResponse = {
         status: 201,
-        data: bookingResponse
+        data: bookingResponse,
       };
       httpPostStub.resolves(mockResponse);
 
@@ -165,7 +166,7 @@ describe('Access Management', (): void => {
 
       expect(httpPostStub).to.have.been.calledOnce;
       expect(httpPostStub.firstCall.args[1]).to.deep.equal({
-        bookingRequest: req.body
+        bookingRequest: req.body,
       });
       expect(setHeadersStub).to.have.been.calledWith(req);
       expect(res.status).to.have.been.calledWith(201);
@@ -185,7 +186,7 @@ describe('Access Management', (): void => {
     });
 
     it('should remove accept header from headers', async () => {
-      const headers = { 'accept': 'application/json', 'content-type': 'application/json' };
+      const headers = { accept: 'application/json', 'content-type': 'application/json' };
       setHeadersStub.returns(headers);
       httpPostStub.resolves({ status: 201, data: {} });
 
@@ -201,8 +202,8 @@ describe('Access Management', (): void => {
     beforeEach(() => {
       req = mockReq({
         body: {
-          userId: '21334a2b-79ce-44eb-9168-2d49a744be9c'
-        }
+          userId: '21334a2b-79ce-44eb-9168-2d49a744be9c',
+        },
       });
       res = mockRes();
       handlePostStub = sandbox.stub();
@@ -214,7 +215,7 @@ describe('Access Management', (): void => {
     it('should refresh role assignments successfully', async () => {
       const mockResponse = {
         status: 200,
-        data: { refreshed: true }
+        data: { refreshed: true },
       };
       handlePostStub.resolves(mockResponse);
 
@@ -222,7 +223,7 @@ describe('Access Management', (): void => {
 
       expect(handlePostStub).to.have.been.calledOnce;
       expect(handlePostStub.firstCall.args[1]).to.deep.equal({
-        refreshRequest: { userIds: ['21334a2b-79ce-44eb-9168-2d49a744be9c'] }
+        refreshRequest: { userIds: ['21334a2b-79ce-44eb-9168-2d49a744be9c'] },
       });
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith({ refreshed: true });
@@ -251,9 +252,9 @@ describe('Access Management', (): void => {
       req = mockReq({
         body: {
           specificAccessStateData: {
-            requestId: 'request-123'
-          }
-        }
+            requestId: 'request-123',
+          },
+        },
       });
       res = mockRes();
       createSpecificAccessApprovalRoleStub = sandbox.stub(roleAccess, 'createSpecificAccessApprovalRole');
@@ -269,13 +270,13 @@ describe('Access Management', (): void => {
           roleAssignmentResponse: {
             requestedRoles: [
               { id: 'role-1', name: 'Role 1' },
-              { id: 'role-2', name: 'Role 2' }
-            ]
-          }
+              { id: 'role-2', name: 'Role 2' },
+            ],
+          },
         },
         statusText: 'Created',
         headers: {},
-        config: {} as any
+        config: {} as any,
       };
 
       const mockDeletionResponse: AxiosResponse = {
@@ -283,7 +284,7 @@ describe('Access Management', (): void => {
         data: null,
         statusText: 'No Content',
         headers: {},
-        config: {} as any
+        config: {} as any,
       };
 
       const mockTaskResponse: AxiosResponse = {
@@ -291,7 +292,7 @@ describe('Access Management', (): void => {
         data: null,
         statusText: 'No Content',
         headers: {},
-        config: {} as any
+        config: {} as any,
       };
 
       createSpecificAccessApprovalRoleStub.resolves(mockFirstRoleResponse);
@@ -315,7 +316,7 @@ describe('Access Management', (): void => {
         data: { error: 'Bad Request' },
         statusText: 'Bad Request',
         headers: {},
-        config: {} as any
+        config: {} as any,
       };
 
       createSpecificAccessApprovalRoleStub.resolves(mockResponse);
@@ -346,13 +347,13 @@ describe('Access Management', (): void => {
           roleAssignmentResponse: {
             requestedRoles: [
               { id: 'role-1', name: 'Role 1' },
-              { id: 'role-2', name: 'Role 2' }
-            ]
-          }
+              { id: 'role-2', name: 'Role 2' },
+            ],
+          },
         },
         statusText: 'Created',
         headers: {},
-        config: {} as any
+        config: {} as any,
       };
 
       const mockDeletionFailure: AxiosResponse = {
@@ -360,15 +361,19 @@ describe('Access Management', (): void => {
         data: { error: 'Internal Server Error' },
         statusText: 'Internal Server Error',
         headers: {},
-        config: {} as any
+        config: {} as any,
       };
 
       createSpecificAccessApprovalRoleStub.resolves(mockFirstRoleResponse);
       deleteRoleByAssignmentIdStub.onFirstCall().resolves(mockDeletionFailure);
 
       // Mock deleteSpecificAccessRoles behavior
-      deleteRoleByAssignmentIdStub.onSecondCall().resolves({ status: 204, data: null, statusText: 'No Content', headers: {}, config: {} as any });
-      deleteRoleByAssignmentIdStub.onThirdCall().resolves({ status: 204, data: null, statusText: 'No Content', headers: {}, config: {} as any });
+      deleteRoleByAssignmentIdStub
+        .onSecondCall()
+        .resolves({ status: 204, data: null, statusText: 'No Content', headers: {}, config: {} as any });
+      deleteRoleByAssignmentIdStub
+        .onThirdCall()
+        .resolves({ status: 204, data: null, statusText: 'No Content', headers: {}, config: {} as any });
 
       await approveSpecificAccessRequest(req, res, next);
 
@@ -385,13 +390,13 @@ describe('Access Management', (): void => {
           roleAssignmentResponse: {
             requestedRoles: [
               { id: 'role-1', name: 'Role 1' },
-              { id: 'role-2', name: 'Role 2' }
-            ]
-          }
+              { id: 'role-2', name: 'Role 2' },
+            ],
+          },
         },
         statusText: 'Created',
         headers: {},
-        config: {} as any
+        config: {} as any,
       };
 
       const mockDeletionResponse: AxiosResponse = {
@@ -399,7 +404,7 @@ describe('Access Management', (): void => {
         data: null,
         statusText: 'No Content',
         headers: {},
-        config: {} as any
+        config: {} as any,
       };
 
       const mockTaskFailure: AxiosResponse = {
@@ -407,7 +412,7 @@ describe('Access Management', (): void => {
         data: { error: 'Task failed' },
         statusText: 'Internal Server Error',
         headers: {},
-        config: {} as any
+        config: {} as any,
       };
 
       createSpecificAccessApprovalRoleStub.resolves(mockFirstRoleResponse);
@@ -417,8 +422,12 @@ describe('Access Management', (): void => {
       // Mock restore behavior
       const restoreStub = sandbox.stub(roleAccess, 'restoreSpecificAccessRequestRole');
       restoreStub.resolves({ status: 201, data: {}, statusText: 'Created', headers: {}, config: {} as any });
-      deleteRoleByAssignmentIdStub.onSecondCall().resolves({ status: 204, data: null, statusText: 'No Content', headers: {}, config: {} as any });
-      deleteRoleByAssignmentIdStub.onThirdCall().resolves({ status: 204, data: null, statusText: 'No Content', headers: {}, config: {} as any });
+      deleteRoleByAssignmentIdStub
+        .onSecondCall()
+        .resolves({ status: 204, data: null, statusText: 'No Content', headers: {}, config: {} as any });
+      deleteRoleByAssignmentIdStub
+        .onThirdCall()
+        .resolves({ status: 204, data: null, statusText: 'No Content', headers: {}, config: {} as any });
 
       await approveSpecificAccessRequest(req, res, next);
 
@@ -448,11 +457,11 @@ describe('Access Management', (): void => {
       data: { error: 'Previous error' },
       statusText: 'Bad Request',
       headers: {},
-      config: {} as any
+      config: {} as any,
     };
     const rolesToDelete = [
       { id: 'role-1', name: 'Role 1' },
-      { id: 'role-2', name: 'Role 2' }
+      { id: 'role-2', name: 'Role 2' },
     ];
 
     beforeEach(() => {
@@ -467,7 +476,7 @@ describe('Access Management', (): void => {
         data: null,
         statusText: 'No Content',
         headers: {},
-        config: {} as any
+        config: {} as any,
       };
 
       deleteRoleByAssignmentIdStub.resolves(mockDeletionResponse);
@@ -487,7 +496,7 @@ describe('Access Management', (): void => {
         data: { error: 'Deletion failed' },
         statusText: 'Internal Server Error',
         headers: {},
-        config: {} as any
+        config: {} as any,
       };
 
       deleteRoleByAssignmentIdStub.resolves(mockFailure);
@@ -515,14 +524,14 @@ describe('Access Management', (): void => {
         data: null,
         statusText: 'No Content',
         headers: {},
-        config: {} as any
+        config: {} as any,
       };
       const mockFailure: AxiosResponse = {
         status: 500,
         data: { error: 'Deletion failed' },
         statusText: 'Internal Server Error',
         headers: {},
-        config: {} as any
+        config: {} as any,
       };
 
       deleteRoleByAssignmentIdStub.onFirstCall().resolves(mockSuccess);
@@ -562,11 +571,11 @@ describe('Access Management', (): void => {
       data: { error: 'Previous error' },
       statusText: 'Internal Server Error',
       headers: {},
-      config: {} as any
+      config: {} as any,
     };
     const rolesToDelete = [
       { id: 'role-1', name: 'Role 1' },
-      { id: 'role-2', name: 'Role 2' }
+      { id: 'role-2', name: 'Role 2' },
     ];
 
     beforeEach(() => {
@@ -582,14 +591,14 @@ describe('Access Management', (): void => {
         data: { restored: true },
         statusText: 'Created',
         headers: {},
-        config: {} as any
+        config: {} as any,
       };
       const mockDeletionResponse: AxiosResponse = {
         status: 204,
         data: null,
         statusText: 'No Content',
         headers: {},
-        config: {} as any
+        config: {} as any,
       };
 
       restoreSpecificAccessRequestRoleStub.resolves(mockRestoreResponse);
@@ -609,7 +618,7 @@ describe('Access Management', (): void => {
         data: { error: 'Restore failed' },
         statusText: 'Bad Request',
         headers: {},
-        config: {} as any
+        config: {} as any,
       };
 
       restoreSpecificAccessRequestRoleStub.resolves(mockRestoreFailure);
@@ -639,11 +648,17 @@ describe('Access Management', (): void => {
         data: { restored: true },
         statusText: 'Created',
         headers: {},
-        config: {} as any
+        config: {} as any,
       };
 
       restoreSpecificAccessRequestRoleStub.resolves(mockRestoreResponse);
-      deleteRoleByAssignmentIdStub.resolves({ status: 204, data: null, statusText: 'No Content', headers: {}, config: {} as any });
+      deleteRoleByAssignmentIdStub.resolves({
+        status: 204,
+        data: null,
+        statusText: 'No Content',
+        headers: {},
+        config: {} as any,
+      });
 
       await restoreDeletedRole(req, res, next, null, rolesToDelete as any);
 
@@ -666,7 +681,7 @@ describe('Access Management', (): void => {
   describe('removeAcceptHeader', () => {
     it('should remove accept header from proxy request', () => {
       const proxyReq = {
-        removeHeader: sandbox.stub()
+        removeHeader: sandbox.stub(),
       };
 
       removeAcceptHeader(proxyReq);
@@ -675,4 +690,3 @@ describe('Access Management', (): void => {
     });
   });
 });
-

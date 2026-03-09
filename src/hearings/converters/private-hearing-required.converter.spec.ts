@@ -11,9 +11,7 @@ describe('PrivateHearingAnswerConverter', () => {
   let converter: AnswerConverter;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-
-    });
+    TestBed.configureTestingModule({});
     converter = new PrivateHearingAnswerConverter();
   });
 

@@ -2,13 +2,14 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { http } from '../lib/http';
 import { ALL_LOCATIONS } from './constants/locations';
 import { getLocationById, mapLocations, getLocations, getFullLocations, getLocationsByRegion } from './locationController';
 import * as locationService from './locationService';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('workAllocation', () => {
@@ -36,8 +37,8 @@ describe('workAllocation', () => {
       sandbox.stub(http, GET).resolves(res);
       const req = mockReq({
         params: {
-          locationId: LOCATION_ID
-        }
+          locationId: LOCATION_ID,
+        },
       });
       const response = mockRes();
 
@@ -53,7 +54,9 @@ describe('workAllocation', () => {
     it('should make a get request and respond appropriately locations', async () => {
       sandbox.stub(http, GET).resolves(res);
 
-      const locations = mapLocations([{ epimms_id: '1', site_name: 'full name', venue_name: 'name1', is_case_management_location: 'Y' }]);
+      const locations = mapLocations([
+        { epimms_id: '1', site_name: 'full name', venue_name: 'name1', is_case_management_location: 'Y' },
+      ]);
 
       expect(locations[0].id).to.equal('1');
       expect(locations[0].locationName).to.equal('full name');

@@ -21,13 +21,19 @@ describe('StaffMainContainerComponent', () => {
   let component: StaffMainContainerComponent;
   let fixture: ComponentFixture<StaffMainContainerComponent>;
 
-  @Component({ selector: 'exui-app-header', template: '' })
-  class HeaderStubComponent {
-  }
+  @Component({
+    standalone: false,
+    selector: 'exui-app-header',
+    template: '',
+  })
+  class HeaderStubComponent {}
 
-  @Component({ selector: 'exui-app-footer', template: '' })
-  class FooterStubComponent {
-  }
+  @Component({
+    standalone: false,
+    selector: 'exui-app-footer',
+    template: '',
+  })
+  class FooterStubComponent {}
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -40,12 +46,9 @@ describe('StaffMainContainerComponent', () => {
         StaffAdvFilterComponent,
         StaffUserListComponent,
         ErrorMessageComponent,
-        StaffStatusComponent
+        StaffStatusComponent,
       ],
-      imports: [RouterTestingModule,
-        ExuiCommonLibModule,
-        CdkTableModule,
-        ReactiveFormsModule],
+      imports: [RouterTestingModule, ExuiCommonLibModule, CdkTableModule, ReactiveFormsModule],
       providers: [
         StaffDataFilterService,
         StaffDataAccessService,
@@ -54,16 +57,15 @@ describe('StaffMainContainerComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                staffFilters: staffFilterOptionsTestData
-              }
-            }
-          }
+                staffFilters: staffFilterOptionsTestData,
+              },
+            },
+          },
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

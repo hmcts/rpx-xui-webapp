@@ -15,9 +15,10 @@ import { setServiceList } from '../../utils';
 import { TaskListWrapperComponent } from '../task-list-wrapper/task-list-wrapper.component';
 
 @Component({
+  standalone: false,
   selector: 'exui-all-work-tasks',
   templateUrl: 'all-work-task.component.html',
-  styleUrls: ['all-work-task.component.scss']
+  styleUrls: ['all-work-task.component.scss'],
 })
 export class AllWorkTaskComponent extends TaskListWrapperComponent {
   private static readonly ALL_TASKS = 'All';
@@ -25,18 +26,18 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   public supportedJurisdictions: string[];
   public sortedBy: SortField = {
     fieldName: '',
-    order: SortOrder.NONE
+    order: SortOrder.NONE,
   };
 
   public pagination: PaginationParameter = {
     page_number: 1,
-    page_size: 25
+    page_size: 25,
   };
 
   private readonly selectedLocation: Location = {
     id: '**ALL LOCATIONS**',
     locationName: '',
-    services: []
+    services: [],
   };
 
   private selectedTaskCategory: string = 'All';
@@ -68,25 +69,27 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   }
 
   public loadCaseWorkersAndLocations(): void {
-    const userRoles$ = this.store.pipe(select(fromActions.getUserDetails)).pipe(map((userDetails) => {
-      if (!userDetails.roleAssignmentInfo) {
-        // if no role assignment info, do not allow page to disappear
-        return [];
-      }
-      return userDetails.roleAssignmentInfo.filter((role) => role.roleName && role.roleName === 'task-supervisor').map((role) => role.jurisdiction || null);
-    }
-    ));
+    const userRoles$ = this.store.pipe(select(fromActions.getUserDetails)).pipe(
+      map((userDetails) => {
+        if (!userDetails.roleAssignmentInfo) {
+          // if no role assignment info, do not allow page to disappear
+          return [];
+        }
+        return userDetails.roleAssignmentInfo
+          .filter((role) => role.roleName && role.roleName === 'task-supervisor')
+          .map((role) => role.jurisdiction || null);
+      })
+    );
 
     // get detailed services for the all work services list
     const waJurisdictions$ = this.waSupportedJurisdictionsService.getDetailedWASupportedJurisdictions();
-    this.waSupportedDetailedServices$ = combineLatest(
-      [userRoles$,
-        waJurisdictions$]
-    ).pipe(map((jurisdictions) => {
-      const fullServiceDetails = setServiceList(jurisdictions[0], jurisdictions[1]);
-      this.supportedJurisdictions = fullServiceDetails.supportedJurisdictions;
-      return fullServiceDetails.detailedWAServices;
-    }));
+    this.waSupportedDetailedServices$ = combineLatest([userRoles$, waJurisdictions$]).pipe(
+      map((jurisdictions) => {
+        const fullServiceDetails = setServiceList(jurisdictions[0], jurisdictions[1]);
+        this.supportedJurisdictions = fullServiceDetails.supportedJurisdictions;
+        return fullServiceDetails.detailedWAServices;
+      })
+    );
   }
 
   public getSearchTaskRequestPagination(): SearchTaskRequest {
@@ -94,15 +97,16 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     if (userInfoStr) {
       const userInfo: UserInfo = JSON.parse(userInfoStr);
       const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
-      const searchParameters = [
-        this.getStateParameter()
-      ];
+      const searchParameters = [this.getStateParameter()];
       const personParameter = { key: 'user', operator: 'IN', values: [this.selectedPerson] };
       const locationParameter = this.getLocationParameter();
       const taskTypeParameter = this.getTaskTypeParameter();
       const taskNameParameter = this.getTaskNameParameter();
       if (this.selectedServices?.length) {
         searchParameters.push({ key: 'jurisdiction', operator: 'IN', values: this.selectedServices });
+      }
+      if (this.selectedWorkTypes?.length) {
+        searchParameters.push({ key: 'work_type', operator: 'IN', values: this.selectedWorkTypes });
       }
       if (this.selectedPerson) {
         searchParameters.push(personParameter);
@@ -122,7 +126,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
         search_parameters: searchParameters,
         sorting_parameters: [...this.getSortParameter()],
         search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
-        pagination_parameters: this.getPaginationParameter()
+        pagination_parameters: this.getPaginationParameter(),
       };
       searchTaskParameter.request_context = TaskContext.ALL_WORK;
       return searchTaskParameter;
@@ -136,13 +140,23 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     this.onPaginationHandler(pageNumber);
   }
 
-  public onSelectionChanged(selection: { findTaskNameControl: any, location: string, service: string, selectPerson: string, person: Person, taskType: string, taskName: any }): void {
+  public onSelectionChanged(selection: {
+    findTaskNameControl: any;
+    location: string;
+    service: string;
+    selectPerson: string;
+    person: Person;
+    taskType: string;
+    taskName: any;
+    workTypes: string[];
+  }): void {
     this.selectedLocation.id = selection.location;
     this.selectedServices = [selection.service];
     this.selectedTaskCategory = selection.selectPerson;
     this.selectedPerson = selection.person ? selection.person.id : null;
     this.selectedTaskType = selection.taskType;
     this.selectedTaskName = selection.taskName ? selection.taskName.task_type_id : null;
+    this.selectedWorkTypes = selection.workTypes;
     this.loadBasedOnFilter();
   }
 
@@ -184,7 +198,7 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
     }
   }
 
-  private getTaskNameParameter(): { key: string, operator: string, values: string[] } {
+  private getTaskNameParameter(): { key: string; operator: string; values: string[] } {
     if (this.selectedTaskName) {
       return { key: 'task_type', operator: 'IN', values: [this.selectedTaskName] };
     }

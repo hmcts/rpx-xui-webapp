@@ -3661,12 +3661,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.35-exui-3995-rc-1":
-  version: 7.3.35-exui-3995-rc-1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.35-exui-3995-rc-1"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.36":
+  version: 7.3.36
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.36"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/34aee240b86fa1379a70d9a692cb6de4a5596691714dc988ad86014b35dea781974452c6100710ac6368c24af00ae2f5df6580fb048f256edc6b666a1a304f87
+  checksum: 10/f84fb334853ce4d79071b445785a51c3f173c03fd2e74a3290b26b5d7b1a8b247f77112a5530755981805dcca52624b4de67b0df6a8bf70266a8192606296b9d
   languageName: node
   linkType: hard
 
@@ -3778,16 +3778,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.3-exui-4123-rc-2":
-  version: 3.2.3-exui-4123-rc-2
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.3-exui-4123-rc-2"
+"@hmcts/rpx-xui-common-lib@npm:3.2.6":
+  version: 3.2.6
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.6"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: 1.1.2-CME-780-9
-  checksum: 10/54e673667ae293d3569d08d7f13dabf2a943b46970f9d50a82186a7c40a2647da8674bddaa574b380050eaa07c52b79b1afced44ceba52f3bf1f95534419122a
+  checksum: 10/718e05b9c621eff2df17b393a4d84d5e5b5d69770e2bad26d13665d8d368d9ce9cca81f80178b20b538125f4f34449374ab06bc3a613306177862aa1ee037690
   languageName: node
   linkType: hard
 
@@ -24011,14 +24011,14 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.35-exui-3995-rc-1"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.36"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.12"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.3.1"
-    "@hmcts/rpx-xui-common-lib": "npm:3.2.3-exui-4123-rc-2"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.6"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7-csp-final-change-3"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"

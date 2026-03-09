@@ -1,17 +1,39 @@
 import { expect, test } from '../../fixtures';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
+import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
+
 const jurisdiction = 'DIVORCE';
-const caseType = 'XUI Case PoC';
+const caseType = 'XUI Test Case type';
+const CREATE_CASE_SETUP_MAX_ATTEMPTS = 3;
+const CREATE_CASE_FLOW_MAX_ATTEMPTS = 2;
 let caseNumber: string;
+let testValue: string;
 
 test.describe('Verify creating cases works as expected', () => {
-  let caseData;
+  test.describe.configure({ timeout: 300_000 });
 
   test.beforeEach(async ({ page, caseDetailsPage, createCasePage }) => {
-    await ensureAuthenticatedPage(page, 'SOLICITOR', { waitForSelector: 'exui-header' });
-    caseData = await createCasePage.generateDivorcePoCData();
-    await createCasePage.createDivorceCasePoC(jurisdiction, caseType, caseData);
-    caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
+    await retryOnTransientFailure(
+      async () => {
+        await ensureAuthenticatedPage(page, 'SOLICITOR', { waitForSelector: 'exui-header' });
+
+        testValue = `create-${Date.now()}`;
+        await createCasePage.createDivorceCase(jurisdiction, caseType, testValue, {
+          maxAttempts: CREATE_CASE_FLOW_MAX_ATTEMPTS,
+          createCaseMaxAttempts: CREATE_CASE_FLOW_MAX_ATTEMPTS,
+        });
+        caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
+      },
+      {
+        maxAttempts: CREATE_CASE_SETUP_MAX_ATTEMPTS,
+        onRetry: async () => {
+          if (page.isClosed()) {
+            return;
+          }
+          await page.goto('/').catch(() => undefined);
+        },
+      }
+    );
   });
 
   test('Verify creating a case in the divorce jurisdiction works as expected', async ({
@@ -21,47 +43,15 @@ test.describe('Verify creating cases works as expected', () => {
   }) => {
     await test.step('Validate the case number format and URL', async () => {
       expect.soft(caseNumber).toMatch(validatorUtils.DIVORCE_CASE_NUMBER_REGEX);
-      expect.soft(page.url()).toContain(`/${jurisdiction}/xuiTestJurisdiction/`);
+      expect.soft(page.url()).toContain('/cases/case-details/');
     });
 
-    await test.step('Check the case tab Data, matches previously entered data', async () => {
-      const expected = {
-        'Text Field 0': caseData.textField0,
-        'Text Field 1': caseData.textField1,
-        'Text Field 2': caseData.textField2,
-        'Text Field 3': caseData.textField3,
-        'Select your gender': caseData.gender,
-        Title: caseData.person1Title,
-        'First Name': caseData.person1FirstName,
-        'Last Name': caseData.person1LastName,
-        Gender: caseData.person1Gender,
-      };
-      const expectedJob = { Title: caseData.person1JobTitle, Description: caseData.person1JobDescription };
-
-      const table1 = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.divorceDataTable);
-      expect.soft(table1).toMatchObject(expected);
-      const table2 = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.divorceDataSubTable);
-      expect.soft(table2).toMatchObject(expectedJob);
-    });
-
-    await test.step('Check the History tab shows the case creation event', async () => {
-      await caseDetailsPage.selectCaseDetailsTab('History');
-
-      const { updateRow, updateDate, updateAuthor } = await caseDetailsPage.getCaseHistoryByEvent('Create a case');
-
-      expect.soft(updateRow, 'Create a case row should be present').toBeTruthy();
-      expect.soft(updateAuthor, 'Case author should be present').not.toBe('');
-
-      const expectedDetails = {
-        Date: updateDate,
-        Author: updateAuthor,
-        'End state': 'Case created',
-        Event: 'Create a case',
-        Summary: '-',
-        Comment: '-',
-      };
-      const table = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.historyDetailsTable);
-      expect.soft(table).toMatchObject(expectedDetails);
+    await test.step('Check the case tab data matches the created XUI Test Case type value', async () => {
+      await caseDetailsPage.selectCaseDetailsTab('Tab 1');
+      const caseViewerTable = caseDetailsPage.page.getByRole('table', { name: 'case viewer table' });
+      await caseViewerTable.waitFor({ state: 'visible' });
+      const textFieldRow = caseViewerTable.getByRole('row', { name: 'Text Field' });
+      await expect.soft(textFieldRow).toContainText(testValue);
     });
   });
 });

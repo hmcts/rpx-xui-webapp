@@ -118,6 +118,9 @@ export class CreateCasePage extends Base {
   readonly person2LastNameInput = this.page.locator(
     '[data-testid="Person2_LastName"] input, [data-testid="Person2_LastName"], #Person2_LastName, [name="Person2_LastName"]'
   );
+  readonly doYouAgreeGroup = this.page.getByRole('group', { name: /Do you agree\?/i });
+  readonly doYouAgreeYesRadio = this.doYouAgreeGroup.getByRole('radio', { name: /^Yes$/i }).first();
+  readonly doYouAgreeNoRadio = this.doYouAgreeGroup.getByRole('radio', { name: /^No$/i }).first();
 
   readonly fileUploadInput = this.page.locator('#DocumentUrl');
   readonly fileUploadStatusLabel = this.page.locator('ccd-write-document-field .error-message');
@@ -153,6 +156,10 @@ export class CreateCasePage extends Base {
   // Address lookup locators
   readonly manualEntryLink = this.page.locator('.manual-link');
   readonly claimantAddressLine1Input = this.page.locator('#claimantType_claimant_addressUK__detailAddressLine1');
+  readonly externalTriageAddressLine1Input = this.page.locator('#et1ReppedTriageAddress__detailAddressLine1');
+  readonly externalTriagePostTownInput = this.page.locator('#et1ReppedTriageAddress__detailPostTown');
+  readonly externalTriagePostCodeInput = this.page.locator('#et1ReppedTriageAddress__detailPostCode');
+  readonly externalTriageAddressSelect = this.page.locator('#et1ReppedTriageAddress_et1ReppedTriageAddress_addressList');
   readonly postCodeSearchInput = this.page.locator('.postcodeLookup input');
   readonly postCodeSearchButton = this.page.locator('.postcodeLookup').getByRole('button');
   readonly addressSelect = this.page.locator('.postcodeLookup select');
@@ -536,13 +543,23 @@ export class CreateCasePage extends Base {
         }
         const hasValidationError = await this.checkForErrorMessage();
         if (hasValidationError) {
-          throw new Error(`Validation error after submit ${context}`);
+          const validationText = await this.getValidationErrorText();
+          throw new Error(`Validation error after submit ${context}: ${validationText || 'unknown validation error'}`);
         }
         return;
       }
 
       const visibleContinueButton = await this.getVisibleActionButton(this.continueButton);
       if (visibleContinueButton) {
+        const continueEnabled = await visibleContinueButton.isEnabled().catch(() => false);
+        if (!continueEnabled) {
+          this.logger.warn('Continue button visible but disabled while waiting for submit; polling for stable action state', {
+            context,
+            autoAdvanceCount,
+          });
+          await this.page.waitForTimeout(EXUI_TIMEOUTS.SUBMIT_POLL_INTERVAL);
+          continue;
+        }
         const nextAutoAdvanceAttempt = autoAdvanceCount + 1;
         if (nextAutoAdvanceAttempt > maxAutoAdvanceAttempts) {
           throw new Error(`Exceeded ${maxAutoAdvanceAttempts} auto-advance attempts before submit ${context}`);
@@ -783,6 +800,39 @@ export class CreateCasePage extends Base {
     return false;
   }
 
+  private async getValidationErrorText(): Promise<string> {
+    const readText = async (locator: Locator): Promise<string> => {
+      const visible = await locator.isVisible().catch(() => false);
+      if (!visible) {
+        return '';
+      }
+      return locator
+        .first()
+        .innerText({ timeout: EXUI_TIMEOUTS.ERROR_META_TEXT_READ })
+        .then((text) => text.trim())
+        .catch(() => '');
+    };
+
+    const [errorText, summaryText] = await Promise.all([readText(this.errorMessage), readText(this.errorSummary)]);
+    return [errorText, summaryText].filter(Boolean).join(' | ');
+  }
+
+  async ensureDoYouAgreeAnswered(answer: 'Yes' | 'No' = 'Yes') {
+    const groupVisible = await this.doYouAgreeGroup
+      .first()
+      .isVisible()
+      .catch(() => false);
+    if (!groupVisible) {
+      return;
+    }
+
+    const target = answer === 'Yes' ? this.doYouAgreeYesRadio : this.doYouAgreeNoRadio;
+    const alreadyChecked = await target.isChecked().catch(() => false);
+    if (!alreadyChecked) {
+      await target.check();
+    }
+  }
+
   async createCase(
     // NOSONAR typescript:S3776 — Cognitive Complexity acceptable per agents.md §6.2.10: multi-attempt CCD case-creation orchestration with retry logic
     jurisdiction: string,
@@ -820,6 +870,16 @@ export class CreateCasePage extends Base {
           await this.selectOptionSmart(this.eventTypeSelect, eventType);
         }
         await this.startButton.click();
+        await this.page
+          .waitForURL((url) => !url.pathname.includes('/cases/case-filter'), {
+            timeout: EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED,
+          })
+          .catch(async (error) => {
+            const stillOnCaseFilter = this.page.url().includes('/cases/case-filter');
+            if (stillOnCaseFilter) {
+              throw error;
+            }
+          });
         return;
       } catch (error) {
         const jurisdictionBootstrapFailed = this.getApiCalls().some(
@@ -857,11 +917,80 @@ export class CreateCasePage extends Base {
   }
 
   async uploadEmploymentFile(fileName: string, mimeType: string, fileContent: string) {
+    await this.prepareEmploymentDraftUploadPage();
     await this.page.locator('#documentCollection button').click();
     await this.uploadFile(fileName, mimeType, fileContent);
     await this.page.locator('#documentCollection_0_topLevelDocuments').selectOption('Misc');
     await this.page.locator('#documentCollection_0_miscDocuments').selectOption('Other');
     await this.clickSubmitButtonWithRetry('after uploading employment document');
+  }
+
+  private async prepareEmploymentDraftUploadPage() {
+    const maxAdvanceAttempts = 8;
+    for (let attempt = 1; attempt <= maxAdvanceAttempts; attempt += 1) {
+      const documentCollectionButton = this.page.locator('#documentCollection button');
+      if (await documentCollectionButton.isVisible().catch(() => false)) {
+        logger.info('Employment draft update: document upload controls ready', {
+          attempt,
+          url: this.page.url(),
+        });
+        return;
+      }
+
+      await this.assertNoEventCreationError(`during employment draft upload preparation (attempt ${attempt})`);
+      await this.ensureEmploymentDraftRespondentCollectionItem();
+      await this.ensureEmploymentDraftClaimantRepresentationAnswered();
+
+      const visibleContinueButton = this.page.getByRole('button', { name: /^continue\b/i }).first();
+      if (!(await visibleContinueButton.isVisible().catch(() => false))) {
+        throw new Error(
+          `Employment draft update did not reach a document upload page; no Continue button visible at ${this.page.url()}`
+        );
+      }
+      await this.clickContinueAndWait(`employment draft upload preparation step ${attempt}`);
+    }
+
+    throw new Error(`Employment draft update did not reach the document upload page after ${maxAdvanceAttempts} steps`);
+  }
+
+  private async ensureEmploymentDraftRespondentCollectionItem() {
+    if (!this.page.url().includes('/UPDATE_CASE_DRAFT3')) {
+      return;
+    }
+
+    const existingCollectionItem = this.page.locator('[id^="respondentCollection_0"]').first();
+    if ((await existingCollectionItem.count()) > 0) {
+      return;
+    }
+
+    await this.addRespondentButton.waitFor({ state: 'visible' });
+    await this.addRespondentButton.click();
+    await expect(this.page.locator('[id^="respondentCollection_0"]').first()).toBeAttached();
+    logger.info('Employment draft update: added minimal respondent collection item', {
+      url: this.page.url(),
+    });
+  }
+
+  private async ensureEmploymentDraftClaimantRepresentationAnswered() {
+    if (!this.page.url().includes('/UPDATE_CASE_DRAFT8')) {
+      return;
+    }
+
+    const claimantRepresentationGroup = this.page.getByRole('group', { name: 'Is the Claimant Represented?' });
+    if (!(await claimantRepresentationGroup.isVisible().catch(() => false))) {
+      return;
+    }
+
+    const noRadio = claimantRepresentationGroup.getByRole('radio', { name: 'No' });
+    if (await noRadio.isChecked().catch(() => false)) {
+      return;
+    }
+
+    await noRadio.check();
+    logger.info('Employment draft update: answered claimant representation question', {
+      answer: 'No',
+      url: this.page.url(),
+    });
   }
 
   async uploadFile(fileName: string, mimeType: string, fileContent: string, fileInput?: Locator) {
@@ -915,13 +1044,108 @@ export class CreateCasePage extends Base {
     await this.fileUploadStatusLabel.waitFor({ state: 'hidden' });
   }
 
-  async createCaseEmployment(jurisdiction: string, caseType: string) {
+  async createCaseEmployment(
+    jurisdiction: string,
+    caseType: string,
+    options: {
+      allowDraftClaimFallback?: boolean;
+    } = {}
+  ) {
     const maxAttempts = 2;
+    const preferredEventLabels = options.allowDraftClaimFallback ? ['Create Case', 'Create draft claim'] : ['Create Case'];
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
-        await this.createCase(jurisdiction, caseType, 'Create Case');
+        let lastSelectionError: unknown;
+        for (const eventLabel of preferredEventLabels) {
+          try {
+            await this.createCase(jurisdiction, caseType, eventLabel);
+            lastSelectionError = undefined;
+            break;
+          } catch (error) {
+            lastSelectionError = error;
+            const message = this.normalizeUnknownError(error);
+            const missingRequestedOption = message.includes(`Option not found for "${eventLabel}"`);
+            const canTryAlternateEvent = missingRequestedOption && eventLabel !== preferredEventLabels.at(-1);
+            if (canTryAlternateEvent) {
+              logger.info('Employment case creation event label unavailable; trying fallback label', {
+                attempt,
+                requestedEventLabel: eventLabel,
+              });
+              continue;
+            }
+            throw error;
+          }
+        }
+        if (lastSelectionError) {
+          throw lastSelectionError;
+        }
+        logger.info('Employment case creation started', {
+          attempt,
+          jurisdiction,
+          caseType,
+          url: this.page.url(),
+        });
         await this.assertNoEventCreationError('after starting employment case');
+        const isExternalDraftClaimFlow =
+          this.page.url().includes('/et1ReppedCreateCase/') || (await this.postCodeSearchInput.isVisible().catch(() => false));
+
+        if (isExternalDraftClaimFlow) {
+          await this.postCodeSearchInput.waitFor({ state: 'visible' });
+          logger.info('Employment create: external draft claim triage page ready', {
+            attempt,
+            url: this.page.url(),
+          });
+          const claimantWorkLocationPostcode = 'SW20 0BX';
+          await this.postCodeSearchInput.fill(claimantWorkLocationPostcode);
+          await this.postCodeSearchButton.click();
+          const resolvedAddressMode = await Promise.race([
+            this.externalTriageAddressSelect.waitFor({ state: 'visible' }).then(() => 'address-select' as const),
+            this.externalTriageAddressLine1Input.waitFor({ state: 'visible' }).then(() => 'manual-address' as const),
+          ]);
+
+          const resolvedAddressSelectVisible = resolvedAddressMode === 'address-select';
+          if (resolvedAddressSelectVisible) {
+            const addressOptions = await this.externalTriageAddressSelect.evaluate((element) => {
+              const select = element as HTMLSelectElement;
+              return Array.from(select.options).map((option) => ({
+                text: option.text.trim(),
+                value: option.value,
+              }));
+            });
+            const firstResolvedAddressValue = addressOptions.find(
+              (option) => option.value && option.value.trim().length > 0 && !/no address found/i.test(option.text)
+            )?.value;
+            if (firstResolvedAddressValue) {
+              await this.externalTriageAddressSelect.selectOption(firstResolvedAddressValue);
+            } else {
+              await this.manualEntryLink.waitFor({ state: 'visible' });
+              await this.manualEntryLink.click();
+              await this.externalTriageAddressLine1Input.waitFor({ state: 'visible' });
+              await this.externalTriageAddressLine1Input.fill('1 Test Street');
+              await this.externalTriagePostTownInput.fill('London');
+              await this.externalTriagePostCodeInput.fill(claimantWorkLocationPostcode);
+            }
+          } else {
+            await this.externalTriageAddressLine1Input.waitFor({ state: 'visible' });
+            await this.externalTriageAddressLine1Input.fill('1 Test Street');
+            await this.externalTriagePostTownInput.fill('London');
+            await this.externalTriagePostCodeInput.fill(claimantWorkLocationPostcode);
+          }
+
+          logger.info('Employment create: external draft claim work location resolved', {
+            attempt,
+            url: this.page.url(),
+            mode: resolvedAddressMode,
+          });
+          await this.clickSubmitButtonWithRetry('after external draft claim work location');
+          await this.waitForSpinnerToComplete('after submitting employment draft claim');
+          await this.waitForCaseDetails('after submitting employment draft claim');
+          logger.info('Employment create: case details loaded', { attempt, url: this.page.url() });
+          return;
+        }
+
         await this.receiptDayInput.waitFor({ state: 'visible' });
+        logger.info('Employment create: receipt details page ready', { attempt, url: this.page.url() });
         const today = new Date();
         await this.receiptDayInput.fill(today.getDate().toString());
         await this.receiptMonthInput.fill((today.getMonth() + 1).toString());
@@ -934,6 +1158,7 @@ export class CreateCasePage extends Base {
           expectedPathIncludes: 'initiateCase2',
           expectedLocator: this.claimantIndividualRadio,
         });
+        logger.info('Employment create: claimant details page ready', { attempt, url: this.page.url() });
         await this.claimantIndividualRadio.check();
         await this.claimantIndividualFirstNameInput.fill('Test ');
         await this.claimantIndividualLastNameInput.fill('Person');
@@ -943,6 +1168,7 @@ export class CreateCasePage extends Base {
         await this.claimantAddressLine1Input.fill('1 Test Street');
 
         await this.clickContinueAndWait('after claimant address');
+        logger.info('Employment create: respondent details page ready', { attempt, url: this.page.url() });
 
         await this.addRespondentButton.waitFor({ state: 'visible' });
         await this.addRespondentButton.click();
@@ -962,25 +1188,32 @@ export class CreateCasePage extends Base {
         await this.respondentAddressPostcodeInput.fill('SW1A 1AA');
 
         await this.clickContinueAndWait('after respondent details');
-        await this.sameAsClaimantWorkAddressYes.waitFor({ state: 'visible' });
-        await this.sameAsClaimantWorkAddressYes.click();
+        logger.info('Employment create: work address page ready', { attempt, url: this.page.url() });
 
-        await this.clickContinueAndWait('after work address confirmation');
+        if (await this.sameAsClaimantWorkAddressYes.isVisible().catch(() => false)) {
+          await this.sameAsClaimantWorkAddressYes.click();
 
-        await this.clickContinueAndWait('after claim details');
+          await this.clickContinueAndWait('after work address confirmation');
+          logger.info('Employment create: claim details page ready', { attempt, url: this.page.url() });
 
-        await this.claimantRepresentedNo.waitFor({ state: 'visible' });
-        await this.claimantRepresentedNo.click();
+          await this.clickContinueAndWait('after claim details');
 
-        await this.clickContinueAndWait('after claimant representation');
+          await this.claimantRepresentedNo.waitFor({ state: 'visible' });
+          logger.info('Employment create: claimant representation page ready', { attempt, url: this.page.url() });
+          await this.claimantRepresentedNo.click();
 
-        await this.hearingPreferenceVideo.waitFor({ state: 'visible' });
-        await this.hearingPreferenceVideo.click();
+          await this.clickContinueAndWait('after claimant representation');
 
-        await this.clickSubmitButtonWithRetry('after hearing preference selection');
-        await this.waitForSpinnerToComplete('after submitting employment case');
-        await this.waitForCaseDetails('after submitting employment case');
-        return;
+          await this.hearingPreferenceVideo.waitFor({ state: 'visible' });
+          logger.info('Employment create: hearing preference page ready', { attempt, url: this.page.url() });
+          await this.hearingPreferenceVideo.click();
+
+          await this.clickSubmitButtonWithRetry('after hearing preference selection');
+          await this.waitForSpinnerToComplete('after submitting employment case');
+          await this.waitForCaseDetails('after submitting employment case');
+          logger.info('Employment create: case details loaded', { attempt, url: this.page.url() });
+          return;
+        }
       } catch (error) {
         const eventErrorVisible = await this.eventCreationErrorHeading.isVisible().catch(() => false);
         if (eventErrorVisible && attempt < maxAttempts) {
@@ -999,6 +1232,7 @@ export class CreateCasePage extends Base {
         return this.createDivorceCaseFlag(testInput, jurisdiction, caseType);
       case 'XUI Case PoC':
         return this.createDivorceCasePoC(jurisdiction, caseType, testInput, options);
+      case 'XUI Test Case type':
       case 'xuiTestCaseType':
         return this.createDivorceCaseTest(testInput, jurisdiction, caseType);
       default:

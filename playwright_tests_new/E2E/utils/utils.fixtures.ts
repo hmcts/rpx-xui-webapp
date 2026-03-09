@@ -135,7 +135,10 @@ export const utilsFixtures = {
   professionalUserUtils: async ({ idamUtils, serviceAuthUtils }, use) => {
     await use(new ProfessionalUserUtils(idamUtils, serviceAuthUtils));
   },
-  logger: async (_fixtures, use) => {
+  logger: async ({ page }, use) => {
+    if (page) {
+      // no-op: keep the destructured arg in use to satisfy Playwright fixture signature and lint/Sonar
+    }
     await use(logger);
   },
 };

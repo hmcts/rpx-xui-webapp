@@ -5,6 +5,7 @@ This directory contains both **API tests** (`node-api` project) and **E2E UI tes
 ## Table of Contents
 
 - [Quick Command Reference (AAT vs LOCAL)](#quick-command-reference-aat-vs-local)
+- [Secrets and Env Population (Key Vault)](#secrets-and-env-population-key-vault)
 - [API Tests](#api-tests)
 - [E2E Tests](#e2e-tests)
 - [Session Management](#session-management)
@@ -87,6 +88,56 @@ yarn test:playwright:integration
 
 - Replace `"My tasks"` with the exact test name, unique substring, or regex.
 - For LOCAL runs, set `TEST_URL=http://localhost:3000`.
+
+---
+
+## Secrets and Env Population (Key Vault)
+
+Use Key Vault tagged secrets to generate local `.env` for Playwright runs.
+
+- Template file: `playwright_tests_new/.env.example`
+- Script wrapper: `scripts/populate-playwright-env-from-keyvault.sh`
+- Underlying helper: `@hmcts/playwright-common/dist/scripts/get-secrets.js`
+
+Tagging rule in Azure Key Vault:
+
+- Set `tags.e2e=<ENV_VAR_NAME>` on each secret you want written into `.env`.
+
+Supported commands:
+
+```bash
+# AAT
+yarn env:populate:playwright:aat
+
+# DEMO
+yarn env:populate:playwright:demo
+
+# Generic form (env + custom output file)
+yarn env:populate:playwright aat .env
+
+# Direct helper form (vault, template, output)
+yarn get-secrets rpx-aat playwright_tests_new/.env.example .env
+```
+
+Dynamic-user keys now available in Key Vault (`rpx-aat`, `rpx-demo`) and populated via tags:
+
+- `ORG_USER_ASSIGNMENT_USERNAME`
+- `ORG_USER_ASSIGNMENT_PASSWORD`
+- `ORG_USER_ASSIGNMENT_CLIENT_ID`
+- `ORG_USER_ASSIGNMENT_CLIENT_SECRET`
+- `ORG_USER_ASSIGNMENT_OAUTH2_SCOPE`
+- `ORG_USER_ASSIGNMENT_EXPECTED_EMAIL`
+- `ORG_USER_ASSIGNMENT_REDIRECT_URI`
+- `ORG_USER_ASSIGNMENT_UI_USER`
+- `ORG_USER_ASSIGNMENT_USER_ROLES`
+- `TEST_SOLICITOR_ORGANISATION_ID`
+- `MANAGE_ORG_API_PATH`
+- `RD_PROFESSIONAL_API_PATH`
+
+Notes:
+
+- Local dynamic-user creation requires F5 VPN (AAT/DEMO private services).
+- Do not commit `.env`.
 
 ---
 

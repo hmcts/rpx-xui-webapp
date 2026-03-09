@@ -17,6 +17,7 @@ const TRANSIENT_FAILURE_PATTERNS: RegExp[] = [
   /Submit button not visible/i,
   /Continue button not visible while retrying wizard advance/i,
   /Critical wizard endpoint failure/i,
+  /Transient dependency instability after submit/i,
   /Test ended/i,
 ];
 

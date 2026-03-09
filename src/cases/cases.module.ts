@@ -149,7 +149,7 @@ import { WorkAllocationComponentsModule } from '../work-allocation/components/wo
  * Entry point for Cases Module that is also lazy loaded.
  */
 export class CasesModule {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   constructor(
     @Optional() @SkipSelf() parentModule: CasesModule,
     private injector: Injector

@@ -204,6 +204,7 @@ const resolveApiTagFilters = (env: EnvMap = process.env): ApiTagFilters => {
 };
 
 const buildConfig = (env: EnvMap = process.env) => {
+  const temporaryProbePattern = '**/_tmp_*.spec.ts';
   const workerCount = resolveWorkerCount(env);
   const headlessMode = resolveHeadlessMode(env);
   const odhinOutputFolder = resolveOdhinOutputFolder(env);
@@ -221,6 +222,7 @@ const buildConfig = (env: EnvMap = process.env) => {
       'playwright_tests_new/E2E/**/*.spec.ts',
       'playwright_tests_new/integration/**/*.spec.ts',
     ],
+    testIgnore: [temporaryProbePattern],
     /* Run tests in files in parallel */
     fullyParallel: true,
     /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -260,7 +262,11 @@ const buildConfig = (env: EnvMap = process.env) => {
     projects: [
       {
         name: 'chromium',
-        testIgnore: ['playwright_tests_new/api/**', 'playwright_tests_new/E2E/test/smoke/smokeTest.spec.ts'],
+        testIgnore: [
+          'playwright_tests_new/api/**',
+          'playwright_tests_new/E2E/test/smoke/smokeTest.spec.ts',
+          temporaryProbePattern,
+        ],
         use: {
           baseURL: resolveBaseUrl(env),
           ...devices['Desktop Chrome'],

@@ -23,6 +23,101 @@ NODE_CONFIG_ENV=development sets the machine so that the config that is used is 
 
 Run `yarn start:ng` to start up the UI.
 
+## Fully mocked local setup (no downstream environments)
+
+Use this mode when AAT/downstream services are unavailable and you want local integration development.
+
+### Ports used
+
+- `3000` Angular UI
+- `3001` Node API
+- `8080` Backend mock (includes local IDAM/OAuth routes)
+
+### 1) Prerequisites
+
+```bash
+node -v   # requires >= 20.19.0
+yarn install
+```
+
+### 2) Start services (three terminals)
+
+Terminal A (mock backend + local IDAM on `8080`):
+
+```bash
+yarn test:backendMock
+```
+
+Terminal B (Node API on `3001`):
+
+```bash
+yarn start:node
+```
+
+Terminal C (Angular UI on `3000`):
+
+```bash
+yarn start:ng
+```
+
+### 3) Quick health checks
+
+```bash
+curl -sS -D - -o /dev/null http://localhost:3000/auth/login | grep -i '^location:'
+curl -sS -D - -o /dev/null http://localhost:3000/ | grep -Ei 'HTTP/|location:|set-cookie:'
+```
+
+Expected:
+
+- `/auth/login` redirects to `http://localhost:8080/o/authorize...` (not AAT IDAM).
+- `/` returns `HTTP/1.1 200 OK`.
+
+### 4) Run Playwright integration tests in local mocked mode
+
+```bash
+TEST_URL=http://localhost:3000 \
+EXUI_BASE_URL=http://localhost:3000 \
+MANAGE_CASES_BASE_URL=http://localhost:3000/cases \
+IDAM_WEB_URL=http://localhost:8080 \
+IDAM_TESTING_SUPPORT_URL=http://localhost:8080 \
+FUNCTIONAL_TESTS_WORKERS=4 \
+PLAYWRIGHT_SKIP_INSTALL=true \
+yarn test:playwright:integration
+```
+
+Why these env vars are required:
+
+- `TEST_URL` / `EXUI_BASE_URL` force Playwright target to local UI.
+- `IDAM_WEB_URL` / `IDAM_TESTING_SUPPORT_URL` prevent session capture from attempting AAT IDAM login.
+
+### Troubleshooting
+
+- `EADDRINUSE: ... 3001`:
+  - Another Node API process is running. Stop it, then restart `yarn start:node`.
+- Browser says `ERR_TOO_MANY_REDIRECTS`:
+  - Clear site cookies for `localhost`.
+  - Verify `/auth/login` points to `localhost:8080` and not `idam-web-public.aat...`.
+
+## Local mock/auth changes implemented
+
+The following code changes were made to support fully mocked local auth + integration flow:
+
+1. `test_codecept/backendMock/services/idam/index.js`
+   - OIDC discovery metadata now points to local mock endpoints on `http://localhost:8080`.
+
+2. `test_codecept/backendMock/services/idam/routes.js`
+   - Added `/login` route to redirect to local `/o/authorize`.
+   - Added `/details` endpoint with role-bearing mock user profile.
+   - Added shared token responder for both `/o/token` and `/oauth2/token`.
+   - Corrected token response shape (`token_type: Bearer`, numeric `expires_in`, JWT `exp` in seconds).
+   - Updated OAuth callback `iss` to local `http://localhost:8080/o`.
+
+3. `test_codecept/backendMock/services/userApiData.js`
+   - Added safe token normalization and null guards to avoid crashes when auth headers are absent/malformed.
+
+4. `api/user/index.ts`
+   - Hardened active role-assignment extraction to handle undefined role arrays without crashing.
+
 ## API docs (Swagger UI)
 
 - Swagger UI is available on lower environments when the `feature.docsEnabled` flag is true and `environment` is not `production`.

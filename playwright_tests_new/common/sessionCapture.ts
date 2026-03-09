@@ -11,6 +11,148 @@ import { StorageStateCorruptedError, SessionCaptureError } from '../api/utils/er
 
 const logger = createLogger({ serviceName: 'session-capture', format: 'pretty' });
 
+const IDAM_USERNAME_SELECTOR =
+  '[data-testid="idam-username-input"], input#username, input[name="username"], input[type="email"], input#email, input[name="email"], input[name="emailAddress"], input[autocomplete="email"]';
+const IDAM_PASSWORD_SELECTOR = 'input#password, input[name="password"], input[type="password"]';
+const IDAM_SUBMIT_SELECTOR = '[name="save"], button[type="submit"], button:has-text("Sign in"), button:has-text("Continue")';
+const CHROME_ERROR_URL_PREFIX = 'chrome-error://chromewebdata/';
+
+function currentPageUrl(page: Page): string {
+  try {
+    return typeof page.url === 'function' ? page.url() : 'unknown';
+  } catch {
+    return 'unknown';
+  }
+}
+
+function toError(error: unknown): Error {
+  return error instanceof Error ? error : new Error(String(error));
+}
+
+function isChromeErrorNavigationFailure(error: unknown, currentUrl: string): boolean {
+  const message = toError(error).message;
+  return currentUrl.startsWith(CHROME_ERROR_URL_PREFIX) || message.includes(CHROME_ERROR_URL_PREFIX);
+}
+
+function isTransientNavigationFailure(error: unknown, currentUrl: string): boolean {
+  const message = toError(error).message;
+  return (
+    isChromeErrorNavigationFailure(error, currentUrl) ||
+    message.includes('ERR_NAME_NOT_RESOLVED') ||
+    message.includes('ERR_INTERNET_DISCONNECTED') ||
+    message.includes('ERR_NETWORK_CHANGED') ||
+    message.includes('ERR_CONNECTION_RESET') ||
+    message.includes('ERR_CONNECTION_CLOSED') ||
+    message.includes('ERR_CONNECTION_TIMED_OUT') ||
+    message.includes('ERR_TIMED_OUT')
+  );
+}
+
+async function gotoAppTarget(page: Page, userIdentifier: string, targetUrl: string): Promise<void> {
+  const maxNavigationAttempts = 3;
+  let lastError: Error | null = null;
+
+  for (let navigationAttempt = 1; navigationAttempt <= maxNavigationAttempts; navigationAttempt += 1) {
+    try {
+      await page.goto(targetUrl);
+      const currentUrl = currentPageUrl(page);
+      if (currentUrl.startsWith(CHROME_ERROR_URL_PREFIX)) {
+        throw new Error(`Navigation landed on ${CHROME_ERROR_URL_PREFIX} while opening ${targetUrl}`);
+      }
+      return;
+    } catch (error) {
+      const currentUrl = currentPageUrl(page);
+      const parsedError = toError(error);
+      const canRetry = navigationAttempt < maxNavigationAttempts && isTransientNavigationFailure(parsedError, currentUrl);
+      lastError = parsedError;
+      logger.warn('Authenticated app navigation failed', {
+        userIdentifier,
+        targetUrl,
+        navigationAttempt,
+        maxNavigationAttempts,
+        canRetry,
+        currentUrl,
+        error: parsedError.message,
+        operation: 'ensure-authenticated-page',
+      });
+      if (!canRetry) {
+        throw parsedError;
+      }
+      await new Promise<void>((resolve) => setTimeout(resolve, 1000 * navigationAttempt));
+    }
+  }
+
+  if (lastError) {
+    throw lastError;
+  }
+}
+
+async function gotoLoginTarget(page: Page, userIdentifier: string, loginTarget: string): Promise<void> {
+  const maxNavigationAttempts = 2;
+  let lastError: Error | null = null;
+
+  for (let navigationAttempt = 1; navigationAttempt <= maxNavigationAttempts; navigationAttempt += 1) {
+    try {
+      await page.goto(loginTarget, { waitUntil: 'domcontentloaded' });
+      const currentUrl = currentPageUrl(page);
+      if (currentUrl.startsWith(CHROME_ERROR_URL_PREFIX)) {
+        throw new Error(`Navigation landed on ${CHROME_ERROR_URL_PREFIX} while opening ${loginTarget}`);
+      }
+      return;
+    } catch (error) {
+      const currentUrl = currentPageUrl(page);
+      const parsedError = toError(error);
+      const canRetry = navigationAttempt < maxNavigationAttempts && isChromeErrorNavigationFailure(parsedError, currentUrl);
+      lastError = parsedError;
+      logger.warn('Login navigation failed', {
+        userIdentifier,
+        loginTarget,
+        navigationAttempt,
+        maxNavigationAttempts,
+        canRetry,
+        currentUrl,
+        error: parsedError.message,
+        operation: 'session-capture',
+      });
+      if (!canRetry) {
+        throw parsedError;
+      }
+      await new Promise<void>((resolve) => setTimeout(resolve, 1000 * navigationAttempt));
+    }
+  }
+
+  if (lastError) {
+    throw lastError;
+  }
+}
+
+async function acceptAccessCookiesIfPresent(page: Page): Promise<void> {
+  const acceptButton = page.getByRole('button', { name: /accept additional cookies/i }).first();
+  if (await acceptButton.isVisible().catch(() => false)) {
+    await acceptButton.click({ timeout: 2000 }).catch(() => undefined);
+  }
+}
+
+function hasRequiredAuthCookies(cookies: Cookie[]): boolean {
+  const names = new Set(cookies.map((cookie) => cookie.name));
+  return names.has('Idam.Session') && names.has('__auth__');
+}
+
+async function waitForRequiredAuthCookies(page: Page, timeoutMs: number): Promise<boolean> {
+  const deadline = Date.now() + timeoutMs;
+  while (Date.now() < deadline) {
+    const cookies = await page
+      .context()
+      .cookies()
+      .catch(() => []);
+    if (hasRequiredAuthCookies(cookies)) {
+      return true;
+    }
+    await new Promise<void>((resolve) => setTimeout(resolve, Math.min(500, deadline - Date.now())));
+  }
+  return false;
+}
+
 export interface LoadedSession {
   email: string;
   cookies: Cookie[];
@@ -291,7 +433,7 @@ export async function ensureAuthenticatedPage(
     markSetup('cookies-ready');
   }
 
-  await page.goto(targetUrl);
+  await gotoAppTarget(page, userIdentifier, targetUrl);
   markSetup('navigated-app');
 
   if (await isIdamLoginPage(page)) {
@@ -322,7 +464,7 @@ export async function ensureAuthenticatedPage(
     if (session.cookies.length) {
       await page.context().addCookies(session.cookies);
     }
-    await page.goto(targetUrl);
+    await gotoAppTarget(page, userIdentifier, targetUrl);
     markSetup('navigated-app');
 
     if (await isIdamLoginPage(page)) {
@@ -358,7 +500,7 @@ export async function ensureAuthenticatedPage(
         error: (error as Error).message,
         operation: 'wait-for-shell',
       });
-      await page.goto(targetUrl);
+      await gotoAppTarget(page, userIdentifier, targetUrl);
       markSetup('navigated-app');
       await waitForAppShell();
     }
@@ -481,10 +623,9 @@ async function loginAndPersistSession({
   userIdentifier: string;
 }) {
   const browser = await chromiumLauncher.launch();
-  const context = await browser.newContext();
-  const page = await context.newPage();
-  const idamPage = idamFactory(page);
   const targetUrl = env.TEST_URL || activeConfig.urls.exuiDefaultUrl;
+  const idamLoginUrl = activeConfig.urls.idamWebUrl ? new URL('/login', activeConfig.urls.idamWebUrl).toString() : undefined;
+  const loginTargets = [targetUrl, idamLoginUrl].filter((candidate): candidate is string => Boolean(candidate));
   logger.info('Logging in to EXUI', {
     userIdentifier,
     email,
@@ -492,38 +633,139 @@ async function loginAndPersistSession({
     operation: 'session-capture',
   });
   try {
-    await page.goto(targetUrl);
-    await idamPage.usernameInput.waitFor({ state: 'visible', timeout: 60000 });
-    await idamPage.login({ username: email, password });
-    // Wait for presence of the standard EXUI header component to confirm the app shell loaded.
+    const context = await browser.newContext();
+    const page = await context.newPage();
+    const idamPage = idamFactory(page);
     try {
-      await page.waitForSelector('exui-header', { timeout: 60000 });
-      logger.info('EXUI header detected', {
+      let loginError: Error | null = null;
+      for (let attempt = 0; attempt < loginTargets.length; attempt += 1) {
+        const loginTarget = loginTargets[attempt];
+        try {
+          await gotoLoginTarget(page, userIdentifier, loginTarget);
+          await acceptAccessCookiesIfPresent(page);
+          const shellMarker = await waitForAuthenticatedShell(page, userIdentifier, undefined, 5000).catch(() => null);
+          if (shellMarker) {
+            logger.info('Authenticated shell detected without IDAM form login', {
+              userIdentifier,
+              email,
+              loginTarget,
+              marker: shellMarker,
+              attempt: attempt + 1,
+              operation: 'session-capture',
+            });
+            loginError = null;
+            break;
+          }
+
+          const usernameInput = page.locator(IDAM_USERNAME_SELECTOR).first();
+          const passwordInput = page.locator(IDAM_PASSWORD_SELECTOR).first();
+          const submitButton = page.locator(IDAM_SUBMIT_SELECTOR).first();
+          const loginSurface = await Promise.race([
+            usernameInput.waitFor({ state: 'visible', timeout: 60000 }).then(() => 'login'),
+            page
+              .locator('exui-header, exui-case-home')
+              .first()
+              .waitFor({ state: 'visible', timeout: 60000 })
+              .then(() => 'app'),
+          ]).catch(() => null);
+
+          if (loginSurface === 'app') {
+            loginError = null;
+            break;
+          }
+
+          if (loginSurface !== 'login') {
+            await idamPage.usernameInput.waitFor({ state: 'visible', timeout: 10000 });
+            await idamPage.login({ username: email, password });
+            loginError = null;
+            break;
+          }
+
+          await usernameInput.fill(email);
+          await passwordInput.fill(password);
+          if (await submitButton.isVisible().catch(() => false)) {
+            await submitButton.click();
+          } else {
+            await passwordInput.press('Enter');
+          }
+          await acceptAccessCookiesIfPresent(page);
+
+          const postLoginShell = await waitForAuthenticatedShell(page, userIdentifier, undefined, 15000).catch(() => null);
+          const hasAuthCookies = await waitForRequiredAuthCookies(page, 15000);
+          if (!postLoginShell && !hasAuthCookies) {
+            throw new Error(
+              `IDAM login did not establish authenticated session for ${userIdentifier} (url=${currentPageUrl(page)}).`
+            );
+          }
+          loginError = null;
+          logger.info('IDAM login successful', {
+            userIdentifier,
+            email,
+            loginTarget,
+            attempt: attempt + 1,
+            marker: postLoginShell ?? 'auth-cookies',
+            operation: 'session-capture',
+          });
+          break;
+        } catch (attemptError) {
+          loginError = attemptError as Error;
+          logger.warn('IDAM login attempt failed', {
+            userIdentifier,
+            email,
+            loginTarget,
+            attempt: attempt + 1,
+            totalAttempts: loginTargets.length,
+            currentUrl: currentPageUrl(page),
+            error: loginError.message,
+            operation: 'session-capture',
+          });
+        }
+      }
+
+      if (loginError) {
+        throw loginError;
+      }
+
+      try {
+        await page.locator('exui-header').waitFor({ timeout: 60000 });
+        logger.info('EXUI header detected', {
+          userIdentifier,
+          operation: 'session-capture',
+        });
+      } catch (error_) {
+        logger.warn('EXUI header not detected within timeout', {
+          userIdentifier,
+          timeout: 60000,
+          error: (error_ as Error).message,
+          operation: 'session-capture',
+        });
+      }
+
+      const cookies = await context.cookies();
+      await persist(sessionPath, cookies, context, userIdentifier);
+    } catch (e) {
+      logger.error('Login failed', {
         userIdentifier,
+        email,
+        targetUrl,
+        error: (e as Error).message,
         operation: 'session-capture',
       });
-    } catch (error_) {
-      logger.warn('EXUI header not detected within timeout', {
+      throw new SessionCaptureError(`Login failed for ${userIdentifier}`, userIdentifier, { email, targetUrl }, e as Error);
+    }
+  } finally {
+    try {
+      await browser.close();
+    } catch (closeError) {
+      logger.warn('Failed to close browser after session capture', {
         userIdentifier,
-        timeout: 60000,
-        error: (error_ as Error).message,
+        email,
+        targetUrl,
+        error: (closeError as Error).message,
         operation: 'session-capture',
       });
     }
-  } catch (e) {
-    logger.error('Login failed', {
-      userIdentifier,
-      email,
-      targetUrl,
-      error: (e as Error).message,
-      operation: 'session-capture',
-    });
-    throw new SessionCaptureError(`Login failed for ${userIdentifier}`, userIdentifier, { email, targetUrl }, e as Error);
   }
-
-  const cookies = await context.cookies();
-  await persist(sessionPath, cookies, context, userIdentifier);
-  await browser.close();
 }
 
 export async function sessionCapture(identifiers: string[], options: { force?: boolean } = {}) {

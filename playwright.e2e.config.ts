@@ -4,6 +4,7 @@ import { cpus } from 'node:os';
 import { version as appVersion } from './package.json';
 import { parseNonNegativeInt, resolveDefaultReporter } from './playwright-config-utils';
 export default (() => {
+  const temporaryProbePattern = '**/_tmp_*.spec.ts';
   const headlessMode = process.env.HEAD !== 'true';
   const odhinOutputFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
   const baseUrl = process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';
@@ -99,7 +100,7 @@ export default (() => {
   return defineConfig({
     testDir: 'playwright_tests_new/E2E',
     testMatch: ['**/test/**/*.spec.ts'],
-    testIgnore: ['**/test/smoke/smokeTest.spec.ts'],
+    testIgnore: [temporaryProbePattern, '**/test/smoke/smokeTest.spec.ts'],
     fullyParallel: true,
     retries,
     timeout: 180_000,

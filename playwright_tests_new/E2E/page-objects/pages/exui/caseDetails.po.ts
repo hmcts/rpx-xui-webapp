@@ -458,27 +458,53 @@ export class CaseDetailsPage extends Base {
     action: string,
     options: {
       expectedLocator?: Locator;
+      expectedPath?: string | RegExp;
       timeoutMs?: number;
       retry?: boolean;
     } = {}
   ) {
     await this.caseActionGoButton.waitFor({ state: 'visible' });
     await this.caseActionsDropdown.waitFor({ state: 'visible' });
+    const availableOptions = await this.caseActionsDropdown.locator('option').evaluateAll((options) =>
+      options
+        .map((option) => ({
+          label: (option.textContent ?? '').trim(),
+          value: (option.getAttribute('value') ?? '').trim(),
+        }))
+        .filter((option) => option.label || option.value)
+    );
+    const matchingOption = availableOptions.find((option) => option.label === action || option.value === action);
+    if (!matchingOption) {
+      throw new Error(
+        `Case action "${action}" is not available. Available actions: ${availableOptions.map((option) => option.label || option.value).join(', ')}`
+      );
+    }
     try {
-      await this.caseActionsDropdown.selectOption({ label: action });
+      if (matchingOption.label === action) {
+        await this.caseActionsDropdown.selectOption({ label: action });
+      } else {
+        await this.caseActionsDropdown.selectOption(action);
+      }
     } catch (error) {
       // Fallback: some dropdowns don't support label selector, use value directly
       this.logger.warn('Failed to select option by label, falling back to value selector', { error });
-      await this.caseActionsDropdown.selectOption(action);
+      await this.caseActionsDropdown.selectOption(matchingOption.value || action);
     }
     await this.caseActionGoButton.click();
     await this.waitForSpinnerToComplete('after selecting case action');
     await this.page.waitForLoadState('domcontentloaded');
-    if (!options.expectedLocator) {
+    if (!options.expectedLocator && !options.expectedPath) {
       return;
     }
     const timeoutMs = options.timeoutMs ?? 30000;
     const waitForExpected = async () => {
+      if (options.expectedPath) {
+        const matcher =
+          typeof options.expectedPath === 'string'
+            ? (url: URL) => url.pathname.includes(options.expectedPath as string)
+            : (url: URL) => (options.expectedPath as RegExp).test(url.pathname);
+        await this.page.waitForURL(matcher, { timeout: timeoutMs });
+      }
       await options.expectedLocator?.waitFor({ state: 'visible', timeout: timeoutMs });
     };
     try {
@@ -493,10 +519,14 @@ export class CaseDetailsPage extends Base {
       }
       this.logger.warn('Expected locator not visible after case action; retrying action', { action });
       try {
-        await this.caseActionsDropdown.selectOption({ label: action });
+        if (matchingOption.label === action) {
+          await this.caseActionsDropdown.selectOption({ label: action });
+        } else {
+          await this.caseActionsDropdown.selectOption(action);
+        }
       } catch (retryError) {
         this.logger.warn('Retry: failed to select option by label, falling back to value selector', { retryError });
-        await this.caseActionsDropdown.selectOption(action);
+        await this.caseActionsDropdown.selectOption(matchingOption.value || action);
       }
       await this.caseActionGoButton.click();
       await this.waitForSpinnerToComplete('after retrying case action');

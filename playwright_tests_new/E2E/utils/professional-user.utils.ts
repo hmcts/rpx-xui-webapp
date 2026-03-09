@@ -1,7 +1,10 @@
 import { faker } from '@faker-js/faker';
 import { ApiClient, IdamUtils, ServiceAuthUtils, createLogger } from '@hmcts/playwright-common';
+import { request } from '@playwright/test';
 
 import { firstAllowedNonEmpty } from './accountPolicy.js';
+import { ensureUiStorageStateForUser } from './session-storage.utils.js';
+import { resolveUiStoragePathForUser } from './storage-state.utils.js';
 
 export const DEFAULT_SOLICITOR_PASSWORD = 'Password12!';
 export const DEFAULT_CASEWORKER_DIVORCE_PASSWORD = 'Password12!';
@@ -9,8 +12,8 @@ export const DEFAULT_IDAM_CREATE_ATTEMPTS = 3;
 export const DEFAULT_SOLICITOR_ROLE_PROFILE = 'minimal';
 export const DEFAULT_IDAM_CLIENT_ID = 'xuiwebapp';
 export const DEFAULT_PASSWORD_GRANT_SCOPE = 'openid profile roles manage-user create-user';
+export const DEFAULT_ASSIGNMENT_SCOPE = 'openid profile roles';
 export const DEFAULT_ORGANISATION_ASSIGNMENT_MODE = 'auto';
-export const DEFAULT_ASSIGNMENT_PRINCIPAL_EMAIL = 'xui_org_main_test@gmail.com';
 
 export const MINIMAL_SOLICITOR_ROLE_NAMES = [
   'caseworker',
@@ -28,29 +31,33 @@ export const EXTENDED_SOLICITOR_ROLE_NAMES = [
   'payments',
 ] as const;
 export const SOLICITOR_ROLE_NAMES = MINIMAL_SOLICITOR_ROLE_NAMES;
+export const DIVORCE_EXTERNAL_CORE_SOLICITOR_ROLE_NAMES = [
+  'caseworker',
+  'caseworker-divorce',
+  'caseworker-divorce-financialremedy',
+  'caseworker-divorce-financialremedy-solicitor',
+  'pui-case-manager',
+] as const;
+export const DIVORCE_EXTERNAL_NOC_SOLICITOR_ROLE_NAMES = [
+  ...DIVORCE_EXTERNAL_CORE_SOLICITOR_ROLE_NAMES,
+  'caseworker-divorce-solicitor',
+] as const;
+export const DIVORCE_EXTERNAL_SOLICITOR_ROLE_NAMES = DIVORCE_EXTERNAL_CORE_SOLICITOR_ROLE_NAMES;
+export const EMPLOYMENT_EXTERNAL_CORE_SOLICITOR_ROLE_NAMES = [
+  'caseworker',
+  'caseworker-employment',
+  'caseworker-employment-legalrep-solicitor',
+  'pui-case-manager',
+] as const;
 export const SOLICITOR_ROLE_NAMES_BY_JURISDICTION = {
   prl: MINIMAL_SOLICITOR_ROLE_NAMES,
-  divorce: [
-    'caseworker',
-    'caseworker-divorce',
-    'caseworker-divorce-solicitor',
-    'caseworker-divorce-financialremedy',
-    'caseworker-divorce-financialremedy-solicitor',
-    'pui-case-manager',
-  ],
-  finrem: [
-    'caseworker',
-    'caseworker-divorce',
-    'caseworker-divorce-solicitor',
-    'caseworker-divorce-financialremedy',
-    'caseworker-divorce-financialremedy-solicitor',
-    'pui-case-manager',
-  ],
+  divorce: DIVORCE_EXTERNAL_SOLICITOR_ROLE_NAMES,
+  finrem: DIVORCE_EXTERNAL_SOLICITOR_ROLE_NAMES,
   probate: ['caseworker', 'caseworker-probate', 'caseworker-probate-solicitor', 'pui-case-manager'],
   ia: ['caseworker', 'caseworker-ia', 'caseworker-ia-legalrep-solicitor', 'pui-case-manager'],
   publiclaw: ['caseworker', 'caseworker-publiclaw', 'caseworker-publiclaw-solicitor', 'pui-case-manager'],
   civil: ['caseworker', 'caseworker-civil', 'caseworker-civil-solicitor', 'pui-case-manager'],
-  employment: ['caseworker', 'caseworker-employment', 'caseworker-employment-legalrep-solicitor', 'pui-case-manager'],
+  employment: EMPLOYMENT_EXTERNAL_CORE_SOLICITOR_ROLE_NAMES,
 } as const;
 export const SOLICITOR_ROLE_AUGMENT_BY_TEST_TYPE = {
   provisioning: [],
@@ -94,6 +101,14 @@ const ORGANISATION_ASSIGNMENT_ALLOWED_ROLES = new Set<string>([
   'caseworker-privatelaw',
   'caseworker-privatelaw-solicitor',
 ]);
+
+type AssignmentUserRoleProfile = keyof typeof SOLICITOR_ROLE_AUGMENT_BY_TEST_TYPE;
+
+type AssignmentUserRolesResolution = {
+  roles?: string[];
+  source: 'profile' | 'explicit' | 'token-claims' | 'none';
+  profile?: AssignmentUserRoleProfile;
+};
 
 export type ProfessionalUserInfo = {
   id?: string;
@@ -188,6 +203,15 @@ type CreateSolicitorUserForOrganisationOptions = {
   outputCreatedUserData?: boolean;
 };
 
+type OrganisationAssignmentPreflightOptions = {
+  organisationId: string;
+  mode?: OrganisationAssignmentStrategy;
+  assignmentBearerToken?: string;
+  serviceToken?: string;
+  rdProfessionalApiPath?: string;
+  requireServiceAuth?: boolean;
+};
+
 type CleanupOrganisationAssignmentOptions = {
   user: ProfessionalUserInfo;
   userIdentifier?: string;
@@ -212,8 +236,10 @@ const logger = createLogger({
 const IDAM_RETRYABLE_STATUSES = new Set([429, 500, 502, 503, 504]);
 const USER_PROPAGATION_CHECK_MAX_ATTEMPTS = 6;
 const USER_PROPAGATION_CHECK_RETRY_DELAY_MS = 1_000;
-const EXTERNAL_ASSIGNMENT_RETRY_DELAY_MS = 5_000;
-const DEFAULT_EXTERNAL_ASSIGNMENT_RETRY_ATTEMPTS = 60;
+const EXTERNAL_ASSIGNMENT_RETRY_DELAY_MS = 2_000;
+const DEFAULT_EXTERNAL_ASSIGNMENT_RETRY_ATTEMPTS = 12;
+const MAX_EXTERNAL_ASSIGNMENT_RETRY_ATTEMPTS = 20;
+const DEFAULT_ASSIGNMENT_REQUEST_TIMEOUT_MS = 20_000;
 const SOLICITOR_ROLE_PROFILES: Record<SolicitorRoleProfile, readonly string[]> = {
   minimal: MINIMAL_SOLICITOR_ROLE_NAMES,
   'org-admin': ORG_ADMIN_SOLICITOR_ROLE_NAMES,
@@ -299,7 +325,7 @@ export class ProfessionalUserUtils {
       roleNames: roleSelection.roleNames,
     };
 
-    const assignmentMode = options.mode ?? 'external';
+    const assignmentMode = options.mode ?? DEFAULT_ORGANISATION_ASSIGNMENT_MODE;
     const resendInvite = options.resendInvite ?? false;
 
     // Requested sequence: create and activate user in SIDAM/IDAM first, then invite/assign in Manage Org.
@@ -338,6 +364,54 @@ export class ProfessionalUserUtils {
       ...createdUser,
       organisationAssignment,
     };
+  }
+
+  public async assertOrganisationAssignmentPreflight(options: OrganisationAssignmentPreflightOptions): Promise<void> {
+    const rdProfessionalApiPath = resolveRdProfessionalApiPath(options.rdProfessionalApiPath);
+    const requestedMode = resolveOrganisationAssignmentMode(options.mode);
+    const modesToTry = resolveAssignmentModesToTry(requestedMode);
+    const assignmentBearerToken = await this.resolveAssignmentBearerToken(options.assignmentBearerToken);
+    const serviceToken = await this.resolveServiceToken(options.serviceToken, options.requireServiceAuth ?? true);
+    const assignmentUserRoles = resolveAssignmentUserRolesResolution(assignmentBearerToken);
+    const headers = buildHeaders(assignmentBearerToken, serviceToken, assignmentUserRoles.roles);
+    const client = new ApiClient({
+      baseUrl: rdProfessionalApiPath,
+      name: 'rd-professional-assignment-preflight',
+    });
+
+    let lastError: unknown;
+    for (const mode of modesToTry) {
+      const endpoint =
+        mode === 'internal'
+          ? `/refdata/internal/v1/organisations/${encodeURIComponent(options.organisationId)}/users/`
+          : '/refdata/external/v1/organisations/users/';
+      try {
+        await client.post<Record<string, unknown>>(endpoint, {
+          headers,
+          // Intentionally invalid payload: validates endpoint/auth/claim processing without creating a user.
+          data: {},
+          responseType: 'json',
+        });
+        return;
+      } catch (error) {
+        lastError = error;
+        const statusCode = parseStatusCode(error);
+        if (statusCode !== undefined && statusCode < 500 && statusCode !== 401 && statusCode !== 403) {
+          return;
+        }
+        const hasNextMode = mode !== modesToTry[modesToTry.length - 1];
+        if (hasNextMode && shouldFallbackToAlternateAssignmentMode(statusCode)) {
+          continue;
+        }
+      }
+    }
+
+    const statusCode = parseStatusCode(lastError);
+    throw new Error(
+      `Organisation assignment preflight failed for organisation ${options.organisationId} (requested mode: ${requestedMode}, status: ${
+        statusCode ?? 'unknown'
+      }). Organisation can be ACTIVE in Manage Org while RD Professional assignment endpoints are unhealthy/forbidden.`
+    );
   }
 
   public async createUser({
@@ -553,7 +627,6 @@ export class ProfessionalUserUtils {
     // NOSONAR typescript:S3776
     options: AssignUserToOrganisationOptions
   ): Promise<OrganisationAssignmentResult> {
-    const rdProfessionalApiPath = resolveRdProfessionalApiPath(options.rdProfessionalApiPath);
     const requestedMode = resolveOrganisationAssignmentMode(options.mode);
     const modesToTry = resolveAssignmentModesToTry(requestedMode);
     const requestedRoles = [...new Set(options.roles ?? options.user.roleNames)];
@@ -567,16 +640,6 @@ export class ProfessionalUserUtils {
         keptRoles: roles,
       });
     }
-    const assignmentBearerToken = await this.resolveAssignmentBearerToken(options.assignmentBearerToken);
-    const serviceToken = await this.resolveServiceToken(options.serviceToken, options.requireServiceAuth ?? true);
-
-    const client = new ApiClient({
-      baseUrl: rdProfessionalApiPath,
-      name: 'rd-professional-assignment',
-    });
-
-    const headers = buildHeaders(assignmentBearerToken, serviceToken, resolveAssignmentUserRoles(assignmentBearerToken));
-
     const payload = {
       firstName: options.user.forename,
       lastName: options.user.surname,
@@ -585,10 +648,88 @@ export class ProfessionalUserUtils {
       resendInvite: options.resendInvite ?? false,
     };
 
-    try {
-      let lastError: unknown;
-      const attemptedModes: OrganisationAssignmentMode[] = [];
+    const attemptedModes: OrganisationAssignmentMode[] = [];
+    if (shouldUseManageOrgInvitePrimary()) {
+      try {
+        const manageOrgPrimary = await this.inviteUserViaManageOrgApi({
+          user: options.user,
+          roles,
+          resendInvite: options.resendInvite ?? false,
+        });
+        const requiresConflictVerification = manageOrgPrimary.status === 409;
+        const conflictVerified =
+          !requiresConflictVerification ||
+          (await this.isUserVisibleInOrganisationAssignment({
+            organisationId: options.organisationId,
+            user: options.user,
+            assignmentBearerToken: options.assignmentBearerToken,
+            serviceToken: options.serviceToken,
+            rdProfessionalApiPath: options.rdProfessionalApiPath,
+            requireServiceAuth: options.requireServiceAuth,
+          }));
+        if (requiresConflictVerification && !conflictVerified) {
+          logger.warn(
+            'Manage-org invite returned 409, but RD Professional lookup could not confirm user assignment. Continuing with RD fallback.',
+            {
+              organisationId: options.organisationId,
+              requestedMode,
+              email: options.user.email,
+            }
+          );
+        } else {
+          logger.info('Organisation assignment succeeded via manage-org invite primary path.', {
+            organisationId: options.organisationId,
+            requestedMode,
+            email: options.user.email,
+            status: manageOrgPrimary.status,
+          });
+          return {
+            organisationId: options.organisationId,
+            mode: 'external',
+            requestedMode,
+            attemptedModes: ['external'],
+            roles,
+            status: manageOrgPrimary.status,
+            userIdentifier: manageOrgPrimary.userIdentifier,
+            responseBody: {
+              assignmentPath: 'manage-org-invite-primary',
+              payload: manageOrgPrimary.responseBody,
+            },
+          };
+        }
+      } catch (error) {
+        if (!shouldFallbackToRdAfterManageOrgFailure()) {
+          throw error;
+        }
+        logger.warn('Manage-org invite primary path failed; falling back to RD Professional assignment path.', {
+          organisationId: options.organisationId,
+          requestedMode,
+          email: options.user.email,
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
+    }
 
+    let client: ApiClient | undefined;
+    try {
+      const assignmentBearerToken = await this.resolveAssignmentBearerToken(options.assignmentBearerToken);
+      const serviceToken = await this.resolveServiceToken(options.serviceToken, options.requireServiceAuth ?? true);
+      const rdProfessionalApiPath = resolveRdProfessionalApiPath(options.rdProfessionalApiPath);
+      client = new ApiClient({
+        baseUrl: rdProfessionalApiPath,
+        name: 'rd-professional-assignment',
+      });
+      const assignmentUserRoles = resolveAssignmentUserRolesResolution(assignmentBearerToken);
+      const headers = buildHeaders(assignmentBearerToken, serviceToken, assignmentUserRoles.roles);
+      logger.info('Resolved assignment principal roles for organisation assignment.', {
+        organisationId: options.organisationId,
+        requestedMode,
+        source: assignmentUserRoles.source,
+        profile: assignmentUserRoles.profile,
+        roles: assignmentUserRoles.roles,
+      });
+      const assignmentRequestTimeoutMs = resolveAssignmentRequestTimeoutMs();
+      let lastError: unknown;
       for (const mode of modesToTry) {
         const endpoint =
           mode === 'internal'
@@ -603,6 +744,7 @@ export class ProfessionalUserUtils {
               headers,
               data: payload,
               responseType: 'json',
+              timeout: assignmentRequestTimeoutMs,
             });
             return {
               organisationId: options.organisationId,
@@ -649,18 +791,23 @@ export class ProfessionalUserUtils {
               };
             }
             const hasNextMode = attemptedModes.length < modesToTry.length;
-            const retryExternalUserVisibility =
-              shouldRetryExternalAssignmentForUserVisibility(mode, statusCode) && attempt < modeAttempts;
+            const retryExternalUserVisibility = shouldRetryExternalAssignment(mode, statusCode) && attempt < modeAttempts;
 
             if (retryExternalUserVisibility) {
-              logger.warn('External organisation invite returned user-not-found; waiting for propagation and retrying.', {
-                organisationId: options.organisationId,
-                attemptedMode: mode,
-                attempt,
-                attempts: modeAttempts,
-                statusCode,
-                username: options.user.email,
-              });
+              const shouldLogRetry = attempt === 1 || attempt % 3 === 0 || attempt + 1 === modeAttempts;
+              if (shouldLogRetry) {
+                logger.warn(
+                  'External organisation invite returned retryable status; waiting for propagation/transient recovery and retrying.',
+                  {
+                    organisationId: options.organisationId,
+                    attemptedMode: mode,
+                    attempt,
+                    attempts: modeAttempts,
+                    statusCode,
+                    username: options.user.email,
+                  }
+                );
+              }
               const propagationOutcome = await this.waitForUserPropagation(options.user);
               if (propagationOutcome.degraded) {
                 logger.warn('External assignment retry is continuing after degraded propagation checks.', {
@@ -696,18 +843,194 @@ export class ProfessionalUserUtils {
               user: options.user,
               roles,
               headers,
+              assignmentUserRoles,
               requestedMode,
               attemptedModes: [...attemptedModes],
             });
             logger.error('Organisation assignment failed. PRD principal and role diagnostics:', diagnostics);
+            if (shouldUseManageOrgInviteFallback(error)) {
+              break;
+            }
             throw error;
           }
         }
       }
 
+      if (shouldUseManageOrgInviteFallback(lastError)) {
+        const manageOrgFallback = await this.inviteUserViaManageOrgApi({
+          user: options.user,
+          roles,
+          resendInvite: options.resendInvite ?? false,
+        });
+        logger.warn('Organisation assignment succeeded via manage-org invite fallback after RD Professional failure.', {
+          organisationId: options.organisationId,
+          requestedMode,
+          attemptedModes,
+          fallbackStatus: manageOrgFallback.status,
+          email: options.user.email,
+        });
+        return {
+          organisationId: options.organisationId,
+          mode: 'external',
+          requestedMode,
+          attemptedModes: [...attemptedModes, 'external'],
+          roles,
+          status: manageOrgFallback.status,
+          userIdentifier: manageOrgFallback.userIdentifier,
+          responseBody: {
+            fallback: 'manage-org-invite',
+            payload: manageOrgFallback.responseBody,
+          },
+        };
+      }
+
       throw toError(lastError, 'Organisation assignment failed.');
+    } catch (error) {
+      if (shouldUseManageOrgInviteFallback(error)) {
+        const manageOrgFallback = await this.inviteUserViaManageOrgApi({
+          user: options.user,
+          roles,
+          resendInvite: options.resendInvite ?? false,
+        });
+        logger.warn('Organisation assignment recovered via manage-org invite fallback after RD prerequisite failure.', {
+          organisationId: options.organisationId,
+          requestedMode,
+          attemptedModes,
+          fallbackStatus: manageOrgFallback.status,
+          email: options.user.email,
+        });
+        return {
+          organisationId: options.organisationId,
+          mode: 'external',
+          requestedMode,
+          attemptedModes: [...attemptedModes, 'external'],
+          roles,
+          status: manageOrgFallback.status,
+          userIdentifier: manageOrgFallback.userIdentifier,
+          responseBody: {
+            fallback: 'manage-org-invite',
+            payload: manageOrgFallback.responseBody,
+          },
+        };
+      }
+      throw error;
     } finally {
-      await client.dispose();
+      if (client) {
+        await client.dispose();
+      }
+    }
+  }
+
+  private async inviteUserViaManageOrgApi(params: {
+    user: ProfessionalUserInfo;
+    roles: readonly string[];
+    resendInvite: boolean;
+  }): Promise<{
+    status: number;
+    userIdentifier?: string;
+    responseBody: unknown;
+  }> {
+    const manageOrgBaseUrl = resolveManageOrgApiPath();
+    const assignmentRequestTimeoutMs = resolveAssignmentRequestTimeoutMs();
+    const invitePayload = {
+      firstName: params.user.forename,
+      lastName: params.user.surname,
+      email: params.user.email,
+      roles: [...params.roles],
+      resendInvite: params.resendInvite,
+    };
+
+    const parseInviteResponse = async (
+      apiContext: Awaited<ReturnType<typeof request.newContext>>
+    ): Promise<{
+      status: number;
+      responseBody: unknown;
+    }> => {
+      const response = await apiContext.post('/api/inviteUser', {
+        data: invitePayload,
+        failOnStatusCode: false,
+        timeout: assignmentRequestTimeoutMs,
+      });
+      const bodyText = await response.text();
+      let responseBody: unknown = bodyText;
+      try {
+        responseBody = JSON.parse(bodyText);
+      } catch {
+        // manage-org may return plain text.
+      }
+      const isUserAlreadyExists =
+        response.status() === 409 &&
+        typeof responseBody === 'object' &&
+        responseBody !== null &&
+        JSON.stringify(responseBody).toLowerCase().includes('already exists');
+      if (isUserAlreadyExists) {
+        logger.info('Manage-org invite returned idempotent user-exists conflict; treating as success.', {
+          email: params.user.email,
+          status: response.status(),
+        });
+      } else if (!response.ok()) {
+        const body = typeof responseBody === 'string' ? responseBody : JSON.stringify(responseBody);
+        throw new Error(`Manage-org invite failed with status ${response.status()}: ${body}`);
+      }
+      return {
+        status: response.status(),
+        responseBody,
+      };
+    };
+
+    const assignmentUiUser = firstNonEmpty(process.env.ORG_USER_ASSIGNMENT_UI_USER, 'ORG_USER_ASSIGNMENT');
+    try {
+      await ensureUiStorageStateForUser(assignmentUiUser, {
+        strict: true,
+        baseUrl: manageOrgBaseUrl,
+      });
+      const storagePath = resolveUiStoragePathForUser(assignmentUiUser);
+      const apiContext = await request.newContext({
+        baseURL: manageOrgBaseUrl,
+        ignoreHTTPSErrors: true,
+        storageState: storagePath,
+      });
+      try {
+        const sessionInvite = await parseInviteResponse(apiContext);
+        return {
+          status: sessionInvite.status,
+          userIdentifier: undefined,
+          responseBody: sessionInvite.responseBody,
+        };
+      } finally {
+        await apiContext.dispose();
+      }
+    } catch (error) {
+      logger.warn('Manage-org session invite path unavailable; falling back to direct bearer invite call.', {
+        email: params.user.email,
+        assignmentUiUser,
+        error: error instanceof Error ? error.message : String(error),
+      });
+    }
+
+    const assignmentBearerToken = await this.resolveAssignmentBearerToken();
+    const serviceToken = await this.resolveServiceToken(undefined, false);
+    const assignmentUserRoles = resolveAssignmentUserRolesResolution(assignmentBearerToken);
+    logger.info('Resolved assignment principal roles for manage-org bearer invite.', {
+      email: params.user.email,
+      source: assignmentUserRoles.source,
+      profile: assignmentUserRoles.profile,
+      roles: assignmentUserRoles.roles,
+    });
+    const apiContext = await request.newContext({
+      baseURL: manageOrgBaseUrl,
+      ignoreHTTPSErrors: true,
+      extraHTTPHeaders: buildHeaders(assignmentBearerToken, serviceToken, assignmentUserRoles.roles),
+    });
+    try {
+      const bearerInvite = await parseInviteResponse(apiContext);
+      return {
+        status: bearerInvite.status,
+        userIdentifier: undefined,
+        responseBody: bearerInvite.responseBody,
+      };
+    } finally {
+      await apiContext.dispose();
     }
   }
 
@@ -717,6 +1040,7 @@ export class ProfessionalUserUtils {
     const rdProfessionalApiPath = resolveRdProfessionalApiPath(options.rdProfessionalApiPath);
     const assignmentBearerToken = await this.resolveAssignmentBearerToken(options.assignmentBearerToken);
     const serviceToken = await this.resolveServiceToken(options.serviceToken, options.requireServiceAuth ?? true);
+    const assignmentUserRoles = resolveAssignmentUserRolesResolution(assignmentBearerToken);
 
     const client = new ApiClient({
       baseUrl: rdProfessionalApiPath,
@@ -732,7 +1056,7 @@ export class ProfessionalUserUtils {
         ...options.user,
         id: firstNonEmpty(options.userIdentifier, options.user.id),
       },
-      headers: buildHeaders(assignmentBearerToken, serviceToken, resolveAssignmentUserRoles(assignmentBearerToken)),
+      headers: buildHeaders(assignmentBearerToken, serviceToken, assignmentUserRoles.roles),
     });
     if (!userIdentifier) {
       logger.warn('Skipping organisation assignment cleanup because user identifier could not be resolved.', {
@@ -751,7 +1075,7 @@ export class ProfessionalUserUtils {
       idamStatus: 'ACTIVE',
       rolesDelete: rolesToRemove.map((name) => ({ name })),
     };
-    const headers = buildHeaders(assignmentBearerToken, serviceToken, resolveAssignmentUserRoles(assignmentBearerToken));
+    const headers = buildHeaders(assignmentBearerToken, serviceToken, assignmentUserRoles.roles);
 
     try {
       let response = await client.put<Record<string, unknown>>(endpoint, {
@@ -1360,6 +1684,7 @@ export class ProfessionalUserUtils {
     user: ProfessionalUserInfo;
     roles: string[];
     headers: Record<string, string>;
+    assignmentUserRoles: AssignmentUserRolesResolution;
   }): Promise<Record<string, unknown>> {
     const tokenClaims = decodeJwtPayload(params.assignmentBearerToken);
     const prdProbe = await this.probePrdUsersView(params);
@@ -1382,6 +1707,11 @@ export class ProfessionalUserUtils {
         roleNames: params.user.roleNames,
       },
       assignmentPrincipalClaims: summarizeTokenPrincipal(tokenClaims),
+      assignmentUserRoles: {
+        source: params.assignmentUserRoles.source,
+        profile: params.assignmentUserRoles.profile,
+        roles: params.assignmentUserRoles.roles,
+      },
       hasServiceAuthHeader: Boolean(params.serviceToken),
       prdUsersReadProbe: prdProbe,
       idamUserInfoProbe,
@@ -1574,6 +1904,49 @@ export class ProfessionalUserUtils {
     }
   }
 
+  private async isUserVisibleInOrganisationAssignment(params: {
+    organisationId: string;
+    user: ProfessionalUserInfo;
+    assignmentBearerToken?: string;
+    serviceToken?: string;
+    rdProfessionalApiPath?: string;
+    requireServiceAuth?: boolean;
+  }): Promise<boolean> {
+    let client: ApiClient | undefined;
+    try {
+      const assignmentBearerToken = await this.resolveAssignmentBearerToken(params.assignmentBearerToken);
+      const serviceToken = await this.resolveServiceToken(params.serviceToken, params.requireServiceAuth ?? true);
+      const rdProfessionalApiPath = resolveRdProfessionalApiPath(params.rdProfessionalApiPath);
+      client = new ApiClient({
+        baseUrl: rdProfessionalApiPath,
+        name: 'rd-professional-assignment-visibility',
+      });
+      const assignmentUserRoles = resolveAssignmentUserRolesResolution(assignmentBearerToken);
+      const headers = buildHeaders(assignmentBearerToken, serviceToken, assignmentUserRoles.roles);
+      const endpoint = `/refdata/internal/v1/organisations/${encodeURIComponent(params.organisationId)}/users/`;
+      const response = await client.get<unknown>(endpoint, {
+        headers,
+        throwOnError: false,
+        responseType: 'json',
+      });
+      if (response.status < 200 || response.status >= 300) {
+        return false;
+      }
+      return Boolean(findUserIdentifierByEmail(response.data, params.user.email));
+    } catch (error) {
+      logger.warn('Failed to verify user visibility in organisation assignment.', {
+        organisationId: params.organisationId,
+        email: params.user.email,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      return false;
+    } finally {
+      if (client) {
+        await client.dispose();
+      }
+    }
+  }
+
   private async resolveAssignmentBearerToken(token?: string): Promise<string> {
     const fromOptionsOrEnv = firstNonEmpty(token, process.env.ORG_USER_ASSIGNMENT_BEARER_TOKEN);
     if (fromOptionsOrEnv) {
@@ -1606,22 +1979,29 @@ export class ProfessionalUserUtils {
   }
 
   private async tryGenerateAssignmentBearerTokenFromCredentials(): Promise<string | undefined> {
-    const username = firstAllowedNonEmpty(
-      process.env.ORG_USER_ASSIGNMENT_USERNAME,
+    const configuredAssignmentUsername = process.env.ORG_USER_ASSIGNMENT_USERNAME?.trim();
+    const configuredAssignmentPassword = process.env.ORG_USER_ASSIGNMENT_PASSWORD;
+    const fallbackUsername = firstAllowedNonEmpty(
       process.env.SOLICITOR_USERNAME,
       process.env.PRL_SOLICITOR_USERNAME,
       process.env.WA_SOLICITOR_USERNAME,
       process.env.NOC_SOLICITOR_USERNAME
     );
-    const password = firstNonEmpty(
-      process.env.ORG_USER_ASSIGNMENT_PASSWORD,
+    const fallbackPassword = firstNonEmpty(
       process.env.SOLICITOR_PASSWORD,
       process.env.PRL_SOLICITOR_PASSWORD,
       process.env.WA_SOLICITOR_PASSWORD,
       process.env.NOC_SOLICITOR_PASSWORD
     );
+    const username = configuredAssignmentUsername ?? fallbackUsername;
+    const password = configuredAssignmentPassword ?? fallbackPassword;
     if (!username || !password) {
       return undefined;
+    }
+    if (!configuredAssignmentUsername || !configuredAssignmentPassword) {
+      logger.warn(
+        'ORG_USER_ASSIGNMENT_USERNAME/ORG_USER_ASSIGNMENT_PASSWORD not fully configured; falling back to solicitor credentials for assignment token hydration.'
+      );
     }
 
     const clientSecret = resolveAssignmentClientSecret();
@@ -1633,10 +2013,10 @@ export class ProfessionalUserUtils {
     const clientId = resolveAssignmentClientId();
     const scopesToTry = uniqueScopes([
       firstNonEmpty(process.env.ORG_USER_ASSIGNMENT_OAUTH2_SCOPE),
+      DEFAULT_ASSIGNMENT_SCOPE,
+      firstNonEmpty(process.env.IDAM_OAUTH2_SCOPE),
       firstNonEmpty(process.env.CREATE_USER_SCOPE),
       DEFAULT_PASSWORD_GRANT_SCOPE,
-      firstNonEmpty(process.env.IDAM_OAUTH2_SCOPE),
-      'openid profile roles',
       'profile roles',
     ]);
 
@@ -1727,13 +2107,19 @@ export class ProfessionalUserUtils {
 
   private async assertExpectedAssignmentPrincipal(token: string): Promise<void> {
     const expectedEmail = resolveExpectedAssignmentPrincipalEmail();
+    if (!expectedEmail) {
+      logger.warn(
+        'Skipping assignment token principal validation because neither ORG_USER_ASSIGNMENT_EXPECTED_EMAIL nor ORG_USER_ASSIGNMENT_USERNAME is configured.'
+      );
+      return;
+    }
     const claims = decodeJwtPayload(token);
     let username = resolveTokenPrincipalUsername(claims)?.trim().toLowerCase();
 
     if (!username) {
       const userInfoProbe = await this.probeIdamUserInfo(token);
       if (userInfoProbe.status === 200 && isRecord(userInfoProbe.body)) {
-        username = readStringFromRecord(userInfoProbe.body, 'email')?.trim().toLowerCase();
+        username = resolveTokenPrincipalUsername(userInfoProbe.body)?.trim().toLowerCase();
       }
     }
 
@@ -2132,6 +2518,20 @@ function resolveRdProfessionalApiPath(value?: string): string {
   return resolved.replace(/\/+$/, '');
 }
 
+function resolveManageOrgApiPath(value?: string): string {
+  const resolved = firstNonEmpty(
+    value,
+    process.env.MANAGE_ORG_API_PATH,
+    process.env.MANAGE_ORG_URL,
+    process.env.MANAGE_ORG_BASE_URL
+  );
+  if (resolved) {
+    return resolved.replace(/\/+$/, '');
+  }
+  const env = firstNonEmpty(process.env.TEST_ENV, 'aat');
+  return `https://manage-org.${env}.platform.hmcts.net`;
+}
+
 function resolveOrganisationAssignmentMode(value?: OrganisationAssignmentStrategy): OrganisationAssignmentStrategy {
   const rawValue = firstNonEmpty(value, process.env.PROFESSIONAL_USER_ASSIGNMENT_MODE);
   switch (rawValue?.toLowerCase()) {
@@ -2179,7 +2579,7 @@ function resolveExternalAssignmentRetryAttempts(): number {
   if (!Number.isFinite(parsed) || parsed < 1) {
     return DEFAULT_EXTERNAL_ASSIGNMENT_RETRY_ATTEMPTS;
   }
-  return parsed;
+  return Math.min(parsed, MAX_EXTERNAL_ASSIGNMENT_RETRY_ATTEMPTS);
 }
 
 function resolveExternalAssignmentRetryDelayMs(): number {
@@ -2194,6 +2594,18 @@ function resolveExternalAssignmentRetryDelayMs(): number {
   return parsed;
 }
 
+function resolveAssignmentRequestTimeoutMs(): number {
+  const raw = firstNonEmpty(process.env.PROFESSIONAL_USER_ASSIGNMENT_REQUEST_TIMEOUT_MS);
+  if (!raw) {
+    return DEFAULT_ASSIGNMENT_REQUEST_TIMEOUT_MS;
+  }
+  const parsed = Number.parseInt(raw, 10);
+  if (!Number.isFinite(parsed) || parsed < 1_000) {
+    return DEFAULT_ASSIGNMENT_REQUEST_TIMEOUT_MS;
+  }
+  return parsed;
+}
+
 function shouldFallbackToAlternateAssignmentMode(statusCode: number | undefined): boolean {
   if (statusCode === undefined) {
     return false;
@@ -2201,11 +2613,39 @@ function shouldFallbackToAlternateAssignmentMode(statusCode: number | undefined)
   return [401, 403, 404, 405, 500, 502, 503, 504].includes(statusCode);
 }
 
-function shouldRetryExternalAssignmentForUserVisibility(
-  mode: OrganisationAssignmentMode,
-  statusCode: number | undefined
-): boolean {
-  return mode === 'external' && statusCode === 404;
+function shouldRetryExternalAssignment(mode: OrganisationAssignmentMode, statusCode: number | undefined): boolean {
+  return mode === 'external' && typeof statusCode === 'number' && [404, 429, 500, 502, 503, 504].includes(statusCode);
+}
+
+function shouldUseManageOrgInviteFallback(error: unknown): boolean {
+  if (!resolveBooleanFlag(process.env.PROFESSIONAL_USER_ENABLE_MANAGE_ORG_FALLBACK)) {
+    return false;
+  }
+  const statusCode = parseStatusCode(error);
+  if (statusCode === undefined) {
+    const message = error instanceof Error ? error.message : String(error);
+    const lowered = message.toLowerCase();
+    return (
+      lowered.includes('forbidden') ||
+      lowered.includes('permission') ||
+      lowered.includes('access denied') ||
+      lowered.includes('token is expired')
+    );
+  }
+  return statusCode >= 500 || statusCode === 401 || statusCode === 403 || statusCode === 404 || statusCode === 405;
+}
+
+function shouldUseManageOrgInvitePrimary(): boolean {
+  return resolveBooleanFlag(process.env.PROFESSIONAL_USER_ASSIGNMENT_USE_MANAGE_ORG_PRIMARY);
+}
+
+function shouldFallbackToRdAfterManageOrgFailure(): boolean {
+  return resolveBooleanFlag(
+    firstNonEmpty(
+      process.env.PROFESSIONAL_USER_ENABLE_RD_FALLBACK_AFTER_MANAGE_ORG,
+      process.env.PROFESSIONAL_USER_ENABLE_MANAGE_ORG_FALLBACK
+    )
+  );
 }
 
 function createFakerIdentity(
@@ -2339,7 +2779,16 @@ function buildHeaders(
   return headers;
 }
 
-function resolveAssignmentUserRoles(assignmentBearerToken: string): string[] | undefined {
+function resolveAssignmentUserRolesResolution(assignmentBearerToken: string): AssignmentUserRolesResolution {
+  const profile = resolveAssignmentUserRoleProfile(process.env.ORG_USER_ASSIGNMENT_ROLE_PROFILE);
+  if (profile) {
+    return {
+      roles: [...SOLICITOR_ROLE_AUGMENT_BY_TEST_TYPE[profile]],
+      source: 'profile',
+      profile,
+    };
+  }
+
   const explicit = firstNonEmpty(process.env.ORG_USER_ASSIGNMENT_USER_ROLES);
   if (explicit) {
     const roles = explicit
@@ -2347,7 +2796,10 @@ function resolveAssignmentUserRoles(assignmentBearerToken: string): string[] | u
       .map((value) => value.trim())
       .filter(Boolean);
     if (roles.length > 0) {
-      return [...new Set(roles)];
+      return {
+        roles: [...new Set(roles)],
+        source: 'explicit',
+      };
     }
   }
 
@@ -2358,9 +2810,14 @@ function resolveAssignmentUserRoles(assignmentBearerToken: string): string[] | u
     (claims && readStringArrayFromRecord(claims, 'roleNames'));
 
   if (claimRoles && claimRoles.length > 0) {
-    return claimRoles;
+    return {
+      roles: claimRoles,
+      source: 'token-claims',
+    };
   }
-  return undefined;
+  return {
+    source: 'none',
+  };
 }
 
 function resolveOrganisationAssignmentRoles(requestedRoles: readonly string[]): string[] {
@@ -2372,6 +2829,23 @@ function resolveOrganisationAssignmentRoles(requestedRoles: readonly string[]): 
   const requested = uniqueStringList(requestedRoles);
   const filtered = requested.filter((role) => ORGANISATION_ASSIGNMENT_ALLOWED_ROLES.has(role));
   return filtered.length > 0 ? filtered : requested;
+}
+
+function resolveAssignmentUserRoleProfile(value: string | undefined): AssignmentUserRoleProfile | undefined {
+  if (!value) {
+    return undefined;
+  }
+
+  const normalized = normaliseSolicitorTestType(value);
+  if (!normalized) {
+    return undefined;
+  }
+
+  if (normalized === 'provisioning' || normalized === 'case-create') {
+    return undefined;
+  }
+
+  return normalized;
 }
 
 function readUserIdentifier(data: Record<string, unknown> | undefined): string | undefined {
@@ -2540,7 +3014,9 @@ function summarizeTokenPrincipal(claims: Record<string, unknown> | undefined): R
     username:
       readStringFromRecord(claims, 'email') ??
       readStringFromRecord(claims, 'preferred_username') ??
-      readStringFromRecord(claims, 'user_name'),
+      readStringFromRecord(claims, 'user_name') ??
+      readStringFromRecord(claims, 'subname') ??
+      readStringFromRecord(claims, 'sub'),
     clientId: readStringFromRecord(claims, 'client_id') ?? readStringFromRecord(claims, 'azp'),
     roles:
       readStringArrayFromRecord(claims, 'authorities') ??
@@ -2553,12 +3029,9 @@ function summarizeTokenPrincipal(claims: Record<string, unknown> | undefined): R
   };
 }
 
-function resolveExpectedAssignmentPrincipalEmail(): string {
-  return (
-    firstNonEmpty(process.env.ORG_USER_ASSIGNMENT_EXPECTED_EMAIL, DEFAULT_ASSIGNMENT_PRINCIPAL_EMAIL) ??
-    DEFAULT_ASSIGNMENT_PRINCIPAL_EMAIL
-  )
-    .trim()
+function resolveExpectedAssignmentPrincipalEmail(): string | undefined {
+  return firstNonEmpty(process.env.ORG_USER_ASSIGNMENT_EXPECTED_EMAIL, process.env.ORG_USER_ASSIGNMENT_USERNAME)
+    ?.trim()
     .toLowerCase();
 }
 
@@ -2569,7 +3042,9 @@ function resolveTokenPrincipalUsername(claims: Record<string, unknown> | undefin
   return (
     readStringFromRecord(claims, 'email') ??
     readStringFromRecord(claims, 'preferred_username') ??
-    readStringFromRecord(claims, 'user_name')
+    readStringFromRecord(claims, 'user_name') ??
+    readStringFromRecord(claims, 'subname') ??
+    readStringFromRecord(claims, 'sub')
   );
 }
 

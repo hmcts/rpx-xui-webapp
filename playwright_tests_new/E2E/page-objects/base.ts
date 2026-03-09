@@ -101,6 +101,28 @@ export abstract class Base {
         }
       }
     });
+
+    this.page.on('requestfailed', (request) => {
+      const url = request.url();
+      if (!this.isBackendApi(url)) {
+        return;
+      }
+
+      const sanitizedUrl = this.sanitizeUrl(url);
+      const call: ApiCall = {
+        url: sanitizedUrl,
+        method: request.method(),
+        status: 0,
+        duration: -1,
+        timestamp: new Date().toISOString(),
+        error: request.failure()?.errorText,
+      };
+
+      this.apiCalls.push(call);
+      if (this.apiCalls.length > this.maxApiCallsTracked) {
+        this.apiCalls.shift();
+      }
+    });
   }
 
   private isBackendApi(url: string): boolean {

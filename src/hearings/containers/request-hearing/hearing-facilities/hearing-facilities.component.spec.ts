@@ -567,7 +567,7 @@ describe('HearingFacilitiesComponent', () => {
       component.hearingRequestMainModel.hearingDetails.facilitiesRequired = ['witnessScreen'];
 
       // Act
-      // eslint-disable-next-line no-unused-expressions
+       
       component.getHearingFacilitiesFormArray;
 
       // Assert
@@ -584,7 +584,7 @@ describe('HearingFacilitiesComponent', () => {
       component.hearingRequestMainModel.hearingDetails.facilitiesRequired = ['witnessScreen'];
 
       // Act
-      // eslint-disable-next-line no-unused-expressions
+       
       component.getHearingFacilitiesFormArray;
 
       // Assert

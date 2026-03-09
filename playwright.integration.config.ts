@@ -3,6 +3,7 @@ import { execSync } from 'node:child_process';
 import { cpus } from 'node:os';
 import { version as appVersion } from './package.json';
 export default (() => {
+  const temporaryProbePattern = '**/_tmp_*.spec.ts';
   const headlessMode = process.env.HEAD !== 'true';
   const odhinOutputFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-integration/odhin-report';
   const baseUrl = process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';
@@ -84,6 +85,7 @@ export default (() => {
   return defineConfig({
     testDir: 'playwright_tests_new/integration',
     testMatch: ['**/test/**/*.spec.ts'],
+    testIgnore: [temporaryProbePattern],
     retries: 2,
     timeout: 120_000,
     expect: { timeout: 45_000 },

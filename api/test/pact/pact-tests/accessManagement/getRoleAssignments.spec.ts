@@ -1,4 +1,5 @@
 import * as config from 'config';
+import { expect } from 'chai';
 import * as sinon from 'sinon';
 import { mockReq } from 'sinon-express-mock';
 import { PactV3TestSetup } from '../settings/provider.mock';
@@ -24,8 +25,8 @@ describe('access management service, get role assignments of actor', () => {
         grantType: somethingLike('STANDARD'),
         roleCategory: somethingLike('LEGAL_OPERATIONS'),
         readOnly: somethingLike(false),
-        beginTime: somethingLike(1646762003.936321),
-        endTime: somethingLike(1646934803.936321),
+        beginTime: somethingLike(Date.now() - 60_000),
+        endTime: somethingLike(Date.now() + 3_600_000),
         process: somethingLike('process'),
         reference: somethingLike('reference'),
         statusSequence: somethingLike(10),
@@ -61,7 +62,6 @@ describe('access management service, get role assignments of actor', () => {
           headers: {
             Authorization: 'Bearer someAuthorizationToken',
             ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json',
           },
         },
         willRespondWith: {
@@ -106,11 +106,9 @@ describe('access management service, get role assignments of actor', () => {
           roles: [],
         };
 
-        try {
-          await refreshRoleAssignmentForUser(userInfo, req);
-        } catch (err) {
-          throw new Error(err);
-        }
+        const response = await refreshRoleAssignmentForUser(userInfo, req);
+        expect(response).to.be.an('array').with.lengthOf(1);
+        expect(response[0].roleName).to.equal('senior-tribunal-caseworker');
       });
     });
   });

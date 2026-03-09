@@ -78,7 +78,7 @@ export function handleRequest(proxyReq, req, res) {
 }
 
 // Handle responses being sent back to the client
- 
+
 export function handleResponse(proxyRes, req, res) {
   if (isLegacyBinaryDocumentRequest(req) && isTextHtmlResponse(proxyRes)) {
     applyLegacyHtmlCsp(res);

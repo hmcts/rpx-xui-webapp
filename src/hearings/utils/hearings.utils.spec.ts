@@ -1181,7 +1181,6 @@ describe('HearingsUtils', () => {
   describe('determineDateOption', () => {
     // We need to access the private method for testing
     const determineDateOption = (hearingWindow: HearingWindowModel | undefined) => {
-       
       return HearingsUtils['determineDateOption'](hearingWindow);
     };
 

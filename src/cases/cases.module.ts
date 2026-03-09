@@ -149,7 +149,6 @@ import { WorkAllocationComponentsModule } from '../work-allocation/components/wo
  * Entry point for Cases Module that is also lazy loaded.
  */
 export class CasesModule {
-   
   constructor(
     @Optional() @SkipSelf() parentModule: CasesModule,
     private injector: Injector

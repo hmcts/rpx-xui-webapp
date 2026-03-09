@@ -567,7 +567,7 @@ describe('HearingFacilitiesComponent', () => {
       component.hearingRequestMainModel.hearingDetails.facilitiesRequired = ['witnessScreen'];
 
       // Act
-       
+
       component.getHearingFacilitiesFormArray;
 
       // Assert
@@ -584,7 +584,7 @@ describe('HearingFacilitiesComponent', () => {
       component.hearingRequestMainModel.hearingDetails.facilitiesRequired = ['witnessScreen'];
 
       // Act
-       
+
       component.getHearingFacilitiesFormArray;
 
       // Assert

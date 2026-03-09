@@ -52,6 +52,8 @@ export class TaskListPage extends Base {
   readonly continueButton = this.page.locator('.govuk-button').filter({ hasText: 'Continue' });
 
   readonly reassignUserSearchInput = this.page.locator('#inputSelectPerson');
+  readonly reassignUserAutocompleteOverlay = this.page.locator('.cdk-overlay-pane');
+  readonly reassignUserAutocompleteFirstOption = this.page.getByRole('option').first();
   readonly reassignButton = this.page.getByRole('button', { name: 'Reassign' });
 
   constructor(page: Page) {
@@ -82,6 +84,11 @@ export class TaskListPage extends Base {
 
   async confirmTaskCancellation() {
     await this.confirmCancelTaskButton.click();
+  }
+
+  async selectFirstReassignUserOption() {
+    await this.reassignUserAutocompleteOverlay.waitFor({ state: 'visible' });
+    await this.reassignUserAutocompleteFirstOption.click();
   }
 
   async waitForManageButton(

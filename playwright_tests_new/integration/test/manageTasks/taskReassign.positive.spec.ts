@@ -59,9 +59,7 @@ test.describe(`Task Reassign as ${userIdentifier}`, () => {
     await test.step('Navigate to task list and open reassign action', async () => {
       await taskListPage.continueButton.click();
       await taskListPage.reassignUserSearchInput.fill('test');
-      await expect(page.locator('.cdk-overlay-pane')).toBeVisible();
-      await page.getByRole('option').first().click();
-
+      await taskListPage.selectFirstReassignUserOption();
       await taskListPage.continueButton.click();
     });
 

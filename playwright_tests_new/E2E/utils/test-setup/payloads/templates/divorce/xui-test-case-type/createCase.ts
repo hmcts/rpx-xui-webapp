@@ -1,4 +1,4 @@
-import type { CcdDocumentValue } from '../../../uploadDocumentViaApi';
+import type { CcdDocumentValue } from '../../../../uploadDocumentViaApi';
 import type { CasePayloadBuildOptions } from '../../../core/types';
 import { createPayloadFaker, mergePayloadValues } from '../../../core/helpers';
 

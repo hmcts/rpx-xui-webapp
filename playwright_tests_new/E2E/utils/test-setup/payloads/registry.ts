@@ -4,9 +4,9 @@ import { buildDivorceXuiTestCaseTypeCreateCaseFlagsPayload } from './templates/d
 import { buildEmploymentEtEnglandWalesInitiateCasePayload } from './templates/employment/et-england-wales/initiateCase';
 
 const payloadTemplateRegistry: Record<CasePayloadTemplateKey, CasePayloadBuilder> = {
-  'employment.et-england-wales.initiate-case': buildEmploymentEtEnglandWalesInitiateCasePayload,
-  'divorce.xui-test-case-type.create-case-flags': buildDivorceXuiTestCaseTypeCreateCaseFlagsPayload,
-  'divorce.xui-test-case-type.create-case': buildDivorceXuiTestCaseTypeCreateCasePayload,
+  'employment.et-england-wales.initiate-case': buildEmploymentEtEnglandWalesInitiateCasePayload as CasePayloadBuilder,
+  'divorce.xui-test-case-type.create-case-flags': buildDivorceXuiTestCaseTypeCreateCaseFlagsPayload as CasePayloadBuilder,
+  'divorce.xui-test-case-type.create-case': buildDivorceXuiTestCaseTypeCreateCasePayload as CasePayloadBuilder,
 };
 
 export function buildCasePayloadFromTemplate<TFieldValues extends CasePayloadFieldValues = CasePayloadFieldValues>(

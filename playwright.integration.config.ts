@@ -1,7 +1,7 @@
-import { defineConfig, devices } from '@playwright/test';
-import { execSync } from 'node:child_process';
-import os from 'node:os';
+import { defineConfig, devices, type ReporterDescription } from '@playwright/test';
+import { cpus, totalmem } from 'node:os';
 import { version as appVersion } from './package.json';
+import { resolveDefaultReporter } from './playwright-config-utils';
 export default (() => {
   const temporaryProbePattern = '**/_tmp_*.spec.ts';
   const headlessMode = process.env.HEAD !== 'true';
@@ -42,7 +42,7 @@ export default (() => {
         return parsed;
       }
     }
-    const logical = os.cpus()?.length ?? 1;
+    const logical = cpus()?.length ?? 1;
     const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));
     const suggested = Math.min(8, Math.max(2, approxPhysical));
     return suggested;
@@ -64,8 +64,8 @@ export default (() => {
   const enableOdhinReporter = resolveFlag(process.env.PW_INTEGRATION_ODHIN, true);
   const resolveAgentHardware = () => {
     try {
-      const cpuCores = os.cpus()?.length ?? 'unknown';
-      const totalRamGiB = Math.round((os.totalmem() / 1024 ** 3) * 10) / 10;
+      const cpuCores = cpus()?.length ?? 'unknown';
+      const totalRamGiB = Math.round((totalmem() / 1024 ** 3) * 10) / 10;
       return `agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
     } catch {
       return 'agent_cpu_cores=unknown | agent_ram_gib=unknown';
@@ -93,7 +93,7 @@ export default (() => {
   const targetEnv = process.env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
   const runContext = process.env.CI ? 'ci' : 'local-run';
   const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
-  const reporter: [string, unknown?][] = [[process.env.CI ? 'dot' : 'list']];
+  const reporter: ReporterDescription[] = [[resolveDefaultReporter(process.env)]];
   if (enableOdhinReporter) {
     reporter.push([
       './playwright_tests_new/common/reporters/odhin-progress.reporter.cjs',

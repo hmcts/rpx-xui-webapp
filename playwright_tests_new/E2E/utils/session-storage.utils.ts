@@ -195,8 +195,8 @@ export async function ensureUiStorageStateForUser(userIdentifier: string, option
       await loginLocators.passwordInput.fill(credentials.password);
       await loginLocators.submitButton.first().click();
       const idamPage = new IdamPage(page);
-      if (typeof (idamPage as { waitForSpinner?: () => Promise<void> }).waitForSpinner === 'function') {
-        await (idamPage as { waitForSpinner: () => Promise<void> }).waitForSpinner();
+      if (typeof (idamPage as unknown as { waitForSpinner?: () => Promise<void> }).waitForSpinner === 'function') {
+        await (idamPage as unknown as { waitForSpinner: () => Promise<void> }).waitForSpinner();
       } else {
         await page.waitForLoadState('networkidle', { timeout: resolveLoginTimeoutMs() }).catch(() => undefined);
       }

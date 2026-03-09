@@ -36,7 +36,7 @@ export interface UtilsFixtures {
   serviceAuthUtils: ServiceAuthUtils;
   userUtils: UserUtils;
   professionalUserUtils: ProfessionalUserUtils;
-  logger: Logger;
+  logger: typeof logger;
 }
 
 export const utilsFixtures = {

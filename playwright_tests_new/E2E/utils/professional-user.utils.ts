@@ -6,7 +6,9 @@ import { firstAllowedNonEmpty } from './accountPolicy.js';
 import { ensureUiStorageStateForUser } from './session-storage.utils.js';
 import { resolveUiStoragePathForUser } from './storage-state.utils.js';
 
+/** Known test-account default password for HMCTS AAT/Demo environments. Override via IDAM_SOLICITOR_USER_PASSWORD env var. */
 export const DEFAULT_SOLICITOR_PASSWORD = 'Password12!';
+/** Known test-account default password for HMCTS AAT/Demo environments. Override via IDAM_CASEWORKER_DIVORCE_PASSWORD env var. */
 export const DEFAULT_CASEWORKER_DIVORCE_PASSWORD = 'Password12!';
 export const DEFAULT_IDAM_CREATE_ATTEMPTS = 3;
 export const DEFAULT_SOLICITOR_ROLE_PROFILE = 'minimal';
@@ -744,7 +746,7 @@ export class ProfessionalUserUtils {
               headers,
               data: payload,
               responseType: 'json',
-              timeout: assignmentRequestTimeoutMs,
+              timeoutMs: assignmentRequestTimeoutMs,
             });
             return {
               organisationId: options.organisationId,
@@ -978,7 +980,8 @@ export class ProfessionalUserUtils {
       };
     };
 
-    const assignmentUiUser = firstNonEmpty(process.env.ORG_USER_ASSIGNMENT_UI_USER, 'ORG_USER_ASSIGNMENT');
+    const assignmentUiUser =
+      firstNonEmpty(process.env.ORG_USER_ASSIGNMENT_UI_USER, 'ORG_USER_ASSIGNMENT') ?? 'ORG_USER_ASSIGNMENT';
     try {
       await ensureUiStorageStateForUser(assignmentUiUser, {
         strict: true,

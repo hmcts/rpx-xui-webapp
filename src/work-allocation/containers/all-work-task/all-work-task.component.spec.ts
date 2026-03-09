@@ -488,8 +488,10 @@ describe('AllWorkTaskComponent', () => {
         ];
 
         const result = setServiceList(['IA', 'CIVIL'], detailedServices);
-        const detailedMockServices = [{ serviceId: 'IA', serviceName: 'Immigration' },
-          { serviceId: 'CIVIL', serviceName: 'CIVIL' }];
+        const detailedMockServices = [
+          { serviceId: 'IA', serviceName: 'Immigration' },
+          { serviceId: 'CIVIL', serviceName: 'CIVIL' },
+        ];
 
         expect(result).toEqual({ supportedJurisdictions: ['IA', 'SSCS'], detailedWAServices: detailedMockServices });
       });

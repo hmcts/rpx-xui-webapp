@@ -145,7 +145,12 @@ export class LocationResolver {
     return this.locations;
   }
 
-  private setRegionsAndBaseLocations(roleAssignment: RoleAssignmentInfo, roleJurisdiction: string, regionLocations: LocationsByRegion[], feePaid: boolean): void {
+  private setRegionsAndBaseLocations(
+    roleAssignment: RoleAssignmentInfo,
+    roleJurisdiction: string,
+    regionLocations: LocationsByRegion[],
+    feePaid: boolean
+  ): void {
     if (!roleAssignment.region && !roleAssignment.baseLocation) {
       // if there are no restrictions, via union logic, all locations selectable
       if (feePaid) {

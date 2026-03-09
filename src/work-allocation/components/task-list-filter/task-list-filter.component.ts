@@ -266,8 +266,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe((userDetails) => {
       const isFeePaidJudgeWithNoBooking: boolean =
         this.bookingLocations.length === 0 &&
-        !userDetails.roleAssignmentInfo?.some((p) => p.roleType && p.roleType === 'ORGANISATION'
-          && !p.bookable);
+        !userDetails.roleAssignmentInfo?.some((p) => p.roleType && p.roleType === 'ORGANISATION' && !p.bookable);
       if (isFeePaidJudgeWithNoBooking) {
         localStorage.removeItem(TaskListFilterComponent.FILTER_NAME);
       } else if (!isLocationsAvailable) {

@@ -13,11 +13,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe(`Available Task List as ${userIdentifier}`, () => {
-  test(`User ${userIdentifier} can view a large number of available tasks on the task list page`, async ({
-    taskListPage,
-    page,
-    tableUtils,
-  }) => {
+  test(`User can view a large number of available tasks on the task list page`, async ({ taskListPage, page, tableUtils }) => {
     const taskListMockResponse = buildTaskListMock(3000, '', availableActionsList);
     await test.step('Setup route mock for task list', async () => {
       await page.route('**/workallocation/task*', async (route) => {
@@ -64,11 +60,7 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
     });
   });
 
-  test(`User ${userIdentifier} can view a small number of assigned tasks on the task list page`, async ({
-    taskListPage,
-    page,
-    tableUtils,
-  }) => {
+  test(`User can view a small number of assigned tasks on the task list page`, async ({ taskListPage, page, tableUtils }) => {
     const taskListMockResponse = buildTaskListMock(3, '', availableActionsList);
     await test.step('Setup route mock for task list', async () => {
       await page.route('**/workallocation/task*', async (route) => {
@@ -103,10 +95,7 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
     });
   });
 
-  test(`User ${userIdentifier} sees the no tasks message if the api returns an empty response`, async ({
-    taskListPage,
-    page,
-  }) => {
+  test(`User sees the no tasks message if the api returns an empty response`, async ({ taskListPage, page }) => {
     const emptyMockResponse = { tasks: [], total_records: 0 };
     await test.step('Setup route mock for empty task list', async () => {
       await page.route('**/workallocation/task*', async (route) => {
@@ -128,7 +117,7 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
     });
   });
 
-  test(`User ${userIdentifier} can see all table sorting buttons on the table`, async ({ taskListPage, page, tableUtils }) => {
+  test(`User can see all table sorting buttons on the table`, async ({ taskListPage, page, tableUtils }) => {
     const emptyMockResponse = { tasks: [], total_records: 0 };
     await test.step('Setup route mock for deterministic task list', async () => {
       await page.route('**/workallocation/task*', async (route) => {
@@ -153,10 +142,7 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
     });
   });
 
-  test(`User ${userIdentifier} can assign a task to themselves and see the expected notifications`, async ({
-    taskListPage,
-    page,
-  }) => {
+  test(`User can assign a task to themselves and see the expected notifications`, async ({ taskListPage, page }) => {
     const taskListMockResponse = buildTaskListMock(3, '', availableActionsList);
     await test.step('Setup route mock for task list', async () => {
       await page.route('**/workallocation/task*', async (route) => {

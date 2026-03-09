@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe(`Available Task List as ${userIdentifier}`, () => {
-  test(`User ${userIdentifier} sees filter errors if no services are selected`, async ({ taskListPage, page }) => {
+  test(`User sees filter errors if no services are selected`, async ({ taskListPage, page }) => {
     const taskListMockResponse = buildTaskListMock(10, '', availableActionsList);
     await test.step('Setup route mock for task list', async () => {
       await page.route('**/workallocation/task*', async (route) => {
@@ -49,7 +49,7 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
   });
 
   errorStates.forEach((errorStatus) => {
-    test(`User ${userIdentifier} sees the no tasks message on available tasks, if the api returns ${errorStatus}`, async ({
+    test(`User sees the no tasks message on available tasks, if the api returns ${errorStatus}`, async ({
       taskListPage,
       page,
     }) => {
@@ -74,10 +74,7 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
     });
   });
 
-  test(`User ${userIdentifier} sees the no tasks message on available tasks, if the api times out`, async ({
-    taskListPage,
-    page,
-  }) => {
+  test(`User sees the no tasks message on available tasks, if the api times out`, async ({ taskListPage, page }) => {
     await test.step('Setup route mock for empty task list', async () => {
       await page.route('**/workallocation/task*', async (route) => {
         await route.abort('timedout');

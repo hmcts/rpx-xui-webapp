@@ -905,6 +905,9 @@ export class CreateCasePage extends Base {
         } else {
           logger.warn('Create case selection failed; retrying case filter', { attempt, maxAttempts });
         }
+        if (this.page.isClosed()) {
+          throw error;
+        }
         await this.page.goto('/cases/case-filter');
       }
     }

@@ -8,11 +8,10 @@ import {
   TableUtils,
   WaitUtils,
   ServiceAuthUtils,
-  type Logger,
 } from '@hmcts/playwright-common';
-import * as fs from 'node:fs';
-import * as os from 'node:os';
-import * as path from 'node:path';
+import * as fs from 'fs';
+import * as os from 'os';
+import * as path from 'path';
 import { chromium, Page } from 'playwright/test';
 import { config, Config } from './config.utils.js';
 import { CookieUtils } from './cookie.utils.js';

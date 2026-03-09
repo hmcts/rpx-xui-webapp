@@ -10,6 +10,7 @@ const TRANSIENT_FAILURE_PATTERNS: RegExp[] = [
   /Something went wrong page was displayed/i,
   /callback data failed validation/i,
   /timeout of \d+ms exceeded/i,
+  /timeout \d+ms exceeded/i,
   /ECONNRESET/i,
   /ETIMEDOUT/i,
   /Exceeded \d+ auto-advance attempts before submit/i,

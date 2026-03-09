@@ -1,7 +1,6 @@
 import { expect, test } from '../../fixtures';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
-
 const jurisdiction = 'DIVORCE';
 const caseType = 'XUI Test Case type';
 const CREATE_CASE_SETUP_MAX_ATTEMPTS = 3;

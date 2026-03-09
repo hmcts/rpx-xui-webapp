@@ -347,6 +347,15 @@ What it does not validate:
 Locally the Playwright worker count scales with available CPU cores (approx. half of the logical cores, capped at 8).  
 Set `FUNCTIONAL_TESTS_WORKERS` to override this behaviour. On CI the default is `8` workers.
 
+### Integration local progress timer
+
+For Playwright integration runs outside CI, periodic live progress logging is enabled by default:
+
+- `PW_LIVE_TEST_TIMER=1`
+- `PW_LIVE_TEST_TIMER_INTERVAL_MS=30000`
+
+You can override either variable explicitly in your local shell.
+
 ## Running Consumer Driven Contract tests (pact)
 
 Run `yarn test-pact` to execute the Pact tests

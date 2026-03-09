@@ -1,11 +1,26 @@
 import { defineConfig, devices } from '@playwright/test';
 import { execSync } from 'node:child_process';
-import { cpus } from 'node:os';
+import { cpus, totalmem } from 'node:os';
 import { version as appVersion } from './package.json';
+import { parseNonNegativeInt, resolveDefaultReporter } from './playwright-config-utils';
 export default (() => {
   const headlessMode = process.env.HEAD !== 'true';
   const odhinOutputFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
   const baseUrl = process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';
+
+  const parsePositiveInt = (raw: string | undefined): number | undefined => {
+    if (!raw) {
+      return undefined;
+    }
+    const parsed = Number.parseInt(raw, 10);
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+      return undefined;
+    }
+    return parsed;
+  };
+
+  const retries = parseNonNegativeInt(process.env.PW_E2E_RETRIES) ?? 2;
+  const globalTimeoutMs = parsePositiveInt(process.env.PW_E2E_GLOBAL_TIMEOUT_MS);
 
   const resolveEnvironmentFromUrl = (url) => {
     try {
@@ -76,9 +91,14 @@ export default (() => {
   };
 
   const workerCount = resolveWorkerCount();
+  const resolveAgentHardware = () => {
+    const cpuCores = cpus()?.length ?? 'unknown';
+    const totalRamGiB = Math.round((totalmem() / 1024 ** 3) * 10) / 10;
+    return `agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
+  };
   const targetEnv = process.env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
   const runContext = process.env.CI ? 'ci' : 'local-run';
-  const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount}`;
+  const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
   const reportBranch = resolveBranchName();
 
   return defineConfig({
@@ -86,20 +106,21 @@ export default (() => {
     testMatch: ['**/test/**/*.spec.ts'],
     testIgnore: ['**/test/smoke/smokeTest.spec.ts'],
     fullyParallel: true,
-    retries: 2,
+    retries,
     timeout: 180_000,
     expect: {
       timeout: 60_000,
     },
+    ...(globalTimeoutMs ? { globalTimeout: globalTimeoutMs } : {}),
     workers: workerCount,
     reporter: [
-      [process.env.CI ? 'dot' : 'list'],
+      [resolveDefaultReporter(process.env)],
       ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs'],
       [
         'odhin-reports-playwright',
         {
           outputFolder: odhinOutputFolder,
-          indexFilename: 'xui-playwright.html',
+          indexFilename: 'xui-playwright-e2e.html',
           title: 'RPX-XUI-WEBAPP Playwright E2E',
           testEnvironment,
           project: process.env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp - E2E',

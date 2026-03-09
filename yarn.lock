@@ -3588,12 +3588,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.34":
-  version: 7.3.34
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.34"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.35":
+  version: 7.3.35
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.35"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/454710a4536a64d8f83f94815e36ae9faf60b03467318f22495c08279a0f330daf4a3d8b422330ac9da2f072f65ec6643d30aed0041a7f8bfb9d7bab8059cb9a
+  checksum: 10/fe76c146061876a8e363bbe65041892daa8feadc12b1ffc9effbd9d6a2b463a0550ae7593630db2892acc49114d6c00aac74bbcfef040c13f310cdad1c85fe46
   languageName: node
   linkType: hard
 
@@ -18456,7 +18456,7 @@ __metadata:
     "@hapi/tlds": "npm:^1.1.1"
     "@hapi/topo": "npm:^6.0.2"
     "@standard-schema/spec": "npm:^1.0.0"
-  checksum: 10/0cf4980cafff311696cfb80618e1725c317153e927947ecb06e452142b89981979b50fca432d4d5e9f321b28ffc8bcbed96872a3a62aa704323055d8295c9b5a
+  checksum: 10/d8e391c0e93ca1e83836bd8eb3562004a038d5184e74b9e6c6877fc60c782cbc549dcaa003e41ddb12c10899be3c4da175e7dc290e9457e92f2f4d28b46094df
   languageName: node
   linkType: hard
 
@@ -23804,7 +23804,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.34"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.35"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.12"

@@ -54,5 +54,3 @@ variable "welsh_email_address_key" {
   type        = string
 }
 
-
-

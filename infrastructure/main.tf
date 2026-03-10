@@ -67,7 +67,6 @@ moved {
   to   = module.application_insights.azurerm_application_insights.this
 }
 
-
 resource "azurerm_application_insights" "appinsight" {
   name                = "${local.app_full_name}-appinsights-${var.env}-classic"
   location            = var.location

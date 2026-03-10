@@ -871,10 +871,11 @@ describe('AppConfiguration with specific config values', () => {
         mockWindow,
         mockLoggerService
       );
-      spyOn(console, 'error');
+      const consoleErrorSpy = jasmine.isSpy(console.error) ? (console.error as jasmine.Spy) : spyOn(console, 'error');
+      consoleErrorSpy.calls.reset();
       callback(false);
       expect(appConfig.initialisationComplete).toBeFalse();
-      expect(console.error).toHaveBeenCalledWith(
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
         'InitialisationSyncService indicated initialisation failed, using default config values'
       );
     });

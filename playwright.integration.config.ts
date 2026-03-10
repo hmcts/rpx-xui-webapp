@@ -1,5 +1,5 @@
 import integrationConfigSupport from './playwright.integration.config.support.cjs';
-import { resolveWorkerCount } from './playwright-config-utils.ts';
+import { resolveWorkerCount } from './playwright-config-utils';
 
 const {
   buildConfig,

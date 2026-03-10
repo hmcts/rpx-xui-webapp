@@ -140,7 +140,7 @@ withNightlyPipeline(type, product, component) {
                     reportFiles          : 'cucumber_report.html',
                     reportName           : 'Codecept Integration Test'
                 ])
-                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
+                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/**/*'
             }
         }
 

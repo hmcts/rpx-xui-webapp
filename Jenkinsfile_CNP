@@ -347,7 +347,7 @@ withPipeline(type, product, component) {
                                     reportFiles          : 'cucumber_report.html',
                                     reportName           : 'PREVIEW Integration Test'
                                 ])
-                                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
+                                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/**/*'
                             }
                         }
                     }
@@ -484,7 +484,7 @@ withPipeline(type, product, component) {
                                     reportFiles          : 'cucumber_report.html',
                                     reportName           : 'AAT Integration Test'
                                 ])
-                                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
+                                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/**/*'
                             }
                         }
                     }

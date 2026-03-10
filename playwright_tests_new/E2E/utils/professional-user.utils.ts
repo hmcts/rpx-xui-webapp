@@ -70,6 +70,7 @@ import {
   resolveIdamApiPath,
   resolveIdamApiPathFromOverride,
   resolveIdamWebUrl,
+  hydrateAssignmentUserRolesResolutionFromIdamUserInfo,
   resolveManageOrgApiPath,
   resolveOrganisationAssignmentMode,
   resolveOrganisationAssignmentRoles,
@@ -326,7 +327,7 @@ export class ProfessionalUserUtils {
         resolveAssignmentPrerequisites: async () => {
           const assignmentBearerToken = await this.resolveAssignmentBearerToken(options.assignmentBearerToken);
           const serviceToken = await this.resolveServiceToken(options.serviceToken, options.requireServiceAuth ?? true);
-          const assignmentUserRoles = resolveAssignmentUserRolesResolution(assignmentBearerToken);
+          const assignmentUserRoles = await this.resolveAssignmentUserRoles(assignmentBearerToken);
           return {
             assignmentBearerToken,
             serviceToken,
@@ -553,7 +554,7 @@ export class ProfessionalUserUtils {
           const assignmentBearerToken = await this.resolveAssignmentBearerToken(options.assignmentBearerToken);
           const serviceToken = await this.resolveServiceToken(options.serviceToken, options.requireServiceAuth ?? true);
           const rdProfessionalApiPath = resolveRdProfessionalApiPath(options.rdProfessionalApiPath);
-          const assignmentUserRoles = resolveAssignmentUserRolesResolution(assignmentBearerToken);
+          const assignmentUserRoles = await this.resolveAssignmentUserRoles(assignmentBearerToken);
           const headers = buildHeaders(assignmentBearerToken, serviceToken, assignmentUserRoles.roles);
           return {
             assignmentBearerToken,
@@ -691,7 +692,7 @@ export class ProfessionalUserUtils {
 
     const assignmentBearerToken = await this.resolveAssignmentBearerToken();
     const serviceToken = await this.resolveServiceToken(undefined, false);
-    const assignmentUserRoles = resolveAssignmentUserRolesResolution(assignmentBearerToken);
+    const assignmentUserRoles = await this.resolveAssignmentUserRoles(assignmentBearerToken);
     logger.info('Resolved assignment principal roles for manage-org bearer invite.', {
       email: params.user.email,
       source: assignmentUserRoles.source,
@@ -731,7 +732,7 @@ export class ProfessionalUserUtils {
         resolveAssignmentPrerequisites: async () => {
           const assignmentBearerToken = await this.resolveAssignmentBearerToken(options.assignmentBearerToken);
           const serviceToken = await this.resolveServiceToken(options.serviceToken, options.requireServiceAuth ?? true);
-          const assignmentUserRoles = resolveAssignmentUserRolesResolution(assignmentBearerToken);
+          const assignmentUserRoles = await this.resolveAssignmentUserRoles(assignmentBearerToken);
           return {
             assignmentBearerToken,
             serviceToken,
@@ -950,6 +951,35 @@ export class ProfessionalUserUtils {
         warn: (message, meta) => logger.warn(message, meta),
       }
     );
+  }
+
+  private async resolveAssignmentUserRoles(assignmentBearerToken: string): Promise<ReturnType<typeof resolveAssignmentUserRolesResolution>> {
+    const resolved = resolveAssignmentUserRolesResolution(assignmentBearerToken);
+    if (resolved.roles && resolved.roles.length > 0) {
+      return resolved;
+    }
+    const idamWebUrl = resolveIdamWebUrl();
+    if (!idamWebUrl) {
+      return resolved;
+    }
+    const idamUserInfoProbe = await probeIdamUserInfoFlow(
+      {
+        assignmentBearerToken,
+        idamWebUrl,
+      },
+      {
+        summariseIdamUserInfo,
+        withBearerPrefix,
+      }
+    );
+    const hydrated = hydrateAssignmentUserRolesResolutionFromIdamUserInfo(resolved, idamUserInfoProbe);
+    if (hydrated.source !== resolved.source) {
+      logger.info('Hydrated assignment principal roles from IDAM userinfo after JWT claims were unmapped.', {
+        source: hydrated.source,
+        roles: hydrated.roles,
+      });
+    }
+    return hydrated;
   }
 
   private async tryGenerateAssignmentBearerTokenFromCredentials(): Promise<string | undefined> {

@@ -32,9 +32,24 @@ export type CcdDocumentValue = {
 
 const XSRF_COOKIE_WAIT_TIMEOUT_MS = 5000;
 const XSRF_COOKIE_WAIT_INTERVAL_MS = 250;
+const XSRF_COOKIE_AUTH_TOUCH_INTERVAL_ATTEMPTS = 4;
+const XSRF_COOKIE_MAX_AUTH_TOUCH_ATTEMPTS = 2;
+
+async function touchAuthEndpointsToMintXsrf(page: Page, baseUrl: string): Promise<void> {
+  const requestContext = page.request;
+  const authLoginUrl = new URL('/auth/login', baseUrl).toString();
+  const authCheckUrl = new URL('/auth/isAuthenticated', baseUrl).toString();
+  const appRootUrl = new URL('/', baseUrl).toString();
+
+  await requestContext.get(authLoginUrl, { failOnStatusCode: false }).catch(() => undefined);
+  await requestContext.get(authCheckUrl, { failOnStatusCode: false }).catch(() => undefined);
+  await requestContext.get(appRootUrl, { failOnStatusCode: false }).catch(() => undefined);
+}
 
 async function waitForXsrfToken(page: Page, baseUrl: string): Promise<string> {
   const deadline = Date.now() + XSRF_COOKIE_WAIT_TIMEOUT_MS;
+  let pollAttempts = 0;
+  let authTouchAttempts = 0;
 
   while (Date.now() <= deadline) {
     await acceptAccessCookiesIfPresent(page);
@@ -45,6 +60,15 @@ async function waitForXsrfToken(page: Page, baseUrl: string): Promise<string> {
     const xsrf = cookies.find((cookie) => cookie.name === 'XSRF-TOKEN')?.value?.trim();
     if (xsrf) {
       return xsrf;
+    }
+    pollAttempts += 1;
+    if (
+      authTouchAttempts < XSRF_COOKIE_MAX_AUTH_TOUCH_ATTEMPTS &&
+      pollAttempts % XSRF_COOKIE_AUTH_TOUCH_INTERVAL_ATTEMPTS === 0
+    ) {
+      authTouchAttempts += 1;
+      await touchAuthEndpointsToMintXsrf(page, baseUrl);
+      continue;
     }
     await page.waitForTimeout(XSRF_COOKIE_WAIT_INTERVAL_MS);
   }

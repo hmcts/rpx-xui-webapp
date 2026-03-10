@@ -480,6 +480,34 @@ export function resolveAssignmentUserRolesResolution(assignmentBearerToken: stri
   };
 }
 
+export function hydrateAssignmentUserRolesResolutionFromIdamUserInfo(
+  resolved: AssignmentUserRolesResolution,
+  idamUserInfoProbe: unknown
+): AssignmentUserRolesResolution {
+  if (resolved.roles && resolved.roles.length > 0) {
+    return resolved;
+  }
+  if (!isRecord(idamUserInfoProbe)) {
+    return resolved;
+  }
+  const probeStatus = typeof idamUserInfoProbe.status === 'number' ? idamUserInfoProbe.status : undefined;
+  if (probeStatus !== 200) {
+    return resolved;
+  }
+  const body = isRecord(idamUserInfoProbe.body) ? idamUserInfoProbe.body : undefined;
+  const roles =
+    body && Array.isArray(body.roles)
+      ? body.roles.map((value) => (typeof value === 'string' ? value.trim() : '')).filter((value): value is string => Boolean(value))
+      : undefined;
+  if (!roles || roles.length === 0) {
+    return resolved;
+  }
+  return {
+    source: 'idam-userinfo-roles',
+    roles: uniqueStringList(roles),
+  };
+}
+
 export function resolveOrganisationAssignmentRoles(requestedRoles: readonly string[]): string[] {
   const unique = uniqueStringList(requestedRoles);
   const assignable = unique.filter((role) => ORGANISATION_ASSIGNMENT_ALLOWED_ROLES.has(role));

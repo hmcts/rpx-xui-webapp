@@ -95,6 +95,7 @@ test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () 
   test('uploadDocumentViaApi fails fast when the XSRF cookie never appears', async () => {
     let consentClicks = 0;
     let cookieCalls = 0;
+    const requestGets: string[] = [];
     const consentButton = {
       first: () => consentButton,
       isVisible: async () => true,
@@ -112,6 +113,14 @@ test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () 
       getByRole: () => consentButton,
       waitForTimeout: async () => undefined,
       request: {
+        get: async (url: string) => {
+          requestGets.push(url);
+          return {
+            ok: () => false,
+            status: () => 404,
+            text: async () => '',
+          };
+        },
         post: async () => {
           throw new Error('post should not be called without xsrf');
         },
@@ -131,5 +140,69 @@ test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () 
 
     expect(cookieCalls).toBeGreaterThan(1);
     expect(consentClicks).toBeGreaterThan(1);
+    expect(requestGets.filter((url) => url.endsWith('/auth/login')).length).toBe(2);
+    expect(requestGets.filter((url) => url.endsWith('/auth/isAuthenticated')).length).toBe(2);
+  });
+
+  test('uploadDocumentViaApi touches auth endpoints to mint XSRF before posting', async () => {
+    let cookieCalls = 0;
+    const requestGets: string[] = [];
+    const consentButton = {
+      first: () => consentButton,
+      isVisible: async () => false,
+      click: async () => undefined,
+    };
+    const page = {
+      context: () => ({
+        cookies: async () => {
+          cookieCalls += 1;
+          if (cookieCalls < 5) {
+            return [];
+          }
+          return [{ name: 'XSRF-TOKEN', value: 'minted-after-reload' }];
+        },
+      }),
+      getByRole: () => consentButton,
+      waitForTimeout: async () => undefined,
+      request: {
+        get: async (url: string) => {
+          requestGets.push(url);
+          return {
+            ok: () => true,
+            status: () => 200,
+            text: async () => '',
+          };
+        },
+        post: async (_url: string, options: { headers?: Record<string, string> }) => ({
+          ok: () => true,
+          text: async () =>
+            JSON.stringify({
+              documents: [
+                {
+                  originalDocumentName: 'seed.pdf',
+                  _links: {
+                    self: { href: 'https://dm/documents/1' },
+                    binary: { href: 'https://dm/documents/1/binary' },
+                  },
+                },
+              ],
+              headers: options.headers,
+            }),
+        }),
+      },
+    };
+
+    const uploaded = await uploadDocumentViaApi({
+      page: page as never,
+      jurisdictionId: 'DIVORCE',
+      caseTypeId: 'XUI_TEST',
+      fileName: 'seed.pdf',
+      mimeType: 'application/pdf',
+      fileContent: '%PDF-1.4\n%%EOF',
+    });
+
+    expect(requestGets.some((url) => url.endsWith('/auth/login'))).toBe(true);
+    expect(requestGets.some((url) => url.endsWith('/auth/isAuthenticated'))).toBe(true);
+    expect(uploaded.document_filename).toBe('seed.pdf');
   });
 });

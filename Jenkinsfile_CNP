@@ -154,9 +154,10 @@ def resolveAgentCpuCount = {
 def resolveParallelTestWorkerPlan = {
     def cpuCount = resolveAgentCpuCount()
     def branchOrder = ['playwrightE2E', 'playwrightIntegration', 'codecept', 'api']
+    def branchCount = branchOrder.size()
     def maxWorkersPerBranch = 8
-    def baseline = Math.max(1, (int) Math.floor(cpuCount / branchOrder.size()))
-    def remainder = Math.max(0, cpuCount - (baseline * branchOrder.size()))
+    def baseline = Math.max(1, cpuCount.intdiv(branchCount))
+    def remainder = Math.max(0, cpuCount - (baseline * branchCount))
     def allocations = [:]
 
     branchOrder.eachWithIndex { branchName, index ->

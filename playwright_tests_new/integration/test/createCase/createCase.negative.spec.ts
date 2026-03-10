@@ -16,7 +16,7 @@ test.beforeEach(async ({ page }) => {
   await applySessionCookies(page, userIdentifier);
 });
 
-test.describe(`Create case as ${userIdentifier}`, () => {
+test.describe(`Create case as ${userIdentifier}`, { tag: ['@integration', '@integration-create-case'] }, () => {
   test(`User ${userIdentifier} should not be able to submit a case without filling in required fields`, async ({
     createCasePage,
     caseListPage,

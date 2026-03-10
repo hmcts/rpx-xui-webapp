@@ -15,7 +15,7 @@ const locationSchema = z.object({
   locationName: z.string(),
 });
 
-test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, () => {
+test.describe('Work Allocation API Contracts', { tag: ['@api', '@svc-work-allocation'] }, () => {
   test('GET /workallocation/location contract: returns array of location objects with required fields', async ({ apiClient }) => {
     // Given: A solicitor user requesting locations for configured service codes
     const endpoint = `workallocation/location?serviceCodes=${encodeURIComponent(serviceCodes.join(','))}`;
@@ -141,7 +141,7 @@ test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, 
   });
 });
 
-test.describe('Search and Ref Data API Contracts', { tag: ['@svc-global-search', '@svc-ref-data'] }, () => {
+test.describe('Search and Ref Data API Contracts', { tag: ['@api', '@svc-global-search', '@svc-ref-data'] }, () => {
   test('GET /api/globalSearch/services contract: returns array of service objects', async ({ apiClient }) => {
     // Given: An authenticated user
     // When: Fetching global search services
@@ -196,7 +196,7 @@ test.describe('Search and Ref Data API Contracts', { tag: ['@svc-global-search',
   });
 });
 
-test.describe('Test Data Builders Validation', { tag: '@svc-internal' }, () => {
+test.describe('Test Data Builders Validation', { tag: ['@api', '@svc-internal'] }, () => {
   test('TaskBuilder creates valid task objects that match Task contract', () => {
     // Given: TaskBuilder with default values
     // When: Building a task

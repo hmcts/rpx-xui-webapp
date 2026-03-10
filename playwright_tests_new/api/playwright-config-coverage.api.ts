@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { availableParallelism, cpus } from 'node:os';
 
 import { loadConfig, resolveConfigModule, type EnvMap, type TestableConfigModule } from './utils/playwrightConfigUtils';
 
@@ -20,20 +21,25 @@ const getReporterTuple = (reporter: unknown, name: string): [string, Record<stri
 
 test.describe.configure({ mode: 'serial' });
 
-test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
+const resolveExpectedDefaultWorkerCount = () => {
+  const cpuCount = typeof availableParallelism === 'function' ? availableParallelism() : (cpus()?.length ?? 1);
+  return Math.min(4, Math.max(1, Math.floor(cpuCount / 2)));
+};
+
+test.describe('Playwright API config coverage', { tag: ['@api', '@svc-internal'] }, () => {
   test.beforeAll(async () => {
-    configModule = await loadConfig();
+    configModule = await loadConfig('playwright.api.config.ts');
   });
 
   test('resolveWorkerCount covers configured, CI, and default', async () => {
-    const configured = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: '4', CI: undefined });
+    const configured = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: '4', CI: 'true' });
     expect(configured).toBe(4);
 
     const ciCount = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' });
-    expect(ciCount).toBe(8);
+    expect(ciCount).toBe(resolveExpectedDefaultWorkerCount());
 
     const defaultCount = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: undefined });
-    expect(defaultCount).toBeGreaterThanOrEqual(1);
+    expect(defaultCount).toBe(resolveExpectedDefaultWorkerCount());
   });
 
   test('resolveConfigModule prefers __test__ and default exports', () => {
@@ -53,82 +59,73 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(plain.name).toBe('plain');
   });
 
-  test('config uses CI overrides and env reporters', async () => {
+  test('config uses API-specific overrides and env reporters', async () => {
     const config = buildConfig({
       CI: 'true',
+      FUNCTIONAL_TESTS_WORKERS: '5',
+      PW_API_WORKERS: '3',
       PLAYWRIGHT_REPORT_FOLDER: 'custom-report',
       PLAYWRIGHT_REPORT_PROJECT: 'Custom Project',
       PLAYWRIGHT_REPORT_RELEASE: 'Custom Release',
       TEST_URL: 'https://example.test',
       TEST_TYPE: undefined,
-      HEAD: 'true',
-    });
-    expect(config.workers).toBe(8);
-    expect(config.use.baseURL).toBe('https://example.test');
+    }) as {
+      workers?: number;
+      use?: { baseURL?: string };
+      reporter: unknown[];
+      projects?: Array<{ name: string; grep?: RegExp; grepInvert?: RegExp }>;
+    };
+
+    expect(config.workers).toBe(3);
+    expect(config.use?.baseURL).toBe('https://example.test');
     expect(config.reporter[0][0]).toBe('dot');
     const [, odhinOptions] = getReporterTuple(config.reporter, 'odhin-reports-playwright');
     expect(odhinOptions?.outputFolder).toBe('custom-report');
     expect(odhinOptions?.project).toBe('Custom Project');
     expect(odhinOptions?.release).toBe('Custom Release');
     expect(odhinOptions?.testEnvironment).toContain('ci');
-    expect(config.projects[0].use.headless).toBe(false);
-
-    const nodeApiProject = config.projects.find((p) => p.name === 'node-api');
+    const nodeApiProject = config.projects?.find((project) => project.name === 'node-api');
     expect(nodeApiProject).toBeDefined();
-    expect(nodeApiProject?.workers).toBe(4);
   });
 
-  test('config defaults to local reporter values', async () => {
-    const config = buildConfig({
-      CI: undefined,
-      PLAYWRIGHT_REPORT_FOLDER: undefined,
-      PLAYWRIGHT_REPORT_PROJECT: undefined,
-      PLAYWRIGHT_REPORT_RELEASE: undefined,
-      GIT_BRANCH: undefined,
-      TEST_URL: undefined,
-      TEST_TYPE: undefined,
-      HEAD: undefined,
-    });
-    expect(config.reporter[0][0]).toBe('list');
-    const [, odhinOptions] = getReporterTuple(config.reporter, 'odhin-reports-playwright');
-    expect(odhinOptions?.outputFolder).toContain('playwright-e2e/odhin-report');
-    expect(odhinOptions?.project).toBe('RPX XUI Webapp');
-    expect(odhinOptions?.release).toContain('branch=');
-    expect(odhinOptions?.testEnvironment).toContain('aat');
-    expect(odhinOptions?.testEnvironment).toContain('local-run');
-    expect(config.use.baseURL).toContain('manage-case');
+  test('API config ignores UI tag-filter env when resolving node-api', async () => {
+    expect(() =>
+      buildConfig({
+        API_PW_INCLUDE_TAGS: '@svc-auth',
+        E2E_PW_TAG_FILTER_CONFIG: '/definitely/missing-e2e-tag-filter.json',
+      })
+    ).not.toThrow();
   });
 
-  test('config uses branch from environment when provided', async () => {
-    const config = buildConfig({
-      CI: undefined,
-      PLAYWRIGHT_REPORT_FOLDER: undefined,
-      PLAYWRIGHT_REPORT_PROJECT: undefined,
-      PLAYWRIGHT_REPORT_RELEASE: undefined,
-      PLAYWRIGHT_REPORT_BRANCH: undefined,
-      GIT_BRANCH: 'feat/EXUI-3618-case-search-e2e',
-      TEST_URL: undefined,
-      TEST_TYPE: undefined,
-      HEAD: undefined,
-    });
-    const [, odhinOptions] = getReporterTuple(config.reporter, 'odhin-reports-playwright');
-    expect(odhinOptions?.release).toContain('branch=feat/EXUI-3618-case-search-e2e');
-  });
-
-  test('node-api resolves include and exclude service tags from environment', () => {
+  test('node-api resolves include tags and clears file excludes with @none', () => {
     const config = buildConfig({
       API_PW_INCLUDE_TAGS: 'svc-auth,@svc-ccd',
-      API_PW_EXCLUDED_TAGS_OVERRIDE: '@svc-work-allocation',
+      API_PW_EXCLUDED_TAGS_OVERRIDE: '@none',
       CI: undefined,
-    });
-    const nodeApiProject = config.projects.find((project) => project.name === 'node-api') as
-      | { grep?: RegExp; grepInvert?: RegExp }
-      | undefined;
+    }) as { projects?: Array<{ name: string; grep?: RegExp; grepInvert?: RegExp }> };
+    const nodeApiProject = config.projects?.find((project) => project.name === 'node-api');
     expect(nodeApiProject).toBeDefined();
     expect(nodeApiProject?.grep).toBeInstanceOf(RegExp);
     expect(nodeApiProject?.grep?.test('@svc-auth')).toBe(true);
     expect(nodeApiProject?.grep?.test('@svc-ccd')).toBe(true);
-    expect(nodeApiProject?.grepInvert).toBeInstanceOf(RegExp);
-    expect(nodeApiProject?.grepInvert?.test('@svc-work-allocation')).toBe(true);
+    expect(nodeApiProject?.grepInvert).toBeUndefined();
+  });
+
+  test('node-api rejects suite-wide api tag exclusion by default', () => {
+    expect(() =>
+      buildConfig({
+        API_PW_EXCLUDED_TAGS_OVERRIDE: '@api',
+        CI: undefined,
+      })
+    ).toThrow(/leave no tagged functional tests/i);
+  });
+
+  test('node-api rejects unknown tag inputs before execution', () => {
+    expect(() =>
+      buildConfig({
+        API_PW_INCLUDE_TAGS: '@svc-not-real',
+        CI: undefined,
+      })
+    ).toThrow(/unknown tag/i);
   });
 });

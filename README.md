@@ -194,7 +194,7 @@ Key behaviour:
 
 - Suite-specific Odhin filenames are used: `xui-playwright-e2e.html`, `xui-playwright-api.html`, `xui-playwright-integration.html`.
 - Jenkins automatically publishes the HTML artefact for preview/AAT functional and nightly cross-browser jobs.
-- Run info shows project, release, environment, branch and worker count. Branch defaults to the current git branch (`git rev-parse --abbrev-ref HEAD`) and can be overridden via `PLAYWRIGHT_REPORT_BRANCH` or `GIT_BRANCH`. Other overrides: `PLAYWRIGHT_REPORT_PROJECT`, `PLAYWRIGHT_REPORT_RELEASE`, `TEST_TYPE`, `FUNCTIONAL_TESTS_WORKERS`.
+- Run info shows project, release, environment, branch and worker count. Branch defaults to the current git branch (`git rev-parse --abbrev-ref HEAD`) and can be overridden via `PLAYWRIGHT_REPORT_BRANCH` or `GIT_BRANCH`. Other overrides: `PLAYWRIGHT_REPORT_PROJECT`, `PLAYWRIGHT_REPORT_RELEASE`, `TEST_TYPE`, `FUNCTIONAL_TESTS_WORKERS`, `PW_API_WORKERS`, `PW_INTEGRATION_WORKERS`, `PW_E2E_WORKERS`.
 - Skipped tests are included in totals; the reporter is patched locally so the dashboard reflects them even when retries are enabled.
 - Chromium runs keep the Playwright trace, failure screenshot and video when a test fails; successful runs discard these artefacts to limit noise.
 - A flake summary is printed at the end of Playwright runs by `playwright_tests_new/common/reporters/flake-gate.reporter.cjs` (counts flaky, retry-pass and failed tests).
@@ -249,8 +249,8 @@ What it does not validate:
 
 ### Parallelism
 
-Locally the Playwright worker count scales with available CPU cores (approx. half of the logical cores, capped at 8).  
-Set `FUNCTIONAL_TESTS_WORKERS` to override this behaviour. On CI the default is `8` workers.
+Playwright worker count scales from the CPU actually available to the process using Node's `availableParallelism()`. UI suites cap at `8` workers; the dedicated API config (`playwright.api.config.ts`) caps default auto-sizing at `4`.
+Set `FUNCTIONAL_TESTS_WORKERS` to override globally, or use `PW_API_WORKERS`, `PW_INTEGRATION_WORKERS`, or `PW_E2E_WORKERS` for suite-specific overrides. Jenkins parallel functional stages split detected agent CPU across API, Codecept integration, Playwright integration, and Playwright E2E branches before starting them together, while reusing the one-time Chromium install done earlier in the pipeline.
 
 ### Integration local progress timer
 

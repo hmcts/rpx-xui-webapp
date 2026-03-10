@@ -1,6 +1,6 @@
 # Playwright Test Suite
 
-This directory contains both **API tests** (`node-api` project) and **E2E UI tests** for the EXUI application.
+This directory contains both **API tests** (run via `playwright.api.config.ts`) and **E2E UI tests** for the EXUI application.
 
 ## Table of Contents
 
@@ -52,6 +52,12 @@ TEST_URL=http://localhost:3000 yarn test:playwrightE2E --ui playwright_tests_new
 
 # LOCAL: single E2E by title/substring
 TEST_URL=http://localhost:3000 yarn test:playwrightE2E --project=chromium --workers=1 --grep "My tasks"
+
+# Run only tagged E2E search-case tests
+E2E_PW_INCLUDE_TAGS=@e2e-search-case yarn test:playwrightE2E
+
+# Exclude one tagged E2E slice from this run
+E2E_PW_EXCLUDED_TAGS_OVERRIDE=@e2e-manage-tasks yarn test:playwrightE2E
 ```
 
 ### API commands
@@ -75,6 +81,12 @@ TEST_URL=http://localhost:3000 yarn test:playwright:integration
 
 # AAT
 yarn test:playwright:integration
+
+# Run only tagged integration search-case tests
+INTEGRATION_PW_INCLUDE_TAGS=@integration-search-case yarn test:playwright:integration
+
+# Exclude one tagged integration slice from this run
+INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=@integration-manage-tasks yarn test:playwright:integration
 ```
 
 ### Odhin report locations
@@ -115,11 +127,13 @@ yarn test:api:pw:coverage
 
 ### API Service Tag Filtering
 
-- API suites are tagged per downstream service using Playwright tags (for example `@svc-ccd`, `@svc-work-allocation`).
+- API suites are tagged with a common `@api` suite tag and per downstream service tags (for example `@svc-ccd`, `@svc-work-allocation`).
 - Default excluded tags are read from `playwright_tests_new/api/service-tag-filter.json` (`excludedTags` array).
-- Override excludes at runtime with `API_PW_EXCLUDED_TAGS_OVERRIDE`.
+- Override excludes at runtime with `API_PW_EXCLUDED_TAGS_OVERRIDE` or use `@none` to clear file-based excludes for a run.
 - Optionally run only selected service tags with `API_PW_INCLUDE_TAGS`.
+- Common suite tag: `@api`.
 - Tag inputs accept comma or space separated values, with or without `@`.
+- Unknown tags and filter combinations that remove all tagged API coverage fail fast during config resolution.
 
 ```bash
 # Exclude one service for this run (overrides file excludes)
@@ -127,12 +141,29 @@ API_PW_EXCLUDED_TAGS_OVERRIDE=@svc-ccd yarn test:api:pw
 
 # Run only work allocation API tests
 API_PW_INCLUDE_TAGS=@svc-work-allocation yarn test:api:pw:coverage
+
+# Clear file-based excludes and run the full tagged API suite
+API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
 ```
+
+### Jenkins Parameters
+
+When Jenkins reloads the updated pipeline, the Build with Parameters page shows these fields:
+
+- `API_PW_INCLUDE_TAGS`
+- `API_PW_EXCLUDED_TAGS_OVERRIDE`
+- `E2E_PW_INCLUDE_TAGS`
+- `E2E_PW_EXCLUDED_TAGS_OVERRIDE`
+- `INTEGRATION_PW_INCLUDE_TAGS`
+- `INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE`
+
+These parameters are validated against each suite's declared tag catalogue. Invalid tags, or filter combinations that would leave no tagged functional tests, fail the run before execution starts.
 
 ### API Test Parallelism
 
-- In CI, Playwright runs with **8 workers** for predictable parallelism
-- Locally, worker count is auto-sized; override with `--workers` flag
+- API runs use `playwright.api.config.ts`.
+- By default, API worker count auto-sizes from available CPU with a maximum of **4** workers.
+- Override with `PW_API_WORKERS` or `FUNCTIONAL_TESTS_WORKERS`.
 
 ### API Authentication Model
 
@@ -185,6 +216,23 @@ npx playwright test --project chromium --workers=1
 rm -rf .sessions && npx playwright test
 ```
 
+### E2E Tag Filtering
+
+- E2E tag defaults are stored in `playwright_tests_new/E2E/tag-filter.json`.
+- Include tags with `E2E_PW_INCLUDE_TAGS`.
+- Override excluded tags with `E2E_PW_EXCLUDED_TAGS_OVERRIDE`.
+- Common suite tag: `@e2e`.
+- Feature tags currently include `@e2e-case-flags`, `@e2e-create-case`, `@e2e-document-upload`, `@e2e-manage-tasks`, `@e2e-search-case`, and `@e2e-update-case`.
+- Unknown tags and filter combinations that remove all tagged E2E coverage fail fast during config resolution.
+
+```bash
+# Run only search-case E2E coverage
+E2E_PW_INCLUDE_TAGS=@e2e-search-case yarn test:playwrightE2E
+
+# Exclude one E2E feature slice from this run
+E2E_PW_EXCLUDED_TAGS_OVERRIDE=@e2e-manage-tasks yarn test:playwrightE2E
+```
+
 ---
 
 ## Integration Tests
@@ -202,6 +250,23 @@ npx playwright test integration/test/caseList/caseList.positive.spec.ts --config
 
 # Run with specific browser
 npx playwright test --config=playwright.integration.config.ts --project=chromium
+```
+
+### Integration Tag Filtering
+
+- Integration tag defaults are stored in `playwright_tests_new/integration/tag-filter.json`.
+- Include tags with `INTEGRATION_PW_INCLUDE_TAGS`.
+- Override excluded tags with `INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE`.
+- Common suite tag: `@integration`.
+- Feature tags currently include `@integration-case-list`, `@integration-create-case`, `@integration-manage-tasks`, `@integration-search-case`, and `@integration-welsh-language`.
+- Unknown tags and filter combinations that remove all tagged integration coverage fail fast during config resolution.
+
+```bash
+# Run only search-case integration coverage
+INTEGRATION_PW_INCLUDE_TAGS=@integration-search-case yarn test:playwright:integration
+
+# Exclude one integration feature slice from this run
+INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=@integration-manage-tasks yarn test:playwright:integration
 ```
 
 ### Integration Test Structure
@@ -361,7 +426,7 @@ When **API and E2E tests run in parallel** (common in CI pipelines):
 │                                                                  │
 │  ┌──────────────────────┐        ┌──────────────────────┐      │
 │  │  E2E Tests            │        │  API Tests            │      │
-│  │  (8 workers)          │        │  (8 workers)          │      │
+│  │  (dynamic workers)    │        │  (max 4 workers)      │      │
 │  │  Need: solicitor      │        │  Need: solicitor      │      │
 │  └──────────┬────────────┘        └──────────┬────────────┘     │
 │             │                                 │                  │
@@ -435,22 +500,22 @@ npx playwright test documentUpload.spec.ts --project chromium --workers=1
 - Logs in SEARCH_EMPLOYMENT_CASE once (~30s)
 - Total login time: ~60s
 
-#### 8 Workers (CI Pipeline)
+#### CI Worker Allocation
 
 ```bash
-npx playwright test --project chromium --workers=8
+npx playwright test --project chromium --workers=<dynamic>
 ```
 
 - Worker 1 logs in SOLICITOR → stores session
-- Workers 2-8 wait for lock → reuse SOLICITOR session
-- Total login time per user: ~30-45s (shared across all workers)
+- Remaining workers wait for the lock → reuse SOLICITOR session
+- Total login time per user stays shared across the worker pool
 
 #### Parallel Test Suites (CI Pipeline)
 
 ```bash
 # Running simultaneously:
-npx playwright test --project chromium --workers=8  # E2E tests
-npx playwright test --project node-api --workers=8   # API tests
+npx playwright test --project chromium --workers=<dynamic>          # E2E tests
+npx playwright test --config=playwright.api.config.ts --workers=4   # API tests
 ```
 
 - E2E Worker 1 logs in solicitor → stores session

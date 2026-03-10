@@ -1,6 +1,7 @@
 {
   "excludedTags": ["@wa-action"],
   "availableServiceTags": [
+    "@api",
     "@svc-auth",
     "@svc-case-share",
     "@svc-ccd",
@@ -12,6 +13,7 @@
     "@svc-ref-data",
     "@svc-role-assignment",
     "@svc-work-allocation",
-    "@svc-internal"
+    "@svc-internal",
+    "@wa-action"
   ]
 }

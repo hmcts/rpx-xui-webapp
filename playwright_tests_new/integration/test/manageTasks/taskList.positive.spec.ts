@@ -4,6 +4,7 @@ import { buildTaskListMock, buildDeterministicMyTasksListMock, myActionsList } f
 import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
 import { formatUiDate } from '../../utils/tableUtils';
 import { setupTaskListMockRoutes } from '../../helpers';
+import { TASK_LIST_ROUTE_REGEX } from '../../testData';
 
 let userId: string | null;
 const userIdentifier = 'STAFF_ADMIN';
@@ -96,7 +97,7 @@ test.describe(`Task List as ${userIdentifier}`, () => {
 
   test(`User can see all expected table elements with a large results set`, async ({ taskListPage, page, tableUtils }) => {
     await test.step('Setup route mock for deterministic task list', async () => {
-      await page.route('**/workallocation/task*', async (route) => {
+      await page.route(TASK_LIST_ROUTE_REGEX, async (route) => {
         const body = JSON.stringify(buildTaskListMock(1000, userId?.toString() || '', myActionsList));
         await route.fulfill({ status: 200, contentType: 'application/json', body });
       });

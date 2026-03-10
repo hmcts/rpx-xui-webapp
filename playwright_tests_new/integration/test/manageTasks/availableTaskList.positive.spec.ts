@@ -2,6 +2,7 @@ import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookies } from '../../../common/sessionCapture';
 import { availableActionsList, buildTaskListMock } from '../../mocks/taskList.mock';
 import { formatUiDate } from '../../utils/tableUtils';
+import { TASK_LIST_ROUTE_REGEX } from '../../testData';
 
 const userIdentifier = 'STAFF_ADMIN';
 let sessionCookies: any[] = [];
@@ -16,7 +17,7 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
   test(`User can view a large number of available tasks on the task list page`, async ({ taskListPage, page, tableUtils }) => {
     const taskListMockResponse = buildTaskListMock(3000, '', availableActionsList);
     await test.step('Setup route mock for task list', async () => {
-      await page.route('**/workallocation/task*', async (route) => {
+      await page.route(TASK_LIST_ROUTE_REGEX, async (route) => {
         const body = JSON.stringify(taskListMockResponse);
         await route.fulfill({ status: 200, contentType: 'application/json', body });
       });
@@ -63,7 +64,7 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
   test(`User can view a small number of assigned tasks on the task list page`, async ({ taskListPage, page, tableUtils }) => {
     const taskListMockResponse = buildTaskListMock(3, '', availableActionsList);
     await test.step('Setup route mock for task list', async () => {
-      await page.route('**/workallocation/task*', async (route) => {
+      await page.route(TASK_LIST_ROUTE_REGEX, async (route) => {
         const body = JSON.stringify(taskListMockResponse);
         await route.fulfill({ status: 200, contentType: 'application/json', body });
       });
@@ -98,7 +99,7 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
   test(`User sees the no tasks message if the api returns an empty response`, async ({ taskListPage, page }) => {
     const emptyMockResponse = { tasks: [], total_records: 0 };
     await test.step('Setup route mock for empty task list', async () => {
-      await page.route('**/workallocation/task*', async (route) => {
+      await page.route(TASK_LIST_ROUTE_REGEX, async (route) => {
         const body = JSON.stringify(emptyMockResponse);
         await route.fulfill({ status: 200, contentType: 'application/json', body });
       });
@@ -120,7 +121,7 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
   test(`User can see all table sorting buttons on the table`, async ({ taskListPage, page, tableUtils }) => {
     const emptyMockResponse = { tasks: [], total_records: 0 };
     await test.step('Setup route mock for deterministic task list', async () => {
-      await page.route('**/workallocation/task*', async (route) => {
+      await page.route(TASK_LIST_ROUTE_REGEX, async (route) => {
         const body = JSON.stringify(emptyMockResponse);
         await route.fulfill({ status: 200, contentType: 'application/json', body });
       });
@@ -145,7 +146,7 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
   test(`User can assign a task to themselves and see the expected notifications`, async ({ taskListPage, page }) => {
     const taskListMockResponse = buildTaskListMock(3, '', availableActionsList);
     await test.step('Setup route mock for task list', async () => {
-      await page.route('**/workallocation/task*', async (route) => {
+      await page.route(TASK_LIST_ROUTE_REGEX, async (route) => {
         const body = JSON.stringify(taskListMockResponse);
         await route.fulfill({ status: 200, contentType: 'application/json', body });
       });

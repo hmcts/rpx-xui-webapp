@@ -3,6 +3,7 @@ import { applySessionCookies } from '../../../common/sessionCapture';
 import { buildTaskListMock, myActionsList } from '../../mocks/taskList.mock';
 import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
 import { setupTaskActionEndpointMocks, singleUsersGetByRoleMockResponse } from '../../helpers/taskActionApiMocks.helper';
+import { TASK_LIST_ROUTE_REGEX } from '../../testData';
 
 const userIdentifier = 'STAFF_ADMIN';
 let sessionCookies: any[] = [];
@@ -20,7 +21,7 @@ test.describe(`Task Reassign as ${userIdentifier}`, () => {
     const firstTask = taskListMockResponse.tasks[0];
 
     await test.step('Setup route mock for task list and reassign action endpoints', async () => {
-      await page.route(/.*\/workallocation\/task(?:\?.*)?$/, async (route) => {
+      await page.route(TASK_LIST_ROUTE_REGEX, async (route) => {
         const body = JSON.stringify(taskListMockResponse);
         await route.fulfill({ status: 200, contentType: 'application/json', body });
       });

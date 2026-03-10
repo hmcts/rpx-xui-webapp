@@ -1,4 +1,5 @@
 import path from 'node:path';
+import { createJiti } from 'jiti';
 
 export type EnvMap = Record<string, string | undefined>;
 
@@ -20,7 +21,6 @@ export interface TestableConfigModule extends ConfigModule {
 
 export async function loadConfig(configFile = 'playwright.config.ts'): Promise<TestableConfigModule> {
   const configPath = path.resolve(process.cwd(), configFile);
-  const { createJiti } = await import('jiti');
   const loadModule = createJiti(path.resolve(process.cwd(), 'package.json'));
   const loaded = loadModule(configPath);
   const resolved = resolveConfigModule(loaded as ConfigModule);

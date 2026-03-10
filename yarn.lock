@@ -3947,12 +3947,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.36-remove-flag-icp-enabled":
-  version: 7.3.36-remove-flag-icp-enabled
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.36-remove-flag-icp-enabled"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.37-remove-flag-icp-enabled":
+  version: 7.3.37-remove-flag-icp-enabled
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.37-remove-flag-icp-enabled"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/5bf7a4a812e7a5ba7e90fa7ca6ee8e0691d9c57d0638bd6292f4a95c84ba90203bc123e6e862413c2a44b5bf49276c3c623b54225e9ddf1284042978afeb8032
+  checksum: 10/107373a3ec0d511cf67f205a9828c5d8806011f3c65c28a51673cf7dcfae04278efa534e122fbbdb7983885875b974b55e7a313bbf92176d0e943aeacbcc2ef4
   languageName: node
   linkType: hard
 
@@ -24972,7 +24972,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.36-remove-flag-icp-enabled"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.37-remove-flag-icp-enabled"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.12"

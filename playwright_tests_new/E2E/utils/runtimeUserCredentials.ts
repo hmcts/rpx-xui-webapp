@@ -49,9 +49,7 @@ function normalizeUserIdentifier(userIdentifier: string): string {
   return userIdentifier.trim().toUpperCase();
 }
 
-export function getRuntimeUserCredentialEnvMapping(
-  userIdentifier: string
-): RuntimeUserCredentialEnvMapping | undefined {
+export function getRuntimeUserCredentialEnvMapping(userIdentifier: string): RuntimeUserCredentialEnvMapping | undefined {
   return dynamicUserEnvMap[normalizeUserIdentifier(userIdentifier)];
 }
 
@@ -88,9 +86,7 @@ export function publishRuntimeUserCredentialsToEnv(
   return publishedState;
 }
 
-export function restoreRuntimeUserCredentialsInEnv(
-  publishedState: PublishedRuntimeUserCredentialEnvState | undefined
-): void {
+export function restoreRuntimeUserCredentialsInEnv(publishedState: PublishedRuntimeUserCredentialEnvState | undefined): void {
   if (!publishedState) {
     return;
   }

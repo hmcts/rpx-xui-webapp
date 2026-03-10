@@ -17,10 +17,7 @@ function normaliseSessionStorageKey(value: string): string {
   return value.trim().replace(/[^a-zA-Z0-9._-]+/g, '-');
 }
 
-export function resolveSessionIdentity(
-  input: SessionIdentityInput,
-  deps: SessionIdentityDeps = {}
-): SessionIdentity {
+export function resolveSessionIdentity(input: SessionIdentityInput, deps: SessionIdentityDeps = {}): SessionIdentity {
   if (typeof input !== 'string') {
     return {
       userIdentifier: input.userIdentifier,

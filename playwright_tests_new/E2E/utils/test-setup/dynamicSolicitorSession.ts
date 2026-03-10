@@ -219,10 +219,7 @@ function resolveJurisdictionAccesses(roleContext?: SolicitorRoleContext): Array<
   return accesses;
 }
 
-function buildDynamicSessionIdentity(
-  alias: DynamicSolicitorAlias,
-  user: ProvisionedProfessionalUser
-): SessionIdentity {
+function buildDynamicSessionIdentity(alias: DynamicSolicitorAlias, user: ProvisionedProfessionalUser): SessionIdentity {
   const stableSuffix = user.id?.trim() || user.email.trim().toLowerCase();
   return {
     userIdentifier: alias,

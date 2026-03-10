@@ -61,7 +61,6 @@ describe('access management service, get role assignments of actor', () => {
           headers: {
             Authorization: 'Bearer someAuthorizationToken',
             ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json',
           },
         },
         willRespondWith: {
@@ -109,7 +108,7 @@ describe('access management service, get role assignments of actor', () => {
         try {
           await refreshRoleAssignmentForUser(userInfo, req);
         } catch (err) {
-          throw new Error(err);
+          throw err instanceof Error ? err : new Error(String(err));
         }
       });
     });

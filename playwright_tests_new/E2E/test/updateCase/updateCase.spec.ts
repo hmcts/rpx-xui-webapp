@@ -2,8 +2,9 @@ import { faker } from '@faker-js/faker';
 import { expect, test } from '../../fixtures';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 import { caseBannerMatches } from '../../utils';
+import { createDivorceCase } from '../../utils/test-setup/journeys/divorceCaseJourneys';
 import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
-import { setupCaseForJourney } from '../_helpers/caseSetup';
+import { setupCaseForJourney } from '../../utils/test-setup/caseSetup';
 
 let caseNumber: string;
 const testField = faker.lorem.word() + new Date().toLocaleTimeString();
@@ -29,7 +30,7 @@ test.describe('Verify creating and updating a case works as expected', () => {
           caseType: 'XUI Test Case type',
           mode: 'ui-only',
           uiCreate: async () => {
-            await createCasePage.createDivorceCase('DIVORCE', 'XUI Test Case type', testField, {
+            await createDivorceCase(createCasePage, 'DIVORCE', 'XUI Test Case type', testField, {
               maxAttempts: UPDATE_CASE_SETUP_CREATE_MAX_ATTEMPTS,
               createCaseMaxAttempts: UPDATE_CASE_SETUP_CREATE_MAX_ATTEMPTS,
             });

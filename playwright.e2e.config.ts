@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 import { execSync } from 'node:child_process';
 import { cpus, totalmem } from 'node:os';
 import { version as appVersion } from './package.json';
-import { parseNonNegativeInt, resolveDefaultReporter } from './playwright-config-utils';
+import { parseNonNegativeInt, resolveDefaultReporter, resolveWorkerCount } from './playwright-config-utils';
 export default (() => {
   const temporaryProbePattern = '**/_tmp_*.spec.ts';
   const headlessMode = process.env.HEAD !== 'true';
@@ -74,24 +74,7 @@ export default (() => {
     return 'local';
   };
 
-  const resolveWorkerCount = () => {
-    const configured = process.env.FUNCTIONAL_TESTS_WORKERS;
-    if (process.env.CI) {
-      return 8;
-    }
-    if (configured) {
-      const parsed = Number.parseInt(configured, 10);
-      if (Number.isFinite(parsed) && parsed > 0) {
-        return parsed;
-      }
-    }
-    const logical = cpus()?.length ?? 1;
-    const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));
-    const suggested = Math.min(8, Math.max(2, approxPhysical));
-    return suggested;
-  };
-
-  const workerCount = resolveWorkerCount();
+  const workerCount = resolveWorkerCount(process.env);
   const resolveAgentHardware = () => {
     const cpuCores = cpus()?.length ?? 'unknown';
     const totalRamGiB = Math.round((totalmem() / 1024 ** 3) * 10) / 10;

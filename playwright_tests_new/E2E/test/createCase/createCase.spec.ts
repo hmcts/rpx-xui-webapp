@@ -1,5 +1,6 @@
 import { expect, test } from '../../fixtures';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
+import { createDivorceCase } from '../../utils/test-setup/journeys/divorceCaseJourneys';
 import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
 const jurisdiction = 'DIVORCE';
 const caseType = 'XUI Test Case type';
@@ -17,7 +18,7 @@ test.describe('Verify creating cases works as expected', () => {
         await ensureAuthenticatedPage(page, 'SOLICITOR', { waitForSelector: 'exui-header' });
 
         testValue = `create-${Date.now()}`;
-        await createCasePage.createDivorceCase(jurisdiction, caseType, testValue, {
+        await createDivorceCase(createCasePage, jurisdiction, caseType, testValue, {
           maxAttempts: CREATE_CASE_FLOW_MAX_ATTEMPTS,
           createCaseMaxAttempts: CREATE_CASE_FLOW_MAX_ATTEMPTS,
         });

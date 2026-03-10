@@ -1,7 +1,7 @@
 import { defineConfig, devices, type ReporterDescription } from '@playwright/test';
 import { cpus, totalmem } from 'node:os';
 import { version as appVersion } from './package.json';
-import { resolveDefaultReporter } from './playwright-config-utils';
+import { resolveDefaultReporter, resolveWorkerCount } from './playwright-config-utils';
 export default (() => {
   const temporaryProbePattern = '**/_tmp_*.spec.ts';
   const headlessMode = process.env.HEAD !== 'true';
@@ -31,23 +31,7 @@ export default (() => {
       return 'unknown';
     }
   };
-  const resolveWorkerCount = () => {
-    const configured = process.env.FUNCTIONAL_TESTS_WORKERS;
-    if (process.env.CI) {
-      return 8;
-    }
-    if (configured) {
-      const parsed = Number.parseInt(configured, 10);
-      if (Number.isFinite(parsed) && parsed > 0) {
-        return parsed;
-      }
-    }
-    const logical = cpus()?.length ?? 1;
-    const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));
-    const suggested = Math.min(8, Math.max(2, approxPhysical));
-    return suggested;
-  };
-  const workerCount = resolveWorkerCount();
+  const workerCount = resolveWorkerCount(process.env);
   const resolveFlag = (rawValue, defaultValue) => {
     if (rawValue === undefined) {
       return defaultValue;

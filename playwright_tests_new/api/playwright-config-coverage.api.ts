@@ -30,10 +30,12 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(configured).toBe(4);
 
     const ciCount = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' });
-    expect(ciCount).toBe(8);
+    expect(ciCount).toBeGreaterThanOrEqual(2);
+    expect(ciCount).toBeLessThanOrEqual(8);
 
     const defaultCount = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: undefined });
-    expect(defaultCount).toBeGreaterThanOrEqual(1);
+    expect(defaultCount).toBeGreaterThanOrEqual(2);
+    expect(defaultCount).toBeLessThanOrEqual(8);
   });
 
   test('resolveConfigModule prefers __test__ and default exports', () => {
@@ -54,6 +56,15 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
   });
 
   test('config uses CI overrides and env reporters', async () => {
+    const expectedWorkers = resolveWorkerCount({
+      CI: 'true',
+      PLAYWRIGHT_REPORT_FOLDER: 'custom-report',
+      PLAYWRIGHT_REPORT_PROJECT: 'Custom Project',
+      PLAYWRIGHT_REPORT_RELEASE: 'Custom Release',
+      TEST_URL: 'https://example.test',
+      TEST_TYPE: undefined,
+      HEAD: 'true',
+    });
     const config = buildConfig({
       CI: 'true',
       PLAYWRIGHT_REPORT_FOLDER: 'custom-report',
@@ -63,7 +74,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
       TEST_TYPE: undefined,
       HEAD: 'true',
     });
-    expect(config.workers).toBe(8);
+    expect(config.workers).toBe(expectedWorkers);
     expect(config.use.baseURL).toBe('https://example.test');
     expect(config.reporter[0][0]).toBe('dot');
     const [, odhinOptions] = getReporterTuple(config.reporter, 'odhin-reports-playwright');
@@ -75,7 +86,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
 
     const nodeApiProject = config.projects.find((p) => p.name === 'node-api');
     expect(nodeApiProject).toBeDefined();
-    expect(nodeApiProject?.workers).toBe(4);
+    expect(nodeApiProject?.workers).toBe(expectedWorkers);
   });
 
   test('config defaults to local reporter values', async () => {

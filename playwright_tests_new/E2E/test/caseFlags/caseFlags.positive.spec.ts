@@ -5,9 +5,10 @@ import { filterEmptyRows } from '../../utils';
 import { caseBannerMatches } from '../../utils/banner.utils';
 import { isPageClosingError, rowMatchesExpected } from '../../utils/case-flags.utils';
 import { buildCasePayloadFromTemplate } from '../../utils/test-setup/payloads/registry';
-import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
-import { setupCaseForJourney } from '../_helpers/caseSetup';
-import { asErrorMessage, isDependencyEnvironmentFailure } from '../_helpers/dependencyFailure';
+import { setupCaseForJourney } from '../../utils/test-setup/caseSetup';
+import { createDivorceCaseFlag } from '../../utils/test-setup/journeys/divorceCaseJourneys';
+import { createEmploymentCase } from '../../utils/test-setup/journeys/employmentJourneys';
+import { formatErrorMessage, isDependencyEnvironmentFailure, retryOnTransientFailure } from '../../utils/transient-failure.utils';
 
 const PARTY_LEVEL_SUITE_TIMEOUT_MS = 300_000;
 
@@ -34,7 +35,7 @@ test.describe('Case level case flags', () => {
             mode: 'api-required',
             apiPayload: buildCasePayloadFromTemplate('employment.et-england-wales.initiate-case'),
             uiCreate: async () => {
-              await createCasePage.createCaseEmployment(jurisdiction, caseType, {
+              await createEmploymentCase(createCasePage, jurisdiction, caseType, {
                 allowDraftClaimFallback: true,
               });
             },
@@ -57,7 +58,9 @@ test.describe('Case level case flags', () => {
       );
     } catch (error) {
       if (isDependencyEnvironmentFailure(error)) {
-        throw new Error(`Case-level employment setup failed due to dependency environment instability: ${asErrorMessage(error)}`);
+        throw new Error(
+          `Case-level employment setup failed due to dependency environment instability: ${formatErrorMessage(error)}`
+        );
       }
       throw error;
     }
@@ -165,7 +168,7 @@ test.describe('Party level case flags', () => {
               },
             }),
             uiCreate: async () => {
-              await createCasePage.createDivorceCaseFlag(testValue, jurisdiction, caseType);
+              await createDivorceCaseFlag(createCasePage, testValue, jurisdiction, caseType);
             },
             page,
             createCasePage,
@@ -187,7 +190,7 @@ test.describe('Party level case flags', () => {
     } catch (error) {
       if (isDependencyEnvironmentFailure(error)) {
         throw new Error(
-          `Party-level case-flags setup failed due to dependency environment instability: ${asErrorMessage(error)}`
+          `Party-level case-flags setup failed due to dependency environment instability: ${formatErrorMessage(error)}`
         );
       }
       throw error;

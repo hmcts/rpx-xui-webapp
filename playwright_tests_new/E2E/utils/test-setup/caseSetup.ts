@@ -488,3 +488,9 @@ export async function setupCaseForJourney(request: SetupCaseRequest): Promise<Se
     mode: 'ui',
   };
 }
+
+export const __test__ = {
+  resolveCaseNumberFromCreateResponse,
+  resolveSetupMode,
+  resolveUiFallbackFlag,
+};

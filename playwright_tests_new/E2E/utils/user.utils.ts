@@ -1,5 +1,6 @@
 // This code block will need to be removed when the frameworks supports creating users on the fly
 import testConfig from '../../common/appTestConfig';
+import { getRuntimeUserCredentials } from './runtimeUserCredentials';
 
 type StaticUser = {
   userIdentifier: string;
@@ -56,6 +57,11 @@ export class UserUtils {
   }
 
   private getDynamicCredentials(userIdentifier: string): { email: string; password: string } | undefined {
+    const runtimeCredentials = getRuntimeUserCredentials(userIdentifier);
+    if (runtimeCredentials) {
+      return runtimeCredentials;
+    }
+
     const mapping = this.dynamicUserEnvMap[userIdentifier];
     if (!mapping) {
       return undefined;

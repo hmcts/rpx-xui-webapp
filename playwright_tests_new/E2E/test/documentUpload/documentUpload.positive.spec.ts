@@ -6,9 +6,13 @@ import { expectCaseBanner } from '../../utils';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
 import { buildCasePayloadFromTemplate } from '../../utils/test-setup/payloads/registry';
+import {
+  provisionDynamicSolicitorForAlias,
+  EMPLOYMENT_DYNAMIC_CASEWORKER_ROLES,
+} from '../../utils/test-setup/dynamicSolicitorSession';
+import { createEmploymentCase, uploadEmploymentDraftDocument } from '../../utils/test-setup/journeys/employmentJourneys';
 import { uploadDocumentViaApi } from '../../utils/test-setup/uploadDocumentViaApi';
-import { setupCaseForJourney } from '../_helpers/caseSetup';
-import { EMPLOYMENT_DYNAMIC_CASEWORKER_ROLES, provisionDynamicSolicitorForAlias } from '../_helpers/dynamicSolicitorSession';
+import { setupCaseForJourney } from '../../utils/test-setup/caseSetup';
 
 import { TEST_DATA } from './constants';
 
@@ -272,6 +276,7 @@ test.describe('Document upload V1', () => {
       },
       testInfo,
     });
+    dynamicHandle.publishSessionCredentials();
 
     testValue = `${faker.person.firstName()}-${Date.now()}-w${process.env.TEST_WORKER_INDEX || '0'}`;
     testFileName = `${faker.string.alphanumeric(8)}-${Date.now()}.pdf`;
@@ -286,7 +291,7 @@ test.describe('Document upload V1', () => {
           caseType: TEST_DATA.V1.CASE_TYPE,
           mode: 'ui-only',
           uiCreate: async () => {
-            await createCasePage.createCaseEmployment(TEST_DATA.V1.JURISDICTION, TEST_DATA.V1.CASE_TYPE, {
+            await createEmploymentCase(createCasePage, TEST_DATA.V1.JURISDICTION, TEST_DATA.V1.CASE_TYPE, {
               allowDraftClaimFallback: true,
             });
           },
@@ -324,7 +329,7 @@ test.describe('Document upload V1', () => {
     });
 
     await test.step('Upload a document to the case', async () => {
-      await createCasePage.uploadEmploymentFile(testFileName, TEST_DATA.V1.FILE_TYPE, TEST_DATA.V1.FILE_CONTENT);
+      await uploadEmploymentDraftDocument(createCasePage, testFileName, TEST_DATA.V1.FILE_TYPE, TEST_DATA.V1.FILE_CONTENT);
     });
 
     await test.step('Verify document was uploaded successfully', async () => {

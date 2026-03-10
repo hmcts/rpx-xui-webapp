@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { cpus, totalmem } from 'node:os';
 import * as path from 'node:path';
 import { version as appVersion } from './package.json';
-import { parseNonNegativeInt, resolveDefaultReporter } from './playwright-config-utils';
+import { parseNonNegativeInt, resolveDefaultReporter, resolveWorkerCount } from './playwright-config-utils';
 
 type EnvMap = NodeJS.ProcessEnv;
 
@@ -73,27 +73,6 @@ const resolveBranchName = (env: EnvMap = process.env): string => {
     // Fall back to local label when branch cannot be resolved.
   }
   return 'local';
-};
-
-const resolveWorkerCount = (env: EnvMap = process.env) => {
-  // CI should always run with 8 workers for predictable parallelism.
-  // (Playwright CLI flags can still override this, but our config default is fixed.)
-  if (env.CI) {
-    return 8;
-  }
-
-  const configured = env.FUNCTIONAL_TESTS_WORKERS;
-  if (configured) {
-    const parsed = Number.parseInt(configured, 10);
-    if (Number.isFinite(parsed) && parsed > 0) {
-      return parsed;
-    }
-  }
-
-  const logical = cpus()?.length ?? 1;
-  const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));
-  const suggested = Math.min(8, Math.max(2, approxPhysical));
-  return suggested;
 };
 
 const resolveApiRetries = (env: EnvMap = process.env) =>
@@ -304,7 +283,7 @@ const buildConfig = (env: EnvMap = process.env) => {
         grep: apiTagFilters.grep,
         grepInvert: apiTagFilters.grepInvert,
         fullyParallel: true,
-        workers: env.CI ? 4 : Math.max(1, Math.min(8, cpus()?.length ?? 4)),
+        workers: workerCount,
         retries: apiRetries,
         timeout: 60_000,
         expect: {

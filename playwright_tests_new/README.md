@@ -1,11 +1,12 @@
 # Playwright Test Suite
 
-This directory contains both **API tests** (`node-api` project) and **E2E UI tests** for the EXUI application.
+This directory contains **node-api API tests**, **Playwright support unit tests**, **integration tests**, and **E2E UI tests** for the EXUI application.
 
 ## Table of Contents
 
 - [Quick Command Reference (AAT vs LOCAL)](#quick-command-reference-aat-vs-local)
 - [Secrets and Env Population (Key Vault)](#secrets-and-env-population-key-vault)
+- [Playwright Support Unit Tests](#playwright-support-unit-tests)
 - [API Tests](#api-tests)
 - [E2E Tests](#e2e-tests)
 - [Session Management](#session-management)
@@ -58,6 +59,9 @@ TEST_URL=http://localhost:3000 yarn test:playwrightE2E --project=chromium --work
 ### API commands
 
 ```bash
+# AAT/LOCAL: run the Playwright support unit tests only
+PLAYWRIGHT_SKIP_INSTALL=true yarn playwright test --project=node-api playwright_tests_new/api/unit
+
 # AAT: include work-allocation tests only, disable excludes
 API_PW_INCLUDE_TAGS=@svc-work-allocation API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
 
@@ -123,6 +127,8 @@ Dynamic-user keys now available in Key Vault (`rpx-aat`, `rpx-demo`) and populat
 
 - `ORG_USER_ASSIGNMENT_USERNAME`
 - `ORG_USER_ASSIGNMENT_PASSWORD`
+- `IDAM_SOLICITOR_USER_PASSWORD`
+- `IDAM_CASEWORKER_DIVORCE_PASSWORD`
 - `ORG_USER_ASSIGNMENT_CLIENT_ID`
 - `ORG_USER_ASSIGNMENT_CLIENT_SECRET`
 - `ORG_USER_ASSIGNMENT_OAUTH2_SCOPE`
@@ -138,6 +144,36 @@ Notes:
 
 - Local dynamic-user creation requires F5 VPN (AAT/DEMO private services).
 - Do not commit `.env`.
+
+---
+
+## Playwright Support Unit Tests
+
+Unit-style tests for Playwright support code live under `playwright_tests_new/api/unit/` and run on the existing `node-api` project. Use this layer for pure helpers, policy resolution, and fake-driven orchestration that does not need a real browser journey.
+
+Current files:
+
+- `playwright_tests_new/api/unit/dynamic-user.pure.unit.api.ts`
+- `playwright_tests_new/api/unit/dynamic-user.orchestration.unit.api.ts`
+
+### Running Unit Tests
+
+```bash
+# Run all Playwright support unit tests
+PLAYWRIGHT_SKIP_INSTALL=true yarn playwright test --project=node-api playwright_tests_new/api/unit
+
+# Run one unit-test file
+PLAYWRIGHT_SKIP_INSTALL=true yarn playwright test --project=node-api playwright_tests_new/api/unit/dynamic-user.pure.unit.api.ts
+
+# Run one unit test by title
+PLAYWRIGHT_SKIP_INSTALL=true yarn playwright test --project=node-api playwright_tests_new/api/unit -g "resolveSolicitorRoleStrategy"
+```
+
+### Placement Rules
+
+- Keep unit tests for `playwright_tests_new` support code inside `playwright_tests_new/`.
+- Prefer `playwright_tests_new/api/unit/` for fake-driven tests that exercise Playwright support modules without a browser journey.
+- Do not add separate runners or support harnesses under `api/test/` for this layer unless there is an exceptional documented reason.
 
 ---
 
@@ -157,6 +193,9 @@ API tests are located in `api/` and replace the legacy Mocha `yarn test:api` run
 ### Running API Tests
 
 ```bash
+# Run only Playwright support unit tests
+PLAYWRIGHT_SKIP_INSTALL=true yarn playwright test --project=node-api playwright_tests_new/api/unit
+
 # Smoke the API suite
 yarn test:api:pw
 
@@ -182,8 +221,8 @@ API_PW_INCLUDE_TAGS=@svc-work-allocation yarn test:api:pw:coverage
 
 ### API Test Parallelism
 
-- In CI, Playwright runs with **8 workers** for predictable parallelism
-- Locally, worker count is auto-sized; override with `--workers` flag
+- Playwright worker count is auto-sized from CPU capacity in both CI and local runs
+- Override explicitly with `FUNCTIONAL_TESTS_WORKERS` or the Playwright `--workers` flag
 
 ### API Authentication Model
 
@@ -207,6 +246,7 @@ API_PW_INCLUDE_TAGS=@svc-work-allocation yarn test:api:pw:coverage
 
 ### What API Tests Cover
 
+- **Playwright support unit tests**: Fake-driven coverage for support modules under `playwright_tests_new/api/unit/`
 - **Unauthenticated routes**: Assert 401 + `{ message: 'Unauthorized' }` body
 - **Node shell**: Verify auth status, user details payload, feature flags
 - **CCD/case-share**: Check jurisdictions, work-basket inputs, profiles, organizations
@@ -351,7 +391,7 @@ expect(visibleRows.length).toBeGreaterThan(0);
 - Stale sessions are automatically refreshed
 - Fresh sessions are reused across all tests in the suite
 
-#### 3. CI Parallel Execution (8 Workers per Test Suite)
+#### 3. CI Parallel Execution (Auto-Sized Workers per Test Suite)
 
 - Multiple workers can safely request the same user session
 - **Filesystem-based lock mechanism** prevents concurrent logins for the same user
@@ -412,7 +452,7 @@ When **API and E2E tests run in parallel** (common in CI pipelines):
 │                                                                  │
 │  ┌──────────────────────┐        ┌──────────────────────┐      │
 │  │  E2E Tests            │        │  API Tests            │      │
-│  │  (8 workers)          │        │  (8 workers)          │      │
+│  │  (auto-sized workers) │        │  (auto-sized workers) │      │
 │  │  Need: solicitor      │        │  Need: solicitor      │      │
 │  └──────────┬────────────┘        └──────────┬────────────┘     │
 │             │                                 │                  │
@@ -489,19 +529,19 @@ npx playwright test documentUpload.spec.ts --project chromium --workers=1
 #### 8 Workers (CI Pipeline)
 
 ```bash
-npx playwright test --project chromium --workers=8
+npx playwright test --project chromium
 ```
 
-- Worker 1 logs in SOLICITOR → stores session
-- Workers 2-8 wait for lock → reuse SOLICITOR session
-- Total login time per user: ~30-45s (shared across all workers)
+- One worker logs in SOLICITOR → stores session
+- Other workers wait for lock → reuse SOLICITOR session
+- Total login time per user remains shared across all workers
 
 #### Parallel Test Suites (CI Pipeline)
 
 ```bash
 # Running simultaneously:
-npx playwright test --project chromium --workers=8  # E2E tests
-npx playwright test --project node-api --workers=8   # API tests
+npx playwright test --project chromium  # E2E tests
+npx playwright test --project node-api  # API tests
 ```
 
 - E2E Worker 1 logs in solicitor → stores session

@@ -953,7 +953,9 @@ export class ProfessionalUserUtils {
     );
   }
 
-  private async resolveAssignmentUserRoles(assignmentBearerToken: string): Promise<ReturnType<typeof resolveAssignmentUserRolesResolution>> {
+  private async resolveAssignmentUserRoles(
+    assignmentBearerToken: string
+  ): Promise<ReturnType<typeof resolveAssignmentUserRolesResolution>> {
     const resolved = resolveAssignmentUserRolesResolution(assignmentBearerToken);
     if (resolved.roles && resolved.roles.length > 0) {
       return resolved;

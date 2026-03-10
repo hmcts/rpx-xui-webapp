@@ -497,7 +497,9 @@ export function hydrateAssignmentUserRolesResolutionFromIdamUserInfo(
   const body = isRecord(idamUserInfoProbe.body) ? idamUserInfoProbe.body : undefined;
   const roles =
     body && Array.isArray(body.roles)
-      ? body.roles.map((value) => (typeof value === 'string' ? value.trim() : '')).filter((value): value is string => Boolean(value))
+      ? body.roles
+          .map((value) => (typeof value === 'string' ? value.trim() : ''))
+          .filter((value): value is string => Boolean(value))
       : undefined;
   if (!roles || roles.length === 0) {
     return resolved;

@@ -1,14 +1,16 @@
 import { expect, test } from '../../../E2E/fixtures';
+import {
+  SERVICE_DOWN_URL_REGEX,
+  SERVICE_DOWN_HEADING_TEXT,
+  MY_WORK_LIST_URL_REGEX,
+  TASK_UNAVAILABLE_WARNING,
+} from '../../testData';
 import { applySessionCookies } from '../../../common/sessionCapture';
 import { buildTaskListMock, myActionsList } from '../../mocks/taskList.mock';
 import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
 import { setupTaskActionEndpointMocks } from '../../helpers/taskActionApiMocks.helper';
 
 const userIdentifier = 'STAFF_ADMIN';
-const SERVICE_DOWN_URL_REGEX = /\/service-down/;
-const SERVICE_DOWN_HEADING_TEXT = 'Sorry, there is a problem with the service';
-const MY_WORK_LIST_URL_REGEX = /\/work\/my-work\/list/;
-const TASK_UNAVAILABLE_WARNING = 'The task is no longer available.';
 let sessionCookies: any[] = [];
 let taskListMockResponse: ReturnType<typeof buildTaskListMock>;
 

@@ -54,7 +54,7 @@ export class HearingLinksEffects {
       ofType(hearingLinksActions.LOAD_LINKED_HEARING_GROUP),
       map((action: hearingLinksActions.LoadLinkedHearingGroup) => action.payload),
       switchMap((payload) => {
-        return this.hearingsService.getLinkedHearingGroup(payload.groupId).pipe(
+        return this.hearingsService.getLinkedHearingGroup(payload.groupId, payload.hearingId, payload.caseId).pipe(
           map((response) => new hearingLinksActions.LoadLinkedHearingGroupSuccess(response)),
           catchError((error: HttpError) => of(new hearingLinksActions.LoadLinkedHearingGroupFailure(error)))
         );
@@ -68,7 +68,7 @@ export class HearingLinksEffects {
         ofType(hearingLinksActions.SUBMIT_LINKED_HEARING_GROUP),
         map((action: hearingLinksActions.SubmitLinkedHearingGroup) => action.payload),
         switchMap((payload) => {
-          return this.hearingsService.postLinkedHearingGroup(payload.linkedHearingGroup).pipe(
+          return this.hearingsService.postLinkedHearingGroup(payload.linkedHearingGroup, payload.caseId, payload.hearingId).pipe(
             tap(() => {
               if (payload.isManageLink) {
                 return this.router.navigate([
@@ -99,15 +99,25 @@ export class HearingLinksEffects {
         ofType(hearingLinksActions.MANAGE_LINKED_HEARING_GROUP),
         map((action: hearingLinksActions.ManageLinkedHearingGroup) => action.payload),
         switchMap((payload) => {
+          console.log(payload);
           let apiCall: any;
           if (
             payload.linkedHearingGroup &&
             payload.linkedHearingGroup.hearingsInGroup &&
             payload.linkedHearingGroup.hearingsInGroup.length > 0
           ) {
-            apiCall = this.hearingsService.putLinkedHearingGroup(payload.hearingGroupRequestId, payload.linkedHearingGroup);
+            apiCall = this.hearingsService.putLinkedHearingGroup(
+              payload.hearingGroupRequestId,
+              payload.linkedHearingGroup,
+              payload.caseId,
+              payload.hearingId
+            );
           } else {
-            apiCall = this.hearingsService.deleteLinkedHearingGroup(payload.hearingGroupRequestId);
+            apiCall = this.hearingsService.deleteLinkedHearingGroup(
+              payload.hearingGroupRequestId,
+              payload.caseId,
+              payload.hearingId
+            );
           }
           return apiCall.pipe(
             tap(() => {

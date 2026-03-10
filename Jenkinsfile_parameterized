@@ -111,16 +111,6 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
             reportName           : "ng coverage tests"
         ])
 
-        publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : 'functional-output/tests/codecept-ngIntegration/',
-            reportFiles          : 'cucumber_report.html',
-            reportName           : 'Codecept Integration Test'
-        ])
-        archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/**/*'
-
     }
 
     after('functionalTest:demo') {

@@ -376,7 +376,7 @@ try {
             to = $recipientAddrList
         }
         content       = @{
-            subject = "Monthly Welsh Language Usage Report - $($env:MODULE_ENV)"
+            subject = "Monthly Welsh Language Usage Report - $reportMonth - $($env:MODULE_ENV)"
             html    = $emailBody
         }
     }

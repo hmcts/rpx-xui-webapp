@@ -47,7 +47,7 @@ Import-Module PSWritePDF -ErrorAction SilentlyContinue
 
 # Main Welsh translation query
 $query = @"
-let startTime = startofmonth(datetime_add('month', -1, startofmonth(now())));
+let startTime = startofmonth(datetime_add('month', 0, startofmonth(now())));
 let endTime = startofmonth(now());
 requests
 | where timestamp >= startTime and timestamp < endTime
@@ -428,7 +428,7 @@ resource "azurerm_automation_schedule" "welsh_monthly_schedule" {
   automation_account_name = azurerm_automation_account.welsh_reporting.0.name
   frequency               = "Hour"
   interval                = 10
-  start_time              = "2026-03-10T12:30:00Z"
+  start_time              = "2026-03-10T13:45:00Z"
   timezone                = "UTC"
 }
 

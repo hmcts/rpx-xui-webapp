@@ -1,7 +1,7 @@
 import type { ProvisionedProfessionalUser } from '../professional-user/types.js';
 import type { SolicitorRoleContext } from '../professional-user/roleStrategy.js';
 
-type DynamicProvisionAttempt = {
+export type DynamicProvisionAttempt = {
   attempt: number;
   durationMs: number;
   outcome: 'success' | 'failed';

@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test';
+import config from '../config.utils.js';
 
 type UploadDocumentViaApiOptions = {
   page: Page;
@@ -29,7 +30,8 @@ export type CcdDocumentValue = {
 };
 
 export async function uploadDocumentViaApi(options: UploadDocumentViaApiOptions): Promise<CcdDocumentValue> {
-  const response = await options.page.request.post(new URL('/documentsv2', options.page.url()).toString(), {
+  const baseUrl = config.urls.baseURL ?? config.urls.exuiDefaultUrl;
+  const response = await options.page.request.post(new URL('/documentsv2', baseUrl).toString(), {
     multipart: {
       classification: options.classification ?? 'PUBLIC',
       jurisdictionId: options.jurisdictionId,

@@ -4,7 +4,7 @@ import { type SolicitorJurisdiction, SOLICITOR_ROLE_AUGMENT_BY_TEST_TYPE } from 
 import type { OrganisationAssignmentMode, OrganisationAssignmentStrategy } from './types.js';
 
 export const DEFAULT_IDAM_CLIENT_ID = 'xuiwebapp';
-export const DEFAULT_PASSWORD_GRANT_SCOPE = 'openid profile roles manage-user create-user';
+export const DEFAULT_PASSWORD_GRANT_SCOPE = 'openid profile roles manage-user create-user'; // NOSONAR: OAuth2 password-grant scope string, not a credential
 export const DEFAULT_ASSIGNMENT_SCOPE = 'openid profile roles';
 export const DEFAULT_ORGANISATION_ASSIGNMENT_MODE = 'auto';
 
@@ -36,7 +36,7 @@ const ORGANISATION_ASSIGNMENT_ALLOWED_ROLES = new Set<string>([
   'caseworker-privatelaw-solicitor',
 ]);
 
-type AssignmentUserRoleProfile = keyof typeof SOLICITOR_ROLE_AUGMENT_BY_TEST_TYPE;
+type AssignmentUserRoleProfile = 'citizen' | 'minimal' | 'org-admin' | 'extended';
 
 export type AssignmentUserRolesResolution = {
   source: string;
@@ -52,8 +52,14 @@ export function getRequiredEnvSecret(name: 'IDAM_SOLICITOR_USER_PASSWORD' | 'IDA
   return value;
 }
 
+function describeError(error: unknown): string {
+  if (error instanceof Error) return error.message;
+  if (typeof error === 'string') return error;
+  return JSON.stringify(error);
+}
+
 export function parseStatusCode(error: unknown): number | undefined {
-  const message = error instanceof Error ? error.message : String(error);
+  const message = describeError(error);
   const explicit = /Status Code:\s*(\d{3})/i.exec(message);
   if (explicit) {
     const parsed = Number.parseInt(explicit[1], 10);
@@ -76,7 +82,7 @@ export function shouldRetryTokenHydrationError(error: unknown): boolean {
   if (statusCode !== undefined) {
     return [408, 429, 500, 502, 503, 504].includes(statusCode);
   }
-  const message = (error instanceof Error ? error.message : String(error)).toLowerCase();
+  const message = describeError(error).toLowerCase();
   return (
     message.includes('timeout') ||
     message.includes('econnreset') ||
@@ -89,7 +95,7 @@ export function shouldFallbackToSidamAccounts(statusCode: number | undefined, er
   if (statusCode !== undefined && [401, 403, 404, 405].includes(statusCode)) {
     return true;
   }
-  const message = error instanceof Error ? error.message : String(error);
+  const message = describeError(error);
   const lower = message.toLowerCase();
   return lower.includes('/test/idam/users') && lower.includes('not found');
 }
@@ -369,8 +375,8 @@ export function resolveEmailAccountPrefix(jurisdiction?: SolicitorJurisdiction):
 export function sanitiseIdentityToken(value: string, fallback: string): string {
   const normalized = value
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
+    .replaceAll(/[^a-z0-9]+/g, '-')
+    .replaceAll(/^-+|-+$/g, '');
   if (normalized) {
     return normalized.slice(0, 24);
   }
@@ -459,7 +465,9 @@ export function resolveAssignmentUserRolesResolution(assignmentBearerToken: stri
       source: 'jwt-claims-unmapped',
     };
   }
-  const roleNames = uniqueStringList(SOLICITOR_ROLE_AUGMENT_BY_TEST_TYPE[profile] ?? []);
+  const roleNames = uniqueStringList(
+    (SOLICITOR_ROLE_AUGMENT_BY_TEST_TYPE as Record<string, readonly string[] | undefined>)[profile] ?? []
+  );
   return {
     source: 'role-profile',
     profile,
@@ -586,7 +594,7 @@ export function decodeJwtPayload(token: string): Record<string, unknown> | undef
     return undefined;
   }
   const payload = parts[1];
-  const normalized = payload.replace(/-/g, '+').replace(/_/g, '/');
+  const normalized = payload.replaceAll('-', '+').replaceAll('_', '/');
   const padding = normalized.length % 4 === 0 ? '' : '='.repeat(4 - (normalized.length % 4));
   try {
     const decoded = Buffer.from(normalized + padding, 'base64').toString('utf8');
@@ -686,7 +694,7 @@ export function stripBearerPrefix(token: string): string {
 }
 
 export function isPlaywrightArtifactIoError(error: unknown): boolean {
-  const message = error instanceof Error ? error.message : String(error);
+  const message = describeError(error);
   return /EBUSY|ENOSPC|EIO|EMFILE|ENFILE/i.test(message);
 }
 
@@ -694,7 +702,7 @@ export function toError(error: unknown, fallbackMessage: string): Error {
   if (error instanceof Error) {
     return error;
   }
-  return new Error(error ? String(error) : fallbackMessage);
+  return new Error(typeof error === 'string' && error ? error : fallbackMessage);
 }
 
 export function sleep(ms: number): Promise<void> {

@@ -8,6 +8,7 @@ import config from '../config.utils';
 import { clearRuntimeUserCredentials, getRuntimeUserCredentials, setRuntimeUserCredentials } from '../runtimeUserCredentials';
 import { ensureSessionCookies } from '../../../common/sessionCapture';
 import { provisionUserWithRetries } from './dynamicProvisioningFlow.js';
+import type { DynamicProvisionAttempt } from './dynamicProvisioningFlow.js';
 import {
   getAliasBaselineRoles,
   resolveProvisionRoleNamesForAlias,
@@ -304,7 +305,9 @@ async function withTimeout<T>(operation: Promise<T>, timeoutMs: number, message:
 }
 
 function describeUnknownError(error: unknown): string {
-  return error instanceof Error ? error.message : String(error);
+  if (error instanceof Error) return error.message;
+  if (typeof error === 'string') return error;
+  return JSON.stringify(error);
 }
 
 function shouldRetryDynamicProvision(error: unknown): boolean {
@@ -354,6 +357,169 @@ function toUserId(payload: unknown): string | undefined {
   return id || undefined;
 }
 
+const DEFAULT_WAIT_FOR_EXUI_PROPAGATION_DEPS: WaitForExuiUserPropagationDeps = {
+  resolveTimeoutMs: resolveDynamicSolicitorExuiReadyTimeoutMs,
+  resolvePollIntervalMs: resolveDynamicSolicitorExuiReadyPollIntervalMs,
+  resolveBaseUrl: () => config.urls.baseURL || config.urls.exuiDefaultUrl || 'https://manage-case.aat.platform.hmcts.net',
+  ensureSessionCookies,
+  createApiContext: ({ baseURL, storageState }) =>
+    request.newContext({
+      baseURL,
+      ignoreHTTPSErrors: true,
+      storageState,
+      extraHTTPHeaders: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    }),
+  attachAttempts: attachExuiReadinessAttempts,
+  sleep,
+  info: (message, meta) => logger.info(message, meta),
+};
+
+function parseJurisdictionIds(responsePayload: unknown): string[] {
+  if (!Array.isArray(responsePayload)) return [];
+  return responsePayload
+    .map((entry: unknown) => {
+      if (typeof entry === 'object' && entry !== null && 'id' in entry) {
+        const id = (entry as { id: unknown }).id;
+        return typeof id === 'string' ? id.trim().toLowerCase() : '';
+      }
+      return '';
+    })
+    .filter(Boolean);
+}
+
+function resolveJurisdictionProbeNote(
+  status: number,
+  jurisdictionCount: number,
+  hasExpectedJurisdiction: boolean
+): string | undefined {
+  if (status !== 200) return 'jurisdictions-not-ready';
+  if (jurisdictionCount === 0) return 'jurisdictions-empty';
+  if (!hasExpectedJurisdiction) return 'expected-jurisdiction-not-ready';
+  return undefined;
+}
+
+function applyProbeResultsToAttempt(
+  readinessAttempt: DynamicExuiReadinessAttempt,
+  probeResults: DynamicJurisdictionProbeResult[]
+): void {
+  readinessAttempt.probeResults = probeResults;
+  const readProbe = probeResults.find((probe) => probe.access === 'read');
+  readinessAttempt.jurisdictionsStatus = readProbe?.status;
+  readinessAttempt.jurisdictionCount = readProbe?.jurisdictionCount;
+  readinessAttempt.ready = probeResults.every((probe) => probe.ready);
+  if (!readinessAttempt.ready) {
+    readinessAttempt.note =
+      probeResults.map((probe) => `${probe.access}:${probe.note ?? 'ok'}:${probe.status}`).join(', ') ||
+      'jurisdictions-not-ready';
+  }
+}
+
+async function probeJurisdictionAccess(
+  apiContext: ExuiApiContext,
+  userId: string,
+  access: 'read' | 'create',
+  expectedJurisdiction: string | undefined
+): Promise<DynamicJurisdictionProbeResult> {
+  const jurisdictionsResponse = await apiContext.get(
+    `/aggregated/caseworkers/${encodeURIComponent(userId)}/jurisdictions?access=${access}`,
+    { failOnStatusCode: false }
+  );
+  const status = jurisdictionsResponse.status();
+  const responsePayload =
+    status === 200
+      ? await jurisdictionsResponse.json().catch(() => undefined)
+      : await jurisdictionsResponse.text().catch(() => undefined);
+  const jurisdictionIds = parseJurisdictionIds(responsePayload);
+  const hasExpectedJurisdiction = expectedJurisdiction ? jurisdictionIds.includes(expectedJurisdiction) : true;
+  const ready = status === 200 && jurisdictionIds.length > 0 && hasExpectedJurisdiction;
+  return {
+    access,
+    status,
+    ready,
+    jurisdictionCount: jurisdictionIds.length,
+    hasExpectedJurisdiction,
+    note: resolveJurisdictionProbeNote(status, jurisdictionIds.length, hasExpectedJurisdiction),
+    responsePreview: truncateForDiagnostics(responsePayload),
+  };
+}
+
+async function probeJurisdictionsForUser(
+  apiContext: ExuiApiContext,
+  userId: string,
+  requiredAccesses: Array<'read' | 'create'>,
+  expectedJurisdiction: string | undefined
+): Promise<DynamicJurisdictionProbeResult[]> {
+  const probeResults: DynamicJurisdictionProbeResult[] = [];
+  for (const access of requiredAccesses) {
+    probeResults.push(await probeJurisdictionAccess(apiContext, userId, access, expectedJurisdiction));
+  }
+  return probeResults;
+}
+
+async function runApiReadinessChecks(
+  apiContext: ExuiApiContext,
+  readinessAttempt: DynamicExuiReadinessAttempt,
+  requiredAccesses: Array<'read' | 'create'>,
+  expectedJurisdiction: string | undefined
+): Promise<void> {
+  const userDetailsResponse = await apiContext.get('/api/user/details', { failOnStatusCode: false });
+  readinessAttempt.userDetailsStatus = userDetailsResponse.status();
+  readinessAttempt.authStatus = userDetailsResponse.status();
+  const userId =
+    userDetailsResponse.status() === 200 ? toUserId(await userDetailsResponse.json().catch(() => undefined)) : undefined;
+  readinessAttempt.userId = userId;
+  if (userId) {
+    const probeResults = await probeJurisdictionsForUser(apiContext, userId, requiredAccesses, expectedJurisdiction);
+    applyProbeResultsToAttempt(readinessAttempt, probeResults);
+  } else {
+    readinessAttempt.note = 'user-details-not-ready';
+  }
+}
+
+async function runReadinessCheck(
+  {
+    alias,
+    baseUrl,
+    expectedJurisdiction,
+    requiredAccesses,
+    attempt,
+    startedAt,
+  }: {
+    alias: DynamicSolicitorAlias;
+    baseUrl: string;
+    expectedJurisdiction: string | undefined;
+    requiredAccesses: Array<'read' | 'create'>;
+    attempt: number;
+    startedAt: number;
+  },
+  deps: WaitForExuiUserPropagationDeps
+): Promise<DynamicExuiReadinessAttempt> {
+  const readinessAttempt: DynamicExuiReadinessAttempt = {
+    attempt,
+    elapsedMs: Date.now() - startedAt,
+    ready: false,
+    expectedJurisdiction,
+    jurisdictionAccesses: requiredAccesses,
+  };
+  try {
+    const session = await deps.ensureSessionCookies(alias);
+    readinessAttempt.authenticated = session.cookies.length > 0;
+    const apiContext = await deps.createApiContext({ baseURL: baseUrl, storageState: session.storageFile });
+    try {
+      await runApiReadinessChecks(apiContext, readinessAttempt, requiredAccesses, expectedJurisdiction);
+    } finally {
+      await apiContext.dispose();
+    }
+  } catch (error) {
+    readinessAttempt.authenticated = false;
+    readinessAttempt.note = describeUnknownError(error);
+  }
+  return readinessAttempt;
+}
+
 async function waitForExuiUserPropagation(
   {
     alias,
@@ -366,25 +532,7 @@ async function waitForExuiUserPropagation(
     roleContext?: SolicitorRoleContext;
     testInfo: TestInfo;
   },
-  deps: WaitForExuiUserPropagationDeps = {
-    resolveTimeoutMs: resolveDynamicSolicitorExuiReadyTimeoutMs,
-    resolvePollIntervalMs: resolveDynamicSolicitorExuiReadyPollIntervalMs,
-    resolveBaseUrl: () => config.urls.baseURL || config.urls.exuiDefaultUrl || 'https://manage-case.aat.platform.hmcts.net',
-    ensureSessionCookies,
-    createApiContext: ({ baseURL, storageState }) =>
-      request.newContext({
-        baseURL,
-        ignoreHTTPSErrors: true,
-        storageState,
-        extraHTTPHeaders: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-      }),
-    attachAttempts: attachExuiReadinessAttempts,
-    sleep,
-    info: (message, meta) => logger.info(message, meta),
-  }
+  deps: WaitForExuiUserPropagationDeps = DEFAULT_WAIT_FOR_EXUI_PROPAGATION_DEPS
 ): Promise<void> {
   const timeoutMs = deps.resolveTimeoutMs();
   const pollIntervalMs = deps.resolvePollIntervalMs();
@@ -397,92 +545,10 @@ async function waitForExuiUserPropagation(
   let attempt = 0;
   while (Date.now() < deadline) {
     attempt += 1;
-    const readinessAttempt: DynamicExuiReadinessAttempt = {
-      attempt,
-      elapsedMs: Date.now() - startedAt,
-      ready: false,
-      expectedJurisdiction,
-      jurisdictionAccesses: requiredAccesses,
-    };
-
-    try {
-      const session = await deps.ensureSessionCookies(alias);
-      readinessAttempt.authenticated = session.cookies.length > 0;
-
-      const apiContext = await deps.createApiContext({
-        baseURL: baseUrl,
-        storageState: session.storageFile,
-      });
-      try {
-        const userDetailsResponse = await apiContext.get('/api/user/details', { failOnStatusCode: false });
-        readinessAttempt.userDetailsStatus = userDetailsResponse.status();
-        readinessAttempt.authStatus = userDetailsResponse.status();
-        const userId =
-          userDetailsResponse.status() === 200 ? toUserId(await userDetailsResponse.json().catch(() => undefined)) : undefined;
-        readinessAttempt.userId = userId;
-
-        if (!userId) {
-          readinessAttempt.note = 'user-details-not-ready';
-        } else {
-          const probeResults: DynamicJurisdictionProbeResult[] = [];
-          for (const access of requiredAccesses) {
-            const jurisdictionsResponse = await apiContext.get(
-              `/aggregated/caseworkers/${encodeURIComponent(userId)}/jurisdictions?access=${access}`,
-              { failOnStatusCode: false }
-            );
-            const status = jurisdictionsResponse.status();
-            const responsePayload =
-              status === 200
-                ? await jurisdictionsResponse.json().catch(() => undefined)
-                : await jurisdictionsResponse.text().catch(() => undefined);
-            const jurisdictionIds = Array.isArray(responsePayload)
-              ? responsePayload
-                  .map((entry) =>
-                    typeof entry === 'object' && entry && 'id' in entry && typeof entry.id === 'string'
-                      ? entry.id.trim().toLowerCase()
-                      : ''
-                  )
-                  .filter(Boolean)
-              : [];
-            const hasExpectedJurisdiction = expectedJurisdiction ? jurisdictionIds.includes(expectedJurisdiction) : true;
-            const ready = status === 200 && jurisdictionIds.length > 0 && hasExpectedJurisdiction;
-            probeResults.push({
-              access,
-              status,
-              ready,
-              jurisdictionCount: jurisdictionIds.length,
-              hasExpectedJurisdiction,
-              note:
-                status !== 200
-                  ? 'jurisdictions-not-ready'
-                  : jurisdictionIds.length === 0
-                    ? 'jurisdictions-empty'
-                    : hasExpectedJurisdiction
-                      ? undefined
-                      : 'expected-jurisdiction-not-ready',
-              responsePreview: truncateForDiagnostics(responsePayload),
-            });
-          }
-
-          readinessAttempt.probeResults = probeResults;
-          const readProbe = probeResults.find((probe) => probe.access === 'read');
-          readinessAttempt.jurisdictionsStatus = readProbe?.status;
-          readinessAttempt.jurisdictionCount = readProbe?.jurisdictionCount;
-          readinessAttempt.ready = probeResults.every((probe) => probe.ready);
-          if (!readinessAttempt.ready) {
-            readinessAttempt.note =
-              probeResults.map((probe) => `${probe.access}:${probe.note ?? 'ok'}:${probe.status}`).join(', ') ||
-              'jurisdictions-not-ready';
-          }
-        }
-      } finally {
-        await apiContext.dispose();
-      }
-    } catch (error) {
-      readinessAttempt.authenticated = false;
-      readinessAttempt.note = describeUnknownError(error);
-    }
-
+    const readinessAttempt = await runReadinessCheck(
+      { alias, baseUrl, expectedJurisdiction, requiredAccesses, attempt, startedAt },
+      deps
+    );
     attempts.push(readinessAttempt);
     if (readinessAttempt.ready) {
       await deps.attachAttempts(testInfo, alias, attempts);
@@ -496,12 +562,10 @@ async function waitForExuiUserPropagation(
       });
       return;
     }
-
     await deps.sleep(Math.min(pollIntervalMs, Math.max(0, deadline - Date.now())));
   }
-
   await deps.attachAttempts(testInfo, alias, attempts);
-  const lastAttempt = attempts[attempts.length - 1];
+  const lastAttempt = attempts.at(-1);
   const probeSummary =
     lastAttempt?.probeResults?.map((probe) => `${probe.access}=${probe.status}/${probe.note ?? 'ok'}`).join(', ') ?? 'none';
   throw new Error(
@@ -602,7 +666,7 @@ async function provisionDynamicSolicitorForAliasFlow(
   if (deps.shouldRunEmploymentAssignmentPreflight(assertEmploymentAssignmentPayloadAccepted)) {
     await deps.runEmploymentAssignmentPreflight({
       professionalUserUtils,
-      organisationId: organisationId!,
+      organisationId: organisationId,
       testInfo,
     });
   } else if (assertEmploymentAssignmentPayloadAccepted) {
@@ -697,13 +761,21 @@ async function withPublishedRuntimeUserCredentials<T>(
   }
 }
 
+const DEFAULT_RESTORE_RUNTIME_DEPS: Pick<
+  ProvisionDynamicSolicitorFlowDeps,
+  'setRuntimeUserCredentials' | 'clearRuntimeUserCredentials'
+> = {
+  setRuntimeUserCredentials,
+  clearRuntimeUserCredentials,
+};
+
 function restoreRuntimeUserCredentials(
   alias: DynamicSolicitorAlias,
   previousCredentials: DynamicRuntimeCredentials | undefined,
-  deps: Pick<ProvisionDynamicSolicitorFlowDeps, 'setRuntimeUserCredentials' | 'clearRuntimeUserCredentials'> = {
-    setRuntimeUserCredentials,
-    clearRuntimeUserCredentials,
-  }
+  deps: Pick<
+    ProvisionDynamicSolicitorFlowDeps,
+    'setRuntimeUserCredentials' | 'clearRuntimeUserCredentials'
+  > = DEFAULT_RESTORE_RUNTIME_DEPS
 ): void {
   if (previousCredentials) {
     deps.setRuntimeUserCredentials(alias, previousCredentials);

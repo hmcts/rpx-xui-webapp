@@ -20,15 +20,16 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
           roleNames: ['caseworker'],
           organisationAssignment: {
             status: 201,
+            organisationId: 'test-org',
             userIdentifier: 'user-123',
             roles: ['caseworker'],
             mode: 'external',
             requestedMode: 'auto',
+            attemptedModes: ['external'],
           },
         },
         roleContext: {
           jurisdiction: 'employment',
-          testType: 'case-create',
         },
         testInfo: {
           attach: async (_name: string, payload: { body: string | Buffer }) => {
@@ -41,7 +42,8 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
         resolvePollIntervalMs: () => 1,
         resolveBaseUrl: () => 'https://manage-case.aat.platform.hmcts.net',
         ensureSessionCookies: async () => ({
-          cookies: [{ name: 'session' }],
+          email: 'test@example.com',
+          cookies: [{ name: 'session' }] as never,
           storageFile: '/tmp/storage.json',
         }),
         createApiContext: async () => {
@@ -112,7 +114,7 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
           runEmploymentAssignmentPreflight: async () => {
             observedCallOrder.push('preflight');
           },
-          provisionUserWithRetries: async (args) => {
+          provisionUserWithRetries: async (args, _deps) => {
             observedCallOrder.push('provision');
             expect(args.alias).toBe('SOLICITOR');
             expect(args.organisationId).toBe('org-123');
@@ -126,10 +128,12 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
                 roleNames: ['caseworker', 'pui-case-manager'],
                 organisationAssignment: {
                   status: 201,
+                  organisationId: 'org-123',
                   userIdentifier: 'user-123',
                   roles: ['caseworker', 'pui-case-manager'],
                   mode: 'external',
                   requestedMode: 'auto',
+                  attemptedModes: ['external'],
                 },
               },
               attempts: [{ attempt: 1, durationMs: 5, outcome: 'success' }],
@@ -250,6 +254,7 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
           roleNames: ['caseworker-employment', 'caseworker-employment-legalrep-solicitor', 'pui-case-manager'],
           organisationAssignment: {
             status: 201,
+            organisationId: 'test-org',
             userIdentifier: 'user-123',
             roles: [
               'caseworker',
@@ -260,6 +265,7 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
             ],
             mode: 'external',
             requestedMode: 'auto',
+            attemptedModes: ['external'],
           },
         },
       })
@@ -284,10 +290,12 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
           roleNames: ['caseworker-employment', 'pui-case-manager'],
           organisationAssignment: {
             status: 201,
+            organisationId: 'test-org',
             userIdentifier: 'user-123',
             roles: ['caseworker-employment', 'pui-case-manager'],
             mode: 'external',
             requestedMode: 'auto',
+            attemptedModes: ['external'],
           },
         },
       })

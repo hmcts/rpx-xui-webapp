@@ -181,7 +181,7 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
         retryDelayMs: 5,
       },
       {
-        createSolicitorUserForOrganisation: async () => {
+        createSolicitorUserForOrganisation: async (_args) => {
           createAttempts += 1;
           if (createAttempts === 1) {
             throw new Error('HTTP 503');
@@ -195,10 +195,12 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
             roleNames: ['caseworker'],
             organisationAssignment: {
               status: 201,
+              organisationId: 'test-org',
               userIdentifier: 'created-user-id',
               roles: ['caseworker'],
               mode: 'external',
               requestedMode: 'auto',
+              attemptedModes: ['external'],
             },
           };
         },

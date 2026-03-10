@@ -6,6 +6,7 @@ This directory contains **node-api API tests**, **Playwright support unit tests*
 
 - [Quick Command Reference (AAT vs LOCAL)](#quick-command-reference-aat-vs-local)
 - [Secrets and Env Population (Key Vault)](#secrets-and-env-population-key-vault)
+- [Dynamic User and API Case Setup Flows](#dynamic-user-and-api-case-setup-flows)
 - [Playwright Support Unit Tests](#playwright-support-unit-tests)
 - [API Tests](#api-tests)
 - [E2E Tests](#e2e-tests)
@@ -147,14 +148,99 @@ Notes:
 
 ---
 
+## Dynamic User and API Case Setup Flows
+
+These diagrams show the two main setup paths that confuse new testers most often:
+
+- dynamic user creation for solicitor-style E2E journeys
+- API-driven case generation before an E2E or integration flow starts
+
+### Dynamic User Creation
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Spec as E2E Spec / Fixture
+    participant Session as dynamicSolicitorSession
+    participant Roles as provisionRoleResolution
+    participant Retry as dynamicProvisioningFlow
+    participant Users as ProfessionalUserUtils
+    participant IDAM as IDAM / SIDAM
+    participant PRD as Org Assignment APIs
+    participant Probe as propagationProbe
+    participant Runtime as runtimeUserCredentials
+    participant EXUI as EXUI readiness check
+
+    Spec->>Session: provisionDynamicSolicitorForAlias(alias, roleContext)
+    Session->>Roles: resolveProvisionRoleNamesForAlias(...)
+    Roles-->>Session: resolved role names
+    Session->>Retry: provisionUserWithRetries(...)
+    Retry->>Users: createSolicitorUserForOrganisation(...)
+    Users->>IDAM: create/update account + ensure active
+    IDAM-->>Users: user id + credentials
+    Users->>Probe: waitForUserPropagationFlow(user)
+    Probe-->>Users: verified / degraded outcome
+    Users->>PRD: assignUserToOrganisationFlow(...)
+    PRD-->>Users: organisation assignment result
+    Users-->>Retry: created user + cleanup handles
+    Retry-->>Session: provisioned user
+    Session->>Runtime: publish runtime credentials for alias
+    Session->>EXUI: waitForExuiUserPropagation(...)
+    EXUI-->>Session: user can reach target journey
+    Session-->>Spec: provisioned session handle + cleanup
+```
+
+### API Case Generation
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Spec as E2E Spec / Fixture
+    participant Setup as caseSetup
+    participant Registry as payload registry
+    participant Template as payload template
+    participant Auth as API auth / caseworker access
+    participant CCD as CCD APIs
+    participant UI as UI fallback journey
+
+    Spec->>Setup: setupCaseForJourney(journey, options)
+    Setup->>Registry: buildCasePayloadFromTemplate(...)
+    Registry->>Template: apply journey template + overrides
+    Template-->>Registry: final CCD payload
+    Registry-->>Setup: payload + metadata
+    Setup->>Auth: resolve tokens / jurisdiction ids / case type ids
+    Auth-->>Setup: authenticated request context
+    Setup->>CCD: createCaseViaApi(...) or createCaseViaDirectCcdApi(...)
+    CCD->>CCD: validate event + submit create event
+    CCD-->>Setup: case id / case number
+    alt API path succeeds
+        Setup-->>Spec: SetupCaseResult(caseNumber, caseId, setupMode=api)
+    else API path unavailable or unsuitable
+        Setup->>UI: run journey-specific UI setup
+        UI-->>Setup: created case number
+        Setup-->>Spec: SetupCaseResult(caseNumber, setupMode=ui)
+    end
+```
+
+### Reading the Diagrams
+
+- Dynamic-user provisioning starts in `dynamicSolicitorSession.ts` and delegates most heavy lifting into `dynamicProvisioningFlow.ts`, `professional-user.utils.ts`, and the extracted `professional-user/` collaborators.
+- API case setup starts in `caseSetup.ts` and uses `payloads/registry.ts` plus the journey templates under `E2E/utils/test-setup/payloads/templates/`.
+- The returned case number or runtime user credentials are then consumed by the spec or fixture layer, not hidden inside the page objects.
+
+---
+
 ## Playwright Support Unit Tests
 
 Unit-style tests for Playwright support code live under `playwright_tests_new/api/unit/` and run on the existing `node-api` project. Use this layer for pure helpers, policy resolution, and fake-driven orchestration that does not need a real browser journey.
 
 Current files:
 
+- `playwright_tests_new/api/unit/create-case.flow.unit.api.ts`
+- `playwright_tests_new/api/unit/dynamic-solicitor-session.unit.api.ts`
 - `playwright_tests_new/api/unit/dynamic-user.pure.unit.api.ts`
 - `playwright_tests_new/api/unit/dynamic-user.orchestration.unit.api.ts`
+- `playwright_tests_new/api/unit/dynamic-user.runtime.unit.api.ts`
 
 ### Running Unit Tests
 
@@ -396,7 +482,7 @@ expect(visibleRows.length).toBeGreaterThan(0);
 - Multiple workers can safely request the same user session
 - **Filesystem-based lock mechanism** prevents concurrent logins for the same user
 - Locks coordinate across **all Playwright worker processes** (API + E2E) using `proper-lockfile`
-- When Worker A logs in user X, Workers B-H **and parallel API tests** wait for lock release and reuse the session
+- When one worker logs in user X, the remaining workers **and parallel API tests** wait for lock release and reuse the session
 - After acquiring lock, workers recheck freshness to ensure session is still valid
 - `ensureSession()` intentionally avoids forced recapture so lock waiters can reuse the newly refreshed session instead of logging in again
 
@@ -526,7 +612,7 @@ npx playwright test documentUpload.spec.ts --project chromium --workers=1
 - Logs in SEARCH_EMPLOYMENT_CASE once (~30s)
 - Total login time: ~60s
 
-#### 8 Workers (CI Pipeline)
+#### Auto-Sized Workers (CI Pipeline)
 
 ```bash
 npx playwright test --project chromium

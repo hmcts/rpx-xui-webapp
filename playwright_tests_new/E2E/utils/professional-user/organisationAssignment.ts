@@ -1,5 +1,6 @@
 import { ApiClient, createLogger } from '@hmcts/playwright-common';
 
+import { SOLICITOR_ROLE_AUGMENT_BY_TEST_TYPE } from './roleStrategy.js';
 import type {
   OrganisationAssignmentMode,
   OrganisationAssignmentResult,
@@ -101,6 +102,7 @@ const logger = createLogger({
 const EXTERNAL_ASSIGNMENT_RETRY_DELAY_MS = 2_000;
 const DEFAULT_EXTERNAL_ASSIGNMENT_RETRY_ATTEMPTS = 12;
 const MAX_EXTERNAL_ASSIGNMENT_RETRY_ATTEMPTS = 20;
+const MANAGE_ORG_ASSIGNMENT_PRINCIPAL_ROLES = new Set(SOLICITOR_ROLE_AUGMENT_BY_TEST_TYPE['manage-org']);
 
 type RdModeAttemptOutcome =
   | { kind: 'success'; result: OrganisationAssignmentResult }
@@ -365,6 +367,7 @@ export async function assignUserToOrganisationFlow(
   deps: OrganisationAssignmentFlowDeps
 ): Promise<OrganisationAssignmentResult> {
   const attemptedModes: OrganisationAssignmentMode[] = [];
+  let prereqs: AssignmentPrerequisites | undefined;
 
   if (shouldUseManageOrgInvitePrimary()) {
     const primaryResult = await tryManageOrgPrimary(args, deps);
@@ -373,7 +376,7 @@ export async function assignUserToOrganisationFlow(
 
   let client: ApiClient | undefined;
   try {
-    const prereqs = await deps.resolveAssignmentPrerequisites();
+    prereqs = await deps.resolveAssignmentPrerequisites();
     client = new ApiClient({ baseUrl: prereqs.rdProfessionalApiPath, name: 'rd-professional-assignment' });
     logger.info('Resolved assignment principal roles for organisation assignment.', {
       organisationId: args.organisationId,
@@ -382,6 +385,17 @@ export async function assignUserToOrganisationFlow(
       profile: prereqs.assignmentUserRoles.profile,
       roles: prereqs.assignmentUserRoles.roles,
     });
+    if (shouldPreferManageOrgInvitePrimaryForPrincipal(args.requestedMode, prereqs.assignmentUserRoles)) {
+      logger.info('Organisation assignment selected manage-org primary path based on assignment-principal roles.', {
+        organisationId: args.organisationId,
+        requestedMode: args.requestedMode,
+        source: prereqs.assignmentUserRoles.source,
+        profile: prereqs.assignmentUserRoles.profile,
+        roles: prereqs.assignmentUserRoles.roles,
+      });
+      const primaryResult = await tryManageOrgPrimary(args, deps);
+      if (primaryResult) return primaryResult;
+    }
 
     let lastError: unknown;
     for (const mode of args.modesToTry) {
@@ -481,6 +495,16 @@ function shouldUseManageOrgInviteFallback(error: unknown): boolean {
 
 function shouldUseManageOrgInvitePrimary(): boolean {
   return resolveBooleanFlag(process.env.PROFESSIONAL_USER_ASSIGNMENT_USE_MANAGE_ORG_PRIMARY);
+}
+
+export function shouldPreferManageOrgInvitePrimaryForPrincipal(
+  requestedMode: OrganisationAssignmentStrategy,
+  assignmentUserRoles: AssignmentUserRolesResolution
+): boolean {
+  if (requestedMode !== 'auto') {
+    return false;
+  }
+  return (assignmentUserRoles.roles ?? []).some((role) => MANAGE_ORG_ASSIGNMENT_PRINCIPAL_ROLES.has(role));
 }
 
 function shouldFallbackToRdAfterManageOrgFailure(): boolean {

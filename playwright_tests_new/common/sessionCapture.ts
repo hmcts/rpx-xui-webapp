@@ -138,8 +138,8 @@ async function gotoLoginTarget(page: Page, userIdentifier: string, loginTarget: 
   }
 }
 
-async function acceptAccessCookiesIfPresent(page: Page): Promise<void> {
-  const acceptButton = page.getByRole('button', { name: /accept additional cookies/i }).first();
+export async function acceptAccessCookiesIfPresent(page: Page): Promise<void> {
+  const acceptButton = page.getByRole('button', { name: /accept (additional|analytics) cookies/i }).first();
   if (await acceptButton.isVisible().catch(() => false)) {
     await acceptButton.click({ timeout: 2000 }).catch(() => undefined);
   }
@@ -451,6 +451,7 @@ export async function ensureAuthenticatedPage(
   }
 
   await gotoAppTarget(page, userIdentifier, targetUrl);
+  await acceptAccessCookiesIfPresent(page);
   markSetup('navigated-app');
 
   if (await isIdamLoginPage(page)) {
@@ -482,6 +483,7 @@ export async function ensureAuthenticatedPage(
       await page.context().addCookies(session.cookies);
     }
     await gotoAppTarget(page, userIdentifier, targetUrl);
+    await acceptAccessCookiesIfPresent(page);
     markSetup('navigated-app');
 
     if (await isIdamLoginPage(page)) {
@@ -495,6 +497,7 @@ export async function ensureAuthenticatedPage(
     const waitForAppShell = async () => {
       markSetup('waiting-shell');
       await page.waitForLoadState('domcontentloaded');
+      await acceptAccessCookiesIfPresent(page);
       const marker = await waitForAuthenticatedShell(page, userIdentifier, selectors, timeoutMs);
       markSetup('shell-ready');
       logger.info('Authenticated app shell detected', {
@@ -518,6 +521,7 @@ export async function ensureAuthenticatedPage(
         operation: 'wait-for-shell',
       });
       await gotoAppTarget(page, userIdentifier, targetUrl);
+      await acceptAccessCookiesIfPresent(page);
       markSetup('navigated-app');
       await waitForAppShell();
     }

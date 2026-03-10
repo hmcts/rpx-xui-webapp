@@ -311,7 +311,7 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
       }
     };
     const resolveRoleLocator = (role: string, name: string) => {
-      if (role === 'button' && name === '/accept additional cookies/i') {
+      if (role === 'button' && name === '/accept (additional|analytics) cookies/i') {
         return acceptCookiesLocator;
       }
       if (role === 'link' && name === 'Create case') {

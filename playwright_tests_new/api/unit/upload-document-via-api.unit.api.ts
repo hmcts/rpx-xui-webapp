@@ -7,10 +7,16 @@ test.describe.configure({ mode: 'serial' });
 test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () => {
   test('uploadDocumentViaApi forwards XSRF header from browser-context cookies', async () => {
     const captured: { url?: string; headers?: Record<string, string> } = {};
+    const consentButton = {
+      first: () => consentButton,
+      isVisible: async () => false,
+      click: async () => undefined,
+    };
     const page = {
       context: () => ({
         cookies: async () => [{ name: 'XSRF-TOKEN', value: 'xsrf-token-123' }],
       }),
+      getByRole: () => consentButton,
       request: {
         post: async (url: string, options: { headers?: Record<string, string> }) => {
           captured.url = url;
@@ -55,10 +61,16 @@ test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () 
   });
 
   test('uploadDocumentViaApi preserves failure details from the proxy response', async () => {
+    const consentButton = {
+      first: () => consentButton,
+      isVisible: async () => false,
+      click: async () => undefined,
+    };
     const page = {
       context: () => ({
         cookies: async () => [{ name: 'XSRF-TOKEN', value: 'xsrf-token-123' }],
       }),
+      getByRole: () => consentButton,
       request: {
         post: async () => ({
           ok: () => false,
@@ -81,7 +93,15 @@ test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () 
   });
 
   test('uploadDocumentViaApi fails fast when the XSRF cookie never appears', async () => {
+    let consentClicks = 0;
     let cookieCalls = 0;
+    const consentButton = {
+      first: () => consentButton,
+      isVisible: async () => true,
+      click: async () => {
+        consentClicks += 1;
+      },
+    };
     const page = {
       context: () => ({
         cookies: async () => {
@@ -89,6 +109,7 @@ test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () 
           return [];
         },
       }),
+      getByRole: () => consentButton,
       waitForTimeout: async () => undefined,
       request: {
         post: async () => {
@@ -109,5 +130,6 @@ test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () 
     ).rejects.toThrow('Document upload setup failed: XSRF-TOKEN cookie was not available within 5000ms');
 
     expect(cookieCalls).toBeGreaterThan(1);
+    expect(consentClicks).toBeGreaterThan(1);
   });
 });

@@ -1,5 +1,6 @@
 import type { Page } from '@playwright/test';
 import config from '../config.utils.js';
+import { acceptAccessCookiesIfPresent } from '../../../common/sessionCapture.js';
 
 type UploadDocumentViaApiOptions = {
   page: Page;
@@ -36,6 +37,7 @@ async function waitForXsrfToken(page: Page, baseUrl: string): Promise<string> {
   const deadline = Date.now() + XSRF_COOKIE_WAIT_TIMEOUT_MS;
 
   while (Date.now() <= deadline) {
+    await acceptAccessCookiesIfPresent(page);
     const cookies = await page
       .context()
       .cookies(baseUrl)

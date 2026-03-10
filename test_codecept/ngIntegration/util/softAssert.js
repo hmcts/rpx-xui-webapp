@@ -24,14 +24,22 @@ class SoftAssert {
     this.assertCount++;
     try {
       await expectCallBack();
-      this.scenarios.push(`${this.scenarioCounter}.${this.scrAssertionsCounter}  PASSED:  ${this.scenario} : ${verificationMsg ? verificationMsg : ''}`);
-      reportLogger.AddMessage(`************* ${this.scenarioCounter}.${this.scrAssertionsCounter}  PASSED:  ${this.scenario}: ${verificationMsg ? verificationMsg : ''}`);
+      this.scenarios.push(
+        `${this.scenarioCounter}.${this.scrAssertionsCounter}  PASSED:  ${this.scenario} : ${verificationMsg ? verificationMsg : ''}`
+      );
+      reportLogger.AddMessage(
+        `************* ${this.scenarioCounter}.${this.scrAssertionsCounter}  PASSED:  ${this.scenario}: ${verificationMsg ? verificationMsg : ''}`
+      );
     } catch (assertError) {
       this.isPassed = false;
-      this.scenarios.push(`${this.scenarioCounter}.${this.scrAssertionsCounter}  FAILED **:   ${this.scenario}: ${verificationMsg ? verificationMsg : ''}`);
+      this.scenarios.push(
+        `${this.scenarioCounter}.${this.scrAssertionsCounter}  FAILED **:   ${this.scenario}: ${verificationMsg ? verificationMsg : ''}`
+      );
       // addContext(this.testContext, { title: "Screenshot path" , value: "../../"});
       this.assertions.push(`${this.scenarioCounter}.${this.scrAssertionsCounter} : ${assertError.message}`);
-      reportLogger.AddMessage(`************* ${this.scenarioCounter}.${this.scrAssertionsCounter}  FAILED **:   ${this.scenario}: ${verificationMsg ? verificationMsg : ''} => ${assertError.message}`);
+      reportLogger.AddMessage(
+        `************* ${this.scenarioCounter}.${this.scrAssertionsCounter}  FAILED **:   ${this.scenario}: ${verificationMsg ? verificationMsg : ''} => ${assertError.message}`
+      );
       await reportLogger.AddScreenshot();
     }
   }
@@ -53,7 +61,10 @@ class SoftAssert {
     reportLogger.AddMessage(`************* All Scenarios \n\n ${scrs}`);
     console.log(`************* All Scenarios \n\n ${scrs}`);
     expect(this.isPassed).to.be.true;
-    expect(this.assertions.length, `${this.assertions.length} of ${this.assertCount} assertions failed => Error(s) :` + scrs).to.equal(0);
+    expect(
+      this.assertions.length,
+      `${this.assertions.length} of ${this.assertCount} assertions failed => Error(s) :` + scrs
+    ).to.equal(0);
   }
 }
 

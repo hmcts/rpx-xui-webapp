@@ -16,7 +16,7 @@ Then('I see case details tab label {string} is selected is {string}', async func
   });
 });
 
-Then('I see case details tab label {string} displayed', async function(tabLabel){
+Then('I see case details tab label {string} displayed', async function (tabLabel) {
   await BrowserWaits.retryWithActionCallback(async () => {
     expect(await caseDetailsPage.isTabWithLabelPresent(tabLabel)).to.be.true;
   });
@@ -28,7 +28,7 @@ Then('I see case details tab label {string} not displayed', async function (tabL
   });
 });
 
-Then('I see case details tab with label {string} is selected', async function (tabLabel){
+Then('I see case details tab with label {string} is selected', async function (tabLabel) {
   await BrowserWaits.retryWithActionCallback(async () => {
     expect(await caseDetailsPage.isTabWithLabelSelected(tabLabel)).to.be.true;
   });
@@ -46,26 +46,30 @@ When('I click tab with label {string} in case details page', async function (tab
   });
 });
 
-When('I click tab with label {string} in case details page, to see element with css selector {string}', async function (tabLabel, cssSelector) {
-  await BrowserWaits.retryWithActionCallback(async () => {
-    await caseDetailsPage.clickTabWithLabel(tabLabel);
-    await BrowserWaits.waitForSeconds(2);
-    await caseDetailsPage.clickTabWithLabel(tabLabel);
+When(
+  'I click tab with label {string} in case details page, to see element with css selector {string}',
+  async function (tabLabel, cssSelector) {
+    await BrowserWaits.retryWithActionCallback(async () => {
+      await caseDetailsPage.clickTabWithLabel(tabLabel);
+      await BrowserWaits.waitForSeconds(2);
+      await caseDetailsPage.clickTabWithLabel(tabLabel);
 
-    await BrowserWaits.waitForElement($(cssSelector));
-    expect(await $(cssSelector).isVisible()).to.be.true;
-  });
-});
+      await BrowserWaits.waitForElement($(cssSelector));
+      expect(await $(cssSelector).isVisible()).to.be.true;
+    });
+  }
+);
 
-Then('I see case details page displayed with tab {string} selected', async function(tabLabel){
+Then('I see case details page displayed with tab {string} selected', async function (tabLabel) {
   await BrowserWaits.retryWithActionCallback(async () => {
     expect(await caseDetailsPage.amOnPage(), 'Not on case details page').to.be.true;
-    expect(await caseDetailsPage.isTabWithLabelPresent(tabLabel), `Tab with label "${tabLabel}" is not present or displayed`).to.be.true;
+    expect(await caseDetailsPage.isTabWithLabelPresent(tabLabel), `Tab with label "${tabLabel}" is not present or displayed`).to
+      .be.true;
     expect(await caseDetailsPage.isTabWithLabelSelected(tabLabel), `Tab with label "${tabLabel}" is not selected`).to.be.true;
   });
 });
 
-Then('I see case details page with message banner {string}', async function(expectedBannerMessage){
+Then('I see case details page with message banner {string}', async function (expectedBannerMessage) {
   await BrowserWaits.retryWithActionCallback(async () => {
     const actualBannerMessage = await caseDetailsPage.messageBanner.getBannerMessagesDisplayed();
     expect(actualBannerMessage.join(',')).to.includes(expectedBannerMessage);
@@ -80,19 +84,19 @@ When('I open dummy document', async () => {
   await caseDetailsPage.openDummyFile();
 });
 
-Then('I verify that text redaction is working', async function() {
+Then('I verify that text redaction is working', async function () {
   await BrowserWaits.retryWithActionCallback(async () => {
     expect(await mediaViewerPage.verifyRedactionWorking()).to.be.true;
   });
 });
 
-Then('I verify that bookmark feature is working', async function() {
+Then('I verify that bookmark feature is working', async function () {
   await BrowserWaits.retryWithActionCallback(async () => {
     expect(await mediaViewerPage.verifyBookmarkWorking()).to.be.true;
   });
 });
 
-Then('I verify that comment feature is working', async function() {
+Then('I verify that comment feature is working', async function () {
   await BrowserWaits.retryWithActionCallback(async () => {
     expect(await mediaViewerPage.verifyCommentWorking(I)).to.be.true;
   });

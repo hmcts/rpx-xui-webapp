@@ -6,7 +6,7 @@ import {
   specificAccessCancelButtonVisibilityStates,
   specificAccessContinueButtonVisibilityStates,
   specificAccessReturnToMyTasksButtonVisibilityStates,
-  specificAccessReturnToTasksTabVisibilityStates
+  specificAccessReturnToTasksTabVisibilityStates,
 } from '../../../constants';
 import { SpecificAccessNavigationEvent, SpecificAccessState } from '../../../models';
 import * as fromFeature from '../../../store';
@@ -14,7 +14,7 @@ import * as fromFeature from '../../../store';
 @Component({
   standalone: false,
   selector: 'exui-specific-access-navigation',
-  templateUrl: 'specific-access-navigation.component.html'
+  templateUrl: 'specific-access-navigation.component.html',
 })
 export class SpecificAccessNavigationComponent implements OnInit {
   @Output() public eventTrigger = new EventEmitter();
@@ -29,9 +29,7 @@ export class SpecificAccessNavigationComponent implements OnInit {
 
   public specificAccessNavigationEvent = SpecificAccessNavigationEvent;
 
-  constructor(
-    private readonly store: Store<fromFeature.State>,
-  ) {}
+  constructor(private readonly store: Store<fromFeature.State>) {}
 
   public ngOnInit() {
     this.navigationCurrentState$ = this.store.pipe(select(fromFeature.currentSpecificAccessNavigation));

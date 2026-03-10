@@ -19,4 +19,3 @@ When('I check all fields IAC case', async function () {
   await iacCase.appealAgainstOtherDecisionsPage();
   await iacCase.legalRepDetailsPage();
 });
-

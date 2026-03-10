@@ -10,7 +10,7 @@ import { LocationsDataService } from '../../../../services/locations-data.servic
 @Component({
   standalone: false,
   selector: 'exui-hearing-venue-section',
-  templateUrl: './hearing-venue-section.component.html'
+  templateUrl: './hearing-venue-section.component.html',
 })
 export class HearingVenueSectionComponent implements OnInit {
   @Input() public hearingRequestMainModel: HearingRequestMainModel;
@@ -22,21 +22,21 @@ export class HearingVenueSectionComponent implements OnInit {
   public amendmentLabelEnum = AmendmentLabelStatus;
   public hearingLocationIdsToCompare: string[];
 
-  constructor(private readonly locationsDataService: LocationsDataService) {
-  }
+  constructor(private readonly locationsDataService: LocationsDataService) {}
 
   public ngOnInit(): void {
-    const hearingLocationIds = this.hearingRequestMainModel.hearingDetails.hearingLocations?.map((hearingLocation) => hearingLocation.locationId);
+    const hearingLocationIds = this.hearingRequestMainModel.hearingDetails.hearingLocations?.map(
+      (hearingLocation) => hearingLocation.locationId
+    );
     hearingLocationIds.sort((a: any, b: any) => a - b);
-    this.hearingLocationIdsToCompare = this.hearingRequestToCompareMainModel.hearingDetails.hearingLocations.map((loc) => loc.locationId);
+    this.hearingLocationIdsToCompare = this.hearingRequestToCompareMainModel.hearingDetails.hearingLocations.map(
+      (loc) => loc.locationId
+    );
     this.hearingLocationIdsToCompare.sort((a: any, b: any) => a - b);
     const serviceCode = this.hearingRequestMainModel.caseDetails.hmctsServiceCode;
     this.locations$ = this.locationsDataService.getLocationById(hearingLocationIds.join(','), serviceCode);
 
-    this.showAmmendedForHeading = !_.isEqual(
-      hearingLocationIds,
-      this.hearingLocationIdsToCompare
-    );
+    this.showAmmendedForHeading = !_.isEqual(hearingLocationIds, this.hearingLocationIdsToCompare);
   }
 
   public onChange(fragmentId: string): void {

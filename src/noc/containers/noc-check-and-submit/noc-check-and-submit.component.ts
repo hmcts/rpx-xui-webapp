@@ -11,7 +11,7 @@ import * as fromFeature from '../../store';
   standalone: false,
   selector: 'exui-noc-check-and-submit',
   templateUrl: './noc-check-and-submit.component.html',
-  styleUrls: ['./noc-check-and-submit.component.scss']
+  styleUrls: ['./noc-check-and-submit.component.scss'],
 })
 export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
   @Input()
@@ -45,7 +45,7 @@ export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
   constructor(private readonly store: Store<fromFeature.State>) {
     this.navEvent = {
       event: null,
-      timestamp: null
+      timestamp: null,
     };
   }
 
@@ -58,37 +58,44 @@ export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
         answers.forEach((answer) => {
           const nocAnswerWithQuestionText: NocAnswer = {
             question_id: answer.question_id,
-            question_text: this.questions$.pipe(map(
-              (questions) => {
+            question_text: this.questions$.pipe(
+              map((questions) => {
                 return questions.find((ques) => ques.question_id === answer.question_id).question_text;
-              }
-            )),
-            question_type: this.questions$.pipe(map(
-              (questions) => {
+              })
+            ),
+            question_type: this.questions$.pipe(
+              map((questions) => {
                 return questions.find((ques) => ques.question_id === answer.question_id).answer_field_type.type;
-              }
-            )),
-            value: answer.value
+              })
+            ),
+            value: answer.value,
           };
           answersWithQuestionText.push(nocAnswerWithQuestionText);
         });
         return answersWithQuestionText;
-      }));
-    this.affirmationAgreedSub = this.store.pipe(select(fromFeature.affirmationAgreed)).subscribe(
-      (affirmationAgree) => this.affirmationAgreed = affirmationAgree);
-    this.notifyEveryPartySub = this.store.pipe(select(fromFeature.notifyEveryParty)).subscribe(
-      (notifyEveryParty) => this.notifyEveryParty = notifyEveryParty);
+      })
+    );
+    this.affirmationAgreedSub = this.store
+      .pipe(select(fromFeature.affirmationAgreed))
+      .subscribe((affirmationAgree) => (this.affirmationAgreed = affirmationAgree));
+    this.notifyEveryPartySub = this.store
+      .pipe(select(fromFeature.notifyEveryParty))
+      .subscribe((notifyEveryParty) => (this.notifyEveryParty = notifyEveryParty));
     this.validationErrors$ = this.store.pipe(select(fromFeature.validationErrors));
-    this.hasDisagreeError$ = this.validationErrors$.pipe(map((errors) => {
-      return errors ? errors.hasOwnProperty(AFFIRMATION_DEFAULT_DISAGREE_ERROR.code) : false;
-    }));
-    this.hasNotifyEveryPartyError$ = this.validationErrors$.pipe(map((errors) => {
-      return errors ? errors.hasOwnProperty(AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR.code) : false;
-    }));
-    this.caseReferenceSub = this.store.pipe(select(fromFeature.caseReference)).subscribe(
-      (caseReference) => this.caseRefernce = caseReference);
-    this.nocAnswersSub = this.store.pipe(select(fromFeature.answers)).subscribe(
-      (nocAnswers) => this.nocAnswers = nocAnswers);
+    this.hasDisagreeError$ = this.validationErrors$.pipe(
+      map((errors) => {
+        return errors ? errors.hasOwnProperty(AFFIRMATION_DEFAULT_DISAGREE_ERROR.code) : false;
+      })
+    );
+    this.hasNotifyEveryPartyError$ = this.validationErrors$.pipe(
+      map((errors) => {
+        return errors ? errors.hasOwnProperty(AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR.code) : false;
+      })
+    );
+    this.caseReferenceSub = this.store
+      .pipe(select(fromFeature.caseReference))
+      .subscribe((caseReference) => (this.caseRefernce = caseReference));
+    this.nocAnswersSub = this.store.pipe(select(fromFeature.answers)).subscribe((nocAnswers) => (this.nocAnswers = nocAnswers));
   }
 
   public navigationHandler(navEvent: NocNavigationEvent) {
@@ -107,7 +114,7 @@ export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
     if (this.affirmationAgreed && this.notifyEveryParty) {
       const nocEvent: NocEvent = {
         case_id: this.caseRefernce,
-        answers: this.nocAnswers
+        answers: this.nocAnswers,
       };
       this.store.dispatch(new fromFeature.SubmitNoc(nocEvent));
     } else if (this.affirmationAgreed && !this.notifyEveryParty) {
@@ -117,7 +124,7 @@ export class NocCheckAndSubmitComponent implements OnInit, OnDestroy {
     } else {
       affirmationError = {
         AFFIRMATION_DEFAULT_DISAGREE_ERROR,
-        AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR
+        AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR,
       };
     }
     if (affirmationError) {

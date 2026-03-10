@@ -1,20 +1,8 @@
-
 const { v4 } = require('uuid');
-const userApiData = require('../userApiData')
+const userApiData = require('../userApiData');
 
-
-class EvidenceManagementApi{
-    
-
-    constructor(){
-
-    }
-
-  
-
+class EvidenceManagementApi {
+  constructor() {}
 }
 
-module.exports = new EvidenceManagementApi()
-
-
-
+module.exports = new EvidenceManagementApi();

@@ -20,9 +20,7 @@ exports.config = {
 
   helpers: {
     Puppeteer: {
-      url: externalServers
-        ? (process.env.WEB_BASE_URL || 'http://localhost:8080')
-        : 'https://manage-case.aat.platform.hmcts.net',
+      url: externalServers ? process.env.WEB_BASE_URL || 'http://localhost:8080' : 'https://manage-case.aat.platform.hmcts.net',
       show: headed,
       headless: !headed,
       restart: true,
@@ -38,20 +36,20 @@ exports.config = {
           '--disable-setuid-sandbox',
           '--disable-notifications',
           '--ignore-certificate-errors',
-          '--window-size=1440,1400'
-        ]
-      }
-    }
+          '--window-size=1440,1400',
+        ],
+      },
+    },
   },
 
   mocha: {
     reporter: path.resolve(__dirname, '../accessibility/reporter/customReporter.js'),
-    reporterOptions: { reportDir: CODECEPT_OUT, html: false, json: true }
+    reporterOptions: { reportDir: CODECEPT_OUT, html: false, json: true },
   },
 
   plugins: {
     screenshotOnFail: { enabled: true, fullPageScreenshots: true },
-    retryFailedStep: { enabled: true }
+    retryFailedStep: { enabled: true },
   },
 
   // ⬇️ Only start/stop local servers when we are NOT using external servers
@@ -64,7 +62,7 @@ exports.config = {
     await backendMockApp.stopServer();
     await applicationServer.stop();
     await generateMergedReport();
-  }
+  },
 };
 
 console.log('[conf] Puppeteer show flag =', exports.config.helpers.Puppeteer.show);

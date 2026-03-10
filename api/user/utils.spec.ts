@@ -18,8 +18,8 @@ describe('user.utils', () => {
         created: new Date(2021, 9, 8),
         attributes: {
           baseLocation: '231596',
-          jurisdiction: 'IA'
-        }
+          jurisdiction: 'IA',
+        },
       };
       expect(isCurrentUserCaseAllocator(ROLE_ASSIGNMENT_EXAMPLE)).to.equal(true);
     });
@@ -38,8 +38,8 @@ describe('user.utils', () => {
         created: new Date(2021, 9, 8),
         attributes: {
           baseLocation: '231596',
-          jurisdiction: 'IA'
-        }
+          jurisdiction: 'IA',
+        },
       };
       expect(isCurrentUserCaseAllocator(ROLE_ASSIGNMENT_EXAMPLE)).to.equal(false);
     });
@@ -60,8 +60,8 @@ describe('user.utils', () => {
         created: new Date(2021, 9, 8),
         attributes: {
           baseLocation: '231596',
-          jurisdiction: 'IA'
-        }
+          jurisdiction: 'IA',
+        },
       };
       expect(isCurrentUserCaseAllocator(ROLE_ASSIGNMENT_EXAMPLE, 'IA', '231596')).to.equal(true);
     });
@@ -80,8 +80,8 @@ describe('user.utils', () => {
         created: new Date(2021, 9, 8),
         attributes: {
           baseLocation: '231596',
-          jurisdiction: 'IA'
-        }
+          jurisdiction: 'IA',
+        },
       };
       expect(isCurrentUserCaseAllocator(ROLE_ASSIGNMENT_EXAMPLE, 'DIVORCE', '123123')).to.equal(false);
     });
@@ -101,38 +101,40 @@ describe('user.utils', () => {
     });
 
     it('should return 1 row', () => {
-      const roleAssignmentInfo = [{
-        id: '478c83f8-0ed0-4651-b8bf-cd2b1e206ac2',
-        actorIdType: 'IDAM',
-        actorId: 'c5a983be-ca99-4b8a-97f7-23be33c3fd22',
-        roleType: 'CASE',
-        roleName: 'SOME_ROLE',
-        classification: 'PUBLIC',
-        grantType: 'STANDARD',
-        roleCategory: LEGAL_OPS_TYPE,
-        readOnly: false,
-        created: new Date(2021, 9, 8),
-        attributes: {
-          baseLocation: '231596',
-          jurisdiction: 'IA'
-        }
-      },
-      {
-        id: '478c83f8-0ed0-4651-b8bf-cd2b1e206ac3',
-        actorIdType: 'IDAM',
-        actorId: 'c5a983be-ca99-4b8a-97f7-23be33c3fd22',
-        roleType: 'ORGANISATION',
-        roleName: CASE_ALLOCATOR_ROLE,
-        classification: 'PUBLIC',
-        grantType: 'STANDARD',
-        roleCategory: LEGAL_OPS_TYPE,
-        readOnly: false,
-        created: new Date(2021, 9, 8),
-        attributes: {
-          baseLocation: '231596',
-          jurisdiction: 'IA'
-        }
-      }];
+      const roleAssignmentInfo = [
+        {
+          id: '478c83f8-0ed0-4651-b8bf-cd2b1e206ac2',
+          actorIdType: 'IDAM',
+          actorId: 'c5a983be-ca99-4b8a-97f7-23be33c3fd22',
+          roleType: 'CASE',
+          roleName: 'SOME_ROLE',
+          classification: 'PUBLIC',
+          grantType: 'STANDARD',
+          roleCategory: LEGAL_OPS_TYPE,
+          readOnly: false,
+          created: new Date(2021, 9, 8),
+          attributes: {
+            baseLocation: '231596',
+            jurisdiction: 'IA',
+          },
+        },
+        {
+          id: '478c83f8-0ed0-4651-b8bf-cd2b1e206ac3',
+          actorIdType: 'IDAM',
+          actorId: 'c5a983be-ca99-4b8a-97f7-23be33c3fd22',
+          roleType: 'ORGANISATION',
+          roleName: CASE_ALLOCATOR_ROLE,
+          classification: 'PUBLIC',
+          grantType: 'STANDARD',
+          roleCategory: LEGAL_OPS_TYPE,
+          readOnly: false,
+          created: new Date(2021, 9, 8),
+          attributes: {
+            baseLocation: '231596',
+            jurisdiction: 'IA',
+          },
+        },
+      ];
       const response = getOrganisationRoles(roleAssignmentInfo);
       expect(response.length).to.equal(1);
       expect(response[0]).to.equal(CASE_ALLOCATOR_ROLE);
@@ -141,10 +143,16 @@ describe('user.utils', () => {
 
   describe('getUserRoleCategory', () => {
     it('should return UserRoleCategory', () => {
-      const roles = ['ADMIN', 'caseworker-ia',
-        'caseworker-ia-caseofficer', 'cwd-user',
-        'case-allocator', 'tribunal-caseworker',
-        'hmcts-legal-operations', 'task-supervisor'];
+      const roles = [
+        'ADMIN',
+        'caseworker-ia',
+        'caseworker-ia-caseofficer',
+        'cwd-user',
+        'case-allocator',
+        'tribunal-caseworker',
+        'hmcts-legal-operations',
+        'task-supervisor',
+      ];
       expect(getUserRoleCategory(roles)).to.equal('admin');
     });
   });
@@ -158,14 +166,10 @@ describe('user.utils', () => {
       ssoProvider: 'testing-support',
       uid: '12345-45678-567890',
       identity: 'id=12345-45678-567890,ou=test-config',
-      roles: [
-        'test-role',
-        'caseworker-role',
-        'judge-role'
-      ],
+      roles: ['test-role', 'caseworker-role', 'judge-role'],
       sub: 'test@ejudiciary.net',
       subname: 'test@ejudiciary.net',
-      iss: 'https://test-url.com?test=1'
+      iss: 'https://test-url.com?test=1',
     };
     it('should ensure user details are valid', () => {
       expect(userDetailsValid(null)).to.equal(true);
@@ -182,6 +186,76 @@ describe('user.utils', () => {
     it('should set user details to invalid if iss has dangerous characters', () => {
       mockUserDetails.iss = 'http://test-url.com&';
       expect(userDetailsValid(mockUserDetails)).to.equal(true);
+    });
+
+    it('should return citizen role category', () => {
+      const roles = ['citizen'];
+      expect(getUserRoleCategory(roles)).to.equal('citizen');
+    });
+
+    it('should return judge role category for judge role', () => {
+      const roles = ['judge'];
+      expect(getUserRoleCategory(roles)).to.equal('judicial');
+    });
+
+    it('should return judge role category for judiciary role', () => {
+      const roles = ['judiciary'];
+      expect(getUserRoleCategory(roles)).to.equal('judicial');
+    });
+
+    it('should return admin role category', () => {
+      const roles = ['admin'];
+      expect(getUserRoleCategory(roles)).to.equal('admin');
+    });
+
+    it('should return ctsc role category', () => {
+      const roles = ['ctsc'];
+      expect(getUserRoleCategory(roles)).to.equal('ctsc');
+    });
+
+    it('should return professional role for legal-operations', () => {
+      const roles = ['legal-operations'];
+      expect(getUserRoleCategory(roles)).to.equal('solicitor');
+    });
+
+    it('should return professional role for task-supervisor', () => {
+      const roles = ['task-supervisor'];
+      expect(getUserRoleCategory(roles)).to.equal('solicitor');
+    });
+
+    it('should return professional role for pui-case-manager', () => {
+      const roles = ['pui-case-manager'];
+      expect(getUserRoleCategory(roles)).to.equal('solicitor');
+    });
+
+    it('should return professional role for pui-organisation-manager', () => {
+      const roles = ['pui-organisation-manager'];
+      expect(getUserRoleCategory(roles)).to.equal('solicitor');
+    });
+
+    it('should return other_gov_department for SSCS DWP response writer', () => {
+      const roles = ['caseworker-sscs-dwpresponsewriter'];
+      expect(getUserRoleCategory(roles)).to.equal('other_gov_department');
+    });
+
+    it('should return other_gov_department for SSCS HMRC response writer', () => {
+      const roles = ['caseworker-sscs-hmrcresponsewriter'];
+      expect(getUserRoleCategory(roles)).to.equal('other_gov_department');
+    });
+
+    it('should return other_gov_department for SSCS IBCA response writer', () => {
+      const roles = ['caseworker-sscs-ibcaresponsewriter'];
+      expect(getUserRoleCategory(roles)).to.equal('other_gov_department');
+    });
+
+    it('should return legal-operations as default', () => {
+      const roles = ['unknown-role'];
+      expect(getUserRoleCategory(roles)).to.equal('legal-operations');
+    });
+
+    it('should handle empty array and return default', () => {
+      const roles = [];
+      expect(getUserRoleCategory(roles)).to.equal('legal-operations');
     });
   });
 });

@@ -17,9 +17,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 describe('ExclusionHomeComponent', () => {
   let component: AddExclusionHomeComponent;
   let fixture: ComponentFixture<AddExclusionHomeComponent>;
-  const routerMock = jasmine.createSpyObj('Router', [
-    'navigateByUrl'
-  ]);
+  const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl']);
   let store;
   let storePipeMock: any;
   let storeDispatchMock: any;
@@ -31,25 +29,19 @@ describe('ExclusionHomeComponent', () => {
     exclusionOption: ExcludeOption.EXCLUDE_ANOTHER_PERSON,
     personRole: null,
     person: null,
-    exclusionDescription: ''
+    exclusionDescription: '',
   };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      schemas: [
-        NO_ERRORS_SCHEMA
-      ],
-      declarations: [
-        ...fromContainers.containers
-      ],
-      imports: [ReactiveFormsModule,
-        UtilsModule,
-        RouterTestingModule],
+      schemas: [NO_ERRORS_SCHEMA],
+      declarations: [...fromContainers.containers],
+      imports: [ReactiveFormsModule, UtilsModule, RouterTestingModule],
       providers: [
         provideMockStore(),
         {
           provide: Router,
-          useValue: routerMock
+          useValue: routerMock,
         },
         {
           provide: ActivatedRoute,
@@ -58,16 +50,15 @@ describe('ExclusionHomeComponent', () => {
               queryParams: {
                 caseId: '111111',
                 jurisdiction: 'IA',
-                caseType: 'Asylum'
-              }
-            }
-          }
+                caseType: 'Asylum',
+              },
+            },
+          },
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
     store = TestBed.inject(Store);
 
     storePipeMock = spyOn(store, 'pipe');

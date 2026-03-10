@@ -10,7 +10,7 @@ import { LovRefDataModel } from '../../../../models/lovRefData.model';
 @Component({
   standalone: false,
   selector: 'exui-judge-details-section',
-  templateUrl: './judge-details-section.component.html'
+  templateUrl: './judge-details-section.component.html',
 })
 export class JudgeDetailsSectionComponent implements OnInit {
   @Input() public panelRequirements: PanelRequirementsModel;
@@ -69,10 +69,12 @@ export class JudgeDetailsSectionComponent implements OnInit {
   }
 
   private getJudgeName(): string {
-    const includedJudgeMemberIds = this.panelRequirements?.panelPreferences?.filter(
-      (panelPreference) => panelPreference.memberType === MemberType.JUDGE
-        && panelPreference.requirementType === RequirementType.MUSTINC
-    ).map((panelPreference) => panelPreference.memberID);
+    const includedJudgeMemberIds = this.panelRequirements?.panelPreferences
+      ?.filter(
+        (panelPreference) =>
+          panelPreference.memberType === MemberType.JUDGE && panelPreference.requirementType === RequirementType.MUSTINC
+      )
+      .map((panelPreference) => panelPreference.memberID);
 
     const includedJudge = this.judicialUsers?.find((judgeInfo) => includedJudgeMemberIds?.includes(judgeInfo.personalCode));
     return includedJudge?.fullName || '';
@@ -85,15 +87,15 @@ export class JudgeDetailsSectionComponent implements OnInit {
         selectedJudgeTypes.push(judgeType.value_en);
       }
     });
-    return selectedJudgeTypes.length > 0
-      ? selectedJudgeTypes.join(', ')
-      : '';
+    return selectedJudgeTypes.length > 0 ? selectedJudgeTypes.join(', ') : '';
   }
 
   private getExcludedJudgeNames(): string {
-    const excludedJudges = this.panelRequirements?.panelPreferences?.filter(
-      (preference) => preference.memberType === MemberType.JUDGE && preference.requirementType === RequirementType.EXCLUDE
-    ).map((preference) => preference.memberID);
+    const excludedJudges = this.panelRequirements?.panelPreferences
+      ?.filter(
+        (preference) => preference.memberType === MemberType.JUDGE && preference.requirementType === RequirementType.EXCLUDE
+      )
+      .map((preference) => preference.memberID);
 
     const excludedJudgeNames: string[] = [];
     this.judicialUsers.forEach((judgeInfo) => {
@@ -101,9 +103,7 @@ export class JudgeDetailsSectionComponent implements OnInit {
         excludedJudgeNames.push(judgeInfo.fullName);
       }
     });
-    return excludedJudgeNames.length > 0
-      ? excludedJudgeNames.join(', ')
-      : '';
+    return excludedJudgeNames.length > 0 ? excludedJudgeNames.join(', ') : '';
   }
 
   private setAmendmentLabels(): void {
@@ -121,20 +121,17 @@ export class JudgeDetailsSectionComponent implements OnInit {
       )
     );
 
-    const memberIdsToCompare = this.panelRequirementsToCompare?.panelPreferences?.map(
-      (panelPreference) => panelPreference.memberID
-    )?.sort((a, b) => {
-      return a > b ? 1 : (a === b ? 0 : -1);
-    });
-    const memberIds = this.panelRequirements?.panelPreferences?.map(
-      (panelPreference) => panelPreference.memberID
-    )?.sort((a, b) => {
-      return a > b ? 1 : (a === b ? 0 : -1);
-    });
-    this.showAmmendedForExcludedJudgeNames = !_.isEqual(
-      memberIdsToCompare,
-      memberIds
-    );
+    const memberIdsToCompare = this.panelRequirementsToCompare?.panelPreferences
+      ?.map((panelPreference) => panelPreference.memberID)
+      ?.sort((a, b) => {
+        return a > b ? 1 : a === b ? 0 : -1;
+      });
+    const memberIds = this.panelRequirements?.panelPreferences
+      ?.map((panelPreference) => panelPreference.memberID)
+      ?.sort((a, b) => {
+        return a > b ? 1 : a === b ? 0 : -1;
+      });
+    this.showAmmendedForExcludedJudgeNames = !_.isEqual(memberIdsToCompare, memberIds);
 
     if (this.panelRequirementsToCompare?.roleType && this.panelRequirements?.roleType) {
       this.showAmmendedForJudgeType = !_.isEqual(
@@ -143,7 +140,8 @@ export class JudgeDetailsSectionComponent implements OnInit {
       );
     }
 
-    this.showAmendedLabelForPageTitle = this.showAmmendedForNeedJudge ||
+    this.showAmendedLabelForPageTitle =
+      this.showAmmendedForNeedJudge ||
       this.showAmmendedForJudgeName ||
       this.showAmmendedForExcludedJudgeNames ||
       this.showAmmendedForJudgeType;

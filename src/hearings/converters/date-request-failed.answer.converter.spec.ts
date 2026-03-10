@@ -14,7 +14,8 @@ describe('DateRequestFailedAnswerConverter', () => {
 
   it('should transform error timestamp from request', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
-    STATE.hearingRequest.hearingRequestMainModel.hearingResponse.errorTimestamp = STATE.hearingRequest.hearingRequestMainModel.hearingResponse.receivedDateTime;
+    STATE.hearingRequest.hearingRequestMainModel.hearingResponse.errorTimestamp =
+      STATE.hearingRequest.hearingRequestMainModel.hearingResponse.receivedDateTime;
     const result$ = dateRequestSubmittedAnswerConverter.transformAnswer(of(STATE));
     const type = '30 November 2021 09:00:00';
     const expected = cold('(b|)', { b: type });

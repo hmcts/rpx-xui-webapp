@@ -14,7 +14,7 @@ import {
   chooseDurationVisibilityStates,
   chooseRoleVisibilityStates,
   noRolesErrorVisibilityStates,
-  searchPersonVisibilityStates
+  searchPersonVisibilityStates,
 } from '../../../constants/allocate-role-page-visibility-states';
 import {
   Actions,
@@ -25,7 +25,7 @@ import {
   AllocateTo,
   DEFINED_ROLES,
   DurationOfRole,
-  SpecificRole
+  SpecificRole,
 } from '../../../models';
 import { AllocateRoleService } from '../../../services';
 import * as fromFeature from '../../../store';
@@ -39,7 +39,7 @@ import { ChooseRoleComponent } from '../choose-role/choose-role.component';
   standalone: false,
   selector: 'exui-allocate-role-home',
   templateUrl: './allocate-role-home.component.html',
-  styleUrls: ['./allocate-role-home.component.scss']
+  styleUrls: ['./allocate-role-home.component.scss'],
 })
 export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
   @Input() public existingUsers: string[] = [];
@@ -86,16 +86,16 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
 
   public showSpinner: boolean = false;
 
-  constructor(private readonly appStore: Store<fromAppStore.State>,
-              private readonly store: Store<fromFeature.State>,
-              private readonly allocateRoleService: AllocateRoleService,
-              private readonly route: ActivatedRoute,
-              private readonly router: Router) {
-    this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe(
-      (userDetails) => {
-        this.userRole = AppUtils.getUserRole(userDetails?.userInfo?.roles);
-      }
-    );
+  constructor(
+    private readonly appStore: Store<fromAppStore.State>,
+    private readonly store: Store<fromFeature.State>,
+    private readonly allocateRoleService: AllocateRoleService,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router
+  ) {
+    this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe((userDetails) => {
+      this.userRole = AppUtils.getUserRole(userDetails?.userInfo?.roles);
+    });
     if (this.route.snapshot.queryParams) {
       const { caseId } = this.route.snapshot.queryParams;
       if (caseId) {
@@ -110,15 +110,26 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       this.caseType = this.route.snapshot.queryParams.caseType ? this.route.snapshot.queryParams.caseType : null;
       this.setReallocatedRole(roleId);
       this.action = this.route.snapshot.routeConfig.path ? this.route.snapshot.routeConfig.path : null;
-      this.existingUsers = this.route.snapshot.queryParams.existingUsers ? this.route.snapshot.queryParams.existingUsers.split(',') : [];
+      this.existingUsers = this.route.snapshot.queryParams.existingUsers
+        ? this.route.snapshot.queryParams.existingUsers.split(',')
+        : [];
     }
     if (this.action === Actions.Reallocate) {
       this.instantiateReallocateRoleData();
     } else {
-      this.store.dispatch(new fromFeature.AllocateRoleSetInitData({ caseId: this.caseId, jurisdiction: this.jurisdiction, roleCategory: this.roleCategory }));
+      this.store.dispatch(
+        new fromFeature.AllocateRoleSetInitData({
+          caseId: this.caseId,
+          jurisdiction: this.jurisdiction,
+          roleCategory: this.roleCategory,
+        })
+      );
     }
     const extras = this.router.getCurrentNavigation().extras;
-    this.allocateRoleService.backUrl = extras.state && extras.state.backUrl ? extras.state.backUrl : `cases/case-details/${this.jurisdiction}/${this.caseType}/${this.caseId}/roles-and-access`;
+    this.allocateRoleService.backUrl =
+      extras.state && extras.state.backUrl
+        ? extras.state.backUrl
+        : `cases/case-details/${this.jurisdiction}/${this.caseType}/${this.caseId}/roles-and-access`;
   }
 
   private instantiateReallocateRoleData(): void {
@@ -136,7 +147,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
       roleCategory: RoleCategory[EnumUtil(RoleCategory).getKeyOrDefault(this.roleCategory)],
       action: Actions.Reallocate,
       period: null,
-      lastError: null
+      lastError: null,
     };
     this.store.dispatch(new fromFeature.AllocateRoleInstantiate(allocateRoleState));
   }
@@ -149,13 +160,13 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
     if (this.action !== Actions.Reallocate) {
       this.store.dispatch(new fromFeature.LoadRoles({ jurisdiction: this.jurisdiction, roleCategory: this.roleCategory }));
     }
-    this.allocateRoleStateDataSub = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe(
-      (allocateRoleStateData) => {
+    this.allocateRoleStateDataSub = this.store
+      .pipe(select(fromFeature.getAllocateRoleState))
+      .subscribe((allocateRoleStateData) => {
         this.navigationCurrentState = allocateRoleStateData.state;
         this.allocateTo = allocateRoleStateData.allocateTo;
         this.action = allocateRoleStateData.action;
-      }
-    );
+      });
   }
 
   public isComponentVisible(currentNavigationState: AllocateRoleState, requiredNavigationState: AllocateRoleState[]): boolean {
@@ -172,7 +183,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
   public onNavEvent(event: AllocateRoleNavigationEvent): void {
     this.navEvent = {
       event,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
     this.navigationHandler(event);
   }
@@ -239,7 +250,9 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
                       case RoleCategory.JUDICIAL:
                         switch (this.allocateTo) {
                           case AllocateTo.ALLOCATE_TO_ME:
-                            this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
+                            this.store.dispatch(
+                              new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO)
+                            );
                             break;
                           case AllocateTo.ALLOCATE_TO_ANOTHER_PERSON:
                             this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
@@ -265,7 +278,9 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
                       case RoleCategory.LEGAL_OPERATIONS:
                         switch (this.allocateTo) {
                           case AllocateTo.ALLOCATE_TO_ME:
-                            this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
+                            this.store.dispatch(
+                              new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO)
+                            );
                             break;
                           case AllocateTo.ALLOCATE_TO_ANOTHER_PERSON:
                             this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
@@ -283,7 +298,9 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
                       case RoleCategory.CTSC:
                         switch (this.allocateTo) {
                           case AllocateTo.ALLOCATE_TO_ME:
-                            this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO));
+                            this.store.dispatch(
+                              new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.CHOOSE_ALLOCATE_TO)
+                            );
                             break;
                           case AllocateTo.ALLOCATE_TO_ANOTHER_PERSON:
                             this.store.dispatch(new fromFeature.AllocateRoleChangeNavigation(AllocateRoleState.SEARCH_PERSON));
@@ -347,8 +364,7 @@ export class AllocateRoleHomeComponent implements OnInit, OnDestroy {
         break;
       }
       case AllocateRoleNavigationEvent.CANCEL: {
-        this.router.navigateByUrl(this.allocateRoleService.backUrl)
-          .then(undefined, undefined);
+        this.router.navigateByUrl(this.allocateRoleService.backUrl).then(undefined, undefined);
         break;
       }
       default:

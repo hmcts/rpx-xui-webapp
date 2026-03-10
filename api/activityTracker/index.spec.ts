@@ -24,7 +24,7 @@ describe('Activity Tracker', () => {
       info: sandbox.stub(),
       error: sandbox.stub(),
       warn: sandbox.stub(),
-      debug: sandbox.stub()
+      debug: sandbox.stub(),
     };
     sandbox.stub(log4jui, 'getLogger').returns(loggerStub);
 
@@ -56,18 +56,15 @@ describe('Activity Tracker', () => {
           userinfo: {
             id: 'test-user-123',
             forename: 'John',
-            surname: 'Doe'
-          }
-        }
+            surname: 'Doe',
+          },
+        },
       });
 
       await activityTrackerProxyRequest(proxyReq, req);
 
       expect(loggerStub.info).to.have.been.calledOnce;
-      expect(loggerStub.info).to.have.been.calledWith(
-        'ActivityTrackerRequest => ',
-        'id:test-user-123 forename:John surname:Doe'
-      );
+      expect(loggerStub.info).to.have.been.calledWith('ActivityTrackerRequest => ', 'id:test-user-123 forename:John surname:Doe');
     });
 
     it('should not log when user does not exist', async () => {
@@ -80,7 +77,7 @@ describe('Activity Tracker', () => {
 
     it('should not log when userinfo does not exist', async () => {
       req = mockReq({
-        user: {}
+        user: {},
       });
 
       await activityTrackerProxyRequest(proxyReq, req);
@@ -92,10 +89,10 @@ describe('Activity Tracker', () => {
       req = mockReq({
         user: {
           userinfo: {
-            id: 'test-user-456'
+            id: 'test-user-456',
             // forename and surname are undefined
-          }
-        }
+          },
+        },
       });
 
       await activityTrackerProxyRequest(proxyReq, req);
@@ -110,8 +107,8 @@ describe('Activity Tracker', () => {
     it('should handle null userinfo gracefully', async () => {
       req = mockReq({
         user: {
-          userinfo: null
-        }
+          userinfo: null,
+        },
       });
 
       await activityTrackerProxyRequest(proxyReq, req);
@@ -125,9 +122,9 @@ describe('Activity Tracker', () => {
           userinfo: {
             id: 'test',
             forename: 'Test',
-            surname: 'User'
-          }
-        }
+            surname: 'User',
+          },
+        },
       });
 
       await activityTrackerProxyRequest(proxyReq, req);
@@ -145,9 +142,9 @@ describe('Activity Tracker', () => {
           userinfo: {
             id: 'test-user-789',
             forename: 'Jane',
-            surname: 'Smith'
-          }
-        }
+            surname: 'Smith',
+          },
+        },
       });
 
       const result = await activityTrackerProxyResponse(proxyReq, req, res, mockJson);
@@ -171,7 +168,7 @@ describe('Activity Tracker', () => {
 
     it('should not log when userinfo does not exist but still return json', async () => {
       req = mockReq({
-        user: {}
+        user: {},
       });
 
       const result = await activityTrackerProxyResponse(proxyReq, req, res, mockJson);
@@ -184,10 +181,10 @@ describe('Activity Tracker', () => {
       req = mockReq({
         user: {
           userinfo: {
-            id: 'test-user-999'
+            id: 'test-user-999',
             // forename and surname are undefined
-          }
-        }
+          },
+        },
       });
 
       const result = await activityTrackerProxyResponse(proxyReq, req, res, mockJson);
@@ -203,8 +200,8 @@ describe('Activity Tracker', () => {
     it('should handle null userinfo gracefully and return json', async () => {
       req = mockReq({
         user: {
-          userinfo: null
-        }
+          userinfo: null,
+        },
       });
 
       const result = await activityTrackerProxyResponse(proxyReq, req, res, mockJson);
@@ -218,9 +215,9 @@ describe('Activity Tracker', () => {
       const complexJson = {
         nested: {
           data: 'value',
-          array: [1, 2, 3]
+          array: [1, 2, 3],
         },
-        status: 'success'
+        status: 'success',
       };
 
       const result = await activityTrackerProxyResponse(proxyReq, req, res, complexJson);
@@ -235,9 +232,9 @@ describe('Activity Tracker', () => {
           userinfo: {
             id: 'test',
             forename: 'Test',
-            surname: 'User'
-          }
-        }
+            surname: 'User',
+          },
+        },
       });
 
       const result = await activityTrackerProxyResponse(proxyReq, req, res, null);
@@ -252,9 +249,9 @@ describe('Activity Tracker', () => {
           userinfo: {
             id: 'test',
             forename: 'Test',
-            surname: 'User'
-          }
-        }
+            surname: 'User',
+          },
+        },
       });
 
       const result = await activityTrackerProxyResponse(proxyReq, req, res, undefined);
@@ -269,9 +266,9 @@ describe('Activity Tracker', () => {
           userinfo: {
             id: 'test',
             forename: 'Test',
-            surname: 'User'
-          }
-        }
+            surname: 'User',
+          },
+        },
       });
 
       await activityTrackerProxyResponse(proxyReq, req, res, mockJson);
@@ -287,9 +284,9 @@ describe('Activity Tracker', () => {
           userinfo: {
             id: 'test',
             forename: 'Test',
-            surname: 'User'
-          }
-        }
+            surname: 'User',
+          },
+        },
       });
 
       // Should not throw
@@ -305,9 +302,9 @@ describe('Activity Tracker', () => {
           userinfo: {
             id: 'test',
             forename: 'Test',
-            surname: 'User'
-          }
-        }
+            surname: 'User',
+          },
+        },
       });
 
       const result = await activityTrackerProxyResponse(proxyReq, req, null, { data: 'test' });

@@ -9,15 +9,19 @@ class ConfirmFlagStatusPage {
 
   get fieldMapping() {
     return {
-      'Confirm the status of the flag': elementByXpath('//ccd-confirm-flag-status//h1[contains(text(),\'Confirm the status of the flag\')]'),
-      'Describe reason for status': $('#statusReason')
-    }
+      'Confirm the status of the flag': elementByXpath(
+        "//ccd-confirm-flag-status//h1[contains(text(),'Confirm the status of the flag')]"
+      ),
+      'Describe reason for status': $('#statusReason'),
+    };
   }
 
   async inputValue(field, value) {
     switch (field) {
       case 'Confirm the status of the flag':
-        const ele = elementByXpath(`//ccd-confirm-flag-status//h1[contains(text(),'Confirm the status of the flag')]/../..//label[contains(text(),'${value}')]/..//input`);
+        const ele = elementByXpath(
+          `//ccd-confirm-flag-status//h1[contains(text(),'Confirm the status of the flag')]/../..//label[contains(text(),'${value}')]/..//input`
+        );
         await ele.click();
         break;
       case 'Describe reason for status':

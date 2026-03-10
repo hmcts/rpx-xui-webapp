@@ -5,7 +5,7 @@ import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
 @Component({
   standalone: false,
   selector: 'exui-noc-email-field',
-  templateUrl: 'noc-email-field.component.html'
+  templateUrl: 'noc-email-field.component.html',
 })
 export class NocEmailFieldComponent extends AbstractFieldWriteComponent implements OnInit {
   public emailControl: FormControl;

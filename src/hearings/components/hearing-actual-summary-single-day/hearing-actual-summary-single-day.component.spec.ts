@@ -10,7 +10,7 @@ import { HearingActualSummarySingleDayComponent } from './hearing-actual-summary
 describe('HearingActualSummarySingleDayComponent', () => {
   let component: HearingActualSummarySingleDayComponent;
   let fixture: ComponentFixture<HearingActualSummarySingleDayComponent>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let router: Router;
 
   beforeEach(() => {
@@ -25,15 +25,14 @@ describe('HearingActualSummarySingleDayComponent', () => {
               data: {
                 partyChannels: partyChannelsRefData,
                 partySubChannels: partySubChannelsRefData,
-                hearingRoles
-              }
+                hearingRoles,
+              },
             },
-            fragment: of('point-to-me')
-          }
-        }
-      ]
-    })
-      .compileComponents();
+            fragment: of('point-to-me'),
+          },
+        },
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(HearingActualSummarySingleDayComponent);
     component = fixture.componentInstance;

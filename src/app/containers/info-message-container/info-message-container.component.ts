@@ -5,7 +5,7 @@ import { InfoMessageCommService } from '../../../app/shared/services/info-messag
 @Component({
   standalone: false,
   selector: 'exui-info-message-container',
-  templateUrl: './info-message-container.component.html'
+  templateUrl: './info-message-container.component.html',
 })
 export class InfoMessageContainerComponent implements OnInit {
   public showInfoMessage: boolean = false;
@@ -32,21 +32,20 @@ export class InfoMessageContainerComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.router.events
-      .subscribe((event) => {
-        if (event instanceof NavigationStart) {
-          // keep the current url the navigation started from
-          this.currentUrl = this.router.url;
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        // keep the current url the navigation started from
+        this.currentUrl = this.router.url;
+      }
+      if (event instanceof NavigationEnd) {
+        // check whether manage link is open
+        // messages should not be cleared when following action via manage link
+        if (!this.excludeUrls.includes(this.currentUrl)) {
+          // remove current messages when redirected to other page or not part of action
+          this.resetMessages();
         }
-        if (event instanceof NavigationEnd) {
-          // check whether manage link is open
-          // messages should not be cleared when following action via manage link
-          if (!this.excludeUrls.includes(this.currentUrl)) {
-            // remove current messages when redirected to other page or not part of action
-            this.resetMessages();
-          }
-        }
-      });
+      }
+    });
 
     this.getInfoMessages();
   }

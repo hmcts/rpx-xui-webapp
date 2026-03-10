@@ -13,34 +13,37 @@ describe('BookingLocationComponent', () => {
   let component: BookingLocationComponent;
   let fixture: ComponentFixture<BookingLocationComponent>;
   const storeMock = jasmine.createSpyObj('mockStore', ['pipe']);
-  const userInfo: UserInfo = { id: '1', forename: 'Test', surname: 'User', email: 'testemail', active: true, roles: ['pui-case-manager'] };
+  const userInfo: UserInfo = {
+    id: '1',
+    forename: 'Test',
+    surname: 'User',
+    email: 'testemail',
+    active: true,
+    roles: ['pui-case-manager'],
+  };
   const roleAssignmentInfo = [];
   const userDetails: UserDetails = {
     sessionTimeout: {
       idleModalDisplayTime: 100,
-      totalIdleTime: 0
+      totalIdleTime: 0,
     },
     canShareCases: true,
     userInfo,
-    roleAssignmentInfo
+    roleAssignmentInfo,
   };
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [BookingLocationComponent],
-      imports: [
-        ReactiveFormsModule,
-        StoreModule.forRoot({})
-      ],
+      imports: [ReactiveFormsModule, StoreModule.forRoot({})],
       providers: [
         {
           provide: Store,
-          useValue: storeMock
-        }
+          useValue: storeMock,
+        },
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    })
-      .compileComponents();
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -113,7 +116,12 @@ describe('BookingLocationComponent', () => {
     });
 
     it('should compile a comma separated list of unique jurisdictions from the role assignment jurisdictions', () => {
-      userDetails.roleAssignmentInfo = [{ jurisdiction: 'IA', isCaseAllocator: true, primaryLocation: '', bookable: true }, { jurisdiction: 'IA', isCaseAllocator: true, primaryLocation: '' }, { jurisdiction: 'IA', isCaseAllocator: true, primaryLocation: '' }, { jurisdiction: 'SSCS', isCaseAllocator: true, primaryLocation: '', bookable: true }];
+      userDetails.roleAssignmentInfo = [
+        { jurisdiction: 'IA', isCaseAllocator: true, primaryLocation: '', bookable: true },
+        { jurisdiction: 'IA', isCaseAllocator: true, primaryLocation: '' },
+        { jurisdiction: 'IA', isCaseAllocator: true, primaryLocation: '' },
+        { jurisdiction: 'SSCS', isCaseAllocator: true, primaryLocation: '', bookable: true },
+      ];
       component.ngOnInit();
       expect(component.jurisdictions).toEqual('IA,SSCS');
     });

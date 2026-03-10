@@ -7,7 +7,7 @@ import * as fromHearingStore from '../../store';
   standalone: false,
   selector: 'exui-hearings-error-page',
   templateUrl: './error-page.component.html',
-  styleUrls: ['./error-page.component.scss']
+  styleUrls: ['./error-page.component.scss'],
 })
 export class ErrorPageComponent implements OnInit, OnDestroy {
   public caseId: string;
@@ -18,13 +18,11 @@ export class ErrorPageComponent implements OnInit, OnDestroy {
   constructor(private readonly hearingStore: Store<fromHearingStore.State>) {}
 
   public ngOnInit(): void {
-    this.sub = this.hearingStore.select(fromHearingStore.getHearingsFeatureState).subscribe(
-      (state) => {
-        this.caseId = state.hearingList?.hearingListMainModel?.caseRef;
-        this.jurisdiction = state.hearingValues?.caseInfo?.jurisdictionId;
-        this.caseType = state.hearingValues?.caseInfo?.caseType;
-      }
-    );
+    this.sub = this.hearingStore.select(fromHearingStore.getHearingsFeatureState).subscribe((state) => {
+      this.caseId = state.hearingList?.hearingListMainModel?.caseRef;
+      this.jurisdiction = state.hearingValues?.caseInfo?.jurisdictionId;
+      this.caseType = state.hearingValues?.caseInfo?.caseType;
+    });
     // Reset errors
     this.hearingStore.dispatch(new fromHearingStore.ResetHearingValuesLastError());
     this.hearingStore.dispatch(new fromHearingStore.ResetHearingRequestLastError());

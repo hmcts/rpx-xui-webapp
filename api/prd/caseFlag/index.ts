@@ -14,7 +14,7 @@ export async function getCaseFlagRefData(req: EnhancedRequest, res: Response, ne
   const serviceId = req.query.serviceId;
   const markupPath: string = `${prdUrl}/refdata/commondata/caseflags/service-id=${serviceId}`;
   try {
-    const { status, data }: { status: number, data: CaseFlagReferenceModel[] } = await handleGet(markupPath, req, next);
+    const { status, data }: { status: number; data: CaseFlagReferenceModel[] } = await handleGet(markupPath, req, next);
     res.status(status).send(data);
   } catch (error) {
     next(error);

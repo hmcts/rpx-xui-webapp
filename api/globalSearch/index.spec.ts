@@ -27,7 +27,7 @@ describe('Jurisdiction', () => {
       service_short_description: 'Immigration and Asylum Appeals',
       ccd_service_name: 'IA',
       last_update: '2021-02-10T11:53:58.808063',
-      ccd_case_types: ['Asylum', 'Bail']
+      ccd_case_types: ['Asylum', 'Bail'],
     },
     {
       jurisdiction: 'Civil',
@@ -40,12 +40,7 @@ describe('Jurisdiction', () => {
       service_short_description: 'Specified Money Claims',
       ccd_service_name: 'Civil',
       last_update: '2021-02-10T11:53:58.808063',
-      ccd_case_types: [
-        'MoneyClaimCase',
-        'CMC_ExceptionRecord',
-        'CIVIL',
-        'GENERALAPPLICATION'
-      ]
+      ccd_case_types: ['MoneyClaimCase', 'CMC_ExceptionRecord', 'CIVIL', 'GENERALAPPLICATION'],
     },
     {
       jurisdiction: 'Civil',
@@ -58,7 +53,7 @@ describe('Jurisdiction', () => {
       service_short_description: 'Damages',
       ccd_service_name: 'CIVIL',
       last_update: '2021-02-10T11:53:58.808063',
-      ccd_case_types: ['UNSPECIFIED_CLAIMS', 'CIVIL', 'GENERALAPPLICATION']
+      ccd_case_types: ['UNSPECIFIED_CLAIMS', 'CIVIL', 'GENERALAPPLICATION'],
     },
     {
       jurisdiction: 'Family',
@@ -71,7 +66,7 @@ describe('Jurisdiction', () => {
       service_short_description: 'Family Private Law',
       ccd_service_name: 'PRIVATELAW',
       last_update: '2021-02-10T11:53:58.808063',
-      ccd_case_types: ['PRLAPPS']
+      ccd_case_types: ['PRLAPPS'],
     },
     {
       jurisdiction: 'Family',
@@ -84,7 +79,7 @@ describe('Jurisdiction', () => {
       service_short_description: 'Family Public Law',
       ccd_service_name: 'PUBLICLAW',
       last_update: '2021-02-10T11:53:58.808063',
-      ccd_case_types: ['CARE_SUPERVISION_EPO']
+      ccd_case_types: ['CARE_SUPERVISION_EPO'],
     },
     {
       jurisdiction: 'Employment Tribunals',
@@ -97,12 +92,7 @@ describe('Jurisdiction', () => {
       service_short_description: 'Employment Claims',
       ccd_service_name: 'EMPLOYMENT',
       last_update: '2021-02-10T11:53:58.808063',
-      ccd_case_types: [
-        'ET_EnglandWales',
-        'ET_Scotland',
-        'ET_Scotland_Multiple',
-        'ET_EnglandWales_Multiple'
-      ]
+      ccd_case_types: ['ET_EnglandWales', 'ET_Scotland', 'ET_Scotland_Multiple', 'ET_EnglandWales_Multiple'],
     },
     {
       jurisdiction: 'Social Entitlement Chamber',
@@ -115,7 +105,7 @@ describe('Jurisdiction', () => {
       service_short_description: 'Criminal Injuries Compensation',
       ccd_service_name: 'ST_CIC',
       last_update: '2021-02-10T11:53:58.808063',
-      ccd_case_types: ['CriminalInjuriesCompensation']
+      ccd_case_types: ['CriminalInjuriesCompensation'],
     },
     {
       jurisdiction: 'Family',
@@ -134,18 +124,17 @@ describe('Jurisdiction', () => {
         'LegacySearch',
         'PROBATE_ExceptionRecord',
         'StandingSearch',
-        'WillLodgement'
-      ]
-    }
+        'WillLodgement',
+      ],
+    },
   ];
   const serviceList: HMCTSServiceDetails[] = [
-
     { serviceId: 'IA', serviceName: 'Immigration and Asylum Appeals' },
     { serviceId: 'Civil', serviceName: 'Civil' },
     { serviceId: 'PRIVATELAW', serviceName: 'Family Private Law' },
     { serviceId: 'PUBLICLAW', serviceName: 'Family Public Law' },
     { serviceId: 'EMPLOYMENT', serviceName: 'Employment Claims' },
-    { serviceId: 'ST_CIC', serviceName: 'Criminal Injuries Compensation' }
+    { serviceId: 'ST_CIC', serviceName: 'Criminal Injuries Compensation' },
   ];
 
   beforeEach(() => {
@@ -156,10 +145,10 @@ describe('Jurisdiction', () => {
     sandbox.restore();
   });
 
-  it('should get global search services', async() => {
+  it('should get global search services', async () => {
     const req = mockReq();
     const res = mockRes({
-      serviceList
+      serviceList,
     });
     const next = sinon.mock().atLeast(1) as NextFunction;
     sandbox.stub(http, 'get').resolves(res);
@@ -168,10 +157,10 @@ describe('Jurisdiction', () => {
     expect(response).to.deep.equal(res);
   });
 
-  it('should error when getting global search services', async() => {
+  it('should error when getting global search services', async () => {
     const req = mockReq();
     const res = mockRes({
-      status: 500
+      status: 500,
     });
     const next = sinon.mock().atLeast(1) as NextFunction;
     sandbox.stub(globalSearchServices, 'getServices').returns(res);
@@ -179,7 +168,7 @@ describe('Jurisdiction', () => {
     expect(response).to.deep.equal(res);
   });
 
-  it('should return global search services', async() => {
+  it('should return global search services', async () => {
     let services = globalSearchServices.generateServices(undefined);
     expect(services.length).to.equal(6);
 
@@ -190,7 +179,7 @@ describe('Jurisdiction', () => {
     expect(services.length).to.equal(6);
   });
 
-  it('should return global search services2', async() => {
+  it('should return global search services2', async () => {
     console.log('refDataHMCTS size: ' + refDataHMCTS.length);
     const services = globalSearchServices.generateServices(refDataHMCTS);
     expect(services).to.deep.equal(serviceList);
@@ -202,27 +191,29 @@ describe('Jurisdiction', () => {
       {
         caseStartRecord: 1,
         casesReturned: 25,
-        moreResultsToGo: true
+        moreResultsToGo: true,
       },
-      [{
-        ccdCaseTypeId: '123',
-        ccdCaseTypeName: 'Test Case Type',
-        ccdJurisdictionId: 'IA',
-        ccdJurisdictionName: '',
-        hmctsServiceId: '',
-        hmctsServiceShortDescription: '',
-        baseLocationId: '',
-        baseLocationName: '',
-        caseManagementCategoryId: '',
-        caseManagementCategoryName: '',
-        caseNameHmctsInternal: '',
-        caseReference: '',
-        otherReferences: [],
-        processForAccess: '',
-        regionId: '',
-        regionName: '',
-        stateId: ''
-      }]
+      [
+        {
+          ccdCaseTypeId: '123',
+          ccdCaseTypeName: 'Test Case Type',
+          ccdJurisdictionId: 'IA',
+          ccdJurisdictionName: '',
+          hmctsServiceId: '',
+          hmctsServiceShortDescription: '',
+          baseLocationId: '',
+          baseLocationName: '',
+          caseManagementCategoryId: '',
+          caseManagementCategoryName: '',
+          caseNameHmctsInternal: '',
+          caseReference: '',
+          otherReferences: [],
+          processForAccess: '',
+          regionId: '',
+          regionName: '',
+          stateId: '',
+        },
+      ]
     );
     const next = sinon.mock().atLeast(1) as NextFunction;
     sandbox.stub(http, 'post').resolves(res);

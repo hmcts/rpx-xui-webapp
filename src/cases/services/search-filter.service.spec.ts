@@ -1,6 +1,14 @@
 import { TestBed } from '@angular/core/testing';
 import { FormControl, FormGroup } from '@angular/forms';
-import { AbstractAppConfig, CaseState, CaseType, HttpService, Jurisdiction, RequestOptionsBuilder, SearchService } from '@hmcts/ccd-case-ui-toolkit';
+import {
+  AbstractAppConfig,
+  CaseState,
+  CaseType,
+  HttpService,
+  Jurisdiction,
+  RequestOptionsBuilder,
+  SearchService,
+} from '@hmcts/ccd-case-ui-toolkit';
 import { combineReducers, Store, StoreModule } from '@ngrx/store';
 import * as fromRoot from '../../app/store/reducers';
 import { CASE_STATE_1, CASE_TYPE_1, JURISDICTION_1 } from '../mock/search-filter.mock';
@@ -22,7 +30,7 @@ describe('SearchFilterService', () => {
   const abstractAppConfigMock = createSpyObj<AbstractAppConfig>('AbstractAppConfig', ['getCaseDataUrl']);
   const httpService = createSpyObj<HttpService>('HttpService', ['get']);
   const requestOptionsBuilder = createSpyObj<RequestOptionsBuilder>('RequestOptionsBuilder', ['buildOptions']);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let storeDispatchMock: any;
   let store: Store<fromCaseSearchStore.SearchState>;
 
@@ -31,16 +39,16 @@ describe('SearchFilterService', () => {
       imports: [
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          feature: combineReducers(fromCaseSearchStore.reducers)
-        })
+          feature: combineReducers(fromCaseSearchStore.reducers),
+        }),
       ],
       providers: [
         SearchFilterService,
         { provide: SearchService, useValue: ccdSearchServiceMock },
         { provide: AbstractAppConfig, useValue: abstractAppConfigMock },
         { provide: HttpService, useValue: httpService },
-        { provide: RequestOptionsBuilder, useValue: requestOptionsBuilder }
-      ]
+        { provide: RequestOptionsBuilder, useValue: requestOptionsBuilder },
+      ],
     });
 
     store = TestBed.inject(Store);
@@ -55,7 +63,7 @@ describe('SearchFilterService', () => {
     nameControl.setValue(NAME_VALUE);
 
     const filterContents = {
-      name: nameControl
+      name: nameControl,
     };
     const formGroupDummy = new FormGroup(filterContents);
     const filter = {
@@ -65,15 +73,21 @@ describe('SearchFilterService', () => {
         caseType: CASE_TYPES[0],
         caseState: CASE_STATE,
         page: 1,
-        view: 'SEARCH'
-      }
+        view: 'SEARCH',
+      },
     };
 
     searchFilterService.search(filter);
 
-    expect(ccdSearchServiceMock.search).toHaveBeenCalledWith(JURISDICTION.id, CASE_TYPE.id, { page: 1, state: CASE_STATE.id }, {
-      name: NAME_VALUE
-    }, 'SEARCH');
+    expect(ccdSearchServiceMock.search).toHaveBeenCalledWith(
+      JURISDICTION.id,
+      CASE_TYPE.id,
+      { page: 1, state: CASE_STATE.id },
+      {
+        name: NAME_VALUE,
+      },
+      'SEARCH'
+    );
   });
 
   it('should make inputs fields turn into query parameters when calling searchCases', () => {
@@ -83,7 +97,7 @@ describe('SearchFilterService', () => {
     nameControl.setValue(NAME_VALUE);
 
     const filterContents = {
-      name: nameControl
+      name: nameControl,
     };
     const formGroupDummy = new FormGroup(filterContents);
     const filter = {
@@ -93,19 +107,25 @@ describe('SearchFilterService', () => {
         caseType: CASE_TYPES[0],
         caseState: CASE_STATE,
         page: 1,
-        view: 'SEARCH'
+        view: 'SEARCH',
       },
       sortParameters: {
         column: 'dummy',
-        order: 0
-      }
+        order: 0,
+      },
     };
 
     searchFilterService.search(filter, true);
 
-    expect(ccdSearchServiceMock.searchCases).toHaveBeenCalledWith(CASE_TYPE.id, { page: 1, state: CASE_STATE.id }, {
-      name: NAME_VALUE
-    }, 'SEARCH', { column: 'dummy', order: 0 });
+    expect(ccdSearchServiceMock.searchCases).toHaveBeenCalledWith(
+      CASE_TYPE.id,
+      { page: 1, state: CASE_STATE.id },
+      {
+        name: NAME_VALUE,
+      },
+      'SEARCH',
+      { column: 'dummy', order: 0 }
+    );
   });
 
   it('should make inputs fields turn into query parameters with structure', () => {
@@ -115,7 +135,7 @@ describe('SearchFilterService', () => {
     nameControl.setValue(NAME_VALUE);
     const filterContents = {
       name: nameControl,
-      child: new FormGroup({ childName: new FormControl('childValue') })
+      child: new FormGroup({ childName: new FormControl('childValue') }),
     };
     const formGroupDummy = new FormGroup(filterContents);
     const filter = {
@@ -125,16 +145,22 @@ describe('SearchFilterService', () => {
         caseType: CASE_TYPES[0],
         caseState: CASE_STATE,
         page: 1,
-        view: 'SEARCH'
-      }
+        view: 'SEARCH',
+      },
     };
 
     searchFilterService.search(filter);
 
-    expect(ccdSearchServiceMock.search).toHaveBeenCalledWith(JURISDICTION.id, CASE_TYPE.id, { page: 1, state: CASE_STATE.id }, {
-      name: NAME_VALUE,
-      'child.childName': 'childValue'
-    }, 'SEARCH');
+    expect(ccdSearchServiceMock.search).toHaveBeenCalledWith(
+      JURISDICTION.id,
+      CASE_TYPE.id,
+      { page: 1, state: CASE_STATE.id },
+      {
+        name: NAME_VALUE,
+        'child.childName': 'childValue',
+      },
+      'SEARCH'
+    );
   });
 
   it('should make metadata inputs fields turn into query parameters', () => {
@@ -147,7 +173,7 @@ describe('SearchFilterService', () => {
 
     const filterContents = {
       name: nameControl1,
-      '[META]': nameControl2
+      '[META]': nameControl2,
     };
     const formGroupDummy = new FormGroup(filterContents);
     const filter = {
@@ -157,15 +183,21 @@ describe('SearchFilterService', () => {
         caseType: CASE_TYPES[0],
         page: 1,
         metadataFields: ['[META]'],
-        view: 'SEARCH'
-      }
+        view: 'SEARCH',
+      },
     };
 
     searchFilterService.search(filter);
 
-    expect(ccdSearchServiceMock.search).toHaveBeenCalledWith(JURISDICTION.id, CASE_TYPE.id, { page: 1, meta: NAME_VALUE2 }, {
-      name: NAME_VALUE1
-    }, 'SEARCH');
+    expect(ccdSearchServiceMock.search).toHaveBeenCalledWith(
+      JURISDICTION.id,
+      CASE_TYPE.id,
+      { page: 1, meta: NAME_VALUE2 },
+      {
+        name: NAME_VALUE1,
+      },
+      'SEARCH'
+    );
   });
 
   describe('findPaginationMetadata', () => {
@@ -176,7 +208,7 @@ describe('SearchFilterService', () => {
       nameControl.setValue(NAME_VALUE);
 
       const filterContents = {
-        name: nameControl
+        name: nameControl,
       };
       const formGroupDummy = new FormGroup(filterContents);
       const filter = {
@@ -186,8 +218,8 @@ describe('SearchFilterService', () => {
           caseType: CASE_TYPES[0],
           caseState: CASE_STATE,
           page: 1,
-          view: 'SEARCH'
-        }
+          view: 'SEARCH',
+        },
       };
 
       searchFilterService.findPaginationMetadata(filter);

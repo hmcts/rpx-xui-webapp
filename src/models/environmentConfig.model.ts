@@ -16,7 +16,7 @@ export interface EnvironmentConfig {
   waSupportedServices?: WAFeatureConfig;
   headerConfig: object;
   hearingJurisdictionConfig: {
-    hearingJurisdictions: object,
-    hearingAmendment: object
+    hearingJurisdictions: object;
+    hearingAmendment: object;
   };
 }

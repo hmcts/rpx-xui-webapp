@@ -19,7 +19,7 @@ import createSpyObj = jasmine.createSpyObj;
 
 @Pipe({
   standalone: false,
-  name: 'rpxTranslate'
+  name: 'rpxTranslate',
 })
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
@@ -47,33 +47,33 @@ describe('SearchResultsComponent', () => {
               id: 'CaseCreated',
               name: 'Create case',
               description: null,
-              order: 1
-            }
+              order: 1,
+            },
           ],
           description: null,
           events: null,
-          name: 'Global Search'
-        }
+          name: 'Global Search',
+        },
       ],
       description: null,
-      name: 'BEFTA Master'
-    }
+      name: 'BEFTA Master',
+    },
   ];
 
   const searchResultWithNoCases: SearchResult = {
     resultInfo: {
       caseStartRecord: 1,
       casesReturned: 0,
-      moreResultsToGo: false
+      moreResultsToGo: false,
     },
-    results: []
+    results: [],
   };
 
   const searchResultWithCaseList: SearchResult = {
     resultInfo: {
       caseStartRecord: 1,
       casesReturned: 2,
-      moreResultsToGo: false
+      moreResultsToGo: false,
     },
     results: [
       {
@@ -93,7 +93,7 @@ describe('SearchResultsComponent', () => {
         processForAccess: ProcessForAccessType.SPECIFIC,
         regionId: null,
         regionName: null,
-        stateId: 'CaseCreated'
+        stateId: 'CaseCreated',
       },
       {
         CCDCaseTypeId: 'FT_GlobalSearch',
@@ -112,16 +112,16 @@ describe('SearchResultsComponent', () => {
         processForAccess: ProcessForAccessType.CHALLENGED,
         regionId: null,
         regionName: null,
-        stateId: 'CaseCreated'
-      }
-    ]
+        stateId: 'CaseCreated',
+      },
+    ],
   };
 
   const searchResultWithMoreResultsToGo: SearchResult = {
     resultInfo: {
       caseStartRecord: 1,
       casesReturned: 1,
-      moreResultsToGo: true
+      moreResultsToGo: true,
     },
     results: [
       {
@@ -141,14 +141,13 @@ describe('SearchResultsComponent', () => {
         processForAccess: ProcessForAccessType.SPECIFIC,
         regionId: null,
         regionName: null,
-        stateId: 'CaseCreated'
-      }
-    ]
+        stateId: 'CaseCreated',
+      },
+    ],
   };
 
   beforeEach(waitForAsync(() => {
-    searchService = createSpyObj<SearchService>(
-      'searchService', ['getResults', 'decrementStartRecord', 'incrementStartRecord']);
+    searchService = createSpyObj<SearchService>('searchService', ['getResults', 'decrementStartRecord', 'incrementStartRecord']);
     searchService.getResults.and.returnValue(of(searchResultWithCaseList));
     searchService.decrementStartRecord.and.returnValue(1);
     searchService.incrementStartRecord.and.returnValue(2);
@@ -163,10 +162,9 @@ describe('SearchResultsComponent', () => {
         { provide: SearchService, useValue: searchService },
         { provide: JurisdictionService, useValue: jurisdictionService },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -217,7 +215,10 @@ describe('SearchResultsComponent', () => {
 
   it('should navigate to no results page if search result is empty', () => {
     component.onSearchSubscriptionHandler([searchResultWithNoCases, jurisdictions]);
-    expect(router.navigate).toHaveBeenCalledWith(['/search/noresults'], { state: { messageId: NoResultsMessageId.NO_RESULTS }, relativeTo: route });
+    expect(router.navigate).toHaveBeenCalledWith(['/search/noresults'], {
+      state: { messageId: NoResultsMessageId.NO_RESULTS },
+      relativeTo: route,
+    });
   });
 
   it('should set "more results to go" flag correctly', () => {

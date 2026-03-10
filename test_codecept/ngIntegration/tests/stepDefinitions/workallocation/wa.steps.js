@@ -7,7 +7,9 @@ const taskAssignmentPage = require('../../../../e2e/features/pageObjects/workAll
 
 const caseDetailsPage = require('../../pageObjects/caseDetailsPage');
 
-function headerPage () { return require('../../../../e2e/features/pageObjects/headerPage')(); }
+function headerPage() {
+  return require('../../../../e2e/features/pageObjects/headerPage')();
+}
 const CaseListPage = require('../../../../e2e/features/pageObjects/CaseListPage');
 const errorPage = require('../../../../e2e/features/pageObjects/errorPage');
 
@@ -49,7 +51,7 @@ Given('I set MOCK Task manager tasks count {int}', async function (taskCount) {
   global.scenarioData['workallocation1.taskmanager'] = alltasks;
 });
 
-Then('I validate tasks column sorting', async function(){
+Then('I validate tasks column sorting', async function () {
   let tasksRequested = false;
   let sortColumnInRequestParam = '';
   await MockUtil.setMockResponse('POST', '/workallocation/taskWithPagination', (req, res) => {
@@ -66,7 +68,7 @@ Then('I validate tasks column sorting', async function(){
     CucumberReporter.AddMessage('Validating sort column for header : ' + headerName);
 
     const isColumnSortable = await taskListPage.isHeaderSortable(headerName);
-    if (!isColumnSortable){
+    if (!isColumnSortable) {
       continue;
     }
 
@@ -77,9 +79,13 @@ Then('I validate tasks column sorting', async function(){
     tasksRequested = false;
     await BrowserWaits.retryWithActionCallback(async () => {
       await taskListPage.clickColumnHeader(headerName);
-      await BrowserWaits.waitForConditionAsync(async () => {
-        return tasksRequested;
-      }, 5000, `sort column header ${headerName} asc, waiting for request trigger`);
+      await BrowserWaits.waitForConditionAsync(
+        async () => {
+          return tasksRequested;
+        },
+        5000,
+        `sort column header ${headerName} asc, waiting for request trigger`
+      );
     });
     //  expect(headerColId).to.contains(sortColumnInRequestParam);
     tasksRequested = false;
@@ -88,9 +94,13 @@ Then('I validate tasks column sorting', async function(){
 
     await BrowserWaits.retryWithActionCallback(async () => {
       await taskListPage.clickColumnHeader(headerName);
-      await BrowserWaits.waitForConditionAsync(async () => {
-        return tasksRequested;
-      }, 5000, `sort column header ${headerName} desc, waiting for request trigger`);
+      await BrowserWaits.waitForConditionAsync(
+        async () => {
+          return tasksRequested;
+        },
+        5000,
+        `sort column header ${headerName} desc, waiting for request trigger`
+      );
     });
     //  expect(headerColId).to.contains(sortColumnInRequestParam);
     sortColumnInRequestParam = '';
@@ -158,7 +168,7 @@ Then('I validate Task manager tasks sort column persist in session', async funct
   expect(await taskManagerPage.getColumnSortState(columnHeaders[1])).to.equal('ascending');
 });
 
-Then('I validate error responses on My tasks page', async function(){
+Then('I validate error responses on My tasks page', async function () {
   const softAssertion = new SoftAssert(this);
 
   await MockUtil.setMockResponse('POST', '/workallocation/taskWithPagination/', (req, res) => {
@@ -179,17 +189,23 @@ Then('I validate error responses on My tasks page', async function(){
     await headerPage().clickTaskList();
 
     const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
-    await softAssertion.assert(async () => expect(isErrorPageDisplayed, 'Error page not displayed on error ' + responseCode).to.be.true);
+    await softAssertion.assert(
+      async () => expect(isErrorPageDisplayed, 'Error page not displayed on error ' + responseCode).to.be.true
+    );
     if (isErrorPageDisplayed) {
       const errorMessageDisplayed = await errorPage.getErrorMessage();
-      await softAssertion.assert(async () => expect(errorMessageDisplayed, 'Error message does not match on error ' + responseCode).to.contains(errorMessageForResponseCode(responseCode)));
+      await softAssertion.assert(async () =>
+        expect(errorMessageDisplayed, 'Error message does not match on error ' + responseCode).to.contains(
+          errorMessageForResponseCode(responseCode)
+        )
+      );
     }
   }
 
   softAssertion.finally();
 });
 
-Then('I validate error responses on available tasks page', async function(){
+Then('I validate error responses on available tasks page', async function () {
   const softAssertion = new SoftAssert(this);
 
   await MockUtil.setMockResponse('POST', '/workallocation/taskWithPagination/', (req, res) => {
@@ -202,7 +218,7 @@ Then('I validate error responses on available tasks page', async function(){
 
     await BrowserWaits.retryWithActionCallback(async () => {
       await headerPage().clickManageCases();
-      if (!(await caseListPage.amOnPage())){
+      if (!(await caseListPage.amOnPage())) {
         throw new Error('Not on case list page');
       }
     });
@@ -219,10 +235,16 @@ Then('I validate error responses on available tasks page', async function(){
     await taskListPage.clickAvailableTasks();
 
     const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
-    await softAssertion.assert(async () => expect(isErrorPageDisplayed, 'Error page not displayed on error ' + responseCode).to.be.true);
+    await softAssertion.assert(
+      async () => expect(isErrorPageDisplayed, 'Error page not displayed on error ' + responseCode).to.be.true
+    );
     if (isErrorPageDisplayed) {
       const errorMessageDisplayed = await errorPage.getErrorMessage();
-      await softAssertion.assert(async () => expect(errorMessageDisplayed, 'Error message does not match on error ' + responseCode).to.contains(errorMessageForResponseCode(responseCode)));
+      await softAssertion.assert(async () =>
+        expect(errorMessageDisplayed, 'Error message does not match on error ' + responseCode).to.contains(
+          errorMessageForResponseCode(responseCode)
+        )
+      );
     }
   }
 
@@ -246,27 +268,37 @@ Then('I validate error responses on available tasks page', async function(){
     await taskListPage.clickAvailableTasks();
 
     const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
-    await softAssertion.assert(async () => expect(isErrorPageDisplayed, '/workallocation/location on error, error page not displayed ' + responseCode).to.be.true);
+    await softAssertion.assert(
+      async () =>
+        expect(isErrorPageDisplayed, '/workallocation/location on error, error page not displayed ' + responseCode).to.be.true
+    );
     if (isErrorPageDisplayed) {
       const errorMessageDisplayed = await errorPage.getErrorMessage();
-      await softAssertion.assert(async () => expect(errorMessageDisplayed, '/workallocation/location on error,Error message does not match ' + responseCode).to.contains(errorMessageForResponseCode(responseCode)));
+      await softAssertion.assert(async () =>
+        expect(
+          errorMessageDisplayed,
+          '/workallocation/location on error,Error message does not match ' + responseCode
+        ).to.contains(errorMessageForResponseCode(responseCode))
+      );
     }
   }
   softAssertion.finally();
 });
 
-Then('I validate Task manager page tasks count {int}', async function (tasksCount){
+Then('I validate Task manager page tasks count {int}', async function (tasksCount) {
   expect(parseInt(await taskManagerPage.getTaskListCountInTable()), 'Task count does not match expected ').to.equal(tasksCount);
 
   if (tasksCount === 0) {
     expect(await taskManagerPage.isTableFooterDisplayed(), 'task list table footer is not displayed').to.be.true;
-    expect(await taskManagerPage.getTableFooterMessage(), 'task list table footer message when 0 tasks are displayed').to.equal('There are no tasks that match your selection.');
+    expect(await taskManagerPage.getTableFooterMessage(), 'task list table footer message when 0 tasks are displayed').to.equal(
+      'There are no tasks that match your selection.'
+    );
   } else {
     expect(await taskManagerPage.isTableFooterDisplayed(), 'task list table footer is displayed').to.be.false;
   }
 });
 
-Then('I validate error responses on Task manager page', async function(){
+Then('I validate error responses on Task manager page', async function () {
   const softAssertion = new SoftAssert(this);
 
   // expect(await taskListPage.amOnPage()).to.be.true;
@@ -281,10 +313,16 @@ Then('I validate error responses on Task manager page', async function(){
     await headerPage().clickTaskManager();
 
     const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
-    await softAssertion.assert(async () => expect(isErrorPageDisplayed, 'Error page not displayed on error ' + responseCode).to.be.true);
+    await softAssertion.assert(
+      async () => expect(isErrorPageDisplayed, 'Error page not displayed on error ' + responseCode).to.be.true
+    );
     if (isErrorPageDisplayed) {
       const errorMessageDisplayed = await errorPage.getErrorMessage();
-      await softAssertion.assert(async () => expect(errorMessageDisplayed, 'Error message does not match on error ' + responseCode).to.contains(errorMessageForResponseCode(responseCode)));
+      await softAssertion.assert(async () =>
+        expect(errorMessageDisplayed, 'Error message does not match on error ' + responseCode).to.contains(
+          errorMessageForResponseCode(responseCode)
+        )
+      );
     }
   }
 
@@ -300,23 +338,30 @@ Then('I validate error responses on Task manager page', async function(){
     await headerPage().clickTaskManager();
 
     const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
-    await softAssertion.assert(async () => expect(isErrorPageDisplayed, '/workallocation/location on error, error page not displayed ' + responseCode).to.be.true);
+    await softAssertion.assert(
+      async () =>
+        expect(isErrorPageDisplayed, '/workallocation/location on error, error page not displayed ' + responseCode).to.be.true
+    );
     if (isErrorPageDisplayed) {
       const errorMessageDisplayed = await errorPage.getErrorMessage();
-      await softAssertion.assert(async () => expect(errorMessageDisplayed, '/workallocation/location on error,Error message does not match ' + responseCode).to.contains(errorMessageForResponseCode(responseCode)));
+      await softAssertion.assert(async () =>
+        expect(
+          errorMessageDisplayed,
+          '/workallocation/location on error,Error message does not match ' + responseCode
+        ).to.contains(errorMessageForResponseCode(responseCode))
+      );
     }
   }
 
   softAssertion.finally();
 });
 
-Then('I validate My task reassign page errors', async function(){
+Then('I validate My task reassign page errors', async function () {
   const softAssertion = new SoftAssert(this);
 
   const reassignEndpoints = [
     { name: 'Task details', url: '/workallocation/task/:taskId' },
-    { name: 'Locations', url: '/workallocation/location' }
-
+    { name: 'Locations', url: '/workallocation/location' },
   ];
 
   for (const endPoint of reassignEndpoints) {
@@ -347,17 +392,28 @@ Then('I validate My task reassign page errors', async function(){
       // await browserUtil.waitForNetworkResponse(endPoint.url);
       softAssertion.setScenario(`Scenario validation: GET ${endPoint.url} error response ${responseCode} `);
       const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
-      await softAssertion.assert(async () => expect(isErrorPageDisplayed, `For action Reassign on ${endPoint.name} status code ${responseCode} status response, error page not displayed`).to.be.true);
+      await softAssertion.assert(
+        async () =>
+          expect(
+            isErrorPageDisplayed,
+            `For action Reassign on ${endPoint.name} status code ${responseCode} status response, error page not displayed`
+          ).to.be.true
+      );
       if (isErrorPageDisplayed) {
         const errorMessageDisplayed = await errorPage.getErrorMessage();
-        await softAssertion.assert(async () => expect(errorMessageDisplayed, `For action Reassign on ${endPoint.name} status code ${responseCode} status response, error message does not match`).to.contains(errorMessageForResponseCode(responseCode)));
+        await softAssertion.assert(async () =>
+          expect(
+            errorMessageDisplayed,
+            `For action Reassign on ${endPoint.name} status code ${responseCode} status response, error message does not match`
+          ).to.contains(errorMessageForResponseCode(responseCode))
+        );
       }
     }
   }
   softAssertion.finally();
 });
 
-Then('I validate My task reassign submit errors', async function(){
+Then('I validate My task reassign submit errors', async function () {
   const softAssertion = new SoftAssert(this);
 
   for (const responseCode of testErrorResponseCodes) {
@@ -396,22 +452,39 @@ Then('I validate My task reassign submit errors', async function(){
     await taskAssignmentPage.clickReassignBtn();
     softAssertion.setScenario(`Scenario validation: POST /workallocation/task/:taskId/assign error response ${responseCode} `);
 
-    if (responseCode === 400){
+    if (responseCode === 400) {
       const isErrorMessageBannerDisplayed = await taskAssignmentPage.isBannerMessageDisplayed();
-      await softAssertion.assert(async () => expect(isErrorMessageBannerDisplayed, `For action Reassign on submit status code ${responseCode} status response, error message banner not displayed`).to.be.true);
+      await softAssertion.assert(
+        async () =>
+          expect(
+            isErrorMessageBannerDisplayed,
+            `For action Reassign on submit status code ${responseCode} status response, error message banner not displayed`
+          ).to.be.true
+      );
     } else {
       const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
-      await softAssertion.assert(async () => expect(isErrorPageDisplayed, `For action Reassign on submit status code ${responseCode} status response, error page not displayed`).to.be.true);
+      await softAssertion.assert(
+        async () =>
+          expect(
+            isErrorPageDisplayed,
+            `For action Reassign on submit status code ${responseCode} status response, error page not displayed`
+          ).to.be.true
+      );
       if (isErrorPageDisplayed) {
         const errorMessageDisplayed = await errorPage.getErrorMessage();
-        await softAssertion.assert(async () => expect(errorMessageDisplayed, `For action Reassign on submit status code ${responseCode} status response, error message does not match`).to.contains(errorMessageForResponseCode(responseCode)));
+        await softAssertion.assert(async () =>
+          expect(
+            errorMessageDisplayed,
+            `For action Reassign on submit status code ${responseCode} status response, error message does not match`
+          ).to.contains(errorMessageForResponseCode(responseCode))
+        );
       }
     }
   }
   softAssertion.finally();
 });
 
-Then('I validate available task action page errors', async function(){
+Then('I validate available task action page errors', async function () {
   const softAssertion = new SoftAssert(this);
 
   // expect(await taskListPage.amOnPage()).to.be.true;
@@ -434,7 +507,7 @@ Then('I validate available task action page errors', async function(){
 
       const isTaskManagelinkOpen = await taskListPage.isTaskActionRowForTaskDisplayed(1);
 
-      if (!isTaskManagelinkOpen){
+      if (!isTaskManagelinkOpen) {
         await taskListPage.clickManageLinkForTaskAt(1);
       }
 
@@ -444,11 +517,24 @@ Then('I validate available task action page errors', async function(){
 
       const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
 
-      softAssertion.setScenario(`Scenario validation: on action ${action} GET /workallocation/task/:taskId/claim error response ${responseCode} `);
-      await softAssertion.assert(async () => expect(isErrorPageDisplayed, `For action ${action} on task details ${responseCode} status response, error page not displayed`).to.be.true);
+      softAssertion.setScenario(
+        `Scenario validation: on action ${action} GET /workallocation/task/:taskId/claim error response ${responseCode} `
+      );
+      await softAssertion.assert(
+        async () =>
+          expect(
+            isErrorPageDisplayed,
+            `For action ${action} on task details ${responseCode} status response, error page not displayed`
+          ).to.be.true
+      );
       if (isErrorPageDisplayed) {
         const errorMessageDisplayed = await errorPage.getErrorMessage();
-        await softAssertion.assert(async () => expect(errorMessageDisplayed, `For action ${action} on task details ${responseCode} status response, error message does not match`).to.contains(errorMessageForResponseCode(responseCode)));
+        await softAssertion.assert(async () =>
+          expect(
+            errorMessageDisplayed,
+            `For action ${action} on task details ${responseCode} status response, error message does not match`
+          ).to.contains(errorMessageForResponseCode(responseCode))
+        );
       }
     }
   }
@@ -456,7 +542,7 @@ Then('I validate available task action page errors', async function(){
   softAssertion.finally();
 });
 
-Then('I validate Task manager task action page errors', async function(){
+Then('I validate Task manager task action page errors', async function () {
   const softAssertion = new SoftAssert(this);
 
   // expect(await taskListPage.amOnPage()).to.be.true;
@@ -487,41 +573,56 @@ Then('I validate Task manager task action page errors', async function(){
       await taskListPage.clickTaskAction(action);
 
       const isErrorPageDisplayed = await errorPage.isErrorPageDisplayed();
-      softAssertion.setScenario(`Scenario validation: on action ${action} GET /workallocation/task/:taskId error response ${responseCode} `);
+      softAssertion.setScenario(
+        `Scenario validation: on action ${action} GET /workallocation/task/:taskId error response ${responseCode} `
+      );
 
-      await softAssertion.assert(async () => expect(isErrorPageDisplayed, `For action ${action} on task details ${responseCode} status response, error page not displayed`).to.be.true);
+      await softAssertion.assert(
+        async () =>
+          expect(
+            isErrorPageDisplayed,
+            `For action ${action} on task details ${responseCode} status response, error page not displayed`
+          ).to.be.true
+      );
       if (isErrorPageDisplayed) {
         const errorMessageDisplayed = await errorPage.getErrorMessage();
-        await softAssertion.assert(async () => expect(errorMessageDisplayed, `For action ${action} on task details ${responseCode} status response, error message does not match`).to.contains(errorMessageForResponseCode(responseCode)));
+        await softAssertion.assert(async () =>
+          expect(
+            errorMessageDisplayed,
+            `For action ${action} on task details ${responseCode} status response, error message does not match`
+          ).to.contains(errorMessageForResponseCode(responseCode))
+        );
       }
     }
     softAssertion.finally();
   }
 });
 
-Then('I validate Task actions from page {string}', async function(fromPage, datatable){
+Then('I validate Task actions from page {string}', async function (fromPage, datatable) {
   const scenarios = datatable.parse().hashes();
 
   let validateOnPage = null;
   const softAssert = new SoftAssert(this);
-  for (let i = 0; i < scenarios.length; i++){
+  for (let i = 0; i < scenarios.length; i++) {
     const scr = scenarios[i];
 
     const scenarioDesc = `${scr.ManageAction} ${scr.ActionType} ${scr.SubmitCancel} ${scr.SuccessMessage}`;
     CucumberReporter.AddMessage('');
     CucumberReporter.AddMessage('**********************************************************************************************');
     CucumberReporter.AddMessage(scenarioDesc);
-    CucumberReporter.AddMessage('********************************************************************************************** ');
+    CucumberReporter.AddMessage(
+      '********************************************************************************************** '
+    );
     softAssert.setScenario(scenarioDesc);
 
     await headerPage().clickManageCases();
     await caseListPage.amOnPage();
 
-    if (fromPage.toUpperCase().includes('MY')){
+    if (fromPage.toUpperCase().includes('MY')) {
       await headerPage().clickTaskList();
       await taskListPage.amOnPage();
       validateOnPage = async () => expect(await taskListPage.isMyTasksDisplayed()).to.be.true;
-    } else if (fromPage.toUpperCase().includes('AVAILA')){
+    } else if (fromPage.toUpperCase().includes('AVAILA')) {
       await headerPage().clickTaskList();
       await taskListPage.amOnPage();
       await taskListPage.clickAvailableTasks();
@@ -533,21 +634,21 @@ Then('I validate Task actions from page {string}', async function(fromPage, data
     await validateOnPage();
 
     const isManageLinkOpen = await taskListPage.isManageLinkOpenForTaskAtPos(1);
-    if (!isManageLinkOpen){
+    if (!isManageLinkOpen) {
       await taskListPage.clickManageLinkForTaskAt(1);
     }
 
     await taskListPage.clickTaskAction(scr.ManageAction);
 
-    if (scr.ActionType.toUpperCase() == 'ASSIGNMENT'){
+    if (scr.ActionType.toUpperCase() == 'ASSIGNMENT') {
       await taskAssignmentPage.validatePageContentForAction(scr.ManageAction, softAssert);
-      if (scr.SubmitCancel.toUpperCase() === 'SUBMIT'){
+      if (scr.SubmitCancel.toUpperCase() === 'SUBMIT') {
         await taskAssignmentPage.selectcaseworkerAtpos(2);
         await taskAssignmentPage.clickSubmitBtn(scr.ManageAction);
       } else {
         await taskAssignmentPage.clickCancelBtn();
       }
-    } else if (scr.ActionType.toUpperCase() == 'ACTION'){
+    } else if (scr.ActionType.toUpperCase() == 'ACTION') {
       await taskActionPage.validatePageContentForAction(scr.ManageAction, softAssert);
       if (scr.SubmitCancel.toUpperCase === 'SUBMIT') {
         await taskActionPage.clickSubmitBtn(scr.ManageAction);
@@ -556,11 +657,11 @@ Then('I validate Task actions from page {string}', async function(fromPage, data
       }
     }
 
-    if (scr.ManageAction.includes('to case')){
+    if (scr.ManageAction.includes('to case')) {
       await softAssert.assert(async () => expect(await caseDetailsPage.amOnPage(), 'Not on case details page').to.be.true);
     } else {
       await validateOnPage();
-      if (scr.SuccessMessage && !scr.ManageAction.includes('to case')){
+      if (scr.SuccessMessage && !scr.ManageAction.includes('to case')) {
         // const displayedMessages = await taskListPage.getBannerMessagesDisplayed();
         // const messagesMathcing = displayedMessages.filter(msg => msg.includes(scr.SuccessMessage));
         // expect(messagesMathcing.length > 0, `${scr.SuccessMessage} is not in displayed message ${displayedMessages}`).to.be.true;
@@ -570,7 +671,7 @@ Then('I validate Task actions from page {string}', async function(fromPage, data
   softAssert.finally();
 });
 
-Given('I set MOCK tasks attributes for {string} in release 1', async function (forView, attributesDatatable){
+Given('I set MOCK tasks attributes for {string} in release 1', async function (forView, attributesDatatable) {
   const tasksHashes = attributesdatatable.parse().hashes();
   let tasksObj = {};
   let view = forView.toLowerCase();
@@ -581,7 +682,8 @@ Given('I set MOCK tasks attributes for {string} in release 1', async function (f
       tasks = workAllocationMockData.getMyTasks(150);
     } else if (view.includes('available')) {
       tasks = workAllocationMockData.getAvailableTasks(200);
-    } if (view.includes('taskmanager')) {
+    }
+    if (view.includes('taskmanager')) {
       tasks = workAllocationMockData.getTaskManagerTasks(400);
     } else {
       throw new Error('Unrecognised task view ' + forView);

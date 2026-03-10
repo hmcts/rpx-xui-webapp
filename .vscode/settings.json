@@ -1,5 +1,4 @@
 {
-  "cucumberautocomplete.steps": ["test/e2e/features/step_definitions/*.steps.js"],
-  "cucumberautocomplete.syncfeatures": "test/e2e/features/app/*.feature",
-  "cucumberautocomplete.strictGherkinCompletion": true
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true
 }

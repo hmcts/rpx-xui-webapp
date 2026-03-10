@@ -15,11 +15,29 @@ test.describe('Verify creating cases works as expected', () => {
     await retryOnTransientFailure(
       async () => {
         await ensureAuthenticatedPage(page, 'SOLICITOR', { waitForSelector: 'exui-header' });
-        caseData = await createCasePage.generateDivorcePoCData();
-        await createCasePage.createDivorceCasePoC(jurisdiction, caseType, caseData, {
-          maxAttempts: 1,
-          createCaseMaxAttempts: 1,
+
+        caseData = await createCasePage.generateDivorcePoCData({ textField0: 'Hide all', divorceReasons: ['Adultery'] });
+        person1Data = await createCasePage.generateDivorcePoCPersonData({
+          gender: 'Male',
         });
+
+        await createCasePage.createCase(jurisdiction, caseType, '', {
+          maxAttempts: 1,
+        });
+
+        await createCasePage.fillDivorcePocSections({
+          data: person1Data,
+          textFields: {
+            textField0: caseData.textField0,
+            textField1: caseData.textField1,
+            textField2: caseData.textField2,
+            textField3: caseData.textField3,
+          },
+          divorceReasons: caseData.divorceReasons,
+          gender: caseData.gender,
+        });
+        await createCasePage.testSubmitButton.click();
+        await expect(createCasePage.caseAlertSuccessMessage).toBeVisible();
         caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
       },
       {

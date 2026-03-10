@@ -1212,7 +1212,7 @@ export class CreateCasePage extends Base {
   ) {
     const data = typeof dataOrTextField0 === 'string' ? ({ textField0: dataOrTextField0 } as DivorcePoCData) : dataOrTextField0;
     const maxAttempts = options.maxAttempts ?? 2;
-    const preferredGenders = data?.gender ? [data.gender] : ['Male', 'Female', 'Not given', 'Not Known', 'Unknown'];
+    const preferredGenders = data?.gender ? [data.gender] : ['Male', 'Female', 'Not given'];
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
         await this.createCase(jurisdiction, caseType, '', {
@@ -1271,7 +1271,7 @@ export class CreateCasePage extends Base {
     }
   }
 
-  async generateDivorcePoCPersonData(overrides: Partial<PersonData>): Promise<PersonData> {
+  async generateDivorcePoCPersonData(overrides: Partial<PersonData> = {}): Promise<PersonData> {
     return {
       title: overrides.title ?? faker.person.prefix(),
       firstName: overrides.firstName ?? `${faker.person.firstName()} ${faker.person.middleName()}`,

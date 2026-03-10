@@ -78,7 +78,7 @@ export class CaseDetailsPage extends Base {
   readonly caseTab1Table = this.page.locator('table.tab1');
   readonly caseDocumentsTable = this.page.locator('table.complex-panel-table');
   readonly someMoreDataTable = this.page.locator('table.SomeMoreData');
-  readonly divorceDataTable = this.page.locator('table.Data');
+  readonly divorceDataTable = this.page.locator('table.Data.ng-star-inserted');
   readonly divorceDataSubTable = this.divorceDataTable.locator('table.complex-panel-table table');
 
   // Search case (16 Digit Search)

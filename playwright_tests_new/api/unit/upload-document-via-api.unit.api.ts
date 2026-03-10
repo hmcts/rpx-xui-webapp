@@ -57,7 +57,7 @@ test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () 
   test('uploadDocumentViaApi preserves failure details from the proxy response', async () => {
     const page = {
       context: () => ({
-        cookies: async () => [],
+        cookies: async () => [{ name: 'XSRF-TOKEN', value: 'xsrf-token-123' }],
       }),
       request: {
         post: async () => ({
@@ -78,5 +78,36 @@ test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () 
         fileContent: '%PDF-1.4\n%%EOF',
       })
     ).rejects.toThrow('Document upload API failed with HTTP 403: {"message":"Internal Server Error"}');
+  });
+
+  test('uploadDocumentViaApi fails fast when the XSRF cookie never appears', async () => {
+    let cookieCalls = 0;
+    const page = {
+      context: () => ({
+        cookies: async () => {
+          cookieCalls += 1;
+          return [];
+        },
+      }),
+      waitForTimeout: async () => undefined,
+      request: {
+        post: async () => {
+          throw new Error('post should not be called without xsrf');
+        },
+      },
+    };
+
+    await expect(
+      uploadDocumentViaApi({
+        page: page as never,
+        jurisdictionId: 'DIVORCE',
+        caseTypeId: 'XUI_TEST',
+        fileName: 'seed.pdf',
+        mimeType: 'application/pdf',
+        fileContent: '%PDF-1.4\n%%EOF',
+      })
+    ).rejects.toThrow('Document upload setup failed: XSRF-TOKEN cookie was not available within 5000ms');
+
+    expect(cookieCalls).toBeGreaterThan(1);
   });
 });

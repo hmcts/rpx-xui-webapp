@@ -5,6 +5,7 @@ import {
   resolveAssignmentModesToTry,
   resolveExpectedAssignmentPrincipalEmail,
   resolveIdamApiPathFromOverride,
+  resolveRdProfessionalApiPath,
   resolveOrganisationAssignmentRoles,
   shouldRetryTokenHydrationError,
   stripBearerPrefix,
@@ -17,6 +18,10 @@ const ENV_KEYS = [
   'ORG_USER_ASSIGNMENT_MODE_ORDER',
   'ORG_USER_ASSIGNMENT_EXPECTED_EMAIL',
   'ORG_USER_ASSIGNMENT_USERNAME',
+  'RD_PROFESSIONAL_API_URL',
+  'RD_PROFESSIONAL_API_PATH',
+  'SERVICES_RD_PROFESSIONAL_API_URL',
+  'SERVICES_PRD_API',
 ] as const;
 
 let originalEnvValues: Record<string, string | undefined> = {};
@@ -65,6 +70,15 @@ test.describe('Dynamic user support unit tests: runtime helpers', { tag: '@svc-i
     expect(resolveIdamApiPathFromOverride('https://idam-api.aat.platform.hmcts.net/o/token')).toBe(
       'https://idam-api.aat.platform.hmcts.net'
     );
+  });
+
+  test('resolveRdProfessionalApiPath prefers Jenkins path-style envs before public fallback', () => {
+    process.env.RD_PROFESSIONAL_API_PATH = 'http://rd-professional-api-aat.service.core-compute-aat.internal/';
+    expect(resolveRdProfessionalApiPath()).toBe('http://rd-professional-api-aat.service.core-compute-aat.internal');
+
+    delete process.env.RD_PROFESSIONAL_API_PATH;
+    process.env.SERVICES_PRD_API = 'http://rd-professional-api-aat.service.core-compute-aat.internal';
+    expect(resolveRdProfessionalApiPath()).toBe('http://rd-professional-api-aat.service.core-compute-aat.internal');
   });
 
   test('resolveAssignmentModesToTry honours configured mode order for auto mode', () => {

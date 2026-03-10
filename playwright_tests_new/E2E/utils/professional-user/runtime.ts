@@ -253,7 +253,12 @@ export function resolveRdProfessionalApiPath(value?: string): string {
   if (fromOverride) {
     return fromOverride.replace(/\/+$/, '');
   }
-  const fromEnv = firstNonEmpty(process.env.RD_PROFESSIONAL_API_URL, process.env.SERVICES_RD_PROFESSIONAL_API_URL);
+  const fromEnv = firstNonEmpty(
+    process.env.RD_PROFESSIONAL_API_URL,
+    process.env.RD_PROFESSIONAL_API_PATH,
+    process.env.SERVICES_RD_PROFESSIONAL_API_URL,
+    process.env.SERVICES_PRD_API
+  );
   if (fromEnv) {
     return fromEnv.replace(/\/+$/, '');
   }

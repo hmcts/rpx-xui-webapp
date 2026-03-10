@@ -377,9 +377,25 @@ yarn test:playwright:integration
 # Run specific integration test file
 npx playwright test integration/test/caseList/caseList.positive.spec.ts --config=playwright.integration.config.ts
 
-# Run with specific browser
+# Run the main integration project
 npx playwright test --config=playwright.integration.config.ts --project=chromium
+
+# Run the searchCase integration project
+npx playwright test --config=playwright.integration.config.ts --project=chromium-search-case
+
+# Disable Odhin locally when you want the fastest possible run
+PW_INTEGRATION_ODHIN=0 npx playwright test --config=playwright.integration.config.ts --project=chromium-search-case
 ```
+
+Notes:
+
+- `chromium-search-case` isolates the `integration/test/searchCase/` suite so it can be run or triaged independently
+- All other integration specs continue to run on the auto-sized `chromium` project
+- Odhin remains enabled by default for integration runs, including local runs
+- Local integration Odhin uses a lightweight profile by default and emits explicit finalization timing so post-test report generation is visible and bounded
+- Local integration Odhin also bounds runtime reporter hooks by default; override with `PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS=<ms>` or set `0` to disable the local safeguard
+- Local integration Odhin disables browser console capture by default; opt in with `PW_ODHIN_CONSOLE_LOG=1 PW_ODHIN_CONSOLE_ERROR=1`
+- Odhin finalization progress is suppressed for quick completions and only starts printing after the grace window set by `PW_ODHIN_PROGRESS_GRACE_MS`
 
 ### Integration Test Structure
 
@@ -485,6 +501,7 @@ expect(visibleRows.length).toBeGreaterThan(0);
 - When one worker logs in user X, the remaining workers **and parallel API tests** wait for lock release and reuse the session
 - After acquiring lock, workers recheck freshness to ensure session is still valid
 - `ensureSession()` intentionally avoids forced recapture so lock waiters can reuse the newly refreshed session instead of logging in again
+- The `searchCase` integration suite runs on a dedicated Playwright project so it can be targeted independently without affecting the rest of the integration matrix
 
 ### Usage in E2E Tests
 
@@ -655,8 +672,9 @@ Sessions are stored in `.sessions/` directory with filesystem-based locking:
 - Created when a worker/test suite attempts to log in
 - Held during login process (2-5 seconds)
 - Released in `finally` block to prevent deadlocks
-- Other workers wait up to 30 retries × 1-5s = ~2.5 minutes max
+- Other workers poll for up to 90 seconds while checking whether another worker has already refreshed the target session
 - After lock released, waiting workers recheck session freshness
+- Waiting workers can skip lock acquisition entirely if the target session becomes fresh while they are polling
 - Waiting workers skip login if session became fresh while waiting (prevents duplicate recapture storms)
 - Stale threshold: 60 seconds (if lock held longer, considered abandoned)
 

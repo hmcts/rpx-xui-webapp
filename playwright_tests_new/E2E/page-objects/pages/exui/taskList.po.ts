@@ -4,13 +4,13 @@ import { Base } from '../../base';
 export class TaskListPage extends Base {
   readonly taskListFilterToggle = this.page.locator('exui-task-list-filter .govuk-button.hmcts-button--secondary');
   readonly filterPanel = this.page.locator('xuilib-generic-filter');
-  readonly selectAllServicesFilter = this.filterPanel.locator('input#checkbox_servicesservices_all');
-  readonly selectServicesError = this.filterPanel.locator('#services-error');
+  readonly selectAllServicesFilter = this.filterPanel.locator('input#checkbox_servicesservices_all').first();
+  readonly selectServicesError = this.filterPanel.locator('#services-error').first();
   readonly typesOfWorkCheckBoxes = this.filterPanel.locator('#types-of-work #checkbox_types-of-work .govuk-checkboxes__item');
-  readonly selectAllTypesOfWorksFilter = this.filterPanel.locator('input#checkbox_types-of-worktypes_of_work_all');
+  readonly selectAllTypesOfWorksFilter = this.filterPanel.locator('input#checkbox_types-of-worktypes_of_work_all').first();
 
-  readonly selectTypesOfWorksError = this.page.locator('#types-of-work-error');
-  readonly applyFilterButton = this.page.locator('button#applyFilter');
+  readonly selectTypesOfWorksError = this.page.locator('#types-of-work-error').first();
+  readonly applyFilterButton = this.page.locator('button#applyFilter').first();
 
   readonly taskTableTabs = this.page.locator('.hmcts-sub-navigation .hmcts-sub-navigation__link');
 
@@ -53,16 +53,14 @@ export class TaskListPage extends Base {
   }
 
   async applyAllFilterOptions() {
-    await this.taskListFilterToggle.waitFor({ state: 'visible' });
-    await this.taskListFilterToggle.click();
-    await this.selectAllServicesFilter.waitFor({ state: 'visible' });
+    await this.openFilterPanel();
     await this.selectAllServicesFilter.check();
     await this.selectAllTypesOfWorksFilter.check();
-    await this.applyFilterButton.click();
+    await this.applyCurrentFilters();
   }
 
   async goto() {
-    await this.page.goto('/work/my-work/list');
+    await this.page.goto('/work/my-work/list', { waitUntil: 'domcontentloaded' });
   }
 
   async selectWorkMenuItem(menuItemText: string) {
@@ -72,6 +70,50 @@ export class TaskListPage extends Base {
 
   async getResultsText() {
     return await this.taskListResultsAmount.textContent();
+  }
+
+  async openFilterPanel() {
+    await this.taskListFilterToggle.waitFor({ state: 'visible' });
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      if (await this.applyFilterButton.isVisible().catch(() => false)) {
+        return;
+      }
+      await this.taskListFilterToggle.click({ force: true });
+      await this.filterPanel.waitFor({ state: 'visible', timeout: 5000 }).catch(() => undefined);
+      if (await this.applyFilterButton.isVisible().catch(() => false)) {
+        return;
+      }
+      await this.page.waitForTimeout(250);
+    }
+    await this.applyFilterButton.waitFor({ state: 'visible', timeout: 10000 });
+  }
+
+  async applyCurrentFilters() {
+    await this.openFilterPanel();
+    await this.applyFilterButton.evaluate((button: HTMLButtonElement) => button.click());
+  }
+
+  async setSelectAllServicesFilter(checked: boolean) {
+    await this.setFilterCheckbox(this.selectAllServicesFilter, checked);
+  }
+
+  async setSelectAllTypesOfWorksFilter(checked: boolean) {
+    await this.setFilterCheckbox(this.selectAllTypesOfWorksFilter, checked);
+  }
+
+  private async setFilterCheckbox(checkbox: ReturnType<Page['locator']>, checked: boolean) {
+    await this.openFilterPanel();
+    const targetCheckbox = checkbox.first();
+    await targetCheckbox.waitFor({ state: 'visible' });
+    const isChecked = await targetCheckbox.isChecked();
+    if (isChecked === checked) {
+      return;
+    }
+    if (checked) {
+      await targetCheckbox.check({ force: true });
+    } else {
+      await targetCheckbox.uncheck({ force: true });
+    }
   }
 
   async confirmTaskCancellation() {

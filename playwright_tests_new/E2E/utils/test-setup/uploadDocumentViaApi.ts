@@ -29,8 +29,18 @@ export type CcdDocumentValue = {
   document_hash?: string;
 };
 
+async function resolveXsrfHeaders(page: Page, baseUrl: string): Promise<Record<string, string>> {
+  const cookies = await page
+    .context()
+    .cookies(baseUrl)
+    .catch(() => []);
+  const xsrf = cookies.find((cookie) => cookie.name === 'XSRF-TOKEN')?.value?.trim();
+  return xsrf ? { 'X-XSRF-TOKEN': xsrf } : {};
+}
+
 export async function uploadDocumentViaApi(options: UploadDocumentViaApiOptions): Promise<CcdDocumentValue> {
   const baseUrl = config.urls.baseURL ?? config.urls.exuiDefaultUrl;
+  const headers = await resolveXsrfHeaders(options.page, baseUrl);
   const response = await options.page.request.post(new URL('/documentsv2', baseUrl).toString(), {
     multipart: {
       classification: options.classification ?? 'PUBLIC',
@@ -42,6 +52,7 @@ export async function uploadDocumentViaApi(options: UploadDocumentViaApiOptions)
         buffer: Buffer.from(options.fileContent),
       },
     },
+    headers,
     failOnStatusCode: false,
   });
 

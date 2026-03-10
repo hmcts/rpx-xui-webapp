@@ -1,5 +1,4 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies } from '../../../common/sessionCapture';
 import {
   buildFindCaseCaseDetailsMock,
   buildFindCaseEmptySearchResultsMock,
@@ -10,17 +9,16 @@ import {
   FIND_CASE_JURISDICTION_LABEL,
   getCaseReferenceFromFindCaseSearchPayload,
 } from '../../mocks/findCase.mock';
-import { createFindCaseSearchResultsRouteHandler, setupFindCaseMockRoutes } from '../../helpers';
-import { TEST_CASE_REFERENCES, TEST_USERS } from '../../testData';
+import { applySearchCaseSessionCookies, createFindCaseSearchResultsRouteHandler, setupFindCaseMockRoutes } from '../../helpers';
+import { TEST_CASE_REFERENCES } from '../../testData';
 
-const userIdentifier = TEST_USERS.FPL_GLOBAL_SEARCH;
 const existingCaseReference = TEST_CASE_REFERENCES.FIND_CASE_EXISTING;
 const nonExistentCaseReference = TEST_CASE_REFERENCES.FIND_CASE_NON_EXISTENT;
 const jurisdictionMock = buildFindCaseJurisdictionsMock();
 const workBasketInputsMock = buildFindCaseWorkBasketInputsMock();
 
-test.beforeEach(async ({ page }) => {
-  await applySessionCookies(page, userIdentifier);
+test.beforeEach(async ({ page }, testInfo) => {
+  await applySearchCaseSessionCookies(page, testInfo);
 
   await setupFindCaseMockRoutes(page, {
     jurisdictions: jurisdictionMock,
@@ -40,7 +38,7 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test.describe(`Find Case as ${userIdentifier}`, () => {
+test.describe('Find Case with prewarmed search session', () => {
   test('User can find an existing case from Find case filters', async ({ caseListPage, findCasePage, page }) => {
     await test.step('Open Find case from main menu and apply filters with 16-digit reference', async () => {
       await caseListPage.navigateTo();

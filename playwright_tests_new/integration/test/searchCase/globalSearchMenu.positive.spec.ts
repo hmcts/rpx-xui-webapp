@@ -1,6 +1,10 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies } from '../../../common/sessionCapture';
-import { createGlobalSearchResultsRouteHandler, setupGlobalSearchMockRoutes, submitGlobalSearchFromMenu } from '../../helpers';
+import {
+  applySearchCaseSessionCookies,
+  createGlobalSearchResultsRouteHandler,
+  setupGlobalSearchMockRoutes,
+  submitGlobalSearchFromMenu,
+} from '../../helpers';
 import {
   buildGlobalSearchCaseDetailsMock,
   buildGlobalSearchJurisdictionsMock,
@@ -11,9 +15,6 @@ import {
   GLOBAL_SEARCH_CASE_REFERENCE,
   GLOBAL_SEARCH_NON_EXISTENT_CASE_REFERENCE,
 } from '../../mocks/globalSearch.mock';
-import { TEST_USERS } from '../../testData';
-
-const userIdentifier = TEST_USERS.FPL_GLOBAL_SEARCH;
 
 const servicesMockResponse = buildGlobalSearchServicesMock();
 const jurisdictionsMockResponse = buildGlobalSearchJurisdictionsMock();
@@ -26,8 +27,8 @@ const globalSearchResultsHandler = createGlobalSearchResultsRouteHandler({
   noResultsResponse: globalSearchNoResultsMockResponse,
 });
 
-test.beforeEach(async ({ page }) => {
-  await applySessionCookies(page, userIdentifier);
+test.beforeEach(async ({ page }, testInfo) => {
+  await applySearchCaseSessionCookies(page, testInfo);
 
   await setupGlobalSearchMockRoutes(page, {
     jurisdictions: jurisdictionsMockResponse,
@@ -45,7 +46,7 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test.describe(`Global search from menu bar as ${userIdentifier}`, () => {
+test.describe('Global search from menu bar with prewarmed search session', () => {
   test('searches by 16-digit case reference and navigates to case details', async ({
     caseListPage,
     globalSearchPage,

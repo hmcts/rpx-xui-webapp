@@ -1,5 +1,4 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies } from '../../../common/sessionCapture';
 import { buildMyTaskListMock } from '../../mocks/taskList.mock';
 import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
 import { logTaskCancellationAssertion } from '../../utils/taskCancellationAssertionLogger';
@@ -11,6 +10,7 @@ import {
 } from '../../utils/taskCancellationRoutes';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { applyPrewarmedSessionCookies } from '../../helpers';
 
 const userIdentifier = 'STAFF_ADMIN';
 const taskId = '22222222-2222-2222-2222-222222222222';
@@ -35,7 +35,7 @@ const cancellationMatrix: readonly CancellationScenario[] = [
 test.describe(`Task cancellation integration as ${userIdentifier}`, () => {
   for (const matrixItem of cancellationMatrix) {
     test(`Cancel task sends expected request for ${matrixItem.scenario}`, async ({ taskListPage, page }, testInfo) => {
-      const { cookies } = await applySessionCookies(page, userIdentifier);
+      const { cookies } = await applyPrewarmedSessionCookies(page, userIdentifier);
       const userId = extractUserIdFromCookies(cookies) || 'test-user-id';
 
       const taskListMockResponse = buildMyTaskListMock(userId, 1);
@@ -127,7 +127,7 @@ test.describe(`Task cancellation integration as ${userIdentifier}`, () => {
     });
 
     test(`My Tasks manual cancellation for ${matrixItem.scenario}`, async ({ taskListPage, page }) => {
-      const { cookies } = await applySessionCookies(page, userIdentifier);
+      const { cookies } = await applyPrewarmedSessionCookies(page, userIdentifier);
       const userId = extractUserIdFromCookies(cookies) || 'test-user-id';
 
       const taskListMockResponse = buildMyTaskListMock(userId, 1);
@@ -165,7 +165,7 @@ test.describe(`Task cancellation integration as ${userIdentifier}`, () => {
 
   test('Case details Tasks tab manual cancellation path', async ({ page, taskListPage }) => {
     const scenario = cancellationMatrix[0];
-    const { cookies } = await applySessionCookies(page, userIdentifier);
+    const { cookies } = await applyPrewarmedSessionCookies(page, userIdentifier);
     const userId = extractUserIdFromCookies(cookies) || 'test-user-id';
     const caseDetailsTemplate = JSON.parse(
       readFileSync(resolve(process.cwd(), 'src/assets/getCase.json'), 'utf8')
@@ -207,7 +207,7 @@ test.describe(`Task cancellation integration as ${userIdentifier}`, () => {
 
   test('Cancel action is not shown for a non-cancellable task', async ({ taskListPage, page }) => {
     const scenario = cancellationMatrix[0];
-    const { cookies } = await applySessionCookies(page, userIdentifier);
+    const { cookies } = await applyPrewarmedSessionCookies(page, userIdentifier);
     const userId = extractUserIdFromCookies(cookies) || 'test-user-id';
 
     const task = {
@@ -234,7 +234,7 @@ test.describe(`Task cancellation integration as ${userIdentifier}`, () => {
 
   test('Stale task cancellation shows task no longer available warning', async ({ taskListPage, page }) => {
     const scenario = cancellationMatrix[0];
-    const { cookies } = await applySessionCookies(page, userIdentifier);
+    const { cookies } = await applyPrewarmedSessionCookies(page, userIdentifier);
     const userId = extractUserIdFromCookies(cookies) || 'test-user-id';
 
     const task = {
@@ -265,7 +265,7 @@ test.describe(`Task cancellation integration as ${userIdentifier}`, () => {
 
   test('Cancellation API failure shows task no longer available warning', async ({ taskListPage, page }) => {
     const scenario = cancellationMatrix[0];
-    const { cookies } = await applySessionCookies(page, userIdentifier);
+    const { cookies } = await applyPrewarmedSessionCookies(page, userIdentifier);
     const userId = extractUserIdFromCookies(cookies) || 'test-user-id';
 
     const task = {

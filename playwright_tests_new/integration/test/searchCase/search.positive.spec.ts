@@ -1,5 +1,4 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies } from '../../../common/sessionCapture';
 import {
   buildCaseDetailsMock,
   buildGlobalSearchNoResultsMock,
@@ -9,10 +8,8 @@ import {
   INVALID_SEARCH_CASE_REFERENCE,
   VALID_SEARCH_CASE_REFERENCE,
 } from '../../mocks/search.mock';
-import { createGlobalSearchResultsRouteHandler, setupGlobalSearchMockRoutes } from '../../helpers';
-import { TEST_USERS } from '../../testData';
+import { applySearchCaseSessionCookies, createGlobalSearchResultsRouteHandler, setupGlobalSearchMockRoutes } from '../../helpers';
 
-const userIdentifier = TEST_USERS.FPL_GLOBAL_SEARCH;
 const searchCaseJurisdictionsMock = buildSearchCaseJurisdictionsMock();
 const globalSearchServicesMock = buildGlobalSearchServicesMock();
 const globalSearchResultsHandler = createGlobalSearchResultsRouteHandler({
@@ -21,8 +18,8 @@ const globalSearchResultsHandler = createGlobalSearchResultsRouteHandler({
   noResultsResponse: buildGlobalSearchNoResultsMock(),
 });
 
-test.beforeEach(async ({ page }) => {
-  await applySessionCookies(page, userIdentifier);
+test.beforeEach(async ({ page }, testInfo) => {
+  await applySearchCaseSessionCookies(page, testInfo);
 
   await setupGlobalSearchMockRoutes(page, {
     jurisdictions: searchCaseJurisdictionsMock,
@@ -48,7 +45,7 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test.describe(`Search quick find as ${userIdentifier}`, () => {
+test.describe('Search quick find with prewarmed search session', () => {
   test('User can find case by valid 16-digit case reference from header search', async ({
     caseListPage,
     searchCasePage,

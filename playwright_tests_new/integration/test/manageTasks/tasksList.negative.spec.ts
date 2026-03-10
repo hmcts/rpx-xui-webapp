@@ -1,9 +1,9 @@
 import { TASK_LIST_MALFORMED_JSON_BODY } from '../../testData';
 import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies } from '../../../common/sessionCapture';
+import { applyPrewarmedSessionCookies, setupTaskListBootstrapRoutes, taskListRoutePattern } from '../../helpers';
 
 test.beforeEach(async ({ page }) => {
-  await applySessionCookies(page, userIdentifier);
+  await applyPrewarmedSessionCookies(page, userIdentifier);
 });
 
 const errorStates = [400, 403, 500, 503];
@@ -16,7 +16,8 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
     }) => {
       const emptyMockResponse = {};
       await test.step('Setup route mock for empty task list', async () => {
-        await page.route('**/workallocation/task*', async (route) => {
+        await setupTaskListBootstrapRoutes(page);
+        await page.route(taskListRoutePattern, async (route) => {
           const body = JSON.stringify(emptyMockResponse);
           await route.fulfill({ status: errorStatus, contentType: 'application/json', body });
         });
@@ -34,7 +35,8 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
 
   test(`User ${userIdentifier} sees the no tasks message on my tasks, if the api times out`, async ({ taskListPage, page }) => {
     await test.step('Setup route mock for empty task list', async () => {
-      await page.route('**/workallocation/task*', async (route) => {
+      await setupTaskListBootstrapRoutes(page);
+      await page.route(taskListRoutePattern, async (route) => {
         await route.abort('timedout');
       });
     });
@@ -53,7 +55,8 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
     page,
   }) => {
     await test.step('Setup route mock for malformed task list response', async () => {
-      await page.route('**/workallocation/task*', async (route) => {
+      await setupTaskListBootstrapRoutes(page);
+      await page.route(taskListRoutePattern, async (route) => {
         const body = JSON.stringify(TASK_LIST_MALFORMED_JSON_BODY);
         await route.fulfill({ status: 200, contentType: 'application/json', body });
       });

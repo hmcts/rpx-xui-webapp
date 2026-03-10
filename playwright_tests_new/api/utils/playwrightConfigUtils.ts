@@ -20,7 +20,11 @@ export interface TestableConfigModule extends ConfigModule {
 }
 
 export async function loadConfig(): Promise<TestableConfigModule> {
-  const configPath = path.resolve(process.cwd(), 'playwright.config.ts');
+  return loadConfigAt('playwright.config.ts');
+}
+
+export async function loadConfigAt(relativePath: string): Promise<TestableConfigModule> {
+  const configPath = path.resolve(process.cwd(), relativePath);
   const configUrl = pathToFileURL(configPath).href;
   const loaded = await import(configUrl);
   const resolved = resolveConfigModule(loaded as ConfigModule);

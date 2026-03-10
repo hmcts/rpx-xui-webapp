@@ -1,6 +1,35 @@
 import { test, expect } from '@playwright/test';
+import { createRequire } from 'node:module';
 
 import { loadConfig, resolveConfigModule, type EnvMap, type TestableConfigModule } from './utils/playwrightConfigUtils';
+const require = createRequire(import.meta.url);
+const integrationConfigSupport = require('../../playwright.integration.config.support.cjs') as {
+  buildConfig: (env: EnvMap) => {
+    reporter: [string, Record<string, unknown> | undefined][];
+    projects: Array<{ name: string; workers?: number }>;
+  };
+  resolveOdhinConsoleCapture: (env: EnvMap) => { consoleLog: boolean; consoleError: boolean };
+  resolveOdhinHardTimeoutMs: (env: EnvMap) => number;
+  resolveOdhinLightweight: (env: EnvMap) => boolean;
+  resolveOdhinRuntimeHookTimeoutMs: (env: EnvMap) => number;
+};
+
+const {
+  buildConfig: buildIntegrationConfig,
+  resolveOdhinConsoleCapture,
+  resolveOdhinHardTimeoutMs,
+  resolveOdhinLightweight,
+  resolveOdhinRuntimeHookTimeoutMs,
+} = integrationConfigSupport as {
+  buildConfig: (env: EnvMap) => {
+    reporter: [string, Record<string, unknown> | undefined][];
+    projects: Array<{ name: string; workers?: number }>;
+  };
+  resolveOdhinConsoleCapture: (env: EnvMap) => { consoleLog: boolean; consoleError: boolean };
+  resolveOdhinHardTimeoutMs: (env: EnvMap) => number;
+  resolveOdhinLightweight: (env: EnvMap) => boolean;
+  resolveOdhinRuntimeHookTimeoutMs: (env: EnvMap) => number;
+};
 
 let configModule: TestableConfigModule;
 
@@ -141,5 +170,71 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(nodeApiProject?.grep?.test('@svc-ccd')).toBe(true);
     expect(nodeApiProject?.grepInvert).toBeInstanceOf(RegExp);
     expect(nodeApiProject?.grepInvert?.test('@svc-work-allocation')).toBe(true);
+  });
+
+  test('integration config keeps Odhin enabled locally with lightweight defaults', async () => {
+    const config = buildIntegrationConfig({
+      CI: undefined,
+      PW_INTEGRATION_ODHIN: undefined,
+      PW_ODHIN_LIGHTWEIGHT: undefined,
+      PW_ODHIN_CONSOLE_LOG: undefined,
+      PW_ODHIN_CONSOLE_ERROR: undefined,
+      PW_ODHIN_PROFILE: undefined,
+      TEST_URL: undefined,
+      TEST_TYPE: undefined,
+      HEAD: undefined,
+    }) as {
+      reporter: [string, Record<string, unknown> | undefined][];
+      projects: Array<{ name: string; workers?: number }>;
+    };
+
+    const [, progressOptions] = getReporterTuple(
+      config.reporter,
+      './playwright_tests_new/common/reporters/odhin-progress.reporter.cjs'
+    );
+    const [, odhinOptions] = getReporterTuple(
+      config.reporter,
+      './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs'
+    );
+
+    expect(progressOptions?.hardTimeoutMs).toBe(resolveOdhinHardTimeoutMs({ CI: undefined }));
+    expect(progressOptions?.timeoutExitCode).toBe(1);
+    expect(odhinOptions?.lightweight).toBe(resolveOdhinLightweight({ CI: undefined }));
+    expect(odhinOptions?.consoleLog).toBe(resolveOdhinConsoleCapture({ CI: undefined }).consoleLog);
+    expect(odhinOptions?.consoleError).toBe(resolveOdhinConsoleCapture({ CI: undefined }).consoleError);
+    expect(odhinOptions?.profile).toBe(true);
+    expect(odhinOptions?.runtimeHookTimeoutMs).toBe(resolveOdhinRuntimeHookTimeoutMs({ CI: undefined }));
+    expect(config.projects.find((project) => project.name === 'chromium-search-case')?.workers).toBeUndefined();
+  });
+
+  test('integration config avoids forced Odhin timeout in CI', async () => {
+    const config = buildIntegrationConfig({
+      CI: 'true',
+      PW_INTEGRATION_ODHIN: undefined,
+      PW_ODHIN_LIGHTWEIGHT: undefined,
+      PW_ODHIN_CONSOLE_LOG: undefined,
+      PW_ODHIN_CONSOLE_ERROR: undefined,
+      PW_ODHIN_PROFILE: undefined,
+      TEST_URL: undefined,
+      TEST_TYPE: undefined,
+      HEAD: undefined,
+    }) as {
+      reporter: [string, Record<string, unknown> | undefined][];
+    };
+
+    const [, progressOptions] = getReporterTuple(
+      config.reporter,
+      './playwright_tests_new/common/reporters/odhin-progress.reporter.cjs'
+    );
+    const [, odhinOptions] = getReporterTuple(
+      config.reporter,
+      './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs'
+    );
+
+    expect(progressOptions?.hardTimeoutMs).toBe(resolveOdhinHardTimeoutMs({ CI: 'true' }));
+    expect(odhinOptions?.lightweight).toBe(resolveOdhinLightweight({ CI: 'true' }));
+    expect(odhinOptions?.consoleLog).toBe(resolveOdhinConsoleCapture({ CI: 'true' }).consoleLog);
+    expect(odhinOptions?.consoleError).toBe(resolveOdhinConsoleCapture({ CI: 'true' }).consoleError);
+    expect(odhinOptions?.runtimeHookTimeoutMs).toBe(resolveOdhinRuntimeHookTimeoutMs({ CI: 'true' }));
   });
 });

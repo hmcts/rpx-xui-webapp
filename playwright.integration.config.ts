@@ -1,136 +1,28 @@
-import { defineConfig, devices, type ReporterDescription } from '@playwright/test';
-import { cpus, totalmem } from 'node:os';
-import { version as appVersion } from './package.json';
-import { resolveDefaultReporter, resolveWorkerCount } from './playwright-config-utils';
-export default (() => {
-  const temporaryProbePattern = '**/_tmp_*.spec.ts';
-  const headlessMode = process.env.HEAD !== 'true';
-  const odhinOutputFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-integration/odhin-report';
-  const baseUrl = process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';
-  const defaultLiveTimerIntervalMs = '30000';
-  const resolveEnvironmentFromUrl = (url) => {
-    try {
-      const hostname = new URL(url).hostname.toLowerCase();
-      if (hostname === 'localhost' || hostname === '127.0.0.1') {
-        return 'local';
-      }
-      if (hostname.includes('.aat.')) {
-        return 'aat';
-      }
-      if (hostname.includes('.ithc.')) {
-        return 'ithc';
-      }
-      if (hostname.includes('.demo.')) {
-        return 'demo';
-      }
-      if (hostname.includes('.perftest.')) {
-        return 'perftest';
-      }
-      return hostname;
-    } catch {
-      return 'unknown';
-    }
-  };
-  const workerCount = resolveWorkerCount(process.env);
-  const resolveFlag = (rawValue, defaultValue) => {
-    if (rawValue === undefined) {
-      return defaultValue;
-    }
-    const normalized = String(rawValue).trim().toLowerCase();
-    if (['1', 'true', 'yes', 'on'].includes(normalized)) {
-      return true;
-    }
-    if (['0', 'false', 'no', 'off'].includes(normalized)) {
-      return false;
-    }
-    return defaultValue;
-  };
-  const enableOdhinReporter = resolveFlag(process.env.PW_INTEGRATION_ODHIN, true);
-  const resolveAgentHardware = () => {
-    try {
-      const cpuCores = cpus()?.length ?? 'unknown';
-      const totalRamGiB = Math.round((totalmem() / 1024 ** 3) * 10) / 10;
-      return `agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
-    } catch {
-      return 'agent_cpu_cores=unknown | agent_ram_gib=unknown';
-    }
-  };
-  const resolveOdhinTestOutput = () => {
-    const configured = (process.env.PW_ODHIN_TEST_OUTPUT ?? 'only-on-failure').trim().toLowerCase();
-    if (configured === 'true') {
-      return true;
-    }
-    if (configured === 'false') {
-      return false;
-    }
-    return 'only-on-failure';
-  };
+import integrationConfigSupport from './playwright.integration.config.support.cjs';
+import { resolveWorkerCount } from './playwright-config-utils.ts';
 
-  // Local runs: enable periodic progress logs by default so long-running workers are visible.
-  if (!process.env.CI && process.env.PW_LIVE_TEST_TIMER === undefined) {
-    process.env.PW_LIVE_TEST_TIMER = '1';
-  }
-  if (!process.env.CI && process.env.PW_LIVE_TEST_TIMER_INTERVAL_MS === undefined) {
-    process.env.PW_LIVE_TEST_TIMER_INTERVAL_MS = defaultLiveTimerIntervalMs;
-  }
+const {
+  buildConfig,
+  resolveOdhinConsoleCapture,
+  resolveOdhinHardTimeoutMs,
+  resolveOdhinLightweight,
+  resolveOdhinRuntimeHookTimeoutMs,
+} = integrationConfigSupport as {
+  buildConfig: (env: NodeJS.ProcessEnv) => unknown;
+  resolveOdhinConsoleCapture: (env: NodeJS.ProcessEnv) => { consoleLog: boolean; consoleError: boolean };
+  resolveOdhinHardTimeoutMs: (env: NodeJS.ProcessEnv) => number;
+  resolveOdhinLightweight: (env: NodeJS.ProcessEnv) => boolean;
+  resolveOdhinRuntimeHookTimeoutMs: (env: NodeJS.ProcessEnv) => number;
+};
 
-  const targetEnv = process.env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
-  const runContext = process.env.CI ? 'ci' : 'local-run';
-  const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
-  const reporter: ReporterDescription[] = [[resolveDefaultReporter(process.env)]];
-  if (enableOdhinReporter) {
-    reporter.push([
-      './playwright_tests_new/common/reporters/odhin-progress.reporter.cjs',
-      {
-        enabled: true,
-        intervalMs: Number.parseInt(process.env.PW_ODHIN_PROGRESS_INTERVAL_MS ?? '5000', 10) || 5000,
-      },
-    ]);
-    reporter.push([
-      './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
-      {
-        outputFolder: odhinOutputFolder,
-        indexFilename: 'xui-playwright-integration.html',
-        title: 'RPX XUI Playwright Integration',
-        testEnvironment,
-        project: process.env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
-        release: process.env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${process.env.GIT_BRANCH ?? 'local'}`,
-        startServer: false,
-        consoleLog: true,
-        consoleError: true,
-        testOutput: resolveOdhinTestOutput(),
-      },
-    ]);
-  }
+const config = buildConfig(process.env);
+(config as { __test__?: unknown }).__test__ = {
+  buildConfig,
+  resolveWorkerCount,
+  resolveOdhinHardTimeoutMs,
+  resolveOdhinConsoleCapture,
+  resolveOdhinLightweight,
+  resolveOdhinRuntimeHookTimeoutMs,
+};
 
-  return defineConfig({
-    testDir: 'playwright_tests_new/integration',
-    testMatch: ['**/test/**/*.spec.ts'],
-    testIgnore: [temporaryProbePattern],
-    retries: 2,
-    timeout: 120_000,
-    expect: { timeout: 45_000 },
-    workers: workerCount,
-    reporter,
-    globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
-    use: {
-      baseURL: baseUrl,
-      trace: 'on-first-retry',
-      screenshot: {
-        mode: 'only-on-failure',
-        fullPage: true,
-      },
-      video: 'off',
-      headless: headlessMode,
-    },
-    projects: [
-      {
-        name: 'chromium',
-        use: {
-          ...devices['Desktop Chrome'],
-          channel: 'chrome',
-        },
-      },
-    ],
-  });
-})();
+export default config;

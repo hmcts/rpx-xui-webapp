@@ -1,13 +1,14 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies } from '../../../common/sessionCapture';
+import { applyPrewarmedSessionCookies } from '../../helpers';
 import { availableActionsList, buildTaskListMock } from '../../mocks/taskList.mock';
 import { formatUiDate } from '../../utils/tableUtils';
+import { setupTaskListBootstrapRoutes, taskListRoutePattern } from '../../helpers';
 
 const userIdentifier = 'STAFF_ADMIN';
 let sessionCookies: any[] = [];
 
 test.beforeEach(async ({ page }) => {
-  const { cookies } = await applySessionCookies(page, userIdentifier);
+  const { cookies } = await applyPrewarmedSessionCookies(page, userIdentifier);
   sessionCookies = cookies;
   // workallocation/region-location
 });
@@ -20,7 +21,8 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
   }) => {
     const taskListMockResponse = buildTaskListMock(3000, '', availableActionsList);
     await test.step('Setup route mock for task list', async () => {
-      await page.route('**/workallocation/task*', async (route) => {
+      await setupTaskListBootstrapRoutes(page);
+      await page.route(taskListRoutePattern, async (route) => {
         const body = JSON.stringify(taskListMockResponse);
         await route.fulfill({ status: 200, contentType: 'application/json', body });
       });
@@ -71,7 +73,8 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
   }) => {
     const taskListMockResponse = buildTaskListMock(3, '', availableActionsList);
     await test.step('Setup route mock for task list', async () => {
-      await page.route('**/workallocation/task*', async (route) => {
+      await setupTaskListBootstrapRoutes(page);
+      await page.route(taskListRoutePattern, async (route) => {
         const body = JSON.stringify(taskListMockResponse);
         await route.fulfill({ status: 200, contentType: 'application/json', body });
       });
@@ -109,7 +112,8 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
   }) => {
     const emptyMockResponse = { tasks: [], total_records: 0 };
     await test.step('Setup route mock for empty task list', async () => {
-      await page.route('**/workallocation/task*', async (route) => {
+      await setupTaskListBootstrapRoutes(page);
+      await page.route(taskListRoutePattern, async (route) => {
         const body = JSON.stringify(emptyMockResponse);
         await route.fulfill({ status: 200, contentType: 'application/json', body });
       });
@@ -131,7 +135,8 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
   test(`User ${userIdentifier} can see all table sorting buttons on the table`, async ({ taskListPage, page, tableUtils }) => {
     const emptyMockResponse = { tasks: [], total_records: 0 };
     await test.step('Setup route mock for deterministic task list', async () => {
-      await page.route('**/workallocation/task*', async (route) => {
+      await setupTaskListBootstrapRoutes(page);
+      await page.route(taskListRoutePattern, async (route) => {
         const body = JSON.stringify(emptyMockResponse);
         await route.fulfill({ status: 200, contentType: 'application/json', body });
       });
@@ -159,7 +164,8 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
   }) => {
     const taskListMockResponse = buildTaskListMock(3, '', availableActionsList);
     await test.step('Setup route mock for task list', async () => {
-      await page.route('**/workallocation/task*', async (route) => {
+      await setupTaskListBootstrapRoutes(page);
+      await page.route(taskListRoutePattern, async (route) => {
         const body = JSON.stringify(taskListMockResponse);
         await route.fulfill({ status: 200, contentType: 'application/json', body });
       });

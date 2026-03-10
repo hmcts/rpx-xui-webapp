@@ -1,22 +1,26 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies } from '../../../common/sessionCapture';
-import { overrideGlobalSearchResultsRoute, setupGlobalSearchMockRoutes, submitGlobalSearchFromMenu } from '../../helpers';
+import {
+  applySearchCaseSessionCookies,
+  overrideGlobalSearchResultsRoute,
+  setupFastCaseRetrievalConfigRoute,
+  setupGlobalSearchMockRoutes,
+  submitGlobalSearchFromMenu,
+} from '../../helpers';
 import {
   buildGlobalSearchJurisdictionsMock,
   buildGlobalSearchNoResultsMock,
   buildGlobalSearchServicesMock,
   GLOBAL_SEARCH_CASE_REFERENCE,
 } from '../../mocks/globalSearch.mock';
-import { SEARCH_CASE_ERROR_STATUS_CODES, SEARCH_CASE_MALFORMED_JSON_BODY, TEST_USERS } from '../../testData';
-
-const userIdentifier = TEST_USERS.FPL_GLOBAL_SEARCH;
+import { SEARCH_CASE_ERROR_STATUS_CODES, SEARCH_CASE_MALFORMED_JSON_BODY } from '../../testData';
 
 const noResultsResponse = buildGlobalSearchNoResultsMock();
 const servicesResponse = buildGlobalSearchServicesMock();
 const jurisdictionsResponse = buildGlobalSearchJurisdictionsMock();
 
-test.beforeEach(async ({ page }) => {
-  await applySessionCookies(page, userIdentifier);
+test.beforeEach(async ({ page }, testInfo) => {
+  await applySearchCaseSessionCookies(page, testInfo);
+  await setupFastCaseRetrievalConfigRoute(page);
 
   await setupGlobalSearchMockRoutes(page, {
     jurisdictions: jurisdictionsResponse,
@@ -31,7 +35,7 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test.describe(`Global Search negative flows as ${userIdentifier}`, () => {
+test.describe('Global Search negative flows with prewarmed search session', () => {
   for (const status of SEARCH_CASE_ERROR_STATUS_CODES) {
     test(`shows error no-results page when global search returns HTTP ${status}`, async ({
       caseListPage,

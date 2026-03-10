@@ -101,6 +101,71 @@ function resolveRetryDelayMs(attempt: number): number {
   return Math.min(200 * 2 ** (attempt - 1), 2_000);
 }
 
+type TestingSupportErrorOutcome =
+  | { kind: 'return'; user: ProfessionalUserInfo }
+  | { kind: 'throw'; error: unknown }
+  | { kind: 'retry'; waitMs: number };
+
+async function handleSidamFallbackCreate(
+  args: CreateUserViaTestingSupportArgs,
+  deps: CreateUserViaTestingSupportDeps,
+  roleNames: readonly string[]
+): Promise<ProfessionalUserInfo> {
+  const createdViaSidam = await deps.createUserViaSidamAccounts({
+    token: args.token,
+    password: args.password,
+    identity: args.identity,
+    roleNames,
+  });
+  const activatedViaSidam = args.token
+    ? await deps.ensureUserAccountActive({ token: args.token, user: createdViaSidam, roleNames })
+    : createdViaSidam;
+  deps.emitCreatedUserData({
+    user: activatedViaSidam,
+    roleSelection: args.roleSelection,
+    createPath: 'idam-api-testing-support',
+    outputCreatedUserData: args.outputCreatedUserData,
+  });
+  return activatedViaSidam;
+}
+
+async function handleTestingSupportCreateError(
+  error: unknown,
+  args: CreateUserViaTestingSupportArgs,
+  deps: CreateUserViaTestingSupportDeps,
+  roleNames: readonly string[],
+  attempt: number
+): Promise<TestingSupportErrorOutcome> {
+  const statusCode = deps.parseStatusCode(error);
+  if (statusCode === 409 && args.token) {
+    const updatedUser = await deps.updateExistingUser({
+      token: args.token,
+      password: args.password,
+      identity: args.identity,
+      roleNames,
+    });
+    deps.emitCreatedUserData({
+      user: updatedUser,
+      roleSelection: args.roleSelection,
+      createPath: 'idam-update-existing',
+      outputCreatedUserData: args.outputCreatedUserData,
+    });
+    return { kind: 'return', user: updatedUser };
+  }
+  if (deps.shouldFallbackToSidamAccounts(statusCode, error)) {
+    deps.warn('IDAM /test/idam/users unavailable or rejected; falling back to /testing-support/accounts.', {
+      email: args.identity.email,
+      statusCode,
+    });
+    const user = await handleSidamFallbackCreate(args, deps, roleNames);
+    return { kind: 'return', user };
+  }
+  if (!deps.isRetryableStatus(statusCode) || attempt === args.attempts) {
+    return { kind: 'throw', error };
+  }
+  return { kind: 'retry', waitMs: resolveRetryDelayMs(attempt) };
+}
+
 export async function createUserViaTestingSupportFlow(
   args: CreateUserViaTestingSupportArgs,
   deps: CreateUserViaTestingSupportDeps
@@ -114,12 +179,7 @@ export async function createUserViaTestingSupportFlow(
       if (!token) {
         throw new Error('Create-user bearer token is required for the testing-support create path.');
       }
-      const created = await deps.createUser({
-        token,
-        password: args.password,
-        identity: args.identity,
-        roleNames,
-      });
+      const created = await deps.createUser({ token, password: args.password, identity: args.identity, roleNames });
       const createdUser: ProfessionalUserInfo = {
         id: created.id,
         email: created.email,
@@ -137,62 +197,62 @@ export async function createUserViaTestingSupportFlow(
       return createdUser;
     } catch (error) {
       lastError = error;
-      const statusCode = deps.parseStatusCode(error);
-      if (statusCode === 409 && args.token) {
-        const updatedUser = await deps.updateExistingUser({
-          token: args.token,
-          password: args.password,
-          identity: args.identity,
-          roleNames,
-        });
-        deps.emitCreatedUserData({
-          user: updatedUser,
-          roleSelection: args.roleSelection,
-          createPath: 'idam-update-existing',
-          outputCreatedUserData: args.outputCreatedUserData,
-        });
-        return updatedUser;
-      }
-      if (deps.shouldFallbackToSidamAccounts(statusCode, error)) {
-        deps.warn('IDAM /test/idam/users unavailable or rejected; falling back to /testing-support/accounts.', {
-          email: args.identity.email,
-          statusCode,
-        });
-        const createdViaSidam = await deps.createUserViaSidamAccounts({
-          token: args.token,
-          password: args.password,
-          identity: args.identity,
-          roleNames,
-        });
-        const activatedViaSidam = await deps.ensureUserAccountActive({
-          token: args.token!,
-          user: createdViaSidam,
-          roleNames,
-        });
-        deps.emitCreatedUserData({
-          user: activatedViaSidam,
-          roleSelection: args.roleSelection,
-          createPath: 'idam-api-testing-support',
-          outputCreatedUserData: args.outputCreatedUserData,
-        });
-        return activatedViaSidam;
-      }
-      if (!deps.isRetryableStatus(statusCode) || attempt === args.attempts) {
-        throw error;
-      }
-      const waitMs = resolveRetryDelayMs(attempt);
+      const errorOutcome = await handleTestingSupportCreateError(error, args, deps, roleNames, attempt);
+      if (errorOutcome.kind === 'return') return errorOutcome.user;
+      if (errorOutcome.kind === 'throw') throw errorOutcome.error;
       deps.warn('Transient IDAM create user failure; retrying', {
         email: args.identity.email,
         attempt,
         attempts: args.attempts,
-        statusCode,
-        waitMs,
+        statusCode: deps.parseStatusCode(error),
+        waitMs: errorOutcome.waitMs,
       });
-      await deps.sleep(waitMs);
+      await deps.sleep(errorOutcome.waitMs);
     }
   }
 
   throw deps.createError(lastError, 'Failed to create user in IDAM');
+}
+
+type Reconcile409SidamOutcome =
+  | { action: 'return'; user: ProfessionalUserInfo }
+  | { action: 'continue'; newIdentity: ProvisionedIdentity };
+
+async function reconcile409SidamFirst(
+  args: CreateUserViaSidamFirstArgs,
+  deps: CreateUserViaSidamFirstDeps,
+  identity: ProvisionedIdentity,
+  roleNames: string[],
+  attempt: number,
+  jurisdiction: SolicitorJurisdiction | undefined
+): Promise<Reconcile409SidamOutcome> {
+  if (!args.token) {
+    if (attempt < args.attempts) {
+      const newIdentity = deps.createIdentity(args.emailPrefix, jurisdiction);
+      deps.warn('SIDAM create returned 409 without create-user bearer token; regenerating identity and retrying.', {
+        attempt,
+        attempts: args.attempts,
+        email: newIdentity.email,
+      });
+      return { action: 'continue', newIdentity };
+    }
+    throw new Error(
+      'SIDAM create returned 409 and create-user bearer token is unavailable to reconcile existing user. Provide CREATE_USER_BEARER_TOKEN/IDAM_SECRET or retry when IDAM token endpoint is healthy.'
+    );
+  }
+  const updatedUser = await deps.updateExistingUser({
+    token: args.token,
+    password: args.password,
+    identity,
+    roleNames,
+  });
+  deps.emitCreatedUserData({
+    user: updatedUser,
+    roleSelection: args.roleSelection,
+    createPath: 'idam-update-existing',
+    outputCreatedUserData: args.outputCreatedUserData,
+  });
+  return { action: 'return', user: updatedUser };
 }
 
 export async function createUserViaSidamFirstFlow(
@@ -230,33 +290,10 @@ export async function createUserViaSidamFirstFlow(
       lastError = error;
       const statusCode = deps.parseStatusCode(error);
       if (statusCode === 409) {
-        if (!args.token) {
-          if (attempt < args.attempts) {
-            identity = deps.createIdentity(args.emailPrefix, jurisdiction);
-            deps.warn('SIDAM create returned 409 without create-user bearer token; regenerating identity and retrying.', {
-              attempt,
-              attempts: args.attempts,
-              email: identity.email,
-            });
-            continue;
-          }
-          throw new Error(
-            'SIDAM create returned 409 and create-user bearer token is unavailable to reconcile existing user. Provide CREATE_USER_BEARER_TOKEN/IDAM_SECRET or retry when IDAM token endpoint is healthy.'
-          );
-        }
-        const updatedUser = await deps.updateExistingUser({
-          token: args.token,
-          password: args.password,
-          identity,
-          roleNames,
-        });
-        deps.emitCreatedUserData({
-          user: updatedUser,
-          roleSelection: args.roleSelection,
-          createPath: 'idam-update-existing',
-          outputCreatedUserData: args.outputCreatedUserData,
-        });
-        return updatedUser;
+        const outcome = await reconcile409SidamFirst(args, deps, identity, roleNames, attempt, jurisdiction);
+        if (outcome.action === 'return') return outcome.user;
+        identity = outcome.newIdentity;
+        continue;
       }
       if (!deps.isRetryableStatus(statusCode) || attempt === args.attempts) {
         throw error;

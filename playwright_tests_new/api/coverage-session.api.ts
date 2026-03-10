@@ -138,6 +138,13 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
     }
   });
 
+  test('session freshness max age defaults to one hour and honors env override', () => {
+    expect(sessionCaptureTest.resolveSessionMaxAgeMs({} as NodeJS.ProcessEnv)).toBe(60 * 60 * 1000);
+    expect(sessionCaptureTest.resolveSessionMaxAgeMs({ PW_SESSION_MAX_AGE_MS: '120000' } as NodeJS.ProcessEnv)).toBe(120000);
+    expect(sessionCaptureTest.resolveSessionMaxAgeMs({ PW_SESSION_MAX_AGE_MS: '0' } as NodeJS.ProcessEnv)).toBe(60 * 60 * 1000);
+    expect(sessionCaptureTest.resolveSessionMaxAgeMs({ PW_SESSION_MAX_AGE_MS: 'bad' } as NodeJS.ProcessEnv)).toBe(60 * 60 * 1000);
+  });
+
   test('persistSession writes cookies and surfaces errors', async () => {
     const tmpDir = await fsp.mkdtemp(path.join(process.cwd(), 'test-results', 'session-persist-'));
     const sessionPath = path.join(tmpDir, 'session.json');
@@ -442,5 +449,91 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
         lockfile: lockfileStub,
       })
     ).rejects.toThrow(/login failed/i);
+  });
+
+  test('sessionCaptureWith reuses a freshly written session instead of waiting on a held lock', async () => {
+    let lockAttempts = 0;
+    let launchAttempts = 0;
+    let freshnessChecks = 0;
+
+    const fsStub = {
+      existsSync: () => true,
+      mkdirSync: () => {},
+      writeFileSync: () => {},
+    } as any;
+
+    const lockfileStub = {
+      lock: async () => {
+        lockAttempts += 1;
+        if (lockAttempts === 1) {
+          const error = new Error('Lock file is already being held');
+          (error as Error & { code?: string }).code = 'ELOCKED';
+          throw error;
+        }
+        return async () => {};
+      },
+    } as any;
+
+    const userUtils = {
+      getUserCredentials: () => ({ email: 'shared@example.com', password: mockPassword }),
+    } as any;
+
+    await sessionCaptureTest.sessionCaptureWith(['USER'], {
+      fs: fsStub,
+      userUtils,
+      isSessionFresh: () => {
+        freshnessChecks += 1;
+        return freshnessChecks >= 2;
+      },
+      chromiumLauncher: {
+        launch: async () => {
+          launchAttempts += 1;
+          throw new Error('browser launch should not be needed');
+        },
+      } as any,
+      lockfile: lockfileStub,
+    });
+
+    expect(lockAttempts).toBe(1);
+    expect(launchAttempts).toBe(0);
+  });
+
+  test('acquireSessionLock clears abandoned lock artifacts before timing out', async () => {
+    let lockAttempts = 0;
+    let removedArtifacts = 0;
+    const staleTime = Date.now() - 70_000;
+
+    const fsStub = {
+      existsSync: (target: string) => target.endsWith('.lock'),
+      statSync: () => ({ mtimeMs: staleTime }),
+      rmSync: () => {
+        removedArtifacts += 1;
+      },
+    } as any;
+
+    const lockfileStub = {
+      lock: async () => {
+        lockAttempts += 1;
+        if (lockAttempts === 1) {
+          const error = new Error('Lock file is already being held');
+          (error as Error & { code?: string }).code = 'ELOCKED';
+          throw error;
+        }
+        return async () => {};
+      },
+    } as any;
+
+    const release = await sessionCaptureTest.acquireSessionLock({
+      fsApi: fsStub,
+      lockfileApi: lockfileStub,
+      lockFilePath: '/tmp/shared-session.lock',
+      userIdentifier: 'USER',
+      isSessionReusable: () => false,
+      force: false,
+    });
+
+    expect(typeof release).toBe('function');
+    expect(lockAttempts).toBe(2);
+    expect(removedArtifacts).toBe(1);
   });
 });

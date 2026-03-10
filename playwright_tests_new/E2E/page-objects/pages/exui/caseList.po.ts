@@ -76,13 +76,29 @@ export class CaseListPage extends Base {
     await this.exuiSpinnerComponent.wait();
   }
 
-  async goto() {
-    await this.page.goto('/cases');
+  private async waitForCasesShellReady(): Promise<void> {
+    await this.caseListHeading.waitFor({ state: 'visible' });
     await this.exuiSpinnerComponent.wait();
+
+    try {
+      await Promise.any([
+        this.quickSearchCaseReferenceInput.waitFor({ state: 'visible', timeout: 10000 }),
+        this.filtersContainer.waitFor({ state: 'visible', timeout: 10000 }),
+        this.container.waitFor({ state: 'visible', timeout: 10000 }),
+      ]);
+    } catch {
+      await this.page.waitForLoadState('networkidle', { timeout: 5000 }).catch(() => undefined);
+      await this.container.waitFor({ state: 'visible', timeout: 10000 });
+    }
+  }
+
+  async goto() {
+    await this.page.goto('/cases', { waitUntil: 'domcontentloaded' });
+    await this.waitForCasesShellReady();
   }
 
   async navigateTo() {
-    await this.page.goto('/cases');
+    await this.goto();
   }
 
   async getPaginationFinalItem(): Promise<string | undefined> {

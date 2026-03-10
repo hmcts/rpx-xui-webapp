@@ -44,6 +44,46 @@ export async function updateExistingUserFlow(
   };
 }
 
+type SidamCreateOutcome =
+  | { kind: 'success'; data: Record<string, unknown> }
+  | { kind: 'fallback'; lastError: unknown }
+  | { kind: 'skip' };
+
+async function tryCreateAuthenticated(
+  execute: (includeAuth: boolean) => Promise<{ data: Record<string, unknown> }>,
+  fallbackStatuses: Set<number>
+): Promise<SidamCreateOutcome> {
+  try {
+    const res = await execute(true);
+    return { kind: 'success', data: res.data };
+  } catch (authError) {
+    const s = parseStatusCode(authError);
+    if (s !== undefined && fallbackStatuses.has(s)) return { kind: 'fallback', lastError: authError };
+    throw authError;
+  }
+}
+
+async function tryCreateViaTarget(
+  target: { allowAnonymous: boolean },
+  execute: (includeAuth: boolean) => Promise<{ data: Record<string, unknown> }>,
+  hasBearerToken: boolean,
+  fallbackStatuses: Set<number>
+): Promise<SidamCreateOutcome> {
+  if (target.allowAnonymous) {
+    try {
+      const res = await execute(false);
+      return { kind: 'success', data: res.data };
+    } catch (anonError) {
+      const s = parseStatusCode(anonError);
+      if ((s === 401 || s === 403) && hasBearerToken) return tryCreateAuthenticated(execute, fallbackStatuses);
+      if (s !== undefined && fallbackStatuses.has(s)) return { kind: 'fallback', lastError: anonError };
+      throw anonError;
+    }
+  }
+  if (!hasBearerToken) return { kind: 'skip' };
+  return tryCreateAuthenticated(execute, fallbackStatuses);
+}
+
 export async function createUserViaSidamAccountsFlow(args: {
   baseUrl: string;
   bearerToken: string;
@@ -109,59 +149,31 @@ export async function createUserViaSidamAccountsFlow(args: {
     });
 
   try {
-    let response: Awaited<ReturnType<typeof executeCreate>> | undefined;
+    let account: Record<string, unknown> | undefined;
     let lastError: unknown;
 
     const fallbackStatuses = new Set([404, 500, 502, 503, 504]);
+    const hasBearerToken = args.bearerToken.trim().length > 0;
     for (const target of sidamCreateTargets) {
-      try {
-        if (target.allowAnonymous) {
-          response = await executeCreate(target, false);
-          break;
-        }
-      } catch (error) {
-        const status = parseStatusCode(error);
-        if (target.allowAnonymous && (status === 401 || status === 403) && args.bearerToken.trim().length > 0) {
-          try {
-            response = await executeCreate(target, true);
-            break;
-          } catch (authenticatedError) {
-            const authenticatedStatus = parseStatusCode(authenticatedError);
-            if (authenticatedStatus !== undefined && fallbackStatuses.has(authenticatedStatus)) {
-              lastError = authenticatedError;
-              continue;
-            }
-            throw authenticatedError;
-          }
-        }
-
-        if (status !== undefined && fallbackStatuses.has(status)) {
-          lastError = error;
-          continue;
-        }
-        throw error;
+      const outcome = await tryCreateViaTarget(
+        target,
+        (includeAuth) => executeCreate(target, includeAuth),
+        hasBearerToken,
+        fallbackStatuses
+      );
+      if (outcome.kind === 'success') {
+        account = outcome.data;
+        break;
       }
-
-      if (args.bearerToken.trim().length > 0) {
-        try {
-          response = await executeCreate(target, true);
-          break;
-        } catch (authenticatedError) {
-          const authenticatedStatus = parseStatusCode(authenticatedError);
-          if (authenticatedStatus !== undefined && fallbackStatuses.has(authenticatedStatus)) {
-            lastError = authenticatedError;
-            continue;
-          }
-          throw authenticatedError;
-        }
+      if (outcome.kind === 'fallback') {
+        lastError = outcome.lastError;
       }
     }
 
-    if (!response) {
+    if (!account) {
       throw lastError ?? new Error('SIDAM user creation failed');
     }
 
-    const account = response.data;
     return {
       id: readStringProperty(account, 'id'),
       email: readStringProperty(account, 'email') ?? args.identity.email,
@@ -212,8 +224,17 @@ export async function ensureUserAccountActiveFlow(
   };
 }
 
+function getErrorMessage(error: unknown): string | undefined {
+  if (error instanceof Error) return error.message;
+  if (typeof error === 'string') return error;
+  return undefined;
+}
+
 function parseStatusCode(error: unknown): number | undefined {
-  const message = error instanceof Error ? error.message : String(error);
+  const message = getErrorMessage(error);
+  if (!message) {
+    return undefined;
+  }
   const explicit = /Status Code:\s*(\d{3})/i.exec(message);
   if (explicit) {
     const parsed = Number.parseInt(explicit[1], 10);

@@ -16,6 +16,7 @@ import {
   tryGenerateAssignmentBearerTokenFromCredentialsFlow,
 } from '../../E2E/utils/professional-user/tokenHydration.js';
 import { waitForUserPropagationFlow } from '../../E2E/utils/professional-user/propagationProbe.js';
+import { ProfessionalUserUtils } from '../../E2E/utils/professional-user.utils.js';
 import { provisionUserWithRetries } from '../../E2E/utils/test-setup/dynamicProvisioningFlow.js';
 
 test.describe.configure({ mode: 'serial' });
@@ -181,7 +182,7 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
         retryDelayMs: 5,
       },
       {
-        createSolicitorUserForOrganisation: async (_args) => {
+        createSolicitorUserForOrganisation: async () => {
           createAttempts += 1;
           if (createAttempts === 1) {
             throw new Error('HTTP 503');
@@ -542,5 +543,43 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
         }
       )
     ).resolves.toBeUndefined();
+  });
+
+  test('ProfessionalUserUtils defaults service-token microservice name to xui_webapp when env is unset', async () => {
+    const originalS2sMicroserviceName = process.env.S2S_MICROSERVICE_NAME;
+    const originalMicroservice = process.env.MICROSERVICE;
+    const retrieveTokenCalls: string[] = [];
+
+    delete process.env.S2S_MICROSERVICE_NAME;
+    delete process.env.MICROSERVICE;
+
+    try {
+      const utils = new ProfessionalUserUtils(
+        {} as never,
+        {
+          retrieveToken: async ({ microservice }: { microservice: string }) => {
+            retrieveTokenCalls.push(microservice);
+            return 'Bearer service-token';
+          },
+        } as never
+      );
+
+      const token = await (utils as never).resolveServiceToken(undefined, true);
+
+      expect(token).toBe('service-token');
+      expect(retrieveTokenCalls).toEqual(['xui_webapp']);
+    } finally {
+      if (typeof originalS2sMicroserviceName === 'string') {
+        process.env.S2S_MICROSERVICE_NAME = originalS2sMicroserviceName;
+      } else {
+        delete process.env.S2S_MICROSERVICE_NAME;
+      }
+
+      if (typeof originalMicroservice === 'string') {
+        process.env.MICROSERVICE = originalMicroservice;
+      } else {
+        delete process.env.MICROSERVICE;
+      }
+    }
   });
 });

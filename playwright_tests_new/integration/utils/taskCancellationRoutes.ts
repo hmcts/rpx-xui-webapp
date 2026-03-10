@@ -86,6 +86,22 @@ export async function routeMyTaskActionFlow(
         actions: actions.filter((action) => action?.id !== actionId),
       };
 
+  await page.route('**/api/healthCheck*', async (route: Route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ healthState: true }),
+    });
+  });
+
+  await page.route('**/workallocation/region-location*', async (route: Route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([]),
+    });
+  });
+
   await page.route(/\/workallocation\/task(?:\?.*)?$/, async (route: Route) => {
     if (route.request().method() !== 'POST') {
       await route.fallback();

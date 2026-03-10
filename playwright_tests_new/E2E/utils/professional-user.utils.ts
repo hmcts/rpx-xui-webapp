@@ -927,13 +927,7 @@ export class ProfessionalUserUtils {
       return undefined;
     }
 
-    const microservice = firstNonEmpty(process.env.S2S_MICROSERVICE_NAME, process.env.MICROSERVICE);
-    if (!microservice) {
-      if (required) {
-        throw new Error('Missing S2S microservice name. Set `S2S_MICROSERVICE_NAME` or `MICROSERVICE`.');
-      }
-      return undefined;
-    }
+    const microservice = firstNonEmpty(process.env.S2S_MICROSERVICE_NAME, process.env.MICROSERVICE) ?? 'xui_webapp';
 
     const token = await this.serviceAuthUtils.retrieveToken({ microservice });
     return stripBearerPrefix(token);

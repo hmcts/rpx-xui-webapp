@@ -58,7 +58,7 @@ export async function assertOrganisationAssignmentPreflightFlow(
         if (statusCode !== undefined && statusCode < 500 && statusCode !== 401 && statusCode !== 403) {
           return;
         }
-        const hasNextMode = mode !== args.modesToTry[args.modesToTry.length - 1];
+        const hasNextMode = mode !== args.modesToTry.at(-1);
         if (hasNextMode && deps.shouldFallbackToAlternateAssignmentMode(statusCode)) {
           continue;
         }
@@ -388,8 +388,17 @@ async function cleanupIdamAccountViaHttp(
   throw new Error(`IDAM v2 cleanup failed with status ${responseById.status}.`);
 }
 
+function getErrorMessage(error: unknown): string | undefined {
+  if (error instanceof Error) return error.message;
+  if (typeof error === 'string') return error;
+  return undefined;
+}
+
 function parseStatusCode(error: unknown): number | undefined {
-  const message = error instanceof Error ? error.message : String(error);
+  const message = getErrorMessage(error);
+  if (!message) {
+    return undefined;
+  }
   const explicit = /Status Code:\s*(\d{3})/i.exec(message);
   if (explicit) {
     const parsed = Number.parseInt(explicit[1], 10);

@@ -1,6 +1,10 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies } from '../../../common/sessionCapture';
-import { overrideFindCaseSearchResultsRoute, setupFindCaseMockRoutes } from '../../helpers';
+import {
+  applySearchCaseSessionCookies,
+  overrideFindCaseSearchResultsRoute,
+  setupFastCaseRetrievalConfigRoute,
+  setupFindCaseMockRoutes,
+} from '../../helpers';
 import {
   buildFindCaseEmptySearchResultsMock,
   buildFindCaseJurisdictionsMock,
@@ -8,20 +12,15 @@ import {
   FIND_CASE_CASE_TYPE_LABEL,
   FIND_CASE_JURISDICTION_LABEL,
 } from '../../mocks/findCase.mock';
-import {
-  SEARCH_CASE_ERROR_STATUS_CODES,
-  SEARCH_CASE_MALFORMED_JSON_BODY,
-  TEST_CASE_REFERENCES,
-  TEST_USERS,
-} from '../../testData';
+import { SEARCH_CASE_ERROR_STATUS_CODES, SEARCH_CASE_MALFORMED_JSON_BODY, TEST_CASE_REFERENCES } from '../../testData';
 
-const userIdentifier = TEST_USERS.FPL_GLOBAL_SEARCH;
 const existingCaseReference = TEST_CASE_REFERENCES.FIND_CASE_EXISTING;
 const jurisdictionMock = buildFindCaseJurisdictionsMock();
 const workBasketInputsMock = buildFindCaseWorkBasketInputsMock();
 
-test.beforeEach(async ({ page }) => {
-  await applySessionCookies(page, userIdentifier);
+test.beforeEach(async ({ page }, testInfo) => {
+  await applySearchCaseSessionCookies(page, testInfo);
+  await setupFastCaseRetrievalConfigRoute(page);
 
   await setupFindCaseMockRoutes(page, {
     jurisdictions: jurisdictionMock,
@@ -36,7 +35,7 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test.describe(`Find Case negative flows as ${userIdentifier}`, () => {
+test.describe('Find Case negative flows with prewarmed search session', () => {
   for (const status of SEARCH_CASE_ERROR_STATUS_CODES) {
     test(`does not navigate to case details when searchCases returns HTTP ${status}`, async ({
       caseListPage,

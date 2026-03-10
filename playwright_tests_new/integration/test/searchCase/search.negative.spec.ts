@@ -1,15 +1,18 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies } from '../../../common/sessionCapture';
-import { createGlobalSearchResultsRouteHandler, setupGlobalSearchMockRoutes, submitHeaderQuickSearch } from '../../helpers';
+import {
+  applySearchCaseSessionCookies,
+  createGlobalSearchResultsRouteHandler,
+  setupFastCaseRetrievalConfigRoute,
+  setupGlobalSearchMockRoutes,
+  submitHeaderQuickSearch,
+} from '../../helpers';
 import {
   buildGlobalSearchNoResultsMock,
   buildGlobalSearchServicesMock,
   buildSearchCaseJurisdictionsMock,
   VALID_SEARCH_CASE_REFERENCE,
 } from '../../mocks/search.mock';
-import { SEARCH_CASE_ERROR_STATUS_CODES, SEARCH_CASE_MALFORMED_JSON_BODY, TEST_USERS } from '../../testData';
-
-const userIdentifier = TEST_USERS.FPL_GLOBAL_SEARCH;
+import { SEARCH_CASE_ERROR_STATUS_CODES, SEARCH_CASE_MALFORMED_JSON_BODY } from '../../testData';
 
 const searchCaseJurisdictionsMock = buildSearchCaseJurisdictionsMock();
 const globalSearchServicesMock = buildGlobalSearchServicesMock();
@@ -22,8 +25,9 @@ const globalSearchResultsHandler = createGlobalSearchResultsRouteHandler({
   noResultsResponse: buildGlobalSearchNoResultsMock(),
 });
 
-test.beforeEach(async ({ page }) => {
-  await applySessionCookies(page, userIdentifier);
+test.beforeEach(async ({ page }, testInfo) => {
+  await applySearchCaseSessionCookies(page, testInfo);
+  await setupFastCaseRetrievalConfigRoute(page);
 
   await setupGlobalSearchMockRoutes(page, {
     jurisdictions: searchCaseJurisdictionsMock,
@@ -46,7 +50,7 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test.describe(`Header quick search negative flows as ${userIdentifier}`, () => {
+test.describe('Header quick search negative flows with prewarmed search session', () => {
   for (const status of SEARCH_CASE_ERROR_STATUS_CODES) {
     test(`handles case-details load failure for HTTP ${status}`, async ({ caseListPage, searchCasePage, page }) => {
       let caseDetailsRequestSeen = false;

@@ -1,8 +1,20 @@
 import { expect } from '@playwright/test';
 import type { Page, Route } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 import type { CaseListPage } from '../../E2E/page-objects/pages/exui/caseList.po';
 import type { GlobalSearchPage } from '../../E2E/page-objects/pages/exui/globalSearch.po';
 import type { SearchCasePage } from '../../E2E/page-objects/pages/exui/searchCase.po';
+
+const helperDir = path.dirname(fileURLToPath(import.meta.url));
+const appConfig = JSON.parse(readFileSync(path.resolve(helperDir, '../../../src/assets/config/config.json'), 'utf8')) as {
+  caseEditorConfig: {
+    activity_retry: number;
+    timeouts_case_retrieval: number[];
+    timeouts_case_retrieval_artificial_delay: number;
+  };
+};
 
 /**
  * Configuration for setting up Find Case mock routes.
@@ -306,6 +318,30 @@ export async function overrideGlobalSearchResultsRoute(page: Page, handler: (rou
 export async function overrideFindCaseSearchResultsRoute(page: Page, handler: (route: Route) => Promise<void>): Promise<void> {
   await page.unroute('**/data/internal/searchCases*');
   await page.route('**/data/internal/searchCases*', handler);
+}
+
+/**
+ * Shrinks case-details retry windows for fully mocked integration tests.
+ *
+ * Production config uses long case retrieval timeouts that are appropriate for live environments
+ * but unnecessarily slow for local mocked timeout-path coverage.
+ */
+export async function setupFastCaseRetrievalConfigRoute(page: Page): Promise<void> {
+  await page.route('**/assets/config/config.json', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        ...appConfig,
+        caseEditorConfig: {
+          ...appConfig.caseEditorConfig,
+          activity_retry: 1,
+          timeouts_case_retrieval: [1, 1],
+          timeouts_case_retrieval_artificial_delay: 0,
+        },
+      }),
+    });
+  });
 }
 
 /**

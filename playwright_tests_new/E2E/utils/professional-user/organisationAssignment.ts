@@ -102,6 +102,264 @@ const EXTERNAL_ASSIGNMENT_RETRY_DELAY_MS = 2_000;
 const DEFAULT_EXTERNAL_ASSIGNMENT_RETRY_ATTEMPTS = 12;
 const MAX_EXTERNAL_ASSIGNMENT_RETRY_ATTEMPTS = 20;
 
+type RdModeAttemptOutcome =
+  | { kind: 'success'; result: OrganisationAssignmentResult }
+  | { kind: 'retry' }
+  | { kind: 'break-mode'; lastError: unknown };
+
+type ModeAttemptsLoopOutcome = { kind: 'success'; result: OrganisationAssignmentResult } | { kind: 'broken'; lastError: unknown };
+
+async function handleRetryExternalAssignment(
+  args: AssignUserToOrganisationFlowArgs,
+  deps: Pick<OrganisationAssignmentFlowDeps, 'waitForUserPropagation'>,
+  mode: OrganisationAssignmentMode,
+  attempt: number,
+  modeAttempts: number,
+  statusCode: number | undefined
+): Promise<void> {
+  const shouldLogRetry = attempt === 1 || attempt % 3 === 0 || attempt + 1 === modeAttempts;
+  if (shouldLogRetry) {
+    logger.warn(
+      'External organisation invite returned retryable status; waiting for propagation/transient recovery and retrying.',
+      {
+        organisationId: args.organisationId,
+        attemptedMode: mode,
+        attempt,
+        attempts: modeAttempts,
+        statusCode,
+        username: args.options.user.email,
+      }
+    );
+  }
+  const propagationOutcome = await deps.waitForUserPropagation(args.options.user);
+  if (propagationOutcome.degraded) {
+    logger.warn('External assignment retry is continuing after degraded propagation checks.', {
+      email: args.options.user.email,
+      reason: propagationOutcome.reason,
+      mode,
+    });
+  }
+  await sleep(resolveExternalAssignmentRetryDelayMs());
+}
+
+async function executeRdModeAttempt(
+  params: {
+    mode: OrganisationAssignmentMode;
+    attempt: number;
+    modeAttempts: number;
+    endpoint: string;
+    client: ApiClient;
+    args: AssignUserToOrganisationFlowArgs;
+    prereqs: AssignmentPrerequisites;
+    attemptedModes: OrganisationAssignmentMode[];
+  },
+  deps: OrganisationAssignmentFlowDeps
+): Promise<RdModeAttemptOutcome> {
+  const { mode, attempt, modeAttempts, endpoint, client, args, prereqs, attemptedModes } = params;
+  const { assignmentBearerToken, serviceToken, rdProfessionalApiPath, headers, assignmentUserRoles } = prereqs;
+  try {
+    const response = await client.post<Record<string, unknown>>(endpoint, {
+      headers,
+      data: args.payload,
+      responseType: 'json',
+      timeoutMs: args.assignmentRequestTimeoutMs,
+    });
+    return {
+      kind: 'success',
+      result: {
+        organisationId: args.organisationId,
+        mode,
+        requestedMode: args.requestedMode,
+        attemptedModes: [...attemptedModes],
+        roles: args.roles,
+        status: response.status,
+        userIdentifier: readUserIdentifier(response.data),
+        responseBody: response.data,
+      },
+    };
+  } catch (error) {
+    const statusCode = parseStatusCode(error);
+    if (statusCode === 409 && mode === 'external') {
+      const reconciledAssignment = await deps.reconcileExistingOrganisationAssignment({
+        client,
+        rdProfessionalApiPath,
+        organisationId: args.organisationId,
+        user: args.options.user,
+        roles: args.roles,
+        headers,
+      });
+      logger.warn('Organisation assignment returned idempotent conflict; reconciled existing assignment.', {
+        organisationId: args.organisationId,
+        attemptedMode: mode,
+        requestedMode: args.requestedMode,
+        username: args.options.user.email,
+        userIdentifier: reconciledAssignment.userIdentifier,
+        reconciliationStatus: reconciledAssignment.status,
+      });
+      return {
+        kind: 'success',
+        result: {
+          organisationId: args.organisationId,
+          mode,
+          requestedMode: args.requestedMode,
+          attemptedModes: [...attemptedModes],
+          roles: args.roles,
+          status: 409,
+          userIdentifier: reconciledAssignment.userIdentifier,
+          responseBody: { conflict: 'already-exists', reconciliation: reconciledAssignment },
+        },
+      };
+    }
+    const hasNextMode = attemptedModes.length < args.modesToTry.length;
+    if (shouldRetryExternalAssignment(mode, statusCode) && attempt < modeAttempts) {
+      await handleRetryExternalAssignment(args, deps, mode, attempt, modeAttempts, statusCode);
+      return { kind: 'retry' };
+    }
+    if (hasNextMode && shouldFallbackToAlternateAssignmentMode(statusCode)) {
+      logger.warn('Organisation assignment attempt failed; trying fallback mode.', {
+        organisationId: args.organisationId,
+        attemptedMode: mode,
+        nextMode: args.modesToTry[attemptedModes.length],
+        statusCode,
+        username: args.options.user.email,
+        requestedMode: args.requestedMode,
+      });
+      return { kind: 'break-mode', lastError: error };
+    }
+    const diagnostics = await deps.collectAssignmentFailureDiagnostics({
+      error,
+      assignmentBearerToken,
+      serviceToken,
+      rdProfessionalApiPath,
+      endpoint,
+      mode,
+      organisationId: args.organisationId,
+      requestedMode: args.requestedMode,
+      attemptedModes: [...attemptedModes],
+      user: args.options.user,
+      roles: args.roles,
+      headers,
+      assignmentUserRoles,
+    });
+    logger.error('Organisation assignment failed. PRD principal and role diagnostics:', diagnostics);
+    if (shouldUseManageOrgInviteFallback(error)) {
+      return { kind: 'break-mode', lastError: error };
+    }
+    throw error;
+  }
+}
+
+async function executeRdModeAttemptsLoop(
+  params: {
+    mode: OrganisationAssignmentMode;
+    endpoint: string;
+    modeAttempts: number;
+    client: ApiClient;
+    args: AssignUserToOrganisationFlowArgs;
+    prereqs: AssignmentPrerequisites;
+    attemptedModes: OrganisationAssignmentMode[];
+  },
+  deps: OrganisationAssignmentFlowDeps
+): Promise<ModeAttemptsLoopOutcome> {
+  const { mode, endpoint, modeAttempts, client, args, prereqs, attemptedModes } = params;
+  for (let attempt = 1; attempt <= modeAttempts; attempt += 1) {
+    const outcome = await executeRdModeAttempt(
+      { mode, attempt, modeAttempts, endpoint, client, args, prereqs, attemptedModes },
+      deps
+    );
+    if (outcome.kind === 'success') return { kind: 'success', result: outcome.result };
+    if (outcome.kind === 'retry') continue;
+    return { kind: 'broken', lastError: outcome.lastError };
+  }
+  return { kind: 'broken', lastError: undefined };
+}
+
+async function executeManageOrgFallback(
+  args: AssignUserToOrganisationFlowArgs,
+  deps: Pick<OrganisationAssignmentFlowDeps, 'inviteUserViaManageOrgApi'>,
+  attemptedModes: OrganisationAssignmentMode[],
+  logMessage: string
+): Promise<OrganisationAssignmentResult> {
+  const manageOrgFallback = await deps.inviteUserViaManageOrgApi({
+    user: args.options.user,
+    roles: args.roles,
+    resendInvite: args.options.resendInvite ?? false,
+  });
+  logger.warn(logMessage, {
+    organisationId: args.organisationId,
+    requestedMode: args.requestedMode,
+    attemptedModes,
+    fallbackStatus: manageOrgFallback.status,
+    email: args.options.user.email,
+  });
+  return {
+    organisationId: args.organisationId,
+    mode: 'external',
+    requestedMode: args.requestedMode,
+    attemptedModes: [...attemptedModes, 'external'],
+    roles: args.roles,
+    status: manageOrgFallback.status,
+    userIdentifier: manageOrgFallback.userIdentifier,
+    responseBody: { fallback: 'manage-org-invite', payload: manageOrgFallback.responseBody },
+  };
+}
+
+async function tryManageOrgPrimary(
+  args: AssignUserToOrganisationFlowArgs,
+  deps: Pick<OrganisationAssignmentFlowDeps, 'inviteUserViaManageOrgApi' | 'isUserVisibleInOrganisationAssignment'>
+): Promise<OrganisationAssignmentResult | null> {
+  try {
+    const manageOrgPrimary = await deps.inviteUserViaManageOrgApi({
+      user: args.options.user,
+      roles: args.roles,
+      resendInvite: args.options.resendInvite ?? false,
+    });
+    const requiresConflictVerification = manageOrgPrimary.status === 409;
+    const conflictVerified =
+      !requiresConflictVerification ||
+      (await deps.isUserVisibleInOrganisationAssignment({
+        organisationId: args.organisationId,
+        user: args.options.user,
+        assignmentBearerToken: args.options.assignmentBearerToken,
+        serviceToken: args.options.serviceToken,
+        rdProfessionalApiPath: args.options.rdProfessionalApiPath,
+        requireServiceAuth: args.options.requireServiceAuth,
+      }));
+    if (requiresConflictVerification && !conflictVerified) {
+      logger.warn(
+        'Manage-org invite returned 409, but RD Professional lookup could not confirm user assignment. Continuing with RD fallback.',
+        { organisationId: args.organisationId, requestedMode: args.requestedMode, email: args.options.user.email }
+      );
+      return null;
+    }
+    logger.info('Organisation assignment succeeded via manage-org invite primary path.', {
+      organisationId: args.organisationId,
+      requestedMode: args.requestedMode,
+      email: args.options.user.email,
+      status: manageOrgPrimary.status,
+    });
+    return {
+      organisationId: args.organisationId,
+      mode: 'external',
+      requestedMode: args.requestedMode,
+      attemptedModes: ['external'],
+      roles: args.roles,
+      status: manageOrgPrimary.status,
+      userIdentifier: manageOrgPrimary.userIdentifier,
+      responseBody: { assignmentPath: 'manage-org-invite-primary', payload: manageOrgPrimary.responseBody },
+    };
+  } catch (error) {
+    if (!shouldFallbackToRdAfterManageOrgFailure()) throw error;
+    logger.warn('Manage-org invite primary path failed; falling back to RD Professional assignment path.', {
+      organisationId: args.organisationId,
+      requestedMode: args.requestedMode,
+      email: args.options.user.email,
+      error: getErrorMessage(error) ?? '[non-Error thrown]',
+    });
+    return null;
+  }
+}
+
 export async function assignUserToOrganisationFlow(
   args: AssignUserToOrganisationFlowArgs,
   deps: OrganisationAssignmentFlowDeps
@@ -109,80 +367,20 @@ export async function assignUserToOrganisationFlow(
   const attemptedModes: OrganisationAssignmentMode[] = [];
 
   if (shouldUseManageOrgInvitePrimary()) {
-    try {
-      const manageOrgPrimary = await deps.inviteUserViaManageOrgApi({
-        user: args.options.user,
-        roles: args.roles,
-        resendInvite: args.options.resendInvite ?? false,
-      });
-      const requiresConflictVerification = manageOrgPrimary.status === 409;
-      const conflictVerified =
-        !requiresConflictVerification ||
-        (await deps.isUserVisibleInOrganisationAssignment({
-          organisationId: args.organisationId,
-          user: args.options.user,
-          assignmentBearerToken: args.options.assignmentBearerToken,
-          serviceToken: args.options.serviceToken,
-          rdProfessionalApiPath: args.options.rdProfessionalApiPath,
-          requireServiceAuth: args.options.requireServiceAuth,
-        }));
-      if (requiresConflictVerification && !conflictVerified) {
-        logger.warn(
-          'Manage-org invite returned 409, but RD Professional lookup could not confirm user assignment. Continuing with RD fallback.',
-          {
-            organisationId: args.organisationId,
-            requestedMode: args.requestedMode,
-            email: args.options.user.email,
-          }
-        );
-      } else {
-        logger.info('Organisation assignment succeeded via manage-org invite primary path.', {
-          organisationId: args.organisationId,
-          requestedMode: args.requestedMode,
-          email: args.options.user.email,
-          status: manageOrgPrimary.status,
-        });
-        return {
-          organisationId: args.organisationId,
-          mode: 'external',
-          requestedMode: args.requestedMode,
-          attemptedModes: ['external'],
-          roles: args.roles,
-          status: manageOrgPrimary.status,
-          userIdentifier: manageOrgPrimary.userIdentifier,
-          responseBody: {
-            assignmentPath: 'manage-org-invite-primary',
-            payload: manageOrgPrimary.responseBody,
-          },
-        };
-      }
-    } catch (error) {
-      if (!shouldFallbackToRdAfterManageOrgFailure()) {
-        throw error;
-      }
-      logger.warn('Manage-org invite primary path failed; falling back to RD Professional assignment path.', {
-        organisationId: args.organisationId,
-        requestedMode: args.requestedMode,
-        email: args.options.user.email,
-        error: error instanceof Error ? error.message : String(error),
-      });
-    }
+    const primaryResult = await tryManageOrgPrimary(args, deps);
+    if (primaryResult) return primaryResult;
   }
 
   let client: ApiClient | undefined;
   try {
-    const { assignmentBearerToken, serviceToken, rdProfessionalApiPath, headers, assignmentUserRoles } =
-      await deps.resolveAssignmentPrerequisites();
-    client = new ApiClient({
-      baseUrl: rdProfessionalApiPath,
-      name: 'rd-professional-assignment',
-    });
+    const prereqs = await deps.resolveAssignmentPrerequisites();
+    client = new ApiClient({ baseUrl: prereqs.rdProfessionalApiPath, name: 'rd-professional-assignment' });
     logger.info('Resolved assignment principal roles for organisation assignment.', {
       organisationId: args.organisationId,
       requestedMode: args.requestedMode,
-      source: assignmentUserRoles.source,
-      profile: assignmentUserRoles.profile,
-      roles: assignmentUserRoles.roles,
+      source: prereqs.assignmentUserRoles.source,
+      profile: prereqs.assignmentUserRoles.profile,
+      roles: prereqs.assignmentUserRoles.roles,
     });
 
     let lastError: unknown;
@@ -193,182 +391,31 @@ export async function assignUserToOrganisationFlow(
           : '/refdata/external/v1/organisations/users/';
       attemptedModes.push(mode);
       const modeAttempts = mode === 'external' ? resolveExternalAssignmentRetryAttempts() : 1;
-
-      for (let attempt = 1; attempt <= modeAttempts; attempt += 1) {
-        try {
-          const response = await client.post<Record<string, unknown>>(endpoint, {
-            headers,
-            data: args.payload,
-            responseType: 'json',
-            timeoutMs: args.assignmentRequestTimeoutMs,
-          });
-          return {
-            organisationId: args.organisationId,
-            mode,
-            requestedMode: args.requestedMode,
-            attemptedModes: [...attemptedModes],
-            roles: args.roles,
-            status: response.status,
-            userIdentifier: readUserIdentifier(response.data),
-            responseBody: response.data,
-          };
-        } catch (error) {
-          lastError = error;
-          const statusCode = parseStatusCode(error);
-          if (statusCode === 409 && mode === 'external') {
-            const reconciledAssignment = await deps.reconcileExistingOrganisationAssignment({
-              client,
-              rdProfessionalApiPath,
-              organisationId: args.organisationId,
-              user: args.options.user,
-              roles: args.roles,
-              headers,
-            });
-            logger.warn('Organisation assignment returned idempotent conflict; reconciled existing assignment.', {
-              organisationId: args.organisationId,
-              attemptedMode: mode,
-              requestedMode: args.requestedMode,
-              username: args.options.user.email,
-              userIdentifier: reconciledAssignment.userIdentifier,
-              reconciliationStatus: reconciledAssignment.status,
-            });
-            return {
-              organisationId: args.organisationId,
-              mode,
-              requestedMode: args.requestedMode,
-              attemptedModes: [...attemptedModes],
-              roles: args.roles,
-              status: 409,
-              userIdentifier: reconciledAssignment.userIdentifier,
-              responseBody: {
-                conflict: 'already-exists',
-                reconciliation: reconciledAssignment,
-              },
-            };
-          }
-
-          const hasNextMode = attemptedModes.length < args.modesToTry.length;
-          const retryExternalUserVisibility = shouldRetryExternalAssignment(mode, statusCode) && attempt < modeAttempts;
-
-          if (retryExternalUserVisibility) {
-            const shouldLogRetry = attempt === 1 || attempt % 3 === 0 || attempt + 1 === modeAttempts;
-            if (shouldLogRetry) {
-              logger.warn(
-                'External organisation invite returned retryable status; waiting for propagation/transient recovery and retrying.',
-                {
-                  organisationId: args.organisationId,
-                  attemptedMode: mode,
-                  attempt,
-                  attempts: modeAttempts,
-                  statusCode,
-                  username: args.options.user.email,
-                }
-              );
-            }
-            const propagationOutcome = await deps.waitForUserPropagation(args.options.user);
-            if (propagationOutcome.degraded) {
-              logger.warn('External assignment retry is continuing after degraded propagation checks.', {
-                email: args.options.user.email,
-                reason: propagationOutcome.reason,
-                mode,
-              });
-            }
-            await sleep(resolveExternalAssignmentRetryDelayMs());
-            continue;
-          }
-
-          if (hasNextMode && shouldFallbackToAlternateAssignmentMode(statusCode)) {
-            logger.warn('Organisation assignment attempt failed; trying fallback mode.', {
-              organisationId: args.organisationId,
-              attemptedMode: mode,
-              nextMode: args.modesToTry[attemptedModes.length],
-              statusCode,
-              username: args.options.user.email,
-              requestedMode: args.requestedMode,
-            });
-            break;
-          }
-
-          const diagnostics = await deps.collectAssignmentFailureDiagnostics({
-            error,
-            assignmentBearerToken,
-            serviceToken,
-            rdProfessionalApiPath,
-            endpoint,
-            mode,
-            organisationId: args.organisationId,
-            requestedMode: args.requestedMode,
-            attemptedModes: [...attemptedModes],
-            user: args.options.user,
-            roles: args.roles,
-            headers,
-            assignmentUserRoles,
-          });
-          logger.error('Organisation assignment failed. PRD principal and role diagnostics:', diagnostics);
-          if (shouldUseManageOrgInviteFallback(error)) {
-            break;
-          }
-          throw error;
-        }
-      }
+      const modeOutcome = await executeRdModeAttemptsLoop(
+        { mode, endpoint, modeAttempts, client, args, prereqs, attemptedModes },
+        deps
+      );
+      if (modeOutcome.kind === 'success') return modeOutcome.result;
+      lastError = modeOutcome.lastError;
     }
 
     if (shouldUseManageOrgInviteFallback(lastError)) {
-      const manageOrgFallback = await deps.inviteUserViaManageOrgApi({
-        user: args.options.user,
-        roles: args.roles,
-        resendInvite: args.options.resendInvite ?? false,
-      });
-      logger.warn('Organisation assignment succeeded via manage-org invite fallback after RD Professional failure.', {
-        organisationId: args.organisationId,
-        requestedMode: args.requestedMode,
+      return executeManageOrgFallback(
+        args,
+        deps,
         attemptedModes,
-        fallbackStatus: manageOrgFallback.status,
-        email: args.options.user.email,
-      });
-      return {
-        organisationId: args.organisationId,
-        mode: 'external',
-        requestedMode: args.requestedMode,
-        attemptedModes: [...attemptedModes, 'external'],
-        roles: args.roles,
-        status: manageOrgFallback.status,
-        userIdentifier: manageOrgFallback.userIdentifier,
-        responseBody: {
-          fallback: 'manage-org-invite',
-          payload: manageOrgFallback.responseBody,
-        },
-      };
+        'Organisation assignment succeeded via manage-org invite fallback after RD Professional failure.'
+      );
     }
-
     throw toError(lastError, 'Organisation assignment failed.');
   } catch (error) {
     if (shouldUseManageOrgInviteFallback(error)) {
-      const manageOrgFallback = await deps.inviteUserViaManageOrgApi({
-        user: args.options.user,
-        roles: args.roles,
-        resendInvite: args.options.resendInvite ?? false,
-      });
-      logger.warn('Organisation assignment recovered via manage-org invite fallback after RD prerequisite failure.', {
-        organisationId: args.organisationId,
-        requestedMode: args.requestedMode,
+      return executeManageOrgFallback(
+        args,
+        deps,
         attemptedModes,
-        fallbackStatus: manageOrgFallback.status,
-        email: args.options.user.email,
-      });
-      return {
-        organisationId: args.organisationId,
-        mode: 'external',
-        requestedMode: args.requestedMode,
-        attemptedModes: [...attemptedModes, 'external'],
-        roles: args.roles,
-        status: manageOrgFallback.status,
-        userIdentifier: manageOrgFallback.userIdentifier,
-        responseBody: {
-          fallback: 'manage-org-invite',
-          payload: manageOrgFallback.responseBody,
-        },
-      };
+        'Organisation assignment recovered via manage-org invite fallback after RD prerequisite failure.'
+      );
     }
     throw error;
   } finally {
@@ -419,7 +466,8 @@ function shouldUseManageOrgInviteFallback(error: unknown): boolean {
   }
   const statusCode = parseStatusCode(error);
   if (statusCode === undefined) {
-    const message = error instanceof Error ? error.message : String(error);
+    const message = getErrorMessage(error);
+    if (!message) return false;
     const lowered = message.toLowerCase();
     return (
       lowered.includes('forbidden') ||
@@ -444,8 +492,17 @@ function shouldFallbackToRdAfterManageOrgFailure(): boolean {
   );
 }
 
+function getErrorMessage(error: unknown): string | undefined {
+  if (error instanceof Error) return error.message;
+  if (typeof error === 'string') return error;
+  return undefined;
+}
+
 function parseStatusCode(error: unknown): number | undefined {
-  const message = error instanceof Error ? error.message : String(error);
+  const message = getErrorMessage(error);
+  if (!message) {
+    return undefined;
+  }
   const explicit = /Status Code:\s*(\d{3})/i.exec(message);
   if (explicit) {
     const parsed = Number.parseInt(explicit[1], 10);

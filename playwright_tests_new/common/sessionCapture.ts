@@ -13,9 +13,10 @@ const logger = createLogger({ serviceName: 'session-capture', format: 'pretty' }
 
 const IDAM_USERNAME_SELECTOR =
   '[data-testid="idam-username-input"], input#username, input[name="username"], input[type="email"], input#email, input[name="email"], input[name="emailAddress"], input[autocomplete="email"]';
-const IDAM_PASSWORD_SELECTOR = 'input#password, input[name="password"], input[type="password"]';
+const IDAM_PASSWORD_SELECTOR = 'input#password, input[name="password"], input[type="password"]'; // NOSONAR - CSS selector, not a hardcoded password
 const IDAM_SUBMIT_SELECTOR = '[name="save"], button[type="submit"], button:has-text("Sign in"), button:has-text("Continue")';
 const CHROME_ERROR_URL_PREFIX = 'chrome-error://chromewebdata/';
+const DEFAULT_SESSION_MAX_AGE_MS = 60 * 60 * 1000;
 
 function currentPageUrl(page: Page): string {
   try {
@@ -26,7 +27,18 @@ function currentPageUrl(page: Page): string {
 }
 
 function toError(error: unknown): Error {
-  return error instanceof Error ? error : new Error(String(error));
+  if (error instanceof Error) return error;
+  if (typeof error === 'string') return new Error(error);
+  return new Error('[non-Error thrown]');
+}
+
+function isLockAlreadyHeldError(error: unknown): boolean {
+  const candidate = error as { code?: string; message?: string };
+  return (
+    candidate?.code === 'ELOCKED' ||
+    candidate?.message?.includes('already being held') === true ||
+    candidate?.message?.includes('Lock file is already being held') === true
+  );
 }
 
 function isChromeErrorNavigationFailure(error: unknown, currentUrl: string): boolean {
@@ -215,6 +227,11 @@ export function getSetupMarker(page: Page): string {
   return setupMarkerByPage.get(page) ?? DEFAULT_SETUP_MARKER;
 }
 
+function resolveSessionMaxAgeMs(env: NodeJS.ProcessEnv = process.env): number {
+  const configured = Number(env.PW_SESSION_MAX_AGE_MS);
+  return Number.isFinite(configured) && configured > 0 ? configured : DEFAULT_SESSION_MAX_AGE_MS;
+}
+
 /**
  * Ensure session is captured for a given userIdentifier before tests run.
  * Call this in test.beforeAll() to lazily capture only needed sessions.
@@ -225,7 +242,7 @@ export async function ensureSession(userIdentifier: string): Promise<void> {
   const email = creds.email;
   const sessionPath = path.join(process.cwd(), '.sessions', `${email}.storage.json`);
 
-  const isFresh = isSessionFresh(sessionPath);
+  const isFresh = isSessionFresh(sessionPath, resolveSessionMaxAgeMs());
   if (isFresh) {
     logger.info('Session is fresh, skipping capture', {
       userIdentifier,
@@ -514,7 +531,7 @@ export async function ensureAuthenticatedPage(
 //Return true if sessionPath exists and its mtime is within maxAgeMs.
 export function isSessionFresh(
   sessionPath: string,
-  maxAgeMs = 15 * 60 * 1000,
+  maxAgeMs = DEFAULT_SESSION_MAX_AGE_MS,
   deps: { fs?: typeof fs; now?: () => number } = {}
 ): boolean {
   const fsApi = deps.fs ?? fs;
@@ -601,6 +618,162 @@ function ensureLockFile(fsApi: typeof fs, lockFilePath: string) {
   }
 }
 
+async function acquireSessionLock({
+  fsApi,
+  lockfileApi,
+  lockFilePath,
+  userIdentifier,
+  isSessionReusable,
+  force,
+}: {
+  fsApi: typeof fs;
+  lockfileApi: typeof lockfile;
+  lockFilePath: string;
+  userIdentifier: string;
+  isSessionReusable: () => boolean;
+  force: boolean;
+}): Promise<(() => Promise<void>) | null> {
+  const pollIntervalMs = 1000;
+  const maxWaitMs = 90000;
+  const staleLockWindowMs = 65000;
+  const startedAt = Date.now();
+  let attempt = 0;
+
+  while (true) {
+    if (!force && isSessionReusable()) {
+      logger.info('Fresh session detected while waiting for lock', {
+        userIdentifier,
+        lockFilePath,
+        waitMs: Date.now() - startedAt,
+        operation: 'session-capture',
+      });
+      return null;
+    }
+
+    try {
+      return await lockfileApi.lock(lockFilePath, {
+        retries: 0,
+        stale: 60000,
+      });
+    } catch (error) {
+      if (!isLockAlreadyHeldError(error)) {
+        throw error;
+      }
+
+      attempt += 1;
+      const elapsedMs = Date.now() - startedAt;
+      const recovered = tryRecoverAbandonedSessionLock(fsApi, lockFilePath, staleLockWindowMs);
+      if (recovered) {
+        logger.warn('Recovered abandoned session lock artifact', {
+          userIdentifier,
+          lockFilePath,
+          attempt,
+          elapsedMs,
+          operation: 'session-capture',
+        });
+        continue;
+      }
+      if (elapsedMs >= maxWaitMs) {
+        throw new Error(`Timed out waiting for session lock for ${userIdentifier} after ${elapsedMs}ms (${lockFilePath})`);
+      }
+
+      logger.info('Session lock currently held by another worker', {
+        userIdentifier,
+        lockFilePath,
+        attempt,
+        elapsedMs,
+        operation: 'session-capture',
+      });
+      await new Promise<void>((resolve) => setTimeout(resolve, Math.min(pollIntervalMs, maxWaitMs - elapsedMs)));
+    }
+  }
+}
+
+function tryRecoverAbandonedSessionLock(fsApi: typeof fs, lockFilePath: string, staleLockWindowMs: number): boolean {
+  const lockArtifactPath = `${lockFilePath}.lock`;
+  try {
+    if (!fsApi.existsSync(lockArtifactPath)) {
+      return false;
+    }
+    const ageMs = Date.now() - fsApi.statSync(lockArtifactPath).mtimeMs;
+    if (ageMs < staleLockWindowMs) {
+      return false;
+    }
+    fsApi.rmSync(lockArtifactPath, { recursive: true, force: true });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function executeLoginAttempt(
+  page: Page,
+  idamPage: IdamPage,
+  userIdentifier: string,
+  email: string,
+  password: string,
+  loginTarget: string,
+  attemptIndex: number
+): Promise<void> {
+  await gotoLoginTarget(page, userIdentifier, loginTarget);
+  await acceptAccessCookiesIfPresent(page);
+  const shellMarker = await waitForAuthenticatedShell(page, userIdentifier, undefined, 5000).catch(() => null);
+  if (shellMarker) {
+    logger.info('Authenticated shell detected without IDAM form login', {
+      userIdentifier,
+      email,
+      loginTarget,
+      marker: shellMarker,
+      attempt: attemptIndex,
+      operation: 'session-capture',
+    });
+    return;
+  }
+
+  const usernameInput = page.locator(IDAM_USERNAME_SELECTOR).first();
+  const passwordInput = page.locator(IDAM_PASSWORD_SELECTOR).first(); // NOSONAR
+  const submitButton = page.locator(IDAM_SUBMIT_SELECTOR).first();
+  const loginSurface = await Promise.race([
+    usernameInput.waitFor({ state: 'visible', timeout: 60000 }).then(() => 'login'),
+    page
+      .locator('exui-header, exui-case-home')
+      .first()
+      .waitFor({ state: 'visible', timeout: 60000 })
+      .then(() => 'app'),
+  ]).catch(() => null);
+
+  if (loginSurface === 'app') return;
+
+  if (loginSurface !== 'login') {
+    await idamPage.usernameInput.waitFor({ state: 'visible', timeout: 10000 });
+    await idamPage.login({ username: email, password });
+    return;
+  }
+
+  await usernameInput.fill(email);
+  await passwordInput.fill(password); // NOSONAR
+  if (await submitButton.isVisible().catch(() => false)) {
+    await submitButton.click();
+  } else {
+    await passwordInput.press('Enter');
+  }
+  await acceptAccessCookiesIfPresent(page);
+
+  const postLoginShell = await waitForAuthenticatedShell(page, userIdentifier, undefined, 15000).catch(() => null);
+  const hasAuthCookies = await waitForRequiredAuthCookies(page, 15000);
+  if (!postLoginShell && !hasAuthCookies) {
+    throw new Error(`IDAM login did not establish authenticated session for ${userIdentifier} (url=${currentPageUrl(page)}).`);
+  }
+  logger.info('IDAM login successful', {
+    userIdentifier,
+    email,
+    loginTarget,
+    attempt: attemptIndex,
+    marker: postLoginShell ?? 'auth-cookies',
+    operation: 'session-capture',
+  });
+}
+
 async function loginAndPersistSession({
   chromiumLauncher,
   idamFactory,
@@ -641,71 +814,8 @@ async function loginAndPersistSession({
       for (let attempt = 0; attempt < loginTargets.length; attempt += 1) {
         const loginTarget = loginTargets[attempt];
         try {
-          await gotoLoginTarget(page, userIdentifier, loginTarget);
-          await acceptAccessCookiesIfPresent(page);
-          const shellMarker = await waitForAuthenticatedShell(page, userIdentifier, undefined, 5000).catch(() => null);
-          if (shellMarker) {
-            logger.info('Authenticated shell detected without IDAM form login', {
-              userIdentifier,
-              email,
-              loginTarget,
-              marker: shellMarker,
-              attempt: attempt + 1,
-              operation: 'session-capture',
-            });
-            loginError = null;
-            break;
-          }
-
-          const usernameInput = page.locator(IDAM_USERNAME_SELECTOR).first();
-          const passwordInput = page.locator(IDAM_PASSWORD_SELECTOR).first();
-          const submitButton = page.locator(IDAM_SUBMIT_SELECTOR).first();
-          const loginSurface = await Promise.race([
-            usernameInput.waitFor({ state: 'visible', timeout: 60000 }).then(() => 'login'),
-            page
-              .locator('exui-header, exui-case-home')
-              .first()
-              .waitFor({ state: 'visible', timeout: 60000 })
-              .then(() => 'app'),
-          ]).catch(() => null);
-
-          if (loginSurface === 'app') {
-            loginError = null;
-            break;
-          }
-
-          if (loginSurface !== 'login') {
-            await idamPage.usernameInput.waitFor({ state: 'visible', timeout: 10000 });
-            await idamPage.login({ username: email, password });
-            loginError = null;
-            break;
-          }
-
-          await usernameInput.fill(email);
-          await passwordInput.fill(password);
-          if (await submitButton.isVisible().catch(() => false)) {
-            await submitButton.click();
-          } else {
-            await passwordInput.press('Enter');
-          }
-          await acceptAccessCookiesIfPresent(page);
-
-          const postLoginShell = await waitForAuthenticatedShell(page, userIdentifier, undefined, 15000).catch(() => null);
-          const hasAuthCookies = await waitForRequiredAuthCookies(page, 15000);
-          if (!postLoginShell && !hasAuthCookies) {
-            throw new Error(
-              `IDAM login did not establish authenticated session for ${userIdentifier} (url=${currentPageUrl(page)}).`
-            );
-          }
+          await executeLoginAttempt(page, idamPage, userIdentifier, email, password, loginTarget, attempt + 1);
           loginError = null;
-          logger.info('IDAM login successful', {
-            userIdentifier,
-            email,
-            loginTarget,
-            attempt: attempt + 1,
-            marker: postLoginShell ?? 'auth-cookies',
-            operation: 'session-capture',
-          });
           break;
         } catch (attemptError) {
           loginError = attemptError as Error;
@@ -804,14 +914,24 @@ async function sessionCaptureWith(identifiers: string[], deps: SessionCaptureDep
         operation: 'session-capture',
       });
 
-      release = await lockfileApi.lock(lockFilePath, {
-        retries: {
-          retries: 30,
-          minTimeout: 1000,
-          maxTimeout: 5000,
-        },
-        stale: 60000, // Consider lock stale after 60s
+      release = await acquireSessionLock({
+        fsApi,
+        lockfileApi,
+        lockFilePath,
+        userIdentifier: id,
+        isSessionReusable: () => isFresh(sessionPath),
+        force,
       });
+
+      if (!release) {
+        logger.info('Skipping session capture because another worker refreshed the session', {
+          userIdentifier: id,
+          email,
+          sessionPath,
+          operation: 'session-capture',
+        });
+        continue;
+      }
 
       logger.info('Lock acquired', {
         userIdentifier: id,
@@ -863,6 +983,8 @@ async function sessionCaptureWith(identifiers: string[], deps: SessionCaptureDep
 }
 
 export const __test__ = {
+  resolveSessionMaxAgeMs,
+  acquireSessionLock,
   sessionCaptureWith,
   persistSession,
 };

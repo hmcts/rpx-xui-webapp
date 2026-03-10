@@ -22,6 +22,53 @@ function readNumericStatus(value: Record<string, unknown>): number | undefined {
   return typeof value.status === 'number' ? value.status : undefined;
 }
 
+function getErrorMessage(error: unknown): string | undefined {
+  if (error instanceof Error) return error.message;
+  if (typeof error === 'string') return error;
+  return undefined;
+}
+
+async function resolveCreateBearerTokenSafe(deps: PropagationProbeDeps, user: ProfessionalUserInfo): Promise<string | undefined> {
+  try {
+    return await deps.resolveCreateUserBearerToken();
+  } catch (error) {
+    deps.warn('Create-user bearer token unavailable for propagation probe; using password-grant probe only.', {
+      email: user.email,
+      message: getErrorMessage(error) ?? '[non-Error thrown]',
+    });
+    return undefined;
+  }
+}
+
+async function probeOnce(
+  user: ProfessionalUserInfo,
+  deps: PropagationProbeDeps,
+  createUserBearerToken: string | undefined
+): Promise<UserPropagationOutcome> {
+  if (createUserBearerToken) {
+    await deps.getUserInfoByEmail({ bearerToken: createUserBearerToken, email: user.email });
+  }
+
+  const passwordGrantToken = await deps.tryGenerateUserPasswordGrantToken(user);
+  if (!passwordGrantToken) {
+    deps.warn('Password-grant token unavailable for user propagation probe; using IDAM API presence check only.', {
+      email: user.email,
+    });
+    if (createUserBearerToken) {
+      return { verified: true, degraded: true, reason: 'idam-api-only' };
+    }
+    deps.warn('Skipping user propagation probes because no probe token could be generated.', { email: user.email });
+    return { verified: false, degraded: true, reason: 'no-probe-token' };
+  }
+
+  const userInfoProbe = await deps.probeIdamUserInfo(passwordGrantToken);
+  const status = readNumericStatus(userInfoProbe);
+  if (status === 200) {
+    return { verified: true, degraded: false, reason: 'idam-api-and-userinfo-probe' };
+  }
+  throw new Error(`IDAM userinfo probe status ${typeof status === 'number' ? status : 'unknown'}`);
+}
+
 export async function waitForUserPropagationFlow(
   user: ProfessionalUserInfo,
   deps: PropagationProbeDeps,
@@ -30,56 +77,12 @@ export async function waitForUserPropagationFlow(
   const maxAttempts = options.maxAttempts ?? DEFAULT_USER_PROPAGATION_CHECK_MAX_ATTEMPTS;
   const retryDelayMs = options.retryDelayMs ?? DEFAULT_USER_PROPAGATION_CHECK_RETRY_DELAY_MS;
   let lastError: unknown;
-  let createUserBearerToken: string | undefined;
 
-  try {
-    createUserBearerToken = await deps.resolveCreateUserBearerToken();
-  } catch (error) {
-    deps.warn('Create-user bearer token unavailable for propagation probe; using password-grant probe only.', {
-      email: user.email,
-      message: error instanceof Error ? error.message : String(error),
-    });
-  }
+  const createUserBearerToken = await resolveCreateBearerTokenSafe(deps, user);
 
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     try {
-      if (createUserBearerToken) {
-        await deps.getUserInfoByEmail({
-          bearerToken: createUserBearerToken,
-          email: user.email,
-        });
-      }
-
-      const passwordGrantToken = await deps.tryGenerateUserPasswordGrantToken(user);
-      if (!passwordGrantToken) {
-        deps.warn('Password-grant token unavailable for user propagation probe; using IDAM API presence check only.', {
-          email: user.email,
-        });
-        if (createUserBearerToken) {
-          return {
-            verified: true,
-            degraded: true,
-            reason: 'idam-api-only',
-          };
-        }
-        deps.warn('Skipping user propagation probes because no probe token could be generated.', { email: user.email });
-        return {
-          verified: false,
-          degraded: true,
-          reason: 'no-probe-token',
-        };
-      }
-
-      const userInfoProbe = await deps.probeIdamUserInfo(passwordGrantToken);
-      const status = readNumericStatus(userInfoProbe);
-      if (status === 200) {
-        return {
-          verified: true,
-          degraded: false,
-          reason: 'idam-api-and-userinfo-probe',
-        };
-      }
-      throw new Error(`IDAM userinfo probe status ${typeof status === 'number' ? status : 'unknown'}`);
+      return await probeOnce(user, deps, createUserBearerToken);
     } catch (error) {
       lastError = error;
       if (attempt === maxAttempts) {

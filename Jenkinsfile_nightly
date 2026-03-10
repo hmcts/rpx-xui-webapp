@@ -68,6 +68,8 @@ withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
+    env.MICROSERVICE = env.MICROSERVICE ?: 'xui_webapp'
+    env.S2S_MICROSERVICE_NAME = env.S2S_MICROSERVICE_NAME ?: env.MICROSERVICE
     enableFortifyScan('rpx-aat')
     
       afterSuccess('checkout') {

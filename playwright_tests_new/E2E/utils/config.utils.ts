@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'node:url';
 import * as path from 'node:path';
 import { UserUtils } from './user.utils.js';
 

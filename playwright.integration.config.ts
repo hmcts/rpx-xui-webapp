@@ -1,4 +1,4 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices, type ReporterDescription } from '@playwright/test';
 import { version as appVersion } from './package.json';
 import {
   resolveAgentHardwareLabel,
@@ -102,7 +102,7 @@ const buildConfig = (env: EnvMap = process.env) => {
   const targetEnv = env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
   const runContext = env.CI ? 'ci' : 'local-run';
   const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
-  const reporter: [string, unknown?][] = [[resolveDefaultReporter(env)]];
+  const reporter: ReporterDescription[] = [[resolveDefaultReporter(env)]];
 
   if (enableOdhinReporter) {
     reporter.push([

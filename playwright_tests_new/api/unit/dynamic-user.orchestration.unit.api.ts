@@ -508,6 +508,8 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
       {},
       {
         stripBearerPrefix: (value) => value.replace(/^Bearer\s+/i, ''),
+        decodeJwtPayload: () => undefined,
+        now: () => 0,
         assertExpectedAssignmentPrincipal: async (value) => {
           validatedTokens.push(value);
         },
@@ -522,6 +524,37 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
     expect(token).toBe('generated-assignment-token');
     expect(persistedTokens).toEqual(['Bearer generated-assignment-token']);
     expect(validatedTokens).toEqual(['generated-assignment-token']);
+  });
+
+  test('resolveAssignmentBearerTokenFlow refreshes expired cached assignment tokens instead of reusing them', async () => {
+    const persistedTokens: string[] = [];
+    const validatedTokens: string[] = [];
+
+    const token = await resolveAssignmentBearerTokenFlow(
+      {
+        envAssignmentBearerToken: 'Bearer expired-assignment-token',
+      },
+      {
+        stripBearerPrefix: (value) => value.replace(/^Bearer\s+/i, ''),
+        decodeJwtPayload: (value) =>
+          value.includes('expired-assignment-token')
+            ? { exp: Math.floor((Date.now() - 5 * 60_000) / 1000) }
+            : { exp: Math.floor((Date.now() + 60 * 60_000) / 1000) },
+        now: () => Date.now(),
+        assertExpectedAssignmentPrincipal: async (value) => {
+          validatedTokens.push(value);
+        },
+        tryGenerateAssignmentBearerTokenFromCredentials: async () => 'Bearer refreshed-assignment-token',
+        persistAssignmentBearerToken: (value) => {
+          persistedTokens.push(value);
+        },
+        warn: () => undefined,
+      }
+    );
+
+    expect(token).toBe('refreshed-assignment-token');
+    expect(persistedTokens).toEqual(['Bearer refreshed-assignment-token']);
+    expect(validatedTokens).toEqual(['refreshed-assignment-token']);
   });
 
   test('assertExpectedAssignmentPrincipalFlow falls back to userinfo when the JWT has no principal email', async () => {

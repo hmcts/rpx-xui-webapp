@@ -8,6 +8,38 @@ type GenerateIdamTokenArgs = {
   redirectUri?: string;
 };
 
+const ASSIGNMENT_TOKEN_REFRESH_BUFFER_MS = 60_000;
+
+function resolveTokenExpiryMs(
+  token: string,
+  decodeJwtPayload: (token: string) => Record<string, unknown> | undefined
+): number | undefined {
+  const claims = decodeJwtPayload(token);
+  const exp = claims?.exp;
+  if (typeof exp === 'number' && Number.isFinite(exp) && exp > 0) {
+    return exp * 1000;
+  }
+  if (typeof exp === 'string') {
+    const parsed = Number.parseInt(exp, 10);
+    if (Number.isFinite(parsed) && parsed > 0) {
+      return parsed * 1000;
+    }
+  }
+  return undefined;
+}
+
+function isTokenReusable(
+  token: string,
+  decodeJwtPayload: (token: string) => Record<string, unknown> | undefined,
+  now: () => number
+): boolean {
+  const expiryMs = resolveTokenExpiryMs(token, decodeJwtPayload);
+  if (!expiryMs) {
+    return true;
+  }
+  return expiryMs - now() > ASSIGNMENT_TOKEN_REFRESH_BUFFER_MS;
+}
+
 export async function tryGenerateAssignmentBearerTokenFromCredentialsFlow(
   args: {
     configuredAssignmentUsername?: string;
@@ -89,6 +121,8 @@ export async function resolveAssignmentBearerTokenFlow(
   },
   deps: {
     stripBearerPrefix: (token: string) => string;
+    decodeJwtPayload: (token: string) => Record<string, unknown> | undefined;
+    now: () => number;
     assertExpectedAssignmentPrincipal: (token: string) => Promise<void>;
     tryGenerateAssignmentBearerTokenFromCredentials: () => Promise<string | undefined>;
     persistAssignmentBearerToken: (token: string) => void;
@@ -98,8 +132,11 @@ export async function resolveAssignmentBearerTokenFlow(
   const fromOptionsOrEnv = firstNonEmpty(args.providedToken, args.envAssignmentBearerToken);
   if (fromOptionsOrEnv) {
     const resolved = deps.stripBearerPrefix(fromOptionsOrEnv);
-    await deps.assertExpectedAssignmentPrincipal(resolved);
-    return resolved;
+    if (isTokenReusable(resolved, deps.decodeJwtPayload, deps.now)) {
+      await deps.assertExpectedAssignmentPrincipal(resolved);
+      return resolved;
+    }
+    deps.warn('Ignoring expired or near-expiry assignment bearer token; regenerating token before org assignment.', {});
   }
 
   const generatedFromPasswordGrant = await deps.tryGenerateAssignmentBearerTokenFromCredentials();

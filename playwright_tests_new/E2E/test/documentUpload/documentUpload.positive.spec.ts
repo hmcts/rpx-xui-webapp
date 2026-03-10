@@ -276,7 +276,6 @@ test.describe('Document upload V1', () => {
       },
       testInfo,
     });
-    dynamicHandle.publishSessionCredentials();
 
     testValue = `${faker.person.firstName()}-${Date.now()}-w${process.env.TEST_WORKER_INDEX || '0'}`;
     testFileName = `${faker.string.alphanumeric(8)}-${Date.now()}.pdf`;
@@ -284,7 +283,7 @@ test.describe('Document upload V1', () => {
 
     await retryOnTransientFailure(
       async () => {
-        await ensureAuthenticatedPage(page, 'EMPLOYMENT_DYNAMIC_CASEWORKER', { waitForSelector: 'exui-header' });
+        await ensureAuthenticatedPage(page, dynamicHandle!.sessionIdentity, { waitForSelector: 'exui-header' });
         const setup = await setupCaseForJourney({
           scenario: 'document-upload-v1-employment',
           jurisdiction: TEST_DATA.V1.JURISDICTION,
@@ -317,7 +316,6 @@ test.describe('Document upload V1', () => {
   });
 
   test.afterEach(async () => {
-    await dynamicHandle?.cleanup();
     dynamicHandle = undefined;
   });
 

@@ -28,6 +28,12 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
             attemptedModes: ['external'],
           },
         },
+        sessionIdentity: {
+          userIdentifier: 'SOLICITOR',
+          email: 'dynamic@example.test',
+          password: 'secret',
+          sessionKey: 'dynamic-solicitor-user-123',
+        },
         roleContext: {
           jurisdiction: 'employment',
         },
@@ -78,15 +84,9 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
     expect(attachedBodies[attachedBodies.length - 1]).toContain('"ready":true');
   });
 
-  test('provisionDynamicSolicitorForAliasFlow runs the extracted orchestration and restores runtime credentials', async () => {
+  test('provisionDynamicSolicitorForAliasFlow returns explicit session identity and runs readiness checks without global runtime mutation', async () => {
     const originalOrganisationId = process.env.TEST_SOLICITOR_ORGANISATION_ID;
     process.env.TEST_SOLICITOR_ORGANISATION_ID = 'org-123';
-
-    const runtimeCredentials = new Map<string, { email: string; password: string }>();
-    runtimeCredentials.set('SOLICITOR', {
-      email: 'original@example.test',
-      password: 'original-secret',
-    });
 
     const attachmentNames: string[] = [];
     const observedCallOrder: string[] = [];
@@ -114,7 +114,7 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
           runEmploymentAssignmentPreflight: async () => {
             observedCallOrder.push('preflight');
           },
-          provisionUserWithRetries: async (args, _deps) => {
+          provisionUserWithRetries: async (args) => {
             observedCallOrder.push('provision');
             expect(args.alias).toBe('SOLICITOR');
             expect(args.organisationId).toBe('org-123');
@@ -158,28 +158,13 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
           assertDynamicUserRoleContract: () => {
             observedCallOrder.push('assert-contract');
           },
-          withPublishedRuntimeUserCredentials: async (alias, user, action) => {
-            observedCallOrder.push(`publish-temp:${alias}`);
-            const previous = runtimeCredentials.get(alias);
-            runtimeCredentials.set(alias, {
-              email: user.email,
-              password: user.password,
-            });
-            try {
-              return await action();
-            } finally {
-              if (previous) {
-                runtimeCredentials.set(alias, previous);
-              } else {
-                runtimeCredentials.delete(alias);
-              }
-            }
-          },
-          waitForExuiUserPropagation: async () => {
+          waitForExuiUserPropagation: async ({ sessionIdentity }) => {
             observedCallOrder.push('wait-exui');
-            expect(runtimeCredentials.get('SOLICITOR')).toEqual({
+            expect(sessionIdentity).toEqual({
+              userIdentifier: 'SOLICITOR',
               email: 'dynamic@example.test',
               password: 'secret',
+              sessionKey: 'dynamic-solicitor-user-123',
             });
           },
           attachDynamicUser: async (testInfo, alias) => {
@@ -189,40 +174,22 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
               contentType: 'application/json',
             });
           },
-          getRuntimeUserCredentials: (alias) => runtimeCredentials.get(alias),
-          setRuntimeUserCredentials: (alias, credentials) => {
-            runtimeCredentials.set(alias, credentials);
-          },
-          clearRuntimeUserCredentials: (alias) => {
-            runtimeCredentials.delete(alias);
-          },
           info: () => undefined,
           warn: () => undefined,
         }
       );
 
-      expect(runtimeCredentials.get('SOLICITOR')).toEqual({
-        email: 'original@example.test',
-        password: 'original-secret',
-      });
-
-      handle.publishSessionCredentials();
-      expect(runtimeCredentials.get('SOLICITOR')).toEqual({
+      expect(handle.sessionIdentity).toEqual({
+        userIdentifier: 'SOLICITOR',
         email: 'dynamic@example.test',
         password: 'secret',
-      });
-
-      await handle.cleanup();
-      expect(runtimeCredentials.get('SOLICITOR')).toEqual({
-        email: 'original@example.test',
-        password: 'original-secret',
+        sessionKey: 'dynamic-solicitor-user-123',
       });
 
       expect(observedCallOrder).toEqual([
         'provision',
         'attach-provision:SOLICITOR',
         'assert-contract',
-        'publish-temp:SOLICITOR',
         'wait-exui',
         'attach-user:SOLICITOR',
       ]);

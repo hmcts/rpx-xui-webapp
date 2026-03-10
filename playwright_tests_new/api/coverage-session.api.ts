@@ -7,6 +7,7 @@ import { CookieUtils } from '../E2E/utils/cookie.utils.js';
 import { UserUtils } from '../E2E/utils/user.utils.js';
 import type { IdamPage } from '@hmcts/playwright-common';
 import { isSessionFresh, loadSessionCookies, __test__ as sessionCaptureTest } from '../common/sessionCapture.js';
+import { resolveSessionStorageKey } from '../common/sessionIdentity.js';
 import type { Cookie } from 'playwright-core';
 
 test.describe.configure({ mode: 'serial' });
@@ -109,8 +110,8 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
       await fsp.mkdir(sessionsDir, { recursive: true });
 
       const userUtils = new UserUtils();
-      const creds = userUtils.getUserCredentials('IAC_CaseOfficer_R1');
-      const storagePath = path.join(sessionsDir, `${creds.email}.storage.json`);
+      const storageKey = resolveSessionStorageKey('IAC_CaseOfficer_R1', { userUtils });
+      const storagePath = path.join(sessionsDir, `${storageKey}.storage.json`);
 
       expect(isSessionFresh(storagePath)).toBe(false);
 
@@ -133,6 +134,30 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
 
       await fsp.rm(storagePath, { force: true });
       expect(() => loadSessionCookies('IAC_CaseOfficer_R1')).toThrow('Failed parsing storage file');
+    } finally {
+      process.chdir(originalCwd);
+    }
+  });
+
+  test('loadSessionCookies uses explicit sessionKey for dynamic identities', async () => {
+    const tmpDir = await fsp.mkdtemp(path.join(process.cwd(), 'test-results', 'session-identity-'));
+    const originalCwd = process.cwd();
+    process.chdir(tmpDir);
+    try {
+      const sessionsDir = path.join(tmpDir, '.sessions');
+      await fsp.mkdir(sessionsDir, { recursive: true });
+      const storagePath = path.join(sessionsDir, 'dynamic-employment-user-123.storage.json');
+      await fsp.writeFile(storagePath, JSON.stringify({ cookies: [baseCookie('session', 'value')] }), 'utf8');
+
+      const loaded = loadSessionCookies({
+        userIdentifier: 'EMPLOYMENT_DYNAMIC_CASEWORKER',
+        email: 'dynamic@example.test',
+        password: 'secret',
+        sessionKey: 'dynamic-employment-user-123',
+      });
+
+      expect(loaded.storageFile).toBe(storagePath);
+      expect(loaded.cookies).toHaveLength(1);
     } finally {
       process.chdir(originalCwd);
     }

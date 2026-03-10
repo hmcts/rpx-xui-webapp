@@ -8,6 +8,11 @@ import { IdamPage, createLogger } from '@hmcts/playwright-common';
 import { Cookie } from 'playwright-core';
 import config from '../E2E/utils/config.utils.js';
 import { StorageStateCorruptedError, SessionCaptureError } from '../api/utils/errors';
+import {
+  type SessionIdentityInput,
+  resolveSessionIdentity,
+  resolveSessionStorageKey,
+} from './sessionIdentity.js';
 
 const logger = createLogger({ serviceName: 'session-capture', format: 'pretty' });
 
@@ -181,6 +186,7 @@ export type StorageStateContext = Pick<BrowserContext, 'addCookies' | 'storageSt
 type SessionCaptureDeps = {
   chromiumLauncher?: typeof chromium;
   userUtils?: UserUtils;
+  resolveSessionIdentity?: typeof resolveSessionIdentity;
   idamPageFactory?: (page: Page) => IdamPage;
   isSessionFresh?: typeof isSessionFresh;
   persistSession?: typeof persistSession;
@@ -236,16 +242,16 @@ function resolveSessionMaxAgeMs(env: NodeJS.ProcessEnv = process.env): number {
  * Ensure session is captured for a given userIdentifier before tests run.
  * Call this in test.beforeAll() to lazily capture only needed sessions.
  */
-export async function ensureSession(userIdentifier: string): Promise<void> {
-  const userUtils = new UserUtils();
-  const creds = userUtils.getUserCredentials(userIdentifier);
-  const email = creds.email;
-  const sessionPath = path.join(process.cwd(), '.sessions', `${email}.storage.json`);
+export async function ensureSession(userIdentifier: SessionIdentityInput): Promise<void> {
+  const identity = resolveSessionIdentity(userIdentifier);
+  const email = identity.email;
+  const sessionStorageKey = resolveSessionStorageKey(identity);
+  const sessionPath = path.join(process.cwd(), '.sessions', `${sessionStorageKey}.storage.json`);
 
   const isFresh = isSessionFresh(sessionPath, resolveSessionMaxAgeMs());
   if (isFresh) {
     logger.info('Session is fresh, skipping capture', {
-      userIdentifier,
+      userIdentifier: identity.userIdentifier,
       email,
       operation: 'lazy-capture',
       metric: 'session-hit',
@@ -253,25 +259,25 @@ export async function ensureSession(userIdentifier: string): Promise<void> {
     return;
   }
   logger.info('Session missing or stale, capturing lazily', {
-    userIdentifier,
+    userIdentifier: identity.userIdentifier,
     email,
     operation: 'lazy-capture',
     metric: 'session-miss',
   });
   // Do not force recapture here: when many workers race on a stale session,
   // lock waiters should be able to reuse the freshly captured session.
-  await sessionCapture([userIdentifier]);
+  await sessionCapture([identity]);
 }
 
 /**
  * Load persisted session cookies for a given userIdentifier.
  * Throws if session doesn't exist. Use ensureSession() first.
  */
-export function loadSessionCookies(userIdentifier: string): LoadedSession {
-  const userUtils = new UserUtils();
-  const creds = userUtils.getUserCredentials(userIdentifier);
-  const email = creds.email;
-  const storageFile = path.join(process.cwd(), '.sessions', `${email}.storage.json`);
+export function loadSessionCookies(userIdentifier: SessionIdentityInput): LoadedSession {
+  const identity = resolveSessionIdentity(userIdentifier);
+  const email = identity.email;
+  const storageKey = resolveSessionStorageKey(identity);
+  const storageFile = path.join(process.cwd(), '.sessions', `${storageKey}.storage.json`);
 
   let cookies: Cookie[] = [];
   if (fs.existsSync(storageFile)) {
@@ -280,7 +286,7 @@ export function loadSessionCookies(userIdentifier: string): LoadedSession {
       if (Array.isArray(state.cookies)) {
         cookies = state.cookies as Cookie[];
         logger.info('Loaded session cookies', {
-          userIdentifier,
+          userIdentifier: identity.userIdentifier,
           email,
           cookieCount: cookies.length,
           operation: 'load-session',
@@ -288,13 +294,13 @@ export function loadSessionCookies(userIdentifier: string): LoadedSession {
       } else {
         logger.warn('Cookies missing or invalid in storage file', {
           storageFile,
-          userIdentifier,
+          userIdentifier: identity.userIdentifier,
           operation: 'load-session',
         });
       }
     } catch (e) {
       logger.error('Failed parsing storage state - cleaning up and throwing', {
-        userIdentifier,
+        userIdentifier: identity.userIdentifier,
         storageFile,
         error: (e as Error).message,
         operation: 'load-session',
@@ -312,17 +318,19 @@ export function loadSessionCookies(userIdentifier: string): LoadedSession {
       throw new StorageStateCorruptedError(
         `Storage file corrupted for ${userIdentifier} - file has been deleted. Re-run test to capture fresh session.`,
         storageFile,
-        { userIdentifier },
+        { userIdentifier: identity.userIdentifier },
         e as Error
       );
     }
   } else {
     logger.warn('Storage file does not exist', {
-      userIdentifier,
+      userIdentifier: identity.userIdentifier,
       storageFile,
       operation: 'load-session',
     });
-    throw new StorageStateCorruptedError(`Failed parsing storage file for ${userIdentifier}`, storageFile, { userIdentifier });
+    throw new StorageStateCorruptedError(`Failed parsing storage file for ${identity.userIdentifier}`, storageFile, {
+      userIdentifier: identity.userIdentifier,
+    });
   }
   return { email, cookies, storageFile };
 }
@@ -331,7 +339,7 @@ export function loadSessionCookies(userIdentifier: string): LoadedSession {
  * Ensure a session is captured and return the loaded cookies.
  * Retries once if the session file is missing or corrupted.
  */
-export async function ensureSessionCookies(userIdentifier: string): Promise<LoadedSession> {
+export async function ensureSessionCookies(userIdentifier: SessionIdentityInput): Promise<LoadedSession> {
   await ensureSession(userIdentifier);
   try {
     return loadSessionCookies(userIdentifier);
@@ -347,7 +355,7 @@ export async function ensureSessionCookies(userIdentifier: string): Promise<Load
 /**
  * Ensure a session exists and add its cookies to the provided page context.
  */
-export async function applySessionCookies(page: Page, userIdentifier: string): Promise<LoadedSession> {
+export async function applySessionCookies(page: Page, userIdentifier: SessionIdentityInput): Promise<LoadedSession> {
   const session = await ensureSessionCookies(userIdentifier);
   if (session.cookies.length) {
     await page.context().addCookies(session.cookies);
@@ -435,14 +443,15 @@ async function waitForAuthenticatedShell(
  */
 export async function ensureAuthenticatedPage(
   page: Page,
-  userIdentifier: string,
+  userIdentifier: SessionIdentityInput,
   options: { targetUrl?: string; waitForSelector?: string; timeoutMs?: number } = {}
 ): Promise<LoadedSession> {
+  const identity = resolveSessionIdentity(userIdentifier);
   const markSetup = (marker: string) => setSetupMarker(page, marker);
   markSetup('setup-start');
   const targetUrl = options.targetUrl ?? process.env.TEST_URL ?? config.urls.exuiDefaultUrl;
   const timeoutMs = options.timeoutMs ?? 60000;
-  let session = await ensureSessionCookies(userIdentifier);
+  let session = await ensureSessionCookies(identity);
   if (session.cookies.length) {
     await page.context().addCookies(session.cookies);
     markSetup('cookies-ready');
@@ -450,14 +459,14 @@ export async function ensureAuthenticatedPage(
     markSetup('cookies-ready');
   }
 
-  await gotoAppTarget(page, userIdentifier, targetUrl);
+  await gotoAppTarget(page, identity.userIdentifier, targetUrl);
   await acceptAccessCookiesIfPresent(page);
   markSetup('navigated-app');
 
   if (await isIdamLoginPage(page)) {
     markSetup('idam-login');
     logger.warn('Session appears invalid; refreshing', {
-      userIdentifier,
+      userIdentifier: identity.userIdentifier,
       email: session.email,
       targetUrl,
       operation: 'session-refresh',
@@ -468,27 +477,30 @@ export async function ensureAuthenticatedPage(
       }
     } catch (error) {
       logger.warn('Failed to delete stale session file', {
-        userIdentifier,
+        userIdentifier: identity.userIdentifier,
         storageFile: session.storageFile,
         error: (error as Error).message,
         operation: 'session-refresh',
       });
     }
 
-    await sessionCapture([userIdentifier]);
+    await sessionCapture([identity]);
     markSetup('session-refresh');
-    session = loadSessionCookies(userIdentifier);
+    session = loadSessionCookies(identity);
     await page.context().clearCookies();
     if (session.cookies.length) {
       await page.context().addCookies(session.cookies);
     }
-    await gotoAppTarget(page, userIdentifier, targetUrl);
+    await gotoAppTarget(page, identity.userIdentifier, targetUrl);
     await acceptAccessCookiesIfPresent(page);
     markSetup('navigated-app');
 
     if (await isIdamLoginPage(page)) {
       markSetup('idam-login');
-      throw new SessionCaptureError(`Login failed for ${userIdentifier}`, userIdentifier, { email: session.email, targetUrl });
+      throw new SessionCaptureError(`Login failed for ${identity.userIdentifier}`, identity.userIdentifier, {
+        email: session.email,
+        targetUrl,
+      });
     }
   }
 
@@ -498,10 +510,10 @@ export async function ensureAuthenticatedPage(
       markSetup('waiting-shell');
       await page.waitForLoadState('domcontentloaded');
       await acceptAccessCookiesIfPresent(page);
-      const marker = await waitForAuthenticatedShell(page, userIdentifier, selectors, timeoutMs);
+      const marker = await waitForAuthenticatedShell(page, identity.userIdentifier, selectors, timeoutMs);
       markSetup('shell-ready');
       logger.info('Authenticated app shell detected', {
-        userIdentifier,
+        userIdentifier: identity.userIdentifier,
         marker,
         selector: selectors,
         timeoutMs,
@@ -514,13 +526,13 @@ export async function ensureAuthenticatedPage(
     } catch (error) {
       markSetup('waiting-shell');
       logger.warn('App shell not detected; retrying once', {
-        userIdentifier,
+        userIdentifier: identity.userIdentifier,
         selector: selectors,
         timeoutMs,
         error: (error as Error).message,
         operation: 'wait-for-shell',
       });
-      await gotoAppTarget(page, userIdentifier, targetUrl);
+      await gotoAppTarget(page, identity.userIdentifier, targetUrl);
       await acceptAccessCookiesIfPresent(page);
       markSetup('navigated-app');
       await waitForAppShell();
@@ -882,12 +894,13 @@ async function loginAndPersistSession({
   }
 }
 
-export async function sessionCapture(identifiers: string[], options: { force?: boolean } = {}) {
+export async function sessionCapture(identifiers: SessionIdentityInput[], options: { force?: boolean } = {}) {
   return sessionCaptureWith(identifiers, { force: options.force });
 }
 
-async function sessionCaptureWith(identifiers: string[], deps: SessionCaptureDeps = {}) {
+async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: SessionCaptureDeps = {}) {
   const userUtils = deps.userUtils ?? new UserUtils();
+  const resolveIdentity = deps.resolveSessionIdentity ?? resolveSessionIdentity;
   const fsApi = deps.fs ?? fs;
   const env = deps.env ?? process.env;
   const activeConfig = deps.config ?? config;
@@ -902,9 +915,10 @@ async function sessionCaptureWith(identifiers: string[], deps: SessionCaptureDep
   ensureDirectory(fsApi, sessionsDir);
 
   for (const id of identifiers) {
-    const { email, password } = userUtils.getUserCredentials(id);
-    const sessionPath = path.join(sessionsDir, `${email}.storage.json`);
-    const lockFilePath = path.join(sessionsDir, `${email}.lock`);
+    const identity = resolveIdentity(id, { userUtils });
+    const sessionStorageKey = resolveSessionStorageKey(identity);
+    const sessionPath = path.join(sessionsDir, `${sessionStorageKey}.storage.json`);
+    const lockFilePath = path.join(sessionsDir, `${sessionStorageKey}.lock`);
 
     ensureDirectory(fsApi, sessionsDir);
     ensureLockFile(fsApi, lockFilePath);
@@ -913,7 +927,7 @@ async function sessionCaptureWith(identifiers: string[], deps: SessionCaptureDep
     let release: (() => Promise<void>) | null = null;
     try {
       logger.info('Attempting to acquire lock for user', {
-        userIdentifier: id,
+        userIdentifier: identity.userIdentifier,
         lockFilePath,
         operation: 'session-capture',
       });
@@ -922,15 +936,15 @@ async function sessionCaptureWith(identifiers: string[], deps: SessionCaptureDep
         fsApi,
         lockfileApi,
         lockFilePath,
-        userIdentifier: id,
+        userIdentifier: identity.userIdentifier,
         isSessionReusable: () => isFresh(sessionPath),
         force,
       });
 
       if (!release) {
         logger.info('Skipping session capture because another worker refreshed the session', {
-          userIdentifier: id,
-          email,
+          userIdentifier: identity.userIdentifier,
+          email: identity.email,
           sessionPath,
           operation: 'session-capture',
         });
@@ -938,15 +952,15 @@ async function sessionCaptureWith(identifiers: string[], deps: SessionCaptureDep
       }
 
       logger.info('Lock acquired', {
-        userIdentifier: id,
+        userIdentifier: identity.userIdentifier,
         operation: 'session-capture',
       });
 
       // Recheck freshness after acquiring lock (another worker may have logged in)
       if (!force && isFresh(sessionPath)) {
         logger.info('Session became fresh while waiting for lock', {
-          userIdentifier: id,
-          email,
+          userIdentifier: identity.userIdentifier,
+          email: identity.email,
           sessionPath,
           operation: 'session-capture',
         });
@@ -958,11 +972,11 @@ async function sessionCaptureWith(identifiers: string[], deps: SessionCaptureDep
         idamFactory,
         env,
         activeConfig,
-        email,
-        password,
+        email: identity.email,
+        password: identity.password,
         sessionPath,
         persist,
-        userIdentifier: id,
+        userIdentifier: identity.userIdentifier,
       });
     } finally {
       // Always release lock
@@ -970,12 +984,12 @@ async function sessionCaptureWith(identifiers: string[], deps: SessionCaptureDep
         try {
           await release();
           logger.info('Lock released', {
-            userIdentifier: id,
+            userIdentifier: identity.userIdentifier,
             operation: 'session-capture',
           });
         } catch (e) {
           logger.warn('Failed to release lock', {
-            userIdentifier: id,
+            userIdentifier: identity.userIdentifier,
             lockFilePath,
             error: (e as Error).message,
             operation: 'session-capture',

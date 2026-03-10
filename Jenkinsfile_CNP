@@ -104,6 +104,13 @@ def archivePlaywrightDiagnostics = {
     )
 }
 
+def playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration/odhin-report'
+def playwrightIntegrationReportFile = 'xui-playwright-integration.html'
+
+def assertHtmlReportExists = { String reportDir, String reportFile ->
+    steps.sh "test -f '${reportDir}/${reportFile}'"
+}
+
 def branchesToSync = ['perftest', 'ithc']
 
 def secrets = [
@@ -289,7 +296,7 @@ withPipeline(type, product, component) {
                                 keepAll              : true,
                                 reportDir            : 'functional-output/tests/codecept-ngIntegration/',
                                 reportFiles          : 'cucumber_report.html',
-                                reportName           : 'PREVIEW Integration Test'
+                                reportName           : 'PREVIEW Legacy Codecept Integration Test'
                             ])
                             steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
                         }
@@ -298,7 +305,13 @@ withPipeline(type, product, component) {
                     playwrightIntegration: {
                     stage('Playwright Integration Tests') {
                         try {
-                            yarnBuilder.yarn('test:playwright:integration')
+                            withEnv([
+                                "PLAYWRIGHT_REPORT_FOLDER=${playwrightIntegrationReportDir}",
+                                "TEST_TYPE=preview"
+                            ]) {
+                                yarnBuilder.yarn('test:playwright:integration')
+                            }
+                            assertHtmlReportExists(playwrightIntegrationReportDir, playwrightIntegrationReportFile)
                         } catch (Exception e) {
                             echo "[failFast] Playwright Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
                             if (handleFailFastAbort(e)) { return }
@@ -308,8 +321,16 @@ withPipeline(type, product, component) {
                                 allowMissing         : true,
                                 alwaysLinkToLastBuild: true,
                                 keepAll              : true,
-                                reportDir            : 'functional-output/tests/playwright-integration/odhin-report/',
-                                reportFiles          : 'xui-playwright-integration.html',
+                                reportDir            : "${playwrightIntegrationReportDir}/",
+                                reportFiles          : playwrightIntegrationReportFile,
+                                reportName           : 'PREVIEW Integration Test'
+                            ])
+                            publishHTML([
+                                allowMissing         : true,
+                                alwaysLinkToLastBuild: true,
+                                keepAll              : true,
+                                reportDir            : "${playwrightIntegrationReportDir}/",
+                                reportFiles          : playwrightIntegrationReportFile,
                                 reportName           : 'PREVIEW Playwright Integration Test'
                             ])
                             steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
@@ -402,7 +423,7 @@ withPipeline(type, product, component) {
                                 keepAll              : true,
                                 reportDir            : 'functional-output/tests/codecept-ngIntegration/',
                                 reportFiles          : 'cucumber_report.html',
-                                reportName           : 'AAT Integration Test'
+                                reportName           : 'AAT Legacy Codecept Integration Test'
                             ])
                             steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
                         }
@@ -411,7 +432,13 @@ withPipeline(type, product, component) {
                     playwrightIntegration: {
                     stage('Playwright Integration Tests') {
                         try {
-                            yarnBuilder.yarn('test:playwright:integration')
+                            withEnv([
+                                "PLAYWRIGHT_REPORT_FOLDER=${playwrightIntegrationReportDir}",
+                                "TEST_TYPE=aat"
+                            ]) {
+                                yarnBuilder.yarn('test:playwright:integration')
+                            }
+                            assertHtmlReportExists(playwrightIntegrationReportDir, playwrightIntegrationReportFile)
                         } catch (Exception e) {
                             echo "[failFast] Playwright Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
                             if (handleFailFastAbort(e)) { return }
@@ -421,8 +448,16 @@ withPipeline(type, product, component) {
                                 allowMissing         : true,
                                 alwaysLinkToLastBuild: true,
                                 keepAll              : true,
-                                reportDir            : 'functional-output/tests/playwright-integration/odhin-report/',
-                                reportFiles          : 'xui-playwright-integration.html',
+                                reportDir            : "${playwrightIntegrationReportDir}/",
+                                reportFiles          : playwrightIntegrationReportFile,
+                                reportName           : 'AAT Integration Test'
+                            ])
+                            publishHTML([
+                                allowMissing         : true,
+                                alwaysLinkToLastBuild: true,
+                                keepAll              : true,
+                                reportDir            : "${playwrightIntegrationReportDir}/",
+                                reportFiles          : playwrightIntegrationReportFile,
                                 reportName           : 'AAT Playwright Integration Test'
                             ])
                             steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'

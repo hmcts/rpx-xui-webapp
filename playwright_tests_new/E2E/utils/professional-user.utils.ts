@@ -943,6 +943,8 @@ export class ProfessionalUserUtils {
       },
       {
         stripBearerPrefix,
+        decodeJwtPayload,
+        now: () => Date.now(),
         assertExpectedAssignmentPrincipal: (resolvedToken) => this.assertExpectedAssignmentPrincipal(resolvedToken),
         tryGenerateAssignmentBearerTokenFromCredentials: () => this.tryGenerateAssignmentBearerTokenFromCredentials(),
         persistAssignmentBearerToken: (generatedToken) => {

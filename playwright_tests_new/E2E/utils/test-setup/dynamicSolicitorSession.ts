@@ -4,8 +4,8 @@ import { request, type TestInfo } from '@playwright/test';
 import { type SolicitorRoleContext } from '../professional-user/roleStrategy.js';
 import type { ProvisionedProfessionalUser } from '../professional-user/types.js';
 import type { ProfessionalUserUtils } from '../professional-user.utils';
+import type { SessionIdentity } from '../../../common/sessionIdentity.js';
 import config from '../config.utils';
-import { clearRuntimeUserCredentials, getRuntimeUserCredentials, setRuntimeUserCredentials } from '../runtimeUserCredentials';
 import { ensureSessionCookies } from '../../../common/sessionCapture';
 import { provisionUserWithRetries } from './dynamicProvisioningFlow.js';
 import type { DynamicProvisionAttempt } from './dynamicProvisioningFlow.js';
@@ -23,8 +23,7 @@ export {
 
 type DynamicProvisionHandle = {
   user: ProvisionedProfessionalUser;
-  publishSessionCredentials: () => void;
-  cleanup: () => Promise<void>;
+  sessionIdentity: SessionIdentity;
 };
 
 type DynamicExuiReadinessAttempt = {
@@ -108,17 +107,14 @@ type ProvisionDynamicSolicitorFlowDeps = {
     resolvedRoleNames?: readonly string[];
     user: ProvisionedProfessionalUser;
   }) => void;
-  withPublishedRuntimeUserCredentials: typeof withPublishedRuntimeUserCredentials;
   waitForExuiUserPropagation: (params: {
     alias: DynamicSolicitorAlias;
     user: ProvisionedProfessionalUser;
+    sessionIdentity: SessionIdentity;
     roleContext?: SolicitorRoleContext;
     testInfo: TestInfo;
   }) => Promise<void>;
   attachDynamicUser: (testInfo: TestInfo, alias: DynamicSolicitorAlias, user: ProvisionedProfessionalUser) => Promise<void>;
-  getRuntimeUserCredentials: typeof getRuntimeUserCredentials;
-  setRuntimeUserCredentials: typeof setRuntimeUserCredentials;
-  clearRuntimeUserCredentials: typeof clearRuntimeUserCredentials;
   info: (message: string, meta: Record<string, unknown>) => void;
   warn: (message: string, meta: Record<string, unknown>) => void;
 };
@@ -187,11 +183,6 @@ const DYNAMIC_SOLICITOR_DISALLOWED_IDAM_ROLES = new Set<string>([
   'pui-caa',
 ]);
 
-type DynamicRuntimeCredentials = {
-  email: string;
-  password: string;
-};
-
 function isTruthy(value: string | undefined): boolean {
   return truthyValues.has((value ?? '').trim().toLowerCase());
 }
@@ -226,6 +217,19 @@ function resolveJurisdictionAccesses(roleContext?: SolicitorRoleContext): Array<
     accesses.push('create');
   }
   return accesses;
+}
+
+function buildDynamicSessionIdentity(
+  alias: DynamicSolicitorAlias,
+  user: ProvisionedProfessionalUser
+): SessionIdentity {
+  const stableSuffix = user.id?.trim() || user.email.trim().toLowerCase();
+  return {
+    userIdentifier: alias,
+    email: user.email,
+    password: user.password,
+    sessionKey: `dynamic-${alias.toLowerCase()}-${stableSuffix}`,
+  };
 }
 
 function resolveDynamicProvisionTimeoutMs(): number {
@@ -481,14 +485,14 @@ async function runApiReadinessChecks(
 
 async function runReadinessCheck(
   {
-    alias,
+    sessionIdentity,
     baseUrl,
     expectedJurisdiction,
     requiredAccesses,
     attempt,
     startedAt,
   }: {
-    alias: DynamicSolicitorAlias;
+    sessionIdentity: SessionIdentity;
     baseUrl: string;
     expectedJurisdiction: string | undefined;
     requiredAccesses: Array<'read' | 'create'>;
@@ -505,7 +509,7 @@ async function runReadinessCheck(
     jurisdictionAccesses: requiredAccesses,
   };
   try {
-    const session = await deps.ensureSessionCookies(alias);
+    const session = await deps.ensureSessionCookies(sessionIdentity);
     readinessAttempt.authenticated = session.cookies.length > 0;
     const apiContext = await deps.createApiContext({ baseURL: baseUrl, storageState: session.storageFile });
     try {
@@ -524,11 +528,13 @@ async function waitForExuiUserPropagation(
   {
     alias,
     user,
+    sessionIdentity,
     roleContext,
     testInfo,
   }: {
     alias: DynamicSolicitorAlias;
     user: ProvisionedProfessionalUser;
+    sessionIdentity: SessionIdentity;
     roleContext?: SolicitorRoleContext;
     testInfo: TestInfo;
   },
@@ -546,7 +552,7 @@ async function waitForExuiUserPropagation(
   while (Date.now() < deadline) {
     attempt += 1;
     const readinessAttempt = await runReadinessCheck(
-      { alias, baseUrl, expectedJurisdiction, requiredAccesses, attempt, startedAt },
+      { sessionIdentity, baseUrl, expectedJurisdiction, requiredAccesses, attempt, startedAt },
       deps
     );
     attempts.push(readinessAttempt);
@@ -613,7 +619,6 @@ export async function provisionDynamicSolicitorForAlias({
       outputCreatedUserData: process.env.PW_DYNAMIC_USER_OUTPUT_CREATED_DATA === '1',
       attachProvisionAttempts,
       assertDynamicUserRoleContract,
-      withPublishedRuntimeUserCredentials,
       waitForExuiUserPropagation,
       attachDynamicUser: async (info, currentAlias, user) => {
         await info.attach(`${currentAlias.toLowerCase()}-dynamic-user.json`, {
@@ -632,9 +637,6 @@ export async function provisionDynamicSolicitorForAlias({
           contentType: 'application/json',
         });
       },
-      getRuntimeUserCredentials,
-      setRuntimeUserCredentials,
-      clearRuntimeUserCredentials,
       info: (message, meta) => logger.info(message, meta),
       warn: (message, meta) => logger.warn(message, meta),
     }
@@ -711,77 +713,22 @@ async function provisionDynamicSolicitorForAliasFlow(
     user,
   });
 
-  await deps.withPublishedRuntimeUserCredentials(alias, user, async () => {
-    await deps.waitForExuiUserPropagation({
-      alias,
-      user,
-      roleContext,
-      testInfo,
-    });
+  const sessionIdentity = buildDynamicSessionIdentity(alias, user);
+
+  await deps.waitForExuiUserPropagation({
+    alias,
+    user,
+    sessionIdentity,
+    roleContext,
+    testInfo,
   });
 
   await deps.attachDynamicUser(testInfo, alias, user);
 
-  const previousRuntimeCredentials = deps.getRuntimeUserCredentials(alias);
-  let sessionCredentialsPublished = false;
-
   return {
     user,
-    publishSessionCredentials: () => {
-      deps.setRuntimeUserCredentials(alias, {
-        email: user.email,
-        password: user.password,
-      });
-      sessionCredentialsPublished = true;
-    },
-    cleanup: async () => {
-      if (!sessionCredentialsPublished) {
-        return;
-      }
-      restoreRuntimeUserCredentials(alias, previousRuntimeCredentials, deps);
-      sessionCredentialsPublished = false;
-    },
+    sessionIdentity,
   };
-}
-
-async function withPublishedRuntimeUserCredentials<T>(
-  alias: DynamicSolicitorAlias,
-  user: ProvisionedProfessionalUser,
-  action: () => Promise<T>
-): Promise<T> {
-  const previousRuntimeCredentials = getRuntimeUserCredentials(alias);
-  setRuntimeUserCredentials(alias, {
-    email: user.email,
-    password: user.password,
-  });
-  try {
-    return await action();
-  } finally {
-    restoreRuntimeUserCredentials(alias, previousRuntimeCredentials);
-  }
-}
-
-const DEFAULT_RESTORE_RUNTIME_DEPS: Pick<
-  ProvisionDynamicSolicitorFlowDeps,
-  'setRuntimeUserCredentials' | 'clearRuntimeUserCredentials'
-> = {
-  setRuntimeUserCredentials,
-  clearRuntimeUserCredentials,
-};
-
-function restoreRuntimeUserCredentials(
-  alias: DynamicSolicitorAlias,
-  previousCredentials: DynamicRuntimeCredentials | undefined,
-  deps: Pick<
-    ProvisionDynamicSolicitorFlowDeps,
-    'setRuntimeUserCredentials' | 'clearRuntimeUserCredentials'
-  > = DEFAULT_RESTORE_RUNTIME_DEPS
-): void {
-  if (previousCredentials) {
-    deps.setRuntimeUserCredentials(alias, previousCredentials);
-    return;
-  }
-  deps.clearRuntimeUserCredentials(alias);
 }
 
 function assertIncludesRoles(actualRoles: readonly string[], expectedRoles: readonly string[], errorContext: string): void {
@@ -900,6 +847,7 @@ export const __test__ = {
     params: {
       alias: DynamicSolicitorAlias;
       user: ProvisionedProfessionalUser;
+      sessionIdentity: SessionIdentity;
       roleContext?: SolicitorRoleContext;
       testInfo: TestInfo;
     },

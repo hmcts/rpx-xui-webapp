@@ -10,6 +10,9 @@ import {
 import {
   clearRuntimeUserCredentials,
   getRuntimeUserCredentials,
+  getRuntimeUserCredentialEnvMapping,
+  publishRuntimeUserCredentialsToEnv,
+  restoreRuntimeUserCredentialsInEnv,
   setRuntimeUserCredentials,
 } from '../../E2E/utils/runtimeUserCredentials.js';
 import { resolveProvisionRoleNamesForAlias } from '../../E2E/utils/test-setup/provisionRoleResolution.js';
@@ -25,6 +28,8 @@ const ENV_KEYS = [
   'PW_E2E_CASE_SETUP_ALLOW_UI_FALLBACK',
   'DYNAMIC_DIVORCE_SOLICITOR_ROLE_SET',
   'DYNAMIC_SOLICITOR_TEMPLATE_ROLES',
+  'EMPLOYMENT_DYNAMIC_CASEWORKER_USERNAME',
+  'EMPLOYMENT_DYNAMIC_CASEWORKER_PASSWORD',
 ] as const;
 
 let originalEnvValues: Record<string, string | undefined> = {};
@@ -94,6 +99,29 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
 
     clearRuntimeUserCredentials('dynamic-user');
     expect(getRuntimeUserCredentials(' dynamic-user ')).toBeUndefined();
+  });
+
+  test('runtime user credential env publication mirrors dynamic aliases and restores previous env values', () => {
+    process.env.EMPLOYMENT_DYNAMIC_CASEWORKER_USERNAME = 'previous@example.test';
+    process.env.EMPLOYMENT_DYNAMIC_CASEWORKER_PASSWORD = 'previous-secret';
+
+    expect(getRuntimeUserCredentialEnvMapping(' employment_dynamic_caseworker ')).toEqual({
+      username: 'EMPLOYMENT_DYNAMIC_CASEWORKER_USERNAME',
+      password: 'EMPLOYMENT_DYNAMIC_CASEWORKER_PASSWORD',
+    });
+
+    const publishedState = publishRuntimeUserCredentialsToEnv('EMPLOYMENT_DYNAMIC_CASEWORKER', {
+      email: 'dynamic@example.test',
+      password: 'dynamic-secret',
+    });
+
+    expect(process.env.EMPLOYMENT_DYNAMIC_CASEWORKER_USERNAME).toBe('dynamic@example.test');
+    expect(process.env.EMPLOYMENT_DYNAMIC_CASEWORKER_PASSWORD).toBe('dynamic-secret');
+
+    restoreRuntimeUserCredentialsInEnv(publishedState);
+
+    expect(process.env.EMPLOYMENT_DYNAMIC_CASEWORKER_USERNAME).toBe('previous@example.test');
+    expect(process.env.EMPLOYMENT_DYNAMIC_CASEWORKER_PASSWORD).toBe('previous-secret');
   });
 
   test('payload registry builds seeded payloads and setup helpers resolve defaults', () => {

@@ -1,6 +1,6 @@
 // This code block will need to be removed when the frameworks supports creating users on the fly
 import testConfig from '../../common/appTestConfig';
-import { getRuntimeUserCredentials } from './runtimeUserCredentials';
+import { getRuntimeUserCredentialEnvMapping, getRuntimeUserCredentials } from './runtimeUserCredentials';
 
 type StaticUser = {
   userIdentifier: string;
@@ -9,37 +9,6 @@ type StaticUser = {
 };
 
 export class UserUtils {
-  private readonly dynamicUserEnvMap: Record<string, { username: string; password: string }> = {
-    SOLICITOR: {
-      username: 'SOLICITOR_USERNAME',
-      password: 'SOLICITOR_PASSWORD',
-    },
-    PROD_LIKE: {
-      username: 'PROD_LIKE_USERNAME',
-      password: 'PROD_LIKE_PASSWORD',
-    },
-    SEARCH_EMPLOYMENT_CASE: {
-      username: 'SEARCH_EMPLOYMENT_CASE_USERNAME',
-      password: 'SEARCH_EMPLOYMENT_CASE_PASSWORD',
-    },
-    EMPLOYMENT_DYNAMIC_CASEWORKER: {
-      username: 'EMPLOYMENT_DYNAMIC_CASEWORKER_USERNAME',
-      password: 'EMPLOYMENT_DYNAMIC_CASEWORKER_PASSWORD',
-    },
-    EMPLOYMENT_DYNAMIC_SOLICITOR: {
-      username: 'EMPLOYMENT_DYNAMIC_SOLICITOR_USERNAME',
-      password: 'EMPLOYMENT_DYNAMIC_SOLICITOR_PASSWORD',
-    },
-    USER_WITH_FLAGS: {
-      username: 'USER_WITH_FLAGS_USERNAME',
-      password: 'USER_WITH_FLAGS_PASSWORD',
-    },
-    ORG_USER_ASSIGNMENT: {
-      username: 'ORG_USER_ASSIGNMENT_USERNAME',
-      password: 'ORG_USER_ASSIGNMENT_PASSWORD',
-    },
-  };
-
   public getUserCredentials(userIdentifier: string) {
     const dynamicCredentials = this.getDynamicCredentials(userIdentifier);
     if (dynamicCredentials) {
@@ -62,7 +31,7 @@ export class UserUtils {
       return runtimeCredentials;
     }
 
-    const mapping = this.dynamicUserEnvMap[userIdentifier];
+    const mapping = getRuntimeUserCredentialEnvMapping(userIdentifier);
     if (!mapping) {
       return undefined;
     }

@@ -58,6 +58,8 @@ type OrganisationAssignmentFlowDeps = {
     user: ProfessionalUserInfo;
     roles: readonly string[];
     resendInvite: boolean;
+    assignmentBearerToken?: string;
+    serviceToken?: string;
   }) => Promise<OrganisationInviteResult>;
   isUserVisibleInOrganisationAssignment: (params: {
     organisationId: string;
@@ -190,6 +192,22 @@ async function executeRdModeAttempt(
         roles: args.roles,
         headers,
       });
+      if (!isSuccessfulReconciliationStatus(reconciledAssignment.status)) {
+        logger.warn('Organisation assignment returned 409, but reconciliation did not confirm the assignment.', {
+          organisationId: args.organisationId,
+          attemptedMode: mode,
+          requestedMode: args.requestedMode,
+          username: args.options.user.email,
+          userIdentifier: reconciledAssignment.userIdentifier,
+          reconciliationStatus: reconciledAssignment.status,
+        });
+        return {
+          kind: 'break-mode',
+          lastError: new Error(
+            `Organisation assignment conflict could not be reconciled for ${args.options.user.email}: reconciliation status=${String(reconciledAssignment.status)}`
+          ),
+        };
+      }
       logger.warn('Organisation assignment returned idempotent conflict; reconciled existing assignment.', {
         organisationId: args.organisationId,
         attemptedMode: mode,
@@ -286,6 +304,8 @@ async function executeManageOrgFallback(
     user: args.options.user,
     roles: args.roles,
     resendInvite: args.options.resendInvite ?? false,
+    assignmentBearerToken: args.options.assignmentBearerToken,
+    serviceToken: args.options.serviceToken,
   });
   logger.warn(logMessage, {
     organisationId: args.organisationId,
@@ -315,6 +335,8 @@ async function tryManageOrgPrimary(
       user: args.options.user,
       roles: args.roles,
       resendInvite: args.options.resendInvite ?? false,
+      assignmentBearerToken: args.options.assignmentBearerToken,
+      serviceToken: args.options.serviceToken,
     });
     const requiresConflictVerification = manageOrgPrimary.status === 409;
     const conflictVerified =
@@ -497,6 +519,10 @@ function shouldUseManageOrgInvitePrimary(): boolean {
   return resolveBooleanFlag(process.env.PROFESSIONAL_USER_ASSIGNMENT_USE_MANAGE_ORG_PRIMARY);
 }
 
+function isSuccessfulReconciliationStatus(status: number | 'skipped'): status is number {
+  return typeof status === 'number' && status >= 200 && status < 300;
+}
+
 export function shouldPreferManageOrgInvitePrimaryForPrincipal(
   requestedMode: OrganisationAssignmentStrategy,
   assignmentUserRoles: AssignmentUserRolesResolution
@@ -579,3 +605,10 @@ function toError(error: unknown, fallbackMessage: string): Error {
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
+
+export const __test__ = {
+  executeRdModeAttempt,
+  executeManageOrgFallback,
+  tryManageOrgPrimary,
+  isSuccessfulReconciliationStatus,
+};

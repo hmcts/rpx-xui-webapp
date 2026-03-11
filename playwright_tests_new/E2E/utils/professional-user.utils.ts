@@ -606,6 +606,8 @@ export class ProfessionalUserUtils {
     user: ProfessionalUserInfo;
     roles: readonly string[];
     resendInvite: boolean;
+    assignmentBearerToken?: string;
+    serviceToken?: string;
   }): Promise<{
     status: number;
     userIdentifier?: string;
@@ -659,39 +661,48 @@ export class ProfessionalUserUtils {
       };
     };
 
+    const hasExplicitAssignmentOverrides = Boolean(firstNonEmpty(params.assignmentBearerToken, params.serviceToken));
     const assignmentUiUser =
       firstNonEmpty(process.env.ORG_USER_ASSIGNMENT_UI_USER, 'ORG_USER_ASSIGNMENT') ?? 'ORG_USER_ASSIGNMENT';
-    try {
-      await ensureUiStorageStateForUser(assignmentUiUser, {
-        strict: true,
-        baseUrl: manageOrgBaseUrl,
-      });
-      const storagePath = resolveUiStoragePathForUser(assignmentUiUser);
-      const apiContext = await request.newContext({
-        baseURL: manageOrgBaseUrl,
-        ignoreHTTPSErrors: true,
-        storageState: storagePath,
-      });
+    if (!hasExplicitAssignmentOverrides) {
       try {
-        const sessionInvite = await parseInviteResponse(apiContext);
-        return {
-          status: sessionInvite.status,
-          userIdentifier: undefined,
-          responseBody: sessionInvite.responseBody,
-        };
-      } finally {
-        await apiContext.dispose();
+        await ensureUiStorageStateForUser(assignmentUiUser, {
+          strict: true,
+          baseUrl: manageOrgBaseUrl,
+        });
+        const storagePath = resolveUiStoragePathForUser(assignmentUiUser);
+        const apiContext = await request.newContext({
+          baseURL: manageOrgBaseUrl,
+          ignoreHTTPSErrors: true,
+          storageState: storagePath,
+        });
+        try {
+          const sessionInvite = await parseInviteResponse(apiContext);
+          return {
+            status: sessionInvite.status,
+            userIdentifier: undefined,
+            responseBody: sessionInvite.responseBody,
+          };
+        } finally {
+          await apiContext.dispose();
+        }
+      } catch (error) {
+        logger.warn('Manage-org session invite path unavailable; falling back to direct bearer invite call.', {
+          email: params.user.email,
+          assignmentUiUser,
+          error: error instanceof Error ? error.message : String(error),
+        });
       }
-    } catch (error) {
-      logger.warn('Manage-org session invite path unavailable; falling back to direct bearer invite call.', {
+    } else {
+      logger.info('Skipping manage-org session invite path because explicit assignment overrides were provided.', {
         email: params.user.email,
-        assignmentUiUser,
-        error: error instanceof Error ? error.message : String(error),
+        hasAssignmentBearerTokenOverride: Boolean(firstNonEmpty(params.assignmentBearerToken)),
+        hasServiceTokenOverride: Boolean(firstNonEmpty(params.serviceToken)),
       });
     }
 
-    const assignmentBearerToken = await this.resolveAssignmentBearerToken();
-    const serviceToken = await this.resolveServiceToken(undefined, false);
+    const assignmentBearerToken = await this.resolveAssignmentBearerToken(params.assignmentBearerToken);
+    const serviceToken = await this.resolveServiceToken(params.serviceToken, false);
     const assignmentUserRoles = await this.resolveAssignmentUserRoles(assignmentBearerToken);
     logger.info('Resolved assignment principal roles for manage-org bearer invite.', {
       email: params.user.email,

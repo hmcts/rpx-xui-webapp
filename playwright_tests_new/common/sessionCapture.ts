@@ -759,6 +759,7 @@ async function executeLoginAttempt(
   if (loginSurface !== 'login') {
     await idamPage.usernameInput.waitFor({ state: 'visible', timeout: 10000 });
     await idamPage.login({ username: email, password });
+    await confirmAuthenticatedLogin(page, userIdentifier, email, loginTarget, attemptIndex);
     return;
   }
 
@@ -769,14 +770,34 @@ async function executeLoginAttempt(
   } else {
     await passwordInput.press('Enter');
   }
-  await acceptAccessCookiesIfPresent(page);
+  await confirmAuthenticatedLogin(page, userIdentifier, email, loginTarget, attemptIndex);
+}
 
-  const postLoginShell = await waitForAuthenticatedShell(page, userIdentifier, undefined, 15000).catch(() => null);
-  const hasAuthCookies = await waitForRequiredAuthCookies(page, 15000);
+async function confirmAuthenticatedLogin(
+  page: Page,
+  userIdentifier: string,
+  email: string,
+  loginTarget: string,
+  attemptIndex: number,
+  deps: {
+    acceptCookies?: typeof acceptAccessCookiesIfPresent;
+    waitForShell?: typeof waitForAuthenticatedShell;
+    waitForAuthCookies?: typeof waitForRequiredAuthCookies;
+    info?: typeof logger.info;
+  } = {}
+): Promise<void> {
+  const acceptCookies = deps.acceptCookies ?? acceptAccessCookiesIfPresent;
+  const waitForShell = deps.waitForShell ?? waitForAuthenticatedShell;
+  const waitForAuthCookies = deps.waitForAuthCookies ?? waitForRequiredAuthCookies;
+  const info = deps.info ?? ((message: string, meta: Record<string, unknown>) => logger.info(message, meta));
+
+  await acceptCookies(page);
+  const postLoginShell = await waitForShell(page, userIdentifier, undefined, 15000).catch(() => null);
+  const hasAuthCookies = await waitForAuthCookies(page, 15000);
   if (!postLoginShell && !hasAuthCookies) {
     throw new Error(`IDAM login did not establish authenticated session for ${userIdentifier} (url=${currentPageUrl(page)}).`);
   }
-  logger.info('IDAM login successful', {
+  info('IDAM login successful', {
     userIdentifier,
     email,
     loginTarget,
@@ -796,6 +817,7 @@ async function loginAndPersistSession({
   sessionPath,
   persist,
   userIdentifier,
+  executeLoginAttemptFn = executeLoginAttempt,
 }: {
   chromiumLauncher: typeof chromium;
   idamFactory: (page: Page) => IdamPage;
@@ -806,6 +828,7 @@ async function loginAndPersistSession({
   sessionPath: string;
   persist: typeof persistSession;
   userIdentifier: string;
+  executeLoginAttemptFn?: typeof executeLoginAttempt;
 }) {
   const browser = await chromiumLauncher.launch();
   const targetUrl = env.TEST_URL || activeConfig.urls.exuiDefaultUrl;
@@ -826,7 +849,7 @@ async function loginAndPersistSession({
       for (let attempt = 0; attempt < loginTargets.length; attempt += 1) {
         const loginTarget = loginTargets[attempt];
         try {
-          await executeLoginAttempt(page, idamPage, userIdentifier, email, password, loginTarget, attempt + 1);
+          await executeLoginAttemptFn(page, idamPage, userIdentifier, email, password, loginTarget, attempt + 1);
           loginError = null;
           break;
         } catch (attemptError) {
@@ -863,7 +886,7 @@ async function loginAndPersistSession({
         });
       }
 
-      const cookies = await context.cookies();
+      const cookies = await requirePersistableSessionCookies(context, userIdentifier, currentPageUrl(page));
       await persist(sessionPath, cookies, context, userIdentifier);
     } catch (e) {
       logger.error('Login failed', {
@@ -888,6 +911,18 @@ async function loginAndPersistSession({
       });
     }
   }
+}
+
+async function requirePersistableSessionCookies(
+  context: Pick<BrowserContext, 'cookies'>,
+  userIdentifier: string,
+  currentUrl: string
+): Promise<Cookie[]> {
+  const cookies = await context.cookies();
+  if (!hasRequiredAuthCookies(cookies)) {
+    throw new Error(`Cannot persist unauthenticated session for ${userIdentifier} (url=${currentUrl}).`);
+  }
+  return cookies;
 }
 
 export async function sessionCapture(identifiers: SessionIdentityInput[], options: { force?: boolean } = {}) {
@@ -1001,4 +1036,7 @@ export const __test__ = {
   acquireSessionLock,
   sessionCaptureWith,
   persistSession,
+  confirmAuthenticatedLogin,
+  loginAndPersistSession,
+  requirePersistableSessionCookies,
 };

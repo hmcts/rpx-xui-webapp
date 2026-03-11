@@ -55,7 +55,10 @@ const hasExpiredAuthCookies = (cookies: { name: string; expires?: number }[]) =>
 const shouldRefreshStorageState = async (
   storagePath: string,
   baseUrl: string,
-  options?: { ignoreTtl?: boolean }
+  options?: {
+    ignoreTtl?: boolean;
+    validateAuthenticatedState?: (storagePath: string, baseUrl: string) => Promise<boolean>;
+  }
 ): Promise<boolean> => {
   if (!fs.existsSync(storagePath)) {
     return true;
@@ -75,7 +78,8 @@ const shouldRefreshStorageState = async (
   }
 
   if (options?.ignoreTtl) {
-    return false;
+    const stillAuthenticated = await (options.validateAuthenticatedState ?? isStorageStateAuthenticated)(storagePath, baseUrl);
+    return !stillAuthenticated;
   }
 
   const ttlMs = resolveStorageTtlMs();
@@ -222,3 +226,7 @@ export async function ensureUiStorageStateForUser(userIdentifier: string, option
 
   return storagePath;
 }
+
+export const __test__ = {
+  shouldRefreshStorageState,
+};

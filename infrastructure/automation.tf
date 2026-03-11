@@ -476,3 +476,287 @@ resource "azurerm_automation_module" "ps_write_pdf" {
     uri = "https://www.powershellgallery.com/api/v2/package/PSWritePDF"
   }
 }
+
+# ─── Organisation Approvals Reporting ────────────────────────────────────────
+
+resource "azurerm_automation_account" "org_approvals_reporting" {
+  count               = var.org_approvals_reporting_enabled ? 1 : 0
+  name                = "${local.app_full_name}-org-approvals-automation-${var.env}"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.rg.name
+  sku_name            = "Basic"
+
+  identity {
+    type = "SystemAssigned"
+  }
+
+  tags = var.common_tags
+}
+
+resource "azurerm_role_assignment" "org_approvals_appinsights_reader" {
+  count                = var.org_approvals_reporting_enabled ? 1 : 0
+  scope                = module.application_insights.id
+  role_definition_name = "Reader"
+  principal_id         = azurerm_automation_account.org_approvals_reporting.0.identity[0].principal_id
+}
+
+resource "azurerm_automation_module" "org_approvals_az_communication" {
+  count                   = var.org_approvals_reporting_enabled ? 1 : 0
+  name                    = "Az.Communication"
+  resource_group_name     = azurerm_resource_group.rg.name
+  automation_account_name = azurerm_automation_account.org_approvals_reporting.0.name
+
+  module_link {
+    uri = "https://www.powershellgallery.com/api/v2/package/Az.Communication/1.2.0"
+  }
+}
+
+resource "azurerm_automation_runbook" "org_approvals_runbook" {
+  count                   = var.org_approvals_reporting_enabled ? 1 : 0
+  name                    = "Generate-Org-Approvals-Report"
+  location                = var.location
+  resource_group_name     = azurerm_resource_group.rg.name
+  automation_account_name = azurerm_automation_account.org_approvals_reporting.0.name
+  log_verbose             = true
+  log_progress            = true
+  description             = "Generates Organisation Approvals Report (last 60 days)"
+  runbook_type            = "PowerShell"
+
+  content = <<EOT
+param(
+    [string]$appinsightsappid,
+    [string]$resourcegroupname,
+    [string]$acsresourcename,
+    [string]$senderaddress,
+    [string]$recipientaddress
+)
+
+# Connect to Azure with Managed Identity
+try {
+    Connect-AzAccount -Identity
+}
+catch {
+    Write-Error "Failed to login with Managed Identity. Ensure System Assigned Identity is enabled and has permissions."
+    throw $_
+}
+
+# Import required modules
+Import-Module Az.Communication -ErrorAction SilentlyContinue
+
+# Organisation approvals query — rolling 60 days
+$query = @"
+customEvents
+| project timestamp, name, operation_Name, itemType
+| where timestamp >= ago(60d)
+| where name == 'Approved Organisation successfully'
+| summarize Approvals=count() by bin(timestamp, 1d)
+| order by timestamp asc
+| project Date=format_datetime(timestamp, 'dd/MM/yyyy'), Approvals
+"@
+
+try {
+    Write-Output "Querying Application Insights for Organisation Approvals..."
+    $token = (Get-AzAccessToken -ResourceUrl "https://api.applicationinsights.io").Token
+    $headers = @{
+        "Authorization" = "Bearer $token"
+        "Content-Type"  = "application/json"
+    }
+
+    $apiUrl = "https://api.applicationinsights.io/v1/apps/$appinsightsappid/query"
+    $body   = @{ query = $query } | ConvertTo-Json
+
+    Write-Output "App ID: $appinsightsappid"
+    $response = Invoke-RestMethod -Uri $apiUrl -Method Post -Headers $headers -Body $body
+
+    $result = @{
+        Results = $response.tables[0].rows | ForEach-Object {
+            $row = $_
+            $obj = New-Object PSObject
+            for ($i = 0; $i -lt $response.tables[0].columns.Count; $i++) {
+                $obj | Add-Member -MemberType NoteProperty -Name $response.tables[0].columns[$i].name -Value $row[$i]
+            }
+            $obj
+        }
+    }
+
+    Write-Output "Query executed successfully. Found $($result.Results.Count) rows."
+}
+catch {
+    Write-Error "Failed to execute query: $($_.Exception.Message)"
+    throw $_
+}
+
+$dataRows = @()
+if ($null -ne $result -and $null -ne $result.Results) {
+    $dataRows = @($result.Results | ForEach-Object { $_ })
+}
+
+Write-Output "Found $($dataRows.Count) days with approvals."
+
+# Build HTML table and bar chart
+if (-not $dataRows -or $dataRows.Count -eq 0) {
+    $htmlTable = "<p><strong>No Organisation Approvals were recorded in the last 60 days.</strong></p>"
+    $htmlChart = ""
+}
+else {
+    $htmlTable = "<table>"
+    $htmlTable += "<thead><tr><th>Date</th><th>Approvals</th></tr></thead>"
+    $htmlTable += "<tbody>"
+
+    $totalApprovals = 0
+    $maxApprovals   = 0
+    foreach ($row in $dataRows) {
+        if ($null -ne $row) {
+            $dateValue     = if ($null -ne $row.Date)      { $row.Date }      else { "N/A" }
+            $approvalValue = if ($null -ne $row.Approvals) { $row.Approvals } else { "0" }
+            $htmlTable += "<tr><td>$dateValue</td><td>$approvalValue</td></tr>"
+            $totalApprovals += [int]$approvalValue
+            if ([int]$approvalValue -gt $maxApprovals) { $maxApprovals = [int]$approvalValue }
+        }
+    }
+
+    $htmlTable += "</tbody>"
+    $htmlTable += "<tfoot><tr><th>Total</th><th>$totalApprovals</th></tr></tfoot>"
+    $htmlTable += "</table>"
+
+    # Bar chart
+    $htmlChart = "<div class='chart-container'>"
+    $htmlChart += "<h3>Visual Trend:</h3>"
+    $htmlChart += "<div class='chart-wrapper'>"
+    $chartMaxHeight = 250
+    foreach ($row in $dataRows) {
+        if ($null -ne $row) {
+            $dateValue     = if ($null -ne $row.Date)      { $row.Date }      else { "N/A" }
+            $approvalValue = if ($null -ne $row.Approvals) { [int]$row.Approvals } else { 0 }
+            $barHeight = if ($maxApprovals -gt 0) { [Math]::Round(($approvalValue / $maxApprovals) * $chartMaxHeight) } else { 0 }
+            if ($barHeight -lt 5) { $barHeight = 5 }
+
+            $htmlChart += "<div class='bar-column'>"
+            $htmlChart += "<div class='bar-value-top'>$approvalValue</div>"
+            $htmlChart += "<div class='bar-wrapper'>"
+            $htmlChart += "<div class='bar-vertical' style='height: " + $barHeight + "px !important;'></div>"
+            $htmlChart += "</div>"
+            $htmlChart += "<div class='bar-label-bottom'>$dateValue</div>"
+            $htmlChart += "</div>"
+        }
+    }
+    $htmlChart += "</div>"
+    $htmlChart += "</div>"
+
+    Write-Output "Report contains $($dataRows.Count) days with $totalApprovals total approvals."
+}
+
+$reportDate = Get-Date -Format "dd MMM yyyy"
+$emailBody = @"
+<html>
+<head>
+<style>
+table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+th { background-color: #0b0c0c; color: white; font-weight: bold; }
+tfoot th { background-color: #005ea5; }
+tr:nth-child(even) { background-color: #f2f2f2; }
+tr:hover { background-color: #e0e0e0; }
+.chart-container { margin: 30px 0; }
+.chart-wrapper { display: flex; align-items: flex-end; justify-content: flex-start; gap: 20px; padding: 20px; background-color: #fafafa; border-radius: 8px; overflow-x: auto; }
+.bar-column { display: flex; flex-direction: column; align-items: center; min-width: 70px; }
+.bar-value-top { font-size: 12px; font-weight: bold; color: #0b0c0c; margin-bottom: 5px; min-height: 20px; text-align: center; }
+.bar-wrapper { display: flex; align-items: flex-end; justify-content: center; height: 250px; border-bottom: 2px solid #505a5f; width: 50px; }
+.bar-vertical { width: 40px; background-color: #005ea5; border-radius: 4px 4px 0 0; }
+.bar-label-bottom { font-size: 10px; color: #505a5f; margin-top: 8px; white-space: nowrap; }
+</style>
+</head>
+<body>
+<h2>Organisation Approvals Report</h2>
+<p>Environment: <strong>$($env:MODULE_PROJECT) $($env:MODULE_ENV)</strong></p>
+<p>Reporting Period: <strong>Last 60 days (as of $reportDate)</strong></p>
+<p>This report shows the daily count of <em>Approved Organisation successfully</em> events.</p>
+<h3>Daily Organisation Approvals:</h3>
+$htmlTable
+$htmlChart
+<hr/>
+<p><small><em>Generated on: $(Get-Date -Format 'dd MMM yyyy HH:mm:ss') UTC</em></small></p>
+</body>
+</html>
+"@
+
+Write-Output "Email report generated successfully."
+
+# Get ACS access token
+try {
+    $token = (Get-AzAccessToken -ResourceUrl "https://communication.azure.com").Token
+    Write-Output "Successfully retrieved access token."
+}
+catch {
+    Write-Error "Failed to retrieve access token: $_"
+    throw $_
+}
+
+# Send email via ACS
+try {
+    $endpoint  = "https://$acsresourcename.communication.azure.com"
+    $emailUrl  = "$endpoint/emails:send?api-version=2023-03-31"
+
+    $recipientAddrList = @($recipientaddress -split "," | ForEach-Object {
+        @{ address = $_.Trim() }
+    })
+
+    $emailPayload = @{
+        senderAddress = $senderaddress
+        recipients    = @{ to = $recipientAddrList }
+        content       = @{
+            subject = "Organisation Approvals Report - last 60 days - $($env:MODULE_ENV)"
+            html    = $emailBody
+        }
+    } | ConvertTo-Json -Depth 10
+
+    $headers = @{
+        "Content-Type"  = "application/json"
+        "Authorization" = "Bearer $token"
+    }
+
+    Write-Output "Sending email to: $recipientaddress"
+    $response = Invoke-RestMethod -Uri $emailUrl -Method Post -Headers $headers -Body $emailPayload
+    Write-Output "Email sent successfully. Message ID: $($response.id)"
+}
+catch {
+    Write-Error "Failed to send email via Azure Communication Services: $_"
+    throw $_
+}
+EOT
+
+  tags = var.common_tags
+}
+
+resource "azurerm_automation_schedule" "org_approvals_schedule" {
+  count                   = var.org_approvals_reporting_enabled ? 1 : 0
+  name                    = "monthly-org-approvals-schedule"
+  resource_group_name     = azurerm_resource_group.rg.name
+  automation_account_name = azurerm_automation_account.org_approvals_reporting.0.name
+  frequency               = "Month"
+  interval                = 1
+  start_time              = "2026-04-01T09:30:00Z"
+  timezone                = "UTC"
+}
+
+resource "azurerm_automation_job_schedule" "org_approvals_job" {
+  count                   = var.org_approvals_reporting_enabled ? 1 : 0
+  resource_group_name     = azurerm_resource_group.rg.name
+  automation_account_name = azurerm_automation_account.org_approvals_reporting.0.name
+  schedule_name           = azurerm_automation_schedule.org_approvals_schedule.0.name
+  runbook_name            = azurerm_automation_runbook.org_approvals_runbook.0.name
+
+  parameters = {
+    appinsightsappid  = module.application_insights.app_id
+    resourcegroupname = azurerm_resource_group.rg.name
+    acsresourcename   = azurerm_communication_service.comm_service.0.name
+    senderaddress     = "DoNotReply@${azurerm_email_communication_service_domain.email_domain.0.from_sender_domain}"
+    recipientaddress  = join(",", local.org_approvals_emails)
+  }
+
+  depends_on = [
+    azurerm_automation_runbook.org_approvals_runbook,
+    azurerm_automation_schedule.org_approvals_schedule,
+    azurerm_automation_module.org_approvals_az_communication,
+  ]
+}

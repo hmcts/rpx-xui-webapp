@@ -52,6 +52,7 @@ import {
   decodeJwtPayload,
   findUserIdentifierByEmail,
   firstNonEmpty,
+  filterSupportedOrganisationAssignmentRoles,
   getRequiredEnvSecret,
   isInvalidScopeError,
   isPlaywrightArtifactIoError,
@@ -704,11 +705,14 @@ export class ProfessionalUserUtils {
     const assignmentBearerToken = await this.resolveAssignmentBearerToken(params.assignmentBearerToken);
     const serviceToken = await this.resolveServiceToken(params.serviceToken, false);
     const assignmentUserRoles = await this.resolveAssignmentUserRoles(assignmentBearerToken);
+    const supportedOrganisationAssignmentRoles = filterSupportedOrganisationAssignmentRoles(assignmentUserRoles.roles);
     logger.info('Resolved assignment principal roles for manage-org bearer invite.', {
-      email: params.user.email,
+      assignmentPrincipalUsername: resolveTokenPrincipalUsername(assignmentBearerToken) ?? 'unknown',
+      targetEmail: params.user.email,
       source: assignmentUserRoles.source,
       profile: assignmentUserRoles.profile,
       roles: assignmentUserRoles.roles,
+      supportedOrganisationAssignmentRoles,
     });
     const apiContext = await request.newContext({
       baseURL: manageOrgBaseUrl,
@@ -989,9 +993,12 @@ export class ProfessionalUserUtils {
     );
     const hydrated = hydrateAssignmentUserRolesResolutionFromIdamUserInfo(resolved, idamUserInfoProbe);
     if (hydrated.source !== resolved.source) {
+      const supportedOrganisationAssignmentRoles = filterSupportedOrganisationAssignmentRoles(hydrated.roles);
       logger.info('Hydrated assignment principal roles from IDAM userinfo after JWT claims were unmapped.', {
+        assignmentPrincipalUsername: resolveTokenPrincipalUsername(assignmentBearerToken) ?? 'unknown',
         source: hydrated.source,
         roles: hydrated.roles,
+        supportedOrganisationAssignmentRoles,
       });
     }
     return hydrated;

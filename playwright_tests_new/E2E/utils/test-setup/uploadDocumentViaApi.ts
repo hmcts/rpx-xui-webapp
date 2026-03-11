@@ -35,15 +35,75 @@ const XSRF_COOKIE_WAIT_INTERVAL_MS = 250;
 const XSRF_COOKIE_AUTH_TOUCH_INTERVAL_ATTEMPTS = 4;
 const XSRF_COOKIE_MAX_AUTH_TOUCH_ATTEMPTS = 2;
 
+type BrowserFetchResult = {
+  ok: boolean;
+  status: number;
+  bodyText: string;
+};
+
+async function runBrowserFetchText(
+  page: Page,
+  params:
+    | {
+        url: string;
+        method: 'GET';
+      }
+    | {
+        url: string;
+        method: 'POST';
+        headers: Record<string, string>;
+        multipart: {
+          classification: 'PUBLIC' | 'PRIVATE' | 'RESTRICTED';
+          jurisdictionId: string;
+          caseTypeId: string;
+          fileName: string;
+          mimeType: string;
+          fileContentBase64: string;
+        };
+      }
+): Promise<BrowserFetchResult> {
+  return page.evaluate(async (request) => {
+    if (request.method === 'GET') {
+      const response = await fetch(request.url, {
+        method: 'GET',
+        credentials: 'same-origin',
+      });
+      return {
+        ok: response.ok,
+        status: response.status,
+        bodyText: await response.text(),
+      };
+    }
+
+    const binary = Uint8Array.from(atob(request.multipart.fileContentBase64), (character) => character.charCodeAt(0));
+    const formData = new FormData();
+    formData.append('classification', request.multipart.classification);
+    formData.append('jurisdictionId', request.multipart.jurisdictionId);
+    formData.append('caseTypeId', request.multipart.caseTypeId);
+    formData.append('files', new File([binary], request.multipart.fileName, { type: request.multipart.mimeType }));
+
+    const response = await fetch(request.url, {
+      method: 'POST',
+      body: formData,
+      headers: request.headers,
+      credentials: 'same-origin',
+    });
+    return {
+      ok: response.ok,
+      status: response.status,
+      bodyText: await response.text(),
+    };
+  }, params);
+}
+
 async function touchAuthEndpointsToMintXsrf(page: Page, baseUrl: string): Promise<void> {
-  const requestContext = page.request;
   const authLoginUrl = new URL('/auth/login', baseUrl).toString();
   const authCheckUrl = new URL('/auth/isAuthenticated', baseUrl).toString();
   const appRootUrl = new URL('/', baseUrl).toString();
 
-  await requestContext.get(authLoginUrl, { failOnStatusCode: false }).catch(() => undefined);
-  await requestContext.get(authCheckUrl, { failOnStatusCode: false }).catch(() => undefined);
-  await requestContext.get(appRootUrl, { failOnStatusCode: false }).catch(() => undefined);
+  await runBrowserFetchText(page, { url: authLoginUrl, method: 'GET' }).catch(() => undefined);
+  await runBrowserFetchText(page, { url: authCheckUrl, method: 'GET' }).catch(() => undefined);
+  await runBrowserFetchText(page, { url: appRootUrl, method: 'GET' }).catch(() => undefined);
 }
 
 async function waitForXsrfToken(page: Page, baseUrl: string): Promise<string> {
@@ -80,34 +140,32 @@ export async function uploadDocumentViaApi(options: UploadDocumentViaApiOptions)
   const baseUrl = config.urls.baseURL ?? config.urls.exuiDefaultUrl;
   const xsrf = await waitForXsrfToken(options.page, baseUrl);
   const headers = { 'X-XSRF-TOKEN': xsrf };
-  const response = await options.page.request.post(new URL('/documentsv2', baseUrl).toString(), {
+  const response = await runBrowserFetchText(options.page, {
+    url: new URL('/documentsv2', baseUrl).toString(),
+    method: 'POST',
+    headers,
     multipart: {
       classification: options.classification ?? 'PUBLIC',
       jurisdictionId: options.jurisdictionId,
       caseTypeId: options.caseTypeId,
-      files: {
-        name: options.fileName,
-        mimeType: options.mimeType,
-        buffer: Buffer.from(options.fileContent),
-      },
+      fileName: options.fileName,
+      mimeType: options.mimeType,
+      fileContentBase64: Buffer.from(options.fileContent).toString('base64'),
     },
-    headers,
-    failOnStatusCode: false,
   });
 
-  const bodyText = await response.text();
-  if (!response.ok()) {
-    throw new Error(`Document upload API failed with HTTP ${response.status()}: ${bodyText.slice(0, 500)}`);
+  if (!response.ok) {
+    throw new Error(`Document upload API failed with HTTP ${response.status}: ${response.bodyText.slice(0, 500)}`);
   }
 
-  const payload = JSON.parse(bodyText) as DocumentsV2Response;
+  const payload = JSON.parse(response.bodyText) as DocumentsV2Response;
   const uploaded = payload.documents?.[0];
   const documentUrl = uploaded?._links?.self?.href?.trim();
   const documentBinaryUrl = uploaded?._links?.binary?.href?.trim();
   const documentFilename = uploaded?.originalDocumentName?.trim();
 
   if (!documentUrl || !documentBinaryUrl || !documentFilename) {
-    throw new Error(`Document upload API response missing CCD document fields: ${bodyText.slice(0, 500)}`);
+    throw new Error(`Document upload API response missing CCD document fields: ${response.bodyText.slice(0, 500)}`);
   }
 
   return {

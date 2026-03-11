@@ -5,8 +5,15 @@ import { uploadDocumentViaApi } from '../../E2E/utils/test-setup/uploadDocumentV
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () => {
-  test('uploadDocumentViaApi forwards XSRF header from browser-context cookies', async () => {
-    const captured: { url?: string; headers?: Record<string, string> } = {};
+  test('uploadDocumentViaApi posts through browser fetch with the XSRF header from browser-context cookies', async () => {
+    const captured: {
+      url?: string;
+      method?: string;
+      headers?: Record<string, string>;
+      fileName?: string;
+      mimeType?: string;
+      classification?: string;
+    } = {};
     const consentButton = {
       first: () => consentButton,
       isVisible: async () => false,
@@ -17,27 +24,40 @@ test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () 
         cookies: async () => [{ name: 'XSRF-TOKEN', value: 'xsrf-token-123' }],
       }),
       getByRole: () => consentButton,
-      request: {
-        post: async (url: string, options: { headers?: Record<string, string> }) => {
-          captured.url = url;
-          captured.headers = options.headers;
-          return {
-            ok: () => true,
-            text: async () =>
-              JSON.stringify({
-                documents: [
-                  {
-                    originalDocumentName: 'seed.pdf',
-                    hashToken: 'hash-token',
-                    _links: {
-                      self: { href: 'https://dm/documents/1' },
-                      binary: { href: 'https://dm/documents/1/binary' },
-                    },
-                  },
-                ],
-              }),
-          };
-        },
+      evaluate: async (
+        _fn: unknown,
+        request: {
+          url: string;
+          method: string;
+          headers?: Record<string, string>;
+          multipart?: { fileName: string; mimeType: string; classification: string };
+        }
+      ) => {
+        if (request.method === 'GET') {
+          return { ok: true, status: 200, bodyText: '' };
+        }
+        captured.url = request.url;
+        captured.method = request.method;
+        captured.headers = request.headers;
+        captured.fileName = request.multipart?.fileName;
+        captured.mimeType = request.multipart?.mimeType;
+        captured.classification = request.multipart?.classification;
+        return {
+          ok: true,
+          status: 200,
+          bodyText: JSON.stringify({
+            documents: [
+              {
+                originalDocumentName: 'seed.pdf',
+                hashToken: 'hash-token',
+                _links: {
+                  self: { href: 'https://dm/documents/1' },
+                  binary: { href: 'https://dm/documents/1/binary' },
+                },
+              },
+            ],
+          }),
+        };
       },
     };
 
@@ -51,7 +71,11 @@ test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () 
     });
 
     expect(captured.url).toContain('/documentsv2');
+    expect(captured.method).toBe('POST');
     expect(captured.headers).toEqual({ 'X-XSRF-TOKEN': 'xsrf-token-123' });
+    expect(captured.fileName).toBe('seed.pdf');
+    expect(captured.mimeType).toBe('application/pdf');
+    expect(captured.classification).toBe('PUBLIC');
     expect(uploaded).toEqual({
       document_url: 'https://dm/documents/1',
       document_binary_url: 'https://dm/documents/1/binary',
@@ -71,13 +95,10 @@ test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () 
         cookies: async () => [{ name: 'XSRF-TOKEN', value: 'xsrf-token-123' }],
       }),
       getByRole: () => consentButton,
-      request: {
-        post: async () => ({
-          ok: () => false,
-          status: () => 403,
-          text: async () => '{"message":"Internal Server Error"}',
-        }),
-      },
+      evaluate: async (_fn: unknown, request: { method: string }) =>
+        request.method === 'GET'
+          ? { ok: true, status: 200, bodyText: '' }
+          : { ok: false, status: 403, bodyText: '{"message":"Internal Server Error"}' },
     };
 
     await expect(
@@ -112,18 +133,13 @@ test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () 
       }),
       getByRole: () => consentButton,
       waitForTimeout: async () => undefined,
-      request: {
-        get: async (url: string) => {
-          requestGets.push(url);
-          return {
-            ok: () => false,
-            status: () => 404,
-            text: async () => '',
-          };
-        },
-        post: async () => {
-          throw new Error('post should not be called without xsrf');
-        },
+      evaluate: async (_fn: unknown, request: { url: string; method: string }) => {
+        requestGets.push(`${request.method}:${request.url}`);
+        return {
+          ok: false,
+          status: 404,
+          bodyText: '',
+        };
       },
     };
 
@@ -140,11 +156,11 @@ test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () 
 
     expect(cookieCalls).toBeGreaterThan(1);
     expect(consentClicks).toBeGreaterThan(1);
-    expect(requestGets.filter((url) => url.endsWith('/auth/login')).length).toBe(2);
-    expect(requestGets.filter((url) => url.endsWith('/auth/isAuthenticated')).length).toBe(2);
+    expect(requestGets.filter((entry) => entry.endsWith('/auth/login')).length).toBe(2);
+    expect(requestGets.filter((entry) => entry.endsWith('/auth/isAuthenticated')).length).toBe(2);
   });
 
-  test('uploadDocumentViaApi touches auth endpoints to mint XSRF before posting', async () => {
+  test('uploadDocumentViaApi touches auth endpoints in the browser context to mint XSRF before posting', async () => {
     let cookieCalls = 0;
     const requestGets: string[] = [];
     const consentButton = {
@@ -164,31 +180,34 @@ test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () 
       }),
       getByRole: () => consentButton,
       waitForTimeout: async () => undefined,
-      request: {
-        get: async (url: string) => {
-          requestGets.push(url);
+      evaluate: async (
+        _fn: unknown,
+        request: { url: string; method: 'GET' } | { url: string; method: 'POST'; headers?: Record<string, string> }
+      ) => {
+        if (request.method === 'GET') {
+          requestGets.push(request.url);
           return {
-            ok: () => true,
-            status: () => 200,
-            text: async () => '',
+            ok: true,
+            status: 200,
+            bodyText: '',
           };
-        },
-        post: async (_url: string, options: { headers?: Record<string, string> }) => ({
-          ok: () => true,
-          text: async () =>
-            JSON.stringify({
-              documents: [
-                {
-                  originalDocumentName: 'seed.pdf',
-                  _links: {
-                    self: { href: 'https://dm/documents/1' },
-                    binary: { href: 'https://dm/documents/1/binary' },
-                  },
+        }
+        return {
+          ok: true,
+          status: 200,
+          bodyText: JSON.stringify({
+            documents: [
+              {
+                originalDocumentName: 'seed.pdf',
+                _links: {
+                  self: { href: 'https://dm/documents/1' },
+                  binary: { href: 'https://dm/documents/1/binary' },
                 },
-              ],
-              headers: options.headers,
-            }),
-        }),
+              },
+            ],
+            headers: request.headers,
+          }),
+        };
       },
     };
 

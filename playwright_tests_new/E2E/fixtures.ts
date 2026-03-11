@@ -367,12 +367,52 @@ function deriveTimeoutPhaseMarker(
   return executionSignals.backendRequestsObserved > 0 ? 'ui-timeout-post-backend' : 'ui-timeout-pre-backend';
 }
 
+function deriveTargetedTimeoutMarker(failureLocation: string, actionableErrorLine: string, error: string): string | undefined {
+  const signal = `${failureLocation} ${actionableErrorLine} ${error}`;
+  if (/dynamicProvisioningFlow\.ts|Dynamic user provisioning (failed|timed out)/i.test(signal)) {
+    return 'setup-dynamic-provisioning-timeout';
+  }
+  if (/caseList\.po\.ts|Cases page shell did not become ready/i.test(signal)) {
+    return 'ui-cases-shell-timeout';
+  }
+  if (/Task list filter controls did not become visible/i.test(signal)) {
+    return 'ui-filter-controls-timeout';
+  }
+  if (/Task list filter checkbox .* did not (become visible|become interactive)/i.test(signal)) {
+    return 'ui-filter-checkbox-timeout';
+  }
+  if (/Task list filter panel did not become ready/i.test(signal)) {
+    return 'ui-filter-panel-timeout';
+  }
+  if (
+    /Task list shell did not become ready|Task list showed service down while|Something went wrong page was displayed while waiting for task list shell/i.test(
+      signal
+    )
+  ) {
+    return 'ui-task-list-shell-timeout';
+  }
+  if (
+    /taskList\.po\.ts|Task list filter controls did not become visible|Task list filter checkbox did not become interactive|Task list filter panel did not become ready|Task list shell did not become ready|Task list showed service down while|Something went wrong page was displayed while waiting for task list shell/i.test(
+      signal
+    )
+  ) {
+    return 'ui-filter-panel-timeout';
+  }
+  return undefined;
+}
+
 function derivePhaseMarker(
   failureType: FailureType,
   error: string,
   executionSignals: ExecutionSignals,
-  backendWait: 'yes' | 'no'
+  backendWait: 'yes' | 'no',
+  failureLocation: string,
+  actionableErrorLine: string
 ): string {
+  const targetedMarker = deriveTargetedTimeoutMarker(failureLocation, actionableErrorLine, error);
+  if (targetedMarker) {
+    return targetedMarker;
+  }
   const inSetupHook = /beforeEach|beforeAll|hook/i.test(error);
 
   if (failureType === 'TIMEOUT_NO_API_ACTIVITY' || failureType === 'GLOBAL_TIMEOUT_UI_STALL') {
@@ -471,13 +511,64 @@ function deriveTimeoutRootCause({
   const closureHint = isPageClosed
     ? ' Page/context was then closed by Playwright timeout teardown; locator/page-closed errors are secondary.'
     : '';
+  const timeoutSignal = `${failureLocation} ${actionableErrorLine} ${error}`;
+
+  if (/dynamicProvisioningFlow\.ts|Dynamic user provisioning (failed|timed out)/i.test(timeoutSignal)) {
+    return `Dynamic user provisioning exhausted its retry budget before the browser journey started (${summarizeExecutionSignals(
+      executionSignals
+    )}). This is a setup/provisioning timeout, not a document-upload UI failure.${locationHint}${actionableHint}`;
+  }
+  if (/caseList\.po\.ts|Cases page shell did not become ready/i.test(timeoutSignal)) {
+    return `The /cases shell did not become interactive before the global-search journey started (${summarizeExecutionSignals(
+      executionSignals
+    )}). This points to a case-list bootstrap wait rather than the mocked search response path.${closureHint}${locationHint}${actionableHint}`;
+  }
+  if (
+    /Task list showed service down while|Something went wrong page was displayed while waiting for task list shell/i.test(
+      timeoutSignal
+    )
+  ) {
+    return `Task-list navigation reached an error/service-down state before the expected shell became usable (${summarizeExecutionSignals(
+      executionSignals
+    )}). This points to task-list readiness or mocked-response handling rather than a backend timeout pattern.${closureHint}${locationHint}${actionableHint}`;
+  }
+  if (/Task list filter controls did not become visible/i.test(timeoutSignal)) {
+    return `The task-list filter controls never became visible before the global timeout (${summarizeExecutionSignals(
+      executionSignals
+    )}). This points to a filter-shell readiness stall rather than a backend-response failure.${closureHint}${locationHint}${actionableHint}`;
+  }
+  if (/Task list filter checkbox .* did not (become visible|become interactive)/i.test(timeoutSignal)) {
+    return `A task-list filter checkbox never became usable before the global timeout (${summarizeExecutionSignals(
+      executionSignals
+    )}). This points to a filter-control interaction stall rather than a backend-response failure.${closureHint}${locationHint}${actionableHint}`;
+  }
+  if (/Task list filter panel did not become ready/i.test(timeoutSignal)) {
+    return `The task-list filter panel never became usable before the global timeout (${summarizeExecutionSignals(
+      executionSignals
+    )}). This points to filter-panel readiness rather than a backend-response failure.${closureHint}${locationHint}${actionableHint}`;
+  }
+  if (
+    /taskList\.po\.ts|Task list filter controls did not become visible|Task list filter checkbox did not become interactive|Task list filter panel did not become ready|Task list shell did not become ready/i.test(
+      timeoutSignal
+    )
+  ) {
+    return `The task-list filter controls never became interactive before the global timeout (${summarizeExecutionSignals(
+      executionSignals
+    )}). This points to a UI-shell/filter readiness stall rather than a backend-response failure.${closureHint}${locationHint}${actionableHint}`;
+  }
 
   if (failureType === 'TIMEOUT_NO_API_ACTIVITY') {
     const inSetupHook = /beforeEach|beforeAll|hook/i.test(error);
     const phaseHint = inSetupHook
       ? 'Likely stuck in session bootstrap, navigation, or UI wait before backend calls.'
       : 'Likely spent timeout budget in UI-only steps/retries before backend calls were triggered.';
-    return `Global test timeout with no backend API activity (${summarizeExecutionSignals(executionSignals)}). ${phaseHint}${closureHint}${locationHint}${actionableHint}`;
+    const telemetryHint =
+      executionSignals.totalRequestsObserved === 0
+        ? ' No page telemetry requests were observed, so setup or other non-page async work may sit outside this monitor.'
+        : '';
+    return `Global test timeout with no page-observed backend API activity (${summarizeExecutionSignals(
+      executionSignals
+    )}). ${phaseHint}${telemetryHint}${closureHint}${locationHint}${actionableHint}`;
   }
 
   // GLOBAL_TIMEOUT_UI_STALL
@@ -511,6 +602,53 @@ function deriveLikelyRootCause({
   actionableErrorLine,
 }: RootCauseContext): string {
   const isPageClosed = /Target page, context or browser has been closed/i.test(error);
+  const readinessSignal = `${failureLocation} ${actionableErrorLine} ${error}`;
+
+  if (/dynamicProvisioningFlow\.ts|Dynamic user provisioning (failed|timed out)/i.test(readinessSignal)) {
+    return `Dynamic user provisioning exhausted its retry budget before the browser journey started (${summarizeExecutionSignals(
+      executionSignals
+    )}). This is a setup/provisioning timeout, not a document-upload UI failure.`;
+  }
+
+  if (/caseList\.po\.ts|Cases page shell did not become ready/i.test(readinessSignal)) {
+    return `The /cases shell did not become interactive before the search journey started (${summarizeExecutionSignals(
+      executionSignals
+    )}). This points to case-list bootstrap readiness rather than the mocked backend response path.`;
+  }
+  if (
+    /Task list showed service down while|Something went wrong page was displayed while waiting for task list shell/i.test(
+      readinessSignal
+    )
+  ) {
+    return `Task-list navigation reached an error/service-down state before the expected shell became usable (${summarizeExecutionSignals(
+      executionSignals
+    )}). This points to task-list readiness or mocked-response handling rather than a backend-response failure.`;
+  }
+  if (/Task list filter controls did not become visible/i.test(readinessSignal)) {
+    return `The task-list filter controls never became visible before the test failed (${summarizeExecutionSignals(
+      executionSignals
+    )}). This points to filter-shell readiness rather than a backend-response failure.`;
+  }
+  if (/Task list filter checkbox .* did not (become visible|become interactive)/i.test(readinessSignal)) {
+    return `A task-list filter checkbox never became usable before the test failed (${summarizeExecutionSignals(
+      executionSignals
+    )}). This points to filter-control interaction rather than a backend-response failure.`;
+  }
+  if (/Task list filter panel did not become ready/i.test(readinessSignal)) {
+    return `The task-list filter panel never became usable before the test failed (${summarizeExecutionSignals(
+      executionSignals
+    )}). This points to filter-panel readiness rather than a backend-response failure.`;
+  }
+
+  if (
+    /taskList\.po\.ts|Task list filter controls did not become visible|Task list filter checkbox did not become interactive|Task list filter panel did not become ready|Task list shell did not become ready/i.test(
+      readinessSignal
+    )
+  ) {
+    return `The task-list shell or filter controls never became interactive before the test failed (${summarizeExecutionSignals(
+      executionSignals
+    )}). This points to UI-shell/filter readiness rather than a backend-response failure.`;
+  }
 
   if (failureType === 'TIMEOUT_NO_API_ACTIVITY' || failureType === 'GLOBAL_TIMEOUT_UI_STALL') {
     return deriveTimeoutRootCause({
@@ -562,6 +700,8 @@ interface ClassifyFailureContext {
   networkTimeout: boolean;
   testStatus: TestInfo['status'];
   executionSignals: ExecutionSignals;
+  actionableErrorLine?: string;
+  failureLocation?: string;
 }
 
 /**
@@ -577,12 +717,19 @@ function classifyFailure({
   networkTimeout,
   testStatus,
   executionSignals,
+  actionableErrorLine = '',
+  failureLocation = '',
 }: ClassifyFailureContext): FailureType {
   const normalizedError = error.toLowerCase();
   const hasTimeoutKeyword = normalizedError.includes('timeout') || normalizedError.includes('timed out');
   const hasBackendFailureSignals = serverErrors.length + clientErrors.length + slowCalls.length + failedRequests.length > 0;
   const hasStrongSlowSignal = hasStrongSlowBackendSignal(slowCalls);
   const hasLocatorSignal = error.includes('locator') || error.includes('element') || error.includes('waiting for');
+  const readinessSignal = `${failureLocation} ${actionableErrorLine} ${error}`;
+  const hasUiReadinessSignal =
+    /Cases page shell did not become ready|Task list shell did not become ready|Task list filter panel did not become ready|Task list filter controls did not become visible|Task list filter checkbox did not become interactive|Task list showed service down while|Something went wrong page was displayed while waiting for task list shell/i.test(
+      readinessSignal
+    );
   const hasNetworkTimeoutFailure =
     networkTimeout || failedRequests.some((request) => /timeout|timed out|ETIMEDOUT/i.test(request.errorText));
 
@@ -595,10 +742,13 @@ function classifyFailure({
   if (hasNetworkTimeoutFailure) {
     return slowCalls.length > 0 ? 'SLOW_API_RESPONSE' : 'NETWORK_TIMEOUT';
   }
-  if (testStatus !== 'timedOut' && hasLocatorSignal && !hasBackendFailureSignals) {
+  if (testStatus !== 'timedOut' && (hasLocatorSignal || hasUiReadinessSignal) && !hasBackendFailureSignals) {
     return 'UI_ELEMENT_MISSING';
   }
   if (testStatus === 'timedOut' || hasTimeoutKeyword) {
+    if ((hasLocatorSignal || hasUiReadinessSignal) && !hasBackendFailureSignals) {
+      return 'GLOBAL_TIMEOUT_UI_STALL';
+    }
     if (!hasBackendFailureSignals && executionSignals.backendRequestsObserved === 0) {
       return 'TIMEOUT_NO_API_ACTIVITY';
     }
@@ -607,7 +757,7 @@ function classifyFailure({
     }
     return 'GLOBAL_TIMEOUT_UI_STALL';
   }
-  if (hasLocatorSignal) {
+  if (hasLocatorSignal || hasUiReadinessSignal) {
     return 'UI_ELEMENT_MISSING';
   }
   if (error.includes('expect') || error.includes('Expected') || error.includes('Received')) {
@@ -761,6 +911,7 @@ async function attachFailureDiagnosis(context: FailureDiagnosisContext): Promise
   } = context;
   const serverErrors = apiErrors.filter((e) => e.status >= 500);
   const clientErrors = apiErrors.filter((e) => e.status >= 400 && e.status < 500);
+  const failureLocation = extractFailureLocation(error, testInfo);
   const failureType = classifyFailure({
     error,
     serverErrors,
@@ -770,6 +921,8 @@ async function attachFailureDiagnosis(context: FailureDiagnosisContext): Promise
     networkTimeout,
     testStatus,
     executionSignals,
+    actionableErrorLine: actionableError,
+    failureLocation,
   });
   const timeoutSuspects = buildTimeoutSuspects(slowCalls, failedRequests);
   const slowCallAggregates = aggregateSlowCalls(slowCalls);
@@ -782,8 +935,7 @@ async function attachFailureDiagnosis(context: FailureDiagnosisContext): Promise
         'No backend timeout call captured (likely UI timeout or non-API wait)'
       : '';
   const backendWait = deriveBackendWaitFlag(failureType, serverErrors, clientErrors, slowCalls, failedRequests);
-  const phaseMarker = derivePhaseMarker(failureType, error, executionSignals, backendWait);
-  const failureLocation = extractFailureLocation(error, testInfo);
+  const phaseMarker = derivePhaseMarker(failureType, error, executionSignals, backendWait, failureLocation, actionableError);
   const likelyRootCause = deriveLikelyRootCause({
     failureType,
     testStatus,
@@ -1021,3 +1173,16 @@ export const test = baseTest.extend<CustomFixtures, { lighthousePort: number }>(
 
 // If you were extending assertions, you would also import the "expect" property from this file
 export const expect = test.expect;
+
+export const __test__ = {
+  classifyFailure: (context: ClassifyFailureContext) => classifyFailure(context),
+  derivePhaseMarker: (
+    failureType: FailureType,
+    error: string,
+    executionSignals: ExecutionSignals,
+    backendWait: 'yes' | 'no',
+    failureLocation: string,
+    actionableErrorLine: string
+  ) => derivePhaseMarker(failureType, error, executionSignals, backendWait, failureLocation, actionableErrorLine),
+  deriveLikelyRootCause: (context: RootCauseContext) => deriveLikelyRootCause(context),
+};

@@ -1,0 +1,194 @@
+import { expect, test } from '@playwright/test';
+
+import { __test__ as diagnosticsTest } from '../../E2E/fixtures.js';
+
+test.describe.configure({ mode: 'serial' });
+
+const baseExecutionSignals = {
+  lastMainFrameUrl: 'about:blank',
+  mainFrameNavigationCount: 0,
+  totalRequestsObserved: 0,
+  backendRequestsObserved: 0,
+};
+
+test.describe('Failure diagnosis unit tests', { tag: '@svc-internal' }, () => {
+  test('classifyFailure treats locator timeouts without backend traffic as UI stalls', () => {
+    const failureType = diagnosticsTest.classifyFailure({
+      error: 'Test timeout of 120000ms exceeded.\nError: locator.waitFor: Test timeout of 120000ms exceeded.',
+      serverErrors: [],
+      clientErrors: [],
+      slowCalls: [],
+      failedRequests: [],
+      networkTimeout: false,
+      testStatus: 'timedOut',
+      executionSignals: baseExecutionSignals,
+    });
+
+    expect(failureType).toBe('GLOBAL_TIMEOUT_UI_STALL');
+  });
+
+  test('deriveLikelyRootCause identifies dynamic provisioning setup timeout as non-UI failure', () => {
+    const message = diagnosticsTest.deriveLikelyRootCause({
+      failureType: 'TIMEOUT_NO_API_ACTIVITY',
+      testStatus: 'timedOut',
+      error: 'Dynamic user provisioning failed for alias SOLICITOR after 2 attempt(s).',
+      timeoutSummary: '',
+      dominantSlowEndpoint: null,
+      topSuspect: 'No backend/API suspect identified',
+      executionSignals: baseExecutionSignals,
+      failureLocation: '/tmp/dynamicProvisioningFlow.ts:107',
+      actionableErrorLine: 'Dynamic user provisioning timed out after 120000ms for alias SOLICITOR on attempt 2/2.',
+    });
+
+    expect(message).toContain('setup/provisioning timeout');
+    expect(message).toContain('not a document-upload UI failure');
+  });
+
+  test('deriveLikelyRootCause identifies task-list shell stalls before blaming backend', () => {
+    const message = diagnosticsTest.deriveLikelyRootCause({
+      failureType: 'GLOBAL_TIMEOUT_UI_STALL',
+      testStatus: 'timedOut',
+      error: 'Error: locator.waitFor: Test timeout of 120000ms exceeded.',
+      timeoutSummary: '',
+      dominantSlowEndpoint: null,
+      topSuspect: 'No backend/API suspect identified',
+      executionSignals: {
+        lastMainFrameUrl: 'https://manage-case.aat.platform.hmcts.net/work/my-work/available',
+        mainFrameNavigationCount: 7,
+        totalRequestsObserved: 65,
+        backendRequestsObserved: 17,
+      },
+      failureLocation: '/tmp/taskList.po.ts:80',
+      actionableErrorLine: 'Task list filter panel did not become ready within 5000ms.',
+    });
+
+    expect(message).toContain('filter panel never became usable');
+    expect(message).toContain('filter-panel readiness');
+  });
+
+  test('deriveLikelyRootCause identifies missing task-list filter controls before blaming backend', () => {
+    const message = diagnosticsTest.deriveLikelyRootCause({
+      failureType: 'GLOBAL_TIMEOUT_UI_STALL',
+      testStatus: 'timedOut',
+      error: 'Test timeout of 120000ms exceeded.',
+      timeoutSummary: '',
+      dominantSlowEndpoint: null,
+      topSuspect: 'No backend/API suspect identified',
+      executionSignals: {
+        lastMainFrameUrl: 'https://manage-case.aat.platform.hmcts.net/work/my-work/available',
+        mainFrameNavigationCount: 7,
+        totalRequestsObserved: 65,
+        backendRequestsObserved: 17,
+      },
+      failureLocation: '/tmp/availableTasksList.negative.spec.ts:43',
+      actionableErrorLine: 'Task list filter controls did not become visible within 15000ms.',
+    });
+
+    expect(message).toContain('filter controls never became visible');
+    expect(message).toContain('filter-shell readiness');
+  });
+
+  test('classifyFailure treats custom case-list readiness errors as UI failures', () => {
+    const failureType = diagnosticsTest.classifyFailure({
+      error: 'Error: Cases page shell did not become ready within 30000ms.',
+      serverErrors: [],
+      clientErrors: [],
+      slowCalls: [],
+      failedRequests: [],
+      networkTimeout: false,
+      testStatus: 'failed',
+      executionSignals: baseExecutionSignals,
+    });
+
+    expect(failureType).toBe('UI_ELEMENT_MISSING');
+  });
+
+  test('classifyFailure treats generic timeout plus task-list actionable line as a UI stall', () => {
+    const failureType = diagnosticsTest.classifyFailure({
+      error: 'Test timeout of 120000ms exceeded.',
+      serverErrors: [],
+      clientErrors: [],
+      slowCalls: [],
+      failedRequests: [],
+      networkTimeout: false,
+      testStatus: 'timedOut',
+      executionSignals: baseExecutionSignals,
+      failureLocation: '/tmp/taskList.po.ts:105',
+      actionableErrorLine: 'Task list shell did not become ready within 20000ms (task list navigation).',
+    });
+
+    expect(failureType).toBe('GLOBAL_TIMEOUT_UI_STALL');
+  });
+
+  test('derivePhaseMarker prioritises task-list filter control stalls over generic UI timeout markers', () => {
+    const phaseMarker = diagnosticsTest.derivePhaseMarker(
+      'GLOBAL_TIMEOUT_UI_STALL',
+      'Test timeout of 120000ms exceeded.',
+      {
+        lastMainFrameUrl: 'https://manage-case.aat.platform.hmcts.net/work/my-work/available',
+        mainFrameNavigationCount: 7,
+        totalRequestsObserved: 65,
+        backendRequestsObserved: 17,
+      },
+      'no',
+      '/tmp/availableTasksList.negative.spec.ts:43',
+      'Task list filter controls did not become visible within 15000ms.'
+    );
+
+    expect(phaseMarker).toBe('ui-filter-controls-timeout');
+  });
+
+  test('deriveLikelyRootCause identifies case-list bootstrap readiness failures', () => {
+    const message = diagnosticsTest.deriveLikelyRootCause({
+      failureType: 'UI_ELEMENT_MISSING',
+      testStatus: 'failed',
+      error: 'Error: Cases page shell did not become ready within 30000ms.',
+      timeoutSummary: '',
+      dominantSlowEndpoint: null,
+      topSuspect: 'No backend/API suspect identified',
+      executionSignals: baseExecutionSignals,
+      failureLocation: '/tmp/caseList.po.ts:102',
+      actionableErrorLine: 'Cases page shell did not become ready within 30000ms.',
+    });
+
+    expect(message).toContain('/cases shell did not become interactive');
+    expect(message).toContain('case-list bootstrap readiness');
+  });
+
+  test('classifyFailure treats task-list service-down readiness errors as UI failures', () => {
+    const failureType = diagnosticsTest.classifyFailure({
+      error: 'Error: Task list showed service down while waiting for task list shell (task list navigation).',
+      serverErrors: [],
+      clientErrors: [],
+      slowCalls: [],
+      failedRequests: [],
+      networkTimeout: false,
+      testStatus: 'failed',
+      executionSignals: baseExecutionSignals,
+    });
+
+    expect(failureType).toBe('UI_ELEMENT_MISSING');
+  });
+
+  test('deriveLikelyRootCause identifies task-list service-down readiness failures', () => {
+    const message = diagnosticsTest.deriveLikelyRootCause({
+      failureType: 'UI_ELEMENT_MISSING',
+      testStatus: 'failed',
+      error: 'Error: Task list showed service down while waiting for task list shell (task list navigation).',
+      timeoutSummary: '',
+      dominantSlowEndpoint: null,
+      topSuspect: 'No backend/API suspect identified',
+      executionSignals: {
+        lastMainFrameUrl: 'https://manage-case.aat.platform.hmcts.net/service-down',
+        mainFrameNavigationCount: 2,
+        totalRequestsObserved: 4,
+        backendRequestsObserved: 0,
+      },
+      failureLocation: '/tmp/taskList.po.ts:120',
+      actionableErrorLine: 'Task list showed service down while waiting for task list shell (task list navigation).',
+    });
+
+    expect(message).toContain('error/service-down state');
+    expect(message).toContain('task-list readiness');
+  });
+});

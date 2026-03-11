@@ -510,9 +510,14 @@ export function hydrateAssignmentUserRolesResolutionFromIdamUserInfo(
   };
 }
 
+export function filterSupportedOrganisationAssignmentRoles(candidateRoles: readonly string[] | undefined): string[] {
+  const unique = uniqueStringList(candidateRoles);
+  return unique.filter((role) => ORGANISATION_ASSIGNMENT_ALLOWED_ROLES.has(role));
+}
+
 export function resolveOrganisationAssignmentRoles(requestedRoles: readonly string[]): string[] {
   const unique = uniqueStringList(requestedRoles);
-  const assignable = unique.filter((role) => ORGANISATION_ASSIGNMENT_ALLOWED_ROLES.has(role));
+  const assignable = filterSupportedOrganisationAssignmentRoles(unique);
   if (assignable.length > 0) {
     return assignable;
   }

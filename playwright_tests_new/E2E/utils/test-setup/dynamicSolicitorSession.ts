@@ -7,7 +7,7 @@ import type { ProfessionalUserUtils } from '../professional-user.utils';
 import type { SessionIdentity } from '../../../common/sessionIdentity.js';
 import config from '../config.utils';
 import { ensureSessionCookies } from '../../../common/sessionCapture';
-import { provisionUserWithRetries } from './dynamicProvisioningFlow.js';
+import { DynamicProvisioningError, provisionUserWithRetries } from './dynamicProvisioningFlow.js';
 import type { DynamicProvisionAttempt } from './dynamicProvisioningFlow.js';
 import {
   getAliasBaselineRoles,
@@ -678,29 +678,38 @@ async function provisionDynamicSolicitorForAliasFlow(
   const provisionTimeoutMs = deps.resolveProvisionTimeoutMs();
   const provisionMaxAttempts = deps.resolveProvisionMaxAttempts();
   const provisionRetryDelayMs = deps.resolveProvisionRetryDelayMs();
-  const { user, attempts: provisionAttempts } = await deps.provisionUserWithRetries(
-    {
-      alias,
-      organisationId,
-      roleContext,
-      roleNames: resolvedRoleNames,
-      mode,
-      timeoutMs: provisionTimeoutMs,
-      maxAttempts: provisionMaxAttempts,
-      retryDelayMs: provisionRetryDelayMs,
-    },
-    {
-      createSolicitorUserForOrganisation: (params) => professionalUserUtils.createSolicitorUserForOrganisation(params),
-      withTimeout: deps.withTimeout,
-      shouldRetry: deps.shouldRetryDynamicProvision,
-      describeError: deps.describeUnknownError,
-      sleep: deps.sleep,
-      now: deps.now,
-      info: deps.info,
-      warn: deps.warn,
-      outputCreatedUserData: deps.outputCreatedUserData,
+  let user: ProvisionedProfessionalUser;
+  let provisionAttempts: DynamicProvisionAttempt[];
+  try {
+    ({ user, attempts: provisionAttempts } = await deps.provisionUserWithRetries(
+      {
+        alias,
+        organisationId,
+        roleContext,
+        roleNames: resolvedRoleNames,
+        mode,
+        timeoutMs: provisionTimeoutMs,
+        maxAttempts: provisionMaxAttempts,
+        retryDelayMs: provisionRetryDelayMs,
+      },
+      {
+        createSolicitorUserForOrganisation: (params) => professionalUserUtils.createSolicitorUserForOrganisation(params),
+        withTimeout: deps.withTimeout,
+        shouldRetry: deps.shouldRetryDynamicProvision,
+        describeError: deps.describeUnknownError,
+        sleep: deps.sleep,
+        now: deps.now,
+        info: deps.info,
+        warn: deps.warn,
+        outputCreatedUserData: deps.outputCreatedUserData,
+      }
+    ));
+  } catch (error) {
+    if (error instanceof DynamicProvisioningError) {
+      await deps.attachProvisionAttempts(testInfo, alias, error.attempts);
     }
-  );
+    throw error;
+  }
   await deps.attachProvisionAttempts(testInfo, alias, provisionAttempts);
 
   deps.assertDynamicUserRoleContract({

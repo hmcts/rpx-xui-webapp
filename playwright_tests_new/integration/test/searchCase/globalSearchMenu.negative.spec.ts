@@ -37,11 +37,7 @@ test.beforeEach(async ({ page }, testInfo) => {
 
 test.describe('Global Search negative flows with prewarmed search session', () => {
   for (const status of SEARCH_CASE_ERROR_STATUS_CODES) {
-    test(`shows error no-results page when global search returns HTTP ${status}`, async ({
-      caseListPage,
-      globalSearchPage,
-      page,
-    }) => {
+    test(`shows error no-results page when global search returns HTTP ${status}`, async ({ globalSearchPage, page }) => {
       let searchRequestSeen = false;
       await overrideGlobalSearchResultsRoute(page, async (route) => {
         searchRequestSeen = true;
@@ -52,7 +48,7 @@ test.describe('Global Search negative flows with prewarmed search session', () =
         });
       });
 
-      await submitGlobalSearchFromMenu(GLOBAL_SEARCH_CASE_REFERENCE, caseListPage, globalSearchPage, page);
+      await submitGlobalSearchFromMenu(GLOBAL_SEARCH_CASE_REFERENCE, globalSearchPage, page);
 
       expect(searchRequestSeen).toBeTruthy();
       await expect(page).toHaveURL(/\/search\/noresults/);
@@ -61,11 +57,7 @@ test.describe('Global Search negative flows with prewarmed search session', () =
     });
   }
 
-  test('shows error no-results page when global search response is malformed JSON', async ({
-    caseListPage,
-    globalSearchPage,
-    page,
-  }) => {
+  test('shows error no-results page when global search response is malformed JSON', async ({ globalSearchPage, page }) => {
     let searchRequestSeen = false;
     await overrideGlobalSearchResultsRoute(page, async (route) => {
       searchRequestSeen = true;
@@ -76,7 +68,7 @@ test.describe('Global Search negative flows with prewarmed search session', () =
       });
     });
 
-    await submitGlobalSearchFromMenu(GLOBAL_SEARCH_CASE_REFERENCE, caseListPage, globalSearchPage, page);
+    await submitGlobalSearchFromMenu(GLOBAL_SEARCH_CASE_REFERENCE, globalSearchPage, page);
 
     expect(searchRequestSeen).toBeTruthy();
     await expect(page).toHaveURL(/\/search\/noresults/);
@@ -84,14 +76,14 @@ test.describe('Global Search negative flows with prewarmed search session', () =
     await expect(page.getByRole('button', { name: 'Search again' })).toBeVisible();
   });
 
-  test('shows error no-results page when global search request times out', async ({ caseListPage, globalSearchPage, page }) => {
+  test('shows error no-results page when global search request times out', async ({ globalSearchPage, page }) => {
     let searchRequestSeen = false;
     await overrideGlobalSearchResultsRoute(page, async (route) => {
       searchRequestSeen = true;
       await route.abort('timedout');
     });
 
-    await submitGlobalSearchFromMenu(GLOBAL_SEARCH_CASE_REFERENCE, caseListPage, globalSearchPage, page);
+    await submitGlobalSearchFromMenu(GLOBAL_SEARCH_CASE_REFERENCE, globalSearchPage, page);
 
     expect(searchRequestSeen).toBeTruthy();
     await expect(page).toHaveURL(/\/search\/noresults/);

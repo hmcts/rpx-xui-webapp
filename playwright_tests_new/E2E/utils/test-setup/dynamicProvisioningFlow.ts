@@ -8,6 +8,18 @@ export type DynamicProvisionAttempt = {
   error?: string;
 };
 
+export class DynamicProvisioningError extends Error {
+  readonly attempts: DynamicProvisionAttempt[];
+  readonly cause: unknown;
+
+  constructor(message: string, attempts: DynamicProvisionAttempt[], cause: unknown) {
+    super(message);
+    this.name = 'DynamicProvisioningError';
+    this.attempts = [...attempts];
+    this.cause = cause;
+  }
+}
+
 type ProvisionDynamicUserFlowArgs = {
   alias: string;
   organisationId: string;
@@ -104,7 +116,9 @@ export async function provisionUserWithRetries(
   }
 
   const lastErrorMessage = deps.describeError(lastProvisionError);
-  throw new Error(
-    `Dynamic user provisioning failed for alias '${args.alias}' after ${attempts.length} attempt(s). Last error: ${lastErrorMessage}`
+  throw new DynamicProvisioningError(
+    `Dynamic user provisioning failed for alias '${args.alias}' after ${attempts.length} attempt(s). Last error: ${lastErrorMessage}`,
+    attempts,
+    lastProvisionError
   );
 }

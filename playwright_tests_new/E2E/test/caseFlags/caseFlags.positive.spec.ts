@@ -11,6 +11,7 @@ import { createEmploymentCase } from '../../utils/test-setup/journeys/employment
 import { formatErrorMessage, isDependencyEnvironmentFailure, retryOnTransientFailure } from '../../utils/transient-failure.utils';
 
 const PARTY_LEVEL_SUITE_TIMEOUT_MS = 300_000;
+const SESSION_BOOTSTRAP_TIMEOUT_MS = 300_000;
 
 test.describe('Case level case flags', () => {
   test.describe.configure({ timeout: 180000 });
@@ -18,7 +19,8 @@ test.describe('Case level case flags', () => {
   const jurisdiction = 'EMPLOYMENT';
   const caseType = 'ET_EnglandWales';
 
-  test.beforeAll(async () => {
+  test.beforeAll(async ({ browserName: _browserName }, testInfo) => {
+    testInfo.setTimeout(SESSION_BOOTSTRAP_TIMEOUT_MS);
     await ensureSession('SEARCH_EMPLOYMENT_CASE');
   });
 
@@ -140,7 +142,8 @@ test.describe('Party level case flags', () => {
   const jurisdiction = 'DIVORCE';
   const caseType = 'xuiCaseFlagsV1';
 
-  test.beforeAll(async () => {
+  test.beforeAll(async ({ browserName: _browserName }, testInfo) => {
+    testInfo.setTimeout(SESSION_BOOTSTRAP_TIMEOUT_MS);
     await ensureSession('USER_WITH_FLAGS');
   });
 

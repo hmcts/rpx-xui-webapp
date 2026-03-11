@@ -5,7 +5,11 @@ import {
   assignUserToOrganisationFlow,
   shouldPreferManageOrgInvitePrimaryForPrincipal,
 } from '../../E2E/utils/professional-user/organisationAssignment.js';
-import { hydrateAssignmentUserRolesResolutionFromIdamUserInfo } from '../../E2E/utils/professional-user/runtime.js';
+import {
+  buildHeaders,
+  filterSupportedOrganisationAssignmentRoles,
+  hydrateAssignmentUserRolesResolutionFromIdamUserInfo,
+} from '../../E2E/utils/professional-user/runtime.js';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -63,6 +67,15 @@ test.describe('Organisation assignment path selection unit tests', { tag: '@svc-
     ).toBe(false);
   });
 
+  test('auto mode accepts hydrated IDAM userinfo manage-org roles when JWT claims are unmapped', () => {
+    expect(
+      shouldPreferManageOrgInvitePrimaryForPrincipal('auto', {
+        source: 'idam-userinfo-roles',
+        roles: ['pui-user-manager', 'pui-organisation-manager'],
+      })
+    ).toBe(true);
+  });
+
   test('userinfo role hydration recovers manage-org-capable roles when JWT claims are unmapped', () => {
     expect(
       hydrateAssignmentUserRolesResolutionFromIdamUserInfo(
@@ -79,6 +92,59 @@ test.describe('Organisation assignment path selection unit tests', { tag: '@svc-
     ).toEqual({
       source: 'idam-userinfo-roles',
       roles: ['pui-user-manager', 'pui-organisation-manager', 'prd-admin'],
+    });
+  });
+
+  test('supported organisation-assignment target roles can be derived separately from hydrated principal roles', () => {
+    expect(
+      filterSupportedOrganisationAssignmentRoles([
+        'prd-aac-system',
+        'pui-user-manager',
+        'prd-admin',
+        'pui-organisation-manager',
+        'payments-refund',
+      ])
+    ).toEqual(['pui-user-manager', 'pui-organisation-manager']);
+  });
+
+  test('userinfo role hydration preserves unsupported privileged principal roles for downstream auth context', () => {
+    expect(
+      hydrateAssignmentUserRolesResolutionFromIdamUserInfo(
+        {
+          source: 'jwt-claims-unmapped',
+        },
+        {
+          status: 200,
+          body: {
+            roles: ['prd-aac-system', 'prd-admin', 'payments-refund', 'xui-approver-userdata'],
+          },
+        }
+      )
+    ).toEqual({
+      source: 'idam-userinfo-roles',
+      roles: ['prd-aac-system', 'prd-admin', 'payments-refund', 'xui-approver-userdata'],
+    });
+  });
+
+  test('raw hydrated principal roles are still forwarded into auth headers when required', () => {
+    const hydrated = hydrateAssignmentUserRolesResolutionFromIdamUserInfo(
+      {
+        source: 'jwt-claims-unmapped',
+      },
+      {
+        status: 200,
+        body: {
+          roles: ['pui-user-manager', 'prd-admin'],
+        },
+      }
+    );
+
+    expect(buildHeaders('assignment-token', 'service-token', hydrated.roles)).toEqual({
+      Authorization: 'Bearer assignment-token',
+      ServiceAuthorization: 'Bearer service-token',
+      accept: 'application/json',
+      'content-type': 'application/json',
+      'x-user-roles': 'pui-user-manager,prd-admin',
     });
   });
 

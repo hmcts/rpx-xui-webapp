@@ -56,7 +56,7 @@ test.describe(`Task cancellation integration as ${userIdentifier}`, () => {
         await taskListPage.goto();
         await expect(taskListPage.taskListTable).toBeVisible();
         await taskListPage.exuiSpinnerComponent.wait();
-
+        await taskListPage.waitForManageButton(`cancel request payload validation for ${matrixItem.scenario}`);
         await expect(taskListPage.taskListTable).toContainText(matrixItem.caseName);
 
         await taskListPage.manageCaseButtons.first().click();
@@ -148,6 +148,7 @@ test.describe(`Task cancellation integration as ${userIdentifier}`, () => {
         await taskListPage.goto();
         await expect(taskListPage.taskListTable).toBeVisible();
         await taskListPage.exuiSpinnerComponent.wait();
+        await taskListPage.waitForManageButton(`my tasks manual cancellation for ${matrixItem.scenario}`);
         await expect(taskListPage.taskListTable).toContainText(matrixItem.caseName);
 
         await taskListPage.manageCaseButtons.first().click();
@@ -226,6 +227,7 @@ test.describe(`Task cancellation integration as ${userIdentifier}`, () => {
       await taskListPage.goto();
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
+      await taskListPage.waitForManageButton('non-cancellable task action menu');
       await taskListPage.manageCaseButtons.first().click();
       await expect(taskListPage.taskActionsRow).toBeVisible();
       await expect(taskListPage.taskActionCancel).toHaveCount(0);
@@ -252,6 +254,7 @@ test.describe(`Task cancellation integration as ${userIdentifier}`, () => {
     await test.step('Open cancellation for stale task', async () => {
       await taskListPage.goto();
       await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.waitForManageButton('stale task cancellation');
       await taskListPage.manageCaseButtons.first().click();
       await taskListPage.taskActionCancel.first().click();
     });
@@ -283,6 +286,7 @@ test.describe(`Task cancellation integration as ${userIdentifier}`, () => {
     await test.step('Open cancellation for API failure scenario', async () => {
       await taskListPage.goto();
       await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.waitForManageButton('cancellation api failure warning');
       await taskListPage.manageCaseButtons.first().click();
       await taskListPage.taskActionCancel.first().click();
     });

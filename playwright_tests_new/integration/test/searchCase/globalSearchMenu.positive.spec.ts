@@ -72,9 +72,9 @@ test.describe('Global search from menu bar with prewarmed search session', () =>
     });
   });
 
-  test('shows no results content for non-existent 16-digit case reference', async ({ caseListPage, globalSearchPage, page }) => {
+  test('shows no results content for non-existent 16-digit case reference', async ({ globalSearchPage, page }) => {
     await test.step('Run global search with non-existent case reference', async () => {
-      await submitGlobalSearchFromMenu(GLOBAL_SEARCH_NON_EXISTENT_CASE_REFERENCE, caseListPage, globalSearchPage, page);
+      await submitGlobalSearchFromMenu(GLOBAL_SEARCH_NON_EXISTENT_CASE_REFERENCE, globalSearchPage, page);
     });
 
     await test.step('Verify no-results content and key action link', async () => {

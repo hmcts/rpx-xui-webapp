@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import { __test__ as dynamicSessionTest } from '../../E2E/utils/test-setup/dynamicSolicitorSession.js';
+import { DynamicProvisioningError } from '../../E2E/utils/test-setup/dynamicProvisioningFlow.js';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -194,6 +195,92 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
         'attach-user:SOLICITOR',
       ]);
       expect(attachmentNames).toEqual(['solicitor-attempts.json', 'solicitor-dynamic-user.json']);
+    } finally {
+      if (typeof originalOrganisationId === 'string') {
+        process.env.TEST_SOLICITOR_ORGANISATION_ID = originalOrganisationId;
+      } else {
+        delete process.env.TEST_SOLICITOR_ORGANISATION_ID;
+      }
+    }
+  });
+
+  test('provisionDynamicSolicitorForAliasFlow attaches failed provisioning attempts before rethrowing', async () => {
+    const originalOrganisationId = process.env.TEST_SOLICITOR_ORGANISATION_ID;
+    process.env.TEST_SOLICITOR_ORGANISATION_ID = 'org-123';
+
+    const attachmentNames: string[] = [];
+    const observedCallOrder: string[] = [];
+
+    try {
+      await expect(
+        dynamicSessionTest.provisionDynamicSolicitorForAliasFlow(
+          {
+            alias: 'SOLICITOR',
+            professionalUserUtils: {
+              createSolicitorUserForOrganisation: async () => {
+                throw new Error('should be stubbed via provisionUserWithRetries');
+              },
+            } as never,
+            roleContext: {
+              jurisdiction: 'employment',
+            },
+            testInfo: {
+              attach: async (name: string) => {
+                attachmentNames.push(name);
+              },
+            } as never,
+          },
+          {
+            shouldRunEmploymentAssignmentPreflight: () => false,
+            runEmploymentAssignmentPreflight: async () => undefined,
+            provisionUserWithRetries: async () => {
+              observedCallOrder.push('provision');
+              throw new DynamicProvisioningError(
+                "Dynamic user provisioning failed for alias 'SOLICITOR' after 2 attempt(s).",
+                [
+                  { attempt: 1, durationMs: 5, outcome: 'failed', error: 'HTTP 503' },
+                  { attempt: 2, durationMs: 7, outcome: 'failed', error: 'HTTP 503' },
+                ],
+                new Error('HTTP 503')
+              );
+            },
+            resolveProvisionTimeoutMs: () => 5_000,
+            resolveProvisionMaxAttempts: () => 2,
+            resolveProvisionRetryDelayMs: () => 1,
+            withTimeout: async (operation) => operation,
+            shouldRetryDynamicProvision: () => true,
+            describeUnknownError: (error) => (error instanceof Error ? error.message : String(error)),
+            sleep: async () => undefined,
+            now: () => 100,
+            outputCreatedUserData: false,
+            attachProvisionAttempts: async (testInfo, alias) => {
+              observedCallOrder.push(`attach-provision:${alias}`);
+              await testInfo.attach(`${alias.toLowerCase()}-attempts.json`, {
+                body: '{}',
+                contentType: 'application/json',
+              });
+            },
+            assertDynamicUserRoleContract: () => {
+              observedCallOrder.push('assert-contract');
+            },
+            waitForExuiUserPropagation: async () => {
+              observedCallOrder.push('wait-exui');
+            },
+            attachDynamicUser: async (testInfo, alias) => {
+              observedCallOrder.push(`attach-user:${alias}`);
+              await testInfo.attach(`${alias.toLowerCase()}-dynamic-user.json`, {
+                body: '{}',
+                contentType: 'application/json',
+              });
+            },
+            info: () => undefined,
+            warn: () => undefined,
+          }
+        )
+      ).rejects.toThrow(/Dynamic user provisioning failed/);
+
+      expect(observedCallOrder).toEqual(['provision', 'attach-provision:SOLICITOR']);
+      expect(attachmentNames).toEqual(['solicitor-attempts.json']);
     } finally {
       if (typeof originalOrganisationId === 'string') {
         process.env.TEST_SOLICITOR_ORGANISATION_ID = originalOrganisationId;

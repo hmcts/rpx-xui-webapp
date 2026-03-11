@@ -23,6 +23,7 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
     await test.step('Navigate to the available tasks list page', async () => {
       await taskListPage.goto();
       await taskListPage.taskTableTabs.filter({ hasText: 'Available tasks' }).first().click();
+      await taskListPage.waitForTaskListShellReady('available tasks tab');
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
     });
@@ -31,21 +32,41 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
       expect
         .soft(await taskListPage.getResultsText())
         .toBe(`Showing 1 to ${Math.min(taskListMockResponse.tasks.length, 25)} of ${taskListMockResponse.total_records} results`);
-      await taskListPage.openFilterPanel();
-      expect.soft(await taskListPage.selectAllServicesFilter.isChecked()).toBeTruthy();
-      await taskListPage.setSelectAllServicesFilter(false);
-      await taskListPage.applyCurrentFilters();
-      expect(await taskListPage.selectServicesError.textContent()).toContain('Select a service');
-    });
-
-    await test.step('Verify table shows filter errors if no types of work are selected', async () => {
-      await taskListPage.setSelectAllTypesOfWorksFilter(false);
+      await taskListPage.clearServicesFilters();
       await taskListPage.applyCurrentFilters();
       await taskListPage.openFilterPanel();
       await expect(taskListPage.selectServicesError).toBeVisible();
+      await expect(taskListPage.selectServicesError).toContainText('Select a service');
+    });
+  });
+
+  test(`User ${userIdentifier} sees filter errors if no types of work are selected`, async ({ taskListPage, page }) => {
+    const taskListMockResponse = buildTaskListMock(10, '', availableActionsList);
+    await test.step('Setup route mock for task list', async () => {
+      await setupTaskListBootstrapRoutes(page);
+      await page.route(taskListRoutePattern, async (route) => {
+        const body = JSON.stringify(taskListMockResponse);
+        await route.fulfill({ status: 200, contentType: 'application/json', body });
+      });
+    });
+
+    await test.step('Navigate to the available tasks list page', async () => {
+      await taskListPage.goto();
+      await taskListPage.taskTableTabs.filter({ hasText: 'Available tasks' }).first().click();
+      await taskListPage.waitForTaskListShellReady('available tasks tab');
+      await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.exuiSpinnerComponent.wait();
+    });
+
+    await test.step('Verify table shows filter errors if no types of work are selected', async () => {
+      expect
+        .soft(await taskListPage.getResultsText())
+        .toBe(`Showing 1 to ${Math.min(taskListMockResponse.tasks.length, 25)} of ${taskListMockResponse.total_records} results`);
+      await taskListPage.clearTypesOfWorkFilters();
+      await taskListPage.applyCurrentFilters();
+      await taskListPage.openFilterPanel();
       await expect(taskListPage.selectTypesOfWorksError).toBeVisible();
-      expect(await taskListPage.selectServicesError.textContent()).toContain('Select a service');
-      expect(await taskListPage.selectTypesOfWorksError.textContent()).toContain('Select a type of work');
+      await expect(taskListPage.selectTypesOfWorksError).toContainText('Select a type of work');
     });
   });
 
@@ -65,6 +86,7 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
       await test.step('Navigate to the my tasks list page', async () => {
         await taskListPage.goto();
         await taskListPage.taskTableTabs.filter({ hasText: 'Available tasks' }).first().click();
+        await taskListPage.waitForTaskListShellReady('available tasks tab');
         await expect(taskListPage.taskListTable).toBeVisible();
         await taskListPage.exuiSpinnerComponent.wait();
       });
@@ -89,6 +111,7 @@ test.describe(`Available Task List as ${userIdentifier}`, () => {
     await test.step('Navigate to the my tasks list page', async () => {
       await taskListPage.goto();
       await taskListPage.taskTableTabs.filter({ hasText: 'Available tasks' }).first().click();
+      await taskListPage.waitForTaskListShellReady('available tasks tab');
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
     });

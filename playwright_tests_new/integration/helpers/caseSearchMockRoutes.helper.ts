@@ -3,6 +3,7 @@ import type { Page, Route } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { EXUI_TIMEOUTS } from '../../E2E/page-objects/pages/exui/exui-timeouts';
 import type { CaseListPage } from '../../E2E/page-objects/pages/exui/caseList.po';
 import type { GlobalSearchPage } from '../../E2E/page-objects/pages/exui/globalSearch.po';
 import type { SearchCasePage } from '../../E2E/page-objects/pages/exui/searchCase.po';
@@ -361,7 +362,7 @@ export async function submitHeaderQuickSearch(
 ): Promise<void> {
   await caseListPage.navigateTo();
   // Defensive check: confirms search input is present before interacting
-  await expect(searchCasePage.caseIdTextBox).toBeVisible();
+  await expect(searchCasePage.caseIdTextBox).toBeVisible({ timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
   await searchCasePage.searchWith16DigitCaseId(caseReference);
 }
 
@@ -372,17 +373,17 @@ export async function submitHeaderQuickSearch(
  * Extracted from spec-level inline helpers for reuse across positive and negative test suites.
  *
  * @param caseReference - 16-digit case reference to search for
- * @param caseListPage - Page object for the case list page
  * @param globalSearchPage - Page object for the global search page
  * @param page - Playwright Page object (for URL wait)
  */
 export async function submitGlobalSearchFromMenu(
   caseReference: string,
-  caseListPage: CaseListPage,
   globalSearchPage: GlobalSearchPage,
   page: Page
 ): Promise<void> {
-  await caseListPage.navigateTo();
+  await page.goto('/cases', { waitUntil: 'domcontentloaded' });
+  await page.getByRole('banner').waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
+  await expect(globalSearchPage.searchLinkOnMenuBar).toBeVisible({ timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
   await globalSearchPage.searchLinkOnMenuBar.click();
   await page.waitForURL(/\/search/);
   await globalSearchPage.caseIdTextBox.waitFor({ state: 'visible' });

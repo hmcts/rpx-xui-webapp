@@ -4,6 +4,7 @@ import { Base } from '../../base';
 const TASK_LIST_READY_TIMEOUT_MS = 20_000;
 const FILTER_PANEL_READY_TIMEOUT_MS = 10_000;
 const FILTER_CONTROL_READY_TIMEOUT_MS = 15_000;
+const FILTER_GROUP_OPERATION_TIMEOUT_MS = 10_000;
 const FILTER_INTERACTION_ATTEMPTS = 2;
 
 export class TaskListPage extends Base {
@@ -151,51 +152,90 @@ export class TaskListPage extends Base {
     await this.assertTaskListHealthy(context);
   }
 
-  private async waitForFilterControls(context: string): Promise<void> {
+  private resolveInteractionTimeout(deadlineMs: number | undefined, fallbackMs: number): number {
+    if (!deadlineMs) {
+      return fallbackMs;
+    }
+    this.assertFilterInteractionAlive('deadline check', deadlineMs);
+    return Math.max(250, Math.min(fallbackMs, deadlineMs - Date.now()));
+  }
+
+  private async waitForFilterControls(context: string, deadlineMs?: number): Promise<void> {
+    const timeoutMs = this.resolveInteractionTimeout(deadlineMs, FILTER_CONTROL_READY_TIMEOUT_MS);
     await Promise.any([
-      this.applyFilterButton.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS }),
-      this.taskListFilterToggle.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS }),
+      this.applyFilterButton.waitFor({ state: 'visible', timeout: timeoutMs }),
+      this.taskListFilterToggle.waitFor({ state: 'visible', timeout: timeoutMs }),
     ]).catch(async () => {
       await this.assertTaskListInteractive(context);
-      throw new Error(`Task list filter controls did not become visible within ${FILTER_CONTROL_READY_TIMEOUT_MS}ms.`);
+      throw new Error(`Task list filter controls did not become visible within ${timeoutMs}ms.`);
     });
   }
 
-  private async waitForFilterCheckboxVisible(checkbox: Locator, description: string): Promise<Locator> {
+  private async waitForFilterCheckboxVisible(checkbox: Locator, description: string, deadlineMs?: number): Promise<Locator> {
     const targetCheckbox = checkbox.first();
-    await targetCheckbox.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS }).catch(async () => {
+    const timeoutMs = this.resolveInteractionTimeout(deadlineMs, FILTER_CONTROL_READY_TIMEOUT_MS);
+    await targetCheckbox.waitFor({ state: 'visible', timeout: timeoutMs }).catch(async () => {
       await this.assertTaskListInteractive(`waiting for ${description}`);
       throw new Error(
-        `Task list filter checkbox "${description}" did not become visible within ${FILTER_CONTROL_READY_TIMEOUT_MS}ms.`
+        `Task list filter checkbox "${description}" did not become visible within ${timeoutMs}ms.`
       );
     });
     return targetCheckbox;
   }
 
-  async openFilterPanel() {
+  private assertFilterInteractionAlive(context: string, deadlineMs?: number): void {
+    if (this.page.isClosed()) {
+      throw new Error(`Task list filter ${context} was interrupted because the page or browser closed before the operation completed.`);
+    }
+    if (deadlineMs && Date.now() > deadlineMs) {
+      throw new Error(`Task list filter ${context} did not complete within ${FILTER_GROUP_OPERATION_TIMEOUT_MS}ms.`);
+    }
+  }
+
+  private async readFilterCheckboxState(checkbox: Locator, description: string, deadlineMs?: number): Promise<boolean> {
+    this.assertFilterInteractionAlive(`checkbox "${description}" state read`, deadlineMs);
+    return checkbox.isChecked().catch((error: Error) => {
+      if (this.page.isClosed() || /Target page, context or browser has been closed/i.test(error.message)) {
+        throw new Error(
+          `Task list filter checkbox "${description}" state could not be read because the page or browser closed before the operation completed.`
+        );
+      }
+      throw error;
+    });
+  }
+
+  async openFilterPanel(deadlineMs?: number) {
     if (await this.applyFilterButton.isVisible().catch(() => false)) {
       return;
     }
     await this.waitForTaskListSpinnerToSettle(5_000);
+    this.assertFilterInteractionAlive('opening filter panel', deadlineMs);
     await this.assertTaskListInteractive('opening filter panel');
-    await this.waitForFilterControls('waiting for filter controls');
+    await this.waitForFilterControls('waiting for filter controls', deadlineMs);
     if (await this.applyFilterButton.isVisible().catch(() => false)) {
       return;
     }
-    const deadline = Date.now() + FILTER_PANEL_READY_TIMEOUT_MS;
-    while (Date.now() < deadline) {
+    const panelDeadlineMs = deadlineMs ?? Date.now() + FILTER_PANEL_READY_TIMEOUT_MS;
+    while (Date.now() < panelDeadlineMs) {
+      this.assertFilterInteractionAlive('opening filter panel', deadlineMs);
       if (await this.applyFilterButton.isVisible().catch(() => false)) {
         return;
       }
       await this.taskListFilterToggle.click({ force: true });
-      await this.filterPanel.waitFor({ state: 'visible', timeout: 1_000 }).catch(() => undefined);
+      await this.filterPanel
+        .waitFor({ state: 'visible', timeout: this.resolveInteractionTimeout(panelDeadlineMs, 1_000) })
+        .catch(() => undefined);
       if (await this.applyFilterButton.isVisible().catch(() => false)) {
         return;
       }
       await this.page.waitForTimeout(250);
     }
     await this.assertTaskListInteractive('opening filter panel');
-    throw new Error(`Task list filter panel did not become ready within ${FILTER_PANEL_READY_TIMEOUT_MS}ms.`);
+    throw new Error(
+      `Task list filter panel did not become ready within ${
+        deadlineMs ? FILTER_GROUP_OPERATION_TIMEOUT_MS : FILTER_PANEL_READY_TIMEOUT_MS
+      }ms.`
+    );
   }
 
   async applyCurrentFilters() {
@@ -212,24 +252,25 @@ export class TaskListPage extends Base {
   }
 
   async clearServicesFilters() {
-    await this.setFilterGroupState('services', this.selectAllServicesFilter, this.serviceFilterCheckboxes, false);
+    await this.clearFilterGroup('services', this.selectAllServicesFilter, this.serviceFilterCheckboxes);
   }
 
   async clearTypesOfWorkFilters() {
-    await this.setFilterGroupState('types of work', this.selectAllTypesOfWorksFilter, this.typesOfWorkFilterCheckboxes, false);
+    await this.clearFilterGroup('types of work', this.selectAllTypesOfWorksFilter, this.typesOfWorkFilterCheckboxes);
   }
 
-  private async setFilterCheckbox(checkbox: Locator, checked: boolean, description: string) {
-    await this.openFilterPanel();
-    const targetCheckbox = await this.waitForFilterCheckboxVisible(checkbox, description);
+  private async setFilterCheckbox(checkbox: Locator, checked: boolean, description: string, deadlineMs?: number) {
+    await this.openFilterPanel(deadlineMs);
+    const targetCheckbox = await this.waitForFilterCheckboxVisible(checkbox, description, deadlineMs);
     for (let attempt = 0; attempt < FILTER_INTERACTION_ATTEMPTS; attempt += 1) {
-      const isChecked = await targetCheckbox.isChecked();
+      const isChecked = await this.readFilterCheckboxState(targetCheckbox, description, deadlineMs);
       if (isChecked === checked) {
         return;
       }
+      this.assertFilterInteractionAlive(`checkbox "${description}" update`, deadlineMs);
       await targetCheckbox.setChecked(checked, { force: true });
       await this.page.waitForTimeout(250);
-      if ((await targetCheckbox.isChecked().catch(() => !checked)) === checked) {
+      if ((await this.readFilterCheckboxState(targetCheckbox, description, deadlineMs)) === checked) {
         return;
       }
     }
@@ -240,52 +281,47 @@ export class TaskListPage extends Base {
     );
   }
 
-  private async setFilterGroupState(groupName: string, selectAllCheckbox: Locator, childCheckboxes: Locator, checked: boolean) {
-    await this.openFilterPanel();
-    if (await this.groupCheckboxesMatchState(childCheckboxes, checked)) {
+  private async clearFilterGroup(groupName: string, selectAllCheckbox: Locator, childCheckboxes: Locator) {
+    const deadlineMs = Date.now() + FILTER_GROUP_OPERATION_TIMEOUT_MS;
+    await this.openFilterPanel(deadlineMs);
+    this.assertFilterInteractionAlive(`${groupName} filter group clear`, deadlineMs);
+    await this.setFilterCheckbox(selectAllCheckbox, false, `${groupName} select all`, deadlineMs);
+    await this.forceChildCheckboxState(childCheckboxes, false, groupName, deadlineMs);
+    if (await this.groupCheckboxesMatchState(childCheckboxes, false, groupName, deadlineMs)) {
       return;
     }
-
-    await this.setFilterCheckbox(selectAllCheckbox, checked, `${groupName} select all`);
-
-    if (!checked) {
-      await this.forceChildCheckboxState(childCheckboxes, checked);
-    }
-
-    if (await this.groupCheckboxesMatchState(childCheckboxes, checked)) {
-      return;
-    }
-
-    const states = await this.getCheckboxStates(childCheckboxes);
-    throw new Error(`Failed to set ${groupName} filter group to ${checked ? 'checked' : 'unchecked'}: ${states.join(', ')}`);
+    const states = await this.getCheckboxStates(childCheckboxes, groupName, deadlineMs);
+    throw new Error(`Failed to clear ${groupName} filter group within ${FILTER_GROUP_OPERATION_TIMEOUT_MS}ms: ${states.join(', ')}`);
   }
 
-  private async forceChildCheckboxState(childCheckboxes: Locator, checked: boolean) {
+  private async forceChildCheckboxState(childCheckboxes: Locator, checked: boolean, groupName: string, deadlineMs?: number) {
     const checkboxCount = await childCheckboxes.count();
     for (let index = 0; index < checkboxCount; index += 1) {
+      this.assertFilterInteractionAlive(`${groupName} child checkbox update`, deadlineMs);
       const checkbox = childCheckboxes.nth(index);
-      if ((await checkbox.isChecked().catch(() => checked)) !== checked) {
+      if ((await this.readFilterCheckboxState(checkbox, `${groupName} option ${index + 1}`, deadlineMs)) !== checked) {
         await checkbox.setChecked(checked, { force: true });
       }
     }
     await this.page.waitForTimeout(250);
   }
 
-  private async groupCheckboxesMatchState(childCheckboxes: Locator, checked: boolean) {
-    const states = await this.getCheckboxStates(childCheckboxes);
+  private async groupCheckboxesMatchState(
+    childCheckboxes: Locator,
+    checked: boolean,
+    groupName: string,
+    deadlineMs?: number
+  ) {
+    const states = await this.getCheckboxStates(childCheckboxes, groupName, deadlineMs);
     return states.length > 0 && states.every((state) => state === checked);
   }
 
-  private async getCheckboxStates(childCheckboxes: Locator) {
+  private async getCheckboxStates(childCheckboxes: Locator, groupName: string, deadlineMs?: number) {
     const checkboxCount = await childCheckboxes.count();
     const states: boolean[] = [];
     for (let index = 0; index < checkboxCount; index += 1) {
-      states.push(
-        await childCheckboxes
-          .nth(index)
-          .isChecked()
-          .catch(() => false)
-      );
+      this.assertFilterInteractionAlive(`${groupName} checkbox state collection`, deadlineMs);
+      states.push(await this.readFilterCheckboxState(childCheckboxes.nth(index), `${groupName} option ${index + 1}`, deadlineMs));
     }
     return states;
   }

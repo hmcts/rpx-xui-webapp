@@ -44,6 +44,15 @@ const resolveWorkerCount = (env = process.env) => {
   return Math.min(8, Math.max(2, approxPhysical));
 };
 
+const resolveBrowserChannel = (env = process.env) => {
+  const configured = env.PLAYWRIGHT_BROWSER_CHANNEL;
+  if (configured === undefined) {
+    return 'chrome';
+  }
+  const normalized = configured.trim();
+  return normalized.length > 0 ? normalized : undefined;
+};
+
 const resolveFlag = (rawValue, defaultValue) => {
   if (rawValue === undefined) {
     return defaultValue;
@@ -150,6 +159,7 @@ const buildConfig = (env = process.env) => {
   const odhinOutputFolder = env.PLAYWRIGHT_REPORT_FOLDER ?? defaultOdhinOutputFolder;
   const baseUrl = env.TEST_URL || defaultBaseUrl;
   const workerCount = resolveWorkerCount(env);
+  const browserChannel = resolveBrowserChannel(env);
   const enableOdhinReporter = resolveFlag(env.PW_INTEGRATION_ODHIN, true);
   const targetEnv = env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
   const runContext = env.CI ? 'ci' : 'local-run';
@@ -221,7 +231,7 @@ const buildConfig = (env = process.env) => {
         testMatch: [searchCasePattern],
         use: {
           ...devices['Desktop Chrome'],
-          channel: 'chrome',
+          ...(browserChannel ? { channel: browserChannel } : {}),
         },
       },
       {
@@ -229,7 +239,7 @@ const buildConfig = (env = process.env) => {
         testIgnore: [searchCasePattern],
         use: {
           ...devices['Desktop Chrome'],
-          channel: 'chrome',
+          ...(browserChannel ? { channel: browserChannel } : {}),
         },
       },
     ],
@@ -239,6 +249,7 @@ const buildConfig = (env = process.env) => {
 module.exports = {
   buildConfig,
   resolveFlag,
+  resolveBrowserChannel,
   resolveEnvironmentFromUrl,
   resolveOdhinTestOutput,
   resolveOdhinLightweight,

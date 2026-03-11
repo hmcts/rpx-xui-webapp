@@ -6,7 +6,7 @@ const require = createRequire(import.meta.url);
 const integrationConfigSupport = require('../../playwright.integration.config.support.cjs') as {
   buildConfig: (env: EnvMap) => {
     reporter: [string, Record<string, unknown> | undefined][];
-    projects: Array<{ name: string; workers?: number }>;
+    projects: Array<{ name: string; workers?: number; use?: { channel?: string } }>;
   };
   resolveOdhinConsoleCapture: (env: EnvMap) => { consoleLog: boolean; consoleError: boolean };
   resolveOdhinHardTimeoutMs: (env: EnvMap) => number;
@@ -23,7 +23,7 @@ const {
 } = integrationConfigSupport as {
   buildConfig: (env: EnvMap) => {
     reporter: [string, Record<string, unknown> | undefined][];
-    projects: Array<{ name: string; workers?: number }>;
+    projects: Array<{ name: string; workers?: number; use?: { channel?: string } }>;
   };
   resolveOdhinConsoleCapture: (env: EnvMap) => { consoleLog: boolean; consoleError: boolean };
   resolveOdhinHardTimeoutMs: (env: EnvMap) => number;
@@ -185,7 +185,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
       HEAD: undefined,
     }) as {
       reporter: [string, Record<string, unknown> | undefined][];
-      projects: Array<{ name: string; workers?: number }>;
+      projects: Array<{ name: string; workers?: number; use?: { channel?: string } }>;
     };
 
     const [, progressOptions] = getReporterTuple(
@@ -205,6 +205,30 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(odhinOptions?.profile).toBe(true);
     expect(odhinOptions?.runtimeHookTimeoutMs).toBe(resolveOdhinRuntimeHookTimeoutMs({ CI: undefined }));
     expect(config.projects.find((project) => project.name === 'chromium-search-case')?.workers).toBeUndefined();
+  });
+
+  test('integration config allows local browser channel override for reproducible reruns', async () => {
+    const withDefaultChannel = buildIntegrationConfig({
+      CI: undefined,
+      PLAYWRIGHT_BROWSER_CHANNEL: undefined,
+      TEST_URL: undefined,
+      TEST_TYPE: undefined,
+      HEAD: undefined,
+    }) as {
+      projects: Array<{ name: string; use?: { channel?: string } }>;
+    };
+    const withBundledChromium = buildIntegrationConfig({
+      CI: undefined,
+      PLAYWRIGHT_BROWSER_CHANNEL: '',
+      TEST_URL: undefined,
+      TEST_TYPE: undefined,
+      HEAD: undefined,
+    }) as {
+      projects: Array<{ name: string; use?: { channel?: string } }>;
+    };
+
+    expect(withDefaultChannel.projects.find((project) => project.name === 'chromium')?.use?.channel).toBe('chrome');
+    expect(withBundledChromium.projects.find((project) => project.name === 'chromium')?.use?.channel).toBeUndefined();
   });
 
   test('integration config avoids forced Odhin timeout in CI', async () => {

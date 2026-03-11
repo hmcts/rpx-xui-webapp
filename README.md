@@ -344,7 +344,7 @@ What it does not validate:
 
 ### Parallelism
 
-Playwright worker count scales with available CPU cores in both local and CI runs (approx. half of the logical cores, capped at 8).  
+Playwright worker count scales with available CPU cores in both local and CI runs (approx. half of the logical cores, capped at 8).
 Set `FUNCTIONAL_TESTS_WORKERS` to override this behaviour explicitly.
 
 ### Integration local progress timer

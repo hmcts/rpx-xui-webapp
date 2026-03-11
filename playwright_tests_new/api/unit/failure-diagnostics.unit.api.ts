@@ -88,6 +88,29 @@ test.describe('Failure diagnosis unit tests', { tag: '@svc-internal' }, () => {
     expect(message).toContain('filter-shell readiness');
   });
 
+  test('deriveLikelyRootCause identifies task-list checkbox state-read failures before blaming backend', () => {
+    const message = diagnosticsTest.deriveLikelyRootCause({
+      failureType: 'GLOBAL_TIMEOUT_UI_STALL',
+      testStatus: 'timedOut',
+      error: 'Test timeout of 120000ms exceeded.\nError: locator.isChecked: Target page, context or browser has been closed',
+      timeoutSummary: '',
+      dominantSlowEndpoint: null,
+      topSuspect: 'No backend/API suspect identified',
+      executionSignals: {
+        lastMainFrameUrl: 'https://manage-case.aat.platform.hmcts.net/work/my-work/available',
+        mainFrameNavigationCount: 7,
+        totalRequestsObserved: 65,
+        backendRequestsObserved: 17,
+      },
+      failureLocation: '/tmp/taskList.po.ts:218',
+      actionableErrorLine:
+        'Task list filter checkbox "services option 1" state could not be read because the page or browser closed before the operation completed.',
+    });
+
+    expect(message).toContain('checkbox never became usable');
+    expect(message).toContain('state/interaction');
+  });
+
   test('classifyFailure treats custom case-list readiness errors as UI failures', () => {
     const failureType = diagnosticsTest.classifyFailure({
       error: 'Error: Cases page shell did not become ready within 30000ms.',
@@ -136,6 +159,24 @@ test.describe('Failure diagnosis unit tests', { tag: '@svc-internal' }, () => {
     );
 
     expect(phaseMarker).toBe('ui-filter-controls-timeout');
+  });
+
+  test('derivePhaseMarker classifies task-list checkbox state-read failures as filter checkbox timeouts', () => {
+    const phaseMarker = diagnosticsTest.derivePhaseMarker(
+      'GLOBAL_TIMEOUT_UI_STALL',
+      'Test timeout of 120000ms exceeded.\nError: locator.isChecked: Target page, context or browser has been closed',
+      {
+        lastMainFrameUrl: 'https://manage-case.aat.platform.hmcts.net/work/my-work/available',
+        mainFrameNavigationCount: 7,
+        totalRequestsObserved: 65,
+        backendRequestsObserved: 17,
+      },
+      'no',
+      '/tmp/taskList.po.ts:218',
+      'Task list filter checkbox "services option 1" state could not be read because the page or browser closed before the operation completed.'
+    );
+
+    expect(phaseMarker).toBe('ui-filter-checkbox-timeout');
   });
 
   test('deriveLikelyRootCause identifies case-list bootstrap readiness failures', () => {

@@ -30,10 +30,43 @@ export type CcdDocumentValue = {
   document_hash?: string;
 };
 
-const XSRF_COOKIE_WAIT_TIMEOUT_MS = 5000;
+function resolvePositiveIntegerEnv(name: string, fallback: number): number {
+  const configured = Number(process.env[name]);
+  return Number.isFinite(configured) && configured > 0 ? configured : fallback;
+}
+
+const XSRF_COOKIE_WAIT_TIMEOUT_MS = resolvePositiveIntegerEnv('PW_UPLOAD_DOCUMENT_XSRF_TIMEOUT_MS', 20_000);
 const XSRF_COOKIE_WAIT_INTERVAL_MS = 250;
 const XSRF_COOKIE_AUTH_TOUCH_INTERVAL_ATTEMPTS = 4;
-const XSRF_COOKIE_MAX_AUTH_TOUCH_ATTEMPTS = 2;
+const XSRF_COOKIE_MAX_AUTH_TOUCH_ATTEMPTS = 3;
+
+function currentPageUrl(page: Page): string {
+  try {
+    return typeof page.url === 'function' ? page.url() : 'unknown';
+  } catch {
+    return 'unknown';
+  }
+}
+
+function resolveAppBaseUrl(page: Page): string {
+  const pageUrl = currentPageUrl(page);
+
+  if (pageUrl && pageUrl !== 'unknown' && pageUrl !== 'about:blank') {
+    try {
+      return new URL(pageUrl).origin;
+    } catch {
+      // Fall through to configured URLs when the current page URL is malformed.
+    }
+  }
+
+  const configuredBaseUrl =
+    process.env.TEST_URL?.trim() ||
+    process.env.EXUI_BASE_URL?.trim() ||
+    config.urls.baseURL ||
+    config.urls.exuiDefaultUrl;
+
+  return new URL(configuredBaseUrl).origin;
+}
 
 type BrowserFetchResult = {
   ok: boolean;
@@ -106,6 +139,16 @@ async function touchAuthEndpointsToMintXsrf(page: Page, baseUrl: string): Promis
   await runBrowserFetchText(page, { url: appRootUrl, method: 'GET' }).catch(() => undefined);
 }
 
+async function navigateShellToMintXsrf(page: Page, baseUrl: string): Promise<void> {
+  const pageUrl = currentPageUrl(page);
+  const navigationTarget =
+    pageUrl.startsWith(baseUrl) && pageUrl !== 'about:blank' ? pageUrl : new URL('/', baseUrl).toString();
+
+  await page.goto(navigationTarget, { waitUntil: 'domcontentloaded' }).catch(() => undefined);
+  await acceptAccessCookiesIfPresent(page);
+  await runBrowserFetchText(page, { url: new URL('/auth/isAuthenticated', baseUrl).toString(), method: 'GET' }).catch(() => undefined);
+}
+
 async function waitForXsrfToken(page: Page, baseUrl: string): Promise<string> {
   const deadline = Date.now() + XSRF_COOKIE_WAIT_TIMEOUT_MS;
   let pollAttempts = 0;
@@ -128,16 +171,26 @@ async function waitForXsrfToken(page: Page, baseUrl: string): Promise<string> {
     ) {
       authTouchAttempts += 1;
       await touchAuthEndpointsToMintXsrf(page, baseUrl);
+      await navigateShellToMintXsrf(page, baseUrl);
       continue;
     }
     await page.waitForTimeout(XSRF_COOKIE_WAIT_INTERVAL_MS);
   }
 
-  throw new Error(`Document upload setup failed: XSRF-TOKEN cookie was not available within ${XSRF_COOKIE_WAIT_TIMEOUT_MS}ms`);
+  const cookieNames = await page
+    .context()
+    .cookies()
+    .then((cookies) => cookies.map((cookie) => cookie.name).filter(Boolean))
+    .catch(() => []);
+  throw new Error(
+    `Document upload setup failed: XSRF-TOKEN cookie was not available within ${XSRF_COOKIE_WAIT_TIMEOUT_MS}ms (url=${currentPageUrl(
+      page
+    )}, cookies=${cookieNames.join(',') || 'none'})`
+  );
 }
 
 export async function uploadDocumentViaApi(options: UploadDocumentViaApiOptions): Promise<CcdDocumentValue> {
-  const baseUrl = config.urls.baseURL ?? config.urls.exuiDefaultUrl;
+  const baseUrl = resolveAppBaseUrl(options.page);
   const xsrf = await waitForXsrfToken(options.page, baseUrl);
   const headers = { 'X-XSRF-TOKEN': xsrf };
   const response = await runBrowserFetchText(options.page, {

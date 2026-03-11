@@ -378,7 +378,11 @@ function deriveTargetedTimeoutMarker(failureLocation: string, actionableErrorLin
   if (/Task list filter controls did not become visible/i.test(signal)) {
     return 'ui-filter-controls-timeout';
   }
-  if (/Task list filter checkbox .* did not (become visible|become interactive)/i.test(signal)) {
+  if (
+    /Task list filter checkbox .* did not (become visible|become interactive)|Task list filter checkbox .* state could not be read|Failed to clear .* filter group within/i.test(
+      signal
+    )
+  ) {
     return 'ui-filter-checkbox-timeout';
   }
   if (/Task list filter panel did not become ready/i.test(signal)) {
@@ -392,7 +396,7 @@ function deriveTargetedTimeoutMarker(failureLocation: string, actionableErrorLin
     return 'ui-task-list-shell-timeout';
   }
   if (
-    /taskList\.po\.ts|Task list filter controls did not become visible|Task list filter checkbox did not become interactive|Task list filter panel did not become ready|Task list shell did not become ready|Task list showed service down while|Something went wrong page was displayed while waiting for task list shell/i.test(
+    /taskList\.po\.ts|Task list filter controls did not become visible|Task list filter checkbox .* did not become interactive|Task list filter checkbox .* state could not be read|Failed to clear .* filter group within|Task list filter panel did not become ready|Task list shell did not become ready|Task list showed service down while|Something went wrong page was displayed while waiting for task list shell/i.test(
       signal
     )
   ) {
@@ -537,10 +541,14 @@ function deriveTimeoutRootCause({
       executionSignals
     )}). This points to a filter-shell readiness stall rather than a backend-response failure.${closureHint}${locationHint}${actionableHint}`;
   }
-  if (/Task list filter checkbox .* did not (become visible|become interactive)/i.test(timeoutSignal)) {
+  if (
+    /Task list filter checkbox .* did not (become visible|become interactive)|Task list filter checkbox .* state could not be read|Failed to clear .* filter group within/i.test(
+      timeoutSignal
+    )
+  ) {
     return `A task-list filter checkbox never became usable before the global timeout (${summarizeExecutionSignals(
       executionSignals
-    )}). This points to a filter-control interaction stall rather than a backend-response failure.${closureHint}${locationHint}${actionableHint}`;
+    )}). This points to a filter-control state/interaction stall rather than a backend-response failure.${closureHint}${locationHint}${actionableHint}`;
   }
   if (/Task list filter panel did not become ready/i.test(timeoutSignal)) {
     return `The task-list filter panel never became usable before the global timeout (${summarizeExecutionSignals(
@@ -548,7 +556,7 @@ function deriveTimeoutRootCause({
     )}). This points to filter-panel readiness rather than a backend-response failure.${closureHint}${locationHint}${actionableHint}`;
   }
   if (
-    /taskList\.po\.ts|Task list filter controls did not become visible|Task list filter checkbox did not become interactive|Task list filter panel did not become ready|Task list shell did not become ready/i.test(
+    /taskList\.po\.ts|Task list filter controls did not become visible|Task list filter checkbox .* did not become interactive|Task list filter checkbox .* state could not be read|Failed to clear .* filter group within|Task list filter panel did not become ready|Task list shell did not become ready/i.test(
       timeoutSignal
     )
   ) {
@@ -629,10 +637,14 @@ function deriveLikelyRootCause({
       executionSignals
     )}). This points to filter-shell readiness rather than a backend-response failure.`;
   }
-  if (/Task list filter checkbox .* did not (become visible|become interactive)/i.test(readinessSignal)) {
+  if (
+    /Task list filter checkbox .* did not (become visible|become interactive)|Task list filter checkbox .* state could not be read|Failed to clear .* filter group within/i.test(
+      readinessSignal
+    )
+  ) {
     return `A task-list filter checkbox never became usable before the test failed (${summarizeExecutionSignals(
       executionSignals
-    )}). This points to filter-control interaction rather than a backend-response failure.`;
+    )}). This points to filter-control state/interaction rather than a backend-response failure.`;
   }
   if (/Task list filter panel did not become ready/i.test(readinessSignal)) {
     return `The task-list filter panel never became usable before the test failed (${summarizeExecutionSignals(
@@ -641,7 +653,7 @@ function deriveLikelyRootCause({
   }
 
   if (
-    /taskList\.po\.ts|Task list filter controls did not become visible|Task list filter checkbox did not become interactive|Task list filter panel did not become ready|Task list shell did not become ready/i.test(
+    /taskList\.po\.ts|Task list filter controls did not become visible|Task list filter checkbox .* did not become interactive|Task list filter checkbox .* state could not be read|Failed to clear .* filter group within|Task list filter panel did not become ready|Task list shell did not become ready/i.test(
       readinessSignal
     )
   ) {
@@ -727,7 +739,7 @@ function classifyFailure({
   const hasLocatorSignal = error.includes('locator') || error.includes('element') || error.includes('waiting for');
   const readinessSignal = `${failureLocation} ${actionableErrorLine} ${error}`;
   const hasUiReadinessSignal =
-    /Cases page shell did not become ready|Task list shell did not become ready|Task list filter panel did not become ready|Task list filter controls did not become visible|Task list filter checkbox did not become interactive|Task list showed service down while|Something went wrong page was displayed while waiting for task list shell/i.test(
+    /Cases page shell did not become ready|Task list shell did not become ready|Task list filter panel did not become ready|Task list filter controls did not become visible|Task list filter checkbox .* did not become interactive|Task list filter checkbox .* state could not be read|Failed to clear .* filter group within|Task list showed service down while|Something went wrong page was displayed while waiting for task list shell/i.test(
       readinessSignal
     );
   const hasNetworkTimeoutFailure =

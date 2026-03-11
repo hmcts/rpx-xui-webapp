@@ -11,7 +11,7 @@ import { __test__ as authTest } from './utils/auth';
 
 test.describe.configure({ mode: 'serial' });
 
-test.describe('Auth helper coverage - basic utilities', () => {
+test.describe('Auth helper coverage - basic utilities', { tag: '@svc-auth' }, () => {
   test('extractCsrf parses token and returns undefined when missing', () => {
     expect(authTest.extractCsrf('<input name="_csrf" value="token">')).toBe('token');
     expect(authTest.extractCsrf('<html></html>')).toBeUndefined();

@@ -11,17 +11,17 @@ export interface StaffUsersFilterResult {
   staff_admin: boolean;
 
   roles: {
-    role_id: number,
-    role: string,
-    is_primary: boolean,
-    created_time?: Date,
-    last_updated_time?: Date,
+    role_id: number;
+    role: string;
+    is_primary: boolean;
+    created_time?: Date;
+    last_updated_time?: Date;
   }[];
 
   skills: {
     skill_id: number;
     description: string;
-    skill_code: string
+    skill_code: string;
   }[];
 
   services: {
@@ -30,11 +30,11 @@ export interface StaffUsersFilterResult {
   }[];
 
   base_locations: {
-    created_time?: Date,
-    last_updated_time?: Date,
-    location_id: number,
-    location: string,
-    is_primary: boolean
+    created_time?: Date;
+    last_updated_time?: Date;
+    location_id: number;
+    location: string;
+    is_primary: boolean;
   }[];
 
   region: string;

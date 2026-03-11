@@ -6,15 +6,19 @@ import { HiddenConverter } from './hidden.converter';
 
 export class JudgeExclusionHiddenConverter implements HiddenConverter {
   public transformHidden(hearingState$: Observable<State>): Observable<boolean> {
-    return hearingState$.pipe(map((state) => {
-      const panelRequirements = state.hearingConditions?.isHearingAmendmentsEnabled
-        ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements
-        : state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
-      if (panelRequirements?.panelPreferences) {
-        return !panelRequirements.panelPreferences.filter((preferences) => preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.EXCLUDE).length;
-      }
-      return true;
-    }
-    ));
+    return hearingState$.pipe(
+      map((state) => {
+        const panelRequirements = state.hearingConditions?.isHearingAmendmentsEnabled
+          ? state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.panelRequirements
+          : state.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements;
+        if (panelRequirements?.panelPreferences) {
+          return !panelRequirements.panelPreferences.filter(
+            (preferences) =>
+              preferences.memberType === MemberType.JUDGE && preferences.requirementType === RequirementType.EXCLUDE
+          ).length;
+        }
+        return true;
+      })
+    );
   }
 }

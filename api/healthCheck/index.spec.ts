@@ -34,8 +34,8 @@ describe('health check', () => {
       const requestQueryPath = '/cases';
       const req = mockReq({
         query: {
-          path: requestQueryPath
-        }
+          path: requestQueryPath,
+        },
       });
 
       const res = mockRes();

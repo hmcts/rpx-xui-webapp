@@ -1,10 +1,11 @@
-import type { ApiClient as PlaywrightApiClient } from '@hmcts/playwright-common';
 import { expect } from '@playwright/test';
+import type { ApiClient } from '@hmcts/playwright-common';
 
 import { expectStatus, withRetry, withXsrf } from './apiTestUtils';
 import { expectTaskList } from './assertions';
 import type { Task, TaskListResponse, UserDetailsResponse } from './types';
 import { buildTaskSearchRequest, type SeededTaskResult } from './work-allocation';
+import type { ApiUserRole } from './auth';
 
 export function toArray<T>(payload: unknown): T[] {
   if (Array.isArray(payload)) {
@@ -27,12 +28,15 @@ export function assertLocationsListResponse(status: number, data: unknown): void
   if (status !== 200) {
     return;
   }
-  expect(Array.isArray(data)).toBe(true);
+  if (!Array.isArray(data)) {
+    expect(Array.isArray(data)).toBe(true);
+    return;
+  }
   if (data.length > 0) {
     expect(data[0]).toEqual(
       expect.objectContaining({
         id: expect.any(String),
-        locationName: expect.any(String)
+        locationName: expect.any(String),
       })
     );
   }
@@ -58,7 +62,7 @@ export function assertTypesOfWorkResponse(status: number, data: unknown): void {
   if (types.length > 0 && typeof types[0] === 'object' && types[0] !== null) {
     expect(types[0]).toEqual(
       expect.objectContaining({
-        id: expect.any(String)
+        id: expect.any(String),
       })
     );
   }
@@ -85,12 +89,15 @@ export function assertAllWorkResponse(status: number, data: unknown): void {
   expectTaskList(data);
 }
 
-export function extractMyWorkCases(data: any): any[] {
+export function extractMyWorkCases(data: unknown): unknown[] {
   if (Array.isArray(data)) {
     return data;
   }
-  if (Array.isArray(data?.cases)) {
-    return data.cases;
+  if (typeof data === 'object' && data !== null && 'cases' in data) {
+    const cases = (data as { cases?: unknown }).cases;
+    if (Array.isArray(cases)) {
+      return cases;
+    }
   }
   return [];
 }
@@ -126,14 +133,16 @@ export function assertCaseworkerListResponse(status: number, data: unknown): voi
       expect.objectContaining({
         firstName: expect.any(String),
         lastName: expect.any(String),
-        idamId: expect.any(String)
+        idamId: expect.any(String),
       })
     );
   }
 }
 
+type WorkAllocationApiClient = Pick<ApiClient, 'post' | 'get'>;
+
 export async function fetchFirstTask(
-  apiClient: PlaywrightApiClient,
+  apiClient: WorkAllocationApiClient,
   locationId?: string,
   states: string[] = ['assigned', 'unassigned'],
   view: 'AllWork' | 'MyTasks' = 'AllWork'
@@ -142,22 +151,22 @@ export async function fetchFirstTask(
     locations: toLocationList(locationId),
     states,
     searchBy: 'caseworker',
-    pageSize: 5
+    pageSize: 5,
   });
 
   const response = (await withRetry(
     () =>
       apiClient.post('workallocation/task', {
         data: body,
-        throwOnError: false
+        throwOnError: false,
       }),
     { retries: 1, retryStatuses: [502, 504] }
-  )) as { data: TaskListResponse; status: number };
-  const data = response.data;
-  if (response.status !== 200 || !Array.isArray(data?.tasks) || data.tasks!.length === 0) {
+  )) as { data: TaskListResponse | undefined; status: number };
+  const tasks = Array.isArray(response.data?.tasks) ? response.data.tasks : [];
+  if (response.status !== 200 || tasks.length === 0) {
     return undefined;
   }
-  return data.tasks![0];
+  return tasks[0];
 }
 
 type TaskDetails = {
@@ -166,8 +175,11 @@ type TaskDetails = {
   task?: TaskState;
 };
 
-export async function fetchTaskById(apiClient: PlaywrightApiClient, id: string): Promise<TaskDetails> {
-  return apiClient.get(`workallocation/task/${id}`, { throwOnError: false });
+export async function fetchTaskById(apiClient: WorkAllocationApiClient, id: string): Promise<TaskDetails> {
+  if (!apiClient.get) {
+    throw new Error('apiClient.get is required to fetch task by id');
+  }
+  return apiClient.get(`workallocation/task/${id}`, { throwOnError: false }) as Promise<TaskDetails>;
 }
 
 type TaskState = {
@@ -238,32 +250,60 @@ export function selectTaskId(candidates: Array<string | undefined>, fallback: st
   return fallback;
 }
 
+type TaskIdResolutionSource = 'dynamic' | 'env-assigned' | 'env-unassigned' | 'none';
+
+export function resolveTaskIdWithEnvFallback(
+  primaryTaskId: string | undefined,
+  envAssignedTaskId: string | undefined,
+  envTaskId: string | undefined,
+  fallback: string
+): { taskId: string; source: TaskIdResolutionSource } {
+  if (primaryTaskId) {
+    return { taskId: primaryTaskId, source: 'dynamic' };
+  }
+  if (envAssignedTaskId) {
+    return { taskId: envAssignedTaskId, source: 'env-assigned' };
+  }
+  if (envTaskId) {
+    return { taskId: envTaskId, source: 'env-unassigned' };
+  }
+  return { taskId: fallback, source: 'none' };
+}
+
 type SeededActionDeps = {
-  apiClient: any;
+  apiClient: WorkAllocationApiClient;
   envTaskId?: string;
   envAssignedTaskId?: string;
   hasSeededEnvTasksFn?: typeof hasSeededEnvTasks;
-  withXsrfFn?: typeof withXsrf;
+  withXsrfFn?: (role: ApiUserRole, fn: (headers: Record<string, string>) => Promise<void>) => Promise<void>;
 };
 
 export async function runSeededAction(action: string, getId: () => string, deps: SeededActionDeps): Promise<boolean> {
-  const hasSeeded = deps.hasSeededEnvTasksFn ?? hasSeededEnvTasks;
   const withXsrfFn = deps.withXsrfFn ?? withXsrf;
-  if (!hasSeeded(deps.envTaskId, deps.envAssignedTaskId)) {
+  const taskId = getId();
+
+  // Skip only if no valid task ID available (neither env nor dynamic)
+  if (!taskId || taskId === '00000000-0000-0000-0000-000000000000') {
     return false;
   }
+
   await withXsrfFn('solicitor', async (headers) => {
-    const res = await deps.apiClient.post(`workallocation/task/${getId()}/${action}`, {
+    const res = await deps.apiClient.post(`workallocation/task/${taskId}/${action}`, {
       data: {},
       headers,
-      throwOnError: false
+      throwOnError: false,
     });
     expectStatus(res.status, [200, 204]);
   });
   return true;
 }
 
-export function maybeAssertStateTransition(action: string, before: any, after: any, status: number): boolean {
+export function maybeAssertStateTransition(
+  action: string,
+  before: TaskState | undefined,
+  after: TaskState | undefined,
+  status: number
+): boolean {
   if (isActionSuccessStatus(status)) {
     assertStateTransition(action, before, after);
     return true;

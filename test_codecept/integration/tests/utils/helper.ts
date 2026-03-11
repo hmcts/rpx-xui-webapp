@@ -1,10 +1,9 @@
-
 import * as addContext from 'mochawesome/addContext';
 let testContext;
 export const mochaHooks = {
-  beforeEach(){
+  beforeEach() {
     testContext = this;
-  }
+  },
 };
 
 export const setTestContext = (testObj) => {
@@ -13,7 +12,7 @@ export const setTestContext = (testObj) => {
 };
 
 export const reporterMsg = (msg) => {
-  const reportMsg = new Date().toTimeString() + ' : '+msg;
+  const reportMsg = new Date().toTimeString() + ' : ' + msg;
   console.log(reportMsg);
   addContext(testContext, reportMsg);
 };
@@ -36,4 +35,3 @@ export const testWithRetry = async (fn) => {
     }
   }
 };
-

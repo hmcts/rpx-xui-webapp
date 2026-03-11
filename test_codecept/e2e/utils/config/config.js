@@ -1,8 +1,7 @@
-
 class config {
   constructor() {
     const config = {
-      baseUrl: this.getBaseUrl()
+      baseUrl: this.getBaseUrl(),
     };
   }
 
@@ -16,4 +15,3 @@ class config {
   }
 }
 module.exports = new config();
-

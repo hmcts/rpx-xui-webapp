@@ -3,11 +3,12 @@ import { FormBuilder } from '@angular/forms';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import {
-  Actions, AllocateRoleNavigationEvent,
+  Actions,
+  AllocateRoleNavigationEvent,
   AllocateRoleState,
   AllocateRoleStateData,
   AllocateTo,
-  DurationOfRole
+  DurationOfRole,
 } from '../../../models';
 import * as fromFeature from '../../../store';
 import { ChooseDurationComponent } from './choose-duration.component';
@@ -26,20 +27,20 @@ describe('ChooseDurationComponent', () => {
     personToBeRemoved: {
       id: 'p111111',
       name: 'test1',
-      domain: ''
+      domain: '',
     },
     person: {
       id: 'p222222',
       name: 'test2',
-      domain: ''
+      domain: '',
     },
     durationOfRole: DurationOfRole.SEVEN_DAYS,
     action: Actions.Allocate,
     period: {
       startDate: new Date(),
-      endDate: new Date()
+      endDate: new Date(),
     },
-    roleCategory: RoleCategory.LEGAL_OPERATIONS
+    roleCategory: RoleCategory.LEGAL_OPERATIONS,
   };
 
   beforeEach(waitForAsync(() => {
@@ -69,8 +70,8 @@ describe('ChooseDurationComponent', () => {
       durationOfRole: DurationOfRole.ANOTHER_PERIOD,
       period: {
         startDate: new Date('2021-12-17T03:24:00'),
-        endDate: new Date('2021-12-27T03:24:00')
-      }
+        endDate: new Date('2021-12-27T03:24:00'),
+      },
     };
     component.selectDurationRole(STATE_DATA);
     expect(component.dayStartDate.value).toBe(17);
@@ -85,14 +86,16 @@ describe('ChooseDurationComponent', () => {
     const navEvent: AllocateRoleNavigationEvent = AllocateRoleNavigationEvent.CONTINUE;
     component.selectedDuration = DurationOfRole.SEVEN_DAYS;
     component.navigationHandler(navEvent);
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseDurationAndGo({
-      durationOfRole: DurationOfRole.SEVEN_DAYS,
-      period: {
-        startDate: component.getTodayDate(),
-        endDate: new Date(component.getTodayDate().setDate(new Date().getDate() + 7))
-      },
-      allocateRoleState: AllocateRoleState.CHECK_ANSWERS }
-    ));
+    expect(mockStore.dispatch).toHaveBeenCalledWith(
+      new fromFeature.ChooseDurationAndGo({
+        durationOfRole: DurationOfRole.SEVEN_DAYS,
+        period: {
+          startDate: component.getTodayDate(),
+          endDate: new Date(component.getTodayDate().setDate(new Date().getDate() + 7)),
+        },
+        allocateRoleState: AllocateRoleState.CHECK_ANSWERS,
+      })
+    );
   });
 
   it('should return true if start date not in past', () => {

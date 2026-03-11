@@ -15,7 +15,7 @@ import { TaskServiceConfig } from '../../models/tasks';
 @Component({
   standalone: false,
   selector: 'exui-task-container-assignment',
-  templateUrl: 'task-assignment-container.component.html'
+  templateUrl: 'task-assignment-container.component.html',
 })
 export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   public error: ErrorMessage = null;
@@ -39,7 +39,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     service: TaskService.IAC,
     defaultSortDirection: SortOrder.ASC,
     defaultSortFieldName: 'dueDate',
-    fields: this.fields
+    fields: this.fields,
   };
 
   protected userDetailsKey: string = 'userDetails';
@@ -52,10 +52,11 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   ) {}
 
   public get fields(): FieldConfig[] {
-    return this.showAssigneeColumn ?
-      (this.isJudicial ?
-        ConfigConstants.TaskActionsWithAssigneeForJudicial :ConfigConstants.TaskActionsWithAssigneeForLegalOps) :
-      ConfigConstants.AllWorkTasksForLegalOps;
+    return this.showAssigneeColumn
+      ? this.isJudicial
+        ? ConfigConstants.TaskActionsWithAssigneeForJudicial
+        : ConfigConstants.TaskActionsWithAssigneeForLegalOps
+      : ConfigConstants.AllWorkTasksForLegalOps;
   }
 
   private get returnUrl(): string {
@@ -64,7 +65,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
     let url: string = '';
 
     // The returnUrl is undefined if the user has used browser navigation buttons, so check for its presence
-    if (window && window.history && window.history.state && window.history.state.returnUrl) {
+    if (window?.history?.state?.returnUrl) {
       // Truncate any portion of the URL beginning with '#', as is appended when clicking "Manage" on a task
       url = window.history.state.returnUrl.split('#')[0];
     }
@@ -73,7 +74,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   }
 
   private get showAssigneeColumn(): boolean {
-    if (window && window.history && window.history.state) {
+    if (window?.history?.state) {
       return !!window.history.state.showAssigneeColumn;
     }
     return false;
@@ -115,14 +116,15 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   }
 
   public assign(): void {
-    if (this.formGroup && this.formGroup.value && this.formGroup.value.findPersonControl && this.formGroup.value.findPersonControl.email) {
+    if (this.formGroup?.value?.findPersonControl?.email) {
       // Pass the returnUrl in the `state` parameter, so it can be used for navigation by the Task Assignment Confirm
       // component
-      this.router.navigate([this.rootPath, this.taskId, this.verb.toLowerCase(), 'confirm'],
-        { state: { selectedPerson: this.person, returnUrl: this.returnUrl, roleCategory: this.role } });
+      this.router.navigate([this.rootPath, this.taskId, this.verb.toLowerCase(), 'confirm'], {
+        state: { selectedPerson: this.person, returnUrl: this.returnUrl, roleCategory: this.role },
+      });
     } else {
       this.formGroup.setErrors({
-        invalid: true
+        invalid: true,
       });
     }
   }

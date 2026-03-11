@@ -23,14 +23,19 @@ const mockServiceHearingValues = require('../../../backendMock/services/hearings
 const jsonUtil = require('../.././../e2e/utils/jsonUtil');
 const path = require('path');
 
-function getHearingsMockJsonFromFile(fileName){
-  return jsonUtil.getJsonFromFile(path.resolve(__dirname, `../features/hearings/mockData/${fileName}.json`,));
+function getHearingsMockJsonFromFile(fileName) {
+  return jsonUtil.getJsonFromFile(path.resolve(__dirname, `../features/hearings/mockData/${fileName}.json`));
 }
 
-function updateObjectValues(object, key, value){
-  const dateField = ['hearingRequestDateTime', 'lastResponseReceivedDateTime', 'hearingDaySchedule.hearingStartDateTime', 'hearingDaySchedule.hearingEndDateTime'];
+function updateObjectValues(object, key, value) {
+  const dateField = [
+    'hearingRequestDateTime',
+    'lastResponseReceivedDateTime',
+    'hearingDaySchedule.hearingStartDateTime',
+    'hearingDaySchedule.hearingEndDateTime',
+  ];
 
-  if (dateField.includes(key)){
+  if (dateField.includes(key)) {
     const byDays = parseInt(value);
     object[key] = moment().add(byDays, 'days').format('YYYY-MM-DDTHH:mm:ss.sssss');
   } else {
@@ -40,13 +45,19 @@ function updateObjectValues(object, key, value){
 
 function modifyHearingDetailsYear(hearingDetails) {
   if (hearingDetails?.dateRangeStart) {
-    hearingDetails.dateRangeStart = moment(hearingDetails.dateRangeStart).year(moment().year() + 1).toISOString();
+    hearingDetails.dateRangeStart = moment(hearingDetails.dateRangeStart)
+      .year(moment().year() + 1)
+      .toISOString();
   }
   if (hearingDetails?.dateRangeEnd) {
-    hearingDetails.dateRangeEnd = moment(hearingDetails.dateRangeEnd).year(moment().year() + 1).toISOString();
+    hearingDetails.dateRangeEnd = moment(hearingDetails.dateRangeEnd)
+      .year(moment().year() + 1)
+      .toISOString();
   }
   if (hearingDetails?.firstDateTimeMustBe) {
-    hearingDetails.firstDateTimeMustBe = moment(hearingDetails.firstDateTimeMustBe).year(moment().year() + 1).toISOString();
+    hearingDetails.firstDateTimeMustBe = moment(hearingDetails.firstDateTimeMustBe)
+      .year(moment().year() + 1)
+      .toISOString();
   }
 }
 
@@ -79,22 +90,22 @@ Given('I set mock hearing SHV response from file {string}', async function (file
 Given('I set mock case hearings', async function (hearingsDatatable) {
   const rows = hearingsDatatable.parse().hashes();
   const hearingsList = [];
-  for (const hearing of rows){
-    for (const key of Object.keys(hearing)){
+  for (const hearing of rows) {
+    for (const key of Object.keys(hearing)) {
       updateObjectValues(hearing, key, hearing[key]);
     }
     hearingsList.push(hearingsMock.getHearingWithProps(hearing));
   }
   const res = {
-    'caseRef': '1690807693531270',
-    'caseHearings': hearingsList,
-    'hmctsServiceCode': "ABA5"
+    caseRef: '1690807693531270',
+    caseHearings: hearingsList,
+    hmctsServiceCode: 'ABA5',
   };
   reportLogger.AddJson(res);
   mockClient.setCaseHearings(res, 200);
 });
 
-function getMockHearingWithStatus(hearingStatus){
+function getMockHearingWithStatus(hearingStatus) {
   let hearingResponse = null;
   switch (hearingStatus) {
     case 'LISTED':
@@ -167,19 +178,22 @@ Given('I set parties in mock hearing data for state {string}', async function (h
   mockClient.setOnGetHearing(hearingData, 200);
 });
 
-Given('I update mock hearings service hearing values with ref {string} for field {string}', async function (ref, field, datatable) {
-  const serviceHearingValue = global.scenarioData[ref];
+Given(
+  'I update mock hearings service hearing values with ref {string} for field {string}',
+  async function (ref, field, datatable) {
+    const serviceHearingValue = global.scenarioData[ref];
 
-  const dataTableObjects = datatable.parse().hashes();
-  let updatedShv = null;
-  if (field === 'caseFlags'){
-    updatedShv = mockServiceHearingValues.setCaseFlags(dataTableObjects, serviceHearingValue);
-  } else if (field === 'parties'){
-    updatedShv = mockServiceHearingValues.setParties(dataTableObjects, serviceHearingValue);
+    const dataTableObjects = datatable.parse().hashes();
+    let updatedShv = null;
+    if (field === 'caseFlags') {
+      updatedShv = mockServiceHearingValues.setCaseFlags(dataTableObjects, serviceHearingValue);
+    } else if (field === 'parties') {
+      updatedShv = mockServiceHearingValues.setParties(dataTableObjects, serviceHearingValue);
+    }
+    reportLogger.AddMessage(JSON.stringify(updatedShv, null, 2));
+    mockClient.setHearingServiceHearingValues(updatedShv, 200);
   }
-  reportLogger.AddMessage(JSON.stringify(updatedShv, null, 2));
-  mockClient.setHearingServiceHearingValues(updatedShv, 200);
-});
+);
 
 Given('I update mock hearings service hearing values with ref {string} at jsonpaths', async function (ref, datatable) {
   const serviceHearingValue = global.scenarioData[ref];

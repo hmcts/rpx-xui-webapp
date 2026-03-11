@@ -15,7 +15,7 @@ import { handleTasksFatalErrors } from '../../utils';
 @Component({
   standalone: false,
   selector: 'exui-task-assignment-confirm',
-  templateUrl: './task-assignment-confirm.component.html'
+  templateUrl: './task-assignment-confirm.component.html',
 })
 export class TaskAssignmentConfirmComponent implements OnInit {
   public verb: TaskActionType;
@@ -34,9 +34,10 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     private readonly route: ActivatedRoute,
     private readonly router: Router,
     private readonly messageService: InfoMessageCommService,
-    private readonly sessionStorageService: SessionStorageService) {
+    private readonly sessionStorageService: SessionStorageService
+  ) {
     const navigation = this.router.getCurrentNavigation();
-    if (navigation && navigation.extras && navigation.extras.state) {
+    if (navigation?.extras?.state) {
       this.selectedPerson = navigation.extras.state.selectedPerson;
       this.roleCategory = navigation.extras.state.roleCategory;
     }
@@ -48,7 +49,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     let url: string = '';
 
     // The returnUrl is undefined if the user has used browser navigation buttons, so check for its presence
-    if (window && window.history && window.history.state && window.history.state.returnUrl) {
+    if (window?.history?.state?.returnUrl) {
       url = window.history.state.returnUrl;
     }
     return url;
@@ -65,7 +66,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     }
     this.verb = this.route.snapshot.data.verb as TaskActionType;
     this.taskId = this.route.snapshot.params.taskId;
-    if (this.router && this.router.url) {
+    if (this.router?.url) {
       this.rootPath = this.router.url.split('/')[1];
     }
     this.task = this.route.snapshot.data.taskAndCaseworkers.task.task;
@@ -73,19 +74,16 @@ export class TaskAssignmentConfirmComponent implements OnInit {
   }
 
   public onChange(): void {
-    this.router.navigate(
-      [this.rootPath, this.taskId, this.verb.toLowerCase()],
-      {
-        state: {
-          person: this.selectedPerson,
-          returnUrl: this.returnUrl
-        },
-        queryParams: {
-          roleCategory: this.roleCategory,
-          service: this.task.jurisdiction
-        }
-      }
-    );
+    this.router.navigate([this.rootPath, this.taskId, this.verb.toLowerCase()], {
+      state: {
+        person: this.selectedPerson,
+        returnUrl: this.returnUrl,
+      },
+      queryParams: {
+        roleCategory: this.roleCategory,
+        service: this.task.jurisdiction,
+      },
+    });
   }
 
   public onSubmit(): void {
@@ -97,7 +95,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
         if (handledStatus > 0) {
           this.reportUnavailableErrorAndReturn();
         }
-      }
+      },
     });
   }
 
@@ -120,17 +118,17 @@ export class TaskAssignmentConfirmComponent implements OnInit {
 
   private reportSuccessAndReturn(): void {
     const message = this.verb === 'Assign' ? InfoMessage.ASSIGNED_TASK : InfoMessage.REASSIGNED_TASK;
-    this.returnWithMessage(
-      { type: InfoMessageType.SUCCESS, message },
-      { badRequest: false }
-    );
+    this.returnWithMessage({ type: InfoMessageType.SUCCESS, message }, { badRequest: false });
   }
 
   private reportUnavailableErrorAndReturn(): void {
-    this.returnWithMessage({
-      type: InfoMessageType.WARNING,
-      message: InfoMessage.TASK_NO_LONGER_AVAILABLE
-    }, { badRequest: true });
+    this.returnWithMessage(
+      {
+        type: InfoMessageType.WARNING,
+        message: InfoMessage.TASK_NO_LONGER_AVAILABLE,
+      },
+      { badRequest: true }
+    );
   }
 
   private returnWithMessage(message: InformationMessage, state: any): void {
@@ -138,7 +136,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
       if (this.returnUrl.includes('case-details')) {
         state = {
           showMessage: true,
-          messageText: message.message
+          messageText: message.message,
         };
       } else {
         this.messageService.nextMessage(message);

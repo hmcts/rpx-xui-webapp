@@ -13,7 +13,7 @@ import { InvokedTaskAction, Task, TaskAction, TaskServiceConfig } from '../../mo
   standalone: false,
   selector: 'exui-task-list',
   templateUrl: './task-list.component.html',
-  styleUrls: ['task-list.component.scss']
+  styleUrls: ['task-list.component.scss'],
 })
 export class TaskListComponent implements OnChanges {
   /**
@@ -54,7 +54,10 @@ export class TaskListComponent implements OnChanges {
   public defaultSortElement: HTMLElement;
   public newUrl: string;
 
-  constructor(private readonly router: Router, private readonly sessionStorageService: SessionStorageService) {}
+  constructor(
+    private readonly router: Router,
+    private readonly sessionStorageService: SessionStorageService
+  ) {}
 
   public get showResetSortButton(): boolean {
     if (!this.sortedBy) {
@@ -80,7 +83,7 @@ export class TaskListComponent implements OnChanges {
       this.dataSource$ = new BehaviorSubject(this.tasks);
       this.setSelectedTask(this.selectTaskFromUrlHash(this.router.url));
       for (const task of this.tasks) {
-        if (task && task.actions && task.actions.length) {
+        if (task?.actions?.length) {
           this.showManage[task.id] = task.actions.length > 0;
         }
       }
@@ -126,7 +129,7 @@ export class TaskListComponent implements OnChanges {
   public onActionHandler(task: Task, action: TaskAction): void {
     const invokedTaskAction: InvokedTaskAction = {
       task,
-      action
+      action,
     };
 
     this.actionEvent.emit(invokedTaskAction);
@@ -196,18 +199,15 @@ export class TaskListComponent implements OnChanges {
   }
 
   public getFirstResult(): number {
-    return ((this.getCurrentPageIndex() * this.pagination.page_size) + (this.tasks ? 1 : 0));
+    return this.getCurrentPageIndex() * this.pagination.page_size + (this.tasks ? 1 : 0);
   }
 
   public getLastResult(): number {
-    return ((this.getCurrentPageIndex() * this.pagination.page_size) + this.getCurrentTaskCount());
+    return this.getCurrentPageIndex() * this.pagination.page_size + this.getCurrentTaskCount();
   }
 
   public isPaginationEnabled(): boolean {
-    return this.pagination &&
-      this.enablePagination &&
-      typeof(this.tasks) !== 'undefined' &&
-      this.tasks.length > 0;
+    return this.pagination && this.enablePagination && typeof this.tasks !== 'undefined' && this.tasks.length > 0;
   }
 
   private setDefaultSort(): void {

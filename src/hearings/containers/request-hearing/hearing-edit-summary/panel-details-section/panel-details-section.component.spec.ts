@@ -14,16 +14,16 @@ describe('PanelDetailsSectionComponent', () => {
       {
         memberID: '7007496',
         memberType: MemberType.PANEL_MEMBER,
-        requirementType: RequirementType.MUSTINC
+        requirementType: RequirementType.MUSTINC,
       },
       {
         memberID: '6006842',
         memberType: MemberType.PANEL_MEMBER,
-        requirementType: RequirementType.EXCLUDE
-      }
+        requirementType: RequirementType.EXCLUDE,
+      },
     ],
     panelSpecialisms: ['BBA3-DQPM', 'BBA3-MQPM2-001', 'BBA3-MQPM1-001'],
-    roleType: ['BBA3-RMM', 'BBA3-DQPM', 'BBA3-MQPM1']
+    roleType: ['BBA3-RMM', 'BBA3-DQPM', 'BBA3-MQPM1'],
   };
 
   const panelMembersRefData: JudicialUserModel[] = [
@@ -39,7 +39,7 @@ describe('PanelDetailsSectionComponent', () => {
       personalCode: '7007496',
       isJudge: '',
       isMagistrate: '',
-      isPanelMember: ''
+      isPanelMember: '',
     },
     {
       title: 'Mr',
@@ -53,8 +53,8 @@ describe('PanelDetailsSectionComponent', () => {
       personalCode: '6006842',
       isJudge: '',
       isMagistrate: '',
-      isPanelMember: ''
-    }
+      isPanelMember: '',
+    },
   ];
 
   const panelRoles: LovRefDataModel[] = [
@@ -69,7 +69,7 @@ describe('PanelDetailsSectionComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'PanelMemberType',
@@ -94,7 +94,7 @@ describe('PanelDetailsSectionComponent', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM2',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -107,7 +107,7 @@ describe('PanelDetailsSectionComponent', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM2',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -120,7 +120,7 @@ describe('PanelDetailsSectionComponent', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM2',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -133,9 +133,9 @@ describe('PanelDetailsSectionComponent', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM2',
           active_flag: 'Y',
-          child_nodes: null
-        }
-      ]
+          child_nodes: null,
+        },
+      ],
     },
     {
       category_key: 'PanelMemberType',
@@ -160,7 +160,7 @@ describe('PanelDetailsSectionComponent', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM1',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -173,7 +173,7 @@ describe('PanelDetailsSectionComponent', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM1',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -186,7 +186,7 @@ describe('PanelDetailsSectionComponent', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM1',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           category_key: 'PanelMemberSpecialism',
@@ -199,9 +199,9 @@ describe('PanelDetailsSectionComponent', () => {
           parent_category: 'PanelMemberType',
           parent_key: 'BBA3-MQPM1',
           active_flag: 'Y',
-          child_nodes: null
-        }
-      ]
+          child_nodes: null,
+        },
+      ],
     },
     {
       category_key: 'PanelMemberType',
@@ -214,7 +214,7 @@ describe('PanelDetailsSectionComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'PanelMemberType',
@@ -227,17 +227,15 @@ describe('PanelDetailsSectionComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
-    }
+      child_nodes: null,
+    },
   ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
-      declarations: [
-        PanelDetailsSectionComponent
-      ],
-      providers: []
+      declarations: [PanelDetailsSectionComponent],
+      providers: [],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PanelDetailsSectionComponent);
@@ -256,26 +254,32 @@ describe('PanelDetailsSectionComponent', () => {
     expect(component.hearingPanel).toEqual('Yes');
     expect(component.includedPanelMembers).toEqual('Ramon Herrera');
     expect(component.excludedPanelMembers).toEqual('Jack Collins');
-    expect(component.panelRoles).toEqual('Disability Qualified Panel Member<br>Medically Qualified Panel Member - Cardiologist<br>Medically Qualified Panel Member - Cardiologist');
+    expect(component.panelRoles).toEqual(
+      'Disability Qualified Panel Member<br>Medically Qualified Panel Member - Cardiologist<br>Medically Qualified Panel Member - Cardiologist'
+    );
   });
 
   it('should verify onChange', () => {
     spyOn(component.changeEditHearing, 'emit');
     component.onChange('hearingPanel');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
-      fragmentId: 'hearingPanel', changeLink: '/hearings/request/hearing-panel#specificPanelSelection'
+      fragmentId: 'hearingPanel',
+      changeLink: '/hearings/request/hearing-panel#specificPanelSelection',
     });
     component.onChange('panelInclusion');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
-      fragmentId: 'panelInclusion', changeLink: '/hearings/request/hearing-panel#inputSelectPersonInclude'
+      fragmentId: 'panelInclusion',
+      changeLink: '/hearings/request/hearing-panel#inputSelectPersonInclude',
     });
     component.onChange('panelExclusion');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
-      fragmentId: 'panelExclusion', changeLink: '/hearings/request/hearing-panel#inputSelectPersonExclude'
+      fragmentId: 'panelExclusion',
+      changeLink: '/hearings/request/hearing-panel#inputSelectPersonExclude',
     });
     component.onChange('panelRoles');
     expect(component.changeEditHearing.emit).toHaveBeenCalledWith({
-      fragmentId: 'panelRoles', changeLink: '/hearings/request/hearing-panel#specificPanelSelection'
+      fragmentId: 'panelRoles',
+      changeLink: '/hearings/request/hearing-panel#specificPanelSelection',
     });
   });
 });

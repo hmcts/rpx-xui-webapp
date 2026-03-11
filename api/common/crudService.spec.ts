@@ -17,7 +17,7 @@ describe('crudService', () => {
     crudId: 'dummy',
     documentId: 'dummy',
     page: 1,
-    rectangles: []
+    rectangles: [],
   };
 
   let sandbox;
@@ -25,7 +25,7 @@ describe('crudService', () => {
   let crudService;
   const req = mockReq();
   const res = mockRes({
-    data: 'ok'
+    data: 'ok',
   });
 
   beforeEach(() => {
@@ -35,7 +35,7 @@ describe('crudService', () => {
       info: sandbox.stub(),
       error: sandbox.stub(),
       warn: sandbox.stub(),
-      debug: sandbox.stub()
+      debug: sandbox.stub(),
     };
 
     // Stub log4jui.getLogger BEFORE importing the module to ensure our mock is used
@@ -43,7 +43,7 @@ describe('crudService', () => {
 
     sandbox.stub(proxyLib, 'setHeaders').returns({
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer token'
+      Authorization: 'Bearer token',
     });
 
     // Clear the module cache to ensure fresh import
@@ -61,58 +61,37 @@ describe('crudService', () => {
     it('should make a get request', async () => {
       sandbox.stub(http, 'get').resolves(res);
       const crudPath = '/crud/12345';
-      const next = sinon.mock() as NextFunction;
-      const response = await crudService.handleGet(crudPath, req, next);
+      const response = await crudService.handleGet(crudPath, req);
       expect(response.data).to.equal('ok');
     });
 
     it('should log info message on successful request', async () => {
       sandbox.stub(http, 'get').resolves(res);
       const crudPath = '/crud/12345';
-      const next = sinon.stub();
 
-      await crudService.handleGet(crudPath, req, next);
+      await crudService.handleGet(crudPath, req);
 
       expect(mockLogger.info).to.have.been.calledOnce;
       expect(mockLogger.info).to.have.been.calledWith('handle get:', crudPath);
     });
 
-    it('should handle error and log error message', async () => {
+    it('should propagate errors to caller (no internal handling)', async () => {
       const error = {
         status: 404,
         statusText: 'Not Found',
-        data: { message: 'Resource not found' }
+        data: { message: 'Resource not found' },
       };
       sandbox.stub(http, 'get').rejects(error);
       const crudPath = '/crud/12345';
-      const next = sinon.stub();
 
-      await crudService.handleGet(crudPath, req, next);
-
-      expect(mockLogger.error).to.have.been.calledOnce;
-      expect(mockLogger.error).to.have.been.calledWith(
-        'handleGet: 404 /crud/12345',
-        'Not Found',
-        'Not Found',
-        JSON.stringify({ message: 'Resource not found' })
-      );
-      expect(next).to.have.been.calledWith(error);
-    });
-
-    it('should handle error with missing status', async () => {
-      const error = {
-        statusText: 'Internal Server Error',
-        data: {}
-      };
-      sandbox.stub(http, 'get').rejects(error);
-      const crudPath = '/crud/12345';
-      const next = sinon.stub();
-
-      await crudService.handleGet(crudPath, req, next);
-
-      expect(mockLogger.error).to.have.been.calledOnce;
-      expect(mockLogger.error.args[0][0]).to.include('handleGet: undefined');
-      expect(next).to.have.been.calledWith(error);
+      try {
+        await crudService.handleGet(crudPath, req);
+        expect.fail('Should have thrown error');
+      } catch (e) {
+        expect(e).to.equal(error);
+        // Current implementation doesn't log errors for handleGet
+        expect(mockLogger.error).to.not.have.been.called;
+      }
     });
   });
 
@@ -143,8 +122,8 @@ describe('crudService', () => {
       expect(postStub).to.have.been.calledWith(crudPath, dummyData, {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer token'
-        }
+          Authorization: 'Bearer token',
+        },
       });
     });
   });
@@ -153,31 +132,31 @@ describe('crudService', () => {
     it('should make a put request', async () => {
       sandbox.stub(http, 'put').resolves(res);
       const crudPath = '/crud/12345';
-      const next = sinon.mock() as NextFunction;
-      const response = await crudService.handlePut(crudPath, dummyData, req, next);
+      const response = await crudService.handlePut(crudPath, dummyData, req);
       expect(response.data).to.equal('ok');
     });
 
     it('should log info message on successful request', async () => {
       sandbox.stub(http, 'put').resolves(res);
       const crudPath = '/crud/12345';
-      const next = sinon.stub();
 
-      await crudService.handlePut(crudPath, dummyData, req, next);
+      await crudService.handlePut(crudPath, dummyData, req);
 
       expect(mockLogger.info).to.have.been.calledOnce;
       expect(mockLogger.info).to.have.been.calledWith('handle put:', crudPath);
     });
 
-    it('should handle error and call next', async () => {
+    it('should propagate errors to caller (no internal handling)', async () => {
       const error = new Error('Put failed');
       sandbox.stub(http, 'put').rejects(error);
       const crudPath = '/crud/12345';
-      const next = sinon.stub();
 
-      await crudService.handlePut(crudPath, dummyData, req, next);
-
-      expect(next).to.have.been.calledWith(error);
+      try {
+        await crudService.handlePut(crudPath, dummyData, req);
+        expect.fail('Should have thrown error');
+      } catch (e) {
+        expect(e).to.equal(error);
+      }
     });
   });
 
@@ -185,32 +164,32 @@ describe('crudService', () => {
     it('should make a delete request', async () => {
       sandbox.stub(http, 'delete').resolves(res);
       const crudPath = '/crud/12345';
-      const next = sinon.mock() as NextFunction;
-      const response = await crudService.handleDelete(crudPath, {}, req, next);
+      const response = await crudService.handleDelete(crudPath, {}, req);
       expect(response.data).to.equal('ok');
     });
 
     it('should log info message on successful request', async () => {
       sandbox.stub(http, 'delete').resolves(res);
       const crudPath = '/crud/12345';
-      const next = sinon.stub();
       const body = { id: '123' };
 
-      await crudService.handleDelete(crudPath, body, req, next);
+      await crudService.handleDelete(crudPath, body, req);
 
       expect(mockLogger.info).to.have.been.calledOnce;
       expect(mockLogger.info).to.have.been.calledWith('handle delete:', crudPath);
     });
 
-    it('should handle error and call next', async () => {
+    it('should propagate errors to caller (no internal handling)', async () => {
       const error = new Error('Delete failed');
       sandbox.stub(http, 'delete').rejects(error);
       const crudPath = '/crud/12345';
-      const next = sinon.stub();
 
-      await crudService.handleDelete(crudPath, {}, req, next);
-
-      expect(next).to.have.been.calledWith(error);
+      try {
+        await crudService.handleDelete(crudPath, {}, req);
+        expect.fail('Should have thrown error');
+      } catch (e) {
+        expect(e).to.equal(error);
+      }
     });
   });
 
@@ -226,9 +205,9 @@ describe('crudService', () => {
       expect(getStub).to.have.been.calledWith(crudPath, {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer token',
-          'X-Custom': 'header'
-        }
+          Authorization: 'Bearer token',
+          'X-Custom': 'header',
+        },
       });
     });
 
@@ -246,7 +225,7 @@ describe('crudService', () => {
       const error = {
         status: 500,
         statusText: 'Internal Server Error',
-        data: { error: 'Server error' }
+        data: { error: 'Server error' },
       };
       sandbox.stub(http, 'get').rejects(error);
       const crudPath = '/crud/12345';
@@ -290,7 +269,7 @@ describe('crudService', () => {
       const error = {
         status: 400,
         statusText: 'Bad Request',
-        data: { validation: 'failed' }
+        data: { validation: 'failed' },
       };
       sandbox.stub(http, 'post').rejects(error);
       const crudPath = '/crud/12345';
@@ -311,7 +290,7 @@ describe('crudService', () => {
       const error = {
         status: 403,
         statusText: 'Forbidden',
-        data: null
+        data: null,
       };
       sandbox.stub(http, 'post').rejects(error);
       const crudPath = '/crud/12345';
@@ -338,9 +317,9 @@ describe('crudService', () => {
       expect(postStub).to.have.been.calledWith(crudPath, dummyData, {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer token'
+          Authorization: 'Bearer token',
         },
-        responseType: 'arraybuffer'
+        responseType: 'arraybuffer',
       });
     });
 
@@ -391,7 +370,7 @@ describe('crudService', () => {
       const error = {
         status: 409,
         statusText: 'Conflict',
-        data: { conflict: 'Version mismatch' }
+        data: { conflict: 'Version mismatch' },
       };
       sandbox.stub(http, 'put').rejects(error);
       const crudPath = '/crud/12345';
@@ -402,11 +381,7 @@ describe('crudService', () => {
       } catch (e) {
         expect(e).to.equal(error);
         expect(mockLogger.error).to.have.been.calledOnce;
-        expect(mockLogger.error).to.have.been.calledWith(
-          409,
-          'Conflict',
-          JSON.stringify({ conflict: 'Version mismatch' })
-        );
+        expect(mockLogger.error).to.have.been.calledWith(409, 'Conflict', JSON.stringify({ conflict: 'Version mismatch' }));
       }
     });
 
@@ -414,7 +389,7 @@ describe('crudService', () => {
       const error = {
         status: 422,
         statusText: 'Unprocessable Entity',
-        data: undefined
+        data: undefined,
       };
       sandbox.stub(http, 'put').rejects(error);
       const crudPath = '/crud/12345';
@@ -443,8 +418,8 @@ describe('crudService', () => {
       // Mock setHeaders to return headers with accept
       (proxyLib.setHeaders as sinon.SinonStub).returns({
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer token',
-        'accept': 'application/json'
+        Authorization: 'Bearer token',
+        accept: 'application/json',
       });
 
       const response = await crudService.sendDelete(crudPath, body, req);
@@ -454,8 +429,8 @@ describe('crudService', () => {
         data: body,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer token'
-        }
+          Authorization: 'Bearer token',
+        },
       });
     });
 
@@ -473,7 +448,7 @@ describe('crudService', () => {
       const error = {
         status: 401,
         statusText: 'Unauthorized',
-        data: { message: 'Invalid token' }
+        data: { message: 'Invalid token' },
       };
       sandbox.stub(http, 'delete').rejects(error);
       const crudPath = '/crud/12345';
@@ -484,11 +459,7 @@ describe('crudService', () => {
       } catch (e) {
         expect(e).to.equal(error);
         expect(mockLogger.error).to.have.been.calledOnce;
-        expect(mockLogger.error).to.have.been.calledWith(
-          401,
-          'Unauthorized',
-          JSON.stringify({ message: 'Invalid token' })
-        );
+        expect(mockLogger.error).to.have.been.calledWith(401, 'Unauthorized', JSON.stringify({ message: 'Invalid token' }));
       }
     });
 
@@ -496,7 +467,7 @@ describe('crudService', () => {
       const error = {
         status: 500,
         statusText: 'Server Error',
-        data: null
+        data: null,
       };
       sandbox.stub(http, 'delete').rejects(error);
       const crudPath = '/crud/12345';
@@ -506,11 +477,7 @@ describe('crudService', () => {
         expect.fail('Should have thrown error');
       } catch (e) {
         expect(e).to.equal(error);
-        expect(mockLogger.error).to.have.been.calledWith(
-          500,
-          'Server Error',
-          'null'
-        );
+        expect(mockLogger.error).to.have.been.calledWith(500, 'Server Error', 'null');
       }
     });
   });

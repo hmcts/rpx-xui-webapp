@@ -24,7 +24,7 @@ export class SearchService {
       searchCriteria: searchRequestCriteria,
       sortCriteria: null,
       maxReturnRecordCount: this.RECORD_PAGE_SIZE,
-      startRecordNumber: startRecord ? parseInt(startRecord, 10) : 1
+      startRecordNumber: startRecord ? parseInt(startRecord, 10) : 1,
     };
 
     return this.http.post<SearchResult>('api/globalsearch/results', searchRequest);
@@ -65,14 +65,16 @@ export class SearchService {
     let parties: SearchRequestParty[] = [];
     const { address, dateOfBirth, dateOfDeath, emailAddress, fullName, postcode } = searchParameters;
     if (address || dateOfBirth || dateOfDeath || emailAddress || fullName || postcode) {
-      parties = [{
-        addressLine1: address,
-        dateOfBirth: dateOfBirth ? dateOfBirth.replace(/\b(\d)\b/g, '0$1') : null,
-        dateOfDeath: dateOfDeath ? dateOfDeath.replace(/\b(\d)\b/g, '0$1') : null,
-        emailAddress,
-        partyName: fullName,
-        postCode: postcode
-      }];
+      parties = [
+        {
+          addressLine1: address,
+          dateOfBirth: dateOfBirth ? dateOfBirth.replace(/\b(\d)\b/g, '0$1') : null,
+          dateOfDeath: dateOfDeath ? dateOfDeath.replace(/\b(\d)\b/g, '0$1') : null,
+          emailAddress,
+          partyName: fullName,
+          postCode: postcode,
+        },
+      ];
     }
 
     return {
@@ -86,7 +88,7 @@ export class SearchService {
         : null,
       otherReferences: searchParameters.otherReferences,
       parties,
-      stateIds: null
+      stateIds: null,
     };
   }
 }

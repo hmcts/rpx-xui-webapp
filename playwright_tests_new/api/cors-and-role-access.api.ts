@@ -8,10 +8,10 @@ const baseURL = config.baseUrl.replace(/\/+$/, '');
 
 const origins = [
   { label: 'allowed', origin: baseURL, expected: StatusSets.corsAllowed },
-  { label: 'disallowed', origin: 'https://example.invalid', expected: StatusSets.corsDisallowed }
+  { label: 'disallowed', origin: 'https://example.invalid', expected: StatusSets.corsDisallowed },
 ];
 
-test.describe('CORS and OPTIONS', () => {
+test.describe('CORS and OPTIONS', { tag: '@svc-cors' }, () => {
   origins.forEach(({ label, origin, expected }) => {
     test(`OPTIONS /api/user/details (${label} origin)`, async () => {
       const ctx = await request.newContext({ baseURL, ignoreHTTPSErrors: true });
@@ -19,7 +19,7 @@ test.describe('CORS and OPTIONS', () => {
         const res = await ctx.fetch('api/user/details', {
           method: 'OPTIONS',
           headers: { origin },
-          failOnStatusCode: false
+          failOnStatusCode: false,
         });
         expectStatus(res.status(), expected);
         assertCorsHeaders(expected, res.status(), res.headers(), origin);
@@ -39,7 +39,7 @@ test.describe('CORS and OPTIONS', () => {
         const res = await ctx.fetch('api/configuration', {
           method: 'OPTIONS',
           headers: { origin },
-          failOnStatusCode: false
+          failOnStatusCode: false,
         });
         expectStatus(res.status(), expected);
         assertCorsHeaders(expected, res.status(), res.headers(), origin);
@@ -55,11 +55,21 @@ test.describe('CORS and OPTIONS', () => {
   });
 });
 
-test.describe('CORS helper coverage', () => {
+test.describe('CORS helper coverage', { tag: '@svc-cors' }, () => {
   test('assertCorsHeaders handles allowed and disallowed origins', () => {
-    assertCorsHeaders(StatusSets.corsAllowed, 200, { 'access-control-allow-origin': 'https://example.test' }, 'https://example.test');
+    assertCorsHeaders(
+      StatusSets.corsAllowed,
+      200,
+      { 'access-control-allow-origin': 'https://example.test' },
+      'https://example.test'
+    );
     assertCorsHeaders(StatusSets.corsAllowed, 204, {}, 'https://example.test');
-    assertCorsHeaders(StatusSets.corsDisallowed, 200, { 'Access-Control-Allow-Origin': 'https://other.test' }, 'https://example.test');
+    assertCorsHeaders(
+      StatusSets.corsDisallowed,
+      200,
+      { 'Access-Control-Allow-Origin': 'https://other.test' },
+      'https://example.test'
+    );
     assertCorsHeaders(StatusSets.corsDisallowed, 502, {}, 'https://example.test');
   });
 

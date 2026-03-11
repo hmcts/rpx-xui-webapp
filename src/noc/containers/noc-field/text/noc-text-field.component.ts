@@ -5,7 +5,7 @@ import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
 @Component({
   standalone: false,
   selector: 'exui-noc-text-field',
-  templateUrl: './noc-text-field.component.html'
+  templateUrl: './noc-text-field.component.html',
 })
 export class NocTextFieldComponent extends AbstractFieldWriteComponent implements OnInit {
   public textControl: FormControl;

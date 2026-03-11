@@ -12,7 +12,7 @@ import { Location, PaginationParameter } from '../../models/dtos';
   standalone: false,
   selector: 'exui-work-case-list',
   templateUrl: './work-case-list.component.html',
-  styleUrls: ['work-case-list.component.scss']
+  styleUrls: ['work-case-list.component.scss'],
 })
 export class WorkCaseListComponent implements OnChanges {
   /**
@@ -80,7 +80,7 @@ export class WorkCaseListComponent implements OnChanges {
       this.dataSource$ = new BehaviorSubject(this.cases);
       this.setSelectedCase(this.selectCaseFromUrlHash(this.router.url));
       for (const item of this.cases) {
-        if (item.actions && item.actions.length) {
+        if (item.actions?.length) {
           this.showManage[item.id] = item.actions.length > 0;
         }
       }
@@ -126,7 +126,7 @@ export class WorkCaseListComponent implements OnChanges {
   public onActionHandler(caseItem: Case, action: CaseAction): void {
     const invokedCaseAction: InvokedCaseAction = {
       invokedCase: caseItem,
-      action
+      action,
     };
 
     this.actionEvent.emit(invokedCaseAction);
@@ -196,23 +196,23 @@ export class WorkCaseListComponent implements OnChanges {
   }
 
   public getFirstResult(): number {
-    return ((this.getCurrentPageIndex() * this.pagination.page_size) + (this.cases ? 1 : 0));
+    return this.getCurrentPageIndex() * this.pagination.page_size + (this.cases ? 1 : 0);
   }
 
   public getLastResult(): number {
-    return ((this.getCurrentPageIndex() * this.pagination.page_size) + this.getCurrentCaseCount());
+    return this.getCurrentPageIndex() * this.pagination.page_size + this.getCurrentCaseCount();
   }
 
   private addPersonInfoAndLocationInfo(cases: Case[]): Case[] {
     const caseworkers = JSON.parse(sessionStorage.getItem('caseworkers'));
     return cases.map((c: Case) => {
-      if (c.assignee && c.assignee.length && caseworkers && caseworkers.length > 0) {
+      if (c.assignee?.length && caseworkers?.length > 0) {
         const actorName = caseworkers.find((caseworker) => caseworker.idamId === c.assignee);
         if (actorName) {
           c.actorName = `${actorName.firstName} ${actorName.lastName}`;
         }
       }
-      if (c.location_id && c.location_id.length) {
+      if (c.location_id?.length) {
         const location = this.locations.find((l) => l.id === c.location_id);
         if (location) {
           c.location_name = location.locationName;

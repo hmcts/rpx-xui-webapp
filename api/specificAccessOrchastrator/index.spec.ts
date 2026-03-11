@@ -13,7 +13,14 @@ import * as roleAccess from '../roleAccess';
 import * as user from '../user';
 import * as workAllocation from '../workAllocation';
 import * as lau from '../services/lau';
-import { getTaskType, orchestrationRequestMoreInformation, orchestrationSpecificAccessRequest, postCreateTask, specificAccessRequestCreateAmRole, specificAccessRequestUpdateAttributes } from './index';
+import {
+  getTaskType,
+  orchestrationRequestMoreInformation,
+  orchestrationSpecificAccessRequest,
+  postCreateTask,
+  specificAccessRequestCreateAmRole,
+  specificAccessRequestUpdateAttributes,
+} from './index';
 
 // Import sinon-chai using require to avoid ES module issues
 const sinonChai = require('sinon-chai');
@@ -27,17 +34,17 @@ describe('postCreateTask', () => {
     status: 204,
     statusText: 'No Content',
     data: '',
-    duration: 2496
+    duration: 2496,
   };
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     req = mockReq({
-      body: {}
+      body: {},
     });
     next = sandbox.stub();
     sandbox.stub(http, 'post').resolves({
-      data
+      data,
     });
   });
 
@@ -46,13 +53,29 @@ describe('postCreateTask', () => {
   });
 
   it('should create task successfully', async () => {
-    const createTask = { caseId: '101', jurisdiction: 'IA', caseType: 'caseType', taskType: 'access_requests', dueDate: '2022-06-30T16:53:10+0100', name: 'name', roleAssignmentId: 'example' };
+    const createTask = {
+      caseId: '101',
+      jurisdiction: 'IA',
+      caseType: 'caseType',
+      taskType: 'access_requests',
+      dueDate: '2022-06-30T16:53:10+0100',
+      name: 'name',
+      roleAssignmentId: 'example',
+    };
     const response = await postCreateTask(req, next, createTask);
     expect(response.data).to.deep.equal(data);
   });
 
   it('should handle errors when creating task fails', async () => {
-    const createTask = { caseId: '101', jurisdiction: 'IA', caseType: 'caseType', taskType: 'access_requests', dueDate: '2022-06-30T16:53:10+0100', name: 'name', roleAssignmentId: 'example' };
+    const createTask = {
+      caseId: '101',
+      jurisdiction: 'IA',
+      caseType: 'caseType',
+      taskType: 'access_requests',
+      dueDate: '2022-06-30T16:53:10+0100',
+      name: 'name',
+      roleAssignmentId: 'example',
+    };
     const error = new Error('Failed to create task');
     (error as any).status = 500;
     sandbox.restore();
@@ -84,31 +107,35 @@ describe('orchestrationSpecificAccessRequest', () => {
         status: 'APPROVED',
         created: '2022-05-10T10:59:01.308613Z',
         log: 'Request has been approved',
-        byPassOrgDroolRule: true
+        byPassOrgDroolRule: true,
       },
-      requestedRoles: [{
-        attributes: {
-          caseId: 101,
-          jurisdiction: 'jurisdiction',
-          caseType: 'caseType'
-        }
-      }]
-    }
+      requestedRoles: [
+        {
+          attributes: {
+            caseId: 101,
+            jurisdiction: 'jurisdiction',
+            caseType: 'caseType',
+          },
+        },
+      ],
+    },
   };
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     res = mockRes();
     req = mockReq({
-      params: {}
+      params: {},
     });
     next = sandbox.stub();
     const postSpy = sandbox.stub(http, 'post');
     postSpy.onCall(0).resolves({
-      data, status: 201
+      data,
+      status: 201,
     });
     postSpy.onCall(1).resolves({
-      data, status: 204
+      data,
+      status: 204,
     });
   });
 
@@ -131,7 +158,8 @@ describe('orchestrationSpecificAccessRequest', () => {
     sandbox.restore();
     const postSpy = sandbox.stub(http, 'post');
     postSpy.onCall(0).resolves({
-      data: { error: 'Bad request' }, status: 400
+      data: { error: 'Bad request' },
+      status: 400,
     });
 
     await orchestrationSpecificAccessRequest(req, res, next);
@@ -148,24 +176,26 @@ describe('orchestrationSpecificAccessRequest', () => {
       data: null,
       statusText: 'No Content',
       headers: {},
-      config: {}
+      config: {},
     } as any);
 
     const data = {
       roleAssignmentResponse: {
         roleRequest: {
-          id: '37cb4517-20b7-4709-adea-472986e78088'
+          id: '37cb4517-20b7-4709-adea-472986e78088',
         },
-        requestedRoles: [{
-          id: 'roleId123',
-          roleCategory: 'JUDICIAL',
-          attributes: {
-            caseId: 101,
-            jurisdiction: 'jurisdiction',
-            caseType: 'caseType'
-          }
-        }]
-      }
+        requestedRoles: [
+          {
+            id: 'roleId123',
+            roleCategory: 'JUDICIAL',
+            attributes: {
+              caseId: 101,
+              jurisdiction: 'jurisdiction',
+              caseType: 'caseType',
+            },
+          },
+        ],
+      },
     };
 
     postSpy.onCall(0).resolves({ data, status: 201 });
@@ -185,24 +215,26 @@ describe('orchestrationSpecificAccessRequest', () => {
       data: 'Delete failed',
       statusText: 'Internal Server Error',
       headers: {},
-      config: {}
+      config: {},
     } as any);
 
     const data = {
       roleAssignmentResponse: {
         roleRequest: {
-          id: '37cb4517-20b7-4709-adea-472986e78088'
+          id: '37cb4517-20b7-4709-adea-472986e78088',
         },
-        requestedRoles: [{
-          id: 'roleId123',
-          roleCategory: 'JUDICIAL',
-          attributes: {
-            caseId: 101,
-            jurisdiction: 'jurisdiction',
-            caseType: 'caseType'
-          }
-        }]
-      }
+        requestedRoles: [
+          {
+            id: 'roleId123',
+            roleCategory: 'JUDICIAL',
+            attributes: {
+              caseId: 101,
+              jurisdiction: 'jurisdiction',
+              caseType: 'caseType',
+            },
+          },
+        ],
+      },
     };
 
     postSpy.onCall(0).resolves({ data, status: 201 });
@@ -211,7 +243,13 @@ describe('orchestrationSpecificAccessRequest', () => {
     await orchestrationSpecificAccessRequest(req, res, next);
 
     expect(res.status).to.have.been.calledWith(500);
-    expect(res.send).to.have.been.calledWith({ status: 500, data: 'Delete failed', statusText: 'Internal Server Error', headers: {}, config: {} });
+    expect(res.send).to.have.been.calledWith({
+      status: 500,
+      data: 'Delete failed',
+      statusText: 'Internal Server Error',
+      headers: {},
+      config: {},
+    });
   });
 
   it('should refresh role assignment and log access request on success', async () => {
@@ -222,10 +260,10 @@ describe('orchestrationSpecificAccessRequest', () => {
       passport: {
         user: {
           userinfo: {
-            id: 'userId123'
-          }
-        }
-      }
+            id: 'userId123',
+          },
+        },
+      },
     };
 
     await orchestrationSpecificAccessRequest(req, res, next);
@@ -243,18 +281,20 @@ describe('orchestrationSpecificAccessRequest', () => {
       data: {
         roleAssignmentResponse: {
           roleRequest: { id: 'test-id' },
-          requestedRoles: [{
-            id: 'roleId123',
-            roleCategory: 'JUDICIAL',
-            attributes: {
-              caseId: 101,
-              jurisdiction: 'jurisdiction',
-              caseType: 'caseType'
-            }
-          }]
-        }
+          requestedRoles: [
+            {
+              id: 'roleId123',
+              roleCategory: 'JUDICIAL',
+              attributes: {
+                caseId: 101,
+                jurisdiction: 'jurisdiction',
+                caseType: 'caseType',
+              },
+            },
+          ],
+        },
       },
-      status: 201
+      status: 201,
     });
     postSpy.onCall(1).resolves({ status: 204 });
 
@@ -265,10 +305,10 @@ describe('orchestrationSpecificAccessRequest', () => {
       passport: {
         user: {
           userinfo: {
-            id: 'userId123'
-          }
-        }
-      }
+            id: 'userId123',
+          },
+        },
+      },
     };
 
     const result = await orchestrationSpecificAccessRequest(req, res, next);
@@ -288,7 +328,7 @@ describe('specificAccessRequestCreateAmRole', () => {
     res = mockRes();
     req = mockReq({
       body: { roleRequest: { id: 'test123' } },
-      headers: { accept: 'application/json' }
+      headers: { accept: 'application/json' },
     });
   });
 
@@ -349,20 +389,20 @@ describe('orchestrationRequestMoreInformation', () => {
       status: 201,
       data: {
         roleAssignmentResponse: {
-          requestedRoles: [
-            { id: 'role1', roleName: 'specific-access-denied' }
-          ]
-        }
+          requestedRoles: [{ id: 'role1', roleName: 'specific-access-denied' }],
+        },
       },
       statusText: 'Created',
       headers: {},
-      config: {}
+      config: {},
     } as any;
 
     const mockTaskResponse = { status: 204, data: {}, statusText: 'No Content', headers: {}, config: {} } as any;
 
     sandbox.stub(roleAccess, 'createSpecificAccessDenyRole').resolves(mockDenyRoleResponse);
-    sandbox.stub(roleAccess, 'deleteSpecificAccessRequestedRole').resolves({ status: 204, data: null, statusText: 'No Content', headers: {}, config: {} } as any);
+    sandbox
+      .stub(roleAccess, 'deleteSpecificAccessRequestedRole')
+      .resolves({ status: 204, data: null, statusText: 'No Content', headers: {}, config: {} } as any);
     sandbox.stub(workAllocation, 'postTaskCompletionForAccess').resolves(mockTaskResponse);
     sandbox.stub(lau, 'logAccessRequest').resolves();
 
@@ -394,17 +434,21 @@ describe('orchestrationRequestMoreInformation', () => {
       status: 201,
       data: {
         roleAssignmentResponse: {
-          requestedRoles: [
-            { id: 'role1', roleName: 'specific-access-denied' }
-          ]
-        }
+          requestedRoles: [{ id: 'role1', roleName: 'specific-access-denied' }],
+        },
       },
       statusText: 'Created',
       headers: {},
-      config: {}
+      config: {},
     } as any;
 
-    const mockDeleteResponse = { status: 500, data: 'Delete failed', statusText: 'Internal Server Error', headers: {}, config: {} } as any;
+    const mockDeleteResponse = {
+      status: 500,
+      data: 'Delete failed',
+      statusText: 'Internal Server Error',
+      headers: {},
+      config: {},
+    } as any;
 
     sandbox.stub(roleAccess, 'createSpecificAccessDenyRole').resolves(mockDenyRoleResponse);
     sandbox.stub(roleAccess, 'deleteSpecificAccessRequestedRole').resolves(mockDeleteResponse);
@@ -413,7 +457,11 @@ describe('orchestrationRequestMoreInformation', () => {
     await orchestrationRequestMoreInformation(req, res, next);
 
     expect(deleteSpecificAccessRolesStub).to.have.been.calledWith(
-      req, res, next, mockDeleteResponse, mockDenyRoleResponse.data.roleAssignmentResponse.requestedRoles
+      req,
+      res,
+      next,
+      mockDeleteResponse,
+      mockDenyRoleResponse.data.roleAssignmentResponse.requestedRoles
     );
   });
 
@@ -422,27 +470,37 @@ describe('orchestrationRequestMoreInformation', () => {
       status: 201,
       data: {
         roleAssignmentResponse: {
-          requestedRoles: [
-            { id: 'role1', roleName: 'specific-access-denied' }
-          ]
-        }
+          requestedRoles: [{ id: 'role1', roleName: 'specific-access-denied' }],
+        },
       },
       statusText: 'Created',
       headers: {},
-      config: {}
+      config: {},
     } as any;
 
-    const mockTaskResponse = { status: 500, data: 'Task completion failed', statusText: 'Internal Server Error', headers: {}, config: {} } as any;
+    const mockTaskResponse = {
+      status: 500,
+      data: 'Task completion failed',
+      statusText: 'Internal Server Error',
+      headers: {},
+      config: {},
+    } as any;
 
     sandbox.stub(roleAccess, 'createSpecificAccessDenyRole').resolves(mockDenyRoleResponse);
-    sandbox.stub(roleAccess, 'deleteSpecificAccessRequestedRole').resolves({ status: 204, data: null, statusText: 'No Content', headers: {}, config: {} } as any);
+    sandbox
+      .stub(roleAccess, 'deleteSpecificAccessRequestedRole')
+      .resolves({ status: 204, data: null, statusText: 'No Content', headers: {}, config: {} } as any);
     sandbox.stub(workAllocation, 'postTaskCompletionForAccess').resolves(mockTaskResponse);
     const restoreDeletedRoleStub = sandbox.stub(accessManagement, 'restoreDeletedRole').resolves(res);
 
     await orchestrationRequestMoreInformation(req, res, next);
 
     expect(restoreDeletedRoleStub).to.have.been.calledWith(
-      req, res, next, mockTaskResponse, mockDenyRoleResponse.data.roleAssignmentResponse.requestedRoles
+      req,
+      res,
+      next,
+      mockTaskResponse,
+      mockDenyRoleResponse.data.roleAssignmentResponse.requestedRoles
     );
   });
 
@@ -472,39 +530,45 @@ describe('specificAccessRequestUpdateAttributes', () => {
   let postSpy: any;
   const basePath = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
   const data = {
-    roleAssignmentResponse: [{
-      id: '37cb4517-20b7-4709-adea-472986e78088',
-      roleName: 'specific-access-granted'
-    }]
+    roleAssignmentResponse: [
+      {
+        id: '37cb4517-20b7-4709-adea-472986e78088',
+        roleName: 'specific-access-granted',
+      },
+    ],
   };
   const data1 = {
-    roleAssignmentResponse: [{
-      id: '37cb4517-20b7-4709-adea-472986e78089',
-      roleName: 'specific-access-ctsc'
-    }]
+    roleAssignmentResponse: [
+      {
+        id: '37cb4517-20b7-4709-adea-472986e78089',
+        roleName: 'specific-access-ctsc',
+      },
+    ],
   };
   beforeEach(() => {
     sandbox = sinon.createSandbox();
     res = mockRes();
     req = mockReq({
-      params: {}
+      params: {},
     });
     req.session = {
       passport: {
         user: {
           userinfo: {
-            id: 'someId'
-          }
-        }
-      }
+            id: 'someId',
+          },
+        },
+      },
     };
     next = sandbox.stub();
     postSpy = sandbox.stub(http, 'post');
     postSpy.onCall(0).resolves({
-      data, status: 201
+      data,
+      status: 201,
     });
     postSpy.onCall(1).resolves({
-      data1, status: 201
+      data1,
+      status: 201,
     });
     spyDelete = sinon.stub(http, 'delete').callsFake(() => {
       return Promise.resolve(res);
@@ -529,21 +593,23 @@ describe('specificAccessRequestUpdateAttributes', () => {
 
   it('should handle specific-access-denied role', async () => {
     const deniedData = {
-      roleAssignmentResponse: [{
-        id: '37cb4517-20b7-4709-adea-472986e78090',
-        roleName: 'specific-access-denied',
-        attributes: {
-          specificAccessReason: { reason: 'Test reason' },
-          requestedRole: 'case-worker'
-        }
-      }]
+      roleAssignmentResponse: [
+        {
+          id: '37cb4517-20b7-4709-adea-472986e78090',
+          roleName: 'specific-access-denied',
+          attributes: {
+            specificAccessReason: { reason: 'Test reason' },
+            requestedRole: 'case-worker',
+          },
+        },
+      ],
     };
 
     req.body = {
       caseId: 'case123',
       attributesToUpdate: {
-        isNew: true
-      }
+        isNew: true,
+      },
     };
 
     postSpy.restore();

@@ -15,7 +15,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 
 @Pipe({
   standalone: false,
-  name: 'rpxTranslate'
+  name: 'rpxTranslate',
 })
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
@@ -27,29 +27,27 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
   let component: HmctsGlobalHeaderComponent;
   let fixture: ComponentFixture<HmctsGlobalHeaderComponent>;
   let mockRouter: any;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let store: Store<fromRoot.State>;
-  const storeMock = jasmine.createSpyObj('Store', [
-    'dispatch', 'pipe'
-  ]);
+  const storeMock = jasmine.createSpyObj('Store', ['dispatch', 'pipe']);
 
   const changesMock = {
     items: {
       currentValue: 'a',
       previousValue: 'b',
       firstChange: false,
-      isFirstChange: () => false
-    }
+      isFirstChange: () => false,
+    },
   };
   const flags = {
     enabledFlag: true,
-    disabledFlag: false
+    disabledFlag: false,
   };
 
   const userDetails = {
     sessionTimeout: {
       idleModalDisplayTime: 10,
-      totalIdleTime: 1
+      totalIdleTime: 1,
     },
     canShareCases: true,
     userInfo: {
@@ -58,8 +56,8 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
       surname: 'surName',
       email: 'email@email.com',
       active: true,
-      roles: ['pui-case-manager']
-    }
+      roles: ['pui-case-manager'],
+    },
   };
 
   const origTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
@@ -69,37 +67,39 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
     TestBed.configureTestingModule({
       declarations: [HmctsGlobalHeaderComponent, RpxTranslateMockPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [RouterTestingModule,
+      imports: [
+        RouterTestingModule,
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          feature: combineReducers(fromNocStore.reducers)
-        })],
+          feature: combineReducers(fromNocStore.reducers),
+        }),
+      ],
       providers: [
         {
           provide: Store,
-          useValue: storeMock
+          useValue: storeMock,
         },
         {
           provide: UserService,
           useValue: {
-            getUserDetails: () => of({
-              userInfo: {
-                roles: ['roleA', 'roleB']
-              }
-            })
-          }
+            getUserDetails: () =>
+              of({
+                userInfo: {
+                  roles: ['roleA', 'roleB'],
+                },
+              }),
+          },
         },
         {
           provide: FeatureToggleService,
           useValue: {
-            isEnabled: (flag) => of(flags[flag])
-          }
+            isEnabled: (flag) => of(flags[flag]),
+          },
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -109,15 +109,15 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
     component = fixture.componentInstance;
     component.headerTitle = {
       name: 'Service name',
-      url: '#'
+      url: '#',
     };
     component.showItems = true;
     component.navigation = {
       label: 'Account navigation',
       items: [
         { text: 'Nav item 1', emit: '#1' },
-        { text: 'Nav item 2', emit: '#1' }
-      ]
+        { text: 'Nav item 2', emit: '#1' },
+      ],
     };
     store = TestBed.inject(Store);
     storeMock.pipe.and.returnValue(of(userDetails));
@@ -146,23 +146,25 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
 
   it('should display find case right aligned', () => {
     component.showItems = true;
-    component.items = [{
-      align: 'right',
-      text: 'Find case',
-      href: '/cases/case-search',
-      active: false,
-      ngClass: 'hmcts-search-toggle__button'
-    },
-    {
-      text: '2',
-      href: '',
-      active: false
-    },
-    {
-      text: '3',
-      href: '',
-      active: false
-    }];
+    component.items = [
+      {
+        align: 'right',
+        text: 'Find case',
+        href: '/cases/case-search',
+        active: false,
+        ngClass: 'hmcts-search-toggle__button',
+      },
+      {
+        text: '2',
+        href: '',
+        active: false,
+      },
+      {
+        text: '3',
+        href: '',
+        active: false,
+      },
+    ];
     component.ngOnInit();
     fixture.detectChanges();
     component.isUserCaseManager$.subscribe((result) => {
@@ -172,21 +174,23 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
 
   it('should not display find case right aligned', () => {
     component.showItems = true;
-    component.items = [{
-      text: 'Find case',
-      href: '/cases/case-search',
-      active: false
-    },
-    {
-      text: '2',
-      href: '',
-      active: false
-    },
-    {
-      text: '3',
-      href: '',
-      active: false
-    }];
+    component.items = [
+      {
+        text: 'Find case',
+        href: '/cases/case-search',
+        active: false,
+      },
+      {
+        text: '2',
+        href: '',
+        active: false,
+      },
+      {
+        text: '3',
+        href: '',
+        active: false,
+      },
+    ];
     userDetails.userInfo.roles = ['roleA', 'roleB'];
     storeMock.pipe.and.returnValue(of(userDetails));
     component.ngOnInit();
@@ -197,105 +201,119 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
   });
 
   it('splitNavItems', () => {
-    component.items = [{
-      align: 'right',
-      text: '1',
-      href: '',
-      active: false
-    },
-    {
-      align: null,
-      text: '2',
-      href: '',
-      active: false
-    },
-    {
-      align: 'right',
-      text: '3',
-      href: '',
-      active: false
-    }];
-    component.ngOnChanges(changesMock);
-    fixture.detectChanges();
-    const leftItems = component.leftItems;
-    const rightItems = component.rightItems;
-
-    leftItems.pipe(
-      switchMap((items) => {
-        expect(items).toEqual([{
-          align: null,
-          text: '2',
-          href: '',
-          active: false
-        }]);
-        return rightItems;
-      })
-    ).subscribe((items) => {
-      expect(items).toEqual([{
+    component.items = [
+      {
         align: 'right',
         text: '1',
         href: '',
-        active: false
+        active: false,
+      },
+      {
+        align: null,
+        text: '2',
+        href: '',
+        active: false,
       },
       {
         align: 'right',
         text: '3',
         href: '',
-        active: false
-      }]);
-    });
+        active: false,
+      },
+    ];
+    component.ngOnChanges(changesMock);
+    fixture.detectChanges();
+    const leftItems = component.leftItems;
+    const rightItems = component.rightItems;
+
+    leftItems
+      .pipe(
+        switchMap((items) => {
+          expect(items).toEqual([
+            {
+              align: null,
+              text: '2',
+              href: '',
+              active: false,
+            },
+          ]);
+          return rightItems;
+        })
+      )
+      .subscribe((items) => {
+        expect(items).toEqual([
+          {
+            align: 'right',
+            text: '1',
+            href: '',
+            active: false,
+          },
+          {
+            align: 'right',
+            text: '3',
+            href: '',
+            active: false,
+          },
+        ]);
+      });
   });
 
   it('filters out menu items for which the user does not hold the correct role', () => {
-    component.items = [{
-      align: 'right',
-      text: '1',
-      href: '',
-      active: false,
-      roles: ['roleA']
-    },
-    {
-      align: null,
-      text: '2',
-      href: '',
-      active: false,
-      roles: ['roleB']
-    },
-    {
-      align: 'right',
-      text: '3',
-      href: '',
-      active: false,
-      roles: ['roleC']
-    }];
+    component.items = [
+      {
+        align: 'right',
+        text: '1',
+        href: '',
+        active: false,
+        roles: ['roleA'],
+      },
+      {
+        align: null,
+        text: '2',
+        href: '',
+        active: false,
+        roles: ['roleB'],
+      },
+      {
+        align: 'right',
+        text: '3',
+        href: '',
+        active: false,
+        roles: ['roleC'],
+      },
+    ];
     component.ngOnChanges(changesMock);
     const leftItems = component.leftItems;
     const rightItems = component.rightItems;
-    leftItems.pipe(
-      switchMap((items) => {
-        expect(items).toEqual([component.items[1]]);
-        return rightItems;
-      })
-    ).subscribe((items) => {
-      expect(items).toEqual([component.items[0]]);
-    });
+    leftItems
+      .pipe(
+        switchMap((items) => {
+          expect(items).toEqual([component.items[1]]);
+          return rightItems;
+        })
+      )
+      .subscribe((items) => {
+        expect(items).toEqual([component.items[0]]);
+      });
   });
 
   it('should call splitAndFilterNavItems on ngOnInit and set left/right items', (done) => {
-    component.items = [{
-      align: 'right',
-      text: 'Right',
-      href: '',
-      active: false,
-      roles: ['pui-case-manager']
-    },
-    {
-      align: 'left',
-      text: 'Left',
-      href: '',
-      active: false,
-      roles: ['pui-case-manager']
-    }];
+    component.items = [
+      {
+        align: 'right',
+        text: 'Right',
+        href: '',
+        active: false,
+        roles: ['pui-case-manager'],
+      },
+      {
+        align: 'left',
+        text: 'Left',
+        href: '',
+        active: false,
+        roles: ['pui-case-manager'],
+      },
+    ];
     // Ensure userDetails has the required role for filtering
     userDetails.userInfo.roles = ['pui-case-manager'];
     storeMock.pipe.and.returnValue(of(userDetails));
@@ -310,27 +328,29 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
   });
 
   it('should call splitAndFilterNavItems on ngOnChanges when items change', (done) => {
-    component.items = [{
-      align: 'right',
-      text: 'Right',
-      href: '',
-      active: false,
-      roles: ['pui-case-manager']
-    },
-    {
-      align: null,
-      text: 'Left',
-      href: '',
-      active: false,
-      roles: ['pui-case-manager']
-    }];
+    component.items = [
+      {
+        align: 'right',
+        text: 'Right',
+        href: '',
+        active: false,
+        roles: ['pui-case-manager'],
+      },
+      {
+        align: null,
+        text: 'Left',
+        href: '',
+        active: false,
+        roles: ['pui-case-manager'],
+      },
+    ];
     component.ngOnChanges({
       items: {
         currentValue: component.items,
         previousValue: [],
         firstChange: false,
-        isFirstChange: () => false
-      }
+        isFirstChange: () => false,
+      },
     });
     component.leftItems.subscribe((items) => {
       expect(items).toEqual([component.items[1]]);
@@ -342,121 +362,133 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
   });
 
   it('filters out menu items for which not all features are enabled', (done) => {
-    component.items = [{
-      align: 'right',
-      text: '1',
-      href: '',
-      active: false,
-      flags: ['MC_Work_Allocation'],
-      roles: ['pui-case-manager']
-    },
-    {
-      align: null,
-      text: '2',
-      href: '',
-      active: false,
-      roles: ['pui-case-manager']
-    },
-    {
-      align: 'right',
-      text: '3',
-      href: '',
-      active: false,
-      flags: ['MC_Work_Allocation', 'disabledFlag'],
-      roles: ['pui-case-manager']
-    }];
+    component.items = [
+      {
+        align: 'right',
+        text: '1',
+        href: '',
+        active: false,
+        flags: ['MC_Work_Allocation'],
+        roles: ['pui-case-manager'],
+      },
+      {
+        align: null,
+        text: '2',
+        href: '',
+        active: false,
+        roles: ['pui-case-manager'],
+      },
+      {
+        align: 'right',
+        text: '3',
+        href: '',
+        active: false,
+        flags: ['MC_Work_Allocation', 'disabledFlag'],
+        roles: ['pui-case-manager'],
+      },
+    ];
     component.ngOnChanges(changesMock);
     const leftItems = component.leftItems;
     const rightItems = component.rightItems;
-    leftItems.pipe(
-      switchMap((items) => {
-        expect(items).toEqual([component.items[1]]);
-        return rightItems;
-      })
-    ).subscribe((items) => {
-      expect(items).toEqual([component.items[0]]);
-      done();
-    });
+    leftItems
+      .pipe(
+        switchMap((items) => {
+          expect(items).toEqual([component.items[1]]);
+          return rightItems;
+        })
+      )
+      .subscribe((items) => {
+        expect(items).toEqual([component.items[0]]);
+        done();
+      });
   });
 
   it('filters out menu items for which not all features are enabled correctly with non-left-right observable', (done) => {
-    component.items = [{
-      align: 'right',
-      text: '1',
-      href: '',
-      active: false,
-      flags: ['MC_Work_Allocation'],
-      roles: ['pui-case-manager']
-    },
-    {
-      align: null,
-      text: '2',
-      href: '',
-      active: false,
-      // important to verify this
-      flags: ['enabledFlag2'],
-      roles: ['roleB']
-    },
-    {
-      align: 'right',
-      text: '3',
-      href: '',
-      active: false,
-      flags: ['enabledFlag'],
-      roles: ['roleC']
-    }];
+    component.items = [
+      {
+        align: 'right',
+        text: '1',
+        href: '',
+        active: false,
+        flags: ['MC_Work_Allocation'],
+        roles: ['pui-case-manager'],
+      },
+      {
+        align: null,
+        text: '2',
+        href: '',
+        active: false,
+        // important to verify this
+        flags: ['enabledFlag2'],
+        roles: ['roleB'],
+      },
+      {
+        align: 'right',
+        text: '3',
+        href: '',
+        active: false,
+        flags: ['enabledFlag'],
+        roles: ['roleC'],
+      },
+    ];
     component.ngOnChanges(changesMock);
     const leftItems = component.leftItems;
     const rightItems = component.rightItems;
-    leftItems.pipe(
-      switchMap((items) => {
-        expect(items).toEqual([]);
-        return rightItems;
-      })
-    ).subscribe((items) => {
-      expect(items).toEqual([component.items[0]]);
-      done();
-    });
+    leftItems
+      .pipe(
+        switchMap((items) => {
+          expect(items).toEqual([]);
+          return rightItems;
+        })
+      )
+      .subscribe((items) => {
+        expect(items).toEqual([component.items[0]]);
+        done();
+      });
   });
 
   it('filters out menu items for which not all features are enabled correctly with non-left-right observable', (done) => {
-    component.items = [{
-      align: 'right',
-      text: '1',
-      href: '',
-      active: false,
-      flags: ['MC_Work_Allocation'],
-      roles: ['pui-case-manager']
-    },
-    {
-      align: null,
-      text: '2',
-      href: '',
-      active: false,
-      // important to verify this
-      flags: ['enabledFlag2'],
-      roles: ['roleB']
-    },
-    {
-      align: 'right',
-      text: '3',
-      href: '',
-      active: false,
-      flags: ['enabledFlag'],
-      roles: ['roleC']
-    }];
+    component.items = [
+      {
+        align: 'right',
+        text: '1',
+        href: '',
+        active: false,
+        flags: ['MC_Work_Allocation'],
+        roles: ['pui-case-manager'],
+      },
+      {
+        align: null,
+        text: '2',
+        href: '',
+        active: false,
+        // important to verify this
+        flags: ['enabledFlag2'],
+        roles: ['roleB'],
+      },
+      {
+        align: 'right',
+        text: '3',
+        href: '',
+        active: false,
+        flags: ['enabledFlag'],
+        roles: ['roleC'],
+      },
+    ];
     component.ngOnChanges(changesMock);
     const leftItems = component.leftItems;
     const rightItems = component.rightItems;
-    leftItems.pipe(
-      switchMap((items) => {
-        expect(items).toEqual([]);
-        return rightItems;
-      })
-    ).subscribe((items) => {
-      expect(items).toEqual([component.items[0]]);
-      done();
-    });
+    leftItems
+      .pipe(
+        switchMap((items) => {
+          expect(items).toEqual([]);
+          return rightItems;
+        })
+      )
+      .subscribe((items) => {
+        expect(items).toEqual([component.items[0]]);
+        done();
+      });
   });
 });
 
@@ -464,23 +496,21 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
   let component: HmctsGlobalHeaderComponent;
   let fixture: ComponentFixture<HmctsGlobalHeaderComponent>;
   let mockRouter: any;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let store: Store<fromRoot.State>;
-  const storeMock = jasmine.createSpyObj('Store', [
-    'dispatch', 'pipe'
-  ]);
+  const storeMock = jasmine.createSpyObj('Store', ['dispatch', 'pipe']);
 
   const changesMock = {
     items: {
       currentValue: 'a',
       previousValue: 'b',
       firstChange: false,
-      isFirstChange: () => false
-    }
+      isFirstChange: () => false,
+    },
   };
   const flags = {
     enabledFlag: true,
-    disabledFlag: false
+    disabledFlag: false,
   };
 
   const userDetails = {};
@@ -492,33 +522,34 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
     TestBed.configureTestingModule({
       declarations: [HmctsGlobalHeaderComponent, RpxTranslateMockPipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      imports: [RouterTestingModule,
+      imports: [
+        RouterTestingModule,
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          feature: combineReducers(fromNocStore.reducers)
-        })],
+          feature: combineReducers(fromNocStore.reducers),
+        }),
+      ],
       providers: [
         {
           provide: Store,
-          useValue: storeMock
+          useValue: storeMock,
         },
         {
           provide: UserService,
           useValue: {
-            getUserDetails: () => of({})
-          }
+            getUserDetails: () => of({}),
+          },
         },
         {
           provide: FeatureToggleService,
           useValue: {
-            isEnabled: (flag) => of(flags[flag])
-          }
+            isEnabled: (flag) => of(flags[flag]),
+          },
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -528,15 +559,15 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
     component = fixture.componentInstance;
     component.headerTitle = {
       name: 'Service name',
-      url: '#'
+      url: '#',
     };
     component.showItems = true;
     component.navigation = {
       label: 'Account navigation',
       items: [
         { text: 'Nav item 1', emit: '#1' },
-        { text: 'Nav item 2', emit: '#1' }
-      ]
+        { text: 'Nav item 2', emit: '#1' },
+      ],
     };
     store = TestBed.inject(Store);
     storeMock.pipe.and.returnValue(of(userDetails));
@@ -552,77 +583,84 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
   });
 
   it('filters out menu items for which the user does not hold the correct role', () => {
-    component.items = [{
-      align: 'right',
-      text: '1',
-      href: '',
-      active: false,
-      roles: ['roleA']
-    },
-    {
-      align: null,
-      text: '2',
-      href: '',
-      active: false,
-      roles: ['roleB']
-    },
-    {
-      align: 'right',
-      text: '3',
-      href: '',
-      active: false,
-      roles: ['roleC']
-    }];
+    component.items = [
+      {
+        align: 'right',
+        text: '1',
+        href: '',
+        active: false,
+        roles: ['roleA'],
+      },
+      {
+        align: null,
+        text: '2',
+        href: '',
+        active: false,
+        roles: ['roleB'],
+      },
+      {
+        align: 'right',
+        text: '3',
+        href: '',
+        active: false,
+        roles: ['roleC'],
+      },
+    ];
     component.ngOnChanges(changesMock);
     const leftItems = component.leftItems;
     const rightItems = component.rightItems;
-    leftItems.pipe(
-      switchMap((items) => {
+    leftItems
+      .pipe(
+        switchMap((items) => {
+          expect(items).toEqual([]);
+          return rightItems;
+        })
+      )
+      .subscribe((items) => {
         expect(items).toEqual([]);
-        return rightItems;
-      })
-    ).subscribe((items) => {
-      expect(items).toEqual([]);
-    });
+      });
   });
 
   it('filters out menu items for which not all features are enabled', (done) => {
-    component.items = [{
-      align: 'right',
-      text: '1',
-      href: '',
-      active: false,
-      flags: ['enabledFlag'],
-      roles: ['roleA']
-    },
-    {
-      align: null,
-      text: '2',
-      href: '',
-      active: false,
-      roles: ['roleB']
-    },
-    {
-      align: 'right',
-      text: '3',
-      href: '',
-      active: false,
-      flags: ['enabledFlag', 'disabledFlag'],
-      roles: ['roleC']
-    }];
+    component.items = [
+      {
+        align: 'right',
+        text: '1',
+        href: '',
+        active: false,
+        flags: ['enabledFlag'],
+        roles: ['roleA'],
+      },
+      {
+        align: null,
+        text: '2',
+        href: '',
+        active: false,
+        roles: ['roleB'],
+      },
+      {
+        align: 'right',
+        text: '3',
+        href: '',
+        active: false,
+        flags: ['enabledFlag', 'disabledFlag'],
+        roles: ['roleC'],
+      },
+    ];
     component.ngOnChanges(changesMock);
     const leftItems = component.leftItems;
     const rightItems = component.rightItems;
 
-    leftItems.pipe(
-      switchMap((items) => {
+    leftItems
+      .pipe(
+        switchMap((items) => {
+          expect(items).toEqual([]);
+          return rightItems;
+        })
+      )
+      .subscribe((items) => {
         expect(items).toEqual([]);
-        return rightItems;
-      })
-    ).subscribe((items) => {
-      expect(items).toEqual([]);
-      done();
-    });
+        done();
+      });
   });
 });
-

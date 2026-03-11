@@ -6,21 +6,22 @@ import * as fromHearingStore from '../../../store';
 @Component({
   standalone: false,
   selector: 'exui-linked-hearings-final-confirmation',
-  templateUrl: './linked-hearings-final-confirmation.component.html'
+  templateUrl: './linked-hearings-final-confirmation.component.html',
 })
 export class LinkedHearingsFinalConfirmationComponent implements OnInit {
   public heading: string;
   public caseId: string;
   public linkedHearingsCount: number;
 
-  constructor(private readonly hearingStore: Store<fromHearingStore.State>,
-              private readonly route: ActivatedRoute) {
+  constructor(
+    private readonly hearingStore: Store<fromHearingStore.State>,
+    private readonly route: ActivatedRoute
+  ) {
     this.caseId = this.route.snapshot.params.caseId;
-    this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
-      (state) => {
-        this.linkedHearingsCount = state.hearingLinks.linkedHearingGroup && state.hearingLinks.linkedHearingGroup.hearingsInGroup.length;
-      }
-    );
+    this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe((state) => {
+      this.linkedHearingsCount =
+        state.hearingLinks.linkedHearingGroup && state.hearingLinks.linkedHearingGroup.hearingsInGroup.length;
+    });
   }
 
   public ngOnInit(): void {

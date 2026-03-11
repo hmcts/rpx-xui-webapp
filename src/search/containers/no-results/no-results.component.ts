@@ -8,15 +8,17 @@ import { NoResultsMessageId } from '../../enums';
   standalone: false,
   selector: 'exui-no-results',
   templateUrl: './no-results.component.html',
-  styleUrls: ['./no-results.component.scss']
+  styleUrls: ['./no-results.component.scss'],
 })
 export class NoResultsComponent implements OnInit {
   private readonly extras: NavigationExtras;
   public messageId: number;
   public noResultsMessageId = NoResultsMessageId;
 
-  constructor(private readonly store: Store<fromActions.State>,
-              private readonly router: Router) {
+  constructor(
+    private readonly store: Store<fromActions.State>,
+    private readonly router: Router
+  ) {
     // Get current navigation
     const currentNavigation = this.router.getCurrentNavigation();
     if (currentNavigation) {
@@ -25,7 +27,7 @@ export class NoResultsComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    if (this.extras && this.extras.state && this.extras.state.messageId) {
+    if (this.extras?.state?.messageId) {
       // Get message id from current navigation extras state
       this.messageId = this.extras.state.messageId;
     } else {

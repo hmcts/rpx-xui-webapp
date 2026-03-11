@@ -37,7 +37,7 @@ describe('HearingChangeReasonsComponent', () => {
       category_key: 'ChangeReasons',
       parent_category: '',
       parent_key: '',
-      active_flag: ''
+      active_flag: '',
     },
     {
       key: 'reasonTwo',
@@ -49,7 +49,7 @@ describe('HearingChangeReasonsComponent', () => {
       category_key: 'ChangeReasons',
       parent_category: '',
       parent_key: '',
-      active_flag: ''
+      active_flag: '',
     },
     {
       key: 'reasonThree',
@@ -61,8 +61,8 @@ describe('HearingChangeReasonsComponent', () => {
       category_key: 'ChangeReasons',
       parent_category: '',
       parent_key: '',
-      active_flag: ''
-    }
+      active_flag: '',
+    },
   ];
 
   beforeEach(waitForAsync(() => {
@@ -73,41 +73,40 @@ describe('HearingChangeReasonsComponent', () => {
       providers: [
         {
           provide: HearingsService,
-          useValue: hearingsService
+          useValue: hearingsService,
         },
         {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
               data: {
-                hearingChangeReasons: reasons
-              }
-            }
-          }
+                hearingChangeReasons: reasons,
+              },
+            },
+          },
         },
         {
           provide: Router,
-          useValue: mockRouter
+          useValue: mockRouter,
         },
         {
           provide: FeatureToggleService,
-          useValue: mockFeatureToggleService
+          useValue: mockFeatureToggleService,
         },
         provideMockStore({ initialState }),
         {
           provide: HearingsService,
-          useValue: hearingsService
+          useValue: hearingsService,
         },
         {
           provide: HearingsFeatureService,
-          useValue: hearingsFeatureServiceMock
+          useValue: hearingsFeatureServiceMock,
         },
         FormBuilder,
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -136,15 +135,17 @@ describe('HearingChangeReasonsComponent', () => {
   });
 
   it('should be true when calling isFormValid reasons selected', () => {
-    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
-      .forEach((reason) => reason.value.selected = true);
+    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls.forEach(
+      (reason) => (reason.value.selected = true)
+    );
     const formValid = component.isFormValid(ACTION.CONTINUE);
     expect(formValid).toEqual(true);
   });
 
   it('should be false when calling isFormValid with no reasons selected', () => {
-    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
-      .forEach((reason) => reason.value.selected = false);
+    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls.forEach(
+      (reason) => (reason.value.selected = false)
+    );
     const formValid = component.isFormValid(ACTION.VIEW_EDIT_SUBMIT);
     expect(formValid).toEqual(false);
   });
@@ -161,8 +162,9 @@ describe('HearingChangeReasonsComponent', () => {
   });
 
   it('should prepareHearingRequestData', () => {
-    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
-      .forEach((reason) => reason.value.selected = true);
+    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls.forEach(
+      (reason) => (reason.value.selected = true)
+    );
     component.prepareHearingRequestData();
     expect(component.hearingRequestMainModel.hearingDetails.amendReasonCodes).toEqual(['reasonOne', 'reasonTwo', 'reasonThree']);
   });
@@ -176,25 +178,27 @@ describe('HearingChangeReasonsComponent', () => {
   });
 
   it('should execute Action', () => {
-    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
-      .forEach((reason) => reason.value.selected = true);
+    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls.forEach(
+      (reason) => (reason.value.selected = true)
+    );
     component.executeAction(ACTION.VIEW_EDIT_SUBMIT);
     expect(component.isFormValid).toHaveBeenCalled();
     expect(component.errors.length).toBe(0);
-    expect(hearingsService.hearingRequestForSubmitValid = true);
+    expect((hearingsService.hearingRequestForSubmitValid = true));
     component.executeAction(ACTION.BACK);
     expect(component.errors.length).toBe(0);
-    expect(hearingsService.hearingRequestForSubmitValid = false);
+    expect((hearingsService.hearingRequestForSubmitValid = false));
   });
 
   it('should execute Action and fail validation', () => {
-    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls
-      .forEach((reason) => reason.value.selected = false);
+    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls.forEach(
+      (reason) => (reason.value.selected = false)
+    );
     hearingsService.hearingRequestForSubmitValid = false;
     component.executeAction(ACTION.VIEW_EDIT_SUBMIT);
     expect(component.isFormValid).toHaveBeenCalled();
     expect(component.errors.length).toBe(1);
-    expect(hearingsService.hearingRequestForSubmitValid = false);
+    expect((hearingsService.hearingRequestForSubmitValid = false));
     component.executeAction(ACTION.BACK);
     expect(component.errors.length).toBe(1);
   });

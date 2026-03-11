@@ -105,8 +105,8 @@ class CodeceptMochawesomeLog {
   }
 
   async getScreenshot(onbrowser) {
-    const page = onbrowser            // you may pass one in tests -or-
-      ? onbrowser               // fall back to the Playwright page
+    const page = onbrowser // you may pass one in tests -or-
+      ? onbrowser // fall back to the Playwright page
       : require('codeceptjs').container.helpers().Playwright.page;
 
     /** Playwright gives raw `Buffer`, Puppeteer gives `base64` string. */
@@ -126,14 +126,14 @@ class CodeceptMochawesomeLog {
     for (let i = 0; i < columnsCount; i++) {
       const columnValues = rows.map((row) => row[i]);
 
-      let columnSize = columnValues.sort((a, b) => a.length < b.length ? 1 : -1)[0].length;
+      let columnSize = columnValues.sort((a, b) => (a.length < b.length ? 1 : -1))[0].length;
       columnSize = columnSize + 3;
       columnSizes[i] = columnSize;
     }
 
     let totalTableLength = 0;
 
-    columnSizes.forEach((colLength) => totalTableLength += colLength);
+    columnSizes.forEach((colLength) => (totalTableLength += colLength));
     this.AddMessage('=== BDD)    ' + ''.padEnd(totalTableLength + 1, '-'));
     for (let row = 0; row < rowsCount; row++) {
       let tableRow = '';

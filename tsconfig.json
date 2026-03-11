@@ -1,6 +1,7 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
     "baseUrl": "./",
     "downlevelIteration": true,
     "outDir": "./dist/out-tsc",
@@ -10,16 +11,12 @@
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "resolveJsonModule": true,
     "importHelpers": true,
     "target": "ES2020",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
+    "typeRoots": ["node_modules/@types"],
     "skipLibCheck": true,
-    "lib": [
-      "ES2020",
-      "dom"
-    ]
+    "lib": ["ES2020", "dom"]
   },
   "ts-node": {
     "transpileOnly": true,

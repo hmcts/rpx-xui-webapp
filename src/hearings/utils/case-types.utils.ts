@@ -3,9 +3,14 @@ import { CategoryType } from '../models/hearings.enum';
 import { LovRefDataModel } from '../models/lovRefData.model';
 
 export class CaseTypesUtils {
-  public static getCaseCategoryDisplayModels(caseTypeRefData: LovRefDataModel[], caseCategories: CaseCategoryModel[]): CaseCategoryDisplayModel[] {
+  public static getCaseCategoryDisplayModels(
+    caseTypeRefData: LovRefDataModel[],
+    caseCategories: CaseCategoryModel[]
+  ): CaseCategoryDisplayModel[] {
     const caseTypeMap = CaseTypesUtils.generateCaseTypesRefDataMap(caseTypeRefData);
-    const allCaseTypes: CaseCategoryModel[] = caseCategories?.filter((category) => category.categoryType === CategoryType.CaseType);
+    const allCaseTypes: CaseCategoryModel[] = caseCategories?.filter(
+      (category) => category.categoryType === CategoryType.CaseType
+    );
     const allCaseTypesWithChildren = [];
     allCaseTypes?.forEach((caseType) => {
       const childNodes = [];

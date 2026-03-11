@@ -1,10 +1,10 @@
-import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies } from '../../../common/sessionCapture';
-import { buildTaskListMock, buildDeterministicMyTasksListMock, myActionsList } from '../../mocks/taskList.mock';
-import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
-import { formatUiDate } from '../../utils/tableUtils';
-import { setupTaskListMockRoutes } from '../../helpers';
-import { TASK_LIST_ROUTE_REGEX } from '../../testData';
+import { expect, test } from '../../../../E2E/fixtures';
+import { applySessionCookies } from '../../../../common/sessionCapture';
+import { buildTaskListMock, buildDeterministicMyTasksListMock, myActionsList } from '../../../mocks/taskList.mock';
+import { extractUserIdFromCookies } from '../../../utils/extractUserIdFromCookies';
+import { formatUiDate } from '../../../utils/tableUtils';
+import { setupTaskListMockRoutes } from '../../../helpers';
+import { TASK_LIST_ROUTE_REGEX } from '../../../testData';
 
 let userId: string | null;
 const userIdentifier = 'STAFF_ADMIN';

@@ -1,6 +1,6 @@
-import { TASK_LIST_MALFORMED_JSON_BODY, TASK_LIST_ROUTE_REGEX } from '../../testData';
-import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies } from '../../../common/sessionCapture';
+import { TASK_LIST_MALFORMED_JSON_BODY, TASK_LIST_ROUTE_REGEX } from '../../../testData';
+import { expect, test } from '../../../../E2E/fixtures';
+import { applySessionCookies } from '../../../../common/sessionCapture';
 
 test.beforeEach(async ({ page }) => {
   await applySessionCookies(page, userIdentifier);

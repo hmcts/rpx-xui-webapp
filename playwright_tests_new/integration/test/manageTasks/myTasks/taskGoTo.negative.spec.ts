@@ -1,9 +1,9 @@
-import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies } from '../../../common/sessionCapture';
-import { buildTaskListMock, myActionsList } from '../../mocks/taskList.mock';
-import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
-import { setupTaskActionEndpointMocks } from '../../helpers/taskActionApiMocks.helper';
-import { TASK_LIST_ROUTE_REGEX } from '../../testData';
+import { expect, test } from '../../../../E2E/fixtures';
+import { applySessionCookies } from '../../../../common/sessionCapture';
+import { buildTaskListMock, myActionsList } from '../../../mocks/taskList.mock';
+import { extractUserIdFromCookies } from '../../../utils/extractUserIdFromCookies';
+import { setupTaskActionEndpointMocks } from '../../../helpers/taskActionApiMocks.helper';
+import { TASK_LIST_ROUTE_REGEX } from '../../../testData';
 
 const userIdentifier = 'STAFF_ADMIN';
 let sessionCookies: any[] = [];

@@ -1,7 +1,7 @@
-import { availableActionsList, buildTaskListMock } from '../../mocks/taskList.mock';
-import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies } from '../../../common/sessionCapture';
-import { TASK_LIST_ROUTE_REGEX } from '../../testData';
+import { availableActionsList, buildTaskListMock } from '../../../mocks/taskList.mock';
+import { expect, test } from '../../../../E2E/fixtures';
+import { applySessionCookies } from '../../../../common/sessionCapture';
+import { TASK_LIST_ROUTE_REGEX } from '../../../testData';
 
 const errorStates = [400, 403, 500, 503];
 const userIdentifier = 'STAFF_ADMIN';

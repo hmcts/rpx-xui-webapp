@@ -1,7 +1,6 @@
 <xuilib-loading-spinner *ngIf="showSpinner$ | async"></xuilib-loading-spinner>
-<div class="cases-container"
-     *ngIf="(waSupportedDetailedServices$ | async) as jurisdictions">
-  <ng-container *ngIf="(locations$ | async) as locations">
+<div class="cases-container" *ngIf="waSupportedDetailedServices$ | async as jurisdictions">
+  <ng-container *ngIf="locations$ | async as locations">
     <exui-case-manager-filter
       [jurisdictions]="jurisdictions"
       (selectChanged)="onSelectionChanged($event)"
@@ -23,7 +22,8 @@
           [emptyMessage]="emptyMessage"
           (paginationEvent)="onPaginationEvent($event)"
           (sortEvent)="onSortHandler($event)"
-          (actionEvent)="onActionHandler($event)">
+          (actionEvent)="onActionHandler($event)"
+        >
         </exui-work-case-list>
       </ng-template>
     </div>

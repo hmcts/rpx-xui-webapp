@@ -4,8 +4,8 @@ const BrowserWaits = require('../../support/customWaits');
 const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 
 const MessageBanner = require('./messageBanner');
-class CaseDetailsPage{
-  constructor(){
+class CaseDetailsPage {
+  constructor() {
     this.messageBanner = new MessageBanner();
   }
 
@@ -17,44 +17,46 @@ class CaseDetailsPage{
     return $('mat-tab-header .mat-tab-label-container');
   }
 
-  async isDisplayed(){
+  async isDisplayed() {
     return isPresent(this.caseDetailsContainer);
   }
 
-  async amOnPage(){
+  async amOnPage() {
     try {
       await BrowserWaits.waitForElement(this.caseDetailsContainer);
       return true;
-    } catch (err){
+    } catch (err) {
       CucumberReporter.AddMessage(err.stack, LOG_LEVELS.Error);
       return false;
     }
   }
 
-  async waitForTabHeader(){
+  async waitForTabHeader() {
     await BrowserWaits.waitForElement(this.tabsContainer);
   }
 
-  async isTabWithLabelPresent(tabLabel){
+  async isTabWithLabelPresent(tabLabel) {
     await this.waitForTabHeader();
     const tabElement = this.getTabElementWithLabel(tabLabel);
     return await isPresent(tabElement);
   }
 
-  async isTabWithLabelSelected(tabLabel){
+  async isTabWithLabelSelected(tabLabel) {
     await this.waitForTabHeader();
     const tabElement = this.getTabElementWithLabel(tabLabel);
     return (await tabElement.getAttribute('class')).includes('mat-tab-label-active');
   }
 
-  async clickTabWithLabel(tabLabel){
+  async clickTabWithLabel(tabLabel) {
     await this.waitForTabHeader();
     const tabElement = this.getTabElementWithLabel(tabLabel);
     await tabElement.click();
   }
 
-  getTabElementWithLabel(tabLabel){
-    return elementByXpath(`//mat-tab-header//div[contains(@class,'mat-tab-list')]//div[contains(text(),'${tabLabel}')]//ancestor::div[contains(@class,'mat-tab-label') and @role='tab']`);
+  getTabElementWithLabel(tabLabel) {
+    return elementByXpath(
+      `//mat-tab-header//div[contains(@class,'mat-tab-list')]//div[contains(text(),'${tabLabel}')]//ancestor::div[contains(@class,'mat-tab-label') and @role='tab']`
+    );
   }
 
   async openLinkedDocument() {

@@ -12,7 +12,7 @@ import { Task } from '../../models/tasks';
   selector: 'exui-task-field',
   templateUrl: './task-field.component.html',
   styleUrls: ['task-field.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class TaskFieldComponent implements OnInit {
   /**
@@ -35,7 +35,7 @@ export class TaskFieldComponent implements OnInit {
   // hard-coded strings floating around the place.
   protected fieldType = FieldType;
 
-  constructor(private readonly sessionStorageService: SessionStorageService) { }
+  constructor(private readonly sessionStorageService: SessionStorageService) {}
 
   /**
    * Convert a string, number, or Date to date object.

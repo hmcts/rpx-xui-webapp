@@ -6,7 +6,7 @@ Feature: search criteria workflow
     Given I am logged into Expert UI with valid user details
     Then I should be redirected to EUI dashboard page
 
-  Scenario Outline:  search criteria apply workflow from Search Case Page
+  Scenario Outline:  search criteria apply workflow from Search Case Page (search page)
     When I click on search button
     Then Search page should be displayed
     When I enter search fields jurisdiction "<Jurisdiction>" case type "<CaseType>"
@@ -22,7 +22,7 @@ Feature: search criteria workflow
 
 
 
-  Scenario Outline:  search criteria apply workflow from Search Case Page
+  Scenario Outline:  search criteria apply workflow from Search Case Page (case list page)
 
     When I select search criteria jurisdiction "<Jurisdiction>" case type "<CaseType>" state "Any" in case list page
     When I click search Reset in case list page

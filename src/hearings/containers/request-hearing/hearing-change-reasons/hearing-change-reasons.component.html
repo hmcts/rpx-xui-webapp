@@ -5,7 +5,7 @@
       <h1 class="govuk-heading-l">
         {{ 'Provide a reason for changing this hearing' | rpxTranslate }}
       </h1>
-      <div class="govuk-form-group" [ngClass]="{'govuk-form-group--error' : !selectionValid}">
+      <div class="govuk-form-group" [ngClass]="{ 'govuk-form-group--error': !selectionValid }">
         <fieldset class="govuk-fieldset">
           <span *ngIf="!selectionValid" id="change-reason-selection-error" class="govuk-error-message">
             <span>{{ hearingChangeReasonMessages.SELECT_AT_LEAST_ONE_REASON | rpxTranslate }}</span>
@@ -13,20 +13,26 @@
           <div class="govuk-hint">
             {{ 'Select all that apply.' | rpxTranslate }}
           </div>
-          <div id="hearing-option-container" class="govuk-checkboxes" formArrayName="reasons"
-            data-module="govuk-checkboxes">
-            <div class="govuk-checkboxes__item" *ngFor="let reason of hearingChangeReasons;index as pos"
-              [formGroupName]="pos">
-              <input class="govuk-checkboxes__input" id="{{reason.key}}" name="pos" type="checkbox"
-                formControlName="selected" [value]="reason.value_en">
-              <label class="govuk-label govuk-checkboxes__label" for="{{reason.key}}">{{reason.value_en}}</label>
+          <div id="hearing-option-container" class="govuk-checkboxes" formArrayName="reasons" data-module="govuk-checkboxes">
+            <div class="govuk-checkboxes__item" *ngFor="let reason of hearingChangeReasons; index as pos" [formGroupName]="pos">
+              <input
+                class="govuk-checkboxes__input"
+                id="{{ reason.key }}"
+                name="pos"
+                type="checkbox"
+                formControlName="selected"
+                [value]="reason.value_en"
+              />
+              <label class="govuk-label govuk-checkboxes__label" for="{{ reason.key }}">{{ reason.value_en }}</label>
             </div>
           </div>
         </fieldset>
       </div>
     </form>
     <p class="govuk-body">
-      <button type="button" class="govuk-js-link" (click)="onBackToSummaryPage()">{{ 'Go back to hearing summary' | rpxTranslate }}</button>
+      <button type="button" class="govuk-js-link" (click)="onBackToSummaryPage()">
+        {{ 'Go back to hearing summary' | rpxTranslate }}
+      </button>
     </p>
   </div>
 </div>

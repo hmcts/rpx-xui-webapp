@@ -6,10 +6,12 @@ import { IsAmendedConverter } from './is-amended.converter';
 
 export class AdditionalSecurityAmendedConverter implements IsAmendedConverter {
   public transformIsAmended(hearingState$?: Observable<State>): Observable<boolean> {
-    return hearingState$.pipe(map((state) => {
-      const objA = state.hearingRequestToCompare.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag;
-      const objB = state.hearingRequest.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag;
-      return !_.isEqual(objA, objB);
-    }));
+    return hearingState$.pipe(
+      map((state) => {
+        const objA = state.hearingRequestToCompare.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag;
+        const objB = state.hearingRequest.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag;
+        return !_.isEqual(objA, objB);
+      })
+    );
   }
 }

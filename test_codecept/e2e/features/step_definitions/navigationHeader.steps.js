@@ -1,5 +1,7 @@
 const { currentUrl, navigate, refresh } = require('../../../helpers/globals');
-function headerPage () { return require('../pageObjects/headerPage')(); }
+function headerPage() {
+  return require('../pageObjects/headerPage')();
+}
 const browserWaits = require('../../support/customWaits');
 const cucumberReporter = require('../../../codeceptCommon/reportLogger');
 const SoftAssert = require('../../../ngIntegration/util/softAssert');
@@ -57,7 +59,7 @@ When('I click on primary navigation header tab {string}, I see selected tab page
       await browserWaits.retryWithActionCallback(async () => {
         expect(await headerPage().isPrimaryTabPageDisplayed(headerTabLabel)).to.be.true;
       });
-    } catch (err){
+    } catch (err) {
       reportLogger.AddMessage(`error load primary nav page ${headerTabLabel}, ${err.message}`);
       reportLogger.AddMessage('retrying refresh');
       await headerPage().clickAppLogoLink();
@@ -81,7 +83,7 @@ When('I click on primary navigation header tab {string}, I see selected tab page
   });
 });
 
-Then('I see navigation header tab page {string}', async function(headerTab){
+Then('I see navigation header tab page {string}', async function (headerTab) {
   expect(await headerPage().isPrimaryTabPageDisplayed(headerTab)).to.be.true;
 });
 
@@ -90,11 +92,12 @@ Then('I see primary navigation tab {string} in header', async function (headerla
     await browserWaits.waitForConditionAsync(async () => {
       return await headerPage().isTabPresent(headerlabel);
     });
-  } catch (err){
+  } catch (err) {}
 
-  }
-
-  expect(await headerPage().isTabPresent(headerlabel), headerlabel + ' tab is not present in ' + await headerPage().getPrimaryTabsDisplayed()).to.be.true;
+  expect(
+    await headerPage().isTabPresent(headerlabel),
+    headerlabel + ' tab is not present in ' + (await headerPage().getPrimaryTabsDisplayed())
+  ).to.be.true;
 });
 
 Then('I see primary navigation tabs {string} in main header', async function (navigationTabs) {
@@ -111,13 +114,22 @@ Then('I see primary navigation tabs {string} in main header', async function (na
             return await headerPage().isTabPresentInMainNav(headerlabel);
           });
         } catch (err) {
-          reportLogger.AddMessage(`Expected main nav tab "${headerlabel}" not present in "${navigationTabsArr}"`, LOG_LEVELS.Error);
+          reportLogger.AddMessage(
+            `Expected main nav tab "${headerlabel}" not present in "${navigationTabsArr}"`,
+            LOG_LEVELS.Error
+          );
         }
         softAssert.setScenario('Nav header in main tab ' + headerlabel);
-        await softAssert.assert(async () => expect(await headerPage().isTabPresentInMainNav(headerlabel), headerlabel + ' tab is not present main nav in ' + await headerPage().getPrimaryTabsDisplayed()).to.be.true);
+        await softAssert.assert(
+          async () =>
+            expect(
+              await headerPage().isTabPresentInMainNav(headerlabel),
+              headerlabel + ' tab is not present main nav in ' + (await headerPage().getPrimaryTabsDisplayed())
+            ).to.be.true
+        );
       }
       softAssert.finally();
-    } catch (err){
+    } catch (err) {
       await refresh();
       throw new Error(err);
     }
@@ -130,12 +142,12 @@ Then('I do not see primary navigation tabs does not exist excluding {string}', a
   await browserUtil.waitForLD();
   const tableHashes = allTabsDatatable.parse().hashes();
   const displayedTabArr = [];
-  for (const dusplayedTab of displayedTabs.split(',')){
+  for (const dusplayedTab of displayedTabs.split(',')) {
     displayedTabArr.push(dusplayedTab.trim());
   }
   const navigationTabsArr = [];
-  for (const hash of tableHashes){
-    if (!displayedTabArr.includes(hash.Tabs)){
+  for (const hash of tableHashes) {
+    if (!displayedTabArr.includes(hash.Tabs)) {
       navigationTabsArr.push(hash.Tabs);
     }
   }
@@ -150,11 +162,15 @@ Then('I do not see primary navigation tabs does not exist excluding {string}', a
           await browserWaits.waitForConditionAsync(async () => {
             return !(await headerPage().isTabPresentInMainNav(headerlabel));
           });
-        } catch (err) {
-
-        }
+        } catch (err) {}
         softAssert.setScenario('Nav header in main tab ' + headerlabel);
-        await softAssert.assert(async () => expect(await headerPage().isTabPresentInMainNav(headerlabel), headerlabel + ' tab is present main nav in ' + await headerPage().getPrimaryTabsDisplayed()).to.be.false);
+        await softAssert.assert(
+          async () =>
+            expect(
+              await headerPage().isTabPresentInMainNav(headerlabel),
+              headerlabel + ' tab is present main nav in ' + (await headerPage().getPrimaryTabsDisplayed())
+            ).to.be.false
+        );
       }
       softAssert.finally();
     } catch (err) {
@@ -177,14 +193,12 @@ Then('I see primary navigation tabs {string} in right side header column', async
           await browserWaits.waitForConditionAsync(async () => {
             return await headerPage().isTabPresentInMainNav(headerlabel);
           });
-        } catch (err) {
-
-        }
+        } catch (err) {}
         softAssert.setScenario('Nav header in main tab ' + headerlabel);
         // await softAssert.assert(async () => expect(await headerPage().isTabPresentInRightNav(headerlabel), headerlabel + " tab is not present main nav in " + await headerPage().getPrimaryTabsDisplayed()).to.be.true);
       }
       softAssert.finally();
-    } catch (err){
+    } catch (err) {
       await navigate(config.config.baseUrl);
       throw new Error(err);
     }
@@ -196,14 +210,15 @@ Then('I do not see primary navigation tab {string} in header', async function (h
     await browserWaits.waitForConditionAsync(async () => {
       return !(await headerPage().isTabPresent(headerlabel));
     });
-  } catch (err){
+  } catch (err) {}
 
-  }
-
-  expect(await headerPage().isTabPresent(headerlabel), headerlabel + ' tab is not expected to present ' + await headerPage().getPrimaryTabsDisplayed()).to.be.false;
+  expect(
+    await headerPage().isTabPresent(headerlabel),
+    headerlabel + ' tab is not expected to present ' + (await headerPage().getPrimaryTabsDisplayed())
+  ).to.be.false;
 });
 
-Then('I validate header displayed for user type {string}', async function(userType){
+Then('I validate header displayed for user type {string}', async function (userType) {
   await browserWaits.retryWithActionCallback(async () => {
     await browserUtil.waitForLD();
     try {
@@ -213,7 +228,7 @@ Then('I validate header displayed for user type {string}', async function(userTy
         await headerPage().clickManageCases();
         throw new Error(err);
       }
-    } catch (err){
+    } catch (err) {
       const baseUrl = process.env.TEST_URL ? process.env.TEST_URL : 'http://localhost:3000/';
       await navigate(baseUrl);
       await browserUtil.waitForLD();
@@ -222,9 +237,11 @@ Then('I validate header displayed for user type {string}', async function(userTy
   });
 });
 
-Then('I validate 16-digit Case reference search box isDisplayed? is {string}', async function(isDisplayed){
+Then('I validate 16-digit Case reference search box isDisplayed? is {string}', async function (isDisplayed) {
   isDisplayed = isDisplayed.toLowerCase();
-  expect(await headerPage().getCaseReferenceSearchBox().isPresent()).to.equal(isDisplayed.includes('yes') || isDisplayed.includes('true'));
+  expect(await headerPage().getCaseReferenceSearchBox().isPresent()).to.equal(
+    isDisplayed.includes('yes') || isDisplayed.includes('true')
+  );
 });
 
 Then('I validate primary navigation headers not displayed', async function () {
@@ -233,14 +250,14 @@ Then('I validate primary navigation headers not displayed', async function () {
 });
 
 When('If env is {string}, I enter {string} in  case ref in header 16 digit ref search', async function (env, input) {
-  if (appTestData.getTestEnvFromEnviornment() === env){
+  if (appTestData.getTestEnvFromEnviornment() === env) {
     await browserWaits.retryWithActionCallback(async () => {
       try {
         await headerPage().headerCaseRefSearch.container.wait();
         await browserWaits.waitForSpinnerToDissappear();
 
         await headerPage().headerCaseRefSearch.searchInput(input);
-      } catch (err){
+      } catch (err) {
         await refresh();
         throw err;
       }
@@ -260,12 +277,12 @@ When('If env is {string}, I find {string} from case ref in header 16 digit ref s
 
         let caseDetailsDisplayed = false;
         let isNoResultsPageDisplayed = false;
-        for (let i = 0; i< 20; i++){
+        for (let i = 0; i < 20; i++) {
           await browserWaits.waitForSeconds(1);
           caseDetailsDisplayed = await caseDetailsPage.isDisplayed();
           const currenturl = await currentUrl();
           isNoResultsPageDisplayed = currenturl.includes('search/noresults');
-          if (caseDetailsDisplayed || isNoResultsPageDisplayed){
+          if (caseDetailsDisplayed || isNoResultsPageDisplayed) {
             break;
           }
         }

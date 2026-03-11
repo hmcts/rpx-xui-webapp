@@ -35,7 +35,7 @@ export const components: any[] = [
   CaseReferenceSearchBoxComponent,
   InfoMessageContainerComponent,
   InfoMessageComponent,
-  ExpiredLoginLinkComponent
+  ExpiredLoginLinkComponent,
 ];
 
 export * from './hmcts-global-footer/hmcts-global-footer.component';

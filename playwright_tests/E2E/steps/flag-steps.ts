@@ -25,7 +25,9 @@ export async function checkActiveRowsMatchesBanner(page, activeFlagCount) {
   const rows = page.locator('xpath=//ccd-case-flag-table//tbody[2]/tr');
   const rowCount = await rows.count();
   const activeRows = await Promise.all(
-    Array.from({ length: rowCount }, (_, i) => rows.nth(i).locator('xpath=.//td[contains(@class, "cell-flag-status")]').textContent())
+    Array.from({ length: rowCount }, (_, i) =>
+      rows.nth(i).locator('xpath=.//td[contains(@class, "cell-flag-status")]').textContent()
+    )
   );
   const activeRowCount = activeRows.filter((text) => text === 'Active').length;
   return activeRowCount === activeFlagCount;

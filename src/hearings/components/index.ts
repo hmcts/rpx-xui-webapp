@@ -33,7 +33,7 @@ export const components: any[] = [
   LinkedHearingsCaseTitleComponent,
   HearingActualSummarySingleDayComponent,
   WarningAndErrorSectionComponent,
-  AmendmentLabelComponent
+  AmendmentLabelComponent,
 ];
 
 export * from '../components/case-flags/case-flags.component';
@@ -51,4 +51,3 @@ export * from '../components/listing-information-summary/listing-information-sum
 export * from '../components/multi-level-selector/multi-level-selector.component';
 export * from '../components/parties-unavailable-dates/parties-unavailable-dates.component';
 export * from './linked-hearings-case-title/linked-hearings-case-title.component';
-

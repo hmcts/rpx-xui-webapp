@@ -1,23 +1,43 @@
 const { $, elementByXpath } = require('../../../../../helpers/globals');
 
-class HearingPanelPage{
-  get pageContainer()                { return $('exui-hearing-panel'); }
+class HearingPanelPage {
+  get pageContainer() {
+    return $('exui-hearing-panel');
+  }
 
-  get specificPanelSelection()       { return $('#specificPanelSelection'); }
-  get noSpecificPanel()              { return $('#noSpecificPanel'); }
+  get specificPanelSelection() {
+    return $('#specificPanelSelection');
+  }
+  get noSpecificPanel() {
+    return $('#noSpecificPanel');
+  }
 
-  get includePanelMemberSearchInput(){ return elementByXpath("//div[contains(text(),'Include specific panel members')]/..//xuilib-search-judicials//input"); }
-  get excludePanelMemberSearchInput(){ return elementByXpath("//div[contains(text(),'Exclude specific panel members')]/..//xuilib-search-judicials//input"); }
+  get includePanelMemberSearchInput() {
+    return elementByXpath("//div[contains(text(),'Include specific panel members')]/..//xuilib-search-judicials//input");
+  }
+  get excludePanelMemberSearchInput() {
+    return elementByXpath("//div[contains(text(),'Exclude specific panel members')]/..//xuilib-search-judicials//input");
+  }
 
-  get includePanelMemberBtn()        { return elementByXpath("//div[contains(text(),'Include specific panel members')]/..//div[contains(@class ,'govuk-button--secondary')]"); }
-  get excludePanelMemberBtn()        { return elementByXpath("//div[contains(text(),'Exclude specific panel members')]/..//div[contains(@class ,'govuk-button--secondary')]"); }
+  get includePanelMemberBtn() {
+    return elementByXpath(
+      "//div[contains(text(),'Include specific panel members')]/..//div[contains(@class ,'govuk-button--secondary')]"
+    );
+  }
+  get excludePanelMemberBtn() {
+    return elementByXpath(
+      "//div[contains(text(),'Exclude specific panel members')]/..//div[contains(@class ,'govuk-button--secondary')]"
+    );
+  }
 
   get fieldMapping() {
     return {
-      'Do you require a panel for this hearing?': elementByXpath("//h1[contains(text(),'Do you require a panel for this hearing?')]"),
-      'Include specific panel members'         : elementByXpath("//div[contains(text(),'Include specific panel members')]"),
-      'Exclude specific panel members'         : elementByXpath("//div[contains(text(),'Exclude specific panel members')]"),
-      'Or select any other panel roles required': $('#panel-role-selector')
+      'Do you require a panel for this hearing?': elementByXpath(
+        "//h1[contains(text(),'Do you require a panel for this hearing?')]"
+      ),
+      'Include specific panel members': elementByXpath("//div[contains(text(),'Include specific panel members')]"),
+      'Exclude specific panel members': elementByXpath("//div[contains(text(),'Exclude specific panel members')]"),
+      'Or select any other panel roles required': $('#panel-role-selector'),
     };
   }
 
@@ -25,10 +45,10 @@ class HearingPanelPage{
     return await this.pageContainer.isVisible();
   }
 
-  async inputValue(field, value){
-    switch (field){
+  async inputValue(field, value) {
+    switch (field) {
       case 'Do you require a panel for this hearing?':
-        if (value.toLowerCase().includes('yes')){
+        if (value.toLowerCase().includes('yes')) {
           await this.specificPanelSelection.click();
         } else {
           await this.noSpecificPanel.click();
@@ -48,7 +68,7 @@ class HearingPanelPage{
         break;
       case 'Or select any other panel roles required':
         const values = value.split(',');
-        for (const role of values){
+        for (const role of values) {
           await this.selectPanelRole(role.trim());
         }
         break;
@@ -57,13 +77,15 @@ class HearingPanelPage{
     }
   }
 
-  async selectPanelRole(role){
+  async selectPanelRole(role) {
     const ele = elementByXpath(`//*[@id='panel-role-selector']//label[contains(text(),'${role}')]/../input`);
     await ele.click();
   }
 
   async selectPanelMember(member) {
-    const ele = elementByXpath(`//div[contains(@class,'mat-autocomplete-panel')]//mat-option//span[contains(text(),'${member}')]`);
+    const ele = elementByXpath(
+      `//div[contains(@class,'mat-autocomplete-panel')]//mat-option//span[contains(text(),'${member}')]`
+    );
     await ele.click();
   }
 }

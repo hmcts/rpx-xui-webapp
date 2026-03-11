@@ -25,7 +25,7 @@ let testUsers: UserDetails[] = [];
 try {
   testData = plainToClass(DataBaseModel, dbJson);
   testOrgs = testData.organisations || [];
-  testUsers = testOrgs.length > 0 ? testOrgs[0].users as any as UserDetails[] : [];
+  testUsers = testOrgs.length > 0 ? (testOrgs[0].users as any as UserDetails[]) : [];
 } catch (e) {
   console.warn('Failed to load test data from JSON:', e);
 }
@@ -36,7 +36,7 @@ const createMockUserDetails = (overrides: Partial<UserDetails> = {}): UserDetail
     firstName: overrides.firstName || 'Test',
     lastName: overrides.lastName || 'User',
     email: overrides.email || 'test@example.com',
-    caseRoles: overrides.caseRoles
+    caseRoles: overrides.caseRoles,
   };
 };
 
@@ -45,7 +45,7 @@ const createMockSharedCase = (overrides?: Partial<SharedCase>): SharedCase => ({
   caseTitle: 'Test Case',
   sharedWith: [],
   pendingShares: [],
-  ...overrides
+  ...overrides,
 });
 
 describe('Case Share Index - Unit Tests', () => {
@@ -109,10 +109,11 @@ describe('Case Share Index - Unit Tests', () => {
 
         // Configure stub to use actual stub-api logic
         stubAPIGetUsersStub.callsFake((req, res) => {
-          const users = testUsers.filter((u) =>
-            u.firstName.toLowerCase().includes('joe') ||
-            u.lastName.toLowerCase().includes('joe') ||
-            u.email.toLowerCase().includes('joe')
+          const users = testUsers.filter(
+            (u) =>
+              u.firstName.toLowerCase().includes('joe') ||
+              u.lastName.toLowerCase().includes('joe') ||
+              u.email.toLowerCase().includes('joe')
           );
           return res.send(users);
         });
@@ -120,11 +121,9 @@ describe('Case Share Index - Unit Tests', () => {
         await getUsers(req, res, next);
 
         expect(stubAPIGetUsersStub).to.have.been.calledOnceWith(req, res);
-        expect(res.send).to.have.been.calledWith(sinon.match((array) =>
-          array.length === 1 &&
-          array[0].idamId === 'u111111' &&
-          array[0].firstName === 'Joe'
-        ));
+        expect(res.send).to.have.been.calledWith(
+          sinon.match((array) => array.length === 1 && array[0].idamId === 'u111111' && array[0].firstName === 'Joe')
+        );
       });
 
       it('should handle empty search results', async () => {
@@ -170,12 +169,12 @@ describe('Case Share Index - Unit Tests', () => {
         createMockSharedCase({
           caseId: 'case1',
           caseTitle: 'Test Case 1',
-          sharedWith: [createMockUserDetails()]
+          sharedWith: [createMockUserDetails()],
         }),
         createMockSharedCase({
           caseId: 'case2',
-          caseTitle: 'Test Case 2'
-        })
+          caseTitle: 'Test Case 2',
+        }),
       ];
 
       it('should return shared cases data', async () => {
@@ -202,17 +201,21 @@ describe('Case Share Index - Unit Tests', () => {
 
     describe('assignCasesToUsers', () => {
       it('should handle pending shares correctly for user u222222', async () => {
-        const inputCases: SharedCase[] = [{
-          caseId: 'case123',
-          caseTitle: 'Test Case',
-          pendingShares: [{
-            idamId: 'u222222',
-            firstName: 'Steve',
-            lastName: 'Harrison',
-            email: 'steve.harrison@woodford.com'
-          }],
-          sharedWith: []
-        }];
+        const inputCases: SharedCase[] = [
+          {
+            caseId: 'case123',
+            caseTitle: 'Test Case',
+            pendingShares: [
+              {
+                idamId: 'u222222',
+                firstName: 'Steve',
+                lastName: 'Harrison',
+                email: 'steve.harrison@woodford.com',
+              },
+            ],
+            sharedWith: [],
+          },
+        ];
 
         req.body = { sharedCases: inputCases };
 
@@ -221,37 +224,46 @@ describe('Case Share Index - Unit Tests', () => {
           const updatedCase = {
             ...shareCases[0],
             pendingShares: [],
-            sharedWith: [{
-              idamId: 'u222222',
-              firstName: 'Steve',
-              lastName: 'Harrison',
-              email: 'steve.harrison@woodford.com'
-            }]
+            sharedWith: [
+              {
+                idamId: 'u222222',
+                firstName: 'Steve',
+                lastName: 'Harrison',
+                email: 'steve.harrison@woodford.com',
+              },
+            ],
           };
           return res.send([updatedCase]);
         });
 
         await assignCasesToUsers(req, res);
 
-        expect(res.send).to.have.been.calledWith(sinon.match((cases) =>
-          cases[0].sharedWith.length === 1 &&
-          cases[0].pendingShares.length === 0 &&
-          cases[0].sharedWith[0].idamId === 'u222222'
-        ));
+        expect(res.send).to.have.been.calledWith(
+          sinon.match(
+            (cases) =>
+              cases[0].sharedWith.length === 1 &&
+              cases[0].pendingShares.length === 0 &&
+              cases[0].sharedWith[0].idamId === 'u222222'
+          )
+        );
       });
 
       it('should return 500 for user u333333', async () => {
-        const inputCases: SharedCase[] = [{
-          caseId: 'case123',
-          caseTitle: 'Test Case',
-          pendingShares: [{
-            idamId: 'u333333',
-            firstName: 'James',
-            lastName: 'Priest',
-            email: 'james.priest@woodford.com'
-          }],
-          sharedWith: []
-        }];
+        const inputCases: SharedCase[] = [
+          {
+            caseId: 'case123',
+            caseTitle: 'Test Case',
+            pendingShares: [
+              {
+                idamId: 'u333333',
+                firstName: 'James',
+                lastName: 'Priest',
+                email: 'james.priest@woodford.com',
+              },
+            ],
+            sharedWith: [],
+          },
+        ];
 
         req.body = { sharedCases: inputCases };
 
@@ -270,14 +282,14 @@ describe('Case Share Index - Unit Tests', () => {
             caseId: 'case1',
             caseTitle: 'Case 1',
             pendingShares: [createMockUserDetails({ idamId: 'u222222' })],
-            sharedWith: []
+            sharedWith: [],
           },
           {
             caseId: 'case2',
             caseTitle: 'Case 2',
             pendingShares: [createMockUserDetails({ idamId: 'u444444' })],
-            sharedWith: []
-          }
+            sharedWith: [],
+          },
         ];
 
         req.body = { sharedCases: inputCases };
@@ -296,10 +308,9 @@ describe('Case Share Index - Unit Tests', () => {
 
         await assignCasesToUsers(req, res);
 
-        expect(res.send).to.have.been.calledWith(sinon.match((cases) =>
-          cases[0].sharedWith.length === 1 &&
-          cases[1].pendingShares.length === 1
-        ));
+        expect(res.send).to.have.been.calledWith(
+          sinon.match((cases) => cases[0].sharedWith.length === 1 && cases[1].pendingShares.length === 1)
+        );
       });
     });
   });
@@ -376,10 +387,7 @@ describe('Case Share Index - Unit Tests', () => {
 
         await assignCasesToUsers(req, res);
 
-        expect(realAPIAssignCasesStub).to.have.been.calledWith(
-          sinon.match.has('body', sinon.match.has('sharedCases', [])),
-          res
-        );
+        expect(realAPIAssignCasesStub).to.have.been.calledWith(sinon.match.has('body', sinon.match.has('sharedCases', [])), res);
       });
 
       it('should handle complex case sharing scenarios', async () => {
@@ -388,18 +396,10 @@ describe('Case Share Index - Unit Tests', () => {
             caseId: 'case1',
             caseTitle: 'Complex Case 1',
             caseTypeId: 'FT_ComplexCase',
-            pendingShares: [
-              createMockUserDetails({ idamId: 'u1' }),
-              createMockUserDetails({ idamId: 'u2' })
-            ],
-            pendingUnshares: [
-              createMockUserDetails({ idamId: 'u3' })
-            ],
-            sharedWith: [
-              createMockUserDetails({ idamId: 'u3' }),
-              createMockUserDetails({ idamId: 'u4' })
-            ]
-          }
+            pendingShares: [createMockUserDetails({ idamId: 'u1' }), createMockUserDetails({ idamId: 'u2' })],
+            pendingUnshares: [createMockUserDetails({ idamId: 'u3' })],
+            sharedWith: [createMockUserDetails({ idamId: 'u3' }), createMockUserDetails({ idamId: 'u4' })],
+          },
         ];
 
         req.body = { sharedCases: complexCases };
@@ -443,9 +443,7 @@ describe('Case Share Index - Unit Tests', () => {
 
         stubAPIGetUsersStub.callsFake((req, res) => {
           const searchText = req.query.q.toString();
-          const users = testUsers.filter((u) =>
-            u.email.toLowerCase().indexOf(searchText.toLowerCase()) > -1
-          );
+          const users = testUsers.filter((u) => u.email.toLowerCase().indexOf(searchText.toLowerCase()) > -1);
           return res.send(users);
         });
 
@@ -457,12 +455,14 @@ describe('Case Share Index - Unit Tests', () => {
 
     describe('assignCasesToUsers edge cases', () => {
       it('should handle empty pendingShares array', async () => {
-        const casesWithoutPending: SharedCase[] = [{
-          caseId: 'case1',
-          caseTitle: 'Case without pending',
-          pendingShares: [],
-          sharedWith: [createMockUserDetails()]
-        }];
+        const casesWithoutPending: SharedCase[] = [
+          {
+            caseId: 'case1',
+            caseTitle: 'Case without pending',
+            pendingShares: [],
+            sharedWith: [createMockUserDetails()],
+          },
+        ];
 
         req.body = { sharedCases: casesWithoutPending };
 
@@ -488,17 +488,21 @@ describe('Case Share Index - Unit Tests', () => {
       });
 
       it('should handle null values in user details', async () => {
-        const casesWithNullUser: SharedCase[] = [{
-          caseId: 'case1',
-          caseTitle: 'Case with null user',
-          pendingShares: [{
-            idamId: 'u1',
-            firstName: null as any,
-            lastName: null as any,
-            email: 'test@example.com'
-          } as UserDetails],
-          sharedWith: []
-        }];
+        const casesWithNullUser: SharedCase[] = [
+          {
+            caseId: 'case1',
+            caseTitle: 'Case with null user',
+            pendingShares: [
+              {
+                idamId: 'u1',
+                firstName: null as any,
+                lastName: null as any,
+                email: 'test@example.com',
+              } as UserDetails,
+            ],
+            sharedWith: [],
+          },
+        ];
 
         req.body = { sharedCases: casesWithNullUser };
 
@@ -532,7 +536,7 @@ describe('Case Share Index - Unit Tests', () => {
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
-        caseRoles: ['caseworker']
+        caseRoles: ['caseworker'],
       };
 
       // Verify the structure matches the model
@@ -547,11 +551,19 @@ describe('Case Share Index - Unit Tests', () => {
         roles: ['caseworker-ia-caseofficer'],
         sharedWith: [],
         pendingShares: [],
-        pendingUnshares: []
+        pendingUnshares: [],
       };
 
       // Verify the structure matches the model
-      expect(validSharedCase).to.have.all.keys('caseId', 'caseTitle', 'caseTypeId', 'roles', 'sharedWith', 'pendingShares', 'pendingUnshares');
+      expect(validSharedCase).to.have.all.keys(
+        'caseId',
+        'caseTitle',
+        'caseTypeId',
+        'roles',
+        'sharedWith',
+        'pendingShares',
+        'pendingUnshares'
+      );
     });
 
     it('should use OrganisationModel structure from test data', () => {

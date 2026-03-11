@@ -1,11 +1,11 @@
 const { v4 } = require('uuid');
 
-class RoleAccessDataModel{
-  getCaseRole(){
+class RoleAccessDataModel {
+  getCaseRole() {
     return {
       actions: [
-        { 'id': 'reallocate', 'title': 'Reallocate' },
-        { 'id': 'remove', 'title': 'Remove Allocation' }
+        { id: 'reallocate', title: 'Reallocate' },
+        { id: 'remove', title: 'Remove Allocation' },
       ],
       actorId: v4(),
       email: '',
@@ -19,7 +19,7 @@ class RoleAccessDataModel{
       start: '',
       created: '',
       notes: 'No reason for case access given',
-      requestedRole: null
+      requestedRole: null,
     };
   }
 }

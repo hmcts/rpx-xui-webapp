@@ -1,6 +1,4 @@
-import {
-  CASE_REF_DEFAULT_VALIDATION_ERROR
-} from '../../constants/nocErrorMap.enum';
+import { CASE_REF_DEFAULT_VALIDATION_ERROR } from '../../constants/nocErrorMap.enum';
 import { NocQuestion, NocState, NocStateData } from '../../models';
 import * as fromActions from '../actions';
 
@@ -14,7 +12,7 @@ export const initialState: NocStateData = {
   affirmationAgreed: false,
   notifyEveryParty: false,
   options: null,
-  validationErrors: null
+  validationErrors: null,
 };
 
 export function nocReducer(currentState = initialState, action: fromActions.NocAction): NocStateData {
@@ -22,27 +20,30 @@ export function nocReducer(currentState = initialState, action: fromActions.NocA
     case fromActions.CHANGE_NAVIGATION: {
       return {
         ...currentState,
-        state: action.payload
+        state: action.payload,
       };
     }
     case fromActions.RESET: {
       return {
         ...currentState,
-        ...initialState
+        ...initialState,
       };
     }
     case fromActions.SET_CASE_REF_VALIDATION_FAILURE: {
       return {
         ...currentState,
         state: NocState.CASE_REF_VALIDATION_FAILURE,
-        validationErrors: CASE_REF_DEFAULT_VALIDATION_ERROR
+        validationErrors: CASE_REF_DEFAULT_VALIDATION_ERROR,
       };
     }
     case fromActions.SET_CASE_REF_SUBMISSION_FAILURE: {
       let nextState: NocState;
       let validationErrors;
       const lastError = action.payload;
-      if (action.payload.error && (action.payload.error.code === 'case-id-invalid' || action.payload.error.code === 'case-not-found')) {
+      if (
+        action.payload.error &&
+        (action.payload.error.code === 'case-id-invalid' || action.payload.error.code === 'case-not-found')
+      ) {
         nextState = NocState.CASE_REF_VALIDATION_FAILURE;
         validationErrors = CASE_REF_DEFAULT_VALIDATION_ERROR;
       } else {
@@ -52,7 +53,7 @@ export function nocReducer(currentState = initialState, action: fromActions.NocA
         ...currentState,
         state: nextState,
         validationErrors,
-        lastError
+        lastError,
       };
     }
     case fromActions.SET_QUESTIONS: {
@@ -62,19 +63,19 @@ export function nocReducer(currentState = initialState, action: fromActions.NocA
         questions: orderQuestions(action.payload.questions),
         caseReference: action.payload.caseReference,
         validationErrors: null,
-        lastError: null
+        lastError: null,
       };
     }
     case fromActions.SET_ANSWER_INCOMPLETE: {
       return {
         ...currentState,
-        state: NocState.ANSWER_INCOMPLETE
+        state: NocState.ANSWER_INCOMPLETE,
       };
     }
     case fromActions.SET_ANSWERS: {
       return {
         ...currentState,
-        answers: action.payload.answers
+        answers: action.payload.answers,
       };
     }
     case fromActions.SET_ANSWER_SUBMISSION_FAILURE: {
@@ -88,7 +89,7 @@ export function nocReducer(currentState = initialState, action: fromActions.NocA
         ...currentState,
         state: nextState,
         validationErrors: action.payload,
-        lastError: action.payload
+        lastError: action.payload,
       };
     }
     case fromActions.CHECK_ANSWERS: {
@@ -97,25 +98,25 @@ export function nocReducer(currentState = initialState, action: fromActions.NocA
         state: NocState.CHECK_ANSWERS,
         answers: action.payload,
         validationErrors: null,
-        lastError: null
+        lastError: null,
       };
     }
     case fromActions.SET_AFFIRMATION_AGREED: {
       return {
         ...currentState,
-        affirmationAgreed: action.payload
+        affirmationAgreed: action.payload,
       };
     }
     case fromActions.SET_NOTIFY_EVERY_PARTY: {
       return {
         ...currentState,
-        notifyEveryParty: action.payload
+        notifyEveryParty: action.payload,
       };
     }
     case fromActions.SET_AFFIRMATION_ERROR: {
       return {
         ...currentState,
-        validationErrors: action.payload
+        validationErrors: action.payload,
       };
     }
     case fromActions.SET_SUBMISSION_SUCCESS_APPROVED: {
@@ -123,7 +124,7 @@ export function nocReducer(currentState = initialState, action: fromActions.NocA
         ...currentState,
         state: NocState.SUBMISSION_SUCCESS_APPROVED,
         validationErrors: null,
-        lastError: null
+        lastError: null,
       };
     }
     case fromActions.SET_SUBMISSION_SUCCESS_PENDING: {
@@ -131,19 +132,19 @@ export function nocReducer(currentState = initialState, action: fromActions.NocA
         ...currentState,
         state: NocState.SUBMISSION_SUCCESS_PENDING,
         validationErrors: null,
-        lastError: null
+        lastError: null,
       };
     }
     case fromActions.SET_SUBMISSION_FAILURE: {
       return {
         ...currentState,
         state: NocState.SUBMISSION_FAILURE,
-        lastError: action.payload
+        lastError: action.payload,
       };
     }
     default: {
       return {
-        ...currentState
+        ...currentState,
       };
     }
   }

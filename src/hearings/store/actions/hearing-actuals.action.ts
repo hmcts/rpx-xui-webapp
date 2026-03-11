@@ -39,13 +39,13 @@ export class GetHearingActualsSuccess implements Action {
 export class UpdateHearingActuals implements Action {
   public readonly type = UPDATE_HEARING_ACTUALS;
 
-  constructor(public payload: { hearingId: string, hearingActuals: HearingActualsModel }) {}
+  constructor(public payload: { hearingId: string; hearingActuals: HearingActualsModel }) {}
 }
 
 export class UpdateHearingActualsStage implements Action {
   public readonly type = UPDATE_HEARING_ACTUALS_STAGE;
 
-  constructor(public payload: { hearingId: string, hearingActuals: HearingActualsModel }) {}
+  constructor(public payload: { hearingId: string; hearingActuals: HearingActualsModel }) {}
 }
 
 export class UpdateHearingActualsSuccess implements Action {

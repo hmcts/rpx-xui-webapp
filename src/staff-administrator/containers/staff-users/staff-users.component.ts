@@ -10,12 +10,12 @@ import { selectStaffError } from '../../store/selectors/staff-select.selector';
   selector: 'exui-staff-users',
   templateUrl: './staff-users.component.html',
   styleUrls: ['./staff-users.component.scss'],
-  providers: [StaffDataFilterService]
+  providers: [StaffDataFilterService],
 })
 export class StaffUsersComponent {
   public advancedSearchEnabled = false;
   public staffSelectError: boolean = false;
-  public staffSelectErrors: { title: string, description: string } = null;
+  public staffSelectErrors: { title: string; description: string } = null;
   public errorSubscription$: Observable<any>;
   private unsubscribe$: Subject<void> = new Subject<void>();
 
@@ -25,13 +25,19 @@ export class StaffUsersComponent {
     private store: Store
   ) {
     this.errorSubscription$ = this.store.pipe(select(selectStaffError));
-    this.errorSubscription$.pipe(
-      takeUntil(this.unsubscribe$),
-      tap((error) => {
-        this.staffSelectError = !!error;
-        this.staffSelectErrors = error ? { title: 'Staff error', description: error?.errorDescription ? error?.errorDescription: 'An unknown error has occured' } : null;
-      })
-    )
+    this.errorSubscription$
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        tap((error) => {
+          this.staffSelectError = !!error;
+          this.staffSelectErrors = error
+            ? {
+                title: 'Staff error',
+                description: error?.errorDescription ? error?.errorDescription : 'An unknown error has occured',
+              }
+            : null;
+        })
+      )
       .subscribe();
   }
 

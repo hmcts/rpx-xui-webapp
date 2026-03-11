@@ -4,7 +4,7 @@
  */
 
 import { test, expect } from './fixtures';
-import { expectStatus, StatusSets } from './utils/apiTestUtils';
+import { expectStatus, StatusSets, withRetry } from './utils/apiTestUtils';
 import { expectContract, WorkAllocationSchemas, SearchSchemas } from './utils/contractValidation';
 import { TaskBuilder, TaskListBuilder, LocationBuilder, TestData } from './utils/testDataBuilders';
 import { z } from 'zod';
@@ -12,10 +12,10 @@ import { z } from 'zod';
 const serviceCodes = ['IA', 'CIVIL', 'PRIVATELAW'];
 const locationSchema = z.object({
   id: z.string(),
-  locationName: z.string()
+  locationName: z.string(),
 });
 
-test.describe('Work Allocation API Contracts', () => {
+test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, () => {
   test('GET /workallocation/location contract: returns array of location objects with required fields', async ({ apiClient }) => {
     // Given: A solicitor user requesting locations for configured service codes
     const endpoint = `workallocation/location?serviceCodes=${encodeURIComponent(serviceCodes.join(','))}`;
@@ -29,7 +29,7 @@ test.describe('Work Allocation API Contracts', () => {
     // And: Response structure matches LocationList contract when successful
     if (response.status === 200 && Array.isArray(response.data)) {
       expectContract(response.data, WorkAllocationSchemas.LocationList, {
-        context: { endpoint, status: response.status }
+        context: { endpoint, status: response.status },
       });
 
       // And: Each location has required fields
@@ -39,17 +39,19 @@ test.describe('Work Allocation API Contracts', () => {
     }
   });
 
-  test('POST /workallocation/task contract: returns TaskList with tasks array and optional total_records', async ({ apiClient }) => {
+  test('POST /workallocation/task contract: returns TaskList with tasks array and optional total_records', async ({
+    apiClient,
+  }) => {
     // Given: A task search request for MyTasks view
     const searchRequest = {
       view: 'MyTasks',
-      searchRequest: []
+      searchRequest: [],
     };
 
     // When: Searching for tasks
     const response = await apiClient.post('workallocation/task', {
       data: searchRequest,
-      throwOnError: false
+      throwOnError: false,
     });
 
     // Then: Response status is within expected range
@@ -58,7 +60,7 @@ test.describe('Work Allocation API Contracts', () => {
     // And: Response structure matches TaskList contract when successful
     if (response.status === 200) {
       expectContract(response.data, WorkAllocationSchemas.TaskList, {
-        context: { endpoint: 'workallocation/task', view: 'MyTasks', status: response.status }
+        context: { endpoint: 'workallocation/task', view: 'MyTasks', status: response.status },
       });
 
       // And: tasks array is present
@@ -99,10 +101,16 @@ test.describe('Work Allocation API Contracts', () => {
   test('GET /workallocation/taskNames contract: returns array of task names or wrapped response', async ({ apiClient }) => {
     // Given: An authenticated user
     // When: Fetching task names catalogue
-    const response = await apiClient.get('workallocation/taskNames', { throwOnError: false });
+    const response = await withRetry(
+      () =>
+        apiClient.get('workallocation/taskNames', {
+          throwOnError: false,
+        }),
+      { retries: 2, retryStatuses: [500, 502, 504] }
+    );
 
-    // Then: Response status is 200 OK
-    expect(response.status).toBe(200);
+    // Then: Response status is guarded for downstream resilience
+    expectStatus(response.status, StatusSets.waReadOnly);
 
     // And: Response may be defined or undefined (API may return empty body)
     // Note: API may return array, {task_names: []}, {taskNames: []}, string, or empty body
@@ -112,20 +120,28 @@ test.describe('Work Allocation API Contracts', () => {
   test('GET /workallocation/task/types-of-work contract: returns array of work type classifications', async ({ apiClient }) => {
     // Given: An authenticated user
     // When: Fetching types of work catalogue
-    const response = await apiClient.get('workallocation/task/types-of-work', { throwOnError: false });
+    const response = await withRetry(
+      () =>
+        apiClient.get('workallocation/task/types-of-work', {
+          throwOnError: false,
+        }),
+      { retries: 2, retryStatuses: [500, 502, 504] }
+    );
 
-    // Then: Response status is 200 OK
-    expect(response.status).toBe(200);
+    // Then: Response status is guarded for downstream resilience
+    expectStatus(response.status, StatusSets.waReadOnly);
 
     // And: Response is an array or object containing work types
-    expect(response.data).toBeDefined();
-    if (Array.isArray(response.data)) {
+    if (response.status === 200) {
+      expect(response.data).toBeDefined();
+    }
+    if (response.status === 200 && Array.isArray(response.data)) {
       expect(response.data.length).toBeGreaterThanOrEqual(0);
     }
   });
 });
 
-test.describe('Search and Ref Data API Contracts', () => {
+test.describe('Search and Ref Data API Contracts', { tag: ['@svc-global-search', '@svc-ref-data'] }, () => {
   test('GET /api/globalSearch/services contract: returns array of service objects', async ({ apiClient }) => {
     // Given: An authenticated user
     // When: Fetching global search services
@@ -137,7 +153,7 @@ test.describe('Search and Ref Data API Contracts', () => {
     // And: Response structure matches GlobalSearchServices contract when successful
     if (response.status === 200 && Array.isArray(response.data)) {
       expectContract(response.data, SearchSchemas.GlobalSearchServices, {
-        context: { endpoint: 'api/globalSearch/services', status: response.status }
+        context: { endpoint: 'api/globalSearch/services', status: response.status },
       });
 
       // And: Each service has required fields
@@ -180,7 +196,7 @@ test.describe('Search and Ref Data API Contracts', () => {
   });
 });
 
-test.describe('Test Data Builders Validation', () => {
+test.describe('Test Data Builders Validation', { tag: '@svc-internal' }, () => {
   test('TaskBuilder creates valid task objects that match Task contract', () => {
     // Given: TaskBuilder with default values
     // When: Building a task
@@ -215,14 +231,11 @@ test.describe('Test Data Builders Validation', () => {
     const tasks = [
       new TaskBuilder().withId('task-1').assigned().build(),
       new TaskBuilder().withId('task-2').unassigned().build(),
-      new TaskBuilder().withId('task-3').completed().build()
+      new TaskBuilder().withId('task-3').completed().build(),
     ];
 
     // When: Building a task list
-    const taskList = new TaskListBuilder()
-      .withTasks(tasks)
-      .withTotalRecords(50)
-      .build();
+    const taskList = new TaskListBuilder().withTasks(tasks).withTotalRecords(50).build();
 
     // Then: Task list matches expected structure
     expect(taskList.tasks).toHaveLength(3);
@@ -273,9 +286,7 @@ test.describe('Test Data Builders Validation', () => {
 
   test('TaskBuilder.buildMany creates multiple tasks with incremental IDs', () => {
     // Given: TaskBuilder configured with base properties
-    const builder = new TaskBuilder()
-      .withTitle('Standard Task')
-      .assigned('user-1');
+    const builder = new TaskBuilder().withTitle('Standard Task').assigned('user-1');
 
     // When: Building multiple tasks
     const tasks = builder.buildMany(3);

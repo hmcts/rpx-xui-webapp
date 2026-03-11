@@ -14,7 +14,7 @@ import {
   FEATURE_COMPRESSION_ENABLED,
   HELMET,
   PROTOCOL,
-  SESSION_SECRET
+  SESSION_SECRET,
 } from './configuration/references';
 import * as health from './health';
 import * as log4jui from './lib/log4jui';
@@ -29,16 +29,23 @@ import { idamCheck } from './idamCheck';
 import { MC_CSP } from './interfaces/csp-config';
 import { getNewUsersByServiceName } from './workAllocation';
 
-function loadIndexHtml(): string {
+function resolveStaticRoot(): string {
+  const buildRoot = path.join(__dirname, '..');
+  const browserRoot = path.join(buildRoot, 'browser');
+  return existsSync(browserRoot) ? browserRoot : buildRoot;
+}
+
+function loadIndexHtml(staticRoot: string): string {
   // production build output
-  let p = path.join(__dirname, '..', 'index.html');
+  let p = path.join(staticRoot, 'index.html');
   if (!existsSync(p)) {
     // running from sources - use the template inside src/
     p = path.join(__dirname, '..', 'src', 'index.html');
   }
   return readFileSync(p, 'utf8');
 }
-const indexHtmlRaw = loadIndexHtml();
+const staticRoot = resolveStaticRoot();
+const indexHtmlRaw = loadIndexHtml(staticRoot);
 
 function injectNonce(html: string, nonce: string): string {
   return html.replace(/{{cspNonce}}/g, nonce);
@@ -63,7 +70,7 @@ export async function createApp() {
     app.use(helmet.hsts({ maxAge: 28800000 }));
     const cspMiddleware = csp({
       defaultCsp: SECURITY_POLICY,
-      ...MC_CSP
+      ...MC_CSP,
     }) as unknown as express.RequestHandler;
     app.use(cspMiddleware);
     app.use((req, res, next) => {
@@ -96,8 +103,8 @@ export async function createApp() {
   // TODO: remove tunnel and configurations
   tunnel.init();
   /**
- * Add Reform Standard health checks.
- */
+   * Add Reform Standard health checks.
+   */
   health.addReformHealthCheck(app);
 
   const xuiNodeMiddleware = await getXuiNodeMiddleware();
@@ -115,23 +122,17 @@ export async function createApp() {
   app.use('/workallocation', workAllocationRouter);
   const csrfMiddleware = csrf({
     cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true, path: '/' },
-    ignoreMethods: ['GET']
+    ignoreMethods: ['GET'],
   }) as unknown as express.RequestHandler;
   app.use(csrfMiddleware);
   // Serve /index.html through the same nonce injector
   // This is to ensure that <MC URL>/index.html works with CSP
   app.get('/index.html', (req, res) => {
     const html = injectNonce(indexHtmlRaw, res.locals.cspNonce as string);
-    res
-      .type('html')
-      .set('Cache-Control', 'no-store, max-age=0')
-      .send(html);
+    res.type('html').set('Cache-Control', 'no-store, max-age=0').send(html);
   });
-  const staticRoot = path.join(__dirname, '..');
   // runs for every incoming request in the order middleware are declared
-  app.use(
-    express.static(staticRoot, { index: false })
-  );
+  app.use(express.static(staticRoot, { index: false }));
   // Catch-all handler for every URL that the static middleware didn’t serve
   app.use('/*', (req, res) => {
     const html = injectNonce(indexHtmlRaw, res.locals.cspNonce as string);

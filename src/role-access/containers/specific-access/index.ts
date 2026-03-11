@@ -1,8 +1,6 @@
 import { SpecificAccessApprovedComponent } from './specific-access-approved/specific-access-approved.component';
 import { SpecificAccessDeniedComponent } from './specific-access-denied/specific-access-denied.component';
-import {
-  SpecificAccessDuplicateRecordComponent
-} from './specific-access-duplicate-record/specific-access-duplicate-record.component';
+import { SpecificAccessDuplicateRecordComponent } from './specific-access-duplicate-record/specific-access-duplicate-record.component';
 import { SpecificAccessDurationComponent } from './specific-access-duration/specific-access-duration.component';
 import { SpecificAccessHomeComponent } from './specific-access-home/specific-access-home.component';
 import { SpecificAccessInformationComponent } from './specific-access-information/specific-access-information.component';
@@ -17,7 +15,7 @@ export const containers: any[] = [
   SpecificAccessApprovedComponent,
   SpecificAccessInformationComponent,
   SpecificAccessDeniedComponent,
-  SpecificAccessDuplicateRecordComponent
+  SpecificAccessDuplicateRecordComponent,
 ];
 
 export * from './specific-access-approved/specific-access-approved.component';

@@ -14,38 +14,38 @@ const taskId = 'f782bde3-8d51-11eb-a9a4-06d032acc76d';
 
 describe('Task management api, Search for completable tasks on case event', () => {
   const RESPONSE_BODY = {
-    'tasks': [
+    tasks: [
       {
-        'assignee': somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe'),
-        'auto_assigned': somethingLike(true),
-        'case_category': somethingLike('protection'),
-        'case_id': somethingLike('1616666869740714'),
-        'case_name': somethingLike('Bob Smith'),
-        'created_date': term(DateTimeMatcher('2021-06-30T16:53:10+0100')),
-        'due_date': term(DateTimeMatcher('2021-06-30T16:53:10+0100')),
-        'execution_type': somethingLike('Case Management Task'),
-        'id': somethingLike(taskId),
-        'jurisdiction': somethingLike('IA'),
-        'location': somethingLike('765324'),
-        'location_name': somethingLike('Taylor House'),
-        'case_type_id': somethingLike('Asylum'),
-        'name': somethingLike('task name'),
-        'region': somethingLike('1'),
-        'security_classification': somethingLike('PUBLIC'),
-        'task_state': somethingLike('assigned'),
-        'task_system': somethingLike('SELF'),
-        'task_title': somethingLike('Review the appeal'),
-        'type': somethingLike('wa-task-configuration-api-task'),
-        'warnings': somethingLike(false)
-      }
-    ]
+        assignee: somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe'),
+        auto_assigned: somethingLike(true),
+        case_category: somethingLike('protection'),
+        case_id: somethingLike('1616666869740714'),
+        case_name: somethingLike('Bob Smith'),
+        created_date: term(DateTimeMatcher('2021-06-30T16:53:10+0100')),
+        due_date: term(DateTimeMatcher('2021-06-30T16:53:10+0100')),
+        execution_type: somethingLike('Case Management Task'),
+        id: somethingLike(taskId),
+        jurisdiction: somethingLike('IA'),
+        location: somethingLike('765324'),
+        location_name: somethingLike('Taylor House'),
+        case_type_id: somethingLike('Asylum'),
+        name: somethingLike('task name'),
+        region: somethingLike('1'),
+        security_classification: somethingLike('PUBLIC'),
+        task_state: somethingLike('assigned'),
+        task_system: somethingLike('SELF'),
+        task_title: somethingLike('Review the appeal'),
+        type: somethingLike('wa-task-configuration-api-task'),
+        warnings: somethingLike(false),
+      },
+    ],
   };
 
   const mockRequest = {
-    'case_id': '1616666869740714',
-    'case_jurisdiction': 'IA',
-    'case_type': 'Asylum',
-    'event_id': 'f782bde3-8d51-11eb-a9a4-06d032acc76d'
+    case_id: '1616666869740714',
+    case_jurisdiction: 'IA',
+    case_type: 'Asylum',
+    event_id: 'f782bde3-8d51-11eb-a9a4-06d032acc76d',
   };
 
   describe('post /task/search-for-completable', () => {
@@ -66,15 +66,15 @@ describe('Task management api, Search for completable tasks on case event', () =
           headers: {
             Authorization: 'Bearer someAuthorizationToken',
             ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            'content-type': 'application/json',
           },
-          body: mockRequest
+          body: mockRequest,
         },
         willRespondWith: {
           status: 200,
           headers: {},
-          body: RESPONSE_BODY
-        }
+          body: RESPONSE_BODY,
+        },
       };
       pactSetUp.provider.addInteraction(interaction);
     });
@@ -97,16 +97,16 @@ describe('Task management api, Search for completable tasks on case event', () =
           headers: {
             Authorization: 'Bearer someAuthorizationToken',
             ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            'content-type': 'application/json',
           },
           body: {
             searchRequest: {
               ccdId: mockRequest.case_id,
               jurisdiction: mockRequest.case_jurisdiction,
               caseTypeId: mockRequest.case_type,
-              eventId: mockRequest.event_id
-            }
-          }
+              eventId: mockRequest.event_id,
+            },
+          },
         });
         let returnedResponse = null;
         const response = mockRes();
@@ -151,4 +151,3 @@ function assertResponses(dto: any) {
   expect(dto.tasks[0].type).to.be.equal('wa-task-configuration-api-task');
   expect(dto.tasks[0].warnings).to.be.equal(false);
 }
-

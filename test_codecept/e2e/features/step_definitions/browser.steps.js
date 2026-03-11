@@ -4,7 +4,9 @@ const ArrayUtil = require('../../utils/ArrayUtil');
 const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
 const browserutil = require('../../../ngIntegration/util/browserUtil');
-function headerPage () { return require('../../../e2e/features/pageObjects/headerPage')(); }
+function headerPage() {
+  return require('../../../e2e/features/pageObjects/headerPage')();
+}
 
 const loginlogout = require('../pageObjects/loginLogoutObjects');
 
@@ -40,7 +42,7 @@ Given('I navigate to home page', async function () {
 });
 
 Given('I navigate page route {string}', async function (routeUrl) {
-  await browser.get(process.env.TEST_URL+routeUrl);
+  await browser.get(process.env.TEST_URL + routeUrl);
   await BrowserWaits.retryWithActionCallback(async () => {
     await headerPage().waitForPrimaryNavDisplay();
     await browserutil.waitForLD();
@@ -56,23 +58,26 @@ Given('I navigate page route {string}, wait for locator {string}', async functio
   });
 });
 
-Then('I validate route guard route {string} with locator {string}, is route allowed? {string}', async function (routeUrl, routePageLocator, isRouteAllowed) {
-  const exuiRoot = $('exui-root');
-  const routePageElement = $(routePageLocator);
+Then(
+  'I validate route guard route {string} with locator {string}, is route allowed? {string}',
+  async function (routeUrl, routePageLocator, isRouteAllowed) {
+    const exuiRoot = $('exui-root');
+    const routePageElement = $(routePageLocator);
 
-  const boolRouteAllowed = isRouteAllowed.toLowerCase().includes('yes') || isRouteAllowed.toLowerCase().includes('true');
+    const boolRouteAllowed = isRouteAllowed.toLowerCase().includes('yes') || isRouteAllowed.toLowerCase().includes('true');
 
-  await browser.get(routeUrl);
-  if (boolRouteAllowed) {
-    await BrowserWaits.retryWithActionCallback(async () => {
-      await headerPage().waitForPrimaryNavDisplay();
-      await browserutil.waitForLD();
-      await BrowserWaits.waitForElement(routePageElement);
-    });
-  } else {
-    expect(exuiRoot).to.equal(null);
+    await browser.get(routeUrl);
+    if (boolRouteAllowed) {
+      await BrowserWaits.retryWithActionCallback(async () => {
+        await headerPage().waitForPrimaryNavDisplay();
+        await browserutil.waitForLD();
+        await BrowserWaits.waitForElement(routePageElement);
+      });
+    } else {
+      expect(exuiRoot).to.equal(null);
+    }
   }
-});
+);
 
 Then('I pause test', async function (routeUrl, locator) {
   await browser.pause();

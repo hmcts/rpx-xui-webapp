@@ -13,10 +13,7 @@ export const init = () => {
     const epimmsIDIdx = config.url.lastIndexOf('=');
     const epimmsID = requestURL.substring(epimmsIDIdx + 1);
     const searchResult = ALL_COURT_LOCATIONS.find((location) => location.epimms_id === epimmsID);
-    return [
-      200,
-      searchResult
-    ];
+    return [200, searchResult];
   });
 
   mock.onGet(getLocationsUrl).reply((config) => {
@@ -32,21 +29,23 @@ export const init = () => {
     }
     const courTypeIdStartIdx = config.url.lastIndexOf('=');
     const courTypeIdsStr = requestURL.substring(courTypeIdStartIdx + 1);
-    const searchResult = ALL_COURT_LOCATIONS
-      .filter((locationWithCourtType) => courTypeIdsStr.indexOf(locationWithCourtType.court_type_id) !== -1)
-      .filter((location) =>
-        (location.court_name ? location.court_name.toLowerCase().includes(searchTerm.toLowerCase()) : false)
-        || (location.site_name ? location.site_name.toLowerCase().includes(searchTerm.toLowerCase()) : false)
-        || (location.venue_name ? location.venue_name.toLowerCase().includes(searchTerm.toLowerCase()) : false)
-        || (location.postcode ? location.postcode.replace(/\s+/g, '').toLowerCase().includes(searchTerm.toLowerCase()) : false)
-        || (location.postcode ? location.postcode.toLowerCase().includes(searchTerm.toLowerCase()) : false)
-        || (location.court_address ? location.court_address.toLowerCase().includes(searchTerm.toLowerCase()) : false))
+    const searchResult = ALL_COURT_LOCATIONS.filter(
+      (locationWithCourtType) => courTypeIdsStr.indexOf(locationWithCourtType.court_type_id) !== -1
+    )
+      .filter(
+        (location) =>
+          (location.court_name ? location.court_name.toLowerCase().includes(searchTerm.toLowerCase()) : false) ||
+          (location.site_name ? location.site_name.toLowerCase().includes(searchTerm.toLowerCase()) : false) ||
+          (location.venue_name ? location.venue_name.toLowerCase().includes(searchTerm.toLowerCase()) : false) ||
+          (location.postcode ? location.postcode.replace(/\s+/g, '').toLowerCase().includes(searchTerm.toLowerCase()) : false) ||
+          (location.postcode ? location.postcode.toLowerCase().includes(searchTerm.toLowerCase()) : false) ||
+          (location.court_address ? location.court_address.toLowerCase().includes(searchTerm.toLowerCase()) : false)
+      )
       .map((locationModel) => toEpimmsLocation(locationModel))
-      .filter((locationByEPIMSModel, index, locationByEPIMSModelArray) =>
-        locationByEPIMSModelArray.findIndex((t) => (t.epimms_id === locationByEPIMSModel.epimms_id)) === index);
-    return [
-      200,
-      searchResult
-    ];
+      .filter(
+        (locationByEPIMSModel, index, locationByEPIMSModelArray) =>
+          locationByEPIMSModelArray.findIndex((t) => t.epimms_id === locationByEPIMSModel.epimms_id) === index
+      );
+    return [200, searchResult];
   });
 };

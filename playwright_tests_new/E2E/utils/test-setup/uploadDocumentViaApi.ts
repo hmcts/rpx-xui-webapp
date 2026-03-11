@@ -60,10 +60,7 @@ function resolveAppBaseUrl(page: Page): string {
   }
 
   const configuredBaseUrl =
-    process.env.TEST_URL?.trim() ||
-    process.env.EXUI_BASE_URL?.trim() ||
-    config.urls.baseURL ||
-    config.urls.exuiDefaultUrl;
+    process.env.TEST_URL?.trim() || process.env.EXUI_BASE_URL?.trim() || config.urls.baseURL || config.urls.exuiDefaultUrl;
 
   return new URL(configuredBaseUrl).origin;
 }
@@ -141,12 +138,13 @@ async function touchAuthEndpointsToMintXsrf(page: Page, baseUrl: string): Promis
 
 async function navigateShellToMintXsrf(page: Page, baseUrl: string): Promise<void> {
   const pageUrl = currentPageUrl(page);
-  const navigationTarget =
-    pageUrl.startsWith(baseUrl) && pageUrl !== 'about:blank' ? pageUrl : new URL('/', baseUrl).toString();
+  const navigationTarget = pageUrl.startsWith(baseUrl) && pageUrl !== 'about:blank' ? pageUrl : new URL('/', baseUrl).toString();
 
   await page.goto(navigationTarget, { waitUntil: 'domcontentloaded' }).catch(() => undefined);
   await acceptAccessCookiesIfPresent(page);
-  await runBrowserFetchText(page, { url: new URL('/auth/isAuthenticated', baseUrl).toString(), method: 'GET' }).catch(() => undefined);
+  await runBrowserFetchText(page, { url: new URL('/auth/isAuthenticated', baseUrl).toString(), method: 'GET' }).catch(
+    () => undefined
+  );
 }
 
 async function waitForXsrfToken(page: Page, baseUrl: string): Promise<string> {

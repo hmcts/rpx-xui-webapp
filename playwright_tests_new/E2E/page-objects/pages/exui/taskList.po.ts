@@ -176,16 +176,16 @@ export class TaskListPage extends Base {
     const timeoutMs = this.resolveInteractionTimeout(deadlineMs, FILTER_CONTROL_READY_TIMEOUT_MS);
     await targetCheckbox.waitFor({ state: 'visible', timeout: timeoutMs }).catch(async () => {
       await this.assertTaskListInteractive(`waiting for ${description}`);
-      throw new Error(
-        `Task list filter checkbox "${description}" did not become visible within ${timeoutMs}ms.`
-      );
+      throw new Error(`Task list filter checkbox "${description}" did not become visible within ${timeoutMs}ms.`);
     });
     return targetCheckbox;
   }
 
   private assertFilterInteractionAlive(context: string, deadlineMs?: number): void {
     if (this.page.isClosed()) {
-      throw new Error(`Task list filter ${context} was interrupted because the page or browser closed before the operation completed.`);
+      throw new Error(
+        `Task list filter ${context} was interrupted because the page or browser closed before the operation completed.`
+      );
     }
     if (deadlineMs && Date.now() > deadlineMs) {
       throw new Error(`Task list filter ${context} did not complete within ${FILTER_GROUP_OPERATION_TIMEOUT_MS}ms.`);
@@ -291,7 +291,9 @@ export class TaskListPage extends Base {
       return;
     }
     const states = await this.getCheckboxStates(childCheckboxes, groupName, deadlineMs);
-    throw new Error(`Failed to clear ${groupName} filter group within ${FILTER_GROUP_OPERATION_TIMEOUT_MS}ms: ${states.join(', ')}`);
+    throw new Error(
+      `Failed to clear ${groupName} filter group within ${FILTER_GROUP_OPERATION_TIMEOUT_MS}ms: ${states.join(', ')}`
+    );
   }
 
   private async forceChildCheckboxState(childCheckboxes: Locator, checked: boolean, groupName: string, deadlineMs?: number) {
@@ -306,12 +308,7 @@ export class TaskListPage extends Base {
     await this.page.waitForTimeout(250);
   }
 
-  private async groupCheckboxesMatchState(
-    childCheckboxes: Locator,
-    checked: boolean,
-    groupName: string,
-    deadlineMs?: number
-  ) {
+  private async groupCheckboxesMatchState(childCheckboxes: Locator, checked: boolean, groupName: string, deadlineMs?: number) {
     const states = await this.getCheckboxStates(childCheckboxes, groupName, deadlineMs);
     return states.length > 0 && states.every((state) => state === checked);
   }

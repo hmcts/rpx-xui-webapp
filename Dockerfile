@@ -16,15 +16,17 @@ ENV PUPPETEER_SKIP_DOWNLOAD=1 \
 USER root
 RUN corepack enable
 USER hmcts
+WORKDIR /opt/app
 
 # Copy only dependency files for better layer caching
-COPY --chown=hmcts:hmcts .yarn ./.yarn
+COPY --chown=hmcts:hmcts .yarn/ ./.yarn/
 COPY --chown=hmcts:hmcts package.json yarn.lock .yarnrc.yml ./
 
 # Install dependencies once
 RUN yarn install
 
 FROM dependencies AS build
+WORKDIR /opt/app
 
 # Copy source files
 COPY --chown=hmcts:hmcts . .
@@ -38,11 +40,13 @@ LABEL maintainer="HMCTS Expert UI <https://github.com/hmcts>"
 USER root
 RUN corepack enable
 USER hmcts
+WORKDIR /opt/app
 
-# Copy only production dependencies
-COPY --chown=hmcts:hmcts .yarn ./.yarn
+# Copy only production dependencies for the API workspace
+COPY --chown=hmcts:hmcts .yarn/ ./.yarn/
 COPY --chown=hmcts:hmcts package.json yarn.lock .yarnrc.yml ./
-RUN yarn workspaces focus --production && yarn cache clean
+COPY --chown=hmcts:hmcts api/package.json ./api/package.json
+RUN yarn workspaces focus jui --production && yarn cache clean
 
 # Copy built artifacts from build stage
 COPY --from=build --chown=hmcts:hmcts $WORKDIR/dist ./dist

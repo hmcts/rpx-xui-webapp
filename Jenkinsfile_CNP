@@ -235,7 +235,7 @@ withPipeline(type, product, component) {
                     api: {
                     stage('API Tests') {
                         withEnv([
-                            "FUNCTIONAL_TESTS_WORKERS=8",
+                            "FUNCTIONAL_TESTS_WORKERS=2",
                             "API_PW_INCLUDE_TAGS=${params.API_PW_INCLUDE_TAGS ?: ''}",
                             "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
                         ]) {

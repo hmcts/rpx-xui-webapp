@@ -111,6 +111,13 @@ data "azurerm_key_vault_secret" "welsh_report_email" {
 }
 
 locals {
-  welsh_emails = var.welsh_reporting_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.welsh_report_email.0.value)) : []
+  welsh_emails          = var.welsh_reporting_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.welsh_report_email.0.value)) : []
+  org_approvals_emails  = var.org_approvals_reporting_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.org_approvals_report_email.0.value)) : []
+}
+
+data "azurerm_key_vault_secret" "org_approvals_report_email" {
+  count        = var.org_approvals_reporting_enabled ? 1 : 0
+  name         = var.org_approvals_email_address_key
+  key_vault_id = data.azurerm_key_vault.key_vault.id
 }
 

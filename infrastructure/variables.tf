@@ -54,3 +54,15 @@ variable "welsh_email_address_key" {
   type        = string
 }
 
+variable "org_approvals_reporting_enabled" {
+  default     = false
+  description = "Enable Organisation Approvals usage reporting"
+  type        = bool
+}
+
+variable "org_approvals_email_address_key" {
+  default     = "org-approvals-report-email"
+  description = "Email address key in Azure Key Vault for Organisation Approvals reporting."
+  type        = string
+}
+

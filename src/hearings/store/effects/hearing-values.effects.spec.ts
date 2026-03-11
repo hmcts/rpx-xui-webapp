@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { of } from 'rxjs';
+import { firstValueFrom, of, take } from 'rxjs';
 import { Go } from '../../../app/store';
 import { initialState } from '../../hearing.test.data';
 import { CategoryType, MemberType, PartyType, RequirementType, UnavailabilityType } from '../../models/hearings.enum';
@@ -160,11 +160,39 @@ describe('Hearing Values Effects', () => {
 
     it('should return a response with service hearing values', () => {
       hearingsServiceMock.loadHearingValues.and.returnValue(of(SERVICE_HEARING_VALUES));
-      const action = new hearingValuesActions.LoadHearingValues();
+      const action = new hearingValuesActions.LoadHearingValues({ jurisdictionId: 'IA', caseReference: '1111222233334444' });
       const completion = new hearingValuesActions.LoadHearingValuesSuccess(SERVICE_HEARING_VALUES);
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.loadHearingValue$).toBeObservable(expected);
+    });
+
+    it('should use payload to override caseInfo values', async () => {
+      hearingsServiceMock.loadHearingValues.and.returnValue(of(SERVICE_HEARING_VALUES));
+
+      const action = new hearingValuesActions.LoadHearingValues({
+        jurisdictionId: 'OVERRIDE_JURIS',
+        caseReference: '9999000011112222',
+      });
+
+      actions$ = of(action);
+
+      await firstValueFrom(effects.loadHearingValue$.pipe(take(1)));
+      expect(hearingsServiceMock.loadHearingValues).toHaveBeenCalledWith('OVERRIDE_JURIS', '9999000011112222');
+    });
+
+    it('should still load hearing values when payload has empty jurisdictionId/caseReference', async () => {
+      hearingsServiceMock.loadHearingValues.and.returnValue(of(SERVICE_HEARING_VALUES));
+
+      const action = new hearingValuesActions.LoadHearingValues({
+        jurisdictionId: undefined,
+        caseReference: '',
+      });
+
+      actions$ = of(action);
+
+      await firstValueFrom(effects.loadHearingValue$.pipe(take(1)));
+      expect(hearingsServiceMock.loadHearingValues).toHaveBeenCalledWith('IA', '1111222233334444');
     });
   });
 

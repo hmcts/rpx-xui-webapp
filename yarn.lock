@@ -3930,12 +3930,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.35":
-  version: 7.3.35
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.35"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.35-exui-4150-rc-1":
+  version: 7.3.35-exui-4150-rc-1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.35-exui-4150-rc-1"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/fe76c146061876a8e363bbe65041892daa8feadc12b1ffc9effbd9d6a2b463a0550ae7593630db2892acc49114d6c00aac74bbcfef040c13f310cdad1c85fe46
+  checksum: 10/821b18356567b8003b298016e073b6153129fa90159df0774e282686a53c82b4d2d0cbc8f85e81e4b7f849ec3ee6573c0265b0483570b703d1ba55dbec47ac9d
   languageName: node
   linkType: hard
 
@@ -20783,21 +20783,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"marked@npm:^12.0.2":
-  version: 12.0.2
-  resolution: "marked@npm:12.0.2"
-  bin:
-    marked: bin/marked.js
-  checksum: 10/24d4fc58d37c1779197fa7f93c504d8c71d4df54eb69cbbc14a55ba2a8e2ad83d723801fc25452c21ce74b38a483c5863c53449f130253a597be9e9c1d3e7e2b
-  languageName: node
-  linkType: hard
-
 "marked@npm:^16.2.1":
   version: 16.4.1
   resolution: "marked@npm:16.4.1"
   bin:
     marked: bin/marked.js
   checksum: 10/b5f475dbe297162dc988b7f345b559d03248fde1023822b9f2a68f50cbca0981c78c42f380c3aa5e133b5f5c069a2c6cd683413c12c83710e983a7bc46cdf4a2
+  languageName: node
+  linkType: hard
+
+"marked@npm:^17.0.3":
+  version: 17.0.3
+  resolution: "marked@npm:17.0.3"
+  bin:
+    marked: bin/marked.js
+  checksum: 10/2e3bce6bb012b0d39fba75689b4dea672156d372ae8f089de99e73932bf71f0bb3a5bffa43e58474d6476950b462b7580cb181d68134df3d222b12d190bfa4b2
   languageName: node
   linkType: hard
 
@@ -24869,7 +24869,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.35"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.35-exui-4150-rc-1"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.12"
@@ -24972,7 +24972,7 @@ __metadata:
     local-storage: "npm:^2.0.0"
     lodash: "npm:^4.17.23"
     lz-string: "npm:^1.5.0"
-    marked: "npm:^12.0.2"
+    marked: "npm:^17.0.3"
     material-design-icons: "npm:^3.0.1"
     mocha: "npm:^10.0.0"
     mochawesome: "npm:^7.0.0"

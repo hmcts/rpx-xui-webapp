@@ -82,9 +82,9 @@ export function prepareGetSpecificLocationUrl(baseUrl: string, epimmsId: string)
   return `${baseUrl}/refdata/location/court-venues?epimms_id=${epimmsId}`;
 }
 
-export function prepareGetUsersUrl(baseUrl: string, service: string): string {
+export function prepareGetUsersUrl(baseUrl: string, service: string, pageNumber: number = 0): string {
   const pageSize = parseInt(getConfigValue(CASEWORKER_PAGE_SIZE));
-  return `${baseUrl}/refdata/internal/staff/usersByServiceName?ccd_service_names=${service}&page_size=${pageSize}`;
+  return `${baseUrl}/refdata/internal/staff/usersByServiceName?ccd_service_names=${service}&page_size=${pageSize}&page_number=${pageNumber}`;
 }
 
 export function prepareRoleApiUrl(baseUrl: string) {
@@ -1075,6 +1075,9 @@ export function getAppropriateLocation(services: string[], locations: Location[]
 }
 
 export function searchAndReturnRefinedUsers(services: string[], term: string, users: CachedCaseworker[]): Caseworker[] {
+  if (!users) {
+    return [];
+  }
   if (services) {
     // filter out the caseworkers who are of the services required
     users = users.filter((user) => services.some((service) => user.services?.includes(service)));

@@ -1,6 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Jurisdiction } from '@hmcts/ccd-case-ui-toolkit';
+import { Jurisdiction, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { SessionStorageService } from '../../app/services';
@@ -19,8 +19,8 @@ export class JurisdictionsService {
       Accept: 'application/json',
     });
     if (this.sessionStorageService.getItem('JURISDICTIONS')) {
-      const jurisdictions = JSON.parse(this.sessionStorageService.getItem('JURISDICTIONS'));
-      return of(jurisdictions as Jurisdiction[]);
+      const jurisdictions = safeJsonParse<Jurisdiction[]>(this.sessionStorageService.getItem('JURISDICTIONS'), []);
+      return of(jurisdictions);
     }
     return this.http
       .get<Jurisdiction[]>('/aggregated/caseworkers/:uid/jurisdictions?access=read', { headers })

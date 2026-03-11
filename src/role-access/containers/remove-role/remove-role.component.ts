@@ -4,6 +4,7 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { first, map, mergeMap } from 'rxjs/operators';
 import { SessionStorageService } from '../../../app/services';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { Utils } from '../../../cases/utils/utils';
 import { Caseworker } from '../../../work-allocation/models/dtos';
 import { CaseworkerDataService } from '../../../work-allocation/services';
@@ -55,7 +56,7 @@ export class RemoveRoleComponent implements OnInit {
       .subscribe((caseRoles: CaseRole[]) => {
         this.role = caseRoles.find((role) => role.id === this.assignmentId);
         if (!this.role.email && this.role.actorId) {
-          const caseworkers = JSON.parse(this.sessionStorageService.getItem('caseworkers'));
+          const caseworkers = safeJsonParse<Caseworker[]>(this.sessionStorageService.getItem('caseworkers'), []);
           if (caseworkers) {
             const caseWorker = (caseworkers as Caseworker[]).find((caseworker) => caseworker.idamId === this.role.actorId);
             if (caseWorker) {

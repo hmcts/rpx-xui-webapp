@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
@@ -95,7 +95,10 @@ export class CaseTaskComponent implements OnInit {
   public isTaskAssignedToCurrentUser(task: Task): boolean {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      if (!userInfo) {
+        return false;
+      }
       const userId = userInfo.id ? userInfo.id : userInfo.uid;
       this.userRoleCategory = userInfo.roleCategory;
       this.isUserJudicial = this.userRoleCategory === RoleCategory.JUDICIAL;

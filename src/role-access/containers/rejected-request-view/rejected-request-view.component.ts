@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { CaseworkerDataService, WASupportedJurisdictionsService } from '../../../work-allocation/services';
 import { RejectionReasonText } from '../../models/enums/answer-text';
 import { AllocateRoleService } from '../../services';
@@ -66,7 +67,7 @@ export class RejectedRequestViewComponent implements OnInit {
     this.reviewReason =
       this.route.snapshot.queryParams && this.route.snapshot.queryParams.infoRequired
         ? this.getRejectReason(
-            JSON.parse(this.route.snapshot.queryParams.infoRequired),
+            safeJsonParse(this.route.snapshot.queryParams.infoRequired, null),
             this.route.snapshot.queryParams.infoRequiredComment
           )
         : 'No reason for rejection found';

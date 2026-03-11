@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { UserInfo } from '../../../app/models';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '..';
 import { WindowLocationService } from '../window-location/window-location.service';
 import { AuthService } from './auth.service';
@@ -37,12 +38,7 @@ export class AuthGuard {
   }
 
   public getJSONObject(value: string): UserInfo {
-    try {
-      return JSON.parse(value);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      return null;
-    }
+    return safeJsonParse<UserInfo>(value, null);
   }
 
   private redirectToStoredUrl(): void {

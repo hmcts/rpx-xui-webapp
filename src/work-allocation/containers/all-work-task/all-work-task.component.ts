@@ -4,6 +4,7 @@ import { select } from '@ngrx/store';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { HMCTSServiceDetails, UserInfo, UserRole } from '../../../app/models';
 import * as fromActions from '../../../app/store';
 import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
@@ -95,7 +96,10 @@ export class AllWorkTaskComponent extends TaskListWrapperComponent {
   public getSearchTaskRequestPagination(): SearchTaskRequest {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      if (!userInfo) {
+        return;
+      }
       const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
       const searchParameters = [this.getStateParameter()];
       const personParameter = { key: 'user', operator: 'IN', values: [this.selectedPerson] };

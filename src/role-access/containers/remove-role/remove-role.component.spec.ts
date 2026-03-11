@@ -17,6 +17,7 @@ import { AnswerLabelText, RemoveRoleText } from '../../models/enums/answer-text'
 import { AllocateRoleService } from '../../services';
 import { RemoveRoleComponent } from './remove-role.component';
 import { LoggerService } from '../../../app/services/logger/logger.service';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
   standalone: false,
@@ -39,6 +40,7 @@ describe('RemoveRoleComponent', () => {
   let component: RemoveRoleComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
+  let sessionStorageServiceMock: jasmine.SpyObj<any>;
   const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate', 'getCurrentNavigation']);
   routerMock.navigate.and.returnValue(Promise.resolve(true));
   const locationMock = jasmine.createSpyObj('Location', ['back']);
@@ -89,6 +91,7 @@ describe('RemoveRoleComponent', () => {
   }
 
   beforeEach(waitForAsync(() => {
+    sessionStorageServiceMock = jasmine.createSpyObj('SessionStorageService', ['getItem']);
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       declarations: [AnswersComponent, RemoveRoleComponent, WrapperComponent],
@@ -149,6 +152,10 @@ describe('RemoveRoleComponent', () => {
           provide: LoggerService,
           useValue: loggerServiceMock,
         },
+        {
+          provide: SessionStorageService,
+          useValue: sessionStorageServiceMock,
+        },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
@@ -197,6 +204,33 @@ describe('RemoveRoleComponent', () => {
       state: { showMessage: true, retainMessages: true, message, messageText: RemoveRoleText.infoMessage },
     };
     expect(routerMock.navigate).toHaveBeenCalledWith([allworkUrl], additionalState);
+  });
+
+  it('should not set email when caseworkers JSON is invalid', () => {
+    const allocateRoleService = TestBed.inject(AllocateRoleService) as AllocateRoleService;
+    sessionStorageServiceMock.getItem.and.returnValue('{not-json}');
+    spyOn(allocateRoleService, 'getCaseRoles').and.returnValue(
+      of([
+        {
+          added: Date.UTC(2021, 6, 1),
+          id: '999999999',
+          actorId: '999999999',
+          name: 'Mr Test',
+          notes: 'Test exclusion',
+          roleName: TypeOfRole.CaseManager,
+          roleCategory: RoleCategory.JUDICIAL,
+          email: null,
+        },
+      ] as unknown as CaseRole[])
+    );
+    spyOn(allocateRoleService, 'getCaseRolesUserDetails').and.returnValue(of([]));
+
+    const localFixture = TestBed.createComponent(WrapperComponent);
+    const localComponent = localFixture.componentInstance.appComponentRef;
+    localComponent.assignmentId = '999999999';
+    localFixture.detectChanges();
+
+    expect(localComponent.role.email).toBeNull();
   });
 
   describe('showSpinner', () => {

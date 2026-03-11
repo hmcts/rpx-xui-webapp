@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
+import { SessionStorageService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { Person, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { InformationMessage } from '../../../app/shared/models';
@@ -58,7 +58,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
   public ngOnInit(): void {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
       if (userInfo) {
         // EXUI-2907 - Use roleCategory instead of roles
         this.isUserJudicial = userInfo.roleCategory === RoleCategory.JUDICIAL;

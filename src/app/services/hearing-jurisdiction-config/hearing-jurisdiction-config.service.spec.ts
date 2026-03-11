@@ -85,4 +85,59 @@ describe('HearingJurisdictionConfigService', () => {
       done();
     });
   });
+
+  it('should return null when userDetails is invalid JSON', (done) => {
+    const mockConfig = {
+      '.+': [{ jurisdiction: 'defaultConfig' }],
+      '123': [{ jurisdiction: 'userConfig' }],
+    };
+
+    environmentServiceSpy.config$ = of({
+      hearingJurisdictionConfig: {
+        hearingJurisdictions: mockConfig,
+        hearingAmendment: {},
+      },
+      idamWeb: '',
+      clientId: '',
+      oAuthCallback: '',
+      protocol: '',
+      oidcEnabled: '',
+      paymentReturnUrl: '',
+      headerConfig: {},
+    });
+    sessionStorageServiceSpy.getItem.and.returnValue('{not-json}');
+
+    service.getHearingJurisdictionsConfig().subscribe((config) => {
+      expect(config).toBeNull();
+      done();
+    });
+  });
+
+  it('should return the correct amendment config based on user id', (done) => {
+    const mockConfig = {
+      '.+': [{ jurisdiction: 'defaultAmendmentConfig' }],
+      '123': [{ jurisdiction: 'userAmendmentConfig' }],
+    };
+    const mockUserDetails = JSON.stringify({ id: '123' });
+
+    environmentServiceSpy.config$ = of({
+      hearingJurisdictionConfig: {
+        hearingJurisdictions: {},
+        hearingAmendment: mockConfig,
+      },
+      idamWeb: '',
+      clientId: '',
+      oAuthCallback: '',
+      protocol: '',
+      oidcEnabled: '',
+      paymentReturnUrl: '',
+      headerConfig: {},
+    });
+    sessionStorageServiceSpy.getItem.and.returnValue(mockUserDetails);
+
+    service.getHearingAmendmentConfig().subscribe((config) => {
+      expect(config).toEqual([{ jurisdiction: 'userAmendmentConfig' }]);
+      done();
+    });
+  });
 });

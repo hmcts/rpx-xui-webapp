@@ -117,7 +117,7 @@ export async function loadLinkedCasesWithHearings(req: EnhancedRequest, res: Res
     };
     const linkedCaseIds = data.map((linkedCase) => linkedCase.caseReference);
 
-    if (linkedCaseIds && linkedCaseIds.length) {
+    if (linkedCaseIds?.length) {
       const promises = [];
       const allCaseId = [currentCase.caseReference, ...linkedCaseIds];
       const allData = [currentCase, ...data];

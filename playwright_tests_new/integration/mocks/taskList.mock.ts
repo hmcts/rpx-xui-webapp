@@ -1,6 +1,11 @@
 import { faker } from '@faker-js/faker';
 
-export const actions = [
+export type TaskActions = {
+  id: string;
+  title: string;
+};
+
+export const myActionsList: TaskActions[] = [
   { id: 'cancel', title: 'Cancel task' },
   { id: 'complete', title: 'Mark as done' },
   { id: 'go', title: 'Go to task' },
@@ -8,11 +13,23 @@ export const actions = [
   { id: 'unclaim', title: 'Unassign task' },
 ];
 
+export const availableActionsList: TaskActions[] = [
+  { id: 'claim', title: 'Assign to me' },
+  { id: 'claim-and-go', title: 'Assign to me and go to task' },
+];
+
 export const permissions = {
   values: ['read', 'own', 'manage', 'execute', 'cancel', 'complete', 'claim', 'assign', 'unassign'],
 };
 
 export const caseCategories = ['Protection', 'Human rights', 'EUSS'];
+export const caseTypes = [
+  'detainedListTheCase',
+  'reviewTheAppeal',
+  'reviewInterpreters',
+  'reviewRespondentResponse',
+  'detainedReviewInterpreters',
+];
 
 export const dateOptions = [
   { label: 'yesterday', value: faker.date.recent({ days: 2 }) },
@@ -23,9 +40,9 @@ export const dateOptions = [
   { label: 'future', value: faker.date.soon({ days: faker.number.int({ min: 14, max: 180 }) }) },
 ];
 
-export function buildMyTaskListMock(rowCount: number = 3, assignee: string) {
+export function buildTaskListMock(rowCount: number, assignee: string, actions: TaskActions[] = myActionsList) {
   const maxResults = 25;
-  const tasks = Array.from({ length: Math.min(rowCount, maxResults) }, (_, i) => {
+  const tasks = Array.from({ length: Math.min(rowCount, maxResults) }, () => {
     // Created date: always in the past (up to 90 days ago)
     const createdDate = faker.date.past({ years: 0.25 });
     // Due date: pick from options
@@ -39,14 +56,15 @@ export function buildMyTaskListMock(rowCount: number = 3, assignee: string) {
     const priority = faker.number.int({ min: 1, max: 10 });
     // Case name/category/location/task
     const caseName = faker.company.name();
+    const caseType = faker.helpers.arrayElement(caseTypes);
     const caseCategory = faker.helpers.arrayElement(caseCategories);
     const locationName = 'Taylor House';
     const taskTitle = faker.word.words({ count: { min: 2, max: 5 } });
     return {
       id: faker.string.uuid(),
       name: taskTitle,
-      assignee: assignee,
-      type: 'processApplicationUpdateHearingRequirements',
+      ...(assignee ? { assignee } : {}),
+      type: caseType,
       task_state: 'assigned',
       task_system: 'SELF',
       security_classification: 'PUBLIC',
@@ -59,7 +77,7 @@ export function buildMyTaskListMock(rowCount: number = 3, assignee: string) {
       jurisdiction: 'IA',
       region: '1',
       case_type_id: 'Asylum',
-      case_id: faker.number.int({ min: 1000000000000000, max: 9999999999999999 }).toString(),
+      case_id: faker.string.numeric(16),
       case_category: caseCategory,
       case_name: caseName,
       auto_assigned: false,
@@ -69,7 +87,7 @@ export function buildMyTaskListMock(rowCount: number = 3, assignee: string) {
       work_type_id: 'applications',
       work_type_label: 'Applications',
       permissions,
-      description: `[Decide an application](/case/IA/Asylum/${faker.number.int({ min: 1000000000000000, max: 9999999999999999 })}/trigger/decideAnApplication)`,
+      description: `[Decide an application](/case/IA/Asylum/${faker.string.numeric(16)}/trigger/decideAnApplication)`,
       role_category: 'LEGAL_OPERATIONS',
       minor_priority: priority,
       major_priority: priority * 1000,
@@ -93,14 +111,18 @@ export function buildMyTaskListMock(rowCount: number = 3, assignee: string) {
   };
 }
 
+// Backward-compatible helper used by manage-tasks integration specs.
+// Signature intentionally matches existing call sites: (assignee, rowCount).
+export function buildMyTaskListMock(assignee: string, rowCount: number, actions: TaskActions[] = myActionsList) {
+  return buildTaskListMock(rowCount, assignee, actions);
+}
+
 /**
  * Deterministic mock builder: always returns the same data except for due dates.
  * Due dates: one in the past, one today, one tomorrow, one next month.
  * Priority is the same for all.
  */
 export function buildDeterministicMyTasksListMock(assignee: string) {
-  const priority = 5;
-  const highPriority = 10;
   const baseTasks = [
     {
       case_name: 'Smith & Co',
@@ -153,14 +175,13 @@ export function buildDeterministicMyTasksListMock(assignee: string) {
   };
 
   const tasks = baseTasks.map((t, i) => {
-    const itemPriority = t.minor_priority;
     const warnings = i === 0;
     const warning_list = i === 0 ? staticWarningList : { values: [] };
     const priority_field = t.priority_field;
     return {
       id: `static-id-${i}`,
       name: t.task_title,
-      assignee,
+      ...(assignee ? { assignee } : {}),
       type: 'processApplicationUpdateHearingRequirements',
       task_state: 'assigned',
       task_system: 'SELF',
@@ -190,7 +211,7 @@ export function buildDeterministicMyTasksListMock(assignee: string) {
       major_priority: t.major_priority,
       priority_date: t.due_date,
       dueDate: t.due_date,
-      actions,
+      actions: myActionsList,
       // Flattened case fields
       case_name_field: t.case_name,
       case_category_field: t.case_category,

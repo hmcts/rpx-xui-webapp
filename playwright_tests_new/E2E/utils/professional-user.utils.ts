@@ -62,6 +62,7 @@ import {
   readStringProperty,
   resolveAssignmentClientId,
   resolveAssignmentClientSecret,
+  resolveAssignmentUiUserIdentifier,
   resolveAssignmentModesToTry,
   resolveAssignmentRequestTimeoutMs,
   resolveAssignmentUserRolesResolution,
@@ -93,6 +94,18 @@ import {
 } from './professional-user/runtime.js';
 import { ensureUiStorageStateForUser } from './session-storage.utils.js';
 import { resolveUiStoragePathForUser } from './storage-state.utils.js';
+
+type ManageOrgSessionInviteDependencies = {
+  ensureUiStorageStateForUser: typeof ensureUiStorageStateForUser;
+  resolveUiStoragePathForUser: typeof resolveUiStoragePathForUser;
+  newApiContext: typeof request.newContext;
+};
+
+const defaultManageOrgSessionInviteDependencies: ManageOrgSessionInviteDependencies = {
+  ensureUiStorageStateForUser,
+  resolveUiStoragePathForUser,
+  newApiContext: request.newContext.bind(request),
+};
 
 export {
   CASEWORKER_DIVORCE_ROLE_NAMES,
@@ -221,7 +234,8 @@ const logger = createLogger({
 export class ProfessionalUserUtils {
   constructor(
     private readonly idamUtils: IdamUtils,
-    private readonly serviceAuthUtils?: ServiceAuthUtils
+    private readonly serviceAuthUtils?: ServiceAuthUtils,
+    private readonly manageOrgSessionInviteDependencies: ManageOrgSessionInviteDependencies = defaultManageOrgSessionInviteDependencies
   ) {}
 
   public async createSolicitorUser(options: CreateTypeSpecificOptions = {}): Promise<ProfessionalUserInfo> {
@@ -663,16 +677,15 @@ export class ProfessionalUserUtils {
     };
 
     const hasExplicitAssignmentOverrides = Boolean(firstNonEmpty(params.assignmentBearerToken, params.serviceToken));
-    const assignmentUiUser =
-      firstNonEmpty(process.env.ORG_USER_ASSIGNMENT_UI_USER, 'ORG_USER_ASSIGNMENT') ?? 'ORG_USER_ASSIGNMENT';
+    const assignmentUiUser = resolveAssignmentUiUserIdentifier();
     if (!hasExplicitAssignmentOverrides) {
       try {
-        await ensureUiStorageStateForUser(assignmentUiUser, {
+        await this.manageOrgSessionInviteDependencies.ensureUiStorageStateForUser(assignmentUiUser, {
           strict: true,
           baseUrl: manageOrgBaseUrl,
         });
-        const storagePath = resolveUiStoragePathForUser(assignmentUiUser);
-        const apiContext = await request.newContext({
+        const storagePath = this.manageOrgSessionInviteDependencies.resolveUiStoragePathForUser(assignmentUiUser);
+        const apiContext = await this.manageOrgSessionInviteDependencies.newApiContext({
           baseURL: manageOrgBaseUrl,
           ignoreHTTPSErrors: true,
           storageState: storagePath,

@@ -665,4 +665,90 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
       }
     }
   });
+
+  test('ProfessionalUserUtils normalises an email-shaped assignment UI user before bootstrapping the manage-org session path', async () => {
+    const originalAssignmentUiUser = process.env.ORG_USER_ASSIGNMENT_UI_USER;
+    const ensuredUsers: string[] = [];
+    const resolvedStorageUsers: string[] = [];
+    const requestedStorageStates: string[] = [];
+    const requestedBaseUrls: string[] = [];
+    const postedPayloads: unknown[] = [];
+
+    process.env.ORG_USER_ASSIGNMENT_UI_USER = 'xui_test_solicitors@xui.com';
+
+    try {
+      const utils = new ProfessionalUserUtils(
+        {} as never,
+        {
+          retrieveToken: async () => {
+            throw new Error('should-not-request-service-token');
+          },
+        } as never,
+        {
+          ensureUiStorageStateForUser: async (userIdentifier, options) => {
+            ensuredUsers.push(userIdentifier);
+            expect(options.strict).toBe(true);
+            expect(options.baseUrl).toMatch(/^https:\/\/manage-org\./);
+          },
+          resolveUiStoragePathForUser: (userIdentifier) => {
+            resolvedStorageUsers.push(userIdentifier);
+            return `/tmp/${userIdentifier}.json`;
+          },
+          newApiContext: async ({ storageState, baseURL }) => {
+            requestedStorageStates.push(storageState);
+            requestedBaseUrls.push(baseURL);
+            return {
+              post: async (_path, options) => {
+                postedPayloads.push(options.data);
+                return {
+                  ok: () => true,
+                  status: () => 201,
+                  text: async () => JSON.stringify({ invited: true }),
+                };
+              },
+              dispose: async () => undefined,
+            } as never;
+          },
+        }
+      );
+
+      const result = await (utils as never).inviteUserViaManageOrgApi({
+        user: {
+          email: 'dynamic@example.test',
+          password: 'secret',
+          forename: 'Dynamic',
+          surname: 'User',
+          roleNames: ['caseworker'],
+        },
+        roles: ['caseworker'],
+        resendInvite: false,
+      });
+
+      expect(result).toEqual({
+        status: 201,
+        userIdentifier: undefined,
+        responseBody: { invited: true },
+      });
+      expect(ensuredUsers).toEqual(['ORG_USER_ASSIGNMENT']);
+      expect(resolvedStorageUsers).toEqual(['ORG_USER_ASSIGNMENT']);
+      expect(requestedStorageStates).toEqual(['/tmp/ORG_USER_ASSIGNMENT.json']);
+      expect(requestedBaseUrls).toHaveLength(1);
+      expect(requestedBaseUrls[0]).toMatch(/^https:\/\/manage-org\./);
+      expect(postedPayloads).toEqual([
+        {
+          firstName: 'Dynamic',
+          lastName: 'User',
+          email: 'dynamic@example.test',
+          roles: ['caseworker'],
+          resendInvite: false,
+        },
+      ]);
+    } finally {
+      if (typeof originalAssignmentUiUser === 'string') {
+        process.env.ORG_USER_ASSIGNMENT_UI_USER = originalAssignmentUiUser;
+      } else {
+        delete process.env.ORG_USER_ASSIGNMENT_UI_USER;
+      }
+    }
+  });
 });

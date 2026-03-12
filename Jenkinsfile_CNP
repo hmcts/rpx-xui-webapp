@@ -260,6 +260,8 @@ withPipeline(type, product, component) {
                         withEnv([
                             "API_PW_INCLUDE_TAGS=${params.API_PW_INCLUDE_TAGS ?: ''}",
                             "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
+                            "ORG_USER_ASSIGNMENT_MODE=external",
+                            "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                             "FUNCTIONAL_TESTS_WORKERS=2"
                         ]) {
                             try {
@@ -309,6 +311,8 @@ withPipeline(type, product, component) {
                             withEnv([
                                 "PLAYWRIGHT_REPORT_FOLDER=${playwrightIntegrationReportDir}",
                                 "TEST_TYPE=preview",
+                                "ORG_USER_ASSIGNMENT_MODE=external",
+                                "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                 "FUNCTIONAL_TESTS_WORKERS=2"
                             ]) {
                                 yarnBuilder.yarn('test:playwright:integration')
@@ -343,6 +347,8 @@ withPipeline(type, product, component) {
                     stage('Playwright E2E') {
                         try {
                             withEnv([
+                                "ORG_USER_ASSIGNMENT_MODE=external",
+                                "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                 "FUNCTIONAL_TESTS_WORKERS=2"
                             ]) {
                                 yarnBuilder.yarn('test:playwrightE2E')
@@ -393,6 +399,8 @@ withPipeline(type, product, component) {
                         withEnv([
                             "API_PW_INCLUDE_TAGS=${params.API_PW_INCLUDE_TAGS ?: ''}",
                             "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
+                            "ORG_USER_ASSIGNMENT_MODE=external",
+                            "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                             "FUNCTIONAL_TESTS_WORKERS=4"
                         ]) {
                             try {
@@ -442,6 +450,8 @@ withPipeline(type, product, component) {
                             withEnv([
                                 "PLAYWRIGHT_REPORT_FOLDER=${playwrightIntegrationReportDir}",
                                 "TEST_TYPE=aat",
+                                "ORG_USER_ASSIGNMENT_MODE=external",
+                                "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                 "FUNCTIONAL_TESTS_WORKERS=4"
                             ]) {
                                 yarnBuilder.yarn('test:playwright:integration')
@@ -476,6 +486,8 @@ withPipeline(type, product, component) {
                     stage('Playwright E2E') {
                         try {
                             withEnv([
+                                "ORG_USER_ASSIGNMENT_MODE=external",
+                                "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                 "FUNCTIONAL_TESTS_WORKERS=4"
                             ]) {
                                 yarnBuilder.yarn('test:playwrightE2E')

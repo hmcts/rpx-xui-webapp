@@ -3,8 +3,10 @@ import { expect, test } from '@playwright/test';
 import {
   parseStatusCode,
   resolveAssignmentModesToTry,
+  resolveAssignmentUiUserIdentifier,
   resolveExpectedAssignmentPrincipalEmail,
   resolveIdamApiPathFromOverride,
+  resolveOrganisationAssignmentMode,
   resolveRdProfessionalApiPath,
   resolveOrganisationAssignmentRoles,
   shouldRetryTokenHydrationError,
@@ -15,9 +17,13 @@ import {
 test.describe.configure({ mode: 'serial' });
 
 const ENV_KEYS = [
+  'ORG_USER_ASSIGNMENT_MODE',
   'ORG_USER_ASSIGNMENT_MODE_ORDER',
+  'ORG_USER_ASSIGNMENT_UI_USER',
   'ORG_USER_ASSIGNMENT_EXPECTED_EMAIL',
   'ORG_USER_ASSIGNMENT_USERNAME',
+  'PROFESSIONAL_USER_ASSIGNMENT_MODE',
+  'PROFESSIONAL_USER_ASSIGNMENT_FALLBACK_ORDER',
   'RD_PROFESSIONAL_API_URL',
   'RD_PROFESSIONAL_API_PATH',
   'SERVICES_RD_PROFESSIONAL_API_URL',
@@ -86,6 +92,33 @@ test.describe('Dynamic user support unit tests: runtime helpers', { tag: '@svc-i
 
     expect(resolveAssignmentModesToTry('auto')).toEqual(['internal', 'external']);
     expect(resolveAssignmentModesToTry('external')).toEqual(['external']);
+  });
+
+  test('organisation assignment mode helpers honour legacy environment aliases for local parity', () => {
+    process.env.PROFESSIONAL_USER_ASSIGNMENT_MODE = 'external';
+    process.env.PROFESSIONAL_USER_ASSIGNMENT_FALLBACK_ORDER = 'external, internal';
+
+    expect(resolveOrganisationAssignmentMode()).toBe('external');
+    expect(resolveAssignmentModesToTry('auto')).toEqual(['external', 'internal']);
+
+    process.env.ORG_USER_ASSIGNMENT_MODE = 'internal';
+    process.env.ORG_USER_ASSIGNMENT_MODE_ORDER = 'internal, external';
+
+    expect(resolveOrganisationAssignmentMode()).toBe('internal');
+    expect(resolveAssignmentModesToTry('auto')).toEqual(['internal', 'external']);
+  });
+
+  test('resolveAssignmentUiUserIdentifier falls back to the runtime identifier for email-shaped env values', () => {
+    expect(resolveAssignmentUiUserIdentifier()).toBe('ORG_USER_ASSIGNMENT');
+
+    process.env.ORG_USER_ASSIGNMENT_UI_USER = 'xui_test_solicitors@xui.com';
+    expect(resolveAssignmentUiUserIdentifier()).toBe('ORG_USER_ASSIGNMENT');
+
+    process.env.ORG_USER_ASSIGNMENT_UI_USER = 'ORG_USER_ASSIGNMENT';
+    expect(resolveAssignmentUiUserIdentifier()).toBe('ORG_USER_ASSIGNMENT');
+
+    process.env.ORG_USER_ASSIGNMENT_UI_USER = 'XUI_ASSIGNMENT_UI';
+    expect(resolveAssignmentUiUserIdentifier()).toBe('XUI_ASSIGNMENT_UI');
   });
 
   test('principal-email helpers prefer explicit expected email and normalize bearer tokens', () => {

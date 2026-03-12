@@ -280,7 +280,13 @@ export function resolveManageOrgApiPath(value?: string): string {
 }
 
 export function resolveOrganisationAssignmentMode(value?: OrganisationAssignmentStrategy): OrganisationAssignmentStrategy {
-  const normalized = (value ?? process.env.ORG_USER_ASSIGNMENT_MODE ?? DEFAULT_ORGANISATION_ASSIGNMENT_MODE).trim().toLowerCase();
+  const normalized = (
+    value ??
+    firstNonEmpty(process.env.ORG_USER_ASSIGNMENT_MODE, process.env.PROFESSIONAL_USER_ASSIGNMENT_MODE) ??
+    DEFAULT_ORGANISATION_ASSIGNMENT_MODE
+  )
+    .trim()
+    .toLowerCase();
   if (normalized === 'internal' || normalized === 'external' || normalized === 'auto') {
     return normalized;
   }
@@ -294,7 +300,9 @@ export function resolveAssignmentModesToTry(mode: OrganisationAssignmentStrategy
   if (mode === 'external') {
     return ['external'];
   }
-  const fromEnv = parseAssignmentModeOrder(process.env.ORG_USER_ASSIGNMENT_MODE_ORDER);
+  const fromEnv = parseAssignmentModeOrder(
+    firstNonEmpty(process.env.ORG_USER_ASSIGNMENT_MODE_ORDER, process.env.PROFESSIONAL_USER_ASSIGNMENT_FALLBACK_ORDER)
+  );
   if (fromEnv.length > 0) {
     return fromEnv;
   }
@@ -310,6 +318,18 @@ export function parseAssignmentModeOrder(value: string | undefined): Organisatio
     return [];
   }
   return [...new Set(entries)];
+}
+
+export function resolveAssignmentUiUserIdentifier(value?: string): string {
+  const raw = firstNonEmpty(value, process.env.ORG_USER_ASSIGNMENT_UI_USER);
+  if (!raw) {
+    return 'ORG_USER_ASSIGNMENT';
+  }
+  const normalized = raw.trim();
+  if (!normalized || normalized.includes('@')) {
+    return 'ORG_USER_ASSIGNMENT';
+  }
+  return normalized;
 }
 
 export function resolveAssignmentRequestTimeoutMs(): number {

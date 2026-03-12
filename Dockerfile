@@ -1,4 +1,4 @@
-FROM hmctssbox.azurecr.io/base/node:20-alpine AS dependencies
+FROM hmctspublic.azurecr.io/base/node:20-alpine AS dependencies
 LABEL maintainer="HMCTS Expert UI <https://github.com/hmcts>"
 
 ENV PUPPETEER_SKIP_DOWNLOAD=1 \
@@ -34,7 +34,7 @@ COPY --chown=hmcts:hmcts . .
 # Build the application (dependencies already installed)
 RUN yarn build
 
-FROM hmctssbox.azurecr.io/base/node:20-alpine AS runtime
+FROM hmctspublic.azurecr.io/base/node:20-alpine AS runtime
 LABEL maintainer="HMCTS Expert UI <https://github.com/hmcts>"
 
 USER root

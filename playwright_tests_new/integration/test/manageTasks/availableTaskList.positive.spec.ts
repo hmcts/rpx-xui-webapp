@@ -12,7 +12,7 @@ test.beforeEach(async ({ page }) => {
   // workallocation/region-location
 });
 
-test.describe(`Available Task List as ${userIdentifier}`, () => {
+test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   test(`User ${userIdentifier} can view a large number of available tasks on the task list page`, async ({
     taskListPage,
     page,

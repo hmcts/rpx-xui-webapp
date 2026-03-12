@@ -4,7 +4,7 @@ import { ensureSessionCookies } from '../../../common/sessionCapture';
 let sessionCookies: any[] = [];
 const TRANSLATIONS_TIMEOUT = 10_000;
 
-test.describe('Verify users can switch the language', () => {
+test.describe('Verify users can switch the language', { tag: ['@integration', '@integration-welsh-language'] }, () => {
   test.beforeEach(async ({ page }) => {
     const { cookies } = await ensureSessionCookies('SOLICITOR');
     sessionCookies = cookies;

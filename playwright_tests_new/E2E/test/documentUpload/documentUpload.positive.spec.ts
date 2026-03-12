@@ -10,7 +10,7 @@ import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
 const logger = createLogger({ serviceName: 'document-upload-tests', format: 'pretty' });
 const DOCUMENT_UPLOAD_SUBMIT_TIMEOUT_MS = 60_000;
 
-test.describe('Document upload V2', () => {
+test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, () => {
   test.describe.configure({ timeout: 120000 });
   let testValue: string;
   let caseNumber: string;
@@ -135,7 +135,7 @@ test.describe('Document upload V2', () => {
   });
 });
 
-test.describe('Document upload V1', () => {
+test.describe('Document upload V1', { tag: ['@e2e', '@e2e-document-upload'] }, () => {
   test.describe.configure({ timeout: 120000 });
   let testValue: string;
   let testFileName: string;

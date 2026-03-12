@@ -65,6 +65,10 @@ test.describe(`Task Reassign as ${userIdentifier}`, () => {
     });
 
     await test.step('Submit reassign action and verify expected API response', async () => {
+      const expectedReassignUserId = singleUsersGetByRoleMockResponse[0].idamId;
+      const reassignRequestPromise = page.waitForRequest(
+        (request) => request.method() === 'POST' && request.url().includes(`/workallocation/task/${firstTask.id}/assign`)
+      );
       const reassignResponsePromise = page.waitForResponse(
         (response) =>
           response.request().method() === 'POST' &&
@@ -72,6 +76,9 @@ test.describe(`Task Reassign as ${userIdentifier}`, () => {
           response.status() === 204
       );
       await taskListPage.reassignButton.click();
+      const reassignRequest = await reassignRequestPromise;
+      const requestBody = reassignRequest.postDataJSON() as { userId?: string };
+      expect(requestBody.userId).toBe(expectedReassignUserId);
       await reassignResponsePromise;
     });
 

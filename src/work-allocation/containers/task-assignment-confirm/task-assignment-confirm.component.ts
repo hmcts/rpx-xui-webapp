@@ -39,7 +39,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     private readonly location: Location
   ) {
     const navigation = this.router.getCurrentNavigation();
-    if (navigation && navigation.extras && navigation.extras.state) {
+    if (navigation?.extras?.state) {
       this.selectedPerson = navigation.extras.state.selectedPerson;
       this.roleCategory = navigation.extras.state.roleCategory;
     }
@@ -69,7 +69,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     }
     this.verb = this.route.snapshot.data.verb as TaskActionType;
     this.taskId = this.route.snapshot.params.taskId;
-    if (this.router && this.router.url) {
+    if (this.router?.url) {
       this.rootPath = this.router.url.split('/')[1];
     }
     this.task = this.route.snapshot.data.taskAndCaseworkers.task.task;

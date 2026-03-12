@@ -175,7 +175,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       .getStream(TaskListFilterComponent.FILTER_NAME)
       .pipe(
         debounceTime(200),
-        filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
+        filter((f: FilterSetting) => f?.hasOwnProperty('fields'))
       )
       .subscribe((f: FilterSetting) => {
         const newLocations = f.fields.find((field) => field.name === 'locations')?.value;
@@ -463,7 +463,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     this.tasks = result.tasks;
     this.tasksTotal = result.total_records;
     this.ref.detectChanges();
-    if (result.tasks && result.tasks.length === 0 && this.pagination.page_number > 1) {
+    if (result.tasks?.length === 0 && this.pagination.page_number > 1) {
       // if possibly back at a page that has been removed by actions to task, go back one to attempt to get tasks
       this.goneBackCount++;
       if (this.goneBackCount < 10) {

@@ -38,7 +38,7 @@ test.beforeEach(async ({ page }, testInfo) => {
   });
 });
 
-test.describe('Find Case with prewarmed search session', () => {
+test.describe('Find Case with prewarmed search session', { tag: ['@integration', '@integration-search-case'] }, () => {
   test('User can find an existing case from Find case filters', async ({ caseListPage, findCasePage, page }) => {
     await test.step('Open Find case from main menu and apply filters with 16-digit reference', async () => {
       await caseListPage.navigateTo();

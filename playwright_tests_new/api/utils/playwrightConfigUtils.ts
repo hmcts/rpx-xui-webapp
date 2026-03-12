@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { createRequire } from 'node:module';
 
 export type EnvMap = Record<string, string | undefined>;
 
@@ -19,14 +19,16 @@ export interface TestableConfigModule extends ConfigModule {
   };
 }
 
+const require = createRequire(import.meta.url);
+require('ts-node/register/transpile-only');
+
 export async function loadConfig(): Promise<TestableConfigModule> {
   return loadConfigAt('playwright.config.ts');
 }
 
 export async function loadConfigAt(relativePath: string): Promise<TestableConfigModule> {
   const configPath = path.resolve(process.cwd(), relativePath);
-  const configUrl = pathToFileURL(configPath).href;
-  const loaded = await import(configUrl);
+  const loaded = require(configPath) as ConfigModule;
   const resolved = resolveConfigModule(loaded as ConfigModule);
   if (!resolved.__test__) {
     throw new Error('Playwright config module did not expose __test__ helpers');

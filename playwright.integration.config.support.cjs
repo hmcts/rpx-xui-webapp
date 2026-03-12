@@ -39,6 +39,10 @@ const resolveWorkerCount = (env = process.env) => {
     }
   }
 
+  if (env.CI) {
+    return 8;
+  }
+
   const logical = cpus()?.length ?? 1;
   const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));
   return Math.min(8, Math.max(2, approxPhysical));

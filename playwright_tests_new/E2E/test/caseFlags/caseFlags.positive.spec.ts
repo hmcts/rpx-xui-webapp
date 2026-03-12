@@ -13,7 +13,7 @@ import { formatErrorMessage, isDependencyEnvironmentFailure, retryOnTransientFai
 const PARTY_LEVEL_SUITE_TIMEOUT_MS = 300_000;
 const SESSION_BOOTSTRAP_TIMEOUT_MS = 300_000;
 
-test.describe('Case level case flags', () => {
+test.describe('Case level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () => {
   test.describe.configure({ timeout: 180000 });
   let caseNumber: string;
   const jurisdiction = 'EMPLOYMENT';
@@ -135,7 +135,7 @@ test.describe('Case level case flags', () => {
   });
 });
 
-test.describe('Party level case flags', () => {
+test.describe('Party level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () => {
   test.describe.configure({ timeout: PARTY_LEVEL_SUITE_TIMEOUT_MS });
   const testValue = faker.person.firstName();
   let caseNumber: string;

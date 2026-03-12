@@ -3,7 +3,7 @@ import { expect, test } from '../../../E2E/fixtures';
 import { applyPrewarmedSessionCookies } from '../../helpers';
 let sessionCookies: any[] = [];
 
-test.describe('Verify users can switch the language', () => {
+test.describe('Verify users can switch the language', { tag: ['@integration', '@integration-welsh-language'] }, () => {
   test.beforeEach(async ({ page }) => {
     const { cookies } = await applyPrewarmedSessionCookies(page, 'SOLICITOR');
     sessionCookies = cookies;

@@ -13,12 +13,32 @@ properties([
         string(
             name: 'API_PW_INCLUDE_TAGS',
             defaultValue: '',
-            description: 'Optional comma/space separated Playwright service tags to include for API tests, for example @svc-ccd,@svc-work-allocation'
+            description: 'Optional comma/space separated Playwright API tags to include, for example @svc-ccd,@svc-work-allocation or @svc-auth @svc-cors'
         ),
         string(
             name: 'API_PW_EXCLUDED_TAGS_OVERRIDE',
             defaultValue: '',
-            description: 'Optional comma/space separated Playwright service tags to exclude; when set this overrides playwright_tests_new/api/service-tag-filter.json'
+            description: 'Optional comma/space separated Playwright API tags to exclude; overrides playwright_tests_new/api/service-tag-filter.json. Examples: @svc-work-allocation, @svc-auth @svc-cors, @none to clear repo defaults'
+        ),
+        string(
+            name: 'E2E_PW_INCLUDE_TAGS',
+            defaultValue: '',
+            description: 'Optional comma/space separated Playwright E2E tags to include, for example @e2e-search-case or @e2e-search-case @e2e-update-case'
+        ),
+        string(
+            name: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
+            defaultValue: '',
+            description: 'Optional comma/space separated Playwright E2E tags to exclude; overrides playwright_tests_new/E2E/tag-filter.json. Examples: @e2e-manage-tasks, @e2e-document-upload @e2e-case-flags, @none to clear repo defaults'
+        ),
+        string(
+            name: 'INTEGRATION_PW_INCLUDE_TAGS',
+            defaultValue: '',
+            description: 'Optional comma/space separated Playwright integration tags to include, for example @integration-search-case or @integration-search-case @integration-create-case'
+        ),
+        string(
+            name: 'INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE',
+            defaultValue: '',
+            description: 'Optional comma/space separated Playwright integration tags to exclude; overrides playwright_tests_new/integration/tag-filter.json. Examples: @integration-manage-tasks, @integration-case-list @integration-welsh-language, @none to clear repo defaults'
         )
     ])
 ])
@@ -313,7 +333,10 @@ withPipeline(type, product, component) {
                                 "TEST_TYPE=preview",
                                 "ORG_USER_ASSIGNMENT_MODE=external",
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                                "FUNCTIONAL_TESTS_WORKERS=2"
+                                "FUNCTIONAL_TESTS_WORKERS=2",
+                                "PLAYWRIGHT_SKIP_INSTALL=true",
+                                "INTEGRATION_PW_INCLUDE_TAGS=${params.INTEGRATION_PW_INCLUDE_TAGS ?: ''}",
+                                "INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=${params.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
                             ]) {
                                 yarnBuilder.yarn('test:playwright:integration')
                             }
@@ -349,7 +372,10 @@ withPipeline(type, product, component) {
                             withEnv([
                                 "ORG_USER_ASSIGNMENT_MODE=external",
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                                "FUNCTIONAL_TESTS_WORKERS=2"
+                                "FUNCTIONAL_TESTS_WORKERS=2",
+                                "PLAYWRIGHT_SKIP_INSTALL=true",
+                                "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
+                                "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
                             ]) {
                                 yarnBuilder.yarn('test:playwrightE2E')
                             }
@@ -452,7 +478,10 @@ withPipeline(type, product, component) {
                                 "TEST_TYPE=aat",
                                 "ORG_USER_ASSIGNMENT_MODE=external",
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                                "FUNCTIONAL_TESTS_WORKERS=4"
+                                "FUNCTIONAL_TESTS_WORKERS=4",
+                                "PLAYWRIGHT_SKIP_INSTALL=true",
+                                "INTEGRATION_PW_INCLUDE_TAGS=${params.INTEGRATION_PW_INCLUDE_TAGS ?: ''}",
+                                "INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=${params.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
                             ]) {
                                 yarnBuilder.yarn('test:playwright:integration')
                             }
@@ -488,7 +517,10 @@ withPipeline(type, product, component) {
                             withEnv([
                                 "ORG_USER_ASSIGNMENT_MODE=external",
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                                "FUNCTIONAL_TESTS_WORKERS=4"
+                                "FUNCTIONAL_TESTS_WORKERS=4",
+                                "PLAYWRIGHT_SKIP_INSTALL=true",
+                                "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
+                                "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
                             ]) {
                                 yarnBuilder.yarn('test:playwrightE2E')
                             }
@@ -505,6 +537,7 @@ withPipeline(type, product, component) {
                                 reportFiles          : 'xui-playwright-e2e.html',
                                 reportName           : 'AAT Playwright E2E'
                             ])
+                            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
                         }
                     }
                     }

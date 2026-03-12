@@ -50,66 +50,70 @@ test.beforeEach(async ({ page }, testInfo) => {
   });
 });
 
-test.describe('Header quick search negative flows with prewarmed search session', () => {
-  for (const status of SEARCH_CASE_ERROR_STATUS_CODES) {
-    test(`handles case-details load failure for HTTP ${status}`, async ({ caseListPage, searchCasePage, page }) => {
-      let caseDetailsRequestSeen = false;
-      await page.route('**/data/internal/cases/**', async (route) => {
-        caseDetailsRequestSeen = true;
-        await route.fulfill({
-          status,
-          contentType: 'application/json',
-          body: JSON.stringify({ message: `Forced failure ${status}` }),
+test.describe(
+  'Header quick search negative flows with prewarmed search session',
+  { tag: ['@integration', '@integration-search-case'] },
+  () => {
+    for (const status of SEARCH_CASE_ERROR_STATUS_CODES) {
+      test(`handles case-details load failure for HTTP ${status}`, async ({ caseListPage, searchCasePage, page }) => {
+        let caseDetailsRequestSeen = false;
+        await page.route('**/data/internal/cases/**', async (route) => {
+          caseDetailsRequestSeen = true;
+          await route.fulfill({
+            status,
+            contentType: 'application/json',
+            body: JSON.stringify({ message: `Forced failure ${status}` }),
+          });
         });
+
+        await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, caseListPage, searchCasePage);
+
+        expect(caseDetailsRequestSeen).toBeTruthy();
+
+        if (status === 403) {
+          await expect(page).toHaveURL(new RegExp(`/cases/restricted-case-access/${VALID_SEARCH_CASE_REFERENCE}`));
+          await expect(
+            page.getByText('This case is restricted. The details of the users with access are provided below.')
+          ).toBeVisible();
+        } else {
+          // timeout: 20_000 — failed auth/access redirect can take up to 15s in AAT when the error page resolves
+          await expect(page).not.toHaveURL(/\/cases\/case-details\//);
+          await expect.poll(() => page.url(), { timeout: 20_000 }).toMatch(/\/(cases(?:[/?#]|$)|work\/my-work\/list(?:[/?#]|$))/);
+        }
       });
 
-      await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, caseListPage, searchCasePage);
+      test('handles malformed case-details response from header quick search', async ({ caseListPage, searchCasePage, page }) => {
+        let caseDetailsRequestSeen = false;
+        await page.route('**/data/internal/cases/**', async (route) => {
+          caseDetailsRequestSeen = true;
+          await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: SEARCH_CASE_MALFORMED_JSON_BODY,
+          });
+        });
 
-      expect(caseDetailsRequestSeen).toBeTruthy();
+        await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, caseListPage, searchCasePage);
 
-      if (status === 403) {
-        await expect(page).toHaveURL(new RegExp(`/cases/restricted-case-access/${VALID_SEARCH_CASE_REFERENCE}`));
-        await expect(
-          page.getByText('This case is restricted. The details of the users with access are provided below.')
-        ).toBeVisible();
-      } else {
-        // timeout: 20_000 — failed auth/access redirect can take up to 15s in AAT when the error page resolves
+        expect(caseDetailsRequestSeen).toBeTruthy();
         await expect(page).not.toHaveURL(/\/cases\/case-details\//);
         await expect.poll(() => page.url(), { timeout: 20_000 }).toMatch(/\/(cases(?:[/?#]|$)|work\/my-work\/list(?:[/?#]|$))/);
-      }
-    });
-  }
-
-  test('handles malformed case-details response from header quick search', async ({ caseListPage, searchCasePage, page }) => {
-    let caseDetailsRequestSeen = false;
-    await page.route('**/data/internal/cases/**', async (route) => {
-      caseDetailsRequestSeen = true;
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: SEARCH_CASE_MALFORMED_JSON_BODY,
       });
-    });
 
-    await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, caseListPage, searchCasePage);
+      test('handles timed-out case-details request from header quick search', async ({ caseListPage, searchCasePage, page }) => {
+        let caseDetailsRequestSeen = false;
+        await page.route('**/data/internal/cases/**', async (route) => {
+          caseDetailsRequestSeen = true;
+          await route.abort('timedout');
+        });
 
-    expect(caseDetailsRequestSeen).toBeTruthy();
-    await expect(page).not.toHaveURL(/\/cases\/case-details\//);
-    await expect.poll(() => page.url(), { timeout: 20_000 }).toMatch(/\/(cases(?:[/?#]|$)|work\/my-work\/list(?:[/?#]|$))/);
-  });
+        await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, caseListPage, searchCasePage);
 
-  test('handles timed-out case-details request from header quick search', async ({ caseListPage, searchCasePage, page }) => {
-    let caseDetailsRequestSeen = false;
-    await page.route('**/data/internal/cases/**', async (route) => {
-      caseDetailsRequestSeen = true;
-      await route.abort('timedout');
-    });
-
-    await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, caseListPage, searchCasePage);
-
-    expect(caseDetailsRequestSeen).toBeTruthy();
-    // timeout: 20_000 — aborted/timed-out request triggers error-page redirect which can take up to 15s in AAT
-    await expect(page).not.toHaveURL(/\/cases\/case-details\//);
-    await expect.poll(() => page.url(), { timeout: 20_000 }).toMatch(/\/(cases(?:[/?#]|$)|work\/my-work\/list(?:[/?#]|$))/);
-  });
-});
+        expect(caseDetailsRequestSeen).toBeTruthy();
+        // timeout: 20_000 — aborted/timed-out request triggers error-page redirect which can take up to 15s in AAT
+        await expect(page).not.toHaveURL(/\/cases\/case-details\//);
+        await expect.poll(() => page.url(), { timeout: 20_000 }).toMatch(/\/(cases(?:[/?#]|$)|work\/my-work\/list(?:[/?#]|$))/);
+      });
+    }
+  }
+);

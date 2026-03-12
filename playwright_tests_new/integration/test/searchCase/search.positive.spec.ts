@@ -45,7 +45,7 @@ test.beforeEach(async ({ page }, testInfo) => {
   });
 });
 
-test.describe('Search quick find with prewarmed search session', () => {
+test.describe('Search quick find with prewarmed search session', { tag: ['@integration', '@integration-search-case'] }, () => {
   test('User can find case by valid 16-digit case reference from header search', async ({
     caseListPage,
     searchCasePage,

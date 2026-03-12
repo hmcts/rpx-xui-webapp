@@ -11,7 +11,7 @@ const testField = faker.lorem.word() + new Date().toLocaleTimeString();
 const UPDATE_CASE_ACTION_TIMEOUT_MS = 60_000;
 const UPDATE_CASE_SETUP_CREATE_MAX_ATTEMPTS = 1;
 
-test.describe('Verify creating and updating a case works as expected', () => {
+test.describe('Verify creating and updating a case works as expected', { tag: ['@e2e', '@e2e-update-case'] }, () => {
   test.describe.configure({ timeout: 240_000 });
   test.beforeEach(async ({ page, createCasePage, caseDetailsPage }) => {
     await retryOnTransientFailure(

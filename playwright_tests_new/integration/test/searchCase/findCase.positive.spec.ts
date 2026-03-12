@@ -40,7 +40,7 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test.describe(`Find Case as ${userIdentifier}`, () => {
+test.describe(`Find Case as ${userIdentifier}`, { tag: ['@integration', '@integration-search-case'] }, () => {
   test('User can find an existing case from Find case filters', async ({ caseListPage, findCasePage, page }) => {
     await test.step('Open Find case from main menu and apply filters with 16-digit reference', async () => {
       await caseListPage.navigateTo();

@@ -13,8 +13,12 @@ test.beforeEach(async ({ page }) => {
   // workallocation/region-location
 });
 
-test.describe(`Available Task List as ${userIdentifier}`, () => {
-  test(`User can view a large number of available tasks on the task list page`, async ({ taskListPage, page, tableUtils }) => {
+test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
+  test(`User ${userIdentifier} can view a large number of available tasks on the task list page`, async ({
+    taskListPage,
+    page,
+    tableUtils,
+  }) => {
     const taskListMockResponse = buildTaskListMock(3000, '', availableActionsList);
     await test.step('Setup route mock for task list', async () => {
       await page.route(TASK_LIST_ROUTE_REGEX, async (route) => {

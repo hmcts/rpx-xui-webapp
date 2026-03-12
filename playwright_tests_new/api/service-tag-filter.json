@@ -1,6 +1,7 @@
 {
   "excludedTags": ["@wa-action"],
   "availableServiceTags": [
+    "@wa-action",
     "@svc-auth",
     "@svc-case-share",
     "@svc-ccd",

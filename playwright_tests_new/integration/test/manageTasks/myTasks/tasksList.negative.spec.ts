@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }) => {
 
 const errorStates = [400, 403, 500, 503];
 const userIdentifier = 'STAFF_ADMIN';
-test.describe(`Available Task List as ${userIdentifier}`, () => {
+test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   errorStates.forEach((errorStatus) => {
     test(`User ${userIdentifier} sees the no tasks message on my tasks, if the api returns ${errorStatus}`, async ({
       taskListPage,

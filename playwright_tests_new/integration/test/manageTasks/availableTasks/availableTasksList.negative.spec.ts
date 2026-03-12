@@ -10,8 +10,8 @@ test.beforeEach(async ({ page }) => {
   await applySessionCookies(page, userIdentifier);
 });
 
-test.describe(`Available Task List as ${userIdentifier}`, () => {
-  test(`User sees filter errors if no services are selected`, async ({ taskListPage, page }) => {
+test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
+  test(`User ${userIdentifier} sees filter errors if no services are selected`, async ({ taskListPage, page }) => {
     const taskListMockResponse = buildTaskListMock(10, '', availableActionsList);
     await test.step('Setup route mock for task list', async () => {
       await page.route(TASK_LIST_ROUTE_REGEX, async (route) => {

@@ -6,7 +6,7 @@ import type { ProvisionedProfessionalUser } from '../professional-user/types.js'
 import type { ProfessionalUserUtils } from '../professional-user.utils';
 import type { SessionIdentity } from '../../../common/sessionIdentity.js';
 import config from '../config.utils';
-import { ensureSessionCookies } from '../../../common/sessionCapture';
+import { ensureSessionCookies, sessionCapture } from '../../../common/sessionCapture';
 import { DynamicProvisioningError, provisionUserWithRetries } from './dynamicProvisioningFlow.js';
 import type { DynamicProvisionAttempt } from './dynamicProvisioningFlow.js';
 import {
@@ -69,6 +69,7 @@ type WaitForExuiUserPropagationDeps = {
   resolvePollIntervalMs: () => number;
   resolveBaseUrl: () => string;
   ensureSessionCookies: typeof ensureSessionCookies;
+  recaptureSession: (sessionIdentity: SessionIdentity) => Promise<void>;
   createApiContext: (params: { baseURL: string; storageState: string }) => Promise<ExuiApiContext>;
   attachAttempts: (
     testInfo: TestInfo,
@@ -219,6 +220,10 @@ function resolveJurisdictionAccesses(roleContext?: SolicitorRoleContext): Array<
   return accesses;
 }
 
+function shouldForceSessionRecapture(readinessAttempt: DynamicExuiReadinessAttempt): boolean {
+  return readinessAttempt.authenticated === true && readinessAttempt.userDetailsStatus === 401;
+}
+
 function buildDynamicSessionIdentity(alias: DynamicSolicitorAlias, user: ProvisionedProfessionalUser): SessionIdentity {
   const stableSuffix = user.id?.trim() || user.email.trim().toLowerCase();
   return {
@@ -363,6 +368,7 @@ const DEFAULT_WAIT_FOR_EXUI_PROPAGATION_DEPS: WaitForExuiUserPropagationDeps = {
   resolvePollIntervalMs: resolveDynamicSolicitorExuiReadyPollIntervalMs,
   resolveBaseUrl: () => config.urls.baseURL || config.urls.exuiDefaultUrl || 'https://manage-case.aat.platform.hmcts.net',
   ensureSessionCookies,
+  recaptureSession: async (sessionIdentity) => sessionCapture([sessionIdentity], { force: true }),
   createApiContext: ({ baseURL, storageState }) =>
     request.newContext({
       baseURL,
@@ -545,6 +551,7 @@ async function waitForExuiUserPropagation(
   const deadline = startedAt + timeoutMs;
   const expectedJurisdiction = roleContext?.jurisdiction?.trim().toLowerCase();
   const requiredAccesses = resolveJurisdictionAccesses(roleContext);
+  let hasForcedSessionRecapture = false;
   let attempt = 0;
   while (Date.now() < deadline) {
     attempt += 1;
@@ -564,6 +571,18 @@ async function waitForExuiUserPropagation(
         expectedJurisdiction,
       });
       return;
+    }
+    if (!hasForcedSessionRecapture && shouldForceSessionRecapture(readinessAttempt)) {
+      hasForcedSessionRecapture = true;
+      deps.info('Dynamic solicitor readiness forcing session recapture after unauthorized EXUI probe.', {
+        alias,
+        email: user.email,
+        elapsedMs: readinessAttempt.elapsedMs,
+        userDetailsStatus: readinessAttempt.userDetailsStatus,
+        expectedJurisdiction,
+      });
+      await deps.recaptureSession(sessionIdentity);
+      continue;
     }
     await deps.sleep(Math.min(pollIntervalMs, Math.max(0, deadline - Date.now())));
   }

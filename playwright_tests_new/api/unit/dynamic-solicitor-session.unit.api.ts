@@ -53,6 +53,7 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
           cookies: [{ name: 'session' }] as never,
           storageFile: '/tmp/storage.json',
         }),
+        recaptureSession: async () => undefined,
         createApiContext: async () => {
           attempt += 1;
           return {
@@ -83,6 +84,101 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
 
     expect(attempt).toBe(2);
     expect(attachedBodies[attachedBodies.length - 1]).toContain('"ready":true');
+  });
+
+  test('waitForExuiUserPropagation forces one session recapture after unauthorized user details and then succeeds', async () => {
+    const attachedBodies: string[] = [];
+    const seenStorageStates: string[] = [];
+    let attempt = 0;
+    let recaptureCount = 0;
+
+    await dynamicSessionTest.waitForExuiUserPropagation(
+      {
+        alias: 'EMPLOYMENT_DYNAMIC_SOLICITOR',
+        user: {
+          email: 'dynamic@example.test',
+          password: 'secret',
+          forename: 'Dynamic',
+          surname: 'User',
+          roleNames: ['caseworker', 'caseworker-employment', 'caseworker-employment-legalrep-solicitor', 'pui-case-manager'],
+          organisationAssignment: {
+            status: 201,
+            organisationId: 'test-org',
+            userIdentifier: 'user-123',
+            roles: ['caseworker', 'caseworker-employment', 'caseworker-employment-legalrep-solicitor', 'pui-case-manager'],
+            mode: 'external',
+            requestedMode: 'auto',
+            attemptedModes: ['external'],
+          },
+        },
+        sessionIdentity: {
+          userIdentifier: 'EMPLOYMENT_DYNAMIC_SOLICITOR',
+          email: 'dynamic@example.test',
+          password: 'secret',
+          sessionKey: 'dynamic-employment_dynamic_solicitor-user-123',
+        },
+        roleContext: {
+          jurisdiction: 'employment',
+          testType: 'case-create',
+        },
+        testInfo: {
+          attach: async (_name: string, payload: { body: string | Buffer }) => {
+            attachedBodies.push(String(payload.body));
+          },
+        } as never,
+      },
+      {
+        resolveTimeoutMs: () => 5_000,
+        resolvePollIntervalMs: () => 1,
+        resolveBaseUrl: () => 'https://manage-case.aat.platform.hmcts.net',
+        ensureSessionCookies: async () => ({
+          email: 'test@example.com',
+          cookies: [{ name: 'session' }] as never,
+          storageFile: recaptureCount === 0 ? '/tmp/stale-storage.json' : '/tmp/fresh-storage.json',
+        }),
+        recaptureSession: async () => {
+          recaptureCount += 1;
+        },
+        createApiContext: async ({ storageState }) => {
+          attempt += 1;
+          seenStorageStates.push(storageState);
+          return {
+            get: async (url: string) => {
+              if (url === '/api/user/details') {
+                if (storageState.includes('stale')) {
+                  return {
+                    status: () => 401,
+                    json: async () => ({}),
+                    text: async () => '',
+                  };
+                }
+                return {
+                  status: () => 200,
+                  json: async () => ({ userInfo: { uid: 'user-123' } }),
+                  text: async () => '',
+                };
+              }
+              return {
+                status: () => 200,
+                json: async () => [{ id: 'employment' }],
+                text: async () => '',
+              };
+            },
+            dispose: async () => undefined,
+          } as never;
+        },
+        attachAttempts: async (_info, _alias, attempts) => {
+          attachedBodies.push(JSON.stringify(attempts));
+        },
+        sleep: async () => undefined,
+        info: () => undefined,
+      }
+    );
+
+    expect(recaptureCount).toBe(1);
+    expect(attempt).toBe(2);
+    expect(seenStorageStates).toEqual(['/tmp/stale-storage.json', '/tmp/fresh-storage.json']);
+    expect(attachedBodies[attachedBodies.length - 1]).toContain('"userDetailsStatus":200');
   });
 
   test('provisionDynamicSolicitorForAliasFlow returns explicit session identity and runs readiness checks without global runtime mutation', async () => {

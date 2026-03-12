@@ -9,7 +9,6 @@ export async function routeCaseCreationFlow(page: Page): Promise<unknown> {
   await page.route('**/data/case-types/xuiTestJurisdiction/cases?ignore-warning=false*', async (route: Route) => {
     const request = route.request();
     if (request.method() === 'POST') {
-      console.log('Create case POST payload:', request.postData());
       try {
         resolveInterceptedRequest(request.postDataJSON());
       } catch {

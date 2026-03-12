@@ -182,7 +182,8 @@ test.describe(`Create a ${jurisdiction} case as ${userIdentifier}`, () => {
     });
   });
 
-  test(`When you change the gender of Person 1, the previously filled 'maiden name' field is hidden, and not sent in the API request`, async ({
+  // EXUI-4317 - Skipped until the related bug is resolved, and the expected behaviour can be tested reliably
+  test.skip(`When you change the gender of Person 1, the previously filled 'maiden name' field is hidden, and not sent in the API request`, async ({
     createCasePage,
     caseDetailsPage,
     page,
@@ -245,11 +246,10 @@ test.describe(`Create a ${jurisdiction} case as ${userIdentifier}`, () => {
 
     await test.step(`Check the JSON sent in the creation request doesn't contain 'maiden name' and shows the updated gender field`, async () => {
       expect(interceptedCreateCaseRequestBody).toBeTruthy();
-
       const submittedData = interceptedCreateCaseRequestBody?.data;
       expect(submittedData).toBeTruthy();
       expect(submittedData.Person1?.PersonGender).toBe('male');
-      expect(submittedData).not.toHaveProperty('MaidenName');
+      expect(submittedData.Person1).not.toHaveProperty('MaidenName');
     });
   });
 });

@@ -14,7 +14,7 @@ const createCaseSubmissionEndpointPatterns: RegExp[] = [
 const apiErrorStatusCodes = [500, 503, 401];
 // Returned error code 403 resolve expected outcome
 
-test.describe(`Create case - submit flow validation as ${userIdentifier}`, () => {
+test.describe(`Create case - submit flow validation as ${userIdentifier}`, { tag: ['@integration', '@integration-create-case'] }, () => {
   test.beforeEach(async ({ page, createCasePage }) => {
     // Lazy capture: only log in SOLICITOR when this test suite runs
     await applySessionCookies(page, userIdentifier);

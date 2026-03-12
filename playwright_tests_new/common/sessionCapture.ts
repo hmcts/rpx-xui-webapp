@@ -12,7 +12,8 @@ import { type SessionIdentityInput, resolveSessionIdentity, resolveSessionStorag
 
 const logger = createLogger({ serviceName: 'session-capture', format: 'pretty' });
 
-const IDAM_USERNAME_FALLBACK_SELECTOR = 'input#email, input[name="email"], input[name="emailAddress"], input[autocomplete="email"]';
+const IDAM_USERNAME_FALLBACK_SELECTOR =
+  'input#email, input[name="email"], input[name="emailAddress"], input[autocomplete="email"]';
 const IDAM_SUBMIT_FALLBACK_SELECTOR = 'button:has-text("Sign in"), button:has-text("Continue")';
 const CHROME_ERROR_URL_PREFIX = 'chrome-error://chromewebdata/';
 const DEFAULT_SESSION_MAX_AGE_MS = 60 * 60 * 1000;

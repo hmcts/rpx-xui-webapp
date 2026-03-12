@@ -1,107 +1,35 @@
 import { faker } from '@faker-js/faker';
-import { createLogger } from '@hmcts/playwright-common';
-
+import { Response } from '@playwright/test';
 import { expect, test } from '../../fixtures';
-import { expectCaseBanner } from '../../utils';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
-import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
-import { buildCasePayloadFromTemplate } from '../../utils/test-setup/payloads/registry';
-import {
-  provisionDynamicSolicitorForAlias,
-  EMPLOYMENT_DYNAMIC_CASEWORKER_ROLES,
-} from '../../utils/test-setup/dynamicSolicitorSession';
-import { createEmploymentCase, uploadEmploymentDraftDocument } from '../../utils/test-setup/journeys/employmentJourneys';
-import { uploadDocumentViaApi } from '../../utils/test-setup/uploadDocumentViaApi';
-import { setupCaseForJourney } from '../../utils/test-setup/caseSetup';
-
 import { TEST_DATA } from './constants';
+import { expectCaseBanner } from '../../utils';
+import { createLogger } from '@hmcts/playwright-common';
+import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
+import { createDivorceCase } from '../../utils/test-setup/journeys/divorceCaseJourneys';
+import { createEmploymentCase, uploadEmploymentDraftDocument } from '../../utils/test-setup/journeys/employmentJourneys';
 
 const logger = createLogger({ serviceName: 'document-upload-tests', format: 'pretty' });
 const DOCUMENT_UPLOAD_SUBMIT_TIMEOUT_MS = 60_000;
 
-async function withTimeout<T>(action: Promise<T>, timeoutMs: number, timeoutMessage: string): Promise<T> {
-  let timeoutHandle: NodeJS.Timeout | undefined;
-  try {
-    return await Promise.race([
-      action,
-      new Promise<T>((_, reject) => {
-        timeoutHandle = setTimeout(() => {
-          reject(new Error(timeoutMessage));
-        }, timeoutMs);
-      }),
-    ]);
-  } finally {
-    if (timeoutHandle) {
-      clearTimeout(timeoutHandle);
-    }
-  }
-}
-
-test.describe('Document upload V2', () => {
-  test.describe.configure({ timeout: 600000 });
+test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, () => {
+  test.describe.configure({ timeout: 120000 });
   let testValue: string;
   let caseNumber: string;
-
   test.beforeAll(async () => {
+    // Set deterministic seed once per suite
     faker.seed(12345);
   });
 
-  test.beforeEach(async ({ page, createCasePage, caseDetailsPage }, testInfo) => {
+  test.beforeEach(async ({ page, createCasePage, caseDetailsPage }) => {
+    // Generate fresh value per test for retry safety
     testValue = `${faker.person.firstName()}-${Date.now()}-w${process.env.TEST_WORKER_INDEX || '0'}`;
     logger.info('Generated test value', { testValue, worker: process.env.TEST_WORKER_INDEX });
 
-    await retryOnTransientFailure(
-      async () => {
-        await withTimeout(
-          (async () => {
-            await ensureAuthenticatedPage(page, 'SOLICITOR', { waitForSelector: 'exui-header' });
-            const seededComplexTypeDocument = await uploadDocumentViaApi({
-              page,
-              jurisdictionId: TEST_DATA.V2.JURISDICTION,
-              caseTypeId: TEST_DATA.V2.CASE_TYPE,
-              fileName: 'seed.pdf',
-              mimeType: 'application/pdf',
-              fileContent: '%PDF-1.4\n%seed\n%%EOF',
-            });
-            const setup = await setupCaseForJourney({
-              scenario: 'document-upload-v2-divorce',
-              jurisdiction: TEST_DATA.V2.JURISDICTION,
-              caseType: TEST_DATA.V2.CASE_TYPE,
-              apiEventId: 'createCase',
-              mode: 'api-required',
-              apiPayload: buildCasePayloadFromTemplate('divorce.xui-test-case-type.create-case', {
-                overrides: {
-                  TextField: testValue,
-                  ComplexType_3: {
-                    document: seededComplexTypeDocument,
-                  },
-                },
-              }),
-              uiCreate: async () => {
-                throw new Error('UI fallback should not be used for document-upload-v2-divorce');
-              },
-              page,
-              createCasePage,
-              caseDetailsPage,
-              testInfo,
-            });
-            caseNumber = setup.caseNumber;
-            logger.info('Created divorce case', { caseNumber, testValue });
-          })(),
-          120_000,
-          'Document upload V2 setup exceeded 120000ms while creating a case'
-        );
-      },
-      {
-        maxAttempts: 2,
-        onRetry: async () => {
-          if (page.isClosed()) {
-            return;
-          }
-          await page.goto('/').catch(() => undefined);
-        },
-      }
-    );
+    await ensureAuthenticatedPage(page, 'SOLICITOR', { waitForSelector: 'exui-header' });
+    await createDivorceCase(createCasePage, TEST_DATA.V2.JURISDICTION, TEST_DATA.V2.CASE_TYPE, testValue);
+    caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
+    logger.info('Created divorce case', { caseNumber, testValue });
   });
 
   test('Check the documentV2 upload works as expected', async ({ createCasePage, caseDetailsPage }) => {
@@ -117,39 +45,52 @@ test.describe('Document upload V2', () => {
     });
 
     await test.step('Upload a document to the case', async () => {
-      await retryOnTransientFailure(
-        async () => {
-          await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
-          await caseDetailsPage.selectCaseAction(TEST_DATA.V2.ACTION, {
-            expectedLocator: createCasePage.fileUploadInput,
-            timeoutMs: 30_000,
-          });
-          await createCasePage.uploadFile(TEST_DATA.V2.FILE_NAME, TEST_DATA.V2.FILE_TYPE, TEST_DATA.V2.FILE_CONTENT);
-          await continueToUpdateCasePage(caseDetailsPage.page, createCasePage, 2);
-          await continueToUpdateCasePage(caseDetailsPage.page, createCasePage, 3);
-          await continueToUpdateCasePage(caseDetailsPage.page, createCasePage, 4);
-          await continueToUpdateCaseSubmitPage(caseDetailsPage.page, createCasePage);
-          await createCasePage.clickSubmitAndWait('after uploading V2 document', {
-            timeoutMs: DOCUMENT_UPLOAD_SUBMIT_TIMEOUT_MS,
-            maxAutoAdvanceAttempts: 1,
-          });
-          await expect(caseDetailsPage.caseAlertSuccessMessage).toBeVisible({ timeout: 30_000 });
-        },
-        {
-          maxAttempts: 2,
-          onRetry: async () => {
-            try {
-              await caseDetailsPage.reopenCaseDetails(caseDetailsUrl);
-            } catch (reopenError) {
-              logger.warn('Failed to reopen case details during V2 document upload retry; trying direct goto', {
-                reopenError,
-                caseDetailsUrl,
-              });
-              await caseDetailsPage.page.goto(caseDetailsUrl);
-            }
-          },
+      let successfulUpdateEventPosts = 0;
+      const updateEventEndpointPattern = new RegExp(`/data/cases/${caseNumber}/events(?:\\?|$)`);
+      const onResponse = (response: Response) => {
+        if (response.request().method() !== 'POST') {
+          return;
         }
-      );
+        if (!updateEventEndpointPattern.test(response.url())) {
+          return;
+        }
+        if (response.status() < 400) {
+          successfulUpdateEventPosts += 1;
+        }
+      };
+      caseDetailsPage.page.on('response', onResponse);
+      try {
+        await retryOnTransientFailure(
+          async () => {
+            await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
+            await caseDetailsPage.selectCaseAction(TEST_DATA.V2.ACTION);
+            await createCasePage.uploadFile(TEST_DATA.V2.FILE_NAME, TEST_DATA.V2.FILE_TYPE, TEST_DATA.V2.FILE_CONTENT);
+            await createCasePage.clickContinueMultipleTimes(4);
+            await createCasePage.clickSubmitAndWait('after uploading V2 document', {
+              timeoutMs: DOCUMENT_UPLOAD_SUBMIT_TIMEOUT_MS,
+              maxAutoAdvanceAttempts: 3,
+            });
+            await expect(caseDetailsPage.caseAlertSuccessMessage).toBeVisible({ timeout: 30_000 });
+          },
+          {
+            maxAttempts: 2,
+            onRetry: async () => {
+              try {
+                await caseDetailsPage.reopenCaseDetails(caseDetailsUrl);
+              } catch (reopenError) {
+                logger.warn('Failed to reopen case details during V2 document upload retry; trying direct goto', {
+                  reopenError,
+                  caseDetailsUrl,
+                });
+                await caseDetailsPage.page.goto(caseDetailsUrl);
+              }
+            },
+          }
+        );
+      } finally {
+        caseDetailsPage.page.off('response', onResponse);
+      }
+      expect(successfulUpdateEventPosts).toBe(1);
     });
 
     await test.step('Verify the document upload was successful', async () => {
@@ -196,133 +137,33 @@ test.describe('Document upload V2', () => {
   });
 });
 
-async function continueToUpdateCasePage(
-  page: {
-    url: () => string;
-    waitForURL: (matcher: (url: URL) => boolean, options?: { timeout?: number }) => Promise<void>;
-    waitForTimeout: (timeout: number) => Promise<void>;
-  },
-  createCasePage: { clickContinueAndWaitForNext: (context: string) => Promise<void> },
-  pageNumber: number
-) {
-  const expectedPath = `/trigger/updateCase/updateCasePage_${pageNumber}`;
-  await continueToExpectedPath(page, createCasePage, expectedPath, `navigating to update case page ${pageNumber}`);
-}
-
-async function continueToUpdateCaseSubmitPage(
-  page: {
-    url: () => string;
-    waitForURL: (matcher: (url: URL) => boolean, options?: { timeout?: number }) => Promise<void>;
-    waitForTimeout: (timeout: number) => Promise<void>;
-  },
-  createCasePage: { clickContinueAndWaitForNext: (context: string) => Promise<void> }
-) {
-  await continueToExpectedPath(page, createCasePage, '/trigger/updateCase/submit', 'navigating to update case submit page');
-}
-
-async function continueToExpectedPath(
-  page: {
-    url: () => string;
-    waitForURL: (matcher: (url: URL) => boolean, options?: { timeout?: number }) => Promise<void>;
-    waitForTimeout: (timeout: number) => Promise<void>;
-  },
-  createCasePage: { clickContinueAndWaitForNext: (context: string) => Promise<void> },
-  expectedPath: string,
-  context: string
-) {
-  const maxAttempts = 2;
-  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
-    if (page.url().includes(expectedPath)) {
-      return;
-    }
-
-    try {
-      await Promise.all([
-        page.waitForURL((url: URL) => url.pathname.includes(expectedPath), { timeout: 30_000 }),
-        createCasePage.clickContinueAndWaitForNext(`${context} (attempt ${attempt})`),
-      ]);
-      return;
-    } catch (error) {
-      if (page.url().includes(expectedPath)) {
-        return;
-      }
-      if (attempt === maxAttempts) {
-        throw error;
-      }
-      await page.waitForTimeout(2_000);
-    }
-  }
-}
-
-test.describe('Document upload V1', () => {
-  test.describe.configure({ timeout: 600000 });
+test.describe('Document upload V1', { tag: ['@e2e', '@e2e-document-upload'] }, () => {
+  test.describe.configure({ timeout: 120000 });
   let testValue: string;
   let testFileName: string;
   let caseNumber: string;
-  let dynamicHandle: Awaited<ReturnType<typeof provisionDynamicSolicitorForAlias>> | undefined;
-
   test.beforeAll(async () => {
+    // Set deterministic seed once per suite
     faker.seed(67890);
   });
 
-  test.beforeEach(async ({ page, createCasePage, caseDetailsPage, professionalUserUtils }, testInfo) => {
-    dynamicHandle = await provisionDynamicSolicitorForAlias({
-      alias: 'EMPLOYMENT_DYNAMIC_CASEWORKER',
-      professionalUserUtils,
-      roleNames: EMPLOYMENT_DYNAMIC_CASEWORKER_ROLES,
-      roleContext: {
-        jurisdiction: 'employment',
-        testType: 'case-create',
-      },
-      testInfo,
-    });
-
+  test.beforeEach(async ({ page, createCasePage, caseDetailsPage }) => {
+    // Generate fresh values per test for retry safety
     testValue = `${faker.person.firstName()}-${Date.now()}-w${process.env.TEST_WORKER_INDEX || '0'}`;
     testFileName = `${faker.string.alphanumeric(8)}-${Date.now()}.pdf`;
     logger.info('Generated test values', { testValue, testFileName, worker: process.env.TEST_WORKER_INDEX });
 
-    await retryOnTransientFailure(
-      async () => {
-        await ensureAuthenticatedPage(page, dynamicHandle!.sessionIdentity, { waitForSelector: 'exui-header' });
-        const setup = await setupCaseForJourney({
-          scenario: 'document-upload-v1-employment',
-          jurisdiction: TEST_DATA.V1.JURISDICTION,
-          caseType: TEST_DATA.V1.CASE_TYPE,
-          mode: 'ui-only',
-          uiCreate: async () => {
-            await createEmploymentCase(createCasePage, TEST_DATA.V1.JURISDICTION, TEST_DATA.V1.CASE_TYPE, {
-              allowDraftClaimFallback: true,
-            });
-          },
-          page,
-          createCasePage,
-          caseDetailsPage,
-          testInfo,
-        });
-        caseNumber = setup.caseNumber;
-      },
-      {
-        maxAttempts: 2,
-        onRetry: async () => {
-          if (page.isClosed()) {
-            return;
-          }
-          await page.goto('/').catch(() => undefined);
-        },
-      }
-    );
+    await ensureAuthenticatedPage(page, 'SEARCH_EMPLOYMENT_CASE', { waitForSelector: 'exui-header' });
+    await createEmploymentCase(createCasePage, TEST_DATA.V1.JURISDICTION, TEST_DATA.V1.CASE_TYPE);
     expect(await createCasePage.checkForErrorMessage(), 'Error message seen after creating employment case').toBe(false);
+    caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
     logger.info('Created employment case', { caseNumber, testValue });
-  });
-
-  test.afterEach(async () => {
-    dynamicHandle = undefined;
   });
 
   test('Check the documentV1 upload works as expected', async ({ createCasePage, caseDetailsPage, tableUtils }) => {
     await test.step('Start document upload process', async () => {
       await caseDetailsPage.selectCaseAction(TEST_DATA.V1.ACTION, {
-        expectedPath: '/trigger/',
+        expectedLocator: createCasePage.page.locator('#documentCollection button'),
       });
     });
 

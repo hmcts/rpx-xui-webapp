@@ -194,42 +194,53 @@ export async function createEmploymentCase(
 
       if (await createCasePage.sameAsClaimantWorkAddressYes.isVisible().catch(() => false)) {
         await createCasePage.sameAsClaimantWorkAddressYes.click();
+        logger.info('Employment create: work address confirmation selected', {
+          attempt,
+          url: createCasePage.page.url(),
+        });
 
         await createCasePage.clickContinueAndWaitForNext('after work address confirmation');
         logger.info('Employment create: claim details page ready', {
           attempt,
           url: createCasePage.page.url(),
         });
-
-        await createCasePage.clickContinueAndWaitForNext('after claim details');
-
-        await createCasePage.claimantRepresentedNo.waitFor({ state: 'visible' });
-        logger.info('Employment create: claimant representation page ready', {
+      } else {
+        logger.info('Employment create: work address confirmation not shown; advancing with current wizard state', {
           attempt,
           url: createCasePage.page.url(),
         });
-        await createCasePage.claimantRepresentedNo.click();
-
-        await createCasePage.clickContinueAndWaitForNext('after claimant representation');
-
-        await createCasePage.hearingPreferenceVideo.waitFor({ state: 'visible' });
-        logger.info('Employment create: hearing preference page ready', {
-          attempt,
-          url: createCasePage.page.url(),
-        });
-        await createCasePage.hearingPreferenceVideo.click();
-
-        await createCasePage.clickSubmitAndWait('after hearing preference selection', {
-          timeoutMs: 60_000,
-          maxAutoAdvanceAttempts: 1,
-        });
-        await createCasePage.waitForCaseDetails('after submitting employment case');
-        logger.info('Employment create: case details loaded', {
-          attempt,
-          url: createCasePage.page.url(),
-        });
-        return;
       }
+
+      if (!(await createCasePage.claimantRepresentedNo.isVisible().catch(() => false))) {
+        await createCasePage.clickContinueAndWaitForNext('after claim details');
+      }
+
+      await createCasePage.claimantRepresentedNo.waitFor({ state: 'visible' });
+      logger.info('Employment create: claimant representation page ready', {
+        attempt,
+        url: createCasePage.page.url(),
+      });
+      await createCasePage.claimantRepresentedNo.click();
+
+      await createCasePage.clickContinueAndWaitForNext('after claimant representation');
+
+      await createCasePage.hearingPreferenceVideo.waitFor({ state: 'visible' });
+      logger.info('Employment create: hearing preference page ready', {
+        attempt,
+        url: createCasePage.page.url(),
+      });
+      await createCasePage.hearingPreferenceVideo.click();
+
+      await createCasePage.clickSubmitAndWait('after hearing preference selection', {
+        timeoutMs: 60_000,
+        maxAutoAdvanceAttempts: 1,
+      });
+      await createCasePage.waitForCaseDetails('after submitting employment case');
+      logger.info('Employment create: case details loaded', {
+        attempt,
+        url: createCasePage.page.url(),
+      });
+      return;
     } catch (error) {
       const eventErrorVisible = await createCasePage.eventCreationErrorHeading.isVisible().catch(() => false);
       if (eventErrorVisible && attempt < maxAttempts) {

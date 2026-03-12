@@ -74,10 +74,9 @@ export class LaunchDarklyDefaultsConstants {
       "releaseVersion": "4",
       "serviceName": "ST_CIC"
     },
- {
+    {
       "caseTypes": [
         "GrantOfRepresentation",
-        "PROBATE_ExceptionRecord",
         "Caveat",
         "LegacySearch",
         "StandingSearch",

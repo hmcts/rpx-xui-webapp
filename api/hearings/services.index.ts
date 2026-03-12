@@ -106,6 +106,7 @@ export async function getHearings(caseId: string, req: EnhancedRequest) {
 export async function loadLinkedCasesWithHearings(req: EnhancedRequest, res: Response, next: NextFunction) {
   const jurisdictionId = req.query.jurisdictionId;
   const reqBody = req.body;
+  console.log('is this being called perhaps?');
   const servicePath: string = getServicePath(jurisdictionId);
   const markupPath: string = `${servicePath}/serviceLinkedCases`;
   try {
@@ -117,7 +118,7 @@ export async function loadLinkedCasesWithHearings(req: EnhancedRequest, res: Res
     };
     const linkedCaseIds = data.map((linkedCase) => linkedCase.caseReference);
 
-    if (linkedCaseIds && linkedCaseIds.length) {
+    if (linkedCaseIds?.length) {
       const promises = [];
       const allCaseId = [currentCase.caseReference, ...linkedCaseIds];
       const allData = [currentCase, ...data];

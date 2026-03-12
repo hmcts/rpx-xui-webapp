@@ -16,7 +16,7 @@ test.beforeEach(async ({ page }) => {
   taskListMockResponse = buildTaskListMock(3, '', availableActionsList);
 });
 
-test.describe(`Assign Task negative scenarios as ${userIdentifier}`, () => {
+test.describe(`Assign Task negative scenarios as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   test(`User sees service down when claim task endpoint returns 500`, async ({ taskListPage, page }) => {
     const firstTask = taskListMockResponse.tasks[0];
 

@@ -16,7 +16,10 @@ test.beforeEach(async ({ page }) => {
   taskListMockResponse = buildTaskListMock(160, userId?.toString() || '', myActionsList);
 });
 
-test.describe(`Task Reassign negative scenarios as ${userIdentifier}`, () => {
+test.describe(
+  `Task Reassign negative scenarios as ${userIdentifier}`,
+  { tag: ['@integration', '@integration-manage-tasks'] },
+  () => {
   [500, 400].forEach((statusCode) => {
     test(`User sees service down when reassign resolver endpoint returns ${statusCode}`, async ({ taskListPage, page }) => {
       const firstTask = taskListMockResponse.tasks[0];
@@ -69,4 +72,5 @@ test.describe(`Task Reassign negative scenarios as ${userIdentifier}`, () => {
       });
     });
   });
-});
+  }
+);

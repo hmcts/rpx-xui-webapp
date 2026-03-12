@@ -16,7 +16,7 @@ test.beforeEach(async ({ page }) => {
   taskListMockResponse = buildTaskListMock(160, userId?.toString() || '', myActionsList);
 });
 
-test.describe(`Task Go To as ${userIdentifier}`, () => {
+test.describe(`Task Go To as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   test(`User can use Go to task action from task list to view the task in case details`, async ({ taskListPage, page }) => {
     const firstTask = taskListMockResponse.tasks[0];
     const caseMockResponse = {

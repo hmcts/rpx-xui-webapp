@@ -17,7 +17,7 @@ test.beforeEach(async ({ page }) => {
   taskListMockResponse = buildTaskListMock(160, userId?.toString() || '', myActionsList);
 });
 
-test.describe(`Task Completion as ${userIdentifier}`, () => {
+test.describe(`Task Completion as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   test(`User can mark one of their assigned tasks as done`, async ({ taskListPage, page }) => {
     const firstTask = taskListMockResponse.tasks[0];
 

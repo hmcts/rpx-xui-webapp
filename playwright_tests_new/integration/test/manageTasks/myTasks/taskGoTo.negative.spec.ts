@@ -17,7 +17,10 @@ test.beforeEach(async ({ page }) => {
 });
 
 // EXUI-4318 - Skipped until the related bug is resolved, and the expected behaviour can be tested reliably
-test.describe.skip(`Task Go To negative scenarios as ${userIdentifier}`, () => {
+test.describe.skip(
+  `Task Go To negative scenarios as ${userIdentifier}`,
+  { tag: ['@integration', '@integration-manage-tasks'] },
+  () => {
   [500, 400].forEach((statusCode) => {
     test(`User still reaches case details when go endpoint returns ${statusCode}`, async ({ taskListPage, page }) => {
       const firstTask = taskListMockResponse.tasks[0];
@@ -112,4 +115,5 @@ test.describe.skip(`Task Go To negative scenarios as ${userIdentifier}`, () => {
       });
     });
   });
-});
+  }
+);

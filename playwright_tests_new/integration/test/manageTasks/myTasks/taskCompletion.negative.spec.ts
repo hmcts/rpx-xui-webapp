@@ -22,7 +22,10 @@ test.beforeEach(async ({ page }) => {
   taskListMockResponse = buildTaskListMock(160, userId?.toString() || '', myActionsList);
 });
 
-test.describe(`Task Completion negative scenarios as ${userIdentifier}`, () => {
+test.describe(
+  `Task Completion negative scenarios as ${userIdentifier}`,
+  { tag: ['@integration', '@integration-manage-tasks'] },
+  () => {
   test(`User sees service down when complete endpoint returns 500`, async ({ taskListPage, page }) => {
     const firstTask = taskListMockResponse.tasks[0];
 
@@ -125,4 +128,5 @@ test.describe(`Task Completion negative scenarios as ${userIdentifier}`, () => {
       await expect(taskListPage.exuiBodyComponent.message).toContainText(TASK_UNAVAILABLE_WARNING);
     });
   });
-});
+  }
+);

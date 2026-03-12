@@ -2,8 +2,9 @@ import { welshTranslationsSmall } from 'playwright_tests_new/integration/mocks/w
 import { expect, test } from '../../../E2E/fixtures';
 import { ensureSessionCookies } from '../../../common/sessionCapture';
 let sessionCookies: any[] = [];
+const TRANSLATIONS_TIMEOUT = 20_000;
 
-test.describe('Verify users can switch the language', () => {
+test.describe('Verify users can switch the language', { tag: ['@integration', '@integration-welsh-language'] }, () => {
   test.beforeEach(async ({ page }) => {
     const { cookies } = await ensureSessionCookies('SOLICITOR');
     sessionCookies = cookies;
@@ -26,36 +27,63 @@ test.describe('Verify users can switch the language', () => {
       await caseListPage.exuiHeader.switchLanguage('Cymraeg');
       await caseListPage.exuiSpinnerComponent.wait();
       await page.waitForLoadState('domcontentloaded');
-      await caseListPage.exuiHeader.headerAppLink.waitFor({ state: 'attached' });
+      await caseListPage.exuiHeader.appHeaderLink.waitFor({ state: 'attached' });
     });
 
     await test.step('Check the translation are shown, and the language toggle switches to English', async () => {
-      expect.soft(await caseListPage.exuiHeader.languageToggle.innerText()).toContain('English');
-      await expect.soft(caseListPage.exuiHeader.notificationBanner).toBeVisible();
-      await expect.soft(caseListPage.exuiHeader.notificationBannerTitle).toContainText('Pwysig');
-      await expect
-        .soft(caseListPage.exuiHeader.headerAppLink)
-        .toContainText(welshTranslationsSmall.translations['Manage Cases'].translation);
-      await expect
-        .soft(caseListPage.exuiHeader.signOutLink)
-        .toContainText(welshTranslationsSmall.translations['Sign out'].translation);
-      await expect.soft(caseListPage.caseListHeading).toContainText(welshTranslationsSmall.translations['Case list'].translation);
-      await expect
-        .soft(createCasePage.createCaseButton)
-        .toContainText(welshTranslationsSmall.translations['Create case'].translation);
-      await expect
-        .soft(caseListPage.exuiFooter.copyrightLink)
-        .toContainText(welshTranslationsSmall.translations['© Crown copyright'].translation);
+      await expect(caseListPage.exuiHeader.notificationBanner).toBeVisible();
+      await expect(caseListPage.exuiHeader.notificationBannerTitle).toContainText('Pwysig');
+
+      await page.waitForTimeout(10_000);
+
+      const checks = [
+        {
+          locator: caseListPage.exuiHeader.appHeaderLink,
+          expected: welshTranslationsSmall.translations['Manage Cases'].translation,
+        },
+        {
+          locator: caseListPage.exuiHeader.languageToggle,
+          expected: 'English',
+        },
+        {
+          locator: caseListPage.exuiHeader.signOutLink,
+          expected: welshTranslationsSmall.translations['Sign out'].translation,
+        },
+        {
+          locator: createCasePage.createCaseButton,
+          expected: welshTranslationsSmall.translations['Create case'].translation,
+        },
+        {
+          locator: caseListPage.exuiFooter.copyrightLink,
+          expected: welshTranslationsSmall.translations['© Crown copyright'].translation,
+        },
+        {
+          locator: caseListPage.caseListHeading,
+          expected: welshTranslationsSmall.translations['Case list'].translation,
+        },
+      ];
+
+      for (const { locator, expected } of checks) {
+        await expect(locator).toContainText(expected, { timeout: TRANSLATIONS_TIMEOUT });
+      }
     });
 
     await test.step('Check the language can be switched back to English and the correct translations are shown', async () => {
       await caseListPage.exuiHeader.switchLanguage('English');
       await caseListPage.exuiSpinnerComponent.wait();
-      expect.soft(await caseListPage.exuiHeader.header.isVisible()).toBe(true);
-      expect.soft(await caseListPage.exuiHeader.headerAppLink.innerText()).toContain('Manage Cases');
-      expect.soft(await caseListPage.exuiHeader.languageToggle.innerText()).toContain('Cymraeg');
-      expect.soft(await caseListPage.exuiHeader.signOutLink.innerText()).toContain('Sign out');
-      expect.soft(caseListPage.exuiHeader.notificationBanner).not.toBeVisible();
+
+      const checks = [
+        { locator: caseListPage.exuiHeader.appHeaderLink, expected: 'Manage Cases' },
+        { locator: caseListPage.exuiHeader.languageToggle, expected: 'Cymraeg' },
+        { locator: caseListPage.exuiHeader.signOutLink, expected: 'Sign out' },
+      ];
+
+      for (const { locator, expected } of checks) {
+        await expect(locator).not.toContainText('[Translation in progress]', { timeout: TRANSLATIONS_TIMEOUT });
+        await expect(locator).toContainText(expected, { timeout: TRANSLATIONS_TIMEOUT });
+      }
+
+      await expect.soft(caseListPage.exuiHeader.notificationBanner).not.toBeVisible();
     });
   });
 });

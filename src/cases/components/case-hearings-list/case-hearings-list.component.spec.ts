@@ -937,8 +937,11 @@ describe('CaseHearingsListComponent', () => {
    *  the feature. This test should be looked at later.
    */
   it('should addAndEdit', () => {
+    mockRouter.navigate.calls.reset();
     component.addAndEdit('h100000');
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'actuals', 'h100000', 'hearing-actual-add-edit-summary']);
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'actuals', 'h100000', 'hearing-actual-add-edit-summary'], {
+      state: { caseId: '1111222233334444' },
+    });
   });
 
   it('should linkHearing', () => {
@@ -988,7 +991,11 @@ describe('CaseHearingsListComponent', () => {
     // CANCELLATION_REQUESTED
     component.viewDetails(UPCOMING_HEARING_LIST[6]);
     fixture.detectChanges();
-    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100007', '/hearings/view/hearing-cancellation-summary');
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith(
+      'h100007',
+      '/hearings/view/hearing-cancellation-summary',
+      '1111222233334444'
+    );
     // CANCELLED
     component.viewDetails(PAST_HEARING_LIST[0]);
     fixture.detectChanges();
@@ -1003,7 +1010,11 @@ describe('CaseHearingsListComponent', () => {
     );
     component.viewDetails(UPCOMING_HEARING_LIST[7]);
     fixture.detectChanges();
-    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100009', '/hearings/view/hearing-view-actuals-summary/h100009');
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith(
+      'h100009',
+      '/hearings/view/hearing-view-actuals-summary/h100009',
+      '1111222233334444'
+    );
     // ADJOURNED
     component.viewDetails(PAST_HEARING_LIST[2]);
     fixture.detectChanges();
@@ -1017,7 +1028,8 @@ describe('CaseHearingsListComponent', () => {
     fixture.detectChanges();
     expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith(
       'h100006',
-      '/hearings/view/hearing-request-failed-summary/h100006'
+      '/hearings/view/hearing-request-failed-summary/h100006',
+      '1111222233334444'
     );
   });
 

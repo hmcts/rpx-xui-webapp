@@ -46,7 +46,7 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test.describe(`Header quick search negative flows as ${userIdentifier}`, () => {
+test.describe(`Header quick search negative flows as ${userIdentifier}`, { tag: ['@integration', '@integration-search-case'] }, () => {
   for (const status of SEARCH_CASE_ERROR_STATUS_CODES) {
     test(`handles case-details load failure for HTTP ${status}`, async ({ caseListPage, searchCasePage, page }) => {
       let caseDetailsRequestSeen = false;

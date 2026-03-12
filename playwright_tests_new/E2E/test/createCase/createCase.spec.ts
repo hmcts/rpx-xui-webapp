@@ -7,7 +7,7 @@ const caseType = 'XUI Case PoC';
 let caseNumber: string;
 const logger = createLogger({ serviceName: 'create-case-e2e', format: 'pretty' });
 
-test.describe('Verify creating cases works as expected', () => {
+test.describe('Verify creating cases works as expected', { tag: ['@e2e', '@e2e-create-case'] }, () => {
   let caseData;
 
   test.beforeEach(async ({ page, caseDetailsPage, createCasePage }) => {

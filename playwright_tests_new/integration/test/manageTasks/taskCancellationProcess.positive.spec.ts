@@ -32,7 +32,7 @@ const cancellationMatrix: readonly CancellationScenario[] = [
   },
 ] as const;
 
-test.describe(`Task cancellation integration as ${userIdentifier}`, () => {
+test.describe(`Task cancellation integration as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   for (const matrixItem of cancellationMatrix) {
     test(`Cancel task sends expected request for ${matrixItem.scenario}`, async ({ taskListPage, page }, testInfo) => {
       const { cookies } = await applySessionCookies(page, userIdentifier);

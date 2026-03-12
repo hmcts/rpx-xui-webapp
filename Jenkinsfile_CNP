@@ -13,12 +13,32 @@ properties([
         string(
             name: 'API_PW_INCLUDE_TAGS',
             defaultValue: '',
-            description: 'Optional comma/space separated Playwright service tags to include for API tests, for example @svc-ccd,@svc-work-allocation'
+            description: 'Optional comma/space separated Playwright API tags to include, for example @svc-ccd,@svc-work-allocation or @svc-auth @svc-cors'
         ),
         string(
             name: 'API_PW_EXCLUDED_TAGS_OVERRIDE',
             defaultValue: '',
-            description: 'Optional comma/space separated Playwright service tags to exclude; when set this overrides playwright_tests_new/api/service-tag-filter.json'
+            description: 'Optional comma/space separated Playwright API tags to exclude; overrides playwright_tests_new/api/service-tag-filter.json. Examples: @svc-work-allocation, @svc-auth @svc-cors, @none to clear repo defaults'
+        ),
+        string(
+            name: 'E2E_PW_INCLUDE_TAGS',
+            defaultValue: '',
+            description: 'Optional comma/space separated Playwright E2E tags to include, for example @e2e-search-case or @e2e @e2e-update-case'
+        ),
+        string(
+            name: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
+            defaultValue: '',
+            description: 'Optional comma/space separated Playwright E2E tags to exclude; overrides playwright_tests_new/E2E/tag-filter.json. Examples: @e2e-manage-tasks, @e2e-document-upload @e2e-case-flags, @none to clear repo defaults'
+        ),
+        string(
+            name: 'INTEGRATION_PW_INCLUDE_TAGS',
+            defaultValue: '',
+            description: 'Optional comma/space separated Playwright integration tags to include, for example @integration-search-case or @integration @integration-create-case'
+        ),
+        string(
+            name: 'INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE',
+            defaultValue: '',
+            description: 'Optional comma/space separated Playwright integration tags to exclude; overrides playwright_tests_new/integration/tag-filter.json. Examples: @integration-manage-tasks, @integration-case-list @integration-welsh-language, @none to clear repo defaults'
         )
     ])
 ])
@@ -235,7 +255,7 @@ withPipeline(type, product, component) {
                     api: {
                     stage('API Tests') {
                         withEnv([
-                            "FUNCTIONAL_TESTS_WORKERS=8",
+                            "FUNCTIONAL_TESTS_WORKERS=2",
                             "API_PW_INCLUDE_TAGS=${params.API_PW_INCLUDE_TAGS ?: ''}",
                             "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
                         ]) {
@@ -282,43 +302,55 @@ withPipeline(type, product, component) {
                     },
                     playwrightIntegration: {
                     stage('Playwright Integration Tests') {
-                        try {
-                            yarnBuilder.yarn('test:playwright:integration')
-                        } catch (Exception e) {
-                            echo "[failFast] Playwright Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
-                            if (handleFailFastAbort(e)) { return }
-                            throw e
-                        } finally {
-                            publishHTML([
-                                allowMissing         : true,
-                                alwaysLinkToLastBuild: true,
-                                keepAll              : true,
-                                reportDir            : 'functional-output/tests/playwright-integration/odhin-report/',
-                                reportFiles          : 'xui-playwright-integration.html',
-                                reportName           : 'PREVIEW Playwright Integration Test'
-                            ])
-                            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
+                        withEnv([
+                            "FUNCTIONAL_TESTS_WORKERS=2",
+                            "INTEGRATION_PW_INCLUDE_TAGS=${params.INTEGRATION_PW_INCLUDE_TAGS ?: ''}",
+                            "INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=${params.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
+                        ]) {
+                            try {
+                                yarnBuilder.yarn('test:playwright:integration')
+                            } catch (Exception e) {
+                                echo "[failFast] Playwright Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
+                                if (handleFailFastAbort(e)) { return }
+                                throw e
+                            } finally {
+                                publishHTML([
+                                    allowMissing         : true,
+                                    alwaysLinkToLastBuild: true,
+                                    keepAll              : true,
+                                    reportDir            : 'functional-output/tests/playwright-integration/odhin-report/',
+                                    reportFiles          : 'xui-playwright-integration.html',
+                                    reportName           : 'PREVIEW Playwright Integration Test'
+                                ])
+                                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
+                            }
                         }
                     }
                     },
                     playwrightE2E: {
                     stage('Playwright E2E') {
-                        try {
-                            yarnBuilder.yarn('test:playwrightE2E')
-                        } catch (Exception e) {
-                            echo "[failFast] Playwright E2E catch: ${e.getClass().getName()}: ${e.getMessage()}"
-                            if (handleFailFastAbort(e)) { return }
-                            throw e
-                        } finally {
-                            publishHTML([
-                                allowMissing         : true,
-                                alwaysLinkToLastBuild: true,
-                                keepAll              : true,
-                                reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
-                                reportFiles          : 'xui-playwright-e2e.html',
-                                reportName           : 'PREVIEW Playwright E2E'
-                            ])
-                            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
+                        withEnv([
+                            "FUNCTIONAL_TESTS_WORKERS=2",
+                            "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
+                            "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
+                        ]) {
+                            try {
+                                yarnBuilder.yarn('test:playwrightE2E')
+                            } catch (Exception e) {
+                                echo "[failFast] Playwright E2E catch: ${e.getClass().getName()}: ${e.getMessage()}"
+                                if (handleFailFastAbort(e)) { return }
+                                throw e
+                            } finally {
+                                publishHTML([
+                                    allowMissing         : true,
+                                    alwaysLinkToLastBuild: true,
+                                    keepAll              : true,
+                                    reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
+                                    reportFiles          : 'xui-playwright-e2e.html',
+                                    reportName           : 'PREVIEW Playwright E2E'
+                                ])
+                                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
+                            }
                         }
                     }
                     }
@@ -349,6 +381,7 @@ withPipeline(type, product, component) {
                     api: {
                     stage('API Tests') {
                         withEnv([
+                            "FUNCTIONAL_TESTS_WORKERS=4",
                             "API_PW_INCLUDE_TAGS=${params.API_PW_INCLUDE_TAGS ?: ''}",
                             "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
                         ]) {
@@ -395,42 +428,55 @@ withPipeline(type, product, component) {
                     },
                     playwrightIntegration: {
                     stage('Playwright Integration Tests') {
-                        try {
-                            yarnBuilder.yarn('test:playwright:integration')
-                        } catch (Exception e) {
-                            echo "[failFast] Playwright Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
-                            if (handleFailFastAbort(e)) { return }
-                            throw e
-                        } finally {
-                            publishHTML([
-                                allowMissing         : true,
-                                alwaysLinkToLastBuild: true,
-                                keepAll              : true,
-                                reportDir            : 'functional-output/tests/playwright-integration/odhin-report/',
-                                reportFiles          : 'xui-playwright-integration.html',
-                                reportName           : 'AAT Playwright Integration Test'
-                            ])
-                            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
+                        withEnv([
+                            "FUNCTIONAL_TESTS_WORKERS=4",
+                            "INTEGRATION_PW_INCLUDE_TAGS=${params.INTEGRATION_PW_INCLUDE_TAGS ?: ''}",
+                            "INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=${params.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
+                        ]) {
+                            try {
+                                yarnBuilder.yarn('test:playwright:integration')
+                            } catch (Exception e) {
+                                echo "[failFast] Playwright Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
+                                if (handleFailFastAbort(e)) { return }
+                                throw e
+                            } finally {
+                                publishHTML([
+                                    allowMissing         : true,
+                                    alwaysLinkToLastBuild: true,
+                                    keepAll              : true,
+                                    reportDir            : 'functional-output/tests/playwright-integration/odhin-report/',
+                                    reportFiles          : 'xui-playwright-integration.html',
+                                    reportName           : 'AAT Playwright Integration Test'
+                                ])
+                                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
+                            }
                         }
                     }
                     },
                     playwrightE2E: {
                     stage('Playwright E2E') {
-                        try {
-                            yarnBuilder.yarn('test:playwrightE2E')
-                        } catch (Exception e) {
-                            echo "[failFast] Playwright E2E catch: ${e.getClass().getName()}: ${e.getMessage()}"
-                            if (handleFailFastAbort(e)) { return }
-                            throw e
-                        } finally {
-                            publishHTML([
-                                allowMissing         : true,
-                                alwaysLinkToLastBuild: true,
-                                keepAll              : true,
-                                reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
-                                reportFiles          : 'xui-playwright-e2e.html',
-                                reportName           : 'AAT Playwright E2E'
-                            ])
+                        withEnv([
+                            "FUNCTIONAL_TESTS_WORKERS=4",
+                            "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
+                            "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
+                        ]) {
+                            try {
+                                yarnBuilder.yarn('test:playwrightE2E')
+                            } catch (Exception e) {
+                                echo "[failFast] Playwright E2E catch: ${e.getClass().getName()}: ${e.getMessage()}"
+                                if (handleFailFastAbort(e)) { return }
+                                throw e
+                            } finally {
+                                publishHTML([
+                                    allowMissing         : true,
+                                    alwaysLinkToLastBuild: true,
+                                    keepAll              : true,
+                                    reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
+                                    reportFiles          : 'xui-playwright-e2e.html',
+                                    reportName           : 'AAT Playwright E2E'
+                                ])
+                                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
+                            }
                         }
                     }
                     }

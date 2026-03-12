@@ -48,7 +48,7 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test.describe(`Search quick find as ${userIdentifier}`, () => {
+test.describe(`Search quick find as ${userIdentifier}`, { tag: ['@integration', '@integration-search-case'] }, () => {
   test('User can find case by valid 16-digit case reference from header search', async ({
     caseListPage,
     searchCasePage,

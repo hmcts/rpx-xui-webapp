@@ -22,7 +22,7 @@ test.beforeEach(async ({ page, createCasePage }) => {
   await expect(createCasePage.person1TitleInput).toBeVisible();
 });
 
-test.describe(`Create a ${jurisdiction} case as ${userIdentifier}`, () => {
+test.describe(`Create a ${jurisdiction} case as ${userIdentifier}`, { tag: ['@integration', '@integration-create-case'] }, () => {
   test(`All expected fields are filled, seen, and sent in the create case API call`, async ({
     createCasePage,
     caseDetailsPage,

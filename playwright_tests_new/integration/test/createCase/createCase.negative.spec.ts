@@ -123,30 +123,34 @@ test.describe(
 );
 
 // Skipped until EXUI-4272 is resolved and the error handling behaviour can be tested reliably
-test.describe.skip('Create case - bootstrap/load API error handling', () => {
-  test.beforeEach(async ({ page }) => {
-    await applySessionCookies(page, userIdentifier);
-  });
+test.describe.skip(
+  'Create case - bootstrap/load API error handling',
+  { tag: ['@integration', '@integration-create-case'] },
+  () => {
+    test.beforeEach(async ({ page }) => {
+      await applySessionCookies(page, userIdentifier);
+    });
 
-  apiErrorStatusCodes.forEach((status) => {
-    test(`User sees an error message, if the create case API returns HTTP ${status}`, async ({ createCasePage, page }) => {
-      await test.step('Mock the create case API to return an error', async () => {
-        await page.route(`**/data/internal/case-types/${caseType}/event-triggers/createCase*`, async (route) => {
-          const body = JSON.stringify({ message: `Forced failure ${status}` });
-          await route.fulfill({ status: status, contentType: 'application/json', body });
+    apiErrorStatusCodes.forEach((status) => {
+      test(`User sees an error message, if the create case API returns HTTP ${status}`, async ({ createCasePage, page }) => {
+        await test.step('Mock the create case API to return an error', async () => {
+          await page.route(`**/data/internal/case-types/${caseType}/event-triggers/createCase*`, async (route) => {
+            const body = JSON.stringify({ message: `Forced failure ${status}` });
+            await route.fulfill({ status: status, contentType: 'application/json', body });
+          });
+          await page.goto(`/cases/case-create/${jurisdiction}/${caseType}/createCase/`);
         });
-        await page.goto(`/cases/case-create/${jurisdiction}/${caseType}/createCase/`);
-      });
 
-      await test.step('Navigate to the create case page', async () => {
-        await page.waitForLoadState('domcontentloaded');
-      });
+        await test.step('Navigate to the create case page', async () => {
+          await page.waitForLoadState('domcontentloaded');
+        });
 
-      await test.step('After page load completes, a UI error is rendered', async () => {
-        await expect(createCasePage.errorSummary).toBeVisible();
-        await expect(createCasePage.errorSummaryTitle).toBeVisible();
-        await expect(createCasePage.errorSummaryMessage).toBeVisible();
+        await test.step('After page load completes, a UI error is rendered', async () => {
+          await expect(createCasePage.errorSummary).toBeVisible();
+          await expect(createCasePage.errorSummaryTitle).toBeVisible();
+          await expect(createCasePage.errorSummaryMessage).toBeVisible();
+        });
       });
     });
-  });
-});
+  }
+);

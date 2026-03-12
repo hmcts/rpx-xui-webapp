@@ -113,6 +113,11 @@ type RdModeAttemptOutcome =
 
 type ModeAttemptsLoopOutcome = { kind: 'success'; result: OrganisationAssignmentResult } | { kind: 'broken'; lastError: unknown };
 
+type ManageOrgPrimaryOutcome = {
+  result: OrganisationAssignmentResult | null;
+  suppressManageOrgFallback: boolean;
+};
+
 async function handleRetryExternalAssignment(
   args: AssignUserToOrganisationFlowArgs,
   deps: Pick<OrganisationAssignmentFlowDeps, 'waitForUserPropagation'>,
@@ -329,7 +334,7 @@ async function executeManageOrgFallback(
 async function tryManageOrgPrimary(
   args: AssignUserToOrganisationFlowArgs,
   deps: Pick<OrganisationAssignmentFlowDeps, 'inviteUserViaManageOrgApi' | 'isUserVisibleInOrganisationAssignment'>
-): Promise<OrganisationAssignmentResult | null> {
+): Promise<ManageOrgPrimaryOutcome> {
   try {
     const manageOrgPrimary = await deps.inviteUserViaManageOrgApi({
       user: args.options.user,
@@ -354,7 +359,7 @@ async function tryManageOrgPrimary(
         'Manage-org invite returned 409, but RD Professional lookup could not confirm user assignment. Continuing with RD fallback.',
         { organisationId: args.organisationId, requestedMode: args.requestedMode, email: args.options.user.email }
       );
-      return null;
+      return { result: null, suppressManageOrgFallback: false };
     }
     logger.info('Organisation assignment succeeded via manage-org invite primary path.', {
       organisationId: args.organisationId,
@@ -363,24 +368,30 @@ async function tryManageOrgPrimary(
       status: manageOrgPrimary.status,
     });
     return {
-      organisationId: args.organisationId,
-      mode: 'external',
-      requestedMode: args.requestedMode,
-      attemptedModes: ['external'],
-      roles: args.roles,
-      status: manageOrgPrimary.status,
-      userIdentifier: manageOrgPrimary.userIdentifier,
-      responseBody: { assignmentPath: 'manage-org-invite-primary', payload: manageOrgPrimary.responseBody },
+      result: {
+        organisationId: args.organisationId,
+        mode: 'external',
+        requestedMode: args.requestedMode,
+        attemptedModes: ['external'],
+        roles: args.roles,
+        status: manageOrgPrimary.status,
+        userIdentifier: manageOrgPrimary.userIdentifier,
+        responseBody: { assignmentPath: 'manage-org-invite-primary', payload: manageOrgPrimary.responseBody },
+      },
+      suppressManageOrgFallback: false,
     };
   } catch (error) {
-    if (!shouldFallbackToRdAfterManageOrgFailure()) throw error;
+    if (!shouldFallbackToRdAfterManageOrgFailure(args.requestedMode)) throw error;
     logger.warn('Manage-org invite primary path failed; falling back to RD Professional assignment path.', {
       organisationId: args.organisationId,
       requestedMode: args.requestedMode,
       email: args.options.user.email,
       error: getErrorMessage(error) ?? '[non-Error thrown]',
     });
-    return null;
+    return {
+      result: null,
+      suppressManageOrgFallback: shouldSuppressManageOrgFallbackAfterPrimaryFailure(error),
+    };
   }
 }
 
@@ -390,9 +401,20 @@ export async function assignUserToOrganisationFlow(
 ): Promise<OrganisationAssignmentResult> {
   const attemptedModes: OrganisationAssignmentMode[] = [];
   let prereqs: AssignmentPrerequisites | undefined;
+  let manageOrgPrimaryAttempted = false;
+  let autoManageOrgFallbackSuppressed = false;
+
+  const attemptManageOrgPrimary = async (): Promise<OrganisationAssignmentResult | null> => {
+    manageOrgPrimaryAttempted = true;
+    const primaryOutcome = await tryManageOrgPrimary(args, deps);
+    if (!primaryOutcome.result && args.requestedMode === 'auto' && primaryOutcome.suppressManageOrgFallback) {
+      autoManageOrgFallbackSuppressed = true;
+    }
+    return primaryOutcome.result;
+  };
 
   if (shouldUseManageOrgInvitePrimary()) {
-    const primaryResult = await tryManageOrgPrimary(args, deps);
+    const primaryResult = await attemptManageOrgPrimary();
     if (primaryResult) return primaryResult;
   }
 
@@ -415,8 +437,16 @@ export async function assignUserToOrganisationFlow(
         profile: prereqs.assignmentUserRoles.profile,
         roles: prereqs.assignmentUserRoles.roles,
       });
-      const primaryResult = await tryManageOrgPrimary(args, deps);
-      if (primaryResult) return primaryResult;
+      if (manageOrgPrimaryAttempted) {
+        logger.info('Skipping duplicate manage-org primary attempt because it already failed earlier in this flow.', {
+          organisationId: args.organisationId,
+          requestedMode: args.requestedMode,
+          email: args.options.user.email,
+        });
+      } else {
+        const primaryResult = await attemptManageOrgPrimary();
+        if (primaryResult) return primaryResult;
+      }
     }
 
     let lastError: unknown;
@@ -435,7 +465,7 @@ export async function assignUserToOrganisationFlow(
       lastError = modeOutcome.lastError;
     }
 
-    if (shouldUseManageOrgInviteFallback(lastError)) {
+    if (!autoManageOrgFallbackSuppressed && shouldUseManageOrgInviteFallback(lastError)) {
       return executeManageOrgFallback(
         args,
         deps,
@@ -445,7 +475,7 @@ export async function assignUserToOrganisationFlow(
     }
     throw toError(lastError, 'Organisation assignment failed.');
   } catch (error) {
-    if (shouldUseManageOrgInviteFallback(error)) {
+    if (!autoManageOrgFallbackSuppressed && shouldUseManageOrgInviteFallback(error)) {
       return executeManageOrgFallback(
         args,
         deps,
@@ -533,13 +563,21 @@ export function shouldPreferManageOrgInvitePrimaryForPrincipal(
   return (assignmentUserRoles.roles ?? []).some((role) => MANAGE_ORG_ASSIGNMENT_PRINCIPAL_ROLES.has(role));
 }
 
-function shouldFallbackToRdAfterManageOrgFailure(): boolean {
+function shouldFallbackToRdAfterManageOrgFailure(requestedMode: OrganisationAssignmentStrategy): boolean {
+  if (requestedMode === 'auto') {
+    return true;
+  }
   return resolveBooleanFlag(
     firstNonEmpty(
       process.env.PROFESSIONAL_USER_ENABLE_RD_FALLBACK_AFTER_MANAGE_ORG,
       process.env.PROFESSIONAL_USER_ENABLE_MANAGE_ORG_FALLBACK
     )
   );
+}
+
+function shouldSuppressManageOrgFallbackAfterPrimaryFailure(error: unknown): boolean {
+  const statusCode = parseStatusCode(error);
+  return statusCode === 401 || statusCode === 403;
 }
 
 function getErrorMessage(error: unknown): string | undefined {

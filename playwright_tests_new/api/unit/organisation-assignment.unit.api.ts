@@ -238,6 +238,341 @@ test.describe('Organisation assignment path selection unit tests', { tag: '@svc-
     });
   });
 
+  test('auto mode falls back to RD assignment when manage-org primary fails', async () => {
+    const originalPost = ApiClient.prototype.post;
+    const originalDispose = ApiClient.prototype.dispose;
+    const originalPrimaryFlag = process.env.PROFESSIONAL_USER_ASSIGNMENT_USE_MANAGE_ORG_PRIMARY;
+    const originalFallbackFlag = process.env.PROFESSIONAL_USER_ENABLE_MANAGE_ORG_FALLBACK;
+    const inviteCalls: Array<{ assignmentBearerToken?: string; serviceToken?: string }> = [];
+    delete process.env.PROFESSIONAL_USER_ASSIGNMENT_USE_MANAGE_ORG_PRIMARY;
+    delete process.env.PROFESSIONAL_USER_ENABLE_MANAGE_ORG_FALLBACK;
+
+    ApiClient.prototype.post = (async () =>
+      ({
+        status: 201,
+        data: { userIdentifier: 'rd-user-id' },
+      }) as never) as never;
+    ApiClient.prototype.dispose = (async () => undefined) as never;
+
+    try {
+      const result = await assignUserToOrganisationFlow(baseArgs, {
+        inviteUserViaManageOrgApi: async (params) => {
+          inviteCalls.push({
+            assignmentBearerToken: params.assignmentBearerToken,
+            serviceToken: params.serviceToken,
+          });
+          throw new Error('Manage-org invite failed with status 403: Forbidden');
+        },
+        isUserVisibleInOrganisationAssignment: async () => false,
+        resolveAssignmentPrerequisites: async () => ({
+          assignmentBearerToken: 'assignment-token',
+          serviceToken: 'service-token',
+          rdProfessionalApiPath: 'https://rd-professional.example',
+          headers: {},
+          assignmentUserRoles: {
+            source: 'idam-userinfo-roles',
+            roles: ['pui-user-manager', 'pui-organisation-manager'],
+          },
+        }),
+        waitForUserPropagation: async () => ({
+          verified: true,
+          degraded: false,
+          reason: 'ready',
+        }),
+        reconcileExistingOrganisationAssignment: async () => ({
+          status: 200,
+        }),
+        collectAssignmentFailureDiagnostics: async () => ({}),
+      });
+
+      expect(inviteCalls).toEqual([
+        {
+          assignmentBearerToken: 'override-assignment-token',
+          serviceToken: 'override-service-token',
+        },
+      ]);
+      expect(result).toMatchObject({
+        mode: 'external',
+        requestedMode: 'auto',
+        attemptedModes: ['external'],
+        status: 201,
+        userIdentifier: 'rd-user-id',
+      });
+    } finally {
+      if (typeof originalPrimaryFlag === 'string') {
+        process.env.PROFESSIONAL_USER_ASSIGNMENT_USE_MANAGE_ORG_PRIMARY = originalPrimaryFlag;
+      } else {
+        delete process.env.PROFESSIONAL_USER_ASSIGNMENT_USE_MANAGE_ORG_PRIMARY;
+      }
+      if (typeof originalFallbackFlag === 'string') {
+        process.env.PROFESSIONAL_USER_ENABLE_MANAGE_ORG_FALLBACK = originalFallbackFlag;
+      } else {
+        delete process.env.PROFESSIONAL_USER_ENABLE_MANAGE_ORG_FALLBACK;
+      }
+      ApiClient.prototype.post = originalPost;
+      ApiClient.prototype.dispose = originalDispose;
+    }
+  });
+
+  test('explicit manage-org primary failure still allows manage-org fallback after RD failure', async () => {
+    const originalPost = ApiClient.prototype.post;
+    const originalDispose = ApiClient.prototype.dispose;
+    const originalFallbackFlag = process.env.PROFESSIONAL_USER_ENABLE_MANAGE_ORG_FALLBACK;
+    const originalPrimaryFlag = process.env.PROFESSIONAL_USER_ASSIGNMENT_USE_MANAGE_ORG_PRIMARY;
+    const originalRdFallbackFlag = process.env.PROFESSIONAL_USER_ENABLE_RD_FALLBACK_AFTER_MANAGE_ORG;
+    const inviteCalls: Array<{ assignmentBearerToken?: string; serviceToken?: string }> = [];
+
+    process.env.PROFESSIONAL_USER_ENABLE_MANAGE_ORG_FALLBACK = 'true';
+    process.env.PROFESSIONAL_USER_ASSIGNMENT_USE_MANAGE_ORG_PRIMARY = 'true';
+    process.env.PROFESSIONAL_USER_ENABLE_RD_FALLBACK_AFTER_MANAGE_ORG = 'true';
+
+    ApiClient.prototype.post = (async () => {
+      throw new Error('Status Code: 403');
+    }) as never;
+    ApiClient.prototype.dispose = (async () => undefined) as never;
+
+    try {
+      const result = await assignUserToOrganisationFlow(
+        {
+          ...baseArgs,
+          requestedMode: 'external',
+        },
+        {
+          inviteUserViaManageOrgApi: async (params) => {
+            inviteCalls.push({
+              assignmentBearerToken: params.assignmentBearerToken,
+              serviceToken: params.serviceToken,
+            });
+            if (inviteCalls.length === 1) {
+              throw new Error('Manage-org invite failed with status 403: Forbidden');
+            }
+            return {
+              status: 201,
+              responseBody: { ok: true },
+            };
+          },
+          isUserVisibleInOrganisationAssignment: async () => false,
+          resolveAssignmentPrerequisites: async () => ({
+            assignmentBearerToken: 'assignment-token',
+            serviceToken: 'service-token',
+            rdProfessionalApiPath: 'https://rd-professional.example',
+            headers: {},
+            assignmentUserRoles: {
+              source: 'jwt-roles',
+              roles: ['prd-admin'],
+            },
+          }),
+          waitForUserPropagation: async () => ({
+            verified: true,
+            degraded: false,
+            reason: 'ready',
+          }),
+          reconcileExistingOrganisationAssignment: async () => ({
+            status: 200,
+          }),
+          collectAssignmentFailureDiagnostics: async () => ({}),
+        }
+      );
+
+      expect(inviteCalls).toEqual([
+        {
+          assignmentBearerToken: 'override-assignment-token',
+          serviceToken: 'override-service-token',
+        },
+        {
+          assignmentBearerToken: 'override-assignment-token',
+          serviceToken: 'override-service-token',
+        },
+      ]);
+      expect(result.responseBody).toEqual({
+        fallback: 'manage-org-invite',
+        payload: { ok: true },
+      });
+    } finally {
+      if (typeof originalFallbackFlag === 'string') {
+        process.env.PROFESSIONAL_USER_ENABLE_MANAGE_ORG_FALLBACK = originalFallbackFlag;
+      } else {
+        delete process.env.PROFESSIONAL_USER_ENABLE_MANAGE_ORG_FALLBACK;
+      }
+      if (typeof originalPrimaryFlag === 'string') {
+        process.env.PROFESSIONAL_USER_ASSIGNMENT_USE_MANAGE_ORG_PRIMARY = originalPrimaryFlag;
+      } else {
+        delete process.env.PROFESSIONAL_USER_ASSIGNMENT_USE_MANAGE_ORG_PRIMARY;
+      }
+      if (typeof originalRdFallbackFlag === 'string') {
+        process.env.PROFESSIONAL_USER_ENABLE_RD_FALLBACK_AFTER_MANAGE_ORG = originalRdFallbackFlag;
+      } else {
+        delete process.env.PROFESSIONAL_USER_ENABLE_RD_FALLBACK_AFTER_MANAGE_ORG;
+      }
+      ApiClient.prototype.post = originalPost;
+      ApiClient.prototype.dispose = originalDispose;
+    }
+  });
+
+  test('auto mode keeps manage-org fallback available after non-permission primary failure', async () => {
+    const originalPost = ApiClient.prototype.post;
+    const originalDispose = ApiClient.prototype.dispose;
+    const originalFallbackFlag = process.env.PROFESSIONAL_USER_ENABLE_MANAGE_ORG_FALLBACK;
+    const originalPrimaryFlag = process.env.PROFESSIONAL_USER_ASSIGNMENT_USE_MANAGE_ORG_PRIMARY;
+    const inviteCalls: Array<{ assignmentBearerToken?: string; serviceToken?: string }> = [];
+
+    process.env.PROFESSIONAL_USER_ENABLE_MANAGE_ORG_FALLBACK = 'true';
+    delete process.env.PROFESSIONAL_USER_ASSIGNMENT_USE_MANAGE_ORG_PRIMARY;
+
+    ApiClient.prototype.post = (async () => {
+      throw new Error('Status Code: 403');
+    }) as never;
+    ApiClient.prototype.dispose = (async () => undefined) as never;
+
+    try {
+      const result = await assignUserToOrganisationFlow(baseArgs, {
+        inviteUserViaManageOrgApi: async (params) => {
+          inviteCalls.push({
+            assignmentBearerToken: params.assignmentBearerToken,
+            serviceToken: params.serviceToken,
+          });
+          if (inviteCalls.length === 1) {
+            throw new Error('Manage-org invite failed with status 500: Internal Server Error');
+          }
+          return {
+            status: 201,
+            responseBody: { ok: true },
+          };
+        },
+        isUserVisibleInOrganisationAssignment: async () => false,
+        resolveAssignmentPrerequisites: async () => ({
+          assignmentBearerToken: 'assignment-token',
+          serviceToken: 'service-token',
+          rdProfessionalApiPath: 'https://rd-professional.example',
+          headers: {},
+          assignmentUserRoles: {
+            source: 'idam-userinfo-roles',
+            roles: ['pui-user-manager', 'pui-organisation-manager'],
+          },
+        }),
+        waitForUserPropagation: async () => ({
+          verified: true,
+          degraded: false,
+          reason: 'ready',
+        }),
+        reconcileExistingOrganisationAssignment: async () => ({
+          status: 200,
+        }),
+        collectAssignmentFailureDiagnostics: async () => ({}),
+      });
+
+      expect(inviteCalls).toEqual([
+        {
+          assignmentBearerToken: 'override-assignment-token',
+          serviceToken: 'override-service-token',
+        },
+        {
+          assignmentBearerToken: 'override-assignment-token',
+          serviceToken: 'override-service-token',
+        },
+      ]);
+      expect(result.responseBody).toEqual({
+        fallback: 'manage-org-invite',
+        payload: { ok: true },
+      });
+    } finally {
+      if (typeof originalFallbackFlag === 'string') {
+        process.env.PROFESSIONAL_USER_ENABLE_MANAGE_ORG_FALLBACK = originalFallbackFlag;
+      } else {
+        delete process.env.PROFESSIONAL_USER_ENABLE_MANAGE_ORG_FALLBACK;
+      }
+      if (typeof originalPrimaryFlag === 'string') {
+        process.env.PROFESSIONAL_USER_ASSIGNMENT_USE_MANAGE_ORG_PRIMARY = originalPrimaryFlag;
+      } else {
+        delete process.env.PROFESSIONAL_USER_ASSIGNMENT_USE_MANAGE_ORG_PRIMARY;
+      }
+      ApiClient.prototype.post = originalPost;
+      ApiClient.prototype.dispose = originalDispose;
+    }
+  });
+
+  test('auto mode keeps manage-org fallback available after message-only primary failure', async () => {
+    const originalPost = ApiClient.prototype.post;
+    const originalDispose = ApiClient.prototype.dispose;
+    const originalFallbackFlag = process.env.PROFESSIONAL_USER_ENABLE_MANAGE_ORG_FALLBACK;
+    const originalPrimaryFlag = process.env.PROFESSIONAL_USER_ASSIGNMENT_USE_MANAGE_ORG_PRIMARY;
+    const inviteCalls: Array<{ assignmentBearerToken?: string; serviceToken?: string }> = [];
+
+    process.env.PROFESSIONAL_USER_ENABLE_MANAGE_ORG_FALLBACK = 'true';
+    delete process.env.PROFESSIONAL_USER_ASSIGNMENT_USE_MANAGE_ORG_PRIMARY;
+
+    ApiClient.prototype.post = (async () => {
+      throw new Error('Status Code: 403');
+    }) as never;
+    ApiClient.prototype.dispose = (async () => undefined) as never;
+
+    try {
+      const result = await assignUserToOrganisationFlow(baseArgs, {
+        inviteUserViaManageOrgApi: async (params) => {
+          inviteCalls.push({
+            assignmentBearerToken: params.assignmentBearerToken,
+            serviceToken: params.serviceToken,
+          });
+          if (inviteCalls.length === 1) {
+            throw new Error('token is expired');
+          }
+          return {
+            status: 201,
+            responseBody: { ok: true },
+          };
+        },
+        isUserVisibleInOrganisationAssignment: async () => false,
+        resolveAssignmentPrerequisites: async () => ({
+          assignmentBearerToken: 'assignment-token',
+          serviceToken: 'service-token',
+          rdProfessionalApiPath: 'https://rd-professional.example',
+          headers: {},
+          assignmentUserRoles: {
+            source: 'idam-userinfo-roles',
+            roles: ['pui-user-manager', 'pui-organisation-manager'],
+          },
+        }),
+        waitForUserPropagation: async () => ({
+          verified: true,
+          degraded: false,
+          reason: 'ready',
+        }),
+        reconcileExistingOrganisationAssignment: async () => ({
+          status: 200,
+        }),
+        collectAssignmentFailureDiagnostics: async () => ({}),
+      });
+
+      expect(inviteCalls).toEqual([
+        {
+          assignmentBearerToken: 'override-assignment-token',
+          serviceToken: 'override-service-token',
+        },
+        {
+          assignmentBearerToken: 'override-assignment-token',
+          serviceToken: 'override-service-token',
+        },
+      ]);
+      expect(result.responseBody).toEqual({
+        fallback: 'manage-org-invite',
+        payload: { ok: true },
+      });
+    } finally {
+      if (typeof originalFallbackFlag === 'string') {
+        process.env.PROFESSIONAL_USER_ENABLE_MANAGE_ORG_FALLBACK = originalFallbackFlag;
+      } else {
+        delete process.env.PROFESSIONAL_USER_ENABLE_MANAGE_ORG_FALLBACK;
+      }
+      if (typeof originalPrimaryFlag === 'string') {
+        process.env.PROFESSIONAL_USER_ASSIGNMENT_USE_MANAGE_ORG_PRIMARY = originalPrimaryFlag;
+      } else {
+        delete process.env.PROFESSIONAL_USER_ASSIGNMENT_USE_MANAGE_ORG_PRIMARY;
+      }
+      ApiClient.prototype.post = originalPost;
+      ApiClient.prototype.dispose = originalDispose;
+    }
+  });
+
   test('manage-org fallback forwards explicit assignment overrides after RD failure', async () => {
     const originalPost = ApiClient.prototype.post;
     const originalDispose = ApiClient.prototype.dispose;

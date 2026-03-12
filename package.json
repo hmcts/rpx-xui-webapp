@@ -93,7 +93,6 @@
   "private": true,
   "dependencies": {
     "@angular-material-components/datetime-picker": "16.0.1",
-    "@angular-material-components/moment-adapter": "^16.0.1",
     "@angular/animations": "^20.3.17",
     "@angular/cdk": "^16.2.0",
     "@angular/common": "^20.3.17",
@@ -150,7 +149,6 @@
     "lz-string": "^1.5.0",
     "marked": "^12.0.2",
     "material-design-icons": "^3.0.1",
-    "moment": "^2.30.1",
     "moment-timezone": "^0.5.28",
     "ngx-chips": "3.0.0",
     "ngx-logger": "^5.0.12",
@@ -173,6 +171,7 @@
   "devDependencies": {
     "@angular-devkit/build-angular": "^20.3.17",
     "@angular-eslint/builder": "20.4.0",
+    "@angular-material-components/moment-adapter": "^16.0.1",
     "@angular/cli": "^20.3.17",
     "@angular/compiler-cli": "^20.3.17",
     "@axe-core/playwright": "^4.9.1",

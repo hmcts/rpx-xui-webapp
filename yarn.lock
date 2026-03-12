@@ -20828,7 +20828,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"moment@npm:^2.19.0, moment@npm:^2.29.4, moment@npm:^2.30.1":
+"moment@npm:^2.19.0, moment@npm:^2.29.4":
   version: 2.30.1
   resolution: "moment@npm:2.30.1"
   checksum: 10/ae42d876d4ec831ef66110bdc302c0657c664991e45cf2afffc4b0f6cd6d251dde11375c982a5c0564ccc0fa593fc564576ddceb8c8845e87c15f58aa6baca69
@@ -24301,7 +24301,6 @@ __metadata:
     material-design-icons: "npm:^3.0.1"
     mocha: "npm:^8.4.0"
     mochawesome: "npm:^7.0.0"
-    moment: "npm:^2.30.1"
     moment-timezone: "npm:^0.5.28"
     ngrx-store-freeze: "npm:^0.2.4"
     ngx-chips: "npm:3.0.0"

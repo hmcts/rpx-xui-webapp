@@ -11,7 +11,7 @@ export class ExuiHeaderComponent {
 
   readonly results = this.page.locator('ccd-search-result');
   readonly headerMenuItems = this.page.locator('.hmcts-primary-navigation li.hmcts-primary-navigation__item');
-  readonly headerAppLink = this.header
+  readonly appHeaderLink = this.header
     .locator('.hmcts-header a.hmcts-header__link')
     .or(this.page.getByRole('banner').getByRole('link', { name: /Manage Cases|Rheoli Achosion/ }));
 

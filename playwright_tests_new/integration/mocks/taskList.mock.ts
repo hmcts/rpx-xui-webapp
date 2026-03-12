@@ -129,15 +129,13 @@ export function buildMyTaskListMock(assignee: string, rowCount: number, actions:
  * Priority is the same for all.
  */
 export function buildDeterministicMyTasksListMock(assignee: string) {
-  const now = new Date();
-  const todayAtUtcNoon = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 12, 0, 0, 0));
   const baseTasks = [
     {
       case_name: 'Smith & Co',
       case_category: 'Protection',
       location_name: 'Taylor House',
       task_title: 'Review documents',
-      due_date: new Date(todayAtUtcNoon.getTime() - 86400000 * 7).toISOString(), // 7 days ago
+      due_date: new Date(Date.now() - 86400000 * 7).toISOString(), // 7 days ago
       priority_field: 'urgent',
       minor_priority: 5,
       major_priority: 1000,
@@ -147,7 +145,7 @@ export function buildDeterministicMyTasksListMock(assignee: string) {
       case_category: 'Human rights',
       location_name: 'Manchester',
       task_title: 'Prepare hearing',
-      due_date: todayAtUtcNoon.toISOString(), // today
+      due_date: new Date().toISOString(), // today
       priority_field: 'high',
       minor_priority: 500,
       major_priority: 5000,
@@ -157,7 +155,7 @@ export function buildDeterministicMyTasksListMock(assignee: string) {
       case_category: 'EUSS',
       location_name: 'Liverpool',
       task_title: 'Send notification',
-      due_date: new Date(todayAtUtcNoon.getTime() + 86400000).toISOString(), // tomorrow
+      due_date: new Date(Date.now() + 86400000).toISOString(), // tomorrow
       priority_field: 'medium',
       minor_priority: 500,
       major_priority: 5000,
@@ -167,7 +165,7 @@ export function buildDeterministicMyTasksListMock(assignee: string) {
       case_category: 'Protection',
       location_name: 'Birmingham',
       task_title: 'Update records',
-      due_date: new Date(todayAtUtcNoon.getTime() + 86400000 * 25).toISOString(), // next month
+      due_date: new Date(Date.now() + 86400000 * 25).toISOString(), // next month
       priority_field: 'low',
       minor_priority: 500,
       major_priority: 5000,

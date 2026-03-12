@@ -42,7 +42,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
   test(`An empty task response shows an empty task list`, async ({ caseDetailsPage, page }) => {
     await test.step('Setup route mock for an empty task details', async () => {
       await page.route(`**workallocation/case/task/${caseId}*`, async (route) => {
-        const body = JSON.stringify({});
+        const body = JSON.stringify([]);
         await route.fulfill({ status: 200, contentType: 'application/json', body });
       });
     });

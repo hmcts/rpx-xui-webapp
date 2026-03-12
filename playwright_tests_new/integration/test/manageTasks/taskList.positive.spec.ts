@@ -18,12 +18,7 @@ test.beforeEach(async ({ page }) => {
 
 test.describe(`Task List as ${userIdentifier}`, () => {
   test(`User ${userIdentifier} can view assigned tasks on the task list page`, async ({ taskListPage, page, tableUtils }) => {
-    await test.step('Setup route mock for task list', async () => {
-      await page.route('**/workallocation/task*', async (route) => {
-        const body = JSON.stringify(taskListMockResponse);
-        await route.fulfill({ status: 200, contentType: 'application/json', body });
-      });
-    });
+    await setupTaskListMockRoutes(page, taskListMockResponse);
 
     await test.step('Navigate to the my tasks list page', async () => {
       await taskListPage.goto();

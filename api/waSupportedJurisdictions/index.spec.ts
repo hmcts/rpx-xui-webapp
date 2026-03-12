@@ -268,6 +268,89 @@ describe('WA Supported Jurisdictions', () => {
       expect(result[3]).to.deep.equal({ serviceId: 'UNKNOWN', serviceName: 'UNKNOWN' });
     });
 
+    it('should generate services from ref data not stubbed', () => {
+      toTitleCaseStub.withArgs('CIVIL').returns('Civil');
+
+      const refData: any[] = [
+        {
+          ccd_service_name: 'IA',
+          service_short_description: 'Immigration and Asylum',
+          jurisdiction: 'IA',
+          service_id: 1,
+          org_unit: 'HMCTS',
+          business_area: 'CFT',
+          sub_business_area: 'CFT',
+          service_description: 'Immigration and Asylum',
+          service_code: 'BFA1',
+          last_update: '2023-01-01',
+          ccd_case_types: ['Asylum'],
+        },
+        {
+          ccd_service_name: 'CIVIL',
+          service_short_description: 'Civil',
+          jurisdiction: 'CIVIL',
+          service_id: 2,
+          org_unit: 'HMCTS',
+          business_area: 'CFT',
+          sub_business_area: 'CFT',
+          service_description: 'Civil',
+          service_code: 'AAA1',
+          last_update: '2023-01-01',
+          ccd_case_types: ['CIVIL'],
+        },
+        {
+          ccd_service_name: 'CIVIL',
+          service_short_description: 'Civil Money Claims',
+          jurisdiction: 'CIVIL',
+          service_id: 3,
+          org_unit: 'HMCTS',
+          business_area: 'CFT',
+          sub_business_area: 'CFT',
+          service_description: 'Civil Money Claims',
+          service_code: 'AAA2',
+          last_update: '2023-01-01',
+          ccd_case_types: ['CIVIL'],
+        },
+        {
+          ccd_service_name: 'PRIVATELAW',
+          service_short_description: 'Private Law',
+          jurisdiction: 'PRIVATELAW',
+          service_id: 4,
+          org_unit: 'HMCTS',
+          business_area: 'CFT',
+          sub_business_area: 'CFT',
+          service_description: 'Private Law',
+          service_code: 'ABA1',
+          last_update: '2023-01-01',
+          ccd_case_types: ['PRLAPPS'],
+        },
+        {
+          ccd_service_name: 'PROBATE',
+          service_short_description: 'Probate',
+          jurisdiction: 'PROBATE',
+          service_id: 4,
+          org_unit: 'HMCTS',
+          business_area: 'CFT',
+          sub_business_area: 'CFT',
+          service_description: 'Probate',
+          service_code: 'ABA6',
+          last_update: '2026-01-01',
+          ccd_case_types: ['Caveat'],
+        },
+      ];
+
+      const result = waSupportedJurisdictions.generateServices(refData);
+
+      expect(result).to.have.lengthOf(7);
+      expect(result[0]).to.deep.equal({ serviceId: 'IA', serviceName: 'Immigration and Asylum' });
+      expect(result[1]).to.deep.equal({ serviceId: 'CIVIL', serviceName: 'Civil' });
+      expect(result[2]).to.deep.equal({ serviceId: 'PRIVATELAW', serviceName: 'Private Law' });
+      expect(result[3]).to.deep.equal({ serviceId: 'PUBLICLAW', serviceName: 'PUBLICLAW' });
+      expect(result[4]).to.deep.equal({ serviceId: 'EMPLOYMENT', serviceName: 'EMPLOYMENT' });
+      expect(result[5]).to.deep.equal({ serviceId: 'ST_CIC', serviceName: 'ST_CIC' });
+      expect(result[6]).to.deep.equal({ serviceId: 'PROBATE', serviceName: 'Probate' });
+    });
+
     it('should handle empty ref data', () => {
       getConfigValueStub.withArgs('waSupportedJurisdictions').returns('IA,CIVIL,PRIVATELAW,UNKNOWN');
       const result = waSupportedJurisdictions.generateServices([]);

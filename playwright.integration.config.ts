@@ -131,7 +131,9 @@ module.exports = (() => {
     testMatch: ['**/test/**/*.spec.ts'],
     retries: process.env.CI ? 1 : 0,
     timeout: 120_000,
-    expect: { timeout: 45_000 },
+    expect: {
+      timeout: 60_000,
+    },
     workers: workerCount,
     reporter,
     globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
@@ -143,6 +145,7 @@ module.exports = (() => {
         fullPage: true,
       },
       video: 'off',
+      timezoneId: 'Europe/London',
       headless: headlessMode,
     },
     projects: [

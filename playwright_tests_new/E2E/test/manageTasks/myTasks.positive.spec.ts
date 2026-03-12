@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 import { expect, test } from '../../fixtures';
 import { ensureSessionCookies } from '../../../common/sessionCapture';
 
-test.describe('Verify the my tasks page tabs appear as expected', () => {
+test.describe('Verify the my tasks page tabs appear as expected', { tag: ['@e2e', '@e2e-manage-tasks'] }, () => {
   test.beforeEach(async ({ page, taskListPage }) => {
     const { cookies } = await ensureSessionCookies('STAFF_ADMIN');
     if (cookies.length) {

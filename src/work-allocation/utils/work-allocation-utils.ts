@@ -129,7 +129,7 @@ export const setCaseworkers = (
 };
 
 export const getAssigneeName = (caseworkers: any[], assignee: string): string => {
-  if (assignee && caseworkers && caseworkers.some((cw) => cw.idamId === assignee)) {
+  if (assignee && caseworkers?.some((cw) => cw.idamId === assignee)) {
     const assignedCW = caseworkers.filter((cw) => cw.idamId === assignee)[0];
     return `${assignedCW.firstName} ${assignedCW.lastName}`;
   }

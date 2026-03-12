@@ -1,12 +1,19 @@
 import { defineConfig, devices } from '@playwright/test';
 import { execSync } from 'node:child_process';
-import { cpus } from 'node:os';
+import { cpus, totalmem } from 'node:os';
 import { version as appVersion } from './package.json';
-import { parseNonNegativeInt, resolveDefaultReporter } from './playwright-config-utils';
+import { parseNonNegativeInt, resolveDefaultReporter, resolveTagFilters } from './playwright-config-utils';
 export default (() => {
   const headlessMode = process.env.HEAD !== 'true';
   const odhinOutputFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
   const baseUrl = process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';
+  const e2eTagFilters = resolveTagFilters({
+    includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
+    excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
+    configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
+    defaultConfigPath: 'playwright_tests_new/E2E/tag-filter.json',
+    suiteTag: '@e2e',
+  });
 
   const parsePositiveInt = (raw: string | undefined): number | undefined => {
     if (!raw) {
@@ -75,14 +82,14 @@ export default (() => {
 
   const resolveWorkerCount = () => {
     const configured = process.env.FUNCTIONAL_TESTS_WORKERS;
-    if (process.env.CI) {
-      return 8;
-    }
     if (configured) {
       const parsed = Number.parseInt(configured, 10);
       if (Number.isFinite(parsed) && parsed > 0) {
         return parsed;
       }
+    }
+    if (process.env.CI) {
+      return 8;
     }
     const logical = cpus()?.length ?? 1;
     const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));
@@ -91,9 +98,14 @@ export default (() => {
   };
 
   const workerCount = resolveWorkerCount();
+  const resolveAgentHardware = () => {
+    const cpuCores = cpus()?.length ?? 'unknown';
+    const totalRamGiB = Math.round((totalmem() / 1024 ** 3) * 10) / 10;
+    return `agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
+  };
   const targetEnv = process.env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
   const runContext = process.env.CI ? 'ci' : 'local-run';
-  const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount}`;
+  const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
   const reportBranch = resolveBranchName();
 
   return defineConfig({
@@ -140,6 +152,8 @@ export default (() => {
     projects: [
       {
         name: 'chromium',
+        grep: e2eTagFilters.grep,
+        grepInvert: e2eTagFilters.grepInvert,
         use: {
           ...devices['Desktop Chrome'],
           channel: 'chrome',

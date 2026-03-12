@@ -134,6 +134,7 @@ export class HearingStageResultComponent implements OnInit, OnDestroy {
         new fromHearingStore.UpdateHearingActualsStage({
           hearingId: this.id,
           hearingActuals,
+          caseId: this.hearingActualsMainModel.caseDetails.caseRef,
         })
       );
     }

@@ -6,7 +6,7 @@ import { caseBannerMatches } from '../../utils/banner.utils';
 import { isPageClosingError, rowMatchesExpected } from '../../utils/case-flags.utils';
 import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
 
-test.describe('Case level case flags', () => {
+test.describe('Case level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () => {
   test.describe.configure({ timeout: 180000 });
   let caseNumber: string;
   const jurisdiction = 'EMPLOYMENT';
@@ -97,7 +97,7 @@ test.describe('Case level case flags', () => {
   });
 });
 
-test.describe('Party level case flags', () => {
+test.describe('Party level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () => {
   test.describe.configure({ timeout: 180000 });
   const testValue = faker.person.firstName();
   let caseNumber: string;

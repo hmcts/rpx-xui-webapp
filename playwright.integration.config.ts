@@ -2,10 +2,18 @@ module.exports = (() => {
   const { defineConfig, devices } = require('@playwright/test');
   const os = require('os');
   const { version: appVersion } = require('./package.json');
+  const { resolveDefaultReporter, resolveTagFilters } = require('./playwright-config-utils');
 
   const headlessMode = process.env.HEAD !== 'true';
   const odhinOutputFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-integration/odhin-report';
   const baseUrl = process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';
+  const integrationTagFilters = resolveTagFilters({
+    includeTagsEnvVar: 'INTEGRATION_PW_INCLUDE_TAGS',
+    excludedTagsEnvVar: 'INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE',
+    configPathEnvVar: 'INTEGRATION_PW_TAG_FILTER_CONFIG',
+    defaultConfigPath: 'playwright_tests_new/integration/tag-filter.json',
+    suiteTag: '@integration',
+  });
   const defaultLiveTimerIntervalMs = '30000';
   const resolveEnvironmentFromUrl = (url) => {
     try {
@@ -32,14 +40,14 @@ module.exports = (() => {
   };
   const resolveWorkerCount = () => {
     const configured = process.env.FUNCTIONAL_TESTS_WORKERS;
-    if (process.env.CI) {
-      return 8;
-    }
     if (configured) {
       const parsed = Number.parseInt(configured, 10);
       if (Number.isFinite(parsed) && parsed > 0) {
         return parsed;
       }
+    }
+    if (process.env.CI) {
+      return 8;
     }
     const logical = os.cpus()?.length ?? 1;
     const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));
@@ -92,7 +100,7 @@ module.exports = (() => {
   const targetEnv = process.env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
   const runContext = process.env.CI ? 'ci' : 'local-run';
   const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
-  const reporter: [string, unknown?][] = [[process.env.CI ? 'dot' : 'list']];
+  const reporter: [string, unknown?][] = [[resolveDefaultReporter(process.env)]];
   if (enableOdhinReporter) {
     reporter.push([
       './playwright_tests_new/common/reporters/odhin-progress.reporter.cjs',
@@ -143,6 +151,8 @@ module.exports = (() => {
     projects: [
       {
         name: 'chromium',
+        grep: integrationTagFilters.grep,
+        grepInvert: integrationTagFilters.grepInvert,
         use: {
           ...devices['Desktop Chrome'],
           channel: 'chrome',

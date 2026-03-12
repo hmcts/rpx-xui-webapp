@@ -2,7 +2,6 @@ nodejs:
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
   environment:
-    LOGGING: debug
     NODE_TLS_REJECT_UNAUTHORIZED: 0
     SERVICES_IDAM_API_URL: https://idam-api.aat.platform.hmcts.net
     SERVICES_IDAM_LOGIN_URL: https://idam-web-public.aat.platform.hmcts.net
@@ -27,8 +26,10 @@ nodejs:
     JURISDICTIONS: DIVORCE,PROBATE,FR,PUBLICLAW,IA,SSCS,EMPLOYMENT,CIVIL,CMC,HRS,PRIVATELAW,WA,PRL,BEFTA_JURISDICTION_1,BEFTA_JURISDICTION_2,BEFTA_JURISDICTION_3,ADOPTION,BEFTA_MASTER,DISPOSER_MASTER,ST_CIC,PCS
     PREVIEW_DEPLOYMENT_ID: exui-preview-deployment-${CHANGE_ID}
     FEATURE_JRD_E_LINKS_V2_ENABLED: true
+    FEATURE_LAU_SPECIFIC_CHALLENGED_ENABLED: true
+    SERVICES_IDAM_SERVICE_OVERRIDE: false
+    SERVICES_IDAM_ISS_URL: https://forgerock-am.service.core-compute-idam-aat2.internal:8443/openam/oauth2/realms/root/realms/hmcts
     FEATURE_OIDC_ENABLED: true
-    FEATURE_SECURE_COOKIE_ENABLED: true
   keyVaults:
     rpx:
       secrets:
@@ -43,9 +44,13 @@ nodejs:
   autoscaling:
     enabled: false
   devmemoryRequests: 512Mi
-  devcpuRequests: 250m
+  devcpuRequests: 400m
   devmemoryLimits: 2Gi
   devcpuLimits: 2
+  livenessTimeout: 15
+  readinessTimeout: 15
+  livenessFailureThreshold: 10
+  readinessFailureThreshold: 10
 redis:
   enabled: true
   master:

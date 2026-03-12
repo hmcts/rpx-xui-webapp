@@ -1,10 +1,35 @@
 import { defineConfig, devices } from '@playwright/test';
 
-import { cpus } from 'node:os';
+import { cpus, totalmem } from 'node:os';
 import { version as appVersion } from './package.json';
 
 const headlessMode = process.env.HEAD !== 'true';
+const baseUrl = process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
+
+const resolveEnvironmentFromUrl = (url: string): string => {
+  try {
+    const hostname = new URL(url).hostname.toLowerCase();
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'local';
+    }
+    if (hostname.includes('.aat.')) {
+      return 'aat';
+    }
+    if (hostname.includes('.ithc.')) {
+      return 'ithc';
+    }
+    if (hostname.includes('.demo.')) {
+      return 'demo';
+    }
+    if (hostname.includes('.perftest.')) {
+      return 'perftest';
+    }
+    return hostname;
+  } catch {
+    return 'unknown';
+  }
+};
 
 const resolveWorkerCount = () => {
   const configured = process.env.FUNCTIONAL_TESTS_WORKERS;
@@ -23,19 +48,29 @@ const resolveWorkerCount = () => {
   return suggested;
 };
 const workerCount = resolveWorkerCount();
+const resolveAgentHardware = () => {
+  const cpuCores = cpus()?.length ?? 'unknown';
+  const totalRamGiB = Math.round((totalmem() / 1024 ** 3) * 10) / 10;
+  return `agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
+};
+const targetEnv = process.env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
+const runContext = process.env.CI ? 'ci' : 'local-run';
+const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
 
 module.exports = defineConfig({
-  testDir: './playwright_tests/E2E',
+  testDir: 'playwright_tests_new/E2E',
+  testMatch: ['**/test/**/*.spec.ts'],
+  testIgnore: ['**/test/smoke/smokeTest.spec.ts'],
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: 1, // Set the number of retries for all projects
+  retries: process.env.CI ? 1 : 0,
 
-  timeout: 5 * 60 * 1000, // 5 minutes per test maximum as on first nightly run tests were taking too long
+  timeout: 300_000, // 5 minutes per test maximum as on first nightly run tests were taking too long
   expect: {
-    timeout: 2 * 60 * 1000, // Same reason as above
+    timeout: 120_000, // Same reason as above
   },
   reportSlowTests: null,
 
@@ -49,9 +84,9 @@ module.exports = defineConfig({
       'odhin-reports-playwright',
       {
         outputFolder: 'functional-output/tests/playwright-e2e/odhin-report',
-        indexFilename: 'xui-playwright.html',
+        indexFilename: 'xui-playwright-e2e.html',
         title: 'RPX XUI Playwright',
-        testEnvironment: `${process.env.TEST_TYPE ?? (process.env.CI ? 'ci' : 'local')} | workers=${workerCount}`,
+        testEnvironment,
         project: process.env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
         release: process.env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${process.env.GIT_BRANCH ?? 'local'}`,
         startServer: false,
@@ -73,7 +108,7 @@ module.exports = defineConfig({
           mode: 'only-on-failure',
           fullPage: true,
         },
-        video: 'retain-on-failure',
+        video: 'off',
       },
     },
     {
@@ -86,7 +121,7 @@ module.exports = defineConfig({
           mode: 'only-on-failure',
           fullPage: true,
         },
-        video: 'retain-on-failure',
+        video: 'off',
       },
     },
     {
@@ -98,7 +133,7 @@ module.exports = defineConfig({
           mode: 'only-on-failure',
           fullPage: true,
         },
-        video: 'retain-on-failure',
+        video: 'off',
       },
     },
     // {

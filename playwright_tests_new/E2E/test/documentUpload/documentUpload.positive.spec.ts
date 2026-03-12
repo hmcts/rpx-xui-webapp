@@ -8,7 +8,7 @@ import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
 import { buildCasePayloadFromTemplate } from '../../utils/test-setup/payloads/registry';
 import {
   provisionDynamicSolicitorForAlias,
-  EMPLOYMENT_DYNAMIC_SOLICITOR_ROLES,
+  EMPLOYMENT_DYNAMIC_CASEWORKER_ROLES,
 } from '../../utils/test-setup/dynamicSolicitorSession';
 import { createEmploymentCase, uploadEmploymentDraftDocument } from '../../utils/test-setup/journeys/employmentJourneys';
 import { uploadDocumentViaApi } from '../../utils/test-setup/uploadDocumentViaApi';
@@ -267,9 +267,9 @@ test.describe('Document upload V1', () => {
 
   test.beforeEach(async ({ page, createCasePage, caseDetailsPage, professionalUserUtils }, testInfo) => {
     dynamicHandle = await provisionDynamicSolicitorForAlias({
-      alias: 'EMPLOYMENT_DYNAMIC_SOLICITOR',
+      alias: 'EMPLOYMENT_DYNAMIC_CASEWORKER',
       professionalUserUtils,
-      roleNames: EMPLOYMENT_DYNAMIC_SOLICITOR_ROLES,
+      roleNames: EMPLOYMENT_DYNAMIC_CASEWORKER_ROLES,
       roleContext: {
         jurisdiction: 'employment',
         testType: 'case-create',

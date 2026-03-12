@@ -290,9 +290,7 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
       click: async () => performLogin(),
     });
     const shellLocator = createLocator('exui-shell', {
-      waitFor: async () => {
-        throw new Error('missing header');
-      },
+      waitFor: async () => new Promise<void>(() => undefined),
     });
     const headerLocator = createLocator('exui-header', {
       isVisible: async () => false,
@@ -317,11 +315,9 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
     });
     const resolveSelectorLocator = (selector: string) => {
       switch (selector) {
-        case '[data-testid="idam-username-input"], input#username, input[name="username"], input[type="email"], input#email, input[name="email"], input[name="emailAddress"], input[autocomplete="email"]':
+        case 'input#email, input[name="email"], input[name="emailAddress"], input[autocomplete="email"]':
           return usernameLocator;
-        case 'input#password, input[name="password"], input[type="password"]':
-          return passwordLocator;
-        case '[name="save"], button[type="submit"], button:has-text("Sign in"), button:has-text("Continue")':
+        case 'button:has-text("Sign in"), button:has-text("Continue")':
           return submitLocator;
         case 'exui-header, exui-case-home':
           return shellLocator;
@@ -380,8 +376,12 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
       launch: async () => browser,
     } as any;
     const idamPageFactory = (() => ({
-      usernameInput: { waitFor: async () => {} },
-      login: async () => {},
+      usernameInput: usernameLocator,
+      passwordInput: passwordLocator,
+      submitBtn: submitLocator,
+      login: async () => {
+        performLogin();
+      },
     })) as unknown as (page: any) => IdamPage;
     await sessionCaptureTest.sessionCaptureWith(['USER'], {
       fs: fsStub,
@@ -439,8 +439,46 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
     const userUtils = {
       getUserCredentials: () => ({ email: 'user@example.com', password: mockPassword }),
     } as any;
+    const acceptCookiesLocator = {
+      first: () => acceptCookiesLocator,
+      isVisible: async () => false,
+    };
+    const shellLocator = {
+      first: () => shellLocator,
+      waitFor: async () => {
+        throw new Error('missing shell');
+      },
+    };
+    const hiddenFallbackLocator = {
+      first: () => hiddenFallbackLocator,
+      isVisible: async () => false,
+    };
     const page = {
       goto: async () => {},
+      url: () => 'https://example.test/login',
+      locator: (selector: string) => {
+        if (selector === 'exui-header, exui-case-home') {
+          return shellLocator;
+        }
+        if (selector === 'exui-header') {
+          return shellLocator;
+        }
+        if (selector === 'input#email, input[name="email"], input[name="emailAddress"], input[autocomplete="email"]') {
+          return hiddenFallbackLocator;
+        }
+        if (selector === 'button:has-text("Sign in"), button:has-text("Continue")') {
+          return hiddenFallbackLocator;
+        }
+        throw new Error(`Unexpected selector ${selector}`);
+      },
+      getByRole: (role: string, options?: { name?: string | RegExp }) => {
+        if (role === 'button' && options?.name instanceof RegExp) {
+          return acceptCookiesLocator;
+        }
+        throw new Error(`Unexpected role ${role}`);
+      },
+      waitForLoadState: async () => {},
+      waitForTimeout: async () => {},
       waitForSelector: async () => {},
     } as any;
     const context = {
@@ -456,7 +494,30 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
     const chromiumOk = {
       launch: async () => browser,
     } as any;
+    const usernameInput = {
+      first: () => usernameInput,
+      isVisible: async () => true,
+      waitFor: async () => {},
+      fill: async () => {},
+    };
+    const passwordInput = {
+      first: () => passwordInput,
+      fill: async () => {},
+      press: async () => {
+        throw new Error('login failed');
+      },
+    };
+    const submitBtn = {
+      first: () => submitBtn,
+      isVisible: async () => true,
+      click: async () => {
+        throw new Error('login failed');
+      },
+    };
     const idamPageFactory = (() => ({
+      usernameInput,
+      passwordInput,
+      submitBtn,
       login: async () => {
         throw new Error('login failed');
       },

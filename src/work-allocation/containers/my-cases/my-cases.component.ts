@@ -44,13 +44,13 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
       let serviceFilters = [];
       let locationFilters = [];
       /* istanbul ignore else */
-      if (locationsFromLS && locationsFromLS.fields) {
+      if (locationsFromLS?.fields) {
         const services = locationsFromLS.fields.find((field) => field.name === 'services');
         const locations = locationsFromLS.fields.find((field) => field.name === 'locations');
-        if (services && services.hasOwnProperty('value')) {
+        if (services?.hasOwnProperty('value')) {
           serviceFilters = services.value;
         }
-        if (locations && locations.hasOwnProperty('value')) {
+        if (locations?.hasOwnProperty('value')) {
           locationFilters = locations.value.map((l) => l.epimms_id);
         }
       }

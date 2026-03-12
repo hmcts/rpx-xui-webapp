@@ -290,6 +290,8 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(odhinOptions?.consoleError).toBe(resolveOdhinConsoleCapture({ CI: undefined }).consoleError);
     expect(odhinOptions?.profile).toBe(true);
     expect(odhinOptions?.runtimeHookTimeoutMs).toBe(resolveOdhinRuntimeHookTimeoutMs({ CI: undefined }));
+    expect(config.expect.timeout).toBe(60_000);
+    expect(config.use.timezoneId).toBe('Europe/London');
     expect(config.projects.find((project) => project.name === 'chromium-search-case')?.workers).toBeUndefined();
   });
 

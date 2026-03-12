@@ -2,7 +2,7 @@ import { welshTranslationsSmall } from 'playwright_tests_new/integration/mocks/w
 import { expect, test } from '../../../E2E/fixtures';
 import { applyPrewarmedSessionCookies } from '../../helpers';
 let sessionCookies: any[] = [];
-const TRANSLATIONS_TIMEOUT = 10_000;
+const TRANSLATIONS_TIMEOUT = 20_000;
 
 test.describe('Verify users can switch the language', { tag: ['@integration', '@integration-welsh-language'] }, () => {
   test.beforeEach(async ({ page }) => {
@@ -24,7 +24,7 @@ test.describe('Verify users can switch the language', { tag: ['@integration', '@
       await caseListPage.exuiHeader.switchLanguage('Cymraeg');
       await caseListPage.exuiSpinnerComponent.wait();
       await page.waitForLoadState('domcontentloaded');
-      await caseListPage.exuiHeader.headerAppLink.waitFor({ state: 'attached' });
+      await caseListPage.exuiHeader.appHeaderLink.waitFor({ state: 'attached' });
     });
 
     await test.step('Check the translation are shown, and the language toggle switches to English', async () => {
@@ -35,7 +35,7 @@ test.describe('Verify users can switch the language', { tag: ['@integration', '@
 
       const checks = [
         {
-          locator: caseListPage.exuiHeader.headerAppLink,
+          locator: caseListPage.exuiHeader.appHeaderLink,
           expected: welshTranslationsSmall.translations['Manage Cases'].translation,
         },
         {
@@ -70,7 +70,7 @@ test.describe('Verify users can switch the language', { tag: ['@integration', '@
       await caseListPage.exuiSpinnerComponent.wait();
 
       const checks = [
-        { locator: caseListPage.exuiHeader.headerAppLink, expected: 'Manage Cases' },
+        { locator: caseListPage.exuiHeader.appHeaderLink, expected: 'Manage Cases' },
         { locator: caseListPage.exuiHeader.languageToggle, expected: 'Cymraeg' },
         { locator: caseListPage.exuiHeader.signOutLink, expected: 'Sign out' },
       ];

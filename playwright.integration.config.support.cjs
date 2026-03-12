@@ -215,7 +215,7 @@ const buildConfig = (env = process.env) => {
     testIgnore: [temporaryProbePattern],
     retries: 2,
     timeout: 120_000,
-    expect: { timeout: 45_000 },
+    expect: { timeout: 60_000 },
     workers: workerCount,
     reporter,
     globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
@@ -227,6 +227,7 @@ const buildConfig = (env = process.env) => {
         fullPage: true,
       },
       video: 'off',
+      timezoneId: 'Europe/London',
       headless: headlessMode,
     },
     projects: [

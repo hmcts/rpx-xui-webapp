@@ -20,6 +20,13 @@ export class DynamicProvisioningError extends Error {
   }
 }
 
+export class DynamicProvisionTimeoutError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'DynamicProvisionTimeoutError';
+  }
+}
+
 type ProvisionDynamicUserFlowArgs = {
   alias: string;
   organisationId: string;

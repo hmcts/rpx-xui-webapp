@@ -256,6 +256,7 @@ module.exports = {
   resolveFlag,
   resolveBrowserChannel,
   resolveEnvironmentFromUrl,
+  resolveWorkerCount,
   resolveOdhinTestOutput,
   resolveOdhinLightweight,
   resolveOdhinConsoleCapture,

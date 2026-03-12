@@ -305,7 +305,7 @@ export function resolveTagFilters({
   if (suiteTag) {
     validateNonEmptyTaggedSelection({
       env,
-      includeTags,
+      includeTags: normalizedIncludeTags,
       excludedTags,
       availableTags,
       suiteTag,

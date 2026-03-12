@@ -52,6 +52,12 @@ const resolveIntegrationTagFilters = (env: EnvMap) =>
       resolveIntegrationTagFilters: (env: EnvMap) => { excludedTags: string[]; grep?: RegExp; grepInvert?: RegExp };
     }
   ).resolveIntegrationTagFilters(env);
+const resolveIntegrationWorkerCount = (env: EnvMap) =>
+  (
+    integrationConfigModule.__test__ as TestableConfigModule['__test__'] & {
+      resolveWorkerCount: (env: EnvMap) => number;
+    }
+  ).resolveWorkerCount(env);
 
 const getReporterTuple = (reporter: unknown, name: string): [string, Record<string, unknown> | undefined] => {
   if (!Array.isArray(reporter)) {
@@ -261,6 +267,22 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(filters.grep?.test('@e2e-manage-tasks')).toBe(false);
   });
 
+  test('shared tag filter helper rejects suite-plus-feature includes that are fully excluded after normalization', () => {
+    expect(() =>
+      resolveTagFilters({
+        env: {
+          E2E_PW_INCLUDE_TAGS: '@e2e @e2e-search-case',
+          E2E_PW_EXCLUDED_TAGS_OVERRIDE: '@none,@e2e-search-case',
+        },
+        includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
+        excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
+        configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
+        defaultConfigPath: 'playwright_tests_new/E2E/tag-filter.json',
+        suiteTag: '@e2e',
+      })
+    ).toThrow(/leave no tagged functional tests/i);
+  });
+
   test('integration config keeps Odhin enabled locally with lightweight defaults', async () => {
     const config = buildIntegrationConfig({
       CI: undefined,
@@ -314,6 +336,11 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     });
     expect(filters.excludedTags).toEqual(['@integration-manage-tasks']);
     expect(filters.grepInvert?.test('@integration-manage-tasks')).toBe(true);
+  });
+
+  test('integration config exposes the documented resolveWorkerCount test helper', async () => {
+    expect(resolveIntegrationWorkerCount({ FUNCTIONAL_TESTS_WORKERS: '3', CI: undefined })).toBe(3);
+    expect(resolveIntegrationWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' })).toBe(8);
   });
 
   test('integration config allows local browser channel override for reproducible reruns', async () => {

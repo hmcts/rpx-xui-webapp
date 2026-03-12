@@ -168,8 +168,20 @@ describe('HearingActualSummaryComponent', () => {
     const storeDispatchSpy = spyOn(store, 'dispatch');
     component.id = '1111222233334444';
     component.hearingResult = HearingResult.COMPLETED;
+
+    // Provide navigation state used by onSubmitHearingDetails()
+    spyOn(TestBed.inject(Router), 'getCurrentNavigation').and.returnValue({
+      extras: {
+        state: {
+          caseId: '1234',
+        },
+      },
+    } as any);
+
     component.onSubmitHearingDetails();
-    expect(storeDispatchSpy).toHaveBeenCalledWith(new fromHearingStore.SubmitHearingActuals(component.id));
+    expect(storeDispatchSpy).toHaveBeenCalledWith(
+      new fromHearingStore.SubmitHearingActuals({ id: component.id, caseRef: '1234' })
+    );
   });
 
   it('should return only one date if only one hearing date', () => {

@@ -139,9 +139,15 @@ withPipeline(type, product, component) {
     disableLegacyDeployment()
     syncBranchesWithMaster(branchesToSync)    
 
-    enablePactAs([
-        AppPipelineDsl.PactRoles.CONSUMER
-    ])   
+    // enablePactAs([
+    //    AppPipelineDsl.PactRoles.CONSUMER
+    // ])   
+
+    afterSuccess('checkout') {
+        stage('Yarn Install') {
+            yarnBuilder.yarn('install --immutable')
+        }
+    }
 
     afterSuccess('build') {
         yarnBuilder.yarn('build:dev')  

@@ -37,7 +37,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     private readonly sessionStorageService: SessionStorageService
   ) {
     const navigation = this.router.getCurrentNavigation();
-    if (navigation && navigation.extras && navigation.extras.state) {
+    if (navigation?.extras?.state) {
       this.selectedPerson = navigation.extras.state.selectedPerson;
       this.roleCategory = navigation.extras.state.roleCategory;
     }
@@ -49,7 +49,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     let url: string = '';
 
     // The returnUrl is undefined if the user has used browser navigation buttons, so check for its presence
-    if (window && window.history && window.history.state && window.history.state.returnUrl) {
+    if (window?.history?.state?.returnUrl) {
       url = window.history.state.returnUrl;
     }
     return url;
@@ -66,7 +66,7 @@ export class TaskAssignmentConfirmComponent implements OnInit {
     }
     this.verb = this.route.snapshot.data.verb as TaskActionType;
     this.taskId = this.route.snapshot.params.taskId;
-    if (this.router && this.router.url) {
+    if (this.router?.url) {
       this.rootPath = this.router.url.split('/')[1];
     }
     this.task = this.route.snapshot.data.taskAndCaseworkers.task.task;

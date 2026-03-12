@@ -185,12 +185,14 @@ Run `HEAD=true TEST_URL=https://manage-case.aat.platform.hmcts.net yarn test:pla
 Add `ENABLE_AXE_TESTS=true` to activate Axe Accessibility testing.
 
 The `playwright_tests_new` folder contains the beginnings of the updated framework structure and test form. Tests are now structured by functionality with step containers for each stage of the test. A page object pattern has been introduced in place of using selectors in the tests themselves. Follow this pattern for any new tests, or ones you wish to migrate.
+Detailed framework architecture (with diagrams): [`playwright_tests_new/TEST_FRAMEWORK_ARCHITECTURE.md`](playwright_tests_new/TEST_FRAMEWORK_ARCHITECTURE.md).
 
 ### Playwright reporting
 
-Playwright E2E runs now emit an [Odhin report](https://playwright-odhin-reports-1f6b7a95ad42468d7d90f7962fbe172f83b229.gitlab.io/#/) under `functional-output/tests/playwright-e2e/odhin-report/xui-playwright.html`.  
+Playwright E2E runs now emit an [Odhin report](https://playwright-odhin-reports-1f6b7a95ad42468d7d90f7962fbe172f83b229.gitlab.io/#/) under `functional-output/tests/playwright-e2e/odhin-report/xui-playwright-e2e.html`.  
 Key behaviour:
 
+- Suite-specific Odhin filenames are used: `xui-playwright-e2e.html`, `xui-playwright-api.html`, `xui-playwright-integration.html`.
 - Jenkins automatically publishes the HTML artefact for preview/AAT functional and nightly cross-browser jobs.
 - Run info shows project, release, environment, branch and worker count. Branch defaults to the current git branch (`git rev-parse --abbrev-ref HEAD`) and can be overridden via `PLAYWRIGHT_REPORT_BRANCH` or `GIT_BRANCH`. Other overrides: `PLAYWRIGHT_REPORT_PROJECT`, `PLAYWRIGHT_REPORT_RELEASE`, `TEST_TYPE`, `FUNCTIONAL_TESTS_WORKERS`.
 - Skipped tests are included in totals; the reporter is patched locally so the dashboard reflects them even when retries are enabled.
@@ -250,6 +252,15 @@ What it does not validate:
 Locally the Playwright worker count scales with available CPU cores (approx. half of the logical cores, capped at 8).  
 Set `FUNCTIONAL_TESTS_WORKERS` to override this behaviour. On CI the default is `8` workers.
 
+### Integration local progress timer
+
+For Playwright integration runs outside CI, periodic live progress logging is enabled by default:
+
+- `PW_LIVE_TEST_TIMER=1`
+- `PW_LIVE_TEST_TIMER_INTERVAL_MS=30000`
+
+You can override either variable explicitly in your local shell.
+
 ## Running Consumer Driven Contract tests (pact)
 
 Run `yarn test-pact` to execute the Pact tests
@@ -270,4 +281,4 @@ Extended version of script below:
 (https://robferguson.org/blog/2017/09/09/a-simple-logging-service-for-angular-4/)
 
 END
-Trigger2 Trigger3
+Trigger2 Trigger3 Trigger4

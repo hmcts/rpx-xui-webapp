@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Input } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AbstractControl, FormArray, FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
@@ -7,7 +8,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { of } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
-import { LovRefDataModel } from '../../../../hearings/models/lovRefData.model';
+import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { initialState } from '../../../hearing.test.data';
 import { ACTION, HearingChannelEnum, PartyType, RadioOptions, UnavailabilityType } from '../../../models/hearings.enum';
 import { PartyDetailsModel } from '../../../models/partyDetails.model';
@@ -16,6 +17,7 @@ import { LovRefDataService } from '../../../services/lov-ref-data.service';
 import { HearingsUtils } from '../../../utils/hearings.utils';
 import { ValidatorsUtils } from '../../../utils/validators.utils';
 import { HearingAttendanceComponent } from './hearing-attendance.component';
+import { AmendmentLabelStatus } from '../../../models/hearingsUpdateMode.enum';
 
 const refData: LovRefDataModel[] = [
   {
@@ -209,14 +211,15 @@ describe('HearingAttendanceComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        partyDetailsChangesRequired: true,
+        participantAttendanceChangesRequired: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false,
       },
     };
     component.prepareHearingRequestData();
-    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.partyDetailsChangesConfirmed).toEqual(true);
+    expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.participantAttendanceChangesConfirmed).toEqual(true);
   });
 
   it('should get individual parties', () => {
@@ -295,10 +298,11 @@ describe('HearingAttendanceComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: false,
-        partyDetailsChangesRequired: true,
+        participantAttendanceChangesRequired: true,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false,
       },
     };
     component.ngOnInit();
@@ -348,11 +352,12 @@ describe('HearingAttendanceComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: false,
-        partyDetailsChangesRequired: true,
-        partyDetailsChangesConfirmed: true,
+        participantAttendanceChangesRequired: true,
+        participantAttendanceChangesConfirmed: true,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false,
       },
     };
     component.ngOnInit();
@@ -375,10 +380,11 @@ describe('HearingAttendanceComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
-        partyDetailsChangesRequired: true,
+        participantAttendanceChangesRequired: true,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false,
       },
     };
     component.ngOnInit();
@@ -408,10 +414,11 @@ describe('HearingAttendanceComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: true,
         nonReasonableAdjustmentChangesRequired: true,
-        partyDetailsChangesRequired: false,
+        participantAttendanceChangesRequired: false,
         hearingWindowChangesRequired: true,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false,
       },
     };
     component.ngOnInit();
@@ -428,16 +435,70 @@ describe('HearingAttendanceComponent', () => {
       afterPageVisit: {
         reasonableAdjustmentChangesRequired: false,
         nonReasonableAdjustmentChangesRequired: false,
-        partyDetailsChangesRequired: true,
-        partyDetailsChangesConfirmed: true,
+        participantAttendanceChangesRequired: true,
+        participantAttendanceChangesConfirmed: true,
         hearingWindowChangesRequired: false,
         hearingFacilitiesChangesRequired: false,
         hearingUnavailabilityDatesChanged: false,
+        additionalInstructionsChangesRequired: false,
       },
     };
     component.initialiseFromHearingValuesForAmendments();
     expect(HearingsUtils.hasPartyNameChanged).toHaveBeenCalled();
     expect(component.attendanceFormGroup.controls.parties.value.length).toEqual(2);
+  });
+
+  describe('setPartyNameStatus', () => {
+    let callSet: (id: string, status?: AmendmentLabelStatus | null) => void;
+
+    beforeEach(() => {
+      // access the private method for testing
+      callSet = (id: string, status?: AmendmentLabelStatus | null) =>
+        (component as any).setPartyNameStatus(id, status as AmendmentLabelStatus);
+      // start each test with a clean map
+      component.partyNameAmendmentStatusById = {};
+    });
+
+    it('sets the status for a new party id', () => {
+      callSet('p1', AmendmentLabelStatus.ACTION_NEEDED);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.ACTION_NEEDED);
+    });
+
+    it('defaults to NONE when status is null', () => {
+      callSet('p1', null);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.NONE);
+    });
+
+    it('defaults to NONE when status is undefined', () => {
+      callSet('p1', undefined);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.NONE);
+    });
+
+    it('overwrites an existing status for the same id', () => {
+      callSet('p1', AmendmentLabelStatus.NONE);
+      callSet('p1', AmendmentLabelStatus.AMENDED);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.AMENDED);
+    });
+
+    it('does not affect other party ids', () => {
+      callSet('p1', AmendmentLabelStatus.AMENDED);
+      callSet('p2', AmendmentLabelStatus.ACTION_NEEDED);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.AMENDED);
+      expect(component.partyNameAmendmentStatusById.p2).toBe(AmendmentLabelStatus.ACTION_NEEDED);
+    });
+
+    it('is idempotent when setting the same value repeatedly', () => {
+      callSet('p1', AmendmentLabelStatus.NONE);
+      callSet('p1', AmendmentLabelStatus.NONE);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.NONE);
+    });
+
+    it('last call wins for rapid successive updates', () => {
+      callSet('p1', AmendmentLabelStatus.NONE);
+      callSet('p1', AmendmentLabelStatus.AMENDED);
+      callSet('p1', AmendmentLabelStatus.ACTION_NEEDED);
+      expect(component.partyNameAmendmentStatusById.p1).toBe(AmendmentLabelStatus.ACTION_NEEDED);
+    });
   });
 
   afterEach(() => {
@@ -503,12 +564,777 @@ describe('HearingAttendanceComponent', () => {
     });
   });
 
+  describe('HearingAttendanceComponent setPartyChannelStatus', () => {
+    let component: HearingAttendanceComponent;
+
+    beforeEach(() => {
+      component = Object.create(HearingAttendanceComponent.prototype);
+      component.partyChannelAmendmentStatusById = {};
+    });
+
+    it('should set the status for a new party id', () => {
+      (component as any).setPartyChannelStatus('p1', AmendmentLabelStatus.AMENDED);
+      expect((component as any).partyChannelAmendmentStatusById.p1).toBe(AmendmentLabelStatus.AMENDED);
+    });
+
+    it('should default to NONE when status is null', () => {
+      (component as any).setPartyChannelStatus('p2', null);
+      expect((component as any).partyChannelAmendmentStatusById.p2).toBe(AmendmentLabelStatus.NONE);
+    });
+
+    it('should default to NONE when status is undefined', () => {
+      (component as any).setPartyChannelStatus('p3', undefined);
+      expect((component as any).partyChannelAmendmentStatusById.p3).toBe(AmendmentLabelStatus.NONE);
+    });
+
+    it('should overwrite an existing status for the same id', () => {
+      (component as any).setPartyChannelStatus('p4', AmendmentLabelStatus.NONE);
+      (component as any).setPartyChannelStatus('p4', AmendmentLabelStatus.AMENDED);
+      expect((component as any).partyChannelAmendmentStatusById.p4).toBe(AmendmentLabelStatus.AMENDED);
+    });
+
+    it('should not affect other party ids', () => {
+      (component as any).setPartyChannelStatus('p5', AmendmentLabelStatus.AMENDED);
+      (component as any).setPartyChannelStatus('p6', AmendmentLabelStatus.ACTION_NEEDED);
+      expect((component as any).partyChannelAmendmentStatusById.p5).toBe(AmendmentLabelStatus.AMENDED);
+      expect((component as any).partyChannelAmendmentStatusById.p6).toBe(AmendmentLabelStatus.ACTION_NEEDED);
+    });
+
+    it('should be idempotent when setting the same value repeatedly', () => {
+      (component as any).setPartyChannelStatus('p7', AmendmentLabelStatus.NONE);
+      (component as any).setPartyChannelStatus('p7', AmendmentLabelStatus.NONE);
+      expect(component.partyChannelAmendmentStatusById.p7).toBe(AmendmentLabelStatus.NONE);
+    });
+
+    it('last call wins for rapid successive updates', () => {
+      (component as any).setPartyChannelStatus('p8', AmendmentLabelStatus.NONE);
+      (component as any).setPartyChannelStatus('p8', AmendmentLabelStatus.AMENDED);
+      (component as any).setPartyChannelStatus('p8', AmendmentLabelStatus.ACTION_NEEDED);
+      expect((component as any).partyChannelAmendmentStatusById.p8).toBe(AmendmentLabelStatus.ACTION_NEEDED);
+    });
+  });
+
   describe('The forms estimation', () => {
     it('should equal 3 as partyDetails is empty', () => {
       fixture.detectChanges();
       expect(component.attendanceFormGroup.controls.estimation.value).toEqual(3);
     });
   });
+
+  it('should correctly set amendment flags when setAmendmentFlags is called and not a paper hearing', () => {
+    // We need to spy on the HearingsUtils methods that are called inside setAmendmentFlags
+    spyOn(HearingsUtils, 'doArraysDiffer').and.returnValue(true);
+    spyOn(HearingsUtils, 'hasHearingNumberChanged').and.returnValue(true);
+    spyOn(HearingsUtils, 'hasPaperHearingChanged').and.returnValue(false);
+
+    // We need access to the private method
+    const setAmendmentFlagsMethod = spyOn<any>(component, 'setAmendmentFlags').and.callThrough();
+
+    // Setup test data - channels with different configurations
+    // Ensure this is NOT a paper hearing (no ONPPR and isPaperHearing is false)
+    component.serviceHearingValuesModel.hearingChannels = ['INTER', 'TEL'];
+    component.hearingRequestMainModel.hearingDetails.hearingChannels = ['INTER'];
+    component.hearingRequestMainModel.hearingDetails.isPaperHearing = false;
+    component.hearingCondition = { mode: 'view-edit' };
+
+    // Create a new FormArray with mock channels
+    const mockChannels = [
+      { key: 'INTER', selected: true, showAmendedLabel: false },
+      { key: 'TEL', selected: false, showAmendedLabel: false },
+      { key: 'VID', selected: true, showAmendedLabel: false },
+    ];
+
+    // Get FormBuilder from TestBed instead of using component's private property
+    const fb = TestBed.inject(FormBuilder);
+
+    // Create a new FormArray with FormGroups instead of directly assigning to value
+    const formArray = new FormArray(
+      mockChannels.map((channel) =>
+        fb.group({
+          key: channel.key,
+          selected: channel.selected,
+          showAmendedLabel: channel.showAmendedLabel,
+          value_en: '',
+          value_cy: '',
+          hint_text_en: '',
+          hint_text_cy: '',
+          lov_order: 0,
+          parent_key: null,
+        })
+      )
+    );
+
+    // Replace the hearingLevelChannels control with our new FormArray
+    component.attendanceFormGroup.setControl('hearingLevelChannels', formArray);
+
+    // Call ngOnInit which will call setAmendmentFlags
+    component.ngOnInit();
+
+    // Verify the method was called
+    expect(setAmendmentFlagsMethod).toHaveBeenCalled();
+
+    // Verify the flags were updated correctly
+    expect(component.methodOfAttendanceChanged).toBe(true);
+    expect(component.noOfPhysicalAttendeesChanged).toBe(true);
+    expect(component.paperHearingChanged).toBe(false);
+
+    // Verify the showAmendedLabel was set correctly for each channel
+    // INTER is in defaults and selected (no amendment needed)
+    expect(component.hearingLevelChannels[0].showAmendedLabel).toBeFalse();
+    // TEL is in defaults but not selected (amendment needed)
+    expect(component.hearingLevelChannels[1].showAmendedLabel).toBeTrue();
+    // VID is not in defaults but is selected (amendment needed)
+    expect(component.hearingLevelChannels[2].showAmendedLabel).toBeTrue();
+
+    // Verify hearingLevelChannels property was updated
+    const formArrayValue = component.attendanceFormGroup.get('hearingLevelChannels').value;
+    expect(component.hearingLevelChannels).toEqual(formArrayValue);
+  });
+
+  it('should not set method of attendance flags when it is a paper hearing', () => {
+    // Spy on the HearingsUtils methods
+    spyOn(HearingsUtils, 'hasPaperHearingChanged').and.returnValue(true);
+    spyOn(HearingsUtils, 'doArraysDiffer').and.returnValue(true);
+    spyOn(HearingsUtils, 'hasHearingNumberChanged').and.returnValue(true);
+
+    // Setup test data for a paper hearing (includes ONPPR)
+    component.serviceHearingValuesModel.hearingChannels = ['INTER', 'TEL'];
+    component.hearingRequestMainModel.hearingDetails.hearingChannels = [HearingChannelEnum.ONPPR];
+    component.hearingRequestMainModel.hearingDetails.isPaperHearing = true;
+    component.hearingCondition = { mode: 'view-edit' };
+
+    // Create a new FormArray with mock channels
+    const mockChannels = [
+      { key: 'INTER', selected: true, showAmendedLabel: false },
+      { key: 'TEL', selected: false, showAmendedLabel: false },
+    ];
+
+    const fb = TestBed.inject(FormBuilder);
+    const formArray = new FormArray(
+      mockChannels.map((channel) =>
+        fb.group({
+          key: channel.key,
+          selected: channel.selected,
+          showAmendedLabel: channel.showAmendedLabel,
+          value_en: '',
+          value_cy: '',
+          hint_text_en: '',
+          hint_text_cy: '',
+          lov_order: 0,
+          parent_key: null,
+        })
+      )
+    );
+
+    component.attendanceFormGroup.setControl('hearingLevelChannels', formArray);
+
+    // Call ngOnInit which will call setAmendmentFlags
+    component.ngOnInit();
+
+    // Verify paperHearingChanged was set
+    expect(component.paperHearingChanged).toBe(true);
+
+    // Verify the method of attendance flags were NOT set (because it's a paper hearing)
+    expect(HearingsUtils.doArraysDiffer).not.toHaveBeenCalled();
+    expect(HearingsUtils.hasHearingNumberChanged).not.toHaveBeenCalled();
+
+    // Verify the showAmendedLabel was NOT modified on channels
+    expect(component.hearingLevelChannels[0].showAmendedLabel).toBeFalse();
+    expect(component.hearingLevelChannels[1].showAmendedLabel).toBeFalse();
+  });
+
+  it('should only set paperHearingChanged when isPaperHearing flag is true but no ONPPR in channels', () => {
+    spyOn(HearingsUtils, 'hasPaperHearingChanged').and.returnValue(false);
+    spyOn(HearingsUtils, 'doArraysDiffer').and.returnValue(false);
+    spyOn(HearingsUtils, 'hasHearingNumberChanged').and.returnValue(false);
+
+    // Setup: isPaperHearing flag is true, but hearingChannels doesn't include ONPPR
+    component.serviceHearingValuesModel.hearingChannels = ['INTER', 'TEL'];
+    component.hearingRequestMainModel.hearingDetails.hearingChannels = ['INTER', 'TEL'];
+    component.hearingRequestMainModel.hearingDetails.isPaperHearing = true;
+    component.hearingCondition = { mode: 'view-edit' };
+
+    const mockChannels = [{ key: 'INTER', selected: true, showAmendedLabel: false }];
+
+    const fb = TestBed.inject(FormBuilder);
+    const formArray = new FormArray(
+      mockChannels.map((channel) =>
+        fb.group({
+          key: channel.key,
+          selected: channel.selected,
+          showAmendedLabel: channel.showAmendedLabel,
+          value_en: '',
+          value_cy: '',
+          hint_text_en: '',
+          hint_text_cy: '',
+          lov_order: 0,
+          parent_key: null,
+        })
+      )
+    );
+
+    component.attendanceFormGroup.setControl('hearingLevelChannels', formArray);
+
+    component.ngOnInit();
+
+    // Verify paperHearingChanged was checked
+    expect(component.paperHearingChanged).toBe(false);
+
+    // Verify the other flags were NOT set because isPaperHearing() returns YES
+    expect(HearingsUtils.doArraysDiffer).not.toHaveBeenCalled();
+    expect(HearingsUtils.hasHearingNumberChanged).not.toHaveBeenCalled();
+  });
+
+  describe('setPartyAmendmentFlags', () => {
+    it('should set party name and channel status to AMENDED when changes detected and not paper hearing', () => {
+      spyOn(HearingsUtils, 'hasPartyNameChanged').and.returnValue(true);
+      spyOn(HearingsUtils, 'hasPartyHearingChannelChanged').and.returnValue(true);
+      spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
+
+      component.hearingRequestMainModel.hearingDetails.hearingChannels = ['TEL', 'VID'];
+      component.hearingRequestMainModel.hearingDetails.isPaperHearing = false;
+
+      const partyInHMC: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          firstName: 'John',
+          lastName: 'Doe',
+          preferredHearingChannel: 'inPerson',
+        },
+      } as any;
+
+      const partyDetailsModel: PartyDetailsModel = {
+        partyID: 'P1',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'video',
+        },
+      } as any;
+
+      (component as any).setPartyAmendmentFlags(partyInHMC, partyDetailsModel);
+
+      expect(component.partyNameAmendmentStatusById['P1']).toBe(AmendmentLabelStatus.AMENDED);
+      expect(component.partyChannelAmendmentStatusById['P1']).toBe(AmendmentLabelStatus.AMENDED);
+    });
+
+    it('should set party name and channel status to NONE when no changes detected and not paper hearing', () => {
+      spyOn(HearingsUtils, 'hasPartyNameChanged').and.returnValue(false);
+      spyOn(HearingsUtils, 'hasPartyHearingChannelChanged').and.returnValue(false);
+      spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
+
+      component.hearingRequestMainModel.hearingDetails.hearingChannels = ['TEL', 'VID'];
+      component.hearingRequestMainModel.hearingDetails.isPaperHearing = false;
+
+      const partyInHMC: PartyDetailsModel = {
+        partyID: 'P2',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          firstName: 'John',
+          lastName: 'Doe',
+          preferredHearingChannel: 'inPerson',
+        },
+      } as any;
+
+      const partyDetailsModel: PartyDetailsModel = {
+        partyID: 'P2',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          firstName: 'John',
+          lastName: 'Doe',
+          preferredHearingChannel: 'inPerson',
+        },
+      } as any;
+
+      (component as any).setPartyAmendmentFlags(partyInHMC, partyDetailsModel);
+
+      expect(component.partyNameAmendmentStatusById['P2']).toBe(AmendmentLabelStatus.NONE);
+      expect(component.partyChannelAmendmentStatusById['P2']).toBe(AmendmentLabelStatus.NONE);
+    });
+
+    it('should set channel status to NONE when toCompareServiceHearingValueField returns false', () => {
+      spyOn(HearingsUtils, 'hasPartyNameChanged').and.returnValue(false);
+      spyOn(HearingsUtils, 'hasPartyHearingChannelChanged').and.returnValue(true);
+      spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
+
+      component.hearingRequestMainModel.hearingDetails.hearingChannels = ['TEL', 'VID'];
+      component.hearingRequestMainModel.hearingDetails.isPaperHearing = false;
+
+      const partyInHMC: PartyDetailsModel = {
+        partyID: 'P3',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          firstName: 'John',
+          lastName: 'Doe',
+          preferredHearingChannel: 'inPerson',
+        },
+      } as any;
+
+      const partyDetailsModel: PartyDetailsModel = {
+        partyID: 'P3',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          firstName: 'John',
+          lastName: 'Doe',
+          preferredHearingChannel: null,
+        },
+      } as any;
+
+      (component as any).setPartyAmendmentFlags(partyInHMC, partyDetailsModel);
+
+      expect(component.partyNameAmendmentStatusById['P3']).toBe(AmendmentLabelStatus.NONE);
+      expect(component.partyChannelAmendmentStatusById['P3']).toBe(AmendmentLabelStatus.NONE);
+      expect(HearingsUtils.toCompareServiceHearingValueField).toHaveBeenCalledWith(null);
+    });
+
+    it('should set channel status to NONE when toCompareServiceHearingValueField returns false for undefined', () => {
+      spyOn(HearingsUtils, 'hasPartyNameChanged').and.returnValue(false);
+      spyOn(HearingsUtils, 'hasPartyHearingChannelChanged').and.returnValue(true);
+      spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
+
+      component.hearingRequestMainModel.hearingDetails.hearingChannels = ['TEL', 'VID'];
+      component.hearingRequestMainModel.hearingDetails.isPaperHearing = false;
+
+      const partyInHMC: PartyDetailsModel = {
+        partyID: 'P4',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          firstName: 'John',
+          lastName: 'Doe',
+          preferredHearingChannel: 'inPerson',
+        },
+      } as any;
+
+      const partyDetailsModel: PartyDetailsModel = {
+        partyID: 'P4',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          firstName: 'John',
+          lastName: 'Doe',
+          preferredHearingChannel: undefined,
+        },
+      } as any;
+
+      (component as any).setPartyAmendmentFlags(partyInHMC, partyDetailsModel);
+
+      expect(component.partyNameAmendmentStatusById['P4']).toBe(AmendmentLabelStatus.NONE);
+      expect(component.partyChannelAmendmentStatusById['P4']).toBe(AmendmentLabelStatus.NONE);
+      expect(HearingsUtils.toCompareServiceHearingValueField).toHaveBeenCalledWith(undefined);
+    });
+
+    it('should set channel status to NONE when toCompareServiceHearingValueField returns false for empty string', () => {
+      spyOn(HearingsUtils, 'hasPartyNameChanged').and.returnValue(false);
+      spyOn(HearingsUtils, 'hasPartyHearingChannelChanged').and.returnValue(true);
+      spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
+
+      component.hearingRequestMainModel.hearingDetails.hearingChannels = ['TEL', 'VID'];
+      component.hearingRequestMainModel.hearingDetails.isPaperHearing = false;
+
+      const partyInHMC: PartyDetailsModel = {
+        partyID: 'P5',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          firstName: 'John',
+          lastName: 'Doe',
+          preferredHearingChannel: 'inPerson',
+        },
+      } as any;
+
+      const partyDetailsModel: PartyDetailsModel = {
+        partyID: 'P5',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          firstName: 'John',
+          lastName: 'Doe',
+          preferredHearingChannel: '',
+        },
+      } as any;
+
+      (component as any).setPartyAmendmentFlags(partyInHMC, partyDetailsModel);
+
+      expect(component.partyNameAmendmentStatusById['P5']).toBe(AmendmentLabelStatus.NONE);
+      expect(component.partyChannelAmendmentStatusById['P5']).toBe(AmendmentLabelStatus.NONE);
+      expect(HearingsUtils.toCompareServiceHearingValueField).toHaveBeenCalledWith('');
+    });
+
+    it('should not set any status when it is a paper hearing', () => {
+      spyOn(HearingsUtils, 'hasPartyNameChanged').and.returnValue(true);
+      spyOn(HearingsUtils, 'hasPartyHearingChannelChanged').and.returnValue(true);
+      spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
+
+      component.hearingRequestMainModel.hearingDetails.hearingChannels = [HearingChannelEnum.ONPPR];
+      component.hearingRequestMainModel.hearingDetails.isPaperHearing = true;
+
+      const partyInHMC: PartyDetailsModel = {
+        partyID: 'P6',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          firstName: 'John',
+          lastName: 'Doe',
+          preferredHearingChannel: 'inPerson',
+        },
+      } as any;
+
+      const partyDetailsModel: PartyDetailsModel = {
+        partyID: 'P6',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          firstName: 'Jane',
+          lastName: 'Smith',
+          preferredHearingChannel: 'video',
+        },
+      } as any;
+
+      (component as any).setPartyAmendmentFlags(partyInHMC, partyDetailsModel);
+
+      expect(component.partyNameAmendmentStatusById['P6']).toBeUndefined();
+      expect(component.partyChannelAmendmentStatusById['P6']).toBeUndefined();
+      expect(HearingsUtils.hasPartyNameChanged).not.toHaveBeenCalled();
+      expect(HearingsUtils.hasPartyHearingChannelChanged).not.toHaveBeenCalled();
+      expect(HearingsUtils.toCompareServiceHearingValueField).not.toHaveBeenCalled();
+    });
+
+    it('should set party name to AMENDED and channel to NONE when only name changed', () => {
+      spyOn(HearingsUtils, 'hasPartyNameChanged').and.returnValue(true);
+      spyOn(HearingsUtils, 'hasPartyHearingChannelChanged').and.returnValue(false);
+      spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
+
+      component.hearingRequestMainModel.hearingDetails.hearingChannels = ['TEL', 'VID'];
+      component.hearingRequestMainModel.hearingDetails.isPaperHearing = false;
+
+      const partyInHMC: PartyDetailsModel = {
+        partyID: 'P7',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          firstName: 'John',
+          lastName: 'Doe',
+          preferredHearingChannel: 'inPerson',
+        },
+      } as any;
+
+      const partyDetailsModel: PartyDetailsModel = {
+        partyID: 'P7',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          firstName: 'Jane',
+          lastName: 'Doe',
+          preferredHearingChannel: 'inPerson',
+        },
+      } as any;
+
+      (component as any).setPartyAmendmentFlags(partyInHMC, partyDetailsModel);
+
+      expect(component.partyNameAmendmentStatusById['P7']).toBe(AmendmentLabelStatus.AMENDED);
+      expect(component.partyChannelAmendmentStatusById['P7']).toBe(AmendmentLabelStatus.NONE);
+    });
+
+    it('should set party channel to AMENDED and name to NONE when only channel changed', () => {
+      spyOn(HearingsUtils, 'hasPartyNameChanged').and.returnValue(false);
+      spyOn(HearingsUtils, 'hasPartyHearingChannelChanged').and.returnValue(true);
+      spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(true);
+
+      component.hearingRequestMainModel.hearingDetails.hearingChannels = ['TEL', 'VID'];
+      component.hearingRequestMainModel.hearingDetails.isPaperHearing = false;
+
+      const partyInHMC: PartyDetailsModel = {
+        partyID: 'P8',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          firstName: 'John',
+          lastName: 'Doe',
+          preferredHearingChannel: 'inPerson',
+        },
+      } as any;
+
+      const partyDetailsModel: PartyDetailsModel = {
+        partyID: 'P8',
+        partyType: PartyType.IND,
+        partyRole: 'appellant',
+        individualDetails: {
+          firstName: 'John',
+          lastName: 'Doe',
+          preferredHearingChannel: 'video',
+        },
+      } as any;
+
+      (component as any).setPartyAmendmentFlags(partyInHMC, partyDetailsModel);
+
+      expect(component.partyNameAmendmentStatusById['P8']).toBe(AmendmentLabelStatus.NONE);
+      expect(component.partyChannelAmendmentStatusById['P8']).toBe(AmendmentLabelStatus.AMENDED);
+    });
+  });
+
+  describe('setAmendmentFlags - defaultHearingChannel.length > 0 check', () => {
+    // Helper function to create a FormArray with mock channels
+    function createMockChannelFormArray(channels: Array<{ key: string; selected: boolean; showAmendedLabel: boolean }>) {
+      const fb = TestBed.inject(FormBuilder);
+      return new FormArray(
+        channels.map((channel) =>
+          fb.group({
+            key: channel.key,
+            selected: channel.selected,
+            showAmendedLabel: channel.showAmendedLabel,
+            value_en: '',
+            value_cy: '',
+            hint_text_en: '',
+            hint_text_cy: '',
+            lov_order: 0,
+            parent_key: null,
+          })
+        )
+      );
+    }
+
+    // Helper function to setup component with hearing channels
+    function setupComponentWithChannels(
+      srvChannels: string[] | null | undefined,
+      hmcChannels: string[],
+      mockChannels: Array<{ key: string; selected: boolean; showAmendedLabel: boolean }>
+    ) {
+      spyOn(HearingsUtils, 'hasPaperHearingChanged').and.returnValue(false);
+      spyOn(HearingsUtils, 'doArraysDiffer').and.returnValue(false);
+      spyOn(HearingsUtils, 'toCompareServiceHearingValueField').and.returnValue(false);
+
+      component.serviceHearingValuesModel.hearingChannels = srvChannels;
+      component.hearingRequestMainModel.hearingDetails.hearingChannels = hmcChannels;
+      component.hearingRequestMainModel.hearingDetails.isPaperHearing = false;
+      component.hearingCondition = { mode: 'view-edit' };
+
+      const formArray = createMockChannelFormArray(mockChannels);
+      component.attendanceFormGroup.setControl('hearingLevelChannels', formArray);
+      component.ngOnInit();
+    }
+
+    it('should not set showAmendedLabel when defaultHearingChannel is empty', () => {
+      const mockChannels = [
+        { key: 'INTER', selected: true, showAmendedLabel: false },
+        { key: 'TEL', selected: false, showAmendedLabel: false },
+      ];
+
+      setupComponentWithChannels([], ['INTER'], mockChannels);
+
+      expect(component.hearingLevelChannels[0].showAmendedLabel).toBeFalse();
+      expect(component.hearingLevelChannels[1].showAmendedLabel).toBeFalse();
+    });
+
+    it('should not set showAmendedLabel when defaultHearingChannel is null', () => {
+      const mockChannels = [{ key: 'INTER', selected: true, showAmendedLabel: false }];
+
+      setupComponentWithChannels(null, ['INTER'], mockChannels);
+
+      expect(component.hearingLevelChannels[0].showAmendedLabel).toBeFalse();
+    });
+
+    it('should not set showAmendedLabel when defaultHearingChannel is undefined', () => {
+      const mockChannels = [{ key: 'INTER', selected: true, showAmendedLabel: false }];
+
+      setupComponentWithChannels(undefined, ['INTER'], mockChannels);
+
+      expect(component.hearingLevelChannels[0].showAmendedLabel).toBeFalse();
+    });
+
+    it('should set showAmendedLabel to true when channel is in defaults but not selected', () => {
+      const mockChannels = [
+        { key: 'INTER', selected: true, showAmendedLabel: false },
+        { key: 'TEL', selected: false, showAmendedLabel: false },
+      ];
+
+      setupComponentWithChannels(['INTER', 'TEL'], ['INTER'], mockChannels);
+
+      expect(component.hearingLevelChannels[0].showAmendedLabel).toBeFalse();
+      expect(component.hearingLevelChannels[1].showAmendedLabel).toBeTrue();
+    });
+
+    it('should set showAmendedLabel to true when channel is not in defaults but is selected', () => {
+      const mockChannels = [
+        { key: 'INTER', selected: true, showAmendedLabel: false },
+        { key: 'VID', selected: true, showAmendedLabel: false },
+      ];
+
+      setupComponentWithChannels(['INTER'], ['INTER', 'VID'], mockChannels);
+
+      expect(component.hearingLevelChannels[0].showAmendedLabel).toBeFalse();
+      expect(component.hearingLevelChannels[1].showAmendedLabel).toBeTrue();
+    });
+
+    it('should set showAmendedLabel to false when channel is in defaults and is selected', () => {
+      const mockChannels = [
+        { key: 'INTER', selected: true, showAmendedLabel: false },
+        { key: 'TEL', selected: true, showAmendedLabel: false },
+        { key: 'VID', selected: true, showAmendedLabel: false },
+      ];
+
+      setupComponentWithChannels(['INTER', 'TEL', 'VID'], ['INTER', 'TEL'], mockChannels);
+
+      expect(component.hearingLevelChannels[0].showAmendedLabel).toBeFalse();
+      expect(component.hearingLevelChannels[1].showAmendedLabel).toBeFalse();
+      expect(component.hearingLevelChannels[2].showAmendedLabel).toBeFalse();
+    });
+
+    it('should set showAmendedLabel to false when channel is not in defaults and is not selected', () => {
+      const mockChannels = [
+        { key: 'INTER', selected: true, showAmendedLabel: false },
+        { key: 'TEL', selected: false, showAmendedLabel: false },
+        { key: 'VID', selected: false, showAmendedLabel: false },
+      ];
+
+      setupComponentWithChannels(['INTER'], ['INTER'], mockChannels);
+
+      expect(component.hearingLevelChannels[0].showAmendedLabel).toBeFalse();
+      expect(component.hearingLevelChannels[1].showAmendedLabel).toBeFalse();
+      expect(component.hearingLevelChannels[2].showAmendedLabel).toBeFalse();
+    });
+
+    it('should correctly set showAmendedLabel for multiple channels with mixed states', () => {
+      const mockChannels = [
+        { key: 'INTER', selected: true, showAmendedLabel: false },
+        { key: 'TEL', selected: false, showAmendedLabel: false },
+        { key: 'VID', selected: true, showAmendedLabel: false },
+      ];
+
+      setupComponentWithChannels(['INTER', 'TEL'], ['INTER', 'VID'], mockChannels);
+
+      expect(component.hearingLevelChannels[0].showAmendedLabel).toBeFalse();
+      expect(component.hearingLevelChannels[1].showAmendedLabel).toBeTrue();
+      expect(component.hearingLevelChannels[2].showAmendedLabel).toBeTrue();
+    });
+
+    it('should handle single channel in defaults that is not selected', () => {
+      const mockChannels = [{ key: 'INTER', selected: false, showAmendedLabel: false }];
+
+      setupComponentWithChannels(['INTER'], [], mockChannels);
+
+      expect(component.hearingLevelChannels[0].showAmendedLabel).toBeTrue();
+    });
+  });
+
+  describe('isPaperHearing', () => {
+    it('should return Yes when hearingChannels includes ONPPR', () => {
+      component.hearingRequestMainModel.hearingDetails.hearingChannels = [HearingChannelEnum.ONPPR];
+      component.hearingRequestMainModel.hearingDetails.isPaperHearing = false;
+
+      const result = (component as any).isPaperHearing();
+
+      expect(result).toBe(RadioOptions.YES);
+    });
+
+    it('should return Yes when isPaperHearing flag is true', () => {
+      component.hearingRequestMainModel.hearingDetails.hearingChannels = ['TEL', 'VID'];
+      component.hearingRequestMainModel.hearingDetails.isPaperHearing = true;
+
+      const result = (component as any).isPaperHearing();
+
+      expect(result).toBe(RadioOptions.YES);
+    });
+
+    it('should return Yes when both hearingChannels includes ONPPR and isPaperHearing flag is true', () => {
+      component.hearingRequestMainModel.hearingDetails.hearingChannels = [HearingChannelEnum.ONPPR, 'TEL'];
+      component.hearingRequestMainModel.hearingDetails.isPaperHearing = true;
+
+      const result = (component as any).isPaperHearing();
+
+      expect(result).toBe(RadioOptions.YES);
+    });
+
+    it('should return No when hearingChannels does not include ONPPR and isPaperHearing flag is false', () => {
+      component.hearingRequestMainModel.hearingDetails.hearingChannels = ['TEL', 'VID'];
+      component.hearingRequestMainModel.hearingDetails.isPaperHearing = false;
+
+      const result = (component as any).isPaperHearing();
+
+      expect(result).toBe(RadioOptions.NO);
+    });
+
+    it('should return No when hearingChannels is empty and isPaperHearing flag is false', () => {
+      component.hearingRequestMainModel.hearingDetails.hearingChannels = [];
+      component.hearingRequestMainModel.hearingDetails.isPaperHearing = false;
+
+      const result = (component as any).isPaperHearing();
+
+      expect(result).toBe(RadioOptions.NO);
+    });
+
+    it('should return No when hearingChannels is null and isPaperHearing flag is false', () => {
+      component.hearingRequestMainModel.hearingDetails.hearingChannels = null;
+      component.hearingRequestMainModel.hearingDetails.isPaperHearing = false;
+
+      const result = (component as any).isPaperHearing();
+
+      expect(result).toBe(RadioOptions.NO);
+    });
+
+    it('should return Yes when hearingChannels is null but isPaperHearing flag is true', () => {
+      component.hearingRequestMainModel.hearingDetails.hearingChannels = null;
+      component.hearingRequestMainModel.hearingDetails.isPaperHearing = true;
+
+      const result = (component as any).isPaperHearing();
+
+      expect(result).toBe(RadioOptions.YES);
+    });
+
+    it('should return No when hearingChannels is undefined and isPaperHearing flag is undefined', () => {
+      component.hearingRequestMainModel.hearingDetails.hearingChannels = undefined;
+      component.hearingRequestMainModel.hearingDetails.isPaperHearing = undefined;
+
+      const result = (component as any).isPaperHearing();
+
+      expect(result).toBe(RadioOptions.NO);
+    });
+
+    it('should return Yes when hearingChannels includes ONPPR even if isPaperHearing flag is undefined', () => {
+      component.hearingRequestMainModel.hearingDetails.hearingChannels = [HearingChannelEnum.ONPPR];
+      component.hearingRequestMainModel.hearingDetails.isPaperHearing = undefined;
+
+      const result = (component as any).isPaperHearing();
+
+      expect(result).toBe(RadioOptions.YES);
+    });
+
+    it('should return Yes when isPaperHearing flag is true even if hearingChannels is undefined', () => {
+      component.hearingRequestMainModel.hearingDetails.hearingChannels = undefined;
+      component.hearingRequestMainModel.hearingDetails.isPaperHearing = true;
+
+      const result = (component as any).isPaperHearing();
+
+      expect(result).toBe(RadioOptions.YES);
+    });
+
+    it('should handle hearingChannels with multiple values correctly when ONPPR is present', () => {
+      component.hearingRequestMainModel.hearingDetails.hearingChannels = ['TEL', 'VID', HearingChannelEnum.ONPPR, 'INTER'];
+      component.hearingRequestMainModel.hearingDetails.isPaperHearing = false;
+
+      const result = (component as any).isPaperHearing();
+
+      expect(result).toBe(RadioOptions.YES);
+    });
+
+    it('should handle hearingChannels with multiple values correctly when ONPPR is not present', () => {
+      component.hearingRequestMainModel.hearingDetails.hearingChannels = ['TEL', 'VID', 'INTER'];
+      component.hearingRequestMainModel.hearingDetails.isPaperHearing = false;
+
+      const result = (component as any).isPaperHearing();
+
+      expect(result).toBe(RadioOptions.NO);
+    });
+  });
+
   afterEach(() => {
     fixture.destroy();
   });

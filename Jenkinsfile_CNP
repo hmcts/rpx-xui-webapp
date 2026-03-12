@@ -259,7 +259,8 @@ withPipeline(type, product, component) {
                     stage('API Tests') {
                         withEnv([
                             "API_PW_INCLUDE_TAGS=${params.API_PW_INCLUDE_TAGS ?: ''}",
-                            "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
+                            "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
+                            "FUNCTIONAL_TESTS_WORKERS=2"
                         ]) {
                             try {
                                 yarnBuilder.yarn('test:api:pw:coverage')
@@ -307,7 +308,8 @@ withPipeline(type, product, component) {
                         try {
                             withEnv([
                                 "PLAYWRIGHT_REPORT_FOLDER=${playwrightIntegrationReportDir}",
-                                "TEST_TYPE=preview"
+                                "TEST_TYPE=preview",
+                                "FUNCTIONAL_TESTS_WORKERS=2"
                             ]) {
                                 yarnBuilder.yarn('test:playwright:integration')
                             }
@@ -340,7 +342,11 @@ withPipeline(type, product, component) {
                     playwrightE2E: {
                     stage('Playwright E2E') {
                         try {
-                            yarnBuilder.yarn('test:playwrightE2E')
+                            withEnv([
+                                "FUNCTIONAL_TESTS_WORKERS=2"
+                            ]) {
+                                yarnBuilder.yarn('test:playwrightE2E')
+                            }
                         } catch (Exception e) {
                             echo "[failFast] Playwright E2E catch: ${e.getClass().getName()}: ${e.getMessage()}"
                             if (handleFailFastAbort(e)) { return }
@@ -386,7 +392,8 @@ withPipeline(type, product, component) {
                     stage('API Tests') {
                         withEnv([
                             "API_PW_INCLUDE_TAGS=${params.API_PW_INCLUDE_TAGS ?: ''}",
-                            "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
+                            "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
+                            "FUNCTIONAL_TESTS_WORKERS=4"
                         ]) {
                             try {
                                 yarnBuilder.yarn('test:api:pw:coverage')
@@ -434,7 +441,8 @@ withPipeline(type, product, component) {
                         try {
                             withEnv([
                                 "PLAYWRIGHT_REPORT_FOLDER=${playwrightIntegrationReportDir}",
-                                "TEST_TYPE=aat"
+                                "TEST_TYPE=aat",
+                                "FUNCTIONAL_TESTS_WORKERS=4"
                             ]) {
                                 yarnBuilder.yarn('test:playwright:integration')
                             }
@@ -467,7 +475,11 @@ withPipeline(type, product, component) {
                     playwrightE2E: {
                     stage('Playwright E2E') {
                         try {
-                            yarnBuilder.yarn('test:playwrightE2E')
+                            withEnv([
+                                "FUNCTIONAL_TESTS_WORKERS=4"
+                            ]) {
+                                yarnBuilder.yarn('test:playwrightE2E')
+                            }
                         } catch (Exception e) {
                             echo "[failFast] Playwright E2E catch: ${e.getClass().getName()}: ${e.getMessage()}"
                             if (handleFailFastAbort(e)) { return }

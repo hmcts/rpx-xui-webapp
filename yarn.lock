@@ -18642,6 +18642,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jiti@npm:^2.6.1":
+  version: 2.6.1
+  resolution: "jiti@npm:2.6.1"
+  bin:
+    jiti: lib/jiti-cli.mjs
+  checksum: 10/8cd72c5fd03a0502564c3f46c49761090f6dadead21fa191b73535724f095ad86c2fa89ee6fe4bc3515337e8d406cc8fb2d37b73fa0c99a34584bac35cd4a4de
+  languageName: node
+  linkType: hard
+
 "joi@npm:17.6.0":
   version: 17.6.0
   resolution: "joi@npm:17.6.0"
@@ -22937,6 +22946,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"prettier@npm:^3.8.0":
+  version: 3.8.1
+  resolution: "prettier@npm:3.8.1"
+  bin:
+    prettier: bin/prettier.cjs
+  checksum: 10/3da1cf8c1ef9bea828aa618553696c312e951f810bee368f6887109b203f18ee869fe88f66e65f9cf60b7cb1f2eae859892c860a300c062ff8ec69c381fc8dbd
+  languageName: node
+  linkType: hard
+
 "pretty-format@npm:30.0.5":
   version: 30.0.5
   resolution: "pretty-format@npm:30.0.5"
@@ -24274,6 +24292,7 @@ __metadata:
     isomorphic-fetch: "npm:^3.0.0"
     jasmine-core: "npm:~5.1.0"
     jasmine-marbles: "npm:^0.9.1"
+    jiti: "npm:^2.6.1"
     jsonwebtoken: "npm:^9.0.3"
     karma: "npm:~6.4.2"
     karma-chrome-launcher: "npm:3.2.0"
@@ -24304,6 +24323,7 @@ __metadata:
     pa11y: "npm:^8.0.0"
     pegjs: "npm:^0.10.0"
     playwright: "npm:1.58.1"
+    prettier: "npm:^3.8.0"
     proper-lockfile: "npm:^4.1.2"
     puppeteer: "npm:^24.0.0"
     rpx-xui-translation: "https://github.com/hmcts/rpx-xui-translation/releases/download/v1.2.1/rpx-xui-translation-1.2.1.tgz"

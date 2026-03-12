@@ -3,10 +3,12 @@
 Date: 2026-02-05
 
 Summary:
+
 - Reviewed package usage with `@hmcts/ccd-case-ui-toolkit` and `@hmcts/rpx-xui-common-lib` dependencies in mind.
 - Kept toolkit/common-lib transitive dependencies even if not directly referenced in this repo.
 
 Changes:
+
 - Moved test-only packages to `devDependencies`:
   - `accessibility-checker`
   - `get-port`
@@ -45,5 +47,5 @@ Changes:
   - `webpack-source-map-support`
 
 Notes:
-- `launchdarkly-js-client-sdk`, `ngx-pagination`, `ngx-markdown`, `pegjs`, `marked`, `lz-string`, `moment-timezone`, `ngx-chips`, `exceljs`, and `file-saver` are retained for toolkit/common-lib compatibility.
 
+- `launchdarkly-js-client-sdk`, `ngx-pagination`, `ngx-markdown`, `pegjs`, `marked`, `lz-string`, `moment-timezone`, `ngx-chips`, `exceljs`, and `file-saver` are retained for toolkit/common-lib compatibility.

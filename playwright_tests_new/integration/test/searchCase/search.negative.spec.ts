@@ -81,39 +81,39 @@ test.describe(
           await expect.poll(() => page.url(), { timeout: 20_000 }).toMatch(/\/(cases(?:[/?#]|$)|work\/my-work\/list(?:[/?#]|$))/);
         }
       });
-
-      test('handles malformed case-details response from header quick search', async ({ caseListPage, searchCasePage, page }) => {
-        let caseDetailsRequestSeen = false;
-        await page.route('**/data/internal/cases/**', async (route) => {
-          caseDetailsRequestSeen = true;
-          await route.fulfill({
-            status: 200,
-            contentType: 'application/json',
-            body: SEARCH_CASE_MALFORMED_JSON_BODY,
-          });
-        });
-
-        await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, caseListPage, searchCasePage);
-
-        expect(caseDetailsRequestSeen).toBeTruthy();
-        await expect(page).not.toHaveURL(/\/cases\/case-details\//);
-        await expect.poll(() => page.url(), { timeout: 20_000 }).toMatch(/\/(cases(?:[/?#]|$)|work\/my-work\/list(?:[/?#]|$))/);
-      });
-
-      test('handles timed-out case-details request from header quick search', async ({ caseListPage, searchCasePage, page }) => {
-        let caseDetailsRequestSeen = false;
-        await page.route('**/data/internal/cases/**', async (route) => {
-          caseDetailsRequestSeen = true;
-          await route.abort('timedout');
-        });
-
-        await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, caseListPage, searchCasePage);
-
-        expect(caseDetailsRequestSeen).toBeTruthy();
-        // timeout: 20_000 — aborted/timed-out request triggers error-page redirect which can take up to 15s in AAT
-        await expect(page).not.toHaveURL(/\/cases\/case-details\//);
-        await expect.poll(() => page.url(), { timeout: 20_000 }).toMatch(/\/(cases(?:[/?#]|$)|work\/my-work\/list(?:[/?#]|$))/);
-      });
     }
+
+    test('handles malformed case-details response from header quick search', async ({ caseListPage, searchCasePage, page }) => {
+      let caseDetailsRequestSeen = false;
+      await page.route('**/data/internal/cases/**', async (route) => {
+        caseDetailsRequestSeen = true;
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: SEARCH_CASE_MALFORMED_JSON_BODY,
+        });
+      });
+
+      await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, caseListPage, searchCasePage);
+
+      expect(caseDetailsRequestSeen).toBeTruthy();
+      await expect(page).not.toHaveURL(/\/cases\/case-details\//);
+      await expect.poll(() => page.url(), { timeout: 20_000 }).toMatch(/\/(cases(?:[/?#]|$)|work\/my-work\/list(?:[/?#]|$))/);
+    });
+
+    test('handles timed-out case-details request from header quick search', async ({ caseListPage, searchCasePage, page }) => {
+      let caseDetailsRequestSeen = false;
+      await page.route('**/data/internal/cases/**', async (route) => {
+        caseDetailsRequestSeen = true;
+        await route.abort('timedout');
+      });
+
+      await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, caseListPage, searchCasePage);
+
+      expect(caseDetailsRequestSeen).toBeTruthy();
+      // timeout: 20_000 — aborted/timed-out request triggers error-page redirect which can take up to 15s in AAT
+      await expect(page).not.toHaveURL(/\/cases\/case-details\//);
+      await expect.poll(() => page.url(), { timeout: 20_000 }).toMatch(/\/(cases(?:[/?#]|$)|work\/my-work\/list(?:[/?#]|$))/);
+    });
   }
 );

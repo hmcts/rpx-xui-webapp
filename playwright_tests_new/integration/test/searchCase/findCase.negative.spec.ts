@@ -35,9 +35,37 @@ test.beforeEach(async ({ page }, testInfo) => {
   });
 });
 
-test.describe('Find Case negative flows with prewarmed search session', { tag: ['@integration', '@integration-search-case'] }, () => {
-  for (const status of SEARCH_CASE_ERROR_STATUS_CODES) {
-    test(`does not navigate to case details when searchCases returns HTTP ${status}`, async ({
+test.describe(
+  'Find Case negative flows with prewarmed search session',
+  { tag: ['@integration', '@integration-search-case'] },
+  () => {
+    for (const status of SEARCH_CASE_ERROR_STATUS_CODES) {
+      test(`does not navigate to case details when searchCases returns HTTP ${status}`, async ({
+        caseListPage,
+        findCasePage,
+        page,
+      }) => {
+        let searchRequestSeen = false;
+        await overrideFindCaseSearchResultsRoute(page, async (route) => {
+          searchRequestSeen = true;
+          await route.fulfill({
+            status,
+            contentType: 'application/json',
+            body: JSON.stringify({ message: `Forced failure ${status}` }),
+          });
+        });
+
+        await caseListPage.navigateTo();
+        await findCasePage.startFindCaseJourney(existingCaseReference, FIND_CASE_CASE_TYPE_LABEL, FIND_CASE_JURISDICTION_LABEL);
+
+        expect(searchRequestSeen).toBeTruthy();
+        await expect(page).not.toHaveURL(/\/cases\/case-details\//);
+        await expect(findCasePage.searchResultsDataTable).toBeHidden();
+        await expect(findCasePage.searchResultsTable.locator('a.govuk-link[href*="/cases/case-details/"]')).toHaveCount(0);
+      });
+    }
+
+    test('does not navigate to case details when searchCases response is malformed JSON', async ({
       caseListPage,
       findCasePage,
       page,
@@ -46,9 +74,9 @@ test.describe('Find Case negative flows with prewarmed search session', { tag: [
       await overrideFindCaseSearchResultsRoute(page, async (route) => {
         searchRequestSeen = true;
         await route.fulfill({
-          status,
+          status: 200,
           contentType: 'application/json',
-          body: JSON.stringify({ message: `Forced failure ${status}` }),
+          body: SEARCH_CASE_MALFORMED_JSON_BODY,
         });
       });
 
@@ -60,45 +88,21 @@ test.describe('Find Case negative flows with prewarmed search session', { tag: [
       await expect(findCasePage.searchResultsDataTable).toBeHidden();
       await expect(findCasePage.searchResultsTable.locator('a.govuk-link[href*="/cases/case-details/"]')).toHaveCount(0);
     });
-  }
 
-  test('does not navigate to case details when searchCases response is malformed JSON', async ({
-    caseListPage,
-    findCasePage,
-    page,
-  }) => {
-    let searchRequestSeen = false;
-    await overrideFindCaseSearchResultsRoute(page, async (route) => {
-      searchRequestSeen = true;
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: SEARCH_CASE_MALFORMED_JSON_BODY,
+    test('does not navigate to case details when searchCases request times out', async ({ caseListPage, findCasePage, page }) => {
+      let searchRequestSeen = false;
+      await overrideFindCaseSearchResultsRoute(page, async (route) => {
+        searchRequestSeen = true;
+        await route.abort('timedout');
       });
+
+      await caseListPage.navigateTo();
+      await findCasePage.startFindCaseJourney(existingCaseReference, FIND_CASE_CASE_TYPE_LABEL, FIND_CASE_JURISDICTION_LABEL);
+
+      expect(searchRequestSeen).toBeTruthy();
+      await expect(page).not.toHaveURL(/\/cases\/case-details\//);
+      await expect(findCasePage.searchResultsDataTable).toBeHidden();
+      await expect(findCasePage.searchResultsTable.locator('a.govuk-link[href*="/cases/case-details/"]')).toHaveCount(0);
     });
-
-    await caseListPage.navigateTo();
-    await findCasePage.startFindCaseJourney(existingCaseReference, FIND_CASE_CASE_TYPE_LABEL, FIND_CASE_JURISDICTION_LABEL);
-
-    expect(searchRequestSeen).toBeTruthy();
-    await expect(page).not.toHaveURL(/\/cases\/case-details\//);
-    await expect(findCasePage.searchResultsDataTable).toBeHidden();
-    await expect(findCasePage.searchResultsTable.locator('a.govuk-link[href*="/cases/case-details/"]')).toHaveCount(0);
-  });
-
-  test('does not navigate to case details when searchCases request times out', async ({ caseListPage, findCasePage, page }) => {
-    let searchRequestSeen = false;
-    await overrideFindCaseSearchResultsRoute(page, async (route) => {
-      searchRequestSeen = true;
-      await route.abort('timedout');
-    });
-
-    await caseListPage.navigateTo();
-    await findCasePage.startFindCaseJourney(existingCaseReference, FIND_CASE_CASE_TYPE_LABEL, FIND_CASE_JURISDICTION_LABEL);
-
-    expect(searchRequestSeen).toBeTruthy();
-    await expect(page).not.toHaveURL(/\/cases\/case-details\//);
-    await expect(findCasePage.searchResultsDataTable).toBeHidden();
-    await expect(findCasePage.searchResultsTable.locator('a.govuk-link[href*="/cases/case-details/"]')).toHaveCount(0);
-  });
-});
+  }
+);

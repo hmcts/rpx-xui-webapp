@@ -4,6 +4,7 @@ import { applyPrewarmedSessionCookies, setupTaskListBootstrapRoutes, taskListRou
 
 const errorStates = [400, 403, 500, 503];
 const userIdentifier = 'STAFF_ADMIN';
+const broaderSupportedJurisdictionsMock = ['IA', 'PRIVATELAW', 'PUBLICLAW', 'CIVIL', 'ST_CIC', 'EMPLOYMENT', 'SSCS', 'DIVORCE'];
 
 test.beforeEach(async ({ page }) => {
   await applyPrewarmedSessionCookies(page, userIdentifier);
@@ -13,7 +14,10 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
   test(`User ${userIdentifier} sees filter errors if no services are selected`, async ({ taskListPage, page }) => {
     const taskListMockResponse = buildTaskListMock(10, '', availableActionsList);
     await test.step('Setup route mock for task list', async () => {
-      await setupTaskListBootstrapRoutes(page);
+      await setupTaskListBootstrapRoutes(page, broaderSupportedJurisdictionsMock);
+      await page.route('**/workallocation/caseworker/getUsersByServiceName*', async (route) => {
+        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([]) });
+      });
       await page.route(taskListRoutePattern, async (route) => {
         const body = JSON.stringify(taskListMockResponse);
         await route.fulfill({ status: 200, contentType: 'application/json', body });
@@ -26,13 +30,15 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
       await taskListPage.waitForTaskListShellReady('available tasks tab');
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
+      await taskListPage.openFilterPanel();
+      await expect(taskListPage.selectAllServicesFilter).toBeVisible();
     });
 
     await test.step('Verify table shows filter errors if no services are selected', async () => {
       expect
         .soft(await taskListPage.getResultsText())
         .toBe(`Showing 1 to ${Math.min(taskListMockResponse.tasks.length, 25)} of ${taskListMockResponse.total_records} results`);
-      await taskListPage.clearServicesFilters();
+      await taskListPage.setSelectAllServicesFilter(false);
       await taskListPage.applyCurrentFilters();
       await taskListPage.openFilterPanel();
       await expect(taskListPage.selectServicesError).toBeVisible();
@@ -43,7 +49,10 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
   test(`User ${userIdentifier} sees filter errors if no types of work are selected`, async ({ taskListPage, page }) => {
     const taskListMockResponse = buildTaskListMock(10, '', availableActionsList);
     await test.step('Setup route mock for task list', async () => {
-      await setupTaskListBootstrapRoutes(page);
+      await setupTaskListBootstrapRoutes(page, broaderSupportedJurisdictionsMock);
+      await page.route('**/workallocation/caseworker/getUsersByServiceName*', async (route) => {
+        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([]) });
+      });
       await page.route(taskListRoutePattern, async (route) => {
         const body = JSON.stringify(taskListMockResponse);
         await route.fulfill({ status: 200, contentType: 'application/json', body });
@@ -56,13 +65,15 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
       await taskListPage.waitForTaskListShellReady('available tasks tab');
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
+      await taskListPage.openFilterPanel();
+      await expect(taskListPage.selectAllTypesOfWorksFilter).toBeVisible();
     });
 
     await test.step('Verify table shows filter errors if no types of work are selected', async () => {
       expect
         .soft(await taskListPage.getResultsText())
         .toBe(`Showing 1 to ${Math.min(taskListMockResponse.tasks.length, 25)} of ${taskListMockResponse.total_records} results`);
-      await taskListPage.clearTypesOfWorkFilters();
+      await taskListPage.setSelectAllTypesOfWorksFilter(false);
       await taskListPage.applyCurrentFilters();
       await taskListPage.openFilterPanel();
       await expect(taskListPage.selectTypesOfWorksError).toBeVisible();

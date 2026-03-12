@@ -35,16 +35,39 @@ test.beforeEach(async ({ page }, testInfo) => {
   });
 });
 
-test.describe('Global Search negative flows with prewarmed search session', { tag: ['@integration', '@integration-search-case'] }, () => {
-  for (const status of SEARCH_CASE_ERROR_STATUS_CODES) {
-    test(`shows error no-results page when global search returns HTTP ${status}`, async ({ globalSearchPage, page }) => {
+test.describe(
+  'Global Search negative flows with prewarmed search session',
+  { tag: ['@integration', '@integration-search-case'] },
+  () => {
+    for (const status of SEARCH_CASE_ERROR_STATUS_CODES) {
+      test(`shows error no-results page when global search returns HTTP ${status}`, async ({ globalSearchPage, page }) => {
+        let searchRequestSeen = false;
+        await overrideGlobalSearchResultsRoute(page, async (route) => {
+          searchRequestSeen = true;
+          await route.fulfill({
+            status,
+            contentType: 'application/json',
+            body: JSON.stringify({ message: `Forced failure ${status}` }),
+          });
+        });
+
+        await submitGlobalSearchFromMenu(GLOBAL_SEARCH_CASE_REFERENCE, globalSearchPage, page);
+
+        expect(searchRequestSeen).toBeTruthy();
+        await expect(page).toHaveURL(/\/search\/noresults/);
+        await expect(page.getByRole('heading', { level: 1, name: 'Something went wrong' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Search again' })).toBeVisible();
+      });
+    }
+
+    test('shows error no-results page when global search response is malformed JSON', async ({ globalSearchPage, page }) => {
       let searchRequestSeen = false;
       await overrideGlobalSearchResultsRoute(page, async (route) => {
         searchRequestSeen = true;
         await route.fulfill({
-          status,
+          status: 200,
           contentType: 'application/json',
-          body: JSON.stringify({ message: `Forced failure ${status}` }),
+          body: SEARCH_CASE_MALFORMED_JSON_BODY,
         });
       });
 
@@ -55,39 +78,20 @@ test.describe('Global Search negative flows with prewarmed search session', { ta
       await expect(page.getByRole('heading', { level: 1, name: 'Something went wrong' })).toBeVisible();
       await expect(page.getByRole('button', { name: 'Search again' })).toBeVisible();
     });
-  }
 
-  test('shows error no-results page when global search response is malformed JSON', async ({ globalSearchPage, page }) => {
-    let searchRequestSeen = false;
-    await overrideGlobalSearchResultsRoute(page, async (route) => {
-      searchRequestSeen = true;
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: SEARCH_CASE_MALFORMED_JSON_BODY,
+    test('shows error no-results page when global search request times out', async ({ globalSearchPage, page }) => {
+      let searchRequestSeen = false;
+      await overrideGlobalSearchResultsRoute(page, async (route) => {
+        searchRequestSeen = true;
+        await route.abort('timedout');
       });
+
+      await submitGlobalSearchFromMenu(GLOBAL_SEARCH_CASE_REFERENCE, globalSearchPage, page);
+
+      expect(searchRequestSeen).toBeTruthy();
+      await expect(page).toHaveURL(/\/search\/noresults/);
+      await expect(page.getByRole('heading', { level: 1, name: 'Something went wrong' })).toBeVisible();
+      await expect(page.getByRole('button', { name: 'Search again' })).toBeVisible();
     });
-
-    await submitGlobalSearchFromMenu(GLOBAL_SEARCH_CASE_REFERENCE, globalSearchPage, page);
-
-    expect(searchRequestSeen).toBeTruthy();
-    await expect(page).toHaveURL(/\/search\/noresults/);
-    await expect(page.getByRole('heading', { level: 1, name: 'Something went wrong' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Search again' })).toBeVisible();
-  });
-
-  test('shows error no-results page when global search request times out', async ({ globalSearchPage, page }) => {
-    let searchRequestSeen = false;
-    await overrideGlobalSearchResultsRoute(page, async (route) => {
-      searchRequestSeen = true;
-      await route.abort('timedout');
-    });
-
-    await submitGlobalSearchFromMenu(GLOBAL_SEARCH_CASE_REFERENCE, globalSearchPage, page);
-
-    expect(searchRequestSeen).toBeTruthy();
-    await expect(page).toHaveURL(/\/search\/noresults/);
-    await expect(page.getByRole('heading', { level: 1, name: 'Something went wrong' })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'Search again' })).toBeVisible();
-  });
-});
+  }
+);

@@ -19,12 +19,8 @@ const integrationConfigSupport = require('../../playwright.integration.config.su
 };
 
 const { resolveTagFilters } = playwrightConfigUtils;
-const {
-  resolveOdhinConsoleCapture,
-  resolveOdhinHardTimeoutMs,
-  resolveOdhinLightweight,
-  resolveOdhinRuntimeHookTimeoutMs,
-} = integrationConfigSupport;
+const { resolveOdhinConsoleCapture, resolveOdhinHardTimeoutMs, resolveOdhinLightweight, resolveOdhinRuntimeHookTimeoutMs } =
+  integrationConfigSupport;
 
 let configModule: TestableConfigModule;
 let integrationConfigModule: TestableConfigModule;
@@ -32,11 +28,13 @@ let integrationConfigModule: TestableConfigModule;
 const buildConfig = (env: EnvMap) => configModule.__test__.buildConfig(env);
 const resolveWorkerCount = (env: EnvMap) => configModule.__test__.resolveWorkerCount(env);
 const resolveApiProjectWorkerCount = (env: EnvMap) =>
-  (configModule.__test__ as TestableConfigModule['__test__'] & { resolveApiProjectWorkerCount: (env: EnvMap) => number })
-    .resolveApiProjectWorkerCount(env);
+  (
+    configModule.__test__ as TestableConfigModule['__test__'] & { resolveApiProjectWorkerCount: (env: EnvMap) => number }
+  ).resolveApiProjectWorkerCount(env);
 const resolveApiTagFilters = (env: EnvMap) =>
-  (configModule.__test__ as TestableConfigModule['__test__'] & { resolveApiTagFilters: (env: EnvMap) => unknown })
-    .resolveApiTagFilters(env) as {
+  (
+    configModule.__test__ as TestableConfigModule['__test__'] & { resolveApiTagFilters: (env: EnvMap) => unknown }
+  ).resolveApiTagFilters(env) as {
     excludedTags: string[];
     grep?: RegExp;
     grepInvert?: RegExp;

@@ -1,11 +1,15 @@
 import { test, expect } from '@playwright/test';
 
 import { loadConfig, resolveConfigModule, type EnvMap, type TestableConfigModule } from './utils/playwrightConfigUtils';
+import * as playwrightConfigUtils from '../../playwright-config-utils';
+
+const { resolveTagFilters } = playwrightConfigUtils;
 
 let configModule: TestableConfigModule;
 
 const buildConfig = (env: EnvMap) => configModule.__test__.buildConfig(env);
 const resolveWorkerCount = (env: EnvMap) => configModule.__test__.resolveWorkerCount(env);
+const resolveApiTagFilters = (env: EnvMap) => configModule.__test__.resolveApiTagFilters(env);
 const getReporterTuple = (reporter: unknown, name: string): [string, Record<string, unknown> | undefined] => {
   if (!Array.isArray(reporter)) {
     throw new TypeError('Unexpected reporter config shape');
@@ -28,6 +32,9 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
   test('resolveWorkerCount covers configured, CI, and default', async () => {
     const configured = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: '4', CI: undefined });
     expect(configured).toBe(4);
+
+    const configuredInCi = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: '2', CI: 'true' });
+    expect(configuredInCi).toBe(2);
 
     const ciCount = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' });
     expect(ciCount).toBe(8);
@@ -76,6 +83,18 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     const nodeApiProject = config.projects.find((p) => p.name === 'node-api');
     expect(nodeApiProject).toBeDefined();
     expect(nodeApiProject?.workers).toBe(4);
+  });
+
+  test('config honors FUNCTIONAL_TESTS_WORKERS override in CI for all Playwright suites', async () => {
+    const config = buildConfig({
+      CI: 'true',
+      FUNCTIONAL_TESTS_WORKERS: '2',
+      TEST_URL: 'https://example.test',
+    });
+    expect(config.workers).toBe(2);
+    const nodeApiProject = config.projects.find((p) => p.name === 'node-api');
+    expect(nodeApiProject).toBeDefined();
+    expect(nodeApiProject?.workers).toBe(2);
   });
 
   test('config defaults to local reporter values', async () => {
@@ -130,5 +149,61 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(nodeApiProject?.grep?.test('@svc-ccd')).toBe(true);
     expect(nodeApiProject?.grepInvert).toBeInstanceOf(RegExp);
     expect(nodeApiProject?.grepInvert?.test('@svc-work-allocation')).toBe(true);
+  });
+
+  test('node-api clears file defaults with @none but keeps explicit env excludes', () => {
+    const filters = resolveApiTagFilters({
+      API_PW_EXCLUDED_TAGS_OVERRIDE: '@none,@svc-work-allocation',
+      CI: undefined,
+    });
+
+    expect(filters.excludedTags).toEqual(['@svc-work-allocation']);
+    expect(filters.grepInvert).toBeInstanceOf(RegExp);
+    expect(filters.grepInvert?.test('@svc-work-allocation')).toBe(true);
+    expect(filters.grepInvert?.test('@wa-action')).toBe(false);
+  });
+
+  test('node-api rejects unknown include tags from environment', () => {
+    expect(() =>
+      buildConfig({
+        API_PW_INCLUDE_TAGS: '@svc-does-not-exist',
+        CI: undefined,
+      })
+    ).toThrow(/unknown tag/i);
+  });
+
+  test('shared tag filter helper keeps explicit excludes when @none is combined with E2E tags', () => {
+    const filters = resolveTagFilters({
+      env: {
+        E2E_PW_EXCLUDED_TAGS_OVERRIDE: '@none,@e2e-search-case',
+      },
+      includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
+      excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
+      configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
+      defaultConfigPath: 'playwright_tests_new/E2E/tag-filter.json',
+      suiteTag: '@e2e',
+    });
+
+    expect(filters.excludedTags).toEqual(['@e2e-search-case']);
+    expect(filters.grepInvert).toBeInstanceOf(RegExp);
+    expect(filters.grepInvert?.test('@e2e-search-case')).toBe(true);
+  });
+
+  test('shared tag filter helper treats suite plus feature includes as feature-only selection', () => {
+    const filters = resolveTagFilters({
+      env: {
+        E2E_PW_INCLUDE_TAGS: '@e2e @e2e-search-case',
+      },
+      includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
+      excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
+      configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
+      defaultConfigPath: 'playwright_tests_new/E2E/tag-filter.json',
+      suiteTag: '@e2e',
+    });
+
+    expect(filters.includeTags).toEqual(['@e2e-search-case']);
+    expect(filters.grep).toBeInstanceOf(RegExp);
+    expect(filters.grep?.test('@e2e-search-case')).toBe(true);
+    expect(filters.grep?.test('@e2e-manage-tasks')).toBe(false);
   });
 });

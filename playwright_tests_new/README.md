@@ -4,9 +4,89 @@ This directory contains both **API tests** (`node-api` project) and **E2E UI tes
 
 ## Table of Contents
 
+- [Quick Command Reference (AAT vs LOCAL)](#quick-command-reference-aat-vs-local)
 - [API Tests](#api-tests)
 - [E2E Tests](#e2e-tests)
 - [Session Management](#session-management)
+
+---
+
+## Quick Command Reference (AAT vs LOCAL)
+
+By default, Playwright tests run against **AAT** from your local machine. Use `TEST_URL=http://localhost:3000` for LOCAL runs.
+
+### Start EXUI locally (for LOCAL runs)
+
+Follow **Startup the Node service locally** in the project root `README.md`, then run:
+
+```bash
+yarn start:ng
+```
+
+### E2E commands
+
+```bash
+# AAT: run all E2E
+yarn test:playwrightE2E
+
+# LOCAL: run all E2E
+TEST_URL=http://localhost:3000 yarn test:playwrightE2E
+
+# LOCAL: single spec file
+TEST_URL=http://localhost:3000 yarn test:playwrightE2E -- playwright_tests_new/E2E/test/documentUpload/documentUpload.positive.spec.ts
+
+# LOCAL: single test title inside spec
+TEST_URL=http://localhost:3000 yarn test:playwrightE2E -- playwright_tests_new/E2E/test/documentUpload/documentUpload.positive.spec.ts -g "upload"
+
+# LOCAL: headed mode
+TEST_URL=http://localhost:3000 yarn test:playwrightE2E -- playwright_tests_new/E2E/test/searchCase/findCase.spec.ts --headed --workers=1
+
+# LOCAL: debug mode
+TEST_URL=http://localhost:3000 PWDEBUG=1 yarn test:playwrightE2E -- playwright_tests_new/E2E/test/myWork/myTasks.spec.ts -g "My tasks"
+
+# LOCAL: single spec in UI mode
+TEST_URL=http://localhost:3000 yarn test:playwrightE2E --ui playwright_tests_new/E2E/test/documentUpload/documentUpload.positive.spec.ts
+
+# LOCAL: single test title in UI mode
+TEST_URL=http://localhost:3000 yarn test:playwrightE2E --ui playwright_tests_new/E2E/test/searchCase/findCase.spec.ts -g "find case"
+
+# LOCAL: single E2E by title/substring
+TEST_URL=http://localhost:3000 yarn test:playwrightE2E --project=chromium --workers=1 --grep "My tasks"
+```
+
+### API commands
+
+```bash
+# AAT: include work-allocation tests only, disable excludes
+API_PW_INCLUDE_TAGS=@svc-work-allocation API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
+
+# LOCAL
+TEST_URL=http://localhost:3000 yarn test:api:pw
+
+# LOCAL with coverage
+TEST_URL=http://localhost:3000 yarn test:api:pw:coverage
+```
+
+### Integration commands
+
+```bash
+# LOCAL
+TEST_URL=http://localhost:3000 yarn test:playwright:integration
+
+# AAT
+yarn test:playwright:integration
+```
+
+### Odhin report locations
+
+- API: `functional-output/tests/playwright-api/odhin-report/xui-playwright-api.html`
+- Integration: `functional-output/tests/playwright-integration/odhin-report/xui-playwright-integration.html`
+- E2E: `functional-output/tests/playwright-e2e/odhin-report/xui-playwright-e2e.html`
+
+### Notes
+
+- Replace `"My tasks"` with the exact test name, unique substring, or regex.
+- For LOCAL runs, set `TEST_URL=http://localhost:3000`.
 
 ---
 
@@ -23,17 +103,6 @@ API tests are located in `api/` and replace the legacy Mocha `yarn test:api` run
   - IDAM/S2S endpoints used by `@hmcts/playwright-common`: `IDAM_WEB_URL`, `IDAM_TESTING_SUPPORT_URL`, `S2S_URL`, optional `S2S_SECRET`
 - User credentials are read from `common/apiTestConfig.ts` for the selected `TEST_ENV`
 
-### Runtime Environment Knobs
-
-Use environment-level configuration to tune diagnostics/retries without code changes.
-
-| Variable                              | Default | Purpose                                                                                                                           |
-| ------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `API_SLOW_THRESHOLD_MS`               | `5000`  | Slow API threshold (ms) used by API and E2E fixtures for failure diagnosis and slow-call annotations/logging.                     |
-| `CASE_REFERENCE_RESOLVE_API_ATTEMPTS` | `3`     | Max attempts for `/api/globalsearch/results` when resolving case references in E2E helpers (retries transient `429/502/503/504`). |
-
-Invalid or non-positive values for these variables fall back to the defaults above.
-
 ### Running API Tests
 
 ```bash
@@ -44,9 +113,31 @@ yarn test:api:pw
 yarn test:api:pw:coverage
 ```
 
+### API Service Tag Filtering
+
+- API suites are tagged per downstream service using Playwright tags (for example `@svc-ccd`, `@svc-work-allocation`).
+- Default excluded tags are read from `playwright_tests_new/api/service-tag-filter.json` (`excludedTags` array).
+- Override excludes at runtime with `API_PW_EXCLUDED_TAGS_OVERRIDE`.
+- Optionally run only selected service tags with `API_PW_INCLUDE_TAGS`.
+- Tag inputs accept comma or space separated values, with or without `@`.
+- Set `API_PW_EXCLUDED_TAGS_OVERRIDE=@none` to clear repo defaults for one run.
+- Jenkins exposes these as string parameters with the same names.
+
+```bash
+# Exclude one service for this run (overrides file excludes)
+API_PW_EXCLUDED_TAGS_OVERRIDE=@svc-ccd yarn test:api:pw
+
+# Run only work allocation API tests
+API_PW_INCLUDE_TAGS=@svc-work-allocation yarn test:api:pw:coverage
+
+# Ignore file-level excludes for this run
+API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
+```
+
 ### API Test Parallelism
 
-- In CI, Playwright runs with **8 workers** for predictable parallelism
+- In CI, Playwright defaults to **8 workers** unless `FUNCTIONAL_TESTS_WORKERS` is set
+- Jenkins currently sets `FUNCTIONAL_TESTS_WORKERS=2` on Preview and `FUNCTIONAL_TESTS_WORKERS=4` on AAT for Playwright API, E2E, and integration runs
 - Locally, worker count is auto-sized; override with `--workers` flag
 
 ### API Authentication Model
@@ -59,14 +150,9 @@ yarn test:api:pw:coverage
 
 ### API Reports
 
-- Odhin report: `functional-output/tests/playwright-api/odhin-report/xui-playwright.html`
+- Odhin report: `functional-output/tests/playwright-api/odhin-report/xui-playwright-api.html`
 - Copied to `functional-output/tests/api_functional/odhin-report/` for Jenkins publishing
 - API call logs attached automatically per test as `node-api-calls.json`
-- Jenkins archives Playwright diagnostics artifacts including:
-- `functional-output/tests/**/odhin-report/**/*`
-- `test-results/**/*`
-- `functional-output/tests/playwright-diagnostics/failure-data/**/*`
-- `**/failure-data.json`
 
 ### API Coverage
 
@@ -105,44 +191,26 @@ npx playwright test --project chromium --workers=1
 rm -rf .sessions && npx playwright test
 ```
 
-### Flake Gate Reporter
+### E2E Tag Filtering
 
-Playwright runs include `playwright_tests_new/common/reporters/flake-gate.reporter.cjs`.
-
-- Default mode: report-only (prints flaky summary, does not fail run).
-- `PW_ENABLE_FLAKE_GATE` is currently not enforced by the reporter.
-- `PW_MAX_FLAKY_TESTS` (default `20`) and `PW_MAX_FLAKY_RATE` (default `0.2`) are reporting thresholds only.
-
-### Locator Audit
+- E2E suites are tagged with `@e2e` plus feature tags such as `@e2e-search-case` and `@e2e-manage-tasks`.
+- Default excluded tags are read from `playwright_tests_new/E2E/tag-filter.json` (`excludedTags` array).
+- Override excludes at runtime with `E2E_PW_EXCLUDED_TAGS_OVERRIDE`.
+- Optionally run only selected E2E tags with `E2E_PW_INCLUDE_TAGS`.
+- Tag inputs accept comma or space separated values, with or without `@`.
+- Set `E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none` to clear repo defaults for one run.
+- Jenkins exposes these as string parameters with the same names.
 
 ```bash
-# report-only mode (default)
-yarn lint:playwright:locators
+# Run only search-case E2E tests
+E2E_PW_INCLUDE_TAGS=@e2e-search-case yarn test:playwrightE2E
 
-# strict mode (fail on findings)
-STRICT_PLAYWRIGHT_LOCATORS=true yarn lint:playwright:locators
+# Temporarily switch off manage-tasks and document-upload E2E tests
+E2E_PW_EXCLUDED_TAGS_OVERRIDE=@e2e-manage-tasks,@e2e-document-upload yarn test:playwrightE2E
+
+# Ignore file-level excludes for this run
+E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:playwrightE2E
 ```
-
-The locator audit script scans for high-risk locator patterns in:
-
-- `playwright_tests_new/E2E/page-objects`
-- `playwright_tests_new/E2E/test`
-
-Opt-outs are available for justified cases:
-
-- `locator-audit:ignore-line`
-- `locator-audit:ignore-file`
-
-Validation rules:
-
-- `no-xpath-engine`: flags `locator('xpath=...')`.
-- `no-text-engine`: flags `locator('text=...')`.
-- `css-descendant-chain`: flags long descendant class-chain selectors inside `locator(...)`.
-
-What this command is for:
-
-- Fast static guardrail to highlight brittle locator patterns early in PRs.
-- It reports risky patterns but does not execute tests or inspect live DOM.
 
 ---
 
@@ -161,6 +229,27 @@ npx playwright test integration/test/caseList/caseList.positive.spec.ts --config
 
 # Run with specific browser
 npx playwright test --config=playwright.integration.config.ts --project=chromium
+```
+
+### Integration Tag Filtering
+
+- Integration suites are tagged with `@integration` plus feature tags such as `@integration-search-case` and `@integration-manage-tasks`.
+- Default excluded tags are read from `playwright_tests_new/integration/tag-filter.json` (`excludedTags` array).
+- Override excludes at runtime with `INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE`.
+- Optionally run only selected integration tags with `INTEGRATION_PW_INCLUDE_TAGS`.
+- Tag inputs accept comma or space separated values, with or without `@`.
+- Set `INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=@none` to clear repo defaults for one run.
+- Jenkins exposes these as string parameters with the same names.
+
+```bash
+# Run only search-case integration tests
+INTEGRATION_PW_INCLUDE_TAGS=@integration-search-case yarn test:playwright:integration
+
+# Temporarily switch off manage-tasks integration tests
+INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=@integration-manage-tasks yarn test:playwright:integration
+
+# Ignore file-level excludes for this run
+INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:playwright:integration
 ```
 
 ### Integration Test Structure
@@ -259,13 +348,15 @@ expect(visibleRows.length).toBeGreaterThan(0);
 - Stale sessions are automatically refreshed
 - Fresh sessions are reused across all tests in the suite
 
-#### 3. CI Parallel Execution (8 Workers per Test Suite)
+#### 3. CI Parallel Execution (Configurable Workers per Test Suite)
 
 - Multiple workers can safely request the same user session
 - **Filesystem-based lock mechanism** prevents concurrent logins for the same user
 - Locks coordinate across **all Playwright worker processes** (API + E2E) using `proper-lockfile`
-- When Worker A logs in user X, Workers B-H **and parallel API tests** wait for lock release and reuse the session
+- Jenkins currently runs API, E2E, and integration suites with **2 workers** on Preview and **4 workers** on AAT
+- When Worker A logs in user X, other workers **and parallel API tests** wait for lock release and reuse the session
 - After acquiring lock, workers recheck freshness to ensure session is still valid
+- `ensureSession()` intentionally avoids forced recapture so lock waiters can reuse the newly refreshed session instead of logging in again
 
 ### Usage in E2E Tests
 
@@ -319,7 +410,7 @@ When **API and E2E tests run in parallel** (common in CI pipelines):
 │                                                                  │
 │  ┌──────────────────────┐        ┌──────────────────────┐      │
 │  │  E2E Tests            │        │  API Tests            │      │
-│  │  (8 workers)          │        │  (8 workers)          │      │
+│  │  (2-4 workers)        │        │  (2-4 workers)        │      │
 │  │  Need: solicitor      │        │  Need: solicitor      │      │
 │  └──────────┬────────────┘        └──────────┬────────────┘     │
 │             │                                 │                  │
@@ -393,22 +484,36 @@ npx playwright test documentUpload.spec.ts --project chromium --workers=1
 - Logs in SEARCH_EMPLOYMENT_CASE once (~30s)
 - Total login time: ~60s
 
-#### 8 Workers (CI Pipeline)
+#### 2 Workers (Preview Jenkins Pipeline)
 
 ```bash
-npx playwright test --project chromium --workers=8
+npx playwright test --project chromium --workers=2
 ```
 
 - Worker 1 logs in SOLICITOR → stores session
-- Workers 2-8 wait for lock → reuse SOLICITOR session
+- Worker 2 waits for lock → reuse SOLICITOR session
+- Total login time per user: ~30-45s (shared across all workers)
+
+#### 4 Workers (AAT Jenkins Pipeline)
+
+```bash
+npx playwright test --project chromium --workers=4
+```
+
+- Worker 1 logs in SOLICITOR → stores session
+- Workers 2-4 wait for lock → reuse SOLICITOR session
 - Total login time per user: ~30-45s (shared across all workers)
 
 #### Parallel Test Suites (CI Pipeline)
 
 ```bash
 # Running simultaneously:
-npx playwright test --project chromium --workers=8  # E2E tests
-npx playwright test --project node-api --workers=8   # API tests
+npx playwright test --project chromium --workers=2  # Preview E2E tests
+npx playwright test --project node-api --workers=2  # Preview API tests
+
+# AAT:
+npx playwright test --project chromium --workers=4  # AAT E2E tests
+npx playwright test --project node-api --workers=4  # AAT API tests
 ```
 
 - E2E Worker 1 logs in solicitor → stores session
@@ -438,6 +543,7 @@ Sessions are stored in `.sessions/` directory with filesystem-based locking:
 - Released in `finally` block to prevent deadlocks
 - Other workers wait up to 30 retries × 1-5s = ~2.5 minutes max
 - After lock released, waiting workers recheck session freshness
+- Waiting workers skip login if session became fresh while waiting (prevents duplicate recapture storms)
 - Stale threshold: 60 seconds (if lock held longer, considered abandoned)
 
 ### Implementation Details

@@ -17,7 +17,7 @@ test.describe.configure({ mode: 'serial' });
 const mockPassword = process.env.PW_MOCK_PASSWORD ?? String(Date.now());
 const mockCredentials = { username: 'test-user', password: mockPassword };
 
-test.describe('Auth helper coverage - storage operations', () => {
+test.describe('Auth helper coverage - storage operations', { tag: '@svc-auth' }, () => {
   test('tryReadState returns parsed state or undefined for invalid content', async () => {
     const tmpDir = path.join(process.cwd(), 'test-results', 'tmp-auth-state');
     await fs.mkdir(tmpDir, { recursive: true });
@@ -68,7 +68,6 @@ test.describe('Auth helper coverage - storage operations', () => {
         return `state-${createCalls}`;
       },
       tryReadState: async (path: string) => {
-        void path;
         readCalls += 1;
         // First read: state missing, second read after create: return cookies
         if (readCalls >= 2) {
@@ -100,7 +99,7 @@ test.describe('Auth helper coverage - storage operations', () => {
 
   test('createStorageStateWith honors token bootstrap and falls back to form login', async () => {
     const storageRoot = path.join(process.cwd(), 'test-results', 'auth-storage');
-    const expectedStorageFile = `api-${config.testEnv}-solicitor.storage.json`;
+    const expectedStorageStateSuffix = `api-${config.testEnv}-solicitor.storage.json`;
     let formCalls = 0;
     const onForm = async () => {
       formCalls += 1;
@@ -113,7 +112,7 @@ test.describe('Auth helper coverage - storage operations', () => {
       tryTokenBootstrap: async () => true,
       createStorageStateViaForm: onForm,
     });
-    expect(tokenSuccess).toContain(expectedStorageFile);
+    expect(tokenSuccess).toContain(expectedStorageStateSuffix);
     expect(formCalls).toBe(0);
 
     const tokenFallback = await authTest.createStorageStateWith('solicitor', {
@@ -124,7 +123,7 @@ test.describe('Auth helper coverage - storage operations', () => {
       tryTokenBootstrap: async () => false,
       createStorageStateViaForm: onForm,
     });
-    expect(tokenFallback).toContain(expectedStorageFile);
+    expect(tokenFallback).toContain(expectedStorageStateSuffix);
     expect(formCalls).toBe(1);
   });
 });

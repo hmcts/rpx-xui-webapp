@@ -188,4 +188,22 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(filters.grepInvert).toBeInstanceOf(RegExp);
     expect(filters.grepInvert?.test('@e2e-search-case')).toBe(true);
   });
+
+  test('shared tag filter helper treats suite plus feature includes as feature-only selection', () => {
+    const filters = resolveTagFilters({
+      env: {
+        E2E_PW_INCLUDE_TAGS: '@e2e @e2e-search-case',
+      },
+      includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
+      excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
+      configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
+      defaultConfigPath: 'playwright_tests_new/E2E/tag-filter.json',
+      suiteTag: '@e2e',
+    });
+
+    expect(filters.includeTags).toEqual(['@e2e-search-case']);
+    expect(filters.grep).toBeInstanceOf(RegExp);
+    expect(filters.grep?.test('@e2e-search-case')).toBe(true);
+    expect(filters.grep?.test('@e2e-manage-tasks')).toBe(false);
+  });
 });

@@ -94,6 +94,13 @@ export function buildTagRegex(tags: string[]): RegExp | undefined {
   return new RegExp(`(${tags.map(escapeRegex).join('|')})`);
 }
 
+function normalizeIncludedTags(includeTags: string[], suiteTag?: string): string[] {
+  if (!suiteTag || !includeTags.includes(suiteTag) || includeTags.length === 1) {
+    return includeTags;
+  }
+  return includeTags.filter((tag) => tag !== suiteTag);
+}
+
 function resolveTagFilterConfigPath(env: EnvMap, configPathEnvVar: string, defaultConfigPath: string): string {
   const configuredPath = env[configPathEnvVar]?.trim();
   const candidatePath = configuredPath && configuredPath.length > 0 ? configuredPath : defaultConfigPath;
@@ -188,7 +195,7 @@ function validateNonEmptyTaggedSelection({
 
   const featureTags = availableTags.filter((tag) => tag !== suiteTag);
   const requestedFeatureTags =
-    includeTags.length === 0 || includeTags.includes(suiteTag) ? featureTags : includeTags.filter((tag) => tag !== suiteTag);
+    includeTags.length === 0 || (includeTags.length === 1 && includeTags[0] === suiteTag) ? featureTags : includeTags;
   const remainingFeatureTags = requestedFeatureTags.filter((tag) => !excludedTags.includes(tag));
 
   if (excludedTags.includes(suiteTag) || remainingFeatureTags.length === 0) {
@@ -241,10 +248,11 @@ export function resolveTagFilters({
     tagSource: excludedTagsEnvVar,
     configPath,
   });
+  const normalizedIncludeTags = normalizeIncludedTags(includeTags, suiteTag);
   if (suiteTag) {
     validateNonEmptyTaggedSelection({
       env,
-      includeTags,
+      includeTags: normalizedIncludeTags,
       excludedTags,
       availableTags,
       suiteTag,
@@ -254,10 +262,10 @@ export function resolveTagFilters({
   }
 
   return {
-    includeTags,
+    includeTags: normalizedIncludeTags,
     excludedTags,
     availableTags,
-    grep: buildTagRegex(includeTags),
+    grep: buildTagRegex(normalizedIncludeTags),
     grepInvert: buildTagRegex(excludedTags),
     excludedTagsSource: clearExcludedTagsOverride || overrideExcludedTags.length > 0 ? 'env' : 'file',
     configPath,

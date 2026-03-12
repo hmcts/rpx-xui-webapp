@@ -164,31 +164,31 @@ export class StaffAdvFilterComponent implements OnInit, OnDestroy {
         const skills = filterConfig.fields.find((item) => item.name === 'user-skills').value;
         const status = filterConfig.fields.find((item) => item.name === 'user-status').value;
 
-        if (services && services.length > 0) {
+        if (services?.length > 0) {
           advancedSearchFilters.serviceCode = services;
         }
 
-        if (locations && locations.length > 0) {
+        if (locations?.length > 0) {
           advancedSearchFilters.location = locations;
         }
 
-        if (roles && roles.length > 0) {
+        if (roles?.length > 0) {
           advancedSearchFilters.role = roles;
         }
 
-        if (skills && skills.some((s) => s !== 'All')) {
+        if (skills?.some((s) => s !== 'All')) {
           advancedSearchFilters.skill = skills;
         }
 
-        if (status && status.some((s) => s !== 'All')) {
+        if (status?.some((s) => s !== 'All')) {
           advancedSearchFilters.status = status;
         }
 
-        if (userType && userType !== 'All') {
+        if (userType !== 'All') {
           advancedSearchFilters.userType = userType;
         }
 
-        if (jobTitle && jobTitle !== 'All') {
+        if (jobTitle !== 'All') {
           advancedSearchFilters.jobTitle = jobTitle;
         }
 

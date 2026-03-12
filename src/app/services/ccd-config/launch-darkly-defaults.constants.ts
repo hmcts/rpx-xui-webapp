@@ -78,7 +78,6 @@ export class LaunchDarklyDefaultsConstants {
       "caseTypes": [
         "GrantOfRepresentation",
         "Caveat",
-        "LegacySearch",
         "StandingSearch",
         "WillLodgement"
       ],
@@ -156,7 +155,6 @@ export class LaunchDarklyDefaultsConstants {
       "caseTypes": [
         "GrantOfRepresentation",
         "Caveat",
-        "LegacySearch",
         "StandingSearch",
         "WillLodgement"
       ],
@@ -245,7 +243,6 @@ export class LaunchDarklyDefaultsConstants {
       "caseTypes": [
         "GrantOfRepresentation",
         "Caveat",
-        "LegacySearch",
         "StandingSearch",
         "WillLodgement"
       ],

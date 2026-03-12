@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 import * as hearingActualsActions from '../../store/actions/hearing-actuals.action';
@@ -16,13 +16,15 @@ export class HearingActualsComponent implements OnInit, OnDestroy {
 
   public constructor(
     private readonly store: Store<any>,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    public readonly router: Router
   ) {}
 
   public ngOnInit(): void {
+    const navState = this.router.getCurrentNavigation()?.extras?.state ?? history.state;
     this.sub = this.route.params.subscribe((params) => {
       this.store.dispatch(new hearingRequestActions.LoadHearingRequest({ hearingID: params.id, targetURL: '', caseRef: '1234' }));
-      this.store.dispatch(new hearingActualsActions.GetHearingActuals(params.id));
+      this.store.dispatch(new hearingActualsActions.GetHearingActuals({ id: params.id, caseRef: navState?.caseId }));
     });
   }
 

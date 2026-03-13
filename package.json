@@ -289,7 +289,7 @@
   "resolutions": {
     "form-data": "4.0.4",
     "flat": "~5.0.1",
-    "loader-utils": "~2.0.3",
+    "loader-utils": "~3.3.0",
     "minimist": "^1.2.8",
     "typed-rest-client": "^2.0.0",
     "braces": "^3.0.3",

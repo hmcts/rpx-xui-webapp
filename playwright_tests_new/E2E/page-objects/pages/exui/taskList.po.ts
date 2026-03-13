@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { Locator, Page, Request } from '@playwright/test';
 import { Base } from '../../base';
 
 const TASK_LIST_READY_TIMEOUT_MS = 20_000;
@@ -417,5 +417,168 @@ export class TaskListPage extends Base {
     }
 
     throw new Error(`Timed out after ${timeoutMs}ms opening Manage actions (${context}). url=${this.page.url()}`);
+  }
+
+  async clickTaskAction(
+    action: Locator,
+    context: string,
+    options: {
+      timeoutMs?: number;
+      pollMs?: number;
+    } = {}
+  ) {
+    const timeoutMs = options.timeoutMs ?? 15_000;
+    const pollMs = options.pollMs ?? 500;
+    const deadline = Date.now() + timeoutMs;
+    let attempt = 0;
+
+    while (Date.now() < deadline) {
+      await this.assertTaskListInteractive(`clicking task action (${context})`);
+      const targetAction = action.first();
+
+      const visible = await targetAction
+        .waitFor({ state: 'visible', timeout: Math.max(1_000, Math.min(2_500, deadline - Date.now())) })
+        .then(() => true)
+        .catch(() => false);
+
+      if (!visible) {
+        await this.openFirstManageActions(`${context} reopen ${attempt + 1}`, {
+          timeoutMs: Math.max(1_000, Math.min(5_000, deadline - Date.now())),
+          pollMs,
+        });
+        attempt += 1;
+        continue;
+      }
+
+      await targetAction.scrollIntoViewIfNeeded().catch(() => undefined);
+
+      const actionTimeoutMs = Math.max(1_000, Math.min(2_500, deadline - Date.now()));
+      const clickStrategies = [
+        async () => targetAction.click({ force: true, noWaitAfter: true, timeout: actionTimeoutMs }),
+        async () => targetAction.dispatchEvent('click'),
+        async () => targetAction.evaluate((actionElement: HTMLAnchorElement) => actionElement.click()),
+        async () => {
+          await targetAction.focus();
+          await this.page.keyboard.press('Enter');
+        },
+      ];
+
+      let lastTransientError: Error | null = null;
+      for (const clickStrategy of clickStrategies) {
+        try {
+          await clickStrategy();
+          return;
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error);
+          const isTransientActionRefresh =
+            /Timeout \d+ms exceeded/i.test(message) ||
+            /element was detached from the DOM/i.test(message) ||
+            /element is not visible/i.test(message) ||
+            /element is not stable/i.test(message) ||
+            /intercepts pointer events/i.test(message);
+
+          if (!isTransientActionRefresh) {
+            throw error;
+          }
+
+          lastTransientError = error instanceof Error ? error : new Error(message);
+        }
+      }
+
+      if (lastTransientError) {
+        await this.openFirstManageActions(`${context} retry ${attempt + 1}`, {
+          timeoutMs: Math.max(1_000, Math.min(5_000, deadline - Date.now())),
+          pollMs,
+        });
+        attempt += 1;
+        await this.page.waitForTimeout(Math.min(pollMs, Math.max(0, deadline - Date.now())));
+      }
+    }
+
+    throw new Error(`Timed out after ${timeoutMs}ms clicking task action (${context}). url=${this.page.url()}`);
+  }
+
+  async submitActionAndWaitForRequest(
+    requestMatcher: (request: Request) => boolean,
+    context: string,
+    options: {
+      timeoutMs?: number;
+    } = {}
+  ): Promise<Request> {
+    return this.clickButtonAndWaitForRequest(this.submitButton.first(), requestMatcher, context, options);
+  }
+
+  async clickButtonAndWaitForRequest(
+    button: Locator,
+    requestMatcher: (request: Request) => boolean,
+    context: string,
+    options: {
+      timeoutMs?: number;
+    } = {}
+  ): Promise<Request> {
+    const timeoutMs = options.timeoutMs ?? 15_000;
+    const deadline = Date.now() + timeoutMs;
+    const targetButton = button.first();
+
+    await targetButton.waitFor({ state: 'visible', timeout: Math.max(1_000, Math.min(5_000, timeoutMs)) });
+    await targetButton.scrollIntoViewIfNeeded({ timeout: Math.max(250, Math.min(1_500, timeoutMs)) }).catch(() => undefined);
+
+    for (let attempt = 0; attempt < 5 && Date.now() < deadline; attempt += 1) {
+      const remainingMs = Math.max(1_000, deadline - Date.now());
+      const actionTimeoutMs = Math.max(250, Math.min(1_500, remainingMs));
+      const requestPromise = this.page.waitForRequest(requestMatcher, {
+        timeout: Math.min(5_000, remainingMs),
+      });
+      const pageErrorPromise = this.page.waitForEvent('pageerror', {
+        timeout: Math.min(2_000, remainingMs),
+      });
+
+      try {
+        if (attempt === 0) {
+          await targetButton.click({ noWaitAfter: true, timeout: actionTimeoutMs });
+        } else if (attempt === 1) {
+          await targetButton.click({ noWaitAfter: true, force: true, timeout: actionTimeoutMs });
+        } else if (attempt === 2) {
+          await targetButton.dispatchEvent('click');
+        } else if (attempt === 3) {
+          await targetButton.evaluate((buttonElement: HTMLButtonElement) => buttonElement.click());
+        } else {
+          await targetButton.focus();
+          await this.page.keyboard.press('Enter');
+        }
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        const isTransientSubmitError =
+          /element is not visible/i.test(message) ||
+          /element is not stable/i.test(message) ||
+          /element was detached from the DOM/i.test(message) ||
+          /intercepts pointer events/i.test(message);
+        if (!isTransientSubmitError || attempt === 4) {
+          throw error;
+        }
+      }
+
+      const pageError = await pageErrorPromise.catch(() => null);
+      if (pageError) {
+        throw new Error(`Page error while ${context}: ${pageError.message}`);
+      }
+
+      const observedRequest = await requestPromise.catch(() => null);
+      if (observedRequest) {
+        return observedRequest;
+      }
+    }
+
+    const submitDiagnostics = await targetButton
+      .evaluate((buttonElement: HTMLButtonElement) => ({
+        disabled: buttonElement.disabled,
+        text: buttonElement.textContent?.trim() || '',
+        ariaDisabled: buttonElement.getAttribute('aria-disabled'),
+      }))
+      .catch(() => ({ disabled: 'unknown', text: 'unknown', ariaDisabled: 'unknown' }));
+
+    throw new Error(
+      `No submit request was observed while ${context}. url=${this.page.url()} submit=${JSON.stringify(submitDiagnostics)}`
+    );
   }
 }

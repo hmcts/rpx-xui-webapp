@@ -58,8 +58,9 @@ test.describe(
         await expect(taskListPage.taskListTable).toBeVisible();
         await taskListPage.exuiSpinnerComponent.wait();
 
-        await taskListPage.manageCaseButtons.first().click();
-        await taskListPage.taskActionCancel.click();
+        await taskListPage.openFirstManageActions('my tasks cancel 500 response');
+        await expect(taskListPage.taskActionCancel).toBeVisible();
+        await taskListPage.clickTaskAction(taskListPage.taskActionCancel, 'my tasks cancel 500 response');
         await expect(page).toHaveURL(new RegExp(`/work/${firstTask.id}/cancel`));
 
         const cancelFailureResponsePromise = page.waitForResponse(
@@ -69,7 +70,10 @@ test.describe(
             response.status() === 500
         );
 
-        await taskListPage.submitButton.click();
+        await taskListPage.submitActionAndWaitForRequest(
+          (request) => request.method() === 'POST' && request.url().includes(`/workallocation/task/${firstTask.id}/cancel`),
+          'submitting my tasks cancel 500 action'
+        );
         const cancelFailureResponse = await cancelFailureResponsePromise;
         expect(cancelFailureResponse.status()).toBe(500);
 
@@ -109,8 +113,9 @@ test.describe(
         await expect(taskListPage.taskListTable).toBeVisible();
         await taskListPage.exuiSpinnerComponent.wait();
 
-        await taskListPage.manageCaseButtons.first().click();
-        await taskListPage.taskActionCancel.click();
+        await taskListPage.openFirstManageActions('my tasks cancel 400 response');
+        await expect(taskListPage.taskActionCancel).toBeVisible();
+        await taskListPage.clickTaskAction(taskListPage.taskActionCancel, 'my tasks cancel 400 response');
         await expect(page).toHaveURL(new RegExp(`/work/${firstTask.id}/cancel`));
 
         const badRequestResponsePromise = page.waitForResponse(
@@ -120,7 +125,10 @@ test.describe(
             response.status() === 400
         );
 
-        await taskListPage.submitButton.click();
+        await taskListPage.submitActionAndWaitForRequest(
+          (request) => request.method() === 'POST' && request.url().includes(`/workallocation/task/${firstTask.id}/cancel`),
+          'submitting my tasks cancel 400 action'
+        );
         const badRequestResponse = await badRequestResponsePromise;
         expect(badRequestResponse.status()).toBe(400);
 

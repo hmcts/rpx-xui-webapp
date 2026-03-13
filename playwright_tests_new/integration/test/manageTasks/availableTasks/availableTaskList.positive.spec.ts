@@ -180,7 +180,7 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
       await taskListPage.openFirstManageActions('available tasks claim action');
       await expect(taskListPage.taskActionsRow).toBeVisible();
       await expect(taskListPage.taskActionClaim).toBeVisible();
-      await taskListPage.taskActionClaim.click();
+      await taskListPage.clickTaskAction(taskListPage.taskActionClaim, 'available tasks claim action');
       await expect(taskListPage.taskActionClaim).not.toBeVisible();
       await expect(taskListPage.exuiBodyComponent.infoMessage).toBeVisible();
       await expect(taskListPage.exuiBodyComponent.successMessage).toContainText(

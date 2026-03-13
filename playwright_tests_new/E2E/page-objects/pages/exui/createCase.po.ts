@@ -879,8 +879,15 @@ export class CreateCasePage extends Base {
   }
 
   async selectDivorceReasons(reasons: string[]) {
+    const divorceReasonField = this.page.locator('#DivorceReason');
+    if (!(await divorceReasonField.isVisible().catch(() => false))) {
+      return;
+    }
+
     for (const reason of reasons) {
-      await this.divorceReasons.filter({ hasText: reason }).first().click();
+      const divorceReasonCheckbox = divorceReasonField.getByLabel(reason, { exact: true }).first();
+      await divorceReasonCheckbox.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
+      await divorceReasonCheckbox.check({ force: true });
     }
   }
 
@@ -942,7 +949,12 @@ export class CreateCasePage extends Base {
       await fillPerson('person2', peopleData[1]);
     }
 
+    const personalDetailsUrl = this.page.url();
     await this.clickContinueAndWait('after PoC personal details');
+    await this.ensureWizardAdvanced('after PoC personal details', personalDetailsUrl, {
+      expectedLocator: this.textField0Input,
+      timeoutMs: EXUI_TIMEOUTS.POC_FIELD_VISIBLE,
+    });
     if (options.textFields?.textField1 !== undefined) {
       await this.textField1Input.fill(options.textFields.textField1);
     }
@@ -960,7 +972,12 @@ export class CreateCasePage extends Base {
       await this.selectDivorceReasons(options.divorceReasons);
     }
 
+    const hiddenFieldDetailsUrl = this.page.url();
     await this.clickContinueAndWait('after hidden field details');
+    await this.ensureWizardAdvanced('after hidden field details', hiddenFieldDetailsUrl, {
+      expectedLocator: this.checkYourAnswersHeading,
+      timeoutMs: EXUI_TIMEOUTS.POC_FIELD_VISIBLE,
+    });
   }
 
   async createDivorceCasePoC(

@@ -38,6 +38,14 @@ test.describe(
             assigneeId: firstTask.assignee,
           });
 
+          await page.route('**/api/role-access/roles/getJudicialUsers*', async (route) => {
+            await route.fulfill({
+              status: 200,
+              contentType: 'application/json',
+              body: JSON.stringify([]),
+            });
+          });
+
           await page.route(new RegExp(String.raw`/workallocation/task/${firstTask.id}(\?.*)?$`), async (route) => {
             if (route.request().method() !== 'GET') {
               await route.continue();
@@ -52,7 +60,7 @@ test.describe(
           await expect(taskListPage.taskListTable).toBeVisible();
           await taskListPage.exuiSpinnerComponent.wait();
 
-          await taskListPage.manageCaseButtons.first().click();
+          await taskListPage.openFirstManageActions(`my tasks reassign ${statusCode} response`);
           await expect(taskListPage.taskActionReassign).toBeVisible();
 
           const reassignFailureResponsePromise = page.waitForResponse(
@@ -63,7 +71,7 @@ test.describe(
               response.status() === statusCode
           );
 
-          await taskListPage.taskActionReassign.click();
+          await taskListPage.clickTaskAction(taskListPage.taskActionReassign, `my tasks reassign ${statusCode} response`);
           const reassignFailureResponse = await reassignFailureResponsePromise;
           expect(reassignFailureResponse.status()).toBe(statusCode);
 

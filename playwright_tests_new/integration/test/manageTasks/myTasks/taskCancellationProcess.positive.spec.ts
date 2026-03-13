@@ -62,9 +62,12 @@ test.describe(
           await taskListPage.waitForManageButton(`cancel request payload validation for ${matrixItem.scenario}`);
           await expect(taskListPage.taskListTable).toContainText(matrixItem.caseName);
 
-          await taskListPage.manageCaseButtons.first().click();
+          await taskListPage.openFirstManageActions(`cancel request payload validation for ${matrixItem.scenario}`);
           await expect(taskListPage.taskActionCancel.first()).toBeVisible();
-          await taskListPage.taskActionCancel.first().click();
+          await taskListPage.clickTaskAction(
+            taskListPage.taskActionCancel.first(),
+            `cancel request payload validation for ${matrixItem.scenario}`
+          );
         });
 
         await test.step('Confirm cancellation and verify request payload', async () => {
@@ -154,9 +157,12 @@ test.describe(
           await taskListPage.waitForManageButton(`my tasks manual cancellation for ${matrixItem.scenario}`);
           await expect(taskListPage.taskListTable).toContainText(matrixItem.caseName);
 
-          await taskListPage.manageCaseButtons.first().click();
+          await taskListPage.openFirstManageActions(`my tasks manual cancellation for ${matrixItem.scenario}`);
           await expect(taskListPage.taskActionCancel.first()).toBeVisible();
-          await taskListPage.taskActionCancel.first().click();
+          await taskListPage.clickTaskAction(
+            taskListPage.taskActionCancel.first(),
+            `my tasks manual cancellation for ${matrixItem.scenario}`
+          );
         });
 
         await test.step('Confirm cancellation and verify user-visible outcome', async () => {
@@ -231,7 +237,7 @@ test.describe(
         await expect(taskListPage.taskListTable).toBeVisible();
         await taskListPage.exuiSpinnerComponent.wait();
         await taskListPage.waitForManageButton('non-cancellable task action menu');
-        await taskListPage.manageCaseButtons.first().click();
+        await taskListPage.openFirstManageActions('non-cancellable task action menu');
         await expect(taskListPage.taskActionsRow).toBeVisible();
         await expect(taskListPage.taskActionCancel).toHaveCount(0);
       });
@@ -258,8 +264,8 @@ test.describe(
         await taskListPage.goto();
         await expect(taskListPage.taskListTable).toBeVisible();
         await taskListPage.waitForManageButton('stale task cancellation');
-        await taskListPage.manageCaseButtons.first().click();
-        await taskListPage.taskActionCancel.first().click();
+        await taskListPage.openFirstManageActions('stale task cancellation');
+        await taskListPage.clickTaskAction(taskListPage.taskActionCancel.first(), 'stale task cancellation');
       });
 
       await test.step('Confirm stale cancellation shows warning', async () => {
@@ -290,8 +296,8 @@ test.describe(
         await taskListPage.goto();
         await expect(taskListPage.taskListTable).toBeVisible();
         await taskListPage.waitForManageButton('cancellation api failure warning');
-        await taskListPage.manageCaseButtons.first().click();
-        await taskListPage.taskActionCancel.first().click();
+        await taskListPage.openFirstManageActions('cancellation api failure warning');
+        await taskListPage.clickTaskAction(taskListPage.taskActionCancel.first(), 'cancellation api failure warning');
       });
 
       await test.step('Confirm API failure shows warning', async () => {

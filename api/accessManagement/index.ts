@@ -16,7 +16,7 @@ import { JUILogger } from '../lib/models';
 const logger: JUILogger = log4jui.getLogger('global-search');
 
 export async function getBookings(req, resp: Response, next: NextFunction) {
-  if (req.body.bookableServices && req.body.bookableServices.length === 0) {
+  if (req.body.bookableServices?.length === 0) {
     return resp.status(200).send([]);
   }
   const basePath = getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH);
@@ -74,18 +74,18 @@ export async function approveSpecificAccessRequest(req, res: Response, next: Nex
     // create the specific access approval role
     const firstRoleResponse: AxiosResponse = await createSpecificAccessApprovalRole(req, res, next);
     // 201
-    if (!firstRoleResponse || firstRoleResponse.status !== 201) {
-      return firstRoleResponse && firstRoleResponse.status ? res.status(firstRoleResponse.status) : res.status(400);
+    if (firstRoleResponse?.status !== 201) {
+      return firstRoleResponse?.status ? res.status(firstRoleResponse.status) : res.status(400);
     }
     const deletionResponse = await deleteRoleByAssignmentId(req, res, next, req.body.specificAccessStateData.requestId);
     const rolesToDelete: RoleAssignment[] = firstRoleResponse.data.roleAssignmentResponse.requestedRoles;
-    if (!deletionResponse || deletionResponse.status !== 204) {
+    if (deletionResponse?.status !== 204) {
       // delete the roles created previously
       return deleteSpecificAccessRoles(req, res, next, deletionResponse, rolesToDelete);
     }
     // 204
     const taskResponse: AxiosResponse = await postTaskCompletionForAccess(req, res, next);
-    if (!taskResponse || taskResponse.status !== 204) {
+    if (taskResponse?.status !== 204) {
       // restore specific access requested role and delete two created roles
       return restoreDeletedRole(req, res, next, taskResponse, rolesToDelete);
     }
@@ -111,17 +111,17 @@ export async function deleteSpecificAccessRoles(
 ): Promise<Response> {
   try {
     const specificAccessDeletionResponse = await deleteRoleByAssignmentId(req, res, next, rolesToDelete[1].id);
-    if (!specificAccessDeletionResponse || specificAccessDeletionResponse.status !== 204) {
+    if (specificAccessDeletionResponse?.status !== 204) {
       // TODO: retry x 3
-      return previousResponse && previousResponse.status ? res.status(previousResponse.status) : res.status(400);
+      return previousResponse?.status ? res.status(previousResponse.status) : res.status(400);
     }
     // Note - the functionality is present but this does not currently work due to AM team restrictions - gives 422 error
     const grantedDeletionResponse = await deleteRoleByAssignmentId(req, res, next, rolesToDelete[0].id);
-    if (!grantedDeletionResponse || grantedDeletionResponse.status !== 204) {
+    if (grantedDeletionResponse?.status !== 204) {
       // TODO: retry x 3
-      return previousResponse && previousResponse.status ? res.status(previousResponse.status) : res.status(400);
+      return previousResponse?.status ? res.status(previousResponse.status) : res.status(400);
     }
-    return previousResponse && previousResponse.status ? res.status(previousResponse.status) : res.status(400);
+    return previousResponse?.status ? res.status(previousResponse.status) : res.status(400);
   } catch (error) {
     next(error);
     return res.status(error.status).send(error);
@@ -138,9 +138,9 @@ export async function restoreDeletedRole(
 ): Promise<Response> {
   try {
     const restoreResponse = await restoreSpecificAccessRequestRole(req, res, next);
-    if (!restoreResponse || restoreResponse.status !== 201) {
+    if (restoreResponse?.status !== 201) {
       // TODO: retry x 3
-      return previousResponse && previousResponse.status ? res.status(previousResponse.status) : res.status(400);
+      return previousResponse?.status ? res.status(previousResponse.status) : res.status(400);
     }
     return deleteSpecificAccessRoles(req, res, next, previousResponse, rolesToDelete);
   } catch (error) {

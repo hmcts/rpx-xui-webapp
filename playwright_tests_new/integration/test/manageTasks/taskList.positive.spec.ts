@@ -16,11 +16,9 @@ test.beforeEach(async ({ page }) => {
   taskListMockResponse = buildTaskListMock(160, userId?.toString() || '', myActionsList);
 });
 
-test.describe(`Task List as ${userIdentifier}`, () => {
+test.describe(`Task List as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   test(`User ${userIdentifier} can view assigned tasks on the task list page`, async ({ taskListPage, page, tableUtils }) => {
-    await test.step('Setup route mock for task list', async () => {
-      await setupTaskListMockRoutes(page, taskListMockResponse);
-    });
+    await setupTaskListMockRoutes(page, taskListMockResponse);
 
     await test.step('Navigate to the my tasks list page', async () => {
       await taskListPage.goto();

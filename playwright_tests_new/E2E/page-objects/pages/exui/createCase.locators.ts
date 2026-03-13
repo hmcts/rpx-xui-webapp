@@ -66,18 +66,29 @@ export function buildCreateCaseLocators(page: Page) {
     complexType4FirstTickBox: page.locator('#ComplexType_4_selectedCategories-item_1'),
     complexType4SelectList: page.locator('#ComplexType_4_FixedListField'),
 
+    genderRadioButtons: page.locator('#Gender .multiple-choice'),
     person1Title: page.locator('#Person1_Title'),
+    person1TitleInput: page.locator('#Person1_Title'),
     person1FirstNameInput: page.locator('#Person1_FirstName'),
+    person1MaidenNameInput: page.locator('#Person1_MaidenName'),
     person1LastNameInput: page.locator('#Person1_LastName'),
     person1GenderSelect: page.locator('#Person1_PersonGender'),
     person1JobTitleInput: page.locator('#Person1_PersonJob_Title'),
     person1JobDescriptionInput: page.locator('#Person1_PersonJob_Description'),
+    person2: page.locator('#Person2_Person2'),
+    person2TitleInput: page.locator('#Person2_Title'),
     person2FirstNameInput: page.locator(
       '[data-testid="Person2_FirstName"] input, [data-testid="Person2_FirstName"], #Person2_FirstName, [name="Person2_FirstName"]'
     ),
+    person2MaidenNameInput: page.locator('#Person2_MaidenName'),
     person2LastNameInput: page.locator(
       '[data-testid="Person2_LastName"] input, [data-testid="Person2_LastName"], #Person2_LastName, [name="Person2_LastName"]'
     ),
+    person2GenderSelect: page.locator('#Person2_PersonGender'),
+    person2JobTitleInput: page.locator('#Person2_PersonJob_Title'),
+    person2JobDescriptionInput: page.locator('#Person2_PersonJob_Description'),
+    additionalPeople: page.locator('#People'),
+    addNewPersonButton: page.locator('#People').locator('button.write-collection-add-item__top'),
     doYouAgreeGroup,
     doYouAgreeYesRadio: doYouAgreeGroup.getByRole('radio', { name: /^Yes$/i }).first(),
     doYouAgreeNoRadio: doYouAgreeGroup.getByRole('radio', { name: /^No$/i }).first(),
@@ -88,7 +99,13 @@ export function buildCreateCaseLocators(page: Page) {
     textField1Input: page.locator('#TextField1'),
     textField2Input: page.locator('#TextField2'),
     textField3Input: page.locator('#TextField3'),
+    divorceReasons: page.locator('#DivorceReason .multiple-choice'),
+    checkYourAnswers: page.locator('form.check-your-answers'),
     checkYourAnswersHeading: page.locator('.check-your-answers h2'),
+    checkYourAnswersTable: page.locator('form.check-your-answers').locator('table'),
+    checkYourAnswersSubTable: page.locator('form.check-your-answers').locator('table').locator('table.complex-panel-table table'),
+    checkYourAnswersFieldLabels: page.locator('form.check-your-answers').locator('.check-your-answers__field-label'),
+    checkYourAnswersChangeLinks: page.locator('form.check-your-answers').getByRole('link', { name: 'Change' }),
     testSubmitButton: page.locator('.check-your-answers [type="submit"]'),
 
     receiptDayInput: page.locator('#receiptDate-day'),
@@ -126,8 +143,11 @@ export function buildCreateCaseLocators(page: Page) {
     refreshModalConfirmButton: refreshModal.getByRole('button', { name: 'Ok' }),
     errorMessage: page.locator('.form-group-error .error-message, .govuk-error-message'),
     errorSummary: page.locator('.error-summary, .govuk-error-summary'),
+    errorSummaryTitle: page.locator('.error-summary, .govuk-error-summary').locator('h2, h3'),
+    errorSummaryItems: page.locator('.error-summary, .govuk-error-summary').locator('.govuk-error-summary__list li, p'),
     eventCreationErrorHeading: page.getByRole('heading', { name: 'The event could not be created' }),
     somethingWentWrongHeading: page.getByRole('heading', { name: /something went wrong/i }),
+    validationErrorMessage: page.locator('.validation-error'),
   };
 }
 

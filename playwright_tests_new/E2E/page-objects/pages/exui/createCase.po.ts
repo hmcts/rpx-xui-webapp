@@ -1,10 +1,38 @@
 import { Page, Locator, expect } from '@playwright/test';
+import { faker } from '@faker-js/faker';
 import { createLogger } from '@hmcts/playwright-common';
 import { Base } from '../../base';
 import { EXUI_TIMEOUTS } from './exui-timeouts';
+import { isTransientWorkflowFailure } from '../../../utils/transient-failure.utils';
 import { extractCaseNumberFromUrl } from './caseDetails.po';
 import { clickSubmitAndWaitFlow, startCreateCaseFlow } from './createCase.flow.js';
 import { buildCreateCaseLocators } from './createCase.locators.js';
+
+export type PersonData = {
+  title?: string;
+  firstName?: string;
+  lastName?: string;
+  maidenName?: string;
+  gender?: string;
+  jobTitle?: string;
+  jobDescription?: string;
+};
+
+export type DivorcePoCData = PersonData & {
+  gender?: string;
+  textField0?: string;
+  textField1?: string;
+  textField2?: string;
+  textField3?: string;
+  divorceReasons?: string[];
+  // timestamp useful for tests to assert against
+  generatedAt?: string;
+};
+
+type CreateDivorceCaseOptions = {
+  maxAttempts?: number;
+  createCaseMaxAttempts?: number;
+};
 
 const logger = createLogger({
   serviceName: 'create-case',
@@ -78,13 +106,24 @@ export class CreateCasePage extends Base {
   readonly complexType4SelectList!: Locator;
 
   readonly person1Title!: Locator;
+  readonly genderRadioButtons!: Locator;
+  readonly person1TitleInput!: Locator;
   readonly person1FirstNameInput!: Locator;
+  readonly person1MaidenNameInput!: Locator;
   readonly person1LastNameInput!: Locator;
   readonly person1GenderSelect!: Locator;
   readonly person1JobTitleInput!: Locator;
   readonly person1JobDescriptionInput!: Locator;
+  readonly person2!: Locator;
+  readonly person2TitleInput!: Locator;
   readonly person2FirstNameInput!: Locator;
+  readonly person2MaidenNameInput!: Locator;
   readonly person2LastNameInput!: Locator;
+  readonly person2GenderSelect!: Locator;
+  readonly person2JobTitleInput!: Locator;
+  readonly person2JobDescriptionInput!: Locator;
+  readonly additionalPeople!: Locator;
+  readonly addNewPersonButton!: Locator;
   readonly doYouAgreeGroup!: Locator;
   readonly doYouAgreeYesRadio!: Locator;
   readonly doYouAgreeNoRadio!: Locator;
@@ -95,7 +134,13 @@ export class CreateCasePage extends Base {
   readonly textField1Input!: Locator;
   readonly textField2Input!: Locator;
   readonly textField3Input!: Locator;
+  readonly divorceReasons!: Locator;
+  readonly checkYourAnswers!: Locator;
   readonly checkYourAnswersHeading!: Locator;
+  readonly checkYourAnswersTable!: Locator;
+  readonly checkYourAnswersSubTable!: Locator;
+  readonly checkYourAnswersFieldLabels!: Locator;
+  readonly checkYourAnswersChangeLinks!: Locator;
   readonly testSubmitButton!: Locator;
 
   readonly receiptDayInput!: Locator;
@@ -133,15 +178,23 @@ export class CreateCasePage extends Base {
   readonly refreshModalConfirmButton!: Locator;
   readonly errorMessage!: Locator;
   readonly errorSummary!: Locator;
+  readonly errorSummaryTitle!: Locator;
+  readonly errorSummaryItems!: Locator;
   readonly eventCreationErrorHeading!: Locator;
   readonly somethingWentWrongHeading!: Locator;
+  readonly validationErrorMessage!: Locator;
 
   constructor(page: Page) {
     super(page);
     Object.assign(this, buildCreateCaseLocators(page));
   }
 
-  // CCD select boxes can become visible before their options are hydrated.
+  public async findTableInCheckAnswers(name: string) {
+    return this.checkYourAnswers.locator(`.complex-panel:has(.complex-panel-title:has-text("${name}")) table`);
+  }
+  public async findSubTableInCheckAnswers(name: string) {
+    return this.checkYourAnswers.locator(`.complex-panel:has(.complex-panel-title:has-text("${name}")) table table`);
+  }
   private async waitForSelectReady(selector: string, timeoutMs?: number) {
     const effectiveTimeoutMs = timeoutMs ?? EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_DEFAULT;
     await this.page.waitForFunction(
@@ -290,7 +343,6 @@ export class CreateCasePage extends Base {
     return fallbackVisibleButton;
   }
 
-  // Continue clicks need to guard against transient overlays and CCD validation failures.
   private async clickContinueAndWait(
     context: string,
     options: { force?: boolean; timeoutMs?: number; continueButton?: Locator } = {}
@@ -416,7 +468,6 @@ export class CreateCasePage extends Base {
     }
   }
 
-  // CCD can complete the spinner before the next step is actually rendered.
   async ensureWizardAdvanced(
     context: string,
     initialUrl: string,
@@ -653,5 +704,359 @@ export class CreateCasePage extends Base {
       break;
     }
     await this.fileUploadStatusLabel.waitFor({ state: 'hidden' });
+  }
+  async createCaseEmployment(jurisdiction: string, caseType: string) {
+    const maxAttempts = 2;
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        await this.createCase(jurisdiction, caseType, 'Create Case');
+        await this.assertNoEventCreationError('after starting employment case');
+        await this.receiptDayInput.waitFor({ state: 'visible' });
+        const today = new Date();
+        await this.receiptDayInput.fill(today.getDate().toString());
+        await this.receiptMonthInput.fill((today.getMonth() + 1).toString());
+        await this.receiptYearInput.fill(today.getFullYear().toString());
+        await this.tribunalOfficeSelect.selectOption('Leeds');
+
+        const receiptUrl = this.page.url();
+        await this.clickContinueAndWait('after receipt details');
+        await this.ensureWizardAdvanced('after receipt details', receiptUrl, {
+          expectedPathIncludes: 'initiateCase2',
+          expectedLocator: this.claimantIndividualRadio,
+        });
+        await this.claimantIndividualRadio.check();
+        await this.claimantIndividualFirstNameInput.fill('Test ');
+        await this.claimantIndividualLastNameInput.fill('Person');
+        await this.manualEntryLink.waitFor({ state: 'visible' });
+        await this.manualEntryLink.click();
+        await this.claimantAddressLine1Input.waitFor({ state: 'visible' });
+        await this.claimantAddressLine1Input.fill('1 Test Street');
+
+        await this.clickContinueAndWait('after claimant address');
+
+        await this.addRespondentButton.waitFor({ state: 'visible' });
+        await this.addRespondentButton.click();
+        await this.respondentOneNameInput.waitFor({ state: 'visible' });
+        await this.respondentOneNameInput.fill('Respondent One');
+        await this.respondentOrganisation.waitFor({ state: 'visible' });
+        await this.respondentOrganisation.check();
+        await this.respondentAcasCertifcateSelectYes.waitFor({ state: 'visible' });
+        await this.respondentAcasCertifcateSelectYes.check();
+        await this.respondentAcasCertificateNumberInput.fill('ACAS123456');
+        await this.respondentCompanyNameInput.fill('Respondent Company');
+        await this.manualEntryLink.waitFor({ state: 'visible' });
+        await this.manualEntryLink.click();
+        await this.respondentAddressLine1Input.waitFor({ state: 'visible' });
+        await this.respondentAddressLine1Input.fill('1 Respondent Street');
+        await this.respondentAddressPostcodeInput.waitFor({ state: 'visible' });
+        await this.respondentAddressPostcodeInput.fill('SW1A 1AA');
+
+        await this.clickContinueAndWait('after respondent details');
+        await this.sameAsClaimantWorkAddressYes.waitFor({ state: 'visible' });
+        await this.sameAsClaimantWorkAddressYes.click();
+
+        await this.clickContinueAndWait('after work address confirmation');
+
+        await this.clickContinueAndWait('after claim details');
+
+        await this.claimantRepresentedNo.waitFor({ state: 'visible' });
+        await this.claimantRepresentedNo.click();
+
+        await this.clickContinueAndWait('after claimant representation');
+
+        await this.hearingPreferenceVideo.waitFor({ state: 'visible' });
+        await this.hearingPreferenceVideo.click();
+
+        await this.clickSubmitButtonWithRetry('after hearing preference selection');
+        await this.waitForSpinnerToComplete('after submitting employment case');
+        await this.waitForCaseDetails('after submitting employment case');
+        return;
+      } catch (error) {
+        const eventErrorVisible = await this.eventCreationErrorHeading.isVisible().catch(() => false);
+        if (eventErrorVisible && attempt < maxAttempts) {
+          logger.warn('Employment case creation failed; retrying', { attempt, maxAttempts });
+          await this.page.goto('/cases/case-filter');
+          continue;
+        }
+        throw error;
+      }
+    }
+  }
+
+  async createDivorceCase(jurisdiction: string, caseType: string, testInput: string, options: CreateDivorceCaseOptions = {}) {
+    switch (caseType) {
+      case 'xuiCaseFlagsV1':
+        return this.createDivorceCaseFlag(testInput, jurisdiction, caseType);
+      case 'XUI Case PoC':
+        return this.createDivorceCasePoC(jurisdiction, caseType, testInput, options);
+      case 'xuiTestCaseType':
+        return this.createDivorceCaseTest(testInput, jurisdiction, caseType);
+      default:
+        throw new Error(`createDivorceCase does not support case type: ${caseType}`);
+    }
+  }
+
+  async createDivorceCaseTest(testData: string, jurisdiction: string = 'DIVORCE', caseType: string = 'xuiTestCaseType') {
+    const maxAttempts = 2;
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        const today = new Date();
+        await this.createCase(jurisdiction, caseType, '');
+        await this.assertNoEventCreationError('after starting divorce test case');
+
+        await this.textFieldInput.fill(testData);
+        await this.clickContinueAndWait('after text field');
+
+        await this.emailFieldInput.fill(faker.internet.email({ provider: 'example.com' }));
+        await this.phoneNumberFieldInput.fill('07123456789');
+        await this.dateFieldDayInput.fill(today.getDate().toString());
+        await this.dateFieldMonthInput.fill((today.getMonth() + 1).toString());
+        await this.dateFieldYearInput.fill((today.getFullYear() - 20).toString());
+        await this.dateTimeFieldDayInput.fill(today.getDate().toString());
+        await this.dateTimeFieldMonthInput.fill((today.getMonth() + 1).toString());
+        await this.dateTimeFieldYearInput.fill(today.getFullYear().toString());
+        await this.dateTimeFieldHourInput.fill('10');
+        await this.dateTimeFieldMinuteInput.fill('30');
+        await this.dateTimeFieldSecondInput.fill('15');
+        await this.currencyFieldInput.fill('1000');
+        await this.clickContinueAndWait('after contact details');
+
+        await this.yesNoRadioButtons.getByLabel('Yes').check();
+        await this.applicantPostcode.fill('SW1A 1AA');
+        await this.complexType1JudgeIsRightRadios.getByLabel('No').check();
+        await this.complexType1LevelOfJudgeRadioButtons.getByLabel('Item 1').check();
+        await this.complexType1LevelOfJudgeDetailsInput.fill('Details about why this level of judge is needed.');
+        await this.complexType1LevelOfJudgeKeyInput.fill('Key information');
+        await this.manualEntryLink.click();
+        await this.complexType2AddressLine1Input.fill('10 Test Street');
+        await this.complexType2EmailInput.fill(faker.internet.email({ provider: 'example.com' }));
+        await this.uploadFile('sample.pdf', 'application/pdf', '%PDF-1.4\n%test\n%%EOF', this.complexType3FileUploadInput);
+        await this.complexType3ComplianceButton.click();
+        await this.complexType3ComplianceInput.fill('Compliant response');
+        await this.complexType3DateOfBirthDay.fill('15');
+        await this.complexType3DateOfBirthMonth.fill('06');
+        await this.complexType3DateOfBirthYear.fill('1990');
+        await this.complexType3DateOfHearingDay.fill(today.getDate().toString());
+        await this.complexType3DateOfHearingMonth.fill((today.getMonth() + 1).toString());
+        await this.complexType3DateOfHearingYear.fill(today.getFullYear().toString());
+        await this.complexType3DateOfHearingHour.fill('14');
+        await this.complexType3DateOfHearingMinute.fill('45');
+        await this.complexType3DateOfHearingSecond.fill('30');
+        await this.complexType4AmountInput.fill('500');
+        await this.complexType4FirstTickBox.check();
+        await this.complexType4SelectList.selectOption('Item 1');
+        await this.clickContinueAndWait('after complex type fields');
+
+        await this.assertNoEventCreationError('before submitting divorce test case');
+        await this.clickSubmitAndWait('before submitting divorce test case', { timeoutMs: 60_000 });
+        await this.waitForCaseDetails('after submitting divorce test case');
+        return;
+      } catch (error) {
+        const eventErrorVisible = await this.eventCreationErrorHeading.isVisible().catch(() => false);
+        const shouldRetry = (eventErrorVisible || isTransientWorkflowFailure(error)) && attempt < maxAttempts;
+        if (shouldRetry) {
+          logger.warn('Divorce test case creation failed; retrying', { attempt, maxAttempts });
+          if (!this.page.isClosed()) {
+            await this.page.goto('/cases/case-filter');
+          }
+          continue;
+        }
+        throw error;
+      }
+    }
+  }
+
+  async createDivorceCaseFlag(testData: string, jurisdiction: string = 'DIVORCE', caseType: string = 'xuiCaseFlagsV1') {
+    await this.createCase(jurisdiction, caseType, '');
+    await this.party1RoleOnCase.fill(testData);
+    await this.party1Name.fill(testData);
+    await this.party2RoleOnCase.fill(`${testData}2`);
+    await this.party2Name.fill(`${testData}2`);
+    await this.clickContinueAndWait('after submitting divorce case flags (continue)');
+    await this.testSubmitButton.click();
+    await this.waitForSpinnerToComplete('after submitting divorce case flags (submit)');
+    await this.waitForCaseDetails('after submitting divorce case flags');
+  }
+
+  async selectDivorceReasons(reasons: string[]) {
+    for (const reason of reasons) {
+      await this.divorceReasons.filter({ hasText: reason }).first().click();
+    }
+  }
+
+  async fillDivorcePocSections(
+    options: {
+      data?: Partial<DivorcePoCData> | Array<Partial<DivorcePoCData>>;
+      textFields?: Pick<DivorcePoCData, 'textField0' | 'textField1' | 'textField2' | 'textField3'>;
+      gender?: string;
+      divorceReasons?: string[];
+    } = {}
+  ): Promise<void> {
+    const fillPerson = async (person: 'person1' | 'person2', data?: Partial<DivorcePoCData>) => {
+      if (!data) {
+        return;
+      }
+
+      const titleInput = person === 'person1' ? this.person1TitleInput : this.person2TitleInput;
+      const firstNameInput = person === 'person1' ? this.person1FirstNameInput : this.person2FirstNameInput;
+      const lastNameInput = person === 'person1' ? this.person1LastNameInput : this.person2LastNameInput;
+      const genderSelect = person === 'person1' ? this.person1GenderSelect : this.person2GenderSelect;
+      const maidenNameInput = person === 'person1' ? this.person1MaidenNameInput : this.person2MaidenNameInput;
+      const jobTitleInput = person === 'person1' ? this.person1JobTitleInput : this.person2JobTitleInput;
+      const jobDescriptionInput = person === 'person1' ? this.person1JobDescriptionInput : this.person2JobDescriptionInput;
+
+      const fieldsToFill: Array<[Locator, string | undefined]> = [
+        [titleInput, data.title],
+        [firstNameInput, data.firstName],
+        [lastNameInput, data.lastName],
+        [jobTitleInput, data.jobTitle],
+        [jobDescriptionInput, data.jobDescription],
+      ];
+      for (const [locator, value] of fieldsToFill) {
+        if (value) {
+          await locator.fill(value);
+        }
+      }
+
+      if (data.gender) {
+        await genderSelect.selectOption(data.gender);
+      }
+
+      if (data.gender?.toLowerCase() === 'female') {
+        await maidenNameInput.fill(data.maidenName ?? '');
+      }
+    };
+
+    let peopleData: Array<Partial<DivorcePoCData>> = [];
+    if (Array.isArray(options.data)) {
+      peopleData = options.data;
+    } else if (options.data) {
+      peopleData = [options.data];
+    }
+    await this.genderRadioButtons
+      .getByLabel(options.gender ?? 'Male', { exact: true })
+      .first()
+      .click();
+    await fillPerson('person1', peopleData[0]);
+    if (peopleData[1]) {
+      await fillPerson('person2', peopleData[1]);
+    }
+
+    await this.clickContinueAndWait('after PoC personal details');
+    if (options.textFields?.textField1 !== undefined) {
+      await this.textField1Input.fill(options.textFields.textField1);
+    }
+    if (options.textFields?.textField2 !== undefined) {
+      await this.textField2Input.fill(options.textFields.textField2);
+    }
+    if (options.textFields?.textField3 !== undefined) {
+      await this.textField3Input.fill(options.textFields.textField3);
+    }
+    if (options.textFields?.textField0 !== undefined) {
+      await this.textField0Input.fill(options.textFields.textField0);
+    }
+
+    if (options.divorceReasons?.length) {
+      await this.selectDivorceReasons(options.divorceReasons);
+    }
+
+    await this.clickContinueAndWait('after hidden field details');
+  }
+
+  async createDivorceCasePoC(
+    // NOSONAR typescript:S3776 — Cognitive Complexity acceptable per agents.md §6.2.10: multi-attempt Divorce PoC creation with retry and data-variant handling
+    jurisdiction: string,
+    caseType: string,
+    dataOrTextField0?: DivorcePoCData | string,
+    options: CreateDivorceCaseOptions = {}
+  ) {
+    const data = typeof dataOrTextField0 === 'string' ? ({ textField0: dataOrTextField0 } as DivorcePoCData) : dataOrTextField0;
+    const maxAttempts = options.maxAttempts ?? 2;
+    const preferredGenders = data?.gender ? [data.gender] : ['Male', 'Female', 'Not given'];
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      try {
+        await this.createCase(jurisdiction, caseType, '', {
+          maxAttempts: options.createCaseMaxAttempts,
+        });
+        const availableGender = await this.person1GenderSelect.evaluate((select) => {
+          const options = Array.from((select as HTMLSelectElement).options).map((option) => option.label.trim());
+          return options;
+        });
+        const gender = preferredGenders.find((candidate) => availableGender.includes(candidate)) ?? 'Male';
+        const genderRadio = this.page.getByLabel(gender, { exact: true });
+        if (await genderRadio.isVisible().catch(() => false)) {
+          await genderRadio.check();
+        }
+        await this.person1TitleInput.click();
+        await this.person1TitleInput.fill(data?.title ?? faker.person.prefix());
+        await this.person1FirstNameInput.fill(data?.firstName ?? faker.person.firstName());
+        await this.person1LastNameInput.fill(data?.lastName ?? faker.person.lastName());
+        await this.person1GenderSelect.selectOption(data?.gender ?? gender);
+        await this.person1JobTitleInput.fill(data?.jobTitle ?? faker.person.jobTitle());
+        await this.person1JobDescriptionInput.fill(data?.jobDescription ?? faker.lorem.sentence());
+        const personalDetailsUrl = this.page.url();
+        await this.clickContinueAndWait('after PoC personal details');
+        await this.ensureWizardAdvanced('after PoC personal details', personalDetailsUrl, {
+          expectedLocator: this.textField0Input,
+          timeoutMs: EXUI_TIMEOUTS.POC_FIELD_VISIBLE,
+        });
+        await this.textField0Input.fill(data?.textField0 ?? faker.lorem.word());
+        await this.textField3Input.fill(data?.textField3 ?? faker.lorem.word());
+        await this.textField1Input.fill(data?.textField1 ?? faker.lorem.word());
+        await this.textField2Input.fill(data?.textField2 ?? faker.lorem.word());
+        await this.clickContinueAndWait('after PoC text fields');
+        await this.checkYourAnswersHeading.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
+
+        await this.testSubmitButton.click();
+        await this.waitForSpinnerToComplete('after submitting divorce PoC case');
+        await this.waitForCaseDetails('after submitting divorce PoC case');
+
+        return;
+      } catch (error) {
+        const message = this.normalizeUnknownError(error);
+        const isTransientCreationFailure =
+          isTransientWorkflowFailure(error) ||
+          message.includes('Validation error after after PoC text fields') ||
+          message.includes('The event could not be created') ||
+          (await this.eventCreationErrorHeading.isVisible().catch(() => false));
+        if (isTransientCreationFailure && attempt < maxAttempts) {
+          logger.warn('Divorce PoC case creation failed; retrying', { attempt, maxAttempts });
+          if (!this.page.isClosed()) {
+            await this.page.goto('/cases/case-filter');
+          }
+          continue;
+        }
+        throw error;
+      }
+    }
+  }
+
+  async generateDivorcePoCPersonData(overrides: Partial<PersonData> = {}): Promise<PersonData> {
+    return {
+      title: overrides.title ?? faker.person.prefix(),
+      firstName: overrides.firstName ?? `${faker.person.firstName()} ${faker.person.middleName()}`,
+      maidenName: overrides.maidenName ?? faker.person.lastName(),
+      lastName: overrides.lastName ?? faker.person.lastName(),
+      gender: overrides.gender ?? 'Male',
+      jobTitle: overrides.jobTitle ?? faker.person.jobTitle(),
+      jobDescription: overrides.jobDescription ?? faker.lorem.sentence(),
+    };
+  }
+
+  async generateDivorcePoCData(overrides: Partial<DivorcePoCData> = {}): Promise<DivorcePoCData> {
+    const gender = overrides.gender ?? faker.helpers.arrayElement(['Male', 'Female', 'Not given']);
+    const reasonsForDivorce = overrides.divorceReasons ?? [
+      faker.helpers.arrayElement(['Behaviour', 'Adultery', 'Desertion', '2-year separation (with consent)', '5-year separation']),
+    ];
+    const generatedAt = overrides.generatedAt ?? new Date().toISOString();
+    return {
+      gender,
+      textField0: overrides.textField0 ?? faker.lorem.sentence() + faker.date.soon().getTime(),
+      textField1: overrides.textField1 ?? faker.lorem.sentence() + faker.date.soon().getTime(),
+      textField2: overrides.textField2 ?? faker.lorem.sentence() + faker.date.soon().getTime(),
+      textField3: overrides.textField3 ?? faker.lorem.sentence() + faker.date.soon().getTime(),
+      divorceReasons: overrides.divorceReasons ?? reasonsForDivorce,
+      generatedAt,
+    };
   }
 }

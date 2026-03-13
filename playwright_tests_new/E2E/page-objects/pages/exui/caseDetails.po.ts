@@ -78,7 +78,7 @@ export class CaseDetailsPage extends Base {
   readonly caseTab1Table = this.page.locator('table.tab1');
   readonly caseDocumentsTable = this.page.locator('table.complex-panel-table');
   readonly someMoreDataTable = this.page.locator('table.SomeMoreData');
-  readonly divorceDataTable = this.page.locator('table.Data');
+  readonly divorceDataTable = this.page.locator('table.Data.ng-star-inserted');
   readonly divorceDataSubTable = this.divorceDataTable.locator('table.complex-panel-table table');
 
   // Task List tab
@@ -214,6 +214,8 @@ export class CaseDetailsPage extends Base {
     }
 
     const fn = (rows: Element[]) => {
+      const trailingSortIndicatorRegex = /[▲▼⇧⇩⯅⯆]\s*$/g;
+
       function findFirstText(node: Node | null): string {
         if (!node) {
           return '';
@@ -257,28 +259,26 @@ export class CaseDetailsPage extends Base {
       });
 
       for (const row of dataRows) {
-        const cells = Array.from(row.querySelectorAll('th, td'));
+        const cells = Array.from(row.querySelectorAll('th, td')).filter(
+          (cell) => !(cell.tagName === 'TD' && cell.classList.contains('case-field-change'))
+        );
         if (cells.length < 2) {
           continue;
         }
 
         // Clone the key cell and strip nested tables so nested content is ignored
-        const keyCellClone = (cells[0] as Element).cloneNode(true) as Element;
+        const keyCellClone = cells[0].cloneNode(true) as Element;
         keyCellClone.querySelectorAll('table').forEach((t) => t.remove());
-        const rawKey = findFirstText(keyCellClone)
-          .replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '')
-          .trim();
+        const rawKey = findFirstText(keyCellClone).replace(trailingSortIndicatorRegex, '').trim();
         if (!rawKey) {
           continue;
         }
         const valueParts = cells
           .slice(1)
           .map((c) => {
-            const clone = (c as Element).cloneNode(true) as Element;
+            const clone = c.cloneNode(true) as Element;
             clone.querySelectorAll('table').forEach((t) => t.remove());
-            return findFirstText(clone)
-              .replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '')
-              .trim();
+            return findFirstText(clone).replace(trailingSortIndicatorRegex, '').trim();
           })
           .filter(Boolean);
         const value = valueParts.join(' ').replaceAll(/\s+/g, ' ').trim();
@@ -305,6 +305,7 @@ export class CaseDetailsPage extends Base {
     }
 
     const fn = (rows: Element[]) => {
+      const trailingSortIndicatorRegex = /[▲▼⇧⇩⯅⯆]\s*$/g;
       const arr: Record<string, string>[] = [];
       if (!rows || rows.length === 0) {
         return arr;
@@ -312,12 +313,14 @@ export class CaseDetailsPage extends Base {
 
       // header is first tr
       const headerRow = rows[0];
-      const sanitize = (s: string) => (s || '').replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim();
-      const headers = Array.from(headerRow.querySelectorAll('th, td')).map((h) => {
-        const clone = (h as Element).cloneNode(true) as Element;
-        clone.querySelectorAll('table').forEach((t) => t.remove());
-        return sanitize(clone.textContent || '');
-      });
+      const sanitize = (s: string) => (s || '').replace(trailingSortIndicatorRegex, '').trim();
+      const headers = Array.from(headerRow.querySelectorAll('th, td'))
+        .filter((cell) => !(cell.tagName === 'TD' && cell.classList.contains('case-field-change')))
+        .map((h) => {
+          const clone = h.cloneNode(true) as Element;
+          clone.querySelectorAll('table').forEach((t) => t.remove());
+          return sanitize(clone.textContent || '');
+        });
 
       // data rows are after header; filter hidden rows
       const dataRows = Array.from(rows)
@@ -340,14 +343,16 @@ export class CaseDetailsPage extends Base {
         });
 
       for (const row of dataRows) {
-        const cells = Array.from(row.querySelectorAll('th, td'));
+        const cells = Array.from(row.querySelectorAll('th, td')).filter(
+          (cell) => !(cell.tagName === 'TD' && cell.classList.contains('case-field-change'))
+        );
         if (cells.length === 0) {
           continue;
         }
         const obj: Record<string, string> = {};
         for (let i = 0; i < cells.length; i++) {
           const key = headers[i] || `column_${i + 1}`;
-          const cellClone = (cells[i] as Element).cloneNode(true) as Element;
+          const cellClone = cells[i].cloneNode(true) as Element;
           cellClone.querySelectorAll('table').forEach((t) => t.remove());
           const cellText = cellClone.textContent || '';
           const value = sanitize(cellText).replace(/\s+/g, ' ');

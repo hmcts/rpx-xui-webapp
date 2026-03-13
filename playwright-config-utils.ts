@@ -73,6 +73,31 @@ export function resolveConfiguredWorkerCount(env: EnvMap = process.env): number 
   return parsed;
 }
 
+function resolveWorkerTargetEnvironment(env: EnvMap = process.env): string | undefined {
+  const configuredTarget = env.TEST_TYPE?.trim().toLowerCase();
+  if (configuredTarget) {
+    return configuredTarget;
+  }
+
+  const configuredUrl = env.TEST_URL?.trim();
+  if (!configuredUrl) {
+    return undefined;
+  }
+
+  try {
+    const hostname = new URL(configuredUrl).hostname.toLowerCase();
+    if (hostname.includes('.aat.')) {
+      return 'aat';
+    }
+    if (hostname.includes('.demo.')) {
+      return 'demo';
+    }
+    return hostname;
+  } catch {
+    return undefined;
+  }
+}
+
 /**
  * Resolves Playwright worker count from FUNCTIONAL_TESTS_WORKERS or runtime defaults.
  * CI defaults to 8 workers unless explicitly overridden. Local runs use an
@@ -84,6 +109,10 @@ export function resolveWorkerCount(env: EnvMap = process.env): number {
     return configured;
   }
   if (env.CI) {
+    const targetEnv = resolveWorkerTargetEnvironment(env);
+    if (targetEnv === 'aat' || targetEnv === 'demo') {
+      return 2;
+    }
     return 8;
   }
 
@@ -102,6 +131,10 @@ export function resolveApiProjectWorkerCount(env: EnvMap = process.env): number 
     return configured;
   }
   if (env.CI) {
+    const targetEnv = resolveWorkerTargetEnvironment(env);
+    if (targetEnv === 'aat' || targetEnv === 'demo') {
+      return 2;
+    }
     return 4;
   }
   return Math.max(1, Math.min(8, cpus()?.length ?? 4));

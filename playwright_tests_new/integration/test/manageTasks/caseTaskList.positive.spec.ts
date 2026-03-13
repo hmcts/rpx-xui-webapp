@@ -44,7 +44,8 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
-  test(`Low priority tasks assigned to logged in user show elements and markdown as expected`, async ({
+  // Skipping until Master build staging issue is resolved - EXUI-4323
+  test.skip(`Low priority tasks assigned to logged in user show elements and markdown as expected`, async ({
     caseDetailsPage,
     page,
   }) => {
@@ -109,8 +110,8 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
         .toContain('Next steps Please review the evidence before proceeding.');
     });
   });
-
-  test(`Priority labels render as in order for each task depending on major priority rate and date`, async ({
+  // Skipping until Master build staging issue is resolved - EXUI-4323
+  test.skip(`Priority labels render as in order for each task depending on major priority rate and date`, async ({
     caseDetailsPage,
     page,
   }) => {

@@ -7,7 +7,7 @@ import type { ProfessionalUserUtils } from '../professional-user.utils';
 import type { SessionIdentity } from '../../../common/sessionIdentity.js';
 import config from '../config.utils';
 import { ensureSessionCookies, sessionCapture } from '../../../common/sessionCapture';
-import { DynamicProvisioningError, provisionUserWithRetries } from './dynamicProvisioningFlow.js';
+import { DynamicProvisionTimeoutError, DynamicProvisioningError, provisionUserWithRetries } from './dynamicProvisioningFlow.js';
 import type { DynamicProvisionAttempt } from './dynamicProvisioningFlow.js';
 import {
   getAliasBaselineRoles,
@@ -300,7 +300,7 @@ async function withTimeout<T>(operation: Promise<T>, timeoutMs: number, message:
     return await Promise.race([
       operation,
       new Promise<T>((_, reject) => {
-        timer = setTimeout(() => reject(new Error(message)), timeoutMs);
+        timer = setTimeout(() => reject(new DynamicProvisionTimeoutError(message)), timeoutMs);
       }),
     ]);
   } finally {
@@ -317,6 +317,9 @@ function describeUnknownError(error: unknown): string {
 }
 
 function shouldRetryDynamicProvision(error: unknown): boolean {
+  if (error instanceof DynamicProvisionTimeoutError) {
+    return false;
+  }
   const message = describeUnknownError(error);
   return DYNAMIC_PROVISION_RETRY_PATTERNS.some((pattern) => pattern.test(message));
 }
@@ -886,4 +889,5 @@ export const __test__ = {
     resolvedRoleNames?: readonly string[];
     user: ProvisionedProfessionalUser;
   }) => assertDynamicUserRoleContract(args),
+  shouldRetryDynamicProvision: (error: unknown) => shouldRetryDynamicProvision(error),
 };

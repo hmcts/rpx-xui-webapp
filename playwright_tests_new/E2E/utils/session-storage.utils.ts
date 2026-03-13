@@ -5,7 +5,7 @@ import { IdamPage } from '@hmcts/playwright-common';
 import { chromium, request, type BrowserContext, type Page } from '@playwright/test';
 
 import config from './config.utils.js';
-import { resolveUiStoragePathForUser } from './storage-state.utils.js';
+import { readUiStorageMetadata, resolveUiStoragePathForUser, writeUiStorageMetadata } from './storage-state.utils.js';
 import { UserUtils } from './user.utils.js';
 
 type EnsureStorageOptions = {
@@ -58,6 +58,7 @@ const shouldRefreshStorageState = async (
   options?: {
     ignoreTtl?: boolean;
     validateAuthenticatedState?: (storagePath: string, baseUrl: string) => Promise<boolean>;
+    expectedIdentity?: { userIdentifier: string; email: string };
   }
 ): Promise<boolean> => {
   if (!fs.existsSync(storagePath)) {
@@ -75,6 +76,18 @@ const shouldRefreshStorageState = async (
     }
   } catch {
     return true;
+  }
+
+  const expectedIdentity = options?.expectedIdentity;
+  if (expectedIdentity) {
+    const metadata = readUiStorageMetadata(storagePath);
+    if (
+      !metadata ||
+      metadata.userIdentifier !== expectedIdentity.userIdentifier.trim() ||
+      metadata.email !== expectedIdentity.email.trim().toLowerCase()
+    ) {
+      return true;
+    }
   }
 
   if (options?.ignoreTtl) {
@@ -169,22 +182,25 @@ const closeContextSafely = async (context: BrowserContext): Promise<void> => {
 };
 
 export async function ensureUiStorageStateForUser(userIdentifier: string, options?: EnsureStorageOptions): Promise<string> {
-  const storagePath = resolveUiStoragePathForUser(userIdentifier);
+  const userUtils = new UserUtils();
+  const credentials = userUtils.getUserCredentials(userIdentifier);
+  const storagePath = resolveUiStoragePathForUser(userIdentifier, { email: credentials.email });
   const baseUrl =
     options?.baseUrl ?? config.urls.baseURL ?? config.urls.exuiDefaultUrl ?? 'https://manage-case.aat.platform.hmcts.net';
   const strict = options?.strict ?? false;
 
   const shouldRefresh = await shouldRefreshStorageState(storagePath, baseUrl, {
     ignoreTtl: strict,
+    expectedIdentity: {
+      userIdentifier,
+      email: credentials.email,
+    },
   });
   if (!shouldRefresh) {
     return storagePath;
   }
 
   fs.mkdirSync(path.dirname(storagePath), { recursive: true });
-
-  const userUtils = new UserUtils();
-  const credentials = userUtils.getUserCredentials(userIdentifier);
 
   const browser = await chromium.launch();
   const context = await browser.newContext({ ignoreHTTPSErrors: true });
@@ -212,6 +228,10 @@ export async function ensureUiStorageStateForUser(userIdentifier: string, option
     }
 
     await context.storageState({ path: storagePath });
+    writeUiStorageMetadata(storagePath, {
+      userIdentifier,
+      email: credentials.email,
+    });
   } finally {
     await closeContextSafely(context);
     await browser.close();

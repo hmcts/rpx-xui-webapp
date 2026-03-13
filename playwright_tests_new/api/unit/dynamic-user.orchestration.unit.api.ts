@@ -17,7 +17,12 @@ import {
 } from '../../E2E/utils/professional-user/tokenHydration.js';
 import { waitForUserPropagationFlow } from '../../E2E/utils/professional-user/propagationProbe.js';
 import { ProfessionalUserUtils } from '../../E2E/utils/professional-user.utils.js';
-import { DynamicProvisioningError, provisionUserWithRetries } from '../../E2E/utils/test-setup/dynamicProvisioningFlow.js';
+import {
+  DynamicProvisionTimeoutError,
+  DynamicProvisioningError,
+  provisionUserWithRetries,
+} from '../../E2E/utils/test-setup/dynamicProvisioningFlow.js';
+import { __test__ as dynamicSessionTest } from '../../E2E/utils/test-setup/dynamicSolicitorSession.js';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -281,6 +286,56 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
         durationMs: 20,
         outcome: 'failed',
         error: 'HTTP 503',
+      },
+    ]);
+  });
+
+  test('provisionUserWithRetries does not retry wrapper timeouts because the original attempt may still complete in the background', async () => {
+    const timestamps = [100, 130];
+    let createAttempts = 0;
+
+    const error = await provisionUserWithRetries(
+      {
+        alias: 'SOLICITOR',
+        organisationId: 'org-123',
+        roleContext: {
+          jurisdiction: 'employment',
+        },
+        roleNames: ['caseworker'],
+        mode: 'auto',
+        timeoutMs: 30_000,
+        maxAttempts: 2,
+        retryDelayMs: 5,
+      },
+      {
+        createSolicitorUserForOrganisation: async () => {
+          createAttempts += 1;
+          return await new Promise<never>(() => undefined);
+        },
+        withTimeout: async (_action, _timeoutMs, message) => {
+          throw new DynamicProvisionTimeoutError(message);
+        },
+        shouldRetry: (failure) => dynamicSessionTest.shouldRetryDynamicProvision(failure),
+        describeError: (failure) => (failure instanceof Error ? failure.message : String(failure)),
+        sleep: async () => undefined,
+        now: () => {
+          const next = timestamps.shift();
+          return typeof next === 'number' ? next : 130;
+        },
+        info: () => undefined,
+        warn: () => undefined,
+        outputCreatedUserData: false,
+      }
+    ).catch((failure) => failure);
+
+    expect(createAttempts).toBe(1);
+    expect(error).toBeInstanceOf(DynamicProvisioningError);
+    expect((error as DynamicProvisioningError).attempts).toEqual([
+      {
+        attempt: 1,
+        durationMs: 30,
+        outcome: 'failed',
+        error: "Dynamic user provisioning timed out after 30000ms for alias 'SOLICITOR' on attempt 1/2.",
       },
     ]);
   });

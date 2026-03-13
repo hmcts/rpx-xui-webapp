@@ -12,12 +12,39 @@ import { type SessionIdentityInput, resolveSessionIdentity, resolveSessionStorag
 
 const logger = createLogger({ serviceName: 'session-capture', format: 'pretty' });
 
-const IDAM_USERNAME_SELECTOR =
-  '[data-testid="idam-username-input"], input#username, input[name="username"], input[type="email"], input#email, input[name="email"], input[name="emailAddress"], input[autocomplete="email"]';
-const IDAM_PASSWORD_SELECTOR = 'input#password, input[name="password"], input[type="password"]'; // NOSONAR - CSS selector, not a hardcoded password
-const IDAM_SUBMIT_SELECTOR = '[name="save"], button[type="submit"], button:has-text("Sign in"), button:has-text("Continue")';
+const IDAM_USERNAME_FALLBACK_SELECTOR =
+  'input#email, input[name="email"], input[name="emailAddress"], input[autocomplete="email"]';
+const IDAM_SUBMIT_FALLBACK_SELECTOR = 'button:has-text("Sign in"), button:has-text("Continue")';
 const CHROME_ERROR_URL_PREFIX = 'chrome-error://chromewebdata/';
 const DEFAULT_SESSION_MAX_AGE_MS = 60 * 60 * 1000;
+
+function getIdamUsernameCandidates(page: Page, idamPage: IdamPage): Locator[] {
+  return [idamPage.usernameInput.first(), page.locator(IDAM_USERNAME_FALLBACK_SELECTOR).first()];
+}
+
+function getIdamSubmitCandidates(page: Page, idamPage: IdamPage): Locator[] {
+  return [idamPage.submitBtn.first(), page.locator(IDAM_SUBMIT_FALLBACK_SELECTOR).first()];
+}
+
+async function waitForFirstVisibleLocator(page: Page, candidates: Locator[], timeoutMs: number): Promise<Locator | null> {
+  const deadline = Date.now() + timeoutMs;
+
+  while (Date.now() < deadline) {
+    for (const candidate of candidates) {
+      if (await candidate.isVisible().catch(() => false)) {
+        return candidate;
+      }
+    }
+
+    const remainingMs = deadline - Date.now();
+    if (remainingMs <= 0) {
+      break;
+    }
+    await page.waitForTimeout(Math.min(250, remainingMs));
+  }
+
+  return null;
+}
 
 function currentPageUrl(page: Page): string {
   try {
@@ -742,11 +769,9 @@ async function executeLoginAttempt(
     return;
   }
 
-  const usernameInput = page.locator(IDAM_USERNAME_SELECTOR).first();
-  const passwordInput = page.locator(IDAM_PASSWORD_SELECTOR).first(); // NOSONAR
-  const submitButton = page.locator(IDAM_SUBMIT_SELECTOR).first();
+  const usernameCandidates = getIdamUsernameCandidates(page, idamPage);
   const loginSurface = await Promise.race([
-    usernameInput.waitFor({ state: 'visible', timeout: 60000 }).then(() => 'login'),
+    waitForFirstVisibleLocator(page, usernameCandidates, 60000).then((locator) => (locator ? 'login' : null)),
     page
       .locator('exui-header, exui-case-home')
       .first()
@@ -757,12 +782,16 @@ async function executeLoginAttempt(
   if (loginSurface === 'app') return;
 
   if (loginSurface !== 'login') {
-    await idamPage.usernameInput.waitFor({ state: 'visible', timeout: 10000 });
+    await idamPage.usernameInput.first().waitFor({ state: 'visible', timeout: 10000 });
     await idamPage.login({ username: email, password });
     await confirmAuthenticatedLogin(page, userIdentifier, email, loginTarget, attemptIndex);
     return;
   }
 
+  const usernameInput = (await waitForFirstVisibleLocator(page, usernameCandidates, 1000)) ?? idamPage.usernameInput.first();
+  const passwordInput = idamPage.passwordInput.first(); // NOSONAR
+  const submitButton =
+    (await waitForFirstVisibleLocator(page, getIdamSubmitCandidates(page, idamPage), 1000)) ?? idamPage.submitBtn.first();
   await usernameInput.fill(email);
   await passwordInput.fill(password); // NOSONAR
   if (await submitButton.isVisible().catch(() => false)) {

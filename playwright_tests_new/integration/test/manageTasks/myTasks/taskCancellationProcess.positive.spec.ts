@@ -1,14 +1,14 @@
-import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies } from '../../../common/sessionCapture';
-import { buildMyTaskListMock } from '../../mocks/taskList.mock';
-import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
-import { logTaskCancellationAssertion } from '../../utils/taskCancellationAssertionLogger';
+import { expect, test } from '../../../../E2E/fixtures';
+import { applySessionCookies } from '../../../../common/sessionCapture';
+import { buildMyTaskListMock } from '../../../mocks/taskList.mock';
+import { extractUserIdFromCookies } from '../../../utils/extractUserIdFromCookies';
+import { logTaskCancellationAssertion } from '../../../utils/taskCancellationAssertionLogger';
 import {
   routeCaseDetailsTaskCancellationFlow,
   routeMyTaskCancellationFlow,
   type CancellationScenario,
   type CaseDetailsTemplate,
-} from '../../utils/taskCancellationRoutes';
+} from '../../../utils/taskCancellationRoutes';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 

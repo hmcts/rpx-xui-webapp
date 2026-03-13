@@ -25,7 +25,7 @@ test.describe('Verify users can switch the language', { tag: ['@integration', '@
       await caseListPage.exuiHeader.switchLanguage('Cymraeg');
       await caseListPage.exuiSpinnerComponent.wait();
       await page.waitForLoadState('domcontentloaded');
-      await caseListPage.exuiHeader.headerAppLink.waitFor({ state: 'attached' });
+      await caseListPage.exuiHeader.appHeaderLink.waitFor({ state: 'attached' });
       await page.waitForResponse((r) => r.url().includes('/cy') && r.status() === 500, { timeout: 5_000 });
     });
 
@@ -34,7 +34,7 @@ test.describe('Verify users can switch the language', { tag: ['@integration', '@
       await expect.soft(caseListPage.exuiHeader.notificationBanner).toBeVisible();
       await expect.soft(caseListPage.exuiHeader.notificationBannerTitle).toContainText('Pwysig');
       await expect
-        .soft(caseListPage.exuiHeader.headerAppLink)
+        .soft(caseListPage.exuiHeader.appHeaderLink)
         .not.toContainText(welshTranslationsSmall.translations['Manage Cases'].translation);
       await expect
         .soft(caseListPage.exuiHeader.signOutLink)

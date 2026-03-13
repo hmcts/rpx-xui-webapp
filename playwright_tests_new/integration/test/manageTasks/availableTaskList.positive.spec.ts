@@ -189,7 +189,8 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
     });
 
     await test.step('Verify you can assign test', async () => {
-      await taskListPage.manageCaseButtons.first().click();
+      await taskListPage.openFirstManageActions('available tasks claim action');
+      await expect(taskListPage.taskActionsRow).toBeVisible();
       await expect(taskListPage.taskActionClaim).toBeVisible();
       await taskListPage.taskActionClaim.click();
       await expect(taskListPage.taskActionClaim).not.toBeVisible();

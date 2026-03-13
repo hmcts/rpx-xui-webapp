@@ -42,13 +42,13 @@ export class TaskListPage extends Base {
   readonly serviceDownError = this.exuiBodyComponent.serviceDownError;
   readonly taskActionsRow = this.taskListTable.locator('tr.actions-row[aria-hidden="false"]');
 
-  readonly taskActionCancel = this.taskListTable.locator('#action_cancel');
-  readonly taskActionGoTo = this.taskListTable.locator('#action_go');
-  readonly taskActionMarkAsDone = this.taskListTable.locator('#action_complete');
-  readonly taskActionReassign = this.taskListTable.locator('#action_reassign');
-  readonly taskActionUnassign = this.taskListTable.locator('#action_unclaim');
-  readonly taskActionClaim = this.taskListTable.locator('#action_claim');
-  readonly taskActionClaimAndGo = this.taskListTable.locator('#action_claim-and-go');
+  readonly taskActionCancel = this.taskActionsRow.locator('#action_cancel');
+  readonly taskActionGoTo = this.taskActionsRow.locator('#action_go');
+  readonly taskActionMarkAsDone = this.taskActionsRow.locator('#action_complete');
+  readonly taskActionReassign = this.taskActionsRow.locator('#action_reassign');
+  readonly taskActionUnassign = this.taskActionsRow.locator('#action_unclaim');
+  readonly taskActionClaim = this.taskActionsRow.locator('#action_claim');
+  readonly taskActionClaimAndGo = this.taskActionsRow.locator('#action_claim-and-go');
   readonly confirmCancelTaskButton = this.page.getByRole('button', { name: 'Cancel task' });
   readonly caseDetailsTaskActionCancel = this.page
     .locator('#action_cancel')
@@ -365,5 +365,44 @@ export class TaskListPage extends Base {
     throw new Error(
       `Timed out after ${timeoutMs}ms waiting for Manage button (${context}). Last /workallocation/task call: ${latestTaskCallSummary}`
     );
+  }
+
+  async openFirstManageActions(
+    context: string,
+    options: {
+      timeoutMs?: number;
+      pollMs?: number;
+    } = {}
+  ) {
+    const timeoutMs = options.timeoutMs ?? 15_000;
+    const pollMs = options.pollMs ?? 500;
+    const deadline = Date.now() + timeoutMs;
+    let attempt = 0;
+
+    while (Date.now() < deadline) {
+      await this.waitForManageButton(`${context} attempt ${attempt + 1}`, {
+        timeoutMs: Math.max(1_000, Math.min(5_000, deadline - Date.now())),
+        pollMs,
+      });
+
+      const manageButton = this.manageCaseButtons.first();
+      await manageButton.scrollIntoViewIfNeeded().catch(() => undefined);
+      await manageButton.click({ force: attempt > 0 });
+
+      const expanded = await this.taskActionsRow
+        .waitFor({ state: 'visible', timeout: Math.max(1_000, Math.min(2_500, deadline - Date.now())) })
+        .then(() => true)
+        .catch(() => false);
+
+      if (expanded) {
+        return;
+      }
+
+      await this.assertTaskListInteractive(`opening Manage actions (${context})`);
+      attempt += 1;
+      await this.page.waitForTimeout(Math.min(pollMs, Math.max(0, deadline - Date.now())));
+    }
+
+    throw new Error(`Timed out after ${timeoutMs}ms opening Manage actions (${context}). url=${this.page.url()}`);
   }
 }

@@ -13,7 +13,6 @@ import { HearingViewSummaryPage } from './exui/hearingViewSummary.po';
 
 export interface PageFixtures {
   determinePage: Page;
-  timeouts: typeof EXUI_TIMEOUTS;
   caseDetailsPage: CaseDetailsPage;
   caseListPage: CaseListPage;
   taskListPage: TaskListPage;
@@ -36,7 +35,6 @@ export interface PageFixtures {
  * This is the same behaviour as a beforeEach/afterEach hook
  */
 export const pageFixtures = {
-  timeouts: EXUI_TIMEOUTS,
   // If a performance test is executed, use the lighthouse created page instead
   determinePage: async ({ page, lighthousePage }, use, testInfo) => {
     if (testInfo.tags.includes('@performance')) {

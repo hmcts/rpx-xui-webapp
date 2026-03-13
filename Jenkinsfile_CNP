@@ -223,7 +223,7 @@ withPipeline(type, product, component) {
 
     }
 
-    afterSuccess('smoketest:demo') {
+    afterFailure('smoketest:demo') {
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -236,7 +236,7 @@ withPipeline(type, product, component) {
         archivePlaywrightDiagnostics()
     }
 
-    afterSuccess('smoketest:preview') {
+    afterFailure('smoketest:preview') {
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,

@@ -3,10 +3,10 @@ import { csp } from '@hmcts/rpx-xui-node-lib';
 export const MC_CSP: Parameters<typeof csp>[0] = {
   /* ── hosts common to every MC environment ─────────────── */
   extraScript: [
+    "'unsafe-eval'",
     'https://www.googletagmanager.com',
     'https://www.google-analytics.com',
     'az416426.vo.msecnd.net',
-    "'unsafe-eval'",
   ],
 
   extraStyle: ['https://fonts.googleapis.com', 'https://fonts.gstatic.com', 'https://www.googletagmanager.com'],

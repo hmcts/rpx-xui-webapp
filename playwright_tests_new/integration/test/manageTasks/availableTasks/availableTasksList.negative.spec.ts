@@ -1,6 +1,6 @@
-import { availableActionsList, buildTaskListMock } from '../../mocks/taskList.mock';
-import { expect, test } from '../../../E2E/fixtures';
-import { applyPrewarmedSessionCookies, setupTaskListBootstrapRoutes, taskListRoutePattern } from '../../helpers';
+import { availableActionsList, buildTaskListMock } from '../../../mocks/taskList.mock';
+import { expect, test } from '../../../../E2E/fixtures';
+import { applyPrewarmedSessionCookies, setupTaskListBootstrapRoutes, taskListRoutePattern } from '../../../helpers';
 
 const errorStates = [400, 403, 500, 503];
 const userIdentifier = 'STAFF_ADMIN';
@@ -82,7 +82,7 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
   });
 
   errorStates.forEach((errorStatus) => {
-    test(`User ${userIdentifier} sees the no tasks message on available tasks, if the api returns ${errorStatus}`, async ({
+    test(`User sees the no tasks message on available tasks, if the api returns ${errorStatus}`, async ({
       taskListPage,
       page,
     }) => {
@@ -109,10 +109,7 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
     });
   });
 
-  test(`User ${userIdentifier} sees the no tasks message on available tasks, if the api times out`, async ({
-    taskListPage,
-    page,
-  }) => {
+  test(`User sees the no tasks message on available tasks, if the api times out`, async ({ taskListPage, page }) => {
     await test.step('Setup route mock for empty task list', async () => {
       await setupTaskListBootstrapRoutes(page);
       await page.route(taskListRoutePattern, async (route) => {

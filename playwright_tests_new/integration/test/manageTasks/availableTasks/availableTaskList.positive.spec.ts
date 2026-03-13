@@ -1,16 +1,12 @@
-import { expect, test } from '../../../E2E/fixtures';
-import { applyPrewarmedSessionCookies } from '../../helpers';
-import { availableActionsList, buildTaskListMock } from '../../mocks/taskList.mock';
-import { formatUiDate } from '../../utils/tableUtils';
-import { setupTaskListBootstrapRoutes, taskListRoutePattern } from '../../helpers';
+import { expect, test } from '../../../../E2E/fixtures';
+import { availableActionsList, buildTaskListMock } from '../../../mocks/taskList.mock';
+import { formatUiDate } from '../../../utils/tableUtils';
+import { applyPrewarmedSessionCookies, setupTaskListBootstrapRoutes, taskListRoutePattern } from '../../../helpers';
 
 const userIdentifier = 'STAFF_ADMIN';
-let sessionCookies: any[] = [];
 
 test.beforeEach(async ({ page }) => {
-  const { cookies } = await applyPrewarmedSessionCookies(page, userIdentifier);
-  sessionCookies = cookies;
-  // workallocation/region-location
+  await applyPrewarmedSessionCookies(page, userIdentifier);
 });
 
 test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
@@ -66,11 +62,7 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
     });
   });
 
-  test(`User ${userIdentifier} can view a small number of assigned tasks on the task list page`, async ({
-    taskListPage,
-    page,
-    tableUtils,
-  }) => {
+  test(`User can view a small number of assigned tasks on the task list page`, async ({ taskListPage, page, tableUtils }) => {
     const taskListMockResponse = buildTaskListMock(3, '', availableActionsList);
     await test.step('Setup route mock for task list', async () => {
       await setupTaskListBootstrapRoutes(page);
@@ -106,10 +98,7 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
     });
   });
 
-  test(`User ${userIdentifier} sees the no tasks message if the api returns an empty response`, async ({
-    taskListPage,
-    page,
-  }) => {
+  test(`User sees the no tasks message if the api returns an empty response`, async ({ taskListPage, page }) => {
     const emptyMockResponse = { tasks: [], total_records: 0 };
     await test.step('Setup route mock for empty task list', async () => {
       await setupTaskListBootstrapRoutes(page);
@@ -132,7 +121,7 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
     });
   });
 
-  test(`User ${userIdentifier} can see all table sorting buttons on the table`, async ({ taskListPage, page, tableUtils }) => {
+  test(`User can see all table sorting buttons on the table`, async ({ taskListPage, page, tableUtils }) => {
     const emptyMockResponse = { tasks: [], total_records: 0 };
     await test.step('Setup route mock for deterministic task list', async () => {
       await setupTaskListBootstrapRoutes(page);
@@ -157,7 +146,6 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
       await expect(taskListPage.sortByHearingDateTableHeader).toBeVisible();
     });
   });
-
   test(`User ${userIdentifier} can assign a task to themselves and see the expected notifications`, async ({
     taskListPage,
     page,

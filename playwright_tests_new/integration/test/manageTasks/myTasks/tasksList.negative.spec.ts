@@ -1,6 +1,6 @@
-import { TASK_LIST_MALFORMED_JSON_BODY } from '../../testData';
-import { expect, test } from '../../../E2E/fixtures';
-import { applyPrewarmedSessionCookies, setupTaskListBootstrapRoutes, taskListRoutePattern } from '../../helpers';
+import { expect, test } from '../../../../E2E/fixtures';
+import { TASK_LIST_MALFORMED_JSON_BODY } from '../../../testData';
+import { applyPrewarmedSessionCookies, setupTaskListBootstrapRoutes, taskListRoutePattern } from '../../../helpers';
 
 test.beforeEach(async ({ page }) => {
   await applyPrewarmedSessionCookies(page, userIdentifier);

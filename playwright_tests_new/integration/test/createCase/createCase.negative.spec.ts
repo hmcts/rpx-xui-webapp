@@ -115,7 +115,7 @@ test.describe(
           await createCasePage.testSubmitButton.click();
           await createCasePage.errorSummary.waitFor({ state: 'visible' });
           await expect(createCasePage.errorSummaryTitle).toHaveText('The event could not be created');
-          await expect(createCasePage.errorSummaryMessage).toHaveText(errorMessage);
+          await expect(createCasePage.errorSummaryItems).toHaveText(errorMessage);
         });
       });
     });
@@ -148,7 +148,7 @@ test.describe.skip(
         await test.step('After page load completes, a UI error is rendered', async () => {
           await expect(createCasePage.errorSummary).toBeVisible();
           await expect(createCasePage.errorSummaryTitle).toBeVisible();
-          await expect(createCasePage.errorSummaryMessage).toBeVisible();
+          await expect(createCasePage.errorSummaryItems).toBeVisible();
         });
       });
     });

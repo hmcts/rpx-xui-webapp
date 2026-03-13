@@ -180,9 +180,9 @@ export class CreateCasePage extends Base {
   readonly errorMessage = this.page.locator('.form-group-error .error-message, .govuk-error-message');
   readonly eventCreationErrorHeading = this.page.getByRole('heading', { name: 'The event could not be created' });
   readonly somethingWentWrongHeading = this.page.getByRole('heading', { name: /something went wrong/i });
-  readonly errorSummary = this.page.locator('div.error-summary');
-  readonly errorSummaryTitle = this.errorSummary.locator('h3');
-  readonly errorSummaryMessage = this.errorSummary.locator('p');
+  readonly errorSummary = this.page.locator('.error-summary, .govuk-error-summary');
+  readonly errorSummaryTitle = this.errorSummary.locator('h2, h3');
+  readonly errorSummaryItems = this.errorSummary.locator('.govuk-error-summary__list li, p');
   readonly validationErrorMessage = this.page.locator('.validation-error');
 
   constructor(page: Page) {

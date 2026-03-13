@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import { __test__ as diagnosticsTest } from '../../E2E/fixtures.js';
+import { TEST_AVAILABLE_TASKS_URL, TEST_SERVICE_DOWN_URL } from './testAppUrls.js';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -53,7 +54,7 @@ test.describe('Failure diagnosis unit tests', { tag: '@svc-internal' }, () => {
       dominantSlowEndpoint: null,
       topSuspect: 'No backend/API suspect identified',
       executionSignals: {
-        lastMainFrameUrl: 'https://manage-case.aat.platform.hmcts.net/work/my-work/available',
+        lastMainFrameUrl: TEST_AVAILABLE_TASKS_URL,
         mainFrameNavigationCount: 7,
         totalRequestsObserved: 65,
         backendRequestsObserved: 17,
@@ -75,7 +76,7 @@ test.describe('Failure diagnosis unit tests', { tag: '@svc-internal' }, () => {
       dominantSlowEndpoint: null,
       topSuspect: 'No backend/API suspect identified',
       executionSignals: {
-        lastMainFrameUrl: 'https://manage-case.aat.platform.hmcts.net/work/my-work/available',
+        lastMainFrameUrl: TEST_AVAILABLE_TASKS_URL,
         mainFrameNavigationCount: 7,
         totalRequestsObserved: 65,
         backendRequestsObserved: 17,
@@ -97,7 +98,7 @@ test.describe('Failure diagnosis unit tests', { tag: '@svc-internal' }, () => {
       dominantSlowEndpoint: null,
       topSuspect: 'No backend/API suspect identified',
       executionSignals: {
-        lastMainFrameUrl: 'https://manage-case.aat.platform.hmcts.net/work/my-work/available',
+        lastMainFrameUrl: TEST_AVAILABLE_TASKS_URL,
         mainFrameNavigationCount: 7,
         totalRequestsObserved: 65,
         backendRequestsObserved: 17,
@@ -148,7 +149,7 @@ test.describe('Failure diagnosis unit tests', { tag: '@svc-internal' }, () => {
       'GLOBAL_TIMEOUT_UI_STALL',
       'Test timeout of 120000ms exceeded.',
       {
-        lastMainFrameUrl: 'https://manage-case.aat.platform.hmcts.net/work/my-work/available',
+        lastMainFrameUrl: TEST_AVAILABLE_TASKS_URL,
         mainFrameNavigationCount: 7,
         totalRequestsObserved: 65,
         backendRequestsObserved: 17,
@@ -166,7 +167,7 @@ test.describe('Failure diagnosis unit tests', { tag: '@svc-internal' }, () => {
       'GLOBAL_TIMEOUT_UI_STALL',
       'Test timeout of 120000ms exceeded.\nError: locator.isChecked: Target page, context or browser has been closed',
       {
-        lastMainFrameUrl: 'https://manage-case.aat.platform.hmcts.net/work/my-work/available',
+        lastMainFrameUrl: TEST_AVAILABLE_TASKS_URL,
         mainFrameNavigationCount: 7,
         totalRequestsObserved: 65,
         backendRequestsObserved: 17,
@@ -220,7 +221,7 @@ test.describe('Failure diagnosis unit tests', { tag: '@svc-internal' }, () => {
       dominantSlowEndpoint: null,
       topSuspect: 'No backend/API suspect identified',
       executionSignals: {
-        lastMainFrameUrl: 'https://manage-case.aat.platform.hmcts.net/service-down',
+        lastMainFrameUrl: TEST_SERVICE_DOWN_URL,
         mainFrameNavigationCount: 2,
         totalRequestsObserved: 4,
         backendRequestsObserved: 0,

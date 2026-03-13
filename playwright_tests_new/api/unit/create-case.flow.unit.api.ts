@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import { clickSubmitAndWaitFlow, startCreateCaseFlow } from '../../E2E/page-objects/pages/exui/createCase.flow.js';
+import { buildTestAppUrl } from './testAppUrls.js';
 
 function createLocator(overrides: Partial<Record<'isVisible' | 'isEnabled' | 'click' | 'waitFor', () => Promise<unknown>>> = {}) {
   return {
@@ -20,7 +21,7 @@ test.describe.configure({ mode: 'serial' });
 
 test.describe('Create case flow unit tests', { tag: '@svc-internal' }, () => {
   test('clickSubmitAndWaitFlow auto-advances, submits, and stops on case details summary', async () => {
-    let currentUrl = 'https://manage-case.aat.platform.hmcts.net/cases/case-details/1/trigger/start';
+    let currentUrl = buildTestAppUrl('/cases/case-details/1/trigger/start');
     let continueVisible = true;
     let submitVisible = false;
     const actionSequence: string[] = [];
@@ -73,14 +74,14 @@ test.describe('Create case flow unit tests', { tag: '@svc-internal' }, () => {
       },
       clickSubmitButtonWithRetry: async () => {
         actionSequence.push('submit');
-        currentUrl = 'https://manage-case.aat.platform.hmcts.net/cases/case-details/1';
+        currentUrl = buildTestAppUrl('/cases/case-details/1');
         submitVisible = false;
       },
       clickContinueAndWait: async () => {
         actionSequence.push('continue');
         continueVisible = false;
         submitVisible = true;
-        currentUrl = 'https://manage-case.aat.platform.hmcts.net/cases/case-details/1/trigger/confirm';
+        currentUrl = buildTestAppUrl('/cases/case-details/1/trigger/confirm');
       },
       waitForSpinnerToComplete: async () => undefined,
       assertNoEventCreationError: async () => undefined,
@@ -91,11 +92,11 @@ test.describe('Create case flow unit tests', { tag: '@svc-internal' }, () => {
     });
 
     expect(actionSequence).toEqual(['continue', 'submit']);
-    expect(currentUrl).toBe('https://manage-case.aat.platform.hmcts.net/cases/case-details/1');
+    expect(currentUrl).toBe(buildTestAppUrl('/cases/case-details/1'));
   });
 
   test('startCreateCaseFlow retries case filter bootstrap failures and succeeds on the next attempt', async () => {
-    let currentUrl = 'https://manage-case.aat.platform.hmcts.net/cases/case-filter';
+    let currentUrl = buildTestAppUrl('/cases/case-filter');
     let attempt = 0;
     const warnMessages: string[] = [];
 
@@ -107,7 +108,7 @@ test.describe('Create case flow unit tests', { tag: '@svc-internal' }, () => {
     });
     const startButton = createLocator({
       click: async () => {
-        currentUrl = 'https://manage-case.aat.platform.hmcts.net/cases/case-create/DIVORCE/xuiTestCaseType/start';
+        currentUrl = buildTestAppUrl('/cases/case-create/DIVORCE/xuiTestCaseType/start');
       },
     });
     const somethingWentWrongHeading = createLocator();
@@ -115,7 +116,7 @@ test.describe('Create case flow unit tests', { tag: '@svc-internal' }, () => {
     const page = {
       url: () => currentUrl,
       goto: async (url: string) => {
-        currentUrl = `https://manage-case.aat.platform.hmcts.net${url}`;
+        currentUrl = buildTestAppUrl(url);
       },
       waitForURL: async () => undefined,
       waitForTimeout: async () => undefined,
@@ -140,7 +141,7 @@ test.describe('Create case flow unit tests', { tag: '@svc-internal' }, () => {
               {
                 method: 'GET',
                 status: 500,
-                url: 'https://manage-case.aat.platform.hmcts.net/aggregated/caseworkers/123/jurisdictions',
+                url: buildTestAppUrl('/aggregated/caseworkers/123/jurisdictions'),
               },
             ]
           : [],

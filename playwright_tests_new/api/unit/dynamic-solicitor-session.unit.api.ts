@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 
 import { __test__ as dynamicSessionTest } from '../../E2E/utils/test-setup/dynamicSolicitorSession.js';
 import { DynamicProvisioningError } from '../../E2E/utils/test-setup/dynamicProvisioningFlow.js';
+import { TEST_APP_BASE_URL } from './testAppUrls.js';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -47,7 +48,7 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
       {
         resolveTimeoutMs: () => 5_000,
         resolvePollIntervalMs: () => 1,
-        resolveBaseUrl: () => 'https://manage-case.aat.platform.hmcts.net',
+        resolveBaseUrl: () => TEST_APP_BASE_URL,
         ensureSessionCookies: async () => ({
           email: 'test@example.com',
           cookies: [{ name: 'session' }] as never,
@@ -130,7 +131,7 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
       {
         resolveTimeoutMs: () => 5_000,
         resolvePollIntervalMs: () => 1,
-        resolveBaseUrl: () => 'https://manage-case.aat.platform.hmcts.net',
+        resolveBaseUrl: () => TEST_APP_BASE_URL,
         ensureSessionCookies: async () => ({
           email: 'test@example.com',
           cookies: [{ name: 'session' }] as never,

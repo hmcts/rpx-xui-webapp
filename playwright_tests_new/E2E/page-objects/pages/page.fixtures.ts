@@ -7,7 +7,9 @@ import { TaskListPage } from './exui/taskList.po';
 import { SearchCasePage } from './exui/searchCase.po';
 import { GlobalSearchPage } from './exui/globalSearch.po';
 import { FindCasePage } from './exui/findCase.po';
-import { EXUI_TIMEOUTS } from './exui/exui-timeouts';
+import { HearingsTabPage } from './exui/hearingsTab.po';
+import { HearingViewEditSummaryPage } from './exui/hearingViewEditSummary.po';
+import { HearingViewSummaryPage } from './exui/hearingViewSummary.po';
 
 export interface PageFixtures {
   determinePage: Page;
@@ -19,6 +21,9 @@ export interface PageFixtures {
   searchCasePage: SearchCasePage;
   globalSearchPage: GlobalSearchPage;
   findCasePage: FindCasePage;
+  hearingsTabPage: HearingsTabPage;
+  hearingViewEditSummaryPage: HearingViewEditSummaryPage;
+  hearingViewSummaryPage: HearingViewSummaryPage;
   mediaViewerPage: ExuiMediaViewerPage;
   idamPage: IdamPage;
   apiClient: ApiClient;
@@ -60,6 +65,15 @@ export const pageFixtures = {
   },
   findCasePage: async ({ determinePage }, use) => {
     await use(new FindCasePage(determinePage));
+  },
+  hearingsTabPage: async ({ determinePage }, use) => {
+    await use(new HearingsTabPage(determinePage));
+  },
+  hearingViewEditSummaryPage: async ({ determinePage }, use) => {
+    await use(new HearingViewEditSummaryPage(determinePage));
+  },
+  hearingViewSummaryPage: async ({ determinePage }, use) => {
+    await use(new HearingViewSummaryPage(determinePage));
   },
   mediaViewerPage: async ({ determinePage }, use) => {
     await use(new ExuiMediaViewerPage(determinePage));

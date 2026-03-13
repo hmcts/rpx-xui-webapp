@@ -125,6 +125,14 @@ function getLiveTestTimerIntervalMs(): number {
   return Number.isFinite(parsedInterval) && parsedInterval >= 1_000 ? parsedInterval : DEFAULT_LIVE_TEST_TIMER_INTERVAL_MS;
 }
 
+function isFinalScreenshotEnabled(): boolean {
+  const rawFlag = process.env.PW_FINAL_SCREENSHOT?.trim().toLowerCase();
+  if (!rawFlag) {
+    return false;
+  }
+  return TRUTHY_ENV_VALUES.has(rawFlag);
+}
+
 function formatElapsed(elapsedMs: number): string {
   const totalSeconds = Math.floor(Math.max(0, elapsedMs) / 1000);
   const minutes = Math.floor(totalSeconds / 60);
@@ -914,6 +922,7 @@ export const test = baseTest.extend<CustomFixtures, { lighthousePort: number }>(
     const slowCalls: Array<{ url: string; duration: number; method: string }> = [];
     const networkTimeoutRef = { value: false };
     const liveTimerEnabled = isLiveTestTimerEnabled();
+    const finalScreenshotEnabled = isFinalScreenshotEnabled();
     const liveTimerIntervalMs = getLiveTestTimerIntervalMs();
     const testStartEpochMs = Date.now();
     let mainFrameNavigationCount = 0;
@@ -970,6 +979,14 @@ export const test = baseTest.extend<CustomFixtures, { lighthousePort: number }>(
       if (liveTimerHandle) {
         clearInterval(liveTimerHandle);
       }
+    }
+
+    if (finalScreenshotEnabled && !page.isClosed() && testInfo.status !== 'skipped') {
+      const finalScreenshot = await page.screenshot({ fullPage: true });
+      await testInfo.attach('final-state.png', {
+        body: finalScreenshot,
+        contentType: 'image/png',
+      });
     }
 
     // On test failure, classify the root cause and attach diagnosis

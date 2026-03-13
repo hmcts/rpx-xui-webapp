@@ -3573,12 +3573,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.38-remove-unused-deps":
-  version: 7.3.38-remove-unused-deps
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.38-remove-unused-deps"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.39-remove-unused-deps":
+  version: 7.3.39-remove-unused-deps
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.39-remove-unused-deps"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/fcbd9ec66cea16a7018baada2d6ebab02685b8563acd58c8493b871837128f6b3722f2c26b07bbb259f0bdb33c3dfbaa653da19c4915471a7418883d97c2f4ec
+  checksum: 10/f61b3d15ae3493b9b607b1b22462253c6ba787b0a330e24fbc806be1806d1caec14a3fb4dc645fcde5dd365993c8aeea09705069ab9bcfacc8c2a6091bcabd6e
   languageName: node
   linkType: hard
 
@@ -22979,7 +22979,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.38-remove-unused-deps"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.39-remove-unused-deps"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.12"

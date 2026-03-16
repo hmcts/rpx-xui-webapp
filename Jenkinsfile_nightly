@@ -110,7 +110,7 @@ withNightlyPipeline(type, product, component) {
           withEnv([
             'ORG_USER_ASSIGNMENT_MODE=external',
             'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
-            'FUNCTIONAL_TESTS_WORKERS=4'
+            'FUNCTIONAL_TESTS_WORKERS=2'
           ]) {
             yarnBuilder.yarn('test:api:pw:coverage')
           }
@@ -157,7 +157,7 @@ withNightlyPipeline(type, product, component) {
                     withEnv([
                       'ORG_USER_ASSIGNMENT_MODE=external',
                       'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
-                      'FUNCTIONAL_TESTS_WORKERS=4'
+                      'FUNCTIONAL_TESTS_WORKERS=2'
                     ]) {
                       yarnBuilder.yarn('test:playwright:integration')
                     }
@@ -180,7 +180,7 @@ withNightlyPipeline(type, product, component) {
               withEnv([
                 'ORG_USER_ASSIGNMENT_MODE=external',
                 'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
-                'FUNCTIONAL_TESTS_WORKERS=4'
+                'FUNCTIONAL_TESTS_WORKERS=2'
               ]) {
                 yarnBuilder.yarn('test:crossbrowser')
               }

@@ -325,6 +325,16 @@ function summarizeExecutionSignals(signals: ExecutionSignals): string {
   return `lastUrl=${signals.lastMainFrameUrl}, navigations=${signals.mainFrameNavigationCount}, requests=${signals.totalRequestsObserved}, backendRequests=${signals.backendRequestsObserved}`;
 }
 
+function extractDirectCcdTokenFailureStatus(signal: string): number | null {
+  const match = /Failed to fetch direct CCD event token \(HTTP (\d{3})\)/i.exec(signal);
+  if (!match?.[1]) {
+    return null;
+  }
+
+  const status = Number(match[1]);
+  return Number.isFinite(status) ? status : null;
+}
+
 function deriveBackendWaitFlag(
   failureType: FailureType,
   serverErrors: ApiError[],
@@ -619,11 +629,24 @@ function deriveLikelyRootCause({
 }: RootCauseContext): string {
   const isPageClosed = /Target page, context or browser has been closed/i.test(error);
   const readinessSignal = `${failureLocation} ${actionableErrorLine} ${error}`;
+  const directCcdTokenFailureStatus = extractDirectCcdTokenFailureStatus(readinessSignal);
 
   if (/dynamicProvisioningFlow\.ts|Dynamic user provisioning (failed|timed out)/i.test(readinessSignal)) {
     return `Dynamic user provisioning exhausted its retry budget before the browser journey started (${summarizeExecutionSignals(
       executionSignals
     )}). This is a setup/provisioning timeout, not a document-upload UI failure.`;
+  }
+
+  if (directCcdTokenFailureStatus !== null) {
+    const severityHint =
+      directCcdTokenFailureStatus >= 500
+        ? 'downstream 5xx response'
+        : directCcdTokenFailureStatus >= 400
+          ? 'downstream 4xx response'
+          : `HTTP ${directCcdTokenFailureStatus} response`;
+    return `Direct CCD event-token bootstrap failed with ${severityHint} before the case journey could start (${summarizeExecutionSignals(
+      executionSignals
+    )}).`;
   }
 
   if (/caseList\.po\.ts|Cases page shell did not become ready/i.test(readinessSignal)) {
@@ -746,6 +769,7 @@ function classifyFailure({
   const hasStrongSlowSignal = hasStrongSlowBackendSignal(slowCalls);
   const hasLocatorSignal = error.includes('locator') || error.includes('element') || error.includes('waiting for');
   const readinessSignal = `${failureLocation} ${actionableErrorLine} ${error}`;
+  const directCcdTokenFailureStatus = extractDirectCcdTokenFailureStatus(readinessSignal);
   const hasUiReadinessSignal =
     /Cases page shell did not become ready|Task list shell did not become ready|Task list filter panel did not become ready|Task list filter controls did not become visible|Task list filter checkbox .* did not become interactive|Task list filter checkbox .* state could not be read|Failed to clear .* filter group within|Task list showed service down while|Something went wrong page was displayed while waiting for task list shell/i.test(
       readinessSignal
@@ -753,6 +777,14 @@ function classifyFailure({
   const hasNetworkTimeoutFailure =
     networkTimeout || failedRequests.some((request) => /timeout|timed out|ETIMEDOUT/i.test(request.errorText));
 
+  if (directCcdTokenFailureStatus !== null) {
+    if (directCcdTokenFailureStatus >= 500) {
+      return 'DOWNSTREAM_API_5XX';
+    }
+    if (directCcdTokenFailureStatus >= 400) {
+      return 'DOWNSTREAM_API_4XX';
+    }
+  }
   if (serverErrors.length > 0) {
     return 'DOWNSTREAM_API_5XX';
   }

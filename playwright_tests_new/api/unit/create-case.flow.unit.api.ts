@@ -1,6 +1,10 @@
 import { expect, test } from '@playwright/test';
 
-import { clickSubmitAndWaitFlow, startCreateCaseFlow } from '../../E2E/page-objects/pages/exui/createCase.flow.js';
+import {
+  clickSubmitAndWaitFlow,
+  findCreateCaseBootstrapFailure,
+  startCreateCaseFlow,
+} from '../../E2E/page-objects/pages/exui/createCase.flow.js';
 import { buildTestAppUrl } from './testAppUrls.js';
 
 function createLocator(overrides: Partial<Record<'isVisible' | 'isEnabled' | 'click' | 'waitFor', () => Promise<unknown>>> = {}) {
@@ -20,6 +24,30 @@ function createLocator(overrides: Partial<Record<'isVisible' | 'isEnabled' | 'cl
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Create case flow unit tests', { tag: '@svc-internal' }, () => {
+  test('findCreateCaseBootstrapFailure returns the first recent bootstrap endpoint failure', () => {
+    const failure = findCreateCaseBootstrapFailure(
+      [
+        {
+          method: 'GET',
+          status: 200,
+          url: buildTestAppUrl('/aggregated/caseworkers/123/jurisdictions'),
+        },
+        {
+          method: 'GET',
+          status: 502,
+          url: buildTestAppUrl('/data/internal/case-types/ET_EnglandWales/event-triggers/initiateCase'),
+        },
+      ],
+      1
+    );
+
+    expect(failure).toEqual({
+      method: 'GET',
+      status: 502,
+      url: buildTestAppUrl('/data/internal/case-types/ET_EnglandWales/event-triggers/initiateCase'),
+    });
+  });
+
   test('clickSubmitAndWaitFlow auto-advances, submits, and stops on case details summary', async () => {
     let currentUrl = buildTestAppUrl('/cases/case-details/1/trigger/start');
     let continueVisible = true;
@@ -159,5 +187,60 @@ test.describe('Create case flow unit tests', { tag: '@svc-internal' }, () => {
 
     expect(warnMessages).toContain('Jurisdiction bootstrap failed; retrying case filter');
     expect(currentUrl).toContain('/cases/case-create/DIVORCE/xuiTestCaseType/start');
+  });
+
+  test('startCreateCaseFlow reports bootstrap endpoint failures instead of a generic navigation timeout', async () => {
+    let currentUrl = buildTestAppUrl('/cases/case-filter');
+    const apiCalls: Array<{ method: string; status: number; url: string }> = [];
+
+    const createCaseButton = createLocator();
+    const jurisdictionSelect = createLocator();
+    const caseTypeSelect = createLocator();
+    const eventTypeSelect = createLocator({
+      click: async () => undefined,
+    });
+    const startButton = createLocator({
+      click: async () => {
+        apiCalls.push({
+          method: 'GET',
+          status: 502,
+          url: buildTestAppUrl('/data/internal/case-types/ET_EnglandWales/event-triggers/initiateCase'),
+        });
+      },
+    });
+    const somethingWentWrongHeading = createLocator();
+
+    const page = {
+      url: () => currentUrl,
+      goto: async (url: string) => {
+        currentUrl = buildTestAppUrl(url);
+      },
+      waitForTimeout: async () => undefined,
+      isClosed: () => false,
+    };
+
+    await expect(
+      startCreateCaseFlow({
+        page: page as never,
+        jurisdiction: 'EMPLOYMENT',
+        caseType: 'ET_EnglandWales',
+        eventType: 'initiateCase',
+        maxAttempts: 1,
+        createCaseButton: createCaseButton as never,
+        jurisdictionSelect: jurisdictionSelect as never,
+        caseTypeSelect: caseTypeSelect as never,
+        eventTypeSelect: eventTypeSelect as never,
+        startButton: startButton as never,
+        somethingWentWrongHeading: somethingWentWrongHeading as never,
+        getApiCalls: () => apiCalls,
+        waitForSelectReady: async () => undefined,
+        selectOptionSmart: async () => undefined,
+        normalizeUnknownError: (error) => (error instanceof Error ? error.message : String(error)),
+        warn: () => undefined,
+        debug: () => undefined,
+      })
+    ).rejects.toThrow(
+      `Create case bootstrap failed (attempt 1/1): GET ${buildTestAppUrl('/data/internal/case-types/ET_EnglandWales/event-triggers/initiateCase')} returned HTTP 502`
+    );
   });
 });

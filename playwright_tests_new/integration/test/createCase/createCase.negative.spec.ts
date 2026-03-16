@@ -113,8 +113,7 @@ test.describe(
 
         await test.step('Verify error message is displayed', async () => {
           await createCasePage.testSubmitButton.click();
-          await expect(createCasePage.eventCreationErrorHeading).toBeVisible();
-          await expect(page.getByText(errorMessage, { exact: true })).toBeVisible();
+          await createCasePage.assertCreateCaseSubmissionError(errorMessage);
         });
       });
     });

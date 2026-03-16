@@ -5,7 +5,7 @@ import { Base } from '../../base';
 import { EXUI_TIMEOUTS } from './exui-timeouts';
 import { isTransientWorkflowFailure } from '../../../utils/transient-failure.utils';
 import { extractCaseNumberFromUrl } from './caseDetails.po';
-import { clickSubmitAndWaitFlow, startCreateCaseFlow } from './createCase.flow.js';
+import { clickSubmitAndWaitFlow, findCreateCaseBootstrapFailure, startCreateCaseFlow } from './createCase.flow.js';
 import { buildCreateCaseLocators } from './createCase.locators.js';
 
 export type PersonData = {
@@ -197,14 +197,31 @@ export class CreateCasePage extends Base {
   }
   private async waitForSelectReady(selector: string, timeoutMs?: number) {
     const effectiveTimeoutMs = timeoutMs ?? EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_DEFAULT;
-    await this.page.waitForFunction(
-      (sel) => {
+    const apiCallsBaseline = this.getApiCalls().length;
+    const deadline = Date.now() + effectiveTimeoutMs;
+
+    while (Date.now() < deadline) {
+      const ready = await this.page.evaluate((sel) => {
         const el = document.querySelector(sel);
         return el instanceof HTMLSelectElement && el.options.length > 1 && !el.disabled;
-      },
-      selector,
-      { timeout: effectiveTimeoutMs }
-    );
+      }, selector);
+
+      if (ready) {
+        return;
+      }
+
+      const bootstrapFailure = findCreateCaseBootstrapFailure(this.getApiCalls(), apiCallsBaseline);
+      if (bootstrapFailure) {
+        throw new Error(
+          `Create case bootstrap failed while waiting for select "${selector}": ` +
+            `${bootstrapFailure.method} ${bootstrapFailure.url} returned HTTP ${bootstrapFailure.status}`
+        );
+      }
+
+      await this.page.waitForTimeout(EXUI_TIMEOUTS.SUBMIT_POLL_INTERVAL);
+    }
+
+    throw new Error(`Create case select "${selector}" did not become ready within ${effectiveTimeoutMs}ms`);
   }
 
   // CCD mixes option values and labels, so selection needs tolerant matching.
@@ -238,6 +255,30 @@ export class CreateCasePage extends Base {
       return;
     }
     throw new Error(`Case event failed ${context}: The event could not be created.`);
+  }
+
+  async assertCreateCaseSubmissionError(expectedMessage: string, options: { timeoutMs?: number } = {}) {
+    const timeoutMs = options.timeoutMs ?? 60_000;
+
+    await expect
+      .poll(
+        async () => {
+          const [eventErrorVisible, errorSummaryVisible, somethingWentWrongVisible] = await Promise.all([
+            this.eventCreationErrorHeading.isVisible().catch(() => false),
+            this.errorSummary.isVisible().catch(() => false),
+            this.somethingWentWrongHeading.isVisible().catch(() => false),
+          ]);
+
+          return eventErrorVisible || errorSummaryVisible || somethingWentWrongVisible;
+        },
+        {
+          timeout: timeoutMs,
+          message: 'Expected a create-case submission error surface to be rendered',
+        }
+      )
+      .toBeTruthy();
+
+    await expect(this.page.getByText(expectedMessage, { exact: true })).toBeVisible({ timeout: timeoutMs });
   }
 
   private normalizePath(url: string): string {

@@ -13,6 +13,50 @@ const baseExecutionSignals = {
 };
 
 test.describe('Failure diagnosis unit tests', { tag: '@svc-internal' }, () => {
+  test('classifyFailure treats direct CCD event-token 502 failures as backend 5xx', () => {
+    const failureType = diagnosticsTest.classifyFailure({
+      error: "Error: Failed to fetch direct CCD event token (HTTP 502) for 'case-flags-employment-case-level'.",
+      serverErrors: [],
+      clientErrors: [],
+      slowCalls: [],
+      failedRequests: [],
+      networkTimeout: false,
+      testStatus: 'failed',
+      executionSignals: {
+        lastMainFrameUrl: 'https://manage-case.aat.platform.hmcts.net/cases/case-filter',
+        mainFrameNavigationCount: 2,
+        totalRequestsObserved: 23,
+        backendRequestsObserved: 6,
+      },
+      failureLocation: '/tmp/caseSetup.ts:329',
+      actionableErrorLine: "Failed to fetch direct CCD event token (HTTP 502) for 'case-flags-employment-case-level'.",
+    });
+
+    expect(failureType).toBe('DOWNSTREAM_API_5XX');
+  });
+
+  test('deriveLikelyRootCause explains direct CCD event-token bootstrap failures', () => {
+    const message = diagnosticsTest.deriveLikelyRootCause({
+      failureType: 'DOWNSTREAM_API_5XX',
+      testStatus: 'failed',
+      error: "Error: Failed to fetch direct CCD event token (HTTP 502) for 'case-flags-employment-case-level'.",
+      timeoutSummary: '',
+      dominantSlowEndpoint: null,
+      topSuspect: 'No backend/API suspect identified',
+      executionSignals: {
+        lastMainFrameUrl: 'https://manage-case.aat.platform.hmcts.net/cases/case-filter',
+        mainFrameNavigationCount: 2,
+        totalRequestsObserved: 23,
+        backendRequestsObserved: 6,
+      },
+      failureLocation: '/tmp/caseSetup.ts:329',
+      actionableErrorLine: "Failed to fetch direct CCD event token (HTTP 502) for 'case-flags-employment-case-level'.",
+    });
+
+    expect(message).toContain('Direct CCD event-token bootstrap failed');
+    expect(message).toContain('downstream 5xx response');
+  });
+
   test('classifyFailure treats locator timeouts without backend traffic as UI stalls', () => {
     const failureType = diagnosticsTest.classifyFailure({
       error: 'Test timeout of 120000ms exceeded.\nError: locator.waitFor: Test timeout of 120000ms exceeded.',

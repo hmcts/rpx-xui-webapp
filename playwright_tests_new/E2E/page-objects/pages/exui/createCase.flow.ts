@@ -3,6 +3,24 @@ import type { Locator, Page } from '@playwright/test';
 import { EXUI_TIMEOUTS } from './exui-timeouts.js';
 
 type VisibleActionButtonResolver = (locator: Locator) => Promise<Locator | undefined>;
+type ApiCall = { method: string; status: number; url: string };
+
+const CREATE_CASE_BOOTSTRAP_API_PATTERNS: RegExp[] = [
+  /\/aggregated\/caseworkers\/[^/]+\/jurisdictions(?:\/|$)/,
+  /\/data\/internal\/case-types\/[^/]+\/event-triggers\/[^/]+(?:\/|$)/,
+];
+
+export function findCreateCaseBootstrapFailure(apiCalls: ApiCall[], baselineIndex = 0): ApiCall | undefined {
+  const recentCalls = apiCalls.slice(Math.max(0, baselineIndex));
+  return recentCalls.find(
+    (call) =>
+      call.status >= 400 && call.method === 'GET' && CREATE_CASE_BOOTSTRAP_API_PATTERNS.some((pattern) => pattern.test(call.url))
+  );
+}
+
+function buildCreateCaseBootstrapFailureMessage(context: string, failure: ApiCall): string {
+  return `Create case bootstrap failed ${context}: ${failure.method} ${failure.url} returned HTTP ${failure.status}`;
+}
 
 export async function clickSubmitAndWaitFlow({
   page,
@@ -185,6 +203,7 @@ export async function startCreateCaseFlow({
   debug: (message: string, meta: Record<string, unknown>) => void;
 }): Promise<void> {
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    const apiCallsBaseline = getApiCalls().length;
     try {
       if (!page.url().includes('/cases/case-filter')) {
         try {
@@ -198,48 +217,73 @@ export async function startCreateCaseFlow({
         }
       }
       await jurisdictionSelect.waitFor({ state: 'visible' });
-      await waitForSelectReady('#cc-jurisdiction', EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED);
+      await waitForSelectReady('#cc-jurisdiction', EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED).catch((error) => {
+        const bootstrapFailure = findCreateCaseBootstrapFailure(getApiCalls(), apiCallsBaseline);
+        if (bootstrapFailure) {
+          throw new Error(buildCreateCaseBootstrapFailureMessage('(while loading jurisdiction options)', bootstrapFailure));
+        }
+        throw error;
+      });
       await selectOptionSmart(jurisdictionSelect, jurisdiction);
 
       await caseTypeSelect.waitFor({ state: 'visible' });
-      await waitForSelectReady('#cc-case-type', EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED);
+      await waitForSelectReady('#cc-case-type', EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED).catch((error) => {
+        const bootstrapFailure = findCreateCaseBootstrapFailure(getApiCalls(), apiCallsBaseline);
+        if (bootstrapFailure) {
+          throw new Error(buildCreateCaseBootstrapFailureMessage('(while loading case type options)', bootstrapFailure));
+        }
+        throw error;
+      });
       await selectOptionSmart(caseTypeSelect, caseType);
 
       if (eventType) {
         await eventTypeSelect.click();
-        await waitForSelectReady('#cc-event', EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED);
+        await waitForSelectReady('#cc-event', EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED).catch((error) => {
+          const bootstrapFailure = findCreateCaseBootstrapFailure(getApiCalls(), apiCallsBaseline);
+          if (bootstrapFailure) {
+            throw new Error(buildCreateCaseBootstrapFailureMessage('(while loading event options)', bootstrapFailure));
+          }
+          throw error;
+        });
         await selectOptionSmart(eventTypeSelect, eventType);
       }
 
       await startButton.click();
-      await page
-        .waitForURL((url) => !url.pathname.includes('/cases/case-filter'), {
-          timeout: EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED,
-        })
-        .catch(async (error) => {
-          const stillOnCaseFilter = page.url().includes('/cases/case-filter');
-          if (stillOnCaseFilter) {
-            throw error;
-          }
-        });
+      const navigationDeadline = Date.now() + EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED;
+      while (Date.now() < navigationDeadline) {
+        if (!page.url().includes('/cases/case-filter')) {
+          return;
+        }
+        const bootstrapFailure = findCreateCaseBootstrapFailure(getApiCalls(), apiCallsBaseline);
+        if (bootstrapFailure) {
+          throw new Error(buildCreateCaseBootstrapFailureMessage('(after clicking Start)', bootstrapFailure));
+        }
+        await page.waitForTimeout(EXUI_TIMEOUTS.SUBMIT_POLL_INTERVAL);
+      }
+      if (page.url().includes('/cases/case-filter')) {
+        throw new Error(
+          `Create case start navigation did not leave /cases/case-filter within ${EXUI_TIMEOUTS.WAIT_FOR_SELECT_READY_EXTENDED}ms`
+        );
+      }
       return;
     } catch (error) {
-      const jurisdictionBootstrapFailed = getApiCalls().some(
-        (call) =>
-          call.method === 'GET' &&
-          call.status >= 400 &&
-          call.url.includes('/aggregated/caseworkers/') &&
-          call.url.includes('/jurisdictions')
-      );
+      const bootstrapFailure = findCreateCaseBootstrapFailure(getApiCalls(), apiCallsBaseline);
+      const jurisdictionBootstrapFailed =
+        bootstrapFailure?.url.includes('/aggregated/caseworkers/') && bootstrapFailure.url.includes('/jurisdictions');
       const onSomethingWentWrongPage = await somethingWentWrongHeading.isVisible().catch(() => false);
 
       if (attempt === maxAttempts) {
+        if (bootstrapFailure) {
+          throw new Error(buildCreateCaseBootstrapFailureMessage(`(attempt ${attempt}/${maxAttempts})`, bootstrapFailure));
+        }
         throw error;
       }
-      if (jurisdictionBootstrapFailed || onSomethingWentWrongPage) {
+      if (bootstrapFailure || jurisdictionBootstrapFailed || onSomethingWentWrongPage) {
         warn('Jurisdiction bootstrap failed; retrying case filter', {
           attempt,
           maxAttempts,
+          bootstrapFailureUrl: bootstrapFailure?.url,
+          bootstrapFailureStatus: bootstrapFailure?.status,
           jurisdictionBootstrapFailed,
           onSomethingWentWrongPage,
         });

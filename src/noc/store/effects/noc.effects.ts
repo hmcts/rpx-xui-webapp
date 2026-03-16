@@ -26,9 +26,9 @@ export class NocEffects {
           return this.nocService.getNoCQuestions(caseReference).pipe(
             map((response) => new nocActions.SetQuestions({ questions: response.questions, caseReference })),
             catchError((error) => {
-              console.log('noceffect error')
-              console.log(error)
-              console.log('noceffect error')
+              console.log('noceffect error');
+              console.log(error);
+              console.log('noceffect error');
               return NocEffects.handleError(error, nocActions.SET_CASE_REFERENCE);
             })
           );

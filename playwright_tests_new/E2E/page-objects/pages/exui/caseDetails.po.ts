@@ -7,6 +7,21 @@ import { TIMEOUTS } from '../../../test/documentUpload/constants';
 const validatorUtils = new ValidatorUtils();
 const tableUtils = new TableUtils();
 
+export function extractCaseNumberFromUrl(url: string): string | null {
+  try {
+    const pathname = new URL(url).pathname;
+    const detailsPathMatch = /\/cases\/case-details\/(\d{16})(?:$|\/)/.exec(pathname);
+    if (detailsPathMatch?.[1]) {
+      return detailsPathMatch[1];
+    }
+
+    const trailingDigitsMatch = /(\d{16})(?:$|\/)/.exec(pathname);
+    return trailingDigitsMatch?.[1] ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export interface CaseFlagItem {
   flagType: string;
   comments: string;
@@ -63,7 +78,13 @@ export class CaseDetailsPage extends Base {
   readonly caseTab1Table = this.page.locator('table.tab1');
   readonly caseDocumentsTable = this.page.locator('table.complex-panel-table');
   readonly someMoreDataTable = this.page.locator('table.SomeMoreData');
+  readonly divorceDataTable = this.page.locator('table.Data.ng-star-inserted');
+  readonly divorceDataSubTable = this.divorceDataTable.locator('table.complex-panel-table table');
 
+  // Task List tab
+  readonly taskListContainer = this.page.locator('.active-tasks-container');
+  readonly taskItem = this.taskListContainer.locator('exui-case-task');
+  readonly taskAlerts = this.page.locator('#alertMessage');
   // Search case (16 Digit Search)
   readonly caseProgressMessage = this.page.locator('#progress_legalOfficer_updateTrib_dismissed_under_rule_31');
   readonly resultsNotFoundHeading = this.page.locator('exui-no-results').getByRole('heading', { level: 1 });
@@ -193,6 +214,8 @@ export class CaseDetailsPage extends Base {
     }
 
     const fn = (rows: Element[]) => {
+      const trailingSortIndicatorRegex = /[▲▼⇧⇩⯅⯆]\s*$/g;
+
       function findFirstText(node: Node | null): string {
         if (!node) {
           return '';
@@ -236,29 +259,34 @@ export class CaseDetailsPage extends Base {
       });
 
       for (const row of dataRows) {
-        const cells = Array.from(row.querySelectorAll('th, td'));
+        const cells = Array.from(row.querySelectorAll('th, td')).filter(
+          (cell) => !(cell.tagName === 'TD' && cell.classList.contains('case-field-change'))
+        );
         if (cells.length < 2) {
           continue;
         }
 
-        const rawKey = findFirstText(cells[0])
-          .replaceAll(/[▲▼⇧⇩⯅⯆]\s*$/g, '')
-          .trim();
+        // Clone the key cell and strip nested tables so nested content is ignored
+        const keyCellClone = cells[0].cloneNode(true) as Element;
+        keyCellClone.querySelectorAll('table').forEach((t) => t.remove());
+        const rawKey = findFirstText(keyCellClone).replace(trailingSortIndicatorRegex, '').trim();
         if (!rawKey) {
           continue;
         }
-
         const valueParts = cells
           .slice(1)
-          .map((c) =>
-            findFirstText(c)
-              .replaceAll(/[▲▼⇧⇩⯅⯆]\s*$/g, '')
-              .trim()
-          )
+          .map((c) => {
+            const clone = c.cloneNode(true) as Element;
+            clone.querySelectorAll('table').forEach((t) => t.remove());
+            return findFirstText(clone).replace(trailingSortIndicatorRegex, '').trim();
+          })
           .filter(Boolean);
         const value = valueParts.join(' ').replaceAll(/\s+/g, ' ').trim();
 
-        out[rawKey] = value;
+        // Preserve the first occurrence of a repeated key (do not overwrite)
+        if (!Object.prototype.hasOwnProperty.call(out, rawKey)) {
+          out[rawKey] = value;
+        }
       }
       return out;
     };
@@ -277,6 +305,7 @@ export class CaseDetailsPage extends Base {
     }
 
     const fn = (rows: Element[]) => {
+      const trailingSortIndicatorRegex = /[▲▼⇧⇩⯅⯆]\s*$/g;
       const arr: Record<string, string>[] = [];
       if (!rows || rows.length === 0) {
         return arr;
@@ -284,8 +313,14 @@ export class CaseDetailsPage extends Base {
 
       // header is first tr
       const headerRow = rows[0];
-      const sanitize = (s: string) => (s || '').replaceAll(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim();
-      const headers = Array.from(headerRow.querySelectorAll('th, td')).map((h) => sanitize((h as HTMLElement).innerText || ''));
+      const sanitize = (s: string) => (s || '').replace(trailingSortIndicatorRegex, '').trim();
+      const headers = Array.from(headerRow.querySelectorAll('th, td'))
+        .filter((cell) => !(cell.tagName === 'TD' && cell.classList.contains('case-field-change')))
+        .map((h) => {
+          const clone = h.cloneNode(true) as Element;
+          clone.querySelectorAll('table').forEach((t) => t.remove());
+          return sanitize(clone.textContent || '');
+        });
 
       // data rows are after header; filter hidden rows
       const dataRows = Array.from(rows)
@@ -308,16 +343,23 @@ export class CaseDetailsPage extends Base {
         });
 
       for (const row of dataRows) {
-        const cells = Array.from(row.querySelectorAll('th, td'));
+        const cells = Array.from(row.querySelectorAll('th, td')).filter(
+          (cell) => !(cell.tagName === 'TD' && cell.classList.contains('case-field-change'))
+        );
         if (cells.length === 0) {
           continue;
         }
         const obj: Record<string, string> = {};
         for (let i = 0; i < cells.length; i++) {
           const key = headers[i] || `column_${i + 1}`;
-          const cellText = cells[i].textContent || '';
-          const value = sanitize(cellText).replaceAll(/\s+/g, ' ');
-          obj[key] = value;
+          const cellClone = cells[i].cloneNode(true) as Element;
+          cellClone.querySelectorAll('table').forEach((t) => t.remove());
+          const cellText = cellClone.textContent || '';
+          const value = sanitize(cellText).replace(/\s+/g, ' ');
+          // Preserve the first occurrence of a repeated header key in the row
+          if (!Object.prototype.hasOwnProperty.call(obj, key)) {
+            obj[key] = value;
+          }
         }
         arr.push(obj);
       }
@@ -350,14 +392,14 @@ export class CaseDetailsPage extends Base {
     return data;
   }
 
-  async getUpdateCaseHistoryInfo(): Promise<{
+  async getCaseHistoryByEvent(event: string): Promise<{
     updateRow: Record<string, string> | undefined;
     updateDate: string;
     updateAuthor: string;
     expectedDate: string;
   }> {
     const rows = await this.mapHistoryTable();
-    const updateRow = rows.find((r) => r.Event === 'Update case');
+    const updateRow = rows.find((r) => r.Event === event);
     const updateDate = updateRow?.Date || '';
     const updateAuthor = updateRow?.Author || '';
     const expectedDate = await this.todaysDateFormatted();
@@ -377,14 +419,10 @@ export class CaseDetailsPage extends Base {
   }
 
   async getCaseNumberFromUrl(): Promise<string> {
-    const url = this.page.url();
-    const pathname = new URL(url).pathname;
-    const caseNumberMatch = pathname.slice(pathname.lastIndexOf('/') + 1);
-    // Validate format: EXUI case numbers are typically 16 digits
-    if (!caseNumberMatch || !/^\d{16}$/.test(caseNumberMatch)) {
+    const caseNumberMatch = extractCaseNumberFromUrl(this.page.url());
+    if (!caseNumberMatch) {
       this.logger.error('Failed to extract valid case number from URL', {
-        pathnameLength: pathname.length,
-        extractedLength: caseNumberMatch?.length,
+        urlLength: this.page.url().length,
       });
       throw new Error('Failed to extract valid case number from URL');
     }
@@ -608,5 +646,69 @@ export class CaseDetailsPage extends Base {
     }
 
     await tabPanel.locator('*').first().waitFor({ state: 'attached', timeout: timeoutMs });
+  }
+
+  /**
+   * Returns task key/value rows for each task as an array of objects.
+   * Each object maps row label -> row value for a single task.
+   */
+  async getTaskKeyValueRows(): Promise<Record<string, string>[]> {
+    try {
+      await this.taskItem.first().waitFor({ state: 'visible' });
+    } catch {
+      return [];
+    }
+    const taskCount = await this.taskItem.count();
+    if (taskCount === 0) {
+      return [];
+    }
+
+    await this.taskItem.first().waitFor({ state: 'visible' });
+
+    const results: Record<string, string>[] = [];
+
+    for (let i = 0; i < taskCount; i++) {
+      const task = this.taskItem.nth(i);
+      const title = (await task.locator('p.govuk-body').innerText()).replace(/\s+/g, ' ').trim();
+      const rows = task.locator('.govuk-summary-list__row');
+      const rowCount = await rows.count();
+      const taskData: Record<string, string> = {};
+
+      if (title) {
+        taskData['Title'] = title;
+      }
+
+      for (let j = 0; j < rowCount; j++) {
+        const row = rows.nth(j);
+        const key = (await row.locator('.govuk-summary-list__key .row-padding').innerText()).trim();
+        const valueEl = row.locator('.govuk-summary-list__value');
+        const rawText = (await valueEl.innerText()).replace(/\s+/g, ' ').trim();
+        // Also capture the rendered HTML so tests can assert on links and markdown output
+        const rawHtml = (await valueEl.evaluate((el: HTMLElement) => el.innerHTML || '')).trim();
+        // If markdown rendered as headings, prefer returning value starting with the first heading
+        let value = rawText;
+        // Prefer a rendered heading if present; use evaluate to avoid locator timeouts
+        const heading = await valueEl.evaluate((el: HTMLElement) => {
+          const h = el.querySelector('h1,h2,h3') as HTMLElement | null;
+          return h ? (h.textContent || '').trim() : '';
+        });
+        if (heading) {
+          if (!value.startsWith(heading)) {
+            value = `${heading}${value ? ' ' + value : ''}`.trim();
+          }
+        }
+        if (key) {
+          taskData[key] = value;
+          // expose HTML for assertions (e.g. verify anchor hrefs rendered from markdown)
+          taskData[`${key} HTML`] = rawHtml;
+        }
+      }
+
+      if (Object.keys(taskData).length > 0) {
+        results.push(taskData);
+      }
+    }
+
+    return results;
   }
 }

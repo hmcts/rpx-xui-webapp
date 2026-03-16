@@ -4,6 +4,28 @@ import { Base } from '../../base';
 import { faker } from '@faker-js/faker';
 import { EXUI_TIMEOUTS } from './exui-timeouts';
 import { isTransientWorkflowFailure } from '../../../utils/transient-failure.utils';
+import { extractCaseNumberFromUrl } from './caseDetails.po';
+
+export type PersonData = {
+  title?: string;
+  firstName?: string;
+  lastName?: string;
+  maidenName?: string;
+  gender?: string;
+  jobTitle?: string;
+  jobDescription?: string;
+};
+
+export type DivorcePoCData = PersonData & {
+  gender?: string;
+  textField0?: string;
+  textField1?: string;
+  textField2?: string;
+  textField3?: string;
+  divorceReasons?: string[];
+  // timestamp useful for tests to assert against
+  generatedAt?: string;
+};
 
 const logger = createLogger({
   serviceName: 'create-case',
@@ -16,10 +38,20 @@ const CRITICAL_WIZARD_API_PATTERNS: RegExp[] = [
   /\/event-triggers\/[^/]+\/validate/,
 ];
 
+type CreateDivorceCaseOptions = {
+  maxAttempts?: number;
+  createCaseMaxAttempts?: number;
+};
+
 export class CreateCasePage extends Base {
   readonly container = this.page.locator('exui-case-home');
   readonly caseDetailsContainer = this.page.locator('exui-case-details-home');
-  readonly createCaseButton = this.page.getByRole('link', { name: 'Create case' });
+  readonly caseAlertSuccessMessage = this.page
+    .locator('.hmcts-banner--success .alert-message, .exui-alert .alert-message')
+    .first();
+  readonly createCaseButton = this.page
+    .getByRole('link', { name: 'Create case' })
+    .or(this.page.locator('a[href="/cases/case-filter"].hmcts-primary-navigation__link'));
   readonly jurisdictionSelect = this.page.locator('#cc-jurisdiction');
   readonly caseTypeSelect = this.page.locator('#cc-case-type');
   readonly eventTypeSelect = this.page.locator('#cc-event');
@@ -78,27 +110,39 @@ export class CreateCasePage extends Base {
   readonly complexType4SelectList = this.page.locator('#ComplexType_4_FixedListField');
 
   // Locators for the Divorce - XUI Case PoC
-  readonly person1Title = this.page.locator('#Person1_Title');
+  readonly genderRadioButtons = this.page.locator('#Gender .multiple-choice');
+  readonly person1TitleInput = this.page.locator('#Person1_Title');
   readonly person1FirstNameInput = this.page.locator('#Person1_FirstName');
+  readonly person1MaidenNameInput = this.page.locator('#Person1_MaidenName');
   readonly person1LastNameInput = this.page.locator('#Person1_LastName');
   readonly person1GenderSelect = this.page.locator('#Person1_PersonGender');
   readonly person1JobTitleInput = this.page.locator('#Person1_PersonJob_Title');
   readonly person1JobDescriptionInput = this.page.locator('#Person1_PersonJob_Description');
-  readonly person2FirstNameInput = this.page.locator(
-    '[data-testid="Person2_FirstName"] input, [data-testid="Person2_FirstName"], #Person2_FirstName, [name="Person2_FirstName"]'
-  );
-
-  readonly person2LastNameInput = this.page.locator(
-    '[data-testid="Person2_LastName"] input, [data-testid="Person2_LastName"], #Person2_LastName, [name="Person2_LastName"]'
-  );
-
+  readonly person2 = this.page.locator('#Person2_Person2');
+  readonly person2TitleInput = this.page.locator('#Person2_Title');
+  readonly person2FirstNameInput = this.page.locator('#Person2_FirstName');
+  readonly person2MaidenNameInput = this.page.locator('#Person2_MaidenName');
+  readonly person2LastNameInput = this.page.locator('#Person2_LastName');
+  readonly person2GenderSelect = this.page.locator('#Person2_PersonGender');
+  readonly person2JobTitleInput = this.page.locator('#Person2_PersonJob_Title');
+  readonly person2JobDescriptionInput = this.page.locator('#Person2_PersonJob_Description');
+  readonly additionalPeople = this.page.locator('#People');
+  readonly addNewPersonButton = this.additionalPeople.locator('button.write-collection-add-item__top');
   readonly fileUploadInput = this.page.locator('#DocumentUrl');
   readonly fileUploadStatusLabel = this.page.locator('ccd-write-document-field .error-message');
   readonly textField0Input = this.page.locator('#TextField0');
   readonly textField1Input = this.page.locator('#TextField1');
   readonly textField2Input = this.page.locator('#TextField2');
   readonly textField3Input = this.page.locator('#TextField3');
-  readonly checkYourAnswersHeading = this.page.locator('.check-your-answers h2');
+  readonly divorceReasons = this.page.locator('#DivorceReason .multiple-choice');
+
+  readonly checkYourAnswers = this.page.locator('form.check-your-answers');
+  readonly checkYourAnswersHeading = this.checkYourAnswers.locator('h2');
+  readonly checkYourAnswersTable = this.checkYourAnswers.locator('table');
+  readonly checkYourAnswersSubTable = this.checkYourAnswersTable.locator('table.complex-panel-table table');
+  readonly checkYourAnswersFieldLabels = this.checkYourAnswers.locator('.check-your-answers__field-label');
+  readonly checkYourAnswersChangeLinks = this.checkYourAnswers.getByRole('link', { name: 'Change' });
+
   readonly testSubmitButton = this.page.locator('.check-your-answers [type="submit"]');
 
   // Employment case locators
@@ -134,12 +178,22 @@ export class CreateCasePage extends Base {
   readonly refreshModal = this.page.locator('.refresh-modal');
   readonly refreshModalConfirmButton = this.refreshModal.getByRole('button', { name: 'Ok' });
   readonly errorMessage = this.page.locator('.form-group-error .error-message, .govuk-error-message');
-  readonly errorSummary = this.page.locator('.error-summary, .govuk-error-summary');
   readonly eventCreationErrorHeading = this.page.getByRole('heading', { name: 'The event could not be created' });
   readonly somethingWentWrongHeading = this.page.getByRole('heading', { name: /something went wrong/i });
+  readonly errorSummary = this.page.locator('.error-summary, .govuk-error-summary');
+  readonly errorSummaryTitle = this.errorSummary.locator('h2, h3');
+  readonly errorSummaryItems = this.errorSummary.locator('.govuk-error-summary__list li, p');
+  readonly validationErrorMessage = this.page.locator('.validation-error');
 
   constructor(page: Page) {
     super(page);
+  }
+
+  public async findTableInCheckAnswers(name: string) {
+    return this.checkYourAnswers.locator(`.complex-panel:has(.complex-panel-title:has-text("${name}")) table`);
+  }
+  public async findSubTableInCheckAnswers(name: string) {
+    return this.checkYourAnswers.locator(`.complex-panel:has(.complex-panel-title:has-text("${name}")) table table`);
   }
 
   /**
@@ -263,7 +317,81 @@ export class CreateCasePage extends Base {
    */
   private async waitForCaseDetails(context: string) {
     await this.assertNoEventCreationError(context);
-    await this.caseDetailsContainer.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.CASE_DETAILS_VISIBLE });
+    try {
+      await this.caseDetailsContainer.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.CASE_DETAILS_VISIBLE });
+    } catch (error) {
+      const recovered = await this.recoverCaseDetailsFromCreatedBanner(context, error);
+      if (recovered) {
+        return;
+      }
+      throw error;
+    }
+  }
+
+  private async extractCreatedCaseNumberFromBanner(): Promise<string | null> {
+    const bannerVisible = await this.caseAlertSuccessMessage.isVisible().catch(() => false);
+    if (!bannerVisible) {
+      return null;
+    }
+
+    const bannerText = await this.caseAlertSuccessMessage.innerText().catch(() => '');
+    if (!/has been created/i.test(bannerText)) {
+      return null;
+    }
+
+    const numericMatch = /\d{16}/.exec(bannerText.replace(/\D/g, '')); // NOSONAR typescript:S5852 — replaceAll requires ES2021; tsconfig targets ES2020
+    return numericMatch?.[0] ?? null;
+  }
+
+  private normalizeUnknownError(error: unknown): string {
+    if (error instanceof Error) {
+      return error.message;
+    }
+    if (typeof error === 'string') {
+      return error;
+    }
+    try {
+      const serialized = JSON.stringify(error);
+      return serialized ?? '[Unable to stringify error]';
+    } catch {
+      return '[Unstringifiable error object]';
+    }
+  }
+
+  private async recoverCaseDetailsFromCreatedBanner(context: string, initialError: unknown): Promise<boolean> {
+    if (this.page.isClosed()) {
+      return false;
+    }
+
+    const caseNumber = extractCaseNumberFromUrl(this.page.url()) ?? (await this.extractCreatedCaseNumberFromBanner());
+    if (!caseNumber) {
+      return false;
+    }
+
+    const caseDetailsUrl = `/cases/case-details/${caseNumber}`;
+    const initialErrorMessage = this.normalizeUnknownError(initialError);
+    this.logger.warn('Case details did not render after submit; trying direct case details URL', {
+      context,
+      caseNumber,
+      caseDetailsUrl,
+      initialError: initialErrorMessage.slice(0, 220),
+    });
+
+    try {
+      await this.page.goto(caseDetailsUrl);
+      await this.assertNoEventCreationError(`${context} (after direct case details navigation)`);
+      await this.caseDetailsContainer.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.CASE_DETAILS_VISIBLE });
+      return true;
+    } catch (recoveryError) {
+      const recoveryErrorMessage = this.normalizeUnknownError(recoveryError);
+      this.logger.warn('Direct case details recovery failed', {
+        context,
+        caseNumber,
+        caseDetailsUrl,
+        recoveryError: recoveryErrorMessage.slice(0, 220),
+      });
+      return false;
+    }
   }
 
   private async getVisibleActionButton(buttons: Locator): Promise<Locator | null> {
@@ -310,7 +438,7 @@ export class CreateCasePage extends Base {
    * @throws {Error} If button disabled, CCD event fails, or validation error occurs
    * @private
    */
-  private async clickContinueAndWait(
+  public async clickContinueAndWait(
     context: string,
     options: { force?: boolean; timeoutMs?: number; continueButton?: Locator } = {}
   ) {
@@ -320,26 +448,36 @@ export class CreateCasePage extends Base {
     }
     await visibleContinueButton.scrollIntoViewIfNeeded();
     await expect(visibleContinueButton).toBeEnabled();
-    const clickTimeout = options.timeoutMs ?? EXUI_TIMEOUTS.CONTINUE_CLICK_DEFAULT;
+    const stepTimeout = options.timeoutMs ?? EXUI_TIMEOUTS.CONTINUE_CLICK_DEFAULT;
+    const clickTimeout = Math.min(stepTimeout, EXUI_TIMEOUTS.CONTINUE_CLICK_DEFAULT);
     try {
       await visibleContinueButton.click({ force: options.force, timeout: clickTimeout });
     } catch (error) {
-      const message = String(error);
+      const message = this.normalizeUnknownError(error);
       if (!message.includes('intercepts pointer events')) {
         throw error;
       }
-      this.logger.warn('Continue click intercepted by spinner; retrying with force', { context });
-      const spinnerSettleTimeout = Math.min(clickTimeout, 5_000);
+      this.logger.warn('Continue click intercepted by spinner; waiting and retrying click', { context });
+      const spinnerSettleTimeout = Math.max(5_000, Math.min(stepTimeout, EXUI_TIMEOUTS.SUBMIT_AUTO_ADVANCE_MAX));
       await this.page
         .locator('xuilib-loading-spinner')
         .first()
         .waitFor({ state: 'hidden', timeout: spinnerSettleTimeout })
         .catch(() => {
-          // Best-effort wait; if spinner persists, we still attempt force click.
+          // Best-effort wait; retry click below handles residual spinner overlays.
         });
-      await visibleContinueButton.click({ force: true, timeout: clickTimeout });
+      try {
+        await visibleContinueButton.click({ force: options.force, timeout: clickTimeout });
+      } catch (retryError) {
+        const retryMessage = this.normalizeUnknownError(retryError);
+        if (!retryMessage.includes('intercepts pointer events') || options.force === true) {
+          throw retryError;
+        }
+        this.logger.warn('Continue click still intercepted after wait; retrying with force', { context });
+        await visibleContinueButton.click({ force: true, timeout: clickTimeout });
+      }
     }
-    await this.waitForSpinnerToComplete(`after ${context}`, clickTimeout);
+    await this.waitForSpinnerToComplete(`after ${context}`, stepTimeout);
     await this.assertNoEventCreationError(context);
     const hasValidationError = await this.checkForErrorMessage();
     if (hasValidationError) {
@@ -370,7 +508,7 @@ export class CreateCasePage extends Base {
     try {
       await visibleSubmitButton.click({ timeout: EXUI_TIMEOUTS.SUBMIT_CLICK });
     } catch (error) {
-      const message = String(error);
+      const message = this.normalizeUnknownError(error);
       if (!message.includes('intercepts pointer events')) {
         throw error;
       }
@@ -380,6 +518,7 @@ export class CreateCasePage extends Base {
   }
 
   async clickSubmitAndWait(context: string, options: { timeoutMs?: number; maxAutoAdvanceAttempts?: number } = {}) {
+    // NOSONAR typescript:S3776 — Cognitive Complexity acceptable per agents.md §6.2.10: self-contained CCD wizard submit/auto-advance polling loop
     const timeoutMs = options.timeoutMs ?? this.getRecommendedTimeoutMs();
     const deadline = Date.now() + timeoutMs;
     const apiCallsBaseline = this.getApiCalls().length;
@@ -401,6 +540,16 @@ export class CreateCasePage extends Base {
       const onSomethingWentWrongPage = await this.somethingWentWrongHeading.isVisible().catch(() => false);
       if (onSomethingWentWrongPage) {
         throw new Error(`Case event failed ${context}: Something went wrong page was displayed.`);
+      }
+
+      const onCaseDetailsSummaryPage =
+        !this.page.url().includes('/trigger/') &&
+        (await this.page
+          .locator('#next-step')
+          .isVisible()
+          .catch(() => false));
+      if (onCaseDetailsSummaryPage) {
+        return;
       }
 
       const visibleSubmitButton = await this.getVisibleActionButton(this.submitButton);
@@ -462,7 +611,7 @@ export class CreateCasePage extends Base {
       .catch(() => []);
 
     throw new Error(
-      `Submit button did not become available ${context}. URL=${this.page.url()} visibleActionButtons=${visibleActionButtons.join(' | ') || 'none'}`
+      `Submit button did not become available ${context}. URL=${this.page.url()} autoAdvance=${autoAdvanceCount}/${maxAutoAdvanceAttempts} visibleActionButtons=${visibleActionButtons.join(' | ') || 'none'}`
     );
   }
 
@@ -521,7 +670,7 @@ export class CreateCasePage extends Base {
    * @throws {Error} If wizard doesn't advance after retry or validation error occurs
    * @private
    */
-  private async ensureWizardAdvanced(
+  async ensureWizardAdvanced(
     context: string,
     initialUrl: string,
     options: {
@@ -661,8 +810,16 @@ export class CreateCasePage extends Base {
     return false;
   }
 
-  async createCase(jurisdiction: string, caseType: string, eventType: string | undefined) {
-    const maxAttempts = 2;
+  async createCase(
+    // NOSONAR typescript:S3776 — Cognitive Complexity acceptable per agents.md §6.2.10: multi-attempt CCD case-creation orchestration with retry logic
+    jurisdiction: string,
+    caseType: string,
+    eventType: string | undefined,
+    options: {
+      maxAttempts?: number;
+    } = {}
+  ) {
+    const maxAttempts = options.maxAttempts ?? 2;
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
         if (!this.page.url().includes('/cases/case-filter')) {
@@ -672,7 +829,7 @@ export class CreateCasePage extends Base {
           } catch (error: unknown) {
             // Button not visible - navigate directly to filter page
             logger.debug('Create case button not visible, navigating to filter page', {
-              error: error instanceof Error ? error.message : JSON.stringify(error),
+              error: this.normalizeUnknownError(error),
             });
             await this.page.goto('/cases/case-filter');
           }
@@ -714,6 +871,9 @@ export class CreateCasePage extends Base {
           await this.page.waitForTimeout(EXUI_TIMEOUTS.CREATE_CASE_RETRY_BACKOFF);
         } else {
           logger.warn('Create case selection failed; retrying case filter', { attempt, maxAttempts });
+        }
+        if (this.page.isClosed()) {
+          throw error;
         }
         await this.page.goto('/cases/case-filter');
       }
@@ -863,12 +1023,12 @@ export class CreateCasePage extends Base {
     }
   }
 
-  async createDivorceCase(jurisdiction: string, caseType: string, testInput: string) {
+  async createDivorceCase(jurisdiction: string, caseType: string, testInput: string, options: CreateDivorceCaseOptions = {}) {
     switch (caseType) {
       case 'xuiCaseFlagsV1':
         return this.createDivorceCaseFlag(testInput, jurisdiction, caseType);
       case 'XUI Case PoC':
-        return this.createDivorceCasePoC(jurisdiction, caseType, testInput);
+        return this.createDivorceCasePoC(jurisdiction, caseType, testInput, options);
       case 'xuiTestCaseType':
         return this.createDivorceCaseTest(testInput, jurisdiction, caseType);
       default:
@@ -936,7 +1096,9 @@ export class CreateCasePage extends Base {
         const shouldRetry = (eventErrorVisible || isTransientWorkflowFailure(error)) && attempt < maxAttempts;
         if (shouldRetry) {
           logger.warn('Divorce test case creation failed; retrying', { attempt, maxAttempts });
-          await this.page.goto('/cases/case-filter');
+          if (!this.page.isClosed()) {
+            await this.page.goto('/cases/case-filter');
+          }
           continue;
         }
         throw error;
@@ -956,12 +1118,106 @@ export class CreateCasePage extends Base {
     await this.waitForCaseDetails('after submitting divorce case flags');
   }
 
-  async createDivorceCasePoC(jurisdiction: string, caseType: string, textField0: string) {
-    const maxAttempts = 2;
-    const preferredGenders = ['Male', 'Female', 'Not given', 'Not Known', 'Unknown'];
+  async selectDivorceReasons(reasons: string[]) {
+    for (const reason of reasons) {
+      await this.divorceReasons.filter({ hasText: reason }).first().click();
+    }
+  }
+
+  async fillDivorcePocSections(
+    options: {
+      data?: Partial<DivorcePoCData> | Array<Partial<DivorcePoCData>>;
+      textFields?: Pick<DivorcePoCData, 'textField0' | 'textField1' | 'textField2' | 'textField3'>;
+      gender?: string;
+      divorceReasons?: string[];
+    } = {}
+  ): Promise<void> {
+    const fillPerson = async (person: 'person1' | 'person2', data?: Partial<DivorcePoCData>) => {
+      if (!data) {
+        return;
+      }
+
+      const titleInput = person === 'person1' ? this.person1TitleInput : this.person2TitleInput;
+      const firstNameInput = person === 'person1' ? this.person1FirstNameInput : this.person2FirstNameInput;
+      const lastNameInput = person === 'person1' ? this.person1LastNameInput : this.person2LastNameInput;
+      const genderSelect = person === 'person1' ? this.person1GenderSelect : this.person2GenderSelect;
+      const maidenNameInput = person === 'person1' ? this.person1MaidenNameInput : this.person2MaidenNameInput;
+      const jobTitleInput = person === 'person1' ? this.person1JobTitleInput : this.person2JobTitleInput;
+      const jobDescriptionInput = person === 'person1' ? this.person1JobDescriptionInput : this.person2JobDescriptionInput;
+
+      const fieldsToFill: Array<[Locator, string | undefined]> = [
+        [titleInput, data.title],
+        [firstNameInput, data.firstName],
+        [lastNameInput, data.lastName],
+        [jobTitleInput, data.jobTitle],
+        [jobDescriptionInput, data.jobDescription],
+      ];
+      for (const [locator, value] of fieldsToFill) {
+        if (value) {
+          await locator.fill(value);
+        }
+      }
+
+      if (data.gender) {
+        await genderSelect.selectOption(data.gender);
+      }
+
+      if (data.gender?.toLowerCase() === 'female') {
+        await maidenNameInput.fill(data.maidenName ?? '');
+      }
+    };
+
+    let peopleData: Array<Partial<DivorcePoCData>> = [];
+    if (Array.isArray(options.data)) {
+      peopleData = options.data;
+    } else if (options.data) {
+      peopleData = [options.data];
+    }
+    await this.genderRadioButtons
+      .getByLabel(options.gender ?? 'Male', { exact: true })
+      .first()
+      .click();
+    await fillPerson('person1', peopleData[0]);
+    if (peopleData[1]) {
+      await fillPerson('person2', peopleData[1]);
+    }
+
+    await this.clickContinueAndWait('after PoC personal details');
+    if (options.textFields?.textField1 !== undefined) {
+      await this.textField1Input.fill(options.textFields.textField1);
+    }
+    if (options.textFields?.textField2 !== undefined) {
+      await this.textField2Input.fill(options.textFields.textField2);
+    }
+    if (options.textFields?.textField3 !== undefined) {
+      await this.textField3Input.fill(options.textFields.textField3);
+    }
+    if (options.textFields?.textField0 !== undefined) {
+      await this.textField0Input.fill(options.textFields.textField0);
+    }
+
+    if (options.divorceReasons?.length) {
+      await this.selectDivorceReasons(options.divorceReasons);
+    }
+
+    await this.clickContinueAndWait('after hidden field details');
+  }
+
+  async createDivorceCasePoC(
+    // NOSONAR typescript:S3776 — Cognitive Complexity acceptable per agents.md §6.2.10: multi-attempt Divorce PoC creation with retry and data-variant handling
+    jurisdiction: string,
+    caseType: string,
+    dataOrTextField0?: DivorcePoCData | string,
+    options: CreateDivorceCaseOptions = {}
+  ) {
+    const data = typeof dataOrTextField0 === 'string' ? ({ textField0: dataOrTextField0 } as DivorcePoCData) : dataOrTextField0;
+    const maxAttempts = options.maxAttempts ?? 2;
+    const preferredGenders = data?.gender ? [data.gender] : ['Male', 'Female', 'Not given'];
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
       try {
-        await this.createCase(jurisdiction, caseType, '');
+        await this.createCase(jurisdiction, caseType, '', {
+          maxAttempts: options.createCaseMaxAttempts,
+        });
         const availableGender = await this.person1GenderSelect.evaluate((select) => {
           const options = Array.from((select as HTMLSelectElement).options).map((option) => option.label.trim());
           return options;
@@ -971,28 +1227,35 @@ export class CreateCasePage extends Base {
         if (await genderRadio.isVisible().catch(() => false)) {
           await genderRadio.check();
         }
-        await this.person1Title.click();
-        await this.person1Title.fill(faker.person.prefix());
-        await this.person1FirstNameInput.fill(faker.person.firstName());
-        await this.person1LastNameInput.fill(faker.person.lastName());
-        await this.person1GenderSelect.selectOption(gender);
-        await this.person1JobTitleInput.fill(faker.person.jobTitle());
-        await this.person1JobDescriptionInput.fill(faker.lorem.sentence());
+        await this.person1TitleInput.click();
+        await this.person1TitleInput.fill(data?.title ?? faker.person.prefix());
+        await this.person1FirstNameInput.fill(data?.firstName ?? faker.person.firstName());
+        await this.person1LastNameInput.fill(data?.lastName ?? faker.person.lastName());
+        await this.person1GenderSelect.selectOption(data?.gender ?? gender);
+        await this.person1JobTitleInput.fill(data?.jobTitle ?? faker.person.jobTitle());
+        await this.person1JobDescriptionInput.fill(data?.jobDescription ?? faker.lorem.sentence());
+        const personalDetailsUrl = this.page.url();
         await this.clickContinueAndWait('after PoC personal details');
-        await this.textField0Input.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
-        await this.textField0Input.fill(textField0);
-        await this.textField3Input.fill(faker.lorem.word());
-        await this.textField1Input.fill(faker.lorem.word());
-        await this.textField2Input.fill(faker.lorem.word());
+        await this.ensureWizardAdvanced('after PoC personal details', personalDetailsUrl, {
+          expectedLocator: this.textField0Input,
+          timeoutMs: EXUI_TIMEOUTS.POC_FIELD_VISIBLE,
+        });
+        await this.textField0Input.fill(data?.textField0 ?? faker.lorem.word());
+        await this.textField3Input.fill(data?.textField3 ?? faker.lorem.word());
+        await this.textField1Input.fill(data?.textField1 ?? faker.lorem.word());
+        await this.textField2Input.fill(data?.textField2 ?? faker.lorem.word());
         await this.clickContinueAndWait('after PoC text fields');
         await this.checkYourAnswersHeading.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
+
         await this.testSubmitButton.click();
         await this.waitForSpinnerToComplete('after submitting divorce PoC case');
         await this.waitForCaseDetails('after submitting divorce PoC case');
+
         return;
       } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
+        const message = this.normalizeUnknownError(error);
         const isTransientCreationFailure =
+          isTransientWorkflowFailure(error) ||
           message.includes('Validation error after after PoC text fields') ||
           message.includes('The event could not be created') ||
           (await this.eventCreationErrorHeading.isVisible().catch(() => false));
@@ -1006,5 +1269,34 @@ export class CreateCasePage extends Base {
         throw error;
       }
     }
+  }
+
+  async generateDivorcePoCPersonData(overrides: Partial<PersonData> = {}): Promise<PersonData> {
+    return {
+      title: overrides.title ?? faker.person.prefix(),
+      firstName: overrides.firstName ?? `${faker.person.firstName()} ${faker.person.middleName()}`,
+      maidenName: overrides.maidenName ?? faker.person.lastName(),
+      lastName: overrides.lastName ?? faker.person.lastName(),
+      gender: overrides.gender ?? 'Male',
+      jobTitle: overrides.jobTitle ?? faker.person.jobTitle(),
+      jobDescription: overrides.jobDescription ?? faker.lorem.sentence(),
+    };
+  }
+
+  async generateDivorcePoCData(overrides: Partial<DivorcePoCData> = {}): Promise<DivorcePoCData> {
+    const gender = overrides.gender ?? faker.helpers.arrayElement(['Male', 'Female', 'Not given']);
+    const reasonsForDivorce = overrides.divorceReasons ?? [
+      faker.helpers.arrayElement(['Behaviour', 'Adultery', 'Desertion', '2-year separation (with consent)', '5-year separation']),
+    ];
+    const generatedAt = overrides.generatedAt ?? new Date().toISOString();
+    return {
+      gender,
+      textField0: overrides.textField0 ?? faker.lorem.sentence() + faker.date.soon().getTime(),
+      textField1: overrides.textField1 ?? faker.lorem.sentence() + faker.date.soon().getTime(),
+      textField2: overrides.textField2 ?? faker.lorem.sentence() + faker.date.soon().getTime(),
+      textField3: overrides.textField3 ?? faker.lorem.sentence() + faker.date.soon().getTime(),
+      divorceReasons: overrides.divorceReasons ?? reasonsForDivorce,
+      generatedAt,
+    };
   }
 }

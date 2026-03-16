@@ -6,7 +6,7 @@ import { caseBannerMatches } from '../../utils/banner.utils';
 import { isPageClosingError, rowMatchesExpected } from '../../utils/case-flags.utils';
 import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
 
-test.describe('Case level case flags', () => {
+test.describe('Case level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () => {
   test.describe.configure({ timeout: 180000 });
   let caseNumber: string;
   const jurisdiction = 'EMPLOYMENT';
@@ -59,12 +59,9 @@ test.describe('Case level case flags', () => {
           return caseBannerMatches(bannerText, caseNumber, 'has been updated with event: Create a case flag');
         })
         .toBe(true);
-      if (await caseDetailsPage.caseNotificationBannerTitle.isVisible()) {
-        expect.soft(await caseDetailsPage.caseNotificationBannerTitle.innerText()).toContain('Important');
-      }
-      if (await caseDetailsPage.caseNotificationBannerBody.isVisible()) {
-        expect.soft(await caseDetailsPage.caseNotificationBannerBody.innerText()).toMatch(/active flag/i);
-      }
+      expect.soft(await caseDetailsPage.caseNotificationBannerTitle.isVisible()).toBe(true);
+      expect.soft(await caseDetailsPage.caseNotificationBannerTitle.innerText()).toContain('Important');
+      expect.soft(await caseDetailsPage.caseNotificationBannerBody.innerText()).toContain('There is 1 active flag on this case.');
     });
 
     await test.step('Verify the case level flag is shown in the flags tab', async () => {
@@ -100,7 +97,7 @@ test.describe('Case level case flags', () => {
   });
 });
 
-test.describe('Party level case flags', () => {
+test.describe('Party level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () => {
   test.describe.configure({ timeout: 180000 });
   const testValue = faker.person.firstName();
   let caseNumber: string;
@@ -160,12 +157,9 @@ test.describe('Party level case flags', () => {
           { timeout: 45000, intervals: [1000, 2000, 3000] }
         )
         .toBe(true);
-      if (await caseDetailsPage.caseNotificationBannerTitle.isVisible()) {
-        expect.soft(await caseDetailsPage.caseNotificationBannerTitle.innerText()).toContain('Important');
-      }
-      if (await caseDetailsPage.caseNotificationBannerBody.isVisible()) {
-        expect.soft(await caseDetailsPage.caseNotificationBannerBody.innerText()).toMatch(/active flag/i);
-      }
+      expect.soft(await caseDetailsPage.caseNotificationBannerTitle.isVisible()).toBe(true);
+      expect.soft(await caseDetailsPage.caseNotificationBannerTitle.innerText()).toContain('Important');
+      expect.soft(await caseDetailsPage.caseNotificationBannerBody.innerText()).toContain('There is 1 active flag on this case.');
     });
 
     await test.step('Verify the party level case flag is shown in the flags tab', async () => {

@@ -11,7 +11,7 @@ import {
 import { extractCaseShareEntries, isTaskList } from './utils/types';
 import nodeAppDataModels from './data/nodeAppDataModels';
 
-test.describe('Assertion shape validators', () => {
+test.describe('Assertion shape validators', { tag: '@svc-internal' }, () => {
   test('expectTaskList covers empty and populated tasks', () => {
     expectTaskList({ tasks: [], total_records: 0 });
     expectTaskList({

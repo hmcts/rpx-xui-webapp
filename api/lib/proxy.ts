@@ -37,7 +37,7 @@ export function setHeaders(req: express.Request, contentType?: string) {
       headers.Authorization = req.headers.Authorization;
     }
 
-    if (req.headers['user-roles'] && req.headers['user-roles'].length) {
+    if (req.headers['user-roles']?.length) {
       headers['user-roles'] = req.headers['user-roles'];
     }
 
@@ -51,6 +51,10 @@ export function setHeaders(req: express.Request, contentType?: string) {
 
     if (enableHearingDataSourceHeaders && exists(req, 'headers.Role-Assignment-Url')) {
       headers['Role-Assignment-Url'] = req.headers['Role-Assignment-Url'];
+    }
+
+    if (enableHearingDataSourceHeaders && exists(req, 'headers.Role-Assignment-Url')) {
+      headers['hmctsDeploymentId'] = req.headers['Hmcts-Deployment-Id'];
     }
   }
 

@@ -168,7 +168,7 @@
     "pegjs": "^0.10.0",
     "portfinder": "^1.0.28",
     "prettier": "^3.8.0",
-    "rpx-xui-translation": "https://github.com/hmcts/rpx-xui-translation/releases/download/v1.2.1/rpx-xui-translation-1.2.1.tgz",
+    "rpx-xui-translation": "1.2.1-exui-3994-2",
     "rx-polling-hmcts": "1.1.1",
     "rxjs": "^7.8.1",
     "smoothscroll-polyfill": "^0.4.3",

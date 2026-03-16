@@ -17,7 +17,8 @@ test.beforeEach(async ({ page }) => {
   taskListMockResponse = buildTaskListMock(160, userId?.toString() || '', myActionsList);
 });
 
-test.describe(`Task Completion as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
+// Skipping until Master build staging issue is resolved - EXUI-4323
+test.describe.skip(`Task Completion as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   test(`User can mark one of their assigned tasks as done`, async ({ taskListPage, page }) => {
     const firstTask = taskListMockResponse.tasks[0];
 

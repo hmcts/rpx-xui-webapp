@@ -178,6 +178,7 @@ describe('AllWorkTaskComponent', () => {
       taskType: 'JUDICIAL',
       priority: 'High',
       taskName: 'Review Hearing bundle',
+      workTypes: ['Type1', 'Type2'],
     };
     component.onSelectionChanged(selection);
     const searchRequest = component.getSearchTaskRequestPagination();
@@ -252,6 +253,7 @@ describe('AllWorkTaskComponent', () => {
     it('should have default sortedBy values', () => {
       // The sortedBy property is declared in the component with initial values
       const freshComponent = new AllWorkTaskComponent(
+        null,
         null,
         null,
         null,
@@ -431,6 +433,7 @@ describe('AllWorkTaskComponent', () => {
         person: { id: 'person789', name: 'Test Person' } as Person,
         taskType: 'ADMIN',
         taskName: { task_type_id: 'task456', task_type_name: 'Test Task' },
+        workTypes: ['Type1', 'Type2'],
       };
 
       component.onSelectionChanged(selection);
@@ -455,6 +458,7 @@ describe('AllWorkTaskComponent', () => {
         person: null,
         taskType: 'ADMIN',
         taskName: null,
+        workTypes: [],
       };
 
       component.onSelectionChanged(selection);

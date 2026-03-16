@@ -49,8 +49,7 @@ describe('Case Flag', () => {
       expect(handleGetStub).to.have.been.calledOnce;
       expect(handleGetStub).to.have.been.calledWith(
         sinon.match((url) => url.endsWith(`/refdata/commondata/caseflags/service-id=${serviceId}`)),
-        req,
-        next
+        req
       );
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(CASE_FLAG_REFERENCE_VALUES);
@@ -89,8 +88,7 @@ describe('Case Flag', () => {
 
       expect(handleGetStub).to.have.been.calledWith(
         sinon.match((url) => url.endsWith('/refdata/commondata/caseflags/service-id=undefined')),
-        req,
-        next
+        req
       );
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(CASE_FLAG_REFERENCE_VALUES);
@@ -111,8 +109,7 @@ describe('Case Flag', () => {
 
       expect(handleGetStub).to.have.been.calledWith(
         sinon.match((url) => url.endsWith('/refdata/commondata/caseflags/service-id=')),
-        req,
-        next
+        req
       );
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(CASE_FLAG_REFERENCE_VALUES);
@@ -202,8 +199,7 @@ describe('Case Flag', () => {
 
       expect(handleGetStub).to.have.been.calledWith(
         sinon.match((url) => url.endsWith(`/refdata/commondata/caseflags/service-id=${serviceId}`)),
-        req,
-        next
+        req
       );
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(CASE_FLAG_REFERENCE_VALUES);
@@ -259,8 +255,7 @@ describe('Case Flag', () => {
 
       expect(handleGetStub).to.have.been.calledWith(
         sinon.match((url) => url.endsWith('/refdata/commondata/caseflags/service-id=AAA7,BBB8')),
-        req,
-        next
+        req
       );
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(CASE_FLAG_REFERENCE_VALUES);

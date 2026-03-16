@@ -16,7 +16,6 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./request-hearing.component.scss'],
 })
 export class RequestHearingComponent implements OnDestroy {
-  private readonly reloadMessage = 'The Party IDs for this request appear mismatched, please reload and start the request again.';
   public action = ACTION;
   public hearingStateSub: Subscription;
   public serviceHearingValuesModel: ServiceHearingValuesModel;
@@ -53,9 +52,9 @@ export class RequestHearingComponent implements OnDestroy {
       this.hearingsService.submitUpdatedRequestClicked = true;
       this.hearingsService.navigateAction(action);
     } else if (action === ACTION.SUBMIT) {
-      if (!HearingsUtils.checkHearingPartiesConsistency(this.hearingRequestMainModel, this.serviceHearingValuesModel)) {
+      if (!HearingsUtils.checkHearingConsistency(this.hearingRequestMainModel, this.serviceHearingValuesModel)) {
         this.showMismatchErrorMessage = true;
-        this.validationErrors = { id: 'reload-error-message', message: this.reloadMessage };
+        this.validationErrors = { id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE };
       } else {
         this.hearingsService.hearingRequestForSubmitValid = true;
         this.hearingsService.navigateAction(action);

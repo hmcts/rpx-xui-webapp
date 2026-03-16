@@ -83,7 +83,7 @@ test.describe(`Task Go To as ${userIdentifier}`, { tag: ['@integration', '@integ
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
 
-      await taskListPage.manageCaseButtons.first().click();
+      await taskListPage.openFirstManageActions('my tasks go to case details');
       await expect(taskListPage.taskActionGoTo).toBeVisible();
 
       const caseTasksResponsePromise = page.waitForResponse(
@@ -93,7 +93,7 @@ test.describe(`Task Go To as ${userIdentifier}`, { tag: ['@integration', '@integ
           response.status() === 200
       );
 
-      await taskListPage.taskActionGoTo.click();
+      await taskListPage.clickTaskAction(taskListPage.taskActionGoTo, 'my tasks go to case details');
       const caseTasksResponse = await caseTasksResponsePromise;
       expect(caseTasksResponse.ok()).toBeTruthy();
 

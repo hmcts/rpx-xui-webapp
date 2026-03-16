@@ -453,7 +453,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
         partyRole: 'appellant',
         individualDetails: { preferredHearingChannel: 'INPERSON' },
       } as any;
-      // eslint-disable-next-line dot-notation
+
       expect(testComponent['getPartyChannelChanged'](partyDetails)).toBe(false);
     });
 
@@ -464,7 +464,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
         partyRole: 'appellant',
         individualDetails: { preferredHearingChannel: 'VIDEO' },
       } as any;
-      // eslint-disable-next-line dot-notation
+
       expect(testComponent['getPartyChannelChanged'](partyDetails)).toBe(true);
     });
 
@@ -475,7 +475,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
         partyRole: 'appellant',
         individualDetails: { preferredHearingChannel: 'VIDEO' },
       } as any;
-      // eslint-disable-next-line dot-notation
+
       expect(testComponent['getPartyChannelChanged'](partyDetails)).toBe(false);
     });
 
@@ -498,7 +498,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
         partyRole: 'appellant',
         individualDetails: { preferredHearingChannel: undefined },
       } as any;
-      // eslint-disable-next-line dot-notation
+
       expect(testComponent['getPartyChannelChanged'](partyDetails)).toBe(true);
     });
 
@@ -521,7 +521,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
         partyRole: 'appellant',
         individualDetails: { preferredHearingChannel: undefined },
       } as any;
-      // eslint-disable-next-line dot-notation
+
       expect(testComponent['getPartyChannelChanged'](partyDetails)).toBe(false);
     });
 
@@ -544,7 +544,7 @@ describe('ParticipantAttendanceSectionComponent', () => {
         partyRole: 'appellant',
         individualDetails: null,
       } as any;
-      // eslint-disable-next-line dot-notation
+
       expect(testComponent['getPartyChannelChanged'](partyDetails)).toBe(true);
     });
   });

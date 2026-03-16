@@ -37,9 +37,9 @@ test.describe(`Assign Task as ${userIdentifier}`, { tag: ['@integration', '@inte
     });
 
     await test.step('Verify you can assign test', async () => {
-      await taskListPage.manageCaseButtons.first().click();
+      await taskListPage.openFirstManageActions('available tasks claim action');
       await expect(taskListPage.taskActionClaim).toBeVisible();
-      await taskListPage.taskActionClaim.click();
+      await taskListPage.clickTaskAction(taskListPage.taskActionClaim, 'available tasks claim action');
       await expect(taskListPage.taskActionClaim).not.toBeVisible();
       await expect(taskListPage.exuiBodyComponent.infoMessage).toBeVisible();
       await expect(taskListPage.exuiBodyComponent.successMessage).toContainText(

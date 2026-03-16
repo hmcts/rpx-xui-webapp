@@ -58,9 +58,9 @@ test.describe(
             response.status() === 500
         );
 
-        await taskListPage.manageCaseButtons.first().click();
-        await taskListPage.taskActionClaim.waitFor({ state: 'visible' });
-        await taskListPage.taskActionClaim.click();
+        await taskListPage.openFirstManageActions('available tasks claim 500 response');
+        await expect(taskListPage.taskActionClaim).toBeVisible();
+        await taskListPage.clickTaskAction(taskListPage.taskActionClaim, 'available tasks claim 500 response');
 
         const claimFailureResponse = await claimFailureResponsePromise;
         expect(claimFailureResponse.status()).toBe(500);
@@ -109,9 +109,9 @@ test.describe(
             response.status() === 400
         );
 
-        await taskListPage.manageCaseButtons.first().click();
-        await taskListPage.taskActionClaim.waitFor({ state: 'visible' });
-        await taskListPage.taskActionClaim.click();
+        await taskListPage.openFirstManageActions('available tasks claim 400 response');
+        await expect(taskListPage.taskActionClaim).toBeVisible();
+        await taskListPage.clickTaskAction(taskListPage.taskActionClaim, 'available tasks claim 400 response');
 
         const badRequestResponse = await badRequestResponsePromise;
         expect(badRequestResponse.status()).toBe(400);

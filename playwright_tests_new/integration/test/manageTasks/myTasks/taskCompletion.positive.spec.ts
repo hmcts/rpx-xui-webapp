@@ -42,18 +42,15 @@ test.describe.skip(`Task Completion as ${userIdentifier}`, { tag: ['@integration
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
 
-      await taskListPage.manageCaseButtons.first().click();
+      await taskListPage.openFirstManageActions('my tasks complete action');
       await expect(taskListPage.taskActionMarkAsDone).toBeVisible();
-      await taskListPage.taskActionMarkAsDone.click();
+      await taskListPage.clickTaskAction(taskListPage.taskActionMarkAsDone, 'my tasks complete action');
 
       await expect(page).toHaveURL(new RegExp(`/work/${firstTask.id}/complete`));
       await expect(page.locator('#action-title')).toHaveText('Mark the task as done');
     });
 
     await test.step('Submit complete action and verify request/response', async () => {
-      const completeRequestPromise = page.waitForRequest(
-        (request) => request.method() === 'POST' && request.url().includes(`/workallocation/task/${firstTask.id}/complete`)
-      );
       const completeResponsePromise = page.waitForResponse(
         (response) =>
           response.request().method() === 'POST' &&
@@ -61,8 +58,10 @@ test.describe.skip(`Task Completion as ${userIdentifier}`, { tag: ['@integration
           response.status() === 204
       );
 
-      await taskListPage.submitButton.click();
-      const completeRequest = await completeRequestPromise;
+      const completeRequest = await taskListPage.submitActionAndWaitForRequest(
+        (request) => request.method() === 'POST' && request.url().includes(`/workallocation/task/${firstTask.id}/complete`),
+        'submitting my tasks complete action'
+      );
       expect(completeRequest.postDataJSON()).toEqual({ hasNoAssigneeOnComplete: false });
       const completeResponse = await completeResponsePromise;
       expect(completeResponse.ok()).toBeTruthy();

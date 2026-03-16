@@ -41,6 +41,23 @@ test.describe(`Task Reassign as ${userIdentifier}`, { tag: ['@integration', '@in
           body: JSON.stringify(singleUsersGetByRoleMockResponse),
         });
       });
+
+      await page.route('**/api/role-access/roles/getJudicialUsers*', async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(
+            singleUsersGetByRoleMockResponse.map((user, index) => ({
+              sidam_id: user.idamId,
+              personal_code: `judicial-personal-code-${index + 1}`,
+              known_as: user.firstName,
+              surname: user.lastName,
+              full_name: `${user.firstName} ${user.lastName}`,
+              email_id: user.email,
+            }))
+          ),
+        });
+      });
     });
 
     await test.step('Navigate to task list and open reassign action', async () => {
@@ -48,9 +65,9 @@ test.describe(`Task Reassign as ${userIdentifier}`, { tag: ['@integration', '@in
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
 
-      await taskListPage.manageCaseButtons.first().click();
+      await taskListPage.openFirstManageActions('my tasks reassign action');
       await expect(taskListPage.taskActionReassign).toBeVisible();
-      await taskListPage.taskActionReassign.click();
+      await taskListPage.clickTaskAction(taskListPage.taskActionReassign, 'my tasks reassign action');
 
       await expect(page).toHaveURL(new RegExp(`/work/${firstTask.id}/reassign`));
       await expect(page.locator('main')).toContainText('Choose a role type');
@@ -75,7 +92,11 @@ test.describe(`Task Reassign as ${userIdentifier}`, { tag: ['@integration', '@in
           response.url().includes(`/workallocation/task/${firstTask.id}/assign`) &&
           response.status() === 204
       );
-      await taskListPage.reassignButton.click();
+      await taskListPage.clickButtonAndWaitForRequest(
+        taskListPage.reassignButton,
+        (request) => request.method() === 'POST' && request.url().includes(`/workallocation/task/${firstTask.id}/assign`),
+        'submitting my tasks reassign action'
+      );
       const reassignRequest = await reassignRequestPromise;
       const requestBody = reassignRequest.postDataJSON() as { userId?: string };
       expect(requestBody.userId).toBe(expectedReassignUserId);

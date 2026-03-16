@@ -2,7 +2,13 @@ import { defineConfig, devices } from '@playwright/test';
 import { execSync } from 'node:child_process';
 import { cpus, totalmem } from 'node:os';
 import { version as appVersion } from './package.json';
-import { parseNonNegativeInt, resolveDefaultReporter, resolveTagFilters } from './playwright-config-utils';
+import {
+  parseNonNegativeInt,
+  resolveApiProjectWorkerCount,
+  resolveDefaultReporter,
+  resolveTagFilters,
+  resolveWorkerCount,
+} from './playwright-config-utils';
 
 type EnvMap = NodeJS.ProcessEnv;
 
@@ -60,42 +66,6 @@ const resolveBranchName = (env: EnvMap = process.env): string => {
   return 'local';
 };
 
-const resolveConfiguredWorkerCount = (env: EnvMap = process.env): number | undefined => {
-  const configured = env.FUNCTIONAL_TESTS_WORKERS;
-  if (configured) {
-    const parsed = Number.parseInt(configured, 10);
-    if (Number.isFinite(parsed) && parsed > 0) {
-      return parsed;
-    }
-  }
-  return undefined;
-};
-
-const resolveWorkerCount = (env: EnvMap = process.env) => {
-  const configured = resolveConfiguredWorkerCount(env);
-  if (configured !== undefined) {
-    return configured;
-  }
-
-  // CI should default to 8 workers for predictable parallelism unless Jenkins overrides it.
-  if (env.CI) {
-    return 8;
-  }
-
-  const logical = cpus()?.length ?? 1;
-  const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));
-  const suggested = Math.min(8, Math.max(2, approxPhysical));
-  return suggested;
-};
-
-const resolveApiProjectWorkerCount = (env: EnvMap = process.env) => {
-  const configured = resolveConfiguredWorkerCount(env);
-  if (configured !== undefined) {
-    return configured;
-  }
-  return env.CI ? 4 : Math.max(1, Math.min(8, cpus()?.length ?? 4));
-};
-
 const resolveApiRetries = (env: EnvMap = process.env) =>
   parseNonNegativeInt(env.PW_API_RETRIES) ?? parseNonNegativeInt(env.PW_E2E_RETRIES) ?? 2;
 
@@ -141,6 +111,7 @@ const resolveApiTagFilters = (env: EnvMap = process.env) =>
   });
 
 const buildConfig = (env: EnvMap = process.env) => {
+  const temporaryProbePattern = '**/_tmp_*.spec.ts';
   const workerCount = resolveWorkerCount(env);
   const headlessMode = resolveHeadlessMode(env);
   const odhinOutputFolder = resolveOdhinOutputFolder(env);
@@ -158,22 +129,16 @@ const buildConfig = (env: EnvMap = process.env) => {
       'playwright_tests_new/E2E/**/*.spec.ts',
       'playwright_tests_new/integration/**/*.spec.ts',
     ],
-    /* Run tests in files in parallel */
+    testIgnore: [temporaryProbePattern],
     fullyParallel: true,
-    /* Fail the build on CI if you accidentally left test.only in the source code. */
     forbidOnly: !!env.CI,
-    /* Retry failed tests twice in all environments */
-    retries: 2, // Set the number of retries for all projects
-
+    retries: 2,
     timeout: 180_000,
     expect: {
       timeout: 60_000,
     },
     reportSlowTests: null,
-
-    /* Control the number of parallel test workers. */
     workers: workerCount,
-
     reporter: [
       [resolveDefaultReporter(env)],
       ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs'],
@@ -193,11 +158,14 @@ const buildConfig = (env: EnvMap = process.env) => {
         },
       ],
     ],
-
     projects: [
       {
         name: 'chromium',
-        testIgnore: ['playwright_tests_new/api/**', 'playwright_tests_new/E2E/test/smoke/smokeTest.spec.ts'],
+        testIgnore: [
+          'playwright_tests_new/api/**',
+          'playwright_tests_new/E2E/test/smoke/smokeTest.spec.ts',
+          temporaryProbePattern,
+        ],
         use: {
           baseURL: resolveBaseUrl(env),
           ...devices['Desktop Chrome'],

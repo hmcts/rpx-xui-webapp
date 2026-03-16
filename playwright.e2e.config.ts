@@ -2,8 +2,10 @@ import { defineConfig, devices } from '@playwright/test';
 import { execSync } from 'node:child_process';
 import { cpus, totalmem } from 'node:os';
 import { version as appVersion } from './package.json';
-import { parseNonNegativeInt, resolveDefaultReporter, resolveTagFilters } from './playwright-config-utils';
+import { parseNonNegativeInt, resolveDefaultReporter, resolveTagFilters, resolveWorkerCount } from './playwright-config-utils';
+
 export default (() => {
+  const temporaryProbePattern = '**/_tmp_*.spec.ts';
   const headlessMode = process.env.HEAD !== 'true';
   const odhinOutputFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
   const baseUrl = process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';
@@ -29,7 +31,7 @@ export default (() => {
   const retries = parseNonNegativeInt(process.env.PW_E2E_RETRIES) ?? 2;
   const globalTimeoutMs = parsePositiveInt(process.env.PW_E2E_GLOBAL_TIMEOUT_MS);
 
-  const resolveEnvironmentFromUrl = (url) => {
+  const resolveEnvironmentFromUrl = (url: string) => {
     try {
       const hostname = new URL(url).hostname.toLowerCase();
       if (hostname === 'localhost' || hostname === '127.0.0.1') {
@@ -80,24 +82,7 @@ export default (() => {
     return 'local';
   };
 
-  const resolveWorkerCount = () => {
-    const configured = process.env.FUNCTIONAL_TESTS_WORKERS;
-    if (configured) {
-      const parsed = Number.parseInt(configured, 10);
-      if (Number.isFinite(parsed) && parsed > 0) {
-        return parsed;
-      }
-    }
-    if (process.env.CI) {
-      return 8;
-    }
-    const logical = cpus()?.length ?? 1;
-    const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));
-    const suggested = Math.min(8, Math.max(2, approxPhysical));
-    return suggested;
-  };
-
-  const workerCount = resolveWorkerCount();
+  const workerCount = resolveWorkerCount(process.env);
   const resolveAgentHardware = () => {
     const cpuCores = cpus()?.length ?? 'unknown';
     const totalRamGiB = Math.round((totalmem() / 1024 ** 3) * 10) / 10;
@@ -111,7 +96,7 @@ export default (() => {
   return defineConfig({
     testDir: 'playwright_tests_new/E2E',
     testMatch: ['**/test/**/*.spec.ts'],
-    testIgnore: ['**/test/smoke/smokeTest.spec.ts'],
+    testIgnore: [temporaryProbePattern, '**/test/smoke/smokeTest.spec.ts'],
     fullyParallel: true,
     retries,
     timeout: 180_000,

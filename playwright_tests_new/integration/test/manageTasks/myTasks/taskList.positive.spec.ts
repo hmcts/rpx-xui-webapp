@@ -1,10 +1,9 @@
 import { expect, test } from '../../../../E2E/fixtures';
-import { applySessionCookies } from '../../../../common/sessionCapture';
 import { buildTaskListMock, buildDeterministicMyTasksListMock, myActionsList } from '../../../mocks/taskList.mock';
 import { extractUserIdFromCookies } from '../../../utils/extractUserIdFromCookies';
 import { formatUiDate } from '../../../utils/tableUtils';
 import { setupTaskListMockRoutes } from '../../../helpers';
-import { TASK_LIST_ROUTE_REGEX } from '../../../testData';
+import { applyPrewarmedSessionCookies } from '../../../helpers';
 
 let userId: string | null;
 const userIdentifier = 'STAFF_ADMIN';
@@ -12,7 +11,7 @@ let sessionCookies: any[] = [];
 let taskListMockResponse: ReturnType<typeof buildTaskListMock>;
 
 test.beforeEach(async ({ page }) => {
-  const { cookies } = await applySessionCookies(page, userIdentifier);
+  const { cookies } = await applyPrewarmedSessionCookies(page, userIdentifier);
   sessionCookies = cookies;
   userId = extractUserIdFromCookies(sessionCookies);
   taskListMockResponse = buildTaskListMock(6, userId?.toString() || '', myActionsList);
@@ -93,12 +92,9 @@ test.describe(`Task List as ${userIdentifier}`, { tag: ['@integration', '@integr
     });
   });
 
-  test(`User can see all expected table elements with a large results set`, async ({ taskListPage, page, tableUtils }) => {
+  test(`User can see all expected table elements with a large results set`, async ({ taskListPage, page }) => {
     await test.step('Setup route mock for deterministic task list', async () => {
-      await page.route(TASK_LIST_ROUTE_REGEX, async (route) => {
-        const body = JSON.stringify(buildTaskListMock(1000, userId?.toString() || '', myActionsList));
-        await route.fulfill({ status: 200, contentType: 'application/json', body });
-      });
+      await setupTaskListMockRoutes(page, buildTaskListMock(1000, userId?.toString() || '', myActionsList));
     });
 
     await test.step('Navigate to the my tasks list page', async () => {

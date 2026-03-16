@@ -113,9 +113,7 @@ test.describe(
 
         await test.step('Verify error message is displayed', async () => {
           await createCasePage.testSubmitButton.click();
-          await createCasePage.errorSummary.waitFor({ state: 'visible' });
-          await expect(createCasePage.errorSummaryTitle).toHaveText('The event could not be created');
-          await expect(createCasePage.errorSummaryItems).toHaveText(errorMessage);
+          await createCasePage.assertCreateCaseSubmissionError(errorMessage);
         });
       });
     });

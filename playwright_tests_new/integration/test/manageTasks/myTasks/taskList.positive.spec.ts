@@ -1,26 +1,25 @@
-import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies } from '../../../common/sessionCapture';
-import { buildTaskListMock, buildDeterministicMyTasksListMock, myActionsList } from '../../mocks/taskList.mock';
-import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
-import { formatUiDate } from '../../utils/tableUtils';
-import { setupTaskListMockRoutes } from '../../helpers';
+import { expect, test } from '../../../../E2E/fixtures';
+import { buildTaskListMock, buildDeterministicMyTasksListMock, myActionsList } from '../../../mocks/taskList.mock';
+import { extractUserIdFromCookies } from '../../../utils/extractUserIdFromCookies';
+import { formatUiDate } from '../../../utils/tableUtils';
+import { setupTaskListMockRoutes } from '../../../helpers';
+import { applyPrewarmedSessionCookies } from '../../../helpers';
 
+let userId: string | null;
 const userIdentifier = 'STAFF_ADMIN';
 let sessionCookies: any[] = [];
 let taskListMockResponse: ReturnType<typeof buildTaskListMock>;
 
 test.beforeEach(async ({ page }) => {
-  const { cookies } = await applySessionCookies(page, userIdentifier);
+  const { cookies } = await applyPrewarmedSessionCookies(page, userIdentifier);
   sessionCookies = cookies;
-  const userId = extractUserIdFromCookies(sessionCookies);
-  taskListMockResponse = buildTaskListMock(160, userId?.toString() || '', myActionsList);
+  userId = extractUserIdFromCookies(sessionCookies);
+  taskListMockResponse = buildTaskListMock(6, userId?.toString() || '', myActionsList);
 });
 
 test.describe(`Task List as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   test(`User ${userIdentifier} can view assigned tasks on the task list page`, async ({ taskListPage, page, tableUtils }) => {
-    await test.step('Setup route mock for task list', async () => {
-      await setupTaskListMockRoutes(page, taskListMockResponse);
-    });
+    await setupTaskListMockRoutes(page, taskListMockResponse);
 
     await test.step('Navigate to the my tasks list page', async () => {
       await taskListPage.goto();
@@ -48,7 +47,7 @@ test.describe(`Task List as ${userIdentifier}`, { tag: ['@integration', '@integr
     });
   });
 
-  test(`User ${userIdentifier} sees the expected message if there are no assigned tasks`, async ({ taskListPage, page }) => {
+  test(`User sees the expected message if there are no assigned tasks`, async ({ taskListPage, page }) => {
     const emptyMockResponse = { tasks: [], total_records: 0 };
     await test.step('Setup route mock for empty task list', async () => {
       await setupTaskListMockRoutes(page, emptyMockResponse);
@@ -63,11 +62,7 @@ test.describe(`Task List as ${userIdentifier}`, { tag: ['@integration', '@integr
     });
   });
 
-  test(`User ${userIdentifier} sees all types of priority tasks with specific due dates`, async ({
-    taskListPage,
-    page,
-    tableUtils,
-  }) => {
+  test(`User sees all priority type tasks with specific due dates`, async ({ taskListPage, page, tableUtils }) => {
     const deterministicMockResponse = buildDeterministicMyTasksListMock('deterministic-assignee');
     await test.step('Setup route mock for deterministic task list', async () => {
       await setupTaskListMockRoutes(page, deterministicMockResponse);
@@ -97,13 +92,9 @@ test.describe(`Task List as ${userIdentifier}`, { tag: ['@integration', '@integr
     });
   });
 
-  test(`User ${userIdentifier} can see all table sorting buttons on the table`, async ({ taskListPage, page, tableUtils }) => {
-    const emptyMockResponse = { tasks: [], total_records: 0 };
+  test(`User can see all expected table elements with a large results set`, async ({ taskListPage, page }) => {
     await test.step('Setup route mock for deterministic task list', async () => {
-      await page.route('**/workallocation/task*', async (route) => {
-        const body = JSON.stringify(emptyMockResponse);
-        await route.fulfill({ status: 200, contentType: 'application/json', body });
-      });
+      await setupTaskListMockRoutes(page, buildTaskListMock(1000, userId?.toString() || '', myActionsList));
     });
 
     await test.step('Navigate to the my tasks list page', async () => {
@@ -119,6 +110,19 @@ test.describe(`Task List as ${userIdentifier}`, { tag: ['@integration', '@integr
       await expect(taskListPage.sortByTaskTableHeader).toBeVisible();
       await expect(taskListPage.sortByDueDateTableHeader).toBeVisible();
       await expect(taskListPage.sortByHearingDateTableHeader).toBeVisible();
+    });
+
+    await test.step('Verify pagination button visibility', async () => {
+      await expect(taskListPage.paginationNextButton).toBeVisible();
+      await expect(taskListPage.paginationPreviousButton).not.toBeVisible();
+      await expect(taskListPage.paginationEllipsisButton).toBeVisible();
+    });
+
+    await test.step('Verify the first page of results shows expected data', async () => {
+      await taskListPage.paginationNextButton.click();
+      await expect(taskListPage.paginationNextButton).toBeVisible();
+      await expect(taskListPage.paginationPreviousButton).toBeVisible();
+      await expect(taskListPage.paginationEllipsisButton).toBeVisible();
     });
   });
 });

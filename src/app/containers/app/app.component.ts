@@ -195,7 +195,7 @@ export class AppComponent implements OnInit, OnDestroy {
     // DynaTrace
     this.cookieService.deleteCookieByPartialMatch('rxVisitor');
     this.cookieService.deleteCookieByPartialMatch('dt');
-    const domainElements = window.location.hostname.split('.');
+    const domainElements = (globalThis?.location?.hostname ?? '').split('.').filter(Boolean);
     for (let i = 0; i < domainElements.length; i++) {
       const domainName = domainElements.slice(i).join('.');
       this.cookieService.deleteCookieByPartialMatch('_ga', '/', domainName);

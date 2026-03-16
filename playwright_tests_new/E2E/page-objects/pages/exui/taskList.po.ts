@@ -48,6 +48,14 @@ export class TaskListPage extends Base {
   readonly paginationPreviousButton = this.paginationControls.locator('.pagination-previous');
   readonly paginationCurrentPage = this.paginationControls.locator('.current');
 
+  readonly submitButton = this.page.locator('#submit-button');
+  readonly continueButton = this.page.locator('.govuk-button').filter({ hasText: 'Continue' });
+
+  readonly reassignUserSearchInput = this.page.locator('#inputSelectPerson');
+  readonly reassignUserAutocompleteOverlay = this.page.locator('.cdk-overlay-pane');
+  readonly reassignUserAutocompleteFirstOption = this.page.getByRole('option').first();
+  readonly reassignButton = this.page.getByRole('button', { name: 'Reassign' });
+
   constructor(page: Page) {
     super(page);
   }
@@ -76,6 +84,11 @@ export class TaskListPage extends Base {
 
   async confirmTaskCancellation() {
     await this.confirmCancelTaskButton.click();
+  }
+
+  async selectFirstReassignUserOption() {
+    await this.reassignUserAutocompleteOverlay.waitFor({ state: 'visible' });
+    await this.reassignUserAutocompleteFirstOption.click();
   }
 
   async waitForManageButton(

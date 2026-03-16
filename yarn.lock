@@ -3601,9 +3601,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.12":
-  version: 4.2.12
-  resolution: "@hmcts/media-viewer@npm:4.2.12"
+"@hmcts/media-viewer@npm:4.2.13":
+  version: 4.2.13
+  resolution: "@hmcts/media-viewer@npm:4.2.13"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3622,7 +3622,7 @@ __metadata:
     "@ngrx/router-store": ^20
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
-  checksum: 10/7511a7fa756d465715ef99451ad4fbcfbbd4a0b65df8edc1c523bcdf342465f5e96332ef87c944f9339feb504739e8293dae81fddb64a5a809c2cc4720392228
+  checksum: 10/198189b75e5ee51c87f403be364a18daf77287569827fe4b62ac3c7484d7d78ba61ba4f14d6ee50ad735588d1fbcd188ab9df5e40345dfad8c478048928f4be7
   languageName: node
   linkType: hard
 
@@ -22982,7 +22982,7 @@ __metadata:
     "@hmcts/ccd-case-ui-toolkit": "npm:7.3.39-remove-unused-deps"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.2.12"
+    "@hmcts/media-viewer": "npm:4.2.13"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.3.1"

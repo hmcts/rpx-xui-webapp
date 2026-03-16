@@ -18,6 +18,7 @@ const TRANSIENT_FAILURE_PATTERNS: RegExp[] = [
   /Submit button not visible/i,
   /Continue button not visible while retrying wizard advance/i,
   /Critical wizard endpoint failure/i,
+  /Transient dependency instability after submit/i,
   /Test ended/i,
 ];
 
@@ -28,6 +29,23 @@ const FATAL_PAGE_CLOSED_PATTERNS: RegExp[] = [
 
 function asErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
+}
+
+export function formatErrorMessage(error: unknown): string {
+  return asErrorMessage(error);
+}
+
+export function isDependencyEnvironmentFailure(error: unknown): boolean {
+  const message = asErrorMessage(error);
+  return (
+    /returned HTTP 5\d\d/i.test(message) ||
+    /status\s+5\d\d/i.test(message) ||
+    /something went wrong page/i.test(message) ||
+    /network timeout/i.test(message) ||
+    /ECONNRESET|ETIMEDOUT/i.test(message) ||
+    /Target page, context or browser has been closed/i.test(message) ||
+    /setup exceeded \d+ms/i.test(message)
+  );
 }
 
 export function isTransientWorkflowFailure(error: unknown): boolean {

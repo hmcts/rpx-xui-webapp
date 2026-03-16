@@ -1,16 +1,16 @@
-import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies } from '../../../common/sessionCapture';
-import { buildMyTaskListMock } from '../../mocks/taskList.mock';
-import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
-import { logTaskCancellationAssertion } from '../../utils/taskCancellationAssertionLogger';
+import { expect, test } from '../../../../E2E/fixtures';
+import { buildMyTaskListMock } from '../../../mocks/taskList.mock';
+import { extractUserIdFromCookies } from '../../../utils/extractUserIdFromCookies';
+import { logTaskCancellationAssertion } from '../../../utils/taskCancellationAssertionLogger';
 import {
   routeCaseDetailsTaskCancellationFlow,
   routeMyTaskCancellationFlow,
   type CancellationScenario,
   type CaseDetailsTemplate,
-} from '../../utils/taskCancellationRoutes';
+} from '../../../utils/taskCancellationRoutes';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { applyPrewarmedSessionCookies } from '../../../helpers';
 
 const userIdentifier = 'STAFF_ADMIN';
 const taskId = '22222222-2222-2222-2222-222222222222';
@@ -38,7 +38,7 @@ test.describe(
   () => {
     for (const matrixItem of cancellationMatrix) {
       test(`Cancel task sends expected request for ${matrixItem.scenario}`, async ({ taskListPage, page }, testInfo) => {
-        const { cookies } = await applySessionCookies(page, userIdentifier);
+        const { cookies } = await applyPrewarmedSessionCookies(page, userIdentifier);
         const userId = extractUserIdFromCookies(cookies) || 'test-user-id';
 
         const taskListMockResponse = buildMyTaskListMock(userId, 1);
@@ -59,12 +59,15 @@ test.describe(
           await taskListPage.goto();
           await expect(taskListPage.taskListTable).toBeVisible();
           await taskListPage.exuiSpinnerComponent.wait();
-
+          await taskListPage.waitForManageButton(`cancel request payload validation for ${matrixItem.scenario}`);
           await expect(taskListPage.taskListTable).toContainText(matrixItem.caseName);
 
-          await taskListPage.manageCaseButtons.first().click();
+          await taskListPage.openFirstManageActions(`cancel request payload validation for ${matrixItem.scenario}`);
           await expect(taskListPage.taskActionCancel.first()).toBeVisible();
-          await taskListPage.taskActionCancel.first().click();
+          await taskListPage.clickTaskAction(
+            taskListPage.taskActionCancel.first(),
+            `cancel request payload validation for ${matrixItem.scenario}`
+          );
         });
 
         await test.step('Confirm cancellation and verify request payload', async () => {
@@ -130,7 +133,7 @@ test.describe(
       });
 
       test(`My Tasks manual cancellation for ${matrixItem.scenario}`, async ({ taskListPage, page }) => {
-        const { cookies } = await applySessionCookies(page, userIdentifier);
+        const { cookies } = await applyPrewarmedSessionCookies(page, userIdentifier);
         const userId = extractUserIdFromCookies(cookies) || 'test-user-id';
 
         const taskListMockResponse = buildMyTaskListMock(userId, 1);
@@ -151,11 +154,15 @@ test.describe(
           await taskListPage.goto();
           await expect(taskListPage.taskListTable).toBeVisible();
           await taskListPage.exuiSpinnerComponent.wait();
+          await taskListPage.waitForManageButton(`my tasks manual cancellation for ${matrixItem.scenario}`);
           await expect(taskListPage.taskListTable).toContainText(matrixItem.caseName);
 
-          await taskListPage.manageCaseButtons.first().click();
+          await taskListPage.openFirstManageActions(`my tasks manual cancellation for ${matrixItem.scenario}`);
           await expect(taskListPage.taskActionCancel.first()).toBeVisible();
-          await taskListPage.taskActionCancel.first().click();
+          await taskListPage.clickTaskAction(
+            taskListPage.taskActionCancel.first(),
+            `my tasks manual cancellation for ${matrixItem.scenario}`
+          );
         });
 
         await test.step('Confirm cancellation and verify user-visible outcome', async () => {
@@ -168,7 +175,7 @@ test.describe(
 
     test('Case details Tasks tab manual cancellation path', async ({ page, taskListPage }) => {
       const scenario = cancellationMatrix[0];
-      const { cookies } = await applySessionCookies(page, userIdentifier);
+      const { cookies } = await applyPrewarmedSessionCookies(page, userIdentifier);
       const userId = extractUserIdFromCookies(cookies) || 'test-user-id';
       const caseDetailsTemplate = JSON.parse(
         readFileSync(resolve(process.cwd(), 'src/assets/getCase.json'), 'utf8')
@@ -210,7 +217,7 @@ test.describe(
 
     test('Cancel action is not shown for a non-cancellable task', async ({ taskListPage, page }) => {
       const scenario = cancellationMatrix[0];
-      const { cookies } = await applySessionCookies(page, userIdentifier);
+      const { cookies } = await applyPrewarmedSessionCookies(page, userIdentifier);
       const userId = extractUserIdFromCookies(cookies) || 'test-user-id';
 
       const task = {
@@ -229,7 +236,8 @@ test.describe(
         await taskListPage.goto();
         await expect(taskListPage.taskListTable).toBeVisible();
         await taskListPage.exuiSpinnerComponent.wait();
-        await taskListPage.manageCaseButtons.first().click();
+        await taskListPage.waitForManageButton('non-cancellable task action menu');
+        await taskListPage.openFirstManageActions('non-cancellable task action menu');
         await expect(taskListPage.taskActionsRow).toBeVisible();
         await expect(taskListPage.taskActionCancel).toHaveCount(0);
       });
@@ -237,7 +245,7 @@ test.describe(
 
     test('Stale task cancellation shows task no longer available warning', async ({ taskListPage, page }) => {
       const scenario = cancellationMatrix[0];
-      const { cookies } = await applySessionCookies(page, userIdentifier);
+      const { cookies } = await applyPrewarmedSessionCookies(page, userIdentifier);
       const userId = extractUserIdFromCookies(cookies) || 'test-user-id';
 
       const task = {
@@ -255,8 +263,9 @@ test.describe(
       await test.step('Open cancellation for stale task', async () => {
         await taskListPage.goto();
         await expect(taskListPage.taskListTable).toBeVisible();
-        await taskListPage.manageCaseButtons.first().click();
-        await taskListPage.taskActionCancel.first().click();
+        await taskListPage.waitForManageButton('stale task cancellation');
+        await taskListPage.openFirstManageActions('stale task cancellation');
+        await taskListPage.clickTaskAction(taskListPage.taskActionCancel.first(), 'stale task cancellation');
       });
 
       await test.step('Confirm stale cancellation shows warning', async () => {
@@ -268,7 +277,7 @@ test.describe(
 
     test('Cancellation API failure shows task no longer available warning', async ({ taskListPage, page }) => {
       const scenario = cancellationMatrix[0];
-      const { cookies } = await applySessionCookies(page, userIdentifier);
+      const { cookies } = await applyPrewarmedSessionCookies(page, userIdentifier);
       const userId = extractUserIdFromCookies(cookies) || 'test-user-id';
 
       const task = {
@@ -286,8 +295,9 @@ test.describe(
       await test.step('Open cancellation for API failure scenario', async () => {
         await taskListPage.goto();
         await expect(taskListPage.taskListTable).toBeVisible();
-        await taskListPage.manageCaseButtons.first().click();
-        await taskListPage.taskActionCancel.first().click();
+        await taskListPage.waitForManageButton('cancellation api failure warning');
+        await taskListPage.openFirstManageActions('cancellation api failure warning');
+        await taskListPage.clickTaskAction(taskListPage.taskActionCancel.first(), 'cancellation api failure warning');
       });
 
       await test.step('Confirm API failure shows warning', async () => {

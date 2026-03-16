@@ -9,16 +9,34 @@ const logger = createLogger({ serviceName: 'create-case-e2e', format: 'pretty' }
 
 test.describe('Verify creating cases works as expected', { tag: ['@e2e', '@e2e-create-case'] }, () => {
   let caseData;
+  let person1Data;
 
   test.beforeEach(async ({ page, caseDetailsPage, createCasePage }) => {
     await retryOnTransientFailure(
       async () => {
         await ensureAuthenticatedPage(page, 'SOLICITOR', { waitForSelector: 'exui-header' });
-        caseData = await createCasePage.generateDivorcePoCData();
-        await createCasePage.createDivorceCasePoC(jurisdiction, caseType, caseData, {
-          maxAttempts: 1,
-          createCaseMaxAttempts: 1,
+        caseData = await createCasePage.generateDivorcePoCData({ textField0: 'Hide all', divorceReasons: ['Adultery'] });
+        person1Data = await createCasePage.generateDivorcePoCPersonData({
+          gender: 'Male',
         });
+
+        await createCasePage.createCase(jurisdiction, caseType, '', {
+          maxAttempts: 1,
+        });
+
+        await createCasePage.fillDivorcePocSections({
+          data: person1Data,
+          textFields: {
+            textField0: caseData.textField0,
+            textField1: caseData.textField1,
+            textField2: caseData.textField2,
+            textField3: caseData.textField3,
+          },
+          divorceReasons: caseData.divorceReasons,
+          gender: caseData.gender,
+        });
+        await createCasePage.testSubmitButton.click();
+        await expect(createCasePage.caseAlertSuccessMessage).toBeVisible();
         caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
       },
       {
@@ -49,30 +67,26 @@ test.describe('Verify creating cases works as expected', { tag: ['@e2e', '@e2e-c
     });
 
     await test.step('Check the case tab Data, matches previously entered data', async () => {
-      const expected = {
+      const table1 = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.divorceDataTable);
+      expect.soft(table1).toMatchObject({
         'Text Field 0': caseData.textField0,
-        'Text Field 1': caseData.textField1,
         'Text Field 2': caseData.textField2,
         'Text Field 3': caseData.textField3,
         'Select your gender': caseData.gender,
-        Title: caseData.person1Title,
-        'First Name': caseData.person1FirstName,
-        'Last Name': caseData.person1LastName,
-        Gender: caseData.person1Gender,
-      };
-      const expectedJob = { Title: caseData.person1JobTitle, Description: caseData.person1JobDescription };
-
-      const table1 = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.divorceDataTable);
-      expect.soft(table1).toMatchObject(expected);
+        Title: person1Data.title,
+        'First Name': person1Data.firstName,
+        'Last Name': person1Data.lastName,
+        Gender: person1Data.gender,
+      });
+      expect.soft(table1).not.toHaveProperty('Text Field 1');
       const table2 = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.divorceDataSubTable);
-      expect.soft(table2).toMatchObject(expectedJob);
+      expect.soft(table2).toMatchObject({ Title: person1Data.jobTitle, Description: person1Data.jobDescription });
     });
 
     await test.step('Check the History tab shows the case creation event', async () => {
       await caseDetailsPage.selectCaseDetailsTab('History');
 
       const { updateRow, updateDate, updateAuthor } = await caseDetailsPage.getCaseHistoryByEvent('Create a case');
-
       expect.soft(updateRow, 'Create a case row should be present').toBeTruthy();
       expect.soft(updateAuthor, 'Case author should be present').not.toBe('');
 

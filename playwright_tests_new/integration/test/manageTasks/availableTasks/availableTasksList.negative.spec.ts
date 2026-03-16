@@ -1,6 +1,7 @@
-import { availableActionsList, buildTaskListMock } from '../../mocks/taskList.mock';
-import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies } from '../../../common/sessionCapture';
+import { availableActionsList, buildTaskListMock } from '../../../mocks/taskList.mock';
+import { expect, test } from '../../../../E2E/fixtures';
+import { applySessionCookies } from '../../../../common/sessionCapture';
+import { TASK_LIST_ROUTE_REGEX } from '../../../testData';
 
 const errorStates = [400, 403, 500, 503];
 const userIdentifier = 'STAFF_ADMIN';
@@ -13,7 +14,7 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
   test(`User ${userIdentifier} sees filter errors if no services are selected`, async ({ taskListPage, page }) => {
     const taskListMockResponse = buildTaskListMock(10, '', availableActionsList);
     await test.step('Setup route mock for task list', async () => {
-      await page.route('**/workallocation/task*', async (route) => {
+      await page.route(TASK_LIST_ROUTE_REGEX, async (route) => {
         const body = JSON.stringify(taskListMockResponse);
         await route.fulfill({ status: 200, contentType: 'application/json', body });
       });
@@ -49,13 +50,13 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
   });
 
   errorStates.forEach((errorStatus) => {
-    test(`User ${userIdentifier} sees the no tasks message on available tasks, if the api returns ${errorStatus}`, async ({
+    test(`User sees the no tasks message on available tasks, if the api returns ${errorStatus}`, async ({
       taskListPage,
       page,
     }) => {
       const emptyMockResponse = {};
       await test.step('Setup route mock for empty task list', async () => {
-        await page.route('**/workallocation/task*', async (route) => {
+        await page.route(TASK_LIST_ROUTE_REGEX, async (route) => {
           const body = JSON.stringify(emptyMockResponse);
           await route.fulfill({ status: errorStatus, contentType: 'application/json', body });
         });
@@ -74,12 +75,9 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
     });
   });
 
-  test(`User ${userIdentifier} sees the no tasks message on available tasks, if the api times out`, async ({
-    taskListPage,
-    page,
-  }) => {
+  test(`User sees the no tasks message on available tasks, if the api times out`, async ({ taskListPage, page }) => {
     await test.step('Setup route mock for empty task list', async () => {
-      await page.route('**/workallocation/task*', async (route) => {
+      await page.route(TASK_LIST_ROUTE_REGEX, async (route) => {
         await route.abort('timedout');
       });
     });

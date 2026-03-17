@@ -1,11 +1,18 @@
 import { faker } from '@faker-js/faker';
 import { expect, type Page, type Route } from '@playwright/test';
+import { min } from 'lodash';
 
 export type UiTaskAction = 'cancel' | 'complete' | 'go' | 'reassign' | 'unassign';
 export type UnassignMode = 'unclaim' | 'assign-null';
 
 export interface TaskActionMockOptions {
   taskId: string;
+  task_name?: string;
+  due_date?: string;
+  dueDate?: string;
+  minor_priority?: boolean;
+  major_priority?: boolean;
+  priority_date?: string;
   caseId: string;
   jurisdiction?: string;
   caseTypeId?: string;
@@ -60,15 +67,18 @@ const buildTaskDetailsResponse = (options: TaskActionMockOptions) => {
   return {
     task: {
       id: taskId,
-      name: 'Review the appeal',
+      name: options.task_name ?? 'Review the appeal',
       type: 'reviewTheAppeal',
       task_state: 'assigned',
       task_system: 'SELF',
       security_classification: 'PUBLIC',
-      task_title: 'Review the appeal',
-      created_date: '2021-06-30T16:53:10+0100',
-      due_date: '2021-06-30T16:53:10+0100',
-      dueDate: '2021-06-30T16:53:10+0100',
+      task_title: options.task_name ?? 'Review the appeal',
+      created_date: faker.date.past({ years: 0.25 }).toISOString(),
+      due_date: options.due_date ?? faker.date.future({ years: 0.25 }).toISOString(),
+      dueDate: options.dueDate ?? faker.date.future({ years: 0.25 }).toISOString(),
+      minor_priority: options.minor_priority ?? false,
+      major_priority: options.major_priority ?? false,
+      priority_date: options.priority_date ?? faker.date.future({ years: 0.25 }).toISOString(),
       assignee: assigneeId,
       auto_assigned: false,
       execution_type: 'Case Management Task',

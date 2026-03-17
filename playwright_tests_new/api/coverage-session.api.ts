@@ -7,6 +7,7 @@ import { CookieUtils } from '../E2E/utils/cookie.utils.js';
 import { UserUtils } from '../E2E/utils/user.utils.js';
 import type { IdamPage } from '@hmcts/playwright-common';
 import { isSessionFresh, loadSessionCookies, __test__ as sessionCaptureTest } from '../common/sessionCapture.js';
+import { resolveSessionStorageKey } from '../common/sessionIdentity.js';
 import type { Cookie } from 'playwright-core';
 
 test.describe.configure({ mode: 'serial' });
@@ -109,8 +110,8 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
       await fsp.mkdir(sessionsDir, { recursive: true });
 
       const userUtils = new UserUtils();
-      const creds = userUtils.getUserCredentials('IAC_CaseOfficer_R1');
-      const storagePath = path.join(sessionsDir, `${creds.email}.storage.json`);
+      const storageKey = resolveSessionStorageKey('IAC_CaseOfficer_R1', { userUtils });
+      const storagePath = path.join(sessionsDir, `${storageKey}.storage.json`);
 
       expect(isSessionFresh(storagePath)).toBe(false);
 
@@ -138,12 +139,43 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
     }
   });
 
+  test('loadSessionCookies uses explicit sessionKey for dynamic identities', async () => {
+    const tmpDir = await fsp.mkdtemp(path.join(process.cwd(), 'test-results', 'session-identity-'));
+    const originalCwd = process.cwd();
+    process.chdir(tmpDir);
+    try {
+      const sessionsDir = path.join(tmpDir, '.sessions');
+      await fsp.mkdir(sessionsDir, { recursive: true });
+      const storagePath = path.join(sessionsDir, 'dynamic-employment-user-123.storage.json');
+      await fsp.writeFile(storagePath, JSON.stringify({ cookies: [baseCookie('session', 'value')] }), 'utf8');
+
+      const loaded = loadSessionCookies({
+        userIdentifier: 'EMPLOYMENT_DYNAMIC_CASEWORKER',
+        email: 'dynamic@example.test',
+        password: 'secret',
+        sessionKey: 'dynamic-employment-user-123',
+      });
+
+      expect(loaded.storageFile).toBe(storagePath);
+      expect(loaded.cookies).toHaveLength(1);
+    } finally {
+      process.chdir(originalCwd);
+    }
+  });
+
+  test('session freshness max age defaults to one hour and honors env override', () => {
+    expect(sessionCaptureTest.resolveSessionMaxAgeMs({} as NodeJS.ProcessEnv)).toBe(60 * 60 * 1000);
+    expect(sessionCaptureTest.resolveSessionMaxAgeMs({ PW_SESSION_MAX_AGE_MS: '120000' } as NodeJS.ProcessEnv)).toBe(120000);
+    expect(sessionCaptureTest.resolveSessionMaxAgeMs({ PW_SESSION_MAX_AGE_MS: '0' } as NodeJS.ProcessEnv)).toBe(60 * 60 * 1000);
+    expect(sessionCaptureTest.resolveSessionMaxAgeMs({ PW_SESSION_MAX_AGE_MS: 'bad' } as NodeJS.ProcessEnv)).toBe(60 * 60 * 1000);
+  });
+
   test('persistSession writes cookies and surfaces errors', async () => {
     const tmpDir = await fsp.mkdtemp(path.join(process.cwd(), 'test-results', 'session-persist-'));
     const sessionPath = path.join(tmpDir, 'session.json');
     const ctx = {
-      addCookies: async (_cookies: Cookie[]) => {},
-      storageState: async (_options: { path: string }) => ({}),
+      addCookies: async () => {},
+      storageState: async () => ({}),
     };
     const cookieUtils = {
       writeManageCasesSession: (pathValue: string, cookies: any[]) => {
@@ -195,20 +227,147 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
     expect(mkdirCalls).toBe(2); // Called once per sessionCaptureWith invocation
 
     let persistCalls = 0;
+    const pageState = {
+      currentUrl: 'https://example.test/login',
+      loggedIn: false,
+    };
+    const performLogin = () => {
+      pageState.loggedIn = true;
+      pageState.currentUrl = 'https://example.test/cases';
+    };
+    const createLocator = (
+      key: string,
+      handlers: {
+        isVisible?: () => Promise<boolean>;
+        waitFor?: () => Promise<void>;
+        fill?: () => Promise<void>;
+        press?: () => Promise<void>;
+        click?: () => Promise<void>;
+      }
+    ) => {
+      const locator = {
+        first: () => locator,
+        isVisible: async () => (handlers.isVisible ? handlers.isVisible() : false),
+        waitFor: async () => {
+          if (!handlers.waitFor) {
+            throw new Error(`Unexpected waitFor on locator ${key}`);
+          }
+          return handlers.waitFor();
+        },
+        fill: async () => {
+          if (!handlers.fill) {
+            throw new Error(`Unexpected fill on locator ${key}`);
+          }
+          return handlers.fill();
+        },
+        press: async () => {
+          if (!handlers.press) {
+            throw new Error(`Unexpected press on locator ${key}`);
+          }
+          return handlers.press();
+        },
+        click: async () => {
+          if (!handlers.click) {
+            throw new Error(`Unexpected click on locator ${key}`);
+          }
+          return handlers.click();
+        },
+      };
+      return locator;
+    };
+    const usernameLocator = createLocator('idam-username', {
+      isVisible: async () => !pageState.loggedIn,
+      waitFor: async () => undefined,
+      fill: async () => undefined,
+    });
+    const passwordLocator = createLocator('idam-password', {
+      isVisible: async () => !pageState.loggedIn,
+      fill: async () => undefined,
+      press: async () => performLogin(),
+    });
+    const submitLocator = createLocator('idam-submit', {
+      isVisible: async () => !pageState.loggedIn,
+      click: async () => performLogin(),
+    });
+    const shellLocator = createLocator('exui-shell', {
+      waitFor: async () => new Promise<void>(() => undefined),
+    });
+    const headerLocator = createLocator('exui-header', {
+      isVisible: async () => false,
+      waitFor: async () => {
+        throw new Error('missing header');
+      },
+    });
+    const createCaseLinkLocator = createLocator('create-case-link', {
+      isVisible: async () => false,
+    });
+    const caseListLinkLocator = createLocator('case-list-link', {
+      isVisible: async () => false,
+    });
+    const nextStepLocator = createLocator('case-action-dropdown', {
+      isVisible: async () => false,
+    });
+    const jurisdictionLocator = createLocator('jurisdiction-select', {
+      isVisible: async () => false,
+    });
+    const acceptCookiesLocator = createLocator('accept-cookies', {
+      isVisible: async () => false,
+    });
+    const resolveSelectorLocator = (selector: string) => {
+      switch (selector) {
+        case 'input#email, input[name="email"], input[name="emailAddress"], input[autocomplete="email"]':
+          return usernameLocator;
+        case 'button:has-text("Sign in"), button:has-text("Continue")':
+          return submitLocator;
+        case 'exui-header, exui-case-home':
+          return shellLocator;
+        case 'exui-header':
+          return headerLocator;
+        case '#next-step':
+          return nextStepLocator;
+        case '#cc-jurisdiction':
+          return jurisdictionLocator;
+        default:
+          throw new Error(`Unexpected selector ${selector}`);
+      }
+    };
+    const resolveRoleLocator = (role: string, name: string) => {
+      if (role === 'button' && name === '/accept (additional|analytics) cookies/i') {
+        return acceptCookiesLocator;
+      }
+      if (role === 'link' && name === 'Create case') {
+        return createCaseLinkLocator;
+      }
+      if (role === 'link' && name === 'Case list') {
+        return caseListLinkLocator;
+      }
+      throw new Error(`Unexpected role locator ${role}:${name}`);
+    };
     const page = {
-      goto: async () => {},
+      goto: async () => {
+        pageState.currentUrl = 'https://example.test/login';
+      },
+      url: () => pageState.currentUrl,
+      locator: (selector: string) => resolveSelectorLocator(selector),
+      getByRole: (role: string, options?: { name?: string | RegExp }) =>
+        resolveRoleLocator(role, options?.name instanceof RegExp ? options.name.toString() : String(options?.name ?? '')),
       waitForSelector: async (selector: string) => {
         if (selector === 'exui-header') {
           throw new Error('missing header');
         }
+        throw new Error(`Unexpected waitForSelector ${selector}`);
       },
+      waitForLoadState: async () => {},
+      waitForTimeout: async () => {},
     } as any;
     const context = {
       newPage: async () => page,
-      cookies: async () => [],
+      cookies: async () =>
+        pageState.loggedIn ? [baseCookie('Idam.Session', 'session-1'), baseCookie('__auth__', 'auth-1')] : [],
       addCookies: async () => {},
-      storageState: async (_options: { path: string }) => ({}),
+      storageState: async () => ({}),
     } as any;
+    page.context = () => context;
     const browser = {
       newContext: async () => context,
       close: async () => {},
@@ -217,8 +376,12 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
       launch: async () => browser,
     } as any;
     const idamPageFactory = (() => ({
-      usernameInput: { waitFor: async () => {} },
-      login: async () => {},
+      usernameInput: usernameLocator,
+      passwordInput: passwordLocator,
+      submitBtn: submitLocator,
+      login: async () => {
+        performLogin();
+      },
     })) as unknown as (page: any) => IdamPage;
     await sessionCaptureTest.sessionCaptureWith(['USER'], {
       fs: fsStub,
@@ -276,15 +439,53 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
     const userUtils = {
       getUserCredentials: () => ({ email: 'user@example.com', password: mockPassword }),
     } as any;
+    const acceptCookiesLocator = {
+      first: () => acceptCookiesLocator,
+      isVisible: async () => false,
+    };
+    const shellLocator = {
+      first: () => shellLocator,
+      waitFor: async () => {
+        throw new Error('missing shell');
+      },
+    };
+    const hiddenFallbackLocator = {
+      first: () => hiddenFallbackLocator,
+      isVisible: async () => false,
+    };
     const page = {
       goto: async () => {},
+      url: () => 'https://example.test/login',
+      locator: (selector: string) => {
+        if (selector === 'exui-header, exui-case-home') {
+          return shellLocator;
+        }
+        if (selector === 'exui-header') {
+          return shellLocator;
+        }
+        if (selector === 'input#email, input[name="email"], input[name="emailAddress"], input[autocomplete="email"]') {
+          return hiddenFallbackLocator;
+        }
+        if (selector === 'button:has-text("Sign in"), button:has-text("Continue")') {
+          return hiddenFallbackLocator;
+        }
+        throw new Error(`Unexpected selector ${selector}`);
+      },
+      getByRole: (role: string, options?: { name?: string | RegExp }) => {
+        if (role === 'button' && options?.name instanceof RegExp) {
+          return acceptCookiesLocator;
+        }
+        throw new Error(`Unexpected role ${role}`);
+      },
+      waitForLoadState: async () => {},
+      waitForTimeout: async () => {},
       waitForSelector: async () => {},
     } as any;
     const context = {
       newPage: async () => page,
       cookies: async () => [],
       addCookies: async () => {},
-      storageState: async (_options: { path: string }) => ({}),
+      storageState: async () => ({}),
     } as any;
     const browser = {
       newContext: async () => context,
@@ -293,7 +494,30 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
     const chromiumOk = {
       launch: async () => browser,
     } as any;
+    const usernameInput = {
+      first: () => usernameInput,
+      isVisible: async () => true,
+      waitFor: async () => {},
+      fill: async () => {},
+    };
+    const passwordInput = {
+      first: () => passwordInput,
+      fill: async () => {},
+      press: async () => {
+        throw new Error('login failed');
+      },
+    };
+    const submitBtn = {
+      first: () => submitBtn,
+      isVisible: async () => true,
+      click: async () => {
+        throw new Error('login failed');
+      },
+    };
     const idamPageFactory = (() => ({
+      usernameInput,
+      passwordInput,
+      submitBtn,
       login: async () => {
         throw new Error('login failed');
       },
@@ -311,5 +535,91 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
         lockfile: lockfileStub,
       })
     ).rejects.toThrow(/login failed/i);
+  });
+
+  test('sessionCaptureWith reuses a freshly written session instead of waiting on a held lock', async () => {
+    let lockAttempts = 0;
+    let launchAttempts = 0;
+    let freshnessChecks = 0;
+
+    const fsStub = {
+      existsSync: () => true,
+      mkdirSync: () => {},
+      writeFileSync: () => {},
+    } as any;
+
+    const lockfileStub = {
+      lock: async () => {
+        lockAttempts += 1;
+        if (lockAttempts === 1) {
+          const error = new Error('Lock file is already being held');
+          (error as Error & { code?: string }).code = 'ELOCKED';
+          throw error;
+        }
+        return async () => {};
+      },
+    } as any;
+
+    const userUtils = {
+      getUserCredentials: () => ({ email: 'shared@example.com', password: mockPassword }),
+    } as any;
+
+    await sessionCaptureTest.sessionCaptureWith(['USER'], {
+      fs: fsStub,
+      userUtils,
+      isSessionFresh: () => {
+        freshnessChecks += 1;
+        return freshnessChecks >= 2;
+      },
+      chromiumLauncher: {
+        launch: async () => {
+          launchAttempts += 1;
+          throw new Error('browser launch should not be needed');
+        },
+      } as any,
+      lockfile: lockfileStub,
+    });
+
+    expect(lockAttempts).toBe(1);
+    expect(launchAttempts).toBe(0);
+  });
+
+  test('acquireSessionLock clears abandoned lock artifacts before timing out', async () => {
+    let lockAttempts = 0;
+    let removedArtifacts = 0;
+    const staleTime = Date.now() - 70_000;
+
+    const fsStub = {
+      existsSync: (target: string) => target.endsWith('.lock'),
+      statSync: () => ({ mtimeMs: staleTime }),
+      rmSync: () => {
+        removedArtifacts += 1;
+      },
+    } as any;
+
+    const lockfileStub = {
+      lock: async () => {
+        lockAttempts += 1;
+        if (lockAttempts === 1) {
+          const error = new Error('Lock file is already being held');
+          (error as Error & { code?: string }).code = 'ELOCKED';
+          throw error;
+        }
+        return async () => {};
+      },
+    } as any;
+
+    const release = await sessionCaptureTest.acquireSessionLock({
+      fsApi: fsStub,
+      lockfileApi: lockfileStub,
+      lockFilePath: '/tmp/shared-session.lock',
+      userIdentifier: 'USER',
+      isSessionReusable: () => false,
+      force: false,
+    });
+
+    expect(typeof release).toBe('function');
+    expect(lockAttempts).toBe(2);
+    expect(removedArtifacts).toBe(1);
   });
 });

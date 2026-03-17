@@ -95,7 +95,7 @@ test.describe.skip(
           await expect(taskListPage.taskListTable).toBeVisible();
           await taskListPage.exuiSpinnerComponent.wait();
 
-          await taskListPage.manageCaseButtons.first().click();
+          await taskListPage.openFirstManageActions(`my tasks go to ${statusCode} response`);
           await expect(taskListPage.taskActionGoTo).toBeVisible();
 
           const goFailureResponsePromise = page.waitForResponse(
@@ -105,7 +105,7 @@ test.describe.skip(
               response.status() === statusCode
           );
 
-          await taskListPage.taskActionGoTo.click();
+          await taskListPage.clickTaskAction(taskListPage.taskActionGoTo, `my tasks go to ${statusCode} response`);
           const goFailureResponse = await goFailureResponsePromise;
           expect(goFailureResponse.status()).toBe(statusCode);
 

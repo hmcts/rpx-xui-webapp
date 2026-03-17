@@ -42,8 +42,6 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
 
   public ngAfterViewInit(): void {
     this.getLocationSearchFocus();
-    // TODO: CAM_BOOKING - remomve these if no longer needed
-    // this.findLocationFormGroup.controls.locationSelectedFormControl.setValue(this.bookingProcess.location);
   }
 
   public onLocationChanged(location: LocationByEpimmsModel): void {
@@ -62,8 +60,8 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
     }
   }
 
+  // EXUI-3967 - CAM Booking - may be needed in future?
   public getLocationSearchFocus(): void {
-    // TODO: CAM_BOOKING - resolve focus
     //   if (this.searchLocationComponent &&
     //     this.searchLocationComponent.autoCompleteInputBox &&
     //     this.searchLocationComponent.autoCompleteInputBox.nativeElement) {

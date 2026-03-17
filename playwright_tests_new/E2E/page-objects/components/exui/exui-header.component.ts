@@ -38,7 +38,8 @@ export class ExuiHeaderComponent {
   }
 
   public async switchLanguage(language: string): Promise<void> {
-    const toggleText = (await this.languageToggle.innerText()).trim();
+    await this.languageToggle.waitFor({ state: 'visible' });
+    const toggleText = ((await this.languageToggle.textContent()) ?? '').trim();
     if (!toggleText.includes(language)) {
       logger.debug(`Language is already set to ${language}`, { language });
       return;

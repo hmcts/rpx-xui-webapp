@@ -40,7 +40,6 @@ describe('Task management api,  retrieve all work types by userId', () => {
           headers: {
             Authorization: 'Bearer someAuthorizationToken',
             ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
-            'Content-Type': 'application/json',
           },
         },
         willRespondWith: {
@@ -80,19 +79,15 @@ describe('Task management api,  retrieve all work types by userId', () => {
           returnedResponse = ret;
         };
 
-        try {
-          await getTypesOfWork(req, response, next);
-          assertResponses(returnedResponse);
-        } catch (err) {
-          console.log(err.stack);
-          throw new Error(err);
-        }
+        await getTypesOfWork(req, response, next);
+        assertResponses(returnedResponse);
       });
     });
   });
 });
 
 function assertResponses(dto: any) {
+  expect(dto).to.be.an('array').with.length.greaterThan(0);
   expect(dto[0].key).to.be.equal('5687');
   expect(dto[0].label).to.be.equal('Upper Tribunal');
 }

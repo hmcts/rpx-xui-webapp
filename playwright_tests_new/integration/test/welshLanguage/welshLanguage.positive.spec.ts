@@ -1,17 +1,14 @@
 import { welshTranslationsSmall } from 'playwright_tests_new/integration/mocks/welshLanguage';
 import { expect, test } from '../../../E2E/fixtures';
-import { ensureSessionCookies } from '../../../common/sessionCapture';
+import { applyPrewarmedSessionCookies } from '../../helpers';
 let sessionCookies: any[] = [];
 const TRANSLATIONS_TIMEOUT = 20_000;
 
 test.describe('Verify users can switch the language', { tag: ['@integration', '@integration-welsh-language'] }, () => {
   test.beforeEach(async ({ page }) => {
-    const { cookies } = await ensureSessionCookies('SOLICITOR');
+    const { cookies } = await applyPrewarmedSessionCookies(page, 'SOLICITOR');
     sessionCookies = cookies;
-    if (sessionCookies.length) {
-      await page.context().addCookies(sessionCookies);
-    }
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
     await page.route('**api/translation/cy*', async (route) => {
       const body = JSON.stringify(welshTranslationsSmall);
       await route.fulfill({ status: 200, contentType: 'application/json', body });

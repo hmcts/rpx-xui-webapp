@@ -277,11 +277,11 @@ export class BookingDateComponent implements OnInit {
   }
 
   public onSubmit(): void {
-    if (!this.validateForm()) {
+    if (this.validateForm()) {
+      this.onEventTrigger();
+    } else {
       // Scroll to error summary
       window.scrollTo({ top: 0, left: 0 });
-    } else {
-      this.onEventTrigger();
     }
   }
 

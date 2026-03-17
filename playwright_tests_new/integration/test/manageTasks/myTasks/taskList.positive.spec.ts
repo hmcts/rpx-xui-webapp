@@ -174,10 +174,8 @@ test.describe(`Task List as ${userIdentifier}`, { tag: ['@integration', '@integr
       await taskListPage.exuiSpinnerComponent.wait();
     });
 
-    await test.step('Verify Case name sort remains selected and log the latest request body', async () => {
+    await test.step('Verify Case name sort remains selected', async () => {
       await expect(caseNameSortHeaderCell).toHaveAttribute('aria-sort', 'ascending');
-      const latestRequestBody = taskSearchRequests.at(-1) ?? null;
-      console.log('My tasks sort persistence request body:', JSON.stringify(latestRequestBody, null, 2));
     });
   });
 });

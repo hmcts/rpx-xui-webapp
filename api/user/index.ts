@@ -148,7 +148,7 @@ export function extractRoleCategories(userRoleAssignments: any[]): string[] {
 }
 
 export function getActiveRoleAssignments(roleAssignments: RoleAssignment[], filterDate: Date): RoleAssignment[] {
-  const activeRoleAssignments = roleAssignments.filter((rm) => {
+  const activeRoleAssignments = (roleAssignments || []).filter((rm) => {
     return rm?.endTime ? filterDate <= new Date(rm.endTime) : true;
   });
   return activeRoleAssignments;

@@ -1,12 +1,21 @@
 import { defineConfig, devices } from '@playwright/test';
 import { execSync } from 'node:child_process';
-import { cpus } from 'node:os';
+import { cpus, totalmem } from 'node:os';
 import { version as appVersion } from './package.json';
-import { parseNonNegativeInt, resolveDefaultReporter } from './playwright-config-utils';
+import { parseNonNegativeInt, resolveDefaultReporter, resolveTagFilters, resolveWorkerCount } from './playwright-config-utils';
+
 export default (() => {
+  const temporaryProbePattern = '**/_tmp_*.spec.ts';
   const headlessMode = process.env.HEAD !== 'true';
   const odhinOutputFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
   const baseUrl = process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';
+  const e2eTagFilters = resolveTagFilters({
+    includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
+    excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
+    configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
+    defaultConfigPath: 'playwright_tests_new/E2E/tag-filter.json',
+    suiteTag: '@e2e',
+  });
 
   const parsePositiveInt = (raw: string | undefined): number | undefined => {
     if (!raw) {
@@ -22,7 +31,7 @@ export default (() => {
   const retries = parseNonNegativeInt(process.env.PW_E2E_RETRIES) ?? 2;
   const globalTimeoutMs = parsePositiveInt(process.env.PW_E2E_GLOBAL_TIMEOUT_MS);
 
-  const resolveEnvironmentFromUrl = (url) => {
+  const resolveEnvironmentFromUrl = (url: string) => {
     try {
       const hostname = new URL(url).hostname.toLowerCase();
       if (hostname === 'localhost' || hostname === '127.0.0.1') {
@@ -73,33 +82,21 @@ export default (() => {
     return 'local';
   };
 
-  const resolveWorkerCount = () => {
-    const configured = process.env.FUNCTIONAL_TESTS_WORKERS;
-    if (process.env.CI) {
-      return 8;
-    }
-    if (configured) {
-      const parsed = Number.parseInt(configured, 10);
-      if (Number.isFinite(parsed) && parsed > 0) {
-        return parsed;
-      }
-    }
-    const logical = cpus()?.length ?? 1;
-    const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));
-    const suggested = Math.min(8, Math.max(2, approxPhysical));
-    return suggested;
+  const workerCount = resolveWorkerCount(process.env);
+  const resolveAgentHardware = () => {
+    const cpuCores = cpus()?.length ?? 'unknown';
+    const totalRamGiB = Math.round((totalmem() / 1024 ** 3) * 10) / 10;
+    return `agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
   };
-
-  const workerCount = resolveWorkerCount();
   const targetEnv = process.env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
   const runContext = process.env.CI ? 'ci' : 'local-run';
-  const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount}`;
+  const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
   const reportBranch = resolveBranchName();
 
   return defineConfig({
     testDir: 'playwright_tests_new/E2E',
     testMatch: ['**/test/**/*.spec.ts'],
-    testIgnore: ['**/test/smoke/smokeTest.spec.ts'],
+    testIgnore: [temporaryProbePattern, '**/test/smoke/smokeTest.spec.ts'],
     fullyParallel: true,
     retries,
     timeout: 180_000,
@@ -140,6 +137,8 @@ export default (() => {
     projects: [
       {
         name: 'chromium',
+        grep: e2eTagFilters.grep,
+        grepInvert: e2eTagFilters.grepInvert,
         use: {
           ...devices['Desktop Chrome'],
           channel: 'chrome',

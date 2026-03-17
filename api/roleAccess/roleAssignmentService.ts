@@ -11,7 +11,7 @@ import { substantiveRolesValid } from './utils';
 
 export async function getPossibleRoles(req: EnhancedRequest, res: Response, next: NextFunction): Promise<any> {
   try {
-    const serviceIds = req.body && req.body.serviceIds ? req.body.serviceIds : null;
+    const serviceIds = req.body?.serviceIds ? req.body.serviceIds : null;
     if (!allContainOnlySafeCharacters(serviceIds)) {
       return res.send('Invalid service id').status(400);
     }
@@ -20,9 +20,7 @@ export async function getPossibleRoles(req: EnhancedRequest, res: Response, next
     if (serviceIds) {
       serviceIds.forEach((serviceId) => {
         // note: if service obtained, check role either includes service or does not specify service
-        const serviceRoles = roles.filter(
-          (role) => role.roleJurisdiction && role.roleJurisdiction.values && role.roleJurisdiction.values.includes(serviceId)
-        );
+        const serviceRoles = roles.filter((role) => role?.roleJurisdiction?.values?.includes(serviceId));
         rolesByService.push({ service: serviceId, roles: serviceRoles });
       });
     }
@@ -42,7 +40,7 @@ export async function getSubstantiveRoles(req: EnhancedRequest) {
     roleCategory: roleApi.category,
     roleId: roleApi.name,
     roleName: roleApi.label,
-    roleJurisdiction: roleApi.patterns && roleApi.patterns[0].attributes ? roleApi.patterns[0].attributes.jurisdiction : null,
+    roleJurisdiction: roleApi.patterns?.[0]?.attributes ? roleApi.patterns[0].attributes.jurisdiction : null,
   }));
   req.session.subStantiveRoles = substantiveRoles;
   return substantiveRoles;

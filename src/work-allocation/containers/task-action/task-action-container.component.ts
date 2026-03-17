@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
@@ -36,7 +37,8 @@ export class TaskActionContainerComponent implements OnInit {
     private readonly router: Router,
     private readonly messageService: InfoMessageCommService,
     private readonly sessionStorageService: SessionStorageService,
-    private readonly roleService: AllocateRoleService
+    private readonly roleService: AllocateRoleService,
+    private readonly location: Location
   ) {}
 
   public get fields(): FieldConfig[] {
@@ -46,9 +48,10 @@ export class TaskActionContainerComponent implements OnInit {
   }
 
   private get returnUrl(): string {
-    if (window && window.history && window.history.state) {
-      const url = window.history.state.returnUrl;
-      if (window.history.state.keepUrl) {
+    const state = this.location.getState() as { returnUrl?: string; keepUrl?: boolean } | null;
+    if (state && state.returnUrl) {
+      const url = state.returnUrl;
+      if (state.keepUrl) {
         return url;
       }
       return url.split('/').splice(0, 3).join('/');

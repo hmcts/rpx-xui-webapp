@@ -2,27 +2,33 @@ import { faker } from '@faker-js/faker';
 import { expect, test } from '../../fixtures';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 import { caseBannerMatches, getTodayFormats, matchesToday } from '../../utils';
-import { DEFAULT_TRANSIENT_MAX_ATTEMPTS, retryOnTransientFailure } from '../../utils/transient-failure.utils';
+import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
+import { createDivorceCase } from '../../utils/test-setup/journeys/divorceCaseJourneys';
 let caseNumber: string;
 const updatedFirstName = faker.person.firstName();
 const updatedLastName = faker.person.lastName();
 const testField = faker.lorem.word() + new Date().toLocaleTimeString();
 const UPDATE_CASE_ACTION_TIMEOUT_MS = 60_000;
-const UPDATE_CASE_SUBMIT_TIMEOUT_MS = 60_000;
-const UPDATE_CASE_MAX_AUTO_ADVANCE_ATTEMPTS = Math.max(2, Math.min(8, Math.floor(UPDATE_CASE_SUBMIT_TIMEOUT_MS / 15_000)));
+const UPDATE_CASE_SETUP_CREATE_MAX_ATTEMPTS = 1;
 
-test.describe('Verify creating and updating a case works as expected', () => {
-  test.describe.configure({ timeout: 300_000 });
+test.describe('Verify creating and updating a case works as expected', { tag: ['@e2e', '@e2e-update-case'] }, () => {
+  test.describe.configure({ timeout: 240_000 });
   test.beforeEach(async ({ page, createCasePage, caseDetailsPage }) => {
     await retryOnTransientFailure(
       async () => {
-        await ensureAuthenticatedPage(page, 'SOLICITOR', { waitForSelector: 'exui-header' });
-        await createCasePage.createDivorceCase('DIVORCE', 'XUI Case PoC', testField);
+        await ensureAuthenticatedPage(page, 'SOLICITOR', {
+          waitForSelector: 'exui-header',
+          timeoutMs: 30_000,
+        });
+        await createDivorceCase(createCasePage, 'DIVORCE', 'XUI Case PoC', testField, {
+          maxAttempts: UPDATE_CASE_SETUP_CREATE_MAX_ATTEMPTS,
+          createCaseMaxAttempts: UPDATE_CASE_SETUP_CREATE_MAX_ATTEMPTS,
+        });
         // Always collect case number from URL for consistency
         caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
       },
       {
-        maxAttempts: DEFAULT_TRANSIENT_MAX_ATTEMPTS,
+        maxAttempts: 1,
         onRetry: async () => {
           if (page.isClosed()) {
             return;
@@ -34,7 +40,10 @@ test.describe('Verify creating and updating a case works as expected', () => {
   });
 
   test('Create, update and verify case history', async ({ page, createCasePage, caseDetailsPage }) => {
+    let caseDetailsUrl = '';
+
     await test.step('Start Update Case event', async () => {
+      caseDetailsUrl = await caseDetailsPage.getCurrentPageUrl();
       await caseDetailsPage.selectCaseAction('Update case', {
         expectedLocator: createCasePage.person2FirstNameInput,
         timeoutMs: UPDATE_CASE_ACTION_TIMEOUT_MS,
@@ -42,27 +51,28 @@ test.describe('Verify creating and updating a case works as expected', () => {
     });
 
     await test.step('Update case fields', async () => {
-      const caseDetailsUrl = await caseDetailsPage.getCurrentPageUrl();
-
       await retryOnTransientFailure(
         async () => {
           await createCasePage.person2FirstNameInput.fill(updatedFirstName);
           await createCasePage.person2LastNameInput.fill(updatedLastName);
           await createCasePage.clickSubmitAndWait('after updating case fields', {
-            timeoutMs: UPDATE_CASE_SUBMIT_TIMEOUT_MS,
-            maxAutoAdvanceAttempts: UPDATE_CASE_MAX_AUTO_ADVANCE_ATTEMPTS,
+            timeoutMs: 60_000,
+            maxAutoAdvanceAttempts: 3,
           });
         },
         {
-          maxAttempts: DEFAULT_TRANSIENT_MAX_ATTEMPTS,
+          maxAttempts: 2,
           onRetry: async () => {
             if (page.isClosed()) {
               return;
             }
-            await page.goto(caseDetailsUrl).catch(() => undefined);
+            await caseDetailsPage.reopenCaseDetails(caseDetailsUrl).catch(async () => {
+              await page.goto(caseDetailsUrl).catch(() => undefined);
+            });
             await caseDetailsPage.selectCaseAction('Update case', {
               expectedLocator: createCasePage.person2FirstNameInput,
               timeoutMs: UPDATE_CASE_ACTION_TIMEOUT_MS,
+              retry: false,
             });
           },
         }
@@ -100,8 +110,7 @@ test.describe('Verify creating and updating a case works as expected', () => {
 
     await test.step('Verify that event details are shown on the History tab', async () => {
       await caseDetailsPage.selectCaseDetailsTab('History');
-      const { updateRow, updateDate, updateAuthor, expectedDate } = await caseDetailsPage.getUpdateCaseHistoryInfo();
-
+      const { updateRow, updateDate, updateAuthor, expectedDate } = await caseDetailsPage.getCaseHistoryByEvent('Update case');
       expect.soft(updateRow, 'Update case row should be present').toBeTruthy();
 
       const { numericFormat } = getTodayFormats();

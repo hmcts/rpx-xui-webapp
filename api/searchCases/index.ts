@@ -33,9 +33,7 @@ export function modifyRequest(proxyReq, req) {
 export function userCanPerformWildCardSearch(userInfo: UserInfo): boolean {
   const allowedRoles: string[] = getConfigValue(WILDCARD_SEARCH_ROLES) as string[];
   return (
-    userInfo &&
-    userInfo.roles &&
-    userInfo.roles.filter(
+    userInfo?.roles?.filter(
       (role: string) => allowedRoles.map((allowedRole: string) => allowedRole.toLowerCase()).indexOf(role.toLowerCase()) >= 0
     ).length > 0
   );
@@ -229,7 +227,16 @@ function isKeywordSuffixNeeded(columnName, type): string {
   return isText ? '.keyword' : '';
 }
 
-export function handleElasticSearchResponse(proxyRes, req, res, json): object {
+export function handleElasticSearchResponse(json): object {
+  if (typeof json === 'string') {
+    try {
+      const parsed = JSON.parse(json);
+      json = parsed;
+    } catch (e) {
+      console.warn('handleElasticSearchResponse: failed to parse JSON string', e);
+      return {};
+    }
+  }
   if (json.cases) {
     const results = json.cases.map((caseObj) => {
       caseObj.case_fields = caseObj.fields;

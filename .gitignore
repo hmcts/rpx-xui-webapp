@@ -57,6 +57,8 @@ api/.nyc_output
 .env
 .tool-versions
 /.agent
+/.agents/
+/AGENTS.md
 execplan-api-pw-coverage.md
 /.ssr.lock
 /.sonar

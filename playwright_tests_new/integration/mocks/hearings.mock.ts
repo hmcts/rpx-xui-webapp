@@ -3,11 +3,12 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const { EXUIDisplayStatusEnum, EXUISectionStatusEnum, HMCStatus } = require('../../../src/hearings/models/hearings.enum');
 const { hearingStatusMappings } = require('../../../src/hearings/models/hearingStatusMappings');
-const hearingsListTemplate = require('../../../test_codecept/ngIntegration/tests/features/hearings/mockData/viewEditHearings/caseHearings.json');
-const listedHearingTemplate = require('../../../test_codecept/ngIntegration/tests/features/hearings/mockData/viewEditHearings/mock_HMC_setup.json');
-const serviceHearingValuesTemplate = require('../../../test_codecept/ngIntegration/tests/features/hearings/mockData/viewEditHearings/mock_SHV_setup.json');
+const hearingsListTemplate = require('./fixtures/hearings/caseHearings.json');
+const listedHearingTemplate = require('./fixtures/hearings/mock_HMC_setup.json');
+const serviceHearingValuesTemplate = require('./fixtures/hearings/mock_SHV_setup.json');
 const appConfigTemplate = require('../../../src/assets/config/config.json');
-const headerConfigTemplate = require('../../../test_codecept/ngIntegration/config/baseConfig.js');
+const headerConfigTemplate = require('./fixtures/hearings/baseConfig.js');
+const hearingTestData = require('../../../src/hearings/hearing.test.data');
 
 export const HEARINGS_CASE_REFERENCE = '1234567812345678';
 export const HEARINGS_CASE_JURISDICTION = 'CIVIL';
@@ -503,4 +504,35 @@ export function buildCourtLocationMock(caseConfig?: HearingsCaseConfig) {
       region: 'Wales',
     },
   ];
+}
+
+export function buildHearingActualsMock() {
+  return deepClone(hearingTestData.hearingActualsMainModel) as UnknownRecord;
+}
+
+function resolveHearingLinks() {
+  const initialState = hearingTestData.initialState as UnknownRecord;
+  const hearingsState = (initialState.hearings ?? {}) as UnknownRecord;
+  return (initialState.hearingLinks ?? hearingsState.hearingLinks ?? {}) as UnknownRecord;
+}
+
+export function buildServiceLinkedCasesMock() {
+  const hearingLinks = resolveHearingLinks();
+  return deepClone(hearingLinks.serviceLinkedCases ?? []);
+}
+
+export function buildLinkedCasesWithHearingsMock() {
+  const hearingLinks = resolveHearingLinks();
+  return deepClone(hearingLinks.serviceLinkedCasesWithHearings ?? []);
+}
+
+export function buildLinkedHearingGroupMock() {
+  const hearingLinks = resolveHearingLinks();
+  return deepClone(hearingLinks.linkedHearingGroup ?? { groupDetails: {}, hearingsInGroup: [] });
+}
+
+export function buildLinkedHearingGroupResponseMock() {
+  return {
+    hearingGroupRequestId: 'g100001',
+  };
 }

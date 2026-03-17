@@ -12,7 +12,7 @@ export enum REDIRECTS {
 }
 
 export const CreateBookingHandleError = (error: any, navigator: Navigator): void => {
-  if (error && error.status) {
+  if (error?.status) {
     switch (error.status) {
       case 401:
       case 403: {
@@ -31,7 +31,7 @@ export const CreateBookingHandleError = (error: any, navigator: Navigator): void
 };
 
 export const RefreshBookingHandleError = (error: any, navigator: Navigator): void => {
-  if (error && error.status) {
+  if (error?.status) {
     navigator.navigate([REDIRECTS.DefaulthRefreshBookingUrl]);
   }
 };

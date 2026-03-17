@@ -93,8 +93,9 @@ test.describe(`Task List as ${userIdentifier}`, { tag: ['@integration', '@integr
   });
 
   test(`User can see all expected table elements with a large results set`, async ({ taskListPage, page }) => {
+    const taskListMockResponse = buildTaskListMock(1000, userId?.toString() || '', myActionsList);
     await test.step('Setup route mock for deterministic task list', async () => {
-      await setupTaskListMockRoutes(page, buildTaskListMock(1000, userId?.toString() || '', myActionsList));
+      await setupTaskListMockRoutes(page, taskListMockResponse);
     });
 
     await test.step('Navigate to the my tasks list page', async () => {
@@ -119,10 +120,17 @@ test.describe(`Task List as ${userIdentifier}`, { tag: ['@integration', '@integr
     });
 
     await test.step('Verify the first page of results shows expected data', async () => {
+      expect(await taskListPage.getResultsText()).toBe(
+        `Showing 1 to ${Math.min(taskListMockResponse.tasks.length, 25)} of ${taskListMockResponse.total_records} results`
+      );
       await taskListPage.paginationNextButton.click();
       await expect(taskListPage.paginationNextButton).toBeVisible();
       await expect(taskListPage.paginationPreviousButton).toBeVisible();
       await expect(taskListPage.paginationEllipsisButton).toBeVisible();
+    });
+    await test.step('Verify the second page of results shows expected data', async () => {
+      await taskListPage.exuiSpinnerComponent.wait();
+      expect(await taskListPage.getResultsText()).toBe(`Showing 26 to 50 of ${taskListMockResponse.total_records} results`);
     });
   });
 });

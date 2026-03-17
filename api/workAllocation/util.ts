@@ -872,7 +872,7 @@ export function getGrantType(roleAssignment: RoleAssignment) {
   ) {
     return 'Specific';
   } else if (roleAssignment.grantType) {
-    return roleAssignment.grantType.replace(/(\w)(\w*)/g, (g0, second, third) => {
+    return roleAssignment.grantType.replaceAll(/(\w)(\w*)/g, (g0, second, third) => {
       return second.toUpperCase() + third.toLowerCase();
     });
   }
@@ -931,7 +931,7 @@ export function formatDate(date: Date) {
 
 export function getAccessType(roleAssignment: RoleAssignment) {
   return roleAssignment.grantType
-    ? roleAssignment.grantType.replace(/\w+/g, (replacableString) => {
+    ? roleAssignment.grantType.replaceAll(/\w+/g, (replacableString) => {
         return replacableString[0].toUpperCase() + replacableString.slice(1).toLowerCase();
       })
     : undefined;

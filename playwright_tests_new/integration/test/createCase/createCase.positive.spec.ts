@@ -86,7 +86,7 @@ test.describe(`Create a ${jurisdiction} case as ${userIdentifier}`, { tag: ['@in
 
     await test.step('Submit the case for creation and capture the request body', async () => {
       const interceptedCreateCaseRequestBodyPromise = routeCaseCreationFlow(page);
-      await createCasePage.testSubmitButton.click();
+      await createCasePage.testSubmitButton.click({ noWaitAfter: true });
       interceptedCreateCaseRequestBody = await interceptedCreateCaseRequestBodyPromise;
     });
 
@@ -157,7 +157,7 @@ test.describe(`Create a ${jurisdiction} case as ${userIdentifier}`, { tag: ['@in
 
     await test.step('Submit the case for creation and capture the request body', async () => {
       const interceptedCreateCaseRequestBodyPromise = routeCaseCreationFlow(page);
-      await createCasePage.testSubmitButton.click();
+      await createCasePage.testSubmitButton.click({ noWaitAfter: true });
       interceptedCreateCaseRequestBody = await interceptedCreateCaseRequestBodyPromise;
     });
 
@@ -240,7 +240,7 @@ test.describe(`Create a ${jurisdiction} case as ${userIdentifier}`, { tag: ['@in
 
     await test.step('Submit the case for creation and capture the request body', async () => {
       const interceptedCreateCaseRequestBodyPromise = routeCaseCreationFlow(page);
-      await createCasePage.testSubmitButton.click();
+      await createCasePage.testSubmitButton.click({ noWaitAfter: true });
       interceptedCreateCaseRequestBody = await interceptedCreateCaseRequestBodyPromise;
     });
 

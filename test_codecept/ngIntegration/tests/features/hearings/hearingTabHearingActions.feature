@@ -38,7 +38,7 @@ Feature: Hearings: Hearings tab Hearing action based on roles
 
         Examples:
             | role                  | actions             |
-            | hearing-manager       | View or edit,Cancel |
+            | hearing-manager       | View details,Cancel |
             | hearing-viewer        | View details        |
             | listed-hearing-viewer | View details        |
 

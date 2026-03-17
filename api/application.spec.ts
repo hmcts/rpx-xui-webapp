@@ -494,6 +494,10 @@ describe('Application', () => {
             'Cache-Control',
             'no-cache, no-store, max-age=0, must-revalidate, proxy-revalidate'
           );
+          expect(mockRes.setHeader).to.have.been.calledWith(
+            'Permissions-Policy',
+            'geolocation=(), camera=(), microphone=()'
+          );
 
           expect(nextSpy).to.have.been.called;
         });

@@ -3,7 +3,7 @@ import { buildTaskListMock, buildDeterministicMyTasksListMock, myActionsList } f
 import { extractUserIdFromCookies } from '../../../utils/extractUserIdFromCookies';
 import { formatUiDate } from '../../../utils/tableUtils';
 import { setupTaskListMockRoutes } from '../../../helpers';
-import { applyPrewarmedSessionCookies } from '../../../helpers';
+import { applyPrewarmedSessionCookies, setupTaskListBootstrapRoutes, taskListRoutePattern } from '../../../helpers';
 
 let userId: string | null;
 const userIdentifier = 'STAFF_ADMIN';
@@ -131,6 +131,53 @@ test.describe(`Task List as ${userIdentifier}`, { tag: ['@integration', '@integr
     await test.step('Verify the second page of results shows expected data', async () => {
       await taskListPage.exuiSpinnerComponent.wait();
       expect(await taskListPage.getResultsText()).toBe(`Showing 26 to 50 of ${taskListMockResponse.total_records} results`);
+    });
+  });
+
+  test(`Column sort persists when navigating away from and back to My tasks`, async ({ taskListPage, page }) => {
+    const myTasksMockResponse = buildTaskListMock(30, userId?.toString() || '', myActionsList);
+    const taskSearchRequests: unknown[] = [];
+    const caseNameSortHeaderCell = taskListPage.sortByCaseNameTableHeader.locator('xpath=ancestor::th[1]');
+
+    await test.step('Setup route mocks and capture task search request bodies', async () => {
+      await setupTaskListBootstrapRoutes(page);
+      await page.route(taskListRoutePattern, async (route) => {
+        const request = route.request();
+        if (request.method() === 'POST') {
+          try {
+            taskSearchRequests.push(request.postDataJSON());
+          } catch {
+            taskSearchRequests.push(request.postData());
+          }
+        }
+
+        const body = JSON.stringify(myTasksMockResponse);
+        await route.fulfill({ status: 200, contentType: 'application/json', body });
+      });
+    });
+
+    await test.step('Open My tasks and sort by Case name', async () => {
+      await taskListPage.goto();
+      await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.exuiSpinnerComponent.wait();
+
+      await taskListPage.sortByCaseNameTableHeader.click();
+      await taskListPage.exuiSpinnerComponent.wait();
+      await expect(caseNameSortHeaderCell).toHaveAttribute('aria-sort', 'ascending');
+    });
+
+    await test.step('Navigate away and return to My tasks', async () => {
+      await taskListPage.taskTableTabs.filter({ hasText: 'Available tasks' }).first().click();
+      await taskListPage.exuiSpinnerComponent.wait();
+
+      await taskListPage.taskTableTabs.filter({ hasText: 'My tasks' }).first().click();
+      await taskListPage.exuiSpinnerComponent.wait();
+    });
+
+    await test.step('Verify Case name sort remains selected and log the latest request body', async () => {
+      await expect(caseNameSortHeaderCell).toHaveAttribute('aria-sort', 'ascending');
+      const latestRequestBody = taskSearchRequests.at(-1) ?? null;
+      console.log('My tasks sort persistence request body:', JSON.stringify(latestRequestBody, null, 2));
     });
   });
 });

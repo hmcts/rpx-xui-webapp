@@ -55,6 +55,8 @@ export class BookingLocationComponent implements AfterViewInit, OnInit {
     this.formError = !this.bookingProcess.location;
     if (this.bookingProcess.location) {
       this.eventTrigger.emit(BookingNavigationEvent.LOCATIONCONTINUE);
+    } else {
+      this.getLocationSearchFocus();
     }
   }
 

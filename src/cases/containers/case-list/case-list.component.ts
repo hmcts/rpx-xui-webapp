@@ -445,10 +445,10 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   private triggerQuery() {
-    if (!this.elasticSearchFlag) {
-      this.findCaseListPaginationMetadata(this.getEvent());
-    } else {
+    if (this.elasticSearchFlag) {
       this.getElasticSearchResults(this.getEvent());
+    } else {
+      this.findCaseListPaginationMetadata(this.getEvent());
     }
   }
 

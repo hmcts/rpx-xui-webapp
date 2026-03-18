@@ -47,7 +47,10 @@ function normaliseHearingsCaseRef(response) {
   }
 
   if (response.caseDetails?.caseDeepLink) {
-    response.caseDetails.caseDeepLink = response.caseDetails.caseDeepLink.replace(/\/case-details\/\d+/, `/case-details/${caseId}`);
+    response.caseDetails.caseDeepLink = response.caseDetails.caseDeepLink.replace(
+      /\/case-details\/\d+/,
+      `/case-details/${caseId}`
+    );
   }
 
   return response;

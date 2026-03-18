@@ -25,7 +25,11 @@ class HearingsTabPage {
   }
 
   async waitForHearingsToLoad() {
-    await browserWaits.waitForConditionAsync(async () => !(await this.loadingMessage.isVisible()), 15000, 'waiting for hearings to load');
+    await browserWaits.waitForConditionAsync(
+      async () => !(await this.loadingMessage.isVisible()),
+      15000,
+      'waiting for hearings to load'
+    );
   }
 
   getTableObject(tableName) {

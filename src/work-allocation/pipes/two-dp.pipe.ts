@@ -9,7 +9,7 @@ import { Pipe, PipeTransform } from '@angular/core';
  */
 @Pipe({
   standalone: false,
-  name: 'twoDP'
+  name: 'twoDP',
 })
 export class TwoDPPipe implements PipeTransform {
   private readonly DIGITS_INFO: string = '1.2-2';

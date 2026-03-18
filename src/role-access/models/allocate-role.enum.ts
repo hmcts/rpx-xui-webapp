@@ -1,7 +1,7 @@
 export enum TypeOfRole {
   LeadJudge = 'Lead judge',
   HearingJudge = 'Hearing judge',
-  CaseManager = 'Case manager'
+  CaseManager = 'Case manager',
 }
 
 export enum AllocateTo {
@@ -20,7 +20,7 @@ export enum Actions {
   Allocate = 'allocate',
   Complete = 'complete',
   Reallocate = 'reallocate',
-  Remove = 'remove'
+  Remove = 'remove',
 }
 
 export interface Period {

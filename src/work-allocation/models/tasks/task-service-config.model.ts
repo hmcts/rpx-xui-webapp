@@ -1,4 +1,3 @@
-/* eslint-disable semi */
 import { FieldConfig } from '../common';
 import { SortOrder, TaskService } from '../../enums';
 

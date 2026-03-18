@@ -16,7 +16,7 @@ export async function getActiveFlagsForCase(page) {
     await page.waitForTimeout(5000);
   }
   const match = textContent.match(/\d+/);
-  const numberOfFlags = match ? parseInt(match[0], 10) : 0;
+  const numberOfFlags = match ? Number.parseInt(match[0], 10) : 0;
   return numberOfFlags;
 }
 
@@ -25,7 +25,9 @@ export async function checkActiveRowsMatchesBanner(page, activeFlagCount) {
   const rows = page.locator('xpath=//ccd-case-flag-table//tbody[2]/tr');
   const rowCount = await rows.count();
   const activeRows = await Promise.all(
-    Array.from({ length: rowCount }, (_, i) => rows.nth(i).locator('xpath=.//td[contains(@class, "cell-flag-status")]').textContent())
+    Array.from({ length: rowCount }, (_, i) =>
+      rows.nth(i).locator('xpath=.//td[contains(@class, "cell-flag-status")]').textContent()
+    )
   );
   const activeRowCount = activeRows.filter((text) => text === 'Active').length;
   return activeRowCount === activeFlagCount;

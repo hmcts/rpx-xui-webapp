@@ -44,7 +44,7 @@ Feature: Create hearings workflow
         #     | party_1 | Party1 name | PARENT_0     | RA0053 | Party1 comment  | ACTIVE     |
         #     | party_2 | Party2 name | PARENT_0     | RA0053 | Party2 comment  | ACTIVE     |
 
-        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
+        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings-ce"
 
 
         When I click Request a hearing button
@@ -205,7 +205,7 @@ Feature: Create hearings workflow
         When I open first case in case list page
         Then I see case details page
         Then I see case details tab label "Hearings" is displayed is "true"
-        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
+        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings-ce"
         When I click Request a hearing button
         Then I see create hearing workflow container
 
@@ -346,7 +346,7 @@ Feature: Create hearings workflow
         When I open first case in case list page
         Then I see case details page
         Then I see case details tab label "Hearings" is displayed is "true"
-        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
+        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings-ce"
         When I click Request a hearing button
         Then I see create hearing workflow container
 
@@ -496,7 +496,7 @@ Feature: Create hearings workflow
         When I open first case in case list page
         Then I see case details page
         Then I see case details tab label "Hearings" is displayed is "true"
-        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
+        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings-ce"
         When I click Request a hearing button
         Then I see create hearing workflow container
 
@@ -568,8 +568,8 @@ Feature: Create hearings workflow
             | field                                                   | value               |
             | Length of hearing                                       | 1,2,5               |
             | Does the hearing need to take place on a specific date? | Choose a date range |
-            | Earliest start date                                     | 1,8,2026            |
-            | Latest end date                                         | 1,9,2026            |
+            | Must list after                                         | 1,9,2026            |
+            | Must list before                                        | 1,8,2026            |
 
             | What is the priority of this hearing? | Hearing priority 1 |
         When I click continue in create hearing workflow
@@ -615,7 +615,7 @@ Feature: Create hearings workflow
             # | Panel details | Exclude specific panel members | auto test 2 judge 2 |
 
             | Length, date and priority level of hearing | Length of hearing                                       | 1 Day 2 Hours 5 Minutes                                                                     |
-            | Length, date and priority level of hearing | Does the hearing need to take place on a specific date? | Choose a date range,Earliest start date: 01 August 2026, Latest end date: 01 September 2026 |
+            | Length, date and priority level of hearing | Does the hearing need to take place on a specific date? | Choose a date range,Must list after: 01 August 2026, Must list before: 01 September 2026 |
 
             | Length, date and priority level of hearing | What is the priority of this hearing?                  | Hearing priority 1 |
             | Linked hearings                            | Will this hearing need to be linked to other hearings? | Yes                |

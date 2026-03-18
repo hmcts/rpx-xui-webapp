@@ -94,7 +94,9 @@ class CaseEdit {
   }
 
   async isFieldLevelValidationErrorDisplayed(fieldId) {
-    const validationLocator = elementByXpath(`//*[contains(@id,'${fieldId}')]/ancestor::*[contains(@class,"form-group-error")] | //*[contains(@id,'${fieldId}')]//span[contains(@class,'error-message')]`);
+    const validationLocator = elementByXpath(
+      `//*[contains(@id,'${fieldId}')]/ancestor::*[contains(@class,"form-group-error")] | //*[contains(@id,'${fieldId}')]//span[contains(@class,'error-message')]`
+    );
     return await validationLocator.isVisible();
   }
 
@@ -107,18 +109,14 @@ class CaseEdit {
   }
 
   async isFieldDisplayed(fieldConfig) {
-    const fieldId = fieldConfig.field_type.type === 'Complex'
-      ? `${fieldConfig.id}_${fieldConfig.id}`
-      : fieldConfig.id;
+    const fieldId = fieldConfig.field_type.type === 'Complex' ? `${fieldConfig.id}_${fieldConfig.id}` : fieldConfig.id;
     const fieldLocator = $('#' + fieldId);
     const isPresent = await fieldLocator.isVisible();
     return isPresent;
   }
 
   async isFieldPresent(fieldConfig) {
-    const fieldId = fieldConfig.field_type.type === 'Complex'
-      ? `${fieldConfig.id}_${fieldConfig.id}`
-      : fieldConfig.id;
+    const fieldId = fieldConfig.field_type.type === 'Complex' ? `${fieldConfig.id}_${fieldConfig.id}` : fieldConfig.id;
     return await $(`#${fieldId}`).isVisible();
   }
 
@@ -127,7 +125,7 @@ class CaseEdit {
     let tagName = '';
     while (tagName !== 'ccd-field-write') {
       current = current.locator('xpath=..');
-      tagName = await current.evaluate(node => node.tagName.toLowerCase());
+      tagName = await current.evaluate((node) => node.tagName.toLowerCase());
     }
     const label = current.locator('xpath=.//*[contains(@class, "form-label")]');
     return await label.textContent();
@@ -172,7 +170,7 @@ class CaseEdit {
     return 'Yes';
   }
 
-    async inputFixedRadioListField(fieldConfig, inputOption, parentId) {
+  async inputFixedRadioListField(fieldConfig, inputOption, parentId) {
     const selectedVal = inputOption || fieldConfig.field_type.fixed_list_items[0];
     await $(`#${this.getFieldId(fieldConfig.id, parentId)}-${selectedVal.code}`).click();
     return selectedVal;
@@ -187,7 +185,9 @@ class CaseEdit {
   async inputMultiSelectListField(fieldConfig, inputOptions, parentId) {
     const selectedVal = inputOptions || fieldConfig.field_type.fixed_list_items;
     for (const option of selectedVal) {
-      const locator = $(`#${this.getFieldId(fieldConfig.id, parentId)} #${this.getFieldId(fieldConfig.id, parentId)}-${option.code}`);
+      const locator = $(
+        `#${this.getFieldId(fieldConfig.id, parentId)} #${this.getFieldId(fieldConfig.id, parentId)}-${option.code}`
+      );
       await locator.click();
     }
     return selectedVal;
@@ -224,9 +224,7 @@ class CaseEdit {
 
   async inputaddressGlobalUK(fieldConfig, value, parentId) {
     const fieldValue = {};
-    const complexId = parentId
-      ? `${parentId}_${fieldConfig.id}_${fieldConfig.id}`
-      : `${fieldConfig.id}_${fieldConfig.id}`;
+    const complexId = parentId ? `${parentId}_${fieldConfig.id}_${fieldConfig.id}` : `${fieldConfig.id}_${fieldConfig.id}`;
 
     const postCodeInput = $(`#${complexId}_postcodeLookup input`);
     const postCodeFindAddressBtn = $(`#${complexId}_postcodeLookup button`);
@@ -241,9 +239,7 @@ class CaseEdit {
     await BrowserWaits.waitForSeconds(2);
 
     for (const complexFieldConfig of fieldConfig.field_type.complex_fields) {
-      const prefix = parentId
-        ? `${parentId}_${fieldConfig.id}__detail`
-        : `${fieldConfig.id}__detail`;
+      const prefix = parentId ? `${parentId}_${fieldConfig.id}__detail` : `${fieldConfig.id}__detail`;
       const val = await $(`#${prefix}${complexFieldConfig.id}`).getAttribute('value');
       fieldValue[complexFieldConfig.id] = val;
     }
@@ -251,7 +247,7 @@ class CaseEdit {
     return fieldValue;
   }
 
-    async inputOrganisationField(fieldConfig, value, parentId) {
+  async inputOrganisationField(fieldConfig, value, parentId) {
     const baseId = `${fieldConfig.id}_${fieldConfig.id}`;
     const searchOrgInputText = $(`#${baseId} #search-org-text`);
     const orgResults = $$(`#${baseId} .scroll-container .td-select`);
@@ -264,7 +260,7 @@ class CaseEdit {
 
     return {
       organisationID: await organisationId.getAttribute('value'),
-      organisationName: await organisationName.getAttribute('value')
+      organisationName: await organisationName.getAttribute('value'),
     };
   }
 
@@ -374,7 +370,7 @@ class CaseEdit {
     await input.click();
   }
 
-    async clickContinue() {
+  async clickContinue() {
     const continueButton = $('button[type="submit"]');
     await continueButton.scrollIntoViewIfNeeded();
     await BrowserWaits.waitForElement(continueButton);
@@ -424,7 +420,7 @@ class CaseEdit {
         break;
       case 'MultiSelectList':
         const multiSelectVal = await this.inputMultiSelectListField(fieldConfig, value, parentId);
-        fieldValue = multiSelectVal.map(val => val.code);
+        fieldValue = multiSelectVal.map((val) => val.code);
         break;
       case 'PhoneUK':
         fieldValue = await this.inputPhoneUKField(fieldConfig, value, parentId);
@@ -447,8 +443,8 @@ class CaseEdit {
   async validateCheckYourAnswersPage(eventConfig) {
     const softAssert = new SoftAssert();
     softAssert.setScenario('Check your answers page content');
-    await softAssert.assert(async () =>
-      expect(await this.isCheckYourAnswersPagePresent(), 'Not on check your answers page').to.be.true
+    await softAssert.assert(
+      async () => expect(await this.isCheckYourAnswersPagePresent(), 'Not on check your answers page').to.be.true
     );
 
     const isHeadingPresent = await this.checkYourAnswersHeading.isVisible();
@@ -457,7 +453,9 @@ class CaseEdit {
 
     if (eventConfig.show_summary) {
       await softAssert.assert(async () => expect(isHeadingPresent, 'Check your answers header not displayed').to.be.true);
-      await softAssert.assert(async () => expect(isHeadingDescPresent, 'Check your answers header description not displayed').to.be.true);
+      await softAssert.assert(
+        async () => expect(isHeadingDescPresent, 'Check your answers header description not displayed').to.be.true
+      );
       await softAssert.assert(async () => expect(summaryRowsCount, 'Summary rows count is 0').to.be.above(0));
     } else {
       await softAssert.assert(async () => expect(isHeadingPresent, 'Header should not be visible').to.be.false);
@@ -467,7 +465,9 @@ class CaseEdit {
 
     for (const caseField of eventConfig.case_fields) {
       softAssert.setScenario(`Field "${caseField.label}" summary display condition: ${caseField.show_summary_change_option}`);
-      const fieldHeader = elementByXpath(`//ccd-case-edit-submit//*[contains(@class, "form-table")]//tr//th//span[text() = "${caseField.label}"]`);
+      const fieldHeader = elementByXpath(
+        `//ccd-case-edit-submit//*[contains(@class, "form-table")]//tr//th//span[text() = "${caseField.label}"]`
+      );
       const shouldDisplay = Boolean(caseField.show_summary_change_option);
       const message = `Field ${caseField.label} expected display: ${shouldDisplay}`;
       await softAssert.assert(async () => expect(await fieldHeader.isVisible(), message).to.equal(shouldDisplay));

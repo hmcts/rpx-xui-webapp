@@ -10,7 +10,7 @@ describe('PrivacyPolicyComponent', () => {
   let fixture: ComponentFixture<PrivacyPolicyComponent>;
 
   const translationServiceMock = {
-    language: 'cy'
+    language: 'cy',
   };
 
   class MockActivatedRoute {
@@ -25,10 +25,9 @@ describe('PrivacyPolicyComponent', () => {
       declarations: [PrivacyPolicyComponent],
       providers: [
         { provide: ActivatedRoute, useClass: MockActivatedRoute },
-        { provide: RpxTranslationService, useValue: translationServiceMock }
-      ]
-    })
-      .compileComponents();
+        { provide: RpxTranslationService, useValue: translationServiceMock },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

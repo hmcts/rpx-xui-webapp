@@ -10,6 +10,7 @@ describe('AppComponent', () => {
   let timeoutNotificationService: any;
   let featureToggleService: any;
   let loggerService: any;
+  let authService: any;
   let cookieService: any;
   let router: any;
   let title: any;
@@ -20,13 +21,22 @@ describe('AppComponent', () => {
   beforeEach(() => {
     store = jasmine.createSpyObj('store', ['pipe', 'dispatch']);
     googleTagManagerService = jasmine.createSpyObj('GoogleTagManagerService', ['init']);
-    timeoutNotificationService = jasmine.createSpyObj('TimeoutNotificationsService', ['notificationOnChange', 'initialise', 'close']);
+    timeoutNotificationService = jasmine.createSpyObj('TimeoutNotificationsService', [
+      'notificationOnChange',
+      'initialise',
+      'close',
+    ]);
     featureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled', 'getValue', 'initialize']);
     cookieService = jasmine.createSpyObj('CookieService', ['deleteCookieByPartialMatch']);
     loggerService = jasmine.createSpyObj('LoggerService', ['enableCookies', 'log']);
+    authService = jasmine.createSpyObj('AuthService', ['keepAlive']);
+    authService.keepAlive.and.returnValue(of(true));
     environmentService = jasmine.createSpyObj('environmentService', ['config$']);
     sessionStorageService = jasmine.createSpyObj('SessionStorageService', ['setItem']);
-    initialisationSyncService = jasmine.createSpyObj('InitialisationSyncService', ['waitForInialisation', 'initialisationComplete']);
+    initialisationSyncService = jasmine.createSpyObj('InitialisationSyncService', [
+      'waitForInialisation',
+      'initialisationComplete',
+    ]);
     testRoute = new RoutesRecognized(1, 'test', 'test', {
       url: 'test',
       root: {
@@ -46,7 +56,7 @@ describe('AppComponent', () => {
           children: [],
           pathFromRoot: [],
           paramMap: null,
-          queryParamMap: null
+          queryParamMap: null,
         },
         data: { title: 'Test' },
         title: 'Test',
@@ -62,12 +72,25 @@ describe('AppComponent', () => {
         children: [],
         pathFromRoot: [],
         paramMap: null,
-        queryParamMap: null
-      }
+        queryParamMap: null,
+      },
     });
     router = { events: of(testRoute) };
     title = jasmine.createSpyObj('Title', ['setTitle']);
-    appComponent = new AppComponent(store, googleTagManagerService, timeoutNotificationService, router, title, featureToggleService, loggerService, cookieService, environmentService, sessionStorageService, initialisationSyncService);
+    appComponent = new AppComponent(
+      store,
+      googleTagManagerService,
+      timeoutNotificationService,
+      router,
+      title,
+      featureToggleService,
+      loggerService,
+      authService,
+      cookieService,
+      environmentService,
+      sessionStorageService,
+      initialisationSyncService
+    );
   });
 
   it('Truthy', () => {
@@ -91,7 +114,9 @@ describe('AppComponent', () => {
   });
 
   it('timeoutNotificationEventHandler throw Error for Invalidtype', () => {
-    expect(() => appComponent.timeoutNotificationEventHandler({ type: 'something' })).toThrow(new Error('Invalid Timeout Notification Event'));
+    expect(() => appComponent.timeoutNotificationEventHandler({ type: 'something' })).toThrow(
+      new Error('Invalid Timeout Notification Event')
+    );
   });
 
   it('timeoutNotificationEventHandler signout', () => {
@@ -111,14 +136,15 @@ describe('AppComponent', () => {
     appComponent.updateTimeoutModal('100 seconds', false);
     expect(appComponent.timeoutModalConfig).toEqual({
       countdown: '100 seconds',
-      isVisible: false
+      isVisible: false,
     });
   });
 
   it('timeoutNotificationEventHandler keepalive', () => {
     const spyModal = spyOn(appComponent, 'updateTimeoutModal');
     appComponent.timeoutNotificationEventHandler({ eventType: 'keep-alive' });
-    expect(spyModal).toHaveBeenCalled();
+    expect(authService.keepAlive).toHaveBeenCalled();
+    expect(spyModal).not.toHaveBeenCalled();
   });
 
   it('should call initializeFeature', () => {
@@ -129,13 +155,13 @@ describe('AppComponent', () => {
       email: 'test@email.com',
       active: true,
       roles: ['role1', 'role2'],
-      uid: '1234'
+      uid: '1234',
     };
     appComponent.initializeFeature(userInfo, 'clientId');
     const featureUser = {
       key: '1234',
       roles: ['role1', 'role2'],
-      orgId: '-1'
+      orgId: '-1',
     };
     expect(featureToggleService.initialize).toHaveBeenCalledWith(featureUser, 'clientId');
   });
@@ -144,7 +170,7 @@ describe('AppComponent', () => {
     const user = {
       sessionTimeout: {
         idleModalDisplayTime: 60,
-        totalIdleTime: 60
+        totalIdleTime: 60,
       },
       canShareCases: true,
       userInfo: {
@@ -154,8 +180,8 @@ describe('AppComponent', () => {
         email: 'test@email.com',
         active: true,
         roles: ['role1', 'role2'],
-        uid: '1234'
-      }
+        uid: '1234',
+      },
     };
     timeoutNotificationService.notificationOnChange.and.returnValue(of({ eventType: 'keep-alive' }));
     appComponent.userDetailsHandler('clientId', user);
@@ -170,7 +196,7 @@ describe('AppComponent', () => {
     const userDetails = {
       sessionTimeout: {
         idleModalDisplayTime: 23434,
-        totalIdleTime: 23
+        totalIdleTime: 23,
       },
       canShareCases: false,
       userInfo: {
@@ -180,8 +206,8 @@ describe('AppComponent', () => {
         email: 'email@name.com',
         active: true,
         roles: ['role1', 'rol3'],
-        uid: '23435'
-      }
+        uid: '23435',
+      },
     };
     store.pipe.and.returnValue(of(userDetails));
     expect(store.pipe).toHaveBeenCalled();
@@ -243,13 +269,15 @@ describe('AppComponent', () => {
   describe('userDetailsHandler', () => {
     it('should call setUserAndCheckCookie', () => {
       const spy = spyOn(appComponent, 'setUserAndCheckCookie');
-      timeoutNotificationService.notificationOnChange.and.returnValue(of({
-        eventType: 'keep-alive'
-      }));
+      timeoutNotificationService.notificationOnChange.and.returnValue(
+        of({
+          eventType: 'keep-alive',
+        })
+      );
       appComponent.userDetailsHandler('ldClientId', {
         sessionTimeout: {
           totalIdleTime: 10,
-          idleModalDisplayTime: 100
+          idleModalDisplayTime: 100,
         },
         canShareCases: false,
         userInfo: {
@@ -259,11 +287,10 @@ describe('AppComponent', () => {
           email: '',
           active: true,
           roles: ['role1'],
-          uid: 'u234'
-        }
+          uid: 'u234',
+        },
       });
       expect(spy).toHaveBeenCalledWith('dummy');
     });
   });
 });
-

@@ -29,18 +29,16 @@ describe('Accept Tc Wrapper Component', () => {
     mockActions$.pipe.and.callFake(() => {
       // The ofType operator filters actions by type
       // We simulate this behavior by filtering for ACCEPT_T_AND_C_SUCCESS
-      return actionsSubject.asObservable().pipe(
-        filter((action: Action) => action.type === fromApp.ACCEPT_T_AND_C_SUCCESS)
-      );
+      return actionsSubject.asObservable().pipe(filter((action: Action) => action.type === fromApp.ACCEPT_T_AND_C_SUCCESS));
     });
 
     TestBed.configureTestingModule({
       declarations: [AcceptTcWrapperComponent],
       providers: [
         { provide: Store, useValue: mockStore },
-        { provide: Actions, useValue: mockActions$ }
+        { provide: Actions, useValue: mockActions$ },
       ],
-      schemas: [NO_ERRORS_SCHEMA]
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
   }));
 
@@ -75,7 +73,7 @@ describe('Accept Tc Wrapper Component', () => {
       expect(mockStore.dispatch).toHaveBeenCalledWith(
         jasmine.objectContaining({
           type: fromStore.GO,
-          payload: { path: ['cases'] }
+          payload: { path: ['cases'] },
         })
       );
     });
@@ -204,7 +202,7 @@ describe('Accept Tc Wrapper Component', () => {
       const result = component.getObservable(mockActions$, 'TEST_ACTION');
 
       let emittedValue: any;
-      result.subscribe((value) => emittedValue = value);
+      result.subscribe((value) => (emittedValue = value));
 
       expect(emittedValue).toEqual({ type: 'TEST_ACTION' });
     });
@@ -217,7 +215,7 @@ describe('Accept Tc Wrapper Component', () => {
 
       result.subscribe({
         next: () => fail('should have failed'),
-        error: (err) => expect(err).toBe(error)
+        error: (err) => expect(err).toBe(error),
       });
     });
   });

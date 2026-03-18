@@ -28,7 +28,7 @@ const reasons: LovRefDataByServiceModel = {
       parent_category: '',
       parent_key: '',
       active_flag: '',
-      from: 'exui-default'
+      from: 'exui-default',
     },
     {
       key: 'judgereq',
@@ -41,7 +41,7 @@ const reasons: LovRefDataByServiceModel = {
       parent_category: '',
       parent_key: '',
       active_flag: '',
-      from: 'exui-default'
+      from: 'exui-default',
     },
     {
       key: 'adminreq',
@@ -54,7 +54,7 @@ const reasons: LovRefDataByServiceModel = {
       parent_category: '',
       parent_key: '',
       active_flag: '',
-      from: 'exui-default'
+      from: 'exui-default',
     },
     {
       key: 'adminerr',
@@ -67,15 +67,15 @@ const reasons: LovRefDataByServiceModel = {
       parent_category: '',
       parent_key: '',
       active_flag: '',
-      from: 'exui-default'
-    }
-  ]
+      from: 'exui-default',
+    },
+  ],
 };
 
 describe('HearingLinkComponent', () => {
   let component: HearingLinkComponent;
   let fixture: ComponentFixture<HearingLinkComponent>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let mockStore: any;
   const mockHttpClient = createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockHttpClient);
@@ -83,21 +83,10 @@ describe('HearingLinkComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        ReactiveFormsModule
-      ],
-      declarations: [
-        CaseReferencePipe,
-        ConvertArrayToStringPipe,
-        HearingLinkComponent,
-        MockRpxTranslatePipe
-      ],
-      providers: [
-        provideMockStore({ initialState }),
-        { provide: HearingsService, useValue: hearingsService }
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      imports: [RouterTestingModule, ReactiveFormsModule],
+      declarations: [CaseReferencePipe, ConvertArrayToStringPipe, HearingLinkComponent, MockRpxTranslatePipe],
+      providers: [provideMockStore({ initialState }), { provide: HearingsService, useValue: hearingsService }],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingLinkComponent);

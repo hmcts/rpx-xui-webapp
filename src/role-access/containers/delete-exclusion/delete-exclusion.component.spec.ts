@@ -14,8 +14,7 @@ import { DeleteExclusionComponent } from './delete-exclusion.component';
 
 @Component({
   standalone: false,
-  template: `
-    <exui-delete-exclusion></exui-delete-exclusion>`
+  template: ` <exui-delete-exclusion></exui-delete-exclusion>`,
 })
 class WrapperComponent {
   @ViewChild(DeleteExclusionComponent, { static: true }) public appComponentRef: DeleteExclusionComponent;
@@ -27,30 +26,37 @@ const mockCaseworker: Caseworker = {
   lastName: 'testing',
   email: 'test@test.com',
   location: null,
-  roleCategory: RoleCategory.LEGAL_OPERATIONS
+  roleCategory: RoleCategory.LEGAL_OPERATIONS,
 };
 
 describe('DeleteExclusionComponent', () => {
   let component: DeleteExclusionComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
-  const routerMock = jasmine.createSpyObj('Router', [
-    'navigateByUrl', 'navigate'
-  ]);
+  const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']);
   const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getAll']);
-  const mockRoleExclusionService = jasmine.createSpyObj('roleExclusionService', ['getCurrentUserRoleExclusions', 'deleteExclusion']);
+  const mockRoleExclusionService = jasmine.createSpyObj('roleExclusionService', [
+    'getCurrentUserRoleExclusions',
+    'deleteExclusion',
+  ]);
   const exampleCaseId = '1234';
   const exclusionId = '2';
   const jurisdiction = 'Jurisdiction';
   const caseType = 'caseType';
   const goToCaseUrl = `cases/case-details/${jurisdiction}/${caseType}/${exampleCaseId}/roles-and-access`;
-  const exclusion = { caseId: exampleCaseId, exclusionId, jurisdiction, caseType, name: 'Sample Name', type: 'test', userType: 'LEGAL_OPERATIONS' };
+  const exclusion = {
+    caseId: exampleCaseId,
+    exclusionId,
+    jurisdiction,
+    caseType,
+    name: 'Sample Name',
+    type: 'test',
+    userType: 'LEGAL_OPERATIONS',
+  };
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      schemas: [
-        NO_ERRORS_SCHEMA
-      ],
+      schemas: [NO_ERRORS_SCHEMA],
       declarations: [AnswersComponent, DeleteExclusionComponent, WrapperComponent],
       imports: [],
       providers: [
@@ -65,27 +71,26 @@ describe('DeleteExclusionComponent', () => {
                     id: exclusionId,
                     name: 'Judge Rinder',
                     notes: 'Test exclusion',
-                    actorId: '999999999'
-                  }
-                ]
-              }
+                    actorId: '999999999',
+                  },
+                ],
+              },
             },
-            queryParamMap: of(convertToParamMap(exclusion))
-          }
+            queryParamMap: of(convertToParamMap(exclusion)),
+          },
         },
         {
           provide: Router,
-          useValue: routerMock
+          useValue: routerMock,
         },
         {
           provide: RoleExclusionsService,
-          useValue: mockRoleExclusionService
+          useValue: mockRoleExclusionService,
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -147,7 +152,7 @@ describe('DeleteExclusionComponent', () => {
       userType: null,
       notes: 'notes',
       added: new Date(2021, 12, 31),
-      email: ''
+      email: '',
     };
     component.populateAnswers(someExclusion);
     component.answers[0].label = AnswerLabelText.Person;
@@ -163,24 +168,33 @@ describe('DeleteExclusionComponent with no name', () => {
   let component: DeleteExclusionComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
-  const routerMock = jasmine.createSpyObj('Router', [
-    'navigateByUrl', 'navigate'
-  ]);
+  const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate']);
   const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getAll']);
-  const mockRoleExclusionService = jasmine.createSpyObj('roleExclusionService', ['getCurrentUserRoleExclusions', 'deleteExclusion']);
+  const mockRoleExclusionService = jasmine.createSpyObj('roleExclusionService', [
+    'getCurrentUserRoleExclusions',
+    'deleteExclusion',
+  ]);
   const mockAllocateRoleService = jasmine.createSpyObj('allocateService', ['getCaseRolesUserDetails']);
   const exampleCaseId = '1234';
   const exclusionId = '2';
   const jurisdiction = 'Jurisdiction';
   const caseType = 'caseType';
   const goToCaseUrl = `cases/case-details/${jurisdiction}/${caseType}/${exampleCaseId}/roles-and-access`;
-  const exclusion = { id: exclusionId, notes: null, added: new Date('21-01-2022'), caseId: exampleCaseId, jurisdiction, caseType, name: 'Sample Name', type: 'test', userType: 'LEGAL_OPERATIONS' };
+  const exclusion = {
+    id: exclusionId,
+    notes: null,
+    added: new Date('21-01-2022'),
+    caseId: exampleCaseId,
+    jurisdiction,
+    caseType,
+    name: 'Sample Name',
+    type: 'test',
+    userType: 'LEGAL_OPERATIONS',
+  };
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      schemas: [
-        NO_ERRORS_SCHEMA
-      ],
+      schemas: [NO_ERRORS_SCHEMA],
       declarations: [AnswersComponent, DeleteExclusionComponent, WrapperComponent],
       imports: [],
       providers: [
@@ -195,31 +209,30 @@ describe('DeleteExclusionComponent with no name', () => {
                     id: exclusionId,
                     name: null,
                     notes: 'Test exclusion',
-                    actorId: '999999999'
-                  }
-                ]
-              }
+                    actorId: '999999999',
+                  },
+                ],
+              },
             },
-            queryParamMap: of(convertToParamMap(exclusion))
-          }
+            queryParamMap: of(convertToParamMap(exclusion)),
+          },
         },
         {
           provide: Router,
-          useValue: routerMock
+          useValue: routerMock,
         },
         {
           provide: RoleExclusionsService,
-          useValue: mockRoleExclusionService
+          useValue: mockRoleExclusionService,
         },
         {
           provide: mockAllocateRoleService,
-          useValue: mockAllocateRoleService
+          useValue: mockAllocateRoleService,
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -251,7 +264,7 @@ describe('DeleteExclusionComponent with no name', () => {
       surname: 'surName',
       email: 'email@email.com',
       active: true,
-      roles: ['pui-case-manager']
+      roles: ['pui-case-manager'],
     };
     component.exclusionId = exclusionId;
     mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(userDetails);
@@ -277,7 +290,7 @@ describe('DeleteExclusionComponent with no name', () => {
       userType: null,
       notes: 'notes',
       added: new Date(2021, 11, 31),
-      email: ''
+      email: '',
     };
     component.populateAnswers(someExclusion);
     expect(component.answers[0].value).toBe('Awaiting person details');

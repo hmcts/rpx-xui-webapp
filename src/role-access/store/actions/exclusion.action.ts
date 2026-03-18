@@ -11,7 +11,7 @@ export enum ExclusionActionTypes {
   SAVE_EXCLUSION_OPTION_AND_GO = '[EXCLUSION] Save Exclusion Option And Go',
   SAVE_PERSON_ROLE_AND_GO = '[EXCLUSION] Save Person Role And Go',
   UPDATE_DESCRIBE_EXCLUSION_TEXT = '[EXCLUSION] Update Describe Exclusion Text',
-  UPDATE_PERSON_EXCLUSION = '[EXCLUSION] Update Person Exclusion'
+  UPDATE_PERSON_EXCLUSION = '[EXCLUSION] Update Person Exclusion',
 }
 
 export class ExclusionReset implements Action {
@@ -26,30 +26,40 @@ export class ChangeNavigation implements Action {
 
 export class ExclusionSetCaseId implements Action {
   public readonly type = ExclusionActionTypes.EXCLUSION_SET_CASE_ID;
-  constructor(public caseId: string, public jurisdiction: string, public caseType: string) {}
+  constructor(
+    public caseId: string,
+    public jurisdiction: string,
+    public caseType: string
+  ) {}
 }
 
 export class UpdateDescribeExclusionText implements Action {
   public readonly type = ExclusionActionTypes.UPDATE_DESCRIBE_EXCLUSION_TEXT;
 
-  constructor(public payload: ExclusionState, public describeExclusionText: string) {}
+  constructor(
+    public payload: ExclusionState,
+    public describeExclusionText: string
+  ) {}
 }
 
 export class SaveExclusionOptionAndGo implements Action {
   public readonly type = ExclusionActionTypes.SAVE_EXCLUSION_OPTION_AND_GO;
 
-  constructor(public payload: { exclusionOption: ExcludeOption, exclusionState: ExclusionState }) {}
+  constructor(public payload: { exclusionOption: ExcludeOption; exclusionState: ExclusionState }) {}
 }
 
 export class SavePersonRoleAndGo implements Action {
   public readonly type = ExclusionActionTypes.SAVE_PERSON_ROLE_AND_GO;
 
-  constructor(public payload: { personRole: PersonRole, exclusionState: ExclusionState }) {}
+  constructor(public payload: { personRole: PersonRole; exclusionState: ExclusionState }) {}
 }
 
 export class UpdatePersonExclusion implements Action {
   public readonly type = ExclusionActionTypes.UPDATE_PERSON_EXCLUSION;
-  constructor(public payload: ExclusionState, public person: Person) {}
+  constructor(
+    public payload: ExclusionState,
+    public person: Person
+  ) {}
 }
 
 export class ConfirmExclusionAction implements Action {

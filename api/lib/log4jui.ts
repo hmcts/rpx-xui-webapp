@@ -1,9 +1,6 @@
 import * as log4js from 'log4js';
 import { getConfigValue } from '../configuration';
-import {
-  LOG4_J_CONFIG,
-  LOGGING
-} from '../configuration/references';
+import { LOG4_J_CONFIG, LOGGING } from '../configuration/references';
 import { client } from './appInsights';
 import { JUILogger } from './models';
 
@@ -13,16 +10,11 @@ const maxCatLength = 14;
 // This is done to mimic log4js calls
 log4js.configure(getConfigValue(LOG4_J_CONFIG));
 
-// TODO: this should be moved into util but the import seems to fail
-export function leftPad(str: string, length = 20): string {
-  return `${' '.repeat(Math.max(length - str.length, 0))}${str}`;
-}
-
 export function getLogger(category: string): JUILogger {
   const logger: log4js.Logger = log4js.getLogger(category);
   logger.level = getConfigValue(LOGGING) || 'off';
 
-  const catFormatted = leftPad(category, maxCatLength);
+  const catFormatted = category.padStart(maxCatLength);
   logger.addContext('catFormatted', `${catFormatted} `);
 
   return {
@@ -31,7 +23,7 @@ export function getLogger(category: string): JUILogger {
     error,
     info,
     trackRequest,
-    warn
+    warn,
   };
 }
 

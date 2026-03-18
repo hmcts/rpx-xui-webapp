@@ -1,5 +1,6 @@
 import { TCDocument } from '@hmcts/rpx-xui-common-lib';
 import { Action } from '@ngrx/store';
+import { UserDetails } from '../../../app/models';
 
 export const APP_LOAD_CONFIG = '[App] Load Config';
 export const APP_LOAD_CONFIG_SUCCESS = '[App] Load Config Success';
@@ -34,7 +35,8 @@ export const LOAD_USER_DETAILS_FAIL = '[App] Load User Details Success';
 export const START_IDLE_SESSION_TIMEOUT = '[App] Start Idle Session Timeout';
 export const STOP_IDLE_SESSION_TIMEOUT = '[App] Stop Idle Session Timeout';
 
-export const DECORATE_16_DIGIT_CASE_REFERENCE_SEARCH_BOX_IN_HEADER = '[App] Decorate 16 Digit Case Reference Search Box In Header';
+export const DECORATE_16_DIGIT_CASE_REFERENCE_SEARCH_BOX_IN_HEADER =
+  '[App] Decorate 16 Digit Case Reference Search Box In Header';
 
 export class LoadConfig implements Action {
   public readonly type = APP_LOAD_CONFIG;
@@ -129,10 +131,9 @@ export class LoadUserDetails implements Action {
   constructor(public payload?: boolean) {}
 }
 
-// TODO: strong type the payload
 export class LoadUserDetailsSuccess implements Action {
   public readonly type = LOAD_USER_DETAILS_SUCCESS;
-  constructor(public payload) {}
+  constructor(public payload: UserDetails) {}
 }
 
 export class LoadUserDetailsFail implements Action {

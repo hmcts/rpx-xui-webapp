@@ -1,20 +1,23 @@
 const { $, elementByXpath } = require('../../../../../helpers/globals');
 
 class HearingJudgePage {
-
   get pageContainer() {
     return $('exui-hearing-judge');
   }
 
-  get specificJudgeRadio()   { return $('#specificJudgeName'); }
-  get noSpecificJudgeRadio() { return $('#noSpecificJudge');   }
+  get specificJudgeRadio() {
+    return $('#specificJudgeName');
+  }
+  get noSpecificJudgeRadio() {
+    return $('#noSpecificJudge');
+  }
 
-  get excludeJudgeSearchInput() { return $('#inputSelectPersonExclude'); }
+  get excludeJudgeSearchInput() {
+    return $('#inputSelectPersonExclude');
+  }
 
   get excludeJdgeBtn() {
-    return elementByXpath(
-      "//div[contains(@class,'govuk-button')][contains(text(),'Exclude judge')]"
-    );
+    return elementByXpath("//div[contains(@class,'govuk-button')][contains(text(),'Exclude judge')]");
   }
 
   get searchJudicialUserContainer() {
@@ -37,16 +40,10 @@ class HearingJudgePage {
 
   get fieldmapping() {
     return {
-      'Do you want a specific judge?':           $('#specific-judge-selection'),
-      'Exclude a judge':                         elementByXpath(
-        "//div[contains(text(),'Exclude a judge')]"
-      ),
-      'Name of the judge':                       elementByXpath(
-        "//h1[contains(text(),'Name of the judge')]"
-      ),
-      'Select all judge types that apply':       elementByXpath(
-        "//h1[contains(text(),'Select all judge types that apply')]"
-      )
+      'Do you want a specific judge?': $('#specific-judge-selection'),
+      'Exclude a judge': elementByXpath("//div[contains(text(),'Exclude a judge')]"),
+      'Name of the judge': elementByXpath("//h1[contains(text(),'Name of the judge')]"),
+      'Select all judge types that apply': elementByXpath("//h1[contains(text(),'Select all judge types that apply')]"),
     };
   }
 
@@ -90,7 +87,9 @@ class HearingJudgePage {
   }
 
   async selectJudgeType(judgeType) {
-    const ele = elementByXpath(`//div[contains(@class, 'govuk-radios__conditional')]//h1[contains(text(),'Select all judge types that apply')]/../../div[@id ='judgeTypes']//label[contains(text(),'${judgeType}')]/../input`);
+    const ele = elementByXpath(
+      `//div[contains(@class, 'govuk-radios__conditional')]//h1[contains(text(),'Select all judge types that apply')]/../../div[@id ='judgeTypes']//label[contains(text(),'${judgeType}')]/../input`
+    );
     await ele.click();
   }
 

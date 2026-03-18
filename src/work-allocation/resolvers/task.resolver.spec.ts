@@ -16,7 +16,7 @@ describe('Task Resolver', () => {
     route.paramMap = {
       get: () => {
         return 'somevalue';
-      }
+      },
     };
 
     const taskCaseWorkers$ = taskResolver.resolve(route);

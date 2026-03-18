@@ -7,13 +7,15 @@ import * as fromHearingStore from '../store';
 export class ServiceIdResolverResolve {
   public serviceId: string = '';
 
-  constructor(
-    protected readonly hearingStore: Store<fromHearingStore.State>
-  ) {}
+  constructor(protected readonly hearingStore: Store<fromHearingStore.State>) {}
 
   public getServiceId$(): Observable<string> {
-    return this.hearingStore.pipe(select(fromHearingStore.getHearingValuesModel)).pipe(
-      map((serviceHearingValuesModel: ServiceHearingValuesModel) => serviceHearingValuesModel && serviceHearingValuesModel.hmctsServiceID ? serviceHearingValuesModel.hmctsServiceID : '')
-    );
+    return this.hearingStore
+      .pipe(select(fromHearingStore.getHearingValuesModel))
+      .pipe(
+        map((serviceHearingValuesModel: ServiceHearingValuesModel) =>
+          serviceHearingValuesModel && serviceHearingValuesModel.hmctsServiceID ? serviceHearingValuesModel.hmctsServiceID : ''
+        )
+      );
   }
 }

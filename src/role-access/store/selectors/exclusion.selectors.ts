@@ -7,12 +7,6 @@ export const getRoleAccessState = createSelector(
   (state: fromFeature.State) => state.exclusion
 );
 
-export const currentNavigation = createSelector(
-  getRoleAccessState,
-  fromFeature.getExclusionActiveState
-);
+export const currentNavigation = createSelector(getRoleAccessState, fromFeature.getExclusionActiveState);
 
-export const lastError = createSelector(
-  getRoleAccessState,
-  fromFeature.getLastErrors
-);
+export const lastError = createSelector(getRoleAccessState, fromFeature.getLastErrors);

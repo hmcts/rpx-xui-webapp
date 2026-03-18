@@ -6,10 +6,12 @@ import { IsAmendedConverter } from './is-amended.converter';
 
 export class ParticipantChannelAttendenceAmendedConverter implements IsAmendedConverter {
   public transformIsAmended(hearingState$?: Observable<State>): Observable<boolean> {
-    return hearingState$.pipe(map((state) => {
-      const objA = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.hearingChannels;
-      const objB = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels;
-      return !_.isEqual(objA, objB);
-    }));
+    return hearingState$.pipe(
+      map((state) => {
+        const objA = state.hearingRequestToCompare.hearingRequestMainModel.hearingDetails.hearingChannels;
+        const objB = state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingChannels;
+        return !_.isEqual(objA, objB);
+      })
+    );
   }
 }

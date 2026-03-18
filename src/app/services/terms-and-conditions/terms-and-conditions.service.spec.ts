@@ -12,10 +12,7 @@ describe('TermsConditionsService', () => {
     mockHttpClient = jasmine.createSpyObj('HttpClient', ['get']);
 
     TestBed.configureTestingModule({
-      providers: [
-        TermsConditionsService,
-        { provide: HttpClient, useValue: mockHttpClient }
-      ]
+      providers: [TermsConditionsService, { provide: HttpClient, useValue: mockHttpClient }],
     });
 
     service = TestBed.inject(TermsConditionsService);
@@ -30,7 +27,7 @@ describe('TermsConditionsService', () => {
       const mockTCDocument: TCDocument = {
         content: 'Terms and conditions content',
         version: 1.0,
-        mimeType: 'text/html'
+        mimeType: 'text/html',
       };
 
       mockHttpClient.get.and.returnValue(of(mockTCDocument));
@@ -168,7 +165,7 @@ describe('TermsConditionsService', () => {
       const mockTCDocument: TCDocument = {
         content: 'Terms and conditions content',
         version: 2.0,
-        mimeType: 'text/html'
+        mimeType: 'text/html',
       };
 
       mockHttpClient.get.and.returnValue(of(mockTCDocument));
@@ -192,7 +189,7 @@ describe('TermsConditionsService', () => {
       const mockTCDocument: TCDocument = {
         content: 'Terms and conditions content',
         version: 1.0,
-        mimeType: 'text/html'
+        mimeType: 'text/html',
       };
       const errorResponse = { status: 503, message: 'Service Unavailable' };
 
@@ -230,7 +227,7 @@ describe('TermsConditionsService', () => {
       const emptyTCDocument: TCDocument = {
         content: '',
         version: 0,
-        mimeType: ''
+        mimeType: '',
       };
 
       mockHttpClient.get.and.returnValue(of(emptyTCDocument));
@@ -265,7 +262,7 @@ describe('TermsConditionsService', () => {
     it('should handle partial terms and conditions document', (done) => {
       const partialTCDocument: Partial<TCDocument> = {
         content: 'Some content',
-        version: 1.0
+        version: 1.0,
         // mimeType field is missing
       };
 

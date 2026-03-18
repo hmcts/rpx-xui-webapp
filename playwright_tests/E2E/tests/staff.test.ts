@@ -7,7 +7,7 @@ test.beforeEach(async ({ page }) => {
   registerCorsChecker(page);
   await signIn(page, 'STAFF_ADMIN');
   await clickToStaffPage(page);
-  await acceptCookies(page)
+  await acceptCookies(page);
 });
 
 test('staff user details', async ({ page }) => {
@@ -15,13 +15,9 @@ test('staff user details', async ({ page }) => {
   await page.locator('#content').getByRole('textbox').fill('xui');
   await page.getByRole('button', { name: 'Search', exact: true }).click();
   await expect(page.getByRole('columnheader', { name: 'Name' })).toBeVisible();
-  await expect(
-    page.getByRole('link', { name: 'xui caseworker all services' })
-  ).toBeVisible();
+  await expect(page.getByRole('link', { name: 'xui caseworker all services' })).toBeVisible();
   await page.getByRole('link', { name: 'xui caseworker all services' }).click();
-  await expect(
-    page.getByRole('heading', { name: 'User details' })
-  ).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'User details' })).toBeVisible();
   await expect(page.getByText('Name')).toBeVisible();
   await expect(page.getByText('Email address')).toBeVisible();
   await expect(page.getByText('Service', { exact: true })).toBeVisible();

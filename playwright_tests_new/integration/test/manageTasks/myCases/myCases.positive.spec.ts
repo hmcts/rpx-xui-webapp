@@ -21,10 +21,12 @@ const buildMyCasesMock = () => {
       case_type: 'Asylum',
       jurisdiction: 'IA',
       jurisdictionId: 'IA',
+      expectedServiceLabel: 'Immigration & Asylum',
       startDate: toMiddayUtcIso('2026-01-10T00:00:00.000Z'),
       endDate: toMiddayUtcIso('2026-02-16T00:00:00.000Z'),
+      next_hearing_date: toMiddayUtcIso('2026-01-20T00:00:00.000Z'),
       case_role: 'lead-judge',
-      role: 'Lead judge',
+      role: 'Lead Judge',
       role_category: 'JUDICIAL',
       hasAccess: true,
       actions: [],
@@ -36,11 +38,13 @@ const buildMyCasesMock = () => {
       case_category: 'Human rights',
       case_type: 'Asylum',
       jurisdiction: 'SSCS',
+      expectedServiceLabel: 'Social security and child support',
       jurisdictionId: 'SSCS',
       startDate: toMiddayUtcIso('2026-01-12T00:00:00.000Z'),
       endDate: toMiddayUtcIso('2026-02-18T00:00:00.000Z'),
+      next_hearing_date: toMiddayUtcIso('2026-01-20T00:00:00.000Z'),
       case_role: 'case-manager',
-      role: 'Case manager',
+      role: 'Case Manager',
       role_category: 'LEGAL_OPERATIONS',
       hasAccess: true,
       actions: [],
@@ -88,7 +92,7 @@ test.describe(`My Cases as ${userIdentifier}`, { tag: ['@integration', '@integra
     });
 
     await test.step('Verify the cases table columns and data', async () => {
-      expect(await taskListPage.getResultsText()).toBe(`Showing ${myCasesMockResponse.cases.length} results`);
+      expect(await taskListPage.myCasesResultsAmount.textContent()).toBe(`Showing ${myCasesMockResponse.cases.length} results`);
 
       const table = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
       expect(Object.keys(table[0] ?? {})).toEqual(
@@ -98,10 +102,10 @@ test.describe(`My Cases as ${userIdentifier}`, { tag: ['@integration', '@integra
       for (let i = 0; i < table.length; i++) {
         const expectedCase = myCasesMockResponse.cases[i];
         expect(table[i]['Case name']).toBe(expectedCase.case_name);
-        expect(table[i]['Service']).toBe(expectedCase.jurisdiction);
+        expect(table[i]['Service']).toBe(expectedCase.expectedServiceLabel);
         expect(table[i]['Case category']).toBe(expectedCase.case_category);
         expect(table[i]['Case role']).toBe(expectedCase.role);
-        expect(table[i]['Hearing date']).toBe(formatUiDate(expectedCase.startDate));
+        expect(table[i]['Hearing date']).toBe(formatUiDate(expectedCase.next_hearing_date));
         expect(table[i]['Start']).toBe(formatUiDate(expectedCase.startDate));
         expect(table[i]['End']).toBe(formatUiDate(expectedCase.endDate));
       }

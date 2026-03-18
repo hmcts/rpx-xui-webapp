@@ -37,6 +37,7 @@ export class TaskListPage extends Base {
   readonly taskTableHeader = this.taskListTable.locator('thead');
   readonly taskTableFooter = this.taskListTable.locator('tfoot');
   readonly taskListResultsAmount = this.page.locator('#search-result-summary__text, [data-test="search-result-summary__text"]');
+  readonly myCasesResultsAmount = this.page.locator('.pagination-top');
   readonly manageCaseButtons = this.taskListTable.getByRole('button', { name: 'Manage' });
   readonly errorPageHeading = this.page.getByRole('heading', { name: /something went wrong/i });
   readonly serviceDownError = this.exuiBodyComponent.serviceDownError;

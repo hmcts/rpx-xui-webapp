@@ -90,7 +90,7 @@ test.describe(`My Access as ${userIdentifier}`, { tag: ['@integration', '@integr
     });
   });
 
-  test(`User ${userIdentifier} sees the service down page on My access if the api times out`, async ({ taskListPage, page }) => {
+  test(`User sees the service down page on My access if the api times out`, async ({ taskListPage, page }) => {
     await test.step('Setup route mocks for a My access timeout', async () => {
       await setupTaskListBootstrapRoutes(page);
       await page.route('**/api/role-access/roles/get-my-access-new-count*', async (route) => {

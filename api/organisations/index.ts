@@ -8,7 +8,7 @@ import { exists } from '../lib/util';
 export async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
     const path = getOrganisationUri();
-    const response = await handleGet(path, req, next);
+    const response = await handleGet(path, req);
 
     if (response.data.organisations) {
       res.send(response.data.organisations);
@@ -23,9 +23,7 @@ export async function handleGetOrganisationsRoute(req: EnhancedRequest, res: Res
 export async function handleOrganisationRoute(req: EnhancedRequest, res: Response) {
   try {
     const path = `${getConfigValue(SERVICES_PRD_API_URL)}/refdata/external/v1/organisations`;
-    const response = await handleGet(path, req, (err) => {
-      throw err;
-    });
+    const response = await handleGet(path, req);
     res.send(response.data);
   } catch (error) {
     const errReport = {

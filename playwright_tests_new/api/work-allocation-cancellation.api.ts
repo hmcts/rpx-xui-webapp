@@ -18,7 +18,7 @@ const cancellationProcessMatrix = [
   },
 ] as const;
 
-test.describe('Work allocation cancellation API coverage', () => {
+test.describe('Work allocation cancellation API coverage', { tag: ['@svc-work-allocation'] }, () => {
   test.beforeAll(async ({ apiClient }) => {
     const firstTask = await fetchFirstTask(apiClient, undefined, ['assigned', 'unassigned'], 'AllWork');
     const resolution = resolveTaskIdWithEnvFallback(firstTask?.id, WA_SAMPLE_ASSIGNED_TASK_ID, WA_SAMPLE_TASK_ID, fallbackTaskId);

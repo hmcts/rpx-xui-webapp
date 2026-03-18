@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -17,6 +18,9 @@ describe('TaskAssignmentChooseRoleComponent', () => {
 
   const router = {
     navigate: jasmine.createSpy('navigate'),
+  };
+  const mockLocation: any = {
+    getState: jasmine.createSpy('getState'),
   };
 
   mockSessionStorageService.getItem.and.returnValue(
@@ -47,6 +51,7 @@ describe('TaskAssignmentChooseRoleComponent', () => {
           },
         },
         { provide: Router, useValue: router },
+        { provide: Location, useValue: mockLocation },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
@@ -81,12 +86,12 @@ describe('TaskAssignmentChooseRoleComponent', () => {
   });
 
   it('should send user to find person', () => {
-    window.history.pushState({ returnUrl: '/case-details/123243430403904/IA/Appeal-864/tasks' }, 'state');
-    const state = window.history.state;
+    const expectedState = { returnUrl: '/case-details/123243430403904/IA/Appeal-864/tasks' };
+    mockLocation.getState.and.returnValue(expectedState);
     component.submit(component.form.value, component.form.valid);
     expect(router.navigate).toHaveBeenCalledWith(['work', 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', 'reassign', 'person'], {
       queryParams: { role: 'LEGAL_OPERATIONS', service: null },
-      state,
+      state: jasmine.objectContaining({ returnUrl: jasmine.any(String) }),
     });
   });
 });

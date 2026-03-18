@@ -87,7 +87,7 @@ describe('AllWorkCaseComponent', () => {
     httpClient = {},
     store = {},
     stateLocation = {},
-     
+
     checkReleaseVersionService = {},
   }) =>
     new AllWorkCaseComponent(

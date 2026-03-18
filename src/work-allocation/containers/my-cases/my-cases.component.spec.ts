@@ -52,7 +52,7 @@ describe('MyCasesComponent', () => {
     httpClient = {},
     store = {},
     location = {},
-     
+
     checkReleaseVersionService = {},
   }) =>
     new MyCasesComponent(

@@ -31,7 +31,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
 
 
     Scenario: SCR_1: CAT1 and CAT 2 ,Ameded and ACTION NEEDED labels  (Conditions (1) & (4))
-        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
+        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings-ce"
         Then I am on hearings tab page
         Then I see hearings table for "Current and upcoming" in hearings tab page
 
@@ -62,7 +62,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
 
 
     Scenario: SCR 2: CAT1 only ,Ameded labels (Conditions (1) & (6))
-        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
+        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings-ce"
         Then I am on hearings tab page
         Then I see hearings table for "Current and upcoming" in hearings tab page
 
@@ -95,7 +95,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
 
 
     Scenario: SCR 3: CAT2 only ,ACTION NEEDED labels (Conditions (3) & (4))
-        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
+        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings-ce"
         Then I am on hearings tab page
         Then I see hearings table for "Current and upcoming" in hearings tab page
 
@@ -130,7 +130,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
 
 
     Scenario: SCR 4: CAT1 and CAT2 with CAT2 accepted,AMENDED labels (Conditions (2) & (5))
-        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
+        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings-ce"
         Then I am on hearings tab page
         Then I see hearings table for "Current and upcoming" in hearings tab page
 
@@ -236,7 +236,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
     Then I validate edit hearing section heading labels
       | Heading                                    | Label         |
       | Hearing requirements                       | AMENDED       |
-      | Additional facilities                      | ACTION NEEDED |
+      | Additional facilities                      |               |
       | Participant attendance                     | AMENDED       |
       | Length, date and priority level of hearing | ACTION NEEDED |
         # end of Additional facilities
@@ -251,7 +251,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
     Then I validate edit hearing section heading labels
       | Heading                                    | Label         |
       | Hearing requirements                       | AMENDED       |
-      | Additional facilities                      | ACTION NEEDED |
+      | Additional facilities                      |               |
       | Participant attendance                     | AMENDED       |
       | Length, date and priority level of hearing | AMENDED       |
         # end of Length, date and priority level of hearing
@@ -268,7 +268,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
 
 
   Scenario: SCR 5: CAT1 and CAT2 with CAT2 accepted,AMENDED labels (Conditions (2) & (5))
-      When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
+      When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings-ce"
       Then I am on hearings tab page
       Then I see hearings table for "Current and upcoming" in hearings tab page
 
@@ -373,7 +373,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
     Then I validate edit hearing section heading labels
       | Heading                                    | Label         |
       | Hearing requirements                       | AMENDED       |
-      | Additional facilities                      | ACTION NEEDED |
+      | Additional facilities                      |               |
       | Participant attendance                     | AMENDED       |
       | Length, date and priority level of hearing | ACTION NEEDED |
         # end of Additional facilities
@@ -391,7 +391,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
       Then I validate edit hearing section heading labels
           | Heading                                    | Label         |
           | Hearing requirements                       | AMENDED       |
-          | Additional facilities                      | ACTION NEEDED |
+          | Additional facilities                      |               |
           | Participant attendance                     | AMENDED       |
           | Length, date and priority level of hearing | AMENDED       |
       # end of Length, date and priority level of hearing
@@ -407,7 +407,7 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
           | Reasonable adjustments   | Party2 name FN Party2 name LN              | true              |                    |
 
     Scenario: SCR 6: No changes and no labels (Conditions (3) & (6)) and Scenario 6
-        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings"
+        When I click tab with label "Hearings" in case details page, to see element with css selector "exui-case-hearings-ce"
         Then I am on hearings tab page
         Then I see hearings table for "Current and upcoming" in hearings tab page
 
@@ -419,12 +419,15 @@ Feature: Hearings CR84: Semi automatic and automatic update labels EUI-8905
         When In view hearing page, I click Edit hearing button
         Then I validate Edit hearing page displayed
 
+        When In view or edit hearing page, I click change link for field "Will this be a paper hearing?"
+        Then I am on hearings workflow page "Participant attendance"
+        When I click continue in hearing workflow
 
         Then I validate edit hearing section heading labels
-            | Heading                                    | Label |
-            | Hearing requirements                       |       |
-            | Participant attendance                     |       |
-            | Length, date and priority level of hearing |       |
+              | Heading                                    | Label |
+              | Hearing requirements                       |       |
+              | Participant attendance                     |       |
+              | Length, date and priority level of hearing |       |
 
 
         Then I validate fields displayed in view or edit hearing page

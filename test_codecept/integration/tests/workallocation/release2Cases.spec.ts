@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-// import mocha from 'mocha';
 import { config } from '../config/config';
 import { getXSRFToken } from '../utils/authUtil';
 import { reporterJson, reporterMsg, setTestContext } from '../utils/helper';
@@ -9,9 +8,6 @@ import CaseRequestBody from '../utils/wa/caseRequestBody';
 const workAllocationDataModels = require('../../../dataModels/workAllocation');
 
 describe('Work allocation Release 2:  Cases', () => {
-  const userName = config.users[config.testEnv].solicitor.e;
-  const password = config.users[config.testEnv].solicitor.sec;
-
   const caseOfficer = config.users[config.testEnv].caseOfficer_r2.e;
   const caseofficerPass = config.users[config.testEnv].caseOfficer_r2.sec;
 
@@ -75,44 +71,42 @@ describe('Work allocation Release 2:  Cases', () => {
     caseRequestObj.withSearchBy('caseworker').sortWith('startDate', 'asc').withPageNumber(1);
     const headers = {
       'X-XSRF-TOKEN': xsrfToken,
-      'content-length': JSON.stringify(caseRequestObj.getRequestBody()).length,
+      'content-length': JSON.stringify(caseRequestObj.getRequestBody()).length.toString(),
     };
 
     const response = await Request.post('workallocation/my-work/cases', caseRequestObj.getRequestBody(), headers, 200);
     return response;
   }
-
-  function getSearchCaseReqBody(view, users, locations, userType) {
-    // const response = await Request.get('api/user/details', null, 200);
-
-    const caseRequestBody = new CaseRequestBody();
-    caseRequestBody.inView(view);
-    if (locations) {
-      locations.forEach((loc) => {
-        caseRequestBody.searchWithlocation(loc);
-      });
-    }
-
-    switch (view) {
-      case 'MyCases':
-        if (users) {
-          users.forEach((user) => {
-            caseRequestBody.searchWithUser(user);
-          });
-        } else {
-          caseRequestBody.searchWithUser(null);
-        }
-        caseRequestBody.withSearchBy(userType ? userType : 'caseworker');
-        break;
-
-      case 'AllWorkCases':
-        caseRequestBody.searchWithlocation(null);
-        caseRequestBody.searchWithUser(null);
-        break;
-      default:
-        throw new Error(`${view} is not recognized or not implemented in test`);
-    }
-
-    return caseRequestBody;
-  }
 });
+
+function getSearchCaseReqBody(view, users, locations, userType) {
+  const caseRequestBody = new CaseRequestBody();
+  caseRequestBody.inView(view);
+  if (locations) {
+    locations.forEach((loc) => {
+      caseRequestBody.searchWithlocation(loc);
+    });
+  }
+
+  switch (view) {
+    case 'MyCases':
+      if (users) {
+        users.forEach((user) => {
+          caseRequestBody.searchWithUser(user);
+        });
+      } else {
+        caseRequestBody.searchWithUser(null);
+      }
+      caseRequestBody.withSearchBy(userType || 'caseworker');
+      break;
+
+    case 'AllWorkCases':
+      caseRequestBody.searchWithlocation(null);
+      caseRequestBody.searchWithUser(null);
+      break;
+    default:
+      throw new Error(`${view} is not recognized or not implemented in test`);
+  }
+
+  return caseRequestBody;
+}

@@ -23,6 +23,101 @@ NODE_CONFIG_ENV=development sets the machine so that the config that is used is 
 
 Run `yarn start:ng` to start up the UI.
 
+## Fully mocked local setup (no downstream environments)
+
+Use this mode when AAT/downstream services are unavailable and you want local integration development.
+
+### Ports used
+
+- `3000` Angular UI
+- `3001` Node API
+- `8080` Backend mock (includes local IDAM/OAuth routes)
+
+### 1) Prerequisites
+
+```bash
+node -v   # requires >= 20.19.0
+yarn install
+```
+
+### 2) Start services (three terminals)
+
+Terminal A (mock backend + local IDAM on `8080`):
+
+```bash
+yarn test:backendMock
+```
+
+Terminal B (Node API on `3001`):
+
+```bash
+yarn start:node
+```
+
+Terminal C (Angular UI on `3000`):
+
+```bash
+yarn start:ng
+```
+
+### 3) Quick health checks
+
+```bash
+curl -sS -D - -o /dev/null http://localhost:3000/auth/login | grep -i '^location:'
+curl -sS -D - -o /dev/null http://localhost:3000/ | grep -Ei 'HTTP/|location:|set-cookie:'
+```
+
+Expected:
+
+- `/auth/login` redirects to `http://localhost:8080/o/authorize...` (not AAT IDAM).
+- `/` returns `HTTP/1.1 200 OK`.
+
+### 4) Run Playwright integration tests in local mocked mode
+
+```bash
+TEST_URL=http://localhost:3000 \
+EXUI_BASE_URL=http://localhost:3000 \
+MANAGE_CASES_BASE_URL=http://localhost:3000/cases \
+IDAM_WEB_URL=http://localhost:8080 \
+IDAM_TESTING_SUPPORT_URL=http://localhost:8080 \
+FUNCTIONAL_TESTS_WORKERS=4 \
+PLAYWRIGHT_SKIP_INSTALL=true \
+yarn test:playwright:integration
+```
+
+Why these env vars are required:
+
+- `TEST_URL` / `EXUI_BASE_URL` force Playwright target to local UI.
+- `IDAM_WEB_URL` / `IDAM_TESTING_SUPPORT_URL` prevent session capture from attempting AAT IDAM login.
+
+### Troubleshooting
+
+- `EADDRINUSE: ... 3001`:
+  - Another Node API process is running. Stop it, then restart `yarn start:node`.
+- Browser says `ERR_TOO_MANY_REDIRECTS`:
+  - Clear site cookies for `localhost`.
+  - Verify `/auth/login` points to `localhost:8080` and not `idam-web-public.aat...`.
+
+## Local mock/auth changes implemented
+
+The following code changes were made to support fully mocked local auth + integration flow:
+
+1. `test_codecept/backendMock/services/idam/index.js`
+   - OIDC discovery metadata now points to local mock endpoints on `http://localhost:8080`.
+
+2. `test_codecept/backendMock/services/idam/routes.js`
+   - Added `/login` route to redirect to local `/o/authorize`.
+   - Added `/details` endpoint with role-bearing mock user profile.
+   - Added shared token responder for both `/o/token` and `/oauth2/token`.
+   - Corrected token response shape (`token_type: Bearer`, numeric `expires_in`, JWT `exp` in seconds).
+   - Updated OAuth callback `iss` to local `http://localhost:8080/o`.
+
+3. `test_codecept/backendMock/services/userApiData.js`
+   - Added safe token normalization and null guards to avoid crashes when auth headers are absent/malformed.
+
+4. `api/user/index.ts`
+   - Hardened active role-assignment extraction to handle undefined role arrays without crashing.
+
 ## API docs (Swagger UI)
 
 - Swagger UI is available on lower environments when the `feature.docsEnabled` flag is true and `environment` is not `production`.
@@ -185,21 +280,81 @@ Run `HEAD=true TEST_URL=https://manage-case.aat.platform.hmcts.net yarn test:pla
 Add `ENABLE_AXE_TESTS=true` to activate Axe Accessibility testing.
 
 The `playwright_tests_new` folder contains the beginnings of the updated framework structure and test form. Tests are now structured by functionality with step containers for each stage of the test. A page object pattern has been introduced in place of using selectors in the tests themselves. Follow this pattern for any new tests, or ones you wish to migrate.
+Detailed framework architecture (with diagrams): [`playwright_tests_new/TEST_FRAMEWORK_ARCHITECTURE.md`](playwright_tests_new/TEST_FRAMEWORK_ARCHITECTURE.md).
 
 ### Playwright reporting
 
-Playwright E2E runs now emit an [Odhin report](https://playwright-odhin-reports-1f6b7a95ad42468d7d90f7962fbe172f83b229.gitlab.io/#/) under `functional-output/tests/playwright-e2e/odhin-report/xui-playwright.html`.  
+Playwright E2E runs now emit an [Odhin report](https://playwright-odhin-reports-1f6b7a95ad42468d7d90f7962fbe172f83b229.gitlab.io/#/) under `functional-output/tests/playwright-e2e/odhin-report/xui-playwright-e2e.html`.  
 Key behaviour:
 
+- Suite-specific Odhin filenames are used: `xui-playwright-e2e.html`, `xui-playwright-api.html`, `xui-playwright-integration.html`.
 - Jenkins automatically publishes the HTML artefact for preview/AAT functional and nightly cross-browser jobs.
-- Run info shows project, release, environment, branch and worker count. Override defaults via `PLAYWRIGHT_REPORT_PROJECT`, `PLAYWRIGHT_REPORT_RELEASE`, `TEST_TYPE`, `GIT_BRANCH` or `FUNCTIONAL_TESTS_WORKERS`.
+- Run info shows project, release, environment, branch and worker count. Branch defaults to the current git branch (`git rev-parse --abbrev-ref HEAD`) and can be overridden via `PLAYWRIGHT_REPORT_BRANCH` or `GIT_BRANCH`. Other overrides: `PLAYWRIGHT_REPORT_PROJECT`, `PLAYWRIGHT_REPORT_RELEASE`, `TEST_TYPE`, `FUNCTIONAL_TESTS_WORKERS`.
 - Skipped tests are included in totals; the reporter is patched locally so the dashboard reflects them even when retries are enabled.
 - Chromium runs keep the Playwright trace, failure screenshot and video when a test fails; successful runs discard these artefacts to limit noise.
+- A flake summary is printed at the end of Playwright runs by `playwright_tests_new/common/reporters/flake-gate.reporter.cjs` (counts flaky, retry-pass and failed tests).
+- Flake gate is currently report-only in all environments; it does not fail the run.
+- `PW_ENABLE_FLAKE_GATE` is currently not enforced by the reporter.
+- Optional flake thresholds `PW_MAX_FLAKY_TESTS` (default `20`) and `PW_MAX_FLAKY_RATE` (default `0.2`, meaning 20%) are used for reporting output only.
+
+### Playwright diagnostics artifacts in Jenkins
+
+Playwright-capable pipeline stages archive diagnostics for troubleshooting and triage:
+
+- `functional-output/tests/**/odhin-report/**/*`
+- `test-results/**/*`
+- `functional-output/tests/playwright-diagnostics/failure-data/**/*`
+- `**/failure-data.json`
+
+`failure-data.json` files attached by Playwright tests are also copied into
+`functional-output/tests/playwright-diagnostics/failure-data/` with flattened filenames so they are easier to find in Jenkins artifacts.
+
+### Playwright locator audit
+
+Use `yarn lint:playwright:locators` to scan E2E page objects and tests for brittle selector patterns.
+
+- Default mode is report-only and does not fail the run.
+- To fail on findings, run with `STRICT_PLAYWRIGHT_LOCATORS=true`.
+- Inline opt-out marker `locator-audit:ignore-line` is supported.
+- File-level opt-out marker `locator-audit:ignore-file` is supported.
+
+What it validates:
+
+- `no-xpath-engine`: flags `locator('xpath=...')`.
+- `no-text-engine`: flags `locator('text=...')`.
+- `css-descendant-chain`: flags long descendant class chains used in `locator(...)`, for example selectors with repeated `.classA .classB .classC ...` patterns.
+
+Scope:
+
+- Scans TypeScript files under:
+- `playwright_tests_new/E2E/page-objects`
+- `playwright_tests_new/E2E/test`
+
+What it does not validate:
+
+- It does not parse runtime DOM.
+- It does not verify selector correctness against the live app.
+- It does not auto-fix selectors; it reports candidate high-risk patterns for manual review.
+
+### Playwright stability conventions
+
+- For CCD wizard/event flows that may require a variable number of steps, use `createCasePage.clickSubmitAndWait(...)` instead of hardcoded `clickContinueMultipleTimes(...)` + direct submit click.
+- API diagnostics intentionally suppress known benign background client errors to reduce noise in failure reporting (for example `GET /api/organisation` `403` and `GET /data/internal/cases/:id` `400`).
+- If branch metadata is wrong in local Odhin reports, override explicitly with `PLAYWRIGHT_REPORT_BRANCH=<your-branch> yarn test:playwrightE2E`.
 
 ### Parallelism
 
-Locally the Playwright worker count scales with available CPU cores (approx. half of the logical cores, capped at 8).  
-Set `FUNCTIONAL_TESTS_WORKERS` to override this behaviour. On CI the default remains a single worker unless the variable is provided.
+Playwright worker count scales with available CPU cores in both local and CI runs (approx. half of the logical cores, capped at 8).
+Set `FUNCTIONAL_TESTS_WORKERS` to override this behaviour explicitly.
+
+### Integration local progress timer
+
+For Playwright integration runs outside CI, periodic live progress logging is enabled by default:
+
+- `PW_LIVE_TEST_TIMER=1`
+- `PW_LIVE_TEST_TIMER_INTERVAL_MS=30000`
+
+You can override either variable explicitly in your local shell.
 
 ## Running Consumer Driven Contract tests (pact)
 
@@ -221,4 +376,4 @@ Extended version of script below:
 (https://robferguson.org/blog/2017/09/09/a-simple-logging-service-for-angular-4/)
 
 END
-Trigger2 Trigger3
+Trigger2 Trigger3 Trigger4

@@ -77,7 +77,8 @@ export async function openHearingsTabForScenario(
 ): Promise<Response | null> {
   await applySessionCookies(page, options?.userIdentifier ?? HEARING_MANAGER_CR84_ON_USER);
   await setupHearingsMockRoutes(page, config);
-  await page.goto(caseDetailsUrl(config.caseConfig?.jurisdictionId, config.caseConfig?.caseTypeId), {
+  const route = resolveHearingsCaseRoute({ routeConfig: config });
+  await page.goto(caseDetailsUrl(route.jurisdictionId, route.caseTypeId, route.caseReference), {
     waitUntil: 'domcontentloaded',
   });
 

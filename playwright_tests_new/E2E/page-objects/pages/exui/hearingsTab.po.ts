@@ -10,8 +10,16 @@ export class HearingsTabPage {
   readonly reloadButton = this.page.locator('#reload-hearing-tab');
   readonly requestHearingButton = this.page.getByRole('button', { name: /request a hearing/i });
 
-  currentAndUpcomingHeading(name: string): Locator {
+  sectionHeading(name: string): Locator {
     return this.page.locator('exui-case-hearings-list th.govuk-body-lead').filter({ hasText: name });
+  }
+
+  currentAndUpcomingHeading(name: string): Locator {
+    return this.sectionHeading(name);
+  }
+
+  pastOrCancelledHeading(name = 'Past or cancelled'): Locator {
+    return this.sectionHeading(name);
   }
 
   linkHearingButton(hearingId: string): Locator {
@@ -46,6 +54,13 @@ export class HearingsTabPage {
       default:
         return this.viewDetailsButton(hearingId);
     }
+  }
+
+  hearingRow(hearingId: string, action: HearingAction = 'view-details'): Locator {
+    return this.page
+      .locator('tr.govuk-table__row')
+      .filter({ has: this.actionButton(hearingId, action) })
+      .first();
   }
 
   async waitForReady(hearingId?: string, action: HearingAction = 'view-details'): Promise<void> {

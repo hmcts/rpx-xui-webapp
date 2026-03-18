@@ -171,7 +171,7 @@ try {
     # Pre-build content lines outside the scriptblock to avoid PS 5.1 pipeline issues inside scriptblocks
     $pdfLines = [System.Collections.Generic.List[string]]::new()
     $pdfLines.Add("Monthly Welsh Language Usage Report")
-    $pdfLines.Add("Environment: $($env:MODULE_PROJECT) $($env:MODULE_ENV)")
+    $pdfLines.Add("Environment: ${var.product} ${var.env}")
     $pdfLines.Add("Reporting Period: $([DateTime]::UtcNow.AddMonths(-1).ToString('MMMM yyyy'))")
     $pdfLines.Add("")
     $pdfLines.Add("Daily Welsh Translation Usage (unique sessions per /api/translation/cy):")
@@ -334,7 +334,7 @@ tr:hover { background-color: #e0e0e0; }
 </head>
 <body>
 <h2>Monthly Welsh Language Usage Report</h2>
-<p>Environment: <strong>$($env:MODULE_PROJECT) $($env:MODULE_ENV)</strong></p>
+<p>Environment: <strong>${var.product} ${var.env}</strong></p>
 <p>Reporting Period: <strong>$reportMonth</strong></p>
 <p>This report shows the daily unique sessions using Welsh language translation services (URL: /api/translation/cy).</p>
 <h3>Daily Welsh Translation Usage:</h3>
@@ -376,7 +376,7 @@ try {
             to = $recipientAddrList
         }
         content       = @{
-            subject = "Monthly Welsh Language Usage Report - $reportMonth - $($env:MODULE_ENV)"
+            subject = "Monthly Welsh Language Usage Report - $reportMonth - ${var.env}"
             html    = $emailBody
         }
     }

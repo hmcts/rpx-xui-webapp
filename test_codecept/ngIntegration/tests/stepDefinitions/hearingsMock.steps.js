@@ -160,7 +160,7 @@ function getMockHearingWithStatus(hearingStatus) {
     default:
       throw new Error(`no mock data setup for hearing ${hearingStatus}`);
   }
-  return JSON.parse(JSON.stringify(hearingResponse));
+  return normaliseHearingsCaseRef(JSON.parse(JSON.stringify(hearingResponse)));
 }
 
 Given('I set mock get hearing with with status {string}', async function (hearingStatus) {
@@ -181,7 +181,7 @@ Given('I set mock get hearing with with status {string} and values at jsonpath',
 
   jsonUtil.updateJsonWithJsonPath(dataTableObjects, hearingResponse);
   reportLogger.AddJson(hearingResponse);
-  mockClient.setOnGetHearing(hearingResponse, 200);
+  mockClient.setOnGetHearing(normaliseHearingsCaseRef(hearingResponse), 200);
 });
 
 Given('I set mock hearings service hearing values with ref {string}', async function (ref) {

@@ -10,7 +10,7 @@ class SummaryTable {
   }
 
   getTableKeyElementXpath(key) {
-    return `//*[contains(@class,'govuk-summary-list__key')][contains(text(),'${key}')]`;
+    return `//*[contains(@class,'govuk-summary-list__key')][contains(normalize-space(.),'${key}')]`;
   }
 
   getTableValueElementXpath(forKey) {

@@ -52,7 +52,7 @@ describe('MyCasesComponent', () => {
     httpClient = {},
     store = {},
     location = {},
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     checkReleaseVersionService = {},
   }) =>
     new MyCasesComponent(

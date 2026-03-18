@@ -13,7 +13,7 @@ describe('NoResultsComponent', () => {
   let fixture: ComponentFixture<NoResultsComponent>;
   let mockRouter: any;
   let mockLocation: Location;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+   
   let store: Store<fromActions.State>;
   const storeMock = jasmine.createSpyObj('Store', ['dispatch']);
 

@@ -87,7 +87,7 @@ describe('AllWorkCaseComponent', () => {
     httpClient = {},
     store = {},
     stateLocation = {},
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     checkReleaseVersionService = {},
   }) =>
     new AllWorkCaseComponent(

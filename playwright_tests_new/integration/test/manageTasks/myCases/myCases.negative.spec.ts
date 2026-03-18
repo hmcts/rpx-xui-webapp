@@ -12,10 +12,7 @@ test.beforeEach(async ({ page }) => {
 
 test.describe(`My Cases as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   serviceDownStatuses.forEach((errorStatus) => {
-    test(`User ${userIdentifier} sees the service down page on My cases when the api returns ${errorStatus}`, async ({
-      taskListPage,
-      page,
-    }) => {
+    test(`User sees the service down page on My cases when the api returns ${errorStatus}`, async ({ taskListPage, page }) => {
       await test.step('Setup route mocks for My cases failure', async () => {
         await setupTaskListBootstrapRoutes(page);
         await page.route(taskListRoutePattern, async (route) => {
@@ -48,10 +45,7 @@ test.describe(`My Cases as ${userIdentifier}`, { tag: ['@integration', '@integra
   });
 
   notAuthorisedStatuses.forEach((errorStatus) => {
-    test(`User ${userIdentifier} sees the not authorised page on My cases when the api returns ${errorStatus}`, async ({
-      taskListPage,
-      page,
-    }) => {
+    test(`User sees the not authorised page on My cases when the api returns ${errorStatus}`, async ({ taskListPage, page }) => {
       await test.step('Setup route mocks for My cases authorisation failure', async () => {
         await setupTaskListBootstrapRoutes(page);
         await page.route(taskListRoutePattern, async (route) => {

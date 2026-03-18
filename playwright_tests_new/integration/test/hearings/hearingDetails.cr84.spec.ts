@@ -1,23 +1,16 @@
 import type { Page } from '@playwright/test';
 import { expect, test } from '../../../E2E/fixtures';
-import type { CaseDetailsPage } from '../../../E2E/page-objects/pages/exui/caseDetails.po';
-import type { HearingsTabPage } from '../../../E2E/page-objects/pages/exui/hearingsTab.po';
 import { applySessionCookies } from '../../../common/sessionCapture';
-import { setupHearingsMockRoutes } from '../../helpers';
+import { caseDetailsUrl, HEARING_MANAGER_CR84_ON_USER, openHearingsTabForScenario, setupHearingsMockRoutes } from '../../helpers';
 import {
   AWAITING_LISTING_HEARING_SCENARIO,
-  HEARINGS_CASE_JURISDICTION,
   HEARINGS_CASE_REFERENCE,
-  HEARINGS_CASE_TYPE,
   HEARINGS_LISTED_HEARING_ID,
   LISTED_HEARING_SCENARIO,
   UPDATE_REQUESTED_HEARING_SCENARIO,
-  type HearingScenario,
 } from '../../mocks/hearings.mock';
 
-const userIdentifier = 'HEARING_MANAGER_CR84_ON';
-const caseDetailsUrl = (jurisdictionId = HEARINGS_CASE_JURISDICTION, caseTypeId = HEARINGS_CASE_TYPE) =>
-  `/cases/case-details/${jurisdictionId}/${caseTypeId}/${HEARINGS_CASE_REFERENCE}`;
+const userIdentifier = HEARING_MANAGER_CR84_ON_USER;
 const hearingsTabUrl = `${caseDetailsUrl()}/hearings`;
 
 const hearingManagerRoles = ['caseworker-privatelaw', 'caseworker-privatelaw-courtadmin', 'case-allocator', 'hearing-manager'];
@@ -28,27 +21,6 @@ const listedHearingViewerRoles = [
   'case-allocator',
   'listed-hearing-viewer',
 ];
-
-async function openHearingsTabForScenario(
-  page: Page,
-  caseDetailsPage: CaseDetailsPage,
-  _hearingsTabPage: HearingsTabPage,
-  options: {
-    userRoles: string[];
-    hearings?: HearingScenario[];
-    summaryHearing?: HearingScenario;
-    caseConfig?: { jurisdictionId?: string; caseTypeId?: string };
-    enabledCaseVariations?: Array<{ jurisdiction: string; caseType: string }>;
-    amendmentCaseVariations?: Array<{ jurisdiction: string; caseType: string }>;
-  }
-) {
-  await applySessionCookies(page, userIdentifier);
-  await setupHearingsMockRoutes(page, options);
-
-  const url = caseDetailsUrl(options.caseConfig?.jurisdictionId, options.caseConfig?.caseTypeId);
-  await page.goto(url, { waitUntil: 'domcontentloaded' });
-  await caseDetailsPage.selectCaseDetailsTab('Hearings');
-}
 
 test.describe(`Hearings CR84 integration as ${userIdentifier}`, { tag: ['@integration', '@integration-hearings'] }, () => {
   test.describe('read-only CR84 summary routes', () => {
@@ -86,11 +58,16 @@ test.describe(`Hearings CR84 integration as ${userIdentifier}`, { tag: ['@integr
         hearingsTabPage,
         hearingViewSummaryPage,
       }) => {
-        await openHearingsTabForScenario(page, caseDetailsPage, hearingsTabPage, {
-          userRoles: roles,
-          hearings: [scenario],
-          summaryHearing: scenario,
-        });
+        await openHearingsTabForScenario(
+          page,
+          caseDetailsPage,
+          {
+            userRoles: roles,
+            hearings: [scenario],
+            summaryHearing: scenario,
+          },
+          { userIdentifier }
+        );
 
         await hearingsTabPage.waitForReady(scenario.hearingId);
         await expect(hearingsTabPage.viewDetailsButton(scenario.hearingId)).toBeVisible();
@@ -142,11 +119,16 @@ test.describe(`Hearings CR84 integration as ${userIdentifier}`, { tag: ['@integr
         hearingsTabPage,
         hearingViewSummaryPage,
       }) => {
-        await openHearingsTabForScenario(page, caseDetailsPage, hearingsTabPage, {
-          userRoles: hearingManagerRoles,
-          hearings: [scenario],
-          summaryHearing: scenario,
-        });
+        await openHearingsTabForScenario(
+          page,
+          caseDetailsPage,
+          {
+            userRoles: hearingManagerRoles,
+            hearings: [scenario],
+            summaryHearing: scenario,
+          },
+          { userIdentifier }
+        );
 
         await hearingsTabPage.waitForReady(scenario.hearingId);
         await hearingsTabPage.openViewDetails(scenario.hearingId);
@@ -196,11 +178,16 @@ test.describe(`Hearings CR84 integration as ${userIdentifier}`, { tag: ['@integr
         caseDetailsPage,
         hearingsTabPage,
       }) => {
-        await openHearingsTabForScenario(page, caseDetailsPage, hearingsTabPage, {
-          userRoles: actionMatrixScenario.roles,
-          hearings: [LISTED_HEARING_SCENARIO],
-          amendmentCaseVariations: [],
-        });
+        await openHearingsTabForScenario(
+          page,
+          caseDetailsPage,
+          {
+            userRoles: actionMatrixScenario.roles,
+            hearings: [LISTED_HEARING_SCENARIO],
+            amendmentCaseVariations: [],
+          },
+          { userIdentifier }
+        );
 
         await hearingsTabPage.waitForReady(HEARINGS_LISTED_HEARING_ID, actionMatrixScenario.readyAction);
 
@@ -232,10 +219,15 @@ test.describe(`Hearings CR84 integration as ${userIdentifier}`, { tag: ['@integr
       hearingsTabPage,
       hearingViewSummaryPage,
     }) => {
-      await openHearingsTabForScenario(page, caseDetailsPage, hearingsTabPage, {
-        userRoles: hearingManagerRoles,
-        hearings: [LISTED_HEARING_SCENARIO],
-      });
+      await openHearingsTabForScenario(
+        page,
+        caseDetailsPage,
+        {
+          userRoles: hearingManagerRoles,
+          hearings: [LISTED_HEARING_SCENARIO],
+        },
+        { userIdentifier }
+      );
 
       await hearingsTabPage.waitForReady();
       await expect(hearingsTabPage.viewDetailsButton(HEARINGS_LISTED_HEARING_ID)).toBeVisible();
@@ -253,16 +245,21 @@ test.describe(`Hearings CR84 integration as ${userIdentifier}`, { tag: ['@integr
       hearingsTabPage,
       hearingViewEditSummaryPage,
     }) => {
-      await openHearingsTabForScenario(page, caseDetailsPage, hearingsTabPage, {
-        userRoles: hearingManagerRoles,
-        hearings: [LISTED_HEARING_SCENARIO],
-        caseConfig: {
-          jurisdictionId: 'SSCS',
-          caseTypeId: 'Benefit',
+      await openHearingsTabForScenario(
+        page,
+        caseDetailsPage,
+        {
+          userRoles: hearingManagerRoles,
+          hearings: [LISTED_HEARING_SCENARIO],
+          caseConfig: {
+            jurisdictionId: 'SSCS',
+            caseTypeId: 'Benefit',
+          },
+          enabledCaseVariations: [{ jurisdiction: 'SSCS', caseType: 'Benefit' }],
+          amendmentCaseVariations: [{ jurisdiction: 'CIVIL', caseType: 'CIVIL' }],
         },
-        enabledCaseVariations: [{ jurisdiction: 'SSCS', caseType: 'Benefit' }],
-        amendmentCaseVariations: [{ jurisdiction: 'CIVIL', caseType: 'CIVIL' }],
-      });
+        { userIdentifier }
+      );
 
       await hearingsTabPage.waitForReady(HEARINGS_LISTED_HEARING_ID, 'view-or-edit');
       await expect(hearingsTabPage.viewOrEditButton(HEARINGS_LISTED_HEARING_ID)).toBeVisible();

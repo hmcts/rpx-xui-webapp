@@ -8,9 +8,14 @@ export class HearingsTabPage {
   readonly container = this.page.locator('exui-case-hearings-ce');
   readonly emptyState = this.page.getByText('No current and upcoming hearings found', { exact: false });
   readonly reloadButton = this.page.locator('#reload-hearing-tab');
+  readonly requestHearingButton = this.page.getByRole('button', { name: /request a hearing/i });
 
   currentAndUpcomingHeading(name: string): Locator {
     return this.page.locator('exui-case-hearings-list th.govuk-body-lead').filter({ hasText: name });
+  }
+
+  linkHearingButton(hearingId: string): Locator {
+    return this.page.locator(`#link-hearing-link-${hearingId}`);
   }
 
   viewOrEditButton(hearingId: string): Locator {
@@ -69,6 +74,14 @@ export class HearingsTabPage {
 
   async openViewDetails(hearingId: string): Promise<void> {
     await this.viewDetailsButton(hearingId).click();
+  }
+
+  async openLinkHearing(hearingId: string): Promise<void> {
+    await this.linkHearingButton(hearingId).click();
+  }
+
+  async openRequestHearing(): Promise<void> {
+    await this.requestHearingButton.click();
   }
 
   async openViewOrEdit(hearingId: string): Promise<void> {

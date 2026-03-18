@@ -10,10 +10,11 @@ test.describe(
   `Hearings semi/automatic update labels as ${HEARING_MANAGER_CR84_ON_USER}`,
   { tag: ['@integration', '@integration-hearings'] },
   () => {
-    test('shows action-needed labels in edit summary before manual acceptance', async ({
+    test('shows action-needed labels on impacted sections before manual acceptance', async ({
       page,
       caseDetailsPage,
       hearingsTabPage,
+      hearingViewEditSummaryPage,
       hearingViewSummaryPage,
     }) => {
       await openHearingsTab(page, caseDetailsPage, {
@@ -35,9 +36,12 @@ test.describe(
       await hearingViewSummaryPage.waitForReady();
       await hearingViewSummaryPage.editHearingButton.click();
 
-      const editSummary = page.locator('exui-hearing-edit-summary');
-      await expect(editSummary).toBeVisible();
-      await expect(editSummary.getByText('ACTION NEEDED').first()).toBeVisible();
+      await hearingViewEditSummaryPage.waitForReady();
+      await expect(hearingViewEditSummaryPage.sectionTag('Hearing requirements', 'ACTION NEEDED')).toBeVisible();
+      await expect(
+        hearingViewEditSummaryPage.sectionTag('Length, date and priority level of hearing', 'ACTION NEEDED')
+      ).toBeVisible();
+      await expect(hearingViewEditSummaryPage.rowChangeButton('Enter any additional instructions for the hearing')).toBeVisible();
     });
   }
 );

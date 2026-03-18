@@ -10,6 +10,7 @@ test.describe(
       page,
       caseDetailsPage,
       hearingsTabPage,
+      hearingViewEditSummaryPage,
       hearingViewSummaryPage,
     }) => {
       await openHearingsTab(page, caseDetailsPage, {
@@ -26,30 +27,44 @@ test.describe(
       await hearingViewSummaryPage.waitForReady();
       await hearingViewSummaryPage.editHearingButton.click();
 
-      const editSummary = page.locator('exui-hearing-edit-summary');
-      await expect(editSummary).toBeVisible();
-
-      const additionalInstructionsRow = editSummary
-        .locator('.govuk-summary-list__row')
-        .filter({ hasText: 'Enter any additional instructions for the hearing' })
-        .first();
-      await additionalInstructionsRow.getByRole('button', { name: /change/i }).click();
+      await hearingViewEditSummaryPage.waitForReady();
+      await hearingViewEditSummaryPage.rowChangeButton('Enter any additional instructions for the hearing').click();
       await expect(page.getByRole('heading', { name: /enter any additional instructions for the hearing/i })).toBeVisible();
       await page.locator('#additionalInstructionsTextarea').fill('Playwright manual label verification');
       await page.getByRole('button', { name: /^continue$/i }).click();
 
-      await expect(editSummary).toBeVisible();
-      const updatedAdditionalInstructionsRow = editSummary
-        .locator('.govuk-summary-list__row')
-        .filter({ hasText: 'Enter any additional instructions for the hearing' })
-        .first();
-      await expect(updatedAdditionalInstructionsRow.getByText('AMENDED')).toBeVisible();
+      await hearingViewEditSummaryPage.waitForReady();
+      await expect(hearingViewEditSummaryPage.rowValue('Enter any additional instructions for the hearing')).toContainText(
+        'Playwright manual label verification'
+      );
+      await expect(
+        hearingViewEditSummaryPage.rowTag('Enter any additional instructions for the hearing', 'AMENDED')
+      ).toBeVisible();
+
+      await hearingViewEditSummaryPage.submitUpdatedRequestButton.click();
+      await expect(page).toHaveURL(/\/hearings\/request\/hearing-change-reason$/);
+      await hearingViewEditSummaryPage.waitForChangeReasonReady();
+      await hearingViewEditSummaryPage.changeReasonCheckboxes.first().check();
+
+      const updateRequest = page.waitForRequest(
+        (request) => request.url().includes('/api/hearings/updateHearingRequest') && request.method() === 'PUT'
+      );
+      await hearingViewEditSummaryPage.submitChangeRequestButton.click();
+
+      expect((await updateRequest).postDataJSON()).toEqual(
+        expect.objectContaining({
+          hearingDetails: expect.objectContaining({
+            listingComments: 'Playwright manual label verification',
+          }),
+        })
+      );
     });
 
     test('marks language requirements section as amended after Welsh flag update', async ({
       page,
       caseDetailsPage,
       hearingsTabPage,
+      hearingViewEditSummaryPage,
       hearingViewSummaryPage,
     }) => {
       await openHearingsTab(page, caseDetailsPage, {
@@ -66,24 +81,33 @@ test.describe(
       await hearingViewSummaryPage.waitForReady();
       await hearingViewSummaryPage.editHearingButton.click();
 
-      const editSummary = page.locator('exui-hearing-edit-summary');
-      await expect(editSummary).toBeVisible();
-
-      const languageRequirementsRow = editSummary
-        .locator('.govuk-summary-list__row')
-        .filter({ hasText: 'Does this hearing need to be in Welsh?' })
-        .first();
-      await languageRequirementsRow.getByRole('button', { name: /change/i }).click();
+      await hearingViewEditSummaryPage.waitForReady();
+      await hearingViewEditSummaryPage.rowChangeButton('Does this hearing need to be in Welsh?').click();
       await expect(page.getByRole('heading', { name: /does this hearing need to be in welsh/i })).toBeVisible();
       await page.locator('#welsh_hearing_yes').check();
       await page.getByRole('button', { name: /^continue$/i }).click();
 
-      await expect(editSummary).toBeVisible();
-      const updatedLanguageRequirementsRow = editSummary
-        .locator('.govuk-summary-list__row')
-        .filter({ hasText: 'Does this hearing need to be in Welsh?' })
-        .first();
-      await expect(updatedLanguageRequirementsRow.getByText('AMENDED')).toBeVisible();
+      await hearingViewEditSummaryPage.waitForReady();
+      await expect(hearingViewEditSummaryPage.rowValue('Does this hearing need to be in Welsh?')).toContainText('Yes');
+      await expect(hearingViewEditSummaryPage.rowTag('Does this hearing need to be in Welsh?', 'AMENDED')).toBeVisible();
+
+      await hearingViewEditSummaryPage.submitUpdatedRequestButton.click();
+      await expect(page).toHaveURL(/\/hearings\/request\/hearing-change-reason$/);
+      await hearingViewEditSummaryPage.waitForChangeReasonReady();
+      await hearingViewEditSummaryPage.changeReasonCheckboxes.first().check();
+
+      const updateRequest = page.waitForRequest(
+        (request) => request.url().includes('/api/hearings/updateHearingRequest') && request.method() === 'PUT'
+      );
+      await hearingViewEditSummaryPage.submitChangeRequestButton.click();
+
+      expect((await updateRequest).postDataJSON()).toEqual(
+        expect.objectContaining({
+          hearingDetails: expect.objectContaining({
+            hearingInWelshFlag: true,
+          }),
+        })
+      );
     });
   }
 );

@@ -1,100 +1,27 @@
-import type { Page, Response } from '@playwright/test';
 import { expect, test } from '../../../E2E/fixtures';
-import type { CaseDetailsPage } from '../../../E2E/page-objects/pages/exui/caseDetails.po';
-import type { HearingsTabPage } from '../../../E2E/page-objects/pages/exui/hearingsTab.po';
 import { applySessionCookies } from '../../../common/sessionCapture';
-import { type HearingsMockRoutesConfig, setupHearingsMockRoutes } from '../../helpers';
 import {
-  HEARINGS_CASE_JURISDICTION,
+  buildLargeListedHearings,
+  caseDetailsUrl,
+  expectHearingsRowsHiddenBeforeResponse,
+  HEARING_MANAGER_CR84_ON_USER,
+  HEARINGS_SLOW_RESPONSE_DELAY_MS,
+  openHearingsTabForScenario,
+  setupHearingsMockRoutes,
+  waitForHearingsTerminalState,
+} from '../../helpers';
+import {
   HEARINGS_CASE_REFERENCE,
-  HEARINGS_CASE_TYPE,
   HEARINGS_LISTED_HEARING_ID,
   LISTED_HEARING_SCENARIO,
   buildHearingsListMock,
-  type HearingScenario,
 } from '../../mocks/hearings.mock';
 
-const userIdentifier = 'HEARING_MANAGER_CR84_ON';
-const caseDetailsUrl = (jurisdictionId = HEARINGS_CASE_JURISDICTION, caseTypeId = HEARINGS_CASE_TYPE) =>
-  `/cases/case-details/${jurisdictionId}/${caseTypeId}/${HEARINGS_CASE_REFERENCE}`;
+const userIdentifier = HEARING_MANAGER_CR84_ON_USER;
 
 const hearingManagerRoles = ['caseworker-privatelaw', 'caseworker-privatelaw-courtadmin', 'case-allocator', 'hearing-manager'];
 const hearingViewerRoles = ['caseworker-privatelaw', 'caseworker-privatelaw-courtadmin', 'case-allocator', 'hearing-viewer'];
 const errorStatusCodes = [400, 401, 403, 404, 500, 503];
-
-async function openHearingsTabForScenario(
-  page: Page,
-  caseDetailsPage: CaseDetailsPage,
-  config: HearingsMockRoutesConfig,
-  options?: { waitForGetHearingsResponse?: boolean }
-): Promise<Response | null> {
-  await applySessionCookies(page, userIdentifier);
-  await setupHearingsMockRoutes(page, config);
-  await page.goto(caseDetailsUrl(config.caseConfig?.jurisdictionId, config.caseConfig?.caseTypeId), {
-    waitUntil: 'domcontentloaded',
-  });
-
-  if (options?.waitForGetHearingsResponse === false) {
-    await caseDetailsPage.selectCaseDetailsTab('Hearings');
-    return null;
-  }
-
-  const getHearingsResponse = page.waitForResponse((response) => response.url().includes('/api/hearings/getHearings'));
-  await caseDetailsPage.selectCaseDetailsTab('Hearings');
-  return getHearingsResponse;
-}
-
-function buildLargeListedHearings(total: number): HearingScenario[] {
-  return Array.from({ length: total }, (_value, index) => ({
-    ...LISTED_HEARING_SCENARIO,
-    hearingId: String(1705615000000 + index),
-    hearingType: `ABA5-LISTED-${index + 1}`,
-  }));
-}
-
-async function expectReloadOrEmptyState(page: Page, hearingsTabPage: HearingsTabPage): Promise<void> {
-  await expect
-    .poll(
-      async () => {
-        if (await hearingsTabPage.reloadButton.isVisible()) {
-          return 'reload';
-        }
-        if (await page.getByText('No current and upcoming hearings found').isVisible()) {
-          return 'empty';
-        }
-        return 'pending';
-      },
-      { timeout: 15_000 }
-    )
-    .not.toBe('pending');
-}
-
-async function expectLoadingPhaseBeforeRowsRender(page: Page): Promise<void> {
-  const hearingRows = page.locator('[id^="link-view-details-"]');
-  const spinnerSeenPromise = page.evaluate(() => {
-    if (document.querySelector('xuilib-loading-spinner')) {
-      return true;
-    }
-
-    return new Promise<boolean>((resolve) => {
-      const observer = new MutationObserver(() => {
-        if (document.querySelector('xuilib-loading-spinner')) {
-          observer.disconnect();
-          resolve(true);
-        }
-      });
-
-      observer.observe(document.body, { childList: true, subtree: true });
-      window.setTimeout(() => {
-        observer.disconnect();
-        resolve(false);
-      }, 10_000);
-    });
-  });
-
-  await expect(hearingRows).toHaveCount(0, { timeout: 10_000 });
-  expect(await spinnerSeenPromise).toBe(true);
-}
 
 test.describe(`Hearings resilience integration as ${userIdentifier}`, { tag: ['@integration', '@integration-hearings'] }, () => {
   test('Hearings - manager can start the request hearing journey from the Hearings tab', async ({ page, caseDetailsPage }) => {
@@ -104,10 +31,8 @@ test.describe(`Hearings resilience integration as ${userIdentifier}`, { tag: ['@
     });
 
     expect(response?.status()).toBe(200);
-    const requestHearingButton = page.getByRole('button', { name: /request a hearing/i });
-    await expect(requestHearingButton).toBeVisible();
-
-    await requestHearingButton.click();
+    await expect(page.getByRole('button', { name: /request a hearing/i })).toBeVisible();
+    await page.getByRole('button', { name: /request a hearing/i }).click();
     await expect(page).toHaveURL(/\/hearings\/request\/hearing-requirements$/);
   });
 
@@ -125,6 +50,8 @@ test.describe(`Hearings resilience integration as ${userIdentifier}`, { tag: ['@
     await hearingsTabPage.waitForReady(largeDataset[0].hearingId);
     const renderedViewDetailsButtons = await page.locator('[id^="link-view-details-"]').count();
     expect(renderedViewDetailsButtons).toBe(largeDataset.length);
+    await expect(page.getByText('ABA5-LISTED-1', { exact: true })).toBeVisible();
+    await expect(page.getByText('ABA5-LISTED-35', { exact: true })).toBeVisible();
   });
 
   test('Hearings - valid payload with optional or null fields still renders without UI failure', async ({
@@ -221,7 +148,7 @@ test.describe(`Hearings resilience integration as ${userIdentifier}`, { tag: ['@
       },
     });
 
-    await expectReloadOrEmptyState(page, hearingsTabPage);
+    await waitForHearingsTerminalState(page, hearingsTabPage);
     await expect(page).toHaveURL(/\/cases\/case-details\/.*#Hearings$/);
   });
 
@@ -249,14 +176,17 @@ test.describe(`Hearings resilience integration as ${userIdentifier}`, { tag: ['@
     await expect(page).toHaveURL(/\/cases\/case-details\/.*#Hearings$/);
   });
 
-  test('Hearings - slow response shows loading indicator before tab rows are rendered', async ({ page, hearingsTabPage }) => {
+  test('Hearings - slow response does not render tab rows before the hearings response resolves', async ({
+    page,
+    hearingsTabPage,
+  }) => {
     await applySessionCookies(page, userIdentifier);
     await setupHearingsMockRoutes(page, {
       userRoles: hearingViewerRoles,
       hearings: [LISTED_HEARING_SCENARIO],
       hearingsApiOverrides: {
         getHearings: {
-          delayMs: 4_000,
+          delayMs: HEARINGS_SLOW_RESPONSE_DELAY_MS,
         },
       },
     });
@@ -266,7 +196,7 @@ test.describe(`Hearings resilience integration as ${userIdentifier}`, { tag: ['@
     const getHearingsResponse = page.waitForResponse((response) => response.url().includes('/api/hearings/getHearings'));
     await hearingsTab.click();
 
-    await expectLoadingPhaseBeforeRowsRender(page);
+    await expectHearingsRowsHiddenBeforeResponse(page);
 
     await getHearingsResponse;
     await hearingsTabPage.waitForReady(HEARINGS_LISTED_HEARING_ID);

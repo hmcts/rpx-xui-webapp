@@ -88,11 +88,11 @@ test.describe(`My Cases as ${userIdentifier}`, { tag: ['@integration', '@integra
     });
 
     await test.step('Verify the cases table columns and data', async () => {
-      expect(await taskListPage.getResultsText()).toBe(`Showing 1 to 2 of ${myCasesMockResponse.cases.length} results`);
+      expect(await taskListPage.getResultsText()).toBe(`Showing ${myCasesMockResponse.cases.length} results`);
 
       const table = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
       expect(Object.keys(table[0] ?? {})).toEqual(
-        expect.arrayContaining(['Case name', 'Service', 'Case category', 'Case role', 'Start', 'End'])
+        expect.arrayContaining(['Case name', 'Service', 'Case category', 'Case role', 'Hearing date', 'Start', 'End'])
       );
 
       for (let i = 0; i < table.length; i++) {
@@ -101,6 +101,7 @@ test.describe(`My Cases as ${userIdentifier}`, { tag: ['@integration', '@integra
         expect(table[i]['Service']).toBe(expectedCase.jurisdiction);
         expect(table[i]['Case category']).toBe(expectedCase.case_category);
         expect(table[i]['Case role']).toBe(expectedCase.role);
+        expect(table[i]['Hearing date']).toBe(formatUiDate(expectedCase.startDate));
         expect(table[i]['Start']).toBe(formatUiDate(expectedCase.startDate));
         expect(table[i]['End']).toBe(formatUiDate(expectedCase.endDate));
       }

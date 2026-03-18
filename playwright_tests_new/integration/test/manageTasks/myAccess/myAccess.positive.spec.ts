@@ -11,7 +11,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe(`My Access as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
-  test(`User ${userIdentifier} can view cases on the My access page from My work`, async ({ taskListPage, page, tableUtils }) => {
+  test(`User can view cases on the My access page from My work`, async ({ taskListPage, page, tableUtils }) => {
     const myAccessMockResponse = buildMyAccessMock();
 
     await test.step('Setup route mocks for My access', async () => {
@@ -93,10 +93,7 @@ test.describe(`My Access as ${userIdentifier}`, { tag: ['@integration', '@integr
     });
   });
 
-  test(`User ${userIdentifier} can open denied access View and capture the resulting navigation`, async ({
-    taskListPage,
-    page,
-  }) => {
+  test(`User can open denied access View and capture the resulting navigation`, async ({ taskListPage, page }) => {
     const myAccessMockResponse = buildSingleDeniedMyAccessMock();
     const deniedCase = myAccessMockResponse.cases[0];
 

@@ -1,3 +1,4 @@
+import { Location as StateLocation } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
@@ -35,8 +36,7 @@ export class WorkCaseListComponent implements OnChanges {
    */
   @Input() public emptyMessage: string = ListConstants.EmptyMessage.DefaultCases;
 
-  // TODO: Need to re-read the LLD, but I believe it says pass in the caseServiceConfig into this CaseListComponent.
-  // Therefore we will not need this.
+  // TODO: EXUI-3967 - Need to remove this as part of tech debt ticket as should be within caseServiceConfig.fields
   @Input() public fields: FieldConfig[];
 
   @Output() public sortEvent = new EventEmitter<string>();
@@ -53,7 +53,10 @@ export class WorkCaseListComponent implements OnChanges {
   private selectedCase: Case;
   public newUrl: string;
 
-  constructor(private readonly router: Router) {}
+  constructor(
+    private readonly router: Router,
+    private readonly stateLocation: StateLocation
+  ) {}
 
   public get showResetSortButton(): boolean {
     if (!this.sortedBy) {
@@ -170,7 +173,7 @@ export class WorkCaseListComponent implements OnChanges {
    *
    * 'ascending'/'descending' needed to set sorting instead of 'asc'/'desc' which does not sort correctly
    *
-   * TODO: Think about moving 'none' to case sort model.
+   * TODO: Think about moving 'none' to task sort model. EXUI-3967 - Further investigation needed
    *
    * @param fieldName - 'caseName'
    * @return 'none' / 'asc' / 'desc'
@@ -232,7 +235,7 @@ export class WorkCaseListComponent implements OnChanges {
       const currentPath = this.router.url || '';
       const basePath = currentPath.split('#')[0];
       this.newUrl = this.selectedCase ? `${basePath}#manage_${this.selectedCase.id}` : basePath;
-      window.history.pushState('object', document.title, this.newUrl);
+      this.stateLocation.go(this.newUrl);
     }
   }
 

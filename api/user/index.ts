@@ -30,7 +30,7 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
     const { roles } = rawUserInfo;
     const permissions = CASE_SHARE_PERMISSIONS.split(',');
     const canShareCases = roles?.some((role) => permissions.includes(role));
-    const sessionTimeouts = getConfigValue(SESSION_TIMEOUTS) as RoleGroupSessionTimeout[];
+    const sessionTimeouts = getConfigValue<RoleGroupSessionTimeout[]>(SESSION_TIMEOUTS);
     const sessionTimeout = getUserSessionTimeout(roles, sessionTimeouts);
     const roleAssignmentInfo = await getUserRoleAssignments(rawUserInfo, req);
     const bearerToken = req.session.passport.user.tokenset.accessToken;
@@ -148,7 +148,7 @@ export function extractRoleCategories(userRoleAssignments: any[]): string[] {
 }
 
 export function getActiveRoleAssignments(roleAssignments: RoleAssignment[], filterDate: Date): RoleAssignment[] {
-  const activeRoleAssignments = roleAssignments.filter((rm) => {
+  const activeRoleAssignments = (roleAssignments || []).filter((rm) => {
     return rm?.endTime ? filterDate <= new Date(rm.endTime) : true;
   });
   return activeRoleAssignments;

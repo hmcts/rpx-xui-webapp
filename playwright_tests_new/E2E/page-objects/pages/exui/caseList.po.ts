@@ -1,6 +1,13 @@
-import { Page } from '@playwright/test';
+import { expect, Locator, Page, Request } from '@playwright/test';
 import { Base } from '../../base';
 import { EXUI_TIMEOUTS } from './exui-timeouts';
+
+interface SearchCasesRequestExpectation {
+  ctid: string;
+  useCase: string;
+  view: string;
+  page: string;
+}
 
 export class CaseListPage extends Base {
   readonly errorPageHeading = this.page.getByRole('heading', { name: /something went wrong/i });
@@ -25,7 +32,9 @@ export class CaseListPage extends Base {
   readonly caseSearchResultsMessage = this.page.locator('#search-result');
   readonly caseResultsTable = this.page.locator('#search-result table');
   readonly pagination = this.page.locator('.ngx-pagination');
-
+  readonly paginationNext = this.page.locator('.pagination-next');
+  readonly paginationPrevious = this.page.locator('.pagination-previous');
+  readonly paginationCurrentPage = this.pagination.locator('.current');
   // Some case list views use an id, others a data-test attribute for the summary
   readonly caseListResultsAmount = this.page.locator('#search-result-summary__text, [data-test="search-result-summary__text"]');
 
@@ -143,6 +152,52 @@ export class CaseListPage extends Base {
   async getPaginationFinalItem(): Promise<string | undefined> {
     const items = (await this.pagination.locator('li').allTextContents()).map((i) => i.trim());
     return items.at(-1);
+  }
+
+  private isSearchCasesRequestWithPage(request: Request, pageNumber: number): boolean {
+    const requestUrl = new URL(request.url());
+    return requestUrl.pathname === '/data/internal/searchCases' && requestUrl.searchParams.get('page') === pageNumber.toString();
+  }
+
+  private async getVisiblePaginationPageControl(pageNumber: number): Promise<Locator> {
+    const pageText = pageNumber.toString();
+    const candidateControls = this.page.locator('.ngx-pagination a, .ngx-pagination button').filter({
+      hasText: new RegExp(`^\\s*${pageText}\\s*$`),
+    });
+    const candidateCount = await candidateControls.count();
+
+    for (let index = 0; index < candidateCount; index += 1) {
+      const candidate = candidateControls.nth(index);
+      if (await candidate.isVisible().catch(() => false)) {
+        return candidate;
+      }
+    }
+
+    const paginationItems = (await this.page.locator('.ngx-pagination li').allTextContents()).map((item) => item.trim());
+    throw new Error(`Pagination page control "${pageText}" was not visible. Available items: ${paginationItems.join(', ')}`);
+  }
+
+  async clickPaginationPage(pageNumber: number): Promise<void> {
+    const pageControl = await this.getVisiblePaginationPageControl(pageNumber);
+    await this.pagination.waitFor({ state: 'visible', timeout: 10_000 });
+    await pageControl.scrollIntoViewIfNeeded().catch(() => undefined);
+    await pageControl.click({ timeout: 10_000 });
+  }
+
+  async clickPaginationPageAndExpectSearchRequest(
+    pageNumber: number,
+    expectedRequest: SearchCasesRequestExpectation
+  ): Promise<void> {
+    const searchRequestPromise = this.page.waitForRequest((request) => this.isSearchCasesRequestWithPage(request, pageNumber));
+    await this.clickPaginationPage(pageNumber);
+
+    const searchRequest = await searchRequestPromise;
+    const searchRequestUrl = new URL(searchRequest.url());
+
+    expect(searchRequestUrl.searchParams.get('ctid')).toBe(expectedRequest.ctid);
+    expect(searchRequestUrl.searchParams.get('use_case')).toBe(expectedRequest.useCase);
+    expect(searchRequestUrl.searchParams.get('view')).toBe(expectedRequest.view);
+    expect(searchRequestUrl.searchParams.get('page')).toBe(expectedRequest.page);
   }
 
   async openCaseByReference(cleanedCaseNumber: string) {

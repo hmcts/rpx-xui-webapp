@@ -21,22 +21,22 @@ jobs:
           stale-issue-message: 'This issue has been automatically marked as stale because it has not had recent activity. It will be closed in 30 days if no further activity occurs. Please comment if you believe this issue should remain open.'
           stale-issue-label: 'stale'
           close-issue-message: 'This issue has been automatically closed due to inactivity. Please feel free to reopen if needed.'
-          
+
           # Stale PRs configuration
           days-before-pr-stale: 90
           days-before-pr-close: 30
           stale-pr-message: 'This pull request has been automatically marked as stale because it has not had recent activity. It will be closed in 30 days if no further activity occurs.'
           stale-pr-label: 'stale'
           close-pr-message: 'This pull request has been automatically closed due to inactivity. Please feel free to reopen if needed.'
-          
+
           # Exemptions
           # Note: Renovate PRs typically have the "dependencies" label which is also excluded
           exempt-pr-labels: 'pinned,dependencies'
           exempt-all-pr-assignees: false
           exempt-all-issue-assignees: false
-          
+
           # Delete branch after closing stale PR
           delete-branch: true
-          
+
           # Operations per run
           operations-per-run: 50

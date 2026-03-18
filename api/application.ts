@@ -48,7 +48,7 @@ const staticRoot = resolveStaticRoot();
 const indexHtmlRaw = loadIndexHtml(staticRoot);
 
 function injectNonce(html: string, nonce: string): string {
-  return html.replace(/{{cspNonce}}/g, nonce);
+  return html.replaceAll(/{{cspNonce}}/g, nonce);
 }
 
 export async function createApp() {

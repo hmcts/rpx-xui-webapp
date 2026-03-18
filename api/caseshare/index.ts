@@ -13,10 +13,10 @@ const stub: boolean = getConfigValue(STUB);
  */
 export async function getUsers(req: EnhancedRequest, res: Response, next: NextFunction) {
   if (stub) {
+    // EXUI-3967 - Only used when stub is true - can be removed in future
     return stubAPI.getUsers(req, res);
   }
 
-  // TODO: call actual API if not for stub
   return realAPI.getUsers(req, res, next);
 }
 

@@ -1,8 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
-import { execSync } from 'node:child_process';
-import { cpus } from 'node:os';
+import { cpus, totalmem } from 'node:os';
 import { version as appVersion } from './package.json';
+import { resolveWorkerCount } from './playwright-config-utils';
 
 const headlessMode = process.env.HEAD !== 'true';
 const baseUrl = process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';
@@ -32,54 +32,15 @@ const resolveEnvironmentFromUrl = (url: string): string => {
   }
 };
 
-const resolveWorkerCount = () => {
-  const configured = process.env.FUNCTIONAL_TESTS_WORKERS;
-  if (process.env.CI) {
-    return 8;
-  }
-  if (configured) {
-    const parsed = Number.parseInt(configured, 10);
-    if (Number.isFinite(parsed) && parsed > 0) {
-      return parsed;
-    }
-  }
-  const logical = cpus()?.length ?? 1;
-  const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));
-  const suggested = Math.min(8, Math.max(2, approxPhysical));
-  return suggested;
+const workerCount = resolveWorkerCount(process.env);
+const resolveAgentHardware = () => {
+  const cpuCores = cpus()?.length ?? 'unknown';
+  const totalRamGiB = Math.round((totalmem() / 1024 ** 3) * 10) / 10;
+  return `agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
 };
-
-const resolveBranchName = (): string => {
-  const envBranch =
-    process.env.PLAYWRIGHT_REPORT_BRANCH ||
-    process.env.GIT_BRANCH ||
-    process.env.BRANCH_NAME ||
-    process.env.GITHUB_REF_NAME ||
-    process.env.GITHUB_HEAD_REF ||
-    process.env.BUILD_SOURCEBRANCHNAME;
-  if (envBranch) {
-    return envBranch.replace(/^refs\/heads\//, '').trim();
-  }
-  try {
-    const gitBranch = execSync('git rev-parse --abbrev-ref HEAD', {
-      encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'ignore'],
-    })
-      .trim()
-      .replace(/^refs\/heads\//, '');
-    if (gitBranch && gitBranch !== 'HEAD') {
-      return gitBranch;
-    }
-  } catch {
-    // Fall back to local label when branch cannot be resolved.
-  }
-  return 'local';
-};
-const workerCount = resolveWorkerCount();
-const reportBranch = resolveBranchName();
 const targetEnv = process.env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
 const runContext = process.env.CI ? 'ci' : 'local-run';
-const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount}`;
+const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
 
 module.exports = defineConfig({
   testDir: 'playwright_tests_new/E2E',
@@ -89,8 +50,8 @@ module.exports = defineConfig({
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
-  /* Retry failed tests twice in all environments */
-  retries: 2, // Set the number of retries for all projects
+  /* Retry on CI only */
+  retries: process.env.CI ? 1 : 0,
 
   timeout: 300_000, // 5 minutes per test maximum as on first nightly run tests were taking too long
   expect: {
@@ -112,7 +73,7 @@ module.exports = defineConfig({
         title: 'RPX XUI Playwright',
         testEnvironment,
         project: process.env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
-        release: process.env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${reportBranch}`,
+        release: process.env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${process.env.GIT_BRANCH ?? 'local'}`,
         startServer: false,
         consoleLog: true,
         consoleError: true,
@@ -122,19 +83,6 @@ module.exports = defineConfig({
   ],
 
   projects: [
-    {
-      name: 'chromium',
-      use: {
-        ...devices['Desktop Chrome'],
-        headless: headlessMode,
-        trace: 'on-first-retry',
-        screenshot: {
-          mode: 'only-on-failure',
-          fullPage: true,
-        },
-        video: 'off',
-      },
-    },
     {
       name: 'firefox',
       use: {
@@ -160,14 +108,5 @@ module.exports = defineConfig({
         video: 'off',
       },
     },
-    // {
-    //   name: 'MicrosoftEdge',
-    //   use: { ...devices['Desktop Edge'],
-    //     channel: 'msedge',
-    //     screenshot: 'only-on-failure',
-    //     headless: headlessMode,
-    //     trace: 'off'
-    //   }
-    // }
   ],
 });

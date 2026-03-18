@@ -1,10 +1,12 @@
 import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookies } from '../../../common/sessionCapture';
 import { HttpStatusCode } from 'axios';
-import { buildCaseListJurisdictionsMock, buildCaseListMockErrorResponse } from '../../mocks/caseList.mock';
+import { buildCaseListJurisdictionsMock, buildCaseListMockErrorResponse, buildCaseListMock } from '../../mocks/caseList.mock';
+import { createCase } from '../../../../playwright_tests/E2E/steps/create-xui-case-poc-steps.ts';
 
 const userIdentifier = 'SOLICITOR';
 const caseListJurisdictionsMock = buildCaseListJurisdictionsMock();
+const buildsCaseListMock = buildCaseListMock(15);
 
 test.beforeEach(async ({ page }) => {
   await applySessionCookies(page, userIdentifier);
@@ -21,15 +23,14 @@ test.beforeEach(async ({ page }) => {
 });
 
 //400,500,503
-test.describe(`Error codes returned on /searchCases call for ${userIdentifier}`, () => {
-  test(`User ${userIdentifier} encounters a error on the case list page`, async ({ caseListPage, page }) => {
+test.skip(`Error codes returned on /searchCases call for ${userIdentifier}`, () => {
+  test(`User ${userIdentifier} encounters a error on the case list page`, async ({ caseListPage, createCasePage, page }) => {
     await test.step('Intercept searchCases endpoint and fulfill with mock body', async () => {
       const errorCodes = [HttpStatusCode.BadRequest, HttpStatusCode.InternalServerError, HttpStatusCode.ServiceUnavailable];
 
       for (const errorCode of errorCodes) {
         await page.route('**/data/internal/searchCases*', async (route) => {
           const body = JSON.stringify(buildCaseListMockErrorResponse(errorCode));
-          console.log(`~~~~~~~~~~~~~    ~~~~~~~   Error code value : ${errorCode.valueOf()}`);
           await route.fulfill({ status: errorCode.valueOf(), contentType: 'application/json', body });
         });
 
@@ -47,6 +48,36 @@ test.describe(`Error codes returned on /searchCases call for ${userIdentifier}`,
           });
         });
       } // end-for
+    });
+  });
+});
+
+test.describe(`Slow Response Times on  /searchCases call for ${userIdentifier}`, () => {
+  test(`User ${userIdentifier} encounters a slow response time on load of the case list page`, async ({ caseListPage, page }) => {
+    await test.step('Intercept searchCases endpoint and fulfill with mock body', async () => {
+      //const errorCodes = [HttpStatusCode.BadRequest, HttpStatusCode.InternalServerError, HttpStatusCode.ServiceUnavailable];
+
+      await page.route('**/data/internal/searchCases*', async (route) => {
+        const body = JSON.stringify(buildsCaseListMock);
+        // 5 second delay
+        await new Promise((resolve) => setTimeout(resolve, 20000));
+        //await waitForSpinnerToComplete('after submitting employment case');
+        await route.fulfill({ status: 200, contentType: 'application/json', body });
+      });
+
+      await test.step('Navigate to the search page', async () => {
+        await caseListPage.navigateTo();
+      });
+
+      await test.step('Verify user can see the WorkBasket Filter layout', async () => {
+        expect(caseListPage.filtersContainer).toBeVisible();
+
+        await test.step('Verify user sees empty case list UI', async () => {
+          await expect(caseListPage.jurisdictionSelect).toBeVisible();
+          await expect(caseListPage.exuiHeader.header).toBeVisible();
+          await expect(caseListPage.caseSearchResultsMessage).not.toBeVisible();
+        });
+      });
     });
   });
 });

@@ -79,7 +79,13 @@ test.describe(
         (request) => request.url().includes('/api/hearings/hearingActualsCompletion/') && request.method() === 'POST'
       );
       await page.getByRole('button', { name: /submit hearing details/i }).click();
-      await completionRequest;
+      const submittedCompletionRequest = await completionRequest;
+      const submittedCompletionUrl = new URL(submittedCompletionRequest.url());
+      expect(submittedCompletionUrl.pathname).toContain(
+        `/api/hearings/hearingActualsCompletion/${awaitingActualsScenario.hearingId}`
+      );
+      expect(submittedCompletionUrl.searchParams.get('caseRef')).toBeTruthy();
+      expect(submittedCompletionRequest.postData()).toBeNull();
 
       await expect(page).toHaveURL(
         new RegExp(`/hearings/actuals/${awaitingActualsScenario.hearingId}/hearing-actuals-confirmation$`)
@@ -114,7 +120,13 @@ test.describe(
         (request) => request.url().includes('/api/hearings/hearingActualsCompletion/') && request.method() === 'POST'
       );
       await page.getByRole('button', { name: /submit hearing details/i }).click();
-      await completionRequest;
+      const submittedCompletionRequest = await completionRequest;
+      const submittedCompletionUrl = new URL(submittedCompletionRequest.url());
+      expect(submittedCompletionUrl.pathname).toContain(
+        `/api/hearings/hearingActualsCompletion/${awaitingActualsScenario.hearingId}`
+      );
+      expect(submittedCompletionUrl.searchParams.get('caseRef')).toBeTruthy();
+      expect(submittedCompletionRequest.postData()).toBeNull();
 
       await expect(page).toHaveURL(
         new RegExp(`/hearings/actuals/${awaitingActualsScenario.hearingId}/hearing-actuals-confirmation$`)

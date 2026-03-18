@@ -31,9 +31,7 @@ test.describe(
 
       await hearingViewEditSummaryPage.waitForReady();
       await hearingViewEditSummaryPage.submitUpdatedRequestButton.click();
-      await expect(
-        page.getByText('The request has not been updated as there is no change in hearing requirements')
-      ).toBeVisible();
+      await expect(hearingViewEditSummaryPage.noChangeWarning).toBeVisible();
     });
 
     test('shows backend error when submitting updated request fails', async ({
@@ -86,9 +84,7 @@ test.describe(
 
       await expect(page).toHaveURL(/\/hearings\/request\/hearing-change-reason$/);
       await expect(hearingViewEditSummaryPage.errorSummaryHeading).toBeVisible();
-      await expect(
-        page.getByText('There was a system error and your request could not be processed. Please try again.')
-      ).toBeVisible();
+      await expect(hearingViewEditSummaryPage.systemErrorMessage).toBeVisible();
     });
   }
 );

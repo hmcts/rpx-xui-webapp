@@ -10,6 +10,14 @@ export class HearingViewEditSummaryPage {
   readonly changeReasonHeading = this.page.getByRole('heading', { name: /provide a reason for changing this hearing/i });
   readonly changeReasonCheckboxes = this.page.locator('#hearing-option-container .govuk-checkboxes__input');
   readonly errorSummaryHeading = this.page.getByText('There is a problem', { exact: true }).first();
+  readonly noChangeWarning = this.page.getByText(
+    'The request has not been updated as there is no change in hearing requirements',
+    { exact: true }
+  );
+  readonly systemErrorMessage = this.page.getByText(
+    'There was a system error and your request could not be processed. Please try again.',
+    { exact: true }
+  );
 
   sectionHeading(name: string): Locator {
     return this.container.locator('h2.govuk-heading-m').filter({ hasText: name }).first();

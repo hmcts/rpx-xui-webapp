@@ -3886,12 +3886,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.39":
-  version: 7.3.39
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.39"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.40-unused-package":
+  version: 7.3.40-unused-package
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.40-unused-package"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/04dfcec29d1e7f2398b3bbf7d87a1fa94daf95b1da761c03aaaea5abb1b9ce2dcb77497969324b0e460c4dc0e8d438044f107d71fa2db0f2291cef48580ee0eb
+  checksum: 10/42b1518d3017ce397687e89113a9698038f90177297a06f154f471452b86469380b021b36e1cd6713e3e82e3d0bd3aa18e7804e6115b558149f62b049e77541f
   languageName: node
   linkType: hard
 
@@ -4003,16 +4003,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.6":
-  version: 3.2.6
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.6"
+"@hmcts/rpx-xui-common-lib@npm:3.2.7-unused-package-1":
+  version: 3.2.7-unused-package-1
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.7-unused-package-1"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
-    rpx-xui-translation: 1.1.2-CME-780-9
-  checksum: 10/718e05b9c621eff2df17b393a4d84d5e5b5d69770e2bad26d13665d8d368d9ce9cca81f80178b20b538125f4f34449374ab06bc3a613306177862aa1ee037690
+    rpx-xui-translation: 1.2.3-unused-package-1
+  checksum: 10/fc34f4d84eea2e9c427b5ea413ff35dc8d19832a78471acc493ce7e784a14b160a962fe47d1eb14cb6b25e474852ca1846f0df54fe5706dd2073f7818008da24
   languageName: node
   linkType: hard
 
@@ -24489,14 +24489,14 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.39"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.40-unused-package"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.13"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.3.1"
-    "@hmcts/rpx-xui-common-lib": "npm:3.2.6"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.7-unused-package-1"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7-exui-4177-tax-cve-fix"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
@@ -24618,7 +24618,7 @@ __metadata:
     prettier: "npm:^3.8.0"
     proper-lockfile: "npm:^4.1.2"
     puppeteer: "npm:^24.0.0"
-    rpx-xui-translation: "https://github.com/hmcts/rpx-xui-translation/releases/download/v1.2.1/rpx-xui-translation-1.2.1.tgz"
+    rpx-xui-translation: "npm:1.2.3-unused-package-1"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
     sass: "npm:^1.97.3"
@@ -24651,9 +24651,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@https://github.com/hmcts/rpx-xui-translation/releases/download/v1.2.1/rpx-xui-translation-1.2.1.tgz":
-  version: 1.2.1
-  resolution: "rpx-xui-translation@https://github.com/hmcts/rpx-xui-translation/releases/download/v1.2.1/rpx-xui-translation-1.2.1.tgz"
+"rpx-xui-translation@npm:1.2.3-unused-package-1":
+  version: 1.2.3-unused-package-1
+  resolution: "rpx-xui-translation@npm:1.2.3-unused-package-1"
   dependencies:
     dexie: "npm:^3.2.2"
     luxon: "npm:^2.4.0"
@@ -24661,7 +24661,7 @@ __metadata:
   peerDependencies:
     "@angular/common": ^20.3.14
     "@angular/core": ^20.3.14
-  checksum: 10/ddcd17ed70fe39046c0ce0fb1794892b3ad8fb468942136f8d7cd9b16eaea3ca28940ec0a591be71304911414b2721aaa012ee9bc123b8780a4accb3e2b8f1f8
+  checksum: 10/3f83ca4f892d02a24d3ed90ae02504f32eff2398c6610314420d3484fc746c49e256c00e9e107b2dec88c8faa9902c18d81850c529b077f800843f955d4381f6
   languageName: node
   linkType: hard
 

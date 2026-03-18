@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker';
+import { HttpStatusCode } from 'axios';
 
 export function buildCaseListMock(rowCount: number = 2) {
   const columns = [
@@ -133,6 +134,23 @@ export function buildCaseListJurisdictionsMock() {
       ],
     },
   ];
+}
+
+/**
+ * The handleElasticSearchResponse() method in the api/searchCases/index.ts is
+ * always seen to return an empty object { } for all non-positive responses
+ *
+ * @param httpStatusCode
+ */
+export function buildCaseListMockErrorResponse(httpStatusCode: HttpStatusCode) {
+  switch (httpStatusCode) {
+    case (HttpStatusCode.BadRequest,
+    HttpStatusCode.Unauthorized,
+    HttpStatusCode.Forbidden,
+    HttpStatusCode.InternalServerError,
+    HttpStatusCode.ServiceUnavailable):
+      return {};
+  }
 }
 
 export default buildCaseListMock;

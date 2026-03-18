@@ -70,18 +70,30 @@ async function expectReloadOrEmptyState(page: Page, hearingsTabPage: HearingsTab
 }
 
 async function expectLoadingPhaseBeforeRowsRender(page: Page): Promise<void> {
-  await expect
-    .poll(
-      async () => {
-        if (await page.locator('xuilib-loading-spinner').isVisible()) {
-          return 'spinner';
+  const hearingRows = page.locator('[id^="link-view-details-"]');
+  const spinnerSeenPromise = page.evaluate(() => {
+    if (document.querySelector('xuilib-loading-spinner')) {
+      return true;
+    }
+
+    return new Promise<boolean>((resolve) => {
+      const observer = new MutationObserver(() => {
+        if (document.querySelector('xuilib-loading-spinner')) {
+          observer.disconnect();
+          resolve(true);
         }
-        const rows = await page.locator('[id^="link-view-details-"]').count();
-        return rows === 0 ? 'rows-pending' : 'rows-rendered';
-      },
-      { timeout: 10_000 }
-    )
-    .not.toBe('rows-rendered');
+      });
+
+      observer.observe(document.body, { childList: true, subtree: true });
+      window.setTimeout(() => {
+        observer.disconnect();
+        resolve(false);
+      }, 10_000);
+    });
+  });
+
+  await expect(hearingRows).toHaveCount(0, { timeout: 10_000 });
+  expect(await spinnerSeenPromise).toBe(true);
 }
 
 test.describe(`Hearings resilience integration as ${userIdentifier}`, { tag: ['@integration', '@integration-hearings'] }, () => {
@@ -251,11 +263,14 @@ test.describe(`Hearings resilience integration as ${userIdentifier}`, { tag: ['@
 
     await page.goto(caseDetailsUrl(), { waitUntil: 'domcontentloaded' });
     const hearingsTab = page.getByRole('tab', { name: /hearings/i }).first();
+    const getHearingsResponse = page.waitForResponse((response) => response.url().includes('/api/hearings/getHearings'));
     await hearingsTab.click();
 
     await expectLoadingPhaseBeforeRowsRender(page);
 
+    await getHearingsResponse;
     await hearingsTabPage.waitForReady(HEARINGS_LISTED_HEARING_ID);
+    await expect(page.locator('[id^="link-view-details-"]')).toHaveCount(1);
     await expect(page.locator('xuilib-loading-spinner')).toBeHidden();
   });
 });

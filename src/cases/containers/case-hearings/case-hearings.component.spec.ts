@@ -335,7 +335,7 @@ describe('CaseHearingsComponent', () => {
 
   const HEARINGS_LIST: HearingListMainModel = {
     hmctsServiceID: 'BBA3',
-    caseRef: '1568642646198441',
+    caseRef: '1234',
     caseHearings: [
       CASE_HEARING_1,
       CASE_HEARING_2,

@@ -1,6 +1,5 @@
 import { faker } from '@faker-js/faker';
 import { expect, type Page, type Route } from '@playwright/test';
-import { min } from 'lodash';
 
 export type UiTaskAction = 'cancel' | 'complete' | 'go' | 'reassign' | 'unassign';
 export type UnassignMode = 'unclaim' | 'assign-null';

@@ -73,10 +73,11 @@ fs.mkdirSync(CUKE_OUT, { recursive: true });
 const debugMode = process.env.DEBUG?.includes('true') ?? false;
 
 const parallel = process.env.PARALLEL ? process.env.PARALLEL === 'true' : false;
-const head = process.env.HEAD === 'true' || (process.platform === 'darwin' && process.arch === 'arm64' && !process.env.CI);
+const defaultShowBrowser = process.platform === 'darwin' && process.arch === 'arm64' && !process.env.CI;
+const showBrowser = process.env.HEADLESS === 'true' ? false : process.env.HEAD === 'true' || defaultShowBrowser;
 console.log(`testType : ${testType}`);
 console.log(`parallel : ${parallel}`);
-console.log(`headless : ${head}`);
+console.log(`headless : ${!showBrowser}`);
 
 const TEST_URL = process.env.TEST_URL || '';
 const pipelineBranch = resolvePipelineBranch(externalServers, TEST_URL);
@@ -128,7 +129,7 @@ exports.config = {
     Playwright: {
       url: externalServers ? process.env.WEB_BASE_URL || 'http://localhost:8080' : 'https://manage-case.aat.platform.hmcts.net',
       restart: true,
-      show: head,
+      show: showBrowser,
       waitForNavigation: 'domcontentloaded',
       waitForAction: 10,
       browser: 'chromium',

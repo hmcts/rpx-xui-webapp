@@ -3,9 +3,7 @@ import getUiConfigRouter from './configuration/uiConfigRouter';
 
 const router = express.Router({ mergeParams: true });
 
-/**
- * TODO: Consolidate duplicate config routes. Keep both for now as multiple teams use them both for performance testing.
- */
+// EXUI-3967 - Removed almost all instances of 'configuration-ui' in favour of 'config/ui' - kept for backwards compatibility
 router.use('/configuration-ui', getUiConfigRouter);
 router.use('/config/ui', getUiConfigRouter);
 

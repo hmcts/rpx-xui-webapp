@@ -43,7 +43,7 @@ variable "redis_capacity" {
 }
 
 variable "welsh_reporting_enabled" {
-  default     = true
+  default     = false
   description = "Enable Welsh language usage reporting"
   type        = bool
 }

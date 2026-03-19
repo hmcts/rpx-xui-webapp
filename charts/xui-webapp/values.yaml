@@ -7,7 +7,7 @@ redis:
   auth:
     enabled: false
   image:
-    registry: hmctssbox.azurecr.io
+    registry: hmctspublic.azurecr.io
     repository: imported/bitnami/redis
 
 global:

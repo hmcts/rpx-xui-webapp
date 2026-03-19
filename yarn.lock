@@ -3886,12 +3886,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.40":
-  version: 7.3.40
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.40"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.41":
+  version: 7.3.41
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.41"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/d6c273aecfb775edc928b4cad16897bd0ed95f8f048b9c32f1cb8bc6cb2df3cbc747de132a705161651ef3bc7fc2588a02fbd07b0285a765b0891f6f4cdc062a
+  checksum: 10/c676848a4f52449638ec714c38ece1aa4a86126fe247238e676ca94c28a38d05fac226dfa5096a168582b18fda406c78a6e3f8613244a893043ead098533cee3
   languageName: node
   linkType: hard
 
@@ -3914,9 +3914,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.13":
-  version: 4.2.13
-  resolution: "@hmcts/media-viewer@npm:4.2.13"
+"@hmcts/media-viewer@npm:4.2.14":
+  version: 4.2.14
+  resolution: "@hmcts/media-viewer@npm:4.2.14"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3935,7 +3935,7 @@ __metadata:
     "@ngrx/router-store": ^20
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
-  checksum: 10/198189b75e5ee51c87f403be364a18daf77287569827fe4b62ac3c7484d7d78ba61ba4f14d6ee50ad735588d1fbcd188ab9df5e40345dfad8c478048928f4be7
+  checksum: 10/1b286c98663ab225904deb687f2a5fe9f9b13f6b63c835493e09efc4ddeb4a9a42437cc6c1177613334cc5b4dddb833bbed720f01d798b16440c00f3a0eff7fc
   languageName: node
   linkType: hard
 
@@ -24489,10 +24489,10 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.40"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.41"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.2.13"
+    "@hmcts/media-viewer": "npm:4.2.14"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.3.1"

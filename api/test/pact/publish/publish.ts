@@ -39,7 +39,9 @@ const publish = async (): Promise<void> => {
 
     const resolveConsumerVersion = (): string => {
       try {
-        return execSync('git rev-parse --short=12 HEAD', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim();
+        return execSync('git rev-parse --short=12 HEAD', { stdio: ['ignore', 'pipe', 'ignore'] })
+          .toString()
+          .trim();
       } catch {
         const envSha = process.env.GIT_COMMIT || process.env.CI_COMMIT_SHA || process.env.BUILD_VCS_NUMBER;
         if (envSha && envSha.trim()) {

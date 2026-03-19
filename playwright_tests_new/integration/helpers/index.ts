@@ -11,3 +11,4 @@ export * from './prewarmedSession.helper';
 export * from './searchCaseSession.helper';
 export * from './hearingsMockRoutes.helper';
 export * from './taskListMockRoutes.helper';
+export * from './manageTasksMockRoutes.helper';

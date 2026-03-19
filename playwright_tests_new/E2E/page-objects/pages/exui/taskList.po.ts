@@ -39,9 +39,14 @@ export class TaskListPage extends Base {
   readonly taskListResultsAmount = this.page.locator('#search-result-summary__text, [data-test="search-result-summary__text"]');
   readonly myCasesResultsAmount = this.page.locator('.pagination-top');
   readonly uniqueCasesSummary = this.page.locator('.second-line');
+  readonly myAccessNewCasesBadge = this.page.locator('.xui-alert-link__number');
   readonly manageCaseButtons = this.taskListTable.getByRole('button', { name: 'Manage' });
   readonly errorPageHeading = this.page.getByRole('heading', { name: /something went wrong/i });
   readonly serviceDownError = this.exuiBodyComponent.serviceDownError;
+  readonly serviceDownHeading = this.page.getByRole('heading', { name: 'Sorry, there is a problem with the service' });
+  readonly notAuthorisedHeading = this.page.getByRole('heading', {
+    name: "Sorry, you're not authorised to perform this action",
+  });
   readonly taskActionsRow = this.taskListTable.locator('tr.actions-row[aria-hidden="false"]');
 
   readonly taskActionCancel = this.taskActionsRow.locator('#action_cancel');
@@ -88,6 +93,16 @@ export class TaskListPage extends Base {
   async goto() {
     await this.page.goto('/work/my-work/list', { waitUntil: 'domcontentloaded' });
     await this.waitForTaskListShellReady('task list navigation');
+  }
+
+  async gotoMyCases() {
+    await this.page.goto('/work/my-work/my-cases', { waitUntil: 'domcontentloaded' });
+    await this.waitForTaskListShellReady('my cases navigation');
+  }
+
+  async gotoMyAccess() {
+    await this.page.goto('/work/my-work/my-access', { waitUntil: 'domcontentloaded' });
+    await this.waitForTaskListShellReady('my access navigation');
   }
 
   async selectWorkMenuItem(menuItemText: string) {

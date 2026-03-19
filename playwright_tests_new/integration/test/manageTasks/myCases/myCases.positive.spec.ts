@@ -1,10 +1,9 @@
 import { expect, test } from '../../../../E2E/fixtures';
-import { applyPrewarmedSessionCookies, setupTaskListBootstrapRoutes, taskListRoutePattern } from '../../../helpers';
+import { applyPrewarmedSessionCookies, setupMyCasesRoutes } from '../../../helpers';
 import { buildMyCases, buildMyCasesMock } from '../../../mocks/myCases.mock';
 import { formatUiDate } from '../../../utils/tableUtils';
 
 const userIdentifier = 'STAFF_ADMIN';
-const myCasesRoutePattern = /\/workallocation\/my-work\/cases(?:\?.*)?$/;
 
 test.beforeEach(async ({ page }) => {
   await applyPrewarmedSessionCookies(page, userIdentifier);
@@ -15,32 +14,16 @@ test.describe(`My Cases as ${userIdentifier}`, { tag: ['@integration', '@integra
     const myCasesMockResponse = buildMyCasesMock();
 
     await test.step('Setup route mocks for My cases', async () => {
-      await setupTaskListBootstrapRoutes(page);
-      await page.route(taskListRoutePattern, async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({ tasks: [], total_records: 0 }),
-        });
-      });
-      await page.route(myCasesRoutePattern, async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(myCasesMockResponse),
-        });
-      });
+      await setupMyCasesRoutes(page, myCasesMockResponse);
     });
 
     await test.step('Open My work and navigate to My cases', async () => {
-      await taskListPage.goto();
-      await taskListPage.taskTableTabs.filter({ hasText: 'My cases' }).first().click();
-      await page.waitForURL(/\/work\/my-work\/my-cases$/);
+      await taskListPage.gotoMyCases();
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
     });
 
-    await test.step('Verify the cases table columns and data', async () => {
+    await test.step('Verify the cases table columns and data as seen as expected', async () => {
       expect(await taskListPage.myCasesResultsAmount.textContent()).toBe(`Showing ${myCasesMockResponse.cases.length} results`);
 
       const table = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
@@ -87,27 +70,11 @@ test.describe(`My Cases as ${userIdentifier}`, { tag: ['@integration', '@integra
     const myCasesMockResponse = buildMyCases(999, undefined, 50);
 
     await test.step('Setup route mocks for a large dataset', async () => {
-      await setupTaskListBootstrapRoutes(page);
-      await page.route(taskListRoutePattern, async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({ tasks: [], total_records: 0 }),
-        });
-      });
-      await page.route(myCasesRoutePattern, async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(myCasesMockResponse),
-        });
-      });
+      await setupMyCasesRoutes(page, myCasesMockResponse);
     });
 
     await test.step('Open My cases with the large dataset', async () => {
-      await taskListPage.goto();
-      await taskListPage.taskTableTabs.filter({ hasText: 'My cases' }).first().click();
-      await page.waitForURL(/\/work\/my-work\/my-cases$/);
+      await taskListPage.gotoMyCases();
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
     });

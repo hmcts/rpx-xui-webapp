@@ -1,10 +1,9 @@
 import { expect, test } from '../../../../E2E/fixtures';
-import { applyPrewarmedSessionCookies, setupTaskListBootstrapRoutes, taskListRoutePattern } from '../../../helpers';
+import { applyPrewarmedSessionCookies, setupMyAccessRoutes } from '../../../helpers';
 import { buildMyAccessCases, buildMyAccessMock } from '../../../mocks/myAccess.mock';
 import { formatUiDate } from '../../../utils/tableUtils';
 
 const userIdentifier = 'STAFF_ADMIN';
-const myAccessRoutePattern = /\/workallocation\/my-work\/myaccess(?:\?.*)?$/;
 
 test.beforeEach(async ({ page }) => {
   await applyPrewarmedSessionCookies(page, userIdentifier);
@@ -16,34 +15,11 @@ test.describe(`My Access as ${userIdentifier}`, { tag: ['@integration', '@integr
     const isNewCount = (myAccessMockResponse.cases ?? []).filter((c) => c.isNew === true).length;
 
     await test.step('Setup route mocks for My access', async () => {
-      await setupTaskListBootstrapRoutes(page);
-      await page.route('**/api/role-access/roles/get-my-access-new-count*', async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({ count: isNewCount }),
-        });
-      });
-      await page.route(taskListRoutePattern, async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({ tasks: [], total_records: 0 }),
-        });
-      });
-      await page.route(myAccessRoutePattern, async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(myAccessMockResponse),
-        });
-      });
+      await setupMyAccessRoutes(page, myAccessMockResponse, { newCount: isNewCount });
     });
 
     await test.step('Open My work and navigate to My access', async () => {
-      await taskListPage.goto();
-      await taskListPage.taskTableTabs.filter({ hasText: 'My access' }).first().click();
-      await page.waitForURL(/\/work\/my-work\/my-access$/);
+      await taskListPage.gotoMyAccess();
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
     });
@@ -54,9 +30,7 @@ test.describe(`My Access as ${userIdentifier}`, { tag: ['@integration', '@integr
         expect.arrayContaining(['Case name', 'Service', 'Case category', 'Date submitted', 'Access', 'Start', 'End'])
       );
 
-      await expect(
-        taskListPage.taskTableTabs.filter({ hasText: 'My access' }).first().locator('.xui-alert-link__number')
-      ).toHaveText(`${isNewCount}`);
+      await expect(taskListPage.myAccessNewCasesBadge).toHaveText(`${isNewCount}`);
 
       for (let i = 0; i < table.length; i++) {
         const expectedCase = myAccessMockResponse.cases[i];
@@ -99,42 +73,17 @@ test.describe(`My Access as ${userIdentifier}`, { tag: ['@integration', '@integr
     const isNewCount = (myAccessMockResponse.cases ?? []).filter((c) => c.isNew === true).length;
 
     await test.step('Setup route mocks for a large datasets', async () => {
-      await setupTaskListBootstrapRoutes(page);
-      await page.route('**/api/role-access/roles/get-my-access-new-count*', async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({ count: isNewCount }),
-        });
-      });
-      await page.route(taskListRoutePattern, async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({ tasks: [], total_records: 0 }),
-        });
-      });
-      await page.route(myAccessRoutePattern, async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(myAccessMockResponse),
-        });
-      });
+      await setupMyAccessRoutes(page, myAccessMockResponse, { newCount: isNewCount });
     });
 
     await test.step('Open My access with the large dataset', async () => {
-      await taskListPage.goto();
-      await taskListPage.taskTableTabs.filter({ hasText: 'My access' }).first().click();
-      await page.waitForURL(/\/work\/my-work\/my-access$/);
+      await taskListPage.gotoMyAccess();
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
     });
 
     await test.step('Check large dataset rendering', async () => {
-      await expect(
-        taskListPage.taskTableTabs.filter({ hasText: 'My access' }).first().locator('.xui-alert-link__number')
-      ).toHaveText(`${isNewCount}`);
+      await expect(taskListPage.myAccessNewCasesBadge).toHaveText(`${isNewCount}`);
       const table = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
       for (let i = 0; i < table.length; i++) {
         const expectedCase = myAccessMockResponse.cases[i];

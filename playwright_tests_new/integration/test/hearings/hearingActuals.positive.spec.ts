@@ -36,7 +36,7 @@ test.describe(
   `Hearings actuals journey as ${HEARING_MANAGER_CR84_OFF_USER}`,
   { tag: ['@integration', '@integration-hearings'] },
   () => {
-    test.skip('loads adjourned hearing details without showing the generic error state', async ({
+    test('loads adjourned hearing details without showing the generic error state', async ({
       page,
       caseDetailsPage,
       hearingsTabPage,

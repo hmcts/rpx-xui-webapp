@@ -148,4 +148,64 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
       await expect(taskListPage.allWorkPersonSearchInput).toBeVisible();
     });
   });
+
+  test('All-work manage action matrix is rendered for each expected row', async ({ taskListPage, page }) => {
+    const taskListMockResponse = buildTaskListMock(25, '', myActionsList);
+    const allActionIds = ['assign', 'claim', 'claim-and-go', 'reassign', 'unclaim', 'go', 'cancel', 'complete'];
+
+    taskListMockResponse.tasks[0].actions = [
+      { id: 'assign', title: 'Assign task' },
+      { id: 'go', title: 'Go to task' },
+    ];
+    taskListMockResponse.tasks[1].actions = [
+      { id: 'assign', title: 'Assign task' },
+      { id: 'go', title: 'Go to task' },
+    ];
+    taskListMockResponse.tasks[3].actions = [
+      { id: 'reassign', title: 'Reassign task' },
+      { id: 'unclaim', title: 'Unassign task' },
+      { id: 'go', title: 'Go to task' },
+    ];
+
+    await test.step('Setup route mocks for all-work manage action matrix', async () => {
+      await setupTaskListBootstrapRoutes(page, supportedJurisdictions, supportedJurisdictionDetails);
+      await page.route(taskListRoutePattern, async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(taskListMockResponse),
+        });
+      });
+    });
+
+    await test.step('Navigate to all-work tasks page', async () => {
+      await taskListPage.gotoAllWorkTasks();
+      await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.exuiSpinnerComponent.wait();
+    });
+
+    const assertManageActionsForRow = async (rowIndex: number, expectedActionIds: string[]) => {
+      await expect(taskListPage.manageCaseButtons.nth(rowIndex)).toBeVisible();
+      await taskListPage.manageCaseButtons.nth(rowIndex).click();
+      await expect(taskListPage.taskActionsRow).toBeVisible();
+
+      for (const actionId of allActionIds) {
+        const actionLocator = taskListPage.taskActionsRow.locator(`#action_${actionId}`);
+        if (expectedActionIds.includes(actionId)) {
+          await expect(actionLocator).toBeVisible();
+        } else {
+          await expect(actionLocator).toHaveCount(0);
+        }
+      }
+    };
+
+    await test.step('Validate row 1 and row 2 show Assign task and Go to task', async () => {
+      await assertManageActionsForRow(0, ['assign', 'go']);
+      await assertManageActionsForRow(1, ['assign', 'go']);
+    });
+
+    await test.step('Validate row 4 shows Reassign task, Unassign task, and Go to task', async () => {
+      await assertManageActionsForRow(3, ['reassign', 'unclaim', 'go']);
+    });
+  });
 });

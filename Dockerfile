@@ -34,7 +34,7 @@ COPY --chown=hmcts:hmcts . .
 # Build the application (dependencies already installed)
 RUN yarn build
 
-FROM hmctspublic.azurecr.io/base/node:20-alpine AS runtime
+FROM hmctssbox.azurecr.io/base/node:20-alpine AS runtime
 LABEL maintainer="HMCTS Expert UI <https://github.com/hmcts>"
 
 USER root

@@ -1,6 +1,6 @@
 import { expect, test } from '../../../../E2E/fixtures';
 import { applyPrewarmedSessionCookies, setupTaskListBootstrapRoutes, taskListRoutePattern } from '../../../helpers';
-import { buildMyAccessMock, buildSingleDeniedMyAccessMock } from '../../../mocks/myAccess.mock';
+import { buildMyAccessCases, buildMyAccessMock, buildSingleDeniedMyAccessMock } from '../../../mocks/myAccess.mock';
 import { formatUiDate } from '../../../utils/tableUtils';
 
 const userIdentifier = 'STAFF_ADMIN';
@@ -13,6 +13,7 @@ test.beforeEach(async ({ page }) => {
 test.describe(`My Access as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   test(`User can view cases on the My access page from My work`, async ({ taskListPage, page, tableUtils }) => {
     const myAccessMockResponse = buildMyAccessMock();
+    const isNewCount = (myAccessMockResponse.cases ?? []).filter((c) => c.isNew === true).length;
 
     await test.step('Setup route mocks for My access', async () => {
       await setupTaskListBootstrapRoutes(page);
@@ -20,7 +21,7 @@ test.describe(`My Access as ${userIdentifier}`, { tag: ['@integration', '@integr
         await route.fulfill({
           status: 200,
           contentType: 'application/json',
-          body: JSON.stringify({ count: myAccessMockResponse.cases.length }),
+          body: JSON.stringify({ count: isNewCount }),
         });
       });
       await page.route(taskListRoutePattern, async (route) => {
@@ -55,7 +56,7 @@ test.describe(`My Access as ${userIdentifier}`, { tag: ['@integration', '@integr
 
       await expect(
         taskListPage.taskTableTabs.filter({ hasText: 'My access' }).first().locator('.xui-alert-link__number')
-      ).toHaveText(`${myAccessMockResponse.cases.length}`);
+      ).toHaveText(`${isNewCount}`);
 
       for (let i = 0; i < table.length; i++) {
         const expectedCase = myAccessMockResponse.cases[i];
@@ -93,9 +94,65 @@ test.describe(`My Access as ${userIdentifier}`, { tag: ['@integration', '@integr
     });
   });
 
+  test(`Large datasets render correctly`, async ({ taskListPage, tableUtils, page }) => {
+    const myAccessMockResponse = buildMyAccessCases(999);
+    const isNewCount = (myAccessMockResponse.cases ?? []).filter((c) => c.isNew === true).length;
+
+    await test.step('Setup route mocks for a large datasets', async () => {
+      await setupTaskListBootstrapRoutes(page);
+      await page.route('**/api/role-access/roles/get-my-access-new-count*', async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({ count: isNewCount }),
+        });
+      });
+      await page.route(taskListRoutePattern, async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({ tasks: [], total_records: 0 }),
+        });
+      });
+      await page.route(myAccessRoutePattern, async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(myAccessMockResponse),
+        });
+      });
+    });
+
+    await test.step('Open My access with the large dataset', async () => {
+      await taskListPage.goto();
+      await taskListPage.taskTableTabs.filter({ hasText: 'My access' }).first().click();
+      await page.waitForURL(/\/work\/my-work\/my-access$/);
+      await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.exuiSpinnerComponent.wait();
+    });
+
+    await test.step('Check large dataset rendering', async () => {
+      await expect(
+        taskListPage.taskTableTabs.filter({ hasText: 'My access' }).first().locator('.xui-alert-link__number')
+      ).toHaveText(`${isNewCount}`);
+      const table = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
+      for (let i = 0; i < table.length; i++) {
+        const expectedCase = myAccessMockResponse.cases[i];
+        expect(table[i]['Case name']).toBe(expectedCase.case_name);
+        expect(table[i]['Service']).toBe(expectedCase.expectedServiceLabel);
+        expect(table[i]['Case category']).toBe(expectedCase.case_category);
+        expect(table[i]['Date submitted']).toBe(formatUiDate(expectedCase.dateSubmitted));
+        expect(table[i]['Access']).toBe(expectedCase.access);
+        expect(table[i]['Start']).toBe(expectedCase.startDate);
+        expect(table[i]['End']).toBe(expectedCase.endDate);
+      }
+    });
+  });
+
   test(`User can open denied access View and capture the resulting navigation`, async ({ taskListPage, page }) => {
     const myAccessMockResponse = buildSingleDeniedMyAccessMock();
     const deniedCase = myAccessMockResponse.cases[0];
+    const isNewCount = (myAccessMockResponse.cases ?? []).filter((c) => c.isNew === true).length;
 
     await test.step('Setup route mocks for a single denied access row', async () => {
       await setupTaskListBootstrapRoutes(page);
@@ -103,7 +160,7 @@ test.describe(`My Access as ${userIdentifier}`, { tag: ['@integration', '@integr
         await route.fulfill({
           status: 200,
           contentType: 'application/json',
-          body: JSON.stringify({ count: myAccessMockResponse.cases.length }),
+          body: JSON.stringify({ count: isNewCount }),
         });
       });
       await page.route(taskListRoutePattern, async (route) => {

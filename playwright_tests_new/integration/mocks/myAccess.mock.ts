@@ -1,3 +1,6 @@
+import { faker } from '@faker-js/faker';
+import { formatUiDate } from '../utils/tableUtils';
+
 const toMiddayUtcIso = (date: string): string => {
   const stableDate = new Date(date);
   stableDate.setUTCHours(12, 0, 0, 0);
@@ -29,100 +32,166 @@ export type MyAccessCaseMock = {
   infoRequiredComment?: string;
 };
 
+const myAccessStateDefinitions = [
+  { role: 'challenged-access-requested', access: 'Challenged', hasAccess: false, isNew: true, includeDates: false },
+  { role: 'challenged-access-pending', access: 'Challenged access pending', hasAccess: false, isNew: true, includeDates: false },
+  { role: 'challenged-access-legal-ops', access: 'Challenged access granted', hasAccess: true, isNew: false, includeDates: false },
+  { role: 'specific-access-requested', access: 'Specific', hasAccess: false, isNew: true, includeDates: false },
+  { role: 'specific-access-approved', access: 'Specific access approved', hasAccess: true, isNew: false, includeDates: true },
+  { role: 'specific-access-granted', access: 'Specific access granted', hasAccess: true, isNew: false, includeDates: true },
+  { role: 'specific-access-legal-ops', access: 'Specific access granted', hasAccess: true, isNew: false, includeDates: true },
+  { role: 'specific-access-denied', access: 'Specific access denied', hasAccess: false, isNew: true, includeDates: false },
+] as const;
+
+type MyAccessStateDefinition = (typeof myAccessStateDefinitions)[number];
+
+export const getMyAccessStateDefinition = (role?: string): MyAccessStateDefinition => {
+  if (role) {
+    const matchingDefinition = myAccessStateDefinitions.find((definition) => definition.role === role);
+    if (matchingDefinition) {
+      return matchingDefinition;
+    }
+  }
+
+  return faker.helpers.arrayElement([...myAccessStateDefinitions]);
+};
+
+export const myAccessRoleValues = myAccessStateDefinitions.map((definition) => definition.role);
+export const myAccessDisplayValues = [...new Set(myAccessStateDefinitions.map((definition) => definition.access))];
+
+export const buildMyAccessCaseMock = (overrides: Partial<MyAccessCaseMock> = {}): MyAccessCaseMock => {
+  const serviceLabelByJurisdiction: Record<string, string> = {
+    IA: 'Immigration & Asylum',
+    SSCS: 'Social security and child support',
+    Other: 'Other',
+  };
+
+  const jurisdiction = overrides.jurisdiction ?? faker.helpers.arrayElement(['IA', 'SSCS', 'Other']);
+  const caseType = overrides.case_type ?? 'Asylum';
+  const caseId = overrides.case_id ?? faker.string.numeric(16);
+  const submittedDate = overrides.dateSubmitted ?? formatUiDate(toMiddayUtcIso(faker.date.recent({ days: 45 }).toISOString()));
+  const stateDefinition = getMyAccessStateDefinition(overrides.role);
+  const role = overrides.role ?? stateDefinition.role;
+  const startDate = overrides.startDate ?? (stateDefinition.includeDates
+    ? formatUiDate(toMiddayUtcIso(faker.date.soon({ days: 14 }).toISOString()))
+    : '');
+  const endDate = overrides.endDate ?? (stateDefinition.includeDates
+    ? formatUiDate(toMiddayUtcIso(faker.date.soon({ days: 60 }).toISOString()))
+    : '');
+
+  return {
+    id: overrides.id ?? faker.string.uuid(),
+    case_id: caseId,
+    case_name: overrides.case_name ?? faker.company.name(),
+    case_category: overrides.case_category ?? faker.helpers.arrayElement(['Protection', 'Human rights', 'EUSS']),
+    case_type: caseType,
+    jurisdiction,
+    jurisdictionId: overrides.jurisdictionId ?? jurisdiction,
+    expectedServiceLabel: overrides.expectedServiceLabel ?? serviceLabelByJurisdiction[jurisdiction] ?? jurisdiction,
+    dateSubmitted: submittedDate,
+    access: overrides.access ?? stateDefinition.access,
+    startDate,
+    endDate,
+    role,
+    hasAccess: overrides.hasAccess ?? stateDefinition.hasAccess,
+    isNew: overrides.isNew ?? stateDefinition.isNew,
+    role_category: overrides.role_category,
+    requestDate: overrides.requestDate,
+    reviewer: overrides.reviewer,
+    reviewerRoleCategory: overrides.reviewerRoleCategory,
+    specificAccessReason: overrides.specificAccessReason,
+    infoRequired: overrides.infoRequired,
+    infoRequiredComment: overrides.infoRequiredComment,
+  };
+};
+
+export const buildMyAccessCases = (
+  count: number,
+  overridesFactory?: (index: number) => Partial<MyAccessCaseMock>
+): { cases: MyAccessCaseMock[]; total_records: number } => {
+  const cases = Array.from({ length: count }, (_, index) => {
+    const overrides = overridesFactory ? overridesFactory(index) : {};
+    return buildMyAccessCaseMock({
+      case_name: overrides.case_name ?? `${faker.company.name()} v ${faker.person.lastName()}`,
+      ...overrides,
+    });
+  });
+
+  return {
+    cases,
+    total_records: cases.length,
+  };
+};
+
 export const buildMyAccessMock = (): { cases: MyAccessCaseMock[]; total_records: number } => {
   const cases: MyAccessCaseMock[] = [
-    {
-      id: 'access-1',
-      case_id: '2234567812345670',
+    buildMyAccessCaseMock({
       case_name: 'Access Case 1',
       case_category: 'Protection',
-      case_type: 'Asylum',
       jurisdiction: 'IA',
-      jurisdictionId: 'IA',
-      expectedServiceLabel: 'Immigration & Asylum',
-      dateSubmitted: toMiddayUtcIso('2026-01-15T00:00:00.000Z'),
+      access: 'Challenged',
+      role: 'challenged-access-requested',
+      requestDate: formatUiDate(toMiddayUtcIso('2026-01-08T00:00:00.000Z')),
+    }),
+    buildMyAccessCaseMock({
+      case_name: 'Access Case 2',
+      case_category: 'Test case category label',
+      jurisdiction: 'SSCS',
+      access: 'Challenged access pending',
+      role: 'challenged-access-pending',
+      requestDate: formatUiDate(toMiddayUtcIso('2026-01-09T00:00:00.000Z')),
+    }),
+    buildMyAccessCaseMock({
+      case_name: 'Access Case 3',
+      case_category: 'Human rights',
+      jurisdiction: 'IA',
+      access: 'Challenged access granted',
+      role: 'challenged-access-legal-ops',
+    }),
+    buildMyAccessCaseMock({
+      case_name: 'Access Case 4',
+      jurisdiction: 'IA',
+      access: 'Specific',
+      role: 'specific-access-requested',
+      requestDate: formatUiDate(toMiddayUtcIso('2026-01-10T00:00:00.000Z')),
+    }),
+    buildMyAccessCaseMock({
+      case_name: 'Access Case 5',
+      jurisdiction: 'IA',
       access: 'Specific access approved',
       startDate: '10 January 2026',
       endDate: '16 February 2026',
       role: 'specific-access-approved',
-      hasAccess: true,
-      isNew: false,
-    },
-    {
-      id: 'access-2',
-      case_id: '2234567812345671',
-      case_name: 'Access Case 2',
-      case_category: 'Test case category label',
-      case_type: 'Asylum',
+    }),
+    buildMyAccessCaseMock({
+      case_name: 'Access Case 6',
       jurisdiction: 'SSCS',
-      jurisdictionId: 'SSCS',
-      expectedServiceLabel: 'Social security and child support',
-      dateSubmitted: toMiddayUtcIso('2026-01-18T00:00:00.000Z'),
-      access: 'Challenged access pending',
-      startDate: 'Pending',
-      endDate: '',
-      role: 'challenged-access-pending',
-      hasAccess: true,
-      isNew: true,
-    },
-    {
-      id: 'access-3',
-      case_id: '2234567812345672',
-      case_name: 'Access Case 3',
-      case_category: 'Human rights',
-      case_type: 'Asylum',
-      jurisdiction: 'IA',
-      jurisdictionId: 'IA',
-      expectedServiceLabel: 'Immigration & Asylum',
-      dateSubmitted: toMiddayUtcIso('2026-01-20T00:00:00.000Z'),
-      access: 'Challenged access granted',
-      startDate: '20 January 2026',
-      endDate: '',
-      role: 'challenged-access-legal-ops',
-      hasAccess: true,
-      isNew: true,
-    },
-    {
-      id: 'access-4',
-      case_id: '2234567812345673',
-      case_name: 'Access Case 4',
-      case_category: 'Protection',
-      case_type: 'Asylum',
+      access: 'Specific access granted',
+      startDate: '21 January 2026',
+      endDate: '28 February 2026',
+      role: 'specific-access-granted',
+    }),
+    buildMyAccessCaseMock({
+      case_name: 'Access Case 7',
       jurisdiction: 'SSCS',
-      jurisdictionId: 'SSCS',
-      expectedServiceLabel: 'Social security and child support',
-      dateSubmitted: toMiddayUtcIso('2026-01-21T00:00:00.000Z'),
       access: 'Specific access granted',
       startDate: '21 January 2026',
       endDate: '28 February 2026',
       role: 'specific-access-legal-ops',
-      hasAccess: true,
-      isNew: true,
-    },
-    {
-      id: 'access-5',
-      case_id: '2234567812345270',
-      case_name: 'Access Case 5',
-      case_category: 'Protection',
-      case_type: 'Asylum',
+    }),
+    buildMyAccessCaseMock({
+      case_name: 'Access Case 8',
       jurisdiction: 'IA',
-      jurisdictionId: 'IA',
-      expectedServiceLabel: 'Immigration & Asylum',
-      dateSubmitted: toMiddayUtcIso('2026-01-15T00:00:00.000Z'),
       access: 'Specific access denied',
-      startDate: 'Pending',
-      endDate: 'Pending',
       role: 'specific-access-denied',
       role_category: 'LEGAL_OPERATIONS',
-      requestDate: toMiddayUtcIso('2026-01-10T00:00:00.000Z'),
+      requestDate: formatUiDate(toMiddayUtcIso('2026-01-10T00:00:00.000Z')),
       reviewer: 'Case Allocator',
       reviewerRoleCategory: 'LEGAL_OPERATIONS',
       specificAccessReason: 'Additional access required to review the case.',
       infoRequired: 'Please provide supporting details.',
       infoRequiredComment: 'Need confirmation from the reviewing team.',
-      hasAccess: false,
-      isNew: true,
-    },
+    }),
   ];
 
   return {

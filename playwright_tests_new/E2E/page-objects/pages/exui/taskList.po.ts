@@ -25,6 +25,24 @@ export class TaskListPage extends Base {
   readonly selectTypesOfWorksError = this.filterPanel.locator('#types-of-work-error').first();
   readonly applyFilterButton = this.page.locator('button#applyFilter').first();
 
+  readonly allWorkServiceFilter = this.filterPanel
+    .locator('select[name="service"], select#service, [id*="service"] select')
+    .first();
+  readonly allWorkLocationAllRadio = this.filterPanel.getByRole('radio', { name: /^All$/ }).first();
+  readonly allWorkLocationSearchRadio = this.filterPanel.getByRole('radio', { name: 'Search for a location' }).first();
+  readonly allWorkTaskCategoryAllRadio = this.filterPanel.getByRole('radio', { name: /^All$/ }).nth(1);
+  readonly allWorkTaskCategoryUnassignedRadio = this.filterPanel.getByRole('radio', { name: 'Unassigned' }).first();
+  readonly allWorkTaskCategoryAssignedToPersonRadio = this.filterPanel
+    .getByRole('radio', { name: 'Assigned to a person' })
+    .first();
+  readonly allWorkTaskTypeFilter = this.filterPanel.getByRole('combobox', { name: /select a role type|task type/i }).first();
+  readonly allWorkTasksByRoleTypeFilter = this.filterPanel
+    .locator('h3:has-text("Tasks by role type")')
+    .locator('xpath=following::select[1]')
+    .first();
+  readonly allWorkPersonSearchInput = this.filterPanel.getByRole('combobox', { name: /select a person/i }).first();
+  readonly allWorkLocationSearchInput = this.filterPanel.locator('input[name="location"], input[id*="location"]').first();
+
   readonly taskTableTabs = this.page.locator('.hmcts-sub-navigation .hmcts-sub-navigation__link');
 
   readonly taskListTable = this.page.locator('table.govuk-table').first();
@@ -105,6 +123,11 @@ export class TaskListPage extends Base {
     await this.waitForTaskListShellReady('my access navigation');
   }
 
+  async gotoAllWorkTasks() {
+    await this.page.goto('/work/all-work/tasks', { waitUntil: 'domcontentloaded' });
+    await this.waitForTaskListShellReady('all work tasks navigation');
+  }
+
   async selectWorkMenuItem(menuItemText: string) {
     const menuItem = this.page.getByRole('link', { name: menuItemText, exact: true });
     await menuItem.click();
@@ -134,7 +157,9 @@ export class TaskListPage extends Base {
 
   async waitForTaskListShellReady(context: string) {
     await this.page
-      .waitForURL(/\/(?:work\/my-work\/(?:list|available)|service-down)/, { timeout: TASK_LIST_READY_TIMEOUT_MS })
+      .waitForURL(/\/(?:work\/(?:my-work\/(?:list|available|my-cases|my-access)|all-work\/(?:tasks|cases))|service-down)/, {
+        timeout: TASK_LIST_READY_TIMEOUT_MS,
+      })
       .catch(() => undefined);
     await this.waitForTaskListSpinnerToSettle(10_000);
     const bootstrapSignal = await Promise.any([

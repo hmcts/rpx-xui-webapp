@@ -3914,9 +3914,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.13":
-  version: 4.2.13
-  resolution: "@hmcts/media-viewer@npm:4.2.13"
+"@hmcts/media-viewer@npm:4.2.14-remove-unused-packages-1":
+  version: 4.2.14-remove-unused-packages-1
+  resolution: "@hmcts/media-viewer@npm:4.2.14-remove-unused-packages-1"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3929,13 +3929,11 @@ __metadata:
     "@angular/common": ^20.0.0
     "@angular/core": ^20.0.0
     "@angular/forms": ^20.0.0
-    "@angular/material": ^17.3.8
     "@angular/platform-browser": ^20.0.0
     "@ngrx/effects": ^20
-    "@ngrx/router-store": ^20
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
-  checksum: 10/198189b75e5ee51c87f403be364a18daf77287569827fe4b62ac3c7484d7d78ba61ba4f14d6ee50ad735588d1fbcd188ab9df5e40345dfad8c478048928f4be7
+  checksum: 10/6fa29be9af31eb384b0ab87aa9d05f29f595ba0d07e30b710671ec1324daee7590236f8ef6c52071067c6a5fa29cb1c57b330b09e0cff33a02d48bfd7067a38a
   languageName: node
   linkType: hard
 
@@ -24492,7 +24490,7 @@ __metadata:
     "@hmcts/ccd-case-ui-toolkit": "npm:7.3.40"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.2.13"
+    "@hmcts/media-viewer": "npm:4.2.14-remove-unused-packages-1"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.3.1"

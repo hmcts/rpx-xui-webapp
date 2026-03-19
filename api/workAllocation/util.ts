@@ -82,7 +82,7 @@ export function prepareGetSpecificLocationUrl(baseUrl: string, epimmsId: string)
 }
 
 export function prepareGetUsersUrl(baseUrl: string, service: string): string {
-  const pageSize = parseInt(getConfigValue(CASEWORKER_PAGE_SIZE));
+  const pageSize = Number.parseInt(getConfigValue(CASEWORKER_PAGE_SIZE));
   return `${baseUrl}/refdata/internal/staff/usersByServiceName?ccd_service_names=${service}&page_size=${pageSize}`;
 }
 
@@ -546,13 +546,13 @@ export function getActionsByPermissions(view, permissions: TaskPermission[]): Ac
 
 export function getActionsFromMatrix(view, permission: TaskPermission, currentActionList: Action[]): Action[] {
   const newActionList = currentActionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][permission]);
-  currentActionList = !newActionList.includes(undefined) ? newActionList : currentActionList;
+  currentActionList = newActionList.includes(undefined) ? currentActionList : newActionList;
   return currentActionList;
 }
 
 export function getActionsFromRefinedMatrix(view, permission: TaskPermission, currentActionList: Action[]): Action[] {
   const newActionList = currentActionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX_REFINED[view][permission]);
-  currentActionList = !newActionList.includes(undefined) ? newActionList : currentActionList;
+  currentActionList = newActionList.includes(undefined) ? currentActionList : newActionList;
   return currentActionList;
 }
 
@@ -872,7 +872,7 @@ export function getGrantType(roleAssignment: RoleAssignment) {
   ) {
     return 'Specific';
   } else if (roleAssignment.grantType) {
-    return roleAssignment.grantType.replace(/(\w)(\w*)/g, (g0, second, third) => {
+    return roleAssignment.grantType.replaceAll(/(\w)(\w*)/g, (g0, second, third) => {
       return second.toUpperCase() + third.toLowerCase();
     });
   }
@@ -931,7 +931,7 @@ export function formatDate(date: Date) {
 
 export function getAccessType(roleAssignment: RoleAssignment) {
   return roleAssignment.grantType
-    ? roleAssignment.grantType.replace(/\w+/g, (replacableString) => {
+    ? roleAssignment.grantType.replaceAll(/\w+/g, (replacableString) => {
         return replacableString[0].toUpperCase() + replacableString.slice(1).toLowerCase();
       })
     : undefined;

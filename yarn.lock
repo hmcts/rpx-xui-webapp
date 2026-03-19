@@ -3833,9 +3833,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.11-exui-4342-unused-package":
-  version: 2.30.11-exui-4342-unused-package
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.11-exui-4342-unused-package"
+"@hmcts/rpx-xui-node-lib@npm:2.30.11-exui-4342-unused-package-1":
+  version: 2.30.11-exui-4342-unused-package-1
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.11-exui-4342-unused-package-1"
   dependencies:
     "@dr.pogodin/csurf": "npm:^1.14.0"
     "@hapi/joi": "npm:^17.1.1"
@@ -3854,7 +3854,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/da2b88d2dbcaa2b1082cbb0a55cb9200dd17ab3d349cca57be41659fe47da7f7ad52179293a7ecadb4bc45a08f53a3bdf6aedb112ed6b08c6b9b67322f4f40d0
+  checksum: 10/0d48c589c12462bdb9b7ce1b916beded18134b0c34b62628cbf8719872494a5102ed03f16be7ddc4bc8fa87dd9db804311dc0c6911e03b6d182f95a2000202b2
   languageName: node
   linkType: hard
 
@@ -22491,7 +22491,7 @@ __metadata:
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.3.1"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.6"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.11-exui-4342-unused-package"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.11-exui-4342-unused-package-1"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"

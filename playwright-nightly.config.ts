@@ -2,6 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 import { cpus, totalmem } from 'node:os';
 import { version as appVersion } from './package.json';
+import { resolveWorkerCount } from './playwright-config-utils';
 
 const headlessMode = process.env.HEAD !== 'true';
 const baseUrl = process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';
@@ -31,23 +32,7 @@ const resolveEnvironmentFromUrl = (url: string): string => {
   }
 };
 
-const resolveWorkerCount = () => {
-  const configured = process.env.FUNCTIONAL_TESTS_WORKERS;
-  if (process.env.CI) {
-    return 8;
-  }
-  if (configured) {
-    const parsed = Number.parseInt(configured, 10);
-    if (Number.isFinite(parsed) && parsed > 0) {
-      return parsed;
-    }
-  }
-  const logical = cpus()?.length ?? 1;
-  const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));
-  const suggested = Math.min(8, Math.max(2, approxPhysical));
-  return suggested;
-};
-const workerCount = resolveWorkerCount();
+const workerCount = resolveWorkerCount(process.env);
 const resolveAgentHardware = () => {
   const cpuCores = cpus()?.length ?? 'unknown';
   const totalRamGiB = Math.round((totalmem() / 1024 ** 3) * 10) / 10;

@@ -1,15 +1,64 @@
 import { test, expect } from '@playwright/test';
+import { createRequire } from 'node:module';
 
-import { loadConfig, resolveConfigModule, type EnvMap, type TestableConfigModule } from './utils/playwrightConfigUtils';
+import {
+  loadConfig,
+  loadConfigAt,
+  resolveConfigModule,
+  type EnvMap,
+  type TestableConfigModule,
+} from './utils/playwrightConfigUtils';
 import * as playwrightConfigUtils from '../../playwright-config-utils';
 
+const require = createRequire(import.meta.url);
+const integrationConfigSupport = require('../../playwright.integration.config.support.cjs') as {
+  resolveOdhinConsoleCapture: (env: EnvMap) => { consoleLog: boolean; consoleError: boolean };
+  resolveOdhinHardTimeoutMs: (env: EnvMap) => number;
+  resolveOdhinLightweight: (env: EnvMap) => boolean;
+  resolveOdhinRuntimeHookTimeoutMs: (env: EnvMap) => number;
+};
+
 const { resolveTagFilters } = playwrightConfigUtils;
+const { resolveOdhinConsoleCapture, resolveOdhinHardTimeoutMs, resolveOdhinLightweight, resolveOdhinRuntimeHookTimeoutMs } =
+  integrationConfigSupport;
 
 let configModule: TestableConfigModule;
+let integrationConfigModule: TestableConfigModule;
 
 const buildConfig = (env: EnvMap) => configModule.__test__.buildConfig(env);
 const resolveWorkerCount = (env: EnvMap) => configModule.__test__.resolveWorkerCount(env);
-const resolveApiTagFilters = (env: EnvMap) => configModule.__test__.resolveApiTagFilters(env);
+const resolveApiProjectWorkerCount = (env: EnvMap) =>
+  (
+    configModule.__test__ as TestableConfigModule['__test__'] & { resolveApiProjectWorkerCount: (env: EnvMap) => number }
+  ).resolveApiProjectWorkerCount(env);
+const resolveApiTagFilters = (env: EnvMap) =>
+  (
+    configModule.__test__ as TestableConfigModule['__test__'] & { resolveApiTagFilters: (env: EnvMap) => unknown }
+  ).resolveApiTagFilters(env) as {
+    excludedTags: string[];
+    grep?: RegExp;
+    grepInvert?: RegExp;
+  };
+
+const buildIntegrationConfig = (env: EnvMap) =>
+  integrationConfigModule.__test__.buildConfig(env) as {
+    reporter: [string, Record<string, unknown> | undefined][];
+    projects: Array<{ name: string; workers?: number; grep?: RegExp; grepInvert?: RegExp; use?: { channel?: string } }>;
+  };
+
+const resolveIntegrationTagFilters = (env: EnvMap) =>
+  (
+    integrationConfigModule.__test__ as TestableConfigModule['__test__'] & {
+      resolveIntegrationTagFilters: (env: EnvMap) => { excludedTags: string[]; grep?: RegExp; grepInvert?: RegExp };
+    }
+  ).resolveIntegrationTagFilters(env);
+const resolveIntegrationWorkerCount = (env: EnvMap) =>
+  (
+    integrationConfigModule.__test__ as TestableConfigModule['__test__'] & {
+      resolveWorkerCount: (env: EnvMap) => number;
+    }
+  ).resolveWorkerCount(env);
+
 const getReporterTuple = (reporter: unknown, name: string): [string, Record<string, unknown> | undefined] => {
   if (!Array.isArray(reporter)) {
     throw new TypeError('Unexpected reporter config shape');
@@ -27,6 +76,7 @@ test.describe.configure({ mode: 'serial' });
 test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
   test.beforeAll(async () => {
     configModule = await loadConfig();
+    integrationConfigModule = await loadConfigAt('playwright.integration.config.ts');
   });
 
   test('resolveWorkerCount covers configured, CI, and default', async () => {
@@ -40,7 +90,8 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(ciCount).toBe(8);
 
     const defaultCount = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: undefined });
-    expect(defaultCount).toBeGreaterThanOrEqual(1);
+    expect(defaultCount).toBeGreaterThanOrEqual(2);
+    expect(defaultCount).toBeLessThanOrEqual(8);
   });
 
   test('resolveConfigModule prefers __test__ and default exports', () => {
@@ -61,6 +112,15 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
   });
 
   test('config uses CI overrides and env reporters', async () => {
+    const expectedWorkers = resolveWorkerCount({
+      CI: 'true',
+      PLAYWRIGHT_REPORT_FOLDER: 'custom-report',
+      PLAYWRIGHT_REPORT_PROJECT: 'Custom Project',
+      PLAYWRIGHT_REPORT_RELEASE: 'Custom Release',
+      TEST_URL: 'https://example.test',
+      TEST_TYPE: undefined,
+      HEAD: 'true',
+    });
     const config = buildConfig({
       CI: 'true',
       PLAYWRIGHT_REPORT_FOLDER: 'custom-report',
@@ -70,7 +130,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
       TEST_TYPE: undefined,
       HEAD: 'true',
     });
-    expect(config.workers).toBe(8);
+    expect(config.workers).toBe(expectedWorkers);
     expect(config.use.baseURL).toBe('https://example.test');
     expect(config.reporter[0][0]).toBe('dot');
     const [, odhinOptions] = getReporterTuple(config.reporter, 'odhin-reports-playwright');
@@ -82,7 +142,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
 
     const nodeApiProject = config.projects.find((p) => p.name === 'node-api');
     expect(nodeApiProject).toBeDefined();
-    expect(nodeApiProject?.workers).toBe(4);
+    expect(nodeApiProject?.workers).toBe(resolveApiProjectWorkerCount({ CI: 'true' }));
   });
 
   test('config honors FUNCTIONAL_TESTS_WORKERS override in CI for all Playwright suites', async () => {
@@ -205,5 +265,130 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(filters.grep).toBeInstanceOf(RegExp);
     expect(filters.grep?.test('@e2e-search-case')).toBe(true);
     expect(filters.grep?.test('@e2e-manage-tasks')).toBe(false);
+  });
+
+  test('shared tag filter helper rejects suite-plus-feature includes that are fully excluded after normalization', () => {
+    expect(() =>
+      resolveTagFilters({
+        env: {
+          E2E_PW_INCLUDE_TAGS: '@e2e @e2e-search-case',
+          E2E_PW_EXCLUDED_TAGS_OVERRIDE: '@none,@e2e-search-case',
+        },
+        includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
+        excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
+        configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
+        defaultConfigPath: 'playwright_tests_new/E2E/tag-filter.json',
+        suiteTag: '@e2e',
+      })
+    ).toThrow(/leave no tagged functional tests/i);
+  });
+
+  test('integration config keeps Odhin enabled locally with lightweight defaults', async () => {
+    const config = buildIntegrationConfig({
+      CI: undefined,
+      PW_INTEGRATION_ODHIN: undefined,
+      PW_ODHIN_LIGHTWEIGHT: undefined,
+      PW_ODHIN_CONSOLE_LOG: undefined,
+      PW_ODHIN_CONSOLE_ERROR: undefined,
+      PW_ODHIN_PROFILE: undefined,
+      TEST_URL: undefined,
+      TEST_TYPE: undefined,
+      HEAD: undefined,
+    });
+
+    const [, progressOptions] = getReporterTuple(
+      config.reporter,
+      './playwright_tests_new/common/reporters/odhin-progress.reporter.cjs'
+    );
+    const [, odhinOptions] = getReporterTuple(
+      config.reporter,
+      './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs'
+    );
+
+    expect(progressOptions?.hardTimeoutMs).toBe(resolveOdhinHardTimeoutMs({ CI: undefined }));
+    expect(progressOptions?.timeoutExitCode).toBe(1);
+    expect(odhinOptions?.lightweight).toBe(resolveOdhinLightweight({ CI: undefined }));
+    expect(odhinOptions?.consoleLog).toBe(resolveOdhinConsoleCapture({ CI: undefined }).consoleLog);
+    expect(odhinOptions?.consoleError).toBe(resolveOdhinConsoleCapture({ CI: undefined }).consoleError);
+    expect(odhinOptions?.profile).toBe(true);
+    expect(odhinOptions?.runtimeHookTimeoutMs).toBe(resolveOdhinRuntimeHookTimeoutMs({ CI: undefined }));
+    expect(config.expect.timeout).toBe(60_000);
+    expect(config.use.timezoneId).toBe('Europe/London');
+    expect(config.projects.find((project) => project.name === 'chromium-search-case')?.workers).toBeUndefined();
+  });
+
+  test('integration config applies shared tag filters to both integration projects', async () => {
+    const config = buildIntegrationConfig({
+      INTEGRATION_PW_INCLUDE_TAGS: '@integration-search-case',
+      INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE: '@none',
+      CI: undefined,
+    });
+
+    for (const project of config.projects) {
+      expect(project.grep).toBeInstanceOf(RegExp);
+      expect(project.grep?.test('@integration-search-case')).toBe(true);
+      expect(project.grep?.test('@integration-manage-tasks')).toBe(false);
+    }
+
+    const filters = resolveIntegrationTagFilters({
+      INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE: '@none,@integration-manage-tasks',
+      CI: undefined,
+    });
+    expect(filters.excludedTags).toEqual(['@integration-manage-tasks']);
+    expect(filters.grepInvert?.test('@integration-manage-tasks')).toBe(true);
+  });
+
+  test('integration config exposes the documented resolveWorkerCount test helper', async () => {
+    expect(resolveIntegrationWorkerCount({ FUNCTIONAL_TESTS_WORKERS: '3', CI: undefined })).toBe(3);
+    expect(resolveIntegrationWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' })).toBe(8);
+  });
+
+  test('integration config allows local browser channel override for reproducible reruns', async () => {
+    const withDefaultChannel = buildIntegrationConfig({
+      CI: undefined,
+      PLAYWRIGHT_BROWSER_CHANNEL: undefined,
+      TEST_URL: undefined,
+      TEST_TYPE: undefined,
+      HEAD: undefined,
+    });
+    const withBundledChromium = buildIntegrationConfig({
+      CI: undefined,
+      PLAYWRIGHT_BROWSER_CHANNEL: '',
+      TEST_URL: undefined,
+      TEST_TYPE: undefined,
+      HEAD: undefined,
+    });
+
+    expect(withDefaultChannel.projects.find((project) => project.name === 'chromium')?.use?.channel).toBe('chrome');
+    expect(withBundledChromium.projects.find((project) => project.name === 'chromium')?.use?.channel).toBeUndefined();
+  });
+
+  test('integration config avoids forced Odhin timeout in CI', async () => {
+    const config = buildIntegrationConfig({
+      CI: 'true',
+      PW_INTEGRATION_ODHIN: undefined,
+      PW_ODHIN_LIGHTWEIGHT: undefined,
+      PW_ODHIN_CONSOLE_LOG: undefined,
+      PW_ODHIN_CONSOLE_ERROR: undefined,
+      PW_ODHIN_PROFILE: undefined,
+      TEST_URL: undefined,
+      TEST_TYPE: undefined,
+      HEAD: undefined,
+    });
+
+    const [, progressOptions] = getReporterTuple(
+      config.reporter,
+      './playwright_tests_new/common/reporters/odhin-progress.reporter.cjs'
+    );
+    const [, odhinOptions] = getReporterTuple(
+      config.reporter,
+      './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs'
+    );
+
+    expect(progressOptions?.hardTimeoutMs).toBe(resolveOdhinHardTimeoutMs({ CI: 'true' }));
+    expect(odhinOptions?.lightweight).toBe(resolveOdhinLightweight({ CI: 'true' }));
+    expect(odhinOptions?.consoleLog).toBe(resolveOdhinConsoleCapture({ CI: 'true' }).consoleLog);
+    expect(odhinOptions?.consoleError).toBe(resolveOdhinConsoleCapture({ CI: 'true' }).consoleError);
+    expect(odhinOptions?.runtimeHookTimeoutMs).toBe(resolveOdhinRuntimeHookTimeoutMs({ CI: 'true' }));
   });
 });

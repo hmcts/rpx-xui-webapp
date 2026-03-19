@@ -151,9 +151,7 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
     await fsp.writeFile(sessionPath, JSON.stringify({ cookies: aatCookies }), 'utf8');
 
     expect(isSessionFresh(sessionPath, 60 * 1000, { targetUrl: 'http://localhost:3000' })).toBe(false);
-    expect(isSessionFresh(sessionPath, 60 * 1000, { targetUrl: 'https://manage-case.aat.platform.hmcts.net' })).toBe(
-      true
-    );
+    expect(isSessionFresh(sessionPath, 60 * 1000, { targetUrl: 'https://manage-case.aat.platform.hmcts.net' })).toBe(true);
 
     const localCookies = [
       { ...baseCookie('Idam.Session', 'local-session'), domain: 'localhost' },

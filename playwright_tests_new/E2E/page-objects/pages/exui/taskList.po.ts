@@ -38,6 +38,7 @@ export class TaskListPage extends Base {
   readonly taskTableFooter = this.taskListTable.locator('tfoot');
   readonly taskListResultsAmount = this.page.locator('#search-result-summary__text, [data-test="search-result-summary__text"]');
   readonly myCasesResultsAmount = this.page.locator('.pagination-top');
+  readonly uniqueCasesSummary = this.page.locator('.second-line');
   readonly manageCaseButtons = this.taskListTable.getByRole('button', { name: 'Manage' });
   readonly errorPageHeading = this.page.getByRole('heading', { name: /something went wrong/i });
   readonly serviceDownError = this.exuiBodyComponent.serviceDownError;
@@ -50,6 +51,8 @@ export class TaskListPage extends Base {
   readonly taskActionUnassign = this.taskActionsRow.locator('#action_unclaim');
   readonly taskActionClaim = this.taskActionsRow.locator('#action_claim');
   readonly taskActionClaimAndGo = this.taskActionsRow.locator('#action_claim-and-go');
+  readonly reallocateAction = this.taskActionsRow.locator('#action_reallocate');
+  readonly removeAllocationAction = this.taskActionsRow.locator('#action_remove');
   readonly confirmCancelTaskButton = this.page.getByRole('button', { name: 'Cancel task' });
   readonly caseDetailsTaskActionCancel = this.page
     .locator('#action_cancel')

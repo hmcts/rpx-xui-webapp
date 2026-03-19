@@ -35,7 +35,13 @@ export type MyAccessCaseMock = {
 const myAccessStateDefinitions = [
   { role: 'challenged-access-requested', access: 'Challenged', hasAccess: false, isNew: true, includeDates: false },
   { role: 'challenged-access-pending', access: 'Challenged access pending', hasAccess: false, isNew: true, includeDates: false },
-  { role: 'challenged-access-legal-ops', access: 'Challenged access granted', hasAccess: true, isNew: false, includeDates: false },
+  {
+    role: 'challenged-access-legal-ops',
+    access: 'Challenged access granted',
+    hasAccess: true,
+    isNew: false,
+    includeDates: false,
+  },
   { role: 'specific-access-requested', access: 'Specific', hasAccess: false, isNew: true, includeDates: false },
   { role: 'specific-access-approved', access: 'Specific access approved', hasAccess: true, isNew: false, includeDates: true },
   { role: 'specific-access-granted', access: 'Specific access granted', hasAccess: true, isNew: false, includeDates: true },
@@ -72,12 +78,12 @@ export const buildMyAccessCaseMock = (overrides: Partial<MyAccessCaseMock> = {})
   const submittedDate = overrides.dateSubmitted ?? formatUiDate(toMiddayUtcIso(faker.date.recent({ days: 45 }).toISOString()));
   const stateDefinition = getMyAccessStateDefinition(overrides.role);
   const role = overrides.role ?? stateDefinition.role;
-  const startDate = overrides.startDate ?? (stateDefinition.includeDates
-    ? formatUiDate(toMiddayUtcIso(faker.date.soon({ days: 14 }).toISOString()))
-    : '');
-  const endDate = overrides.endDate ?? (stateDefinition.includeDates
-    ? formatUiDate(toMiddayUtcIso(faker.date.soon({ days: 60 }).toISOString()))
-    : '');
+  const startDate =
+    overrides.startDate ??
+    (stateDefinition.includeDates ? formatUiDate(toMiddayUtcIso(faker.date.soon({ days: 14 }).toISOString())) : '');
+  const endDate =
+    overrides.endDate ??
+    (stateDefinition.includeDates ? formatUiDate(toMiddayUtcIso(faker.date.soon({ days: 60 }).toISOString())) : '');
 
   return {
     id: overrides.id ?? faker.string.uuid(),

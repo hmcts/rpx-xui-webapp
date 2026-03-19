@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
+import { SessionStorageService } from 'src/app/services/session-storage/session-storage.service';
 import * as hearingActualsActions from '../../store/actions/hearing-actuals.action';
 import * as hearingRequestActions from '../../store/actions/hearing-request.action';
 
@@ -17,14 +18,15 @@ export class HearingActualsComponent implements OnInit, OnDestroy {
   public constructor(
     private readonly store: Store<any>,
     private readonly route: ActivatedRoute,
-    public readonly router: Router
+    public readonly router: Router,
+    private readonly sessionStorage: SessionStorageService
   ) {}
 
   public ngOnInit(): void {
-    const navState = this.router.getCurrentNavigation()?.extras?.state ?? history.state;
+    const caseId = JSON.parse(this.sessionStorage.getItem('caseInfo'))?.caseId;
     this.sub = this.route.params.subscribe((params) => {
       this.store.dispatch(new hearingRequestActions.LoadHearingRequest({ hearingID: params.id, targetURL: '', caseRef: '1234' }));
-      this.store.dispatch(new hearingActualsActions.GetHearingActuals({ id: params.id, caseRef: navState?.caseId }));
+      this.store.dispatch(new hearingActualsActions.GetHearingActuals({ id: params.id, caseRef: caseId }));
     });
   }
 

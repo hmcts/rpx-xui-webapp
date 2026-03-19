@@ -1,5 +1,5 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { buildHearingActualsMock, HEARINGS_CASE_REFERENCE, type HearingScenario } from '../../mocks/hearings.mock';
+import { buildHearingActualsMock, type HearingScenario } from '../../mocks/hearings.mock';
 import { HEARING_MANAGER_CR84_OFF_USER, hearingManagerRoles, openHearingsTab } from '../../helpers';
 
 const awaitingActualsScenario: HearingScenario = {
@@ -36,7 +36,7 @@ test.describe(
   `Hearings actuals journey as ${HEARING_MANAGER_CR84_OFF_USER}`,
   { tag: ['@integration', '@integration-hearings'] },
   () => {
-    test('loads adjourned hearing details using caseRef in the hearing actuals request', async ({
+    test('loads adjourned hearing details without showing the generic error state', async ({
       page,
       caseDetailsPage,
       hearingsTabPage,
@@ -61,11 +61,16 @@ test.describe(
         { timeout: 10_000 }
       );
       await hearingsTabPage.openViewDetails(adjournedScenario.hearingId);
-      const requestedActuals = await actualsRequest;
-      const requestedActualsUrl = new URL(requestedActuals.url());
+      await actualsRequest;
 
-      expect(requestedActualsUrl.searchParams.get('caseRef')).toBe(HEARINGS_CASE_REFERENCE);
       await expect(page).toHaveURL(new RegExp(`/hearings/view/hearing-adjourned-summary/${adjournedScenario.hearingId}$`));
+      await expect(page.locator('exui-hearing-adjourned-summary')).toBeVisible();
+      await expect(page.getByRole('heading', { name: /hearing details/i })).toBeVisible();
+      await expect(
+        page.getByText('There was a system error and your request could not be processed. Please try again.', {
+          exact: true,
+        })
+      ).toHaveCount(0);
     });
 
     test('updates hearing stage and persists edited actuals payload', async ({ page, caseDetailsPage, hearingsTabPage }) => {

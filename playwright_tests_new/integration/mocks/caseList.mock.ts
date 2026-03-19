@@ -138,7 +138,7 @@ export function buildCaseListJurisdictionsMock() {
 
 /**
  * The handleElasticSearchResponse() method in the api/searchCases/index.ts is
- * always seen to return an empty object { } for all non-positive responses
+ * always returning  an empty object { } for all non-positive responses
  *
  * @param httpStatusCode
  */

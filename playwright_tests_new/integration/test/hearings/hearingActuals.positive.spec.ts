@@ -1,5 +1,5 @@
 import { expect, test } from '../../../E2E/fixtures';
-import type { HearingScenario } from '../../mocks/hearings.mock';
+import { buildHearingActualsMock, HEARINGS_CASE_REFERENCE, type HearingScenario } from '../../mocks/hearings.mock';
 import { HEARING_MANAGER_CR84_OFF_USER, hearingManagerRoles, openHearingsTab } from '../../helpers';
 
 const awaitingActualsScenario: HearingScenario = {
@@ -7,12 +7,67 @@ const awaitingActualsScenario: HearingScenario = {
   hmcStatus: 'AWAITING_ACTUALS',
   hearingType: 'ABA5-ACTUALS',
 };
+const adjournedScenario: HearingScenario = {
+  hearingId: '1705614528114',
+  hmcStatus: 'ADJOURNED',
+  hearingType: 'ABA5-ADJOURNED',
+};
 const updatedHearingStage = 'final';
+
+function buildAdjournedActualsSummary() {
+  const actuals = buildHearingActualsMock() as {
+    hearingActuals: {
+      hearingOutcome: {
+        hearingResult: string;
+        hearingResultDate: string;
+        hearingResultReasonType: string;
+      };
+    };
+  };
+
+  actuals.hearingActuals.hearingOutcome.hearingResult = 'ADJOURNED';
+  actuals.hearingActuals.hearingOutcome.hearingResultDate = '2026-03-18';
+  actuals.hearingActuals.hearingOutcome.hearingResultReasonType = 'unable';
+
+  return actuals;
+}
 
 test.describe(
   `Hearings actuals journey as ${HEARING_MANAGER_CR84_OFF_USER}`,
   { tag: ['@integration', '@integration-hearings'] },
   () => {
+    test('loads adjourned hearing details using caseRef in the hearing actuals request', async ({
+      page,
+      caseDetailsPage,
+      hearingsTabPage,
+    }) => {
+      await openHearingsTab(page, caseDetailsPage, {
+        userIdentifier: HEARING_MANAGER_CR84_OFF_USER,
+        routeConfig: {
+          userRoles: hearingManagerRoles,
+          hearings: [adjournedScenario],
+          summaryHearing: adjournedScenario,
+          hearingsApiOverrides: {
+            hearingActualsGet: {
+              body: buildAdjournedActualsSummary(),
+            },
+          },
+        },
+      });
+
+      const actualsRequest = page.waitForRequest(
+        (request) =>
+          request.method() === 'GET' && request.url().includes(`/api/hearings/hearingActuals/${adjournedScenario.hearingId}`),
+        { timeout: 10_000 }
+      );
+      await hearingsTabPage.openViewDetails(adjournedScenario.hearingId);
+      const requestedActuals = await actualsRequest;
+      const requestedActualsUrl = new URL(requestedActuals.url());
+
+      expect(requestedActualsUrl.searchParams.get('caseRef')).toBe(HEARINGS_CASE_REFERENCE);
+      await expect(page).toHaveURL(new RegExp(`/hearings/view/hearing-adjourned-summary/${adjournedScenario.hearingId}$`));
+    });
+
     test('updates hearing stage and persists edited actuals payload', async ({ page, caseDetailsPage, hearingsTabPage }) => {
       await openHearingsTab(page, caseDetailsPage, {
         userIdentifier: HEARING_MANAGER_CR84_OFF_USER,

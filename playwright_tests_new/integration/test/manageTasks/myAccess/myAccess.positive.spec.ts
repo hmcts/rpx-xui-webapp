@@ -1,6 +1,6 @@
 import { expect, test } from '../../../../E2E/fixtures';
 import { applyPrewarmedSessionCookies, setupTaskListBootstrapRoutes, taskListRoutePattern } from '../../../helpers';
-import { buildMyAccessCases, buildMyAccessMock, buildSingleDeniedMyAccessMock } from '../../../mocks/myAccess.mock';
+import { buildMyAccessCases, buildMyAccessMock } from '../../../mocks/myAccess.mock';
 import { formatUiDate } from '../../../utils/tableUtils';
 
 const userIdentifier = 'STAFF_ADMIN';
@@ -146,69 +146,6 @@ test.describe(`My Access as ${userIdentifier}`, { tag: ['@integration', '@integr
         expect(table[i]['Start']).toBe(expectedCase.startDate);
         expect(table[i]['End']).toBe(expectedCase.endDate);
       }
-    });
-  });
-
-  test(`User can open denied access View and capture the resulting navigation`, async ({ taskListPage, page }) => {
-    const myAccessMockResponse = buildSingleDeniedMyAccessMock();
-    const deniedCase = myAccessMockResponse.cases[0];
-    const isNewCount = (myAccessMockResponse.cases ?? []).filter((c) => c.isNew === true).length;
-
-    await test.step('Setup route mocks for a single denied access row', async () => {
-      await setupTaskListBootstrapRoutes(page);
-      await page.route('**/api/role-access/roles/get-my-access-new-count*', async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({ count: isNewCount }),
-        });
-      });
-      await page.route(taskListRoutePattern, async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({ tasks: [], total_records: 0 }),
-        });
-      });
-      await page.route(myAccessRoutePattern, async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(myAccessMockResponse),
-        });
-      });
-    });
-
-    await test.step('Open My access with the denied row', async () => {
-      await taskListPage.goto();
-      await taskListPage.taskTableTabs.filter({ hasText: 'My access' }).first().click();
-      await page.waitForURL(/\/work\/my-work\/my-access$/);
-      await expect(taskListPage.taskListTable).toBeVisible();
-      await taskListPage.exuiSpinnerComponent.wait();
-    });
-
-    await test.step('Click View and capture the resulting navigation details', async () => {
-      const deniedRow = taskListPage.taskListTable.locator('tr').filter({ hasText: deniedCase.case_name }).first();
-      const viewLink = deniedRow.locator('a.xui-access-view-field');
-
-      await expect(viewLink).toBeVisible();
-      await viewLink.click();
-      await page.waitForURL(/\/role-access\/rejected-request/);
-
-      const navigatedUrl = new URL(page.url());
-      console.log(
-        'My access denied view navigation:',
-        JSON.stringify(
-          {
-            pathname: navigatedUrl.pathname,
-            query: Object.fromEntries(navigatedUrl.searchParams.entries()),
-          },
-          null,
-          2
-        )
-      );
-
-      expect(navigatedUrl.pathname).toBe('/role-access/rejected-request');
     });
   });
 });

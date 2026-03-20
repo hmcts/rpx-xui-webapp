@@ -224,6 +224,8 @@ export const LEGAL_OPS_ROLE_LIST: string[] = [
   'caseworker-civil',
   'caseworker-privatelaw',
   'hmcts-legal-operations',
+  'caseworker-probate',
+  'caseworker-probate-issuer',
 ];
 export const JUDICIAL_ROLE_LIST: string[] = [
   'caseworker-ia-iacjudge',

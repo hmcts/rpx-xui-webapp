@@ -395,6 +395,12 @@ E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:playwrightE2E
 
 Integration tests are located in `integration/` and test Angular application integration with mocked backend APIs.
 
+File naming convention:
+
+- Use `<feature>.positive.spec.ts` for happy-path and expected-success coverage.
+- Use `<feature>.negative.spec.ts` for validation, access-control, backend-failure, and resilience/error-path coverage.
+- If a feature needs both, split the scenarios across two files rather than mixing them in one spec.
+
 ### Running Integration Tests
 
 ```bash

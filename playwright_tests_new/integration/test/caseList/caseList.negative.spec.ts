@@ -70,23 +70,23 @@ test.describe(`Mimic Slow Response Times on  /searchCases call for ${userIdentif
 
       await test.step('Verify user can see the WorkBasket Filter layout', async () => {
         expect(caseListPage.filtersContainer).toBeVisible();
-
-        await test.step('Verify user can see a list of cases in  expected layout given the mock response', async () => {
-          expect(await caseListPage.caseListResultsAmount.textContent()).toBe(
-            `Showing 1 to ${Math.min(caseListMockResponse.results.length, 25)} of ${caseListMockResponse.total} results`
-          );
-          const table = await tableUtils.parseDataTable(caseListPage.exuiCaseListComponent.caseListTable);
-          expect(table.length).toBe(caseListMockResponse.results.length);
-          for (let i = 0; i < caseListMockResponse.results.length; i++) {
-            const expectedFields = caseListMockResponse.results[i].case_fields;
-            expect(table[i]['Case reference']).toBe(expectedFields['[CASE_REFERENCE]']);
-            expect(table[i]['Text Field 0']).toBe(expectedFields['TextField0']);
-            expect(table[i]['Text Field 1']).toBe(expectedFields['TextField1']);
-            expect(table[i]['Text Field 2']).toBe(expectedFields['TextField2']);
-          }
-        });
-        expect(await caseListPage.pagination.isVisible()).toBeFalsy();
       });
+
+      await test.step('Verify user can see a list of cases in  expected layout given the mock response', async () => {
+        expect(await caseListPage.caseListResultsAmount.textContent()).toBe(
+          `Showing 1 to ${Math.min(caseListMockResponse.results.length, 25)} of ${caseListMockResponse.total} results`
+        );
+        const table = await tableUtils.parseDataTable(caseListPage.exuiCaseListComponent.caseListTable);
+        expect(table.length).toBe(caseListMockResponse.results.length);
+        for (let i = 0; i < caseListMockResponse.results.length; i++) {
+          const expectedFields = caseListMockResponse.results[i].case_fields;
+          expect(table[i]['Case reference']).toBe(expectedFields['[CASE_REFERENCE]']);
+          expect(table[i]['Text Field 0']).toBe(expectedFields['TextField0']);
+          expect(table[i]['Text Field 1']).toBe(expectedFields['TextField1']);
+          expect(table[i]['Text Field 2']).toBe(expectedFields['TextField2']);
+        }
+      });
+      expect(await caseListPage.pagination.isVisible()).toBeFalsy();
     });
   });
 });

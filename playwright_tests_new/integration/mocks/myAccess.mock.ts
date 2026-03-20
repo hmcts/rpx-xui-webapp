@@ -28,7 +28,7 @@ export type MyAccessCaseMock = {
   reviewer?: string;
   reviewerRoleCategory?: string;
   specificAccessReason?: string;
-  infoRequired?: string;
+  infoRequired?: boolean;
   infoRequiredComment?: string;
 };
 
@@ -195,7 +195,7 @@ export const buildMyAccessMock = (): { cases: MyAccessCaseMock[]; total_records:
       reviewer: 'Case Allocator',
       reviewerRoleCategory: 'LEGAL_OPERATIONS',
       specificAccessReason: 'Additional access required to review the case.',
-      infoRequired: 'Please provide supporting details.',
+      infoRequired: true,
       infoRequiredComment: 'Need confirmation from the reviewing team.',
     }),
   ];

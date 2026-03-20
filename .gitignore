@@ -126,13 +126,17 @@ test-results/
 # Fortify scan artifacts
 Fortify Scan/
 
-# Local orchestration artifacts
-/docs/DECISIONS.md
+# Local orchestration scratch docs
 /docs/NODE_API_SERVICES_REVIEW_RECOMMENDATIONS.md
-/docs/PLAN.md
-/docs/RESULT.md
-/docs/TODO.md
+
+# Local agent review artefacts
+/.agents/
+/AGENTS.md
 /DECISIONS.md
 /PLAN.md
 /RESULT.md
 /TODO.md
+/docs/DECISIONS.md
+/docs/PLAN.md
+/docs/RESULT.md
+/docs/TODO.md

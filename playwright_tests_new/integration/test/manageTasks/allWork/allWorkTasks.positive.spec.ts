@@ -10,11 +10,11 @@ const supportedJurisdictionDetails = [
   { serviceId: 'CIVIL', serviceName: 'Civil' },
 ];
 
-test.beforeEach(async ({ page }) => {
-  await applyPrewarmedSessionCookies(page, userIdentifier);
-});
-
 test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
+  test.beforeEach(async ({ page }) => {
+    await applyPrewarmedSessionCookies(page, userIdentifier);
+  });
+
   test('User can view all-work task table, links, and pagination', async ({ taskListPage, page, tableUtils }) => {
     const taskListMockResponse = buildTaskListMock(2000, '', myActionsList);
 
@@ -60,12 +60,12 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
     });
 
     await test.step('Verify pagination controls are shown for multi-page all-work results', async () => {
-      await expect(taskListPage.paginationNextButton).toBeVisible();
-      await expect(taskListPage.paginationPreviousButton).not.toBeVisible();
+      await expect(taskListPage.exuiBodyComponent.paginationNextButton).toBeVisible();
+      await expect(taskListPage.exuiBodyComponent.paginationPreviousButton).not.toBeVisible();
 
-      await taskListPage.paginationNextButton.click();
+      await taskListPage.exuiBodyComponent.paginationNextButton.click();
       await taskListPage.exuiSpinnerComponent.wait();
-      await expect(taskListPage.paginationPreviousButton).toBeVisible();
+      await expect(taskListPage.exuiBodyComponent.paginationPreviousButton).toBeVisible();
       expect
         .soft(await taskListPage.getResultsText())
         .toContain(`Showing 26 to 50 of ${taskListMockResponse.total_records} results`);
@@ -208,4 +208,58 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
       await assertManageActionsForRow(3, ['reassign', 'unclaim', 'go']);
     });
   });
+});
+
+test.describe('All Work role-based task columns', { tag: ['@integration', '@integration-manage-tasks'] }, () => {
+  const scenarios = [
+    {
+      userIdentifier: 'IAC_CaseOfficer_R2',
+      expectedDateHeader: 'Due date',
+      notExpectedDateHeader: 'Task created',
+    },
+    {
+      userIdentifier: 'IAC_Judge_WA_R1',
+      expectedDateHeader: 'Task created',
+      notExpectedDateHeader: 'Due date',
+    },
+  ] as const;
+
+  for (const scenario of scenarios) {
+    test.describe(`All-work columns render correctly for ${scenario.userIdentifier}`, () => {
+      const taskListMockResponse = buildTaskListMock(40, '', myActionsList);
+
+      test.beforeEach(async ({ page }) => {
+        await applyPrewarmedSessionCookies(page, scenario.userIdentifier);
+      });
+      test(`renders expected date column and not the non-expected date column`, async ({ taskListPage, page, tableUtils }) => {
+        await test.step('Setup route mocks for all-work role-based columns', async () => {
+          await setupTaskListBootstrapRoutes(page, supportedJurisdictions, supportedJurisdictionDetails);
+          await page.route(taskListRoutePattern, async (route) => {
+            await route.fulfill({
+              status: 200,
+              contentType: 'application/json',
+              body: JSON.stringify(taskListMockResponse),
+            });
+          });
+        });
+
+        await test.step('Navigate to all-work tasks and parse rendered columns', async () => {
+          await taskListPage.gotoAllWorkTasks();
+          await expect(taskListPage.taskListTable).toBeVisible();
+          await taskListPage.exuiSpinnerComponent.wait();
+
+          const table = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
+          const headers = Object.keys(table[0] ?? {});
+
+          expect(headers).toEqual(
+            expect.arrayContaining(['Case name', 'Case category', 'Location', 'Task', 'Person', 'Priority'])
+          );
+          expect(headers).toContain(scenario.expectedDateHeader);
+          expect(headers).not.toContain(scenario.notExpectedDateHeader);
+
+          expect(table[0][scenario.expectedDateHeader]).toBeTruthy();
+        });
+      });
+    });
+  }
 });

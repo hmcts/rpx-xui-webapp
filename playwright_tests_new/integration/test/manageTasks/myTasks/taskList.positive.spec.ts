@@ -2,8 +2,12 @@ import { expect, test } from '../../../../E2E/fixtures';
 import { buildTaskListMock, buildDeterministicMyTasksListMock, myActionsList } from '../../../mocks/taskList.mock';
 import { extractUserIdFromCookies } from '../../../utils/extractUserIdFromCookies';
 import { formatUiDate } from '../../../utils/tableUtils';
-import { setupTaskListMockRoutes } from '../../../helpers';
-import { applyPrewarmedSessionCookies, setupTaskListBootstrapRoutes, taskListRoutePattern } from '../../../helpers';
+import {
+  applyPrewarmedSessionCookies,
+  setupTaskListBootstrapRoutes,
+  taskListRoutePattern,
+  setupTaskListMockRoutes,
+} from '../../../helpers';
 
 let userId: string | null;
 const userIdentifier = 'STAFF_ADMIN';
@@ -136,21 +140,11 @@ test.describe(`Task List as ${userIdentifier}`, { tag: ['@integration', '@integr
 
   test(`Column sort persists when navigating away from and back to My tasks`, async ({ taskListPage, page }) => {
     const myTasksMockResponse = buildTaskListMock(30, userId?.toString() || '', myActionsList);
-    const taskSearchRequests: unknown[] = [];
     const caseNameSortHeaderCell = taskListPage.sortByCaseNameTableHeader.locator('xpath=ancestor::th[1]');
 
-    await test.step('Setup route mocks and capture task search request bodies', async () => {
+    await test.step('Setup route mocks', async () => {
       await setupTaskListBootstrapRoutes(page);
       await page.route(taskListRoutePattern, async (route) => {
-        const request = route.request();
-        if (request.method() === 'POST') {
-          try {
-            taskSearchRequests.push(request.postDataJSON());
-          } catch {
-            taskSearchRequests.push(request.postData());
-          }
-        }
-
         const body = JSON.stringify(myTasksMockResponse);
         await route.fulfill({ status: 200, contentType: 'application/json', body });
       });
@@ -170,8 +164,42 @@ test.describe(`Task List as ${userIdentifier}`, { tag: ['@integration', '@integr
       await taskListPage.taskTableTabs.filter({ hasText: 'Available tasks' }).first().click();
       await taskListPage.exuiSpinnerComponent.wait();
 
+      const myTasksRequestPromise = page.waitForRequest((request) => {
+        if (!taskListRoutePattern.exec(request.url()) || request.method() !== 'POST') {
+          return false;
+        }
+
+        try {
+          const requestBody = request.postDataJSON() as {
+            view?: string;
+            searchRequest?: { request_context?: string };
+          };
+          return requestBody.view === 'MyTasks' || requestBody.searchRequest?.request_context === 'MY_TASKS';
+        } catch {
+          return false;
+        }
+      });
+
       await taskListPage.taskTableTabs.filter({ hasText: 'My tasks' }).first().click();
       await taskListPage.exuiSpinnerComponent.wait();
+
+      const myTasksRequest = await myTasksRequestPromise;
+      const myTasksRequestBody = myTasksRequest.postDataJSON() as {
+        searchRequest?: { sorting_parameters?: Array<{ sort_by?: string; sort_order?: string }> };
+      };
+
+      expect(myTasksRequestBody).toEqual(
+        expect.objectContaining({
+          searchRequest: expect.objectContaining({
+            sorting_parameters: expect.arrayContaining([
+              expect.objectContaining({
+                sort_by: 'caseName',
+                sort_order: 'asc',
+              }),
+            ]),
+          }),
+        })
+      );
     });
 
     await test.step('Verify Case name sort remains selected', async () => {

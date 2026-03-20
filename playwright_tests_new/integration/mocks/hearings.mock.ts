@@ -1,13 +1,14 @@
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const { EXUIDisplayStatusEnum, EXUISectionStatusEnum, HMCStatus } = require('../../../src/hearings/models/hearings.enum');
+const { EXUISectionStatusEnum, HMCStatus } = require('../../../src/hearings/models/hearings.enum');
 const { hearingStatusMappings } = require('../../../src/hearings/models/hearingStatusMappings');
-const hearingsListTemplate = require('../../../test_codecept/ngIntegration/tests/features/hearings/mockData/viewEditHearings/caseHearings.json');
-const listedHearingTemplate = require('../../../test_codecept/ngIntegration/tests/features/hearings/mockData/viewEditHearings/mock_HMC_setup.json');
-const serviceHearingValuesTemplate = require('../../../test_codecept/ngIntegration/tests/features/hearings/mockData/viewEditHearings/mock_SHV_setup.json');
+const hearingsListTemplate = require('./fixtures/hearings/caseHearings.json');
+const listedHearingTemplate = require('./fixtures/hearings/mock_HMC_setup.json');
+const serviceHearingValuesTemplate = require('./fixtures/hearings/mock_SHV_setup.json');
 const appConfigTemplate = require('../../../src/assets/config/config.json');
-const headerConfigTemplate = require('../../../test_codecept/ngIntegration/config/baseConfig.js');
+const headerConfigTemplate = require('./fixtures/hearings/baseConfig.js');
+const hearingTestData = require('../../../src/hearings/hearing.test.data');
 
 export const HEARINGS_CASE_REFERENCE = '1234567812345678';
 export const HEARINGS_CASE_JURISDICTION = 'CIVIL';
@@ -384,13 +385,28 @@ export function buildLovRefDataMock(
     caseTypeId?: string;
   }
 ) {
-  const hearingTypes = options?.hearingTypes ?? [LISTED_HEARING_SCENARIO.hearingType ?? 'ABA5-ABC'];
+  const scenarioHearingTypes = options?.hearingTypes ?? [LISTED_HEARING_SCENARIO.hearingType ?? 'ABA5-ABC'];
+  const baselineHearingTypeItems = (hearingTestData.hearingStageRefData ?? [])
+    .map((item: { key?: string; value_en?: string; value_cy?: string }) =>
+      item.key
+        ? {
+            key: item.key,
+            value_en: item.value_en ?? item.key,
+            value_cy: item.value_cy ?? item.value_en ?? item.key,
+          }
+        : null
+    )
+    .filter((item): item is { key: string; value_en: string; value_cy: string } => item !== null);
+  const additionalScenarioHearingTypeItems = scenarioHearingTypes
+    .filter((hearingType) => !baselineHearingTypeItems.some((baselineType) => baselineType.key === hearingType))
+    .map((hearingType) => ({ key: hearingType, value_en: hearingType, value_cy: hearingType }));
+  const hearingTypeItems = [...baselineHearingTypeItems, ...additionalScenarioHearingTypeItems];
   const caseTypeId = options?.caseTypeId ?? HEARINGS_CASE_TYPE;
   const itemsByCategory: Record<string, Array<Record<string, unknown>>> = {
-    HearingType: hearingTypes.map((hearingType, index) => ({
-      key: hearingType,
-      value_en: hearingType,
-      value_cy: hearingType,
+    HearingType: hearingTypeItems.map((hearingType, index) => ({
+      key: hearingType.key,
+      value_en: hearingType.value_en,
+      value_cy: hearingType.value_cy,
       hint_text_en: '',
       hint_text_cy: '',
       lov_order: index + 1,
@@ -474,6 +490,47 @@ export function buildLovRefDataMock(
         child_nodes: [],
       },
     ],
+    ChangeReasons: [
+      {
+        key: 'reasonOne',
+        value_en: 'Reason 1',
+        value_cy: 'Reason 1',
+        hint_text_en: 'Reason 1',
+        hint_text_cy: 'Reason 1',
+        lov_order: 1,
+        parent_key: null,
+        category_key: 'ChangeReasons',
+        parent_category: null,
+        active_flag: true,
+        child_nodes: [],
+      },
+      {
+        key: 'reasonTwo',
+        value_en: 'Reason 2',
+        value_cy: 'Reason 2',
+        hint_text_en: 'Reason 2',
+        hint_text_cy: 'Reason 2',
+        lov_order: 2,
+        parent_key: null,
+        category_key: 'ChangeReasons',
+        parent_category: null,
+        active_flag: true,
+        child_nodes: [],
+      },
+      {
+        key: 'reasonThree',
+        value_en: 'Reason 3',
+        value_cy: 'Reason 3',
+        hint_text_en: 'Reason 3',
+        hint_text_cy: 'Reason 3',
+        lov_order: 3,
+        parent_key: null,
+        category_key: 'ChangeReasons',
+        parent_category: null,
+        active_flag: true,
+        child_nodes: [],
+      },
+    ],
     JudgeType: [],
     PanelMemberType: [],
   };
@@ -503,4 +560,35 @@ export function buildCourtLocationMock(caseConfig?: HearingsCaseConfig) {
       region: 'Wales',
     },
   ];
+}
+
+export function buildHearingActualsMock() {
+  return deepClone(hearingTestData.hearingActualsMainModel) as UnknownRecord;
+}
+
+function resolveHearingLinks() {
+  const initialState = hearingTestData.initialState as UnknownRecord;
+  const hearingsState = (initialState.hearings ?? {}) as UnknownRecord;
+  return (initialState.hearingLinks ?? hearingsState.hearingLinks ?? {}) as UnknownRecord;
+}
+
+export function buildServiceLinkedCasesMock() {
+  const hearingLinks = resolveHearingLinks();
+  return deepClone(hearingLinks.serviceLinkedCases ?? []);
+}
+
+export function buildLinkedCasesWithHearingsMock() {
+  const hearingLinks = resolveHearingLinks();
+  return deepClone(hearingLinks.serviceLinkedCasesWithHearings ?? []);
+}
+
+export function buildLinkedHearingGroupMock() {
+  const hearingLinks = resolveHearingLinks();
+  return deepClone(hearingLinks.linkedHearingGroup ?? { groupDetails: {}, hearingsInGroup: [] });
+}
+
+export function buildLinkedHearingGroupResponseMock() {
+  return {
+    hearingGroupRequestId: 'g100001',
+  };
 }

@@ -6,6 +6,8 @@ const FILTER_PANEL_READY_TIMEOUT_MS = 10_000;
 const FILTER_CONTROL_READY_TIMEOUT_MS = 15_000;
 const FILTER_GROUP_OPERATION_TIMEOUT_MS = 10_000;
 const FILTER_INTERACTION_ATTEMPTS = 2;
+const PRIORITY_LIMIT_URGENT = 2000;
+const PRIORITY_LIMIT_HIGH = 5000;
 
 export class TaskListPage extends Base {
   readonly myWorkHeading = this.page.getByRole('heading', { name: /my work/i }).first();
@@ -135,6 +137,62 @@ export class TaskListPage extends Base {
 
   async getResultsText() {
     return await this.taskListResultsAmount.textContent();
+  }
+
+  getExpectedPriorityLabel(majorPriority?: number | string, priorityDate?: string | Date, currentDate: Date = new Date()) {
+    const resolvedMajorPriority = this.parsePriorityValue(majorPriority);
+
+    if (resolvedMajorPriority === null) {
+      return '';
+    }
+
+    if (resolvedMajorPriority === PRIORITY_LIMIT_HIGH) {
+      return this.getExpectedHighThresholdPriorityLabel(priorityDate, currentDate);
+    }
+
+    if (resolvedMajorPriority <= PRIORITY_LIMIT_URGENT) {
+      return 'URGENT';
+    }
+
+    if (resolvedMajorPriority > PRIORITY_LIMIT_HIGH) {
+      return 'LOW';
+    }
+
+    return 'HIGH';
+  }
+
+  private parsePriorityValue(majorPriority?: number | string): number | null {
+    if (majorPriority === undefined || majorPriority === null) {
+      return null;
+    }
+
+    const resolvedMajorPriority = typeof majorPriority === 'number' ? majorPriority : Number.parseInt(String(majorPriority), 10);
+
+    return Number.isNaN(resolvedMajorPriority) ? null : resolvedMajorPriority;
+  }
+
+  private getExpectedHighThresholdPriorityLabel(priorityDate?: string | Date, currentDate: Date = new Date()) {
+    const resolvedPriorityDate = this.parsePriorityDate(priorityDate);
+
+    if (!resolvedPriorityDate) {
+      return 'HIGH';
+    }
+
+    if (currentDate.getTime() > resolvedPriorityDate.getTime()) {
+      return 'HIGH';
+    }
+
+    const hoursBetweenDates = Math.abs(resolvedPriorityDate.getTime() - currentDate.getTime()) / (60 * 60 * 1000);
+    return hoursBetweenDates <= 24 ? 'MEDIUM' : 'LOW';
+  }
+
+  private parsePriorityDate(priorityDate?: string | Date): Date | null {
+    if (priorityDate === undefined || priorityDate === null) {
+      return null;
+    }
+
+    const resolvedPriorityDate = priorityDate instanceof Date ? priorityDate : new Date(priorityDate);
+    return Number.isNaN(resolvedPriorityDate.getTime()) ? null : resolvedPriorityDate;
   }
 
   private async waitForTaskListSpinnerToSettle(timeoutMs: number): Promise<void> {

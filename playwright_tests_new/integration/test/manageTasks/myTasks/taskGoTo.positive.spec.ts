@@ -70,6 +70,8 @@ test.describe(`Task Go To as ${userIdentifier}`, { tag: ['@integration', '@integ
         task_name: firstTask.task_title,
         due_date: firstTask.due_date,
         dueDate: firstTask.dueDate,
+        minor_priority: firstTask.minor_priority,
+        major_priority: firstTask.major_priority,
         priority_date: firstTask.priority_date,
         caseId: firstTask.case_id,
         jurisdiction: firstTask.jurisdiction,
@@ -112,12 +114,13 @@ test.describe(`Task Go To as ${userIdentifier}`, { tag: ['@integration', '@integ
 
     await test.step('Check case details page', async () => {
       const table = await caseDetailsPage.getTaskKeyValueRows();
+      const expectedPriority = taskListPage.getExpectedPriorityLabel(firstTask.major_priority, firstTask.priority_date);
       expect.soft(table[0]['Title']).toContain(firstTask.task_title);
       expect
         .soft(table[0]['Assigned to'])
         .toContain(`${userRequestMockResponse[0].firstName} ${userRequestMockResponse[0].lastName}`);
       expect.soft(table[0]['Due date']).toBe(formatUiDate(firstTask.due_date));
-      expect.soft(table[0]['Priority']).toContain('URGENT');
+      expect.soft(table[0]['Priority']).toContain(expectedPriority);
     });
   });
 });

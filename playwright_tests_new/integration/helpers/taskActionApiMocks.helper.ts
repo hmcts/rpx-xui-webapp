@@ -9,8 +9,8 @@ export interface TaskActionMockOptions {
   task_name?: string;
   due_date?: string;
   dueDate?: string;
-  minor_priority?: boolean;
-  major_priority?: boolean;
+  minor_priority?: number;
+  major_priority?: number;
   priority_date?: string;
   caseId: string;
   jurisdiction?: string;
@@ -75,8 +75,8 @@ const buildTaskDetailsResponse = (options: TaskActionMockOptions) => {
       created_date: faker.date.past({ years: 0.25 }).toISOString(),
       due_date: options.due_date ?? faker.date.future({ years: 0.25 }).toISOString(),
       dueDate: options.dueDate ?? faker.date.future({ years: 0.25 }).toISOString(),
-      minor_priority: options.minor_priority ?? false,
-      major_priority: options.major_priority ?? false,
+      minor_priority: options.minor_priority ?? 500,
+      major_priority: options.major_priority ?? 1000,
       priority_date: options.priority_date ?? faker.date.future({ years: 0.25 }).toISOString(),
       assignee: assigneeId,
       auto_assigned: false,

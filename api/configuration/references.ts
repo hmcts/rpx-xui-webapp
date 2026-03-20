@@ -91,6 +91,7 @@ export const SESSION_SECRET = 'sessionSecret';
 export const ENVIRONMENT = 'environment';
 
 export const CASEWORKER_PAGE_SIZE = 'caseworkerPageSize';
+export const ROLE_ASSIGNMENT_PAGE_SIZE = 'roleAssignmentPageSize';
 
 export const JURISDICTIONS = 'jurisdictions';
 

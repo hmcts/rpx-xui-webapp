@@ -54,6 +54,46 @@ function currentPageUrl(page: Page): string {
   }
 }
 
+function normalizeCookieDomain(domain: string | undefined): string | null {
+  const value = domain?.trim().replace(/^\./, '');
+  return value ? value.toLowerCase() : null;
+}
+
+function resolveTargetHost(targetUrl: string | undefined): string | null {
+  if (!targetUrl?.trim()) {
+    return null;
+  }
+
+  try {
+    return new URL(targetUrl).hostname.toLowerCase();
+  } catch {
+    return null;
+  }
+}
+
+function isCookieCompatibleWithHost(cookie: Cookie, targetHost: string): boolean {
+  const cookieDomain = normalizeCookieDomain(cookie.domain);
+  if (!cookieDomain) {
+    return false;
+  }
+
+  return targetHost === cookieDomain || targetHost.endsWith(`.${cookieDomain}`) || cookieDomain.endsWith(`.${targetHost}`);
+}
+
+function hasTargetCompatibleAuthCookies(cookies: Cookie[], targetUrl: string | undefined): boolean {
+  const targetHost = resolveTargetHost(targetUrl);
+  if (!targetHost) {
+    return true;
+  }
+
+  const authCookies = cookies.filter((cookie) => cookie.name === 'Idam.Session' || cookie.name === '__auth__');
+  if (authCookies.length === 0) {
+    return false;
+  }
+
+  return authCookies.some((cookie) => isCookieCompatibleWithHost(cookie, targetHost));
+}
+
 function toError(error: unknown): Error {
   if (error instanceof Error) return error;
   if (typeof error === 'string') return new Error(error);
@@ -270,8 +310,9 @@ export async function ensureSession(userIdentifier: SessionIdentityInput): Promi
   const email = identity.email;
   const sessionStorageKey = resolveSessionStorageKey(identity);
   const sessionPath = path.join(process.cwd(), '.sessions', `${sessionStorageKey}.storage.json`);
+  const targetUrl = process.env.TEST_URL ?? config.urls.exuiDefaultUrl;
 
-  const isFresh = isSessionFresh(sessionPath, resolveSessionMaxAgeMs());
+  const isFresh = isSessionFresh(sessionPath, resolveSessionMaxAgeMs(), { targetUrl });
   if (isFresh) {
     logger.info('Session is fresh, skipping capture', {
       userIdentifier: identity.userIdentifier,
@@ -571,7 +612,7 @@ export async function ensureAuthenticatedPage(
 export function isSessionFresh(
   sessionPath: string,
   maxAgeMs = DEFAULT_SESSION_MAX_AGE_MS,
-  deps: { fs?: typeof fs; now?: () => number } = {}
+  deps: { fs?: typeof fs; now?: () => number; targetUrl?: string } = {}
 ): boolean {
   const fsApi = deps.fs ?? fs;
   const now = deps.now ?? Date.now;
@@ -600,7 +641,11 @@ export function isSessionFresh(
         }
         return cookie.expires > nowSeconds + 60;
       });
-      return hasValidCookie;
+      if (!hasValidCookie) {
+        return false;
+      }
+
+      return hasTargetCompatibleAuthCookies(cookies, deps.targetUrl);
     }
     return false;
   } catch (err) {
@@ -970,6 +1015,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
   const idamFactory = deps.idamPageFactory ?? ((page) => new IdamPage(page));
   const lockfileApi = deps.lockfile ?? lockfile;
   const force = deps.force ?? false;
+  const targetUrl = env.TEST_URL || activeConfig.urls.exuiDefaultUrl;
 
   const sessionsDir = path.join(process.cwd(), '.sessions');
   ensureDirectory(fsApi, sessionsDir);
@@ -997,7 +1043,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
         lockfileApi,
         lockFilePath,
         userIdentifier: identity.userIdentifier,
-        isSessionReusable: () => isFresh(sessionPath),
+        isSessionReusable: () => isFresh(sessionPath, DEFAULT_SESSION_MAX_AGE_MS, { targetUrl }),
         force,
       });
 
@@ -1017,7 +1063,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
       });
 
       // Recheck freshness after acquiring lock (another worker may have logged in)
-      if (!force && isFresh(sessionPath)) {
+      if (!force && isFresh(sessionPath, DEFAULT_SESSION_MAX_AGE_MS, { targetUrl })) {
         logger.info('Session became fresh while waiting for lock', {
           userIdentifier: identity.userIdentifier,
           email: identity.email,
@@ -1062,6 +1108,8 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
 
 export const __test__ = {
   resolveSessionMaxAgeMs,
+  hasTargetCompatibleAuthCookies,
+  resolveTargetHost,
   acquireSessionLock,
   sessionCaptureWith,
   persistSession,

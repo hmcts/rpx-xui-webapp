@@ -999,7 +999,11 @@ describe('CaseHearingsListComponent', () => {
     // CANCELLED
     component.viewDetails(PAST_HEARING_LIST[0]);
     fixture.detectChanges();
-    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith('h100008', '/hearings/view/hearing-cancelled-summary/h100008');
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith(
+      'h100008',
+      '/hearings/view/hearing-cancelled-summary/h100008',
+      '1111222233334444'
+    );
     // COMPLETED
     component.viewDetails(PAST_HEARING_LIST[1]);
     fixture.detectChanges();

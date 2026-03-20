@@ -1,5 +1,4 @@
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
-const browserWaits = require('../../../support/customWaits');
 const { $, elementByXpath, elementsByXpath, getText } = require('../../../../helpers/globals');
 
 class HearingsTabPage {
@@ -16,20 +15,8 @@ class HearingsTabPage {
     return elementByXpath("//exui-case-hearings-ce//a[contains(text(),'Request a hearing')]");
   }
 
-  get loadingMessage() {
-    return elementByXpath("//exui-case-hearings-ce//*[contains(text(),'Retrieving hearing data...')]");
-  }
-
   isDisplayed() {
     return this.tabContainer.isVisible();
-  }
-
-  async waitForHearingsToLoad() {
-    await browserWaits.waitForConditionAsync(
-      async () => !(await this.loadingMessage.isVisible()),
-      15000,
-      'waiting for hearings to load'
-    );
   }
 
   getTableObject(tableName) {

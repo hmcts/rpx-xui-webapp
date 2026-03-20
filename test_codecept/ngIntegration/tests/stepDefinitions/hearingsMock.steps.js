@@ -27,35 +27,6 @@ function getHearingsMockJsonFromFile(fileName) {
   return jsonUtil.getJsonFromFile(path.resolve(__dirname, `../features/hearings/mockData/${fileName}.json`));
 }
 
-function getCurrentMockCaseId() {
-  const scenarioCase = Object.values(global.scenarioData || {}).find((value) => value && typeof value.case_id === 'string');
-  return scenarioCase?.case_id || null;
-}
-
-function normaliseHearingsCaseRef(response) {
-  const caseId = getCurrentMockCaseId();
-  if (!caseId || !response) {
-    return response;
-  }
-
-  if (response.caseRef) {
-    response.caseRef = caseId;
-  }
-
-  if (response.caseDetails?.caseRef) {
-    response.caseDetails.caseRef = caseId;
-  }
-
-  if (response.caseDetails?.caseDeepLink) {
-    response.caseDetails.caseDeepLink = response.caseDetails.caseDeepLink.replace(
-      /\/case-details\/\d+/,
-      `/case-details/${caseId}`
-    );
-  }
-
-  return response;
-}
-
 function updateObjectValues(object, key, value) {
   const dateField = [
     'hearingRequestDateTime',
@@ -100,12 +71,12 @@ function resetHearingWindow(input) {
 }
 
 Given('I set mock case hearings from file {string}', async function (filename) {
-  const response = normaliseHearingsCaseRef(getHearingsMockJsonFromFile(filename));
+  const response = getHearingsMockJsonFromFile(filename);
   mockClient.setCaseHearings(response, 200);
 });
 
 Given('I set mock hearing HMC response from file {string}', async function (fileName) {
-  const response = normaliseHearingsCaseRef(getHearingsMockJsonFromFile(fileName));
+  const response = getHearingsMockJsonFromFile(fileName);
   resetHearingWindow(response);
   await mockClient.setOnGetHearing(response, 200);
 });
@@ -125,9 +96,8 @@ Given('I set mock case hearings', async function (hearingsDatatable) {
     }
     hearingsList.push(hearingsMock.getHearingWithProps(hearing));
   }
-  const caseId = getCurrentMockCaseId() || '1690807693531270';
   const res = {
-    caseRef: caseId,
+    caseRef: '1690807693531270',
     caseHearings: hearingsList,
     hmctsServiceCode: 'ABA5',
   };
@@ -160,7 +130,7 @@ function getMockHearingWithStatus(hearingStatus) {
     default:
       throw new Error(`no mock data setup for hearing ${hearingStatus}`);
   }
-  return normaliseHearingsCaseRef(JSON.parse(JSON.stringify(hearingResponse)));
+  return JSON.parse(JSON.stringify(hearingResponse));
 }
 
 Given('I set mock get hearing with with status {string}', async function (hearingStatus) {
@@ -181,7 +151,7 @@ Given('I set mock get hearing with with status {string} and values at jsonpath',
 
   jsonUtil.updateJsonWithJsonPath(dataTableObjects, hearingResponse);
   reportLogger.AddJson(hearingResponse);
-  mockClient.setOnGetHearing(normaliseHearingsCaseRef(hearingResponse), 200);
+  mockClient.setOnGetHearing(hearingResponse, 200);
 });
 
 Given('I set mock hearings service hearing values with ref {string}', async function (ref) {

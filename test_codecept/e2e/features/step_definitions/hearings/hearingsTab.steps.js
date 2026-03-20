@@ -7,7 +7,6 @@ Then('I am on hearings tab page', async function () {
 });
 
 Then('I see hearings table for {string} in hearings tab page', async function (hearingsTable) {
-  await hearingsTabPage.waitForHearingsToLoad();
   await browserWaits.retryWithActionCallback(async () => {
     expect(await hearingsTabPage.getTableObject(hearingsTable).isDisplayed()).to.be.true;
   });

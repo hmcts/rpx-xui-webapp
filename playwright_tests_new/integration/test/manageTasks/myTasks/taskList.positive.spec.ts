@@ -114,19 +114,19 @@ test.describe(`Task List as ${userIdentifier}`, { tag: ['@integration', '@integr
     });
 
     await test.step('Verify pagination button visibility', async () => {
-      await expect(taskListPage.paginationNextButton).toBeVisible();
-      await expect(taskListPage.paginationPreviousButton).not.toBeVisible();
-      await expect(taskListPage.paginationEllipsisButton).toBeVisible();
+      await expect(taskListPage.exuiBodyComponent.paginationNextButton).toBeVisible();
+      await expect(taskListPage.exuiBodyComponent.paginationPreviousButton).not.toBeVisible();
+      await expect(taskListPage.exuiBodyComponent.paginationEllipsisButton).toBeVisible();
     });
 
     await test.step('Verify the first page of results shows expected data', async () => {
       expect(await taskListPage.getResultsText()).toBe(
         `Showing 1 to ${Math.min(taskListMockResponse.tasks.length, 25)} of ${taskListMockResponse.total_records} results`
       );
-      await taskListPage.paginationNextButton.click();
-      await expect(taskListPage.paginationNextButton).toBeVisible();
-      await expect(taskListPage.paginationPreviousButton).toBeVisible();
-      await expect(taskListPage.paginationEllipsisButton).toBeVisible();
+      await taskListPage.exuiBodyComponent.paginationNextButton.click();
+      await expect(taskListPage.exuiBodyComponent.paginationNextButton).toBeVisible();
+      await expect(taskListPage.exuiBodyComponent.paginationPreviousButton).toBeVisible();
+      await expect(taskListPage.exuiBodyComponent.paginationEllipsisButton).toBeVisible();
     });
     await test.step('Verify the second page of results shows expected data', async () => {
       await taskListPage.exuiSpinnerComponent.wait();

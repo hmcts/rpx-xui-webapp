@@ -150,18 +150,4 @@ export class CaseListPage extends Base {
     await caseLink.first().waitFor({ state: 'visible' });
     await caseLink.first().click();
   }
-
-  async waitForSpinnerToComplete(context: string, timeoutMs?: number) {
-    const effectiveTimeoutMs = timeoutMs ?? this.getRecommendedTimeoutMs();
-    const spinner = this.page.locator('xuilib-loading-spinner').first();
-    try {
-      await spinner.waitFor({ state: 'hidden', timeout: effectiveTimeoutMs });
-    } catch (error) {
-      const stillVisible = await spinner.isVisible().catch(() => false);
-      if (stillVisible) {
-        throw new Error(`Spinner still visible ${context}`);
-      }
-      this.logger.warn('Spinner hidden wait failed, proceeding because spinner not visible', { context, error });
-    }
-  }
 }

@@ -1,7 +1,7 @@
 import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookies } from '../../../common/sessionCapture';
-import { HttpStatusCode } from 'axios';
-import { buildCaseListJurisdictionsMock, buildCaseListMockErrorResponse, buildCaseListMock } from '../../mocks/caseList.mock';
+import { buildCaseListJurisdictionsMock, buildCaseListMock } from '../../mocks/caseList.mock';
+import { CASE_LIST_MALFORMED_JSON_BODY, CASE_LIST_ERROR_STATUS_CODES } from '../../testData';
 
 const userIdentifier = 'SOLICITOR';
 const caseListJurisdictionsMock = buildCaseListJurisdictionsMock();
@@ -21,22 +21,19 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-// Covers HTTP Error codes 400,500 and 503
 test.describe(`Error codes returned on /searchCases call for ${userIdentifier}`, () => {
   test(`User ${userIdentifier} encounters a error on the case list page`, async ({ caseListPage, createCasePage, page }) => {
     await test.step('Intercept searchCases endpoint and fulfill with mock body', async () => {
-      const errorCodes = [HttpStatusCode.BadRequest, HttpStatusCode.InternalServerError, HttpStatusCode.ServiceUnavailable];
+      const errorCodes = CASE_LIST_ERROR_STATUS_CODES;
 
-      for (const errorCode of errorCodes) {
+      for (const errorCode of CASE_LIST_ERROR_STATUS_CODES) {
         await page.route('**/data/internal/searchCases*', async (route) => {
-          const body = JSON.stringify(buildCaseListMockErrorResponse(errorCode));
-          await route.fulfill({ status: errorCode.valueOf(), contentType: 'application/json', body });
+          const body = JSON.stringify({});
+          await route.fulfill({ status: errorCode, contentType: 'application/json', body });
         });
-
         await test.step('Navigate to the search page', async () => {
           await caseListPage.navigateTo();
         });
-
         await test.step('Verify user can see the WorkBasket Filter layout', async () => {
           expect(caseListPage.filtersContainer).toBeVisible();
 
@@ -60,10 +57,12 @@ test.describe(`Mimic Slow Response Times on  /searchCases call for ${userIdentif
     await test.step('Intercept searchCases endpoint and fulfill with mock body', async () => {
       await page.route('**/data/internal/searchCases*', async (route) => {
         const body = JSON.stringify(caseListMockResponse);
-        // 5 second delay
-        await caseListPage.waitForSpinnerToComplete('Slow response in call to /searchCase ES endpoint', 5000);
+        await new Promise((resolve) => setTimeout(resolve, 3000));
         await route.fulfill({ status: 200, contentType: 'application/json', body });
+        await page.unroute('**/data/internal/searchCases*');
       });
+
+      const searchCasesResponse = page.waitForResponse((response) => response.url().includes('/data/internal/searchCases'));
 
       await test.step('Navigate to the search page', async () => {
         await caseListPage.navigateTo();
@@ -85,22 +84,18 @@ test.describe(`Mimic Slow Response Times on  /searchCases call for ${userIdentif
             expect(table[i]['Text Field 1']).toBe(expectedFields['TextField1']);
             expect(table[i]['Text Field 2']).toBe(expectedFields['TextField2']);
           }
-          expect(await caseListPage.pagination.isVisible()).toBeFalsy();
         });
+        expect(await caseListPage.pagination.isVisible()).toBeFalsy();
       });
     });
   });
 });
 
-test.describe(`Malformed Response received on /searchCases call for ${userIdentifier}`, () => {
-  test(`User ${userIdentifier} encounters a error on the case list page`, async ({ caseListPage, createCasePage, page }) => {
+test.describe(`Malformed Response &  Request Timeout on /searchCases call for ${userIdentifier}`, () => {
+  test(`User ${userIdentifier} encounters a Malformed Response on calling of /searchCases`, async ({ caseListPage, page }) => {
     await test.step('Intercept searchCases endpoint and fulfill with mock body', async () => {
       await page.route('**/data/internal/searchCases*', async (route) => {
-        const body = JSON.stringify({
-          columnsZ: [],
-          resultsZ: [],
-          totalZ: 0,
-        });
+        const body = CASE_LIST_MALFORMED_JSON_BODY;
         await route.fulfill({ status: 200, contentType: 'application/json', body });
       });
       await test.step('Navigate to the search page', async () => {
@@ -110,6 +105,26 @@ test.describe(`Malformed Response received on /searchCases call for ${userIdenti
         expect(caseListPage.filtersContainer).toBeVisible();
 
         await test.step('Verify user sees empty case list UI', async () => {
+          await expect(caseListPage.jurisdictionSelect).toBeVisible();
+          await expect(caseListPage.exuiHeader.header).toBeVisible();
+          await expect(caseListPage.caseSearchResultsMessage).not.toBeVisible();
+        });
+      });
+    });
+  });
+
+  test(`User ${userIdentifier} encounters a Request Timeout on calling of /searchCases  `, async ({ caseListPage, page }) => {
+    await test.step('Intercept searchCases endpoint and fulfill with mock body', async () => {
+      await page.route('**/data/internal/searchCases*', async (route) => {
+        await route.abort('timedout');
+      });
+      await test.step('Navigate to the search page', async () => {
+        await caseListPage.navigateTo();
+      });
+      await test.step('Verify user can see the WorkBasket Filter layout', async () => {
+        expect(caseListPage.filtersContainer).toBeVisible();
+
+        await test.step('Cases shell will have to be empty', async () => {
           await expect(caseListPage.jurisdictionSelect).toBeVisible();
           await expect(caseListPage.exuiHeader.header).toBeVisible();
           await expect(caseListPage.caseSearchResultsMessage).not.toBeVisible();

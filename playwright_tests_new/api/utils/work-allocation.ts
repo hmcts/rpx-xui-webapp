@@ -56,6 +56,33 @@ export function buildTaskSearchRequest(view: 'MyTasks' | 'AvailableTasks' | 'All
   };
 }
 
+export interface CaseSearchOptions {
+  searchParameters?: Array<{ key: string; operator: string; values: string[] | string }>;
+  pageNumber?: number;
+  pageSize?: number;
+  searchBy?: string;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+/**
+ * Builds the payload expected by case dashboard endpoints such as
+ * /workallocation/my-work/cases and /workallocation/my-work/myaccess.
+ */
+export function buildCaseSearchRequest(view: 'MyCases' | 'MyAccess' | 'AllWorkCases', options: CaseSearchOptions = {}) {
+  const { searchParameters = [], pageNumber = 1, pageSize = 25, searchBy, sortBy = 'caseName', sortOrder = 'asc' } = options;
+
+  return {
+    searchRequest: {
+      search_parameters: searchParameters,
+      sorting_parameters: [{ sort_by: sortBy, sort_order: sortOrder }],
+      pagination_parameters: { page_number: pageNumber, page_size: pageSize },
+      ...(searchBy ? { search_by: searchBy } : {}),
+    },
+    view,
+  };
+}
+
 export interface SeededTaskResult {
   id: string;
   type: 'assigned' | 'unassigned';

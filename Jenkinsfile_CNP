@@ -131,7 +131,7 @@ def assertHtmlReportExists = { String reportDir, String reportFile ->
     steps.sh "test -f '${reportDir}/${reportFile}'"
 }
 
-def branchesToSync = ['perftest', 'ithc']
+def branchesToSync = ['perftest', 'ithc', 'demo']
 
 def secrets = [
   'rpx-${env}': [
@@ -285,7 +285,7 @@ withPipeline(type, product, component) {
                             "FUNCTIONAL_TESTS_WORKERS=2"
                         ]) {
                             try {
-                                yarnBuilder.yarn('test:api:pw:coverage')
+                                yarnBuilder.yarn('test:api:pw')
                             } catch (Exception e) {
                                 echo "[failFast] API Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
                                 if (handleFailFastAbort(e)) { return }
@@ -430,7 +430,7 @@ withPipeline(type, product, component) {
                             "FUNCTIONAL_TESTS_WORKERS=2"
                         ]) {
                             try {
-                                yarnBuilder.yarn('test:api:pw:coverage')
+                                yarnBuilder.yarn('test:api:pw')
                             } catch (Exception e) {
                                 echo "[failFast] API Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
                                 if (handleFailFastAbort(e)) { return }

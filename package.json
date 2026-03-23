@@ -310,7 +310,9 @@
     "jsdom": "^27.4.0",
     "qs": "^6.15.0",
     "bn.js": "^4.12.3",
-    "dompurify": "^3.3.2"
+    "dompurify": "^3.3.2",
+    "lodash": "^4.17.22",
+    "lodash-es": "^4.17.22"
   },
   "packageManager": "yarn@4.7.0"
 }

@@ -85,9 +85,7 @@ export function buildCaseFileViewCategoriesMock() {
         category_id: 'orders',
         category_name: 'Orders',
         category_order: 2,
-        documents: [
-          buildV2Document(CASE_FILE_VIEW_DOC_IDS.orderRootV2, 'Root order.pdf', '2023-10-20T11:45:00.000Z'),
-        ],
+        documents: [buildV2Document(CASE_FILE_VIEW_DOC_IDS.orderRootV2, 'Root order.pdf', '2023-10-20T11:45:00.000Z')],
         sub_categories: [
           {
             category_id: 'approvedOrders',
@@ -110,5 +108,12 @@ export function buildCaseFileViewCategoriesMock() {
         sub_categories: [],
       },
     ],
+  };
+}
+
+export function buildEmptyCaseFileViewCategoriesMock() {
+  return {
+    case_version: 2,
+    categories: [],
   };
 }

@@ -34,6 +34,18 @@ export class CaseFlagsUtils {
     return this.getReasonableAdjustmentFlagsGroup(groupedReasonableAdjustmentFlags, partiesInHMC, partiesInSHV);
   }
 
+  public static getAllAdjustmentFlags(
+    caseFlagsRefData: CaseFlagReferenceModel[],
+    caseFlags: PartyFlagsModel[],
+    partiesInHMC: PartyDetailsModel[],
+    partiesInSHV: PartyDetailsModel[]
+  ): CaseFlagGroup[] {
+    // Get all active case flags without filtering by reasonable adjustments
+    const activeFlags = this.getActiveDisplaysFlags(caseFlags, caseFlagsRefData, partiesInSHV);
+    const groupedFlags = _.groupBy(activeFlags, CaseFlagsUtils.PARTY_NAME);
+    return this.getAllAdjustmentFlagsGroup(groupedFlags, partiesInHMC, partiesInSHV);
+  }
+
   public static getNonReasonableAdjustmentFlagsGroupedByPartyName(
     caseFlagsRefData: CaseFlagReferenceModel[],
     caseFlags: PartyFlagsModel[],
@@ -284,6 +296,24 @@ export class CaseFlagsUtils {
     return reasonableAdjustmentFlagGroups;
   }
 
+  private static getAllAdjustmentFlagsGroup(
+    groupedFlags: Record<string, PartyFlagsDisplayModel[]>,
+    partiesInHMC: PartyDetailsModel[],
+    partiesInSHV: PartyDetailsModel[]
+  ): CaseFlagGroup[] {
+    const allAdjustmentFlagGroups = [];
+    for (const flagGroup in groupedFlags) {
+      if (groupedFlags.hasOwnProperty(flagGroup)) {
+        allAdjustmentFlagGroups.push({
+          name: flagGroup,
+          partyFlags: this.getAllAdjustmentFlagsWithAmendedLabelStatus(groupedFlags[flagGroup], partiesInHMC, partiesInSHV),
+          partyAmendmentLabelStatus: this.getPartyAmendmentLabelStatus(groupedFlags[flagGroup], partiesInHMC, partiesInSHV),
+        } as CaseFlagGroup);
+      }
+    }
+    return allAdjustmentFlagGroups;
+  }
+
   private static getReasonableAdjustmentFlagsWithAmendedLabelStatus(
     reasonableAdjustmentFlags: PartyFlagsDisplayModel[],
     partiesInHMC: PartyDetailsModel[],
@@ -311,6 +341,36 @@ export class CaseFlagsUtils {
       }
     }
     return reasonableAdjustmentFlags;
+  }
+
+  private static getAllAdjustmentFlagsWithAmendedLabelStatus(
+    flags: PartyFlagsDisplayModel[],
+    partiesInHMC: PartyDetailsModel[],
+    partiesInSHV: PartyDetailsModel[]
+  ): PartyFlagsDisplayModel[] {
+    if (!flags || flags.length === 0) {
+      return flags;
+    }
+    const partyInHMC = partiesInHMC.find((party) => party.partyID === flags[0].partyId);
+    const partyInSHV = partiesInSHV.find((party) => party.partyID === flags[0].partyId);
+    for (const flag of flags) {
+      flag.flagAmendmentLabelStatus = AmendmentLabelStatus.NONE;
+      const isReasonableAdjustment =
+        flag.displayPath?.includes(CaseFlagType.REASONABLE_ADJUSTMENT) || flag.flagId === this.LANGUAGE_INTERPRETER_FLAG_ID;
+      if (!isReasonableAdjustment || !partyInHMC) {
+        continue;
+      }
+      if (!partyInHMC.individualDetails?.reasonableAdjustments?.includes(flag.flagId)) {
+        if (partyInSHV?.individualDetails?.reasonableAdjustments?.includes(flag.flagId)) {
+          flag.flagAmendmentLabelStatus = AmendmentLabelStatus.ACTION_NEEDED;
+        } else {
+          if (flag.flagId !== this.LANGUAGE_INTERPRETER_FLAG_ID) {
+            flag.flagAmendmentLabelStatus = AmendmentLabelStatus.WARNING;
+          }
+        }
+      }
+    }
+    return flags;
   }
 
   private static getNonReasonableAdjustmentFlagsGroup(

@@ -127,8 +127,8 @@ export class ActualHearingsUtils {
 
       const newHearingActual = {
         hearingDate,
-        hearingStartTime: plannedHearingDate.plannedStartTime,
-        hearingEndTime: plannedHearingDate.plannedEndTime,
+        hearingStartTime: updatedActuals?.notRequired ? null : plannedHearingDate.plannedStartTime,
+        hearingEndTime: updatedActuals?.notRequired ? null : plannedHearingDate.plannedEndTime,
         actualDayParties: [],
         pauseDateTimes: [],
         notRequired: null,

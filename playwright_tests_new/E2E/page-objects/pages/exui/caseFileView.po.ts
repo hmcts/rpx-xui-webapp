@@ -77,14 +77,23 @@ export class CaseFileViewPage extends Base {
 
   public async getVisibleFileNamesUnderFolder(folderPath: string): Promise<string[]> {
     const folderNode = await this.getFolderNode(folderPath);
-    return folderNode
-      .locator('.document-tree-container__node--document .node-name-document')
-      .evaluateAll((nodes) => nodes.map((node) => (node.textContent || '').trim()).filter(Boolean));
+    return folderNode.locator('.document-tree-container__node--document > button .node-name-document').evaluateAll((nodes) =>
+      nodes
+        .map((node) => {
+          const firstTextNode = Array.from(node.childNodes).find((child) => child.nodeType === Node.TEXT_NODE);
+          return (firstTextNode?.textContent || '').trim();
+        })
+        .filter(Boolean)
+    );
   }
 
   public async openSortMenu(): Promise<void> {
-    await this.sortButton.click();
-    await this.sortMenu.waitFor({ state: 'visible' });
+    if (await this.sortMenu.isVisible()) {
+      return;
+    } else {
+      await this.sortButton.click();
+      await this.sortMenu.waitFor({ state: 'visible' });
+    }
   }
 
   public async sortByAscending(): Promise<void> {

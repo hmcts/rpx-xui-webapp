@@ -285,7 +285,7 @@ withPipeline(type, product, component) {
                             "FUNCTIONAL_TESTS_WORKERS=2"
                         ]) {
                             try {
-                                yarnBuilder.yarn('test:api:pw:coverage')
+                                yarnBuilder.yarn('test:api:pw')
                             } catch (Exception e) {
                                 echo "[failFast] API Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
                                 if (handleFailFastAbort(e)) { return }
@@ -430,7 +430,7 @@ withPipeline(type, product, component) {
                             "FUNCTIONAL_TESTS_WORKERS=2"
                         ]) {
                             try {
-                                yarnBuilder.yarn('test:api:pw:coverage')
+                                yarnBuilder.yarn('test:api:pw')
                             } catch (Exception e) {
                                 echo "[failFast] API Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
                                 if (handleFailFastAbort(e)) { return }

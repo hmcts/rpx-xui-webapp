@@ -1,8 +1,6 @@
 import { expect, test } from '../../../E2E/fixtures';
 import { setupCaseFileViewMockRoutes } from '../../helpers';
-import {
-  CASE_FILE_VIEW_DOC_IDS,
-} from '../../mocks/caseFileView.mock';
+import { CASE_FILE_VIEW_DOC_IDS } from '../../mocks/caseFileView.mock';
 
 const caseId = '1690807693531270';
 const minimalPdf = Buffer.from(
@@ -33,8 +31,10 @@ test.describe('Case file view integration coverage', { tag: ['@integration', '@i
     await expect(caseFileViewPage.getFolderCount(approvedOrdersNode)).toHaveText('1');
 
     const evidenceNode = await caseFileViewPage.getFolderNode('Evidence');
+
     await expect(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Alpha evidence.pdf')).toContainText('20 Oct 2023');
     await expect(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Middle evidence.pdf')).toContainText('21 Oct 2023');
+    await expect(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Zeta evidence.pdf')).toContainText('22 Oct 2023');
   });
 
   test('selecting V2 and V1 documents updates the media viewer request target', async ({
@@ -61,18 +61,18 @@ test.describe('Case file view integration coverage', { tag: ['@integration', '@i
     await expect(caseFileViewPage.documentHeader).toContainText('Documents (6)');
 
     const requestCountBeforeV2 = binaryRequests.length;
-    await caseFileViewPage.clickFile('Evidence', 'Zulu evidence.pdf');
+    await caseFileViewPage.clickFile('Evidence', 'Zeta evidence.pdf');
     await expect.poll(() => binaryRequests.length).toBeGreaterThan(requestCountBeforeV2);
-    await expect.poll(() => binaryRequests[binaryRequests.length - 1] || '').toContain(
-      `/documentsv2/${CASE_FILE_VIEW_DOC_IDS.evidenceZuluV2}/binary`
-    );
+    await expect
+      .poll(() => binaryRequests[binaryRequests.length - 1] || '')
+      .toContain(`/documentsv2/${CASE_FILE_VIEW_DOC_IDS.evidenceZetaV2}/binary`);
 
     const requestCountBeforeV1 = binaryRequests.length;
     await caseFileViewPage.clickFile('Evidence', 'Alpha evidence.pdf');
     await expect.poll(() => binaryRequests.length).toBeGreaterThan(requestCountBeforeV1);
-    await expect.poll(() => binaryRequests[binaryRequests.length - 1] || '').toContain(
-      `/documents/${CASE_FILE_VIEW_DOC_IDS.evidenceAlphaV1}/binary`
-    );
+    await expect
+      .poll(() => binaryRequests[binaryRequests.length - 1] || '')
+      .toContain(`/documents/${CASE_FILE_VIEW_DOC_IDS.evidenceAlphaV1}/binary`);
     await expect(caseFileViewPage.mediaViewerContainer).toBeVisible();
   });
 
@@ -117,31 +117,23 @@ test.describe('Case file view integration coverage', { tag: ['@integration', '@i
     await expect(caseFileViewPage.sortOldestFirstOption).toBeVisible();
 
     await caseFileViewPage.sortByAscending();
-    await expect.poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence')).toEqual([
-      'Alpha evidence.pdf',
-      'Middle evidence.pdf',
-      'Zulu evidence.pdf',
-    ]);
+    await expect
+      .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'))
+      .toEqual(['Alpha evidence.pdf', 'Middle evidence.pdf', 'Zeta evidence.pdf']);
 
     await caseFileViewPage.sortByDescending();
-    await expect.poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence')).toEqual([
-      'Zulu evidence.pdf',
-      'Middle evidence.pdf',
-      'Alpha evidence.pdf',
-    ]);
+    await expect
+      .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'))
+      .toEqual(['Zeta evidence.pdf', 'Middle evidence.pdf', 'Alpha evidence.pdf']);
 
     await caseFileViewPage.sortByRecentFirst();
-    await expect.poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence')).toEqual([
-      'Zulu evidence.pdf',
-      'Middle evidence.pdf',
-      'Alpha evidence.pdf',
-    ]);
+    await expect
+      .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'))
+      .toEqual(['Zeta evidence.pdf', 'Middle evidence.pdf', 'Alpha evidence.pdf']);
 
     await caseFileViewPage.sortByOldestFirst();
-    await expect.poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence')).toEqual([
-      'Alpha evidence.pdf',
-      'Middle evidence.pdf',
-      'Zulu evidence.pdf',
-    ]);
+    await expect
+      .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'))
+      .toEqual(['Alpha evidence.pdf', 'Middle evidence.pdf', 'Zeta evidence.pdf']);
   });
 });

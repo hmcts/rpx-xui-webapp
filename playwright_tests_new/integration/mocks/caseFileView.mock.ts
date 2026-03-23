@@ -3,13 +3,13 @@ import { buildAsylumCaseMock } from './cases/asylumCase.mock';
 export const CASE_FILE_VIEW_DOC_IDS = {
   evidenceAlphaV1: '11111111-1111-1111-1111-111111111111',
   evidenceMiddleV2: '22222222-2222-2222-2222-222222222222',
-  evidenceZuluV2: '33333333-3333-3333-3333-333333333333',
+  evidenceZetaV2: '33333333-3333-3333-3333-333333333333',
   orderRootV2: '44444444-4444-4444-4444-444444444444',
   approvedOrderV2: '55555555-5555-5555-5555-555555555555',
   applicationRootV2: '66666666-6666-6666-6666-666666666666',
 } as const;
 
-const buildV1Document = (documentId: string, filename: string, uploadTimestamp: number) => ({
+const buildV1Document = (documentId: string, filename: string, uploadTimestamp: string) => ({
   document_url: `http://localhost:3000/documents/${documentId}`,
   document_filename: filename,
   document_binary_url: `http://localhost:3000/documents/${documentId}/binary`,
@@ -17,7 +17,7 @@ const buildV1Document = (documentId: string, filename: string, uploadTimestamp: 
   upload_timestamp: uploadTimestamp,
 });
 
-const buildV2Document = (documentId: string, filename: string, uploadTimestamp: number) => ({
+const buildV2Document = (documentId: string, filename: string, uploadTimestamp: string) => ({
   document_url: `http://localhost:3000/documentsv2/${documentId}`,
   document_filename: filename,
   document_binary_url: `http://localhost:3000/documentsv2/${documentId}/binary`,
@@ -75,9 +75,9 @@ export function buildCaseFileViewCategoriesMock() {
         category_name: 'Evidence',
         category_order: 1,
         documents: [
-          buildV2Document(CASE_FILE_VIEW_DOC_IDS.evidenceZuluV2, 'Zulu evidence.pdf', Date.UTC(2023, 9, 22, 9, 15, 0)),
-          buildV1Document(CASE_FILE_VIEW_DOC_IDS.evidenceAlphaV1, 'Alpha evidence.pdf', Date.UTC(2023, 9, 20, 8, 15, 0)),
-          buildV2Document(CASE_FILE_VIEW_DOC_IDS.evidenceMiddleV2, 'Middle evidence.pdf', Date.UTC(2023, 9, 21, 10, 30, 0)),
+          buildV2Document(CASE_FILE_VIEW_DOC_IDS.evidenceZetaV2, 'Zeta evidence.pdf', '2023-10-22T09:15:00.000Z'),
+          buildV1Document(CASE_FILE_VIEW_DOC_IDS.evidenceAlphaV1, 'Alpha evidence.pdf', '2023-10-20T08:15:00.000Z'),
+          buildV2Document(CASE_FILE_VIEW_DOC_IDS.evidenceMiddleV2, 'Middle evidence.pdf', '2023-10-21T10:30:00.000Z'),
         ],
         sub_categories: [],
       },
@@ -86,7 +86,7 @@ export function buildCaseFileViewCategoriesMock() {
         category_name: 'Orders',
         category_order: 2,
         documents: [
-          buildV2Document(CASE_FILE_VIEW_DOC_IDS.orderRootV2, 'Root order.pdf', Date.UTC(2023, 9, 20, 11, 45, 0)),
+          buildV2Document(CASE_FILE_VIEW_DOC_IDS.orderRootV2, 'Root order.pdf', '2023-10-20T11:45:00.000Z'),
         ],
         sub_categories: [
           {
@@ -94,7 +94,7 @@ export function buildCaseFileViewCategoriesMock() {
             category_name: 'Approved orders',
             category_order: 1,
             documents: [
-              buildV2Document(CASE_FILE_VIEW_DOC_IDS.approvedOrderV2, 'Approved order.pdf', Date.UTC(2023, 9, 19, 14, 0, 0)),
+              buildV2Document(CASE_FILE_VIEW_DOC_IDS.approvedOrderV2, 'Approved order.pdf', '2023-10-19T14:00:00.000Z'),
             ],
             sub_categories: [],
           },
@@ -105,7 +105,7 @@ export function buildCaseFileViewCategoriesMock() {
         category_name: 'Applications',
         category_order: 3,
         documents: [
-          buildV2Document(CASE_FILE_VIEW_DOC_IDS.applicationRootV2, 'Application summary.pdf', Date.UTC(2023, 9, 18, 16, 0, 0)),
+          buildV2Document(CASE_FILE_VIEW_DOC_IDS.applicationRootV2, 'Application summary.pdf', '2023-10-18T16:00:00.000Z'),
         ],
         sub_categories: [],
       },

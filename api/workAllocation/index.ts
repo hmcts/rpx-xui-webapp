@@ -98,7 +98,7 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
     // Adding log in app insights for task completion journey
     trackTrace(`get task Id: ${taskId}`, { functionCall: 'getTask' });
     const jsonResponse = await handleTaskGet(getTaskPath, req);
-    if (jsonResponse && jsonResponse.task && jsonResponse.task.due_date) {
+    if (jsonResponse?.task?.due_date) {
       jsonResponse.task.dueDate = jsonResponse.task.due_date;
     }
     res.status(200);
@@ -110,15 +110,39 @@ export async function getTask(req: EnhancedRequest, res: Response, next: NextFun
 }
 
 /**
- * getTask
+ * getTypesOfWork
  */
 export async function getTypesOfWork(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
     const path: string = `${baseWorkAllocationTaskUrl}/work-types?filter-by-user=true`;
     const response = await getTypesOfWorkByUserId(path, req);
     let typesOfWork = [];
+    if (response?.work_types) {
+      typesOfWork = response.work_types.map((work) => ({ key: work.id, label: work.label }));
+    }
+    res.status(200);
+    res.send(typesOfWork);
+  } catch (error) {
+    next(error);
+  }
+}
+
+/**
+ * searchTypesOfWork
+ */
+export async function searchTypesOfWork(req: EnhancedRequest, res: Response, next: NextFunction) {
+  try {
+    const path: string = `${baseWorkAllocationTaskUrl}/work-types?filter-by-user=true`;
+    const response = await getTypesOfWorkByUserId(path, req);
+    let typesOfWork = [];
     if (response && response.work_types) {
       typesOfWork = response.work_types.map((work) => ({ key: work.id, label: work.label }));
+    }
+    const searchTerm = req.body.searchTerm ? req.body.searchTerm.toUpperCase() : '';
+    if (searchTerm) {
+      typesOfWork = typesOfWork.filter((work) => {
+        return work.label.toUpperCase().includes(searchTerm) || work.key.toUpperCase().includes(searchTerm);
+      });
     }
     res.status(200);
     res.send(typesOfWork);
@@ -474,10 +498,10 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
 
     let serviceIds = [];
     let locationIds = [];
-    if (services && services.hasOwnProperty('values')) {
+    if (services?.hasOwnProperty('values')) {
       serviceIds = services.values;
     }
-    if (locations && locations.hasOwnProperty('values')) {
+    if (locations?.hasOwnProperty('values')) {
       locationIds = locations.values;
     }
 
@@ -487,11 +511,11 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
     );
 
     // get cases using either filteredRoleAssignments array or roleAssignments array if no serviceId filters are applied
-    const cases = await getCaseIdListFromRoles(!serviceIds.length ? roleAssignments : filteredRoleAssignments, req);
+    const cases = await getCaseIdListFromRoles(serviceIds?.length > 0 ? filteredRoleAssignments : roleAssignments, req);
 
     // search parameters passed in as null as there are no parameters for my cases
     const userIsCaseAllocator = checkIfCaseAllocator(null, null, req);
-    let checkedRoles = req && req.session && req.session.roleAssignmentResponse ? req.session.roleAssignmentResponse : null;
+    let checkedRoles = req?.session?.roleAssignmentResponse ? req.session.roleAssignmentResponse : null;
     if (showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED)) {
       checkedRoles = getSubstantiveRoles(roleAssignments as any) as any;
     }
@@ -507,7 +531,7 @@ export async function getMyCases(req: EnhancedRequest, res: Response): Promise<R
     logger.info('results filtered by location id', caseData.length, locationIds);
 
     if (caseData) {
-      const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles as any) : [];
+      const mappedCases = checkedRoles ? mapCasesFromData(caseData, checkedRoles) : [];
       result.total_records = mappedCases.length;
       result.unique_cases = getUniqueCasesCount(mappedCases);
       const sortedCaseList = mappedCases.sort((a, b) => (a.isNew === b.isNew ? 0 : a.isNew ? -1 : 1));

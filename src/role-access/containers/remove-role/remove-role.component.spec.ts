@@ -187,6 +187,7 @@ describe('RemoveRoleComponent', () => {
   });
 
   it('should navigate correctly on click', () => {
+    (component as any).backUrl = allworkUrl;
     component.onNavEvent(RemoveAllocationNavigationEvent.CANCEL);
     expect(locationMock.back).toHaveBeenCalled();
     component.onNavEvent(RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION);

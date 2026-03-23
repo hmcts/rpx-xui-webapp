@@ -9,7 +9,7 @@ import { logAndRethrow } from './work-allocation-error.utils';
 
 @Injectable({ providedIn: 'root' })
 export class CaseworkerDataService {
-  public static caseWorkerUrl: string = '/workallocation/caseworker';
+  public static readonly caseWorkerUrl: string = '/workallocation/caseworker';
   public constructor(
     private readonly http: HttpClient,
     @Optional() private readonly logger?: LoggerService

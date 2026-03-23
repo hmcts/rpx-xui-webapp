@@ -8,7 +8,7 @@ import { logAndRethrow } from './work-allocation-error.utils';
 
 @Injectable()
 export class WASupportedJurisdictionsService {
-  public static jurisdictionUrl: string = '/api/wa-supported-jurisdiction';
+  public static readonly jurisdictionUrl: string = '/api/wa-supported-jurisdiction';
   public constructor(
     private readonly http: HttpClient,
     @Optional() private readonly logger?: LoggerService

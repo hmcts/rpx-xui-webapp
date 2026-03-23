@@ -99,10 +99,10 @@ const data: AppTestConfig = {
       },
       {
         idamId: '4fd5803c-a1ae-4790-b735-dc262e8322b8',
-        email: 'xui_iac_judge_1@mailinator.com',
+        email: '4917924EMP-@ejudiciary.net',
         release: 'wa_release_1',
         userIdentifier: 'IAC_Judge_WA_R1',
-        key: 'Welcome01',
+        key: 'Hmcts1234',
       },
       {
         idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
@@ -279,9 +279,10 @@ const data: AppTestConfig = {
       },
       {
         idamId: '4fd5803c-a1ae-4790-b735-dc262e8322b8',
-        email: 'xui_iac_judge_1@mailinator.com',
+        email: '4917924EMP-@ejudiciary.net',
         release: 'wa_release_1',
         userIdentifier: 'IAC_Judge_WA_R1',
+        key: 'Hmcts1234',
       },
       {
         idamId: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',

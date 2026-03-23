@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 import {
   buildCaseLinkingCaseDetailsMock,
   CASE_LINKING_CASE_REFERENCE,
+  CASE_LINKING_REASON_CODE,
   CASE_LINKING_RELATED_CASE_REFERENCE,
 } from '../../integration/mocks/caseLinking.mock.js';
 
@@ -15,6 +16,20 @@ function metadataCaseReference(caseDetails: Record<string, unknown>): number | u
 }
 
 function firstLinkedCaseReference(caseDetails: Record<string, unknown>): string | undefined {
+  const firstLinkedCase = firstLinkedCase(caseDetails);
+
+  return typeof firstLinkedCase?.caseReference === 'string' ? firstLinkedCase.caseReference : undefined;
+}
+
+function firstLinkedCaseReasonCode(caseDetails: Record<string, unknown>): string | undefined {
+  const firstLinkedCase = firstLinkedCase(caseDetails);
+  const reasons = Array.isArray(firstLinkedCase?.reasons) ? firstLinkedCase.reasons : [];
+  const firstReason = reasons[0];
+
+  return typeof firstReason?.reasonCode === 'string' ? firstReason.reasonCode : undefined;
+}
+
+function firstLinkedCase(caseDetails: Record<string, unknown>): Record<string, unknown> | undefined {
   const tabs = Array.isArray(caseDetails.tabs) ? caseDetails.tabs : [];
   const linkedCasesTab = tabs.find(
     (tab): tab is Record<string, unknown> => typeof tab === 'object' && tab !== null && tab.id === 'linked_cases_sscs'
@@ -26,7 +41,7 @@ function firstLinkedCaseReference(caseDetails: Record<string, unknown>): string 
   const linkedCases = Array.isArray(caseLinksField?.value) ? caseLinksField.value : [];
   const firstLinkedCase = linkedCases[0];
 
-  return typeof firstLinkedCase?.caseReference === 'string' ? firstLinkedCase.caseReference : undefined;
+  return typeof firstLinkedCase === 'object' && firstLinkedCase !== null ? firstLinkedCase : undefined;
 }
 
 test.describe('case linking mock builder', { tag: '@svc-internal' }, () => {
@@ -36,6 +51,7 @@ test.describe('case linking mock builder', { tag: '@svc-internal' }, () => {
     expect(caseDetails.case_id).toBe(CASE_LINKING_CASE_REFERENCE);
     expect(metadataCaseReference(caseDetails)).toBe(Number(CASE_LINKING_CASE_REFERENCE));
     expect(firstLinkedCaseReference(caseDetails)).toBe(CASE_LINKING_RELATED_CASE_REFERENCE);
+    expect(firstLinkedCaseReasonCode(caseDetails)).toBe(CASE_LINKING_REASON_CODE);
   });
 
   test('keeps the no-links fixture on the same case identity before submit', () => {

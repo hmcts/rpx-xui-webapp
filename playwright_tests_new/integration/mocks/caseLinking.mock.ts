@@ -1,7 +1,6 @@
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const caseWithLinksTemplate = require('../../../src/assets/getCase.json');
 const caseWithoutLinksTemplate = require('../../../src/assets/getCaseNoLinkedCases.json');
 
 function deepClone<T>(value: T): T {
@@ -21,6 +20,21 @@ function normalizeCaseReferenceMetadata(caseDetails: Record<string, unknown>, ca
   }
 }
 
+function setCaseLinksValue(caseDetails: Record<string, unknown>, linkedCases: Record<string, unknown>[] | null): void {
+  const tabs = Array.isArray(caseDetails.tabs) ? caseDetails.tabs : [];
+  const linkedCasesTab = tabs.find(
+    (tab): tab is Record<string, unknown> => typeof tab === 'object' && tab !== null && tab.id === 'linked_cases_sscs'
+  );
+  const fields = Array.isArray(linkedCasesTab?.fields) ? linkedCasesTab.fields : [];
+  const caseLinksField = fields.find(
+    (field): field is Record<string, unknown> => typeof field === 'object' && field !== null && field.id === 'caseLinks'
+  );
+
+  if (caseLinksField) {
+    caseLinksField.value = linkedCases;
+  }
+}
+
 export const CASE_LINKING_CASE_REFERENCE = String(caseWithoutLinksTemplate.case_id);
 export const CASE_LINKING_JURISDICTION = String(caseWithoutLinksTemplate.case_type?.jurisdiction?.id ?? 'SSCS');
 export const CASE_LINKING_CASE_TYPE = String(caseWithoutLinksTemplate.case_type?.id ?? 'Benefit_Xui');
@@ -29,6 +43,8 @@ export const CASE_LINKING_USER = 'STAFF_ADMIN';
 export const CASE_LINKING_RELATED_CASE_REFERENCE = '1652112127295261';
 export const CASE_LINKING_REASON_CODE = 'CLRC015';
 export const CASE_LINKING_REASON_LABEL = 'Case consolidated';
+export const CASE_LINKING_SECONDARY_REASON_CODE = 'CLRC017';
+export const CASE_LINKING_SECONDARY_REASON_LABEL = 'Linked for a hearing';
 
 const FULL_ACCESS_ACLS = [
   {
@@ -62,8 +78,8 @@ function buildFixedListFieldType() {
         order: 1,
       },
       {
-        code: 'CLRC017',
-        label: 'Linked for a hearing',
+        code: CASE_LINKING_SECONDARY_REASON_CODE,
+        label: CASE_LINKING_SECONDARY_REASON_LABEL,
         order: 2,
       },
     ],
@@ -107,11 +123,67 @@ function buildEventField(options: {
   };
 }
 
-export function buildCaseLinkingCaseDetailsMock(options?: { withLinks?: boolean }) {
-  const template = options?.withLinks ? caseWithLinksTemplate : caseWithoutLinksTemplate;
-  const caseDetails = deepClone(template) as Record<string, unknown>;
+function buildCaseLinkReason(code: string): Record<string, string> {
+  return {
+    reasonCode: code,
+    OtherDescription: '',
+  };
+}
+
+function buildLinkedCaseValue(linkedCaseReference: string, reasonCode: string): Record<string, unknown> {
+  return {
+    caseReference: linkedCaseReference,
+    modified_date_time: '2022-05-10',
+    caseType: 'Benefit_SCSS',
+    reasons: [buildCaseLinkReason(reasonCode)],
+  };
+}
+
+function buildCaseLinkReasonLov(code: string, label: string, lovOrder: number): Record<string, unknown> {
+  return {
+    category_key: 'CaseLinkingReasonCode',
+    key: code,
+    value_en: label,
+    value_cy: '',
+    hint_text_en: label,
+    hint_text_cy: '',
+    lov_order: lovOrder,
+    parent_category: '',
+    parent_key: '',
+    active_flag: 'Y',
+    child_nodes: null,
+    from: 'exui-default',
+  };
+}
+
+export function buildCaseLinkingCaseDetailsMock(options?: {
+  withLinks?: boolean;
+  linkedCaseReference?: string;
+  reasonCode?: string;
+}) {
+  const caseDetails = deepClone(caseWithoutLinksTemplate) as Record<string, unknown>;
   normalizeCaseReferenceMetadata(caseDetails, CASE_LINKING_CASE_REFERENCE);
+  setCaseLinksValue(
+    caseDetails,
+    options?.withLinks
+      ? [
+          buildLinkedCaseValue(
+            options.linkedCaseReference ?? CASE_LINKING_RELATED_CASE_REFERENCE,
+            options.reasonCode ?? CASE_LINKING_REASON_CODE
+          ),
+        ]
+      : null
+  );
   return caseDetails;
+}
+
+export function buildCaseLinkingReasonCodesMock() {
+  return {
+    list_of_values: [
+      buildCaseLinkReasonLov(CASE_LINKING_REASON_CODE, CASE_LINKING_REASON_LABEL, 1),
+      buildCaseLinkReasonLov(CASE_LINKING_SECONDARY_REASON_CODE, CASE_LINKING_SECONDARY_REASON_LABEL, 2),
+    ],
+  };
 }
 
 export function buildCaseLinkingEventTriggerMock() {

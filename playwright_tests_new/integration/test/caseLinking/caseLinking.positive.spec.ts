@@ -55,7 +55,9 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
     await test.step('Return to case details and show the linked case in the Linked cases tab', async () => {
       await expect(page).toHaveURL(new RegExp(`/cases/case-details/.*/.*/${CASE_LINKING_CASE_REFERENCE}(?:$|#)`));
       await caseDetailsPage.selectCaseDetailsTab('Linked cases');
-      await expect(page.getByText(CASE_LINKING_RELATED_CASE_REFERENCE, { exact: true })).toBeVisible();
+      const linkedCasesPanel = page.locator('[role="tabpanel"]:visible').first();
+      await expect(linkedCasesPanel.getByText(CASE_LINKING_RELATED_CASE_REFERENCE, { exact: true })).toBeVisible();
+      await expect(linkedCasesPanel.getByText(CASE_LINKING_REASON_LABEL, { exact: true })).toBeVisible();
     });
   });
 });

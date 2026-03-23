@@ -9,9 +9,12 @@ import { applyPrewarmedSessionCookies } from './prewarmedSession.helper';
 import {
   buildCaseLinkingCaseDetailsMock,
   buildCaseLinkingEventTriggerMock,
+  buildCaseLinkingReasonCodesMock,
   CASE_LINKING_CASE_REFERENCE,
   CASE_LINKING_CASE_TYPE,
   CASE_LINKING_JURISDICTION,
+  CASE_LINKING_REASON_CODE,
+  CASE_LINKING_RELATED_CASE_REFERENCE,
   CASE_LINKING_TRIGGER_ID,
   CASE_LINKING_USER,
 } from '../mocks/caseLinking.mock';
@@ -60,11 +63,24 @@ async function fulfillRoute(
   });
 }
 
+function resolveSubmittedCaseLinkData(route: Route): { linkedCaseReference: string; reasonCode: string } {
+  const payload = route.request().postDataJSON() as { data?: Record<string, unknown> } | null;
+  const linkedCaseReference =
+    typeof payload?.data?.LinkedCaseReference === 'string'
+      ? payload.data.LinkedCaseReference
+      : CASE_LINKING_RELATED_CASE_REFERENCE;
+  const reasonCode =
+    typeof payload?.data?.CaseLinkReasonCode === 'string' ? payload.data.CaseLinkReasonCode : CASE_LINKING_REASON_CODE;
+
+  return { linkedCaseReference, reasonCode };
+}
+
 export async function setupCaseLinkingMockRoutes(page: Page, config: CaseLinkingMockRoutesConfig): Promise<void> {
   const userDetails = buildHearingsUserDetailsMock(config.userRoles);
   const appConfig = buildHearingsAppConfigMock();
   const environmentConfig = buildHearingsEnvironmentConfigMock();
   const eventTrigger = buildCaseLinkingEventTriggerMock();
+  const caseLinkReasonCodes = buildCaseLinkingReasonCodesMock();
   let currentCaseDetails = buildCaseLinkingCaseDetailsMock({ withLinks: false });
 
   await page.addInitScript((seededUserInfo) => {
@@ -75,19 +91,30 @@ export async function setupCaseLinkingMockRoutes(page: Page, config: CaseLinking
     await fulfillRoute(route, undefined, currentCaseDetails);
   });
 
-  await page.route(`**/data/internal/cases/${CASE_LINKING_CASE_REFERENCE}/event-triggers/${CASE_LINKING_TRIGGER_ID}/validate*`, async (route) => {
-    await fulfillRoute(route, undefined, eventTrigger);
-  });
+  await page.route(
+    `**/data/internal/cases/${CASE_LINKING_CASE_REFERENCE}/event-triggers/${CASE_LINKING_TRIGGER_ID}/validate*`,
+    async (route) => {
+      await fulfillRoute(route, undefined, eventTrigger);
+    }
+  );
 
-  await page.route(`**/data/internal/cases/${CASE_LINKING_CASE_REFERENCE}/event-triggers/${CASE_LINKING_TRIGGER_ID}*`, async (route) => {
-    await fulfillRoute(route, undefined, eventTrigger);
-  });
+  await page.route(
+    `**/data/internal/cases/${CASE_LINKING_CASE_REFERENCE}/event-triggers/${CASE_LINKING_TRIGGER_ID}*`,
+    async (route) => {
+      await fulfillRoute(route, undefined, eventTrigger);
+    }
+  );
 
   await page.route(`**/data/cases/${CASE_LINKING_CASE_REFERENCE}/events*`, async (route) => {
     const submitOverride = config.submitCaseLinks;
     const successfulSubmit = !submitOverride?.status || (submitOverride.status >= 200 && submitOverride.status < 300);
     if (successfulSubmit) {
-      currentCaseDetails = buildCaseLinkingCaseDetailsMock({ withLinks: true });
+      const submittedCaseLinkData = resolveSubmittedCaseLinkData(route);
+      currentCaseDetails = buildCaseLinkingCaseDetailsMock({
+        withLinks: true,
+        linkedCaseReference: submittedCaseLinkData.linkedCaseReference,
+        reasonCode: submittedCaseLinkData.reasonCode,
+      });
     }
     await fulfillRoute(route, submitOverride, successfulSubmit ? currentCaseDetails : { message: 'case-link-submit-failed' });
   });
@@ -102,6 +129,10 @@ export async function setupCaseLinkingMockRoutes(page: Page, config: CaseLinking
 
   await page.route('**/external/config/ui*', async (route) => {
     await fulfillRoute(route, undefined, environmentConfig);
+  });
+
+  await page.route('**/refdata/commondata/lov/categories/CaseLinkingReasonCode*', async (route) => {
+    await fulfillRoute(route, undefined, caseLinkReasonCodes);
   });
 
   await page.route('**/api/role-access/roles/manageLabellingRoleAssignment/**', async (route) => {

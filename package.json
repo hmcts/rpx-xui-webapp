@@ -108,7 +108,7 @@
     "@angular/platform-browser": "^20.3.18",
     "@angular/platform-browser-dynamic": "^20.3.18",
     "@angular/router": "^20.3.18",
-    "@angular/ssr": "^20.3.18",
+    "@angular/ssr": "^20.3.21",
     "@dr.pogodin/csurf": "^1.16.5",
     "@edium/fsm": "^2.1.2",
     "@faker-js/faker": "^9.2.0",

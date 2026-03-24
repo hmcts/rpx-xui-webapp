@@ -643,7 +643,8 @@ export class TaskListPage extends Base {
       pollMs?: number;
     } = {}
   ) {
-    await this.clickTaskActionWithRetry(
+    await TaskListPage.prototype.clickTaskActionWithRetry.call(
+      this,
       () => action,
       (retryContext, retryOptions) => this.openFirstManageActions(retryContext, retryOptions),
       context,
@@ -660,7 +661,8 @@ export class TaskListPage extends Base {
       pollMs?: number;
     } = {}
   ) {
-    await this.clickTaskActionWithRetry(
+    await TaskListPage.prototype.clickTaskActionWithRetry.call(
+      this,
       () => this.getTaskActionForRow(rowIndex, actionId),
       (retryContext, retryOptions) => this.openManageActionsForRow(rowIndex, retryContext, retryOptions),
       `${context} for row ${rowIndex + 1}`,

@@ -1,5 +1,7 @@
 import { CaseCategoryModel } from './caseCategory.model';
 
+// Used in hearingActualsMainModel and hearingRequestMainModel to define the case details data structure returned from the API
+// Not populated directly
 export interface CaseDetailsModel {
   hmctsServiceCode: string;
   caseRef: string;

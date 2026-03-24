@@ -3,6 +3,7 @@ import { ServiceHearingValuesModel } from './serviceHearingValues.model';
 
 export interface HearingValuesStateData {
   serviceHearingValuesModel: ServiceHearingValuesModel;
+  // unsure why not set to HearingsValueCaseContext
   caseInfo: any;
   lastError?: HttpError;
 }

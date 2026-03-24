@@ -9,24 +9,25 @@ const caseListMockResponse = buildCaseListMock(15);
 
 test.beforeEach(async ({ page }) => {
   await applySessionCookies(page, userIdentifier);
-
   await page.route('**/caseworkers/**/jurisdictions*', async (route) => {
     const body = JSON.stringify(caseListJurisdictionsMock);
     await route.fulfill({ status: 200, contentType: 'application/json', body });
   });
-
   await page.route('**/caseworkers/**/jurisdictions/**/case-types/**/work-basket-inputs*', async (route) => {
     const body = JSON.stringify({ workbasketInputs: [] });
     await route.fulfill({ status: 200, contentType: 'application/json', body });
   });
 });
 
-test.describe(`Error codes returned on /searchCases call for ${userIdentifier}`, () => {
-  test(`User ${userIdentifier} encounters a error on the case list page`, async ({ caseListPage, createCasePage, page }) => {
-    await test.step('Intercept searchCases endpoint and fulfill with mock body', async () => {
-      const errorCodes = CASE_LIST_ERROR_STATUS_CODES;
-
-      for (const errorCode of CASE_LIST_ERROR_STATUS_CODES) {
+test.describe(
+  `Error codes returned on /searchCases call for ${userIdentifier}`,
+  { tag: ['@integration', '@integration-case-list'] },
+  () => {
+    for (const errorCode of CASE_LIST_ERROR_STATUS_CODES) {
+      test(`User ${userIdentifier} encounters a HTTP Response  ${errorCode} error on the case list page`, async ({
+        caseListPage,
+        page,
+      }) => {
         await page.route('**/data/internal/searchCases*', async (route) => {
           const body = JSON.stringify({});
           await route.fulfill({ status: errorCode, contentType: 'application/json', body });
@@ -36,42 +37,41 @@ test.describe(`Error codes returned on /searchCases call for ${userIdentifier}`,
         });
         await test.step('Verify user can see the WorkBasket Filter layout', async () => {
           expect(caseListPage.filtersContainer).toBeVisible();
-
           await test.step('Verify user sees empty case list UI', async () => {
             await expect(caseListPage.jurisdictionSelect).toBeVisible();
             await expect(caseListPage.exuiHeader.header).toBeVisible();
             await expect(caseListPage.caseSearchResultsMessage).not.toBeVisible();
           });
         });
-      }
-    });
-  });
-});
-
-test.describe(`Mimic Slow Response Times on  /searchCases call for ${userIdentifier}`, () => {
-  test(`User ${userIdentifier} encounters a slow response time on load of the case list page`, async ({
-    caseListPage,
-    tableUtils,
-    page,
-  }) => {
-    await test.step('Intercept searchCases endpoint and fulfill with mock body', async () => {
-      await page.route('**/data/internal/searchCases*', async (route) => {
-        const body = JSON.stringify(caseListMockResponse);
-        await new Promise((resolve) => setTimeout(resolve, 3000));
-        await route.fulfill({ status: 200, contentType: 'application/json', body });
-        await page.unroute('**/data/internal/searchCases*');
       });
+    } // end for
+  }
+);
 
-      const searchCasesResponse = page.waitForResponse((response) => response.url().includes('/data/internal/searchCases'));
-
+test.describe(
+  `Mimic Slow Response Times on  /searchCases call for ${userIdentifier}`,
+  { tag: ['@integration', '@integration-case-list'] },
+  () => {
+    test(`User ${userIdentifier} encounters a slow response time on load of the case list page`, async ({
+      caseListPage,
+      tableUtils,
+      page,
+    }) => {
+      await test.step('Intercept searchCases endpoint and fulfill with mock body', async () => {
+        await page.route('**/data/internal/searchCases*', async (route) => {
+          const body = JSON.stringify(caseListMockResponse);
+          await new Promise((resolve) => setTimeout(resolve, 3000));
+          await route.fulfill({ status: 200, contentType: 'application/json', body });
+          await page.unroute('**/data/internal/searchCases*');
+        });
+      });
+      page.waitForResponse((response) => response.url().includes('/data/internal/searchCases'));
       await test.step('Navigate to the search page', async () => {
         await caseListPage.navigateTo();
       });
-
       await test.step('Verify user can see the WorkBasket Filter layout', async () => {
         expect(caseListPage.filtersContainer).toBeVisible();
       });
-
       await test.step('Verify user can see a list of cases in  expected layout given the mock response', async () => {
         expect(await caseListPage.caseListResultsAmount.textContent()).toBe(
           `Showing 1 to ${Math.min(caseListMockResponse.results.length, 25)} of ${caseListMockResponse.total} results`
@@ -88,48 +88,48 @@ test.describe(`Mimic Slow Response Times on  /searchCases call for ${userIdentif
       });
       expect(await caseListPage.pagination.isVisible()).toBeFalsy();
     });
-  });
-});
+  }
+);
 
-test.describe(`Malformed Response &  Request Timeout on /searchCases call for ${userIdentifier}`, () => {
-  test(`User ${userIdentifier} encounters a Malformed Response on calling of /searchCases`, async ({ caseListPage, page }) => {
-    await test.step('Intercept searchCases endpoint and fulfill with mock body', async () => {
-      await page.route('**/data/internal/searchCases*', async (route) => {
-        const body = CASE_LIST_MALFORMED_JSON_BODY;
-        await route.fulfill({ status: 200, contentType: 'application/json', body });
+test.describe(
+  `Check UI Behviour when a Malformed Response is returned for ${userIdentifier}`,
+  { tag: ['@integration', '@integration-case-list'] },
+  () => {
+    test(`User ${userIdentifier} encounters a Malformed Response on calling of /searchCases`, async ({ caseListPage, page }) => {
+      await test.step('Intercept searchCases endpoint and fulfill with mock body', async () => {
+        await page.route('**/data/internal/searchCases*', async (route) => {
+          const body = CASE_LIST_MALFORMED_JSON_BODY;
+          await route.fulfill({ status: 200, contentType: 'application/json', body });
+        });
       });
       await test.step('Navigate to the search page', async () => {
         await caseListPage.navigateTo();
       });
       await test.step('Verify user can see the WorkBasket Filter layout', async () => {
         expect(caseListPage.filtersContainer).toBeVisible();
-
-        await test.step('Verify user sees empty case list UI', async () => {
-          await expect(caseListPage.jurisdictionSelect).toBeVisible();
-          await expect(caseListPage.exuiHeader.header).toBeVisible();
-          await expect(caseListPage.caseSearchResultsMessage).not.toBeVisible();
-        });
+        await expect(caseListPage.jurisdictionSelect).toBeVisible();
+        await expect(caseListPage.exuiHeader.header).toBeVisible();
+        await expect(caseListPage.caseSearchResultsMessage).not.toBeVisible();
       });
     });
-  });
+  }
+);
 
-  test(`User ${userIdentifier} encounters a Request Timeout on calling of /searchCases  `, async ({ caseListPage, page }) => {
+test.describe(`Check behaviour of UI when a  Timeout issue occurs}`, { tag: ['@integration', '@integration-case-list'] }, () => {
+  test(`User ${userIdentifier} encounters a Timeout on calling of /searchCases`, async ({ caseListPage, page }) => {
     await test.step('Intercept searchCases endpoint and fulfill with mock body', async () => {
       await page.route('**/data/internal/searchCases*', async (route) => {
         await route.abort('timedout');
       });
-      await test.step('Navigate to the search page', async () => {
-        await caseListPage.navigateTo();
-      });
-      await test.step('Verify user can see the WorkBasket Filter layout', async () => {
-        expect(caseListPage.filtersContainer).toBeVisible();
-
-        await test.step('Cases shell will have to be empty', async () => {
-          await expect(caseListPage.jurisdictionSelect).toBeVisible();
-          await expect(caseListPage.exuiHeader.header).toBeVisible();
-          await expect(caseListPage.caseSearchResultsMessage).not.toBeVisible();
-        });
-      });
+    });
+    await test.step('Navigate to the search page', async () => {
+      await caseListPage.navigateTo();
+    });
+    await test.step('Verify user can see the WorkBasket Filter layout', async () => {
+      expect(caseListPage.filtersContainer).toBeVisible();
+      await expect(caseListPage.jurisdictionSelect).toBeVisible();
+      await expect(caseListPage.exuiHeader.header).toBeVisible();
+      await expect(caseListPage.caseSearchResultsMessage).not.toBeVisible();
     });
   });
 });

@@ -13,7 +13,7 @@ import {
   CASE_LINKING_CASE_REFERENCE,
   CASE_LINKING_CASE_TYPE,
   CASE_LINKING_JURISDICTION,
-  CASE_LINKING_OTHER_DESCRIPTION,
+  CASE_LINKING_OTHER_REASON_CODE,
   CASE_LINKING_REASON_CODE,
   CASE_LINKING_RELATED_CASE_REFERENCE,
   CASE_LINKING_TRIGGER_ID,
@@ -80,7 +80,9 @@ function resolveSubmittedCaseLinkData(route: Route): {
   const reasonCode =
     typeof payload?.data?.CaseLinkReasonCode === 'string' ? payload.data.CaseLinkReasonCode : CASE_LINKING_REASON_CODE;
   const otherDescription =
-    typeof payload?.data?.OtherDescription === 'string' ? payload.data.OtherDescription : CASE_LINKING_OTHER_DESCRIPTION;
+    reasonCode === CASE_LINKING_OTHER_REASON_CODE && typeof payload?.data?.OtherDescription === 'string'
+      ? payload.data.OtherDescription
+      : '';
 
   return { linkedCaseReference, reasonCode, otherDescription };
 }

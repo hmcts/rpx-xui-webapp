@@ -13,8 +13,8 @@ import {
 import { openCaseLinkingJourney } from '../../helpers';
 
 const linkCaseAccessScenarios = [
-  { label: 'hmcts-staff', userRoles: ['hmcts-staff'] },
-  { label: 'hmcts-judiciary', userRoles: ['hmcts-judiciary'] },
+  { label: 'hmcts-staff', userRoles: ['hmcts-staff'], userIdentifier: 'STAFF_ADMIN' },
+  { label: 'hmcts-judiciary', userRoles: ['hmcts-judiciary'], userIdentifier: 'IAC_Judge_WA_R1' },
 ] as const;
 
 function formatCaseReference(caseReference: string): string {
@@ -22,11 +22,11 @@ function formatCaseReference(caseReference: string): string {
 }
 
 test.describe('Case linking integration', { tag: ['@integration', '@integration-case-linking'] }, () => {
-  linkCaseAccessScenarios.forEach(({ label, userRoles }) => {
+  linkCaseAccessScenarios.forEach(({ label, userRoles, userIdentifier }) => {
     test(`links a case from case details and submits the selected reason as ${label}`, async ({ page, caseDetailsPage }) => {
       await openCaseLinkingJourney(page, caseDetailsPage, {
         userRoles: [...userRoles],
-      });
+      }, userIdentifier);
 
       await test.step('Open the Link cases event from the case-actions dropdown', async () => {
         await caseDetailsPage.caseActionsDropdown.selectOption({ label: 'Link cases' });
@@ -52,17 +52,25 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
         const submitRequest = page.waitForRequest(
           (request) => request.url().includes(`/data/cases/${CASE_LINKING_CASE_REFERENCE}/events`) && request.method() === 'POST'
         );
+        const submitResponse = page.waitForResponse(
+          (response) => response.url().includes(`/data/cases/${CASE_LINKING_CASE_REFERENCE}/events`) && response.request().method() === 'POST'
+        );
 
         await page.getByRole('button', { name: /^submit$/i }).click();
 
         const request = await submitRequest;
+        const response = await submitResponse;
         const payload = request.postDataJSON();
+        const responseBody = JSON.stringify(await response.json());
         expect(payload.event).toMatchObject({ id: 'linkCases' });
         expect(payload.data).toMatchObject({
           LinkedCaseReference: CASE_LINKING_RELATED_CASE_REFERENCE,
           CaseLinkReasonCode: CASE_LINKING_REASON_CODE,
         });
         expect(payload.event_token).toBeTruthy();
+        expect(responseBody).toContain(CASE_LINKING_RELATED_CASE_REFERENCE);
+        expect(responseBody).toContain(`"reasonCode":"${CASE_LINKING_REASON_CODE}"`);
+        expect(responseBody).toContain('"OtherDescription":""');
       });
 
       await test.step('Return to case details and show the linked case in the Linked cases tab', async () => {
@@ -72,6 +80,7 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
         await expect(
           linkedCasesPanel.getByRole('link', { name: formatCaseReference(CASE_LINKING_RELATED_CASE_REFERENCE) })
         ).toBeVisible();
+        await expect(linkedCasesPanel).not.toContainText(CASE_LINKING_OTHER_DESCRIPTION);
       });
     });
   });
@@ -126,16 +135,24 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
     const submitRequest = page.waitForRequest(
       (request) => request.url().includes(`/data/cases/${CASE_LINKING_CASE_REFERENCE}/events`) && request.method() === 'POST'
     );
+    const submitResponse = page.waitForResponse(
+      (response) => response.url().includes(`/data/cases/${CASE_LINKING_CASE_REFERENCE}/events`) && response.request().method() === 'POST'
+    );
     await page.getByRole('button', { name: /^submit$/i }).click();
 
     const request = await submitRequest;
+    const response = await submitResponse;
     const payload = request.postDataJSON();
+    const responseBody = JSON.stringify(await response.json());
     expect(payload.event).toMatchObject({ id: 'linkCases' });
     expect(payload.data).toMatchObject({
       LinkedCaseReference: CASE_LINKING_RELATED_CASE_REFERENCE,
       CaseLinkReasonCode: CASE_LINKING_OTHER_REASON_CODE,
       OtherDescription: CASE_LINKING_OTHER_DESCRIPTION,
     });
+    expect(responseBody).toContain(CASE_LINKING_RELATED_CASE_REFERENCE);
+    expect(responseBody).toContain(`"reasonCode":"${CASE_LINKING_OTHER_REASON_CODE}"`);
+    expect(responseBody).toContain(`"OtherDescription":"${CASE_LINKING_OTHER_DESCRIPTION}"`);
 
     await expect(page).toHaveURL(new RegExp(`/cases/case-details/.*/.*/${CASE_LINKING_CASE_REFERENCE}(?:$|#)`));
     await caseDetailsPage.selectCaseDetailsTab('Linked cases');

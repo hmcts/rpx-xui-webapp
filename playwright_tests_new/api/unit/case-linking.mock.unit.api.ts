@@ -101,6 +101,17 @@ test.describe('case linking mock builder', { tag: '@svc-internal' }, () => {
     expect(firstLinkedCaseOtherDescription(caseDetails)).toBe(CASE_LINKING_OTHER_DESCRIPTION);
   });
 
+  test('keeps OtherDescription empty for standard linked-case reasons', () => {
+    const caseDetails = buildCaseLinkingCaseDetailsMock({
+      withLinks: true,
+      reasonCode: CASE_LINKING_REASON_CODE,
+    });
+
+    expect(firstLinkedCaseReference(caseDetails)).toBe(CASE_LINKING_RELATED_CASE_REFERENCE);
+    expect(firstLinkedCaseReasonCode(caseDetails)).toBe(CASE_LINKING_REASON_CODE);
+    expect(firstLinkedCaseOtherDescription(caseDetails)).toBe('');
+  });
+
   test('preserves the supplied linked-case ordering in the case details tab data', () => {
     const caseDetails = buildCaseLinkingCaseDetailsMock({
       linkedCases: [

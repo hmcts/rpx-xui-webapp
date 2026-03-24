@@ -207,11 +207,7 @@ export function buildCaseLinkingCaseDetailsMock(options?: {
   setCaseLinksValue(
     caseDetails,
     linkedCases?.map((linkedCase) =>
-      buildLinkedCaseCollectionItem(
-        linkedCase.linkedCaseReference,
-        linkedCase.reasonCode,
-        linkedCase.otherDescription ?? ''
-      )
+      buildLinkedCaseCollectionItem(linkedCase.linkedCaseReference, linkedCase.reasonCode, linkedCase.otherDescription ?? '')
     ) ?? null
   );
   return caseDetails;

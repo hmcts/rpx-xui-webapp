@@ -40,7 +40,6 @@ export const CASE_LINKING_CASE_REFERENCE = String(caseWithoutLinksTemplate.case_
 export const CASE_LINKING_JURISDICTION = String(caseWithoutLinksTemplate.case_type?.jurisdiction?.id ?? 'SSCS');
 export const CASE_LINKING_CASE_TYPE = String(caseWithoutLinksTemplate.case_type?.id ?? 'Benefit_Xui');
 export const CASE_LINKING_TRIGGER_ID = 'linkCases';
-export const CASE_LINKING_USER = 'STAFF_ADMIN';
 export const CASE_LINKING_RELATED_CASE_REFERENCE = '1652112127295261';
 export const CASE_LINKING_SECOND_RELATED_CASE_REFERENCE = '1652112127295262';
 export const CASE_LINKING_REASON_CODE = 'CLRC015';

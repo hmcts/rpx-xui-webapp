@@ -1,4 +1,5 @@
 import { expect, test } from '../../../E2E/fixtures';
+import { caseLinkingJudiciaryAccess, caseLinkingStaffAccess, openCaseLinkingJourney } from '../../helpers';
 import {
   CASE_LINKING_CASE_REFERENCE,
   CASE_LINKING_OTHER_DESCRIPTION,
@@ -11,23 +12,10 @@ import {
   CASE_LINKING_SECONDARY_REASON_CODE,
   formatCaseReferenceForDisplay,
 } from '../../mocks/caseLinking.mock';
-import { openCaseLinkingJourney } from '../../helpers';
-
-const userIdentifier = 'STAFF_ADMIN';
-const caseLinkingRoles = ['hmcts-staff'];
-const judiciaryUserIdentifier = 'IAC_Judge_WA_R1';
-const judiciaryCaseLinkingRoles = ['hmcts-judiciary'];
 
 test.describe('Case linking integration', { tag: ['@integration', '@integration-case-linking'] }, () => {
   test('links a case from case details and submits the selected reason', async ({ page, caseDetailsPage }) => {
-    await openCaseLinkingJourney(
-      page,
-      caseDetailsPage,
-      {
-        userRoles: caseLinkingRoles,
-      },
-      userIdentifier
-    );
+    await openCaseLinkingJourney(page, caseDetailsPage, { access: caseLinkingStaffAccess });
 
     await test.step('Open the Link cases event from the case-actions dropdown', async () => {
       await caseDetailsPage.openLinkCasesEvent();
@@ -88,14 +76,7 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
   });
 
   test('allows a judiciary user to open the Link cases event from case details', async ({ page, caseDetailsPage }) => {
-    await openCaseLinkingJourney(
-      page,
-      caseDetailsPage,
-      {
-        userRoles: judiciaryCaseLinkingRoles,
-      },
-      judiciaryUserIdentifier
-    );
+    await openCaseLinkingJourney(page, caseDetailsPage, { access: caseLinkingJudiciaryAccess });
 
     await caseDetailsPage.openLinkCasesEvent();
     await expect(caseDetailsPage.linkedCaseReferenceInput).toBeVisible();
@@ -104,7 +85,7 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
 
   test('shows linked cases in their supplied order on the Linked cases tab', async ({ page, caseDetailsPage }) => {
     await openCaseLinkingJourney(page, caseDetailsPage, {
-      userRoles: ['hmcts-staff'],
+      access: caseLinkingStaffAccess,
       initialLinkedCases: [
         {
           linkedCaseReference: CASE_LINKING_RELATED_CASE_REFERENCE,
@@ -129,7 +110,7 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
 
   test('submits the Other case-link reason with a custom description', async ({ page, caseDetailsPage }) => {
     await openCaseLinkingJourney(page, caseDetailsPage, {
-      userRoles: ['hmcts-staff'],
+      access: caseLinkingStaffAccess,
     });
 
     await caseDetailsPage.openLinkCasesEvent();

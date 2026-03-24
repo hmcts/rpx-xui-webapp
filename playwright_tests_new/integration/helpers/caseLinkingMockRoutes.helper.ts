@@ -6,6 +6,7 @@ import {
   buildHearingsUserDetailsMock,
 } from '../mocks/hearings.mock';
 import { applySessionCookies } from '../../common/sessionCapture';
+import { caseLinkingStaffAccess, type CaseLinkingAccessConfig } from './caseLinkingAccess.helper';
 import {
   buildCaseLinkingCaseDetailsMock,
   buildCaseLinkingEventTriggerMock,
@@ -17,7 +18,6 @@ import {
   CASE_LINKING_REASON_CODE,
   CASE_LINKING_RELATED_CASE_REFERENCE,
   CASE_LINKING_TRIGGER_ID,
-  CASE_LINKING_USER,
   type CaseLinkingLinkedCase,
 } from '../mocks/caseLinking.mock';
 
@@ -31,7 +31,7 @@ interface CaseLinkingApiOverride {
 }
 
 export interface CaseLinkingMockRoutesConfig {
-  userRoles: string[];
+  access?: CaseLinkingAccessConfig;
   submitCaseLinks?: CaseLinkingApiOverride;
   validateCaseLinks?: CaseLinkingApiOverride;
   initialLinkedCases?: CaseLinkingLinkedCase[];
@@ -103,7 +103,8 @@ function buildValidationResponse(route: Route): Record<string, unknown> {
 }
 
 export async function setupCaseLinkingMockRoutes(page: Page, config: CaseLinkingMockRoutesConfig): Promise<void> {
-  const userDetails = buildHearingsUserDetailsMock(config.userRoles);
+  const access = config.access ?? caseLinkingStaffAccess;
+  const userDetails = buildHearingsUserDetailsMock(access.userRoles);
   const appConfig = buildHearingsAppConfigMock();
   const environmentConfig = buildHearingsEnvironmentConfigMock();
   const eventTrigger = buildCaseLinkingEventTriggerMock();
@@ -189,10 +190,10 @@ export async function setupCaseLinkingMockRoutes(page: Page, config: CaseLinking
 export async function openCaseLinkingJourney(
   page: Page,
   caseDetailsPage: CaseDetailsPage,
-  config: CaseLinkingMockRoutesConfig,
-  userIdentifier = CASE_LINKING_USER
+  config: CaseLinkingMockRoutesConfig = {}
 ): Promise<void> {
-  await applySessionCookies(page, userIdentifier);
+  const access = config.access ?? caseLinkingStaffAccess;
+  await applySessionCookies(page, access.userIdentifier);
   await setupCaseLinkingMockRoutes(page, config);
   await page.goto(`/cases/case-details/${CASE_LINKING_JURISDICTION}/${CASE_LINKING_CASE_TYPE}/${CASE_LINKING_CASE_REFERENCE}`, {
     waitUntil: 'domcontentloaded',

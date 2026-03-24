@@ -1,12 +1,10 @@
 import { expect, test } from '../../../E2E/fixtures';
+import { caseLinkingStaffAccess, openCaseLinkingJourney } from '../../helpers';
 import {
   CASE_LINKING_CASE_REFERENCE,
   CASE_LINKING_REASON_LABEL,
   CASE_LINKING_RELATED_CASE_REFERENCE,
 } from '../../mocks/caseLinking.mock';
-import { openCaseLinkingJourney } from '../../helpers';
-
-const caseLinkingRoles = ['hmcts-staff'];
 
 test.describe('Case linking integration', { tag: ['@integration', '@integration-case-linking'] }, () => {
   test('shows validation errors when the user continues without entering mandatory link details', async ({
@@ -14,7 +12,7 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
     caseDetailsPage,
   }) => {
     await openCaseLinkingJourney(page, caseDetailsPage, {
-      userRoles: caseLinkingRoles,
+      access: caseLinkingStaffAccess,
     });
 
     await caseDetailsPage.openLinkCasesEvent();
@@ -29,7 +27,7 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
 
   test('shows a backend error when the user tries to link the case to itself', async ({ page, caseDetailsPage }) => {
     await openCaseLinkingJourney(page, caseDetailsPage, {
-      userRoles: caseLinkingRoles,
+      access: caseLinkingStaffAccess,
       submitCaseLinks: {
         status: 400,
         body: { message: 'A case cannot be linked to itself' },
@@ -66,7 +64,7 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
 
   test('shows an error and stays on check-your-answers when the case-link submit fails', async ({ page, caseDetailsPage }) => {
     await openCaseLinkingJourney(page, caseDetailsPage, {
-      userRoles: caseLinkingRoles,
+      access: caseLinkingStaffAccess,
       submitCaseLinks: {
         status: 500,
         body: { message: 'case-link-submit-failed' },

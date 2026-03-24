@@ -51,6 +51,10 @@ export const CASE_LINKING_OTHER_REASON_CODE = 'CLRC014';
 export const CASE_LINKING_OTHER_REASON_LABEL = 'Other';
 export const CASE_LINKING_OTHER_DESCRIPTION = 'Linked because the appeals should be managed together';
 
+export function formatCaseReferenceForDisplay(caseReference: string): string {
+  return caseReference.replace(/(\d{4})(?=\d)/g, '$1-');
+}
+
 const FULL_ACCESS_ACLS = [
   {
     role: 'caseworker',

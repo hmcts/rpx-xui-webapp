@@ -9,87 +9,97 @@ import {
   CASE_LINKING_RELATED_CASE_REFERENCE,
   CASE_LINKING_SECOND_RELATED_CASE_REFERENCE,
   CASE_LINKING_SECONDARY_REASON_CODE,
+  formatCaseReferenceForDisplay,
 } from '../../mocks/caseLinking.mock';
 import { openCaseLinkingJourney } from '../../helpers';
 
-const linkCaseAccessScenarios = [
-  { label: 'hmcts-staff', userRoles: ['hmcts-staff'], userIdentifier: 'STAFF_ADMIN' },
-  { label: 'hmcts-judiciary', userRoles: ['hmcts-judiciary'], userIdentifier: 'IAC_Judge_WA_R1' },
-] as const;
-
-function formatCaseReference(caseReference: string): string {
-  return caseReference.replace(/(\d{4})(?=\d)/g, '$1-');
-}
+const userIdentifier = 'STAFF_ADMIN';
+const caseLinkingRoles = ['hmcts-staff'];
+const judiciaryUserIdentifier = 'IAC_Judge_WA_R1';
+const judiciaryCaseLinkingRoles = ['hmcts-judiciary'];
 
 test.describe('Case linking integration', { tag: ['@integration', '@integration-case-linking'] }, () => {
-  linkCaseAccessScenarios.forEach(({ label, userRoles, userIdentifier }) => {
-    test(`links a case from case details and submits the selected reason as ${label}`, async ({ page, caseDetailsPage }) => {
-      await openCaseLinkingJourney(
-        page,
-        caseDetailsPage,
-        {
-          userRoles: [...userRoles],
-        },
-        userIdentifier
-      );
+  test('links a case from case details and submits the selected reason', async ({ page, caseDetailsPage }) => {
+    await openCaseLinkingJourney(
+      page,
+      caseDetailsPage,
+      {
+        userRoles: caseLinkingRoles,
+      },
+      userIdentifier
+    );
 
-      await test.step('Open the Link cases event from the case-actions dropdown', async () => {
-        await caseDetailsPage.openLinkCasesEvent();
-        await expect(caseDetailsPage.linkedCaseReferenceInput).toBeVisible();
-        await expect(caseDetailsPage.caseLinkReasonSelect).toBeVisible();
+    await test.step('Open the Link cases event from the case-actions dropdown', async () => {
+      await caseDetailsPage.openLinkCasesEvent();
+      await expect(caseDetailsPage.linkedCaseReferenceInput).toBeVisible();
+      await expect(caseDetailsPage.caseLinkReasonSelect).toBeVisible();
+    });
+
+    await test.step('Enter the linked case details and continue to check-your-answers', async () => {
+      await caseDetailsPage.fillCaseLinkDetails({
+        linkedCaseReference: CASE_LINKING_RELATED_CASE_REFERENCE,
+        reasonLabel: CASE_LINKING_REASON_LABEL,
       });
+      await caseDetailsPage.continueCaseEvent();
 
-      await test.step('Enter the linked case details and continue to check-your-answers', async () => {
-        await caseDetailsPage.fillCaseLinkDetails({
-          linkedCaseReference: CASE_LINKING_RELATED_CASE_REFERENCE,
-          reasonLabel: CASE_LINKING_REASON_LABEL,
-        });
-        await caseDetailsPage.continueCaseEvent();
-
-        await expect(caseDetailsPage.checkYourAnswersHeading).toBeVisible();
-        const answers = await caseDetailsPage.trRowsToObjectInPage(page.getByRole('table').first());
-        expect(answers).toMatchObject({
-          'Linked case reference': CASE_LINKING_RELATED_CASE_REFERENCE,
-          'Reason for link': CASE_LINKING_REASON_LABEL,
-        });
-      });
-
-      await test.step('Submit the link-cases event and assert the CCD request payload', async () => {
-        const submitRequest = page.waitForRequest(
-          (request) => request.url().includes(`/data/cases/${CASE_LINKING_CASE_REFERENCE}/events`) && request.method() === 'POST'
-        );
-        const submitResponse = page.waitForResponse(
-          (response) =>
-            response.url().includes(`/data/cases/${CASE_LINKING_CASE_REFERENCE}/events`) && response.request().method() === 'POST'
-        );
-
-        await caseDetailsPage.submitCaseEvent();
-
-        const request = await submitRequest;
-        const response = await submitResponse;
-        const payload = request.postDataJSON();
-        const responseBody = JSON.stringify(await response.json());
-        expect(payload.event).toMatchObject({ id: 'linkCases' });
-        expect(payload.data).toMatchObject({
-          LinkedCaseReference: CASE_LINKING_RELATED_CASE_REFERENCE,
-          CaseLinkReasonCode: CASE_LINKING_REASON_CODE,
-        });
-        expect(payload.event_token).toBeTruthy();
-        expect(responseBody).toContain(CASE_LINKING_RELATED_CASE_REFERENCE);
-        expect(responseBody).toContain(`"reasonCode":"${CASE_LINKING_REASON_CODE}"`);
-        expect(responseBody).toContain('"OtherDescription":""');
-      });
-
-      await test.step('Return to case details and show the linked case in the Linked cases tab', async () => {
-        await expect(page).toHaveURL(new RegExp(`/cases/case-details/.*/.*/${CASE_LINKING_CASE_REFERENCE}(?:$|#)`));
-        await caseDetailsPage.selectCaseDetailsTab('Linked cases');
-        const linkedCasesPanel = page.locator('[role="tabpanel"]:visible').first();
-        await expect(
-          linkedCasesPanel.getByRole('link', { name: formatCaseReference(CASE_LINKING_RELATED_CASE_REFERENCE) })
-        ).toBeVisible();
-        await expect(linkedCasesPanel).not.toContainText(CASE_LINKING_OTHER_DESCRIPTION);
+      await expect(caseDetailsPage.checkYourAnswersHeading).toBeVisible();
+      const answers = await caseDetailsPage.trRowsToObjectInPage(page.getByRole('table').first());
+      expect(answers).toMatchObject({
+        'Linked case reference': CASE_LINKING_RELATED_CASE_REFERENCE,
+        'Reason for link': CASE_LINKING_REASON_LABEL,
       });
     });
+
+    await test.step('Submit the link-cases event and assert the CCD request payload', async () => {
+      const submitRequest = page.waitForRequest(
+        (request) => request.url().includes(`/data/cases/${CASE_LINKING_CASE_REFERENCE}/events`) && request.method() === 'POST'
+      );
+      const submitResponse = page.waitForResponse(
+        (response) =>
+          response.url().includes(`/data/cases/${CASE_LINKING_CASE_REFERENCE}/events`) && response.request().method() === 'POST'
+      );
+
+      await caseDetailsPage.submitCaseEvent();
+
+      const request = await submitRequest;
+      const response = await submitResponse;
+      const payload = request.postDataJSON();
+      const responseBody = JSON.stringify(await response.json());
+      expect(payload.event).toMatchObject({ id: 'linkCases' });
+      expect(payload.data).toMatchObject({
+        LinkedCaseReference: CASE_LINKING_RELATED_CASE_REFERENCE,
+        CaseLinkReasonCode: CASE_LINKING_REASON_CODE,
+      });
+      expect(payload.event_token).toBeTruthy();
+      expect(responseBody).toContain(CASE_LINKING_RELATED_CASE_REFERENCE);
+      expect(responseBody).toContain(`"reasonCode":"${CASE_LINKING_REASON_CODE}"`);
+      expect(responseBody).toContain('"OtherDescription":""');
+    });
+
+    await test.step('Return to case details and show the linked case in the Linked cases tab', async () => {
+      await expect(page).toHaveURL(new RegExp(`/cases/case-details/.*/.*/${CASE_LINKING_CASE_REFERENCE}(?:$|#)`));
+      await caseDetailsPage.selectCaseDetailsTab('Linked cases');
+      const linkedCasesPanel = page.locator('[role="tabpanel"]:visible').first();
+      await expect(
+        linkedCasesPanel.getByRole('link', { name: formatCaseReferenceForDisplay(CASE_LINKING_RELATED_CASE_REFERENCE) })
+      ).toBeVisible();
+      await expect(linkedCasesPanel).not.toContainText(CASE_LINKING_OTHER_DESCRIPTION);
+    });
+  });
+
+  test('allows a judiciary user to open the Link cases event from case details', async ({ page, caseDetailsPage }) => {
+    await openCaseLinkingJourney(
+      page,
+      caseDetailsPage,
+      {
+        userRoles: judiciaryCaseLinkingRoles,
+      },
+      judiciaryUserIdentifier
+    );
+
+    await caseDetailsPage.openLinkCasesEvent();
+    await expect(caseDetailsPage.linkedCaseReferenceInput).toBeVisible();
+    await expect(caseDetailsPage.caseLinkReasonSelect).toBeVisible();
   });
 
   test('shows linked cases in their supplied order on the Linked cases tab', async ({ page, caseDetailsPage }) => {
@@ -112,8 +122,8 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
     const linkedCaseReferences = await linkedCasesPanel.getByRole('link').allInnerTexts();
 
     expect(linkedCaseReferences.slice(0, 2)).toEqual([
-      formatCaseReference(CASE_LINKING_RELATED_CASE_REFERENCE),
-      formatCaseReference(CASE_LINKING_SECOND_RELATED_CASE_REFERENCE),
+      formatCaseReferenceForDisplay(CASE_LINKING_RELATED_CASE_REFERENCE),
+      formatCaseReferenceForDisplay(CASE_LINKING_SECOND_RELATED_CASE_REFERENCE),
     ]);
   });
 
@@ -166,7 +176,7 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
     await caseDetailsPage.selectCaseDetailsTab('Linked cases');
     const linkedCasesPanel = page.locator('[role="tabpanel"]:visible').first();
     await expect(
-      linkedCasesPanel.getByRole('link', { name: formatCaseReference(CASE_LINKING_RELATED_CASE_REFERENCE) })
+      linkedCasesPanel.getByRole('link', { name: formatCaseReferenceForDisplay(CASE_LINKING_RELATED_CASE_REFERENCE) })
     ).toBeVisible();
   });
 });

@@ -67,6 +67,7 @@ export class TaskListPage extends Base {
   readonly notAuthorisedHeading = this.page.getByRole('heading', {
     name: "Sorry, you're not authorised to perform this action",
   });
+  readonly taskActionsRows = this.taskListTable.locator('tr.actions-row');
   readonly taskActionsRow = this.taskListTable.locator('tr.actions-row[aria-hidden="false"]');
 
   readonly taskActionCancel = this.taskActionsRow.locator('#action_cancel');
@@ -519,6 +520,53 @@ export class TaskListPage extends Base {
     }
 
     throw new Error(`Timed out after ${timeoutMs}ms opening Manage actions (${context}). url=${this.page.url()}`);
+  }
+
+  getTaskActionsRow(rowIndex: number): Locator {
+    return this.taskActionsRows.nth(rowIndex);
+  }
+
+  async openManageActionsForRow(
+    rowIndex: number,
+    context: string,
+    options: {
+      timeoutMs?: number;
+      pollMs?: number;
+    } = {}
+  ) {
+    const timeoutMs = options.timeoutMs ?? 15_000;
+    const pollMs = options.pollMs ?? 500;
+    const deadline = Date.now() + timeoutMs;
+    let attempt = 0;
+
+    while (Date.now() < deadline) {
+      await this.waitForManageButton(`${context} row ${rowIndex + 1} attempt ${attempt + 1}`, {
+        timeoutMs: Math.max(1_000, Math.min(5_000, deadline - Date.now())),
+        pollMs,
+      });
+
+      const manageButton = this.manageCaseButtons.nth(rowIndex);
+      await manageButton.scrollIntoViewIfNeeded().catch(() => undefined);
+      await manageButton.click({ force: attempt > 0 });
+
+      const rowActions = this.getTaskActionsRow(rowIndex);
+      const expanded = await rowActions
+        .waitFor({ state: 'visible', timeout: Math.max(1_000, Math.min(2_500, deadline - Date.now())) })
+        .then(() => true)
+        .catch(() => false);
+
+      if (expanded) {
+        return;
+      }
+
+      await this.assertTaskListInteractive(`opening Manage actions (${context}) for row ${rowIndex + 1}`);
+      attempt += 1;
+      await this.page.waitForTimeout(Math.min(pollMs, Math.max(0, deadline - Date.now())));
+    }
+
+    throw new Error(
+      `Timed out after ${timeoutMs}ms opening Manage actions (${context}) for row ${rowIndex + 1}. url=${this.page.url()}`
+    );
   }
 
   async clickTaskAction(

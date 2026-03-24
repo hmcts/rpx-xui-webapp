@@ -185,12 +185,13 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
     });
 
     const assertManageActionsForRow = async (rowIndex: number, expectedActionIds: string[]) => {
-      await expect(taskListPage.manageCaseButtons.nth(rowIndex)).toBeVisible();
-      await taskListPage.manageCaseButtons.nth(rowIndex).click();
-      await expect(taskListPage.taskActionsRow).toBeVisible();
+      await taskListPage.openManageActionsForRow(rowIndex, `all-work manage action matrix row ${rowIndex + 1}`);
+
+      const taskActionsRow = taskListPage.getTaskActionsRow(rowIndex);
+      await expect(taskActionsRow).toBeVisible();
 
       for (const actionId of allActionIds) {
-        const actionLocator = taskListPage.taskActionsRow.locator(`#action_${actionId}`);
+        const actionLocator = taskActionsRow.locator(`#action_${actionId}`);
         if (expectedActionIds.includes(actionId)) {
           await expect(actionLocator).toBeVisible();
         } else {

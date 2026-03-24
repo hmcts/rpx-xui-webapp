@@ -51,13 +51,13 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
     });
 
     await test.step('Verify the pagination controls behave and display as expected for large result sets', async () => {
-      await expect.soft(taskListPage.paginationPreviousButton).not.toBeVisible();
-      await expect.soft(taskListPage.paginationNextButton).toBeVisible();
-      await expect.soft(taskListPage.paginationEllipsisButton).toBeVisible();
-      expect.soft(await taskListPage.paginationCurrentPage.textContent()).toContain('1');
-      await taskListPage.paginationNextButton.click();
-      expect.soft(await taskListPage.paginationCurrentPage.textContent()).toContain('2');
-      await expect.soft(taskListPage.paginationPreviousButton).toBeVisible();
+      await expect.soft(taskListPage.exuiBodyComponent.paginationPreviousButton).not.toBeVisible();
+      await expect.soft(taskListPage.exuiBodyComponent.paginationNextButton).toBeVisible();
+      await expect.soft(taskListPage.exuiBodyComponent.paginationEllipsisButton).toBeVisible();
+      expect.soft(await taskListPage.exuiBodyComponent.paginationCurrentPage.textContent()).toContain('1');
+      await taskListPage.exuiBodyComponent.paginationNextButton.click();
+      expect.soft(await taskListPage.exuiBodyComponent.paginationCurrentPage.textContent()).toContain('2');
+      await expect.soft(taskListPage.exuiBodyComponent.paginationPreviousButton).toBeVisible();
       expect.soft(await taskListPage.getResultsText()).toBe(`Showing 26 to 50 of ${taskListMockResponse.total_records} results`);
     });
   });
@@ -94,7 +94,7 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
         const expectedHearingDate = taskListMockResponse.tasks[i].next_hearing_date || '';
         expect.soft(table[i]['Hearing date']).toBe(formatUiDate(expectedHearingDate));
       }
-      await expect(taskListPage.paginationControls).not.toBeVisible();
+      await expect(taskListPage.exuiBodyComponent.paginationControls).not.toBeVisible();
     });
   });
 
@@ -117,7 +117,7 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
       expect(await taskListPage.taskListTable.textContent()).toContain(
         'There are no available tasks. Use the location filter to view available tasks at other locations.'
       );
-      await expect(taskListPage.paginationControls).not.toBeVisible();
+      await expect(taskListPage.exuiBodyComponent.paginationControls).not.toBeVisible();
     });
   });
 

@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+
 import { buildAsylumCaseMock } from './cases/asylumCase.mock';
 
 export const CASE_FILE_VIEW_DOC_IDS = {
@@ -8,6 +11,13 @@ export const CASE_FILE_VIEW_DOC_IDS = {
   approvedOrderV2: '55555555-5555-5555-5555-555555555555',
   applicationRootV2: '66666666-6666-6666-6666-666666666666',
 } as const;
+
+const CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF_PATH = path.resolve(
+  process.cwd(),
+  'playwright_tests_new/integration/testData/documents/case-file-view-document-delivery.pdf'
+);
+
+export const CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF = readFileSync(CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF_PATH);
 
 const buildV1Document = (documentId: string, filename: string, uploadTimestamp: string) => ({
   document_url: `http://localhost:3000/documents/${documentId}`,

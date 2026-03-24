@@ -13,10 +13,12 @@ import {
   CASE_LINKING_CASE_REFERENCE,
   CASE_LINKING_CASE_TYPE,
   CASE_LINKING_JURISDICTION,
+  CASE_LINKING_OTHER_DESCRIPTION,
   CASE_LINKING_REASON_CODE,
   CASE_LINKING_RELATED_CASE_REFERENCE,
   CASE_LINKING_TRIGGER_ID,
   CASE_LINKING_USER,
+  type CaseLinkingLinkedCase,
 } from '../mocks/caseLinking.mock';
 
 type RouteAbortCode = Parameters<Route['abort']>[0];
@@ -31,6 +33,8 @@ interface CaseLinkingApiOverride {
 export interface CaseLinkingMockRoutesConfig {
   userRoles: string[];
   submitCaseLinks?: CaseLinkingApiOverride;
+  validateCaseLinks?: CaseLinkingApiOverride;
+  initialLinkedCases?: CaseLinkingLinkedCase[];
 }
 
 function resolveRouteBody(override: CaseLinkingApiOverride | undefined, fallbackBody: unknown): string {
@@ -63,7 +67,11 @@ async function fulfillRoute(
   });
 }
 
-function resolveSubmittedCaseLinkData(route: Route): { linkedCaseReference: string; reasonCode: string } {
+function resolveSubmittedCaseLinkData(route: Route): {
+  linkedCaseReference: string;
+  reasonCode: string;
+  otherDescription: string;
+} {
   const payload = route.request().postDataJSON() as { data?: Record<string, unknown> } | null;
   const linkedCaseReference =
     typeof payload?.data?.LinkedCaseReference === 'string'
@@ -71,8 +79,10 @@ function resolveSubmittedCaseLinkData(route: Route): { linkedCaseReference: stri
       : CASE_LINKING_RELATED_CASE_REFERENCE;
   const reasonCode =
     typeof payload?.data?.CaseLinkReasonCode === 'string' ? payload.data.CaseLinkReasonCode : CASE_LINKING_REASON_CODE;
+  const otherDescription =
+    typeof payload?.data?.OtherDescription === 'string' ? payload.data.OtherDescription : CASE_LINKING_OTHER_DESCRIPTION;
 
-  return { linkedCaseReference, reasonCode };
+  return { linkedCaseReference, reasonCode, otherDescription };
 }
 
 function buildValidationResponse(route: Route): Record<string, unknown> {
@@ -81,6 +91,7 @@ function buildValidationResponse(route: Route): Record<string, unknown> {
 
   return {
     data: payload?.data ?? {},
+    errors: [],
     _links: {
       self: {
         href: `/data/case-types/${CASE_LINKING_CASE_TYPE}/validate?pageId=${pageId}`,
@@ -95,7 +106,8 @@ export async function setupCaseLinkingMockRoutes(page: Page, config: CaseLinking
   const environmentConfig = buildHearingsEnvironmentConfigMock();
   const eventTrigger = buildCaseLinkingEventTriggerMock();
   const caseLinkReasonCodes = buildCaseLinkingReasonCodesMock();
-  let currentCaseDetails = buildCaseLinkingCaseDetailsMock({ withLinks: false });
+  let currentLinkedCases = [...(config.initialLinkedCases ?? [])];
+  let currentCaseDetails = buildCaseLinkingCaseDetailsMock({ linkedCases: currentLinkedCases });
 
   await page.addInitScript((seededUserInfo) => {
     window.sessionStorage.setItem('userDetails', JSON.stringify(seededUserInfo));
@@ -113,7 +125,7 @@ export async function setupCaseLinkingMockRoutes(page: Page, config: CaseLinking
   );
 
   await page.route(`**/data/case-types/${CASE_LINKING_CASE_TYPE}/validate*`, async (route) => {
-    await fulfillRoute(route, undefined, buildValidationResponse(route));
+    await fulfillRoute(route, config.validateCaseLinks, buildValidationResponse(route));
   });
 
   await page.route(
@@ -128,10 +140,16 @@ export async function setupCaseLinkingMockRoutes(page: Page, config: CaseLinking
     const successfulSubmit = !submitOverride?.status || (submitOverride.status >= 200 && submitOverride.status < 300);
     if (successfulSubmit) {
       const submittedCaseLinkData = resolveSubmittedCaseLinkData(route);
+      currentLinkedCases = [
+        ...currentLinkedCases,
+        {
+          linkedCaseReference: submittedCaseLinkData.linkedCaseReference,
+          reasonCode: submittedCaseLinkData.reasonCode,
+          otherDescription: submittedCaseLinkData.otherDescription,
+        },
+      ];
       currentCaseDetails = buildCaseLinkingCaseDetailsMock({
-        withLinks: true,
-        linkedCaseReference: submittedCaseLinkData.linkedCaseReference,
-        reasonCode: submittedCaseLinkData.reasonCode,
+        linkedCases: currentLinkedCases,
       });
     }
     await fulfillRoute(route, submitOverride, successfulSubmit ? currentCaseDetails : { message: 'case-link-submit-failed' });

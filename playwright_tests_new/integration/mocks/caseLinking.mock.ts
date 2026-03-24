@@ -42,10 +42,14 @@ export const CASE_LINKING_CASE_TYPE = String(caseWithoutLinksTemplate.case_type?
 export const CASE_LINKING_TRIGGER_ID = 'linkCases';
 export const CASE_LINKING_USER = 'STAFF_ADMIN';
 export const CASE_LINKING_RELATED_CASE_REFERENCE = '1652112127295261';
+export const CASE_LINKING_SECOND_RELATED_CASE_REFERENCE = '1652112127295262';
 export const CASE_LINKING_REASON_CODE = 'CLRC015';
 export const CASE_LINKING_REASON_LABEL = 'Case consolidated';
 export const CASE_LINKING_SECONDARY_REASON_CODE = 'CLRC017';
 export const CASE_LINKING_SECONDARY_REASON_LABEL = 'Linked for a hearing';
+export const CASE_LINKING_OTHER_REASON_CODE = 'CLRC014';
+export const CASE_LINKING_OTHER_REASON_LABEL = 'Other';
+export const CASE_LINKING_OTHER_DESCRIPTION = 'Linked because the appeals should be managed together';
 
 const FULL_ACCESS_ACLS = [
   {
@@ -83,6 +87,11 @@ function buildFixedListFieldType() {
         label: CASE_LINKING_SECONDARY_REASON_LABEL,
         order: 2,
       },
+      {
+        code: CASE_LINKING_OTHER_REASON_CODE,
+        label: CASE_LINKING_OTHER_REASON_LABEL,
+        order: 3,
+      },
     ],
     complex_fields: [],
     collection_field_type: null,
@@ -99,6 +108,7 @@ function buildEventField(options: {
   order: number;
   displayContext?: 'MANDATORY' | 'OPTIONAL';
   hintText?: string | null;
+  showCondition?: string | null;
 }) {
   return {
     id: options.id,
@@ -114,7 +124,7 @@ function buildEventField(options: {
     formatted_value: null,
     display_context: options.displayContext ?? 'OPTIONAL',
     display_context_parameter: null,
-    show_condition: null,
+    show_condition: options.showCondition ?? null,
     show_summary_change_option: true,
     show_summary_content_option: null,
     retain_hidden_value: null,
@@ -124,27 +134,37 @@ function buildEventField(options: {
   };
 }
 
-function buildCaseLinkReason(code: string): Record<string, string> {
+function buildCaseLinkReason(code: string, otherDescription = ''): Record<string, string> {
   return {
     reasonCode: code,
-    OtherDescription: '',
+    OtherDescription: otherDescription,
   };
 }
 
-function buildLinkedCaseValue(linkedCaseReference: string, reasonCode: string): Record<string, unknown> {
+function buildLinkedCaseValue(linkedCaseReference: string, reasonCode: string, otherDescription = ''): Record<string, unknown> {
   return {
     CaseReference: linkedCaseReference,
     ModifiedDateTime: '2022-05-10',
     CaseType: 'Benefit_SCSS',
-    Reasons: [buildCaseLinkReason(reasonCode)],
+    Reasons: [buildCaseLinkReason(reasonCode, otherDescription)],
   };
 }
 
-function buildLinkedCaseCollectionItem(linkedCaseReference: string, reasonCode: string): Record<string, unknown> {
+function buildLinkedCaseCollectionItem(
+  linkedCaseReference: string,
+  reasonCode: string,
+  otherDescription = ''
+): Record<string, unknown> {
   return {
     id: linkedCaseReference,
-    value: buildLinkedCaseValue(linkedCaseReference, reasonCode),
+    value: buildLinkedCaseValue(linkedCaseReference, reasonCode, otherDescription),
   };
+}
+
+export interface CaseLinkingLinkedCase {
+  linkedCaseReference: string;
+  reasonCode: string;
+  otherDescription?: string;
 }
 
 function buildCaseLinkReasonLov(code: string, label: string, lovOrder: number): Record<string, unknown> {
@@ -168,19 +188,31 @@ export function buildCaseLinkingCaseDetailsMock(options?: {
   withLinks?: boolean;
   linkedCaseReference?: string;
   reasonCode?: string;
+  otherDescription?: string;
+  linkedCases?: CaseLinkingLinkedCase[];
 }) {
   const caseDetails = deepClone(caseWithoutLinksTemplate) as Record<string, unknown>;
   normalizeCaseReferenceMetadata(caseDetails, CASE_LINKING_CASE_REFERENCE);
+  const linkedCases =
+    options?.linkedCases ??
+    (options?.withLinks
+      ? [
+          {
+            linkedCaseReference: options.linkedCaseReference ?? CASE_LINKING_RELATED_CASE_REFERENCE,
+            reasonCode: options.reasonCode ?? CASE_LINKING_REASON_CODE,
+            otherDescription: options.otherDescription ?? '',
+          },
+        ]
+      : null);
   setCaseLinksValue(
     caseDetails,
-    options?.withLinks
-      ? [
-          buildLinkedCaseCollectionItem(
-            options.linkedCaseReference ?? CASE_LINKING_RELATED_CASE_REFERENCE,
-            options.reasonCode ?? CASE_LINKING_REASON_CODE
-          ),
-        ]
-      : null
+    linkedCases?.map((linkedCase) =>
+      buildLinkedCaseCollectionItem(
+        linkedCase.linkedCaseReference,
+        linkedCase.reasonCode,
+        linkedCase.otherDescription ?? ''
+      )
+    ) ?? null
   );
   return caseDetails;
 }
@@ -216,6 +248,14 @@ export function buildCaseLinkingEventTriggerMock() {
         order: 2,
         displayContext: 'MANDATORY',
       }),
+      buildEventField({
+        id: 'OtherDescription',
+        label: 'Other description',
+        fieldType: TEXT_FIELD_TYPE,
+        order: 3,
+        hintText: 'Describe the reason for linking these cases',
+        showCondition: `CaseLinkReasonCode="${CASE_LINKING_OTHER_REASON_CODE}"`,
+      }),
     ],
     event_token: 'mock-case-linking-event-token',
     wizard_pages: [
@@ -233,6 +273,12 @@ export function buildCaseLinkingEventTriggerMock() {
           {
             case_field_id: 'CaseLinkReasonCode',
             order: 2,
+            page_column_no: null,
+            complex_field_overrides: [],
+          },
+          {
+            case_field_id: 'OtherDescription',
+            order: 3,
             page_column_no: null,
             complex_field_overrides: [],
           },

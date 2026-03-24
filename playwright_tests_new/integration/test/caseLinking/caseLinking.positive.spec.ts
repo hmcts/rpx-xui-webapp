@@ -24,9 +24,14 @@ function formatCaseReference(caseReference: string): string {
 test.describe('Case linking integration', { tag: ['@integration', '@integration-case-linking'] }, () => {
   linkCaseAccessScenarios.forEach(({ label, userRoles, userIdentifier }) => {
     test(`links a case from case details and submits the selected reason as ${label}`, async ({ page, caseDetailsPage }) => {
-      await openCaseLinkingJourney(page, caseDetailsPage, {
-        userRoles: [...userRoles],
-      }, userIdentifier);
+      await openCaseLinkingJourney(
+        page,
+        caseDetailsPage,
+        {
+          userRoles: [...userRoles],
+        },
+        userIdentifier
+      );
 
       await test.step('Open the Link cases event from the case-actions dropdown', async () => {
         await caseDetailsPage.caseActionsDropdown.selectOption({ label: 'Link cases' });
@@ -53,7 +58,8 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
           (request) => request.url().includes(`/data/cases/${CASE_LINKING_CASE_REFERENCE}/events`) && request.method() === 'POST'
         );
         const submitResponse = page.waitForResponse(
-          (response) => response.url().includes(`/data/cases/${CASE_LINKING_CASE_REFERENCE}/events`) && response.request().method() === 'POST'
+          (response) =>
+            response.url().includes(`/data/cases/${CASE_LINKING_CASE_REFERENCE}/events`) && response.request().method() === 'POST'
         );
 
         await page.getByRole('button', { name: /^submit$/i }).click();
@@ -136,7 +142,8 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
       (request) => request.url().includes(`/data/cases/${CASE_LINKING_CASE_REFERENCE}/events`) && request.method() === 'POST'
     );
     const submitResponse = page.waitForResponse(
-      (response) => response.url().includes(`/data/cases/${CASE_LINKING_CASE_REFERENCE}/events`) && response.request().method() === 'POST'
+      (response) =>
+        response.url().includes(`/data/cases/${CASE_LINKING_CASE_REFERENCE}/events`) && response.request().method() === 'POST'
     );
     await page.getByRole('button', { name: /^submit$/i }).click();
 

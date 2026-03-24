@@ -4,12 +4,13 @@ import { buildEmptyCaseFileViewCategoriesMock } from '../../mocks/caseFileView.m
 import { applySessionCookies } from '../../../common/sessionCapture';
 
 const caseId = '1690807693531270';
+const userIdentifier = 'RESTRICTED_CASE_FILE_VIEW_ON';
 
 test.beforeEach(async ({ page }) => {
-  await applySessionCookies(page, 'RESTRICTED_CASE_FILE_VIEW_ON');
+  await applySessionCookies(page, userIdentifier);
 });
 
-test.describe('Case file view negative integration coverage', { tag: ['@integration', '@integration-case-file-view'] }, () => {
+test.describe(`Case file view negative with ${userIdentifier}`, { tag: ['@integration', '@integration-case-file-view'] }, () => {
   test('Empty categories response shows an empty case file view state', async ({ caseDetailsPage, caseFileViewPage, page }) => {
     await test.step('Set up case file view mocks with no categories', async () => {
       await setupCaseFileViewMockRoutes(page, caseId, {

@@ -7,7 +7,7 @@ const caseId = '1690807693531270';
 const fileViewOnUser = 'RESTRICTED_CASE_FILE_VIEW_ON';
 const fileViewOffUser = 'RESTRICTED_CASE_FILE_VIEW_OFF';
 
-test.describe('Case file view integration coverage', { tag: ['@integration', '@integration-case-file-view'] }, () => {
+test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@integration-case-file-view'] }, () => {
   test('V1.1 shows tree view, media viewer, document count, folder hierarchy and upload stamps', async ({
     caseDetailsPage,
     caseFileViewPage,
@@ -99,26 +99,6 @@ test.describe('Case file view integration coverage', { tag: ['@integration', '@i
     });
   });
 
-  test('V1 mode User still sees core case file view content', async ({ caseDetailsPage, caseFileViewPage, page }) => {
-    await test.step('Set up V1 case file view mocks', async () => {
-      await applySessionCookies(page, fileViewOffUser);
-      await setupCaseFileViewMockRoutes(page, caseId);
-      await setupCaseFileViewDocumentBinaryMockRoutes(page);
-    });
-
-    await test.step('Open the Case File View tab in V1 mode', async () => {
-      await page.goto(`/cases/case-details/PRIVATELAW/PRLAPPS/${caseId}`);
-      await caseDetailsPage.selectCaseDetailsTab('Case File View');
-      await caseFileViewPage.waitForReady();
-    });
-
-    await test.step('Show the core case file view content', async () => {
-      await expect(caseFileViewPage.documentHeader).toContainText('Documents (6)');
-      const evidenceNode = await caseFileViewPage.getFolderNode('Evidence');
-      await expect.soft(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Alpha evidence.pdf')).toContainText('20 Oct 2023');
-    });
-  });
-
   test('sort options reorder documents as expected', async ({ caseDetailsPage, caseFileViewPage, page }) => {
     await test.step('Set up case file and binary document mocks', async () => {
       await applySessionCookies(page, fileViewOnUser);
@@ -169,6 +149,28 @@ test.describe('Case file view integration coverage', { tag: ['@integration', '@i
       await expect
         .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'))
         .toEqual(['Alpha evidence.pdf', 'Middle evidence.pdf', 'Zeta evidence.pdf']);
+    });
+  });
+});
+
+test.describe(`Case file view as ${fileViewOffUser}`, { tag: ['@integration', '@integration-case-file-view'] }, () => {
+  test('V1 mode User still sees core case file view content', async ({ caseDetailsPage, caseFileViewPage, page }) => {
+    await test.step('Set up V1 case file view mocks', async () => {
+      await applySessionCookies(page, fileViewOffUser);
+      await setupCaseFileViewMockRoutes(page, caseId);
+      await setupCaseFileViewDocumentBinaryMockRoutes(page);
+    });
+
+    await test.step('Open the Case File View tab in V1 mode', async () => {
+      await page.goto(`/cases/case-details/PRIVATELAW/PRLAPPS/${caseId}`);
+      await caseDetailsPage.selectCaseDetailsTab('Case File View');
+      await caseFileViewPage.waitForReady();
+    });
+
+    await test.step('Show the core case file view content', async () => {
+      await expect(caseFileViewPage.documentHeader).toContainText('Documents (6)');
+      const evidenceNode = await caseFileViewPage.getFolderNode('Evidence');
+      await expect.soft(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Alpha evidence.pdf')).toContainText('20 Oct 2023');
     });
   });
 });

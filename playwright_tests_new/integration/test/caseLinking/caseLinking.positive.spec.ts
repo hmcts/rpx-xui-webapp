@@ -9,8 +9,12 @@ import { openCaseLinkingJourney } from '../../helpers';
 
 const caseLinkingRoles = ['hmcts-staff'];
 
+function formatCaseReference(caseReference: string): string {
+  return caseReference.replace(/(\d{4})(?=\d)/g, '$1-');
+}
+
 test.describe('Case linking integration', { tag: ['@integration', '@integration-case-linking'] }, () => {
-  test('links a case from case details and persists the selected reason', async ({ page, caseDetailsPage }) => {
+  test('links a case from case details and submits the selected reason', async ({ page, caseDetailsPage }) => {
     await openCaseLinkingJourney(page, caseDetailsPage, {
       userRoles: caseLinkingRoles,
     });
@@ -24,7 +28,7 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
 
     await test.step('Enter the linked case details and continue to check-your-answers', async () => {
       await page.getByLabel('Linked case reference').fill(CASE_LINKING_RELATED_CASE_REFERENCE);
-      await page.getByLabel('Reason for link').selectOption(CASE_LINKING_REASON_CODE);
+      await page.getByLabel('Reason for link').selectOption({ label: CASE_LINKING_REASON_LABEL });
       await page.getByRole('button', { name: /^continue$/i }).click();
 
       await expect(page.getByRole('heading', { name: /check your answers/i })).toBeVisible();
@@ -56,8 +60,9 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
       await expect(page).toHaveURL(new RegExp(`/cases/case-details/.*/.*/${CASE_LINKING_CASE_REFERENCE}(?:$|#)`));
       await caseDetailsPage.selectCaseDetailsTab('Linked cases');
       const linkedCasesPanel = page.locator('[role="tabpanel"]:visible').first();
-      await expect(linkedCasesPanel.getByText(CASE_LINKING_RELATED_CASE_REFERENCE, { exact: true })).toBeVisible();
-      await expect(linkedCasesPanel.getByText(CASE_LINKING_REASON_LABEL, { exact: true })).toBeVisible();
+      await expect(
+        linkedCasesPanel.getByRole('link', { name: formatCaseReference(CASE_LINKING_RELATED_CASE_REFERENCE) })
+      ).toBeVisible();
     });
   });
 });

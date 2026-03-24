@@ -16,14 +16,22 @@ function metadataCaseReference(caseDetails: Record<string, unknown>): number | u
 }
 
 function firstLinkedCaseReference(caseDetails: Record<string, unknown>): string | undefined {
-  const firstLinkedCase = firstLinkedCase(caseDetails);
+  const linkedCase = firstLinkedCase(caseDetails);
+  const linkedCaseValue =
+    typeof linkedCase?.value === 'object' && linkedCase.value !== null
+      ? (linkedCase.value as Record<string, unknown>)
+      : undefined;
 
-  return typeof firstLinkedCase?.caseReference === 'string' ? firstLinkedCase.caseReference : undefined;
+  return typeof linkedCaseValue?.CaseReference === 'string' ? linkedCaseValue.CaseReference : undefined;
 }
 
 function firstLinkedCaseReasonCode(caseDetails: Record<string, unknown>): string | undefined {
-  const firstLinkedCase = firstLinkedCase(caseDetails);
-  const reasons = Array.isArray(firstLinkedCase?.reasons) ? firstLinkedCase.reasons : [];
+  const linkedCase = firstLinkedCase(caseDetails);
+  const linkedCaseValue =
+    typeof linkedCase?.value === 'object' && linkedCase.value !== null
+      ? (linkedCase.value as Record<string, unknown>)
+      : undefined;
+  const reasons = Array.isArray(linkedCaseValue?.Reasons) ? linkedCaseValue.Reasons : [];
   const firstReason = reasons[0];
 
   return typeof firstReason?.reasonCode === 'string' ? firstReason.reasonCode : undefined;

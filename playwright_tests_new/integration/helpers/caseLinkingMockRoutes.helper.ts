@@ -75,6 +75,20 @@ function resolveSubmittedCaseLinkData(route: Route): { linkedCaseReference: stri
   return { linkedCaseReference, reasonCode };
 }
 
+function buildValidationResponse(route: Route): Record<string, unknown> {
+  const payload = route.request().postDataJSON() as { data?: Record<string, unknown> } | null;
+  const pageId = new URL(route.request().url()).searchParams.get('pageId') ?? '';
+
+  return {
+    data: payload?.data ?? {},
+    _links: {
+      self: {
+        href: `/data/case-types/${CASE_LINKING_CASE_TYPE}/validate?pageId=${pageId}`,
+      },
+    },
+  };
+}
+
 export async function setupCaseLinkingMockRoutes(page: Page, config: CaseLinkingMockRoutesConfig): Promise<void> {
   const userDetails = buildHearingsUserDetailsMock(config.userRoles);
   const appConfig = buildHearingsAppConfigMock();
@@ -97,6 +111,10 @@ export async function setupCaseLinkingMockRoutes(page: Page, config: CaseLinking
       await fulfillRoute(route, undefined, eventTrigger);
     }
   );
+
+  await page.route(`**/data/case-types/${CASE_LINKING_CASE_TYPE}/validate*`, async (route) => {
+    await fulfillRoute(route, undefined, buildValidationResponse(route));
+  });
 
   await page.route(
     `**/data/internal/cases/${CASE_LINKING_CASE_REFERENCE}/event-triggers/${CASE_LINKING_TRIGGER_ID}*`,

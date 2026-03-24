@@ -32,6 +32,7 @@ function setCaseLinksValue(caseDetails: Record<string, unknown>, linkedCases: Re
 
   if (caseLinksField) {
     caseLinksField.value = linkedCases;
+    caseLinksField.formatted_value = linkedCases;
   }
 }
 
@@ -132,10 +133,17 @@ function buildCaseLinkReason(code: string): Record<string, string> {
 
 function buildLinkedCaseValue(linkedCaseReference: string, reasonCode: string): Record<string, unknown> {
   return {
-    caseReference: linkedCaseReference,
-    modified_date_time: '2022-05-10',
-    caseType: 'Benefit_SCSS',
-    reasons: [buildCaseLinkReason(reasonCode)],
+    CaseReference: linkedCaseReference,
+    ModifiedDateTime: '2022-05-10',
+    CaseType: 'Benefit_SCSS',
+    Reasons: [buildCaseLinkReason(reasonCode)],
+  };
+}
+
+function buildLinkedCaseCollectionItem(linkedCaseReference: string, reasonCode: string): Record<string, unknown> {
+  return {
+    id: linkedCaseReference,
+    value: buildLinkedCaseValue(linkedCaseReference, reasonCode),
   };
 }
 
@@ -167,7 +175,7 @@ export function buildCaseLinkingCaseDetailsMock(options?: {
     caseDetails,
     options?.withLinks
       ? [
-          buildLinkedCaseValue(
+          buildLinkedCaseCollectionItem(
             options.linkedCaseReference ?? CASE_LINKING_RELATED_CASE_REFERENCE,
             options.reasonCode ?? CASE_LINKING_REASON_CODE
           ),

@@ -1,12 +1,11 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { setupCaseFileViewMockRoutes } from '../../helpers';
-import { CASE_FILE_VIEW_DOC_IDS } from '../../mocks/caseFileView.mock';
+import { setupCaseFileViewDocumentBinaryMockRoutes, setupCaseFileViewMockRoutes } from '../../helpers';
+import { CASE_FILE_VIEW_DOC_IDS, CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF } from '../../mocks/caseFileView.mock';
+import { applySessionCookies } from '../../../common/sessionCapture';
 
 const caseId = '1690807693531270';
-const minimalPdf = Buffer.from(
-  '%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 200 200] >>\nendobj\ntrailer\n<< /Root 1 0 R >>\n%%EOF',
-  'utf-8'
-);
+const fileViewOnUser = 'RESTRICTED_CASE_FILE_VIEW_ON';
+const fileViewOffUser = 'RESTRICTED_CASE_FILE_VIEW_OFF';
 
 test.describe('Case file view integration coverage', { tag: ['@integration', '@integration-case-file-view'] }, () => {
   test('V1.1 shows tree view, media viewer, document count, folder hierarchy and upload stamps', async ({
@@ -15,7 +14,8 @@ test.describe('Case file view integration coverage', { tag: ['@integration', '@i
     page,
   }) => {
     await test.step('Set up V1.1 case file view mocks', async () => {
-      await setupCaseFileViewMockRoutes(page, caseId, 'RESTRICTED_CASE_FILE_VIEW_V1.1_ON');
+      await applySessionCookies(page, fileViewOnUser);
+      await setupCaseFileViewMockRoutes(page, caseId);
     });
 
     await test.step('Open the Case File View tab', async () => {
@@ -24,43 +24,47 @@ test.describe('Case file view integration coverage', { tag: ['@integration', '@i
       await caseFileViewPage.waitForReady();
     });
 
-    await test.step('Show the document header and folder hierarchy', async () => {
-      await expect(caseFileViewPage.documentHeader).toContainText('Documents (6)');
+    await test.step('Check document header file counts and folder hierarchy', async () => {
+      await expect.soft(caseFileViewPage.documentHeader).toContainText('Documents (6)');
 
+      const evidenceNode = await caseFileViewPage.getFolderNode('Evidence');
+      const applicationsNode = await caseFileViewPage.getFolderNode('Applications');
       const ordersNode = await caseFileViewPage.getFolderNode('Orders');
       const approvedOrdersNode = await caseFileViewPage.getFolderNode('Orders.Approved orders');
-      await expect(caseFileViewPage.getFolderName(ordersNode)).toContainText('Orders');
-      await expect(caseFileViewPage.getFolderName(approvedOrdersNode)).toContainText('Approved orders');
 
-      await expect(caseFileViewPage.getFolderCount(ordersNode)).toHaveText('2');
-      await expect(caseFileViewPage.getFolderCount(approvedOrdersNode)).toHaveText('1');
+      await expect.soft(caseFileViewPage.getFolderName(applicationsNode)).toContainText('Applications');
+      await expect.soft(caseFileViewPage.getFolderName(ordersNode)).toContainText('Orders');
+      await expect.soft(caseFileViewPage.getFolderName(approvedOrdersNode)).toContainText('Approved orders');
+      await expect.soft(caseFileViewPage.getFolderName(evidenceNode)).toContainText('Evidence');
+
+      await expect.soft(caseFileViewPage.getFolderCount(evidenceNode)).toHaveText('3');
+      await expect.soft(caseFileViewPage.getFolderCount(ordersNode)).toHaveText('2');
+      await expect.soft(caseFileViewPage.getFolderCount(approvedOrdersNode)).toHaveText('1');
+      await expect.soft(caseFileViewPage.getFolderCount(applicationsNode)).toHaveText('1');
     });
 
-    await test.step('Show upload timestamps for evidence documents', async () => {
+    await test.step('Upload timestamps for evidence document are correct', async () => {
       const evidenceNode = await caseFileViewPage.getFolderNode('Evidence');
 
-      await expect(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Alpha evidence.pdf')).toContainText('20 Oct 2023');
-      await expect(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Middle evidence.pdf')).toContainText('21 Oct 2023');
-      await expect(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Zeta evidence.pdf')).toContainText('22 Oct 2023');
+      await expect.soft(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Alpha evidence.pdf')).toContainText('20 Oct 2023');
+      await expect.soft(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Middle evidence.pdf')).toContainText('21 Oct 2023');
+      await expect.soft(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Zeta evidence.pdf')).toContainText('22 Oct 2023');
     });
   });
 
-  test('selecting V2 and V1 documents updates the media viewer request target', async ({
-    caseDetailsPage,
-    caseFileViewPage,
-    page,
-  }) => {
+  test('Case view can show V2 and V1 documents', async ({ caseDetailsPage, caseFileViewPage, page }) => {
     const binaryRequests: string[] = [];
     await test.step('Set up case file and binary document mocks', async () => {
-      await setupCaseFileViewMockRoutes(page, caseId, 'RESTRICTED_CASE_FILE_VIEW_V1.1_ON');
+      await applySessionCookies(page, fileViewOnUser);
+      await setupCaseFileViewMockRoutes(page, caseId);
 
       await page.route('**/documentsv2/*/binary', async (route) => {
         binaryRequests.push(route.request().url());
-        await route.fulfill({ status: 200, contentType: 'application/pdf', body: minimalPdf });
+        await route.fulfill({ status: 200, contentType: 'application/pdf', body: CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF });
       });
       await page.route('**/documents/*/binary', async (route) => {
         binaryRequests.push(route.request().url());
-        await route.fulfill({ status: 200, contentType: 'application/pdf', body: minimalPdf });
+        await route.fulfill({ status: 200, contentType: 'application/pdf', body: CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF });
       });
     });
 
@@ -76,7 +80,7 @@ test.describe('Case file view integration coverage', { tag: ['@integration', '@i
       await caseFileViewPage.clickFile('Evidence', 'Zeta evidence.pdf');
       await expect.poll(() => binaryRequests.length).toBeGreaterThan(requestCountBeforeV2);
       await expect
-        .poll(() => binaryRequests[binaryRequests.length - 1] || '')
+        .poll(() => binaryRequests.at(-1) || '')
         .toContain(`/documentsv2/${CASE_FILE_VIEW_DOC_IDS.evidenceZetaV2}/binary`);
     });
 
@@ -85,22 +89,21 @@ test.describe('Case file view integration coverage', { tag: ['@integration', '@i
       await caseFileViewPage.clickFile('Evidence', 'Alpha evidence.pdf');
       await expect.poll(() => binaryRequests.length).toBeGreaterThan(requestCountBeforeV1);
       await expect
-        .poll(() => binaryRequests[binaryRequests.length - 1] || '')
+        .poll(() => binaryRequests.at(-1) || '')
         .toContain(`/documents/${CASE_FILE_VIEW_DOC_IDS.evidenceAlphaV1}/binary`);
       await expect(caseFileViewPage.mediaViewerContainer).toBeVisible();
     });
+
+    await test.step('Verify media viewer content', async () => {
+      expect(await caseFileViewPage.mediaViewerContainer.textContent()).toContain('Case File View - Document Delivery Fixture');
+    });
   });
 
-  test('V1 mode still shows core case file view content', async ({ caseDetailsPage, caseFileViewPage, page }) => {
+  test('V1 mode User still sees core case file view content', async ({ caseDetailsPage, caseFileViewPage, page }) => {
     await test.step('Set up V1 case file view mocks', async () => {
-      await setupCaseFileViewMockRoutes(page, caseId, 'RESTRICTED_CASE_FILE_VIEW_V1.1_OFF');
-
-      await page.route('**/documentsv2/*/binary', async (route) => {
-        await route.fulfill({ status: 200, contentType: 'application/pdf', body: minimalPdf });
-      });
-      await page.route('**/documents/*/binary', async (route) => {
-        await route.fulfill({ status: 200, contentType: 'application/pdf', body: minimalPdf });
-      });
+      await applySessionCookies(page, fileViewOffUser);
+      await setupCaseFileViewMockRoutes(page, caseId);
+      await setupCaseFileViewDocumentBinaryMockRoutes(page);
     });
 
     await test.step('Open the Case File View tab in V1 mode', async () => {
@@ -111,19 +114,16 @@ test.describe('Case file view integration coverage', { tag: ['@integration', '@i
 
     await test.step('Show the core case file view content', async () => {
       await expect(caseFileViewPage.documentHeader).toContainText('Documents (6)');
+      const evidenceNode = await caseFileViewPage.getFolderNode('Evidence');
+      await expect.soft(caseFileViewPage.getFileUploadStamp(evidenceNode, 'Alpha evidence.pdf')).toContainText('20 Oct 2023');
     });
   });
 
   test('sort options reorder documents as expected', async ({ caseDetailsPage, caseFileViewPage, page }) => {
     await test.step('Set up case file and binary document mocks', async () => {
-      await setupCaseFileViewMockRoutes(page, caseId, 'RESTRICTED_CASE_FILE_VIEW_V1.1_ON');
-
-      await page.route('**/documentsv2/*/binary', async (route) => {
-        await route.fulfill({ status: 200, contentType: 'application/pdf', body: minimalPdf });
-      });
-      await page.route('**/documents/*/binary', async (route) => {
-        await route.fulfill({ status: 200, contentType: 'application/pdf', body: minimalPdf });
-      });
+      await applySessionCookies(page, fileViewOnUser);
+      await setupCaseFileViewMockRoutes(page, caseId);
+      await setupCaseFileViewDocumentBinaryMockRoutes(page);
     });
 
     await test.step('Open the Case File View tab', async () => {

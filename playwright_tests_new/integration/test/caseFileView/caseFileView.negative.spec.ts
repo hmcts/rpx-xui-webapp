@@ -1,13 +1,18 @@
 import { expect, test } from '../../../E2E/fixtures';
 import { setupCaseFileViewMockRoutes } from '../../helpers';
 import { buildEmptyCaseFileViewCategoriesMock } from '../../mocks/caseFileView.mock';
+import { applySessionCookies } from '../../../common/sessionCapture';
 
 const caseId = '1690807693531270';
+
+test.beforeEach(async ({ page }) => {
+  await applySessionCookies(page, 'RESTRICTED_CASE_FILE_VIEW_ON');
+});
 
 test.describe('Case file view negative integration coverage', { tag: ['@integration', '@integration-case-file-view'] }, () => {
   test('Empty categories response shows an empty case file view state', async ({ caseDetailsPage, caseFileViewPage, page }) => {
     await test.step('Set up case file view mocks with no categories', async () => {
-      await setupCaseFileViewMockRoutes(page, caseId, 'RESTRICTED_CASE_FILE_VIEW_V1.1_ON', {
+      await setupCaseFileViewMockRoutes(page, caseId, {
         categoriesMock: buildEmptyCaseFileViewCategoriesMock(),
       });
     });
@@ -27,7 +32,7 @@ test.describe('Case file view negative integration coverage', { tag: ['@integrat
 
   test('Document binary failure keeps the case file view stable', async ({ caseDetailsPage, caseFileViewPage, page }) => {
     await test.step('Set up case file view mocks with a failing binary endpoint', async () => {
-      await setupCaseFileViewMockRoutes(page, caseId, 'RESTRICTED_CASE_FILE_VIEW_V1.1_ON');
+      await setupCaseFileViewMockRoutes(page, caseId);
 
       await page.route('**/documentsv2/*/binary', async (route) => {
         await route.fulfill({

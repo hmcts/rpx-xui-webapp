@@ -1,8 +1,10 @@
 import { expect, test } from '../../../../E2E/fixtures';
 import { applyPrewarmedSessionCookies, setupTaskListBootstrapRoutes, taskListRoutePattern } from '../../../helpers';
 import { buildTaskListMock, myActionsList } from '../../../mocks/taskList.mock';
+import { buildMyCases } from '../../../mocks/myCases.mock';
 
 const userIdentifier = 'STAFF_ADMIN';
+const allWorkCasesRoutePattern = /\/workallocation\/all-work\/cases(?:\?.*)?$/;
 
 const supportedJurisdictions = ['IA', 'CIVIL'];
 const supportedJurisdictionDetails = [
@@ -74,6 +76,7 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
 
   test('All-work Case name sort persists after navigating away and back', async ({ taskListPage, page }) => {
     const taskListMockResponse = buildTaskListMock(40, '', myActionsList);
+    const allWorkCasesMockResponse = buildMyCases(3);
     const caseNameSortHeaderCell = taskListPage.sortByCaseNameTableHeader.locator('xpath=ancestor::th[1]');
 
     await test.step('Setup route mocks for all-work tasks sorting', async () => {
@@ -83,6 +86,13 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
           status: 200,
           contentType: 'application/json',
           body: JSON.stringify(taskListMockResponse),
+        });
+      });
+      await page.route(allWorkCasesRoutePattern, async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(allWorkCasesMockResponse),
         });
       });
     });
@@ -97,14 +107,41 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
       await expect(caseNameSortHeaderCell).toHaveAttribute('aria-sort', 'ascending');
     });
 
-    await test.step('Navigate away then return to all-work tasks', async () => {
-      await taskListPage.goto();
+    await test.step('Navigate to All work cases then back to All work tasks', async () => {
+      await taskListPage.taskTableTabs.filter({ hasText: 'Cases' }).first().click();
+      await page.waitForURL(/\/work\/all-work\/cases$/, { timeout: 15_000 });
+
+      const allWorkTasksRequestPromise = page.waitForRequest((request) => {
+        if (!taskListRoutePattern.exec(request.url()) || request.method() !== 'POST') {
+          return false;
+        }
+
+        try {
+          const requestBody = request.postDataJSON() as {
+            searchRequest?: {
+              request_context?: string;
+              sorting_parameters?: Array<{ sort_by?: string; sort_order?: string }>;
+            };
+            view?: string;
+          };
+
+          return (
+            requestBody.view === 'AllWork' &&
+            requestBody.searchRequest?.request_context === 'ALL_WORK' &&
+            requestBody.searchRequest?.sorting_parameters?.some(
+              (sortParameter) => sortParameter.sort_by === 'caseName' && sortParameter.sort_order === 'asc'
+            ) === true
+          );
+        } catch {
+          return false;
+        }
+      });
+
+      await taskListPage.taskTableTabs.filter({ hasText: 'Tasks' }).first().click();
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
 
-      await taskListPage.gotoAllWorkTasks();
-      await expect(taskListPage.taskListTable).toBeVisible();
-      await taskListPage.exuiSpinnerComponent.wait();
+      await allWorkTasksRequestPromise;
     });
 
     await test.step('Verify Case name sort remains selected on all-work tasks', async () => {

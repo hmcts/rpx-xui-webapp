@@ -526,6 +526,10 @@ export class TaskListPage extends Base {
     return this.taskActionsRows.nth(rowIndex);
   }
 
+  getTaskActionForRow(rowIndex: number, actionId: string): Locator {
+    return this.getTaskActionsRow(rowIndex).locator(`#action_${actionId}`).first();
+  }
+
   async openManageActionsForRow(
     rowIndex: number,
     context: string,
@@ -646,6 +650,88 @@ export class TaskListPage extends Base {
     }
 
     throw new Error(`Timed out after ${timeoutMs}ms clicking task action (${context}). url=${this.page.url()}`);
+  }
+
+  async clickTaskActionForRow(
+    rowIndex: number,
+    actionId: string,
+    context: string,
+    options: {
+      timeoutMs?: number;
+      pollMs?: number;
+    } = {}
+  ) {
+    const timeoutMs = options.timeoutMs ?? 15_000;
+    const pollMs = options.pollMs ?? 500;
+    const deadline = Date.now() + timeoutMs;
+    let attempt = 0;
+
+    while (Date.now() < deadline) {
+      await this.assertTaskListInteractive(`clicking task action (${context}) for row ${rowIndex + 1}`);
+      const targetAction = this.getTaskActionForRow(rowIndex, actionId);
+
+      const visible = await targetAction
+        .waitFor({ state: 'visible', timeout: Math.max(1_000, Math.min(2_500, deadline - Date.now())) })
+        .then(() => true)
+        .catch(() => false);
+
+      if (!visible) {
+        await this.openManageActionsForRow(rowIndex, `${context} reopen ${attempt + 1}`, {
+          timeoutMs: Math.max(1_000, Math.min(5_000, deadline - Date.now())),
+          pollMs,
+        });
+        attempt += 1;
+        continue;
+      }
+
+      await targetAction.scrollIntoViewIfNeeded().catch(() => undefined);
+
+      const actionTimeoutMs = Math.max(1_000, Math.min(2_500, deadline - Date.now()));
+      const clickStrategies = [
+        async () => targetAction.click({ force: true, noWaitAfter: true, timeout: actionTimeoutMs }),
+        async () => targetAction.dispatchEvent('click'),
+        async () => targetAction.evaluate((actionElement: HTMLAnchorElement) => actionElement.click()),
+        async () => {
+          await targetAction.focus();
+          await this.page.keyboard.press('Enter');
+        },
+      ];
+
+      let lastTransientError: Error | null = null;
+      for (const clickStrategy of clickStrategies) {
+        try {
+          await clickStrategy();
+          return;
+        } catch (error) {
+          const message = error instanceof Error ? error.message : String(error);
+          const isTransientActionRefresh =
+            /Timeout \d+ms exceeded/i.test(message) ||
+            /element was detached from the DOM/i.test(message) ||
+            /element is not visible/i.test(message) ||
+            /element is not stable/i.test(message) ||
+            /intercepts pointer events/i.test(message);
+
+          if (!isTransientActionRefresh) {
+            throw error;
+          }
+
+          lastTransientError = error instanceof Error ? error : new Error(message);
+        }
+      }
+
+      if (lastTransientError) {
+        await this.openManageActionsForRow(rowIndex, `${context} retry ${attempt + 1}`, {
+          timeoutMs: Math.max(1_000, Math.min(5_000, deadline - Date.now())),
+          pollMs,
+        });
+        attempt += 1;
+        await this.page.waitForTimeout(Math.min(pollMs, Math.max(0, deadline - Date.now())));
+      }
+    }
+
+    throw new Error(
+      `Timed out after ${timeoutMs}ms clicking task action (${context}) for row ${rowIndex + 1}. url=${this.page.url()}`
+    );
   }
 
   async submitActionAndWaitForRequest(

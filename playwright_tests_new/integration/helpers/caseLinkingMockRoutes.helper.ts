@@ -5,7 +5,7 @@ import {
   buildHearingsEnvironmentConfigMock,
   buildHearingsUserDetailsMock,
 } from '../mocks/hearings.mock';
-import { applyPrewarmedSessionCookies } from './prewarmedSession.helper';
+import { applySessionCookies } from '../../common/sessionCapture';
 import {
   buildCaseLinkingCaseDetailsMock,
   buildCaseLinkingEventTriggerMock,
@@ -192,7 +192,7 @@ export async function openCaseLinkingJourney(
   config: CaseLinkingMockRoutesConfig,
   userIdentifier = CASE_LINKING_USER
 ): Promise<void> {
-  await applyPrewarmedSessionCookies(page, userIdentifier);
+  await applySessionCookies(page, userIdentifier);
   await setupCaseLinkingMockRoutes(page, config);
   await page.goto(`/cases/case-details/${CASE_LINKING_JURISDICTION}/${CASE_LINKING_CASE_TYPE}/${CASE_LINKING_CASE_REFERENCE}`, {
     waitUntil: 'domcontentloaded',

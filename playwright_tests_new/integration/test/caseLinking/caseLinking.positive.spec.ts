@@ -34,18 +34,19 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
       );
 
       await test.step('Open the Link cases event from the case-actions dropdown', async () => {
-        await caseDetailsPage.caseActionsDropdown.selectOption({ label: 'Link cases' });
-        await caseDetailsPage.caseActionGoButton.click();
-        await expect(page.getByLabel('Linked case reference')).toBeVisible();
-        await expect(page.getByLabel('Reason for link')).toBeVisible();
+        await caseDetailsPage.openLinkCasesEvent();
+        await expect(caseDetailsPage.linkedCaseReferenceInput).toBeVisible();
+        await expect(caseDetailsPage.caseLinkReasonSelect).toBeVisible();
       });
 
       await test.step('Enter the linked case details and continue to check-your-answers', async () => {
-        await page.getByLabel('Linked case reference').fill(CASE_LINKING_RELATED_CASE_REFERENCE);
-        await page.getByLabel('Reason for link').selectOption({ label: CASE_LINKING_REASON_LABEL });
-        await page.getByRole('button', { name: /^continue$/i }).click();
+        await caseDetailsPage.fillCaseLinkDetails({
+          linkedCaseReference: CASE_LINKING_RELATED_CASE_REFERENCE,
+          reasonLabel: CASE_LINKING_REASON_LABEL,
+        });
+        await caseDetailsPage.continueCaseEvent();
 
-        await expect(page.getByRole('heading', { name: /check your answers/i })).toBeVisible();
+        await expect(caseDetailsPage.checkYourAnswersHeading).toBeVisible();
         const answers = await caseDetailsPage.trRowsToObjectInPage(page.getByRole('table').first());
         expect(answers).toMatchObject({
           'Linked case reference': CASE_LINKING_RELATED_CASE_REFERENCE,
@@ -62,7 +63,7 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
             response.url().includes(`/data/cases/${CASE_LINKING_CASE_REFERENCE}/events`) && response.request().method() === 'POST'
         );
 
-        await page.getByRole('button', { name: /^submit$/i }).click();
+        await caseDetailsPage.submitCaseEvent();
 
         const request = await submitRequest;
         const response = await submitResponse;
@@ -121,16 +122,16 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
       userRoles: ['hmcts-staff'],
     });
 
-    await caseDetailsPage.caseActionsDropdown.selectOption({ label: 'Link cases' });
-    await caseDetailsPage.caseActionGoButton.click();
+    await caseDetailsPage.openLinkCasesEvent();
+    await caseDetailsPage.fillCaseLinkDetails({
+      linkedCaseReference: CASE_LINKING_RELATED_CASE_REFERENCE,
+      reasonLabel: CASE_LINKING_OTHER_REASON_LABEL,
+      otherDescription: CASE_LINKING_OTHER_DESCRIPTION,
+    });
+    await expect(caseDetailsPage.caseLinkOtherDescriptionInput).toBeVisible();
+    await caseDetailsPage.continueCaseEvent();
 
-    await page.getByLabel('Linked case reference').fill(CASE_LINKING_RELATED_CASE_REFERENCE);
-    await page.getByLabel('Reason for link').selectOption({ label: CASE_LINKING_OTHER_REASON_LABEL });
-    await expect(page.getByLabel('Other description')).toBeVisible();
-    await page.getByLabel('Other description').fill(CASE_LINKING_OTHER_DESCRIPTION);
-    await page.getByRole('button', { name: /^continue$/i }).click();
-
-    await expect(page.getByRole('heading', { name: /check your answers/i })).toBeVisible();
+    await expect(caseDetailsPage.checkYourAnswersHeading).toBeVisible();
     const answers = await caseDetailsPage.trRowsToObjectInPage(page.getByRole('table').first());
     expect(answers).toMatchObject({
       'Linked case reference': CASE_LINKING_RELATED_CASE_REFERENCE,
@@ -145,7 +146,7 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
       (response) =>
         response.url().includes(`/data/cases/${CASE_LINKING_CASE_REFERENCE}/events`) && response.request().method() === 'POST'
     );
-    await page.getByRole('button', { name: /^submit$/i }).click();
+    await caseDetailsPage.submitCaseEvent();
 
     const request = await submitRequest;
     const response = await submitResponse;

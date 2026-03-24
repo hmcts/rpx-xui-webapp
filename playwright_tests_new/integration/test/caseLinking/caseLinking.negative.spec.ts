@@ -17,15 +17,14 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
       userRoles: caseLinkingRoles,
     });
 
-    await caseDetailsPage.caseActionsDropdown.selectOption({ label: 'Link cases' });
-    await caseDetailsPage.caseActionGoButton.click();
-    await page.getByRole('button', { name: /^continue$/i }).click();
+    await caseDetailsPage.openLinkCasesEvent();
+    await caseDetailsPage.continueCaseEvent();
 
-    await expect(page.getByText('There is a problem')).toBeVisible();
+    await expect(caseDetailsPage.generalProblemHeading).toBeVisible();
     await expect(page.getByText('Linked case reference is required').first()).toBeVisible();
     await expect(page.getByText('Reason for link is required').first()).toBeVisible();
-    await expect(page.getByLabel('Linked case reference')).toBeVisible();
-    await expect(page.getByLabel('Reason for link')).toBeVisible();
+    await expect(caseDetailsPage.linkedCaseReferenceInput).toBeVisible();
+    await expect(caseDetailsPage.caseLinkReasonSelect).toBeVisible();
   });
 
   test('shows a backend error when the user tries to link the case to itself', async ({ page, caseDetailsPage }) => {
@@ -37,13 +36,16 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
       },
     });
 
-    await caseDetailsPage.caseActionsDropdown.selectOption({ label: 'Link cases' });
-    await caseDetailsPage.caseActionGoButton.click();
-    await page.getByLabel('Linked case reference').fill(CASE_LINKING_CASE_REFERENCE);
-    await page.getByLabel('Reason for link').selectOption({ label: CASE_LINKING_REASON_LABEL });
-    await page.getByRole('button', { name: /^continue$/i }).click();
+    await test.step(`Open Link cases and continue with self-link reference ${CASE_LINKING_CASE_REFERENCE} using reason ${CASE_LINKING_REASON_LABEL}`, async () => {
+      await caseDetailsPage.openLinkCasesEvent();
+      await caseDetailsPage.fillCaseLinkDetails({
+        linkedCaseReference: CASE_LINKING_CASE_REFERENCE,
+        reasonLabel: CASE_LINKING_REASON_LABEL,
+      });
+      await caseDetailsPage.continueCaseEvent();
+    });
 
-    await expect(page.getByRole('heading', { name: /check your answers/i })).toBeVisible();
+    await expect(caseDetailsPage.checkYourAnswersHeading).toBeVisible();
 
     const failedResponse = page.waitForResponse(
       (response) =>
@@ -52,12 +54,14 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
         response.status() === 400
     );
 
-    await page.getByRole('button', { name: /^submit$/i }).click();
-    await failedResponse;
+    await test.step('Submit and verify the 400 self-link error "A case cannot be linked to itself"', async () => {
+      await caseDetailsPage.submitCaseEvent();
+      await failedResponse;
 
-    await expect(page.getByRole('heading', { name: /check your answers/i })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'The event could not be created' })).toBeVisible();
-    await expect(page.getByText('A case cannot be linked to itself')).toBeVisible();
+      await expect(caseDetailsPage.checkYourAnswersHeading).toBeVisible();
+      await expect(caseDetailsPage.eventCreationErrorHeading).toBeVisible();
+      await expect(page.getByText('A case cannot be linked to itself')).toBeVisible();
+    });
   });
 
   test('shows an error and stays on check-your-answers when the case-link submit fails', async ({ page, caseDetailsPage }) => {
@@ -69,14 +73,16 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
       },
     });
 
-    await caseDetailsPage.caseActionsDropdown.selectOption({ label: 'Link cases' });
-    await caseDetailsPage.caseActionGoButton.click();
+    await test.step(`Open Link cases and continue with linked case ${CASE_LINKING_RELATED_CASE_REFERENCE} using reason ${CASE_LINKING_REASON_LABEL}`, async () => {
+      await caseDetailsPage.openLinkCasesEvent();
+      await caseDetailsPage.fillCaseLinkDetails({
+        linkedCaseReference: CASE_LINKING_RELATED_CASE_REFERENCE,
+        reasonLabel: CASE_LINKING_REASON_LABEL,
+      });
+      await caseDetailsPage.continueCaseEvent();
+    });
 
-    await page.getByLabel('Linked case reference').fill(CASE_LINKING_RELATED_CASE_REFERENCE);
-    await page.getByLabel('Reason for link').selectOption({ label: CASE_LINKING_REASON_LABEL });
-    await page.getByRole('button', { name: /^continue$/i }).click();
-
-    await expect(page.getByRole('heading', { name: /check your answers/i })).toBeVisible();
+    await expect(caseDetailsPage.checkYourAnswersHeading).toBeVisible();
 
     const failedResponse = page.waitForResponse(
       (response) =>
@@ -85,12 +91,14 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
         response.status() === 500
     );
 
-    await page.getByRole('button', { name: /^submit$/i }).click();
-    await failedResponse;
+    await test.step('Submit and verify the 500 error "case-link-submit-failed" while remaining on check-your-answers', async () => {
+      await caseDetailsPage.submitCaseEvent();
+      await failedResponse;
 
-    await expect(page.getByRole('heading', { name: /check your answers/i })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'The event could not be created' })).toBeVisible();
-    await expect(page.getByText('case-link-submit-failed')).toBeVisible();
-    await expect(page).not.toHaveURL(new RegExp(`/cases/case-details/.*/.*/${CASE_LINKING_CASE_REFERENCE}(?:$|#)`));
+      await expect(caseDetailsPage.checkYourAnswersHeading).toBeVisible();
+      await expect(caseDetailsPage.eventCreationErrorHeading).toBeVisible();
+      await expect(page.getByText('case-link-submit-failed')).toBeVisible();
+      await expect(page).not.toHaveURL(new RegExp(`/cases/case-details/.*/.*/${CASE_LINKING_CASE_REFERENCE}(?:$|#)`));
+    });
   });
 });

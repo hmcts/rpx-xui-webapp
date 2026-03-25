@@ -43,6 +43,14 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
     username: 'ORG_USER_ASSIGNMENT_USERNAME',
     password: 'ORG_USER_ASSIGNMENT_PASSWORD',
   },
+  IAC_JUDGE_WA_R1: {
+    username: 'PW_IAC_JUDGE_WA_R1_EMAIL',
+    password: 'PW_IAC_JUDGE_WA_R1_PASSWORD',
+  },
+  IAC_CASEOFFICER_R2: {
+    username: 'PW_IAC_CASEOFFICER_R2_EMAIL',
+    password: 'PW_IAC_CASEOFFICER_R2_PASSWORD',
+  },
 };
 
 function normalizeUserIdentifier(userIdentifier: string): string {

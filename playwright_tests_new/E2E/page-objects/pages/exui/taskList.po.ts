@@ -67,7 +67,6 @@ export class TaskListPage extends Base {
   readonly notAuthorisedHeading = this.page.getByRole('heading', {
     name: "Sorry, you're not authorised to perform this action",
   });
-  readonly taskActionsRows = this.taskListTable.locator('tr.actions-row');
   readonly taskActionsRow = this.taskListTable.locator('tr.actions-row[aria-hidden="false"]');
 
   readonly taskActionCancel = this.taskActionsRow.locator('#action_cancel');
@@ -537,7 +536,10 @@ export class TaskListPage extends Base {
   }
 
   getTaskActionsRow(rowIndex: number): Locator {
-    return this.taskActionsRows.nth(rowIndex);
+    return this.manageCaseButtons
+      .nth(rowIndex)
+      .locator('xpath=ancestor::tr[1]/following-sibling::tr[contains(@class,"actions-row")][1]')
+      .first();
   }
 
   getTaskActionForRow(rowIndex: number, actionId: string): Locator {
@@ -592,10 +594,9 @@ export class TaskListPage extends Base {
       const actionTimeoutMs = Math.max(1_000, Math.min(2_500, deadline - Date.now()));
       const clickStrategies = [
         async () => targetAction.click({ force: true, noWaitAfter: true, timeout: actionTimeoutMs }),
-        async () => targetAction.dispatchEvent('click'),
-        async () => targetAction.evaluate((actionElement: HTMLAnchorElement) => actionElement.click()),
+        async () => targetAction.click({ force: true, timeout: actionTimeoutMs }),
         async () => {
-          await targetAction.focus();
+          await targetAction.focus({ timeout: actionTimeoutMs });
           await this.page.keyboard.press('Enter');
         },
       ];

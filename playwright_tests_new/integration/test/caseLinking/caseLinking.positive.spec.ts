@@ -116,7 +116,10 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
       formatCaseReferenceForDisplay(CASE_LINKING_SECOND_RELATED_CASE_REFERENCE),
     ]);
     await expect(firstLinkedCaseLink).toHaveAttribute('href', new RegExp(`/v2/case/${CASE_LINKING_RELATED_CASE_REFERENCE}$`));
-    await expect(secondLinkedCaseLink).toHaveAttribute('href', new RegExp(`/v2/case/${CASE_LINKING_SECOND_RELATED_CASE_REFERENCE}$`));
+    await expect(secondLinkedCaseLink).toHaveAttribute(
+      'href',
+      new RegExp(`/v2/case/${CASE_LINKING_SECOND_RELATED_CASE_REFERENCE}$`)
+    );
   });
 
   test('submits the Other case-link reason with a custom description', async ({ page, caseDetailsPage }) => {

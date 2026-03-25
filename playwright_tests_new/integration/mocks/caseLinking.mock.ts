@@ -257,9 +257,7 @@ export function buildCaseLinkingCaseDetailsMock(options?: {
   return caseDetails;
 }
 
-export function buildCaseLinkingLinkedCasesResponseMock(options?: {
-  linkedCases?: CaseLinkingLinkedCase[];
-}) {
+export function buildCaseLinkingLinkedCasesResponseMock(options?: { linkedCases?: CaseLinkingLinkedCase[] }) {
   const linkedCasesResponse = deepClone(linkedCasesResponseTemplate) as Record<string, unknown>;
   const linkedCases = options?.linkedCases ?? [];
 

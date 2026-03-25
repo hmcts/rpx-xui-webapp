@@ -6,6 +6,8 @@ const FILTER_PANEL_READY_TIMEOUT_MS = 10_000;
 const FILTER_CONTROL_READY_TIMEOUT_MS = 15_000;
 const FILTER_GROUP_OPERATION_TIMEOUT_MS = 10_000;
 const FILTER_INTERACTION_ATTEMPTS = 2;
+const PRIORITY_LIMIT_URGENT = 2000;
+const PRIORITY_LIMIT_HIGH = 5000;
 
 export class TaskListPage extends Base {
   readonly myWorkHeading = this.page.getByRole('heading', { name: /my work/i }).first();
@@ -25,6 +27,24 @@ export class TaskListPage extends Base {
   readonly selectTypesOfWorksError = this.filterPanel.locator('#types-of-work-error').first();
   readonly applyFilterButton = this.page.locator('button#applyFilter').first();
 
+  readonly allWorkServiceFilter = this.filterPanel
+    .locator('select[name="service"], select#service, [id*="service"] select')
+    .first();
+  readonly allWorkLocationAllRadio = this.filterPanel.getByRole('radio', { name: /^All$/ }).first();
+  readonly allWorkLocationSearchRadio = this.filterPanel.getByRole('radio', { name: 'Search for a location' }).first();
+  readonly allWorkTaskCategoryAllRadio = this.filterPanel.getByRole('radio', { name: /^All$/ }).nth(1);
+  readonly allWorkTaskCategoryUnassignedRadio = this.filterPanel.getByRole('radio', { name: 'Unassigned' }).first();
+  readonly allWorkTaskCategoryAssignedToPersonRadio = this.filterPanel
+    .getByRole('radio', { name: 'Assigned to a person' })
+    .first();
+  readonly allWorkTaskTypeFilter = this.filterPanel.getByRole('combobox', { name: /select a role type|task type/i }).first();
+  readonly allWorkTasksByRoleTypeFilter = this.filterPanel
+    .locator('h3:has-text("Tasks by role type")')
+    .locator('xpath=following::select[1]')
+    .first();
+  readonly allWorkPersonSearchInput = this.filterPanel.getByRole('combobox', { name: /select a person/i }).first();
+  readonly allWorkLocationSearchInput = this.filterPanel.locator('input[name="location"], input[id*="location"]').first();
+
   readonly taskTableTabs = this.page.locator('.hmcts-sub-navigation .hmcts-sub-navigation__link');
 
   readonly taskListTable = this.page.locator('table.govuk-table').first();
@@ -37,9 +57,16 @@ export class TaskListPage extends Base {
   readonly taskTableHeader = this.taskListTable.locator('thead');
   readonly taskTableFooter = this.taskListTable.locator('tfoot');
   readonly taskListResultsAmount = this.page.locator('#search-result-summary__text, [data-test="search-result-summary__text"]');
+  readonly myCasesResultsAmount = this.page.locator('.pagination-top');
+  readonly uniqueCasesSummary = this.page.locator('.second-line');
+  readonly myAccessNewCasesBadge = this.page.locator('.xui-alert-link__number');
   readonly manageCaseButtons = this.taskListTable.getByRole('button', { name: 'Manage' });
   readonly errorPageHeading = this.page.getByRole('heading', { name: /something went wrong/i });
   readonly serviceDownError = this.exuiBodyComponent.serviceDownError;
+  readonly serviceDownHeading = this.page.getByRole('heading', { name: 'Sorry, there is a problem with the service' });
+  readonly notAuthorisedHeading = this.page.getByRole('heading', {
+    name: "Sorry, you're not authorised to perform this action",
+  });
   readonly taskActionsRow = this.taskListTable.locator('tr.actions-row[aria-hidden="false"]');
 
   readonly taskActionCancel = this.taskActionsRow.locator('#action_cancel');
@@ -49,6 +76,8 @@ export class TaskListPage extends Base {
   readonly taskActionUnassign = this.taskActionsRow.locator('#action_unclaim');
   readonly taskActionClaim = this.taskActionsRow.locator('#action_claim');
   readonly taskActionClaimAndGo = this.taskActionsRow.locator('#action_claim-and-go');
+  readonly reallocateAction = this.taskActionsRow.locator('#action_reallocate');
+  readonly removeAllocationAction = this.taskActionsRow.locator('#action_remove');
   readonly confirmCancelTaskButton = this.page.getByRole('button', { name: 'Cancel task' });
   readonly caseDetailsTaskActionCancel = this.page
     .locator('#action_cancel')
@@ -86,6 +115,21 @@ export class TaskListPage extends Base {
     await this.waitForTaskListShellReady('task list navigation');
   }
 
+  async gotoMyCases() {
+    await this.page.goto('/work/my-work/my-cases', { waitUntil: 'domcontentloaded' });
+    await this.waitForTaskListShellReady('my cases navigation');
+  }
+
+  async gotoMyAccess() {
+    await this.page.goto('/work/my-work/my-access', { waitUntil: 'domcontentloaded' });
+    await this.waitForTaskListShellReady('my access navigation');
+  }
+
+  async gotoAllWorkTasks() {
+    await this.page.goto('/work/all-work/tasks', { waitUntil: 'domcontentloaded' });
+    await this.waitForTaskListShellReady('all work tasks navigation');
+  }
+
   async selectWorkMenuItem(menuItemText: string) {
     const menuItem = this.page.getByRole('link', { name: menuItemText, exact: true });
     await menuItem.click();
@@ -93,6 +137,62 @@ export class TaskListPage extends Base {
 
   async getResultsText() {
     return await this.taskListResultsAmount.textContent();
+  }
+
+  getExpectedPriorityLabel(majorPriority?: number | string, priorityDate?: string | Date, currentDate: Date = new Date()) {
+    const resolvedMajorPriority = this.parsePriorityValue(majorPriority);
+
+    if (resolvedMajorPriority === null) {
+      return '';
+    }
+
+    if (resolvedMajorPriority === PRIORITY_LIMIT_HIGH) {
+      return this.getExpectedHighThresholdPriorityLabel(priorityDate, currentDate);
+    }
+
+    if (resolvedMajorPriority <= PRIORITY_LIMIT_URGENT) {
+      return 'URGENT';
+    }
+
+    if (resolvedMajorPriority > PRIORITY_LIMIT_HIGH) {
+      return 'LOW';
+    }
+
+    return 'HIGH';
+  }
+
+  private parsePriorityValue(majorPriority?: number | string): number | null {
+    if (majorPriority === undefined || majorPriority === null) {
+      return null;
+    }
+
+    const resolvedMajorPriority = typeof majorPriority === 'number' ? majorPriority : Number.parseInt(String(majorPriority), 10);
+
+    return Number.isNaN(resolvedMajorPriority) ? null : resolvedMajorPriority;
+  }
+
+  private getExpectedHighThresholdPriorityLabel(priorityDate?: string | Date, currentDate: Date = new Date()) {
+    const resolvedPriorityDate = this.parsePriorityDate(priorityDate);
+
+    if (!resolvedPriorityDate) {
+      return 'HIGH';
+    }
+
+    if (currentDate.getTime() > resolvedPriorityDate.getTime()) {
+      return 'HIGH';
+    }
+
+    const hoursBetweenDates = Math.abs(resolvedPriorityDate.getTime() - currentDate.getTime()) / (60 * 60 * 1000);
+    return hoursBetweenDates <= 24 ? 'MEDIUM' : 'LOW';
+  }
+
+  private parsePriorityDate(priorityDate?: string | Date): Date | null {
+    if (priorityDate === undefined || priorityDate === null) {
+      return null;
+    }
+
+    const resolvedPriorityDate = priorityDate instanceof Date ? priorityDate : new Date(priorityDate);
+    return Number.isNaN(resolvedPriorityDate.getTime()) ? null : resolvedPriorityDate;
   }
 
   private async waitForTaskListSpinnerToSettle(timeoutMs: number): Promise<void> {
@@ -115,7 +215,9 @@ export class TaskListPage extends Base {
 
   async waitForTaskListShellReady(context: string) {
     await this.page
-      .waitForURL(/\/(?:work\/my-work\/(?:list|available)|service-down)/, { timeout: TASK_LIST_READY_TIMEOUT_MS })
+      .waitForURL(/\/(?:work\/(?:my-work\/(?:list|available|my-cases|my-access)|all-work\/(?:tasks|cases))|service-down)/, {
+        timeout: TASK_LIST_READY_TIMEOUT_MS,
+      })
       .catch(() => undefined);
     await this.waitForTaskListSpinnerToSettle(10_000);
     const bootstrapSignal = await Promise.any([

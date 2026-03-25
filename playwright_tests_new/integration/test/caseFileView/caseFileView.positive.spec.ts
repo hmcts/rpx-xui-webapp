@@ -94,8 +94,10 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
       await expect(caseFileViewPage.mediaViewerContainer).toBeVisible();
     });
 
-    await test.step('Verify media viewer content', async () => {
-      expect(await caseFileViewPage.mediaViewerContainer.textContent()).toContain('Case File View - Document Delivery Fixture');
+    await test.step('Verify media viewer content and toolbar', async () => {
+      await caseFileViewPage.mediaViewPanel.waitFor();
+      expect(await caseFileViewPage.mediaViewerToolbar.isVisible()).toBe(true);
+      expect(await caseFileViewPage.mediaViewPanel.textContent()).toContain('Case File View - Document Delivery Fixture');
     });
   });
 
@@ -144,11 +146,15 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
     });
 
     await test.step('Sort evidence documents by oldest first', async () => {
-      (await caseFileViewPage.getFolderNode('Orders.Approved orders')).click(); // expand another folder to ensure sort order is applied across the whole tree, not just currently expanded nodes
+      await caseFileViewPage.getFolderNode('Orders.Approved orders');
       await caseFileViewPage.sortByOldestFirst();
       await expect
         .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'))
         .toEqual(['Alpha evidence.pdf', 'Middle evidence.pdf', 'Zeta evidence.pdf']);
+
+      await expect
+        .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Orders'))
+        .toEqual(['Approved order.pdf', 'Root order.pdf']);
     });
   });
 });

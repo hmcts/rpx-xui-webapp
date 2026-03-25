@@ -6,6 +6,18 @@ export class CaseFileViewPage extends Base {
   readonly treeContainer = this.container.locator('.document-tree-container').first();
   readonly treeRoot = this.treeContainer.locator('cdk-tree[role="tree"]').first();
   readonly mediaViewerContainer = this.container.locator('.media-viewer-container');
+  readonly mediaViewerToolbar = this.mediaViewerContainer.locator('#mvToolbarMain');
+  readonly indexButton = this.mediaViewerToolbar.locator('#mvIndexBtn');
+  readonly bookmarksButton = this.mediaViewerToolbar.locator('#mvBookmarksBtn');
+  readonly highlightButton = this.mediaViewerToolbar.locator('#mvHighlightBtn');
+  readonly pageButtonGroup = this.mediaViewerToolbar.locator('#mvPageBtn');
+  readonly pageUpButton = this.pageButtonGroup.locator('#mvUpBtn');
+  readonly pageDownButton = this.pageButtonGroup.locator('#mvDownBtn');
+  readonly moreOptionsButton = this.mediaViewerToolbar.locator('#mvMoreOptionsBtn');
+  readonly downloadButton = this.mediaViewerToolbar.locator('#mvDownloadBtn');
+  readonly printButton = this.mediaViewerToolbar.locator('#mvPrintBtn');
+  readonly mediaViewPanel = this.mediaViewerContainer.locator('#viewerContainer');
+
   readonly documentHeader = this.container.locator('.document-folders-header .document-folders-header__title');
   readonly sortButton = this.container.locator('ccd-case-file-view-folder-sort button').first();
   readonly sortMenu = this.page.locator('.cdk-overlay-pane').first();

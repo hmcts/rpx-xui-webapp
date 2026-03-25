@@ -64,9 +64,8 @@ test.describe(`Case file view negative with ${userIdentifier}`, { tag: ['@integr
       await expect.poll(() => failedBinaryRequest).toBe(true);
       await expect(caseFileViewPage.documentHeader).toContainText('Documents (6)');
       await expect(caseFileViewPage.treeContainer).toContainText('Evidence');
+      await expect(caseFileViewPage.mediaViewerToolbar).not.toBeVisible();
       await expect(caseFileViewPage.mediaViewerContainer).not.toBeVisible();
-      await page.locator('#mvMoreOptionsBtn').click();
-      await page.waitForTimeout(6000);
     });
   });
 });

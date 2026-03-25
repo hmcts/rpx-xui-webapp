@@ -1,4 +1,4 @@
-@ng @functional_enabled
+@ng
 Feature: WA Release 2: All work
 
     Background: Mock and browser setup

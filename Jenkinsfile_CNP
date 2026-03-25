@@ -131,7 +131,7 @@ def assertHtmlReportExists = { String reportDir, String reportFile ->
     steps.sh "test -f '${reportDir}/${reportFile}'"
 }
 
-def branchesToSync = ['perftest', 'ithc']
+def branchesToSync = ['perftest', 'ithc', 'demo']
 
 def secrets = [
   'rpx-${env}': [

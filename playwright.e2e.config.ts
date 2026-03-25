@@ -1,12 +1,37 @@
-module.exports = (() => {
-  const { defineConfig, devices } = require('@playwright/test');
-  const { version: appVersion } = require('./package.json');
-  const { cpus } = require('node:os');
+import { defineConfig, devices } from '@playwright/test';
+import { execSync } from 'node:child_process';
+import { cpus, totalmem } from 'node:os';
+import { version as appVersion } from './package.json';
+import { parseNonNegativeInt, resolveDefaultReporter, resolveTagFilters, resolveWorkerCount } from './playwright-config-utils';
 
+export default (() => {
+  const temporaryProbePattern = '**/_tmp_*.spec.ts';
   const headlessMode = process.env.HEAD !== 'true';
   const odhinOutputFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
   const baseUrl = process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';
-  const resolveEnvironmentFromUrl = (url) => {
+  const e2eTagFilters = resolveTagFilters({
+    includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
+    excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
+    configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
+    defaultConfigPath: 'playwright_tests_new/E2E/tag-filter.json',
+    suiteTag: '@e2e',
+  });
+
+  const parsePositiveInt = (raw: string | undefined): number | undefined => {
+    if (!raw) {
+      return undefined;
+    }
+    const parsed = Number.parseInt(raw, 10);
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+      return undefined;
+    }
+    return parsed;
+  };
+
+  const retries = parseNonNegativeInt(process.env.PW_E2E_RETRIES) ?? 2;
+  const globalTimeoutMs = parsePositiveInt(process.env.PW_E2E_GLOBAL_TIMEOUT_MS);
+
+  const resolveEnvironmentFromUrl = (url: string) => {
     try {
       const hostname = new URL(url).hostname.toLowerCase();
       if (hostname === 'localhost' || hostname === '127.0.0.1') {
@@ -30,49 +55,68 @@ module.exports = (() => {
     }
   };
 
-  const resolveWorkerCount = () => {
-    const configured = process.env.FUNCTIONAL_TESTS_WORKERS;
-    if (process.env.CI) {
-      return 8;
+  const resolveBranchName = () => {
+    const envBranch =
+      process.env.PLAYWRIGHT_REPORT_BRANCH ||
+      process.env.GIT_BRANCH ||
+      process.env.BRANCH_NAME ||
+      process.env.GITHUB_REF_NAME ||
+      process.env.GITHUB_HEAD_REF ||
+      process.env.BUILD_SOURCEBRANCHNAME;
+    if (envBranch) {
+      return envBranch.replace(/^refs\/heads\//, '').trim();
     }
-    if (configured) {
-      const parsed = Number.parseInt(configured, 10);
-      if (Number.isFinite(parsed) && parsed > 0) {
-        return parsed;
+    try {
+      const gitBranch = execSync('git rev-parse --abbrev-ref HEAD', {
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'ignore'],
+      })
+        .trim()
+        .replace(/^refs\/heads\//, '');
+      if (gitBranch && gitBranch !== 'HEAD') {
+        return gitBranch;
       }
+    } catch {
+      // Fall back to local label when branch cannot be resolved.
     }
-    const logical = cpus()?.length ?? 1;
-    const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));
-    const suggested = Math.min(8, Math.max(2, approxPhysical));
-    return suggested;
+    return 'local';
   };
-  const workerCount = resolveWorkerCount();
+
+  const workerCount = resolveWorkerCount(process.env);
+  const resolveAgentHardware = () => {
+    const cpuCores = cpus()?.length ?? 'unknown';
+    const totalRamGiB = Math.round((totalmem() / 1024 ** 3) * 10) / 10;
+    return `agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
+  };
   const targetEnv = process.env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
   const runContext = process.env.CI ? 'ci' : 'local-run';
-  const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount}`;
+  const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
+  const reportBranch = resolveBranchName();
 
   return defineConfig({
     testDir: 'playwright_tests_new/E2E',
     testMatch: ['**/test/**/*.spec.ts'],
-    testIgnore: ['**/test/smoke/smokeTest.spec.ts'],
+    testIgnore: [temporaryProbePattern, '**/test/smoke/smokeTest.spec.ts'],
     fullyParallel: true,
-    retries: process.env.CI ? 2 : 0,
-    timeout: 3 * 60 * 1000,
+    retries,
+    timeout: 180_000,
     expect: {
-      timeout: 1 * 60 * 1000,
+      timeout: 60_000,
     },
+    ...(globalTimeoutMs ? { globalTimeout: globalTimeoutMs } : {}),
     workers: workerCount,
     reporter: [
-      [process.env.CI ? 'dot' : 'list'],
+      [resolveDefaultReporter(process.env)],
+      ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs'],
       [
         'odhin-reports-playwright',
         {
           outputFolder: odhinOutputFolder,
-          indexFilename: 'xui-playwright.html',
-          title: 'RPX XUI Playwright E2E',
+          indexFilename: 'xui-playwright-e2e.html',
+          title: 'RPX-XUI-WEBAPP Playwright E2E',
           testEnvironment,
           project: process.env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp - E2E',
-          release: process.env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${process.env.GIT_BRANCH ?? 'local'}`,
+          release: process.env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${reportBranch}`,
           startServer: false,
           consoleLog: true,
           consoleError: true,
@@ -87,12 +131,14 @@ module.exports = (() => {
         mode: 'only-on-failure',
         fullPage: true,
       },
-      video: 'retain-on-failure',
+      video: 'off',
       headless: headlessMode,
     },
     projects: [
       {
         name: 'chromium',
+        grep: e2eTagFilters.grep,
+        grepInvert: e2eTagFilters.grepInvert,
         use: {
           ...devices['Desktop Chrome'],
           channel: 'chrome',

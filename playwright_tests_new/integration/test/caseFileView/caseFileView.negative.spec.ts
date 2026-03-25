@@ -32,6 +32,7 @@ test.describe(`Case file view negative with ${userIdentifier}`, { tag: ['@integr
   });
 
   test('Document binary failure keeps the case file view stable', async ({ caseDetailsPage, caseFileViewPage, page }) => {
+    let failedBinaryRequest = false;
     await test.step('Set up case file view mocks with a failing binary endpoint', async () => {
       await setupCaseFileViewMockRoutes(page, caseId);
 
@@ -43,6 +44,7 @@ test.describe(`Case file view negative with ${userIdentifier}`, { tag: ['@integr
         });
       });
       await page.route('**/documents/*/binary', async (route) => {
+        failedBinaryRequest = true;
         await route.fulfill({
           status: 500,
           contentType: 'application/json',
@@ -59,10 +61,12 @@ test.describe(`Case file view negative with ${userIdentifier}`, { tag: ['@integr
 
     await test.step('Keep the page shell visible after a document load failure', async () => {
       await caseFileViewPage.clickFile('Evidence', 'Alpha evidence.pdf');
-
+      await expect.poll(() => failedBinaryRequest).toBe(true);
       await expect(caseFileViewPage.documentHeader).toContainText('Documents (6)');
       await expect(caseFileViewPage.treeContainer).toContainText('Evidence');
-      await expect(caseFileViewPage.mediaViewerContainer).toBeVisible();
+      await expect(caseFileViewPage.mediaViewerContainer).not.toBeVisible();
+      await page.locator('#mvMoreOptionsBtn').click();
+      await page.waitForTimeout(6000);
     });
   });
 });

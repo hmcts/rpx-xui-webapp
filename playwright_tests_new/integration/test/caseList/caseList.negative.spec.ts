@@ -85,8 +85,8 @@ test.describe(
           expect(table[i]['Text Field 1']).toBe(expectedFields['TextField1']);
           expect(table[i]['Text Field 2']).toBe(expectedFields['TextField2']);
         }
+        expect(await caseListPage.pagination.isVisible()).toBeFalsy();
       });
-      expect(await caseListPage.pagination.isVisible()).toBeFalsy();
     });
   }
 );

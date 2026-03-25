@@ -2,6 +2,10 @@ import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 const caseWithoutLinksTemplate = require('../../../src/assets/getCaseNoLinkedCases.json');
+const linkedCasesResponseTemplate = require('../../../src/assets/getLinkedCases.json');
+const linkedCasesResponseTemplateFirstItem = Array.isArray(linkedCasesResponseTemplate.linkedCases)
+  ? linkedCasesResponseTemplate.linkedCases[0]
+  : undefined;
 
 function deepClone<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T;
@@ -39,6 +43,7 @@ function setCaseLinksValue(caseDetails: Record<string, unknown>, linkedCases: Re
 export const CASE_LINKING_CASE_REFERENCE = String(caseWithoutLinksTemplate.case_id);
 export const CASE_LINKING_JURISDICTION = String(caseWithoutLinksTemplate.case_type?.jurisdiction?.id ?? 'SSCS');
 export const CASE_LINKING_CASE_TYPE = String(caseWithoutLinksTemplate.case_type?.id ?? 'Benefit_Xui');
+export const CASE_LINKING_LINKED_CASES_API_CASE_TYPE = String(linkedCasesResponseTemplateFirstItem?.ccdCaseType ?? 'benefit');
 export const CASE_LINKING_TRIGGER_ID = 'linkCases';
 export const CASE_LINKING_RELATED_CASE_REFERENCE = '1652112127295261';
 export const CASE_LINKING_SECOND_RELATED_CASE_REFERENCE = '1652112127295262';
@@ -144,7 +149,11 @@ function buildCaseLinkReason(code: string, otherDescription = ''): Record<string
   };
 }
 
-function buildLinkedCaseValue(linkedCaseReference: string, reasonCode: string, otherDescription = ''): Record<string, unknown> {
+function buildCaseFieldLinkedCaseValue(
+  linkedCaseReference: string,
+  reasonCode: string,
+  otherDescription = ''
+): Record<string, unknown> {
   return {
     CaseReference: linkedCaseReference,
     ModifiedDateTime: '2022-05-10',
@@ -153,14 +162,39 @@ function buildLinkedCaseValue(linkedCaseReference: string, reasonCode: string, o
   };
 }
 
-function buildLinkedCaseCollectionItem(
+function buildCaseFieldLinkedCaseCollectionItem(
   linkedCaseReference: string,
   reasonCode: string,
   otherDescription = ''
 ): Record<string, unknown> {
   return {
     id: linkedCaseReference,
-    value: buildLinkedCaseValue(linkedCaseReference, reasonCode, otherDescription),
+    value: buildCaseFieldLinkedCaseValue(linkedCaseReference, reasonCode, otherDescription),
+  };
+}
+
+function buildLinkedCasesApiItem(
+  linkedCaseReference: string,
+  reasonCode: string,
+  otherDescription = ''
+): Record<string, unknown> {
+  return {
+    caseNameHmctsInternal: `Linked case ${linkedCaseReference}`,
+    caseReference: linkedCaseReference,
+    ccdCaseType: CASE_LINKING_LINKED_CASES_API_CASE_TYPE,
+    ccdJurisdiction: CASE_LINKING_JURISDICTION,
+    state: 'withDwp',
+    linkDetails: [
+      {
+        createdDateTime: '2022-05-10T10:00:00.000',
+        reasons: [
+          {
+            reasonCode,
+            OtherDescription: otherDescription,
+          },
+        ],
+      },
+    ],
   };
 }
 
@@ -192,28 +226,48 @@ export function buildCaseLinkingCaseDetailsMock(options?: {
   linkedCaseReference?: string;
   reasonCode?: string;
   otherDescription?: string;
-  linkedCases?: CaseLinkingLinkedCase[];
+  linkedCases?: CaseLinkingLinkedCase[] | null;
 }) {
   const caseDetails = deepClone(caseWithoutLinksTemplate) as Record<string, unknown>;
   normalizeCaseReferenceMetadata(caseDetails, CASE_LINKING_CASE_REFERENCE);
   const linkedCases =
-    options?.linkedCases ??
-    (options?.withLinks
-      ? [
-          {
-            linkedCaseReference: options.linkedCaseReference ?? CASE_LINKING_RELATED_CASE_REFERENCE,
-            reasonCode: options.reasonCode ?? CASE_LINKING_REASON_CODE,
-            otherDescription: options.otherDescription ?? '',
-          },
-        ]
-      : null);
+    options?.linkedCases !== undefined
+      ? options.linkedCases
+      : options?.withLinks
+        ? [
+            {
+              linkedCaseReference: options.linkedCaseReference ?? CASE_LINKING_RELATED_CASE_REFERENCE,
+              reasonCode: options.reasonCode ?? CASE_LINKING_REASON_CODE,
+              otherDescription: options.otherDescription ?? '',
+            },
+          ]
+        : null;
   setCaseLinksValue(
     caseDetails,
-    linkedCases?.map((linkedCase) =>
-      buildLinkedCaseCollectionItem(linkedCase.linkedCaseReference, linkedCase.reasonCode, linkedCase.otherDescription ?? '')
-    ) ?? null
+    linkedCases && linkedCases.length > 0
+      ? linkedCases.map((linkedCase) =>
+          buildCaseFieldLinkedCaseCollectionItem(
+            linkedCase.linkedCaseReference,
+            linkedCase.reasonCode,
+            linkedCase.otherDescription ?? ''
+          )
+        )
+      : null
   );
   return caseDetails;
+}
+
+export function buildCaseLinkingLinkedCasesResponseMock(options?: {
+  linkedCases?: CaseLinkingLinkedCase[];
+}) {
+  const linkedCasesResponse = deepClone(linkedCasesResponseTemplate) as Record<string, unknown>;
+  const linkedCases = options?.linkedCases ?? [];
+
+  linkedCasesResponse.linkedCases = linkedCases.map((linkedCase) =>
+    buildLinkedCasesApiItem(linkedCase.linkedCaseReference, linkedCase.reasonCode, linkedCase.otherDescription ?? '')
+  );
+
+  return linkedCasesResponse;
 }
 
 export function buildCaseLinkingReasonCodesMock() {
@@ -221,6 +275,7 @@ export function buildCaseLinkingReasonCodesMock() {
     list_of_values: [
       buildCaseLinkReasonLov(CASE_LINKING_REASON_CODE, CASE_LINKING_REASON_LABEL, 1),
       buildCaseLinkReasonLov(CASE_LINKING_SECONDARY_REASON_CODE, CASE_LINKING_SECONDARY_REASON_LABEL, 2),
+      buildCaseLinkReasonLov(CASE_LINKING_OTHER_REASON_CODE, CASE_LINKING_OTHER_REASON_LABEL, 3),
     ],
   };
 }

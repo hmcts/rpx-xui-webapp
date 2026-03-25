@@ -6,10 +6,10 @@ import {
   buildHearingsUserDetailsMock,
 } from '../mocks/hearings.mock';
 import { applySessionCookies } from '../../common/sessionCapture';
-import { caseLinkingStaffAccess, type CaseLinkingAccessConfig } from './caseLinkingAccess.helper';
 import {
   buildCaseLinkingCaseDetailsMock,
   buildCaseLinkingEventTriggerMock,
+  buildCaseLinkingLinkedCasesResponseMock,
   buildCaseLinkingReasonCodesMock,
   CASE_LINKING_CASE_REFERENCE,
   CASE_LINKING_CASE_TYPE,
@@ -23,6 +23,9 @@ import {
 
 type RouteAbortCode = Parameters<Route['abort']>[0];
 
+const DEFAULT_CASE_LINKING_USER_IDENTIFIER = 'STAFF_ADMIN';
+const DEFAULT_CASE_LINKING_USER_ROLES = ['hmcts-staff'];
+
 interface CaseLinkingApiOverride {
   status?: number;
   body?: unknown;
@@ -31,7 +34,8 @@ interface CaseLinkingApiOverride {
 }
 
 export interface CaseLinkingMockRoutesConfig {
-  access?: CaseLinkingAccessConfig;
+  userIdentifier?: string;
+  userRoles?: string[];
   submitCaseLinks?: CaseLinkingApiOverride;
   validateCaseLinks?: CaseLinkingApiOverride;
   initialLinkedCases?: CaseLinkingLinkedCase[];
@@ -103,14 +107,16 @@ function buildValidationResponse(route: Route): Record<string, unknown> {
 }
 
 export async function setupCaseLinkingMockRoutes(page: Page, config: CaseLinkingMockRoutesConfig): Promise<void> {
-  const access = config.access ?? caseLinkingStaffAccess;
-  const userDetails = buildHearingsUserDetailsMock(access.userRoles);
+  const userDetails = buildHearingsUserDetailsMock(config.userRoles ?? DEFAULT_CASE_LINKING_USER_ROLES);
   const appConfig = buildHearingsAppConfigMock();
   const environmentConfig = buildHearingsEnvironmentConfigMock();
   const eventTrigger = buildCaseLinkingEventTriggerMock();
   const caseLinkReasonCodes = buildCaseLinkingReasonCodesMock();
   let currentLinkedCases = [...(config.initialLinkedCases ?? [])];
-  let currentCaseDetails = buildCaseLinkingCaseDetailsMock({ linkedCases: currentLinkedCases });
+  let currentCaseDetails = buildCaseLinkingCaseDetailsMock({
+    linkedCases: currentLinkedCases.length > 0 ? currentLinkedCases : null,
+  });
+  let currentLinkedCasesResponse = buildCaseLinkingLinkedCasesResponseMock({ linkedCases: currentLinkedCases });
 
   await page.addInitScript((seededUserInfo) => {
     window.sessionStorage.setItem('userDetails', JSON.stringify(seededUserInfo));
@@ -118,6 +124,10 @@ export async function setupCaseLinkingMockRoutes(page: Page, config: CaseLinking
 
   await page.route(`**/data/internal/cases/${CASE_LINKING_CASE_REFERENCE}*`, async (route) => {
     await fulfillRoute(route, undefined, currentCaseDetails);
+  });
+
+  await page.route(`**/getLinkedCases/${CASE_LINKING_CASE_REFERENCE}*`, async (route) => {
+    await fulfillRoute(route, undefined, currentLinkedCasesResponse);
   });
 
   await page.route(
@@ -152,8 +162,9 @@ export async function setupCaseLinkingMockRoutes(page: Page, config: CaseLinking
         },
       ];
       currentCaseDetails = buildCaseLinkingCaseDetailsMock({
-        linkedCases: currentLinkedCases,
+        linkedCases: currentLinkedCases.length > 0 ? currentLinkedCases : null,
       });
+      currentLinkedCasesResponse = buildCaseLinkingLinkedCasesResponseMock({ linkedCases: currentLinkedCases });
     }
     await fulfillRoute(route, submitOverride, successfulSubmit ? currentCaseDetails : { message: 'case-link-submit-failed' });
   });
@@ -192,8 +203,7 @@ export async function openCaseLinkingJourney(
   caseDetailsPage: CaseDetailsPage,
   config: CaseLinkingMockRoutesConfig = {}
 ): Promise<void> {
-  const access = config.access ?? caseLinkingStaffAccess;
-  await applySessionCookies(page, access.userIdentifier);
+  await applySessionCookies(page, config.userIdentifier ?? DEFAULT_CASE_LINKING_USER_IDENTIFIER);
   await setupCaseLinkingMockRoutes(page, config);
   await page.goto(`/cases/case-details/${CASE_LINKING_JURISDICTION}/${CASE_LINKING_CASE_TYPE}/${CASE_LINKING_CASE_REFERENCE}`, {
     waitUntil: 'domcontentloaded',

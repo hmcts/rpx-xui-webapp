@@ -1,5 +1,5 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { caseLinkingStaffAccess, openCaseLinkingJourney } from '../../helpers';
+import { openCaseLinkingJourney } from '../../helpers';
 import {
   CASE_LINKING_CASE_REFERENCE,
   CASE_LINKING_REASON_LABEL,
@@ -11,9 +11,7 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
     page,
     caseDetailsPage,
   }) => {
-    await openCaseLinkingJourney(page, caseDetailsPage, {
-      access: caseLinkingStaffAccess,
-    });
+    await openCaseLinkingJourney(page, caseDetailsPage);
 
     await caseDetailsPage.openLinkCasesEvent();
     await caseDetailsPage.continueCaseEvent();
@@ -27,7 +25,6 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
 
   test('shows a backend error when the user tries to link the case to itself', async ({ page, caseDetailsPage }) => {
     await openCaseLinkingJourney(page, caseDetailsPage, {
-      access: caseLinkingStaffAccess,
       submitCaseLinks: {
         status: 400,
         body: { message: 'A case cannot be linked to itself' },
@@ -64,7 +61,6 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
 
   test('shows an error and stays on check-your-answers when the case-link submit fails', async ({ page, caseDetailsPage }) => {
     await openCaseLinkingJourney(page, caseDetailsPage, {
-      access: caseLinkingStaffAccess,
       submitCaseLinks: {
         status: 500,
         body: { message: 'case-link-submit-failed' },

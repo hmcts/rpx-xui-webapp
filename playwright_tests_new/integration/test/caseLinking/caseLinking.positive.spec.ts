@@ -1,5 +1,5 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { caseLinkingJudiciaryAccess, caseLinkingStaffAccess, openCaseLinkingJourney } from '../../helpers';
+import { openCaseLinkingJourney } from '../../helpers';
 import {
   CASE_LINKING_CASE_REFERENCE,
   CASE_LINKING_OTHER_DESCRIPTION,
@@ -15,7 +15,7 @@ import {
 
 test.describe('Case linking integration', { tag: ['@integration', '@integration-case-linking'] }, () => {
   test('links a case from case details and submits the selected reason', async ({ page, caseDetailsPage }) => {
-    await openCaseLinkingJourney(page, caseDetailsPage, { access: caseLinkingStaffAccess });
+    await openCaseLinkingJourney(page, caseDetailsPage);
 
     await test.step('Open the Link cases event from the case-actions dropdown', async () => {
       await caseDetailsPage.openLinkCasesEvent();
@@ -68,15 +68,19 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
       await expect(page).toHaveURL(new RegExp(`/cases/case-details/.*/.*/${CASE_LINKING_CASE_REFERENCE}(?:$|#)`));
       await caseDetailsPage.selectCaseDetailsTab('Linked cases');
       const linkedCasesPanel = page.locator('[role="tabpanel"]:visible').first();
-      await expect(
-        linkedCasesPanel.getByRole('link', { name: formatCaseReferenceForDisplay(CASE_LINKING_RELATED_CASE_REFERENCE) })
-      ).toBeVisible();
-      await expect(linkedCasesPanel).not.toContainText(CASE_LINKING_OTHER_DESCRIPTION);
+      const linkedCaseLink = linkedCasesPanel
+        .getByRole('link', { name: formatCaseReferenceForDisplay(CASE_LINKING_RELATED_CASE_REFERENCE) })
+        .first();
+      await expect(linkedCaseLink).toBeVisible();
+      await expect(linkedCaseLink).toHaveAttribute('href', new RegExp(`/v2/case/${CASE_LINKING_RELATED_CASE_REFERENCE}$`));
     });
   });
 
   test('allows a judiciary user to open the Link cases event from case details', async ({ page, caseDetailsPage }) => {
-    await openCaseLinkingJourney(page, caseDetailsPage, { access: caseLinkingJudiciaryAccess });
+    await openCaseLinkingJourney(page, caseDetailsPage, {
+      userIdentifier: 'IAC_Judge_WA_R1',
+      userRoles: ['hmcts-judiciary'],
+    });
 
     await caseDetailsPage.openLinkCasesEvent();
     await expect(caseDetailsPage.linkedCaseReferenceInput).toBeVisible();
@@ -85,7 +89,6 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
 
   test('shows linked cases in their supplied order on the Linked cases tab', async ({ page, caseDetailsPage }) => {
     await openCaseLinkingJourney(page, caseDetailsPage, {
-      access: caseLinkingStaffAccess,
       initialLinkedCases: [
         {
           linkedCaseReference: CASE_LINKING_RELATED_CASE_REFERENCE,
@@ -100,18 +103,24 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
 
     await caseDetailsPage.selectCaseDetailsTab('Linked cases');
     const linkedCasesPanel = page.locator('[role="tabpanel"]:visible').first();
+    const firstLinkedCaseLink = linkedCasesPanel
+      .getByRole('link', { name: formatCaseReferenceForDisplay(CASE_LINKING_RELATED_CASE_REFERENCE) })
+      .first();
+    const secondLinkedCaseLink = linkedCasesPanel
+      .getByRole('link', { name: formatCaseReferenceForDisplay(CASE_LINKING_SECOND_RELATED_CASE_REFERENCE) })
+      .first();
     const linkedCaseReferences = await linkedCasesPanel.getByRole('link').allInnerTexts();
 
     expect(linkedCaseReferences.slice(0, 2)).toEqual([
       formatCaseReferenceForDisplay(CASE_LINKING_RELATED_CASE_REFERENCE),
       formatCaseReferenceForDisplay(CASE_LINKING_SECOND_RELATED_CASE_REFERENCE),
     ]);
+    await expect(firstLinkedCaseLink).toHaveAttribute('href', new RegExp(`/v2/case/${CASE_LINKING_RELATED_CASE_REFERENCE}$`));
+    await expect(secondLinkedCaseLink).toHaveAttribute('href', new RegExp(`/v2/case/${CASE_LINKING_SECOND_RELATED_CASE_REFERENCE}$`));
   });
 
   test('submits the Other case-link reason with a custom description', async ({ page, caseDetailsPage }) => {
-    await openCaseLinkingJourney(page, caseDetailsPage, {
-      access: caseLinkingStaffAccess,
-    });
+    await openCaseLinkingJourney(page, caseDetailsPage);
 
     await caseDetailsPage.openLinkCasesEvent();
     await caseDetailsPage.fillCaseLinkDetails({
@@ -156,8 +165,10 @@ test.describe('Case linking integration', { tag: ['@integration', '@integration-
     await expect(page).toHaveURL(new RegExp(`/cases/case-details/.*/.*/${CASE_LINKING_CASE_REFERENCE}(?:$|#)`));
     await caseDetailsPage.selectCaseDetailsTab('Linked cases');
     const linkedCasesPanel = page.locator('[role="tabpanel"]:visible').first();
-    await expect(
-      linkedCasesPanel.getByRole('link', { name: formatCaseReferenceForDisplay(CASE_LINKING_RELATED_CASE_REFERENCE) })
-    ).toBeVisible();
+    const linkedCaseLink = linkedCasesPanel
+      .getByRole('link', { name: formatCaseReferenceForDisplay(CASE_LINKING_RELATED_CASE_REFERENCE) })
+      .first();
+    await expect(linkedCaseLink).toBeVisible();
+    await expect(linkedCaseLink).toHaveAttribute('href', new RegExp(`/v2/case/${CASE_LINKING_RELATED_CASE_REFERENCE}$`));
   });
 });

@@ -1,7 +1,9 @@
 import { expect, test } from '@playwright/test';
 import {
   buildCaseLinkingCaseDetailsMock,
+  buildCaseLinkingLinkedCasesResponseMock,
   CASE_LINKING_CASE_REFERENCE,
+  CASE_LINKING_LINKED_CASES_API_CASE_TYPE,
   CASE_LINKING_OTHER_DESCRIPTION,
   CASE_LINKING_OTHER_REASON_CODE,
   CASE_LINKING_REASON_CODE,
@@ -22,9 +24,7 @@ function metadataCaseReference(caseDetails: Record<string, unknown>): number | u
 function firstLinkedCaseReference(caseDetails: Record<string, unknown>): string | undefined {
   const linkedCase = firstLinkedCase(caseDetails);
   const linkedCaseValue =
-    typeof linkedCase?.value === 'object' && linkedCase.value !== null
-      ? (linkedCase.value as Record<string, unknown>)
-      : undefined;
+    typeof linkedCase?.value === 'object' && linkedCase.value !== null ? (linkedCase.value as Record<string, unknown>) : undefined;
 
   return typeof linkedCaseValue?.CaseReference === 'string' ? linkedCaseValue.CaseReference : undefined;
 }
@@ -32,9 +32,7 @@ function firstLinkedCaseReference(caseDetails: Record<string, unknown>): string 
 function firstLinkedCaseReasonCode(caseDetails: Record<string, unknown>): string | undefined {
   const linkedCase = firstLinkedCase(caseDetails);
   const linkedCaseValue =
-    typeof linkedCase?.value === 'object' && linkedCase.value !== null
-      ? (linkedCase.value as Record<string, unknown>)
-      : undefined;
+    typeof linkedCase?.value === 'object' && linkedCase.value !== null ? (linkedCase.value as Record<string, unknown>) : undefined;
   const reasons = Array.isArray(linkedCaseValue?.Reasons) ? linkedCaseValue.Reasons : [];
   const firstReason = reasons[0];
 
@@ -44,9 +42,7 @@ function firstLinkedCaseReasonCode(caseDetails: Record<string, unknown>): string
 function firstLinkedCaseOtherDescription(caseDetails: Record<string, unknown>): string | undefined {
   const linkedCase = firstLinkedCase(caseDetails);
   const linkedCaseValue =
-    typeof linkedCase?.value === 'object' && linkedCase.value !== null
-      ? (linkedCase.value as Record<string, unknown>)
-      : undefined;
+    typeof linkedCase?.value === 'object' && linkedCase.value !== null ? (linkedCase.value as Record<string, unknown>) : undefined;
   const reasons = Array.isArray(linkedCaseValue?.Reasons) ? linkedCaseValue.Reasons : [];
   const firstReason = reasons[0];
 
@@ -72,6 +68,23 @@ function linkedCasesCollection(caseDetails: Record<string, unknown>): unknown[] 
   return Array.isArray(caseLinksField?.value) ? caseLinksField.value : [];
 }
 
+function caseLinksValue(caseDetails: Record<string, unknown>): unknown {
+  const tabs = Array.isArray(caseDetails.tabs) ? caseDetails.tabs : [];
+  const linkedCasesTab = tabs.find(
+    (tab): tab is Record<string, unknown> => typeof tab === 'object' && tab !== null && tab.id === 'linked_cases_sscs'
+  );
+  const fields = Array.isArray(linkedCasesTab?.fields) ? linkedCasesTab.fields : [];
+  const caseLinksField = fields.find(
+    (field): field is Record<string, unknown> => typeof field === 'object' && field !== null && field.id === 'caseLinks'
+  );
+
+  return caseLinksField?.value;
+}
+
+function linkedCasesResponseItems(response: Record<string, unknown>): unknown[] {
+  return Array.isArray(response.linkedCases) ? response.linkedCases : [];
+}
+
 test.describe('case linking mock builder', { tag: '@svc-internal' }, () => {
   test('keeps the linked-case success fixture on the same case identity as the link journey', () => {
     const caseDetails = buildCaseLinkingCaseDetailsMock({ withLinks: true });
@@ -87,6 +100,7 @@ test.describe('case linking mock builder', { tag: '@svc-internal' }, () => {
 
     expect(caseDetails.case_id).toBe(CASE_LINKING_CASE_REFERENCE);
     expect(metadataCaseReference(caseDetails)).toBe(Number(CASE_LINKING_CASE_REFERENCE));
+    expect(caseLinksValue(caseDetails)).toBeNull();
   });
 
   test('stores the custom Other description when the linked case reason is CLRC014', () => {
@@ -135,5 +149,31 @@ test.describe('case linking mock builder', { tag: '@svc-internal' }, () => {
       .filter((linkedCaseReference): linkedCaseReference is string => linkedCaseReference !== null);
 
     expect(linkedCaseReferences).toEqual([CASE_LINKING_RELATED_CASE_REFERENCE, CASE_LINKING_SECOND_RELATED_CASE_REFERENCE]);
+  });
+
+  test('builds the linked-cases API response in the same shape used by the repo fixtures', () => {
+    const response = buildCaseLinkingLinkedCasesResponseMock({
+      linkedCases: [
+        {
+          linkedCaseReference: CASE_LINKING_RELATED_CASE_REFERENCE,
+          reasonCode: CASE_LINKING_OTHER_REASON_CODE,
+          otherDescription: CASE_LINKING_OTHER_DESCRIPTION,
+        },
+      ],
+    });
+
+    const firstLinkedCase = linkedCasesResponseItems(response)[0] as Record<string, unknown> | undefined;
+    const firstLinkDetails = Array.isArray(firstLinkedCase?.linkDetails)
+      ? (firstLinkedCase.linkDetails[0] as Record<string, unknown> | undefined)
+      : undefined;
+    const firstReason = Array.isArray(firstLinkDetails?.reasons)
+      ? (firstLinkDetails.reasons[0] as Record<string, unknown> | undefined)
+      : undefined;
+
+    expect(firstLinkedCase?.caseReference).toBe(CASE_LINKING_RELATED_CASE_REFERENCE);
+    expect(firstLinkedCase?.ccdJurisdiction).toBe('SSCS');
+    expect(firstLinkedCase?.ccdCaseType).toBe(CASE_LINKING_LINKED_CASES_API_CASE_TYPE);
+    expect(firstReason?.reasonCode).toBe(CASE_LINKING_OTHER_REASON_CODE);
+    expect(firstReason?.OtherDescription).toBe(CASE_LINKING_OTHER_DESCRIPTION);
   });
 });

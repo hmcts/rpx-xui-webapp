@@ -173,7 +173,12 @@ test.describe(`Case List as ${userIdentifier}`, { tag: ['@integration', '@integr
           await expect(caseListPage.paginationPrevious).toBeVisible();
           await expect(caseListPage.paginationNext).toBeVisible();
 
-          await caseListPage.clickPaginationPage(4);
+          await caseListPage.clickPaginationPageAndExpectSearchRequest(4, {
+            ctid: 'xuiTestJurisdiction',
+            useCase: 'WORKBASKET',
+            view: 'WORKBASKET',
+            page: '4',
+          });
           await expect(caseListPage.paginationCurrentPage).toContainText('4');
           await expect(caseListPage.caseListResultsAmount).toHaveText(
             getExpectedResultsSummary(caseListMockResponseMoreThan100.total, 4)

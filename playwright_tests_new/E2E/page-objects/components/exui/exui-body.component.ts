@@ -7,6 +7,11 @@ export class ExuiBodyComponent {
   readonly successMessage = this.message.filter({ hasText: 'success' });
   readonly infoMessage = this.message.filter({ hasText: 'information' });
 
+  readonly mainHeading = this.page.locator('h1.govuk-heading-l');
+
+  readonly table = this.page.locator('table.govuk-table');
+  readonly tableHeaders = this.table.locator('thead th');
+
   readonly paginationControls = this.page.locator('.ngx-pagination');
   readonly paginationNextButton = this.paginationControls.locator('.pagination-next');
   readonly paginationEllipsisButton = this.paginationControls.locator('.ellipsis');

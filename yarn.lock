@@ -691,11 +691,11 @@ __metadata:
   linkType: hard
 
 "@angular/compiler@npm:^20.3.16":
-  version: 20.3.17
-  resolution: "@angular/compiler@npm:20.3.17"
+  version: 20.3.18
+  resolution: "@angular/compiler@npm:20.3.18"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/03f82176dec89ed833c24d02035ea1ae7eeaca40f08398aaf7b14c9d0675a9ebdab03e6562ba5462e5bea2479b912ed885d2604b28ae04d78c792c7fb5f6b8a2
+  checksum: 10/094f78f191648bf6d3c7bc07339f9f877915387a843ab3081b3a75cfc91a4c419ef14cb7f0d7dc2dd95c71a49a33b9f79329774ade154cd7e665309f9c4f47cd
   languageName: node
   linkType: hard
 
@@ -3886,12 +3886,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.43":
-  version: 7.3.43
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.43"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.43-exui-4277-1":
+  version: 7.3.43-exui-4277-1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.43-exui-4277-1"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/b33aedd7599e43731deeadb18ea8bc26c0b48ad93d6ab08541dc1e71d9b3869e7522fe07cf63fc4dcb6dc2580dc305bccf4eb1c782bdbe310568184a0ff8983a
+  checksum: 10/f68f12b7d75658ae9db9530f1b129f0a59a0591b339afc00605de92e10a26675c94a591b42da91c034ffb11b0a1395c89fec9a7cc918c9cb49eb29d9a8a77d48
   languageName: node
   linkType: hard
 
@@ -3914,9 +3914,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.15":
-  version: 4.2.15
-  resolution: "@hmcts/media-viewer@npm:4.2.15"
+"@hmcts/media-viewer@npm:4.2.15-exui-4277":
+  version: 4.2.15-exui-4277
+  resolution: "@hmcts/media-viewer@npm:4.2.15-exui-4277"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3935,7 +3935,7 @@ __metadata:
     "@ngrx/router-store": ^20
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
-  checksum: 10/d08f0b28c15b45e9ea909ddfd7f8ad7bdd8e0bc438a2cefe0d03755caec89f768083ebf75a75e22f630059feb01a11528d40f4c21a6b64cbf384ed934b5f1576
+  checksum: 10/b457881f49b116fb8530c667c9d83643fb93c935557e2c4744dc122d0a30ea46d2cf9eb55738404b1865e112ca9f0cdf1b223fb31abdccac1986061c880f4cbd
   languageName: node
   linkType: hard
 
@@ -4003,16 +4003,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.6":
-  version: 3.2.6
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.6"
+"@hmcts/rpx-xui-common-lib@npm:3.2.6-exui-4277":
+  version: 3.2.6-exui-4277
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.6-exui-4277"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: 1.1.2-CME-780-9
-  checksum: 10/718e05b9c621eff2df17b393a4d84d5e5b5d69770e2bad26d13665d8d368d9ce9cca81f80178b20b538125f4f34449374ab06bc3a613306177862aa1ee037690
+  checksum: 10/c4811dfe2abaeb4a9ffb9cb009af21e0bc369556366508db5fe26e75431b7d20053a15694e588bc687bba56c5b18cc73906304e584699aa9ed00b8c46e6395d6
   languageName: node
   linkType: hard
 
@@ -19321,7 +19321,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"karma-coverage@npm:~2.2.0":
+"karma-coverage@npm:^2.2.1":
   version: 2.2.1
   resolution: "karma-coverage@npm:2.2.1"
   dependencies:
@@ -24489,14 +24489,14 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.43"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.43-exui-4277-1"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.2.15"
+    "@hmcts/media-viewer": "npm:4.2.15-exui-4277"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.3.1"
-    "@hmcts/rpx-xui-common-lib": "npm:3.2.6"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.6-exui-4277"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7-exui-4185-4"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
@@ -24582,7 +24582,7 @@ __metadata:
     jsonwebtoken: "npm:^9.0.3"
     karma: "npm:~6.4.2"
     karma-chrome-launcher: "npm:3.2.0"
-    karma-coverage: "npm:~2.2.0"
+    karma-coverage: "npm:^2.2.1"
     karma-coverage-istanbul-reporter: "npm:~3.0.0"
     karma-jasmine: "npm:5.1.0"
     karma-jasmine-html-reporter: "npm:^2.0.0"
@@ -24618,7 +24618,7 @@ __metadata:
     prettier: "npm:^3.8.0"
     proper-lockfile: "npm:^4.1.2"
     puppeteer: "npm:^24.0.0"
-    rpx-xui-translation: "https://github.com/hmcts/rpx-xui-translation/releases/download/v1.2.1/rpx-xui-translation-1.2.1.tgz"
+    rpx-xui-translation: "npm:1.2.2-exui-4277"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
     sass: "npm:^1.97.3"
@@ -24651,9 +24651,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@https://github.com/hmcts/rpx-xui-translation/releases/download/v1.2.1/rpx-xui-translation-1.2.1.tgz":
-  version: 1.2.1
-  resolution: "rpx-xui-translation@https://github.com/hmcts/rpx-xui-translation/releases/download/v1.2.1/rpx-xui-translation-1.2.1.tgz"
+"rpx-xui-translation@npm:1.2.2-exui-4277":
+  version: 1.2.2-exui-4277
+  resolution: "rpx-xui-translation@npm:1.2.2-exui-4277"
   dependencies:
     dexie: "npm:^3.2.2"
     luxon: "npm:^2.4.0"
@@ -24661,7 +24661,7 @@ __metadata:
   peerDependencies:
     "@angular/common": ^20.3.14
     "@angular/core": ^20.3.14
-  checksum: 10/ddcd17ed70fe39046c0ce0fb1794892b3ad8fb468942136f8d7cd9b16eaea3ca28940ec0a591be71304911414b2721aaa012ee9bc123b8780a4accb3e2b8f1f8
+  checksum: 10/b8bf75994ccf973924c6a7a094df9819603e357f7ae3bcfdeb1d54d173af38cb55dbaf941a2a8e976c4b47520af5635fbbb88c3f6eb710a75d2ea2b6e8b4da17
   languageName: node
   linkType: hard
 

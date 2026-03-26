@@ -72,6 +72,11 @@ export class CaseDetailsPage extends Base {
   readonly caseNotificationBannerBody = this.page.locator('.govuk-notification-banner__heading');
 
   readonly eventCreationErrorHeading = this.page.getByRole('heading', { name: 'The event could not be created' });
+  readonly generalProblemHeading = this.page.getByRole('heading', { name: /there is a problem/i }).first();
+  readonly checkYourAnswersHeading = this.page.getByRole('heading', { name: /check your answers/i });
+  readonly linkedCaseReferenceInput = this.page.getByLabel('Linked case reference');
+  readonly caseLinkReasonSelect = this.page.getByLabel('Reason for link');
+  readonly caseLinkOtherDescriptionInput = this.page.getByLabel('Other description');
   readonly caseViewerTable = this.page.getByRole('table', { name: 'case viewer table' });
 
   // Table locators
@@ -560,6 +565,32 @@ export class CaseDetailsPage extends Base {
 
   async selectCaseDetailsEvent(action: string) {
     await this.selectCaseAction(action);
+  }
+
+  async openLinkCasesEvent(): Promise<void> {
+    await this.selectCaseAction('Link cases', { expectedLocator: this.linkedCaseReferenceInput });
+    await this.caseLinkReasonSelect.waitFor({ state: 'visible' });
+  }
+
+  async fillCaseLinkDetails(options: {
+    linkedCaseReference: string;
+    reasonLabel: string;
+    otherDescription?: string;
+  }): Promise<void> {
+    await this.linkedCaseReferenceInput.fill(options.linkedCaseReference);
+    await this.caseLinkReasonSelect.selectOption({ label: options.reasonLabel });
+    if (options.otherDescription !== undefined) {
+      await this.caseLinkOtherDescriptionInput.waitFor({ state: 'visible', timeout: this.getRecommendedTimeoutMs() });
+      await this.caseLinkOtherDescriptionInput.fill(options.otherDescription);
+    }
+  }
+
+  async continueCaseEvent(): Promise<void> {
+    await this.continueButton.click();
+  }
+
+  async submitCaseEvent(): Promise<void> {
+    await this.submitButton.click();
   }
 
   async selectFirstRadioOption() {

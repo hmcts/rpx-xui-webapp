@@ -482,7 +482,8 @@ export class TaskListPage extends Base {
     );
   }
 
-  async openFirstManageActions(
+  private async openManageActions(
+    rowIndex: number,
     context: string,
     options: {
       timeoutMs?: number;
@@ -495,16 +496,17 @@ export class TaskListPage extends Base {
     let attempt = 0;
 
     while (Date.now() < deadline) {
-      await this.waitForManageButton(`${context} attempt ${attempt + 1}`, {
+      await this.waitForManageButton(`${context} row ${rowIndex + 1} attempt ${attempt + 1}`, {
         timeoutMs: Math.max(1_000, Math.min(5_000, deadline - Date.now())),
         pollMs,
       });
 
-      const manageButton = this.manageCaseButtons.first();
+      const manageButton = this.manageCaseButtons.nth(rowIndex);
       await manageButton.scrollIntoViewIfNeeded().catch(() => undefined);
       await manageButton.click({ force: attempt > 0 });
 
-      const expanded = await this.taskActionsRow
+      const rowActions = this.getTaskActionsRow(rowIndex);
+      const expanded = await rowActions
         .waitFor({ state: 'visible', timeout: Math.max(1_000, Math.min(2_500, deadline - Date.now())) })
         .then(() => true)
         .catch(() => false);
@@ -513,16 +515,51 @@ export class TaskListPage extends Base {
         return;
       }
 
-      await this.assertTaskListInteractive(`opening Manage actions (${context})`);
+      await this.assertTaskListInteractive(`opening Manage actions (${context}) for row ${rowIndex + 1}`);
       attempt += 1;
       await this.page.waitForTimeout(Math.min(pollMs, Math.max(0, deadline - Date.now())));
     }
 
-    throw new Error(`Timed out after ${timeoutMs}ms opening Manage actions (${context}). url=${this.page.url()}`);
+    throw new Error(
+      `Timed out after ${timeoutMs}ms opening Manage actions (${context}) for row ${rowIndex + 1}. url=${this.page.url()}`
+    );
   }
 
-  async clickTaskAction(
-    action: Locator,
+  async openFirstManageActions(
+    context: string,
+    options: {
+      timeoutMs?: number;
+      pollMs?: number;
+    } = {}
+  ) {
+    await this.openManageActions(0, context, options);
+  }
+
+  getTaskActionsRow(rowIndex: number): Locator {
+    return this.manageCaseButtons
+      .nth(rowIndex)
+      .locator('xpath=ancestor::tr[1]/following-sibling::tr[contains(@class,"actions-row")][1]')
+      .first();
+  }
+
+  getTaskActionForRow(rowIndex: number, actionId: string): Locator {
+    return this.getTaskActionsRow(rowIndex).locator(`#action_${actionId}`).first();
+  }
+
+  async openManageActionsForRow(
+    rowIndex: number,
+    context: string,
+    options: {
+      timeoutMs?: number;
+      pollMs?: number;
+    } = {}
+  ) {
+    await this.openManageActions(rowIndex, context, options);
+  }
+
+  private async clickTaskActionWithRetry(
+    actionResolver: () => Locator,
+    reopenManageActions: (retryContext: string, retryOptions: { timeoutMs: number; pollMs: number }) => Promise<void>,
     context: string,
     options: {
       timeoutMs?: number;
@@ -536,7 +573,7 @@ export class TaskListPage extends Base {
 
     while (Date.now() < deadline) {
       await this.assertTaskListInteractive(`clicking task action (${context})`);
-      const targetAction = action.first();
+      const targetAction = actionResolver().first();
 
       const visible = await targetAction
         .waitFor({ state: 'visible', timeout: Math.max(1_000, Math.min(2_500, deadline - Date.now())) })
@@ -544,7 +581,7 @@ export class TaskListPage extends Base {
         .catch(() => false);
 
       if (!visible) {
-        await this.openFirstManageActions(`${context} reopen ${attempt + 1}`, {
+        await reopenManageActions(`${context} reopen ${attempt + 1}`, {
           timeoutMs: Math.max(1_000, Math.min(5_000, deadline - Date.now())),
           pollMs,
         });
@@ -557,10 +594,9 @@ export class TaskListPage extends Base {
       const actionTimeoutMs = Math.max(1_000, Math.min(2_500, deadline - Date.now()));
       const clickStrategies = [
         async () => targetAction.click({ force: true, noWaitAfter: true, timeout: actionTimeoutMs }),
-        async () => targetAction.dispatchEvent('click'),
-        async () => targetAction.evaluate((actionElement: HTMLAnchorElement) => actionElement.click()),
+        async () => targetAction.click({ force: true, timeout: actionTimeoutMs }),
         async () => {
-          await targetAction.focus();
+          await targetAction.focus({ timeout: actionTimeoutMs });
           await this.page.keyboard.press('Enter');
         },
       ];
@@ -588,7 +624,7 @@ export class TaskListPage extends Base {
       }
 
       if (lastTransientError) {
-        await this.openFirstManageActions(`${context} retry ${attempt + 1}`, {
+        await reopenManageActions(`${context} retry ${attempt + 1}`, {
           timeoutMs: Math.max(1_000, Math.min(5_000, deadline - Date.now())),
           pollMs,
         });
@@ -598,6 +634,41 @@ export class TaskListPage extends Base {
     }
 
     throw new Error(`Timed out after ${timeoutMs}ms clicking task action (${context}). url=${this.page.url()}`);
+  }
+
+  async clickTaskAction(
+    action: Locator,
+    context: string,
+    options: {
+      timeoutMs?: number;
+      pollMs?: number;
+    } = {}
+  ) {
+    await TaskListPage.prototype.clickTaskActionWithRetry.call(
+      this,
+      () => action,
+      (retryContext, retryOptions) => this.openFirstManageActions(retryContext, retryOptions),
+      context,
+      options
+    );
+  }
+
+  async clickTaskActionForRow(
+    rowIndex: number,
+    actionId: string,
+    context: string,
+    options: {
+      timeoutMs?: number;
+      pollMs?: number;
+    } = {}
+  ) {
+    await TaskListPage.prototype.clickTaskActionWithRetry.call(
+      this,
+      () => this.getTaskActionForRow(rowIndex, actionId),
+      (retryContext, retryOptions) => this.openManageActionsForRow(rowIndex, retryContext, retryOptions),
+      `${context} for row ${rowIndex + 1}`,
+      options
+    );
   }
 
   async submitActionAndWaitForRequest(

@@ -3,8 +3,9 @@ import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
 import { mockRes } from 'sinon-express-mock';
+import * as configuration from '../configuration';
 import { http } from '../lib/http';
-import { fetchNewUserData, fetchRoleAssignmentsForNewUsers } from './caseWorkerUserDataCacheService';
+import { fetchNewUserData, fetchRoleAssignmentsForNewUsers, getAuthTokens } from './caseWorkerUserDataCacheService';
 import { StaffUserDetails } from './interfaces/staffUserDetails';
 
 // Import sinon-chai using require to avoid ES module issues
@@ -216,6 +217,49 @@ describe('Caseworker Cache Service', () => {
       sandbox.stub(http, 'post').resolves(res);
       const data = await fetchRoleAssignmentsForNewUsers(mockMergedStaffUsers as StaffUserDetails[]);
       expect(data).to.deep.equal(finalCaseworkers);
+    });
+  });
+
+  describe('getAuthTokens', () => {
+    it('should generate an OTP from the trimmed v13 secret and fetch both auth tokens', async () => {
+      const getConfigValueStub = sandbox.stub(configuration, 'getConfigValue');
+      getConfigValueStub.callsFake((key) => {
+        const values = {
+          microservice: 'xui_webapp',
+          'services.s2s': 'https://s2s.test.com',
+          'secrets.rpx.mc-s2s-client-secret': '  JBSWY3DPEHPK3PXP  ',
+          'services.idam.idamApiUrl': 'https://idam-api.test.com',
+          'services.idam.idamClientID': 'test-client-id',
+          'secrets.rpx.system-user-name': 'system-user',
+          'secrets.rpx.system-user-password': 'system-password',
+          'secrets.rpx.mc-idam-client-secret': 'test-idam-secret',
+        };
+
+        return values[key];
+      });
+
+      const postStub = sandbox.stub(http, 'post');
+      postStub.onFirstCall().resolves({ data: 'service-token' });
+      postStub.onSecondCall().resolves({ data: { access_token: 'access-token' } });
+
+      await getAuthTokens();
+
+      const firstRequestBody = postStub.firstCall.args[1] as { microservice: string; oneTimePassword: string };
+
+      expect(postStub.firstCall.args[0]).to.equal('https://s2s.test.com/lease');
+      expect(firstRequestBody).to.deep.equal({
+        microservice: 'xui_webapp',
+        oneTimePassword: sinon.match.string,
+      });
+      expect(firstRequestBody.oneTimePassword).to.have.length(6);
+
+      expect(postStub.secondCall.args[0]).to.equal('https://idam-api.test.com/o/token');
+      expect(postStub.secondCall.args[1]).to.equal(
+        'grant_type=password&username=system-user&password=system-password&client_id=test-client-id&client_secret=test-idam-secret&scope=openid%20profile%20roles%20manage-user%20create-user%20search-user'
+      );
+      expect(postStub.secondCall.args[2]).to.deep.equal({
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      });
     });
   });
 });

@@ -247,16 +247,22 @@ describe('Caseworker Cache Service', () => {
       const firstRequestBody = postStub.firstCall.args[1] as { microservice: string; oneTimePassword: string };
 
       expect(postStub.firstCall.args[0]).to.equal('https://s2s.test.com/lease');
-      expect(firstRequestBody).to.deep.equal({
+      expect(firstRequestBody).to.deep.include({
         microservice: 'xui_webapp',
-        oneTimePassword: sinon.match.string,
       });
+      expect(firstRequestBody.oneTimePassword).to.satisfy(sinon.match.string.test);
       expect(firstRequestBody.oneTimePassword).to.have.length(6);
 
       expect(postStub.secondCall.args[0]).to.equal('https://idam-api.test.com/o/token');
-      expect(postStub.secondCall.args[1]).to.equal(
-        'grant_type=password&username=system-user&password=system-password&client_id=test-client-id&client_secret=test-idam-secret&scope=openid%20profile%20roles%20manage-user%20create-user%20search-user'
-      );
+      const authBody = new URLSearchParams(postStub.secondCall.args[1] as string);
+      expect(Object.fromEntries(authBody.entries())).to.deep.equal({
+        grant_type: 'password',
+        password: 'system-password',
+        username: 'system-user',
+        scope: 'openid profile roles manage-user create-user search-user',
+        client_id: 'test-client-id',
+        client_secret: 'test-idam-secret',
+      });
       expect(postStub.secondCall.args[2]).to.deep.equal({
         headers: { 'content-type': 'application/x-www-form-urlencoded' },
       });

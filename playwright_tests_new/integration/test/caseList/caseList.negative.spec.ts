@@ -37,11 +37,11 @@ test.describe(
         });
         await test.step('Verify user can see the WorkBasket Filter layout', async () => {
           expect(caseListPage.filtersContainer).toBeVisible();
-          await test.step('Verify user sees empty case list UI', async () => {
-            await expect(caseListPage.jurisdictionSelect).toBeVisible();
-            await expect(caseListPage.exuiHeader.header).toBeVisible();
-            await expect(caseListPage.caseSearchResultsMessage).not.toBeVisible();
-          });
+        });
+        await test.step('Verify user sees empty case list UI', async () => {
+          expect(caseListPage.jurisdictionSelect).toBeVisible();
+          expect(caseListPage.exuiHeader.header).toBeVisible();
+          expect(caseListPage.caseSearchResultsMessage).not.toBeVisible();
         });
       });
     }

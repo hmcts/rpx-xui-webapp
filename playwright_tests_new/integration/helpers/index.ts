@@ -7,6 +7,7 @@
  * ```
  */
 export * from './caseSearchMockRoutes.helper';
+export * from './caseLinkingMockRoutes.helper';
 export * from './prewarmedSession.helper';
 export * from './searchCaseSession.helper';
 export * from './hearingsMockRoutes.helper';

@@ -1,21 +1,152 @@
 # Manage Cases
 
-To run the application locally please make sure you follow the prerequisite task of
-Setting up Secrets locally as documented below.
+To run the application locally, populate the repo-root `.env` from `.env.example` first.
+
+Quick setup:
+
+```bash
+yarn env:populate:aat
+```
+
+The generated `.env` keeps safe placeholders for local-only values and fills only secrets tagged with `e2e=<ENV_VAR_NAME>` in Azure Key Vault. Review any remaining blank values before you run local-only flows.
 
 Then follow:
 
+## How environment loading works now
+
+This repo now uses the repo-root [`.env.example`](./.env.example) as the single template for local environment setup, and the repo-root [`.env`](./.env) as the generated runtime file.
+
+The design goal is simple:
+
+- one local `.env` file for the repo
+- one template that shows the full supported env catalogue
+- Azure Key Vault as the source of truth for secret values used by local setup and Jenkins
+- deterministic loading for Node, Pact, and Playwright commands regardless of whether they start from the repo root or from `api/`
+
+### Source of truth
+
+There are four important files:
+
+- [`.env.example`](./.env.example)
+  The full env template. It contains every supported key, safe defaults, and placeholders only. No live secrets should be committed here.
+- [`.env`](./.env)
+  The generated local runtime file. This is ignored by git and is populated from Azure Key Vault plus local defaults.
+- [`api/.env.defaults`](./api/.env.defaults)
+  Fallback defaults for the Node/API layer. This file is still used by `dotenv-extended` for API and Pact commands.
+- [`api/setup-runtime-env.js`](./api/setup-runtime-env.js)
+  The small bootstrap file that makes sure Node-side commands always load the correct `.env`, `.env.defaults`, and config directory.
+
+### Populate flow
+
+Use one of the repo-level commands:
+
+```bash
+yarn env:populate:aat
+yarn env:populate:demo
+```
+
+These call [`scripts/populate-env-from-keyvault.sh`](./scripts/populate-env-from-keyvault.sh), which:
+
+1. uses [`.env.example`](./.env.example) as the template
+2. looks up Azure Key Vault secrets tagged with `e2e=<ENV_VAR_NAME>`
+3. writes the resulting values into the repo-root [`.env`](./.env)
+4. preserves blank values for keys that are intentionally local-only
+5. derives a few aliases/defaults after secret retrieval so the generated `.env` is complete enough for current test and API flows
+
+The older compatibility commands:
+
+```bash
+yarn env:populate:playwright:aat
+yarn env:populate:playwright:demo
+```
+
+still work, but they now point at the same repo-root template and generated `.env`.
+
+### Why the API and Pact layer need special handling
+
+The Node/API layer does not read only one file from one directory:
+
+- the real runtime values should come from the repo-root [`.env`](./.env)
+- the fallback defaults still live in [`api/.env.defaults`](./api/.env.defaults)
+
+That becomes awkward because some commands run from the repo root and some run from inside `api/`.
+
+Without explicit setup, `dotenv-extended/config` resolves files relative to the current working directory. That means:
+
+- a command started in the repo root naturally sees `./.env`
+- a command started in `api/` naturally looks for `api/.env`
+- this repo does not use `api/.env` as the source of truth
+
+So if we did nothing, local behaviour would depend on where the process started, which is exactly the kind of drift that leads to “works locally but not in Jenkins” failures.
+
+### How Node, API, and Pact commands resolve env now
+
+For Node-side commands, the scripts first preload [`api/setup-runtime-env.js`](./api/setup-runtime-env.js), then load `dotenv-extended/config`.
+
+The bootstrap file sets:
+
+- `DOTENV_CONFIG_PATH` to the repo-root [`.env`](./.env)
+- `DOTENV_CONFIG_DEFAULTS` to [`api/.env.defaults`](./api/.env.defaults)
+- `NODE_CONFIG_DIR` to [`config/`](./config)
+- `NODE_CONFIG_ENV=development` if not already set
+- `FEATURE_APP_INSIGHTS_ENABLED=false` if not already set
+
+After that, `dotenv-extended/config` loads env values in the normal way, but now with the right paths already defined.
+
+This gives us the best balance for this repo:
+
+- the scripts still look close to the historical `dotenv-extended/config` pattern
+- the path logic is kept in one place
+- the same setup works from the repo root and from `api/`
+- we avoid scattering `DOTENV_CONFIG_PATH=... DOTENV_CONFIG_DEFAULTS=...` across `package.json`
+
+### Command behaviour summary
+
+Repo-level env generation:
+
+- `yarn env:populate:aat` generates repo-root [`.env`](./.env) from AAT Key Vault using [`.env.example`](./.env.example)
+- `yarn env:populate:demo` does the same for demo
+
+Node/API startup and tests:
+
+- `yarn start:node:development` runs the API with `NODE_CONFIG_ENV=development`
+- `yarn test:node:local` runs Node tests against the repo-root [`.env`](./.env) plus [`api/.env.defaults`](./api/.env.defaults)
+- `yarn test-pact` and `yarn publish-pact` use the same bootstrap path resolution before Pact code runs
+- `cd api && yarn start`, `cd api && yarn test`, and `cd api && yarn watch` also resolve the repo-root [`.env`](./.env) correctly
+
+### Why this matters
+
+This setup was introduced so that:
+
+- the repo-root [`.env.example`](./.env.example), current test user catalogue, generated [`.env`](./.env), and Azure Key Vault all stay aligned
+- local developers and Jenkins consume the same secret source
+- API, Pact, and Playwright flows stop depending on accidental current-working-directory behaviour
+- retiring older external env catalogues does not leave hidden credentials or config expectations behind elsewhere
+
+### What this does not do
+
+This setup does not change Angular application logic or production behaviour by itself.
+
+It only changes how local and test-side commands discover environment variables and defaults.
+
+### Troubleshooting env loading
+
+- If `yarn env:populate:*` leaves a key blank, either the key is intentionally local-only or the matching Azure Key Vault secret/tag does not exist yet.
+- If a Node/API/Pact command starts with unexpected config, check that the repo-root [`.env`](./.env) exists and was generated from the correct environment.
+- If you are comparing values, compare the generated [`.env`](./.env) against [`.env.example`](./.env.example), not against an old `api/.env` pattern.
+- If you add a new env key, update [`.env.example`](./.env.example) and ensure the Azure Key Vault secret is tagged with `e2e=<ENV_VAR_NAME>` if it should be populated automatically.
+
 ## Startup the Node service locally
 
-1. Make sure you have local-development.json within /config, if you do not you can get this from an XUI team member.
+1. Make sure you have `local-development.json` within `/config`; if you do not, get it from an XUI team member.
 2. Start the Node service locally using:
-   `export IDAM_SECRET=* && export S2S_SECRET=* && export NODE_CONFIG_DIR=../config && export NODE_CONFIG_ENV=development
-&& export ALLOW_CONFIG_MUTATIONS=1 && npm run start:node`
+   `yarn start:node:development`
 
 Explanation:
 
-NODE_CONFIG_DIR tells the machine where the configuration for the Node application is located.
-NODE_CONFIG_ENV=development sets the machine so that the config that is used is local-development.json
+The API package now reads the repo-root `.env`, with `api/.env.defaults` acting as the fallback defaults file.
+`NODE_CONFIG_ENV=development` selects `config/local-development.json`.
+See [How environment loading works now](#how-environment-loading-works-now) for the full bootstrap flow.
 
 @see https://github.com/lorenwest/node-config/wiki/Configuration-Files
 
@@ -181,6 +312,28 @@ It increases complexity if we were to add files to /config as we already have th
 values contained within values.preview.template.yaml and values.aat.template.yaml.
 
 # Setting up Secrets locally (Required)
+
+Use the repo-root `.env.example` as the local source of truth for developer setup.
+
+Recommended flow:
+
+```bash
+yarn env:populate:aat
+```
+
+Alternative environments:
+
+```bash
+yarn env:populate:demo
+yarn env:populate aat /tmp/xui.env .env.example
+```
+
+Notes:
+
+- `yarn env:populate:*` fills only Key Vault secrets tagged with `e2e=<ENV_VAR_NAME>`.
+- Blank values left in `.env` are local-only overrides and should be set manually only when your workflow needs them.
+- `.env` is ignored by git and must not be committed.
+- The older `yarn env:populate:playwright:*` commands are kept as compatibility aliases and now use the same repo-root `.env.example`.
 
 You need to setup secrets locally before you run the project. Why? - When you push this application
 up through AKS deployed through Flux to AAT, ITHC and Prod, the application will take in the secrets on these environments.

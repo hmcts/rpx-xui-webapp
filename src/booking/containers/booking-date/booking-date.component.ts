@@ -192,7 +192,7 @@ export class BookingDateComponent implements OnInit {
           errorMessage: BookingDateFormErrorMessage.NO_SELECTION,
         });
       }
-      switch (this.formGroup.errors && this.formGroup.errors.errorType) {
+      switch (this.formGroup.errors?.errorType) {
         case BookingDateFormErrorMessage.PAST_DATE_CHECK:
           this.dateValidationErrors.push({
             controlId: DateFormControl.BOOKING_START_DAY,
@@ -241,19 +241,21 @@ export class BookingDateComponent implements OnInit {
     let startDate: Date;
     let endDate: Date;
     switch (bookingDateOption) {
-      case BookingDateOption.TODAY:
+      case BookingDateOption.TODAY: {
         startDate = new Date();
         const now = new Date();
         endDate = new Date(now.setHours(23, 59, 59, 999));
         break;
-      case BookingDateOption.WEEK:
+      }
+      case BookingDateOption.WEEK: {
         startDate = new Date();
         const sunday = new Date();
         const sundayUTC = sunday.setTime(sunday.getTime() - ((sunday.getDay() ? sunday.getDay() : 7) - 7) * 24 * 60 * 60 * 1000);
         const sundayMidnightUTC = new Date(sundayUTC).setUTCHours(23, 59, 59, 999);
         endDate = new Date(sundayMidnightUTC);
         break;
-      case BookingDateOption.DATERANGE:
+      }
+      case BookingDateOption.DATERANGE: {
         startDate = new Date(
           this.formGroup.get(DateFormControl.BOOKING_START_YEAR).value,
           this.formGroup.get(DateFormControl.BOOKING_START_MONTH).value - 1,
@@ -266,8 +268,10 @@ export class BookingDateComponent implements OnInit {
         ).setUTCHours(23, 59, 59, 999);
         endDate = new Date(endDateMidnight);
         break;
-      default:
+      }
+      default: {
         break;
+      }
     }
 
     return {
@@ -277,11 +281,11 @@ export class BookingDateComponent implements OnInit {
   }
 
   public onSubmit(): void {
-    if (!this.validateForm()) {
+    if (this.validateForm()) {
+      this.onEventTrigger();
+    } else {
       // Scroll to error summary
       window.scrollTo({ top: 0, left: 0 });
-    } else {
-      this.onEventTrigger();
     }
   }
 

@@ -10,6 +10,10 @@ class UserApiData {
     this.debugUserDataFile = path.resolve(__dirname, '../../../functional-output/mockUserData.json');
   }
 
+  normaliseToken(token) {
+    return typeof token === 'string' ? token.replace('Bearer ', '') : '';
+  }
+
   sendResponse(req, res, apiMethod, defaultResponseCallback) {
     const auth = req.headers.authorization ? req.headers.authorization : req.headers.serviceauthorization;
     const response = this.getUserData(auth, apiMethod);
@@ -50,7 +54,11 @@ class UserApiData {
   }
 
   getUserData(token, apiMethod) {
-    const userSession = this.sessionUsers.find((sess) => sess.token === token.replace('Bearer ', ''));
+    const normalisedToken = this.normaliseToken(token);
+    if (!normalisedToken) {
+      return null;
+    }
+    const userSession = this.sessionUsers.find((sess) => sess.token === normalisedToken);
     if (!userSession) {
       return null;
     }
@@ -60,7 +68,10 @@ class UserApiData {
 
   captureRequestDetails(apiMethod, requestObj) {
     // apiMethod = apiMethod.toUpperCase();
-    const token = requestObj.headers.authorization.replace('Bearer ', '');
+    const token = this.normaliseToken(requestObj?.headers?.authorization);
+    if (!token) {
+      return;
+    }
     let userSession = this.sessionUsers.find((sess) => sess.token === token);
     if (!userSession) {
       userSession = {
@@ -93,7 +104,11 @@ class UserApiData {
       });
       return allSessionsRequests;
     }
-    const userSession = this.sessionUsers.find((sess) => sess.token === token.replace('Bearer ', ''));
+    const normalisedToken = this.normaliseToken(token);
+    if (!normalisedToken) {
+      return null;
+    }
+    const userSession = this.sessionUsers.find((sess) => sess.token === normalisedToken);
     if (!userSession) {
       return null;
     }
@@ -102,7 +117,11 @@ class UserApiData {
   }
 
   getUserSessionData(token) {
-    const userSession = this.sessionUsers.find((sess) => (sess.token === token ? token.replace('Bearer ', '') : ''));
+    const normalisedToken = this.normaliseToken(token);
+    if (!normalisedToken) {
+      return null;
+    }
+    const userSession = this.sessionUsers.find((sess) => sess.token === normalisedToken);
     return userSession;
   }
 

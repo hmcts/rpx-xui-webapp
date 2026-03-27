@@ -12,7 +12,7 @@ if (environment.production) {
 }
 
 /* ②  Fetch runtime config, then bootstrap with the nonce providers */
-fetch('/external/configuration-ui/')
+fetch('/external/config/ui/')
   .then(async (res) => (await res.json()) || {})
   .then((config) =>
     platformBrowserDynamic([

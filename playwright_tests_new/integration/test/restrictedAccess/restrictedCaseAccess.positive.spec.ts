@@ -62,12 +62,7 @@ test.describe(
       page,
       tableUtils,
     }) => {
-      let judicialLookupRequests = 0;
-      page.on('request', (request) => {
-        if (request.url().includes('/api/prd/judicial/searchJudicialUserByIdamId')) {
-          judicialLookupRequests++;
-        }
-      });
+      const judicialLookupRequestPromise = page.waitForRequest('**/api/prd/judicial/searchJudicialUserByIdamId*');
 
       await test.step('Configure restricted-access mock responses', async () => {
         await setupRestrictedAccessMocks(page);
@@ -113,7 +108,9 @@ test.describe(
 
         expect(table).toHaveLength(expectedRows.length);
         expect(table).toEqual(expect.arrayContaining(expectedRows));
-        await expect.poll(() => judicialLookupRequests).toBeGreaterThan(0);
+
+        const judicialLookupRequest = await judicialLookupRequestPromise;
+        expect(judicialLookupRequest).toBeTruthy();
       });
     });
 
@@ -124,16 +121,14 @@ test.describe(
       page,
       tableUtils,
     }) => {
-      let judicialLookupRequests = 0;
-      page.on('request', (request) => {
-        if (request.url().includes('/api/prd/judicial/searchJudicialUserByIdamId')) {
-          judicialLookupRequests++;
-        }
-      });
-
       await setupRestrictedAccessMocks(page, {
         roleAccessBody: DEFAULT_ROLE_ACCESS_USERS_OPS,
         caseworkersBody: DEFAULT_CASEWORKERS_OPS,
+      });
+
+      await page.unroute('**/api/prd/judicial/searchJudicialUserByIdamId*');
+      await page.route('**/api/prd/judicial/searchJudicialUserByIdamId*', async () => {
+        throw new Error('Judicial lookup API should not be called for legal-ops-only scenario');
       });
 
       await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, caseListPage, searchCasePage);
@@ -154,8 +149,6 @@ test.describe(
       });
 
       expect(table).toEqual(expectedRows);
-      await page.waitForTimeout(300);
-      expect(judicialLookupRequests).toBe(0);
     });
 
     test('shows only judicial users when role-access returns judicial entries only', async ({
@@ -198,16 +191,14 @@ test.describe(
       page,
       tableUtils,
     }) => {
-      let judicialLookupRequests = 0;
-      page.on('request', (request) => {
-        if (request.url().includes('/api/prd/judicial/searchJudicialUserByIdamId')) {
-          judicialLookupRequests++;
-        }
-      });
-
       await setupRestrictedAccessMocks(page, {
         roleAccessBody: DEFAULT_ROLE_ACCESS_USERS_JUDICIAL,
         caseworkersBody: DEFAULT_CASEWORKERS.filter((worker) => worker.roleCategory === 'JUDICIAL'),
+      });
+
+      await page.unroute('**/api/prd/judicial/searchJudicialUserByIdamId*');
+      await page.route('**/api/prd/judicial/searchJudicialUserByIdamId*', async () => {
+        throw new Error('Judicial lookup API should not be called when judicial users are resolved by caseworker API');
       });
 
       await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, caseListPage, searchCasePage);
@@ -215,9 +206,6 @@ test.describe(
       await expect(page).toHaveURL(new RegExp(`/cases/restricted-case-access/${VALID_SEARCH_CASE_REFERENCE}`));
       await expect(caseDetailsPage.restrictedAccessContainer).toBeVisible();
       await tableUtils.parseDataTable(caseDetailsPage.exuiBodyComponent.table);
-
-      await page.waitForTimeout(300);
-      expect(judicialLookupRequests).toBe(0);
     });
   }
 );

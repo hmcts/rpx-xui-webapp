@@ -59,6 +59,10 @@ export type RestrictedAccessMockOverrides = {
   roleAccessBody?: object;
   caseworkersStatus?: number;
   caseworkersBody?: object;
+  restrictedCaseDetailsStatus?: number;
+  restrictedCaseDetailsBody?: object;
+  judicialSearchStatus?: number;
+  judicialSearchBody?: object;
 };
 
 export async function setupRestrictedAccessMocks(page: Page, overrides: RestrictedAccessMockOverrides = {}): Promise<void> {

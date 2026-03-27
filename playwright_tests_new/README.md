@@ -1,10 +1,13 @@
 # Playwright Test Suite
 
-This directory contains both **API tests** (`node-api` project) and **E2E UI tests** for the EXUI application.
+This directory contains **node-api API tests**, **Playwright support unit tests**, **integration tests**, and **E2E UI tests** for the EXUI application.
 
 ## Table of Contents
 
 - [Quick Command Reference (AAT vs LOCAL)](#quick-command-reference-aat-vs-local)
+- [Secrets and Env Population (Key Vault)](#secrets-and-env-population-key-vault)
+- [Dynamic User and API Case Setup Flows](#dynamic-user-and-api-case-setup-flows)
+- [Playwright Support Unit Tests](#playwright-support-unit-tests)
 - [API Tests](#api-tests)
 - [E2E Tests](#e2e-tests)
 - [Session Management](#session-management)
@@ -57,6 +60,9 @@ TEST_URL=http://localhost:3000 yarn test:playwrightE2E --project=chromium --work
 ### API commands
 
 ```bash
+# AAT/LOCAL: run the Playwright support unit tests only
+PLAYWRIGHT_SKIP_INSTALL=true yarn playwright test --project=node-api playwright_tests_new/api/unit
+
 # AAT: include work-allocation tests only, disable excludes
 API_PW_INCLUDE_TAGS=@svc-work-allocation API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
 
@@ -90,6 +96,173 @@ yarn test:playwright:integration
 
 ---
 
+## Secrets and Env Population (Key Vault)
+
+Use Key Vault tagged secrets to generate local `.env` for Playwright runs.
+
+- Template file: `playwright_tests_new/.env.example`
+- Script wrapper: `scripts/populate-playwright-env-from-keyvault.sh`
+- Underlying helper: `@hmcts/playwright-common/dist/scripts/get-secrets.js`
+
+Tagging rule in Azure Key Vault:
+
+- Set `tags.e2e=<ENV_VAR_NAME>` on each secret you want written into `.env`.
+
+Supported commands:
+
+```bash
+# AAT
+yarn env:populate:playwright:aat
+
+# DEMO
+yarn env:populate:playwright:demo
+
+# Generic form (env + custom output file)
+yarn env:populate:playwright aat .env
+
+# Direct helper form (vault, template, output)
+yarn get-secrets rpx-aat playwright_tests_new/.env.example .env
+```
+
+Dynamic-user keys now available in Key Vault (`rpx-aat`, `rpx-demo`) and populated via tags:
+
+- `ORG_USER_ASSIGNMENT_USERNAME`
+- `ORG_USER_ASSIGNMENT_PASSWORD`
+- `IDAM_SOLICITOR_USER_PASSWORD`
+- `IDAM_CASEWORKER_DIVORCE_PASSWORD`
+- `ORG_USER_ASSIGNMENT_CLIENT_ID`
+- `ORG_USER_ASSIGNMENT_CLIENT_SECRET`
+- `ORG_USER_ASSIGNMENT_OAUTH2_SCOPE`
+- `ORG_USER_ASSIGNMENT_EXPECTED_EMAIL`
+- `ORG_USER_ASSIGNMENT_REDIRECT_URI`
+- `ORG_USER_ASSIGNMENT_UI_USER`
+- `ORG_USER_ASSIGNMENT_USER_ROLES`
+- `TEST_SOLICITOR_ORGANISATION_ID`
+- `MANAGE_ORG_API_PATH`
+- `RD_PROFESSIONAL_API_PATH`
+
+Notes:
+
+- Local dynamic-user creation requires F5 VPN (AAT/DEMO private services).
+- Do not commit `.env`.
+
+---
+
+## Dynamic User and API Case Setup Flows
+
+These diagrams show the two main setup paths that confuse new testers most often:
+
+- dynamic user creation for solicitor-style E2E journeys
+- API-driven case generation before an E2E or integration flow starts
+
+### Dynamic User Creation
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Spec as E2E Spec / Fixture
+    participant Session as dynamicSolicitorSession
+    participant Roles as provisionRoleResolution
+    participant Retry as dynamicProvisioningFlow
+    participant Users as ProfessionalUserUtils
+    participant IDAM as IDAM / SIDAM
+    participant PRD as Org Assignment APIs
+    participant Probe as propagationProbe
+    participant Runtime as runtimeUserCredentials
+    participant EXUI as EXUI readiness check
+
+    Spec->>Session: provisionDynamicSolicitorForAlias(alias, roleContext)
+    Session->>Roles: resolveProvisionRoleNamesForAlias(...)
+    Roles-->>Session: resolved role names
+    Session->>Retry: provisionUserWithRetries(...)
+    Retry->>Users: createSolicitorUserForOrganisation(...)
+    Users->>IDAM: create/update account + ensure active
+    IDAM-->>Users: user id + credentials
+    Users->>Probe: waitForUserPropagationFlow(user)
+    Probe-->>Users: verified / degraded outcome
+    Users->>PRD: assignUserToOrganisationFlow(...)
+    PRD-->>Users: organisation assignment result
+    Users-->>Retry: created user + cleanup handles
+    Retry-->>Session: provisioned user
+    Session->>Runtime: publish runtime credentials for alias
+    Session->>EXUI: waitForExuiUserPropagation(...)
+    EXUI-->>Session: user can reach target journey
+    Session-->>Spec: provisioned session handle + cleanup
+```
+
+### API Case Generation
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Spec as E2E Spec / Fixture
+    participant Setup as caseSetup
+    participant Registry as payload registry
+    participant Template as payload template
+    participant Auth as API auth / caseworker access
+    participant CCD as CCD APIs
+    participant UI as UI fallback journey
+
+    Spec->>Setup: setupCaseForJourney(journey, options)
+    Setup->>Registry: buildCasePayloadFromTemplate(...)
+    Registry->>Template: apply journey template + overrides
+    Template-->>Registry: final CCD payload
+    Registry-->>Setup: payload + metadata
+    Setup->>Auth: resolve tokens / jurisdiction ids / case type ids
+    Auth-->>Setup: authenticated request context
+    Setup->>CCD: createCaseViaApi(...) or createCaseViaDirectCcdApi(...)
+    CCD->>CCD: validate event + submit create event
+    CCD-->>Setup: case id / case number
+    alt API path succeeds
+        Setup-->>Spec: SetupCaseResult(caseNumber, caseId, setupMode=api)
+    else API path unavailable or unsuitable
+        Setup->>UI: run journey-specific UI setup
+        UI-->>Setup: created case number
+        Setup-->>Spec: SetupCaseResult(caseNumber, setupMode=ui)
+    end
+```
+
+### Reading the Diagrams
+
+- Dynamic-user provisioning starts in `dynamicSolicitorSession.ts` and delegates most heavy lifting into `dynamicProvisioningFlow.ts`, `professional-user.utils.ts`, and the extracted `professional-user/` collaborators.
+- API case setup starts in `caseSetup.ts` and uses `payloads/registry.ts` plus the journey templates under `E2E/utils/test-setup/payloads/templates/`.
+- The returned case number or runtime user credentials are then consumed by the spec or fixture layer, not hidden inside the page objects.
+
+---
+
+## Playwright Support Unit Tests
+
+Unit-style tests for Playwright support code live under `playwright_tests_new/api/unit/` and run on the existing `node-api` project. Use this layer for pure helpers, policy resolution, and fake-driven orchestration that does not need a real browser journey.
+
+Current files:
+
+- `playwright_tests_new/api/unit/create-case.flow.unit.api.ts`
+- `playwright_tests_new/api/unit/dynamic-solicitor-session.unit.api.ts`
+- `playwright_tests_new/api/unit/dynamic-user.pure.unit.api.ts`
+- `playwright_tests_new/api/unit/dynamic-user.orchestration.unit.api.ts`
+- `playwright_tests_new/api/unit/dynamic-user.runtime.unit.api.ts`
+
+### Running Unit Tests
+
+```bash
+# Run all Playwright support unit tests
+PLAYWRIGHT_SKIP_INSTALL=true yarn playwright test --project=node-api playwright_tests_new/api/unit
+
+# Run one unit-test file
+PLAYWRIGHT_SKIP_INSTALL=true yarn playwright test --project=node-api playwright_tests_new/api/unit/dynamic-user.pure.unit.api.ts
+
+# Run one unit test by title
+PLAYWRIGHT_SKIP_INSTALL=true yarn playwright test --project=node-api playwright_tests_new/api/unit -g "resolveSolicitorRoleStrategy"
+```
+
+### Placement Rules
+
+- Keep unit tests for `playwright_tests_new` support code inside `playwright_tests_new/`.
+- Prefer `playwright_tests_new/api/unit/` for fake-driven tests that exercise Playwright support modules without a browser journey.
+- Do not add separate runners or support harnesses under `api/test/` for this layer unless there is an exceptional documented reason.
+
+---
+
 ## API Tests
 
 API tests are located in `api/` and replace the legacy Mocha `yarn test:api` run.
@@ -106,6 +279,9 @@ API tests are located in `api/` and replace the legacy Mocha `yarn test:api` run
 ### Running API Tests
 
 ```bash
+# Run only Playwright support unit tests
+PLAYWRIGHT_SKIP_INSTALL=true yarn playwright test --project=node-api playwright_tests_new/api/unit
+
 # Smoke the API suite
 yarn test:api:pw
 
@@ -138,7 +314,7 @@ API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
 
 - In CI, Playwright defaults to **8 workers** unless `FUNCTIONAL_TESTS_WORKERS` is set
 - Jenkins currently sets `FUNCTIONAL_TESTS_WORKERS=2` on Preview and `FUNCTIONAL_TESTS_WORKERS=4` on AAT for Playwright API, E2E, and integration runs
-- Locally, worker count is auto-sized; override with `--workers` flag
+- Locally, worker count is auto-sized from CPU capacity; override with `FUNCTIONAL_TESTS_WORKERS` or the Playwright `--workers` flag
 
 ### API Authentication Model
 
@@ -162,6 +338,7 @@ API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
 
 ### What API Tests Cover
 
+- **Playwright support unit tests**: Fake-driven coverage for support modules under `playwright_tests_new/api/unit/`
 - **Unauthenticated routes**: Assert 401 + `{ message: 'Unauthorized' }` body
 - **Node shell**: Verify auth status, user details payload, feature flags
 - **CCD/case-share**: Check jurisdictions, work-basket inputs, profiles, organizations
@@ -218,6 +395,12 @@ E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:playwrightE2E
 
 Integration tests are located in `integration/` and test Angular application integration with mocked backend APIs.
 
+File naming convention:
+
+- Use `<feature>.positive.spec.ts` for happy-path and expected-success coverage.
+- Use `<feature>.negative.spec.ts` for validation, access-control, backend-failure, and resilience/error-path coverage.
+- If a feature needs both, split the scenarios across two files rather than mixing them in one spec.
+
 ### Running Integration Tests
 
 ```bash
@@ -227,8 +410,14 @@ yarn test:playwright:integration
 # Run specific integration test file
 npx playwright test integration/test/caseList/caseList.positive.spec.ts --config=playwright.integration.config.ts
 
-# Run with specific browser
+# Run the main integration project
 npx playwright test --config=playwright.integration.config.ts --project=chromium
+
+# Run the searchCase integration project
+npx playwright test --config=playwright.integration.config.ts --project=chromium-search-case
+
+# Disable Odhin locally when you want the fastest possible run
+PW_INTEGRATION_ODHIN=0 npx playwright test --config=playwright.integration.config.ts --project=chromium-search-case
 ```
 
 ### Integration Tag Filtering
@@ -251,6 +440,16 @@ INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=@integration-manage-tasks yarn test:playwr
 # Ignore file-level excludes for this run
 INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:playwright:integration
 ```
+
+Notes:
+
+- `chromium-search-case` isolates the `integration/test/searchCase/` suite so it can be run or triaged independently
+- All other integration specs continue to run on the auto-sized `chromium` project unless `FUNCTIONAL_TESTS_WORKERS` is pinned explicitly
+- Odhin remains enabled by default for integration runs, including local runs
+- Local integration Odhin uses a lightweight profile by default and emits explicit finalization timing so post-test report generation is visible and bounded
+- Local integration Odhin also bounds runtime reporter hooks by default; override with `PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS=<ms>` or set `0` to disable the local safeguard
+- Local integration Odhin disables browser console capture by default; opt in with `PW_ODHIN_CONSOLE_LOG=1 PW_ODHIN_CONSOLE_ERROR=1`
+- Odhin finalization progress is suppressed for quick completions and only starts printing after the grace window set by `PW_ODHIN_PROGRESS_GRACE_MS`
 
 ### Integration Test Structure
 
@@ -354,9 +553,10 @@ expect(visibleRows.length).toBeGreaterThan(0);
 - **Filesystem-based lock mechanism** prevents concurrent logins for the same user
 - Locks coordinate across **all Playwright worker processes** (API + E2E) using `proper-lockfile`
 - Jenkins currently runs API, E2E, and integration suites with **2 workers** on Preview and **4 workers** on AAT
-- When Worker A logs in user X, other workers **and parallel API tests** wait for lock release and reuse the session
+- When one worker logs in user X, the remaining workers **and parallel API tests** wait for lock release and reuse the session
 - After acquiring lock, workers recheck freshness to ensure session is still valid
 - `ensureSession()` intentionally avoids forced recapture so lock waiters can reuse the newly refreshed session instead of logging in again
+- The `searchCase` integration suite runs on a dedicated Playwright project so it can be targeted independently without affecting the rest of the integration matrix
 
 ### Usage in E2E Tests
 
@@ -504,6 +704,16 @@ npx playwright test --project chromium --workers=4
 - Workers 2-4 wait for lock → reuse SOLICITOR session
 - Total login time per user: ~30-45s (shared across all workers)
 
+#### Auto-Sized Workers (Local or Unpinned CI)
+
+```bash
+npx playwright test --project chromium
+```
+
+- One worker logs in SOLICITOR and stores the session
+- Other workers wait for lock release and reuse the fresh session
+- Total login time per user remains shared across all workers
+
 #### Parallel Test Suites (CI Pipeline)
 
 ```bash
@@ -514,6 +724,10 @@ npx playwright test --project node-api --workers=2  # Preview API tests
 # AAT:
 npx playwright test --project chromium --workers=4  # AAT E2E tests
 npx playwright test --project node-api --workers=4  # AAT API tests
+
+# Local or unpinned CI:
+npx playwright test --project chromium  # E2E tests
+npx playwright test --project node-api  # API tests
 ```
 
 - E2E Worker 1 logs in solicitor → stores session
@@ -541,8 +755,9 @@ Sessions are stored in `.sessions/` directory with filesystem-based locking:
 - Created when a worker/test suite attempts to log in
 - Held during login process (2-5 seconds)
 - Released in `finally` block to prevent deadlocks
-- Other workers wait up to 30 retries × 1-5s = ~2.5 minutes max
+- Other workers poll for up to 90 seconds while checking whether another worker has already refreshed the target session
 - After lock released, waiting workers recheck session freshness
+- Waiting workers can skip lock acquisition entirely if the target session becomes fresh while they are polling
 - Waiting workers skip login if session became fresh while waiting (prevents duplicate recapture storms)
 - Stale threshold: 60 seconds (if lock held longer, considered abandoned)
 

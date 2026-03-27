@@ -1,6 +1,7 @@
 import { expect, test } from '../../../../E2E/fixtures';
 import { applySessionCookies } from '../../../../common/sessionCapture';
 import { availableActionsList, buildTaskListMock } from '../../../mocks/taskList.mock';
+import { setupTaskListBootstrapRoutes } from '../../../helpers';
 import { TASK_LIST_ROUTE_REGEX } from '../../../testData';
 
 const userIdentifier = 'STAFF_ADMIN';
@@ -13,6 +14,7 @@ test.describe(`Assign Task as ${userIdentifier}`, { tag: ['@integration', '@inte
   test(`User can assign a task to themselves and see the expected notifications`, async ({ taskListPage, page }) => {
     const taskListMockResponse = buildTaskListMock(3, '', availableActionsList);
     await test.step('Setup route mock for task list', async () => {
+      await setupTaskListBootstrapRoutes(page);
       await page.route(TASK_LIST_ROUTE_REGEX, async (route) => {
         const body = JSON.stringify(taskListMockResponse);
         await route.fulfill({ status: 200, contentType: 'application/json', body });
@@ -37,10 +39,13 @@ test.describe(`Assign Task as ${userIdentifier}`, { tag: ['@integration', '@inte
     });
 
     await test.step('Verify you can assign test', async () => {
-      await taskListPage.manageCaseButtons.first().click();
-      await expect(taskListPage.taskActionClaim).toBeVisible();
-      await taskListPage.taskActionClaim.click();
-      await expect(taskListPage.taskActionClaim).not.toBeVisible();
+      const rowIndex = 0;
+      const claimAction = taskListPage.getTaskActionForRow(rowIndex, 'claim');
+
+      await taskListPage.openManageActionsForRow(rowIndex, 'available tasks claim action');
+      await expect(claimAction).toBeVisible();
+      await taskListPage.clickTaskActionForRow(rowIndex, 'claim', 'available tasks claim action');
+      await expect(claimAction).not.toBeVisible();
       await expect(taskListPage.exuiBodyComponent.infoMessage).toBeVisible();
       await expect(taskListPage.exuiBodyComponent.successMessage).toContainText(
         `You've assigned yourself a task. It's available in My tasks.`

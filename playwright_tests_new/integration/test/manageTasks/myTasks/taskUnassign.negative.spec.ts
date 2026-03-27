@@ -9,7 +9,11 @@ import {
 import { applySessionCookies } from '../../../../common/sessionCapture';
 import { buildTaskListMock, myActionsList } from '../../../mocks/taskList.mock';
 import { extractUserIdFromCookies } from '../../../utils/extractUserIdFromCookies';
-import { setupTaskActionEndpointMocks } from '../../../helpers/taskActionApiMocks.helper';
+import {
+  expectValidUnassignSubmission,
+  setupTaskActionEndpointMocks,
+  setupUnassignSubmissionCapture,
+} from '../../../helpers/taskActionApiMocks.helper';
 
 const userIdentifier = 'STAFF_ADMIN';
 let sessionCookies: any[] = [];
@@ -42,14 +46,7 @@ test.describe(
           caseTypeId: firstTask.case_type_id,
           assigneeId: firstTask.assignee,
           unassignMode: 'unclaim',
-        });
-
-        await page.route(`**/workallocation/task/${firstTask.id}/unclaim*`, async (route) => {
-          if (route.request().method() !== 'POST') {
-            await route.continue();
-            return;
-          }
-          await route.fulfill({ status: 500, contentType: 'application/json', body: '{}' });
+          includeSubmitActionMock: false,
         });
       });
 
@@ -58,20 +55,27 @@ test.describe(
         await expect(taskListPage.taskListTable).toBeVisible();
         await taskListPage.exuiSpinnerComponent.wait();
 
-        await taskListPage.manageCaseButtons.first().click();
-        await taskListPage.taskActionUnassign.click();
+        await taskListPage.openFirstManageActions('my tasks unassign 500 response');
+        await expect(taskListPage.taskActionUnassign).toBeVisible();
+        await taskListPage.clickTaskAction(taskListPage.taskActionUnassign, 'my tasks unassign 500 response');
         await expect(page).toHaveURL(new RegExp(`/work/${firstTask.id}/unclaim`));
 
-        const unassignFailureResponsePromise = page.waitForResponse(
-          (response) =>
-            response.request().method() === 'POST' &&
-            response.url().includes(`/workallocation/task/${firstTask.id}/unclaim`) &&
-            response.status() === 500
-        );
+        const { submissionPromise: unassignFailureResponsePromise } = await setupUnassignSubmissionCapture(page, {
+          taskId: firstTask.id,
+          status: 500,
+        });
 
-        await taskListPage.submitButton.click();
+        await taskListPage.submitActionAndWaitForRequest(
+          (request) =>
+            request.method() === 'POST' &&
+            (request.url().includes(`/workallocation/task/${firstTask.id}/unclaim`) ||
+              request.url().includes(`/workallocation/task/${firstTask.id}/assign`)),
+          'submitting my tasks unassign 500 action'
+        );
         const unassignFailureResponse = await unassignFailureResponsePromise;
-        expect(unassignFailureResponse.status()).toBe(500);
+        expect(unassignFailureResponse.status).toBe(500);
+        expect(['unclaim', 'assign-null']).toContain(unassignFailureResponse.mode);
+        expectValidUnassignSubmission(unassignFailureResponse);
 
         await expect(page).toHaveURL(SERVICE_DOWN_URL_REGEX);
         await expect(page.getByRole('heading', { level: 1, name: SERVICE_DOWN_HEADING_TEXT })).toBeVisible();
@@ -94,14 +98,7 @@ test.describe(
           caseTypeId: firstTask.case_type_id,
           assigneeId: firstTask.assignee,
           unassignMode: 'unclaim',
-        });
-
-        await page.route(`**/workallocation/task/${firstTask.id}/unclaim*`, async (route) => {
-          if (route.request().method() !== 'POST') {
-            await route.continue();
-            return;
-          }
-          await route.fulfill({ status: 400, contentType: 'application/json', body: '{}' });
+          includeSubmitActionMock: false,
         });
       });
 
@@ -110,20 +107,27 @@ test.describe(
         await expect(taskListPage.taskListTable).toBeVisible();
         await taskListPage.exuiSpinnerComponent.wait();
 
-        await taskListPage.manageCaseButtons.first().click();
-        await taskListPage.taskActionUnassign.click();
+        await taskListPage.openFirstManageActions('my tasks unassign 400 response');
+        await expect(taskListPage.taskActionUnassign).toBeVisible();
+        await taskListPage.clickTaskAction(taskListPage.taskActionUnassign, 'my tasks unassign 400 response');
         await expect(page).toHaveURL(new RegExp(`/work/${firstTask.id}/unclaim`));
 
-        const badRequestResponsePromise = page.waitForResponse(
-          (response) =>
-            response.request().method() === 'POST' &&
-            response.url().includes(`/workallocation/task/${firstTask.id}/unclaim`) &&
-            response.status() === 400
-        );
+        const { submissionPromise: badRequestResponsePromise } = await setupUnassignSubmissionCapture(page, {
+          taskId: firstTask.id,
+          status: 400,
+        });
 
-        await taskListPage.submitButton.click();
+        await taskListPage.submitActionAndWaitForRequest(
+          (request) =>
+            request.method() === 'POST' &&
+            (request.url().includes(`/workallocation/task/${firstTask.id}/unclaim`) ||
+              request.url().includes(`/workallocation/task/${firstTask.id}/assign`)),
+          'submitting my tasks unassign 400 action'
+        );
         const badRequestResponse = await badRequestResponsePromise;
-        expect(badRequestResponse.status()).toBe(400);
+        expect(badRequestResponse.status).toBe(400);
+        expect(['unclaim', 'assign-null']).toContain(badRequestResponse.mode);
+        expectValidUnassignSubmission(badRequestResponse);
 
         await expect(page).toHaveURL(MY_WORK_LIST_URL_REGEX);
         await expect(taskListPage.taskListTable).toBeVisible();

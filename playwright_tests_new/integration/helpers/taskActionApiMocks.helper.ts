@@ -1,17 +1,24 @@
 import { faker } from '@faker-js/faker';
-import type { Page } from '@playwright/test';
+import { expect, type Page, type Route } from '@playwright/test';
 
 export type UiTaskAction = 'cancel' | 'complete' | 'go' | 'reassign' | 'unassign';
 export type UnassignMode = 'unclaim' | 'assign-null';
 
 export interface TaskActionMockOptions {
   taskId: string;
+  task_name?: string;
+  due_date?: string;
+  dueDate?: string;
+  minor_priority?: number;
+  major_priority?: number;
+  priority_date?: string;
   caseId: string;
   jurisdiction?: string;
   caseTypeId?: string;
   assigneeId?: string;
   newAssigneeId?: string;
   unassignMode?: UnassignMode;
+  includeSubmitActionMock?: boolean;
 }
 
 export interface ExpectedApiCall {
@@ -31,6 +38,22 @@ export interface TaskActionExpectation {
   notes?: string[];
 }
 
+export interface CapturedTaskSubmission {
+  mode: 'unclaim' | 'assign-null';
+  requestJson?: unknown;
+  status: number;
+  url: string;
+}
+
+export const expectValidUnassignSubmission = (submission: CapturedTaskSubmission) => {
+  if (submission.mode === 'assign-null') {
+    expect(submission.requestJson).toEqual({ userId: null });
+    return;
+  }
+
+  expect(submission.requestJson).toEqual({ hasNoAssigneeOnComplete: false });
+};
+
 const DEFAULT_TASK_ID = 'f782bde3-8d51-11eb-a9a4-06d032acc76d';
 
 const buildTaskDetailsResponse = (options: TaskActionMockOptions) => {
@@ -43,15 +66,18 @@ const buildTaskDetailsResponse = (options: TaskActionMockOptions) => {
   return {
     task: {
       id: taskId,
-      name: 'Review the appeal',
+      name: options.task_name ?? 'Review the appeal',
       type: 'reviewTheAppeal',
       task_state: 'assigned',
       task_system: 'SELF',
       security_classification: 'PUBLIC',
-      task_title: 'Review the appeal',
-      created_date: '2021-06-30T16:53:10+0100',
-      due_date: '2021-06-30T16:53:10+0100',
-      dueDate: '2021-06-30T16:53:10+0100',
+      task_title: options.task_name ?? 'Review the appeal',
+      created_date: faker.date.past({ years: 0.25 }).toISOString(),
+      due_date: options.due_date ?? faker.date.future({ years: 0.25 }).toISOString(),
+      dueDate: options.dueDate ?? faker.date.future({ years: 0.25 }).toISOString(),
+      minor_priority: options.minor_priority ?? 500,
+      major_priority: options.major_priority ?? 1000,
+      priority_date: options.priority_date ?? faker.date.future({ years: 0.25 }).toISOString(),
       assignee: assigneeId,
       auto_assigned: false,
       execution_type: 'Case Management Task',
@@ -116,6 +142,7 @@ const buildActionExpectation = (action: UiTaskAction, options: TaskActionMockOpt
   const assigneeId = options.assigneeId ?? '10bac6bf-80a7-4c81-b2db-516aba826be6';
   const newAssigneeId = options.newAssigneeId ?? '004b7164-0943-41b5-95fc-39794af4a9fe';
   const unassignMode = options.unassignMode ?? 'unclaim';
+  const includeSubmitActionMock = options.includeSubmitActionMock ?? true;
 
   const sharedResolvers: ExpectedApiCall[] = [
     {
@@ -150,14 +177,18 @@ const buildActionExpectation = (action: UiTaskAction, options: TaskActionMockOpt
         actionLabel: 'Cancel task',
         apiCalls: [
           ...sharedResolvers,
-          {
-            purpose: 'Submit cancel action',
-            method: 'POST',
-            urlPattern: `**/workallocation/task/${taskId}/cancel*`,
-            expectedRequestJson: {},
-            responseStatus: 204,
-            responseJson: {},
-          },
+          ...(includeSubmitActionMock
+            ? [
+                {
+                  purpose: 'Submit cancel action',
+                  method: 'POST' as const,
+                  urlPattern: `**/workallocation/task/${taskId}/cancel*`,
+                  expectedRequestJson: {},
+                  responseStatus: 204,
+                  responseJson: {},
+                },
+              ]
+            : []),
         ],
       };
 
@@ -168,14 +199,18 @@ const buildActionExpectation = (action: UiTaskAction, options: TaskActionMockOpt
         actionLabel: 'Mark as done',
         apiCalls: [
           ...sharedResolvers,
-          {
-            purpose: 'Submit complete action',
-            method: 'POST',
-            urlPattern: `**/workallocation/task/${taskId}/complete*`,
-            expectedRequestJson: { hasNoAssigneeOnComplete: false },
-            responseStatus: 204,
-            responseJson: {},
-          },
+          ...(includeSubmitActionMock
+            ? [
+                {
+                  purpose: 'Submit complete action',
+                  method: 'POST' as const,
+                  urlPattern: `**/workallocation/task/${taskId}/complete*`,
+                  expectedRequestJson: { hasNoAssigneeOnComplete: false },
+                  responseStatus: 204,
+                  responseJson: {},
+                },
+              ]
+            : []),
         ],
       };
 
@@ -186,14 +221,18 @@ const buildActionExpectation = (action: UiTaskAction, options: TaskActionMockOpt
         actionLabel: 'Reassign task',
         apiCalls: [
           ...sharedResolvers,
-          {
-            purpose: 'Submit reassign action (confirm screen)',
-            method: 'POST',
-            urlPattern: `**/workallocation/task/${taskId}/assign*`,
-            expectedRequestJson: { userId: newAssigneeId },
-            responseStatus: 204,
-            responseJson: {},
-          },
+          ...(includeSubmitActionMock
+            ? [
+                {
+                  purpose: 'Submit reassign action (confirm screen)',
+                  method: 'POST' as const,
+                  urlPattern: `**/workallocation/task/${taskId}/assign*`,
+                  expectedRequestJson: { userId: newAssigneeId },
+                  responseStatus: 204,
+                  responseJson: {},
+                },
+              ]
+            : []),
         ],
       };
 
@@ -204,23 +243,27 @@ const buildActionExpectation = (action: UiTaskAction, options: TaskActionMockOpt
         actionLabel: 'Unassign task',
         apiCalls: [
           ...sharedResolvers,
-          unassignMode === 'assign-null'
-            ? {
-                purpose: 'Manager unassign path (assign null user)',
-                method: 'POST',
-                urlPattern: `**/workallocation/task/${taskId}/assign*`,
-                expectedRequestJson: { userId: null },
-                responseStatus: 204,
-                responseJson: {},
-              }
-            : {
-                purpose: 'Self-unassign path',
-                method: 'POST',
-                urlPattern: `**/workallocation/task/${taskId}/unclaim*`,
-                expectedRequestJson: {},
-                responseStatus: 204,
-                responseJson: {},
-              },
+          ...(includeSubmitActionMock
+            ? [
+                unassignMode === 'assign-null'
+                  ? {
+                      purpose: 'Manager unassign path (assign null user)',
+                      method: 'POST' as const,
+                      urlPattern: `**/workallocation/task/${taskId}/assign*`,
+                      expectedRequestJson: { userId: null },
+                      responseStatus: 204,
+                      responseJson: {},
+                    }
+                  : {
+                      purpose: 'Self-unassign path',
+                      method: 'POST' as const,
+                      urlPattern: `**/workallocation/task/${taskId}/unclaim*`,
+                      expectedRequestJson: { hasNoAssigneeOnComplete: false },
+                      responseStatus: 204,
+                      responseJson: {},
+                    },
+              ]
+            : []),
         ],
         notes:
           unassignMode === 'assign-null'
@@ -286,6 +329,60 @@ export const setupTaskActionEndpointMocks = async (
   }
 
   return expectation;
+};
+
+export const setupUnassignSubmissionCapture = async (
+  page: Page,
+  options: {
+    taskId: string;
+    status: number;
+    responseJson?: unknown;
+  }
+): Promise<{ submissionPromise: Promise<CapturedTaskSubmission> }> => {
+  const unclaimPattern = `**/workallocation/task/${options.taskId}/unclaim*`;
+  const assignPattern = `**/workallocation/task/${options.taskId}/assign*`;
+  let resolved = false;
+  let resolveSubmission: (value: CapturedTaskSubmission) => void;
+
+  const submissionPromise = new Promise<CapturedTaskSubmission>((resolve) => {
+    resolveSubmission = resolve;
+  });
+
+  const captureSubmission = async (route: Route, mode: 'unclaim' | 'assign-null') => {
+    const request = route.request();
+    if (request.method() !== 'POST') {
+      await route.continue();
+      return;
+    }
+
+    let requestJson: unknown;
+    try {
+      requestJson = request.postDataJSON();
+    } catch {
+      requestJson = undefined;
+    }
+
+    if (!resolved) {
+      resolved = true;
+      resolveSubmission({
+        mode,
+        requestJson,
+        status: options.status,
+        url: request.url(),
+      });
+    }
+
+    await route.fulfill({
+      status: options.status,
+      contentType: 'application/json',
+      body: JSON.stringify(options.responseJson ?? {}),
+    });
+  };
+
+  await page.route(unclaimPattern, async (route) => captureSubmission(route, 'unclaim'));
+  await page.route(assignPattern, async (route) => captureSubmission(route, 'assign-null'));
+
+  return { submissionPromise };
 };
 
 /**

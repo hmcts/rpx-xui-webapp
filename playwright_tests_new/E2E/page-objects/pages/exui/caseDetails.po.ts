@@ -72,6 +72,11 @@ export class CaseDetailsPage extends Base {
   readonly caseNotificationBannerBody = this.page.locator('.govuk-notification-banner__heading');
 
   readonly eventCreationErrorHeading = this.page.getByRole('heading', { name: 'The event could not be created' });
+  readonly generalProblemHeading = this.page.getByRole('heading', { name: /there is a problem/i }).first();
+  readonly checkYourAnswersHeading = this.page.getByRole('heading', { name: /check your answers/i });
+  readonly linkedCaseReferenceInput = this.page.getByLabel('Linked case reference');
+  readonly caseLinkReasonSelect = this.page.getByLabel('Reason for link');
+  readonly caseLinkOtherDescriptionInput = this.page.getByLabel('Other description');
   readonly caseViewerTable = this.page.getByRole('table', { name: 'case viewer table' });
 
   // Table locators
@@ -467,27 +472,53 @@ export class CaseDetailsPage extends Base {
     action: string,
     options: {
       expectedLocator?: Locator;
+      expectedPath?: string | RegExp;
       timeoutMs?: number;
       retry?: boolean;
     } = {}
   ) {
     await this.caseActionGoButton.waitFor({ state: 'visible' });
     await this.caseActionsDropdown.waitFor({ state: 'visible' });
+    const availableOptions = await this.caseActionsDropdown.locator('option').evaluateAll((options) =>
+      options
+        .map((option) => ({
+          label: (option.textContent ?? '').trim(),
+          value: (option.getAttribute('value') ?? '').trim(),
+        }))
+        .filter((option) => option.label || option.value)
+    );
+    const matchingOption = availableOptions.find((option) => option.label === action || option.value === action);
+    if (!matchingOption) {
+      throw new Error(
+        `Case action "${action}" is not available. Available actions: ${availableOptions.map((option) => option.label || option.value).join(', ')}`
+      );
+    }
     try {
-      await this.caseActionsDropdown.selectOption({ label: action });
+      if (matchingOption.label === action) {
+        await this.caseActionsDropdown.selectOption({ label: action });
+      } else {
+        await this.caseActionsDropdown.selectOption(action);
+      }
     } catch (error) {
       // Fallback: some dropdowns don't support label selector, use value directly
       this.logger.warn('Failed to select option by label, falling back to value selector', { error });
-      await this.caseActionsDropdown.selectOption(action);
+      await this.caseActionsDropdown.selectOption(matchingOption.value || action);
     }
     await this.caseActionGoButton.click();
     await this.waitForSpinnerToComplete('after selecting case action');
     await this.page.waitForLoadState('domcontentloaded');
-    if (!options.expectedLocator) {
+    if (!options.expectedLocator && !options.expectedPath) {
       return;
     }
     const timeoutMs = options.timeoutMs ?? 30000;
     const waitForExpected = async () => {
+      if (options.expectedPath) {
+        const matcher =
+          typeof options.expectedPath === 'string'
+            ? (url: URL) => url.pathname.includes(options.expectedPath as string)
+            : (url: URL) => (options.expectedPath as RegExp).test(url.pathname);
+        await this.page.waitForURL(matcher, { timeout: timeoutMs });
+      }
       await options.expectedLocator?.waitFor({ state: 'visible', timeout: timeoutMs });
     };
     try {
@@ -502,10 +533,14 @@ export class CaseDetailsPage extends Base {
       }
       this.logger.warn('Expected locator not visible after case action; retrying action', { action });
       try {
-        await this.caseActionsDropdown.selectOption({ label: action });
+        if (matchingOption.label === action) {
+          await this.caseActionsDropdown.selectOption({ label: action });
+        } else {
+          await this.caseActionsDropdown.selectOption(action);
+        }
       } catch (retryError) {
         this.logger.warn('Retry: failed to select option by label, falling back to value selector', { retryError });
-        await this.caseActionsDropdown.selectOption(action);
+        await this.caseActionsDropdown.selectOption(matchingOption.value || action);
       }
       await this.caseActionGoButton.click();
       await this.waitForSpinnerToComplete('after retrying case action');
@@ -530,6 +565,32 @@ export class CaseDetailsPage extends Base {
 
   async selectCaseDetailsEvent(action: string) {
     await this.selectCaseAction(action);
+  }
+
+  async openLinkCasesEvent(): Promise<void> {
+    await this.selectCaseAction('Link cases', { expectedLocator: this.linkedCaseReferenceInput });
+    await this.caseLinkReasonSelect.waitFor({ state: 'visible' });
+  }
+
+  async fillCaseLinkDetails(options: {
+    linkedCaseReference: string;
+    reasonLabel: string;
+    otherDescription?: string;
+  }): Promise<void> {
+    await this.linkedCaseReferenceInput.fill(options.linkedCaseReference);
+    await this.caseLinkReasonSelect.selectOption({ label: options.reasonLabel });
+    if (options.otherDescription !== undefined) {
+      await this.caseLinkOtherDescriptionInput.waitFor({ state: 'visible', timeout: this.getRecommendedTimeoutMs() });
+      await this.caseLinkOtherDescriptionInput.fill(options.otherDescription);
+    }
+  }
+
+  async continueCaseEvent(): Promise<void> {
+    await this.continueButton.click();
+  }
+
+  async submitCaseEvent(): Promise<void> {
+    await this.submitButton.click();
   }
 
   async selectFirstRadioOption() {

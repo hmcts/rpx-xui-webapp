@@ -57,8 +57,9 @@ test.describe(
         await expect(taskListPage.taskListTable).toBeVisible();
         await taskListPage.exuiSpinnerComponent.wait();
 
-        await taskListPage.manageCaseButtons.first().click();
-        await taskListPage.taskActionMarkAsDone.click();
+        await taskListPage.openFirstManageActions('my tasks complete 500 response');
+        await expect(taskListPage.taskActionMarkAsDone).toBeVisible();
+        await taskListPage.clickTaskAction(taskListPage.taskActionMarkAsDone, 'my tasks complete 500 response');
         await expect(page).toHaveURL(new RegExp(`/work/${firstTask.id}/complete`));
 
         const completeFailureResponsePromise = page.waitForResponse(
@@ -68,7 +69,10 @@ test.describe(
             response.status() === 500
         );
 
-        await taskListPage.submitButton.click();
+        await taskListPage.submitActionAndWaitForRequest(
+          (request) => request.method() === 'POST' && request.url().includes(`/workallocation/task/${firstTask.id}/complete`),
+          'submitting my tasks complete 500 action'
+        );
         const completeFailureResponse = await completeFailureResponsePromise;
         expect(completeFailureResponse.status()).toBe(500);
 
@@ -108,8 +112,9 @@ test.describe(
         await expect(taskListPage.taskListTable).toBeVisible();
         await taskListPage.exuiSpinnerComponent.wait();
 
-        await taskListPage.manageCaseButtons.first().click();
-        await taskListPage.taskActionMarkAsDone.click();
+        await taskListPage.openFirstManageActions('my tasks complete 400 response');
+        await expect(taskListPage.taskActionMarkAsDone).toBeVisible();
+        await taskListPage.clickTaskAction(taskListPage.taskActionMarkAsDone, 'my tasks complete 400 response');
         await expect(page).toHaveURL(new RegExp(`/work/${firstTask.id}/complete`));
 
         const badRequestResponsePromise = page.waitForResponse(
@@ -119,7 +124,10 @@ test.describe(
             response.status() === 400
         );
 
-        await taskListPage.submitButton.click();
+        await taskListPage.submitActionAndWaitForRequest(
+          (request) => request.method() === 'POST' && request.url().includes(`/workallocation/task/${firstTask.id}/complete`),
+          'submitting my tasks complete 400 action'
+        );
         const badRequestResponse = await badRequestResponsePromise;
         expect(badRequestResponse.status()).toBe(400);
 

@@ -99,10 +99,10 @@ const data: AppTestConfig = {
       },
       {
         idamId: '4fd5803c-a1ae-4790-b735-dc262e8322b8',
-        email: 'xui_iac_judge_1@mailinator.com',
+        email: '4917924EMP-@ejudiciary.net',
         release: 'wa_release_1',
         userIdentifier: 'IAC_Judge_WA_R1',
-        key: 'Welcome01',
+        key: 'Hmcts1234',
       },
       {
         idamId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
@@ -185,7 +185,7 @@ const data: AppTestConfig = {
         idamId: '80004966-1d94-456b-8e09-05730a1d9f5e',
         email: 'xui_casefileview_v11_on@mailinator.com',
         release: 'restricted-case-file-view-v1.1-on',
-        userIdentifier: 'RESTRICTED_CASE_FILE_VIEW_V1.1_ON',
+        userIdentifier: 'RESTRICTED_CASE_FILE_VIEW_ON',
         key: 'Welcome01',
       },
       {
@@ -199,7 +199,7 @@ const data: AppTestConfig = {
         idamId: '6bd95a7f-9065-42a0-af4b-c0b6ed84e960',
         email: 'xui_casefileview_v11_off@mailinator.com',
         release: 'restricted-case-file-view-v1.1-off',
-        userIdentifier: 'RESTRICTED_CASE_FILE_VIEW_V1.1_OFF',
+        userIdentifier: 'RESTRICTED_CASE_FILE_VIEW_OFF',
         key: 'Welcome01',
       },
       {
@@ -279,9 +279,10 @@ const data: AppTestConfig = {
       },
       {
         idamId: '4fd5803c-a1ae-4790-b735-dc262e8322b8',
-        email: 'xui_iac_judge_1@mailinator.com',
+        email: '4917924EMP-@ejudiciary.net',
         release: 'wa_release_1',
         userIdentifier: 'IAC_Judge_WA_R1',
+        key: 'Hmcts1234',
       },
       {
         idamId: '519e0c40-d30e-4f42-8a4c-2c79838f0e4e',

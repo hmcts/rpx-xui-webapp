@@ -15,7 +15,6 @@ test.describe('Verify creating cases works as expected', { tag: ['@e2e', '@e2e-c
     await retryOnTransientFailure(
       async () => {
         await ensureAuthenticatedPage(page, 'SOLICITOR', { waitForSelector: 'exui-header' });
-
         caseData = await createCasePage.generateDivorcePoCData({ textField0: 'Hide all', divorceReasons: ['Adultery'] });
         person1Data = await createCasePage.generateDivorcePoCPersonData({
           gender: 'Male',
@@ -88,7 +87,6 @@ test.describe('Verify creating cases works as expected', { tag: ['@e2e', '@e2e-c
       await caseDetailsPage.selectCaseDetailsTab('History');
 
       const { updateRow, updateDate, updateAuthor } = await caseDetailsPage.getCaseHistoryByEvent('Create a case');
-
       expect.soft(updateRow, 'Create a case row should be present').toBeTruthy();
       expect.soft(updateAuthor, 'Case author should be present').not.toBe('');
 

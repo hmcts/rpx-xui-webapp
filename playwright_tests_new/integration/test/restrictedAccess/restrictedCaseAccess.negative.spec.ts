@@ -49,7 +49,7 @@ test.beforeEach(async ({ page }) => {
 
 test.describe(
   `Restricted case access as ${TEST_USERS.FPL_GLOBAL_SEARCH} negative flows with prewarmed search session`,
-  { tag: ['@integration', '@integration-search-case'] },
+  { tag: ['@integration', '@integration-restricted-case'] },
   () => {
     test('renders empty table when no users have access', async ({
       caseDetailsPage,

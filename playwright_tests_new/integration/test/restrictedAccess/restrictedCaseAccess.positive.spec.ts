@@ -1,7 +1,7 @@
 import { expect, test } from '../../../E2E/fixtures';
 import {
   DEFAULT_CASEWORKERS,
-  DEFAULT_ROLE_ACCESS_USERS,
+  DEFAULT_ROLE_ACCESS_USERS_OPS,
   createGlobalSearchResultsRouteHandler,
   setupRestrictedAccessMocks,
   setupFastCaseRetrievalConfigRoute,
@@ -86,7 +86,7 @@ test.describe(
         const table = await tableUtils.parseDataTable(caseDetailsPage.exuiBodyComponent.table);
         const workerByIdamId = new Map(DEFAULT_CASEWORKERS.map((worker) => [worker.idamId, worker]));
 
-        const expectedRows = DEFAULT_ROLE_ACCESS_USERS.map((assignment) => {
+        const expectedRows = DEFAULT_ROLE_ACCESS_USERS_OPS.map((assignment) => {
           const worker = workerByIdamId.get(assignment.actorId);
           const fullName = [worker?.firstName, worker?.lastName].filter(Boolean).join(' ').trim();
           return {

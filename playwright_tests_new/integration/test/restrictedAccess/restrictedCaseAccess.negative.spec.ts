@@ -1,5 +1,6 @@
 import { expect, test } from '../../../E2E/fixtures';
 import {
+  DEFAULT_ROLE_ACCESS_USERS_JUDICIAL,
   createGlobalSearchResultsRouteHandler,
   setupRestrictedAccessMocks,
   setupFastCaseRetrievalConfigRoute,
@@ -131,6 +132,86 @@ test.describe(
       }) => {
         await test.step(`Configure restricted-access mocks with caseworker lookup HTTP ${status}`, async () => {
           await setupRestrictedAccessMocks(page, { caseworkersStatus: status, caseworkersBody: { message: 'error' } });
+        });
+
+        await test.step('Search for restricted case from quick search', async () => {
+          await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, caseListPage, searchCasePage);
+        });
+
+        await test.step('Verify restricted access shell is shown without table rows', async () => {
+          await expect(page).toHaveURL(new RegExp(`/cases/restricted-case-access/${VALID_SEARCH_CASE_REFERENCE}`));
+          await expect(page.getByText(RESTRICTED_ACCESS_MESSAGE)).toBeVisible();
+          expect(await caseDetailsPage.exuiBodyComponent.mainHeading.textContent()).toContain(
+            formatCaseNumberWithDashes(VALID_SEARCH_CASE_REFERENCE)
+          );
+          await expect(caseDetailsPage.restrictedAccessContainer).toBeVisible();
+          await expect(page.getByRole('heading', { level: 2, name: 'Users with access' })).toBeVisible();
+
+          await expect(caseDetailsPage.exuiBodyComponent.tableHeaders).toHaveCount(3);
+          await expect(caseDetailsPage.exuiBodyComponent.tableHeaders.nth(0)).toHaveText('User');
+          await expect(caseDetailsPage.exuiBodyComponent.tableHeaders.nth(1)).toHaveText('Case role');
+          await expect(caseDetailsPage.exuiBodyComponent.tableHeaders.nth(2)).toHaveText('Email address');
+
+          const table = await tableUtils.parseDataTable(caseDetailsPage.exuiBodyComponent.table);
+          expect(table).toEqual([]);
+        });
+      });
+    });
+
+    RESTRICTED_ACCESS_FAILURE_STATUSES.forEach((status) => {
+      test(`handles failed supported-jurisdiction lookup with HTTP ${status} by showing restricted access shell`, async ({
+        caseDetailsPage,
+        caseListPage,
+        searchCasePage,
+        page,
+        tableUtils,
+      }) => {
+        await test.step(`Configure restricted-access mocks with supported-jurisdiction HTTP ${status}`, async () => {
+          await setupRestrictedAccessMocks(page, {
+            supportedJurisdictionsStatus: status,
+            supportedJurisdictions: { message: 'error' },
+          });
+        });
+
+        await test.step('Search for restricted case from quick search', async () => {
+          await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, caseListPage, searchCasePage);
+        });
+
+        await test.step('Verify restricted access shell is shown without table rows', async () => {
+          await expect(page).toHaveURL(new RegExp(`/cases/restricted-case-access/${VALID_SEARCH_CASE_REFERENCE}`));
+          await expect(page.getByText(RESTRICTED_ACCESS_MESSAGE)).toBeVisible();
+          expect(await caseDetailsPage.exuiBodyComponent.mainHeading.textContent()).toContain(
+            formatCaseNumberWithDashes(VALID_SEARCH_CASE_REFERENCE)
+          );
+          await expect(caseDetailsPage.restrictedAccessContainer).toBeVisible();
+          await expect(page.getByRole('heading', { level: 2, name: 'Users with access' })).toBeVisible();
+
+          await expect(caseDetailsPage.exuiBodyComponent.tableHeaders).toHaveCount(3);
+          await expect(caseDetailsPage.exuiBodyComponent.tableHeaders.nth(0)).toHaveText('User');
+          await expect(caseDetailsPage.exuiBodyComponent.tableHeaders.nth(1)).toHaveText('Case role');
+          await expect(caseDetailsPage.exuiBodyComponent.tableHeaders.nth(2)).toHaveText('Email address');
+
+          const table = await tableUtils.parseDataTable(caseDetailsPage.exuiBodyComponent.table);
+          expect(table).toEqual([]);
+        });
+      });
+    });
+
+    RESTRICTED_ACCESS_FAILURE_STATUSES.forEach((status) => {
+      test(`handles failed judicial lookup with HTTP ${status} by showing restricted access shell`, async ({
+        caseDetailsPage,
+        caseListPage,
+        searchCasePage,
+        page,
+        tableUtils,
+      }) => {
+        await test.step(`Configure restricted-access mocks with judicial lookup HTTP ${status}`, async () => {
+          await setupRestrictedAccessMocks(page, {
+            roleAccessBody: DEFAULT_ROLE_ACCESS_USERS_JUDICIAL,
+            caseworkersBody: [],
+            judicialUsersStatus: status,
+            judicialUsersBody: { message: 'error' },
+          });
         });
 
         await test.step('Search for restricted case from quick search', async () => {

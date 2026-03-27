@@ -32,7 +32,7 @@ const globalSearchResultsHandler = createGlobalSearchResultsRouteHandler({
 
 const RESTRICTED_ACCESS_MESSAGE = 'This case is restricted. The details of the users with access are provided below.';
 
-test.beforeEach(async ({ page }, testInfo) => {
+test.beforeEach(async ({ page }) => {
   await applySessionCookies(page, TEST_USERS.FPL_GLOBAL_SEARCH);
   await setupFastCaseRetrievalConfigRoute(page);
 
@@ -112,13 +112,13 @@ test.describe(
           })
           .toBe(expectedRows.length);
 
+        const judicialLookupRequest = await judicialLookupRequestPromise;
+        expect(judicialLookupRequest).toBeTruthy();
+
         const table = await tableUtils.parseDataTable(caseDetailsPage.exuiBodyComponent.table);
 
         expect(table).toHaveLength(expectedRows.length);
         expect(table).toEqual(expect.arrayContaining(expectedRows));
-
-        const judicialLookupRequest = await judicialLookupRequestPromise;
-        expect(judicialLookupRequest).toBeTruthy();
       });
     });
 
@@ -207,9 +207,11 @@ test.describe(
       page,
       tableUtils,
     }) => {
+      const judicialCaseworkers = DEFAULT_CASEWORKERS.filter((worker) => worker.roleCategory === 'JUDICIAL');
+
       await setupRestrictedAccessMocks(page, {
         roleAccessBody: DEFAULT_ROLE_ACCESS_USERS_JUDICIAL,
-        caseworkersBody: DEFAULT_CASEWORKERS.filter((worker) => worker.roleCategory === 'JUDICIAL'),
+        caseworkersBody: judicialCaseworkers,
       });
 
       await page.unroute('**/api/prd/judicial/searchJudicialUserByIdamId*');
@@ -221,7 +223,20 @@ test.describe(
 
       await expect(page).toHaveURL(new RegExp(`/cases/restricted-case-access/${VALID_SEARCH_CASE_REFERENCE}`));
       await expect(caseDetailsPage.restrictedAccessContainer).toBeVisible();
-      await tableUtils.parseDataTable(caseDetailsPage.exuiBodyComponent.table);
+
+      const caseworkerByIdamId = new Map(judicialCaseworkers.map((worker) => [worker.idamId, worker]));
+      const expectedRows = DEFAULT_ROLE_ACCESS_USERS_JUDICIAL.map((assignment) => {
+        const worker = caseworkerByIdamId.get(assignment.actorId);
+        return {
+          User: [worker?.firstName, worker?.lastName].filter(Boolean).join(' ').trim(),
+          'Case role': assignment.roleName,
+          'Email address': worker?.email ?? assignment.email,
+        };
+      });
+
+      const table = await tableUtils.parseDataTable(caseDetailsPage.exuiBodyComponent.table);
+      expect(table).toHaveLength(expectedRows.length);
+      expect(table).toEqual(expect.arrayContaining(expectedRows));
     });
   }
 );

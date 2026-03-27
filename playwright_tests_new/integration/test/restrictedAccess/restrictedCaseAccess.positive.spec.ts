@@ -74,7 +74,7 @@ test.describe(
 
       await test.step('Verify restricted access page construction elements', async () => {
         await expect(page).toHaveURL(new RegExp(`/cases/restricted-case-access/${VALID_SEARCH_CASE_REFERENCE}`));
-        await expect(page.getByText(RESTRICTED_ACCESS_MESSAGE)).toBeVisible();
+        expect(await caseDetailsPage.exuiBodyComponent.message.textContent()).toContain(RESTRICTED_ACCESS_MESSAGE);
         expect(await caseDetailsPage.exuiBodyComponent.mainHeading.textContent()).toContain(
           formatCaseNumberWithDashes(VALID_SEARCH_CASE_REFERENCE)
         );

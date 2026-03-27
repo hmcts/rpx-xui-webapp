@@ -29,7 +29,7 @@ export class SearchCasePage extends Base {
    * @throws {Error} If case ID format is invalid
    */
   public async searchWith16DigitCaseId(caseId: string): Promise<void> {
-    test.step(`Search for case with reference ${caseId} using header quick search`, async () => {
+    await test.step(`Search for case with reference ${caseId} using header quick search`, async () => {
       if (!CCD_CASE_REFERENCE_PATTERN.test(caseId)) {
         throw new Error(`Expected ${CCD_CASE_REFERENCE_LENGTH}-digit case reference, received "${caseId}"`);
       }

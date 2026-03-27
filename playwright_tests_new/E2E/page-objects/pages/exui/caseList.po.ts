@@ -22,7 +22,9 @@ export class CaseListPage extends Base {
   readonly caseTypeSelect = this.page.locator('#wb-case-type');
   readonly stateSelect = this.page.locator('#wb-case-state');
   readonly textField0Input = this.page.locator('#TextField0');
-  readonly textField0FallbackInput = this.page.locator('input[id*="TextField0"], input[name*="TextField0"], input[formcontrolname*="TextField0"]').first();
+  readonly textField0FallbackInput = this.page
+    .locator('input[id*="TextField0"], input[name*="TextField0"], input[formcontrolname*="TextField0"]')
+    .first();
   readonly quickSearchContainer = this.page.locator('.hmcts-primary-navigation__global-search');
   readonly quickSearchCaseReferenceInput = this.page.locator('#exuiCaseReferenceSearch');
   readonly quickSearchFindButton = this.quickSearchContainer.getByRole('button', { name: 'Find', exact: true });
@@ -248,9 +250,7 @@ export class CaseListPage extends Base {
     await pageControl.click({ timeout: 10_000 });
   }
 
-  async clickPaginationPageAndWaitForSearchRequest(
-    pageNumber: number,
-  ): Promise<SearchCasesRequestParams> {
+  async clickPaginationPageAndWaitForSearchRequest(pageNumber: number): Promise<SearchCasesRequestParams> {
     const searchRequestPromise = this.page.waitForRequest((request) => this.isSearchCasesRequestWithPage(request, pageNumber));
     await this.clickPaginationPage(pageNumber);
 

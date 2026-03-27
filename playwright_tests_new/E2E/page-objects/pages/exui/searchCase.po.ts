@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Page, test } from '@playwright/test';
 import { Base } from '../../base';
 import { EXUI_TIMEOUTS, CCD_CASE_REFERENCE_LENGTH, CCD_CASE_REFERENCE_PATTERN } from './exui-timeouts';
 
@@ -29,35 +29,37 @@ export class SearchCasePage extends Base {
    * @throws {Error} If case ID format is invalid
    */
   public async searchWith16DigitCaseId(caseId: string): Promise<void> {
-    if (!CCD_CASE_REFERENCE_PATTERN.test(caseId)) {
-      throw new Error(`Expected ${CCD_CASE_REFERENCE_LENGTH}-digit case reference, received "${caseId}"`);
-    }
-    await this.caseIdTextBox.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
-    await this.caseIdTextBox.click();
-    await this.caseIdTextBox.fill(caseId);
-    const primaryFindButtonVisible = await this.searchCaseFindButton.isVisible().catch(() => false);
-    const findButton = primaryFindButtonVisible ? this.searchCaseFindButton : this.searchCaseFindButtonFallback;
-    await findButton.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_BUTTON_VISIBLE });
-    await findButton.scrollIntoViewIfNeeded();
-    try {
-      await findButton.click({ timeout: EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK });
-    } catch (error) {
-      const errorMsg = error instanceof Error ? error.message : JSON.stringify(error);
-      if (!errorMsg.includes('intercepts pointer events')) {
-        throw error;
+    test.step(`Search for case with reference ${caseId} using header quick search`, async () => {
+      if (!CCD_CASE_REFERENCE_PATTERN.test(caseId)) {
+        throw new Error(`Expected ${CCD_CASE_REFERENCE_LENGTH}-digit case reference, received "${caseId}"`);
       }
-      await findButton.click({ force: true, timeout: EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK });
-    }
-    await this.waitForPostSearchSpinnerCycle();
-    const immediateOutcomeReached = await this.waitForImmediateSearchOutcome(SearchCasePage.QUICK_SEARCH_OUTCOME_PROBE_MS);
-    if (!immediateOutcomeReached && (await this.shouldRetrySearchSubmit(caseId))) {
-      this.logger.warn('Header quick-search produced no immediate outcome; retrying once', {
-        caseId,
-        currentUrl: this.page.url(),
-      });
-      await this.caseIdTextBox.press('Enter');
+      await this.caseIdTextBox.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
+      await this.caseIdTextBox.click();
+      await this.caseIdTextBox.fill(caseId);
+      const primaryFindButtonVisible = await this.searchCaseFindButton.isVisible().catch(() => false);
+      const findButton = primaryFindButtonVisible ? this.searchCaseFindButton : this.searchCaseFindButtonFallback;
+      await findButton.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_BUTTON_VISIBLE });
+      await findButton.scrollIntoViewIfNeeded();
+      try {
+        await findButton.click({ timeout: EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK });
+      } catch (error) {
+        const errorMsg = error instanceof Error ? error.message : JSON.stringify(error);
+        if (!errorMsg.includes('intercepts pointer events')) {
+          throw error;
+        }
+        await findButton.click({ force: true, timeout: EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK });
+      }
       await this.waitForPostSearchSpinnerCycle();
-    }
+      const immediateOutcomeReached = await this.waitForImmediateSearchOutcome(SearchCasePage.QUICK_SEARCH_OUTCOME_PROBE_MS);
+      if (!immediateOutcomeReached && (await this.shouldRetrySearchSubmit(caseId))) {
+        this.logger.warn('Header quick-search produced no immediate outcome; retrying once', {
+          caseId,
+          currentUrl: this.page.url(),
+        });
+        await this.caseIdTextBox.press('Enter');
+        await this.waitForPostSearchSpinnerCycle();
+      }
+    });
   }
 
   /**

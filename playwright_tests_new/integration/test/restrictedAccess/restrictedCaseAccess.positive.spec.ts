@@ -88,7 +88,6 @@ test.describe(
       });
 
       await test.step('Verify users table content matches mocked role access composition', async () => {
-        const table = await tableUtils.parseDataTable(caseDetailsPage.exuiBodyComponent.table);
         const workerByIdamId = new Map(DEFAULT_CASEWORKERS.map((worker) => [worker.idamId, worker]));
         const judgeByIdamId = new Map(DEFAULT_JUDICIAL_USERS.map((judge) => [judge.idamId, judge]));
 
@@ -105,6 +104,15 @@ test.describe(
             'Email address': worker?.email ?? judge?.emailId ?? assignment.email,
           };
         });
+
+        await expect
+          .poll(async () => {
+            const rows = await tableUtils.parseDataTable(caseDetailsPage.exuiBodyComponent.table);
+            return rows.length;
+          })
+          .toBe(expectedRows.length);
+
+        const table = await tableUtils.parseDataTable(caseDetailsPage.exuiBodyComponent.table);
 
         expect(table).toHaveLength(expectedRows.length);
         expect(table).toEqual(expect.arrayContaining(expectedRows));
@@ -168,7 +176,6 @@ test.describe(
       await expect(page).toHaveURL(new RegExp(`/cases/restricted-case-access/${VALID_SEARCH_CASE_REFERENCE}`));
       await expect(caseDetailsPage.restrictedAccessContainer).toBeVisible();
 
-      const table = await tableUtils.parseDataTable(caseDetailsPage.exuiBodyComponent.table);
       const judgeByIdamId = new Map(DEFAULT_JUDICIAL_USERS.map((judge) => [judge.idamId, judge]));
 
       const expectedRows = DEFAULT_ROLE_ACCESS_USERS_JUDICIAL.map((assignment) => {
@@ -179,6 +186,15 @@ test.describe(
           'Email address': judge?.emailId ?? assignment.email,
         };
       });
+
+      await expect
+        .poll(async () => {
+          const rows = await tableUtils.parseDataTable(caseDetailsPage.exuiBodyComponent.table);
+          return rows.length;
+        })
+        .toBe(expectedRows.length);
+
+      const table = await tableUtils.parseDataTable(caseDetailsPage.exuiBodyComponent.table);
 
       expect(table).toHaveLength(expectedRows.length);
       expect(table).toEqual(expect.arrayContaining(expectedRows));

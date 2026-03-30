@@ -39,9 +39,25 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
     username: 'USER_WITH_FLAGS_USERNAME',
     password: 'USER_WITH_FLAGS_PASSWORD',
   },
+  RESTRICTED_CASE_FILE_VIEW_ON: {
+    username: 'RESTRICTED_CASE_FILE_VIEW_V1_1_ON_USERNAME',
+    password: 'RESTRICTED_CASE_FILE_VIEW_V1_1_ON_PASSWORD',
+  },
+  RESTRICTED_CASE_FILE_VIEW_OFF: {
+    username: 'RESTRICTED_CASE_FILE_VIEW_V1_1_OFF_USERNAME',
+    password: 'RESTRICTED_CASE_FILE_VIEW_V1_1_OFF_PASSWORD',
+  },
   ORG_USER_ASSIGNMENT: {
     username: 'ORG_USER_ASSIGNMENT_USERNAME',
     password: 'ORG_USER_ASSIGNMENT_PASSWORD',
+  },
+  IAC_JUDGE_WA_R1: {
+    username: 'PW_IAC_JUDGE_WA_R1_EMAIL',
+    password: 'PW_IAC_JUDGE_WA_R1_PASSWORD',
+  },
+  IAC_CASEOFFICER_R2: {
+    username: 'PW_IAC_CASEOFFICER_R2_EMAIL',
+    password: 'PW_IAC_CASEOFFICER_R2_PASSWORD',
   },
 };
 

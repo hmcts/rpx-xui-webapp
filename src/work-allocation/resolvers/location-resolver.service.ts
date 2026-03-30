@@ -189,12 +189,12 @@ export class LocationResolver {
   }
 
   private setAllLocations(location: Location, roleAssignment: RoleAssignmentInfo, feePaid: boolean): void {
-    if (!feePaid) {
-      this.locations.push(location);
-      this.locationServices.add(roleAssignment.jurisdiction);
-    } else {
+    if (feePaid) {
       this.feePaidLocations.push(location);
       this.feePaidLocationServices.add(roleAssignment.jurisdiction);
+    } else {
+      this.locations.push(location);
+      this.locationServices.add(roleAssignment.jurisdiction);
     }
   }
 
@@ -218,7 +218,7 @@ export class LocationResolver {
   }
 
   private getLocations(locations: Location[]): Observable<LocationModel[]> {
-    locations = locations.filter((location) => !!location.id);
+    locations = locations?.filter((location) => !!location.id);
     if (!locations || locations.length === 0) {
       return of(null);
     }

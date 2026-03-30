@@ -1,5 +1,5 @@
 <div>
-  <ng-container *ngIf="(validationErrors$ | async)?.message">
+  <ng-container *ngIf="cannotProceedErrorMessage || (validationErrors$ | async)?.message">
     <div
       class="govuk-error-summary"
       aria-labelledby="error-summary-title"
@@ -13,7 +13,10 @@
       </h2>
       <div class="govuk-error-summary__body">
         <ul class="govuk-list govuk-error-summary__list">
-          <li>
+          <li *ngIf="cannotProceedErrorMessage">
+            <a href="noc#representing">{{ cannotProceedErrorMessage | rpxTranslate }}</a>
+          </li>
+          <li *ngIf="(validationErrors$ | async)?.message">
             <a href="noc#caseRef">{{ (validationErrors$ | async)?.message | rpxTranslate }}</a>
           </li>
         </ul>
@@ -38,13 +41,62 @@
     <li>{{ "a legal representative previously acting on your client's behalf" | rpxTranslate }}</li>
   </ul>
 
-  <div class="govuk-form-group" [class.govuk-form-group--error]="(validationErrors$ | async)?.message || null">
-    <form [formGroup]="caseRefForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="caseRefForm" (ngSubmit)="onSubmit()">
+    <div class="govuk-form-group" [class.govuk-form-group--error]="(validationErrors$ | async)?.message || null">
       <xuilib-gov-uk-input
         [config]="caseRefConfig"
         [group]="caseRefForm"
         [errorMessage]="{ messages: [(validationErrors$ | async)?.message || null] }"
       ></xuilib-gov-uk-input>
-    </form>
-  </div>
+    </div>
+
+    <div>
+      <p>You can only use a notice of change if you will be representing your client on the Divorce or Dissolution case.</p>
+      <p>You cannot use a notice of change if:</p>
+      <ul class="govuk-list govuk-list--bullet">
+        <li>{{ 'you act for your client only on the Financial Remedy proceedings.' | rpxTranslate }}</li>
+        <li>{{ 'you do not represent them on the Divorce or Dissolution case.' | rpxTranslate }}</li>
+      </ul>
+      <br />
+      <div class="govuk-form-group" [class.govuk-form-group--error]="cannotProceedErrorMessage">
+        <fieldset class="govuk-fieldset" aria-describedby="representing-error">
+          <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+            <h2 class="govuk-fieldset__heading">Are you going to represent your client on the Divorce or Dissolution case?</h2>
+          </legend>
+          <span *ngIf="cannotProceedErrorMessage" id="representing-error" class="govuk-error-message">
+            <span class="govuk-visually-hidden">Error:</span>
+            {{ cannotProceedErrorMessage | rpxTranslate }}
+          </span>
+          <div class="govuk-radios" data-module="govuk-radios">
+            <div class="govuk-radios__item">
+              <input
+                class="govuk-radios__input"
+                id="representing"
+                name="representing"
+                type="radio"
+                value="yes"
+                formControlName="representing"
+              />
+              <label class="govuk-label govuk-radios__label" for="representing">
+                Yes, I am representing my client on the Divorce or Dissolution case
+              </label>
+            </div>
+            <div class="govuk-radios__item">
+              <input
+                class="govuk-radios__input"
+                id="notRepresenting"
+                name="representing"
+                type="radio"
+                value="no"
+                formControlName="representing"
+              />
+              <label class="govuk-label govuk-radios__label" for="notRepresenting">
+                No, I am not representing my client on the Divorce or Dissolution case
+              </label>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+  </form>
 </div>

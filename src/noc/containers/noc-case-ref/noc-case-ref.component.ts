@@ -22,6 +22,7 @@ export class NocCaseRefComponent implements OnInit, OnDestroy {
   public lastError$: Observable<NocHttpError>;
 
   public caseRefForm: FormGroup;
+  public cannotProceedErrorMessage: string | null = null;
 
   public scrollToError = false;
 
@@ -42,7 +43,10 @@ export class NocCaseRefComponent implements OnInit, OnDestroy {
       type: 'text',
     };
 
-    this.caseRefForm = this.formBuilder.group({ caseRef: null });
+    this.caseRefForm = this.formBuilder.group({
+      caseRef: null,
+      representing: null,
+    });
 
     this.validationErrors$ = this.store.pipe(select(fromFeature.validationErrors));
     this.lastError$ = this.store.pipe(select(fromFeature.lastError));
@@ -86,6 +90,13 @@ export class NocCaseRefComponent implements OnInit, OnDestroy {
         break;
       }
       case NocNavigationEvent.CONTINUE: {
+        if (this.caseRefForm.controls.representing.value === 'no') {
+          this.cannotProceedErrorMessage =
+            'You can only use this service if you are representing your client on the Divorce or Dissolution case.';
+          break;
+        }
+
+        this.cannotProceedErrorMessage = null;
         this.store.dispatch(new fromFeature.SetCaseReference(this.caseRefForm.controls.caseRef.value));
         break;
       }

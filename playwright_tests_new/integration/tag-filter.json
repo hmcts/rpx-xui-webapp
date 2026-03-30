@@ -2,6 +2,7 @@
   "excludedTags": [],
   "availableTags": [
     "@integration",
+    "@integration-case-file-view",
     "@integration-case-list",
     "@integration-create-case",
     "@integration-manage-tasks",

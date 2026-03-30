@@ -218,7 +218,7 @@ export class LocationResolver {
   }
 
   private getLocations(locations: Location[]): Observable<LocationModel[]> {
-    locations = locations.filter((location) => !!location.id);
+    locations = locations?.filter((location) => !!location.id);
     if (!locations || locations.length === 0) {
       return of(null);
     }

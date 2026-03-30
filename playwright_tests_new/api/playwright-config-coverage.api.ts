@@ -24,6 +24,7 @@ const { resolveOdhinConsoleCapture, resolveOdhinHardTimeoutMs, resolveOdhinLight
 
 let configModule: TestableConfigModule;
 let integrationConfigModule: TestableConfigModule;
+let nightlyConfigModule: TestableConfigModule;
 
 const buildConfig = (env: EnvMap) => configModule.__test__.buildConfig(env);
 const resolveWorkerCount = (env: EnvMap) => configModule.__test__.resolveWorkerCount(env);
@@ -58,6 +59,12 @@ const resolveIntegrationWorkerCount = (env: EnvMap) =>
       resolveWorkerCount: (env: EnvMap) => number;
     }
   ).resolveWorkerCount(env);
+const buildNightlyConfig = (env: EnvMap) =>
+  nightlyConfigModule.__test__.buildConfig(env) as {
+    reporter: [string, Record<string, unknown> | undefined][];
+    use: { baseURL: string };
+    projects: Array<{ name: string; use?: { headless?: boolean } }>;
+  };
 
 const getReporterTuple = (reporter: unknown, name: string): [string, Record<string, unknown> | undefined] => {
   if (!Array.isArray(reporter)) {
@@ -77,6 +84,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
   test.beforeAll(async () => {
     configModule = await loadConfig();
     integrationConfigModule = await loadConfigAt('playwright.integration.config.ts');
+    nightlyConfigModule = await loadConfigAt('playwright-nightly.config.ts');
   });
 
   test('resolveWorkerCount covers configured, CI, and default', async () => {
@@ -361,6 +369,19 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
 
     expect(withDefaultChannel.projects.find((project) => project.name === 'chromium')?.use?.channel).toBe('chrome');
     expect(withBundledChromium.projects.find((project) => project.name === 'chromium')?.use?.channel).toBeUndefined();
+  });
+
+  test('nightly config keeps a root baseURL so cross-browser relative navigation stays valid', async () => {
+    const config = buildNightlyConfig({
+      CI: 'true',
+      TEST_URL: 'https://example.test',
+      HEAD: 'true',
+    });
+
+    expect(config.use.baseURL).toBe('https://example.test');
+    expect(config.reporter[0][0]).toBe('dot');
+    expect(config.projects.find((project) => project.name === 'firefox')?.use?.headless).toBe(false);
+    expect(config.projects.find((project) => project.name === 'webkit')?.use?.headless).toBe(false);
   });
 
   test('integration config avoids forced Odhin timeout in CI', async () => {

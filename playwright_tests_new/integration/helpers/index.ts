@@ -16,3 +16,6 @@ export * from './hearingJourneySetup.helper';
 export * from './taskListMockRoutes.helper';
 export * from './manageTasksMockRoutes.helper';
 export * from './restrictedAccessMockRoutes.helper';
+export * from './accessRequestsMockRoutes.helper';
+export * from './summaryList.helper';
+export * from './challengedAccessRequest.helper';

@@ -1,8 +1,7 @@
 import { expect, test } from '../../../../E2E/fixtures';
 import { buildTaskListMock, myActionsList } from '../../../mocks/taskList.mock';
-import { applySessionCookiesAndExtractUserId } from '../../../helpers';
+import { applySessionCookiesAndExtractUserId, setupManageTasksBaseRoutes } from '../../../helpers';
 import { setupTaskActionEndpointMocks, singleUsersGetByRoleMockResponse } from '../../../helpers/taskActionApiMocks.helper';
-import { TASK_LIST_ROUTE_REGEX } from '../../../testData';
 
 const userIdentifier = 'STAFF_ADMIN';
 let taskListMockResponse: ReturnType<typeof buildTaskListMock>;
@@ -17,10 +16,7 @@ test.describe(`Task Reassign as ${userIdentifier}`, { tag: ['@integration', '@in
     const firstTask = taskListMockResponse.tasks[0];
 
     await test.step('Setup route mock for task list and reassign action endpoints', async () => {
-      await page.route(TASK_LIST_ROUTE_REGEX, async (route) => {
-        const body = JSON.stringify(taskListMockResponse);
-        await route.fulfill({ status: 200, contentType: 'application/json', body });
-      });
+      await setupManageTasksBaseRoutes(page, { taskListResponse: taskListMockResponse });
 
       await setupTaskActionEndpointMocks(page, 'reassign', {
         taskId: firstTask.id,

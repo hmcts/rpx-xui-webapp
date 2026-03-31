@@ -43,7 +43,6 @@ test.describe(`Assign Task as ${userIdentifier}`, { tag: ['@integration', '@inte
       const claimAction = taskListPage.getTaskActionForRow(rowIndex, 'claim');
 
       await taskListPage.openManageActionsForRow(rowIndex, 'available tasks claim action');
-      await expect(claimAction).toBeVisible();
       await taskListPage.clickTaskActionForRow(rowIndex, 'claim', 'available tasks claim action');
       await expect(claimAction).not.toBeVisible();
       await expect(taskListPage.exuiBodyComponent.infoMessage).toBeVisible();

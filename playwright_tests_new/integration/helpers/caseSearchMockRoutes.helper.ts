@@ -4,7 +4,6 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { EXUI_TIMEOUTS } from '../../E2E/page-objects/pages/exui/exui-timeouts';
-import type { CaseListPage } from '../../E2E/page-objects/pages/exui/caseList.po';
 import type { GlobalSearchPage } from '../../E2E/page-objects/pages/exui/globalSearch.po';
 import type { SearchCasePage } from '../../E2E/page-objects/pages/exui/searchCase.po';
 
@@ -347,21 +346,17 @@ export async function setupFastCaseRetrievalConfigRoute(page: Page): Promise<voi
 
 /**
  * Submits a header quick-search using a 16-digit case reference.
- * Navigates to the case list, waits for the search input, and submits the reference.
+ * Navigates to the cases area, waits only for the quick-search contract used by the header,
+ * and submits the reference.
  *
  * Extracted from spec-level inline helpers for reuse across positive and negative search suites.
  *
  * @param caseReference - 16-digit case reference to search for
- * @param caseListPage - Page object for the case list page
  * @param searchCasePage - Page object for the search case (header search) page
  */
-export async function submitHeaderQuickSearch(
-  caseReference: string,
-  caseListPage: CaseListPage,
-  searchCasePage: SearchCasePage
-): Promise<void> {
-  await caseListPage.navigateTo();
-  // Defensive check: confirms search input is present before interacting
+export async function submitHeaderQuickSearch(caseReference: string, searchCasePage: SearchCasePage): Promise<void> {
+  await searchCasePage.page.goto('/cases', { waitUntil: 'domcontentloaded' });
+  await searchCasePage.exuiHeader.appHeaderLink.waitFor({ state: 'attached', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
   await expect(searchCasePage.caseIdTextBox).toBeVisible({ timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
   await searchCasePage.searchWith16DigitCaseId(caseReference);
 }

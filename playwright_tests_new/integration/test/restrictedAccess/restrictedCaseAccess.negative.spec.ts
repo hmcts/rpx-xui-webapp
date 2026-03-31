@@ -54,7 +54,6 @@ test.describe(
   () => {
     test('renders empty table when no users have access', async ({
       caseDetailsPage,
-      caseListPage,
       searchCasePage,
       page,
       tableUtils,
@@ -64,7 +63,7 @@ test.describe(
       });
 
       await test.step('Search for restricted case from quick search', async () => {
-        await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, caseListPage, searchCasePage);
+        await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, searchCasePage);
       });
 
       await test.step('Verify restricted access shell and empty users table', async () => {
@@ -89,7 +88,6 @@ test.describe(
     RESTRICTED_ACCESS_FAILURE_STATUSES.forEach((status) => {
       test(`handles failed role-access call with HTTP ${status} by showing restricted access shell`, async ({
         caseDetailsPage,
-        caseListPage,
         searchCasePage,
         page,
         tableUtils,
@@ -99,7 +97,7 @@ test.describe(
         });
 
         await test.step('Search for restricted case from quick search', async () => {
-          await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, caseListPage, searchCasePage);
+          await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, searchCasePage);
         });
 
         await test.step('Verify restricted access shell is shown without table rows', async () => {
@@ -125,7 +123,6 @@ test.describe(
     RESTRICTED_ACCESS_FAILURE_STATUSES.forEach((status) => {
       test(`handles failed caseworker lookup with HTTP ${status} by showing restricted access shell`, async ({
         caseDetailsPage,
-        caseListPage,
         searchCasePage,
         page,
         tableUtils,
@@ -135,7 +132,7 @@ test.describe(
         });
 
         await test.step('Search for restricted case from quick search', async () => {
-          await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, caseListPage, searchCasePage);
+          await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, searchCasePage);
         });
 
         await test.step('Verify restricted access shell is shown without table rows', async () => {
@@ -161,7 +158,6 @@ test.describe(
     RESTRICTED_ACCESS_FAILURE_STATUSES.forEach((status) => {
       test(`handles failed supported-jurisdiction lookup with HTTP ${status} by showing restricted access shell`, async ({
         caseDetailsPage,
-        caseListPage,
         searchCasePage,
         page,
         tableUtils,
@@ -174,7 +170,7 @@ test.describe(
         });
 
         await test.step('Search for restricted case from quick search', async () => {
-          await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, caseListPage, searchCasePage);
+          await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, searchCasePage);
         });
 
         await test.step('Verify restricted access shell is shown without table rows', async () => {
@@ -200,7 +196,6 @@ test.describe(
     RESTRICTED_ACCESS_FAILURE_STATUSES.forEach((status) => {
       test(`handles failed judicial lookup with HTTP ${status} by showing restricted access shell`, async ({
         caseDetailsPage,
-        caseListPage,
         searchCasePage,
         page,
         tableUtils,
@@ -215,7 +210,7 @@ test.describe(
         });
 
         await test.step('Search for restricted case from quick search', async () => {
-          await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, caseListPage, searchCasePage);
+          await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, searchCasePage);
         });
 
         await test.step('Verify restricted access shell is shown without table rows', async () => {

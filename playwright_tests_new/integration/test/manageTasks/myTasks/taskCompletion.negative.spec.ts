@@ -4,10 +4,9 @@ import {
   SERVICE_DOWN_HEADING_TEXT,
   MY_WORK_LIST_URL_REGEX,
   TASK_UNAVAILABLE_WARNING,
-  TASK_LIST_ROUTE_REGEX,
 } from '../../../testData';
 import { buildTaskListMock, myActionsList } from '../../../mocks/taskList.mock';
-import { applySessionCookiesAndExtractUserId } from '../../../helpers';
+import { applySessionCookiesAndExtractUserId, setupManageTasksBaseRoutes } from '../../../helpers';
 import { setupTaskActionEndpointMocks } from '../../../helpers/taskActionApiMocks.helper';
 
 const userIdentifier = 'STAFF_ADMIN';
@@ -26,10 +25,7 @@ test.describe(
       const firstTask = taskListMockResponse.tasks[0];
 
       await test.step('Setup route mocks for list, action dependencies, and complete 500 response', async () => {
-        await page.route(TASK_LIST_ROUTE_REGEX, async (route) => {
-          const body = JSON.stringify(taskListMockResponse);
-          await route.fulfill({ status: 200, contentType: 'application/json', body });
-        });
+        await setupManageTasksBaseRoutes(page, { taskListResponse: taskListMockResponse });
 
         await setupTaskActionEndpointMocks(page, 'complete', {
           taskId: firstTask.id,
@@ -81,10 +77,7 @@ test.describe(
       const firstTask = taskListMockResponse.tasks[0];
 
       await test.step('Setup route mocks for list, action dependencies, and complete 400 response', async () => {
-        await page.route(TASK_LIST_ROUTE_REGEX, async (route) => {
-          const body = JSON.stringify(taskListMockResponse);
-          await route.fulfill({ status: 200, contentType: 'application/json', body });
-        });
+        await setupManageTasksBaseRoutes(page, { taskListResponse: taskListMockResponse });
 
         await setupTaskActionEndpointMocks(page, 'complete', {
           taskId: firstTask.id,

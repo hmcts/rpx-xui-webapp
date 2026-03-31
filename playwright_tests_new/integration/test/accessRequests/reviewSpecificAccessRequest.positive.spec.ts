@@ -96,6 +96,42 @@ test.describe(
       expect(payload.period.endDate).toBeTruthy();
     });
 
+    test('User can approve a specific access request for another period and submit the selected end date', async ({ page }) => {
+      await setupReviewSpecificAccessMockRoutes(page);
+      await page.goto(ACCESS_REQUEST_REVIEW_PATH, { waitUntil: 'domcontentloaded' });
+
+      await page.getByLabel('Approve request').check();
+      await page.getByRole('button', { name: 'Continue' }).click();
+
+      await expect(page.getByRole('heading', { name: 'How long do you want to give access to this case for?' })).toBeVisible();
+      await page.getByLabel('Another period').check();
+      await page.locator('#endDate-day').fill('15');
+      await page.locator('#endDate-month').fill('7');
+      await page.locator('#endDate-year').fill('2035');
+      await expect(page.getByText('Invalid End date')).toBeHidden();
+
+      const approvalRequestPromise = page.waitForRequest(
+        (request) => request.method() === 'POST' && request.url().includes('/api/am/specific-access-approval')
+      );
+
+      await page.getByRole('button', { name: 'Submit' }).click();
+
+      const payload = (await approvalRequestPromise).postDataJSON() as Record<string, any>;
+      const startDate = new Date(payload.period.startDate);
+      const endDate = new Date(payload.period.endDate);
+
+      await expect(page.getByRole('heading', { name: 'Access approved' })).toBeVisible();
+      expect(payload.specificAccessStateData.caseId).toBe(ACCESS_REQUEST_CASE_ID);
+      expect(payload.specificAccessStateData.taskId).toBe(ACCESS_REQUEST_TASK_ID);
+      expect(payload.specificAccessStateData.requestedRole).toBe(ACCESS_REQUEST_REQUESTED_ROLE);
+      expect(Number.isNaN(startDate.getTime())).toBeFalsy();
+      expect(Number.isNaN(endDate.getTime())).toBeFalsy();
+      expect(endDate.getUTCFullYear()).toBe(2035);
+      expect(endDate.getUTCMonth()).toBe(6);
+      expect(endDate.getUTCDate()).toBe(15);
+      expect(endDate.getTime()).toBeGreaterThan(startDate.getTime());
+    });
+
     test('User can choose Request more information and complete that path', async ({ page }) => {
       await setupReviewSpecificAccessMockRoutes(page);
       await page.goto(ACCESS_REQUEST_REVIEW_PATH, { waitUntil: 'domcontentloaded' });

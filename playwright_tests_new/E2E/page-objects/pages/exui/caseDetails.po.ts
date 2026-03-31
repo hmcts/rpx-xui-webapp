@@ -70,6 +70,9 @@ export class CaseDetailsPage extends Base {
   readonly caseNotificationBannerTitle = this.page.locator('#govuk-notification-banner-title');
 
   readonly caseNotificationBannerBody = this.page.locator('.govuk-notification-banner__heading');
+  readonly documentUrlLink = this.page.locator('#case-viewer-field-read--DocumentUrl a').first();
+  readonly documentOneRow = this.page.getByRole('table', { name: 'case viewer table' }).getByRole('row', { name: /^Document 1\b/i }).first();
+  readonly documentOneAction = this.documentOneRow.locator('a,button').first();
 
   readonly eventCreationErrorHeading = this.page.getByRole('heading', { name: 'The event could not be created' });
   readonly generalProblemHeading = this.page.getByRole('heading', { name: /there is a problem/i }).first();
@@ -688,6 +691,16 @@ export class CaseDetailsPage extends Base {
 
     const visibleTabPanel = this.page.locator('[role="tabpanel"]:visible').first();
     await this.waitForTabPanelReadiness(visibleTabPanel, tabLoadTimeoutMs);
+  }
+
+  async openDocumentUrl() {
+    await this.documentUrlLink.waitFor({ state: 'visible', timeout: this.getRecommendedTimeoutMs() });
+    await this.documentUrlLink.click();
+  }
+
+  async openDocumentOne() {
+    await this.documentOneAction.waitFor({ state: 'visible', timeout: this.getRecommendedTimeoutMs() });
+    await this.documentOneAction.click();
   }
 
   async getTabCount() {

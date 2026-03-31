@@ -322,21 +322,22 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(odhinOptions?.runtimeHookTimeoutMs).toBe(resolveOdhinRuntimeHookTimeoutMs({ CI: undefined }));
     expect(config.expect.timeout).toBe(60_000);
     expect(config.use.timezoneId).toBe('Europe/London');
-    expect(config.projects.find((project) => project.name === 'chromium-search-case')?.workers).toBeUndefined();
+    expect(config.projects).toHaveLength(1);
+    expect(config.projects[0]?.name).toBe('chromium');
+    expect(config.projects[0]?.workers).toBeUndefined();
   });
 
-  test('integration config applies shared tag filters to both integration projects', async () => {
+  test('integration config applies shared tag filters to the integration project', async () => {
     const config = buildIntegrationConfig({
       INTEGRATION_PW_INCLUDE_TAGS: '@integration-search-case',
       INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE: '@none',
       CI: undefined,
     });
 
-    for (const project of config.projects) {
-      expect(project.grep).toBeInstanceOf(RegExp);
-      expect(project.grep?.test('@integration-search-case')).toBe(true);
-      expect(project.grep?.test('@integration-manage-tasks')).toBe(false);
-    }
+    expect(config.projects).toHaveLength(1);
+    expect(config.projects[0]?.grep).toBeInstanceOf(RegExp);
+    expect(config.projects[0]?.grep?.test('@integration-search-case')).toBe(true);
+    expect(config.projects[0]?.grep?.test('@integration-manage-tasks')).toBe(false);
 
     const filters = resolveIntegrationTagFilters({
       INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE: '@none,@integration-manage-tasks',

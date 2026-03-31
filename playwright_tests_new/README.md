@@ -413,11 +413,11 @@ npx playwright test integration/test/caseList/caseList.positive.spec.ts --config
 # Run the main integration project
 npx playwright test --config=playwright.integration.config.ts --project=chromium
 
-# Run the searchCase integration project
-npx playwright test --config=playwright.integration.config.ts --project=chromium-search-case
+# Run only search-case integration tests via tags
+INTEGRATION_PW_INCLUDE_TAGS=@integration-search-case npx playwright test --config=playwright.integration.config.ts --project=chromium
 
 # Disable Odhin locally when you want the fastest possible run
-PW_INTEGRATION_ODHIN=0 npx playwright test --config=playwright.integration.config.ts --project=chromium-search-case
+PW_INTEGRATION_ODHIN=0 INTEGRATION_PW_INCLUDE_TAGS=@integration-search-case npx playwright test --config=playwright.integration.config.ts --project=chromium
 ```
 
 ### Integration Tag Filtering
@@ -443,8 +443,8 @@ INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:playwright:integration
 
 Notes:
 
-- `chromium-search-case` isolates the `integration/test/searchCase/` suite so it can be run or triaged independently
-- All other integration specs continue to run on the auto-sized `chromium` project unless `FUNCTIONAL_TESTS_WORKERS` is pinned explicitly
+- Search-case integration specs now run in the main `chromium` project and can be isolated with `INTEGRATION_PW_INCLUDE_TAGS=@integration-search-case`
+- Integration specs continue to run on the auto-sized `chromium` project unless `FUNCTIONAL_TESTS_WORKERS` is pinned explicitly
 - Odhin remains enabled by default for integration runs, including local runs
 - Local integration Odhin uses a lightweight profile by default and emits explicit finalization timing so post-test report generation is visible and bounded
 - Local integration Odhin also bounds runtime reporter hooks by default; override with `PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS=<ms>` or set `0` to disable the local safeguard

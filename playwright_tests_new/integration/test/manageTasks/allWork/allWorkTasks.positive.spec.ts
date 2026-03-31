@@ -1,5 +1,5 @@
 import { expect, test } from '../../../../E2E/fixtures';
-import { applyPrewarmedSessionCookies, setupTaskListBootstrapRoutes, taskListRoutePattern } from '../../../helpers';
+import { applySessionCookies, setupTaskListBootstrapRoutes, taskListRoutePattern } from '../../../helpers';
 import { buildTaskListMock, myActionsList } from '../../../mocks/taskList.mock';
 import { buildMyCases } from '../../../mocks/myCases.mock';
 
@@ -14,7 +14,7 @@ const supportedJurisdictionDetails = [
 
 test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   test.beforeEach(async ({ page }) => {
-    await applyPrewarmedSessionCookies(page, userIdentifier);
+    await applySessionCookies(page, userIdentifier);
   });
 
   test('User can view all-work task table, links, and pagination', async ({ taskListPage, page, tableUtils }) => {
@@ -167,9 +167,7 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
       await taskListPage.gotoAllWorkTasks();
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
-
-      await taskListPage.openFilterPanel();
-      await expect(taskListPage.applyFilterButton).toBeVisible();
+      await taskListPage.waitForAllWorkFilterControlsReady();
     });
 
     await test.step('Verify all-work service/location/task/person filter controls are present', async () => {
@@ -267,7 +265,7 @@ test.describe('All Work role-based task columns', { tag: ['@integration', '@inte
       const taskListMockResponse = buildTaskListMock(40, '', myActionsList);
 
       test.beforeEach(async ({ page }) => {
-        await applyPrewarmedSessionCookies(page, scenario.userIdentifier);
+        await applySessionCookies(page, scenario.userIdentifier);
       });
       test(`renders expected date column and not the non-expected date column`, async ({ taskListPage, page, tableUtils }) => {
         await test.step('Setup route mocks for all-work role-based columns', async () => {

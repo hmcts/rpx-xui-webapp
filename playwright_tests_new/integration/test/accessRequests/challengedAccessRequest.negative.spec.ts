@@ -1,12 +1,12 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { applyPrewarmedSessionCookies, CHALLENGED_ACCESS_PATH, setupChallengedAccessMockRoutes } from '../../helpers';
+import { applySessionCookies, CHALLENGED_ACCESS_PATH, setupChallengedAccessMockRoutes } from '../../helpers';
 
 const userIdentifier = 'STAFF_ADMIN';
 const linkedCaseReason = 'The cases or parties are linked to the case I am working on';
 const otherReason = 'Other reason';
 
 test.beforeEach(async ({ page }) => {
-  await applyPrewarmedSessionCookies(page, userIdentifier);
+  await applySessionCookies(page, userIdentifier);
 });
 
 test.describe(

@@ -89,6 +89,12 @@ yarn test:playwright:integration
 - Integration: `functional-output/tests/playwright-integration/odhin-report/xui-playwright-integration.html`
 - E2E: `functional-output/tests/playwright-e2e/odhin-report/xui-playwright-e2e.html`
 
+Odhin dashboard notes:
+
+- The dashboard now groups the former file summary by Playwright feature folder, for example `caseFileView`, `caseLinking`, `accessRequests`, and `hearings`.
+- API, integration, and E2E reports now share the adaptive Odhin wrapper, so grouped feature summaries and inline grouped status are applied consistently across suites.
+- The report stays single-page: grouped feature status is rendered directly under `Run info` instead of generating a separate drilldown page.
+
 ### Notes
 
 - Replace `"My tasks"` with the exact test name, unique substring, or regex.

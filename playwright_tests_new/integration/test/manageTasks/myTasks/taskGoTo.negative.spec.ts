@@ -1,19 +1,15 @@
 import { expect, test } from '../../../../E2E/fixtures';
-import { applySessionCookies } from '../../../../common/sessionCapture';
 import { buildTaskListMock, myActionsList } from '../../../mocks/taskList.mock';
-import { extractUserIdFromCookies } from '../../../utils/extractUserIdFromCookies';
+import { applySessionCookiesAndExtractUserId } from '../../../helpers';
 import { setupTaskActionEndpointMocks } from '../../../helpers/taskActionApiMocks.helper';
 import { TASK_LIST_ROUTE_REGEX } from '../../../testData';
 
 const userIdentifier = 'STAFF_ADMIN';
-let sessionCookies: any[] = [];
 let taskListMockResponse: ReturnType<typeof buildTaskListMock>;
 
 test.beforeEach(async ({ page }) => {
-  const { cookies } = await applySessionCookies(page, userIdentifier);
-  sessionCookies = cookies;
-  const userId = extractUserIdFromCookies(sessionCookies);
-  taskListMockResponse = buildTaskListMock(160, userId?.toString() || '', myActionsList);
+  const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
+  taskListMockResponse = buildTaskListMock(160, userId, myActionsList);
 });
 
 // EXUI-4318 - Skipped until the related bug is resolved, and the expected behaviour can be tested reliably

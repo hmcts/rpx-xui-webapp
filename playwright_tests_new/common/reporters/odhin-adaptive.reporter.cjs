@@ -2,12 +2,19 @@
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const odhinModule = require('odhin-reports-playwright');
+const {
+  createEmptyFeatureStat,
+  deriveFeatureName,
+  enhanceGeneratedReport,
+} = require('./odhin-report-enhancer.cjs');
 
 const OdhinReporter = odhinModule.default ?? odhinModule;
+const terminalStatusesNoRetry = ['passed', 'flaky', 'skipped', 'interrupted'];
 
 class OdhinAdaptiveReporter {
   constructor(options = {}) {
     this.options = options;
+    this.outputFolder = options.outputFolder;
     const configuredLightweight = options.lightweight;
     const envLightweight = process.env.PW_ODHIN_LIGHTWEIGHT;
     this.lightweight =
@@ -61,6 +68,7 @@ class OdhinAdaptiveReporter {
       timedOut: 0,
       failed: 0,
     };
+    this.featureStats = new Map();
     this.finalizationStartedAt = 0;
     this.pendingInnerCallbacks = Promise.resolve();
     this.inner =
@@ -101,6 +109,7 @@ class OdhinAdaptiveReporter {
     }
 
     this.recordStatus(result?.status);
+    this.recordFeatureStat(test, result);
     this.enqueueInnerCallback('onTestEnd', () => this.inner.onTestEnd(test, nextResult), { test });
   }
 
@@ -114,6 +123,11 @@ class OdhinAdaptiveReporter {
     await this.flushInnerCallbacks();
     if (typeof this.inner.onEnd === 'function') {
       await this.inner.onEnd(result);
+    }
+    try {
+      enhanceGeneratedReport(this.outputFolder, this.featureStats);
+    } catch (error) {
+      process.stderr.write(`[odhin-profile] report enhancement failed: ${formatErrorMessage(error)}\n`);
     }
     if (this.profileEnabled) {
       const elapsedMs = Math.max(0, Date.now() - this.finalizationStartedAt);
@@ -155,6 +169,44 @@ class OdhinAdaptiveReporter {
     }
   }
 
+  recordFeatureStat(test, result) {
+    const finalStatus = normalizeFinalStatus(result?.status, result?.retry);
+    if (!isFinalResult(finalStatus, result?.retry, test?.retries)) {
+      return;
+    }
+
+    const featureName = deriveFeatureName(test?.location?.file);
+    const current = this.featureStats.get(featureName) ?? createEmptyFeatureStat(featureName);
+    current.totalTests += 1;
+    current.durationMs += Number(result?.duration ?? 0);
+
+    switch (finalStatus) {
+      case 'passed':
+        current.passed += 1;
+        break;
+      case 'failed':
+        current.failed += 1;
+        break;
+      case 'timedOut':
+        current.timedOut += 1;
+        break;
+      case 'skipped':
+        current.skipped += 1;
+        break;
+      case 'interrupted':
+        current.interrupted += 1;
+        break;
+      case 'flaky':
+        current.flaky += 1;
+        break;
+      default:
+        current.interrupted += 1;
+        break;
+    }
+
+    this.featureStats.set(featureName, current);
+  }
+
   enqueueInnerCallback(hookName, invoke, context = {}) {
     this.runtimeHookStats.queued += 1;
     const run = async () => {
@@ -189,6 +241,16 @@ const normalizeRuntimeHookTimeoutMs = (raw, fallbackMs) => {
   }
   return fallbackMs;
 };
+
+const normalizeFinalStatus = (status, retry) => {
+  if (status === 'passed' && Number(retry ?? 0) > 0) {
+    return 'flaky';
+  }
+  return status;
+};
+
+const isFinalResult = (status, retry, retries) =>
+  terminalStatusesNoRetry.includes(status) || Number(retry ?? 0) === Number(retries ?? 0);
 
 const withTimeout = async (promise, timeoutMs) => {
   if (!Number.isFinite(timeoutMs) || timeoutMs <= 0) {
@@ -230,6 +292,8 @@ const formatHookContext = ({ test } = {}) => {
 
 const exportedReporter = OdhinAdaptiveReporter;
 exportedReporter.__test__ = {
+  isFinalResult,
+  normalizeFinalStatus,
   normalizeTestOutputMode(raw) {
     if (raw === true || raw === false) {
       return raw;

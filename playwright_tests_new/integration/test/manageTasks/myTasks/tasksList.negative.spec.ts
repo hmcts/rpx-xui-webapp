@@ -1,9 +1,9 @@
 import { expect, test } from '../../../../E2E/fixtures';
 import { TASK_LIST_MALFORMED_JSON_BODY } from '../../../testData';
-import { applyPrewarmedSessionCookies, setupTaskListBootstrapRoutes, taskListRoutePattern } from '../../../helpers';
+import { applySessionCookies, setupTaskListBootstrapRoutes, taskListRoutePattern } from '../../../helpers';
 
 test.beforeEach(async ({ page }) => {
-  await applyPrewarmedSessionCookies(page, userIdentifier);
+  await applySessionCookies(page, userIdentifier);
 });
 
 const errorStates = [400, 403, 500, 503];

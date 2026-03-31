@@ -1,13 +1,11 @@
 import { welshTranslationsSmall } from 'playwright_tests_new/integration/mocks/welshLanguage';
 import { expect, test } from '../../../E2E/fixtures';
-import { applyPrewarmedSessionCookies } from '../../helpers';
-let sessionCookies: any[] = [];
+import { applySessionCookies } from '../../helpers';
 const TRANSLATIONS_TIMEOUT = 20_000;
 
 test.describe('Verify users can switch the language', { tag: ['@integration', '@integration-welsh-language'] }, () => {
   test.beforeEach(async ({ page }) => {
-    const { cookies } = await applyPrewarmedSessionCookies(page, 'SOLICITOR');
-    sessionCookies = cookies;
+    await applySessionCookies(page, 'SOLICITOR');
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     await page.route('**api/translation/cy*', async (route) => {
       const body = JSON.stringify(welshTranslationsSmall);
@@ -30,8 +28,6 @@ test.describe('Verify users can switch the language', { tag: ['@integration', '@
     await test.step('Check the translation are shown, and the language toggle switches to English', async () => {
       await expect(caseListPage.exuiHeader.notificationBanner).toBeVisible();
       await expect(caseListPage.exuiHeader.notificationBannerTitle).toContainText('Pwysig');
-
-      await page.waitForTimeout(10_000);
 
       const checks = [
         {

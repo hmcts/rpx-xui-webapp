@@ -141,7 +141,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(config.workers).toBe(expectedWorkers);
     expect(config.use.baseURL).toBe('https://example.test');
     expect(config.reporter[0][0]).toBe('dot');
-    const [, odhinOptions] = getReporterTuple(config.reporter, 'odhin-reports-playwright');
+    const [, odhinOptions] = getReporterTuple(config.reporter, './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs');
     expect(odhinOptions?.outputFolder).toBe('custom-report');
     expect(odhinOptions?.project).toBe('Custom Project');
     expect(odhinOptions?.release).toBe('Custom Release');
@@ -177,7 +177,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
       HEAD: undefined,
     });
     expect(config.reporter[0][0]).toBe('list');
-    const [, odhinOptions] = getReporterTuple(config.reporter, 'odhin-reports-playwright');
+    const [, odhinOptions] = getReporterTuple(config.reporter, './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs');
     expect(odhinOptions?.outputFolder).toContain('playwright-e2e/odhin-report');
     expect(odhinOptions?.project).toBe('RPX XUI Webapp');
     expect(odhinOptions?.release).toContain('branch=');
@@ -198,7 +198,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
       TEST_TYPE: undefined,
       HEAD: undefined,
     });
-    const [, odhinOptions] = getReporterTuple(config.reporter, 'odhin-reports-playwright');
+    const [, odhinOptions] = getReporterTuple(config.reporter, './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs');
     expect(odhinOptions?.release).toContain('branch=feat/EXUI-3618-case-search-e2e');
   });
 
@@ -381,6 +381,11 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
 
     expect(config.use.baseURL).toBe('https://example.test');
     expect(config.reporter[0][0]).toBe('dot');
+    const [, odhinOptions] = getReporterTuple(
+      config.reporter,
+      './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs'
+    );
+    expect(odhinOptions?.outputFolder).toContain('playwright-e2e/odhin-report');
     expect(config.projects.find((project) => project.name === 'firefox')?.use?.headless).toBe(false);
     expect(config.projects.find((project) => project.name === 'webkit')?.use?.headless).toBe(false);
   });

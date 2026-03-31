@@ -8,14 +8,14 @@ import {
   ACCESS_REQUEST_REQUESTED_ROLE,
   ACCESS_REQUEST_REVIEW_PATH,
   ACCESS_REQUEST_TASK_ID,
-  applyPrewarmedSessionCookies,
+  applySessionCookies,
   setupReviewSpecificAccessMockRoutes,
 } from '../../helpers';
 
 const userIdentifier = 'STAFF_ADMIN';
 
 test.beforeEach(async ({ page }) => {
-  await applyPrewarmedSessionCookies(page, userIdentifier);
+  await applySessionCookies(page, userIdentifier);
 });
 
 test.describe(

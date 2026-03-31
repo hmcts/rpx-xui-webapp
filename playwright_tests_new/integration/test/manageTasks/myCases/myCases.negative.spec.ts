@@ -1,6 +1,6 @@
 import { expect, test } from '../../../../E2E/fixtures';
 import {
-  applyPrewarmedSessionCookies,
+  applySessionCookies,
   myCasesRoutePattern,
   setupManageTasksBaseRoutes,
   setupMyCasesRoutes,
@@ -11,7 +11,7 @@ const serviceDownStatuses = [400, 500];
 const notAuthorisedStatuses = [401, 403];
 
 test.beforeEach(async ({ page }) => {
-  await applyPrewarmedSessionCookies(page, userIdentifier);
+  await applySessionCookies(page, userIdentifier);
 });
 
 test.describe(`My Cases as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {

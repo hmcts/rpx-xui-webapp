@@ -1,12 +1,12 @@
 import { expect, test } from '../../../../E2E/fixtures';
 import { availableActionsList, buildTaskListMock } from '../../../mocks/taskList.mock';
 import { formatUiDate } from '../../../utils/tableUtils';
-import { applyPrewarmedSessionCookies, setupTaskListBootstrapRoutes, taskListRoutePattern } from '../../../helpers';
+import { applySessionCookies, setupTaskListBootstrapRoutes, taskListRoutePattern } from '../../../helpers';
 
 const userIdentifier = 'STAFF_ADMIN';
 
 test.beforeEach(async ({ page }) => {
-  await applyPrewarmedSessionCookies(page, userIdentifier);
+  await applySessionCookies(page, userIdentifier);
 });
 
 test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {

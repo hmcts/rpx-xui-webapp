@@ -1,7 +1,7 @@
 import { Locator, Page, Request } from '@playwright/test';
 import { Base } from '../../base';
 
-const TASK_LIST_READY_TIMEOUT_MS = 20_000;
+const TASK_LIST_READY_TIMEOUT_MS = 30_000;
 const FILTER_PANEL_READY_TIMEOUT_MS = 10_000;
 const FILTER_CONTROL_READY_TIMEOUT_MS = 15_000;
 const FILTER_GROUP_OPERATION_TIMEOUT_MS = 10_000;
@@ -48,6 +48,7 @@ export class TaskListPage extends Base {
   readonly taskTableTabs = this.page.locator('.hmcts-sub-navigation .hmcts-sub-navigation__link');
 
   readonly taskListTable = this.page.locator('table.govuk-table').first();
+  readonly taskRows = this.taskListTable.locator('tbody > tr:not(.actions-row)');
   readonly sortByCaseNameTableHeader = this.taskListTable.locator('#sort_by_caseName');
   readonly sortByCaseCategoryTableHeader = this.taskListTable.locator('#sort_by_caseCategory');
   readonly sortByLocationTableHeader = this.taskListTable.locator('#sort_by_locationName');
@@ -214,12 +215,48 @@ export class TaskListPage extends Base {
   }
 
   async waitForTaskListShellReady(context: string) {
+    const findVisibleShellSignal = async () => {
+      const signals: Array<[string, Locator]> = [
+        ['heading', this.myWorkHeading],
+        ['tabs', this.taskTableTabs.first()],
+        ['filter-toggle', this.taskListFilterToggle],
+        ['table', this.taskListTable],
+        ['table-header', this.taskTableHeader],
+        ['table-footer', this.taskTableFooter],
+        ['results-summary', this.taskListResultsAmount],
+        ['error-page', this.errorPageHeading],
+        ['service-down', this.serviceDownError],
+      ];
+
+      for (const [signal, locator] of signals) {
+        if (await locator.isVisible().catch(() => false)) {
+          return signal;
+        }
+      }
+
+      return null;
+    };
+
     await this.page
       .waitForURL(/\/(?:work\/(?:my-work\/(?:list|available|my-cases|my-access)|all-work\/(?:tasks|cases))|service-down)/, {
         timeout: TASK_LIST_READY_TIMEOUT_MS,
       })
       .catch(() => undefined);
     await this.waitForTaskListSpinnerToSettle(10_000);
+    const immediateSignal = await findVisibleShellSignal();
+    if (immediateSignal) {
+      if (immediateSignal === 'error-page') {
+        await this.assertTaskListHealthy(`waiting for task list shell (${context})`);
+      }
+
+      if (immediateSignal !== 'service-down') {
+        await this.waitForTaskListSpinnerToSettle(5_000);
+        await this.assertTaskListHealthy(`waiting for task list shell (${context})`, { allowServiceDown: true });
+      }
+
+      return;
+    }
+
     const bootstrapSignal = await Promise.any([
       this.myWorkHeading.waitFor({ state: 'visible', timeout: TASK_LIST_READY_TIMEOUT_MS }).then(() => 'heading'),
       this.taskTableTabs
@@ -234,6 +271,10 @@ export class TaskListPage extends Base {
       this.errorPageHeading.waitFor({ state: 'visible', timeout: TASK_LIST_READY_TIMEOUT_MS }).then(() => 'error-page'),
       this.serviceDownError.waitFor({ state: 'visible', timeout: TASK_LIST_READY_TIMEOUT_MS }).then(() => 'service-down'),
     ]).catch(async () => {
+      const lateSignal = await findVisibleShellSignal();
+      if (lateSignal) {
+        return lateSignal;
+      }
       const headingText = await this.page
         .locator('main h1, main h2, main h3')
         .first()
@@ -353,6 +394,21 @@ export class TaskListPage extends Base {
     await this.applyFilterButton.evaluate((button: HTMLButtonElement) => button.click());
   }
 
+  async waitForAllWorkFilterControlsReady() {
+    await this.openFilterPanel();
+    await this.allWorkServiceFilter.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+    await this.allWorkLocationAllRadio.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+    await this.allWorkLocationSearchRadio.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+    await this.allWorkTaskCategoryAllRadio.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+    await this.allWorkTaskCategoryUnassignedRadio.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+    await this.allWorkTaskCategoryAssignedToPersonRadio.waitFor({
+      state: 'visible',
+      timeout: FILTER_CONTROL_READY_TIMEOUT_MS,
+    });
+    await this.allWorkTasksByRoleTypeFilter.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+    await this.allWorkPersonSearchInput.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+  }
+
   async setSelectAllServicesFilter(checked: boolean) {
     await this.setFilterCheckbox(this.selectAllServicesFilter, checked, 'select all services');
   }
@@ -445,40 +501,63 @@ export class TaskListPage extends Base {
   async waitForManageButton(
     context: string,
     options: {
+      rowIndex?: number;
       timeoutMs?: number;
       pollMs?: number;
     } = {}
   ) {
+    await this.waitForTaskRowReady(context, options);
+  }
+
+  private isTaskDataCall(url: string): boolean {
+    return url.includes('/workallocation/task') && !url.includes('/types-of-work');
+  }
+
+  private getLatestTaskDataCallSummary(): string {
+    const latestTaskCall = [...this.getApiCalls()].reverse().find((call) => this.isTaskDataCall(call.url));
+    return latestTaskCall ? `${latestTaskCall.method} ${latestTaskCall.url} -> HTTP ${latestTaskCall.status}` : 'none captured';
+  }
+
+  async waitForTaskRowReady(
+    context: string,
+    options: {
+      rowIndex?: number;
+      timeoutMs?: number;
+      pollMs?: number;
+    } = {}
+  ) {
+    const rowIndex = options.rowIndex ?? 0;
     const timeoutMs = options.timeoutMs ?? 60_000;
     const pollMs = options.pollMs ?? 500;
     const deadline = Date.now() + timeoutMs;
 
     while (Date.now() < deadline) {
-      await this.assertTaskListInteractive(`waiting for Manage button (${context})`);
+      await this.assertTaskListInteractive(`waiting for task row (${context})`);
 
-      const taskApi5xx = this.getApiCalls().find((call) => call.url.includes('/workallocation/task') && call.status >= 500);
+      const taskApi5xx = this.getApiCalls().find((call) => this.isTaskDataCall(call.url) && call.status >= 500);
       if (taskApi5xx) {
         throw new Error(
-          `Task list failed while waiting for Manage button (${context}): ${taskApi5xx.method} ${taskApi5xx.url} returned HTTP ${taskApi5xx.status}`
+          `Task list failed while waiting for task row (${context}): ${taskApi5xx.method} ${taskApi5xx.url} returned HTTP ${taskApi5xx.status}`
         );
       }
 
-      const manageButton = this.manageCaseButtons.first();
-      if (await manageButton.isVisible().catch(() => false)) {
-        return;
+      const rowCount = await this.taskRows.count().catch(() => 0);
+      if (rowCount > rowIndex) {
+        const targetRow = this.getTaskRow(rowIndex);
+        const rowVisible = await targetRow.isVisible().catch(() => false);
+        const manageVisible = await this.getManageButtonForRow(rowIndex).isVisible().catch(() => false);
+
+        if (rowVisible && manageVisible) {
+          return;
+        }
       }
 
       await this.page.waitForTimeout(pollMs);
     }
 
-    const latestTaskCall = this.getApiCalls()
-      .reverse()
-      .find((call) => call.url.includes('/workallocation/task'));
-    const latestTaskCallSummary = latestTaskCall
-      ? `${latestTaskCall.method} ${latestTaskCall.url} -> HTTP ${latestTaskCall.status}`
-      : 'none captured';
+    const finalRowCount = await this.taskRows.count().catch(() => 0);
     throw new Error(
-      `Timed out after ${timeoutMs}ms waiting for Manage button (${context}). Last /workallocation/task call: ${latestTaskCallSummary}`
+      `Timed out after ${timeoutMs}ms waiting for task row (${context}) on row ${rowIndex + 1}. rowCount=${finalRowCount}. Last /workallocation/task data call: ${this.getLatestTaskDataCallSummary()}`
     );
   }
 
@@ -497,17 +576,18 @@ export class TaskListPage extends Base {
 
     while (Date.now() < deadline) {
       await this.waitForManageButton(`${context} row ${rowIndex + 1} attempt ${attempt + 1}`, {
-        timeoutMs: Math.max(1_000, Math.min(5_000, deadline - Date.now())),
+        rowIndex,
+        timeoutMs: Math.max(1_500, Math.min(8_000, deadline - Date.now())),
         pollMs,
       });
 
-      const manageButton = this.manageCaseButtons.nth(rowIndex);
+      const manageButton = this.getManageButtonForRow(rowIndex);
       await manageButton.scrollIntoViewIfNeeded().catch(() => undefined);
       await manageButton.click({ force: attempt > 0 });
 
       const rowActions = this.getTaskActionsRow(rowIndex);
       const expanded = await rowActions
-        .waitFor({ state: 'visible', timeout: Math.max(1_000, Math.min(2_500, deadline - Date.now())) })
+        .waitFor({ state: 'visible', timeout: Math.max(1_000, Math.min(4_000, deadline - Date.now())) })
         .then(() => true)
         .catch(() => false);
 
@@ -535,11 +615,16 @@ export class TaskListPage extends Base {
     await this.openManageActions(0, context, options);
   }
 
+  private getTaskRow(rowIndex: number): Locator {
+    return this.taskRows.nth(rowIndex);
+  }
+
+  private getManageButtonForRow(rowIndex: number): Locator {
+    return this.getTaskRow(rowIndex).getByRole('button', { name: 'Manage' }).first();
+  }
+
   getTaskActionsRow(rowIndex: number): Locator {
-    return this.manageCaseButtons
-      .nth(rowIndex)
-      .locator('xpath=ancestor::tr[1]/following-sibling::tr[contains(@class,"actions-row")][1]')
-      .first();
+    return this.getTaskRow(rowIndex).locator('xpath=following-sibling::tr[contains(@class,"actions-row")][1]').first();
   }
 
   getTaskActionForRow(rowIndex: number, actionId: string): Locator {

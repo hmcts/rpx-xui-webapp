@@ -1,9 +1,8 @@
 import { expect, test } from '../../../../E2E/fixtures';
 import { buildTaskListMock, buildDeterministicMyTasksListMock, myActionsList } from '../../../mocks/taskList.mock';
-import { extractUserIdFromCookies } from '../../../utils/extractUserIdFromCookies';
 import { formatUiDate } from '../../../utils/tableUtils';
 import {
-  applyPrewarmedSessionCookies,
+  applySessionCookiesAndExtractUserId,
   setupTaskListBootstrapRoutes,
   taskListRoutePattern,
   setupTaskListMockRoutes,
@@ -11,14 +10,11 @@ import {
 
 let userId: string | null;
 const userIdentifier = 'STAFF_ADMIN';
-let sessionCookies: any[] = [];
 let taskListMockResponse: ReturnType<typeof buildTaskListMock>;
 
 test.beforeEach(async ({ page }) => {
-  const { cookies } = await applyPrewarmedSessionCookies(page, userIdentifier);
-  sessionCookies = cookies;
-  userId = extractUserIdFromCookies(sessionCookies);
-  taskListMockResponse = buildTaskListMock(6, userId?.toString() || '', myActionsList);
+  userId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
+  taskListMockResponse = buildTaskListMock(6, userId, myActionsList);
 });
 
 test.describe(`Task List as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {

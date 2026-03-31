@@ -3,8 +3,14 @@ import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 const OdhinAdaptiveReporter = require('../../common/reporters/odhin-adaptive.reporter.cjs');
+const enhancerModule = require('../../common/reporters/odhin-report-enhancer.cjs');
+
+const createEmptyFeatureStat = enhancerModule.createEmptyFeatureStat as (name: string) => { name: string; totalTests: number };
+const deriveFeatureName = enhancerModule.deriveFeatureName as (filePath: string) => string;
 
 const odhinAdaptiveTest = OdhinAdaptiveReporter.__test__ as {
+  isFinalResult: (status: string, retry: number, retries: number) => boolean;
+  normalizeFinalStatus: (status: string, retry: number) => string;
   normalizeTestOutputMode: (raw: unknown) => true | false | 'only-on-failure';
   normalizeRuntimeHookTimeoutMs: (raw: unknown, fallbackMs: number) => number;
   withTimeout: <T>(promise: Promise<T>, timeoutMs: number) => Promise<T>;
@@ -29,6 +35,15 @@ test.describe('odhin adaptive reporter', { tag: '@svc-internal' }, () => {
     expect(odhinAdaptiveTest.normalizeRuntimeHookTimeoutMs(undefined, 15000)).toBe(15000);
     expect(odhinAdaptiveTest.normalizeRuntimeHookTimeoutMs('2500', 15000)).toBe(2500);
     expect(odhinAdaptiveTest.normalizeRuntimeHookTimeoutMs('junk', 15000)).toBe(15000);
+  });
+
+  test('normalizes final status and final-attempt detection for grouped feature stats', () => {
+    expect(odhinAdaptiveTest.normalizeFinalStatus('passed', 0)).toBe('passed');
+    expect(odhinAdaptiveTest.normalizeFinalStatus('passed', 1)).toBe('flaky');
+    expect(odhinAdaptiveTest.isFinalResult('failed', 0, 1)).toBe(false);
+    expect(odhinAdaptiveTest.isFinalResult('failed', 1, 1)).toBe(true);
+    expect(deriveFeatureName('/tmp/playwright_tests_new/integration/test/caseLinking/caseLinking.positive.spec.ts')).toBe('caseLinking');
+    expect(createEmptyFeatureStat('caseFileView')).toMatchObject({ name: 'caseFileView', totalTests: 0 });
   });
 
   test('trims passed-test output and heavy artifacts in lightweight mode', () => {

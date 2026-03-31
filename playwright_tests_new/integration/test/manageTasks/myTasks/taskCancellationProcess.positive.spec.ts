@@ -1,6 +1,5 @@
 import { expect, test } from '../../../../E2E/fixtures';
 import { buildMyTaskListMock } from '../../../mocks/taskList.mock';
-import { extractUserIdFromCookies } from '../../../utils/extractUserIdFromCookies';
 import { logTaskCancellationAssertion } from '../../../utils/taskCancellationAssertionLogger';
 import {
   routeCaseDetailsTaskCancellationFlow,
@@ -10,7 +9,7 @@ import {
 } from '../../../utils/taskCancellationRoutes';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { applyPrewarmedSessionCookies } from '../../../helpers';
+import { applySessionCookiesAndExtractUserId } from '../../../helpers';
 
 const userIdentifier = 'STAFF_ADMIN';
 const taskId = '22222222-2222-2222-2222-222222222222';
@@ -38,8 +37,9 @@ test.describe(
   () => {
     for (const matrixItem of cancellationMatrix) {
       test(`Cancel task sends expected request for ${matrixItem.scenario}`, async ({ taskListPage, page }, testInfo) => {
-        const { cookies } = await applyPrewarmedSessionCookies(page, userIdentifier);
-        const userId = extractUserIdFromCookies(cookies) || 'test-user-id';
+        const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier, {
+          fallbackUserId: 'test-user-id',
+        });
 
         const taskListMockResponse = buildMyTaskListMock(userId, 1);
         const task = {
@@ -133,8 +133,9 @@ test.describe(
       });
 
       test(`My Tasks manual cancellation for ${matrixItem.scenario}`, async ({ taskListPage, page }) => {
-        const { cookies } = await applyPrewarmedSessionCookies(page, userIdentifier);
-        const userId = extractUserIdFromCookies(cookies) || 'test-user-id';
+        const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier, {
+          fallbackUserId: 'test-user-id',
+        });
 
         const taskListMockResponse = buildMyTaskListMock(userId, 1);
         const task = {
@@ -175,8 +176,9 @@ test.describe(
 
     test('Case details Tasks tab manual cancellation path', async ({ page, taskListPage }) => {
       const scenario = cancellationMatrix[0];
-      const { cookies } = await applyPrewarmedSessionCookies(page, userIdentifier);
-      const userId = extractUserIdFromCookies(cookies) || 'test-user-id';
+      const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier, {
+        fallbackUserId: 'test-user-id',
+      });
       const caseDetailsTemplate = JSON.parse(
         readFileSync(resolve(process.cwd(), 'src/assets/getCase.json'), 'utf8')
       ) as CaseDetailsTemplate;
@@ -217,8 +219,9 @@ test.describe(
 
     test('Cancel action is not shown for a non-cancellable task', async ({ taskListPage, page }) => {
       const scenario = cancellationMatrix[0];
-      const { cookies } = await applyPrewarmedSessionCookies(page, userIdentifier);
-      const userId = extractUserIdFromCookies(cookies) || 'test-user-id';
+      const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier, {
+        fallbackUserId: 'test-user-id',
+      });
 
       const task = {
         ...buildMyTaskListMock(userId, 1).tasks[0],
@@ -245,8 +248,9 @@ test.describe(
 
     test('Stale task cancellation shows task no longer available warning', async ({ taskListPage, page }) => {
       const scenario = cancellationMatrix[0];
-      const { cookies } = await applyPrewarmedSessionCookies(page, userIdentifier);
-      const userId = extractUserIdFromCookies(cookies) || 'test-user-id';
+      const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier, {
+        fallbackUserId: 'test-user-id',
+      });
 
       const task = {
         ...buildMyTaskListMock(userId, 1).tasks[0],
@@ -277,8 +281,9 @@ test.describe(
 
     test('Cancellation API failure shows task no longer available warning', async ({ taskListPage, page }) => {
       const scenario = cancellationMatrix[0];
-      const { cookies } = await applyPrewarmedSessionCookies(page, userIdentifier);
-      const userId = extractUserIdFromCookies(cookies) || 'test-user-id';
+      const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier, {
+        fallbackUserId: 'test-user-id',
+      });
 
       const task = {
         ...buildMyTaskListMock(userId, 1).tasks[0],

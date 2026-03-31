@@ -4,7 +4,7 @@ import {
   ACCESS_REQUEST_CASE_ID,
   ACCESS_REQUEST_SERVICE_NAME,
   CHALLENGED_ACCESS_PATH,
-  applyPrewarmedSessionCookies,
+  applySessionCookies,
   expectChallengedAccessConditionalFields,
   getChallengedAccessReasonDetails,
   summaryRow,
@@ -18,7 +18,7 @@ const transferReason = 'To consider an order for transfer';
 const otherReason = 'Other reason';
 
 test.beforeEach(async ({ page }) => {
-  await applyPrewarmedSessionCookies(page, userIdentifier);
+  await applySessionCookies(page, userIdentifier);
 });
 
 test.describe(`Challenged Access Request as ${userIdentifier}`, { tag: ['@integration', '@integration-access-requests'] }, () => {

@@ -3,7 +3,7 @@ import {
   ACCESS_REQUEST_CASE_DETAILS_PATH,
   ACCESS_REQUEST_CASE_ID,
   ACCESS_REQUEST_SERVICE_NAME,
-  applyPrewarmedSessionCookies,
+  applySessionCookies,
   summaryRow,
   setupSpecificAccessRequestMockRoutes,
   SPECIFIC_ACCESS_PATH,
@@ -13,7 +13,7 @@ const userIdentifier = 'STAFF_ADMIN';
 const specificAccessReason = 'Urgent linked case review required.';
 
 test.beforeEach(async ({ page }) => {
-  await applyPrewarmedSessionCookies(page, userIdentifier);
+  await applySessionCookies(page, userIdentifier);
 });
 
 test.describe(`Specific Access Request as ${userIdentifier}`, { tag: ['@integration', '@integration-access-requests'] }, () => {

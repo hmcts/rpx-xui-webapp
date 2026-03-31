@@ -6,20 +6,16 @@ import {
   TASK_LIST_ROUTE_REGEX,
   TASK_UNAVAILABLE_WARNING,
 } from '../../../testData';
-import { applySessionCookies } from '../../../../common/sessionCapture';
 import { buildTaskListMock, myActionsList } from '../../../mocks/taskList.mock';
-import { extractUserIdFromCookies } from '../../../utils/extractUserIdFromCookies';
+import { applySessionCookiesAndExtractUserId } from '../../../helpers';
 import { setupTaskActionEndpointMocks, singleUsersGetByRoleMockResponse } from '../../../helpers/taskActionApiMocks.helper';
 
 const userIdentifier = 'STAFF_ADMIN';
-let sessionCookies: any[] = [];
 let taskListMockResponse: ReturnType<typeof buildTaskListMock>;
 
 test.beforeEach(async ({ page }) => {
-  const { cookies } = await applySessionCookies(page, userIdentifier);
-  sessionCookies = cookies;
-  const userId = extractUserIdFromCookies(sessionCookies);
-  taskListMockResponse = buildTaskListMock(160, userId?.toString() || '', myActionsList);
+  const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
+  taskListMockResponse = buildTaskListMock(160, userId, myActionsList);
 });
 
 test.describe(

@@ -9,7 +9,7 @@
 export * from './caseSearchMockRoutes.helper';
 export * from './caseFileViewMockRoutes.helper';
 export * from './caseLinkingMockRoutes.helper';
-export * from './prewarmedSession.helper';
+export { applySessionCookies } from '../../common/sessionCapture';
 export * from './searchCaseSession.helper';
 export * from './hearingsMockRoutes.helper';
 export * from './hearingJourneySetup.helper';
@@ -19,3 +19,4 @@ export * from './restrictedAccessMockRoutes.helper';
 export * from './accessRequestsMockRoutes.helper';
 export * from './summaryList.helper';
 export * from './challengedAccessRequest.helper';
+export * from './sessionUser.helper';

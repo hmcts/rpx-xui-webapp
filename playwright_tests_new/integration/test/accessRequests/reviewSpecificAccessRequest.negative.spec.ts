@@ -1,10 +1,10 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { applyPrewarmedSessionCookies, ACCESS_REQUEST_REVIEW_PATH, setupReviewSpecificAccessMockRoutes } from '../../helpers';
+import { applySessionCookies, ACCESS_REQUEST_REVIEW_PATH, setupReviewSpecificAccessMockRoutes } from '../../helpers';
 
 const userIdentifier = 'STAFF_ADMIN';
 
 test.beforeEach(async ({ page }) => {
-  await applyPrewarmedSessionCookies(page, userIdentifier);
+  await applySessionCookies(page, userIdentifier);
 });
 
 test.describe(

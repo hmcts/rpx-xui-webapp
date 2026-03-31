@@ -45,7 +45,11 @@ function buildFixedListFieldType(id: string, type: 'FixedList' | 'MultiSelectLis
   };
 }
 
-function buildWorkbasketInput(label: string, id: string, fieldType: ReturnType<typeof buildTextFieldType | typeof buildFixedListFieldType>) {
+function buildWorkbasketInput(
+  label: string,
+  id: string,
+  fieldType: ReturnType<typeof buildTextFieldType | typeof buildFixedListFieldType>
+) {
   return {
     label,
     order: 1,

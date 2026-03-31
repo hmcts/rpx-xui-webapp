@@ -174,7 +174,12 @@ test.describe(`Case List as ${userIdentifier}`, { tag: ['@integration', '@integr
 
     await expectCaseListSummary(caseListPage, mock.total, 1);
     await expectCaseListRows(caseListPage, tableUtils, mock);
-    await expectPaginationState(caseListPage, { currentPage: 1, previousVisible: false, paginationVisible: true, finalItem: 'Next' });
+    await expectPaginationState(caseListPage, {
+      currentPage: 1,
+      previousVisible: false,
+      paginationVisible: true,
+      finalItem: 'Next',
+    });
   });
 
   test(`User ${userIdentifier} sees empty case list message when searchCases returns empty response`, async ({
@@ -207,7 +212,11 @@ test.describe(`Case List as ${userIdentifier}`, { tag: ['@integration', '@integr
     await expectPaginationState(caseListPage, { currentPage: 1, previousVisible: false, paginationVisible: false });
   });
 
-  test(`User ${userIdentifier} can view more than 100 cases on the case list page`, async ({ caseListPage, tableUtils, page }) => {
+  test(`User ${userIdentifier} can view more than 100 cases on the case list page`, async ({
+    caseListPage,
+    tableUtils,
+    page,
+  }) => {
     const totalResults = 100;
     const pageOneMock = buildCaseListMockForPage(totalResults, 1, PAGE_SIZE);
     const pageTwoMock = buildCaseListMockForPage(totalResults, 2, PAGE_SIZE);
@@ -231,7 +240,12 @@ test.describe(`Case List as ${userIdentifier}`, { tag: ['@integration', '@integr
 
     await expectCaseListSummary(caseListPage, totalResults, 1);
     await expectCaseListRows(caseListPage, tableUtils, pageOneMock);
-    await expectPaginationState(caseListPage, { currentPage: 1, previousVisible: false, paginationVisible: true, finalItem: 'Next' });
+    await expectPaginationState(caseListPage, {
+      currentPage: 1,
+      previousVisible: false,
+      paginationVisible: true,
+      finalItem: 'Next',
+    });
 
     const pageTwoSearchRequestPromise = waitForSearchCasesRequest(page, { page: 2 });
     await caseListPage.clickPaginationPage(2);
@@ -260,7 +274,11 @@ test.describe(`Case List as ${userIdentifier}`, { tag: ['@integration', '@integr
     await expectCaseListRows(caseListPage, tableUtils, pageFourMock);
   });
 
-  test(`User ${userIdentifier} can view more than 10000 cases on the case list page`, async ({ caseListPage, tableUtils, page }) => {
+  test(`User ${userIdentifier} can view more than 10000 cases on the case list page`, async ({
+    caseListPage,
+    tableUtils,
+    page,
+  }) => {
     const totalResults = 10000;
     const pageOneMock = buildCaseListMockForPage(totalResults, 1, PAGE_SIZE);
     const pageFourHundredMock = buildCaseListMockForPage(totalResults, 400, PAGE_SIZE);
@@ -287,7 +305,12 @@ test.describe(`Case List as ${userIdentifier}`, { tag: ['@integration', '@integr
     );
     await expectCaseListSummary(caseListPage, totalResults, 1);
     await expectCaseListRows(caseListPage, tableUtils, pageOneMock);
-    await expectPaginationState(caseListPage, { currentPage: 1, previousVisible: false, paginationVisible: true, finalItem: 'Next' });
+    await expectPaginationState(caseListPage, {
+      currentPage: 1,
+      previousVisible: false,
+      paginationVisible: true,
+      finalItem: 'Next',
+    });
     const visiblePageNumbers = await caseListPage.getVisiblePaginationPageNumbers();
     const visibleIntermediatePageNumbers = visiblePageNumbers.slice(1, -1);
 
@@ -338,7 +361,12 @@ test.describe(`Case List as ${userIdentifier}`, { tag: ['@integration', '@integr
 
     await expectCaseListSummary(caseListPage, totalResults, 1);
     await expectCaseListRows(caseListPage, tableUtils, pageOneMock);
-    await expectPaginationState(caseListPage, { currentPage: 1, previousVisible: false, paginationVisible: true, finalItem: 'Next' });
+    await expectPaginationState(caseListPage, {
+      currentPage: 1,
+      previousVisible: false,
+      paginationVisible: true,
+      finalItem: 'Next',
+    });
 
     const pageTwoSearchRequestPromise = waitForSearchCasesRequest(page, { page: 2 });
     await caseListPage.clickPaginationPage(2);
@@ -432,7 +460,12 @@ test.describe(`Case List as ${userIdentifier}`, { tag: ['@integration', '@integr
 
         await expectCaseListSummary(caseListPage, stateMock.total, 1);
         await expectCaseListRows(caseListPage, tableUtils, stateMock);
-        await expectPaginationState(caseListPage, { currentPage: 1, previousVisible: false, paginationVisible: true, finalItem: 'Next' });
+        await expectPaginationState(caseListPage, {
+          currentPage: 1,
+          previousVisible: false,
+          paginationVisible: true,
+          finalItem: 'Next',
+        });
         await expect(caseListPage.caseResultsTable).toContainText(expectedUniqueReference);
       });
     }

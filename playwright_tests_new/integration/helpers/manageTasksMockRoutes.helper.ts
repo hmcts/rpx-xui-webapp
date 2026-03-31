@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test';
+import type { Page, Route } from '@playwright/test';
 import { setupTaskListBootstrapRoutes, taskListRoutePattern } from './taskListMockRoutes.helper';
 
 export const myCasesRoutePattern = /\/workallocation\/my-work\/cases(?:\?.*)?$/;
@@ -8,12 +8,18 @@ const defaultTaskListResponse = { tasks: [], total_records: 0 };
 
 type BaseManageTaskRouteOptions = {
   taskListResponse?: unknown;
+  taskListHandler?: (route: Route) => Promise<void>;
 };
 
 export async function setupManageTasksBaseRoutes(page: Page, options: BaseManageTaskRouteOptions = {}): Promise<void> {
   await setupTaskListBootstrapRoutes(page);
 
   await page.route(taskListRoutePattern, async (route) => {
+    if (options.taskListHandler) {
+      await options.taskListHandler(route);
+      return;
+    }
+
     await route.fulfill({
       status: 200,
       contentType: 'application/json',

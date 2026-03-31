@@ -841,4 +841,20 @@ export class TaskListPage extends Base {
       `No submit request was observed while ${context}. url=${this.page.url()} submit=${JSON.stringify(submitDiagnostics)}`
     );
   }
+
+  async clickTaskTabAndWaitForRequest(
+    tabText: string,
+    requestMatcher: (request: Request) => boolean,
+    context: string,
+    options: {
+      timeoutMs?: number;
+    } = {}
+  ): Promise<Request> {
+    return this.clickButtonAndWaitForRequest(
+      this.taskTableTabs.filter({ hasText: tabText }).first(),
+      requestMatcher,
+      context,
+      options
+    );
+  }
 }

@@ -3,7 +3,7 @@ import { buildTaskListMock, buildDeterministicMyTasksListMock, myActionsList } f
 import { formatUiDate } from '../../../utils/tableUtils';
 import {
   applySessionCookiesAndExtractUserId,
-  setupTaskListBootstrapRoutes,
+  setupManageTasksBaseRoutes,
   taskListRoutePattern,
   setupTaskListMockRoutes,
 } from '../../../helpers';
@@ -139,11 +139,7 @@ test.describe(`Task List as ${userIdentifier}`, { tag: ['@integration', '@integr
     const caseNameSortHeaderCell = taskListPage.sortByCaseNameTableHeader.locator('xpath=ancestor::th[1]');
 
     await test.step('Setup route mocks', async () => {
-      await setupTaskListBootstrapRoutes(page);
-      await page.route(taskListRoutePattern, async (route) => {
-        const body = JSON.stringify(myTasksMockResponse);
-        await route.fulfill({ status: 200, contentType: 'application/json', body });
-      });
+      await setupManageTasksBaseRoutes(page, { taskListResponse: myTasksMockResponse });
     });
 
     await test.step('Open My tasks and sort by Case name', async () => {
@@ -160,26 +156,26 @@ test.describe(`Task List as ${userIdentifier}`, { tag: ['@integration', '@integr
       await taskListPage.taskTableTabs.filter({ hasText: 'Available tasks' }).first().click();
       await taskListPage.exuiSpinnerComponent.wait();
 
-      const myTasksRequestPromise = page.waitForRequest((request) => {
-        if (!taskListRoutePattern.exec(request.url()) || request.method() !== 'POST') {
-          return false;
-        }
+      const myTasksRequest = await taskListPage.clickTaskTabAndWaitForRequest(
+        'My tasks',
+        (request) => {
+          if (!taskListRoutePattern.exec(request.url()) || request.method() !== 'POST') {
+            return false;
+          }
 
-        try {
-          const requestBody = request.postDataJSON() as {
-            view?: string;
-            searchRequest?: { request_context?: string };
-          };
-          return requestBody.view === 'MyTasks' || requestBody.searchRequest?.request_context === 'MY_TASKS';
-        } catch {
-          return false;
-        }
-      });
-
-      await taskListPage.taskTableTabs.filter({ hasText: 'My tasks' }).first().click();
+          try {
+            const requestBody = request.postDataJSON() as {
+              view?: string;
+              searchRequest?: { request_context?: string };
+            };
+            return requestBody.view === 'MyTasks' || requestBody.searchRequest?.request_context === 'MY_TASKS';
+          } catch {
+            return false;
+          }
+        },
+        'returning to My tasks after switching away'
+      );
       await taskListPage.exuiSpinnerComponent.wait();
-
-      const myTasksRequest = await myTasksRequestPromise;
       const myTasksRequestBody = myTasksRequest.postDataJSON() as {
         searchRequest?: { sorting_parameters?: Array<{ sort_by?: string; sort_order?: string }> };
       };

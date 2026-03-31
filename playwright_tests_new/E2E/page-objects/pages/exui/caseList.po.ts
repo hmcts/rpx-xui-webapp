@@ -1,13 +1,6 @@
-import { Locator, Page, Request } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import { Base } from '../../base';
 import { EXUI_TIMEOUTS } from './exui-timeouts';
-
-interface SearchCasesRequestParams {
-  ctid: string;
-  useCase: string;
-  view: string;
-  page: string;
-}
 
 export class CaseListPage extends Base {
   readonly errorPageHeading = this.page.getByRole('heading', { name: /something went wrong/i });
@@ -22,9 +15,7 @@ export class CaseListPage extends Base {
   readonly caseTypeSelect = this.page.locator('#wb-case-type');
   readonly stateSelect = this.page.locator('#wb-case-state');
   readonly textField0Input = this.page.locator('#TextField0');
-  readonly textField0FallbackInput = this.page
-    .locator('input[id*="TextField0"], input[name*="TextField0"], input[formcontrolname*="TextField0"]')
-    .first();
+  readonly textField0FallbackInput = this.page.locator('input[id*="TextField0"], input[name*="TextField0"], input[formcontrolname*="TextField0"]') .first();
   readonly quickSearchContainer = this.page.locator('.hmcts-primary-navigation__global-search');
   readonly quickSearchCaseReferenceInput = this.page.locator('#exuiCaseReferenceSearch');
   readonly quickSearchFindButton = this.quickSearchContainer.getByRole('button', { name: 'Find', exact: true });
@@ -222,11 +213,6 @@ export class CaseListPage extends Base {
     return Array.from(visiblePageNumbers).sort((first, second) => first - second);
   }
 
-  private isSearchCasesRequestWithPage(request: Request, pageNumber: number): boolean {
-    const requestUrl = new URL(request.url());
-    return requestUrl.pathname === '/data/internal/searchCases' && requestUrl.searchParams.get('page') === pageNumber.toString();
-  }
-
   private async getVisiblePaginationPageControl(pageNumber: number): Promise<Locator> {
     const pageText = pageNumber.toString();
     const candidateControls = this.page.locator('.ngx-pagination a, .ngx-pagination button').filter({
@@ -248,27 +234,6 @@ export class CaseListPage extends Base {
   async clickPaginationPage(pageNumber: number): Promise<void> {
     const pageControl = await this.getVisiblePaginationPageControl(pageNumber);
     await pageControl.click({ timeout: 10_000 });
-  }
-
-  async clickPaginationPageAndWaitForSearchRequest(pageNumber: number): Promise<SearchCasesRequestParams> {
-    const searchRequestPromise = this.page.waitForRequest((request) => this.isSearchCasesRequestWithPage(request, pageNumber));
-    await this.clickPaginationPage(pageNumber);
-
-    const searchRequest = await searchRequestPromise;
-    const searchRequestUrl = new URL(searchRequest.url());
-
-    return {
-      ctid: searchRequestUrl.searchParams.get('ctid') ?? '',
-      useCase: searchRequestUrl.searchParams.get('use_case') ?? '',
-      view: searchRequestUrl.searchParams.get('view') ?? '',
-      page: searchRequestUrl.searchParams.get('page') ?? '',
-    };
-  }
-
-  getExpectedResultsSummary(totalResults: number, pageNumber: number, pageSize: number = 25): string {
-    const startResult = (pageNumber - 1) * pageSize + 1;
-    const endResult = Math.min(totalResults, pageNumber * pageSize);
-    return `Showing ${startResult} to ${endResult} of ${totalResults} results`;
   }
 
   async openCaseByReference(cleanedCaseNumber: string) {

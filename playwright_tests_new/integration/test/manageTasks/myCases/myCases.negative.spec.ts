@@ -1,10 +1,5 @@
 import { expect, test } from '../../../../E2E/fixtures';
-import {
-  applySessionCookies,
-  myCasesRoutePattern,
-  setupManageTasksBaseRoutes,
-  setupMyCasesRoutes,
-} from '../../../helpers';
+import { applySessionCookies, myCasesRoutePattern, setupManageTasksBaseRoutes, setupMyCasesRoutes } from '../../../helpers';
 
 const userIdentifier = 'STAFF_ADMIN';
 const serviceDownStatuses = [400, 500];

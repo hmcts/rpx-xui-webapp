@@ -42,7 +42,9 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
       )
     ).toBe('caseFileView');
     expect(
-      deriveFeatureName('/opt/jenkins/workspace/PR/playwright_tests_new/integration/test/hearings/hearingDetails.cr84.positive.spec.ts')
+      deriveFeatureName(
+        '/opt/jenkins/workspace/PR/playwright_tests_new/integration/test/hearings/hearingDetails.cr84.positive.spec.ts'
+      )
     ).toBe('hearings');
   });
 

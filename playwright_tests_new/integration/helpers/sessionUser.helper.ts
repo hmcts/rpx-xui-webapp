@@ -2,10 +2,7 @@ import type { Page } from '@playwright/test';
 import { applySessionCookies } from '../../common/sessionCapture';
 import { extractUserIdFromCookies } from '../utils/extractUserIdFromCookies';
 
-type SessionCookieApplier = (
-  page: Page,
-  userIdentifier: string
-) => Promise<{ cookies: Array<{ name: string; value: string }> }>;
+type SessionCookieApplier = (page: Page, userIdentifier: string) => Promise<{ cookies: Array<{ name: string; value: string }> }>;
 
 type SessionUserOptions = {
   fallbackUserId?: string;

@@ -545,7 +545,9 @@ export class TaskListPage extends Base {
       if (rowCount > rowIndex) {
         const targetRow = this.getTaskRow(rowIndex);
         const rowVisible = await targetRow.isVisible().catch(() => false);
-        const manageVisible = await this.getManageButtonForRow(rowIndex).isVisible().catch(() => false);
+        const manageVisible = await this.getManageButtonForRow(rowIndex)
+          .isVisible()
+          .catch(() => false);
 
         if (rowVisible && manageVisible) {
           return;

@@ -42,7 +42,9 @@ test.describe('odhin adaptive reporter', { tag: '@svc-internal' }, () => {
     expect(odhinAdaptiveTest.normalizeFinalStatus('passed', 1)).toBe('flaky');
     expect(odhinAdaptiveTest.isFinalResult('failed', 0, 1)).toBe(false);
     expect(odhinAdaptiveTest.isFinalResult('failed', 1, 1)).toBe(true);
-    expect(deriveFeatureName('/tmp/playwright_tests_new/integration/test/caseLinking/caseLinking.positive.spec.ts')).toBe('caseLinking');
+    expect(deriveFeatureName('/tmp/playwright_tests_new/integration/test/caseLinking/caseLinking.positive.spec.ts')).toBe(
+      'caseLinking'
+    );
     expect(createEmptyFeatureStat('caseFileView')).toMatchObject({ name: 'caseFileView', totalTests: 0 });
   });
 

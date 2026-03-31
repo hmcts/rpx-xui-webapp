@@ -285,7 +285,12 @@ function rebalanceTopDashboardColumns(root) {
   }
 
   const parent = runInfoColumn.parentNode;
-  if (!parent || parent !== globalSummaryColumn.parentNode || parent !== featureOverviewColumn.parentNode || parent !== projectsSummaryColumn.parentNode) {
+  if (
+    !parent ||
+    parent !== globalSummaryColumn.parentNode ||
+    parent !== featureOverviewColumn.parentNode ||
+    parent !== projectsSummaryColumn.parentNode
+  ) {
     return;
   }
 
@@ -406,9 +411,9 @@ function replaceDashboardBlock(root, title, replacementHtml) {
 }
 
 function removeDuplicateFeatureStatusBlock(root) {
-  const featureStatusBlocks = root.querySelectorAll('.dashboard-block').filter(
-    (candidate) => candidate.querySelector('.info-box-header')?.text.trim() === 'Status by feature'
-  );
+  const featureStatusBlocks = root
+    .querySelectorAll('.dashboard-block')
+    .filter((candidate) => candidate.querySelector('.info-box-header')?.text.trim() === 'Status by feature');
 
   featureStatusBlocks.forEach((candidate) => candidate.remove());
 }
@@ -461,9 +466,7 @@ function enhanceGeneratedReport(outputFolder, featureStats) {
     return;
   }
 
-  const reportFiles = fs
-    .readdirSync(outputFolder)
-    .filter((fileName) => fileName.toLowerCase().endsWith('.html'));
+  const reportFiles = fs.readdirSync(outputFolder).filter((fileName) => fileName.toLowerCase().endsWith('.html'));
 
   reportFiles.forEach((fileName) => {
     const filePath = path.join(outputFolder, fileName);

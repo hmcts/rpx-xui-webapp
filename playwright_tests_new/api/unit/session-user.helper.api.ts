@@ -18,9 +18,9 @@ test.describe('session user helper', { tag: '@svc-internal' }, () => {
       cookies: [{ name: 'Idam.Session', value: 'session-cookie' }],
     });
 
-    await expect(
-      resolveSessionUserId({} as never, 'STAFF_ADMIN', fakeApplier, { fallbackUserId: 'test-user-id' })
-    ).resolves.toBe('test-user-id');
+    await expect(resolveSessionUserId({} as never, 'STAFF_ADMIN', fakeApplier, { fallbackUserId: 'test-user-id' })).resolves.toBe(
+      'test-user-id'
+    );
   });
 
   test('fails fast when the session does not expose __userid__ and no fallback is provided', async () => {

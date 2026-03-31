@@ -1,10 +1,5 @@
 import { expect, test } from '../../../../E2E/fixtures';
-import {
-  applySessionCookies,
-  myAccessRoutePattern,
-  setupManageTasksBaseRoutes,
-  setupMyAccessRoutes,
-} from '../../../helpers';
+import { applySessionCookies, myAccessRoutePattern, setupManageTasksBaseRoutes, setupMyAccessRoutes } from '../../../helpers';
 
 const userIdentifier = 'STAFF_ADMIN';
 const serviceDownStatuses = [400, 500];

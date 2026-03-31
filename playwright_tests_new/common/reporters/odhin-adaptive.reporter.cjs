@@ -2,11 +2,7 @@
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const odhinModule = require('odhin-reports-playwright');
-const {
-  createEmptyFeatureStat,
-  deriveFeatureName,
-  enhanceGeneratedReport,
-} = require('./odhin-report-enhancer.cjs');
+const { createEmptyFeatureStat, deriveFeatureName, enhanceGeneratedReport } = require('./odhin-report-enhancer.cjs');
 
 const OdhinReporter = odhinModule.default ?? odhinModule;
 const terminalStatusesNoRetry = ['passed', 'flaky', 'skipped', 'interrupted'];

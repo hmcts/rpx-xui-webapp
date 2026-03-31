@@ -696,7 +696,13 @@ export class CreateCasePage extends Base {
     await this.addressSelect.selectOption(addressOption);
   }
 
-  async uploadFile(fileName: string, mimeType: string, fileContent: string, fileInput?: Locator, fileContentEncoding?: BufferEncoding) {
+  async uploadFile(
+    fileName: string,
+    mimeType: string,
+    fileContent: string,
+    fileInput?: Locator,
+    fileContentEncoding?: BufferEncoding
+  ) {
     const maxRetries = 3;
     const baseDelayMs = 3000; // initial backoff
     const resolvedFileInput = fileInput ?? this.page.locator('input[type="file"]').first();

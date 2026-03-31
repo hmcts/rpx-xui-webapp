@@ -71,7 +71,10 @@ export class CaseDetailsPage extends Base {
 
   readonly caseNotificationBannerBody = this.page.locator('.govuk-notification-banner__heading');
   readonly documentUrlLink = this.page.locator('#case-viewer-field-read--DocumentUrl a').first();
-  readonly documentOneRow = this.page.getByRole('table', { name: 'case viewer table' }).getByRole('row', { name: /^Document 1\b/i }).first();
+  readonly documentOneRow = this.page
+    .getByRole('table', { name: 'case viewer table' })
+    .getByRole('row', { name: /^Document 1\b/i })
+    .first();
   readonly documentOneAction = this.documentOneRow.locator('a,button').first();
 
   readonly eventCreationErrorHeading = this.page.getByRole('heading', { name: 'The event could not be created' });

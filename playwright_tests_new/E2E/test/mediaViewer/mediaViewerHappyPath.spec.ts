@@ -11,7 +11,8 @@ const CASE_TYPE = 'xuiTestCaseType';
 const MEDIA_VIEWER_ROUTE_PATTERN = /\/media-viewer(?:\?|$)/;
 const UPDATE_CASE_ACTION = 'Update case';
 const MEDIA_VIEWER_FIXTURE_PATH = path.resolve(
-  process.cwd(),'playwright_tests_new/integration/testData/documents/case-file-view-document-delivery.pdf'
+  process.cwd(),
+  'playwright_tests_new/integration/testData/documents/case-file-view-document-delivery.pdf'
 );
 const MEDIA_VIEWER_FIXTURE_CONTENT = readFileSync(MEDIA_VIEWER_FIXTURE_PATH, 'latin1');
 
@@ -27,11 +28,7 @@ test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] },
     await ensureSession('SOLICITOR');
   });
 
-  test('opens auploaded document in the Media Viewer end-to-end', async ({
-    page,
-    createCasePage,
-    caseDetailsPage,
-  }, testInfo) => {
+  test('opens auploaded document in the Media Viewer end-to-end', async ({ page, createCasePage, caseDetailsPage }, testInfo) => {
     faker.seed(testInfo.retry + 1);
     const uniqueSuffix = `${Date.now()}-w${testInfo.workerIndex}-r${testInfo.retry}`;
     const documentFileName = `media-viewer-${uniqueSuffix}.pdf`;

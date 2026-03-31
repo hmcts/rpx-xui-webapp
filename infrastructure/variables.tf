@@ -43,7 +43,7 @@ variable "redis_capacity" {
 }
 
 variable "welsh_reporting_enabled" {
-  default     = true
+  default     = false
   description = "Enable Welsh language usage reporting"
   type        = bool
 }
@@ -51,18 +51,6 @@ variable "welsh_reporting_enabled" {
 variable "welsh_email_address_key" {
   default     = "welsh-report-email"
   description = "Email address key in azure Key Vault for Welsh reporting."
-  type        = string
-}
-
-variable "org_approvals_reporting_enabled" {
-  default     = false
-  description = "Enable Organisation Approvals usage reporting"
-  type        = bool
-}
-
-variable "org_approvals_email_address_key" {
-  default     = "org-approvals-report-email"
-  description = "Email address key in Azure Key Vault for Organisation Approvals reporting."
   type        = string
 }
 

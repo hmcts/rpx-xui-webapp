@@ -1,5 +1,5 @@
 resource "azurerm_automation_account" "welsh_reporting" {
-  count               = var.welsh_reporting_enabled ? 1 : 0
+  count               = local.reporting_enabled ? 1 : 0
   name                = "${local.app_full_name}-automation-${var.env}"
   location            = var.location
   resource_group_name = azurerm_resource_group.rg.name
@@ -8,6 +8,288 @@ resource "azurerm_automation_account" "welsh_reporting" {
   identity {
     type = "SystemAssigned"
   }
+
+  tags = var.common_tags
+}
+
+resource "azurerm_automation_runbook" "exui_weekly_stats_runbook" {
+  count                   = var.exui_weekly_stats_enabled ? 1 : 0
+  name                    = "Generate-ExUI-Weekly-Stats"
+  location                = var.location
+  resource_group_name     = azurerm_resource_group.rg.name
+  automation_account_name = azurerm_automation_account.welsh_reporting.0.name
+  log_verbose             = true
+  log_progress            = true
+  description             = "Generates weekly ExUI stats from Application Insights and emails the latest 60-day trend"
+  runbook_type            = "PowerShell"
+
+  content = <<EOT
+param(
+    [string]$appinsightsappid,
+    [string]$resourcegroupname,
+    [string]$acsresourcename,
+    [string]$senderaddress,
+    [string]$recipientaddress
+)
+
+try {
+    Connect-AzAccount -Identity
+}
+catch {
+    Write-Error "Failed to login with Managed Identity. Ensure System Assigned Identity is enabled and has permissions."
+    throw $_
+}
+
+Import-Module Az.Communication -ErrorAction SilentlyContinue
+
+$query = @"
+customEvents
+| project timestamp, name, operation_Name, itemType
+| where timestamp >= ago(60d)
+| where name == 'Approved Organisation successfully'
+| summarize Approvals = count() by Day = bin(timestamp, 1d)
+| order by Day asc
+| project Day, Date = format_datetime(Day, 'dd/MM/yyyy'), Approvals
+"@
+
+try {
+    Write-Output "Querying Application Insights for ExUI weekly stats..."
+    $token = (Get-AzAccessToken -ResourceUrl "https://api.applicationinsights.io").Token
+    $headers = @{
+        "Authorization" = "Bearer $token"
+        "Content-Type" = "application/json"
+    }
+
+    $apiUrl = "https://api.applicationinsights.io/v1/apps/$appinsightsappid/query"
+    $body = @{ query = $query } | ConvertTo-Json
+
+    Write-Output "App ID: $appinsightsappid"
+    $response = Invoke-RestMethod -Uri $apiUrl -Method Post -Headers $headers -Body $body
+
+    $result = @{
+        Results = $response.tables[0].rows | ForEach-Object {
+            $row = $_
+            $obj = New-Object PSObject
+            for ($i = 0; $i -lt $response.tables[0].columns.Count; $i++) {
+                $obj | Add-Member -MemberType NoteProperty -Name $response.tables[0].columns[$i].name -Value $row[$i]
+            }
+            $obj
+        }
+    }
+
+    Write-Output "Query executed successfully. Found $($result.Results.Count) rows."
+}
+catch {
+    Write-Error "Failed to execute query: $($_.Exception.Message)"
+    Write-Output "App Insights App ID: $appinsightsappid"
+    Write-Output "Note: Ensure the Automation Account Managed Identity has 'Reader' role on Application Insights."
+    throw $_
+}
+
+$dataRows = @()
+if ($null -ne $result -and $null -ne $result.Results) {
+    $dataRows = @($result.Results | ForEach-Object { $_ })
+}
+
+Write-Output "Found $($dataRows.Count) days with ExUI approvals."
+
+$totalApprovals = 0
+$latest7DayTotal = 0
+$maxApprovals = 0
+$weekWindowStart = [DateTime]::UtcNow.Date.AddDays(-7)
+
+if (-not $dataRows -or $dataRows.Count -eq 0) {
+    $htmlSummary = "<p><strong>No matching ExUI approval events were recorded in the last 60 days.</strong></p>"
+    $htmlTable = ""
+    $htmlChart = ""
+}
+else {
+    $htmlSummary = ""
+    $htmlTable = "<table>"
+    $htmlTable += "<thead><tr><th>Date</th><th>Approved Organisations</th></tr></thead>"
+    $htmlTable += "<tbody>"
+
+    foreach ($row in $dataRows) {
+        if ($null -eq $row) {
+            continue
+        }
+
+        $dateValue = if ($null -ne $row.Date) { $row.Date } else { "N/A" }
+        $approvalValue = if ($null -ne $row.Approvals) { [int]$row.Approvals } else { 0 }
+        $dayValue = if ($null -ne $row.Day) { [DateTime]$row.Day } else { $null }
+
+        $htmlTable += "<tr><td>$dateValue</td><td>$approvalValue</td></tr>"
+        $totalApprovals += $approvalValue
+        if ($approvalValue -gt $maxApprovals) { $maxApprovals = $approvalValue }
+        if ($null -ne $dayValue -and $dayValue -ge $weekWindowStart) {
+            $latest7DayTotal += $approvalValue
+        }
+    }
+
+    $htmlTable += "</tbody>"
+    $htmlTable += "<tfoot><tr><th>Total</th><th>$totalApprovals</th></tr></tfoot>"
+    $htmlTable += "</table>"
+
+    $averageApprovals = [Math]::Round(($totalApprovals / $dataRows.Count), 2)
+    $htmlSummary = @"
+<div class='summary-grid'>
+  <div class='summary-card'><span class='summary-label'>Last 60 days total</span><strong>$totalApprovals</strong></div>
+  <div class='summary-card'><span class='summary-label'>Last 7 days total</span><strong>$latest7DayTotal</strong></div>
+  <div class='summary-card'><span class='summary-label'>Average per active day</span><strong>$averageApprovals</strong></div>
+</div>
+"@
+
+    $htmlChart = "<div class='chart-container'>"
+    $htmlChart += "<h3>Daily Approved Organisation events</h3>"
+    $htmlChart += "<div class='chart-wrapper'>"
+    $chartMaxHeight = 250
+    foreach ($row in $dataRows) {
+        if ($null -eq $row) {
+            continue
+        }
+
+        $dateValue = if ($null -ne $row.Date) { $row.Date } else { "N/A" }
+        $approvalValue = if ($null -ne $row.Approvals) { [int]$row.Approvals } else { 0 }
+        $barHeight = if ($maxApprovals -gt 0) { [Math]::Round(($approvalValue / $maxApprovals) * $chartMaxHeight) } else { 0 }
+        if ($barHeight -lt 5) { $barHeight = 5 }
+
+        $htmlChart += "<div class='bar-column'>"
+        $htmlChart += "<div class='bar-value-top'>$approvalValue</div>"
+        $htmlChart += "<div class='bar-wrapper'>"
+        $htmlChart += "<div class='bar-vertical' style='height: " + $barHeight + "px !important;'></div>"
+        $htmlChart += "</div>"
+        $htmlChart += "<div class='bar-label-bottom'>$dateValue</div>"
+        $htmlChart += "</div>"
+    }
+    $htmlChart += "</div>"
+    $htmlChart += "</div>"
+
+    Write-Output "Report contains $($dataRows.Count) days with $totalApprovals total approvals."
+}
+
+$csvPath = Join-Path ([System.IO.Path]::GetTempPath()) "ExUIWeeklyStats_$(Get-Date -Format 'yyyyMMdd').csv"
+$csvBase64 = $null
+try {
+    Write-Output "Generating CSV attachment..."
+    if (-not $dataRows -or $dataRows.Count -eq 0) {
+        [System.IO.File]::WriteAllText($csvPath, "Date,Approvals`n")
+    }
+    else {
+        $csvRows = foreach ($row in $dataRows) {
+            [PSCustomObject]@{
+                Date      = $row.Date
+                Approvals = if ($null -ne $row.Approvals) { [int]$row.Approvals } else { 0 }
+            }
+        }
+        $csvRows | Export-Csv -Path $csvPath -NoTypeInformation
+    }
+
+    if (Test-Path $csvPath) {
+        $csvBase64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes($csvPath))
+        Write-Output "CSV generated successfully ($([Math]::Round((Get-Item $csvPath).Length / 1KB, 1)) KB)."
+    }
+}
+catch {
+    Write-Warning "Failed to generate CSV attachment: $_. Email will be sent without CSV."
+}
+
+$reportDate = [DateTime]::UtcNow.ToString("dd MMM yyyy")
+$emailBody = @"
+<html>
+<head>
+<style>
+body { font-family: Arial, sans-serif; color: #0b0c0c; }
+table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+th { background-color: #0b0c0c; color: white; font-weight: bold; }
+tfoot th { background-color: #005ea5; }
+tr:nth-child(even) { background-color: #f2f2f2; }
+
+.summary-grid { display: flex; gap: 16px; flex-wrap: wrap; margin: 20px 0; }
+.summary-card { background: #f8f8f8; border-left: 4px solid #005ea5; padding: 16px; min-width: 180px; }
+.summary-card strong { display: block; font-size: 24px; margin-top: 8px; }
+.summary-label { color: #505a5f; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+.chart-container { margin: 30px 0; }
+.chart-wrapper { display: flex; align-items: flex-end; justify-content: flex-start; gap: 20px; padding: 20px; background-color: #fafafa; border-radius: 8px; overflow-x: auto; }
+.bar-column { display: flex; flex-direction: column; align-items: center; min-width: 70px; }
+.bar-value-top { font-size: 12px; font-weight: bold; color: #0b0c0c; margin-bottom: 5px; min-height: 20px; text-align: center; }
+.bar-wrapper { display: flex; align-items: flex-end; justify-content: center; height: 250px; border-bottom: 2px solid #505a5f; width: 50px; }
+.bar-vertical { width: 40px; background-color: #005ea5; border-radius: 4px 4px 0 0; }
+.bar-label-bottom { font-size: 10px; color: #505a5f; margin-top: 8px; white-space: nowrap; }
+</style>
+</head>
+<body>
+<h2>ExUI Weekly Stats Report</h2>
+<p>Environment: <strong>${var.product} ${var.env}</strong></p>
+<p>Reporting Date: <strong>$reportDate</strong></p>
+<p>This report shows the last 60 days of <strong>Approved Organisation successfully</strong> Application Insights custom events for ExUI.</p>
+$htmlSummary
+$htmlTable
+$htmlChart
+<hr/>
+<p><small><em>Generated on: $(Get-Date -Format 'dd MMM yyyy HH:mm:ss') UTC</em></small></p>
+</body>
+</html>
+"@
+
+try {
+    $token = (Get-AzAccessToken -ResourceUrl "https://communication.azure.com").Token
+    Write-Output "Successfully retrieved access token."
+}
+catch {
+    Write-Error "Failed to retrieve access token: $_"
+    throw $_
+}
+
+try {
+    $endpoint = "https://$acsresourcename.communication.azure.com"
+    $apiVersion = "2023-03-31"
+    $emailUrl = "$endpoint/emails:send?api-version=$apiVersion"
+
+    $recipientAddrList = @($recipientaddress -split "," | ForEach-Object {
+        @{ address = $_.Trim() }
+    })
+
+    $emailPayload = @{
+        senderAddress = $senderaddress
+        recipients    = @{
+            to = $recipientAddrList
+        }
+        content       = @{
+            subject = "ExUI Weekly Stats Report - ${var.env} - $reportDate"
+            html    = $emailBody
+        }
+    }
+    if ($csvBase64) {
+        $emailPayload.attachments = @(
+            @{
+                name            = "ExUIWeeklyStats_$([DateTime]::UtcNow.ToString('yyyyMMdd')).csv"
+                contentType     = "text/csv"
+                contentInBase64 = $csvBase64
+            }
+        )
+    }
+
+    $payload = $emailPayload | ConvertTo-Json -Depth 10
+    $headers = @{
+        "Content-Type"  = "application/json"
+        "Authorization" = "Bearer $token"
+    }
+
+    Write-Output "Sending email to: $recipientaddress"
+    Write-Output "From: $senderaddress"
+
+    $response = Invoke-RestMethod -Uri $emailUrl -Method Post -Headers $headers -Body $payload
+    Write-Output "Email sent successfully. Message ID: $($response.id)"
+}
+catch {
+    Write-Error "Failed to send email via Azure Communication Services: $_"
+    Write-Error "Status Code: $($_.Exception.Response.StatusCode.value__)"
+    Write-Error "Response: $($_.Exception.Response)"
+    throw $_
+}
+EOT
 
   tags = var.common_tags
 }
@@ -414,7 +696,7 @@ EOT
 }
 
 resource "azurerm_role_assignment" "automation_appinsights_reader" {
-  count                = var.welsh_reporting_enabled ? 1 : 0
+  count                = local.reporting_enabled ? 1 : 0
   scope                = module.application_insights.id
   role_definition_name = "Reader"
   principal_id         = azurerm_automation_account.welsh_reporting.0.identity[0].principal_id
@@ -455,8 +737,41 @@ resource "azurerm_automation_job_schedule" "welsh_report_job" {
   ]
 }
 
+resource "azurerm_automation_schedule" "exui_weekly_stats_schedule" {
+  count                   = var.exui_weekly_stats_enabled ? 1 : 0
+  name                    = "weekly-exui-stats-schedule"
+  resource_group_name     = azurerm_resource_group.rg.name
+  automation_account_name = azurerm_automation_account.welsh_reporting.0.name
+  frequency               = "Week"
+  interval                = 1
+  start_time              = "2026-04-06T09:30:00Z"
+  timezone                = "UTC"
+}
+
+resource "azurerm_automation_job_schedule" "exui_weekly_stats_job" {
+  count                   = var.exui_weekly_stats_enabled ? 1 : 0
+  resource_group_name     = azurerm_resource_group.rg.name
+  automation_account_name = azurerm_automation_account.welsh_reporting.0.name
+  schedule_name           = azurerm_automation_schedule.exui_weekly_stats_schedule.0.name
+  runbook_name            = azurerm_automation_runbook.exui_weekly_stats_runbook.0.name
+
+  parameters = {
+    appinsightsappid  = module.application_insights.app_id
+    resourcegroupname = azurerm_resource_group.rg.name
+    acsresourcename   = azurerm_communication_service.comm_service.0.name
+    senderaddress     = "DoNotReply@${azurerm_email_communication_service_domain.email_domain.0.from_sender_domain}"
+    recipientaddress  = join(",", local.exui_weekly_stats_emails)
+  }
+
+  depends_on = [
+    azurerm_automation_runbook.exui_weekly_stats_runbook,
+    azurerm_automation_schedule.exui_weekly_stats_schedule,
+    azurerm_automation_module.az_communication
+  ]
+}
+
 resource "azurerm_automation_module" "az_communication" {
-  count                   = var.welsh_reporting_enabled ? 1 : 0
+  count                   = local.reporting_enabled ? 1 : 0
   name                    = "Az.Communication"
   resource_group_name     = azurerm_resource_group.rg.name
   automation_account_name = azurerm_automation_account.welsh_reporting.0.name
@@ -467,7 +782,7 @@ resource "azurerm_automation_module" "az_communication" {
 }
 
 resource "azurerm_automation_module" "ps_write_pdf" {
-  count                   = var.welsh_reporting_enabled ? 1 : 0
+  count                   = local.reporting_enabled ? 1 : 0
   name                    = "PSWritePDF"
   resource_group_name     = azurerm_resource_group.rg.name
   automation_account_name = azurerm_automation_account.welsh_reporting.0.name

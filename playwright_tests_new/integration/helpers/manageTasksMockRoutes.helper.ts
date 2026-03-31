@@ -14,6 +14,22 @@ type BaseManageTaskRouteOptions = {
 export async function setupManageTasksBaseRoutes(page: Page, options: BaseManageTaskRouteOptions = {}): Promise<void> {
   await setupTaskListBootstrapRoutes(page);
 
+  await page.route('**/api/role-access/roles/getJudicialUsers*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: '[]',
+    });
+  });
+
+  await page.route('**/api/role-access/roles/get-my-access-new-count*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ count: 0 }),
+    });
+  });
+
   await page.route(taskListRoutePattern, async (route) => {
     if (options.taskListHandler) {
       await options.taskListHandler(route);

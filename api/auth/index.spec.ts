@@ -178,7 +178,7 @@ describe('Auth Module', () => {
       s2sSecret: 'test-s2s-secret',
       userName: 'system-user',
       password: 'system-password',
-      sessionSecret: 'session-secret',
+      mcSessionSecret: 'session-secret',
       redisCloudUrl: 'redis://test',
       redisKeyPrefix: 'xui:',
       redisTtl: 3600,
@@ -203,7 +203,7 @@ describe('Auth Module', () => {
       expect(sessionConfig.name).to.equal('xui-webapp');
       expect(sessionConfig.resave).to.be.false;
       expect(sessionConfig.saveUninitialized).to.be.false;
-      expect(sessionConfig.secret).to.equal(mockConfig.sessionSecret);
+      expect(sessionConfig.secret).to.equal(mockConfig.mcSessionSecret);
     };
 
     const assertCookieConfiguration = (cookieConfig: any) => {
@@ -250,7 +250,7 @@ describe('Auth Module', () => {
       getConfigValueStub.withArgs('secrets.rpx.mc-s2s-client-secret').returns(mockConfig.s2sSecret);
       getConfigValueStub.withArgs('secrets.rpx.system-user-name').returns(mockConfig.userName);
       getConfigValueStub.withArgs('secrets.rpx.system-user-password').returns(mockConfig.password);
-      getConfigValueStub.withArgs('sessionSecret').returns(mockConfig.sessionSecret);
+      getConfigValueStub.withArgs('secrets.rpx.mc-session-secret').returns(mockConfig.mcSessionSecret);
       getConfigValueStub.withArgs('secrets.rpx.webapp-redis-connection-string').returns(mockConfig.redisCloudUrl);
       getConfigValueStub.withArgs('redis.prefix').returns(mockConfig.redisKeyPrefix);
       getConfigValueStub.withArgs('redis.ttl').returns(mockConfig.redisTtl);

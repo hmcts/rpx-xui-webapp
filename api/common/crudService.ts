@@ -104,14 +104,10 @@ export async function handlePostBlob<T>(path: string, body: T, req: EnhancedRequ
  * @param next
  * @returns {Promise<AxiosResponse>}
  */
-export async function handlePut<T>(path: string, body: T, req: EnhancedRequest, next: NextFunction): Promise<AxiosResponse> {
-  try {
-    logger.info('handle put:', path);
-    const headers = setHeaders(req);
-    return await http.put(path, body, { headers });
-  } catch (e) {
-    next(e);
-  }
+export async function handlePut<T>(path: string, body: T, req: EnhancedRequest): Promise<AxiosResponse> {
+  logger.info('handle put:', path);
+  const headers = setHeaders(req);
+  return await http.put(path, body, { headers });
 }
 
 export async function sendPut<T>(path: string, body: T, req: EnhancedRequest): Promise<AxiosResponse> {

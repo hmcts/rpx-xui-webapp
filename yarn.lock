@@ -3839,12 +3839,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.44":
-  version: 7.3.44
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.44"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.44-exui-4297-mv":
+  version: 7.3.44-exui-4297-mv
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.44-exui-4297-mv"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/b13497c5d7198ae714e84e0a3b04adb5bac8c4023fd156fb8e70dfde1151ba27bd2ac8b7b83523d8d4ab65210ab38a274d681649ba5b0154f5906ce5b7182f53
+  checksum: 10/861e17b35ce4f5597939af36d6c40c839fbd1f2451207ffaa2f52d3c24c03e8d203ccdfd899ef915350c0a05d45e1575b16b90e042b5e1b5259a87e17a823705
   languageName: node
   linkType: hard
 
@@ -3867,9 +3867,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.15-exui-4297":
-  version: 4.2.15-exui-4297
-  resolution: "@hmcts/media-viewer@npm:4.2.15-exui-4297"
+"@hmcts/media-viewer@npm:4.2.15-exui-4297-1":
+  version: 4.2.15-exui-4297-1
+  resolution: "@hmcts/media-viewer@npm:4.2.15-exui-4297-1"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3888,7 +3888,7 @@ __metadata:
     "@ngrx/router-store": ^20
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
-  checksum: 10/0a444eedd00f75040321cf7c159941225b63770bec43fd682ad00ed90b2f8b4d640b29d18382f2d1af8efd173c8aa90b430814fc6128cff01bd40f7727368e88
+  checksum: 10/44cb7dab6b98c3c9467e52f174b15702e1924e6d1f2849553b41e0e34c4f8885ad685687edd23abb1c5df6468527d995cc3a220d3fe14935118960d0e52b4d39
   languageName: node
   linkType: hard
 
@@ -24294,10 +24294,10 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.44"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.44-exui-4297-mv"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.2.15-exui-4297"
+    "@hmcts/media-viewer": "npm:4.2.15-exui-4297-1"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.3.1"

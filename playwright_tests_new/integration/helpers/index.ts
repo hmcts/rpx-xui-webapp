@@ -20,3 +20,4 @@ export * from './accessRequestsMockRoutes.helper';
 export * from './summaryList.helper';
 export * from './challengedAccessRequest.helper';
 export * from './sessionUser.helper';
+export * from './welshLanguageSession.helper';

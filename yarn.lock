@@ -3614,12 +3614,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.44-cve-fix":
-  version: 7.3.44-cve-fix
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.44-cve-fix"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.45-cve-fix":
+  version: 7.3.45-cve-fix
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.45-cve-fix"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/224ec7e9f39c92d8d25d627a5889511a2113206dccef099a32ea2a6a836e8e173fc2cc9362dca3ba573b420cda7ffc65f0516de01d6c0e5f49b395f85310dc4a
+  checksum: 10/40722c24393217efc620b877311a20eb56e1825d717c1c429d8580ab86d3d85f2b53d1c7ece49260fec1413a5211f992d923a7629b02d9e2c2d2ba2bd4c46f50
+  languageName: node
+  linkType: hard
+
+"@hmcts/ccpay-web-component@npm:6.5.17":
+  version: 6.5.17
+  resolution: "@hmcts/ccpay-web-component@npm:6.5.17"
+  dependencies:
+    tslib: "npm:^2.3.0"
+  peerDependencies:
+    "@angular/common": ^20.3.1
+    "@angular/core": ~20.3.1
+  checksum: 10/7be62fd80d676934e2217985ab414f107aeaf8c6e44a9a128d41a856a4417b8ab0b5ba5be57af529a207ac2599c0e47fa52b204b461dc7002dd9d9585a5667df
   languageName: node
   linkType: hard
 
@@ -23751,7 +23763,8 @@ __metadata:
     "@edium/fsm": "npm:^2.1.5"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.44-cve-fix"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.45-cve-fix"
+    "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.16-cve-fix"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"

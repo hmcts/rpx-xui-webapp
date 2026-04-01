@@ -93,7 +93,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   }
 
   public get getCasesFormValue(): FormArray {
-    return this.linkHearingForm.get('linkedCasesWithHearings') as FormArray;
+    return this.linkHearingForm ? (this.linkHearingForm.get('linkedCasesWithHearings') as FormArray) : this.fb.array([]);
   }
 
   public isHearingsSelected(linkedCases: ServiceLinkedCasesWithHearingsModel[]) {
@@ -117,7 +117,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
         )
       );
     }
-    return null;
+    return this.fb.array([]);
   }
 
   public getHearingsFormArray(hearings: HearingDetailModel[]): FormArray {
@@ -172,7 +172,17 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   }
 
   public getHearingsFormValue(casePos: number, hearingPos?: number): FormArray {
-    const formArray: FormArray = this.getCasesFormValue.controls[casePos].get('caseHearings') as FormArray;
+    const casesFormArray = this.getCasesFormValue;
+    // Defensive check to ensure caseGrooup below exists
+    if (!casesFormArray?.controls?.length || casePos < 0 || casePos >= casesFormArray.controls.length) {
+      return this.fb.array([]);
+    }
+    const caseGroup = casesFormArray.controls[casePos] as FormGroup;
+    const formArray = caseGroup.get('caseHearings') as FormArray;
+    // Second defensive check to confirm formArray exists
+    if (!formArray) {
+      return this.fb.array([]);
+    }
     if (String(hearingPos && formArray.controls[hearingPos].get('hearingID').value) === this.hearingId) {
       this.updateLinkedCase(casePos, hearingPos);
     }

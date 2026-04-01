@@ -147,10 +147,7 @@ export async function getHearingActuals(req: EnhancedRequest, res: Response, nex
   const caseId = req.query.caseRef as string;
   const markupPath = `${hmcHearingsUrl}/hearingActuals/${hearingId}`;
   try {
-    const { status, data }: { status: number; data: HearingActualsMainModel } = await handleGet(
-      markupPath,
-      req
-    );
+    const { status, data }: { status: number; data: HearingActualsMainModel } = await handleGet(markupPath, req);
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, caseId, 'getHearingActuals', req, markupPath, next);

@@ -95,6 +95,9 @@ export class CaseDetailsPage extends Base {
   readonly resultsNotFoundHeading = this.page.locator('exui-no-results').getByRole('heading', { level: 1 });
   readonly backLink = this.page.locator('exui-no-results .govuk-width-container .govuk-back-link');
 
+  // Restricted Access
+  readonly restrictedAccessContainer = this.page.locator('exui-restricted-case-access-container');
+
   // GlobalSearch
   readonly tabsCount = this.page.locator('.mat-tab-label-container .mat-tab-list');
   readonly caseSummaryHeading = this.page.locator('#case-viewer-field-read--caseSummaryTabHeading');

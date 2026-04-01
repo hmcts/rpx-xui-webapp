@@ -213,22 +213,18 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
       });
     });
 
-    await test.step('Navigate to all-work tasks page', async () => {
+    const assertManageActionsForRow = async (rowIndex: number, expectedActionIds: string[]) => {
       await taskListPage.gotoAllWorkTasks();
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
-    });
-
-    const assertManageActionsForRow = async (rowIndex: number, expectedActionIds: string[]) => {
       await taskListPage.openManageActionsForRow(rowIndex, `all-work manage action matrix row ${rowIndex + 1}`);
 
       const taskActionsRow = taskListPage.getTaskActionsRow(rowIndex);
-      await expect(taskActionsRow).toBeVisible();
 
       for (const actionId of allActionIds) {
         const actionLocator = taskActionsRow.locator(`#action_${actionId}`);
         if (expectedActionIds.includes(actionId)) {
-          await expect(actionLocator).toBeVisible();
+          await taskListPage.waitForTaskActionForRow(rowIndex, actionId, `all-work manage action matrix row ${rowIndex + 1}`);
         } else {
           await expect(actionLocator).toHaveCount(0);
         }

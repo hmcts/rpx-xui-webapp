@@ -1,12 +1,7 @@
 import { expect, test } from '../../../../E2E/fixtures';
 import { buildTaskListMock, buildDeterministicMyTasksListMock, myActionsList } from '../../../mocks/taskList.mock';
 import { formatUiDate } from '../../../utils/tableUtils';
-import {
-  applySessionCookiesAndExtractUserId,
-  setupManageTasksBaseRoutes,
-  taskListRoutePattern,
-  setupTaskListMockRoutes,
-} from '../../../helpers';
+import { applySessionCookiesAndExtractUserId, setupManageTasksBaseRoutes, setupTaskListMockRoutes } from '../../../helpers';
 
 let userId: string | null;
 const userIdentifier = 'STAFF_ADMIN';
@@ -143,7 +138,7 @@ test.describe(`Task List as ${userIdentifier}`, { tag: ['@integration', '@integr
     });
 
     await test.step('Open My tasks and sort by Case name', async () => {
-      await taskListPage.goto();
+      await taskListPage.gotoAndWaitForTaskRow('sorting My tasks by case name');
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
 
@@ -153,26 +148,16 @@ test.describe(`Task List as ${userIdentifier}`, { tag: ['@integration', '@integr
     });
 
     await test.step('Navigate away and return to My tasks', async () => {
-      await taskListPage.taskTableTabs.filter({ hasText: 'Available tasks' }).first().click();
+      await taskListPage.clickTaskTabAndWaitForView(
+        'Available tasks',
+        'AvailableTasks',
+        'switching away from My tasks after sorting'
+      );
       await taskListPage.exuiSpinnerComponent.wait();
 
-      const myTasksRequest = await taskListPage.clickTaskTabAndWaitForRequest(
+      const myTasksRequest = await taskListPage.clickTaskTabAndWaitForView(
         'My tasks',
-        (request) => {
-          if (!taskListRoutePattern.exec(request.url()) || request.method() !== 'POST') {
-            return false;
-          }
-
-          try {
-            const requestBody = request.postDataJSON() as {
-              view?: string;
-              searchRequest?: { request_context?: string };
-            };
-            return requestBody.view === 'MyTasks' || requestBody.searchRequest?.request_context === 'MY_TASKS';
-          } catch {
-            return false;
-          }
-        },
+        'MyTasks',
         'returning to My tasks after switching away'
       );
       await taskListPage.exuiSpinnerComponent.wait();

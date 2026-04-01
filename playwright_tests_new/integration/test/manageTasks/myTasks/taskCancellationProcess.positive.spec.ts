@@ -56,18 +56,11 @@ test.describe(
         const { getCancelRequestUrl, getCancelRequestBody } = await routeMyTaskCancellationFlow(page, taskId, task);
 
         await test.step('Navigate to My Work and open cancel action', async () => {
-          await taskListPage.goto();
+          await taskListPage.gotoAndWaitForTaskRow(`cancel request payload validation for ${matrixItem.scenario}`);
           await expect(taskListPage.taskListTable).toBeVisible();
           await taskListPage.exuiSpinnerComponent.wait();
-          await taskListPage.waitForManageButton(`cancel request payload validation for ${matrixItem.scenario}`);
           await expect(taskListPage.taskListTable).toContainText(matrixItem.caseName);
-
-          await taskListPage.openFirstManageActions(`cancel request payload validation for ${matrixItem.scenario}`);
-          await expect(taskListPage.taskActionCancel.first()).toBeVisible();
-          await taskListPage.clickTaskAction(
-            taskListPage.taskActionCancel.first(),
-            `cancel request payload validation for ${matrixItem.scenario}`
-          );
+          await taskListPage.clickTaskActionForRow(0, 'cancel', `cancel request payload validation for ${matrixItem.scenario}`);
         });
 
         await test.step('Confirm cancellation and verify request payload', async () => {
@@ -152,18 +145,11 @@ test.describe(
         await routeMyTaskCancellationFlow(page, taskId, task);
 
         await test.step('Open cancellation from My Work', async () => {
-          await taskListPage.goto();
+          await taskListPage.gotoAndWaitForTaskRow(`my tasks manual cancellation for ${matrixItem.scenario}`);
           await expect(taskListPage.taskListTable).toBeVisible();
           await taskListPage.exuiSpinnerComponent.wait();
-          await taskListPage.waitForManageButton(`my tasks manual cancellation for ${matrixItem.scenario}`);
           await expect(taskListPage.taskListTable).toContainText(matrixItem.caseName);
-
-          await taskListPage.openFirstManageActions(`my tasks manual cancellation for ${matrixItem.scenario}`);
-          await expect(taskListPage.taskActionCancel.first()).toBeVisible();
-          await taskListPage.clickTaskAction(
-            taskListPage.taskActionCancel.first(),
-            `my tasks manual cancellation for ${matrixItem.scenario}`
-          );
+          await taskListPage.clickTaskActionForRow(0, 'cancel', `my tasks manual cancellation for ${matrixItem.scenario}`);
         });
 
         await test.step('Confirm cancellation and verify user-visible outcome', async () => {
@@ -236,10 +222,9 @@ test.describe(
       await routeMyTaskCancellationFlow(page, taskId, task, { includeCancelAction: false });
 
       await test.step('Open task actions and verify cancel is not available', async () => {
-        await taskListPage.goto();
+        await taskListPage.gotoAndWaitForTaskRow('non-cancellable task action menu');
         await expect(taskListPage.taskListTable).toBeVisible();
         await taskListPage.exuiSpinnerComponent.wait();
-        await taskListPage.waitForManageButton('non-cancellable task action menu');
         await taskListPage.openFirstManageActions('non-cancellable task action menu');
         await expect(taskListPage.taskActionsRow).toBeVisible();
         await expect(taskListPage.taskActionCancel).toHaveCount(0);
@@ -265,11 +250,9 @@ test.describe(
       await routeMyTaskCancellationFlow(page, taskId, task, { cancelResponseStatus: 409 });
 
       await test.step('Open cancellation for stale task', async () => {
-        await taskListPage.goto();
+        await taskListPage.gotoAndWaitForTaskRow('stale task cancellation');
         await expect(taskListPage.taskListTable).toBeVisible();
-        await taskListPage.waitForManageButton('stale task cancellation');
-        await taskListPage.openFirstManageActions('stale task cancellation');
-        await taskListPage.clickTaskAction(taskListPage.taskActionCancel.first(), 'stale task cancellation');
+        await taskListPage.clickTaskActionForRow(0, 'cancel', 'stale task cancellation');
       });
 
       await test.step('Confirm stale cancellation shows warning', async () => {
@@ -298,11 +281,9 @@ test.describe(
       await routeMyTaskCancellationFlow(page, taskId, task, { cancelResponseStatus: 400 });
 
       await test.step('Open cancellation for API failure scenario', async () => {
-        await taskListPage.goto();
+        await taskListPage.gotoAndWaitForTaskRow('cancellation api failure warning');
         await expect(taskListPage.taskListTable).toBeVisible();
-        await taskListPage.waitForManageButton('cancellation api failure warning');
-        await taskListPage.openFirstManageActions('cancellation api failure warning');
-        await taskListPage.clickTaskAction(taskListPage.taskActionCancel.first(), 'cancellation api failure warning');
+        await taskListPage.clickTaskActionForRow(0, 'cancel', 'cancellation api failure warning');
       });
 
       await test.step('Confirm API failure shows warning', async () => {

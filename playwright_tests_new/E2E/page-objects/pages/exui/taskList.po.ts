@@ -113,21 +113,46 @@ export class TaskListPage extends Base {
 
   async goto() {
     await this.page.goto('/work/my-work/list', { waitUntil: 'domcontentloaded' });
+    await this.waitForExuiAppShell('task list navigation', TASK_LIST_READY_TIMEOUT_MS);
     await this.waitForTaskListShellReady('task list navigation');
+  }
+
+  async gotoAndWaitForTaskRow(
+    context: string,
+    options: {
+      rowIndex?: number;
+      timeoutMs?: number;
+    } = {}
+  ) {
+    const rowIndex = options.rowIndex ?? 0;
+    const timeoutMs = options.timeoutMs ?? TASK_LIST_READY_TIMEOUT_MS;
+
+    await this.page.goto('/work/my-work/list', { waitUntil: 'domcontentloaded' });
+    await this.page.waitForURL(/\/work\/my-work\/list(?:\?.*)?$/, { timeout: timeoutMs }).catch(() => undefined);
+    await this.waitForExuiAppShell(context, timeoutMs);
+    await this.waitForTaskListSpinnerToSettle(10_000);
+
+    await Promise.any([
+      this.waitForTaskListShellReady(`${context} shell bootstrap`),
+      this.waitForTaskRowReady(`${context} row bootstrap`, { rowIndex, timeoutMs }),
+    ]);
   }
 
   async gotoMyCases() {
     await this.page.goto('/work/my-work/my-cases', { waitUntil: 'domcontentloaded' });
+    await this.waitForExuiAppShell('my cases navigation', TASK_LIST_READY_TIMEOUT_MS);
     await this.waitForTaskListShellReady('my cases navigation');
   }
 
   async gotoMyAccess() {
     await this.page.goto('/work/my-work/my-access', { waitUntil: 'domcontentloaded' });
+    await this.waitForExuiAppShell('my access navigation', TASK_LIST_READY_TIMEOUT_MS);
     await this.waitForTaskListShellReady('my access navigation');
   }
 
   async gotoAllWorkTasks() {
     await this.page.goto('/work/all-work/tasks', { waitUntil: 'domcontentloaded' });
+    await this.waitForExuiAppShell('all work tasks navigation', TASK_LIST_READY_TIMEOUT_MS);
     await this.waitForTaskListShellReady('all work tasks navigation');
   }
 
@@ -200,6 +225,18 @@ export class TaskListPage extends Base {
     await this.page
       .waitForFunction(() => document.querySelectorAll('xuilib-loading-spinner').length === 0, undefined, { timeout: timeoutMs })
       .catch(() => undefined);
+  }
+
+  private async waitForExuiAppShell(context: string, timeoutMs: number): Promise<void> {
+    const shellTimeoutMs = Math.max(1_000, Math.min(10_000, timeoutMs));
+
+    await Promise.any([
+      this.exuiHeader.appHeaderLink.waitFor({ state: 'attached', timeout: shellTimeoutMs }),
+      this.errorPageHeading.waitFor({ state: 'visible', timeout: shellTimeoutMs }),
+      this.serviceDownError.waitFor({ state: 'visible', timeout: shellTimeoutMs }),
+    ]).catch(async () => {
+      await this.assertTaskListHealthy(`waiting for EXUI app shell (${context})`, { allowServiceDown: true });
+    });
   }
 
   private async assertTaskListHealthy(context: string, options: { allowServiceDown?: boolean } = {}): Promise<void> {
@@ -563,6 +600,151 @@ export class TaskListPage extends Base {
     );
   }
 
+  async waitForTaskActionsRowReady(
+    rowIndex: number,
+    context: string,
+    options: {
+      timeoutMs?: number;
+      pollMs?: number;
+    } = {}
+  ) {
+    const timeoutMs = options.timeoutMs ?? 8_000;
+    const pollMs = options.pollMs ?? 250;
+    const deadline = Date.now() + timeoutMs;
+    const taskActionsRow = this.getTaskActionsRow(rowIndex);
+
+    while (Date.now() < deadline) {
+      await this.assertTaskListInteractive(`waiting for task actions row (${context})`);
+
+      const rowVisible = await taskActionsRow.isVisible().catch(() => false);
+      const ariaHidden = await taskActionsRow.getAttribute('aria-hidden').catch(() => null);
+      if (rowVisible && ariaHidden !== 'true') {
+        return taskActionsRow;
+      }
+
+      await this.page.waitForTimeout(pollMs);
+    }
+
+    const finalAriaHidden = await taskActionsRow.getAttribute('aria-hidden').catch(() => 'unknown');
+    throw new Error(
+      `Timed out after ${timeoutMs}ms waiting for task actions row (${context}) on row ${rowIndex + 1}. aria-hidden=${finalAriaHidden}. url=${this.page.url()}`
+    );
+  }
+
+  private async waitForManageButtonExpanded(
+    rowIndex: number,
+    context: string,
+    options: {
+      timeoutMs?: number;
+      pollMs?: number;
+    } = {}
+  ) {
+    const timeoutMs = options.timeoutMs ?? 4_000;
+    const pollMs = options.pollMs ?? 250;
+    const deadline = Date.now() + timeoutMs;
+    const manageButton = this.getManageButtonForRow(rowIndex);
+
+    while (Date.now() < deadline) {
+      await this.assertTaskListInteractive(`waiting for Manage button expansion (${context})`);
+
+      const ariaExpanded = await manageButton.getAttribute('aria-expanded').catch(() => null);
+      if (ariaExpanded === 'true') {
+        return;
+      }
+
+      await this.page.waitForTimeout(pollMs);
+    }
+
+    const finalAriaExpanded = await manageButton.getAttribute('aria-expanded').catch(() => 'unknown');
+    throw new Error(
+      `Timed out after ${timeoutMs}ms waiting for Manage button expansion (${context}) on row ${rowIndex + 1}. aria-expanded=${finalAriaExpanded}. url=${this.page.url()}`
+    );
+  }
+
+  async waitForTaskActionForRow(
+    rowIndex: number,
+    actionId: string,
+    context: string,
+    options: {
+      timeoutMs?: number;
+      pollMs?: number;
+    } = {}
+  ) {
+    const timeoutMs = options.timeoutMs ?? 8_000;
+    const pollMs = options.pollMs ?? 250;
+    const deadline = Date.now() + timeoutMs;
+    const taskAction = this.getTaskActionForRow(rowIndex, actionId);
+    let attempt = 0;
+
+    while (Date.now() < deadline) {
+      await this.assertTaskListInteractive(`waiting for task action (${context})`);
+
+      if (await taskAction.isVisible().catch(() => false)) {
+        return taskAction;
+      }
+
+      await this.openManageActions(rowIndex, `${context} reopen ${attempt + 1}`, {
+        timeoutMs: Math.max(1_000, Math.min(4_000, deadline - Date.now())),
+        pollMs,
+      }).catch(() => undefined);
+
+      if (await taskAction.isVisible().catch(() => false)) {
+        return taskAction;
+      }
+
+      attempt += 1;
+
+      await this.page.waitForTimeout(pollMs);
+    }
+
+    throw new Error(
+      `Timed out after ${timeoutMs}ms waiting for action "${actionId}" (${context}) on row ${rowIndex + 1}. url=${this.page.url()}`
+    );
+  }
+
+  private async clickManageButtonForRow(
+    rowIndex: number,
+    context: string,
+    options: {
+      timeoutMs?: number;
+      pollMs?: number;
+    } = {}
+  ) {
+    const timeoutMs = options.timeoutMs ?? 3_000;
+    const pollMs = options.pollMs ?? 250;
+    const manageButton = this.getManageButtonForRow(rowIndex);
+    await manageButton.scrollIntoViewIfNeeded().catch(() => undefined);
+
+    const clickStrategies = [
+      async () => manageButton.click({ timeout: timeoutMs }),
+      async () => manageButton.click({ force: true, timeout: timeoutMs }),
+      async () => {
+        await manageButton.focus({ timeout: timeoutMs });
+        await this.page.keyboard.press('Enter');
+      },
+      async () => manageButton.evaluate((element: HTMLButtonElement) => element.click()),
+      async () => manageButton.dispatchEvent('click'),
+    ];
+
+    let lastError: Error | null = null;
+    for (const clickStrategy of clickStrategies) {
+      try {
+        await clickStrategy();
+        await this.waitForManageButtonExpanded(rowIndex, `${context} expanded`, {
+          timeoutMs: Math.max(1_000, timeoutMs),
+          pollMs,
+        });
+        return;
+      } catch (error) {
+        lastError = error instanceof Error ? error : new Error(String(error));
+      }
+    }
+
+    throw new Error(
+      `Failed to click Manage button (${context}) on row ${rowIndex + 1}: ${lastError?.message || 'unknown error'}`
+    );
+  }
+
   private async openManageActions(
     rowIndex: number,
     context: string,
@@ -583,13 +765,15 @@ export class TaskListPage extends Base {
         pollMs,
       });
 
-      const manageButton = this.getManageButtonForRow(rowIndex);
-      await manageButton.scrollIntoViewIfNeeded().catch(() => undefined);
-      await manageButton.click({ force: attempt > 0 });
+      await this.clickManageButtonForRow(rowIndex, `${context} open row ${rowIndex + 1}`, {
+        timeoutMs: Math.max(1_000, Math.min(2_500, deadline - Date.now())),
+        pollMs,
+      });
 
-      const rowActions = this.getTaskActionsRow(rowIndex);
-      const expanded = await rowActions
-        .waitFor({ state: 'visible', timeout: Math.max(1_000, Math.min(4_000, deadline - Date.now())) })
+      const expanded = await this.waitForTaskActionsRowReady(rowIndex, `${context} actions row`, {
+        timeoutMs: Math.max(1_000, Math.min(4_000, deadline - Date.now())),
+        pollMs,
+      })
         .then(() => true)
         .catch(() => false);
 
@@ -853,6 +1037,36 @@ export class TaskListPage extends Base {
     return this.clickButtonAndWaitForRequest(
       this.taskTableTabs.filter({ hasText: tabText }).first(),
       requestMatcher,
+      context,
+      options
+    );
+  }
+
+  async clickTaskTabAndWaitForView(
+    tabText: string,
+    view: 'MyTasks' | 'AvailableTasks' | 'AllWork',
+    context: string,
+    options: {
+      timeoutMs?: number;
+    } = {}
+  ): Promise<Request> {
+    return this.clickTaskTabAndWaitForRequest(
+      tabText,
+      (request) => {
+        if (!request.url().includes('/workallocation/task') || request.method() !== 'POST') {
+          return false;
+        }
+
+        try {
+          const requestBody = request.postDataJSON() as {
+            view?: string;
+            searchRequest?: { request_context?: string };
+          };
+          return requestBody.view === view || requestBody.searchRequest?.request_context === view.toUpperCase();
+        } catch {
+          return false;
+        }
+      },
       context,
       options
     );

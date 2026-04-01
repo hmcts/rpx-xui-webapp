@@ -702,11 +702,12 @@ export class CaseDetailsPage extends Base {
 
     const deadline = Date.now() + timeoutMs;
     while (Date.now() < deadline) {
-      const visibleTabCount = await this.tablist2.evaluateAll((tabs) =>
-        tabs.filter((tab) => {
-          const element = tab as HTMLElement;
-          return !element.hidden && element.offsetParent !== null;
-        }).length
+      const visibleTabCount = await this.tablist2.evaluateAll(
+        (tabs) =>
+          tabs.filter((tab) => {
+            const element = tab as HTMLElement;
+            return !element.hidden && element.offsetParent !== null;
+          }).length
       );
 
       if (visibleTabCount > 0) {

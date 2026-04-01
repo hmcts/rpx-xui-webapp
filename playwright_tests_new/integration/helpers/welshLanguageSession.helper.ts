@@ -62,7 +62,7 @@ function ensureDirectory(dirPath: string) {
 
 function getWelshLanguageLeaseKey(userIdentifier: SessionIdentityInput): string {
   const identityKey =
-    typeof userIdentifier === 'string' ? userIdentifier : userIdentifier.email ?? userIdentifier.userIdentifier;
+    typeof userIdentifier === 'string' ? userIdentifier : (userIdentifier.email ?? userIdentifier.userIdentifier);
   return identityKey.toLowerCase().replace(/[^a-z0-9._-]+/g, '_');
 }
 

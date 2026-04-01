@@ -1,5 +1,5 @@
 import { expect, test } from '../../../../E2E/fixtures';
-import { applySessionCookies, setupTaskListBootstrapRoutes, taskListRoutePattern } from '../../../helpers';
+import { applySessionCookies, setupManageTasksBaseRoutes, taskListRoutePattern } from '../../../helpers';
 import { buildTaskListMock, myActionsList } from '../../../mocks/taskList.mock';
 import { buildMyCases } from '../../../mocks/myCases.mock';
 
@@ -21,13 +21,10 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
     const taskListMockResponse = buildTaskListMock(2000, '', myActionsList);
 
     await test.step('Setup route mocks for all-work tasks', async () => {
-      await setupTaskListBootstrapRoutes(page, supportedJurisdictions, supportedJurisdictionDetails);
-      await page.route(taskListRoutePattern, async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(taskListMockResponse),
-        });
+      await setupManageTasksBaseRoutes(page, {
+        taskListResponse: taskListMockResponse,
+        supportedJurisdictions,
+        supportedJurisdictionDetails,
       });
     });
 
@@ -80,13 +77,10 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
     const caseNameSortHeaderCell = taskListPage.sortByCaseNameTableHeader.locator('xpath=ancestor::th[1]');
 
     await test.step('Setup route mocks for all-work tasks sorting', async () => {
-      await setupTaskListBootstrapRoutes(page, supportedJurisdictions, supportedJurisdictionDetails);
-      await page.route(taskListRoutePattern, async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(taskListMockResponse),
-        });
+      await setupManageTasksBaseRoutes(page, {
+        taskListResponse: taskListMockResponse,
+        supportedJurisdictions,
+        supportedJurisdictionDetails,
       });
       await page.route(allWorkCasesRoutePattern, async (route) => {
         await route.fulfill({
@@ -153,13 +147,10 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
     const taskListMockResponse = buildTaskListMock(10, '', myActionsList);
 
     await test.step('Setup route mocks for all-work filters', async () => {
-      await setupTaskListBootstrapRoutes(page, supportedJurisdictions, supportedJurisdictionDetails);
-      await page.route(taskListRoutePattern, async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(taskListMockResponse),
-        });
+      await setupManageTasksBaseRoutes(page, {
+        taskListResponse: taskListMockResponse,
+        supportedJurisdictions,
+        supportedJurisdictionDetails,
       });
     });
 
@@ -203,13 +194,10 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
     ];
 
     await test.step('Setup route mocks for all-work manage action matrix', async () => {
-      await setupTaskListBootstrapRoutes(page, supportedJurisdictions, supportedJurisdictionDetails);
-      await page.route(taskListRoutePattern, async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(taskListMockResponse),
-        });
+      await setupManageTasksBaseRoutes(page, {
+        taskListResponse: taskListMockResponse,
+        supportedJurisdictions,
+        supportedJurisdictionDetails,
       });
     });
 
@@ -265,13 +253,10 @@ test.describe('All Work role-based task columns', { tag: ['@integration', '@inte
       });
       test(`renders expected date column and not the non-expected date column`, async ({ taskListPage, page, tableUtils }) => {
         await test.step('Setup route mocks for all-work role-based columns', async () => {
-          await setupTaskListBootstrapRoutes(page, supportedJurisdictions, supportedJurisdictionDetails);
-          await page.route(taskListRoutePattern, async (route) => {
-            await route.fulfill({
-              status: 200,
-              contentType: 'application/json',
-              body: JSON.stringify(taskListMockResponse),
-            });
+          await setupManageTasksBaseRoutes(page, {
+            taskListResponse: taskListMockResponse,
+            supportedJurisdictions,
+            supportedJurisdictionDetails,
           });
         });
 

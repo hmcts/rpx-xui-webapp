@@ -1,7 +1,8 @@
-import { expect, Locator, Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import { Base } from '../../base';
 
 const CASE_FILE_VIEW_FOLDER_TIMEOUT_MS = 10_000;
+const CASE_FILE_VIEW_FOLDER_POLL_INTERVAL_MS = 200;
 
 export class CaseFileViewPage extends Base {
   readonly container = this.page.locator('#case-file-view');
@@ -143,18 +144,16 @@ export class CaseFileViewPage extends Base {
     const folderNodes = scope.locator(':scope > cdk-nested-tree-node.document-tree-container__folder');
     const folderLabels = folderNodes.locator(':scope > button .node__name--folder:not(.document-tree-invisible)');
 
-    await expect
-      .poll(
-        async () => {
-          const labels = await folderLabels.allTextContents();
-          return labels.map((label) => label.trim()).filter(Boolean);
-        },
-        {
-          timeout: CASE_FILE_VIEW_FOLDER_TIMEOUT_MS,
-          message: `Waiting for direct child folder "${folderName}" to appear`,
-        }
-      )
-      .toContain(folderName);
+    const deadline = Date.now() + CASE_FILE_VIEW_FOLDER_TIMEOUT_MS;
+
+    while (Date.now() < deadline) {
+      const labels = (await folderLabels.allTextContents()).map((label) => label.trim()).filter(Boolean);
+      if (labels.includes(folderName)) {
+        break;
+      }
+
+      await this.page.waitForTimeout(CASE_FILE_VIEW_FOLDER_POLL_INTERVAL_MS);
+    }
 
     const folderCount = await folderNodes.count();
     const visibleFolderNames: string[] = [];

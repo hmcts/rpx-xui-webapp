@@ -9,10 +9,12 @@ const defaultTaskListResponse = { tasks: [], total_records: 0 };
 type BaseManageTaskRouteOptions = {
   taskListResponse?: unknown;
   taskListHandler?: (route: Route) => Promise<void>;
+  supportedJurisdictions?: string[];
+  supportedJurisdictionDetails?: Array<{ serviceId: string; serviceName: string }>;
 };
 
 export async function setupManageTasksBaseRoutes(page: Page, options: BaseManageTaskRouteOptions = {}): Promise<void> {
-  await setupTaskListBootstrapRoutes(page);
+  await setupTaskListBootstrapRoutes(page, options.supportedJurisdictions, options.supportedJurisdictionDetails);
 
   await page.route('**/api/role-access/roles/getJudicialUsers*', async (route) => {
     await route.fulfill({

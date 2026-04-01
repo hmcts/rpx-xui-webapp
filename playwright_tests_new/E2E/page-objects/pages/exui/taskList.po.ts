@@ -112,9 +112,7 @@ export class TaskListPage extends Base {
   }
 
   async goto() {
-    await this.page.goto('/work/my-work/list', { waitUntil: 'domcontentloaded' });
-    await this.waitForExuiAppShell('task list navigation', TASK_LIST_READY_TIMEOUT_MS);
-    await this.waitForTaskListShellReady('task list navigation');
+    await this.navigateToTaskListView('/work/my-work/list', /\/work\/my-work\/list(?:\?.*)?$/, 'task list navigation');
   }
 
   async gotoAndWaitForTaskRow(
@@ -139,21 +137,15 @@ export class TaskListPage extends Base {
   }
 
   async gotoMyCases() {
-    await this.page.goto('/work/my-work/my-cases', { waitUntil: 'domcontentloaded' });
-    await this.waitForExuiAppShell('my cases navigation', TASK_LIST_READY_TIMEOUT_MS);
-    await this.waitForTaskListShellReady('my cases navigation');
+    await this.navigateToTaskListView('/work/my-work/my-cases', /\/work\/my-work\/my-cases(?:\?.*)?$/, 'my cases navigation');
   }
 
   async gotoMyAccess() {
-    await this.page.goto('/work/my-work/my-access', { waitUntil: 'domcontentloaded' });
-    await this.waitForExuiAppShell('my access navigation', TASK_LIST_READY_TIMEOUT_MS);
-    await this.waitForTaskListShellReady('my access navigation');
+    await this.navigateToTaskListView('/work/my-work/my-access', /\/work\/my-work\/my-access(?:\?.*)?$/, 'my access navigation');
   }
 
   async gotoAllWorkTasks() {
-    await this.page.goto('/work/all-work/tasks', { waitUntil: 'domcontentloaded' });
-    await this.waitForExuiAppShell('all work tasks navigation', TASK_LIST_READY_TIMEOUT_MS);
-    await this.waitForTaskListShellReady('all work tasks navigation');
+    await this.navigateToTaskListView('/work/all-work/tasks', /\/work\/all-work\/tasks(?:\?.*)?$/, 'all work tasks navigation');
   }
 
   async selectWorkMenuItem(menuItemText: string) {
@@ -225,6 +217,19 @@ export class TaskListPage extends Base {
     await this.page
       .waitForFunction(() => document.querySelectorAll('xuilib-loading-spinner').length === 0, undefined, { timeout: timeoutMs })
       .catch(() => undefined);
+  }
+
+  private async navigateToTaskListView(
+    path: string,
+    urlPattern: RegExp,
+    context: string,
+    timeoutMs = TASK_LIST_READY_TIMEOUT_MS
+  ) {
+    await this.page.goto(path, { waitUntil: 'domcontentloaded' });
+    await this.page.waitForURL(urlPattern, { timeout: timeoutMs }).catch(() => undefined);
+    await this.waitForExuiAppShell(context, timeoutMs);
+    await this.waitForTaskListSpinnerToSettle(10_000);
+    await this.waitForTaskListShellReady(context);
   }
 
   private async waitForExuiAppShell(context: string, timeoutMs: number): Promise<void> {

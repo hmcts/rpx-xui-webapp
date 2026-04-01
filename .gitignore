@@ -55,6 +55,7 @@ api/.nyc_output
 # Do not commit local files
 /config/local*.*
 .env
+.env_copy
 .tool-versions
 /.agent
 execplan-api-pw-coverage.md

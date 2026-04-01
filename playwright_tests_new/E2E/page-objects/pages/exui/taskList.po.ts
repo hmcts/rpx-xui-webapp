@@ -129,11 +129,8 @@ export class TaskListPage extends Base {
     await this.page.waitForURL(/\/work\/my-work\/list(?:\?.*)?$/, { timeout: timeoutMs }).catch(() => undefined);
     await this.waitForExuiAppShell(context, timeoutMs);
     await this.waitForTaskListSpinnerToSettle(10_000);
-
-    await Promise.any([
-      this.waitForTaskListShellReady(`${context} shell bootstrap`),
-      this.waitForTaskRowReady(`${context} row bootstrap`, { rowIndex, timeoutMs }),
-    ]);
+    await this.waitForTaskListShellReady(`${context} shell bootstrap`);
+    await this.waitForTaskRowReady(`${context} row bootstrap`, { rowIndex, timeoutMs });
   }
 
   async gotoMyCases() {

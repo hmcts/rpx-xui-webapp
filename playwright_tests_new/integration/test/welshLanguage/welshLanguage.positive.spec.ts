@@ -1,6 +1,6 @@
 import { welshTranslationsSmall } from 'playwright_tests_new/integration/mocks/welshLanguage';
 import { expect, test } from '../../../E2E/fixtures';
-import { applyWelshLanguageSessionCookies } from '../../helpers';
+import { setupWelshLanguageSession, type WelshLanguageSessionLease } from '../../helpers';
 const TRANSLATIONS_TIMEOUT = 20_000;
 
 function getWelshTranslationChecks(createCasePage, caseListPage) {
@@ -70,13 +70,22 @@ async function expectLanguageChecks(checks) {
 }
 
 test.describe('Verify users can switch the language', { tag: ['@integration', '@integration-welsh-language'] }, () => {
+  let welshSessionLease: WelshLanguageSessionLease | undefined;
+
   test.beforeEach(async ({ page }, testInfo) => {
-    await applyWelshLanguageSessionCookies(page, testInfo);
+    welshSessionLease = await setupWelshLanguageSession(page, testInfo);
     await page.route('**api/translation/cy*', async (route) => {
       const body = JSON.stringify(welshTranslationsSmall);
       await route.fulfill({ status: 200, contentType: 'application/json', body });
     });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
+  });
+
+  test.afterEach(async () => {
+    if (welshSessionLease) {
+      await welshSessionLease.release();
+      welshSessionLease = undefined;
+    }
   });
 
   test('Verify translations are shown when the user selects to view the site in Welsh', async ({
@@ -89,6 +98,7 @@ test.describe('Verify users can switch the language', { tag: ['@integration', '@
 
     await test.step('Change the language to Welsh', async () => {
       await caseListPage.exuiHeader.switchLanguage('Cymraeg');
+      await caseListPage.exuiHeader.waitForRenderedLanguageState('Cymraeg');
       await caseListPage.exuiSpinnerComponent.wait();
       await page.waitForLoadState('domcontentloaded');
     });
@@ -106,7 +116,7 @@ test.describe('Verify users can switch the language', { tag: ['@integration', '@
 
     await test.step('Check the language can be switched back to English and the correct translations are shown', async () => {
       await caseListPage.exuiHeader.switchLanguage('English');
-      await page.reload({ waitUntil: 'domcontentloaded' });
+      await caseListPage.exuiHeader.waitForRenderedLanguageState('English');
       await caseListPage.exuiSpinnerComponent.wait();
       await page.waitForLoadState('domcontentloaded');
       await expectLanguageChecks(englishChecks);

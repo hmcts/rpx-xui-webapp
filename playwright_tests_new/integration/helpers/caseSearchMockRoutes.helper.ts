@@ -377,7 +377,7 @@ export async function submitGlobalSearchFromMenu(
   page: Page
 ): Promise<void> {
   await page.goto('/cases', { waitUntil: 'domcontentloaded' });
-  await page.getByRole('banner').waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
+  await page.waitForURL(/\/cases(?:[/?#]|$)/, { timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
   await expect(globalSearchPage.searchLinkOnMenuBar).toBeVisible({ timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
   await globalSearchPage.searchLinkOnMenuBar.click();
   await page.waitForURL(/\/search/);

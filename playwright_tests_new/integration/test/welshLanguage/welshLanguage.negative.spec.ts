@@ -1,14 +1,23 @@
 import { welshTranslationsSmall } from 'playwright_tests_new/integration/mocks/welshLanguage';
 import { expect, test } from '../../../E2E/fixtures';
-import { applyWelshLanguageSessionCookies } from '../../helpers';
+import { setupWelshLanguageSession, type WelshLanguageSessionLease } from '../../helpers';
 
 test.describe('Verify users can switch the language', { tag: ['@integration', '@integration-welsh-language'] }, () => {
+  let welshSessionLease: WelshLanguageSessionLease | undefined;
+
   test.beforeEach(async ({ page }, testInfo) => {
-    await applyWelshLanguageSessionCookies(page, testInfo);
+    welshSessionLease = await setupWelshLanguageSession(page, testInfo);
     await page.route('**api/translation/cy*', async (route) => {
       await route.fulfill({ status: 500, contentType: 'application/json', body: '{}' });
     });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
+  });
+
+  test.afterEach(async () => {
+    if (welshSessionLease) {
+      await welshSessionLease.release();
+      welshSessionLease = undefined;
+    }
   });
 
   test('Verify translations are not shown when the translation endpoint returns an error', async ({

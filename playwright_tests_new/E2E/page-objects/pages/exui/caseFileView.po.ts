@@ -8,6 +8,9 @@ export class CaseFileViewPage extends Base {
   readonly container = this.page.locator('#case-file-view');
   readonly treeContainer = this.container.locator('.document-tree-container').first();
   readonly treeRoot = this.treeContainer.locator('cdk-tree[role="tree"]').first();
+  readonly directChildFolderLabels = this.treeRoot.locator(
+    ':scope > cdk-nested-tree-node.document-tree-container__folder > button .node__name--folder:not(.document-tree-invisible)'
+  );
   readonly emptyStateMessage = this.treeContainer.getByText('No results found', { exact: true });
   readonly mediaViewerContainer = this.container.locator('.media-viewer-container');
   readonly mediaViewerToolbar = this.mediaViewerContainer.locator('#mvToolbarMain');
@@ -39,7 +42,7 @@ export class CaseFileViewPage extends Base {
     await this.treeContainer.waitFor({ state: 'visible' });
     await this.treeRoot.waitFor({ state: 'attached' });
     await Promise.any([
-      this.treeRoot.locator('.node__name--folder:not(.document-tree-invisible)').first().waitFor({ state: 'visible' }),
+      this.waitForVisibleDirectChildFolders(this.treeRoot),
       this.emptyStateMessage.waitFor({ state: 'visible' }),
     ]);
     await this.mediaViewerContainer.waitFor({ state: 'visible' });
@@ -147,7 +150,7 @@ export class CaseFileViewPage extends Base {
     const deadline = Date.now() + CASE_FILE_VIEW_FOLDER_TIMEOUT_MS;
 
     while (Date.now() < deadline) {
-      const labels = (await folderLabels.allTextContents()).map((label) => label.trim()).filter(Boolean);
+      const labels = await this.collectVisibleFolderNames(folderLabels);
       if (labels.includes(folderName)) {
         break;
       }
@@ -178,5 +181,42 @@ export class CaseFileViewPage extends Base {
         visibleFolderNames.join(', ') || 'none'
       }`
     );
+  }
+
+  private async waitForVisibleDirectChildFolders(scope: Locator): Promise<void> {
+    const folderLabels = scope.locator(
+      ':scope > cdk-nested-tree-node.document-tree-container__folder > button .node__name--folder:not(.document-tree-invisible)'
+    );
+    const deadline = Date.now() + CASE_FILE_VIEW_FOLDER_TIMEOUT_MS;
+
+    while (Date.now() < deadline) {
+      const labels = await this.collectVisibleFolderNames(folderLabels);
+      if (labels.length > 0) {
+        return;
+      }
+
+      await this.page.waitForTimeout(CASE_FILE_VIEW_FOLDER_POLL_INTERVAL_MS);
+    }
+
+    throw new Error('Case file view did not render any visible direct child folders before timeout.');
+  }
+
+  private async collectVisibleFolderNames(folderLabels: Locator): Promise<string[]> {
+    const labelCount = await folderLabels.count();
+    const labels: string[] = [];
+
+    for (let i = 0; i < labelCount; i += 1) {
+      const label = folderLabels.nth(i);
+      if (!(await label.isVisible().catch(() => false))) {
+        continue;
+      }
+
+      const text = (await label.textContent())?.trim();
+      if (text) {
+        labels.push(text);
+      }
+    }
+
+    return labels;
   }
 }

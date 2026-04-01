@@ -1,8 +1,8 @@
 import { faker } from '@faker-js/faker';
-import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
-import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies } from '../../../common/sessionCapture';
-import { buildAsylumCaseMock } from '../../mocks/cases/asylumCase.mock';
+import { extractUserIdFromCookies } from '../../../utils/extractUserIdFromCookies';
+import { expect, test } from '../../../../E2E/fixtures';
+import { applySessionCookies } from '../../../../common/sessionCapture';
+import { buildAsylumCaseMock } from '../../../mocks/cases/asylumCase.mock';
 
 const userIdentifier = 'STAFF_ADMIN';
 const caseId = faker.number.int({ min: 1000000000, max: 9999999999 }).toString();

@@ -1,4 +1,4 @@
-@functional_enabled
+
 Feature: Case file view sort documents
 
 

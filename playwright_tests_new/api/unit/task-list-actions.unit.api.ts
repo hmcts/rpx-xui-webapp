@@ -99,6 +99,41 @@ function createButtonLocator(config: { clickFailures?: string[] }) {
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Task list action helper unit tests', { tag: '@svc-internal' }, () => {
+  test('clickTaskActionForRow reopens the same row when the row action is temporarily hidden', async () => {
+    const action = createActionLocator({
+      waitResults: ['hidden', 'visible'],
+    });
+    const reopenedRows: Array<{ rowIndex: number; context: string }> = [];
+
+    await TaskListPage.prototype.clickTaskActionForRow.call(
+      {
+        getTaskActionForRow: (rowIndex: number, actionId: string) => {
+          expect(rowIndex).toBe(2);
+          expect(actionId).toBe('claim');
+          return action as never;
+        },
+        openManageActionsForRow: async (rowIndex: number, context: string) => {
+          reopenedRows.push({ rowIndex, context });
+        },
+        assertTaskListInteractive: async () => undefined,
+        page: {
+          waitForTimeout: async () => undefined,
+          keyboard: {
+            press: async () => undefined,
+          },
+          url: () => 'https://manage-case.aat.platform.hmcts.net/work/my-work/available',
+        },
+      },
+      2,
+      'claim',
+      'row scoped task action retry',
+      { timeoutMs: 5_000, pollMs: 50 }
+    );
+
+    expect(reopenedRows).toEqual([{ rowIndex: 2, context: 'row scoped task action retry for row 3 reopen 1' }]);
+    expect(action.attempts).toEqual({ waitAttempt: 2, clickAttempt: 1, dispatchAttempt: 0, evaluateAttempt: 0, focusAttempt: 0 });
+  });
+
   test('clickTaskAction reopens the actions row after hidden and transient action refresh failures', async () => {
     const action = createActionLocator({
       waitResults: ['hidden', 'visible', 'visible'],
@@ -128,10 +163,10 @@ test.describe('Task list action helper unit tests', { tag: '@svc-internal' }, ()
       'clicking task action (unit task action retry)',
     ]);
     expect(waitIntervals).toEqual([]);
-    expect(action.attempts).toEqual({ waitAttempt: 2, clickAttempt: 1, dispatchAttempt: 1, evaluateAttempt: 0, focusAttempt: 0 });
+    expect(action.attempts).toEqual({ waitAttempt: 2, clickAttempt: 2, dispatchAttempt: 0, evaluateAttempt: 0, focusAttempt: 0 });
   });
 
-  test('clickTaskAction falls back to dispatchEvent when the action link rerenders during click', async () => {
+  test('clickTaskAction retries a bounded fallback click when the action link rerenders during click', async () => {
     const action = createActionLocator({
       waitResults: ['visible'],
       clickFailures: ['element was detached from the DOM'],
@@ -154,7 +189,7 @@ test.describe('Task list action helper unit tests', { tag: '@svc-internal' }, ()
       { timeoutMs: 5_000, pollMs: 50 }
     );
 
-    expect(action.attempts).toEqual({ waitAttempt: 1, clickAttempt: 1, dispatchAttempt: 1, evaluateAttempt: 0, focusAttempt: 0 });
+    expect(action.attempts).toEqual({ waitAttempt: 1, clickAttempt: 2, dispatchAttempt: 0, evaluateAttempt: 0, focusAttempt: 0 });
   });
 
   test('clickButtonAndWaitForRequest retries after a transient click failure and returns the observed request', async () => {

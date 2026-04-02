@@ -1,6 +1,7 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
@@ -20,17 +21,20 @@ describe('RequestHearingComponent', () => {
   let fixture: ComponentFixture<RequestHearingComponent>;
   let mockStore: any;
   const mockPageFlow = jasmine.createSpyObj('PageFlow', ['getCurrentPage']);
+  const appConfig = jasmine.createSpyObj('AbstractAppConfig', ['logMessage']);
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
   beforeEach(() => {
+    appConfig.logMessage.calls.reset();
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       declarations: [RequestHearingComponent, MockRpxTranslatePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: AbstractPageFlow, useValue: mockPageFlow },
+        { provide: AbstractAppConfig, useValue: appConfig },
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },
       ],
@@ -385,7 +389,40 @@ describe('RequestHearingComponent', () => {
     spyOn(hearingsService, 'navigateAction');
     component.submitRequest(ACTION.SUBMIT);
     expect(component.showMismatchErrorMessage).toBeTruthy();
+    expect(appConfig.logMessage).toHaveBeenCalledWith(
+      'Hearing internal name mismatch detected. HRM: Jane vs DWP SHV: Jane vs DWP for caseId: 1111222233334444 and hearingId: undefined at undefined with status undefined'
+    );
+    expect(appConfig.logMessage).toHaveBeenCalledWith(
+      'Hearing public name mismatch detected. HRM: Jane vs DWP SHV: Jane vs DWP for caseId: 1111222233334444 and hearingId: undefined at undefined with status undefined'
+    );
     expect(component.validationErrors).toEqual({ id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE });
+  });
+
+  it('should log internal name when names are equal and still submit successfully', () => {
+    component.hearingRequestMainModel = {
+      ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+      caseDetails: {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+        hmctsServiceCode: 'BBA3',
+        hmctsInternalCaseName: 'Internal Name',
+        publicCaseName: 'Public Name',
+      },
+    };
+    component.serviceHearingValuesModel = {
+      ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+      hmctsServiceID: 'BBA3',
+      hmctsInternalCaseName: 'Internal Name',
+      publicCaseName: 'Different Public Name',
+    };
+
+    spyOn(hearingsService, 'navigateAction');
+    component.submitRequest(ACTION.SUBMIT);
+
+    expect(appConfig.logMessage).toHaveBeenCalledWith(
+      'Hearing internal name mismatch detected. HRM: Internal Name SHV: Internal Name for caseId: 1234123412341234 and hearingId: 1000000 at 2021-11-30T09:00:00.000Z with status LISTED'
+    );
+    expect(component.showMismatchErrorMessage).toBeFalsy();
+    expect(hearingsService.navigateAction).toHaveBeenCalledWith(ACTION.SUBMIT);
   });
 
   afterEach(() => {

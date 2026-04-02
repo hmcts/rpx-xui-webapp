@@ -728,7 +728,7 @@ resource "azurerm_automation_job_schedule" "welsh_report_job" {
   runbook_name            = azurerm_automation_runbook.welsh_report_runbook.0.name
 
   parameters = {
-        reportingenabled = tostring(var.welsh_reporting_enabled)
+    reportingenabled  = tostring(var.welsh_reporting_enabled)
     appinsightsappid  = module.application_insights.app_id
     resourcegroupname = azurerm_resource_group.rg.name
     acsresourcename   = azurerm_communication_service.comm_service.0.name

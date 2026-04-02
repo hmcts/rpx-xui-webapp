@@ -1,0 +1,58 @@
+sequenceDiagram
+participant User
+participant WebPage as Web Page
+participant Store as Hearing Store
+participant Reducer
+participant RefData as RefData Resolver
+participant Effects
+participant HService as Hearing Service
+participant Node
+participant Service
+participant HMC
+
+User->>WebPage: Request
+WebPage->>Store: hearingState
+Store-->>WebPage:
+WebPage->>WebPage: /request/hearing-requirements
+WebPage->>Reducer: RESET_HEARING_VALUES
+note over RefData: Reset hearing values to null<br />Set caseInfo to current state.caseInfo
+Reducer-->>WebPage:
+WebPage->>Effects: LOAD_HEARING_VALUES
+Effects->>HService: loadHearingValues
+HService->>Node: loadServiceHearingValues
+Node->>Service: /serviceHearingValues
+Service-->>Node:
+Node-->>Effects:
+Effects-->>Reducer:
+Reducer-->>WebPage:
+WebPage->>Store: InitializeHearingRequest
+WebPage-->>User:
+
+loop
+    note over WebPage,Effects: Internal updates before external update is made 
+    User->>WebPage: Continue
+    WebPage->>Store: UpdateHearingRequest
+    Store-->>Effects: UPDATE_HEARING_REQUEST
+    Effects-->>WebPage: redirect via pageFlow object
+    WebPage-->>User:
+end
+
+User->>WebPage: Submit request
+WebPage->>WebPage: Validate submission
+WebPage->>WebPage: Navigation dispatch
+
+par
+    WebPage->>Store: submit hearing request
+    Store->>Effects: SUBMIT_HEARING_REQUEST
+    Effects->>HService: submitHearingRequest
+    HService->>Node: submitHearingRequest
+    Node->>HMC: POST /hearing
+    HMC-->>Node:
+    Node-->>HService:
+    HService-->>Effects:
+    Effects->>WebPage: /hearings/request/hearing-confirmation
+and
+    WebPage-->>Store: reset hearing request
+    WebPage-->>Store: reset hearing values
+    WebPage-->>Store: reset hearing conditions
+end

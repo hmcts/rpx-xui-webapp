@@ -3,12 +3,20 @@ import { test, expect } from '../../../E2E/fixtures';
 import { applySessionCookies } from '../../../common/sessionCapture';
 import { routeCaseCreationFlow } from '../../utils/caseCreationRoutes';
 import { TEST_USERS } from '../../testData';
+import type { Page } from '@playwright/test';
+import type { CreateCasePage } from '../../../E2E/page-objects/pages/exui/createCase.po';
 
 const userIdentifier = TEST_USERS.SOLICITOR;
 const jurisdiction = 'DIVORCE';
 const caseType = 'xuiTestJurisdiction';
 
 let interceptedCreateCaseRequestBody;
+
+async function submitCaseAndCaptureRequest(page: Page, createCasePage: CreateCasePage) {
+  const interceptedCreateCaseRequestBodyPromise = routeCaseCreationFlow(page);
+  await Promise.all([interceptedCreateCaseRequestBodyPromise, createCasePage.testSubmitButton.click()]);
+  return interceptedCreateCaseRequestBodyPromise;
+}
 
 test.beforeEach(async ({ page, createCasePage }) => {
   await applySessionCookies(page, userIdentifier);
@@ -103,9 +111,7 @@ test.describe(`Create a ${jurisdiction} case as ${userIdentifier}`, { tag: ['@in
     });
 
     await test.step('Submit the case for creation and capture the request body', async () => {
-      const interceptedCreateCaseRequestBodyPromise = routeCaseCreationFlow(page);
-      await createCasePage.testSubmitButton.click({ noWaitAfter: true });
-      interceptedCreateCaseRequestBody = await interceptedCreateCaseRequestBodyPromise;
+      interceptedCreateCaseRequestBody = await submitCaseAndCaptureRequest(page, createCasePage);
     });
 
     await test.step('Check the JSON sent in the creation request matches the expected data', async () => {
@@ -174,9 +180,7 @@ test.describe(`Create a ${jurisdiction} case as ${userIdentifier}`, { tag: ['@in
     });
 
     await test.step('Submit the case for creation and capture the request body', async () => {
-      const interceptedCreateCaseRequestBodyPromise = routeCaseCreationFlow(page);
-      await createCasePage.testSubmitButton.click({ noWaitAfter: true });
-      interceptedCreateCaseRequestBody = await interceptedCreateCaseRequestBodyPromise;
+      interceptedCreateCaseRequestBody = await submitCaseAndCaptureRequest(page, createCasePage);
     });
 
     await test.step('Check the JSON sent in the creation request matches the expected data, and no omitted items are sent', async () => {
@@ -257,9 +261,7 @@ test.describe(`Create a ${jurisdiction} case as ${userIdentifier}`, { tag: ['@in
     });
 
     await test.step('Submit the case for creation and capture the request body', async () => {
-      const interceptedCreateCaseRequestBodyPromise = routeCaseCreationFlow(page);
-      await createCasePage.testSubmitButton.click({ noWaitAfter: true });
-      interceptedCreateCaseRequestBody = await interceptedCreateCaseRequestBodyPromise;
+      interceptedCreateCaseRequestBody = await submitCaseAndCaptureRequest(page, createCasePage);
     });
 
     await test.step(`Check the JSON sent in the creation request doesn't contain 'maiden name' and shows the updated gender field`, async () => {

@@ -100,9 +100,8 @@ yarn test:playwright:integration
 
 Use Key Vault tagged secrets to generate local `.env` for Playwright runs.
 
-- Template file: `.env.example`
-- Preferred script wrapper: `scripts/populate-env-from-keyvault.sh`
-- Compatibility wrapper: `scripts/populate-playwright-env-from-keyvault.sh`
+- Template file: `playwright_tests_new/.env.example`
+- Script wrapper: `scripts/populate-playwright-env-from-keyvault.sh`
 - Underlying helper: `@hmcts/playwright-common/dist/scripts/get-secrets.js`
 
 Tagging rule in Azure Key Vault:
@@ -113,16 +112,16 @@ Supported commands:
 
 ```bash
 # AAT
-yarn env:populate:aat
+yarn env:populate:playwright:aat
 
 # DEMO
-yarn env:populate:demo
+yarn env:populate:playwright:demo
 
 # Generic form (env + custom output file)
-yarn env:populate aat .env
+yarn env:populate:playwright aat .env
 
 # Direct helper form (vault, template, output)
-yarn get-secrets rpx-aat .env.example .env
+yarn get-secrets rpx-aat playwright_tests_new/.env.example .env
 ```
 
 Dynamic-user keys now available in Key Vault (`rpx-aat`, `rpx-demo`) and populated via tags:
@@ -145,7 +144,6 @@ Dynamic-user keys now available in Key Vault (`rpx-aat`, `rpx-demo`) and populat
 Notes:
 
 - Local dynamic-user creation requires F5 VPN (AAT/DEMO private services).
-- The repo-root `.env.example` is now the single source of truth for local `.env` generation.
 - Do not commit `.env`.
 
 ---

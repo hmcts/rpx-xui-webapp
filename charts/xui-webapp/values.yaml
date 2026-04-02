@@ -36,7 +36,6 @@ nodejs:
     MAX_LOG_LINE: 80
     PROTOCOL: https
     MICROSERVICE: xui_webapp
-    SESSION_SECRET: secretSauce
     ALLOW_CONFIG_MUTATIONS: 1
     MC_HTTP_PROXY: http://172.16.0.7:8080
     MC_NO_PROXY: localhost
@@ -138,7 +137,7 @@ nodejs:
     FEATURE_TERMS_AND_CONDITIONS_ENABLED: false
     FEATURE_HELMET_ENABLED: true
     FEATURE_REDIS_ENABLED: true
-    FEATURE_OIDC_ENABLED: false
+    FEATURE_OIDC_ENABLED: true
     FEATURE_UPDATED_TASK_PERMISSIONS_ENABLED: true
     FEATURE_WORKALLOCATION_ENABLED: false
     FEATURE_JRD_E_LINKS_V2_ENABLED: true
@@ -164,6 +163,7 @@ nodejs:
         - launch-darkly-client-id
         - system-user-name
         - system-user-password
+        - mc-session-secret
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}

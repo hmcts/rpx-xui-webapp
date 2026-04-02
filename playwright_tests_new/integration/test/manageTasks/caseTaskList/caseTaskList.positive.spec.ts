@@ -1,10 +1,10 @@
 import { faker } from '@faker-js/faker';
-import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
-import { formatUiDate } from '../../utils/tableUtils';
-import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies } from '../../../common/sessionCapture';
-import { buildCaseDetailsTasksMinimal } from '../../mocks/caseDetailsTasks.builder';
-import { buildAsylumCaseMock } from '../../mocks/cases/asylumCase.mock';
+import { extractUserIdFromCookies } from '../../../utils/extractUserIdFromCookies';
+import { formatUiDate } from '../../../utils/tableUtils';
+import { expect, test } from '../../../../E2E/fixtures';
+import { applySessionCookies } from '../../../../common/sessionCapture';
+import { buildCaseDetailsTasksMinimal } from '../../../mocks/caseDetailsTasks.builder';
+import { buildAsylumCaseMock } from '../../../mocks/cases/asylumCase.mock';
 
 const userIdentifier = 'STAFF_ADMIN';
 const inSixHours = faker.date.soon({ days: 0.25 }).toISOString();

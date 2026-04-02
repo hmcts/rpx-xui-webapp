@@ -48,9 +48,21 @@ variable "welsh_reporting_enabled" {
   type        = bool
 }
 
+variable "exui_weekly_stats_enabled" {
+  default     = false
+  description = "Enable ExUI weekly stats reporting"
+  type        = bool
+}
+
 variable "welsh_email_address_key" {
   default     = "welsh-report-email"
   description = "Email address key in azure Key Vault for Welsh reporting."
+  type        = string
+}
+
+variable "exui_weekly_stats_email_address_key" {
+  default     = "exui-weekly-stats-email"
+  description = "Email address key in azure Key Vault for ExUI weekly stats reporting."
   type        = string
 }
 

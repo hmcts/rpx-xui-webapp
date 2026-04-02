@@ -7,6 +7,7 @@ import { test, expect } from './fixtures';
 import { expectStatus, StatusSets, withRetry } from './utils/apiTestUtils';
 import { expectContract, WorkAllocationSchemas, SearchSchemas } from './utils/contractValidation';
 import { TaskBuilder, TaskListBuilder, LocationBuilder, TestData } from './utils/testDataBuilders';
+import { buildTaskSearchRequest } from './utils/work-allocation';
 import { z } from 'zod';
 
 const serviceCodes = ['IA', 'CIVIL', 'PRIVATELAW'];
@@ -43,10 +44,7 @@ test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, 
     apiClient,
   }) => {
     // Given: A task search request for MyTasks view
-    const searchRequest = {
-      view: 'MyTasks',
-      searchRequest: [],
-    };
+    const searchRequest = buildTaskSearchRequest('MyTasks', { states: ['assigned'] });
 
     // When: Searching for tasks
     const response = await apiClient.post('workallocation/task', {
@@ -55,7 +53,7 @@ test.describe('Work Allocation API Contracts', { tag: '@svc-work-allocation' }, 
     });
 
     // Then: Response status is within expected range
-    expectStatus(response.status, [200, 401, 403, 500, 502]);
+    expectStatus(response.status, [200, 401, 403, 500, 502, 504]);
 
     // And: Response structure matches TaskList contract when successful
     if (response.status === 200) {

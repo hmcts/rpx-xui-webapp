@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import { Base } from '../../base';
 import { EXUI_TIMEOUTS } from './exui-timeouts';
 
@@ -12,9 +12,8 @@ export class CaseListPage extends Base {
   readonly applyFilterButton = this.page.locator('.search-block button[type="submit"]');
   readonly resetFilterButton = this.page.locator('.search-block button[type="reset"]');
   readonly jurisdictionSelect = this.page.locator('#wb-jurisdiction');
-
   readonly caseTypeSelect = this.page.locator('#wb-case-type');
-
+  readonly stateSelect = this.page.locator('#wb-case-state');
   readonly textField0Input = this.page.locator('#TextField0');
   readonly textField0FallbackInput = this.page
     .locator('input[id*="TextField0"], input[name*="TextField0"], input[formcontrolname*="TextField0"]')
@@ -24,8 +23,16 @@ export class CaseListPage extends Base {
   readonly quickSearchFindButton = this.quickSearchContainer.getByRole('button', { name: 'Find', exact: true });
   readonly caseSearchResultsMessage = this.page.locator('#search-result');
   readonly caseResultsTable = this.page.locator('#search-result table');
+  readonly caseListResultsLimitWarning = this.page.locator('#search-result .govuk-warning-text__text');
+  readonly unselectableCasesInfoMessage = this.page.locator('#info-msg-unselected-case');
+  readonly unselectableCasesInfoDetails = this.page.locator('#info-msg-unselected-case details');
+  readonly unselectableCasesInfoSummaryButton = this.page.locator('#info-msg-unselected-case summary');
+  readonly unselectableCasesInfoSummary = this.page.locator('#sp-msg-unselected-case-header');
+  readonly unselectableCasesInfoContent = this.page.locator('#sp-msg-unselected-case-content');
   readonly pagination = this.page.locator('.ngx-pagination');
-
+  readonly paginationNext = this.page.locator('.pagination-next');
+  readonly paginationPrevious = this.page.locator('.pagination-previous');
+  readonly paginationCurrentPage = this.pagination.locator('.current');
   // Some case list views use an id, others a data-test attribute for the summary
   readonly caseListResultsAmount = this.page.locator('#search-result-summary__text, [data-test="search-result-summary__text"]');
 
@@ -34,11 +41,15 @@ export class CaseListPage extends Base {
   }
 
   public async searchByJurisdiction(jurisdiction: string): Promise<void> {
-    await this.jurisdictionSelect.selectOption(jurisdiction);
+    await this.selectDropdownOption(this.jurisdictionSelect, jurisdiction);
   }
 
   public async searchByCaseType(caseType: string): Promise<void> {
-    await this.caseTypeSelect.selectOption(caseType);
+    await this.selectDropdownOption(this.caseTypeSelect, caseType);
+  }
+
+  public async searchByState(state: string): Promise<void> {
+    await this.selectDropdownOption(this.stateSelect, state);
   }
 
   public async searchByTextField0(textField0: string): Promise<boolean> {
@@ -77,6 +88,45 @@ export class CaseListPage extends Base {
   public async applyFilters(): Promise<void> {
     await this.exuiCaseListComponent.filters.applyFilterBtn.click();
     await this.exuiSpinnerComponent.wait();
+  }
+
+  private async selectDropdownOption(select: Locator, optionValueOrLabel: string): Promise<void> {
+    await select.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
+
+    await this.page.waitForFunction(
+      ({ selector, optionValueOrLabel: target }) => {
+        const element = document.querySelector(selector);
+        if (!(element instanceof HTMLSelectElement)) {
+          return false;
+        }
+
+        return Array.from(element.options).some((option) => option.value === target || option.label.trim() === target);
+      },
+      { selector: await select.evaluate((element) => `#${(element as HTMLSelectElement).id}`), optionValueOrLabel },
+      { timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE }
+    );
+
+    const availableOptions = await select.evaluate((element) =>
+      Array.from((element as HTMLSelectElement).options).map((option) => ({
+        value: option.value,
+        label: option.label.trim(),
+      }))
+    );
+
+    const matchingOption = availableOptions.find(
+      (option) => option.value === optionValueOrLabel || option.label === optionValueOrLabel
+    );
+
+    if (!matchingOption) {
+      throw new Error(`Dropdown option "${optionValueOrLabel}" was not available.`);
+    }
+
+    if (matchingOption.value === optionValueOrLabel) {
+      await select.selectOption(optionValueOrLabel);
+      return;
+    }
+
+    await select.selectOption({ label: optionValueOrLabel });
   }
 
   private async assertCasesPageHealthy(context: string): Promise<void> {
@@ -143,6 +193,49 @@ export class CaseListPage extends Base {
   async getPaginationFinalItem(): Promise<string | undefined> {
     const items = (await this.pagination.locator('li').allTextContents()).map((i) => i.trim());
     return items.at(-1);
+  }
+
+  async getVisiblePaginationPageNumbers(): Promise<number[]> {
+    const paginationItems = this.pagination.locator('li');
+    const itemCount = await paginationItems.count();
+    const visiblePageNumbers = new Set<number>();
+
+    for (let index = 0; index < itemCount; index += 1) {
+      const item = paginationItems.nth(index);
+      if (!(await item.isVisible().catch(() => false))) {
+        continue;
+      }
+
+      const digitMatches = ((await item.textContent()) ?? '').match(/\d+/g) ?? [];
+      for (const match of digitMatches) {
+        visiblePageNumbers.add(Number(match));
+      }
+    }
+
+    return Array.from(visiblePageNumbers).sort((first, second) => first - second);
+  }
+
+  private async getVisiblePaginationPageControl(pageNumber: number): Promise<Locator> {
+    const pageText = pageNumber.toString();
+    const candidateControls = this.page.locator('.ngx-pagination a, .ngx-pagination button').filter({
+      hasText: new RegExp(`^\\s*${pageText}\\s*$`),
+    });
+    const candidateCount = await candidateControls.count();
+
+    for (let index = 0; index < candidateCount; index += 1) {
+      const candidate = candidateControls.nth(index);
+      if (await candidate.isVisible().catch(() => false)) {
+        return candidate;
+      }
+    }
+
+    const paginationItems = (await this.page.locator('.ngx-pagination li').allTextContents()).map((item) => item.trim());
+    throw new Error(`Pagination page control "${pageText}" was not visible. Available items: ${paginationItems.join(', ')}`);
+  }
+
+  async clickPaginationPage(pageNumber: number): Promise<void> {
+    const pageControl = await this.getVisiblePaginationPageControl(pageNumber);
+    await pageControl.click({ timeout: 10_000 });
   }
 
   async openCaseByReference(cleanedCaseNumber: string) {

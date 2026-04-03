@@ -50,6 +50,10 @@ import { effects } from './store/effects';
 // APP store
 import { CustomSerializer, reducers } from './store/reducers';
 import { InitialisationSyncService } from './services/ccd-config/initialisation-sync-service';
+import { TELEMETRY_SERVICE } from '@hmcts/rpx-xui-common-lib';
+import { SessionTelemetryService } from './services/session-telemetry.service';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { TraceIdInterceptor } from './interceptors/trace-id.interceptor';
 // enforces immutability
 export const metaReducers: MetaReducer<any>[] = !environment.production ? [storeFreeze] : [];
 
@@ -129,6 +133,9 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
         headerName: 'X-XSRF-TOKEN',
       })
     ),
+    SessionTelemetryService,
+    { provide: TELEMETRY_SERVICE, useExisting: SessionTelemetryService },
+    { provide: HTTP_INTERCEPTORS, useClass: TraceIdInterceptor, multi: true }
   ],
 })
 export class AppModule {}

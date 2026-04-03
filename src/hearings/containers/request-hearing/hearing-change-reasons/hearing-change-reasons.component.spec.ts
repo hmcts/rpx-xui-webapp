@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormArray, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
+import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { of, throwError } from 'rxjs';
@@ -13,6 +14,7 @@ import { ACTION } from '../../../models/hearings.enum';
 import { LovRefDataModel } from '../../../models/lovRefData.model';
 import { HearingsService } from '../../../services/hearings.service';
 import { HearingsFeatureService } from '../../../services/hearings-feature.service';
+import { HearingsUtils } from '../../../utils/hearings.utils';
 import { HearingChangeReasonsComponent } from './hearing-change-reasons.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
@@ -23,6 +25,7 @@ describe('HearingChangeReasonsComponent', () => {
   const mockedHttpClient = jasmine.createSpyObj('HttpClient', ['get', 'post']);
   const hearingsService = new HearingsService(mockedHttpClient);
   const mockRouter = jasmine.createSpyObj('router', ['navigateByUrl']);
+  const appConfig = jasmine.createSpyObj('AbstractAppConfig', ['logMessage']);
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled']);
   const hearingsFeatureServiceMock = jasmine.createSpyObj('FeatureServiceMock', ['isFeatureEnabled', 'hearingAmendmentsEnabled']);
 
@@ -90,6 +93,10 @@ describe('HearingChangeReasonsComponent', () => {
           useValue: mockRouter,
         },
         {
+          provide: AbstractAppConfig,
+          useValue: appConfig,
+        },
+        {
           provide: FeatureToggleService,
           useValue: mockFeatureToggleService,
         },
@@ -110,6 +117,7 @@ describe('HearingChangeReasonsComponent', () => {
   }));
 
   beforeEach(() => {
+    appConfig.logMessage.calls.reset();
     fixture = TestBed.createComponent(HearingChangeReasonsComponent);
     component = fixture.componentInstance;
     component.hearingChangeReasons = reasons;
@@ -188,6 +196,23 @@ describe('HearingChangeReasonsComponent', () => {
     component.executeAction(ACTION.BACK);
     expect(component.errors.length).toBe(0);
     expect((hearingsService.hearingRequestForSubmitValid = false));
+  });
+
+  it('should log hearing consistency messages on submit when form is valid', () => {
+    spyOn(HearingsUtils, 'getHearingConsistencyLogMessages').and.returnValue([
+      'Hearing internal name mismatch detected. HRM: A SHV: B for caseId: 1234567890123456',
+    ]);
+    (component.hearingChangeReasonForm.controls.reasons as FormArray).controls[0].patchValue({ selected: true });
+    spyOn(component, 'prepareHearingRequestData');
+    spyOn(component, 'navigateAction').and.callThrough();
+
+    component.executeAction(ACTION.VIEW_EDIT_SUBMIT);
+
+    expect(appConfig.logMessage).toHaveBeenCalledWith(
+      'Hearing internal name mismatch detected. HRM: A SHV: B for caseId: 1234567890123456'
+    );
+    expect(component.prepareHearingRequestData).toHaveBeenCalled();
+    expect(hearingsService.hearingRequestForSubmitValid).toBeTrue();
   });
 
   it('should execute Action and fail validation', () => {

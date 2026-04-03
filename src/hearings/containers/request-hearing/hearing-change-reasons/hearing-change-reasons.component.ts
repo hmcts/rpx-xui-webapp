@@ -1,3 +1,4 @@
+import { AbstractAppConfig } from '@hmcts/ccd-case-ui-toolkit';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -35,7 +36,8 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
     protected readonly hearingsService: HearingsService,
     protected readonly featureToggleService: FeatureToggleService,
     protected readonly hearingsFeatureService: HearingsFeatureService,
-    protected readonly route: ActivatedRoute
+    protected readonly route: ActivatedRoute,
+    private readonly appConfig: AbstractAppConfig
   ) {
     super(hearingStore, hearingsService, featureToggleService, route);
     this.hearingRequestLastError$ = this.hearingStore.pipe(select(fromHearingStore.getHearingRequestLastError));
@@ -107,6 +109,11 @@ export class HearingChangeReasonsComponent extends RequestHearingPageFlow implem
   public executeAction(action: ACTION): void {
     if (action === ACTION.VIEW_EDIT_SUBMIT) {
       if (this.isFormValid(action)) {
+        const mismatchLogMessages = HearingsUtils.getHearingConsistencyLogMessages(
+          this.hearingRequestMainModel,
+          this.serviceHearingValuesModel
+        );
+        mismatchLogMessages.forEach((message) => this.appConfig.logMessage(message));
         this.hearingsService.hearingRequestForSubmitValid = true;
         this.prepareHearingRequestData();
         super.navigateAction(action);

@@ -30,6 +30,7 @@ export class HearingActualsAddEditSummaryComponent extends HearingActualsSummary
   ) {
     super(hearingStore, hearingsService, route, router, ccdDatePipe);
     this.partyChannels = [...this.route.snapshot.data.partyChannels, ...this.route.snapshot.data.partySubChannels];
+    console.log(this.hearingActualsMainModel);
   }
 
   public onSubmitHearingDetails(): void {

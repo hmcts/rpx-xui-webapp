@@ -679,7 +679,7 @@ describe('HearingsUtils', () => {
   });
 
   describe('getHearingConsistencyLogMessages', () => {
-    it('should return internal and public name log messages with case id when names are equal', () => {
+    it('should return no log messages when internal and public names are equal', () => {
       const hearingRequestMainModel: HearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         caseDetails: {
@@ -696,13 +696,10 @@ describe('HearingsUtils', () => {
         publicCaseName: 'Public Name',
       };
 
-      expect(HearingsUtils.getHearingConsistencyLogMessages(hearingRequestMainModel, serviceHearingValuesModel)).toEqual([
-        'Hearing internal name mismatch detected. HRM: Internal Name SHV: Internal Name for caseId: 1234567890123456 and hearingId: 1000000 at 2021-11-30T09:00:00.000Z with status LISTED',
-        'Hearing public name mismatch detected. HRM: Public Name SHV: Public Name for caseId: 1234567890123456 and hearingId: 1000000 at 2021-11-30T09:00:00.000Z with status LISTED',
-      ]);
+      expect(HearingsUtils.getHearingConsistencyLogMessages(hearingRequestMainModel, serviceHearingValuesModel)).toEqual([]);
     });
 
-    it('should use the HRM caseRef when creating internal name log messages for equal names', () => {
+    it('should use the HRM caseRef when creating public name log messages for mismatched names', () => {
       const hearingRequestMainModel: HearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         caseDetails: {
@@ -720,7 +717,7 @@ describe('HearingsUtils', () => {
       };
 
       expect(HearingsUtils.getHearingConsistencyLogMessages(hearingRequestMainModel, serviceHearingValuesModel)).toEqual([
-        'Hearing internal name mismatch detected. HRM: Internal Name SHV: Internal Name for caseId: 1111111111111111 and hearingId: 1000000 at 2021-11-30T09:00:00.000Z with status LISTED',
+        'Hearing public name mismatch detected. HRM: Public Name SHV: Different Public Name for caseId: 1111111111111111 and hearingId: 1000000 at 2021-11-30T09:00:00.000Z with status LISTED',
       ]);
     });
   });

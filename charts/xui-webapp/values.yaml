@@ -112,6 +112,7 @@ nodejs:
     SERVICES_IDAM_LOGIN_URL: https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net
     SERVICES_IDAM_INDEX_URL: /
     SERVICES_IDAM_OAUTH_CALLBACK_URL: /oauth2/callback
+    SERVICES_IDAM_SERVICE_OVERRIDE: false
     # Services payments
     SERVICES_PAYMENTS_URL: http://payment-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services S2s
@@ -119,7 +120,7 @@ nodejs:
     # Services T&Cs
     SERVICES_TERMS_AND_CONDITIONS: http://xui-terms-and-conditions-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # OpenId ISS
-    SERVICES_IDAM_ISS_URL: https://forgerock-am.service.core-compute-idam-{{ .Values.global.environment }}2.internal:8443/openam/oauth2/hmcts
+    SERVICES_IDAM_ISS_URL: https://forgerock-am.service.core-compute-idam-{{ .Values.global.environment }}2.internal:8443/openam/oauth2/realms/root/realms/hmcts
     # Card Payment Return Url (for Ways To Pay)
     SERVICES_PAYMENT_RETURN_URL: https://paymentoutcome-web.{{ .Values.global.environment }}.platform.hmcts.net
     # Judicial Booking Url
@@ -144,7 +145,7 @@ nodejs:
     FEATURE_SUBSTANTIVE_ROLE_ENABLED: true
     FEATURE_ACCESS_MANAGEMENT_ENABLED: false
     FEATURE_LAU_SPECIFIC_CHALLENGED_ENABLED: false
-    FEATURE_QUERY_IDAM_SERVICE_OVERRIDE: true
+    FEATURE_QUERY_IDAM_SERVICE_OVERRIDE: false
 
     # Redis
     REDIS_KEY_PREFIX: 'activity:'

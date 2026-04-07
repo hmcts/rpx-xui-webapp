@@ -3839,12 +3839,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.44":
-  version: 7.3.44
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.44"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.44-4300":
+  version: 7.3.44-4300
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.44-4300"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/b13497c5d7198ae714e84e0a3b04adb5bac8c4023fd156fb8e70dfde1151ba27bd2ac8b7b83523d8d4ab65210ab38a274d681649ba5b0154f5906ce5b7182f53
+  checksum: 10/c84fedebfdfd2985f27417ed45433b6145afa8a8523b680328c7594745d9aa18996ab5fab0757904bc5b0ef4c391d7cc15560c53f22edd54b0c677833229495a
   languageName: node
   linkType: hard
 
@@ -3956,16 +3956,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.6":
-  version: 3.2.6
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.6"
+"@hmcts/rpx-xui-common-lib@npm:3.2.6-4300":
+  version: 3.2.6-4300
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.6-4300"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: 1.1.2-CME-780-9
-  checksum: 10/718e05b9c621eff2df17b393a4d84d5e5b5d69770e2bad26d13665d8d368d9ce9cca81f80178b20b538125f4f34449374ab06bc3a613306177862aa1ee037690
+  checksum: 10/1075850151f6365201f5549ec9f3041af4e15fd18dc51667b35d3b24fa729b064634c68cf91c5fb3b51f2ce4d554500769cdff657145ee505b408c1a088656f1
   languageName: node
   linkType: hard
 
@@ -13259,10 +13259,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"core-js@npm:^3.19.3":
-  version: 3.48.0
-  resolution: "core-js@npm:3.48.0"
-  checksum: 10/08bb3cc9b3225b905e72370c18257a14bb5563946d9eb7496799e0ee4f13231768b980ffe98434df7dbd0f8209bd2c19519938a2fa94846b2c82c2d5aa804037
+"core-js@npm:^3.49.0":
+  version: 3.49.0
+  resolution: "core-js@npm:3.49.0"
+  checksum: 10/31d018f9830b0240ae40869e380595f2d06a8800709ad63299a42a438ba0c8d5805045fa02a20a78f42761d83103b0b71eca982955f5e890fb7cf6b2fe6a9ab1
   languageName: node
   linkType: hard
 
@@ -24442,14 +24442,14 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.44"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.44-4300"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.15"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.3.1"
-    "@hmcts/rpx-xui-common-lib": "npm:3.2.6"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.6-4300"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7-exui-3762-rel"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
@@ -24503,7 +24503,7 @@ __metadata:
     compression: "npm:^1.7.4"
     config: "npm:^3.2.5"
     cookie-parser: "npm:^1.4.4"
-    core-js: "npm:^3.19.3"
+    core-js: "npm:^3.49.0"
     cross-env: "npm:^10.0.0"
     crypto-js: "npm:^4.2.0"
     cucumber-html-report: "npm:0.6.5"

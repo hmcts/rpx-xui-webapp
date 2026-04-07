@@ -1,0 +1,12 @@
+{
+  "excludedTags": [],
+  "availableTags": [
+    "@e2e",
+    "@e2e-case-flags",
+    "@e2e-create-case",
+    "@e2e-document-upload",
+    "@e2e-manage-tasks",
+    "@e2e-search-case",
+    "@e2e-update-case"
+  ]
+}

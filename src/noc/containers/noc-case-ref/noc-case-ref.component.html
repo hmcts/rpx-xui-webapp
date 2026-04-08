@@ -14,7 +14,7 @@
       <div class="govuk-error-summary__body">
         <ul class="govuk-list govuk-error-summary__list">
           <li *ngIf="cannotProceedErrorMessage">
-            <a href="noc#representing">{{ cannotProceedErrorMessage | rpxTranslate }}</a>
+            <a href="noc#representing" class="noc-error-message-multiline">{{ cannotProceedErrorMessage | rpxTranslate }}</a>
           </li>
           <li *ngIf="(validationErrors$ | async)?.message">
             <a href="noc#caseRef">{{ (validationErrors$ | async)?.message | rpxTranslate }}</a>
@@ -63,7 +63,7 @@
           <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
             <h2 class="govuk-fieldset__heading">Are you going to represent your client on the Divorce or Dissolution case?</h2>
           </legend>
-          <span *ngIf="cannotProceedErrorMessage" id="representing-error" class="govuk-error-message">
+          <span *ngIf="cannotProceedErrorMessage" id="representing-error" class="govuk-error-message noc-error-message-multiline">
             <span class="govuk-visually-hidden">Error:</span>
             {{ cannotProceedErrorMessage | rpxTranslate }}
           </span>

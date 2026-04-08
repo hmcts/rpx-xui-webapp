@@ -23,6 +23,9 @@ export class NocCaseRefComponent implements OnInit, OnDestroy {
 
   public caseRefForm: FormGroup;
   public cannotProceedErrorMessage: string | null = null;
+  private readonly representingRequiredErrorMessage = 'You must select an option to proceed.';
+  private readonly representingNotAllowedErrorMessage =
+    'You cannot continue.\nYou can only use this service if you are representing your client on the Divorce or Dissolution case.';
 
   public scrollToError = false;
 
@@ -90,9 +93,13 @@ export class NocCaseRefComponent implements OnInit, OnDestroy {
         break;
       }
       case NocNavigationEvent.CONTINUE: {
+        if (!this.caseRefForm.controls.representing.value) {
+          this.cannotProceedErrorMessage = this.representingRequiredErrorMessage;
+          break;
+        }
+
         if (this.caseRefForm.controls.representing.value === 'no') {
-          this.cannotProceedErrorMessage =
-            'You can only use this service if you are representing your client on the Divorce or Dissolution case.';
+          this.cannotProceedErrorMessage = this.representingNotAllowedErrorMessage;
           break;
         }
 

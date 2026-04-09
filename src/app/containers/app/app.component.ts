@@ -9,7 +9,7 @@ import {
   TimeoutNotificationsService,
 } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { combineLatest, Subscription } from 'rxjs';
+import { combineLatest, fromEvent, Subscription } from 'rxjs';
 import { propsExist } from '../../../../api/lib/objectUtilities';
 import { SessionStorageService } from '../../services';
 import { environment as config } from '../../../environments/environment';
@@ -38,6 +38,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private cookieBannerEnabledSubscription: Subscription;
   private cookieBannerEnabled: boolean = false;
   public subscription: Subscription;
+  private foregroundSessionSubscription: Subscription;
   private pageReloading: boolean = false;
   private timeoutNotificationServiceInitialised: boolean = false;
   private idleModalDisplayTimeInMilliseconds: number;
@@ -79,6 +80,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit() {
+    this.setupForegroundSessionCheck();
     this.store.pipe(select(fromRoot.getUseIdleSessionTimeout)).subscribe((useIdleTimeout) => {
       if (useIdleTimeout) {
         this.loadAndListenForUserDetails();
@@ -101,6 +103,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
     if (this.subscription) {
       this.subscription.unsubscribe();
+    }
+
+    if (this.foregroundSessionSubscription) {
+      this.foregroundSessionSubscription.unsubscribe();
     }
   }
 
@@ -256,6 +262,19 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
+  public revalidateSessionOnForeground(): void {
+    this.authService.keepAlive().subscribe({
+      next: (isAuthenticated) => {
+        if (!isAuthenticated) {
+          this.loggerService.log('Session invalid after returning to app.');
+        }
+      },
+      error: () => {
+        this.loggerService.log('Failed to revalidate session after returning to app. Leaving user on current page.');
+      },
+    });
+  }
+
   /**
    * Set Modal
    *
@@ -324,7 +343,7 @@ export class AppComponent implements OnInit, OnDestroy {
     const timeoutNotificationConfig: any = {
       idleModalDisplayTime: this.idleModalDisplayTimeInMilliseconds,
       totalIdleTime: this.totalIdleTimeInMilliseconds,
-      keepAliveInSeconds: 900,
+      keepAliveInSeconds: 600,
       idleServiceName: 'idleSession',
     };
 
@@ -334,6 +353,12 @@ export class AppComponent implements OnInit, OnDestroy {
     this.loggerService.log('Initialising TimeoutNotificationService');
     this.timeoutNotificationsService.initialise(timeoutNotificationConfig);
     this.timeoutNotificationServiceInitialised = true;
+  }
+
+  private setupForegroundSessionCheck(): void {
+    this.foregroundSessionSubscription = fromEvent(window, 'focus').subscribe(() => {
+      this.revalidateSessionOnForeground();
+    });
   }
 
   public setCookieBannerVisibility(): void {

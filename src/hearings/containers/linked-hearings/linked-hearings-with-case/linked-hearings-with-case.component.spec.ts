@@ -394,6 +394,86 @@ describe('LinkedHearingsWithCaseComponent', () => {
     expect(component.getHearingsFormValue(0, 0).controls[0].get('isSelected').value).toBe(true);
   });
 
+  it('should return the caseHearings form array when the control exists', () => {
+    const expectedFormArray = component['fb'].array([
+      component['fb'].group({
+        hearingID: 'h100010',
+        isSelected: true,
+      }),
+    ]);
+
+    const casesFormArray = component['fb'].array([
+      component['fb'].group({
+        caseRef: '4652724902696213',
+        caseName: 'X vs Y',
+        reasonsForLink: component['fb'].array([]),
+        caseHearings: expectedFormArray,
+      }),
+    ]);
+
+    spyOnProperty(component, 'getCasesFormValue', 'get').and.returnValue(casesFormArray);
+
+    const result = component.getHearingsFormValue(0);
+
+    expect(result).toBe(expectedFormArray);
+    expect(result.length).toBe(1);
+
+    const nextResult = component.getHearingsFormValue(0, 0);
+    expect(nextResult).toBe(expectedFormArray);
+    expect(nextResult.length).toBe(1);
+  });
+
+  it('should return an empty form array when caseHearings control is missing', () => {
+    const casesFormArray = component['fb'].array([
+      component['fb'].group({
+        caseRef: '4652724902696213',
+        caseName: 'X vs Y',
+        reasonsForLink: component['fb'].array([]),
+      }),
+    ]);
+
+    spyOnProperty(component, 'getCasesFormValue', 'get').and.returnValue(casesFormArray);
+
+    const result = component.getHearingsFormValue(0, 0);
+
+    expect(result).toBeTruthy();
+    expect(result.length).toBe(0);
+  });
+
+  it('should return an empty form array when there are no case controls', () => {
+    spyOnProperty(component, 'getCasesFormValue', 'get').and.returnValue(component['fb'].array([]));
+
+    const result = component.getHearingsFormValue(0);
+
+    expect(result).toBeTruthy();
+    expect(result.length).toBe(0);
+  });
+
+  it('should return an empty form array when case position is out of bounds', () => {
+    const casesFormArray = component['fb'].array([
+      component['fb'].group({
+        caseRef: '4652724902696213',
+        caseName: 'X vs Y',
+        reasonsForLink: component['fb'].array([]),
+        caseHearings: component['fb'].array([]),
+      }),
+    ]);
+
+    spyOnProperty(component, 'getCasesFormValue', 'get').and.returnValue(casesFormArray);
+
+    expect(component.getHearingsFormValue(-1).length).toBe(0);
+    expect(component.getHearingsFormValue(1).length).toBe(0);
+  });
+
+  it('should return an empty form array when linkedCases is undefined', () => {
+    component.linkedCases = undefined;
+
+    const result = component.getCasesFormArray;
+
+    expect(result).toBeTruthy();
+    expect(result.length).toBe(0);
+  });
+
   afterEach(() => {
     fixture.destroy();
   });

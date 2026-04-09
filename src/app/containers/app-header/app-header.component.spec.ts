@@ -265,4 +265,21 @@ describe('AppHeaderComponent', () => {
       expect(component.navItems).toEqual([]);
     });
   });
+
+  describe('setupActiveNavLink()', () => {
+    it('should clear nav items when current route is booking and user is bookable judicial', () => {
+      const menuItems: NavigationItem[] = [{ text: 'Bookings', href: '/booking', active: false }];
+      const isBookableAndJudicialRoleSpy = spyOn(AppUtils, 'isBookableAndJudicialRole').and.returnValue(true);
+      component['userDetails'] = {
+        userInfo: { roleCategory: 'JUDICIAL' },
+        roleAssignmentInfo: [{ bookable: true }],
+      } as any;
+      (component.router as any).url = '/booking/some-page';
+
+      (component as any).setupActiveNavLink(menuItems);
+
+      expect(isBookableAndJudicialRoleSpy).toHaveBeenCalledWith(component['userDetails']);
+      expect(component.navItems).toEqual([]);
+    });
+  });
 });

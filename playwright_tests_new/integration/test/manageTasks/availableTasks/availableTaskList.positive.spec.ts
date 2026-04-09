@@ -177,11 +177,14 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
     });
 
     await test.step('Verify you can assign test', async () => {
-      await taskListPage.openFirstManageActions('available tasks claim action');
-      await expect(taskListPage.taskActionsRow).toBeVisible();
-      await expect(taskListPage.taskActionClaim).toBeVisible();
-      await taskListPage.clickTaskAction(taskListPage.taskActionClaim, 'available tasks claim action');
-      await expect(taskListPage.taskActionClaim).not.toBeVisible();
+      const rowIndex = 0;
+      const claimAction = taskListPage.getTaskActionForRow(rowIndex, 'claim');
+
+      await taskListPage.openManageActionsForRow(rowIndex, 'available tasks claim action');
+      await expect(taskListPage.getTaskActionsRow(rowIndex)).toBeVisible();
+      await expect(claimAction).toBeVisible();
+      await taskListPage.clickTaskActionForRow(rowIndex, 'claim', 'available tasks claim action');
+      await expect(claimAction).not.toBeVisible();
       await expect(taskListPage.exuiBodyComponent.infoMessage).toBeVisible();
       await expect(taskListPage.exuiBodyComponent.successMessage).toContainText(
         `You've assigned yourself a task. It's available in My tasks.`

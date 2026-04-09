@@ -2,6 +2,7 @@
   "excludedTags": [],
   "availableTags": [
     "@e2e",
+    "@e2e-case-file-view",
     "@e2e-case-flags",
     "@e2e-create-case",
     "@e2e-document-upload",

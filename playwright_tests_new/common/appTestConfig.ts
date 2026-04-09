@@ -237,6 +237,13 @@ const data: AppTestConfig = {
         userIdentifier: 'PROBATE_CW',
         key: 'Monday01',
       },
+      {
+        idamId: 'ea3154e5-4cc0-45ba-8d25-dd1c924530b2',
+        email: 'prl_aat_swansea_courtadmin@justice.gov.uk',
+        release: 'PRL',
+        userIdentifier: 'PRL_Courtadmin',
+        key: 'Nagoya0102',
+      },
     ],
     demo: [
       {

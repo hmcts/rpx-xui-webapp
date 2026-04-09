@@ -314,14 +314,14 @@ export async function ensureSession(userIdentifier: SessionIdentityInput): Promi
 
   const isFresh = isSessionFresh(sessionPath, resolveSessionMaxAgeMs(), { targetUrl });
   if (isFresh) {
-    logger.info('Session is fresh, skipping capture', {
-      userIdentifier: identity.userIdentifier,
-      email,
-      operation: 'lazy-capture',
-      metric: 'session-hit',
-    });
-    return;
-  }
+      logger.info('Session is fresh, skipping capture', {
+        userIdentifier: identity.userIdentifier,
+        email,
+        operation: 'lazy-capture',
+        metric: 'session-hit',
+      });
+      return;
+    }
   logger.info('Session missing or stale, capturing lazily', {
     userIdentifier: identity.userIdentifier,
     email,
@@ -516,23 +516,12 @@ export async function ensureAuthenticatedPage(
   const targetUrl = options.targetUrl ?? process.env.TEST_URL ?? config.urls.exuiDefaultUrl;
   const timeoutMs = options.timeoutMs ?? 60000;
   let session = await ensureSessionCookies(identity);
-  if (session.cookies.length) {
-    await page.context().addCookies(session.cookies);
-    markSetup('cookies-ready');
-  } else {
-    markSetup('cookies-ready');
-  }
-
-  await gotoAppTarget(page, identity.userIdentifier, targetUrl);
-  await acceptAccessCookiesIfPresent(page);
-  markSetup('navigated-app');
-
-  if (await isIdamLoginPage(page)) {
-    markSetup('idam-login');
+  const refreshSession = async (reason: string): Promise<LoadedSession> => {
     logger.warn('Session appears invalid; refreshing', {
       userIdentifier: identity.userIdentifier,
       email: session.email,
       targetUrl,
+      reason,
       operation: 'session-refresh',
     });
     try {
@@ -550,11 +539,29 @@ export async function ensureAuthenticatedPage(
 
     await sessionCapture([identity]);
     markSetup('session-refresh');
-    session = loadSessionCookies(identity);
+    const refreshedSession = loadSessionCookies(identity);
     await page.context().clearCookies();
-    if (session.cookies.length) {
-      await page.context().addCookies(session.cookies);
+    if (refreshedSession.cookies.length) {
+      await page.context().addCookies(refreshedSession.cookies);
     }
+    session = refreshedSession;
+    return refreshedSession;
+  };
+
+  if (session.cookies.length) {
+    await page.context().addCookies(session.cookies);
+    markSetup('cookies-ready');
+  } else {
+    markSetup('cookies-ready');
+  }
+
+  await gotoAppTarget(page, identity.userIdentifier, targetUrl);
+  await acceptAccessCookiesIfPresent(page);
+  markSetup('navigated-app');
+
+  if (await isIdamLoginPage(page)) {
+    markSetup('idam-login');
+    await refreshSession('initial-login-page');
     await gotoAppTarget(page, identity.userIdentifier, targetUrl);
     await acceptAccessCookiesIfPresent(page);
     markSetup('navigated-app');
@@ -596,6 +603,9 @@ export async function ensureAuthenticatedPage(
         error: (error as Error).message,
         operation: 'wait-for-shell',
       });
+      if (error instanceof SessionCaptureError) {
+        await refreshSession('shell-wait-login-page');
+      }
       await gotoAppTarget(page, identity.userIdentifier, targetUrl);
       await acceptAccessCookiesIfPresent(page);
       markSetup('navigated-app');
@@ -657,7 +667,6 @@ export function isSessionFresh(
     return false;
   }
 }
-
 // local helper to persist session: write session file, add cookies to context and save storageState
 async function persistSession(
   localSessionPath: string,
@@ -855,9 +864,14 @@ async function confirmAuthenticatedLogin(
   attemptIndex: number,
   deps: {
     acceptCookies?: typeof acceptAccessCookiesIfPresent;
-    waitForShell?: typeof waitForAuthenticatedShell;
+    waitForShell?: (
+      page: Page,
+      userIdentifier: string,
+      preferredSelector: string | undefined,
+      timeoutMs: number
+    ) => Promise<string | null>;
     waitForAuthCookies?: typeof waitForRequiredAuthCookies;
-    info?: typeof logger.info;
+    info?: (message: string, meta: Record<string, unknown>) => unknown;
   } = {}
 ): Promise<void> {
   const acceptCookies = deps.acceptCookies ?? acceptAccessCookiesIfPresent;

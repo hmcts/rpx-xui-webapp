@@ -55,9 +55,8 @@ export class CaseFileViewPage extends Base {
           return false;
         }
 
-        const hasFolderNodes = container.querySelectorAll(
-          'cdk-tree[role="tree"] > cdk-nested-tree-node.document-tree-container__folder'
-        ).length > 0;
+        const hasFolderNodes =
+          container.querySelectorAll('cdk-tree[role="tree"] > cdk-nested-tree-node.document-tree-container__folder').length > 0;
         const hasEmptyState = (container.textContent || '').includes(emptyStateText);
 
         return hasFolderNodes || hasEmptyState;

@@ -22,12 +22,7 @@ test.describe('Case file view', { tag: ['@e2e', '@e2e-case-file-view'] }, () => 
     await openHomeWithCapturedSession(page, userIdentifier);
   });
 
-  test('Case File view, media viewer, document count', async ({
-    caseDetailsPage,
-    caseFileViewPage,
-    searchCasePage,
-    page,
-  }) => {
+  test('Case File view, media viewer, document count', async ({ caseDetailsPage, caseFileViewPage, searchCasePage, page }) => {
     await test.step('Navigate to the case and open Case File View Tab', async () => {
       await searchCasePage.searchWith16DigitCaseId(caseReference);
       await expect(page).toHaveURL(/\/cases\/case-details\//);
@@ -67,7 +62,9 @@ test.describe('Case file view', { tag: ['@e2e', '@e2e-case-file-view'] }, () => 
 
       await expect(caseFileViewPage.getFolderCount(ordersFileNode)).toHaveText('0');
       await expect(caseFileViewPage.getFolderCount(preliminaryDocumentsNode)).toHaveText('1');
-      await expect.poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder(preliminaryPositionStatementsFolder)).toContain(documentName);
+      await expect
+        .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder(preliminaryPositionStatementsFolder))
+        .toContain(documentName);
     });
 
     await test.step('Move the document back to Orders.Finalised order', async () => {

@@ -314,14 +314,14 @@ export async function ensureSession(userIdentifier: SessionIdentityInput): Promi
 
   const isFresh = isSessionFresh(sessionPath, resolveSessionMaxAgeMs(), { targetUrl });
   if (isFresh) {
-      logger.info('Session is fresh, skipping capture', {
-        userIdentifier: identity.userIdentifier,
-        email,
-        operation: 'lazy-capture',
-        metric: 'session-hit',
-      });
-      return;
-    }
+    logger.info('Session is fresh, skipping capture', {
+      userIdentifier: identity.userIdentifier,
+      email,
+      operation: 'lazy-capture',
+      metric: 'session-hit',
+    });
+    return;
+  }
   logger.info('Session missing or stale, capturing lazily', {
     userIdentifier: identity.userIdentifier,
     email,

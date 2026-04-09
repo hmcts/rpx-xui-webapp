@@ -92,10 +92,8 @@ export class LinkedHearingsCheckYourAnswersComponent implements OnInit, OnDestro
         this.showSpinner = false;
       },
     });
-    this.error$.subscribe((error) => {
-      this.serverErrors = error?.status
-        ? [{ id: error.status.toString(), message: error.message }]
-        : [LinkedHearingsCheckYourAnswersComponent.GENERAL_SERVER_ERROR];
+    this.error$.subscribe(() => {
+      this.serverErrors = [LinkedHearingsCheckYourAnswersComponent.GENERAL_SERVER_ERROR];
     });
   }
 

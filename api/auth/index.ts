@@ -44,7 +44,7 @@ export const successCallback = (req: EnhancedRequest, res: Response, next: NextF
 
   logger.info('Setting session and cookies');
 
-  res.cookie(cookieUserId, userinfo.uid || userinfo.id, { sameSite: 'strict' });
+  res.cookie(cookieUserId, userinfo.uid, { sameSite: 'strict' });
   res.cookie(cookieToken, accessToken, { sameSite: 'strict' });
 
   if (!req.isRefresh) {

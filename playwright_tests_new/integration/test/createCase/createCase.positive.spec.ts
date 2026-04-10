@@ -14,6 +14,24 @@ test.beforeEach(async ({ page, createCasePage }) => {
   await applySessionCookies(page, userIdentifier);
 
   interceptedCreateCaseRequestBody = null;
+  await page.route(`**/data/case-types/${caseType}/validate*`, async (route) => {
+    const request = route.request();
+    const requestBody = request.postDataJSON?.() as { data?: unknown } | undefined;
+    const responseBody = {
+      data: requestBody?.data ?? {},
+      _links: {
+        self: {
+          href: request.url(),
+        },
+      },
+    };
+
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(responseBody),
+    });
+  });
   await page.route(`**/data/internal/case-types/${caseType}/event-triggers/createCase*`, async (route) => {
     const body = JSON.stringify(divorcePocCaseData());
     await route.fulfill({ status: 200, contentType: 'application/json', body });

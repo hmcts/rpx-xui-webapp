@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { CaseField, CaseView } from '@hmcts/ccd-case-ui-toolkit';
+import { CaseField, CaseNotifier, CaseView } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import { first, map, mergeMap, tap } from 'rxjs/operators';
 import { UserDetails } from '../../../app/models/user-details.model';
 import { SessionStorageService } from '../../../app/services';
@@ -26,6 +26,7 @@ export class RolesAndAccessContainerComponent implements OnInit {
   public roles$: Observable<CaseRole[]>;
   public jurisdictionFieldId = '[JURISDICTION]';
   public caseJurisdiction: string;
+  public caseNotifierSubscription: Subscription;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -33,11 +34,17 @@ export class RolesAndAccessContainerComponent implements OnInit {
     private readonly roleExclusionsService: RoleExclusionsService,
     private readonly allocateService: AllocateRoleService,
     private readonly caseworkerDataService: CaseworkerDataService,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly caseNotifier: CaseNotifier
   ) {}
 
   public ngOnInit(): void {
-    this.caseDetails = this.route.snapshot.data.case as CaseView;
+    this.caseNotifierSubscription = this.caseNotifier.caseView.subscribe((caseNotifDetails) => {
+      if (caseNotifDetails) {
+        this.caseDetails = caseNotifDetails;
+      }
+    });
+    // this.caseDetails = this.route.snapshot.data.case as CaseView;
     this.applyJurisdiction(this.caseDetails);
     const jurisdiction = this.caseDetails.metadataFields.find((field) => field.id === this.jurisdictionFieldId);
     // Keeping call for now - in unlikely event exclusion has missing details

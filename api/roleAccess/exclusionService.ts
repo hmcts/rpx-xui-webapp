@@ -116,14 +116,14 @@ export function mapResponseToExclusions(roleAssignments: RoleAssignment[], assig
   }));
 }
 
-export function getEmail(actorId: string): string {
+export function getEmail(actorId: string): string | undefined {
   const cachedCaseworker = FullUserDetailCache.getUserByIdamId(actorId);
   if (cachedCaseworker) {
     return cachedCaseworker.email;
   }
 }
 
-export function getUserName(actorId: string): string {
+export function getUserName(actorId: string): string | undefined {
   const cachedCaseworker = FullUserDetailCache.getUserByIdamId(actorId);
   if (cachedCaseworker) {
     // Note: Seems to be discrepancy between whether dash or space between names on different screens

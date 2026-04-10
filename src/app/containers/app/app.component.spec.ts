@@ -1,5 +1,5 @@
 import { RoutesRecognized } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
@@ -10,6 +10,7 @@ describe('AppComponent', () => {
   let timeoutNotificationService: any;
   let featureToggleService: any;
   let loggerService: any;
+  let authService: any;
   let cookieService: any;
   let router: any;
   let title: any;
@@ -28,6 +29,8 @@ describe('AppComponent', () => {
     featureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled', 'getValue', 'initialize']);
     cookieService = jasmine.createSpyObj('CookieService', ['deleteCookieByPartialMatch']);
     loggerService = jasmine.createSpyObj('LoggerService', ['enableCookies', 'log']);
+    authService = jasmine.createSpyObj('AuthService', ['keepAlive', 'loginRedirect']);
+    authService.keepAlive.and.returnValue(of(true));
     environmentService = jasmine.createSpyObj('environmentService', ['config$']);
     sessionStorageService = jasmine.createSpyObj('SessionStorageService', ['setItem']);
     initialisationSyncService = jasmine.createSpyObj('InitialisationSyncService', [
@@ -82,6 +85,7 @@ describe('AppComponent', () => {
       title,
       featureToggleService,
       loggerService,
+      authService,
       cookieService,
       environmentService,
       sessionStorageService,
@@ -139,7 +143,39 @@ describe('AppComponent', () => {
   it('timeoutNotificationEventHandler keepalive', () => {
     const spyModal = spyOn(appComponent, 'updateTimeoutModal');
     appComponent.timeoutNotificationEventHandler({ eventType: 'keep-alive' });
-    expect(spyModal).toHaveBeenCalled();
+    expect(authService.keepAlive).toHaveBeenCalled();
+    expect(spyModal).not.toHaveBeenCalled();
+  });
+
+  it('revalidateSessionOnForeground does not redirect when keepalive reports unauthenticated', () => {
+    authService.keepAlive.and.returnValue(of(false));
+
+    appComponent.revalidateSessionOnForeground();
+
+    expect(authService.keepAlive).toHaveBeenCalled();
+    expect(loggerService.log).toHaveBeenCalledWith('Session invalid after returning to app.');
+    expect(authService.loginRedirect).not.toHaveBeenCalled();
+  });
+
+  it('revalidateSessionOnForeground does not redirect when keepalive fails', () => {
+    authService.keepAlive.and.returnValue(throwError(() => new Error('keepalive failed')));
+
+    appComponent.revalidateSessionOnForeground();
+
+    expect(authService.keepAlive).toHaveBeenCalled();
+    expect(loggerService.log).toHaveBeenCalledWith(
+      'Failed to revalidate session after returning to app. Leaving user on current page.'
+    );
+    expect(authService.loginRedirect).not.toHaveBeenCalled();
+  });
+
+  it('revalidateSessionOnForeground does not redirect when keepalive succeeds', () => {
+    authService.keepAlive.and.returnValue(of(true));
+
+    appComponent.revalidateSessionOnForeground();
+
+    expect(authService.keepAlive).toHaveBeenCalled();
+    expect(authService.loginRedirect).not.toHaveBeenCalled();
   });
 
   it('should call initializeFeature', () => {

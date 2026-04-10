@@ -1,6 +1,6 @@
 import { ExuiCaseDetailsComponent, ExuiCaseListComponent, ExuiSpinnerComponent, createLogger } from '@hmcts/playwright-common';
 import { Page } from '@playwright/test';
-import { ExuiHeaderComponent } from './components/index.js';
+import { ExuiBodyComponent, ExuiFooterComponent, ExuiHeaderComponent } from './components/index.js';
 
 const logger = createLogger({ serviceName: 'api-monitor', format: 'pretty' });
 
@@ -20,6 +20,8 @@ export abstract class Base {
   readonly exuiCaseListComponent = new ExuiCaseListComponent(this.page);
   readonly exuiCaseDetailsComponent = new ExuiCaseDetailsComponent(this.page);
   readonly exuiHeader = new ExuiHeaderComponent(this.page);
+  readonly exuiBodyComponent = new ExuiBodyComponent(this.page);
+  readonly exuiFooter = new ExuiFooterComponent(this.page);
   readonly exuiSpinnerComponent = new ExuiSpinnerComponent(this.page);
   private static readonly monitoredPages = new WeakSet<Page>();
   private apiCalls: ApiCall[] = [];
@@ -85,6 +87,28 @@ export abstract class Base {
             method: request.method(),
           });
         }
+      }
+    });
+
+    this.page.on('requestfailed', (request) => {
+      const url = request.url();
+      if (!this.isBackendApi(url)) {
+        return;
+      }
+
+      const sanitizedUrl = this.sanitizeUrl(url);
+      const call: ApiCall = {
+        url: sanitizedUrl,
+        method: request.method(),
+        status: 0,
+        duration: -1,
+        timestamp: new Date().toISOString(),
+        error: request.failure()?.errorText,
+      };
+
+      this.apiCalls.push(call);
+      if (this.apiCalls.length > this.maxApiCallsTracked) {
+        this.apiCalls.shift();
       }
     });
   }

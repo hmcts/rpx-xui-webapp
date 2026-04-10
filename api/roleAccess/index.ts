@@ -21,7 +21,6 @@ import {
 import { getEmail, getJudicialUsersFromApi, getUserName, mapRoleCategory } from './exclusionService';
 import { CaseRoleRequestPayload } from './models/caseRoleRequestPayload';
 import { release2ContentType } from './models/release2ContentType';
-import { Role } from './models/roleType';
 import { getAllRoles, getSubstantiveRoles } from './roleAssignmentService';
 
 const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
@@ -76,7 +75,7 @@ export async function getAccessRolesByCaseId(req: EnhancedRequest, res: Response
     const finalRoles: CaseRole[] = mapResponseToCaseRoles(response.data.roleAssignmentResponse, req.body.assignmentId);
     if (finalRoles) {
       const rolesResponse = await getAllRoles(req);
-      const roles = rolesResponse.data as Role[];
+      const roles = rolesResponse.data;
       finalRoles?.forEach((finalRole) => {
         const role = roles?.find((role) => role.name === finalRole.roleName);
         if (role) {
@@ -115,7 +114,7 @@ export async function getJudicialUsers(req: EnhancedRequest, res: Response, next
     }
     return res.status(200).send(searchResult);
   } catch (error) {
-    if (error && error.status === 404) {
+    if (error?.status === 404) {
       return res.status(200).send(searchResult);
     }
     next(error);
@@ -174,12 +173,10 @@ export function mapResponseToCaseRoles(roleAssignments: RoleAssignment[], assign
     roleName: roleAssignment.roleName,
     start: roleAssignment.beginTime ? roleAssignment.beginTime.toString() : null,
     created: roleAssignment.created ? roleAssignment.created : null,
-    notes:
-      roleAssignment.attributes && roleAssignment.attributes.specificAccessReason
-        ? getSpecificReason(roleAssignment.attributes.specificAccessReason)
-        : 'No reason for case access given',
-    requestedRole:
-      roleAssignment.attributes && roleAssignment.attributes.requestedRole ? roleAssignment.attributes.requestedRole : null,
+    notes: roleAssignment.attributes?.specificAccessReason
+      ? getSpecificReason(roleAssignment.attributes.specificAccessReason)
+      : 'No reason for case access given',
+    requestedRole: roleAssignment.attributes?.requestedRole ? roleAssignment.attributes.requestedRole : null,
   }));
 }
 

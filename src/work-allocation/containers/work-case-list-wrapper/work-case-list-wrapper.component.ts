@@ -1,3 +1,4 @@
+import { Location as StateLocation } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -88,7 +89,8 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     protected readonly jurisdictionsService: JurisdictionsService,
     protected readonly rolesService: AllocateRoleService,
     protected readonly httpClient: HttpClient,
-    protected store: Store<fromActions.State>
+    protected store: Store<fromActions.State>,
+    protected stateLocation: StateLocation
   ) {}
 
   public get cases(): Case[] {
@@ -148,13 +150,11 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
   /**
    * Flag to indicate whether or not we've arrived here following a bad
    * request with a flag having been set on another route. The flag is
-   * passed through the router and so is held in window.history.state.
+   * passed through the router and so is held in location state.
    */
   private get wasBadRequest(): boolean {
-    if (window && window.history && window.history.state) {
-      return !!window.history.state.badRequest;
-    }
-    return false;
+    const state = this.stateLocation.getState() as { badRequest?: boolean } | null;
+    return !!state?.badRequest;
   }
 
   public ngOnInit(): void {
@@ -208,7 +208,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
       .getStream('locations')
       .pipe(
         debounceTime(200),
-        filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
+        filter((f: FilterSetting) => f?.hasOwnProperty('fields'))
       )
       .subscribe((f: FilterSetting) => {
         const newLocations = f.fields.find((field) => field.name === 'locations').value;
@@ -231,7 +231,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
         .getUserByIdamId(userId)
         .pipe(first())
         .subscribe((caseworker) => {
-          if (caseworker && caseworker.location && caseworker.location.id) {
+          if (caseworker?.location?.id) {
             this.defaultLocation = caseworker.location.id;
           }
         });
@@ -367,7 +367,7 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
     const casesSearch$ = this.performSearchPagination();
     const mappedSearchResult$ = casesSearch$.pipe(
       mergeMap((result) => {
-        if (result && result.cases) {
+        if (result?.cases) {
           const judicialUserIds = result.cases
             .filter((theCase) => theCase.role_category === 'JUDICIAL')
             .map((thisCase) => thisCase.assignee);
@@ -406,12 +406,12 @@ export class WorkCaseListWrapperComponent implements OnInit, OnDestroy {
         this.casesTotal = result.total_records;
         this.uniqueCases = result.unique_cases;
         this.cases.forEach((item) => {
-          if (this.allJurisdictions && this.allJurisdictions.find((jur) => jur.id === item.jurisdiction)) {
+          if (this.allJurisdictions?.find((jur) => jur.id === item.jurisdiction)) {
             item.jurisdiction = this.allJurisdictions.find((jur) => jur.id === item.jurisdiction).name;
           } else if (servicesMap[item.jurisdiction]) {
             item.jurisdiction = servicesMap[item.jurisdiction];
           }
-          if (this.allRoles && this.allRoles.find((role) => role.roleId === item.case_role)) {
+          if (this.allRoles?.find((role) => role.roleId === item.case_role)) {
             item.role = this.allRoles.find((role) => role.roleId === item.case_role).roleName;
           }
         });

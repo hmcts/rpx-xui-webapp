@@ -1,28 +1,34 @@
 import path from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { createRequire } from 'node:module';
 
 export type EnvMap = Record<string, string | undefined>;
 
 export interface ConfigModule {
   __test__?: {
-    buildConfig: (env: EnvMap) => any;
+    buildConfig: (env: EnvMap) => unknown;
     resolveWorkerCount: (env: EnvMap) => number;
   };
   default?: ConfigModule;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface TestableConfigModule extends ConfigModule {
   __test__: {
-    buildConfig: (env: EnvMap) => any;
+    buildConfig: (env: EnvMap) => unknown;
     resolveWorkerCount: (env: EnvMap) => number;
   };
 }
 
+const require = createRequire(import.meta.url);
+require('ts-node/register/transpile-only');
+
 export async function loadConfig(): Promise<TestableConfigModule> {
-  const configPath = path.resolve(process.cwd(), 'playwright.config.ts');
-  const configUrl = pathToFileURL(configPath).href;
-  const loaded = await import(configUrl);
+  return loadConfigAt('playwright.config.ts');
+}
+
+export async function loadConfigAt(relativePath: string): Promise<TestableConfigModule> {
+  const configPath = path.resolve(process.cwd(), relativePath);
+  const loaded = require(configPath) as ConfigModule;
   const resolved = resolveConfigModule(loaded as ConfigModule);
   if (!resolved.__test__) {
     throw new Error('Playwright config module did not expose __test__ helpers');
@@ -31,5 +37,20 @@ export async function loadConfig(): Promise<TestableConfigModule> {
 }
 
 export function resolveConfigModule(loaded: ConfigModule): ConfigModule {
-  return loaded?.__test__ ? loaded : (loaded?.default ?? loaded);
+  let current: ConfigModule = loaded;
+  const visited = new Set<ConfigModule>();
+
+  while (current && typeof current === 'object' && !visited.has(current)) {
+    visited.add(current);
+    if (current.__test__) {
+      return current;
+    }
+    if (current.default) {
+      current = current.default as ConfigModule;
+      continue;
+    }
+    break;
+  }
+
+  return current ?? loaded;
 }

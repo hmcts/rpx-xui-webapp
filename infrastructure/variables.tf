@@ -66,3 +66,15 @@ variable "exui_weekly_stats_email_address_key" {
   type        = string
 }
 
+variable "exui_throughput_stats_email_address_key" {
+  default     = "exui-throughput-stats-email"
+  description = "Email address key in azure Key Vault for ExUI throughput stats reporting."
+  type        = string
+}
+
+variable "exui_throughput_stats_enabled" {
+  default     = false
+  description = "Enable ExUI request throughput stats reporting"
+  type        = bool
+}
+

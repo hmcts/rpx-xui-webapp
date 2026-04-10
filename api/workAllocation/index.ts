@@ -669,6 +669,10 @@ export async function getUsersByServiceName(req: EnhancedRequest, res: Response,
     let firstEntry = true;
     if (currentUser.roles.includes(PUI_CASE_MANAGER)) {
       res.status(403).send('Forbidden');
+    } else if (services?.length === 0 || services[0]?.length === 0) {
+      // if no services selected return empty array with error to avoid showing all users from all services
+      // note: should never happen as frontend should always send at least one service
+      res.status(400).send('Bad Request');
     } else {
       if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
         // if already ran just use the cache to avoid loading issues

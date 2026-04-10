@@ -145,6 +145,32 @@ describe('workAllocation', () => {
       expect(res.send).to.have.been.called;
       expect(res.status).to.have.been.calledWith(200);
     });
+
+    it('should return 400 when services contains an empty list', async () => {
+      const req = mockReq({
+        body: {
+          term: null,
+          services: [],
+        },
+        session: {
+          passport: {
+            user: {
+              userinfo: {
+                roles: ['role1'],
+              },
+            },
+          },
+        },
+      });
+
+      const response = mockRes();
+      const next = sandbox.spy();
+
+      await getUsersByServiceName(req, response, next);
+
+      expect(response.status).to.have.been.calledWith(400);
+      expect(response.send).to.have.been.calledWith('Bad Request');
+    });
   });
 
   it('should reject calls for users with pui-case-manager', async () => {

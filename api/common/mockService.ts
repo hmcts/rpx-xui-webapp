@@ -20,7 +20,7 @@ export async function handleGet(path: string, req: EnhancedRequest): Promise<Axi
     const headers = setHeaders(req);
     return await httpMock.get(path, { headers });
   } catch (e) {
-    exists(e, 'message') ? logger.error(e.message) : logger.error('Error in get response');
+    logger.error(exists(e, 'message') ? e.message : 'Error in get response');
     throw e;
   }
 }
@@ -39,7 +39,7 @@ export async function handlePost<T>(path: string, body: T, req: EnhancedRequest)
     const headers = setHeaders(req);
     return await httpMock.post(path, body, { headers });
   } catch (e) {
-    exists(e, 'message') ? logger.error(e.message) : logger.error('Error in post response');
+    logger.error(exists(e, 'message') ? e.message : 'Error in post response');
     throw e;
   }
 }
@@ -58,7 +58,7 @@ export async function handlePut<T>(path: string, body: T, req: EnhancedRequest):
     const headers = setHeaders(req);
     return await httpMock.put(path, body, { headers });
   } catch (e) {
-    exists(e, 'message') ? logger.error(e.message) : logger.error('Error in put response');
+    logger.error(exists(e, 'message') ? e.message : 'Error in put response');
     throw e;
   }
 }
@@ -74,10 +74,10 @@ export async function handleDelete<T>(path: string, body: T): Promise<AxiosRespo
   try {
     logger.info('handle delete method', path);
     return await httpMock.delete(path, {
-      data: body
+      data: body,
     });
   } catch (e) {
-    exists(e, 'message') ? logger.error(e.message) : logger.error('Error in delete response');
+    logger.error(exists(e, 'message') ? e.message : 'Error in delete response');
     throw e;
   }
 }

@@ -44,6 +44,7 @@ export const SERVICES_JUDICIAL_BOOKING_API_PATH = 'services.judicialBookingApi';
 export const SERVICES_HEARINGS_COMPONENT_API = 'services.hearings.serviceApi';
 export const SERVICES_HMC_HEARINGS_COMPONENT_API = 'services.hearings.hmcApi';
 export const SERVICES_HEARINGS_ENABLE_DATA_SOURCE_HEADERS = 'services.hearings.enableHearingDataSourceHeaders';
+export const SERVICES_HEARINGS_PREVIEW_DEPLOYMENT_ID = 'services.hearings.previewDeploymentId';
 
 export const SERVICES_DOCUMENTS_API_PATH = 'services.documents.api';
 export const SERVICES_DOCUMENTS_API_PATH_V2 = 'services.documentsv2.api';
@@ -85,7 +86,7 @@ export const PROTOCOL = 'protocol';
 export const MICROSERVICE = 'microservice';
 export const NOW = 'now';
 
-export const SESSION_SECRET = 'sessionSecret';
+export const SESSION_SECRET = 'secrets.rpx.mc-session-secret';
 
 export const ENVIRONMENT = 'environment';
 

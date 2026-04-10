@@ -21,16 +21,15 @@ describe('HearingJudgeNamesListComponent', () => {
     isJudge: '',
     personalCode: 'P100001',
     isMagistrate: '',
-    isPanelMember: ''
+    isPanelMember: '',
   };
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule],
       declarations: [HearingJudgeNamesListComponent, MockRpxTranslatePipe],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    })
-      .compileComponents();
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

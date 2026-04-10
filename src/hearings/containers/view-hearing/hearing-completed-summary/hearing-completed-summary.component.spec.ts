@@ -12,21 +12,18 @@ import { HearingCompletedSummaryComponent } from './hearing-completed-summary.co
 describe('HearingCompletedSummaryComponent', () => {
   let component: HearingCompletedSummaryComponent;
   let fixture: ComponentFixture<HearingCompletedSummaryComponent>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let router: Router;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let mockStore: any;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
       declarations: [HearingCompletedSummaryComponent, MockRpxTranslatePipe],
-      providers: [
-        provideMockStore({ initialState }), LoadingService
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    })
-      .compileComponents();
+      providers: [provideMockStore({ initialState }), LoadingService],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
     mockStore = TestBed.inject(Store);
     mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
     fixture = TestBed.createComponent(HearingCompletedSummaryComponent);

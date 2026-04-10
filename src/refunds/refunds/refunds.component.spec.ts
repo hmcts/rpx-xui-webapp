@@ -18,14 +18,14 @@ describe('RefundsComponent', () => {
         id: '123',
         forename: 'John',
         surname: 'Doe',
-        active: true
+        active: true,
       },
       sessionTimeout: {
         idleModalDisplayTime: 5,
-        totalIdleTime: 25
+        totalIdleTime: 25,
       },
-      canShareCases: true
-    }
+      canShareCases: true,
+    },
   };
 
   beforeEach(waitForAsync(() => {
@@ -33,13 +33,8 @@ describe('RefundsComponent', () => {
       declarations: [RefundsComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [],
-      providers: [
-        provideMockStore({ initialState }),
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+      providers: [provideMockStore({ initialState }), provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -61,4 +56,3 @@ describe('RefundsComponent', () => {
     expect(component.userDataLoaded).toBeTruthy();
   });
 });
-

@@ -17,7 +17,7 @@ const upstreamSpecs: Record<string, string> = {
   'future-hearings-hmi-api': 'https://hmcts.github.io/cnp-api-docs/specs/future-hearings-hmi-api.json',
   'rd-location-ref-api': 'https://hmcts.github.io/cnp-api-docs/specs/rd-location-ref-api.json',
   'rd-judicial-api': 'https://hmcts.github.io/cnp-api-docs/specs/rd-judicial-api.json',
-  'rd-caseworker-ref-api': 'https://hmcts.github.io/cnp-api-docs/specs/rd-caseworker-ref-api.json'
+  'rd-caseworker-ref-api': 'https://hmcts.github.io/cnp-api-docs/specs/rd-caseworker-ref-api.json',
 };
 
 router.get('/upstream/:id.json', async (req, res) => {
@@ -30,7 +30,7 @@ router.get('/upstream/:id.json', async (req, res) => {
     const response = await axios.get(url, { responseType: 'json' });
     res.type('application/json').send(response.data);
   } catch (error) {
-    const status = (error as any).response?.status || 500;
+    const status = error.response?.status || 500;
     res.status(status).send({ error: 'Failed to fetch upstream spec', detail: url });
   }
 });
@@ -48,9 +48,9 @@ const swaggerSetup = swaggerUi.setup(null, {
       { url: '/api/docs/upstream/future-hearings-hmi-api.json', name: 'Hearing Management (HMI)' },
       { url: '/api/docs/upstream/rd-location-ref-api.json', name: 'RD Location Ref API' },
       { url: '/api/docs/upstream/rd-judicial-api.json', name: 'RD Judicial API' },
-      { url: '/api/docs/upstream/rd-caseworker-ref-api.json', name: 'RD Caseworker Ref API' }
-    ]
-  }
+      { url: '/api/docs/upstream/rd-caseworker-ref-api.json', name: 'RD Caseworker Ref API' },
+    ],
+  },
 }) as unknown as RequestHandler;
 
 router.use('/', ...swaggerServe, swaggerSetup);

@@ -2,8 +2,7 @@ import { expect } from 'chai';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { RealStaffRefDataAPI } from './real-staff-ref-data-api';
-
-const StaffRefDataService = require('./staff-ref-data.service');
+import { StaffRefDataService } from './staff-ref-data.service';
 
 describe('StaffRefDataService', () => {
   let sandbox: sinon.SinonSandbox;
@@ -15,9 +14,10 @@ describe('StaffRefDataService', () => {
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
+    const getFilteredUsers = sandbox.stub();
 
     mockRealStaffRefDataAPI = {
-      getFilteredUsers: sandbox.stub(),
+      getFilteredUsers,
       getUserTypes: sandbox.stub(),
       getJobTitles: sandbox.stub(),
       getServices: sandbox.stub(),
@@ -26,7 +26,7 @@ describe('StaffRefDataService', () => {
       addNewUser: sandbox.stub(),
       fetchUsersById: sandbox.stub(),
       fetchSingleUserById: sandbox.stub(),
-      updateUser: sandbox.stub()
+      updateUser: sandbox.stub(),
     } as any;
 
     service = new StaffRefDataService(mockRealStaffRefDataAPI);
@@ -58,11 +58,7 @@ describe('StaffRefDataService', () => {
 
       await service.getFilteredUsers(customReq, customRes, customNext);
 
-      expect(mockRealStaffRefDataAPI.getFilteredUsers).to.have.been.calledOnceWith(
-        customReq,
-        customRes,
-        customNext
-      );
+      expect(mockRealStaffRefDataAPI.getFilteredUsers).to.have.been.calledOnceWith(customReq, customRes, customNext);
     });
   });
 
@@ -159,11 +155,7 @@ describe('StaffRefDataService', () => {
 
       await service.getUsersByPartialName(reqWithSearch, res, next);
 
-      expect(mockRealStaffRefDataAPI.getUsersByPartialName).to.have.been.calledOnceWith(
-        reqWithSearch,
-        res,
-        next
-      );
+      expect(mockRealStaffRefDataAPI.getUsersByPartialName).to.have.been.calledOnceWith(reqWithSearch, res, next);
     });
   });
 
@@ -181,18 +173,14 @@ describe('StaffRefDataService', () => {
         body: {
           firstName: 'John',
           lastName: 'Doe',
-          email: 'john.doe@example.com'
-        }
+          email: 'john.doe@example.com',
+        },
       });
       mockRealStaffRefDataAPI.addNewUser.resolves();
 
       await service.addNewUser(reqWithBody, res, next);
 
-      expect(mockRealStaffRefDataAPI.addNewUser).to.have.been.calledOnceWith(
-        reqWithBody,
-        res,
-        next
-      );
+      expect(mockRealStaffRefDataAPI.addNewUser).to.have.been.calledOnceWith(reqWithBody, res, next);
     });
   });
 
@@ -207,17 +195,13 @@ describe('StaffRefDataService', () => {
 
     it('should handle array of user IDs in request body', async () => {
       const reqWithIds = mockReq({
-        body: ['user1', 'user2', 'user3']
+        body: ['user1', 'user2', 'user3'],
       });
       mockRealStaffRefDataAPI.fetchUsersById.resolves();
 
       await service.fetchUsersById(reqWithIds, res, next);
 
-      expect(mockRealStaffRefDataAPI.fetchUsersById).to.have.been.calledOnceWith(
-        reqWithIds,
-        res,
-        next
-      );
+      expect(mockRealStaffRefDataAPI.fetchUsersById).to.have.been.calledOnceWith(reqWithIds, res, next);
     });
   });
 
@@ -232,17 +216,13 @@ describe('StaffRefDataService', () => {
 
     it('should pass query parameter with user ID', async () => {
       const reqWithId = mockReq({
-        query: { id: 'user123' }
+        query: { id: 'user123' },
       });
       mockRealStaffRefDataAPI.fetchSingleUserById.resolves();
 
       await service.fetchSingleUserById(reqWithId, res, next);
 
-      expect(mockRealStaffRefDataAPI.fetchSingleUserById).to.have.been.calledOnceWith(
-        reqWithId,
-        res,
-        next
-      );
+      expect(mockRealStaffRefDataAPI.fetchSingleUserById).to.have.been.calledOnceWith(reqWithId, res, next);
     });
   });
 
@@ -261,18 +241,14 @@ describe('StaffRefDataService', () => {
           id: 'user123',
           firstName: 'Updated',
           lastName: 'Name',
-          suspended: true
-        }
+          suspended: true,
+        },
       });
       mockRealStaffRefDataAPI.updateUser.resolves();
 
       await service.updateUser(reqWithUpdate, res, next);
 
-      expect(mockRealStaffRefDataAPI.updateUser).to.have.been.calledOnceWith(
-        reqWithUpdate,
-        res,
-        next
-      );
+      expect(mockRealStaffRefDataAPI.updateUser).to.have.been.calledOnceWith(reqWithUpdate, res, next);
     });
 
     it('should propagate rejected promises', async () => {
@@ -294,6 +270,7 @@ describe('StaffRefDataService', () => {
       const serviceWithRealAPI = new StaffRefDataService(realAPI);
 
       expect(serviceWithRealAPI).to.be.an.instanceof(StaffRefDataService);
+      // @ts-expect-error - test inspecting protected field
       expect(serviceWithRealAPI.service).to.equal(realAPI);
     });
   });
@@ -328,11 +305,7 @@ describe('StaffRefDataService', () => {
 
       await service.getSkills(undefined, undefined, undefined);
 
-      expect(mockRealStaffRefDataAPI.getSkills).to.have.been.calledOnceWith(
-        undefined,
-        undefined,
-        undefined
-      );
+      expect(mockRealStaffRefDataAPI.getSkills).to.have.been.calledOnceWith(undefined, undefined, undefined);
     });
   });
 });

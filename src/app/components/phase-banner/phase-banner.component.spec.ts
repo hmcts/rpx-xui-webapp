@@ -8,12 +8,12 @@ import { PhaseBannerComponent } from './phase-banner.component';
 
 const mockSessionStorageService = {
   getItem: jasmine.createSpy('getItem').and.returnValue(JSON.parse('false')),
-  setItem: jasmine.createSpy('setItem').and.returnValue(JSON.stringify('false'))
+  setItem: jasmine.createSpy('setItem').and.returnValue(JSON.stringify('false')),
 };
 
 @Pipe({
   standalone: false,
-  name: 'rpxTranslate'
+  name: 'rpxTranslate',
 })
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
@@ -27,13 +27,12 @@ describe('PhaseBannerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [PhaseBannerComponent]
+      declarations: [PhaseBannerComponent],
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => { }, getTranslation: (phrase: string) => phrase });
+    const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {}, getTranslation: (phrase: string) => phrase });
     TestBed.configureTestingModule({
       imports: [],
       schemas: [NO_ERRORS_SCHEMA],
@@ -41,10 +40,10 @@ describe('PhaseBannerComponent', () => {
       providers: [
         {
           provide: RpxTranslationService,
-          useFactory: rpxTranslationServiceStub
+          useFactory: rpxTranslationServiceStub,
         },
-        { provide: SessionStorageService, useValue: mockSessionStorageService }
-      ]
+        { provide: SessionStorageService, useValue: mockSessionStorageService },
+      ],
     });
     fixture = TestBed.createComponent(PhaseBannerComponent);
     component = fixture.componentInstance;
@@ -93,13 +92,16 @@ describe('PhaseBannerComponent', () => {
   it('should create client context if not existing', () => {
     mockSessionStorageService.getItem.and.returnValue(null);
     component.toggleLanguage('en');
-    expect(mockSessionStorageService.setItem).toHaveBeenCalledWith('clientContext', JSON.stringify({
-      client_context: {
-        user_language: {
-          language: 'en'
-        }
-      }
-    }));
+    expect(mockSessionStorageService.setItem).toHaveBeenCalledWith(
+      'clientContext',
+      JSON.stringify({
+        client_context: {
+          user_language: {
+            language: 'en',
+          },
+        },
+      })
+    );
   });
 });
 
@@ -132,7 +134,7 @@ describe('PhaseBannerComponent additional tests', () => {
         }
         return null;
       }),
-      setItem: jasmine.createSpy('setItem')
+      setItem: jasmine.createSpy('setItem'),
     };
 
     TestBed.configureTestingModule({
@@ -140,8 +142,8 @@ describe('PhaseBannerComponent additional tests', () => {
       declarations: [PhaseBannerComponent, RpxTranslateMockPipe],
       providers: [
         { provide: RpxTranslationService, useClass: MockTranslationService },
-        { provide: SessionStorageService, useValue: mockSessionStorage }
-      ]
+        { provide: SessionStorageService, useValue: mockSessionStorage },
+      ],
     });
 
     fixture = TestBed.createComponent(PhaseBannerComponent);
@@ -157,7 +159,7 @@ describe('PhaseBannerComponent additional tests', () => {
   });
 
   it('should not show banner on init when banner previously closed in Welsh', () => {
-    mockSessionStorage.getItem.and.callFake((key: string) => key === 'bannerClosed' ? 'true' : null);
+    mockSessionStorage.getItem.and.callFake((key: string) => (key === 'bannerClosed' ? 'true' : null));
     const langService = TestBed.inject(RpxTranslationService);
     langService.language = 'cy';
     component.ngOnInit();
@@ -189,8 +191,8 @@ describe('PhaseBannerComponent additional tests', () => {
       'clientContext',
       JSON.stringify({
         client_context: {
-          user_language: { language: 'en' }
-        }
+          user_language: { language: 'en' },
+        },
       })
     );
   });
@@ -198,7 +200,7 @@ describe('PhaseBannerComponent additional tests', () => {
   it('should preserve existing client context properties when updating language', () => {
     const existingContext = {
       client_context: { existingKey: 'keepMe' },
-      topLevelKeep: 'stillHere'
+      topLevelKeep: 'stillHere',
     };
     mockSessionStorage.getItem.and.callFake((key: string) => {
       if (key === 'bannerClosed') {
@@ -215,9 +217,9 @@ describe('PhaseBannerComponent additional tests', () => {
     const expectedContext = {
       client_context: {
         existingKey: 'keepMe',
-        user_language: { language: 'cy' }
+        user_language: { language: 'cy' },
       },
-      topLevelKeep: 'stillHere'
+      topLevelKeep: 'stillHere',
     };
     expect(mockSessionStorage.setItem).toHaveBeenCalledWith('clientContext', JSON.stringify(expectedContext));
   });

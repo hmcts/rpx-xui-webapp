@@ -1,14 +1,26 @@
 const { $, $$, elementByXpath, getText } = require('../../../../helpers/globals');
 
 class StaffUIUserDEtailsPage {
-  get container() { return $('exui-staff-user-details'); }
+  get container() {
+    return $('exui-staff-user-details');
+  }
 
-  get heading() { return $('exui-staff-user-details h2'); }
-  get summaryListRows() { return $$('exui-staff-user-details .govuk-summary-list .govuk-summary-list__row'); }
+  get heading() {
+    return $('exui-staff-user-details h2');
+  }
+  get summaryListRows() {
+    return $$('exui-staff-user-details .govuk-summary-list .govuk-summary-list__row');
+  }
 
-  get copyButton() { return elementByXpath('//div[contains(@class,"govuk-button-group")]//button[contains(text(),"Copy")]'); }
-  get updateButton() { return elementByXpath('//div[contains(@class,"govuk-button-group")]//button[contains(text(),"Update")]'); }
-  get restoreButton() { return elementByXpath('//div[contains(@class,"govuk-button-group")]//button[contains(text(),"Restore")]'); }
+  get copyButton() {
+    return elementByXpath('//div[contains(@class,"govuk-button-group")]//button[contains(text(),"Copy")]');
+  }
+  get updateButton() {
+    return elementByXpath('//div[contains(@class,"govuk-button-group")]//button[contains(text(),"Update")]');
+  }
+  get restoreButton() {
+    return elementByXpath('//div[contains(@class,"govuk-button-group")]//button[contains(text(),"Restore")]');
+  }
 
   async isDisplayed() {
     await this.container.wait();

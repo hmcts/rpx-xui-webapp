@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, StoreModule } from '@ngrx/store';
@@ -13,9 +14,9 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 
 const storeMock = {
   pipe: () => of([]),
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+
   dispatch: () => {},
-  select: () => of(null) // Mocking select method
+  select: () => of(null), // Mocking select method
 };
 
 const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
@@ -28,7 +29,7 @@ describe('AppHeaderComponent', () => {
 
   let component: AppHeaderComponent;
   let fixture: ComponentFixture<AppHeaderComponent>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let store: Store<fromActions.State>;
   const subscriptionMock: Subscription = new Subscription();
   const eventsSub = new BehaviorSubject<any>(null);
@@ -40,38 +41,37 @@ describe('AppHeaderComponent', () => {
     subscribeSpy = spyOn(subscriptionMock, 'unsubscribe');
 
     TestBed.configureTestingModule({
-      declarations: [
-        AppHeaderComponent
-      ],
+      declarations: [AppHeaderComponent],
       imports: [StoreModule.forRoot({})],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
           provide: Store,
-          useValue: storeMock
+          useValue: storeMock,
         },
         {
           provide: FeatureToggleService,
-          useValue: featureToggleServiceMock
+          useValue: featureToggleServiceMock,
         },
         {
           provide: Router,
           useValue: {
             events: eventsSub,
-            url: '/something-or-other'
-          }
+            url: '/something-or-other',
+          },
         },
         {
           provide: LoggerService,
-          useValue: loggerServiceMock
+          useValue: loggerServiceMock,
         },
         {
           provide: Window,
-          useValue: window
+          useValue: window,
         },
         AppHeaderComponent,
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
 
     store = TestBed.inject(Store);
@@ -90,12 +90,13 @@ describe('AppHeaderComponent', () => {
 
   describe('deserialiseUserRoles()', () => {
     it('should take in serialised roles, and deserialise them into an array.', () => {
-      const serialisedRoles = 'j:["pui-organisation-manager","caseworker-publiclaw","caseworker-divorce-financialremedy-solicitor","caseworker"]';
+      const serialisedRoles =
+        'j:["pui-organisation-manager","caseworker-publiclaw","caseworker-divorce-financialremedy-solicitor","caseworker"]';
       expect(component.deserialiseUserRoles(serialisedRoles)).toEqual([
         'pui-organisation-manager',
         'caseworker-publiclaw',
         'caseworker-divorce-financialremedy-solicitor',
-        'caseworker'
+        'caseworker',
       ]);
     });
   });
@@ -126,7 +127,12 @@ describe('AppHeaderComponent', () => {
       const themeSpy = spyOn(component, 'setApplicationThemeForUser').and.returnValue();
 
       const userDetails = {
-        userInfo: ['pui-organisation-manager', 'caseworker-publiclaw', 'caseworker-divorce-financialremedy-solicitor', 'caseworker']
+        userInfo: [
+          'pui-organisation-manager',
+          'caseworker-publiclaw',
+          'caseworker-divorce-financialremedy-solicitor',
+          'caseworker',
+        ],
       };
       component.setHeaderContent(userDetails);
       expect(themeSpy).toHaveBeenCalled();

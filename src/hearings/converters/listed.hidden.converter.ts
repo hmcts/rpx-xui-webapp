@@ -6,12 +6,13 @@ import { HiddenConverter } from './hidden.converter';
 
 export class ListedHiddenConverter implements HiddenConverter {
   public transformHidden(hearingState$: Observable<State>): Observable<boolean> {
-    return hearingState$.pipe(map((state) => {
-      const hearingResponse = state.hearingConditions?.isHearingAmendmentsEnabled
-        ? state.hearingRequestToCompare.hearingRequestMainModel.hearingResponse
-        : state.hearingRequest.hearingRequestMainModel.hearingResponse;
-      return hearingResponse.laCaseStatus === LaCaseStatus.LISTED;
-    }
-    ));
+    return hearingState$.pipe(
+      map((state) => {
+        const hearingResponse = state.hearingConditions?.isHearingAmendmentsEnabled
+          ? state.hearingRequestToCompare.hearingRequestMainModel.hearingResponse
+          : state.hearingRequest.hearingRequestMainModel.hearingResponse;
+        return hearingResponse.laCaseStatus === LaCaseStatus.LISTED;
+      })
+    );
   }
 }

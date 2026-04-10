@@ -18,10 +18,18 @@ class caseEditPage {
     this.caseEventApiResponse = null;
   }
 
-  get searchResultsTopPagination() { return $('ccd-search-result .pagination-top'); }
-  get ccdCaseEdit() { return $('ccd-case-edit'); }
-  get continueButton() { return new Button('button[type=submit]'); }
-  get validationErrorContainer() { return $('ccd-case-edit-page .govuk-error-summary'); }
+  get searchResultsTopPagination() {
+    return $('ccd-search-result .pagination-top');
+  }
+  get ccdCaseEdit() {
+    return $('ccd-case-edit');
+  }
+  get continueButton() {
+    return new Button('button[type=submit]');
+  }
+  get validationErrorContainer() {
+    return $('ccd-case-edit-page .govuk-error-summary');
+  }
 
   async isValidationErrorDisplayed() {
     return await isPresent(this.validationErrorContainer);
@@ -104,7 +112,10 @@ class caseEditPage {
 
   async workBasketHeaders(index) {
     await BrowserWaits.waitForElement(this.searchResultsTopPagination);
-    CucumberReportLogger.AddMessage('starting wait for 2 sec for list to render  : ' + new Date().toTimeString(), LOG_LEVELS.Debug);
+    CucumberReportLogger.AddMessage(
+      'starting wait for 2 sec for list to render  : ' + new Date().toTimeString(),
+      LOG_LEVELS.Debug
+    );
     await BrowserWaits.waitForSeconds(2);
     CucumberReportLogger.AddMessage('wait complete : ' + new Date().toTimeString(), LOG_LEVELS.Debug);
     const thLable = $$('ccd-search-result>table>thead tr th');
@@ -195,7 +206,7 @@ class caseEditPage {
   }
 
   _getOptionSelectorWithText(optionText) {
-    return elementByXpath('//option[text() = \'' + optionText + '\']');
+    return elementByXpath("//option[text() = '" + optionText + "']");
   }
 
   async wizardPageFormFieldValidations(pageNo) {
@@ -238,7 +249,7 @@ class caseEditPage {
   }
 
   async validateSummeryPageLinks() {
-    const checkURanswerPage = elementsByXpath('//table[@class=\'form-table\']/tbody/tr');
+    const checkURanswerPage = elementsByXpath("//table[@class='form-table']/tbody/tr");
     await BrowserWaits.waitForElement($('ccd-case-edit-submit form table tbody tr'));
     const tdCount = await checkURanswerPage.count();
     for (let count = 0; count < tdCount; count++) {
@@ -250,7 +261,7 @@ class caseEditPage {
 
   async validateCheckYouranswerPage(createCaseFormData) {
     this.checkURanswerPageData = this.checkURanswerPageData ? this.checkURanswerPageData : [];
-    const checkURanswerPage = elementsByXpath('//table[@class=\'form-table\']/tbody/tr');
+    const checkURanswerPage = elementsByXpath("//table[@class='form-table']/tbody/tr");
     await BrowserWaits.waitForElement($('ccd-case-edit-submit form table tbody tr'));
     const trCount = await checkURanswerPage.count();
     if (trCount >= 0) {
@@ -258,7 +269,9 @@ class caseEditPage {
         const th = await checkURanswerPage.nth(count).elementByXpath('./*');
         const trxpath = elementByXpath(`//table[@class='form-table']/tbody/tr[${count + 1}]/td`);
         const dl = await isPresent(checkURanswerPage.nth(count).elementByCss('td ccd-field-read dl'));
-        const tdInsideTable = await isPresent(checkURanswerPage.nth(count).elementByCss('td ccd-field-read ccd-read-multi-select-list-field table'));
+        const tdInsideTable = await isPresent(
+          checkURanswerPage.nth(count).elementByCss('td ccd-field-read ccd-read-multi-select-list-field table')
+        );
         if (!dl && !tdInsideTable) {
           this.checkURanswerPageData.push({ [await th.textContent()]: await trxpath.textContent() });
         }
@@ -269,13 +282,28 @@ class caseEditPage {
     }
     if (this.checkURanswerPageData && this.checkURanswerPageData.length > 0) {
       for (let i = 0; i < this.checkURanswerPageData.length; i++) {
-        if ((Object.keys(this.checkURanswerPageData[i]).toString() == 'Date' || Object.keys(this.checkURanswerPageData[i]).toString() == 'Date and time' || Object.keys(this.checkURanswerPageData[i]).toString() == 'Date Time' || Object.keys(this.checkURanswerPageData[i]).toString() == 'Date of birth') && Object.keys(this.checkURanswerPageData[i]).toString()) {
+        if (
+          (Object.keys(this.checkURanswerPageData[i]).toString() == 'Date' ||
+            Object.keys(this.checkURanswerPageData[i]).toString() == 'Date and time' ||
+            Object.keys(this.checkURanswerPageData[i]).toString() == 'Date Time' ||
+            Object.keys(this.checkURanswerPageData[i]).toString() == 'Date of birth') &&
+          Object.keys(this.checkURanswerPageData[i]).toString()
+        ) {
           const date = new Date(Object.values(this.checkURanswerPageData[i]).toString());
           date.setDate(date.getDate());
-          const keyVal = String(date.getDate()).padStart(2, '0') + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + date.getFullYear();
+          const keyVal =
+            String(date.getDate()).padStart(2, '0') +
+            '-' +
+            String(date.getMonth() + 1).padStart(2, '0') +
+            '-' +
+            date.getFullYear();
           this.checkURanswerPageData[i][Object.keys(this.checkURanswerPageData[i]).toString()] = keyVal;
         }
-        if (Object.values(this.checkURanswerPageData[i]).toString() && Object.keys(this.checkURanswerPageData[i]).toString() !== 'Compliance' && Object.keys(this.checkURanswerPageData[i]).toString() !== '') {
+        if (
+          Object.values(this.checkURanswerPageData[i]).toString() &&
+          Object.keys(this.checkURanswerPageData[i]).toString() !== 'Compliance' &&
+          Object.keys(this.checkURanswerPageData[i]).toString() !== ''
+        ) {
           expect(createCaseFormData).to.deep.include(this.checkURanswerPageData[i]);
         }
       }
@@ -283,10 +311,10 @@ class caseEditPage {
   }
 
   async _dlData(count) {
-    const checkURanswerPage = elementsByXpath('//table[@class=\'form-table\']/tbody/tr');
+    const checkURanswerPage = elementsByXpath("//table[@class='form-table']/tbody/tr");
     const dd = checkURanswerPage.nth(count).locator('td ccd-field-read dl dd');
     const dt = checkURanswerPage.nth(count).locator('td ccd-field-read dl dt');
-    for (let dtCount = 0; dtCount < await dt.count(); dtCount++) {
+    for (let dtCount = 0; dtCount < (await dt.count()); dtCount++) {
       const isDisplayed = await await dd.nth(dtCount).isVisible();
       if (!isDisplayed) {
         continue;
@@ -356,7 +384,8 @@ class caseEditPage {
         CucumberReportLogger.AddMessage(date1);
         date1 = date1[1] + ' ' + monthNames[parseInt(date1[0]) - 1] + ' ' + date1[2] + ', ' + time[1].toUpperCase();
         return date1;
-      default: return field.value;
+      default:
+        return field.value;
     }
   }
 }

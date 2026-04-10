@@ -1,11 +1,4 @@
-import {
-  AfterContentInit,
-  Component,
-  ContentChild,
-  ElementRef, HostBinding,
-  Input,
-  OnDestroy
-} from '@angular/core';
+import { AfterContentInit, Component, ContentChild, ElementRef, HostBinding, Input, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 
@@ -23,7 +16,7 @@ import { Subscription } from 'rxjs';
     <ng-container>
       <ng-content></ng-content>
     </ng-container>
-  `
+  `,
 })
 export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
   @ContentChild('ccdComponent', { static: false }) public ccdComponent;
@@ -39,8 +32,9 @@ export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
   public ngAfterContentInit() {
     if (this.ccdComponent) {
       this.eventsBindings.forEach((event) => {
-        this.subscriptions[event.type] =
-          this.ccdComponent[event.type].subscribe((obj = {}) => this.dispatcherContainer[event.type](obj));
+        this.subscriptions[event.type] = this.ccdComponent[event.type].subscribe((obj = {}) =>
+          this.dispatcherContainer[event.type](obj)
+        );
       });
       this.createDispatchers();
       this.hostBindingValue = this.ccdComponentElementRef.nativeElement.tagName;
@@ -69,7 +63,7 @@ export class ExuiCcdConnectorComponent implements AfterContentInit, OnDestroy {
         const copiedValue = obj[key].value;
         delete obj[key];
         obj[key] = {
-          value: copiedValue
+          value: copiedValue,
         };
       } else if (obj[key] && typeof obj[key] === 'object') {
         this.simplifyFormGroup(obj[key]);

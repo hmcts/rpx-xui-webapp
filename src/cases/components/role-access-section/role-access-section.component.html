@@ -1,9 +1,11 @@
-<h2 class="govuk-heading-m">{{title}}</h2>
-  <exui-case-roles-table [roles]="roles"
-                        [roleCategory]="roleCategory"
-                        [caseDetails]="caseDetails"
-                        [showAllocateRoleLink]="showAllocateRoleLink">
-  </exui-case-roles-table>
+<h2 class="govuk-heading-m">{{ title }}</h2>
+<exui-case-roles-table
+  [roles]="roles"
+  [roleCategory]="roleCategory"
+  [caseDetails]="caseDetails"
+  [showAllocateRoleLink]="showAllocateRoleLink"
+>
+</exui-case-roles-table>
 <p>
   <exui-allocate-a-role-link
     *ngIf="showAllocate"
@@ -13,6 +15,7 @@
     [roles]="roles"
     [roleCategory]="roleCategory"
     [linkText]="linkText"
-    [existingUsers]="existingUsers">
+    [existingUsers]="existingUsers"
+  >
   </exui-allocate-a-role-link>
 </p>

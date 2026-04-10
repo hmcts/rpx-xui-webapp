@@ -65,8 +65,8 @@ Then('Validate Case event update populating form page', async function () {
 
 Then('Validate create case form pages fields against the api response', async function () {
   const caseData = {
-    'Reference': '1610530255167708',
-    'Appicant Postcode': 'SW19 8JW'
+    Reference: '1610530255167708',
+    'Appicant Postcode': 'SW19 8JW',
   };
   await caseManager.createCase(caseData, false, true);
   await caseManager.submitCase();
@@ -74,17 +74,17 @@ Then('Validate create case form pages fields against the api response', async fu
 
 Then('I should be able to fill the form pages', async function () {
   const caseData = {
-    'Reference': '1610530255167708',
-    'Appicant Postcode': 'SW19 8JW'
+    Reference: '1610530255167708',
+    'Appicant Postcode': 'SW19 8JW',
   };
   await caseManager.createCase(caseData, false);
 });
 
 When('I create case with invalid date', async function () {
   const caseData = {
-    'Reference': '1610530255167708',
+    Reference: '1610530255167708',
     'Appicant Postcode': 'SW19 8JW',
-    'Date': '01-01-0000'
+    Date: '01-01-0000',
   };
   await caseManager.createCaseWithInvalidDate(caseData, false);
 });
@@ -100,12 +100,12 @@ Then('Validate check your answer summery page', async function () {
   });
 });
 
-Then('Validate mandatory fields functionality', async function(){
+Then('Validate mandatory fields functionality', async function () {
   await BrowserWaits.retryWithActionCallback(async () => {
     await caseEditPage.validateMandatoryFields();
   });
 });
 
-Then('Validate event pages display show condition logic', async function(){
+Then('Validate event pages display show condition logic', async function () {
   await caseEditPage.eventPageDisplayShowCondition();
 });

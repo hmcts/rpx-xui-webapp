@@ -1,24 +1,37 @@
-<a class="govuk-back-link govuk-!-margin-bottom-1" href="#"
-   *ngIf="isBackVisible(((allocateRoleStateData$ | async)?.state), ((allocateRoleStateData$ | async)?.action))"
-   (click)="onEventTrigger(allocateRoleNavigationEvent.BACK); $event.preventDefault()">Back</a>
+<a
+  class="govuk-back-link govuk-!-margin-bottom-1"
+  href="#"
+  *ngIf="isBackVisible((allocateRoleStateData$ | async)?.state, (allocateRoleStateData$ | async)?.action)"
+  (click)="onEventTrigger(allocateRoleNavigationEvent.BACK); $event.preventDefault()"
+  >Back</a
+>
 <ng-content></ng-content>
 <div class="govuk-button-group">
-  <button class="govuk-button govuk-!-margin-right-3"
-          type="button"
-          *ngIf="isVisible(((allocateRoleStateData$ | async)?.state), continueVisibilityStates)"
-          (click)="onEventTrigger(allocateRoleNavigationEvent.CONTINUE)">Continue
+  <button
+    class="govuk-button govuk-!-margin-right-3"
+    type="button"
+    *ngIf="isVisible((allocateRoleStateData$ | async)?.state, continueVisibilityStates)"
+    (click)="onEventTrigger(allocateRoleNavigationEvent.CONTINUE)"
+  >
+    Continue
   </button>
-  <button class="govuk-button govuk-!-margin-right-3"
-          type="button"
-          *ngIf="isVisible(((allocateRoleStateData$ | async)?.state), confirmExclusionButtonVisibilityStates)"
-          (click)="onEventTrigger(allocateRoleNavigationEvent.CONFIRM)">Confirm allocation
+  <button
+    class="govuk-button govuk-!-margin-right-3"
+    type="button"
+    *ngIf="isVisible((allocateRoleStateData$ | async)?.state, confirmExclusionButtonVisibilityStates)"
+    (click)="onEventTrigger(allocateRoleNavigationEvent.CONFIRM)"
+  >
+    Confirm allocation
   </button>
   <div class="govuk-grid-column-full govuk-!-padding-left-0">
     <p>
-      <a class='govuk-body'
-         *ngIf="isVisible(((allocateRoleStateData$ | async)?.state), cancelButtonVisibilityStates)"
-         (click)="onEventTrigger(allocateRoleNavigationEvent.CANCEL); $event.preventDefault()"
-          href="#">Cancel</a>
+      <a
+        class="govuk-body"
+        *ngIf="isVisible((allocateRoleStateData$ | async)?.state, cancelButtonVisibilityStates)"
+        (click)="onEventTrigger(allocateRoleNavigationEvent.CANCEL); $event.preventDefault()"
+        href="#"
+        >Cancel</a
+      >
     </p>
   </div>
 </div>

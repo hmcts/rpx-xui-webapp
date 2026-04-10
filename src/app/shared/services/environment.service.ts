@@ -1,23 +1,22 @@
-import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, Optional } from '@angular/core';
+import { EMPTY, Observable, of } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
-import { EnvironmentConfig } from '../../../models/environmentConfig.model';
+import { EnvironmentConfig, ENVIRONMENT_CONFIG } from '../../../models/environmentConfig.model';
 import { DeploymentEnvironmentEnum } from '../../enums/deployment-environment-enum';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class EnvironmentService {
   private data: EnvironmentConfig;
+  public config$: Observable<EnvironmentConfig>;
 
-  public config$ = this.http.get<EnvironmentConfig>('/external/config/ui')
-    .pipe<EnvironmentConfig>(shareReplay<EnvironmentConfig>(1));
-
-  constructor(private readonly http: HttpClient,
-              @Inject(Window) private readonly window:Window) {
-    this.config$.subscribe((config) => {
-      this.data = config;
-    });
+  constructor(
+    @Optional() @Inject(ENVIRONMENT_CONFIG) environmentConfig: EnvironmentConfig,
+    @Inject(Window) private readonly window: Window
+  ) {
+    this.data = environmentConfig;
+    this.config$ = this.data ? of(this.data).pipe(shareReplay<EnvironmentConfig>(1)) : EMPTY;
   }
 
   public get<K extends keyof EnvironmentConfig>(key: K): EnvironmentConfig[K] {
@@ -31,11 +30,16 @@ export class EnvironmentService {
     const hostname = this.window.location.hostname;
     console.log('Detecting environment for hostname ' + hostname);
     switch (hostname) {
-      case 'manage-case.platform.hmcts.net': return DeploymentEnvironmentEnum.PROD;
-      case 'manage-case.aat.platform.hmcts.net': return DeploymentEnvironmentEnum.AAT;
-      case 'manage-case.perftest.platform.hmcts.net': return DeploymentEnvironmentEnum.PERFTEST;
-      case 'manage-case.ithc.platform.hmcts.net': return DeploymentEnvironmentEnum.ITHC;
-      case 'localhost': return DeploymentEnvironmentEnum.LOCAL;
+      case 'manage-case.platform.hmcts.net':
+        return DeploymentEnvironmentEnum.PROD;
+      case 'manage-case.aat.platform.hmcts.net':
+        return DeploymentEnvironmentEnum.AAT;
+      case 'manage-case.perftest.platform.hmcts.net':
+        return DeploymentEnvironmentEnum.PERFTEST;
+      case 'manage-case.ithc.platform.hmcts.net':
+        return DeploymentEnvironmentEnum.ITHC;
+      case 'localhost':
+        return DeploymentEnvironmentEnum.LOCAL;
       default: {
         if (hostname.includes('.demo.platform.hmcts.net')) {
           return DeploymentEnvironmentEnum.DEMO;

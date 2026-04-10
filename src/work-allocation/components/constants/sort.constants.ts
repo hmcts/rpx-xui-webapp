@@ -5,9 +5,9 @@ const SESSION = {
   MyTasks: 'myTasksSort',
   AllWork: 'allWorkSort',
   AllWorkCases: 'allWorkCasesSort',
-  TaskManager: 'taskManagerSort'
+  TaskManager: 'taskManagerSort',
 };
 
 export const SORT_CONSTANTS = {
-  Session: SESSION
+  Session: SESSION,
 };

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { ModuleWithProviders, NgModule, Optional, SkipSelf } from '@angular/core';
+import { ModuleWithProviders, NgModule, Optional, SkipSelf, Injector } from '@angular/core';
+import { createCustomElement } from '@angular/elements';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { RouterModule } from '@angular/router';
@@ -43,7 +44,7 @@ import {
   RouterHelperService,
   SearchFiltersModule,
   SearchResultModule,
-  WorkbasketFiltersModule
+  WorkbasketFiltersModule,
 } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
@@ -62,6 +63,9 @@ import { casesRouting } from './case-feature.routes';
 import * as fromComponents from './components';
 // from containers
 import * as fromContainers from './containers';
+import { CaseHearingsComponent } from './containers';
+import { RolesAndAccessContainerComponent } from './containers/roles-and-access-container/roles-and-access-container.component';
+import { TasksContainerComponent } from './containers/tasks-container/tasks-container.component';
 // from directives
 import * as fromDirectives from './directives';
 import { queryManagementRouting } from './query-management.routes';
@@ -72,84 +76,108 @@ import * as fromServices from './services';
 import { effects, reducers } from './store';
 import { WorkAllocationComponentsModule } from '../work-allocation/components/work-allocation.components.module';
 
-@NgModule({ declarations: [...fromComponents.components, ...fromContainers.containers, ...fromDirectives.directives], imports: [AlertModule,
-  CommonModule,
-  CreateCaseFiltersModule,
-  SearchResultModule,
-  StoreModule.forFeature('cases', reducers),
-  EffectsModule.forFeature(effects),
-  casesRouting,
-  SharedModule,
-  OrganisationModule,
-  SearchFiltersModule,
-  MatDialogModule,
-  CaseListFiltersModule,
-  WorkbasketFiltersModule,
-  ExuiCommonLibModule,
-  LoadingModule,
-  ReactiveFormsModule,
-  HearingsModule,
-  HearingsPipesModule,
-  CaseHeaderModule,
-  CaseEditorModule,
-  CaseListModule,
-  PaletteModule,
-  CaseViewerModule,
-  PipesModule,
-  queryManagementRouting,
-  RpxTranslationModule.forChild(),
-  WorkAllocationComponentsModule], providers: [
-  PlaceholderService,
-  CaseReferencePipe,
-  CaseNotifier,
-  ErrorNotifierService,
-  NavigationNotifierService,
-  CasesService,
-  RetryUtil,
-  CCDAuthService,
-  HttpService,
-  HttpErrorService,
-  DraftService,
-  PageValidationService,
-  CaseEditWizardGuard,
-  RouterHelperService,
-  DocumentManagementService,
-  RequestOptionsBuilder,
-  {
-    provide: AbstractAppConfig,
-    useExisting: AppConfig
-  },
-  ScrollToService,
-  ...fromServices.services,
-  CreateCaseEventTriggerResolver,
-  CaseResolver,
-  ActivityResolver,
-  HearingsService,
-  FormatTranslatorService,
-  WASupportedJurisdictionsService,
-  OrganisationService,
-  OrganisationConverter,
-  IsCompoundPipe,
-  CcdCYAPageLabelFilterPipe,
-  CaseFileViewService,
-  JurisdictionService,
-  provideHttpClient(withInterceptorsFromDi())
-] })
+@NgModule({
+  declarations: [...fromComponents.components, ...fromContainers.containers, ...fromDirectives.directives],
+  imports: [
+    AlertModule,
+    CommonModule,
+    CreateCaseFiltersModule,
+    SearchResultModule,
+    StoreModule.forFeature('cases', reducers),
+    EffectsModule.forFeature(effects),
+    casesRouting,
+    SharedModule,
+    OrganisationModule,
+    SearchFiltersModule,
+    MatDialogModule,
+    CaseListFiltersModule,
+    WorkbasketFiltersModule,
+    ExuiCommonLibModule,
+    LoadingModule,
+    ReactiveFormsModule,
+    HearingsModule,
+    HearingsPipesModule,
+    CaseHeaderModule,
+    CaseEditorModule,
+    CaseListModule,
+    PaletteModule,
+    CaseViewerModule,
+    PipesModule,
+    queryManagementRouting,
+    RpxTranslationModule.forChild(),
+    WorkAllocationComponentsModule,
+  ],
+  providers: [
+    PlaceholderService,
+    CaseReferencePipe,
+    CaseNotifier,
+    ErrorNotifierService,
+    NavigationNotifierService,
+    CasesService,
+    RetryUtil,
+    CCDAuthService,
+    HttpService,
+    HttpErrorService,
+    DraftService,
+    PageValidationService,
+    CaseEditWizardGuard,
+    RouterHelperService,
+    DocumentManagementService,
+    RequestOptionsBuilder,
+    {
+      provide: AbstractAppConfig,
+      useExisting: AppConfig,
+    },
+    ScrollToService,
+    ...fromServices.services,
+    CreateCaseEventTriggerResolver,
+    CaseResolver,
+    ActivityResolver,
+    HearingsService,
+    FormatTranslatorService,
+    WASupportedJurisdictionsService,
+    OrganisationService,
+    OrganisationConverter,
+    IsCompoundPipe,
+    CcdCYAPageLabelFilterPipe,
+    CaseFileViewService,
+    JurisdictionService,
+    provideHttpClient(withInterceptorsFromDi()),
+  ],
+})
 /**
  * Entry point for Cases Module that is also lazy loaded.
  */
 export class CasesModule {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  constructor(@Optional() @SkipSelf() parentModule: CasesModule) {
+  constructor(
+    @Optional() @SkipSelf() parentModule: CasesModule,
+    private injector: Injector
+  ) {
     CasesModule.forRoot();
+    // There are elements that need to be registered as custom elements to be used in the toolkit
+    if (typeof customElements !== 'undefined') {
+      const registrations: Array<{ tag: string; component: any }> = [
+        { tag: 'exui-case-hearings-ce', component: CaseHearingsComponent },
+        { tag: 'exui-roles-and-access-ce', component: RolesAndAccessContainerComponent },
+        { tag: 'exui-tasks-ce', component: TasksContainerComponent },
+      ];
+      for (const { tag, component } of registrations) {
+        if (!customElements.get(tag)) {
+          try {
+            const el = createCustomElement(component, { injector: this.injector });
+            customElements.define(tag, el);
+          } catch (err) {
+            console.log(err);
+          }
+        }
+      }
+    }
   }
 
   public static forRoot(): ModuleWithProviders<RouterModule> {
     return {
       ngModule: CasesModule,
-      providers: [
-        AlertService
-      ]
+      providers: [AlertService],
     };
   }
 }

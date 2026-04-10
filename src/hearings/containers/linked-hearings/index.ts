@@ -9,5 +9,5 @@ export const containers: any[] = [
   LinkedHearingsWithCaseComponent,
   HowLinkedHearingsBeHeardComponent,
   LinkedHearingsCheckYourAnswersComponent,
-  LinkedHearingsFinalConfirmationComponent
+  LinkedHearingsFinalConfirmationComponent,
 ];

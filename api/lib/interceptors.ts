@@ -1,14 +1,12 @@
 import * as exceptionFormatter from 'exception-formatter';
 import { getConfigValue } from '../configuration';
-import {
-  MAX_LOG_LINE
-} from '../configuration/references';
+import { MAX_LOG_LINE } from '../configuration/references';
 
 import { shorten, valueOrNull } from '../lib/util';
 import * as log4jui from './log4jui';
 
 const exceptionOptions = {
-  maxLines: 1
+  maxLines: 1,
 };
 
 export function requestInterceptor(request) {
@@ -36,7 +34,7 @@ export function successInterceptor(response) {
     name: `Service ${response.config.method.toUpperCase()} call`,
     resultCode: response.status,
     success: true,
-    url: response.config.url
+    url: response.config.url,
   });
   return response;
 }
@@ -50,16 +48,16 @@ export function errorInterceptor(error) {
   const url = shorten(error.config.url, getConfigValue(MAX_LOG_LINE));
 
   let data = valueOrNull(error, 'response.data.details');
-  if (!data) {
+  if (data) {
+    logger.error(`Error on ${error.config.method.toUpperCase()} to ${url} in (${error.duration}) - ${error} \n
+    ${JSON.stringify(data)}`);
+  } else {
     data = valueOrNull(error, 'response.status') ? JSON.stringify(error.response.data, null, 2) : null;
     if (!data) {
       data = error;
     }
     logger.error(`Error on ${error.config.method.toUpperCase()} to ${url} in (${error.duration}) - ${error} \n
     ${exceptionFormatter(data, exceptionOptions)}`);
-  } else {
-    logger.error(`Error on ${error.config.method.toUpperCase()} to ${url} in (${error.duration}) - ${error} \n
-    ${JSON.stringify(data)}`);
   }
 
   logger.trackRequest({
@@ -67,7 +65,7 @@ export function errorInterceptor(error) {
     name: `Service ${error.config.method.toUpperCase()} call`,
     resultCode: error.status,
     success: true,
-    url: error.config.url
+    url: error.config.url,
   });
 
   return Promise.reject(error.response);

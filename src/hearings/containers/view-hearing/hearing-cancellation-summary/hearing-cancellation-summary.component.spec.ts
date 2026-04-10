@@ -9,7 +9,7 @@ describe('HearingCancellationSummaryComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [HearingCancellationSummaryComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingCancellationSummaryComponent);

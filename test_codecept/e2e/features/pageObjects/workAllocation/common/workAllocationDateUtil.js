@@ -1,14 +1,13 @@
-
-class WorkAllocationDateUtil{
+class WorkAllocationDateUtil {
   getDurationDateDisplayString(dateInDays) {
     return this.getDateFormat_D_Month_YYYY(dateInDays);
   }
 
-  getTaskDueDateDisplayString(dateInDays){
+  getTaskDueDateDisplayString(dateInDays) {
     return this.getDateFormat_D_Month_YYYY(dateInDays);
   }
 
-  getTaskCeateDateDisplayString(dateInDays){
+  getTaskCeateDateDisplayString(dateInDays) {
     return this.getDateFormat_D_Month_YYYY(dateInDays);
   }
 
@@ -17,7 +16,7 @@ class WorkAllocationDateUtil{
     dateObj.setDate(dateObj.getDate() + parseInt(dateInDays.replace(' ', '')));
     let date = dateObj.getDate();
 
-    if (format === 'DD MONTH YYYY'){
+    if (format === 'DD MONTH YYYY') {
       date = date < 10 ? '0' + date : date;
 
       let month = dateObj.getMonth();
@@ -27,19 +26,19 @@ class WorkAllocationDateUtil{
       return `${date} ${month} ${year}`;
     }
 
-    if (format === 'DD/MM/YYYY'){
+    if (format === 'DD/MM/YYYY') {
       date = date < 10 ? '0' + date : date;
 
       const month = dateObj.getMonth();
 
       const year = dateObj.getFullYear();
-      return `${date}/${month+1}/${year}`;
+      return `${date}/${month + 1}/${year}`;
     }
 
     return date;
   }
 
-  getDateInDays(dateInDays){
+  getDateInDays(dateInDays) {
     const dateObj = new Date();
     dateObj.setHours(0);
     dateObj.setMinutes(0);
@@ -48,7 +47,7 @@ class WorkAllocationDateUtil{
     return dateObj;
   }
 
-  getDateFormat_DD_Month_YYYY(dateInDays){
+  getDateFormat_DD_Month_YYYY(dateInDays) {
     const dateObj = new Date();
     dateObj.setDate(dateObj.getDate() + parseInt(dateInDays.replace(' ', '')));
 

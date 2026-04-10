@@ -16,12 +16,10 @@ describe('ExclusionNavigationComponent', () => {
       imports: [
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          feature: combineReducers(fromStore.reducers)
-        })
+          feature: combineReducers(fromStore.reducers),
+        }),
       ],
-      declarations: [
-        SpecificAccessNavigationComponent
-      ]
+      declarations: [SpecificAccessNavigationComponent],
     }).compileComponents();
 
     store = TestBed.inject(Store);

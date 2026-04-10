@@ -10,28 +10,33 @@ import { HearingJurisdictionConfigService } from 'src/app/services/hearing-juris
 
 @Injectable()
 export class HearingsEditGuard extends HearingsGuard {
-  constructor(protected readonly appStore: Store<fromAppStore.State>,
-              protected readonly hearingStore: Store<fromAppStore.State>,
-              protected readonly hearingJurisdictionConfigService: HearingJurisdictionConfigService,
-              protected readonly router: Router) {
+  constructor(
+    protected readonly appStore: Store<fromAppStore.State>,
+    protected readonly hearingStore: Store<fromAppStore.State>,
+    protected readonly hearingJurisdictionConfigService: HearingJurisdictionConfigService,
+    protected readonly router: Router
+  ) {
     super(appStore, hearingJurisdictionConfigService, hearingStore, router);
   }
 
   public canActivate(): Observable<boolean> {
-    return super.hasMatchedPermissions().pipe(
-      switchMap((hasMatchedPermissions) => {
-        if (hasMatchedPermissions) {
-          return this.userRoles$.pipe(
-            map((userRoles) => userRoles.includes(UserRole.HearingManager))
-          );
-        }
+    return super
+      .hasMatchedPermissions()
+      .pipe(
+        switchMap((hasMatchedPermissions) => {
+          if (hasMatchedPermissions) {
+            return this.userRoles$.pipe(map((userRoles) => userRoles.includes(UserRole.HearingManager)));
+          }
 
-        return of(false);
-      })
-    ).pipe(tap((canActive) => {
-      if (!canActive) {
-        this.router.navigate([HearingsGuard.DEFAULT_URL]);
-      }
-    }));
+          return of(false);
+        })
+      )
+      .pipe(
+        tap((canActive) => {
+          if (!canActive) {
+            this.router.navigate([HearingsGuard.DEFAULT_URL]);
+          }
+        })
+      );
   }
 }

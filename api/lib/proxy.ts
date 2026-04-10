@@ -4,12 +4,11 @@
  * When moving to a different proxy middleware, it is important to refactor this as well.
  */
 // TODO: remove this entire file in favour of middleware/proxy.ts
+// EXUI-3967 - the above ask is a larger task requiring investigation and testing
 import * as express from 'express';
 import * as striptags from 'striptags';
 import { getConfigValue } from '../configuration';
-import {
-  SERVICES_CCD_COMPONENT_API_PATH, SERVICES_HEARINGS_ENABLE_DATA_SOURCE_HEADERS
-} from '../configuration/references';
+import { SERVICES_CCD_COMPONENT_API_PATH, SERVICES_HEARINGS_ENABLE_DATA_SOURCE_HEADERS } from '../configuration/references';
 
 import { http } from './http';
 import { EnhancedRequest } from './models';
@@ -39,7 +38,7 @@ export function setHeaders(req: express.Request, contentType?: string) {
       headers.Authorization = req.headers.Authorization;
     }
 
-    if (req.headers['user-roles'] && req.headers['user-roles'].length) {
+    if (req.headers['user-roles']?.length) {
       headers['user-roles'] = req.headers['user-roles'];
     }
 
@@ -53,6 +52,10 @@ export function setHeaders(req: express.Request, contentType?: string) {
 
     if (enableHearingDataSourceHeaders && exists(req, 'headers.Role-Assignment-Url')) {
       headers['Role-Assignment-Url'] = req.headers['Role-Assignment-Url'];
+    }
+
+    if (enableHearingDataSourceHeaders && exists(req, 'headers.Role-Assignment-Url')) {
+      headers['hmctsDeploymentId'] = req.headers['Hmcts-Deployment-Id'];
     }
   }
 

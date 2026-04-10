@@ -18,12 +18,12 @@ describe('AdditionalFacilitiesAnswerConverter', () => {
           useValue: {
             snapshot: {
               data: {
-                additionFacilitiesOptions: facilitiesListRefData
-              }
-            }
-          }
-        }
-      ]
+                additionFacilitiesOptions: facilitiesListRefData,
+              },
+            },
+          },
+        },
+      ],
     });
     router = TestBed.inject(ActivatedRoute);
     converter = new AdditionalFacilitiesAnswerConverter(router);
@@ -42,8 +42,8 @@ describe('AdditionalFacilitiesAnswerConverter', () => {
       ...initialState.hearings,
       hearingConditions: {
         ...initialState.hearings.hearingConditions,
-        isHearingAmendmentsEnabled: true
-      }
+        isHearingAmendmentsEnabled: true,
+      },
     };
     const result$ = converter.transformAnswer(of(STATE));
     const additionalFacilities = '<ul><li>Same-sex courtroom</li><li>Secure dock</li></ul>';

@@ -1,4 +1,5 @@
 import 'core-js/es/array';
+import 'core-js/es/global-this';
 import 'core-js/es/object';
 import 'core-js/es/reflect';
 import 'core-js/es/symbol';
@@ -47,4 +48,4 @@ import 'web-animations-js'; // Run `npm install --save web-animations-js`.
  */
 import 'zone.js';
 
-(window as any).global = window; // added to prevent issues with some libraries
+(globalThis as any).global = globalThis; // added to prevent issues with some libraries

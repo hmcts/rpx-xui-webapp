@@ -13,25 +13,21 @@ const cookieService = {
   set: (key, value) => {
     cookieService[key] = value;
   },
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  removeAll: () => {}
+
+  removeAll: () => {},
 };
 
 describe('AppHeaderSignedOutComponent', () => {
   let component: AppHeaderSignedOutComponent;
   let fixture: ComponentFixture<AppHeaderSignedOutComponent>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let store: Store<fromActions.State>;
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-        StoreModule.forRoot({})
-      ],
+      imports: [StoreModule.forRoot({})],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [
-        AppHeaderSignedOutComponent
-      ]
+      declarations: [AppHeaderSignedOutComponent],
     }).compileComponents();
   }));
 

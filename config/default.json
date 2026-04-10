@@ -1,4 +1,4 @@
-  {
+{
   "environment": "production",
   "cookies": {
     "token": "__auth__",
@@ -114,7 +114,6 @@
   },
   "protocol": "https",
   "microservice": "xui_webapp",
-  "sessionSecret": "secretSauce",
   "caseworkerPageSize": "30000",
   "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT,ST_CIC",
   "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT,ST_CIC",
@@ -133,20 +132,11 @@
     { "service": "PROBATE", "serviceCodes": ["ABA6"] }
   ],
   "wildcardSearchFields": {
-    "Benefit": [
-      "generatedSurname",
-      "appeal.appellant.name.lastName"
-    ],
-    "HearingRecordings": [
-      "recordingReference"
-    ],
-    "xuiTestCaseType": [
-      "TextField"
-    ]
+    "Benefit": ["generatedSurname", "appeal.appellant.name.lastName"],
+    "HearingRecordings": ["recordingReference"],
+    "xuiTestCaseType": ["TextField"]
   },
-  "wildcardSearchRoles": [
-    "caseworker"
-  ],
+  "wildcardSearchRoles": ["caseworker"],
   "loginRoleMatcher": "caseworker",
   "log4JConfig": {
     "appenders": {

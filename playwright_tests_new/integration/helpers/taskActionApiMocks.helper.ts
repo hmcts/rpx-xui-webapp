@@ -195,15 +195,15 @@ const buildActionExpectation = (action: UiTaskAction, options: TaskActionMockOpt
           ...sharedResolvers,
           ...(includeSubmitActionMock
             ? [
-              {
-                purpose: 'Submit cancel action',
-                method: 'POST' as const,
-                urlPattern: `**/workallocation/task/${taskId}/cancel*`,
-                expectedRequestJson: {},
-                responseStatus: 204,
-                responseJson: {},
-              },
-            ]
+                {
+                  purpose: 'Submit cancel action',
+                  method: 'POST' as const,
+                  urlPattern: `**/workallocation/task/${taskId}/cancel*`,
+                  expectedRequestJson: {},
+                  responseStatus: 204,
+                  responseJson: {},
+                },
+              ]
             : []),
         ],
       };
@@ -217,15 +217,15 @@ const buildActionExpectation = (action: UiTaskAction, options: TaskActionMockOpt
           ...sharedResolvers,
           ...(includeSubmitActionMock
             ? [
-              {
-                purpose: 'Submit complete action',
-                method: 'POST' as const,
-                urlPattern: `**/workallocation/task/${taskId}/complete*`,
-                expectedRequestJson: { hasNoAssigneeOnComplete: false },
-                responseStatus: 204,
-                responseJson: {},
-              },
-            ]
+                {
+                  purpose: 'Submit complete action',
+                  method: 'POST' as const,
+                  urlPattern: `**/workallocation/task/${taskId}/complete*`,
+                  expectedRequestJson: { hasNoAssigneeOnComplete: false },
+                  responseStatus: 204,
+                  responseJson: {},
+                },
+              ]
             : []),
         ],
       };
@@ -239,15 +239,15 @@ const buildActionExpectation = (action: UiTaskAction, options: TaskActionMockOpt
           ...sharedResolvers,
           ...(includeSubmitActionMock
             ? [
-              {
-                purpose: 'Submit reassign action (confirm screen)',
-                method: 'POST' as const,
-                urlPattern: `**/workallocation/task/${taskId}/assign*`,
-                expectedRequestJson: { userId: newAssigneeId },
-                responseStatus: 204,
-                responseJson: {},
-              },
-            ]
+                {
+                  purpose: 'Submit reassign action (confirm screen)',
+                  method: 'POST' as const,
+                  urlPattern: `**/workallocation/task/${taskId}/assign*`,
+                  expectedRequestJson: { userId: newAssigneeId },
+                  responseStatus: 204,
+                  responseJson: {},
+                },
+              ]
             : []),
         ],
       };
@@ -261,24 +261,24 @@ const buildActionExpectation = (action: UiTaskAction, options: TaskActionMockOpt
           ...sharedResolvers,
           ...(includeSubmitActionMock
             ? [
-              unassignMode === 'assign-null'
-                ? {
-                  purpose: 'Manager unassign path (assign null user)',
-                  method: 'POST' as const,
-                  urlPattern: `**/workallocation/task/${taskId}/assign*`,
-                  expectedRequestJson: { userId: null },
-                  responseStatus: 204,
-                  responseJson: {},
-                }
-                : {
-                  purpose: 'Self-unassign path',
-                  method: 'POST' as const,
-                  urlPattern: `**/workallocation/task/${taskId}/unclaim*`,
-                  expectedRequestJson: { hasNoAssigneeOnComplete: false },
-                  responseStatus: 204,
-                  responseJson: {},
-                },
-            ]
+                unassignMode === 'assign-null'
+                  ? {
+                      purpose: 'Manager unassign path (assign null user)',
+                      method: 'POST' as const,
+                      urlPattern: `**/workallocation/task/${taskId}/assign*`,
+                      expectedRequestJson: { userId: null },
+                      responseStatus: 204,
+                      responseJson: {},
+                    }
+                  : {
+                      purpose: 'Self-unassign path',
+                      method: 'POST' as const,
+                      urlPattern: `**/workallocation/task/${taskId}/unclaim*`,
+                      expectedRequestJson: { hasNoAssigneeOnComplete: false },
+                      responseStatus: 204,
+                      responseJson: {},
+                    },
+              ]
             : []),
         ],
         notes:

@@ -83,9 +83,9 @@ export async function routeMyTaskActionFlow(
   const taskWithActions = includeAction
     ? task
     : {
-      ...task,
-      actions: actions.filter((action) => action?.id !== actionId),
-    };
+        ...task,
+        actions: actions.filter((action) => action?.id !== actionId),
+      };
 
   await setupTaskListBootstrapRoutes(page);
 
@@ -235,17 +235,15 @@ export async function routeCaseDetailsTaskActionFlow(
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(
-        {
-          idamId: assignee,
-          firstName: 'Test',
-          lastName: 'User',
-          email: 'test.user@justice.gov.uk',
-          roleCategory: 'LEGAL_OPERATIONS',
-          services: [scenario.jurisdiction],
-          locations: [],
-        },
-      ),
+      body: JSON.stringify({
+        idamId: assignee,
+        firstName: 'Test',
+        lastName: 'User',
+        email: 'test.user@justice.gov.uk',
+        roleCategory: 'LEGAL_OPERATIONS',
+        services: [scenario.jurisdiction],
+        locations: [],
+      }),
     });
   });
 

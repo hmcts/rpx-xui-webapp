@@ -83,9 +83,9 @@ export async function routeMyTaskActionFlow(
   const taskWithActions = includeAction
     ? task
     : {
-        ...task,
-        actions: actions.filter((action) => action?.id !== actionId),
-      };
+      ...task,
+      actions: actions.filter((action) => action?.id !== actionId),
+    };
 
   await setupTaskListBootstrapRoutes(page);
 
@@ -113,6 +113,14 @@ export async function routeMyTaskActionFlow(
 
   await page.route('**/workallocation/caseworker/getUsersByServiceName', async (route: Route) => {
     await route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
+  });
+
+  await page.route('**/workallocation/caseworker/getUsersByIdamIds*', async (route: Route) => {
+    await route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
+  });
+
+  await page.route('**/workallocation/caseworker/getUserByIdamId*', async (route: Route) => {
+    await route.fulfill({ status: 200, contentType: 'application/json', body: '' });
   });
 
   await page.route(`**/workallocation/task/${taskId}/${actionId}*`, async (route: Route) => {
@@ -200,6 +208,44 @@ export async function routeCaseDetailsTaskActionFlow(
           locations: [],
         },
       ]),
+    });
+  });
+
+  await page.route('**/workallocation/caseworker/getUsersByIdamIds*', async (route: Route) => {
+    const assignee = typeof task.assignee === 'string' ? task.assignee : '';
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([
+        {
+          idamId: assignee,
+          firstName: 'Test',
+          lastName: 'User',
+          email: 'test.user@justice.gov.uk',
+          roleCategory: 'LEGAL_OPERATIONS',
+          services: [scenario.jurisdiction],
+          locations: [],
+        },
+      ]),
+    });
+  });
+
+  await page.route('**/workallocation/caseworker/getUserByIdamId*', async (route: Route) => {
+    const assignee = typeof task.assignee === 'string' ? task.assignee : '';
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(
+        {
+          idamId: assignee,
+          firstName: 'Test',
+          lastName: 'User',
+          email: 'test.user@justice.gov.uk',
+          roleCategory: 'LEGAL_OPERATIONS',
+          services: [scenario.jurisdiction],
+          locations: [],
+        },
+      ),
     });
   });
 

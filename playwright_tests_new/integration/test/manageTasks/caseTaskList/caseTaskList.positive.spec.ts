@@ -24,7 +24,7 @@ test.beforeEach(async ({ page }) => {
     await route.fulfill({ status: 200, contentType: 'application/json', body });
   });
 
-  await page.route(`**/workallocation/caseworker/getUsersByServiceName*`, async (route) => {
+  await page.route(`**/workallocation/caseworker/getUsersByIdamIds*`, async (route) => {
     const body = JSON.stringify([
       {
         email: 'test@example.com',
@@ -182,7 +182,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     };
     const tasks = buildCaseDetailsTasksMinimal(taskData);
 
-    await page.route(`**/workallocation/caseworker/getUsersByServiceName*`, async (route) => {
+    await page.route(`**/workallocation/caseworker/getUsersByIdamIds*`, async (route) => {
       const body = JSON.stringify([
         {
           email: 'test@example.com',

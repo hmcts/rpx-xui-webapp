@@ -205,6 +205,22 @@ export async function setupHearingsMockRoutes(page: Page, config: HearingsMockRo
     });
   });
 
+  await page.route('**/workallocation/caseworker/getUsersByIdamIds*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([]),
+    });
+  });
+
+  await page.route('**/workallocation/caseworker/getUserByIdamId*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([]),
+    });
+  });
+
   await page.route('**/api/prd/judicial/searchJudicialUserByIdamId*', async (route) => {
     await route.fulfill({
       status: 200,

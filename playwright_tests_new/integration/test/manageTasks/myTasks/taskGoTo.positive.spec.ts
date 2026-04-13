@@ -84,7 +84,7 @@ test.describe(`Task Go To as ${userIdentifier}`, { tag: ['@integration', '@integ
         await route.fulfill({ status: 200, contentType: 'application/json', body });
       });
 
-      await page.route('**/workallocation/caseworker/getUsersByServiceName*', async (route) => {
+      await page.route('**/workallocation/caseworker/getUsersByIdamIds*', async (route) => {
         const body = JSON.stringify(userRequestMockResponse);
         await route.fulfill({ status: 200, contentType: 'application/json', body });
       });

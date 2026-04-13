@@ -1,4 +1,5 @@
-
+@functional_enabled @ignore
+# Legacy Codecept coverage retained for reference only. Active coverage lives in playwright_tests_new/integration/test/accessRequests/.
 Feature: Case access management: Approve specific access request
 
     Background:setup

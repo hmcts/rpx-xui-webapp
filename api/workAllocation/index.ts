@@ -618,24 +618,14 @@ export async function getCases(req: EnhancedRequest, res: Response, next: NextFu
 }
 
 // This will put assignee names in cases based on cached user details
+// Assignee name currently only matches one user but kept for future proofing
 // Note: Judges will not have their names populated until refresh within the Angular layer
 export async function setAssigneeNamesInCases(cases: Case[], assigneeIds: string[]): Promise<Case[]> {
   let assigneeDetails = [];
   if (timestampExists() && FullUserDetailCache.getAllUserDetails()?.length > 0) {
     assigneeDetails = FullUserDetailCache.getUsersByIdamIds(assigneeIds);
-  } else {
-    // Names are not actually needed for all work cases (as they will be filtered by individual) so commenting out to improve performance
-    /* try {
-      // EXUI-2645 - populate / refresh cache then retrieve only if there is no alternative
-      // if either call fails we revert back to proceeding without assignee names similar to previous Angular behaviours
-      const cachedUserData = await fetchUserData(req, next);
-      await fetchRoleAssignments(cachedUserData, req, next);
-      assigneeDetails = FullUserDetailCache.getUsersByIdamIds(assigneeIds);
-    } catch (error) {
-      trackTrace(`Error fetching user data for assignees: ${error.toString()}, proceeding without assignee names`);
-      assigneeDetails = []; // proceed without assignee names
-    } */
   }
+  // If cache does not exist, do not refresh it as the names for cases are no longer displayed anyway
   if (assigneeDetails.length > 0) {
     const nameMap = new Map(assigneeDetails.map((assignee) => [assignee.idamId, `${assignee.firstName} ${assignee.lastName}`]));
     cases.forEach((caseWithAssignee) => {

@@ -1396,7 +1396,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/helper-define-polyfill-provider@npm:^0.6.5, @babel/helper-define-polyfill-provider@npm:^0.6.6":
+"@babel/helper-define-polyfill-provider@npm:^0.6.5":
+  version: 0.6.7
+  resolution: "@babel/helper-define-polyfill-provider@npm:0.6.7"
+  dependencies:
+    "@babel/helper-compilation-targets": "npm:^7.28.6"
+    "@babel/helper-plugin-utils": "npm:^7.28.6"
+    debug: "npm:^4.4.3"
+    lodash.debounce: "npm:^4.0.8"
+    resolve: "npm:^1.22.11"
+  peerDependencies:
+    "@babel/core": ^7.4.0 || ^8.0.0-0 <8.0.0
+  checksum: 10/a13fe848018aad9745018ab1f8c95520f3872572cc931c70c77acacf9b8f774b49e22ece6cc89143867935e2efac3fc7eb325f2846dedc1621d83f2f8f7d8ad1
+  languageName: node
+  linkType: hard
+
+"@babel/helper-define-polyfill-provider@npm:^0.6.6":
   version: 0.6.6
   resolution: "@babel/helper-define-polyfill-provider@npm:0.6.6"
   dependencies:
@@ -3886,12 +3901,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.43":
-  version: 7.3.43
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.43"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.45":
+  version: 7.3.45
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.45"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/b33aedd7599e43731deeadb18ea8bc26c0b48ad93d6ab08541dc1e71d9b3869e7522fe07cf63fc4dcb6dc2580dc305bccf4eb1c782bdbe310568184a0ff8983a
+  checksum: 10/9573f016ec5bb145046e2297bb2bc88ef468213aaddf7d9fc084f1a47f8462ce2b32fd80f8054699bb568fc1fda66c28989c5b37b499bac11276105aa45d07e2
   languageName: node
   linkType: hard
 
@@ -4003,22 +4018,22 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.6":
-  version: 3.2.6
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.6"
+"@hmcts/rpx-xui-common-lib@npm:3.2.7":
+  version: 3.2.7
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.7"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: 1.1.2-CME-780-9
-  checksum: 10/718e05b9c621eff2df17b393a4d84d5e5b5d69770e2bad26d13665d8d368d9ce9cca81f80178b20b538125f4f34449374ab06bc3a613306177862aa1ee037690
+  checksum: 10/5ae8445e5765075922e47483275446b6cddd996796523735daf2b7bcee3f39610c11e38b5d327a6cb8e8e64c4df40f25f223a463dc4f0d54e6f8df80faa2ff3d
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.7-exui-4185-4":
-  version: 2.30.7-exui-4185-4
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.7-exui-4185-4"
+"@hmcts/rpx-xui-node-lib@npm:2.30.7-exui-3762-rel":
+  version: 2.30.7-exui-3762-rel
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.7-exui-3762-rel"
   dependencies:
     "@hapi/joi": "npm:^17.1.1"
     axios: "npm:^1.11.0"
@@ -4040,7 +4055,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/e4bd1c5bac5e0b04af484c7df26cc3f9733391acd8b57e0359879f74dd014536a8a661652216dda7364625a404dbdd1f339d8f2849498f5d5422ddd6e5f8c978
+  checksum: 10/831bb461efc52c2e3699081aa97c842b8a940f1683d22e1bbca0f00a6d67e2b0bf91d2ca4eba138de54b9c26be9c11c78214659a8f339738f782123fad462449
   languageName: node
   linkType: hard
 
@@ -10506,7 +10521,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"acorn@npm:^8.14.0":
+"acorn@npm:^8.14.0, acorn@npm:^8.16.0":
   version: 8.16.0
   resolution: "acorn@npm:8.16.0"
   bin:
@@ -17428,9 +17443,9 @@ __metadata:
   linkType: hard
 
 "immutable@npm:^5.0.2":
-  version: 5.1.3
-  resolution: "immutable@npm:5.1.3"
-  checksum: 10/6d29b29036143e7ea1e7f7be581c71bca873ea77c175d33c6c839bf4017265a58c41ec269e3ffcd7b483797fc7fa9c928b4ed3d6edfeeb1b5711d84f60d04090
+  version: 5.1.5
+  resolution: "immutable@npm:5.1.5"
+  checksum: 10/7aec2740239772ec8e92e793c991bd809203a97694f4ff3a18e50e28f9a6b02393ad033d87b458037bdf8c0ea37d4446d640e825f6171df3405cf6cf300ce028
   languageName: node
   linkType: hard
 
@@ -19423,13 +19438,13 @@ __metadata:
   linkType: hard
 
 "katex@npm:^0.16.0":
-  version: 0.16.33
-  resolution: "katex@npm:0.16.33"
+  version: 0.16.38
+  resolution: "katex@npm:0.16.38"
   dependencies:
     commander: "npm:^8.3.0"
   bin:
     katex: cli.js
-  checksum: 10/6db21ebc53316402b07a2718d038121db311ce4ccc3c196189c82c165d198f15924f34d26b1d0aaaabfc6860885a372aac1d7254416f2cb513693e94a19a7cee
+  checksum: 10/e9103def114d9d08ab216864e66b68e6f50a6360fdc5aa29d8edeee430e1618dd7551b9f080e9c591b3ee24c18fe6910b8fe0c89c7c4b1109abd2b63e223fbc5
   languageName: node
   linkType: hard
 
@@ -20926,14 +20941,14 @@ __metadata:
   linkType: hard
 
 "mlly@npm:^1.7.4":
-  version: 1.8.0
-  resolution: "mlly@npm:1.8.0"
+  version: 1.8.1
+  resolution: "mlly@npm:1.8.1"
   dependencies:
-    acorn: "npm:^8.15.0"
+    acorn: "npm:^8.16.0"
     pathe: "npm:^2.0.3"
     pkg-types: "npm:^1.3.1"
-    ufo: "npm:^1.6.1"
-  checksum: 10/4db690a421076d5fe88331679f702b77a4bfc9fe3f324bc6150270fb0b69ecd4b5e43570b8e4573dde341515b3eac4daa720a6ac9f2715c210b670852641ab1c
+    ufo: "npm:^1.6.3"
+  checksum: 10/8e424f0615d09adfb7d59ad8f0c8245df275cd05e483a4631a1b2c5dd7e09913a9ce8182bc1562d569941ecee25ab03f4429284265471f562da1dd308008e237
   languageName: node
   linkType: hard
 
@@ -24489,15 +24504,15 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.43"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.45"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.15"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.3.1"
-    "@hmcts/rpx-xui-common-lib": "npm:3.2.6"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.7-exui-4185-4"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.7"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.7-exui-3762-rel"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"
@@ -26940,7 +26955,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ufo@npm:^1.6.1":
+"ufo@npm:^1.6.3":
   version: 1.6.3
   resolution: "ufo@npm:1.6.3"
   checksum: 10/79803984f3e414567273a666183d6a50d1bec0d852100a98f55c1e393cb705e3b88033e04029dd651714e6eec99e1b00f54fdc13f32404968251a16f8898cfe5

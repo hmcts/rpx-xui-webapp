@@ -6,6 +6,7 @@ class TaskForEventCompletionValidationPage {
       'app-no-tasks-available',
       'app-multiple-tasks-exist',
       'app-task-assigned',
+      'app-task-unassigned',
       'app-case-event-completion-task-reassigned',
       'app-case-event-completion-task-cancelled',
       'app-case-event-completion-task-completed',

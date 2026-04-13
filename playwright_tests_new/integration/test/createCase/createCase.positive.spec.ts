@@ -1,22 +1,14 @@
 import { divorcePocCaseData } from '../../mocks/createCase.mock';
 import { test, expect } from '../../../E2E/fixtures';
 import { applySessionCookies } from '../../../common/sessionCapture';
-import { routeCaseCreationFlow } from '../../utils/caseCreationRoutes';
+import { submitCaseAndCaptureRequest } from '../../utils/caseCreationRoutes';
 import { TEST_USERS } from '../../testData';
-import type { Page } from '@playwright/test';
-import type { CreateCasePage } from '../../../E2E/page-objects/pages/exui/createCase.po';
 
 const userIdentifier = TEST_USERS.SOLICITOR;
 const jurisdiction = 'DIVORCE';
 const caseType = 'xuiTestJurisdiction';
 
 let interceptedCreateCaseRequestBody;
-
-async function submitCaseAndCaptureRequest(page: Page, createCasePage: CreateCasePage) {
-  const interceptedCreateCaseRequestBodyPromise = routeCaseCreationFlow(page);
-  await Promise.all([interceptedCreateCaseRequestBodyPromise, createCasePage.testSubmitButton.click()]);
-  return interceptedCreateCaseRequestBodyPromise;
-}
 
 test.beforeEach(async ({ page, createCasePage }) => {
   await applySessionCookies(page, userIdentifier);

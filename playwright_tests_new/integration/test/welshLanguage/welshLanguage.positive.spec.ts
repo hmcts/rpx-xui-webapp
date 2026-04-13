@@ -1,73 +1,12 @@
-import { welshTranslationsSmall } from 'playwright_tests_new/integration/mocks/welshLanguage';
 import { expect, test } from '../../../E2E/fixtures';
-import { setupWelshLanguageSession, type WelshLanguageSessionLease } from '../../helpers';
-const TRANSLATIONS_TIMEOUT = 20_000;
-
-function getWelshTranslationChecks(createCasePage, caseListPage) {
-  return [
-    {
-      locator: caseListPage.exuiHeader.appHeaderLink,
-      welsh: welshTranslationsSmall.translations['Manage Cases'].translation,
-      english: 'Manage Cases',
-    },
-    {
-      locator: caseListPage.exuiHeader.languageToggle,
-      welsh: 'English',
-      english: 'Cymraeg',
-    },
-    {
-      locator: caseListPage.exuiHeader.signOutLink,
-      welsh: welshTranslationsSmall.translations['Sign out'].translation,
-      english: 'Sign out',
-    },
-    {
-      locator: createCasePage.createCaseButton,
-      welsh: welshTranslationsSmall.translations['Create case'].translation,
-      english: 'Create case',
-    },
-    {
-      locator: caseListPage.exuiFooter.copyrightLink,
-      welsh: welshTranslationsSmall.translations['© Crown copyright'].translation,
-      english: '© Crown copyright',
-    },
-    {
-      locator: caseListPage.caseListHeading,
-      welsh: welshTranslationsSmall.translations['Case list'].translation,
-      english: 'Case list',
-    },
-  ] as const;
-}
-
-function getEnglishTranslationChecks(createCasePage, caseListPage) {
-  return [
-    {
-      locator: caseListPage.exuiHeader.appHeaderLink,
-      expected: 'Manage Cases',
-    },
-    {
-      locator: caseListPage.exuiHeader.languageToggle,
-      expected: 'Cymraeg',
-    },
-    {
-      locator: caseListPage.exuiHeader.signOutLink,
-      expected: 'Sign out',
-    },
-    {
-      locator: createCasePage.createCaseButton,
-      expected: 'Create case',
-    },
-    {
-      locator: caseListPage.caseListHeading,
-      expected: 'Case list',
-    },
-  ] as const;
-}
-
-async function expectLanguageChecks(checks) {
-  for (const { locator, expected } of checks) {
-    await expect(locator).toContainText(expected, { timeout: TRANSLATIONS_TIMEOUT });
-  }
-}
+import {
+  expectLanguageChecks,
+  getEnglishTranslationChecks,
+  getWelshTranslationChecks,
+  setupWelshLanguageSession,
+  type WelshLanguageSessionLease,
+} from '../../helpers';
+import { welshTranslationsSmall } from '../../mocks/welshLanguage';
 
 test.describe('Verify users can switch the language', { tag: ['@integration', '@integration-welsh-language'] }, () => {
   let welshSessionLease: WelshLanguageSessionLease | undefined;
@@ -106,12 +45,7 @@ test.describe('Verify users can switch the language', { tag: ['@integration', '@
     await test.step('Check the translation are shown, and the language toggle switches to English', async () => {
       await expect(caseListPage.exuiHeader.notificationBanner).toBeVisible();
       await expect(caseListPage.exuiHeader.notificationBannerTitle).toContainText('Pwysig');
-      await expectLanguageChecks(
-        welshChecks.map(({ locator, welsh }) => ({
-          locator,
-          expected: welsh,
-        }))
-      );
+      await expectLanguageChecks(welshChecks);
     });
 
     await test.step('Check the language can be switched back to English and the correct translations are shown', async () => {
@@ -120,7 +54,7 @@ test.describe('Verify users can switch the language', { tag: ['@integration', '@
       await caseListPage.exuiSpinnerComponent.wait();
       await page.waitForLoadState('domcontentloaded');
       await expectLanguageChecks(englishChecks);
-      await expect(caseListPage.exuiHeader.notificationBanner).not.toBeVisible({ timeout: TRANSLATIONS_TIMEOUT });
+      await expect(caseListPage.exuiHeader.notificationBanner).not.toBeVisible({ timeout: 20_000 });
     });
   });
 });

@@ -1,33 +1,37 @@
-import type { Page } from '@playwright/test';
 import { expect } from '@playwright/test';
+import type { AccessRequestPage } from '../../E2E/page-objects/pages/exui/accessRequest.po';
 
-export type ChallengedAccessReasonDetails = Record<string, any>;
+export type ChallengedAccessReasonDetails = Record<string, unknown>;
+type ChallengedAccessPayload = {
+  requestedRoles?: Array<{
+    attributes?: {
+      accessReason?: string;
+    };
+  }>;
+};
 
 export type ChallengedAccessConditionalFields = {
   caseReferenceVisible: boolean;
   otherReasonVisible: boolean;
 };
 
-export function getChallengedAccessReasonDetails(payload: Record<string, any>): ChallengedAccessReasonDetails {
+export function getChallengedAccessReasonDetails(payload: ChallengedAccessPayload): ChallengedAccessReasonDetails {
   return JSON.parse(payload.requestedRoles?.[0]?.attributes?.accessReason ?? '{}') as ChallengedAccessReasonDetails;
 }
 
 export async function expectChallengedAccessConditionalFields(
-  page: Page,
+  accessRequestPage: AccessRequestPage,
   options: ChallengedAccessConditionalFields
 ): Promise<void> {
-  const caseReference = page.locator('#case-reference');
-  const otherReason = page.locator('#other-reason');
-
   if (options.caseReferenceVisible) {
-    await expect(caseReference).toBeVisible();
+    await expect(accessRequestPage.challengedCaseReferenceInput).toBeVisible();
   } else {
-    await expect(caseReference).toHaveCount(0);
+    await expect(accessRequestPage.challengedCaseReferenceInput).toHaveCount(0);
   }
 
   if (options.otherReasonVisible) {
-    await expect(otherReason).toBeVisible();
+    await expect(accessRequestPage.challengedOtherReasonInput).toBeVisible();
   } else {
-    await expect(otherReason).toHaveCount(0);
+    await expect(accessRequestPage.challengedOtherReasonInput).toHaveCount(0);
   }
 }

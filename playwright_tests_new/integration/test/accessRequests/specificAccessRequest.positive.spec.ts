@@ -17,7 +17,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe(`Specific Access Request as ${userIdentifier}`, { tag: ['@integration', '@integration-access-requests'] }, () => {
-  test('User can open Specific Access Request from case details', async ({ page }) => {
+  test('User can open Specific Access Request from case details', async ({ accessRequestPage, page }) => {
     await setupSpecificAccessRequestMockRoutes(page);
 
     await page.goto(ACCESS_REQUEST_CASE_DETAILS_PATH, { waitUntil: 'domcontentloaded' });
@@ -25,30 +25,30 @@ test.describe(`Specific Access Request as ${userIdentifier}`, { tag: ['@integrat
     await expect(page.getByText('Authorisation is needed to access this case')).toBeVisible();
     await expect(summaryRow(page, 'Service')).toContainText(ACCESS_REQUEST_SERVICE_NAME);
     await expect(summaryRow(page, 'Access')).toContainText('Specific');
-    await expect(page.getByRole('button', { name: 'Request access' })).toBeVisible();
+    await expect(accessRequestPage.requestAccessButton).toBeVisible();
 
-    await page.getByRole('button', { name: 'Request access' }).click();
+    await accessRequestPage.requestAccessButton.click();
 
     await expect(page).toHaveURL(new RegExp(`${SPECIFIC_ACCESS_PATH}$`));
-    await expect(page.locator('ccd-case-specific-access-request')).toBeVisible();
-    await expect(page.locator('#specific-reason')).toBeVisible();
+    await expect(accessRequestPage.specificAccessContainer).toBeVisible();
+    await expect(accessRequestPage.specificAccessReasonInput).toBeVisible();
   });
 
-  test('User can submit a specific access request and reach the success page', async ({ page }) => {
+  test('User can submit a specific access request and reach the success page', async ({ accessRequestPage, page }) => {
     await setupSpecificAccessRequestMockRoutes(page);
     await page.goto(SPECIFIC_ACCESS_PATH, { waitUntil: 'domcontentloaded' });
 
-    await page.locator('#specific-reason').fill(specificAccessReason);
+    await accessRequestPage.specificAccessReasonInput.fill(specificAccessReason);
 
     const requestPromise = page.waitForRequest(
       (request) => request.method() === 'POST' && request.url().match(/\/api\/specific-access-request(?:\?|$)/) !== null
     );
 
-    await page.getByRole('button', { name: 'Submit' }).click();
+    await accessRequestPage.submitButton.click();
 
     const payload = (await requestPromise).postDataJSON() as Record<string, any>;
 
-    await expect(page.locator('ccd-case-specific-access-success')).toBeVisible();
+    await expect(accessRequestPage.specificAccessSuccessContainer).toBeVisible();
     await expect(page.getByText(ACCESS_REQUEST_CASE_ID)).toBeVisible();
     expect(payload.roleRequest?.process).toBe('specific-access');
     expect(payload.requestedRoles?.[0]?.roleName).toBe('specific-access-requested');

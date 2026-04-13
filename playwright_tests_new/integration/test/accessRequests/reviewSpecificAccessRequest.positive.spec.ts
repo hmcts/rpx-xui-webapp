@@ -22,61 +22,61 @@ test.describe(
   `Review Specific Access Request as ${userIdentifier}`,
   { tag: ['@integration', '@integration-access-requests'] },
   () => {
-    test('User can open Review Specific Access Request from a task and see request details', async ({ page }) => {
+    test('User can open Review Specific Access Request from a task and see request details', async ({
+      accessRequestPage,
+      page,
+    }) => {
       await setupReviewSpecificAccessMockRoutes(page);
 
       await page.goto(ACCESS_REQUEST_REVIEW_PATH, { waitUntil: 'domcontentloaded' });
 
-      await expect(page.getByRole('heading', { name: 'Review specific access request' })).toBeVisible();
+      await expect(accessRequestPage.reviewSpecificHeading).toBeVisible();
       await expect(page.getByText(ACCESS_REQUEST_CASE_NAME)).toBeVisible();
       await expect(page.getByText(formatCaseNumberWithDashes(ACCESS_REQUEST_CASE_ID))).toBeVisible();
       await expect(page.getByText('Alice Example')).toBeVisible();
       await expect(page.getByText(ACCESS_REQUEST_REASON)).toBeVisible();
     });
 
-    test('User sees the correct fields for each access duration option', async ({ page }) => {
+    test('User sees the correct fields for each access duration option', async ({ accessRequestPage, page }) => {
       await setupReviewSpecificAccessMockRoutes(page);
       await page.goto(ACCESS_REQUEST_REVIEW_PATH, { waitUntil: 'domcontentloaded' });
 
-      await page.getByLabel('Approve request').check();
-      await page.getByRole('button', { name: 'Continue' }).click();
+      await accessRequestPage.approveRequestRadio.check();
+      await accessRequestPage.continueButton.click();
 
-      const accessStarts = page.locator('legend', { hasText: 'Access Starts' });
-      const accessEnds = page.getByText('Access Ends', { exact: true });
+      await expect(accessRequestPage.reviewDurationHeading).toBeVisible();
 
-      await expect(page.getByRole('heading', { name: 'How long do you want to give access to this case for?' })).toBeVisible();
+      await accessRequestPage.sevenDaysRadio.check();
+      await expect(accessRequestPage.accessStartsLegend).toBeHidden();
+      await expect(accessRequestPage.accessEndsText).toBeHidden();
 
-      await page.getByLabel('7 days').check();
-      await expect(accessStarts).toBeHidden();
-      await expect(accessEnds).toBeHidden();
+      await accessRequestPage.indefiniteRadio.check();
+      await expect(accessRequestPage.accessStartsLegend).toBeHidden();
+      await expect(accessRequestPage.accessEndsText).toBeHidden();
 
-      await page.getByLabel('Indefinite').check();
-      await expect(accessStarts).toBeHidden();
-      await expect(accessEnds).toBeHidden();
-
-      await page.getByLabel('Another period').check();
-      await expect(accessStarts).toBeVisible();
-      await expect(accessEnds).toBeVisible();
+      await accessRequestPage.anotherPeriodRadio.check();
+      await expect(accessRequestPage.accessStartsLegend).toBeVisible();
+      await expect(accessRequestPage.accessEndsText).toBeVisible();
     });
 
-    test('User can approve a specific access request and reach the success page', async ({ page }) => {
+    test('User can approve a specific access request and reach the success page', async ({ accessRequestPage, page }) => {
       await setupReviewSpecificAccessMockRoutes(page);
       await page.goto(ACCESS_REQUEST_REVIEW_PATH, { waitUntil: 'domcontentloaded' });
 
-      await page.getByLabel('Approve request').check();
-      await page.getByRole('button', { name: 'Continue' }).click();
+      await accessRequestPage.approveRequestRadio.check();
+      await accessRequestPage.continueButton.click();
 
-      await expect(page.getByRole('heading', { name: 'How long do you want to give access to this case for?' })).toBeVisible();
-      await page.getByLabel('7 days').check();
+      await expect(accessRequestPage.reviewDurationHeading).toBeVisible();
+      await accessRequestPage.sevenDaysRadio.check();
 
       const approvalRequestPromise = page.waitForRequest(
         (request) => request.method() === 'POST' && request.url().includes('/api/am/specific-access-approval')
       );
 
-      await page.getByRole('button', { name: 'Submit' }).click();
+      await accessRequestPage.submitButton.click();
 
       const approvalPayload = approvalRequestPromise.then((request) => request.postDataJSON() as Record<string, any>);
-      await expect(page.getByRole('heading', { name: 'Access approved' })).toBeVisible();
+      await expect(accessRequestPage.accessApprovedHeading).toBeVisible();
 
       await expect
         .poll(async () => {
@@ -96,31 +96,32 @@ test.describe(
       expect(payload.period.endDate).toBeTruthy();
     });
 
-    test('User can approve a specific access request for another period and submit the selected end date', async ({ page }) => {
+    test('User can approve a specific access request for another period and submit the selected end date', async ({
+      accessRequestPage,
+      page,
+    }) => {
       await setupReviewSpecificAccessMockRoutes(page);
       await page.goto(ACCESS_REQUEST_REVIEW_PATH, { waitUntil: 'domcontentloaded' });
 
-      await page.getByLabel('Approve request').check();
-      await page.getByRole('button', { name: 'Continue' }).click();
+      await accessRequestPage.approveRequestRadio.check();
+      await accessRequestPage.continueButton.click();
 
-      await expect(page.getByRole('heading', { name: 'How long do you want to give access to this case for?' })).toBeVisible();
-      await page.getByLabel('Another period').check();
-      await page.locator('#endDate-day').fill('15');
-      await page.locator('#endDate-month').fill('7');
-      await page.locator('#endDate-year').fill('2035');
-      await expect(page.getByText('Invalid End date')).toBeHidden();
+      await expect(accessRequestPage.reviewDurationHeading).toBeVisible();
+      await accessRequestPage.anotherPeriodRadio.check();
+      await accessRequestPage.fillReviewPeriodEndDate('15', '7', '2035');
+      await expect(accessRequestPage.invalidEndDateMessage).toBeHidden();
 
       const approvalRequestPromise = page.waitForRequest(
         (request) => request.method() === 'POST' && request.url().includes('/api/am/specific-access-approval')
       );
 
-      await page.getByRole('button', { name: 'Submit' }).click();
+      await accessRequestPage.submitButton.click();
 
       const payload = (await approvalRequestPromise).postDataJSON() as Record<string, any>;
       const startDate = new Date(payload.period.startDate);
       const endDate = new Date(payload.period.endDate);
 
-      await expect(page.getByRole('heading', { name: 'Access approved' })).toBeVisible();
+      await expect(accessRequestPage.accessApprovedHeading).toBeVisible();
       expect(payload.specificAccessStateData.caseId).toBe(ACCESS_REQUEST_CASE_ID);
       expect(payload.specificAccessStateData.taskId).toBe(ACCESS_REQUEST_TASK_ID);
       expect(payload.specificAccessStateData.requestedRole).toBe(ACCESS_REQUEST_REQUESTED_ROLE);
@@ -132,25 +133,25 @@ test.describe(
       expect(endDate.getTime()).toBeGreaterThan(startDate.getTime());
     });
 
-    test('User can choose Request more information and complete that path', async ({ page }) => {
+    test('User can choose Request more information and complete that path', async ({ accessRequestPage, page }) => {
       await setupReviewSpecificAccessMockRoutes(page);
       await page.goto(ACCESS_REQUEST_REVIEW_PATH, { waitUntil: 'domcontentloaded' });
 
-      await page.getByLabel('Request more information').check();
-      await page.getByRole('button', { name: 'Continue' }).click();
+      await accessRequestPage.requestMoreInformationRadio.check();
+      await accessRequestPage.continueButton.click();
 
-      await expect(page.getByRole('heading', { name: 'Request more information' })).toBeVisible();
-      await page.locator('#more-detail').fill('Please provide the linked application details.');
+      await expect(accessRequestPage.requestMoreInformationHeading).toBeVisible();
+      await accessRequestPage.reviewMoreDetailInput.fill('Please provide the linked application details.');
 
       const requestMoreInformationPromise = page.waitForRequest(
         (request) =>
           request.method() === 'POST' && request.url().includes('/api/specific-access-request/request-more-information')
       );
 
-      await page.getByRole('button', { name: 'Continue' }).click();
+      await accessRequestPage.continueButton.click();
 
       const payload = ((await requestMoreInformationPromise).postDataJSON() ?? {}) as Record<string, any>;
-      await expect(page.getByRole('heading', { name: 'Request for access denied' })).toBeVisible();
+      await expect(accessRequestPage.requestDeniedHeading).toBeVisible();
       expect(payload.caseId).toBe(ACCESS_REQUEST_CASE_ID);
       expect(payload.taskId).toBe(ACCESS_REQUEST_TASK_ID);
       expect(payload.specificAccessReason).toBe(ACCESS_REQUEST_REASON);

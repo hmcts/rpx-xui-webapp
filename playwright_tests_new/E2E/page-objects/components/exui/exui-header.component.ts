@@ -44,7 +44,6 @@ export class ExuiHeaderComponent {
     if (normalized === 'english') {
       return { label: 'English', code: 'en' };
     }
-
     return { label: 'Cymraeg', code: 'cy' };
   }
 

@@ -2,8 +2,6 @@ import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookies, CHALLENGED_ACCESS_PATH, setupChallengedAccessMockRoutes } from '../../helpers';
 
 const userIdentifier = 'STAFF_ADMIN';
-const linkedCaseReason = 'The cases or parties are linked to the case I am working on';
-const otherReason = 'Other reason';
 
 test.beforeEach(async ({ page }) => {
   await applySessionCookies(page, userIdentifier);
@@ -13,45 +11,48 @@ test.describe(
   `Challenged Access Request negative paths as ${userIdentifier}`,
   { tag: ['@integration', '@integration-access-requests'] },
   () => {
-    test('User cannot submit challenged access request without selecting a reason', async ({ page }) => {
+    test('User cannot submit challenged access request without selecting a reason', async ({ accessRequestPage, page }) => {
       await setupChallengedAccessMockRoutes(page);
       await page.goto(CHALLENGED_ACCESS_PATH, { waitUntil: 'domcontentloaded' });
 
-      await page.getByRole('button', { name: 'Submit' }).click();
+      await accessRequestPage.submitButton.click();
 
-      await expect(page.locator('.govuk-error-message').filter({ hasText: 'Select a reason' })).toBeVisible();
-      await expect(page.getByRole('heading', { name: 'Why do you need to access this case?' })).toBeVisible();
+      await expect(accessRequestPage.errorMessage('Select a reason')).toBeVisible();
+      await expect(accessRequestPage.challengedAccessHeading).toBeVisible();
     });
 
-    test('User cannot submit challenged access request without a linked case reference', async ({ page }) => {
+    test('User cannot submit challenged access request without a linked case reference', async ({ accessRequestPage, page }) => {
       await setupChallengedAccessMockRoutes(page);
       await page.goto(CHALLENGED_ACCESS_PATH, { waitUntil: 'domcontentloaded' });
 
-      await page.getByLabel(linkedCaseReason).check();
-      await page.getByRole('button', { name: 'Submit' }).click();
+      await accessRequestPage.linkedCaseReasonRadio.check();
+      await accessRequestPage.submitButton.click();
 
-      await expect(page.locator('.govuk-error-message').filter({ hasText: 'Enter a case reference' })).toBeVisible();
+      await expect(accessRequestPage.errorMessage('Enter a case reference')).toBeVisible();
     });
 
-    test('User cannot submit challenged access request without required input for other reason', async ({ page }) => {
+    test('User cannot submit challenged access request without required input for other reason', async ({
+      accessRequestPage,
+      page,
+    }) => {
       await setupChallengedAccessMockRoutes(page);
       await page.goto(CHALLENGED_ACCESS_PATH, { waitUntil: 'domcontentloaded' });
 
-      await page.getByLabel(otherReason).check();
-      await page.getByRole('button', { name: 'Submit' }).click();
+      await accessRequestPage.otherReasonRadio.check();
+      await accessRequestPage.submitButton.click();
 
-      await expect(page.locator('.govuk-error-message').filter({ hasText: 'Enter a reason' })).toBeVisible();
+      await expect(accessRequestPage.errorMessage('Enter a reason')).toBeVisible();
     });
 
-    test('Submit failures keep the user on the challenged access form', async ({ page }) => {
+    test('Submit failures keep the user on the challenged access form', async ({ accessRequestPage, page }) => {
       await setupChallengedAccessMockRoutes(page, {
         challengedAccessStatus: 500,
         challengedAccessBody: { message: 'challenged access failed' },
       });
       await page.goto(CHALLENGED_ACCESS_PATH, { waitUntil: 'domcontentloaded' });
 
-      await page.getByLabel(otherReason).check();
-      await page.locator('#other-reason').fill('Need access for urgent case progression review.');
+      await accessRequestPage.otherReasonRadio.check();
+      await accessRequestPage.challengedOtherReasonInput.fill('Need access for urgent case progression review.');
 
       const failureResponse = page.waitForResponse(
         (response) =>
@@ -60,11 +61,11 @@ test.describe(
           response.status() === 500
       );
 
-      await page.getByRole('button', { name: 'Submit' }).click();
+      await accessRequestPage.submitButton.click();
 
       await failureResponse;
       await expect(page).toHaveURL(new RegExp(`${CHALLENGED_ACCESS_PATH}$`));
-      await expect(page.getByRole('heading', { name: 'Why do you need to access this case?' })).toBeVisible();
+      await expect(accessRequestPage.challengedAccessHeading).toBeVisible();
     });
   }
 );

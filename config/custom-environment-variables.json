@@ -57,7 +57,8 @@
         "caseTypes": "SERVICES_HEARINGS_CASETYPES_ET"
       },
       "hmcApi": "SERVICES_HMC_HEARINGS_COMPONENT_API",
-      "enableHearingDataSourceHeaders": "ENABLE_HEARING_DATA_SOURCE_HEADERS"
+      "enableHearingDataSourceHeaders": "ENABLE_HEARING_DATA_SOURCE_HEADERS",
+      "previewDeploymentId": "PREVIEW_DEPLOYMENT_ID"
     },
     "documents": {
       "api": "SERVICES_DOCUMENTS_API"
@@ -118,11 +119,11 @@
   "protocol": "PROTOCOL",
   "secureCookie": "SECURE_COOKIE",
   "microservice": "MICROSERVICE",
-  "sessionSecret": "SESSION_SECRET",
   "secrets": {
     "rpx": {
       "appinsights-instrumentationkey-mc": "APPINSIGHTS_INSTRUMENTATIONKEY",
       "appinsights-connection-string-mc": "APPINSIGHTS_CONNECTION_STRING",
+      "mc-session-secret": "SESSION_SECRET",
       "mc-s2s-client-secret": "S2S_SECRET",
       "mc-idam-client-secret": "IDAM_SECRET",
       "webapp-redis-connection-string": "REDISCLOUD_URL",

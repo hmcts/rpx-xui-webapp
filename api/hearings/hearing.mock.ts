@@ -59,7 +59,7 @@ export const init = () => {
   mock.onGet(getHearingsUrl).reply((config) => {
     const url = config.url;
     const caseIds = url.match(/[0-9]{16}/g);
-    const mod = parseInt(caseIds[0], 10) % 2;
+    const mod = Number.parseInt(caseIds[0], 10) % 2;
     if (mod === 1) {
       return [
         200,
@@ -146,7 +146,7 @@ export const init = () => {
     // START : This few lines code just to faciliate testing for specific hearing id of h100014
     // so that even the failure scenarios can be verified
     const jsonData = JSON.parse(config.data);
-    if (jsonData && jsonData.hearingsInGroup && jsonData.hearingsInGroup[0].hearingId === 'h100014') {
+    if (jsonData?.hearingsInGroup?.[0]?.hearingId === 'h100014') {
       return [500, null];
     }
     // END

@@ -1,0 +1,149 @@
+import { defineConfig, devices } from '@playwright/test';
+import { execSync } from 'node:child_process';
+import { cpus, totalmem } from 'node:os';
+import { version as appVersion } from './package.json';
+import { parseNonNegativeInt, resolveDefaultReporter, resolveTagFilters, resolveWorkerCount } from './playwright-config-utils';
+
+export default (() => {
+  const temporaryProbePattern = '**/_tmp_*.spec.ts';
+  const headlessMode = process.env.HEAD !== 'true';
+  const odhinOutputFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
+  const baseUrl = process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';
+  const e2eTagFilters = resolveTagFilters({
+    includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
+    excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
+    configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
+    defaultConfigPath: 'playwright_tests_new/E2E/tag-filter.json',
+    suiteTag: '@e2e',
+  });
+
+  const parsePositiveInt = (raw: string | undefined): number | undefined => {
+    if (!raw) {
+      return undefined;
+    }
+    const parsed = Number.parseInt(raw, 10);
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+      return undefined;
+    }
+    return parsed;
+  };
+
+  const retries = parseNonNegativeInt(process.env.PW_E2E_RETRIES) ?? 2;
+  const globalTimeoutMs = parsePositiveInt(process.env.PW_E2E_GLOBAL_TIMEOUT_MS);
+
+  const resolveEnvironmentFromUrl = (url: string) => {
+    try {
+      const hostname = new URL(url).hostname.toLowerCase();
+      if (hostname === 'localhost' || hostname === '127.0.0.1') {
+        return 'local';
+      }
+      if (hostname.includes('.aat.')) {
+        return 'aat';
+      }
+      if (hostname.includes('.ithc.')) {
+        return 'ithc';
+      }
+      if (hostname.includes('.demo.')) {
+        return 'demo';
+      }
+      if (hostname.includes('.perftest.')) {
+        return 'perftest';
+      }
+      return hostname;
+    } catch {
+      return 'unknown';
+    }
+  };
+
+  const resolveBranchName = () => {
+    const envBranch =
+      process.env.PLAYWRIGHT_REPORT_BRANCH ||
+      process.env.GIT_BRANCH ||
+      process.env.BRANCH_NAME ||
+      process.env.GITHUB_REF_NAME ||
+      process.env.GITHUB_HEAD_REF ||
+      process.env.BUILD_SOURCEBRANCHNAME;
+    if (envBranch) {
+      return envBranch.replace(/^refs\/heads\//, '').trim();
+    }
+    try {
+      const gitBranch = execSync('git rev-parse --abbrev-ref HEAD', {
+        encoding: 'utf8',
+        stdio: ['ignore', 'pipe', 'ignore'],
+      })
+        .trim()
+        .replace(/^refs\/heads\//, '');
+      if (gitBranch && gitBranch !== 'HEAD') {
+        return gitBranch;
+      }
+    } catch {
+      // Fall back to local label when branch cannot be resolved.
+    }
+    return 'local';
+  };
+
+  const workerCount = resolveWorkerCount(process.env);
+  const resolveAgentHardware = () => {
+    const cpuCores = cpus()?.length ?? 'unknown';
+    const totalRamGiB = Math.round((totalmem() / 1024 ** 3) * 10) / 10;
+    return `agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
+  };
+  const targetEnv = process.env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
+  const runContext = process.env.CI ? 'ci' : 'local-run';
+  const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
+  const reportBranch = resolveBranchName();
+
+  return defineConfig({
+    testDir: 'playwright_tests_new/E2E',
+    testMatch: ['**/test/**/*.spec.ts'],
+    testIgnore: [temporaryProbePattern, '**/test/smoke/smokeTest.spec.ts'],
+    fullyParallel: true,
+    retries,
+    timeout: 180_000,
+    expect: {
+      timeout: 60_000,
+    },
+    ...(globalTimeoutMs ? { globalTimeout: globalTimeoutMs } : {}),
+    workers: workerCount,
+    reporter: [
+      [resolveDefaultReporter(process.env)],
+      ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs'],
+      [
+        'odhin-reports-playwright',
+        {
+          outputFolder: odhinOutputFolder,
+          indexFilename: 'xui-playwright-e2e.html',
+          title: 'RPX-XUI-WEBAPP Playwright E2E',
+          testEnvironment,
+          project: process.env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp - E2E',
+          release: process.env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${reportBranch}`,
+          startServer: false,
+          consoleLog: true,
+          consoleError: true,
+          testOutput: 'only-on-failure',
+        },
+      ],
+    ],
+    use: {
+      baseURL: baseUrl,
+      trace: 'retain-on-failure',
+      screenshot: {
+        mode: 'only-on-failure',
+        fullPage: true,
+      },
+      video: 'off',
+      headless: headlessMode,
+    },
+    projects: [
+      {
+        name: 'chromium',
+        grep: e2eTagFilters.grep,
+        grepInvert: e2eTagFilters.grepInvert,
+        use: {
+          ...devices['Desktop Chrome'],
+          channel: 'chrome',
+        },
+      },
+    ],
+  });
+})();

@@ -1,11 +1,19 @@
 import { defineConfig, devices } from '@playwright/test';
-
-const { cpus } = require('node:os');
-const { version: appVersion } = require('./package.json');
+import { execSync } from 'node:child_process';
+import { cpus, totalmem } from 'node:os';
+import { version as appVersion } from './package.json';
+import {
+  parseNonNegativeInt,
+  resolveApiProjectWorkerCount,
+  resolveDefaultReporter,
+  resolveTagFilters,
+  resolveWorkerCount,
+} from './playwright-config-utils';
 
 type EnvMap = NodeJS.ProcessEnv;
 
 const defaultBaseUrl = 'https://manage-case.aat.platform.hmcts.net';
+const defaultApiTagFilterConfigPath = 'playwright_tests_new/api/service-tag-filter.json';
 
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
 
@@ -16,67 +24,133 @@ const resolveHeadlessMode = (env: EnvMap = process.env) => env.HEAD !== 'true';
 const resolveOdhinOutputFolder = (env: EnvMap = process.env) =>
   env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
 
-const resolveWorkerCount = (env: EnvMap = process.env) => {
-  // CI should always run with 8 workers for predictable parallelism.
-  // (Playwright CLI flags can still override this, but our config default is fixed.)
-  if (env.CI) {
-    return 8;
-  }
-
-  const configured = env.FUNCTIONAL_TESTS_WORKERS;
+const resolveOdhinIndexFilename = (env: EnvMap = process.env): string => {
+  const configured = env.PLAYWRIGHT_REPORT_INDEX_FILENAME?.trim();
   if (configured) {
-    const parsed = Number.parseInt(configured, 10);
-    if (Number.isFinite(parsed) && parsed > 0) {
-      return parsed;
-    }
+    return configured;
   }
-
-  const logical = cpus()?.length ?? 1;
-  const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));
-  const suggested = Math.min(8, Math.max(2, approxPhysical));
-  return suggested;
+  const outputFolder = resolveOdhinOutputFolder(env).toLowerCase();
+  if (outputFolder.includes('playwright-api') || outputFolder.includes('api_functional')) {
+    return 'xui-playwright-api.html';
+  }
+  if (outputFolder.includes('playwright-integration')) {
+    return 'xui-playwright-integration.html';
+  }
+  return 'xui-playwright-e2e.html';
 };
 
+const resolveBranchName = (env: EnvMap = process.env): string => {
+  const envBranch =
+    env.PLAYWRIGHT_REPORT_BRANCH ||
+    env.GIT_BRANCH ||
+    env.BRANCH_NAME ||
+    env.GITHUB_REF_NAME ||
+    env.GITHUB_HEAD_REF ||
+    env.BUILD_SOURCEBRANCHNAME;
+  if (envBranch) {
+    return envBranch.replace(/^refs\/heads\//, '').trim();
+  }
+  try {
+    const gitBranch = execSync('git rev-parse --abbrev-ref HEAD', {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    })
+      .trim()
+      .replace(/^refs\/heads\//, '');
+    if (gitBranch && gitBranch !== 'HEAD') {
+      return gitBranch;
+    }
+  } catch {
+    // Fall back to local label when branch cannot be resolved.
+  }
+  return 'local';
+};
+
+const resolveApiRetries = (env: EnvMap = process.env) =>
+  parseNonNegativeInt(env.PW_API_RETRIES) ?? parseNonNegativeInt(env.PW_E2E_RETRIES) ?? 2;
+
+const resolveEnvironmentFromUrl = (baseUrl: string): string => {
+  try {
+    const hostname = new URL(baseUrl).hostname.toLowerCase();
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'local';
+    }
+    if (hostname.includes('.aat.')) {
+      return 'aat';
+    }
+    if (hostname.includes('.ithc.')) {
+      return 'ithc';
+    }
+    if (hostname.includes('.demo.')) {
+      return 'demo';
+    }
+    if (hostname.includes('.perftest.')) {
+      return 'perftest';
+    }
+    return hostname;
+  } catch {
+    return 'unknown';
+  }
+};
+
+const resolveTestEnvironmentLabel = (env: EnvMap, workerCount: number): string => {
+  const targetEnv = env.TEST_TYPE ?? resolveEnvironmentFromUrl(resolveBaseUrl(env));
+  const runContext = env.CI ? 'ci' : 'local-run';
+  const cpuCores = cpus()?.length ?? 'unknown';
+  const totalRamGiB = Math.round((totalmem() / 1024 ** 3) * 10) / 10;
+  return `${targetEnv} | ${runContext} | workers=${workerCount} | agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
+};
+
+const resolveApiTagFilters = (env: EnvMap = process.env) =>
+  resolveTagFilters({
+    env,
+    includeTagsEnvVar: 'API_PW_INCLUDE_TAGS',
+    excludedTagsEnvVar: 'API_PW_EXCLUDED_TAGS_OVERRIDE',
+    configPathEnvVar: 'API_PW_TAG_FILTER_CONFIG',
+    defaultConfigPath: defaultApiTagFilterConfigPath,
+  });
+
 const buildConfig = (env: EnvMap = process.env) => {
+  const temporaryProbePattern = '**/_tmp_*.spec.ts';
   const workerCount = resolveWorkerCount(env);
   const headlessMode = resolveHeadlessMode(env);
   const odhinOutputFolder = resolveOdhinOutputFolder(env);
+  const reportBranch = resolveBranchName(env);
+  const apiTagFilters = resolveApiTagFilters(env);
+  const apiRetries = resolveApiRetries(env);
 
   return defineConfig({
     use: {
       baseURL: resolveBaseUrl(env),
     },
     testDir: '.',
-    testMatch: ['playwright_tests/**/*.test.ts', 'playwright_tests_new/E2E/**/*.spec.ts'],
-    /* Run tests in files in parallel */
+    testMatch: [
+      'playwright_tests/**/*.test.ts',
+      'playwright_tests_new/E2E/**/*.spec.ts',
+      'playwright_tests_new/integration/**/*.spec.ts',
+    ],
+    testIgnore: [temporaryProbePattern],
     fullyParallel: true,
-    /* Fail the build on CI if you accidentally left test.only in the source code. */
     forbidOnly: !!env.CI,
-    /* Retry on CI only */
-    retries: 3, // Set the number of retries for all projects
-
-    timeout: 3 * 60 * 1000,
+    retries: 2,
+    timeout: 180_000,
     expect: {
-      timeout: 1 * 60 * 1000,
+      timeout: 60_000,
     },
     reportSlowTests: null,
-
-    /* Control the number of parallel test workers. */
     workers: workerCount,
-
-    globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
-
     reporter: [
-      [env.CI ? 'dot' : 'list'],
+      [resolveDefaultReporter(env)],
+      ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs'],
       [
         'odhin-reports-playwright',
         {
           outputFolder: odhinOutputFolder,
-          indexFilename: 'xui-playwright.html',
+          indexFilename: resolveOdhinIndexFilename(env),
           title: 'RPX XUI Playwright',
-          testEnvironment: `${env.TEST_TYPE ?? (env.CI ? 'ci' : 'local')} | workers=${workerCount}`,
+          testEnvironment: resolveTestEnvironmentLabel(env, workerCount),
           project: env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
-          release: env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${env.GIT_BRANCH ?? 'local'}`,
+          release: env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${reportBranch}`,
           startServer: false,
           consoleLog: true,
           consoleError: true,
@@ -84,11 +158,14 @@ const buildConfig = (env: EnvMap = process.env) => {
         },
       ],
     ],
-
     projects: [
       {
         name: 'chromium',
-        testIgnore: ['playwright_tests_new/api/**', 'playwright_tests_new/E2E/test/smoke/smokeTest.spec.ts'],
+        testIgnore: [
+          'playwright_tests_new/api/**',
+          'playwright_tests_new/E2E/test/smoke/smokeTest.spec.ts',
+          temporaryProbePattern,
+        ],
         use: {
           baseURL: resolveBaseUrl(env),
           ...devices['Desktop Chrome'],
@@ -99,7 +176,7 @@ const buildConfig = (env: EnvMap = process.env) => {
             mode: 'only-on-failure',
             fullPage: true,
           },
-          video: 'retain-on-failure',
+          video: 'off',
         },
       },
       {
@@ -115,18 +192,20 @@ const buildConfig = (env: EnvMap = process.env) => {
             mode: 'only-on-failure',
             fullPage: true,
           },
-          video: 'retain-on-failure',
+          video: 'off',
         },
       },
       {
         name: 'node-api',
         testMatch: ['playwright_tests_new/api/**/*.api.ts'],
+        grep: apiTagFilters.grep,
+        grepInvert: apiTagFilters.grepInvert,
         fullyParallel: true,
-        workers: env.CI ? 8 : Math.min(8, cpus()?.length ?? 4),
-        retries: 0,
-        timeout: 60 * 1000,
+        workers: resolveApiProjectWorkerCount(env),
+        retries: apiRetries,
+        timeout: 60_000,
         expect: {
-          timeout: 10 * 1000,
+          timeout: 10_000,
         },
         use: {
           headless: true,
@@ -144,7 +223,12 @@ const config = buildConfig(process.env);
 (config as { __test__?: unknown }).__test__ = {
   resolveBaseUrl,
   resolveWorkerCount,
+  resolveApiProjectWorkerCount,
+  resolveBranchName,
+  resolveApiTagFilters,
+  resolveApiRetries,
+  resolveDefaultReporter,
   buildConfig,
 };
 
-module.exports = config;
+export default config;

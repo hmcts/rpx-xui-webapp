@@ -8,7 +8,7 @@ type UploadDocumentViaApiOptions = {
   caseTypeId: string;
   fileName: string;
   mimeType: string;
-  fileContent: string;
+  fileContent: string | Buffer;
   classification?: 'PUBLIC' | 'PRIVATE' | 'RESTRICTED';
 };
 
@@ -201,7 +201,9 @@ export async function uploadDocumentViaApi(options: UploadDocumentViaApiOptions)
       caseTypeId: options.caseTypeId,
       fileName: options.fileName,
       mimeType: options.mimeType,
-      fileContentBase64: Buffer.from(options.fileContent).toString('base64'),
+      fileContentBase64: Buffer.isBuffer(options.fileContent)
+        ? options.fileContent.toString('base64')
+        : Buffer.from(options.fileContent).toString('base64'),
     },
   });
 

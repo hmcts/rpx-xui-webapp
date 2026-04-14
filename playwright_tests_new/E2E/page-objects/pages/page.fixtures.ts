@@ -8,6 +8,7 @@ import { SearchCasePage } from './exui/searchCase.po';
 import { GlobalSearchPage } from './exui/globalSearch.po';
 import { FindCasePage } from './exui/findCase.po';
 import { HearingsTabPage } from './exui/hearingsTab.po';
+import { HearingsJourneyPage } from './exui/hearingsJourney.po';
 import { HearingViewEditSummaryPage } from './exui/hearingViewEditSummary.po';
 import { HearingViewSummaryPage } from './exui/hearingViewSummary.po';
 import { CaseFileViewPage } from './exui/caseFileView.po';
@@ -22,6 +23,7 @@ export interface PageFixtures {
   globalSearchPage: GlobalSearchPage;
   findCasePage: FindCasePage;
   hearingsTabPage: HearingsTabPage;
+  hearingsJourneyPage: HearingsJourneyPage;
   hearingViewEditSummaryPage: HearingViewEditSummaryPage;
   hearingViewSummaryPage: HearingViewSummaryPage;
   caseFileViewPage: CaseFileViewPage;
@@ -68,6 +70,9 @@ export const pageFixtures = {
   },
   hearingsTabPage: async ({ determinePage }, use) => {
     await use(new HearingsTabPage(determinePage));
+  },
+  hearingsJourneyPage: async ({ determinePage }, use) => {
+    await use(new HearingsJourneyPage(determinePage));
   },
   hearingViewEditSummaryPage: async ({ determinePage }, use) => {
     await use(new HearingViewEditSummaryPage(determinePage));

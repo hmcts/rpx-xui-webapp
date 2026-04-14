@@ -1,4 +1,5 @@
 import { expect, Locator, Page } from '@playwright/test';
+import { HearingJourneyModel } from '../../../utils/hearing-model.ts';
 
 type HearingAction = 'view-details' | 'view-or-edit' | 'cancel' | 'add-or-edit';
 
@@ -9,6 +10,8 @@ export class HearingsTabPage {
   readonly emptyState = this.page.getByText('No current and upcoming hearings found', { exact: false });
   readonly reloadButton = this.page.locator('#reload-hearing-tab');
   readonly requestHearingButton = this.page.getByRole('button', { name: /request a hearing/i });
+  readonly additionalSecurityYes = this.page.locator('#addition-security-confirmation #additionalSecurityYes');
+  readonly additionalSecurityNo = this.page.locator('#addition-security-confirmation #additionalSecurityNo');
 
   sectionHeading(name: string): Locator {
     return this.page.locator('exui-case-hearings-list th.govuk-body-lead').filter({ hasText: name });
@@ -101,5 +104,18 @@ export class HearingsTabPage {
 
   async openViewOrEdit(hearingId: string): Promise<void> {
     await this.viewOrEditButton(hearingId).click();
+  }
+
+  async additionalSecurity(model: HearingJourneyModel, page: Page): Promise<void> {
+    const value = model.get('hearingFacilities', 'additionalSecurity');
+    console.log('~~~~~~~~~~~SET VALUE for hearingFacilities ===', value);
+
+    if (value === 'Yes') {
+      await this.additionalSecurityYes.click();
+    } else {
+      await this.additionalSecurityNo.click();
+    }
+    const getValue = model.get('hearingFacilities', 'additionalSecurity');
+    console.log('~~~~~~~~~~~GET VALUE for hearingFacilities ===', getValue);
   }
 }

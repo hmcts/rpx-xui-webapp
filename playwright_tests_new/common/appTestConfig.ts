@@ -237,6 +237,13 @@ const data: AppTestConfig = {
         userIdentifier: 'PROBATE_CW',
         key: 'Monday01',
       },
+      {
+        idamId: 'acb14cb1-5631-4fe2-810f-9ad3d752b8a7',
+        email: 'prl_ctscadmin11_stoke@justice.gov.uk',
+        release: 'general',
+        userIdentifier: 'PRL_HEARINGS',
+        key: 'Nagoya0102',
+      },
     ],
     demo: [
       {

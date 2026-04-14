@@ -14,6 +14,10 @@ export class BookingUiPage extends Base {
     super(page);
   }
 
+  public async goto(): Promise<void> {
+    await this.page.goto('/booking', { waitUntil: 'domcontentloaded' });
+  }
+
   public async selectOption(optionText: string): Promise<void> {
     await this.page.getByLabel(optionText).check();
   }

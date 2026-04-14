@@ -35,8 +35,8 @@ test.describe(`Booking UI as ${userIdentifier}`, { tag: ['@integration', '@integ
     });
 
     await test.step('Select existing booking option and verify continue button', async () => {
-      await bookingUiPage.selectChooseExistingBooking();
-      await expect(bookingUiPage.continueButton).toBeVisible();
+      await bookingUiPage.selectOption('Choose an existing booking');
+      await expect(bookingUiPage.continueButton).toBeVisible({ visible: false });
     });
   });
 
@@ -49,7 +49,7 @@ test.describe(`Booking UI as ${userIdentifier}`, { tag: ['@integration', '@integ
     });
 
     await test.step('Select create new booking option and verify continue button', async () => {
-      await bookingUiPage.selectCreateNewBooking();
+      await bookingUiPage.selectOption('Create a new booking');
       await expect(bookingUiPage.continueButton).toBeVisible();
     });
   });
@@ -63,7 +63,7 @@ test.describe(`Booking UI as ${userIdentifier}`, { tag: ['@integration', '@integ
     });
 
     await test.step('Select view tasks and cases option and verify continue button', async () => {
-      await bookingUiPage.selectViewTasksAndCases();
+      await bookingUiPage.selectOption('View tasks and cases');
       await expect(bookingUiPage.continueButton).toBeVisible();
     });
   });

@@ -4,13 +4,13 @@ To generate a local repo-root `.env` from Azure Key Vault, use the checked-in
 template [`.env.example`](./.env.example) with the population script:
 
 ```bash
-bash ./scripts/populate-env-from-keyvault.sh aat
+yarn env:populate:aat
 ```
 
 Use `demo` instead of `aat` when needed:
 
 ```bash
-bash ./scripts/populate-env-from-keyvault.sh demo
+yarn env:populate:demo
 ```
 
 This writes `.env` in the repo root using `.env.example` plus any Azure Key
@@ -211,13 +211,13 @@ Prerequisites:
 Generate `.env` for AAT:
 
 ```bash
-bash ./scripts/populate-env-from-keyvault.sh aat
+yarn env:populate:aat
 ```
 
 Generate `.env` for demo:
 
 ```bash
-bash ./scripts/populate-env-from-keyvault.sh demo
+yarn env:populate:demo
 ```
 
 Optional custom output path and template:
@@ -231,6 +231,7 @@ What the script does:
 - reads [`.env.example`](./.env.example)
 - looks up secrets in Azure Key Vault using the `e2e=<ENV_VAR_NAME>` tag
 - writes the resolved values into `.env`
+- applies compatibility fills for `CLIENT_ID`, `CREATE_USER_CLIENT_ID`, `CREATE_USER_CLIENT_SECRET`, `IDAM_API_URL`, `MANAGE_CASE_REDIRECT_URI`, `SOLICITOR_CASE_TYPE`, and `SOLICITOR_JURISDICTION`
 - leaves blank values in place when a value is intentionally local-only or no tagged secret exists
 
 Notes:
@@ -238,6 +239,75 @@ Notes:
 - [`.env`](./.env) is gitignored and must not be committed
 - if a generated value is blank, either add or fix the Key Vault tag/secret, or set the value locally if it is intentionally not stored in Key Vault
 - this section replaces the old local mount-point secret setup instructions for this branch
+
+### Adding new usernames and passwords to Azure Key Vault
+
+If you add a new credential to [`.env.example`](./.env.example), you must add it
+to the relevant Key Vault with the correct `e2e` tag so the population script
+can write it into `.env`.
+
+Use these vaults:
+
+- AAT: `rpx-aat`
+- DEMO: `rpx-demo`
+
+Important rules:
+
+- The env var name must exist in [`.env.example`](./.env.example).
+- The secret is matched by `tags.e2e`, not by the secret name.
+- If the same key is needed in both environments, create or update it in both
+  `rpx-aat` and `rpx-demo`.
+- Username and password should normally be stored as two separate secrets.
+
+Example: add a new username/password pair for `NEW_CASEWORKER_USERNAME` and
+`NEW_CASEWORKER_PASSWORD`.
+
+Create or update the AAT secrets:
+
+```bash
+az keyvault secret set \
+  --vault-name rpx-aat \
+  --name new-caseworker-username \
+  --value 'user@example.com' \
+  --tags e2e=NEW_CASEWORKER_USERNAME
+
+az keyvault secret set \
+  --vault-name rpx-aat \
+  --name new-caseworker-password \
+  --value 'SuperSecretPassword' \
+  --tags e2e=NEW_CASEWORKER_PASSWORD
+```
+
+Create or update the DEMO secrets:
+
+```bash
+az keyvault secret set \
+  --vault-name rpx-demo \
+  --name new-caseworker-username \
+  --value 'user@example.com' \
+  --tags e2e=NEW_CASEWORKER_USERNAME
+
+az keyvault secret set \
+  --vault-name rpx-demo \
+  --name new-caseworker-password \
+  --value 'SuperSecretPassword' \
+  --tags e2e=NEW_CASEWORKER_PASSWORD
+```
+
+Then regenerate your local env file:
+
+```bash
+yarn env:populate:aat
+yarn env:populate:demo
+```
+
+Quick checklist when adding a new credential:
+
+- add the placeholder key to [`.env.example`](./.env.example) if it is missing
+- create or update the secret in `rpx-aat` and/or `rpx-demo`
+- set `--tags e2e=<EXACT_ENV_VAR_NAME>`
+- rerun the env population command for the target environment
+- if the generated value is still blank, check the tag spelling and your vault access first
 
 # How Application Configuration (Node Config) Works
 

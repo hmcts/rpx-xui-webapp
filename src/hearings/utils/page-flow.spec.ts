@@ -1,4 +1,4 @@
-import { Observable, of } from 'rxjs';
+import { config, Observable, of } from 'rxjs';
 import { ScreenNavigationModel } from '../models/screenNavigation.model';
 import { PageFlow } from './page-flow';
 
@@ -107,6 +107,11 @@ describe('PageFlow', () => {
     expect(pageFlow.getCurrentPage()).toBe('hearing-requirements');
   });
 
+  it('should strip fragment from current page', () => {
+    mockRoute.url = '/request/hearing/hearing-requirements#details';
+    expect(pageFlow.getCurrentPage()).toBe('hearing-requirements');
+  });
+
   it('should get last page', () => {
     const screensNavigations$: Observable<ScreenNavigationModel[]> = of(SCREEN_FLOW);
     pageFlow.hearingConditions$ = of({});
@@ -153,6 +158,58 @@ describe('PageFlow', () => {
     mockRoute.url = '/request/hearing/hearing-venue';
     const nextPage = pageFlow.getNextPage(screensNavigations$);
     expect(nextPage).toBe('hearing-judge');
+  });
+
+  it('should return empty next page when condition key is not present in hearing conditions', () => {
+    const screensNavigations$: Observable<ScreenNavigationModel[]> = of(SCREEN_FLOW);
+    pageFlow.hearingConditions$ = of({});
+    mockRoute.url = '/request/hearing/hearing-venue';
+
+    expect(pageFlow.getNextPage(screensNavigations$)).toBe('');
+  });
+
+  it('should return empty next page for unsupported navigation condition operator', () => {
+    const screensNavigations$: Observable<ScreenNavigationModel[]> = of([
+      {
+        screenName: 'hearing-venue',
+        conditionKey: 'regionId',
+        navigation: [
+          {
+            conditionOperator: 'UNKNOWN' as any,
+            conditionValue: '7',
+            resultValue: 'hearing-welsh',
+          },
+        ],
+      },
+    ]);
+    pageFlow.hearingConditions$ = of({ regionId: '7' });
+    mockRoute.url = '/request/hearing/hearing-venue';
+
+    expect(pageFlow.getNextPage(screensNavigations$)).toBe('');
+  });
+
+  it('should throw when the current page is not found in navigation config', () => {
+    const screensNavigations$: Observable<ScreenNavigationModel[]> = of(SCREEN_FLOW);
+    pageFlow.hearingConditions$ = of({});
+    mockRoute.url = '/request/hearing/missing-page';
+    const previousOnUnhandledError = config.onUnhandledError;
+    let reportedError: Error;
+
+    jasmine.clock().install();
+    try {
+      config.onUnhandledError = (error) => {
+        reportedError = error as Error;
+      };
+
+      pageFlow.getNextPage(screensNavigations$);
+      jasmine.clock().tick(0);
+
+      expect(reportedError).toEqual(jasmine.any(Error));
+      expect(reportedError.message).toBe('Current screen not found: missing-page');
+    } finally {
+      config.onUnhandledError = previousOnUnhandledError;
+      jasmine.clock().uninstall();
+    }
   });
 
   afterEach(() => {

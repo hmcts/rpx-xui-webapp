@@ -19,14 +19,14 @@ describe('WorkAllocation', () => {
     let component: InfoMessageContainerComponent;
     let fixture: ComponentFixture<InfoMessageContainerComponent>;
     const mockMessageService = {
-      infoMessageChangeEmitted$: of([
-        { type: InfoMessageType.SUCCESS, message: InfoMessage.ASSIGNED_TASK },
-      ] as InformationMessage[]),
+      infoMessageChangeEmitted$: undefined,
       removeAllMessages: () => {
         return undefined;
       },
     };
     beforeEach(() => {
+      mockMessageService.infoMessageChangeEmitted$ = of([]);
+
       TestBed.configureTestingModule({
         declarations: [InfoMessageContainerComponent],
         imports: [RouterTestingModule],
@@ -43,6 +43,32 @@ describe('WorkAllocation', () => {
 
     it('should create', () => {
       expect(component).toBeDefined();
+    });
+
+    it('should show emitted messages when no state message is present', () => {
+      const assignedMessage = { type: InfoMessageType.SUCCESS, message: InfoMessage.ASSIGNED_TASK } as InformationMessage;
+      spyOnProperty(window, 'history', 'get').and.returnValue({
+        state: null,
+      } as History);
+      mockMessageService.infoMessageChangeEmitted$ = of([assignedMessage]);
+
+      component.getInfoMessages();
+
+      expect(component.infoMessages).toEqual([assignedMessage]);
+      expect(component.showInfoMessage).toBeTrue();
+    });
+
+    it('should remove duplicate messages after appending state message', () => {
+      const assignedMessage = { type: InfoMessageType.SUCCESS, message: InfoMessage.ASSIGNED_TASK } as InformationMessage;
+      spyOnProperty(window, 'history', 'get').and.returnValue({
+        state: { showMessage: true, message: assignedMessage },
+      } as History);
+      mockMessageService.infoMessageChangeEmitted$ = of([assignedMessage]);
+
+      component.getInfoMessages();
+
+      expect(component.infoMessages).toEqual([assignedMessage]);
+      expect(component.showInfoMessage).toBeTrue();
     });
   });
 });

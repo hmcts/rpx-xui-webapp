@@ -78,11 +78,34 @@ describe('NocCaseRefComponent', () => {
   });
 
   describe('navigationHandler', () => {
-    it('should dispatch an action', () => {
+    it('should dispatch an action when yes is selected', () => {
       const storeDispatchMock = spyOn(store, 'dispatch');
+      component.caseRefForm.controls.representing.setValue('yes');
       component.navigationHandler(NocNavigationEvent.CONTINUE);
 
       expect(storeDispatchMock).toHaveBeenCalled();
+    });
+
+    it('should show an inline error and not dispatch when no is selected', () => {
+      const storeDispatchMock = spyOn(store, 'dispatch');
+
+      component.caseRefForm.controls.representing.setValue('no');
+      component.navigationHandler(NocNavigationEvent.CONTINUE);
+
+      expect(component.cannotProceedErrorMessage).toBe(
+        'You cannot continue.\nYou can only use this service if you are representing your client on the Divorce or Dissolution case.'
+      );
+      expect(storeDispatchMock).not.toHaveBeenCalled();
+    });
+
+    it('should show a validation error and not dispatch when no radio option is selected', () => {
+      const storeDispatchMock = spyOn(store, 'dispatch');
+
+      component.caseRefForm.controls.representing.setValue(null);
+      component.navigationHandler(NocNavigationEvent.CONTINUE);
+
+      expect(component.cannotProceedErrorMessage).toBe('You must select an option to proceed.');
+      expect(storeDispatchMock).not.toHaveBeenCalled();
     });
   });
 

@@ -1,3 +1,7 @@
 :host ::ng-deep .govuk-input {
   max-width: 23ex;
 }
+
+.noc-error-message-multiline {
+  white-space: pre-line;
+}

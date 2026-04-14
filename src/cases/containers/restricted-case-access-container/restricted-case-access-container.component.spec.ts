@@ -30,7 +30,7 @@ describe('RestrictedCaseAccessContainerComponent', () => {
   const mockWASupportedJurisdictionsService = jasmine.createSpyObj('WASupportedJurisdictionsService', [
     'getWASupportedJurisdictions',
   ]);
-  const mockCaseworkerDataService = jasmine.createSpyObj('CaseworkerDataService', ['getUsersFromServices']);
+  const mockCaseworkerDataService = jasmine.createSpyObj('CaseworkerDataService', ['getUsersByIdamIds']);
   const mockLoadingService = jasmine.createSpyObj('LoadingService', ['register', 'unregister']);
   const mockJudicialRefDataService = jasmine.createSpyObj('JudicialRefDataService', ['searchJudicialUserByIdamID']);
   const mockActivatedRoute = {
@@ -93,7 +93,7 @@ describe('RestrictedCaseAccessContainerComponent', () => {
     }).compileComponents();
     mockAllocateService.getCaseAccessRolesByCaseId.and.returnValue(of(CASEROLES));
     mockWASupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
-    mockCaseworkerDataService.getUsersFromServices.and.returnValue(of([CASEWORKERS.JANE_DOE, CASEWORKERS.JOHN_SMITH]));
+    mockCaseworkerDataService.getUsersByIdamIds.and.returnValue(of([CASEWORKERS.JANE_DOE, CASEWORKERS.JOHN_SMITH]));
     mockLoadingService.register.and.callThrough();
     mockLoadingService.unregister.and.callThrough();
     let callCount = 0;
@@ -115,7 +115,7 @@ describe('RestrictedCaseAccessContainerComponent', () => {
     expect(mockLoadingService.register).toHaveBeenCalled();
     expect(mockAllocateService.getCaseAccessRolesByCaseId).toHaveBeenCalled();
     expect(mockWASupportedJurisdictionsService.getWASupportedJurisdictions).toHaveBeenCalled();
-    expect(mockCaseworkerDataService.getUsersFromServices).toHaveBeenCalled();
+    expect(mockCaseworkerDataService.getUsersByIdamIds).toHaveBeenCalled();
     expect(mockLoadingService.unregister).toHaveBeenCalled();
     expect(mockJudicialRefDataService.searchJudicialUserByIdamID).toHaveBeenCalled();
     expect(component.restrictedCases).toEqual([

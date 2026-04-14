@@ -3,10 +3,10 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
 import { Subscription, Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { first, take } from 'rxjs/operators';
 import { $enum as EnumUtil } from 'ts-enum-util';
 import { UserDetails } from '../../../../app/models';
-import { CaseworkerDataService, WASupportedJurisdictionsService } from '../../../../work-allocation/services';
+import { CaseworkerDataService } from '../../../../work-allocation/services';
 import { ERROR_MESSAGE } from '../../../constants';
 import {
   DisplayedAccessReason,
@@ -58,8 +58,7 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
     private readonly fb: FormBuilder,
     private readonly store: Store<fromFeature.State>,
     private readonly allocateRoleService: AllocateRoleService,
-    private readonly caseworkerDataService: CaseworkerDataService,
-    private readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService
+    private readonly caseworkerDataService: CaseworkerDataService
   ) {
     this.accessReasons = [
       { reason: AccessReason.APPROVE_REQUEST, checked: false },
@@ -81,14 +80,14 @@ export class SpecificAccessReviewComponent implements OnInit, OnDestroy {
           this.requesterName = caseRoleUserDetails[0].full_name;
         });
     } else {
-      this.waSupportedJurisdictionsService.getWASupportedJurisdictions().subscribe((services) => {
-        this.caseworkerDataService.getUsersFromServices(services).subscribe((caseworkers) => {
-          const caseworker = caseworkers.find((thisCaseworker) => thisCaseworker.idamId === this.specificAccessStateData.actorId);
+      this.caseworkerDataService
+        .getUserByIdamId(this.specificAccessStateData.actorId)
+        .pipe(first())
+        .subscribe((caseworker) => {
           if (caseworker) {
             this.requesterName = `${caseworker.firstName} ${caseworker.lastName}`;
           }
         });
-      });
     }
     this.reviewOptionControl = new FormControl(this.initialAccessReason ? this.initialAccessReason : '', [Validators.required]);
     this.formGroup = this.fb.group({

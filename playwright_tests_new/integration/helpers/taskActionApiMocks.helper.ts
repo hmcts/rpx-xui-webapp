@@ -167,6 +167,22 @@ const buildActionExpectation = (action: UiTaskAction, options: TaskActionMockOpt
       responseStatus: 200,
       responseJson: buildCaseworkerResponse(assigneeId),
     },
+    {
+      purpose: 'Task action route resolver: load caseworkers for task jurisdiction',
+      method: 'POST',
+      urlPattern: '**/workallocation/caseworker/getUsersByIdamIds*',
+      expectedRequestJson: { idamIds: [assigneeId] },
+      responseStatus: 200,
+      responseJson: buildCaseworkerResponse(assigneeId),
+    },
+    {
+      purpose: 'Task action route resolver: load caseworkers for task jurisdiction',
+      method: 'POST',
+      urlPattern: '**/workallocation/caseworker/getUserByIdamId*',
+      expectedRequestJson: { idamId: assigneeId },
+      responseStatus: 200,
+      responseJson: buildCaseworkerResponse(assigneeId)[0],
+    },
   ];
 
   switch (action) {

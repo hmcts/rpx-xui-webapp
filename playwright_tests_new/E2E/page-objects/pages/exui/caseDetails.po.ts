@@ -30,6 +30,8 @@ export interface CaseFlagItem {
   status: string;
 }
 
+const MEDIA_VIEWER_ROUTE_PATTERN = /\/media-viewer(?:\?|$)/;
+
 export class CaseDetailsPage extends Base {
   readonly container = this.page.locator('exui-case-details-home');
 
@@ -698,6 +700,28 @@ export class CaseDetailsPage extends Base {
   async openDocumentOne() {
     await this.documentOneAction.waitFor({ state: 'visible', timeout: this.getRecommendedTimeoutMs() });
     await this.documentOneAction.click();
+  }
+
+  async openDocumentOneInMediaViewer(): Promise<Page> {
+    await this.openDocumentOne();
+
+    await this.page
+      .waitForFunction(
+        (routePatternSource) => {
+          const routePattern = new RegExp(routePatternSource);
+          return window.location.href.match(routePattern) !== null;
+        },
+        MEDIA_VIEWER_ROUTE_PATTERN.source,
+        { timeout: this.getRecommendedTimeoutMs() }
+      )
+      .catch(() => undefined);
+
+    const matchingPage = this.page
+      .context()
+      .pages()
+      .find((candidate) => MEDIA_VIEWER_ROUTE_PATTERN.test(candidate.url()));
+
+    return matchingPage ?? this.page;
   }
 
   async getTabCount() {

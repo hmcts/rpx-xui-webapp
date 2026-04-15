@@ -1,20 +1,15 @@
 import { expect, test } from '../../../../E2E/fixtures';
-import { applySessionCookies } from '../../../../common/sessionCapture';
 import { buildTaskListMock, myActionsList } from '../../../mocks/taskList.mock';
 import { formatUiDate } from '../../../utils/tableUtils';
-import { extractUserIdFromCookies } from '../../../utils/extractUserIdFromCookies';
+import { applySessionCookiesAndExtractUserId, setupManageTasksBaseRoutes } from '../../../helpers';
 import { setupTaskActionEndpointMocks } from '../../../helpers/taskActionApiMocks.helper';
-import { TASK_LIST_ROUTE_REGEX } from '../../../testData';
 
 const userIdentifier = 'STAFF_ADMIN';
-let sessionCookies: any[] = [];
 let taskListMockResponse: ReturnType<typeof buildTaskListMock>;
 
 test.beforeEach(async ({ page }) => {
-  const { cookies } = await applySessionCookies(page, userIdentifier);
-  sessionCookies = cookies;
-  const userId = extractUserIdFromCookies(sessionCookies);
-  taskListMockResponse = buildTaskListMock(160, userId?.toString() || '', myActionsList);
+  const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
+  taskListMockResponse = buildTaskListMock(160, userId, myActionsList);
 });
 
 test.describe(`Task Go To as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
@@ -60,10 +55,7 @@ test.describe(`Task Go To as ${userIdentifier}`, { tag: ['@integration', '@integ
     ];
 
     await test.step('Setup route mock for task list and go action dependencies', async () => {
-      await page.route(TASK_LIST_ROUTE_REGEX, async (route) => {
-        const body = JSON.stringify(taskListMockResponse);
-        await route.fulfill({ status: 200, contentType: 'application/json', body });
-      });
+      await setupManageTasksBaseRoutes(page, { taskListResponse: taskListMockResponse });
 
       await setupTaskActionEndpointMocks(page, 'go', {
         taskId: firstTask.id,

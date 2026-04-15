@@ -1,26 +1,25 @@
 import { availableActionsList, buildTaskListMock } from '../../../mocks/taskList.mock';
 import { expect, test } from '../../../../E2E/fixtures';
-import { applyPrewarmedSessionCookies, setupTaskListBootstrapRoutes, taskListRoutePattern } from '../../../helpers';
+import { applySessionCookies, setupManageTasksBaseRoutes } from '../../../helpers';
 
 const errorStates = [400, 403, 500, 503];
 const userIdentifier = 'STAFF_ADMIN';
 const broaderSupportedJurisdictionsMock = ['IA', 'PRIVATELAW', 'PUBLICLAW', 'CIVIL', 'ST_CIC', 'EMPLOYMENT', 'SSCS', 'DIVORCE'];
 
 test.beforeEach(async ({ page }) => {
-  await applyPrewarmedSessionCookies(page, userIdentifier);
+  await applySessionCookies(page, userIdentifier);
 });
 
 test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   test(`User ${userIdentifier} sees filter errors if no services are selected`, async ({ taskListPage, page }) => {
     const taskListMockResponse = buildTaskListMock(10, '', availableActionsList);
     await test.step('Setup route mock for task list', async () => {
-      await setupTaskListBootstrapRoutes(page, broaderSupportedJurisdictionsMock);
+      await setupManageTasksBaseRoutes(page, {
+        taskListResponse: taskListMockResponse,
+        supportedJurisdictions: broaderSupportedJurisdictionsMock,
+      });
       await page.route('**/workallocation/caseworker/getUsersByServiceName*', async (route) => {
         await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([]) });
-      });
-      await page.route(taskListRoutePattern, async (route) => {
-        const body = JSON.stringify(taskListMockResponse);
-        await route.fulfill({ status: 200, contentType: 'application/json', body });
       });
     });
 
@@ -49,13 +48,12 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
   test(`User ${userIdentifier} sees filter errors if no types of work are selected`, async ({ taskListPage, page }) => {
     const taskListMockResponse = buildTaskListMock(10, '', availableActionsList);
     await test.step('Setup route mock for task list', async () => {
-      await setupTaskListBootstrapRoutes(page, broaderSupportedJurisdictionsMock);
+      await setupManageTasksBaseRoutes(page, {
+        taskListResponse: taskListMockResponse,
+        supportedJurisdictions: broaderSupportedJurisdictionsMock,
+      });
       await page.route('**/workallocation/caseworker/getUsersByServiceName*', async (route) => {
         await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([]) });
-      });
-      await page.route(taskListRoutePattern, async (route) => {
-        const body = JSON.stringify(taskListMockResponse);
-        await route.fulfill({ status: 200, contentType: 'application/json', body });
       });
     });
 
@@ -88,10 +86,11 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
     }) => {
       const emptyMockResponse = {};
       await test.step('Setup route mock for empty task list', async () => {
-        await setupTaskListBootstrapRoutes(page);
-        await page.route(taskListRoutePattern, async (route) => {
-          const body = JSON.stringify(emptyMockResponse);
-          await route.fulfill({ status: errorStatus, contentType: 'application/json', body });
+        await setupManageTasksBaseRoutes(page, {
+          taskListHandler: async (route) => {
+            const body = JSON.stringify(emptyMockResponse);
+            await route.fulfill({ status: errorStatus, contentType: 'application/json', body });
+          },
         });
       });
       await test.step('Navigate to the my tasks list page', async () => {
@@ -111,9 +110,10 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
 
   test(`User sees the no tasks message on available tasks, if the api times out`, async ({ taskListPage, page }) => {
     await test.step('Setup route mock for empty task list', async () => {
-      await setupTaskListBootstrapRoutes(page);
-      await page.route(taskListRoutePattern, async (route) => {
-        await route.abort('timedout');
+      await setupManageTasksBaseRoutes(page, {
+        taskListHandler: async (route) => {
+          await route.abort('timedout');
+        },
       });
     });
     await test.step('Navigate to the my tasks list page', async () => {

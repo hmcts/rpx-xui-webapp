@@ -24,11 +24,7 @@ test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] },
     await ensureSession('SOLICITOR');
   });
 
-  test('Opens uploaded document in the Media Viewer end-to-end', async ({
-    page,
-    createCasePage,
-    caseDetailsPage,
-  }, testInfo) => {
+  test('Opens uploaded document in the Media Viewer end-to-end', async ({ page, createCasePage, caseDetailsPage }, testInfo) => {
     let caseDetailsUrl = '';
     faker.seed(testInfo.retry + 1);
     const uniqueSuffix = `${Date.now()}-w${testInfo.workerIndex}-r${testInfo.retry}`;

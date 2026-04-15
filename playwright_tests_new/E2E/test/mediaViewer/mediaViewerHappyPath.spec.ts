@@ -18,10 +18,7 @@ const MEDIA_VIEWER_FIXTURE_PATH = path.resolve(
 const MEDIA_VIEWER_FIXTURE_CONTENT = readFileSync(MEDIA_VIEWER_FIXTURE_PATH, 'latin1');
 
 test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] }, () => {
-  test.describe.configure({ timeout: 180_000 });
-
-  test.beforeAll(async ({ browserName: _browserName }, testInfo) => {
-    testInfo.setTimeout(180_000);
+  test.beforeAll(async ({ browserName: _browserName }, _testInfo) => {
     await ensureSession('SOLICITOR');
   });
 

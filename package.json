@@ -119,7 +119,7 @@
     "@hmcts/nodejs-healthcheck": "1.8.5",
     "@hmcts/properties-volume": "^1.3.1",
     "@hmcts/rpx-xui-common-lib": "3.2.8",
-    "@hmcts/rpx-xui-node-lib": "2.30.11-exui-4342-unused-package-2",
+    "@hmcts/rpx-xui-node-lib": "2.30.12-exui-4342-unused-package",
     "@microsoft/applicationinsights-web": "^3.1.0",
     "@ng-idle/core": "^16.0.0",
     "@ng-idle/keepalive": "^16.0.0",

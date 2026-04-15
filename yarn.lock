@@ -2793,7 +2793,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@dr.pogodin/csurf@npm:^1.16.5":
+"@dr.pogodin/csurf@npm:^1.14.0, @dr.pogodin/csurf@npm:^1.16.5":
   version: 1.16.9
   resolution: "@dr.pogodin/csurf@npm:1.16.9"
   dependencies:
@@ -3407,7 +3407,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hapi/hoek@npm:^9.0.0, @hapi/hoek@npm:^9.3.0":
+"@hapi/hoek@npm:^9.0.0":
   version: 9.3.0
   resolution: "@hapi/hoek@npm:9.3.0"
   checksum: 10/ad83a223787749f3873bce42bd32a9a19673765bf3edece0a427e138859ff729469e68d5fdf9ff6bbee6fb0c8e21bab61415afa4584f527cfc40b59ea1957e70
@@ -3428,7 +3428,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hapi/topo@npm:^5.0.0, @hapi/topo@npm:^5.1.0":
+"@hapi/topo@npm:^5.0.0":
   version: 5.1.0
   resolution: "@hapi/topo@npm:5.1.0"
   dependencies:
@@ -3576,18 +3576,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.11-exui-4342-unused-package-2":
-  version: 2.30.11-exui-4342-unused-package-2
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.11-exui-4342-unused-package-2"
+"@hmcts/rpx-xui-node-lib@npm:2.30.12-exui-4342-unused-package":
+  version: 2.30.12-exui-4342-unused-package
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.12-exui-4342-unused-package"
   dependencies:
     "@dr.pogodin/csurf": "npm:^1.14.0"
-    "@hapi/joi": "npm:^17.1.1"
     axios: "npm:^1.11.0"
     connect-redis: "npm:^4.0.4"
     debug: "npm:^4.3.7"
     deepmerge: "npm:^4.2.2"
     express: "npm:^4.20.0"
     express-session: "npm:^1.17.0"
+    joi: "npm:^18.1.2"
     jwt-decode: "npm:^3.1.2"
     openid-client: "npm:^3.10.0"
     otplib: "npm:^12.0.1"
@@ -3597,7 +3597,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/c820506429366bfab2ccc12e1ce77254b3ee3898b5b5bc38c0c3d644e67246d02910da379dc31d235ce18269b0ead7aa8e50d6cc1b760adc93d3ea65f0ffddb9
+  checksum: 10/40eee304cbd3ba41459dc1e4a973906f78d43c453c9485da37cf32f07856d6f03694c464dbc54c098bbacd5f3a7b4c6c8d983d2c0c9b6de3a145e6a69fdac781
   languageName: node
   linkType: hard
 
@@ -7384,7 +7384,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sideway/address@npm:^4.1.3, @sideway/address@npm:^4.1.5":
+"@sideway/address@npm:^4.1.3":
   version: 4.1.5
   resolution: "@sideway/address@npm:4.1.5"
   dependencies:
@@ -7393,7 +7393,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sideway/formula@npm:^3.0.0, @sideway/formula@npm:^3.0.1":
+"@sideway/formula@npm:^3.0.0":
   version: 3.0.1
   resolution: "@sideway/formula@npm:3.0.1"
   checksum: 10/8d3ee7f80df4e5204b2cbe92a2a711ca89684965a5c9eb3b316b7051212d3522e332a65a0bb2a07cc708fcd1d0b27fcb30f43ff0bcd5089d7006c7160a89eefe
@@ -16495,20 +16495,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"joi@npm:^17":
-  version: 17.13.3
-  resolution: "joi@npm:17.13.3"
-  dependencies:
-    "@hapi/hoek": "npm:^9.3.0"
-    "@hapi/topo": "npm:^5.1.0"
-    "@sideway/address": "npm:^4.1.5"
-    "@sideway/formula": "npm:^3.0.1"
-    "@sideway/pinpoint": "npm:^2.0.0"
-  checksum: 10/4c150db0c820c3a52f4a55c82c1fc5e144a5b5f4da9ffebc7339a15469d1a447ebb427ced446efcb9709ab56bd71a06c4c67c9381bc1b9f9ae63fc7c89209bdf
-  languageName: node
-  linkType: hard
-
-"joi@npm:^18.0.1, joi@npm:^18.0.2":
+"joi@npm:^18.0.1, joi@npm:^18.0.2, joi@npm:^18.1.2":
   version: 18.1.2
   resolution: "joi@npm:18.1.2"
   dependencies:
@@ -21763,7 +21750,7 @@ __metadata:
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.3.1"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.8"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.11-exui-4342-unused-package-2"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.12-exui-4342-unused-package"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"

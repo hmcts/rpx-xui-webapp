@@ -1,13 +1,8 @@
 import { expect, test } from '../../../../E2E/fixtures';
-import {
-  SERVICE_DOWN_URL_REGEX,
-  SERVICE_DOWN_HEADING_TEXT,
-  TASK_UNAVAILABLE_WARNING,
-  TASK_LIST_ROUTE_REGEX,
-} from '../../../testData';
+import { SERVICE_DOWN_URL_REGEX, SERVICE_DOWN_HEADING_TEXT, TASK_UNAVAILABLE_WARNING } from '../../../testData';
 import { applySessionCookies } from '../../../../common/sessionCapture';
 import { availableActionsList, buildTaskListMock } from '../../../mocks/taskList.mock';
-import { setupTaskListBootstrapRoutes } from '../../../helpers';
+import { setupManageTasksBaseRoutes } from '../../../helpers';
 
 const userIdentifier = 'STAFF_ADMIN';
 let taskListMockResponse: ReturnType<typeof buildTaskListMock>;
@@ -25,11 +20,7 @@ test.describe(
       const firstTask = taskListMockResponse.tasks[0];
 
       await test.step('Setup route mocks for task list and claim 500 response', async () => {
-        await setupTaskListBootstrapRoutes(page);
-        await page.route(TASK_LIST_ROUTE_REGEX, async (route) => {
-          const body = JSON.stringify(taskListMockResponse);
-          await route.fulfill({ status: 200, contentType: 'application/json', body });
-        });
+        await setupManageTasksBaseRoutes(page, { taskListResponse: taskListMockResponse });
 
         await page.route(`**/workallocation/task/${firstTask.id}/claim*`, async (route) => {
           if (route.request().method() !== 'POST') {
@@ -79,11 +70,7 @@ test.describe(
       const firstTask = taskListMockResponse.tasks[0];
 
       await test.step('Setup route mocks for task list and claim 400 response', async () => {
-        await setupTaskListBootstrapRoutes(page);
-        await page.route(TASK_LIST_ROUTE_REGEX, async (route) => {
-          const body = JSON.stringify(taskListMockResponse);
-          await route.fulfill({ status: 200, contentType: 'application/json', body });
-        });
+        await setupManageTasksBaseRoutes(page, { taskListResponse: taskListMockResponse });
 
         await page.route(`**/workallocation/task/${firstTask.id}/claim*`, async (route) => {
           if (route.request().method() !== 'POST') {

@@ -10,7 +10,6 @@ const { cpus, totalmem } = require('node:os');
 const path = require('node:path');
 
 const temporaryProbePattern = '**/_tmp_*.spec.ts';
-const searchCasePattern = '**/test/searchCase/**/*.spec.ts';
 const defaultBaseUrl = 'https://manage-case.aat.platform.hmcts.net';
 const defaultLiveTimerIntervalMs = '30000';
 const defaultOdhinOutputFolder = 'functional-output/tests/playwright-integration/odhin-report';
@@ -261,16 +260,7 @@ const buildConfig = (env = process.env) => {
     },
     projects: [
       {
-        name: 'chromium-search-case',
-        testMatch: [searchCasePattern],
-        use: {
-          ...devices['Desktop Chrome'],
-          ...(browserChannel ? { channel: browserChannel } : {}),
-        },
-      },
-      {
         name: 'chromium',
-        testIgnore: [searchCasePattern],
         use: {
           ...devices['Desktop Chrome'],
           ...(browserChannel ? { channel: browserChannel } : {}),

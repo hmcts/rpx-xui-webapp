@@ -3446,12 +3446,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.47":
-  version: 7.3.47
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.47"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.45-EXUI-4188-sanitize-HTML":
+  version: 7.3.45-EXUI-4188-sanitize-HTML
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.45-EXUI-4188-sanitize-HTML"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/9759ba77dd7bb03adad20ee8544bf7526f31d76d47dc6e252ca6e1eccfa1649d12791116d2dd86b7bbff35c1f056a246a232caa57f576102a87ed6884579da3f
+  checksum: 10/86525c1c071a9dbbe497c8262f133e8095512a3ae734cf21dddd3ccba17e36f6db2dffc20d20e61bee9300f878b96a1fbcdf95e4a55aad98fc29c114f19478ad
   languageName: node
   linkType: hard
 
@@ -3563,16 +3563,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.8":
-  version: 3.2.8
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.8"
+"@hmcts/rpx-xui-common-lib@npm:3.2.6-EXUI-4188-sanitize-HTML":
+  version: 3.2.6-EXUI-4188-sanitize-HTML
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.6-EXUI-4188-sanitize-HTML"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: 1.1.2-CME-780-9
-  checksum: 10/4e48b962f867ee137fca5415e6f465cc3c68ed7845a925565b423711a32e032ac8b3af39923439653f6200391f75f089ab49f795743e1ef0a11a934aafeee331
+  checksum: 10/0fd4370044432115294fa521bd76384e0bdf1faf495a41711f20a7aec1b71358a5ee0f9c28aca2278b72d8421a57d9ab47d8fadf038162fdadd45beed7d1f6f1
   languageName: node
   linkType: hard
 
@@ -21809,14 +21809,14 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.47"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.45-EXUI-4188-sanitize-HTML"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.16"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.3.1"
-    "@hmcts/rpx-xui-common-lib": "npm:3.2.8"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.6-EXUI-4188-sanitize-HTML"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.7-exui-4227-rel"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"

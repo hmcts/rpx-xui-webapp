@@ -1,8 +1,6 @@
 import { Page } from '@playwright/test';
 import { Base } from '../../base';
 
-const BOOKING_UI_READY_TIMEOUT_MS = 15_000;
-
 export class BookingUiPage extends Base {
   readonly container = this.page.locator('exui-booking-home');
   readonly options = this.container.locator('.govuk-radios__item');

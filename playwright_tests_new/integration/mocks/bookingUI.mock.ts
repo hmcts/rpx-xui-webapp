@@ -1,3 +1,5 @@
+import { buildExistingBookingsMock } from './bookingUI.builder';
+
 export const bookingLocationMock = {
   court_venue_id: '40827',
   epimms_id: '20262',
@@ -39,25 +41,4 @@ export const bookingLocationMock = {
   welsh_external_short_name: 'Canol Llundain',
 };
 
-export const existingBookingsMock = [
-  {
-    id: 'cbc27146-137f-4e8a-b92f-1cd4f36011e8',
-    userId: '7a51b87d-36c6-47fa-b9ef-4257af8001c5',
-    regionId: '1',
-    locationId: '20262',
-    created: '2025-03-05T10:21:09Z',
-    beginTime: '2028-12-25T00:00:00Z',
-    endTime: '2029-12-26T00:00:00Z',
-    locationName: 'Central London County Court',
-  },
-  {
-    id: 'f06dc43a-8d73-41bd-a3bd-8612c08173c5',
-    userId: '7a51b87d-36c6-47fa-b9ef-4257af8001c5',
-    regionId: '1',
-    locationId: '784131',
-    created: '2026-04-13T15:59:19Z',
-    beginTime: '2026-04-13T00:00:00Z',
-    endTime: '2026-04-21T00:00:00Z',
-    locationName: "Bromley Magistrates' Court",
-  },
-];
+export { buildExistingBookingsMock };

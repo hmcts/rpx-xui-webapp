@@ -1,6 +1,6 @@
-import { applySessionCookies } from 'playwright_tests_new/common/sessionCapture';
+import { applySessionCookiesAndExtractUserId } from '../../helpers';
 import { expect, test } from '../../../E2E/fixtures';
-import { bookingLocationMock, existingBookingsMock } from './booking-ui.data';
+import { bookingLocationMock, buildExistingBookingsMock } from '../../mocks/bookingUI.mock';
 
 const userIdentifier = 'BOOKING_UI-FT-ON';
 let getBookingsCalled = false;
@@ -8,7 +8,8 @@ let getBookingsCalled = false;
 test.describe(`Booking UI as ${userIdentifier}`, { tag: ['@integration', '@integration-booking-ui'] }, () => {
   test.beforeEach(async ({ page }) => {
     getBookingsCalled = false;
-    await applySessionCookies(page, userIdentifier);
+    const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
+    const existingBookingsMock = buildExistingBookingsMock(userId);
     await page.route('**/api/locations/getLocations', async (route) => {
       await route.fulfill({
         status: 200,
@@ -26,7 +27,7 @@ test.describe(`Booking UI as ${userIdentifier}`, { tag: ['@integration', '@integ
     });
   });
 
-  test('shows continue when choosing an existing booking', async ({ page, bookingUiPage }) => {
+  test('can continue when choosing an existing booking', async ({ page, bookingUiPage }) => {
     await test.step('Navigate to booking UI and wait for bookings request', async () => {
       await bookingUiPage.goto();
       await expect(page).toHaveURL(/\/booking$/);
@@ -36,11 +37,11 @@ test.describe(`Booking UI as ${userIdentifier}`, { tag: ['@integration', '@integ
 
     await test.step('Select existing booking option and verify continue button', async () => {
       await bookingUiPage.selectOption('Choose an existing booking');
-      await expect(bookingUiPage.continueButton).toBeVisible({ visible: false });
+      await expect(bookingUiPage.continueButton).toBeVisible();
     });
   });
 
-  test('shows continue when creating a new booking', async ({ page, bookingUiPage }) => {
+  test('can continue when creating a new booking', async ({ page, bookingUiPage }) => {
     await test.step('Navigate to booking UI and wait for bookings request', async () => {
       await bookingUiPage.goto();
       await expect(page).toHaveURL(/\/booking$/);
@@ -54,7 +55,7 @@ test.describe(`Booking UI as ${userIdentifier}`, { tag: ['@integration', '@integ
     });
   });
 
-  test('shows continue when viewing tasks and cases', async ({ page, bookingUiPage }) => {
+  test('can continue when viewing tasks and cases', async ({ page, bookingUiPage }) => {
     await test.step('Navigate to booking UI and wait for bookings request', async () => {
       await bookingUiPage.goto();
       await expect(page).toHaveURL(/\/booking$/);

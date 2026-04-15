@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 import { Base } from '../../base';
 
 export class CaseFileViewPage extends Base {
@@ -17,6 +17,9 @@ export class CaseFileViewPage extends Base {
   readonly downloadButton = this.mediaViewerToolbar.locator('#mvDownloadBtn');
   readonly printButton = this.mediaViewerToolbar.locator('#mvPrintBtn');
   readonly mediaViewPanel = this.mediaViewerContainer.locator('#viewerContainer');
+  readonly standaloneMediaViewerContainer = this.page.locator('exui-media-viewer');
+  readonly standaloneMediaViewerToolbar = this.page.locator('#mvToolbarMain');
+  readonly standaloneMediaViewPanel = this.page.locator('#viewerContainer');
 
   readonly documentHeader = this.container.locator('.document-folders-header .document-folders-header__title');
   readonly sortButton = this.container.locator('ccd-case-file-view-folder-sort button').first();
@@ -126,6 +129,16 @@ export class CaseFileViewPage extends Base {
   public async sortByOldestFirst(): Promise<void> {
     await this.openSortMenu();
     await this.sortOldestFirstOption.click();
+  }
+
+  public async expectStandaloneMediaViewerLoaded(expectedTitleText?: string): Promise<void> {
+    if (expectedTitleText) {
+      await expect.poll(async () => this.page.title()).toContain(`${expectedTitleText} - View Document`);
+    }
+
+    await expect(this.standaloneMediaViewerContainer).toBeVisible();
+    await expect(this.standaloneMediaViewerToolbar).toBeVisible();
+    await expect(this.standaloneMediaViewPanel).toBeVisible();
   }
 
   private async findDirectChildFolderNode(scope: Locator, folderName: string): Promise<Locator> {

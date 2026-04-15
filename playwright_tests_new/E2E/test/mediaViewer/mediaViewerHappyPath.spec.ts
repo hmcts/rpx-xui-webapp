@@ -2,6 +2,7 @@ import { faker } from '@faker-js/faker';
 import { Response } from '@playwright/test';
 import { expect, test } from '../../fixtures';
 import { ensureAuthenticatedPage, ensureSession } from '../../../common/sessionCapture';
+import { CaseFileViewPage } from '../../page-objects/pages/exui/caseFileView.po';
 import { createDivorceCase } from '../../utils/test-setup/journeys/divorceCaseJourneys';
 import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
 import { readFileSync } from 'node:fs';
@@ -10,6 +11,7 @@ import path from 'node:path';
 const JURISDICTION = 'DIVORCE';
 const CASE_TYPE = 'xuiTestCaseType';
 const MEDIA_VIEWER_ROUTE_PATTERN = /\/media-viewer(?:\?|$)/;
+const DOCUMENT_BINARY_ROUTE_PATTERN = /\/documents(?:v2)?\/[^/]+\/binary$/;
 const UPDATE_CASE_ACTION = 'Update case';
 const MEDIA_VIEWER_FIXTURE_PATH = path.resolve(
   process.cwd(),
@@ -22,7 +24,11 @@ test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] },
     await ensureSession('SOLICITOR');
   });
 
-  test('opens auploaded document in the Media Viewer end-to-end', async ({ page, createCasePage, caseDetailsPage }, testInfo) => {
+  test('Opens uploaded document in the Media Viewer end-to-end', async ({
+    page,
+    createCasePage,
+    caseDetailsPage,
+  }, testInfo) => {
     let caseDetailsUrl = '';
     faker.seed(testInfo.retry + 1);
     const uniqueSuffix = `${Date.now()}-w${testInfo.workerIndex}-r${testInfo.retry}`;
@@ -38,7 +44,7 @@ test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] },
       caseDetailsUrl = await caseDetailsPage.getCurrentPageUrl();
     });
 
-    await test.step('Upload a  document through the update flow', async () => {
+    await test.step('Upload a document through the update flow', async () => {
       await retryOnTransientFailure(
         async () => {
           await caseDetailsPage.selectCaseDetailsTab('Tab 1');
@@ -98,7 +104,7 @@ test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] },
         }
 
         const pathname = new URL(response.url()).pathname;
-        if (/\/documents(?:v2)?\/[^/]+\/binary$/.test(pathname)) {
+        if (DOCUMENT_BINARY_ROUTE_PATTERN.test(pathname)) {
           binaryResponses.push(response.url());
         }
       };
@@ -109,13 +115,11 @@ test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] },
         await mediaPage.waitForLoadState('domcontentloaded').catch(() => undefined);
 
         await expect.poll(() => binaryResponses.length).toBeGreaterThan(0);
-        await expect.poll(() => binaryResponses.at(-1) ?? '').toMatch(/\/documents(?:v2)?\/[^/]+\/binary$/);
+        await expect.poll(() => binaryResponses.at(-1) ?? '').toMatch(DOCUMENT_BINARY_ROUTE_PATTERN);
 
+        const resolvedMediaViewerPage = new CaseFileViewPage(mediaPage);
         await expect(mediaPage).toHaveURL(MEDIA_VIEWER_ROUTE_PATTERN);
-        await expect.poll(async () => mediaPage.title()).toContain(`${documentFileName} - View Document`);
-        await expect(mediaPage.locator('exui-media-viewer')).toBeVisible();
-        await expect(mediaPage.locator('#mvToolbarMain')).toBeVisible();
-        await expect(mediaPage.locator('#viewerContainer')).toBeVisible();
+        await resolvedMediaViewerPage.expectStandaloneMediaViewerLoaded(documentFileName);
       } finally {
         page.context().off('response', onResponse);
       }

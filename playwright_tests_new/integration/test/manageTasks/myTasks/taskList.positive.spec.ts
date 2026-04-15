@@ -1,24 +1,15 @@
 import { expect, test } from '../../../../E2E/fixtures';
 import { buildTaskListMock, buildDeterministicMyTasksListMock, myActionsList } from '../../../mocks/taskList.mock';
-import { extractUserIdFromCookies } from '../../../utils/extractUserIdFromCookies';
 import { formatUiDate } from '../../../utils/tableUtils';
-import {
-  applyPrewarmedSessionCookies,
-  setupTaskListBootstrapRoutes,
-  taskListRoutePattern,
-  setupTaskListMockRoutes,
-} from '../../../helpers';
+import { applySessionCookiesAndExtractUserId, setupManageTasksBaseRoutes, setupTaskListMockRoutes } from '../../../helpers';
 
 let userId: string | null;
 const userIdentifier = 'STAFF_ADMIN';
-let sessionCookies: any[] = [];
 let taskListMockResponse: ReturnType<typeof buildTaskListMock>;
 
 test.beforeEach(async ({ page }) => {
-  const { cookies } = await applyPrewarmedSessionCookies(page, userIdentifier);
-  sessionCookies = cookies;
-  userId = extractUserIdFromCookies(sessionCookies);
-  taskListMockResponse = buildTaskListMock(6, userId?.toString() || '', myActionsList);
+  userId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
+  taskListMockResponse = buildTaskListMock(6, userId, myActionsList);
 });
 
 test.describe(`Task List as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
@@ -143,15 +134,11 @@ test.describe(`Task List as ${userIdentifier}`, { tag: ['@integration', '@integr
     const caseNameSortHeaderCell = taskListPage.sortByCaseNameTableHeader.locator('xpath=ancestor::th[1]');
 
     await test.step('Setup route mocks', async () => {
-      await setupTaskListBootstrapRoutes(page);
-      await page.route(taskListRoutePattern, async (route) => {
-        const body = JSON.stringify(myTasksMockResponse);
-        await route.fulfill({ status: 200, contentType: 'application/json', body });
-      });
+      await setupManageTasksBaseRoutes(page, { taskListResponse: myTasksMockResponse });
     });
 
     await test.step('Open My tasks and sort by Case name', async () => {
-      await taskListPage.goto();
+      await taskListPage.gotoAndWaitForTaskRow('sorting My tasks by case name');
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
 
@@ -161,29 +148,19 @@ test.describe(`Task List as ${userIdentifier}`, { tag: ['@integration', '@integr
     });
 
     await test.step('Navigate away and return to My tasks', async () => {
-      await taskListPage.taskTableTabs.filter({ hasText: 'Available tasks' }).first().click();
+      await taskListPage.clickTaskTabAndWaitForView(
+        'Available tasks',
+        'AvailableTasks',
+        'switching away from My tasks after sorting'
+      );
       await taskListPage.exuiSpinnerComponent.wait();
 
-      const myTasksRequestPromise = page.waitForRequest((request) => {
-        if (!taskListRoutePattern.exec(request.url()) || request.method() !== 'POST') {
-          return false;
-        }
-
-        try {
-          const requestBody = request.postDataJSON() as {
-            view?: string;
-            searchRequest?: { request_context?: string };
-          };
-          return requestBody.view === 'MyTasks' || requestBody.searchRequest?.request_context === 'MY_TASKS';
-        } catch {
-          return false;
-        }
-      });
-
-      await taskListPage.taskTableTabs.filter({ hasText: 'My tasks' }).first().click();
+      const myTasksRequest = await taskListPage.clickTaskTabAndWaitForView(
+        'My tasks',
+        'MyTasks',
+        'returning to My tasks after switching away'
+      );
       await taskListPage.exuiSpinnerComponent.wait();
-
-      const myTasksRequest = await myTasksRequestPromise;
       const myTasksRequestBody = myTasksRequest.postDataJSON() as {
         searchRequest?: { sorting_parameters?: Array<{ sort_by?: string; sort_order?: string }> };
       };

@@ -1,28 +1,19 @@
 import { defineConfig, devices } from '@playwright/test';
 import { execSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
-import { cpus } from 'node:os';
-import * as path from 'node:path';
+import { cpus, totalmem } from 'node:os';
 import { version as appVersion } from './package.json';
-import { parseNonNegativeInt, resolveDefaultReporter } from './playwright-config-utils';
+import {
+  parseNonNegativeInt,
+  resolveApiProjectWorkerCount,
+  resolveDefaultReporter,
+  resolveTagFilters,
+  resolveWorkerCount,
+} from './playwright-config-utils';
 
 type EnvMap = NodeJS.ProcessEnv;
 
 const defaultBaseUrl = 'https://manage-case.aat.platform.hmcts.net';
 const defaultApiTagFilterConfigPath = 'playwright_tests_new/api/service-tag-filter.json';
-
-type ApiTagFilterConfig = {
-  excludedTags?: string[];
-};
-
-type ApiTagFilters = {
-  includeTags: string[];
-  excludedTags: string[];
-  grep?: RegExp;
-  grepInvert?: RegExp;
-  excludedTagsSource: 'file' | 'env';
-  configPath: string;
-};
 
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
 
@@ -75,27 +66,6 @@ const resolveBranchName = (env: EnvMap = process.env): string => {
   return 'local';
 };
 
-const resolveWorkerCount = (env: EnvMap = process.env) => {
-  // CI should always run with 8 workers for predictable parallelism.
-  // (Playwright CLI flags can still override this, but our config default is fixed.)
-  if (env.CI) {
-    return 8;
-  }
-
-  const configured = env.FUNCTIONAL_TESTS_WORKERS;
-  if (configured) {
-    const parsed = Number.parseInt(configured, 10);
-    if (Number.isFinite(parsed) && parsed > 0) {
-      return parsed;
-    }
-  }
-
-  const logical = cpus()?.length ?? 1;
-  const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));
-  const suggested = Math.min(8, Math.max(2, approxPhysical));
-  return suggested;
-};
-
 const resolveApiRetries = (env: EnvMap = process.env) =>
   parseNonNegativeInt(env.PW_API_RETRIES) ?? parseNonNegativeInt(env.PW_E2E_RETRIES) ?? 2;
 
@@ -126,84 +96,22 @@ const resolveEnvironmentFromUrl = (baseUrl: string): string => {
 const resolveTestEnvironmentLabel = (env: EnvMap, workerCount: number): string => {
   const targetEnv = env.TEST_TYPE ?? resolveEnvironmentFromUrl(resolveBaseUrl(env));
   const runContext = env.CI ? 'ci' : 'local-run';
-  return `${targetEnv} | ${runContext} | workers=${workerCount}`;
+  const cpuCores = cpus()?.length ?? 'unknown';
+  const totalRamGiB = Math.round((totalmem() / 1024 ** 3) * 10) / 10;
+  return `${targetEnv} | ${runContext} | workers=${workerCount} | agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
 };
 
-const ensureTagPrefix = (value: string): string => {
-  const normalized = value.trim();
-  if (!normalized) {
-    return '';
-  }
-  return normalized.startsWith('@') ? normalized : `@${normalized}`;
-};
-
-const splitTagInput = (raw?: string): string[] => {
-  if (!raw) {
-    return [];
-  }
-  const seen = new Set<string>();
-  const tags: string[] = [];
-  for (const token of raw.split(/[\s,]+/)) {
-    const tag = ensureTagPrefix(token);
-    if (!tag || seen.has(tag)) {
-      continue;
-    }
-    seen.add(tag);
-    tags.push(tag);
-  }
-  return tags;
-};
-
-const escapeRegex = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`); // NOSONAR typescript:S5852 — replaceAll requires ES2021; tsconfig targets ES2020
-
-const buildTagRegex = (tags: string[]): RegExp | undefined => {
-  if (!tags.length) {
-    return undefined;
-  }
-  return new RegExp(`(${tags.map(escapeRegex).join('|')})`);
-};
-
-const resolveApiTagFilterConfigPath = (env: EnvMap): string => {
-  const configuredPath = env.API_PW_TAG_FILTER_CONFIG?.trim();
-  const candidatePath = configuredPath && configuredPath.length > 0 ? configuredPath : defaultApiTagFilterConfigPath;
-  return path.isAbsolute(candidatePath) ? candidatePath : path.resolve(process.cwd(), candidatePath);
-};
-
-const readApiTagFilterConfig = (configPath: string): ApiTagFilterConfig => {
-  try {
-    const raw = readFileSync(configPath, 'utf8');
-    const parsed = JSON.parse(raw) as ApiTagFilterConfig;
-    if (!parsed || typeof parsed !== 'object') {
-      throw new TypeError('Config must be a JSON object');
-    }
-    if (parsed.excludedTags !== undefined && !Array.isArray(parsed.excludedTags)) {
-      throw new TypeError('excludedTags must be an array');
-    }
-    return parsed;
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    throw new Error(`Failed to read API tag filter config at "${configPath}": ${message}`);
-  }
-};
-
-const resolveApiTagFilters = (env: EnvMap = process.env): ApiTagFilters => {
-  const includeTags = splitTagInput(env.API_PW_INCLUDE_TAGS);
-  const overrideExcludedTags = splitTagInput(env.API_PW_EXCLUDED_TAGS_OVERRIDE);
-  const configPath = resolveApiTagFilterConfigPath(env);
-  const configuredExcludedTags = splitTagInput(readApiTagFilterConfig(configPath).excludedTags?.join(','));
-  const excludedTags = overrideExcludedTags.length > 0 ? overrideExcludedTags : configuredExcludedTags;
-
-  return {
-    includeTags,
-    excludedTags,
-    grep: buildTagRegex(includeTags),
-    grepInvert: buildTagRegex(excludedTags),
-    excludedTagsSource: overrideExcludedTags.length > 0 ? 'env' : 'file',
-    configPath,
-  };
-};
+const resolveApiTagFilters = (env: EnvMap = process.env) =>
+  resolveTagFilters({
+    env,
+    includeTagsEnvVar: 'API_PW_INCLUDE_TAGS',
+    excludedTagsEnvVar: 'API_PW_EXCLUDED_TAGS_OVERRIDE',
+    configPathEnvVar: 'API_PW_TAG_FILTER_CONFIG',
+    defaultConfigPath: defaultApiTagFilterConfigPath,
+  });
 
 const buildConfig = (env: EnvMap = process.env) => {
+  const temporaryProbePattern = '**/_tmp_*.spec.ts';
   const workerCount = resolveWorkerCount(env);
   const headlessMode = resolveHeadlessMode(env);
   const odhinOutputFolder = resolveOdhinOutputFolder(env);
@@ -221,27 +129,21 @@ const buildConfig = (env: EnvMap = process.env) => {
       'playwright_tests_new/E2E/**/*.spec.ts',
       'playwright_tests_new/integration/**/*.spec.ts',
     ],
-    /* Run tests in files in parallel */
+    testIgnore: [temporaryProbePattern],
     fullyParallel: true,
-    /* Fail the build on CI if you accidentally left test.only in the source code. */
     forbidOnly: !!env.CI,
-    /* Retry failed tests twice in all environments */
-    retries: 2, // Set the number of retries for all projects
-
-    timeout: 3 * 60 * 1000,
+    retries: 2,
+    timeout: 180_000,
     expect: {
-      timeout: 1 * 60 * 1000,
+      timeout: 60_000,
     },
     reportSlowTests: null,
-
-    /* Control the number of parallel test workers. */
     workers: workerCount,
-
     reporter: [
       [resolveDefaultReporter(env)],
       ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs'],
       [
-        'odhin-reports-playwright',
+        './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
         {
           outputFolder: odhinOutputFolder,
           indexFilename: resolveOdhinIndexFilename(env),
@@ -256,11 +158,14 @@ const buildConfig = (env: EnvMap = process.env) => {
         },
       ],
     ],
-
     projects: [
       {
         name: 'chromium',
-        testIgnore: ['playwright_tests_new/api/**', 'playwright_tests_new/E2E/test/smoke/smokeTest.spec.ts'],
+        testIgnore: [
+          'playwright_tests_new/api/**',
+          'playwright_tests_new/E2E/test/smoke/smokeTest.spec.ts',
+          temporaryProbePattern,
+        ],
         use: {
           baseURL: resolveBaseUrl(env),
           ...devices['Desktop Chrome'],
@@ -296,11 +201,11 @@ const buildConfig = (env: EnvMap = process.env) => {
         grep: apiTagFilters.grep,
         grepInvert: apiTagFilters.grepInvert,
         fullyParallel: true,
-        workers: env.CI ? 4 : Math.max(1, Math.min(8, cpus()?.length ?? 4)),
+        workers: resolveApiProjectWorkerCount(env),
         retries: apiRetries,
-        timeout: 60 * 1000,
+        timeout: 60_000,
         expect: {
-          timeout: 10 * 1000,
+          timeout: 10_000,
         },
         use: {
           headless: true,
@@ -318,8 +223,8 @@ const config = buildConfig(process.env);
 (config as { __test__?: unknown }).__test__ = {
   resolveBaseUrl,
   resolveWorkerCount,
+  resolveApiProjectWorkerCount,
   resolveBranchName,
-  splitTagInput,
   resolveApiTagFilters,
   resolveApiRetries,
   resolveDefaultReporter,

@@ -1,8 +1,20 @@
 import { expect } from '@playwright/test';
 import type { Page, Route } from '@playwright/test';
-import type { CaseListPage } from '../../E2E/page-objects/pages/exui/caseList.po';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+import { EXUI_TIMEOUTS } from '../../E2E/page-objects/pages/exui/exui-timeouts';
 import type { GlobalSearchPage } from '../../E2E/page-objects/pages/exui/globalSearch.po';
 import type { SearchCasePage } from '../../E2E/page-objects/pages/exui/searchCase.po';
+
+const helperDir = path.dirname(fileURLToPath(import.meta.url));
+const appConfig = JSON.parse(readFileSync(path.resolve(helperDir, '../../../src/assets/config/config.json'), 'utf8')) as {
+  caseEditorConfig: {
+    activity_retry: number;
+    timeouts_case_retrieval: number[];
+    timeouts_case_retrieval_artificial_delay: number;
+  };
+};
 
 /**
  * Configuration for setting up Find Case mock routes.
@@ -309,23 +321,43 @@ export async function overrideFindCaseSearchResultsRoute(page: Page, handler: (r
 }
 
 /**
+ * Shrinks case-details retry windows for fully mocked integration tests.
+ *
+ * Production config uses long case retrieval timeouts that are appropriate for live environments
+ * but unnecessarily slow for local mocked timeout-path coverage.
+ */
+export async function setupFastCaseRetrievalConfigRoute(page: Page): Promise<void> {
+  await page.route('**/assets/config/config.json', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        ...appConfig,
+        caseEditorConfig: {
+          ...appConfig.caseEditorConfig,
+          activity_retry: 1,
+          timeouts_case_retrieval: [1, 1],
+          timeouts_case_retrieval_artificial_delay: 0,
+        },
+      }),
+    });
+  });
+}
+
+/**
  * Submits a header quick-search using a 16-digit case reference.
- * Navigates to the case list, waits for the search input, and submits the reference.
+ * Navigates to the cases area, waits only for the quick-search contract used by the header,
+ * and submits the reference.
  *
  * Extracted from spec-level inline helpers for reuse across positive and negative search suites.
  *
  * @param caseReference - 16-digit case reference to search for
- * @param caseListPage - Page object for the case list page
  * @param searchCasePage - Page object for the search case (header search) page
  */
-export async function submitHeaderQuickSearch(
-  caseReference: string,
-  caseListPage: CaseListPage,
-  searchCasePage: SearchCasePage
-): Promise<void> {
-  await caseListPage.navigateTo();
-  // Defensive check: confirms search input is present before interacting
-  await expect(searchCasePage.caseIdTextBox).toBeVisible();
+export async function submitHeaderQuickSearch(caseReference: string, searchCasePage: SearchCasePage): Promise<void> {
+  await searchCasePage.page.goto('/cases', { waitUntil: 'domcontentloaded' });
+  await searchCasePage.exuiHeader.appHeaderLink.waitFor({ state: 'attached', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
+  await expect(searchCasePage.caseIdTextBox).toBeVisible({ timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
   await searchCasePage.searchWith16DigitCaseId(caseReference);
 }
 
@@ -336,17 +368,17 @@ export async function submitHeaderQuickSearch(
  * Extracted from spec-level inline helpers for reuse across positive and negative test suites.
  *
  * @param caseReference - 16-digit case reference to search for
- * @param caseListPage - Page object for the case list page
  * @param globalSearchPage - Page object for the global search page
  * @param page - Playwright Page object (for URL wait)
  */
 export async function submitGlobalSearchFromMenu(
   caseReference: string,
-  caseListPage: CaseListPage,
   globalSearchPage: GlobalSearchPage,
   page: Page
 ): Promise<void> {
-  await caseListPage.navigateTo();
+  await page.goto('/cases', { waitUntil: 'domcontentloaded' });
+  await page.waitForURL(/\/cases(?:[/?#]|$)/, { timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
+  await expect(globalSearchPage.searchLinkOnMenuBar).toBeVisible({ timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
   await globalSearchPage.searchLinkOnMenuBar.click();
   await page.waitForURL(/\/search/);
   await globalSearchPage.caseIdTextBox.waitFor({ state: 'visible' });

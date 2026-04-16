@@ -1,0 +1,118 @@
+import { expect, test } from '../../../../E2E/fixtures';
+import { buildTaskListMock, myActionsList } from '../../../mocks/taskList.mock';
+import { formatUiDate } from '../../../utils/tableUtils';
+import { applySessionCookiesAndExtractUserId, setupManageTasksBaseRoutes } from '../../../helpers';
+import { setupTaskActionEndpointMocks } from '../../../helpers/taskActionApiMocks.helper';
+
+const userIdentifier = 'STAFF_ADMIN';
+let taskListMockResponse: ReturnType<typeof buildTaskListMock>;
+
+test.beforeEach(async ({ page }) => {
+  const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
+  taskListMockResponse = buildTaskListMock(160, userId, myActionsList);
+});
+
+test.describe(`Task Go To as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
+  test(`User can use Go to task action from task list to view the task in case details`, async ({
+    taskListPage,
+    caseDetailsPage,
+    page,
+  }) => {
+    const firstTask = taskListMockResponse.tasks[0];
+    const caseMockResponse = {
+      case_id: firstTask.case_id,
+      case_type: {
+        id: firstTask.case_type_id,
+        name: firstTask.case_type_id,
+        jurisdiction: {
+          id: firstTask.jurisdiction,
+          name: firstTask.jurisdiction,
+        },
+      },
+      tabs: [],
+      triggers: [],
+      events: [],
+      channels: [],
+      metadataFields: [],
+      state: {
+        id: 'CaseCreated',
+        name: 'Case created',
+      },
+    };
+    const userRequestMockResponse = [
+      {
+        email: 'test@example.com',
+        firstName: 'Test',
+        idamId: firstTask.assignee,
+        lastName: 'User',
+        location: {
+          id: 227101,
+          locationName: 'Newport (South Wales) Immigration and Asylum Tribunal',
+        },
+        roleCategory: 'LEGAL_OPERATIONS',
+        service: 'IA',
+      },
+    ];
+
+    await test.step('Setup route mock for task list and go action dependencies', async () => {
+      await setupManageTasksBaseRoutes(page, { taskListResponse: taskListMockResponse });
+
+      await setupTaskActionEndpointMocks(page, 'go', {
+        taskId: firstTask.id,
+        task_name: firstTask.task_title,
+        due_date: firstTask.due_date,
+        dueDate: firstTask.dueDate,
+        minor_priority: firstTask.minor_priority,
+        major_priority: firstTask.major_priority,
+        priority_date: firstTask.priority_date,
+        caseId: firstTask.case_id,
+        jurisdiction: firstTask.jurisdiction,
+        caseTypeId: firstTask.case_type_id,
+        assigneeId: firstTask.assignee,
+      });
+
+      await page.route(`**/data/internal/cases/${firstTask.case_id}*`, async (route) => {
+        const body = JSON.stringify(caseMockResponse);
+        await route.fulfill({ status: 200, contentType: 'application/json', body });
+      });
+
+      await page.route('**/workallocation/caseworker/getUsersByServiceName*', async (route) => {
+        const body = JSON.stringify(userRequestMockResponse);
+        await route.fulfill({ status: 200, contentType: 'application/json', body });
+      });
+    });
+
+    await test.step('Navigate to task list and click Go to task', async () => {
+      await taskListPage.goto();
+      await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.exuiSpinnerComponent.wait();
+
+      await taskListPage.openFirstManageActions('my tasks go to case details');
+      await expect(taskListPage.taskActionGoTo).toBeVisible();
+
+      const caseTasksResponsePromise = page.waitForResponse(
+        (response) =>
+          response.request().method() === 'POST' &&
+          response.url().includes(`/workallocation/case/task/${firstTask.case_id}`) &&
+          response.status() === 200
+      );
+
+      await taskListPage.clickTaskAction(taskListPage.taskActionGoTo, 'my tasks go to case details');
+      const caseTasksResponse = await caseTasksResponsePromise;
+      expect(caseTasksResponse.ok()).toBeTruthy();
+
+      await expect(page.getByRole('heading', { name: 'Active tasks' })).toBeVisible();
+    });
+
+    await test.step('Check case details page', async () => {
+      const table = await caseDetailsPage.getTaskKeyValueRows();
+      const expectedPriority = taskListPage.getExpectedPriorityLabel(firstTask.major_priority, firstTask.priority_date);
+      expect.soft(table[0]['Title']).toContain(firstTask.task_title);
+      expect
+        .soft(table[0]['Assigned to'])
+        .toContain(`${userRequestMockResponse[0].firstName} ${userRequestMockResponse[0].lastName}`);
+      expect.soft(table[0]['Due date']).toBe(formatUiDate(firstTask.due_date));
+      expect.soft(table[0]['Priority']).toContain(expectedPriority);
+    });
+  });
+});

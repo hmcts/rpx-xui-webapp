@@ -1,11 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, StoreModule } from '@ngrx/store';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { BehaviorSubject, of, Subscription } from 'rxjs';
 import { AppConstants } from '../../app.constants';
+import { AppUtils } from '../../app-utils';
 import { ApplicationThemeLogo } from '../../enums';
+import { NavigationItem } from '../../models/theming.model';
+import { HeaderConfigService } from '../../services/header-config/header-config.service';
 import { LoggerService } from '../../services/logger/logger.service';
 import * as fromActions from '../../store';
 import { AppHeaderComponent } from './app-header.component';
@@ -19,6 +23,7 @@ const storeMock = {
 };
 
 const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
+const headerConfigServiceMock = jasmine.createSpyObj('HeaderConfigService', ['constructHeaderConfig']);
 
 let dispatchSpy: jasmine.Spy;
 let subscribeSpy: jasmine.Spy;
@@ -38,10 +43,12 @@ describe('AppHeaderComponent', () => {
   beforeEach(async () => {
     dispatchSpy = spyOn(storeMock, 'dispatch');
     subscribeSpy = spyOn(subscriptionMock, 'unsubscribe');
+    headerConfigServiceMock.constructHeaderConfig.and.returnValue(of(AppConstants.DEFAULT_MENU_ITEMS));
 
     TestBed.configureTestingModule({
       declarations: [AppHeaderComponent],
       imports: [StoreModule.forRoot({})],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         {
           provide: Store,
@@ -61,6 +68,10 @@ describe('AppHeaderComponent', () => {
         {
           provide: LoggerService,
           useValue: loggerServiceMock,
+        },
+        {
+          provide: HeaderConfigService,
+          useValue: headerConfigServiceMock,
         },
         {
           provide: Window,
@@ -169,6 +180,14 @@ describe('AppHeaderComponent', () => {
       expect(component.router.url).toBe(component.navItems[0].href);
       expect(component.navItems[0].active).toBe(true);
     });
+
+    it('should ignore non navigation end events', () => {
+      const setupActiveNavLinkSpy = spyOn<any>(component, 'setupActiveNavLink');
+
+      component.setNavigationEnd({});
+
+      expect(setupActiveNavLinkSpy).not.toHaveBeenCalled();
+    });
   });
 
   describe('onNavigate()', () => {
@@ -194,6 +213,10 @@ describe('AppHeaderComponent', () => {
       component.unsubscribe(subscriptionMock);
       expect(subscribeSpy).toHaveBeenCalled();
     });
+
+    it('should ignore missing subscriptions', () => {
+      expect(() => component.unsubscribe(undefined)).not.toThrow();
+    });
   });
 
   describe('getObservable()', async () => {
@@ -209,6 +232,54 @@ describe('AppHeaderComponent', () => {
       const subscription = component.hideNavigationListener(stateStoreMock);
       // will be undefined as Observable not returned from the store
       expect(subscription).toBeUndefined();
+    });
+  });
+
+  describe('setHeaderContent()', () => {
+    it('should do nothing when userInfo is missing', async () => {
+      const hideNavigationListenerSpy = spyOn(component, 'hideNavigationListener');
+      const setApplicationThemeForUserSpy = spyOn(component, 'setApplicationThemeForUser');
+      headerConfigServiceMock.constructHeaderConfig.calls.reset();
+
+      await component.setHeaderContent({});
+
+      expect(headerConfigServiceMock.constructHeaderConfig).not.toHaveBeenCalled();
+      expect(hideNavigationListenerSpy).not.toHaveBeenCalled();
+      expect(setApplicationThemeForUserSpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('setAppHeaderNavItems()', () => {
+    it('should clear nav items for bookable judicial users on booking pages', () => {
+      const menuItems: NavigationItem[] = [{ text: 'Bookings', href: '/booking', active: false }];
+      const isBookableAndJudicialRoleSpy = spyOn(AppUtils, 'isBookableAndJudicialRole').and.returnValue(true);
+      component['userDetails'] = {
+        userInfo: { roleCategory: 'JUDICIAL' },
+        roleAssignmentInfo: [{ bookable: true }],
+      } as any;
+      (component.router as any).url = '/booking/some-page';
+
+      component.setAppHeaderNavItems(menuItems);
+
+      expect(isBookableAndJudicialRoleSpy).toHaveBeenCalled();
+      expect(component.navItems).toEqual([]);
+    });
+  });
+
+  describe('setupActiveNavLink()', () => {
+    it('should clear nav items when current route is booking and user is bookable judicial', () => {
+      const menuItems: NavigationItem[] = [{ text: 'Bookings', href: '/booking', active: false }];
+      const isBookableAndJudicialRoleSpy = spyOn(AppUtils, 'isBookableAndJudicialRole').and.returnValue(true);
+      component['userDetails'] = {
+        userInfo: { roleCategory: 'JUDICIAL' },
+        roleAssignmentInfo: [{ bookable: true }],
+      } as any;
+      (component.router as any).url = '/booking/some-page';
+
+      (component as any).setupActiveNavLink(menuItems);
+
+      expect(isBookableAndJudicialRoleSpy).toHaveBeenCalledWith(component['userDetails']);
+      expect(component.navItems).toEqual([]);
     });
   });
 });

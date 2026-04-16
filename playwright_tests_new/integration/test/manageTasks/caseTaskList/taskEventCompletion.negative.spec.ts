@@ -83,13 +83,16 @@ test.describe(`Task event completion as ${userIdentifier}`, { tag: ['@integratio
         });
       });
 
-      await page.route(`**/workallocation/case/tasks/${caseId}/event/${eventId}/caseType/Asylum/jurisdiction/IA*`, async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(noCompletableTasksResponse),
-        });
-      });
+      await page.route(
+        `**/workallocation/case/tasks/${caseId}/event/${eventId}/caseType/Asylum/jurisdiction/IA*`,
+        async (route) => {
+          await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify(noCompletableTasksResponse),
+          });
+        }
+      );
     });
 
     await test.step('Open the task tab and trigger the event completion flow', async () => {
@@ -178,13 +181,16 @@ test.describe(`Task event completion as ${userIdentifier}`, { tag: ['@integratio
         });
       });
 
-      await page.route(`**/workallocation/case/tasks/${caseId}/event/${eventId}/caseType/Asylum/jurisdiction/IA*`, async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(unassignedCompletableTasksResponse),
-        });
-      });
+      await page.route(
+        `**/workallocation/case/tasks/${caseId}/event/${eventId}/caseType/Asylum/jurisdiction/IA*`,
+        async (route) => {
+          await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify(unassignedCompletableTasksResponse),
+          });
+        }
+      );
     });
 
     await test.step('Open the task tab and trigger the event completion flow', async () => {

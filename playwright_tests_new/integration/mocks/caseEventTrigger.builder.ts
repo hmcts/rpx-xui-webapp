@@ -5,12 +5,7 @@ type CaseEventTriggerBuilderOptions = {
   description?: string;
 };
 
-export const buildCaseEventTriggerMock = ({
-  caseId,
-  eventId,
-  eventName,
-  description,
-}: CaseEventTriggerBuilderOptions) => ({
+export const buildCaseEventTriggerMock = ({ caseId, eventId, eventName, description }: CaseEventTriggerBuilderOptions) => ({
   id: eventId,
   name: eventName,
   description: description ?? eventName,

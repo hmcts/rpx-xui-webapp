@@ -30,6 +30,8 @@ export interface CaseFlagItem {
   status: string;
 }
 
+const MEDIA_VIEWER_ROUTE_PATTERN = /\/media-viewer(?:\?|$)/;
+
 export class CaseDetailsPage extends Base {
   readonly container = this.page.locator('exui-case-details-home');
 
@@ -70,6 +72,11 @@ export class CaseDetailsPage extends Base {
   readonly caseNotificationBannerTitle = this.page.locator('#govuk-notification-banner-title');
 
   readonly caseNotificationBannerBody = this.page.locator('.govuk-notification-banner__heading');
+  readonly documentOneRow = this.page
+    .getByRole('table', { name: 'case viewer table' })
+    .getByRole('row', { name: /^Document 1\b/i })
+    .first();
+  readonly documentOneAction = this.documentOneRow.locator('a,button').first();
 
   readonly eventCreationErrorHeading = this.page.getByRole('heading', { name: 'The event could not be created' });
   readonly generalProblemHeading = this.page.getByRole('heading', { name: /there is a problem/i }).first();
@@ -689,6 +696,33 @@ export class CaseDetailsPage extends Base {
 
     const visibleTabPanel = this.page.locator('[role="tabpanel"]:visible').first();
     await this.waitForTabPanelReadiness(visibleTabPanel, tabLoadTimeoutMs);
+  }
+
+  async openDocumentOne() {
+    await this.documentOneAction.waitFor({ state: 'visible', timeout: this.getRecommendedTimeoutMs() });
+    await this.documentOneAction.click();
+  }
+
+  async openDocumentOneInMediaViewer(): Promise<Page> {
+    await this.openDocumentOne();
+
+    await this.page
+      .waitForFunction(
+        (routePatternSource) => {
+          const routePattern = new RegExp(routePatternSource);
+          return window.location.href.match(routePattern) !== null;
+        },
+        MEDIA_VIEWER_ROUTE_PATTERN.source,
+        { timeout: this.getRecommendedTimeoutMs() }
+      )
+      .catch(() => undefined);
+
+    const matchingPage = this.page
+      .context()
+      .pages()
+      .find((candidate) => MEDIA_VIEWER_ROUTE_PATTERN.test(candidate.url()));
+
+    return matchingPage ?? this.page;
   }
 
   async getTabCount() {

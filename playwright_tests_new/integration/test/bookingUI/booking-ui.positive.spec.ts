@@ -62,7 +62,7 @@ test.describe(`Booking UI via ${sessionUserIdentifier} session`, { tag: ['@integ
     });
   });
 
-test('existing booking choice shows ordered cards, rendered date ranges, and no primary continue button', async ({
+  test('existing booking choice shows ordered cards, rendered date ranges, and no primary continue button', async ({
     bookingUiPage,
     page,
   }) => {

@@ -1,8 +1,10 @@
 import { expect, test } from '../../../../E2E/fixtures';
-import { applyPrewarmedSessionCookies, setupTaskListBootstrapRoutes, taskListRoutePattern } from '../../../helpers';
+import { applySessionCookies, setupManageTasksBaseRoutes, taskListRoutePattern } from '../../../helpers';
 import { buildTaskListMock, myActionsList } from '../../../mocks/taskList.mock';
+import { buildMyCases } from '../../../mocks/myCases.mock';
 
 const userIdentifier = 'STAFF_ADMIN';
+const allWorkCasesRoutePattern = /\/workallocation\/all-work\/cases(?:\?.*)?$/;
 
 const supportedJurisdictions = ['IA', 'CIVIL'];
 const supportedJurisdictionDetails = [
@@ -12,20 +14,17 @@ const supportedJurisdictionDetails = [
 
 test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   test.beforeEach(async ({ page }) => {
-    await applyPrewarmedSessionCookies(page, userIdentifier);
+    await applySessionCookies(page, userIdentifier);
   });
 
   test('User can view all-work task table, links, and pagination', async ({ taskListPage, page, tableUtils }) => {
     const taskListMockResponse = buildTaskListMock(2000, '', myActionsList);
 
     await test.step('Setup route mocks for all-work tasks', async () => {
-      await setupTaskListBootstrapRoutes(page, supportedJurisdictions, supportedJurisdictionDetails);
-      await page.route(taskListRoutePattern, async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(taskListMockResponse),
-        });
+      await setupManageTasksBaseRoutes(page, {
+        taskListResponse: taskListMockResponse,
+        supportedJurisdictions,
+        supportedJurisdictionDetails,
       });
     });
 
@@ -74,15 +73,20 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
 
   test('All-work Case name sort persists after navigating away and back', async ({ taskListPage, page }) => {
     const taskListMockResponse = buildTaskListMock(40, '', myActionsList);
+    const allWorkCasesMockResponse = buildMyCases(3);
     const caseNameSortHeaderCell = taskListPage.sortByCaseNameTableHeader.locator('xpath=ancestor::th[1]');
 
     await test.step('Setup route mocks for all-work tasks sorting', async () => {
-      await setupTaskListBootstrapRoutes(page, supportedJurisdictions, supportedJurisdictionDetails);
-      await page.route(taskListRoutePattern, async (route) => {
+      await setupManageTasksBaseRoutes(page, {
+        taskListResponse: taskListMockResponse,
+        supportedJurisdictions,
+        supportedJurisdictionDetails,
+      });
+      await page.route(allWorkCasesRoutePattern, async (route) => {
         await route.fulfill({
           status: 200,
           contentType: 'application/json',
-          body: JSON.stringify(taskListMockResponse),
+          body: JSON.stringify(allWorkCasesMockResponse),
         });
       });
     });
@@ -97,14 +101,41 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
       await expect(caseNameSortHeaderCell).toHaveAttribute('aria-sort', 'ascending');
     });
 
-    await test.step('Navigate away then return to all-work tasks', async () => {
-      await taskListPage.goto();
+    await test.step('Navigate to All work cases then back to All work tasks', async () => {
+      await taskListPage.taskTableTabs.filter({ hasText: 'Cases' }).first().click();
+      await page.waitForURL(/\/work\/all-work\/cases$/, { timeout: 15_000 });
+
+      const allWorkTasksRequestPromise = page.waitForRequest((request) => {
+        if (!taskListRoutePattern.exec(request.url()) || request.method() !== 'POST') {
+          return false;
+        }
+
+        try {
+          const requestBody = request.postDataJSON() as {
+            searchRequest?: {
+              request_context?: string;
+              sorting_parameters?: Array<{ sort_by?: string; sort_order?: string }>;
+            };
+            view?: string;
+          };
+
+          return (
+            requestBody.view === 'AllWork' &&
+            requestBody.searchRequest?.request_context === 'ALL_WORK' &&
+            requestBody.searchRequest?.sorting_parameters?.some(
+              (sortParameter) => sortParameter.sort_by === 'caseName' && sortParameter.sort_order === 'asc'
+            ) === true
+          );
+        } catch {
+          return false;
+        }
+      });
+
+      await taskListPage.taskTableTabs.filter({ hasText: 'Tasks' }).first().click();
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
 
-      await taskListPage.gotoAllWorkTasks();
-      await expect(taskListPage.taskListTable).toBeVisible();
-      await taskListPage.exuiSpinnerComponent.wait();
+      await allWorkTasksRequestPromise;
     });
 
     await test.step('Verify Case name sort remains selected on all-work tasks', async () => {
@@ -116,13 +147,10 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
     const taskListMockResponse = buildTaskListMock(10, '', myActionsList);
 
     await test.step('Setup route mocks for all-work filters', async () => {
-      await setupTaskListBootstrapRoutes(page, supportedJurisdictions, supportedJurisdictionDetails);
-      await page.route(taskListRoutePattern, async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(taskListMockResponse),
-        });
+      await setupManageTasksBaseRoutes(page, {
+        taskListResponse: taskListMockResponse,
+        supportedJurisdictions,
+        supportedJurisdictionDetails,
       });
     });
 
@@ -130,9 +158,7 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
       await taskListPage.gotoAllWorkTasks();
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
-
-      await taskListPage.openFilterPanel();
-      await expect(taskListPage.applyFilterButton).toBeVisible();
+      await taskListPage.waitForAllWorkFilterControlsReady();
     });
 
     await test.step('Verify all-work service/location/task/person filter controls are present', async () => {
@@ -168,31 +194,25 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
     ];
 
     await test.step('Setup route mocks for all-work manage action matrix', async () => {
-      await setupTaskListBootstrapRoutes(page, supportedJurisdictions, supportedJurisdictionDetails);
-      await page.route(taskListRoutePattern, async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(taskListMockResponse),
-        });
+      await setupManageTasksBaseRoutes(page, {
+        taskListResponse: taskListMockResponse,
+        supportedJurisdictions,
+        supportedJurisdictionDetails,
       });
     });
 
-    await test.step('Navigate to all-work tasks page', async () => {
+    const assertManageActionsForRow = async (rowIndex: number, expectedActionIds: string[]) => {
       await taskListPage.gotoAllWorkTasks();
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
-    });
+      await taskListPage.openManageActionsForRow(rowIndex, `all-work manage action matrix row ${rowIndex + 1}`);
 
-    const assertManageActionsForRow = async (rowIndex: number, expectedActionIds: string[]) => {
-      await expect(taskListPage.manageCaseButtons.nth(rowIndex)).toBeVisible();
-      await taskListPage.manageCaseButtons.nth(rowIndex).click();
-      await expect(taskListPage.taskActionsRow).toBeVisible();
+      const taskActionsRow = taskListPage.getTaskActionsRow(rowIndex);
 
       for (const actionId of allActionIds) {
-        const actionLocator = taskListPage.taskActionsRow.locator(`#action_${actionId}`);
+        const actionLocator = taskActionsRow.locator(`#action_${actionId}`);
         if (expectedActionIds.includes(actionId)) {
-          await expect(actionLocator).toBeVisible();
+          await taskListPage.waitForTaskActionForRow(rowIndex, actionId, `all-work manage action matrix row ${rowIndex + 1}`);
         } else {
           await expect(actionLocator).toHaveCount(0);
         }
@@ -229,17 +249,14 @@ test.describe('All Work role-based task columns', { tag: ['@integration', '@inte
       const taskListMockResponse = buildTaskListMock(40, '', myActionsList);
 
       test.beforeEach(async ({ page }) => {
-        await applyPrewarmedSessionCookies(page, scenario.userIdentifier);
+        await applySessionCookies(page, scenario.userIdentifier);
       });
       test(`renders expected date column and not the non-expected date column`, async ({ taskListPage, page, tableUtils }) => {
         await test.step('Setup route mocks for all-work role-based columns', async () => {
-          await setupTaskListBootstrapRoutes(page, supportedJurisdictions, supportedJurisdictionDetails);
-          await page.route(taskListRoutePattern, async (route) => {
-            await route.fulfill({
-              status: 200,
-              contentType: 'application/json',
-              body: JSON.stringify(taskListMockResponse),
-            });
+          await setupManageTasksBaseRoutes(page, {
+            taskListResponse: taskListMockResponse,
+            supportedJurisdictions,
+            supportedJurisdictionDetails,
           });
         });
 

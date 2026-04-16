@@ -10,6 +10,8 @@ import { FindCasePage } from './exui/findCase.po';
 import { HearingsTabPage } from './exui/hearingsTab.po';
 import { HearingViewEditSummaryPage } from './exui/hearingViewEditSummary.po';
 import { HearingViewSummaryPage } from './exui/hearingViewSummary.po';
+import { CaseFileViewPage } from './exui/caseFileView.po';
+import { AccessRequestPage } from './exui/accessRequest.po';
 
 export interface PageFixtures {
   determinePage: Page;
@@ -23,6 +25,8 @@ export interface PageFixtures {
   hearingsTabPage: HearingsTabPage;
   hearingViewEditSummaryPage: HearingViewEditSummaryPage;
   hearingViewSummaryPage: HearingViewSummaryPage;
+  caseFileViewPage: CaseFileViewPage;
+  accessRequestPage: AccessRequestPage;
   mediaViewerPage: ExuiMediaViewerPage;
   idamPage: IdamPage;
   apiClient: ApiClient;
@@ -72,6 +76,12 @@ export const pageFixtures = {
   },
   hearingViewSummaryPage: async ({ determinePage }, use) => {
     await use(new HearingViewSummaryPage(determinePage));
+  },
+  caseFileViewPage: async ({ determinePage }, use) => {
+    await use(new CaseFileViewPage(determinePage));
+  },
+  accessRequestPage: async ({ determinePage }, use) => {
+    await use(new AccessRequestPage(determinePage));
   },
   mediaViewerPage: async ({ determinePage }, use) => {
     await use(new ExuiMediaViewerPage(determinePage));

@@ -67,6 +67,9 @@ const applyTabAndFieldOverrides = (
   });
 };
 
+const syncMetadataField = (fields: CaseTabField[] | undefined, id: string, value: unknown): CaseTabField[] =>
+  (fields ?? []).map((field) => (field.id === id ? { ...field, value, formatted_value: value } : field));
+
 export function buildAsylumCaseMock(overrides: CaseMockOverrides = {}) {
   const base = asylumCase();
   const caseId = overrides.caseId ?? base.case_id;
@@ -77,12 +80,12 @@ export function buildAsylumCaseMock(overrides: CaseMockOverrides = {}) {
   const stateDescription = overrides.stateDescription ?? base.state?.description;
 
   let tabs = overrides.tabs ?? base.tabs ?? [];
-  if (overrides.tabIds && overrides.tabIds.length) {
+  if (overrides.tabIds?.length) {
     tabs = tabs.filter((tab) => overrides.tabIds?.includes(tab.id));
   }
 
   const derivedFieldOverrides: Record<string, Partial<CaseTabField> & { tabId?: string }> = {
-    ...(overrides.fieldOverrides ?? {}),
+    ...overrides.fieldOverrides,
   };
 
   if (overrides.appealReferenceNumber) {
@@ -118,11 +121,17 @@ export function buildAsylumCaseMock(overrides: CaseMockOverrides = {}) {
   }
 
   const tabsWithOverrides = applyTabAndFieldOverrides(tabs, overrides.tabOverrides, derivedFieldOverrides, overrides.addFields);
+  const metadataFields = syncMetadataField(
+    syncMetadataField(base.metadataFields, '[JURISDICTION]', jurisdictionId),
+    '[CASE_TYPE]',
+    caseTypeId
+  );
 
   return {
     ...base,
     _links: { ...base._links, self: { href: `http://gateway-ccd.aat.platform.hmcts.net/internal/cases/${caseId}` } },
     case_id: caseId,
+    metadataFields,
     case_type: {
       ...base.case_type,
       id: caseTypeId,

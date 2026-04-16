@@ -1,12 +1,8 @@
 import { expect, test } from '../../../../E2E/fixtures';
-import {
-  SERVICE_DOWN_URL_REGEX,
-  SERVICE_DOWN_HEADING_TEXT,
-  TASK_UNAVAILABLE_WARNING,
-  TASK_LIST_ROUTE_REGEX,
-} from '../../../testData';
+import { SERVICE_DOWN_URL_REGEX, SERVICE_DOWN_HEADING_TEXT, TASK_UNAVAILABLE_WARNING } from '../../../testData';
 import { applySessionCookies } from '../../../../common/sessionCapture';
 import { availableActionsList, buildTaskListMock } from '../../../mocks/taskList.mock';
+import { setupManageTasksBaseRoutes } from '../../../helpers';
 
 const userIdentifier = 'STAFF_ADMIN';
 let taskListMockResponse: ReturnType<typeof buildTaskListMock>;
@@ -24,10 +20,7 @@ test.describe(
       const firstTask = taskListMockResponse.tasks[0];
 
       await test.step('Setup route mocks for task list and claim 500 response', async () => {
-        await page.route(TASK_LIST_ROUTE_REGEX, async (route) => {
-          const body = JSON.stringify(taskListMockResponse);
-          await route.fulfill({ status: 200, contentType: 'application/json', body });
-        });
+        await setupManageTasksBaseRoutes(page, { taskListResponse: taskListMockResponse });
 
         await page.route(`**/workallocation/task/${firstTask.id}/claim*`, async (route) => {
           if (route.request().method() !== 'POST') {
@@ -51,6 +44,8 @@ test.describe(
       });
 
       await test.step('Attempt claim action and verify service down', async () => {
+        const rowIndex = 0;
+        const claimAction = taskListPage.getTaskActionForRow(rowIndex, 'claim');
         const claimFailureResponsePromise = page.waitForResponse(
           (response) =>
             response.request().method() === 'POST' &&
@@ -58,13 +53,13 @@ test.describe(
             response.status() === 500
         );
 
-        await taskListPage.openFirstManageActions('available tasks claim 500 response');
-        await expect(taskListPage.taskActionClaim).toBeVisible();
-        await taskListPage.clickTaskAction(taskListPage.taskActionClaim, 'available tasks claim 500 response');
+        await taskListPage.openManageActionsForRow(rowIndex, 'available tasks claim 500 response');
+        await expect(claimAction).toBeVisible();
+        await taskListPage.clickTaskActionForRow(rowIndex, 'claim', 'available tasks claim 500 response');
 
         const claimFailureResponse = await claimFailureResponsePromise;
         expect(claimFailureResponse.status()).toBe(500);
-        await expect(taskListPage.taskActionClaim).not.toBeVisible();
+        await expect(claimAction).not.toBeVisible();
 
         await expect(page).toHaveURL(SERVICE_DOWN_URL_REGEX);
         await expect(page.getByRole('heading', { level: 1, name: SERVICE_DOWN_HEADING_TEXT })).toBeVisible();
@@ -75,10 +70,7 @@ test.describe(
       const firstTask = taskListMockResponse.tasks[0];
 
       await test.step('Setup route mocks for task list and claim 400 response', async () => {
-        await page.route(TASK_LIST_ROUTE_REGEX, async (route) => {
-          const body = JSON.stringify(taskListMockResponse);
-          await route.fulfill({ status: 200, contentType: 'application/json', body });
-        });
+        await setupManageTasksBaseRoutes(page, { taskListResponse: taskListMockResponse });
 
         await page.route(`**/workallocation/task/${firstTask.id}/claim*`, async (route) => {
           if (route.request().method() !== 'POST') {
@@ -102,6 +94,8 @@ test.describe(
       });
 
       await test.step('Attempt claim action and verify task unavailable warning', async () => {
+        const rowIndex = 0;
+        const claimAction = taskListPage.getTaskActionForRow(rowIndex, 'claim');
         const badRequestResponsePromise = page.waitForResponse(
           (response) =>
             response.request().method() === 'POST' &&
@@ -109,14 +103,14 @@ test.describe(
             response.status() === 400
         );
 
-        await taskListPage.openFirstManageActions('available tasks claim 400 response');
-        await expect(taskListPage.taskActionClaim).toBeVisible();
-        await taskListPage.clickTaskAction(taskListPage.taskActionClaim, 'available tasks claim 400 response');
+        await taskListPage.openManageActionsForRow(rowIndex, 'available tasks claim 400 response');
+        await expect(claimAction).toBeVisible();
+        await taskListPage.clickTaskActionForRow(rowIndex, 'claim', 'available tasks claim 400 response');
 
         const badRequestResponse = await badRequestResponsePromise;
         expect(badRequestResponse.status()).toBe(400);
 
-        await expect(taskListPage.taskActionClaim).not.toBeVisible();
+        await expect(claimAction).not.toBeVisible();
         await expect(taskListPage.taskListTable).toBeVisible();
         await expect(taskListPage.exuiBodyComponent.warningMessage).toContainText(TASK_UNAVAILABLE_WARNING);
         await expect(taskListPage.exuiBodyComponent.infoMessage).toContainText('The list has been refreshed.');

@@ -1,24 +1,20 @@
 import { faker } from '@faker-js/faker';
-import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
-import { formatUiDate } from '../../utils/tableUtils';
-import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies } from '../../../common/sessionCapture';
-import { buildCaseDetailsTasksMinimal } from '../../mocks/caseDetailsTasks.builder';
-import { buildAsylumCaseMock } from '../../mocks/cases/asylumCase.mock';
+import { formatUiDate } from '../../../utils/tableUtils';
+import { expect, test } from '../../../../E2E/fixtures';
+import { applySessionCookiesAndExtractUserId } from '../../../helpers';
+import { buildCaseDetailsTasksMinimal } from '../../../mocks/caseDetailsTasks.builder';
+import { buildAsylumCaseMock } from '../../../mocks/cases/asylumCase.mock';
 
 const userIdentifier = 'STAFF_ADMIN';
 const inSixHours = faker.date.soon({ days: 0.25 }).toISOString();
 const inTwoDays = faker.date.soon({ days: 2 }).toISOString();
 const in90Days = faker.date.future().toISOString();
 const caseId = faker.number.int({ min: 1000000000, max: 9999999999 }).toString();
-let sessionCookies: any[] = [];
 let assigneeId: string | null = null;
 const caseMockResponse = buildAsylumCaseMock({ caseId });
 
 test.beforeEach(async ({ page }) => {
-  const { cookies } = await applySessionCookies(page, userIdentifier);
-  sessionCookies = cookies;
-  assigneeId = extractUserIdFromCookies(sessionCookies);
+  assigneeId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
   await page.route(`**data/internal/cases/${caseId}*`, async (route) => {
     const body = JSON.stringify(caseMockResponse);
     await route.fulfill({ status: 200, contentType: 'application/json', body });

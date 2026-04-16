@@ -46,7 +46,7 @@ describe('Application', () => {
     const getConfigStub = sandbox.stub(require('./configuration'), 'getConfigValue');
     getConfigStub.withArgs('secrets.rpx.mc-session-secret').returns('test-session-secret-12345');
     getConfigStub.withArgs('protocol').returns('https');
-    getConfigStub.withArgs('HELMET').returns({
+    getConfigStub.withArgs('helmet').returns({
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],

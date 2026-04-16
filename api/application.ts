@@ -58,31 +58,10 @@ export async function createApp() {
   if (showFeature(FEATURE_HELMET_ENABLED)) {
     const helmetConfig = getConfigValue(HELMET);
     if (helmetConfig && typeof helmetConfig === 'object') {
-      app.use(helmet(helmetConfig)); // use the configured rules
+      app.use(helmet(helmetConfig));
     } else {
-      app.use(helmet()); // fall back to Helmet defaults
+      app.use(helmet());
     }
-    app.use(helmet.noSniff());
-    app.use(helmet.frameguard({ action: 'deny' }));
-    app.use(helmet.referrerPolicy({ policy: ['origin'] }));
-    app.use((req, res, next) => {
-      res.setHeader('X-Robots-Tag', 'noindex');
-      res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate, proxy-revalidate');
-      next();
-    });
-    app.get('/robots.txt', (req, res) => {
-      res.type('text/plain');
-      res.send('User-agent: *\nDisallow: /');
-    });
-    app.get('/sitemap.xml', (req, res) => {
-      res.type('text/xml');
-      res.send('User-agent: *\nDisallow: /');
-    });
-    app.disable('x-powered-by');
-    app.disable('X-Powered-By');
-  }
-  if (showFeature(FEATURE_HELMET_ENABLED)) {
-    app.use(helmet(getConfigValue(HELMET)));
     app.use(helmet.noSniff());
     app.use(helmet.frameguard({ action: 'deny' }));
     app.use(helmet.referrerPolicy({ policy: ['origin'] }));

@@ -1,4 +1,4 @@
-import { expect, Locator, Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import { Base } from '../../base';
 
 const CASE_FILE_VIEW_FOLDER_TIMEOUT_MS = 10_000;
@@ -144,16 +144,6 @@ export class CaseFileViewPage extends Base {
   public async sortByOldestFirst(): Promise<void> {
     await this.openSortMenu();
     await this.sortOldestFirstOption.click();
-  }
-
-  public async expectStandaloneMediaViewerLoaded(expectedTitleText?: string): Promise<void> {
-    if (expectedTitleText) {
-      await expect.poll(async () => this.page.title()).toContain(`${expectedTitleText} - View Document`);
-    }
-
-    await expect(this.standaloneMediaViewerContainer).toBeVisible();
-    await expect(this.standaloneMediaViewerToolbar).toBeVisible();
-    await expect(this.standaloneMediaViewPanel).toBeVisible();
   }
 
   private async findDirectChildFolderNode(scope: Locator, folderName: string): Promise<Locator> {

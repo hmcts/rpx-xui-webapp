@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { Response } from '@playwright/test';
 import { expect, test } from '../../fixtures';
-import { ensureAuthenticatedPage, ensureSession } from '../../../common/sessionCapture';
+import { acceptAccessCookiesIfPresent, applySessionCookies } from '../../../common/sessionCapture';
 import { CaseFileViewPage } from '../../page-objects/pages/exui/caseFileView.po';
 import { createDivorceCase } from '../../utils/test-setup/journeys/divorceCaseJourneys';
 import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
@@ -20,10 +20,6 @@ const MEDIA_VIEWER_FIXTURE_PATH = path.resolve(
 const MEDIA_VIEWER_FIXTURE_CONTENT = readFileSync(MEDIA_VIEWER_FIXTURE_PATH, 'latin1');
 
 test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] }, () => {
-  test.beforeAll(async ({ browserName: _browserName }, _testInfo) => {
-    await ensureSession('SOLICITOR');
-  });
-
   test('Opens uploaded document in the Media Viewer end-to-end', async ({ page, createCasePage, caseDetailsPage }, testInfo) => {
     let caseDetailsUrl = '';
     faker.seed(testInfo.retry + 1);
@@ -31,8 +27,11 @@ test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] },
     const documentFileName = `media-viewer-${uniqueSuffix}.pdf`;
     const caseMarker = `media-viewer-${faker.string.alphanumeric(8)}-${uniqueSuffix}`;
 
-    await test.step('Authenticate and upload a PDF for this test run', async () => {
-      await ensureAuthenticatedPage(page, 'SOLICITOR', { waitForSelector: 'exui-header' });
+    await test.step('Apply solicitor session and open the app shell', async () => {
+      await applySessionCookies(page, 'SOLICITOR');
+      await page.goto('/');
+      await acceptAccessCookiesIfPresent(page);
+      await expect(page.locator('exui-header')).toBeVisible();
     });
 
     await test.step('Create a case for this test run', async () => {
@@ -115,7 +114,10 @@ test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] },
 
         const resolvedMediaViewerPage = new CaseFileViewPage(mediaPage);
         await expect(mediaPage).toHaveURL(MEDIA_VIEWER_ROUTE_PATTERN);
-        await resolvedMediaViewerPage.expectStandaloneMediaViewerLoaded(documentFileName);
+        await expect.poll(async () => mediaPage.title()).toContain(`${documentFileName} - View Document`);
+        await expect(resolvedMediaViewerPage.standaloneMediaViewerContainer).toBeVisible();
+        await expect(resolvedMediaViewerPage.standaloneMediaViewerToolbar).toBeVisible();
+        await expect(resolvedMediaViewerPage.standaloneMediaViewPanel).toBeVisible();
       } finally {
         page.context().off('response', onResponse);
       }

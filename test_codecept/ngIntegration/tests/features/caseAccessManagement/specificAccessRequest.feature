@@ -1,5 +1,5 @@
-
-@functional_enabled
+@functional_enabled @ignore
+# Legacy Codecept coverage retained for reference only. Active coverage lives in playwright_tests_new/integration/test/accessRequests/.
 Feature: Case specific access request 
 
 
@@ -36,8 +36,6 @@ Feature: Case specific access request
         When In specific access request page, I enter reason "test reason"
         Then In specific access request page, I click submit
         Then I see specific access request success page
-
-
 
 
 

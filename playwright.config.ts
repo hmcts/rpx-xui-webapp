@@ -143,7 +143,7 @@ const buildConfig = (env: EnvMap = process.env) => {
       [resolveDefaultReporter(env)],
       ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs'],
       [
-        'odhin-reports-playwright',
+        './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
         {
           outputFolder: odhinOutputFolder,
           indexFilename: resolveOdhinIndexFilename(env),

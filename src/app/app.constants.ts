@@ -199,6 +199,8 @@ const menuFlags = {
   'feature-refunds': true,
 };
 
+const activityTrackerMode: string = 'mc-activity-tracker-mode';
+
 export class AppConstants {
   public static readonly FOOTER_DATA = null;
   public static readonly FOOTER_DATA_NAVIGATION = footerDataNavigation;
@@ -213,6 +215,7 @@ export class AppConstants {
   public static readonly FEATURE_TO_ATTRIBUTE_MAP = featureToAttributeMap;
   public static readonly DEFAULT_SERVICE_MESSAGE = defaultServiceMessage;
   public static readonly MENU_FLAGS = menuFlags;
+  public static ACTIVITY_TRACKER_MODE = activityTrackerMode;
 }
 
 export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-mc';

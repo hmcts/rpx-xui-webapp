@@ -58,9 +58,9 @@ export async function createApp() {
   if (showFeature(FEATURE_HELMET_ENABLED)) {
     const helmetConfig = getConfigValue(HELMET);
     if (helmetConfig && typeof helmetConfig === 'object') {
-      app.use(helmet(helmetConfig)); // use the configured rules
+      app.use(helmet(helmetConfig));
     } else {
-      app.use(helmet()); // fall back to Helmet defaults
+      app.use(helmet());
     }
     app.use(helmet.noSniff());
     app.use(helmet.frameguard({ action: 'deny' }));

@@ -178,6 +178,10 @@ Run `yarn pact-stub` to run the PACT stub server.
  |---------------------------------------|
 ```
 
+## Preview testing
+
+For PR builds deployed to `preview`, add the `enable_keep_helm` label to the pull request when you need the Helm release to stay available after Jenkins completes. This is useful when you want to continue testing against the preview environment without the release being cleaned up at the end of the pipeline run.
+
 # Path to configuration
 
 The application should point to the configuration folder that contains the .json configuration files. There

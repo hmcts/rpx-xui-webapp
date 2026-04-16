@@ -3,7 +3,7 @@ import { ensureStorageState } from './utils/auth';
 import { WA_SAMPLE_ASSIGNED_TASK_ID, WA_SAMPLE_TASK_ID } from './data/testIds';
 import { expectStatus, StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
 import type { TaskListResponse, UserDetailsResponse } from './utils/types';
-import { buildTaskSearchRequest, seedTaskId } from './utils/work-allocation';
+import { buildCaseSearchRequest, buildTaskSearchRequest, seedTaskId } from './utils/work-allocation';
 import {
   assertAllWorkResponse,
   assertAvailableTasksResponse,
@@ -255,11 +255,25 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
   });
 
   test.describe('my-work dashboards', () => {
-    const endpoints = ['workallocation/my-work/cases', 'workallocation/my-work/myaccess'];
-    for (const endpoint of endpoints) {
-      test(`${endpoint} returns data or guarded status`, async ({ apiClient }) => {
+    const dashboards = [
+      {
+        endpoint: 'workallocation/my-work/cases',
+        buildBody: () => buildCaseSearchRequest('MyCases'),
+      },
+      {
+        endpoint: 'workallocation/my-work/myaccess',
+        buildBody: () =>
+          buildCaseSearchRequest('MyAccess', {
+            searchParameters: userId ? [{ key: 'user', operator: 'IN', values: [userId] }] : [],
+          }),
+      },
+    ] as const;
+
+    for (const { endpoint, buildBody } of dashboards) {
+      test(`POST ${endpoint} returns data or guarded status`, async ({ apiClient }) => {
         const response = await withXsrf('solicitor', (headers) =>
-          apiClient.get(endpoint, {
+          apiClient.post(endpoint, {
+            data: buildBody(),
             headers,
             throwOnError: false,
           })
@@ -269,12 +283,13 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
       });
     }
 
-    test('GET /workallocation/my-work/cases exposes case totals in response when data available', async ({ apiClient }) => {
+    test('POST /workallocation/my-work/cases exposes case totals in response when data available', async ({ apiClient }) => {
       // Given: A solicitor user authenticated with valid session
       // When: Requesting my-work cases dashboard
       // Then: Response includes totals field with case counts when cases exist
       const response = await withXsrf('solicitor', (headers) =>
-        apiClient.get('workallocation/my-work/cases', {
+        apiClient.post('workallocation/my-work/cases', {
+          data: buildCaseSearchRequest('MyCases'),
           headers,
           throwOnError: false,
         })

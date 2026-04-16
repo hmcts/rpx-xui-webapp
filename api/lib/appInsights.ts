@@ -1,8 +1,31 @@
 import * as applicationinsights from 'applicationinsights';
+import type { Contracts } from 'applicationinsights';
 import * as express from 'express';
 import { getConfigValue, showFeature } from '../configuration/';
 import { APP_INSIGHTS_CONNECTION_STRING, FEATURE_APP_INSIGHTS_ENABLED } from '../configuration/references';
+function fineGrainedSampling(envelope: Contracts.EnvelopeTelemetry): boolean {
+  if (['RequestData', 'RemoteDependencyData'].includes(envelope.data.baseType)) {
+    const name = (envelope.data.baseData.name || '').toLowerCase();
 
+    if (
+      name.includes('/health') ||
+      name.includes('/assets/') ||
+      name.includes('/media/') ||
+      name.endsWith('.js') ||
+      name.endsWith('.css') ||
+      name.endsWith('.woff2') ||
+      name.endsWith('.svg') ||
+      name.endsWith('.png') ||
+      name.endsWith('.gif') ||
+      name.endsWith('.ico') ||
+      name.endsWith('.json') ||
+      name.includes('/polyfills')
+    ) {
+      envelope.sampleRate = 1;
+    }
+  }
+  return true;
+}
 export let client: applicationinsights.TelemetryClient;
 
 if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
@@ -19,6 +42,7 @@ if (showFeature(FEATURE_APP_INSIGHTS_ENABLED)) {
     .start();
 
   client = applicationinsights.defaultClient;
+  client.addTelemetryProcessor(fineGrainedSampling);
   client.trackTrace({ message: 'App Insight Activated' });
 } else {
   client = null;

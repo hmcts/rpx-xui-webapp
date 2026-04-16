@@ -20,6 +20,7 @@ import { MyAccessComponent } from './containers/my-access/my-access.component';
 import { MyCasesComponent } from './containers/my-cases/my-cases.component';
 import { TaskAssignmentChooseRoleComponent } from './containers/task-assignment-choose-role/task-assignment-choose-role.component';
 import { WorkAllocationAccessGuard } from './guards';
+import { MyWorkAccessGuard } from './guards/my-work-access.guard';
 import { TaskResolver } from './resolvers';
 import { LocationResolver } from './resolvers/location-resolver.service';
 import { TaskRoleResolverService } from './resolvers/task-role-resolver.service';
@@ -32,7 +33,7 @@ export const ROUTES: Routes = [
       {
         path: 'my-work',
         component: TaskHomeComponent,
-        canActivate: [HealthCheckGuard],
+        canActivate: [HealthCheckGuard, MyWorkAccessGuard],
         resolve: {
           locations: LocationResolver,
         },

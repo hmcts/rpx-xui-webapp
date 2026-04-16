@@ -8,7 +8,6 @@ import { setupCaseForJourney } from '../../utils/test-setup/caseSetup';
 import { createEmploymentCase, uploadEmploymentDraftDocumentViaApi } from '../../utils/test-setup/journeys/employmentJourneys';
 import { formatErrorMessage, isDependencyEnvironmentFailure, retryOnTransientFailure } from '../../utils/transient-failure.utils';
 
-
 const DOCUMENT_FILE_NAME = 'case-file-view-fixture.pdf';
 const DOCUMENT_VIEWER_TEXT = 'Case File View - Document Delivery Fixture';
 const DOCUMENT_CATEGORY_FOLDER = 'Miscellaneous';

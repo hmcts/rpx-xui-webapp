@@ -31,9 +31,7 @@ export function filterNavigationItemsByFlags(
       if (item.flags && item.flags.length > 0) {
         return item.flags.every((flag) => {
           const flagName = isPlainFlag(flag) ? flag : flag.flagName;
-          const flagValue = isPlainFlag(flag) 
-            ? menuFlags[flagName]
-            : menuFlags[flagName] === flag.value;
+          const flagValue = isPlainFlag(flag) ? menuFlags[flagName] : menuFlags[flagName] === flag.value;
           return flagValue;
         });
       }
@@ -44,9 +42,7 @@ export function filterNavigationItemsByFlags(
       item.notFlags && item.notFlags.length > 0
         ? item.notFlags.every((flag) => {
             const flagName = isPlainFlag(flag) ? flag : flag.flagName;
-            const flagValue = isPlainFlag(flag)
-              ? menuFlags[flagName]
-              : menuFlags[flagName] !== flag.value;
+            const flagValue = isPlainFlag(flag) ? menuFlags[flagName] : menuFlags[flagName] !== flag.value;
             return !flagValue;
           })
         : true

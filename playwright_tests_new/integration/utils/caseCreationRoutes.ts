@@ -1,4 +1,5 @@
 import type { Page, Route } from '@playwright/test';
+import type { CreateCasePage } from '../../E2E/page-objects/pages/exui/createCase.po';
 
 export async function routeCaseCreationFlow(page: Page): Promise<unknown> {
   const createdCaseId = '1234123412341234';
@@ -98,4 +99,13 @@ export async function routeCaseCreationFlow(page: Page): Promise<unknown> {
   });
 
   return interceptedRequestPromise;
+}
+
+export async function submitCaseAndCaptureRequest(
+  page: Page,
+  createCasePage: Pick<CreateCasePage, 'testSubmitButton'>
+): Promise<unknown> {
+  const interceptedCreateCaseRequestBodyPromise = routeCaseCreationFlow(page);
+  await Promise.all([interceptedCreateCaseRequestBodyPromise, createCasePage.testSubmitButton.click()]);
+  return interceptedCreateCaseRequestBodyPromise;
 }

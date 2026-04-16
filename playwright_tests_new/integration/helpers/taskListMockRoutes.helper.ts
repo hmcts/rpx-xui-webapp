@@ -2,16 +2,30 @@ import type { Page } from '@playwright/test';
 
 export const taskListRoutePattern = /\/workallocation\/task(?:\?.*)?$/;
 const defaultSupportedJurisdictionsMock = ['IA', 'SSCS'];
+type SupportedJurisdictionDetail = { serviceId: string; serviceName: string };
+
+const defaultSupportedJurisdictionDetailsMock: SupportedJurisdictionDetail[] = defaultSupportedJurisdictionsMock.map(
+  (serviceId) => ({ serviceId, serviceName: serviceId })
+);
 
 export async function setupTaskListBootstrapRoutes(
   page: Page,
-  supportedJurisdictions: string[] = defaultSupportedJurisdictionsMock
+  supportedJurisdictions: string[] = defaultSupportedJurisdictionsMock,
+  supportedJurisdictionDetails: SupportedJurisdictionDetail[] = defaultSupportedJurisdictionDetailsMock
 ): Promise<void> {
   await page.route('**/api/wa-supported-jurisdiction/get*', async (route) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify(supportedJurisdictions),
+    });
+  });
+
+  await page.route('**/api/wa-supported-jurisdiction/detail*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(supportedJurisdictionDetails),
     });
   });
 

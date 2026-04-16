@@ -335,7 +335,7 @@ describe('CaseHearingsComponent', () => {
 
   const HEARINGS_LIST: HearingListMainModel = {
     hmctsServiceID: 'BBA3',
-    caseRef: '1568642646198441',
+    caseRef: '1234',
     caseHearings: [
       CASE_HEARING_1,
       CASE_HEARING_2,
@@ -493,6 +493,15 @@ describe('CaseHearingsComponent', () => {
     expect(dispatchSpy).toHaveBeenCalledWith(
       new fromHearingStore.LoadHearingValues({ jurisdictionId: 'CIVIL', caseReference: '1234', caseType: 'CIVIL' })
     );
+  });
+
+  it('should reset hearing list before loading hearings for the current case', () => {
+    const dispatchSpy = spyOn(mockStore, 'dispatch');
+
+    component.reloadHearings();
+
+    expect(dispatchSpy.calls.argsFor(0)[0]).toEqual(new fromHearingStore.ResetHearingList());
+    expect(dispatchSpy.calls.argsFor(1)[0]).toEqual(new fromHearingStore.LoadAllHearings('1234'));
   });
 
   it('should unsubscribe', () => {
@@ -709,7 +718,23 @@ describe('CaseHearingsComponent', () => {
   it('should dispatch events to load all hearings and hearing values', () => {
     const dispatchSpy = spyOn(mockStore, 'dispatch');
     component.reloadHearings();
-    expect(dispatchSpy).toHaveBeenCalledTimes(2);
+    expect(dispatchSpy).toHaveBeenCalledTimes(3);
+  });
+
+  it('should not return hearings for a different case', (done) => {
+    spyOn(mockStore, 'pipe').and.returnValue(
+      of({
+        hearingListMainModel: {
+          ...HEARINGS_LIST,
+          caseRef: 'another-case',
+        },
+      })
+    );
+
+    component.getHearingListByStatus(EXUISectionStatusEnum.UPCOMING).subscribe((hearing) => {
+      expect(hearing).toEqual([]);
+      done();
+    });
   });
 
   afterEach(() => {

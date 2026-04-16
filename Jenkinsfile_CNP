@@ -131,7 +131,7 @@ def assertHtmlReportExists = { String reportDir, String reportFile ->
     steps.sh "test -f '${reportDir}/${reportFile}'"
 }
 
-def branchesToSync = ['perftest', 'ithc']
+def branchesToSync = ['perftest', 'ithc', 'demo']
 
 def secrets = [
   'rpx-${env}': [
@@ -145,6 +145,7 @@ def secrets = [
     secret('system-user-name', 'SYSTEM_USER_NAME'),
     secret('system-user-password', 'SYSTEM_USER_PASSWORD'),
     secret('launch-darkly-client-id', 'LAUNCH_DARKLY_CLIENT_ID'),
+    secret('mc-session-secret', 'SESSION_SECRET'),
     secret('idam-solicitor-user-password', 'IDAM_SOLICITOR_USER_PASSWORD'),
     secret('idam-caseworker-divorce-password', 'IDAM_CASEWORKER_DIVORCE_PASSWORD'),
     secret('xui-dynamic-org-user-assignment-username', 'ORG_USER_ASSIGNMENT_USERNAME'),
@@ -160,7 +161,7 @@ def secrets = [
     secret('xui-dynamic-manage-org-api-path', 'MANAGE_ORG_API_PATH'),
     secret('xui-dynamic-rd-professional-api-path', 'RD_PROFESSIONAL_API_PATH'),
   ],
-  ]
+]
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
     [ $class: 'AzureKeyVaultSecret',
@@ -285,7 +286,7 @@ withPipeline(type, product, component) {
                             "FUNCTIONAL_TESTS_WORKERS=2"
                         ]) {
                             try {
-                                yarnBuilder.yarn('test:api:pw:coverage')
+                                yarnBuilder.yarn('test:api:pw')
                             } catch (Exception e) {
                                 echo "[failFast] API Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
                                 if (handleFailFastAbort(e)) { return }
@@ -430,7 +431,7 @@ withPipeline(type, product, component) {
                             "FUNCTIONAL_TESTS_WORKERS=2"
                         ]) {
                             try {
-                                yarnBuilder.yarn('test:api:pw:coverage')
+                                yarnBuilder.yarn('test:api:pw')
                             } catch (Exception e) {
                                 echo "[failFast] API Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
                                 if (handleFailFastAbort(e)) { return }

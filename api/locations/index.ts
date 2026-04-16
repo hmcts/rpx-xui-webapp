@@ -13,7 +13,6 @@ import { SERVICES_COURT_TYPE_MAPPINGS } from './data/serviceCourtType.mapping';
 import { LocationModel } from './models/location.model';
 
 // const url: string = getConfigValue(SERVICES_PRD_API_URL);
-// TODO: CAM_BOOKING - check this
 const url: string = getConfigValue(SERVICES_LOCATION_API_PATH);
 
 /**
@@ -147,7 +146,7 @@ function getCourtTypeIdsByService(serviceIdArray: string[]): string[] {
 function concatCourtTypeWithoutDuplicates(array1: number[], array2: number[]) {
   array1 = array1 ? array1 : [];
   array2 = array2 ? array2 : [];
-  return array1.concat(array2.filter((item) => array1.indexOf(item) < 0));
+  return array1.concat(array2.filter((item) => !array1.includes(item)));
 }
 
 function mapCourtVenuesToLocationModels(courtVenues: CourtVenue[]): CourtVenue {

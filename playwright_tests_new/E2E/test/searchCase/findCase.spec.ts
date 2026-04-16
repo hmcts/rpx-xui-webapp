@@ -3,7 +3,7 @@ import { ensureSession } from '../../../common/sessionCapture';
 import { resolveCaseReferenceFromGlobalSearch } from '../../../E2E/utils/case-reference.utils';
 import { openHomeWithCapturedSession, PUBLIC_LAW_CASE_REFERENCE_OPTIONS } from './searchCase.setup';
 
-test.describe('IDAM login for Find Search page', () => {
+test.describe('FPL global search user - find case', { tag: ['@e2e', '@e2e-search-case'] }, () => {
   let availableCaseReference = '';
   test.beforeAll(async () => {
     await ensureSession('FPL_GLOBAL_SEARCH');
@@ -59,7 +59,7 @@ test.describe('IDAM login for Find Search page', () => {
   });
 });
 
-test.describe('Solicitor navigation to Find case (top-right)', () => {
+test.describe('Solicitor navigation to Find case (top-right)', { tag: ['@e2e', '@e2e-search-case'] }, () => {
   test.beforeAll(async () => {
     await ensureSession('SOLICITOR');
   });

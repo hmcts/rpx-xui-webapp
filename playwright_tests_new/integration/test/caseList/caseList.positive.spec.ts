@@ -3,13 +3,11 @@ import { applySessionCookies } from '../../../common/sessionCapture';
 import { buildCaseListMock, buildCaseListJurisdictionsMock } from '../../mocks/caseList.mock';
 
 const userIdentifier = 'SOLICITOR';
-let sessionCookies: any[] = [];
 const caseListMockResponse = buildCaseListMock(124);
 const caseListJurisdictionsMock = buildCaseListJurisdictionsMock();
 
 test.beforeEach(async ({ page }) => {
-  const { cookies } = await applySessionCookies(page, userIdentifier);
-  sessionCookies = cookies;
+  await applySessionCookies(page, userIdentifier);
 
   await page.route('**/caseworkers/**/jurisdictions*', async (route) => {
     const body = JSON.stringify(caseListJurisdictionsMock);
@@ -22,7 +20,7 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test.describe(`Case List as ${userIdentifier}`, () => {
+test.describe(`Case List as ${userIdentifier}`, { tag: ['@integration', '@integration-case-list'] }, () => {
   test(`User ${userIdentifier} can view cases on the case list page`, async ({ caseListPage, tableUtils, page }) => {
     await test.step('Intercept searchCases endpoint and fulfill with mock body', async () => {
       await page.route('**/data/internal/searchCases*', async (route) => {

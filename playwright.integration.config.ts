@@ -1,128 +1,56 @@
-import { defineConfig, devices } from '@playwright/test';
-import { execSync } from 'node:child_process';
-import { cpus } from 'node:os';
-import { version as appVersion } from './package.json';
-export default (() => {
-  const headlessMode = process.env.HEAD !== 'true';
-  const odhinOutputFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-integration/odhin-report';
-  const baseUrl = process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';
+import integrationConfigSupport from './playwright.integration.config.support.cjs';
+import { resolveTagFilters } from './playwright-config-utils';
 
-  const resolveEnvironmentFromUrl = (url) => {
-    try {
-      const hostname = new URL(url).hostname.toLowerCase();
-      if (hostname === 'localhost' || hostname === '127.0.0.1') {
-        return 'local';
-      }
-      if (hostname.includes('.aat.')) {
-        return 'aat';
-      }
-      if (hostname.includes('.ithc.')) {
-        return 'ithc';
-      }
-      if (hostname.includes('.demo.')) {
-        return 'demo';
-      }
-      if (hostname.includes('.perftest.')) {
-        return 'perftest';
-      }
-      return hostname;
-    } catch {
-      return 'unknown';
-    }
+const {
+  buildConfig: buildSupportConfig,
+  resolveOdhinConsoleCapture,
+  resolveOdhinHardTimeoutMs,
+  resolveOdhinLightweight,
+  resolveOdhinRuntimeHookTimeoutMs,
+  resolveWorkerCount,
+} = integrationConfigSupport as {
+  buildConfig: (env: NodeJS.ProcessEnv) => {
+    reporter: [string, Record<string, unknown> | undefined][];
+    projects: Array<{ name: string; workers?: number; grep?: RegExp; grepInvert?: RegExp; use?: { channel?: string } }>;
   };
+  resolveOdhinConsoleCapture: (env: NodeJS.ProcessEnv) => { consoleLog: boolean; consoleError: boolean };
+  resolveOdhinHardTimeoutMs: (env: NodeJS.ProcessEnv) => number;
+  resolveOdhinLightweight: (env: NodeJS.ProcessEnv) => boolean;
+  resolveOdhinRuntimeHookTimeoutMs: (env: NodeJS.ProcessEnv) => number;
+  resolveWorkerCount: (env: NodeJS.ProcessEnv) => number;
+};
 
-  const resolveBranchName = () => {
-    const envBranch =
-      process.env.PLAYWRIGHT_REPORT_BRANCH ||
-      process.env.GIT_BRANCH ||
-      process.env.BRANCH_NAME ||
-      process.env.GITHUB_REF_NAME ||
-      process.env.GITHUB_HEAD_REF ||
-      process.env.BUILD_SOURCEBRANCHNAME;
-    if (envBranch) {
-      return envBranch.replace(/^refs\/heads\//, '').trim();
-    }
-    try {
-      const gitBranch = execSync('git rev-parse --abbrev-ref HEAD', {
-        encoding: 'utf8',
-        stdio: ['ignore', 'pipe', 'ignore'],
-      })
-        .trim()
-        .replace(/^refs\/heads\//, '');
-      if (gitBranch && gitBranch !== 'HEAD') {
-        return gitBranch;
-      }
-    } catch {
-      // Fall back to local label when branch cannot be resolved.
-    }
-    return 'local';
-  };
-
-  const resolveWorkerCount = () => {
-    const configured = process.env.FUNCTIONAL_TESTS_WORKERS;
-    if (process.env.CI) {
-      return 8;
-    }
-    if (configured) {
-      const parsed = Number.parseInt(configured, 10);
-      if (Number.isFinite(parsed) && parsed > 0) {
-        return parsed;
-      }
-    }
-    const logical = cpus()?.length ?? 1;
-    const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));
-    const suggested = Math.min(8, Math.max(2, approxPhysical));
-    return suggested;
-  };
-
-  const workerCount = resolveWorkerCount();
-  const targetEnv = process.env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
-  const runContext = process.env.CI ? 'ci' : 'local-run';
-  const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount}`;
-  const reportBranch = resolveBranchName();
-
-  return defineConfig({
-    testDir: 'playwright_tests_new/integration',
-    testMatch: ['**/test/**/*.spec.ts'],
-    retries: 2,
-    timeout: 120_000,
-    expect: { timeout: 45_000 },
-    workers: workerCount,
-    reporter: [
-      [process.env.CI ? 'dot' : 'list'],
-      ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs'],
-      [
-        'odhin-reports-playwright',
-        {
-          outputFolder: odhinOutputFolder,
-          indexFilename: 'xui-playwright.html',
-          title: 'RPX XUI Playwright Integration',
-          testEnvironment,
-          project: process.env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
-          release: process.env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${reportBranch}`,
-          startServer: false,
-          consoleLog: true,
-          consoleError: true,
-          testOutput: 'only-on-failure',
-        },
-      ],
-    ],
-    globalSetup: require.resolve('./playwright_tests_new/common/playwright.global.setup.ts'),
-    use: {
-      baseURL: baseUrl,
-      trace: 'on-first-retry',
-      screenshot: 'only-on-failure',
-      video: 'off',
-      headless: headlessMode,
-    },
-    projects: [
-      {
-        name: 'chromium',
-        use: {
-          ...devices['Desktop Chrome'],
-          channel: 'chrome',
-        },
-      },
-    ],
+const resolveIntegrationTagFilters = (env: NodeJS.ProcessEnv = process.env) =>
+  resolveTagFilters({
+    env,
+    includeTagsEnvVar: 'INTEGRATION_PW_INCLUDE_TAGS',
+    excludedTagsEnvVar: 'INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE',
+    configPathEnvVar: 'INTEGRATION_PW_TAG_FILTER_CONFIG',
+    defaultConfigPath: 'playwright_tests_new/integration/tag-filter.json',
+    suiteTag: '@integration',
   });
-})();
+
+const buildConfig = (env: NodeJS.ProcessEnv = process.env) => {
+  const config = buildSupportConfig(env);
+  const integrationTagFilters = resolveIntegrationTagFilters(env);
+
+  for (const project of config.projects ?? []) {
+    project.grep = integrationTagFilters.grep;
+    project.grepInvert = integrationTagFilters.grepInvert;
+  }
+
+  return config;
+};
+
+const config = buildConfig(process.env);
+(config as { __test__?: unknown }).__test__ = {
+  buildConfig,
+  resolveWorkerCount,
+  resolveIntegrationTagFilters,
+  resolveOdhinHardTimeoutMs,
+  resolveOdhinConsoleCapture,
+  resolveOdhinLightweight,
+  resolveOdhinRuntimeHookTimeoutMs,
+};
+
+export default config;

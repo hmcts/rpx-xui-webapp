@@ -51,7 +51,6 @@ class MockConfigService {
       case_data_store_api_url: 'test-case-store',
       documentSecureModeCaseTypeExclusions: ['DIVORCE', 'PROBATE'],
       mc_cdam_exclusion_list: ['DIVORCE', 'PROBATE'],
-      icp_enabled: false,
       icp_jurisdictions: ['foo'],
       wa_service_config: { test: 'config' },
       events_to_hide: ['queryManagementRespondQuery'],
@@ -708,19 +707,14 @@ describe('AppConfiguration with specific config values', () => {
       document_data_url: 'https://docdata.test.com',
       rd_common_data_api_url: 'https://rdcommon.test.com',
       case_data_store_api_url: 'https://casestore.test.com',
-      icp_enabled: true,
       icp_jurisdictions: ['SSCS', 'IMMIGRATION'],
       events_to_hide: ['event1', 'event2', 'event3'],
       access_management_mode: false,
     };
 
-    mockFeatureToggleServiceConfig = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled', 'getValue']);
-    mockFeatureToggleServiceConfig.isEnabled.and.returnValue(of(false));
+    mockFeatureToggleServiceConfig = jasmine.createSpyObj('mockFeatureToggleService', ['getValue']);
     mockFeatureToggleServiceConfig.getValue.and.callFake((featureName: string, defVal: any) => {
       // Override default values for specific features to match our test config
-      if (featureName === AppConstants.FEATURE_NAMES.icpEnabled) {
-        return of(true);
-      }
       if (featureName === AppConstants.FEATURE_NAMES.icpJurisdictions) {
         return of(['SSCS', 'IMMIGRATION']);
       }
@@ -804,13 +798,6 @@ describe('AppConfiguration with specific config values', () => {
     expect(service.getPaginationPageSize()).toBe(25);
   }));
 
-  it('should return all configured boolean values correctly', fakeAsync(
-    inject([AppConfig], (service: AppConfig) => {
-      tick(5000);
-      expect(service.getIcpEnable()).toBe(true);
-    })
-  ));
-
   it('should return all configured array values correctly', fakeAsync(
     inject([AppConfig], (service: AppConfig) => {
       tick(5000);
@@ -884,10 +871,11 @@ describe('AppConfiguration with specific config values', () => {
         mockWindow,
         mockLoggerService
       );
-      spyOn(console, 'error');
+      const consoleErrorSpy = jasmine.isSpy(console.error) ? (console.error as jasmine.Spy) : spyOn(console, 'error');
+      consoleErrorSpy.calls.reset();
       callback(false);
       expect(appConfig.initialisationComplete).toBeFalse();
-      expect(console.error).toHaveBeenCalledWith(
+      expect(consoleErrorSpy).toHaveBeenCalledWith(
         'InitialisationSyncService indicated initialisation failed, using default config values'
       );
     });

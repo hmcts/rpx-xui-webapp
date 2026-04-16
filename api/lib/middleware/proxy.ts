@@ -7,7 +7,7 @@ const logger = log4jui.getLogger('proxy');
 export const onProxyError = (err, req, res) => {
   logger.error(err);
 
-  if (req.baseUrl && req.baseUrl === '/activity' && req.user && req.user.userinfo) {
+  if (req.baseUrl && req.baseUrl === '/activity' && req.user?.userinfo) {
     logger.info(
       'ActivityTrackerResponseFailed => ',
       `id: ${req.user.userinfo.id} forename:${req.user.userinfo.forename} surname:${req.user.userinfo.surname}`
@@ -93,7 +93,7 @@ export const applyProxy = (app: any, config: ProxyConfig, modifyBody: boolean = 
       proxyRes: (proxyRes, req, res) => {
         if (isDocumentsSource) {
           if (config.onRes) {
-            config.onRes('', req, res);
+            config.onRes(proxyRes, req, res);
           }
           return proxyRes;
         }

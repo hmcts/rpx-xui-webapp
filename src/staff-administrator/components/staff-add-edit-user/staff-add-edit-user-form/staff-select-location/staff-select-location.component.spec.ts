@@ -301,7 +301,7 @@ describe('StaffSelectLocationComponent', () => {
         refDataServiceMock.getLocationsByServiceCodes.and.returnValue(of([dummyLocations[0], dummyLocations[1]]));
         const mockLocationInControl: any = dummyLocations[0];
         // also ensures we are checking numbers as well as strings
-        mockLocationInControl.location_id = parseInt(mockLocationInControl.epimms_id);
+        mockLocationInControl.location_id = Number.parseInt(mockLocationInControl.epimms_id);
         component.locationsControl.setValue([mockLocationInControl]);
         let obsCount = 0;
         component.filteredList$.subscribe((result) => {

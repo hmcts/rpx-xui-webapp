@@ -17,6 +17,8 @@ export const StatusSets = {
   corsDisallowed: [200, 204, 400, 401, 403, 404] as const,
   retryable: [200, 401, 403, 404, 500, 502, 504] as const,
   roleAccessRetryable: [200, 400, 401, 403, 404, 409, 500, 502, 504] as const,
+  /** WA read-only endpoints: guards against downstream 5xx while accepting auth rejections */
+  waReadOnly: [200, 401, 403, 500, 502, 504] as const,
 };
 
 export type StatusSetName = keyof typeof StatusSets;
@@ -40,17 +42,29 @@ export async function withXsrf<T>(role: ApiUserRole, fn: (headers: Record<string
 
 export async function withRetry<T extends { status: number }>(
   fn: () => Promise<T>,
-  opts: { retries?: number; retryStatuses?: number[] } = {}
+  opts: { retries?: number; retryStatuses?: number[]; baseDelayMs?: number; backoffFactor?: number; maxDelayMs?: number } = {}
 ): Promise<T> {
   const retries = opts.retries ?? 1;
   const retryStatuses = opts.retryStatuses ?? [502, 504];
+  const baseDelayMs = opts.baseDelayMs ?? 250;
+  const backoffFactor = opts.backoffFactor ?? 2;
+  const maxDelayMs = opts.maxDelayMs ?? 2_000;
   let attempt = 0;
   let lastError;
+
+  const waitBeforeRetry = async () => {
+    if (baseDelayMs <= 0) {
+      return;
+    }
+    const delayMs = Math.min(maxDelayMs, Math.floor(baseDelayMs * Math.pow(backoffFactor, attempt)));
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
+  };
 
   while (attempt <= retries) {
     try {
       const res = await fn();
       if (retryStatuses.includes(res.status) && attempt < retries) {
+        await waitBeforeRetry();
         attempt++;
         continue;
       }
@@ -60,6 +74,7 @@ export async function withRetry<T extends { status: number }>(
       if (attempt >= retries) {
         throw error;
       }
+      await waitBeforeRetry();
     }
     attempt++;
   }

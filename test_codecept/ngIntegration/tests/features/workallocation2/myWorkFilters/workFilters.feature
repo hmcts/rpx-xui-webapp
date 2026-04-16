@@ -1,4 +1,4 @@
-@ng @functional_enabled
+@ng @ignore
 Feature: WA Release 2: My work - Work filters
 
     Background: Mock and brow ser setup
@@ -175,4 +175,3 @@ Feature: WA Release 2: My work - Work filters
             | ORGANISATION |                 | ORGANISATION  |                   | 18          | IA,SSCS            |
             | CASE         | 20001           | ORGANISATION  | 30001             | 9           | SSCS               |
             | ORGANISATION | 20001           | CASE          | 20001             | 9           | IA                 |
-

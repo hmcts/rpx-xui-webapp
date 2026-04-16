@@ -12,11 +12,13 @@ import { HearingViewEditSummaryPage } from './exui/hearingViewEditSummary.po';
 import { HearingViewSummaryPage } from './exui/hearingViewSummary.po';
 import { CaseFileViewPage } from './exui/caseFileView.po';
 import { AccessRequestPage } from './exui/accessRequest.po';
+import { BookingUiPage } from './exui/bookingUi.po';
 
 export interface PageFixtures {
   determinePage: Page;
   caseDetailsPage: CaseDetailsPage;
   caseListPage: CaseListPage;
+  bookingUiPage: BookingUiPage;
   taskListPage: TaskListPage;
   createCasePage: CreateCasePage;
   searchCasePage: SearchCasePage;
@@ -52,6 +54,9 @@ export const pageFixtures = {
   },
   caseListPage: async ({ determinePage }, use) => {
     await use(new CaseListPage(determinePage));
+  },
+  bookingUiPage: async ({ determinePage }, use) => {
+    await use(new BookingUiPage(determinePage));
   },
   taskListPage: async ({ determinePage }, use) => {
     await use(new TaskListPage(determinePage));

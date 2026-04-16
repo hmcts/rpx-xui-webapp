@@ -2793,7 +2793,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@dr.pogodin/csurf@npm:^1.16.5":
+"@dr.pogodin/csurf@npm:^1.14.0, @dr.pogodin/csurf@npm:^1.16.5":
   version: 1.16.9
   resolution: "@dr.pogodin/csurf@npm:1.16.9"
   dependencies:
@@ -3407,7 +3407,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hapi/hoek@npm:^9.0.0, @hapi/hoek@npm:^9.3.0":
+"@hapi/hoek@npm:^9.0.0":
   version: 9.3.0
   resolution: "@hapi/hoek@npm:9.3.0"
   checksum: 10/ad83a223787749f3873bce42bd32a9a19673765bf3edece0a427e138859ff729469e68d5fdf9ff6bbee6fb0c8e21bab61415afa4584f527cfc40b59ea1957e70
@@ -3428,7 +3428,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hapi/topo@npm:^5.0.0, @hapi/topo@npm:^5.1.0":
+"@hapi/topo@npm:^5.0.0":
   version: 5.1.0
   resolution: "@hapi/topo@npm:5.1.0"
   dependencies:
@@ -3576,19 +3576,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.7-exui-4227-rel":
-  version: 2.30.7-exui-4227-rel
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.7-exui-4227-rel"
+"@hmcts/rpx-xui-node-lib@npm:2.30.12-exui-4342-unused-package":
+  version: 2.30.12-exui-4342-unused-package
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.12-exui-4342-unused-package"
   dependencies:
+    "@dr.pogodin/csurf": "npm:^1.14.0"
     axios: "npm:^1.11.0"
-    caller-path: "npm:^3.0.0"
     connect-redis: "npm:^4.0.4"
-    csurf: "npm:^1.11.0"
     debug: "npm:^4.3.7"
     deepmerge: "npm:^4.2.2"
     express: "npm:^4.20.0"
     express-session: "npm:^1.17.0"
-    joi: "npm:^17"
+    joi: "npm:^18.1.2"
     jwt-decode: "npm:^3.1.2"
     openid-client: "npm:^3.10.0"
     otplib: "npm:^12.0.1"
@@ -3598,7 +3597,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/03071e6ec12975fa5673e3c1095db1ec9e2dbdee9f3039dada2b6e4ab588b8e251154c2694e1ba35a438abfdfdb57007e53a09b3a0fb540cc9abcc33809e42a3
+  checksum: 10/40eee304cbd3ba41459dc1e4a973906f78d43c453c9485da37cf32f07856d6f03694c464dbc54c098bbacd5f3a7b4c6c8d983d2c0c9b6de3a145e6a69fdac781
   languageName: node
   linkType: hard
 
@@ -5404,6 +5403,7 @@ __metadata:
   version: 3.4.1
   resolution: "@microsoft/applicationinsights-core-js@npm:3.4.1"
   dependencies:
+    "@microsoft/applicationinsights-core-js": "npm:3.4.1"
     "@microsoft/applicationinsights-shims": "npm:3.0.1"
     "@microsoft/dynamicproto-js": "npm:^2.0.3"
     "@nevware21/ts-async": "npm:>= 0.5.5 < 2.x"
@@ -7384,7 +7384,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sideway/address@npm:^4.1.3, @sideway/address@npm:^4.1.5":
+"@sideway/address@npm:^4.1.3":
   version: 4.1.5
   resolution: "@sideway/address@npm:4.1.5"
   dependencies:
@@ -7393,7 +7393,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sideway/formula@npm:^3.0.0, @sideway/formula@npm:^3.0.1":
+"@sideway/formula@npm:^3.0.0":
   version: 3.0.1
   resolution: "@sideway/formula@npm:3.0.1"
   checksum: 10/8d3ee7f80df4e5204b2cbe92a2a711ca89684965a5c9eb3b316b7051212d3522e332a65a0bb2a07cc708fcd1d0b27fcb30f43ff0bcd5089d7006c7160a89eefe
@@ -10701,25 +10701,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caller-callsite@npm:^4.1.0":
-  version: 4.1.0
-  resolution: "caller-callsite@npm:4.1.0"
-  dependencies:
-    callsites: "npm:^3.1.0"
-  checksum: 10/4a3e775344f553a473947ddb01e45c91c7e0e5a0d77d697095063ad0efd8ea38e4093654837470aaf529cedff338320ece9e5da91224bc5cc9109a0ded25cd11
-  languageName: node
-  linkType: hard
-
-"caller-path@npm:^3.0.0":
-  version: 3.0.1
-  resolution: "caller-path@npm:3.0.1"
-  dependencies:
-    caller-callsite: "npm:^4.1.0"
-  checksum: 10/ed00224727925d7e6807230e054a7bb995fa09cd9b8c8241c3985de9c50c96784cf4b996360c2c417b56d82af340c7752300ad3387c68e7e9cfd9c5516e3faa9
-  languageName: node
-  linkType: hard
-
-"callsites@npm:^3.0.0, callsites@npm:^3.1.0":
+"callsites@npm:^3.0.0":
   version: 3.1.0
   resolution: "callsites@npm:3.1.0"
   checksum: 10/072d17b6abb459c2ba96598918b55868af677154bec7e73d222ef95a8fdb9bbf7dae96a8421085cdad8cd190d86653b5b6dc55a4484f2e5b2e27d5e0c3fc15b3
@@ -11936,17 +11918,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"csrf@npm:3.1.0":
-  version: 3.1.0
-  resolution: "csrf@npm:3.1.0"
-  dependencies:
-    rndm: "npm:1.2.0"
-    tsscmp: "npm:1.0.6"
-    uid-safe: "npm:2.1.5"
-  checksum: 10/bb151ccd76203bf4d443d01c63a9122cdcc3e7c6c6213518d836c440a4a9fc05543078086e45add14c0c1e1d57592068967b8ec9cc1fa67c01a49474c988c4e9
-  languageName: node
-  linkType: hard
-
 "css-loader@npm:7.1.2":
   version: 7.1.2
   resolution: "css-loader@npm:7.1.2"
@@ -12068,18 +12039,6 @@ __metadata:
     css-tree: "npm:^3.1.0"
     lru-cache: "npm:^11.2.4"
   checksum: 10/bd4469af81f068537dbbce53c4247f192e91202c19abc066b77b4ee7bbf256526bc82471198bec762ac70ea53ce17b8044aec69fd7982d2d0fd9fd7780329e2d
-  languageName: node
-  linkType: hard
-
-"csurf@npm:^1.11.0":
-  version: 1.11.0
-  resolution: "csurf@npm:1.11.0"
-  dependencies:
-    cookie: "npm:0.4.0"
-    cookie-signature: "npm:1.0.6"
-    csrf: "npm:3.1.0"
-    http-errors: "npm:~1.7.3"
-  checksum: 10/823e6f4a11a7cded7473af18f7f3605477102f154b892291e37e99f67ba00863ef299369d1facdf9603ea8946acfb8281d35f54831d5e9c8ac704d526cd9ca4e
   languageName: node
   linkType: hard
 
@@ -15474,19 +15433,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"http-errors@npm:~1.7.3":
-  version: 1.7.3
-  resolution: "http-errors@npm:1.7.3"
-  dependencies:
-    depd: "npm:~1.1.2"
-    inherits: "npm:2.0.4"
-    setprototypeof: "npm:1.1.1"
-    statuses: "npm:>= 1.5.0 < 2"
-    toidentifier: "npm:1.0.0"
-  checksum: 10/157cb95296118e9c37034f04d5c372916db03bcb6b1097caf693fbc9cf85ac881c8cbdf892140acb7ede6cad6a1a3dbf86a8031b2b127dc47bfc0600b3fda8a0
-  languageName: node
-  linkType: hard
-
 "http-errors@npm:~1.8.0":
   version: 1.8.1
   resolution: "http-errors@npm:1.8.1"
@@ -16549,20 +16495,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"joi@npm:^17":
-  version: 17.13.3
-  resolution: "joi@npm:17.13.3"
-  dependencies:
-    "@hapi/hoek": "npm:^9.3.0"
-    "@hapi/topo": "npm:^5.1.0"
-    "@sideway/address": "npm:^4.1.5"
-    "@sideway/formula": "npm:^3.0.1"
-    "@sideway/pinpoint": "npm:^2.0.0"
-  checksum: 10/4c150db0c820c3a52f4a55c82c1fc5e144a5b5f4da9ffebc7339a15469d1a447ebb427ced446efcb9709ab56bd71a06c4c67c9381bc1b9f9ae63fc7c89209bdf
-  languageName: node
-  linkType: hard
-
-"joi@npm:^18.0.1, joi@npm:^18.0.2":
+"joi@npm:^18.0.1, joi@npm:^18.0.2, joi@npm:^18.1.2":
   version: 18.1.2
   resolution: "joi@npm:18.1.2"
   dependencies:
@@ -21817,7 +21750,7 @@ __metadata:
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.3.1"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.8"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.7-exui-4227-rel"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.12-exui-4342-unused-package"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"
@@ -22388,13 +22321,6 @@ __metadata:
   version: 1.0.5
   resolution: "setimmediate@npm:1.0.5"
   checksum: 10/76e3f5d7f4b581b6100ff819761f04a984fa3f3990e72a6554b57188ded53efce2d3d6c0932c10f810b7c59414f85e2ab3c11521877d1dea1ce0b56dc906f485
-  languageName: node
-  linkType: hard
-
-"setprototypeof@npm:1.1.1":
-  version: 1.1.1
-  resolution: "setprototypeof@npm:1.1.1"
-  checksum: 10/b8fcf5b4b8325ea638712ed6e62f8e0ffac69eef1390305a5331046992424e484d4d6603a18d84d4c08c3def50b9195d9e707b747aed5eec15ee66a2a6508318
   languageName: node
   linkType: hard
 
@@ -23612,13 +23538,6 @@ __metadata:
   dependencies:
     is-number: "npm:^7.0.0"
   checksum: 10/10dda13571e1f5ad37546827e9b6d4252d2e0bc176c24a101252153ef435d83696e2557fe128c4678e4e78f5f01e83711c703eef9814eb12dab028580d45980a
-  languageName: node
-  linkType: hard
-
-"toidentifier@npm:1.0.0":
-  version: 1.0.0
-  resolution: "toidentifier@npm:1.0.0"
-  checksum: 10/199e6bfca1531d49b3506cff02353d53ec987c9ee10ee272ca6484ed97f1fc10fb77c6c009079ca16d5c5be4a10378178c3cacdb41ce9ec954c3297c74c6053e
   languageName: node
   linkType: hard
 

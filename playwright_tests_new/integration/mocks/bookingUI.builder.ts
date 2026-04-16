@@ -50,6 +50,8 @@ export function buildExistingBookingsMock(userId: string, referenceDate: Date = 
   const activeEnd = new Date(now + 7 * DAY_MS).toISOString();
   const futureBegin = new Date(now + 30 * DAY_MS).toISOString();
   const futureEnd = new Date(now + 60 * DAY_MS).toISOString();
+  const laterFutureBegin = new Date(now + 90 * DAY_MS).toISOString();
+  const laterFutureEnd = new Date(now + 120 * DAY_MS).toISOString();
 
   return [
     {
@@ -61,6 +63,16 @@ export function buildExistingBookingsMock(userId: string, referenceDate: Date = 
       beginTime: futureBegin,
       endTime: futureEnd,
       locationName: 'Central London County Court',
+    },
+    {
+      id: faker.string.uuid(),
+      userId,
+      regionId: '1',
+      locationId: '765324',
+      created: faker.date.recent({ days: 5, refDate: referenceDate }).toISOString(),
+      beginTime: laterFutureBegin,
+      endTime: laterFutureEnd,
+      locationName: 'Taylor House',
     },
     {
       id: faker.string.uuid(),

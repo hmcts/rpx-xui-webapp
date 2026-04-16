@@ -5,8 +5,13 @@ import { buildTaskListMock, myActionsList } from '../../mocks/taskList.mock';
 import {
   setupWorkFiltersUser,
   workFiltersDefaultLocations,
+  workFiltersIaSearchLocation,
+  workFiltersLocationSearchSupportedJurisdictionDetails,
+  workFiltersLocationSearchSupportedJurisdictions,
+  workFiltersSscsSearchLocation,
   workFiltersSupportedJurisdictionDetails,
   workFiltersSupportedJurisdictions,
+  type WorkFilterRoleAssignment,
   workFiltersUserId,
   workFiltersUserIdentifier,
 } from './workFilters.setup';
@@ -21,6 +26,18 @@ type SearchRequestPayload = {
     search_parameters?: SearchParameter[];
   };
   view?: string;
+};
+
+type LocationSearchScenario = {
+  scenarioName: string;
+  roleAssignments: WorkFilterRoleAssignment[];
+  expectedServiceCodes: string[];
+  expectedLocations: string[];
+};
+
+type LocationSearchRequest = {
+  searchTerm: string;
+  userLocationServices: string[];
 };
 
 test.beforeEach(async ({ page }) => {
@@ -56,7 +73,7 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
 
       await expect(taskListPage.taskListFilterToggle).toContainText('Hide work filter');
       await expect(taskListPage.filterPanel.getByText('Services', { exact: true })).toBeVisible();
-      await expect(taskListPage.filterPanel.getByText('Search for a location by name', { exact: true })).toBeVisible();
+      await expect(taskListPage.filterPanel.locator('#locations')).toBeVisible();
       await expect(taskListPage.filterPanel.getByText('Types of work', { exact: true })).toBeVisible();
 
       await taskListPage.applyCurrentFilters();
@@ -75,7 +92,7 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
       await taskListPage.openFilterPanel();
 
       await expect(taskListPage.filterPanel.getByText('Services', { exact: true })).toBeVisible();
-      await expect(taskListPage.filterPanel.getByText('Search for a location by name', { exact: true })).toBeVisible();
+      await expect(taskListPage.filterPanel.locator('#locations')).toBeVisible();
       await expect(taskListPage.filterPanel.getByText('Types of work', { exact: true })).toBeVisible();
     });
 
@@ -85,7 +102,7 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
       await taskListPage.openFilterPanel();
 
       await expect(taskListPage.filterPanel.getByText('Services', { exact: true })).toBeVisible();
-      await expect(taskListPage.filterPanel.getByText('Search for a location by name', { exact: true })).toBeVisible();
+      await expect(taskListPage.filterPanel.locator('#locations')).toBeVisible();
       await expect(taskListPage.filterPanel.locator('#types-of-work')).toBeHidden();
     });
   });
@@ -212,4 +229,129 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
       taskListPage.filterPanel.locator('.hmcts-filter__tag', { hasText: 'Birmingham Civil and Family Justice Centre' })
     ).toBeVisible();
   });
+
+  const locationSearchScenarios: LocationSearchScenario[] = [
+    {
+      scenarioName: 'organisation roles cover both IA and SSCS services',
+      roleAssignments: [
+        { jurisdiction: 'IA', substantive: 'Y', roleType: 'ORGANISATION', baseLocation: '20001' },
+        { jurisdiction: 'SSCS', substantive: 'Y', roleType: 'ORGANISATION', baseLocation: '30001' },
+      ],
+      expectedServiceCodes: ['IA', 'SSCS'],
+      expectedLocations: [workFiltersIaSearchLocation.site_name, workFiltersSscsSearchLocation.site_name],
+    },
+    {
+      scenarioName: 'only SSCS remains organisation scoped when IA is case scoped',
+      roleAssignments: [
+        { jurisdiction: 'IA', substantive: 'Y', roleType: 'CASE', baseLocation: '20001' },
+        { jurisdiction: 'SSCS', substantive: 'Y', roleType: 'ORGANISATION', baseLocation: '30001' },
+      ],
+      expectedServiceCodes: ['SSCS'],
+      expectedLocations: [workFiltersSscsSearchLocation.site_name],
+    },
+    {
+      scenarioName: 'only IA remains organisation scoped when SSCS is case scoped',
+      roleAssignments: [
+        { jurisdiction: 'IA', substantive: 'Y', roleType: 'ORGANISATION', baseLocation: '20001' },
+        { jurisdiction: 'SSCS', substantive: 'Y', roleType: 'CASE', baseLocation: '30001' },
+      ],
+      expectedServiceCodes: ['IA'],
+      expectedLocations: [workFiltersIaSearchLocation.site_name],
+    },
+  ];
+
+  for (const scenario of locationSearchScenarios) {
+    test(`My tasks location search keeps organisation-only scope when ${scenario.scenarioName}`, async ({
+      taskListPage,
+      page,
+    }) => {
+      const taskListResponse = buildTaskListMock(6, workFiltersUserId, myActionsList);
+      const fullLocationRequests: string[] = [];
+      const locationSearchRequests: LocationSearchRequest[] = [];
+      const fullLocationResponses: Record<string, Array<typeof workFiltersIaSearchLocation>> = {
+        IA: [workFiltersIaSearchLocation],
+        SSCS: [workFiltersSscsSearchLocation],
+        'IA,SSCS': [workFiltersIaSearchLocation, workFiltersSscsSearchLocation],
+      };
+      const searchableLocations = [workFiltersIaSearchLocation, workFiltersSscsSearchLocation];
+
+      await setupWorkFiltersUser(page, {
+        roles: ['caseworker-ia', 'caseworker-ia-caseofficer', 'caseworker-sscs'],
+        roleAssignments: scenario.roleAssignments,
+      });
+
+      await setupManageTasksBaseRoutes(page, {
+        taskListResponse,
+        supportedJurisdictions: workFiltersLocationSearchSupportedJurisdictions,
+        supportedJurisdictionDetails: workFiltersLocationSearchSupportedJurisdictionDetails,
+      });
+
+      await page.unroute('**/workallocation/full-location*').catch(() => undefined);
+      await page.route('**/workallocation/full-location*', async (route) => {
+        const serviceCodes = new URL(route.request().url()).searchParams.get('serviceCodes') ?? '';
+        fullLocationRequests.push(serviceCodes);
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(fullLocationResponses[serviceCodes] ?? []),
+        });
+      });
+
+      await page.unroute('**/api/locations/getLocations*').catch(() => undefined);
+      await page.route('**/api/locations/getLocations*', async (route) => {
+        const requestBody = route.request().postDataJSON() as {
+          searchTerm?: string;
+          userLocations?: Array<{ service?: string; serviceCode?: string }>;
+        };
+
+        locationSearchRequests.push({
+          searchTerm: requestBody.searchTerm ?? '',
+          userLocationServices: (requestBody.userLocations ?? [])
+            .map((location) => location.serviceCode ?? location.service)
+            .filter((serviceCode): serviceCode is string => Boolean(serviceCode))
+            .sort(),
+        });
+
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(
+            searchableLocations.filter(
+              (location) =>
+                scenario.expectedLocations.includes(location.site_name) &&
+                location.site_name.toLowerCase().includes((requestBody.searchTerm ?? '').toLowerCase())
+            )
+          ),
+        });
+      });
+
+      await taskListPage.gotoAndWaitForTaskRow(`verifying ${scenario.scenarioName}`);
+      await expect.poll(() => fullLocationRequests.length).toBeGreaterThan(0);
+      expect(fullLocationRequests.at(-1)?.split(',').sort()).toEqual([...scenario.expectedServiceCodes].sort());
+
+      await taskListPage.openFilterPanel();
+      await expect(taskListPage.selectedLocationTags).toHaveText(scenario.expectedLocations);
+      await taskListPage.removeAllSelectedLocations();
+      await expect(taskListPage.selectedLocationTags).toHaveCount(0);
+
+      await taskListPage.searchForLocation('Court');
+      await expect(taskListPage.allWorkLocationSearchInput).toHaveValue('Court');
+      await expect
+        .poll(() => locationSearchRequests.find((request) => request.searchTerm === 'Court') ?? null)
+        .toEqual({
+          searchTerm: 'Court',
+          userLocationServices: [...scenario.expectedServiceCodes].sort(),
+        });
+      await expect
+        .poll(
+          async () =>
+            (await taskListPage.allWorkLocationSearchResults.allTextContents())
+              .map((location) => location.trim())
+              .filter(Boolean)
+              .sort(),
+          { message: `location search results for ${scenario.scenarioName}` }
+        )
+        .toEqual([...scenario.expectedLocations].sort());
+    });
+  }
 });

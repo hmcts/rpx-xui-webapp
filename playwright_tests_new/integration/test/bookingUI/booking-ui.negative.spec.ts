@@ -41,17 +41,18 @@ test.describe(
       bookingUiPage,
       page,
     }) => {
-      await bookingUiPage.goto();
-
-      await expect(page).toHaveURL(/\/cases(?:\/|$)/);
-      await expect(bookingUiPage.container).toHaveCount(0);
-      const bookingsRequestResult = await page
+      const bookingsRequestPromise = page
         .waitForRequest((request) => request.url().includes('/am/getBookings'), {
           timeout: 1_000,
         })
         .then(() => 'requested')
         .catch(() => 'timed-out');
 
+      await bookingUiPage.goto();
+
+      await expect(page).toHaveURL(/\/cases(?:\/|$)/);
+      await expect(bookingUiPage.container).toHaveCount(0);
+      const bookingsRequestResult = await bookingsRequestPromise;
       expect(bookingsRequestResult).toBe('timed-out');
     });
   }

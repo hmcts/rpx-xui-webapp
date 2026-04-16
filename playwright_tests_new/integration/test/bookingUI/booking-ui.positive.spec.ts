@@ -9,6 +9,7 @@ const createBookingOption = 'Create a new booking';
 const viewTasksAndCasesOption = 'View tasks and cases';
 const currentBookingLocation = "Bromley Magistrates' Court";
 const futureBookingLocation = 'Central London County Court';
+const laterFutureBookingLocation = 'Taylor House';
 const existingBookingsReferenceDate = new Date('2026-02-15T12:00:00.000Z');
 let getBookingsCalled = false;
 let existingBookingsMock: BookingUiMock[] = [];
@@ -68,9 +69,11 @@ test.describe(`Booking UI via ${sessionUserIdentifier} session`, { tag: ['@integ
   }) => {
     const currentBooking = existingBookingsMock.find((booking) => booking.locationName === currentBookingLocation);
     const futureBooking = existingBookingsMock.find((booking) => booking.locationName === futureBookingLocation);
+    const laterFutureBooking = existingBookingsMock.find((booking) => booking.locationName === laterFutureBookingLocation);
 
     expect(currentBooking).toBeTruthy();
     expect(futureBooking).toBeTruthy();
+    expect(laterFutureBooking).toBeTruthy();
 
     await test.step('Open the booking page and confirm the booking-only layout', async () => {
       await bookingUiPage.goto();
@@ -87,17 +90,22 @@ test.describe(`Booking UI via ${sessionUserIdentifier} session`, { tag: ['@integ
     await test.step('Select the existing booking option and verify rendered booking details', async () => {
       await bookingUiPage.selectOption(existingBookingOption);
 
-      await expect(bookingUiPage.existingBookingCards).toHaveCount(2);
+      await expect(bookingUiPage.existingBookingCards).toHaveCount(3);
       await expect(bookingUiPage.existingBookingCards.nth(0)).toContainText(currentBookingLocation);
       await expect(bookingUiPage.existingBookingCards.nth(1)).toContainText(futureBookingLocation);
+      await expect(bookingUiPage.existingBookingCards.nth(2)).toContainText(laterFutureBookingLocation);
       await expect(bookingUiPage.existingBookingDateRange(currentBookingLocation)).toHaveText(
         formatBookingDateRange(currentBooking as BookingUiMock)
       );
       await expect(bookingUiPage.existingBookingDateRange(futureBookingLocation)).toHaveText(
         formatBookingDateRange(futureBooking as BookingUiMock)
       );
+      await expect(bookingUiPage.existingBookingDateRange(laterFutureBookingLocation)).toHaveText(
+        formatBookingDateRange(laterFutureBooking as BookingUiMock)
+      );
       await expect(bookingUiPage.existingBookingContinueButton(currentBookingLocation)).toBeEnabled();
       await expect(bookingUiPage.existingBookingContinueButton(futureBookingLocation)).toBeVisible();
+      await expect(bookingUiPage.existingBookingContinueButton(laterFutureBookingLocation)).toBeVisible();
       await expect(bookingUiPage.genericContinueButton).toHaveCount(0);
     });
   });

@@ -77,7 +77,7 @@ const buildConfig = (env: EnvMap = process.env) => {
     reporter: [
       [env.CI ? 'dot' : 'list'],
       [
-        'odhin-reports-playwright',
+        './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
         {
           outputFolder: 'functional-output/tests/playwright-e2e/odhin-report',
           indexFilename: 'xui-playwright-e2e.html',

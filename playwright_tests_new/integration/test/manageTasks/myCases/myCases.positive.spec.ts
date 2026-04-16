@@ -1,12 +1,12 @@
 import { expect, test } from '../../../../E2E/fixtures';
-import { applyPrewarmedSessionCookies, setupMyCasesRoutes } from '../../../helpers';
+import { applySessionCookies, setupMyCasesRoutes } from '../../../helpers';
 import { buildMyCases, buildMyCasesMock } from '../../../mocks/myCases.mock';
 import { formatUiDate } from '../../../utils/tableUtils';
 
 const userIdentifier = 'STAFF_ADMIN';
 
 test.beforeEach(async ({ page }) => {
-  await applyPrewarmedSessionCookies(page, userIdentifier);
+  await applySessionCookies(page, userIdentifier);
 });
 
 test.describe(`My Cases as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {

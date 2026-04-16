@@ -1,9 +1,15 @@
-import type { Page } from '@playwright/test';
 import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies, myCasesRoutePattern, setupManageTasksBaseRoutes } from '../../helpers';
-import { buildHearingsUserDetailsMock } from '../../mocks/hearings.mock';
+import { myCasesRoutePattern, setupManageTasksBaseRoutes } from '../../helpers';
 import { buildMyCasesMock } from '../../mocks/myCases.mock';
 import { buildTaskListMock, myActionsList } from '../../mocks/taskList.mock';
+import {
+  setupWorkFiltersUser,
+  workFiltersDefaultLocations,
+  workFiltersSupportedJurisdictionDetails,
+  workFiltersSupportedJurisdictions,
+  workFiltersUserId,
+  workFiltersUserIdentifier,
+} from './workFilters.setup';
 
 type SearchParameter = {
   key?: string;
@@ -17,52 +23,20 @@ type SearchRequestPayload = {
   view?: string;
 };
 
-const userIdentifier = 'STAFF_ADMIN';
-const supportedJurisdictions = ['IA', 'CIVIL'];
-const supportedJurisdictionDetails = [
-  { serviceId: 'CIVIL', serviceName: 'Civil' },
-  { serviceId: 'IA', serviceName: 'Immigration and Asylum' },
-];
-
-async function seedManageTasksUser(page: Page) {
-  const userDetails = buildHearingsUserDetailsMock(['caseworker-ia', 'caseworker-ia-caseofficer', 'caseworker-civil']);
-
-  userDetails.userInfo.id = 'staff-admin-integration-user';
-  userDetails.userInfo.uid = 'staff-admin-integration-user';
-  userDetails.userInfo.roleCategory = 'LEGAL_OPERATIONS';
-  userDetails.roleAssignmentInfo = [
-    { jurisdiction: 'IA', substantive: 'Y', roleType: 'ORGANISATION', baseLocation: '765324' },
-    { jurisdiction: 'CIVIL', substantive: 'Y', roleType: 'ORGANISATION', baseLocation: '231596' },
-  ];
-
-  await page.addInitScript((seededUserInfo) => {
-    window.sessionStorage.setItem('userDetails', JSON.stringify(seededUserInfo));
-  }, userDetails.userInfo);
-
-  await page.route('**/api/user/details*', async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(userDetails),
-    });
-  });
-}
-
 test.beforeEach(async ({ page }) => {
-  await applySessionCookies(page, userIdentifier);
-  await seedManageTasksUser(page);
+  await setupWorkFiltersUser(page);
 });
 
-test.describe(`Work filters as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
+test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   test('show and hide work filters across My tasks, Available tasks, and My cases', async ({ taskListPage, page }) => {
-    const taskListResponse = buildTaskListMock(6, 'staff-admin-integration-user', myActionsList);
+    const taskListResponse = buildTaskListMock(6, workFiltersUserId, myActionsList);
     const myCasesResponse = buildMyCasesMock();
 
     await test.step('Mock task and case routes for each My work view', async () => {
       await setupManageTasksBaseRoutes(page, {
         taskListResponse,
-        supportedJurisdictions,
-        supportedJurisdictionDetails,
+        supportedJurisdictions: workFiltersSupportedJurisdictions,
+        supportedJurisdictionDetails: workFiltersSupportedJurisdictionDetails,
       });
 
       await page.route(myCasesRoutePattern, async (route) => {
@@ -117,12 +91,12 @@ test.describe(`Work filters as ${userIdentifier}`, { tag: ['@integration', '@int
   });
 
   test('My tasks applies selected services and work types to the search request', async ({ taskListPage, page }) => {
-    const taskListResponse = buildTaskListMock(6, 'staff-admin-integration-user', myActionsList);
+    const taskListResponse = buildTaskListMock(6, workFiltersUserId, myActionsList);
     const taskRequests: SearchRequestPayload[] = [];
 
     await setupManageTasksBaseRoutes(page, {
-      supportedJurisdictions,
-      supportedJurisdictionDetails,
+      supportedJurisdictions: workFiltersSupportedJurisdictions,
+      supportedJurisdictionDetails: workFiltersSupportedJurisdictionDetails,
       taskListHandler: async (route) => {
         taskRequests.push(route.request().postDataJSON() as SearchRequestPayload);
         await route.fulfill({
@@ -153,7 +127,7 @@ test.describe(`Work filters as ${userIdentifier}`, { tag: ['@integration', '@int
     const latestRequest = taskRequests.at(-1);
     expect(latestRequest?.searchRequest?.search_parameters).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ key: 'user', values: ['staff-admin-integration-user'] }),
+        expect.objectContaining({ key: 'user', values: [workFiltersUserId] }),
         expect.objectContaining({ key: 'state', values: ['assigned'] }),
         expect.objectContaining({ key: 'jurisdiction', values: [selectedService] }),
         expect.objectContaining({ key: 'work_type', values: [selectedWorkType] }),
@@ -178,9 +152,9 @@ test.describe(`Work filters as ${userIdentifier}`, { tag: ['@integration', '@int
     });
 
     await setupManageTasksBaseRoutes(page, {
-      taskListResponse: buildTaskListMock(6, 'staff-admin-integration-user', myActionsList),
-      supportedJurisdictions,
-      supportedJurisdictionDetails,
+      taskListResponse: buildTaskListMock(6, workFiltersUserId, myActionsList),
+      supportedJurisdictions: workFiltersSupportedJurisdictions,
+      supportedJurisdictionDetails: workFiltersSupportedJurisdictionDetails,
     });
 
     await page.route(myCasesRoutePattern, async (route) => {
@@ -202,5 +176,40 @@ test.describe(`Work filters as ${userIdentifier}`, { tag: ['@integration', '@int
         expect.objectContaining({ key: 'locations', values: ['765324'] }),
       ])
     );
+  });
+
+  test('My tasks restores default base locations using organisation service codes', async ({ taskListPage, page }) => {
+    const taskListResponse = buildTaskListMock(6, workFiltersUserId, myActionsList);
+    const fullLocationServiceCodes: string[] = [];
+
+    await setupManageTasksBaseRoutes(page, {
+      taskListResponse,
+      supportedJurisdictions: workFiltersSupportedJurisdictions,
+      supportedJurisdictionDetails: workFiltersSupportedJurisdictionDetails,
+    });
+
+    await page.route('**/workallocation/full-location*', async (route) => {
+      const serviceCodes = new URL(route.request().url()).searchParams.get('serviceCodes');
+      if (serviceCodes) {
+        fullLocationServiceCodes.push(serviceCodes);
+      }
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(workFiltersDefaultLocations),
+      });
+    });
+
+    await taskListPage.gotoAndWaitForTaskRow('restoring work filter base locations');
+    await expect.poll(() => fullLocationServiceCodes.length).toBeGreaterThan(0);
+    expect(fullLocationServiceCodes.at(-1)?.split(',').sort()).toEqual(['CIVIL', 'IA']);
+
+    await expect(page.getByText('Access tasks and cases.', { exact: true })).toBeVisible();
+
+    await taskListPage.openFilterPanel();
+    await expect(taskListPage.filterPanel.locator('.hmcts-filter__tag', { hasText: 'Taylor House' })).toBeVisible();
+    await expect(
+      taskListPage.filterPanel.locator('.hmcts-filter__tag', { hasText: 'Birmingham Civil and Family Justice Centre' })
+    ).toBeVisible();
   });
 });

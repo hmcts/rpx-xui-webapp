@@ -1,5 +1,6 @@
 import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookiesAndExtractUserId } from '../../helpers';
+import type { BookingUiMock } from '../../mocks/bookingUI.builder';
 import { bookingLocationMock, buildBookingUserDetailsMock, buildExistingBookingsMock } from '../../mocks/bookingUI.mock';
 
 const sessionUserIdentifier = 'STAFF_ADMIN';
@@ -8,14 +9,28 @@ const createBookingOption = 'Create a new booking';
 const viewTasksAndCasesOption = 'View tasks and cases';
 const currentBookingLocation = "Bromley Magistrates' Court";
 const futureBookingLocation = 'Central London County Court';
+const existingBookingsReferenceDate = new Date('2026-02-15T12:00:00.000Z');
 let getBookingsCalled = false;
+let existingBookingsMock: BookingUiMock[] = [];
+
+function formatBookingDateRange(booking: BookingUiMock): string {
+  const displayDate = new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+  const bookingEndDate = new Date(booking.endTime);
+  bookingEndDate.setUTCDate(bookingEndDate.getUTCDate() - 1);
+  return `${displayDate.format(new Date(booking.beginTime))} to ${displayDate.format(bookingEndDate)}`;
+}
 
 test.describe(`Booking UI via ${sessionUserIdentifier} session`, { tag: ['@integration', '@integration-booking-ui'] }, () => {
   test.beforeEach(async ({ page }) => {
     getBookingsCalled = false;
     const userId = await applySessionCookiesAndExtractUserId(page, sessionUserIdentifier);
     const userDetails = buildBookingUserDetailsMock({ userId });
-    const existingBookingsMock = buildExistingBookingsMock(userId);
+    existingBookingsMock = buildExistingBookingsMock(userId, existingBookingsReferenceDate);
 
     await page.addInitScript((seededUserInfo) => {
       window.sessionStorage.setItem('userDetails', JSON.stringify(seededUserInfo));
@@ -47,10 +62,16 @@ test.describe(`Booking UI via ${sessionUserIdentifier} session`, { tag: ['@integ
     });
   });
 
-  test('existing booking choice shows ordered cards and keeps the primary continue button hidden', async ({
+test('existing booking choice shows ordered cards, rendered date ranges, and no primary continue button', async ({
     bookingUiPage,
     page,
   }) => {
+    const currentBooking = existingBookingsMock.find((booking) => booking.locationName === currentBookingLocation);
+    const futureBooking = existingBookingsMock.find((booking) => booking.locationName === futureBookingLocation);
+
+    expect(currentBooking).toBeTruthy();
+    expect(futureBooking).toBeTruthy();
+
     await test.step('Open the booking page and confirm the booking-only layout', async () => {
       await bookingUiPage.goto();
       await expect(page).toHaveURL(/\/booking$/);
@@ -63,14 +84,20 @@ test.describe(`Booking UI via ${sessionUserIdentifier} session`, { tag: ['@integ
       await expect(bookingUiPage.genericContinueButton).toHaveCount(0);
     });
 
-    await test.step('Select the existing booking option and verify card ordering and button states', async () => {
+    await test.step('Select the existing booking option and verify rendered booking details', async () => {
       await bookingUiPage.selectOption(existingBookingOption);
 
       await expect(bookingUiPage.existingBookingCards).toHaveCount(2);
       await expect(bookingUiPage.existingBookingCards.nth(0)).toContainText(currentBookingLocation);
       await expect(bookingUiPage.existingBookingCards.nth(1)).toContainText(futureBookingLocation);
+      await expect(bookingUiPage.existingBookingDateRange(currentBookingLocation)).toHaveText(
+        formatBookingDateRange(currentBooking as BookingUiMock)
+      );
+      await expect(bookingUiPage.existingBookingDateRange(futureBookingLocation)).toHaveText(
+        formatBookingDateRange(futureBooking as BookingUiMock)
+      );
       await expect(bookingUiPage.existingBookingContinueButton(currentBookingLocation)).toBeEnabled();
-      await expect(bookingUiPage.existingBookingContinueButton(futureBookingLocation)).toBeDisabled();
+      await expect(bookingUiPage.existingBookingContinueButton(futureBookingLocation)).toBeVisible();
       await expect(bookingUiPage.genericContinueButton).toHaveCount(0);
     });
   });

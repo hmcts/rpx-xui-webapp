@@ -3,14 +3,12 @@ import { applySessionCookiesAndExtractUserId } from '../../helpers';
 import { buildBookingUserDetailsMock } from '../../mocks/bookingUI.mock';
 
 const sessionUserIdentifier = 'STAFF_ADMIN';
-let getBookingsCalled = false;
 
 test.describe(
   `Booking UI guard via ${sessionUserIdentifier} session`,
   { tag: ['@integration', '@integration-booking-ui'] },
   () => {
     test.beforeEach(async ({ page }) => {
-      getBookingsCalled = false;
       const userId = await applySessionCookiesAndExtractUserId(page, sessionUserIdentifier);
       const userDetails = buildBookingUserDetailsMock({
         userId,
@@ -31,7 +29,6 @@ test.describe(
       });
 
       await page.route('**/am/getBookings', async (route) => {
-        getBookingsCalled = true;
         await route.fulfill({
           status: 200,
           contentType: 'application/json',
@@ -47,7 +44,15 @@ test.describe(
       await bookingUiPage.goto();
 
       await expect(page).toHaveURL(/\/cases(?:\/|$)/);
-      await expect.poll(() => getBookingsCalled, { timeout: 1_000 }).toBe(false);
+      await expect(bookingUiPage.container).toHaveCount(0);
+      const bookingsRequestResult = await page
+        .waitForRequest((request) => request.url().includes('/am/getBookings'), {
+          timeout: 1_000,
+        })
+        .then(() => 'requested')
+        .catch(() => 'timed-out');
+
+      expect(bookingsRequestResult).toBe('timed-out');
     });
   }
 );

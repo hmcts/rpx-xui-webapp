@@ -26,6 +26,10 @@ export class BookingUiPage extends Base {
     return this.existingBookingCards.filter({ hasText: locationName }).first();
   }
 
+  existingBookingDateRange(locationName: string): Locator {
+    return this.existingBookingCard(locationName).locator('.govuk-hint').first();
+  }
+
   existingBookingContinueButton(locationName: string): Locator {
     return this.existingBookingCard(locationName).locator('button.govuk-button').first();
   }

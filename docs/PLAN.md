@@ -51,20 +51,24 @@ The change only affects test/support code, but it hardens shared mock bootstrap 
 Agent: Planner
 
 Consumed
+
 - EXUI-4213 ticket statement and acceptance criteria
 - Existing Playwright Work Allocation helpers and specs
 - Current mocked task/access coverage gaps already identified in the repo
 
 Produced
+
 - Ticket-scoped plan for EXUI-4213 delivery in Playwright
 - Medium-risk classification
 - Minimal implementation slice covering validation, scenario modelling, and targeted UI proof
 
 Notes / Risks
+
 - The repo already had stale branch traceability docs for another ticket, so these artefacts must be replaced, not incrementally appended.
 - Shared mock-route changes need targeted regression runs because they affect existing manage-tasks tests.
 
 Next Instructions (to next agent)
+
 1. Implement shared Work Allocation mock validation in the Playwright helper layer.
 2. Add scenario helpers and tests for access-rule behaviour, including `EXCLUDED`.
 3. Run targeted unit and integration validation, then document the real evidence boundary.

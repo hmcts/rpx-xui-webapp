@@ -70,33 +70,41 @@ Repo lint entrypoint:
 Agent: Builder
 
 Consumed
+
 - EXUI-4213 gap analysis
 - Existing Work Allocation Playwright helper/spec structure
 
 Produced
+
 - Shared validation helpers
 - Shared access-scenario helpers
 - Targeted unit and integration coverage for the ticket gaps
 
 Notes / Risks
+
 - Shared route bootstrap now rejects invalid mocked payloads by default, so future mocked tests will surface malformed fixtures earlier.
 
 Next Instructions (to next agent)
+
 1. Review the changed helper contracts and new scenario coverage for behavioural gaps.
 2. Confirm the final summary stays within the targeted validation boundary.
 
 Agent: Tester
 
 Consumed
+
 - Final EXUI-4213 helper and spec changes
 - Targeted node-api and integration commands
 
 Produced
+
 - Passing evidence for the implemented EXUI-4213 slice
 
 Notes / Risks
+
 - Confidence is high for the touched paths, but broader suite confidence still depends on CI and wider regression runs.
 
 Next Instructions (to next agent)
+
 1. Present the work as targeted ticket delivery, not full-suite hardening.
 2. Call out residual risk around broader untouched contract layers.

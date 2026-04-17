@@ -36,7 +36,12 @@ const mandatoryTaskFields: RequiredFieldDefinition[] = [
     validate: isIsoDateString,
     expected: 'an ISO date-time string',
   },
-  { key: 'role_category', ticketField: 'role_attributes.role_category', validate: isNonEmptyString, expected: 'a non-empty string' },
+  {
+    key: 'role_category',
+    ticketField: 'role_attributes.role_category',
+    validate: isNonEmptyString,
+    expected: 'a non-empty string',
+  },
   { key: 'case_id', ticketField: 'case_attributes.case_id', validate: isNonEmptyString, expected: 'a non-empty string' },
   { key: 'case_name', ticketField: 'case_attributes.case_name', validate: isNonEmptyString, expected: 'a non-empty string' },
   {

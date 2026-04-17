@@ -6,7 +6,7 @@ import {
   buildExistingBookingsMock,
   type CreateBookingRequest,
   type CreateBookingResponse,
-  getUtcDayRangeForLocalDate,
+  getExpectedTodayOnlyCreateBookingRange,
 } from '../../mocks/bookingUI.mock';
 import { buildMyTaskListMock } from '../../mocks/taskList.mock';
 import { formatUiDate } from '../../utils/tableUtils';
@@ -85,7 +85,6 @@ test.describe(`Booking UI as ${userIdentifier}`, { tag: ['@integration', '@integ
   });
 
   test('can continue when creating a new booking', async ({ page, bookingUiPage }) => {
-    const expectedTodayBookingRange = getUtcDayRangeForLocalDate(new Date(), new Date());
     await test.step('Navigate to booking UI and wait for bookings request', async () => {
       await bookingUiPage.goto();
       await expect(page).toHaveURL(bookingPageUrlPattern);
@@ -127,22 +126,22 @@ test.describe(`Booking UI as ${userIdentifier}`, { tag: ['@integration', '@integ
     await test.step('Intercept create booking API request and verify payload', async () => {
       await expect.poll(() => createBookingCalled).toBeTruthy();
       expect(createBookingRequestBody).toBeDefined();
-      expect(expectedTodayBookingRange).toBeDefined();
       expect(createBookingResponseBody).toBeDefined();
+      const submittedRequest = createBookingRequestBody as CreateBookingRequest;
+      const expectedTodayBookingRange = getExpectedTodayOnlyCreateBookingRange(new Date(submittedRequest.beginDate));
       expect(createBookingRequestBody).toEqual({
         userId: sessionUserId,
         locationId: defaultBookingLocation.epimms_id,
         regionId: defaultBookingLocation.region_id,
-        beginDate: expectedTodayBookingRange?.beginDate,
-        endDate: expectedTodayBookingRange?.endDate,
+        beginDate: expectedTodayBookingRange.beginDate,
+        endDate: expectedTodayBookingRange.endDate,
       });
-      const expectedRange = expectedTodayBookingRange as { beginDate: string; endDate: string };
       const bookingResponse = createBookingResponseBody!.bookingResponse;
       expect(bookingResponse.userId).toBe(sessionUserId);
       expect(bookingResponse.locationId).toBe(defaultBookingLocation.epimms_id);
       expect(bookingResponse.regionId).toBe(defaultBookingLocation.region_id);
-      expect(bookingResponse.beginTime).toBe(expectedRange.beginDate);
-      expect(bookingResponse.endTime).toBe(new Date(new Date(expectedRange.endDate).getTime() + 1).toISOString());
+      expect(bookingResponse.beginTime).toBe(submittedRequest.beginDate);
+      expect(bookingResponse.endTime).toBe(new Date(new Date(submittedRequest.endDate).getTime() + 1).toISOString());
       expect(bookingResponse.log).toBe('Booking record is successfully created');
       expect(bookingResponse.id).toBeTruthy();
       expect(Number.isNaN(Date.parse(bookingResponse.created))).toBeFalsy();

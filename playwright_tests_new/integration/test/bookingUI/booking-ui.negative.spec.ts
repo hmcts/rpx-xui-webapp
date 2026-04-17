@@ -4,7 +4,7 @@ import { expect, test } from '../../../E2E/fixtures';
 import {
   buildExistingBookingsMock,
   type CreateBookingRequest,
-  getUtcDayRangeForLocalDate,
+  getExpectedTodayOnlyCreateBookingRange,
   singleLocationMock,
 } from '../../mocks/bookingUI.mock';
 import { buildHearingsUserDetailsMock } from '../../mocks/hearings.mock';
@@ -76,8 +76,6 @@ createBookingErrorCases.forEach(({ status, expectedUrlPattern }) => {
       });
 
       test(`redirects correctly when create booking returns ${status}`, async ({ page, bookingUiPage }) => {
-        const expectedTodayBookingRange = getUtcDayRangeForLocalDate(new Date(), new Date());
-
         await test.step('Navigate to booking UI and wait for bookings request', async () => {
           await bookingUiPage.goto();
           await expect(page).toHaveURL(bookingPageUrlPattern);
@@ -113,6 +111,8 @@ createBookingErrorCases.forEach(({ status, expectedUrlPattern }) => {
 
         await test.step('Verify create booking payload and error redirect', async () => {
           await expect.poll(() => createBookingCalled).toBeTruthy();
+          const submittedRequest = createBookingRequestBody as CreateBookingRequest;
+          const expectedTodayBookingRange = getExpectedTodayOnlyCreateBookingRange(new Date(submittedRequest.beginDate));
           expect(createBookingRequestBody).toEqual({
             userId: sessionUserId,
             locationId: defaultBookingLocation.epimms_id,

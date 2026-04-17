@@ -50,3 +50,5 @@ export type {
 } from '../../E2E/page-objects/pages/exui/bookingUi.po';
 export { buildExistingBookingsMock };
 export { getUtcDayRangeForLocalDate } from '../../E2E/page-objects/pages/exui/bookingUi.po';
+export { normalizeCreateBookingDates } from '../../E2E/page-objects/pages/exui/bookingUi.po';
+export { getExpectedTodayOnlyCreateBookingRange } from '../../E2E/page-objects/pages/exui/bookingUi.po';

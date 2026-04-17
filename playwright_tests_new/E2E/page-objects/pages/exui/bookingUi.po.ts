@@ -34,6 +34,50 @@ export const getUtcDayRangeForLocalDate = (beginDate: Date, endDate: Date): Book
   };
 };
 
+export const normalizeCreateBookingDates = (beginDate: Date, endDate: Date): BookingDayRange => {
+  let normalizedBeginDate = beginDate;
+  let normalizedEndDate = endDate;
+
+  if (normalizedBeginDate.getHours() !== normalizedBeginDate.getUTCHours()) {
+    normalizedBeginDate = new Date(
+      Date.UTC(
+        normalizedBeginDate.getFullYear(),
+        normalizedBeginDate.getMonth(),
+        normalizedBeginDate.getDate(),
+        0,
+        0,
+        0,
+        0
+      )
+    );
+  }
+
+  if (normalizedEndDate.getHours() !== normalizedEndDate.getUTCHours()) {
+    normalizedEndDate = new Date(
+      Date.UTC(
+        normalizedEndDate.getFullYear(),
+        normalizedEndDate.getMonth(),
+        normalizedEndDate.getDate(),
+        23,
+        59,
+        59,
+        999
+      )
+    );
+  }
+
+  return {
+    beginDate: normalizedBeginDate.toISOString(),
+    endDate: normalizedEndDate.toISOString(),
+  };
+};
+
+export const getExpectedTodayOnlyCreateBookingRange = (beginDate: Date): BookingDayRange => {
+  const endDate = new Date(beginDate);
+  endDate.setHours(23, 59, 59, 999);
+  return normalizeCreateBookingDates(beginDate, endDate);
+};
+
 type SummaryPair = { key: string; value: string };
 
 export class BookingUiPage extends Base {

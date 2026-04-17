@@ -1,4 +1,5 @@
-@ng @known_bug @EUI-4837 
+@functional_enabled @ignore
+# Legacy Codecept coverage retained for reference only. Active coverage lives in playwright_tests_new/integration/test/caseDetails/rolesAndAccess.positive.spec.ts.
 Feature: WA Release 2: Roles and access tab (EUI-4837)
     https://tools.hmcts.net/jira/browse/EUI-3782 ???
     known bug EUI-4837
@@ -263,4 +264,3 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
 #     | Location   |
 #     | Start      |
 #     | End        |
-

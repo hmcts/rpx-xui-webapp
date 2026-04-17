@@ -1,4 +1,5 @@
 import type { Page, Route } from '@playwright/test';
+import { assertValidWorkAllocationTaskListMock } from './workAllocationMockValidation.helper';
 import { setupTaskListBootstrapRoutes, taskListRoutePattern } from './taskListMockRoutes.helper';
 
 export const myCasesRoutePattern = /\/workallocation\/my-work\/cases(?:\?.*)?$/;
@@ -38,10 +39,13 @@ export async function setupManageTasksBaseRoutes(page: Page, options: BaseManage
       return;
     }
 
+    const resolvedTaskListResponse = options.taskListResponse ?? defaultTaskListResponse;
+    assertValidWorkAllocationTaskListMock(resolvedTaskListResponse);
+
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(options.taskListResponse ?? defaultTaskListResponse),
+      body: JSON.stringify(resolvedTaskListResponse),
     });
   });
 }

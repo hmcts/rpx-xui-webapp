@@ -1,4 +1,5 @@
 import { ApiClient, createLogger, ExuiMediaViewerPage, IdamPage, type ApiLogEntry } from '@hmcts/playwright-common';
+import { BookingPage } from './exui/booking.po';
 import { CaseDetailsPage } from './exui/caseDetails.po';
 import { CaseListPage } from './exui/caseList.po';
 import { CreateCasePage } from './exui/createCase.po';
@@ -14,6 +15,7 @@ import { CaseFileViewPage } from './exui/caseFileView.po';
 import { AccessRequestPage } from './exui/accessRequest.po';
 
 export interface PageFixtures {
+  bookingPage: BookingPage;
   determinePage: Page;
   caseDetailsPage: CaseDetailsPage;
   caseListPage: CaseListPage;
@@ -46,6 +48,9 @@ export const pageFixtures = {
     } else {
       await use(page);
     }
+  },
+  bookingPage: async ({ determinePage }, use) => {
+    await use(new BookingPage(determinePage));
   },
   caseDetailsPage: async ({ determinePage }, use) => {
     await use(new CaseDetailsPage(determinePage));

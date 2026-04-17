@@ -1,5 +1,12 @@
 import { expect, test } from '../../../../E2E/fixtures';
-import { applySessionCookies, setupManageTasksBaseRoutes, taskListRoutePattern } from '../../../helpers';
+import {
+  applySessionCookies,
+  setupCaseTaskListMockRoute,
+  setupManageTasksBaseRoutes,
+  taskListRoutePattern,
+} from '../../../helpers';
+import { buildCaseDetailsTasksMinimal } from '../../../mocks/caseDetailsTasks.builder';
+import { buildAsylumCaseMock } from '../../../mocks/cases/asylumCase.mock';
 import { buildTaskListMock, myActionsList } from '../../../mocks/taskList.mock';
 import { buildMyCases } from '../../../mocks/myCases.mock';
 
@@ -71,10 +78,137 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
     });
   });
 
+  test('All-work task title links to the case details tasks tab', async ({ taskListPage, caseDetailsPage, page }) => {
+    const taskListMockResponse = buildTaskListMock(10, '', myActionsList);
+    const firstTask = taskListMockResponse.tasks[0];
+    const caseTaskAssigneeId = 'linked-case-task-assignee';
+
+    firstTask.case_id = '1234567812345678';
+    firstTask.case_name = 'Linked all-work case';
+    firstTask.case_type_id = 'Asylum';
+    firstTask.jurisdiction = 'IA';
+    firstTask.task_title = 'Escalated respondent follow-up';
+
+    await test.step('Setup route mocks for all-work task link navigation', async () => {
+      await setupManageTasksBaseRoutes(page, {
+        taskListResponse: taskListMockResponse,
+        supportedJurisdictions,
+        supportedJurisdictionDetails,
+      });
+
+      await page.route(`**data/internal/cases/${firstTask.case_id}*`, async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(buildAsylumCaseMock({ caseId: firstTask.case_id })),
+        });
+      });
+
+      await page.route('**/workallocation/caseworker/getUsersByServiceName*', async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify([
+            {
+              email: 'linked.caseworker@example.com',
+              firstName: 'Linked',
+              idamId: caseTaskAssigneeId,
+              lastName: 'Caseworker',
+              location: {
+                id: 227101,
+                locationName: 'Taylor House',
+              },
+              roleCategory: 'LEGAL_OPERATIONS',
+              service: 'IA',
+            },
+          ]),
+        });
+      });
+
+      await setupCaseTaskListMockRoute(
+        page,
+        firstTask.case_id,
+        buildCaseDetailsTasksMinimal({
+          caseId: firstTask.case_id,
+          titles: [firstTask.task_title],
+          assignees: [caseTaskAssigneeId],
+          dueDates: [firstTask.due_date],
+        })
+      );
+    });
+
+    await test.step('Open all-work tasks and verify the task title link target', async () => {
+      await page.goto('/work/all-work/tasks', { waitUntil: 'domcontentloaded' });
+      await page.waitForURL(/\/work\/all-work\/tasks(?:\?.*)?$/);
+      await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.exuiSpinnerComponent.wait();
+
+      const firstTaskLink = taskListPage.taskListTable.getByRole('link', { name: firstTask.task_title }).first();
+      await expect(firstTaskLink).toBeVisible();
+      await expect(firstTaskLink).toHaveAttribute(
+        'href',
+        `/cases/case-details/${firstTask.jurisdiction}/${firstTask.case_type_id}/${firstTask.case_id}/tasks`
+      );
+      await firstTaskLink.click();
+    });
+
+    await test.step('Verify the task link opens the case details tasks tab', async () => {
+      await page.waitForURL(new RegExp(`/cases/case-details/IA/Asylum/${firstTask.case_id}/tasks$`));
+      await caseDetailsPage.taskListContainer.waitFor();
+      const taskRows = await caseDetailsPage.getTaskKeyValueRows();
+
+      expect(taskRows).toHaveLength(1);
+      expect(taskRows[0]['Title']).toContain(firstTask.task_title);
+    });
+  });
+
+  test('All-work renders long case names and task titles without dropping the row data', async ({
+    taskListPage,
+    page,
+    tableUtils,
+  }) => {
+    const taskListMockResponse = buildTaskListMock(10, '', myActionsList);
+    const longCaseName = 'case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6';
+    const longTaskTitle =
+      'test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6';
+
+    taskListMockResponse.tasks[2].case_name = longCaseName;
+    taskListMockResponse.tasks[2].task_title = longTaskTitle;
+    taskListMockResponse.tasks[2].case_category = 'auto test category 3';
+    taskListMockResponse.tasks[2].location_name = 'test location 3';
+
+    await test.step('Setup route mocks for all-work long-content rendering', async () => {
+      await setupManageTasksBaseRoutes(page, {
+        taskListResponse: taskListMockResponse,
+        supportedJurisdictions,
+        supportedJurisdictionDetails,
+      });
+    });
+
+    await test.step('Open all-work tasks and parse the rendered table', async () => {
+      await taskListPage.gotoAllWorkTasks();
+      await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.exuiSpinnerComponent.wait();
+    });
+
+    await test.step('Verify long case-name and task-title values remain visible in the table row', async () => {
+      const table = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
+
+      expect(table[2]).toEqual(
+        expect.objectContaining({
+          'Case name': longCaseName,
+          'Case category': 'auto test category 3',
+          Location: 'test location 3',
+          Task: longTaskTitle,
+        })
+      );
+    });
+  });
   test('All-work Case name sort persists after navigating away and back', async ({ taskListPage, page }) => {
     const taskListMockResponse = buildTaskListMock(40, '', myActionsList);
     const allWorkCasesMockResponse = buildMyCases(3);
     const caseNameSortHeaderCell = taskListPage.sortByCaseNameTableHeader.locator('xpath=ancestor::th[1]');
+    const resetSortingButton = page.getByRole('button', { name: 'Reset sorting' });
 
     await test.step('Setup route mocks for all-work tasks sorting', async () => {
       await setupManageTasksBaseRoutes(page, {
@@ -103,43 +237,71 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
 
     await test.step('Navigate to All work cases then back to All work tasks', async () => {
       await taskListPage.taskTableTabs.filter({ hasText: 'Cases' }).first().click();
-      await page.waitForURL(/\/work\/all-work\/cases$/, { timeout: 15_000 });
-
-      const allWorkTasksRequestPromise = page.waitForRequest((request) => {
-        if (!taskListRoutePattern.exec(request.url()) || request.method() !== 'POST') {
-          return false;
-        }
-
-        try {
-          const requestBody = request.postDataJSON() as {
-            searchRequest?: {
-              request_context?: string;
-              sorting_parameters?: Array<{ sort_by?: string; sort_order?: string }>;
-            };
-            view?: string;
-          };
-
-          return (
-            requestBody.view === 'AllWork' &&
-            requestBody.searchRequest?.request_context === 'ALL_WORK' &&
-            requestBody.searchRequest?.sorting_parameters?.some(
-              (sortParameter) => sortParameter.sort_by === 'caseName' && sortParameter.sort_order === 'asc'
-            ) === true
-          );
-        } catch {
-          return false;
-        }
-      });
-
-      await taskListPage.taskTableTabs.filter({ hasText: 'Tasks' }).first().click();
-      await expect(taskListPage.taskListTable).toBeVisible();
+      await page.waitForURL(/\/work\/all-work\/cases(?:\?.*)?$/, { timeout: 15_000 });
       await taskListPage.exuiSpinnerComponent.wait();
 
-      await allWorkTasksRequestPromise;
+      const allWorkTasksRequest = await taskListPage.clickTaskTabAndWaitForView(
+        'Tasks',
+        'AllWork',
+        'returning to All work tasks after switching to cases'
+      );
+      await taskListPage.exuiSpinnerComponent.wait();
+      await expect(taskListPage.taskListTable).toBeVisible();
+
+      const allWorkTasksRequestBody = allWorkTasksRequest.postDataJSON() as {
+        searchRequest?: {
+          sorting_parameters?: Array<{ sort_by?: string; sort_order?: string }>;
+        };
+      };
+
+      expect(allWorkTasksRequestBody).toEqual(
+        expect.objectContaining({
+          searchRequest: expect.objectContaining({
+            sorting_parameters: expect.arrayContaining([
+              expect.objectContaining({
+                sort_by: 'caseName',
+                sort_order: 'asc',
+              }),
+            ]),
+          }),
+        })
+      );
     });
 
     await test.step('Verify Case name sort remains selected on all-work tasks', async () => {
       await expect(caseNameSortHeaderCell).toHaveAttribute('aria-sort', 'ascending');
+      await expect(resetSortingButton).toBeVisible();
+    });
+
+    await test.step('Verify resetting sorting restores the default unsorted Case name state', async () => {
+      await resetSortingButton.click();
+      await taskListPage.exuiSpinnerComponent.wait();
+
+      await expect(caseNameSortHeaderCell).toHaveAttribute('aria-sort', 'none');
+      await expect(resetSortingButton).toHaveCount(0);
+    });
+  });
+
+  test('Single-page all-work results hide pagination controls', async ({ taskListPage, page }) => {
+    const taskListMockResponse = buildTaskListMock(20, '', myActionsList);
+
+    await test.step('Setup route mocks for a single all-work page', async () => {
+      await setupManageTasksBaseRoutes(page, {
+        taskListResponse: taskListMockResponse,
+        supportedJurisdictions,
+        supportedJurisdictionDetails,
+      });
+    });
+
+    await test.step('Open all-work tasks', async () => {
+      await taskListPage.gotoAllWorkTasks();
+      await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.exuiSpinnerComponent.wait();
+    });
+
+    await test.step('Verify the single-page result set does not show pagination controls', async () => {
+      expect.soft(await taskListPage.getResultsText()).toBe('Showing 1 to 20 of 20 results');
+      await expect(taskListPage.exuiBodyComponent.paginationControls).not.toBeVisible();
     });
   });
 

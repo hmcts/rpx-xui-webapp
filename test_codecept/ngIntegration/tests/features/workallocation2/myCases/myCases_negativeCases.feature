@@ -1,4 +1,5 @@
-
+@functional_enabled @ignore
+# Legacy Codecept coverage retained for reference only. Active coverage lives in playwright_tests_new/integration/test/manageTasks/myCases/myCases.negative.spec.ts.
 Feature: WA Release 2: My cases - negative scenarios
 
     Background: Mock and browser setup
@@ -20,4 +21,3 @@ Feature: WA Release 2: My cases - negative scenarios
             | IAC_Judge_WA_R2    | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 400          | Page             | Sorry, there is a problem with the service          |
             | IAC_CaseOfficer_R2 | caseworker-ia-caseofficer,caseworker-ia-admofficer | 401          | Page             | Sorry, you're not authorised to perform this action |
             | IAC_Judge_WA_R2    | caseworker-ia-iacjudge,caseworker-ia,caseworker    | 403          | Page             | Sorry, you're not authorised to perform this action |
-

@@ -1,0 +1,34 @@
+# Branch Delivery TODO
+
+- [x] Create `codex/exui-4213-wa-playwright-coverage` from `origin/master`.
+- [x] Confirm the current Playwright framework does not fully deliver EXUI-4213.
+- [x] Add shared validation for mandatory Work Allocation task-list mock fields.
+- [x] Add shared validation for mandatory case-task mock fields.
+- [x] Wire shared task-list and case-task route helpers to validate mocked payloads by default.
+- [x] Validate `setupManageTasksBaseRoutes(...)` task-list responses before fulfillment.
+- [x] Add direct node-api coverage for valid mocked payloads and clear field-level failures.
+- [x] Add scenario-helper support for `user + entity`, `user -> entities`, and `entity -> users`.
+- [x] Add direct node-api coverage for access matching and `EXCLUDED` behaviour.
+- [x] Add Playwright integration coverage proving `user -> entities` exclusion behaviour on `My access`.
+- [x] Add Playwright integration coverage proving `entity -> users` separation of active roles and exclusions on `Roles and access`.
+- [x] Move case-task integration specs onto the shared validated route helper where appropriate.
+- [x] Align the access-scenario helper with the repo's current specific-access `My access` contract.
+- [x] Stop suppressing active role rows when exclusions exist for the same actor and case.
+- [x] Replace permissive timestamp parsing with strict calendar validation for mandatory task dates.
+- [x] Repair the repo lint scripts so `yarn lint` resolves both Prettier and ESLint in this Yarn environment.
+- [x] Remove the `docs/*.md` ignore rules so traceability artefacts are reviewable in the branch.
+- [x] Replace stale branch traceability docs with EXUI-4213-specific plan, decisions, and results.
+- [x] Refresh branch evidence after the formatter and lint-entrypoint follow-up changes.
+- [x] Run targeted unit and integration validation for the touched Work Allocation areas.
+- [x] Run a final review pass and record residual risks instead of overstating delivery.
+- [x] Align requested and denied `My access` scenario states with the repo's current role-driven status semantics.
+- [x] Move large scenario datasets out of the touched specs and into dedicated integration mock files.
+- [x] Identify the Work Allocation Codecept features that are safe to retire based on current Playwright parity.
+- [x] Add quick-win Playwright parity for legacy `My cases` allocator actions and single-page/no-sort coverage.
+- [x] Add quick-win Playwright parity for legacy `Available tasks` manage-action visibility.
+- [x] Add quick-win Playwright parity for legacy `All work` task-link, reset-sort, and single-page coverage.
+- [x] Add quick-win Playwright parity for legacy `Roles and access` empty, allocator, and non-allocator states.
+- [x] Add a dedicated `Roles and access` integration route helper so the new parity coverage stays deterministic.
+- [x] Retire the matched legacy Work Allocation Codecept feature files with explicit ignore markers and replacement notes.
+- [x] Keep workflow-heavy legacy Work Allocation Codecept features active where Playwright parity is still incomplete.
+- [x] Rerun the targeted Playwright integration slice after the retirement-driven additions.

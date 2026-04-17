@@ -1,5 +1,6 @@
+@functional_enabled @ignore
+# Legacy Codecept coverage retained for reference only. Active coverage lives in playwright_tests_new/integration/test/manageTasks/myCases/myCases.positive.spec.ts.
 # https://tools.hmcts.net/jira/browse/EUI-3886
-@ng   
 Feature: WA Release 2: My work to  My cases to pagination sorting
 
     Background: Mock and browser setup
@@ -124,4 +125,3 @@ Feature: WA Release 2: My work to  My cases to pagination sorting
             | UserIdentifier  | UserType | Roles                                           |
             # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
             | IAC_Judge_WA_R2 | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |
-

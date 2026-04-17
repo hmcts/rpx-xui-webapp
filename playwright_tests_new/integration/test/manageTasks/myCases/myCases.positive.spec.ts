@@ -1,6 +1,6 @@
 import { expect, test } from '../../../../E2E/fixtures';
 import { applySessionCookies, setupMyCasesRoutes } from '../../../helpers';
-import { buildMyCases, buildMyCasesMock } from '../../../mocks/myCases.mock';
+import { buildMyCases, buildMyCasesMock, myCasesAllocatorActions } from '../../../mocks/myCases.mock';
 import { formatUiDate } from '../../../utils/tableUtils';
 
 const userIdentifier = 'STAFF_ADMIN';
@@ -41,6 +41,9 @@ test.describe(`My Cases as ${userIdentifier}`, { tag: ['@integration', '@integra
         expect(table[i]['Start']).toBe(formatUiDate(expectedCase.startDate));
         expect(table[i]['End']).toBe(formatUiDate(expectedCase.endDate));
       }
+
+      await expect(taskListPage.taskListTable.getByRole('button', { name: 'Case name', exact: true })).toHaveCount(0);
+      await expect(taskListPage.taskListTable.getByRole('button', { name: 'Case category', exact: true })).toHaveCount(0);
     });
 
     await test.step('Verify the case name column renders links to case details', async () => {
@@ -66,6 +69,42 @@ test.describe(`My Cases as ${userIdentifier}`, { tag: ['@integration', '@integra
     });
   });
 
+  test(`Allocator actions render for multiple case rows`, async ({ taskListPage, page }) => {
+    const myCasesMockResponse = buildMyCases(
+      2,
+      (index) => ({
+        case_id: `123456781234567${index}`,
+        case_name: `Managed case ${index + 1}`,
+        actions: [...myCasesAllocatorActions],
+      }),
+      2
+    );
+    const expectedActionIds = ['reallocate', 'remove'];
+
+    await test.step('Setup route mocks for allocator-managed cases', async () => {
+      await setupMyCasesRoutes(page, myCasesMockResponse);
+    });
+
+    await test.step('Open My cases', async () => {
+      await taskListPage.gotoMyCases();
+      await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.exuiSpinnerComponent.wait();
+    });
+
+    const assertManageActionsForRow = async (rowIndex: number) => {
+      await taskListPage.openManageActionsForRow(rowIndex, `my cases manage action matrix row ${rowIndex + 1}`);
+
+      for (const actionId of expectedActionIds) {
+        await taskListPage.waitForTaskActionForRow(rowIndex, actionId, `my cases manage action matrix row ${rowIndex + 1}`);
+      }
+    };
+
+    await test.step('Verify rows 1 and 2 expose Reallocate and Remove Allocation', async () => {
+      await assertManageActionsForRow(0);
+      await assertManageActionsForRow(1);
+    });
+  });
+
   test(`Large datasets render correctly`, async ({ taskListPage, tableUtils, page }) => {
     const myCasesMockResponse = buildMyCases(999, undefined, 50);
 
@@ -82,6 +121,7 @@ test.describe(`My Cases as ${userIdentifier}`, { tag: ['@integration', '@integra
     await test.step('Check large dataset rendering of results data', async () => {
       expect(await taskListPage.myCasesResultsAmount.textContent()).toBe(`Showing ${myCasesMockResponse.cases.length} results`);
       await expect(taskListPage.uniqueCasesSummary).toContainText(`${myCasesMockResponse.unique_cases} cases`);
+      await expect(taskListPage.exuiBodyComponent.paginationControls).not.toBeVisible();
 
       const table = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
 

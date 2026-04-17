@@ -65,6 +65,17 @@ describe('navigation access utils', () => {
     expect(isNavigationItemVisible(hiddenItem, [], menuFlags)).toBeFalse();
   });
 
+  it('should deny a search navigation item when a blocked flag is enabled', () => {
+    const item: NavigationItem = {
+      href: '/search',
+      active: false,
+      notFlags: ['enabledFlag'],
+      text: 'Search',
+    };
+
+    expect(isNavigationItemVisible(item, [], menuFlags)).toBeFalse();
+  });
+
   it('should filter navigation items by roles and excluded roles', () => {
     const items: NavigationItem[] = [
       {

@@ -2,6 +2,7 @@ import { ModuleWithProviders } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { TaskSupervisorGuard } from '../app/guards/task-supervisor.guard';
 import { HealthCheckGuard } from '../app/shared/guards/health-check.guard';
+import { NavigationAccessGuard } from '../app/shared/guards/navigation-access.guard';
 import { TaskActionConstants } from './components/constants';
 import {
   AllWorkCaseComponent,
@@ -20,7 +21,6 @@ import { MyAccessComponent } from './containers/my-access/my-access.component';
 import { MyCasesComponent } from './containers/my-cases/my-cases.component';
 import { TaskAssignmentChooseRoleComponent } from './containers/task-assignment-choose-role/task-assignment-choose-role.component';
 import { WorkAllocationAccessGuard } from './guards';
-import { MyWorkAccessGuard } from './guards/my-work-access.guard';
 import { TaskResolver } from './resolvers';
 import { LocationResolver } from './resolvers/location-resolver.service';
 import { TaskRoleResolverService } from './resolvers/task-role-resolver.service';
@@ -33,7 +33,11 @@ export const ROUTES: Routes = [
       {
         path: 'my-work',
         component: TaskHomeComponent,
-        canActivate: [HealthCheckGuard, MyWorkAccessGuard],
+        canActivate: [HealthCheckGuard, NavigationAccessGuard],
+        data: {
+          accessDeniedRedirectUrl: '/cases',
+          requiredNavigationHref: '/work/my-work/list',
+        },
         resolve: {
           locations: LocationResolver,
         },

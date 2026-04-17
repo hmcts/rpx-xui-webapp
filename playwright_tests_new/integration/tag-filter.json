@@ -2,7 +2,6 @@
   "excludedTags": [],
   "availableTags": [
     "@integration",
-    "@integration-booking-ui",
     "@integration-case-file-view",
     "@integration-case-list",
     "@integration-create-case",

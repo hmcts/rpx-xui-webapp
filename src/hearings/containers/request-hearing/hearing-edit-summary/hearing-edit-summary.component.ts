@@ -465,8 +465,9 @@ export class HearingEditSummaryComponent extends RequestHearingPageFlow implemen
     hmcCaseCategories: CaseCategoryModel[],
     shvCaseCategories: CaseCategoryModel[]
   ): CaseCategoryModel[] {
-    this.hearingsService.propertiesUpdatedAutomatically.withinPage.caseCategories = [];
-
+    if (!this.hearingsService.propertiesUpdatedAutomatically.withinPage.caseCategories) {
+      this.hearingsService.propertiesUpdatedAutomatically.withinPage.caseCategories = [];
+    }
     // Get case types
     const hmcCategoryValues = hmcCaseCategories
       .filter((caseCategories) => caseCategories.categoryType === CategoryType.CaseType)

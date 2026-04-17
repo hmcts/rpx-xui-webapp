@@ -304,8 +304,7 @@ export function buildMyAccessResponseFromScenario(
     .map((record) => {
       const role = getMyAccessRole(record);
 
-      return (
-      buildMyAccessCaseMock({
+      return buildMyAccessCaseMock({
         id: record.assignmentId,
         case_id: record.caseId,
         case_name: record.caseName,
@@ -321,8 +320,7 @@ export function buildMyAccessResponseFromScenario(
         role,
         hasAccess: getMyAccessHasAccess(record),
         isNew: getMyAccessIsNew(record),
-      })
-      );
+      });
     });
 
   return {

@@ -23,3 +23,12 @@
 - [x] Run a final review pass and record residual risks instead of overstating delivery.
 - [x] Align requested and denied `My access` scenario states with the repo's current role-driven status semantics.
 - [x] Move large scenario datasets out of the touched specs and into dedicated integration mock files.
+- [x] Identify the Work Allocation Codecept features that are safe to retire based on current Playwright parity.
+- [x] Add quick-win Playwright parity for legacy `My cases` allocator actions and single-page/no-sort coverage.
+- [x] Add quick-win Playwright parity for legacy `Available tasks` manage-action visibility.
+- [x] Add quick-win Playwright parity for legacy `All work` task-link, reset-sort, and single-page coverage.
+- [x] Add quick-win Playwright parity for legacy `Roles and access` empty, allocator, and non-allocator states.
+- [x] Add a dedicated `Roles and access` integration route helper so the new parity coverage stays deterministic.
+- [x] Retire the matched legacy Work Allocation Codecept feature files with explicit ignore markers and replacement notes.
+- [x] Keep workflow-heavy legacy Work Allocation Codecept features active where Playwright parity is still incomplete.
+- [x] Rerun the targeted Playwright integration slice after the retirement-driven additions.

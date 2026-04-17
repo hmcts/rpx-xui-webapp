@@ -72,3 +72,37 @@ Next Instructions (to next agent)
 1. Implement shared Work Allocation mock validation in the Playwright helper layer.
 2. Add scenario helpers and tests for access-rule behaviour, including `EXCLUDED`.
 3. Run targeted unit and integration validation, then document the real evidence boundary.
+
+## Retirement Extension
+
+### Problem
+
+Even after the EXUI-4213 Playwright hardening, a set of legacy Work Allocation Codecept features was still executed for list and tab views that the new Playwright suite either already covered or could cover with small, low-risk additions.
+
+### Scope
+
+- Add quick-win Playwright parity for legacy Work Allocation list and tab coverage in:
+  - `My cases`
+  - `Available tasks`
+  - `All work`
+  - `Roles and access`
+- Retire only the matched legacy Codecept features by marking them ignored with explicit replacement notes.
+- Keep the work limited to deterministic mocked coverage and branch traceability artefacts.
+
+### Non-scope
+
+- Retiring workflow-heavy legacy Codecept features such as assignment workflows, filters with distinct behaviour, task completion, or exclusions-management journeys.
+- Replacing every remaining Work Allocation Codecept test in one branch.
+- Product-side Angular changes.
+
+### Acceptance Criteria Mapping
+
+1. Playwright covers the legacy list or tab behaviour being retired, with equal or stronger assertions.
+2. Retired Codecept features are marked explicitly and remain reviewable in the repo history.
+3. Workflow-heavy legacy features without real Playwright parity stay active.
+
+### Risk
+
+`Medium`
+
+The product code is unchanged, but retiring legacy tests too aggressively would reduce effective coverage. Every retirement therefore needs direct Playwright proof and an explicit explanation of what stayed active.

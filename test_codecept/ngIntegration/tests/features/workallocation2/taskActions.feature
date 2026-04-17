@@ -1,4 +1,5 @@
-@ng  @wa2 @task_action
+@functional_enabled @ignore
+# Legacy Codecept coverage retained for reference only. Active coverage lives in playwright_tests_new/integration/test/manageTasks/availableTasks/availableTaskList.positive.spec.ts.
 Feature: WA Release 2: Task actions
 
     Background: Mock and browser setup
@@ -44,4 +45,3 @@ Feature: WA Release 2: Task actions
             | UserType       | Roles                                              |
             | Caseworker IAC | caseworker-ia-caseofficer,caseworker-ia-admofficer |
             | Judge          | caseworker-ia-iacjudge,caseworker-ia,caseworker    |
-

@@ -43,3 +43,19 @@ The branch claims clear failures for malformed mandatory task attributes. Date v
 ## D11. Keep scenario helpers and scenario mocks aligned with the supported My Access states
 
 If a shared test helper claims to support requested or denied `My access` rows, it must carry the matching role, label, start/end status, and access flags instead of relying on granted-state defaults. The larger scenario datasets also live in dedicated mock files so specs stay focused on assertions rather than embedded fixture construction.
+
+## D12. Retire legacy Work Allocation Codecept coverage only when Playwright owns the same behavioural contract
+
+This branch does not remove legacy tests on optimism alone. A legacy feature is retired only when the new Playwright suite already proves the same list, tab, or manage-action behaviour, or when the remaining gap is small enough to close deterministically in the same branch.
+
+## D13. Use explicit ignore markers and replacement notes for retired Codecept features
+
+Legacy Work Allocation `.feature` files stay in the repo as reference artefacts. Each retired file is marked with `@functional_enabled @ignore` and a note pointing at the owning Playwright spec, so the retirement is visible in review and reversible if parity is challenged.
+
+## D14. Keep workflow-heavy Work Allocation Codecept features active for now
+
+Assignment workflows, task-completion journeys, filters with distinct behavioural coverage, and exclusions-management flows remain active because this branch focuses on quick-win list and tab parity rather than full behavioural migration.
+
+## D15. Prefer direct route navigation over stricter shared shell helpers when a parity-only assertion becomes flaky
+
+The new `All work` task-title deep-link coverage is about proving the rendered link target and landing page, not stress-testing the shared task-list bootstrap helper. Where the shared navigation helper made the new assertion flaky, the spec was simplified to direct route navigation so the retirement evidence stays deterministic.

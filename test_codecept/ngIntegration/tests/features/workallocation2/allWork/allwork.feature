@@ -1,4 +1,5 @@
-@ng
+@functional_enabled @ignore
+# Legacy Codecept coverage retained for reference only. Active coverage lives in playwright_tests_new/integration/test/manageTasks/allWork/allWorkTasks.positive.spec.ts.
 Feature: WA Release 2: All work
 
     Background: Mock and browser setup

@@ -130,6 +130,33 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
       await expect(taskListPage.sortByHearingDateTableHeader).toBeVisible();
     });
   });
+
+  test(`Available task manage actions render claim and claim-and-go on multiple rows`, async ({ taskListPage, page }) => {
+    const taskListMockResponse = buildTaskListMock(3, '', availableActionsList);
+
+    await test.step('Setup route mock for deterministic available task actions', async () => {
+      await setupManageTasksBaseRoutes(page, { taskListResponse: taskListMockResponse });
+    });
+
+    await test.step('Navigate to the available tasks list page', async () => {
+      await taskListPage.goto();
+      await taskListPage.taskTableTabs.filter({ hasText: 'Available tasks' }).first().click();
+      await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.exuiSpinnerComponent.wait();
+    });
+
+    const assertAvailableActionsForRow = async (rowIndex: number) => {
+      await taskListPage.openManageActionsForRow(rowIndex, `available tasks action matrix row ${rowIndex + 1}`);
+      await taskListPage.waitForTaskActionForRow(rowIndex, 'claim', `available tasks action matrix row ${rowIndex + 1}`);
+      await taskListPage.waitForTaskActionForRow(rowIndex, 'claim-and-go', `available tasks action matrix row ${rowIndex + 1}`);
+    };
+
+    await test.step('Verify rows 1 and 2 expose Assign to me and Assign to me and go to task', async () => {
+      await assertAvailableActionsForRow(0);
+      await assertAvailableActionsForRow(1);
+    });
+  });
+
   test(`User ${userIdentifier} can assign a task to themselves and see the expected notifications`, async ({
     taskListPage,
     page,

@@ -13,6 +13,12 @@ This branch closes the specific gaps previously identified against EXUI-4213:
 - access scenarios are modelled in reusable helpers that follow the current repo contract
 - the `user + entity`, `user -> entities`, and `entity -> users` ticket scenarios now have current Playwright-era coverage
 
+It also adds a focused retirement extension for legacy Work Allocation Codecept coverage:
+
+- list and tab scenarios now have enough Playwright parity to retire a first batch of legacy `ngIntegration` Work Allocation `.feature` files
+- the retirement is limited to view/list/manage-link behaviour that is now owned by Playwright
+- workflow-heavy legacy features remain active where this branch did not yet add equivalent Playwright depth
+
 ## Implementation
 
 - Added shared mandatory Work Allocation mock validation in `playwright_tests_new/integration/helpers/workAllocationMockValidation.helper.ts`.
@@ -30,6 +36,21 @@ This branch closes the specific gaps previously identified against EXUI-4213:
 - Moved the larger Work Allocation scenario datasets into `playwright_tests_new/integration/mocks/workAllocationAccessScenarios.mock.ts` so the touched specs stay assertion-focused.
 - Moved case-task setup in `playwright_tests_new/integration/test/manageTasks/caseTaskList/caseTaskList.positive.spec.ts` onto the shared validated case-task route helper.
 - Added `Roles and access` scenario coverage in `playwright_tests_new/integration/test/caseDetails/rolesAndAccess.positive.spec.ts`, including proof of the outgoing judicial-user lookup payload.
+- Added deterministic `Roles and access` route setup in `playwright_tests_new/integration/helpers/rolesAndAccessMockRoutes.helper.ts` and exported it via `playwright_tests_new/integration/helpers/index.ts`.
+- Extended `playwright_tests_new/integration/test/manageTasks/myCases/myCases.positive.spec.ts` to cover multi-row allocator actions plus the single-page/no-sort behaviour still carried by legacy Codecept `My cases` features.
+- Extended `playwright_tests_new/integration/test/manageTasks/availableTasks/availableTaskList.positive.spec.ts` to cover the legacy available-task action-menu contract on multiple rows.
+- Extended `playwright_tests_new/integration/test/manageTasks/allWork/allWorkTasks.positive.spec.ts` to cover task-title deep linking to the case-details task tab, reset-sort behaviour, and single-page pagination hiding.
+- Reworked `playwright_tests_new/integration/test/caseDetails/rolesAndAccess.positive.spec.ts` to cover allocator empty state, allocator populated state, and non-allocator read-only behaviour.
+- Retired the matched legacy Codecept features under `test_codecept/ngIntegration/tests/features/workallocation2/` for:
+  - `myCases/myCases.feature`
+  - `myCases/myCases_negativeCases.feature`
+  - `myCases/myCases_manageLinks.feature`
+  - `myCases/myCases_pagination.feature`
+  - `allWork/allwork.feature`
+  - `allWork/allwork_manageLinks.feature`
+  - `allWork/allwork_paginationSorting.feature`
+  - `rolesAccess/rolesAndAccessTabPage.feature`
+  - `taskActions.feature`
 - Updated the root lint scripts in `package.json` so Prettier and ESLint resolve through the local `node_modules` binaries in this Yarn environment.
 - Removed the `docs/*.md` ignore entries from `.gitignore` so the required branch traceability artefacts can be reviewed and committed with the code changes.
 
@@ -63,6 +84,25 @@ Follow-up review-fix validation:
 - `yarn test:playwright:integration playwright_tests_new/integration/test/manageTasks/myAccess/myAccess.positive.spec.ts playwright_tests_new/integration/test/caseDetails/rolesAndAccess.positive.spec.ts`
 - Result: `4 passed (47.0s)`
 
+Retirement-extension validation:
+
+- `yarn test:playwright:integration playwright_tests_new/integration/test/manageTasks/myCases/myCases.positive.spec.ts playwright_tests_new/integration/test/manageTasks/availableTasks/availableTaskList.positive.spec.ts playwright_tests_new/integration/test/manageTasks/allWork/allWorkTasks.positive.spec.ts playwright_tests_new/integration/test/caseDetails/rolesAndAccess.positive.spec.ts`
+- Result: `20 passed, 1 flaky, 1 failed` before correction, which exposed:
+  - a bad new all-work result-summary expectation
+  - a flaky first-attempt navigation path in the new all-work task-link spec
+- `yarn test:playwright:integration playwright_tests_new/integration/test/manageTasks/allWork/allWorkTasks.positive.spec.ts`
+- Result: `8 passed (26.2s)` after correcting the new all-work assertions
+- `yarn test:playwright:integration playwright_tests_new/integration/test/manageTasks/myCases/myCases.positive.spec.ts playwright_tests_new/integration/test/manageTasks/availableTasks/availableTaskList.positive.spec.ts playwright_tests_new/integration/test/manageTasks/allWork/allWorkTasks.positive.spec.ts playwright_tests_new/integration/test/caseDetails/rolesAndAccess.positive.spec.ts`
+- Result: `20 passed (38.6s)` on the first post-fix branch state
+- `yarn test:playwright:integration playwright_tests_new/integration/test/manageTasks/allWork/allWorkTasks.positive.spec.ts`
+- Result: `8 passed (37.9s)` after replacing the manual all-work tab request waiter with the hardened `clickTaskTabAndWaitForView` helper when a later combined rerun exposed a timeout in the persisted-sort scenario
+- `yarn test:playwright:integration playwright_tests_new/integration/test/manageTasks/myCases/myCases.positive.spec.ts playwright_tests_new/integration/test/manageTasks/availableTasks/availableTaskList.positive.spec.ts playwright_tests_new/integration/test/manageTasks/allWork/allWorkTasks.positive.spec.ts playwright_tests_new/integration/test/caseDetails/rolesAndAccess.positive.spec.ts`
+- Result: `20 passed (37.0s)` on the final post-fix branch state
+- `yarn test:playwright:integration playwright_tests_new/integration/test/manageTasks/myCases/myCases.negative.spec.ts`
+- Result: `5 passed (12.8s)`
+- `rg -n "@functional_enabled @ignore" test_codecept/ngIntegration/tests/features/workallocation2/myCases test_codecept/ngIntegration/tests/features/workallocation2/allWork test_codecept/ngIntegration/tests/features/workallocation2/rolesAccess/rolesAndAccessTabPage.feature test_codecept/ngIntegration/tests/features/workallocation2/taskActions.feature`
+- Result: retired feature markers present on the matched Work Allocation Codecept files
+
 Touched-file lint:
 
 - `./node_modules/.bin/eslint playwright_tests_new/integration/helpers/workAllocationMockValidation.helper.ts playwright_tests_new/integration/helpers/workAllocationAccessScenarios.helper.ts playwright_tests_new/api/unit/work-allocation-mock-validation.unit.api.ts playwright_tests_new/api/unit/work-allocation-access-scenarios.unit.api.ts playwright_tests_new/integration/test/manageTasks/myAccess/myAccess.positive.spec.ts playwright_tests_new/integration/test/caseDetails/rolesAndAccess.positive.spec.ts`
@@ -79,6 +119,7 @@ Repo lint entrypoint:
 - Existing Work Allocation contract schemas under the broader API-contract test layer remain intentionally permissive; this branch hardens mocked integration coverage, not every contract definition in the repo.
 - The new access-scenario helpers are still test-support abstractions rather than production service logic, so future product changes to access semantics will need the helpers and tests to be kept in sync deliberately.
 - `yarn lint` is now runnable, but the repo still carries a large warning baseline outside this ticket slice.
+- Several legacy Work Allocation Codecept features intentionally remain active because this branch did not migrate their workflow depth. The main retained areas are assignment workflows, filters with distinct behaviour, case-based all-work journeys, exclusions-management flows, and task-event completion.
 
 ## Handoff
 

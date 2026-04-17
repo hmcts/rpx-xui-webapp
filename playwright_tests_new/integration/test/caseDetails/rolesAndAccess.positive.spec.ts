@@ -1,93 +1,104 @@
+import type { Page } from '@playwright/test';
 import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies, buildEntityToUsersAccessView } from '../../helpers';
-import { buildAsylumCaseMock } from '../../mocks/cases/asylumCase.mock';
+import { applySessionCookies, setupRolesAndAccessMockRoutes } from '../../helpers';
 import {
-  rolesAndAccessScenarioCaseId as caseId,
+  rolesAndAccessScenarioCaseId as populatedCaseId,
   rolesAndAccessScenarioRecords as scenarioRecords,
 } from '../../mocks/workAllocationAccessScenarios.mock';
 
 const userIdentifier = 'STAFF_ADMIN';
-const caseMockResponse = buildAsylumCaseMock({ caseId });
+const emptyCaseId = '1000000000000200';
+
+const getRoleAccessSection = (page: Page, title: 'Judiciary' | 'Legal Ops') =>
+  page.locator('exui-role-access-section').filter({
+    has: page.getByRole('heading', { level: 2, name: title }),
+  });
 
 test.beforeEach(async ({ page }) => {
   await applySessionCookies(page, userIdentifier);
-
-  const entityView = buildEntityToUsersAccessView(scenarioRecords, caseId);
-
-  await page.route(`**data/internal/cases/${caseId}*`, async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(caseMockResponse),
-    });
-  });
-
-  await page.route('**/workallocation/caseworker/getUsersByServiceName*', async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(entityView.caseworkers),
-    });
-  });
-
-  await page.route('**/api/role-access/roles/post*', async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(entityView.roles),
-    });
-  });
-
-  await page.route('**/api/role-access/exclusions/post*', async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(entityView.exclusions),
-    });
-  });
-
-  await page.route('**/api/role-access/roles/getJudicialUsers*', async (route) => {
-    const requestBody = (route.request().postDataJSON() as { userIds?: string[]; services?: string[] }) ?? {};
-    const requestedUserIds = Array.isArray(requestBody.userIds) ? requestBody.userIds : [];
-    const requestedServices = Array.isArray(requestBody.services) ? requestBody.services : [];
-    const filteredJudicialUsers =
-      requestedUserIds.length > 0 && requestedServices.includes('IA')
-        ? entityView.judicialUsers.filter((user) => requestedUserIds.includes(user.sidam_id))
-        : [];
-
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(filteredJudicialUsers),
-    });
-  });
 });
 
 test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '@integration-case-details'] }, () => {
-  test('Entity->users access view separates active roles from EXCLUDED users', async ({ page, tableUtils }) => {
-    const judicialLookupRequestPromise = page.waitForRequest('**/api/role-access/roles/getJudicialUsers*');
-    const judiciarySection = page.locator('exui-role-access-section').filter({
-      has: page.getByRole('heading', { level: 2, name: 'Judiciary' }),
-    });
-    const legalOpsSection = page.locator('exui-role-access-section').filter({
-      has: page.getByRole('heading', { level: 2, name: 'Legal Ops' }),
+  test('Case allocator sees empty-state messages and allocate links when no roles or exclusions exist', async ({ page }) => {
+    const judiciarySection = getRoleAccessSection(page, 'Judiciary');
+    const legalOpsSection = getRoleAccessSection(page, 'Legal Ops');
+    const addExclusionLink = page.locator('a.govuk-link[href*="/role-access/add-exclusion"]').first();
+
+    await test.step('Setup route mocks for an empty Roles and access case', async () => {
+      await setupRolesAndAccessMockRoutes(page, {
+        caseId: emptyCaseId,
+        records: [],
+        isCaseAllocator: true,
+      });
     });
 
-    await test.step('Open the Roles and access tab directly on case details', async () => {
-      await page.goto(`/cases/case-details/IA/Asylum/${caseId}/roles-and-access`);
+    await test.step('Open the Roles and access page directly on case details', async () => {
+      await page.goto(`/cases/case-details/IA/Asylum/${emptyCaseId}/roles-and-access`);
       await expect(page.getByRole('heading', { level: 2, name: 'Roles and access' })).toBeVisible();
     });
 
-    await test.step('Verify active roles remain visible even when exclusions exist for the same user', async () => {
+    await test.step('Verify allocate links and empty-state messaging are rendered', async () => {
+      await expect(judiciarySection.getByRole('link', { name: 'Allocate a judicial role' })).toBeVisible();
+      await expect(legalOpsSection.getByRole('link', { name: 'Allocate a legal ops role' })).toBeVisible();
+      await expect(addExclusionLink).toBeVisible();
+
+      await expect(judiciarySection.locator('table.govuk-table')).toHaveCount(0);
+      await expect(legalOpsSection.locator('table.govuk-table')).toHaveCount(0);
+      await expect(page.locator('exui-exclusions-table table.govuk-table')).toHaveCount(0);
+
+      await expect(judiciarySection).toContainText('There are no judicial roles for this case.');
+      await expect(legalOpsSection).toContainText('There are no legal Ops roles for this case.');
+      await expect(page.locator('exui-exclusions-table')).toContainText('There are no exclusions for this case.');
+    });
+  });
+
+  test('Case allocator sees active roles, exclusions, headers, and manage actions', async ({ page, tableUtils }) => {
+    const judicialLookupRequestPromise = page.waitForRequest('**/api/role-access/roles/getJudicialUsers*');
+    const judiciarySection = getRoleAccessSection(page, 'Judiciary');
+    const legalOpsSection = getRoleAccessSection(page, 'Legal Ops');
+    const addExclusionLink = page.locator('a.govuk-link[href*="/role-access/add-exclusion"]').first();
+
+    await test.step('Setup route mocks for a populated Roles and access case', async () => {
+      await setupRolesAndAccessMockRoutes(page, {
+        caseId: populatedCaseId,
+        records: scenarioRecords,
+        isCaseAllocator: true,
+      });
+    });
+
+    await test.step('Open the Roles and access page directly on case details', async () => {
+      await page.goto(`/cases/case-details/IA/Asylum/${populatedCaseId}/roles-and-access`);
+      await expect(page.getByRole('heading', { level: 2, name: 'Roles and access' })).toBeVisible();
+    });
+
+    await test.step('Verify links, headers, and judicial lookup payload for the populated view', async () => {
       const judicialLookupRequest = await judicialLookupRequestPromise;
-      expect(judicialLookupRequest).toBeTruthy();
       expect(judicialLookupRequest.postDataJSON()).toEqual({
         userIds: ['judge-bob'],
         services: ['IA'],
       });
 
+      await expect(judiciarySection.getByRole('link', { name: 'Allocate a judicial role' })).toBeVisible();
+      await expect(legalOpsSection.getByRole('link', { name: 'Allocate a legal ops role' })).toHaveCount(0);
+      await expect(addExclusionLink).toBeVisible();
+
+      expect(
+        (await judiciarySection.locator('table.govuk-table thead th').allInnerTexts())
+          .map((value) => value.trim())
+          .filter(Boolean)
+      ).toEqual(['Name', 'Role', 'Start', 'End']);
+      expect(
+        (await legalOpsSection.locator('table.govuk-table thead th').allInnerTexts()).map((value) => value.trim()).filter(Boolean)
+      ).toEqual(['Name', 'Role', 'Start', 'End']);
+      expect(
+        (await page.locator('exui-exclusions-table table.govuk-table thead th').allInnerTexts())
+          .map((value) => value.trim())
+          .filter(Boolean)
+      ).toEqual(['Name', 'User type', 'Notes', 'Added']);
+    });
+
+    await test.step('Verify active roles remain visible even when exclusions exist for the same user', async () => {
       const judiciaryTable = judiciarySection.locator('table.govuk-table').first();
-      await expect(judiciaryTable).toBeVisible();
       const judiciaryRows = await tableUtils.parseDataTable(judiciaryTable);
 
       expect(judiciaryRows).toHaveLength(1);
@@ -114,7 +125,7 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
       );
     });
 
-    await test.step('Verify EXCLUDED grant behaviour is rendered in the Exclusions table', async () => {
+    await test.step('Verify EXCLUDED grant behaviour and allocator controls are rendered', async () => {
       const exclusionsTable = page.locator('exui-exclusions-table table.govuk-table').first();
       const exclusionRows = await tableUtils.parseDataTable(exclusionsTable);
 
@@ -127,6 +138,46 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
           Added: '15 January 2026',
         })
       );
+
+      await expect(judiciarySection.getByRole('link', { name: 'Manage' })).toHaveCount(1);
+      await expect(legalOpsSection.getByRole('link', { name: 'Manage' })).toHaveCount(1);
+      await expect(page.locator('exui-exclusions-table').getByRole('link', { name: 'Delete' })).toHaveCount(1);
+    });
+  });
+
+  test('Non case allocators can view roles and exclusions but not manage or delete them', async ({ page, tableUtils }) => {
+    const judiciarySection = getRoleAccessSection(page, 'Judiciary');
+    const legalOpsSection = getRoleAccessSection(page, 'Legal Ops');
+
+    await test.step('Setup route mocks for a non-case allocator user', async () => {
+      await setupRolesAndAccessMockRoutes(page, {
+        caseId: populatedCaseId,
+        records: scenarioRecords,
+        isCaseAllocator: false,
+      });
+    });
+
+    await test.step('Open the Roles and access page directly on case details', async () => {
+      await page.goto(`/cases/case-details/IA/Asylum/${populatedCaseId}/roles-and-access`);
+      await expect(page.getByRole('heading', { level: 2, name: 'Roles and access' })).toBeVisible();
+    });
+
+    await test.step('Verify non-case allocators still see the role and exclusion data', async () => {
+      const judiciaryRows = await tableUtils.parseDataTable(judiciarySection.locator('table.govuk-table').first());
+      const legalOpsRows = await tableUtils.parseDataTable(legalOpsSection.locator('table.govuk-table').first());
+      const exclusionRows = await tableUtils.parseDataTable(page.locator('exui-exclusions-table table.govuk-table').first());
+
+      expect(judiciaryRows).toHaveLength(1);
+      expect(legalOpsRows).toHaveLength(1);
+      expect(exclusionRows).toHaveLength(1);
+    });
+
+    await test.step('Verify non-case allocators cannot allocate, manage, or delete', async () => {
+      await expect(judiciarySection.getByRole('link', { name: 'Allocate a judicial role' })).toHaveCount(0);
+      await expect(legalOpsSection.getByRole('link', { name: 'Allocate a legal ops role' })).toHaveCount(0);
+      await expect(judiciarySection.getByRole('link', { name: 'Manage' })).toHaveCount(0);
+      await expect(legalOpsSection.getByRole('link', { name: 'Manage' })).toHaveCount(0);
+      await expect(page.locator('exui-exclusions-table').getByRole('link', { name: 'Delete' })).toHaveCount(0);
     });
   });
 });

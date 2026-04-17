@@ -18,10 +18,7 @@ describe('NavigationAccessGuard', () => {
       appConfig: { userDetails },
     }) as unknown as fromAppStore.State;
 
-  const createRoute = (
-    requiredNavigationHref: string,
-    accessDeniedRedirectUrl: string
-  ): ActivatedRouteSnapshot =>
+  const createRoute = (requiredNavigationHref: string, accessDeniedRedirectUrl: string): ActivatedRouteSnapshot =>
     ({
       data: {
         accessDeniedRedirectUrl,

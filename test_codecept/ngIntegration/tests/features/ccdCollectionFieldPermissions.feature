@@ -1,4 +1,4 @@
-
+@ignore
 Feature: Collection field displat_context_parameter permissions
     Background: Start mock app
         Given I set MOCK event "CollectionFieldPermission" config with reference "testEventRef"

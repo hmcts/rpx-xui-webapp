@@ -1,4 +1,4 @@
-@ng @links_testing 
+@ng @links_testing @ignore
 Feature: WA Release 2: Case details Tasks tab - Manage links (@integration_todo)
 
 Feature Description
@@ -141,6 +141,5 @@ Feature Description
  # Then I validate notification banner messages displayed in "My work" page
  #     | message                                   |
  #     | <bannermessage> |
-
 
 

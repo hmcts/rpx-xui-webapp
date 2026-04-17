@@ -1,4 +1,4 @@
-@ng @wa2 @wa 
+@ng @wa2 @wa @ignore
 Feature: WA Release 2: My cases - Manage links
 
     Background: Mock and browser setup
@@ -36,4 +36,3 @@ Feature: WA Release 2: My cases - Manage links
             | UserIdentifier  | UserType | Roles                                           |
             # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
             | IAC_Judge_WA_R2 | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |
-

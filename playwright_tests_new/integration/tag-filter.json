@@ -4,8 +4,10 @@
     "@integration",
     "@integration-case-file-view",
     "@integration-case-list",
+    "@integration-ccd-toolkit",
     "@integration-create-case",
     "@integration-manage-tasks",
+    "@integration-platform-services",
     "@integration-search-case",
     "@integration-welsh-language"
   ]

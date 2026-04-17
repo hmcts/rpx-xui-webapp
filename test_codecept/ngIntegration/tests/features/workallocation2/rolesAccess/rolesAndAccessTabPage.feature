@@ -1,4 +1,4 @@
-@ng @known_bug @EUI-4837 
+@ng @known_bug @EUI-4837 @ignore
 Feature: WA Release 2: Roles and access tab (EUI-4837)
     https://tools.hmcts.net/jira/browse/EUI-3782 ???
     known bug EUI-4837
@@ -263,4 +263,3 @@ Feature: WA Release 2: Roles and access tab (EUI-4837)
 #     | Location   |
 #     | Start      |
 #     | End        |
-

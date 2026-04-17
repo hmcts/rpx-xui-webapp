@@ -38,6 +38,7 @@ import { ROUTES, routingConfiguration } from './app.routes';
 import { AppComponent } from './containers/app/app.component';
 // common provider
 import { ProvidersModule } from './providers/providers.module';
+import { CaseEventStartStateMachineService } from './services/case-event-start-state-machine.service';
 import { AcceptTermsService } from './services/acceptTerms/acceptTerms.service';
 import { CaseShareService } from './services/case/share-case.service';
 import { DefaultErrorHandler } from './services/errorHandler/defaultErrorHandler';
@@ -46,6 +47,7 @@ import { LoggerService } from './services/logger/logger.service';
 import { MonitoringService } from './services/logger/monitoring.service';
 import { SharedModule } from './shared/shared.module';
 import { effects } from './store/effects';
+import { EventStartStateMachineService } from '@hmcts/ccd-case-ui-toolkit';
 // ngrx modules - END
 // APP store
 import { CustomSerializer, reducers } from './store/reducers';
@@ -105,6 +107,10 @@ export function launchDarklyClientIdFactory(envConfig: EnvironmentConfig): strin
     },
     MonitoringService,
     LoggerService,
+    {
+      provide: EventStartStateMachineService,
+      useClass: CaseEventStartStateMachineService,
+    },
     {
       provide: ErrorHandler,
       useClass: DefaultErrorHandler,

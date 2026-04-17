@@ -40,29 +40,13 @@ export const normalizeCreateBookingDates = (beginDate: Date, endDate: Date): Boo
 
   if (normalizedBeginDate.getHours() !== normalizedBeginDate.getUTCHours()) {
     normalizedBeginDate = new Date(
-      Date.UTC(
-        normalizedBeginDate.getFullYear(),
-        normalizedBeginDate.getMonth(),
-        normalizedBeginDate.getDate(),
-        0,
-        0,
-        0,
-        0
-      )
+      Date.UTC(normalizedBeginDate.getFullYear(), normalizedBeginDate.getMonth(), normalizedBeginDate.getDate(), 0, 0, 0, 0)
     );
   }
 
   if (normalizedEndDate.getHours() !== normalizedEndDate.getUTCHours()) {
     normalizedEndDate = new Date(
-      Date.UTC(
-        normalizedEndDate.getFullYear(),
-        normalizedEndDate.getMonth(),
-        normalizedEndDate.getDate(),
-        23,
-        59,
-        59,
-        999
-      )
+      Date.UTC(normalizedEndDate.getFullYear(), normalizedEndDate.getMonth(), normalizedEndDate.getDate(), 23, 59, 59, 999)
     );
   }
 

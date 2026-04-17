@@ -11,13 +11,7 @@ type BookingUiMockRoutesOptions = {
 };
 
 export async function setupBookingUiMockRoutes(page: Page, options: BookingUiMockRoutesOptions): Promise<void> {
-  const {
-    locationResponseBody,
-    getBookingsResponseBody,
-    onGetBookings,
-    onCreateBooking,
-    onRefreshRoleAssignments,
-  } = options;
+  const { locationResponseBody, getBookingsResponseBody, onGetBookings, onCreateBooking, onRefreshRoleAssignments } = options;
 
   await page.route('**/api/locations/getLocations*', async (route) => {
     await route.fulfill({

@@ -43,6 +43,10 @@ export const singleLocationMock = [
   },
 ];
 
-export type { BookingDayRange, CreateBookingRequest, CreateBookingResponse } from '../../E2E/page-objects/pages/exui/bookingUi.po';
+export type {
+  BookingDayRange,
+  CreateBookingRequest,
+  CreateBookingResponse,
+} from '../../E2E/page-objects/pages/exui/bookingUi.po';
 export { buildExistingBookingsMock };
 export { getUtcDayRangeForLocalDate } from '../../E2E/page-objects/pages/exui/bookingUi.po';

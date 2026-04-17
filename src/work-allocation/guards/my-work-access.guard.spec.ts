@@ -1,5 +1,5 @@
 import { Router } from '@angular/router';
-import { Store } from '@ngrx/store';
+import { MemoizedSelector, Store } from '@ngrx/store';
 import { BehaviorSubject, Observable, lastValueFrom, of } from 'rxjs';
 import { HeaderConfigService } from '../../app/services/header-config/header-config.service';
 import * as fromAppStore from '../../app/store';
@@ -10,6 +10,7 @@ describe('MyWorkAccessGuard', () => {
   let routerMock: jasmine.SpyObj<Router>;
   let storeMock: jasmine.SpyObj<Store<fromAppStore.State>>;
   let headerConfigServiceMock: jasmine.SpyObj<HeaderConfigService>;
+  let userDetailsSelector: MemoizedSelector<fromAppStore.State, any>;
   const createState = (userDetails: any) =>
     ({
       routerReducer: undefined,
@@ -23,8 +24,13 @@ describe('MyWorkAccessGuard', () => {
     routerMock = jasmine.createSpyObj<Router>('router', ['navigateByUrl']);
     storeMock = jasmine.createSpyObj<Store<fromAppStore.State>>('store', ['pipe']);
     headerConfigServiceMock = jasmine.createSpyObj<HeaderConfigService>('headerConfigService', ['constructHeaderConfig']);
-
+    userDetailsSelector = fromAppStore.getUserDetails as MemoizedSelector<fromAppStore.State, any>;
+    userDetailsSelector.clearResult();
     guard = new MyWorkAccessGuard(routerMock, storeMock, headerConfigServiceMock);
+  });
+
+  afterEach(() => {
+    userDetailsSelector.clearResult();
   });
 
   it('allows access when the visible header config contains the my work nav item', async () => {

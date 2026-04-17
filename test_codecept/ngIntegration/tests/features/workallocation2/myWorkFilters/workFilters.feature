@@ -1,4 +1,4 @@
-@ng @ignore
+@ng @functional_enabled @ignore
 Feature: WA Release 2: My work - Work filters
 
     Background: Mock and brow ser setup

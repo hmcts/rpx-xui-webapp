@@ -1,4 +1,4 @@
-@ng @ignore
+@functional_enabled @ignore
 Feature: WA Release 2: Case events and Task completion and states when task_required is true
 
     Background: Setup

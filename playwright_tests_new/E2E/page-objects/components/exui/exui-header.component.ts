@@ -19,9 +19,9 @@ export class ExuiHeaderComponent {
 
   readonly header = this.page.locator('exui-header');
 
-  readonly errorHeader = this.page.locator('exui-error-message .govuk-error-summary');
+  readonly errorHeader = this.page.locator('.govuk-error-summary');
   readonly errorHeaderTitle = this.errorHeader.locator('h2.govuk-error-summary__title');
-  readonly errorHeaderListItems = this.errorHeader.locator('ul.govuk-error-summary__list li a');
+  readonly errorHeaderListItems = this.errorHeader.locator('ul.govuk-error-summary__list li');
 
   readonly results = this.page.locator('ccd-search-result');
   readonly headerMenuItems = this.page.locator('.hmcts-primary-navigation li.hmcts-primary-navigation__item');

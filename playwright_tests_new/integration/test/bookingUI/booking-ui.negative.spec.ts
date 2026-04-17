@@ -119,7 +119,7 @@ createBookingErrorCases.forEach(({ status, expectedUrlPattern }) => {
   });
 });
 
-test.describe(`Booking UI validation and access checks as ${userIdentifier}`, { tag: ['@integration', '@integration-booking-ui'] }, () => {
+test.describe(`Booking UI access checks as ${userIdentifier}`, { tag: ['@integration', '@integration-booking-ui'] }, () => {
   let getBookingsCalled = false;
   let existingBookingsMock;
 
@@ -139,55 +139,88 @@ test.describe(`Booking UI validation and access checks as ${userIdentifier}`, { 
   });
 
   test('user without booking access is redirected away from Booking UI', async ({ page }) => {
-    const noBookingAccessUser = buildHearingsUserDetailsMock([]);
-    await page.route('**/api/user/details*', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify(noBookingAccessUser),
+    await test.step('Mock user details without booking access', async () => {
+      const noBookingAccessUser = buildHearingsUserDetailsMock([]);
+      await page.route('**/api/user/details*', async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(noBookingAccessUser),
+        });
       });
     });
 
-    await page.goto('/booking');
-    await expect(page).toHaveURL(casesPageUrlPattern);
+    await test.step('Navigate to booking and verify redirect to cases', async () => {
+      await page.goto('/booking');
+      await expect(page).toHaveURL(casesPageUrlPattern);
+    });
+  });
+});
+
+test.describe(`Booking UI validation checks as ${userIdentifier}`, { tag: ['@integration', '@integration-booking-ui'] }, () => {
+  let getBookingsCalled = false;
+  let existingBookingsMock;
+
+  test.beforeEach(async ({ page }) => {
+    getBookingsCalled = false;
+    const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
+    existingBookingsMock = buildExistingBookingsMock(userId);
+
+    await setupTaskListMockRoutes(page, buildMyTaskListMock(userId, 3));
+    await setupBookingUiMockRoutes(page, {
+      locationResponseBody: singleLocationMock,
+      getBookingsResponseBody: existingBookingsMock,
+      onGetBookings: () => {
+        getBookingsCalled = true;
+      },
+    });
   });
 
   test('user cannot continue from location step without selecting a location', async ({ page, bookingUiPage }) => {
-    await bookingUiPage.goto();
-    await expect(page).toHaveURL(bookingPageUrlPattern);
-    await expect.poll(() => getBookingsCalled).toBeTruthy();
+    await test.step('Navigate to booking and move to location step', async () => {
+      await bookingUiPage.goto();
+      await expect(page).toHaveURL(bookingPageUrlPattern);
+      await expect.poll(() => getBookingsCalled).toBeTruthy();
+      await bookingUiPage.selectOption('Create a new booking');
+      await bookingUiPage.continueButton.click();
+      await expect(page.getByRole('heading', { name: /Select a location/i })).toBeVisible();
+    });
 
-    await bookingUiPage.selectOption('Create a new booking');
-    await bookingUiPage.continueButton.click();
-    await expect(page.getByRole('heading', { name: /Select a location/i })).toBeVisible();
+    await test.step('Try to continue without selecting a location', async () => {
+      await bookingUiPage.continueButton.click();
+    });
 
-    await bookingUiPage.continueButton.click();
-    await expect(page).toHaveURL(bookingPageUrlPattern);
-    const errorSummary = page.locator('.govuk-error-summary');
-    await expect(errorSummary).toBeVisible();
-    await expect(errorSummary).toContainText('There is a problem');
-    await expect(errorSummary).toContainText('Enter a valid location');
+    await test.step('Verify GOV.UK error summary for missing location', async () => {
+      await expect(page).toHaveURL(bookingPageUrlPattern);
+      await expect(bookingUiPage.exuiHeader.errorHeader).toBeVisible();
+      await expect(bookingUiPage.exuiHeader.errorHeaderTitle).toContainText('There is a problem');
+      await expect(bookingUiPage.exuiHeader.errorHeader).toContainText('Enter a valid location');
+    });
   });
 
   test('user cannot continue from date step with invalid or incomplete dates', async ({ page, bookingUiPage }) => {
-    await bookingUiPage.goto();
-    await expect(page).toHaveURL(bookingPageUrlPattern);
-    await expect.poll(() => getBookingsCalled).toBeTruthy();
+    await test.step('Navigate to booking and move to date step', async () => {
+      await bookingUiPage.goto();
+      await expect(page).toHaveURL(bookingPageUrlPattern);
+      await expect.poll(() => getBookingsCalled).toBeTruthy();
+      await bookingUiPage.selectOption('Create a new booking');
+      await bookingUiPage.continueButton.click();
+      await bookingUiPage.selectFirstLocationFromSearch('Lon');
+      await bookingUiPage.continueButton.click();
+    });
 
-    await bookingUiPage.selectOption('Create a new booking');
-    await bookingUiPage.continueButton.click();
-    await bookingUiPage.selectFirstLocationFromSearch('Lon');
-    await bookingUiPage.continueButton.click();
+    await test.step('Select date range and continue with incomplete dates', async () => {
+      await bookingUiPage.bookingDateRadio.filter({ hasText: 'Select a date range' }).click();
+      await bookingUiPage.continueButton.click();
+    });
 
-    await bookingUiPage.bookingDateRadio.filter({ hasText: 'Select a date range' }).click();
-    await bookingUiPage.continueButton.click();
-
-    await expect(page).toHaveURL(bookingPageUrlPattern);
-    const errorSummary = page.locator('.govuk-error-summary');
-    await expect(errorSummary).toBeVisible();
-    await expect(errorSummary).toContainText('There is a problem');
-    await expect(errorSummary).toContainText('Enter a booking start date');
-    await expect(errorSummary).toContainText('Enter a booking end date');
-    await expect(page.locator('.govuk-summary-list')).toHaveCount(0);
+    await test.step('Verify GOV.UK error summary for invalid/incomplete dates', async () => {
+      await expect(page).toHaveURL(bookingPageUrlPattern);
+      await expect(bookingUiPage.exuiHeader.errorHeader).toBeVisible();
+      await expect(bookingUiPage.exuiHeader.errorHeaderTitle).toContainText('There is a problem');
+      await expect(bookingUiPage.exuiHeader.errorHeader).toContainText('Enter a booking start date');
+      await expect(bookingUiPage.exuiHeader.errorHeader).toContainText('Enter a booking end date');
+      await expect(page.locator('.govuk-summary-list')).toHaveCount(0);
+    });
   });
 });

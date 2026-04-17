@@ -2,7 +2,7 @@ import { faker } from '@faker-js/faker';
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-interface BookingUiMock {
+export interface BookingUiMock {
   id: string;
   userId: string;
   regionId: string;

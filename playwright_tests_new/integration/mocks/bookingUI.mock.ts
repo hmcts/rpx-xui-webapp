@@ -1,6 +1,6 @@
 import { buildExistingBookingsMock } from './bookingUI.builder';
 
-export const bookingLocationMock = [
+export const singleLocationMock = [
   {
     court_venue_id: '40827',
     epimms_id: '20262',
@@ -43,4 +43,6 @@ export const bookingLocationMock = [
   },
 ];
 
+export type { BookingDayRange, CreateBookingRequest, CreateBookingResponse } from '../../E2E/page-objects/pages/exui/bookingUi.po';
 export { buildExistingBookingsMock };
+export { getUtcDayRangeForLocalDate } from '../../E2E/page-objects/pages/exui/bookingUi.po';

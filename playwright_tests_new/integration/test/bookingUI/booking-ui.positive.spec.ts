@@ -1,43 +1,25 @@
 import { applySessionCookiesAndExtractUserId } from '../../helpers';
 import { setupTaskListMockRoutes } from '../../helpers/taskListMockRoutes.helper';
 import { expect, test } from '../../../E2E/fixtures';
-import { bookingLocationMock, buildExistingBookingsMock } from '../../mocks/bookingUI.mock';
+import {
+  singleLocationMock,
+  buildExistingBookingsMock,
+  type CreateBookingRequest,
+  type CreateBookingResponse,
+  getUtcDayRangeForLocalDate,
+} from '../../mocks/bookingUI.mock';
 import { buildMyTaskListMock } from '../../mocks/taskList.mock';
 import { formatUiDate } from '../../utils/tableUtils';
 
 const userIdentifier = 'BOOKING_UI-FT-ON';
-const defaultBookingLocation = bookingLocationMock[0];
+const defaultBookingLocation = singleLocationMock[0];
 const bookingPageUrlPattern = /\/booking$/;
 const tasksPageUrlPattern = /\/work\/my-work\/list/;
-
-type CreateBookingRequest = {
-  userId: string;
-  locationId: string;
-  regionId: string;
-  beginDate: string;
-  endDate: string;
-};
-
-type BookingDayRange = {
-  beginDate: string;
-  endDate: string;
-};
-
-const getUtcDayRangeForLocalDate = (date: Date): BookingDayRange => {
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  const day = date.getDate();
-
-  return {
-    beginDate: new Date(Date.UTC(year, month, day, 0, 0, 0, 0)).toISOString(),
-    endDate: new Date(Date.UTC(year, month, day, 23, 59, 59, 999)).toISOString(),
-  };
-};
 
 let getBookingsCalled = false;
 let createBookingCalled = false;
 let createBookingRequestBody: CreateBookingRequest | undefined;
-let expectedTodayBookingRange: BookingDayRange | undefined;
+let createBookingResponseBody: CreateBookingResponse | undefined;
 let sessionUserId = '';
 let existingBookingsMock;
 
@@ -46,7 +28,8 @@ test.describe(`Booking UI as ${userIdentifier}`, { tag: ['@integration', '@integ
     getBookingsCalled = false;
     createBookingCalled = false;
     createBookingRequestBody = undefined;
-    expectedTodayBookingRange = undefined;
+    createBookingResponseBody = undefined;
+
     const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
     sessionUserId = userId;
     existingBookingsMock = buildExistingBookingsMock(userId);
@@ -55,7 +38,7 @@ test.describe(`Booking UI as ${userIdentifier}`, { tag: ['@integration', '@integ
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify(bookingLocationMock),
+        body: JSON.stringify(singleLocationMock),
       });
     });
     await page.route('**/am/getBookings', async (route) => {
@@ -68,11 +51,24 @@ test.describe(`Booking UI as ${userIdentifier}`, { tag: ['@integration', '@integ
     });
     await page.route('**/am/createBooking', async (route) => {
       createBookingCalled = true;
-      createBookingRequestBody = route.request().postDataJSON() as CreateBookingRequest;
+      const requestBody = route.request().postDataJSON() as CreateBookingRequest;
+      createBookingRequestBody = requestBody;
+      createBookingResponseBody = {
+        bookingResponse: {
+          id: `mock-booking-${Date.now()}`,
+          userId: requestBody.userId,
+          regionId: requestBody.regionId,
+          locationId: requestBody.locationId,
+          created: new Date().toISOString(),
+          beginTime: new Date(requestBody.beginDate).toISOString(),
+          endTime: new Date(new Date(requestBody.endDate).getTime() + 1).toISOString(),
+          log: 'Booking record is successfully created',
+        },
+      };
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify({ bookingResponse: {} }),
+        body: JSON.stringify(createBookingResponseBody),
       });
     });
     await page.route('**/am/role-mapping/judicial/refresh', async (route) => {
@@ -104,6 +100,7 @@ test.describe(`Booking UI as ${userIdentifier}`, { tag: ['@integration', '@integ
   });
 
   test('can continue when creating a new booking', async ({ page, bookingUiPage }) => {
+    const expectedTodayBookingRange = getUtcDayRangeForLocalDate(new Date(), new Date());
     await test.step('Navigate to booking UI and wait for bookings request', async () => {
       await bookingUiPage.goto();
       await expect(page).toHaveURL(bookingPageUrlPattern);
@@ -124,8 +121,7 @@ test.describe(`Booking UI as ${userIdentifier}`, { tag: ['@integration', '@integ
     });
 
     await test.step('Select the booking time as today only', async () => {
-      expectedTodayBookingRange = getUtcDayRangeForLocalDate(new Date());
-      await page.locator('.govuk-radios').locator('input').first().click();
+      await bookingUiPage.bookingDateRadio.filter({ hasText: 'Today only (ends at midnight)' }).click();
       await bookingUiPage.continueButton.click();
     });
 
@@ -147,6 +143,7 @@ test.describe(`Booking UI as ${userIdentifier}`, { tag: ['@integration', '@integ
       await expect.poll(() => createBookingCalled).toBeTruthy();
       expect(createBookingRequestBody).toBeDefined();
       expect(expectedTodayBookingRange).toBeDefined();
+      expect(createBookingResponseBody).toBeDefined();
       expect(createBookingRequestBody).toEqual({
         userId: sessionUserId,
         locationId: defaultBookingLocation.epimms_id,
@@ -154,6 +151,16 @@ test.describe(`Booking UI as ${userIdentifier}`, { tag: ['@integration', '@integ
         beginDate: expectedTodayBookingRange?.beginDate,
         endDate: expectedTodayBookingRange?.endDate,
       });
+      const expectedRange = expectedTodayBookingRange as { beginDate: string; endDate: string };
+      const bookingResponse = createBookingResponseBody!.bookingResponse;
+      expect(bookingResponse.userId).toBe(sessionUserId);
+      expect(bookingResponse.locationId).toBe(defaultBookingLocation.epimms_id);
+      expect(bookingResponse.regionId).toBe(defaultBookingLocation.region_id);
+      expect(bookingResponse.beginTime).toBe(expectedRange.beginDate);
+      expect(bookingResponse.endTime).toBe(new Date(new Date(expectedRange.endDate).getTime() + 1).toISOString());
+      expect(bookingResponse.log).toBe('Booking record is successfully created');
+      expect(bookingResponse.id).toBeTruthy();
+      expect(Number.isNaN(Date.parse(bookingResponse.created))).toBeFalsy();
     });
 
     await test.step('Continue and redirect to my work list', async () => {

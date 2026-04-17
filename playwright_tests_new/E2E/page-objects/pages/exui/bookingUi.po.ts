@@ -1,5 +1,39 @@
 import { Page } from '@playwright/test';
 import { Base } from '../../base';
+
+export type CreateBookingRequest = {
+  userId: string;
+  locationId: string;
+  regionId: string;
+  beginDate: string;
+  endDate: string;
+};
+
+export type CreateBookingResponse = {
+  bookingResponse: {
+    id: string;
+    userId: string;
+    regionId: string;
+    locationId: string;
+    created: string;
+    beginTime: string;
+    endTime: string;
+    log: string;
+  };
+};
+
+export type BookingDayRange = {
+  beginDate: string;
+  endDate: string;
+};
+
+export const getUtcDayRangeForLocalDate = (beginDate: Date, endDate: Date): BookingDayRange => {
+  return {
+    beginDate: new Date(Date.UTC(beginDate.getFullYear(), beginDate.getMonth(), beginDate.getDate(), 0, 0, 0, 0)).toISOString(),
+    endDate: new Date(Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate(), 23, 59, 59, 999)).toISOString(),
+  };
+};
+
 type SummaryPair = { key: string; value: string };
 
 export class BookingUiPage extends Base {
@@ -10,6 +44,7 @@ export class BookingUiPage extends Base {
   readonly button = this.container.locator('button.govuk-button');
   readonly continueButton = this.button.filter({ hasText: 'Continue' });
   readonly bookingButton = this.button.filter({ hasText: 'Confirm Booking' });
+  readonly bookingDateRadio = this.container.locator('.govuk-radios__label');
 
   readonly locationSearch = this.page.locator('#inputLocationSearch');
   readonly locationAutocomplete = this.page.locator('#mat-autocomplete-0');

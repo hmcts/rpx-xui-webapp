@@ -1,4 +1,4 @@
-import { applySessionCookiesAndExtractUserId } from '../../helpers';
+import { applySessionCookiesAndExtractUserId, setupBookingUiMockRoutes } from '../../helpers';
 import { setupTaskListMockRoutes } from '../../helpers/taskListMockRoutes.helper';
 import { expect, test } from '../../../E2E/fixtures';
 import {
@@ -34,49 +34,34 @@ test.describe(`Booking UI as ${userIdentifier}`, { tag: ['@integration', '@integ
     sessionUserId = userId;
     existingBookingsMock = buildExistingBookingsMock(userId);
     await setupTaskListMockRoutes(page, buildMyTaskListMock(userId, 3));
-    await page.route('**/api/locations/getLocations*', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify(singleLocationMock),
-      });
-    });
-    await page.route('**/am/getBookings', async (route) => {
-      getBookingsCalled = true;
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify(existingBookingsMock),
-      });
-    });
-    await page.route('**/am/createBooking', async (route) => {
-      createBookingCalled = true;
-      const requestBody = route.request().postDataJSON() as CreateBookingRequest;
-      createBookingRequestBody = requestBody;
-      createBookingResponseBody = {
-        bookingResponse: {
-          id: `mock-booking-${Date.now()}`,
-          userId: requestBody.userId,
-          regionId: requestBody.regionId,
-          locationId: requestBody.locationId,
-          created: new Date().toISOString(),
-          beginTime: new Date(requestBody.beginDate).toISOString(),
-          endTime: new Date(new Date(requestBody.endDate).getTime() + 1).toISOString(),
-          log: 'Booking record is successfully created',
-        },
-      };
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify(createBookingResponseBody),
-      });
-    });
-    await page.route('**/am/role-mapping/judicial/refresh', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({}),
-      });
+    await setupBookingUiMockRoutes(page, {
+      locationResponseBody: singleLocationMock,
+      getBookingsResponseBody: existingBookingsMock,
+      onGetBookings: () => {
+        getBookingsCalled = true;
+      },
+      onCreateBooking: async (route) => {
+        createBookingCalled = true;
+        const requestBody = route.request().postDataJSON() as CreateBookingRequest;
+        createBookingRequestBody = requestBody;
+        createBookingResponseBody = {
+          bookingResponse: {
+            id: `mock-booking-${Date.now()}`,
+            userId: requestBody.userId,
+            regionId: requestBody.regionId,
+            locationId: requestBody.locationId,
+            created: new Date().toISOString(),
+            beginTime: new Date(requestBody.beginDate).toISOString(),
+            endTime: new Date(new Date(requestBody.endDate).getTime() + 1).toISOString(),
+            log: 'Booking record is successfully created',
+          },
+        };
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(createBookingResponseBody),
+        });
+      },
     });
   });
 

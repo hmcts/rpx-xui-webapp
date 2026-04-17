@@ -1,4 +1,4 @@
-import { applySessionCookiesAndExtractUserId } from '../../helpers';
+import { applySessionCookiesAndExtractUserId, setupBookingUiMockRoutes } from '../../helpers';
 import { setupTaskListMockRoutes } from '../../helpers/taskListMockRoutes.helper';
 import { expect, test } from '../../../E2E/fixtures';
 import { buildExistingBookingsMock, type CreateBookingRequest, getUtcDayRangeForLocalDate, singleLocationMock } from '../../mocks/bookingUI.mock';
@@ -36,42 +36,34 @@ createBookingErrorCases.forEach(({ status, expectedUrlPattern }) => {
       existingBookingsMock = buildExistingBookingsMock(userId);
 
       await setupTaskListMockRoutes(page, buildMyTaskListMock(userId, 3));
-      await page.route('**/api/locations/getLocations*', async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(singleLocationMock),
-        });
-      });
-      await page.route('**/am/getBookings', async (route) => {
-        getBookingsCalled = true;
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(existingBookingsMock),
-        });
-      });
-      await page.route('**/am/createBooking', async (route) => {
-        createBookingCalled = true;
-        createBookingRequestBody = route.request().postDataJSON() as CreateBookingRequest;
-        await route.fulfill({
-          status,
-          contentType: 'application/json',
-          body: JSON.stringify({
-            errorCode: `BOOKING_${status}`,
-            status: `${status}`,
-            errorMessage: `Create booking failed with ${status}`,
-            timeStamp: new Date().toISOString(),
-          }),
-        });
-      });
-      await page.route('**/am/role-mapping/judicial/refresh', async (route) => {
-        refreshRoleAssignmentsCalled = true;
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify({}),
-        });
+      await setupBookingUiMockRoutes(page, {
+        locationResponseBody: singleLocationMock,
+        getBookingsResponseBody: existingBookingsMock,
+        onGetBookings: () => {
+          getBookingsCalled = true;
+        },
+        onCreateBooking: async (route) => {
+          createBookingCalled = true;
+          createBookingRequestBody = route.request().postDataJSON() as CreateBookingRequest;
+          await route.fulfill({
+            status,
+            contentType: 'application/json',
+            body: JSON.stringify({
+              errorCode: `BOOKING_${status}`,
+              status: `${status}`,
+              errorMessage: `Create booking failed with ${status}`,
+              timeStamp: new Date().toISOString(),
+            }),
+          });
+        },
+        onRefreshRoleAssignments: async (route) => {
+          refreshRoleAssignmentsCalled = true;
+          await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify({}),
+          });
+        },
       });
     });
 
@@ -137,20 +129,12 @@ test.describe(`Booking UI validation and access checks as ${userIdentifier}`, { 
     existingBookingsMock = buildExistingBookingsMock(userId);
 
     await setupTaskListMockRoutes(page, buildMyTaskListMock(userId, 3));
-    await page.route('**/api/locations/getLocations*', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify(singleLocationMock),
-      });
-    });
-    await page.route('**/am/getBookings', async (route) => {
-      getBookingsCalled = true;
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify(existingBookingsMock),
-      });
+    await setupBookingUiMockRoutes(page, {
+      locationResponseBody: singleLocationMock,
+      getBookingsResponseBody: existingBookingsMock,
+      onGetBookings: () => {
+        getBookingsCalled = true;
+      },
     });
   });
 

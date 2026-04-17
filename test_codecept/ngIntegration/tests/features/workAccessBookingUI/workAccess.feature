@@ -279,4 +279,3 @@ Feature: Work access page
         When I select work access radio button "View tasks and cases"
         Then I see work access continue button displayed
         When I click work access continue button
-

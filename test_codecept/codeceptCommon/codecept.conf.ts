@@ -53,8 +53,29 @@ function findStepFiles(basePath) {
   return results;
 }
 
+function findFeatureFiles(basePath) {
+  const results = [];
+
+  function walk(dir) {
+    const files = fs.readdirSync(dir);
+    for (const file of files) {
+      const fullPath = path.join(dir, file);
+      const stat = fs.statSync(fullPath);
+      if (stat.isDirectory()) {
+        walk(fullPath);
+      } else if (file.endsWith('.feature')) {
+        results.push(fullPath);
+      }
+    }
+  }
+
+  walk(basePath);
+  return results;
+}
+
 const e2eStepFiles = findStepFiles(path.resolve(__dirname, '../e2e/features/step_definitions'));
 const ngIntegrationStepFiles = findStepFiles(path.resolve(__dirname, '../ngIntegration/tests/stepDefinitions'));
+const ngIntegrationFeatureFiles = findFeatureFiles(path.resolve(__dirname, '../ngIntegration/tests/features'));
 
 console.log('Loaded step files:', [...e2eStepFiles, ...ngIntegrationStepFiles]);
 
@@ -102,7 +123,19 @@ if (pipelineBranch === 'master' && testType === 'ngIntegration') {
 
 const tags = process.env.DEBUG ? 'functional_debug' : bddTags;
 const grepTags = `(?=.*@${testType === 'smoke' ? 'smoke' : tags})^(?!.*@ignore)`;
+const grepRegex = new RegExp(grepTags);
+const selectedNgIntegrationFeatureCount =
+  testType === 'ngIntegration'
+    ? ngIntegrationFeatureFiles.filter((featureFile) => grepRegex.test(fs.readFileSync(featureFile, 'utf-8'))).length
+    : 0;
 console.log(grepTags);
+if (testType === 'ngIntegration') {
+  console.log(`selected ngIntegration features : ${selectedNgIntegrationFeatureCount}`);
+}
+
+function hasNoSelectableNgIntegrationFeatures() {
+  return testType === 'ngIntegration' && selectedNgIntegrationFeatureCount === 0;
+}
 
 exports.config = {
   require: [path.resolve(__dirname, 'steps_file.js')],
@@ -216,6 +249,10 @@ function exitWithStatus() {
       .map((f) => path.join(CUKE_OUT, f));
 
     if (cucumberReports.length === 0) {
+      if (hasNoSelectableNgIntegrationFeatures()) {
+        console.log('No selectable ngIntegration features remain after retirement markers - passing legacy suite');
+        process.exit(0);
+      }
       console.warn('No cucumber JSON files found - failing the run');
       process.exit(1);
     }
@@ -252,7 +289,11 @@ function exitWithStatus() {
       }
     }
 
-    const status = nonEmpty === 0 ? 'FAIL' : failedScenarios > 0 ? 'FAIL' : 'PASS';
+    const status =
+      nonEmpty === 0 ? (hasNoSelectableNgIntegrationFeatures() ? 'PASS' : 'FAIL') : failedScenarios > 0 ? 'FAIL' : 'PASS';
+    if (nonEmpty === 0 && hasNoSelectableNgIntegrationFeatures()) {
+      console.log('No selectable ngIntegration features remain after retirement markers - passing legacy suite');
+    }
     console.log(
       `Non-empty reports: ${nonEmpty}, Failed scenarios: ${failedScenarios}, Failed steps: ${failedSteps}, Status: ${status}`
     );

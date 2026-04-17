@@ -162,6 +162,48 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
     });
   });
 
+  test('All-work renders long case names and task titles without dropping the row data', async ({
+    taskListPage,
+    page,
+    tableUtils,
+  }) => {
+    const taskListMockResponse = buildTaskListMock(10, '', myActionsList);
+    const longCaseName = 'case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6case 6';
+    const longTaskTitle =
+      'test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6test auto task 6';
+
+    taskListMockResponse.tasks[2].case_name = longCaseName;
+    taskListMockResponse.tasks[2].task_title = longTaskTitle;
+    taskListMockResponse.tasks[2].case_category = 'auto test category 3';
+    taskListMockResponse.tasks[2].location_name = 'test location 3';
+
+    await test.step('Setup route mocks for all-work long-content rendering', async () => {
+      await setupManageTasksBaseRoutes(page, {
+        taskListResponse: taskListMockResponse,
+        supportedJurisdictions,
+        supportedJurisdictionDetails,
+      });
+    });
+
+    await test.step('Open all-work tasks and parse the rendered table', async () => {
+      await taskListPage.gotoAllWorkTasks();
+      await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.exuiSpinnerComponent.wait();
+    });
+
+    await test.step('Verify long case-name and task-title values remain visible in the table row', async () => {
+      const table = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
+
+      expect(table[2]).toEqual(
+        expect.objectContaining({
+          'Case name': longCaseName,
+          'Case category': 'auto test category 3',
+          Location: 'test location 3',
+          Task: longTaskTitle,
+        })
+      );
+    });
+  });
   test('All-work Case name sort persists after navigating away and back', async ({ taskListPage, page }) => {
     const taskListMockResponse = buildTaskListMock(40, '', myActionsList);
     const allWorkCasesMockResponse = buildMyCases(3);

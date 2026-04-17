@@ -17,6 +17,10 @@ export class TaskListPage extends Base {
   readonly serviceFilterCheckboxes = this.filterPanel.locator(
     '#services .govuk-checkboxes__input:not(#checkbox_servicesservices_all)'
   );
+  readonly locationFilterContainer = this.filterPanel.locator('.location-picker-custom').first();
+  readonly locationSearchInput = this.filterPanel.locator('#inputLocationSearch').first();
+  readonly locationSearchOptions = this.page.getByRole('option');
+  readonly selectedLocationTags = this.filterPanel.locator('.selection-container .hmcts-filter__tag');
   readonly selectServicesError = this.filterPanel.locator('#services-error').first();
   readonly typesOfWorkCheckBoxes = this.filterPanel.locator('#types-of-work #checkbox_types-of-work .govuk-checkboxes__item');
   readonly selectAllTypesOfWorksFilter = this.filterPanel.locator('input#checkbox_types-of-worktypes_of_work_all').first();
@@ -462,6 +466,43 @@ export class TaskListPage extends Base {
 
   async clearTypesOfWorkFilters() {
     await this.clearFilterGroup('types of work', this.selectAllTypesOfWorksFilter, this.typesOfWorkFilterCheckboxes);
+  }
+
+  getServiceFilterCheckbox(label: string): Locator {
+    return this.filterPanel.getByRole('checkbox', { name: label, exact: true }).first();
+  }
+
+  async setServiceFilterValue(label: string, checked: boolean) {
+    await this.openFilterPanel();
+    const checkbox = this.getServiceFilterCheckbox(label);
+    await checkbox.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+    await checkbox.setChecked(checked, { force: true });
+  }
+
+  async clearSelectedLocations() {
+    await this.openFilterPanel();
+    while ((await this.selectedLocationTags.count()) > 0) {
+      await this.selectedLocationTags.first().click({ force: true });
+    }
+  }
+
+  async searchForLocation(term: string) {
+    await this.openFilterPanel();
+    await this.page.waitForTimeout(300);
+    if (!(await this.locationSearchInput.isVisible().catch(() => false))) {
+      await this.openFilterPanel();
+    }
+    await this.locationSearchInput.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+    for (let attempt = 0; attempt < FILTER_INTERACTION_ATTEMPTS; attempt += 1) {
+      await this.locationSearchInput.click({ force: true });
+      await this.locationSearchInput.fill('');
+      await this.locationSearchInput.type(term, { delay: 50 });
+      if ((await this.locationSearchInput.inputValue().catch(() => '')) === term) {
+        await this.page.waitForTimeout(300);
+        return;
+      }
+    }
+    throw new Error(`Location search input did not retain the value "${term}" after ${FILTER_INTERACTION_ATTEMPTS} attempts.`);
   }
 
   private async setFilterCheckbox(checkbox: Locator, checked: boolean, description: string, deadlineMs?: number) {

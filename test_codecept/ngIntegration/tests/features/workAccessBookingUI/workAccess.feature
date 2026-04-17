@@ -1,4 +1,4 @@
-@ng  @functional_enabled
+@ng @functional_enabled @ignore
 Feature: Work access page
 
     Background: Setup bookings data
@@ -279,4 +279,3 @@ Feature: Work access page
         When I select work access radio button "View tasks and cases"
         Then I see work access continue button displayed
         When I click work access continue button
-

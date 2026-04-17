@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test';
+import type { CaseDetailsPage } from '../../../E2E/page-objects/pages/exui/caseDetails.po';
 import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookies, setupRolesAndAccessMockRoutes } from '../../helpers';
 import {
@@ -14,12 +15,26 @@ const getRoleAccessSection = (page: Page, title: 'Judiciary' | 'Legal Ops') =>
     has: page.getByRole('heading', { level: 2, name: title }),
   });
 
+const openRolesAndAccessTab = async (page: Page, caseDetailsPage: CaseDetailsPage, caseId: string) => {
+  await page.goto(`/cases/case-details/IA/Asylum/${caseId}`);
+  await expect(caseDetailsPage.container).toBeVisible();
+
+  const rolesAndAccessTab = page.getByRole('tab', { name: /Roles and access/i }).first();
+  await expect(rolesAndAccessTab).toBeVisible();
+
+  await caseDetailsPage.selectCaseDetailsTab('Roles and access');
+  await page.waitForURL(new RegExp(`/cases/case-details/IA/Asylum/${caseId}(?:/roles-and-access)?(?:#.*)?$`));
+  await expect(page.getByRole('heading', { level: 2, name: 'Roles and access' })).toBeVisible();
+};
 test.beforeEach(async ({ page }) => {
   await applySessionCookies(page, userIdentifier);
 });
 
 test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '@integration-case-details'] }, () => {
-  test('Case allocator sees empty-state messages and allocate links when no roles or exclusions exist', async ({ page }) => {
+  test('Case allocator sees empty-state messages and allocate links when no roles or exclusions exist', async ({
+    page,
+    caseDetailsPage,
+  }) => {
     const judiciarySection = getRoleAccessSection(page, 'Judiciary');
     const legalOpsSection = getRoleAccessSection(page, 'Legal Ops');
     const addExclusionLink = page.locator('a.govuk-link[href*="/role-access/add-exclusion"]').first();
@@ -32,9 +47,8 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
       });
     });
 
-    await test.step('Open the Roles and access page directly on case details', async () => {
-      await page.goto(`/cases/case-details/IA/Asylum/${emptyCaseId}/roles-and-access`);
-      await expect(page.getByRole('heading', { level: 2, name: 'Roles and access' })).toBeVisible();
+    await test.step('Open case details and navigate via the Roles and access tab', async () => {
+      await openRolesAndAccessTab(page, caseDetailsPage, emptyCaseId);
     });
 
     await test.step('Verify allocate links and empty-state messaging are rendered', async () => {
@@ -52,7 +66,11 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
     });
   });
 
-  test('Case allocator sees active roles, exclusions, headers, and manage actions', async ({ page, tableUtils }) => {
+  test('Case allocator sees active roles, exclusions, headers, and manage actions', async ({
+    page,
+    caseDetailsPage,
+    tableUtils,
+  }) => {
     const judicialLookupRequestPromise = page.waitForRequest('**/api/role-access/roles/getJudicialUsers*');
     const judiciarySection = getRoleAccessSection(page, 'Judiciary');
     const legalOpsSection = getRoleAccessSection(page, 'Legal Ops');
@@ -66,9 +84,8 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
       });
     });
 
-    await test.step('Open the Roles and access page directly on case details', async () => {
-      await page.goto(`/cases/case-details/IA/Asylum/${populatedCaseId}/roles-and-access`);
-      await expect(page.getByRole('heading', { level: 2, name: 'Roles and access' })).toBeVisible();
+    await test.step('Open case details and navigate via the Roles and access tab', async () => {
+      await openRolesAndAccessTab(page, caseDetailsPage, populatedCaseId);
     });
 
     await test.step('Verify links, headers, and judicial lookup payload for the populated view', async () => {
@@ -145,7 +162,11 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
     });
   });
 
-  test('Non case allocators can view roles and exclusions but not manage or delete them', async ({ page, tableUtils }) => {
+  test('Non case allocators can view roles and exclusions but not manage or delete them', async ({
+    page,
+    caseDetailsPage,
+    tableUtils,
+  }) => {
     const judiciarySection = getRoleAccessSection(page, 'Judiciary');
     const legalOpsSection = getRoleAccessSection(page, 'Legal Ops');
 
@@ -157,9 +178,8 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
       });
     });
 
-    await test.step('Open the Roles and access page directly on case details', async () => {
-      await page.goto(`/cases/case-details/IA/Asylum/${populatedCaseId}/roles-and-access`);
-      await expect(page.getByRole('heading', { level: 2, name: 'Roles and access' })).toBeVisible();
+    await test.step('Open case details and navigate via the Roles and access tab', async () => {
+      await openRolesAndAccessTab(page, caseDetailsPage, populatedCaseId);
     });
 
     await test.step('Verify non-case allocators still see the role and exclusion data', async () => {

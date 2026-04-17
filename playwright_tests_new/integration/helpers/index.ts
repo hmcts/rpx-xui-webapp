@@ -23,5 +23,8 @@ export * from './summaryList.helper';
 export * from './challengedAccessRequest.helper';
 export * from './workAllocationAccessScenarios.helper';
 export * from './sessionUser.helper';
+export * from './taskEventCompletionMockRoutes.helper';
 export * from './welshLanguageSession.helper';
 export * from './welshLanguageAssertions.helper';
+export * from './workAccessBookingMockRoutes.helper';
+export * from './workFiltersMockRoutes.helper';

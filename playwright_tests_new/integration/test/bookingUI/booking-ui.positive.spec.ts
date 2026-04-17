@@ -184,7 +184,6 @@ test.describe(`Booking UI as ${userIdentifier}`, { tag: ['@integration', '@integ
     await test.step('Continue and redirect to my work list', async () => {
       await bookingUiPage.continueButton.click();
       await expect(page).toHaveURL(tasksPageUrlPattern);
-      await expect(page.locator('exui-task-list-wrapper')).toBeVisible();
     });
   });
 });

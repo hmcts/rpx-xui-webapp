@@ -90,6 +90,24 @@ describe('navigation access utils', () => {
     expect(filterNavigationItemsByRoles(items, ['matched-role'])).toEqual([items[0]]);
   });
 
+  it('should handle omitted and nullish role inputs defensively', () => {
+    const unrestrictedItem: NavigationItem = {
+      href: '/cases',
+      active: false,
+      text: 'Case list',
+    };
+    const restrictedItem: NavigationItem = {
+      href: '/work/my-work/list',
+      active: false,
+      roles: ['matched-role'],
+      text: 'My work',
+    };
+
+    expect(filterNavigationItemsByRoles()).toEqual([]);
+    expect(filterNavigationItemsByRoles(null as unknown as NavigationItem[], ['matched-role'])).toEqual([]);
+    expect(filterNavigationItemsByRoles([unrestrictedItem, restrictedItem], null as unknown as string[])).toEqual([unrestrictedItem]);
+  });
+
   it('should filter navigation items by required and excluded flags', () => {
     const items: NavigationItem[] = [
       {
@@ -114,6 +132,18 @@ describe('navigation access utils', () => {
     ];
 
     expect(filterNavigationItemsByFlags(items, menuFlags)).toEqual([items[0]]);
+  });
+
+  it('should handle omitted and null items when filtering by flags', () => {
+    const item: NavigationItem = {
+      href: '/cases',
+      active: false,
+      text: 'Case list',
+    };
+
+    expect(filterNavigationItemsByFlags()).toEqual([]);
+    expect(filterNavigationItemsByFlags([item])).toEqual([item]);
+    expect(filterNavigationItemsByFlags(null as unknown as NavigationItem[], menuFlags)).toEqual([]);
   });
 
   it('should filter navigation items using mixed role and flag access rules', () => {
@@ -141,5 +171,27 @@ describe('navigation access utils', () => {
     ];
 
     expect(filterNavigationItemsByAccess(items, ['matched-role'], menuFlags)).toEqual([items[0]]);
+  });
+
+  it('should default access filtering inputs when arguments are omitted', () => {
+    const item: NavigationItem = {
+      href: '/cases',
+      active: false,
+      text: 'Case list',
+    };
+
+    expect(filterNavigationItemsByAccess()).toEqual([]);
+    expect(filterNavigationItemsByAccess([item])).toEqual([item]);
+  });
+
+  it('should allow visible navigation items when optional visibility args are omitted', () => {
+    const item: NavigationItem = {
+      href: '/cases',
+      active: false,
+      text: 'Case list',
+    };
+
+    expect(isNavigationItemVisible(item)).toBeTrue();
+    expect(isNavigationItemVisible(null as unknown as NavigationItem)).toBeFalse();
   });
 });

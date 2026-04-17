@@ -99,10 +99,7 @@ const taskEventScenarios: TaskEventScenario[] = [
     detailsHeading: 'No task available',
     detailsMessage: /You should have an assigned task for this event, but something has gone wrong\.?/i,
     returnLinkText: /^Return to tasks tab$/i,
-    // AAT still carries the toolkit empty-task routing defect; the repo override restores the IA/Asylum path.
-    expectedUrlPattern: new RegExp(
-      `/cases/case-details/(?:${jurisdiction}|undefined)/(?:${caseType}|undefined)/${caseId}/no-tasks-available(?:\\?.*)?$`
-    ),
+    expectedUrlPattern: new RegExp(`/cases/case-details/${jurisdiction}/${caseType}/${caseId}/no-tasks-available(?:\\?.*)?$`),
   },
   {
     name: 'shows the task-assignment-required validation page when the only completable task is unassigned',
@@ -258,6 +255,7 @@ test.describe(
           await firstEventTasksResponse;
 
           await expect(page).toHaveURL(scenario.expectedUrlPattern);
+          expect(page.url()).not.toContain('/undefined/');
           await expect
             .poll(() => routeState.getEventTaskRequestCount(), {
               message: 'expected the event-start flow to request completable tasks before routing to the validation page',

@@ -39,3 +39,7 @@ The current application loads role assignments and exclusions separately. Scenar
 ## D10. Validate mandatory date fields as strict calendar timestamps, not `Date.parse(...)`-compatible strings
 
 The branch claims clear failures for malformed mandatory task attributes. Date validation therefore rejects impossible calendar values such as February 31 rather than accepting browser-normalized overflow dates.
+
+## D11. Keep scenario helpers and scenario mocks aligned with the supported My Access states
+
+If a shared test helper claims to support requested or denied `My access` rows, it must carry the matching role, label, start/end status, and access flags instead of relying on granted-state defaults. The larger scenario datasets also live in dedicated mock files so specs stay focused on assertions rather than embedded fixture construction.

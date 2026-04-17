@@ -21,3 +21,5 @@
 - [x] Refresh branch evidence after the formatter and lint-entrypoint follow-up changes.
 - [x] Run targeted unit and integration validation for the touched Work Allocation areas.
 - [x] Run a final review pass and record residual risks instead of overstating delivery.
+- [x] Align requested and denied `My access` scenario states with the repo's current role-driven status semantics.
+- [x] Move large scenario datasets out of the touched specs and into dedicated integration mock files.

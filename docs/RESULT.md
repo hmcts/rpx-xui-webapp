@@ -21,11 +21,13 @@ This branch closes the specific gaps previously identified against EXUI-4213:
 - Exported the new helper surface via `playwright_tests_new/integration/helpers/index.ts`.
 - Added pure access-scenario support in `playwright_tests_new/integration/helpers/workAllocationAccessScenarios.helper.ts`.
 - Corrected the access-scenario helper so `My access` mirrors the repo's current specific-access subset and keeps challenged records out of that view.
+- Corrected the access-scenario helper so requested and denied `My access` rows keep the right labels, status fields, and access flags instead of inheriting granted-state defaults.
 - Corrected the entity-to-users scenario modelling so active roles and exclusions remain independently visible, matching the current application wiring.
 - Tightened mandatory date validation so impossible calendar timestamps fail instead of being accepted via `Date.parse(...)` overflow.
 - Added direct validation tests in `playwright_tests_new/api/unit/work-allocation-mock-validation.unit.api.ts`.
 - Added direct access-scenario tests in `playwright_tests_new/api/unit/work-allocation-access-scenarios.unit.api.ts`.
 - Added `My access` scenario coverage in `playwright_tests_new/integration/test/manageTasks/myAccess/myAccess.positive.spec.ts`.
+- Moved the larger Work Allocation scenario datasets into `playwright_tests_new/integration/mocks/workAllocationAccessScenarios.mock.ts` so the touched specs stay assertion-focused.
 - Moved case-task setup in `playwright_tests_new/integration/test/manageTasks/caseTaskList/caseTaskList.positive.spec.ts` onto the shared validated case-task route helper.
 - Added `Roles and access` scenario coverage in `playwright_tests_new/integration/test/caseDetails/rolesAndAccess.positive.spec.ts`, including proof of the outgoing judicial-user lookup payload.
 - Updated the root lint scripts in `package.json` so Prettier and ESLint resolve through the local `node_modules` binaries in this Yarn environment.
@@ -33,9 +35,10 @@ This branch closes the specific gaps previously identified against EXUI-4213:
 
 ## Review Verdict
 
-Functionally sound in the targeted slice after one corrective review loop. The review pass surfaced three legitimate gaps in the first implementation:
+Functionally sound in the targeted slice after the corrective review loops. The review pass surfaced four legitimate gaps in the implementation journey:
 
 - the access-scenario helper invented a challenged and exclusion-override contract that the repo does not implement
+- the access-scenario helper still left requested and denied `My access` rows on granted-state defaults
 - the date validator was too permissive for a claimed ISO-only contract
 - the `Roles and access` spec did not prove the judicial lookup request payload
 
@@ -46,12 +49,19 @@ Those issues were fixed before final handoff. The branch now follows the existin
 Mandatory mock validation and access-scenario helper tests:
 
 - `yarn playwright test --project=node-api playwright_tests_new/api/unit/work-allocation-mock-validation.unit.api.ts playwright_tests_new/api/unit/work-allocation-access-scenarios.unit.api.ts`
-- Result: `8 passed (1.8s)`
+- Result: `9 passed`
 
 Targeted Work Allocation integration coverage:
 
 - `yarn test:playwright:integration playwright_tests_new/integration/test/manageTasks/myAccess/myAccess.positive.spec.ts playwright_tests_new/integration/test/manageTasks/caseTaskList/caseTaskList.positive.spec.ts playwright_tests_new/integration/test/caseDetails/rolesAndAccess.positive.spec.ts`
 - Result: `8 passed, 1 skipped (43.0s)`
+
+Follow-up review-fix validation:
+
+- `yarn playwright test --project=node-api playwright_tests_new/api/unit/work-allocation-access-scenarios.unit.api.ts`
+- Result: `5 passed (1.5s)`
+- `yarn test:playwright:integration playwright_tests_new/integration/test/manageTasks/myAccess/myAccess.positive.spec.ts playwright_tests_new/integration/test/caseDetails/rolesAndAccess.positive.spec.ts`
+- Result: `4 passed (47.0s)`
 
 Touched-file lint:
 

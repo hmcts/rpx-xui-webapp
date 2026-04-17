@@ -1,63 +1,13 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies, buildEntityToUsersAccessView, type WorkAllocationAccessScenarioRecord } from '../../helpers';
+import { applySessionCookies, buildEntityToUsersAccessView } from '../../helpers';
 import { buildAsylumCaseMock } from '../../mocks/cases/asylumCase.mock';
+import {
+  rolesAndAccessScenarioCaseId as caseId,
+  rolesAndAccessScenarioRecords as scenarioRecords,
+} from '../../mocks/workAllocationAccessScenarios.mock';
 
 const userIdentifier = 'STAFF_ADMIN';
-const caseId = '1000000000000100';
 const caseMockResponse = buildAsylumCaseMock({ caseId });
-
-const scenarioRecords: WorkAllocationAccessScenarioRecord[] = [
-  {
-    assignmentId: 'assignment-legal-ops-case-100',
-    actorId: 'user-alice',
-    actorName: 'Alice Example',
-    actorEmail: 'alice@example.com',
-    roleCategory: 'LEGAL_OPERATIONS',
-    roleName: 'Case Manager',
-    caseId,
-    caseName: 'Access Case 100',
-    caseCategory: 'Protection',
-    caseTypeId: 'Asylum',
-    jurisdiction: 'IA',
-    grantType: 'SPECIFIC',
-    created: '2026-01-10T12:00:00.000Z',
-    start: '2026-01-11T12:00:00.000Z',
-    end: '2026-02-11T12:00:00.000Z',
-  },
-  {
-    assignmentId: 'assignment-judge-case-100',
-    actorId: 'judge-bob',
-    actorName: 'Bob Judge',
-    actorEmail: 'judge.bob@example.com',
-    roleCategory: 'JUDICIAL',
-    roleName: 'Lead Judge',
-    caseId,
-    caseName: 'Access Case 100',
-    caseCategory: 'Protection',
-    caseTypeId: 'Asylum',
-    jurisdiction: 'IA',
-    grantType: 'STANDARD',
-    created: '2026-01-09T12:00:00.000Z',
-    start: '2026-01-10T12:00:00.000Z',
-    end: '2026-02-10T12:00:00.000Z',
-  },
-  {
-    assignmentId: 'assignment-judge-case-100-excluded',
-    actorId: 'judge-bob',
-    actorName: 'Bob Judge',
-    actorEmail: 'judge.bob@example.com',
-    roleCategory: 'JUDICIAL',
-    roleName: 'Lead Judge',
-    caseId,
-    caseName: 'Access Case 100',
-    caseCategory: 'Protection',
-    caseTypeId: 'Asylum',
-    jurisdiction: 'IA',
-    grantType: 'EXCLUDED',
-    created: '2026-01-15T12:00:00.000Z',
-    notes: 'Judicial conflict flagged.',
-  },
-];
 
 test.beforeEach(async ({ page }) => {
   await applySessionCookies(page, userIdentifier);

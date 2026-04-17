@@ -138,6 +138,71 @@ test.describe('work allocation access scenario helper', { tag: '@svc-internal' }
     expect(response.cases.filter((item) => item.isNew)).toHaveLength(0);
   });
 
+  test('builds requested and denied my-access records with repo-aligned labels and status fields', () => {
+    const response = buildMyAccessResponseFromScenario(
+      [
+        {
+          assignmentId: 'assignment-alice-case-300-requested',
+          actorId: 'user-alice',
+          actorName: 'Alice Example',
+          actorEmail: 'alice@example.com',
+          roleCategory: 'LEGAL_OPERATIONS',
+          roleName: 'Case Allocator',
+          caseId: '1000000000000003',
+          caseName: 'Access Case 300',
+          caseCategory: 'EUSS',
+          caseTypeId: 'Asylum',
+          jurisdiction: 'IA',
+          serviceLabel: 'Immigration & Asylum',
+          grantType: 'SPECIFIC',
+          created: '2026-01-14T12:00:00.000Z',
+          myAccessRole: 'specific-access-requested',
+        },
+        {
+          assignmentId: 'assignment-alice-case-400-denied',
+          actorId: 'user-alice',
+          actorName: 'Alice Example',
+          actorEmail: 'alice@example.com',
+          roleCategory: 'LEGAL_OPERATIONS',
+          roleName: 'Case Allocator',
+          caseId: '1000000000000004',
+          caseName: 'Access Case 400',
+          caseCategory: 'Protection',
+          caseTypeId: 'Asylum',
+          jurisdiction: 'IA',
+          serviceLabel: 'Immigration & Asylum',
+          grantType: 'SPECIFIC',
+          created: '2026-01-15T12:00:00.000Z',
+          end: '2026-02-12T12:00:00.000Z',
+          myAccessRole: 'specific-access-denied',
+        },
+      ],
+      'user-alice'
+    );
+
+    expect(response.total_records).toBe(2);
+    expect(response.cases).toEqual([
+      expect.objectContaining({
+        case_name: 'Access Case 300',
+        access: 'Specific',
+        startDate: 'Pending',
+        endDate: '',
+        role: 'specific-access-requested',
+        hasAccess: false,
+        isNew: true,
+      }),
+      expect.objectContaining({
+        case_name: 'Access Case 400',
+        access: 'Specific access denied',
+        startDate: 'Not authorised',
+        endDate: '12 February 2026',
+        role: 'specific-access-denied',
+        hasAccess: false,
+        isNew: true,
+      }),
+    ]);
+  });
+
   test('builds the entity->users view with exclusions separated from active users', () => {
     const response = buildEntityToUsersAccessView(scenarioRecords, '1000000000000001');
 

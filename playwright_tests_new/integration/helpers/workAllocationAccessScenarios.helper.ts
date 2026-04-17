@@ -1,4 +1,4 @@
-import { buildMyAccessCaseMock, type MyAccessCaseMock } from '../mocks/myAccess.mock';
+import { buildMyAccessCaseMock, getMyAccessStateDefinition, type MyAccessCaseMock } from '../mocks/myAccess.mock';
 import { formatUiDate } from '../utils/tableUtils';
 
 export type WorkAllocationAccessGrantType = 'STANDARD' | 'SPECIFIC' | 'CHALLENGED' | 'EXCLUDED';
@@ -125,23 +125,6 @@ const splitActorName = (fullName: string): { firstName: string; lastName: string
   };
 };
 
-const getAccessLabel = (record: WorkAllocationAccessScenarioRecord): string => {
-  if (record.myAccessLabel) {
-    return record.myAccessLabel;
-  }
-
-  switch (record.grantType) {
-    case 'CHALLENGED':
-      return 'Challenged access granted';
-    case 'SPECIFIC':
-      return 'Specific access granted';
-    case 'STANDARD':
-      return 'Standard access';
-    case 'EXCLUDED':
-      return 'Excluded';
-  }
-};
-
 const getMyAccessRole = (record: WorkAllocationAccessScenarioRecord): MyAccessCaseMock['role'] => {
   if (record.myAccessRole) {
     return record.myAccessRole;
@@ -157,6 +140,54 @@ const getMyAccessRole = (record: WorkAllocationAccessScenarioRecord): MyAccessCa
     case 'EXCLUDED':
       return 'specific-access-denied';
   }
+};
+
+const getAccessLabel = (record: WorkAllocationAccessScenarioRecord): string => {
+  if (record.myAccessLabel) {
+    return record.myAccessLabel;
+  }
+
+  return getMyAccessStateDefinition(getMyAccessRole(record)).access;
+};
+
+const getMyAccessStartDate = (record: WorkAllocationAccessScenarioRecord): string => {
+  const role = getMyAccessRole(record);
+
+  if (role === 'specific-access-requested') {
+    return 'Pending';
+  }
+
+  if (role === 'specific-access-denied') {
+    return 'Not authorised';
+  }
+
+  return formatUiDate(record.start ?? DEFAULT_START);
+};
+
+const getMyAccessEndDate = (record: WorkAllocationAccessScenarioRecord): string => {
+  const role = getMyAccessRole(record);
+
+  if (role === 'specific-access-requested') {
+    return '';
+  }
+
+  return formatUiDate(record.end ?? DEFAULT_END);
+};
+
+const getMyAccessHasAccess = (record: WorkAllocationAccessScenarioRecord): boolean => {
+  if (typeof record.hasAccess === 'boolean') {
+    return record.hasAccess;
+  }
+
+  return getMyAccessStateDefinition(getMyAccessRole(record)).hasAccess;
+};
+
+const getMyAccessIsNew = (record: WorkAllocationAccessScenarioRecord): boolean => {
+  if (typeof record.isNew === 'boolean') {
+    return record.isNew;
+  }
+
+  return getMyAccessStateDefinition(getMyAccessRole(record)).isNew;
 };
 
 const getNonExcludedAccessRecords = (records: WorkAllocationAccessScenarioRecord[]): WorkAllocationAccessScenarioRecord[] =>
@@ -270,7 +301,10 @@ export function buildMyAccessResponseFromScenario(
 ): { cases: MyAccessCaseMock[]; total_records: number } {
   const cases = getMyAccessScenarioRecords(records)
     .filter((record) => record.actorId === actorId)
-    .map((record) =>
+    .map((record) => {
+      const role = getMyAccessRole(record);
+
+      return (
       buildMyAccessCaseMock({
         id: record.assignmentId,
         case_id: record.caseId,
@@ -282,13 +316,14 @@ export function buildMyAccessResponseFromScenario(
         expectedServiceLabel: record.serviceLabel ?? record.jurisdiction,
         dateSubmitted: formatUiDate(record.created ?? DEFAULT_CREATED),
         access: getAccessLabel(record),
-        startDate: formatUiDate(record.start ?? DEFAULT_START),
-        endDate: formatUiDate(record.end ?? DEFAULT_END),
-        role: getMyAccessRole(record),
-        hasAccess: record.hasAccess ?? true,
-        isNew: record.isNew ?? false,
+        startDate: getMyAccessStartDate(record),
+        endDate: getMyAccessEndDate(record),
+        role,
+        hasAccess: getMyAccessHasAccess(record),
+        isNew: getMyAccessIsNew(record),
       })
-    );
+      );
+    });
 
   return {
     cases,

@@ -12,11 +12,11 @@ export function isNavigationItemVisible(
 export function filterNavigationItemsByRoles(items: NavigationItem[] = [], userRoles: string[] = []): NavigationItem[] {
   const roles = userRoles ?? [];
   const roleFilteredItems = (items || []).filter((item) =>
-    item.roles && item.roles.length > 0 ? item.roles.some((role) => roles.includes(role)) : true
+    item.roles?.length > 0 ? item.roles.some((role) => roles.includes(role)) : true
   );
 
   return roleFilteredItems.filter((item) =>
-    item.notRoles && item.notRoles.length > 0 ? item.notRoles.every((role) => !roles.includes(role)) : true
+    item.notRoles?.length > 0 ? item.notRoles.every((role) => !roles.includes(role)) : true
   );
 }
 
@@ -28,7 +28,7 @@ export function filterNavigationItemsByFlags(
   return items
     .filter((item) => {
       // If item.flags exists, check every flag against AppConstants.MENU_FLAGS
-      if (item.flags && item.flags.length > 0) {
+      if (item.flags?.length > 0) {
         return item.flags.every((flag) => {
           const flagName = isPlainFlag(flag) ? flag : flag.flagName;
           const flagValue = isPlainFlag(flag) ? menuFlags[flagName] : menuFlags[flagName] === flag.value;
@@ -39,7 +39,7 @@ export function filterNavigationItemsByFlags(
       return true;
     })
     .filter((item) =>
-      item.notFlags && item.notFlags.length > 0
+      item.notFlags?.length > 0
         ? item.notFlags.every((flag) => {
             const flagName = isPlainFlag(flag) ? flag : flag.flagName;
             const flagValue = isPlainFlag(flag) ? menuFlags[flagName] : menuFlags[flagName] !== flag.value;

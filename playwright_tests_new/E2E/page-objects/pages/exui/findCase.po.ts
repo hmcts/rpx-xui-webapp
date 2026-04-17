@@ -15,7 +15,9 @@ export class FindCasePage extends Base {
   readonly ccdCaseReference = this.page
     .locator(String.raw`#dynamicFilters #\[CASE_REFERENCE\], input[id*="CASE_REFERENCE"]`)
     .first();
-  readonly pagination = this.page.locator('.ngx-pagination');
+  readonly pagination = this.page.locator(
+    '.ngx-pagination, nav[aria-label="Pagination"], [role="navigation"][aria-label="Pagination"]'
+  );
   readonly searchResultsContainer = this.page.locator('#search-result');
   readonly searchResultsSummary = this.page.locator('#search-result .pagination-top');
   readonly searchResultsTable = this.page.locator('ccd-search-result#search-result');

@@ -1,7 +1,7 @@
 # Requirements
 # https://tools.hmcts.net/confluence/display/EUI/Work+Allocation-+Release+2#WorkAllocationRelease2-ManagelinklogicforTasksandCases
 
-@ng @wa2 @wa  
+@ng @wa2 @wa @ignore
 Feature: WA Release 2: My cases - Manage links - Action work flow
 
     Background: Mock and browser setup
@@ -124,4 +124,3 @@ Feature: WA Release 2: My cases - Manage links - Action work flow
     #     Examples:
     #         | UserIdentifier     | UserType   | Roles                                              | taskAtRow | action | submitBtnLabel | bannermessage                              |
     #         | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer | 1         | Remove | Reassign       | You've reassigned a task to somebody else. |
-

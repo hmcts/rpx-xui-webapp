@@ -28,7 +28,12 @@ export class TaskListPage extends Base {
   readonly applyFilterButton = this.page.locator('button#applyFilter').first();
 
   readonly allWorkServiceFilter = this.filterPanel
-    .locator('select[name="service"], select#service, [id*="service"] select')
+    .locator(
+      'select#select_service, select[name="select_service"], select[name="service"], select#service, [id*="service"] select'
+    )
+    .first();
+  readonly allWorkCasesServiceFilter = this.filterPanel
+    .locator('select#select_jurisdiction, select[name="select_jurisdiction"]')
     .first();
   readonly allWorkLocationAllRadio = this.filterPanel.getByRole('radio', { name: /^All$/ }).first();
   readonly allWorkLocationSearchRadio = this.filterPanel.getByRole('radio', { name: 'Search for a location' }).first();
@@ -37,6 +42,7 @@ export class TaskListPage extends Base {
   readonly allWorkTaskCategoryAssignedToPersonRadio = this.filterPanel
     .getByRole('radio', { name: 'Assigned to a person' })
     .first();
+  readonly allWorkCasesRoleTypeFilter = this.filterPanel.locator('select#select_role, select[name="select_role"]').first();
   readonly allWorkTaskTypeFilter = this.filterPanel.getByRole('combobox', { name: /select a role type|task type/i }).first();
   readonly allWorkTasksByRoleTypeFilter = this.filterPanel
     .locator('h3:has-text("Tasks by role type")')
@@ -44,6 +50,8 @@ export class TaskListPage extends Base {
     .first();
   readonly allWorkPersonSearchInput = this.filterPanel.getByRole('combobox', { name: /select a person/i }).first();
   readonly allWorkLocationSearchInput = this.filterPanel.locator('input[name="location"], input[id*="location"]').first();
+  readonly allWorkCasesApplyPrompt = this.page.getByText('Please select filters and click Apply').first();
+  readonly allWorkCasesEmptyMessage = this.page.getByText('Change your selection to view cases').first();
 
   readonly taskTableTabs = this.page.locator('.hmcts-sub-navigation .hmcts-sub-navigation__link');
 
@@ -58,7 +66,7 @@ export class TaskListPage extends Base {
   readonly taskTableHeader = this.taskListTable.locator('thead');
   readonly taskTableFooter = this.taskListTable.locator('tfoot');
   readonly taskListResultsAmount = this.page.locator('#search-result-summary__text, [data-test="search-result-summary__text"]');
-  readonly myCasesResultsAmount = this.page.locator('.pagination-top');
+  readonly myCasesResultsAmount = this.page.locator('.pagination-top').first();
   readonly uniqueCasesSummary = this.page.locator('.second-line');
   readonly myAccessNewCasesBadge = this.page.locator('.xui-alert-link__number');
   readonly manageCaseButtons = this.taskListTable.getByRole('button', { name: 'Manage' });
@@ -86,7 +94,9 @@ export class TaskListPage extends Base {
   readonly cancelledTaskMessage = this.page.getByText("You've cancelled a task. It has been removed from the task list.");
   readonly taskNoLongerAvailableMessage = this.page.getByText('The task is no longer available.');
 
-  readonly paginationControls = this.page.locator('.ngx-pagination');
+  readonly paginationControls = this.page
+    .locator('.ngx-pagination, nav[aria-label="Pagination"], [role="navigation"][aria-label="Pagination"]')
+    .first();
   readonly paginationNextButton = this.paginationControls.locator('.pagination-next');
   readonly paginationEllipsisButton = this.paginationControls.locator('.ellipsis');
   readonly paginationPreviousButton = this.paginationControls.locator('.pagination-previous');
@@ -96,8 +106,10 @@ export class TaskListPage extends Base {
   readonly continueButton = this.page.locator('.govuk-button').filter({ hasText: 'Continue' });
 
   readonly reassignUserSearchInput = this.page.locator('#inputSelectPerson');
-  readonly reassignUserAutocompleteOverlay = this.page.locator('.cdk-overlay-pane');
-  readonly reassignUserAutocompleteFirstOption = this.page.getByRole('option').first();
+  readonly autocompleteOverlay = this.page.locator('.cdk-overlay-pane').filter({
+    has: this.page.locator('[role="option"]'),
+  });
+  readonly autocompleteFirstOption = this.autocompleteOverlay.locator('[role="option"]').first();
   readonly reassignButton = this.page.getByRole('button', { name: 'Reassign' });
 
   constructor(page: Page) {
@@ -143,6 +155,10 @@ export class TaskListPage extends Base {
 
   async gotoAllWorkTasks() {
     await this.navigateToTaskListView('/work/all-work/tasks', /\/work\/all-work\/tasks(?:\?.*)?$/, 'all work tasks navigation');
+  }
+
+  async gotoAllWorkCases() {
+    await this.navigateToTaskListView('/work/all-work/cases', /\/work\/all-work\/cases(?:\?.*)?$/, 'all work cases navigation');
   }
 
   async selectWorkMenuItem(menuItemText: string) {
@@ -448,6 +464,15 @@ export class TaskListPage extends Base {
     await this.allWorkPersonSearchInput.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
   }
 
+  async waitForAllWorkCasesFilterControlsReady() {
+    await this.openFilterPanel();
+    await this.allWorkCasesServiceFilter.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+    await this.allWorkCasesRoleTypeFilter.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+    await this.allWorkPersonSearchInput.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+    await this.allWorkLocationAllRadio.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+    await this.allWorkLocationSearchRadio.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+  }
+
   async setSelectAllServicesFilter(checked: boolean) {
     await this.setFilterCheckbox(this.selectAllServicesFilter, checked, 'select all services');
   }
@@ -532,9 +557,23 @@ export class TaskListPage extends Base {
     await this.confirmCancelTaskButton.click();
   }
 
+  async selectFirstAutocompleteOption() {
+    await this.autocompleteOverlay.last().waitFor({ state: 'visible' });
+    await this.autocompleteOverlay.last().locator('[role="option"]').first().click();
+  }
+
   async selectFirstReassignUserOption() {
-    await this.reassignUserAutocompleteOverlay.waitFor({ state: 'visible' });
-    await this.reassignUserAutocompleteFirstOption.click();
+    await this.selectFirstAutocompleteOption();
+  }
+
+  getPaginationPageControl(pageNumber: number): Locator {
+    return this.paginationControls.locator(`[aria-label="Page ${pageNumber}"]`).first();
+  }
+
+  async openPaginationPage(pageNumber: number) {
+    const pageControl = this.getPaginationPageControl(pageNumber);
+    await pageControl.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+    await pageControl.click();
   }
 
   async waitForManageButton(

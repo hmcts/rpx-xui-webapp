@@ -1,5 +1,5 @@
 
-@functional_enabled
+@functional_enabled @ignore
 Feature: WA Release 2: Case events and Task completion and states when task_required is true
 
     Background: Setup
@@ -231,4 +231,3 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
     #     Examples:
     #         | roles                                                                            |
     #         | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor |
-

@@ -21,6 +21,7 @@ export type MyCaseMock = {
   case_role: string;
   role: string;
   role_category: string;
+  assignee: string;
   hasAccess: boolean;
   actions: MyCaseActionMock[];
 };
@@ -91,6 +92,7 @@ export const buildMyCaseMock = (overrides: Partial<MyCaseMock> = {}): MyCaseMock
     case_role: overrides.case_role ?? stateDefinition.caseRole,
     role: overrides.role ?? stateDefinition.role,
     role_category: overrides.role_category ?? stateDefinition.roleCategory,
+    assignee: overrides.assignee ?? faker.string.uuid(),
     hasAccess: overrides.hasAccess ?? true,
     actions: overrides.actions ?? [...myCasesNoActions],
   };
@@ -133,6 +135,7 @@ export const buildMyCasesMock = (uniqueCasesCount: number = 2): MyCasesResponseM
       case_role: 'lead-judge',
       role: 'Lead Judge',
       role_category: 'JUDICIAL',
+      assignee: 'judicial-assignee-1',
       hasAccess: true,
       actions: myCasesAllocatorActions,
     }),
@@ -151,6 +154,7 @@ export const buildMyCasesMock = (uniqueCasesCount: number = 2): MyCasesResponseM
       case_role: 'case-manager',
       role: 'Case Manager',
       role_category: 'LEGAL_OPERATIONS',
+      assignee: 'legal-ops-assignee-2',
       hasAccess: true,
       actions: myCasesNoActions,
     }),

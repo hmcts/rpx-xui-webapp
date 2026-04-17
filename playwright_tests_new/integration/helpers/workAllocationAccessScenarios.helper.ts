@@ -102,9 +102,6 @@ const DEFAULT_END = '2026-02-09T12:00:00.000Z';
 const DEFAULT_LOCATION_ID = 227101;
 const DEFAULT_LOCATION_NAME = 'Taylor House';
 
-const getActorCaseKey = (record: Pick<WorkAllocationAccessScenarioRecord, 'actorId' | 'caseId'>) =>
-  `${record.actorId}::${record.caseId}`;
-
 const uniqueBy = <T, TKey>(items: T[], selector: (item: T) => TKey): T[] => {
   const seen = new Set<TKey>();
 
@@ -162,14 +159,16 @@ const getMyAccessRole = (record: WorkAllocationAccessScenarioRecord): MyAccessCa
   }
 };
 
-const getExclusionKeys = (records: WorkAllocationAccessScenarioRecord[]): Set<string> =>
-  new Set(records.filter((record) => record.grantType === 'EXCLUDED').map(getActorCaseKey));
+const getNonExcludedAccessRecords = (records: WorkAllocationAccessScenarioRecord[]): WorkAllocationAccessScenarioRecord[] =>
+  records.filter((record) => record.grantType !== 'EXCLUDED');
 
-const getActiveAccessRecords = (records: WorkAllocationAccessScenarioRecord[]): WorkAllocationAccessScenarioRecord[] => {
-  const excludedKeys = getExclusionKeys(records);
-
-  return records.filter((record) => record.grantType !== 'EXCLUDED' && !excludedKeys.has(getActorCaseKey(record)));
-};
+const getMyAccessScenarioRecords = (records: WorkAllocationAccessScenarioRecord[]): WorkAllocationAccessScenarioRecord[] =>
+  records.filter(
+    (record) =>
+      record.grantType === 'SPECIFIC' ||
+      record.myAccessRole === 'specific-access-requested' ||
+      record.myAccessRole === 'specific-access-denied'
+  );
 
 const getCaseworkersForScenario = (records: WorkAllocationAccessScenarioRecord[]): ScenarioCaseworker[] =>
   uniqueBy(
@@ -239,7 +238,7 @@ export function queryWorkAllocationAccessByUserAndEntity(
   records: WorkAllocationAccessScenarioRecord[],
   query: { actorId: string; caseId: string }
 ): UserEntityAccessDecision {
-  const responsibilities = getActiveAccessRecords(records)
+  const responsibilities = getNonExcludedAccessRecords(records)
     .filter((record) => record.actorId === query.actorId && record.caseId === query.caseId)
     .map((record) => ({
       assignmentId: record.assignmentId,
@@ -269,7 +268,7 @@ export function buildMyAccessResponseFromScenario(
   records: WorkAllocationAccessScenarioRecord[],
   actorId: string
 ): { cases: MyAccessCaseMock[]; total_records: number } {
-  const cases = getActiveAccessRecords(records)
+  const cases = getMyAccessScenarioRecords(records)
     .filter((record) => record.actorId === actorId)
     .map((record) =>
       buildMyAccessCaseMock({
@@ -307,7 +306,7 @@ export function buildEntityToUsersAccessView(
   judicialUsers: ScenarioJudicialUser[];
 } {
   const caseRecords = records.filter((record) => record.caseId === caseId);
-  const activeRoles = getActiveAccessRecords(caseRecords).map(toCaseRole);
+  const activeRoles = getNonExcludedAccessRecords(caseRecords).map(toCaseRole);
   const exclusions = caseRecords.filter((record) => record.grantType === 'EXCLUDED').map(toRoleExclusion);
 
   return {

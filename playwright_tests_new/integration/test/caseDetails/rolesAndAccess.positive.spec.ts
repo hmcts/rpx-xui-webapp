@@ -128,8 +128,27 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
       await expect(page.getByRole('heading', { level: 2, name: 'Roles and access' })).toBeVisible();
     });
 
-    await test.step('Verify only active non-excluded users remain in the case-role sections', async () => {
-      await expect(judiciarySection.getByText('There are no judicial roles for this case.')).toBeVisible();
+    await test.step('Verify active roles remain visible even when exclusions exist for the same user', async () => {
+      const judicialLookupRequest = await judicialLookupRequestPromise;
+      expect(judicialLookupRequest).toBeTruthy();
+      expect(judicialLookupRequest.postDataJSON()).toEqual({
+        userIds: ['judge-bob'],
+        services: ['IA'],
+      });
+
+      const judiciaryTable = judiciarySection.locator('table.govuk-table').first();
+      await expect(judiciaryTable).toBeVisible();
+      const judiciaryRows = await tableUtils.parseDataTable(judiciaryTable);
+
+      expect(judiciaryRows).toHaveLength(1);
+      expect(judiciaryRows[0]).toEqual(
+        expect.objectContaining({
+          Name: 'Bob Judge',
+          Role: 'Lead Judge',
+          Start: '10 January 2026',
+          End: '10 February 2026',
+        })
+      );
 
       const legalOpsTable = legalOpsSection.locator('table.govuk-table').first();
       const legalOpsRows = await tableUtils.parseDataTable(legalOpsTable);
@@ -146,13 +165,6 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
     });
 
     await test.step('Verify EXCLUDED grant behaviour is rendered in the Exclusions table', async () => {
-      const judicialLookupRequest = await judicialLookupRequestPromise;
-      expect(judicialLookupRequest).toBeTruthy();
-      expect(judicialLookupRequest.postDataJSON()).toEqual({
-        userIds: ['judge-bob'],
-        services: ['IA'],
-      });
-
       const exclusionsTable = page.locator('exui-exclusions-table table.govuk-table').first();
       const exclusionRows = await tableUtils.parseDataTable(exclusionsTable);
 

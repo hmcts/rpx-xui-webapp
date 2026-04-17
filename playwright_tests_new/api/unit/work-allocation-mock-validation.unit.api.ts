@@ -66,4 +66,31 @@ test.describe('work allocation mock validation helper', { tag: '@svc-internal' }
       expect(message).toContain('caseTasks[0].role_category must be a non-empty string for role_attributes.role_category.');
     }
   });
+
+  test('rejects impossible ISO calendar dates in mandatory task fields', () => {
+    const validTaskList = buildMyTaskListMock('test-user', 1);
+    const invalidTaskList = {
+      ...validTaskList,
+      tasks: [
+        {
+          ...validTaskList.tasks[0],
+          due_date: '2026-02-31T10:00:00Z',
+        },
+      ],
+    };
+    const validCaseTasks = buildCaseDetailsTasksMock({ caseId: '1234567890123456' });
+    const invalidCaseTasks = [
+      {
+        ...validCaseTasks[0],
+        priority_date: '2026-02-30T10:00:00+01:00',
+      },
+    ];
+
+    expect(() => assertValidWorkAllocationTaskListMock(invalidTaskList)).toThrow(
+      /tasks\[0\]\.due_date must be an ISO date-time string for due_date_time\./
+    );
+    expect(() => assertValidWorkAllocationCaseTaskMock(invalidCaseTasks)).toThrow(
+      /caseTasks\[0\]\.priority_date must be an ISO date-time string for priorities\.priority_date\./
+    );
+  });
 });

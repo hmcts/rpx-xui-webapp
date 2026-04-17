@@ -186,7 +186,7 @@ test.describe(`My Access as ${userIdentifier}`, { tag: ['@integration', '@integr
     });
   });
 
-  test(`Scenario-driven access queries exclude conflicts from the My access view`, async ({ taskListPage, page, tableUtils }) => {
+  test(`Scenario-driven access queries follow the current My access contract`, async ({ taskListPage, page, tableUtils }) => {
     const scenarioResponse = buildMyAccessResponseFromScenario(myAccessScenarioRecords, scenarioActorId);
     const isNewCount = scenarioResponse.cases.filter((item) => item.isNew).length;
 
@@ -200,15 +200,15 @@ test.describe(`My Access as ${userIdentifier}`, { tag: ['@integration', '@integr
       await taskListPage.exuiSpinnerComponent.wait();
     });
 
-    await test.step('Verify user->entities results include only active, non-excluded assignments', async () => {
+    await test.step('Verify user->entities results follow the current specific-access-only My access contract', async () => {
       const table = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
       const visibleCaseNames = table.map((row) => row['Case name']);
 
-      expect(visibleCaseNames).toEqual(['Scenario Access Case 100', 'Scenario Access Case 200']);
-      expect(visibleCaseNames).not.toContain('Scenario Access Case 300');
-      await expect(taskListPage.myAccessNewCasesBadge).toHaveText('1');
+      expect(visibleCaseNames).toEqual(['Scenario Access Case 100', 'Scenario Access Case 300']);
+      expect(visibleCaseNames).not.toContain('Scenario Access Case 200');
+      await expect(taskListPage.myAccessNewCasesBadge).toBeHidden();
       expect(table[0]['Access']).toBe('Specific access granted');
-      expect(table[1]['Access']).toBe('Challenged access granted');
+      expect(table[1]['Access']).toBe('Specific access granted');
     });
   });
 });

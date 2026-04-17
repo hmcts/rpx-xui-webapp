@@ -16,9 +16,9 @@ The access-scenario logic is deterministic data transformation. That belongs in 
 
 `My access` and `Roles and access` still need integration proof because those flows exercise the real UI tables, exclusion rendering, and judicial-name resolution. Browser coverage is limited to those surfaces instead of duplicating all scenario permutations in the UI layer.
 
-## D5. Treat `EXCLUDED` as an override of matching active access for the same actor and case
+## D5. Keep `My access` modelling aligned with the current specific-access contract
 
-For this ticket slice, an exclusion record for the same `actorId + caseId` suppresses otherwise-active access in scenario helpers and downstream mocked views. The tests are written around that explicit rule.
+The repo's current `My access` mapping is driven by the specific-access subset and excludes challenged records. The Playwright scenario helper therefore mirrors that existing contract instead of inventing a broader access-projection rule for the ticket slice.
 
 ## D6. Reuse existing mock builders and page objects rather than inventing a parallel WA fixture stack
 
@@ -31,3 +31,11 @@ This branch intentionally validates the touched Work Allocation helpers/specs, n
 ## D8. No `P2` waivers are accepted for the current branch state
 
 If the final review finds a material behavioural or maintainability gap in this slice, it should be fixed before handoff rather than carried as an undocumented waiver.
+
+## D9. Keep active roles and exclusions as independent surfaces in the entity-to-users view
+
+The current application loads role assignments and exclusions separately. Scenario helpers and specs therefore keep active roles visible while also rendering matching exclusions, rather than suppressing one with the other.
+
+## D10. Validate mandatory date fields as strict calendar timestamps, not `Date.parse(...)`-compatible strings
+
+The branch claims clear failures for malformed mandatory task attributes. Date validation therefore rejects impossible calendar values such as February 31 rather than accepting browser-normalized overflow dates.

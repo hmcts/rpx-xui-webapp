@@ -12,9 +12,51 @@ type RequiredFieldDefinition = {
 const isObject = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null;
 const isNonEmptyString = (value: unknown): value is string => typeof value === 'string' && value.trim().length > 0;
 const isFiniteNumber = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value);
-const ISO_DATE_TIME_REGEX = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?(?:Z|[+-]\d{2}:\d{2})$/;
-const isIsoDateString = (value: unknown): value is string =>
-  isNonEmptyString(value) && ISO_DATE_TIME_REGEX.test(value) && !Number.isNaN(Date.parse(value));
+const ISO_DATE_TIME_REGEX = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(?:\.(\d{1,9}))?(Z|([+-])(\d{2}):(\d{2}))$/;
+
+const isWithinRange = (value: number, min: number, max: number): boolean => value >= min && value <= max;
+
+const isValidCalendarDate = (year: number, month: number, day: number): boolean => {
+  const parsedDate = new Date(Date.UTC(year, month - 1, day));
+
+  return parsedDate.getUTCFullYear() === year && parsedDate.getUTCMonth() === month - 1 && parsedDate.getUTCDate() === day;
+};
+
+const isIsoDateString = (value: unknown): value is string => {
+  if (!isNonEmptyString(value)) {
+    return false;
+  }
+
+  const match = value.match(ISO_DATE_TIME_REGEX);
+
+  if (!match) {
+    return false;
+  }
+
+  const [, year, month, day, hour, minute, second, , timezone, , offsetHour, offsetMinute] = match;
+  const yearNumber = Number.parseInt(year, 10);
+  const monthNumber = Number.parseInt(month, 10);
+  const dayNumber = Number.parseInt(day, 10);
+  const hourNumber = Number.parseInt(hour, 10);
+  const minuteNumber = Number.parseInt(minute, 10);
+  const secondNumber = Number.parseInt(second, 10);
+
+  if (
+    !isWithinRange(monthNumber, 1, 12) ||
+    !isValidCalendarDate(yearNumber, monthNumber, dayNumber) ||
+    !isWithinRange(hourNumber, 0, 23) ||
+    !isWithinRange(minuteNumber, 0, 59) ||
+    !isWithinRange(secondNumber, 0, 59)
+  ) {
+    return false;
+  }
+
+  if (timezone === 'Z') {
+    return true;
+  }
+
+  return isWithinRange(Number.parseInt(offsetHour, 10), 0, 23) && isWithinRange(Number.parseInt(offsetMinute, 10), 0, 59);
+};
 
 const mandatoryTaskFields: RequiredFieldDefinition[] = [
   { key: 'id', ticketField: 'task_id', validate: isNonEmptyString, expected: 'a non-empty string' },

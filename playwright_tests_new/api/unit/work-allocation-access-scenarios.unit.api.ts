@@ -105,14 +105,21 @@ test.describe('work allocation access scenario helper', { tag: '@svc-internal' }
     expect(decision.exclusions).toEqual([]);
   });
 
-  test('suppresses responsibilities when an EXCLUDED grant exists for the same user+entity', () => {
+  test('returns responsibilities and exclusions independently when an EXCLUDED grant exists for the same user+entity', () => {
     const decision = queryWorkAllocationAccessByUserAndEntity(scenarioRecords, {
       actorId: 'judge-bob',
       caseId: '1000000000000001',
     });
 
-    expect(decision.hasAccess).toBe(false);
-    expect(decision.responsibilities).toEqual([]);
+    expect(decision.hasAccess).toBe(true);
+    expect(decision.responsibilities).toEqual([
+      {
+        assignmentId: 'assignment-judge-case-100',
+        roleName: 'Lead Judge',
+        roleCategory: 'JUDICIAL',
+        grantType: 'STANDARD',
+      },
+    ]);
     expect(decision.exclusions).toEqual([
       {
         assignmentId: 'assignment-judge-case-100-exclusion',
@@ -122,25 +129,33 @@ test.describe('work allocation access scenario helper', { tag: '@svc-internal' }
     ]);
   });
 
-  test('builds the user->entities my-access view from active records only', () => {
+  test('builds the user->entities my-access view from specific-access records only', () => {
     const response = buildMyAccessResponseFromScenario(scenarioRecords, 'user-alice');
 
-    expect(response.total_records).toBe(2);
-    expect(response.cases.map((item) => item.case_name)).toEqual(['Access Case 100', 'Access Case 200']);
-    expect(response.cases.map((item) => item.access)).toEqual(['Specific access granted', 'Challenged access granted']);
-    expect(response.cases.filter((item) => item.isNew)).toHaveLength(1);
+    expect(response.total_records).toBe(1);
+    expect(response.cases.map((item) => item.case_name)).toEqual(['Access Case 100']);
+    expect(response.cases.map((item) => item.access)).toEqual(['Specific access granted']);
+    expect(response.cases.filter((item) => item.isNew)).toHaveLength(0);
   });
 
   test('builds the entity->users view with exclusions separated from active users', () => {
     const response = buildEntityToUsersAccessView(scenarioRecords, '1000000000000001');
 
-    expect(response.roles).toHaveLength(1);
-    expect(response.roles[0]).toEqual(
+    expect(response.roles).toHaveLength(2);
+    expect(response.roles).toContainEqual(
       expect.objectContaining({
         id: 'assignment-alice-case-100',
         name: 'Alice Example',
         roleName: 'Case Manager',
         roleCategory: 'LEGAL_OPERATIONS',
+      })
+    );
+    expect(response.roles).toContainEqual(
+      expect.objectContaining({
+        id: 'assignment-judge-case-100',
+        actorId: 'judge-bob',
+        roleName: 'Lead Judge',
+        roleCategory: 'JUDICIAL',
       })
     );
 

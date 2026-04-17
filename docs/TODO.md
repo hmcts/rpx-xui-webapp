@@ -12,7 +12,12 @@
 - [x] Add Playwright integration coverage proving `user -> entities` exclusion behaviour on `My access`.
 - [x] Add Playwright integration coverage proving `entity -> users` separation of active roles and exclusions on `Roles and access`.
 - [x] Move case-task integration specs onto the shared validated route helper where appropriate.
+- [x] Align the access-scenario helper with the repo's current specific-access `My access` contract.
+- [x] Stop suppressing active role rows when exclusions exist for the same actor and case.
+- [x] Replace permissive timestamp parsing with strict calendar validation for mandatory task dates.
+- [x] Repair the repo lint scripts so `yarn lint` resolves both Prettier and ESLint in this Yarn environment.
 - [x] Remove the `docs/*.md` ignore rules so traceability artefacts are reviewable in the branch.
 - [x] Replace stale branch traceability docs with EXUI-4213-specific plan, decisions, and results.
+- [x] Refresh branch evidence after the formatter and lint-entrypoint follow-up changes.
 - [x] Run targeted unit and integration validation for the touched Work Allocation areas.
 - [x] Run a final review pass and record residual risks instead of overstating delivery.

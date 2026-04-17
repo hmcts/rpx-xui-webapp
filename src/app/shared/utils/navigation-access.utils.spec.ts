@@ -105,7 +105,9 @@ describe('navigation access utils', () => {
 
     expect(filterNavigationItemsByRoles()).toEqual([]);
     expect(filterNavigationItemsByRoles(null as unknown as NavigationItem[], ['matched-role'])).toEqual([]);
-    expect(filterNavigationItemsByRoles([unrestrictedItem, restrictedItem], null as unknown as string[])).toEqual([unrestrictedItem]);
+    expect(filterNavigationItemsByRoles([unrestrictedItem, restrictedItem], null as unknown as string[])).toEqual([
+      unrestrictedItem,
+    ]);
   });
 
   it('should filter navigation items by required and excluded flags', () => {

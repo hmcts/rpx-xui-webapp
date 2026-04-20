@@ -12,6 +12,7 @@ import { HearingViewEditSummaryPage } from './exui/hearingViewEditSummary.po';
 import { HearingViewSummaryPage } from './exui/hearingViewSummary.po';
 import { CaseFileViewPage } from './exui/caseFileView.po';
 import { AccessRequestPage } from './exui/accessRequest.po';
+
 export interface PageFixtures {
   determinePage: Page;
   caseDetailsPage: CaseDetailsPage;

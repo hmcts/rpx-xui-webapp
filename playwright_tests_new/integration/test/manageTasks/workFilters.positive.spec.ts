@@ -30,6 +30,18 @@ type SearchRequestPayload = {
   view?: string;
 };
 
+type LocationSearchRequestLocation = {
+  id?: string;
+  locationId?: string;
+  regionId?: string;
+};
+
+type LocationSearchRequestUserLocation = {
+  service?: string;
+  serviceCode?: string;
+  locations?: LocationSearchRequestLocation[];
+};
+
 type LocationSearchScenario = {
   scenarioName: string;
   roleAssignments: WorkFilterRoleAssignment[];
@@ -37,14 +49,25 @@ type LocationSearchScenario = {
   expectedInitialLocations: string[];
   expectedSearchResults: string[];
   expectedFullLocationServiceCodes?: string[];
-  searchableLocations: Array<typeof workFiltersIaSearchLocation>;
 };
 
 type LocationSearchRequest = {
   searchTerm: string;
   serviceIds: string[];
+  userLocations: LocationSearchRequestUserLocation[];
   userLocationServices: string[];
 };
+
+type SearchableLocation = typeof workFiltersIaSearchLocation & {
+  serviceCode: string;
+};
+
+const searchableLocations: SearchableLocation[] = [
+  { ...workFiltersIaSearchLocation, serviceCode: 'IA' },
+  { ...workFiltersIaSearchLocationSecondary, serviceCode: 'IA' },
+  { ...workFiltersSscsSearchLocation, serviceCode: 'SSCS' },
+  { ...workFiltersSscsSearchLocationSecondary, serviceCode: 'SSCS' },
+];
 
 test.beforeEach(async ({ page }) => {
   await setupWorkFiltersUser(page);
@@ -113,19 +136,83 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
     });
   });
 
-  test('My tasks applies selected services and work types to the search request', async ({ taskListPage, page }) => {
-    const taskListResponse = buildTaskListMock(6, workFiltersUserId, myActionsList);
+  test('My tasks applies selected services and work types to the search request', async ({ taskListPage, page, tableUtils }) => {
+    const baseTaskListResponse = buildTaskListMock(2, workFiltersUserId, myActionsList);
+    const unfilteredTasks = [
+      {
+        ...baseTaskListResponse.tasks[0],
+        case_name: 'Unfiltered IA task',
+        case_name_field: 'Unfiltered IA task',
+        case_category: 'Protection',
+        case_category_field: 'Protection',
+        case_management_category: 'Protection',
+        location_name: 'Taylor House',
+        location_field: 'Taylor House',
+        task_title: 'Review application',
+        task_field: 'Review application',
+      },
+      {
+        ...baseTaskListResponse.tasks[1],
+        case_name: 'Unfiltered secondary task',
+        case_name_field: 'Unfiltered secondary task',
+        case_category: 'Civil',
+        case_category_field: 'Civil',
+        case_management_category: 'Civil',
+        location_name: 'Birmingham Civil and Family Justice Centre',
+        location_field: 'Birmingham Civil and Family Justice Centre',
+        task_title: 'Review hearing bundle',
+        task_field: 'Review hearing bundle',
+      },
+    ];
+    const taskListResponse = { tasks: unfilteredTasks, total_records: unfilteredTasks.length };
     const taskRequests: SearchRequestPayload[] = [];
+    let selectedService: string | null = null;
+    let selectedWorkType: string | null = null;
+    const filteredTask = {
+      ...baseTaskListResponse.tasks[0],
+      case_name: 'Filtered work task',
+      case_name_field: 'Filtered work task',
+      case_category: 'Protection',
+      case_category_field: 'Protection',
+      case_management_category: 'Protection',
+      location_name: 'Taylor House',
+      location_field: 'Taylor House',
+      task_title: 'Review filtered task',
+      task_field: 'Review filtered task',
+    };
 
     await setupManageTasksBaseRoutes(page, {
       supportedJurisdictions: workFiltersSupportedJurisdictions,
       supportedJurisdictionDetails: workFiltersSupportedJurisdictionDetails,
       taskListHandler: async (route) => {
-        taskRequests.push(route.request().postDataJSON() as SearchRequestPayload);
+        const request = route.request().postDataJSON() as SearchRequestPayload;
+        taskRequests.push(request);
+        const searchParameters = request.searchRequest?.search_parameters ?? [];
+        const shouldReturnFilteredTask =
+          Boolean(selectedService && selectedWorkType) &&
+          searchParameters.some(
+            (parameter) => parameter.key === 'jurisdiction' && parameter.values?.includes(selectedService ?? '')
+          ) &&
+          searchParameters.some(
+            (parameter) => parameter.key === 'work_type' && parameter.values?.includes(selectedWorkType ?? '')
+          );
         await route.fulfill({
           status: 200,
           contentType: 'application/json',
-          body: JSON.stringify(taskListResponse),
+          body: JSON.stringify(
+            shouldReturnFilteredTask
+              ? {
+                  tasks: [
+                    {
+                      ...filteredTask,
+                      jurisdiction: selectedService,
+                      work_type_id: selectedWorkType,
+                    },
+                  ],
+                  total_records: 1,
+                }
+              : taskListResponse
+          ),
         });
       },
     });
@@ -134,12 +221,12 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
     await taskListPage.openFilterPanel();
 
     await taskListPage.clearServicesFilters();
-    const selectedService = await taskListPage.serviceFilterCheckboxes.first().getAttribute('value');
+    selectedService = await taskListPage.serviceFilterCheckboxes.first().getAttribute('value');
     expect(selectedService).toBeTruthy();
     await taskListPage.serviceFilterCheckboxes.first().check({ force: true });
 
     await taskListPage.clearTypesOfWorkFilters();
-    const selectedWorkType = await taskListPage.typesOfWorkFilterCheckboxes.first().getAttribute('value');
+    selectedWorkType = await taskListPage.typesOfWorkFilterCheckboxes.first().getAttribute('value');
     expect(selectedWorkType).toBeTruthy();
     await taskListPage.typesOfWorkFilterCheckboxes.first().check({ force: true });
 
@@ -156,10 +243,27 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
         expect.objectContaining({ key: 'work_type', values: [selectedWorkType] }),
       ])
     );
+
+    await expect.poll(() => taskListPage.getResultsText()).toBe('Showing 1 to 1 of 1 results');
+
+    const table = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
+    expect(table).toHaveLength(1);
+    expect(table[0]['Case name']).toBe(filteredTask.case_name);
+    expect(table[0]['Location']).toBe(filteredTask.location_name);
+    expect(table[0]['Task']).toBe(filteredTask.task_title);
   });
 
-  test('My cases request honours persisted service and location filters from local storage', async ({ taskListPage, page }) => {
+  test('My cases request honours persisted service and location filters from local storage', async ({
+    taskListPage,
+    page,
+    tableUtils,
+  }) => {
     const myCasesResponse = buildMyCasesMock();
+    const filteredMyCasesResponse = {
+      cases: [myCasesResponse.cases[0]],
+      total_records: 1,
+      unique_cases: 1,
+    };
     const myCasesRequests: SearchRequestPayload[] = [];
 
     await page.addInitScript(() => {
@@ -181,11 +285,16 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
     });
 
     await page.route(myCasesRoutePattern, async (route) => {
-      myCasesRequests.push(route.request().postDataJSON() as SearchRequestPayload);
+      const request = route.request().postDataJSON() as SearchRequestPayload;
+      myCasesRequests.push(request);
+      const searchParameters = request.searchRequest?.search_parameters ?? [];
+      const usesPersistedFilters =
+        searchParameters.some((parameter) => parameter.key === 'services' && parameter.values?.includes('IA')) &&
+        searchParameters.some((parameter) => parameter.key === 'locations' && parameter.values?.includes('765324'));
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
-        body: JSON.stringify(myCasesResponse),
+        body: JSON.stringify(usesPersistedFilters ? filteredMyCasesResponse : myCasesResponse),
       });
     });
 
@@ -199,6 +308,12 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
         expect.objectContaining({ key: 'locations', values: ['765324'] }),
       ])
     );
+
+    await expect(taskListPage.myCasesResultsAmount).toContainText('Showing 1 results');
+    const table = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
+    expect(table).toHaveLength(1);
+    expect(table[0]['Case name']).toBe(filteredMyCasesResponse.cases[0].case_name);
+    expect(table[0]['Service']).toBe(filteredMyCasesResponse.cases[0].expectedServiceLabel);
   });
 
   test('My tasks restores default base locations using organisation service codes', async ({ taskListPage, page }) => {
@@ -251,12 +366,6 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
         workFiltersSscsSearchLocation.site_name,
         workFiltersSscsSearchLocationSecondary.site_name,
       ],
-      searchableLocations: [
-        workFiltersIaSearchLocation,
-        workFiltersIaSearchLocationSecondary,
-        workFiltersSscsSearchLocation,
-        workFiltersSscsSearchLocationSecondary,
-      ],
     },
     {
       scenarioName: 'only SSCS remains organisation scoped when IA is case scoped',
@@ -268,7 +377,6 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
       expectedInitialLocations: [workFiltersSscsSearchLocation.site_name],
       expectedSearchResults: [workFiltersSscsSearchLocation.site_name],
       expectedFullLocationServiceCodes: ['SSCS'],
-      searchableLocations: [workFiltersSscsSearchLocation],
     },
     {
       scenarioName: 'only IA remains organisation scoped when SSCS is case scoped',
@@ -280,7 +388,6 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
       expectedInitialLocations: [workFiltersIaSearchLocation.site_name],
       expectedSearchResults: [workFiltersIaSearchLocation.site_name],
       expectedFullLocationServiceCodes: ['IA'],
-      searchableLocations: [workFiltersIaSearchLocation],
     },
   ];
 
@@ -325,17 +432,20 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
         const requestBody = route.request().postDataJSON() as {
           searchTerm?: string;
           serviceIds?: string;
-          userLocations?: Array<{ service?: string; serviceCode?: string }>;
+          userLocations?: LocationSearchRequestUserLocation[];
         };
+        const requestServiceIds = (requestBody.serviceIds ?? '')
+          .split(',')
+          .map((serviceCode) => serviceCode.trim())
+          .filter(Boolean)
+          .sort();
+        const requestUserLocations = requestBody.userLocations ?? [];
 
         locationSearchRequests.push({
           searchTerm: requestBody.searchTerm ?? '',
-          serviceIds: (requestBody.serviceIds ?? '')
-            .split(',')
-            .map((serviceCode) => serviceCode.trim())
-            .filter(Boolean)
-            .sort(),
-          userLocationServices: (requestBody.userLocations ?? [])
+          serviceIds: requestServiceIds,
+          userLocations: requestUserLocations,
+          userLocationServices: requestUserLocations
             .map((location) => location.serviceCode ?? location.service)
             .filter((serviceCode): serviceCode is string => Boolean(serviceCode))
             .sort(),
@@ -345,9 +455,31 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
           status: 200,
           contentType: 'application/json',
           body: JSON.stringify(
-            scenario.searchableLocations.filter((location) =>
-              location.site_name.toLowerCase().includes((requestBody.searchTerm ?? '').toLowerCase())
-            )
+            searchableLocations
+              .filter((location) => requestServiceIds.includes(location.serviceCode))
+              .filter((location) => {
+                const requestedScope = requestUserLocations.find(
+                  (userLocation) => (userLocation.serviceCode ?? userLocation.service) === location.serviceCode
+                );
+                if (!requestedScope) {
+                  return true;
+                }
+
+                const requestedLocationIds = (requestedScope.locations ?? [])
+                  .map((userLocation) => userLocation.id ?? userLocation.locationId)
+                  .filter((value): value is string => Boolean(value));
+                const requestedRegionIds = (requestedScope.locations ?? [])
+                  .map((userLocation) => userLocation.regionId)
+                  .filter((value): value is string => Boolean(value));
+
+                if (requestedLocationIds.length === 0 && requestedRegionIds.length === 0) {
+                  return false;
+                }
+
+                return requestedLocationIds.includes(location.epimms_id) || requestedRegionIds.includes(location.region_id);
+              })
+              .filter((location) => location.site_name.toLowerCase().includes((requestBody.searchTerm ?? '').toLowerCase()))
+              .map(({ serviceCode, ...location }) => location)
           ),
         });
       });

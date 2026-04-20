@@ -2,9 +2,20 @@ export type YesNo = 'Yes' | 'No';
 
 export type AdditionalFacility = 'Custody Cell' | 'Laptop' | 'Projector' | 'Witness Room';
 
-export type hearingMethods = 'In Person' | 'Telephone' | 'Video';
+export type HearingMethod = 'In Person' | 'Telephone' | 'Video';
 
 export type howWillParticipantAttend = 'In Person' | 'Telephone' | 'Video' | 'Not in Attendence';
+
+export type TypeOfJudges =
+  | 'Circuit Judge'
+  | 'Deputy Circuit Judge'
+  | 'Deputy District Judge'
+  | 'Deputy High Court Judge'
+  | 'District Judge'
+  | 'District Judge Magistrates Court'
+  | 'High Court Judge'
+  | 'Magistrate (JP)'
+  | 'Recorder';
 
 export type HearingStage =
   | 'Allocation'
@@ -41,12 +52,22 @@ export interface HearingFacilitiesData {
 
 export interface HearingAttendenceData {
   paperHearing?: YesNo;
-  hearingMethod?: hearingMethods[];
-  attendHearingHow?: howWillParticipantAttend;
+  hearingMethod?: HearingMethod[];
+  attendHearingHow?: howWillParticipantAttend[];
+  numberOfPeopleAttendingHearing?: string;
+}
+
+export interface HearingVenueData {
+  name?: string;
 }
 
 export interface HearingStageData {
   stage?: HearingStage;
+}
+
+export interface JudgeData {
+  specificJudge?: YesNo;
+  typeOfJudges?: TypeOfJudges;
 }
 
 // Page key registry - Add more page interfaces based on the pageFlows
@@ -54,6 +75,7 @@ export interface JourneyPages {
   hearingFacilities: HearingFacilitiesData;
   hearingStage: HearingStageData;
   hearingAttendence: HearingAttendenceData;
+  hearingVenue: HearingVenueData;
 }
 
 export type PageKey = keyof JourneyPages;
@@ -64,6 +86,8 @@ export class HearingJourneyModel {
     hearingFacilities: {},
     hearingStage: {},
     hearingAttendence: {},
+    hearingVenue: {},
+
     // ......
   };
 

@@ -61,18 +61,36 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
       await continueHearingsFlow(page);
     });
 
-    await test.step('Hearing Stage Radio select ', async () => {
+    await test.step('Complete the Hearing Stage Section', async () => {
       await expect(page).toHaveURL(/\/hearings\/request\/hearing-stage$/);
       await expect(page.getByRole('heading', { name: /What stage is this hearing at?/i })).toBeVisible();
-      await hearingsJourneyPage.setHearingStage(hearingJourneyModel, page);
+      await hearingsJourneyPage.setHearingStage(hearingJourneyModel);
       await continueHearingsFlow(page);
     });
 
-    await test.step('Select Hearing Attendence Details  ', async () => {
+    await test.step('Complete Hearing Attendance Section', async () => {
       await expect(page).toHaveURL(/\/hearings\/request\/hearing-attendance$/);
+      await expect(page.getByRole('heading', { name: /Participant attendance/i })).toBeVisible();
 
+      await hearingsJourneyPage.setParticipantAttendence(hearingJourneyModel);
       await continueHearingsFlow(page);
-      await page.waitForTimeout(6000);
+    });
+
+    await test.step('Complete Hearing Venue Section', async () => {
+      await expect(page).toHaveURL(/\/hearings\/request\/hearing-venue$/);
+      await expect(page.getByRole('heading', { name: /What are the hearing venue details?/i })).toBeVisible();
+
+      await hearingsJourneyPage.setHearingVenue(hearingJourneyModel);
+      await continueHearingsFlow(page);
+    });
+
+    await test.step('Welsh Hearing', async () => {
+      await expect(page).toHaveURL(/\/hearings\/request\/hearing-welsh$/);
+      await expect(page.getByRole('heading', { name: /Does this hearing need to be in Welsh?/i })).toBeVisible();
+
+      //await hearingsJourneyPage.setHearingVenue(hearingJourneyModel);
+      await continueHearingsFlow(page);
+      //await page.waitForTimeout(8000);
     });
   });
 
@@ -80,6 +98,14 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
   function setUpHearingJourneyData() {
     hearingJourneyModel.set('hearingFacilities', 'additionalSecurity', 'Yes');
     hearingJourneyModel.set('hearingFacilities', 'additionalFacilities', ['Custody Cell', 'Laptop', 'Projector', 'Witness Room']);
-    hearingJourneyModel.set('hearingStage', 'stage', 'Allocation'); // Radio button for HearingStage
+    hearingJourneyModel.set('hearingStage', 'stage', 'Allocation');
+    // hearing attendence
+    hearingJourneyModel.set('hearingAttendence', 'paperHearing', 'No');
+    hearingJourneyModel.set('hearingAttendence', 'hearingMethod', ['Video', 'Telephone']);
+    hearingJourneyModel.set('hearingAttendence', 'attendHearingHow', ['Video', 'Telephone']);
+    hearingJourneyModel.set('hearingAttendence', 'numberOfPeopleAttendingHearing', '2');
+
+    //hearingVenue
+    hearingJourneyModel.set('hearingVenue', 'name', 'swans');
   }
 });

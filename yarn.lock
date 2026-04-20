@@ -3446,12 +3446,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.35-exui-4150-rc-1":
-  version: 7.3.35-exui-4150-rc-1
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.35-exui-4150-rc-1"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.49-exui-4150-rc-1":
+  version: 7.3.49-exui-4150-rc-1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.49-exui-4150-rc-1"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/821b18356567b8003b298016e073b6153129fa90159df0774e282686a53c82b4d2d0cbc8f85e81e4b7f849ec3ee6573c0265b0483570b703d1ba55dbec47ac9d
+  checksum: 10/0626fb765af5d62e61d71167c672fb9ba0d78e8985122fdf2f6b86e377d362f9a96dc6ab977528014d3a299e9115dd688899c3c5bf9b1f36efb53e3e64b58f79
   languageName: node
   linkType: hard
 
@@ -17957,12 +17957,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"marked@npm:^16.2.1":
-  version: 16.4.1
-  resolution: "marked@npm:16.4.1"
+"marked@npm:^16.3.0":
+  version: 16.4.2
+  resolution: "marked@npm:16.4.2"
   bin:
     marked: bin/marked.js
-  checksum: 10/b5f475dbe297162dc988b7f345b559d03248fde1023822b9f2a68f50cbca0981c78c42f380c3aa5e133b5f5c069a2c6cd683413c12c83710e983a7bc46cdf4a2
+  checksum: 10/6e40e40661dce97e271198daa2054fc31e6445892a735e416c248fba046bdfa4573cafa08dc254529f105e7178a34485eb7f82573979cfb377a4530f66e79187
   languageName: node
   linkType: hard
 
@@ -21809,7 +21809,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.35-exui-4150-rc-1"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.49-exui-4150-rc-1"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.16"

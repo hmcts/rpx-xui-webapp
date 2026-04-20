@@ -31,7 +31,7 @@ export class CreateCaseEventTriggerResolver {
     const draftId = route.queryParamMap.get(DRAFT_QUERY_PARAM);
     let caseId;
 
-    if (-1 === CreateCaseEventTriggerResolver.IGNORE_WARNING_VALUES.indexOf(ignoreWarning)) {
+    if (!CreateCaseEventTriggerResolver.IGNORE_WARNING_VALUES.includes(ignoreWarning)) {
       ignoreWarning = 'false';
     }
     if (draftId && Draft.isDraft(draftId)) {

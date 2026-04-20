@@ -72,19 +72,31 @@ export class CaseDetailsPage extends Base {
   readonly caseNotificationBannerBody = this.page.locator('.govuk-notification-banner__heading');
 
   readonly eventCreationErrorHeading = this.page.getByRole('heading', { name: 'The event could not be created' });
+  readonly generalProblemHeading = this.page.getByRole('heading', { name: /there is a problem/i }).first();
+  readonly checkYourAnswersHeading = this.page.getByRole('heading', { name: /check your answers/i });
+  readonly linkedCaseReferenceInput = this.page.getByLabel('Linked case reference');
+  readonly caseLinkReasonSelect = this.page.getByLabel('Reason for link');
+  readonly caseLinkOtherDescriptionInput = this.page.getByLabel('Other description');
   readonly caseViewerTable = this.page.getByRole('table', { name: 'case viewer table' });
 
   // Table locators
   readonly caseTab1Table = this.page.locator('table.tab1');
   readonly caseDocumentsTable = this.page.locator('table.complex-panel-table');
   readonly someMoreDataTable = this.page.locator('table.SomeMoreData');
-  readonly divorceDataTable = this.page.locator('table.Data');
+  readonly divorceDataTable = this.page.locator('table.Data.ng-star-inserted');
   readonly divorceDataSubTable = this.divorceDataTable.locator('table.complex-panel-table table');
 
+  // Task List tab
+  readonly taskListContainer = this.page.locator('.active-tasks-container');
+  readonly taskItem = this.taskListContainer.locator('exui-case-task');
+  readonly taskAlerts = this.page.locator('#alertMessage');
   // Search case (16 Digit Search)
   readonly caseProgressMessage = this.page.locator('#progress_legalOfficer_updateTrib_dismissed_under_rule_31');
   readonly resultsNotFoundHeading = this.page.locator('exui-no-results').getByRole('heading', { level: 1 });
   readonly backLink = this.page.locator('exui-no-results .govuk-width-container .govuk-back-link');
+
+  // Restricted Access
+  readonly restrictedAccessContainer = this.page.locator('exui-restricted-case-access-container');
 
   // GlobalSearch
   readonly tabsCount = this.page.locator('.mat-tab-label-container .mat-tab-list');
@@ -210,6 +222,8 @@ export class CaseDetailsPage extends Base {
     }
 
     const fn = (rows: Element[]) => {
+      const trailingSortIndicatorRegex = /[▲▼⇧⇩⯅⯆]\s*$/g;
+
       function findFirstText(node: Node | null): string {
         if (!node) {
           return '';
@@ -253,28 +267,26 @@ export class CaseDetailsPage extends Base {
       });
 
       for (const row of dataRows) {
-        const cells = Array.from(row.querySelectorAll('th, td'));
+        const cells = Array.from(row.querySelectorAll('th, td')).filter(
+          (cell) => !(cell.tagName === 'TD' && cell.classList.contains('case-field-change'))
+        );
         if (cells.length < 2) {
           continue;
         }
 
         // Clone the key cell and strip nested tables so nested content is ignored
-        const keyCellClone = (cells[0] as Element).cloneNode(true) as Element;
+        const keyCellClone = cells[0].cloneNode(true) as Element;
         keyCellClone.querySelectorAll('table').forEach((t) => t.remove());
-        const rawKey = findFirstText(keyCellClone)
-          .replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '')
-          .trim();
+        const rawKey = findFirstText(keyCellClone).replace(trailingSortIndicatorRegex, '').trim();
         if (!rawKey) {
           continue;
         }
         const valueParts = cells
           .slice(1)
           .map((c) => {
-            const clone = (c as Element).cloneNode(true) as Element;
+            const clone = c.cloneNode(true) as Element;
             clone.querySelectorAll('table').forEach((t) => t.remove());
-            return findFirstText(clone)
-              .replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '')
-              .trim();
+            return findFirstText(clone).replace(trailingSortIndicatorRegex, '').trim();
           })
           .filter(Boolean);
         const value = valueParts.join(' ').replaceAll(/\s+/g, ' ').trim();
@@ -301,6 +313,7 @@ export class CaseDetailsPage extends Base {
     }
 
     const fn = (rows: Element[]) => {
+      const trailingSortIndicatorRegex = /[▲▼⇧⇩⯅⯆]\s*$/g;
       const arr: Record<string, string>[] = [];
       if (!rows || rows.length === 0) {
         return arr;
@@ -308,12 +321,14 @@ export class CaseDetailsPage extends Base {
 
       // header is first tr
       const headerRow = rows[0];
-      const sanitize = (s: string) => (s || '').replace(/[▲▼⇧⇩⯅⯆]\s*$/g, '').trim();
-      const headers = Array.from(headerRow.querySelectorAll('th, td')).map((h) => {
-        const clone = (h as Element).cloneNode(true) as Element;
-        clone.querySelectorAll('table').forEach((t) => t.remove());
-        return sanitize(clone.textContent || '');
-      });
+      const sanitize = (s: string) => (s || '').replace(trailingSortIndicatorRegex, '').trim();
+      const headers = Array.from(headerRow.querySelectorAll('th, td'))
+        .filter((cell) => !(cell.tagName === 'TD' && cell.classList.contains('case-field-change')))
+        .map((h) => {
+          const clone = h.cloneNode(true) as Element;
+          clone.querySelectorAll('table').forEach((t) => t.remove());
+          return sanitize(clone.textContent || '');
+        });
 
       // data rows are after header; filter hidden rows
       const dataRows = Array.from(rows)
@@ -336,14 +351,16 @@ export class CaseDetailsPage extends Base {
         });
 
       for (const row of dataRows) {
-        const cells = Array.from(row.querySelectorAll('th, td'));
+        const cells = Array.from(row.querySelectorAll('th, td')).filter(
+          (cell) => !(cell.tagName === 'TD' && cell.classList.contains('case-field-change'))
+        );
         if (cells.length === 0) {
           continue;
         }
         const obj: Record<string, string> = {};
         for (let i = 0; i < cells.length; i++) {
           const key = headers[i] || `column_${i + 1}`;
-          const cellClone = (cells[i] as Element).cloneNode(true) as Element;
+          const cellClone = cells[i].cloneNode(true) as Element;
           cellClone.querySelectorAll('table').forEach((t) => t.remove());
           const cellText = cellClone.textContent || '';
           const value = sanitize(cellText).replace(/\s+/g, ' ');
@@ -458,27 +475,53 @@ export class CaseDetailsPage extends Base {
     action: string,
     options: {
       expectedLocator?: Locator;
+      expectedPath?: string | RegExp;
       timeoutMs?: number;
       retry?: boolean;
     } = {}
   ) {
     await this.caseActionGoButton.waitFor({ state: 'visible' });
     await this.caseActionsDropdown.waitFor({ state: 'visible' });
+    const availableOptions = await this.caseActionsDropdown.locator('option').evaluateAll((options) =>
+      options
+        .map((option) => ({
+          label: (option.textContent ?? '').trim(),
+          value: (option.getAttribute('value') ?? '').trim(),
+        }))
+        .filter((option) => option.label || option.value)
+    );
+    const matchingOption = availableOptions.find((option) => option.label === action || option.value === action);
+    if (!matchingOption) {
+      throw new Error(
+        `Case action "${action}" is not available. Available actions: ${availableOptions.map((option) => option.label || option.value).join(', ')}`
+      );
+    }
     try {
-      await this.caseActionsDropdown.selectOption({ label: action });
+      if (matchingOption.label === action) {
+        await this.caseActionsDropdown.selectOption({ label: action });
+      } else {
+        await this.caseActionsDropdown.selectOption(action);
+      }
     } catch (error) {
       // Fallback: some dropdowns don't support label selector, use value directly
       this.logger.warn('Failed to select option by label, falling back to value selector', { error });
-      await this.caseActionsDropdown.selectOption(action);
+      await this.caseActionsDropdown.selectOption(matchingOption.value || action);
     }
     await this.caseActionGoButton.click();
     await this.waitForSpinnerToComplete('after selecting case action');
     await this.page.waitForLoadState('domcontentloaded');
-    if (!options.expectedLocator) {
+    if (!options.expectedLocator && !options.expectedPath) {
       return;
     }
     const timeoutMs = options.timeoutMs ?? 30000;
     const waitForExpected = async () => {
+      if (options.expectedPath) {
+        const matcher =
+          typeof options.expectedPath === 'string'
+            ? (url: URL) => url.pathname.includes(options.expectedPath as string)
+            : (url: URL) => (options.expectedPath as RegExp).test(url.pathname);
+        await this.page.waitForURL(matcher, { timeout: timeoutMs });
+      }
       await options.expectedLocator?.waitFor({ state: 'visible', timeout: timeoutMs });
     };
     try {
@@ -493,10 +536,14 @@ export class CaseDetailsPage extends Base {
       }
       this.logger.warn('Expected locator not visible after case action; retrying action', { action });
       try {
-        await this.caseActionsDropdown.selectOption({ label: action });
+        if (matchingOption.label === action) {
+          await this.caseActionsDropdown.selectOption({ label: action });
+        } else {
+          await this.caseActionsDropdown.selectOption(action);
+        }
       } catch (retryError) {
         this.logger.warn('Retry: failed to select option by label, falling back to value selector', { retryError });
-        await this.caseActionsDropdown.selectOption(action);
+        await this.caseActionsDropdown.selectOption(matchingOption.value || action);
       }
       await this.caseActionGoButton.click();
       await this.waitForSpinnerToComplete('after retrying case action');
@@ -521,6 +568,32 @@ export class CaseDetailsPage extends Base {
 
   async selectCaseDetailsEvent(action: string) {
     await this.selectCaseAction(action);
+  }
+
+  async openLinkCasesEvent(): Promise<void> {
+    await this.selectCaseAction('Link cases', { expectedLocator: this.linkedCaseReferenceInput });
+    await this.caseLinkReasonSelect.waitFor({ state: 'visible' });
+  }
+
+  async fillCaseLinkDetails(options: {
+    linkedCaseReference: string;
+    reasonLabel: string;
+    otherDescription?: string;
+  }): Promise<void> {
+    await this.linkedCaseReferenceInput.fill(options.linkedCaseReference);
+    await this.caseLinkReasonSelect.selectOption({ label: options.reasonLabel });
+    if (options.otherDescription !== undefined) {
+      await this.caseLinkOtherDescriptionInput.waitFor({ state: 'visible', timeout: this.getRecommendedTimeoutMs() });
+      await this.caseLinkOtherDescriptionInput.fill(options.otherDescription);
+    }
+  }
+
+  async continueCaseEvent(): Promise<void> {
+    await this.continueButton.click();
+  }
+
+  async submitCaseEvent(): Promise<void> {
+    await this.submitButton.click();
   }
 
   async selectFirstRadioOption() {
@@ -598,6 +671,7 @@ export class CaseDetailsPage extends Base {
       multiplier: 3,
       fallback: 15_000,
     });
+    await this.waitForCaseDetailsTabsReady(tabLoadTimeoutMs);
     const escapedTabName = tabName.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
     const tab = this.page.getByRole('tab', { name: new RegExp(escapedTabName, 'i') }).first();
     await tab.waitFor({ state: 'visible', timeout: tabLoadTimeoutMs });
@@ -622,6 +696,30 @@ export class CaseDetailsPage extends Base {
     return tabsCount;
   }
 
+  private async waitForCaseDetailsTabsReady(timeoutMs: number): Promise<void> {
+    await this.container.waitFor({ state: 'visible', timeout: timeoutMs });
+    await this.tabList.waitFor({ state: 'visible', timeout: timeoutMs });
+
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
+      const visibleTabCount = await this.tablist2.evaluateAll(
+        (tabs) =>
+          tabs.filter((tab) => {
+            const element = tab as HTMLElement;
+            return !element.hidden && element.offsetParent !== null;
+          }).length
+      );
+
+      if (visibleTabCount > 0) {
+        return;
+      }
+
+      await this.page.waitForTimeout(200);
+    }
+
+    throw new Error(`Case details tabs did not become visible within ${timeoutMs}ms.`);
+  }
+
   private async waitForTabPanelReadiness(tabPanel: Locator, timeoutMs: number): Promise<void> {
     await tabPanel.waitFor({ state: 'visible', timeout: timeoutMs });
     const structuredContent = tabPanel.locator('table, form, ccd-read-collection-field, ccd-read-complex-type-field');
@@ -637,5 +735,69 @@ export class CaseDetailsPage extends Base {
     }
 
     await tabPanel.locator('*').first().waitFor({ state: 'attached', timeout: timeoutMs });
+  }
+
+  /**
+   * Returns task key/value rows for each task as an array of objects.
+   * Each object maps row label -> row value for a single task.
+   */
+  async getTaskKeyValueRows(): Promise<Record<string, string>[]> {
+    try {
+      await this.taskItem.first().waitFor({ state: 'visible' });
+    } catch {
+      return [];
+    }
+    const taskCount = await this.taskItem.count();
+    if (taskCount === 0) {
+      return [];
+    }
+
+    await this.taskItem.first().waitFor({ state: 'visible' });
+
+    const results: Record<string, string>[] = [];
+
+    for (let i = 0; i < taskCount; i++) {
+      const task = this.taskItem.nth(i);
+      const title = (await task.locator('p.govuk-body').innerText()).replace(/\s+/g, ' ').trim();
+      const rows = task.locator('.govuk-summary-list__row');
+      const rowCount = await rows.count();
+      const taskData: Record<string, string> = {};
+
+      if (title) {
+        taskData['Title'] = title;
+      }
+
+      for (let j = 0; j < rowCount; j++) {
+        const row = rows.nth(j);
+        const key = (await row.locator('.govuk-summary-list__key .row-padding').innerText()).trim();
+        const valueEl = row.locator('.govuk-summary-list__value');
+        const rawText = (await valueEl.innerText()).replace(/\s+/g, ' ').trim();
+        // Also capture the rendered HTML so tests can assert on links and markdown output
+        const rawHtml = (await valueEl.evaluate((el: HTMLElement) => el.innerHTML || '')).trim();
+        // If markdown rendered as headings, prefer returning value starting with the first heading
+        let value = rawText;
+        // Prefer a rendered heading if present; use evaluate to avoid locator timeouts
+        const heading = await valueEl.evaluate((el: HTMLElement) => {
+          const h = el.querySelector('h1,h2,h3') as HTMLElement | null;
+          return h ? (h.textContent || '').trim() : '';
+        });
+        if (heading) {
+          if (!value.startsWith(heading)) {
+            value = `${heading}${value ? ' ' + value : ''}`.trim();
+          }
+        }
+        if (key) {
+          taskData[key] = value;
+          // expose HTML for assertions (e.g. verify anchor hrefs rendered from markdown)
+          taskData[`${key} HTML`] = rawHtml;
+        }
+      }
+
+      if (Object.keys(taskData).length > 0) {
+        results.push(taskData);
+      }
+    }
+
+    return results;
   }
 }

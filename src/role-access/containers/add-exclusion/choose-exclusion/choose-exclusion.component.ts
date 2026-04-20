@@ -59,9 +59,7 @@ export class ChooseExclusionComponent implements OnInit, OnDestroy {
   }
 
   public setOptionsList(userDetails: UserDetails, jurisdiction: string) {
-    // Todo: Need to add check for
-    // Case Jurisdiction and LocationId
-    // with User's Jurisdiction and LocationId
+    // EXUI-3967 - Location could be added to this check later if needed
     const caseJurisdictionAndLocation =
       userDetails.roleAssignmentInfo &&
       userDetails.roleAssignmentInfo.some(

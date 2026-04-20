@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, Optional } from '@angular/core';
+import { EMPTY, Observable, of } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
-import { EnvironmentConfig } from '../../../models/environmentConfig.model';
+import { EnvironmentConfig, ENVIRONMENT_CONFIG } from '../../../models/environmentConfig.model';
 import { DeploymentEnvironmentEnum } from '../../enums/deployment-environment-enum';
 
 @Injectable({
@@ -9,18 +9,14 @@ import { DeploymentEnvironmentEnum } from '../../enums/deployment-environment-en
 })
 export class EnvironmentService {
   private data: EnvironmentConfig;
-
-  public config$ = this.http
-    .get<EnvironmentConfig>('/external/config/ui')
-    .pipe<EnvironmentConfig>(shareReplay<EnvironmentConfig>(1));
+  public config$: Observable<EnvironmentConfig>;
 
   constructor(
-    private readonly http: HttpClient,
+    @Optional() @Inject(ENVIRONMENT_CONFIG) environmentConfig: EnvironmentConfig,
     @Inject(Window) private readonly window: Window
   ) {
-    this.config$.subscribe((config) => {
-      this.data = config;
-    });
+    this.data = environmentConfig;
+    this.config$ = this.data ? of(this.data).pipe(shareReplay<EnvironmentConfig>(1)) : EMPTY;
   }
 
   public get<K extends keyof EnvironmentConfig>(key: K): EnvironmentConfig[K] {

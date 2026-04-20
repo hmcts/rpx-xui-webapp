@@ -1,9 +1,13 @@
 import { FullConfig } from '@playwright/test';
+import { sessionCapture } from './sessionCapture';
+import { resolveIntegrationSessionWarmupUsers } from '../integration/helpers';
 
-// Global setup is now a no-op.
-// Sessions are captured lazily via test.beforeAll() in each test file.
 async function globalSetup(_full: FullConfig) {
-  // Sessions will be captured on-demand
+  void _full;
+  const userIdentifiers = resolveIntegrationSessionWarmupUsers(process.env);
+  if (userIdentifiers.length > 0) {
+    await sessionCapture(userIdentifiers);
+  }
 }
 
 export default globalSetup;

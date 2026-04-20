@@ -1,33 +1,71 @@
 import { faker } from '@faker-js/faker';
 import { expect, test } from '../../fixtures';
-import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
+import { ensureAuthenticatedPage, ensureSession } from '../../../common/sessionCapture';
 import { filterEmptyRows } from '../../utils';
 import { caseBannerMatches } from '../../utils/banner.utils';
 import { isPageClosingError, rowMatchesExpected } from '../../utils/case-flags.utils';
-import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
+import { buildCasePayloadFromTemplate } from '../../utils/test-setup/payloads/registry';
+import { setupCaseForJourney } from '../../utils/test-setup/caseSetup';
+import { createDivorceCaseFlag } from '../../utils/test-setup/journeys/divorceCaseJourneys';
+import { createEmploymentCase } from '../../utils/test-setup/journeys/employmentJourneys';
+import { formatErrorMessage, isDependencyEnvironmentFailure, retryOnTransientFailure } from '../../utils/transient-failure.utils';
 
-test.describe('Case level case flags', () => {
+const PARTY_LEVEL_SUITE_TIMEOUT_MS = 300_000;
+const SESSION_BOOTSTRAP_TIMEOUT_MS = 300_000;
+
+test.describe('Case level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () => {
   test.describe.configure({ timeout: 180000 });
   let caseNumber: string;
   const jurisdiction = 'EMPLOYMENT';
   const caseType = 'ET_EnglandWales';
-  test.beforeEach(async ({ page, createCasePage, caseDetailsPage }) => {
-    await retryOnTransientFailure(
-      async () => {
-        await ensureAuthenticatedPage(page, 'SEARCH_EMPLOYMENT_CASE', { waitForSelector: 'exui-header' });
-        await createCasePage.createCaseEmployment(jurisdiction, caseType);
-        caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
-      },
-      {
-        maxAttempts: 2,
-        onRetry: async () => {
-          if (page.isClosed()) {
-            return;
-          }
-          await page.goto('/').catch(() => undefined);
+
+  test.beforeAll(async ({ browserName: _browserName }, testInfo) => {
+    testInfo.setTimeout(SESSION_BOOTSTRAP_TIMEOUT_MS);
+    await ensureSession('SEARCH_EMPLOYMENT_CASE');
+  });
+
+  test.beforeEach(async ({ page, createCasePage, caseDetailsPage }, testInfo) => {
+    try {
+      await retryOnTransientFailure(
+        async () => {
+          await ensureAuthenticatedPage(page, 'SEARCH_EMPLOYMENT_CASE', { waitForSelector: 'exui-header' });
+          const setup = await setupCaseForJourney({
+            scenario: 'case-flags-employment-case-level',
+            jurisdiction,
+            caseType,
+            apiEventId: 'initiateCase',
+            mode: 'api-required',
+            apiPayload: buildCasePayloadFromTemplate('employment.et-england-wales.initiate-case'),
+            uiCreate: async () => {
+              await createEmploymentCase(createCasePage, jurisdiction, caseType, {
+                allowDraftClaimFallback: true,
+              });
+            },
+            page,
+            createCasePage,
+            caseDetailsPage,
+            testInfo,
+          });
+          caseNumber = setup.caseNumber;
         },
+        {
+          maxAttempts: 2,
+          onRetry: async () => {
+            if (page.isClosed()) {
+              return;
+            }
+            await page.goto('/').catch(() => undefined);
+          },
+        }
+      );
+    } catch (error) {
+      if (isDependencyEnvironmentFailure(error)) {
+        throw new Error(
+          `Case-level employment setup failed due to dependency environment instability: ${formatErrorMessage(error)}`
+        );
       }
-    );
+      throw error;
+    }
   });
 
   test('Create a new case level flag and verify the flag is displayed on the case', async ({ caseDetailsPage, tableUtils }) => {
@@ -97,29 +135,69 @@ test.describe('Case level case flags', () => {
   });
 });
 
-test.describe('Party level case flags', () => {
-  test.describe.configure({ timeout: 180000 });
+test.describe('Party level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () => {
+  test.describe.configure({ timeout: PARTY_LEVEL_SUITE_TIMEOUT_MS });
   const testValue = faker.person.firstName();
   let caseNumber: string;
   const jurisdiction = 'DIVORCE';
   const caseType = 'xuiCaseFlagsV1';
-  test.beforeEach(async ({ page, createCasePage, caseDetailsPage }) => {
-    await retryOnTransientFailure(
-      async () => {
-        await ensureAuthenticatedPage(page, 'USER_WITH_FLAGS', { waitForSelector: 'exui-header' });
-        await createCasePage.createDivorceCaseFlag(testValue, jurisdiction, caseType);
-        caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
-      },
-      {
-        maxAttempts: 2,
-        onRetry: async () => {
-          if (page.isClosed()) {
-            return;
-          }
-          await page.goto('/').catch(() => undefined);
+
+  test.beforeAll(async ({ browserName: _browserName }, testInfo) => {
+    testInfo.setTimeout(SESSION_BOOTSTRAP_TIMEOUT_MS);
+    await ensureSession('USER_WITH_FLAGS');
+  });
+
+  test.beforeEach(async ({ page, createCasePage, caseDetailsPage }, testInfo) => {
+    try {
+      await retryOnTransientFailure(
+        async () => {
+          await ensureAuthenticatedPage(page, 'USER_WITH_FLAGS', { waitForSelector: 'exui-header' });
+          const setup = await setupCaseForJourney({
+            scenario: 'case-flags-divorce-party-level',
+            jurisdiction,
+            caseType,
+            apiEventId: 'createCase',
+            mode: 'api-required',
+            apiPayload: buildCasePayloadFromTemplate('divorce.xui-test-case-type.create-case-flags', {
+              overrides: {
+                LegalRepParty1Flags: {
+                  roleOnCase: testValue,
+                  partyName: testValue,
+                },
+                LegalRepParty2Flags: {
+                  roleOnCase: `${testValue}2`,
+                  partyName: `${testValue}2`,
+                },
+              },
+            }),
+            uiCreate: async () => {
+              await createDivorceCaseFlag(createCasePage, testValue, jurisdiction, caseType);
+            },
+            page,
+            createCasePage,
+            caseDetailsPage,
+            testInfo,
+          });
+          caseNumber = setup.caseNumber;
         },
+        {
+          maxAttempts: 2,
+          onRetry: async () => {
+            if (page.isClosed()) {
+              return;
+            }
+            await page.goto('/').catch(() => undefined);
+          },
+        }
+      );
+    } catch (error) {
+      if (isDependencyEnvironmentFailure(error)) {
+        throw new Error(
+          `Party-level case-flags setup failed due to dependency environment instability: ${formatErrorMessage(error)}`
+        );
       }
-    );
+      throw error;
+    }
   });
 
   test('Create a new party level flag and verify the flag is displayed on the case', async ({ caseDetailsPage, tableUtils }) => {

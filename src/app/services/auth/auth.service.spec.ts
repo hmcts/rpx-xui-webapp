@@ -33,6 +33,21 @@ describe('AuthService', () => {
     ));
   });
 
+  describe('keepAlive', () => {
+    it('should call keepalive endpoint', inject(
+      [HttpTestingController, AuthService],
+      (httpMock: HttpTestingController, service: AuthService) => {
+        service.keepAlive().subscribe((response) => {
+          expect(JSON.parse(String(response))).toBeTruthy();
+        });
+
+        const req = httpMock.expectOne('/auth/keepalive');
+        expect(req.request.method).toEqual('GET');
+        req.flush('true');
+      }
+    ));
+  });
+
   describe('logOut', () => {
     it('should make a call to logOut', inject(
       [HttpTestingController, AuthService, SessionStorageService],

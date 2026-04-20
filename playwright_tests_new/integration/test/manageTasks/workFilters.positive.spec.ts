@@ -1,7 +1,5 @@
 import { expect, test } from '../../../E2E/fixtures';
 import { myCasesRoutePattern, setupManageTasksBaseRoutes } from '../../helpers';
-import { buildMyCasesMock } from '../../mocks/myCases.mock';
-import { buildTaskListMock, myActionsList } from '../../mocks/taskList.mock';
 import {
   buildWorkFiltersFullLocationResponses,
   buildWorkFiltersLocationSearchRequest,
@@ -9,6 +7,10 @@ import {
   type LocationSearchRequest,
   type WorkFiltersLocationSearchRequestBody,
   workFiltersLocationSearchScenarios,
+} from '../../mocks/workFiltersLocationSearch.mock';
+import { buildMyCasesMock } from '../../mocks/myCases.mock';
+import { buildTaskListMock, myActionsList } from '../../mocks/taskList.mock';
+import {
   setupWorkFiltersUser,
   workFiltersDefaultLocations,
   workFiltersLocationSearchSupportedJurisdictionDetails,
@@ -31,14 +33,12 @@ type SearchRequestPayload = {
   view?: string;
 };
 
-test.beforeEach(async ({ page }) => {
-  await setupWorkFiltersUser(page);
-});
-
 test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   test('show and hide work filters across My tasks, Available tasks, and My cases', async ({ taskListPage, page }) => {
     const taskListResponse = buildTaskListMock(6, workFiltersUserId, myActionsList);
     const myCasesResponse = buildMyCasesMock();
+
+    await setupWorkFiltersUser(page);
 
     await test.step('Mock task and case routes for each My work view', async () => {
       await setupManageTasksBaseRoutes(page, {
@@ -143,6 +143,8 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
       task_field: 'Review filtered task',
     };
 
+    await setupWorkFiltersUser(page);
+
     await setupManageTasksBaseRoutes(page, {
       supportedJurisdictions: workFiltersSupportedJurisdictions,
       supportedJurisdictionDetails: workFiltersSupportedJurisdictionDetails,
@@ -228,6 +230,8 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
     };
     const myCasesRequests: SearchRequestPayload[] = [];
 
+    await setupWorkFiltersUser(page);
+
     await page.addInitScript(() => {
       window.localStorage.setItem(
         'locations',
@@ -281,6 +285,8 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
   test('My tasks restores default base locations using organisation service codes', async ({ taskListPage, page }) => {
     const taskListResponse = buildTaskListMock(6, workFiltersUserId, myActionsList);
     const fullLocationServiceCodes: string[] = [];
+
+    await setupWorkFiltersUser(page);
 
     await setupManageTasksBaseRoutes(page, {
       taskListResponse,

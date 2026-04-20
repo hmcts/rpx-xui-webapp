@@ -95,6 +95,9 @@ export class CaseDetailsPage extends Base {
   readonly resultsNotFoundHeading = this.page.locator('exui-no-results').getByRole('heading', { level: 1 });
   readonly backLink = this.page.locator('exui-no-results .govuk-width-container .govuk-back-link');
 
+  // Restricted Access
+  readonly restrictedAccessContainer = this.page.locator('exui-restricted-case-access-container');
+
   // GlobalSearch
   readonly tabsCount = this.page.locator('.mat-tab-label-container .mat-tab-list');
   readonly caseSummaryHeading = this.page.locator('#case-viewer-field-read--caseSummaryTabHeading');
@@ -668,6 +671,7 @@ export class CaseDetailsPage extends Base {
       multiplier: 3,
       fallback: 15_000,
     });
+    await this.waitForCaseDetailsTabsReady(tabLoadTimeoutMs);
     const escapedTabName = tabName.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
     const tab = this.page.getByRole('tab', { name: new RegExp(escapedTabName, 'i') }).first();
     await tab.waitFor({ state: 'visible', timeout: tabLoadTimeoutMs });
@@ -690,6 +694,30 @@ export class CaseDetailsPage extends Base {
   async getTabCount() {
     const tabsCount = await this.tablist2.count();
     return tabsCount;
+  }
+
+  private async waitForCaseDetailsTabsReady(timeoutMs: number): Promise<void> {
+    await this.container.waitFor({ state: 'visible', timeout: timeoutMs });
+    await this.tabList.waitFor({ state: 'visible', timeout: timeoutMs });
+
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
+      const visibleTabCount = await this.tablist2.evaluateAll(
+        (tabs) =>
+          tabs.filter((tab) => {
+            const element = tab as HTMLElement;
+            return !element.hidden && element.offsetParent !== null;
+          }).length
+      );
+
+      if (visibleTabCount > 0) {
+        return;
+      }
+
+      await this.page.waitForTimeout(200);
+    }
+
+    throw new Error(`Case details tabs did not become visible within ${timeoutMs}ms.`);
   }
 
   private async waitForTabPanelReadiness(tabPanel: Locator, timeoutMs: number): Promise<void> {

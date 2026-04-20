@@ -1,9 +1,9 @@
 import { expect, test } from '../../../../E2E/fixtures';
 import { TASK_LIST_MALFORMED_JSON_BODY } from '../../../testData';
-import { applyPrewarmedSessionCookies, setupTaskListBootstrapRoutes, taskListRoutePattern } from '../../../helpers';
+import { applySessionCookies, setupManageTasksBaseRoutes } from '../../../helpers';
 
 test.beforeEach(async ({ page }) => {
-  await applyPrewarmedSessionCookies(page, userIdentifier);
+  await applySessionCookies(page, userIdentifier);
 });
 
 const errorStates = [400, 403, 500, 503];
@@ -16,10 +16,11 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
     }) => {
       const emptyMockResponse = {};
       await test.step('Setup route mock for empty task list', async () => {
-        await setupTaskListBootstrapRoutes(page);
-        await page.route(taskListRoutePattern, async (route) => {
-          const body = JSON.stringify(emptyMockResponse);
-          await route.fulfill({ status: errorStatus, contentType: 'application/json', body });
+        await setupManageTasksBaseRoutes(page, {
+          taskListHandler: async (route) => {
+            const body = JSON.stringify(emptyMockResponse);
+            await route.fulfill({ status: errorStatus, contentType: 'application/json', body });
+          },
         });
       });
       await test.step('Navigate to the my tasks list page', async () => {
@@ -35,9 +36,10 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
 
   test(`User ${userIdentifier} sees the no tasks message on my tasks, if the api times out`, async ({ taskListPage, page }) => {
     await test.step('Setup route mock for empty task list', async () => {
-      await setupTaskListBootstrapRoutes(page);
-      await page.route(taskListRoutePattern, async (route) => {
-        await route.abort('timedout');
+      await setupManageTasksBaseRoutes(page, {
+        taskListHandler: async (route) => {
+          await route.abort('timedout');
+        },
       });
     });
     await test.step('Navigate to the my tasks list page', async () => {
@@ -55,10 +57,11 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
     page,
   }) => {
     await test.step('Setup route mock for malformed task list response', async () => {
-      await setupTaskListBootstrapRoutes(page);
-      await page.route(taskListRoutePattern, async (route) => {
-        const body = JSON.stringify(TASK_LIST_MALFORMED_JSON_BODY);
-        await route.fulfill({ status: 200, contentType: 'application/json', body });
+      await setupManageTasksBaseRoutes(page, {
+        taskListHandler: async (route) => {
+          const body = JSON.stringify(TASK_LIST_MALFORMED_JSON_BODY);
+          await route.fulfill({ status: 200, contentType: 'application/json', body });
+        },
       });
     });
     await test.step('Navigate to the my tasks list page', async () => {

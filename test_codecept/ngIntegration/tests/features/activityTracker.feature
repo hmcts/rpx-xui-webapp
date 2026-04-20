@@ -1,4 +1,4 @@
-@ng 
+@ng @ignore
 Feature: Activity tracket basic validation
 
     Scenario: Verify activity tracket network call to confirm feature is available

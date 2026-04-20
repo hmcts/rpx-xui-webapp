@@ -1,5 +1,6 @@
 #  disabled tests in MC as same tests are now enabled in CCD-CASE-UI-TOOLKIT functional test
 # @ng
+@ignore
 Feature: Case fields
 
     Background: Mock event setup
@@ -111,4 +112,3 @@ Feature: Case fields
             | addressUK        | AddressUK            | addressUK.PostCode                     | Building and Street is required  |
             | organisation     | Organisation         | organisation.OrgPolicyCaseAssignedRole | Case Assigned Role is required   |
             | complexTestField | Textfield in complex | complexTestField.text                  | Textfield in complex is required |
-

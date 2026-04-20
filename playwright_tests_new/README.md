@@ -422,14 +422,21 @@ npx playwright test --config=playwright.integration.config.ts --project=chromium
 # Run only search-case integration tests via tags
 INTEGRATION_PW_INCLUDE_TAGS=@integration-search-case npx playwright test --config=playwright.integration.config.ts --project=chromium
 
+# Run only platform-services integration tests via tags
+INTEGRATION_PW_INCLUDE_TAGS=@integration-platform-services npx playwright test --config=playwright.integration.config.ts --project=chromium
+
+# Run only CCD toolkit integration tests via tags
+INTEGRATION_PW_INCLUDE_TAGS=@integration-ccd-toolkit npx playwright test --config=playwright.integration.config.ts --project=chromium
+
 # Disable Odhin locally when you want the fastest possible run
 PW_INTEGRATION_ODHIN=0 INTEGRATION_PW_INCLUDE_TAGS=@integration-search-case npx playwright test --config=playwright.integration.config.ts --project=chromium
 ```
 
 ### Integration Tag Filtering
 
-- Integration suites are tagged with `@integration` plus feature tags such as `@integration-search-case` and `@integration-manage-tasks`.
+- Integration suites are tagged with `@integration` plus feature tags such as `@integration-search-case`, `@integration-manage-tasks`, `@integration-platform-services`, and `@integration-ccd-toolkit`.
 - Default excluded tags are read from `playwright_tests_new/integration/tag-filter.json` (`excludedTags` array).
+- Repo defaults currently keep `excludedTags` empty so new slices participate in the normal Wave 2 matrix unless a temporary quarantine is added explicitly.
 - Override excludes at runtime with `INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE`.
 - Optionally run only selected integration tags with `INTEGRATION_PW_INCLUDE_TAGS`.
 - Tag inputs accept comma or space separated values, with or without `@`.
@@ -439,6 +446,12 @@ PW_INTEGRATION_ODHIN=0 INTEGRATION_PW_INCLUDE_TAGS=@integration-search-case npx 
 ```bash
 # Run only search-case integration tests
 INTEGRATION_PW_INCLUDE_TAGS=@integration-search-case yarn test:playwright:integration
+
+# Run only platform-services integration tests
+INTEGRATION_PW_INCLUDE_TAGS=@integration-platform-services yarn test:playwright:integration
+
+# Run only CCD toolkit integration tests
+INTEGRATION_PW_INCLUDE_TAGS=@integration-ccd-toolkit yarn test:playwright:integration
 
 # Temporarily switch off manage-tasks integration tests
 INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=@integration-manage-tasks yarn test:playwright:integration
@@ -450,6 +463,9 @@ INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:playwright:integration
 Notes:
 
 - Search-case integration specs now run in the main `chromium` project and can be isolated with `INTEGRATION_PW_INCLUDE_TAGS=@integration-search-case`
+- Platform-services integration specs are grouped under `playwright_tests_new/integration/test/platformServices/` and isolated with `INTEGRATION_PW_INCLUDE_TAGS=@integration-platform-services`
+- CCD toolkit integration specs are grouped under `playwright_tests_new/integration/test/ccdToolkit/` and isolated with `INTEGRATION_PW_INCLUDE_TAGS=@integration-ccd-toolkit`
+- Manage-tasks remains the single Wave 2 home for work-allocation retirement coverage and stays isolated with `INTEGRATION_PW_INCLUDE_TAGS=@integration-manage-tasks`
 - Integration specs continue to run on the auto-sized `chromium` project unless `FUNCTIONAL_TESTS_WORKERS` is pinned explicitly
 - Odhin remains enabled by default for integration runs, including local runs
 - Local integration Odhin uses a lightweight profile by default and emits explicit finalization timing so post-test report generation is visible and bounded

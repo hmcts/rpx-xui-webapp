@@ -1,14 +1,30 @@
 import type { Page, Route } from '@playwright/test';
 import type { CreateCasePage } from '../../E2E/page-objects/pages/exui/createCase.po';
 
-export async function routeCaseCreationFlow(page: Page): Promise<unknown> {
-  const createdCaseId = '1234123412341234';
+export interface CaseCreationRouteOptions {
+  caseTypeId?: string;
+  caseTypeName?: string;
+  jurisdictionId?: string;
+  jurisdictionName?: string;
+  createdCaseId?: string;
+  stateId?: string;
+  stateName?: string;
+}
+
+export async function routeCaseCreationFlow(page: Page, options?: CaseCreationRouteOptions): Promise<unknown> {
+  const createdCaseId = options?.createdCaseId ?? '1234123412341234';
+  const caseTypeId = options?.caseTypeId ?? 'xuiTestJurisdiction';
+  const caseTypeName = options?.caseTypeName ?? caseTypeId;
+  const jurisdictionId = options?.jurisdictionId ?? 'DIVORCE';
+  const jurisdictionName = options?.jurisdictionName ?? jurisdictionId;
+  const stateId = options?.stateId ?? 'CaseCreated';
+  const stateName = options?.stateName ?? 'Case created';
   let resolveInterceptedRequest: (body: unknown) => void;
   const interceptedRequestPromise = new Promise<unknown>((resolve) => {
     resolveInterceptedRequest = resolve;
   });
 
-  await page.route('**/data/case-types/xuiTestJurisdiction/cases?ignore-warning=false*', async (route: Route) => {
+  await page.route(`**/data/case-types/${caseTypeId}/cases?ignore-warning=false*`, async (route: Route) => {
     const request = route.request();
     if (request.method() === 'POST') {
       try {
@@ -24,23 +40,23 @@ export async function routeCaseCreationFlow(page: Page): Promise<unknown> {
     });
   });
 
-  await page.route('**/data/internal/cases/1234123412341234*', async (route: Route) => {
+  await page.route(`**/data/internal/cases/${createdCaseId}*`, async (route: Route) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify({
         case_id: createdCaseId,
         case_type: {
-          id: 'xuiTestJurisdiction',
-          name: 'xuiTestJurisdiction',
+          id: caseTypeId,
+          name: caseTypeName,
           jurisdiction: {
-            id: 'DIVORCE',
-            name: 'DIVORCE',
+            id: jurisdictionId,
+            name: jurisdictionName,
           },
         },
         state: {
-          id: 'CaseCreated',
-          name: 'Case created',
+          id: stateId,
+          name: stateName,
         },
         metadataFields: [
           {
@@ -49,11 +65,11 @@ export async function routeCaseCreationFlow(page: Page): Promise<unknown> {
           },
           {
             id: '[JURISDICTION]',
-            value: 'DIVORCE',
+            value: jurisdictionName,
           },
           {
             id: '[CASE_TYPE]',
-            value: 'xuiTestJurisdiction',
+            value: caseTypeName,
           },
         ],
         tabs: [
@@ -79,16 +95,16 @@ export async function routeCaseCreationFlow(page: Page): Promise<unknown> {
       contentType: 'application/json',
       body: JSON.stringify([
         {
-          id: 'DIVORCE',
-          name: 'DIVORCE',
+          id: jurisdictionId,
+          name: jurisdictionName,
           caseTypes: [
             {
-              id: 'xuiTestJurisdiction',
-              name: 'xuiTestJurisdiction',
+              id: caseTypeId,
+              name: caseTypeName,
               states: [
                 {
-                  id: 'CaseCreated',
-                  name: 'Case created',
+                  id: stateId,
+                  name: stateName,
                 },
               ],
             },
@@ -103,9 +119,10 @@ export async function routeCaseCreationFlow(page: Page): Promise<unknown> {
 
 export async function submitCaseAndCaptureRequest(
   page: Page,
-  createCasePage: Pick<CreateCasePage, 'testSubmitButton'>
+  createCasePage: Pick<CreateCasePage, 'testSubmitButton'>,
+  options?: CaseCreationRouteOptions
 ): Promise<unknown> {
-  const interceptedCreateCaseRequestBodyPromise = routeCaseCreationFlow(page);
+  const interceptedCreateCaseRequestBodyPromise = routeCaseCreationFlow(page, options);
   await Promise.all([interceptedCreateCaseRequestBodyPromise, createCasePage.testSubmitButton.click()]);
   return interceptedCreateCaseRequestBodyPromise;
 }

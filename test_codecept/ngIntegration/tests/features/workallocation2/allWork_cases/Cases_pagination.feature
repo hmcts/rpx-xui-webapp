@@ -1,4 +1,4 @@
-@ng 
+@ng @ignore
 Feature: WA Release 2: All work > cases -  pagination sorting
 
     Background: Mock and browser setup
@@ -177,6 +177,5 @@ Feature: WA Release 2: All work > cases -  pagination sorting
             | UserIdentifier  | UserType | Roles                                           |
             # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |
             | IAC_Judge_WA_R2 | Judge    | caseworker-ia-iacjudge,caseworker-ia,caseworker |
-
 
 

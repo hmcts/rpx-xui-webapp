@@ -1,4 +1,4 @@
-@ng  @wa2 
+@ng @wa2 @ignore
 Feature: WA Release 2: All work > Cases
 
     Background: Mock and browser setup
@@ -107,5 +107,4 @@ Feature: WA Release 2: All work > Cases
             | UserIdentifier     | UserType   | Roles                                              |roleCategory|
             # | IAC_CaseOfficer_R2 | Caseworker | caseworker-ia-caseofficer,caseworker-ia-admofficer |LEGAL_OPERATIONS|
 | IAC_Judge_WA_R2    | Judge      | caseworker-ia-iacjudge,caseworker-ia,caseworker    |JUDICIAL|
-
 

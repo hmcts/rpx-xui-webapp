@@ -1,5 +1,7 @@
 import { expect, test } from '../../../../E2E/fixtures';
 import { applySessionCookies, setupManageTasksBaseRoutes, taskListRoutePattern } from '../../../helpers';
+import { buildCaseDetailsTasksFromParams } from '../../../mocks/caseDetailsTasks.builder';
+import { buildAsylumCaseMock } from '../../../mocks/cases/asylumCase.mock';
 import { buildTaskListMock, myActionsList } from '../../../mocks/taskList.mock';
 import { buildMyCases } from '../../../mocks/myCases.mock';
 
@@ -19,12 +21,85 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
 
   test('User can view all-work task table, links, and pagination', async ({ taskListPage, page, tableUtils }) => {
     const taskListMockResponse = buildTaskListMock(2000, '', myActionsList);
+    const firstTask = taskListMockResponse.tasks[0];
+
+    firstTask.case_name = 'All work migrated case';
+    firstTask.case_name_field = firstTask.case_name;
+    firstTask.task_title = 'All work migrated task';
+    firstTask.task_field = firstTask.task_title;
+
+    const caseMockResponse = buildAsylumCaseMock({
+      caseId: firstTask.case_id,
+      caseTypeId: firstTask.case_type_id,
+      jurisdictionId: firstTask.jurisdiction,
+    });
+    const caseTasksResponse = buildCaseDetailsTasksFromParams({
+      caseId: firstTask.case_id,
+      tasks: [
+        {
+          id: firstTask.id,
+          title: firstTask.task_title,
+          state: 'assigned',
+          assignee: 'all-work-assignee-1',
+          createdDate: firstTask.created_date,
+          dueDate: firstTask.due_date,
+          priorityDate: firstTask.priority_date,
+          jurisdiction: firstTask.jurisdiction,
+          caseTypeId: firstTask.case_type_id,
+          caseId: firstTask.case_id,
+          caseName: firstTask.case_name,
+          caseCategory: firstTask.case_category,
+          locationName: firstTask.location_name,
+          location: firstTask.location,
+          description: 'Task opened from the all-work task link.',
+          actions: [{ id: 'go', title: 'Go to task' }],
+        },
+      ],
+    });
+    const caseworkerLookupResponse = [
+      {
+        email: 'all.work.caseworker@example.com',
+        firstName: 'All',
+        idamId: 'all-work-assignee-1',
+        lastName: 'Work',
+        location: {
+          id: 227101,
+          locationName: 'Taylor House',
+        },
+        roleCategory: 'LEGAL_OPERATIONS',
+        service: 'IA',
+      },
+    ];
 
     await test.step('Setup route mocks for all-work tasks', async () => {
       await setupManageTasksBaseRoutes(page, {
         taskListResponse: taskListMockResponse,
         supportedJurisdictions,
         supportedJurisdictionDetails,
+      });
+
+      await page.route(`**/data/internal/cases/${firstTask.case_id}*`, async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(caseMockResponse),
+        });
+      });
+
+      await page.route(`**/workallocation/case/task/${firstTask.case_id}*`, async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(caseTasksResponse),
+        });
+      });
+
+      await page.route('**/workallocation/caseworker/getUsersByServiceName*', async (route) => {
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(caseworkerLookupResponse),
+        });
       });
     });
 
@@ -34,7 +109,7 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
       await taskListPage.exuiSpinnerComponent.wait();
     });
 
-    await test.step('Verify expected all-work columns, data, and case link rendering', async () => {
+    await test.step('Verify expected all-work columns, data, and case/task link rendering', async () => {
       expect
         .soft(await taskListPage.getResultsText())
         .toBe(`Showing 1 to ${Math.min(taskListMockResponse.tasks.length, 25)} of ${taskListMockResponse.total_records} results`);
@@ -49,16 +124,55 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
       expect.soft(table[0]['Location']).toBe(taskListMockResponse.tasks[0].location_name);
       expect.soft(table[0]['Task']).toBe(taskListMockResponse.tasks[0].task_title);
 
-      const firstCase = taskListMockResponse.tasks[0];
-      const firstCaseLink = taskListPage.taskListTable.getByRole('link', { name: firstCase.case_name }).first();
+      const firstCaseLink = taskListPage.taskListTable.getByRole('link', { name: firstTask.case_name }).first();
       await expect(firstCaseLink).toBeVisible();
       await expect(firstCaseLink).toHaveAttribute(
         'href',
-        `/cases/case-details/${firstCase.jurisdiction}/${firstCase.case_type_id}/${firstCase.case_id}`
+        `/cases/case-details/${firstTask.jurisdiction}/${firstTask.case_type_id}/${firstTask.case_id}`
+      );
+
+      const firstTaskLink = taskListPage.taskListTable.getByRole('link', { name: firstTask.task_title }).first();
+      await expect(firstTaskLink).toBeVisible();
+      await expect(firstTaskLink).toHaveAttribute(
+        'href',
+        new RegExp(
+          `/cases/case-details/${firstTask.jurisdiction}/${firstTask.case_type_id}/${firstTask.case_id}(?:/tasks|#Tasks)$`
+        )
       );
     });
 
+    await test.step('Click the all-work Task link and land on the case details Tasks tab', async () => {
+      const caseDetailsResponsePromise = page.waitForResponse(
+        (response) =>
+          response.request().method() === 'GET' &&
+          response.url().includes(`/data/internal/cases/${firstTask.case_id}`) &&
+          response.status() === 200
+      );
+      const caseTasksResponsePromise = page.waitForResponse(
+        (response) =>
+          response.request().method() === 'POST' &&
+          response.url().includes(`/workallocation/case/task/${firstTask.case_id}`) &&
+          response.status() === 200
+      );
+
+      await taskListPage.taskListTable.getByRole('link', { name: firstTask.task_title }).first().click();
+
+      await caseDetailsResponsePromise;
+      await caseTasksResponsePromise;
+
+      await expect(page).toHaveURL(
+        new RegExp(
+          `/cases/case-details/${firstTask.jurisdiction}/${firstTask.case_type_id}/${firstTask.case_id}(?:/tasks|#Tasks)(?:\\?.*)?$`
+        )
+      );
+      await expect(page.getByRole('heading', { name: 'Active tasks' })).toBeVisible();
+    });
+
     await test.step('Verify pagination controls are shown for multi-page all-work results', async () => {
+      await taskListPage.gotoAllWorkTasks();
+      await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.exuiSpinnerComponent.wait();
+
       await expect(taskListPage.exuiBodyComponent.paginationNextButton).toBeVisible();
       await expect(taskListPage.exuiBodyComponent.paginationPreviousButton).not.toBeVisible();
 

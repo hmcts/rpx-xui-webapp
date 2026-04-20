@@ -96,9 +96,11 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
 
   // TODO Data SetUp - move to helper once done
   function setUpHearingJourneyData() {
+    // Hearing facilities
     hearingJourneyModel.set('hearingFacilities', 'additionalSecurity', 'Yes');
     hearingJourneyModel.set('hearingFacilities', 'additionalFacilities', ['Custody Cell', 'Laptop', 'Projector', 'Witness Room']);
     hearingJourneyModel.set('hearingStage', 'stage', 'Allocation');
+
     // hearing attendence
     hearingJourneyModel.set('hearingAttendence', 'paperHearing', 'No');
     hearingJourneyModel.set('hearingAttendence', 'hearingMethod', ['Video', 'Telephone']);
@@ -106,6 +108,6 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
     hearingJourneyModel.set('hearingAttendence', 'numberOfPeopleAttendingHearing', '2');
 
     //hearingVenue
-    hearingJourneyModel.set('hearingVenue', 'name', 'swans');
+    hearingJourneyModel.set('hearingVenue', 'name', 'southa');
   }
 });

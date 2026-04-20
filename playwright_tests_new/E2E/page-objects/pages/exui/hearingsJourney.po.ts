@@ -18,8 +18,9 @@ export class HearingsJourneyPage {
   readonly facilitiesCheckbox = (facility: string) =>
     this.page.locator(`#facilitiesList .govuk-checkboxes__input[value="${facility}"]`);
 
-  readonly hearingStageRadioButton = this.page.locator('#hearing-stage .govuk-radios__item');
+  readonly locationAutocomplete = this.page.locator('.mat-autocomplete-trigger');
 
+  readonly hearingStageRadioButton = this.page.locator('#hearing-stage .govuk-radios__item');
   readonly paperHearingYes = this.page.locator('#addition-security-confirmation  .govuk-radios__item #paperHearingYes');
   readonly paperHearingNo = this.page.locator('#addition-security-confirmation  .govuk-radios__item #paperHearingNo');
 
@@ -50,7 +51,7 @@ export class HearingsJourneyPage {
 
   readonly firstVenueOption = this.overlayLocationPanel.getByRole('option').first();
 
-  readonly addLocationsButton = this.page.locator('.search-location').getByRole('link', { name: 'Add location' });
+  readonly addLocationsButton = this.page.locator('.search-location').getByRole('link', { name: ' Add location ' });
 
   readonly courtNameForVenue = this.page.getByRole('link', { name: 'Swansea Civil And Family Justice Centre', exact: true });
 
@@ -126,19 +127,14 @@ export class HearingsJourneyPage {
 
     //await this.removeAllSelectedLocations();
     //await this.removeLocationLink('Swansea Civil And Family Justice Centre').click();
-    //await this.hearingVenue.fill(hearingVenue);
-    //await this.chooseFirstVenueWithFilter.click();
+    await this.hearingVenue.pressSequentially(hearingVenue, { delay: 1000 });
+    //await this.page.waitForTimeout(2000);
+    //await this.locationAutocomplete.waitFor({ state: 'visible' });
+    await this.locationAutocomplete.waitFor({ state: 'visible' });
+    await this.page.keyboard.press('ArrowDown');
+    await this.page.keyboard.press('Enter');
 
-    // await this.overlayLocationPanel.waitFor({ state: 'visible', timeout: 8_000 });
-    //await this.firstVenueOption.click();
-    // await this.page
-    //   .locator('.cdk-overlay-container .cdk-overlay-pane')
-    //   .filter({ has: this.page.getByRole('listbox') })
-    //   .click();
-    //await this.locationPanel.waitFor({ state: 'visible', timeout: 8_000 });
-    // await this.chooseFirstVenueWithFilter.click();
-
-    //await this.addLocationsButton.click();
+    await this.addLocationsButton.click();
   }
 
   async removeAllSelectedLocations() {

@@ -1,4 +1,4 @@
-@ng @functional_enabled @ignore
+@ng @ignore
 # Legacy Codecept coverage retained for reference only. Active coverage lives in playwright_tests_new/integration/test/manageTasks/workFilters.*.spec.ts.
 Feature: WA Release 2: My work - Work filters
 

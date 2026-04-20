@@ -305,27 +305,6 @@ withPipeline(type, product, component) {
                         }
                     }
                     },
-                    codecept: {
-                    stage('Codecept Integration Tests') {
-                        try {
-                            yarnBuilder.yarn('test:xuiIntegration')
-                        } catch (Exception e) {
-                            echo "[failFast] Codecept Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
-                            if (handleFailFastAbort(e)) { return }
-                            throw e
-                        } finally {
-                            publishHTML([
-                                allowMissing         : true,
-                                alwaysLinkToLastBuild: true,
-                                keepAll              : true,
-                                reportDir            : 'functional-output/tests/codecept-ngIntegration/',
-                                reportFiles          : 'cucumber_report.html',
-                                reportName           : 'PREVIEW Legacy Codecept Integration Test'
-                            ])
-                            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
-                        }
-                    }
-                    },
                     playwrightIntegration: {
                     stage('Playwright Integration Tests') {
                         try {
@@ -447,27 +426,6 @@ withPipeline(type, product, component) {
                                 ])
                                 steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
                             }
-                        }
-                    }
-                    },
-                    codecept: {
-                    stage('Codecept Integration Tests') {
-                        try {
-                            yarnBuilder.yarn('test:xuiIntegration')
-                        } catch (Exception e) {
-                            echo "[failFast] Codecept Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
-                            if (handleFailFastAbort(e)) { return }
-                            throw e
-                        } finally {
-                            publishHTML([
-                                allowMissing         : true,
-                                alwaysLinkToLastBuild: true,
-                                keepAll              : true,
-                                reportDir            : 'functional-output/tests/codecept-ngIntegration/',
-                                reportFiles          : 'cucumber_report.html',
-                                reportName           : 'AAT Legacy Codecept Integration Test'
-                            ])
-                            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
                         }
                     }
                     },

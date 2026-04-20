@@ -114,7 +114,6 @@
   },
   "protocol": "https",
   "microservice": "xui_webapp",
-  "sessionSecret": "secretSauce",
   "caseworkerPageSize": "30000",
   "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT,ST_CIC",
   "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT,ST_CIC",

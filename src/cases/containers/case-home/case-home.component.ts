@@ -86,6 +86,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
   }
 
   // TODO: please revisit
+  // EXUI-3967 - Needs to be investigated
   public paramHandler(navigation: any): GoActionParams {
     let params: GoActionParams;
     switch (navigation.action) {

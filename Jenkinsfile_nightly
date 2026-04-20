@@ -52,8 +52,9 @@ def secrets = [
     secret('system-user-name', 'SYSTEM_USER_NAME'),
     secret('system-user-password', 'SYSTEM_USER_PASSWORD'),
     secret('launch-darkly-client-id', 'LAUNCH_DARKLY_CLIENT_ID'),
+    secret('mc-session-secret', 'SESSION_SECRET'),
   ],
-  ]
+]
 
 static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
     [ $class: 'AzureKeyVaultSecret',
@@ -68,9 +69,14 @@ withNightlyPipeline(type, product, component) {
     enableSlackNotifications(channel)
     loadVaultSecrets(secrets)
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
+    env.MICROSERVICE = env.MICROSERVICE ?: 'xui_webapp'
+    env.S2S_MICROSERVICE_NAME = env.S2S_MICROSERVICE_NAME ?: env.MICROSERVICE
     enableFortifyScan('rpx-aat')
     
       afterSuccess('checkout') {
+        stage('Yarn Install') {
+          yarnBuilder.yarn('install --immutable')
+        }
         yarnBuilder.yarn('cache clean')
     }
 
@@ -102,7 +108,13 @@ withNightlyPipeline(type, product, component) {
   
       stage('API Tests') {
         try {
-          yarnBuilder.yarn('test:api:pw:coverage')
+          withEnv([
+            'ORG_USER_ASSIGNMENT_MODE=external',
+            'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
+            'FUNCTIONAL_TESTS_WORKERS=2'
+          ]) {
+            yarnBuilder.yarn('test:api:pw:coverage')
+          }
         } finally {
           publishHTML([
             allowMissing         : true,
@@ -143,7 +155,13 @@ withNightlyPipeline(type, product, component) {
 
         stage('Playwright Integration Tests') {
                 try {
-                    yarnBuilder.yarn('test:playwright:integration')
+                    withEnv([
+                      'ORG_USER_ASSIGNMENT_MODE=external',
+                      'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
+                      'FUNCTIONAL_TESTS_WORKERS=2'
+                    ]) {
+                      yarnBuilder.yarn('test:playwright:integration')
+                    }
                 } finally {
                     publishHTML([
                       allowMissing         : true,
@@ -160,7 +178,13 @@ withNightlyPipeline(type, product, component) {
 
       stage('Cross Browser Test') {
             try {
-              yarnBuilder.yarn('test:crossbrowser')
+              withEnv([
+                'ORG_USER_ASSIGNMENT_MODE=external',
+                'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
+                'FUNCTIONAL_TESTS_WORKERS=2'
+              ]) {
+                yarnBuilder.yarn('test:crossbrowser')
+              }
             } catch (Error) {
               unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
             } finally {

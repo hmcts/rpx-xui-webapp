@@ -113,7 +113,7 @@ export class TaskHomeComponent implements OnInit, OnDestroy {
   public errorChangedHandler(error: ErrorMessage) {
     // Override location error message
     // https://tools.hmcts.net/jira/browse/EUI-4582
-    if (error && error.errors) {
+    if (error?.errors) {
       const locationsErrorIndex = error.errors.findIndex((x) => x.name.toLowerCase() === 'locations');
       if (locationsErrorIndex > -1) {
         error.errors[locationsErrorIndex].error = 'Enter a location';

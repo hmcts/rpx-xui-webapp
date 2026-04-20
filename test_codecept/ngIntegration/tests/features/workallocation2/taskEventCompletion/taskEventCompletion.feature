@@ -6,6 +6,8 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
         Given I init MockApp
 
 
+    @functional_enabled @ignore
+    # Legacy Codecept scenario retained for reference only. Active coverage lives in playwright_tests_new/integration/test/manageTasks/caseTaskList/taskEventCompletion.negative.spec.ts.
     Scenario Outline: No task available
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
 
@@ -121,6 +123,8 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
             | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor |
 
 
+    @functional_enabled @ignore
+    # Legacy Codecept scenario retained for reference only. Active coverage lives in playwright_tests_new/integration/test/manageTasks/caseTaskList/taskEventCompletion.negative.spec.ts.
     Scenario Outline: Task multiple tasks found unassigned
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
 
@@ -231,4 +235,3 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
     #     Examples:
     #         | roles                                                                            |
     #         | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor |
-

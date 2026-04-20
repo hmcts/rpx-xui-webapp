@@ -72,6 +72,11 @@ export class CaseDetailsPage extends Base {
   readonly caseNotificationBannerBody = this.page.locator('.govuk-notification-banner__heading');
 
   readonly eventCreationErrorHeading = this.page.getByRole('heading', { name: 'The event could not be created' });
+  readonly generalProblemHeading = this.page.getByRole('heading', { name: /there is a problem/i }).first();
+  readonly checkYourAnswersHeading = this.page.getByRole('heading', { name: /check your answers/i });
+  readonly linkedCaseReferenceInput = this.page.getByLabel('Linked case reference');
+  readonly caseLinkReasonSelect = this.page.getByLabel('Reason for link');
+  readonly caseLinkOtherDescriptionInput = this.page.getByLabel('Other description');
   readonly caseViewerTable = this.page.getByRole('table', { name: 'case viewer table' });
 
   // Table locators
@@ -89,6 +94,9 @@ export class CaseDetailsPage extends Base {
   readonly caseProgressMessage = this.page.locator('#progress_legalOfficer_updateTrib_dismissed_under_rule_31');
   readonly resultsNotFoundHeading = this.page.locator('exui-no-results').getByRole('heading', { level: 1 });
   readonly backLink = this.page.locator('exui-no-results .govuk-width-container .govuk-back-link');
+
+  // Restricted Access
+  readonly restrictedAccessContainer = this.page.locator('exui-restricted-case-access-container');
 
   // GlobalSearch
   readonly tabsCount = this.page.locator('.mat-tab-label-container .mat-tab-list');
@@ -562,6 +570,32 @@ export class CaseDetailsPage extends Base {
     await this.selectCaseAction(action);
   }
 
+  async openLinkCasesEvent(): Promise<void> {
+    await this.selectCaseAction('Link cases', { expectedLocator: this.linkedCaseReferenceInput });
+    await this.caseLinkReasonSelect.waitFor({ state: 'visible' });
+  }
+
+  async fillCaseLinkDetails(options: {
+    linkedCaseReference: string;
+    reasonLabel: string;
+    otherDescription?: string;
+  }): Promise<void> {
+    await this.linkedCaseReferenceInput.fill(options.linkedCaseReference);
+    await this.caseLinkReasonSelect.selectOption({ label: options.reasonLabel });
+    if (options.otherDescription !== undefined) {
+      await this.caseLinkOtherDescriptionInput.waitFor({ state: 'visible', timeout: this.getRecommendedTimeoutMs() });
+      await this.caseLinkOtherDescriptionInput.fill(options.otherDescription);
+    }
+  }
+
+  async continueCaseEvent(): Promise<void> {
+    await this.continueButton.click();
+  }
+
+  async submitCaseEvent(): Promise<void> {
+    await this.submitButton.click();
+  }
+
   async selectFirstRadioOption() {
     await this.commonRadioButtons.first().getByRole('radio').check();
     await this.submitCaseFlagButton.click();
@@ -637,6 +671,7 @@ export class CaseDetailsPage extends Base {
       multiplier: 3,
       fallback: 15_000,
     });
+    await this.waitForCaseDetailsTabsReady(tabLoadTimeoutMs);
     const escapedTabName = tabName.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
     const tab = this.page.getByRole('tab', { name: new RegExp(escapedTabName, 'i') }).first();
     await tab.waitFor({ state: 'visible', timeout: tabLoadTimeoutMs });
@@ -659,6 +694,30 @@ export class CaseDetailsPage extends Base {
   async getTabCount() {
     const tabsCount = await this.tablist2.count();
     return tabsCount;
+  }
+
+  private async waitForCaseDetailsTabsReady(timeoutMs: number): Promise<void> {
+    await this.container.waitFor({ state: 'visible', timeout: timeoutMs });
+    await this.tabList.waitFor({ state: 'visible', timeout: timeoutMs });
+
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
+      const visibleTabCount = await this.tablist2.evaluateAll(
+        (tabs) =>
+          tabs.filter((tab) => {
+            const element = tab as HTMLElement;
+            return !element.hidden && element.offsetParent !== null;
+          }).length
+      );
+
+      if (visibleTabCount > 0) {
+        return;
+      }
+
+      await this.page.waitForTimeout(200);
+    }
+
+    throw new Error(`Case details tabs did not become visible within ${timeoutMs}ms.`);
   }
 
   private async waitForTabPanelReadiness(tabPanel: Locator, timeoutMs: number): Promise<void> {

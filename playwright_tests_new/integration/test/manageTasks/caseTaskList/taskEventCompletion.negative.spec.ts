@@ -4,6 +4,7 @@ import { applySessionCookiesAndExtractUserId } from '../../../helpers';
 import { buildCaseEventTriggerMock } from '../../../mocks/caseEventTrigger.builder';
 import { buildCaseDetailsTasksFromParams, buildCaseDetailsTasksMinimal } from '../../../mocks/caseDetailsTasks.builder';
 import { buildAsylumCaseMock } from '../../../mocks/cases/asylumCase.mock';
+import { setupTaskEventCompletionRoutes } from './taskEventCompletion.setup';
 
 const userIdentifier = 'STAFF_ADMIN';
 const caseId = faker.number.int({ min: 1_000_000_000, max: 9_999_999_999 }).toString();
@@ -38,61 +39,15 @@ test.describe(`Task event completion as ${userIdentifier}`, { tag: ['@integratio
     };
 
     await test.step('Mock the case details, task tab, and completable-task responses', async () => {
-      await page.route(`**/data/internal/cases/${caseId}*`, async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(caseMockResponse),
-        });
+      await setupTaskEventCompletionRoutes(page, {
+        assigneeId,
+        caseId,
+        caseResponse: caseMockResponse,
+        completableTasksResponse: noCompletableTasksResponse,
+        eventId,
+        eventTriggerResponse: eventTriggerResponse,
+        visibleTasks,
       });
-
-      await page.route(`**/data/internal/cases/${caseId}/event-triggers/${eventId}*`, async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(eventTriggerResponse),
-        });
-      });
-
-      await page.route('**/workallocation/caseworker/getUsersByServiceName*', async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify([
-            {
-              email: 'test@example.com',
-              firstName: 'Test',
-              idamId: assigneeId,
-              lastName: 'User',
-              location: {
-                id: 227101,
-                locationName: 'Newport (South Wales) Immigration and Asylum Tribunal',
-              },
-              roleCategory: 'LEGAL_OPERATIONS',
-              service: 'IA',
-            },
-          ]),
-        });
-      });
-
-      await page.route(`**/workallocation/case/task/${caseId}*`, async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(visibleTasks),
-        });
-      });
-
-      await page.route(
-        `**/workallocation/case/tasks/${caseId}/event/${eventId}/caseType/Asylum/jurisdiction/IA*`,
-        async (route) => {
-          await route.fulfill({
-            status: 200,
-            contentType: 'application/json',
-            body: JSON.stringify(noCompletableTasksResponse),
-          });
-        }
-      );
     });
 
     await test.step('Open the task tab and trigger the event completion flow', async () => {
@@ -136,61 +91,15 @@ test.describe(`Task event completion as ${userIdentifier}`, { tag: ['@integratio
     };
 
     await test.step('Mock the case details, task tab, and unassigned completable-task responses', async () => {
-      await page.route(`**/data/internal/cases/${caseId}*`, async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(caseMockResponse),
-        });
+      await setupTaskEventCompletionRoutes(page, {
+        assigneeId,
+        caseId,
+        caseResponse: caseMockResponse,
+        completableTasksResponse: unassignedCompletableTasksResponse,
+        eventId,
+        eventTriggerResponse: eventTriggerResponse,
+        visibleTasks,
       });
-
-      await page.route(`**/data/internal/cases/${caseId}/event-triggers/${eventId}*`, async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(eventTriggerResponse),
-        });
-      });
-
-      await page.route('**/workallocation/caseworker/getUsersByServiceName*', async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify([
-            {
-              email: 'test@example.com',
-              firstName: 'Test',
-              idamId: assigneeId,
-              lastName: 'User',
-              location: {
-                id: 227101,
-                locationName: 'Newport (South Wales) Immigration and Asylum Tribunal',
-              },
-              roleCategory: 'LEGAL_OPERATIONS',
-              service: 'IA',
-            },
-          ]),
-        });
-      });
-
-      await page.route(`**/workallocation/case/task/${caseId}*`, async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(visibleTasks),
-        });
-      });
-
-      await page.route(
-        `**/workallocation/case/tasks/${caseId}/event/${eventId}/caseType/Asylum/jurisdiction/IA*`,
-        async (route) => {
-          await route.fulfill({
-            status: 200,
-            contentType: 'application/json',
-            body: JSON.stringify(unassignedCompletableTasksResponse),
-          });
-        }
-      );
     });
 
     await test.step('Open the task tab and trigger the event completion flow', async () => {

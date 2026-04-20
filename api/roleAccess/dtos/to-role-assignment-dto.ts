@@ -38,7 +38,7 @@ export function toSARoleAssignmentBody(
   const allocateRoleData = specificAccessData.specificAccessStateData;
   const period = specificAccessData.period;
   const requestedRole =
-    allocateRoleData.requestedRole !== 'specific-access-judicial' ? allocateRoleData.requestedRole : 'specific-access-judiciary';
+    allocateRoleData.requestedRole === 'specific-access-judicial' ? 'specific-access-judiciary' : allocateRoleData.requestedRole;
   return {
     roleRequest: {
       assignerId: currentUserId,

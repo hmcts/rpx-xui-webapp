@@ -39,7 +39,7 @@ export function getPromises(path): any[] {
   /* Checking whether path can be simplified, ie route has parameters*/
   const dictionaryKeys = Object.keys(healthCheckEndpointDictionary).reverse();
   for (const key of dictionaryKeys) {
-    if (path.indexOf(key) > -1) {
+    if (path.includes(key)) {
       path = key;
       break;
     }

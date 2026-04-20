@@ -1,4 +1,8 @@
-import { buildDecentralisedEventUrl, getExpectedSubFromUserDetails } from './decentralised-event-redirect.util';
+import {
+  buildDecentralisedEventUrl,
+  buildDecentralisedNocUrl,
+  getExpectedSubFromUserDetails,
+} from './decentralised-redirect.util';
 
 describe('decentralised-event-redirect.util', () => {
   let consoleErrorSpy: jasmine.Spy;
@@ -108,6 +112,34 @@ describe('decentralised-event-redirect.util', () => {
     );
 
     expect(url).toBe('https://pcs-xui-pr-1234.preview.platform/cases/123/event/ext%3AfooEvent?expected_sub=user-123');
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+  });
+
+  it('should build an external URL for decentralised noc using the mirrored noc path', () => {
+    const url = buildDecentralisedNocUrl(
+      {
+        caseType: 'PCS',
+        caseId: '1234567890',
+      },
+      { PCS: 'https://pcs-frontend.service.gov.uk/' },
+      'user-123'
+    );
+
+    expect(url).toBe('https://pcs-frontend.service.gov.uk/noc?caseId=1234567890&expected_sub=user-123');
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+  });
+
+  it('should return null for decentralised noc when case type is not configured', () => {
+    const url = buildDecentralisedNocUrl(
+      {
+        caseType: 'UNMATCHED',
+        caseId: '1234567890',
+      },
+      { PCS: 'https://pcs-frontend.service.gov.uk' },
+      'user-123'
+    );
+
+    expect(url).toBeNull();
     expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
 

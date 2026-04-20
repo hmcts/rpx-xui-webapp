@@ -19,5 +19,5 @@ export interface EnvironmentConfig {
     hearingJurisdictions: object;
     hearingAmendment: object;
   };
-  decentralisedEventBaseUrls?: Record<string, string>;
+  decentralisedCaseTypeBaseUrls?: Record<string, string>;
 }

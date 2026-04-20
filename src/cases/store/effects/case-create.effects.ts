@@ -5,7 +5,7 @@ import { filter, map } from 'rxjs/operators';
 import { LoggerService } from '../../../app/services/logger/logger.service';
 import * as fromRoot from '../../../app/store';
 import * as fromActions from '../actions';
-import { DecentralisedEventRedirectService } from '../../services/decentralised-event-redirect.service';
+import { DecentralisedRedirectService } from '../../services/decentralised-redirect.service';
 
 @Injectable()
 export class CaseCreateEffects {
@@ -13,7 +13,7 @@ export class CaseCreateEffects {
     private readonly actions$: Actions,
     private readonly alertService: AlertService,
     private readonly loggerService: LoggerService,
-    private readonly decentralisedEventRedirectService: DecentralisedEventRedirectService
+    private readonly decentralisedRedirectService: DecentralisedRedirectService
   ) {}
 
   public applyChangeCaseCreateFilter$ = createEffect(() =>
@@ -22,7 +22,7 @@ export class CaseCreateEffects {
       map((action: fromActions.CaseCreateFilterApply) => action.payload),
       map((param) => {
         if (
-          this.decentralisedEventRedirectService.tryRedirect({
+          this.decentralisedRedirectService.tryEventRedirect({
             caseType: param.caseTypeId,
             jurisdiction: param.jurisdictionId,
             eventId: param.eventId,

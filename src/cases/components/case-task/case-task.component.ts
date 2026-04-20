@@ -11,7 +11,7 @@ import { Caseworker } from '../../../work-allocation/models/dtos';
 import { Task } from '../../../work-allocation/models/tasks';
 import { WorkAllocationTaskService } from '../../../work-allocation/services';
 import { REDIRECTS, handleTasksFatalErrors } from '../../../work-allocation/utils';
-import { getExpectedSubFromUserDetails } from '../../utils/decentralised-event-redirect.util';
+import { getExpectedSubFromUserDetails } from '../../utils/decentralised-redirect.util';
 import { appendTaskIdAsQueryStringToTaskDescription } from './case-task.util';
 
 @Component({

@@ -1,10 +1,11 @@
 import { Params } from '@angular/router';
 import type { EnvironmentConfig } from '../../models/environmentConfig.model';
 
-type DecentralisedEventBaseUrls = EnvironmentConfig['decentralisedEventBaseUrls'];
+type DecentralisedCaseTypeBaseUrls = EnvironmentConfig['decentralisedCaseTypeBaseUrls'];
 
 const DECENTRALISED_EVENT_PREFIX = 'ext:';
 const TEMPLATE_PLACEHOLDER = '%s';
+const DECENTRALISED_NOC_PATH = '/noc';
 
 const isDecentralisedEvent = (eventId?: string): eventId is string => {
   return !!eventId && eventId.startsWith(DECENTRALISED_EVENT_PREFIX);
@@ -16,7 +17,7 @@ const resolveUrlTemplate = (params: { template: string; prefix: string; caseType
   const firstPlaceholder = template.indexOf(TEMPLATE_PLACEHOLDER);
   if (firstPlaceholder !== -1 && template.indexOf(TEMPLATE_PLACEHOLDER, firstPlaceholder + TEMPLATE_PLACEHOLDER.length) !== -1) {
     console.error(
-      `Decentralised event base URL template for prefix '${prefix}' contains multiple '${TEMPLATE_PLACEHOLDER}' placeholders`
+      `Decentralised case type base URL template for prefix '${prefix}' contains multiple '${TEMPLATE_PLACEHOLDER}' placeholders`
     );
     return null;
   }
@@ -36,7 +37,7 @@ const resolveUrlTemplate = (params: { template: string; prefix: string; caseType
   return template.replace(TEMPLATE_PLACEHOLDER, suffix);
 };
 
-const getDecentralisedBaseUrl = (baseUrls: DecentralisedEventBaseUrls, caseType?: string): string | null => {
+const getDecentralisedBaseUrl = (baseUrls: DecentralisedCaseTypeBaseUrls, caseType?: string): string | null => {
   if (!baseUrls || !caseType || caseType.trim().length === 0) {
     return null;
   }
@@ -52,7 +53,7 @@ const getDecentralisedBaseUrl = (baseUrls: DecentralisedEventBaseUrls, caseType?
 
   if (longestMatches.length > 1) {
     console.error(
-      `Ambiguous decentralised event base URL configuration for case type '${caseType}'. Multiple longest prefix matches found: [${longestMatches.join(
+      `Ambiguous decentralised case type base URL configuration for case type '${caseType}'. Multiple longest prefix matches found: [${longestMatches.join(
         ', '
       )}]`
     );
@@ -65,7 +66,12 @@ const getDecentralisedBaseUrl = (baseUrls: DecentralisedEventBaseUrls, caseType?
     return null;
   }
 
-  return resolveUrlTemplate({ template, prefix, caseType });
+  const resolvedUrl = resolveUrlTemplate({ template, prefix, caseType });
+  if (!resolvedUrl) {
+    return null;
+  }
+
+  return resolvedUrl.replace(/\/+$/, '');
 };
 
 export const getExpectedSubFromUserDetails = (userInfoStr?: string | null): string | null => {
@@ -116,9 +122,14 @@ interface BuildDecentralisedCaseEventUrlInput extends BuildDecentralisedEventUrl
 
 export type BuildDecentralisedEventUrlInput = BuildDecentralisedCaseCreateEventUrlInput | BuildDecentralisedCaseEventUrlInput;
 
+export interface BuildDecentralisedNocUrlInput {
+  caseType: string;
+  caseId: string;
+}
+
 export const buildDecentralisedEventUrl = (
   params: BuildDecentralisedEventUrlInput,
-  baseUrls: DecentralisedEventBaseUrls,
+  baseUrls: DecentralisedCaseTypeBaseUrls,
   expectedSub?: string
 ): string | null => {
   if (!isDecentralisedEvent(params.eventId)) {
@@ -130,11 +141,6 @@ export const buildDecentralisedEventUrl = (
     return null;
   }
 
-  // Remove any trailing slashes from our base url
-  let base = baseUrl;
-  while (base.endsWith('/')) {
-    base = base.slice(0, -1);
-  }
   let eventPath: string;
   if (params.isCaseCreate === true) {
     eventPath = `/cases/case-create/${encodeURIComponent(params.jurisdiction)}/${encodeURIComponent(params.caseType)}/${encodeURIComponent(params.eventId)}`;
@@ -149,5 +155,24 @@ export const buildDecentralisedEventUrl = (
   }
 
   const queryString = searchParams.toString();
-  return queryString ? `${base}${eventPath}?${queryString}` : `${base}${eventPath}`;
+  return queryString ? `${baseUrl}${eventPath}?${queryString}` : `${baseUrl}${eventPath}`;
+};
+
+export const buildDecentralisedNocUrl = (
+  params: BuildDecentralisedNocUrlInput,
+  baseUrls: DecentralisedCaseTypeBaseUrls,
+  expectedSub?: string
+): string | null => {
+  const baseUrl = getDecentralisedBaseUrl(baseUrls, params.caseType);
+  if (!baseUrl) {
+    return null;
+  }
+
+  const searchParams = new URLSearchParams();
+  searchParams.set('caseId', params.caseId);
+  if (expectedSub) {
+    searchParams.set('expected_sub', expectedSub);
+  }
+
+  return `${baseUrl}${DECENTRALISED_NOC_PATH}?${searchParams.toString()}`;
 };

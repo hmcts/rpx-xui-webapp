@@ -15,7 +15,7 @@ import { GoActionParams } from '../../../cases/models/go-action-params.model';
 
 import * as fromRoot from '../../../app/store';
 import * as fromFeature from '../../store';
-import { DecentralisedEventRedirectService } from '../../services/decentralised-event-redirect.service';
+import { DecentralisedRedirectService } from '../../services/decentralised-redirect.service';
 
 @Component({
   standalone: false,
@@ -38,7 +38,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
     private readonly store: Store<fromFeature.State>,
     private readonly commonLibLoadingService: CommonLibLoadingService,
     private readonly ccdLibLoadingService: CCDLoadingService,
-    private readonly decentralisedEventRedirectService: DecentralisedEventRedirectService
+    private readonly decentralisedRedirectService: DecentralisedRedirectService
   ) {}
 
   /**
@@ -56,7 +56,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
 
       const isRedirected =
         navigation.action === NavigationOrigin.EVENT_TRIGGERED &&
-        this.decentralisedEventRedirectService.tryRedirect({
+        this.decentralisedRedirectService.tryEventRedirect({
           caseType: navigation.relativeTo.snapshot.params.caseType ?? navigation.relativeTo.data?.value?.case?.case_type?.id,
           eventId: navigation.etid,
           caseId: navigation.relativeTo.snapshot.params.cid,

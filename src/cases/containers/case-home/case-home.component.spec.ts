@@ -16,7 +16,7 @@ import { CaseHomeComponent } from '..';
 import { reducers } from '../../../app/store';
 import { SessionStorageService } from '../../../app/services';
 import { EnvironmentService } from '../../../app/shared/services/environment.service';
-import { DecentralisedEventRedirectService } from '../../services/decentralised-event-redirect.service';
+import { DecentralisedRedirectService } from '../../services/decentralised-redirect.service';
 import * as fromFeature from '../../store';
 
 describe('CaseHomeComponent', () => {
@@ -45,7 +45,7 @@ describe('CaseHomeComponent', () => {
         { provide: ErrorNotifierService, useValue: mockErrorNotifierService },
         { provide: CommonLibLoadingService, useValue: mockCommonLibLoadingService },
         { provide: CCDLoadingService, useValue: mockCCDLoadingService },
-        DecentralisedEventRedirectService,
+        DecentralisedRedirectService,
         { provide: EnvironmentService, useValue: mockEnvironmentService },
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: Window, useValue: mockWindow },

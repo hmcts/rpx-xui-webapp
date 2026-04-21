@@ -46,6 +46,13 @@ describe('Application', () => {
     const getConfigStub = sandbox.stub(require('./configuration'), 'getConfigValue');
     getConfigStub.withArgs('secrets.rpx.mc-session-secret').returns('test-session-secret-12345');
     getConfigStub.withArgs('protocol').returns('https');
+    getConfigStub.withArgs('eventLoopMonitor.enabled').returns(false);
+    getConfigStub.withArgs('eventLoopMonitor.debugEnabled').returns(false);
+    getConfigStub.withArgs('eventLoopMonitor.maxTrackedRequests').returns(5);
+    getConfigStub.withArgs('eventLoopMonitor.resolutionMs').returns(20);
+    getConfigStub.withArgs('eventLoopMonitor.sampleIntervalMs').returns(5000);
+    getConfigStub.withArgs('eventLoopMonitor.slowRequestThresholdMs').returns(2000);
+    getConfigStub.withArgs('eventLoopMonitor.warnThresholdMs').returns(1000);
     getConfigStub.withArgs('HELMET').returns({
       contentSecurityPolicy: {
         directives: {
@@ -152,7 +159,15 @@ describe('Application', () => {
 
         // Set up stubs with the specific error
         sandbox.stub(require('./configuration'), 'showFeature').returns(false);
-        sandbox.stub(require('./configuration'), 'getConfigValue').returns('test-value');
+        const getConfigStub = sandbox.stub(require('./configuration'), 'getConfigValue');
+        getConfigStub.withArgs('eventLoopMonitor.enabled').returns(false);
+        getConfigStub.withArgs('eventLoopMonitor.debugEnabled').returns(false);
+        getConfigStub.withArgs('eventLoopMonitor.maxTrackedRequests').returns(5);
+        getConfigStub.withArgs('eventLoopMonitor.resolutionMs').returns(20);
+        getConfigStub.withArgs('eventLoopMonitor.sampleIntervalMs').returns(5000);
+        getConfigStub.withArgs('eventLoopMonitor.slowRequestThresholdMs').returns(2000);
+        getConfigStub.withArgs('eventLoopMonitor.warnThresholdMs').returns(1000);
+        getConfigStub.returns('test-value');
         sandbox.stub(require('./lib/log4jui'), 'getLogger').returns(mockLogger);
         sandbox.stub(require('./lib/tunnel'), 'init').returns(undefined);
         sandbox.stub(require('./health'), 'addReformHealthCheck').returns(undefined);

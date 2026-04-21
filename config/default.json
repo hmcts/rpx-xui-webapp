@@ -152,6 +152,15 @@
       "default": { "appenders": ["out"], "level": "info" }
     }
   },
+  "eventLoopMonitor": {
+    "enabled": false,
+    "debugEnabled": false,
+    "sampleIntervalMs": 5000,
+    "resolutionMs": 20,
+    "warnThresholdMs": 1000,
+    "maxTrackedRequests": 5,
+    "slowRequestThresholdMs": 2000
+  },
   "feature": {
     "appInsightsEnabled": true,
     "proxyEnabled": false,

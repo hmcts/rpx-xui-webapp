@@ -14,15 +14,15 @@ const isDecentralisedEvent = (eventId?: string): eventId is string => {
 const resolveUrlTemplate = (params: { template: string; prefix: string; caseType: string }): string | null => {
   const { template, prefix, caseType } = params;
 
-  const firstPlaceholder = template.indexOf(TEMPLATE_PLACEHOLDER);
-  if (firstPlaceholder !== -1 && template.indexOf(TEMPLATE_PLACEHOLDER, firstPlaceholder + TEMPLATE_PLACEHOLDER.length) !== -1) {
+  const placeholderCount = template.split(TEMPLATE_PLACEHOLDER).length - 1;
+  if (placeholderCount > 1) {
     console.error(
       `Decentralised case type base URL template for prefix '${prefix}' contains multiple '${TEMPLATE_PLACEHOLDER}' placeholders`
     );
     return null;
   }
 
-  if (firstPlaceholder === -1) {
+  if (placeholderCount === 0) {
     return template;
   }
 

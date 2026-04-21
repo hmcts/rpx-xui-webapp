@@ -1,7 +1,10 @@
 import { createLogger } from '@hmcts/playwright-common';
 import { expect } from '@playwright/test';
+import { randomUUID } from 'node:crypto';
 
 import type { CreateCasePage } from '../../../page-objects/pages/exui/createCase.po';
+import type { Page } from '@playwright/test';
+import { uploadDocumentViaApi } from '../uploadDocumentViaApi';
 
 const logger = createLogger({
   serviceName: 'employment-case-journeys',
@@ -12,11 +15,32 @@ type CreateEmploymentCaseOptions = {
   allowDraftClaimFallback?: boolean;
 };
 
+type InternalEventTriggerResponse = {
+  event_token?: string;
+};
+
+const CCD_API_JSON_HEADERS = {
+  experimental: 'true',
+  Accept: 'application/json',
+  'Content-Type': 'application/json',
+} as const;
+
+const CCD_INTERNAL_START_EVENT_HEADERS = {
+  experimental: 'true',
+  Accept: 'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-event-trigger.v2+json',
+} as const;
+
+const CCD_CREATE_EVENT_HEADERS = {
+  experimental: 'true',
+  Accept: 'application/vnd.uk.gov.hmcts.ccd-data-store-api.create-event.v2+json',
+  'Content-Type': 'application/json',
+} as const;
+
 export async function uploadEmploymentDraftDocument(
   createCasePage: CreateCasePage,
   fileName: string,
   mimeType: string,
-  fileContent: string
+  fileContent: string | Buffer
 ): Promise<void> {
   await prepareEmploymentDraftUploadPage(createCasePage);
   await createCasePage.page.locator('#documentCollection button').click();
@@ -28,6 +52,85 @@ export async function uploadEmploymentDraftDocument(
     maxAutoAdvanceAttempts: 1,
   });
   await createCasePage.waitForCaseDetails('after uploading employment document');
+}
+
+export async function uploadEmploymentDraftDocumentViaApi(options: {
+  page: Page;
+  caseNumber: string;
+  fileName: string;
+  mimeType: string;
+  fileContent: string | Buffer;
+  topLevelDocuments?: string;
+  miscDocuments?: string;
+}): Promise<void> {
+  const uploadedDocument = await uploadDocumentViaApi({
+    page: options.page,
+    jurisdictionId: 'EMPLOYMENT',
+    caseTypeId: 'ET_EnglandWales',
+    fileName: options.fileName,
+    mimeType: options.mimeType,
+    fileContent: options.fileContent,
+  });
+
+  const eventId = 'uploadDocument';
+  const eventTriggerPath = `data/internal/cases/${encodeURIComponent(options.caseNumber)}/event-triggers/${encodeURIComponent(
+    eventId
+  )}?ignore-warning=false`;
+  const eventTriggerResponse = await options.page.request.get(eventTriggerPath, {
+    failOnStatusCode: false,
+    headers: CCD_INTERNAL_START_EVENT_HEADERS,
+    timeout: 60_000,
+  });
+  if (!eventTriggerResponse.ok()) {
+    const body = await eventTriggerResponse.text().catch(() => '');
+    throw new Error(
+      `Employment document setup failed to fetch event trigger (HTTP ${eventTriggerResponse.status()}). ` +
+        `Path='${eventTriggerPath}'. Body='${body.slice(0, 500)}'`
+    );
+  }
+
+  const eventTrigger = (await eventTriggerResponse.json()) as InternalEventTriggerResponse;
+  const eventToken = eventTrigger.event_token?.trim();
+  if (!eventToken) {
+    throw new Error('Employment document setup event trigger did not include event_token.');
+  }
+
+  const eventBody = {
+    data: {
+      documentCollection: [
+        {
+          id: randomUUID(),
+          value: {
+            uploadedDocument: uploadedDocument,
+            topLevelDocuments: options.topLevelDocuments ?? 'Misc',
+            miscDocuments: options.miscDocuments ?? 'Other',
+          },
+        },
+      ],
+    },
+    event: {
+      id: eventId,
+      summary: 'Upload document for case file view',
+      description: 'Uploaded via Playwright CCD API helper',
+    },
+    event_token: eventToken,
+    ignore_warning: false,
+  };
+
+  const submitPath = `data/cases/${encodeURIComponent(options.caseNumber)}/events`;
+  const submitResponse = await options.page.request.post(submitPath, {
+    data: eventBody,
+    failOnStatusCode: false,
+    headers: CCD_CREATE_EVENT_HEADERS,
+    timeout: 60_000,
+  });
+  if (!submitResponse.ok()) {
+    const body = await submitResponse.text().catch(() => '');
+    throw new Error(
+      `Employment document setup submit failed (HTTP ${submitResponse.status()}). ` +
+        `Path='${submitPath}'. Body='${body.slice(0, 500)}'`
+    );
+  }
 }
 
 export async function createEmploymentCase(

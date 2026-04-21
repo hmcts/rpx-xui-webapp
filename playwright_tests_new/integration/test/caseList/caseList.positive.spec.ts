@@ -1,165 +1,28 @@
-import type { Page, Route } from '@playwright/test';
 import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookies } from '../../../common/sessionCapture';
 import {
+  clearPersistedCaseListState,
+  defaultSearchCasesRequestParams,
+  expectCaseListRows,
+  expectCaseListSummary,
+  expectPaginationState,
+  expectSearchCasesRequest,
+  navigateToPageAndAssertResults,
+  setupCaseListMocks,
+  waitForSearchCasesRequest,
+} from '../../helpers';
+import {
   buildCaseListJurisdictionsMock,
   buildCaseListMock,
+  buildCaseListMockForDefaultState,
   buildCaseListMockForPage,
-  buildCaseListMockForState,
   buildCaseListMockWithOptionalFieldsForPage,
-  buildCaseListSubmittedStateJurisdictionsMock,
   buildCaseListStateFilterInputsMock,
-  CASE_LIST_SUBMITTED_STATE_CASE_TYPE_LABEL,
-  CASE_LIST_SUBMITTED_STATE_JURISDICTION_LABEL,
-  CASE_LIST_SUBMITTED_STATE_OPTIONS,
+  CASE_LIST_STATE_FILTER_OPTIONS,
 } from '../../mocks/caseList.mock';
 
 const userIdentifier = 'SOLICITOR';
 const PAGE_SIZE = 25;
-const defaultJurisdictionsMock = buildCaseListJurisdictionsMock();
-type CaseListMockResponse = ReturnType<typeof buildCaseListMock>;
-
-async function setupCaseListMocks(
-  page: Page,
-  options: {
-    searchResponse?: unknown;
-    searchResponseHandler?: (route: Route) => Promise<void>;
-    jurisdictions?: unknown;
-    workbasketInputs?: { workbasketInputs?: unknown[]; searchInputs?: unknown[] };
-  }
-): Promise<void> {
-  const jurisdictions = options.jurisdictions ?? defaultJurisdictionsMock;
-  const workbasketInputs = options.workbasketInputs ?? { workbasketInputs: [], searchInputs: [] };
-
-  await page.unroute('**/aggregated/caseworkers/**/jurisdictions*').catch(() => undefined);
-  await page.unroute('**/caseworkers/**/jurisdictions*').catch(() => undefined);
-  await page.unroute('**/data/internal/case-types/**/work-basket-inputs*').catch(() => undefined);
-  await page.unroute('**/caseworkers/**/jurisdictions/**/case-types/**/work-basket-inputs*').catch(() => undefined);
-  await page.unroute('**/data/internal/case-types/**/search-inputs*').catch(() => undefined);
-  await page.unroute('**/data/internal/searchCases*').catch(() => undefined);
-
-  await page.route('**/aggregated/caseworkers/**/jurisdictions*', async (route) => {
-    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(jurisdictions) });
-  });
-
-  await page.route('**/caseworkers/**/jurisdictions*', async (route) => {
-    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(jurisdictions) });
-  });
-
-  await page.route('**/data/internal/case-types/**/work-basket-inputs*', async (route) => {
-    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(workbasketInputs) });
-  });
-
-  await page.route('**/caseworkers/**/jurisdictions/**/case-types/**/work-basket-inputs*', async (route) => {
-    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(workbasketInputs) });
-  });
-
-  await page.route('**/data/internal/case-types/**/search-inputs*', async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({ searchInputs: workbasketInputs.searchInputs ?? [] }),
-    });
-  });
-
-  await page.route('**/data/internal/searchCases*', async (route) => {
-    if (options.searchResponseHandler) {
-      await options.searchResponseHandler(route);
-      return;
-    }
-
-    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(options.searchResponse) });
-  });
-}
-
-async function clearPersistedCaseListState(page: Page): Promise<void> {
-  await page.addInitScript(() => {
-    window.localStorage.removeItem('savedQueryParams');
-    window.localStorage.removeItem('workbasket-filter-form-group-value');
-  });
-}
-
-function getExpectedResultsSummary(totalResults: number, pageNumber: number, pageSize: number = PAGE_SIZE): string {
-  const startResult = (pageNumber - 1) * pageSize + 1;
-  const endResult = Math.min(totalResults, pageNumber * pageSize);
-  return `Showing ${startResult} to ${endResult} of ${totalResults} results`;
-}
-
-async function waitForSearchCasesRequest(
-  page: Page,
-  expected: {
-    page: number;
-  }
-) {
-  const request = await page.waitForRequest((candidate) => {
-    const requestUrl = new URL(candidate.url());
-    return requestUrl.pathname === '/data/internal/searchCases' && requestUrl.searchParams.get('page') === String(expected.page);
-  });
-
-  const requestUrl = new URL(request.url());
-  return {
-    ctid: requestUrl.searchParams.get('ctid') ?? '',
-    useCase: requestUrl.searchParams.get('use_case') ?? '',
-    view: requestUrl.searchParams.get('view') ?? '',
-    page: requestUrl.searchParams.get('page') ?? '',
-  };
-}
-
-async function expectCaseListRows(caseListPage, tableUtils, mock: CaseListMockResponse): Promise<void> {
-  const table = await tableUtils.parseDataTable(caseListPage.exuiCaseListComponent.caseListTable);
-  expect(table).toHaveLength(mock.results.length);
-
-  for (let i = 0; i < mock.results.length; i++) {
-    const expectedFields = mock.results[i].case_fields;
-    expect(table[i]['Case reference']).toBe(expectedFields['[CASE_REFERENCE]']);
-    expect(table[i]['Text Field 0']).toBe(expectedFields['TextField0']);
-    expect(table[i]['Text Field 1']).toBe(expectedFields['TextField1']);
-    expect(table[i]['Text Field 2']).toBe(expectedFields['TextField2']);
-  }
-}
-
-async function expectCaseListSummary(caseListPage, totalResults: number, pageNumber: number): Promise<void> {
-  await expect(caseListPage.caseListResultsAmount).toHaveText(getExpectedResultsSummary(totalResults, pageNumber, PAGE_SIZE));
-}
-
-async function expectPaginationState(
-  caseListPage,
-  options: {
-    currentPage: number;
-    previousVisible: boolean;
-    nextVisible?: boolean;
-    paginationVisible?: boolean;
-    finalItem?: string;
-  }
-): Promise<void> {
-  if (options.paginationVisible !== undefined) {
-    if (options.paginationVisible) {
-      await expect(caseListPage.pagination).toBeVisible();
-    } else {
-      await expect(caseListPage.pagination).toBeHidden();
-      return;
-    }
-  }
-
-  await expect(caseListPage.paginationCurrentPage).toContainText(String(options.currentPage));
-  if (options.previousVisible) {
-    await expect(caseListPage.paginationPrevious).toBeVisible();
-  } else {
-    await expect(caseListPage.paginationPrevious).not.toBeVisible();
-  }
-
-  if (options.nextVisible !== undefined) {
-    if (options.nextVisible) {
-      await expect(caseListPage.paginationNext).toBeVisible();
-    } else {
-      await expect(caseListPage.paginationNext).not.toBeVisible();
-    }
-  }
-
-  if (options.finalItem) {
-    expect(await caseListPage.getPaginationFinalItem()).toBe(options.finalItem);
-  }
-}
 
 test.beforeEach(async ({ page }) => {
   await applySessionCookies(page, userIdentifier);
@@ -247,31 +110,25 @@ test.describe(`Case List as ${userIdentifier}`, { tag: ['@integration', '@integr
       finalItem: 'Next',
     });
 
-    const pageTwoSearchRequestPromise = waitForSearchCasesRequest(page, { page: 2 });
-    await caseListPage.clickPaginationPage(2);
-    const pageTwoSearchRequest = await pageTwoSearchRequestPromise;
-    expect(pageTwoSearchRequest).toEqual({
-      ctid: 'xuiTestJurisdiction',
-      useCase: 'WORKBASKET',
-      view: 'WORKBASKET',
-      page: '2',
+    await navigateToPageAndAssertResults(page, caseListPage, tableUtils, {
+      targetPage: 2,
+      expectedRequest: {
+        ...defaultSearchCasesRequestParams,
+        page: '2',
+      },
+      expectedMock: pageTwoMock,
+      pagination: { currentPage: 2, previousVisible: true, nextVisible: true },
     });
 
-    await expectPaginationState(caseListPage, { currentPage: 2, previousVisible: true, nextVisible: true });
-    await expectCaseListRows(caseListPage, tableUtils, pageTwoMock);
-
-    const pageFourSearchRequestPromise = waitForSearchCasesRequest(page, { page: 4 });
-    await caseListPage.clickPaginationPage(4);
-    const pageFourSearchRequest = await pageFourSearchRequestPromise;
-    expect(pageFourSearchRequest).toEqual({
-      ctid: 'xuiTestJurisdiction',
-      useCase: 'WORKBASKET',
-      view: 'WORKBASKET',
-      page: '4',
+    await navigateToPageAndAssertResults(page, caseListPage, tableUtils, {
+      targetPage: 4,
+      expectedRequest: {
+        ...defaultSearchCasesRequestParams,
+        page: '4',
+      },
+      expectedMock: pageFourMock,
+      pagination: { currentPage: 4, previousVisible: true, nextVisible: false },
     });
-    await expectPaginationState(caseListPage, { currentPage: 4, previousVisible: true, nextVisible: false });
-    await expectCaseListSummary(caseListPage, totalResults, 4);
-    await expectCaseListRows(caseListPage, tableUtils, pageFourMock);
   });
 
   test(`User ${userIdentifier} can view more than 10000 cases on the case list page`, async ({
@@ -299,7 +156,6 @@ test.describe(`Case List as ${userIdentifier}`, { tag: ['@integration', '@integr
 
     await caseListPage.navigateTo();
 
-    const totalPages = Math.ceil(totalResults / PAGE_SIZE);
     await expect(caseListPage.caseListResultsLimitWarning).toContainText(
       'The total size of the result set is 10,000. Only the first 10,000 records are available for display.'
     );
@@ -311,27 +167,16 @@ test.describe(`Case List as ${userIdentifier}`, { tag: ['@integration', '@integr
       paginationVisible: true,
       finalItem: 'Next',
     });
-    const visiblePageNumbers = await caseListPage.getVisiblePaginationPageNumbers();
-    const visibleIntermediatePageNumbers = visiblePageNumbers.slice(1, -1);
 
-    expect(visiblePageNumbers[0]).toBe(1);
-    expect(visiblePageNumbers.at(-1)).toBe(totalPages);
-    expect(visibleIntermediatePageNumbers).toEqual(
-      Array.from({ length: visibleIntermediatePageNumbers.length }, (_, index) => index + 2)
-    );
-    const pageFourHundredSearchRequestPromise = waitForSearchCasesRequest(page, { page: 400 });
-    await caseListPage.clickPaginationPage(400);
-    const pageFourHundredSearchRequest = await pageFourHundredSearchRequestPromise;
-    expect(pageFourHundredSearchRequest).toEqual({
-      ctid: 'xuiTestJurisdiction',
-      useCase: 'WORKBASKET',
-      view: 'WORKBASKET',
-      page: '400',
+    await navigateToPageAndAssertResults(page, caseListPage, tableUtils, {
+      targetPage: 400,
+      expectedRequest: {
+        ...defaultSearchCasesRequestParams,
+        page: '400',
+      },
+      expectedMock: pageFourHundredMock,
+      pagination: { currentPage: 400, previousVisible: true, nextVisible: false },
     });
-
-    await expectPaginationState(caseListPage, { currentPage: 400, previousVisible: true, nextVisible: false });
-    await expectCaseListSummary(caseListPage, totalResults, 400);
-    await expectCaseListRows(caseListPage, tableUtils, pageFourHundredMock);
   });
 
   test(`User ${userIdentifier} can view case with optional data missing where fields are optional`, async ({
@@ -343,6 +188,7 @@ test.describe(`Case List as ${userIdentifier}`, { tag: ['@integration', '@integr
     const pageOneMock = buildCaseListMockWithOptionalFieldsForPage(totalResults, 1, PAGE_SIZE);
     const pageTwoMock = buildCaseListMockWithOptionalFieldsForPage(totalResults, 2, PAGE_SIZE);
     const pageFourMock = buildCaseListMockWithOptionalFieldsForPage(totalResults, 4, PAGE_SIZE);
+
     await setupCaseListMocks(page, {
       searchResponseHandler: async (route) => {
         const requestUrl = new URL(route.request().url());
@@ -368,31 +214,25 @@ test.describe(`Case List as ${userIdentifier}`, { tag: ['@integration', '@integr
       finalItem: 'Next',
     });
 
-    const pageTwoSearchRequestPromise = waitForSearchCasesRequest(page, { page: 2 });
-    await caseListPage.clickPaginationPage(2);
-    const pageTwoSearchRequest = await pageTwoSearchRequestPromise;
-    expect(pageTwoSearchRequest).toEqual({
-      ctid: 'xuiTestJurisdiction',
-      useCase: 'WORKBASKET',
-      view: 'WORKBASKET',
-      page: '2',
+    await navigateToPageAndAssertResults(page, caseListPage, tableUtils, {
+      targetPage: 2,
+      expectedRequest: {
+        ...defaultSearchCasesRequestParams,
+        page: '2',
+      },
+      expectedMock: pageTwoMock,
+      pagination: { currentPage: 2, previousVisible: true, nextVisible: true },
     });
 
-    await expectPaginationState(caseListPage, { currentPage: 2, previousVisible: true, nextVisible: true });
-    await expectCaseListRows(caseListPage, tableUtils, pageTwoMock);
-
-    const pageFourSearchRequestPromise = waitForSearchCasesRequest(page, { page: 4 });
-    await caseListPage.clickPaginationPage(4);
-    const pageFourSearchRequest = await pageFourSearchRequestPromise;
-    expect(pageFourSearchRequest).toEqual({
-      ctid: 'xuiTestJurisdiction',
-      useCase: 'WORKBASKET',
-      view: 'WORKBASKET',
-      page: '4',
+    await navigateToPageAndAssertResults(page, caseListPage, tableUtils, {
+      targetPage: 4,
+      expectedRequest: {
+        ...defaultSearchCasesRequestParams,
+        page: '4',
+      },
+      expectedMock: pageFourMock,
+      pagination: { currentPage: 4, previousVisible: true, nextVisible: false },
     });
-    await expectPaginationState(caseListPage, { currentPage: 4, previousVisible: true, nextVisible: false });
-    await expectCaseListSummary(caseListPage, totalResults, 4);
-    await expectCaseListRows(caseListPage, tableUtils, pageFourMock);
   });
 
   test(`User ${userIdentifier} can filter by multiple states and see the expected case list`, async ({
@@ -400,16 +240,17 @@ test.describe(`Case List as ${userIdentifier}`, { tag: ['@integration', '@integr
     tableUtils,
     page,
   }) => {
-    const jurisdictions = buildCaseListSubmittedStateJurisdictionsMock();
+    const jurisdictions = buildCaseListJurisdictionsMock();
     const workbasketInputs = buildCaseListStateFilterInputsMock();
-    const statesToVerify = ['Any', ...CASE_LIST_SUBMITTED_STATE_OPTIONS];
-    const stateMocks = new Map(statesToVerify.map((state) => [state, buildCaseListMockForState(state)]));
+    const statesToVerify = ['Any', ...CASE_LIST_STATE_FILTER_OPTIONS];
+    const stateMocks = new Map(statesToVerify.map((state) => [state, buildCaseListMockForDefaultState(state)]));
 
     await clearPersistedCaseListState(page);
     await setupCaseListMocks(page, {
       searchResponseHandler: async (route) => {
         const requestUrl = new URL(route.request().url());
         const state = requestUrl.searchParams.get('state') ?? 'Any';
+
         await route.fulfill({
           status: 200,
           contentType: 'application/json',
@@ -421,42 +262,29 @@ test.describe(`Case List as ${userIdentifier}`, { tag: ['@integration', '@integr
     });
 
     await caseListPage.navigateTo();
-    await caseListPage.searchByJurisdiction(CASE_LIST_SUBMITTED_STATE_JURISDICTION_LABEL);
-    await caseListPage.searchByCaseType(CASE_LIST_SUBMITTED_STATE_CASE_TYPE_LABEL);
+    await caseListPage.searchByJurisdiction('Family Divorce');
+    await caseListPage.searchByCaseType('XUI Case PoC');
     await expect(caseListPage.stateSelect).toBeVisible();
 
     for (const state of statesToVerify) {
       await test.step(`Apply the ${state} filter and verify the request and case list`, async () => {
         await caseListPage.searchByState(state);
-
-        const stateSearchRequest = page.waitForRequest((request) => {
-          if (!request.url().includes('/data/internal/searchCases')) {
-            return false;
-          }
-
-          const requestUrl = new URL(request.url());
-          if (state === 'Any') {
-            return !requestUrl.searchParams.has('state') || requestUrl.searchParams.get('state') === '';
-          }
-
-          return requestUrl.searchParams.get('state') === state;
+        const stateSearchRequestPromise = waitForSearchCasesRequest(page, {
+          page: 1,
+          state: state === 'Any' ? undefined : state,
+          allowEmptyState: state === 'Any',
         });
 
         await caseListPage.applyFilters();
-        const stateSearchRequestUrl = new URL((await stateSearchRequest).url());
+        const stateSearchRequest = await stateSearchRequestPromise;
         const stateMock = stateMocks.get(state)!;
         const expectedUniqueReference = stateMock.results[0].case_fields['[CASE_REFERENCE]'];
 
-        expect.soft(stateSearchRequestUrl.pathname).toContain('/data/internal/searchCases');
-        expect.soft(stateSearchRequestUrl.searchParams.get('ctid')).toBe('CARE_SUPERVISION_EPO');
-        expect.soft(stateSearchRequestUrl.searchParams.get('use_case')).toBe('WORKBASKET');
-        expect.soft(stateSearchRequestUrl.searchParams.get('view')).toBe('WORKBASKET');
-        if (state === 'Any') {
-          expect.soft(stateSearchRequestUrl.searchParams.get('state')).toBeFalsy();
-        } else {
-          expect.soft(stateSearchRequestUrl.searchParams.get('state')).toBe(state);
-        }
-        expect.soft(stateSearchRequestUrl.searchParams.get('page')).toBe('1');
+        expectSearchCasesRequest(stateSearchRequest, {
+          ...defaultSearchCasesRequestParams,
+          page: '1',
+          state: state === 'Any' ? null : state,
+        });
 
         await expectCaseListSummary(caseListPage, stateMock.total, 1);
         await expectCaseListRows(caseListPage, tableUtils, stateMock);

@@ -7,6 +7,7 @@
  * ```
  */
 export * from './caseSearchMockRoutes.helper';
+export * from './caseList.helper';
 export * from './caseFileViewMockRoutes.helper';
 export * from './caseLinkingMockRoutes.helper';
 export { applySessionCookies } from '../../common/sessionCapture';

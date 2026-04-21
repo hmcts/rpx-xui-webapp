@@ -93,29 +93,29 @@ export class CaseListPage extends Base {
   private async selectDropdownOption(select: Locator, optionValueOrLabel: string): Promise<void> {
     await select.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
 
-    await this.page.waitForFunction(
-      ({ selector, optionValueOrLabel: target }) => {
-        const element = document.querySelector(selector);
+    const deadline = Date.now() + EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE;
+    let matchingOption: { value: string; label: string } | null = null;
+
+    while (Date.now() < deadline) {
+      matchingOption = await select.evaluate((element, target) => {
         if (!(element instanceof HTMLSelectElement)) {
-          return false;
+          return null;
         }
 
-        return Array.from(element.options).some((option) => option.value === target || option.label.trim() === target);
-      },
-      { selector: await select.evaluate((element) => `#${(element as HTMLSelectElement).id}`), optionValueOrLabel },
-      { timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE }
-    );
+        const options = Array.from(element.options).map((option) => ({
+          value: option.value,
+          label: option.label.trim(),
+        }));
 
-    const availableOptions = await select.evaluate((element) =>
-      Array.from((element as HTMLSelectElement).options).map((option) => ({
-        value: option.value,
-        label: option.label.trim(),
-      }))
-    );
+        return options.find((option) => option.value === target || option.label === target) ?? null;
+      }, optionValueOrLabel);
 
-    const matchingOption = availableOptions.find(
-      (option) => option.value === optionValueOrLabel || option.label === optionValueOrLabel
-    );
+      if (matchingOption) {
+        break;
+      }
+
+      await this.page.waitForTimeout(100);
+    }
 
     if (!matchingOption) {
       throw new Error(`Dropdown option "${optionValueOrLabel}" was not available.`);
@@ -193,26 +193,6 @@ export class CaseListPage extends Base {
   async getPaginationFinalItem(): Promise<string | undefined> {
     const items = (await this.pagination.locator('li').allTextContents()).map((i) => i.trim());
     return items.at(-1);
-  }
-
-  async getVisiblePaginationPageNumbers(): Promise<number[]> {
-    const paginationItems = this.pagination.locator('li');
-    const itemCount = await paginationItems.count();
-    const visiblePageNumbers = new Set<number>();
-
-    for (let index = 0; index < itemCount; index += 1) {
-      const item = paginationItems.nth(index);
-      if (!(await item.isVisible().catch(() => false))) {
-        continue;
-      }
-
-      const digitMatches = ((await item.textContent()) ?? '').match(/\d+/g) ?? [];
-      for (const match of digitMatches) {
-        visiblePageNumbers.add(Number(match));
-      }
-    }
-
-    return Array.from(visiblePageNumbers).sort((first, second) => first - second);
   }
 
   private async getVisiblePaginationPageControl(pageNumber: number): Promise<Locator> {

@@ -1,19 +1,6 @@
 import { faker } from '@faker-js/faker';
 
-export const CASE_LIST_SUBMITTED_STATE_JURISDICTION_ID = 'PUBLICLAW';
-export const CASE_LIST_SUBMITTED_STATE_JURISDICTION_LABEL = 'Public Law';
-export const CASE_LIST_SUBMITTED_STATE_CASE_TYPE_ID = 'CARE_SUPERVISION_EPO';
-export const CASE_LIST_SUBMITTED_STATE_CASE_TYPE_LABEL = 'Public Law Applications';
-export const CASE_LIST_SUBMITTED_STATE_OPTIONS = [
-  'Open',
-  'Submitted',
-  'Gatekeeping',
-  'Gatekeeping Listing',
-  'Case management',
-  'Final hearing',
-  'Closed',
-  'Returned',
-];
+export const CASE_LIST_STATE_FILTER_OPTIONS = ['CaseCreated', 'Submitted', 'InReview', 'Closed'];
 
 function buildTextFieldType() {
   return {
@@ -107,7 +94,7 @@ export function buildCaseListMock(rowCount: number = 2) {
   const maxResults = 25;
   const now = new Date();
   const results = Array.from({ length: Math.min(rowCount, maxResults) }, () => {
-    const caseReference = `#${faker.number.int({ min: 1000, max: 9999 })}-${faker.number.int({ min: 1000, max: 9999 })}-${faker.number.int({ min: 1000, max: 9999 })}-${faker.number.int({ min: 1000, max: 9999 })}`;
+    const caseReference = `${faker.number.int({ min: 1000, max: 9999 })}-${faker.number.int({ min: 1000, max: 9999 })}-${faker.number.int({ min: 1000, max: 9999 })}-${faker.number.int({ min: 1000, max: 9999 })}`;
 
     // Generate dates: created < last state modified < last modified
     const createdDate = faker.date.between({
@@ -155,14 +142,14 @@ export function buildCaseListMockForPage(totalResults: number, pageNumber: numbe
   return mock;
 }
 
-export function buildCaseListMockForState(state: string) {
+export function buildCaseListMockForDefaultState(state: string) {
   const normalizedState = state === 'Any' ? 'Any' : state;
   const mock = buildCaseListMock(25);
 
   mock.results.forEach((result) => {
     result.case_fields['[STATE]'] = normalizedState === 'Any' ? 'CaseCreated' : normalizedState;
-    result.case_fields['[JURISDICTION]'] = CASE_LIST_SUBMITTED_STATE_JURISDICTION_ID;
-    result.case_fields['[CASE_TYPE]'] = CASE_LIST_SUBMITTED_STATE_CASE_TYPE_ID;
+    result.case_fields['[JURISDICTION]'] = 'DIVORCE';
+    result.case_fields['[CASE_TYPE]'] = 'xuiTestJurisdiction';
   });
 
   mock.total = 100;
@@ -197,28 +184,7 @@ export function buildCaseListJurisdictionsMock() {
         {
           id: 'xuiTestJurisdiction',
           name: 'XUI Case PoC',
-          states: [
-            {
-              id: 'CaseCreated',
-              name: 'Case Created',
-            },
-          ],
-        },
-      ],
-    },
-  ];
-}
-
-export function buildCaseListSubmittedStateJurisdictionsMock() {
-  return [
-    {
-      id: CASE_LIST_SUBMITTED_STATE_JURISDICTION_ID,
-      name: CASE_LIST_SUBMITTED_STATE_JURISDICTION_LABEL,
-      caseTypes: [
-        {
-          id: CASE_LIST_SUBMITTED_STATE_CASE_TYPE_ID,
-          name: CASE_LIST_SUBMITTED_STATE_CASE_TYPE_LABEL,
-          states: CASE_LIST_SUBMITTED_STATE_OPTIONS.map((state) => ({
+          states: CASE_LIST_STATE_FILTER_OPTIONS.map((state) => ({
             id: state,
             name: state,
           })),
@@ -232,7 +198,7 @@ export function buildCaseListStateFilterInputsMock() {
   const stateInput = buildWorkbasketInput(
     'State',
     'state',
-    buildFixedListFieldType('FixedList-state', 'FixedList', ['Any', ...CASE_LIST_SUBMITTED_STATE_OPTIONS])
+    buildFixedListFieldType('FixedList-state', 'FixedList', ['Any', ...CASE_LIST_STATE_FILTER_OPTIONS])
   );
   const textFieldInput = buildWorkbasketInput('Case name', 'TextField0', buildTextFieldType());
   const regionInput = buildWorkbasketInput(

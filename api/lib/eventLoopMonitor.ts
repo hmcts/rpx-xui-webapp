@@ -35,15 +35,19 @@ const activeRequests = new Map<string, TrackedRequest>();
 let requestSequence = 0;
 let monitorStarted = false;
 
+function getNumberConfigValue(reference: string): number {
+  return Number(getConfigValue<string | number>(reference));
+}
+
 function getMonitorConfig(): EventLoopMonitorConfig {
   return {
     debugEnabled: getConfigValue<boolean>(EVENT_LOOP_MONITOR_DEBUG_ENABLED),
     enabled: getConfigValue<boolean>(EVENT_LOOP_MONITOR_ENABLED),
-    maxTrackedRequests: getConfigValue<number>(EVENT_LOOP_MONITOR_MAX_TRACKED_REQUESTS),
-    resolutionMs: getConfigValue<number>(EVENT_LOOP_MONITOR_RESOLUTION_MS),
-    sampleIntervalMs: getConfigValue<number>(EVENT_LOOP_MONITOR_SAMPLE_INTERVAL_MS),
-    slowRequestThresholdMs: getConfigValue<number>(EVENT_LOOP_MONITOR_SLOW_REQUEST_THRESHOLD_MS),
-    warnThresholdMs: getConfigValue<number>(EVENT_LOOP_MONITOR_WARN_THRESHOLD_MS),
+    maxTrackedRequests: getNumberConfigValue(EVENT_LOOP_MONITOR_MAX_TRACKED_REQUESTS),
+    resolutionMs: getNumberConfigValue(EVENT_LOOP_MONITOR_RESOLUTION_MS),
+    sampleIntervalMs: getNumberConfigValue(EVENT_LOOP_MONITOR_SAMPLE_INTERVAL_MS),
+    slowRequestThresholdMs: getNumberConfigValue(EVENT_LOOP_MONITOR_SLOW_REQUEST_THRESHOLD_MS),
+    warnThresholdMs: getNumberConfigValue(EVENT_LOOP_MONITOR_WARN_THRESHOLD_MS),
   };
 }
 

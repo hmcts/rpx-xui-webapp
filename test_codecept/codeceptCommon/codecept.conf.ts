@@ -151,7 +151,6 @@ const CODECEPT_OUT = path.resolve(
 
 const CUKE_OUT = path.resolve(__dirname, '../../functional-output/tests/codecept-' + testType);
 fs.mkdirSync(CUKE_OUT, { recursive: true });
-clearLegacyCucumberArtifacts(CUKE_OUT);
 const CUCUMBER_REPORT_FILE = path.join(CUKE_OUT, 'cucumber_report.html');
 
 const debugMode = process.env.DEBUG?.includes('true') ?? false;
@@ -195,6 +194,12 @@ const hasNoSelectableNgIntegrationScenarios =
 console.log(grepTags);
 if (testType === 'ngIntegration') {
   console.log(`Selected ngIntegration scenarios for @${tags}: ${selectedNgIntegrationScenarioCount}`);
+}
+
+function prepareNgIntegrationLegacyArtifacts() {
+  if (testType === 'ngIntegration') {
+    clearLegacyCucumberArtifacts(CUKE_OUT);
+  }
 }
 
 exports.config = {
@@ -268,12 +273,16 @@ exports.config = {
       users: [],
       reuseCounter: 0,
     });
+    if (!parallel) {
+      prepareNgIntegrationLegacyArtifacts();
+    }
     if (!parallel && testType !== 'smoke') {
       // smoke tests are run in serial even with PARALLEL=true
       await setup();
     }
   },
   bootstrapAll: async () => {
+    prepareNgIntegrationLegacyArtifacts();
     globalThis.scenarioData = {};
     await import(path.resolve(__dirname, './hooks.js')); // 🟢 Will now run your hook IIFE immediately
 

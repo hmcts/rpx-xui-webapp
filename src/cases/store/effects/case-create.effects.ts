@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { filter, map } from 'rxjs/operators';
+import { EMPTY, of } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
 import { LoggerService } from '../../../app/services/logger/logger.service';
 import * as fromRoot from '../../../app/store';
 import * as fromActions from '../actions';
@@ -20,7 +21,7 @@ export class CaseCreateEffects {
     this.actions$.pipe(
       ofType(fromActions.CREATE_CASE_FILTER_APPLY),
       map((action: fromActions.CaseCreateFilterApply) => action.payload),
-      map((param) => {
+      mergeMap((param) => {
         if (
           this.decentralisedRedirectService.tryEventRedirect({
             caseType: param.caseTypeId,
@@ -29,14 +30,15 @@ export class CaseCreateEffects {
             isCaseCreate: true,
           })
         ) {
-          return null;
+          return EMPTY;
         }
 
-        return new fromRoot.Go({
-          path: [`/cases/case-create/${param.jurisdictionId}/${param.caseTypeId}/${param.eventId}`],
-        });
-      }),
-      filter((action): action is fromRoot.Go => action !== null)
+        return of(
+          new fromRoot.Go({
+            path: [`/cases/case-create/${param.jurisdictionId}/${param.caseTypeId}/${param.eventId}`],
+          })
+        );
+      })
     )
   );
 

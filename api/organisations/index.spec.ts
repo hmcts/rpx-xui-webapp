@@ -67,7 +67,7 @@ describe('Organisations API', () => {
       await handleGetOrganisationsRoute(req, res, next);
 
       expect(getConfigValueStub).to.have.been.calledWith(SERVICES_PRD_API_URL);
-      expect(handleGetStub).to.have.been.calledWith(expectedPath, req, next);
+      expect(handleGetStub).to.have.been.calledWith(expectedPath, req);
       expect(res.send).to.have.been.calledWith(mockOrganisations);
       expect(next).to.not.have.been.called;
     });
@@ -84,7 +84,7 @@ describe('Organisations API', () => {
       await handleGetOrganisationsRoute(req, res, next);
 
       expect(getConfigValueStub).to.have.been.calledWith(SERVICES_PRD_API_URL);
-      expect(handleGetStub).to.have.been.calledWith(expectedPath, req, next);
+      expect(handleGetStub).to.have.been.calledWith(expectedPath, req);
       expect(res.send).to.have.been.calledWith(mockData);
       expect(next).to.not.have.been.called;
     });
@@ -96,7 +96,7 @@ describe('Organisations API', () => {
       await handleGetOrganisationsRoute(req, res, next);
 
       expect(getConfigValueStub).to.have.been.calledWith(SERVICES_PRD_API_URL);
-      expect(handleGetStub).to.have.been.calledWith(expectedPath, req, next);
+      expect(handleGetStub).to.have.been.calledWith(expectedPath, req);
       expect(next).to.have.been.calledWith(error);
       expect(res.send).to.not.have.been.called;
     });
@@ -183,7 +183,7 @@ describe('Organisations API', () => {
       await handleOrganisationRoute(req, res);
 
       expect(getConfigValueStub).to.have.been.calledWith(SERVICES_PRD_API_URL);
-      expect(handleGetStub).to.have.been.calledWith(expectedPath, req, sinon.match.func);
+      expect(handleGetStub).to.have.been.calledWith(expectedPath, req);
       expect(res.send).to.have.been.calledWith(mockData);
       expect(res.status).to.not.have.been.called;
     });
@@ -389,7 +389,7 @@ describe('Organisations API', () => {
 
       await handleGetOrganisationsRoute(req, res, next);
 
-      expect(handleGetStub).to.have.been.calledWith(expectedPath, req, next);
+      expect(handleGetStub).to.have.been.calledWith(expectedPath, req);
     });
 
     it('should use different PRD API URL when configuration changes', async () => {
@@ -401,7 +401,7 @@ describe('Organisations API', () => {
 
       await handleGetOrganisationsRoute(req, res, next);
 
-      expect(handleGetStub).to.have.been.calledWith(expectedPath, req, next);
+      expect(handleGetStub).to.have.been.calledWith(expectedPath, req);
     });
   });
 
@@ -412,9 +412,8 @@ describe('Organisations API', () => {
 
       getConfigValueStub.withArgs(SERVICES_PRD_API_URL).returns(mockPrdApiUrl);
 
-      handleGetStub.callsFake((path, req, errorCallback) => {
-        errorCallback(testError);
-        return Promise.reject(testError);
+      handleGetStub.callsFake(() => {
+        throw testError;
       });
 
       existsStub.withArgs(testError, 'data.message').returns(null);

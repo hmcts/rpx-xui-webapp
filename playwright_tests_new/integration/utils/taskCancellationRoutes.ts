@@ -1,4 +1,5 @@
 import type { Page, Route } from '@playwright/test';
+import { setupManageTasksBaseRoutes } from '../helpers';
 
 export type CancellationScenario = {
   scenario: string;
@@ -86,18 +87,20 @@ export async function routeMyTaskActionFlow(
         actions: actions.filter((action) => action?.id !== actionId),
       };
 
-  await page.route(/\/workallocation\/task(?:\?.*)?$/, async (route: Route) => {
-    if (route.request().method() !== 'POST') {
-      await route.fallback();
-      return;
-    }
+  await setupManageTasksBaseRoutes(page, {
+    taskListHandler: async (route: Route) => {
+      if (route.request().method() !== 'POST') {
+        await route.fallback();
+        return;
+      }
 
-    const tasks = actionInvoked ? [] : [taskWithActions];
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({ tasks, total_records: tasks.length }),
-    });
+      const tasks = actionInvoked ? [] : [taskWithActions];
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ tasks, total_records: tasks.length }),
+      });
+    },
   });
 
   await page.route(`**/workallocation/task/${taskId}/roles*`, async (route: Route) => {

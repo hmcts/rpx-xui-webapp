@@ -78,7 +78,7 @@ export function handleRequest(proxyReq, req, res) {
 }
 
 // Handle responses being sent back to the client
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 export function handleResponse(proxyRes, req, res) {
   if (isLegacyBinaryDocumentRequest(req) && isTextHtmlResponse(proxyRes)) {
     applyLegacyHtmlCsp(res);

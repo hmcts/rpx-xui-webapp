@@ -1181,7 +1181,6 @@ describe('HearingsUtils', () => {
   describe('determineDateOption', () => {
     // We need to access the private method for testing
     const determineDateOption = (hearingWindow: HearingWindowModel | undefined) => {
-      // eslint-disable-next-line dot-notation
       return HearingsUtils['determineDateOption'](hearingWindow);
     };
 

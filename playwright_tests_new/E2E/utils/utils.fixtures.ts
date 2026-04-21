@@ -17,6 +17,8 @@ import { config, Config } from './config.utils.js';
 import { CookieUtils } from './cookie.utils.js';
 import { ValidatorUtils } from './validator.utils.js';
 import { UserUtils } from './user.utils.js';
+import { ProfessionalUserUtils } from './professional-user.utils.js';
+import { logger } from './logger.utils.js';
 
 export interface UtilsFixtures {
   config: Config;
@@ -33,6 +35,8 @@ export interface UtilsFixtures {
   localeUtils: LocaleUtils;
   serviceAuthUtils: ServiceAuthUtils;
   userUtils: UserUtils;
+  professionalUserUtils: ProfessionalUserUtils;
+  logger: typeof logger;
 }
 
 export const utilsFixtures = {
@@ -109,7 +113,7 @@ export const utilsFixtures = {
       await context.close();
       try {
         fs.rmSync(userDataDir, { recursive: true, force: true });
-      } catch (error) {
+      } catch {
         // Best-effort cleanup; avoid test failure if temp removal fails.
       }
     } else {
@@ -126,5 +130,14 @@ export const utilsFixtures = {
       // no-op: keep the destructured arg in use to satisfy lint rules
     }
     await use(new UserUtils());
+  },
+  professionalUserUtils: async ({ idamUtils, serviceAuthUtils }, use) => {
+    await use(new ProfessionalUserUtils(idamUtils, serviceAuthUtils));
+  },
+  logger: async ({ page }, use) => {
+    if (page) {
+      // no-op: keep the destructured arg in use to satisfy Playwright fixture signature and lint/Sonar
+    }
+    await use(logger);
   },
 };

@@ -1,3 +1,4 @@
+import { Location as StateLocation } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
@@ -85,6 +86,7 @@ describe('AllWorkCaseComponent', () => {
     allocateRoleService = {},
     httpClient = {},
     store = {},
+    stateLocation = {},
 
     checkReleaseVersionService = {},
   }) =>
@@ -104,7 +106,8 @@ describe('AllWorkCaseComponent', () => {
       jurisdictionsService as JurisdictionsService,
       allocateRoleService as AllocateRoleService,
       httpClient as HttpClient,
-      store as Store<fromActions.State>
+      store as Store<fromActions.State>,
+      stateLocation as StateLocation
     );
 
   const cases: Case[] = getMockCases();

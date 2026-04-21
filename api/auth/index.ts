@@ -94,6 +94,7 @@ export const getXuiNodeMiddleware = async () => {
   };
 
   //TODO: we can move these out into proper config at some point to tidy up even further
+  // EXUI-3967 - above needs to be looked at further as unclear on best approach at this time
   const options: AuthOptions = {
     allowRolesRegex: getConfigValue(LOGIN_ROLE_MATCHER),
     authorizationURL: authorizationUrl,

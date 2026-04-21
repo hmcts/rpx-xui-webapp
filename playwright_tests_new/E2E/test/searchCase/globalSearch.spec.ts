@@ -4,7 +4,7 @@ import { resolveCaseReferenceFromGlobalSearch } from '../../../E2E/utils/case-re
 import { openHomeWithCapturedSession, PUBLIC_LAW_CASE_REFERENCE_OPTIONS } from './searchCase.setup';
 import { CCD_CASE_REFERENCE_LENGTH } from '../../page-objects/pages/exui/exui-timeouts';
 
-test.describe('IDAM login using credentials for Global Search', () => {
+test.describe('IDAM login using credentials for Global Search', { tag: ['@e2e', '@e2e-search-case'] }, () => {
   let availableCaseReference = '';
   test.beforeAll(async () => {
     await ensureSession('FPL_GLOBAL_SEARCH');

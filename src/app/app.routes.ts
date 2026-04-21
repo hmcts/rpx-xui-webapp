@@ -64,7 +64,7 @@ export const ROUTES: Routes = [
     canActivate: [AuthGuard, AcceptTermsGuard],
     loadChildren: () => import('../role-access/role-access.module').then((m) => m.RoleAccessModule),
   },
-  // TODO: remove redundant redirections
+  // TODO: remove redundant redirections - EXUI-3967 - needs further checks
   {
     path: 'case/:jurisdiction/:case-type/:cid',
     redirectTo: 'cases/case-details/:jurisdiction/:caseType/:cid',
@@ -226,7 +226,7 @@ export const ROUTES: Routes = [
     path: 'query-management',
     canActivate: [AuthGuard, AcceptTermsGuard],
     loadChildren: () => import('../cases/cases.module').then((m) => m.CasesModule),
-    // TODO Define feature toggle
+    // EXUI-3967 - Feature toggle guard can be added here if required
   },
   {
     path: '**',

@@ -154,7 +154,9 @@ export async function expectCaseListSummary(caseListPage: CaseListPage, totalRes
   const startResult = (pageNumber - 1) * PAGE_SIZE + 1;
   const endResult = Math.min(totalResults, pageNumber * PAGE_SIZE);
 
-  await expect(caseListPage.caseListResultsAmount).toHaveText(`Showing ${startResult} to ${endResult} of ${totalResults} results`);
+  await expect(caseListPage.caseListResultsAmount).toHaveText(
+    `Showing ${startResult} to ${endResult} of ${totalResults} results`
+  );
 }
 
 export async function expectPaginationState(

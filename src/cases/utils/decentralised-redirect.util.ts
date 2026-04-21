@@ -71,7 +71,11 @@ const getDecentralisedBaseUrl = (baseUrls: DecentralisedCaseTypeBaseUrls, caseTy
     return null;
   }
 
-  return resolvedUrl.replace(/\/+$/, '');
+  let trimmedUrl = resolvedUrl;
+  while (trimmedUrl.endsWith('/')) {
+    trimmedUrl = trimmedUrl.slice(0, -1);
+  }
+  return trimmedUrl;
 };
 
 export const getExpectedSubFromUserDetails = (userInfoStr?: string | null): string | null => {

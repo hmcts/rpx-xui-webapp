@@ -170,12 +170,8 @@ function buildLogContext(config: any, startTime: Date): LogContext {
   };
 }
 
-function buildLogPrefix(context: LogContext, extras: { durationMs?: number; event: string; status?: number } ): string {
-  const parts = [
-    `event=${extras.event}`,
-    `datetime=${context.callDateTime}`,
-    `outboundId=${context.outboundId}`,
-  ];
+function buildLogPrefix(context: LogContext, extras: { durationMs?: number; event: string; status?: number }): string {
+  const parts = [`event=${extras.event}`, `datetime=${context.callDateTime}`, `outboundId=${context.outboundId}`];
 
   if (context.method) {
     parts.push(`method=${context.method}`);
@@ -241,7 +237,9 @@ export function successInterceptor(response) {
   const logContext = response.config.metadata.logContext || buildLogContext(response.config, response.config.metadata.startTime);
   const status = response.status;
 
-  logger.info(`${buildLogPrefix(logContext, { durationMs: response.duration, event: 'response', status })} Success on ${response.config.method.toUpperCase()} to ${url}`);
+  logger.info(
+    `${buildLogPrefix(logContext, { durationMs: response.duration, event: 'response', status })} Success on ${response.config.method.toUpperCase()} to ${url}`
+  );
   logger.trackRequest({
     duration: response.duration,
     name: `Service ${response.config.method.toUpperCase()} call`,

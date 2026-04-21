@@ -20,7 +20,7 @@ describe('decentralised-event-redirect.util', () => {
         eventId: 'ext:fooEvent',
         queryParams: { tid: 'task-1', foo: 'bar' },
       },
-      { PCS: 'https://pcs-frontend.service.gov.uk' },
+      { PCS: { baseUrl: 'https://pcs-frontend.service.gov.uk' } },
       'user-123'
     );
 
@@ -38,7 +38,7 @@ describe('decentralised-event-redirect.util', () => {
         eventId: 'ext:createCase',
         isCaseCreate: true,
       },
-      { PCS: 'https://pcs-frontend.service.gov.uk' },
+      { PCS: { baseUrl: 'https://pcs-frontend.service.gov.uk' } },
       'user-456'
     );
 
@@ -54,7 +54,7 @@ describe('decentralised-event-redirect.util', () => {
         isCaseCreate: false,
         eventId: 'standardEvent',
       },
-      { PCS: 'https://pcs-frontend.service.gov.uk' },
+      { PCS: { baseUrl: 'https://pcs-frontend.service.gov.uk' } },
       'user-123'
     );
 
@@ -70,7 +70,7 @@ describe('decentralised-event-redirect.util', () => {
         isCaseCreate: false,
         eventId: 'ext:fooEvent',
       } as any,
-      { PCS: 'https://pcs-frontend.service.gov.uk' },
+      { PCS: { baseUrl: 'https://pcs-frontend.service.gov.uk' } },
       'user-123'
     );
 
@@ -87,8 +87,8 @@ describe('decentralised-event-redirect.util', () => {
         eventId: 'ext:fooEvent',
       },
       {
-        pre: 'https://one.test',
-        prefix: 'https://two.test',
+        pre: { baseUrl: 'https://one.test' },
+        prefix: { baseUrl: 'https://two.test' },
       },
       'user-123'
     );
@@ -106,7 +106,7 @@ describe('decentralised-event-redirect.util', () => {
         eventId: 'ext:fooEvent',
       },
       {
-        PCS_PR_: 'https://pcs-xui-pr-%s.preview.platform',
+        PCS_PR_: { baseUrl: 'https://pcs-xui-pr-%s.preview.platform' },
       },
       'user-123'
     );
@@ -121,11 +121,25 @@ describe('decentralised-event-redirect.util', () => {
         caseType: 'PCS',
         caseId: '1234567890',
       },
-      { PCS: 'https://pcs-frontend.service.gov.uk/' },
+      { PCS: { baseUrl: 'https://pcs-frontend.service.gov.uk/' } },
       'user-123'
     );
 
     expect(url).toBe('https://pcs-frontend.service.gov.uk/noc?caseId=1234567890&expected_sub=user-123');
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+  });
+
+  it('should return null for decentralised noc when noc is disabled for the case type', () => {
+    const url = buildDecentralisedNocUrl(
+      {
+        caseType: 'PCS',
+        caseId: '1234567890',
+      },
+      { PCS: { baseUrl: 'https://pcs-frontend.service.gov.uk/', nocRedirectEnabled: false } },
+      'user-123'
+    );
+
+    expect(url).toBeNull();
     expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
 
@@ -135,7 +149,7 @@ describe('decentralised-event-redirect.util', () => {
         caseType: 'UNMATCHED',
         caseId: '1234567890',
       },
-      { PCS: 'https://pcs-frontend.service.gov.uk' },
+      { PCS: { baseUrl: 'https://pcs-frontend.service.gov.uk' } },
       'user-123'
     );
 
@@ -152,8 +166,8 @@ describe('decentralised-event-redirect.util', () => {
         eventId: 'ext:fooEvent',
       },
       {
-        ab: 'https://one.test',
-        AB: 'https://two.test',
+        ab: { baseUrl: 'https://one.test' },
+        AB: { baseUrl: 'https://two.test' },
       },
       'user-123'
     );
@@ -171,7 +185,7 @@ describe('decentralised-event-redirect.util', () => {
         eventId: 'ext:fooEvent',
       },
       {
-        PCS_PR_: 'https://%s.%s.preview.platform',
+        PCS_PR_: { baseUrl: 'https://%s.%s.preview.platform' },
       },
       'user-123'
     );
@@ -189,7 +203,7 @@ describe('decentralised-event-redirect.util', () => {
         eventId: 'ext:fooEvent',
       },
       {
-        PCS_PR_: 'https://pcs-xui-pr-%s.preview.platform',
+        PCS_PR_: { baseUrl: 'https://pcs-xui-pr-%s.preview.platform' },
       },
       'user-123'
     );

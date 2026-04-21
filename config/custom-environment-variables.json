@@ -145,8 +145,8 @@
     "__name": "SERVICE_REF_DATA_MAPPING",
     "__format": "json"
   },
-  "decentralisedCaseTypeBaseUrls": {
-    "__name": "DECENTRALISED_CASE_TYPE_BASE_URLS",
+  "decentralisedCaseTypeConfig": {
+    "__name": "DECENTRALISED_CASE_TYPE_CONFIG",
     "__format": "json"
   },
   "log4JConfig": {

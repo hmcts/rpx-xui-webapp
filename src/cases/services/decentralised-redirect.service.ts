@@ -23,7 +23,7 @@ export class DecentralisedRedirectService {
     return this.redirect(
       buildDecentralisedEventUrl(
         params,
-        this.environmentService.get('decentralisedCaseTypeBaseUrls'),
+        this.environmentService.get('decentralisedCaseTypeConfig'),
         getExpectedSubFromUserDetails(this.sessionStorageService.getItem('userDetails'))
       )
     );
@@ -33,7 +33,7 @@ export class DecentralisedRedirectService {
     return this.redirect(
       buildDecentralisedNocUrl(
         params,
-        this.environmentService.get('decentralisedCaseTypeBaseUrls'),
+        this.environmentService.get('decentralisedCaseTypeConfig'),
         getExpectedSubFromUserDetails(this.sessionStorageService.getItem('userDetails'))
       )
     );

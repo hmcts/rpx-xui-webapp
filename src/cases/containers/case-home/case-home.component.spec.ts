@@ -172,7 +172,7 @@ describe('CaseHomeComponent', () => {
   describe('decentralised event redirect', () => {
     it('should redirect and avoid dispatch when a decentralised event is triggered', () => {
       mockEnvironmentService.get.and.returnValue({
-        PCS: 'https://pcs-frontend.service.gov.uk',
+        PCS: { baseUrl: 'https://pcs-frontend.service.gov.uk' },
       });
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify({ id: 'user-123' }));
 

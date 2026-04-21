@@ -1,7 +1,5 @@
 import { Params } from '@angular/router';
-import type { EnvironmentConfig } from '../../models/environmentConfig.model';
-
-type DecentralisedCaseTypeBaseUrls = EnvironmentConfig['decentralisedCaseTypeBaseUrls'];
+import type { DecentralisedCaseTypeConfig, DecentralisedCaseTypeConfigMap } from '../../models/environmentConfig.model';
 
 const DECENTRALISED_EVENT_PREFIX = 'ext:';
 const TEMPLATE_PLACEHOLDER = '%s';
@@ -37,13 +35,16 @@ const resolveUrlTemplate = (params: { template: string; prefix: string; caseType
   return template.replace(TEMPLATE_PLACEHOLDER, suffix);
 };
 
-const getDecentralisedBaseUrl = (baseUrls: DecentralisedCaseTypeBaseUrls, caseType?: string): string | null => {
-  if (!baseUrls || !caseType || caseType.trim().length === 0) {
+const getDecentralisedCaseTypeConfig = (
+  caseTypeConfig: DecentralisedCaseTypeConfigMap,
+  caseType?: string
+): DecentralisedCaseTypeConfig | null => {
+  if (!caseTypeConfig || !caseType || caseType.trim().length === 0) {
     return null;
   }
 
   const lowerCaseType = caseType.toLowerCase();
-  const matchingPrefixes = Object.keys(baseUrls).filter((prefix) => lowerCaseType.startsWith(prefix.toLowerCase()));
+  const matchingPrefixes = Object.keys(caseTypeConfig).filter((prefix) => lowerCaseType.startsWith(prefix.toLowerCase()));
   if (matchingPrefixes.length === 0) {
     return null;
   }
@@ -61,12 +62,12 @@ const getDecentralisedBaseUrl = (baseUrls: DecentralisedCaseTypeBaseUrls, caseTy
   }
 
   const prefix = longestMatches[0];
-  const template = baseUrls[prefix];
-  if (!template) {
+  const config = caseTypeConfig[prefix];
+  if (!config?.baseUrl) {
     return null;
   }
 
-  const resolvedUrl = resolveUrlTemplate({ template, prefix, caseType });
+  const resolvedUrl = resolveUrlTemplate({ template: config.baseUrl, prefix, caseType });
   if (!resolvedUrl) {
     return null;
   }
@@ -75,7 +76,7 @@ const getDecentralisedBaseUrl = (baseUrls: DecentralisedCaseTypeBaseUrls, caseTy
   while (trimmedUrl.endsWith('/')) {
     trimmedUrl = trimmedUrl.slice(0, -1);
   }
-  return trimmedUrl;
+  return { ...config, baseUrl: trimmedUrl };
 };
 
 export const getExpectedSubFromUserDetails = (userInfoStr?: string | null): string | null => {
@@ -133,15 +134,15 @@ export interface BuildDecentralisedNocUrlInput {
 
 export const buildDecentralisedEventUrl = (
   params: BuildDecentralisedEventUrlInput,
-  baseUrls: DecentralisedCaseTypeBaseUrls,
+  caseTypeConfig: DecentralisedCaseTypeConfigMap,
   expectedSub?: string
 ): string | null => {
   if (!isDecentralisedEvent(params.eventId)) {
     return null;
   }
 
-  const baseUrl = getDecentralisedBaseUrl(baseUrls, params.caseType);
-  if (!baseUrl) {
+  const config = getDecentralisedCaseTypeConfig(caseTypeConfig, params.caseType);
+  if (!config) {
     return null;
   }
 
@@ -159,16 +160,16 @@ export const buildDecentralisedEventUrl = (
   }
 
   const queryString = searchParams.toString();
-  return queryString ? `${baseUrl}${eventPath}?${queryString}` : `${baseUrl}${eventPath}`;
+  return queryString ? `${config.baseUrl}${eventPath}?${queryString}` : `${config.baseUrl}${eventPath}`;
 };
 
 export const buildDecentralisedNocUrl = (
   params: BuildDecentralisedNocUrlInput,
-  baseUrls: DecentralisedCaseTypeBaseUrls,
+  caseTypeConfig: DecentralisedCaseTypeConfigMap,
   expectedSub?: string
 ): string | null => {
-  const baseUrl = getDecentralisedBaseUrl(baseUrls, params.caseType);
-  if (!baseUrl) {
+  const config = getDecentralisedCaseTypeConfig(caseTypeConfig, params.caseType);
+  if (!config || config.nocRedirectEnabled === false) {
     return null;
   }
 
@@ -178,5 +179,5 @@ export const buildDecentralisedNocUrl = (
     searchParams.set('expected_sub', expectedSub);
   }
 
-  return `${baseUrl}${DECENTRALISED_NOC_PATH}?${searchParams.toString()}`;
+  return `${config.baseUrl}${DECENTRALISED_NOC_PATH}?${searchParams.toString()}`;
 };

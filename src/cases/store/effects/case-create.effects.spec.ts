@@ -92,7 +92,7 @@ describe('CaseCreate Effects', () => {
 
     it('should redirect when decentralised case-create event is configured', async () => {
       mockEnvironmentService.get.and.returnValue({
-        PCS: 'https://pcs-frontend.service.gov.uk',
+        PCS: { baseUrl: 'https://pcs-frontend.service.gov.uk' },
       });
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify({ id: 'user-123' }));
 

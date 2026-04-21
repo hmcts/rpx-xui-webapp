@@ -106,7 +106,7 @@ export const WILDCARD_SEARCH_FIELDS = 'wildcardSearchFields';
 
 export const WILDCARD_SEARCH_ROLES = 'wildcardSearchRoles';
 
-export const DECENTRALISED_CASE_TYPE_BASE_URLS = 'decentralisedCaseTypeBaseUrls';
+export const DECENTRALISED_CASE_TYPE_CONFIG = 'decentralisedCaseTypeConfig';
 
 export const IDAM_SECRET = 'secrets.rpx.mc-idam-client-secret';
 

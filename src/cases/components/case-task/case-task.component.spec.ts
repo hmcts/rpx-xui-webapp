@@ -177,8 +177,8 @@ describe('CaseTaskComponent', () => {
       warnings: true,
       permissions: ['Own', 'Execute', 'Manage'],
     };
-    component.task = task as Task;
-    expect(component.task.description).toBe(
+    const result = CaseTaskComponent.replaceVariablesWithRealValues(task);
+    expect(result).toBe(
       `[Link the appeal](/cases/case-details/1620409659381330/trigger/linkAppeal/linkAppealreasonForLinkAppealPageId?tid=${task.id})`
     );
   });

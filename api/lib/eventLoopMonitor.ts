@@ -55,6 +55,11 @@ function toMilliseconds(valueInNanoseconds: number): number {
   return Number((valueInNanoseconds / 1_000_000).toFixed(1));
 }
 
+function toPositiveInteger(value: string | number, fallback: number): number {
+  const parsed = Number.parseInt(String(value), 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
 function summariseActiveRequests(maxTrackedRequests: number) {
   return [...activeRequests.values()]
     .sort((left, right) => left.startedAt - right.startedAt)
@@ -93,8 +98,12 @@ function startEventLoopMonitor(config: EventLoopMonitorConfig) {
     return;
   }
 
-  const histogram = monitorEventLoopDelay({ resolution: config.resolutionMs });
+  const resolutionMs = toPositiveInteger(config.resolutionMs, 20);
+  const sampleIntervalMs = toPositiveInteger(config.sampleIntervalMs, 5000);
+  const warnThresholdMs = toPositiveInteger(config.warnThresholdMs, 1000);
+  const maxTrackedRequests = toPositiveInteger(config.maxTrackedRequests, 5);
   let lastElu = performance.eventLoopUtilization();
+  const histogram = monitorEventLoopDelay({ resolution: resolutionMs });
 
   histogram.enable();
   monitorStarted = true;
@@ -106,7 +115,7 @@ function startEventLoopMonitor(config: EventLoopMonitorConfig) {
     const elu = performance.eventLoopUtilization(lastElu);
     lastElu = elu;
 
-    if (maxMs >= config.warnThresholdMs || p99Ms >= config.warnThresholdMs) {
+    if (maxMs >= warnThresholdMs || p99Ms >= warnThresholdMs) {
       const payload: Record<string, unknown> = {
         activeRequestCount: activeRequests.size,
         event: 'node_event_loop_latency',
@@ -114,19 +123,19 @@ function startEventLoopMonitor(config: EventLoopMonitorConfig) {
         maxMs,
         meanMs,
         p99Ms,
-        sampleIntervalMs: config.sampleIntervalMs,
-        thresholdMs: config.warnThresholdMs,
+        sampleIntervalMs,
+        thresholdMs: warnThresholdMs,
       };
 
       if (config.debugEnabled) {
-        payload.activeRequests = summariseActiveRequests(config.maxTrackedRequests);
+        payload.activeRequests = summariseActiveRequests(maxTrackedRequests);
       }
 
       logger.warn(JSON.stringify(payload));
     }
 
     histogram.reset();
-  }, config.sampleIntervalMs).unref();
+  }, sampleIntervalMs).unref();
 }
 
 export function initialiseEventLoopMonitor(app: Application) {

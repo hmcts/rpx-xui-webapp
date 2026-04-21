@@ -20,32 +20,31 @@ export class DecentralisedRedirectService {
   ) {}
 
   public tryEventRedirect(params: BuildDecentralisedEventUrlInput): boolean {
-    const redirectUrl = buildDecentralisedEventUrl(
-      params,
-      this.environmentService.get('decentralisedCaseTypeBaseUrls'),
-      getExpectedSubFromUserDetails(this.sessionStorageService.getItem('userDetails'))
+    return this.redirect(
+      buildDecentralisedEventUrl(
+        params,
+        this.environmentService.get('decentralisedCaseTypeBaseUrls'),
+        getExpectedSubFromUserDetails(this.sessionStorageService.getItem('userDetails'))
+      )
     );
-
-    if (redirectUrl) {
-      this.window.location.assign(redirectUrl);
-      return true;
-    }
-
-    return false;
   }
 
   public tryNocRedirect(params: BuildDecentralisedNocUrlInput): boolean {
-    const redirectUrl = buildDecentralisedNocUrl(
-      params,
-      this.environmentService.get('decentralisedCaseTypeBaseUrls'),
-      getExpectedSubFromUserDetails(this.sessionStorageService.getItem('userDetails'))
+    return this.redirect(
+      buildDecentralisedNocUrl(
+        params,
+        this.environmentService.get('decentralisedCaseTypeBaseUrls'),
+        getExpectedSubFromUserDetails(this.sessionStorageService.getItem('userDetails'))
+      )
     );
+  }
 
-    if (redirectUrl) {
-      this.window.location.assign(redirectUrl);
-      return true;
+  private redirect(url: string | null): boolean {
+    if (!url) {
+      return false;
     }
 
-    return false;
+    this.window.location.assign(url);
+    return true;
   }
 }

@@ -57,8 +57,7 @@ export class CaseTaskComponent implements OnInit {
 
   @Input()
   public set task(value: Task) {
-    const expectedSub = getExpectedSubFromUserDetails(this.sessionStorageService.getItem('userDetails'));
-    value.description = CaseTaskComponent.replaceVariablesWithRealValues(value, expectedSub);
+    value.description = this.replaceVariablesWithRealValues(value);
     this.pTask = value;
     this.isTaskUrgent = this.pTask.major_priority <= PriorityLimits.Urgent ? true : false;
   }
@@ -71,10 +70,12 @@ export class CaseTaskComponent implements OnInit {
    */
   @Output() public taskRefreshRequired: EventEmitter<void> = new EventEmitter();
 
-  public static replaceVariablesWithRealValues(task: Task, expectedSub?: string | null): string {
+  private replaceVariablesWithRealValues(task: Task): string {
     if (!task.description) {
       return '';
     }
+
+    const expectedSub = getExpectedSubFromUserDetails(this.sessionStorageService.getItem('userDetails'));
 
     // Allow decentralised services to substitute the user idam id for session mismatch detection.
     if (expectedSub) {

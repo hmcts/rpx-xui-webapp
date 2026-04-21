@@ -57,7 +57,7 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
       const isRedirected =
         navigation.action === NavigationOrigin.EVENT_TRIGGERED &&
         this.decentralisedRedirectService.tryEventRedirect({
-          caseType: navigation.relativeTo.snapshot.params.caseType ?? navigation.relativeTo.data?.value?.case?.case_type?.id,
+          caseType: navigation.relativeTo.snapshot.params.caseType ?? navigation.relativeTo.snapshot.data?.case?.case_type?.id,
           eventId: navigation.etid,
           caseId: navigation.relativeTo.snapshot.params.cid,
           queryParams: navigation.queryParams,
@@ -118,8 +118,8 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
             'cases',
             'case-details',
             navigation.relativeTo.snapshot.params.jurisdiction ??
-              navigation.relativeTo.data?.value?.case?.case_type?.jurisdiction?.id,
-            navigation.relativeTo.snapshot.params.caseType ?? navigation.relativeTo.data?.value?.case?.case_type?.id,
+              navigation.relativeTo.snapshot.data?.case?.case_type?.jurisdiction?.id,
+            navigation.relativeTo.snapshot.params.caseType ?? navigation.relativeTo.snapshot.data?.case?.case_type?.id,
             navigation.relativeTo.snapshot.params.cid,
             'trigger',
             navigation.etid,

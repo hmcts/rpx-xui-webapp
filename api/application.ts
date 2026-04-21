@@ -27,7 +27,6 @@ import routes from './routes';
 import workAllocationRouter from './workAllocation/routes';
 import { idamCheck } from './idamCheck';
 import { MC_CSP } from './interfaces/csp-config';
-import { getNewUsersByServiceName } from './workAllocation';
 
 function resolveStaticRoot(): string {
   const buildRoot = path.join(__dirname, '..');

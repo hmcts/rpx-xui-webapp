@@ -219,9 +219,6 @@ const getScenarioGrantedAccess = (record: WorkAllocationAccessScenarioRecord): b
   return getMyAccessHasAccess(record);
 };
 
-const getNonExcludedAccessRecords = (records: WorkAllocationAccessScenarioRecord[]): WorkAllocationAccessScenarioRecord[] =>
-  records.filter((record) => record.grantType !== 'EXCLUDED');
-
 const getMyAccessScenarioRecords = (records: WorkAllocationAccessScenarioRecord[]): WorkAllocationAccessScenarioRecord[] =>
   records.filter((record) => record.grantType === 'SPECIFIC' || record.grantType === 'CHALLENGED');
 
@@ -368,7 +365,7 @@ export function buildEntityToUsersAccessView(
   judicialUsers: ScenarioJudicialUser[];
 } {
   const caseRecords = records.filter((record) => record.caseId === caseId);
-  const activeRoles = getNonExcludedAccessRecords(caseRecords).map(toCaseRole);
+  const activeRoles = caseRecords.filter(getScenarioGrantedAccess).map(toCaseRole);
   const exclusions = caseRecords.filter((record) => record.grantType === 'EXCLUDED').map(toRoleExclusion);
 
   return {

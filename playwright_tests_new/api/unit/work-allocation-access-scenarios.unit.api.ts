@@ -299,4 +299,31 @@ test.describe('work allocation access scenario helper', { tag: '@svc-internal' }
       }),
     ]);
   });
+
+  test('does not include requested or denied records in the entity->users active roles view', () => {
+    const response = buildEntityToUsersAccessView(
+      [
+        ...scenarioRecords,
+        {
+          ...scenarioRecords[0],
+          assignmentId: 'assignment-alice-case-100-requested',
+          caseId: '1000000000000001',
+          myAccessRole: 'specific-access-requested',
+          hasAccess: false,
+        },
+        {
+          ...scenarioRecords[0],
+          assignmentId: 'assignment-alice-case-100-denied',
+          caseId: '1000000000000001',
+          myAccessRole: 'specific-access-denied',
+          hasAccess: false,
+        },
+      ],
+      '1000000000000001'
+    );
+
+    expect(response.roles).toHaveLength(2);
+    expect(response.roles.map((role) => role.id)).toEqual(['assignment-alice-case-100', 'assignment-judge-case-100']);
+    expect(response.exclusions).toHaveLength(1);
+  });
 });

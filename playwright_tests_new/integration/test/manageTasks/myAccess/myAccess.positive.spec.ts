@@ -1,12 +1,12 @@
 import { expect, test } from '../../../../E2E/fixtures';
-import { applyPrewarmedSessionCookies, setupMyAccessRoutes } from '../../../helpers';
+import { applySessionCookies, setupMyAccessRoutes } from '../../../helpers';
 import { buildMyAccessCases, buildMyAccessMock } from '../../../mocks/myAccess.mock';
 import { formatUiDate } from '../../../utils/tableUtils';
 
 const userIdentifier = 'STAFF_ADMIN';
 
 test.beforeEach(async ({ page }) => {
-  await applyPrewarmedSessionCookies(page, userIdentifier);
+  await applySessionCookies(page, userIdentifier);
 });
 
 test.describe(`My Access as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {

@@ -2,6 +2,7 @@
   <!-- The background color is dynamic so that we can change the background color of the navigation,
    dependent on the User. -->
   <div [ngStyle]="{ 'background-color': backgroundColor }">
+    <div id="top" tabindex="-1" aria-hidden="true"></div>
     <a [href]="currentUrl?.split('#')[0] + contentHash" class="govuk-skip-link">{{ 'Skip to main content' | rpxTranslate }}</a>
 
     <exui-hmcts-global-header

@@ -57,7 +57,6 @@ test.describe(
   () => {
     test('shows both legal-ops and judicial users and resolves judicial users from ref-data', async ({
       caseDetailsPage,
-      caseListPage,
       searchCasePage,
       page,
       tableUtils,
@@ -69,7 +68,7 @@ test.describe(
       });
 
       await test.step('Search for restricted case from quick search', async () => {
-        await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, caseListPage, searchCasePage);
+        await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, searchCasePage);
       });
 
       await test.step('Verify restricted access page construction elements', async () => {
@@ -124,7 +123,6 @@ test.describe(
 
     test('shows only legal-ops users and does not call judicial lookup when not needed', async ({
       caseDetailsPage,
-      caseListPage,
       searchCasePage,
       page,
       tableUtils,
@@ -139,7 +137,7 @@ test.describe(
         throw new Error('Judicial lookup API should not be called for legal-ops-only scenario');
       });
 
-      await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, caseListPage, searchCasePage);
+      await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, searchCasePage);
 
       await expect(page).toHaveURL(new RegExp(`/cases/restricted-case-access/${VALID_SEARCH_CASE_REFERENCE}`));
       await expect(caseDetailsPage.restrictedAccessContainer).toBeVisible();
@@ -161,7 +159,6 @@ test.describe(
 
     test('shows only judicial users when role-access returns judicial entries only', async ({
       caseDetailsPage,
-      caseListPage,
       searchCasePage,
       page,
       tableUtils,
@@ -171,7 +168,7 @@ test.describe(
         caseworkersBody: [],
       });
 
-      await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, caseListPage, searchCasePage);
+      await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, searchCasePage);
 
       await expect(page).toHaveURL(new RegExp(`/cases/restricted-case-access/${VALID_SEARCH_CASE_REFERENCE}`));
       await expect(caseDetailsPage.restrictedAccessContainer).toBeVisible();
@@ -202,7 +199,6 @@ test.describe(
 
     test('does not call judicial lookup when judicial users are already resolved by caseworker API', async ({
       caseDetailsPage,
-      caseListPage,
       searchCasePage,
       page,
       tableUtils,
@@ -219,7 +215,7 @@ test.describe(
         throw new Error('Judicial lookup API should not be called when judicial users are resolved by caseworker API');
       });
 
-      await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, caseListPage, searchCasePage);
+      await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, searchCasePage);
 
       await expect(page).toHaveURL(new RegExp(`/cases/restricted-case-access/${VALID_SEARCH_CASE_REFERENCE}`));
       await expect(caseDetailsPage.restrictedAccessContainer).toBeVisible();

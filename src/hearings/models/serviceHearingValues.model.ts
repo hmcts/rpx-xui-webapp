@@ -8,6 +8,8 @@ import { PartyFlagsModel } from './partyFlags.model';
 import { ScreenNavigationModel } from './screenNavigation.model';
 import { VocabularyModel } from './vocabulary.model';
 
+// Populated directly via getServiceHearingValues call with caseId and hearingId (only change done via api layer is for case flags and screenFlow)
+// Values gathered via service APIs
 export interface ServiceHearingValuesModel {
   hmctsServiceID: string;
   hmctsInternalCaseName: string;

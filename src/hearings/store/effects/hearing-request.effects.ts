@@ -71,6 +71,7 @@ export class HearingRequestEffects {
               return of(null); // Return an observable that emits null and then completes
             default:
               return from(
+                // Navigating back using caseInfo
                 this.router.navigate(['cases', 'case-details', this.jurisdiction, this.caseType, this.caseId, 'hearings'])
               );
           }
@@ -132,6 +133,7 @@ export class HearingRequestEffects {
 
             default:
               this.router
+                // CaseInfo used here
                 .navigate(['cases', 'case-details', this.jurisdiction, this.caseType, this.caseId, 'hearings'])
                 .catch((err) =>
                   this.loggerService.error('Error navigating to cases/case-details/jurisdiction/caseType/caseId/hearings ', err)

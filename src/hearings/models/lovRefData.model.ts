@@ -1,3 +1,4 @@
+// Populated via getLovRefData call with serviceId and categoryKey
 export interface LovRefDataModel {
   category_key: string;
   key: string;

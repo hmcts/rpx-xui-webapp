@@ -356,11 +356,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private setupForegroundSessionCheck(): void {
-    const foregroundEvents$ = merge(
-      fromEvent(window, 'focus'),
-      fromEvent(window, 'pageshow'),
-      fromEvent(window, 'online')
-    ).pipe(
+    const foregroundEvents$ = merge(fromEvent(window, 'focus'), fromEvent(window, 'pageshow'), fromEvent(window, 'online')).pipe(
       debounceTime(200)
     );
 

@@ -35,7 +35,7 @@ def archivePlaywrightDiagnostics = {
     '''
     steps.archiveArtifacts(
         allowEmptyArchive: true,
-        artifacts: 'functional-output/tests/**/odhin-report/**/*,test-results/**/*,functional-output/tests/playwright-diagnostics/failure-data/**/*,**/failure-data.json',
+        artifacts: 'functional-output/tests/**/odhin-report/**/*,functional-output/tests/playwright-diagnostics/failure-data/**/*',
         excludes: 'test-results/.playwright-artifacts-*/**,**/.playwright-artifacts-*/**'
     )
 }
@@ -135,22 +135,6 @@ withNightlyPipeline(type, product, component) {
             } catch (Error) {
               error(message: "${STAGE_NAME} is unstable: " + Error.toString())
             }  
-        }
-
-        stage('Codecept Integration Tests') {
-            try {
-                yarnBuilder.yarn('test:xuiIntegration')
-            } finally {
-                publishHTML([
-                    allowMissing         : true,
-                    alwaysLinkToLastBuild: true,
-                    keepAll              : true,
-                    reportDir            : 'functional-output/tests/codecept-ngIntegration/',
-                    reportFiles          : 'cucumber_report.html',
-                    reportName           : 'Codecept Integration Test'
-                ])
-                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
-            }
         }
 
         stage('Playwright Integration Tests') {

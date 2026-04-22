@@ -9,7 +9,7 @@ import {
   TimeoutNotificationsService,
 } from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { combineLatest, fromEvent, Subscription } from 'rxjs';
+import { combineLatest, fromEvent, merge, Subscription, debounceTime } from 'rxjs';
 import { propsExist } from '../../../../api/lib/objectUtilities';
 import { SessionStorageService } from '../../services';
 import { environment as config } from '../../../environments/environment';
@@ -356,7 +356,15 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   private setupForegroundSessionCheck(): void {
-    this.foregroundSessionSubscription = fromEvent(window, 'focus').subscribe(() => {
+    const foregroundEvents$ = merge(
+      fromEvent(window, 'focus'),
+      fromEvent(window, 'pageshow'),
+      fromEvent(window, 'online')
+    ).pipe(
+      debounceTime(200)
+    );
+
+    this.foregroundSessionSubscription = foregroundEvents$.subscribe(() => {
       this.revalidateSessionOnForeground();
     });
   }

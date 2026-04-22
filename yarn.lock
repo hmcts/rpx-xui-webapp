@@ -3371,9 +3371,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.51":
-  version: 7.3.51
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.51"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.49-4369":
+  version: 7.3.49-4369
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.49-4369"
   dependencies:
     "@angular-material-components/datetime-picker": "npm:16.0.1"
     "@angular-material-components/moment-adapter": "npm:16.0.1"
@@ -3411,7 +3411,7 @@ __metadata:
     ngx-pagination: "npm:6.0.3"
     pegjs: "npm:^0.10.0"
     prismjs: "npm:^1.30.0"
-    rpx-xui-translation: "npm:1.2.3"
+    rpx-xui-translation: "npm:1.2.0"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
     rxjs-compat: "npm:^6.6.7"
@@ -3420,7 +3420,7 @@ __metadata:
     yargs: "npm:17.7.2"
     yargs-parser: "npm:^21.1.1"
     zone.js: "npm:^0.15.1"
-  checksum: 10/6cc1a188c0159b9ff16603dd1a56b6dc0f279b7e4b5da5b1291e776bdabac4ec6bc3cf0e0be07523672a89619eeb7d01f417329f348bdd86469d9f58249165ba
+  checksum: 10/d116c9cf19b5390c476b56a5b0f9e8c37a9184b869a8701b061cd916a627c9060389b76f4c528e092dfc25e7373ee54a305be176c1f71de315499d43272c7d6b
   languageName: node
   linkType: hard
 
@@ -20801,7 +20801,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.5"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.51"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.49-4369"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.17"
@@ -20965,6 +20965,20 @@ __metadata:
     "@angular/common": ^20.3.1
     "@angular/core": ^20.3.1
   checksum: 10/82126cfbc5984c0e3718a173e8e29d35c18f56e01dbe10241b7bd3f17ce5df065421dffc030db0dc88ec807597aa5aadb55b3349c03ac8335dc44189886aec0a
+  languageName: node
+  linkType: hard
+
+"rpx-xui-translation@npm:1.2.0":
+  version: 1.2.0
+  resolution: "rpx-xui-translation@npm:1.2.0"
+  dependencies:
+    dexie: "npm:^3.2.2"
+    luxon: "npm:^2.4.0"
+    tslib: "npm:^2.0.0"
+  peerDependencies:
+    "@angular/common": ^20.3.1
+    "@angular/core": ^20.3.1
+  checksum: 10/5eea929cc08f8d089adc64790201fbb24c248c29e8a9fcc5d35eac70c0e9f47bce211dec291eddfece69a8ba0ee5ffbcac3a3e1fb749a316a47f3b6fed48e7ec
   languageName: node
   linkType: hard
 

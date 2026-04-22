@@ -3,6 +3,8 @@ import { Base } from '../../base';
 import { EXUI_TIMEOUTS, CCD_CASE_REFERENCE_LENGTH, CCD_CASE_REFERENCE_PATTERN } from './exui-timeouts';
 
 export class SearchCasePage extends Base {
+  private static readonly QUICK_SEARCH_OUTCOME_PROBE_MS = 10_000;
+
   // Locators
   readonly pageHeading = this.page.locator('main h1');
   // CSS class from HMCTS Design System - stable by design
@@ -47,6 +49,15 @@ export class SearchCasePage extends Base {
       await findButton.click({ force: true, timeout: EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK });
     }
     await this.waitForPostSearchSpinnerCycle();
+    const immediateOutcomeReached = await this.waitForImmediateSearchOutcome(SearchCasePage.QUICK_SEARCH_OUTCOME_PROBE_MS);
+    if (!immediateOutcomeReached && (await this.shouldRetrySearchSubmit(caseId))) {
+      this.logger.warn('Header quick-search produced no immediate outcome; retrying once', {
+        caseId,
+        currentUrl: this.page.url(),
+      });
+      await this.caseIdTextBox.press('Enter');
+      await this.waitForPostSearchSpinnerCycle();
+    }
   }
 
   /**
@@ -77,6 +88,34 @@ export class SearchCasePage extends Base {
       // Spinner never appeared - fast response, continue
       return;
     }
+  }
+
+  private async waitForImmediateSearchOutcome(timeoutMs: number): Promise<boolean> {
+    const urlBeforeSubmit = this.page.url();
+
+    return Promise.any([
+      this.page.waitForURL((url) => url.toString() !== urlBeforeSubmit, { timeout: timeoutMs }).then(() => true),
+      this.noResultsContainer.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => true),
+    ]).catch(() => false);
+  }
+
+  private async shouldRetrySearchSubmit(caseId: string): Promise<boolean> {
+    const currentUrl = this.page.url();
+    if (!/\/cases(?:[/?#]|$)/.test(currentUrl)) {
+      return false;
+    }
+
+    if (await this.noResultsContainer.isVisible().catch(() => false)) {
+      return false;
+    }
+
+    const inputVisible = await this.caseIdTextBox.isVisible().catch(() => false);
+    if (!inputVisible) {
+      return false;
+    }
+
+    const currentValue = await this.caseIdTextBox.inputValue().catch(() => '');
+    return currentValue === caseId;
   }
 
   constructor(page: Page) {

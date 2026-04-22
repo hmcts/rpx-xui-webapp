@@ -41,12 +41,17 @@ nodejs:
         - system-user-password
         - name: launch-darkly-client-id-preview
           alias: launch-darkly-client-id
+        - mc-session-secret
   autoscaling:
     enabled: false
   devmemoryRequests: 512Mi
-  devcpuRequests: 250m
+  devcpuRequests: 400m
   devmemoryLimits: 2Gi
   devcpuLimits: 2
+  livenessTimeout: 15
+  readinessTimeout: 15
+  livenessFailureThreshold: 10
+  readinessFailureThreshold: 10
 redis:
   enabled: true
   master:

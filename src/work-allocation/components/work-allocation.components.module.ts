@@ -22,7 +22,7 @@ import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsSer
     CommonModule,
     ExuiCommonLibModule,
     RouterModule,
-    FormsModule, // TODO: Remove this as it's only needed for testing.
+    FormsModule, // TODO: Remove this as it's only needed for testing. EXUI-3967 - Potential removal to be investigated
     PipesModule,
     WorkAllocationPipesModule,
     ReactiveFormsModule,

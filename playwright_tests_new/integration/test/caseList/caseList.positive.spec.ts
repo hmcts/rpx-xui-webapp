@@ -20,7 +20,7 @@ test.beforeEach(async ({ page }) => {
   });
 });
 
-test.describe(`Case List as ${userIdentifier}`, () => {
+test.describe(`Case List as ${userIdentifier}`, { tag: ['@integration', '@integration-case-list'] }, () => {
   test(`User ${userIdentifier} can view cases on the case list page`, async ({ caseListPage, tableUtils, page }) => {
     await test.step('Intercept searchCases endpoint and fulfill with mock body', async () => {
       await page.route('**/data/internal/searchCases*', async (route) => {

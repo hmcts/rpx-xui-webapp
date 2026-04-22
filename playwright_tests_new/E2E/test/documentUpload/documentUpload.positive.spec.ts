@@ -6,11 +6,13 @@ import { TEST_DATA } from './constants';
 import { expectCaseBanner } from '../../utils';
 import { createLogger } from '@hmcts/playwright-common';
 import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
+import { createDivorceCase } from '../../utils/test-setup/journeys/divorceCaseJourneys';
+import { createEmploymentCase, uploadEmploymentDraftDocument } from '../../utils/test-setup/journeys/employmentJourneys';
 
 const logger = createLogger({ serviceName: 'document-upload-tests', format: 'pretty' });
 const DOCUMENT_UPLOAD_SUBMIT_TIMEOUT_MS = 60_000;
 
-test.describe('Document upload V2', () => {
+test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, () => {
   test.describe.configure({ timeout: 120000 });
   let testValue: string;
   let caseNumber: string;
@@ -25,7 +27,7 @@ test.describe('Document upload V2', () => {
     logger.info('Generated test value', { testValue, worker: process.env.TEST_WORKER_INDEX });
 
     await ensureAuthenticatedPage(page, 'SOLICITOR', { waitForSelector: 'exui-header' });
-    await createCasePage.createDivorceCase(TEST_DATA.V2.JURISDICTION, TEST_DATA.V2.CASE_TYPE, testValue);
+    await createDivorceCase(createCasePage, TEST_DATA.V2.JURISDICTION, TEST_DATA.V2.CASE_TYPE, testValue);
     caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
     logger.info('Created divorce case', { caseNumber, testValue });
   });
@@ -135,7 +137,7 @@ test.describe('Document upload V2', () => {
   });
 });
 
-test.describe('Document upload V1', () => {
+test.describe('Document upload V1', { tag: ['@e2e', '@e2e-document-upload'] }, () => {
   test.describe.configure({ timeout: 120000 });
   let testValue: string;
   let testFileName: string;
@@ -152,7 +154,7 @@ test.describe('Document upload V1', () => {
     logger.info('Generated test values', { testValue, testFileName, worker: process.env.TEST_WORKER_INDEX });
 
     await ensureAuthenticatedPage(page, 'SEARCH_EMPLOYMENT_CASE', { waitForSelector: 'exui-header' });
-    await createCasePage.createCaseEmployment(TEST_DATA.V1.JURISDICTION, TEST_DATA.V1.CASE_TYPE);
+    await createEmploymentCase(createCasePage, TEST_DATA.V1.JURISDICTION, TEST_DATA.V1.CASE_TYPE);
     expect(await createCasePage.checkForErrorMessage(), 'Error message seen after creating employment case').toBe(false);
     caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
     logger.info('Created employment case', { caseNumber, testValue });
@@ -160,11 +162,13 @@ test.describe('Document upload V1', () => {
 
   test('Check the documentV1 upload works as expected', async ({ createCasePage, caseDetailsPage, tableUtils }) => {
     await test.step('Start document upload process', async () => {
-      await caseDetailsPage.selectCaseDetailsEvent(TEST_DATA.V1.ACTION);
+      await caseDetailsPage.selectCaseAction(TEST_DATA.V1.ACTION, {
+        expectedLocator: createCasePage.page.locator('#documentCollection button'),
+      });
     });
 
     await test.step('Upload a document to the case', async () => {
-      await createCasePage.uploadEmploymentFile(testFileName, TEST_DATA.V1.FILE_TYPE, TEST_DATA.V1.FILE_CONTENT);
+      await uploadEmploymentDraftDocument(createCasePage, testFileName, TEST_DATA.V1.FILE_TYPE, TEST_DATA.V1.FILE_CONTENT);
     });
 
     await test.step('Verify document was uploaded successfully', async () => {

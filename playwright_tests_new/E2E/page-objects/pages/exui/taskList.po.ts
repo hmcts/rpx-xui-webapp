@@ -1,4 +1,4 @@
-import { Locator, Page, Request } from '@playwright/test';
+import { expect, Locator, Page, Request } from '@playwright/test';
 import { Base } from '../../base';
 
 const TASK_LIST_READY_TIMEOUT_MS = 30_000;
@@ -50,6 +50,10 @@ export class TaskListPage extends Base {
     .first();
   readonly allWorkPersonSearchInput = this.filterPanel.getByRole('combobox', { name: /select a person/i }).first();
   readonly allWorkLocationSearchInput = this.filterPanel.locator('input[name="location"], input[id*="location"]').first();
+  readonly allWorkLocationSearchResults = this.page.locator('.cdk-overlay-container .mat-autocomplete-panel mat-option span');
+  readonly selectedLocationTags = this.filterPanel.locator(
+    '#locations xuilib-find-location .location-picker-custom .location-selection a'
+  );
   readonly allWorkCasesApplyPrompt = this.page.getByText('Please select filters and click Apply').first();
   readonly allWorkCasesEmptyMessage = this.page.getByText('Change your selection to view cases').first();
 
@@ -487,6 +491,24 @@ export class TaskListPage extends Base {
 
   async clearTypesOfWorkFilters() {
     await this.clearFilterGroup('types of work', this.selectAllTypesOfWorksFilter, this.typesOfWorkFilterCheckboxes);
+  }
+
+  async removeAllSelectedLocations() {
+    await this.openFilterPanel();
+    const initialSelectionCount = await this.selectedLocationTags.count();
+
+    for (let remainingSelections = initialSelectionCount; remainingSelections > 0; remainingSelections -= 1) {
+      await this.selectedLocationTags.nth(0).click();
+      await expect(this.selectedLocationTags).toHaveCount(remainingSelections - 1, {
+        timeout: FILTER_CONTROL_READY_TIMEOUT_MS,
+      });
+    }
+  }
+
+  async searchForLocation(searchText: string) {
+    await this.openFilterPanel();
+    await this.allWorkLocationSearchInput.clear();
+    await this.allWorkLocationSearchInput.type(searchText);
   }
 
   private async setFilterCheckbox(checkbox: Locator, checked: boolean, description: string, deadlineMs?: number) {

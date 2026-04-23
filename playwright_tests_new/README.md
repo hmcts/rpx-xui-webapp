@@ -319,7 +319,7 @@ API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
 ### API Test Parallelism
 
 - In CI, Playwright defaults to **8 workers** unless `FUNCTIONAL_TESTS_WORKERS` is set
-- Jenkins currently sets `FUNCTIONAL_TESTS_WORKERS=2` on Preview and `FUNCTIONAL_TESTS_WORKERS=4` on AAT for Playwright API, E2E, and integration runs
+- Jenkins currently pins `FUNCTIONAL_TESTS_WORKERS=4` for standard CI and nightly Playwright API, E2E, integration, and cross-browser runs
 - Locally, worker count is auto-sized from CPU capacity; override with `FUNCTIONAL_TESTS_WORKERS` or the Playwright `--workers` flag
 
 ### API Authentication Model
@@ -558,7 +558,7 @@ expect(visibleRows.length).toBeGreaterThan(0);
 - Multiple workers can safely request the same user session
 - **Filesystem-based lock mechanism** prevents concurrent logins for the same user
 - Locks coordinate across **all Playwright worker processes** (API + E2E) using `proper-lockfile`
-- Jenkins currently runs API, E2E, and integration suites with **2 workers** on Preview and **4 workers** on AAT
+- Jenkins currently runs API, E2E, and integration suites with **4 workers** on both Preview and AAT
 - When one worker logs in user X, the remaining workers **and parallel API tests** wait for lock release and reuse the session
 - After acquiring lock, workers recheck freshness to ensure session is still valid
 - `ensureSession()` intentionally avoids forced recapture so lock waiters can reuse the newly refreshed session instead of logging in again
@@ -724,8 +724,8 @@ npx playwright test --project chromium
 
 ```bash
 # Running simultaneously:
-npx playwright test --project chromium --workers=2  # Preview E2E tests
-npx playwright test --project node-api --workers=2  # Preview API tests
+npx playwright test --project chromium --workers=4  # Preview E2E tests
+npx playwright test --project node-api --workers=4  # Preview API tests
 
 # AAT:
 npx playwright test --project chromium --workers=4  # AAT E2E tests

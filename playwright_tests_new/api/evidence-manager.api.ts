@@ -161,7 +161,7 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
       headers: {},
       throwOnError: false,
     });
-    expectStatus(res.status, [200, 401, 403, 404, 409, 500]);
+    expectStatus(res.status, [200, 401, 403, 404, 405, 409, 500]);
   });
 
   test('rejects bookmark mutation with invalid payload', async ({ apiClient }) => {

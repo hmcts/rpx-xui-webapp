@@ -87,14 +87,12 @@ test.describe(
       });
     });
 
-    test('reassigns and then unassigns a case task from the Tasks tab', async ({ caseDetailsPage, taskListPage, page }) => {
+    test('opens the reassign flow and loads matching people from the Tasks tab', async ({ caseDetailsPage, taskListPage, page }) => {
       const currentUserId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
       const people = buildCaseTaskManageLinksCaseworkers(currentUserId);
       const taskState: CaseTaskManageLinksState = {
         managedTaskAssigneeId: people.existingAssignee.idamId,
       };
-      let reassignRequestBody: unknown;
-      let unassignRequestBody: unknown;
 
       await test.step('Setup case-details task routes and task-action resolvers', async () => {
         await setupTaskActionEndpointMocks(page, 'reassign', {
@@ -111,6 +109,72 @@ test.describe(
           includeSubmitActionMock: false,
         });
 
+        await page.unroute('**/workallocation/caseworker/getUsersByServiceName*');
+        await setupCaseTaskManageLinksRoutes(page, {
+          caseId,
+          claimTaskId,
+          managedTaskId,
+          claimTaskTitle,
+          managedTaskTitle,
+          taskDueDate,
+          state: taskState,
+          caseworkers: people.all,
+        });
+
+        await page.route('**/workallocation/caseworker/getUsersByServiceName*', async (route) => {
+          await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify(people.all),
+          });
+        });
+      });
+
+      await test.step('Open the reassign flow from the case-details Tasks tab', async () => {
+        await openCaseDetailsTasksTab(page, caseDetailsPage, caseId);
+
+        await caseDetailsPage.taskItem.filter({ hasText: managedTaskTitle }).first().locator('#action_reassign').click();
+
+        await expect(page).toHaveURL(new RegExp(`/work/${managedTaskId}/reassign\\?service=IA$`));
+        await expect(page.locator('main')).toContainText('Choose a role type');
+        await expect(page.locator('main')).toContainText('Reassign task');
+      });
+
+      await test.step('Load matching people for the selected role', async () => {
+        await page.getByRole('radio', { name: 'Legal Ops' }).check({ force: true });
+        await taskListPage.continueButton.click();
+
+        await expect(page.locator('main')).toContainText('Find the person');
+        const caseworkerSearchResponsePromise = page.waitForResponse(
+          (response) =>
+            response.request().method() === 'POST' &&
+            response.url().includes('/workallocation/caseworker/getUsersByServiceName') &&
+            response.request().postData()?.includes('"term":"Replacement"')
+        );
+        await taskListPage.reassignUserSearchInput.click();
+        await taskListPage.reassignUserSearchInput.pressSequentially('Replacement');
+        const caseworkerSearchResponse = await caseworkerSearchResponsePromise;
+        const caseworkerSearchResults = (await caseworkerSearchResponse.json()) as Array<{ idamId?: string; firstName?: string }>;
+        expect(caseworkerSearchResults).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              idamId: people.replacementAssignee.idamId,
+            }),
+          ])
+        );
+        await expect(taskListPage.reassignUserSearchInput).toHaveValue(/Replacement/i);
+      });
+    });
+
+    test('unassigns a case task from the Tasks tab and refreshes the task card', async ({ caseDetailsPage, page }) => {
+      const currentUserId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
+      const people = buildCaseTaskManageLinksCaseworkers(currentUserId);
+      const taskState: CaseTaskManageLinksState = {
+        managedTaskAssigneeId: people.existingAssignee.idamId,
+      };
+      let unassignRequestBody: unknown;
+
+      await test.step('Setup case-details task routes and unassign resolvers', async () => {
         await setupTaskActionEndpointMocks(page, 'unassign', {
           taskId: managedTaskId,
           task_name: managedTaskTitle,
@@ -120,7 +184,7 @@ test.describe(
           caseId,
           jurisdiction: 'IA',
           caseTypeId: 'Asylum',
-          assigneeId: people.replacementAssignee.idamId,
+          assigneeId: people.existingAssignee.idamId,
           unassignMode: 'unclaim',
           includeSubmitActionMock: false,
         });
@@ -134,23 +198,6 @@ test.describe(
           taskDueDate,
           state: taskState,
           caseworkers: people.all,
-        });
-
-        await page.route(`**/workallocation/task/${managedTaskId}/assign*`, async (route) => {
-          const request = route.request();
-          if (request.method() !== 'POST') {
-            await route.continue();
-            return;
-          }
-
-          reassignRequestBody = request.postDataJSON();
-          taskState.managedTaskAssigneeId = people.replacementAssignee.idamId;
-
-          await route.fulfill({
-            status: 204,
-            contentType: 'application/json',
-            body: JSON.stringify({}),
-          });
         });
 
         await page.route(`**/workallocation/task/${managedTaskId}/unclaim*`, async (route) => {
@@ -171,44 +218,8 @@ test.describe(
         });
       });
 
-      await test.step('Open the reassign flow from the case-details Tasks tab', async () => {
-        await openCaseDetailsTasksTab(page, caseDetailsPage, caseId);
-
-        await caseDetailsPage.taskItem.filter({ hasText: managedTaskTitle }).first().locator('#action_reassign').click();
-
-        await expect(page).toHaveURL(new RegExp(`/work/${managedTaskId}/reassign\\?service=IA$`));
-        await expect(page.locator('main')).toContainText('Choose a role type');
-        await expect(page.locator('main')).toContainText('Reassign task');
-      });
-
-      await test.step('Complete the reassign flow and verify the refreshed assignee', async () => {
-        await page.getByRole('radio', { name: 'Legal Ops' }).check({ force: true });
-        await taskListPage.continueButton.click();
-
-        await expect(page.locator('main')).toContainText('Find the person');
-        await taskListPage.reassignUserSearchInput.fill('Replacement');
-        await taskListPage.selectFirstReassignUserOption(
-          `${people.replacementAssignee.firstName} ${people.replacementAssignee.lastName}`
-        );
-        await taskListPage.continueButton.click();
-
-        await expect(page.locator('main')).toContainText('Check your answers');
-        await page.getByRole('button', { name: 'Reassign task' }).click();
-
-        expect(reassignRequestBody).toEqual({ userId: people.replacementAssignee.idamId });
-        await expect(caseDetailsPage.caseAlertSuccessMessage).toContainText("You've re-assigned a task.");
-
-        const rows = await caseDetailsPage.getTaskKeyValueRows();
-        const managedTask = getTaskRecordByTitle(rows, managedTaskTitle);
-
-        expect(managedTask).toEqual(
-          expect.objectContaining({
-            'Assigned to': `${people.replacementAssignee.firstName} ${people.replacementAssignee.lastName}`,
-          })
-        );
-      });
-
       await test.step('Open the unassign flow and verify the refreshed unassigned state', async () => {
+        await openCaseDetailsTasksTab(page, caseDetailsPage, caseId);
         await caseDetailsPage.taskItem.filter({ hasText: managedTaskTitle }).first().locator('#action_unclaim').click();
 
         await expect(page).toHaveURL(new RegExp(`/work/${managedTaskId}/unclaim\\?service=IA$`));

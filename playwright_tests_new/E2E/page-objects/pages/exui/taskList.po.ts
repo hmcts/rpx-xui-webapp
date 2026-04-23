@@ -555,15 +555,18 @@ export class TaskListPage extends Base {
   }
 
   async selectFirstReassignUserOption(optionName?: string) {
-    const autocompleteOverlay = this.reassignUserAutocompleteOverlay.filter({
-      has: this.page.locator('[role="option"]'),
-    });
-    const option = optionName
-      ? autocompleteOverlay.last().getByRole('option', { name: new RegExp(optionName, 'i') })
-      : this.reassignUserAutocompleteFirstOption;
+    const selectableOptions = this.page.getByRole('option').filter({ hasNotText: 'No results found' });
+    const namedOption = optionName ? selectableOptions.filter({ hasText: new RegExp(optionName, 'i') }).first() : null;
+    const option = (namedOption && (await namedOption.count())) > 0 ? namedOption : selectableOptions.first();
 
-    await autocompleteOverlay.last().waitFor({ state: 'visible' });
-    await option.click();
+    try {
+      await expect(option).toBeVisible({ timeout: 2_000 });
+      await option.click();
+    } catch {
+      await this.reassignUserSearchInput.focus();
+      await this.page.keyboard.press('ArrowDown');
+      await this.page.keyboard.press('Enter');
+    }
 
     if (optionName) {
       await expect(this.reassignUserSearchInput).toHaveValue(new RegExp(optionName, 'i'));

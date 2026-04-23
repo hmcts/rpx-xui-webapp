@@ -29,10 +29,10 @@ export class CaseListPage extends Base {
   readonly unselectableCasesInfoSummaryButton = this.page.locator('#info-msg-unselected-case summary');
   readonly unselectableCasesInfoSummary = this.page.locator('#sp-msg-unselected-case-header');
   readonly unselectableCasesInfoContent = this.page.locator('#sp-msg-unselected-case-content');
-  readonly pagination = this.page.locator('.ngx-pagination');
-  readonly paginationNext = this.page.locator('.pagination-next');
-  readonly paginationPrevious = this.page.locator('.pagination-previous');
-  readonly paginationCurrentPage = this.pagination.locator('.current');
+  readonly pagination = this.exuiBodyComponent.paginationControls;
+  readonly paginationNext = this.exuiBodyComponent.paginationNextButton;
+  readonly paginationPrevious = this.exuiBodyComponent.paginationPreviousButton;
+  readonly paginationCurrentPage = this.exuiBodyComponent.paginationCurrentPage;
   // Some case list views use an id, others a data-test attribute for the summary
   readonly caseListResultsAmount = this.page.locator('#search-result-summary__text, [data-test="search-result-summary__text"]');
 

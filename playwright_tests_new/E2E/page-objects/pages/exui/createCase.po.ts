@@ -45,6 +45,12 @@ const CRITICAL_WIZARD_API_PATTERNS: RegExp[] = [
   /\/event-triggers\/[^/]+\/validate/,
 ];
 
+const CREATE_CASE_OPTION_ALIASES: Record<string, string[]> = {
+  DIVORCE: ['PRIVATELAW', 'Family Private Law'],
+  'XUI Case PoC': ['PRLAPPS', 'C100 & FL401 Applications'],
+  xuiTestCaseType: ['PRLAPPS', 'C100 & FL401 Applications'],
+};
+
 export class CreateCasePage extends Base {
   readonly container!: Locator;
   readonly caseDetailsContainer!: Locator;
@@ -241,12 +247,37 @@ export class CreateCasePage extends Base {
       options.find((o) => o.value.toLowerCase() === normalized) ||
       options.find((o) => o.label.toLowerCase() === normalized);
 
-    if (!match) {
+    const aliasMatch =
+      match ||
+      (CREATE_CASE_OPTION_ALIASES[option] ?? []).find((alias) =>
+        options.some((availableOption) => {
+          const normalizedAlias = alias.toLowerCase();
+          return (
+            availableOption.value === alias ||
+            availableOption.label === alias ||
+            availableOption.value.toLowerCase() === normalizedAlias ||
+            availableOption.label.toLowerCase() === normalizedAlias
+          );
+        })
+      );
+
+    const resolvedMatch =
+      match ||
+      options.find((o) => o.value === aliasMatch) ||
+      options.find((o) => o.label === aliasMatch) ||
+      options.find((o) => o.value.toLowerCase() === aliasMatch?.toLowerCase()) ||
+      options.find((o) => o.label.toLowerCase() === aliasMatch?.toLowerCase());
+
+    if (!resolvedMatch) {
       const available = options.map((o) => `${o.label} (${o.value})`).join(', ');
       throw new Error(`Option not found for "${option}". Available: ${available}`);
     }
 
-    await selectLocator.selectOption({ value: match.value });
+    if (!match && aliasMatch) {
+      logger.info(`Resolved create-case option alias "${option}" -> "${aliasMatch}"`);
+    }
+
+    await selectLocator.selectOption({ value: resolvedMatch.value });
   }
 
   async assertNoEventCreationError(context: string) {

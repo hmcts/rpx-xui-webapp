@@ -704,6 +704,38 @@ export class CaseDetailsPage extends Base {
     });
   }
 
+  getAddExclusionLink(): Locator {
+    return this.page.locator('a.govuk-link[href*="/role-access/add-exclusion"]').first();
+  }
+
+  getAllocateJudicialRoleLink(): Locator {
+    return this.getRoleAccessSection('Judiciary').getByRole('link', { name: 'Allocate a judicial role' });
+  }
+
+  getAllocateLegalOpsRoleLink(): Locator {
+    return this.getRoleAccessSection('Legal Ops').getByRole('link', { name: 'Allocate a legal ops role' });
+  }
+
+  getManageRoleLink(sectionTitle: 'Judiciary' | 'Legal Ops'): Locator {
+    return this.getRoleAccessSection(sectionTitle).getByRole('link', { name: 'Manage' });
+  }
+
+  async openRoleActions(sectionTitle: 'Judiciary' | 'Legal Ops'): Promise<void> {
+    await this.getManageRoleLink(sectionTitle).click();
+  }
+
+  getRoleActionLink(sectionTitle: 'Judiciary' | 'Legal Ops', action: 'Reallocate' | 'Remove Allocation'): Locator {
+    return this.getRoleAccessSection(sectionTitle).getByRole('link', { name: action });
+  }
+
+  getDeleteExclusionLink(): Locator {
+    return this.page.locator('exui-exclusions-table').getByRole('link', { name: 'Delete' });
+  }
+
+  getExclusionsTable(): Locator {
+    return this.page.locator('exui-exclusions-table table.govuk-table').first();
+  }
+
   async openRolesAndAccessTab(caseId: string): Promise<void> {
     await this.page.goto(`/cases/case-details/IA/Asylum/${caseId}`);
     await expect(this.container).toBeVisible();

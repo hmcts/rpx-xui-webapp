@@ -18,7 +18,6 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
   }) => {
     const judiciarySection = caseDetailsPage.getRoleAccessSection('Judiciary');
     const legalOpsSection = caseDetailsPage.getRoleAccessSection('Legal Ops');
-    const addExclusionLink = page.locator('a.govuk-link[href*="/role-access/add-exclusion"]').first();
 
     await test.step('Setup route mocks for an empty Roles and access case', async () => {
       await setupRolesAndAccessMockRoutes(page, {
@@ -33,13 +32,13 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
     });
 
     await test.step('Verify allocate links and empty-state messaging are rendered', async () => {
-      await expect(judiciarySection.getByRole('link', { name: 'Allocate a judicial role' })).toBeVisible();
-      await expect(legalOpsSection.getByRole('link', { name: 'Allocate a legal ops role' })).toBeVisible();
-      await expect(addExclusionLink).toBeVisible();
+      await expect(caseDetailsPage.getAllocateJudicialRoleLink()).toBeVisible();
+      await expect(caseDetailsPage.getAllocateLegalOpsRoleLink()).toBeVisible();
+      await expect(caseDetailsPage.getAddExclusionLink()).toBeVisible();
 
       await expect(judiciarySection.locator('table.govuk-table')).toHaveCount(0);
       await expect(legalOpsSection.locator('table.govuk-table')).toHaveCount(0);
-      await expect(page.locator('exui-exclusions-table table.govuk-table')).toHaveCount(0);
+      await expect(caseDetailsPage.getExclusionsTable()).toHaveCount(0);
 
       await expect(judiciarySection).toContainText('There are no judicial roles for this case.');
       await expect(legalOpsSection).toContainText('There are no legal Ops roles for this case.');
@@ -56,7 +55,6 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
     const caseworkerLookupRequestPromise = page.waitForRequest('**/workallocation/caseworker/getUsersByServiceName*');
     const judiciarySection = caseDetailsPage.getRoleAccessSection('Judiciary');
     const legalOpsSection = caseDetailsPage.getRoleAccessSection('Legal Ops');
-    const addExclusionLink = page.locator('a.govuk-link[href*="/role-access/add-exclusion"]').first();
 
     await test.step('Setup route mocks for a populated Roles and access case', async () => {
       await setupRolesAndAccessMockRoutes(page, {
@@ -82,9 +80,9 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
         services: ['IA'],
       });
 
-      await expect(judiciarySection.getByRole('link', { name: 'Allocate a judicial role' })).toBeVisible();
-      await expect(legalOpsSection.getByRole('link', { name: 'Allocate a legal ops role' })).toHaveCount(0);
-      await expect(addExclusionLink).toBeVisible();
+      await expect(caseDetailsPage.getAllocateJudicialRoleLink()).toBeVisible();
+      await expect(caseDetailsPage.getAllocateLegalOpsRoleLink()).toHaveCount(0);
+      await expect(caseDetailsPage.getAddExclusionLink()).toBeVisible();
 
       expect(
         (await judiciarySection.locator('table.govuk-table thead th').allInnerTexts())
@@ -130,7 +128,7 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
     });
 
     await test.step('Verify EXCLUDED grant behaviour and allocator controls are rendered', async () => {
-      const exclusionsTable = page.locator('exui-exclusions-table table.govuk-table').first();
+      const exclusionsTable = caseDetailsPage.getExclusionsTable();
       const exclusionRows = await tableUtils.parseDataTable(exclusionsTable);
 
       expect(exclusionRows).toHaveLength(1);
@@ -143,13 +141,13 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
         })
       );
 
-      await expect(judiciarySection.getByRole('link', { name: 'Manage' })).toHaveCount(1);
-      await expect(legalOpsSection.getByRole('link', { name: 'Manage' })).toHaveCount(1);
-      await expect(page.locator('exui-exclusions-table').getByRole('link', { name: 'Delete' })).toHaveCount(1);
+      await expect(caseDetailsPage.getManageRoleLink('Judiciary')).toHaveCount(1);
+      await expect(caseDetailsPage.getManageRoleLink('Legal Ops')).toHaveCount(1);
+      await expect(caseDetailsPage.getDeleteExclusionLink()).toHaveCount(1);
 
-      await judiciarySection.getByRole('link', { name: 'Manage' }).click();
-      const judicialReallocateLink = judiciarySection.getByRole('link', { name: 'Reallocate' });
-      const judicialRemoveLink = judiciarySection.getByRole('link', { name: 'Remove Allocation' });
+      await caseDetailsPage.openRoleActions('Judiciary');
+      const judicialReallocateLink = caseDetailsPage.getRoleActionLink('Judiciary', 'Reallocate');
+      const judicialRemoveLink = caseDetailsPage.getRoleActionLink('Judiciary', 'Remove Allocation');
 
       await expect(judicialReallocateLink).toBeVisible();
       await expect(judicialRemoveLink).toBeVisible();
@@ -168,9 +166,9 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
       expect(judicialReallocateUrl.searchParams.get('typeOfRole')).toBe('lead-judge');
       expect(judicialRemoveUrl.searchParams.get('typeOfRole')).toBe('lead-judge');
 
-      await legalOpsSection.getByRole('link', { name: 'Manage' }).click();
-      const legalOpsReallocateLink = legalOpsSection.getByRole('link', { name: 'Reallocate' });
-      const legalOpsRemoveLink = legalOpsSection.getByRole('link', { name: 'Remove Allocation' });
+      await caseDetailsPage.openRoleActions('Legal Ops');
+      const legalOpsReallocateLink = caseDetailsPage.getRoleActionLink('Legal Ops', 'Reallocate');
+      const legalOpsRemoveLink = caseDetailsPage.getRoleActionLink('Legal Ops', 'Remove Allocation');
 
       await expect(legalOpsReallocateLink).toBeVisible();
       await expect(legalOpsRemoveLink).toBeVisible();
@@ -208,7 +206,7 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
     await test.step('Verify non-case allocators still see the role and exclusion data', async () => {
       const judiciaryRows = await tableUtils.parseDataTable(judiciarySection.locator('table.govuk-table').first());
       const legalOpsRows = await tableUtils.parseDataTable(legalOpsSection.locator('table.govuk-table').first());
-      const exclusionRows = await tableUtils.parseDataTable(page.locator('exui-exclusions-table table.govuk-table').first());
+      const exclusionRows = await tableUtils.parseDataTable(caseDetailsPage.getExclusionsTable());
 
       expect(judiciaryRows).toHaveLength(1);
       expect(legalOpsRows).toHaveLength(1);
@@ -216,11 +214,11 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
     });
 
     await test.step('Verify non-case allocators cannot allocate, manage, or delete', async () => {
-      await expect(judiciarySection.getByRole('link', { name: 'Allocate a judicial role' })).toHaveCount(0);
-      await expect(legalOpsSection.getByRole('link', { name: 'Allocate a legal ops role' })).toHaveCount(0);
-      await expect(judiciarySection.getByRole('link', { name: 'Manage' })).toHaveCount(0);
-      await expect(legalOpsSection.getByRole('link', { name: 'Manage' })).toHaveCount(0);
-      await expect(page.locator('exui-exclusions-table').getByRole('link', { name: 'Delete' })).toHaveCount(0);
+      await expect(caseDetailsPage.getAllocateJudicialRoleLink()).toHaveCount(0);
+      await expect(caseDetailsPage.getAllocateLegalOpsRoleLink()).toHaveCount(0);
+      await expect(caseDetailsPage.getManageRoleLink('Judiciary')).toHaveCount(0);
+      await expect(caseDetailsPage.getManageRoleLink('Legal Ops')).toHaveCount(0);
+      await expect(caseDetailsPage.getDeleteExclusionLink()).toHaveCount(0);
     });
   });
 });

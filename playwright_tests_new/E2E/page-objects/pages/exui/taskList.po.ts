@@ -554,9 +554,20 @@ export class TaskListPage extends Base {
     await this.confirmCancelTaskButton.click();
   }
 
-  async selectFirstReassignUserOption() {
-    await this.reassignUserAutocompleteOverlay.waitFor({ state: 'visible' });
-    await this.reassignUserAutocompleteFirstOption.click();
+  async selectFirstReassignUserOption(optionName?: string) {
+    const autocompleteOverlay = this.reassignUserAutocompleteOverlay.filter({
+      has: this.page.locator('[role="option"]'),
+    });
+    const option = optionName
+      ? autocompleteOverlay.last().getByRole('option', { name: new RegExp(optionName, 'i') })
+      : this.reassignUserAutocompleteFirstOption;
+
+    await autocompleteOverlay.last().waitFor({ state: 'visible' });
+    await option.click();
+
+    if (optionName) {
+      await expect(this.reassignUserSearchInput).toHaveValue(new RegExp(optionName, 'i'));
+    }
   }
 
   async waitForManageButton(

@@ -187,7 +187,9 @@ test.describe(
 
         await expect(page.locator('main')).toContainText('Find the person');
         await taskListPage.reassignUserSearchInput.fill('Replacement');
-        await taskListPage.selectFirstReassignUserOption();
+        await taskListPage.selectFirstReassignUserOption(
+          `${people.replacementAssignee.firstName} ${people.replacementAssignee.lastName}`
+        );
         await taskListPage.continueButton.click();
 
         await expect(page.locator('main')).toContainText('Check your answers');

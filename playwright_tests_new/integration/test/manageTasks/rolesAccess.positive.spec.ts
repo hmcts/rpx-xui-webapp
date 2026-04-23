@@ -24,8 +24,8 @@ test.describe('Roles and access parity', { tag: ['@integration', '@integration-m
     await test.step('Show the allocator empty states and add links', async () => {
       await rolesAccessPage.open(caseId);
 
-      await expect(rolesAccessPage.getLink('Allocate a judicial role')).toBeVisible();
-      await expect(rolesAccessPage.getLink('Allocate a legal ops role')).toBeVisible();
+      await expect(rolesAccessPage.getAllocateJudicialRoleLink()).toBeVisible();
+      await expect(rolesAccessPage.getAllocateLegalOpsRoleLink()).toBeVisible();
       await expect(rolesAccessPage.getExclusionsAddLink()).toBeVisible();
 
       await expect(rolesAccessPage.tabPanel).toContainText('There are no judicial roles for this case.');
@@ -43,10 +43,10 @@ test.describe('Roles and access parity', { tag: ['@integration', '@integration-m
       await expect(rolesAccessPage.tabPanel).toContainText('Judge One Full');
       await expect(rolesAccessPage.tabPanel).toContainText('Alice Example');
       await expect(rolesAccessPage.tabPanel).toContainText('Judge One Alias');
-      await expect(rolesAccessPage.getLink('Allocate a judicial role')).toBeVisible();
-      await expect(rolesAccessPage.getLink('Allocate a legal ops role')).toHaveCount(0);
-      await expect(rolesAccessPage.getLink('Manage')).toHaveCount(2);
-      await expect(rolesAccessPage.getLink('Delete')).toHaveCount(1);
+      await expect(rolesAccessPage.getAllocateJudicialRoleLink()).toBeVisible();
+      await expect(rolesAccessPage.getAllocateLegalOpsRoleLink()).toHaveCount(0);
+      await expect(rolesAccessPage.getManageLinks()).toHaveCount(2);
+      await expect(rolesAccessPage.getDeleteLinks()).toHaveCount(1);
     });
 
     await test.step('Hide manage and allocate links for a non-allocator while leaving the exclusion add link visible', async () => {
@@ -56,10 +56,10 @@ test.describe('Roles and access parity', { tag: ['@integration', '@integration-m
       });
       await rolesAccessPage.open(caseId);
 
-      await expect(rolesAccessPage.getLink('Manage')).toHaveCount(0);
-      await expect(rolesAccessPage.getLink('Delete')).toHaveCount(0);
-      await expect(rolesAccessPage.getLink('Allocate a judicial role')).toHaveCount(0);
-      await expect(rolesAccessPage.getLink('Allocate a legal ops role')).toHaveCount(0);
+      await expect(rolesAccessPage.getManageLinks()).toHaveCount(0);
+      await expect(rolesAccessPage.getDeleteLinks()).toHaveCount(0);
+      await expect(rolesAccessPage.getAllocateJudicialRoleLink()).toHaveCount(0);
+      await expect(rolesAccessPage.getAllocateLegalOpsRoleLink()).toHaveCount(0);
       await expect(rolesAccessPage.getExclusionsAddLink()).toBeVisible();
     });
   });
@@ -75,28 +75,28 @@ test.describe('Roles and access parity', { tag: ['@integration', '@integration-m
     await test.step('Open the judicial manage links and reallocate the role', async () => {
       await rolesAccessPage.open(caseId);
 
-      await rolesAccessPage.getLink('Manage').first().click();
-      await expect(rolesAccessPage.getLink('Reallocate').first()).toBeVisible();
-      await expect(rolesAccessPage.getLink('Remove Allocation').first()).toBeVisible();
+      await rolesAccessPage.openFirstManageLink();
+      await expect(rolesAccessPage.getReallocateLinks().first()).toBeVisible();
+      await expect(rolesAccessPage.getRemoveAllocationLinks().first()).toBeVisible();
 
-      await rolesAccessPage.getLink('Reallocate').first().click();
-      await expect(page.locator('main')).toContainText('Find the person');
+      await rolesAccessPage.openFirstReallocateLink();
+      await expect(rolesAccessPage.mainContent).toContainText('Find the person');
 
       await rolesAccessPage.searchAndSelectPerson('Replacement', 'Replacement Judge');
-      await page.getByRole('button', { name: 'Continue' }).click();
+      await rolesAccessPage.continue();
 
-      await expect(page.locator('main')).toContainText('Duration of role');
-      await page.getByLabel('Indefinite').check({ force: true });
-      await page.getByRole('button', { name: 'Continue' }).click();
+      await expect(rolesAccessPage.mainContent).toContainText('Duration of role');
+      await rolesAccessPage.selectIndefiniteDuration();
+      await rolesAccessPage.continue();
 
-      await expect(page.locator('main')).toContainText('Check your changes');
+      await expect(rolesAccessPage.mainContent).toContainText('Check your changes');
       await expect(page.locator('.govuk-summary-list')).toContainText('Replacement Judge');
 
       const reallocateRequestPromise = page.waitForRequest(
         (request) => request.method() === 'POST' && request.url().includes('/api/role-access/allocate-role/reallocate')
       );
 
-      await page.getByRole('button', { name: 'Confirm allocation' }).click();
+      await rolesAccessPage.confirmAllocation();
 
       const reallocateRequest = await reallocateRequestPromise;
       expect(reallocateRequest.postDataJSON()).toEqual(
@@ -118,16 +118,16 @@ test.describe('Roles and access parity', { tag: ['@integration', '@integration-m
     });
 
     await test.step('Remove the reallocated judicial role and verify the submitted payload', async () => {
-      await rolesAccessPage.getLink('Manage').first().click();
-      await rolesAccessPage.getLink('Remove Allocation').first().click();
+      await rolesAccessPage.openFirstManageLink();
+      await rolesAccessPage.openFirstRemoveAllocationLink();
 
-      await expect(page.locator('main')).toContainText('Remove allocation');
+      await expect(rolesAccessPage.mainContent).toContainText('Remove allocation');
 
       const removeRequestPromise = page.waitForRequest(
         (request) => request.method() === 'POST' && request.url().includes('/api/role-access/allocate-role/delete')
       );
 
-      await page.getByRole('button', { name: 'Remove allocation' }).click();
+      await rolesAccessPage.removeAllocation();
 
       const removeRequest = await removeRequestPromise;
       expect(removeRequest.postDataJSON()).toEqual({ assigmentId: 'judicial-role-1' });
@@ -151,23 +151,23 @@ test.describe('Roles and access parity', { tag: ['@integration', '@integration-m
       await rolesAccessPage.open(caseId);
 
       await rolesAccessPage.getExclusionsAddLink().click();
-      await expect(page.locator('main')).toContainText('Choose who the exclusion is for');
-      await page.getByRole('radio', { name: 'Exclude another person' }).check({ force: true });
-      await page.getByRole('button', { name: 'Continue' }).click();
+      await expect(rolesAccessPage.mainContent).toContainText('Choose who the exclusion is for');
+      await rolesAccessPage.chooseExclusionForAnotherPerson();
+      await rolesAccessPage.continue();
 
-      await expect(page.locator('main')).toContainText("Choose the person's role");
-      await page.getByRole('radio', { name: 'Judicial' }).check({ force: true });
-      await page.getByRole('button', { name: 'Continue' }).click();
+      await expect(rolesAccessPage.mainContent).toContainText("Choose the person's role");
+      await rolesAccessPage.chooseJudicialPersonRole();
+      await rolesAccessPage.continue();
 
-      await expect(page.locator('main')).toContainText('Find the person');
+      await expect(rolesAccessPage.mainContent).toContainText('Find the person');
       await rolesAccessPage.searchAndSelectPerson('Replacement', 'Replacement Judge');
-      await page.getByRole('button', { name: 'Continue' }).click();
+      await rolesAccessPage.continue();
 
-      await expect(page.locator('main')).toContainText('Describe the exclusion');
-      await page.locator('#exclusion-description').fill('Initial judicial exclusion');
-      await page.getByRole('button', { name: 'Continue' }).click();
+      await expect(rolesAccessPage.mainContent).toContainText('Describe the exclusion');
+      await rolesAccessPage.fillExclusionDescription('Initial judicial exclusion');
+      await rolesAccessPage.continue();
 
-      await expect(page.locator('main')).toContainText('Check your answers');
+      await expect(rolesAccessPage.mainContent).toContainText('Check your answers');
       await expect(rolesAccessPage.getSummaryRow('Who is the exclusion for')).toContainText('Exclude another person');
       await expect(rolesAccessPage.getSummaryRow("What's the person's role")).toContainText('Judicial');
       await expect(rolesAccessPage.getSummaryRow('Person')).toContainText('Replacement Judge');
@@ -175,55 +175,43 @@ test.describe('Roles and access parity', { tag: ['@integration', '@integration-m
     });
 
     await test.step('Exercise each change link and confirm the updated answers', async () => {
-      await rolesAccessPage
-        .getSummaryRow('Who is the exclusion for')
-        .getByRole('button', { name: /change/i })
-        .click();
-      await expect(page.locator('main')).toContainText('Choose who the exclusion is for');
-      await page.getByRole('radio', { name: 'Exclude another person' }).check({ force: true });
-      await page.getByRole('button', { name: 'Continue' }).click();
-      await expect(page.locator('main')).toContainText("Choose the person's role");
-      await page.getByRole('radio', { name: 'Judicial' }).check({ force: true });
-      await page.getByRole('button', { name: 'Continue' }).click();
-      await expect(page.locator('main')).toContainText('Find the person');
+      await rolesAccessPage.getSummaryChangeButton('Who is the exclusion for').click();
+      await expect(rolesAccessPage.mainContent).toContainText('Choose who the exclusion is for');
+      await rolesAccessPage.chooseExclusionForAnotherPerson();
+      await rolesAccessPage.continue();
+      await expect(rolesAccessPage.mainContent).toContainText("Choose the person's role");
+      await rolesAccessPage.chooseJudicialPersonRole();
+      await rolesAccessPage.continue();
+      await expect(rolesAccessPage.mainContent).toContainText('Find the person');
       await rolesAccessPage.searchAndSelectPerson('Alternate', 'Alternate Judge');
-      await page.getByRole('button', { name: 'Continue' }).click();
-      await expect(page.locator('main')).toContainText('Describe the exclusion');
-      await page.locator('#exclusion-description').fill('Initial judicial exclusion');
-      await page.getByRole('button', { name: 'Continue' }).click();
+      await rolesAccessPage.continue();
+      await expect(rolesAccessPage.mainContent).toContainText('Describe the exclusion');
+      await rolesAccessPage.fillExclusionDescription('Initial judicial exclusion');
+      await rolesAccessPage.continue();
 
-      await rolesAccessPage
-        .getSummaryRow("What's the person's role")
-        .getByRole('button', { name: /change/i })
-        .click();
-      await expect(page.locator('main')).toContainText("Choose the person's role");
-      await page.getByRole('radio', { name: 'Judicial' }).check({ force: true });
-      await page.getByRole('button', { name: 'Continue' }).click();
-      await expect(page.locator('main')).toContainText('Find the person');
+      await rolesAccessPage.getSummaryChangeButton("What's the person's role").click();
+      await expect(rolesAccessPage.mainContent).toContainText("Choose the person's role");
+      await rolesAccessPage.chooseJudicialPersonRole();
+      await rolesAccessPage.continue();
+      await expect(rolesAccessPage.mainContent).toContainText('Find the person');
       await rolesAccessPage.searchAndSelectPerson('Replacement', 'Replacement Judge');
-      await page.getByRole('button', { name: 'Continue' }).click();
-      await expect(page.locator('main')).toContainText('Describe the exclusion');
-      await page.locator('#exclusion-description').fill('Initial judicial exclusion');
-      await page.getByRole('button', { name: 'Continue' }).click();
+      await rolesAccessPage.continue();
+      await expect(rolesAccessPage.mainContent).toContainText('Describe the exclusion');
+      await rolesAccessPage.fillExclusionDescription('Initial judicial exclusion');
+      await rolesAccessPage.continue();
 
-      await rolesAccessPage
-        .getSummaryRow('Person')
-        .getByRole('button', { name: /change/i })
-        .click();
-      await expect(page.locator('main')).toContainText('Find the person');
+      await rolesAccessPage.getSummaryChangeButton('Person').click();
+      await expect(rolesAccessPage.mainContent).toContainText('Find the person');
       await rolesAccessPage.searchAndSelectPerson('Alternate', 'Alternate Judge');
-      await page.getByRole('button', { name: 'Continue' }).click();
-      await expect(page.locator('main')).toContainText('Describe the exclusion');
-      await page.locator('#exclusion-description').fill('Initial judicial exclusion');
-      await page.getByRole('button', { name: 'Continue' }).click();
+      await rolesAccessPage.continue();
+      await expect(rolesAccessPage.mainContent).toContainText('Describe the exclusion');
+      await rolesAccessPage.fillExclusionDescription('Initial judicial exclusion');
+      await rolesAccessPage.continue();
 
-      await rolesAccessPage
-        .getSummaryRow('Describe the exclusion')
-        .getByRole('button', { name: /change/i })
-        .click();
-      await expect(page.locator('main')).toContainText('Describe the exclusion');
-      await page.locator('#exclusion-description').fill('Updated judicial exclusion');
-      await page.getByRole('button', { name: 'Continue' }).click();
+      await rolesAccessPage.getSummaryChangeButton('Describe the exclusion').click();
+      await expect(rolesAccessPage.mainContent).toContainText('Describe the exclusion');
+      await rolesAccessPage.fillExclusionDescription('Updated judicial exclusion');
+      await rolesAccessPage.continue();
 
       await expect(rolesAccessPage.getSummaryRow('Person')).toContainText('Alternate Judge');
       await expect(rolesAccessPage.getSummaryRow('Describe the exclusion')).toContainText('Updated judicial exclusion');
@@ -234,7 +222,7 @@ test.describe('Roles and access parity', { tag: ['@integration', '@integration-m
         (request) => request.method() === 'POST' && request.url().includes('/api/role-access/exclusions/confirm')
       );
 
-      await page.getByRole('button', { name: 'Confirm exclusion' }).click();
+      await rolesAccessPage.confirmExclusion();
 
       const confirmExclusionRequest = await confirmExclusionRequestPromise;
       expect(confirmExclusionRequest.postDataJSON()).toEqual(
@@ -249,7 +237,9 @@ test.describe('Roles and access parity', { tag: ['@integration', '@integration-m
         })
       );
 
-      await expect(page).toHaveURL(new RegExp(`/cases/case-details/IA/Asylum/${caseId}/roles-and-access(?:\\?.*)?$`));
+      await expect(page).toHaveURL(
+        new RegExp(`/cases/case-details/IA/Asylum/${caseId}(?:/roles-and-access(?:\\?.*)?|#Roles%20and%20access)$`)
+      );
       await expect(rolesAccessPage.tabPanel).toContainText('Alternate Judge');
       await expect(rolesAccessPage.tabPanel).toContainText('Updated judicial exclusion');
     });

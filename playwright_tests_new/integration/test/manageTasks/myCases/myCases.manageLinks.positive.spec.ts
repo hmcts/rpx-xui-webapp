@@ -2,9 +2,14 @@ import { expect, test } from '../../../../E2E/fixtures';
 import { applySessionCookies, setupMyCasesRoutes } from '../../../helpers';
 import { singleUsersGetByRoleMockResponse } from '../../../helpers/taskActionApiMocks.helper';
 import { buildMyCaseMock, myCasesAllocatorActions } from '../../../mocks/myCases.mock';
+import { buildHearingsUserDetailsMock } from '../../../mocks/hearings.mock';
 
 const userIdentifier = 'STAFF_ADMIN';
 const replacementUser = singleUsersGetByRoleMockResponse[0];
+const assigneeIdsByAssignmentId: Record<string, string> = {
+  'managed-allocation-1': 'caseworker-existing-1',
+  'managed-allocation-2': 'caseworker-existing-2',
+};
 
 const managedCases = [
   buildMyCaseMock({
@@ -19,6 +24,7 @@ const managedCases = [
     case_role: 'case-manager',
     role: 'Case Manager',
     role_category: 'LEGAL_OPERATIONS',
+    assignee: assigneeIdsByAssignmentId['managed-allocation-1'],
     actions: myCasesAllocatorActions,
   }),
   buildMyCaseMock({
@@ -33,14 +39,10 @@ const managedCases = [
     case_role: 'case-manager',
     role: 'Case Manager',
     role_category: 'LEGAL_OPERATIONS',
+    assignee: assigneeIdsByAssignmentId['managed-allocation-2'],
     actions: myCasesAllocatorActions,
   }),
 ];
-
-const assigneeIdsByAssignmentId: Record<string, string> = {
-  'managed-allocation-1': 'caseworker-existing-1',
-  'managed-allocation-2': 'caseworker-existing-2',
-};
 
 const buildRoleAssignmentResponse = (assignmentId: string) => {
   const matchingCase = managedCases.find((caseItem) => caseItem.id === assignmentId) ?? managedCases[0];
@@ -77,7 +79,9 @@ test.describe(`My Cases manage links as ${userIdentifier}`, { tag: ['@integratio
           total_records: managedCases.length,
           unique_cases: managedCases.length,
         },
-        {}
+        {
+          userDetails: buildHearingsUserDetailsMock(['caseworker-ia', 'caseworker-ia-caseofficer', 'case-allocator']),
+        }
       );
 
       await page.route('**/workallocation/caseworker/getUsersByServiceName*', async (route) => {
@@ -139,7 +143,7 @@ test.describe(`My Cases manage links as ${userIdentifier}`, { tag: ['@integratio
       await expect(page.locator('main')).toContainText('Find the person');
 
       await taskListPage.reassignUserSearchInput.fill('test');
-      await taskListPage.selectFirstReassignUserOption();
+      await taskListPage.selectFirstReassignUserOption(`${replacementUser.firstName} ${replacementUser.lastName}`);
       await taskListPage.continueButton.click();
 
       await expect(page.locator('main')).toContainText('Duration of role');

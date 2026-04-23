@@ -1,5 +1,6 @@
 import type { Page } from '@playwright/test';
 import { buildAsylumCaseMock } from '../mocks/cases/asylumCase.mock';
+import { buildHearingsAppConfigMock, buildHearingsEnvironmentConfigMock } from '../mocks/hearings.mock';
 import {
   buildFindPersonResults,
   buildRolesAccessCaseRoles,
@@ -47,8 +48,14 @@ export async function setupRolesAccessMockRoutes(page: Page, config: RolesAccess
   const userDetails = buildRolesAccessUserDetailsMock({
     roleAssignmentInfo: config.roleAssignmentInfo,
   });
+  const appConfig = buildHearingsAppConfigMock();
+  const environmentConfig = buildHearingsEnvironmentConfigMock();
 
   await clearRolesAccessRoutes(page, config.caseId);
+
+  await page.addInitScript((seededUserInfo) => {
+    window.sessionStorage.setItem('userDetails', JSON.stringify(seededUserInfo));
+  }, userDetails.userInfo);
 
   await page.route(`**/data/internal/cases/${config.caseId}*`, async (route) => {
     await route.fulfill({
@@ -63,6 +70,86 @@ export async function setupRolesAccessMockRoutes(page: Page, config: RolesAccess
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify(userDetails),
+    });
+  });
+
+  await page.route('**/assets/config/config.json*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(appConfig),
+    });
+  });
+
+  await page.route(/\/external\/config\/ui(?:\/|\?|$)/, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(environmentConfig),
+    });
+  });
+
+  await page.route('**/auth/isAuthenticated*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: 'true',
+    });
+  });
+
+  await page.route('**/api/configuration*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: 'false',
+    });
+  });
+
+  await page.route('**/api/monitoring-tools*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        key: '',
+        connectionString: '',
+      }),
+    });
+  });
+
+  await page.route('**/api/wa-supported-jurisdiction/get*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(['IA']),
+    });
+  });
+
+  await page.route('**/api/wa-supported-jurisdiction/detail*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([{ serviceId: 'IA', serviceName: 'IA' }]),
+    });
+  });
+
+  await page.route('**/aggregated/caseworkers/**/jurisdictions*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([
+        {
+          id: 'IA',
+          name: 'Immigration and Asylum',
+        },
+      ]),
+    });
+  });
+
+  await page.route(`**/workallocation/case/task/${config.caseId}*`, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([]),
     });
   });
 

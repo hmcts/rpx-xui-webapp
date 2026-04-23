@@ -21,6 +21,7 @@ export type MyCaseMock = {
   case_role: string;
   role: string;
   role_category: string;
+  assignee?: string;
   hasAccess: boolean;
   actions: MyCaseActionMock[];
 };
@@ -91,6 +92,7 @@ export const buildMyCaseMock = (overrides: Partial<MyCaseMock> = {}): MyCaseMock
     case_role: overrides.case_role ?? stateDefinition.caseRole,
     role: overrides.role ?? stateDefinition.role,
     role_category: overrides.role_category ?? stateDefinition.roleCategory,
+    assignee: overrides.assignee,
     hasAccess: overrides.hasAccess ?? true,
     actions: overrides.actions ?? [...myCasesNoActions],
   };

@@ -53,6 +53,7 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
     tableUtils,
   }) => {
     const judicialLookupRequestPromise = page.waitForRequest('**/api/role-access/roles/getJudicialUsers*');
+    const caseworkerLookupRequestPromise = page.waitForRequest('**/workallocation/caseworker/getUsersByServiceName*');
     const judiciarySection = caseDetailsPage.getRoleAccessSection('Judiciary');
     const legalOpsSection = caseDetailsPage.getRoleAccessSection('Legal Ops');
     const addExclusionLink = page.locator('a.govuk-link[href*="/role-access/add-exclusion"]').first();
@@ -71,8 +72,13 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
 
     await test.step('Verify links, headers, and judicial lookup payload for the populated view', async () => {
       const judicialLookupRequest = await judicialLookupRequestPromise;
+      const caseworkerLookupRequest = await caseworkerLookupRequestPromise;
+
       expect(judicialLookupRequest.postDataJSON()).toEqual({
         userIds: ['judge-bob'],
+        services: ['IA'],
+      });
+      expect(caseworkerLookupRequest.postDataJSON()).toEqual({
         services: ['IA'],
       });
 

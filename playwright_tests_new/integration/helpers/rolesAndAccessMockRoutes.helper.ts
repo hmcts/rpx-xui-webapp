@@ -60,10 +60,16 @@ export async function setupRolesAndAccessMockRoutes(
   });
 
   await page.route('**/workallocation/caseworker/getUsersByServiceName*', async (route) => {
+    const requestBody = (route.request().postDataJSON() as { services?: string[] }) ?? {};
+    const requestedServices = Array.isArray(requestBody.services) ? requestBody.services : [];
+    const filteredCaseworkers = requestedServices.includes(options.jurisdiction ?? 'IA')
+      ? entityView.caseworkers.filter((caseworker) => requestedServices.includes(caseworker.service))
+      : [];
+
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(entityView.caseworkers),
+      body: JSON.stringify(filteredCaseworkers),
     });
   });
 

@@ -16,6 +16,7 @@ export * from './hearingJourneySetup.helper';
 export * from './ngIntegrationMockRoutes.helper';
 export * from './myWorkFiltersMockRoutes.helper';
 export * from './taskListMockRoutes.helper';
+export * from './bookingUiMockRoutes.helper';
 export * from './manageTasksMockRoutes.helper';
 export * from './restrictedAccessMockRoutes.helper';
 export * from './accessRequestsMockRoutes.helper';

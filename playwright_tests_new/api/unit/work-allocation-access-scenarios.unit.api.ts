@@ -240,7 +240,7 @@ test.describe('work allocation access scenario helper', { tag: '@svc-internal' }
         case_name: 'Access Case 400',
         access: 'Specific access denied',
         startDate: 'Not authorised',
-        endDate: '12 February 2026',
+        endDate: '',
         role: 'specific-access-denied',
         hasAccess: false,
         isNew: true,

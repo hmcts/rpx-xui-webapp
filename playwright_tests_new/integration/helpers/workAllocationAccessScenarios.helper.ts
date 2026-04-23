@@ -184,7 +184,7 @@ const getMyAccessStartDate = (record: WorkAllocationAccessScenarioRecord): strin
 const getMyAccessEndDate = (record: WorkAllocationAccessScenarioRecord): string => {
   const role = getMyAccessRole(record);
 
-  if (role === 'specific-access-requested') {
+  if (role === 'specific-access-requested' || role === 'specific-access-denied') {
     return '';
   }
 

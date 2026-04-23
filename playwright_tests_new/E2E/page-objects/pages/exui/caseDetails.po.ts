@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 import { Base } from '../../base';
 import { ValidatorUtils } from '../../../utils/validator.utils';
 import { TableUtils } from '@hmcts/playwright-common';
@@ -696,6 +696,22 @@ export class CaseDetailsPage extends Base {
 
     const visibleTabPanel = this.page.locator('[role="tabpanel"]:visible').first();
     await this.waitForTabPanelReadiness(visibleTabPanel, tabLoadTimeoutMs);
+  }
+
+  getRoleAccessSection(title: 'Judiciary' | 'Legal Ops'): Locator {
+    return this.page.locator('exui-role-access-section').filter({
+      has: this.page.getByRole('heading', { level: 2, name: title }),
+    });
+  }
+
+  async openRolesAndAccessTab(caseId: string): Promise<void> {
+    await this.page.goto(`/cases/case-details/IA/Asylum/${caseId}`);
+    await expect(this.container).toBeVisible();
+    await expect(this.page.getByRole('tab', { name: /Roles and access/i }).first()).toBeVisible();
+
+    await this.selectCaseDetailsTab('Roles and access');
+    await this.page.waitForURL(new RegExp(`/cases/case-details/IA/Asylum/${caseId}(?:/roles-and-access)?(?:#.*)?$`));
+    await expect(this.page.getByRole('heading', { level: 2, name: 'Roles and access' })).toBeVisible();
   }
 
   async openDocumentOne() {

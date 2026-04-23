@@ -1,5 +1,3 @@
-import type { Page } from '@playwright/test';
-import type { CaseDetailsPage } from '../../../E2E/page-objects/pages/exui/caseDetails.po';
 import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookies, setupRolesAndAccessMockRoutes } from '../../helpers';
 import {
@@ -9,23 +7,6 @@ import {
 
 const userIdentifier = 'STAFF_ADMIN';
 const emptyCaseId = '1000000000000200';
-
-const getRoleAccessSection = (page: Page, title: 'Judiciary' | 'Legal Ops') =>
-  page.locator('exui-role-access-section').filter({
-    has: page.getByRole('heading', { level: 2, name: title }),
-  });
-
-const openRolesAndAccessTab = async (page: Page, caseDetailsPage: CaseDetailsPage, caseId: string) => {
-  await page.goto(`/cases/case-details/IA/Asylum/${caseId}`);
-  await expect(caseDetailsPage.container).toBeVisible();
-
-  const rolesAndAccessTab = page.getByRole('tab', { name: /Roles and access/i }).first();
-  await expect(rolesAndAccessTab).toBeVisible();
-
-  await caseDetailsPage.selectCaseDetailsTab('Roles and access');
-  await page.waitForURL(new RegExp(`/cases/case-details/IA/Asylum/${caseId}(?:/roles-and-access)?(?:#.*)?$`));
-  await expect(page.getByRole('heading', { level: 2, name: 'Roles and access' })).toBeVisible();
-};
 test.beforeEach(async ({ page }) => {
   await applySessionCookies(page, userIdentifier);
 });
@@ -35,8 +16,8 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
     page,
     caseDetailsPage,
   }) => {
-    const judiciarySection = getRoleAccessSection(page, 'Judiciary');
-    const legalOpsSection = getRoleAccessSection(page, 'Legal Ops');
+    const judiciarySection = caseDetailsPage.getRoleAccessSection('Judiciary');
+    const legalOpsSection = caseDetailsPage.getRoleAccessSection('Legal Ops');
     const addExclusionLink = page.locator('a.govuk-link[href*="/role-access/add-exclusion"]').first();
 
     await test.step('Setup route mocks for an empty Roles and access case', async () => {
@@ -48,7 +29,7 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
     });
 
     await test.step('Open case details and navigate via the Roles and access tab', async () => {
-      await openRolesAndAccessTab(page, caseDetailsPage, emptyCaseId);
+      await caseDetailsPage.openRolesAndAccessTab(emptyCaseId);
     });
 
     await test.step('Verify allocate links and empty-state messaging are rendered', async () => {
@@ -72,8 +53,8 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
     tableUtils,
   }) => {
     const judicialLookupRequestPromise = page.waitForRequest('**/api/role-access/roles/getJudicialUsers*');
-    const judiciarySection = getRoleAccessSection(page, 'Judiciary');
-    const legalOpsSection = getRoleAccessSection(page, 'Legal Ops');
+    const judiciarySection = caseDetailsPage.getRoleAccessSection('Judiciary');
+    const legalOpsSection = caseDetailsPage.getRoleAccessSection('Legal Ops');
     const addExclusionLink = page.locator('a.govuk-link[href*="/role-access/add-exclusion"]').first();
 
     await test.step('Setup route mocks for a populated Roles and access case', async () => {
@@ -85,7 +66,7 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
     });
 
     await test.step('Open case details and navigate via the Roles and access tab', async () => {
-      await openRolesAndAccessTab(page, caseDetailsPage, populatedCaseId);
+      await caseDetailsPage.openRolesAndAccessTab(populatedCaseId);
     });
 
     await test.step('Verify links, headers, and judicial lookup payload for the populated view', async () => {
@@ -203,8 +184,8 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
     caseDetailsPage,
     tableUtils,
   }) => {
-    const judiciarySection = getRoleAccessSection(page, 'Judiciary');
-    const legalOpsSection = getRoleAccessSection(page, 'Legal Ops');
+    const judiciarySection = caseDetailsPage.getRoleAccessSection('Judiciary');
+    const legalOpsSection = caseDetailsPage.getRoleAccessSection('Legal Ops');
 
     await test.step('Setup route mocks for a non-case allocator user', async () => {
       await setupRolesAndAccessMockRoutes(page, {
@@ -215,7 +196,7 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
     });
 
     await test.step('Open case details and navigate via the Roles and access tab', async () => {
-      await openRolesAndAccessTab(page, caseDetailsPage, populatedCaseId);
+      await caseDetailsPage.openRolesAndAccessTab(populatedCaseId);
     });
 
     await test.step('Verify non-case allocators still see the role and exclusion data', async () => {

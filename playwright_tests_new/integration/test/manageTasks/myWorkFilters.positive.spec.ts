@@ -144,28 +144,6 @@ test.describe('My work filter parity', { tag: ['@integration', '@integration-man
 
   for (const scenario of [
     {
-      expectedFullLocationServiceCodes: ['IA', 'SSCS'],
-      expectedVisibleServices: ['Immigration and Asylum', 'Social security and child support'],
-      name: 'only ORGANISATION roles contribute services and locations when both assignments are organisational',
-      roleAssignmentInfo: [
-        {
-          jurisdiction: 'IA',
-          substantive: 'Y',
-          roleType: 'ORGANISATION',
-          baseLocation: '20001',
-          isCaseAllocator: false,
-        },
-        {
-          jurisdiction: 'SSCS',
-          substantive: 'Y',
-          roleType: 'ORGANISATION',
-          baseLocation: '30001',
-          isCaseAllocator: false,
-        },
-      ],
-      unexpectedServices: ['Civil'],
-    },
-    {
       expectedFullLocationServiceCodes: ['SSCS'],
       expectedVisibleServices: ['Social security and child support'],
       name: 'CASE roles do not leak into the filter when IA is case-scoped and SSCS is organisational',

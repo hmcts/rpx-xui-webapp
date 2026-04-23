@@ -71,6 +71,7 @@ test.describe('my work filters mock routes helper', { tag: '@svc-internal' }, ()
       expect.arrayContaining([
         '**/api/user/details*',
         myCasesRoutePattern,
+        '**/aggregated/caseworkers/**/jurisdictions*',
         '**/workallocation/region-location*',
         '**/workallocation/full-location*',
         '**/api/locations/getLocationsById*',
@@ -79,14 +80,17 @@ test.describe('my work filters mock routes helper', { tag: '@svc-internal' }, ()
 
     const userDetailsRoute = getLastRegisteredRoute(fakePage.routes, '**/api/user/details*');
     const myCasesRoute = getLastRegisteredRoute(fakePage.routes, myCasesRoutePattern);
+    const aggregatedJurisdictionsRoute = getLastRegisteredRoute(fakePage.routes, '**/aggregated/caseworkers/**/jurisdictions*');
     const fullLocationRoute = getLastRegisteredRoute(fakePage.routes, '**/workallocation/full-location*');
 
     expect(userDetailsRoute).toBeTruthy();
     expect(myCasesRoute).toBeTruthy();
+    expect(aggregatedJurisdictionsRoute).toBeTruthy();
     expect(fullLocationRoute).toBeTruthy();
 
     const userDetailsPayload = (await invokeRoute(userDetailsRoute!))[0] as { body: string };
     const myCasesPayload = (await invokeRoute(myCasesRoute!))[0] as { body: string };
+    const aggregatedJurisdictionsPayload = (await invokeRoute(aggregatedJurisdictionsRoute!))[0] as { body: string };
     const fullLocationPayload = (await invokeRoute(fullLocationRoute!))[0] as { body: string };
 
     expect(JSON.parse(userDetailsPayload.body)).toEqual(
@@ -111,6 +115,11 @@ test.describe('my work filters mock routes helper', { tag: '@svc-internal' }, ()
       })
     );
     expect(JSON.parse(myCasesPayload.body).cases).toHaveLength(2);
+    expect(JSON.parse(aggregatedJurisdictionsPayload.body)).toEqual([
+      { id: 'IA', name: 'Immigration and Asylum' },
+      { id: 'SSCS', name: 'Social security and child support' },
+      { id: 'CIVIL', name: 'Civil' },
+    ]);
     expect(JSON.parse(fullLocationPayload.body)).toEqual(myWorkSelectableLocations);
   });
 });

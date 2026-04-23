@@ -13,6 +13,14 @@ export async function setupTaskListBootstrapRoutes(
   supportedJurisdictions: string[] = defaultSupportedJurisdictionsMock,
   supportedJurisdictionDetails: SupportedJurisdictionDetail[] = defaultSupportedJurisdictionDetailsMock
 ): Promise<void> {
+  const aggregatedJurisdictions = supportedJurisdictions.map((serviceId) => {
+    const detailedService = supportedJurisdictionDetails.find((service) => service.serviceId === serviceId);
+    return {
+      id: serviceId,
+      name: detailedService?.serviceName ?? serviceId,
+    };
+  });
+
   await page.route('**/api/wa-supported-jurisdiction/get*', async (route) => {
     await route.fulfill({
       status: 200,
@@ -26,6 +34,14 @@ export async function setupTaskListBootstrapRoutes(
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify(supportedJurisdictionDetails),
+    });
+  });
+
+  await page.route('**/aggregated/caseworkers/**/jurisdictions*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(aggregatedJurisdictions),
     });
   });
 

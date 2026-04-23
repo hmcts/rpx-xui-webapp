@@ -97,17 +97,6 @@ test.describe(
       let unassignRequestBody: unknown;
 
       await test.step('Setup case-details task routes and task-action resolvers', async () => {
-        await setupCaseTaskManageLinksRoutes(page, {
-          caseId,
-          claimTaskId,
-          managedTaskId,
-          claimTaskTitle,
-          managedTaskTitle,
-          taskDueDate,
-          state: taskState,
-          caseworkers: people.all,
-        });
-
         await setupTaskActionEndpointMocks(page, 'reassign', {
           taskId: managedTaskId,
           task_name: managedTaskTitle,
@@ -134,6 +123,17 @@ test.describe(
           assigneeId: people.replacementAssignee.idamId,
           unassignMode: 'unclaim',
           includeSubmitActionMock: false,
+        });
+
+        await setupCaseTaskManageLinksRoutes(page, {
+          caseId,
+          claimTaskId,
+          managedTaskId,
+          claimTaskTitle,
+          managedTaskTitle,
+          taskDueDate,
+          state: taskState,
+          caseworkers: people.all,
         });
 
         await page.route(`**/workallocation/task/${managedTaskId}/assign*`, async (route) => {

@@ -8,9 +8,10 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 import { SessionStorageService } from '../../services/session-storage/session-storage.service';
 import { MediaViewerWrapperComponent } from './media-viewer-wrapper.component';
-import { RpxTranslationModule } from 'rpx-xui-translation';
+import { RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 import createSpyObj = jasmine.createSpyObj;
 import { Title } from '@angular/platform-browser';
+import { of } from 'rxjs';
 
 const GATEWAY_DOCUMENT_URL = 'http://localhost:1234/documents';
 const REMOTE_DOCUMENT_URL = 'https://www.example.com/binary';
@@ -29,6 +30,11 @@ describe('MediaViewerWrapperComponent', () => {
   let mockAppConfig: any;
   let featureToggleService;
   let titleService;
+  const rpxTranslationServiceStub = () => ({
+    language: 'en',
+    translate: (key: string) => key,
+    getTranslation$: () => of({}),
+  });
 
   beforeEach(waitForAsync(() => {
     mockAppConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getDocumentManagementUrl', 'getRemoteDocumentManagementUrl']);
@@ -66,6 +72,7 @@ describe('MediaViewerWrapperComponent', () => {
         { provide: FeatureToggleService, useValue: featureToggleService },
         { provide: SessionStorageService, useValue: sessionStorageService },
         { provide: Title, useValue: titleService },
+        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub },
       ],
       teardown: { destroyAfterEach: false },
     }).compileComponents();

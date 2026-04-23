@@ -1,16 +1,19 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { AbstractAppConfig, DocumentUrlPipe, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { MediaViewerModule } from '@hmcts/media-viewer';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { of } from 'rxjs';
+import { EffectsModule } from '@ngrx/effects';
+import { StoreModule } from '@ngrx/store';
 import { SessionStorageService } from '../../services/session-storage/session-storage.service';
 import { MediaViewerWrapperComponent } from './media-viewer-wrapper.component';
+import { RpxTranslationModule } from 'rpx-xui-translation';
 import createSpyObj = jasmine.createSpyObj;
 import { Title } from '@angular/platform-browser';
 
 const GATEWAY_DOCUMENT_URL = 'http://localhost:1234/documents';
+const REMOTE_DOCUMENT_URL = 'https://www.example.com/binary';
 const MEDIA_VIEWER_DATA = {
   document_binary_url: GATEWAY_DOCUMENT_URL,
   document_filename: 'sample.pdf',
@@ -23,32 +26,47 @@ describe('MediaViewerWrapperComponent', () => {
   let windowService;
   let sessionStorageService;
   let activatedRoute;
+  let mockAppConfig: any;
   let featureToggleService;
   let titleService;
 
   beforeEach(waitForAsync(() => {
+    mockAppConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getDocumentManagementUrl', 'getRemoteDocumentManagementUrl']);
+    mockAppConfig.getDocumentManagementUrl.and.returnValue(GATEWAY_DOCUMENT_URL);
+    mockAppConfig.getRemoteDocumentManagementUrl.and.returnValue(REMOTE_DOCUMENT_URL);
     windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'removeLocalStorage']);
     sessionStorageService = createSpyObj('sessionStorageService', ['setItem', 'getItem']);
     featureToggleService = createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
     titleService = createSpyObj('titleService', ['setTitle']);
-    featureToggleService.getValue.and.returnValue(of([]));
-    featureToggleService.isEnabled.and.returnValue(of(true));
     activatedRoute = {
       snapshot: {
         queryParamMap: convertToParamMap({}),
       },
     };
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
-      declarations: [MediaViewerWrapperComponent],
+      imports: [
+        MediaViewerModule,
+        StoreModule.forRoot({}),
+        EffectsModule.forRoot([]),
+        RouterTestingModule,
+        RpxTranslationModule.forRoot({
+          baseUrl: '',
+          debounceTimeMs: 300,
+          validity: {
+            days: 1,
+          },
+          testMode: true,
+        }),
+      ],
+      declarations: [MediaViewerWrapperComponent, DocumentUrlPipe],
       providers: [
+        { provide: AbstractAppConfig, useValue: mockAppConfig },
         { provide: WindowService, useValue: windowService },
         { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: FeatureToggleService, useValue: featureToggleService },
         { provide: SessionStorageService, useValue: sessionStorageService },
         { provide: Title, useValue: titleService },
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       teardown: { destroyAfterEach: false },
     }).compileComponents();
   }));

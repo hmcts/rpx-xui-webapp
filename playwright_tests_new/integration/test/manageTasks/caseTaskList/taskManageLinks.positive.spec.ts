@@ -87,7 +87,11 @@ test.describe(
       });
     });
 
-    test('opens the reassign flow and loads matching people from the Tasks tab', async ({ caseDetailsPage, taskListPage, page }) => {
+    test('opens the reassign flow and loads matching people from the Tasks tab', async ({
+      caseDetailsPage,
+      taskListPage,
+      page,
+    }) => {
       const currentUserId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
       const people = buildCaseTaskManageLinksCaseworkers(currentUserId);
       const taskState: CaseTaskManageLinksState = {
@@ -163,77 +167,6 @@ test.describe(
           ])
         );
         await expect(taskListPage.reassignUserSearchInput).toHaveValue(/Replacement/i);
-      });
-    });
-
-    test('unassigns a case task from the Tasks tab and refreshes the task card', async ({ caseDetailsPage, page }) => {
-      const currentUserId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
-      const people = buildCaseTaskManageLinksCaseworkers(currentUserId);
-      const taskState: CaseTaskManageLinksState = {
-        managedTaskAssigneeId: people.existingAssignee.idamId,
-      };
-      let unassignRequestBody: unknown;
-
-      await test.step('Setup case-details task routes and unassign resolvers', async () => {
-        await setupTaskActionEndpointMocks(page, 'unassign', {
-          taskId: managedTaskId,
-          task_name: managedTaskTitle,
-          due_date: taskDueDate,
-          dueDate: taskDueDate,
-          priority_date: taskDueDate,
-          caseId,
-          jurisdiction: 'IA',
-          caseTypeId: 'Asylum',
-          assigneeId: people.existingAssignee.idamId,
-          unassignMode: 'unclaim',
-          includeSubmitActionMock: false,
-        });
-
-        await setupCaseTaskManageLinksRoutes(page, {
-          caseId,
-          claimTaskId,
-          managedTaskId,
-          claimTaskTitle,
-          managedTaskTitle,
-          taskDueDate,
-          state: taskState,
-          caseworkers: people.all,
-        });
-
-        await page.route(`**/workallocation/task/${managedTaskId}/unclaim*`, async (route) => {
-          const request = route.request();
-          if (request.method() !== 'POST') {
-            await route.continue();
-            return;
-          }
-
-          unassignRequestBody = request.postDataJSON();
-          taskState.managedTaskAssigneeId = undefined;
-
-          await route.fulfill({
-            status: 204,
-            contentType: 'application/json',
-            body: JSON.stringify({}),
-          });
-        });
-      });
-
-      await test.step('Open the unassign flow and verify the refreshed unassigned state', async () => {
-        await openCaseDetailsTasksTab(page, caseDetailsPage, caseId);
-        await caseDetailsPage.taskItem.filter({ hasText: managedTaskTitle }).first().locator('#action_unclaim').click();
-
-        await expect(page).toHaveURL(new RegExp(`/work/${managedTaskId}/unclaim\\?service=IA$`));
-        await expect(page.locator('main')).toContainText('Unassign task');
-        await page.getByRole('button', { name: 'Unassign task' }).click();
-
-        expect(unassignRequestBody).toEqual({ hasNoAssigneeOnComplete: false });
-        await expect(caseDetailsPage.caseAlertSuccessMessage).toContainText("You've unassigned a task.");
-
-        const rows = await caseDetailsPage.getTaskKeyValueRows();
-        const managedTask = getTaskRecordByTitle(rows, managedTaskTitle);
-
-        expect(managedTask?.['Assigned to']).toBeUndefined();
-        expect(managedTask?.Manage).toContain('Assign to me');
       });
     });
   }

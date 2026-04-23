@@ -3371,9 +3371,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.49-4369-03":
-  version: 7.3.49-4369-03
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.49-4369-03"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.49-4369-04":
+  version: 7.3.49-4369-04
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.49-4369-04"
   dependencies:
     "@angular-material-components/datetime-picker": "npm:16.0.1"
     "@angular-material-components/moment-adapter": "npm:16.0.1"
@@ -3391,7 +3391,7 @@ __metadata:
     "@angular/upgrade": "npm:^20.3.18"
     "@edium/fsm": "npm:^3.0.1"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
-    "@hmcts/media-viewer": "npm:4.2.17-exui-4369-cve-fix"
+    "@hmcts/media-viewer": "npm:4.2.17-exui-4369-cve-fix-01"
     "@ngrx/effects": "npm:17.2.0"
     "@ngrx/store": "npm:^17.2.0"
     "@nicky-lenaers/ngx-scroll-to": "npm:^14.0.0"
@@ -3420,7 +3420,7 @@ __metadata:
     yargs: "npm:17.7.2"
     yargs-parser: "npm:^21.1.1"
     zone.js: "npm:^0.15.1"
-  checksum: 10/b7496a11008b18500e50009a1e02ef3f9a130748fc0e37049bb2ec05ad85ddee73b175af6199e34ef57a7153c595a18a9a6a475c2b77e6513370e65190b0620c
+  checksum: 10/99abd0b5c3d28d40a7b9780a68f0bc8f79b2ef3df0fe3e5d31aadce47c9b231d297ca71aee22a7649d20bf8251c342d957066575bd998938d7265495b65349c0
   languageName: node
   linkType: hard
 
@@ -3443,9 +3443,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.17-exui-4369-cve-fix":
-  version: 4.2.17-exui-4369-cve-fix
-  resolution: "@hmcts/media-viewer@npm:4.2.17-exui-4369-cve-fix"
+"@hmcts/media-viewer@npm:4.2.17-exui-4369-cve-fix-01":
+  version: 4.2.17-exui-4369-cve-fix-01
+  resolution: "@hmcts/media-viewer@npm:4.2.17-exui-4369-cve-fix-01"
   dependencies:
     "@angular-eslint/utils": "npm:20.7.0"
     "@angular/cdk": "npm:^17.3.8"
@@ -3472,7 +3472,7 @@ __metadata:
     otp: "npm:^0.1.3"
     pdfjs-dist: "npm:^4.10.38"
     require-directory: "npm:2.1.1"
-    rpx-xui-translation: "npm:1.1.2-CME-780-9"
+    rpx-xui-translation: "npm:1.2.3"
     rxjs: "npm:^7.8.1"
     sass: "npm:^1.97.3"
     session-file-store: "npm:^1.5.0"
@@ -3493,7 +3493,7 @@ __metadata:
     "@ngrx/router-store": ^20
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
-  checksum: 10/3003c7d1ad41d9c7c92183cb5dd49bf0a626c07d6e624c5b72cdb15b7fd41a139984c9a918ff6786a557e4b9842f44e8d6dde5fd33693516f097e00cd9d2109d
+  checksum: 10/3a495e6de2eab3738f360dd844eaeb59ecf4c869ea83038b63ae4f957dc5eee05d102dac531a301da9edb322954db532601b5eeaee5d500a1dd88e3bec3326ea
   languageName: node
   linkType: hard
 
@@ -20801,10 +20801,10 @@ __metadata:
     "@edium/fsm": "npm:^2.1.5"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.49-4369-03"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.49-4369-04"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.2.17-exui-4369-cve-fix"
+    "@hmcts/media-viewer": "npm:4.2.17-exui-4369-cve-fix-01"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.3.1"
@@ -20953,20 +20953,6 @@ __metadata:
     zone.js: "npm:~0.15.0"
   languageName: unknown
   linkType: soft
-
-"rpx-xui-translation@npm:1.1.2-CME-780-9":
-  version: 1.1.2-CME-780-9
-  resolution: "rpx-xui-translation@npm:1.1.2-CME-780-9"
-  dependencies:
-    dexie: "npm:^3.2.2"
-    luxon: "npm:^2.4.0"
-    tslib: "npm:^2.0.0"
-  peerDependencies:
-    "@angular/common": ^20.3.1
-    "@angular/core": ^20.3.1
-  checksum: 10/82126cfbc5984c0e3718a173e8e29d35c18f56e01dbe10241b7bd3f17ce5df065421dffc030db0dc88ec807597aa5aadb55b3349c03ac8335dc44189886aec0a
-  languageName: node
-  linkType: hard
 
 "rpx-xui-translation@npm:1.2.3":
   version: 1.2.3

@@ -4,10 +4,6 @@ import { buildMyCaseMock, buildMyCases } from '../../../mocks/myCases.mock';
 
 const userIdentifier = 'STAFF_ADMIN';
 
-const getSummaryText = async (summaryLocator: { textContent: () => Promise<string | null> }): Promise<string> => {
-  return ((await summaryLocator.textContent()) ?? '').replace(/\s+/g, ' ').trim();
-};
-
 test.beforeEach(async ({ page }) => {
   await applySessionCookies(page, userIdentifier);
 });
@@ -48,7 +44,7 @@ test.describe(`My Cases pagination as ${userIdentifier}`, { tag: ['@integration'
       await expect(taskListPage.paginationControls).toHaveCount(0);
       await expect(taskListPage.uniqueCasesSummary).toContainText('100 cases');
       await expect(taskListPage.taskRows).toHaveCount(140);
-      expect(await getSummaryText(taskListPage.myCasesResultsAmount)).toBe('Showing 140 results');
+      expect(await taskListPage.getPaginationSummaryText()).toBe('Showing 140 results');
     });
 
     await test.step('Verify case name and case category remain non-sortable', async () => {
@@ -81,7 +77,7 @@ test.describe(`My Cases pagination as ${userIdentifier}`, { tag: ['@integration'
 
       await expect(taskListPage.paginationControls).toHaveCount(0);
       await expect(taskListPage.uniqueCasesSummary).toContainText('20 cases');
-      expect(await getSummaryText(taskListPage.myCasesResultsAmount)).toMatch(/Showing (?:1 to 20 of 20|20) results/);
+      expect(await taskListPage.getPaginationSummaryText()).toMatch(/Showing (?:1 to 20 of 20|20) results/);
     });
   });
 });

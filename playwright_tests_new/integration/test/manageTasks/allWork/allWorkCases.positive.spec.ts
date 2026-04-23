@@ -1,5 +1,12 @@
 import { expect, test } from '../../../../E2E/fixtures';
-import { allWorkCasesRoutePattern, applySessionCookies, setupAllWorkCasesRoutes } from '../../../helpers';
+import {
+  allWorkCasesRoutePattern,
+  applySessionCookies,
+  parseAllWorkCasesRequest,
+  setupAllWorkCasesRoutes,
+  waitForAllWorkCasesPageRequest,
+  waitForFilteredAllWorkCasesRequest,
+} from '../../../helpers';
 import { buildMyCaseMock, type MyCaseMock } from '../../../mocks/myCases.mock';
 
 const userIdentifier = 'STAFF_ADMIN';
@@ -61,59 +68,6 @@ const buildAllWorkCase = (index: number, overrides: Partial<MyCaseMock> = {}): M
 };
 
 const pagedAllWorkCases = Array.from({ length: 140 }, (_, index) => buildAllWorkCase(index));
-
-const getSummaryText = async (summaryLocator: { textContent: () => Promise<string | null> }): Promise<string> => {
-  return ((await summaryLocator.textContent()) ?? '').replace(/\s+/g, ' ').trim();
-};
-
-const selectAllWorkPersonAndApply = async (
-  taskListPage: {
-    waitForAllWorkCasesFilterControlsReady: () => Promise<void>;
-    allWorkPersonSearchInput: { fill: (value: string) => Promise<void> };
-    selectFirstAutocompleteOption: () => Promise<void>;
-    applyFilterButton: { click: () => Promise<void> };
-  },
-  personName: string
-) => {
-  await taskListPage.waitForAllWorkCasesFilterControlsReady();
-  await taskListPage.allWorkPersonSearchInput.fill(personName);
-  await taskListPage.selectFirstAutocompleteOption();
-  await taskListPage.applyFilterButton.click();
-};
-
-const parseAllWorkCasesRequest = (request: { postDataJSON: () => unknown }) => {
-  return request.postDataJSON() as {
-    searchRequest?: {
-      search_parameters?: Array<{ key?: string; values?: unknown }>;
-      pagination_parameters?: { page_number?: number; page_size?: number };
-    };
-    view?: string;
-  };
-};
-
-type AllWorkCasesRequest = {
-  url: () => string;
-  method: () => string;
-  postDataJSON: () => unknown;
-};
-
-const waitForFilteredAllWorkCasesRequest = (
-  page: {
-    waitForRequest: (predicate: (request: AllWorkCasesRequest) => boolean) => Promise<AllWorkCasesRequest>;
-  },
-  actorId: string
-) => {
-  return page.waitForRequest((request) => {
-    if (!allWorkCasesRoutePattern.exec(request.url()) || request.method() !== 'POST') {
-      return false;
-    }
-
-    const requestBody = parseAllWorkCasesRequest(request);
-    return requestBody.searchRequest?.search_parameters?.some(
-      (parameter) => parameter.key === 'actorId' && parameter.values === actorId
-    );
-  });
-};
 
 test.beforeEach(async ({ page }) => {
   await applySessionCookies(page, userIdentifier);
@@ -177,7 +131,7 @@ test.describe(`All Work cases as ${userIdentifier}`, { tag: ['@integration', '@i
         );
       });
 
-      await selectAllWorkPersonAndApply(taskListPage, 'Empty');
+      await taskListPage.applyAllWorkCasesPersonFilter('Empty', 'Empty Allocation');
       await allWorkCasesRequest;
 
       await expect(taskListPage.allWorkCasesEmptyMessage).toBeVisible();
@@ -235,7 +189,7 @@ test.describe(`All Work cases as ${userIdentifier}`, { tag: ['@integration', '@i
 
       const firstRequestPromise = waitForFilteredAllWorkCasesRequest(page, currentFilterPerson.idamId);
 
-      await selectAllWorkPersonAndApply(taskListPage, 'Current');
+      await taskListPage.applyAllWorkCasesPersonFilter('Current', 'Current Allocation');
       const firstRequest = await firstRequestPromise;
       const requestBody = parseAllWorkCasesRequest(firstRequest);
 
@@ -259,7 +213,7 @@ test.describe(`All Work cases as ${userIdentifier}`, { tag: ['@integration', '@i
       await expect(taskListPage.allWorkCasesApplyPrompt).toHaveCount(0);
       await expect(taskListPage.paginationControls).toBeVisible();
       await expect(taskListPage.paginationCurrentPage).toContainText('1');
-      expect(await getSummaryText(taskListPage.myCasesResultsAmount)).toBe('Showing 1 to 25 of 140 results');
+      expect(await taskListPage.getPaginationSummaryText()).toBe('Showing 1 to 25 of 140 results');
 
       const firstCaseLink = taskListPage.taskListTable.getByRole('link', { name: firstCase.case_name }).first();
       await expect(firstCaseLink).toHaveAttribute(
@@ -272,14 +226,7 @@ test.describe(`All Work cases as ${userIdentifier}`, { tag: ['@integration', '@i
     });
 
     await test.step('Move to page 3 and verify the backend pagination request and summary', async () => {
-      const thirdPageRequestPromise = page.waitForRequest((request) => {
-        if (!allWorkCasesRoutePattern.exec(request.url()) || request.method() !== 'POST') {
-          return false;
-        }
-
-        const requestBody = parseAllWorkCasesRequest(request);
-        return requestBody.searchRequest?.pagination_parameters?.page_number === 3;
-      });
+      const thirdPageRequestPromise = waitForAllWorkCasesPageRequest(page, 3);
 
       await taskListPage.openPaginationPage(3);
       const thirdPageRequest = await thirdPageRequestPromise;
@@ -289,7 +236,7 @@ test.describe(`All Work cases as ${userIdentifier}`, { tag: ['@integration', '@i
         page_size: 25,
       });
       await expect(taskListPage.paginationCurrentPage).toContainText('3');
-      expect(await getSummaryText(taskListPage.myCasesResultsAmount)).toBe('Showing 51 to 75 of 140 results');
+      expect(await taskListPage.getPaginationSummaryText()).toBe('Showing 51 to 75 of 140 results');
     });
   });
 });

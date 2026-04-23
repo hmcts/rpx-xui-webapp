@@ -9,6 +9,8 @@ const FILTER_INTERACTION_ATTEMPTS = 2;
 const PRIORITY_LIMIT_URGENT = 2000;
 const PRIORITY_LIMIT_HIGH = 5000;
 
+const escapeForRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 export class TaskListPage extends Base {
   readonly myWorkHeading = this.page.getByRole('heading', { name: /my work/i }).first();
   readonly taskListFilterToggle = this.page.locator('exui-task-list-filter .govuk-button.hmcts-button--secondary').first();
@@ -28,9 +30,7 @@ export class TaskListPage extends Base {
   readonly applyFilterButton = this.page.locator('button#applyFilter').first();
 
   readonly allWorkServiceFilter = this.filterPanel
-    .locator(
-      'select#select_service, select[name="select_service"], select[name="service"], select#service, [id*="service"] select'
-    )
+    .locator('select#select_service, select[name="select_service"], select#service, select[name="service"]')
     .first();
   readonly allWorkCasesServiceFilter = this.filterPanel
     .locator('select#select_jurisdiction, select[name="select_jurisdiction"]')
@@ -49,7 +49,8 @@ export class TaskListPage extends Base {
     .locator('xpath=following::select[1]')
     .first();
   readonly allWorkPersonSearchInput = this.filterPanel.getByRole('combobox', { name: /select a person/i }).first();
-  readonly allWorkLocationSearchInput = this.filterPanel.locator('input[name="location"], input[id*="location"]').first();
+  readonly allWorkLocationSearchInput = this.filterPanel.locator('#locations input[name="location"]').first();
+  readonly allWorkAutocompleteOptions = this.page.locator('.cdk-overlay-container .mat-autocomplete-panel [role="option"]');
   readonly allWorkLocationSearchResults = this.page.locator('.cdk-overlay-container .mat-autocomplete-panel mat-option span');
   readonly selectedLocationTags = this.filterPanel.locator(
     '#locations xuilib-find-location .location-picker-custom .location-selection a'
@@ -172,6 +173,11 @@ export class TaskListPage extends Base {
 
   async getResultsText() {
     return await this.taskListResultsAmount.textContent();
+  }
+
+  async getPaginationSummaryText() {
+    const summaryText = (await this.myCasesResultsAmount.textContent()) ?? '';
+    return summaryText.replace(/\s+/g, ' ').trim();
   }
 
   getExpectedPriorityLabel(majorPriority?: number | string, priorityDate?: string | Date, currentDate: Date = new Date()) {
@@ -582,6 +588,22 @@ export class TaskListPage extends Base {
   async selectFirstAutocompleteOption() {
     await this.autocompleteOverlay.last().waitFor({ state: 'visible' });
     await this.autocompleteOverlay.last().locator('[role="option"]').first().click();
+  }
+
+  async selectAllWorkAutocompleteOption(optionText: string) {
+    const option = this.page
+      .locator('.cdk-overlay-container .mat-autocomplete-panel')
+      .getByRole('option', { name: new RegExp(escapeForRegex(optionText), 'i') })
+      .first();
+    await option.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+    await option.click();
+  }
+
+  async applyAllWorkCasesPersonFilter(searchText: string, optionText: string) {
+    await this.waitForAllWorkCasesFilterControlsReady();
+    await this.allWorkPersonSearchInput.fill(searchText);
+    await this.selectAllWorkAutocompleteOption(optionText);
+    await this.applyFilterButton.click();
   }
 
   async selectFirstReassignUserOption() {

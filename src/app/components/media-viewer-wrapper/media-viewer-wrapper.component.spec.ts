@@ -1,14 +1,11 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { AbstractAppConfig, DocumentUrlPipe, WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { AbstractAppConfig, WindowService } from '@hmcts/ccd-case-ui-toolkit';
 import { ActivatedRoute, convertToParamMap } from '@angular/router';
-import { MediaViewerModule } from '@hmcts/media-viewer';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { EffectsModule } from '@ngrx/effects';
-import { StoreModule } from '@ngrx/store';
 import { SessionStorageService } from '../../services/session-storage/session-storage.service';
 import { MediaViewerWrapperComponent } from './media-viewer-wrapper.component';
-import { RpxTranslationModule, RpxTranslationService } from 'rpx-xui-translation';
 import createSpyObj = jasmine.createSpyObj;
 import { Title } from '@angular/platform-browser';
 import { of } from 'rxjs';
@@ -30,11 +27,6 @@ describe('MediaViewerWrapperComponent', () => {
   let mockAppConfig: any;
   let featureToggleService;
   let titleService;
-  const rpxTranslationServiceStub = () => ({
-    language: 'en',
-    translate: (key: string) => key,
-    getTranslation$: () => of({}),
-  });
 
   beforeEach(waitForAsync(() => {
     mockAppConfig = createSpyObj<AbstractAppConfig>('AppConfig', ['getDocumentManagementUrl', 'getRemoteDocumentManagementUrl']);
@@ -43,6 +35,8 @@ describe('MediaViewerWrapperComponent', () => {
     windowService = createSpyObj('windowService', ['setLocalStorage', 'getLocalStorage', 'removeLocalStorage']);
     sessionStorageService = createSpyObj('sessionStorageService', ['setItem', 'getItem']);
     featureToggleService = createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
+    featureToggleService.getValue.and.returnValue(of([]));
+    featureToggleService.isEnabled.and.returnValue(of(false));
     titleService = createSpyObj('titleService', ['setTitle']);
     activatedRoute = {
       snapshot: {
@@ -50,21 +44,9 @@ describe('MediaViewerWrapperComponent', () => {
       },
     };
     TestBed.configureTestingModule({
-      imports: [
-        MediaViewerModule,
-        StoreModule.forRoot({}),
-        EffectsModule.forRoot([]),
-        RouterTestingModule,
-        RpxTranslationModule.forRoot({
-          baseUrl: '',
-          debounceTimeMs: 300,
-          validity: {
-            days: 1,
-          },
-          testMode: true,
-        }),
-      ],
-      declarations: [MediaViewerWrapperComponent, DocumentUrlPipe],
+      imports: [RouterTestingModule],
+      declarations: [MediaViewerWrapperComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       providers: [
         { provide: AbstractAppConfig, useValue: mockAppConfig },
         { provide: WindowService, useValue: windowService },
@@ -72,7 +54,6 @@ describe('MediaViewerWrapperComponent', () => {
         { provide: FeatureToggleService, useValue: featureToggleService },
         { provide: SessionStorageService, useValue: sessionStorageService },
         { provide: Title, useValue: titleService },
-        { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub },
       ],
       teardown: { destroyAfterEach: false },
     }).compileComponents();

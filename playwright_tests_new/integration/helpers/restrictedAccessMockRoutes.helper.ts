@@ -178,7 +178,7 @@ export async function setupRestrictedAccessMocks(page: Page, overrides: Restrict
     await route.fulfill({
       status: caseworkersStatus,
       contentType: 'application/json',
-      body: JSON.stringify(caseworkersBody),
+      body: JSON.stringify(caseworkersBody[0]),
     });
   });
 

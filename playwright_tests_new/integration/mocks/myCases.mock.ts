@@ -21,6 +21,7 @@ export type MyCaseMock = {
   case_role: string;
   role: string;
   role_category: string;
+  assignee: string;
   hasAccess: boolean;
   actions: MyCaseActionMock[];
 };
@@ -66,7 +67,7 @@ export const myCaseDisplayValues = [...new Set(myCaseStateDefinitions.map((defin
 
 export const buildMyCaseMock = (overrides: Partial<MyCaseMock> = {}): MyCaseMock => {
   const serviceLabelByJurisdiction: Record<string, string> = {
-    IA: 'Immigration & Asylum',
+    IA: 'Immigration and Asylum',
     SSCS: 'Social security and child support',
     Other: 'Other',
   };
@@ -91,6 +92,7 @@ export const buildMyCaseMock = (overrides: Partial<MyCaseMock> = {}): MyCaseMock
     case_role: overrides.case_role ?? stateDefinition.caseRole,
     role: overrides.role ?? stateDefinition.role,
     role_category: overrides.role_category ?? stateDefinition.roleCategory,
+    assignee: overrides.assignee ?? faker.string.uuid(),
     hasAccess: overrides.hasAccess ?? true,
     actions: overrides.actions ?? [...myCasesNoActions],
   };
@@ -126,13 +128,14 @@ export const buildMyCasesMock = (uniqueCasesCount: number = 2): MyCasesResponseM
       case_type: 'Asylum',
       jurisdiction: 'IA',
       jurisdictionId: 'IA',
-      expectedServiceLabel: 'Immigration & Asylum',
+      expectedServiceLabel: 'Immigration and Asylum',
       startDate: toMiddayUtcIso('2026-01-10T00:00:00.000Z'),
       endDate: toMiddayUtcIso('2026-02-16T00:00:00.000Z'),
       next_hearing_date: toMiddayUtcIso('2026-01-20T00:00:00.000Z'),
       case_role: 'lead-judge',
       role: 'Lead Judge',
       role_category: 'JUDICIAL',
+      assignee: 'judicial-assignee-1',
       hasAccess: true,
       actions: myCasesAllocatorActions,
     }),
@@ -151,6 +154,7 @@ export const buildMyCasesMock = (uniqueCasesCount: number = 2): MyCasesResponseM
       case_role: 'case-manager',
       role: 'Case Manager',
       role_category: 'LEGAL_OPERATIONS',
+      assignee: 'legal-ops-assignee-2',
       hasAccess: true,
       actions: myCasesNoActions,
     }),

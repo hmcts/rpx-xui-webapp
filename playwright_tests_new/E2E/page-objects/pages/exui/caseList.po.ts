@@ -197,8 +197,8 @@ export class CaseListPage extends Base {
 
   private async getVisiblePaginationPageControl(pageNumber: number): Promise<Locator> {
     const pageText = pageNumber.toString();
-    const candidateControls = this.page.locator('.ngx-pagination a, .ngx-pagination button').filter({
-      hasText: new RegExp(`^\\s*${pageText}\\s*$`),
+    const candidateControls = this.pagination.locator('a, button').filter({
+      hasText: new RegExp(String.raw`^\s*${pageText}\s*$`),
     });
     const candidateCount = await candidateControls.count();
 
@@ -209,13 +209,13 @@ export class CaseListPage extends Base {
       }
     }
 
-    const paginationItems = (await this.page.locator('.ngx-pagination li').allTextContents()).map((item) => item.trim());
+    const paginationItems = (await this.pagination.locator('li').allTextContents()).map((item) => item.trim());
     throw new Error(`Pagination page control "${pageText}" was not visible. Available items: ${paginationItems.join(', ')}`);
   }
 
   async clickPaginationPage(pageNumber: number): Promise<void> {
     const pageControl = await this.getVisiblePaginationPageControl(pageNumber);
-    await pageControl.click({ timeout: 10_000 });
+    await pageControl.click();
   }
 
   async openCaseByReference(cleanedCaseNumber: string) {

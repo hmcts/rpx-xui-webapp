@@ -89,7 +89,12 @@ test.describe(`Case List as ${userIdentifier}`, { tag: ['@integration', '@integr
       searchResponseHandler: async (route) => {
         const requestUrl = new URL(route.request().url());
         const pageNumber = Number(requestUrl.searchParams.get('page') ?? '1');
-        const responseBody = pageNumber === 4 ? pageFourMock : pageNumber === 2 ? pageTwoMock : pageOneMock;
+        let responseBody = pageOneMock;
+        if (pageNumber === 2) {
+          responseBody = pageTwoMock;
+        } else if (pageNumber === 4) {
+          responseBody = pageFourMock;
+        }
 
         await route.fulfill({
           status: 200,
@@ -193,7 +198,12 @@ test.describe(`Case List as ${userIdentifier}`, { tag: ['@integration', '@integr
       searchResponseHandler: async (route) => {
         const requestUrl = new URL(route.request().url());
         const pageNumber = Number(requestUrl.searchParams.get('page') ?? '1');
-        const responseBody = pageNumber === 4 ? pageFourMock : pageNumber === 2 ? pageTwoMock : pageOneMock;
+        let responseBody = pageOneMock;
+        if (pageNumber === 2) {
+          responseBody = pageTwoMock;
+        } else if (pageNumber === 4) {
+          responseBody = pageFourMock;
+        }
 
         await route.fulfill({
           status: 200,

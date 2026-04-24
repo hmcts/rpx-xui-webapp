@@ -14,6 +14,9 @@ export type SearchCasesRequestDetails = {
   page: string;
   state?: string;
 };
+type ExpectedSearchCasesRequestDetails = Omit<SearchCasesRequestDetails, 'state'> & {
+  state?: string | null;
+};
 
 export const defaultSearchCasesRequestParams = {
   ctid: 'xuiTestJurisdiction',
@@ -118,7 +121,7 @@ export async function waitForSearchCasesRequest(
 
 export function expectSearchCasesRequest(
   request: SearchCasesRequestDetails,
-  expected: SearchCasesRequestDetails & { state?: string | undefined | null }
+  expected: ExpectedSearchCasesRequestDetails
 ): void {
   expect(request.ctid).toBe(expected.ctid);
   expect(request.useCase).toBe(expected.useCase);
@@ -205,7 +208,7 @@ export async function navigateToPageAndAssertResults(
   tableUtils: TableUtils,
   options: {
     targetPage: number;
-    expectedRequest: SearchCasesRequestDetails & { state?: string | undefined | null };
+    expectedRequest: ExpectedSearchCasesRequestDetails;
     expectedMock: CaseListMockResponse;
     pagination: {
       currentPage: number;

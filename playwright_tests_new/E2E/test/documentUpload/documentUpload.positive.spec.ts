@@ -137,7 +137,7 @@ test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, (
   });
 });
 
-test.describe('Document upload V1', { tag: ['@e2e', '@e2e-document-upload'] }, () => {
+test.describe('Document upload V1', { tag: ['@e2e', '@e2e-document-upload', '@e2e-document-upload-v1'] }, () => {
   test.describe.configure({ timeout: 120000 });
   let testValue: string;
   let testFileName: string;

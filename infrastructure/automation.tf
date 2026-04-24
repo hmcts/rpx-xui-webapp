@@ -44,6 +44,199 @@ catch {
 # Import required modules
 Import-Module Az.Communication -ErrorAction SilentlyContinue
 
+function Escape-PdfText {
+    param([string]$Text)
+
+    if ($null -eq $Text) {
+        return ""
+    }
+
+    return $Text.Replace('\', '\\').Replace('(', '\(').Replace(')', '\)')
+}
+
+function ConvertTo-PdfWrappedLines {
+    param(
+        [string[]]$Lines,
+        [int]$MaxLength = 90
+    )
+
+    $wrappedLines = New-Object System.Collections.Generic.List[string]
+
+    foreach ($line in $Lines) {
+        if ([string]::IsNullOrEmpty($line)) {
+            $wrappedLines.Add("")
+            continue
+        }
+
+        $remaining = $line.TrimEnd()
+        while ($remaining.Length -gt $MaxLength) {
+            $breakIndex = $remaining.LastIndexOf(' ', $MaxLength)
+            if ($breakIndex -lt 1) {
+                $breakIndex = $MaxLength
+            }
+
+            $wrappedLines.Add($remaining.Substring(0, $breakIndex).TrimEnd())
+            $remaining = $remaining.Substring($breakIndex).TrimStart()
+        }
+
+        $wrappedLines.Add($remaining)
+    }
+
+    return $wrappedLines.ToArray()
+}
+
+function New-PdfObjectBytes {
+    param(
+        [int]$ObjectNumber,
+        [byte[]]$BodyBytes
+    )
+
+    $headerBytes = [System.Text.Encoding]::ASCII.GetBytes("${ObjectNumber} 0 obj`n")
+    $footerBytes = [System.Text.Encoding]::ASCII.GetBytes("`nendobj`n")
+    $objectBytes = New-Object byte[] ($headerBytes.Length + $BodyBytes.Length + $footerBytes.Length)
+
+    [System.Buffer]::BlockCopy($headerBytes, 0, $objectBytes, 0, $headerBytes.Length)
+    [System.Buffer]::BlockCopy($BodyBytes, 0, $objectBytes, $headerBytes.Length, $BodyBytes.Length)
+    [System.Buffer]::BlockCopy($footerBytes, 0, $objectBytes, ($headerBytes.Length + $BodyBytes.Length), $footerBytes.Length)
+
+    return $objectBytes
+}
+
+function New-PdfTextObjectBytes {
+    param(
+        [int]$ObjectNumber,
+        [string]$BodyText
+    )
+
+    return New-PdfObjectBytes -ObjectNumber $ObjectNumber -BodyBytes ([System.Text.Encoding]::ASCII.GetBytes($BodyText))
+}
+
+function New-SimplePdfReport {
+    param(
+        [string]$FilePath,
+        [string[]]$Lines,
+        [string]$ImagePath
+    )
+
+    $pdfLines = ConvertTo-PdfWrappedLines -Lines $Lines
+    $pageWidth = 612
+    $pageHeight = 792
+    $leftMargin = 40
+    $topStart = 760
+    $lineHeight = 14
+
+    $contentBuilder = New-Object System.Text.StringBuilder
+    [void]$contentBuilder.AppendLine("BT")
+    [void]$contentBuilder.AppendLine("/F1 11 Tf")
+
+    $lineIndex = 0
+    foreach ($line in $pdfLines) {
+        $yPosition = $topStart - ($lineIndex * $lineHeight)
+        if ($yPosition -lt 140) {
+            break
+        }
+
+        $escapedLine = Escape-PdfText $line
+        [void]$contentBuilder.AppendLine(("1 0 0 1 {0} {1} Tm ({2}) Tj" -f $leftMargin, $yPosition, $escapedLine))
+        $lineIndex++
+    }
+
+    [void]$contentBuilder.AppendLine("ET")
+
+    $imageObjectBytes = $null
+    $imageResource = ""
+    if ($ImagePath -and (Test-Path $ImagePath)) {
+        $image = [System.Drawing.Image]::FromFile($ImagePath)
+        try {
+            $maxImageWidth = 520.0
+            $maxImageHeight = 260.0
+            $scale = [Math]::Min(($maxImageWidth / $image.Width), ($maxImageHeight / $image.Height))
+            if ($scale -gt 1.0) { $scale = 1.0 }
+
+            $drawWidth = [Math]::Round($image.Width * $scale, 2)
+            $drawHeight = [Math]::Round($image.Height * $scale, 2)
+            $drawX = $leftMargin
+            $drawY = 40
+
+            [void]$contentBuilder.AppendLine("q")
+            [void]$contentBuilder.AppendLine(("{0} 0 0 {1} {2} {3} cm" -f $drawWidth, $drawHeight, $drawX, $drawY))
+            [void]$contentBuilder.AppendLine("/Im1 Do")
+            [void]$contentBuilder.AppendLine("Q")
+
+            $imageBytes = [System.IO.File]::ReadAllBytes($ImagePath)
+            $imageDictionary = "<< /Type /XObject /Subtype /Image /Width $($image.Width) /Height $($image.Height) /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length $($imageBytes.Length) >>`nstream`n"
+            $imageHeaderBytes = [System.Text.Encoding]::ASCII.GetBytes($imageDictionary)
+            $imageFooterBytes = [System.Text.Encoding]::ASCII.GetBytes("`nendstream")
+            $imageBodyBytes = New-Object byte[] ($imageHeaderBytes.Length + $imageBytes.Length + $imageFooterBytes.Length)
+
+            [System.Buffer]::BlockCopy($imageHeaderBytes, 0, $imageBodyBytes, 0, $imageHeaderBytes.Length)
+            [System.Buffer]::BlockCopy($imageBytes, 0, $imageBodyBytes, $imageHeaderBytes.Length, $imageBytes.Length)
+            [System.Buffer]::BlockCopy($imageFooterBytes, 0, $imageBodyBytes, ($imageHeaderBytes.Length + $imageBytes.Length), $imageFooterBytes.Length)
+
+            $imageObjectBytes = New-PdfObjectBytes -ObjectNumber 6 -BodyBytes $imageBodyBytes
+            $imageResource = " /XObject << /Im1 6 0 R >>"
+        }
+        finally {
+            $image.Dispose()
+        }
+    }
+
+    $contentBytes = [System.Text.Encoding]::ASCII.GetBytes($contentBuilder.ToString())
+    $contentObjectBody = [System.Text.Encoding]::ASCII.GetBytes("<< /Length $($contentBytes.Length) >>`nstream`n")
+    $contentFooterBytes = [System.Text.Encoding]::ASCII.GetBytes("endstream")
+    $contentBodyBytes = New-Object byte[] ($contentObjectBody.Length + $contentBytes.Length + $contentFooterBytes.Length)
+    [System.Buffer]::BlockCopy($contentObjectBody, 0, $contentBodyBytes, 0, $contentObjectBody.Length)
+    [System.Buffer]::BlockCopy($contentBytes, 0, $contentBodyBytes, $contentObjectBody.Length, $contentBytes.Length)
+    [System.Buffer]::BlockCopy($contentFooterBytes, 0, $contentBodyBytes, ($contentObjectBody.Length + $contentBytes.Length), $contentFooterBytes.Length)
+
+    $objects = New-Object System.Collections.Generic.List[byte[]]
+    $objects.Add((New-PdfTextObjectBytes -ObjectNumber 1 -BodyText "<< /Type /Catalog /Pages 2 0 R >>"))
+    $objects.Add((New-PdfTextObjectBytes -ObjectNumber 2 -BodyText "<< /Type /Pages /Kids [3 0 R] /Count 1 >>"))
+    $objects.Add((New-PdfTextObjectBytes -ObjectNumber 3 -BodyText "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 $pageWidth $pageHeight] /Resources << /Font << /F1 4 0 R >>$imageResource >> /Contents 5 0 R >>"))
+    $objects.Add((New-PdfTextObjectBytes -ObjectNumber 4 -BodyText "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>"))
+    $objects.Add((New-PdfObjectBytes -ObjectNumber 5 -BodyBytes $contentBodyBytes))
+    if ($imageObjectBytes) {
+        $objects.Add($imageObjectBytes)
+    }
+
+    $memoryStream = New-Object System.IO.MemoryStream
+    try {
+        $headerBytes = [System.Text.Encoding]::ASCII.GetBytes("%PDF-1.4`n%`xE2`xE3`xCF`xD3`n")
+        $memoryStream.Write($headerBytes, 0, $headerBytes.Length)
+
+        $offsets = New-Object System.Collections.Generic.List[int]
+        $offsets.Add(0)
+
+        foreach ($objectBytes in $objects) {
+            $offsets.Add([int]$memoryStream.Position)
+            $memoryStream.Write($objectBytes, 0, $objectBytes.Length)
+        }
+
+        $xrefStart = [int]$memoryStream.Position
+        $xrefBuilder = New-Object System.Text.StringBuilder
+        [void]$xrefBuilder.AppendLine("xref")
+        [void]$xrefBuilder.AppendLine(("0 {0}" -f ($offsets.Count)))
+        [void]$xrefBuilder.AppendLine("0000000000 65535 f ")
+        for ($i = 1; $i -lt $offsets.Count; $i++) {
+            [void]$xrefBuilder.AppendLine(("{0:0000000000} 00000 n " -f $offsets[$i]))
+        }
+
+        [void]$xrefBuilder.AppendLine("trailer")
+        [void]$xrefBuilder.AppendLine(("<< /Size {0} /Root 1 0 R >>" -f $offsets.Count))
+        [void]$xrefBuilder.AppendLine("startxref")
+        [void]$xrefBuilder.AppendLine($xrefStart)
+        [void]$xrefBuilder.Append("%%EOF")
+
+        $xrefBytes = [System.Text.Encoding]::ASCII.GetBytes($xrefBuilder.ToString())
+        $memoryStream.Write($xrefBytes, 0, $xrefBytes.Length)
+
+        [System.IO.File]::WriteAllBytes($FilePath, $memoryStream.ToArray())
+    }
+    finally {
+        $memoryStream.Dispose()
+    }
+}
+
 # Main Welsh translation query
 $query = @"
 let startTime = startofmonth(datetime_add('month', -1, startofmonth(now())));
@@ -161,35 +354,132 @@ else {
     Write-Output "Report contains $($dataRows.Count) days with $totalSessions total sessions."
 }
 
-# Generate CSV attachment using built-in PowerShell cmdlets to avoid external PDF dependencies
-$csvBase64 = $null
+# Generate PDF attachment without external PDF modules
+$pdfPath = Join-Path ([System.IO.Path]::GetTempPath()) "WelshReport_$(Get-Date -Format 'yyyyMM').pdf"
+$pdfBase64 = $null
 try {
-    Write-Output "Generating CSV report attachment..."
+    Write-Output "Generating PDF report..."
 
-    $csvRows = @()
+    $pdfLines = [System.Collections.Generic.List[string]]::new()
+    $pdfLines.Add("Monthly Welsh Language Usage Report")
+    $pdfLines.Add("Environment: ${var.product} ${var.env}")
+    $pdfLines.Add("Reporting Period: $([DateTime]::UtcNow.AddMonths(-1).ToString('MMMM yyyy'))")
+    $pdfLines.Add("")
+    $pdfLines.Add("Daily Welsh Translation Usage (unique sessions per /api/translation/cy):")
+    $pdfLines.Add("Date                 | Unique Sessions")
+    $pdfLines.Add("---------------------+----------------")
     if ($dataRows -and $dataRows.Count -gt 0) {
-        $csvRows = @($dataRows | ForEach-Object {
-            [PSCustomObject]@{
-                Date            = if ($null -ne $_.Date) { $_.Date } else { "N/A" }
-                UniqueSessions  = if ($null -ne $_.Sessions) { [int]$_.Sessions } else { 0 }
+        foreach ($row in $dataRows) {
+            if ($null -ne $row) {
+                $pdfDate     = if ($null -ne $row.Date)     { $row.Date }                else { 'N/A' }
+                $pdfSessions = if ($null -ne $row.Sessions) { $row.Sessions.ToString() } else { '0' }
+                $pdfLines.Add(("{0,-21}| {1}" -f $pdfDate, $pdfSessions))
             }
-        })
+        }
+        $pdfLines.Add("---------------------+----------------")
+        $pdfLines.Add(("Total                | {0}" -f $totalSessions))
     }
     else {
-        $csvRows = @(
-            [PSCustomObject]@{
-                Date           = "No data"
-                UniqueSessions = 0
+        $pdfLines.Add("No Welsh language translation usage was recorded in the reporting period.")
+    }
+    $pdfLines.Add("")
+    $pdfLines.Add("Generated: $(Get-Date -Format 'dd MMM yyyy HH:mm:ss') UTC")
+
+    $pdfChartImagePath = $null
+    if ($dataRows -and $dataRows.Count -gt 0) {
+        try {
+            Add-Type -AssemblyName System.Drawing
+            $chartWidth   = 700
+            $chartHeight  = 380
+            $marginLeft   = 65
+            $marginRight  = 20
+            $marginTop    = 45
+            $marginBottom = 70
+            $plotWidth    = $chartWidth  - $marginLeft - $marginRight
+            $plotHeight   = $chartHeight - $marginTop  - $marginBottom
+
+            $bitmap  = New-Object System.Drawing.Bitmap($chartWidth, $chartHeight)
+            $graphic = [System.Drawing.Graphics]::FromImage($bitmap)
+            $graphic.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
+            $graphic.Clear([System.Drawing.Color]::White)
+
+            $gridPen   = New-Object System.Drawing.Pen([System.Drawing.Color]::FromArgb(220, 220, 220), 1)
+            $axesPen   = New-Object System.Drawing.Pen([System.Drawing.Color]::FromArgb(80, 90, 95),    2)
+            $barBrush  = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(0, 94, 165))
+            $fontSmall = New-Object System.Drawing.Font("Arial",  8)
+            $fontTitle = New-Object System.Drawing.Font("Arial", 11, [System.Drawing.FontStyle]::Bold)
+            $textBrush = New-Object System.Drawing.SolidBrush([System.Drawing.Color]::FromArgb(11, 12, 12))
+
+            $titleStr  = "Daily Welsh Translation Usage"
+            $titleSize = $graphic.MeasureString($titleStr, $fontTitle)
+            $graphic.DrawString($titleStr, $fontTitle, $textBrush, [int](($chartWidth - $titleSize.Width) / 2), 12)
+
+            $yLevels  = [Math]::Min(5, $maxSessions)
+            if ($yLevels -lt 1) { $yLevels = 1 }
+            $yStep    = [Math]::Ceiling($maxSessions / $yLevels)
+            for ($lvl = 0; $lvl -le $yLevels; $lvl++) {
+                $yVal  = [int]($yStep * $lvl)
+                if ($yVal -gt $maxSessions) { $yVal = $maxSessions }
+                $yPos  = $marginTop + $plotHeight - [int]($plotHeight * $yVal / $maxSessions)
+                $graphic.DrawLine($gridPen, $marginLeft, $yPos, ($marginLeft + $plotWidth), $yPos)
+                $yLabel = $yVal.ToString()
+                $ySz    = $graphic.MeasureString($yLabel, $fontSmall)
+                $graphic.DrawString($yLabel, $fontSmall, $textBrush, ($marginLeft - $ySz.Width - 4), ($yPos - $ySz.Height / 2))
             }
-        )
+
+            $graphic.DrawLine($axesPen, $marginLeft, $marginTop, ($marginLeft), ($marginTop + $plotHeight))
+            $graphic.DrawLine($axesPen, $marginLeft, ($marginTop + $plotHeight), ($marginLeft + $plotWidth), ($marginTop + $plotHeight))
+
+            $barCount     = $dataRows.Count
+            $barSlotWidth = if ($barCount -gt 0) { [int]($plotWidth / $barCount) } else { 1 }
+            $barWidth     = [Math]::Max(4, $barSlotWidth - 6)
+
+            for ($bi = 0; $bi -lt $dataRows.Count; $bi++) {
+                $rowItem  = $dataRows[$bi]
+                $sessVal  = if ($null -ne $rowItem.Sessions) { [int]$rowItem.Sessions } else { 0 }
+                $barH     = if ($maxSessions -gt 0) { [int]($plotHeight * $sessVal / $maxSessions) } else { 0 }
+                if ($barH -lt 2 -and $sessVal -gt 0) { $barH = 2 }
+
+                $xBar = $marginLeft + $bi * $barSlotWidth + [int](($barSlotWidth - $barWidth) / 2)
+                $yBar = $marginTop + $plotHeight - $barH
+                if ($barH -gt 0) {
+                    $graphic.FillRectangle($barBrush, [int]$xBar, [int]$yBar, $barWidth, $barH)
+                }
+
+                $valLabel = $sessVal.ToString()
+                $valSz    = $graphic.MeasureString($valLabel, $fontSmall)
+                $graphic.DrawString($valLabel, $fontSmall, $textBrush, ([int]$xBar + ($barWidth - $valSz.Width) / 2), [Math]::Max($marginTop, $yBar - 14))
+
+                $dateLabel = if ($null -ne $rowItem.Date -and $rowItem.Date.Length -ge 10) { $rowItem.Date.Substring(5) } else { "" }
+                $dateSz    = $graphic.MeasureString($dateLabel, $fontSmall)
+                $graphic.DrawString($dateLabel, $fontSmall, $textBrush, ([int]$xBar + ($barWidth - $dateSz.Width) / 2), ($marginTop + $plotHeight + 6))
+            }
+
+            $pdfChartImagePath = Join-Path ([System.IO.Path]::GetTempPath()) "WelshChart_$(Get-Date -Format 'yyyyMM').jpg"
+            $bitmap.Save($pdfChartImagePath, [System.Drawing.Imaging.ImageFormat]::Jpeg)
+            $graphic.Dispose()
+            $bitmap.Dispose()
+            Write-Output "Chart image generated: $pdfChartImagePath"
+        }
+        catch {
+            Write-Warning "Failed to generate chart image for PDF: $_"
+            $pdfChartImagePath = $null
+        }
     }
 
-    $csvContent = @($csvRows | ConvertTo-Csv -NoTypeInformation) -join [Environment]::NewLine
-    $csvBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($csvContent))
-    Write-Output "CSV generated successfully ($($csvRows.Count) rows)."
+    New-SimplePdfReport -FilePath $pdfPath -Lines $pdfLines.ToArray() -ImagePath $pdfChartImagePath
+
+    if (Test-Path $pdfPath) {
+        $pdfBase64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes($pdfPath))
+        Write-Output "PDF generated successfully ($([Math]::Round((Get-Item $pdfPath).Length / 1KB, 1)) KB)."
+        if ($pdfChartImagePath -and (Test-Path $pdfChartImagePath)) { Remove-Item $pdfChartImagePath -Force -ErrorAction SilentlyContinue }
+    }
+    else {
+        Write-Warning "PDF was not created at $pdfPath — attachment will be omitted."
+    }
 }
 catch {
-    Write-Warning "Failed to generate CSV attachment: $_. Email will be sent without attachment."
+    Write-Warning "Failed to generate PDF: $_. Email will be sent without PDF attachment."
 }
 
 $reportMonth = [DateTime]::UtcNow.AddMonths(-1).ToString("MMMM yyyy")
@@ -261,12 +551,12 @@ try {
             html    = $emailBody
         }
     }
-    if ($csvBase64) {
+    if ($pdfBase64) {
         $emailPayload.attachments = @(
             @{
-                name            = "WelshLanguageReport_$([DateTime]::UtcNow.AddMonths(-1).ToString('yyyy-MM')).csv"
-                contentType     = "text/csv"
-                contentInBase64 = $csvBase64
+                name            = "WelshLanguageReport_$([DateTime]::UtcNow.AddMonths(-1).ToString('yyyy-MM')).pdf"
+                contentType     = "application/pdf"
+                contentInBase64 = $pdfBase64
             }
         )
     }

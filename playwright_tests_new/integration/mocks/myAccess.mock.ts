@@ -67,7 +67,7 @@ export const myAccessDisplayValues = [...new Set(myAccessStateDefinitions.map((d
 
 export const buildMyAccessCaseMock = (overrides: Partial<MyAccessCaseMock> = {}): MyAccessCaseMock => {
   const serviceLabelByJurisdiction: Record<string, string> = {
-    IA: 'Immigration & Asylum',
+    IA: 'Immigration and Asylum',
     SSCS: 'Social security and child support',
     Other: 'Other',
   };

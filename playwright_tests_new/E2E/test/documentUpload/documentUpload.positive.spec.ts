@@ -1,19 +1,30 @@
 import { faker } from '@faker-js/faker';
 import { Response } from '@playwright/test';
 import { expect, test } from '../../fixtures';
-import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
+import { ensureAuthenticatedPage, ensureSession } from '../../../common/sessionCapture';
 import { TEST_DATA } from './constants';
 import { expectCaseBanner } from '../../utils';
 import { createLogger } from '@hmcts/playwright-common';
 import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
 import { createDivorceCase } from '../../utils/test-setup/journeys/divorceCaseJourneys';
 import { createEmploymentCase, uploadEmploymentDraftDocument } from '../../utils/test-setup/journeys/employmentJourneys';
+import { buildCasePayloadFromTemplate } from '../../utils/test-setup/payloads/registry';
+import { setupCaseForJourney } from '../../utils/test-setup/caseSetup';
 
 const logger = createLogger({ serviceName: 'document-upload-tests', format: 'pretty' });
 const DOCUMENT_UPLOAD_SUBMIT_TIMEOUT_MS = 60_000;
+const DOCUMENT_UPLOAD_TEST_TIMEOUT_MS = 300_000;
+const SESSION_BOOTSTRAP_TIMEOUT_MS = 300_000;
+
+test.describe.configure({ mode: 'serial', timeout: DOCUMENT_UPLOAD_TEST_TIMEOUT_MS });
+
+test.beforeAll(async ({ browserName: _browserName }, testInfo) => {
+  testInfo.setTimeout(SESSION_BOOTSTRAP_TIMEOUT_MS);
+  await ensureSession('USER_WITH_FLAGS');
+  await ensureSession('SEARCH_EMPLOYMENT_CASE');
+});
 
 test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, () => {
-  test.describe.configure({ timeout: 120000 });
   let testValue: string;
   let caseNumber: string;
   test.beforeAll(async () => {
@@ -21,14 +32,32 @@ test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, (
     faker.seed(12345);
   });
 
-  test.beforeEach(async ({ page, createCasePage, caseDetailsPage }) => {
+  test.beforeEach(async ({ page, createCasePage, caseDetailsPage }, testInfo) => {
     // Generate fresh value per test for retry safety
     testValue = `${faker.person.firstName()}-${Date.now()}-w${process.env.TEST_WORKER_INDEX || '0'}`;
     logger.info('Generated test value', { testValue, worker: process.env.TEST_WORKER_INDEX });
 
-    await ensureAuthenticatedPage(page, 'SOLICITOR', { waitForSelector: 'exui-header' });
-    await createDivorceCase(createCasePage, TEST_DATA.V2.JURISDICTION, TEST_DATA.V2.CASE_TYPE, testValue);
-    caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
+    await ensureAuthenticatedPage(page, 'USER_WITH_FLAGS', { waitForSelector: 'exui-header' });
+    const setup = await setupCaseForJourney({
+      scenario: 'document-upload-v2-divorce',
+      jurisdiction: TEST_DATA.V2.JURISDICTION,
+      caseType: TEST_DATA.V2.CASE_TYPE,
+      apiEventId: 'createCase',
+      mode: 'api-required',
+      apiPayload: buildCasePayloadFromTemplate('divorce.xui-test-case-type.create-case', {
+        overrides: {
+          TextField: testValue,
+        },
+      }),
+      uiCreate: async () => {
+        await createDivorceCase(createCasePage, TEST_DATA.V2.JURISDICTION, TEST_DATA.V2.CASE_TYPE, testValue);
+      },
+      page,
+      createCasePage,
+      caseDetailsPage,
+      testInfo,
+    });
+    caseNumber = setup.caseNumber;
     logger.info('Created divorce case', { caseNumber, testValue });
   });
 
@@ -64,8 +93,19 @@ test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, (
           async () => {
             await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
             await caseDetailsPage.selectCaseAction(TEST_DATA.V2.ACTION);
-            await createCasePage.uploadFile(TEST_DATA.V2.FILE_NAME, TEST_DATA.V2.FILE_TYPE, TEST_DATA.V2.FILE_CONTENT);
-            await createCasePage.clickContinueMultipleTimes(4);
+            await createCasePage.uploadFile(
+              TEST_DATA.V2.FILE_NAME,
+              TEST_DATA.V2.FILE_TYPE,
+              TEST_DATA.V2.FILE_CONTENT,
+              createCasePage.fileUploadInput
+            );
+            await createCasePage.clickContinueMultipleTimes(3);
+            await createCasePage.uploadFile(
+              'complex-type-required-document.pdf',
+              'application/pdf',
+              '%PDF-1.4\n%test\n%%EOF',
+              createCasePage.complexType3FileUploadInput
+            );
             await createCasePage.clickSubmitAndWait('after uploading V2 document', {
               timeoutMs: DOCUMENT_UPLOAD_SUBMIT_TIMEOUT_MS,
               maxAutoAdvanceAttempts: 3,
@@ -138,7 +178,6 @@ test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, (
 });
 
 test.describe('Document upload V1', { tag: ['@e2e', '@e2e-document-upload', '@e2e-document-upload-v1'] }, () => {
-  test.describe.configure({ timeout: 120000 });
   let testValue: string;
   let testFileName: string;
   let caseNumber: string;
@@ -147,16 +186,32 @@ test.describe('Document upload V1', { tag: ['@e2e', '@e2e-document-upload', '@e2
     faker.seed(67890);
   });
 
-  test.beforeEach(async ({ page, createCasePage, caseDetailsPage }) => {
+  test.beforeEach(async ({ page, createCasePage, caseDetailsPage }, testInfo) => {
     // Generate fresh values per test for retry safety
     testValue = `${faker.person.firstName()}-${Date.now()}-w${process.env.TEST_WORKER_INDEX || '0'}`;
     testFileName = `${faker.string.alphanumeric(8)}-${Date.now()}.pdf`;
     logger.info('Generated test values', { testValue, testFileName, worker: process.env.TEST_WORKER_INDEX });
 
     await ensureAuthenticatedPage(page, 'SEARCH_EMPLOYMENT_CASE', { waitForSelector: 'exui-header' });
-    await createEmploymentCase(createCasePage, TEST_DATA.V1.JURISDICTION, TEST_DATA.V1.CASE_TYPE);
-    expect(await createCasePage.checkForErrorMessage(), 'Error message seen after creating employment case').toBe(false);
-    caseNumber = await caseDetailsPage.getCaseNumberFromUrl();
+    const setup = await setupCaseForJourney({
+      scenario: 'document-upload-v1-employment',
+      jurisdiction: TEST_DATA.V1.JURISDICTION,
+      caseType: TEST_DATA.V1.CASE_TYPE,
+      apiEventId: 'initiateCase',
+      mode: 'api-required',
+      apiPayload: buildCasePayloadFromTemplate('employment.et-england-wales.initiate-case'),
+      uiCreate: async () => {
+        await createEmploymentCase(createCasePage, TEST_DATA.V1.JURISDICTION, TEST_DATA.V1.CASE_TYPE, {
+          allowDraftClaimFallback: true,
+        });
+        expect(await createCasePage.checkForErrorMessage(), 'Error message seen after creating employment case').toBe(false);
+      },
+      page,
+      createCasePage,
+      caseDetailsPage,
+      testInfo,
+    });
+    caseNumber = setup.caseNumber;
     logger.info('Created employment case', { caseNumber, testValue });
   });
 

@@ -84,13 +84,26 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
       await continueHearingsFlow(page);
     });
 
-    await test.step('Welsh Hearing', async () => {
+    await test.step('Welsh Hearing and Hearing Details until CYA page', async () => {
       await expect(page).toHaveURL(/\/hearings\/request\/hearing-welsh$/);
       await expect(page.getByRole('heading', { name: /Does this hearing need to be in Welsh?/i })).toBeVisible();
-
-      //await hearingsJourneyPage.setHearingVenue(hearingJourneyModel);
+      await hearingsJourneyPage.isWelshHearing(hearingJourneyModel);
       await continueHearingsFlow(page);
-      //await page.waitForTimeout(8000);
+    });
+
+    await test.step('Specific Judge Selection', async () => {
+      await expect(page).toHaveURL(/\/hearings\/request\/hearing-judge$/);
+      await expect(page.getByRole('heading', { name: /Do you want a specific judge?/i })).toBeVisible();
+
+      await hearingsJourneyPage.setJudgeOptions(hearingJourneyModel);
+      await continueHearingsFlow(page);
+    });
+
+    // hearing timing
+    await test.step('Hearing Timings etc', async () => {
+      await expect(page).toHaveURL(/\/hearings\/request\/hearing-timing$/);
+
+      await page.waitForTimeout(12000);
     });
   });
 
@@ -109,5 +122,10 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
 
     //hearingVenue
     hearingJourneyModel.set('hearingVenue', 'name', 'southa');
+
+    // hearingDetails
+    hearingJourneyModel.set('hearingDetails', 'hearingInWelsh', 'No');
+    hearingJourneyModel.set('hearingDetails', 'specificJudge', 'No');
+    hearingJourneyModel.set('hearingDetails', 'judgeType', ['Deputy High Court Judge', 'Deputy Circuit Judge']);
   }
 });

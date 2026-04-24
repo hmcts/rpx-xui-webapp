@@ -4,6 +4,7 @@ import {
   HearingJourneyModel,
   HearingMethod,
   howWillParticipantAttend,
+  TypeOfJudges,
 } from '../../../utils/hearing-model.ts';
 
 type HearingAction = 'view-details' | 'view-or-edit' | 'cancel' | 'add-or-edit';
@@ -12,7 +13,6 @@ export class HearingsJourneyPage {
   constructor(private readonly page: Page) {}
 
   readonly container = this.page.locator('exui-case-hearings-ce');
-  readonly requestHearingButton = this.page.getByRole('button', { name: /request a hearing/i });
   readonly additionalSecurityYes = this.page.locator('#addition-security-confirmation #additionalSecurityYes');
   readonly additionalSecurityNo = this.page.locator('#addition-security-confirmation #additionalSecurityNo');
   readonly facilitiesCheckbox = (facility: string) =>
@@ -36,30 +36,27 @@ export class HearingsJourneyPage {
   // How Many attending
   // attendance-number
   readonly numberAttendingHearing = this.page.locator('#attendance-number');
-
   readonly hearingVenue = this.page.locator('#searchVenueLocation');
-  readonly addLocationButton = this.page.getByRole('link', { name: 'Add location' });
-  readonly addLocationButtonCss = this.page.locator('a.govuk-button:has-text("Add location")');
 
-  readonly reassignUserAutocompleteOverlay = this.page.locator('.cdk-overlay-pane');
-  readonly reassignUserAutocompleteFirstOption = this.page.getByRole('option').first();
+  readonly hearingInWelshNo = this.page.locator('#welsh_hearing_no');
+  readonly hearingInWelshYes = this.page.locator('#welsh_hearing_yes');
+
+  #noSpecificJudge;
+  readonly noSpecificJudgeRadio = this.page.locator('#noSpecificJudge');
+  readonly specificJudgeRadio = this.page.locator('#specificJudgeName');
+
+  readonly selectAllJudgesThatApply = this.page.locator('.govuk-fieldset .govuk-fieldset__legend').nth(1);
+
+  // typeOfJudge
+  readonly deputyCircuitJudgeOption = this.page.locator('#judgeType-DEPUTY_CIRCUIT_JUDGE');
+  readonly circuitJudgeOption = this.page.locator('#judgeType-DEPUTY_CIRCUIT_JUDGE');
 
   readonly overlayLocationPanel = this.page
     .locator('.cdk-overlay-container .cdk-overlay-pane')
     // .filter({ has: this.page.getByRole('listbox') });
     .filter({ has: this.page.locator('.mat-autocomplete-panel[role="listbox"]') });
 
-  readonly firstVenueOption = this.overlayLocationPanel.getByRole('option').first();
-
   readonly addLocationsButton = this.page.locator('.search-location').getByRole('link', { name: ' Add location ' });
-
-  readonly courtNameForVenue = this.page.getByRole('link', { name: 'Swansea Civil And Family Justice Centre', exact: true });
-
-  readonly govInsetTex = this.page.locator('exui-hearing-venue .govuk-inset-text');
-  readonly participantAttendingInPerson = this.page.locator('#hearingLevelChannelList #INTER');
-  readonly participantAttendingInVideo = this.page.locator('#hearingLevelChannelList #TEL');
-  readonly participantAttendingNotInAttendance = this.page.locator('#hearingLevelChannelList #VID');
-  readonly participantAttendingTelephone = this.page.locator('#hearingLevelChannelList #VID');
 
   async additionalSecurityAndFacilities(model: HearingJourneyModel, page: Page): Promise<void> {
     const value = model.get('hearingFacilities', 'additionalSecurity');
@@ -137,10 +134,31 @@ export class HearingsJourneyPage {
     await this.addLocationsButton.click();
   }
 
-  async removeAllSelectedLocations() {
-    const removeLinks = this.page.locator('.hmcts-filter-tags a.hmcts-filter__tag');
-    while ((await removeLinks.count()) > 0) {
-      await removeLinks.first().click();
+  async isWelshHearing(model: HearingJourneyModel): Promise<void> {
+    // WelshHearing
+    const welshHearing = model.get('hearingDetails', 'hearingInWelsh') as string;
+    await this.hearingInWelshYes.waitFor({ state: 'visible' });
+    //    await this.hearingInWelshYes.click();
+    await (welshHearing === 'Yes' ? this.hearingInWelshYes : this.hearingInWelshNo).click();
+  }
+
+  async setJudgeOptions(model: HearingJourneyModel): Promise<void> {
+    // Judge options
+    await this.noSpecificJudgeRadio.waitFor({ state: 'visible' });
+    await this.specificJudgeRadio.waitFor({ state: 'visible' });
+
+    await this.noSpecificJudgeRadio.click();
+    await expect(this.selectAllJudgesThatApply).toHaveText('Select all judge types that apply');
+
+    const judgeTypes = model.get('hearingDetails', 'judgeType') as TypeOfJudges[];
+    await this.selectJudgeTypes(judgeTypes);
+  }
+
+  // helper methods
+  async selectJudgeTypes(judgeTypes: TypeOfJudges[]): Promise<void> {
+    const fieldset = this.page.locator('#judgeTypes .govuk-fieldset');
+    for (const judgeType of judgeTypes) {
+      await fieldset.getByLabel(judgeType).check();
     }
   }
 

@@ -1050,6 +1050,314 @@ resource "azurerm_automation_job_schedule" "exui_throughput_stats_job" {
   ]
 }
 
+resource "azurerm_automation_runbook" "exui_pui_activations_runbook" {
+  count                   = var.exui_pui_activations_enabled ? 1 : 0
+  name                    = "Generate-ExUI-PUI-Activations"
+  location                = var.location
+  resource_group_name     = azurerm_resource_group.rg.name
+  automation_account_name = azurerm_automation_account.welsh_reporting.0.name
+  log_verbose             = true
+  log_progress            = true
+  description             = "Generates weekly PUI activations report from Application Insights (daily unique IDAM activations via pui- clients, last 60 days)"
+  runbook_type            = "PowerShell"
+
+  content = <<EOT
+param(
+    [string]$appinsightsappid,
+    [string]$resourcegroupname,
+    [string]$acsresourcename,
+    [string]$senderaddress,
+    [string]$recipientaddress
+)
+
+try {
+    Connect-AzAccount -Identity
+}
+catch {
+    Write-Error "Failed to login with Managed Identity. Ensure System Assigned Identity is enabled and has permissions."
+    throw $_
+}
+
+Import-Module Az.Communication -ErrorAction SilentlyContinue
+
+$query = @"
+requests
+| where timestamp > ago(60d)
+| where cloud_RoleName == "idam-api"
+| where customDimensions contains "pui-"
+| where operation_Name == "PATCH /activate"
+| extend d=parse_json(customDimensions)
+| project timestamp, idamId=tostring(d.user_id)
+| summarize arg_max(timestamp, *) by idamId, startofday(timestamp)
+| summarize number_of_pui_activations = count() by bin(timestamp, 1d)
+| sort by timestamp asc
+| extend Date = format_datetime(timestamp, "dd/MM/yyyy")
+"@
+
+try {
+    Write-Output "Querying Application Insights for PUI activations (last 60 days)..."
+    $token = (Get-AzAccessToken -ResourceUrl "https://api.applicationinsights.io").Token
+    $headers = @{
+        "Authorization" = "Bearer $token"
+        "Content-Type" = "application/json"
+    }
+
+    $apiUrl = "https://api.applicationinsights.io/v1/apps/$appinsightsappid/query"
+    $body = @{ query = $query } | ConvertTo-Json
+
+    Write-Output "App ID: $appinsightsappid"
+    $response = Invoke-RestMethod -Uri $apiUrl -Method Post -Headers $headers -Body $body
+
+    $dataRows = @($response.tables[0].rows | ForEach-Object {
+        $row = $_
+        $obj = New-Object PSObject
+        for ($i = 0; $i -lt $response.tables[0].columns.Count; $i++) {
+            $obj | Add-Member -MemberType NoteProperty -Name $response.tables[0].columns[$i].name -Value $row[$i]
+        }
+        $obj
+    })
+
+    Write-Output "Query executed successfully. Found $($dataRows.Count) days."
+}
+catch {
+    Write-Error "Failed to execute query: $($_.Exception.Message)"
+    Write-Output "App Insights App ID: $appinsightsappid"
+    Write-Output "Note: Ensure the Automation Account Managed Identity has 'Reader' role on Application Insights."
+    throw $_
+}
+
+$totalActivations = 0
+$latest7DayTotal  = 0
+$maxActivations   = 0
+$weekWindowStart  = [DateTime]::UtcNow.Date.AddDays(-7)
+$htmlTable        = ""
+$htmlChart        = ""
+$htmlSummary      = ""
+
+if (-not $dataRows -or $dataRows.Count -eq 0) {
+    $htmlTable   = "<p><strong>No PUI activation events were recorded in the last 60 days.</strong></p>"
+    $htmlChart   = ""
+    $htmlSummary = ""
+}
+else {
+    foreach ($row in $dataRows) {
+        if ($null -eq $row) { continue }
+        $val = if ($null -ne $row.number_of_pui_activations) { [int]$row.number_of_pui_activations } else { 0 }
+        if ($val -gt $maxActivations) { $maxActivations = $val }
+    }
+
+    $htmlTable = "<table>"
+    $htmlTable += "<thead><tr><th>Date</th><th>PUI Activations</th></tr></thead>"
+    $htmlTable += "<tbody>"
+
+    foreach ($row in $dataRows) {
+        if ($null -eq $row) { continue }
+        $dateValue       = if ($null -ne $row.Date) { $row.Date } else { "N/A" }
+        $activationValue = if ($null -ne $row.number_of_pui_activations) { [int]$row.number_of_pui_activations } else { 0 }
+        $dayValue        = if ($null -ne $row.timestamp) { [DateTime]$row.timestamp } else { $null }
+        $htmlTable += "<tr><td>$dateValue</td><td>$activationValue</td></tr>"
+        $totalActivations += $activationValue
+        if ($null -ne $dayValue -and $dayValue -ge $weekWindowStart) {
+            $latest7DayTotal += $activationValue
+        }
+    }
+
+    $htmlTable += "</tbody>"
+    $htmlTable += "<tfoot><tr><th>Total</th><th>$totalActivations</th></tr></tfoot>"
+    $htmlTable += "</table>"
+
+    $averageActivations = [Math]::Round(($totalActivations / $dataRows.Count), 2)
+    $htmlSummary = @"
+<div class='summary-grid'>
+  <div class='summary-card'><span class='summary-label'>Last 60 days total</span><strong>$totalActivations</strong></div>
+  <div class='summary-card'><span class='summary-label'>Last 7 days total</span><strong>$latest7DayTotal</strong></div>
+  <div class='summary-card'><span class='summary-label'>Average per active day</span><strong>$averageActivations</strong></div>
+</div>
+"@
+
+    $htmlChart = "<div class='chart-container'>"
+    $htmlChart += "<h3>Daily PUI Activations (unique users per day)</h3>"
+    $htmlChart += "<div class='chart-wrapper'>"
+    $chartMaxHeight = 250
+    foreach ($row in $dataRows) {
+        if ($null -eq $row) { continue }
+        $dateValue       = if ($null -ne $row.Date) { $row.Date } else { "N/A" }
+        $activationValue = if ($null -ne $row.number_of_pui_activations) { [int]$row.number_of_pui_activations } else { 0 }
+        $barHeight = if ($maxActivations -gt 0) { [Math]::Round(($activationValue / $maxActivations) * $chartMaxHeight) } else { 0 }
+        if ($barHeight -lt 5) { $barHeight = 5 }
+        $htmlChart += "<div class='bar-column'>"
+        $htmlChart += "<div class='bar-value-top'>$activationValue</div>"
+        $htmlChart += "<div class='bar-wrapper'>"
+        $htmlChart += "<div class='bar-vertical' style='height: " + $barHeight + "px !important;'></div>"
+        $htmlChart += "</div>"
+        $htmlChart += "<div class='bar-label-bottom'>$dateValue</div>"
+        $htmlChart += "</div>"
+    }
+    $htmlChart += "</div></div>"
+
+    Write-Output "Report contains $($dataRows.Count) days with $totalActivations total PUI activations."
+}
+
+$csvPath   = Join-Path ([System.IO.Path]::GetTempPath()) "ExUIPUIActivations_$(Get-Date -Format 'yyyyMMdd').csv"
+$csvBase64 = $null
+try {
+    Write-Output "Generating CSV attachment..."
+    if (-not $dataRows -or $dataRows.Count -eq 0) {
+        [System.IO.File]::WriteAllText($csvPath, "Date,PUIActivations`n")
+    }
+    else {
+        $csvRows = foreach ($row in $dataRows) {
+            [PSCustomObject]@{
+                Date           = $row.Date
+                PUIActivations = if ($null -ne $row.number_of_pui_activations) { [int]$row.number_of_pui_activations } else { 0 }
+            }
+        }
+        $csvRows | Export-Csv -Path $csvPath -NoTypeInformation
+    }
+
+    if (Test-Path $csvPath) {
+        $csvBase64 = [Convert]::ToBase64String([IO.File]::ReadAllBytes($csvPath))
+        Write-Output "CSV generated successfully ($([Math]::Round((Get-Item $csvPath).Length / 1KB, 1)) KB)."
+    }
+}
+catch {
+    Write-Warning "Failed to generate CSV attachment: $_. Email will be sent without CSV."
+}
+
+$reportDate = [DateTime]::UtcNow.ToString("dd MMM yyyy")
+$emailBody = @"
+<html>
+<head>
+<style>
+body { font-family: Arial, sans-serif; color: #0b0c0c; }
+table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+th { background-color: #0b0c0c; color: white; font-weight: bold; }
+tfoot th { background-color: #005ea5; }
+tr:nth-child(even) { background-color: #f2f2f2; }
+
+.summary-grid { display: flex; gap: 16px; flex-wrap: wrap; margin: 20px 0; }
+.summary-card { background: #f8f8f8; border-left: 4px solid #005ea5; padding: 16px; min-width: 180px; }
+.summary-card strong { display: block; font-size: 24px; margin-top: 8px; }
+.summary-label { color: #505a5f; font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+.chart-container { margin: 30px 0; }
+.chart-wrapper { display: flex; align-items: flex-end; justify-content: flex-start; gap: 20px; padding: 20px; background-color: #fafafa; border-radius: 8px; overflow-x: auto; }
+.bar-column { display: flex; flex-direction: column; align-items: center; min-width: 70px; }
+.bar-value-top { font-size: 12px; font-weight: bold; color: #0b0c0c; margin-bottom: 5px; min-height: 20px; text-align: center; }
+.bar-wrapper { display: flex; align-items: flex-end; justify-content: center; height: 250px; border-bottom: 2px solid #505a5f; width: 50px; }
+.bar-vertical { width: 40px; background-color: #005ea5; border-radius: 4px 4px 0 0; }
+.bar-label-bottom { font-size: 10px; color: #505a5f; margin-top: 8px; white-space: nowrap; }
+</style>
+</head>
+<body>
+<h2>ExUI PUI Activations Weekly Report</h2>
+<p>Environment: <strong>${var.product} ${var.env}</strong></p>
+<p>Reporting Date: <strong>$reportDate</strong></p>
+<p>This report shows the last 60 days of daily unique PUI user activations via idam-api (<code>PATCH /activate</code> where client contains <code>pui-</code>). Each user is counted only once per day regardless of the number of activation attempts.</p>
+$htmlSummary
+$htmlTable
+$htmlChart
+<hr/>
+<p><small><em>Generated on: $(Get-Date -Format 'dd MMM yyyy HH:mm:ss') UTC</em></small></p>
+</body>
+</html>
+"@
+
+try {
+    $token = (Get-AzAccessToken -ResourceUrl "https://communication.azure.com").Token
+    Write-Output "Successfully retrieved access token."
+}
+catch {
+    Write-Error "Failed to retrieve access token: $_"
+    throw $_
+}
+
+try {
+    $endpoint   = "https://$acsresourcename.communication.azure.com"
+    $apiVersion = "2023-03-31"
+    $emailUrl   = "$endpoint/emails:send?api-version=$apiVersion"
+
+    $recipientAddrList = @($recipientaddress -split "," | ForEach-Object {
+        @{ address = $_.Trim() }
+    })
+
+    $emailPayload = @{
+        senderAddress = $senderaddress
+        recipients    = @{
+            to = $recipientAddrList
+        }
+        content       = @{
+            subject = "ExUI PUI Activations Report - ${var.env} - $reportDate"
+            html    = $emailBody
+        }
+    }
+    if ($csvBase64) {
+        $emailPayload.attachments = @(
+            @{
+                name            = "ExUIPUIActivations_$([DateTime]::UtcNow.ToString('yyyyMMdd')).csv"
+                contentType     = "text/csv"
+                contentInBase64 = $csvBase64
+            }
+        )
+    }
+
+    $payload = $emailPayload | ConvertTo-Json -Depth 10
+    $headers = @{
+        "Content-Type"  = "application/json"
+        "Authorization" = "Bearer $token"
+    }
+
+    Write-Output "Sending email to: $recipientaddress"
+    Write-Output "From: $senderaddress"
+
+    $response = Invoke-RestMethod -Uri $emailUrl -Method Post -Headers $headers -Body $payload
+    Write-Output "Email sent successfully. Message ID: $($response.id)"
+}
+catch {
+    Write-Error "Failed to send email via Azure Communication Services: $_"
+    Write-Error "Status Code: $($_.Exception.Response.StatusCode.value__)"
+    Write-Error "Response: $($_.Exception.Response)"
+    throw $_
+}
+EOT
+
+  tags = var.common_tags
+}
+
+resource "azurerm_automation_schedule" "exui_pui_activations_schedule" {
+  count                   = var.exui_pui_activations_enabled ? 1 : 0
+  name                    = "weekly-exui-pui-activations-schedule"
+  resource_group_name     = azurerm_resource_group.rg.name
+  automation_account_name = azurerm_automation_account.welsh_reporting.0.name
+  frequency               = "Week"
+  interval                = 1
+  start_time              = "2026-04-06T09:30:00Z"
+  timezone                = "UTC"
+}
+
+resource "azurerm_automation_job_schedule" "exui_pui_activations_job" {
+  count                   = var.exui_pui_activations_enabled ? 1 : 0
+  resource_group_name     = azurerm_resource_group.rg.name
+  automation_account_name = azurerm_automation_account.welsh_reporting.0.name
+  schedule_name           = azurerm_automation_schedule.exui_pui_activations_schedule.0.name
+  runbook_name            = azurerm_automation_runbook.exui_pui_activations_runbook.0.name
+
+  parameters = {
+    appinsightsappid  = module.application_insights.app_id
+    resourcegroupname = azurerm_resource_group.rg.name
+    acsresourcename   = azurerm_communication_service.comm_service.0.name
+    senderaddress     = "DoNotReply@${azurerm_email_communication_service_domain.email_domain.0.from_sender_domain}"
+    recipientaddress  = join(",", local.exui_pui_activations_emails)
+  }
+
+  depends_on = [
+    azurerm_automation_runbook.exui_pui_activations_runbook,
+    azurerm_automation_schedule.exui_pui_activations_schedule,
+    azurerm_automation_module.az_communication
+  ]
+}
+
 resource "azurerm_automation_module" "az_communication" {
   count                   = local.reporting_enabled ? 1 : 0
   name                    = "Az.Communication"

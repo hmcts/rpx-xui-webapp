@@ -78,3 +78,15 @@ variable "exui_throughput_stats_enabled" {
   type        = bool
 }
 
+variable "exui_pui_activations_enabled" {
+  default     = false
+  description = "Enable ExUI PUI activations weekly reporting (daily unique IDAM activations via pui- clients)"
+  type        = bool
+}
+
+variable "exui_pui_activations_email_address_key" {
+  default     = "exui-pui-activations-email"
+  description = "Email address key in Azure Key Vault for ExUI PUI activations reporting."
+  type        = string
+}
+

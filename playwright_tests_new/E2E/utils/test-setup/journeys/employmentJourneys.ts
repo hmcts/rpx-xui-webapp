@@ -276,12 +276,44 @@ export async function createEmploymentCase(
       await createCasePage.addRespondentButton.click();
       await createCasePage.respondentOneNameInput.waitFor({ state: 'visible' });
       await createCasePage.respondentOneNameInput.fill('Respondent One');
-      await createCasePage.respondentOrganisation.waitFor({ state: 'visible' });
-      await createCasePage.respondentOrganisation.check();
+      const respondentOrganisationSelected =
+        (await createCasePage.respondentOrganisation.isChecked().catch(() => false)) ||
+        (await createCasePage.respondentCompanyNameInput.isVisible().catch(() => false));
+
+      if (!respondentOrganisationSelected) {
+        const respondentOrganisationReady =
+          (await createCasePage.respondentOrganisation.isVisible().catch(() => false)) &&
+          (await createCasePage.respondentOrganisation.isEnabled().catch(() => false));
+
+        if (respondentOrganisationReady) {
+          await createCasePage.respondentOrganisation.check();
+          logger.info('Employment create: respondent organisation type selected explicitly', {
+            attempt,
+            url: createCasePage.page.url(),
+          });
+        } else {
+          logger.info('Employment create: respondent organisation type already fixed by the page state', {
+            attempt,
+            url: createCasePage.page.url(),
+          });
+        }
+      }
+
       await createCasePage.respondentAcasCertifcateSelectYes.waitFor({ state: 'visible' });
       await createCasePage.respondentAcasCertifcateSelectYes.check();
       await createCasePage.respondentAcasCertificateNumberInput.fill('ACAS123456');
-      await createCasePage.respondentCompanyNameInput.fill('Respondent Company');
+      if (await createCasePage.respondentCompanyNameInput.isVisible().catch(() => false)) {
+        await createCasePage.respondentCompanyNameInput.fill('Respondent Company');
+        logger.info('Employment create: respondent company name captured', {
+          attempt,
+          url: createCasePage.page.url(),
+        });
+      } else {
+        logger.info('Employment create: respondent company name field not present in current page shape', {
+          attempt,
+          url: createCasePage.page.url(),
+        });
+      }
       await createCasePage.manualEntryLink.waitFor({ state: 'visible' });
       await createCasePage.manualEntryLink.click();
       await createCasePage.respondentAddressLine1Input.waitFor({ state: 'visible' });

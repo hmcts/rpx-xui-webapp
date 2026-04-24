@@ -17,6 +17,7 @@ export * from './hearingManagerUserPool.helper';
 export * from './hearingJourneySetup.helper';
 export * from './caseworkerJurisdictionMockRoutes.helper';
 export * from './ngIntegrationMockRoutes.helper';
+export * from './allWorkCasesRequest.helper';
 export * from './taskListMockRoutes.helper';
 export * from './bookingUiMockRoutes.helper';
 export * from './bookingUiUserPool.helper';

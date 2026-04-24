@@ -157,7 +157,7 @@ export async function setupHearingsMockRoutes(page: Page, config: HearingsMockRo
     });
   });
 
-  await page.route('**/external/config/ui*', async (route) => {
+  await page.route(/\/external\/config\/ui(?:\/|\?|$)/, async (route) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',

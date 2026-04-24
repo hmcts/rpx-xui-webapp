@@ -1,19 +1,15 @@
 import { faker } from '@faker-js/faker';
-import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
-import { expect, test } from '../../../E2E/fixtures';
-import { applySessionCookies } from '../../../common/sessionCapture';
-import { buildAsylumCaseMock } from '../../mocks/cases/asylumCase.mock';
+import { expect, test } from '../../../../E2E/fixtures';
+import { applySessionCookiesAndExtractUserId } from '../../../helpers';
+import { buildAsylumCaseMock } from '../../../mocks/cases/asylumCase.mock';
 
 const userIdentifier = 'STAFF_ADMIN';
 const caseId = faker.number.int({ min: 1000000000, max: 9999999999 }).toString();
-let sessionCookies: any[] = [];
 let assigneeId: string | null = null;
 const caseMockResponse = buildAsylumCaseMock({ caseId });
 
 test.beforeEach(async ({ page }) => {
-  const { cookies } = await applySessionCookies(page, userIdentifier);
-  sessionCookies = cookies;
-  assigneeId = extractUserIdFromCookies(sessionCookies);
+  assigneeId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
   await page.route(`**data/internal/cases/${caseId}*`, async (route) => {
     const body = JSON.stringify(caseMockResponse);
     await route.fulfill({ status: 200, contentType: 'application/json', body });

@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 import { Base } from '../../base';
 import { ValidatorUtils } from '../../../utils/validator.utils';
 import { TableUtils } from '@hmcts/playwright-common';
@@ -29,6 +29,8 @@ export interface CaseFlagItem {
   lastModified: string;
   status: string;
 }
+
+const MEDIA_VIEWER_ROUTE_PATTERN = /\/media-viewer(?:\?|$)/;
 
 export class CaseDetailsPage extends Base {
   readonly container = this.page.locator('exui-case-details-home');
@@ -70,8 +72,18 @@ export class CaseDetailsPage extends Base {
   readonly caseNotificationBannerTitle = this.page.locator('#govuk-notification-banner-title');
 
   readonly caseNotificationBannerBody = this.page.locator('.govuk-notification-banner__heading');
+  readonly documentOneRow = this.page
+    .getByRole('table', { name: 'case viewer table' })
+    .getByRole('row', { name: /^Document 1\b/i })
+    .first();
+  readonly documentOneAction = this.documentOneRow.locator('a,button').first();
 
   readonly eventCreationErrorHeading = this.page.getByRole('heading', { name: 'The event could not be created' });
+  readonly generalProblemHeading = this.page.getByRole('heading', { name: /there is a problem/i }).first();
+  readonly checkYourAnswersHeading = this.page.getByRole('heading', { name: /check your answers/i });
+  readonly linkedCaseReferenceInput = this.page.getByLabel('Linked case reference');
+  readonly caseLinkReasonSelect = this.page.getByLabel('Reason for link');
+  readonly caseLinkOtherDescriptionInput = this.page.getByLabel('Other description');
   readonly caseViewerTable = this.page.getByRole('table', { name: 'case viewer table' });
 
   // Table locators
@@ -89,6 +101,9 @@ export class CaseDetailsPage extends Base {
   readonly caseProgressMessage = this.page.locator('#progress_legalOfficer_updateTrib_dismissed_under_rule_31');
   readonly resultsNotFoundHeading = this.page.locator('exui-no-results').getByRole('heading', { level: 1 });
   readonly backLink = this.page.locator('exui-no-results .govuk-width-container .govuk-back-link');
+
+  // Restricted Access
+  readonly restrictedAccessContainer = this.page.locator('exui-restricted-case-access-container');
 
   // GlobalSearch
   readonly tabsCount = this.page.locator('.mat-tab-label-container .mat-tab-list');
@@ -562,6 +577,32 @@ export class CaseDetailsPage extends Base {
     await this.selectCaseAction(action);
   }
 
+  async openLinkCasesEvent(): Promise<void> {
+    await this.selectCaseAction('Link cases', { expectedLocator: this.linkedCaseReferenceInput });
+    await this.caseLinkReasonSelect.waitFor({ state: 'visible' });
+  }
+
+  async fillCaseLinkDetails(options: {
+    linkedCaseReference: string;
+    reasonLabel: string;
+    otherDescription?: string;
+  }): Promise<void> {
+    await this.linkedCaseReferenceInput.fill(options.linkedCaseReference);
+    await this.caseLinkReasonSelect.selectOption({ label: options.reasonLabel });
+    if (options.otherDescription !== undefined) {
+      await this.caseLinkOtherDescriptionInput.waitFor({ state: 'visible', timeout: this.getRecommendedTimeoutMs() });
+      await this.caseLinkOtherDescriptionInput.fill(options.otherDescription);
+    }
+  }
+
+  async continueCaseEvent(): Promise<void> {
+    await this.continueButton.click();
+  }
+
+  async submitCaseEvent(): Promise<void> {
+    await this.submitButton.click();
+  }
+
   async selectFirstRadioOption() {
     await this.commonRadioButtons.first().getByRole('radio').check();
     await this.submitCaseFlagButton.click();
@@ -637,6 +678,7 @@ export class CaseDetailsPage extends Base {
       multiplier: 3,
       fallback: 15_000,
     });
+    await this.waitForCaseDetailsTabsReady(tabLoadTimeoutMs);
     const escapedTabName = tabName.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
     const tab = this.page.getByRole('tab', { name: new RegExp(escapedTabName, 'i') }).first();
     await tab.waitFor({ state: 'visible', timeout: tabLoadTimeoutMs });
@@ -656,9 +698,108 @@ export class CaseDetailsPage extends Base {
     await this.waitForTabPanelReadiness(visibleTabPanel, tabLoadTimeoutMs);
   }
 
+  getRoleAccessSection(title: 'Judiciary' | 'Legal Ops'): Locator {
+    return this.page.locator('exui-role-access-section').filter({
+      has: this.page.getByRole('heading', { level: 2, name: title }),
+    });
+  }
+
+  getAddExclusionLink(): Locator {
+    return this.page.locator('a.govuk-link[href*="/role-access/add-exclusion"]').first();
+  }
+
+  getAllocateJudicialRoleLink(): Locator {
+    return this.getRoleAccessSection('Judiciary').getByRole('link', { name: 'Allocate a judicial role' });
+  }
+
+  getAllocateLegalOpsRoleLink(): Locator {
+    return this.getRoleAccessSection('Legal Ops').getByRole('link', { name: 'Allocate a legal ops role' });
+  }
+
+  getManageRoleLink(sectionTitle: 'Judiciary' | 'Legal Ops'): Locator {
+    return this.getRoleAccessSection(sectionTitle).getByRole('link', { name: 'Manage' });
+  }
+
+  async openRoleActions(sectionTitle: 'Judiciary' | 'Legal Ops'): Promise<void> {
+    await this.getManageRoleLink(sectionTitle).click();
+  }
+
+  getRoleActionLink(sectionTitle: 'Judiciary' | 'Legal Ops', action: 'Reallocate' | 'Remove Allocation'): Locator {
+    return this.getRoleAccessSection(sectionTitle).getByRole('link', { name: action });
+  }
+
+  getDeleteExclusionLink(): Locator {
+    return this.page.locator('exui-exclusions-table').getByRole('link', { name: 'Delete' });
+  }
+
+  getExclusionsTable(): Locator {
+    return this.page.locator('exui-exclusions-table table.govuk-table').first();
+  }
+
+  async openRolesAndAccessTab(caseId: string): Promise<void> {
+    await this.page.goto(`/cases/case-details/IA/Asylum/${caseId}`);
+    await expect(this.container).toBeVisible();
+    await expect(this.page.getByRole('tab', { name: /Roles and access/i }).first()).toBeVisible();
+
+    await this.selectCaseDetailsTab('Roles and access');
+    await this.page.waitForURL(new RegExp(`/cases/case-details/IA/Asylum/${caseId}(?:/roles-and-access)?(?:#.*)?$`));
+    await expect(this.page.getByRole('heading', { level: 2, name: 'Roles and access' })).toBeVisible();
+  }
+
+  async openDocumentOne() {
+    await this.documentOneAction.waitFor({ state: 'visible', timeout: this.getRecommendedTimeoutMs() });
+    await this.documentOneAction.click();
+  }
+
+  async openDocumentOneInMediaViewer(): Promise<Page> {
+    await this.openDocumentOne();
+
+    await this.page
+      .waitForFunction(
+        (routePatternSource) => {
+          const routePattern = new RegExp(routePatternSource);
+          return window.location.href.match(routePattern) !== null;
+        },
+        MEDIA_VIEWER_ROUTE_PATTERN.source,
+        { timeout: this.getRecommendedTimeoutMs() }
+      )
+      .catch(() => undefined);
+
+    const matchingPage = this.page
+      .context()
+      .pages()
+      .find((candidate) => MEDIA_VIEWER_ROUTE_PATTERN.test(candidate.url()));
+
+    return matchingPage ?? this.page;
+  }
+
   async getTabCount() {
     const tabsCount = await this.tablist2.count();
     return tabsCount;
+  }
+
+  private async waitForCaseDetailsTabsReady(timeoutMs: number): Promise<void> {
+    await this.container.waitFor({ state: 'visible', timeout: timeoutMs });
+    await this.tabList.waitFor({ state: 'visible', timeout: timeoutMs });
+
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
+      const visibleTabCount = await this.tablist2.evaluateAll(
+        (tabs) =>
+          tabs.filter((tab) => {
+            const element = tab as HTMLElement;
+            return !element.hidden && element.offsetParent !== null;
+          }).length
+      );
+
+      if (visibleTabCount > 0) {
+        return;
+      }
+
+      await this.page.waitForTimeout(200);
+    }
+
+    throw new Error(`Case details tabs did not become visible within ${timeoutMs}ms.`);
   }
 
   private async waitForTabPanelReadiness(tabPanel: Locator, timeoutMs: number): Promise<void> {

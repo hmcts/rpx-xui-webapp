@@ -176,7 +176,6 @@ describe('user.utils', () => {
       expect(userDetailsValid(mockUserDetails)).to.equal(true);
     });
 
-    // todo: unignore and fix following updated list of valid characters
     it('should set user details to invalid if it has dangerous characters', () => {
       mockUserDetails.email = '<script>alert("hello")</script>';
       expect(userDetailsValid(mockUserDetails)).to.equal(false);

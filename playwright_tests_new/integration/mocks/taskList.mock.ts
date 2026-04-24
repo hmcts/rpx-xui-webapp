@@ -50,8 +50,14 @@ export function buildTaskListMock(rowCount: number, assignee: string, actions: T
     const dueDate = dueOpt.value;
     // Hearing date: random future date (or null)
     const hearingDate = faker.datatype.boolean() ? faker.date.soon({ days: faker.number.int({ min: 1, max: 90 }) }) : null;
-    // Format as ISO8601 with timezone
-    const formatDate = (d: Date | null) => (d ? d.toISOString().replace(/\.\d{3}Z$/, '+0000') : '');
+    const formatDate = (d: Date | null) => {
+      if (!d) {
+        return '';
+      }
+      const normalized = new Date(d);
+      normalized.setUTCHours(12, 0, 0, 0);
+      return normalized.toISOString();
+    };
     // Priority: random int 1-10
     const priority = faker.number.int({ min: 1, max: 10 });
     // Case name/category/location/task

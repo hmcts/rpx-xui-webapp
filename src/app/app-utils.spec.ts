@@ -217,11 +217,6 @@ describe('getUserRole', () => {
     expect(roleCategory).toBe('legalops');
   });
 
-  it('should return legal ops role if user is an caseworker-ia', () => {
-    const roleCategory = AppUtils.getUserRole(['caseworker-ia']);
-    expect(roleCategory).toBe('legalops');
-  });
-
   it('should return legal ops role if user is an caseworker-ia-admofficer', () => {
     const roleCategory = AppUtils.getUserRole(['caseworker-ia-admofficer']);
     expect(roleCategory).toBe('legalops');

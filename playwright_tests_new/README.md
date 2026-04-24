@@ -379,6 +379,7 @@ rm -rf .sessions && npx playwright test
 
 - E2E suites are tagged with `@e2e` plus feature tags such as `@e2e-search-case` and `@e2e-manage-tasks`.
 - Default excluded tags are read from `playwright_tests_new/E2E/tag-filter.json` (`excludedTags` array).
+- `@e2e-document-upload-v1` is excluded by default because the legacy V1 Employment case setup is timing out in Jenkins; V2 document upload coverage remains active under `@e2e-document-upload`.
 - Override excludes at runtime with `E2E_PW_EXCLUDED_TAGS_OVERRIDE`.
 - Optionally run only selected E2E tags with `E2E_PW_INCLUDE_TAGS`.
 - Tag inputs accept comma or space separated values, with or without `@`.
@@ -391,6 +392,9 @@ E2E_PW_INCLUDE_TAGS=@e2e-search-case yarn test:playwrightE2E
 
 # Temporarily switch off manage-tasks and document-upload E2E tests
 E2E_PW_EXCLUDED_TAGS_OVERRIDE=@e2e-manage-tasks,@e2e-document-upload yarn test:playwrightE2E
+
+# Re-enable the V1 document-upload test for a targeted run
+E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none E2E_PW_INCLUDE_TAGS=@e2e-document-upload-v1 yarn test:playwrightE2E
 
 # Ignore file-level excludes for this run
 E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:playwrightE2E

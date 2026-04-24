@@ -1,4 +1,5 @@
 import { expect } from '@playwright/test';
+import type { ApiClient } from '@hmcts/playwright-common';
 
 import { expectStatus, withRetry, withXsrf } from './apiTestUtils';
 import { expectTaskList } from './assertions';
@@ -138,10 +139,7 @@ export function assertCaseworkerListResponse(status: number, data: unknown): voi
   }
 }
 
-type WorkAllocationApiClient = {
-  post: (path: string, options?: unknown) => Promise<{ status: number; data?: unknown }>;
-  get?: (path: string, options?: unknown) => Promise<{ status: number; data?: unknown }>;
-};
+type WorkAllocationApiClient = Pick<ApiClient, 'post' | 'get'>;
 
 export async function fetchFirstTask(
   apiClient: WorkAllocationApiClient,
@@ -250,6 +248,26 @@ export function selectTaskId(candidates: Array<string | undefined>, fallback: st
     }
   }
   return fallback;
+}
+
+type TaskIdResolutionSource = 'dynamic' | 'env-assigned' | 'env-unassigned' | 'none';
+
+export function resolveTaskIdWithEnvFallback(
+  primaryTaskId: string | undefined,
+  envAssignedTaskId: string | undefined,
+  envTaskId: string | undefined,
+  fallback: string
+): { taskId: string; source: TaskIdResolutionSource } {
+  if (primaryTaskId) {
+    return { taskId: primaryTaskId, source: 'dynamic' };
+  }
+  if (envAssignedTaskId) {
+    return { taskId: envAssignedTaskId, source: 'env-assigned' };
+  }
+  if (envTaskId) {
+    return { taskId: envTaskId, source: 'env-unassigned' };
+  }
+  return { taskId: fallback, source: 'none' };
 }
 
 type SeededActionDeps = {

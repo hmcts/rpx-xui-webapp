@@ -8,16 +8,16 @@ import {
   TableUtils,
   WaitUtils,
   ServiceAuthUtils,
-  type Logger,
 } from '@hmcts/playwright-common';
-import * as fs from 'node:fs';
-import * as os from 'node:os';
-import * as path from 'node:path';
+import * as fs from 'fs';
+import * as os from 'os';
+import * as path from 'path';
 import { chromium, Page } from 'playwright/test';
 import { config, Config } from './config.utils.js';
 import { CookieUtils } from './cookie.utils.js';
 import { ValidatorUtils } from './validator.utils.js';
 import { UserUtils } from './user.utils.js';
+import { ProfessionalUserUtils } from './professional-user.utils.js';
 import { logger } from './logger.utils.js';
 
 export interface UtilsFixtures {
@@ -35,7 +35,8 @@ export interface UtilsFixtures {
   localeUtils: LocaleUtils;
   serviceAuthUtils: ServiceAuthUtils;
   userUtils: UserUtils;
-  logger: Logger;
+  professionalUserUtils: ProfessionalUserUtils;
+  logger: typeof logger;
 }
 
 export const utilsFixtures = {
@@ -112,7 +113,7 @@ export const utilsFixtures = {
       await context.close();
       try {
         fs.rmSync(userDataDir, { recursive: true, force: true });
-      } catch (error) {
+      } catch {
         // Best-effort cleanup; avoid test failure if temp removal fails.
       }
     } else {
@@ -130,7 +131,13 @@ export const utilsFixtures = {
     }
     await use(new UserUtils());
   },
-  logger: async ({}, use) => {
+  professionalUserUtils: async ({ idamUtils, serviceAuthUtils }, use) => {
+    await use(new ProfessionalUserUtils(idamUtils, serviceAuthUtils));
+  },
+  logger: async ({ page }, use) => {
+    if (page) {
+      // no-op: keep the destructured arg in use to satisfy Playwright fixture signature and lint/Sonar
+    }
     await use(logger);
   },
 };

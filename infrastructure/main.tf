@@ -102,3 +102,15 @@ resource "azurerm_key_vault_secret" "app_insights_connection_string" {
   value        = module.application_insights.connection_string
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }
+
+# Welsh Language Usage Reporting - Logic App Implementation
+data "azurerm_key_vault_secret" "welsh_report_email" {
+  count        = var.welsh_reporting_enabled ? 1 : 0
+  name         = var.welsh_email_address_key
+  key_vault_id = data.azurerm_key_vault.key_vault.id
+}
+
+locals {
+  welsh_emails = var.welsh_reporting_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.welsh_report_email.0.value)) : []
+}
+

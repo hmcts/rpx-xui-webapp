@@ -119,10 +119,7 @@ export async function waitForSearchCasesRequest(
   };
 }
 
-export function expectSearchCasesRequest(
-  request: SearchCasesRequestDetails,
-  expected: ExpectedSearchCasesRequestDetails
-): void {
+export function expectSearchCasesRequest(request: SearchCasesRequestDetails, expected: ExpectedSearchCasesRequestDetails): void {
   expect(request.ctid).toBe(expected.ctid);
   expect(request.useCase).toBe(expected.useCase);
   expect(request.view).toBe(expected.view);

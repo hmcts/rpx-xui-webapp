@@ -319,7 +319,8 @@ API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
 ### API Test Parallelism
 
 - In CI, Playwright defaults to **8 workers** unless `FUNCTIONAL_TESTS_WORKERS` is set
-- Jenkins currently pins `FUNCTIONAL_TESTS_WORKERS=4` for standard CI and nightly Playwright API, E2E, integration, and cross-browser runs
+- Jenkins pins `FUNCTIONAL_TESTS_WORKERS=4` for API and integration suites, and `FUNCTIONAL_TESTS_WORKERS=2` for browser-heavy E2E and cross-browser suites
+- Keeping E2E below the Jenkins agent core count avoids saturating the preview/AAT backends while API and integration stages run in parallel
 - Locally, worker count is auto-sized from CPU capacity; override with `FUNCTIONAL_TESTS_WORKERS` or the Playwright `--workers` flag
 
 ### API Authentication Model
@@ -724,11 +725,11 @@ npx playwright test --project chromium
 
 ```bash
 # Running simultaneously:
-npx playwright test --project chromium --workers=4  # Preview E2E tests
+npx playwright test --project chromium --workers=2  # Preview E2E tests
 npx playwright test --project node-api --workers=4  # Preview API tests
 
 # AAT:
-npx playwright test --project chromium --workers=4  # AAT E2E tests
+npx playwright test --project chromium --workers=2  # AAT E2E tests
 npx playwright test --project node-api --workers=4  # AAT API tests
 
 # Local or unpinned CI:

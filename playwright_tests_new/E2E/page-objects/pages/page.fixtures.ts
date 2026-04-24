@@ -12,6 +12,7 @@ import { HearingsJourneyPage } from './exui/hearingsJourney.po';
 import { HearingViewEditSummaryPage } from './exui/hearingViewEditSummary.po';
 import { HearingViewSummaryPage } from './exui/hearingViewSummary.po';
 import { CaseFileViewPage } from './exui/caseFileView.po';
+import { BookingUiPage } from './exui/bookingUi.po';
 import { AccessRequestPage } from './exui/accessRequest.po';
 
 export interface PageFixtures {
@@ -28,6 +29,7 @@ export interface PageFixtures {
   hearingViewEditSummaryPage: HearingViewEditSummaryPage;
   hearingViewSummaryPage: HearingViewSummaryPage;
   caseFileViewPage: CaseFileViewPage;
+  bookingUiPage: BookingUiPage;
   accessRequestPage: AccessRequestPage;
   mediaViewerPage: ExuiMediaViewerPage;
   idamPage: IdamPage;
@@ -84,6 +86,9 @@ export const pageFixtures = {
   },
   caseFileViewPage: async ({ determinePage }, use) => {
     await use(new CaseFileViewPage(determinePage));
+  },
+  bookingUiPage: async ({ determinePage }, use) => {
+    await use(new BookingUiPage(determinePage));
   },
   accessRequestPage: async ({ determinePage }, use) => {
     await use(new AccessRequestPage(determinePage));

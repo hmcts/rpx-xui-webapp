@@ -119,7 +119,7 @@ def archivePlaywrightDiagnostics = {
     '''
     steps.archiveArtifacts(
         allowEmptyArchive: true,
-        artifacts: 'functional-output/tests/**/odhin-report/**/*,test-results/**/*,functional-output/tests/playwright-diagnostics/failure-data/**/*,**/failure-data.json',
+        artifacts: 'functional-output/tests/**/odhin-report/**/*,functional-output/tests/playwright-diagnostics/failure-data/**/*',
         excludes: 'test-results/.playwright-artifacts-*/**,**/.playwright-artifacts-*/**'
     )
 }
@@ -283,7 +283,7 @@ withPipeline(type, product, component) {
                             "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                             "ORG_USER_ASSIGNMENT_MODE=external",
                             "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                            "FUNCTIONAL_TESTS_WORKERS=2"
+                            "FUNCTIONAL_TESTS_WORKERS=4"
                         ]) {
                             try {
                                 yarnBuilder.yarn('test:api:pw')
@@ -305,27 +305,6 @@ withPipeline(type, product, component) {
                         }
                     }
                     },
-                    codecept: {
-                    stage('Codecept Integration Tests') {
-                        try {
-                            yarnBuilder.yarn('test:xuiIntegration')
-                        } catch (Exception e) {
-                            echo "[failFast] Codecept Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
-                            if (handleFailFastAbort(e)) { return }
-                            throw e
-                        } finally {
-                            publishHTML([
-                                allowMissing         : true,
-                                alwaysLinkToLastBuild: true,
-                                keepAll              : true,
-                                reportDir            : 'functional-output/tests/codecept-ngIntegration/',
-                                reportFiles          : 'cucumber_report.html',
-                                reportName           : 'PREVIEW Legacy Codecept Integration Test'
-                            ])
-                            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
-                        }
-                    }
-                    },
                     playwrightIntegration: {
                     stage('Playwright Integration Tests') {
                         try {
@@ -334,7 +313,7 @@ withPipeline(type, product, component) {
                                 "TEST_TYPE=preview",
                                 "ORG_USER_ASSIGNMENT_MODE=external",
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                                "FUNCTIONAL_TESTS_WORKERS=2",
+                                "FUNCTIONAL_TESTS_WORKERS=4",
                                 "PLAYWRIGHT_SKIP_INSTALL=true",
                                 "INTEGRATION_PW_INCLUDE_TAGS=${params.INTEGRATION_PW_INCLUDE_TAGS ?: ''}",
                                 "INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=${params.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
@@ -428,7 +407,7 @@ withPipeline(type, product, component) {
                             "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                             "ORG_USER_ASSIGNMENT_MODE=external",
                             "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                            "FUNCTIONAL_TESTS_WORKERS=2"
+                            "FUNCTIONAL_TESTS_WORKERS=4"
                         ]) {
                             try {
                                 yarnBuilder.yarn('test:api:pw')
@@ -450,27 +429,6 @@ withPipeline(type, product, component) {
                         }
                     }
                     },
-                    codecept: {
-                    stage('Codecept Integration Tests') {
-                        try {
-                            yarnBuilder.yarn('test:xuiIntegration')
-                        } catch (Exception e) {
-                            echo "[failFast] Codecept Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
-                            if (handleFailFastAbort(e)) { return }
-                            throw e
-                        } finally {
-                            publishHTML([
-                                allowMissing         : true,
-                                alwaysLinkToLastBuild: true,
-                                keepAll              : true,
-                                reportDir            : 'functional-output/tests/codecept-ngIntegration/',
-                                reportFiles          : 'cucumber_report.html',
-                                reportName           : 'AAT Legacy Codecept Integration Test'
-                            ])
-                            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/codecept-ngIntegration/*'
-                        }
-                    }
-                    },
                     playwrightIntegration: {
                     stage('Playwright Integration Tests') {
                         try {
@@ -479,7 +437,7 @@ withPipeline(type, product, component) {
                                 "TEST_TYPE=aat",
                                 "ORG_USER_ASSIGNMENT_MODE=external",
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                                "FUNCTIONAL_TESTS_WORKERS=2",
+                                "FUNCTIONAL_TESTS_WORKERS=4",
                                 "PLAYWRIGHT_SKIP_INSTALL=true",
                                 "INTEGRATION_PW_INCLUDE_TAGS=${params.INTEGRATION_PW_INCLUDE_TAGS ?: ''}",
                                 "INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=${params.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"

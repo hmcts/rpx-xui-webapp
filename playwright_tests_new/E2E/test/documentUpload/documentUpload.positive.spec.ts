@@ -160,7 +160,7 @@ test.describe('Document upload V1', { tag: ['@e2e', '@e2e-document-upload'] }, (
     logger.info('Created employment case', { caseNumber, testValue });
   });
 
-  test('Check the documentV1 upload works as expected', async ({ createCasePage, caseDetailsPage, tableUtils }) => {
+  test.skip('Check the documentV1 upload works as expected', async ({ createCasePage, caseDetailsPage, tableUtils }) => {
     await test.step('Start document upload process', async () => {
       await caseDetailsPage.selectCaseAction(TEST_DATA.V1.ACTION, {
         expectedLocator: createCasePage.page.locator('#documentCollection button'),

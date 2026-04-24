@@ -14,15 +14,46 @@ type TaskMockRouteOptions = {
 
 const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-const defaultSupportedJurisdictionDetailsMock: SupportedJurisdictionDetail[] = defaultSupportedJurisdictionsMock.map(
-  (serviceId) => ({ serviceId, serviceName: serviceId })
+const supportedJurisdictionDisplayNames: Record<string, string> = {
+  CIVIL: 'Civil',
+  EMPLOYMENT: 'Employment',
+  IA: 'Immigration and Asylum',
+  PRIVATELAW: 'Private Law',
+  PUBLICLAW: 'Public Law',
+  SSCS: 'Social security and child support',
+};
+
+export function buildSupportedJurisdictionDetails(
+  supportedJurisdictions: string[],
+  supportedJurisdictionDetails: SupportedJurisdictionDetail[] = []
+): SupportedJurisdictionDetail[] {
+  return supportedJurisdictions.map((serviceId) => {
+    const explicitDetail = supportedJurisdictionDetails.find((detail) => detail.serviceId === serviceId);
+    return explicitDetail ?? { serviceId, serviceName: supportedJurisdictionDisplayNames[serviceId] ?? serviceId };
+  });
+}
+
+export const defaultSupportedJurisdictionDetailsMock: SupportedJurisdictionDetail[] = buildSupportedJurisdictionDetails(
+  defaultSupportedJurisdictionsMock
 );
 
 export async function setupTaskListBootstrapRoutes(
   page: Page,
   supportedJurisdictions: string[] = defaultSupportedJurisdictionsMock,
-  supportedJurisdictionDetails: SupportedJurisdictionDetail[] = defaultSupportedJurisdictionDetailsMock
+  supportedJurisdictionDetails: SupportedJurisdictionDetail[] = []
 ): Promise<void> {
+  const resolvedSupportedJurisdictionDetails = buildSupportedJurisdictionDetails(
+    supportedJurisdictions,
+    supportedJurisdictionDetails
+  );
+  const aggregatedJurisdictions = supportedJurisdictions.map((serviceId) => {
+    const detailedService = resolvedSupportedJurisdictionDetails.find((service) => service.serviceId === serviceId);
+    return {
+      id: serviceId,
+      name: detailedService?.serviceName ?? serviceId,
+    };
+  });
+
   await page.route('**/api/wa-supported-jurisdiction/get*', async (route) => {
     await route.fulfill({
       status: 200,
@@ -35,7 +66,15 @@ export async function setupTaskListBootstrapRoutes(
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(supportedJurisdictionDetails),
+      body: JSON.stringify(resolvedSupportedJurisdictionDetails),
+    });
+  });
+
+  await page.route('**/aggregated/caseworkers/**/jurisdictions*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(aggregatedJurisdictions),
     });
   });
 

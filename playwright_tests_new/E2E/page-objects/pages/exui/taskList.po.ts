@@ -2,6 +2,8 @@ import { expect, Locator, Page, Request } from '@playwright/test';
 import { Base } from '../../base';
 
 const TASK_LIST_READY_TIMEOUT_MS = 30_000;
+const TASK_LIST_BOOTSTRAP_RETRY_TIMEOUT_MS = 12_000;
+const TASK_LIST_NAVIGATION_ATTEMPTS = 2;
 const FILTER_PANEL_READY_TIMEOUT_MS = 10_000;
 const FILTER_CONTROL_READY_TIMEOUT_MS = 15_000;
 const FILTER_GROUP_OPERATION_TIMEOUT_MS = 10_000;
@@ -253,11 +255,31 @@ export class TaskListPage extends Base {
     context: string,
     timeoutMs = TASK_LIST_READY_TIMEOUT_MS
   ) {
-    await this.page.goto(path, { waitUntil: 'domcontentloaded' });
-    await this.page.waitForURL(urlPattern, { timeout: timeoutMs }).catch(() => undefined);
-    await this.waitForExuiAppShell(context, timeoutMs);
-    await this.waitForTaskListSpinnerToSettle(10_000);
-    await this.waitForTaskListShellReady(context);
+    let lastError: Error | undefined;
+
+    for (let attempt = 1; attempt <= TASK_LIST_NAVIGATION_ATTEMPTS; attempt += 1) {
+      await this.page.goto(path, { waitUntil: 'domcontentloaded' });
+      await this.page.waitForURL(urlPattern, { timeout: timeoutMs }).catch(() => undefined);
+
+      try {
+        await this.waitForExuiAppShell(context, timeoutMs);
+        await this.waitForTaskListSpinnerToSettle(10_000);
+        await this.waitForTaskListShellReady(
+          `${context}${attempt > 1 ? ` retry ${attempt}` : ''}`,
+          attempt === TASK_LIST_NAVIGATION_ATTEMPTS ? timeoutMs : TASK_LIST_BOOTSTRAP_RETRY_TIMEOUT_MS
+        );
+        return;
+      } catch (error) {
+        lastError = error as Error;
+        if (attempt === TASK_LIST_NAVIGATION_ATTEMPTS || this.page.isClosed()) {
+          throw lastError;
+        }
+      }
+    }
+
+    if (lastError) {
+      throw lastError;
+    }
   }
 
   private async waitForExuiAppShell(context: string, timeoutMs: number): Promise<void> {
@@ -284,7 +306,7 @@ export class TaskListPage extends Base {
     }
   }
 
-  async waitForTaskListShellReady(context: string) {
+  async waitForTaskListShellReady(context: string, timeoutMs = TASK_LIST_READY_TIMEOUT_MS) {
     const findVisibleShellSignal = async () => {
       const signals: Array<[string, Locator]> = [
         ['heading', this.myWorkHeading],
@@ -309,7 +331,7 @@ export class TaskListPage extends Base {
 
     await this.page
       .waitForURL(/\/(?:work\/(?:my-work\/(?:list|available|my-cases|my-access)|all-work\/(?:tasks|cases))|service-down)/, {
-        timeout: TASK_LIST_READY_TIMEOUT_MS,
+        timeout: timeoutMs,
       })
       .catch(() => undefined);
     await this.waitForTaskListSpinnerToSettle(10_000);
@@ -328,18 +350,18 @@ export class TaskListPage extends Base {
     }
 
     const bootstrapSignal = await Promise.any([
-      this.myWorkHeading.waitFor({ state: 'visible', timeout: TASK_LIST_READY_TIMEOUT_MS }).then(() => 'heading'),
+      this.myWorkHeading.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => 'heading'),
       this.taskTableTabs
         .first()
-        .waitFor({ state: 'visible', timeout: TASK_LIST_READY_TIMEOUT_MS })
+        .waitFor({ state: 'visible', timeout: timeoutMs })
         .then(() => 'tabs'),
-      this.taskListFilterToggle.waitFor({ state: 'visible', timeout: TASK_LIST_READY_TIMEOUT_MS }).then(() => 'filter-toggle'),
-      this.taskListTable.waitFor({ state: 'visible', timeout: TASK_LIST_READY_TIMEOUT_MS }).then(() => 'table'),
-      this.taskTableHeader.waitFor({ state: 'visible', timeout: TASK_LIST_READY_TIMEOUT_MS }).then(() => 'table-header'),
-      this.taskTableFooter.waitFor({ state: 'visible', timeout: TASK_LIST_READY_TIMEOUT_MS }).then(() => 'table-footer'),
-      this.taskListResultsAmount.waitFor({ state: 'visible', timeout: TASK_LIST_READY_TIMEOUT_MS }).then(() => 'results-summary'),
-      this.errorPageHeading.waitFor({ state: 'visible', timeout: TASK_LIST_READY_TIMEOUT_MS }).then(() => 'error-page'),
-      this.serviceDownError.waitFor({ state: 'visible', timeout: TASK_LIST_READY_TIMEOUT_MS }).then(() => 'service-down'),
+      this.taskListFilterToggle.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => 'filter-toggle'),
+      this.taskListTable.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => 'table'),
+      this.taskTableHeader.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => 'table-header'),
+      this.taskTableFooter.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => 'table-footer'),
+      this.taskListResultsAmount.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => 'results-summary'),
+      this.errorPageHeading.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => 'error-page'),
+      this.serviceDownError.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => 'service-down'),
     ]).catch(async () => {
       const lateSignal = await findVisibleShellSignal();
       if (lateSignal) {
@@ -351,7 +373,7 @@ export class TaskListPage extends Base {
         .textContent()
         .catch(() => '');
       throw new Error(
-        `Task list shell did not become ready within ${TASK_LIST_READY_TIMEOUT_MS}ms (${context}). url=${this.page.url()} heading=${
+        `Task list shell did not become ready within ${timeoutMs}ms (${context}). url=${this.page.url()} heading=${
           headingText?.trim() || 'unknown'
         }`
       );
@@ -422,6 +444,14 @@ export class TaskListPage extends Base {
 
     if (!surfaceReady) {
       return false;
+    }
+
+    const allWorkFilterStates = await Promise.all([
+      this.allWorkServiceFilter.isVisible(),
+      this.allWorkCasesServiceFilter.isVisible(),
+    ]).catch(() => false);
+    if (Array.isArray(allWorkFilterStates) && allWorkFilterStates.some(Boolean)) {
+      return true;
     }
 
     const toggleText = ((await this.taskListFilterToggle.textContent().catch(() => '')) ?? '').replace(/\s+/g, ' ').trim();
@@ -502,6 +532,7 @@ export class TaskListPage extends Base {
 
   async applyCurrentFilters() {
     await this.openFilterPanel();
+    await this.applyFilterButton.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
     await this.applyFilterButton.evaluate((button: HTMLButtonElement) => button.click());
   }
 
@@ -559,8 +590,13 @@ export class TaskListPage extends Base {
 
   async searchForLocation(searchText: string) {
     await this.openFilterPanel();
-    await this.allWorkLocationSearchInput.clear();
-    await this.allWorkLocationSearchInput.type(searchText);
+    await this.allWorkLocationSearchInput.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+    await this.allWorkLocationSearchInput.click();
+    await this.allWorkLocationSearchInput.fill('');
+    await this.allWorkLocationSearchInput.type(searchText, { delay: 50 });
+    await this.allWorkLocationSearchInput.evaluate((input: HTMLInputElement) => {
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    });
   }
 
   private async setFilterCheckbox(checkbox: Locator, checked: boolean, description: string, deadlineMs?: number) {

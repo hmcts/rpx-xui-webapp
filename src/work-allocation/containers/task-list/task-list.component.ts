@@ -35,8 +35,7 @@ export class TaskListComponent implements OnChanges {
    */
   @Input() public emptyMessage: string = ListConstants.EmptyMessage.Default;
 
-  // TODO: Need to re-read the LLD, but I believe it says pass in the taskServiceConfig into this TaskListComponent.
-  // Therefore we will not need this.
+  // TODO: EXUI-3967 - Need to remove this as part of tech debt ticket as should be within taskServiceConfig.fields
   @Input() public fields: FieldConfig[];
 
   @Output() public sortEvent = new EventEmitter<string>();
@@ -171,7 +170,7 @@ export class TaskListComponent implements OnChanges {
    *
    * 'ascending'/'descending' needed to set sorting instead of 'asc'/'desc' which does not sort correctly
    *
-   * TODO: Think about moving 'none' to task sort model.
+   * TODO: Think about moving 'none' to task sort model. EXUI-3967 - Further investigation needed
    *
    * @param fieldName - 'caseName'
    * @return 'none' / 'asc' / 'desc'
@@ -195,7 +194,7 @@ export class TaskListComponent implements OnChanges {
     this.pagination.page_number = 1;
     this.sessionStorageService.setItem(this.pageSessionKey, this.pagination.page_number.toString());
     if (!this.defaultSortElement) {
-      this.defaultSortElement = document.getElementById(`sort_by_${this.taskServiceConfig.defaultSortFieldName}`) as HTMLElement;
+      this.defaultSortElement = document.getElementById(`sort_by_${this.taskServiceConfig.defaultSortFieldName}`);
     }
     this.defaultSortElement.click();
   }

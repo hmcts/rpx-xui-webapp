@@ -30,7 +30,7 @@ router.get('/upstream/:id.json', async (req, res) => {
     const response = await axios.get(url, { responseType: 'json' });
     res.type('application/json').send(response.data);
   } catch (error) {
-    const status = (error as any).response?.status || 500;
+    const status = error.response?.status || 500;
     res.status(status).send({ error: 'Failed to fetch upstream spec', detail: url });
   }
 });

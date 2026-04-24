@@ -14,7 +14,6 @@ import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import { release2ContentType } from '../roleAccess/models/release2ContentType';
 import { Role } from '../roleAccess/models/roleType';
 import { ElasticSearchQuery } from '../searchCases/interfaces/ElasticSearchQuery';
-import { CASE_ALLOCATOR_ROLE } from '../user/constants';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { exists, reflect } from '../lib/util';
 import {
@@ -25,7 +24,7 @@ import {
 } from './constants/actions';
 import { getCaseListPromises } from './index';
 import { Case, CaseList } from './interfaces/case';
-import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
+import { ServiceCaseworkerData } from './interfaces/caseworkerPayload';
 import {
   Action,
   CachedCaseworker,
@@ -83,7 +82,7 @@ export function prepareGetSpecificLocationUrl(baseUrl: string, epimmsId: string)
 }
 
 export function prepareGetUsersUrl(baseUrl: string, service: string): string {
-  const pageSize = parseInt(getConfigValue(CASEWORKER_PAGE_SIZE));
+  const pageSize = Number.parseInt(getConfigValue(CASEWORKER_PAGE_SIZE));
   return `${baseUrl}/refdata/internal/staff/usersByServiceName?ccd_service_names=${service}&page_size=${pageSize}`;
 }
 
@@ -318,7 +317,6 @@ export function getRoleCategory(roleAssignments: RoleAssignment[], caseWorkerApi
 }
 
 export function getUserRoleCategory(roleAssignments: RoleAssignment[], user: StaffProfile, services: string[]): string {
-  // TODO: Will need to be updated
   const roleAssignment = roleAssignments.find(
     (roleAssign) =>
       roleAssign.actorId === user.id &&
@@ -379,17 +377,14 @@ export function mapUserLocation(baseLocation: LocationApi[]): Location {
   return thisBaseLocation;
 }
 
-export function prepareRoleApiRequest(jurisdictions: string[], locationId?: number, allRoles?: boolean): any {
-  let attributes: any = {};
-  if (!allRoles) {
-    attributes = {
-      jurisdiction: jurisdictions,
-    };
-  }
-
+export function prepareRoleApiRequest(jurisdictions: string[]): any {
+  const attributes: any = {
+    jurisdiction: jurisdictions,
+  };
   const payload = {
     attributes,
     // TODO: This should not be hard-coded list
+    // EXUI-3967 - needs review as to where roles should come from
     roleName: [
       'hearing-centre-admin',
       'case-manager',
@@ -406,34 +401,7 @@ export function prepareRoleApiRequest(jurisdictions: string[], locationId?: numb
     roleType: ['ORGANISATION'],
     validAt: Date.UTC,
   };
-  if (locationId) {
-    // TODO: Not sure whether this is even being used
-    payload.attributes.baseLocation = [locationId];
-  }
   return payload;
-}
-
-export function prepareServiceRoleApiRequest(jurisdictions: string[], roles: Role[], locationId?: number): CaseworkerPayload[] {
-  // note that this could be moved to index method if required
-  const roleIds = getRoleIdsFromRoles(roles);
-  const payloads: CaseworkerPayload[] = [];
-  jurisdictions.forEach((jurisdiction) => {
-    const attributes: any = {
-      jurisdiction: [jurisdiction],
-    };
-    if (locationId) {
-      // TODO: Again does not seem to be being used
-      attributes.baseLocation = [locationId];
-    }
-    const payload = {
-      attributes,
-      roleName: roleIds,
-      roleType: ['ORGANISATION'],
-      validAt: Date.UTC,
-    };
-    payloads.push(payload);
-  });
-  return payloads;
 }
 
 export function getRoleIdsFromRoles(roles: Role[]): string[] {
@@ -578,13 +546,13 @@ export function getActionsByPermissions(view, permissions: TaskPermission[]): Ac
 
 export function getActionsFromMatrix(view, permission: TaskPermission, currentActionList: Action[]): Action[] {
   const newActionList = currentActionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][permission]);
-  currentActionList = !newActionList.includes(undefined) ? newActionList : currentActionList;
+  currentActionList = newActionList.includes(undefined) ? currentActionList : newActionList;
   return currentActionList;
 }
 
 export function getActionsFromRefinedMatrix(view, permission: TaskPermission, currentActionList: Action[]): Action[] {
   const newActionList = currentActionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX_REFINED[view][permission]);
-  currentActionList = !newActionList.includes(undefined) ? newActionList : currentActionList;
+  currentActionList = newActionList.includes(undefined) ? currentActionList : newActionList;
   return currentActionList;
 }
 
@@ -705,16 +673,6 @@ export async function searchCasesById(queryParams: string, query: any, req: expr
     console.error(e);
   }
   return null;
-}
-
-// Only called in test function - why is it here?
-export function getCaseAllocatorLocations(roleAssignments: RoleAssignment[]): string[] {
-  return roleAssignments
-    .filter((roleAssignment) => roleAssignment.attributes?.baseLocation && roleAssignment.roleName === CASE_ALLOCATOR_ROLE)
-    .map((roleAssignment) => roleAssignment.attributes.baseLocation)
-    .reduce((acc, locationId) => (acc.includes(locationId) ? acc : `${acc}${locationId},`), '')
-    .split(',')
-    .filter((location) => location.length);
 }
 
 export function constructRoleAssignmentQuery(searchTaskParameters: SearchTaskParameter[]): any {
@@ -914,7 +872,7 @@ export function getGrantType(roleAssignment: RoleAssignment) {
   ) {
     return 'Specific';
   } else if (roleAssignment.grantType) {
-    return roleAssignment.grantType.replace(/(\w)(\w*)/g, (g0, second, third) => {
+    return roleAssignment.grantType.replaceAll(/(\w)(\w*)/g, (g0, second, third) => {
       return second.toUpperCase() + third.toLowerCase();
     });
   }
@@ -973,7 +931,7 @@ export function formatDate(date: Date) {
 
 export function getAccessType(roleAssignment: RoleAssignment) {
   return roleAssignment.grantType
-    ? roleAssignment.grantType.replace(/\w+/g, (replacableString) => {
+    ? roleAssignment.grantType.replaceAll(/\w+/g, (replacableString) => {
         return replacableString[0].toUpperCase() + replacableString.slice(1).toLowerCase();
       })
     : undefined;

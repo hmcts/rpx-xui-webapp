@@ -15,10 +15,16 @@
       upcoming: upcomingHearings$ | async,
       pastAndCancelled: pastAndCancelledHearings$ | async,
       listed: listedHearings$ | async,
+      currentCaseHearingsLoaded: currentCaseHearingsLoaded$ | async,
     } as data"
   >
     <br />
-    <ng-container *ngIf="!serverError && (data.upcoming !== null || data.pastAndCancelled !== null || data.listed !== null)">
+    <ng-container *ngIf="!serverError && !data.currentCaseHearingsLoaded">
+      <div class="hearings-loading-message" aria-live="polite">
+        <p class="govuk-body">Retrieving hearing data...</p>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="!serverError && data.currentCaseHearingsLoaded">
       <a
         *ngIf="hasRequestAction"
         href="#"

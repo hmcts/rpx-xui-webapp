@@ -48,7 +48,7 @@ const staticRoot = resolveStaticRoot();
 const indexHtmlRaw = loadIndexHtml(staticRoot);
 
 function injectNonce(html: string, nonce: string): string {
-  return html.replace(/{{cspNonce}}/g, nonce);
+  return html.replaceAll(/{{cspNonce}}/g, nonce);
 }
 
 export async function createApp() {
@@ -101,6 +101,7 @@ export async function createApp() {
   }
 
   // TODO: remove tunnel and configurations
+  // EXUI-3967 - the above ask requires further investigation and testing on production environments
   tunnel.init();
   /**
    * Add Reform Standard health checks.

@@ -97,10 +97,10 @@ export class RolesAndAccessComponent implements OnInit, OnChanges {
           exclusion.userType === RoleCategory.ADMIN ||
           exclusion.userType === RoleCategory.CTSC
         ) {
-          if (!exclusion.name) {
-            this.exclusionsNotNamed = true;
-          } else {
+          if (exclusion?.name) {
             break;
+          } else {
+            this.exclusionsNotNamed = true;
           }
         }
       }

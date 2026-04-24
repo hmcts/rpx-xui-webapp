@@ -109,7 +109,7 @@ export default (() => {
       [resolveDefaultReporter(process.env)],
       ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs'],
       [
-        'odhin-reports-playwright',
+        './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
         {
           outputFolder: odhinOutputFolder,
           indexFilename: 'xui-playwright-e2e.html',

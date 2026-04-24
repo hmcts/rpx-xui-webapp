@@ -67,7 +67,7 @@ export const myCaseDisplayValues = [...new Set(myCaseStateDefinitions.map((defin
 
 export const buildMyCaseMock = (overrides: Partial<MyCaseMock> = {}): MyCaseMock => {
   const serviceLabelByJurisdiction: Record<string, string> = {
-    IA: 'Immigration & Asylum',
+    IA: 'Immigration and Asylum',
     SSCS: 'Social security and child support',
     Other: 'Other',
   };
@@ -128,7 +128,7 @@ export const buildMyCasesMock = (uniqueCasesCount: number = 2): MyCasesResponseM
       case_type: 'Asylum',
       jurisdiction: 'IA',
       jurisdictionId: 'IA',
-      expectedServiceLabel: 'Immigration & Asylum',
+      expectedServiceLabel: 'Immigration and Asylum',
       startDate: toMiddayUtcIso('2026-01-10T00:00:00.000Z'),
       endDate: toMiddayUtcIso('2026-02-16T00:00:00.000Z'),
       next_hearing_date: toMiddayUtcIso('2026-01-20T00:00:00.000Z'),

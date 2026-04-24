@@ -13,8 +13,10 @@ const escapeForRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '
 
 export class TaskListPage extends Base {
   readonly myWorkHeading = this.page.getByRole('heading', { name: /my work/i }).first();
-  readonly taskListFilterToggle = this.page.locator('exui-task-list-filter .govuk-button.hmcts-button--secondary').first();
-  readonly filterPanel = this.page.locator('xuilib-generic-filter');
+  readonly taskListFilterToggle = this.page
+    .locator('exui-task-list-filter .govuk-button.hmcts-button--secondary:visible')
+    .first();
+  readonly filterPanel = this.page.locator('xuilib-generic-filter:visible').first();
   readonly selectAllServicesFilter = this.filterPanel.locator('input#checkbox_servicesservices_all').first();
   readonly serviceFilterCheckboxes = this.filterPanel.locator(
     '#services .govuk-checkboxes__input:not(#checkbox_servicesservices_all)'
@@ -27,7 +29,7 @@ export class TaskListPage extends Base {
   );
 
   readonly selectTypesOfWorksError = this.filterPanel.locator('#types-of-work-error').first();
-  readonly applyFilterButton = this.page.locator('button#applyFilter').first();
+  readonly applyFilterButton = this.filterPanel.locator('button#applyFilter').first();
 
   readonly allWorkServiceFilter = this.filterPanel
     .locator('select#select_service, select[name="select_service"], select#service, select[name="service"]')
@@ -49,12 +51,15 @@ export class TaskListPage extends Base {
     .locator('xpath=following::select[1]')
     .first();
   readonly allWorkPersonSearchInput = this.filterPanel.getByRole('combobox', { name: /select a person/i }).first();
-  readonly allWorkLocationSearchInput = this.filterPanel.locator('#locations input[name="location"]').first();
+  readonly locationFilterSection = this.filterPanel.locator('#locations').first();
+  readonly locationPicker = this.filterPanel
+    .locator('xuilib-find-location')
+    .filter({ has: this.page.locator('input#inputLocationSearch:visible') })
+    .first();
+  readonly allWorkLocationSearchInput = this.locationPicker.locator('input#inputLocationSearch').first();
   readonly allWorkAutocompleteOptions = this.page.locator('.cdk-overlay-container .mat-autocomplete-panel [role="option"]');
   readonly allWorkLocationSearchResults = this.page.locator('.cdk-overlay-container .mat-autocomplete-panel mat-option span');
-  readonly selectedLocationTags = this.filterPanel.locator(
-    '#locations xuilib-find-location .location-picker-custom .location-selection a'
-  );
+  readonly selectedLocationTags = this.locationPicker.locator('.location-picker-custom .location-selection a.hmcts-filter__tag');
   readonly allWorkCasesApplyPrompt = this.page.getByText('Please select filters and click Apply').first();
   readonly allWorkCasesEmptyMessage = this.page.getByText('Change your selection to view cases').first();
 
@@ -387,6 +392,42 @@ export class TaskListPage extends Base {
     });
   }
 
+  private async waitForFilterPanelSurface(context: string, deadlineMs?: number): Promise<boolean> {
+    const timeoutMs = this.resolveInteractionTimeout(deadlineMs, FILTER_CONTROL_READY_TIMEOUT_MS);
+
+    const panelVisible = await this.filterPanel.isVisible().catch(() => false);
+    if (!panelVisible) {
+      return false;
+    }
+
+    const surfaceReady = await Promise.any([
+      this.selectAllServicesFilter.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => true),
+      this.serviceFilterCheckboxes
+        .first()
+        .waitFor({ state: 'visible', timeout: timeoutMs })
+        .then(() => true),
+      this.selectAllTypesOfWorksFilter.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => true),
+      this.typesOfWorkFilterCheckboxes
+        .first()
+        .waitFor({ state: 'visible', timeout: timeoutMs })
+        .then(() => true),
+      this.allWorkServiceFilter.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => true),
+      this.allWorkCasesServiceFilter.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => true),
+      this.allWorkLocationAllRadio.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => true),
+      this.allWorkLocationSearchRadio.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => true),
+    ]).catch(async () => {
+      await this.assertTaskListInteractive(context);
+      return false;
+    });
+
+    if (!surfaceReady) {
+      return false;
+    }
+
+    const toggleText = ((await this.taskListFilterToggle.textContent().catch(() => '')) ?? '').replace(/\s+/g, ' ').trim();
+    return /Hide work filter/i.test(toggleText) && (await this.filterPanel.isVisible().catch(() => false));
+  }
+
   private async waitForFilterCheckboxVisible(checkbox: Locator, description: string, deadlineMs?: number): Promise<Locator> {
     const targetCheckbox = checkbox.first();
     const timeoutMs = this.resolveInteractionTimeout(deadlineMs, FILTER_CONTROL_READY_TIMEOUT_MS);
@@ -421,29 +462,34 @@ export class TaskListPage extends Base {
   }
 
   async openFilterPanel(deadlineMs?: number) {
-    if (await this.applyFilterButton.isVisible().catch(() => false)) {
+    if (await this.waitForFilterPanelSurface('checking existing filter panel state', deadlineMs)) {
       return;
     }
     await this.waitForTaskListSpinnerToSettle(5_000);
     this.assertFilterInteractionAlive('opening filter panel', deadlineMs);
     await this.assertTaskListInteractive('opening filter panel');
     await this.waitForFilterControls('waiting for filter controls', deadlineMs);
-    if (await this.applyFilterButton.isVisible().catch(() => false)) {
+    if (await this.waitForFilterPanelSurface('checking filter panel state after control wait', deadlineMs)) {
       return;
     }
     const panelDeadlineMs = deadlineMs ?? Date.now() + FILTER_PANEL_READY_TIMEOUT_MS;
     while (Date.now() < panelDeadlineMs) {
       this.assertFilterInteractionAlive('opening filter panel', deadlineMs);
-      if (await this.applyFilterButton.isVisible().catch(() => false)) {
+      if (await this.waitForFilterPanelSurface('waiting for filter panel surface', panelDeadlineMs)) {
         return;
       }
-      await this.taskListFilterToggle.click({ force: true });
-      await this.filterPanel
-        .waitFor({ state: 'visible', timeout: this.resolveInteractionTimeout(panelDeadlineMs, 1_000) })
-        .catch(() => undefined);
-      if (await this.applyFilterButton.isVisible().catch(() => false)) {
+
+      if (!(await this.filterPanel.isVisible().catch(() => false))) {
+        await this.taskListFilterToggle.click({ force: true });
+        await this.filterPanel
+          .waitFor({ state: 'visible', timeout: this.resolveInteractionTimeout(panelDeadlineMs, 1_000) })
+          .catch(() => undefined);
+      }
+
+      if (await this.waitForFilterPanelSurface('waiting for filter panel surface after toggle', panelDeadlineMs)) {
         return;
       }
+
       await this.page.waitForTimeout(250);
     }
     await this.assertTaskListInteractive('opening filter panel');

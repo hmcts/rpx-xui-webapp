@@ -57,7 +57,7 @@ const buildAllWorkCase = (index: number, overrides: Partial<MyCaseMock> = {}): M
     case_type: 'Asylum',
     jurisdiction: caseNumber % 2 === 0 ? 'SSCS' : 'IA',
     jurisdictionId: caseNumber % 2 === 0 ? 'SSCS' : 'IA',
-    expectedServiceLabel: caseNumber % 2 === 0 ? 'Social security and child support' : 'Immigration & Asylum',
+    expectedServiceLabel: caseNumber % 2 === 0 ? 'Social security and child support' : 'Immigration and Asylum',
     case_role: 'case-manager',
     role: 'Case Manager',
     role_category: 'LEGAL_OPERATIONS',

@@ -26,7 +26,7 @@ test.describe(`My Cases pagination as ${userIdentifier}`, { tag: ['@integration'
           case_type: 'Asylum',
           jurisdiction: jurisdictionId,
           jurisdictionId,
-          expectedServiceLabel: jurisdictionId === 'IA' ? 'Immigration & Asylum' : 'Social security and child support',
+          expectedServiceLabel: jurisdictionId === 'IA' ? 'Immigration and Asylum' : 'Social security and child support',
         });
       },
       100

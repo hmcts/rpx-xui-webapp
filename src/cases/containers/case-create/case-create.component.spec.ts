@@ -1,5 +1,5 @@
 import { provideHttpClientTesting } from '@angular/common/http/testing';
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
@@ -16,13 +16,17 @@ import {
   PlaceholderService,
   RequestOptionsBuilder,
   RouterHelperService,
+  SearchFiltersModule,
   SearchService,
 } from '@hmcts/ccd-case-ui-toolkit';
-import { MemoizedSelector } from '@ngrx/store';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { EffectsModule } from '@ngrx/effects';
+import { combineReducers, StoreModule } from '@ngrx/store';
+import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { AppConfigService } from '../../../app/services/config/configuration.services';
-import * as fromCasesSelectors from '../../store/selectors/create-case.selectors';
+import { SharedModule } from '../../../app/shared/shared.module';
+import { reducers } from '../../../app/store';
+import * as fromCases from '../../store/reducers';
 import { CasesCreateComponent } from './case-create.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
@@ -37,8 +41,6 @@ class MockSortService {
 describe('CaseCreateComponent', () => {
   let component: CasesCreateComponent;
   let fixture: ComponentFixture<CasesCreateComponent>;
-  let store: MockStore;
-  let createCaseFilterSelector: MemoizedSelector<any, { jurisdictionId: string; caseTypeId: string; eventId: string }>;
 
   beforeAll(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
@@ -47,9 +49,15 @@ describe('CaseCreateComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [CasesCreateComponent],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
       teardown: { destroyAfterEach: false },
-      imports: [RouterTestingModule],
+      imports: [
+        RouterTestingModule,
+        StoreModule.forRoot({ ...reducers, cases: combineReducers(fromCases.reducers) }),
+        EffectsModule.forRoot([]),
+        SharedModule,
+        SearchFiltersModule,
+      ],
       providers: [
         PlaceholderService,
         CasesService,
@@ -80,7 +88,7 @@ describe('CaseCreateComponent', () => {
           provide: AppConfigService,
           useClass: MockSortService,
         },
-        provideMockStore(),
+        ScrollToService,
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
@@ -88,13 +96,6 @@ describe('CaseCreateComponent', () => {
   }));
 
   beforeEach(() => {
-    store = TestBed.inject(MockStore);
-    createCaseFilterSelector = store.overrideSelector(fromCasesSelectors.getCreateCaseFilterState, {
-      jurisdictionId: 'TEST',
-      caseTypeId: 'CASE',
-      eventId: 'CREATE',
-    });
-    store.refreshState();
     fixture = TestBed.createComponent(CasesCreateComponent);
     component = fixture.componentInstance;
     component.caseCreateInputs = { jurisdictionId: '', caseTypeId: '', eventId: '' };
@@ -103,8 +104,8 @@ describe('CaseCreateComponent', () => {
   });
 
   afterEach(() => {
+    spyOn(component, 'ngOnDestroy').and.callFake(() => {});
     fixture.destroy();
-    createCaseFilterSelector?.setResult({ jurisdictionId: 'TEST', caseTypeId: 'CASE', eventId: 'CREATE' });
   });
 
   it('should create', () => {

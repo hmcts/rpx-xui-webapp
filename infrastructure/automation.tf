@@ -91,7 +91,7 @@ function New-PdfObjectBytes {
         [byte[]]$BodyBytes
     )
 
-    $headerBytes = [System.Text.Encoding]::ASCII.GetBytes("${ObjectNumber} 0 obj`n")
+    $headerBytes = [System.Text.Encoding]::ASCII.GetBytes("$($ObjectNumber) 0 obj`n")
     $footerBytes = [System.Text.Encoding]::ASCII.GetBytes("`nendobj`n")
     $objectBytes = New-Object byte[] ($headerBytes.Length + $BodyBytes.Length + $footerBytes.Length)
 

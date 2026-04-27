@@ -1,6 +1,6 @@
 import { expect, test } from '../../fixtures';
 import { ensureSession } from '../../../common/sessionCapture';
-import { HearingJourneyModel } from '../../utils/hearing-model';
+import { HearingJourneyModel, TypeOfJudges } from '../../utils/hearing-model';
 //import { resolveCaseReferenceFromGlobalSearch, resolveNonExistentCaseReference } from '../../../E2E/utils/case-reference.utils';
 import { openHomeWithCapturedSession } from '../searchCase/searchCase.setup';
 import { caseDetailsUrl, continueHearingsFlow } from '../../../integration/helpers/hearingJourneySetup.helper.ts';
@@ -99,9 +99,19 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
       await continueHearingsFlow(page);
     });
 
-    // hearing timing
+    // hearing timings
     await test.step('Hearing Timings etc', async () => {
       await expect(page).toHaveURL(/\/hearings\/request\/hearing-timing$/);
+
+      await hearingsJourneyPage.setHearingTimings(hearingJourneyModel);
+
+      await page.waitForTimeout(12000);
+    });
+
+    await test.step('Hearing Timings etc', async () => {
+      await expect(page).toHaveURL(/\/hearings\/request\/hearing-link$/);
+
+      //await hearingsJourneyPage.setHearingTimings(hearingJourneyModel);
 
       await page.waitForTimeout(12000);
     });

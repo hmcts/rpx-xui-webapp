@@ -4,6 +4,7 @@ import {
   HearingJourneyModel,
   HearingMethod,
   howWillParticipantAttend,
+  LengthOfHearing,
   TypeOfJudges,
 } from '../../../utils/hearing-model.ts';
 
@@ -45,11 +46,30 @@ export class HearingsJourneyPage {
   readonly noSpecificJudgeRadio = this.page.locator('#noSpecificJudge');
   readonly specificJudgeRadio = this.page.locator('#specificJudgeName');
 
+  readonly hearingPriority = this.page.locator('#hearingPriority');
+
   readonly selectAllJudgesThatApply = this.page.locator('.govuk-fieldset .govuk-fieldset__legend').nth(1);
 
-  // typeOfJudge
-  readonly deputyCircuitJudgeOption = this.page.locator('#judgeType-DEPUTY_CIRCUIT_JUDGE');
-  readonly circuitJudgeOption = this.page.locator('#judgeType-DEPUTY_CIRCUIT_JUDGE');
+  // lengthOfHearing
+  readonly durationDays = this.page.locator('#durationdays');
+  readonly durationHours = this.page.locator('#durationhours');
+  readonly durationMinutes = this.page.locator('#durationmins');
+
+  readonly dateRangeDay = this.page.locator('#earliestHearingDate-day');
+  readonly dateRangeMonth = this.page.locator('#earliestHearingDate-month');
+  readonly dateRangeYear = this.page.locator('#earliestHearingDate-year');
+
+  readonly latestHearingDay = this.page.locator('#latestHearingDate-day');
+  readonly latestHearingMonth = this.page.locator('#latestHearingDate-month');
+  readonly latestHearingYear = this.page.locator('#latestHearingDate-year');
+
+  readonly specificDateNo: Locator = this.page.locator('#noSpecificDate');
+  readonly specificDateYes: Locator = this.page.locator('#hearingSingleDate');
+  readonly specificDateRange: Locator = this.page.locator('#hearingDateRange');
+
+  readonly selectedHearingPriority: Locator = this.page.locator('#hearing-priority .govuk-radios');
+
+  readonly linkedToOtherHearings = this.page.locator('#linkedToOtherHearings');
 
   readonly overlayLocationPanel = this.page
     .locator('.cdk-overlay-container .cdk-overlay-pane')
@@ -154,12 +174,54 @@ export class HearingsJourneyPage {
     await this.selectJudgeTypes(judgeTypes);
   }
 
+  async setHearingTimings(model: HearingJourneyModel): Promise<void> {
+    const lenghtOfHearing = model.get('hearingDetails', 'hearingLength') as LengthOfHearing;
+    const specificDate = model.get('hearingDetails', 'hearingSpecificDate') as string;
+    const hearingPriority = model.get('hearingDetails', 'hearingPriority') as string;
+
+    const days = lenghtOfHearing.days as number;
+    const hours = lenghtOfHearing.hours as number;
+    const minutes = lenghtOfHearing.minutes as number;
+
+    if (days != null) {
+      await this.durationDays.fill(days.toString());
+    }
+    if (hours != null) {
+      await this.durationHours.fill(hours.toString());
+    }
+    if (minutes != null) {
+      await this.durationMinutes.fill(minutes.toString());
+    }
+
+    await this.specificDateNo.waitFor({ state: 'visible' });
+    await this.specificDateYes.waitFor({ state: 'visible' });
+    await this.specificDateRange.waitFor({ state: 'visible' });
+
+    switch (specificDate) {
+      case 'No':
+        await this.specificDateNo.click();
+        break;
+      case 'Yes':
+        await this.specificDateYes.click();
+        break;
+      default:
+        await this.specificDateRange.click();
+        break;
+    }
+
+    this.setHearingPriority(hearingPriority);
+  }
+
   // helper methods
   async selectJudgeTypes(judgeTypes: TypeOfJudges[]): Promise<void> {
     const fieldset = this.page.locator('#judgeTypes .govuk-fieldset');
     for (const judgeType of judgeTypes) {
       await fieldset.getByLabel(judgeType).check();
     }
+  }
+
+  async setHearingPriority(priority: string): Promise<void> {
+    await this.selectedHearingPriority.getByLabel(priority).check();
   }
 
   removeLocationLink(locationName: string): Locator {

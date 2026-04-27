@@ -6,7 +6,7 @@ import { buildTestAppUrl, TEST_CASES_URL } from './testAppUrls.js';
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () => {
-  test('uploadDocumentViaApi posts through browser fetch on the current app origin with the XSRF header from browser-context cookies', async () => {
+  test('uploadDocumentViaApi posts through the browser request context on the current app origin with the XSRF header', async () => {
     const documentsUrl = buildTestAppUrl('/documentsv2');
     const captured: {
       url?: string;
@@ -28,43 +28,61 @@ test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () 
       getByRole: () => consentButton,
       isClosed: () => false,
       url: () => TEST_CASES_URL,
-      evaluate: async (
-        _fn: unknown,
-        request: {
-          url: string;
-          method: string;
-          headers?: Record<string, string>;
-          multipart?: { fileName: string; mimeType: string; classification: string };
-        }
-      ) => {
-        if (request.method === 'GET') {
-          return { ok: true, status: 200, bodyText: '' };
-        }
-        captured.url = request.url;
-        captured.method = request.method;
-        captured.headers = request.headers;
-        captured.fileName = request.multipart?.fileName;
-        captured.mimeType = request.multipart?.mimeType;
-        captured.classification = request.multipart?.classification;
-        return {
-          ok: true,
-          status: 200,
-          bodyText: JSON.stringify({
-            documents: [
-              {
-                originalDocumentName: 'seed.pdf',
-                hashToken: 'hash-token',
-                _links: {
-                  self: { href: 'https://dm/documents/1' },
-                  binary: { href: 'https://dm/documents/1/binary' },
-                },
-              },
-            ],
-          }),
-        };
+      request: {
+        fetch: async (
+          url: string,
+          options: {
+            method?: string;
+            headers?: Record<string, string>;
+            multipart?: {
+              classification: string;
+              files: { name: string; mimeType: string };
+            };
+          } = {}
+        ) => {
+          const request: {
+            url: string;
+            method: string;
+            headers?: Record<string, string>;
+            multipart?: { classification: string; files: { name: string; mimeType: string } };
+          } = {
+            url,
+            method: options.method ?? 'GET',
+            headers: options.headers,
+            multipart: options.multipart,
+          };
+          if (request.method === 'GET') {
+            return { ok: () => true, status: () => 200, text: async () => '' };
+          }
+          captured.url = request.url;
+          captured.method = request.method;
+          captured.headers = request.headers;
+          captured.fileName = request.multipart?.files.name;
+          captured.mimeType = request.multipart?.files.mimeType;
+          captured.classification = request.multipart?.classification;
+          return {
+            ok: () => true,
+            status: () => 200,
+            text: async () =>
+              JSON.stringify({
+                documents: [
+                  {
+                    originalDocumentName: 'seed.pdf',
+                    hashToken: 'hash-token',
+                    _links: {
+                      self: { href: 'https://dm/documents/1' },
+                      binary: { href: 'https://dm/documents/1/binary' },
+                    },
+                  },
+                ],
+              }),
+          };
+        },
+      },
+      evaluate: async () => {
+        throw new Error('page.evaluate should not be used for document upload requests');
       },
     };
-
     const uploaded = await uploadDocumentViaApi({
       page: page as never,
       jurisdictionId: 'DIVORCE',

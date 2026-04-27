@@ -74,6 +74,21 @@ type BrowserFetchResult = {
   bodyText: string;
 };
 
+type PageRequestFetch = {
+  fetch: (
+    url: string,
+    options?: {
+      method?: string;
+      headers?: Record<string, string>;
+      multipart?: Record<string, unknown>;
+    }
+  ) => Promise<{
+    ok: () => boolean;
+    status: () => number;
+    text: () => Promise<string>;
+  }>;
+};
+
 async function runBrowserFetchText(
   page: Page,
   params:
@@ -91,14 +106,63 @@ async function runBrowserFetchText(
           caseTypeId: string;
           fileName: string;
           mimeType: string;
-          fileContentBase64: string;
+          fileContent: Buffer;
         };
       }
 ): Promise<BrowserFetchResult> {
-  return page.evaluate(async (request) => {
-    if (request.method === 'GET') {
+  const requestContext = (page as Page & { request?: PageRequestFetch }).request;
+
+  if (requestContext?.fetch) {
+    const response =
+      params.method === 'GET'
+        ? await requestContext.fetch(params.url, { method: 'GET' })
+        : await requestContext.fetch(params.url, {
+            method: 'POST',
+            headers: params.headers,
+            multipart: {
+              classification: params.multipart.classification,
+              jurisdictionId: params.multipart.jurisdictionId,
+              caseTypeId: params.multipart.caseTypeId,
+              files: {
+                name: params.multipart.fileName,
+                mimeType: params.multipart.mimeType,
+                buffer: params.multipart.fileContent,
+              },
+            },
+          });
+
+    return {
+      ok: response.ok(),
+      status: response.status(),
+      bodyText: await response.text(),
+    };
+  }
+
+  return page.evaluate(
+    async (request) => {
+      if (request.method === 'GET') {
+        const response = await fetch(request.url, {
+          method: 'GET',
+          credentials: 'same-origin',
+        });
+        return {
+          ok: response.ok,
+          status: response.status,
+          bodyText: await response.text(),
+        };
+      }
+
+      const binary = Uint8Array.from(atob(request.multipart.fileContentBase64), (character) => character.charCodeAt(0));
+      const formData = new FormData();
+      formData.append('classification', request.multipart.classification);
+      formData.append('jurisdictionId', request.multipart.jurisdictionId);
+      formData.append('caseTypeId', request.multipart.caseTypeId);
+      formData.append('files', new File([binary], request.multipart.fileName, { type: request.multipart.mimeType }));
+
       const response = await fetch(request.url, {
-        method: 'GET',
+        method: 'POST',
+        body: formData,
+        headers: request.headers,
         credentials: 'same-origin',
       });
       return {
@@ -106,27 +170,17 @@ async function runBrowserFetchText(
         status: response.status,
         bodyText: await response.text(),
       };
-    }
-
-    const binary = Uint8Array.from(atob(request.multipart.fileContentBase64), (character) => character.charCodeAt(0));
-    const formData = new FormData();
-    formData.append('classification', request.multipart.classification);
-    formData.append('jurisdictionId', request.multipart.jurisdictionId);
-    formData.append('caseTypeId', request.multipart.caseTypeId);
-    formData.append('files', new File([binary], request.multipart.fileName, { type: request.multipart.mimeType }));
-
-    const response = await fetch(request.url, {
-      method: 'POST',
-      body: formData,
-      headers: request.headers,
-      credentials: 'same-origin',
-    });
-    return {
-      ok: response.ok,
-      status: response.status,
-      bodyText: await response.text(),
-    };
-  }, params);
+    },
+    params.method === 'GET'
+      ? params
+      : {
+          ...params,
+          multipart: {
+            ...params.multipart,
+            fileContentBase64: params.multipart.fileContent.toString('base64'),
+          },
+        }
+  );
 }
 
 async function touchAuthEndpointsToMintXsrf(page: Page, baseUrl: string): Promise<void> {
@@ -195,9 +249,7 @@ export async function uploadDocumentViaApi(options: UploadDocumentViaApiOptions)
   const xsrf = await waitForXsrfToken(options.page, baseUrl);
   const headers = { 'X-XSRF-TOKEN': xsrf };
   const uploadUrl = new URL('/documentsv2', baseUrl).toString();
-  const fileContentBase64 = Buffer.isBuffer(options.fileContent)
-    ? options.fileContent.toString('base64')
-    : Buffer.from(options.fileContent).toString('base64');
+  const fileContent = Buffer.isBuffer(options.fileContent) ? options.fileContent : Buffer.from(options.fileContent);
   let response: BrowserFetchResult | null = null;
 
   for (let attempt = 1; attempt <= DOCUMENT_UPLOAD_RETRY_ATTEMPTS; attempt += 1) {
@@ -215,7 +267,7 @@ export async function uploadDocumentViaApi(options: UploadDocumentViaApiOptions)
         caseTypeId: options.caseTypeId,
         fileName: options.fileName,
         mimeType: options.mimeType,
-        fileContentBase64,
+        fileContent,
       },
     });
 

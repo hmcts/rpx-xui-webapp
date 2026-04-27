@@ -1,4 +1,4 @@
-import { Page, Locator, expect, test } from '@playwright/test';
+import { Page, Locator, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 import { createLogger } from '@hmcts/playwright-common';
 import { Base } from '../../base';
@@ -571,51 +571,7 @@ export class CreateCasePage extends Base {
     const timeoutMs = options.timeoutMs ?? EXUI_TIMEOUTS.WIZARD_ADVANCE_DEFAULT;
     const quickClickTimeoutMs = Math.min(timeoutMs, EXUI_TIMEOUTS.CONTINUE_VISIBLE_BRIEF);
     await this.clickContinueAndWait(context, { timeoutMs: quickClickTimeoutMs });
-
-    try {
-      await this.ensureWizardAdvanced(context, initialUrl, options);
-    } catch (error) {
-      const visibleContinueButton = await this.getVisibleActionButton(this.continueButton);
-      const spinnerVisible = await this.page
-        .locator('xuilib-loading-spinner')
-        .first()
-        .isVisible()
-        .catch(() => false);
-
-      if (!visibleContinueButton || !spinnerVisible) {
-        throw error;
-      }
-
-      // Last-resort DOM-click fallback: the AUT occasionally leaves a non-blocking
-      // xuilib-loading-spinner overlay that fails Playwright actionability while the
-      // underlying button is interactive. Capture diagnostic evidence so the
-      // underlying race can be reported and this fallback eventually removed.
-      this.logger.warn('Retrying continue with DOM click because a non-blocking spinner overlay persisted', { context });
-      await this.attachSpinnerOverlayDiagnostics(context).catch(() => undefined);
-      await visibleContinueButton.dispatchEvent('click');
-      await this.ensureWizardAdvanced(`${context} after DOM continue`, initialUrl, options);
-    }
-  }
-
-  private async attachSpinnerOverlayDiagnostics(context: string): Promise<void> {
-    const info = (() => {
-      try {
-        return test.info();
-      } catch {
-        return undefined;
-      }
-    })();
-    if (!info) {
-      return;
-    }
-    const screenshot = await this.page.screenshot({ fullPage: false }).catch(() => undefined);
-    if (screenshot) {
-      await info.attach(`spinner-overlay-${context}`, { body: screenshot, contentType: 'image/png' });
-    }
-    await info.attach(`spinner-overlay-${context}-url`, {
-      body: this.page.url(),
-      contentType: 'text/plain',
-    });
+    await this.ensureWizardAdvanced(context, initialUrl, options);
   }
 
   async clickContinueMultipleTimes(count: number, options: { force?: boolean } = {}) {

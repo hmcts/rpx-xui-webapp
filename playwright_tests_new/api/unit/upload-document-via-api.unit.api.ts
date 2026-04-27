@@ -325,6 +325,101 @@ test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () 
     expect(uploaded.document_filename).toBe('seed.pdf');
   });
 
+  test('uploadDocumentViaApi retries rate-limited uploads only', async () => {
+    const consentButton = {
+      first: () => consentButton,
+      isVisible: async () => false,
+      click: async () => undefined,
+    };
+    let postAttempts = 0;
+    const waits: number[] = [];
+    const page = {
+      context: () => ({
+        cookies: async () => [{ name: 'XSRF-TOKEN', value: 'xsrf-token-123' }],
+      }),
+      getByRole: () => consentButton,
+      isClosed: () => false,
+      url: () => TEST_CASES_URL,
+      waitForTimeout: async (timeout: number) => {
+        waits.push(timeout);
+      },
+      evaluate: async (_fn: unknown, request: { method: string }) => {
+        if (request.method === 'GET') {
+          return { ok: true, status: 200, bodyText: '' };
+        }
+        postAttempts += 1;
+        if (postAttempts === 1) {
+          return { ok: false, status: 429, bodyText: 'rate limited' };
+        }
+        return {
+          ok: true,
+          status: 200,
+          bodyText: JSON.stringify({
+            documents: [
+              {
+                originalDocumentName: 'seed.pdf',
+                _links: {
+                  self: { href: 'https://dm/documents/1' },
+                  binary: { href: 'https://dm/documents/1/binary' },
+                },
+              },
+            ],
+          }),
+        };
+      },
+    };
+
+    const uploaded = await uploadDocumentViaApi({
+      page: page as never,
+      jurisdictionId: 'DIVORCE',
+      caseTypeId: 'XUI_TEST',
+      fileName: 'seed.pdf',
+      mimeType: 'application/pdf',
+      fileContent: '%PDF-1.4\n%%EOF',
+    });
+
+    expect(postAttempts).toBe(2);
+    expect(waits).toHaveLength(1);
+    expect(uploaded.document_filename).toBe('seed.pdf');
+  });
+
+  test('uploadDocumentViaApi does not retry server-error upload responses', async () => {
+    const consentButton = {
+      first: () => consentButton,
+      isVisible: async () => false,
+      click: async () => undefined,
+    };
+    let postAttempts = 0;
+    const page = {
+      context: () => ({
+        cookies: async () => [{ name: 'XSRF-TOKEN', value: 'xsrf-token-123' }],
+      }),
+      getByRole: () => consentButton,
+      isClosed: () => false,
+      url: () => TEST_CASES_URL,
+      evaluate: async (_fn: unknown, request: { method: string }) => {
+        if (request.method === 'GET') {
+          return { ok: true, status: 200, bodyText: '' };
+        }
+        postAttempts += 1;
+        return { ok: false, status: 500, bodyText: '{"message":"Internal Server Error"}' };
+      },
+    };
+
+    await expect(
+      uploadDocumentViaApi({
+        page: page as never,
+        jurisdictionId: 'DIVORCE',
+        caseTypeId: 'XUI_TEST',
+        fileName: 'seed.pdf',
+        mimeType: 'application/pdf',
+        fileContent: '%PDF-1.4\n%%EOF',
+      })
+    ).rejects.toThrow('Document upload API failed with HTTP 500: {"message":"Internal Server Error"}');
+
+    expect(postAttempts).toBe(1);
+  });
+
   test('uploadDocumentViaApi aborts before posting when the page closes after XSRF setup', async () => {
     const consentButton = {
       first: () => consentButton,

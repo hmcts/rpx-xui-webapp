@@ -99,6 +99,45 @@ function createButtonLocator(config: { clickFailures?: string[] }) {
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Task list action helper unit tests', { tag: '@svc-internal' }, () => {
+  test('waitForTaskRowReady fails fast when the task data API returns a server error', async () => {
+    const waitIntervals: number[] = [];
+
+    await expect(
+      TaskListPage.prototype.waitForTaskRowReady.call(
+        {
+          assertTaskListInteractive: async () => undefined,
+          getApiCalls: () => [
+            {
+              method: 'POST',
+              url: 'https://manage-case.aat.platform.hmcts.net/workallocation/task',
+              status: 503,
+            },
+          ],
+          getLatestTaskDataCallSummary: () => 'POST /workallocation/task -> HTTP 503',
+          getManageButtonForRow: () => ({
+            isVisible: async () => false,
+          }),
+          getTaskRow: () => ({
+            isVisible: async () => false,
+          }),
+          isTaskDataCall: (url: string) => url.includes('/workallocation/task') && !url.includes('/types-of-work'),
+          page: {
+            waitForTimeout: async (ms: number) => waitIntervals.push(ms),
+          },
+          taskRows: {
+            count: async () => 0,
+          },
+        },
+        'unit task api failure',
+        { timeoutMs: 5_000, pollMs: 50 }
+      )
+    ).rejects.toThrow(
+      'Task list failed while waiting for task row (unit task api failure): POST https://manage-case.aat.platform.hmcts.net/workallocation/task returned HTTP 503'
+    );
+
+    expect(waitIntervals).toEqual([]);
+  });
+
   test('clickTaskActionForRow reopens the same row when the row action is temporarily hidden', async () => {
     const action = createActionLocator({
       waitResults: ['hidden', 'visible'],

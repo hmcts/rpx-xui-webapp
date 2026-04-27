@@ -41,7 +41,7 @@ const XSRF_COOKIE_AUTH_TOUCH_INTERVAL_ATTEMPTS = 4;
 const XSRF_COOKIE_MAX_AUTH_TOUCH_ATTEMPTS = 3;
 const DOCUMENT_UPLOAD_RETRY_ATTEMPTS = resolvePositiveIntegerEnv('PW_UPLOAD_DOCUMENT_RETRY_ATTEMPTS', 3);
 const DOCUMENT_UPLOAD_RETRY_INTERVAL_MS = resolvePositiveIntegerEnv('PW_UPLOAD_DOCUMENT_RETRY_INTERVAL_MS', 2_000);
-const TRANSIENT_DOCUMENT_UPLOAD_STATUS_CODES = new Set([429, 500, 502, 503, 504]);
+const RETRYABLE_DOCUMENT_UPLOAD_STATUS_CODES = new Set([429]);
 
 function currentPageUrl(page: Page): string {
   try {
@@ -221,7 +221,7 @@ export async function uploadDocumentViaApi(options: UploadDocumentViaApiOptions)
 
     if (
       response.ok ||
-      !TRANSIENT_DOCUMENT_UPLOAD_STATUS_CODES.has(response.status) ||
+      !RETRYABLE_DOCUMENT_UPLOAD_STATUS_CODES.has(response.status) ||
       attempt === DOCUMENT_UPLOAD_RETRY_ATTEMPTS
     ) {
       break;

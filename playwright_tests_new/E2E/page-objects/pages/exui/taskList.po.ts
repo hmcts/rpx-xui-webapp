@@ -6,8 +6,6 @@ const FILTER_PANEL_READY_TIMEOUT_MS = 10_000;
 const FILTER_CONTROL_READY_TIMEOUT_MS = 15_000;
 const FILTER_GROUP_OPERATION_TIMEOUT_MS = 10_000;
 const FILTER_INTERACTION_ATTEMPTS = 2;
-const TASK_LIST_TRANSIENT_RECOVERY_ATTEMPTS = 2;
-const TASK_LIST_TRANSIENT_RECOVERY_DELAY_MS = 1_000;
 const PRIORITY_LIMIT_URGENT = 2000;
 const PRIORITY_LIMIT_HIGH = 5000;
 
@@ -584,39 +582,6 @@ export class TaskListPage extends Base {
     return latestTaskCall ? `${latestTaskCall.method} ${latestTaskCall.url} -> HTTP ${latestTaskCall.status}` : 'none captured';
   }
 
-  private getLatestTaskData5xxCall() {
-    return [...this.getApiCalls()].reverse().find((call) => this.isTaskDataCall(call.url) && call.status >= 500);
-  }
-
-  private resolveTaskListRecoveryPath(context: string): string {
-    const currentUrl = this.page.url();
-    if (currentUrl.includes('/work/')) {
-      return currentUrl;
-    }
-
-    if (/available/i.test(context)) {
-      return '/work/my-work/available';
-    }
-
-    if (/all work/i.test(context)) {
-      return '/work/all-work/tasks';
-    }
-
-    return '/work/my-work/list';
-  }
-
-  private async recoverTaskListFromTransientFailure(context: string, attempt: number): Promise<void> {
-    const recoveryPath = this.resolveTaskListRecoveryPath(context);
-    await this.page.waitForTimeout(TASK_LIST_TRANSIENT_RECOVERY_DELAY_MS * attempt);
-    this.clearApiCalls();
-    await this.navigateToTaskListView(
-      recoveryPath,
-      /\/work\/(?:my-work\/(?:list|available|my-cases|my-access)|all-work\/(?:tasks|cases))(?:\?.*)?$/,
-      `${context} transient recovery ${attempt}`,
-      TASK_LIST_READY_TIMEOUT_MS
-    );
-  }
-
   async waitForTaskRowReady(
     context: string,
     options: {
@@ -629,17 +594,15 @@ export class TaskListPage extends Base {
     const timeoutMs = options.timeoutMs ?? 60_000;
     const pollMs = options.pollMs ?? 500;
     const deadline = Date.now() + timeoutMs;
-    let recoveryAttempts = 0;
 
     while (Date.now() < deadline) {
-      if (await this.isServiceDownPage()) {
-        if (recoveryAttempts < TASK_LIST_TRANSIENT_RECOVERY_ATTEMPTS) {
-          recoveryAttempts += 1;
-          await this.recoverTaskListFromTransientFailure(context, recoveryAttempts);
-          continue;
-        }
+      await this.assertTaskListInteractive(`waiting for task row (${context})`);
 
-        await this.assertTaskListInteractive(`waiting for task row (${context})`);
+      const taskApi5xx = this.getApiCalls().find((call) => this.isTaskDataCall(call.url) && call.status >= 500);
+      if (taskApi5xx) {
+        throw new Error(
+          `Task list failed while waiting for task row (${context}): ${taskApi5xx.method} ${taskApi5xx.url} returned HTTP ${taskApi5xx.status}`
+        );
       }
 
       const rowCount = await this.taskRows.count().catch(() => 0);
@@ -655,20 +618,6 @@ export class TaskListPage extends Base {
         }
       }
 
-      const taskApi5xx = this.getLatestTaskData5xxCall();
-      if (taskApi5xx) {
-        if (recoveryAttempts < TASK_LIST_TRANSIENT_RECOVERY_ATTEMPTS) {
-          recoveryAttempts += 1;
-          await this.recoverTaskListFromTransientFailure(context, recoveryAttempts);
-          continue;
-        }
-
-        throw new Error(
-          `Task list failed while waiting for task row (${context}): ${taskApi5xx.method} ${taskApi5xx.url} returned HTTP ${taskApi5xx.status}`
-        );
-      }
-
-      await this.assertTaskListInteractive(`waiting for task row (${context})`);
       await this.page.waitForTimeout(pollMs);
     }
 

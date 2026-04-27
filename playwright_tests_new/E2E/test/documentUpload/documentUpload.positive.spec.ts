@@ -14,9 +14,26 @@ import { RuntimeUserAlias } from '../../utils/runtimeUserCredentials';
 
 const logger = createLogger({ serviceName: 'document-upload-tests', format: 'pretty' });
 const DOCUMENT_UPLOAD_SUBMIT_TIMEOUT_MS = 60_000;
-const DOCUMENT_UPLOAD_TEST_TIMEOUT_MS = 300_000;
-const SESSION_BOOTSTRAP_TIMEOUT_MS = 300_000;
 
+// Document upload journeys combine case creation, multi-step CCD wizard navigation,
+// file upload + ClamAV scan, and submit polling. The 5 minute envelope covers the
+// upper bound observed in nightly runs against AAT and is overridable via env.
+const DOCUMENT_UPLOAD_TEST_TIMEOUT_MS = Number.parseInt(
+  process.env.PW_DOCUMENT_UPLOAD_TEST_TIMEOUT_MS ?? '',
+  10,
+) || 300_000;
+
+// Cold-cache IDAM bootstrap for two distinct aliases (Divorce solicitor + Employment
+// search user) can serialise behind the session lock and IDAM rate limits; allow up
+// to 5 minutes for the worst case before failing fast.
+const SESSION_BOOTSTRAP_TIMEOUT_MS = Number.parseInt(
+  process.env.PW_DOCUMENT_UPLOAD_SESSION_BOOTSTRAP_TIMEOUT_MS ?? '',
+  10,
+) || 300_000;
+
+// Run serially: the V2 and V1 describes share module-level `caseNumber` / `testValue`
+// state that the per-test beforeEach mutates, and the IDAM session lock contends
+// when both aliases bootstrap concurrently in the same worker.
 test.describe.configure({ mode: 'serial', timeout: DOCUMENT_UPLOAD_TEST_TIMEOUT_MS });
 
 test.beforeAll(async ({ browserName: _browserName }, testInfo) => {

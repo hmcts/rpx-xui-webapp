@@ -1,6 +1,7 @@
 import { expect, test } from '../../../../E2E/fixtures';
-import { applySessionCookies, setupMyAccessRoutes } from '../../../helpers';
+import { applySessionCookies, buildMyAccessResponseFromScenario, setupMyAccessRoutes } from '../../../helpers';
 import { buildMyAccessCases, buildMyAccessMock } from '../../../mocks/myAccess.mock';
+import { myAccessScenarioActorId, myAccessScenarioRecords } from '../../../mocks/workAllocationAccessScenarios.mock';
 import { formatUiDate } from '../../../utils/tableUtils';
 
 const userIdentifier = 'STAFF_ADMIN';
@@ -95,6 +96,36 @@ test.describe(`My Access as ${userIdentifier}`, { tag: ['@integration', '@integr
         expect(table[i]['Start']).toBe(expectedCase.startDate);
         expect(table[i]['End']).toBe(expectedCase.endDate);
       }
+    });
+  });
+
+  test(`Scenario-driven access queries follow the current My access contract`, async ({ taskListPage, page, tableUtils }) => {
+    const scenarioResponse = buildMyAccessResponseFromScenario(myAccessScenarioRecords, myAccessScenarioActorId);
+    const isNewCount = scenarioResponse.cases.filter((item) => item.isNew).length;
+
+    await test.step('Setup a scenario-driven My access response', async () => {
+      await setupMyAccessRoutes(page, scenarioResponse, { newCount: isNewCount });
+    });
+
+    await test.step('Open My access and wait for the mocked scenario data', async () => {
+      await taskListPage.gotoMyAccess();
+      await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.exuiSpinnerComponent.wait();
+    });
+
+    await test.step('Verify user->entities results keep supported challenged and specific access rows visible', async () => {
+      const table = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
+      const caseNames = table.map((row) => row['Case name']);
+      const casesByName = Object.fromEntries(table.map((row) => [row['Case name'], row]));
+
+      expect(table).toHaveLength(3);
+      expect(caseNames).toEqual(['Scenario Access Case 100', 'Scenario Access Case 200', 'Scenario Access Case 300']);
+      await expect(taskListPage.myAccessNewCasesBadge).toBeHidden();
+      expect(casesByName['Scenario Access Case 100']['Access']).toBe('Specific access granted');
+      expect(casesByName['Scenario Access Case 200']['Access']).toBe('Challenged access granted');
+      expect(casesByName['Scenario Access Case 200']['Start']).toBe('');
+      expect(casesByName['Scenario Access Case 200']['End']).toBe('');
+      expect(casesByName['Scenario Access Case 300']['Access']).toBe('Specific access granted');
     });
   });
 });

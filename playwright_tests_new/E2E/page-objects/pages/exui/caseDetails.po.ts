@@ -773,6 +773,22 @@ export class CaseDetailsPage extends Base {
     return matchingPage ?? this.page;
   }
 
+  async waitForDocumentOneRowToContain(expectedText: string, timeoutMs = 45_000): Promise<void> {
+    await expect
+      .poll(
+        async () => {
+          await this.selectCaseDetailsTab('Tab 1').catch(() => undefined);
+          const rowVisible = await this.documentOneRow.isVisible().catch(() => false);
+          if (!rowVisible) {
+            return '';
+          }
+          return await this.documentOneRow.innerText().catch(() => '');
+        },
+        { timeout: timeoutMs, intervals: [1_000, 2_000, 3_000] }
+      )
+      .toContain(expectedText);
+  }
+
   async getTabCount() {
     const tabsCount = await this.tablist2.count();
     return tabsCount;

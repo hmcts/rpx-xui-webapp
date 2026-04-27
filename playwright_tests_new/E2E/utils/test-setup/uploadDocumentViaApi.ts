@@ -39,6 +39,9 @@ const XSRF_COOKIE_WAIT_TIMEOUT_MS = resolvePositiveIntegerEnv('PW_UPLOAD_DOCUMEN
 const XSRF_COOKIE_WAIT_INTERVAL_MS = 250;
 const XSRF_COOKIE_AUTH_TOUCH_INTERVAL_ATTEMPTS = 4;
 const XSRF_COOKIE_MAX_AUTH_TOUCH_ATTEMPTS = 3;
+const DOCUMENT_UPLOAD_RETRY_ATTEMPTS = resolvePositiveIntegerEnv('PW_UPLOAD_DOCUMENT_RETRY_ATTEMPTS', 3);
+const DOCUMENT_UPLOAD_RETRY_INTERVAL_MS = resolvePositiveIntegerEnv('PW_UPLOAD_DOCUMENT_RETRY_INTERVAL_MS', 2_000);
+const TRANSIENT_DOCUMENT_UPLOAD_STATUS_CODES = new Set([429, 500, 502, 503, 504]);
 
 function currentPageUrl(page: Page): string {
   try {
@@ -191,21 +194,41 @@ export async function uploadDocumentViaApi(options: UploadDocumentViaApiOptions)
   const baseUrl = resolveAppBaseUrl(options.page);
   const xsrf = await waitForXsrfToken(options.page, baseUrl);
   const headers = { 'X-XSRF-TOKEN': xsrf };
-  const response = await runBrowserFetchText(options.page, {
-    url: new URL('/documentsv2', baseUrl).toString(),
-    method: 'POST',
-    headers,
-    multipart: {
-      classification: options.classification ?? 'PUBLIC',
-      jurisdictionId: options.jurisdictionId,
-      caseTypeId: options.caseTypeId,
-      fileName: options.fileName,
-      mimeType: options.mimeType,
-      fileContentBase64: Buffer.isBuffer(options.fileContent)
-        ? options.fileContent.toString('base64')
-        : Buffer.from(options.fileContent).toString('base64'),
-    },
-  });
+  const uploadUrl = new URL('/documentsv2', baseUrl).toString();
+  const fileContentBase64 = Buffer.isBuffer(options.fileContent)
+    ? options.fileContent.toString('base64')
+    : Buffer.from(options.fileContent).toString('base64');
+  let response: BrowserFetchResult | null = null;
+
+  for (let attempt = 1; attempt <= DOCUMENT_UPLOAD_RETRY_ATTEMPTS; attempt += 1) {
+    response = await runBrowserFetchText(options.page, {
+      url: uploadUrl,
+      method: 'POST',
+      headers,
+      multipart: {
+        classification: options.classification ?? 'PUBLIC',
+        jurisdictionId: options.jurisdictionId,
+        caseTypeId: options.caseTypeId,
+        fileName: options.fileName,
+        mimeType: options.mimeType,
+        fileContentBase64,
+      },
+    });
+
+    if (
+      response.ok ||
+      !TRANSIENT_DOCUMENT_UPLOAD_STATUS_CODES.has(response.status) ||
+      attempt === DOCUMENT_UPLOAD_RETRY_ATTEMPTS
+    ) {
+      break;
+    }
+
+    await options.page.waitForTimeout(DOCUMENT_UPLOAD_RETRY_INTERVAL_MS * attempt);
+  }
+
+  if (!response) {
+    throw new Error('Document upload API failed before receiving a response');
+  }
 
   if (!response.ok) {
     throw new Error(`Document upload API failed with HTTP ${response.status}: ${response.bodyText.slice(0, 500)}`);

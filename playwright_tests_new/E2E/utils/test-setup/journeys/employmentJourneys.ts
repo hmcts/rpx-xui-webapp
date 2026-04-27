@@ -43,7 +43,7 @@ export async function uploadEmploymentDraftDocument(
   fileContent: string | Buffer
 ): Promise<void> {
   await prepareEmploymentDraftUploadPage(createCasePage);
-  await createCasePage.page.locator('#documentCollection button').click();
+  await clickEmploymentDocumentCollectionAddButton(createCasePage);
   await createCasePage.uploadFile(fileName, mimeType, fileContent);
   await createCasePage.page.locator('#documentCollection_0_topLevelDocuments').selectOption('Misc');
   await createCasePage.page.locator('#documentCollection_0_miscDocuments').selectOption('Other');
@@ -382,6 +382,30 @@ async function prepareEmploymentDraftUploadPage(createCasePage: CreateCasePage):
   }
 
   throw new Error(`Employment draft update did not reach the document upload page after ${maxAdvanceAttempts} steps`);
+}
+
+async function clickEmploymentDocumentCollectionAddButton(createCasePage: CreateCasePage): Promise<void> {
+  const addButton = createCasePage.page.locator('#documentCollection button').first();
+  await addButton.waitFor({ state: 'visible', timeout: 15_000 });
+
+  try {
+    await addButton.click({ timeout: 15_000 });
+  } catch (error) {
+    const spinnerVisible = await createCasePage.page
+      .locator('xuilib-loading-spinner')
+      .first()
+      .isVisible()
+      .catch(() => false);
+
+    if (!spinnerVisible) {
+      throw error;
+    }
+
+    logger.warn('Retrying employment document collection add with DOM click because a non-blocking spinner overlay persisted');
+    await addButton.evaluate((button) => (button as HTMLButtonElement).click());
+  }
+
+  await createCasePage.page.locator('#documentCollection_0_topLevelDocuments').waitFor({ state: 'visible', timeout: 15_000 });
 }
 
 async function ensureEmploymentDraftRespondentCollectionItem(createCasePage: CreateCasePage): Promise<void> {

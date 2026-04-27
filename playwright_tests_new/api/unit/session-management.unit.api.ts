@@ -77,6 +77,16 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     expect(secondPath).toContain('solicitor-second-example-test');
   });
 
+  test('session lock wait defaults support cold parallel capture and remain configurable', () => {
+    expect(sessionCaptureTest.resolveSessionLockWaitMs({} as NodeJS.ProcessEnv)).toBe(180_000);
+    expect(
+      sessionCaptureTest.resolveSessionLockWaitMs({
+        PW_SESSION_LOCK_WAIT_MS: '45000',
+      } as NodeJS.ProcessEnv)
+    ).toBe(45_000);
+    expect(sessionCaptureTest.resolveSessionAbandonedLockRecoveryMs({} as NodeJS.ProcessEnv)).toBe(120_000);
+  });
+
   test('storage reuse refreshes when cached metadata belongs to a different resolved email for the same alias', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-storage-unit-'));
     const storagePath = path.join(tempDir, 'storage.json');

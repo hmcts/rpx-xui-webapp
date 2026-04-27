@@ -13,9 +13,11 @@ import {
   getRuntimeUserCredentialEnvMapping,
   publishRuntimeUserCredentialsToEnv,
   restoreRuntimeUserCredentialsInEnv,
+  resolveRuntimeUserCredentialsFromEnv,
   setRuntimeUserCredentials,
 } from '../../E2E/utils/runtimeUserCredentials.js';
-import { resolveProvisionRoleNamesForAlias } from '../../E2E/utils/test-setup/provisionRoleResolution.js';
+import { getAliasBaselineRoles, resolveProvisionRoleNamesForAlias } from '../../E2E/utils/test-setup/provisionRoleResolution.js';
+import { isTransientWorkflowFailure } from '../../E2E/utils/transient-failure.utils.js';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -28,6 +30,8 @@ const ENV_KEYS = [
   'PW_E2E_CASE_SETUP_ALLOW_UI_FALLBACK',
   'DYNAMIC_DIVORCE_SOLICITOR_ROLE_SET',
   'DYNAMIC_SOLICITOR_TEMPLATE_ROLES',
+  'DIVORCE_SOLICITOR_USERNAME',
+  'DIVORCE_SOLICITOR_PASSWORD',
   'EMPLOYMENT_DYNAMIC_CASEWORKER_USERNAME',
   'EMPLOYMENT_DYNAMIC_CASEWORKER_PASSWORD',
 ] as const;
@@ -109,6 +113,18 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
       username: 'EMPLOYMENT_DYNAMIC_CASEWORKER_USERNAME',
       password: 'EMPLOYMENT_DYNAMIC_CASEWORKER_PASSWORD',
     });
+    const divorceSolicitorMapping = getRuntimeUserCredentialEnvMapping(' divorce_solicitor ');
+    expect(divorceSolicitorMapping).toEqual({
+      username: 'DIVORCE_SOLICITOR_USERNAME',
+      password: 'DIVORCE_SOLICITOR_PASSWORD',
+    });
+
+    process.env.DIVORCE_SOLICITOR_USERNAME = 'divorce@example.test';
+    process.env.DIVORCE_SOLICITOR_PASSWORD = 'divorce-secret';
+    expect(resolveRuntimeUserCredentialsFromEnv(divorceSolicitorMapping!)).toEqual({
+      email: 'divorce@example.test',
+      password: 'divorce-secret',
+    });
 
     const publishedState = publishRuntimeUserCredentialsToEnv('EMPLOYMENT_DYNAMIC_CASEWORKER', {
       email: 'dynamic@example.test',
@@ -156,6 +172,10 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
     expect(caseSetupTest.resolveUiFallbackFlag(undefined)).toBe(true);
     expect(caseSetupTest.resolveUiFallbackFlag(false)).toBe(false);
     expect(caseSetupTest.resolveCaseNumberFromCreateResponse({ case_reference: 1773065942199262 })).toBe('1773065942199262');
+    expect(caseSetupTest.isTransientApiRequestError(new Error('api/user/details failed: read ECONNRESET'))).toBe(true);
+    expect(caseSetupTest.isTransientApiRequestError(new Error('Validation failed'))).toBe(false);
+    expect(isTransientWorkflowFailure(new Error('Validation error after submit after updating case fields'))).toBe(false);
+    expect(isTransientWorkflowFailure(new Error('read ECONNRESET while calling api/user/details'))).toBe(true);
     expect(() => buildCasePayloadFromTemplate('unsupported.template' as never)).toThrow(
       "Unsupported payload template 'unsupported.template'."
     );
@@ -178,6 +198,15 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
 
     delete process.env.DYNAMIC_SOLICITOR_TEMPLATE_ROLES;
     process.env.DYNAMIC_DIVORCE_SOLICITOR_ROLE_SET = 'external-noc';
+
+    expect(
+      getAliasBaselineRoles({
+        alias: 'DIVORCE_SOLICITOR',
+        roleContext: {
+          jurisdiction: 'divorce',
+        },
+      })
+    ).toEqual([...DIVORCE_EXTERNAL_NOC_SOLICITOR_ROLE_NAMES]);
 
     expect(
       resolveProvisionRoleNamesForAlias({

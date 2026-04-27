@@ -559,6 +559,39 @@ export class CreateCasePage extends Base {
     }
   }
 
+  async clickContinueAndEnsureWizardAdvanced(
+    context: string,
+    options: {
+      expectedPathIncludes?: string;
+      expectedLocator?: Locator;
+      timeoutMs?: number;
+    } = {}
+  ) {
+    const initialUrl = this.page.url();
+    const timeoutMs = options.timeoutMs ?? EXUI_TIMEOUTS.WIZARD_ADVANCE_DEFAULT;
+    const quickClickTimeoutMs = Math.min(timeoutMs, EXUI_TIMEOUTS.CONTINUE_VISIBLE_BRIEF);
+    await this.clickContinueAndWait(context, { timeoutMs: quickClickTimeoutMs });
+
+    try {
+      await this.ensureWizardAdvanced(context, initialUrl, options);
+    } catch (error) {
+      const visibleContinueButton = await this.getVisibleActionButton(this.continueButton);
+      const spinnerVisible = await this.page
+        .locator('xuilib-loading-spinner')
+        .first()
+        .isVisible()
+        .catch(() => false);
+
+      if (!visibleContinueButton || !spinnerVisible) {
+        throw error;
+      }
+
+      this.logger.warn('Retrying continue with DOM click because a non-blocking spinner overlay persisted', { context });
+      await visibleContinueButton.evaluate((button) => (button as HTMLButtonElement).click());
+      await this.ensureWizardAdvanced(`${context} after DOM continue`, initialUrl, options);
+    }
+  }
+
   async clickContinueMultipleTimes(count: number, options: { force?: boolean } = {}) {
     for (let i = 0; i < count; i++) {
       const visibleContinueButton = await this.getVisibleActionButton(this.continueButton);
@@ -704,8 +737,14 @@ export class CreateCasePage extends Base {
     fileContentEncoding?: BufferEncoding
   ) {
     const maxRetries = 3;
-    const baseDelayMs = 3000; // initial backoff
+    const baseDelayMs = 1000;
     const resolvedFileInput = fileInput ?? this.page.locator('input[type="file"]').first();
+    const uploadResponseTimeoutMs = this.getRecommendedTimeoutMs({
+      min: EXUI_TIMEOUTS.UPLOAD_RESPONSE,
+      max: 30_000,
+      fallback: EXUI_TIMEOUTS.UPLOAD_RESPONSE,
+      multiplier: 2,
+    });
     const safeBackoff = async (attempt: number) => {
       if (this.page.isClosed()) {
         throw new Error('Page closed during upload retry backoff');
@@ -717,40 +756,53 @@ export class CreateCasePage extends Base {
       if (this.page.isClosed()) {
         throw new Error('Page closed before upload retry attempt');
       }
-      const responsePromise = this.page.waitForResponse((r) => r.url().includes('/document') && r.request().method() === 'POST', {
-        timeout: EXUI_TIMEOUTS.UPLOAD_RESPONSE,
-      });
+      const responsePromise = this.page
+        .waitForResponse((r) => r.url().includes('/document') && r.request().method() === 'POST', {
+          timeout: uploadResponseTimeoutMs,
+        })
+        .catch((error: Error) => error);
+
       await resolvedFileInput.setInputFiles({
         name: fileName,
         mimeType,
         buffer: Buffer.from(fileContent, fileContentEncoding ?? 'utf8'),
       });
 
-      const res = await responsePromise.catch(() => null);
+      const uploadResponse = await responsePromise;
 
-      if (!res) {
-        // no response within timeout — treat as failure or retry depending on policy
+      if (uploadResponse instanceof Error) {
+        if (this.page.isClosed() || /Target page, context or browser has been closed/i.test(uploadResponse.message)) {
+          throw uploadResponse;
+        }
         if (attempt < maxRetries) {
+          logger.warn('Document upload response was not observed; retrying upload', {
+            attempt,
+            maxRetries,
+            timeoutMs: uploadResponseTimeoutMs,
+            errorMessage: uploadResponse.message,
+          });
           await safeBackoff(attempt);
           continue;
-        } else {
-          throw new Error('Upload timed out after retries');
         }
+        throw new Error(`Upload timed out after ${maxRetries} attempts: ${uploadResponse.message}`);
       }
 
-      if (res.status() !== 200) {
+      if (uploadResponse.status() !== 200) {
         if (attempt < maxRetries) {
-          // exponential backoff before retrying
+          logger.warn('Document upload returned non-200 response; retrying upload', {
+            attempt,
+            maxRetries,
+            status: uploadResponse.status(),
+          });
           await safeBackoff(attempt);
           continue;
-        } else {
-          throw new Error(`Upload failed: server returned status ${res.status()} after ${maxRetries} retries`);
         }
+        throw new Error(`Upload failed: server returned status ${uploadResponse.status()} after ${maxRetries} attempts`);
       }
 
       break;
     }
-    await this.fileUploadStatusLabel.waitFor({ state: 'hidden' });
+    await this.fileUploadStatusLabel.waitFor({ state: 'hidden', timeout: uploadResponseTimeoutMs });
   }
   async createCaseEmployment(jurisdiction: string, caseType: string) {
     const maxAttempts = 2;

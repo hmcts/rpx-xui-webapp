@@ -7,6 +7,7 @@ import {
 
 export type DynamicSolicitorAlias =
   | 'SOLICITOR'
+  | 'DIVORCE_SOLICITOR'
   | 'PROD_LIKE'
   | 'SEARCH_EMPLOYMENT_CASE'
   | 'EMPLOYMENT_DYNAMIC_CASEWORKER'
@@ -147,6 +148,9 @@ export function getAliasBaselineRoles({
   }
   if (alias === 'USER_WITH_FLAGS') {
     return [...DIVORCE_EXTERNAL_NOC_SOLICITOR_ROLE_NAMES];
+  }
+  if (alias === 'DIVORCE_SOLICITOR') {
+    return [...(resolveDynamicDivorceSolicitorRoleNames(roleContext) ?? DIVORCE_EXTERNAL_CORE_SOLICITOR_ROLE_NAMES)];
   }
   if (alias === 'SOLICITOR' && ['divorce', 'finrem'].includes(roleContext?.jurisdiction?.trim().toLowerCase() ?? '')) {
     return [...(resolveDynamicDivorceSolicitorRoleNames(roleContext) ?? DIVORCE_EXTERNAL_CORE_SOLICITOR_ROLE_NAMES)];

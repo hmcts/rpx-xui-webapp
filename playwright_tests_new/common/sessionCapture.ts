@@ -17,6 +17,9 @@ const IDAM_USERNAME_FALLBACK_SELECTOR =
 const IDAM_SUBMIT_FALLBACK_SELECTOR = 'button:has-text("Sign in"), button:has-text("Continue")';
 const CHROME_ERROR_URL_PREFIX = 'chrome-error://chromewebdata/';
 const DEFAULT_SESSION_MAX_AGE_MS = 60 * 60 * 1000;
+const DEFAULT_SESSION_LOCK_WAIT_MS = 180_000;
+const DEFAULT_SESSION_LOCK_STALE_MS = 60_000;
+const DEFAULT_SESSION_ABANDONED_LOCK_RECOVERY_MS = 120_000;
 
 function getIdamUsernameCandidates(page: Page, idamPage: IdamPage): Locator[] {
   return [idamPage.usernameInput.first(), page.locator(IDAM_USERNAME_FALLBACK_SELECTOR).first()];
@@ -299,6 +302,16 @@ export function getSetupMarker(page: Page): string {
 function resolveSessionMaxAgeMs(env: NodeJS.ProcessEnv = process.env): number {
   const configured = Number(env.PW_SESSION_MAX_AGE_MS);
   return Number.isFinite(configured) && configured > 0 ? configured : DEFAULT_SESSION_MAX_AGE_MS;
+}
+
+function resolveSessionLockWaitMs(env: NodeJS.ProcessEnv = process.env): number {
+  const configured = Number(env.PW_SESSION_LOCK_WAIT_MS);
+  return Number.isFinite(configured) && configured > 0 ? configured : DEFAULT_SESSION_LOCK_WAIT_MS;
+}
+
+function resolveSessionAbandonedLockRecoveryMs(env: NodeJS.ProcessEnv = process.env): number {
+  const configured = Number(env.PW_SESSION_ABANDONED_LOCK_RECOVERY_MS);
+  return Number.isFinite(configured) && configured > 0 ? configured : DEFAULT_SESSION_ABANDONED_LOCK_RECOVERY_MS;
 }
 
 /**
@@ -718,8 +731,8 @@ async function acquireSessionLock({
   force: boolean;
 }): Promise<(() => Promise<void>) | null> {
   const pollIntervalMs = 1000;
-  const maxWaitMs = 90000;
-  const staleLockWindowMs = 65000;
+  const maxWaitMs = resolveSessionLockWaitMs();
+  const staleLockWindowMs = resolveSessionAbandonedLockRecoveryMs();
   const startedAt = Date.now();
   let attempt = 0;
 
@@ -737,7 +750,7 @@ async function acquireSessionLock({
     try {
       return await lockfileApi.lock(lockFilePath, {
         retries: 0,
-        stale: 60000,
+        stale: DEFAULT_SESSION_LOCK_STALE_MS,
       });
     } catch (error) {
       if (!isLockAlreadyHeldError(error)) {
@@ -1108,6 +1121,8 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
 
 export const __test__ = {
   resolveSessionMaxAgeMs,
+  resolveSessionLockWaitMs,
+  resolveSessionAbandonedLockRecoveryMs,
   hasTargetCompatibleAuthCookies,
   resolveTargetHost,
   acquireSessionLock,

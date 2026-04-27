@@ -19,6 +19,10 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
     username: 'SOLICITOR_USERNAME',
     password: 'SOLICITOR_PASSWORD',
   },
+  DIVORCE_SOLICITOR: {
+    username: 'DIVORCE_SOLICITOR_USERNAME',
+    password: 'DIVORCE_SOLICITOR_PASSWORD',
+  },
   PROD_LIKE: {
     username: 'PROD_LIKE_USERNAME',
     password: 'PROD_LIKE_PASSWORD',
@@ -71,6 +75,18 @@ export function getRuntimeUserCredentialEnvMapping(userIdentifier: string): Runt
 
 export function getRuntimeUserCredentials(userIdentifier: string): RuntimeUserCredentials | undefined {
   return runtimeUserCredentials.get(normalizeUserIdentifier(userIdentifier));
+}
+
+export function resolveRuntimeUserCredentialsFromEnv(
+  mapping: RuntimeUserCredentialEnvMapping
+): RuntimeUserCredentials | undefined {
+  const email = process.env[mapping.username]?.trim();
+  const password = process.env[mapping.password];
+  if (!email || !password) {
+    return undefined;
+  }
+
+  return { email, password };
 }
 
 export function setRuntimeUserCredentials(userIdentifier: string, credentials: RuntimeUserCredentials): void {

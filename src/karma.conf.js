@@ -2,8 +2,21 @@
 // Karma configuration file, see link for more information
 // https://karma-runner.github.io/1.0/config/configuration-file.html
 
+// Best-effort: point karma at the Playwright-managed Chromium so unit tests can
+// share the same browser binary as Playwright on CI agents that have it cached.
+// Falls back silently when Playwright isn't installed (e.g. PLAYWRIGHT_SKIP_INSTALL=true
+// agents) or when the binary path doesn't exist on disk, so karma can use its
+// own resolution and produce a clear error if Chrome is genuinely missing.
 if (!process.env.CHROME_BIN) {
-  process.env.CHROME_BIN = require('playwright').chromium.executablePath();
+  try {
+    const fs = require('fs');
+    const playwrightChromiumPath = require('playwright').chromium.executablePath();
+    if (playwrightChromiumPath && fs.existsSync(playwrightChromiumPath)) {
+      process.env.CHROME_BIN = playwrightChromiumPath;
+    }
+  } catch (_err) {
+    // Playwright not installed or browser cache absent; let karma resolve Chrome itself.
+  }
 }
 
 module.exports = function (config) {

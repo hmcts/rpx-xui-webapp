@@ -201,6 +201,10 @@ export async function uploadDocumentViaApi(options: UploadDocumentViaApiOptions)
   let response: BrowserFetchResult | null = null;
 
   for (let attempt = 1; attempt <= DOCUMENT_UPLOAD_RETRY_ATTEMPTS; attempt += 1) {
+    if (options.page.isClosed()) {
+      throw new Error('Document upload aborted: page closed mid-retry');
+    }
+
     response = await runBrowserFetchText(options.page, {
       url: uploadUrl,
       method: 'POST',
@@ -223,7 +227,11 @@ export async function uploadDocumentViaApi(options: UploadDocumentViaApiOptions)
       break;
     }
 
-    await options.page.waitForTimeout(DOCUMENT_UPLOAD_RETRY_INTERVAL_MS * attempt);
+    // Linear backoff plus +/-20% jitter to avoid worker-level thundering herd
+    // against the same AAT 429 surface that triggered the retry.
+    const baseDelayMs = DOCUMENT_UPLOAD_RETRY_INTERVAL_MS * attempt;
+    const jitterMs = Math.floor(baseDelayMs * 0.2 * (Math.random() * 2 - 1));
+    await options.page.waitForTimeout(Math.max(0, baseDelayMs + jitterMs));
   }
 
   if (!response) {

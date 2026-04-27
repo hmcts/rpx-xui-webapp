@@ -14,7 +14,7 @@ type SetupCaseRequest = {
   mode?: SetupMode;
   allowUiFallback?: boolean;
   apiPayload?: Record<string, unknown>;
-  uiCreate: () => Promise<void>;
+  uiCreate?: () => Promise<void>;
   page: Page;
   createCasePage: CreateCasePage;
   caseDetailsPage: CaseDetailsPage;
@@ -150,6 +150,18 @@ function isTransientApiRequestError(error: unknown): boolean {
   const message = error instanceof Error ? error.message : String(error);
   const normalised = message.toLowerCase();
   return TRANSIENT_API_REQUEST_ERROR_MARKERS.some((marker) => normalised.includes(marker));
+}
+
+// Shared backoff helper: applies +/-20% jitter to avoid worker-level thundering
+// herd against the same transient backend surface, and short-circuits when the
+// page has been torn down so retry waits don't mask the real failure.
+async function backoffOrAbort(page: Page, baseDelayMs: number, scenario: string): Promise<void> {
+  if (page.isClosed()) {
+    throw new Error(`Case setup aborted: page closed mid-retry (scenario='${scenario}')`);
+  }
+  const safeBaseMs = Math.max(0, baseDelayMs);
+  const jitterMs = Math.floor(safeBaseMs * 0.2 * (Math.random() * 2 - 1));
+  await page.waitForTimeout(Math.max(0, safeBaseMs + jitterMs));
 }
 
 async function createCaseViaApi(request: SetupCaseRequest): Promise<string | undefined> {
@@ -330,7 +342,7 @@ async function requestUserDetailsWithRetry(request: SetupCaseRequest, effectiveT
       });
     }
 
-    await request.page.waitForTimeout(retryIntervalMs);
+    await backoffOrAbort(request.page, retryIntervalMs, request.scenario);
   }
 
   throw lastError instanceof Error ? lastError : new Error(String(lastError));
@@ -407,7 +419,7 @@ async function createCaseViaDirectCcdApi(request: SetupCaseRequest): Promise<str
       eventId,
     });
     const remainingMs = tokenRetryDeadline - now;
-    await request.page.waitForTimeout(Math.min(tokenRetryIntervalMs, Math.max(remainingMs, 0)));
+    await backoffOrAbort(request.page, Math.min(tokenRetryIntervalMs, Math.max(remainingMs, 0)), request.scenario);
     tokenResponse = await requestEventToken();
   }
 
@@ -471,7 +483,7 @@ async function createCaseViaDirectCcdApi(request: SetupCaseRequest): Promise<str
       caseType: request.caseType,
     });
     const remainingMs = validateRetryDeadline - now;
-    await request.page.waitForTimeout(Math.min(validateRetryIntervalMs, Math.max(remainingMs, 0)));
+    await backoffOrAbort(request.page, Math.min(validateRetryIntervalMs, Math.max(remainingMs, 0)), request.scenario);
     validateResponse = await requestValidate();
   }
   if (validateResponse.status() < 200 || validateResponse.status() >= 300) {
@@ -527,7 +539,7 @@ async function createCaseViaDirectCcdApi(request: SetupCaseRequest): Promise<str
       caseType: request.caseType,
     });
     const remainingMs = createRetryDeadline - now;
-    await request.page.waitForTimeout(Math.min(createRetryIntervalMs, Math.max(remainingMs, 0)));
+    await backoffOrAbort(request.page, Math.min(createRetryIntervalMs, Math.max(remainingMs, 0)), request.scenario);
     createResponse = await request.page.request.post(createPath, {
       data: createCaseBody,
       failOnStatusCode: false,
@@ -560,6 +572,16 @@ export async function setupCaseForJourney(request: SetupCaseRequest): Promise<Se
   const mode = resolveSetupMode(request.mode);
   const allowUiFallback = resolveUiFallbackFlag(request.allowUiFallback);
 
+  // Reject configurations that pair a UI fallback with a mode that can never use it.
+  // Without this guard, callers can pass a `uiCreate` callback alongside `api-required`
+  // and silently leave dead code in the journey, masking the intent of the setup.
+  if (mode === 'api-required' && request.uiCreate) {
+    throw new Error(`setupCaseForJourney: 'uiCreate' must be omitted when mode='api-required' (scenario='${request.scenario}').`);
+  }
+  if (mode !== 'api-required' && !request.uiCreate) {
+    throw new Error(`setupCaseForJourney: 'uiCreate' is required when mode='${mode}' (scenario='${request.scenario}').`);
+  }
+
   if (mode !== 'ui-only') {
     try {
       const apiCaseNumber = await createCaseViaApi(request);
@@ -589,7 +611,7 @@ export async function setupCaseForJourney(request: SetupCaseRequest): Promise<Se
     }
   }
 
-  await request.uiCreate();
+  await request.uiCreate!();
   const uiCaseNumber = await request.caseDetailsPage.getCaseNumberFromUrl();
   logger.info('Case setup created via UI fallback', {
     scenario: request.scenario,

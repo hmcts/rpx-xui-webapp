@@ -149,6 +149,11 @@ export function getAliasBaselineRoles({
   if (alias === 'USER_WITH_FLAGS') {
     return [...DIVORCE_EXTERNAL_NOC_SOLICITOR_ROLE_NAMES];
   }
+  // The dedicated DIVORCE_SOLICITOR alias resolves to the same divorce role set
+  // regardless of context. We keep this branch separate from the SOLICITOR
+  // jurisdiction-conditional below so the alias intent stays explicit at the
+  // call site (specs that require a divorce-entitled user shouldn't depend on
+  // jurisdiction context being threaded through).
   if (alias === 'DIVORCE_SOLICITOR') {
     return [...(resolveDynamicDivorceSolicitorRoleNames(roleContext) ?? DIVORCE_EXTERNAL_CORE_SOLICITOR_ROLE_NAMES)];
   }

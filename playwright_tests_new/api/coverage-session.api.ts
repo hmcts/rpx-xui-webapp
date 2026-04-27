@@ -610,7 +610,10 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
   test('acquireSessionLock clears abandoned lock artifacts before timing out', async () => {
     let lockAttempts = 0;
     let removedArtifacts = 0;
-    const staleTime = Date.now() - 130_000;
+    // Anchor the stale-time offset to the recovery window default so the test
+    // tracks production behaviour: sit just outside the recovery threshold.
+    const recoveryMs = sessionCaptureTest.resolveSessionAbandonedLockRecoveryMs({} as NodeJS.ProcessEnv);
+    const staleTime = Date.now() - (recoveryMs + 10_000);
 
     const fsStub = {
       existsSync: (target: string) => target.endsWith('.lock'),

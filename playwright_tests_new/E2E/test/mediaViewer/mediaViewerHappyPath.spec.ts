@@ -3,7 +3,6 @@ import { Page, Response } from '@playwright/test';
 import { expect, test } from '../../fixtures';
 import { acceptAccessCookiesIfPresent, applySessionCookies } from '../../../common/sessionCapture';
 import { CaseFileViewPage } from '../../page-objects/pages/exui/caseFileView.po';
-import { createDivorceCase } from '../../utils/test-setup/journeys/divorceCaseJourneys';
 import { buildCasePayloadFromTemplate } from '../../utils/test-setup/payloads/registry';
 import { setupCaseForJourney } from '../../utils/test-setup/caseSetup';
 import { uploadDocumentViaApi } from '../../utils/test-setup/uploadDocumentViaApi';
@@ -57,9 +56,6 @@ test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] },
             DocumentUrl: uploadedDocument,
           },
         }),
-        uiCreate: async () => {
-          await createDivorceCase(createCasePage, JURISDICTION, CASE_TYPE, caseMarker);
-        },
         page,
         createCasePage,
         caseDetailsPage,

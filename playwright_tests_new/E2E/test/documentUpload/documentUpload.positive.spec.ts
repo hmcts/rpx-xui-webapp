@@ -6,11 +6,14 @@ import { TEST_DATA } from './constants';
 import { expectCaseBanner } from '../../utils';
 import { createLogger } from '@hmcts/playwright-common';
 import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
-import { createDivorceCase } from '../../utils/test-setup/journeys/divorceCaseJourneys';
-import { createEmploymentCase, uploadEmploymentDraftDocument } from '../../utils/test-setup/journeys/employmentJourneys';
+import { uploadEmploymentDraftDocument } from '../../utils/test-setup/journeys/employmentJourneys';
 import { buildCasePayloadFromTemplate } from '../../utils/test-setup/payloads/registry';
 import { setupCaseForJourney } from '../../utils/test-setup/caseSetup';
-import { RuntimeUserAlias } from '../../utils/runtimeUserCredentials';
+import {
+  RuntimeUserAlias,
+  getRuntimeUserCredentialEnvMapping,
+  resolveRuntimeUserCredentialsFromEnv,
+} from '../../utils/runtimeUserCredentials';
 
 const logger = createLogger({ serviceName: 'document-upload-tests', format: 'pretty' });
 const DOCUMENT_UPLOAD_SUBMIT_TIMEOUT_MS = 60_000;
@@ -18,26 +21,37 @@ const DOCUMENT_UPLOAD_SUBMIT_TIMEOUT_MS = 60_000;
 // Document upload journeys combine case creation, multi-step CCD wizard navigation,
 // file upload + ClamAV scan, and submit polling. The 5 minute envelope covers the
 // upper bound observed in nightly runs against AAT and is overridable via env.
-const DOCUMENT_UPLOAD_TEST_TIMEOUT_MS = Number.parseInt(
-  process.env.PW_DOCUMENT_UPLOAD_TEST_TIMEOUT_MS ?? '',
-  10,
-) || 300_000;
+const DOCUMENT_UPLOAD_TEST_TIMEOUT_MS = Number.parseInt(process.env.PW_DOCUMENT_UPLOAD_TEST_TIMEOUT_MS ?? '', 10) || 300_000;
 
 // Cold-cache IDAM bootstrap for two distinct aliases (Divorce solicitor + Employment
 // search user) can serialise behind the session lock and IDAM rate limits; allow up
 // to 5 minutes for the worst case before failing fast.
-const SESSION_BOOTSTRAP_TIMEOUT_MS = Number.parseInt(
-  process.env.PW_DOCUMENT_UPLOAD_SESSION_BOOTSTRAP_TIMEOUT_MS ?? '',
-  10,
-) || 300_000;
+const SESSION_BOOTSTRAP_TIMEOUT_MS =
+  Number.parseInt(process.env.PW_DOCUMENT_UPLOAD_SESSION_BOOTSTRAP_TIMEOUT_MS ?? '', 10) || 300_000;
 
 // Run serially: the V2 and V1 describes share module-level `caseNumber` / `testValue`
 // state that the per-test beforeEach mutates, and the IDAM session lock contends
 // when both aliases bootstrap concurrently in the same worker.
 test.describe.configure({ mode: 'serial', timeout: DOCUMENT_UPLOAD_TEST_TIMEOUT_MS });
 
+function assertRuntimeAliasCredentialsPresent(alias: string): void {
+  const mapping = getRuntimeUserCredentialEnvMapping(alias);
+  if (!mapping) {
+    test.skip(true, `Document upload tests require runtime alias '${alias}' to be configured.`);
+    return;
+  }
+  if (!resolveRuntimeUserCredentialsFromEnv(mapping)) {
+    test.skip(
+      true,
+      `Document upload tests require env vars '${mapping.username}' and '${mapping.password}' to be set for alias '${alias}'.`
+    );
+  }
+}
+
 test.beforeAll(async ({ browserName: _browserName }, testInfo) => {
   testInfo.setTimeout(SESSION_BOOTSTRAP_TIMEOUT_MS);
+  assertRuntimeAliasCredentialsPresent(RuntimeUserAlias.DIVORCE_SOLICITOR);
+  assertRuntimeAliasCredentialsPresent(RuntimeUserAlias.SEARCH_EMPLOYMENT_CASE);
   await ensureSession(RuntimeUserAlias.DIVORCE_SOLICITOR);
   await ensureSession(RuntimeUserAlias.SEARCH_EMPLOYMENT_CASE);
 });
@@ -67,9 +81,6 @@ test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, (
           TextField: testValue,
         },
       }),
-      uiCreate: async () => {
-        await createDivorceCase(createCasePage, TEST_DATA.V2.JURISDICTION, TEST_DATA.V2.CASE_TYPE, testValue);
-      },
       page,
       createCasePage,
       caseDetailsPage,
@@ -218,12 +229,6 @@ test.describe('Document upload V1', { tag: ['@e2e', '@e2e-document-upload', '@e2
       apiEventId: 'initiateCase',
       mode: 'api-required',
       apiPayload: buildCasePayloadFromTemplate('employment.et-england-wales.initiate-case'),
-      uiCreate: async () => {
-        await createEmploymentCase(createCasePage, TEST_DATA.V1.JURISDICTION, TEST_DATA.V1.CASE_TYPE, {
-          allowDraftClaimFallback: true,
-        });
-        expect(await createCasePage.checkForErrorMessage(), 'Error message seen after creating employment case').toBe(false);
-      },
       page,
       createCasePage,
       caseDetailsPage,

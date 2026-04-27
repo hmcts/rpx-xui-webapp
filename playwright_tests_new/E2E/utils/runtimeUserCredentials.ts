@@ -13,6 +13,8 @@ export const RuntimeUserAlias = {
   SEARCH_EMPLOYMENT_CASE: 'SEARCH_EMPLOYMENT_CASE',
 } as const;
 
+export type RuntimeUserAlias = (typeof RuntimeUserAlias)[keyof typeof RuntimeUserAlias];
+
 export type PublishedRuntimeUserCredentialEnvState = RuntimeUserCredentialEnvMapping & {
   previousUsername?: string;
   previousPassword?: string;

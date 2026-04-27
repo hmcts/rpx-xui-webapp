@@ -37,12 +37,10 @@ test.describe.configure({ mode: 'serial', timeout: DOCUMENT_UPLOAD_TEST_TIMEOUT_
 function assertRuntimeAliasCredentialsPresent(alias: string): void {
   const mapping = getRuntimeUserCredentialEnvMapping(alias);
   if (!mapping) {
-    test.skip(true, `Document upload tests require runtime alias '${alias}' to be configured.`);
-    return;
+    throw new Error(`Document upload tests require runtime alias '${alias}' to be configured.`);
   }
   if (!resolveRuntimeUserCredentialsFromEnv(mapping)) {
-    test.skip(
-      true,
+    throw new Error(
       `Document upload tests require env vars '${mapping.username}' and '${mapping.password}' to be set for alias '${alias}'.`
     );
   }

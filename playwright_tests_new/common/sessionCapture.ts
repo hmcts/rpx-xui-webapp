@@ -17,9 +17,6 @@ const IDAM_USERNAME_FALLBACK_SELECTOR =
 const IDAM_SUBMIT_FALLBACK_SELECTOR = 'button:has-text("Sign in"), button:has-text("Continue")';
 const CHROME_ERROR_URL_PREFIX = 'chrome-error://chromewebdata/';
 const DEFAULT_SESSION_MAX_AGE_MS = 3_600_000;
-const DEFAULT_SESSION_LOCK_WAIT_MS = 180_000;
-const DEFAULT_SESSION_LOCK_STALE_MS = 60_000;
-const DEFAULT_SESSION_ABANDONED_LOCK_RECOVERY_MS = 120_000;
 
 function getIdamUsernameCandidates(page: Page, idamPage: IdamPage): Locator[] {
   return [idamPage.usernameInput.first(), page.locator(IDAM_USERNAME_FALLBACK_SELECTOR).first()];
@@ -161,7 +158,7 @@ async function gotoAppTarget(page: Page, userIdentifier: string, targetUrl: stri
       if (!canRetry) {
         throw parsedError;
       }
-      await new Promise<void>((resolve) => setTimeout(resolve, 1000 * navigationAttempt));
+      await new Promise<void>((resolve) => setTimeout(resolve, 1_000 * navigationAttempt));
     }
   }
 
@@ -200,7 +197,7 @@ async function gotoLoginTarget(page: Page, userIdentifier: string, loginTarget: 
       if (!canRetry) {
         throw parsedError;
       }
-      await new Promise<void>((resolve) => setTimeout(resolve, 1000 * navigationAttempt));
+      await new Promise<void>((resolve) => setTimeout(resolve, 1_000 * navigationAttempt));
     }
   }
 
@@ -212,7 +209,7 @@ async function gotoLoginTarget(page: Page, userIdentifier: string, loginTarget: 
 export async function acceptAccessCookiesIfPresent(page: Page): Promise<void> {
   const acceptButton = page.getByRole('button', { name: /accept (additional|analytics) cookies/i }).first();
   if (await acceptButton.isVisible().catch(() => false)) {
-    await acceptButton.click({ timeout: 2000 }).catch(() => undefined);
+    await acceptButton.click({ timeout: 2_000 }).catch(() => undefined);
   }
 }
 
@@ -302,16 +299,6 @@ export function getSetupMarker(page: Page): string {
 function resolveSessionMaxAgeMs(env: NodeJS.ProcessEnv = process.env): number {
   const configured = Number(env.PW_SESSION_MAX_AGE_MS);
   return Number.isFinite(configured) && configured > 0 ? configured : DEFAULT_SESSION_MAX_AGE_MS;
-}
-
-function resolveSessionLockWaitMs(env: NodeJS.ProcessEnv = process.env): number {
-  const configured = Number(env.PW_SESSION_LOCK_WAIT_MS);
-  return Number.isFinite(configured) && configured > 0 ? configured : DEFAULT_SESSION_LOCK_WAIT_MS;
-}
-
-function resolveSessionAbandonedLockRecoveryMs(env: NodeJS.ProcessEnv = process.env): number {
-  const configured = Number(env.PW_SESSION_ABANDONED_LOCK_RECOVERY_MS);
-  return Number.isFinite(configured) && configured > 0 ? configured : DEFAULT_SESSION_ABANDONED_LOCK_RECOVERY_MS;
 }
 
 /**
@@ -527,7 +514,7 @@ export async function ensureAuthenticatedPage(
   const markSetup = (marker: string) => setSetupMarker(page, marker);
   markSetup('setup-start');
   const targetUrl = options.targetUrl ?? process.env.TEST_URL ?? config.urls.exuiDefaultUrl;
-  const timeoutMs = options.timeoutMs ?? 60000;
+  const timeoutMs = options.timeoutMs ?? 60_000;
   let session = await ensureSessionCookies(identity);
   if (session.cookies.length) {
     await page.context().addCookies(session.cookies);
@@ -644,7 +631,7 @@ export function isSessionFresh(
       }
 
       // Treat session as stale if all cookies are expired or nearly expired.
-      const nowSeconds = Math.floor(now() / 1000);
+      const nowSeconds = Math.floor(now() / 1_000);
       const hasValidCookie = cookies.some((cookie: Cookie) => {
         if (typeof cookie.expires !== 'number') {
           return true;
@@ -730,9 +717,9 @@ async function acquireSessionLock({
   isSessionReusable: () => boolean;
   force: boolean;
 }): Promise<(() => Promise<void>) | null> {
-  const pollIntervalMs = 1000;
-  const maxWaitMs = resolveSessionLockWaitMs();
-  const staleLockWindowMs = resolveSessionAbandonedLockRecoveryMs();
+  const pollIntervalMs = 1_000;
+  const maxWaitMs = 90_000;
+  const staleLockWindowMs = 65_000;
   const startedAt = Date.now();
   let attempt = 0;
 
@@ -750,7 +737,7 @@ async function acquireSessionLock({
     try {
       return await lockfileApi.lock(lockFilePath, {
         retries: 0,
-        stale: DEFAULT_SESSION_LOCK_STALE_MS,
+        stale: 60_000,
       });
     } catch (error) {
       if (!isLockAlreadyHeldError(error)) {
@@ -814,7 +801,7 @@ async function executeLoginAttempt(
 ): Promise<void> {
   await gotoLoginTarget(page, userIdentifier, loginTarget);
   await acceptAccessCookiesIfPresent(page);
-  const shellMarker = await waitForAuthenticatedShell(page, userIdentifier, undefined, 5000).catch(() => null);
+  const shellMarker = await waitForAuthenticatedShell(page, userIdentifier, undefined, 5_000).catch(() => null);
   if (shellMarker) {
     logger.info('Authenticated shell detected without IDAM form login', {
       userIdentifier,
@@ -829,27 +816,27 @@ async function executeLoginAttempt(
 
   const usernameCandidates = getIdamUsernameCandidates(page, idamPage);
   const loginSurface = await Promise.race([
-    waitForFirstVisibleLocator(page, usernameCandidates, 60000).then((locator) => (locator ? 'login' : null)),
+    waitForFirstVisibleLocator(page, usernameCandidates, 60_000).then((locator) => (locator ? 'login' : null)),
     page
       .locator('exui-header, exui-case-home')
       .first()
-      .waitFor({ state: 'visible', timeout: 60000 })
+      .waitFor({ state: 'visible', timeout: 60_000 })
       .then(() => 'app'),
   ]).catch(() => null);
 
   if (loginSurface === 'app') return;
 
   if (loginSurface !== 'login') {
-    await idamPage.usernameInput.first().waitFor({ state: 'visible', timeout: 10000 });
+    await idamPage.usernameInput.first().waitFor({ state: 'visible', timeout: 10_000 });
     await idamPage.login({ username: email, password });
     await confirmAuthenticatedLogin(page, userIdentifier, email, loginTarget, attemptIndex);
     return;
   }
 
-  const usernameInput = (await waitForFirstVisibleLocator(page, usernameCandidates, 1000)) ?? idamPage.usernameInput.first();
+  const usernameInput = (await waitForFirstVisibleLocator(page, usernameCandidates, 1_000)) ?? idamPage.usernameInput.first();
   const passwordInput = idamPage.passwordInput.first(); // NOSONAR
   const submitButton =
-    (await waitForFirstVisibleLocator(page, getIdamSubmitCandidates(page, idamPage), 1000)) ?? idamPage.submitBtn.first();
+    (await waitForFirstVisibleLocator(page, getIdamSubmitCandidates(page, idamPage), 1_000)) ?? idamPage.submitBtn.first();
   await usernameInput.fill(email);
   await passwordInput.fill(password); // NOSONAR
   if (await submitButton.isVisible().catch(() => false)) {
@@ -879,8 +866,8 @@ async function confirmAuthenticatedLogin(
   const info = deps.info ?? ((message: string, meta: Record<string, unknown>) => logger.info(message, meta));
 
   await acceptCookies(page);
-  const postLoginShell = await waitForShell(page, userIdentifier, undefined, 15000).catch(() => null);
-  const hasAuthCookies = await waitForAuthCookies(page, 15000);
+  const postLoginShell = await waitForShell(page, userIdentifier, undefined, 15_000).catch(() => null);
+  const hasAuthCookies = await waitForAuthCookies(page, 15_000);
   if (!postLoginShell && !hasAuthCookies) {
     throw new Error(`IDAM login did not establish authenticated session for ${userIdentifier} (url=${currentPageUrl(page)}).`);
   }
@@ -959,7 +946,7 @@ async function loginAndPersistSession({
       }
 
       try {
-        await page.locator('exui-header').waitFor({ timeout: 60000 });
+        await page.locator('exui-header').waitFor({ timeout: 60_000 });
         logger.info('EXUI header detected', {
           userIdentifier,
           operation: 'session-capture',
@@ -967,7 +954,7 @@ async function loginAndPersistSession({
       } catch (error_) {
         logger.warn('EXUI header not detected within timeout', {
           userIdentifier,
-          timeout: 60000,
+          timeout: 60_000,
           error: (error_ as Error).message,
           operation: 'session-capture',
         });
@@ -1121,8 +1108,6 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
 
 export const __test__ = {
   resolveSessionMaxAgeMs,
-  resolveSessionLockWaitMs,
-  resolveSessionAbandonedLockRecoveryMs,
   hasTargetCompatibleAuthCookies,
   resolveTargetHost,
   acquireSessionLock,

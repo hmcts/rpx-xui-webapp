@@ -3,3 +3,15 @@
   margin-bottom: 5px;
   padding-top: 0;
 }
+
+.hearings-loading-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+  text-align: center;
+}
+
+.hearings-loading-message .govuk-body {
+  margin-bottom: 0;
+}

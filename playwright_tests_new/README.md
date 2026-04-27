@@ -89,6 +89,12 @@ yarn test:playwright:integration
 - Integration: `functional-output/tests/playwright-integration/odhin-report/xui-playwright-integration.html`
 - E2E: `functional-output/tests/playwright-e2e/odhin-report/xui-playwright-e2e.html`
 
+Odhin dashboard notes:
+
+- The dashboard now groups the former file summary by Playwright feature folder, for example `caseFileView`, `caseLinking`, `accessRequests`, and `hearings`.
+- API, integration, and E2E reports now share the adaptive Odhin wrapper, so grouped feature summaries and inline grouped status are applied consistently across suites.
+- The report stays single-page: grouped feature status is rendered directly under `Run info` instead of generating a separate drilldown page.
+
 ### Notes
 
 - Replace `"My tasks"` with the exact test name, unique substring, or regex.
@@ -313,7 +319,8 @@ API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
 ### API Test Parallelism
 
 - In CI, Playwright defaults to **8 workers** unless `FUNCTIONAL_TESTS_WORKERS` is set
-- Jenkins currently sets `FUNCTIONAL_TESTS_WORKERS=2` on Preview and `FUNCTIONAL_TESTS_WORKERS=4` on AAT for Playwright API, E2E, and integration runs
+- Jenkins pins `FUNCTIONAL_TESTS_WORKERS=4` for API and integration suites, and `FUNCTIONAL_TESTS_WORKERS=2` for browser-heavy E2E and cross-browser suites
+- Keeping E2E below the Jenkins agent core count avoids saturating the preview/AAT backends while API and integration stages run in parallel
 - Locally, worker count is auto-sized from CPU capacity; override with `FUNCTIONAL_TESTS_WORKERS` or the Playwright `--workers` flag
 
 ### API Authentication Model
@@ -372,6 +379,7 @@ rm -rf .sessions && npx playwright test
 
 - E2E suites are tagged with `@e2e` plus feature tags such as `@e2e-search-case` and `@e2e-manage-tasks`.
 - Default excluded tags are read from `playwright_tests_new/E2E/tag-filter.json` (`excludedTags` array).
+- `@e2e-document-upload-v1` is excluded by default because the legacy V1 Employment case setup is timing out in Jenkins; V2 document upload coverage remains active under `@e2e-document-upload`.
 - Override excludes at runtime with `E2E_PW_EXCLUDED_TAGS_OVERRIDE`.
 - Optionally run only selected E2E tags with `E2E_PW_INCLUDE_TAGS`.
 - Tag inputs accept comma or space separated values, with or without `@`.
@@ -384,6 +392,9 @@ E2E_PW_INCLUDE_TAGS=@e2e-search-case yarn test:playwrightE2E
 
 # Temporarily switch off manage-tasks and document-upload E2E tests
 E2E_PW_EXCLUDED_TAGS_OVERRIDE=@e2e-manage-tasks,@e2e-document-upload yarn test:playwrightE2E
+
+# Re-enable the V1 document-upload test for a targeted run
+E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none E2E_PW_INCLUDE_TAGS=@e2e-document-upload-v1 yarn test:playwrightE2E
 
 # Ignore file-level excludes for this run
 E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:playwrightE2E
@@ -413,11 +424,11 @@ npx playwright test integration/test/caseList/caseList.positive.spec.ts --config
 # Run the main integration project
 npx playwright test --config=playwright.integration.config.ts --project=chromium
 
-# Run the searchCase integration project
-npx playwright test --config=playwright.integration.config.ts --project=chromium-search-case
+# Run only search-case integration tests via tags
+INTEGRATION_PW_INCLUDE_TAGS=@integration-search-case npx playwright test --config=playwright.integration.config.ts --project=chromium
 
 # Disable Odhin locally when you want the fastest possible run
-PW_INTEGRATION_ODHIN=0 npx playwright test --config=playwright.integration.config.ts --project=chromium-search-case
+PW_INTEGRATION_ODHIN=0 INTEGRATION_PW_INCLUDE_TAGS=@integration-search-case npx playwright test --config=playwright.integration.config.ts --project=chromium
 ```
 
 ### Integration Tag Filtering
@@ -443,8 +454,8 @@ INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:playwright:integration
 
 Notes:
 
-- `chromium-search-case` isolates the `integration/test/searchCase/` suite so it can be run or triaged independently
-- All other integration specs continue to run on the auto-sized `chromium` project unless `FUNCTIONAL_TESTS_WORKERS` is pinned explicitly
+- Search-case integration specs now run in the main `chromium` project and can be isolated with `INTEGRATION_PW_INCLUDE_TAGS=@integration-search-case`
+- Integration specs continue to run on the auto-sized `chromium` project unless `FUNCTIONAL_TESTS_WORKERS` is pinned explicitly
 - Odhin remains enabled by default for integration runs, including local runs
 - Local integration Odhin uses a lightweight profile by default and emits explicit finalization timing so post-test report generation is visible and bounded
 - Local integration Odhin also bounds runtime reporter hooks by default; override with `PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS=<ms>` or set `0` to disable the local safeguard
@@ -552,7 +563,7 @@ expect(visibleRows.length).toBeGreaterThan(0);
 - Multiple workers can safely request the same user session
 - **Filesystem-based lock mechanism** prevents concurrent logins for the same user
 - Locks coordinate across **all Playwright worker processes** (API + E2E) using `proper-lockfile`
-- Jenkins currently runs API, E2E, and integration suites with **2 workers** on Preview and **4 workers** on AAT
+- Jenkins currently runs API, E2E, and integration suites with **4 workers** on both Preview and AAT
 - When one worker logs in user X, the remaining workers **and parallel API tests** wait for lock release and reuse the session
 - After acquiring lock, workers recheck freshness to ensure session is still valid
 - `ensureSession()` intentionally avoids forced recapture so lock waiters can reuse the newly refreshed session instead of logging in again
@@ -719,10 +730,10 @@ npx playwright test --project chromium
 ```bash
 # Running simultaneously:
 npx playwright test --project chromium --workers=2  # Preview E2E tests
-npx playwright test --project node-api --workers=2  # Preview API tests
+npx playwright test --project node-api --workers=4  # Preview API tests
 
 # AAT:
-npx playwright test --project chromium --workers=4  # AAT E2E tests
+npx playwright test --project chromium --workers=2  # AAT E2E tests
 npx playwright test --project node-api --workers=4  # AAT API tests
 
 # Local or unpinned CI:

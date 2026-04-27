@@ -4,20 +4,20 @@ import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 import { caseBannerMatches, getTodayFormats, matchesToday } from '../../utils';
 import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
 import { createDivorceCase } from '../../utils/test-setup/journeys/divorceCaseJourneys';
+import { RuntimeUserAlias } from '../../utils/runtimeUserCredentials';
 let caseNumber: string;
 const updatedFirstName = faker.person.firstName();
 const updatedLastName = faker.person.lastName();
 const testField = faker.lorem.word() + new Date().toLocaleTimeString();
 const UPDATE_CASE_ACTION_TIMEOUT_MS = 60_000;
 const UPDATE_CASE_SETUP_CREATE_MAX_ATTEMPTS = 1;
-const DIVORCE_SOLICITOR = 'DIVORCE_SOLICITOR';
 
 test.describe('Verify creating and updating a case works as expected', { tag: ['@e2e', '@e2e-update-case'] }, () => {
   test.describe.configure({ timeout: 240_000 });
   test.beforeEach(async ({ page, createCasePage, caseDetailsPage }) => {
     await retryOnTransientFailure(
       async () => {
-        await ensureAuthenticatedPage(page, DIVORCE_SOLICITOR, {
+        await ensureAuthenticatedPage(page, RuntimeUserAlias.DIVORCE_SOLICITOR, {
           waitForSelector: 'exui-header',
           timeoutMs: 30_000,
         });

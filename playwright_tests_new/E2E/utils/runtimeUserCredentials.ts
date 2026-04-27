@@ -8,6 +8,11 @@ type RuntimeUserCredentialEnvMapping = {
   password: string;
 };
 
+export const RuntimeUserAlias = {
+  DIVORCE_SOLICITOR: 'DIVORCE_SOLICITOR',
+  SEARCH_EMPLOYMENT_CASE: 'SEARCH_EMPLOYMENT_CASE',
+} as const;
+
 export type PublishedRuntimeUserCredentialEnvState = RuntimeUserCredentialEnvMapping & {
   previousUsername?: string;
   previousPassword?: string;

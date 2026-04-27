@@ -10,19 +10,19 @@ import { createDivorceCase } from '../../utils/test-setup/journeys/divorceCaseJo
 import { createEmploymentCase, uploadEmploymentDraftDocument } from '../../utils/test-setup/journeys/employmentJourneys';
 import { buildCasePayloadFromTemplate } from '../../utils/test-setup/payloads/registry';
 import { setupCaseForJourney } from '../../utils/test-setup/caseSetup';
+import { RuntimeUserAlias } from '../../utils/runtimeUserCredentials';
 
 const logger = createLogger({ serviceName: 'document-upload-tests', format: 'pretty' });
 const DOCUMENT_UPLOAD_SUBMIT_TIMEOUT_MS = 60_000;
 const DOCUMENT_UPLOAD_TEST_TIMEOUT_MS = 300_000;
 const SESSION_BOOTSTRAP_TIMEOUT_MS = 300_000;
-const DIVORCE_SOLICITOR = 'DIVORCE_SOLICITOR';
 
 test.describe.configure({ mode: 'serial', timeout: DOCUMENT_UPLOAD_TEST_TIMEOUT_MS });
 
 test.beforeAll(async ({ browserName: _browserName }, testInfo) => {
   testInfo.setTimeout(SESSION_BOOTSTRAP_TIMEOUT_MS);
-  await ensureSession(DIVORCE_SOLICITOR);
-  await ensureSession('SEARCH_EMPLOYMENT_CASE');
+  await ensureSession(RuntimeUserAlias.DIVORCE_SOLICITOR);
+  await ensureSession(RuntimeUserAlias.SEARCH_EMPLOYMENT_CASE);
 });
 
 test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, () => {
@@ -38,7 +38,7 @@ test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, (
     testValue = `${faker.person.firstName()}-${Date.now()}-w${process.env.TEST_WORKER_INDEX || '0'}`;
     logger.info('Generated test value', { testValue, worker: process.env.TEST_WORKER_INDEX });
 
-    await ensureAuthenticatedPage(page, DIVORCE_SOLICITOR, { waitForSelector: 'exui-header' });
+    await ensureAuthenticatedPage(page, RuntimeUserAlias.DIVORCE_SOLICITOR, { waitForSelector: 'exui-header' });
     const setup = await setupCaseForJourney({
       scenario: 'document-upload-v2-divorce',
       jurisdiction: TEST_DATA.V2.JURISDICTION,
@@ -193,7 +193,7 @@ test.describe('Document upload V1', { tag: ['@e2e', '@e2e-document-upload', '@e2
     testFileName = `${faker.string.alphanumeric(8)}-${Date.now()}.pdf`;
     logger.info('Generated test values', { testValue, testFileName, worker: process.env.TEST_WORKER_INDEX });
 
-    await ensureAuthenticatedPage(page, 'SEARCH_EMPLOYMENT_CASE', { waitForSelector: 'exui-header' });
+    await ensureAuthenticatedPage(page, RuntimeUserAlias.SEARCH_EMPLOYMENT_CASE, { waitForSelector: 'exui-header' });
     const setup = await setupCaseForJourney({
       scenario: 'document-upload-v1-employment',
       jurisdiction: TEST_DATA.V1.JURISDICTION,

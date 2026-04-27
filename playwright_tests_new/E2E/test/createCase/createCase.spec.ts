@@ -2,9 +2,9 @@ import { expect, test } from '../../fixtures';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
 import { createLogger } from '@hmcts/playwright-common';
+import { RuntimeUserAlias } from '../../utils/runtimeUserCredentials';
 const jurisdiction = 'DIVORCE';
 const caseType = 'XUI Case PoC';
-const divorceSolicitor = 'DIVORCE_SOLICITOR';
 let caseNumber: string;
 const logger = createLogger({ serviceName: 'create-case-e2e', format: 'pretty' });
 
@@ -15,7 +15,7 @@ test.describe('Verify creating cases works as expected', { tag: ['@e2e', '@e2e-c
   test.beforeEach(async ({ page, caseDetailsPage, createCasePage }) => {
     await retryOnTransientFailure(
       async () => {
-        await ensureAuthenticatedPage(page, divorceSolicitor, { waitForSelector: 'exui-header' });
+        await ensureAuthenticatedPage(page, RuntimeUserAlias.DIVORCE_SOLICITOR, { waitForSelector: 'exui-header' });
         caseData = await createCasePage.generateDivorcePoCData({ textField0: 'Hide all', divorceReasons: ['Adultery'] });
         person1Data = await createCasePage.generateDivorcePoCPersonData({
           gender: 'Male',

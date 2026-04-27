@@ -7,12 +7,12 @@ import { createDivorceCase } from '../../utils/test-setup/journeys/divorceCaseJo
 import { buildCasePayloadFromTemplate } from '../../utils/test-setup/payloads/registry';
 import { setupCaseForJourney } from '../../utils/test-setup/caseSetup';
 import { uploadDocumentViaApi } from '../../utils/test-setup/uploadDocumentViaApi';
+import { RuntimeUserAlias } from '../../utils/runtimeUserCredentials';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 
 const JURISDICTION = 'DIVORCE';
 const CASE_TYPE = 'xuiTestCaseType';
-const DIVORCE_SOLICITOR = 'DIVORCE_SOLICITOR';
 const MEDIA_VIEWER_ROUTE_PATTERN = /\/media-viewer(?:\?|$)/;
 const DOCUMENT_BINARY_ROUTE_PATTERN = /\/documents(?:v2)?\/[^/]+\/binary$/;
 const MEDIA_VIEWER_FIXTURE_PATH = path.resolve(
@@ -29,7 +29,7 @@ test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] },
     const caseMarker = `media-viewer-${faker.string.alphanumeric(8)}-${uniqueSuffix}`;
 
     await test.step('Apply solicitor session and open the app shell', async () => {
-      await applySessionCookies(page, DIVORCE_SOLICITOR);
+      await applySessionCookies(page, RuntimeUserAlias.DIVORCE_SOLICITOR);
       await page.goto('/');
       await acceptAccessCookiesIfPresent(page);
       await expect(page.locator('exui-header')).toBeVisible();

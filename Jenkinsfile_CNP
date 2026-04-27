@@ -148,6 +148,8 @@ def secrets = [
     secret('mc-session-secret', 'SESSION_SECRET'),
     secret('idam-solicitor-user-password', 'IDAM_SOLICITOR_USER_PASSWORD'),
     secret('idam-caseworker-divorce-password', 'IDAM_CASEWORKER_DIVORCE_PASSWORD'),
+    secret('e2e-divorce-solicitor-username', 'DIVORCE_SOLICITOR_USERNAME'),
+    secret('e2e-divorce-solicitor-password', 'DIVORCE_SOLICITOR_PASSWORD'),
     secret('xui-dynamic-org-user-assignment-username', 'ORG_USER_ASSIGNMENT_USERNAME'),
     secret('xui-dynamic-org-user-assignment-password', 'ORG_USER_ASSIGNMENT_PASSWORD'),
     secret('xui-dynamic-org-user-assignment-client-id', 'ORG_USER_ASSIGNMENT_CLIENT_ID'),

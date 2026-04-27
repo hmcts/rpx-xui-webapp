@@ -53,6 +53,8 @@ def secrets = [
     secret('system-user-password', 'SYSTEM_USER_PASSWORD'),
     secret('launch-darkly-client-id', 'LAUNCH_DARKLY_CLIENT_ID'),
     secret('mc-session-secret', 'SESSION_SECRET'),
+    secret('e2e-divorce-solicitor-username', 'DIVORCE_SOLICITOR_USERNAME'),
+    secret('e2e-divorce-solicitor-password', 'DIVORCE_SOLICITOR_PASSWORD'),
   ],
 ]
 

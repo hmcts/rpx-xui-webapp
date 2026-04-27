@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { formatUiDate } from '../../../utils/tableUtils';
 import { expect, test } from '../../../../E2E/fixtures';
-import { applySessionCookiesAndExtractUserId } from '../../../helpers';
+import { applySessionCookiesAndExtractUserId, setupCaseTaskListMockRoute } from '../../../helpers';
 import { buildCaseDetailsTasksMinimal } from '../../../mocks/caseDetailsTasks.builder';
 import { buildAsylumCaseMock } from '../../../mocks/cases/asylumCase.mock';
 
@@ -64,10 +64,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     const tasks = buildCaseDetailsTasksMinimal(taskData);
 
     await test.step('Setup route mock for task details', async () => {
-      await page.route(`**workallocation/case/task/${caseId}*`, async (route) => {
-        const body = JSON.stringify(tasks);
-        await route.fulfill({ status: 200, contentType: 'application/json', body });
-      });
+      await setupCaseTaskListMockRoute(page, caseId, tasks);
     });
 
     await test.step('Navigate to mocked case task list', async () => {
@@ -125,11 +122,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     };
 
     await test.step('Setup route mock for priority label tasks', async () => {
-      await page.route(`**workallocation/case/task/${caseId}*`, async (route) => {
-        const tasks = buildCaseDetailsTasksMinimal(taskData);
-        const body = JSON.stringify(tasks);
-        await route.fulfill({ status: 200, contentType: 'application/json', body });
-      });
+      await setupCaseTaskListMockRoute(page, caseId, buildCaseDetailsTasksMinimal(taskData));
     });
 
     await test.step('Navigate to mocked case task list', async () => {
@@ -194,10 +187,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
       await route.fulfill({ status: 200, contentType: 'application/json', body });
     });
 
-    await page.route(`**workallocation/case/task/${caseId}*`, async (route) => {
-      const body = JSON.stringify(tasks);
-      await route.fulfill({ status: 200, contentType: 'application/json', body });
-    });
+    await setupCaseTaskListMockRoute(page, caseId, tasks);
 
     await test.step('Navigate to mocked case task list', async () => {
       await page.goto(`/cases/case-details/IA/Asylum/${caseId}/tasks`);
@@ -260,10 +250,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     };
     const tasks = buildCaseDetailsTasksMinimal(taskData);
 
-    await page.route(`**workallocation/case/task/${caseId}*`, async (route) => {
-      const body = JSON.stringify(tasks);
-      await route.fulfill({ status: 200, contentType: 'application/json', body });
-    });
+    await setupCaseTaskListMockRoute(page, caseId, tasks);
 
     await test.step('Navigate to mocked case task list', async () => {
       await page.goto(`/cases/case-details/IA/Asylum/${caseId}/tasks`);
@@ -298,11 +285,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     };
 
     await test.step('Setup route mock for complex markdown in a task', async () => {
-      await page.route(`**workallocation/case/task/${caseId}*`, async (route) => {
-        const tasks = buildCaseDetailsTasksMinimal(taskData);
-        const body = JSON.stringify(tasks);
-        await route.fulfill({ status: 200, contentType: 'application/json', body });
-      });
+      await setupCaseTaskListMockRoute(page, caseId, buildCaseDetailsTasksMinimal(taskData));
     });
 
     await test.step('Navigate to mocked case task list', async () => {

@@ -9,7 +9,6 @@ import { Observable } from 'rxjs';
 import { of } from 'rxjs';
 import { catchError, filter, first, map, mergeMap } from 'rxjs/operators';
 import { RoleAssignmentInfo, UserDetails } from '../../app/models';
-import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { SessionStorageService } from '../../app/services';
 import * as fromRoot from '../../app/store';
 import * as fromCaseList from '../../app/store/reducers';

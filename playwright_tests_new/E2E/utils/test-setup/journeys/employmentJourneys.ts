@@ -19,12 +19,6 @@ type InternalEventTriggerResponse = {
   event_token?: string;
 };
 
-const CCD_API_JSON_HEADERS = {
-  experimental: 'true',
-  Accept: 'application/json',
-  'Content-Type': 'application/json',
-} as const;
-
 const CCD_INTERNAL_START_EVENT_HEADERS = {
   experimental: 'true',
   Accept: 'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-event-trigger.v2+json',

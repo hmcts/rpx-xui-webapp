@@ -16,10 +16,13 @@ const IDAM_USERNAME_FALLBACK_SELECTOR =
   'input#email, input[name="email"], input[name="emailAddress"], input[autocomplete="email"]';
 const IDAM_SUBMIT_FALLBACK_SELECTOR = 'button:has-text("Sign in"), button:has-text("Continue")';
 const CHROME_ERROR_URL_PREFIX = 'chrome-error://chromewebdata/';
-const DEFAULT_SESSION_MAX_AGE_MS = 60 * 60_000;
-const DEFAULT_SESSION_LOCK_WAIT_MS = 180_000;
-const DEFAULT_SESSION_LOCK_STALE_MS = 60_000;
-const DEFAULT_SESSION_ABANDONED_LOCK_RECOVERY_MS = 120_000;
+const SECOND_MS = 1000;
+const MINUTE_MS = 60 * SECOND_MS;
+const HOUR_MS = 60 * MINUTE_MS;
+const DEFAULT_SESSION_MAX_AGE_MS = HOUR_MS;
+const DEFAULT_SESSION_LOCK_WAIT_MS = 3 * MINUTE_MS;
+const DEFAULT_SESSION_LOCK_STALE_MS = MINUTE_MS;
+const DEFAULT_SESSION_ABANDONED_LOCK_RECOVERY_MS = 2 * MINUTE_MS;
 
 function getIdamUsernameCandidates(page: Page, idamPage: IdamPage): Locator[] {
   return [idamPage.usernameInput.first(), page.locator(IDAM_USERNAME_FALLBACK_SELECTOR).first()];

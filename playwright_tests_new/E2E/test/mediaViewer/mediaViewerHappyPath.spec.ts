@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { Page, Response } from '@playwright/test';
 import { expect, test } from '../../fixtures';
-import { acceptAccessCookiesIfPresent, applySessionCookies } from '../../../common/sessionCapture';
+import { acceptAccessCookiesIfPresent, applySessionCookies, ensureSession } from '../../../common/sessionCapture';
 import { CaseFileViewPage } from '../../page-objects/pages/exui/caseFileView.po';
 import { buildCasePayloadFromTemplate } from '../../utils/test-setup/payloads/registry';
 import { setupCaseForJourney } from '../../utils/test-setup/caseSetup';
@@ -19,8 +19,15 @@ const MEDIA_VIEWER_FIXTURE_PATH = path.resolve(
   'playwright_tests_new/integration/testData/documents/case-file-view-document-delivery.pdf'
 );
 const MEDIA_VIEWER_FIXTURE_CONTENT = readFileSync(MEDIA_VIEWER_FIXTURE_PATH, 'latin1');
+const SESSION_BOOTSTRAP_TIMEOUT_MS =
+  Number.parseInt(process.env.PW_MEDIA_VIEWER_SESSION_BOOTSTRAP_TIMEOUT_MS ?? '', 10) || 300_000;
 
 test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] }, () => {
+  test.beforeAll(async ({}, testInfo) => {
+    testInfo.setTimeout(SESSION_BOOTSTRAP_TIMEOUT_MS);
+    await ensureSession(RuntimeUserAlias.DIVORCE_SOLICITOR);
+  });
+
   test('Opens uploaded document in the Media Viewer end-to-end', async ({ page, createCasePage, caseDetailsPage }, testInfo) => {
     faker.seed(testInfo.retry + 1);
     const uniqueSuffix = `${Date.now()}-w${testInfo.workerIndex}-r${testInfo.retry}`;

@@ -26,6 +26,7 @@ test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () 
         cookies: async () => [{ name: 'XSRF-TOKEN', value: 'xsrf-token-123' }],
       }),
       getByRole: () => consentButton,
+      isClosed: () => false,
       url: () => TEST_CASES_URL,
       evaluate: async (
         _fn: unknown,
@@ -99,6 +100,7 @@ test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () 
         cookies: async () => [{ name: 'XSRF-TOKEN', value: 'xsrf-token-123' }],
       }),
       getByRole: () => consentButton,
+      isClosed: () => false,
       evaluate: async (_fn: unknown, request: { method: string }) =>
         request.method === 'GET'
           ? { ok: true, status: 200, bodyText: '' }
@@ -142,6 +144,7 @@ test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () 
       goto: async (url: string) => {
         navigations.push(url);
       },
+      isClosed: () => false,
       url: () => TEST_CASES_URL,
       waitForTimeout: async (timeout: number) => {
         fakeNow += timeout;
@@ -203,6 +206,7 @@ test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () 
       }),
       getByRole: () => consentButton,
       goto: async () => undefined,
+      isClosed: () => false,
       url: () => TEST_CASES_URL,
       waitForTimeout: async () => undefined,
       evaluate: async (
@@ -273,6 +277,7 @@ test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () 
       goto: async (url: string) => {
         navigations.push(url);
       },
+      isClosed: () => false,
       url: () => TEST_CASES_URL,
       waitForTimeout: async () => undefined,
       evaluate: async (
@@ -318,5 +323,41 @@ test.describe('Document upload helper unit tests', { tag: '@svc-internal' }, () 
     expect(requestGets.some((url) => url.endsWith('/auth/login'))).toBe(true);
     expect(requestGets.filter((url) => url.endsWith('/auth/isAuthenticated')).length).toBeGreaterThan(1);
     expect(uploaded.document_filename).toBe('seed.pdf');
+  });
+
+  test('uploadDocumentViaApi aborts before posting when the page closes after XSRF setup', async () => {
+    const consentButton = {
+      first: () => consentButton,
+      isVisible: async () => false,
+      click: async () => undefined,
+    };
+    let postAttempted = false;
+    const page = {
+      context: () => ({
+        cookies: async () => [{ name: 'XSRF-TOKEN', value: 'xsrf-token-123' }],
+      }),
+      getByRole: () => consentButton,
+      isClosed: () => true,
+      url: () => TEST_CASES_URL,
+      evaluate: async (_fn: unknown, request: { method: string }) => {
+        if (request.method === 'POST') {
+          postAttempted = true;
+        }
+        return { ok: true, status: 200, bodyText: '' };
+      },
+    };
+
+    await expect(
+      uploadDocumentViaApi({
+        page: page as never,
+        jurisdictionId: 'DIVORCE',
+        caseTypeId: 'XUI_TEST',
+        fileName: 'seed.pdf',
+        mimeType: 'application/pdf',
+        fileContent: '%PDF-1.4\n%%EOF',
+      })
+    ).rejects.toThrow('Document upload aborted: page closed mid-retry');
+
+    expect(postAttempted).toBe(false);
   });
 });

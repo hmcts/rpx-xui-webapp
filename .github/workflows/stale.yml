@@ -39,4 +39,4 @@ jobs:
           delete-branch: true
 
           # Operations per run
-          operations-per-run: 50
+          operations-per-run: 500

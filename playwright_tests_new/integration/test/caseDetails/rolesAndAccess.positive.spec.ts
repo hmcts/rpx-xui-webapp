@@ -78,6 +78,7 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
       });
       expect(caseworkerLookupRequest.postDataJSON()).toEqual({
         idamIds: ['user-alice'],
+        services: ['IA'],
       });
 
       await expect(caseDetailsPage.getAllocateJudicialRoleLink()).toBeVisible();

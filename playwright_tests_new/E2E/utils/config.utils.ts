@@ -1,5 +1,5 @@
 import * as dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
+import { fileURLToPath } from 'node:url';
 import * as path from 'node:path';
 import { UserUtils } from './user.utils.js';
 
@@ -22,6 +22,7 @@ export interface UserCredentials {
 }
 
 interface Urls {
+  baseURL: string;
   exuiDefaultUrl: string;
   manageCaseBaseUrl: string;
   citizenUrl: string;
@@ -54,7 +55,9 @@ export const config: Config = {
     },
   },
   urls: {
-    exuiDefaultUrl: 'https://manage-case.aat.platform.hmcts.net',
+    // Backward-compatible root EXUI URL used by API probes and legacy helpers.
+    baseURL: resolveUrl(process.env.EXUI_BASE_URL, 'https://manage-case.aat.platform.hmcts.net'),
+    exuiDefaultUrl: resolveUrl(process.env.EXUI_BASE_URL, 'https://manage-case.aat.platform.hmcts.net'),
     manageCaseBaseUrl: resolveUrl(process.env.MANAGE_CASES_BASE_URL, 'https://manage-case.aat.platform.hmcts.net/cases'),
     citizenUrl: resolveUrl(process.env.CITIZEN_FRONTEND_BASE_URL, 'https://privatelaw.aat.platform.hmcts.net/'),
     idamWebUrl: resolveUrl(process.env.IDAM_WEB_URL, 'https://idam-web-public.aat.platform.hmcts.net'),

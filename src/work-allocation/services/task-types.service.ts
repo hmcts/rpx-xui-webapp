@@ -10,7 +10,7 @@ import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
   providedIn: 'root',
 })
 export class TaskTypesService {
-  public static typesOfWorkStorageKey: string = 'typesOfWork_cache';
+  public static readonly typesOfWorkStorageKey: string = 'typesOfWork_cache';
   public constructor(
     private readonly http: HttpClient,
     private readonly sessionStorage: SessionStorageService

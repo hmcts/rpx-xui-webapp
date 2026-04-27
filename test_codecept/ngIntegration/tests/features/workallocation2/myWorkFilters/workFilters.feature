@@ -1,4 +1,5 @@
-@ng @functional_enabled
+@ng @ignore
+# Legacy Codecept coverage retained for reference only. Active coverage lives in playwright_tests_new/integration/test/manageTasks/workFilters.*.spec.ts.
 Feature: WA Release 2: My work - Work filters
 
     Background: Mock and brow ser setup
@@ -175,4 +176,3 @@ Feature: WA Release 2: My work - Work filters
             | ORGANISATION |                 | ORGANISATION  |                   | 18          | IA,SSCS            |
             | CASE         | 20001           | ORGANISATION  | 30001             | 9           | SSCS               |
             | ORGANISATION | 20001           | CASE          | 20001             | 9           | IA                 |
-

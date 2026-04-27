@@ -200,12 +200,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
             case_type_id: this.savedQueryParams['case-type'],
             state_id: null,
           };
-        } else if (
-          jurisdictions[0] &&
-          jurisdictions[0].id &&
-          jurisdictions[0].caseTypes[0] &&
-          jurisdictions[0].caseTypes[0].states[0]
-        ) {
+        } else if (jurisdictions[0]?.id && jurisdictions[0].caseTypes[0]?.states[0]) {
           this.defaults = {
             jurisdiction_id: jurisdictions[0].id,
             case_type_id: jurisdictions[0].caseTypes[0].id,
@@ -455,10 +450,10 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   private triggerQuery() {
-    if (!this.elasticSearchFlag) {
-      this.findCaseListPaginationMetadata(this.getEvent());
-    } else {
+    if (this.elasticSearchFlag) {
       this.getElasticSearchResults(this.getEvent());
+    } else {
+      this.findCaseListPaginationMetadata(this.getEvent());
     }
   }
 
@@ -484,7 +479,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.store.dispatch(new fromStore.LoadOrganisation());
     this.orgStore.pipe(select(fromStore.getOrganisationSel)).subscribe((response) => {
       this.organisationDetails = response;
-      if (this.organisationDetails && this.organisationDetails.organisationIdentifier) {
+      if (this.organisationDetails?.organisationIdentifier) {
         sessionStorage.setItem('organisationDetails', JSON.stringify(this.organisationDetails));
       }
     });

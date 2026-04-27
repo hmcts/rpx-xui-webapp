@@ -9,56 +9,69 @@ const jwt = require('jsonwebtoken');
 
 const { privateKey, publicKey } = require('./index');
 
+const mockUserDetails = {
+  sub: 'mock_framework_user@justice.gov.uk',
+  uid: '7cfc118d-c753-4d6e-b89f-d56d4f8482f5',
+  id: '7cfc118d-c753-4d6e-b89f-d56d4f8482f5',
+  email: 'mock_framework_user@justice.gov.uk',
+  name: 'Prl CTSC Admin',
+  forename: 'Prl',
+  surname: 'CTSC Admin',
+  given_name: 'Prl',
+  family_name: 'CTSC Admin',
+  roles: [
+    'caseworker-privatelaw-casecreator',
+    'caseworker-privatelaw-cafcass',
+    'caseworker-privatelaw',
+    'payments-refund',
+    'caseworker-privatelaw-bulkscan',
+    'payments',
+    'cwd-user',
+    'caseworker',
+    'caseworker-privatelaw-superuser',
+    'caseworker-privatelaw-courtadmin',
+    'caseworker-privatelaw-la',
+  ],
+};
+
 router.get('/o/.well-known/openid-configuration', (req, res) => {
   const oidcConf = service.getOpenIdConfig();
   userApiData.sendResponse(req, res, 'openidConfig', () => oidcConf);
 });
 
 router.get('/o/userinfo', (req, res) => {
-  res.send({
-    sub: 'mock_framework_user@justice.gov.uk',
-    uid: '7cfc118d-c753-4d6e-b89f-d56d4f8482f5',
-    roles: [
-      'caseworker-privatelaw-casecreator',
-      'caseworker-privatelaw-cafcass',
-      'caseworker-privatelaw',
-      'payments-refund',
-      'caseworker-privatelaw-bulkscan',
-      'payments',
-      'cwd-user',
-      'caseworker',
-      'caseworker-privatelaw-superuser',
-      'caseworker-privatelaw-courtadmin',
-      'caseworker-privatelaw-la',
-    ],
-    name: 'Prl CTSC Admin',
-    given_name: 'Prl',
-    family_name: 'CTSC Admin',
-  });
+  res.send(mockUserDetails);
 });
 
 router.post('/o/userinfo', (req, res) => {
   res.send({});
 });
 
+router.get('/details', (req, res) => {
+  res.send(mockUserDetails);
+});
+
 router.get('/o/authrorize', (req, res) => {
   res.send();
 });
 
-router.post('/o/token', (req, res) => {
-  req.body.iss = 'https://forgerock-am.service.core-compute-idam-demo.internal:8443/openam/oauth2/realms/root/realms/hmcts';
+const sendTokenResponse = (req, res) => {
+  req.body.iss = 'http://localhost:8080/o';
   req.body.sub = 'mock_framework_user@justice.gov.uk';
   req.body.aud = 'xuiwebapp';
-  req.body.exp = Date.now() + 60 * 60;
+  req.body.exp = Math.floor(Date.now() / 1000) + 60 * 60;
   res.send({
     access_token: jwt.sign(req.body, 'xui-webapp'),
     refresh_token: jwt.sign(req.body, privateKey, { algorithm: 'RS256' }),
     scope: 'profile openid roles manage-user create-user search-user',
     id_token: jwt.sign(req.body, privateKey, { algorithm: 'RS256' }),
-    token_type: 'code',
-    expires_in: 'string',
+    token_type: 'Bearer',
+    expires_in: 3600,
   });
-});
+};
+
+router.post('/o/token', sendTokenResponse);
+router.post('/oauth2/token', sendTokenResponse);
 
 router.get('/o/jwks', (req, res) => {
   res.send({
@@ -110,10 +123,16 @@ router.post('/lease', (req, res) => {
   res.send(token);
 });
 
+router.get('/login', (req, res) => {
+  const query = new URLSearchParams(req.query).toString();
+  const target = query ? `/o/authorize?${query}` : '/o/authorize';
+  res.redirect(target);
+});
+
 router.get('/o/authorize', (req, res) => {
   res.set(
     'Location',
-    `http://localhost:3000/oauth2/callback?code=YUP4Q2vUXmFZdpckVlRYFN_4g4w&state=${req.query.state}&client_id=xuiwebapp&iss=https%3A%2F%2Fidam-web-public.aat.platform.hmcts.net%2Fo`
+    `http://localhost:3000/oauth2/callback?code=YUP4Q2vUXmFZdpckVlRYFN_4g4w&state=${req.query.state}&client_id=xuiwebapp&iss=http%3A%2F%2Flocalhost%3A8080%2Fo`
   );
   res.cookie('Idam.Session', '*AAJTSQACMDIABHR5cGUAA0pXVAACUzEAAjAx*');
   res.status(302).send();

@@ -43,7 +43,6 @@ describe('HmctsGlobalFooterComponent', () => {
   let component: HmctsGlobalFooterComponent;
   let fixture: ComponentFixture<HmctsGlobalFooterComponent>;
 
-  const helpData: Helper = AppConstants.FOOTER_DATA;
   const navigationData: Navigation = AppConstants.FOOTER_DATA_NAVIGATION;
 
   beforeEach(waitForAsync(() => {
@@ -64,7 +63,6 @@ describe('HmctsGlobalFooterComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(HmctsGlobalFooterComponent);
     component = fixture.componentInstance;
-    component.help = helpData;
     component.navigation = navigationData;
     fixture.detectChanges();
   });

@@ -44,7 +44,7 @@ describe('Application', () => {
     showFeatureStub.returns(false); // default for other features
 
     const getConfigStub = sandbox.stub(require('./configuration'), 'getConfigValue');
-    getConfigStub.withArgs('sessionSecret').returns('test-session-secret-12345');
+    getConfigStub.withArgs('secrets.rpx.mc-session-secret').returns('test-session-secret-12345');
     getConfigStub.withArgs('protocol').returns('https');
     getConfigStub.withArgs('HELMET').returns({
       contentSecurityPolicy: {
@@ -79,16 +79,6 @@ describe('Application', () => {
       sandbox.stub(require('./idamCheck'), 'idamCheck').rejects(new Error('IDAM service unavailable'));
     } else {
       sandbox.stub(require('./idamCheck'), 'idamCheck').resolves({ status: 'UP' });
-    }
-
-    // Handle work allocation based on options
-    if (options.workAllocationRejects) {
-      sandbox.stub(require('./workAllocation'), 'getNewUsersByServiceName').rejects(new Error('Work allocation service error'));
-    } else {
-      sandbox.stub(require('./workAllocation'), 'getNewUsersByServiceName').resolves([
-        { id: 'user1', name: 'Test User 1', roles: ['case-manager'] },
-        { id: 'user2', name: 'Test User 2', roles: ['judicial'] },
-      ]);
     }
 
     const mockRouter = (req: any, res: any, next: any) => next();
@@ -133,17 +123,6 @@ describe('Application', () => {
         expect(idamCheck).to.have.been.calledOnce;
       });
 
-      it('should handle errors when work allocation service fails', async () => {
-        sandbox.restore();
-        setupDefaultStubs({ workAllocationRejects: true });
-
-        const app = await createApp();
-
-        expect(app).to.exist;
-        const getNewUsers = require('./workAllocation').getNewUsersByServiceName;
-        expect(getNewUsers).to.have.been.called;
-      });
-
       it('should propagate errors when XUI middleware initialization fails', async () => {
         sandbox.restore();
 
@@ -159,7 +138,6 @@ describe('Application', () => {
         sandbox.stub(require('./auth'), 'getXuiNodeMiddleware').rejects(middlewareError);
         sandbox.stub(require('./proxy.config'), 'initProxy').returns(undefined);
         sandbox.stub(require('./idamCheck'), 'idamCheck').resolves();
-        sandbox.stub(require('./workAllocation'), 'getNewUsersByServiceName').resolves();
 
         const mockRouter = (req: any, res: any, next: any) => next();
         sandbox.stub(require('./accessManagement/routes'), 'default').value(mockRouter);
@@ -186,9 +164,7 @@ describe('Application', () => {
         expect(app).to.exist;
         // Both promises should have been called despite failures
         const idamCheck = require('./idamCheck').idamCheck;
-        const getNewUsers = require('./workAllocation').getNewUsersByServiceName;
         expect(idamCheck).to.have.been.called;
-        expect(getNewUsers).to.have.been.called;
       });
     });
 
@@ -235,19 +211,12 @@ describe('Application', () => {
         expect(idamCheck).to.have.been.called;
       });
 
-      it('should initialize caseworkers loading promise', async () => {
-        await createApp();
-
-        const getNewUsersByServiceName = require('./workAllocation').getNewUsersByServiceName;
-        expect(getNewUsersByServiceName).to.have.been.called;
-      });
-
       it('should configure session secret for cookie parser', async () => {
         const app = await createApp();
 
         expect(app).to.exist;
         const getConfigValue = require('./configuration').getConfigValue;
-        expect(getConfigValue).to.have.been.calledWith('sessionSecret');
+        expect(getConfigValue).to.have.been.calledWith('secrets.rpx.mc-session-secret');
         expect(getConfigValue).to.have.been.calledWith('protocol');
       });
     });
@@ -355,7 +324,7 @@ describe('Application', () => {
         expect(cookieParserMiddleware.handle).to.be.a('function');
 
         // Verify session secret was retrieved
-        expect(getConfigValue).to.have.been.calledWith('sessionSecret');
+        expect(getConfigValue).to.have.been.calledWith('secrets.rpx.mc-session-secret');
 
         // Test cookie parser functionality
         const req = mockReq({

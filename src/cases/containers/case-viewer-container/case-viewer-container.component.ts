@@ -108,9 +108,9 @@ export class CaseViewerContainerComponent implements OnInit {
       )
       .subscribe((event: NavigationEnd) => {
         if (
-          event.url.indexOf(
+          !event.url.includes(
             `/cases/case-details/${this.caseDetails.case_type.jurisdiction.id}/${this.caseDetails.case_type.id}/${this.caseDetails.case_id}`
-          ) === -1
+          )
         ) {
           window.location.href = `/cases/case-details/${event.url.split('/')[5]}`;
         }

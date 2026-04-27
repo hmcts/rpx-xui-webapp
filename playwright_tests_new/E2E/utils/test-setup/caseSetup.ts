@@ -6,20 +6,31 @@ import type { CreateCasePage } from '../../page-objects/pages/exui/createCase.po
 
 type SetupMode = 'api-required' | 'api-first' | 'ui-only';
 
-type SetupCaseRequest = {
+type SetupCaseBaseRequest = {
   scenario: string;
   jurisdiction: string;
   caseType: string;
   apiEventId?: string;
-  mode?: SetupMode;
-  allowUiFallback?: boolean;
   apiPayload?: Record<string, unknown>;
-  uiCreate?: () => Promise<void>;
   page: Page;
   createCasePage: CreateCasePage;
   caseDetailsPage: CaseDetailsPage;
   testInfo?: TestInfo;
 };
+
+type ApiRequiredSetupCaseRequest = SetupCaseBaseRequest & {
+  mode: 'api-required';
+  uiCreate?: never;
+  allowUiFallback?: boolean;
+};
+
+type UiCapableSetupCaseRequest = SetupCaseBaseRequest & {
+  mode?: Exclude<SetupMode, 'api-required'>;
+  uiCreate: () => Promise<void>;
+  allowUiFallback?: boolean;
+};
+
+type SetupCaseRequest = ApiRequiredSetupCaseRequest | UiCapableSetupCaseRequest;
 
 type SetupCaseResult = {
   caseNumber: string;

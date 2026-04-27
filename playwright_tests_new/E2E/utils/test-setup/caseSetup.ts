@@ -388,7 +388,7 @@ async function createCaseViaDirectCcdApi(request: SetupCaseRequest): Promise<str
   let tokenAttempt = 0;
   let tokenResponse = await requestEventToken();
 
-  while (tokenResponse.status() >= 200 && tokenResponse.status() < 300 ? false : true) {
+  while (tokenResponse.status() < 200 || tokenResponse.status() >= 300) {
     const status = tokenResponse.status();
     const now = Date.now();
     const canRetry = TRANSIENT_EVENT_TOKEN_STATUS_CODES.has(status) && now < tokenRetryDeadline;
@@ -453,7 +453,7 @@ async function createCaseViaDirectCcdApi(request: SetupCaseRequest): Promise<str
   const validateRetryDeadline = Date.now() + validateRetryWindowMs;
   let validateAttempt = 0;
   let validateResponse = await requestValidate();
-  while (validateResponse.status() >= 200 && validateResponse.status() < 300 ? false : true) {
+  while (validateResponse.status() < 200 || validateResponse.status() >= 300) {
     const status = validateResponse.status();
     const now = Date.now();
     const canRetry = TRANSIENT_VALIDATE_STATUS_CODES.has(status) && now < validateRetryDeadline;

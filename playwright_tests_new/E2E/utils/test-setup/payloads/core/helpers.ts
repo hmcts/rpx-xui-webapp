@@ -54,7 +54,27 @@ export function mergePayloadValues<TValue extends Record<string, unknown>>(
     return base;
   }
 
+  assertOverridesAgainstBase(base, overrides as Record<string, unknown>, []);
+
   return mergeObjects(base, overrides) as TValue;
+}
+
+function assertOverridesAgainstBase(base: Record<string, unknown>, overrides: Record<string, unknown>, path: string[]): void {
+  for (const [key, overrideValue] of Object.entries(overrides)) {
+    if (!(key in base)) {
+      const fullPath = [...path, key].join('.');
+      throw new Error(
+        `Unknown override field '${fullPath}' for case payload template. ` +
+          `Expected one of: ${Object.keys(base)
+            .sort((a, b) => a.localeCompare(b))
+            .join(', ')}`
+      );
+    }
+    const baseValue = base[key];
+    if (isPlainObject(baseValue) && isPlainObject(overrideValue)) {
+      assertOverridesAgainstBase(baseValue, overrideValue, [...path, key]);
+    }
+  }
 }
 
 function mergeObjects(base: unknown, overrides: unknown): unknown {

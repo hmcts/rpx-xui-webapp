@@ -396,7 +396,7 @@ async function clickEmploymentDocumentCollectionAddButton(createCasePage: Create
     }
 
     logger.warn('Retrying employment document collection add with DOM click because a non-blocking spinner overlay persisted');
-    await addButton.evaluate((button) => (button as HTMLButtonElement).click());
+    await addButton.dispatchEvent('click');
   }
 
   await createCasePage.page.locator('#documentCollection_0_topLevelDocuments').waitFor({ state: 'visible', timeout: 15_000 });

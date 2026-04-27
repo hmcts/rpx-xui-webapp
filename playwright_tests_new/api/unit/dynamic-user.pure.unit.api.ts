@@ -179,6 +179,11 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
     expect(() => buildCasePayloadFromTemplate('unsupported.template' as never)).toThrow(
       "Unsupported payload template 'unsupported.template'."
     );
+    expect(() =>
+      buildCasePayloadFromTemplate('divorce.xui-test-case-type.create-case', {
+        overrides: { TextFieldd: 'typo' } as never,
+      })
+    ).toThrow(/Unknown override field 'TextFieldd'/);
   });
 
   test('resolveProvisionRoleNamesForAlias honours explicit, template, and divorce noc role resolution', () => {

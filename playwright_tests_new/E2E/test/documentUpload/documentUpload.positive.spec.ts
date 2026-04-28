@@ -94,9 +94,8 @@ test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, (
     await test.step('Verify case details tab does not contain an uploaded file', async () => {
       caseDetailsUrl = await caseDetailsPage.getCurrentPageUrl();
       await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
-      const caseViewerTable = caseDetailsPage.page.getByRole('table', { name: 'case viewer table' });
-      await caseViewerTable.waitFor({ state: 'visible' });
-      const textFieldRow = caseViewerTable.getByRole('row', { name: TEST_DATA.V2.TEXT_FIELD_LABEL });
+      await caseDetailsPage.caseViewerTable.waitFor({ state: 'visible' });
+      const textFieldRow = caseDetailsPage.caseViewerRow(TEST_DATA.V2.TEXT_FIELD_LABEL);
       await expect(textFieldRow).toContainText(testValue);
     });
 
@@ -173,12 +172,11 @@ test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, (
             }
 
             await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME).catch(() => undefined);
-            const caseViewerTable = caseDetailsPage.page.getByRole('table', { name: 'case viewer table' });
-            const tableVisible = await caseViewerTable.isVisible().catch(() => false);
+            const tableVisible = await caseDetailsPage.caseViewerTable.isVisible().catch(() => false);
             if (!tableVisible) {
               return false;
             }
-            const documentRow = caseViewerTable.getByRole('row', { name: TEST_DATA.V2.DOCUMENT_FIELD_LABEL });
+            const documentRow = caseDetailsPage.caseViewerRow(TEST_DATA.V2.DOCUMENT_FIELD_LABEL);
             const documentText = await documentRow.innerText().catch(() => '');
             return documentText.includes(TEST_DATA.V2.FILE_NAME);
           },
@@ -193,12 +191,11 @@ test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, (
       }
 
       await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
-      const caseViewerTable = caseDetailsPage.page.getByRole('table', { name: 'case viewer table' });
-      await caseViewerTable.waitFor({ state: 'visible' });
-      const textFieldRow = caseViewerTable.getByRole('row', { name: TEST_DATA.V2.TEXT_FIELD_LABEL });
+      await caseDetailsPage.caseViewerTable.waitFor({ state: 'visible' });
+      const textFieldRow = caseDetailsPage.caseViewerRow(TEST_DATA.V2.TEXT_FIELD_LABEL);
       await expect(textFieldRow).toContainText(testValue);
 
-      const documentRow = caseViewerTable.getByRole('row', { name: TEST_DATA.V2.DOCUMENT_FIELD_LABEL });
+      const documentRow = caseDetailsPage.caseViewerRow(TEST_DATA.V2.DOCUMENT_FIELD_LABEL);
       await expect(documentRow).toContainText(TEST_DATA.V2.FILE_NAME);
     });
   });
@@ -239,7 +236,7 @@ test.describe('Document upload V1', { tag: ['@e2e', '@e2e-document-upload', '@e2
   test('Check the documentV1 upload works as expected', async ({ createCasePage, caseDetailsPage, tableUtils }) => {
     await test.step('Start document upload process', async () => {
       await caseDetailsPage.selectCaseAction(TEST_DATA.V1.ACTION, {
-        expectedLocator: createCasePage.page.locator('#documentCollection button'),
+        expectedLocator: createCasePage.documentCollectionButton,
       });
     });
 

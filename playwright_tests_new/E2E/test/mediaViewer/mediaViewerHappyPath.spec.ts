@@ -38,7 +38,7 @@ test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] },
       await applySessionCookies(page, RuntimeUserAlias.DIVORCE_SOLICITOR);
       await page.goto('/');
       await acceptAccessCookiesIfPresent(page);
-      await expect(page.locator('exui-header')).toBeVisible();
+      await expect(caseDetailsPage.exuiHeader.header).toBeVisible();
     });
 
     await test.step('Create a case with a document for this test run', async () => {

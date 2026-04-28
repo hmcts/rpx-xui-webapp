@@ -7,23 +7,21 @@ import { UserUtils } from '../E2E/utils/user.utils.js';
 import { IdamPage, createLogger } from '@hmcts/playwright-common';
 import { Cookie } from 'playwright-core';
 import config from '../E2E/utils/config.utils.js';
+import { SessionCapturePage } from '../E2E/page-objects/pages/exui/sessionCapture.po.js';
 import { StorageStateCorruptedError, SessionCaptureError } from '../api/utils/errors';
 import { type SessionIdentityInput, resolveSessionIdentity, resolveSessionStorageKey } from './sessionIdentity.js';
 
 const logger = createLogger({ serviceName: 'session-capture', format: 'pretty' });
 
-const IDAM_USERNAME_FALLBACK_SELECTOR =
-  'input#email, input[name="email"], input[name="emailAddress"], input[autocomplete="email"]';
-const IDAM_SUBMIT_FALLBACK_SELECTOR = 'button:has-text("Sign in"), button:has-text("Continue")';
 const CHROME_ERROR_URL_PREFIX = 'chrome-error://chromewebdata/';
 const DEFAULT_SESSION_MAX_AGE_MS = 3_600_000;
 
 function getIdamUsernameCandidates(page: Page, idamPage: IdamPage): Locator[] {
-  return [idamPage.usernameInput.first(), page.locator(IDAM_USERNAME_FALLBACK_SELECTOR).first()];
+  return new SessionCapturePage(page).idamUsernameCandidates(idamPage);
 }
 
 function getIdamSubmitCandidates(page: Page, idamPage: IdamPage): Locator[] {
-  return [idamPage.submitBtn.first(), page.locator(IDAM_SUBMIT_FALLBACK_SELECTOR).first()];
+  return new SessionCapturePage(page).idamSubmitCandidates(idamPage);
 }
 
 async function waitForFirstVisibleLocator(page: Page, candidates: Locator[], timeoutMs: number): Promise<Locator | null> {
@@ -207,9 +205,9 @@ async function gotoLoginTarget(page: Page, userIdentifier: string, loginTarget: 
 }
 
 export async function acceptAccessCookiesIfPresent(page: Page): Promise<void> {
-  const acceptButton = page.getByRole('button', { name: /accept (additional|analytics) cookies/i }).first();
-  if (await acceptButton.isVisible().catch(() => false)) {
-    await acceptButton.click({ timeout: 2_000 }).catch(() => undefined);
+  const sessionCapturePage = new SessionCapturePage(page);
+  if (await sessionCapturePage.acceptCookiesButton.isVisible().catch(() => false)) {
+    await sessionCapturePage.acceptCookiesButton.click({ timeout: 2_000 }).catch(() => undefined);
   }
 }
 
@@ -441,24 +439,7 @@ async function isIdamLoginPage(page: Page): Promise<boolean> {
 }
 
 function getAppShellMarkers(page: Page, preferredSelector?: string): Array<{ name: string; locator: Locator }> {
-  const markers: Array<{ name: string; locator: Locator }> = [];
-
-  if (preferredSelector?.trim()) {
-    markers.push({
-      name: `preferred:${preferredSelector}`,
-      locator: page.locator(preferredSelector).first(),
-    });
-  }
-
-  markers.push(
-    { name: 'exui-header', locator: page.locator('exui-header').first() },
-    { name: 'create-case-link', locator: page.getByRole('link', { name: 'Create case' }).first() },
-    { name: 'case-list-link', locator: page.getByRole('link', { name: 'Case list' }).first() },
-    { name: 'case-action-dropdown', locator: page.locator('#next-step').first() },
-    { name: 'jurisdiction-select', locator: page.locator('#cc-jurisdiction').first() }
-  );
-
-  return markers;
+  return new SessionCapturePage(page).appShellMarkers(preferredSelector);
 }
 
 async function waitForAuthenticatedShell(
@@ -817,11 +798,7 @@ async function executeLoginAttempt(
   const usernameCandidates = getIdamUsernameCandidates(page, idamPage);
   const loginSurface = await Promise.race([
     waitForFirstVisibleLocator(page, usernameCandidates, 60_000).then((locator) => (locator ? 'login' : null)),
-    page
-      .locator('exui-header, exui-case-home')
-      .first()
-      .waitFor({ state: 'visible', timeout: 60_000 })
-      .then(() => 'app'),
+    new SessionCapturePage(page).waitForAppSurface(60_000).then(() => 'app'),
   ]).catch(() => null);
 
   if (loginSurface === 'app') return;
@@ -946,7 +923,7 @@ async function loginAndPersistSession({
       }
 
       try {
-        await page.locator('exui-header').waitFor({ timeout: 60_000 });
+        await new SessionCapturePage(page).header.waitFor({ timeout: 60_000 });
         logger.info('EXUI header detected', {
           userIdentifier,
           operation: 'session-capture',

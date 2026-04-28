@@ -21,9 +21,7 @@ test.describe('Verify creating cases works as expected', { tag: ['@e2e', '@e2e-c
           gender: 'Male',
         });
 
-        await createCasePage.createCase(jurisdiction, caseType, '', {
-          maxAttempts: 1,
-        });
+        await createCasePage.createCase(jurisdiction, caseType, '');
 
         await createCasePage.fillDivorcePocSections({
           data: person1Data,

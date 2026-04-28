@@ -228,6 +228,10 @@ export class TaskListPage extends Base {
   ) {
     await this.page.goto(path, { waitUntil: 'domcontentloaded' });
     await this.page.waitForURL(urlPattern, { timeout: timeoutMs }).catch(() => undefined);
+    if (!urlPattern.test(this.page.url())) {
+      await this.page.goto(path, { waitUntil: 'domcontentloaded' });
+      await this.page.waitForURL(urlPattern, { timeout: timeoutMs });
+    }
     await this.waitForExuiAppShell(context, timeoutMs);
     await this.waitForTaskListSpinnerToSettle(10_000);
     await this.waitForTaskListShellReady(context);
@@ -455,6 +459,24 @@ export class TaskListPage extends Base {
     await this.allWorkPersonSearchInput.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
   }
 
+  async expectWorkFilterControls(options: { typesOfWorkVisible?: boolean } = {}) {
+    const typesOfWorkVisible = options.typesOfWorkVisible ?? true;
+    await this.openFilterPanel();
+    await expect(this.filterPanel.getByText('Services', { exact: true })).toBeVisible();
+    await expect(this.filterPanel.locator('#locations')).toBeVisible();
+
+    const typesOfWorkFilter = this.filterPanel.locator('#types-of-work');
+    if (typesOfWorkVisible) {
+      await expect(this.filterPanel.getByText('Types of work', { exact: true })).toBeVisible();
+    } else {
+      await expect(typesOfWorkFilter).toBeHidden();
+    }
+  }
+
+  async expectAccessTasksAndCasesTextVisible() {
+    await expect(this.page.getByText('Access tasks and cases.', { exact: true })).toBeVisible();
+  }
+
   async setSelectAllServicesFilter(checked: boolean) {
     await this.setFilterCheckbox(this.selectAllServicesFilter, checked, 'select all services');
   }
@@ -481,6 +503,29 @@ export class TaskListPage extends Base {
         timeout: FILTER_CONTROL_READY_TIMEOUT_MS,
       });
     }
+  }
+
+  async expectSelectedFilterTagVisible(tagText: string) {
+    await this.openFilterPanel();
+    await expect
+      .poll(async () => {
+        const matchingTags = this.filterPanel.locator('.hmcts-filter__tag', { hasText: tagText });
+        const tagCount = await matchingTags.count();
+
+        for (let index = 0; index < tagCount; index += 1) {
+          if (
+            await matchingTags
+              .nth(index)
+              .isVisible()
+              .catch(() => false)
+          ) {
+            return true;
+          }
+        }
+
+        return false;
+      })
+      .toBe(true);
   }
 
   async searchForLocation(searchText: string) {

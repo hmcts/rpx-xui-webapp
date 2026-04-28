@@ -163,6 +163,12 @@ export class CreateCasePage extends Base {
   readonly sameAsClaimantWorkAddressYes!: Locator;
   readonly claimantRepresentedNo!: Locator;
   readonly hearingPreferenceVideo!: Locator;
+  readonly documentCollectionButton!: Locator;
+  readonly employmentDocumentCollectionButton!: Locator;
+  readonly employmentDocumentTypeSelect!: Locator;
+  readonly employmentDocumentMiscTypeSelect!: Locator;
+  readonly employmentRespondentCollectionItem!: Locator;
+  readonly employmentClaimantRepresentationGroup!: Locator;
 
   readonly manualEntryLink!: Locator;
   readonly claimantAddressLine1Input!: Locator;
@@ -433,6 +439,67 @@ export class CreateCasePage extends Base {
 
   async clickContinueAndWaitForNext(context: string, options: { force?: boolean; timeoutMs?: number } = {}) {
     await this.clickContinueAndWait(context, options);
+  }
+
+  async hasVisibleContinueButton(): Promise<boolean> {
+    return Boolean(await this.getVisibleActionButton(this.continueButton));
+  }
+
+  async isEmploymentDocumentUploadReady(): Promise<boolean> {
+    return this.employmentDocumentCollectionButton.isVisible().catch(() => false);
+  }
+
+  async clickEmploymentDocumentCollectionAddButton(): Promise<void> {
+    const addButton = this.employmentDocumentCollectionButton.first();
+    await addButton.waitFor({ state: 'visible', timeout: 15_000 });
+
+    try {
+      await addButton.click({ timeout: 15_000 });
+    } catch (error) {
+      const spinnerVisible = await this.page
+        .locator('xuilib-loading-spinner')
+        .first()
+        .isVisible()
+        .catch(() => false);
+
+      if (!spinnerVisible) {
+        throw error;
+      }
+
+      this.logger.warn(
+        'Retrying employment document collection add with DOM click because a non-blocking spinner overlay persisted'
+      );
+      await addButton.dispatchEvent('click');
+    }
+
+    await this.employmentDocumentTypeSelect.waitFor({ state: 'visible', timeout: 15_000 });
+  }
+
+  async selectEmploymentDocumentCategory(category: string, documentType: string): Promise<void> {
+    await this.employmentDocumentTypeSelect.selectOption(category);
+    await this.employmentDocumentMiscTypeSelect.selectOption(documentType);
+  }
+
+  async hasEmploymentDraftRespondentCollectionItem(): Promise<boolean> {
+    return (await this.employmentRespondentCollectionItem.count()) > 0;
+  }
+
+  async expectEmploymentDraftRespondentCollectionItemAttached(): Promise<void> {
+    await expect(this.employmentRespondentCollectionItem).toBeAttached();
+  }
+
+  async answerEmploymentClaimantRepresentationNoIfVisible(): Promise<boolean> {
+    if (!(await this.employmentClaimantRepresentationGroup.isVisible().catch(() => false))) {
+      return false;
+    }
+
+    const noRadio = this.employmentClaimantRepresentationGroup.getByRole('radio', { name: 'No' });
+    if (await noRadio.isChecked().catch(() => false)) {
+      return false;
+    }
+
+    await noRadio.check();
+    return true;
   }
 
   private async clickSubmitButtonWithRetry(context: string, submitButton?: Locator) {

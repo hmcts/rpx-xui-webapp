@@ -671,6 +671,10 @@ export class CaseDetailsPage extends Base {
     return callbackValidationAlert.isVisible({ timeout: timeoutMs }).catch(() => false);
   }
 
+  caseViewerRow(label: string): Locator {
+    return this.caseViewerTable.getByRole('row', { name: label });
+  }
+
   async selectCaseDetailsTab(tabName: string) {
     const tabLoadTimeoutMs = this.getRecommendedTimeoutMs({
       min: TIMEOUTS.TAB_LOAD,

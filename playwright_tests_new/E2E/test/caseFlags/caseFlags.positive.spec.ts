@@ -6,8 +6,6 @@ import { caseBannerMatches } from '../../utils/banner.utils';
 import { isPageClosingError, rowMatchesExpected } from '../../utils/case-flags.utils';
 import { buildCasePayloadFromTemplate } from '../../utils/test-setup/payloads/registry';
 import { setupCaseForJourney } from '../../utils/test-setup/caseSetup';
-import { createDivorceCaseFlag } from '../../utils/test-setup/journeys/divorceCaseJourneys';
-import { createEmploymentCase } from '../../utils/test-setup/journeys/employmentJourneys';
 import { formatErrorMessage, isDependencyEnvironmentFailure, retryOnTransientFailure } from '../../utils/transient-failure.utils';
 
 const PARTY_LEVEL_SUITE_TIMEOUT_MS = 300_000;
@@ -36,11 +34,6 @@ test.describe('Case level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, () 
             apiEventId: 'initiateCase',
             mode: 'api-required',
             apiPayload: buildCasePayloadFromTemplate('employment.et-england-wales.initiate-case'),
-            uiCreate: async () => {
-              await createEmploymentCase(createCasePage, jurisdiction, caseType, {
-                allowDraftClaimFallback: true,
-              });
-            },
             page,
             createCasePage,
             caseDetailsPage,
@@ -170,9 +163,6 @@ test.describe('Party level case flags', { tag: ['@e2e', '@e2e-case-flags'] }, ()
                 },
               },
             }),
-            uiCreate: async () => {
-              await createDivorceCaseFlag(createCasePage, testValue, jurisdiction, caseType);
-            },
             page,
             createCasePage,
             caseDetailsPage,

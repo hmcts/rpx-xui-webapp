@@ -218,7 +218,6 @@ export class AppConstants {
 export const LD_FLAG_REMOVE_USER_FROM_CASE_MC: string = 'remove-user-from-case-mc';
 export const LEGAL_OPS_ROLE_LIST: string[] = [
   'caseworker-ia-caseofficer',
-  'caseworker-ia',
   'caseworker-ia-admofficer',
   'task-supervisor',
   'caseworker-civil',

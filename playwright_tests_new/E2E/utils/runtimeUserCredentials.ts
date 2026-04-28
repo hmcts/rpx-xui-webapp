@@ -8,6 +8,13 @@ type RuntimeUserCredentialEnvMapping = {
   password: string;
 };
 
+export const RuntimeUserAlias = {
+  DIVORCE_SOLICITOR: 'DIVORCE_SOLICITOR',
+  SEARCH_EMPLOYMENT_CASE: 'SEARCH_EMPLOYMENT_CASE',
+} as const;
+
+export type RuntimeUserAlias = (typeof RuntimeUserAlias)[keyof typeof RuntimeUserAlias];
+
 export type PublishedRuntimeUserCredentialEnvState = RuntimeUserCredentialEnvMapping & {
   previousUsername?: string;
   previousPassword?: string;
@@ -18,6 +25,10 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
   SOLICITOR: {
     username: 'SOLICITOR_USERNAME',
     password: 'SOLICITOR_PASSWORD',
+  },
+  DIVORCE_SOLICITOR: {
+    username: 'DIVORCE_SOLICITOR_USERNAME',
+    password: 'DIVORCE_SOLICITOR_PASSWORD',
   },
   PROD_LIKE: {
     username: 'PROD_LIKE_USERNAME',
@@ -38,6 +49,14 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
   USER_WITH_FLAGS: {
     username: 'USER_WITH_FLAGS_USERNAME',
     password: 'USER_WITH_FLAGS_PASSWORD',
+  },
+  RESTRICTED_CASE_FILE_VIEW_ON: {
+    username: 'RESTRICTED_CASE_FILE_VIEW_V1_1_ON_USERNAME',
+    password: 'RESTRICTED_CASE_FILE_VIEW_V1_1_ON_PASSWORD',
+  },
+  RESTRICTED_CASE_FILE_VIEW_OFF: {
+    username: 'RESTRICTED_CASE_FILE_VIEW_V1_1_OFF_USERNAME',
+    password: 'RESTRICTED_CASE_FILE_VIEW_V1_1_OFF_PASSWORD',
   },
   ORG_USER_ASSIGNMENT: {
     username: 'ORG_USER_ASSIGNMENT_USERNAME',
@@ -63,6 +82,18 @@ export function getRuntimeUserCredentialEnvMapping(userIdentifier: string): Runt
 
 export function getRuntimeUserCredentials(userIdentifier: string): RuntimeUserCredentials | undefined {
   return runtimeUserCredentials.get(normalizeUserIdentifier(userIdentifier));
+}
+
+export function resolveRuntimeUserCredentialsFromEnv(
+  mapping: RuntimeUserCredentialEnvMapping
+): RuntimeUserCredentials | undefined {
+  const email = process.env[mapping.username]?.trim();
+  const password = process.env[mapping.password];
+  if (!email || !password) {
+    return undefined;
+  }
+
+  return { email, password };
 }
 
 export function setRuntimeUserCredentials(userIdentifier: string, credentials: RuntimeUserCredentials): void {

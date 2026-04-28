@@ -7,8 +7,14 @@ import { buildAsylumCaseMock } from '../../../mocks/cases/asylumCase.mock';
 
 const userIdentifier = 'STAFF_ADMIN';
 const inSixHours = faker.date.soon({ days: 0.25 }).toISOString();
-const inTwoDays = faker.date.soon({ days: 2 }).toISOString();
-const in90Days = faker.date.future().toISOString();
+const futureDateAtNoonUtc = (daysFromNow: number): string => {
+  const date = new Date();
+  date.setUTCDate(date.getUTCDate() + daysFromNow);
+  date.setUTCHours(12, 0, 0, 0);
+  return date.toISOString();
+};
+const inTwoDays = futureDateAtNoonUtc(2);
+const in90Days = futureDateAtNoonUtc(90);
 const caseId = faker.number.int({ min: 1000000000, max: 9999999999 }).toString();
 let assigneeId: string | null = null;
 const caseMockResponse = buildAsylumCaseMock({ caseId });

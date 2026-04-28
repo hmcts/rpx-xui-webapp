@@ -50,6 +50,10 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
     username: 'USER_WITH_FLAGS_USERNAME',
     password: 'USER_WITH_FLAGS_PASSWORD',
   },
+  'BOOKING_UI-FT-ON': {
+    username: 'BOOKING_UI_FT_ON_USERNAME',
+    password: 'BOOKING_UI_FT_ON_PASSWORD',
+  },
   RESTRICTED_CASE_FILE_VIEW_ON: {
     username: 'RESTRICTED_CASE_FILE_VIEW_V1_1_ON_USERNAME',
     password: 'RESTRICTED_CASE_FILE_VIEW_V1_1_ON_PASSWORD',

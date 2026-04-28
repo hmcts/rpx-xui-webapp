@@ -32,6 +32,8 @@ const ENV_KEYS = [
   'DYNAMIC_SOLICITOR_TEMPLATE_ROLES',
   'DIVORCE_SOLICITOR_USERNAME',
   'DIVORCE_SOLICITOR_PASSWORD',
+  'BOOKING_UI_FT_ON_USERNAME',
+  'BOOKING_UI_FT_ON_PASSWORD',
   'EMPLOYMENT_DYNAMIC_CASEWORKER_USERNAME',
   'EMPLOYMENT_DYNAMIC_CASEWORKER_PASSWORD',
 ] as const;
@@ -117,6 +119,11 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
     expect(divorceSolicitorMapping).toEqual({
       username: 'DIVORCE_SOLICITOR_USERNAME',
       password: 'DIVORCE_SOLICITOR_PASSWORD',
+    });
+    const bookingUiFtOnMapping = getRuntimeUserCredentialEnvMapping(' booking_ui-ft-on ');
+    expect(bookingUiFtOnMapping).toEqual({
+      username: 'BOOKING_UI_FT_ON_USERNAME',
+      password: 'BOOKING_UI_FT_ON_PASSWORD',
     });
 
     process.env.DIVORCE_SOLICITOR_USERNAME = 'divorce@example.test';

@@ -139,6 +139,29 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
     }
   });
 
+  test('isSessionFresh rejects sessions whose auth cookies target a different host', async () => {
+    const tmpDir = await fsp.mkdtemp(path.join(process.cwd(), 'test-results', 'session-target-'));
+    const sessionPath = path.join(tmpDir, 'session.storage.json');
+
+    const aatCookies = [
+      { ...baseCookie('Idam.Session', 'aat-session'), domain: 'idam-web-public.aat.platform.hmcts.net' },
+      { ...baseCookie('__auth__', 'aat-auth'), domain: 'manage-case.aat.platform.hmcts.net' },
+    ];
+
+    await fsp.writeFile(sessionPath, JSON.stringify({ cookies: aatCookies }), 'utf8');
+
+    expect(isSessionFresh(sessionPath, 60 * 1000, { targetUrl: 'http://localhost:3000' })).toBe(false);
+    expect(isSessionFresh(sessionPath, 60 * 1000, { targetUrl: 'https://manage-case.aat.platform.hmcts.net' })).toBe(true);
+
+    const localCookies = [
+      { ...baseCookie('Idam.Session', 'local-session'), domain: 'localhost' },
+      { ...baseCookie('__auth__', 'local-auth'), domain: 'localhost' },
+    ];
+
+    await fsp.writeFile(sessionPath, JSON.stringify({ cookies: localCookies }), 'utf8');
+    expect(isSessionFresh(sessionPath, 60 * 1000, { targetUrl: 'http://localhost:3000' })).toBe(true);
+  });
+
   test('loadSessionCookies uses explicit sessionKey for dynamic identities', async () => {
     const tmpDir = await fsp.mkdtemp(path.join(process.cwd(), 'test-results', 'session-identity-'));
     const originalCwd = process.cwd();

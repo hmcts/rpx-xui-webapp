@@ -1,16 +1,23 @@
 import { welshTranslationsSmall } from 'playwright_tests_new/integration/mocks/welshLanguage';
 import { expect, test } from '../../../E2E/fixtures';
-import { applyPrewarmedSessionCookies } from '../../helpers';
-let sessionCookies: any[] = [];
+import { setupWelshLanguageSession, type WelshLanguageSessionLease } from '../../helpers';
 
 test.describe('Verify users can switch the language', { tag: ['@integration', '@integration-welsh-language'] }, () => {
-  test.beforeEach(async ({ page }) => {
-    const { cookies } = await applyPrewarmedSessionCookies(page, 'SOLICITOR');
-    sessionCookies = cookies;
-    await page.goto('/', { waitUntil: 'domcontentloaded' });
+  let welshSessionLease: WelshLanguageSessionLease | undefined;
+
+  test.beforeEach(async ({ page }, testInfo) => {
+    welshSessionLease = await setupWelshLanguageSession(page, testInfo);
     await page.route('**api/translation/cy*', async (route) => {
       await route.fulfill({ status: 500, contentType: 'application/json', body: '{}' });
     });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+  });
+
+  test.afterEach(async () => {
+    if (welshSessionLease) {
+      await welshSessionLease.release();
+      welshSessionLease = undefined;
+    }
   });
 
   test('Verify translations are not shown when the translation endpoint returns an error', async ({
@@ -19,11 +26,13 @@ test.describe('Verify users can switch the language', { tag: ['@integration', '@
     page,
   }) => {
     await test.step('Change the language to Welsh', async () => {
-      await caseListPage.exuiHeader.switchLanguage('Cymraeg');
+      await Promise.all([
+        page.waitForResponse((response) => response.url().includes('/api/translation/cy') && response.status() === 500),
+        caseListPage.exuiHeader.switchLanguage('Cymraeg'),
+      ]);
       await caseListPage.exuiSpinnerComponent.wait();
       await page.waitForLoadState('domcontentloaded');
       await caseListPage.exuiHeader.appHeaderLink.waitFor({ state: 'attached' });
-      await page.waitForResponse((r) => r.url().includes('/cy') && r.status() === 500, { timeout: 5_000 });
     });
 
     await test.step('Check the translations are not shown, but the translated banner still is', async () => {

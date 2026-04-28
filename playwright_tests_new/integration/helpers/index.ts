@@ -13,6 +13,7 @@ export { applySessionCookies } from '../../common/sessionCapture';
 export * from './searchCaseSession.helper';
 export * from './hearingsMockRoutes.helper';
 export * from './hearingJourneySetup.helper';
+export * from './ngIntegrationMockRoutes.helper';
 export * from './taskListMockRoutes.helper';
 export * from './bookingUiMockRoutes.helper';
 export * from './manageTasksMockRoutes.helper';

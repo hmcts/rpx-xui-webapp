@@ -2,6 +2,8 @@ import { expect, Locator, Page, Request } from '@playwright/test';
 import { Base } from '../../base';
 
 const TASK_LIST_READY_TIMEOUT_MS = 30_000;
+const TASK_LIST_BOOTSTRAP_RETRY_TIMEOUT_MS = 12_000;
+const TASK_LIST_NAVIGATION_ATTEMPTS = 2;
 const FILTER_PANEL_READY_TIMEOUT_MS = 10_000;
 const FILTER_CONTROL_READY_TIMEOUT_MS = 15_000;
 const FILTER_GROUP_OPERATION_TIMEOUT_MS = 10_000;
@@ -9,10 +11,14 @@ const FILTER_INTERACTION_ATTEMPTS = 2;
 const PRIORITY_LIMIT_URGENT = 2000;
 const PRIORITY_LIMIT_HIGH = 5000;
 
+const escapeForRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 export class TaskListPage extends Base {
   readonly myWorkHeading = this.page.getByRole('heading', { name: /my work/i }).first();
-  readonly taskListFilterToggle = this.page.locator('exui-task-list-filter .govuk-button.hmcts-button--secondary').first();
-  readonly filterPanel = this.page.locator('xuilib-generic-filter');
+  readonly taskListFilterToggle = this.page
+    .locator('exui-task-list-filter .govuk-button.hmcts-button--secondary:visible')
+    .first();
+  readonly filterPanel = this.page.locator('xuilib-generic-filter:visible').first();
   readonly selectAllServicesFilter = this.filterPanel.locator('input#checkbox_servicesservices_all').first();
   readonly serviceFilterCheckboxes = this.filterPanel.locator(
     '#services .govuk-checkboxes__input:not(#checkbox_servicesservices_all)'
@@ -25,10 +31,13 @@ export class TaskListPage extends Base {
   );
 
   readonly selectTypesOfWorksError = this.filterPanel.locator('#types-of-work-error').first();
-  readonly applyFilterButton = this.page.locator('button#applyFilter').first();
+  readonly applyFilterButton = this.filterPanel.locator('button#applyFilter').first();
 
   readonly allWorkServiceFilter = this.filterPanel
-    .locator('select[name="service"], select#service, [id*="service"] select')
+    .locator('select#select_service, select[name="select_service"], select#service, select[name="service"]')
+    .first();
+  readonly allWorkCasesServiceFilter = this.filterPanel
+    .locator('select#select_jurisdiction, select[name="select_jurisdiction"]')
     .first();
   readonly allWorkLocationAllRadio = this.filterPanel.getByRole('radio', { name: /^All$/ }).first();
   readonly allWorkLocationSearchRadio = this.filterPanel.getByRole('radio', { name: 'Search for a location' }).first();
@@ -37,17 +46,24 @@ export class TaskListPage extends Base {
   readonly allWorkTaskCategoryAssignedToPersonRadio = this.filterPanel
     .getByRole('radio', { name: 'Assigned to a person' })
     .first();
+  readonly allWorkCasesRoleTypeFilter = this.filterPanel.locator('select#select_role, select[name="select_role"]').first();
   readonly allWorkTaskTypeFilter = this.filterPanel.getByRole('combobox', { name: /select a role type|task type/i }).first();
   readonly allWorkTasksByRoleTypeFilter = this.filterPanel
     .locator('h3:has-text("Tasks by role type")')
     .locator('xpath=following::select[1]')
     .first();
   readonly allWorkPersonSearchInput = this.filterPanel.getByRole('combobox', { name: /select a person/i }).first();
-  readonly allWorkLocationSearchInput = this.filterPanel.locator('#locations exui-search-location input').first();
+  readonly locationFilterSection = this.filterPanel.locator('#locations').first();
+  readonly locationPicker = this.filterPanel
+    .locator('xuilib-find-location')
+    .filter({ has: this.page.locator('input#inputLocationSearch:visible') })
+    .first();
+  readonly allWorkLocationSearchInput = this.locationPicker.locator('input#inputLocationSearch').first();
+  readonly allWorkAutocompleteOptions = this.page.locator('.cdk-overlay-container .mat-autocomplete-panel [role="option"]');
   readonly allWorkLocationSearchResults = this.page.locator('.cdk-overlay-container .mat-autocomplete-panel mat-option span');
-  readonly selectedLocationTags = this.filterPanel.locator(
-    '#locations xuilib-find-location .location-picker-custom .location-selection a'
-  );
+  readonly selectedLocationTags = this.locationPicker.locator('.location-picker-custom .location-selection a.hmcts-filter__tag');
+  readonly allWorkCasesApplyPrompt = this.page.getByText('Please select filters and click Apply').first();
+  readonly allWorkCasesEmptyMessage = this.page.getByText('Change your selection to view cases').first();
 
   readonly taskTableTabs = this.page.locator('.hmcts-sub-navigation .hmcts-sub-navigation__link');
 
@@ -62,7 +78,7 @@ export class TaskListPage extends Base {
   readonly taskTableHeader = this.taskListTable.locator('thead');
   readonly taskTableFooter = this.taskListTable.locator('tfoot');
   readonly taskListResultsAmount = this.page.locator('#search-result-summary__text, [data-test="search-result-summary__text"]');
-  readonly myCasesResultsAmount = this.page.locator('.pagination-top');
+  readonly myCasesResultsAmount = this.page.locator('.pagination-top').first();
   readonly uniqueCasesSummary = this.page.locator('.second-line');
   readonly myAccessNewCasesBadge = this.page.locator('.xui-alert-link__number');
   readonly manageCaseButtons = this.taskListTable.getByRole('button', { name: 'Manage' });
@@ -90,7 +106,9 @@ export class TaskListPage extends Base {
   readonly cancelledTaskMessage = this.page.getByText("You've cancelled a task. It has been removed from the task list.");
   readonly taskNoLongerAvailableMessage = this.page.getByText('The task is no longer available.');
 
-  readonly paginationControls = this.page.locator('.ngx-pagination');
+  readonly paginationControls = this.page
+    .locator('.ngx-pagination, nav[aria-label="Pagination"], [role="navigation"][aria-label="Pagination"]')
+    .first();
   readonly paginationNextButton = this.paginationControls.locator('.pagination-next');
   readonly paginationEllipsisButton = this.paginationControls.locator('.ellipsis');
   readonly paginationPreviousButton = this.paginationControls.locator('.pagination-previous');
@@ -100,8 +118,10 @@ export class TaskListPage extends Base {
   readonly continueButton = this.page.locator('.govuk-button').filter({ hasText: 'Continue' });
 
   readonly reassignUserSearchInput = this.page.locator('#inputSelectPerson');
-  readonly reassignUserAutocompleteOverlay = this.page.locator('.cdk-overlay-pane');
-  readonly reassignUserAutocompleteFirstOption = this.page.getByRole('option').first();
+  readonly autocompleteOverlay = this.page.locator('.cdk-overlay-pane').filter({
+    has: this.page.locator('[role="option"]'),
+  });
+  readonly autocompleteFirstOption = this.autocompleteOverlay.locator('[role="option"]').first();
   readonly reassignButton = this.page.getByRole('button', { name: 'Reassign' });
 
   constructor(page: Page) {
@@ -149,6 +169,10 @@ export class TaskListPage extends Base {
     await this.navigateToTaskListView('/work/all-work/tasks', /\/work\/all-work\/tasks(?:\?.*)?$/, 'all work tasks navigation');
   }
 
+  async gotoAllWorkCases() {
+    await this.navigateToTaskListView('/work/all-work/cases', /\/work\/all-work\/cases(?:\?.*)?$/, 'all work cases navigation');
+  }
+
   async selectWorkMenuItem(menuItemText: string) {
     const menuItem = this.page.getByRole('link', { name: menuItemText, exact: true });
     await menuItem.click();
@@ -156,6 +180,11 @@ export class TaskListPage extends Base {
 
   async getResultsText() {
     return await this.taskListResultsAmount.textContent();
+  }
+
+  async getPaginationSummaryText() {
+    const summaryText = (await this.myCasesResultsAmount.textContent()) ?? '';
+    return summaryText.replace(/\s+/g, ' ').trim();
   }
 
   getExpectedPriorityLabel(majorPriority?: number | string, priorityDate?: string | Date, currentDate: Date = new Date()) {
@@ -226,11 +255,31 @@ export class TaskListPage extends Base {
     context: string,
     timeoutMs = TASK_LIST_READY_TIMEOUT_MS
   ) {
-    await this.page.goto(path, { waitUntil: 'domcontentloaded' });
-    await this.page.waitForURL(urlPattern, { timeout: timeoutMs }).catch(() => undefined);
-    await this.waitForExuiAppShell(context, timeoutMs);
-    await this.waitForTaskListSpinnerToSettle(10_000);
-    await this.waitForTaskListShellReady(context);
+    let lastError: Error | undefined;
+
+    for (let attempt = 1; attempt <= TASK_LIST_NAVIGATION_ATTEMPTS; attempt += 1) {
+      await this.page.goto(path, { waitUntil: 'domcontentloaded' });
+      await this.page.waitForURL(urlPattern, { timeout: timeoutMs }).catch(() => undefined);
+
+      try {
+        await this.waitForExuiAppShell(context, timeoutMs);
+        await this.waitForTaskListSpinnerToSettle(10_000);
+        await this.waitForTaskListShellReady(
+          `${context}${attempt > 1 ? ` retry ${attempt}` : ''}`,
+          attempt === TASK_LIST_NAVIGATION_ATTEMPTS ? timeoutMs : TASK_LIST_BOOTSTRAP_RETRY_TIMEOUT_MS
+        );
+        return;
+      } catch (error) {
+        lastError = error as Error;
+        if (attempt === TASK_LIST_NAVIGATION_ATTEMPTS || this.page.isClosed()) {
+          throw lastError;
+        }
+      }
+    }
+
+    if (lastError) {
+      throw lastError;
+    }
   }
 
   private async waitForExuiAppShell(context: string, timeoutMs: number): Promise<void> {
@@ -257,7 +306,7 @@ export class TaskListPage extends Base {
     }
   }
 
-  async waitForTaskListShellReady(context: string) {
+  async waitForTaskListShellReady(context: string, timeoutMs = TASK_LIST_READY_TIMEOUT_MS) {
     const findVisibleShellSignal = async () => {
       const signals: Array<[string, Locator]> = [
         ['heading', this.myWorkHeading],
@@ -282,7 +331,7 @@ export class TaskListPage extends Base {
 
     await this.page
       .waitForURL(/\/(?:work\/(?:my-work\/(?:list|available|my-cases|my-access)|all-work\/(?:tasks|cases))|service-down)/, {
-        timeout: TASK_LIST_READY_TIMEOUT_MS,
+        timeout: timeoutMs,
       })
       .catch(() => undefined);
     await this.waitForTaskListSpinnerToSettle(10_000);
@@ -301,18 +350,18 @@ export class TaskListPage extends Base {
     }
 
     const bootstrapSignal = await Promise.any([
-      this.myWorkHeading.waitFor({ state: 'visible', timeout: TASK_LIST_READY_TIMEOUT_MS }).then(() => 'heading'),
+      this.myWorkHeading.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => 'heading'),
       this.taskTableTabs
         .first()
-        .waitFor({ state: 'visible', timeout: TASK_LIST_READY_TIMEOUT_MS })
+        .waitFor({ state: 'visible', timeout: timeoutMs })
         .then(() => 'tabs'),
-      this.taskListFilterToggle.waitFor({ state: 'visible', timeout: TASK_LIST_READY_TIMEOUT_MS }).then(() => 'filter-toggle'),
-      this.taskListTable.waitFor({ state: 'visible', timeout: TASK_LIST_READY_TIMEOUT_MS }).then(() => 'table'),
-      this.taskTableHeader.waitFor({ state: 'visible', timeout: TASK_LIST_READY_TIMEOUT_MS }).then(() => 'table-header'),
-      this.taskTableFooter.waitFor({ state: 'visible', timeout: TASK_LIST_READY_TIMEOUT_MS }).then(() => 'table-footer'),
-      this.taskListResultsAmount.waitFor({ state: 'visible', timeout: TASK_LIST_READY_TIMEOUT_MS }).then(() => 'results-summary'),
-      this.errorPageHeading.waitFor({ state: 'visible', timeout: TASK_LIST_READY_TIMEOUT_MS }).then(() => 'error-page'),
-      this.serviceDownError.waitFor({ state: 'visible', timeout: TASK_LIST_READY_TIMEOUT_MS }).then(() => 'service-down'),
+      this.taskListFilterToggle.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => 'filter-toggle'),
+      this.taskListTable.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => 'table'),
+      this.taskTableHeader.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => 'table-header'),
+      this.taskTableFooter.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => 'table-footer'),
+      this.taskListResultsAmount.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => 'results-summary'),
+      this.errorPageHeading.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => 'error-page'),
+      this.serviceDownError.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => 'service-down'),
     ]).catch(async () => {
       const lateSignal = await findVisibleShellSignal();
       if (lateSignal) {
@@ -324,7 +373,7 @@ export class TaskListPage extends Base {
         .textContent()
         .catch(() => '');
       throw new Error(
-        `Task list shell did not become ready within ${TASK_LIST_READY_TIMEOUT_MS}ms (${context}). url=${this.page.url()} heading=${
+        `Task list shell did not become ready within ${timeoutMs}ms (${context}). url=${this.page.url()} heading=${
           headingText?.trim() || 'unknown'
         }`
       );
@@ -365,6 +414,50 @@ export class TaskListPage extends Base {
     });
   }
 
+  private async waitForFilterPanelSurface(context: string, deadlineMs?: number): Promise<boolean> {
+    const timeoutMs = this.resolveInteractionTimeout(deadlineMs, FILTER_CONTROL_READY_TIMEOUT_MS);
+
+    const panelVisible = await this.filterPanel.isVisible().catch(() => false);
+    if (!panelVisible) {
+      return false;
+    }
+
+    const surfaceReady = await Promise.any([
+      this.selectAllServicesFilter.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => true),
+      this.serviceFilterCheckboxes
+        .first()
+        .waitFor({ state: 'visible', timeout: timeoutMs })
+        .then(() => true),
+      this.selectAllTypesOfWorksFilter.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => true),
+      this.typesOfWorkFilterCheckboxes
+        .first()
+        .waitFor({ state: 'visible', timeout: timeoutMs })
+        .then(() => true),
+      this.allWorkServiceFilter.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => true),
+      this.allWorkCasesServiceFilter.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => true),
+      this.allWorkLocationAllRadio.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => true),
+      this.allWorkLocationSearchRadio.waitFor({ state: 'visible', timeout: timeoutMs }).then(() => true),
+    ]).catch(async () => {
+      await this.assertTaskListInteractive(context);
+      return false;
+    });
+
+    if (!surfaceReady) {
+      return false;
+    }
+
+    const allWorkFilterStates = await Promise.all([
+      this.allWorkServiceFilter.isVisible(),
+      this.allWorkCasesServiceFilter.isVisible(),
+    ]).catch(() => false);
+    if (Array.isArray(allWorkFilterStates) && allWorkFilterStates.some(Boolean)) {
+      return true;
+    }
+
+    const toggleText = ((await this.taskListFilterToggle.textContent().catch(() => '')) ?? '').replace(/\s+/g, ' ').trim();
+    return /Hide work filter/i.test(toggleText) && (await this.filterPanel.isVisible().catch(() => false));
+  }
+
   private async waitForFilterCheckboxVisible(checkbox: Locator, description: string, deadlineMs?: number): Promise<Locator> {
     const targetCheckbox = checkbox.first();
     const timeoutMs = this.resolveInteractionTimeout(deadlineMs, FILTER_CONTROL_READY_TIMEOUT_MS);
@@ -399,29 +492,34 @@ export class TaskListPage extends Base {
   }
 
   async openFilterPanel(deadlineMs?: number) {
-    if (await this.applyFilterButton.isVisible().catch(() => false)) {
+    if (await this.waitForFilterPanelSurface('checking existing filter panel state', deadlineMs)) {
       return;
     }
     await this.waitForTaskListSpinnerToSettle(5_000);
     this.assertFilterInteractionAlive('opening filter panel', deadlineMs);
     await this.assertTaskListInteractive('opening filter panel');
     await this.waitForFilterControls('waiting for filter controls', deadlineMs);
-    if (await this.applyFilterButton.isVisible().catch(() => false)) {
+    if (await this.waitForFilterPanelSurface('checking filter panel state after control wait', deadlineMs)) {
       return;
     }
     const panelDeadlineMs = deadlineMs ?? Date.now() + FILTER_PANEL_READY_TIMEOUT_MS;
     while (Date.now() < panelDeadlineMs) {
       this.assertFilterInteractionAlive('opening filter panel', deadlineMs);
-      if (await this.applyFilterButton.isVisible().catch(() => false)) {
+      if (await this.waitForFilterPanelSurface('waiting for filter panel surface', panelDeadlineMs)) {
         return;
       }
-      await this.taskListFilterToggle.click({ force: true });
-      await this.filterPanel
-        .waitFor({ state: 'visible', timeout: this.resolveInteractionTimeout(panelDeadlineMs, 1_000) })
-        .catch(() => undefined);
-      if (await this.applyFilterButton.isVisible().catch(() => false)) {
+
+      if (!(await this.filterPanel.isVisible().catch(() => false))) {
+        await this.taskListFilterToggle.click({ force: true });
+        await this.filterPanel
+          .waitFor({ state: 'visible', timeout: this.resolveInteractionTimeout(panelDeadlineMs, 1_000) })
+          .catch(() => undefined);
+      }
+
+      if (await this.waitForFilterPanelSurface('waiting for filter panel surface after toggle', panelDeadlineMs)) {
         return;
       }
+
       await this.page.waitForTimeout(250);
     }
     await this.assertTaskListInteractive('opening filter panel');
@@ -434,6 +532,7 @@ export class TaskListPage extends Base {
 
   async applyCurrentFilters() {
     await this.openFilterPanel();
+    await this.applyFilterButton.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
     await this.applyFilterButton.evaluate((button: HTMLButtonElement) => button.click());
   }
 
@@ -450,6 +549,15 @@ export class TaskListPage extends Base {
     });
     await this.allWorkTasksByRoleTypeFilter.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
     await this.allWorkPersonSearchInput.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+  }
+
+  async waitForAllWorkCasesFilterControlsReady() {
+    await this.openFilterPanel();
+    await this.allWorkCasesServiceFilter.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+    await this.allWorkCasesRoleTypeFilter.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+    await this.allWorkPersonSearchInput.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+    await this.allWorkLocationAllRadio.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+    await this.allWorkLocationSearchRadio.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
   }
 
   async setSelectAllServicesFilter(checked: boolean) {
@@ -482,8 +590,13 @@ export class TaskListPage extends Base {
 
   async searchForLocation(searchText: string) {
     await this.openFilterPanel();
-    await this.allWorkLocationSearchInput.clear();
-    await this.allWorkLocationSearchInput.type(searchText);
+    await this.allWorkLocationSearchInput.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+    await this.allWorkLocationSearchInput.click();
+    await this.allWorkLocationSearchInput.fill('');
+    await this.allWorkLocationSearchInput.type(searchText, { delay: 50 });
+    await this.allWorkLocationSearchInput.evaluate((input: HTMLInputElement) => {
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    });
   }
 
   private async setFilterCheckbox(checkbox: Locator, checked: boolean, description: string, deadlineMs?: number) {
@@ -554,9 +667,39 @@ export class TaskListPage extends Base {
     await this.confirmCancelTaskButton.click();
   }
 
+  async selectFirstAutocompleteOption() {
+    await this.autocompleteOverlay.last().waitFor({ state: 'visible' });
+    await this.autocompleteOverlay.last().locator('[role="option"]').first().click();
+  }
+
+  async selectAllWorkAutocompleteOption(optionText: string) {
+    const option = this.page
+      .locator('.cdk-overlay-container .mat-autocomplete-panel')
+      .getByRole('option', { name: new RegExp(escapeForRegex(optionText), 'i') })
+      .first();
+    await option.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+    await option.click();
+  }
+
+  async applyAllWorkCasesPersonFilter(searchText: string, optionText: string) {
+    await this.waitForAllWorkCasesFilterControlsReady();
+    await this.allWorkPersonSearchInput.fill(searchText);
+    await this.selectAllWorkAutocompleteOption(optionText);
+    await this.applyFilterButton.click();
+  }
+
   async selectFirstReassignUserOption() {
-    await this.reassignUserAutocompleteOverlay.waitFor({ state: 'visible' });
-    await this.reassignUserAutocompleteFirstOption.click();
+    await this.selectFirstAutocompleteOption();
+  }
+
+  getPaginationPageControl(pageNumber: number): Locator {
+    return this.paginationControls.locator(`[aria-label="Page ${pageNumber}"]`).first();
+  }
+
+  async openPaginationPage(pageNumber: number) {
+    const pageControl = this.getPaginationPageControl(pageNumber);
+    await pageControl.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+    await pageControl.click();
   }
 
   async waitForManageButton(

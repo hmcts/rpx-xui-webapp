@@ -4,6 +4,7 @@ import { setupTaskListBootstrapRoutes, taskListRoutePattern } from './taskListMo
 
 export const myCasesRoutePattern = /\/workallocation\/my-work\/cases(?:\?.*)?$/;
 export const myAccessRoutePattern = /\/workallocation\/my-work\/myaccess(?:\?.*)?$/;
+export const allWorkCasesRoutePattern = /\/workallocation\/all-work\/cases(?:\?.*)?$/;
 
 const defaultTaskListResponse = { tasks: [], total_records: 0 };
 
@@ -52,12 +53,18 @@ export async function setupManageTasksBaseRoutes(page: Page, options: BaseManage
 
 type MyCasesRouteOptions = BaseManageTaskRouteOptions & {
   status?: number;
+  routeHandler?: (route: Route) => Promise<void>;
 };
 
 export async function setupMyCasesRoutes(page: Page, myCasesResponse: unknown, options: MyCasesRouteOptions = {}): Promise<void> {
   await setupManageTasksBaseRoutes(page, options);
 
   await page.route(myCasesRoutePattern, async (route) => {
+    if (options.routeHandler) {
+      await options.routeHandler(route);
+      return;
+    }
+
     await route.fulfill({
       status: options.status ?? 200,
       contentType: 'application/json',
@@ -91,6 +98,32 @@ export async function setupMyAccessRoutes(
       status: options.status ?? 200,
       contentType: 'application/json',
       body: JSON.stringify(myAccessResponse),
+    });
+  });
+}
+
+type AllWorkCasesRouteOptions = BaseManageTaskRouteOptions & {
+  status?: number;
+  routeHandler?: (route: Route) => Promise<void>;
+};
+
+export async function setupAllWorkCasesRoutes(
+  page: Page,
+  allWorkCasesResponse: unknown,
+  options: AllWorkCasesRouteOptions = {}
+): Promise<void> {
+  await setupManageTasksBaseRoutes(page, options);
+
+  await page.route(allWorkCasesRoutePattern, async (route) => {
+    if (options.routeHandler) {
+      await options.routeHandler(route);
+      return;
+    }
+
+    await route.fulfill({
+      status: options.status ?? 200,
+      contentType: 'application/json',
+      body: JSON.stringify(allWorkCasesResponse),
     });
   });
 }

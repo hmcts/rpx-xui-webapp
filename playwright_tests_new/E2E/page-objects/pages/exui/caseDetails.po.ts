@@ -702,6 +702,10 @@ export class CaseDetailsPage extends Base {
     await this.waitForTabPanelReadiness(visibleTabPanel, tabLoadTimeoutMs);
   }
 
+  async waitForCaseDetailsReady(timeoutMs = 30_000): Promise<void> {
+    await this.waitForCaseDetailsTabsReady(timeoutMs);
+  }
+
   getRoleAccessSection(title: 'Judiciary' | 'Legal Ops'): Locator {
     return this.page.locator('exui-role-access-section').filter({
       has: this.page.getByRole('heading', { level: 2, name: title }),

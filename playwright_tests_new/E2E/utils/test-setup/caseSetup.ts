@@ -576,6 +576,7 @@ async function createCaseViaDirectCcdApi(request: SetupCaseRequest): Promise<str
 
   await request.page.goto(`/cases/case-details/${resolvedIds.jurisdictionId}/${resolvedIds.caseTypeId}/${caseNumber}`);
   await request.caseDetailsPage.exuiSpinnerComponent.wait();
+  await request.caseDetailsPage.waitForCaseDetailsReady();
   return request.caseDetailsPage.getCaseNumberFromUrl();
 }
 

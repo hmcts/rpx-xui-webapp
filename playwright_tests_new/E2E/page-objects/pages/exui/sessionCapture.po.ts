@@ -1,21 +1,40 @@
 import { type Locator, type Page } from '@playwright/test';
 import { IdamPage } from '@hmcts/playwright-common';
-import { ExuiHeaderComponent } from '../../components/exui/exui-header.component.js';
 
 const IDAM_USERNAME_FALLBACK_SELECTOR =
   'input#email, input[name="email"], input[name="emailAddress"], input[autocomplete="email"]';
 const IDAM_SUBMIT_FALLBACK_SELECTOR = 'button:has-text("Sign in"), button:has-text("Continue")';
 
 export class SessionCapturePage {
-  readonly header = new ExuiHeaderComponent(this.page).header;
-  readonly caseHome = this.page.locator('exui-case-home');
-  readonly acceptCookiesButton = this.page.getByRole('button', { name: /accept (additional|analytics) cookies/i }).first();
-  readonly createCaseLink = this.page.getByRole('link', { name: 'Create case' }).first();
-  readonly caseListLink = this.page.getByRole('link', { name: 'Case list' }).first();
-  readonly caseActionDropdown = this.page.locator('#next-step').first();
-  readonly jurisdictionSelect = this.page.locator('#cc-jurisdiction').first();
-
   constructor(private readonly page: Page) {}
+
+  get header(): Locator {
+    return this.page.locator('exui-header');
+  }
+
+  get appSurface(): Locator {
+    return this.page.locator('exui-header, exui-case-home');
+  }
+
+  get acceptCookiesButton(): Locator {
+    return this.page.getByRole('button', { name: /accept (additional|analytics) cookies/i }).first();
+  }
+
+  get createCaseLink(): Locator {
+    return this.page.getByRole('link', { name: 'Create case' }).first();
+  }
+
+  get caseListLink(): Locator {
+    return this.page.getByRole('link', { name: 'Case list' }).first();
+  }
+
+  get caseActionDropdown(): Locator {
+    return this.page.locator('#next-step').first();
+  }
+
+  get jurisdictionSelect(): Locator {
+    return this.page.locator('#cc-jurisdiction').first();
+  }
 
   idamUsernameCandidates(idamPage: IdamPage): Locator[] {
     return [idamPage.usernameInput.first(), this.page.locator(IDAM_USERNAME_FALLBACK_SELECTOR).first()];
@@ -47,6 +66,6 @@ export class SessionCapturePage {
   }
 
   async waitForAppSurface(timeoutMs: number): Promise<void> {
-    await this.header.or(this.caseHome).first().waitFor({ state: 'visible', timeout: timeoutMs });
+    await this.appSurface.first().waitFor({ state: 'visible', timeout: timeoutMs });
   }
 }

@@ -175,6 +175,9 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
     expect(caseSetupTest.isTransientApiRequestError(new Error('api/user/details failed: read ECONNRESET'))).toBe(true);
     expect(caseSetupTest.isTransientApiRequestError(new Error('Validation failed'))).toBe(false);
     expect(isTransientWorkflowFailure(new Error('Validation error after submit after updating case fields'))).toBe(false);
+    expect(
+      isTransientWorkflowFailure(new Error('Case event failed after PoC personal details: The event could not be created'))
+    ).toBe(true);
     expect(isTransientWorkflowFailure(new Error('read ECONNRESET while calling api/user/details'))).toBe(true);
     expect(() => buildCasePayloadFromTemplate('unsupported.template' as never)).toThrow(
       "Unsupported payload template 'unsupported.template'."

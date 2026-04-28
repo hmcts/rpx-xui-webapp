@@ -433,6 +433,10 @@ export class CreateCasePage extends Base {
     await this.assertNoEventCreationError(context);
     const hasValidationError = await this.checkForErrorMessage();
     if (hasValidationError) {
+      const validationText = await this.getValidationErrorText();
+      if (this.isEventCreationValidationText(validationText)) {
+        throw new Error(`Case event failed ${context}: ${validationText}`);
+      }
       throw new Error(`Validation error after ${context}`);
     }
   }
@@ -609,6 +613,10 @@ export class CreateCasePage extends Base {
       }
       const hasValidationError = await this.checkForErrorMessage();
       if (hasValidationError) {
+        const validationText = await this.getValidationErrorText();
+        if (this.isEventCreationValidationText(validationText)) {
+          throw new Error(`Case event failed after ${context}: ${validationText}`);
+        }
         throw new Error(`Validation error after ${context}`);
       }
       if (this.page.isClosed()) {
@@ -724,6 +732,10 @@ export class CreateCasePage extends Base {
 
     const [errorText, summaryText] = await Promise.all([readText(this.errorMessage), readText(this.errorSummary)]);
     return [errorText, summaryText].filter(Boolean).join(' | ');
+  }
+
+  private isEventCreationValidationText(text: string): boolean {
+    return /the event could not be created|technical staff have been automatically notified/i.test(text);
   }
 
   async ensureDoYouAgreeAnswered(answer: 'Yes' | 'No' = 'Yes') {

@@ -623,6 +623,11 @@ export async function getUsersByServiceName(req: EnhancedRequest, res: Response,
       res.status(403).send('Forbidden');
       return;
     }
+    if (services.length === 0) {
+      // TODO(EXUI-2645): Remove this defensive branch once Angular always sends explicit service scoping.
+      res.status(200).send([]);
+      return;
+    }
 
     const fullUserDetailCache = FullUserDetailCache.getAllUserDetails() || [];
     if (timestampExists() && fullUserDetailCache.length > 0) {

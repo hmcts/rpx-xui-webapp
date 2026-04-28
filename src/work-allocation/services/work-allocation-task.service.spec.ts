@@ -144,18 +144,6 @@ describe('WorkAllocationTaskService', () => {
     });
   });
 
-  it('getTaskTypeNamesFromService should return data on success', (done) => {
-    const response = [{ taskName: 'Review', taskId: 1 }];
-    mockHttpService.get.and.returnValue(of(response));
-
-    service.getTaskTypeNamesFromService().subscribe((res) => {
-      expect(res).toEqual(response);
-      expect(mockHttpService.get).toHaveBeenCalledWith('/workallocation2/taskNames');
-      expect(mockLoggerService.warn).not.toHaveBeenCalled();
-      done();
-    });
-  });
-
   it('getUsersAssignedTasks should log and rethrow downstream failure', (done) => {
     const downstreamError = { status: 503 };
     sessionStorage.setItem('userDetails', JSON.stringify({ id: 'u1', uid: 'u1', roles: ['caseworker'] }));
@@ -167,23 +155,6 @@ describe('WorkAllocationTaskService', () => {
         expect(error).toEqual(downstreamError);
         expect(mockLoggerService.warn).toHaveBeenCalledWith(
           'WorkAllocationTaskService.getUsersAssignedTasks downstream failure; endpoint=/workallocation/task; status=503',
-          downstreamError
-        );
-        done();
-      },
-    });
-  });
-
-  it('getTaskTypeNamesFromService should log and rethrow downstream failure', (done) => {
-    const downstreamError = { status: 500 };
-    mockHttpService.get.and.returnValue(throwError(() => downstreamError));
-
-    service.getTaskTypeNamesFromService().subscribe({
-      next: () => done.fail('expected error'),
-      error: (error) => {
-        expect(error).toEqual(downstreamError);
-        expect(mockLoggerService.warn).toHaveBeenCalledWith(
-          'WorkAllocationTaskService.getTaskTypeNamesFromService downstream failure; endpoint=/workallocation2/taskNames; status=500',
           downstreamError
         );
         done();

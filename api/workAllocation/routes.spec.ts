@@ -113,5 +113,30 @@ describe('workAllocation.routes', () => {
       });
       expect(next).not.to.have.been.called;
     });
+
+    it('returns an empty result for POST /workallocation/caseworker/getUsersByServiceName when services is empty', async () => {
+      const req = mockReq({
+        body: {
+          term: 'john',
+          services: [],
+        },
+        session: {
+          passport: {
+            user: {
+              userinfo: {
+                roles: ['caseworker'],
+              },
+            },
+          },
+        },
+      });
+      const res = mockRes();
+
+      await getUsersByServiceName(req as any, res as any, next as any);
+
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.send).to.have.been.calledWith([]);
+      expect(next).not.to.have.been.called;
+    });
   });
 });

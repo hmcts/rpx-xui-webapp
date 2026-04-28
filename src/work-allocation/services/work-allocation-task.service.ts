@@ -5,7 +5,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 import { AppUtils } from '../../app/app-utils';
 import { UserInfo, UserRole } from '../../app/models';
 import { LoggerService } from '../../app/services/logger/logger.service';
-import { SearchTaskRequest, TaskNamesResponse, TaskSearchParameters } from '../models/dtos';
+import { SearchTaskRequest, TaskSearchParameters } from '../models/dtos';
 import { Task, TaskRole } from '../models/tasks';
 import { TaskResponse } from '../models/tasks/task.model';
 import { logAndRethrow } from './work-allocation-error.utils';
@@ -174,19 +174,5 @@ export class WorkAllocationTaskService {
       );
     }
     return of([]);
-  }
-
-  public getTaskTypeNamesFromService(): Observable<TaskNamesResponse[]> {
-    return this.http
-      .get<TaskNamesResponse[]>('/workallocation2/taskNames')
-      .pipe(
-        catchError((error) =>
-          logAndRethrow(
-            this.logger,
-            'WorkAllocationTaskService.getTaskTypeNamesFromService downstream failure; endpoint=/workallocation2/taskNames',
-            error
-          )
-        )
-      );
   }
 }

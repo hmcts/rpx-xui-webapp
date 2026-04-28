@@ -63,9 +63,7 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
       await taskListPage.openFilterPanel();
 
       await expect(taskListPage.taskListFilterToggle).toContainText('Hide work filter');
-      await expect(taskListPage.filterPanel.getByText('Services', { exact: true })).toBeVisible();
-      await expect(taskListPage.filterPanel.locator('#locations')).toBeVisible();
-      await expect(taskListPage.filterPanel.getByText('Types of work', { exact: true })).toBeVisible();
+      await taskListPage.expectWorkFilterControls();
 
       await taskListPage.applyCurrentFilters();
 
@@ -80,21 +78,13 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
         'checking filter fields on Available tasks'
       );
       await taskListPage.waitForTaskListShellReady('available tasks filter view');
-      await taskListPage.openFilterPanel();
-
-      await expect(taskListPage.filterPanel.getByText('Services', { exact: true })).toBeVisible();
-      await expect(taskListPage.filterPanel.locator('#locations')).toBeVisible();
-      await expect(taskListPage.filterPanel.getByText('Types of work', { exact: true })).toBeVisible();
+      await taskListPage.expectWorkFilterControls();
     });
 
     await test.step('My cases keeps services and location search while keeping work types hidden', async () => {
       await taskListPage.gotoMyCases();
       await taskListPage.waitForTaskListShellReady('my cases filter view');
-      await taskListPage.openFilterPanel();
-
-      await expect(taskListPage.filterPanel.getByText('Services', { exact: true })).toBeVisible();
-      await expect(taskListPage.filterPanel.locator('#locations')).toBeVisible();
-      await expect(taskListPage.filterPanel.locator('#types-of-work')).toBeHidden();
+      await taskListPage.expectWorkFilterControls({ typesOfWorkVisible: false });
     });
   });
 
@@ -310,13 +300,10 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
     await expect.poll(() => fullLocationServiceCodes.length).toBeGreaterThan(0);
     expect(fullLocationServiceCodes.at(-1)?.split(',').sort()).toEqual(['CIVIL', 'IA']);
 
-    await expect(page.getByText('Access tasks and cases.', { exact: true })).toBeVisible();
+    await taskListPage.expectAccessTasksAndCasesTextVisible();
 
-    await taskListPage.openFilterPanel();
-    await expect(taskListPage.filterPanel.locator('.hmcts-filter__tag', { hasText: 'Taylor House' })).toBeVisible();
-    await expect(
-      taskListPage.filterPanel.locator('.hmcts-filter__tag', { hasText: 'Birmingham Civil and Family Justice Centre' })
-    ).toBeVisible();
+    await taskListPage.expectSelectedFilterTagVisible('Taylor House');
+    await taskListPage.expectSelectedFilterTagVisible('Birmingham Civil and Family Justice Centre');
   });
 
   for (const scenario of workFiltersLocationSearchScenarios) {

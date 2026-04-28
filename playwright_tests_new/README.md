@@ -597,7 +597,8 @@ test.describe('My Test Suite', () => {
 
 ### Available User Identifiers
 
-- `SOLICITOR` - Standard solicitor user for divorce/civil cases
+- `SOLICITOR` - Standard solicitor user for Private Law / civil cases
+- `DIVORCE_SOLICITOR` - Divorce-entitled solicitor user for divorce create/update journeys
 - `SEARCH_EMPLOYMENT_CASE` - Employment tribunal case user
 - `STAFF_ADMIN` - Administrative staff user
 - `USER_WITH_FLAGS` - User with case flags enabled

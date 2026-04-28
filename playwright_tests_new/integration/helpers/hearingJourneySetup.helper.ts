@@ -1,6 +1,6 @@
 import { expect, type Page, type Response } from '@playwright/test';
 import type { CaseDetailsPage } from '../../E2E/page-objects/pages/exui/caseDetails.po';
-import type { HearingsTabPage } from '../../E2E/page-objects/pages/exui/hearingsTab.po';
+import { HearingsTabPage } from '../../E2E/page-objects/pages/exui/hearingsTab.po';
 import { applySessionCookies } from '../../common/sessionCapture';
 import { setupHearingsMockRoutes, type HearingsMockRoutesConfig } from './hearingsMockRoutes.helper';
 import {
@@ -81,6 +81,7 @@ export async function openHearingsTabForScenario(
   await page.goto(caseDetailsUrl(route.jurisdictionId, route.caseTypeId, route.caseReference), {
     waitUntil: 'domcontentloaded',
   });
+  await expect(caseDetailsPage.container).toBeVisible({ timeout: 30_000 });
 
   if (options?.waitForGetHearingsResponse === false) {
     await caseDetailsPage.selectCaseDetailsTab('Hearings');
@@ -100,14 +101,14 @@ export function buildLargeListedHearings(total: number): HearingScenario[] {
   }));
 }
 
-export async function waitForHearingsTerminalState(page: Page, hearingsTabPage: HearingsTabPage): Promise<void> {
+export async function waitForHearingsTerminalState(hearingsTabPage: HearingsTabPage): Promise<void> {
   await expect
     .poll(
       async () => {
         if (await hearingsTabPage.reloadButton.isVisible()) {
           return 'reload';
         }
-        if (await page.getByText('No current and upcoming hearings found').isVisible()) {
+        if (await hearingsTabPage.emptyState.isVisible()) {
           return 'empty';
         }
         return 'pending';
@@ -118,27 +119,17 @@ export async function waitForHearingsTerminalState(page: Page, hearingsTabPage: 
 }
 
 export async function expectHearingsRowsHiddenBeforeResponse(page: Page): Promise<void> {
-  await expect(page.locator('[id^="link-view-details-"]')).toHaveCount(0, {
-    timeout: HEARINGS_ROWS_HIDDEN_TIMEOUT_MS,
-  });
+  await new HearingsTabPage(page).expectNoViewDetailsButtons(HEARINGS_ROWS_HIDDEN_TIMEOUT_MS);
 }
 
 export async function continueHearingsFlow(page: Page): Promise<void> {
-  await page.getByRole('button', { name: /^continue$/i }).click();
+  await new HearingsTabPage(page).continueFlow();
 }
 
 export async function goBackInHearingsFlow(page: Page): Promise<void> {
-  await page.getByRole('link', { name: /^back$/i }).click();
+  await new HearingsTabPage(page).goBack();
 }
 
 export async function selectOrderedLinkedHearings(page: Page): Promise<void> {
-  await page.locator('#linked-form input[type="radio"]').first().check();
-  await continueHearingsFlow(page);
-  await page.locator('#particularOrder').check();
-
-  const orderSelects = page.locator('select[id^="hearingsOrder"]');
-  const orderCount = await orderSelects.count();
-  for (let index = 0; index < orderCount; index += 1) {
-    await orderSelects.nth(index).selectOption(String(index + 1));
-  }
+  await new HearingsTabPage(page).selectOrderedLinkedHearings();
 }

@@ -6,6 +6,7 @@ const FILTER_PANEL_READY_TIMEOUT_MS = 10_000;
 const FILTER_CONTROL_READY_TIMEOUT_MS = 15_000;
 const FILTER_GROUP_OPERATION_TIMEOUT_MS = 10_000;
 const FILTER_INTERACTION_ATTEMPTS = 2;
+const TASK_LIST_NAVIGATION_ATTEMPTS = 2;
 const PRIORITY_LIMIT_URGENT = 2000;
 const PRIORITY_LIMIT_HIGH = 5000;
 
@@ -25,7 +26,7 @@ export class TaskListPage extends Base {
   );
 
   readonly selectTypesOfWorksError = this.filterPanel.locator('#types-of-work-error').first();
-  readonly applyFilterButton = this.page.locator('button#applyFilter').first();
+  readonly applyFilterButton = this.filterPanel.locator('button#applyFilter').first();
 
   readonly allWorkServiceFilter = this.filterPanel
     .locator('select[name="service"], select#service, [id*="service"] select')
@@ -137,8 +138,10 @@ export class TaskListPage extends Base {
     await this.waitForTaskRowReady(`${context} row bootstrap`, { rowIndex, timeoutMs });
   }
 
-  async gotoMyCases() {
-    await this.navigateToTaskListView('/work/my-work/my-cases', /\/work\/my-work\/my-cases(?:\?.*)?$/, 'my cases navigation');
+  async gotoMyCases(options: { allowServiceDown?: boolean } = {}) {
+    await this.navigateToTaskListView('/work/my-work/my-cases', /\/work\/my-work\/my-cases(?:\?.*)?$/, 'my cases navigation', {
+      allowServiceDown: options.allowServiceDown ?? true,
+    });
   }
 
   async gotoMyAccess() {
@@ -224,17 +227,62 @@ export class TaskListPage extends Base {
     path: string,
     urlPattern: RegExp,
     context: string,
-    timeoutMs = TASK_LIST_READY_TIMEOUT_MS
+    options: { allowServiceDown?: boolean; timeoutMs?: number } = {}
   ) {
-    await this.page.goto(path, { waitUntil: 'domcontentloaded' });
-    await this.page.waitForURL(urlPattern, { timeout: timeoutMs }).catch(() => undefined);
-    if (!urlPattern.test(this.page.url())) {
+    const timeoutMs = options.timeoutMs ?? TASK_LIST_READY_TIMEOUT_MS;
+    const allowServiceDown = options.allowServiceDown ?? true;
+
+    for (let attempt = 1; attempt <= TASK_LIST_NAVIGATION_ATTEMPTS; attempt += 1) {
       await this.page.goto(path, { waitUntil: 'domcontentloaded' });
-      await this.page.waitForURL(urlPattern, { timeout: timeoutMs });
+      await this.page.waitForURL(urlPattern, { timeout: timeoutMs }).catch(() => undefined);
+      if (!urlPattern.test(this.page.url())) {
+        await this.page.goto(path, { waitUntil: 'domcontentloaded' });
+        await this.page.waitForURL(urlPattern, { timeout: timeoutMs });
+      }
+
+      await this.recoverBlankRootRedirect(path, urlPattern, timeoutMs);
+      await this.waitForExuiAppShell(context, timeoutMs);
+      await this.waitForTaskListSpinnerToSettle(10_000);
+      await this.recoverBlankRootRedirect(path, urlPattern, timeoutMs);
+
+      try {
+        await this.waitForTaskListShellReady(context);
+      } catch (error) {
+        if (attempt < TASK_LIST_NAVIGATION_ATTEMPTS && (await this.isBlankAppRoot())) {
+          continue;
+        }
+
+        throw error;
+      }
+
+      if (!allowServiceDown && (await this.isServiceDownPage())) {
+        await this.page.goto(path, { waitUntil: 'domcontentloaded' });
+        await this.page.waitForURL(urlPattern, { timeout: timeoutMs }).catch(() => undefined);
+        await this.waitForExuiAppShell(`${context} retry`, timeoutMs);
+        await this.waitForTaskListSpinnerToSettle(10_000);
+        await this.waitForTaskListShellReady(`${context} retry`);
+        await this.assertTaskListHealthy(`${context} retry`);
+      }
+
+      return;
     }
-    await this.waitForExuiAppShell(context, timeoutMs);
-    await this.waitForTaskListSpinnerToSettle(10_000);
-    await this.waitForTaskListShellReady(context);
+  }
+
+  private async recoverBlankRootRedirect(path: string, urlPattern: RegExp, timeoutMs: number): Promise<void> {
+    if (!(await this.isBlankAppRoot())) {
+      return;
+    }
+
+    await this.page.goto(path, { waitUntil: 'domcontentloaded' });
+    await this.page.waitForURL(urlPattern, { timeout: timeoutMs });
+  }
+
+  private async isBlankAppRoot(): Promise<boolean> {
+    if (!/\/$/.test(this.page.url())) {
+      return false;
+    }
+
+    return await this.page.evaluate(() => document.body.innerText.trim().length === 0).catch(() => false);
   }
 
   private async waitForExuiAppShell(context: string, timeoutMs: number): Promise<void> {
@@ -372,6 +420,12 @@ export class TaskListPage extends Base {
     });
   }
 
+  private async isFilterPanelOpen(): Promise<boolean> {
+    return (
+      (await this.filterPanel.isVisible().catch(() => false)) && (await this.applyFilterButton.isVisible().catch(() => false))
+    );
+  }
+
   private async waitForFilterCheckboxVisible(checkbox: Locator, description: string, deadlineMs?: number): Promise<Locator> {
     const targetCheckbox = checkbox.first();
     const timeoutMs = this.resolveInteractionTimeout(deadlineMs, FILTER_CONTROL_READY_TIMEOUT_MS);
@@ -406,27 +460,27 @@ export class TaskListPage extends Base {
   }
 
   async openFilterPanel(deadlineMs?: number) {
-    if (await this.applyFilterButton.isVisible().catch(() => false)) {
+    if (await this.isFilterPanelOpen()) {
       return;
     }
     await this.waitForTaskListSpinnerToSettle(5_000);
     this.assertFilterInteractionAlive('opening filter panel', deadlineMs);
     await this.assertTaskListInteractive('opening filter panel');
     await this.waitForFilterControls('waiting for filter controls', deadlineMs);
-    if (await this.applyFilterButton.isVisible().catch(() => false)) {
+    if (await this.isFilterPanelOpen()) {
       return;
     }
     const panelDeadlineMs = deadlineMs ?? Date.now() + FILTER_PANEL_READY_TIMEOUT_MS;
     while (Date.now() < panelDeadlineMs) {
       this.assertFilterInteractionAlive('opening filter panel', deadlineMs);
-      if (await this.applyFilterButton.isVisible().catch(() => false)) {
+      if (await this.isFilterPanelOpen()) {
         return;
       }
       await this.taskListFilterToggle.click({ force: true });
       await this.filterPanel
         .waitFor({ state: 'visible', timeout: this.resolveInteractionTimeout(panelDeadlineMs, 1_000) })
         .catch(() => undefined);
-      if (await this.applyFilterButton.isVisible().catch(() => false)) {
+      if (await this.isFilterPanelOpen()) {
         return;
       }
       await this.page.waitForTimeout(250);
@@ -440,7 +494,12 @@ export class TaskListPage extends Base {
   }
 
   async applyCurrentFilters() {
-    await this.openFilterPanel();
+    const deadlineMs = Date.now() + FILTER_GROUP_OPERATION_TIMEOUT_MS;
+    await this.openFilterPanel(deadlineMs);
+    await this.applyFilterButton.waitFor({
+      state: 'visible',
+      timeout: this.resolveInteractionTimeout(deadlineMs, FILTER_GROUP_OPERATION_TIMEOUT_MS),
+    });
     await this.applyFilterButton.evaluate((button: HTMLButtonElement) => button.click());
   }
 
@@ -461,16 +520,43 @@ export class TaskListPage extends Base {
 
   async expectWorkFilterControls(options: { typesOfWorkVisible?: boolean } = {}) {
     const typesOfWorkVisible = options.typesOfWorkVisible ?? true;
-    await this.openFilterPanel();
-    await expect(this.filterPanel.getByText('Services', { exact: true })).toBeVisible();
-    await expect(this.filterPanel.locator('#locations')).toBeVisible();
+    const deadlineMs = Date.now() + FILTER_CONTROL_READY_TIMEOUT_MS;
+    const servicesHeading = this.filterPanel.getByText('Services', { exact: true }).first();
+    const locationsFilter = this.filterPanel.locator('#locations:visible').first();
+    const typesOfWorkHeading = this.filterPanel.getByText('Types of work', { exact: true }).first();
+    const visibleTypesOfWorkFilter = this.filterPanel.locator('#types-of-work:visible');
 
-    const typesOfWorkFilter = this.filterPanel.locator('#types-of-work');
-    if (typesOfWorkVisible) {
-      await expect(this.filterPanel.getByText('Types of work', { exact: true })).toBeVisible();
-    } else {
-      await expect(typesOfWorkFilter).toBeHidden();
+    while (Date.now() < deadlineMs) {
+      await this.openFilterPanel(deadlineMs);
+
+      const servicesVisible = await servicesHeading.isVisible().catch(() => false);
+      const locationsVisible = await locationsFilter.isVisible().catch(() => false);
+      const typeOfWorkStateMatches = typesOfWorkVisible
+        ? await typesOfWorkHeading.isVisible().catch(() => false)
+        : (await visibleTypesOfWorkFilter.count().catch(() => 0)) === 0;
+
+      if (servicesVisible && locationsVisible && typeOfWorkStateMatches) {
+        return;
+      }
+
+      await this.page.waitForTimeout(250);
     }
+
+    await this.assertTaskListInteractive('waiting for work filter controls');
+    await expect(servicesHeading).toBeVisible();
+    await expect(locationsFilter).toBeVisible();
+
+    if (typesOfWorkVisible) {
+      await expect(typesOfWorkHeading).toBeVisible();
+    } else {
+      await expect(visibleTypesOfWorkFilter).toHaveCount(0);
+    }
+  }
+
+  async expectAvailableTaskFilterControls() {
+    await this.openFilterPanel();
+    await this.waitForFilterCheckboxVisible(this.selectAllServicesFilter, 'select all services');
+    await this.waitForFilterCheckboxVisible(this.selectAllTypesOfWorksFilter, 'select all types of work');
   }
 
   async expectAccessTasksAndCasesTextVisible() {
@@ -493,6 +579,14 @@ export class TaskListPage extends Base {
     await this.clearFilterGroup('types of work', this.selectAllTypesOfWorksFilter, this.typesOfWorkFilterCheckboxes);
   }
 
+  async selectOnlyFirstServiceFilter(): Promise<string> {
+    return this.selectOnlyFirstFilterOption('services', this.selectAllServicesFilter, this.serviceFilterCheckboxes);
+  }
+
+  async selectOnlyFirstTypeOfWorkFilter(): Promise<string> {
+    return this.selectOnlyFirstFilterOption('types of work', this.selectAllTypesOfWorksFilter, this.typesOfWorkFilterCheckboxes);
+  }
+
   async removeAllSelectedLocations() {
     await this.openFilterPanel();
     const initialSelectionCount = await this.selectedLocationTags.count();
@@ -505,25 +599,32 @@ export class TaskListPage extends Base {
     }
   }
 
+  async expectSelectedLocations(expectedLocations: string[]) {
+    await this.openFilterPanel();
+    await expect
+      .poll(async () => this.getVisibleSelectedLocationTexts(), { timeout: FILTER_CONTROL_READY_TIMEOUT_MS })
+      .toEqual(expectedLocations);
+  }
+
   async expectSelectedFilterTagVisible(tagText: string) {
+    await this.expectSelectedFilterTagsVisible([tagText]);
+  }
+
+  async expectSelectedFilterTagsVisible(tagTexts: string[]) {
     await this.openFilterPanel();
     await expect
       .poll(async () => {
-        const matchingTags = this.filterPanel.locator('.hmcts-filter__tag', { hasText: tagText });
-        const tagCount = await matchingTags.count();
+        const visibleTagTexts = await this.filterPanel.locator('.hmcts-filter__tag').evaluateAll((tags) =>
+          tags
+            .filter((tag) => {
+              const style = window.getComputedStyle(tag);
+              const box = tag.getBoundingClientRect();
+              return style.visibility !== 'hidden' && style.display !== 'none' && box.width > 0 && box.height > 0;
+            })
+            .map((tag) => tag.textContent?.replace(/\s+/g, ' ').trim() ?? '')
+        );
 
-        for (let index = 0; index < tagCount; index += 1) {
-          if (
-            await matchingTags
-              .nth(index)
-              .isVisible()
-              .catch(() => false)
-          ) {
-            return true;
-          }
-        }
-
-        return false;
+        return tagTexts.every((tagText) => visibleTagTexts.some((visibleText) => visibleText.includes(tagText)));
       })
       .toBe(true);
   }
@@ -532,6 +633,21 @@ export class TaskListPage extends Base {
     await this.openFilterPanel();
     await this.allWorkLocationSearchInput.clear();
     await this.allWorkLocationSearchInput.type(searchText);
+  }
+
+  private async getVisibleSelectedLocationTexts(): Promise<string[]> {
+    const locationTexts = await this.selectedLocationTags.evaluateAll((tags) =>
+      tags
+        .filter((tag) => {
+          const style = window.getComputedStyle(tag);
+          const box = tag.getBoundingClientRect();
+          return style.visibility !== 'hidden' && style.display !== 'none' && box.width > 0 && box.height > 0;
+        })
+        .map((tag) => tag.textContent?.replace(/\s+/g, ' ').trim() ?? '')
+        .filter(Boolean)
+    );
+
+    return [...new Set(locationTexts)];
   }
 
   private async setFilterCheckbox(checkbox: Locator, checked: boolean, description: string, deadlineMs?: number) {
@@ -571,15 +687,56 @@ export class TaskListPage extends Base {
     );
   }
 
-  private async forceChildCheckboxState(childCheckboxes: Locator, checked: boolean, groupName: string, deadlineMs?: number) {
-    const checkboxCount = await childCheckboxes.count();
-    for (let index = 0; index < checkboxCount; index += 1) {
-      this.assertFilterInteractionAlive(`${groupName} child checkbox update`, deadlineMs);
-      const checkbox = childCheckboxes.nth(index);
-      if ((await this.readFilterCheckboxState(checkbox, `${groupName} option ${index + 1}`, deadlineMs)) !== checked) {
-        await checkbox.setChecked(checked, { force: true });
-      }
+  private async selectOnlyFirstFilterOption(
+    groupName: string,
+    selectAllCheckbox: Locator,
+    childCheckboxes: Locator
+  ): Promise<string> {
+    const deadlineMs = Date.now() + FILTER_GROUP_OPERATION_TIMEOUT_MS;
+    await this.openFilterPanel(deadlineMs);
+    const firstCheckbox = await this.waitForFilterCheckboxVisible(childCheckboxes.first(), `${groupName} option 1`, deadlineMs);
+    const firstValue = await firstCheckbox.getAttribute('value');
+    if (!firstValue) {
+      throw new Error(`Task list ${groupName} first filter option did not expose a value.`);
     }
+    await selectAllCheckbox.first().evaluate((checkboxElement) => {
+      const checkbox = checkboxElement as HTMLInputElement;
+      if (checkbox.checked) {
+        checkbox.checked = false;
+        checkbox.dispatchEvent(new Event('input', { bubbles: true }));
+        checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    });
+    await childCheckboxes.evaluateAll((checkboxElements, selectedValue) => {
+      for (const checkboxElement of checkboxElements) {
+        const checkbox = checkboxElement as HTMLInputElement;
+        const shouldBeChecked = checkbox.value === selectedValue;
+        if (checkbox.checked !== shouldBeChecked) {
+          checkbox.checked = shouldBeChecked;
+          checkbox.dispatchEvent(new Event('input', { bubbles: true }));
+          checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      }
+    }, firstValue);
+    if ((await this.readFilterCheckboxState(firstCheckbox, `${groupName} option 1`, deadlineMs)) !== true) {
+      throw new Error(`Task list ${groupName} first filter option was not selected.`);
+    }
+    return firstValue;
+  }
+
+  private async forceChildCheckboxState(childCheckboxes: Locator, checked: boolean, groupName: string, deadlineMs?: number) {
+    this.assertFilterInteractionAlive(`${groupName} child checkbox update`, deadlineMs);
+    await this.waitForFilterCheckboxVisible(childCheckboxes.first(), `${groupName} option 1`, deadlineMs);
+    await childCheckboxes.evaluateAll((checkboxElements, desiredChecked) => {
+      for (const checkboxElement of checkboxElements) {
+        const checkbox = checkboxElement as HTMLInputElement;
+        if (checkbox.checked !== desiredChecked) {
+          checkbox.checked = desiredChecked;
+          checkbox.dispatchEvent(new Event('input', { bubbles: true }));
+          checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      }
+    }, checked);
     await this.page.waitForTimeout(250);
   }
 
@@ -1080,14 +1237,15 @@ export class TaskListPage extends Base {
         }
       }
 
-      const pageError = await pageErrorPromise.catch(() => null);
-      if (pageError) {
-        throw new Error(`Page error while ${context}: ${pageError.message}`);
-      }
-
-      const observedRequest = await requestPromise.catch(() => null);
+      const [observedRequest, pageError] = await Promise.all([
+        requestPromise.catch(() => null),
+        pageErrorPromise.catch(() => null),
+      ]);
       if (observedRequest) {
         return observedRequest;
+      }
+      if (pageError) {
+        throw new Error(`Page error while ${context}: ${pageError.message}`);
       }
     }
 

@@ -25,8 +25,21 @@ test.describe(
         const body = JSON.stringify(divorcePocCaseData());
         await route.fulfill({ status: 200, contentType: 'application/json', body });
       });
+      await page.route(`**/data/case-types/${caseType}/validate*`, async (route) => {
+        const request = route.request();
+        const requestBody = request.postDataJSON?.() as { data?: unknown } | undefined;
+        const responseBody = {
+          data: requestBody?.data ?? {},
+          _links: {
+            self: {
+              href: request.url(),
+            },
+          },
+        };
+        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(responseBody) });
+      });
       await page.goto(`/cases/case-create/${jurisdiction}/${caseType}/createCase/`);
-      await expect(createCasePage.person1TitleInput).toBeVisible();
+      await createCasePage.waitForCreateCaseFormReady('negative create-case setup');
     });
     test(`User should see a page refreshed modal when attempting to skip to the submit case page, without filling in required fields`, async ({
       createCasePage,

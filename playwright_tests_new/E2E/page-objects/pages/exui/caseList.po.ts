@@ -133,7 +133,12 @@ export class CaseListPage extends Base {
 
   async goto() {
     await this.page.goto('/cases', { waitUntil: 'domcontentloaded' });
-    await this.waitForCasesShellReady();
+    await this.waitForCasesShellReady().catch(async (error: Error) => {
+      await this.page.reload({ waitUntil: 'domcontentloaded' });
+      await this.waitForCasesShellReady().catch(() => {
+        throw error;
+      });
+    });
   }
 
   async navigateTo() {

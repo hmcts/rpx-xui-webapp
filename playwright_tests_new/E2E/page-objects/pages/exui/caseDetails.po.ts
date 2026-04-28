@@ -706,6 +706,18 @@ export class CaseDetailsPage extends Base {
     await this.waitForCaseDetailsTabsReady(timeoutMs);
   }
 
+  async openTasksTab(jurisdiction: string, caseType: string, caseId: string, timeoutMs = 30_000): Promise<void> {
+    const targetUrl = `/cases/case-details/${jurisdiction}/${caseType}/${caseId}/tasks`;
+    await this.page.goto(targetUrl, { waitUntil: 'domcontentloaded' });
+    await this.taskListContainer.waitFor({ state: 'visible', timeout: timeoutMs }).catch(async (error: Error) => {
+      await this.page.goto(targetUrl, { waitUntil: 'domcontentloaded' });
+      await this.taskListContainer.waitFor({ state: 'visible', timeout: timeoutMs }).catch(() => {
+        throw error;
+      });
+    });
+    await this.exuiSpinnerComponent.wait();
+  }
+
   getRoleAccessSection(title: 'Judiciary' | 'Legal Ops'): Locator {
     return this.page.locator('exui-role-access-section').filter({
       has: this.page.getByRole('heading', { level: 2, name: title }),
@@ -803,7 +815,15 @@ export class CaseDetailsPage extends Base {
   }
 
   private async waitForCaseDetailsTabsReady(timeoutMs: number): Promise<void> {
-    await this.container.waitFor({ state: 'visible', timeout: timeoutMs });
+    await this.container.waitFor({ state: 'visible', timeout: timeoutMs }).catch(async (error: Error) => {
+      if (!/\/cases\/case-details\//.test(this.page.url())) {
+        throw error;
+      }
+      await this.page.goto(this.page.url(), { waitUntil: 'domcontentloaded' });
+      await this.container.waitFor({ state: 'visible', timeout: timeoutMs }).catch(() => {
+        throw error;
+      });
+    });
     await this.tabList.waitFor({ state: 'visible', timeout: timeoutMs });
 
     const deadline = Date.now() + timeoutMs;

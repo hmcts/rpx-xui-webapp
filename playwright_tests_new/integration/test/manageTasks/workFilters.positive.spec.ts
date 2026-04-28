@@ -82,7 +82,7 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
     });
 
     await test.step('My cases keeps services and location search while keeping work types hidden', async () => {
-      await taskListPage.gotoMyCases();
+      await taskListPage.gotoMyCases({ allowServiceDown: false });
       await taskListPage.waitForTaskListShellReady('my cases filter view');
       await taskListPage.expectWorkFilterControls({ typesOfWorkVisible: false });
     });
@@ -172,17 +172,11 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
     });
 
     await taskListPage.gotoAndWaitForTaskRow('capturing My tasks filter requests');
-    await taskListPage.openFilterPanel();
-
-    await taskListPage.clearServicesFilters();
-    selectedService = await taskListPage.serviceFilterCheckboxes.first().getAttribute('value');
+    selectedService = await taskListPage.selectOnlyFirstServiceFilter();
     expect(selectedService).toBeTruthy();
-    await taskListPage.serviceFilterCheckboxes.first().check({ force: true });
 
-    await taskListPage.clearTypesOfWorkFilters();
-    selectedWorkType = await taskListPage.typesOfWorkFilterCheckboxes.first().getAttribute('value');
+    selectedWorkType = await taskListPage.selectOnlyFirstTypeOfWorkFilter();
     expect(selectedWorkType).toBeTruthy();
-    await taskListPage.typesOfWorkFilterCheckboxes.first().check({ force: true });
 
     const initialRequestCount = taskRequests.length;
     await taskListPage.applyCurrentFilters();
@@ -254,7 +248,7 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
       });
     });
 
-    await taskListPage.gotoMyCases();
+    await taskListPage.gotoMyCases({ allowServiceDown: false });
     await expect.poll(() => myCasesRequests.length).toBeGreaterThan(0);
 
     const latestRequest = myCasesRequests.at(-1);
@@ -302,8 +296,7 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
 
     await taskListPage.expectAccessTasksAndCasesTextVisible();
 
-    await taskListPage.expectSelectedFilterTagVisible('Taylor House');
-    await taskListPage.expectSelectedFilterTagVisible('Birmingham Civil and Family Justice Centre');
+    await taskListPage.expectSelectedFilterTagsVisible(['Taylor House', 'Birmingham Civil and Family Justice Centre']);
   });
 
   for (const scenario of workFiltersLocationSearchScenarios) {
@@ -360,13 +353,9 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
         await expect.poll(() => fullLocationRequests.length).toBe(0);
       }
 
-      if (scenario.expectedInitialLocations.length > 0) {
-        await expect(taskListPage.selectedLocationTags).toHaveText(scenario.expectedInitialLocations);
-      } else {
-        await expect(taskListPage.selectedLocationTags).toHaveCount(0);
-      }
+      await taskListPage.expectSelectedLocations(scenario.expectedInitialLocations);
       await taskListPage.removeAllSelectedLocations();
-      await expect(taskListPage.selectedLocationTags).toHaveCount(0);
+      await taskListPage.expectSelectedLocations([]);
 
       await taskListPage.searchForLocation('Court');
       await expect(taskListPage.allWorkLocationSearchInput).toHaveValue('Court');

@@ -78,10 +78,20 @@ export async function openHearingsTabForScenario(
   await applySessionCookies(page, options?.userIdentifier ?? HEARING_MANAGER_CR84_ON_USER);
   await setupHearingsMockRoutes(page, config);
   const route = resolveHearingsCaseRoute({ routeConfig: config });
-  await page.goto(caseDetailsUrl(route.jurisdictionId, route.caseTypeId, route.caseReference), {
+  const targetUrl = caseDetailsUrl(route.jurisdictionId, route.caseTypeId, route.caseReference);
+  await page.goto(targetUrl, {
     waitUntil: 'domcontentloaded',
   });
-  await expect(caseDetailsPage.container).toBeVisible({ timeout: 30_000 });
+  await expect(caseDetailsPage.container)
+    .toBeVisible({ timeout: 30_000 })
+    .catch(async (error: Error) => {
+      await page.goto(targetUrl, { waitUntil: 'domcontentloaded' });
+      await expect(caseDetailsPage.container)
+        .toBeVisible({ timeout: 30_000 })
+        .catch(() => {
+          throw error;
+        });
+    });
 
   if (options?.waitForGetHearingsResponse === false) {
     await caseDetailsPage.selectCaseDetailsTab('Hearings');

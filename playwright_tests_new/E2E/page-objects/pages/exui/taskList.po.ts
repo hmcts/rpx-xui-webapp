@@ -399,6 +399,9 @@ export class TaskListPage extends Base {
       await this.assertTaskListInteractive(`waiting for ${description}`);
       throw new Error(`Task list filter checkbox "${description}" did not become visible within ${timeoutMs}ms.`);
     });
+    await expect(targetCheckbox).toBeEnabled({
+      timeout: this.resolveInteractionTimeout(deadlineMs, FILTER_CHECKBOX_STATE_TIMEOUT_MS),
+    });
     return targetCheckbox;
   }
 
@@ -415,7 +418,8 @@ export class TaskListPage extends Base {
 
   private async readFilterCheckboxState(checkbox: Locator, description: string, deadlineMs?: number): Promise<boolean> {
     this.assertFilterInteractionAlive(`checkbox "${description}" state read`, deadlineMs);
-    return checkbox
+    const targetCheckbox = await this.waitForFilterCheckboxVisible(checkbox, description, deadlineMs);
+    return targetCheckbox
       .isChecked({ timeout: this.resolveInteractionTimeout(deadlineMs, FILTER_CHECKBOX_STATE_TIMEOUT_MS) })
       .catch((error: Error) => {
         if (this.page.isClosed() || /Target page, context or browser has been closed/i.test(error.message)) {
@@ -630,8 +634,8 @@ export class TaskListPage extends Base {
 
   private async setFilterCheckbox(checkbox: Locator, checked: boolean, description: string, deadlineMs?: number) {
     await this.openFilterPanel(deadlineMs);
-    const targetCheckbox = await this.waitForFilterCheckboxVisible(checkbox, description, deadlineMs);
     for (let attempt = 0; attempt < FILTER_INTERACTION_ATTEMPTS; attempt += 1) {
+      const targetCheckbox = await this.waitForFilterCheckboxVisible(checkbox, description, deadlineMs);
       const isChecked = await this.readFilterCheckboxState(targetCheckbox, description, deadlineMs);
       if (isChecked === checked) {
         return;

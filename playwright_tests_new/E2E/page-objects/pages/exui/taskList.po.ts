@@ -1240,12 +1240,7 @@ export class TaskListPage extends Base {
       });
 
       try {
-        if (attempt === 0) {
-          await targetButton.click({ noWaitAfter: true, timeout: actionTimeoutMs });
-        } else if (attempt === 1) {
-          await targetButton.focus();
-          await this.page.keyboard.press('Enter');
-        }
+        await targetButton.click({ noWaitAfter: true, timeout: actionTimeoutMs });
       } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         const isTransientSubmitError =

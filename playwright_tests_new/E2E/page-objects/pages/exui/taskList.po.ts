@@ -7,6 +7,7 @@ const FILTER_CONTROL_READY_TIMEOUT_MS = 15_000;
 const FILTER_GROUP_OPERATION_TIMEOUT_MS = 30_000;
 const FILTER_CHECKBOX_STATE_TIMEOUT_MS = 5_000;
 const FILTER_INTERACTION_ATTEMPTS = 2;
+const TASK_LIST_NAVIGATION_ATTEMPTS = 2;
 const PRIORITY_LIMIT_URGENT = 2000;
 const PRIORITY_LIMIT_HIGH = 5000;
 
@@ -135,7 +136,11 @@ export class TaskListPage extends Base {
 
     await this.gotoTaskListPath('/work/my-work/list', /\/work\/my-work\/list(?:\?.*)?$/, `${context} navigation`, timeoutMs);
     await this.waitForTaskListSpinnerToSettle(10_000);
-    await this.waitForTaskListShellReady(`${context} shell bootstrap`);
+    await this.waitForTaskListShellReadyAfterNavigation(
+      /\/work\/my-work\/list(?:\?.*)?$/,
+      `${context} shell bootstrap`,
+      timeoutMs
+    );
     await this.waitForTaskRowReady(`${context} row bootstrap`, { rowIndex, timeoutMs });
   }
 
@@ -262,7 +267,7 @@ export class TaskListPage extends Base {
     const timeoutMs = options.timeoutMs ?? TASK_LIST_READY_TIMEOUT_MS;
     await this.gotoTaskListPath(path, urlPattern, context, timeoutMs);
     await this.waitForTaskListSpinnerToSettle(10_000);
-    await this.waitForTaskListShellReady(context);
+    await this.waitForTaskListShellReadyAfterNavigation(urlPattern, context, timeoutMs);
   }
 
   private async navigateToTerminalTaskListView(
@@ -278,11 +283,62 @@ export class TaskListPage extends Base {
   }
 
   private async gotoTaskListPath(path: string, urlPattern: RegExp, context: string, timeoutMs: number): Promise<void> {
-    await this.page.goto(path, { waitUntil: 'domcontentloaded' });
+    for (let attempt = 1; attempt <= TASK_LIST_NAVIGATION_ATTEMPTS; attempt += 1) {
+      try {
+        await this.page.goto(path, { waitUntil: 'domcontentloaded', timeout: timeoutMs });
+        break;
+      } catch (error) {
+        const navigationError = error as Error;
+        if (!this.isTransientTaskListNavigationError(navigationError) || attempt === TASK_LIST_NAVIGATION_ATTEMPTS) {
+          throw navigationError;
+        }
+        await this.page.waitForTimeout(500);
+      }
+    }
+
     await this.page.waitForURL(urlPattern, { timeout: timeoutMs }).catch(() => undefined);
     if (!urlPattern.test(this.page.url())) {
       throw new Error(`Task list navigation for ${context} landed on ${this.page.url()} instead of ${urlPattern}.`);
     }
+  }
+
+  private isTransientTaskListNavigationError(error: Error): boolean {
+    return /net::ERR_NETWORK_CHANGED|chrome-error:\/\/chromewebdata/i.test(error.message);
+  }
+
+  private async waitForTaskListShellReadyAfterNavigation(urlPattern: RegExp, context: string, timeoutMs: number): Promise<void> {
+    try {
+      await this.waitForTaskListShellReady(context);
+      return;
+    } catch (error) {
+      if (!(await this.isBlankTaskListDocument(urlPattern))) {
+        throw error;
+      }
+
+      this.logger.warn('TASK_LIST_BLANK_DOCUMENT_RELOAD', {
+        context,
+        url: this.page.url(),
+      });
+      await this.page.reload({ waitUntil: 'domcontentloaded', timeout: timeoutMs });
+      await this.page.waitForURL(urlPattern, { timeout: timeoutMs }).catch(() => undefined);
+      if (!urlPattern.test(this.page.url())) {
+        throw new Error(`Task list navigation for ${context} landed on ${this.page.url()} after blank-page reload.`);
+      }
+      await this.waitForTaskListSpinnerToSettle(10_000);
+      await this.waitForTaskListShellReady(`${context} after blank-page reload`);
+    }
+  }
+
+  private async isBlankTaskListDocument(urlPattern: RegExp): Promise<boolean> {
+    if (!urlPattern.test(this.page.url())) {
+      return false;
+    }
+
+    const bodyText = await this.page
+      .locator('body')
+      .innerText({ timeout: 500 })
+      .catch(() => '');
+    return bodyText.trim().length === 0;
   }
 
   private async assertTaskListHealthy(context: string, options: { allowServiceDown?: boolean } = {}): Promise<void> {

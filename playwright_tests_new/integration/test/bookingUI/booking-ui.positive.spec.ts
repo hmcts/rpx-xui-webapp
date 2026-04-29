@@ -1,4 +1,9 @@
-import { applySessionCookiesAndExtractUserId, setupBookingUiMockRoutes } from '../../helpers';
+import {
+  applySessionCookiesAndExtractUserId,
+  type BookingUiUserIdentifier,
+  resolveBookingUiUserIdentifier,
+  setupBookingUiMockRoutes,
+} from '../../helpers';
 import { setupTaskListMockRoutes } from '../../helpers/taskListMockRoutes.helper';
 import { expect, test } from '../../../E2E/fixtures';
 import {
@@ -11,11 +16,11 @@ import {
 import { buildMyTaskListMock } from '../../mocks/taskList.mock';
 import { formatUiDate } from '../../utils/tableUtils';
 
-const userIdentifier = 'BOOKING_UI-FT-ON';
 const defaultBookingLocation = singleLocationMock[0];
 const bookingPageUrlPattern = /\/booking$/;
 const tasksPageUrlPattern = /\/work\/my-work\/list/;
 
+let userIdentifier: BookingUiUserIdentifier;
 let getBookingsCalled = false;
 let createBookingCalled = false;
 let createBookingRequestBody: CreateBookingRequest | undefined;
@@ -23,13 +28,14 @@ let createBookingResponseBody: CreateBookingResponse | undefined;
 let sessionUserId = '';
 let existingBookingsMock;
 
-test.describe(`Booking UI as ${userIdentifier}`, { tag: ['@integration', '@integration-booking-ui'] }, () => {
-  test.beforeEach(async ({ page }) => {
+test.describe('Booking UI with lazy pooled session users', { tag: ['@integration', '@integration-booking-ui'] }, () => {
+  test.beforeEach(async ({ page }, testInfo) => {
     getBookingsCalled = false;
     createBookingCalled = false;
     createBookingRequestBody = undefined;
     createBookingResponseBody = undefined;
 
+    userIdentifier = resolveBookingUiUserIdentifier(testInfo);
     const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
     sessionUserId = userId;
     existingBookingsMock = buildExistingBookingsMock(userId);
@@ -75,11 +81,11 @@ test.describe(`Booking UI as ${userIdentifier}`, { tag: ['@integration', '@integ
 
     await test.step('Select existing booking and verify enabled/disabled booking buttons', async () => {
       await bookingUiPage.selectOption('Choose an existing booking');
-      await expect(bookingUiPage.existingBookings.nth(1).getByRole('button')).toBeDisabled();
+      await expect(bookingUiPage.existingBookingButton(1)).toBeDisabled();
     });
 
     await test.step('Continue with the active booking and redirect to my work list', async () => {
-      await bookingUiPage.existingBookings.first().getByRole('button').click();
+      await bookingUiPage.continueWithExistingBooking(0);
       await expect(page).toHaveURL(tasksPageUrlPattern);
     });
   });
@@ -98,15 +104,15 @@ test.describe(`Booking UI as ${userIdentifier}`, { tag: ['@integration', '@integ
     });
 
     await test.step('Continue and move to booking location step', async () => {
-      await bookingUiPage.continueButton.click();
+      await bookingUiPage.continue();
       await expect(page).toHaveURL(bookingPageUrlPattern);
       await bookingUiPage.selectFirstLocationFromSearch('Lon');
-      await bookingUiPage.continueButton.click();
+      await bookingUiPage.continue();
     });
 
     await test.step('Select the booking time as today only', async () => {
-      await bookingUiPage.bookingDateRadio.filter({ hasText: 'Today only (ends at midnight)' }).click();
-      await bookingUiPage.continueButton.click();
+      await bookingUiPage.chooseTodayOnlyBooking();
+      await bookingUiPage.continue();
     });
 
     await test.step('Verify check your answers and submit', async () => {
@@ -120,7 +126,7 @@ test.describe(`Booking UI as ${userIdentifier}`, { tag: ['@integration', '@integ
         key: 'Duration',
         value: `${today} to ${today}`,
       });
-      await bookingUiPage.bookingButton.click();
+      await bookingUiPage.confirmBooking();
     });
 
     await test.step('Intercept create booking API request and verify payload', async () => {
@@ -166,7 +172,7 @@ test.describe(`Booking UI as ${userIdentifier}`, { tag: ['@integration', '@integ
     });
 
     await test.step('Continue and redirect to my work list', async () => {
-      await bookingUiPage.continueButton.click();
+      await bookingUiPage.continue();
       await expect(page).toHaveURL(tasksPageUrlPattern);
     });
   });

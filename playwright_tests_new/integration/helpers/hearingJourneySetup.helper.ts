@@ -2,6 +2,12 @@ import { expect, type Page, type Response } from '@playwright/test';
 import type { CaseDetailsPage } from '../../E2E/page-objects/pages/exui/caseDetails.po';
 import { HearingsTabPage } from '../../E2E/page-objects/pages/exui/hearingsTab.po';
 import { applySessionCookies } from '../../common/sessionCapture';
+import {
+  HEARING_MANAGER_CR84_OFF_USER,
+  HEARING_MANAGER_CR84_ON_USER,
+  resolveHearingManagerUserIdentifier,
+  type HearingManagerUserIdentifier,
+} from './hearingManagerUserPool.helper';
 import { setupHearingsMockRoutes, type HearingsMockRoutesConfig } from './hearingsMockRoutes.helper';
 import {
   HEARINGS_CASE_JURISDICTION,
@@ -11,8 +17,6 @@ import {
   type HearingScenario,
 } from '../mocks/hearings.mock';
 
-export const HEARING_MANAGER_CR84_ON_USER = 'HEARING_MANAGER_CR84_ON';
-export const HEARING_MANAGER_CR84_OFF_USER = 'HEARING_MANAGER_CR84_OFF';
 export const HEARINGS_TERMINAL_STATE_TIMEOUT_MS = 15_000;
 export const HEARINGS_ROWS_HIDDEN_TIMEOUT_MS = 10_000;
 export const HEARINGS_SLOW_RESPONSE_DELAY_MS = 4_000;
@@ -82,14 +86,14 @@ export async function openHearingsTab(
   page: Page,
   caseDetailsPage: CaseDetailsPage,
   options: {
-    userIdentifier?: string;
+    userIdentifier?: HearingManagerUserIdentifier;
     routeConfig: HearingsMockRoutesConfig;
     jurisdictionId?: string;
     caseTypeId?: string;
     caseReference?: string;
   }
 ): Promise<void> {
-  await applySessionCookies(page, options.userIdentifier ?? HEARING_MANAGER_CR84_ON_USER);
+  await applySessionCookies(page, resolveHearingManagerUserIdentifier(options.userIdentifier ?? HEARING_MANAGER_CR84_ON_USER));
   await setupHearingsMockRoutes(page, options.routeConfig);
   const route = resolveHearingsCaseRoute(options);
   await gotoCaseDetailsWithRetry(page, caseDetailsUrl(route.jurisdictionId, route.caseTypeId, route.caseReference));
@@ -101,11 +105,11 @@ export async function openHearingsTabForScenario(
   caseDetailsPage: CaseDetailsPage,
   config: HearingsMockRoutesConfig,
   options?: {
-    userIdentifier?: string;
+    userIdentifier?: HearingManagerUserIdentifier;
     waitForGetHearingsResponse?: boolean;
   }
 ): Promise<Response | null> {
-  await applySessionCookies(page, options?.userIdentifier ?? HEARING_MANAGER_CR84_ON_USER);
+  await applySessionCookies(page, resolveHearingManagerUserIdentifier(options?.userIdentifier ?? HEARING_MANAGER_CR84_ON_USER));
   await setupHearingsMockRoutes(page, config);
   const route = resolveHearingsCaseRoute({ routeConfig: config });
   const targetUrl = caseDetailsUrl(route.jurisdictionId, route.caseTypeId, route.caseReference);

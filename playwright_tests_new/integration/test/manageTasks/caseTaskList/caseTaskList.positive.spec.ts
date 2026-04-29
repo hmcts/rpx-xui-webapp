@@ -6,19 +6,12 @@ import { buildCaseDetailsTasksMinimal } from '../../../mocks/caseDetailsTasks.bu
 import { buildAsylumCaseMock } from '../../../mocks/cases/asylumCase.mock';
 
 const userIdentifier = 'STAFF_ADMIN';
-const futureDateInHours = (hoursFromNow: number): string => {
-  const date = new Date();
-  date.setUTCHours(date.getUTCHours() + hoursFromNow, 0, 0, 0);
-  return date.toISOString();
-};
 const futureDateAtNoonUtc = (daysFromNow: number): string => {
   const date = new Date();
   date.setUTCDate(date.getUTCDate() + daysFromNow);
   date.setUTCHours(12, 0, 0, 0);
   return date.toISOString();
 };
-const inTwelveHours = futureDateInHours(12);
-const inTwoDays = futureDateAtNoonUtc(2);
 const in90Days = futureDateAtNoonUtc(90);
 const caseId = faker.number.int({ min: 1000000000, max: 9999999999 }).toString();
 let assigneeId: string | null = null;
@@ -115,6 +108,9 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     caseDetailsPage,
     page,
   }) => {
+    const fixedNow = new Date('2026-04-28T12:00:00.000Z');
+    const inTwelveHours = new Date('2026-04-29T00:00:00.000Z').toISOString();
+    const inTwoDays = new Date('2026-04-30T12:00:00.000Z').toISOString();
     const caseMockResponse = buildAsylumCaseMock({ caseId });
     const taskData = {
       id: [faker.string.uuid().toString()],
@@ -135,6 +131,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     });
 
     await test.step('Navigate to mocked case task list', async () => {
+      await page.clock.setFixedTime(fixedNow);
       await caseDetailsPage.openTasksTab('IA', 'Asylum', caseId);
     });
 

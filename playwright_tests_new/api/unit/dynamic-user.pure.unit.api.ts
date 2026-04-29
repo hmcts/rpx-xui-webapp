@@ -34,6 +34,26 @@ const ENV_KEYS = [
   'DIVORCE_SOLICITOR_PASSWORD',
   'BOOKING_UI_FT_ON_USERNAME',
   'BOOKING_UI_FT_ON_PASSWORD',
+  'BOOKING_UI_FT_ON_1_USERNAME',
+  'BOOKING_UI_FT_ON_1_PASSWORD',
+  'BOOKING_UI_FT_ON_2_USERNAME',
+  'BOOKING_UI_FT_ON_2_PASSWORD',
+  'BOOKING_UI_FT_ON_3_USERNAME',
+  'BOOKING_UI_FT_ON_3_PASSWORD',
+  'BOOKING_UI_FT_ON_4_USERNAME',
+  'BOOKING_UI_FT_ON_4_PASSWORD',
+  'HEARING_MANAGER_CR84_OFF_USERNAME',
+  'HEARING_MANAGER_CR84_OFF_PASSWORD',
+  'HEARING_MANAGER_CR84_OFF_1_USERNAME',
+  'HEARING_MANAGER_CR84_OFF_1_PASSWORD',
+  'HEARING_MANAGER_CR84_OFF_4_USERNAME',
+  'HEARING_MANAGER_CR84_OFF_4_PASSWORD',
+  'HEARING_MANAGER_CR84_ON_USERNAME',
+  'HEARING_MANAGER_CR84_ON_PASSWORD',
+  'HEARING_MANAGER_CR84_ON_1_USERNAME',
+  'HEARING_MANAGER_CR84_ON_1_PASSWORD',
+  'HEARING_MANAGER_CR84_ON_4_USERNAME',
+  'HEARING_MANAGER_CR84_ON_4_PASSWORD',
   'EMPLOYMENT_DYNAMIC_CASEWORKER_USERNAME',
   'EMPLOYMENT_DYNAMIC_CASEWORKER_PASSWORD',
 ] as const;
@@ -124,6 +144,30 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
     expect(bookingUiFtOnMapping).toEqual({
       username: 'BOOKING_UI_FT_ON_USERNAME',
       password: 'BOOKING_UI_FT_ON_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' booking_ui-ft-on-1 ')).toEqual({
+      username: 'BOOKING_UI_FT_ON_1_USERNAME',
+      password: 'BOOKING_UI_FT_ON_1_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' booking_ui-ft-on-4 ')).toEqual({
+      username: 'BOOKING_UI_FT_ON_4_USERNAME',
+      password: 'BOOKING_UI_FT_ON_4_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' hearing_manager_cr84_off ')).toEqual({
+      username: 'HEARING_MANAGER_CR84_OFF_USERNAME',
+      password: 'HEARING_MANAGER_CR84_OFF_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' hearing_manager_cr84_off-1 ')).toEqual({
+      username: 'HEARING_MANAGER_CR84_OFF_1_USERNAME',
+      password: 'HEARING_MANAGER_CR84_OFF_1_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' hearing_manager_cr84_on ')).toEqual({
+      username: 'HEARING_MANAGER_CR84_ON_USERNAME',
+      password: 'HEARING_MANAGER_CR84_ON_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' hearing_manager_cr84_on-4 ')).toEqual({
+      username: 'HEARING_MANAGER_CR84_ON_4_USERNAME',
+      password: 'HEARING_MANAGER_CR84_ON_4_PASSWORD',
     });
 
     process.env.DIVORCE_SOLICITOR_USERNAME = 'divorce@example.test';

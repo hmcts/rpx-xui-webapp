@@ -1,4 +1,9 @@
-import { applySessionCookiesAndExtractUserId, setupBookingUiMockRoutes } from '../../helpers';
+import {
+  applySessionCookiesAndExtractUserId,
+  type BookingUiUserIdentifier,
+  resolveBookingUiUserIdentifier,
+  setupBookingUiMockRoutes,
+} from '../../helpers';
 import { setupTaskListMockRoutes } from '../../helpers/taskListMockRoutes.helper';
 import { expect, test } from '../../../E2E/fixtures';
 import {
@@ -11,7 +16,6 @@ import { buildHearingsUserDetailsMock } from '../../mocks/hearings.mock';
 import { buildMyTaskListMock } from '../../mocks/taskList.mock';
 import { formatUiDate } from '../../utils/tableUtils';
 
-const userIdentifier = 'BOOKING_UI-FT-ON';
 const defaultBookingLocation = singleLocationMock[0];
 const bookingPageUrlPattern = /\/booking$/;
 const casesPageUrlPattern = /\/cases(?:$|[/?#])/;
@@ -23,9 +27,10 @@ const createBookingErrorCases = [
 
 createBookingErrorCases.forEach(({ status, expectedUrlPattern }) => {
   test.describe(
-    `Booking UI create booking error ${status} as ${userIdentifier}`,
+    `Booking UI create booking error ${status} with lazy pooled session users`,
     { tag: ['@integration', '@integration-booking-ui'] },
     () => {
+      let userIdentifier: BookingUiUserIdentifier;
       let getBookingsCalled = false;
       let createBookingCalled = false;
       let refreshRoleAssignmentsCalled = false;
@@ -33,12 +38,13 @@ createBookingErrorCases.forEach(({ status, expectedUrlPattern }) => {
       let sessionUserId = '';
       let existingBookingsMock;
 
-      test.beforeEach(async ({ page }) => {
+      test.beforeEach(async ({ page }, testInfo) => {
         getBookingsCalled = false;
         createBookingCalled = false;
         refreshRoleAssignmentsCalled = false;
         createBookingRequestBody = undefined;
 
+        userIdentifier = resolveBookingUiUserIdentifier(testInfo);
         const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
         sessionUserId = userId;
         existingBookingsMock = buildExistingBookingsMock(userId);
@@ -84,15 +90,15 @@ createBookingErrorCases.forEach(({ status, expectedUrlPattern }) => {
 
         await test.step('Choose create new booking and continue', async () => {
           await bookingUiPage.selectOption('Create a new booking');
-          await bookingUiPage.continueButton.click();
+          await bookingUiPage.continue();
           await expect(page).toHaveURL(bookingPageUrlPattern);
         });
 
         await test.step('Select location, choose today only and continue', async () => {
           await bookingUiPage.selectFirstLocationFromSearch('Lon');
-          await bookingUiPage.continueButton.click();
-          await bookingUiPage.bookingDateRadio.filter({ hasText: 'Today only (ends at midnight)' }).click();
-          await bookingUiPage.continueButton.click();
+          await bookingUiPage.continue();
+          await bookingUiPage.chooseTodayOnlyBooking();
+          await bookingUiPage.continue();
         });
 
         await test.step('Confirm booking and verify summary details', async () => {
@@ -106,7 +112,7 @@ createBookingErrorCases.forEach(({ status, expectedUrlPattern }) => {
             key: 'Duration',
             value: `${today} to ${today}`,
           });
-          await bookingUiPage.bookingButton.click();
+          await bookingUiPage.confirmBooking();
         });
 
         await test.step('Verify create booking payload and error redirect', async () => {
@@ -128,108 +134,120 @@ createBookingErrorCases.forEach(({ status, expectedUrlPattern }) => {
   );
 });
 
-test.describe(`Booking UI access checks as ${userIdentifier}`, { tag: ['@integration', '@integration-booking-ui'] }, () => {
-  let getBookingsCalled = false;
-  let existingBookingsMock;
+test.describe(
+  'Booking UI access checks with lazy pooled session users',
+  { tag: ['@integration', '@integration-booking-ui'] },
+  () => {
+    let userIdentifier: BookingUiUserIdentifier;
+    let getBookingsCalled = false;
+    let existingBookingsMock;
 
-  test.beforeEach(async ({ page }) => {
-    getBookingsCalled = false;
-    const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
-    existingBookingsMock = buildExistingBookingsMock(userId);
+    test.beforeEach(async ({ page }, testInfo) => {
+      getBookingsCalled = false;
+      userIdentifier = resolveBookingUiUserIdentifier(testInfo);
+      const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
+      existingBookingsMock = buildExistingBookingsMock(userId);
 
-    await setupTaskListMockRoutes(page, buildMyTaskListMock(userId, 3));
-    await setupBookingUiMockRoutes(page, {
-      locationResponseBody: singleLocationMock,
-      getBookingsResponseBody: existingBookingsMock,
-      onGetBookings: () => {
-        getBookingsCalled = true;
-      },
-    });
-  });
-
-  test('user without booking access is redirected away from Booking UI', async ({ bookingUiPage, page }) => {
-    await test.step('Mock user details without booking access', async () => {
-      const noBookingAccessUser = buildHearingsUserDetailsMock([]);
-      await page.route('**/api/user/details*', async (route) => {
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(noBookingAccessUser),
-        });
+      await setupTaskListMockRoutes(page, buildMyTaskListMock(userId, 3));
+      await setupBookingUiMockRoutes(page, {
+        locationResponseBody: singleLocationMock,
+        getBookingsResponseBody: existingBookingsMock,
+        onGetBookings: () => {
+          getBookingsCalled = true;
+        },
       });
     });
 
-    await test.step('Navigate to booking and verify redirect to cases', async () => {
-      await bookingUiPage.gotoExpectingRedirect(casesPageUrlPattern);
-      await expect(page).toHaveURL(casesPageUrlPattern);
+    test('user without booking access is redirected away from Booking UI', async ({ bookingUiPage, page }) => {
+      await test.step('Mock user details without booking access', async () => {
+        const noBookingAccessUser = buildHearingsUserDetailsMock([]);
+        await page.route('**/api/user/details*', async (route) => {
+          await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify(noBookingAccessUser),
+          });
+        });
+      });
+
+      await test.step('Navigate to booking and verify redirect to cases', async () => {
+        await bookingUiPage.gotoExpectingRedirect(casesPageUrlPattern);
+        await expect(page).toHaveURL(casesPageUrlPattern);
+      });
     });
-  });
-});
+  }
+);
 
-test.describe(`Booking UI validation checks as ${userIdentifier}`, { tag: ['@integration', '@integration-booking-ui'] }, () => {
-  let getBookingsCalled = false;
-  let existingBookingsMock;
+test.describe(
+  'Booking UI validation checks with lazy pooled session users',
+  { tag: ['@integration', '@integration-booking-ui'] },
+  () => {
+    let userIdentifier: BookingUiUserIdentifier;
+    let getBookingsCalled = false;
+    let existingBookingsMock;
 
-  test.beforeEach(async ({ page }) => {
-    getBookingsCalled = false;
-    const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
-    existingBookingsMock = buildExistingBookingsMock(userId);
+    test.beforeEach(async ({ page }, testInfo) => {
+      getBookingsCalled = false;
+      userIdentifier = resolveBookingUiUserIdentifier(testInfo);
+      const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
+      existingBookingsMock = buildExistingBookingsMock(userId);
 
-    await setupTaskListMockRoutes(page, buildMyTaskListMock(userId, 3));
-    await setupBookingUiMockRoutes(page, {
-      locationResponseBody: singleLocationMock,
-      getBookingsResponseBody: existingBookingsMock,
-      onGetBookings: () => {
-        getBookingsCalled = true;
-      },
-    });
-  });
-
-  test('user cannot continue from location step without selecting a location', async ({ page, bookingUiPage }) => {
-    await test.step('Navigate to booking and move to location step', async () => {
-      await bookingUiPage.goto();
-      await expect(page).toHaveURL(bookingPageUrlPattern);
-      await expect.poll(() => getBookingsCalled).toBeTruthy();
-      await bookingUiPage.selectOption('Create a new booking');
-      await bookingUiPage.continueButton.click();
-      await expect(page.getByRole('heading', { name: /Select a location/i })).toBeVisible();
-    });
-
-    await test.step('Try to continue without selecting a location', async () => {
-      await bookingUiPage.continueButton.click();
-    });
-
-    await test.step('Verify GOV.UK error summary for missing location', async () => {
-      await expect(page).toHaveURL(bookingPageUrlPattern);
-      await expect(bookingUiPage.exuiHeader.errorHeader).toBeVisible();
-      await expect(bookingUiPage.exuiHeader.errorHeaderTitle).toContainText('There is a problem');
-      await expect(bookingUiPage.exuiHeader.errorHeader).toContainText('Enter a valid location');
-    });
-  });
-
-  test('user cannot continue from date step with invalid or incomplete dates', async ({ page, bookingUiPage }) => {
-    await test.step('Navigate to booking and move to date step', async () => {
-      await bookingUiPage.goto();
-      await expect(page).toHaveURL(bookingPageUrlPattern);
-      await expect.poll(() => getBookingsCalled).toBeTruthy();
-      await bookingUiPage.selectOption('Create a new booking');
-      await bookingUiPage.continueButton.click();
-      await bookingUiPage.selectFirstLocationFromSearch('Lon');
-      await bookingUiPage.continueButton.click();
+      await setupTaskListMockRoutes(page, buildMyTaskListMock(userId, 3));
+      await setupBookingUiMockRoutes(page, {
+        locationResponseBody: singleLocationMock,
+        getBookingsResponseBody: existingBookingsMock,
+        onGetBookings: () => {
+          getBookingsCalled = true;
+        },
+      });
     });
 
-    await test.step('Select date range and continue with incomplete dates', async () => {
-      await bookingUiPage.bookingDateRadio.filter({ hasText: 'Select a date range' }).click();
-      await bookingUiPage.continueButton.click();
+    test('user cannot continue from location step without selecting a location', async ({ page, bookingUiPage }) => {
+      await test.step('Navigate to booking and move to location step', async () => {
+        await bookingUiPage.goto();
+        await expect(page).toHaveURL(bookingPageUrlPattern);
+        await expect.poll(() => getBookingsCalled).toBeTruthy();
+        await bookingUiPage.selectOption('Create a new booking');
+        await bookingUiPage.continue();
+        await expect(bookingUiPage.locationStepHeading).toBeVisible();
+      });
+
+      await test.step('Try to continue without selecting a location', async () => {
+        await bookingUiPage.continue();
+      });
+
+      await test.step('Verify GOV.UK error summary for missing location', async () => {
+        await expect(page).toHaveURL(bookingPageUrlPattern);
+        await expect(bookingUiPage.exuiHeader.errorHeader).toBeVisible();
+        await expect(bookingUiPage.exuiHeader.errorHeaderTitle).toContainText('There is a problem');
+        await expect(bookingUiPage.exuiHeader.errorHeader).toContainText('Enter a valid location');
+      });
     });
 
-    await test.step('Verify GOV.UK error summary for invalid/incomplete dates', async () => {
-      await expect(page).toHaveURL(bookingPageUrlPattern);
-      await expect(bookingUiPage.exuiHeader.errorHeader).toBeVisible();
-      await expect(bookingUiPage.exuiHeader.errorHeaderTitle).toContainText('There is a problem');
-      await expect(bookingUiPage.exuiHeader.errorHeader).toContainText('Enter a booking start date');
-      await expect(bookingUiPage.exuiHeader.errorHeader).toContainText('Enter a booking end date');
-      await expect(page.locator('.govuk-summary-list')).toHaveCount(0);
+    test('user cannot continue from date step with invalid or incomplete dates', async ({ page, bookingUiPage }) => {
+      await test.step('Navigate to booking and move to date step', async () => {
+        await bookingUiPage.goto();
+        await expect(page).toHaveURL(bookingPageUrlPattern);
+        await expect.poll(() => getBookingsCalled).toBeTruthy();
+        await bookingUiPage.selectOption('Create a new booking');
+        await bookingUiPage.continue();
+        await bookingUiPage.selectFirstLocationFromSearch('Lon');
+        await bookingUiPage.continue();
+      });
+
+      await test.step('Select date range and continue with incomplete dates', async () => {
+        await bookingUiPage.chooseDateRangeBooking();
+        await bookingUiPage.continue();
+      });
+
+      await test.step('Verify GOV.UK error summary for invalid/incomplete dates', async () => {
+        await expect(page).toHaveURL(bookingPageUrlPattern);
+        await expect(bookingUiPage.exuiHeader.errorHeader).toBeVisible();
+        await expect(bookingUiPage.exuiHeader.errorHeaderTitle).toContainText('There is a problem');
+        await expect(bookingUiPage.exuiHeader.errorHeader).toContainText('Enter a booking start date');
+        await expect(bookingUiPage.exuiHeader.errorHeader).toContainText('Enter a booking end date');
+        await expect(bookingUiPage.summaryList()).toHaveCount(0);
+      });
     });
-  });
-});
+  }
+);

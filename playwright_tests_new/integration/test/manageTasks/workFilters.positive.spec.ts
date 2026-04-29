@@ -82,7 +82,7 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
     });
 
     await test.step('My cases keeps services and location search while keeping work types hidden', async () => {
-      await taskListPage.gotoMyCases({ allowServiceDown: false });
+      await taskListPage.gotoMyCases();
       await taskListPage.waitForTaskListShellReady('my cases filter view');
       await taskListPage.expectWorkFilterControls({ typesOfWorkVisible: false });
     });
@@ -250,7 +250,7 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
       });
     });
 
-    await taskListPage.gotoMyCases({ allowServiceDown: false });
+    await taskListPage.gotoMyCases();
     await expect.poll(() => myCasesRequests.length).toBeGreaterThan(0);
 
     const latestRequest = myCasesRequests.at(-1);

@@ -76,6 +76,7 @@ export class BookingUiPage extends Base {
   readonly continueButton = this.button.filter({ hasText: 'Continue' });
   readonly bookingButton = this.button.filter({ hasText: 'Confirm Booking' });
   readonly bookingDateRadio = this.container.locator('.govuk-radios__label');
+  readonly locationStepHeading = this.page.getByRole('heading', { name: /Select a location/i });
 
   readonly locationSearch = this.page.locator('#inputLocationSearch');
   readonly locationAutocomplete = this.page.locator('#mat-autocomplete-0');
@@ -99,11 +100,39 @@ export class BookingUiPage extends Base {
     await this.page.getByLabel(optionText).check();
   }
 
+  public existingBookingButton(index: number): Locator {
+    return this.existingBookings.nth(index).getByRole('button');
+  }
+
+  public async continue(): Promise<void> {
+    await this.continueButton.click();
+  }
+
+  public async chooseTodayOnlyBooking(): Promise<void> {
+    await this.bookingDateRadio.filter({ hasText: 'Today only (ends at midnight)' }).click();
+  }
+
+  public async chooseDateRangeBooking(): Promise<void> {
+    await this.bookingDateRadio.filter({ hasText: 'Select a date range' }).click();
+  }
+
+  public async confirmBooking(): Promise<void> {
+    await this.bookingButton.click();
+  }
+
+  public async continueWithExistingBooking(index: number): Promise<void> {
+    await this.existingBookingButton(index).click();
+  }
+
   public async selectFirstLocationFromSearch(searchText: string): Promise<void> {
     await this.locationSearch.fill(searchText);
     await this.locationAutocomplete.waitFor({ state: 'visible' });
     await this.page.keyboard.press('ArrowDown');
     await this.page.keyboard.press('Enter');
+  }
+
+  public summaryList(): Locator {
+    return this.page.locator('.govuk-summary-list');
   }
 
   public async getSummaryListPairs(): Promise<SummaryPair[]> {

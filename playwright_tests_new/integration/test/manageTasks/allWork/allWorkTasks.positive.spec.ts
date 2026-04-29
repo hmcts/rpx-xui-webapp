@@ -74,8 +74,6 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
   test('All-work Case name sort persists after navigating away and back', async ({ taskListPage, page }) => {
     const taskListMockResponse = buildTaskListMock(40, '', myActionsList);
     const allWorkCasesMockResponse = buildMyCases(3);
-    const caseNameSortHeaderCell = taskListPage.sortByCaseNameTableHeader.locator('xpath=ancestor::th[1]');
-
     await test.step('Setup route mocks for all-work tasks sorting', async () => {
       await setupManageTasksBaseRoutes(page, {
         taskListResponse: taskListMockResponse,
@@ -98,7 +96,7 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
 
       await taskListPage.sortByCaseNameTableHeader.click();
       await taskListPage.exuiSpinnerComponent.wait();
-      await expect(caseNameSortHeaderCell).toHaveAttribute('aria-sort', 'ascending');
+      await expect(taskListPage.sortByCaseNameColumnHeader).toHaveAttribute('aria-sort', 'ascending');
     });
 
     await test.step('Navigate to All work cases then back to All work tasks', async () => {
@@ -139,7 +137,7 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
     });
 
     await test.step('Verify Case name sort remains selected on all-work tasks', async () => {
-      await expect(caseNameSortHeaderCell).toHaveAttribute('aria-sort', 'ascending');
+      await expect(taskListPage.sortByCaseNameColumnHeader).toHaveAttribute('aria-sort', 'ascending');
     });
   });
 
@@ -207,14 +205,11 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
       await taskListPage.exuiSpinnerComponent.wait();
       await taskListPage.openManageActionsForRow(rowIndex, `all-work manage action matrix row ${rowIndex + 1}`);
 
-      const taskActionsRow = taskListPage.getTaskActionsRow(rowIndex);
-
       for (const actionId of allActionIds) {
-        const actionLocator = taskActionsRow.locator(`#action_${actionId}`);
         if (expectedActionIds.includes(actionId)) {
           await taskListPage.waitForTaskActionForRow(rowIndex, actionId, `all-work manage action matrix row ${rowIndex + 1}`);
         } else {
-          await expect(actionLocator).toHaveCount(0);
+          await expect(taskListPage.getTaskActionForRow(rowIndex, actionId)).toHaveCount(0);
         }
       }
     };

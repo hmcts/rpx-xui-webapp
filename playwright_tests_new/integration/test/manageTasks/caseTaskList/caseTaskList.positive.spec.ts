@@ -1,8 +1,7 @@
 import { faker } from '@faker-js/faker';
-import { extractUserIdFromCookies } from '../../../utils/extractUserIdFromCookies';
 import { formatUiDate } from '../../../utils/tableUtils';
 import { expect, test } from '../../../../E2E/fixtures';
-import { applySessionCookies } from '../../../../common/sessionCapture';
+import { applySessionCookiesAndExtractUserId, setupCaseTaskListMockRoute } from '../../../helpers';
 import { buildCaseDetailsTasksMinimal } from '../../../mocks/caseDetailsTasks.builder';
 import { buildAsylumCaseMock } from '../../../mocks/cases/asylumCase.mock';
 
@@ -11,14 +10,11 @@ const inSixHours = faker.date.soon({ days: 0.25 }).toISOString();
 const inTwoDays = faker.date.soon({ days: 2 }).toISOString();
 const in90Days = faker.date.future().toISOString();
 const caseId = faker.number.int({ min: 1000000000, max: 9999999999 }).toString();
-let sessionCookies: any[] = [];
 let assigneeId: string | null = null;
 const caseMockResponse = buildAsylumCaseMock({ caseId });
 
 test.beforeEach(async ({ page }) => {
-  const { cookies } = await applySessionCookies(page, userIdentifier);
-  sessionCookies = cookies;
-  assigneeId = extractUserIdFromCookies(sessionCookies);
+  assigneeId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
   await page.route(`**data/internal/cases/${caseId}*`, async (route) => {
     const body = JSON.stringify(caseMockResponse);
     await route.fulfill({ status: 200, contentType: 'application/json', body });
@@ -44,8 +40,7 @@ test.beforeEach(async ({ page }) => {
 });
 
 test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
-  // Skipping until Master build staging issue is resolved - EXUI-4323
-  test.skip(`Low priority tasks assigned to logged in user show elements and markdown as expected`, async ({
+  test(`Low priority tasks assigned to logged in user show elements and markdown as expected`, async ({
     caseDetailsPage,
     page,
   }) => {
@@ -69,10 +64,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     const tasks = buildCaseDetailsTasksMinimal(taskData);
 
     await test.step('Setup route mock for task details', async () => {
-      await page.route(`**workallocation/case/task/${caseId}*`, async (route) => {
-        const body = JSON.stringify(tasks);
-        await route.fulfill({ status: 200, contentType: 'application/json', body });
-      });
+      await setupCaseTaskListMockRoute(page, caseId, tasks);
     });
 
     await test.step('Navigate to mocked case task list', async () => {
@@ -110,8 +102,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
         .toContain('Next steps Please review the evidence before proceeding.');
     });
   });
-  // Skipping until Master build staging issue is resolved - EXUI-4323
-  test.skip(`Priority labels render as in order for each task depending on major priority rate and date`, async ({
+  test(`Priority labels render as in order for each task depending on major priority rate and date`, async ({
     caseDetailsPage,
     page,
   }) => {
@@ -127,15 +118,11 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
       assignees: assigneeId ? [assigneeId] : [],
       majorPriorities: [1000, 4000, 5000, 6000],
       priorityDates: [inTwoDays, inTwoDays, inSixHours, inTwoDays],
-      dueDates: [inTwoDays, inTwoDays, inSixHours, inTwoDays],
+      dueDates: [inTwoDays, inTwoDays, inTwoDays, inTwoDays],
     };
 
     await test.step('Setup route mock for priority label tasks', async () => {
-      await page.route(`**workallocation/case/task/${caseId}*`, async (route) => {
-        const tasks = buildCaseDetailsTasksMinimal(taskData);
-        const body = JSON.stringify(tasks);
-        await route.fulfill({ status: 200, contentType: 'application/json', body });
-      });
+      await setupCaseTaskListMockRoute(page, caseId, buildCaseDetailsTasksMinimal(taskData));
     });
 
     await test.step('Navigate to mocked case task list', async () => {
@@ -200,10 +187,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
       await route.fulfill({ status: 200, contentType: 'application/json', body });
     });
 
-    await page.route(`**workallocation/case/task/${caseId}*`, async (route) => {
-      const body = JSON.stringify(tasks);
-      await route.fulfill({ status: 200, contentType: 'application/json', body });
-    });
+    await setupCaseTaskListMockRoute(page, caseId, tasks);
 
     await test.step('Navigate to mocked case task list', async () => {
       await page.goto(`/cases/case-details/IA/Asylum/${caseId}/tasks`);
@@ -266,10 +250,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     };
     const tasks = buildCaseDetailsTasksMinimal(taskData);
 
-    await page.route(`**workallocation/case/task/${caseId}*`, async (route) => {
-      const body = JSON.stringify(tasks);
-      await route.fulfill({ status: 200, contentType: 'application/json', body });
-    });
+    await setupCaseTaskListMockRoute(page, caseId, tasks);
 
     await test.step('Navigate to mocked case task list', async () => {
       await page.goto(`/cases/case-details/IA/Asylum/${caseId}/tasks`);
@@ -304,11 +285,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     };
 
     await test.step('Setup route mock for complex markdown in a task', async () => {
-      await page.route(`**workallocation/case/task/${caseId}*`, async (route) => {
-        const tasks = buildCaseDetailsTasksMinimal(taskData);
-        const body = JSON.stringify(tasks);
-        await route.fulfill({ status: 200, contentType: 'application/json', body });
-      });
+      await setupCaseTaskListMockRoute(page, caseId, buildCaseDetailsTasksMinimal(taskData));
     });
 
     await test.step('Navigate to mocked case task list', async () => {

@@ -8,7 +8,7 @@ type UploadDocumentViaApiOptions = {
   caseTypeId: string;
   fileName: string;
   mimeType: string;
-  fileContent: string;
+  fileContent: string | Buffer;
   classification?: 'PUBLIC' | 'PRIVATE' | 'RESTRICTED';
 };
 
@@ -39,6 +39,9 @@ const XSRF_COOKIE_WAIT_TIMEOUT_MS = resolvePositiveIntegerEnv('PW_UPLOAD_DOCUMEN
 const XSRF_COOKIE_WAIT_INTERVAL_MS = 250;
 const XSRF_COOKIE_AUTH_TOUCH_INTERVAL_ATTEMPTS = 4;
 const XSRF_COOKIE_MAX_AUTH_TOUCH_ATTEMPTS = 3;
+const DOCUMENT_UPLOAD_RETRY_ATTEMPTS = resolvePositiveIntegerEnv('PW_UPLOAD_DOCUMENT_RETRY_ATTEMPTS', 3);
+const DOCUMENT_UPLOAD_RETRY_INTERVAL_MS = resolvePositiveIntegerEnv('PW_UPLOAD_DOCUMENT_RETRY_INTERVAL_MS', 2_000);
+const RETRYABLE_DOCUMENT_UPLOAD_STATUS_CODES = new Set([429]);
 
 function currentPageUrl(page: Page): string {
   try {
@@ -71,6 +74,21 @@ type BrowserFetchResult = {
   bodyText: string;
 };
 
+type PageRequestFetch = {
+  fetch: (
+    url: string,
+    options?: {
+      method?: string;
+      headers?: Record<string, string>;
+      multipart?: Record<string, unknown>;
+    }
+  ) => Promise<{
+    ok: () => boolean;
+    status: () => number;
+    text: () => Promise<string>;
+  }>;
+};
+
 async function runBrowserFetchText(
   page: Page,
   params:
@@ -88,14 +106,63 @@ async function runBrowserFetchText(
           caseTypeId: string;
           fileName: string;
           mimeType: string;
-          fileContentBase64: string;
+          fileContent: Buffer;
         };
       }
 ): Promise<BrowserFetchResult> {
-  return page.evaluate(async (request) => {
-    if (request.method === 'GET') {
+  const requestContext = (page as Page & { request?: PageRequestFetch }).request;
+
+  if (requestContext?.fetch) {
+    const response =
+      params.method === 'GET'
+        ? await requestContext.fetch(params.url, { method: 'GET' })
+        : await requestContext.fetch(params.url, {
+            method: 'POST',
+            headers: params.headers,
+            multipart: {
+              classification: params.multipart.classification,
+              jurisdictionId: params.multipart.jurisdictionId,
+              caseTypeId: params.multipart.caseTypeId,
+              files: {
+                name: params.multipart.fileName,
+                mimeType: params.multipart.mimeType,
+                buffer: params.multipart.fileContent,
+              },
+            },
+          });
+
+    return {
+      ok: response.ok(),
+      status: response.status(),
+      bodyText: await response.text(),
+    };
+  }
+
+  return page.evaluate(
+    async (request) => {
+      if (request.method === 'GET') {
+        const response = await fetch(request.url, {
+          method: 'GET',
+          credentials: 'same-origin',
+        });
+        return {
+          ok: response.ok,
+          status: response.status,
+          bodyText: await response.text(),
+        };
+      }
+
+      const binary = Uint8Array.from(atob(request.multipart.fileContentBase64), (character) => character.charCodeAt(0));
+      const formData = new FormData();
+      formData.append('classification', request.multipart.classification);
+      formData.append('jurisdictionId', request.multipart.jurisdictionId);
+      formData.append('caseTypeId', request.multipart.caseTypeId);
+      formData.append('files', new File([binary], request.multipart.fileName, { type: request.multipart.mimeType }));
+
       const response = await fetch(request.url, {
-        method: 'GET',
+        method: 'POST',
+        body: formData,
+        headers: request.headers,
         credentials: 'same-origin',
       });
       return {
@@ -103,27 +170,17 @@ async function runBrowserFetchText(
         status: response.status,
         bodyText: await response.text(),
       };
-    }
-
-    const binary = Uint8Array.from(atob(request.multipart.fileContentBase64), (character) => character.charCodeAt(0));
-    const formData = new FormData();
-    formData.append('classification', request.multipart.classification);
-    formData.append('jurisdictionId', request.multipart.jurisdictionId);
-    formData.append('caseTypeId', request.multipart.caseTypeId);
-    formData.append('files', new File([binary], request.multipart.fileName, { type: request.multipart.mimeType }));
-
-    const response = await fetch(request.url, {
-      method: 'POST',
-      body: formData,
-      headers: request.headers,
-      credentials: 'same-origin',
-    });
-    return {
-      ok: response.ok,
-      status: response.status,
-      bodyText: await response.text(),
-    };
-  }, params);
+    },
+    params.method === 'GET'
+      ? params
+      : {
+          ...params,
+          multipart: {
+            ...params.multipart,
+            fileContentBase64: params.multipart.fileContent.toString('base64'),
+          },
+        }
+  );
 }
 
 async function touchAuthEndpointsToMintXsrf(page: Page, baseUrl: string): Promise<void> {
@@ -191,19 +248,47 @@ export async function uploadDocumentViaApi(options: UploadDocumentViaApiOptions)
   const baseUrl = resolveAppBaseUrl(options.page);
   const xsrf = await waitForXsrfToken(options.page, baseUrl);
   const headers = { 'X-XSRF-TOKEN': xsrf };
-  const response = await runBrowserFetchText(options.page, {
-    url: new URL('/documentsv2', baseUrl).toString(),
-    method: 'POST',
-    headers,
-    multipart: {
-      classification: options.classification ?? 'PUBLIC',
-      jurisdictionId: options.jurisdictionId,
-      caseTypeId: options.caseTypeId,
-      fileName: options.fileName,
-      mimeType: options.mimeType,
-      fileContentBase64: Buffer.from(options.fileContent).toString('base64'),
-    },
-  });
+  const uploadUrl = new URL('/documentsv2', baseUrl).toString();
+  const fileContent = Buffer.isBuffer(options.fileContent) ? options.fileContent : Buffer.from(options.fileContent);
+  let response: BrowserFetchResult | null = null;
+
+  for (let attempt = 1; attempt <= DOCUMENT_UPLOAD_RETRY_ATTEMPTS; attempt += 1) {
+    if (options.page.isClosed()) {
+      throw new Error('Document upload aborted: page closed mid-retry');
+    }
+
+    response = await runBrowserFetchText(options.page, {
+      url: uploadUrl,
+      method: 'POST',
+      headers,
+      multipart: {
+        classification: options.classification ?? 'PUBLIC',
+        jurisdictionId: options.jurisdictionId,
+        caseTypeId: options.caseTypeId,
+        fileName: options.fileName,
+        mimeType: options.mimeType,
+        fileContent,
+      },
+    });
+
+    if (
+      response.ok ||
+      !RETRYABLE_DOCUMENT_UPLOAD_STATUS_CODES.has(response.status) ||
+      attempt === DOCUMENT_UPLOAD_RETRY_ATTEMPTS
+    ) {
+      break;
+    }
+
+    // Linear backoff plus +/-20% jitter to avoid worker-level thundering herd
+    // against the same AAT 429 surface that triggered the retry.
+    const baseDelayMs = DOCUMENT_UPLOAD_RETRY_INTERVAL_MS * attempt;
+    const jitterMs = Math.floor(baseDelayMs * 0.2 * (Math.random() * 2 - 1));
+    await options.page.waitForTimeout(Math.max(0, baseDelayMs + jitterMs));
+  }
+
+  if (!response) {
+    throw new Error('Document upload API failed before receiving a response');
+  }
 
   if (!response.ok) {
     throw new Error(`Document upload API failed with HTTP ${response.status}: ${response.bodyText.slice(0, 500)}`);

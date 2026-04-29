@@ -79,9 +79,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     });
 
     await test.step('Navigate to mocked case task list', async () => {
-      await page.goto(`/cases/case-details/IA/Asylum/${caseId}/tasks`);
-      await caseDetailsPage.taskListContainer.waitFor();
-      await caseDetailsPage.exuiSpinnerComponent.wait();
+      await caseDetailsPage.openTasksTab('IA', 'Asylum', caseId);
     });
 
     await test.step('Verify the task table shows the expected results', async () => {
@@ -137,8 +135,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     });
 
     await test.step('Navigate to mocked case task list', async () => {
-      await page.goto(`/cases/case-details/IA/Asylum/${caseId}/tasks`);
-      await caseDetailsPage.taskListContainer.waitFor();
+      await caseDetailsPage.openTasksTab('IA', 'Asylum', caseId);
     });
 
     await test.step('Verify the expected priority labels are shown', async () => {
@@ -201,8 +198,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     await setupCaseTaskListMockRoute(page, caseId, tasks);
 
     await test.step('Navigate to mocked case task list', async () => {
-      await page.goto(`/cases/case-details/IA/Asylum/${caseId}/tasks`);
-      await caseDetailsPage.taskListContainer.waitFor();
+      await caseDetailsPage.openTasksTab('IA', 'Asylum', caseId);
     });
 
     await test.step('Verify table shows results', async () => {
@@ -264,9 +260,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     await setupCaseTaskListMockRoute(page, caseId, tasks);
 
     await test.step('Navigate to mocked case task list', async () => {
-      await page.goto(`/cases/case-details/IA/Asylum/${caseId}/tasks`);
-      await caseDetailsPage.taskListContainer.waitFor();
-      await caseDetailsPage.exuiSpinnerComponent.wait();
+      await caseDetailsPage.openTasksTab('IA', 'Asylum', caseId);
     });
 
     await test.step('Verify task alerts are shown in the UI', async () => {
@@ -300,8 +294,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     });
 
     await test.step('Navigate to mocked case task list', async () => {
-      await page.goto(`/cases/case-details/IA/Asylum/${caseId}/tasks`);
-      await caseDetailsPage.taskListContainer.waitFor();
+      await caseDetailsPage.openTasksTab('IA', 'Asylum', caseId);
     });
 
     await test.step('Verify Next steps elements are shown as expected', async () => {

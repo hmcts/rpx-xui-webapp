@@ -3,6 +3,7 @@ import { applySessionCookies } from '../../../common/sessionCapture';
 import {
   caseDetailsUrl,
   expectHearingsRowsHiddenBeforeResponse,
+  gotoCaseDetailsWithRetry,
   HEARING_MANAGER_CR84_ON_USER,
   HEARINGS_SLOW_RESPONSE_DELAY_MS,
   openHearingsTabForScenario,
@@ -116,7 +117,7 @@ test.describe(`Hearings resilience integration as ${userIdentifier}`, { tag: ['@
       },
     });
 
-    await page.goto(caseDetailsUrl(), { waitUntil: 'domcontentloaded' });
+    await gotoCaseDetailsWithRetry(page, caseDetailsUrl());
     const hearingsTab = page.getByRole('tab', { name: /hearings/i }).first();
     const getHearingsResponse = page.waitForResponse((response) => response.url().includes('/api/hearings/getHearings'));
     await hearingsTab.click();

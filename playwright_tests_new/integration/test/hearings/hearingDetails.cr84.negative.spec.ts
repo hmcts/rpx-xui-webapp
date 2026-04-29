@@ -1,6 +1,6 @@
 import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookies } from '../../../common/sessionCapture';
-import { caseDetailsUrl, HEARING_MANAGER_CR84_ON_USER, setupHearingsMockRoutes } from '../../helpers';
+import { caseDetailsUrl, gotoCaseDetailsWithRetry, HEARING_MANAGER_CR84_ON_USER, setupHearingsMockRoutes } from '../../helpers';
 import { HEARINGS_LISTED_HEARING_ID, LISTED_HEARING_SCENARIO } from '../../mocks/hearings.mock';
 
 const userIdentifier = HEARING_MANAGER_CR84_ON_USER;
@@ -21,7 +21,7 @@ test.describe(`Hearings CR84 integration as ${userIdentifier}`, { tag: ['@integr
       amendmentCaseVariations: [{ jurisdiction: 'CIVIL', caseType: 'CIVIL' }],
     });
 
-    await page.goto(caseDetailsUrl('DIVORCE', 'DIVORCE'), { waitUntil: 'domcontentloaded' });
+    await gotoCaseDetailsWithRetry(page, caseDetailsUrl('DIVORCE', 'DIVORCE'));
     await expect(page.getByRole('tab', { name: /hearings/i })).toHaveCount(0);
   });
 
@@ -35,7 +35,7 @@ test.describe(`Hearings CR84 integration as ${userIdentifier}`, { tag: ['@integr
       hearings: [LISTED_HEARING_SCENARIO],
     });
 
-    await page.goto(caseDetailsUrl(), { waitUntil: 'domcontentloaded' });
+    await gotoCaseDetailsWithRetry(page, caseDetailsUrl());
     await expect(page.getByRole('tab', { name: /hearings/i })).toHaveCount(0);
 
     await page.goto(hearingsTabUrl, { waitUntil: 'domcontentloaded' });

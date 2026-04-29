@@ -147,7 +147,7 @@ test.describe(`Booking UI access checks as ${userIdentifier}`, { tag: ['@integra
     });
   });
 
-  test('user without booking access is redirected away from Booking UI', async ({ page }) => {
+  test('user without booking access is redirected away from Booking UI', async ({ bookingUiPage, page }) => {
     await test.step('Mock user details without booking access', async () => {
       const noBookingAccessUser = buildHearingsUserDetailsMock([]);
       await page.route('**/api/user/details*', async (route) => {
@@ -160,7 +160,7 @@ test.describe(`Booking UI access checks as ${userIdentifier}`, { tag: ['@integra
     });
 
     await test.step('Navigate to booking and verify redirect to cases', async () => {
-      await page.goto('/booking');
+      await bookingUiPage.gotoExpectingRedirect(casesPageUrlPattern);
       await expect(page).toHaveURL(casesPageUrlPattern);
     });
   });

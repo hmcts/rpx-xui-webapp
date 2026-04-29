@@ -3,10 +3,10 @@ import {
   assertValidWorkAllocationCaseTaskMock,
   assertValidWorkAllocationTaskListMock,
 } from './workAllocationMockValidation.helper';
+import { setupCaseworkerJurisdictionsRoute, type SupportedJurisdictionDetail } from './caseworkerJurisdictionMockRoutes.helper';
 
 export const taskListRoutePattern = /\/workallocation\/task(?:\?.*)?$/;
-const defaultSupportedJurisdictionsMock = ['IA', 'SSCS'];
-type SupportedJurisdictionDetail = { serviceId: string; serviceName: string };
+const defaultSupportedJurisdictionsMock = ['IA', 'SSCS', 'Other'];
 type TaskMockRouteOptions = {
   skipValidation?: boolean;
   status?: number;
@@ -14,15 +14,19 @@ type TaskMockRouteOptions = {
 
 const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
-const defaultSupportedJurisdictionDetailsMock: SupportedJurisdictionDetail[] = defaultSupportedJurisdictionsMock.map(
-  (serviceId) => ({ serviceId, serviceName: serviceId })
-);
+const defaultSupportedJurisdictionDetailsMock: SupportedJurisdictionDetail[] = [
+  { serviceId: 'IA', serviceName: 'Immigration & Asylum' },
+  { serviceId: 'SSCS', serviceName: 'Social security and child support' },
+  { serviceId: 'Other', serviceName: 'Other' },
+];
 
 export async function setupTaskListBootstrapRoutes(
   page: Page,
   supportedJurisdictions: string[] = defaultSupportedJurisdictionsMock,
   supportedJurisdictionDetails: SupportedJurisdictionDetail[] = defaultSupportedJurisdictionDetailsMock
 ): Promise<void> {
+  await setupCaseworkerJurisdictionsRoute(page, supportedJurisdictions, supportedJurisdictionDetails);
+
   await page.route('**/api/wa-supported-jurisdiction/get*', async (route) => {
     await route.fulfill({
       status: 200,

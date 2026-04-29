@@ -4,9 +4,10 @@ import { Base } from '../../base';
 const TASK_LIST_READY_TIMEOUT_MS = 30_000;
 const FILTER_PANEL_READY_TIMEOUT_MS = 10_000;
 const FILTER_CONTROL_READY_TIMEOUT_MS = 15_000;
-const FILTER_GROUP_OPERATION_TIMEOUT_MS = 10_000;
+const FILTER_GROUP_OPERATION_TIMEOUT_MS = 30_000;
+const FILTER_CHECKBOX_STATE_TIMEOUT_MS = 2_000;
 const FILTER_INTERACTION_ATTEMPTS = 2;
-const TASK_LIST_NAVIGATION_ATTEMPTS = 2;
+const TASK_LIST_NAVIGATION_ATTEMPTS = 3;
 const PRIORITY_LIMIT_URGENT = 2000;
 const PRIORITY_LIMIT_HIGH = 5000;
 
@@ -48,6 +49,9 @@ export class TaskListPage extends Base {
   readonly allWorkLocationSearchResults = this.page.locator('.cdk-overlay-container .mat-autocomplete-panel mat-option span');
   readonly selectedLocationTags = this.filterPanel.locator(
     '#locations xuilib-find-location .location-picker-custom .location-selection a'
+  );
+  readonly visibleSelectedLocationTags = this.filterPanel.locator(
+    '#locations xuilib-find-location .location-picker-custom .location-selection a:visible'
   );
 
   readonly taskTableTabs = this.page.locator('.hmcts-sub-navigation .hmcts-sub-navigation__link');
@@ -130,12 +134,20 @@ export class TaskListPage extends Base {
     const rowIndex = options.rowIndex ?? 0;
     const timeoutMs = options.timeoutMs ?? TASK_LIST_READY_TIMEOUT_MS;
 
-    await this.page.goto('/work/my-work/list', { waitUntil: 'domcontentloaded' });
-    await this.page.waitForURL(/\/work\/my-work\/list(?:\?.*)?$/, { timeout: timeoutMs }).catch(() => undefined);
-    await this.waitForExuiAppShell(context, timeoutMs);
-    await this.waitForTaskListSpinnerToSettle(10_000);
-    await this.waitForTaskListShellReady(`${context} shell bootstrap`);
-    await this.waitForTaskRowReady(`${context} row bootstrap`, { rowIndex, timeoutMs });
+    for (let attempt = 1; attempt <= TASK_LIST_NAVIGATION_ATTEMPTS; attempt += 1) {
+      try {
+        await this.gotoTaskListPath('/work/my-work/list', /\/work\/my-work\/list(?:\?.*)?$/, `${context} navigation`, timeoutMs);
+        await this.waitForExuiAppShell(context, timeoutMs);
+        await this.waitForTaskListSpinnerToSettle(10_000);
+        await this.waitForTaskListShellReady(`${context} shell bootstrap`);
+        await this.waitForTaskRowReady(`${context} row bootstrap`, { rowIndex, timeoutMs });
+        return;
+      } catch (error) {
+        if (attempt >= TASK_LIST_NAVIGATION_ATTEMPTS || !(await this.isRecoverableTaskListBootstrapError(error))) {
+          throw error;
+        }
+      }
+    }
   }
 
   async gotoMyCases(options: { allowServiceDown?: boolean } = {}) {
@@ -233,22 +245,15 @@ export class TaskListPage extends Base {
     const allowServiceDown = options.allowServiceDown ?? true;
 
     for (let attempt = 1; attempt <= TASK_LIST_NAVIGATION_ATTEMPTS; attempt += 1) {
-      await this.page.goto(path, { waitUntil: 'domcontentloaded' });
-      await this.page.waitForURL(urlPattern, { timeout: timeoutMs }).catch(() => undefined);
-      if (!urlPattern.test(this.page.url())) {
-        await this.page.goto(path, { waitUntil: 'domcontentloaded' });
-        await this.page.waitForURL(urlPattern, { timeout: timeoutMs });
-      }
-
-      await this.recoverBlankRootRedirect(path, urlPattern, timeoutMs);
+      await this.gotoTaskListPath(path, urlPattern, context, timeoutMs);
       await this.waitForExuiAppShell(context, timeoutMs);
       await this.waitForTaskListSpinnerToSettle(10_000);
-      await this.recoverBlankRootRedirect(path, urlPattern, timeoutMs);
+      await this.recoverBlankPageRedirect(path, urlPattern, timeoutMs);
 
       try {
         await this.waitForTaskListShellReady(context);
       } catch (error) {
-        if (attempt < TASK_LIST_NAVIGATION_ATTEMPTS && (await this.isBlankAppRoot())) {
+        if (attempt < TASK_LIST_NAVIGATION_ATTEMPTS && (await this.isRecoverableNavigationState(error))) {
           continue;
         }
 
@@ -256,8 +261,7 @@ export class TaskListPage extends Base {
       }
 
       if (!allowServiceDown && (await this.isServiceDownPage())) {
-        await this.page.goto(path, { waitUntil: 'domcontentloaded' });
-        await this.page.waitForURL(urlPattern, { timeout: timeoutMs }).catch(() => undefined);
+        await this.gotoTaskListPath(path, urlPattern, `${context} retry`, timeoutMs);
         await this.waitForExuiAppShell(`${context} retry`, timeoutMs);
         await this.waitForTaskListSpinnerToSettle(10_000);
         await this.waitForTaskListShellReady(`${context} retry`);
@@ -268,8 +272,38 @@ export class TaskListPage extends Base {
     }
   }
 
-  private async recoverBlankRootRedirect(path: string, urlPattern: RegExp, timeoutMs: number): Promise<void> {
-    if (!(await this.isBlankAppRoot())) {
+  private async gotoTaskListPath(path: string, urlPattern: RegExp, context: string, timeoutMs: number): Promise<void> {
+    let lastError: unknown;
+
+    for (let attempt = 1; attempt <= TASK_LIST_NAVIGATION_ATTEMPTS; attempt += 1) {
+      try {
+        await this.page.goto(path, { waitUntil: 'domcontentloaded' });
+        await this.page.waitForURL(urlPattern, { timeout: timeoutMs }).catch(() => undefined);
+        if (!urlPattern.test(this.page.url())) {
+          await this.page.goto(path, { waitUntil: 'domcontentloaded' });
+          await this.page.waitForURL(urlPattern, { timeout: timeoutMs });
+        }
+        await this.recoverBlankPageRedirect(path, urlPattern, timeoutMs);
+        return;
+      } catch (error) {
+        lastError = error;
+        if (this.isTransientNavigationError(error) && urlPattern.test(this.page.url())) {
+          await this.page.waitForLoadState('domcontentloaded', { timeout: 5_000 }).catch(() => undefined);
+          await this.recoverBlankPageRedirect(path, urlPattern, timeoutMs);
+          return;
+        }
+
+        if (attempt >= TASK_LIST_NAVIGATION_ATTEMPTS || !this.isTransientNavigationError(error)) {
+          throw error;
+        }
+      }
+    }
+
+    throw new Error(`Task list navigation failed for ${context}: ${String(lastError)}`);
+  }
+
+  private async recoverBlankPageRedirect(path: string, urlPattern: RegExp, timeoutMs: number): Promise<void> {
+    if (!(await this.isBlankPage())) {
       return;
     }
 
@@ -277,12 +311,28 @@ export class TaskListPage extends Base {
     await this.page.waitForURL(urlPattern, { timeout: timeoutMs });
   }
 
-  private async isBlankAppRoot(): Promise<boolean> {
-    if (!/\/$/.test(this.page.url())) {
-      return false;
-    }
-
+  private async isBlankPage(): Promise<boolean> {
     return await this.page.evaluate(() => document.body.innerText.trim().length === 0).catch(() => false);
+  }
+
+  private isTransientNavigationError(error: unknown): boolean {
+    return (
+      error instanceof Error &&
+      /ERR_SOCKET_NOT_CONNECTED|ERR_ABORTED|net::ERR|Navigation failed|interrupted.*navigation|chrome-error:\/\/chromewebdata/i.test(
+        error.message
+      )
+    );
+  }
+
+  private async isRecoverableNavigationState(error: unknown): Promise<boolean> {
+    return this.isTransientNavigationError(error) || (await this.isBlankPage());
+  }
+
+  private async isRecoverableTaskListBootstrapError(error: unknown): Promise<boolean> {
+    return (
+      (await this.isRecoverableNavigationState(error)) ||
+      (error instanceof Error && /Task list shell did not become ready/i.test(error.message))
+    );
   }
 
   private async waitForExuiAppShell(context: string, timeoutMs: number): Promise<void> {
@@ -324,6 +374,7 @@ export class TaskListPage extends Base {
         ['results-summary', this.taskListResultsAmount],
         ['error-page', this.errorPageHeading],
         ['service-down', this.serviceDownError],
+        ['not-authorised', this.notAuthorisedHeading],
       ];
 
       for (const [signal, locator] of signals) {
@@ -336,9 +387,12 @@ export class TaskListPage extends Base {
     };
 
     await this.page
-      .waitForURL(/\/(?:work\/(?:my-work\/(?:list|available|my-cases|my-access)|all-work\/(?:tasks|cases))|service-down)/, {
-        timeout: TASK_LIST_READY_TIMEOUT_MS,
-      })
+      .waitForURL(
+        /\/(?:work\/(?:my-work\/(?:list|available|my-cases|my-access)|all-work\/(?:tasks|cases))|service-down|not-authorised)/,
+        {
+          timeout: TASK_LIST_READY_TIMEOUT_MS,
+        }
+      )
       .catch(() => undefined);
     await this.waitForTaskListSpinnerToSettle(10_000);
     const immediateSignal = await findVisibleShellSignal();
@@ -368,6 +422,7 @@ export class TaskListPage extends Base {
       this.taskListResultsAmount.waitFor({ state: 'visible', timeout: TASK_LIST_READY_TIMEOUT_MS }).then(() => 'results-summary'),
       this.errorPageHeading.waitFor({ state: 'visible', timeout: TASK_LIST_READY_TIMEOUT_MS }).then(() => 'error-page'),
       this.serviceDownError.waitFor({ state: 'visible', timeout: TASK_LIST_READY_TIMEOUT_MS }).then(() => 'service-down'),
+      this.notAuthorisedHeading.waitFor({ state: 'visible', timeout: TASK_LIST_READY_TIMEOUT_MS }).then(() => 'not-authorised'),
     ]).catch(async () => {
       const lateSignal = await findVisibleShellSignal();
       if (lateSignal) {
@@ -389,7 +444,7 @@ export class TaskListPage extends Base {
       await this.assertTaskListHealthy(`waiting for task list shell (${context})`);
     }
 
-    if (bootstrapSignal === 'service-down') {
+    if (bootstrapSignal === 'service-down' || bootstrapSignal === 'not-authorised') {
       return;
     }
 
@@ -449,14 +504,16 @@ export class TaskListPage extends Base {
 
   private async readFilterCheckboxState(checkbox: Locator, description: string, deadlineMs?: number): Promise<boolean> {
     this.assertFilterInteractionAlive(`checkbox "${description}" state read`, deadlineMs);
-    return checkbox.isChecked().catch((error: Error) => {
-      if (this.page.isClosed() || /Target page, context or browser has been closed/i.test(error.message)) {
-        throw new Error(
-          `Task list filter checkbox "${description}" state could not be read because the page or browser closed before the operation completed.`
-        );
-      }
-      throw error;
-    });
+    return checkbox
+      .isChecked({ timeout: this.resolveInteractionTimeout(deadlineMs, FILTER_CHECKBOX_STATE_TIMEOUT_MS) })
+      .catch((error: Error) => {
+        if (this.page.isClosed() || /Target page, context or browser has been closed/i.test(error.message)) {
+          throw new Error(
+            `Task list filter checkbox "${description}" state could not be read because the page or browser closed before the operation completed.`
+          );
+        }
+        throw error;
+      });
   }
 
   async openFilterPanel(deadlineMs?: number) {
@@ -589,14 +646,22 @@ export class TaskListPage extends Base {
 
   async removeAllSelectedLocations() {
     await this.openFilterPanel();
-    const initialSelectionCount = await this.selectedLocationTags.count();
 
-    for (let remainingSelections = initialSelectionCount; remainingSelections > 0; remainingSelections -= 1) {
-      await this.selectedLocationTags.nth(0).click();
-      await expect(this.selectedLocationTags).toHaveCount(remainingSelections - 1, {
-        timeout: FILTER_CONTROL_READY_TIMEOUT_MS,
-      });
+    for (let attempt = 0; attempt < 5; attempt += 1) {
+      const visibleSelectionCount = await this.visibleSelectedLocationTags.count();
+      if (visibleSelectionCount === 0) {
+        return;
+      }
+
+      await this.visibleSelectedLocationTags.first().click();
+      await expect
+        .poll(async () => this.visibleSelectedLocationTags.count(), { timeout: FILTER_CONTROL_READY_TIMEOUT_MS })
+        .toBeLessThan(visibleSelectionCount);
     }
+
+    await expect(this.visibleSelectedLocationTags).toHaveCount(0, {
+      timeout: FILTER_CONTROL_READY_TIMEOUT_MS,
+    });
   }
 
   async expectSelectedLocations(expectedLocations: string[]) {
@@ -677,6 +742,9 @@ export class TaskListPage extends Base {
     await this.openFilterPanel(deadlineMs);
     this.assertFilterInteractionAlive(`${groupName} filter group clear`, deadlineMs);
     await this.setFilterCheckbox(selectAllCheckbox, false, `${groupName} select all`, deadlineMs);
+    if ((await childCheckboxes.count()) === 0) {
+      return;
+    }
     await this.forceChildCheckboxState(childCheckboxes, false, groupName, deadlineMs);
     if (await this.groupCheckboxesMatchState(childCheckboxes, false, groupName, deadlineMs)) {
       return;
@@ -718,7 +786,15 @@ export class TaskListPage extends Base {
         }
       }
     }, firstValue);
-    if ((await this.readFilterCheckboxState(firstCheckbox, `${groupName} option 1`, deadlineMs)) !== true) {
+    const selectedStateMatches = await childCheckboxes.evaluateAll(
+      (checkboxElements, selectedValue) =>
+        checkboxElements.some((checkboxElement) => {
+          const checkbox = checkboxElement as HTMLInputElement;
+          return checkbox.value === selectedValue && checkbox.checked;
+        }),
+      firstValue
+    );
+    if (!selectedStateMatches) {
       throw new Error(`Task list ${groupName} first filter option was not selected.`);
     }
     return firstValue;

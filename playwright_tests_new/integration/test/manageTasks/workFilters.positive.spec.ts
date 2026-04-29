@@ -207,8 +207,10 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
     tableUtils,
   }) => {
     const myCasesResponse = buildMyCasesMock();
+    const expectedIaServiceLabel =
+      workFiltersSupportedJurisdictionDetails.find((jurisdiction) => jurisdiction.serviceId === 'IA')?.serviceName ?? 'IA';
     const filteredMyCasesResponse = {
-      cases: [myCasesResponse.cases[0]],
+      cases: [{ ...myCasesResponse.cases[0], expectedServiceLabel: expectedIaServiceLabel }],
       total_records: 1,
       unique_cases: 1,
     };

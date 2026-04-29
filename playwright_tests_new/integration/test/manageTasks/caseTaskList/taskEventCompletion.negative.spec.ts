@@ -104,9 +104,7 @@ test.describe(`Task event completion as ${userIdentifier}`, { tag: ['@integratio
     });
 
     await test.step('Open the task tab and trigger the event completion flow', async () => {
-      await page.goto(`/cases/case-details/IA/Asylum/${caseId}/tasks`);
-      await caseDetailsPage.taskListContainer.waitFor();
-      await caseDetailsPage.exuiSpinnerComponent.wait();
+      await caseDetailsPage.openTasksTab('IA', 'Asylum', caseId);
       await caseDetailsPage.selectCaseAction(eventName, { expectedLocator: caseDetailsPage.generalProblemHeading });
     });
 

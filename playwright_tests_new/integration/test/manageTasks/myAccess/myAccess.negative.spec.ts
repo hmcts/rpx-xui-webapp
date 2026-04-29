@@ -35,7 +35,7 @@ test.describe(`My Access as ${userIdentifier}`, { tag: ['@integration', '@integr
       });
 
       await test.step('Navigate to My access', async () => {
-        await page.goto('/work/my-work/my-access', { waitUntil: 'domcontentloaded' });
+        await taskListPage.gotoMyAccess();
       });
 
       await test.step('Verify the not authorised page is shown', async () => {

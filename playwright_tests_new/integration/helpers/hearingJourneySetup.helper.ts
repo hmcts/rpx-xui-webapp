@@ -16,6 +16,7 @@ export const HEARING_MANAGER_CR84_OFF_USER = 'HEARING_MANAGER_CR84_OFF';
 export const HEARINGS_TERMINAL_STATE_TIMEOUT_MS = 15_000;
 export const HEARINGS_ROWS_HIDDEN_TIMEOUT_MS = 10_000;
 export const HEARINGS_SLOW_RESPONSE_DELAY_MS = 4_000;
+const HEARINGS_NAVIGATION_ATTEMPTS = 3;
 
 export const hearingManagerRoles = [
   'caseworker-privatelaw',
@@ -30,6 +31,37 @@ export const caseDetailsUrl = (
   caseTypeId = HEARINGS_CASE_TYPE,
   caseReference = HEARINGS_CASE_REFERENCE
 ) => `/cases/case-details/${jurisdictionId}/${caseTypeId}/${caseReference}`;
+
+function isTransientNavigationError(error: unknown): boolean {
+  return (
+    error instanceof Error &&
+    /ERR_SOCKET_NOT_CONNECTED|ERR_ABORTED|net::ERR|Navigation failed|interrupted.*navigation|chrome-error:\/\/chromewebdata|did not reach/i.test(
+      error.message
+    )
+  );
+}
+
+export async function gotoCaseDetailsWithRetry(page: Page, targetUrl: string): Promise<void> {
+  const targetPath = targetUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const targetPattern = new RegExp(`${targetPath}(?:[/?#]|$)`);
+
+  for (let attempt = 1; attempt <= HEARINGS_NAVIGATION_ATTEMPTS; attempt += 1) {
+    try {
+      await page.goto(targetUrl, {
+        waitUntil: 'domcontentloaded',
+      });
+      await page.waitForURL(targetPattern, { timeout: 30_000 }).catch(() => undefined);
+      if (!targetPattern.test(page.url())) {
+        throw new Error(`Hearings case-details navigation did not reach ${targetUrl}; current URL is ${page.url()}`);
+      }
+      return;
+    } catch (error) {
+      if (attempt >= HEARINGS_NAVIGATION_ATTEMPTS || !isTransientNavigationError(error)) {
+        throw error;
+      }
+    }
+  }
+}
 
 export function resolveHearingsCaseRoute(options: {
   routeConfig: HearingsMockRoutesConfig;
@@ -60,9 +92,7 @@ export async function openHearingsTab(
   await applySessionCookies(page, options.userIdentifier ?? HEARING_MANAGER_CR84_ON_USER);
   await setupHearingsMockRoutes(page, options.routeConfig);
   const route = resolveHearingsCaseRoute(options);
-  await page.goto(caseDetailsUrl(route.jurisdictionId, route.caseTypeId, route.caseReference), {
-    waitUntil: 'domcontentloaded',
-  });
+  await gotoCaseDetailsWithRetry(page, caseDetailsUrl(route.jurisdictionId, route.caseTypeId, route.caseReference));
   await caseDetailsPage.selectCaseDetailsTab('Hearings');
 }
 
@@ -79,13 +109,11 @@ export async function openHearingsTabForScenario(
   await setupHearingsMockRoutes(page, config);
   const route = resolveHearingsCaseRoute({ routeConfig: config });
   const targetUrl = caseDetailsUrl(route.jurisdictionId, route.caseTypeId, route.caseReference);
-  await page.goto(targetUrl, {
-    waitUntil: 'domcontentloaded',
-  });
+  await gotoCaseDetailsWithRetry(page, targetUrl);
   await expect(caseDetailsPage.container)
     .toBeVisible({ timeout: 30_000 })
     .catch(async (error: Error) => {
-      await page.goto(targetUrl, { waitUntil: 'domcontentloaded' });
+      await gotoCaseDetailsWithRetry(page, targetUrl);
       await expect(caseDetailsPage.container)
         .toBeVisible({ timeout: 30_000 })
         .catch(() => {

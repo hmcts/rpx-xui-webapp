@@ -35,7 +35,7 @@ test.describe(`My Cases as ${userIdentifier}`, { tag: ['@integration', '@integra
       });
 
       await test.step('Navigate to My cases', async () => {
-        await page.goto('/work/my-work/my-cases', { waitUntil: 'domcontentloaded' });
+        await taskListPage.gotoMyCases();
       });
 
       await test.step('Verify the not authorised page is shown', async () => {

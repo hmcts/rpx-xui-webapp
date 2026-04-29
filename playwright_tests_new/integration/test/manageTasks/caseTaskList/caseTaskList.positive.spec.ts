@@ -6,13 +6,18 @@ import { buildCaseDetailsTasksMinimal } from '../../../mocks/caseDetailsTasks.bu
 import { buildAsylumCaseMock } from '../../../mocks/cases/asylumCase.mock';
 
 const userIdentifier = 'STAFF_ADMIN';
-const inSixHours = faker.date.soon({ days: 0.25 }).toISOString();
+const futureDateInHours = (hoursFromNow: number): string => {
+  const date = new Date();
+  date.setUTCHours(date.getUTCHours() + hoursFromNow, 0, 0, 0);
+  return date.toISOString();
+};
 const futureDateAtNoonUtc = (daysFromNow: number): string => {
   const date = new Date();
   date.setUTCDate(date.getUTCDate() + daysFromNow);
   date.setUTCHours(12, 0, 0, 0);
   return date.toISOString();
 };
+const inTwelveHours = futureDateInHours(12);
 const inTwoDays = futureDateAtNoonUtc(2);
 const in90Days = futureDateAtNoonUtc(90);
 const caseId = faker.number.int({ min: 1000000000, max: 9999999999 }).toString();
@@ -123,7 +128,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
       locations: [{ name: 'Manchester', id: '512401' }],
       assignees: assigneeId ? [assigneeId] : [],
       majorPriorities: [1000, 4000, 5000, 6000],
-      priorityDates: [inTwoDays, inTwoDays, inSixHours, inTwoDays],
+      priorityDates: [inTwoDays, inTwoDays, inTwelveHours, inTwoDays],
       dueDates: [inTwoDays, inTwoDays, inTwoDays, inTwoDays],
     };
 

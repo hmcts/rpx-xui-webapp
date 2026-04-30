@@ -105,14 +105,13 @@ class OdhinProgressReporter {
     }
 
     if (this.completionExitDelayMs > 0) {
-      const exitTimer = setTimeout(() => {
+      setTimeout(() => {
         const exitCode = Number.isFinite(Number(process.exitCode)) ? Number(process.exitCode) : 0;
         process.stderr.write(
           `[odhin-progress] Process still alive ${this.completionExitDelayMs}ms after Odhin completion. Forcing exit with code ${exitCode}.\n`
         );
         process.exit(exitCode);
       }, this.completionExitDelayMs);
-      exitTimer.unref?.();
     }
   }
 }

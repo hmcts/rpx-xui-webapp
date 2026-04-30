@@ -194,7 +194,7 @@ const resolveOdhinCompletionExitDelayMs = (env = process.env) => {
       return parsed;
     }
   }
-  return env.CI ? 10000 : 0;
+  return env.CI ? 1000 : 0;
 };
 
 const buildConfig = (env = process.env) => {

@@ -18,15 +18,18 @@ function parseArgs(argv) {
   const separatorIndex = argv.indexOf('--');
   const optionArgs = separatorIndex >= 0 ? argv.slice(0, separatorIndex) : [];
   const commandArgs = separatorIndex >= 0 ? argv.slice(separatorIndex + 1) : argv;
+  const defaultReportFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? DEFAULT_REPORT_FOLDER;
   const options = {
     outputFolder: process.env.PW_LOAD_PROFILE_OUTPUT ?? DEFAULT_OUTPUT_FOLDER,
-    reportFolder: process.env.PLAYWRIGHT_REPORT_FOLDER ?? DEFAULT_REPORT_FOLDER,
+    reportFolder: defaultReportFolder,
+    reportFolders: [defaultReportFolder],
     sampleIntervalMs: parsePositiveInteger(process.env.PW_LOAD_PROFILE_INTERVAL_MS, DEFAULT_SAMPLE_INTERVAL_MS),
     label: process.env.PW_LOAD_PROFILE_LABEL ?? '',
     injectOdhin: process.env.PW_LOAD_PROFILE_INJECT_ODHIN !== 'false',
     odhinTab: process.env.PW_LOAD_PROFILE_ODHIN_TAB !== 'false',
     eventsFile: process.env.PW_LOAD_PROFILE_EVENTS_FILE ?? '',
   };
+  let explicitReportFolderSeen = false;
 
   for (let index = 0; index < optionArgs.length; index += 1) {
     const arg = optionArgs[index];
@@ -35,7 +38,12 @@ function parseArgs(argv) {
       options.outputFolder = next;
       index += 1;
     } else if (arg === '--report-folder' && next) {
-      options.reportFolder = next;
+      if (!explicitReportFolderSeen) {
+        options.reportFolders = [];
+        options.reportFolder = next;
+        explicitReportFolderSeen = true;
+      }
+      options.reportFolders.push(next);
       index += 1;
     } else if (arg === '--sample-interval-ms' && next) {
       options.sampleIntervalMs = parsePositiveInteger(next, DEFAULT_SAMPLE_INTERVAL_MS);
@@ -54,6 +62,11 @@ function parseArgs(argv) {
   }
 
   return { options, commandArgs };
+}
+
+function normalizeReportFolders(options) {
+  const folders = options.reportFolders?.length ? options.reportFolders : [options.reportFolder];
+  return Array.from(new Set(folders.filter(Boolean)));
 }
 
 function parsePositiveInteger(value, fallback) {
@@ -247,13 +260,15 @@ async function runMonitoredCommand(commandArgs, options) {
   writeProfileArtifacts(options.outputFolder, summary, samples);
 
   if (options.injectOdhin) {
-    injectLoadProfileIntoOdhin(
-      options.reportFolder,
-      summary,
-      samples,
-      path.relative(options.reportFolder, path.join(options.outputFolder, REPORT_FILE)),
-      { odhinTab: options.odhinTab }
-    );
+    normalizeReportFolders(options).forEach((reportFolder) => {
+      injectLoadProfileIntoOdhin(
+        reportFolder,
+        summary,
+        samples,
+        path.relative(reportFolder, path.join(options.outputFolder, REPORT_FILE)),
+        { odhinTab: options.odhinTab }
+      );
+    });
   }
 
   return exitCode;

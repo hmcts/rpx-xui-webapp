@@ -38,6 +38,7 @@ const loadMonitor = require('../../../scripts/playwright-load-monitor.js') as {
     options: {
       outputFolder: string;
       reportFolder: string;
+      reportFolders: string[];
       sampleIntervalMs: number;
       label: string;
       injectOdhin: boolean;
@@ -69,12 +70,32 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
     expect(parsed.options).toMatchObject({
       sampleIntervalMs: 1000,
       reportFolder: 'custom-report',
+      reportFolders: ['custom-report'],
       outputFolder: 'custom-load',
       label: 'workers-10',
       injectOdhin: true,
       odhinTab: true,
     });
     expect(parsed.commandArgs).toEqual(['yarn', 'test:playwright:integration', '--workers=10', '--shard=1/2']);
+  });
+
+  test('supports injecting the same load profile into multiple Odhín report folders', () => {
+    const parsed = loadMonitor.parseArgs([
+      '--report-folder',
+      'functional-output/tests/api_functional/odhin-report',
+      '--report-folder',
+      'functional-output/tests/playwright-api/odhin-report',
+      '--',
+      'yarn',
+      'test:api:pw:raw',
+    ]);
+
+    expect(parsed.options.reportFolder).toBe('functional-output/tests/api_functional/odhin-report');
+    expect(parsed.options.reportFolders).toEqual([
+      'functional-output/tests/api_functional/odhin-report',
+      'functional-output/tests/playwright-api/odhin-report',
+    ]);
+    expect(parsed.commandArgs).toEqual(['yarn', 'test:api:pw:raw']);
   });
 
   test('parses Odhín tab and timeline event controls', () => {

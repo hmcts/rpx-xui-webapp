@@ -70,6 +70,26 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
     username: 'BOOKING_UI_FT_ON_4_USERNAME',
     password: 'BOOKING_UI_FT_ON_4_PASSWORD',
   },
+  STAFF_ADMIN: {
+    username: 'STAFF_ADMIN_USERNAME',
+    password: 'STAFF_ADMIN_PASSWORD',
+  },
+  'STAFF_ADMIN-1': {
+    username: 'STAFF_ADMIN_1_USERNAME',
+    password: 'STAFF_ADMIN_1_PASSWORD',
+  },
+  'STAFF_ADMIN-2': {
+    username: 'STAFF_ADMIN_2_USERNAME',
+    password: 'STAFF_ADMIN_2_PASSWORD',
+  },
+  'STAFF_ADMIN-3': {
+    username: 'STAFF_ADMIN_3_USERNAME',
+    password: 'STAFF_ADMIN_3_PASSWORD',
+  },
+  'STAFF_ADMIN-4': {
+    username: 'STAFF_ADMIN_4_USERNAME',
+    password: 'STAFF_ADMIN_4_PASSWORD',
+  },
   HEARING_MANAGER_CR84_OFF: {
     username: 'HEARING_MANAGER_CR84_OFF_USERNAME',
     password: 'HEARING_MANAGER_CR84_OFF_PASSWORD',

@@ -19,6 +19,7 @@ export * from './caseworkerJurisdictionMockRoutes.helper';
 export * from './taskListMockRoutes.helper';
 export * from './bookingUiMockRoutes.helper';
 export * from './bookingUiUserPool.helper';
+export * from '../../common/staffAdminUserPool';
 export * from './manageTasksMockRoutes.helper';
 export * from './rolesAndAccessMockRoutes.helper';
 export * from './restrictedAccessMockRoutes.helper';

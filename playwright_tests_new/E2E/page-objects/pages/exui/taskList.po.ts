@@ -285,7 +285,7 @@ export class TaskListPage extends Base {
   private async gotoTaskListPath(path: string, urlPattern: RegExp, context: string, timeoutMs: number): Promise<void> {
     for (let attempt = 1; attempt <= TASK_LIST_NAVIGATION_ATTEMPTS; attempt += 1) {
       try {
-        await this.page.goto(path, { waitUntil: 'domcontentloaded', timeout: timeoutMs });
+        await this.page.goto(path, { waitUntil: 'commit', timeout: timeoutMs });
         break;
       } catch (error) {
         const navigationError = error as Error;

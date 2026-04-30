@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 import { Base } from '../../base';
 import { ValidatorUtils } from '../../../utils/validator.utils';
 import { TableUtils } from '@hmcts/playwright-common';
@@ -671,6 +671,10 @@ export class CaseDetailsPage extends Base {
     return callbackValidationAlert.isVisible({ timeout: timeoutMs }).catch(() => false);
   }
 
+  caseViewerRow(label: string): Locator {
+    return this.caseViewerTable.getByRole('row', { name: label });
+  }
+
   async selectCaseDetailsTab(tabName: string) {
     const tabLoadTimeoutMs = this.getRecommendedTimeoutMs({
       min: TIMEOUTS.TAB_LOAD,
@@ -698,6 +702,58 @@ export class CaseDetailsPage extends Base {
     await this.waitForTabPanelReadiness(visibleTabPanel, tabLoadTimeoutMs);
   }
 
+  async waitForCaseDetailsReady(timeoutMs = 30_000): Promise<void> {
+    await this.waitForCaseDetailsTabsReady(timeoutMs);
+  }
+
+  getRoleAccessSection(title: 'Judiciary' | 'Legal Ops'): Locator {
+    return this.page.locator('exui-role-access-section').filter({
+      has: this.page.getByRole('heading', { level: 2, name: title }),
+    });
+  }
+
+  getAddExclusionLink(): Locator {
+    return this.page.locator('a.govuk-link[href*="/role-access/add-exclusion"]').first();
+  }
+
+  getAllocateJudicialRoleLink(): Locator {
+    return this.getRoleAccessSection('Judiciary').getByRole('link', { name: 'Allocate a judicial role' });
+  }
+
+  getAllocateLegalOpsRoleLink(): Locator {
+    return this.getRoleAccessSection('Legal Ops').getByRole('link', { name: 'Allocate a legal ops role' });
+  }
+
+  getManageRoleLink(sectionTitle: 'Judiciary' | 'Legal Ops'): Locator {
+    return this.getRoleAccessSection(sectionTitle).getByRole('link', { name: 'Manage' });
+  }
+
+  async openRoleActions(sectionTitle: 'Judiciary' | 'Legal Ops'): Promise<void> {
+    await this.getManageRoleLink(sectionTitle).click();
+  }
+
+  getRoleActionLink(sectionTitle: 'Judiciary' | 'Legal Ops', action: 'Reallocate' | 'Remove Allocation'): Locator {
+    return this.getRoleAccessSection(sectionTitle).getByRole('link', { name: action });
+  }
+
+  getDeleteExclusionLink(): Locator {
+    return this.page.locator('exui-exclusions-table').getByRole('link', { name: 'Delete' });
+  }
+
+  getExclusionsTable(): Locator {
+    return this.page.locator('exui-exclusions-table table.govuk-table').first();
+  }
+
+  async openRolesAndAccessTab(caseId: string): Promise<void> {
+    await this.page.goto(`/cases/case-details/IA/Asylum/${caseId}`);
+    await expect(this.container).toBeVisible();
+    await expect(this.page.getByRole('tab', { name: /Roles and access/i }).first()).toBeVisible();
+
+    await this.selectCaseDetailsTab('Roles and access');
+    await this.page.waitForURL(new RegExp(`/cases/case-details/IA/Asylum/${caseId}(?:/roles-and-access)?(?:#.*)?$`));
+    await expect(this.page.getByRole('heading', { level: 2, name: 'Roles and access' })).toBeVisible();
+  }
+
   async openDocumentOne() {
     await this.documentOneAction.waitFor({ state: 'visible', timeout: this.getRecommendedTimeoutMs() });
     await this.documentOneAction.click();
@@ -723,6 +779,22 @@ export class CaseDetailsPage extends Base {
       .find((candidate) => MEDIA_VIEWER_ROUTE_PATTERN.test(candidate.url()));
 
     return matchingPage ?? this.page;
+  }
+
+  async waitForDocumentOneRowToContain(expectedText: string, timeoutMs = 45_000): Promise<void> {
+    await expect
+      .poll(
+        async () => {
+          await this.selectCaseDetailsTab('Tab 1').catch(() => undefined);
+          const rowVisible = await this.documentOneRow.isVisible().catch(() => false);
+          if (!rowVisible) {
+            return '';
+          }
+          return await this.documentOneRow.innerText().catch(() => '');
+        },
+        { timeout: timeoutMs, intervals: [1_000, 2_000, 3_000] }
+      )
+      .toContain(expectedText);
   }
 
   async getTabCount() {

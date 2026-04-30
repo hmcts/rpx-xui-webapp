@@ -1,13 +1,14 @@
 import { availableActionsList, buildTaskListMock } from '../../../mocks/taskList.mock';
 import { expect, test } from '../../../../E2E/fixtures';
-import { applySessionCookies, setupManageTasksBaseRoutes } from '../../../helpers';
+import { applySessionCookies, getLegacyStaffAdminSessionIdentity, setupManageTasksBaseRoutes } from '../../../helpers';
 
 const errorStates = [400, 403, 500, 503];
 const userIdentifier = 'STAFF_ADMIN';
+const staffAdminSession = getLegacyStaffAdminSessionIdentity();
 const broaderSupportedJurisdictionsMock = ['IA', 'PRIVATELAW', 'PUBLICLAW', 'CIVIL', 'ST_CIC', 'EMPLOYMENT', 'SSCS', 'DIVORCE'];
 
 test.beforeEach(async ({ page }) => {
-  await applySessionCookies(page, userIdentifier);
+  await applySessionCookies(page, staffAdminSession);
 });
 
 test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {

@@ -1,4 +1,6 @@
 import { getRuntimeUserCredentialEnvMapping } from '../E2E/utils/runtimeUserCredentials';
+import { UserUtils } from '../E2E/utils/user.utils.js';
+import type { SessionIdentity } from './sessionIdentity.js';
 
 export const STAFF_ADMIN_USER = 'STAFF_ADMIN' as const;
 
@@ -58,4 +60,13 @@ export function resolveStaffAdminUserIdentifier(
   }
 
   return configuredUserIdentifiers[resolveParallelIndex(source, env) % configuredUserIdentifiers.length];
+}
+
+export function getLegacyStaffAdminSessionIdentity(userUtils: UserUtils = new UserUtils()): SessionIdentity {
+  const credentials = userUtils.getUserCredentials(STAFF_ADMIN_USER);
+  return {
+    userIdentifier: STAFF_ADMIN_USER,
+    email: credentials.email,
+    password: credentials.password,
+  };
 }

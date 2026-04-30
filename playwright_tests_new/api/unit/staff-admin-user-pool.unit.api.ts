@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 
 import {
   getConfiguredStaffAdminUserIdentifiers,
+  getLegacyStaffAdminSessionIdentity,
   resolveStaffAdminUserIdentifier,
   STAFF_ADMIN_USER,
 } from '../../common/staffAdminUserPool.js';
@@ -57,6 +58,22 @@ test.describe('Staff admin user pool unit tests', { tag: '@svc-internal' }, () =
 
   test('keeps non-staff-admin user identifiers unchanged', () => {
     expect(resolveStaffAdminUserIdentifier('SOLICITOR', { parallelIndex: 1 }, configuredEnv)).toBe('SOLICITOR');
+  });
+
+  test('creates an explicit legacy staff admin session identity that bypasses pool resolution', () => {
+    const identity = getLegacyStaffAdminSessionIdentity({
+      getUserCredentials: (userIdentifier: string) => {
+        expect(userIdentifier).toBe(STAFF_ADMIN_USER);
+        return { email: 'legacy-staff-admin@example.test', password: 'legacy-secret' };
+      },
+    } as never);
+
+    expect(identity).toEqual({
+      userIdentifier: STAFF_ADMIN_USER,
+      email: 'legacy-staff-admin@example.test',
+      password: 'legacy-secret',
+    });
+    expect(resolveSessionIdentity(identity).userIdentifier).toBe(STAFF_ADMIN_USER);
   });
 
   test('routes legacy STAFF_ADMIN session identity through the configured pool', () => {

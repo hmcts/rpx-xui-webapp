@@ -323,6 +323,34 @@ API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
 - Keeping E2E below the Jenkins agent core count avoids saturating the preview/AAT backends while API and integration stages run in parallel
 - Locally, worker count is auto-sized from CPU capacity; override with `FUNCTIONAL_TESTS_WORKERS` or the Playwright `--workers` flag
 
+### Integration Load Profiling
+
+Use the load-profile wrapper when tuning workers or Playwright sharding. It samples the local/Jenkins host while the run is executing, writes raw metrics, and injects a **System Load Profile** block into the Odhín dashboard.
+
+```bash
+# Run integration with a host-load profile and 10 workers
+yarn test:playwright:integration:profile -- --workers=10
+
+# Compare a sharded run
+yarn test:playwright:integration:profile -- --workers=10 --shard=1/2
+yarn test:playwright:integration:profile -- --workers=10 --shard=2/2
+```
+
+Artifacts:
+
+- Odhín dashboard block: `functional-output/tests/playwright-integration/odhin-report/xui-playwright-integration.html`
+- Standalone chart: `functional-output/tests/playwright-integration/load-profile/load-profile.html`
+- Raw samples: `functional-output/tests/playwright-integration/load-profile/samples.json`
+- Summary: `functional-output/tests/playwright-integration/load-profile/summary.json`
+
+Useful controls:
+
+- `PW_LOAD_PROFILE_INTERVAL_MS=1000` changes the sample interval
+- `PW_LOAD_PROFILE_OUTPUT=<path>` changes the artifact folder
+- `PW_LOAD_PROFILE_INJECT_ODHIN=false` disables Odhín injection
+
+Treat the profile as capacity evidence. If failures appear while CPU, load/core, or memory are saturated, reduce workers or shard. If load is healthy, investigate the test/app contract instead of masking the failure with more retries.
+
 ### API Authentication Model
 
 - **Default behavior**: `utils/auth.ts` attempts token/S2S login using `IdamUtils.generateIdamToken` (password grant) plus `ServiceAuthUtils.retrieveToken`

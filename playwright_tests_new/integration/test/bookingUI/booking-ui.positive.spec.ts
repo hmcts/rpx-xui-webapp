@@ -1,5 +1,6 @@
 import {
   applySessionCookiesAndExtractUserId,
+  buildBookingUiBootstrapUser,
   type BookingUiUserIdentifier,
   resolveBookingUiUserIdentifier,
   setupBookingUiMockRoutes,
@@ -39,7 +40,9 @@ test.describe('Booking UI with lazy pooled session users', { tag: ['@integration
     const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
     sessionUserId = userId;
     existingBookingsMock = buildExistingBookingsMock(userId);
-    await setupTaskListMockRoutes(page, buildMyTaskListMock(userId, 3));
+    await setupTaskListMockRoutes(page, buildMyTaskListMock(userId, 3), {
+      bootstrapUser: buildBookingUiBootstrapUser(userId),
+    });
     await setupBookingUiMockRoutes(page, {
       locationResponseBody: singleLocationMock,
       getBookingsResponseBody: existingBookingsMock,

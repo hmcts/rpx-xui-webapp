@@ -1,5 +1,6 @@
 import {
   applySessionCookiesAndExtractUserId,
+  buildBookingUiBootstrapUser,
   type BookingUiUserIdentifier,
   resolveBookingUiUserIdentifier,
   setupBookingUiMockRoutes,
@@ -49,7 +50,9 @@ createBookingErrorCases.forEach(({ status, expectedUrlPattern }) => {
         sessionUserId = userId;
         existingBookingsMock = buildExistingBookingsMock(userId);
 
-        await setupTaskListMockRoutes(page, buildMyTaskListMock(userId, 3));
+        await setupTaskListMockRoutes(page, buildMyTaskListMock(userId, 3), {
+          bootstrapUser: buildBookingUiBootstrapUser(userId),
+        });
         await setupBookingUiMockRoutes(page, {
           locationResponseBody: singleLocationMock,
           getBookingsResponseBody: existingBookingsMock,
@@ -148,7 +151,9 @@ test.describe(
       const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
       existingBookingsMock = buildExistingBookingsMock(userId);
 
-      await setupTaskListMockRoutes(page, buildMyTaskListMock(userId, 3));
+      await setupTaskListMockRoutes(page, buildMyTaskListMock(userId, 3), {
+        bootstrapUser: buildBookingUiBootstrapUser(userId),
+      });
       await setupBookingUiMockRoutes(page, {
         locationResponseBody: singleLocationMock,
         getBookingsResponseBody: existingBookingsMock,
@@ -192,7 +197,9 @@ test.describe(
       const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
       existingBookingsMock = buildExistingBookingsMock(userId);
 
-      await setupTaskListMockRoutes(page, buildMyTaskListMock(userId, 3));
+      await setupTaskListMockRoutes(page, buildMyTaskListMock(userId, 3), {
+        bootstrapUser: buildBookingUiBootstrapUser(userId),
+      });
       await setupBookingUiMockRoutes(page, {
         locationResponseBody: singleLocationMock,
         getBookingsResponseBody: existingBookingsMock,

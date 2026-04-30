@@ -9,6 +9,7 @@ import { setupCaseworkerJurisdictionsRoute, type SupportedJurisdictionDetail } f
 export const taskListRoutePattern = /\/workallocation\/task(?:\?.*)?$/;
 const defaultSupportedJurisdictionsMock = ['IA', 'SSCS', 'Other'];
 type TaskMockRouteOptions = {
+  bootstrapUser?: TaskListBootstrapUserOptions;
   skipValidation?: boolean;
   status?: number;
 };
@@ -25,6 +26,7 @@ export type TaskListBootstrapUserOptions = {
   }>;
   roleCategory?: string;
   roles?: string[];
+  userId?: string;
 };
 
 const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -53,6 +55,10 @@ export async function setupTaskListBootstrapRoutes(
   userOptions: TaskListBootstrapUserOptions = {}
 ): Promise<void> {
   const userDetails = nodeAppDataModels.getUserDetails_oauth();
+  if (userOptions.userId) {
+    userDetails.userInfo.id = userOptions.userId;
+    userDetails.userInfo.uid = userOptions.userId;
+  }
   const existingRoles = Array.isArray(userDetails.userInfo.roles)
     ? userDetails.userInfo.roles.filter((role): role is string => typeof role === 'string')
     : [];
@@ -216,7 +222,12 @@ export async function setupTaskListMockRoutes(
     assertValidWorkAllocationTaskListMock(taskListResponse);
   }
 
-  await setupTaskListBootstrapRoutes(page);
+  await setupTaskListBootstrapRoutes(
+    page,
+    defaultSupportedJurisdictionsMock,
+    defaultSupportedJurisdictionDetailsMock,
+    options.bootstrapUser
+  );
 
   await page.route(taskListRoutePattern, async (route) => {
     await route.fulfill({

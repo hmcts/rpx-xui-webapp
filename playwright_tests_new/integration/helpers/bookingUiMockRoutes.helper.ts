@@ -1,4 +1,5 @@
 import type { Page, Route } from '@playwright/test';
+import type { TaskListBootstrapUserOptions } from './taskListMockRoutes.helper';
 
 type RouteHandler = (route: Route) => Promise<void>;
 
@@ -9,6 +10,21 @@ type BookingUiMockRoutesOptions = {
   onCreateBooking?: RouteHandler;
   onRefreshRoleAssignments?: RouteHandler;
 };
+
+export const buildBookingUiBootstrapUser = (userId: string): TaskListBootstrapUserOptions => ({
+  userId,
+  roleCategory: 'JUDICIAL',
+  roles: ['caseworker-judge'],
+  roleAssignments: [
+    {
+      bookable: true,
+      jurisdiction: 'IA',
+      roleName: 'fee-paid-judge',
+      roleType: 'ORGANISATION',
+      substantive: 'Y',
+    },
+  ],
+});
 
 export async function setupBookingUiMockRoutes(page: Page, options: BookingUiMockRoutesOptions): Promise<void> {
   const { locationResponseBody, getBookingsResponseBody, onGetBookings, onCreateBooking, onRefreshRoleAssignments } = options;

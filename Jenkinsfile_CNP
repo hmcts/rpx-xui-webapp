@@ -62,6 +62,11 @@ workers=10 shard=2/2''',
             name: 'INTEGRATION_PW_LOAD_PROFILE_ODHIN_TAB',
             defaultValue: true,
             description: 'Add the System Load tab to generated Odhín integration reports.'
+        ),
+        booleanParam(
+            name: 'PW_LOAD_PROFILE_ODHIN_TAB',
+            defaultValue: true,
+            description: 'Add the System Load tab to generated Odhín API, E2E, and integration reports.'
         )
     ])
 ])
@@ -213,7 +218,7 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
                 "PLAYWRIGHT_REPORT_FOLDER=${runConfig.reportDir}",
                 "PW_LOAD_PROFILE_OUTPUT=${runConfig.loadProfileDir}",
                 "PW_LOAD_PROFILE_LABEL=${runConfig.label}",
-                "PW_LOAD_PROFILE_ODHIN_TAB=${params.INTEGRATION_PW_LOAD_PROFILE_ODHIN_TAB}",
+                "PW_LOAD_PROFILE_ODHIN_TAB=${params.PW_LOAD_PROFILE_ODHIN_TAB && params.INTEGRATION_PW_LOAD_PROFILE_ODHIN_TAB}",
                 "PW_LOAD_PROFILE_EVENTS_FILE=${playwrightLoadProfileEventsFile(testType)}",
                 "TEST_TYPE=${testType}",
                 "ORG_USER_ASSIGNMENT_MODE=external",
@@ -279,6 +284,8 @@ def secrets = [
     secret('e2e-booking-ui-ft-on-3-password', 'BOOKING_UI_FT_ON_3_PASSWORD'),
     secret('e2e-booking-ui-ft-on-4-username', 'BOOKING_UI_FT_ON_4_USERNAME'),
     secret('e2e-booking-ui-ft-on-4-password', 'BOOKING_UI_FT_ON_4_PASSWORD'),
+    secret('e2e-hearing-manager-cr84-off-username', 'HEARING_MANAGER_CR84_OFF_USERNAME'),
+    secret('e2e-hearing-manager-cr84-off-password', 'HEARING_MANAGER_CR84_OFF_PASSWORD'),
     secret('e2e-hearing-manager-cr84-off-1-username', 'HEARING_MANAGER_CR84_OFF_1_USERNAME'),
     secret('e2e-hearing-manager-cr84-off-1-password', 'HEARING_MANAGER_CR84_OFF_1_PASSWORD'),
     secret('e2e-hearing-manager-cr84-off-2-username', 'HEARING_MANAGER_CR84_OFF_2_USERNAME'),
@@ -287,6 +294,8 @@ def secrets = [
     secret('e2e-hearing-manager-cr84-off-3-password', 'HEARING_MANAGER_CR84_OFF_3_PASSWORD'),
     secret('e2e-hearing-manager-cr84-off-4-username', 'HEARING_MANAGER_CR84_OFF_4_USERNAME'),
     secret('e2e-hearing-manager-cr84-off-4-password', 'HEARING_MANAGER_CR84_OFF_4_PASSWORD'),
+    secret('e2e-hearing-manager-cr84-on-username', 'HEARING_MANAGER_CR84_ON_USERNAME'),
+    secret('e2e-hearing-manager-cr84-on-password', 'HEARING_MANAGER_CR84_ON_PASSWORD'),
     secret('e2e-hearing-manager-cr84-on-1-username', 'HEARING_MANAGER_CR84_ON_1_USERNAME'),
     secret('e2e-hearing-manager-cr84-on-1-password', 'HEARING_MANAGER_CR84_ON_1_PASSWORD'),
     secret('e2e-hearing-manager-cr84-on-2-username', 'HEARING_MANAGER_CR84_ON_2_USERNAME'),
@@ -436,6 +445,7 @@ withPipeline(type, product, component) {
                             "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                             "ORG_USER_ASSIGNMENT_MODE=external",
                             "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
+                            "PW_LOAD_PROFILE_ODHIN_TAB=${params.PW_LOAD_PROFILE_ODHIN_TAB}",
                             "FUNCTIONAL_TESTS_WORKERS=4"
                         ]) {
                             try {
@@ -483,6 +493,7 @@ withPipeline(type, product, component) {
                                 "ORG_USER_ASSIGNMENT_MODE=external",
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                 "FUNCTIONAL_TESTS_WORKERS=2",
+                                "PW_LOAD_PROFILE_ODHIN_TAB=${params.PW_LOAD_PROFILE_ODHIN_TAB}",
                                 "PLAYWRIGHT_SKIP_INSTALL=true",
                                 "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
                                 "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
@@ -538,6 +549,7 @@ withPipeline(type, product, component) {
                             "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                             "ORG_USER_ASSIGNMENT_MODE=external",
                             "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
+                            "PW_LOAD_PROFILE_ODHIN_TAB=${params.PW_LOAD_PROFILE_ODHIN_TAB}",
                             "FUNCTIONAL_TESTS_WORKERS=4"
                         ]) {
                             try {
@@ -585,6 +597,7 @@ withPipeline(type, product, component) {
                                 "ORG_USER_ASSIGNMENT_MODE=external",
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                 "FUNCTIONAL_TESTS_WORKERS=2",
+                                "PW_LOAD_PROFILE_ODHIN_TAB=${params.PW_LOAD_PROFILE_ODHIN_TAB}",
                                 "PLAYWRIGHT_SKIP_INSTALL=true",
                                 "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
                                 "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"

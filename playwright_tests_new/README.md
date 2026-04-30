@@ -29,10 +29,10 @@ yarn start:ng
 ### E2E commands
 
 ```bash
-# AAT: run all E2E
+# AAT: run all E2E. Produces Odhín plus the System Load tab by default.
 yarn test:playwrightE2E
 
-# LOCAL: run all E2E
+# LOCAL: run all E2E. Produces Odhín plus the System Load tab by default.
 TEST_URL=http://localhost:3000 yarn test:playwrightE2E
 
 # LOCAL: single spec file
@@ -55,6 +55,9 @@ TEST_URL=http://localhost:3000 yarn test:playwrightE2E --ui playwright_tests_new
 
 # LOCAL: single E2E by title/substring
 TEST_URL=http://localhost:3000 yarn test:playwrightE2E --project=chromium --workers=1 --grep "My tasks"
+
+# Direct E2E run without the load-profile wrapper
+yarn test:playwrightE2E:raw
 ```
 
 ### API commands
@@ -63,14 +66,19 @@ TEST_URL=http://localhost:3000 yarn test:playwrightE2E --project=chromium --work
 # AAT/LOCAL: run the Playwright support unit tests only
 PLAYWRIGHT_SKIP_INSTALL=true yarn playwright test --project=node-api playwright_tests_new/api/unit
 
-# AAT: include work-allocation tests only, disable excludes
+# AAT: include work-allocation tests only, disable excludes.
+# Produces Odhín plus the System Load tab by default.
 API_PW_INCLUDE_TAGS=@svc-work-allocation API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
 
-# LOCAL
+# LOCAL - produces Odhín plus the System Load tab by default
 TEST_URL=http://localhost:3000 yarn test:api:pw
 
-# LOCAL with coverage
+# LOCAL with coverage - produces Odhín plus the System Load tab by default
 TEST_URL=http://localhost:3000 yarn test:api:pw:coverage
+
+# Direct Playwright API runs without the load-profile wrapper
+yarn test:api:pw:raw
+yarn test:api:pw:coverage:raw
 ```
 
 ### Integration commands
@@ -88,7 +96,7 @@ yarn test:playwright:integration:raw
 
 ### Odhin report locations
 
-- API: `functional-output/tests/playwright-api/odhin-report/xui-playwright-api.html`
+- API: `functional-output/tests/api_functional/odhin-report/xui-playwright-api.html`
 - Integration: `functional-output/tests/playwright-integration/odhin-report/xui-playwright-integration.html`
 - E2E: `functional-output/tests/playwright-e2e/odhin-report/xui-playwright-e2e.html`
 
@@ -326,9 +334,9 @@ API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
 - Keeping E2E below the Jenkins agent core count avoids saturating the preview/AAT backends while API and integration stages run in parallel
 - Locally, worker count is auto-sized from CPU capacity; override with `FUNCTIONAL_TESTS_WORKERS` or the Playwright `--workers` flag
 
-### Integration Load Profiling
+### Playwright Load Profiling
 
-The standard `yarn test:playwright:integration` command runs through the load-profile wrapper by default. It samples the local/Jenkins host while the run is executing, writes raw metrics, and injects a **System Load** tab into the Odhín report.
+The standard API, E2E, cross-browser E2E, and integration commands run through the load-profile wrapper by default. The wrapper samples the local/Jenkins host while the run is executing, writes raw metrics, and injects a **System Load** tab into the Odhín report.
 
 ```bash
 # Run integration with a host-load profile and 10 workers
@@ -344,10 +352,14 @@ yarn test:playwright:integration:profile -- --workers=10
 
 Artifacts:
 
-- Odhín report with **System Load** tab: `functional-output/tests/playwright-integration/odhin-report/xui-playwright-integration.html`
-- Standalone chart: `functional-output/tests/playwright-integration/load-profile/load-profile.html`
-- Raw samples: `functional-output/tests/playwright-integration/load-profile/samples.json`
-- Summary: `functional-output/tests/playwright-integration/load-profile/summary.json`
+- API Odhín report with **System Load** tab: `functional-output/tests/api_functional/odhin-report/xui-playwright-api.html`
+- E2E Odhín report with **System Load** tab: `functional-output/tests/playwright-e2e/odhin-report/xui-playwright-e2e.html`
+- Integration Odhín report with **System Load** tab: `functional-output/tests/playwright-integration/odhin-report/xui-playwright-integration.html`
+- API standalone chart: `functional-output/tests/api_functional/odhin-report/load-profile/load-profile.html`
+- E2E standalone chart: `functional-output/tests/playwright-e2e/odhin-report/load-profile/load-profile.html`
+- Integration standalone chart: `functional-output/tests/playwright-integration/load-profile/load-profile.html`
+- Integration raw samples: `functional-output/tests/playwright-integration/load-profile/samples.json`
+- Integration summary: `functional-output/tests/playwright-integration/load-profile/summary.json`
 
 Useful controls:
 
@@ -366,7 +378,7 @@ workers=10 shard=1/2
 workers=10 shard=2/2
 ```
 
-Use `INTEGRATION_PW_WORKERS=<n>` and optional `INTEGRATION_PW_SHARD=<index/total>` on Jenkins to run one targeted integration profile instead of the full `INTEGRATION_PW_PROFILE_RUNS` matrix. Use `INTEGRATION_PW_LOAD_PROFILE_ODHIN_TAB=false` to disable the Odhín **System Load** tab while still producing the standalone load profile artifacts. CNP and nightly also write API, E2E, and integration stage markers to the profile event file so the report can show which suite was running when CPU, load, or memory changed.
+Use `INTEGRATION_PW_WORKERS=<n>` and optional `INTEGRATION_PW_SHARD=<index/total>` on Jenkins to run one targeted integration profile instead of the full `INTEGRATION_PW_PROFILE_RUNS` matrix. Use `PW_LOAD_PROFILE_ODHIN_TAB=false` to disable the Odhín **System Load** tab for API, E2E, and integration reports while still producing standalone load profile artifacts. `INTEGRATION_PW_LOAD_PROFILE_ODHIN_TAB=false` remains available as an integration-only override. CNP and nightly also write API, E2E, and integration stage markers to the profile event file so the report can show which suite was running when CPU, load, or memory changed.
 
 The wrapper always marks the wrapped command start and finish on the chart. To show API, E2E, and integration boundaries on one timeline, run a monitor across the parent pipeline window or write shared JSONL events into `PW_LOAD_PROFILE_EVENTS_FILE`:
 

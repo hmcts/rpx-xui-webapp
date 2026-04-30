@@ -186,6 +186,17 @@ const resolveOdhinTimeoutExitCode = (env = process.env) => {
   return 1;
 };
 
+const resolveOdhinCompletionExitDelayMs = (env = process.env) => {
+  const raw = env.PW_ODHIN_COMPLETION_EXIT_DELAY_MS;
+  if (raw !== undefined) {
+    const parsed = Number.parseInt(raw, 10);
+    if (Number.isFinite(parsed) && parsed >= 0) {
+      return parsed;
+    }
+  }
+  return env.CI ? 10000 : 0;
+};
+
 const buildConfig = (env = process.env) => {
   const headlessMode = env.HEAD !== 'true';
   const odhinOutputFolder = env.PLAYWRIGHT_REPORT_FOLDER ?? defaultOdhinOutputFolder;
@@ -215,6 +226,7 @@ const buildConfig = (env = process.env) => {
         intervalMs: Number.parseInt(env.PW_ODHIN_PROGRESS_INTERVAL_MS ?? '5000', 10) || 5000,
         hardTimeoutMs: resolveOdhinHardTimeoutMs(env),
         timeoutExitCode: resolveOdhinTimeoutExitCode(env),
+        completionExitDelayMs: resolveOdhinCompletionExitDelayMs(env),
       },
     ]);
     reporter.push([
@@ -283,4 +295,5 @@ module.exports = {
   resolveOdhinRuntimeHookTimeoutMs,
   resolveOdhinHardTimeoutMs,
   resolveOdhinTimeoutExitCode,
+  resolveOdhinCompletionExitDelayMs,
 };

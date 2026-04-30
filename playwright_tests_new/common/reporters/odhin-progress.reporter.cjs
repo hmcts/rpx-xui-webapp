@@ -19,6 +19,10 @@ class OdhinProgressReporter {
       Number.isFinite(Number(options.timeoutExitCode)) && Number(options.timeoutExitCode) >= 0
         ? Number(options.timeoutExitCode)
         : 1;
+    this.completionExitDelayMs =
+      Number.isFinite(Number(options.completionExitDelayMs)) && Number(options.completionExitDelayMs) >= 0
+        ? Number(options.completionExitDelayMs)
+        : 0;
   }
 
   onBegin(_config, suite) {
@@ -98,6 +102,17 @@ class OdhinProgressReporter {
     if (this.progressStarted) {
       const elapsedSeconds = this.startedAt ? Math.max(0, Math.floor((Date.now() - this.startedAt) / 1000)) : 0;
       process.stdout.write(`[odhin-progress] Odhin report completed in ${elapsedSeconds}s.\n`);
+    }
+
+    if (this.completionExitDelayMs > 0) {
+      const exitTimer = setTimeout(() => {
+        const exitCode = Number.isFinite(Number(process.exitCode)) ? Number(process.exitCode) : 0;
+        process.stderr.write(
+          `[odhin-progress] Process still alive ${this.completionExitDelayMs}ms after Odhin completion. Forcing exit with code ${exitCode}.\n`
+        );
+        process.exit(exitCode);
+      }, this.completionExitDelayMs);
+      exitTimer.unref?.();
     }
   }
 }

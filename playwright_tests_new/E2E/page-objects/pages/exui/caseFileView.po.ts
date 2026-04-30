@@ -61,12 +61,11 @@ export class CaseFileViewPage extends Base {
       folderNode = await this.findDirectChildFolderNode(currentScope, segment);
 
       const folderButton = folderNode.locator(':scope > button.node[role="treeitem"]').first();
-      const icon = folderButton.locator('.node__iconImg').first();
       const isExpanded = await folderButton.getAttribute('aria-expanded');
 
       await folderButton.waitFor({ state: 'visible' });
       if (isExpanded !== 'true') {
-        await icon.click();
+        await this.expandFolderButton(folderButton, segment);
       }
 
       currentScope = folderNode.locator(':scope > div[role="group"]').first();
@@ -241,6 +240,36 @@ export class CaseFileViewPage extends Base {
       .waitFor({ state: 'visible', timeout: timeoutMs })
       .then(() => true)
       .catch(() => false);
+  }
+
+  private async expandFolderButton(folderButton: Locator, folderName: string): Promise<void> {
+    const deadline = Date.now() + CASE_FILE_VIEW_FOLDER_TIMEOUT_MS;
+    let lastError: Error | undefined;
+
+    while (Date.now() < deadline) {
+      if ((await folderButton.getAttribute('aria-expanded').catch(() => null)) === 'true') {
+        return;
+      }
+
+      try {
+        await folderButton.click({ timeout: 2_000 });
+      } catch (error) {
+        if (!this.isTransientDocumentClickError(error)) {
+          throw error;
+        }
+        lastError = error as Error;
+      }
+
+      if ((await folderButton.getAttribute('aria-expanded').catch(() => null)) === 'true') {
+        return;
+      }
+
+      await this.page.waitForTimeout(CASE_FILE_VIEW_FOLDER_POLL_INTERVAL_MS);
+    }
+
+    throw new Error(
+      `Could not expand case file view folder "${folderName}" before timeout.${lastError ? ` Last error: ${lastError.message}` : ''}`
+    );
   }
 
   private isTransientDocumentClickError(error: unknown): boolean {

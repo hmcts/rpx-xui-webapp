@@ -135,6 +135,7 @@ export class TaskListPage extends Base {
     const timeoutMs = options.timeoutMs ?? TASK_LIST_READY_TIMEOUT_MS;
 
     await this.gotoTaskListPath('/work/my-work/list', /\/work\/my-work\/list(?:\?.*)?$/, `${context} navigation`, timeoutMs);
+    await this.reloadBlankTaskListDocumentIfNeeded(/\/work\/my-work\/list(?:\?.*)?$/, `${context} navigation`, timeoutMs);
     await this.waitForTaskListSpinnerToSettle(10_000);
     await this.waitForTaskListShellReadyAfterNavigation(
       /\/work\/my-work\/list(?:\?.*)?$/,
@@ -266,6 +267,7 @@ export class TaskListPage extends Base {
   private async navigateToTaskListView(path: string, urlPattern: RegExp, context: string, options: { timeoutMs?: number } = {}) {
     const timeoutMs = options.timeoutMs ?? TASK_LIST_READY_TIMEOUT_MS;
     await this.gotoTaskListPath(path, urlPattern, context, timeoutMs);
+    await this.reloadBlankTaskListDocumentIfNeeded(urlPattern, context, timeoutMs);
     await this.waitForTaskListSpinnerToSettle(10_000);
     await this.waitForTaskListShellReadyAfterNavigation(urlPattern, context, timeoutMs);
   }
@@ -315,17 +317,25 @@ export class TaskListPage extends Base {
         throw error;
       }
 
-      this.logger.warn('TASK_LIST_BLANK_DOCUMENT_RELOAD', {
-        context,
-        url: this.page.url(),
-      });
-      await this.page.reload({ waitUntil: 'domcontentloaded', timeout: timeoutMs });
-      await this.page.waitForURL(urlPattern, { timeout: timeoutMs }).catch(() => undefined);
-      if (!urlPattern.test(this.page.url())) {
-        throw new Error(`Task list navigation for ${context} landed on ${this.page.url()} after blank-page reload.`);
-      }
+      await this.reloadBlankTaskListDocumentIfNeeded(urlPattern, context, timeoutMs);
       await this.waitForTaskListSpinnerToSettle(10_000);
       await this.waitForTaskListShellReady(`${context} after blank-page reload`);
+    }
+  }
+
+  private async reloadBlankTaskListDocumentIfNeeded(urlPattern: RegExp, context: string, timeoutMs: number): Promise<void> {
+    if (!(await this.isBlankTaskListDocument(urlPattern))) {
+      return;
+    }
+
+    this.logger.warn('TASK_LIST_BLANK_DOCUMENT_RELOAD', {
+      context,
+      url: this.page.url(),
+    });
+    await this.page.reload({ waitUntil: 'domcontentloaded', timeout: timeoutMs });
+    await this.page.waitForURL(urlPattern, { timeout: timeoutMs }).catch(() => undefined);
+    if (!urlPattern.test(this.page.url())) {
+      throw new Error(`Task list navigation for ${context} landed on ${this.page.url()} after blank-page reload.`);
     }
   }
 
@@ -451,14 +461,48 @@ export class TaskListPage extends Base {
   private async waitForFilterCheckboxVisible(checkbox: Locator, description: string, deadlineMs?: number): Promise<Locator> {
     const targetCheckbox = checkbox.first();
     const timeoutMs = this.resolveInteractionTimeout(deadlineMs, FILTER_CONTROL_READY_TIMEOUT_MS);
-    await targetCheckbox.waitFor({ state: 'visible', timeout: timeoutMs }).catch(async () => {
+    const targetDeadlineMs = Date.now() + timeoutMs;
+
+    while (Date.now() < targetDeadlineMs) {
+      this.assertFilterInteractionAlive(`waiting for checkbox "${description}"`, deadlineMs);
+      if (await targetCheckbox.isVisible().catch(() => false)) {
+        await expect(targetCheckbox).toBeEnabled({
+          timeout: this.resolveInteractionTimeout(deadlineMs, FILTER_CHECKBOX_STATE_TIMEOUT_MS),
+        });
+        return targetCheckbox;
+      }
       await this.assertTaskListInteractive(`waiting for ${description}`);
-      throw new Error(`Task list filter checkbox "${description}" did not become visible within ${timeoutMs}ms.`);
-    });
-    await expect(targetCheckbox).toBeEnabled({
-      timeout: this.resolveInteractionTimeout(deadlineMs, FILTER_CHECKBOX_STATE_TIMEOUT_MS),
-    });
-    return targetCheckbox;
+      await this.page.waitForTimeout(250);
+    }
+
+    await this.assertTaskListInteractive(`waiting for ${description}`);
+    throw new Error(`Task list filter checkbox "${description}" did not become visible within ${timeoutMs}ms.`);
+  }
+
+  private async waitForFirstFilterOptionVisible(
+    childCheckboxes: Locator,
+    groupName: string,
+    deadlineMs?: number
+  ): Promise<Locator> {
+    const timeoutMs = this.resolveInteractionTimeout(deadlineMs, FILTER_CONTROL_READY_TIMEOUT_MS);
+    const targetDeadlineMs = Date.now() + timeoutMs;
+
+    while (Date.now() < targetDeadlineMs) {
+      this.assertFilterInteractionAlive(`waiting for ${groupName} filter options`, deadlineMs);
+      const checkboxCount = await childCheckboxes.count().catch(() => 0);
+      for (let index = 0; index < checkboxCount; index += 1) {
+        const checkbox = childCheckboxes.nth(index);
+        if (await checkbox.isVisible().catch(() => false)) {
+          return this.waitForFilterCheckboxVisible(checkbox, `${groupName} option ${index + 1}`, deadlineMs);
+        }
+      }
+
+      await this.assertTaskListInteractive(`waiting for ${groupName} filter options`);
+      await this.page.waitForTimeout(250);
+    }
+
+    await this.assertTaskListInteractive(`waiting for ${groupName} filter options`);
+    throw new Error(`Task list ${groupName} filter options did not become visible within ${timeoutMs}ms.`);
   }
 
   private assertFilterInteractionAlive(context: string, deadlineMs?: number): void {
@@ -735,7 +779,7 @@ export class TaskListPage extends Base {
   ): Promise<string> {
     const deadlineMs = Date.now() + FILTER_GROUP_OPERATION_TIMEOUT_MS;
     await this.openFilterPanel(deadlineMs);
-    const firstCheckbox = await this.waitForFilterCheckboxVisible(childCheckboxes.first(), `${groupName} option 1`, deadlineMs);
+    const firstCheckbox = await this.waitForFirstFilterOptionVisible(childCheckboxes, groupName, deadlineMs);
     const firstValue = await firstCheckbox.getAttribute('value');
     if (!firstValue) {
       throw new Error(`Task list ${groupName} first filter option did not expose a value.`);

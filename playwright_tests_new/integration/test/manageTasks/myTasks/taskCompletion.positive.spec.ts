@@ -6,9 +6,11 @@ import { setupTaskActionEndpointMocks } from '../../../helpers/taskActionApiMock
 const userIdentifier = 'STAFF_ADMIN';
 const MY_WORK_LIST_URL_REGEX = /\/work\/my-work\/list/;
 let taskListMockResponse: ReturnType<typeof buildTaskListMock>;
+let sessionUserId = '';
 
 test.beforeEach(async ({ page }) => {
   const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
+  sessionUserId = userId;
   taskListMockResponse = buildTaskListMock(160, userId, myActionsList);
 });
 
@@ -17,7 +19,10 @@ test.describe(`Task Completion as ${userIdentifier}`, { tag: ['@integration', '@
     const firstTask = taskListMockResponse.tasks[0];
 
     await test.step('Setup route mock for task list and complete action endpoints', async () => {
-      await setupManageTasksBaseRoutes(page, { taskListResponse: taskListMockResponse });
+      await setupManageTasksBaseRoutes(page, {
+        taskListResponse: taskListMockResponse,
+        user: { userId: sessionUserId },
+      });
 
       await setupTaskActionEndpointMocks(page, 'complete', {
         taskId: firstTask.id,

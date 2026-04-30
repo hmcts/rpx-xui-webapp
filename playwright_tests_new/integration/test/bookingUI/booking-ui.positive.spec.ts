@@ -1,54 +1,44 @@
-import {
-  applySessionCookiesAndExtractUserId,
-  buildBookingUiBootstrapUser,
-  type BookingUiUserIdentifier,
-  resolveBookingUiUserIdentifier,
-  setupBookingUiMockRoutes,
-} from '../../helpers';
-import { setupTaskListMockRoutes } from '../../helpers/taskListMockRoutes.helper';
+import { setupBookableBookingUiRoutesForTest } from '../../helpers';
 import { expect, test } from '../../../E2E/fixtures';
 import {
   singleLocationMock,
-  buildExistingBookingsMock,
   type CreateBookingRequest,
   type CreateBookingResponse,
   getExpectedTodayOnlyCreateBookingRange,
 } from '../../mocks/bookingUI.mock';
-import { buildMyTaskListMock } from '../../mocks/taskList.mock';
 import { formatUiDate } from '../../utils/tableUtils';
 
 const defaultBookingLocation = singleLocationMock[0];
 const bookingPageUrlPattern = /\/booking$/;
 const tasksPageUrlPattern = /\/work\/my-work\/list/;
 
-let userIdentifier: BookingUiUserIdentifier;
-let getBookingsCalled = false;
-let createBookingCalled = false;
-let createBookingRequestBody: CreateBookingRequest | undefined;
-let createBookingResponseBody: CreateBookingResponse | undefined;
-let sessionUserId = '';
-let existingBookingsMock;
-
 test.describe('Booking UI with lazy pooled session users', { tag: ['@integration', '@integration-booking-ui'] }, () => {
-  test.beforeEach(async ({ page }, testInfo) => {
-    getBookingsCalled = false;
-    createBookingCalled = false;
-    createBookingRequestBody = undefined;
-    createBookingResponseBody = undefined;
+  test('can continue when choosing an existing booking', async ({ page, bookingUiPage }, testInfo) => {
+    const routeState = await setupBookableBookingUiRoutesForTest(page, testInfo);
 
-    userIdentifier = resolveBookingUiUserIdentifier(testInfo);
-    const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
-    sessionUserId = userId;
-    existingBookingsMock = buildExistingBookingsMock(userId);
-    await setupTaskListMockRoutes(page, buildMyTaskListMock(userId, 3), {
-      bootstrapUser: buildBookingUiBootstrapUser(userId),
+    await test.step('Navigate to booking UI and wait for bookings request', async () => {
+      await bookingUiPage.goto();
+      await expect(page).toHaveURL(bookingPageUrlPattern);
+      await expect.poll(routeState.getBookingsCalled).toBeTruthy();
+      await expect(bookingUiPage.continueButton).toHaveCount(0);
     });
-    await setupBookingUiMockRoutes(page, {
-      locationResponseBody: singleLocationMock,
-      getBookingsResponseBody: existingBookingsMock,
-      onGetBookings: () => {
-        getBookingsCalled = true;
-      },
+
+    await test.step('Select existing booking and verify enabled/disabled booking buttons', async () => {
+      await bookingUiPage.selectOption('Choose an existing booking');
+      await expect(bookingUiPage.existingBookingButton(1)).toBeDisabled();
+    });
+
+    await test.step('Continue with the active booking and redirect to my work list', async () => {
+      await bookingUiPage.continueWithExistingBooking(0);
+      await expect(page).toHaveURL(tasksPageUrlPattern);
+    });
+  });
+
+  test('can continue when creating a new booking', async ({ page, bookingUiPage }, testInfo) => {
+    let createBookingCalled = false;
+    let createBookingRequestBody: CreateBookingRequest | undefined;
+    let createBookingResponseBody: CreateBookingResponse | undefined;
+    const routeState = await setupBookableBookingUiRoutesForTest(page, testInfo, {
       onCreateBooking: async (route) => {
         createBookingCalled = true;
         const requestBody = route.request().postDataJSON() as CreateBookingRequest;
@@ -72,32 +62,11 @@ test.describe('Booking UI with lazy pooled session users', { tag: ['@integration
         });
       },
     });
-  });
 
-  test('can continue when choosing an existing booking', async ({ page, bookingUiPage }) => {
     await test.step('Navigate to booking UI and wait for bookings request', async () => {
       await bookingUiPage.goto();
       await expect(page).toHaveURL(bookingPageUrlPattern);
-      await expect.poll(() => getBookingsCalled).toBeTruthy();
-      await expect(bookingUiPage.continueButton).toHaveCount(0);
-    });
-
-    await test.step('Select existing booking and verify enabled/disabled booking buttons', async () => {
-      await bookingUiPage.selectOption('Choose an existing booking');
-      await expect(bookingUiPage.existingBookingButton(1)).toBeDisabled();
-    });
-
-    await test.step('Continue with the active booking and redirect to my work list', async () => {
-      await bookingUiPage.continueWithExistingBooking(0);
-      await expect(page).toHaveURL(tasksPageUrlPattern);
-    });
-  });
-
-  test('can continue when creating a new booking', async ({ page, bookingUiPage }) => {
-    await test.step('Navigate to booking UI and wait for bookings request', async () => {
-      await bookingUiPage.goto();
-      await expect(page).toHaveURL(bookingPageUrlPattern);
-      await expect.poll(() => getBookingsCalled).toBeTruthy();
+      await expect.poll(routeState.getBookingsCalled).toBeTruthy();
       await expect(bookingUiPage.continueButton).toHaveCount(0);
     });
 
@@ -123,7 +92,7 @@ test.describe('Booking UI with lazy pooled session users', { tag: ['@integration
       const today = formatUiDate(new Date().toISOString());
       expect(table[0]).toEqual({
         key: 'Location',
-        value: existingBookingsMock[0].locationName,
+        value: routeState.existingBookingsMock[0].locationName,
       });
       expect(table[1]).toEqual({
         key: 'Duration',
@@ -139,14 +108,14 @@ test.describe('Booking UI with lazy pooled session users', { tag: ['@integration
       const submittedRequest = createBookingRequestBody as CreateBookingRequest;
       const expectedTodayBookingRange = getExpectedTodayOnlyCreateBookingRange(new Date(submittedRequest.beginDate));
       expect(createBookingRequestBody).toEqual({
-        userId: sessionUserId,
+        userId: routeState.sessionUserId,
         locationId: defaultBookingLocation.epimms_id,
         regionId: defaultBookingLocation.region_id,
         beginDate: expectedTodayBookingRange.beginDate,
         endDate: expectedTodayBookingRange.endDate,
       });
       const bookingResponse = createBookingResponseBody!.bookingResponse;
-      expect(bookingResponse.userId).toBe(sessionUserId);
+      expect(bookingResponse.userId).toBe(routeState.sessionUserId);
       expect(bookingResponse.locationId).toBe(defaultBookingLocation.epimms_id);
       expect(bookingResponse.regionId).toBe(defaultBookingLocation.region_id);
       expect(bookingResponse.beginTime).toBe(submittedRequest.beginDate);
@@ -161,11 +130,13 @@ test.describe('Booking UI with lazy pooled session users', { tag: ['@integration
     });
   });
 
-  test('can continue when viewing tasks and cases', async ({ page, bookingUiPage }) => {
+  test('can continue when viewing tasks and cases', async ({ page, bookingUiPage }, testInfo) => {
+    const routeState = await setupBookableBookingUiRoutesForTest(page, testInfo);
+
     await test.step('Navigate to booking UI and wait for bookings request', async () => {
       await bookingUiPage.goto();
       await expect(page).toHaveURL(bookingPageUrlPattern);
-      await expect.poll(() => getBookingsCalled).toBeTruthy();
+      await expect.poll(routeState.getBookingsCalled).toBeTruthy();
       await expect(bookingUiPage.continueButton).toHaveCount(0);
     });
 

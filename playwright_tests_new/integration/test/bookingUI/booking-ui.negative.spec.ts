@@ -1,20 +1,11 @@
-import {
-  applySessionCookiesAndExtractUserId,
-  buildBookingUiBootstrapUser,
-  type BookingUiUserIdentifier,
-  resolveBookingUiUserIdentifier,
-  setupBookingUiMockRoutes,
-} from '../../helpers';
-import { setupTaskListMockRoutes } from '../../helpers/taskListMockRoutes.helper';
+import { setupBookableBookingUiRoutesForTest } from '../../helpers';
 import { expect, test } from '../../../E2E/fixtures';
 import {
-  buildExistingBookingsMock,
   type CreateBookingRequest,
   getExpectedTodayOnlyCreateBookingRange,
   singleLocationMock,
 } from '../../mocks/bookingUI.mock';
 import { buildHearingsUserDetailsMock } from '../../mocks/hearings.mock';
-import { buildMyTaskListMock } from '../../mocks/taskList.mock';
 import { formatUiDate } from '../../utils/tableUtils';
 
 const defaultBookingLocation = singleLocationMock[0];
@@ -31,34 +22,11 @@ createBookingErrorCases.forEach(({ status, expectedUrlPattern }) => {
     `Booking UI create booking error ${status} with lazy pooled session users`,
     { tag: ['@integration', '@integration-booking-ui'] },
     () => {
-      let userIdentifier: BookingUiUserIdentifier;
-      let getBookingsCalled = false;
-      let createBookingCalled = false;
-      let refreshRoleAssignmentsCalled = false;
-      let createBookingRequestBody: CreateBookingRequest | undefined;
-      let sessionUserId = '';
-      let existingBookingsMock;
-
-      test.beforeEach(async ({ page }, testInfo) => {
-        getBookingsCalled = false;
-        createBookingCalled = false;
-        refreshRoleAssignmentsCalled = false;
-        createBookingRequestBody = undefined;
-
-        userIdentifier = resolveBookingUiUserIdentifier(testInfo);
-        const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
-        sessionUserId = userId;
-        existingBookingsMock = buildExistingBookingsMock(userId);
-
-        await setupTaskListMockRoutes(page, buildMyTaskListMock(userId, 3), {
-          bootstrapUser: buildBookingUiBootstrapUser(userId),
-        });
-        await setupBookingUiMockRoutes(page, {
-          locationResponseBody: singleLocationMock,
-          getBookingsResponseBody: existingBookingsMock,
-          onGetBookings: () => {
-            getBookingsCalled = true;
-          },
+      test(`redirects correctly when create booking returns ${status}`, async ({ page, bookingUiPage }, testInfo) => {
+        let createBookingCalled = false;
+        let refreshRoleAssignmentsCalled = false;
+        let createBookingRequestBody: CreateBookingRequest | undefined;
+        const routeState = await setupBookableBookingUiRoutesForTest(page, testInfo, {
           onCreateBooking: async (route) => {
             createBookingCalled = true;
             createBookingRequestBody = route.request().postDataJSON() as CreateBookingRequest;
@@ -82,13 +50,11 @@ createBookingErrorCases.forEach(({ status, expectedUrlPattern }) => {
             });
           },
         });
-      });
 
-      test(`redirects correctly when create booking returns ${status}`, async ({ page, bookingUiPage }) => {
         await test.step('Navigate to booking UI and wait for bookings request', async () => {
           await bookingUiPage.goto();
           await expect(page).toHaveURL(bookingPageUrlPattern);
-          await expect.poll(() => getBookingsCalled).toBeTruthy();
+          await expect.poll(routeState.getBookingsCalled).toBeTruthy();
         });
 
         await test.step('Choose create new booking and continue', async () => {
@@ -109,7 +75,7 @@ createBookingErrorCases.forEach(({ status, expectedUrlPattern }) => {
           const today = formatUiDate(new Date().toISOString());
           expect(table[0]).toEqual({
             key: 'Location',
-            value: existingBookingsMock[0].locationName,
+            value: routeState.existingBookingsMock[0].locationName,
           });
           expect(table[1]).toEqual({
             key: 'Duration',
@@ -123,7 +89,7 @@ createBookingErrorCases.forEach(({ status, expectedUrlPattern }) => {
           const submittedRequest = createBookingRequestBody as CreateBookingRequest;
           const expectedTodayBookingRange = getExpectedTodayOnlyCreateBookingRange(new Date(submittedRequest.beginDate));
           expect(createBookingRequestBody).toEqual({
-            userId: sessionUserId,
+            userId: routeState.sessionUserId,
             locationId: defaultBookingLocation.epimms_id,
             regionId: defaultBookingLocation.region_id,
             beginDate: expectedTodayBookingRange.beginDate,
@@ -141,29 +107,9 @@ test.describe(
   'Booking UI access checks with lazy pooled session users',
   { tag: ['@integration', '@integration-booking-ui'] },
   () => {
-    let userIdentifier: BookingUiUserIdentifier;
-    let getBookingsCalled = false;
-    let existingBookingsMock;
+    test('user without booking access is redirected away from Booking UI', async ({ bookingUiPage, page }, testInfo) => {
+      await setupBookableBookingUiRoutesForTest(page, testInfo);
 
-    test.beforeEach(async ({ page }, testInfo) => {
-      getBookingsCalled = false;
-      userIdentifier = resolveBookingUiUserIdentifier(testInfo);
-      const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
-      existingBookingsMock = buildExistingBookingsMock(userId);
-
-      await setupTaskListMockRoutes(page, buildMyTaskListMock(userId, 3), {
-        bootstrapUser: buildBookingUiBootstrapUser(userId),
-      });
-      await setupBookingUiMockRoutes(page, {
-        locationResponseBody: singleLocationMock,
-        getBookingsResponseBody: existingBookingsMock,
-        onGetBookings: () => {
-          getBookingsCalled = true;
-        },
-      });
-    });
-
-    test('user without booking access is redirected away from Booking UI', async ({ bookingUiPage, page }) => {
       await test.step('Mock user details without booking access', async () => {
         const noBookingAccessUser = buildHearingsUserDetailsMock([]);
         await page.route('**/api/user/details*', async (route) => {
@@ -187,33 +133,13 @@ test.describe(
   'Booking UI validation checks with lazy pooled session users',
   { tag: ['@integration', '@integration-booking-ui'] },
   () => {
-    let userIdentifier: BookingUiUserIdentifier;
-    let getBookingsCalled = false;
-    let existingBookingsMock;
+    test('user cannot continue from location step without selecting a location', async ({ page, bookingUiPage }, testInfo) => {
+      const routeState = await setupBookableBookingUiRoutesForTest(page, testInfo);
 
-    test.beforeEach(async ({ page }, testInfo) => {
-      getBookingsCalled = false;
-      userIdentifier = resolveBookingUiUserIdentifier(testInfo);
-      const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
-      existingBookingsMock = buildExistingBookingsMock(userId);
-
-      await setupTaskListMockRoutes(page, buildMyTaskListMock(userId, 3), {
-        bootstrapUser: buildBookingUiBootstrapUser(userId),
-      });
-      await setupBookingUiMockRoutes(page, {
-        locationResponseBody: singleLocationMock,
-        getBookingsResponseBody: existingBookingsMock,
-        onGetBookings: () => {
-          getBookingsCalled = true;
-        },
-      });
-    });
-
-    test('user cannot continue from location step without selecting a location', async ({ page, bookingUiPage }) => {
       await test.step('Navigate to booking and move to location step', async () => {
         await bookingUiPage.goto();
         await expect(page).toHaveURL(bookingPageUrlPattern);
-        await expect.poll(() => getBookingsCalled).toBeTruthy();
+        await expect.poll(routeState.getBookingsCalled).toBeTruthy();
         await bookingUiPage.selectOption('Create a new booking');
         await bookingUiPage.continue();
         await expect(bookingUiPage.locationStepHeading).toBeVisible();
@@ -231,11 +157,13 @@ test.describe(
       });
     });
 
-    test('user cannot continue from date step with invalid or incomplete dates', async ({ page, bookingUiPage }) => {
+    test('user cannot continue from date step with invalid or incomplete dates', async ({ page, bookingUiPage }, testInfo) => {
+      const routeState = await setupBookableBookingUiRoutesForTest(page, testInfo);
+
       await test.step('Navigate to booking and move to date step', async () => {
         await bookingUiPage.goto();
         await expect(page).toHaveURL(bookingPageUrlPattern);
-        await expect.poll(() => getBookingsCalled).toBeTruthy();
+        await expect.poll(routeState.getBookingsCalled).toBeTruthy();
         await bookingUiPage.selectOption('Create a new booking');
         await bookingUiPage.continue();
         await bookingUiPage.selectFirstLocationFromSearch('Lon');

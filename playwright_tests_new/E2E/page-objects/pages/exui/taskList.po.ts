@@ -2,6 +2,7 @@ import { expect, Locator, Page, Request } from '@playwright/test';
 import { Base } from '../../base';
 
 const TASK_LIST_READY_TIMEOUT_MS = 30_000;
+const TASK_LIST_BLANK_DOCUMENT_RECOVERY_MS = 3_000;
 const FILTER_PANEL_READY_TIMEOUT_MS = 10_000;
 const FILTER_CONTROL_READY_TIMEOUT_MS = 15_000;
 const FILTER_GROUP_OPERATION_TIMEOUT_MS = 30_000;
@@ -268,6 +269,7 @@ export class TaskListPage extends Base {
     const timeoutMs = options.timeoutMs ?? TASK_LIST_READY_TIMEOUT_MS;
     await this.gotoTaskListPath(path, urlPattern, context, timeoutMs);
     await this.waitForTaskListSpinnerToSettle(10_000);
+    await this.recoverBlankTaskListDocumentAfterNavigation(urlPattern, context, timeoutMs);
     await this.waitForTaskListShellReadyAfterNavigation(urlPattern, context, timeoutMs);
   }
 
@@ -327,6 +329,18 @@ export class TaskListPage extends Base {
       await this.waitForTaskListSpinnerToSettle(10_000);
       await this.waitForTaskListShellReady(`${context} after blank-page reload`);
     }
+  }
+
+  private async recoverBlankTaskListDocumentAfterNavigation(
+    urlPattern: RegExp,
+    context: string,
+    timeoutMs: number
+  ): Promise<void> {
+    await this.page
+      .waitForLoadState('domcontentloaded', { timeout: TASK_LIST_BLANK_DOCUMENT_RECOVERY_MS })
+      .catch(() => undefined);
+    await this.page.waitForTimeout(250);
+    await this.reloadBlankTaskListDocumentIfNeeded(urlPattern, `${context} early blank-page recovery`, timeoutMs);
   }
 
   private async reloadBlankTaskListDocumentIfNeeded(urlPattern: RegExp, context: string, timeoutMs: number): Promise<void> {

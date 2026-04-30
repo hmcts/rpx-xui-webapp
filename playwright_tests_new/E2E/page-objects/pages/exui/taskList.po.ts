@@ -267,7 +267,6 @@ export class TaskListPage extends Base {
   private async navigateToTaskListView(path: string, urlPattern: RegExp, context: string, options: { timeoutMs?: number } = {}) {
     const timeoutMs = options.timeoutMs ?? TASK_LIST_READY_TIMEOUT_MS;
     await this.gotoTaskListPath(path, urlPattern, context, timeoutMs);
-    await this.reloadBlankTaskListDocumentIfNeeded(urlPattern, context, timeoutMs);
     await this.waitForTaskListSpinnerToSettle(10_000);
     await this.waitForTaskListShellReadyAfterNavigation(urlPattern, context, timeoutMs);
   }
@@ -285,13 +284,15 @@ export class TaskListPage extends Base {
   }
 
   private async gotoTaskListPath(path: string, urlPattern: RegExp, context: string, timeoutMs: number): Promise<void> {
+    const navigationAttemptTimeoutMs = Math.min(timeoutMs, 15_000);
+
     for (let attempt = 1; attempt <= TASK_LIST_NAVIGATION_ATTEMPTS; attempt += 1) {
       try {
-        await this.page.goto(path, { waitUntil: 'commit', timeout: timeoutMs });
+        await this.page.goto(path, { waitUntil: 'commit', timeout: navigationAttemptTimeoutMs });
         break;
       } catch (error) {
         const navigationError = error as Error;
-        if (!this.isTransientTaskListNavigationError(navigationError) || attempt === TASK_LIST_NAVIGATION_ATTEMPTS) {
+        if (!this.isTransientTaskListNavigationError(navigationError, urlPattern) || attempt === TASK_LIST_NAVIGATION_ATTEMPTS) {
           throw navigationError;
         }
         await this.page.waitForTimeout(500);
@@ -304,8 +305,13 @@ export class TaskListPage extends Base {
     }
   }
 
-  private isTransientTaskListNavigationError(error: Error): boolean {
-    return /net::ERR_NETWORK_CHANGED|chrome-error:\/\/chromewebdata/i.test(error.message);
+  private isTransientTaskListNavigationError(error: Error, urlPattern: RegExp): boolean {
+    return (
+      /net::ERR_NETWORK_CHANGED|net::ERR_CONNECTION_TIMED_OUT|Timeout \d+ms exceeded|chrome-error:\/\/chromewebdata/i.test(
+        error.message
+      ) &&
+      (this.page.url() === 'about:blank' || this.page.url().startsWith('chrome-error://') || urlPattern.test(this.page.url()))
+    );
   }
 
   private async waitForTaskListShellReadyAfterNavigation(urlPattern: RegExp, context: string, timeoutMs: number): Promise<void> {
@@ -332,8 +338,14 @@ export class TaskListPage extends Base {
       context,
       url: this.page.url(),
     });
-    await this.page.reload({ waitUntil: 'domcontentloaded', timeout: timeoutMs });
-    await this.page.waitForURL(urlPattern, { timeout: timeoutMs }).catch(() => undefined);
+    await this.page.reload({ waitUntil: 'commit', timeout: 5_000 }).catch((error) => {
+      this.logger.warn('TASK_LIST_BLANK_DOCUMENT_RELOAD_TIMEOUT', {
+        context,
+        url: this.page.url(),
+        error: String(error),
+      });
+    });
+    await this.page.waitForURL(urlPattern, { timeout: Math.min(timeoutMs, 5_000) }).catch(() => undefined);
     if (!urlPattern.test(this.page.url())) {
       throw new Error(`Task list navigation for ${context} landed on ${this.page.url()} after blank-page reload.`);
     }

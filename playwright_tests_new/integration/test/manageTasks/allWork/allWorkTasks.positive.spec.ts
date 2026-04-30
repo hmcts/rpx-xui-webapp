@@ -205,10 +205,13 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
       });
     });
 
-    const assertManageActionsForRow = async (rowIndex: number, expectedActionIds: string[]) => {
+    await test.step('Open all-work tasks once for the manage action matrix', async () => {
       await taskListPage.gotoAllWorkTasks();
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
+    });
+
+    const assertManageActionsForRow = async (rowIndex: number, expectedActionIds: string[]) => {
       await taskListPage.openManageActionsForRow(rowIndex, `all-work manage action matrix row ${rowIndex + 1}`);
 
       for (const actionId of allActionIds) {
@@ -235,11 +238,15 @@ test.describe('All Work role-based task columns', { tag: ['@integration', '@inte
   const scenarios = [
     {
       userIdentifier: 'IAC_CaseOfficer_R2',
+      roleCategory: 'LEGAL_OPERATIONS',
+      roles: ['caseworker', 'caseworker-ia', 'caseworker-ia-caseofficer'],
       expectedDateHeader: 'Due date',
       notExpectedDateHeader: 'Task created',
     },
     {
       userIdentifier: 'IAC_Judge_WA_R1',
+      roleCategory: 'JUDICIAL',
+      roles: ['caseworker', 'caseworker-ia', 'caseworker-ia-iacjudge'],
       expectedDateHeader: 'Task created',
       notExpectedDateHeader: 'Due date',
     },
@@ -258,6 +265,10 @@ test.describe('All Work role-based task columns', { tag: ['@integration', '@inte
             taskListResponse: taskListMockResponse,
             supportedJurisdictions,
             supportedJurisdictionDetails,
+            user: {
+              roleCategory: scenario.roleCategory,
+              roles: scenario.roles,
+            },
           });
         });
 

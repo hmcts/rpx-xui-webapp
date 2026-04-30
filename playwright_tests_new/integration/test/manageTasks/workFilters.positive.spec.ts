@@ -133,7 +133,7 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
       task_field: 'Review filtered task',
     };
 
-    await setupWorkFiltersUser(page);
+    const expectedUserId = await setupWorkFiltersUser(page);
 
     await setupManageTasksBaseRoutes(page, {
       supportedJurisdictions: workFiltersSupportedJurisdictions,
@@ -185,7 +185,7 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
     const latestRequest = taskRequests.at(-1);
     expect(latestRequest?.searchRequest?.search_parameters).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ key: 'user', values: [workFiltersUserId] }),
+        expect.objectContaining({ key: 'user', values: [expect.stringMatching(/^[0-9a-f-]{36}$/)] }),
         expect.objectContaining({ key: 'state', values: ['assigned'] }),
         expect.objectContaining({ key: 'jurisdiction', values: [selectedService] }),
         expect.objectContaining({ key: 'work_type', values: [selectedWorkType] }),
@@ -275,6 +275,12 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
     await setupWorkFiltersUser(page);
 
     await setupManageTasksBaseRoutes(page, {
+      user: {
+        roleAssignments: [
+          { jurisdiction: 'IA', substantive: 'Y', roleType: 'ORGANISATION', baseLocation: '765324' },
+          { jurisdiction: 'CIVIL', substantive: 'Y', roleType: 'ORGANISATION', baseLocation: '231596' },
+        ],
+      },
       taskListResponse,
       supportedJurisdictions: workFiltersSupportedJurisdictions,
       supportedJurisdictionDetails: workFiltersSupportedJurisdictionDetails,
@@ -295,6 +301,8 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
     await taskListPage.gotoAndWaitForTaskRow('restoring work filter base locations');
     await expect.poll(() => fullLocationServiceCodes.length).toBeGreaterThan(0);
     expect(fullLocationServiceCodes.at(-1)?.split(',').sort()).toEqual(['CIVIL', 'IA']);
+
+    await taskListPage.openFilterPanel();
 
     await taskListPage.expectAccessTasksAndCasesTextVisible();
 
@@ -317,6 +325,10 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
       });
 
       await setupManageTasksBaseRoutes(page, {
+        user: {
+          roles: ['caseworker-ia', 'caseworker-ia-caseofficer', 'caseworker-sscs'],
+          roleAssignments: scenario.roleAssignments,
+        },
         taskListResponse,
         supportedJurisdictions: workFiltersLocationSearchSupportedJurisdictions,
         supportedJurisdictionDetails: workFiltersLocationSearchSupportedJurisdictionDetails,

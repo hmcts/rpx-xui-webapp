@@ -349,6 +349,15 @@ Useful controls:
 - `PW_LOAD_PROFILE_OUTPUT=<path>` changes the artifact folder
 - `PW_LOAD_PROFILE_INJECT_ODHIN=false` disables Odhín injection
 
+Jenkins CNP and nightly integration stages use `INTEGRATION_PW_PROFILE_RUNS` to run a small profile matrix. The default is:
+
+```text
+workers=4
+workers=8
+workers=10 shard=1/2
+workers=10 shard=2/2
+```
+
 Treat the profile as capacity evidence. If failures appear while CPU, load/core, or memory are saturated, reduce workers or shard. If load is healthy, investigate the test/app contract instead of masking the failure with more retries.
 
 ### API Authentication Model

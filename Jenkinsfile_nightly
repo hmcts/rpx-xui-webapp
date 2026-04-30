@@ -8,6 +8,16 @@ properties([
     ],
     pipelineTriggers([
     cron('30 17 * * *')
+    ]),
+    parameters([
+      text(
+        name: 'INTEGRATION_PW_PROFILE_RUNS',
+        defaultValue: '''workers=4
+workers=8
+workers=10 shard=1/2
+workers=10 shard=2/2''',
+        description: 'Integration load-profile matrix. One run per line or semicolon. Supported keys: workers=<n> and optional shard=<index/total>.'
+      )
     ])
 ])
 
@@ -38,6 +48,87 @@ def archivePlaywrightDiagnostics = {
         artifacts: 'functional-output/tests/**/odhin-report/**/*,functional-output/tests/playwright-diagnostics/failure-data/**/*',
         excludes: 'test-results/.playwright-artifacts-*/**,**/.playwright-artifacts-*/**'
     )
+}
+
+def playwrightIntegrationReportFile = 'xui-playwright-integration.html'
+
+def assertHtmlReportExists = { String reportDir, String reportFile ->
+    steps.sh "test -f '${reportDir}/${reportFile}'"
+}
+
+def resolveIntegrationProfileRuns = { String configuredRuns ->
+    def configured = configuredRuns?.trim()
+    if (!configured) {
+        configured = 'workers=4'
+    }
+    return configured
+        .split(/[\r\n;]+/)
+        .collect { it.trim() }
+        .findAll { it }
+}
+
+def integrationProfileRunConfig = { String spec ->
+    def workers = '4'
+    def shard = ''
+    spec.split(/\s+/).each { token ->
+        if (token.startsWith('workers=')) {
+            workers = token.replaceFirst('workers=', '')
+        }
+        if (token.startsWith('shard=')) {
+            shard = token.replaceFirst('shard=', '')
+        }
+    }
+    def safeName = "workers-${workers}${shard ? "-shard-${shard}" : ''}".replaceAll(/[^A-Za-z0-9._-]/, '-')
+    return [
+        workers: workers,
+        shard: shard,
+        shardArg: shard ? " --shard=${shard}" : '',
+        label: "nightly-${safeName}",
+        reportDir: "functional-output/tests/playwright-integration/odhin-report/nightly-${safeName}",
+        loadProfileDir: "functional-output/tests/playwright-integration/load-profile/nightly-${safeName}",
+        displayName: "${workers} workers${shard ? ", shard ${shard}" : ''}"
+    ]
+}
+
+def runPlaywrightIntegrationProfileMatrix = {
+    def failures = []
+    resolveIntegrationProfileRuns(params.INTEGRATION_PW_PROFILE_RUNS ?: '').each { spec ->
+        def runConfig = integrationProfileRunConfig(spec)
+        try {
+            withEnv([
+              "PLAYWRIGHT_REPORT_FOLDER=${runConfig.reportDir}",
+              "PW_LOAD_PROFILE_OUTPUT=${runConfig.loadProfileDir}",
+              "PW_LOAD_PROFILE_LABEL=${runConfig.label}",
+              'ORG_USER_ASSIGNMENT_MODE=external',
+              'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
+              "FUNCTIONAL_TESTS_WORKERS=${runConfig.workers}",
+              'PLAYWRIGHT_SKIP_INSTALL=true'
+            ]) {
+              yarnBuilder.yarn("test:playwright:integration:profile -- --workers=${runConfig.workers}${runConfig.shardArg}")
+            }
+            assertHtmlReportExists(runConfig.reportDir, playwrightIntegrationReportFile)
+        } catch (Exception e) {
+            if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                throw e
+            }
+            if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                throw e
+            }
+            failures << "${runConfig.displayName}: ${e.getMessage()}"
+        } finally {
+            publishHTML([
+              allowMissing         : true,
+              alwaysLinkToLastBuild: true,
+              keepAll              : true,
+              reportDir            : "${runConfig.reportDir}/",
+              reportFiles          : playwrightIntegrationReportFile,
+              reportName           : "Playwright Integration Test (${runConfig.displayName})"
+            ])
+        }
+    }
+    if (failures) {
+        error("Playwright integration profile matrix failed:\n${failures.join('\n')}")
+    }
 }
 
 def secrets = [
@@ -173,22 +264,8 @@ withNightlyPipeline(type, product, component) {
 
         stage('Playwright Integration Tests') {
                 try {
-                    withEnv([
-                      'ORG_USER_ASSIGNMENT_MODE=external',
-                      'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
-                      'FUNCTIONAL_TESTS_WORKERS=4'
-                    ]) {
-                      yarnBuilder.yarn('test:playwright:integration')
-                    }
+                    runPlaywrightIntegrationProfileMatrix()
                 } finally {
-                    publishHTML([
-                      allowMissing         : true,
-                      alwaysLinkToLastBuild: true,
-                      keepAll              : true,
-                      reportDir            : 'functional-output/tests/playwright-integration/odhin-report/',
-                      reportFiles          : 'xui-playwright-integration.html',
-                      reportName           : 'Playwright Integration Test'
-                    ])
                     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
                     archivePlaywrightDiagnostics()
                 }

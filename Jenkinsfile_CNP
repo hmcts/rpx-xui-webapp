@@ -39,6 +39,14 @@ properties([
             name: 'INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE',
             defaultValue: '',
             description: 'Optional comma/space separated Playwright integration tags to exclude; overrides playwright_tests_new/integration/tag-filter.json. Examples: @integration-manage-tasks, @integration-case-list @integration-welsh-language, @none to clear repo defaults'
+        ),
+        text(
+            name: 'INTEGRATION_PW_PROFILE_RUNS',
+            defaultValue: '''workers=4
+workers=8
+workers=10 shard=1/2
+workers=10 shard=2/2''',
+            description: 'Integration load-profile matrix. One run per line or semicolon. Supported keys: workers=<n> and optional shard=<index/total>.'
         )
     ])
 ])
@@ -124,11 +132,88 @@ def archivePlaywrightDiagnostics = {
     )
 }
 
-def playwrightIntegrationReportDir = 'functional-output/tests/playwright-integration/odhin-report'
 def playwrightIntegrationReportFile = 'xui-playwright-integration.html'
 
 def assertHtmlReportExists = { String reportDir, String reportFile ->
     steps.sh "test -f '${reportDir}/${reportFile}'"
+}
+
+def resolveIntegrationProfileRuns = { String configuredRuns ->
+    def configured = configuredRuns?.trim()
+    if (!configured) {
+        configured = 'workers=4'
+    }
+    return configured
+        .split(/[\r\n;]+/)
+        .collect { it.trim() }
+        .findAll { it }
+}
+
+def integrationProfileRunConfig = { String spec, String testType ->
+    def workers = '4'
+    def shard = ''
+    spec.split(/\s+/).each { token ->
+        if (token.startsWith('workers=')) {
+            workers = token.replaceFirst('workers=', '')
+        }
+        if (token.startsWith('shard=')) {
+            shard = token.replaceFirst('shard=', '')
+        }
+    }
+    def safeName = "workers-${workers}${shard ? "-shard-${shard}" : ''}".replaceAll(/[^A-Za-z0-9._-]/, '-')
+    return [
+        workers: workers,
+        shard: shard,
+        shardArg: shard ? " --shard=${shard}" : '',
+        label: "${testType}-${safeName}",
+        reportDir: "functional-output/tests/playwright-integration/odhin-report/${testType}-${safeName}",
+        loadProfileDir: "functional-output/tests/playwright-integration/load-profile/${testType}-${safeName}",
+        displayName: "${workers} workers${shard ? ", shard ${shard}" : ''}"
+    ]
+}
+
+def runPlaywrightIntegrationProfileMatrix = { String testType, String reportNamePrefix ->
+    def failures = []
+    resolveIntegrationProfileRuns(params.INTEGRATION_PW_PROFILE_RUNS ?: '').each { spec ->
+        def runConfig = integrationProfileRunConfig(spec, testType)
+        try {
+            withEnv([
+                "PLAYWRIGHT_REPORT_FOLDER=${runConfig.reportDir}",
+                "PW_LOAD_PROFILE_OUTPUT=${runConfig.loadProfileDir}",
+                "PW_LOAD_PROFILE_LABEL=${runConfig.label}",
+                "TEST_TYPE=${testType}",
+                "ORG_USER_ASSIGNMENT_MODE=external",
+                "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
+                "FUNCTIONAL_TESTS_WORKERS=${runConfig.workers}",
+                "PLAYWRIGHT_SKIP_INSTALL=true",
+                "INTEGRATION_PW_INCLUDE_TAGS=${params.INTEGRATION_PW_INCLUDE_TAGS ?: ''}",
+                "INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=${params.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
+            ]) {
+                yarnBuilder.yarn("test:playwright:integration:profile -- --workers=${runConfig.workers}${runConfig.shardArg}")
+            }
+            assertHtmlReportExists(runConfig.reportDir, playwrightIntegrationReportFile)
+        } catch (Exception e) {
+            if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                throw e
+            }
+            if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                throw e
+            }
+            failures << "${runConfig.displayName}: ${e.getMessage()}"
+        } finally {
+            publishHTML([
+                allowMissing         : true,
+                alwaysLinkToLastBuild: true,
+                keepAll              : true,
+                reportDir            : "${runConfig.reportDir}/",
+                reportFiles          : playwrightIntegrationReportFile,
+                reportName           : "${reportNamePrefix} Playwright Integration Test (${runConfig.displayName})"
+            ])
+        }
+    }
+    if (failures) {
+        error("Playwright integration profile matrix failed:\n${failures.join('\n')}")
+    }
 }
 
 def branchesToSync = ['perftest', 'ithc', 'demo']
@@ -342,40 +427,12 @@ withPipeline(type, product, component) {
                     playwrightIntegration: {
                     stage('Playwright Integration Tests') {
                         try {
-                            withEnv([
-                                "PLAYWRIGHT_REPORT_FOLDER=${playwrightIntegrationReportDir}",
-                                "TEST_TYPE=preview",
-                                "ORG_USER_ASSIGNMENT_MODE=external",
-                                "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                                "FUNCTIONAL_TESTS_WORKERS=4",
-                                "PLAYWRIGHT_SKIP_INSTALL=true",
-                                "INTEGRATION_PW_INCLUDE_TAGS=${params.INTEGRATION_PW_INCLUDE_TAGS ?: ''}",
-                                "INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=${params.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
-                            ]) {
-                                yarnBuilder.yarn('test:playwright:integration')
-                            }
-                            assertHtmlReportExists(playwrightIntegrationReportDir, playwrightIntegrationReportFile)
+                            runPlaywrightIntegrationProfileMatrix('preview', 'PREVIEW')
                         } catch (Exception e) {
                             echo "[failFast] Playwright Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
                             if (handleFailFastAbort(e)) { return }
                             throw e
                         } finally {
-                            publishHTML([
-                                allowMissing         : true,
-                                alwaysLinkToLastBuild: true,
-                                keepAll              : true,
-                                reportDir            : "${playwrightIntegrationReportDir}/",
-                                reportFiles          : playwrightIntegrationReportFile,
-                                reportName           : 'PREVIEW Integration Test'
-                            ])
-                            publishHTML([
-                                allowMissing         : true,
-                                alwaysLinkToLastBuild: true,
-                                keepAll              : true,
-                                reportDir            : "${playwrightIntegrationReportDir}/",
-                                reportFiles          : playwrightIntegrationReportFile,
-                                reportName           : 'PREVIEW Playwright Integration Test'
-                            ])
                             steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
                         }
                     }
@@ -466,40 +523,12 @@ withPipeline(type, product, component) {
                     playwrightIntegration: {
                     stage('Playwright Integration Tests') {
                         try {
-                            withEnv([
-                                "PLAYWRIGHT_REPORT_FOLDER=${playwrightIntegrationReportDir}",
-                                "TEST_TYPE=aat",
-                                "ORG_USER_ASSIGNMENT_MODE=external",
-                                "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                                "FUNCTIONAL_TESTS_WORKERS=4",
-                                "PLAYWRIGHT_SKIP_INSTALL=true",
-                                "INTEGRATION_PW_INCLUDE_TAGS=${params.INTEGRATION_PW_INCLUDE_TAGS ?: ''}",
-                                "INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=${params.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
-                            ]) {
-                                yarnBuilder.yarn('test:playwright:integration')
-                            }
-                            assertHtmlReportExists(playwrightIntegrationReportDir, playwrightIntegrationReportFile)
+                            runPlaywrightIntegrationProfileMatrix('aat', 'AAT')
                         } catch (Exception e) {
                             echo "[failFast] Playwright Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
                             if (handleFailFastAbort(e)) { return }
                             throw e
                         } finally {
-                            publishHTML([
-                                allowMissing         : true,
-                                alwaysLinkToLastBuild: true,
-                                keepAll              : true,
-                                reportDir            : "${playwrightIntegrationReportDir}/",
-                                reportFiles          : playwrightIntegrationReportFile,
-                                reportName           : 'AAT Integration Test'
-                            ])
-                            publishHTML([
-                                allowMissing         : true,
-                                alwaysLinkToLastBuild: true,
-                                keepAll              : true,
-                                reportDir            : "${playwrightIntegrationReportDir}/",
-                                reportFiles          : playwrightIntegrationReportFile,
-                                reportName           : 'AAT Playwright Integration Test'
-                            ])
                             steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
                         }
                     }

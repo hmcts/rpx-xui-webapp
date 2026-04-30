@@ -1,4 +1,4 @@
-import { setupBookableBookingUiRoutesForTest } from '../../helpers';
+import { setupBookableBookingUiRoutesForTest, warmBookableBookingUiSessionForWorker } from '../../helpers';
 import { expect, test } from '../../../E2E/fixtures';
 import {
   singleLocationMock,
@@ -11,8 +11,14 @@ import { formatUiDate } from '../../utils/tableUtils';
 const defaultBookingLocation = singleLocationMock[0];
 const bookingPageUrlPattern = /\/booking$/;
 const tasksPageUrlPattern = /\/work\/my-work\/list/;
+const sessionWarmupTimeoutMs = 3 * 60_000;
 
 test.describe('Booking UI with lazy pooled session users', { tag: ['@integration', '@integration-booking-ui'] }, () => {
+  test.beforeAll(async ({}, workerInfo) => {
+    test.setTimeout(sessionWarmupTimeoutMs);
+    await warmBookableBookingUiSessionForWorker(workerInfo);
+  });
+
   test('can continue when choosing an existing booking', async ({ page, bookingUiPage }, testInfo) => {
     const routeState = await setupBookableBookingUiRoutesForTest(page, testInfo);
 

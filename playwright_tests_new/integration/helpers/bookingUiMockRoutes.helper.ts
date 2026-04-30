@@ -2,6 +2,7 @@ import type { Page, Route } from '@playwright/test';
 import { buildExistingBookingsMock, singleLocationMock } from '../mocks/bookingUI.mock';
 import { buildMyTaskListMock } from '../mocks/taskList.mock';
 import { resolveBookingUiUserIdentifier } from './bookingUiUserPool.helper';
+import { ensureSession } from '../../common/sessionCapture';
 import { applySessionCookiesAndExtractUserId } from './sessionUser.helper';
 import { setupTaskListMockRoutes, type TaskListBootstrapUserOptions } from './taskListMockRoutes.helper';
 
@@ -117,4 +118,8 @@ export async function setupBookableBookingUiRoutesForTest(
     getBookingsCalled: () => getBookingsCalled,
     sessionUserId: userId,
   };
+}
+
+export async function warmBookableBookingUiSessionForWorker(testInfo: ParallelIndexSource): Promise<void> {
+  await ensureSession(resolveBookingUiUserIdentifier(testInfo));
 }

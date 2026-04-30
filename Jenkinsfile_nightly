@@ -71,6 +71,11 @@ def archivePlaywrightDiagnostics = {
 }
 
 def playwrightIntegrationReportFile = 'xui-playwright-integration.html'
+// Temporary CI diagnostic scope for PR-5120: keep Playwright runs tiny while proving
+// the Odhín/reporting process exits cleanly. Revert this block to restore full coverage.
+def playwrightCiDiagnosticScopeEnabled = true
+def playwrightCiDiagnosticIntegrationArgs = 'playwright_tests_new/integration/test/restrictedAccess/restrictedCaseAccess.negative.spec.ts --grep "handles failed judicial lookup with HTTP 500"'
+def playwrightCiDiagnosticE2EArgs = 'playwright_tests_new/E2E/test/searchCase/searchCase.spec.ts --grep "Search invalid 16-digit case reference shows no results"'
 
 def assertHtmlReportExists = { String reportDir, String reportFile ->
     steps.sh "test -f '${reportDir}/${reportFile}'"
@@ -89,6 +94,9 @@ def recordPlaywrightLoadEvent = { String label, String eventType ->
 }
 
 def resolveIntegrationProfileRuns = { String configuredRuns, String workersOverride, String shardOverride ->
+    if (playwrightCiDiagnosticScopeEnabled) {
+        return ['workers=2']
+    }
     def requestedWorkers = workersOverride?.trim()
     if (requestedWorkers) {
         def requestedShard = shardOverride?.trim()
@@ -143,7 +151,8 @@ def runPlaywrightIntegrationProfileMatrix = {
               "FUNCTIONAL_TESTS_WORKERS=${runConfig.workers}",
               'PLAYWRIGHT_SKIP_INSTALL=true'
             ]) {
-              yarnBuilder.yarn("test:playwright:integration:profile -- --workers=${runConfig.workers}${runConfig.shardArg}")
+              def diagnosticArgs = playwrightCiDiagnosticScopeEnabled ? " ${playwrightCiDiagnosticIntegrationArgs}" : ''
+              yarnBuilder.yarn("test:playwright:integration:profile -- --workers=${runConfig.workers}${runConfig.shardArg}${diagnosticArgs}")
             }
             echo "[playwright-integration] Completed test command for ${runConfig.displayName}; checking Odhín report at ${runConfig.reportDir}/${playwrightIntegrationReportFile}"
             assertHtmlReportExists(runConfig.reportDir, playwrightIntegrationReportFile)
@@ -342,7 +351,8 @@ withNightlyPipeline(type, product, component) {
                 "PW_LOAD_PROFILE_ODHIN_TAB=${params.PW_LOAD_PROFILE_ODHIN_TAB}",
                 'FUNCTIONAL_TESTS_WORKERS=2'
               ]) {
-                yarnBuilder.yarn('test:crossbrowser')
+                def diagnosticArgs = playwrightCiDiagnosticScopeEnabled ? " -- ${playwrightCiDiagnosticE2EArgs}" : ''
+                yarnBuilder.yarn("test:crossbrowser${diagnosticArgs}")
               }
             } catch (Error) {
               unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())

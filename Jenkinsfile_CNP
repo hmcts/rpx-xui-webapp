@@ -153,6 +153,11 @@ def archivePlaywrightDiagnostics = {
 }
 
 def playwrightIntegrationReportFile = 'xui-playwright-integration.html'
+// Temporary CI diagnostic scope for PR-5120: keep Playwright runs tiny while proving
+// the Odhín/reporting process exits cleanly. Revert this block to restore full coverage.
+def playwrightCiDiagnosticScopeEnabled = true
+def playwrightCiDiagnosticIntegrationArgs = 'playwright_tests_new/integration/test/restrictedAccess/restrictedCaseAccess.negative.spec.ts --grep "handles failed judicial lookup with HTTP 500"'
+def playwrightCiDiagnosticE2EArgs = 'playwright_tests_new/E2E/test/searchCase/searchCase.spec.ts --grep "Search invalid 16-digit case reference shows no results"'
 
 def assertHtmlReportExists = { String reportDir, String reportFile ->
     steps.sh "test -f '${reportDir}/${reportFile}'"
@@ -171,6 +176,9 @@ def recordPlaywrightLoadEvent = { String eventsFile, String label, String eventT
 }
 
 def resolveIntegrationProfileRuns = { String configuredRuns, String workersOverride, String shardOverride ->
+    if (playwrightCiDiagnosticScopeEnabled) {
+        return ['workers=2']
+    }
     def requestedWorkers = workersOverride?.trim()
     if (requestedWorkers) {
         def requestedShard = shardOverride?.trim()
@@ -228,7 +236,8 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
                 "INTEGRATION_PW_INCLUDE_TAGS=${params.INTEGRATION_PW_INCLUDE_TAGS ?: ''}",
                 "INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=${params.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
             ]) {
-                yarnBuilder.yarn("test:playwright:integration:profile -- --workers=${runConfig.workers}${runConfig.shardArg}")
+                def diagnosticArgs = playwrightCiDiagnosticScopeEnabled ? " ${playwrightCiDiagnosticIntegrationArgs}" : ''
+                yarnBuilder.yarn("test:playwright:integration:profile -- --workers=${runConfig.workers}${runConfig.shardArg}${diagnosticArgs}")
             }
             echo "[playwright-integration] Completed test command for ${runConfig.displayName}; checking Odhín report at ${runConfig.reportDir}/${playwrightIntegrationReportFile}"
             assertHtmlReportExists(runConfig.reportDir, playwrightIntegrationReportFile)
@@ -512,7 +521,8 @@ withPipeline(type, product, component) {
                                 "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
                                 "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
                             ]) {
-                                yarnBuilder.yarn('test:playwrightE2E')
+                                def diagnosticArgs = playwrightCiDiagnosticScopeEnabled ? " -- ${playwrightCiDiagnosticE2EArgs}" : ''
+                                yarnBuilder.yarn("test:playwrightE2E${diagnosticArgs}")
                             }
                         } catch (Exception e) {
                             echo "[failFast] Playwright E2E catch: ${e.getClass().getName()}: ${e.getMessage()}"
@@ -618,7 +628,8 @@ withPipeline(type, product, component) {
                                 "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
                                 "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
                             ]) {
-                                yarnBuilder.yarn('test:playwrightE2E')
+                                def diagnosticArgs = playwrightCiDiagnosticScopeEnabled ? " -- ${playwrightCiDiagnosticE2EArgs}" : ''
+                                yarnBuilder.yarn("test:playwrightE2E${diagnosticArgs}")
                             }
                         } catch (Exception e) {
                             echo "[failFast] Playwright E2E catch: ${e.getClass().getName()}: ${e.getMessage()}"

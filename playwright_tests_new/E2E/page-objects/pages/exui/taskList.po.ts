@@ -1,4 +1,4 @@
-import { Locator, Page, Request } from '@playwright/test';
+import { expect, Locator, Page, Request } from '@playwright/test';
 import { Base } from '../../base';
 
 const TASK_LIST_READY_TIMEOUT_MS = 30_000;
@@ -43,7 +43,11 @@ export class TaskListPage extends Base {
     .locator('xpath=following::select[1]')
     .first();
   readonly allWorkPersonSearchInput = this.filterPanel.getByRole('combobox', { name: /select a person/i }).first();
-  readonly allWorkLocationSearchInput = this.filterPanel.locator('input[name="location"], input[id*="location"]').first();
+  readonly allWorkLocationSearchInput = this.filterPanel.locator('#locations exui-search-location input').first();
+  readonly allWorkLocationSearchResults = this.page.locator('.cdk-overlay-container .mat-autocomplete-panel mat-option span');
+  readonly selectedLocationTags = this.filterPanel.locator(
+    '#locations xuilib-find-location .location-picker-custom .location-selection a'
+  );
 
   readonly taskTableTabs = this.page.locator('.hmcts-sub-navigation .hmcts-sub-navigation__link');
 
@@ -224,6 +228,10 @@ export class TaskListPage extends Base {
   ) {
     await this.page.goto(path, { waitUntil: 'domcontentloaded' });
     await this.page.waitForURL(urlPattern, { timeout: timeoutMs }).catch(() => undefined);
+    if (!urlPattern.test(this.page.url())) {
+      await this.page.goto(path, { waitUntil: 'domcontentloaded' });
+      await this.page.waitForURL(urlPattern, { timeout: timeoutMs });
+    }
     await this.waitForExuiAppShell(context, timeoutMs);
     await this.waitForTaskListSpinnerToSettle(10_000);
     await this.waitForTaskListShellReady(context);
@@ -246,11 +254,14 @@ export class TaskListPage extends Base {
       throw new Error(`Something went wrong page was displayed while ${context}.`);
     }
 
-    const onServiceDownPage =
-      this.page.url().includes('/service-down') || (await this.serviceDownError.isVisible().catch(() => false));
+    const onServiceDownPage = await this.isServiceDownPage();
     if (onServiceDownPage && !options.allowServiceDown) {
       throw new Error(`Task list showed service down while ${context}.`);
     }
+  }
+
+  private async isServiceDownPage(): Promise<boolean> {
+    return this.page.url().includes('/service-down') || (await this.serviceDownError.isVisible().catch(() => false));
   }
 
   async waitForTaskListShellReady(context: string) {
@@ -448,6 +459,24 @@ export class TaskListPage extends Base {
     await this.allWorkPersonSearchInput.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
   }
 
+  async expectWorkFilterControls(options: { typesOfWorkVisible?: boolean } = {}) {
+    const typesOfWorkVisible = options.typesOfWorkVisible ?? true;
+    await this.openFilterPanel();
+    await expect(this.filterPanel.getByText('Services', { exact: true })).toBeVisible();
+    await expect(this.filterPanel.locator('#locations')).toBeVisible();
+
+    const typesOfWorkFilter = this.filterPanel.locator('#types-of-work');
+    if (typesOfWorkVisible) {
+      await expect(this.filterPanel.getByText('Types of work', { exact: true })).toBeVisible();
+    } else {
+      await expect(typesOfWorkFilter).toBeHidden();
+    }
+  }
+
+  async expectAccessTasksAndCasesTextVisible() {
+    await expect(this.page.getByText('Access tasks and cases.', { exact: true })).toBeVisible();
+  }
+
   async setSelectAllServicesFilter(checked: boolean) {
     await this.setFilterCheckbox(this.selectAllServicesFilter, checked, 'select all services');
   }
@@ -462,6 +491,47 @@ export class TaskListPage extends Base {
 
   async clearTypesOfWorkFilters() {
     await this.clearFilterGroup('types of work', this.selectAllTypesOfWorksFilter, this.typesOfWorkFilterCheckboxes);
+  }
+
+  async removeAllSelectedLocations() {
+    await this.openFilterPanel();
+    const initialSelectionCount = await this.selectedLocationTags.count();
+
+    for (let remainingSelections = initialSelectionCount; remainingSelections > 0; remainingSelections -= 1) {
+      await this.selectedLocationTags.nth(0).click();
+      await expect(this.selectedLocationTags).toHaveCount(remainingSelections - 1, {
+        timeout: FILTER_CONTROL_READY_TIMEOUT_MS,
+      });
+    }
+  }
+
+  async expectSelectedFilterTagVisible(tagText: string) {
+    await this.openFilterPanel();
+    await expect
+      .poll(async () => {
+        const matchingTags = this.filterPanel.locator('.hmcts-filter__tag', { hasText: tagText });
+        const tagCount = await matchingTags.count();
+
+        for (let index = 0; index < tagCount; index += 1) {
+          if (
+            await matchingTags
+              .nth(index)
+              .isVisible()
+              .catch(() => false)
+          ) {
+            return true;
+          }
+        }
+
+        return false;
+      })
+      .toBe(true);
+  }
+
+  async searchForLocation(searchText: string) {
+    await this.openFilterPanel();
+    await this.allWorkLocationSearchInput.clear();
+    await this.allWorkLocationSearchInput.type(searchText);
   }
 
   private async setFilterCheckbox(checkbox: Locator, checked: boolean, description: string, deadlineMs?: number) {
@@ -552,8 +622,11 @@ export class TaskListPage extends Base {
     return url.includes('/workallocation/task') && !url.includes('/types-of-work');
   }
 
-  private getLatestTaskDataCallSummary(): string {
-    const latestTaskCall = [...this.getApiCalls()].reverse().find((call) => this.isTaskDataCall(call.url));
+  private getLatestTaskDataCallSummary(baselineIndex = 0): string {
+    const latestTaskCall = [...this.getApiCalls()]
+      .slice(baselineIndex)
+      .reverse()
+      .find((call) => this.isTaskDataCall(call.url));
     return latestTaskCall ? `${latestTaskCall.method} ${latestTaskCall.url} -> HTTP ${latestTaskCall.status}` : 'none captured';
   }
 
@@ -569,11 +642,14 @@ export class TaskListPage extends Base {
     const timeoutMs = options.timeoutMs ?? 60_000;
     const pollMs = options.pollMs ?? 500;
     const deadline = Date.now() + timeoutMs;
+    const apiCallsBaseline = this.getApiCalls().length;
 
     while (Date.now() < deadline) {
       await this.assertTaskListInteractive(`waiting for task row (${context})`);
 
-      const taskApi5xx = this.getApiCalls().find((call) => this.isTaskDataCall(call.url) && call.status >= 500);
+      const taskApi5xx = this.getApiCalls()
+        .slice(apiCallsBaseline)
+        .find((call) => this.isTaskDataCall(call.url) && call.status >= 500);
       if (taskApi5xx) {
         throw new Error(
           `Task list failed while waiting for task row (${context}): ${taskApi5xx.method} ${taskApi5xx.url} returned HTTP ${taskApi5xx.status}`
@@ -598,7 +674,7 @@ export class TaskListPage extends Base {
 
     const finalRowCount = await this.taskRows.count().catch(() => 0);
     throw new Error(
-      `Timed out after ${timeoutMs}ms waiting for task row (${context}) on row ${rowIndex + 1}. rowCount=${finalRowCount}. Last /workallocation/task data call: ${this.getLatestTaskDataCallSummary()}`
+      `Timed out after ${timeoutMs}ms waiting for task row (${context}) on row ${rowIndex + 1}. rowCount=${finalRowCount}. Last /workallocation/task data call: ${this.getLatestTaskDataCallSummary(apiCallsBaseline)}`
     );
   }
 

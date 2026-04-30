@@ -1,5 +1,5 @@
 {
-  "excludedTags": ["@e2e-document-upload-v1"],
+  "excludedTags": [],
   "availableTags": [
     "@e2e",
     "@e2e-case-flags",

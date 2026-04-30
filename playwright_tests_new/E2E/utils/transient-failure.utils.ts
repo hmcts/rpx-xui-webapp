@@ -6,7 +6,6 @@ const TRANSIENT_FAILURE_PATTERNS: RegExp[] = [
   /NETWORK_TIMEOUT/,
   /SLOW_API_RESPONSE/,
   /The event could not be created/i,
-  /Validation error after/i,
   /Something went wrong page was displayed/i,
   /callback data failed validation/i,
   /timeout of \d+ms exceeded/i,

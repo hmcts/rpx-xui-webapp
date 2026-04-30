@@ -73,7 +73,7 @@ test.describe(`Hearings resilience integration as ${userIdentifier}`, { tag: ['@
       },
     });
 
-    await waitForHearingsTerminalState(page, hearingsTabPage);
+    await waitForHearingsTerminalState(hearingsTabPage);
     await expect(page).toHaveURL(/\/cases\/case-details\/.*#Hearings$/);
   });
 

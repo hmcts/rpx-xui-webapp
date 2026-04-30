@@ -325,7 +325,7 @@ API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
 
 ### Integration Load Profiling
 
-Use the load-profile wrapper when tuning workers or Playwright sharding. It samples the local/Jenkins host while the run is executing, writes raw metrics, and injects a **System Load Profile** block into the Odhín dashboard.
+Use the load-profile wrapper when tuning workers or Playwright sharding. It samples the local/Jenkins host while the run is executing, writes raw metrics, and injects a **System Load Profile** block and optional **System Load** tab into the Odhín report.
 
 ```bash
 # Run integration with a host-load profile and 10 workers
@@ -348,6 +348,8 @@ Useful controls:
 - `PW_LOAD_PROFILE_INTERVAL_MS=1000` changes the sample interval
 - `PW_LOAD_PROFILE_OUTPUT=<path>` changes the artifact folder
 - `PW_LOAD_PROFILE_INJECT_ODHIN=false` disables Odhín injection
+- `PW_LOAD_PROFILE_ODHIN_TAB=false` keeps the dashboard block but disables the Odhín **System Load** tab
+- `PW_LOAD_PROFILE_EVENTS_FILE=<jsonl-or-json>` overlays external start/finish markers on the load chart
 
 Jenkins CNP and nightly integration stages use `INTEGRATION_PW_PROFILE_RUNS` to run a small profile matrix. The default is:
 
@@ -356,6 +358,19 @@ workers=4
 workers=8
 workers=10 shard=1/2
 workers=10 shard=2/2
+```
+
+Use `INTEGRATION_PW_LOAD_PROFILE_ODHIN_TAB=false` on Jenkins to disable the Odhín **System Load** tab while still producing the standalone load profile artifacts. CNP and nightly also write API, E2E, and integration stage markers to the profile event file so the report can show which suite was running when CPU, load, or memory changed.
+
+The wrapper always marks the wrapped command start and finish on the chart. To show API, E2E, and integration boundaries on one timeline, run a monitor across the parent pipeline window or write shared JSONL events into `PW_LOAD_PROFILE_EVENTS_FILE`:
+
+```json
+{"label":"API","type":"start","timestamp":"2026-04-30T09:00:00.000Z"}
+{"label":"API","type":"finish","timestamp":"2026-04-30T09:06:30.000Z"}
+{"label":"E2E","type":"start","timestamp":"2026-04-30T09:00:20.000Z"}
+{"label":"E2E","type":"finish","timestamp":"2026-04-30T09:18:10.000Z"}
+{"label":"Integration","type":"start","timestamp":"2026-04-30T09:01:00.000Z"}
+{"label":"Integration","type":"finish","timestamp":"2026-04-30T09:13:45.000Z"}
 ```
 
 Treat the profile as capacity evidence. If failures appear while CPU, load/core, or memory are saturated, reduce workers or shard. If load is healthy, investigate the test/app contract instead of masking the failure with more retries.

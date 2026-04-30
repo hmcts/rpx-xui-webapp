@@ -17,6 +17,11 @@ workers=8
 workers=10 shard=1/2
 workers=10 shard=2/2''',
         description: 'Integration load-profile matrix. One run per line or semicolon. Supported keys: workers=<n> and optional shard=<index/total>.'
+      ),
+      booleanParam(
+        name: 'INTEGRATION_PW_LOAD_PROFILE_ODHIN_TAB',
+        defaultValue: true,
+        description: 'Add the System Load tab to generated Odhín integration reports.'
       )
     ])
 ])
@@ -54,6 +59,18 @@ def playwrightIntegrationReportFile = 'xui-playwright-integration.html'
 
 def assertHtmlReportExists = { String reportDir, String reportFile ->
     steps.sh "test -f '${reportDir}/${reportFile}'"
+}
+
+def playwrightLoadProfileEventsFile = { ->
+    'functional-output/tests/playwright-integration/load-profile/nightly-stage-events.jsonl'
+}
+
+def recordPlaywrightLoadEvent = { String label, String eventType ->
+    try {
+        steps.sh "node scripts/playwright-load-event.js '${playwrightLoadProfileEventsFile()}' '${label}' '${eventType}'"
+    } catch (Exception e) {
+        echo "[load-profile] failed to record ${label} ${eventType}: ${e.getMessage()}"
+    }
 }
 
 def resolveIntegrationProfileRuns = { String configuredRuns ->
@@ -99,6 +116,8 @@ def runPlaywrightIntegrationProfileMatrix = {
               "PLAYWRIGHT_REPORT_FOLDER=${runConfig.reportDir}",
               "PW_LOAD_PROFILE_OUTPUT=${runConfig.loadProfileDir}",
               "PW_LOAD_PROFILE_LABEL=${runConfig.label}",
+              "PW_LOAD_PROFILE_ODHIN_TAB=${params.INTEGRATION_PW_LOAD_PROFILE_ODHIN_TAB}",
+              "PW_LOAD_PROFILE_EVENTS_FILE=${playwrightLoadProfileEventsFile()}",
               'ORG_USER_ASSIGNMENT_MODE=external',
               'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
               "FUNCTIONAL_TESTS_WORKERS=${runConfig.workers}",
@@ -233,6 +252,7 @@ withNightlyPipeline(type, product, component) {
   
       stage('API Tests') {
         try {
+          recordPlaywrightLoadEvent('API', 'start')
           withEnv([
             'ORG_USER_ASSIGNMENT_MODE=external',
             'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
@@ -241,6 +261,7 @@ withNightlyPipeline(type, product, component) {
             yarnBuilder.yarn('test:api:pw:coverage')
           }
         } finally {
+          recordPlaywrightLoadEvent('API', 'finish')
           publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -264,8 +285,10 @@ withNightlyPipeline(type, product, component) {
 
         stage('Playwright Integration Tests') {
                 try {
+                    recordPlaywrightLoadEvent('Integration', 'start')
                     runPlaywrightIntegrationProfileMatrix()
                 } finally {
+                    recordPlaywrightLoadEvent('Integration', 'finish')
                     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
                     archivePlaywrightDiagnostics()
                 }
@@ -273,6 +296,7 @@ withNightlyPipeline(type, product, component) {
 
       stage('Cross Browser Test') {
             try {
+              recordPlaywrightLoadEvent('E2E', 'start')
               withEnv([
                 'ORG_USER_ASSIGNMENT_MODE=external',
                 'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
@@ -283,6 +307,7 @@ withNightlyPipeline(type, product, component) {
             } catch (Error) {
               unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
             } finally {
+              recordPlaywrightLoadEvent('E2E', 'finish')
               publishHTML([
               allowMissing         : true,
               alwaysLinkToLastBuild: true,

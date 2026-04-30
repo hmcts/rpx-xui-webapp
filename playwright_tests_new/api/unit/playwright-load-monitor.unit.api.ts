@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import childProcess from 'node:child_process';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -18,14 +19,21 @@ interface Summary {
   cpu: { max: number };
   memory: { average: number };
   workers: string;
+  timelineEvents?: Array<{ label: string; type: string; inRange: boolean }>;
 }
 
 const loadMonitor = require('../../../scripts/playwright-load-monitor.js') as {
-  buildInlineSvgChart: (samples: unknown[]) => string;
+  buildInlineSvgChart: (samples: unknown[], timelineEvents?: unknown[]) => string;
   buildPressureSignals: (samples: unknown[]) => PressureSignals;
   buildRecommendation: (signals: { cpuSaturated: boolean; loadSaturated: boolean; memoryPressure: boolean }) => string;
-  buildSummary: (metadata: Record<string, unknown>, samples: unknown[], exitCode: number) => Summary;
-  injectLoadProfileIntoOdhin: (reportFolder: string, summary: Summary, samples: unknown[], relativeProfilePath: string) => void;
+  buildSummary: (metadata: Record<string, unknown>, samples: unknown[], exitCode: number, timelineEvents?: unknown[]) => Summary;
+  injectLoadProfileIntoOdhin: (
+    reportFolder: string,
+    summary: Summary,
+    samples: unknown[],
+    relativeProfilePath: string,
+    options?: { odhinTab?: boolean }
+  ) => void;
   parseArgs: (argv: string[]) => {
     options: {
       outputFolder: string;
@@ -33,6 +41,8 @@ const loadMonitor = require('../../../scripts/playwright-load-monitor.js') as {
       sampleIntervalMs: number;
       label: string;
       injectOdhin: boolean;
+      odhinTab: boolean;
+      eventsFile: string;
     };
     commandArgs: string[];
   };
@@ -62,8 +72,24 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
       outputFolder: 'custom-load',
       label: 'workers-10',
       injectOdhin: true,
+      odhinTab: true,
     });
     expect(parsed.commandArgs).toEqual(['yarn', 'test:playwright:integration', '--workers=10', '--shard=1/2']);
+  });
+
+  test('parses Odhín tab and timeline event controls', () => {
+    const parsed = loadMonitor.parseArgs([
+      '--no-odhin-tab',
+      '--events-file',
+      'functional-output/stage-events.jsonl',
+      '--',
+      'yarn',
+      'test:playwright:integration',
+    ]);
+
+    expect(parsed.options.odhinTab).toBe(false);
+    expect(parsed.options.eventsFile).toBe('functional-output/stage-events.jsonl');
+    expect(parsed.commandArgs).toEqual(['yarn', 'test:playwright:integration']);
   });
 
   test('builds pressure signals and recommendations from sampled load', () => {
@@ -115,13 +141,17 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
         sample({ elapsedMs: 5000, cpuPercent: 70, load1PerCore: 0.9, memoryUsedPercent: 55 }),
         sample({ elapsedMs: 10000, cpuPercent: 90, load1PerCore: 1.6, memoryUsedPercent: 70 }),
       ],
-      0
+      0,
+      [{ label: 'API', type: 'start', epochMs: startEpochMs + 5000 }]
     );
 
     expect(summary.cpu.max).toBe(90);
     expect(summary.memory.average).toBe(55);
     expect(summary.workers).toBe('10');
-    expect(loadMonitor.buildInlineSvgChart([sample({ cpuPercent: 10 })])).toContain('<svg');
+    expect(summary.timelineEvents).toEqual(
+      expect.arrayContaining([expect.objectContaining({ label: 'API', type: 'start', inRange: true })])
+    );
+    expect(loadMonitor.buildInlineSvgChart([sample({ cpuPercent: 10 })], summary.timelineEvents)).toContain('API start');
   });
 
   test('injects the system load profile block into an Odhín dashboard', () => {
@@ -138,7 +168,9 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
               <div class="col-12"><div class="dashboard-block"><div class="info-box-header">Run info</div></div></div>
             </div>
           </div>
-          <div id="TabTests"></div>
+          <button class="main-tablinks" onclick="openMainTab(event, 'TabDashboard')">Dashboard</button>
+          <button class="main-tablinks" onclick="openMainTab(event, 'TabTests')">Tests</button>
+          <div id="TabTests" class="main-tabcontent"></div>
         </body>
       </html>`
     );
@@ -166,8 +198,69 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
 
     const html = fs.readFileSync(reportPath, 'utf8');
     expect(html).toContain('System Load Profile');
+    expect(html).toContain("openMainTab(event, 'TabSystemLoad')");
+    expect(html).toContain('id="TabSystemLoad"');
     expect(html).toContain('Standalone profile');
     expect(html).toContain('../load-profile/load-profile.html');
+  });
+
+  test('can inject the dashboard block without adding the Odhín System Load tab', () => {
+    const reportFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'odhin-load-profile-no-tab-'));
+    const reportPath = path.join(reportFolder, 'xui-playwright-integration.html');
+    fs.writeFileSync(
+      reportPath,
+      `
+      <!doctype html>
+      <html>
+        <body>
+          <div id="TabDashboard">
+            <div class="row ms-3 me-3">
+              <div class="col-12"><div class="dashboard-block"><div class="info-box-header">Run info</div></div></div>
+            </div>
+          </div>
+          <button class="main-tablinks" onclick="openMainTab(event, 'TabTests')">Tests</button>
+          <div id="TabTests" class="main-tabcontent"></div>
+        </body>
+      </html>`
+    );
+
+    const summary = loadMonitor.buildSummary(
+      {
+        command: ['yarn', 'test:playwright:integration'],
+        startEpochMs: Date.now() - 1000,
+        sampleIntervalMs: 1000,
+        effectiveCpuCount: 4,
+        totalMemoryBytes: 8 * 1024 ** 3,
+        workers: 'config-default',
+        shard: '',
+      },
+      [sample({ cpuPercent: 20, load1PerCore: 0.2, memoryUsedPercent: 30 })],
+      0
+    );
+
+    loadMonitor.injectLoadProfileIntoOdhin(
+      reportFolder,
+      summary,
+      [sample({ cpuPercent: 20 })],
+      '../load-profile/load-profile.html',
+      { odhinTab: false }
+    );
+
+    const html = fs.readFileSync(reportPath, 'utf8');
+    expect(html).toContain('System Load Profile');
+    expect(html).not.toContain('TabSystemLoad');
+  });
+
+  test('writes timeline event JSONL records for Jenkins stage markers', () => {
+    const outputFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'load-profile-events-'));
+    const eventsFile = path.join(outputFolder, 'stage-events.jsonl');
+
+    childProcess.execFileSync('node', [path.join(process.cwd(), 'scripts/playwright-load-event.js'), eventsFile, 'API', 'start']);
+
+    const [line] = fs.readFileSync(eventsFile, 'utf8').trim().split('\n');
+    const event = JSON.parse(line);
+    expect(event).toMatchObject({ label: 'API', type: 'start', source: 'jenkins' });
+    expect(Number.isFinite(event.epochMs)).toBe(true);
   });
 });
 

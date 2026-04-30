@@ -12,6 +12,7 @@ const DEFAULT_REPORT_FOLDER = 'functional-output/tests/playwright-integration/od
 const SUMMARY_FILE = 'summary.json';
 const SAMPLES_FILE = 'samples.json';
 const REPORT_FILE = 'load-profile.html';
+const ODHIN_LOAD_TAB_ID = 'TabSystemLoad';
 
 function parseArgs(argv) {
   const separatorIndex = argv.indexOf('--');
@@ -23,6 +24,8 @@ function parseArgs(argv) {
     sampleIntervalMs: parsePositiveInteger(process.env.PW_LOAD_PROFILE_INTERVAL_MS, DEFAULT_SAMPLE_INTERVAL_MS),
     label: process.env.PW_LOAD_PROFILE_LABEL ?? '',
     injectOdhin: process.env.PW_LOAD_PROFILE_INJECT_ODHIN !== 'false',
+    odhinTab: process.env.PW_LOAD_PROFILE_ODHIN_TAB !== 'false',
+    eventsFile: process.env.PW_LOAD_PROFILE_EVENTS_FILE ?? '',
   };
 
   for (let index = 0; index < optionArgs.length; index += 1) {
@@ -42,6 +45,11 @@ function parseArgs(argv) {
       index += 1;
     } else if (arg === '--no-odhin-inject') {
       options.injectOdhin = false;
+    } else if (arg === '--no-odhin-tab') {
+      options.odhinTab = false;
+    } else if (arg === '--events-file' && next) {
+      options.eventsFile = next;
+      index += 1;
     }
   }
 
@@ -235,7 +243,7 @@ async function runMonitoredCommand(commandArgs, options) {
 
   clearInterval(timer);
   samples.push(sample());
-  const summary = buildSummary(metadata, samples, exitCode);
+  const summary = buildSummary(metadata, samples, exitCode, readTimelineEvents(options.eventsFile));
   writeProfileArtifacts(options.outputFolder, summary, samples);
 
   if (options.injectOdhin) {
@@ -243,7 +251,8 @@ async function runMonitoredCommand(commandArgs, options) {
       options.reportFolder,
       summary,
       samples,
-      path.relative(options.reportFolder, path.join(options.outputFolder, REPORT_FILE))
+      path.relative(options.reportFolder, path.join(options.outputFolder, REPORT_FILE)),
+      { odhinTab: options.odhinTab }
     );
   }
 
@@ -279,16 +288,23 @@ function buildMetadata(commandArgs, options) {
   };
 }
 
-function buildSummary(metadata, samples, exitCode) {
-  const durationMs = Math.max(0, Date.now() - metadata.startEpochMs);
+function buildSummary(metadata, samples, exitCode, externalEvents = []) {
+  const endEpochMs = Date.now();
+  const durationMs = Math.max(0, endEpochMs - metadata.startEpochMs);
   const cpuValues = samples.map((sample) => sample.cpuPercent);
   const memoryValues = samples.map((sample) => sample.memoryUsedPercent);
   const loadPerCoreValues = samples.map((sample) => sample.load1PerCore);
   const pressureSignals = buildPressureSignals(samples);
+  const timelineEvents = normalizeTimelineEvents(
+    [...buildRunBoundaryEvents(metadata, endEpochMs), ...externalEvents],
+    metadata.startEpochMs,
+    endEpochMs
+  );
 
   return {
     ...metadata,
-    endTime: new Date().toISOString(),
+    endTime: new Date(endEpochMs).toISOString(),
+    endEpochMs,
     durationMs,
     exitCode,
     sampleCount: samples.length,
@@ -296,8 +312,83 @@ function buildSummary(metadata, samples, exitCode) {
     memory: summarizeValues(memoryValues),
     load1PerCore: summarizeValues(loadPerCoreValues),
     pressureSignals,
+    timelineEvents,
     recommendation: buildRecommendation(pressureSignals),
   };
+}
+
+function buildRunBoundaryEvents(metadata, endEpochMs) {
+  const label = metadata.label || 'Playwright run';
+  return [
+    {
+      label,
+      type: 'start',
+      epochMs: metadata.startEpochMs,
+      timestamp: new Date(metadata.startEpochMs).toISOString(),
+      source: 'load-profile',
+    },
+    {
+      label,
+      type: 'finish',
+      epochMs: endEpochMs,
+      timestamp: new Date(endEpochMs).toISOString(),
+      source: 'load-profile',
+    },
+  ];
+}
+
+function readTimelineEvents(eventsFile) {
+  if (!eventsFile || !fs.existsSync(eventsFile)) {
+    return [];
+  }
+
+  try {
+    const content = fs.readFileSync(eventsFile, 'utf8').trim();
+    if (!content) {
+      return [];
+    }
+
+    if (content.startsWith('[')) {
+      return JSON.parse(content);
+    }
+
+    return content
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .map((line) => JSON.parse(line));
+  } catch (error) {
+    console.warn(`[load-profile] failed to read timeline events from ${eventsFile}: ${error.message}`);
+    return [];
+  }
+}
+
+function normalizeTimelineEvents(events, startEpochMs, endEpochMs) {
+  return events
+    .map((event) => {
+      const epochMs = resolveEventEpochMs(event);
+      return {
+        label: String(event.label ?? event.name ?? 'event'),
+        type: String(event.type ?? event.phase ?? 'mark'),
+        timestamp: Number.isFinite(epochMs) ? new Date(epochMs).toISOString() : '',
+        epochMs,
+        elapsedMs: Number.isFinite(epochMs) ? epochMs - startEpochMs : undefined,
+        inRange: Number.isFinite(epochMs) && epochMs >= startEpochMs && epochMs <= endEpochMs,
+        source: event.source ? String(event.source) : undefined,
+      };
+    })
+    .filter((event) => Number.isFinite(event.epochMs))
+    .sort((left, right) => left.epochMs - right.epochMs);
+}
+
+function resolveEventEpochMs(event) {
+  const epochMs = Number(event.epochMs ?? event.timeMs ?? event.timestampMs);
+  if (Number.isFinite(epochMs)) {
+    return epochMs;
+  }
+
+  const parsedTimestamp = Date.parse(event.timestamp ?? event.time ?? '');
+  return Number.isFinite(parsedTimestamp) ? parsedTimestamp : undefined;
 }
 
 function buildPressureSignals(samples) {
@@ -345,7 +436,7 @@ function writeProfileArtifacts(outputFolder, summary, samples) {
   fs.writeFileSync(path.join(outputFolder, REPORT_FILE), buildLoadProfileHtml(summary, samples));
 }
 
-function injectLoadProfileIntoOdhin(reportFolder, summary, samples, relativeProfilePath) {
+function injectLoadProfileIntoOdhin(reportFolder, summary, samples, relativeProfilePath, options = {}) {
   if (!reportFolder || !fs.existsSync(reportFolder)) {
     console.warn(`[load-profile] Odhín report folder not found: ${reportFolder}`);
     return;
@@ -366,8 +457,16 @@ function injectLoadProfileIntoOdhin(reportFolder, summary, samples, relativeProf
     const tabDashPattern = /(<div[^>]+id="TabDashboard"[\s\S]*?)(<\/div>\s*<div[^>]+id="TabTests")/m;
     if (tabDashPattern.test(html)) {
       html = html.replace(tabDashPattern, (_match, before, after) => `${before}\n${block}\n</div>\n${after}`);
-      fs.writeFileSync(filePath, html, 'utf8');
+    } else {
+      const testsTabPattern = /(\s*<div\b[^>]*id="TabTests"[^>]*>)/m;
+      html = html.replace(testsTabPattern, `${block}$1`);
     }
+    if (options.odhinTab !== false) {
+      html = injectLoadProfileTab(html, summary, samples, relativeProfilePath);
+    } else {
+      html = removeLoadProfileTab(html);
+    }
+    fs.writeFileSync(filePath, html, 'utf8');
   });
 }
 
@@ -381,12 +480,61 @@ function buildOdhinLoadBlock(summary, samples, relativeProfilePath) {
                   ${escapeHtml(summary.recommendation)}
                 </p>
                 <div class="odhin-table">
-                  ${buildInlineSvgChart(samples)}
+                  ${buildInlineSvgChart(samples, summary.timelineEvents)}
                   ${buildSummaryTable(summary, relativeProfilePath)}
                 </div>
               </div>
             </div>
           </div>`;
+}
+
+function injectLoadProfileTab(html, summary, samples, relativeProfilePath) {
+  let updatedHtml = removeLoadProfileTab(html);
+  const button = `
+      <button
+        class="main-tablinks"
+        onclick="openMainTab(event, '${ODHIN_LOAD_TAB_ID}')"
+      >
+        System Load
+      </button>`;
+  const testsButtonPattern = /(\s*<button\b[\s\S]*?onclick="openMainTab\(event,\s*'TabTests'\)"[\s\S]*?<\/button>)/m;
+  if (testsButtonPattern.test(updatedHtml)) {
+    updatedHtml = updatedHtml.replace(testsButtonPattern, `${button}$1`);
+  }
+
+  const testsTabPattern = /(\s*<div\b[^>]*id="TabTests"[^>]*class="main-tabcontent"[^>]*>)/m;
+  if (testsTabPattern.test(updatedHtml)) {
+    updatedHtml = updatedHtml.replace(testsTabPattern, `${buildOdhinLoadTab(summary, samples, relativeProfilePath)}$1`);
+  }
+  return updatedHtml;
+}
+
+function removeLoadProfileTab(html) {
+  return html
+    .replace(/\s*<button\b[\s\S]*?onclick="openMainTab\(event,\s*'TabSystemLoad'\)"[\s\S]*?<\/button>/m, '')
+    .replace(/\s*<!-- odhin-system-load-tab:start -->[\s\S]*?<!-- odhin-system-load-tab:end -->/m, '');
+}
+
+function buildOdhinLoadTab(summary, samples, relativeProfilePath) {
+  return `
+          <!-- odhin-system-load-tab:start -->
+          <div id="${ODHIN_LOAD_TAB_ID}" style="display: none" class="main-tabcontent">
+            <div class="row ms-3 me-3">
+              <div class="col-12">
+                <div class="mt-3 mb-3 odhin-thin-border dashboard-block" id="odhin-system-load-profile-tab">
+                  <div class="info-box-header">System Load Profile</div>
+                  <p class="text-secondary-emphasis small mb-2 ps-2">
+                    ${escapeHtml(summary.recommendation)}
+                  </p>
+                  <div class="odhin-table">
+                    ${buildInlineSvgChart(samples, summary.timelineEvents)}
+                    ${buildSummaryTable(summary, relativeProfilePath)}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- odhin-system-load-tab:end -->`;
 }
 
 function buildLoadProfileHtml(summary, samples) {
@@ -406,7 +554,7 @@ function buildLoadProfileHtml(summary, samples) {
 <body>
   <h1>Playwright load profile</h1>
   <p>${escapeHtml(summary.recommendation)}</p>
-  <div class="chart">${buildInlineSvgChart(samples)}</div>
+  <div class="chart">${buildInlineSvgChart(samples, summary.timelineEvents)}</div>
   ${buildSummaryTable(summary, '')}
 </body>
 </html>`;
@@ -429,6 +577,9 @@ function buildSummaryTable(summary, relativeProfilePath) {
   if (relativeProfilePath) {
     rows.push(['Standalone profile', `<a href="${escapeHtml(relativeProfilePath)}">open load-profile.html</a>`]);
   }
+  if (summary.timelineEvents?.length) {
+    rows.push(['Timeline events', buildTimelineEventList(summary.timelineEvents)]);
+  }
 
   return `<div class="table-responsive">
     <table class="table table-sm mb-0 testcase-run-info-table">
@@ -437,7 +588,7 @@ function buildSummaryTable(summary, relativeProfilePath) {
           .map(
             ([label, value]) => `<tr>
               <td class="fs-6 text-secondary-emphasis text-start summary-row-left-column">${escapeHtml(label)}</td>
-              <td class="text-secondary-emphasis">${String(value).startsWith('<a ') ? value : escapeHtml(value)}</td>
+              <td class="text-secondary-emphasis">${isSafeInlineHtml(value) ? value : escapeHtml(value)}</td>
             </tr>`
           )
           .join('\n')}
@@ -446,7 +597,21 @@ function buildSummaryTable(summary, relativeProfilePath) {
   </div>`;
 }
 
-function buildInlineSvgChart(samples) {
+function buildTimelineEventList(events) {
+  const items = events
+    .map((event) => {
+      const rangeLabel = event.inRange ? formatDuration(event.elapsedMs) : 'outside profile window';
+      return `<li>${escapeHtml(event.label)} ${escapeHtml(event.type)} (${escapeHtml(rangeLabel)})</li>`;
+    })
+    .join('');
+  return `<ul class="mb-0 ps-3">${items}</ul>`;
+}
+
+function isSafeInlineHtml(value) {
+  return String(value).startsWith('<a ') || String(value).startsWith('<ul ');
+}
+
+function buildInlineSvgChart(samples, timelineEvents = []) {
   const width = 900;
   const height = 260;
   const padding = { top: 18, right: 24, bottom: 36, left: 44 };
@@ -465,6 +630,7 @@ function buildInlineSvgChart(samples) {
   const loadPoints = points((sample) => sample.load1PerCore * 100);
   const cpuPoints = points((sample) => sample.cpuPercent);
   const memoryPoints = points((sample) => sample.memoryUsedPercent);
+  const eventMarkers = buildSvgEventMarkers(timelineEvents, maxElapsed, padding, plotWidth, plotHeight);
 
   return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="CPU memory and load profile" style="width:100%;max-height:${height}px;">
     <rect x="0" y="0" width="${width}" height="${height}" fill="#fff"></rect>
@@ -477,12 +643,31 @@ function buildInlineSvgChart(samples) {
     <polyline points="${cpuPoints}" fill="none" stroke="#1d70b8" stroke-width="2.5"></polyline>
     <polyline points="${memoryPoints}" fill="none" stroke="#00703c" stroke-width="2.5"></polyline>
     <polyline points="${loadPoints}" fill="none" stroke="#f47738" stroke-width="2.5"></polyline>
+    ${eventMarkers}
     <g font-size="12" fill="#172b4d">
       <rect x="${padding.left}" y="${height - 24}" width="12" height="4" fill="#1d70b8"></rect><text x="${padding.left + 18}" y="${height - 19}">CPU %</text>
       <rect x="${padding.left + 90}" y="${height - 24}" width="12" height="4" fill="#00703c"></rect><text x="${padding.left + 108}" y="${height - 19}">Memory %</text>
       <rect x="${padding.left + 205}" y="${height - 24}" width="12" height="4" fill="#f47738"></rect><text x="${padding.left + 223}" y="${height - 19}">Load/core %</text>
     </g>
   </svg>`;
+}
+
+function buildSvgEventMarkers(events, maxElapsed, padding, plotWidth, plotHeight) {
+  const inRangeEvents = events.filter((event) => event.inRange && Number.isFinite(event.elapsedMs));
+  if (!inRangeEvents.length) {
+    return '';
+  }
+  return inRangeEvents
+    .map((event, index) => {
+      const x = round(padding.left + (event.elapsedMs / maxElapsed) * plotWidth);
+      const y = padding.top + 12 + (index % 4) * 14;
+      const label = `${event.label} ${event.type}`;
+      return `<g>
+        <line x1="${x}" y1="${padding.top}" x2="${x}" y2="${padding.top + plotHeight}" stroke="#6f72af" stroke-dasharray="3 3" opacity="0.8"></line>
+        <text x="${x + 4}" y="${y}" font-size="10" fill="#4c2c92">${escapeHtml(label)}</text>
+      </g>`;
+    })
+    .join('\n');
 }
 
 function formatDuration(durationMs) {

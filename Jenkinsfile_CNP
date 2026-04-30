@@ -47,6 +47,11 @@ workers=8
 workers=10 shard=1/2
 workers=10 shard=2/2''',
             description: 'Integration load-profile matrix. One run per line or semicolon. Supported keys: workers=<n> and optional shard=<index/total>.'
+        ),
+        booleanParam(
+            name: 'INTEGRATION_PW_LOAD_PROFILE_ODHIN_TAB',
+            defaultValue: true,
+            description: 'Add the System Load tab to generated Odhín integration reports.'
         )
     ])
 ])
@@ -138,6 +143,18 @@ def assertHtmlReportExists = { String reportDir, String reportFile ->
     steps.sh "test -f '${reportDir}/${reportFile}'"
 }
 
+def playwrightLoadProfileEventsFile = { String testType ->
+    "functional-output/tests/playwright-integration/load-profile/${testType}-stage-events.jsonl"
+}
+
+def recordPlaywrightLoadEvent = { String eventsFile, String label, String eventType ->
+    try {
+        steps.sh "node scripts/playwright-load-event.js '${eventsFile}' '${label}' '${eventType}'"
+    } catch (Exception e) {
+        echo "[load-profile] failed to record ${label} ${eventType}: ${e.getMessage()}"
+    }
+}
+
 def resolveIntegrationProfileRuns = { String configuredRuns ->
     def configured = configuredRuns?.trim()
     if (!configured) {
@@ -181,6 +198,8 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
                 "PLAYWRIGHT_REPORT_FOLDER=${runConfig.reportDir}",
                 "PW_LOAD_PROFILE_OUTPUT=${runConfig.loadProfileDir}",
                 "PW_LOAD_PROFILE_LABEL=${runConfig.label}",
+                "PW_LOAD_PROFILE_ODHIN_TAB=${params.INTEGRATION_PW_LOAD_PROFILE_ODHIN_TAB}",
+                "PW_LOAD_PROFILE_EVENTS_FILE=${playwrightLoadProfileEventsFile(testType)}",
                 "TEST_TYPE=${testType}",
                 "ORG_USER_ASSIGNMENT_MODE=external",
                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
@@ -405,21 +424,23 @@ withPipeline(type, product, component) {
                             "FUNCTIONAL_TESTS_WORKERS=4"
                         ]) {
                             try {
+                                recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'API', 'start')
                                 yarnBuilder.yarn('test:api:pw')
                             } catch (Exception e) {
                                 echo "[failFast] API Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
                                 if (handleFailFastAbort(e)) { return }
                                 throw e
                             } finally {
-                            publishHTML([
-                                allowMissing         : true,
-                                alwaysLinkToLastBuild: true,
-                                keepAll              : true,
-                                reportDir            : 'functional-output/tests/api_functional/odhin-report/',
-                                reportFiles          : 'xui-playwright-api.html',
-                                reportName           : 'PREVIEW API Functional Test'
-                              ])
-                              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
+                                recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'API', 'finish')
+                                publishHTML([
+                                    allowMissing         : true,
+                                    alwaysLinkToLastBuild: true,
+                                    keepAll              : true,
+                                    reportDir            : 'functional-output/tests/api_functional/odhin-report/',
+                                    reportFiles          : 'xui-playwright-api.html',
+                                    reportName           : 'PREVIEW API Functional Test'
+                                ])
+                                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
                             }
                         }
                     }
@@ -427,12 +448,14 @@ withPipeline(type, product, component) {
                     playwrightIntegration: {
                     stage('Playwright Integration Tests') {
                         try {
+                            recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'Integration', 'start')
                             runPlaywrightIntegrationProfileMatrix('preview', 'PREVIEW')
                         } catch (Exception e) {
                             echo "[failFast] Playwright Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
                             if (handleFailFastAbort(e)) { return }
                             throw e
                         } finally {
+                            recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'Integration', 'finish')
                             steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
                         }
                     }
@@ -440,6 +463,7 @@ withPipeline(type, product, component) {
                     playwrightE2E: {
                     stage('Playwright E2E') {
                         try {
+                            recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'E2E', 'start')
                             withEnv([
                                 "ORG_USER_ASSIGNMENT_MODE=external",
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
@@ -455,6 +479,7 @@ withPipeline(type, product, component) {
                             if (handleFailFastAbort(e)) { return }
                             throw e
                         } finally {
+                            recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'E2E', 'finish')
                             publishHTML([
                                 allowMissing         : true,
                                 alwaysLinkToLastBuild: true,
@@ -501,12 +526,14 @@ withPipeline(type, product, component) {
                             "FUNCTIONAL_TESTS_WORKERS=4"
                         ]) {
                             try {
+                                recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'API', 'start')
                                 yarnBuilder.yarn('test:api:pw')
                             } catch (Exception e) {
                                 echo "[failFast] API Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
                                 if (handleFailFastAbort(e)) { return }
                                 throw e
                             } finally {
+                                recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'API', 'finish')
                                 publishHTML([
                                   allowMissing         : true,
                                   alwaysLinkToLastBuild: true,
@@ -523,12 +550,14 @@ withPipeline(type, product, component) {
                     playwrightIntegration: {
                     stage('Playwright Integration Tests') {
                         try {
+                            recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'Integration', 'start')
                             runPlaywrightIntegrationProfileMatrix('aat', 'AAT')
                         } catch (Exception e) {
                             echo "[failFast] Playwright Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
                             if (handleFailFastAbort(e)) { return }
                             throw e
                         } finally {
+                            recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'Integration', 'finish')
                             steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
                         }
                     }
@@ -536,6 +565,7 @@ withPipeline(type, product, component) {
                     playwrightE2E: {
                     stage('Playwright E2E') {
                         try {
+                            recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'E2E', 'start')
                             withEnv([
                                 "ORG_USER_ASSIGNMENT_MODE=external",
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
@@ -551,6 +581,7 @@ withPipeline(type, product, component) {
                             if (handleFailFastAbort(e)) { return }
                             throw e
                         } finally {
+                            recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'E2E', 'finish')
                             publishHTML([
                                 allowMissing         : true,
                                 alwaysLinkToLastBuild: true,

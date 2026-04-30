@@ -251,6 +251,7 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
     expect(
       isTransientWorkflowFailure(new Error('Case event failed after PoC personal details: The event could not be created'))
     ).toBe(true);
+    expect(isTransientWorkflowFailure(new Error('Task list showed service down while waiting for task row'))).toBe(true);
     expect(isTransientWorkflowFailure(new Error('read ECONNRESET while calling api/user/details'))).toBe(true);
     expect(() => buildCasePayloadFromTemplate('unsupported.template' as never)).toThrow(
       "Unsupported payload template 'unsupported.template'."

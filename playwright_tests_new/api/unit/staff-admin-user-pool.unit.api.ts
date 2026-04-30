@@ -8,6 +8,7 @@ import {
 import { resolveSessionIdentity } from '../../common/sessionIdentity.js';
 
 const configuredEnv = {
+  STAFF_ADMIN_POOL_ENABLED: 'true',
   STAFF_ADMIN_1_USERNAME: 'staff-admin-1@example.test',
   STAFF_ADMIN_1_PASSWORD: 'secret-1',
   STAFF_ADMIN_2_USERNAME: 'staff-admin-2@example.test',
@@ -26,6 +27,7 @@ test.describe('Staff admin user pool unit tests', { tag: '@svc-internal' }, () =
 
   test('returns only fully configured pooled users', () => {
     const env = {
+      STAFF_ADMIN_POOL_ENABLED: 'true',
       STAFF_ADMIN_1_USERNAME: 'staff-admin-1@example.test',
       STAFF_ADMIN_1_PASSWORD: 'secret-1',
       STAFF_ADMIN_2_USERNAME: 'staff-admin-2@example.test',
@@ -33,6 +35,16 @@ test.describe('Staff admin user pool unit tests', { tag: '@svc-internal' }, () =
     };
 
     expect(getConfiguredStaffAdminUserIdentifiers(env)).toEqual(['STAFF_ADMIN-1']);
+  });
+
+  test('keeps the legacy staff admin user unless the pool is explicitly enabled', () => {
+    const env = {
+      STAFF_ADMIN_1_USERNAME: 'staff-admin-1@example.test',
+      STAFF_ADMIN_1_PASSWORD: 'secret-1',
+    };
+
+    expect(getConfiguredStaffAdminUserIdentifiers(env)).toEqual([]);
+    expect(resolveStaffAdminUserIdentifier(STAFF_ADMIN_USER, { parallelIndex: 0 }, env)).toBe(STAFF_ADMIN_USER);
   });
 
   test('selects configured pooled users by Playwright parallel index', () => {
@@ -51,10 +63,12 @@ test.describe('Staff admin user pool unit tests', { tag: '@svc-internal' }, () =
     const previousEnv = {
       STAFF_ADMIN_2_USERNAME: process.env.STAFF_ADMIN_2_USERNAME,
       STAFF_ADMIN_2_PASSWORD: process.env.STAFF_ADMIN_2_PASSWORD,
+      STAFF_ADMIN_POOL_ENABLED: process.env.STAFF_ADMIN_POOL_ENABLED,
       TEST_PARALLEL_INDEX: process.env.TEST_PARALLEL_INDEX,
     };
 
     try {
+      process.env.STAFF_ADMIN_POOL_ENABLED = 'true';
       process.env.STAFF_ADMIN_2_USERNAME = 'staff-admin-2@example.test';
       process.env.STAFF_ADMIN_2_PASSWORD = 'secret-2';
       process.env.TEST_PARALLEL_INDEX = '1';

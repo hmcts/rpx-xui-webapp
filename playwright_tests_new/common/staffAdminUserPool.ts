@@ -21,6 +21,10 @@ function hasConfiguredCredentials(userIdentifier: StaffAdminUserIdentifier, env:
   return Boolean(env[mapping.username]?.trim() && env[mapping.password]);
 }
 
+function isStaffAdminPoolEnabled(env: EnvMap): boolean {
+  return env.STAFF_ADMIN_POOL_ENABLED === 'true';
+}
+
 function resolveParallelIndex(source?: ParallelIndexSource, env: EnvMap = process.env): number {
   if (Number.isInteger(source?.parallelIndex) && Number(source?.parallelIndex) > 0) {
     return Number(source?.parallelIndex);
@@ -32,6 +36,10 @@ function resolveParallelIndex(source?: ParallelIndexSource, env: EnvMap = proces
 }
 
 export function getConfiguredStaffAdminUserIdentifiers(env: EnvMap = process.env): StaffAdminUserIdentifier[] {
+  if (!isStaffAdminPoolEnabled(env)) {
+    return [];
+  }
+
   return STAFF_ADMIN_POOLED_USER_IDENTIFIERS.filter((userIdentifier) => hasConfiguredCredentials(userIdentifier, env));
 }
 

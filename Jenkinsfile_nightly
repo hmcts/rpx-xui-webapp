@@ -71,11 +71,11 @@ def archivePlaywrightDiagnostics = {
 }
 
 def playwrightIntegrationReportFile = 'xui-playwright-integration.html'
-// Temporary CI diagnostic scope for PR-5120: keep Playwright runs tiny while proving
+// Temporary CI diagnostic scope for PR-5120: keep Playwright runs small while proving
 // the Odhín/reporting process exits cleanly. Revert this block to restore full coverage.
 def playwrightCiDiagnosticScopeEnabled = true
-def playwrightCiDiagnosticIntegrationArgs = 'playwright_tests_new/integration/test/restrictedAccess/restrictedCaseAccess.negative.spec.ts --grep "handles failed judicial lookup with HTTP 500"'
-def playwrightCiDiagnosticE2EArgs = 'playwright_tests_new/E2E/test/searchCase/searchCase.spec.ts --grep "Search invalid 16-digit case reference shows no results"'
+def playwrightCiDiagnosticIntegrationArgs = 'playwright_tests_new/integration/test/restrictedAccess --grep @integration-restricted-case'
+def playwrightCiDiagnosticE2EArgs = 'playwright_tests_new/E2E/test/searchCase --grep @e2e-search-case'
 
 def assertHtmlReportExists = { String reportDir, String reportFile ->
     steps.sh "test -f '${reportDir}/${reportFile}'"

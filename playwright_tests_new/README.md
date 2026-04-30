@@ -328,7 +328,7 @@ API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
 
 ### Integration Load Profiling
 
-The standard `yarn test:playwright:integration` command runs through the load-profile wrapper by default. It samples the local/Jenkins host while the run is executing, writes raw metrics, and injects a **System Load Profile** block and **System Load** tab into the Odhín report.
+The standard `yarn test:playwright:integration` command runs through the load-profile wrapper by default. It samples the local/Jenkins host while the run is executing, writes raw metrics, and injects a **System Load** tab into the Odhín report.
 
 ```bash
 # Run integration with a host-load profile and 10 workers
@@ -344,7 +344,7 @@ yarn test:playwright:integration:profile -- --workers=10
 
 Artifacts:
 
-- Odhín dashboard block: `functional-output/tests/playwright-integration/odhin-report/xui-playwright-integration.html`
+- Odhín report with **System Load** tab: `functional-output/tests/playwright-integration/odhin-report/xui-playwright-integration.html`
 - Standalone chart: `functional-output/tests/playwright-integration/load-profile/load-profile.html`
 - Raw samples: `functional-output/tests/playwright-integration/load-profile/samples.json`
 - Summary: `functional-output/tests/playwright-integration/load-profile/summary.json`
@@ -354,7 +354,7 @@ Useful controls:
 - `PW_LOAD_PROFILE_INTERVAL_MS=1000` changes the sample interval
 - `PW_LOAD_PROFILE_OUTPUT=<path>` changes the artifact folder
 - `PW_LOAD_PROFILE_INJECT_ODHIN=false` disables Odhín injection
-- `PW_LOAD_PROFILE_ODHIN_TAB=false` keeps the dashboard block but disables the Odhín **System Load** tab
+- `PW_LOAD_PROFILE_ODHIN_TAB=false` disables the Odhín **System Load** tab
 - `PW_LOAD_PROFILE_EVENTS_FILE=<jsonl-or-json>` overlays external start/finish markers on the load chart
 
 Jenkins CNP and nightly integration stages use `INTEGRATION_PW_PROFILE_RUNS` to run a small profile matrix. The default is:

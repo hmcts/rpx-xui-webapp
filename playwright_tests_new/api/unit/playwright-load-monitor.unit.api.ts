@@ -154,7 +154,7 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
     expect(loadMonitor.buildInlineSvgChart([sample({ cpuPercent: 10 })], summary.timelineEvents)).toContain('API start');
   });
 
-  test('injects the system load profile block into an Odhín dashboard', () => {
+  test('injects the System Load tab after Tests without adding content to the dashboard', () => {
     const reportFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'odhin-load-profile-'));
     const reportPath = path.join(reportFolder, 'xui-playwright-integration.html');
     fs.writeFileSync(
@@ -202,9 +202,11 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
     expect(html).toContain('id="TabSystemLoad"');
     expect(html).toContain('Standalone profile');
     expect(html).toContain('../load-profile/load-profile.html');
+    expect(html).not.toContain('id="odhin-system-load-profile"');
+    expect(html.indexOf("openMainTab(event, 'TabTests')")).toBeLessThan(html.indexOf("openMainTab(event, 'TabSystemLoad')"));
   });
 
-  test('can inject the dashboard block without adding the Odhín System Load tab', () => {
+  test('can skip the Odhín System Load tab and dashboard injection', () => {
     const reportFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'odhin-load-profile-no-tab-'));
     const reportPath = path.join(reportFolder, 'xui-playwright-integration.html');
     fs.writeFileSync(
@@ -247,8 +249,9 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
     );
 
     const html = fs.readFileSync(reportPath, 'utf8');
-    expect(html).toContain('System Load Profile');
     expect(html).not.toContain('TabSystemLoad');
+    expect(html).not.toContain('System Load Profile');
+    expect(html).not.toContain('odhin-system-load-profile');
   });
 
   test('writes timeline event JSONL records for Jenkins stage markers', () => {

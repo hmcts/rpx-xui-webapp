@@ -443,7 +443,6 @@ function injectLoadProfileIntoOdhin(reportFolder, summary, samples, relativeProf
   }
 
   const files = fs.readdirSync(reportFolder).filter((fileName) => fileName.toLowerCase().endsWith('.html'));
-  const block = buildOdhinLoadBlock(summary, samples, relativeProfilePath);
   files.forEach((fileName) => {
     const filePath = path.join(reportFolder, fileName);
     let html = fs.readFileSync(filePath, 'utf8');
@@ -454,13 +453,6 @@ function injectLoadProfileIntoOdhin(reportFolder, summary, samples, relativeProf
       /<div class="row ms-3 me-3">\s*<div class="col-12[^>]*>\s*<div class="mt-3 mb-3 odhin-thin-border dashboard-block" id="odhin-system-load-profile">[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/m,
       ''
     );
-    const tabDashPattern = /(<div[^>]+id="TabDashboard"[\s\S]*?)(<\/div>\s*<div[^>]+id="TabTests")/m;
-    if (tabDashPattern.test(html)) {
-      html = html.replace(tabDashPattern, (_match, before, after) => `${before}\n${block}\n</div>\n${after}`);
-    } else {
-      const testsTabPattern = /(\s*<div\b[^>]*id="TabTests"[^>]*>)/m;
-      html = html.replace(testsTabPattern, `${block}$1`);
-    }
     if (options.odhinTab !== false) {
       html = injectLoadProfileTab(html, summary, samples, relativeProfilePath);
     } else {
@@ -468,24 +460,6 @@ function injectLoadProfileIntoOdhin(reportFolder, summary, samples, relativeProf
     }
     fs.writeFileSync(filePath, html, 'utf8');
   });
-}
-
-function buildOdhinLoadBlock(summary, samples, relativeProfilePath) {
-  return `
-          <div class="row ms-3 me-3">
-            <div class="col-12">
-              <div class="mt-3 mb-3 odhin-thin-border dashboard-block" id="odhin-system-load-profile">
-                <div class="info-box-header">System Load Profile</div>
-                <p class="text-secondary-emphasis small mb-2 ps-2">
-                  ${escapeHtml(summary.recommendation)}
-                </p>
-                <div class="odhin-table">
-                  ${buildInlineSvgChart(samples, summary.timelineEvents)}
-                  ${buildSummaryTable(summary, relativeProfilePath)}
-                </div>
-              </div>
-            </div>
-          </div>`;
 }
 
 function injectLoadProfileTab(html, summary, samples, relativeProfilePath) {
@@ -499,12 +473,15 @@ function injectLoadProfileTab(html, summary, samples, relativeProfilePath) {
       </button>`;
   const testsButtonPattern = /(\s*<button\b[\s\S]*?onclick="openMainTab\(event,\s*'TabTests'\)"[\s\S]*?<\/button>)/m;
   if (testsButtonPattern.test(updatedHtml)) {
-    updatedHtml = updatedHtml.replace(testsButtonPattern, `${button}$1`);
+    updatedHtml = updatedHtml.replace(testsButtonPattern, `$1${button}`);
   }
 
-  const testsTabPattern = /(\s*<div\b[^>]*id="TabTests"[^>]*class="main-tabcontent"[^>]*>)/m;
-  if (testsTabPattern.test(updatedHtml)) {
-    updatedHtml = updatedHtml.replace(testsTabPattern, `${buildOdhinLoadTab(summary, samples, relativeProfilePath)}$1`);
+  const systemLoadTab = buildOdhinLoadTab(summary, samples, relativeProfilePath);
+  const bodyEndPattern = /(\s*<\/body>)/m;
+  if (bodyEndPattern.test(updatedHtml)) {
+    updatedHtml = updatedHtml.replace(bodyEndPattern, `${systemLoadTab}$1`);
+  } else {
+    updatedHtml += systemLoadTab;
   }
   return updatedHtml;
 }
@@ -726,7 +703,6 @@ module.exports = {
   parseArgs,
   summarizeValues,
   __test__: {
-    buildOdhinLoadBlock,
     buildSummaryTable,
     calculateCpuUsage,
     parsePositiveInteger,

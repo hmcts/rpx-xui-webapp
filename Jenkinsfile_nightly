@@ -145,7 +145,9 @@ def runPlaywrightIntegrationProfileMatrix = {
             ]) {
               yarnBuilder.yarn("test:playwright:integration:profile -- --workers=${runConfig.workers}${runConfig.shardArg}")
             }
+            echo "[playwright-integration] Completed test command for ${runConfig.displayName}; checking Odhín report at ${runConfig.reportDir}/${playwrightIntegrationReportFile}"
             assertHtmlReportExists(runConfig.reportDir, playwrightIntegrationReportFile)
+            echo "[playwright-integration] Odhín report exists for ${runConfig.displayName}"
         } catch (Exception e) {
             if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
                 throw e
@@ -155,6 +157,7 @@ def runPlaywrightIntegrationProfileMatrix = {
             }
             failures << "${runConfig.displayName}: ${e.getMessage()}"
         } finally {
+            echo "[playwright-integration] Publishing Odhín HTML report for ${runConfig.displayName}"
             publishHTML([
               allowMissing         : true,
               alwaysLinkToLastBuild: true,
@@ -163,6 +166,7 @@ def runPlaywrightIntegrationProfileMatrix = {
               reportFiles          : playwrightIntegrationReportFile,
               reportName           : "Playwright Integration Test (${runConfig.displayName})"
             ])
+            echo "[playwright-integration] Published Odhín HTML report for ${runConfig.displayName}"
         }
     }
     if (failures) {
@@ -322,7 +326,9 @@ withNightlyPipeline(type, product, component) {
                     runPlaywrightIntegrationProfileMatrix()
                 } finally {
                     recordPlaywrightLoadEvent('Integration', 'finish')
+                    echo '[playwright-integration] Archiving integration artifacts'
                     steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
+                    echo '[playwright-integration] Archived integration artifacts'
                     archivePlaywrightDiagnostics()
                 }
         }

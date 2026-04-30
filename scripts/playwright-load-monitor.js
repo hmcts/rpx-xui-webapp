@@ -696,13 +696,19 @@ function clamp(value, min, max) {
 
 if (require.main === module) {
   const { options, commandArgs } = parseArgs(process.argv.slice(2));
+  const exitAfterFlush = (exitCode) => {
+    process.exitCode = exitCode;
+    setImmediate(() => process.exit(exitCode));
+  };
+
   runMonitoredCommand(commandArgs, options)
     .then((exitCode) => {
-      process.exitCode = exitCode;
+      console.log(`[load-profile] completed with exit code ${exitCode}`);
+      exitAfterFlush(exitCode);
     })
     .catch((error) => {
       console.error(`[load-profile] ${error.message}`);
-      process.exitCode = 1;
+      exitAfterFlush(1);
     });
 }
 

@@ -118,7 +118,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
       assignees: assigneeId ? [assigneeId] : [],
       majorPriorities: [1000, 4000, 5000, 6000],
       priorityDates: [inTwoDays, inTwoDays, inSixHours, inTwoDays],
-      dueDates: [inTwoDays, inTwoDays, inSixHours, inTwoDays],
+      dueDates: [inTwoDays, inTwoDays, inTwoDays, inTwoDays],
     };
 
     await test.step('Setup route mock for priority label tasks', async () => {

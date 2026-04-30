@@ -76,11 +76,14 @@ TEST_URL=http://localhost:3000 yarn test:api:pw:coverage
 ### Integration commands
 
 ```bash
-# LOCAL
+# LOCAL - produces Odhín plus the System Load tab by default
 TEST_URL=http://localhost:3000 yarn test:playwright:integration
 
-# AAT
+# AAT - produces Odhín plus the System Load tab by default
 yarn test:playwright:integration
+
+# Direct Playwright run without the load-profile wrapper
+yarn test:playwright:integration:raw
 ```
 
 ### Odhin report locations
@@ -325,15 +328,18 @@ API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
 
 ### Integration Load Profiling
 
-Use the load-profile wrapper when tuning workers or Playwright sharding. It samples the local/Jenkins host while the run is executing, writes raw metrics, and injects a **System Load Profile** block and optional **System Load** tab into the Odhín report.
+The standard `yarn test:playwright:integration` command runs through the load-profile wrapper by default. It samples the local/Jenkins host while the run is executing, writes raw metrics, and injects a **System Load Profile** block and **System Load** tab into the Odhín report.
 
 ```bash
 # Run integration with a host-load profile and 10 workers
-yarn test:playwright:integration:profile -- --workers=10
+yarn test:playwright:integration -- --workers=10
 
 # Compare a sharded run
-yarn test:playwright:integration:profile -- --workers=10 --shard=1/2
-yarn test:playwright:integration:profile -- --workers=10 --shard=2/2
+yarn test:playwright:integration -- --workers=10 --shard=1/2
+yarn test:playwright:integration -- --workers=10 --shard=2/2
+
+# Backwards-compatible alias
+yarn test:playwright:integration:profile -- --workers=10
 ```
 
 Artifacts:
@@ -360,7 +366,7 @@ workers=10 shard=1/2
 workers=10 shard=2/2
 ```
 
-Use `INTEGRATION_PW_LOAD_PROFILE_ODHIN_TAB=false` on Jenkins to disable the Odhín **System Load** tab while still producing the standalone load profile artifacts. CNP and nightly also write API, E2E, and integration stage markers to the profile event file so the report can show which suite was running when CPU, load, or memory changed.
+Use `INTEGRATION_PW_WORKERS=<n>` and optional `INTEGRATION_PW_SHARD=<index/total>` on Jenkins to run one targeted integration profile instead of the full `INTEGRATION_PW_PROFILE_RUNS` matrix. Use `INTEGRATION_PW_LOAD_PROFILE_ODHIN_TAB=false` to disable the Odhín **System Load** tab while still producing the standalone load profile artifacts. CNP and nightly also write API, E2E, and integration stage markers to the profile event file so the report can show which suite was running when CPU, load, or memory changed.
 
 The wrapper always marks the wrapped command start and finish on the chart. To show API, E2E, and integration boundaries on one timeline, run a monitor across the parent pipeline window or write shared JSONL events into `PW_LOAD_PROFILE_EVENTS_FILE`:
 

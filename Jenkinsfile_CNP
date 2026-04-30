@@ -48,6 +48,16 @@ workers=10 shard=1/2
 workers=10 shard=2/2''',
             description: 'Integration load-profile matrix. One run per line or semicolon. Supported keys: workers=<n> and optional shard=<index/total>.'
         ),
+        string(
+            name: 'INTEGRATION_PW_WORKERS',
+            defaultValue: '',
+            description: 'Optional integration worker-count override. When set, runs one integration profile with this worker count instead of INTEGRATION_PW_PROFILE_RUNS.'
+        ),
+        string(
+            name: 'INTEGRATION_PW_SHARD',
+            defaultValue: '',
+            description: 'Optional Playwright integration shard override, for example 1/2. Used with INTEGRATION_PW_WORKERS.'
+        ),
         booleanParam(
             name: 'INTEGRATION_PW_LOAD_PROFILE_ODHIN_TAB',
             defaultValue: true,
@@ -155,7 +165,12 @@ def recordPlaywrightLoadEvent = { String eventsFile, String label, String eventT
     }
 }
 
-def resolveIntegrationProfileRuns = { String configuredRuns ->
+def resolveIntegrationProfileRuns = { String configuredRuns, String workersOverride, String shardOverride ->
+    def requestedWorkers = workersOverride?.trim()
+    if (requestedWorkers) {
+        def requestedShard = shardOverride?.trim()
+        return ["workers=${requestedWorkers}${requestedShard ? " shard=${requestedShard}" : ''}"]
+    }
     def configured = configuredRuns?.trim()
     if (!configured) {
         configured = 'workers=4'
@@ -191,7 +206,7 @@ def integrationProfileRunConfig = { String spec, String testType ->
 
 def runPlaywrightIntegrationProfileMatrix = { String testType, String reportNamePrefix ->
     def failures = []
-    resolveIntegrationProfileRuns(params.INTEGRATION_PW_PROFILE_RUNS ?: '').each { spec ->
+    resolveIntegrationProfileRuns(params.INTEGRATION_PW_PROFILE_RUNS ?: '', params.INTEGRATION_PW_WORKERS ?: '', params.INTEGRATION_PW_SHARD ?: '').each { spec ->
         def runConfig = integrationProfileRunConfig(spec, testType)
         try {
             withEnv([

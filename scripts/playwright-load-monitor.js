@@ -8,6 +8,7 @@ const path = require('node:path');
 
 const DEFAULT_SAMPLE_INTERVAL_MS = 2000;
 const DEFAULT_CHILD_IDLE_TIMEOUT_MS = isCiLikeEnvironment(process.env) ? 120_000 : 0;
+const DEFAULT_CHILD_CLOSE_GRACE_MS = isCiLikeEnvironment(process.env) ? 5_000 : 0;
 const DEFAULT_CHILD_TERMINATE_GRACE_MS = 10_000;
 const DEFAULT_OUTPUT_FOLDER = 'functional-output/tests/playwright-load-profile';
 const DEFAULT_REPORT_FOLDER = 'functional-output/tests/playwright-integration/odhin-report';
@@ -27,6 +28,7 @@ function parseArgs(argv) {
     reportFolders: [defaultReportFolder],
     sampleIntervalMs: parsePositiveInteger(process.env.PW_LOAD_PROFILE_INTERVAL_MS, DEFAULT_SAMPLE_INTERVAL_MS),
     childIdleTimeoutMs: parseNonNegativeInteger(process.env.PW_LOAD_PROFILE_CHILD_IDLE_TIMEOUT_MS, DEFAULT_CHILD_IDLE_TIMEOUT_MS),
+    childCloseGraceMs: parseNonNegativeInteger(process.env.PW_LOAD_PROFILE_CHILD_CLOSE_GRACE_MS, DEFAULT_CHILD_CLOSE_GRACE_MS),
     childTerminateGraceMs: parseNonNegativeInteger(
       process.env.PW_LOAD_PROFILE_CHILD_TERMINATE_GRACE_MS,
       DEFAULT_CHILD_TERMINATE_GRACE_MS
@@ -57,6 +59,9 @@ function parseArgs(argv) {
       index += 1;
     } else if (arg === '--child-idle-timeout-ms' && next) {
       options.childIdleTimeoutMs = parseNonNegativeInteger(next, DEFAULT_CHILD_IDLE_TIMEOUT_MS);
+      index += 1;
+    } else if (arg === '--child-close-grace-ms' && next) {
+      options.childCloseGraceMs = parseNonNegativeInteger(next, DEFAULT_CHILD_CLOSE_GRACE_MS);
       index += 1;
     } else if (arg === '--child-terminate-grace-ms' && next) {
       options.childTerminateGraceMs = parseNonNegativeInteger(next, DEFAULT_CHILD_TERMINATE_GRACE_MS);
@@ -259,12 +264,17 @@ async function runMonitoredCommand(commandArgs, options) {
     let child;
     let settled = false;
     let idleTimer;
+    let closeGraceTimer;
     let terminateTimer;
 
     const clearWatchdogs = () => {
       if (idleTimer) {
         clearTimeout(idleTimer);
         idleTimer = undefined;
+      }
+      if (closeGraceTimer) {
+        clearTimeout(closeGraceTimer);
+        closeGraceTimer = undefined;
       }
       if (terminateTimer) {
         clearTimeout(terminateTimer);
@@ -344,6 +354,23 @@ async function runMonitoredCommand(commandArgs, options) {
     child.on('error', (error) => {
       console.error(`[load-profile] failed to start command: ${error.message}`);
       finish(1);
+    });
+    child.on('exit', (code, signal) => {
+      if (settled || signal || !options.childCloseGraceMs) {
+        return;
+      }
+      closeGraceTimer = setTimeout(() => {
+        if (settled) {
+          return;
+        }
+        console.error(
+          `[load-profile] command exited with code ${code ?? 1} but stdio did not close within ${
+            options.childCloseGraceMs
+          }ms; continuing`
+        );
+        finish(code ?? 1);
+      }, options.childCloseGraceMs);
+      closeGraceTimer.unref?.();
     });
     child.on('close', (code, signal) => {
       if (signal) {

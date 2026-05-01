@@ -43,6 +43,7 @@ const loadMonitor = require('../../../scripts/playwright-load-monitor.js') as {
       reportFolders: string[];
       sampleIntervalMs: number;
       childIdleTimeoutMs: number;
+      childCloseGraceMs: number;
       childTerminateGraceMs: number;
       label: string;
       injectOdhin: boolean;
@@ -64,6 +65,8 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
       '1000',
       '--child-idle-timeout-ms',
       '2500',
+      '--child-close-grace-ms',
+      '1500',
       '--child-terminate-grace-ms',
       '500',
       '--report-folder',
@@ -82,6 +85,7 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
     expect(parsed.options).toMatchObject({
       sampleIntervalMs: 1000,
       childIdleTimeoutMs: 2500,
+      childCloseGraceMs: 1500,
       childTerminateGraceMs: 500,
       reportFolder: 'custom-report',
       reportFolders: ['custom-report'],
@@ -352,6 +356,7 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
         reportFolders: [outputFolder],
         sampleIntervalMs: 5,
         childIdleTimeoutMs: 20,
+        childCloseGraceMs: 0,
         childTerminateGraceMs: 20,
         label: 'silent-child',
         injectOdhin: false,
@@ -405,6 +410,7 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
         reportFolders: [outputFolder],
         sampleIntervalMs: 5,
         childIdleTimeoutMs: 20,
+        childCloseGraceMs: 0,
         childTerminateGraceMs: 20,
         label: 'active-child',
         injectOdhin: false,
@@ -423,6 +429,49 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
     }
 
     expect(signals).toEqual([]);
+    expect(fs.existsSync(path.join(outputFolder, 'summary.json'))).toBe(true);
+  });
+
+  test('continues after child exit when stdio close never arrives', async () => {
+    const outputFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'load-profile-child-exit-'));
+    const child = new EventEmitter() as EventEmitter & {
+      stdout: PassThrough;
+      stderr: PassThrough;
+      kill: (signal: string) => boolean;
+    };
+    child.stdout = new PassThrough();
+    child.stderr = new PassThrough();
+    child.kill = () => true;
+    const stderrWrites: string[] = [];
+    const originalError = console.error;
+    console.error = (message?: unknown) => {
+      stderrWrites.push(String(message));
+    };
+
+    try {
+      const runPromise = loadMonitor.__test__.runMonitoredCommand(['node', 'exit-no-close.js'], {
+        outputFolder,
+        reportFolder: outputFolder,
+        reportFolders: [outputFolder],
+        sampleIntervalMs: 5,
+        childIdleTimeoutMs: 0,
+        childCloseGraceMs: 20,
+        childTerminateGraceMs: 20,
+        label: 'exit-no-close',
+        injectOdhin: false,
+        odhinTab: false,
+        eventsFile: '',
+        spawnProcess: () => child,
+      });
+
+      child.emit('exit', 0, null);
+
+      await expect(runPromise).resolves.toBe(0);
+    } finally {
+      console.error = originalError;
+    }
+
+    expect(stderrWrites.some((entry) => entry.includes('stdio did not close'))).toBe(true);
     expect(fs.existsSync(path.join(outputFolder, 'summary.json'))).toBe(true);
   });
 });

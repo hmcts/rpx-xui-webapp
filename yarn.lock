@@ -3220,27 +3220,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.52-exui-4425-rc-2":
-  version: 7.3.52-exui-4425-rc-2
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.52-exui-4425-rc-2"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.52-exui-4425-rc-3":
+  version: 7.3.52-exui-4425-rc-3
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.52-exui-4425-rc-3"
   dependencies:
     "@edium/fsm": "npm:^2.1.2"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/media-viewer": "npm:4.2.16"
     file-saver: "npm:^2.0.2"
-    govuk-elements-sass: "npm:^3.1.2"
     govuk-frontend: "npm:^4.9.0"
     lz-string: "npm:^1.5.0"
     marked: "npm:^12.0.2"
-    moment: "npm:^2.30.1"
-    moment-timezone: "npm:^0.5.31"
     pegjs: "npm:^0.10.0"
-    rpx-xui-translation: "npm:1.2.0"
     rx-polling-hmcts: "npm:1.1.1"
-    rxjs-compat: "npm:^6.6.7"
     tslib: "npm:^2.3.0"
-    underscore: "npm:^1.9.1"
-  checksum: 10/9a65bcb8fe79425f0f2b3fcd57861ee637af13d56d0df9e52f3bdf437f5ddbeb3bd8b1d78a2ea6b5cbce319f536ed4b839873b4dfb3a60ebac1f3c07168e4091
+  checksum: 10/f1a886a448203b8a4513f8045c0165df43004ff3e97c50b09bdf1f063a4a866ae32b3ad7360ae6e50233622f94602a29e4a1b436e0fe30ca737a3ea265f494b8
   languageName: node
   linkType: hard
 
@@ -14204,7 +14198,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"govuk-elements-sass@npm:^3.1.2, govuk-elements-sass@npm:^3.1.3":
+"govuk-elements-sass@npm:^3.1.3":
   version: 3.1.3
   resolution: "govuk-elements-sass@npm:3.1.3"
   dependencies:
@@ -17356,7 +17350,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"moment-timezone@npm:^0.5.28, moment-timezone@npm:^0.5.31":
+"moment-timezone@npm:^0.5.28":
   version: 0.5.48
   resolution: "moment-timezone@npm:0.5.48"
   dependencies:
@@ -17365,7 +17359,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"moment@npm:^2.29.4, moment@npm:^2.30.1":
+"moment@npm:^2.29.4":
   version: 2.30.1
   resolution: "moment@npm:2.30.1"
   checksum: 10/ae42d876d4ec831ef66110bdc302c0657c664991e45cf2afffc4b0f6cd6d251dde11375c982a5c0564ccc0fa593fc564576ddceb8c8845e87c15f58aa6baca69
@@ -20272,7 +20266,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.52-exui-4425-rc-2"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.52-exui-4425-rc-3"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.16"
@@ -20414,20 +20408,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:1.2.0":
-  version: 1.2.0
-  resolution: "rpx-xui-translation@npm:1.2.0"
-  dependencies:
-    dexie: "npm:^3.2.2"
-    luxon: "npm:^2.4.0"
-    tslib: "npm:^2.0.0"
-  peerDependencies:
-    "@angular/common": ^20.3.1
-    "@angular/core": ^20.3.1
-  checksum: 10/5eea929cc08f8d089adc64790201fbb24c248c29e8a9fcc5d35eac70c0e9f47bce211dec291eddfece69a8ba0ee5ffbcac3a3e1fb749a316a47f3b6fed48e7ec
-  languageName: node
-  linkType: hard
-
 "rpx-xui-translation@npm:1.2.3":
   version: 1.2.3
   resolution: "rpx-xui-translation@npm:1.2.3"
@@ -20489,13 +20469,6 @@ __metadata:
   peerDependencies:
     rxjs: ">=5.5.0"
   checksum: 10/3a9695d85f3a87d07a5828b792d5c7aac820c6744d4938f089ea78e06d1b8de4e6c8b767d98974bf9d4d8206b73322657c010b4bfc1be374cf68e16566898f59
-  languageName: node
-  linkType: hard
-
-"rxjs-compat@npm:^6.6.7":
-  version: 6.6.7
-  resolution: "rxjs-compat@npm:6.6.7"
-  checksum: 10/1e0e4b1a4c5dc05d41aac95b88b024f7e631e199f2203966200873a704807c88a005696adaad465f1920685722d66a39b350cc7e4bc1488e3930fffa6231a4ba
   languageName: node
   linkType: hard
 
@@ -22449,7 +22422,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"underscore@npm:^1.12.1, underscore@npm:^1.13.6, underscore@npm:^1.9.1":
+"underscore@npm:^1.12.1, underscore@npm:^1.13.6":
   version: 1.13.8
   resolution: "underscore@npm:1.13.8"
   checksum: 10/b50ac5806d059cc180b1bd9adea6f7ed500021f4dc782dfc75d66a90337f6f0506623c1b37863f4a9bf64ffbeb5769b638a54b7f2f5966816189955815953139

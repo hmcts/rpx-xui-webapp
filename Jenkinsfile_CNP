@@ -228,19 +228,9 @@ def stopPlaywrightLoadProfile = { String reportDir ->
     """
 }
 
-def runWithPlaywrightLoadProfile = { String reportDir, String label, String eventsFile, String reportName, Closure body ->
-    startPlaywrightLoadProfile(reportDir, label, eventsFile)
-    try {
-        body()
-    } finally {
-        stopPlaywrightLoadProfile(reportDir)
-        publishPlaywrightLoadProfile(reportDir, reportName)
-    }
-}
-
-def playwrightLoadProfileEventsFile = { String testType ->
-    "functional-output/tests/playwright-integration/load-profile/${testType}-stage-events.jsonl"
-}
+def ciLoadProfileDir = 'functional-output/tests/playwright-integration/load-profile/ci'
+def ciLoadProfileEventsFile = 'functional-output/tests/playwright-integration/load-profile/ci-stage-events.jsonl'
+def ciLoadProfilePublished = false
 
 def recordPlaywrightLoadEvent = { String eventsFile, String label, String eventType ->
     try {
@@ -248,6 +238,24 @@ def recordPlaywrightLoadEvent = { String eventsFile, String label, String eventT
     } catch (Exception e) {
         echo "[load-profile] failed to record ${label} ${eventType}: ${e.getMessage()}"
     }
+}
+
+def startCiLoadProfile = {
+    startPlaywrightLoadProfile(ciLoadProfileDir, 'Jenkins CI run', ciLoadProfileEventsFile)
+    recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Checkout', 'finish')
+}
+
+def publishCiLoadProfile = { String reportName ->
+    if (ciLoadProfilePublished) {
+        return
+    }
+    ciLoadProfilePublished = true
+    stopPlaywrightLoadProfile(ciLoadProfileDir)
+    publishPlaywrightLoadProfile(ciLoadProfileDir, reportName)
+}
+
+def playwrightLoadProfileEventsFile = { String testType ->
+    ciLoadProfileEventsFile
 }
 
 def resolveIntegrationProfileRuns = { String configuredRuns, String workersOverride, String shardOverride ->
@@ -443,26 +451,41 @@ withPipeline(type, product, component) {
     // ])   
 
     afterSuccess('checkout') {
+        startCiLoadProfile()
         stage('Yarn Install') {
-            yarnBuilder.yarn('install --immutable')
+            try {
+                recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Yarn install', 'start')
+                yarnBuilder.yarn('install --immutable')
+            } finally {
+                recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Yarn install', 'finish')
+            }
         }
     }
 
     afterSuccess('build') {
-        yarnBuilder.yarn('build:dev')  
+        try {
+            recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Build', 'start')
+            yarnBuilder.yarn('build:dev')
+        } finally {
+            recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Build', 'finish')
+        }
     }
 
     afterAlways('checkout'){
         stage('Playwright Install Chromium') {
             try {
+                recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Playwright chromium install', 'start')
                 yarnBuilder.yarn('test:setup:playwright-install-chromium')
             } catch (Error) {
                 error(message: "${STAGE_NAME} is unstable: " + Error.toString())
-            }  
+            } finally {
+                recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Playwright chromium install', 'finish')
+            }
         }
     }
 
     afterAlways('test') {
+        recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Coverage report publish', 'start')
 
         publishHTML ( [
             allowMissing         : true,
@@ -499,10 +522,12 @@ withPipeline(type, product, component) {
             reportFiles          : 'Report.html',
             reportName           : 'Manage Cases a11y Test Report'
         ])
+        recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Coverage report publish', 'finish')
 
     }
 
     afterAlways('smoketest:demo') {
+        recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'DEMO smoke report publish', 'start')
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -512,9 +537,12 @@ withPipeline(type, product, component) {
             reportName           : 'DEMO Playwright Smoke'
         ])
         archivePlaywrightDiagnostics()
+        recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'DEMO smoke report publish', 'finish')
+        publishCiLoadProfile('DEMO CI System Load')
     }
 
     afterAlways('smoketest:preview') {
+        recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'PREVIEW smoke report publish', 'start')
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -524,17 +552,12 @@ withPipeline(type, product, component) {
             reportName           : 'PREVIEW Playwright Smoke'
         ])
         archivePlaywrightDiagnostics()
+        recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'PREVIEW smoke report publish', 'finish')
 
         stage('Preview Functional Tests (Parallel)') {
-            def previewLoadProfileDir = 'functional-output/tests/playwright-integration/load-profile/preview'
             def previewLoadProfileEvents = playwrightLoadProfileEventsFile('preview')
-            runWithPlaywrightLoadProfile(
-                previewLoadProfileDir,
-                'PREVIEW Playwright functional tests',
-                previewLoadProfileEvents,
-                'PREVIEW Playwright System Load'
-            ) {
-              try {
+            try {
+                recordPlaywrightLoadEvent(previewLoadProfileEvents, 'PREVIEW functional tests', 'start')
                 parallel(
                     failFast: true,
                     api: {
@@ -615,15 +638,16 @@ withPipeline(type, product, component) {
                     }
                     }
                 )
-              } finally {
-                  archivePlaywrightDiagnostics()
-              }
+            } finally {
+                recordPlaywrightLoadEvent(previewLoadProfileEvents, 'PREVIEW functional tests', 'finish')
+                archivePlaywrightDiagnostics()
+                publishCiLoadProfile('PREVIEW CI System Load')
             }
         }
     }
 
     afterAlways('smoketest:aat') {
-      
+        recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'AAT smoke report publish', 'start')
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -633,17 +657,12 @@ withPipeline(type, product, component) {
             reportName           : 'AAT Playwright Smoke'
         ])
         archivePlaywrightDiagnostics()
+        recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'AAT smoke report publish', 'finish')
 
         stage('AAT Functional Tests (Parallel)') {
-            def aatLoadProfileDir = 'functional-output/tests/playwright-integration/load-profile/aat'
             def aatLoadProfileEvents = playwrightLoadProfileEventsFile('aat')
-            runWithPlaywrightLoadProfile(
-                aatLoadProfileDir,
-                'AAT Playwright functional tests',
-                aatLoadProfileEvents,
-                'AAT Playwright System Load'
-            ) {
-              try {
+            try {
+                recordPlaywrightLoadEvent(aatLoadProfileEvents, 'AAT functional tests', 'start')
                 parallel(
                     failFast: true,
                     api: {
@@ -724,9 +743,10 @@ withPipeline(type, product, component) {
                     }
                     }
                 )
-              } finally {
-                  archivePlaywrightDiagnostics()
-              }
+            } finally {
+                recordPlaywrightLoadEvent(aatLoadProfileEvents, 'AAT functional tests', 'finish')
+                archivePlaywrightDiagnostics()
+                publishCiLoadProfile('AAT CI System Load')
             }
         }
     }

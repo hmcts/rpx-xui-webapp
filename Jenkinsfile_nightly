@@ -146,18 +146,12 @@ def stopPlaywrightLoadProfile = { String reportDir ->
     """
 }
 
-def runWithPlaywrightLoadProfile = { String reportDir, String label, String eventsFile, String reportName, Closure body ->
-    startPlaywrightLoadProfile(reportDir, label, eventsFile)
-    try {
-        body()
-    } finally {
-        stopPlaywrightLoadProfile(reportDir)
-        publishPlaywrightLoadProfile(reportDir, reportName)
-    }
-}
+def ciLoadProfileDir = 'functional-output/tests/playwright-integration/load-profile/ci'
+def ciLoadProfileEventsFile = 'functional-output/tests/playwright-integration/load-profile/ci-stage-events.jsonl'
+def ciLoadProfilePublished = false
 
 def playwrightLoadProfileEventsFile = { ->
-    'functional-output/tests/playwright-integration/load-profile/nightly-stage-events.jsonl'
+    ciLoadProfileEventsFile
 }
 
 def recordPlaywrightLoadEvent = { String label, String eventType ->
@@ -166,6 +160,20 @@ def recordPlaywrightLoadEvent = { String label, String eventType ->
     } catch (Exception e) {
         echo "[load-profile] failed to record ${label} ${eventType}: ${e.getMessage()}"
     }
+}
+
+def startCiLoadProfile = {
+    startPlaywrightLoadProfile(ciLoadProfileDir, 'Jenkins nightly CI run', ciLoadProfileEventsFile)
+    recordPlaywrightLoadEvent('Checkout', 'finish')
+}
+
+def publishCiLoadProfile = { String reportName ->
+    if (ciLoadProfilePublished) {
+        return
+    }
+    ciLoadProfilePublished = true
+    stopPlaywrightLoadProfile(ciLoadProfileDir)
+    publishPlaywrightLoadProfile(ciLoadProfileDir, reportName)
 }
 
 def resolveIntegrationProfileRuns = { String configuredRuns, String workersOverride, String shardOverride ->
@@ -335,19 +343,38 @@ withNightlyPipeline(type, product, component) {
     enableFortifyScan('rpx-aat')
     
       afterSuccess('checkout') {
+        startCiLoadProfile()
         stage('Yarn Install') {
-          yarnBuilder.yarn('install --immutable')
+          try {
+            recordPlaywrightLoadEvent('Yarn install', 'start')
+            yarnBuilder.yarn('install --immutable')
+          } finally {
+            recordPlaywrightLoadEvent('Yarn install', 'finish')
+          }
         }
-        yarnBuilder.yarn('cache clean')
+        try {
+          recordPlaywrightLoadEvent('Yarn cache clean', 'start')
+          yarnBuilder.yarn('cache clean')
+        } finally {
+          recordPlaywrightLoadEvent('Yarn cache clean', 'finish')
+        }
     }
 
     afterAlways('fortify-scan') {
+        recordPlaywrightLoadEvent('Fortify artifact archive', 'start')
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
+        recordPlaywrightLoadEvent('Fortify artifact archive', 'finish')
     }
 
   afterSuccess('build') {
-        yarnBuilder.yarn('build')
+        try {
+            recordPlaywrightLoadEvent('Build', 'start')
+            yarnBuilder.yarn('build')
+        } finally {
+            recordPlaywrightLoadEvent('Build', 'finish')
+        }
 
+        recordPlaywrightLoadEvent('Lint report publish', 'start')
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -364,15 +391,11 @@ withNightlyPipeline(type, product, component) {
             reportFiles          : 'index.html',
             reportName           : 'ng lint Report'
         ])
+        recordPlaywrightLoadEvent('Lint report publish', 'finish')
      }
     afterSuccess('fortify-scan') {
-      def nightlyLoadProfileDir = 'functional-output/tests/playwright-integration/load-profile/nightly'
-      runWithPlaywrightLoadProfile(
-        nightlyLoadProfileDir,
-        'Nightly Playwright functional tests',
-        playwrightLoadProfileEventsFile(),
-        'Playwright System Load'
-      ) {
+      try {
+      recordPlaywrightLoadEvent('Nightly functional tests', 'start')
       stage('API Tests') {
         try {
           recordPlaywrightLoadEvent('API', 'start')
@@ -397,12 +420,15 @@ withNightlyPipeline(type, product, component) {
         }
       }
       
-      stage('Playwright Install All Browsers') {
+        stage('Playwright Install All Browsers') {
             try {
+              recordPlaywrightLoadEvent('Playwright browser install', 'start')
               yarnBuilder.yarn('test:setup:playwright-install-all')
             } catch (Error) {
               error(message: "${STAGE_NAME} is unstable: " + Error.toString())
-            }  
+            } finally {
+              recordPlaywrightLoadEvent('Playwright browser install', 'finish')
+            }
         }
 
         stage('Playwright Integration Tests') {
@@ -443,6 +469,9 @@ withNightlyPipeline(type, product, component) {
             }
         }
       }
+      } finally {
+        recordPlaywrightLoadEvent('Nightly functional tests', 'finish')
+      }
 
         // yarnBuilder.yarn('test:a11y')
         // publishHTML([
@@ -458,6 +487,7 @@ withNightlyPipeline(type, product, component) {
 
 
     afterSuccess('mutationTest') {
+        recordPlaywrightLoadEvent('Mutation report publish', 'start')
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -466,9 +496,11 @@ withNightlyPipeline(type, product, component) {
             reportFiles          : 'index.html',
             reportName           : 'XUI Manage Cases Mutation tests'
         ])
+        recordPlaywrightLoadEvent('Mutation report publish', 'finish')
     }
 
-  afterSuccess('securityScan') {
+  afterAlways('securityScan') {
+    recordPlaywrightLoadEvent('Security scan report publish', 'start')
     publishHTML([
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
@@ -477,5 +509,7 @@ withNightlyPipeline(type, product, component) {
       reportFiles          : 'activescan.html',
       reportName           : 'XUIMC ZAP Security Scan Report'
     ])
+    recordPlaywrightLoadEvent('Security scan report publish', 'finish')
+    publishCiLoadProfile('Nightly CI System Load')
   }
 }

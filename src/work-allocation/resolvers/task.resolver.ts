@@ -25,7 +25,6 @@ export class TaskResolver {
     );
     const caseworker$ = task$.pipe(
       mergeMap((task) => {
-        console.log('thios is the task', task)
         if (!task.task.assignee) {
           // if no assignee, return no caseworker
           return of(null);

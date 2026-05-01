@@ -7,7 +7,7 @@ const os = require('node:os');
 const path = require('node:path');
 
 const DEFAULT_SAMPLE_INTERVAL_MS = 2000;
-const DEFAULT_CHILD_IDLE_TIMEOUT_MS = process.env.CI ? 120_000 : 0;
+const DEFAULT_CHILD_IDLE_TIMEOUT_MS = isCiLikeEnvironment(process.env) ? 120_000 : 0;
 const DEFAULT_CHILD_TERMINATE_GRACE_MS = 10_000;
 const DEFAULT_OUTPUT_FOLDER = 'functional-output/tests/playwright-load-profile';
 const DEFAULT_REPORT_FOLDER = 'functional-output/tests/playwright-integration/odhin-report';
@@ -90,6 +90,10 @@ function parsePositiveInteger(value, fallback) {
 function parseNonNegativeInteger(value, fallback) {
   const parsed = Number.parseInt(String(value ?? ''), 10);
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
+}
+
+function isCiLikeEnvironment(env) {
+  return Boolean(env.CI || env.JENKINS_URL || env.BUILD_NUMBER);
 }
 
 function readFirstExistingFile(filePaths) {
@@ -275,6 +279,19 @@ async function runMonitoredCommand(commandArgs, options) {
       clearWatchdogs();
       resolve(code);
     };
+    const signalChild = (signal) => {
+      if (process.platform !== 'win32' && child.pid) {
+        try {
+          process.kill(-child.pid, signal);
+          return;
+        } catch (error) {
+          if (error?.code !== 'ESRCH') {
+            console.error(`[load-profile] failed to signal child process group with ${signal}: ${error.message}`);
+          }
+        }
+      }
+      child.kill?.(signal);
+    };
     const terminateStuckChild = () => {
       if (settled) {
         return;
@@ -282,13 +299,13 @@ async function runMonitoredCommand(commandArgs, options) {
       console.error(
         `[load-profile] command produced no output for ${options.childIdleTimeoutMs}ms; terminating stuck child process`
       );
-      child.kill?.('SIGTERM');
+      signalChild('SIGTERM');
       terminateTimer = setTimeout(() => {
         if (settled) {
           return;
         }
         console.error(`[load-profile] command did not exit ${options.childTerminateGraceMs}ms after SIGTERM; forcing failure`);
-        child.kill?.('SIGKILL');
+        signalChild('SIGKILL');
         finish(1);
       }, options.childTerminateGraceMs);
       terminateTimer.unref?.();
@@ -315,6 +332,7 @@ async function runMonitoredCommand(commandArgs, options) {
         ...process.env,
         PLAYWRIGHT_REPORT_FOLDER: options.reportFolder,
       },
+      detached: process.platform !== 'win32' && monitorChildOutput,
       shell: process.platform === 'win32',
       stdio: monitorChildOutput ? ['inherit', 'pipe', 'pipe'] : 'inherit',
     });
@@ -811,6 +829,7 @@ module.exports = {
   __test__: {
     buildSummaryTable,
     calculateCpuUsage,
+    isCiLikeEnvironment,
     parsePositiveInteger,
     parseNonNegativeInteger,
     runMonitoredCommand,

@@ -52,6 +52,7 @@ const loadMonitor = require('../../../scripts/playwright-load-monitor.js') as {
     commandArgs: string[];
   };
   __test__: {
+    isCiLikeEnvironment: (env: Record<string, string | undefined>) => boolean;
     runMonitoredCommand: (commandArgs: string[], options: Record<string, unknown>) => Promise<number>;
   };
 };
@@ -124,6 +125,13 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
     expect(parsed.options.odhinTab).toBe(false);
     expect(parsed.options.eventsFile).toBe('functional-output/stage-events.jsonl');
     expect(parsed.commandArgs).toEqual(['yarn', 'test:playwright:integration']);
+  });
+
+  test('treats Jenkins build metadata as CI for watchdog defaults', () => {
+    expect(loadMonitor.__test__.isCiLikeEnvironment({})).toBe(false);
+    expect(loadMonitor.__test__.isCiLikeEnvironment({ CI: 'true' })).toBe(true);
+    expect(loadMonitor.__test__.isCiLikeEnvironment({ JENKINS_URL: 'https://build.hmcts.net' })).toBe(true);
+    expect(loadMonitor.__test__.isCiLikeEnvironment({ BUILD_NUMBER: '40' })).toBe(true);
   });
 
   test('builds pressure signals and recommendations from sampled load', () => {
@@ -308,6 +316,7 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
       kill: (signal: string) => boolean;
     };
     const signals: string[] = [];
+    const spawnOptions: Array<{ detached?: boolean; stdio?: unknown }> = [];
     child.stdout = new PassThrough();
     child.stderr = new PassThrough();
     child.kill = (signal: string) => {
@@ -332,7 +341,10 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
         injectOdhin: false,
         odhinTab: false,
         eventsFile: '',
-        spawnProcess: () => child,
+        spawnProcess: (_command: string, _args: string[], options: { detached?: boolean; stdio?: unknown }) => {
+          spawnOptions.push(options);
+          return child;
+        },
       });
 
       expect(exitCode).toBe(1);
@@ -341,6 +353,14 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
     }
 
     expect(signals).toEqual(['SIGTERM', 'SIGKILL']);
+    expect(spawnOptions).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          detached: process.platform !== 'win32',
+          stdio: ['inherit', 'pipe', 'pipe'],
+        }),
+      ])
+    );
     expect(stderrWrites.some((entry) => entry.includes('produced no output'))).toBe(true);
     expect(fs.existsSync(path.join(outputFolder, 'summary.json'))).toBe(true);
   });

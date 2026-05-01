@@ -87,10 +87,26 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
       reportFolders: ['custom-report'],
       outputFolder: 'custom-load',
       label: 'workers-10',
-      injectOdhin: true,
+      injectOdhin: false,
       odhinTab: true,
     });
     expect(parsed.commandArgs).toEqual(['yarn', 'test:playwright:integration', '--workers=10', '--shard=1/2']);
+  });
+
+  test('only injects the load profile into Odhín when explicitly requested', () => {
+    const originalValue = process.env.PW_LOAD_PROFILE_INJECT_ODHIN;
+    process.env.PW_LOAD_PROFILE_INJECT_ODHIN = 'true';
+
+    try {
+      const parsed = loadMonitor.parseArgs(['--', 'yarn', 'test:playwright:integration']);
+      expect(parsed.options.injectOdhin).toBe(true);
+    } finally {
+      if (originalValue === undefined) {
+        delete process.env.PW_LOAD_PROFILE_INJECT_ODHIN;
+      } else {
+        process.env.PW_LOAD_PROFILE_INJECT_ODHIN = originalValue;
+      }
+    }
   });
 
   test('supports injecting the same load profile into multiple Odhín report folders', () => {

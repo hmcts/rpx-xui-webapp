@@ -57,13 +57,13 @@ properties([
         ),
         booleanParam(
             name: 'INTEGRATION_PW_LOAD_PROFILE_ODHIN_TAB',
-            defaultValue: true,
-            description: 'Add the System Load tab to generated Odhín integration reports.'
+            defaultValue: false,
+            description: 'Legacy opt-in for adding the System Load tab to generated Odhín integration reports. Jenkins publishes System Load separately by default.'
         ),
         booleanParam(
             name: 'PW_LOAD_PROFILE_ODHIN_TAB',
-            defaultValue: true,
-            description: 'Add the System Load tab to generated Odhín API, E2E, and integration reports.'
+            defaultValue: false,
+            description: 'Legacy opt-in for adding the System Load tab to generated Odhín reports. Jenkins publishes System Load separately by default.'
         )
     ])
 ])
@@ -150,6 +150,7 @@ def archivePlaywrightDiagnostics = {
 }
 
 def playwrightIntegrationReportFile = 'xui-playwright-integration.html'
+def playwrightLoadProfileReportFile = 'load-profile.html'
 
 def assertHtmlReportExists = { String reportDir, String reportFile ->
     steps.sh "test -f '${reportDir}/${reportFile}'"
@@ -168,6 +169,17 @@ def ensureHtmlReportForPublishing = { String reportDir, String reportFile, Strin
               --suite-name "$PW_ODHIN_ENSURE_SUITE_NAME"
         '''
     }
+}
+
+def publishPlaywrightLoadProfile = { String reportDir, String reportName ->
+    publishHTML([
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : "${reportDir}/",
+        reportFiles          : playwrightLoadProfileReportFile,
+        reportName           : reportName
+    ])
 }
 
 def playwrightLoadProfileEventsFile = { String testType ->
@@ -230,7 +242,7 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
                 "PLAYWRIGHT_REPORT_FOLDER=${runConfig.reportDir}",
                 "PW_LOAD_PROFILE_OUTPUT=${runConfig.loadProfileDir}",
                 "PW_LOAD_PROFILE_LABEL=${runConfig.label}",
-                "PW_LOAD_PROFILE_ODHIN_TAB=${params.PW_LOAD_PROFILE_ODHIN_TAB && params.INTEGRATION_PW_LOAD_PROFILE_ODHIN_TAB}",
+                "PW_LOAD_PROFILE_INJECT_ODHIN=false",
                 "PW_LOAD_PROFILE_EVENTS_FILE=${playwrightLoadProfileEventsFile(testType)}",
                 "PW_LOAD_PROFILE_CHILD_IDLE_TIMEOUT_MS=30000",
                 "PW_LOAD_PROFILE_CHILD_TERMINATE_GRACE_MS=10000",
@@ -270,6 +282,10 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
                 reportFiles          : playwrightIntegrationReportFile,
                 reportName           : "${reportNamePrefix} Playwright Integration Tests"
             ])
+            publishPlaywrightLoadProfile(
+                runConfig.loadProfileDir,
+                "${reportNamePrefix} Playwright Integration System Load"
+            )
             echo "[playwright-integration] Published Odhín HTML report for ${runConfig.displayName}"
         }
     }
@@ -476,7 +492,7 @@ withPipeline(type, product, component) {
                             "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                             "ORG_USER_ASSIGNMENT_MODE=external",
                             "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                            "PW_LOAD_PROFILE_ODHIN_TAB=${params.PW_LOAD_PROFILE_ODHIN_TAB}",
+                            "PW_LOAD_PROFILE_INJECT_ODHIN=false",
                             "FUNCTIONAL_TESTS_WORKERS=4"
                         ]) {
                             try {
@@ -497,6 +513,10 @@ withPipeline(type, product, component) {
                                     reportName           : 'PREVIEW API Functional Test'
                                 ])
                                 steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/**/odhin-report/**/xui-playwright-api.html'
+                                publishPlaywrightLoadProfile(
+                                    'functional-output/tests/api_functional/odhin-report/load-profile',
+                                    'PREVIEW API System Load'
+                                )
                             }
                         }
                     }
@@ -526,7 +546,7 @@ withPipeline(type, product, component) {
                                 "ORG_USER_ASSIGNMENT_MODE=external",
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                 "FUNCTIONAL_TESTS_WORKERS=2",
-                                "PW_LOAD_PROFILE_ODHIN_TAB=${params.PW_LOAD_PROFILE_ODHIN_TAB}",
+                                "PW_LOAD_PROFILE_INJECT_ODHIN=false",
                                 "PLAYWRIGHT_SKIP_INSTALL=true",
                                 "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
                                 "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
@@ -548,6 +568,10 @@ withPipeline(type, product, component) {
                                 reportName           : 'PREVIEW Playwright E2E'
                             ])
                             steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/xui-playwright-e2e.html'
+                            publishPlaywrightLoadProfile(
+                                'functional-output/tests/playwright-e2e/odhin-report/load-profile',
+                                'PREVIEW Playwright E2E System Load'
+                            )
                         }
                     }
                     }
@@ -582,7 +606,7 @@ withPipeline(type, product, component) {
                             "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                             "ORG_USER_ASSIGNMENT_MODE=external",
                             "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                            "PW_LOAD_PROFILE_ODHIN_TAB=${params.PW_LOAD_PROFILE_ODHIN_TAB}",
+                            "PW_LOAD_PROFILE_INJECT_ODHIN=false",
                             "FUNCTIONAL_TESTS_WORKERS=4"
                         ]) {
                             try {
@@ -603,6 +627,10 @@ withPipeline(type, product, component) {
                                   reportName           : 'AAT API Functional Test'
                                 ])
                                 steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/**/odhin-report/**/xui-playwright-api.html'
+                                publishPlaywrightLoadProfile(
+                                    'functional-output/tests/api_functional/odhin-report/load-profile',
+                                    'AAT API System Load'
+                                )
                             }
                         }
                     }
@@ -632,7 +660,7 @@ withPipeline(type, product, component) {
                                 "ORG_USER_ASSIGNMENT_MODE=external",
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                 "FUNCTIONAL_TESTS_WORKERS=2",
-                                "PW_LOAD_PROFILE_ODHIN_TAB=${params.PW_LOAD_PROFILE_ODHIN_TAB}",
+                                "PW_LOAD_PROFILE_INJECT_ODHIN=false",
                                 "PLAYWRIGHT_SKIP_INSTALL=true",
                                 "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
                                 "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
@@ -654,6 +682,10 @@ withPipeline(type, product, component) {
                                 reportName           : 'AAT Playwright E2E'
                             ])
                             steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/xui-playwright-e2e.html'
+                            publishPlaywrightLoadProfile(
+                                'functional-output/tests/playwright-e2e/odhin-report/load-profile',
+                                'AAT Playwright E2E System Load'
+                            )
                         }
                     }
                     }

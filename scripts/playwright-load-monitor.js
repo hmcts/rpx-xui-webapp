@@ -32,7 +32,7 @@ function parseArgs(argv) {
       DEFAULT_CHILD_TERMINATE_GRACE_MS
     ),
     label: process.env.PW_LOAD_PROFILE_LABEL ?? '',
-    injectOdhin: process.env.PW_LOAD_PROFILE_INJECT_ODHIN !== 'false',
+    injectOdhin: process.env.PW_LOAD_PROFILE_INJECT_ODHIN === 'true',
     odhinTab: process.env.PW_LOAD_PROFILE_ODHIN_TAB !== 'false',
     eventsFile: process.env.PW_LOAD_PROFILE_EVENTS_FILE ?? '',
   };

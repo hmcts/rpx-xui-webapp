@@ -136,6 +136,38 @@ test.describe('Odhin reporter unit tests', { tag: '@svc-internal' }, () => {
     expect(writes.some((entry) => entry.includes('Odhin report completed'))).toBe(true);
   });
 
+  test('progress reporter can force process exit immediately after Odhin completion', async () => {
+    const exitCalls: number[] = [];
+    const reporter = new OdhinProgressReporter({
+      enabled: true,
+      forceExitOnCompletion: true,
+      exitProcess: (exitCode: number) => {
+        exitCalls.push(exitCode);
+      },
+    });
+    const originalExitCode = process.exitCode;
+    const stderrWrites: string[] = [];
+    const originalWrite = process.stderr.write.bind(process.stderr);
+    process.stderr.write = ((chunk: string | Uint8Array) => {
+      stderrWrites.push(String(chunk));
+      return true;
+    }) as typeof process.stderr.write;
+
+    try {
+      process.exitCode = 0;
+      reporter.onBegin({}, { allTests: () => [1] });
+      reporter.onEnd();
+      reporter.onExit();
+      await new Promise((resolve) => setImmediate(resolve));
+    } finally {
+      process.exitCode = originalExitCode;
+      process.stderr.write = originalWrite;
+    }
+
+    expect(exitCalls).toEqual([0]);
+    expect(stderrWrites.some((entry) => entry.includes('Forcing process exit after Odhin completion'))).toBe(true);
+  });
+
   test('adaptive reporter bounds stalled runtime hooks and still reaches onEnd', async () => {
     let onEndCalls = 0;
     const reporter = new OdhinAdaptiveReporter({

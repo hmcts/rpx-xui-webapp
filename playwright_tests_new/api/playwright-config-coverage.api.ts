@@ -13,14 +13,20 @@ import * as playwrightConfigUtils from '../../playwright-config-utils';
 const require = createRequire(import.meta.url);
 const integrationConfigSupport = require('../../playwright.integration.config.support.cjs') as {
   resolveOdhinConsoleCapture: (env: EnvMap) => { consoleLog: boolean; consoleError: boolean };
+  resolveOdhinForceExitOnCompletion: (env: EnvMap) => boolean;
   resolveOdhinHardTimeoutMs: (env: EnvMap) => number;
   resolveOdhinLightweight: (env: EnvMap) => boolean;
   resolveOdhinRuntimeHookTimeoutMs: (env: EnvMap) => number;
 };
 
 const { resolveTagFilters } = playwrightConfigUtils;
-const { resolveOdhinConsoleCapture, resolveOdhinHardTimeoutMs, resolveOdhinLightweight, resolveOdhinRuntimeHookTimeoutMs } =
-  integrationConfigSupport;
+const {
+  resolveOdhinConsoleCapture,
+  resolveOdhinForceExitOnCompletion,
+  resolveOdhinHardTimeoutMs,
+  resolveOdhinLightweight,
+  resolveOdhinRuntimeHookTimeoutMs,
+} = integrationConfigSupport;
 
 let configModule: TestableConfigModule;
 let integrationConfigModule: TestableConfigModule;
@@ -352,6 +358,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     );
 
     expect(progressOptions?.hardTimeoutMs).toBe(resolveOdhinHardTimeoutMs({ CI: undefined }));
+    expect(progressOptions?.forceExitOnCompletion).toBe(resolveOdhinForceExitOnCompletion({ CI: undefined }));
     expect(progressOptions?.timeoutExitCode).toBe(1);
     expect(odhinOptions?.lightweight).toBe(resolveOdhinLightweight({ CI: undefined }));
     expect(odhinOptions?.consoleLog).toBe(resolveOdhinConsoleCapture({ CI: undefined }).consoleLog);
@@ -451,6 +458,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     );
 
     expect(progressOptions?.hardTimeoutMs).toBe(resolveOdhinHardTimeoutMs({ CI: 'true' }));
+    expect(progressOptions?.forceExitOnCompletion).toBe(resolveOdhinForceExitOnCompletion({ CI: 'true' }));
     expect(odhinOptions?.lightweight).toBe(resolveOdhinLightweight({ CI: 'true' }));
     expect(odhinOptions?.consoleLog).toBe(resolveOdhinConsoleCapture({ CI: 'true' }).consoleLog);
     expect(odhinOptions?.consoleError).toBe(resolveOdhinConsoleCapture({ CI: 'true' }).consoleError);

@@ -5,6 +5,7 @@ const {
   buildConfig: buildSupportConfig,
   resolveOdhinConsoleCapture,
   resolveOdhinHardTimeoutMs,
+  resolveOdhinForceExitOnCompletion,
   resolveOdhinLightweight,
   resolveOdhinRuntimeHookTimeoutMs,
   resolveWorkerCount,
@@ -14,6 +15,7 @@ const {
     projects: Array<{ name: string; workers?: number; grep?: RegExp; grepInvert?: RegExp; use?: { channel?: string } }>;
   };
   resolveOdhinConsoleCapture: (env: NodeJS.ProcessEnv) => { consoleLog: boolean; consoleError: boolean };
+  resolveOdhinForceExitOnCompletion: (env: NodeJS.ProcessEnv) => boolean;
   resolveOdhinHardTimeoutMs: (env: NodeJS.ProcessEnv) => number;
   resolveOdhinLightweight: (env: NodeJS.ProcessEnv) => boolean;
   resolveOdhinRuntimeHookTimeoutMs: (env: NodeJS.ProcessEnv) => number;
@@ -48,6 +50,7 @@ const config = buildConfig(process.env);
   resolveWorkerCount,
   resolveIntegrationTagFilters,
   resolveOdhinHardTimeoutMs,
+  resolveOdhinForceExitOnCompletion,
   resolveOdhinConsoleCapture,
   resolveOdhinLightweight,
   resolveOdhinRuntimeHookTimeoutMs,

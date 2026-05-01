@@ -162,6 +162,9 @@ const resolveOdhinCompletionExitDelayMs = (env = process.env) => {
   return env.CI ? 1000 : 0;
 };
 
+const resolveOdhinForceExitOnCompletion = (env = process.env) =>
+  resolveFlag(env.PW_ODHIN_FORCE_EXIT_ON_COMPLETION, Boolean(env.CI));
+
 const buildConfig = (env = process.env) => {
   const headlessMode = env.HEAD !== 'true';
   const odhinOutputFolder = env.PLAYWRIGHT_REPORT_FOLDER ?? defaultOdhinOutputFolder;
@@ -192,6 +195,7 @@ const buildConfig = (env = process.env) => {
         hardTimeoutMs: resolveOdhinHardTimeoutMs(env),
         timeoutExitCode: resolveOdhinTimeoutExitCode(env),
         completionExitDelayMs: resolveOdhinCompletionExitDelayMs(env),
+        forceExitOnCompletion: resolveOdhinForceExitOnCompletion(env),
       },
     ]);
     reporter.push([
@@ -261,4 +265,5 @@ module.exports = {
   resolveOdhinHardTimeoutMs,
   resolveOdhinTimeoutExitCode,
   resolveOdhinCompletionExitDelayMs,
+  resolveOdhinForceExitOnCompletion,
 };

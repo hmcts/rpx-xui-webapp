@@ -9,7 +9,7 @@ import {
   getExpectedTodayOnlyCreateBookingRange,
 } from '../../mocks/bookingUI.mock';
 import { buildMyTaskListMock } from '../../mocks/taskList.mock';
-import { formatUiDate } from '../../utils/tableUtils';
+import { formatUiDate, normalizeUiDateValue } from '../../utils/tableUtils';
 
 const userIdentifier = 'BOOKING_UI-FT-ON';
 const defaultBookingLocation = singleLocationMock[0];
@@ -116,10 +116,8 @@ test.describe(`Booking UI as ${userIdentifier}`, { tag: ['@integration', '@integ
         key: 'Location',
         value: existingBookingsMock[0].locationName,
       });
-      expect(table[1]).toEqual({
-        key: 'Duration',
-        value: `${today} to ${today}`,
-      });
+      expect(table[1].key).toBe('Duration');
+      expect(normalizeUiDateValue(table[1].value)).toBe(`${today} to ${today}`);
       await bookingUiPage.bookingButton.click();
     });
 

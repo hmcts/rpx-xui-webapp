@@ -1,4 +1,5 @@
-import type { Page } from '@playwright/test';
+import type { Page, Route } from '@playwright/test';
+import { assertValidWorkAllocationTaskListMock } from './workAllocationMockValidation.helper';
 import { setupTaskListBootstrapRoutes, taskListRoutePattern } from './taskListMockRoutes.helper';
 
 export const myCasesRoutePattern = /\/workallocation\/my-work\/cases(?:\?.*)?$/;
@@ -8,16 +9,43 @@ const defaultTaskListResponse = { tasks: [], total_records: 0 };
 
 type BaseManageTaskRouteOptions = {
   taskListResponse?: unknown;
+  taskListHandler?: (route: Route) => Promise<void>;
+  supportedJurisdictions?: string[];
+  supportedJurisdictionDetails?: Array<{ serviceId: string; serviceName: string }>;
 };
 
 export async function setupManageTasksBaseRoutes(page: Page, options: BaseManageTaskRouteOptions = {}): Promise<void> {
-  await setupTaskListBootstrapRoutes(page);
+  await setupTaskListBootstrapRoutes(page, options.supportedJurisdictions, options.supportedJurisdictionDetails);
 
-  await page.route(taskListRoutePattern, async (route) => {
+  await page.route('**/api/role-access/roles/getJudicialUsers*', async (route) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(options.taskListResponse ?? defaultTaskListResponse),
+      body: '[]',
+    });
+  });
+
+  await page.route('**/api/role-access/roles/get-my-access-new-count*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ count: 0 }),
+    });
+  });
+
+  await page.route(taskListRoutePattern, async (route) => {
+    if (options.taskListHandler) {
+      await options.taskListHandler(route);
+      return;
+    }
+
+    const resolvedTaskListResponse = options.taskListResponse ?? defaultTaskListResponse;
+    assertValidWorkAllocationTaskListMock(resolvedTaskListResponse);
+
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(resolvedTaskListResponse),
     });
   });
 }

@@ -96,6 +96,10 @@ def publishPlaywrightLoadProfile = { String reportDir, String reportName ->
         cp '${reportDir}/${playwrightLoadProfileReportFile}' '${slimReportDir}/${playwrightLoadProfileReportFile}'
       fi
     """
+    steps.archiveArtifacts(
+      allowEmptyArchive: true,
+      artifacts: "${slimReportDir}/${playwrightLoadProfileReportFile}"
+    )
     publishHTML([
       allowMissing         : true,
       alwaysLinkToLastBuild: true,

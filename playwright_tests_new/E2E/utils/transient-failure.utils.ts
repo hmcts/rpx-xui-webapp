@@ -3,6 +3,8 @@ export const DEFAULT_TRANSIENT_MAX_ATTEMPTS = 2;
 const TRANSIENT_FAILURE_PATTERNS: RegExp[] = [
   /DOWNSTREAM_API_5\d\d/,
   /status\s+5\d\d/i,
+  /status\s+429/i,
+  /HTTP\s+429/i,
   /NETWORK_TIMEOUT/,
   /SLOW_API_RESPONSE/,
   /The event could not be created/i,

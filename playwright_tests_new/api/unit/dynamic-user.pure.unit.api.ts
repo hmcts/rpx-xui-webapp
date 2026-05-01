@@ -253,6 +253,7 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
     ).toBe(true);
     expect(isTransientWorkflowFailure(new Error('Task list showed service down while waiting for task row'))).toBe(true);
     expect(isTransientWorkflowFailure(new Error('read ECONNRESET while calling api/user/details'))).toBe(true);
+    expect(isTransientWorkflowFailure(new Error('Upload failed: server returned status 429 after 3 attempts'))).toBe(true);
     expect(() => buildCasePayloadFromTemplate('unsupported.template' as never)).toThrow(
       "Unsupported payload template 'unsupported.template'."
     );

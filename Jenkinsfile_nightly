@@ -84,6 +84,13 @@ def publishPlaywrightLoadProfile = { String reportDir, String reportName ->
     def slimReportDir = "functional-output/tests/playwright-published-reports/load-profile/${safeReportName}"
     steps.sh """
       set +e
+      node scripts/ensure-load-profile-report.js \\
+        --report-dir '${reportDir}' \\
+        --report-file '${playwrightLoadProfileReportFile}' \\
+        --report-name '${reportName}'
+    """
+    steps.sh """
+      set +e
       mkdir -p '${slimReportDir}'
       if [ -f '${reportDir}/${playwrightLoadProfileReportFile}' ]; then
         cp '${reportDir}/${playwrightLoadProfileReportFile}' '${slimReportDir}/${playwrightLoadProfileReportFile}'
@@ -411,7 +418,8 @@ withNightlyPipeline(type, product, component) {
               withEnv([
                 'ORG_USER_ASSIGNMENT_MODE=external',
                 'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
-                'FUNCTIONAL_TESTS_WORKERS=2'
+                'FUNCTIONAL_TESTS_WORKERS=2',
+                'PW_SESSION_CAPTURE_FAILURE_TTL_MS=0'
               ]) {
                 yarnBuilder.yarn('test:crossbrowser:raw')
               }

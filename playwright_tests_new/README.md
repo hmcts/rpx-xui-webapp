@@ -329,25 +329,26 @@ API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
 
 ### API Test Parallelism
 
-- In CI, Playwright defaults to **8 workers** unless `FUNCTIONAL_TESTS_WORKERS` is set
+- E2E defaults to **2 workers** unless `FUNCTIONAL_TESTS_WORKERS` is set
+- API and integration default to **4 workers** unless `FUNCTIONAL_TESTS_WORKERS` is set
 - Jenkins pins `FUNCTIONAL_TESTS_WORKERS=4` for API and integration suites, and `FUNCTIONAL_TESTS_WORKERS=2` for browser-heavy E2E and cross-browser suites
 - Keeping E2E below the Jenkins agent core count avoids saturating the preview/AAT backends while API and integration stages run in parallel
-- Locally, worker count is auto-sized from CPU capacity; override with `FUNCTIONAL_TESTS_WORKERS` or the Playwright `--workers` flag
+- Locally, the same suite defaults apply; override with `FUNCTIONAL_TESTS_WORKERS` or the Playwright `--workers` flag
 
 ### Playwright Load Profiling
 
 The standard API, E2E, cross-browser E2E, and integration commands run through the load-profile wrapper by default. The wrapper samples the local/Jenkins host while the run is executing, writes raw metrics, and injects a **System Load** tab into the Odhín report.
 
 ```bash
-# Run integration with a host-load profile and 10 workers
-yarn test:playwright:integration -- --workers=10
+# Run integration with a host-load profile and explicit workers
+yarn test:playwright:integration -- --workers=4
 
 # Compare a sharded run
-yarn test:playwright:integration -- --workers=10 --shard=1/2
-yarn test:playwright:integration -- --workers=10 --shard=2/2
+yarn test:playwright:integration -- --workers=4 --shard=1/2
+yarn test:playwright:integration -- --workers=4 --shard=2/2
 
 # Backwards-compatible alias
-yarn test:playwright:integration:profile -- --workers=10
+yarn test:playwright:integration:profile -- --workers=4
 ```
 
 Artifacts:
@@ -369,16 +370,13 @@ Useful controls:
 - `PW_LOAD_PROFILE_ODHIN_TAB=false` disables the Odhín **System Load** tab
 - `PW_LOAD_PROFILE_EVENTS_FILE=<jsonl-or-json>` overlays external start/finish markers on the load chart
 
-Jenkins CNP and nightly integration stages use `INTEGRATION_PW_PROFILE_RUNS` to run a small profile matrix. The default is:
+Jenkins CNP and nightly integration stages use `INTEGRATION_PW_PROFILE_RUNS` to control the integration worker profile. The default is:
 
 ```text
 workers=4
-workers=8
-workers=10 shard=1/2
-workers=10 shard=2/2
 ```
 
-Use `INTEGRATION_PW_WORKERS=<n>` and optional `INTEGRATION_PW_SHARD=<index/total>` on Jenkins to run one targeted integration profile instead of the full `INTEGRATION_PW_PROFILE_RUNS` matrix. Use `PW_LOAD_PROFILE_ODHIN_TAB=false` to disable the Odhín **System Load** tab for API, E2E, and integration reports while still producing standalone load profile artifacts. `INTEGRATION_PW_LOAD_PROFILE_ODHIN_TAB=false` remains available as an integration-only override. CNP and nightly also write API, E2E, and integration stage markers to the profile event file so the report can show which suite was running when CPU, load, or memory changed.
+Use `INTEGRATION_PW_WORKERS=<n>` and optional `INTEGRATION_PW_SHARD=<index/total>` on Jenkins to run a targeted integration profile instead of the default `INTEGRATION_PW_PROFILE_RUNS` value. Use `PW_LOAD_PROFILE_ODHIN_TAB=false` to disable the Odhín **System Load** tab for API, E2E, and integration reports while still producing standalone load profile artifacts. `INTEGRATION_PW_LOAD_PROFILE_ODHIN_TAB=false` remains available as an integration-only override. CNP and nightly also write API, E2E, and integration stage markers to the profile event file so the report can show which suite was running when CPU, load, or memory changed.
 
 The wrapper always marks the wrapped command start and finish on the chart. To show API, E2E, and integration boundaries on one timeline, run a monitor across the parent pipeline window or write shared JSONL events into `PW_LOAD_PROFILE_EVENTS_FILE`:
 
@@ -525,7 +523,7 @@ INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:playwright:integration
 Notes:
 
 - Search-case integration specs now run in the main `chromium` project and can be isolated with `INTEGRATION_PW_INCLUDE_TAGS=@integration-search-case`
-- Integration specs continue to run on the auto-sized `chromium` project unless `FUNCTIONAL_TESTS_WORKERS` is pinned explicitly
+- Integration specs continue to run on the default 4-worker `chromium` project unless `FUNCTIONAL_TESTS_WORKERS` is pinned explicitly
 - Odhin remains enabled by default for integration runs, including local runs
 - Local integration Odhin uses a lightweight profile by default and emits explicit finalization timing so post-test report generation is visible and bounded
 - Local integration Odhin also bounds runtime reporter hooks by default; override with `PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS=<ms>` or set `0` to disable the local safeguard
@@ -633,7 +631,7 @@ expect(visibleRows.length).toBeGreaterThan(0);
 - Multiple workers can safely request the same user session
 - **Filesystem-based lock mechanism** prevents concurrent logins for the same user
 - Locks coordinate across **all Playwright worker processes** (API + E2E) using `proper-lockfile`
-- Jenkins currently runs API, E2E, and integration suites with **4 workers** on both Preview and AAT
+- Jenkins currently runs E2E with **2 workers**, and API and integration with **4 workers** on both Preview and AAT
 - When one worker logs in user X, the remaining workers **and parallel API tests** wait for lock release and reuse the session
 - After acquiring lock, workers recheck freshness to ensure session is still valid
 - `ensureSession()` intentionally avoids forced recapture so lock waiters can reuse the newly refreshed session instead of logging in again

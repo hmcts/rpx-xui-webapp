@@ -29,31 +29,6 @@ const resolveDefaultReporter = (env = process.env) => {
   return env.CI ? 'dot' : 'list';
 };
 
-const resolveWorkerTargetEnvironment = (env = process.env) => {
-  const configuredTarget = env.TEST_TYPE?.trim().toLowerCase();
-  if (configuredTarget) {
-    return configuredTarget;
-  }
-
-  const configuredUrl = env.TEST_URL?.trim();
-  if (!configuredUrl) {
-    return undefined;
-  }
-
-  try {
-    const hostname = new URL(configuredUrl).hostname.toLowerCase();
-    if (hostname.includes('.aat.')) {
-      return 'aat';
-    }
-    if (hostname.includes('.demo.')) {
-      return 'demo';
-    }
-    return hostname;
-  } catch {
-    return undefined;
-  }
-};
-
 const resolveWorkerCount = (env = process.env) => {
   const configured = env.FUNCTIONAL_TESTS_WORKERS?.trim();
   if (configured) {
@@ -63,17 +38,7 @@ const resolveWorkerCount = (env = process.env) => {
     }
   }
 
-  if (env.CI) {
-    const targetEnv = resolveWorkerTargetEnvironment(env);
-    if (targetEnv === 'aat' || targetEnv === 'demo') {
-      return 2;
-    }
-    return 8;
-  }
-
-  const logical = cpus()?.length ?? 1;
-  const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));
-  return Math.min(8, Math.max(2, approxPhysical));
+  return 4;
 };
 
 const resolveBrowserChannel = (env = process.env) => {

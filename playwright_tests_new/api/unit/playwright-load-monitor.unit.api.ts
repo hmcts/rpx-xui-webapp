@@ -102,6 +102,27 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
     expect(parsed.commandArgs).toEqual(['yarn', 'test:api:pw:raw']);
   });
 
+  test('treats options-only invocation as monitor-only mode', () => {
+    const parsed = loadMonitor.parseArgs([
+      '--output-folder',
+      'functional-output/tests/playwright-integration/load-profile/preview',
+      '--label',
+      'PREVIEW Playwright System Load',
+      '--events-file',
+      'functional-output/tests/playwright-integration/load-profile/preview-stage-events.jsonl',
+      '--stop-file',
+      'functional-output/tests/playwright-integration/load-profile/preview/stop',
+    ]);
+
+    expect(parsed.options).toMatchObject({
+      outputFolder: 'functional-output/tests/playwright-integration/load-profile/preview',
+      label: 'PREVIEW Playwright System Load',
+      eventsFile: 'functional-output/tests/playwright-integration/load-profile/preview-stage-events.jsonl',
+      stopFile: 'functional-output/tests/playwright-integration/load-profile/preview/stop',
+    });
+    expect(parsed.commandArgs).toEqual([]);
+  });
+
   test('ignores retired Odhín load-profile environment controls', () => {
     withTemporaryEnv(
       {

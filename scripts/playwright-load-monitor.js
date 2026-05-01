@@ -18,8 +18,9 @@ const REPORT_FILE = 'load-profile.html';
 
 function parseArgs(argv) {
   const separatorIndex = argv.indexOf('--');
-  const optionArgs = separatorIndex >= 0 ? argv.slice(0, separatorIndex) : [];
-  const commandArgs = separatorIndex >= 0 ? argv.slice(separatorIndex + 1) : argv;
+  const hasWrapperOptions = argv[0]?.startsWith('--');
+  const optionArgs = separatorIndex >= 0 ? argv.slice(0, separatorIndex) : hasWrapperOptions ? argv : [];
+  const commandArgs = separatorIndex >= 0 ? argv.slice(separatorIndex + 1) : hasWrapperOptions ? [] : argv;
   const defaultReportFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? DEFAULT_REPORT_FOLDER;
   const options = {
     outputFolder: process.env.PW_LOAD_PROFILE_OUTPUT ?? DEFAULT_OUTPUT_FOLDER,

@@ -109,6 +109,52 @@ def publishPlaywrightLoadProfile = { String reportDir, String reportName ->
     ])
 }
 
+def startPlaywrightLoadProfile = { String reportDir, String label, String eventsFile ->
+    steps.sh """
+      set +e
+      mkdir -p '${reportDir}'
+      rm -f '${reportDir}/stop' '${reportDir}/monitor.pid'
+      JENKINS_NODE_COOKIE=dontKillMe nohup node scripts/playwright-load-monitor.js \\
+        --output-folder '${reportDir}' \\
+        --label '${label}' \\
+        --events-file '${eventsFile}' \\
+        --stop-file '${reportDir}/stop' \\
+        > '${reportDir}/monitor.log' 2>&1 &
+      echo \$! > '${reportDir}/monitor.pid'
+    """
+}
+
+def stopPlaywrightLoadProfile = { String reportDir ->
+    steps.sh """
+      set +e
+      if [ -f '${reportDir}/monitor.pid' ]; then
+        pid=\$(cat '${reportDir}/monitor.pid')
+        touch '${reportDir}/stop'
+        for i in \$(seq 1 30); do
+          kill -0 "\${pid}" 2>/dev/null || break
+          sleep 1
+        done
+        if kill -0 "\${pid}" 2>/dev/null; then
+          kill -TERM "\${pid}" 2>/dev/null || true
+          sleep 2
+        fi
+      fi
+      if [ -f '${reportDir}/monitor.log' ]; then
+        cat '${reportDir}/monitor.log'
+      fi
+    """
+}
+
+def runWithPlaywrightLoadProfile = { String reportDir, String label, String eventsFile, String reportName, Closure body ->
+    startPlaywrightLoadProfile(reportDir, label, eventsFile)
+    try {
+        body()
+    } finally {
+        stopPlaywrightLoadProfile(reportDir)
+        publishPlaywrightLoadProfile(reportDir, reportName)
+    }
+}
+
 def playwrightLoadProfileEventsFile = { ->
     'functional-output/tests/playwright-integration/load-profile/nightly-stage-events.jsonl'
 }
@@ -155,7 +201,6 @@ def integrationProfileRunConfig = { String spec ->
         shardArg: shard ? " --shard=${shard}" : '',
         label: "nightly-${safeName}",
         reportDir: "functional-output/tests/playwright-integration/odhin-report/nightly-${safeName}",
-        loadProfileDir: "functional-output/tests/playwright-integration/load-profile/nightly-${safeName}",
         displayName: "${workers} workers${shard ? ", shard ${shard}" : ''}"
     ]
 }
@@ -167,18 +212,14 @@ def runPlaywrightIntegrationProfileMatrix = {
         try {
             withEnv([
               "PLAYWRIGHT_REPORT_FOLDER=${runConfig.reportDir}",
-              "PW_LOAD_PROFILE_OUTPUT=${runConfig.loadProfileDir}",
-              "PW_LOAD_PROFILE_LABEL=${runConfig.label}",
               "PW_LOAD_PROFILE_INJECT_ODHIN=false",
               "PW_LOAD_PROFILE_EVENTS_FILE=${playwrightLoadProfileEventsFile()}",
-              "PW_LOAD_PROFILE_CHILD_IDLE_TIMEOUT_MS=30000",
-              "PW_LOAD_PROFILE_CHILD_TERMINATE_GRACE_MS=10000",
               'ORG_USER_ASSIGNMENT_MODE=external',
               'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
               "FUNCTIONAL_TESTS_WORKERS=${runConfig.workers}",
               'PLAYWRIGHT_SKIP_INSTALL=true'
             ]) {
-              yarnBuilder.yarn("test:playwright:integration:profile -- --workers=${runConfig.workers}${runConfig.shardArg}")
+              yarnBuilder.yarn("test:playwright:integration:raw -- --workers=${runConfig.workers}${runConfig.shardArg}")
             }
             echo "[playwright-integration] Completed test command for ${runConfig.displayName}; checking Odhín report at ${runConfig.reportDir}/${playwrightIntegrationReportFile}"
             assertHtmlReportExists(runConfig.reportDir, playwrightIntegrationReportFile)
@@ -206,10 +247,6 @@ def runPlaywrightIntegrationProfileMatrix = {
               reportFiles          : playwrightIntegrationReportFile,
               reportName           : "Playwright Integration Tests"
             ])
-            publishPlaywrightLoadProfile(
-              runConfig.loadProfileDir,
-              "Playwright Integration System Load"
-            )
             echo "[playwright-integration] Published Odhín HTML report for ${runConfig.displayName}"
         }
     }
@@ -329,7 +366,13 @@ withNightlyPipeline(type, product, component) {
         ])
      }
     afterSuccess('fortify-scan') {
-  
+      def nightlyLoadProfileDir = 'functional-output/tests/playwright-integration/load-profile/nightly'
+      runWithPlaywrightLoadProfile(
+        nightlyLoadProfileDir,
+        'Nightly Playwright functional tests',
+        playwrightLoadProfileEventsFile(),
+        'Playwright System Load'
+      ) {
       stage('API Tests') {
         try {
           recordPlaywrightLoadEvent('API', 'start')
@@ -339,7 +382,7 @@ withNightlyPipeline(type, product, component) {
             "PW_LOAD_PROFILE_INJECT_ODHIN=false",
             'FUNCTIONAL_TESTS_WORKERS=4'
           ]) {
-            yarnBuilder.yarn('test:api:pw:coverage')
+            yarnBuilder.yarn('test:api:pw:coverage:raw')
           }
         } finally {
           recordPlaywrightLoadEvent('API', 'finish')
@@ -351,10 +394,6 @@ withNightlyPipeline(type, product, component) {
             reportFiles          : 'xui-playwright-api.html',
             reportName           : 'API Functional Test'
           ])
-          publishPlaywrightLoadProfile(
-            'functional-output/tests/api_functional/odhin-report/load-profile',
-            'API System Load'
-          )
           archivePlaywrightDiagnostics()
         }
       }
@@ -387,7 +426,7 @@ withNightlyPipeline(type, product, component) {
                 "PW_LOAD_PROFILE_INJECT_ODHIN=false",
                 'FUNCTIONAL_TESTS_WORKERS=2'
               ]) {
-                yarnBuilder.yarn('test:crossbrowser')
+                yarnBuilder.yarn('test:crossbrowser:raw')
               }
             } catch (Error) {
               unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
@@ -401,13 +440,10 @@ withNightlyPipeline(type, product, component) {
               reportFiles          : 'xui-playwright-e2e.html',
               reportName           : 'XUI Manage Cases Playwright Cross Browser Tests'
               ])
-              publishPlaywrightLoadProfile(
-                'functional-output/tests/playwright-e2e/odhin-report/load-profile',
-                'Playwright E2E System Load'
-              )
               archivePlaywrightDiagnostics()
             }
         }
+      }
 
         // yarnBuilder.yarn('test:a11y')
         // publishHTML([

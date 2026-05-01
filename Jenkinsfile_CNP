@@ -191,6 +191,52 @@ def publishPlaywrightLoadProfile = { String reportDir, String reportName ->
     ])
 }
 
+def startPlaywrightLoadProfile = { String reportDir, String label, String eventsFile ->
+    steps.sh """
+        set +e
+        mkdir -p '${reportDir}'
+        rm -f '${reportDir}/stop' '${reportDir}/monitor.pid'
+        JENKINS_NODE_COOKIE=dontKillMe nohup node scripts/playwright-load-monitor.js \\
+          --output-folder '${reportDir}' \\
+          --label '${label}' \\
+          --events-file '${eventsFile}' \\
+          --stop-file '${reportDir}/stop' \\
+          > '${reportDir}/monitor.log' 2>&1 &
+        echo \$! > '${reportDir}/monitor.pid'
+    """
+}
+
+def stopPlaywrightLoadProfile = { String reportDir ->
+    steps.sh """
+        set +e
+        if [ -f '${reportDir}/monitor.pid' ]; then
+          pid=\$(cat '${reportDir}/monitor.pid')
+          touch '${reportDir}/stop'
+          for i in \$(seq 1 30); do
+            kill -0 "\${pid}" 2>/dev/null || break
+            sleep 1
+          done
+          if kill -0 "\${pid}" 2>/dev/null; then
+            kill -TERM "\${pid}" 2>/dev/null || true
+            sleep 2
+          fi
+        fi
+        if [ -f '${reportDir}/monitor.log' ]; then
+          cat '${reportDir}/monitor.log'
+        fi
+    """
+}
+
+def runWithPlaywrightLoadProfile = { String reportDir, String label, String eventsFile, String reportName, Closure body ->
+    startPlaywrightLoadProfile(reportDir, label, eventsFile)
+    try {
+        body()
+    } finally {
+        stopPlaywrightLoadProfile(reportDir)
+        publishPlaywrightLoadProfile(reportDir, reportName)
+    }
+}
+
 def playwrightLoadProfileEventsFile = { String testType ->
     "functional-output/tests/playwright-integration/load-profile/${testType}-stage-events.jsonl"
 }
@@ -237,7 +283,6 @@ def integrationProfileRunConfig = { String spec, String testType ->
         shardArg: shard ? " --shard=${shard}" : '',
         label: "${testType}-${safeName}",
         reportDir: "functional-output/tests/playwright-integration/odhin-report/${testType}-${safeName}",
-        loadProfileDir: "functional-output/tests/playwright-integration/load-profile/${testType}-${safeName}",
         displayName: "${workers} workers${shard ? ", shard ${shard}" : ''}"
     ]
 }
@@ -249,12 +294,8 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
         try {
             withEnv([
                 "PLAYWRIGHT_REPORT_FOLDER=${runConfig.reportDir}",
-                "PW_LOAD_PROFILE_OUTPUT=${runConfig.loadProfileDir}",
-                "PW_LOAD_PROFILE_LABEL=${runConfig.label}",
                 "PW_LOAD_PROFILE_INJECT_ODHIN=false",
                 "PW_LOAD_PROFILE_EVENTS_FILE=${playwrightLoadProfileEventsFile(testType)}",
-                "PW_LOAD_PROFILE_CHILD_IDLE_TIMEOUT_MS=30000",
-                "PW_LOAD_PROFILE_CHILD_TERMINATE_GRACE_MS=10000",
                 "TEST_TYPE=${testType}",
                 "ORG_USER_ASSIGNMENT_MODE=external",
                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
@@ -263,7 +304,7 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
                 "INTEGRATION_PW_INCLUDE_TAGS=${params.INTEGRATION_PW_INCLUDE_TAGS ?: ''}",
                 "INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=${params.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
             ]) {
-                yarnBuilder.yarn("test:playwright:integration:profile -- --workers=${runConfig.workers}${runConfig.shardArg}")
+                yarnBuilder.yarn("test:playwright:integration:raw -- --workers=${runConfig.workers}${runConfig.shardArg}")
             }
             echo "[playwright-integration] Completed test command for ${runConfig.displayName}; checking Odhín report at ${runConfig.reportDir}/${playwrightIntegrationReportFile}"
             assertHtmlReportExists(runConfig.reportDir, playwrightIntegrationReportFile)
@@ -291,10 +332,6 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
                 reportFiles          : playwrightIntegrationReportFile,
                 reportName           : "${reportNamePrefix} Playwright Integration Tests"
             ])
-            publishPlaywrightLoadProfile(
-                runConfig.loadProfileDir,
-                "${reportNamePrefix} Playwright Integration System Load"
-            )
             echo "[playwright-integration] Published Odhín HTML report for ${runConfig.displayName}"
         }
     }
@@ -489,22 +526,30 @@ withPipeline(type, product, component) {
         archivePlaywrightDiagnostics()
 
         stage('Preview Functional Tests (Parallel)') {
-            try {
+            def previewLoadProfileDir = 'functional-output/tests/playwright-integration/load-profile/preview'
+            def previewLoadProfileEvents = playwrightLoadProfileEventsFile('preview')
+            runWithPlaywrightLoadProfile(
+                previewLoadProfileDir,
+                'PREVIEW Playwright functional tests',
+                previewLoadProfileEvents,
+                'PREVIEW Playwright System Load'
+            ) {
+              try {
                 parallel(
                     failFast: true,
                     api: {
                     stage('API Tests') {
                         withEnv([
                             "API_PW_INCLUDE_TAGS=${params.API_PW_INCLUDE_TAGS ?: ''}",
-                            "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
-                            "ORG_USER_ASSIGNMENT_MODE=external",
-                            "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                            "PW_LOAD_PROFILE_INJECT_ODHIN=false",
-                            "FUNCTIONAL_TESTS_WORKERS=4"
+                                "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
+                                "ORG_USER_ASSIGNMENT_MODE=external",
+                                "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
+                                "PW_LOAD_PROFILE_INJECT_ODHIN=false",
+                                "FUNCTIONAL_TESTS_WORKERS=4"
                         ]) {
-                            try {
-                                recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'API', 'start')
-                                yarnBuilder.yarn('test:api:pw')
+                                try {
+                                    recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'API', 'start')
+                                    yarnBuilder.yarn('test:api:pw:raw')
                             } catch (Exception e) {
                                 echo "[failFast] API Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
                                 if (handleFailFastAbort(e)) { return }
@@ -519,11 +564,7 @@ withPipeline(type, product, component) {
                                     reportFiles          : 'xui-playwright-api.html',
                                     reportName           : 'PREVIEW API Functional Test'
                                 ])
-                                publishPlaywrightLoadProfile(
-                                    'functional-output/tests/api_functional/odhin-report/load-profile',
-                                    'PREVIEW API System Load'
-                                )
-                            }
+                                }
                         }
                     }
                     },
@@ -554,9 +595,9 @@ withPipeline(type, product, component) {
                                 "PLAYWRIGHT_SKIP_INSTALL=true",
                                 "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
                                 "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
-                            ]) {
-                                yarnBuilder.yarn('test:playwrightE2E')
-                            }
+                                ]) {
+                                    yarnBuilder.yarn('test:playwrightE2E:raw')
+                                }
                         } catch (Exception e) {
                             echo "[failFast] Playwright E2E catch: ${e.getClass().getName()}: ${e.getMessage()}"
                             if (handleFailFastAbort(e)) { return }
@@ -571,16 +612,13 @@ withPipeline(type, product, component) {
                                 reportFiles          : 'xui-playwright-e2e.html',
                                 reportName           : 'PREVIEW Playwright E2E'
                             ])
-                            publishPlaywrightLoadProfile(
-                                'functional-output/tests/playwright-e2e/odhin-report/load-profile',
-                                'PREVIEW Playwright E2E System Load'
-                            )
-                        }
+                            }
                     }
                     }
                 )
-            } finally {
-                archivePlaywrightDiagnostics()
+              } finally {
+                  archivePlaywrightDiagnostics()
+              }
             }
         }
     }
@@ -598,7 +636,15 @@ withPipeline(type, product, component) {
         archivePlaywrightDiagnostics()
 
         stage('AAT Functional Tests (Parallel)') {
-            try {
+            def aatLoadProfileDir = 'functional-output/tests/playwright-integration/load-profile/aat'
+            def aatLoadProfileEvents = playwrightLoadProfileEventsFile('aat')
+            runWithPlaywrightLoadProfile(
+                aatLoadProfileDir,
+                'AAT Playwright functional tests',
+                aatLoadProfileEvents,
+                'AAT Playwright System Load'
+            ) {
+              try {
                 parallel(
                     failFast: true,
                     api: {
@@ -611,9 +657,9 @@ withPipeline(type, product, component) {
                             "PW_LOAD_PROFILE_INJECT_ODHIN=false",
                             "FUNCTIONAL_TESTS_WORKERS=4"
                         ]) {
-                            try {
-                                recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'API', 'start')
-                                yarnBuilder.yarn('test:api:pw')
+                                try {
+                                    recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'API', 'start')
+                                    yarnBuilder.yarn('test:api:pw:raw')
                             } catch (Exception e) {
                                 echo "[failFast] API Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
                                 if (handleFailFastAbort(e)) { return }
@@ -628,11 +674,7 @@ withPipeline(type, product, component) {
                                   reportFiles          : 'xui-playwright-api.html',
                                   reportName           : 'AAT API Functional Test'
                                 ])
-                                publishPlaywrightLoadProfile(
-                                    'functional-output/tests/api_functional/odhin-report/load-profile',
-                                    'AAT API System Load'
-                                )
-                            }
+                                }
                         }
                     }
                     },
@@ -663,9 +705,9 @@ withPipeline(type, product, component) {
                                 "PLAYWRIGHT_SKIP_INSTALL=true",
                                 "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
                                 "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
-                            ]) {
-                                yarnBuilder.yarn('test:playwrightE2E')
-                            }
+                                ]) {
+                                    yarnBuilder.yarn('test:playwrightE2E:raw')
+                                }
                         } catch (Exception e) {
                             echo "[failFast] Playwright E2E catch: ${e.getClass().getName()}: ${e.getMessage()}"
                             if (handleFailFastAbort(e)) { return }
@@ -680,16 +722,13 @@ withPipeline(type, product, component) {
                                 reportFiles          : 'xui-playwright-e2e.html',
                                 reportName           : 'AAT Playwright E2E'
                             ])
-                            publishPlaywrightLoadProfile(
-                                'functional-output/tests/playwright-e2e/odhin-report/load-profile',
-                                'AAT Playwright E2E System Load'
-                            )
-                        }
+                            }
                     }
                     }
                 )
-            } finally {
-                archivePlaywrightDiagnostics()
+              } finally {
+                  archivePlaywrightDiagnostics()
+              }
             }
         }
     }

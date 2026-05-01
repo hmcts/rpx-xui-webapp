@@ -37,6 +37,7 @@ function parseArgs(argv) {
     injectOdhin: process.env.PW_LOAD_PROFILE_INJECT_ODHIN === 'true',
     odhinTab: process.env.PW_LOAD_PROFILE_ODHIN_TAB !== 'false',
     eventsFile: process.env.PW_LOAD_PROFILE_EVENTS_FILE ?? '',
+    stopFile: process.env.PW_LOAD_PROFILE_STOP_FILE ?? '',
   };
   let explicitReportFolderSeen = false;
 
@@ -75,6 +76,9 @@ function parseArgs(argv) {
       options.odhinTab = false;
     } else if (arg === '--events-file' && next) {
       options.eventsFile = next;
+      index += 1;
+    } else if (arg === '--stop-file' && next) {
+      options.stopFile = next;
       index += 1;
     }
   }
@@ -402,6 +406,48 @@ async function runMonitoredCommand(commandArgs, options) {
   return exitCode;
 }
 
+async function runUntilStopFile(options) {
+  if (!options.stopFile) {
+    throw new Error('No command supplied. Use: node scripts/playwright-load-monitor.js -- <command> [args...]');
+  }
+
+  const metadata = buildMetadata(['jenkins-functional-stages'], options);
+  const samples = [];
+  const sample = createSampler(metadata);
+  samples.push(sample());
+
+  const exitCode = await new Promise((resolve) => {
+    let settled = false;
+    const finish = (code) => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      clearInterval(sampleTimer);
+      clearInterval(stopTimer);
+      resolve(code);
+    };
+    const sampleTimer = setInterval(() => samples.push(sample()), options.sampleIntervalMs);
+    const stopTimer = setInterval(
+      () => {
+        if (fs.existsSync(options.stopFile)) {
+          finish(0);
+        }
+      },
+      Math.min(options.sampleIntervalMs, 1000)
+    );
+
+    const stopOnSignal = () => finish(0);
+    process.once('SIGTERM', stopOnSignal);
+    process.once('SIGINT', stopOnSignal);
+  });
+
+  samples.push(sample());
+  const summary = buildSummary(metadata, samples, exitCode, readTimelineEvents(options.eventsFile));
+  writeProfileArtifacts(options.outputFolder, summary, samples);
+  return exitCode;
+}
+
 function buildMetadata(commandArgs, options) {
   const cgroupCpuLimit = resolveCgroupCpuLimit();
   const cgroupMemoryLimitBytes = resolveCgroupMemoryLimitBytes();
@@ -650,6 +696,7 @@ function buildOdhinLoadTab(summary, samples, relativeProfilePath) {
                   </p>
                   <div class="odhin-table">
                     ${buildInlineSvgChart(samples, summary.timelineEvents)}
+                    ${buildTimelinePhaseTimingTable(summary.timelineEvents)}
                     ${buildSummaryTable(summary, relativeProfilePath)}
                   </div>
                 </div>
@@ -677,6 +724,7 @@ function buildLoadProfileHtml(summary, samples) {
   <h1>Playwright load profile</h1>
   <p>${escapeHtml(summary.recommendation)}</p>
   <div class="chart">${buildInlineSvgChart(samples, summary.timelineEvents)}</div>
+  ${buildTimelinePhaseTimingTable(summary.timelineEvents)}
   ${buildSummaryTable(summary, '')}
 </body>
 </html>`;
@@ -729,14 +777,48 @@ function buildTimelineEventList(events) {
   return `<ul class="mb-0 ps-3">${items}</ul>`;
 }
 
+function buildTimelinePhaseTimingTable(events = []) {
+  const phases = buildTimelinePhases(events);
+  if (!phases.length) {
+    return '';
+  }
+
+  const rows = phases
+    .map(
+      (phase) => `<tr>
+        <td><span style="display:inline-block;width:10px;height:10px;background:${phase.color};margin-right:6px"></span>${escapeHtml(phase.label)}</td>
+        <td>${escapeHtml(formatDuration(phase.startElapsedMs))}</td>
+        <td>${escapeHtml(formatDuration(phase.endElapsedMs))}</td>
+        <td>${escapeHtml(formatDuration(phase.durationMs))}</td>
+      </tr>`
+    )
+    .join('\n');
+
+  return `<div class="table-responsive">
+    <table class="table table-sm testcase-run-info-table" style="margin-top:12px">
+      <thead>
+        <tr>
+          <th>Phase</th>
+          <th>Start</th>
+          <th>End</th>
+          <th>Duration</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+  </div>`;
+}
+
 function isSafeInlineHtml(value) {
-  return String(value).startsWith('<a ') || String(value).startsWith('<ul ');
+  return String(value).startsWith('<a ') || String(value).startsWith('<ul ') || String(value).startsWith('<div ');
 }
 
 function buildInlineSvgChart(samples, timelineEvents = []) {
   const width = 900;
-  const height = 260;
-  const padding = { top: 18, right: 24, bottom: 36, left: 44 };
+  const phases = buildTimelinePhases(timelineEvents);
+  const markerBandHeight = phases.length ? 22 + phases.length * 24 : 48;
+  const height = 242 + markerBandHeight;
+  const padding = { top: markerBandHeight + 18, right: 24, bottom: 36, left: phases.length ? 92 : 44 };
   const plotWidth = width - padding.left - padding.right;
   const plotHeight = height - padding.top - padding.bottom;
   const maxElapsed = Math.max(...samples.map((sample) => sample.elapsedMs), 1);
@@ -753,9 +835,13 @@ function buildInlineSvgChart(samples, timelineEvents = []) {
   const cpuPoints = points((sample) => sample.cpuPercent);
   const memoryPoints = points((sample) => sample.memoryUsedPercent);
   const eventMarkers = buildSvgEventMarkers(timelineEvents, maxElapsed, padding, plotWidth, plotHeight);
+  const phaseLanes = buildSvgPhaseLanes(phases, maxElapsed, padding, plotWidth);
 
   return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="CPU memory and load profile" style="width:100%;max-height:${height}px;">
     <rect x="0" y="0" width="${width}" height="${height}" fill="#fff"></rect>
+    <rect x="0" y="0" width="${width}" height="${markerBandHeight}" fill="#f4f8fb"></rect>
+    <line x1="${padding.left}" y1="${markerBandHeight}" x2="${width - padding.right}" y2="${markerBandHeight}" stroke="#d8e3ef"></line>
+    ${phaseLanes}
     <line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${height - padding.bottom}" stroke="#d8e3ef"></line>
     <line x1="${padding.left}" y1="${height - padding.bottom}" x2="${width - padding.right}" y2="${height - padding.bottom}" stroke="#d8e3ef"></line>
     <line x1="${padding.left}" y1="${toY(85)}" x2="${width - padding.right}" y2="${toY(85)}" stroke="#d4351c" stroke-dasharray="4 4" opacity="0.65"></line>
@@ -774,22 +860,85 @@ function buildInlineSvgChart(samples, timelineEvents = []) {
   </svg>`;
 }
 
+function buildTimelinePhases(events = []) {
+  const usableEvents = events.filter(
+    (event) => event.inRange && Number.isFinite(event.elapsedMs) && event.source !== 'load-profile'
+  );
+  const labels = [...new Set(usableEvents.map((event) => event.label))];
+
+  return labels
+    .map((label, index) => {
+      const labelEvents = usableEvents.filter((event) => event.label === label);
+      const startEvent = labelEvents.find((event) => event.type === 'start') ?? labelEvents[0];
+      const endEvent =
+        labelEvents.find((event) => ['finish', 'end', 'stop'].includes(event.type)) ?? labelEvents[labelEvents.length - 1];
+      const startElapsedMs = startEvent.elapsedMs;
+      const endElapsedMs = Math.max(startElapsedMs, endEvent.elapsedMs);
+      return {
+        label,
+        startElapsedMs,
+        endElapsedMs,
+        durationMs: endElapsedMs - startElapsedMs,
+        color: timelineEventColor(label, index),
+      };
+    })
+    .filter((phase) => Number.isFinite(phase.startElapsedMs) && Number.isFinite(phase.endElapsedMs));
+}
+
+function buildSvgPhaseLanes(phases, maxElapsed, padding, plotWidth) {
+  if (!phases.length) {
+    return '';
+  }
+
+  return phases
+    .map((phase, index) => {
+      const y = 22 + index * 24;
+      const startX = round(padding.left + (phase.startElapsedMs / maxElapsed) * plotWidth);
+      const endX = round(padding.left + (phase.endElapsedMs / maxElapsed) * plotWidth);
+      return `<g>
+        <text x="6" y="${y + 4}" font-size="12" font-weight="700" fill="${phase.color}">${escapeHtml(phase.label)}</text>
+        <line x1="${startX}" y1="${y}" x2="${endX}" y2="${y}" stroke="${phase.color}" stroke-width="4" stroke-linecap="round"></line>
+        <circle cx="${startX}" cy="${y}" r="4" fill="${phase.color}"></circle>
+        <circle cx="${endX}" cy="${y}" r="4" fill="${phase.color}"></circle>
+        <text x="${startX + 6}" y="${y - 6}" font-size="11" font-weight="700" fill="${phase.color}">start</text>
+        <text x="${endX + 6}" y="${y + 14}" font-size="11" font-weight="700" fill="${phase.color}">end</text>
+      </g>`;
+    })
+    .join('\n');
+}
+
 function buildSvgEventMarkers(events, maxElapsed, padding, plotWidth, plotHeight) {
-  const inRangeEvents = events.filter((event) => event.inRange && Number.isFinite(event.elapsedMs));
+  const inRangeEvents = events.filter(
+    (event) => event.inRange && Number.isFinite(event.elapsedMs) && event.source !== 'load-profile'
+  );
   if (!inRangeEvents.length) {
     return '';
   }
   return inRangeEvents
     .map((event, index) => {
       const x = round(padding.left + (event.elapsedMs / maxElapsed) * plotWidth);
-      const y = padding.top + 12 + (index % 4) * 14;
-      const label = `${event.label} ${event.type}`;
+      const color = timelineEventColor(event.label, index);
+      const label = `${event.label} ${formatTimelineEventType(event.type)}`;
       return `<g>
-        <line x1="${x}" y1="${padding.top}" x2="${x}" y2="${padding.top + plotHeight}" stroke="#6f72af" stroke-dasharray="3 3" opacity="0.8"></line>
-        <text x="${x + 4}" y="${y}" font-size="10" fill="#4c2c92">${escapeHtml(label)}</text>
+        <line x1="${x}" y1="${padding.top}" x2="${x}" y2="${padding.top + plotHeight}" stroke="${color}" stroke-dasharray="3 3" opacity="0.8"></line>
+        <title>${escapeHtml(label)} at ${escapeHtml(formatDuration(event.elapsedMs))}</title>
       </g>`;
     })
     .join('\n');
+}
+
+function formatTimelineEventType(type) {
+  return type === 'finish' ? 'end' : type;
+}
+
+function timelineEventColor(label, index = 0) {
+  const knownColors = {
+    api: '#005ea5',
+    integration: '#00703c',
+    e2e: '#d4351c',
+  };
+  const fallbackColors = ['#4c2c92', '#f47738', '#28a197', '#b58840'];
+  return knownColors[String(label).toLowerCase()] ?? fallbackColors[index % fallbackColors.length];
 }
 
 function formatDuration(durationMs) {
@@ -831,7 +980,9 @@ if (require.main === module) {
     setImmediate(() => process.exit(exitCode));
   };
 
-  runMonitoredCommand(commandArgs, options)
+  const runProfile = commandArgs.length ? runMonitoredCommand(commandArgs, options) : runUntilStopFile(options);
+
+  runProfile
     .then((exitCode) => {
       console.log(`[load-profile] completed with exit code ${exitCode}`);
       exitAfterFlush(exitCode);
@@ -860,5 +1011,6 @@ module.exports = {
     parsePositiveInteger,
     parseNonNegativeInteger,
     runMonitoredCommand,
+    runUntilStopFile,
   },
 };

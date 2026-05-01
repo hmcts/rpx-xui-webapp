@@ -49,12 +49,14 @@ const loadMonitor = require('../../../scripts/playwright-load-monitor.js') as {
       injectOdhin: boolean;
       odhinTab: boolean;
       eventsFile: string;
+      stopFile: string;
     };
     commandArgs: string[];
   };
   __test__: {
     isCiLikeEnvironment: (env: Record<string, string | undefined>) => boolean;
     runMonitoredCommand: (commandArgs: string[], options: Record<string, unknown>) => Promise<number>;
+    runUntilStopFile: (options: Record<string, unknown>) => Promise<number>;
   };
 };
 
@@ -137,6 +139,8 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
       '--no-odhin-tab',
       '--events-file',
       'functional-output/stage-events.jsonl',
+      '--stop-file',
+      'functional-output/load-profile.stop',
       '--',
       'yarn',
       'test:playwright:integration',
@@ -144,6 +148,7 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
 
     expect(parsed.options.odhinTab).toBe(false);
     expect(parsed.options.eventsFile).toBe('functional-output/stage-events.jsonl');
+    expect(parsed.options.stopFile).toBe('functional-output/load-profile.stop');
     expect(parsed.commandArgs).toEqual(['yarn', 'test:playwright:integration']);
   });
 
@@ -214,6 +219,35 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
       expect.arrayContaining([expect.objectContaining({ label: 'API', type: 'start', inRange: true })])
     );
     expect(loadMonitor.buildInlineSvgChart([sample({ cpuPercent: 10 })], summary.timelineEvents)).toContain('API start');
+  });
+
+  test('renders timeline marker labels in a prominent band above the plot', () => {
+    const chart = loadMonitor.buildInlineSvgChart(
+      [
+        sample({ elapsedMs: 0, cpuPercent: 10, load1PerCore: 0.2, memoryUsedPercent: 40 }),
+        sample({ elapsedMs: 1000, cpuPercent: 30, load1PerCore: 0.3, memoryUsedPercent: 45 }),
+      ],
+      [{ label: 'Integration', type: 'start', elapsedMs: 500, inRange: true }]
+    );
+
+    expect(chart).toContain('<rect x="0" y="0"');
+    expect(chart).toContain('height="46" fill="#f4f8fb"');
+    expect(chart).toContain('font-size="12" font-weight="700" fill="#00703c"');
+    expect(chart).toContain('Integration start');
+    expect(chart).toContain('y1="64"');
+  });
+
+  test('renders finish timeline markers as end labels', () => {
+    const chart = loadMonitor.buildInlineSvgChart(
+      [
+        sample({ elapsedMs: 0, cpuPercent: 10, load1PerCore: 0.2, memoryUsedPercent: 40 }),
+        sample({ elapsedMs: 1000, cpuPercent: 30, load1PerCore: 0.3, memoryUsedPercent: 45 }),
+      ],
+      [{ label: 'API', type: 'finish', elapsedMs: 1000, inRange: true }]
+    );
+
+    expect(chart).toContain('API end');
+    expect(chart).not.toContain('API finish');
   });
 
   test('injects the System Load tab after Tests without adding content to the dashboard', () => {
@@ -326,6 +360,35 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
     const event = JSON.parse(line);
     expect(event).toMatchObject({ label: 'API', type: 'start', source: 'jenkins' });
     expect(Number.isFinite(event.epochMs)).toBe(true);
+  });
+
+  test('can profile a Jenkins stage until a stop file is created', async () => {
+    const outputFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'load-profile-stop-file-'));
+    const stopFile = path.join(outputFolder, 'stop');
+
+    const runPromise = loadMonitor.__test__.runUntilStopFile({
+      outputFolder,
+      reportFolder: outputFolder,
+      reportFolders: [outputFolder],
+      sampleIntervalMs: 5,
+      childIdleTimeoutMs: 0,
+      childCloseGraceMs: 0,
+      childTerminateGraceMs: 20,
+      label: 'jenkins-stage',
+      injectOdhin: false,
+      odhinTab: false,
+      eventsFile: '',
+      stopFile,
+    });
+
+    setTimeout(() => fs.writeFileSync(stopFile, 'stop\n'), 20);
+
+    await expect(runPromise).resolves.toBe(0);
+
+    const summary = JSON.parse(fs.readFileSync(path.join(outputFolder, 'summary.json'), 'utf8'));
+    expect(summary.command).toEqual(['jenkins-functional-stages']);
+    expect(summary.label).toBe('jenkins-stage');
+    expect(fs.existsSync(path.join(outputFolder, 'load-profile.html'))).toBe(true);
   });
 
   test('terminates a silent child command after the configured idle watchdog expires', async () => {

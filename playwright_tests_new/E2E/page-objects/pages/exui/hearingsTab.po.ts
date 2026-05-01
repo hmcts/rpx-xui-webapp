@@ -10,14 +10,14 @@ export class HearingsTabPage {
   readonly emptyState = this.page.getByText('No current and upcoming hearings found', { exact: false });
   readonly reloadButton = this.page.locator('#reload-hearing-tab');
   readonly requestHearingButton = this.page.getByRole('button', { name: /request a hearing/i });
-  readonly additionalSecurityYes = this.page.locator('#addition-security-confirmation #additionalSecurityYes');
-  readonly additionalSecurityNo = this.page.locator('#addition-security-confirmation #additionalSecurityNo');
   readonly continueButton = this.page.getByRole('button', { name: /^continue$/i });
   readonly backLink = this.page.getByRole('link', { name: /^back$/i });
   readonly linkedHearingRadio = this.page.locator('#linked-form input[type="radio"]').first();
   readonly particularOrderRadio = this.page.locator('#particularOrder');
   readonly hearingOrderSelects = this.page.locator('select[id^="hearingsOrder"]');
   readonly viewDetailsButtons = this.page.locator('[id^="link-view-details-"]');
+  readonly additionalSecurityYes = this.page.locator('#addition-security-confirmation #additionalSecurityYes');
+  readonly additionalSecurityNo = this.page.locator('#addition-security-confirmation #additionalSecurityNo');
 
   sectionHeading(name: string): Locator {
     return this.page.locator('exui-case-hearings-list th.govuk-body-lead').filter({ hasText: name });
@@ -112,6 +112,14 @@ export class HearingsTabPage {
     await this.viewOrEditButton(hearingId).click();
   }
 
+  async expectNoViewDetailsButtons(timeoutMs: number): Promise<void> {
+    await expect(this.viewDetailsButtons).toHaveCount(0, { timeout: timeoutMs });
+  }
+
+  async continueFlow(): Promise<void> {
+    await this.continueButton.click();
+  }
+
   async additionalSecurity(model: HearingJourneyModel, page: Page): Promise<void> {
     const value = model.get('hearingFacilities', 'additionalSecurity');
     console.log('~~~~~~~~~~~SET VALUE for hearingFacilities ===', value);
@@ -123,26 +131,5 @@ export class HearingsTabPage {
     }
     const getValue = model.get('hearingFacilities', 'additionalSecurity');
     console.log('~~~~~~~~~~~GET VALUE for hearingFacilities ===', getValue);
-  async expectNoViewDetailsButtons(timeoutMs: number): Promise<void> {
-    await expect(this.viewDetailsButtons).toHaveCount(0, { timeout: timeoutMs });
-  }
-
-  async continueFlow(): Promise<void> {
-    await this.continueButton.click();
-  }
-
-  async goBack(): Promise<void> {
-    await this.backLink.click();
-  }
-
-  async selectOrderedLinkedHearings(): Promise<void> {
-    await this.linkedHearingRadio.check();
-    await this.continueFlow();
-    await this.particularOrderRadio.check();
-
-    const orderCount = await this.hearingOrderSelects.count();
-    for (let index = 0; index < orderCount; index += 1) {
-      await this.hearingOrderSelects.nth(index).selectOption(String(index + 1));
-    }
   }
 }

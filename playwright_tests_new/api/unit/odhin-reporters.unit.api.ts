@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test';
 let OdhinProgressReporter: {
   new (options?: Record<string, unknown>): {
     onBegin: (config: unknown, suite: { allTests: () => unknown[] }) => void;
-    onEnd: () => void;
+    onEnd: (result?: { status?: string }) => void;
     onExit: () => void;
   };
 };
@@ -166,6 +166,87 @@ test.describe('Odhin reporter unit tests', { tag: '@svc-internal' }, () => {
 
     expect(exitCalls).toEqual([0]);
     expect(stderrWrites.some((entry) => entry.includes('Forcing process exit after Odhin completion'))).toBe(true);
+  });
+
+  test('progress reporter preserves a failed result when forced exit happens before process exitCode is set', async () => {
+    const exitCalls: number[] = [];
+    const reporter = new OdhinProgressReporter({
+      enabled: true,
+      forceExitOnCompletion: true,
+      exitProcess: (exitCode: number) => {
+        exitCalls.push(exitCode);
+      },
+    });
+    const originalExitCode = process.exitCode;
+    const originalWrite = process.stderr.write.bind(process.stderr);
+    process.stderr.write = (() => true) as typeof process.stderr.write;
+
+    try {
+      process.exitCode = undefined;
+      reporter.onBegin({}, { allTests: () => [1] });
+      reporter.onEnd({ status: 'failed' });
+      reporter.onExit();
+      await new Promise((resolve) => setImmediate(resolve));
+    } finally {
+      process.exitCode = originalExitCode;
+      process.stderr.write = originalWrite;
+    }
+
+    expect(exitCalls).toEqual([1]);
+  });
+
+  test('progress reporter treats a passed result as successful when process exitCode is not set', async () => {
+    const exitCalls: number[] = [];
+    const reporter = new OdhinProgressReporter({
+      enabled: true,
+      forceExitOnCompletion: true,
+      exitProcess: (exitCode: number) => {
+        exitCalls.push(exitCode);
+      },
+    });
+    const originalExitCode = process.exitCode;
+    const originalWrite = process.stderr.write.bind(process.stderr);
+    process.stderr.write = (() => true) as typeof process.stderr.write;
+
+    try {
+      process.exitCode = undefined;
+      reporter.onBegin({}, { allTests: () => [1] });
+      reporter.onEnd({ status: 'passed' });
+      reporter.onExit();
+      await new Promise((resolve) => setImmediate(resolve));
+    } finally {
+      process.exitCode = originalExitCode;
+      process.stderr.write = originalWrite;
+    }
+
+    expect(exitCalls).toEqual([0]);
+  });
+
+  test('progress reporter preserves an explicit non-zero process exitCode over a passed result', async () => {
+    const exitCalls: number[] = [];
+    const reporter = new OdhinProgressReporter({
+      enabled: true,
+      forceExitOnCompletion: true,
+      exitProcess: (exitCode: number) => {
+        exitCalls.push(exitCode);
+      },
+    });
+    const originalExitCode = process.exitCode;
+    const originalWrite = process.stderr.write.bind(process.stderr);
+    process.stderr.write = (() => true) as typeof process.stderr.write;
+
+    try {
+      process.exitCode = 2;
+      reporter.onBegin({}, { allTests: () => [1] });
+      reporter.onEnd({ status: 'passed' });
+      reporter.onExit();
+      await new Promise((resolve) => setImmediate(resolve));
+    } finally {
+      process.exitCode = originalExitCode;
+      process.stderr.write = originalWrite;
+    }
+
+    expect(exitCalls).toEqual([2]);
   });
 
   test('adaptive reporter bounds stalled runtime hooks and still reaches onEnd', async () => {

@@ -15,6 +15,7 @@ class OdhinProgressReporter {
     this.tick = 0;
     this.totalPlannedTests = 0;
     this.progressStarted = false;
+    this.finalStatus = undefined;
     this.timeoutExitCode =
       Number.isFinite(Number(options.timeoutExitCode)) && Number(options.timeoutExitCode) >= 0
         ? Number(options.timeoutExitCode)
@@ -34,10 +35,11 @@ class OdhinProgressReporter {
     this.totalPlannedTests = suite.allTests().length;
   }
 
-  onEnd() {
+  onEnd(result) {
     if (!this.enabled) {
       return;
     }
+    this.finalStatus = result?.status;
     this.startedAt = Date.now();
     if (this.graceMs <= 0) {
       this.startProgress();
@@ -108,7 +110,7 @@ class OdhinProgressReporter {
 
     if (this.forceExitOnCompletion) {
       setImmediate(() => {
-        const exitCode = Number.isFinite(Number(process.exitCode)) ? Number(process.exitCode) : 0;
+        const exitCode = this.resolveCompletionExitCode();
         process.stderr.write(`[odhin-progress] Forcing process exit after Odhin completion with code ${exitCode}.\n`);
         this.exitProcess(exitCode);
       });
@@ -117,13 +119,21 @@ class OdhinProgressReporter {
 
     if (this.completionExitDelayMs > 0) {
       setTimeout(() => {
-        const exitCode = Number.isFinite(Number(process.exitCode)) ? Number(process.exitCode) : 0;
+        const exitCode = this.resolveCompletionExitCode();
         process.stderr.write(
           `[odhin-progress] Process still alive ${this.completionExitDelayMs}ms after Odhin completion. Forcing exit with code ${exitCode}.\n`
         );
         this.exitProcess(exitCode);
       }, this.completionExitDelayMs);
     }
+  }
+
+  resolveCompletionExitCode() {
+    const processExitCode = Number(process.exitCode);
+    if (Number.isFinite(processExitCode)) {
+      return processExitCode;
+    }
+    return this.finalStatus === 'passed' ? 0 : 1;
   }
 }
 

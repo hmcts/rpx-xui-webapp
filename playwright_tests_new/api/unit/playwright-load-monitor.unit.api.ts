@@ -1,9 +1,11 @@
 import { expect, test } from '@playwright/test';
 import childProcess from 'node:child_process';
+import { EventEmitter } from 'node:events';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { createRequire } from 'node:module';
+import { PassThrough } from 'node:stream';
 
 const require = createRequire(import.meta.url);
 
@@ -40,12 +42,17 @@ const loadMonitor = require('../../../scripts/playwright-load-monitor.js') as {
       reportFolder: string;
       reportFolders: string[];
       sampleIntervalMs: number;
+      childIdleTimeoutMs: number;
+      childTerminateGraceMs: number;
       label: string;
       injectOdhin: boolean;
       odhinTab: boolean;
       eventsFile: string;
     };
     commandArgs: string[];
+  };
+  __test__: {
+    runMonitoredCommand: (commandArgs: string[], options: Record<string, unknown>) => Promise<number>;
   };
 };
 
@@ -54,6 +61,10 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
     const parsed = loadMonitor.parseArgs([
       '--sample-interval-ms',
       '1000',
+      '--child-idle-timeout-ms',
+      '2500',
+      '--child-terminate-grace-ms',
+      '500',
       '--report-folder',
       'custom-report',
       '--output-folder',
@@ -69,6 +80,8 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
 
     expect(parsed.options).toMatchObject({
       sampleIntervalMs: 1000,
+      childIdleTimeoutMs: 2500,
+      childTerminateGraceMs: 500,
       reportFolder: 'custom-report',
       reportFolders: ['custom-report'],
       outputFolder: 'custom-load',
@@ -285,6 +298,96 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
     const event = JSON.parse(line);
     expect(event).toMatchObject({ label: 'API', type: 'start', source: 'jenkins' });
     expect(Number.isFinite(event.epochMs)).toBe(true);
+  });
+
+  test('terminates a silent child command after the configured idle watchdog expires', async () => {
+    const outputFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'load-profile-child-timeout-'));
+    const child = new EventEmitter() as EventEmitter & {
+      stdout: PassThrough;
+      stderr: PassThrough;
+      kill: (signal: string) => boolean;
+    };
+    const signals: string[] = [];
+    child.stdout = new PassThrough();
+    child.stderr = new PassThrough();
+    child.kill = (signal: string) => {
+      signals.push(signal);
+      return true;
+    };
+    const stderrWrites: string[] = [];
+    const originalError = console.error;
+    console.error = (message?: unknown) => {
+      stderrWrites.push(String(message));
+    };
+
+    try {
+      const exitCode = await loadMonitor.__test__.runMonitoredCommand(['node', 'silent-child.js'], {
+        outputFolder,
+        reportFolder: outputFolder,
+        reportFolders: [outputFolder],
+        sampleIntervalMs: 5,
+        childIdleTimeoutMs: 20,
+        childTerminateGraceMs: 20,
+        label: 'silent-child',
+        injectOdhin: false,
+        odhinTab: false,
+        eventsFile: '',
+        spawnProcess: () => child,
+      });
+
+      expect(exitCode).toBe(1);
+    } finally {
+      console.error = originalError;
+    }
+
+    expect(signals).toEqual(['SIGTERM', 'SIGKILL']);
+    expect(stderrWrites.some((entry) => entry.includes('produced no output'))).toBe(true);
+    expect(fs.existsSync(path.join(outputFolder, 'summary.json'))).toBe(true);
+  });
+
+  test('keeps the child watchdog alive while the command continues to emit output', async () => {
+    const outputFolder = fs.mkdtempSync(path.join(os.tmpdir(), 'load-profile-child-active-'));
+    const child = new EventEmitter() as EventEmitter & {
+      stdout: PassThrough;
+      stderr: PassThrough;
+      kill: (signal: string) => boolean;
+    };
+    const signals: string[] = [];
+    child.stdout = new PassThrough();
+    child.stderr = new PassThrough();
+    child.kill = (signal: string) => {
+      signals.push(signal);
+      return true;
+    };
+    const originalWrite = process.stdout.write.bind(process.stdout);
+    process.stdout.write = (() => true) as typeof process.stdout.write;
+
+    try {
+      const runPromise = loadMonitor.__test__.runMonitoredCommand(['node', 'active-child.js'], {
+        outputFolder,
+        reportFolder: outputFolder,
+        reportFolders: [outputFolder],
+        sampleIntervalMs: 5,
+        childIdleTimeoutMs: 20,
+        childTerminateGraceMs: 20,
+        label: 'active-child',
+        injectOdhin: false,
+        odhinTab: false,
+        eventsFile: '',
+        spawnProcess: () => child,
+      });
+
+      setTimeout(() => child.stdout.emit('data', Buffer.from('tick 1\n')), 10);
+      setTimeout(() => child.stdout.emit('data', Buffer.from('tick 2\n')), 25);
+      setTimeout(() => child.emit('close', 0, null), 35);
+
+      await expect(runPromise).resolves.toBe(0);
+    } finally {
+      process.stdout.write = originalWrite;
+    }
+
+    expect(signals).toEqual([]);
+    expect(fs.existsSync(path.join(outputFolder, 'summary.json'))).toBe(true);
   });
 });
 

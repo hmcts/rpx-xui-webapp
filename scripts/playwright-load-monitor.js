@@ -7,6 +7,8 @@ const os = require('node:os');
 const path = require('node:path');
 
 const DEFAULT_SAMPLE_INTERVAL_MS = 2000;
+const DEFAULT_CHILD_IDLE_TIMEOUT_MS = process.env.CI ? 120_000 : 0;
+const DEFAULT_CHILD_TERMINATE_GRACE_MS = 10_000;
 const DEFAULT_OUTPUT_FOLDER = 'functional-output/tests/playwright-load-profile';
 const DEFAULT_REPORT_FOLDER = 'functional-output/tests/playwright-integration/odhin-report';
 const SUMMARY_FILE = 'summary.json';
@@ -24,6 +26,11 @@ function parseArgs(argv) {
     reportFolder: defaultReportFolder,
     reportFolders: [defaultReportFolder],
     sampleIntervalMs: parsePositiveInteger(process.env.PW_LOAD_PROFILE_INTERVAL_MS, DEFAULT_SAMPLE_INTERVAL_MS),
+    childIdleTimeoutMs: parseNonNegativeInteger(process.env.PW_LOAD_PROFILE_CHILD_IDLE_TIMEOUT_MS, DEFAULT_CHILD_IDLE_TIMEOUT_MS),
+    childTerminateGraceMs: parseNonNegativeInteger(
+      process.env.PW_LOAD_PROFILE_CHILD_TERMINATE_GRACE_MS,
+      DEFAULT_CHILD_TERMINATE_GRACE_MS
+    ),
     label: process.env.PW_LOAD_PROFILE_LABEL ?? '',
     injectOdhin: process.env.PW_LOAD_PROFILE_INJECT_ODHIN !== 'false',
     odhinTab: process.env.PW_LOAD_PROFILE_ODHIN_TAB !== 'false',
@@ -47,6 +54,12 @@ function parseArgs(argv) {
       index += 1;
     } else if (arg === '--sample-interval-ms' && next) {
       options.sampleIntervalMs = parsePositiveInteger(next, DEFAULT_SAMPLE_INTERVAL_MS);
+      index += 1;
+    } else if (arg === '--child-idle-timeout-ms' && next) {
+      options.childIdleTimeoutMs = parseNonNegativeInteger(next, DEFAULT_CHILD_IDLE_TIMEOUT_MS);
+      index += 1;
+    } else if (arg === '--child-terminate-grace-ms' && next) {
+      options.childTerminateGraceMs = parseNonNegativeInteger(next, DEFAULT_CHILD_TERMINATE_GRACE_MS);
       index += 1;
     } else if (arg === '--label' && next) {
       options.label = next;
@@ -72,6 +85,11 @@ function normalizeReportFolders(options) {
 function parsePositiveInteger(value, fallback) {
   const parsed = Number.parseInt(String(value ?? ''), 10);
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+function parseNonNegativeInteger(value, fallback) {
+  const parsed = Number.parseInt(String(value ?? ''), 10);
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : fallback;
 }
 
 function readFirstExistingFile(filePaths) {
@@ -232,24 +250,89 @@ async function runMonitoredCommand(commandArgs, options) {
   const timer = setInterval(() => samples.push(sample()), options.sampleIntervalMs);
 
   const exitCode = await new Promise((resolve) => {
-    const child = childProcess.spawn(commandArgs[0], commandArgs.slice(1), {
+    const spawnProcess = options.spawnProcess ?? childProcess.spawn;
+    const monitorChildOutput = Boolean(options.childIdleTimeoutMs);
+    let child;
+    let settled = false;
+    let idleTimer;
+    let terminateTimer;
+
+    const clearWatchdogs = () => {
+      if (idleTimer) {
+        clearTimeout(idleTimer);
+        idleTimer = undefined;
+      }
+      if (terminateTimer) {
+        clearTimeout(terminateTimer);
+        terminateTimer = undefined;
+      }
+    };
+    const finish = (code) => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      clearWatchdogs();
+      resolve(code);
+    };
+    const terminateStuckChild = () => {
+      if (settled) {
+        return;
+      }
+      console.error(
+        `[load-profile] command produced no output for ${options.childIdleTimeoutMs}ms; terminating stuck child process`
+      );
+      child.kill?.('SIGTERM');
+      terminateTimer = setTimeout(() => {
+        if (settled) {
+          return;
+        }
+        console.error(`[load-profile] command did not exit ${options.childTerminateGraceMs}ms after SIGTERM; forcing failure`);
+        child.kill?.('SIGKILL');
+        finish(1);
+      }, options.childTerminateGraceMs);
+      terminateTimer.unref?.();
+    };
+    const resetIdleTimer = () => {
+      if (!options.childIdleTimeoutMs || settled) {
+        return;
+      }
+      if (idleTimer) {
+        clearTimeout(idleTimer);
+      }
+      idleTimer = setTimeout(terminateStuckChild, options.childIdleTimeoutMs);
+      idleTimer.unref?.();
+    };
+    const pipeChildOutput = (stream, destination) => {
+      stream?.on('data', (chunk) => {
+        resetIdleTimer();
+        destination.write(chunk);
+      });
+    };
+
+    child = spawnProcess(commandArgs[0], commandArgs.slice(1), {
       env: {
         ...process.env,
         PLAYWRIGHT_REPORT_FOLDER: options.reportFolder,
       },
       shell: process.platform === 'win32',
-      stdio: 'inherit',
+      stdio: monitorChildOutput ? ['inherit', 'pipe', 'pipe'] : 'inherit',
     });
+    resetIdleTimer();
+    if (monitorChildOutput) {
+      pipeChildOutput(child.stdout, process.stdout);
+      pipeChildOutput(child.stderr, process.stderr);
+    }
     child.on('error', (error) => {
       console.error(`[load-profile] failed to start command: ${error.message}`);
-      resolve(1);
+      finish(1);
     });
     child.on('close', (code, signal) => {
       if (signal) {
         console.error(`[load-profile] command terminated by signal ${signal}`);
-        resolve(1);
+        finish(1);
       } else {
-        resolve(code ?? 1);
+        finish(code ?? 1);
       }
     });
   });
@@ -288,6 +371,8 @@ function buildMetadata(commandArgs, options) {
     startTime: new Date().toISOString(),
     startEpochMs: Date.now(),
     sampleIntervalMs: options.sampleIntervalMs,
+    childIdleTimeoutMs: options.childIdleTimeoutMs,
+    childTerminateGraceMs: options.childTerminateGraceMs,
     logicalCpuCount,
     effectiveCpuCount: round(effectiveCpuCount),
     totalMemoryBytes: os.totalmem(),
@@ -727,5 +812,7 @@ module.exports = {
     buildSummaryTable,
     calculateCpuUsage,
     parsePositiveInteger,
+    parseNonNegativeInteger,
+    runMonitoredCommand,
   },
 };

@@ -37,9 +37,10 @@ NODE_CONFIG_ENV=development sets the machine so that the config that is used is 
 
 Run `yarn start:ng` to start up the UI.
 
-## Fully mocked local setup (no downstream environments)
+## Backend-mock-assisted local setup (mixed mode)
 
-Use this mode when AAT/downstream services are unavailable and you want local integration development.
+Use this mode for local integration development when you want local UI/Node plus local auth and selected mocked routes.
+By default, this is **not** fully isolated from downstream environments: with standard local Node config, many service calls still target test downstream services.
 
 ### Ports used
 
@@ -148,6 +149,53 @@ Node API test commands (complementary):
 - `yarn coverage:node` – full Mocha + c8 coverage run for the Node layer (uses `api` scripts and generates coverage reports). Use when you need coverage numbers.
 - `yarn test:node:local` – quick Mocha run for Node with dev config (`NODE_CONFIG_DIR=../config`, `NODE_CONFIG_ENV=development`, `ALLOW_CONFIG_MUTATIONS=1`) and stubs for external calls; good for local iteration.
 - `yarn test:api:pw:coverage` – Playwright API functional tests with `c8` coverage over live API flows; complements the unit coverage above by exercising end-to-end routes.
+
+## Playwright test automation (E2E, integration, reporting)
+
+Use this section as the quick entry point for Playwright testing in this repo.
+
+Detailed suite documentation and architecture:
+
+- [`playwright_tests_new/README.md`](./playwright_tests_new/README.md)
+- [`playwright_tests_new/TEST_FRAMEWORK_ARCHITECTURE.md`](./playwright_tests_new/TEST_FRAMEWORK_ARCHITECTURE.md)
+
+### Test layers and commands
+
+- **E2E UI journeys (browser + backend):**
+  - AAT: `yarn test:playwrightE2E`
+  - Local app target: `TEST_URL=http://localhost:3000 yarn test:playwrightE2E`
+- **Integration tests (UI with mocked backend routes):**
+  - AAT: `yarn test:playwright:integration`
+  - Fully mocked local mode: `TEST_URL=http://localhost:3000 EXUI_BASE_URL=http://localhost:3000 IDAM_WEB_URL=http://localhost:8080 IDAM_TESTING_SUPPORT_URL=http://localhost:8080 PLAYWRIGHT_SKIP_INSTALL=true yarn test:playwright:integration`
+- **API functional tests (Playwright node-api project):**
+  - `yarn test:api:pw`
+  - With coverage/report copy: `yarn test:api:pw:coverage`
+
+### How tests operate
+
+- **Session management:** Playwright uses lazy session capture and shared `.sessions/` storage to avoid repeated logins during parallel runs.
+- **Integration mocking model:** Integration specs in `playwright_tests_new/integration/test/` mock backend APIs with route interception and builders in `playwright_tests_new/integration/mocks/`.
+- **Tag-based execution:** Suites support include/exclude tag filters via environment variables (`E2E_PW_INCLUDE_TAGS`, `INTEGRATION_PW_INCLUDE_TAGS`, `API_PW_INCLUDE_TAGS` and corresponding `*_EXCLUDED_TAGS_OVERRIDE`).
+- **Parallelism:** worker count auto-scales unless overridden with `FUNCTIONAL_TESTS_WORKERS`.
+
+### Reporting and diagnostics
+
+- **Odhin HTML reports:**
+  - E2E: `functional-output/tests/playwright-e2e/odhin-report/xui-playwright-e2e.html`
+  - Integration: `functional-output/tests/playwright-integration/odhin-report/xui-playwright-integration.html`
+  - API: `functional-output/tests/playwright-api/odhin-report/xui-playwright-api.html`
+- **Playwright diagnostics:**
+  - Trace/video/screenshot outputs (on failures): `test-results/`
+  - Additional failure payloads: `functional-output/tests/playwright-diagnostics/failure-data/`
+- **CI publishing:** Jenkins archives Odhin reports and Playwright diagnostics artifacts for troubleshooting.
+
+### Key considerations for developers
+
+- Use backend mock + local IDAM routes for local auth and selected endpoint stubbing.
+- Treat the default local setup as **mixed mode**: unless Node is explicitly configured for mock service endpoints, many calls still go to test downstream services.
+- If auth behavior looks incorrect or stale, clear sessions and rerun: `rm -rf .sessions`.
+- Prefer running targeted subsets first (file path or tags), then full suites.
+- For locator hygiene in E2E code, run `yarn lint:playwright:locators`.
 
 ## Linting
 

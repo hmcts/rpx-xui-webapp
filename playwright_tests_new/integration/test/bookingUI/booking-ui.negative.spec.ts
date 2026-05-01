@@ -6,7 +6,7 @@ import {
   singleLocationMock,
 } from '../../mocks/bookingUI.mock';
 import { buildHearingsUserDetailsMock } from '../../mocks/hearings.mock';
-import { formatBookingUiDate } from '../../utils/tableUtils';
+import { formatUiDate, normalizeUiDateValue } from '../../utils/tableUtils';
 
 const defaultBookingLocation = singleLocationMock[0];
 const bookingPageUrlPattern = /\/booking$/;
@@ -78,15 +78,13 @@ createBookingErrorCases.forEach(({ status, expectedUrlPattern }) => {
 
         await test.step('Confirm booking and verify summary details', async () => {
           const table = await bookingUiPage.getSummaryListPairs();
-          const today = formatBookingUiDate(new Date().toISOString());
+          const today = formatUiDate(new Date().toISOString());
           expect(table[0]).toEqual({
             key: 'Location',
             value: routeState.existingBookingsMock[0].locationName,
           });
-          expect(table[1]).toEqual({
-            key: 'Duration',
-            value: `${today} to ${today}`,
-          });
+          expect(table[1].key).toBe('Duration');
+          expect(normalizeUiDateValue(table[1].value)).toBe(`${today} to ${today}`);
           await bookingUiPage.confirmBooking();
         });
 

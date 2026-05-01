@@ -268,6 +268,33 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(filters.grepInvert?.test('@e2e-search-case')).toBe(true);
   });
 
+  test('E2E tag defaults enable every configured non-smoke feature by default', () => {
+    const filters = resolveTagFilters({
+      env: {},
+      includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
+      excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
+      configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
+      defaultConfigPath: 'playwright_tests_new/E2E/tag-filter.json',
+      suiteTag: '@e2e',
+    });
+
+    expect(filters.excludedTags).toEqual([]);
+    expect(filters.grepInvert).toBeUndefined();
+    expect(filters.availableTags).toEqual(
+      expect.arrayContaining([
+        '@e2e-case-file-view',
+        '@e2e-case-flags',
+        '@e2e-create-case',
+        '@e2e-document-upload',
+        '@e2e-document-upload-v1',
+        '@e2e-manage-tasks',
+        '@e2e-media-viewer',
+        '@e2e-search-case',
+        '@e2e-update-case',
+      ])
+    );
+  });
+
   test('shared tag filter helper treats suite plus feature includes as feature-only selection', () => {
     const filters = resolveTagFilters({
       env: {

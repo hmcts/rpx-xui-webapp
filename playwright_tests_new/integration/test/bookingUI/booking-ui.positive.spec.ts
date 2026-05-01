@@ -6,7 +6,7 @@ import {
   type CreateBookingResponse,
   getExpectedTodayOnlyCreateBookingRange,
 } from '../../mocks/bookingUI.mock';
-import { formatUiDate } from '../../utils/tableUtils';
+import { formatBookingUiDate } from '../../utils/tableUtils';
 
 const defaultBookingLocation = singleLocationMock[0];
 const bookingPageUrlPattern = /\/booking$/;
@@ -95,7 +95,7 @@ test.describe('Booking UI with lazy pooled session users', { tag: ['@integration
 
     await test.step('Verify check your answers and submit', async () => {
       const table = await bookingUiPage.getSummaryListPairs();
-      const today = formatUiDate(new Date().toISOString());
+      const today = formatBookingUiDate(new Date().toISOString());
       expect(table[0]).toEqual({
         key: 'Location',
         value: routeState.existingBookingsMock[0].locationName,

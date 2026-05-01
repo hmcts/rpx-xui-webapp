@@ -62,41 +62,43 @@ const loadMonitor = require('../../../scripts/playwright-load-monitor.js') as {
 
 test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => {
   test('parses wrapper options and preserves Playwright command arguments', () => {
-    const parsed = loadMonitor.parseArgs([
-      '--sample-interval-ms',
-      '1000',
-      '--child-idle-timeout-ms',
-      '2500',
-      '--child-close-grace-ms',
-      '1500',
-      '--child-terminate-grace-ms',
-      '500',
-      '--report-folder',
-      'custom-report',
-      '--output-folder',
-      'custom-load',
-      '--label',
-      'workers-10',
-      '--',
-      'yarn',
-      'test:playwright:integration',
-      '--workers=10',
-      '--shard=1/2',
-    ]);
+    withTemporaryEnv({ PW_LOAD_PROFILE_ODHIN_TAB: undefined }, () => {
+      const parsed = loadMonitor.parseArgs([
+        '--sample-interval-ms',
+        '1000',
+        '--child-idle-timeout-ms',
+        '2500',
+        '--child-close-grace-ms',
+        '1500',
+        '--child-terminate-grace-ms',
+        '500',
+        '--report-folder',
+        'custom-report',
+        '--output-folder',
+        'custom-load',
+        '--label',
+        'workers-10',
+        '--',
+        'yarn',
+        'test:playwright:integration',
+        '--workers=10',
+        '--shard=1/2',
+      ]);
 
-    expect(parsed.options).toMatchObject({
-      sampleIntervalMs: 1000,
-      childIdleTimeoutMs: 2500,
-      childCloseGraceMs: 1500,
-      childTerminateGraceMs: 500,
-      reportFolder: 'custom-report',
-      reportFolders: ['custom-report'],
-      outputFolder: 'custom-load',
-      label: 'workers-10',
-      injectOdhin: false,
-      odhinTab: true,
+      expect(parsed.options).toMatchObject({
+        sampleIntervalMs: 1000,
+        childIdleTimeoutMs: 2500,
+        childCloseGraceMs: 1500,
+        childTerminateGraceMs: 500,
+        reportFolder: 'custom-report',
+        reportFolders: ['custom-report'],
+        outputFolder: 'custom-load',
+        label: 'workers-10',
+        injectOdhin: false,
+        odhinTab: true,
+      });
+      expect(parsed.commandArgs).toEqual(['yarn', 'test:playwright:integration', '--workers=10', '--shard=1/2']);
     });
-    expect(parsed.commandArgs).toEqual(['yarn', 'test:playwright:integration', '--workers=10', '--shard=1/2']);
   });
 
   test('only injects the load profile into Odhín when explicitly requested', () => {
@@ -559,4 +561,28 @@ function sample(overrides: Record<string, unknown>) {
     },
     ...overrides,
   };
+}
+
+function withTemporaryEnv(overrides: Record<string, string | undefined>, callback: () => void) {
+  const originalValues = new Map<string, string | undefined>();
+  for (const [key, value] of Object.entries(overrides)) {
+    originalValues.set(key, process.env[key]);
+    if (value === undefined) {
+      delete process.env[key];
+    } else {
+      process.env[key] = value;
+    }
+  }
+
+  try {
+    callback();
+  } finally {
+    for (const [key, value] of originalValues) {
+      if (value === undefined) {
+        delete process.env[key];
+      } else {
+        process.env[key] = value;
+      }
+    }
+  }
 }

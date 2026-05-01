@@ -160,6 +160,21 @@ def assertHtmlReportExists = { String reportDir, String reportFile ->
     steps.sh "test -f '${reportDir}/${reportFile}'"
 }
 
+def ensureHtmlReportForPublishing = { String reportDir, String reportFile, String suiteName ->
+    withEnv([
+        "PW_ODHIN_ENSURE_REPORT_DIR=${reportDir}",
+        "PW_ODHIN_ENSURE_REPORT_FILE=${reportFile}",
+        "PW_ODHIN_ENSURE_SUITE_NAME=${suiteName}"
+    ]) {
+        steps.sh '''
+            node scripts/ensure-odhin-report.js \
+              --report-dir "$PW_ODHIN_ENSURE_REPORT_DIR" \
+              --report-file "$PW_ODHIN_ENSURE_REPORT_FILE" \
+              --suite-name "$PW_ODHIN_ENSURE_SUITE_NAME"
+        '''
+    }
+}
+
 def playwrightLoadProfileEventsFile = { String testType ->
     "functional-output/tests/playwright-integration/load-profile/${testType}-stage-events.jsonl"
 }
@@ -249,6 +264,11 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
             failures << "${runConfig.displayName}: ${e.getMessage()}"
         } finally {
             echo "[playwright-integration] Publishing Odhín HTML report for ${runConfig.displayName}"
+            ensureHtmlReportForPublishing(
+                runConfig.reportDir,
+                playwrightIntegrationReportFile,
+                "${reportNamePrefix} Playwright Integration Test (${runConfig.displayName})"
+            )
             publishHTML([
                 allowMissing         : true,
                 alwaysLinkToLastBuild: true,

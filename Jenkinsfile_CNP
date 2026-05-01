@@ -144,17 +144,12 @@ def archivePlaywrightDiagnostics = {
     '''
     steps.archiveArtifacts(
         allowEmptyArchive: true,
-        artifacts: 'functional-output/tests/**/odhin-report/**/*,functional-output/tests/playwright-diagnostics/failure-data/**/*',
+        artifacts: 'functional-output/tests/**/odhin-report/**/xui-playwright-*.html,functional-output/tests/playwright-diagnostics/failure-data/**/*',
         excludes: 'test-results/.playwright-artifacts-*/**,**/.playwright-artifacts-*/**'
     )
 }
 
 def playwrightIntegrationReportFile = 'xui-playwright-integration.html'
-// Temporary CI diagnostic scope for PR-5120: keep Playwright runs small while proving
-// the Odhín/reporting process exits cleanly. Revert this block to restore full coverage.
-def playwrightCiDiagnosticScopeEnabled = true
-def playwrightCiDiagnosticIntegrationArgs = 'playwright_tests_new/integration/test/restrictedAccess --grep @integration-restricted-case'
-def playwrightCiDiagnosticE2EArgs = 'playwright_tests_new/E2E/test/searchCase --grep @e2e-search-case'
 
 def assertHtmlReportExists = { String reportDir, String reportFile ->
     steps.sh "test -f '${reportDir}/${reportFile}'"
@@ -188,9 +183,6 @@ def recordPlaywrightLoadEvent = { String eventsFile, String label, String eventT
 }
 
 def resolveIntegrationProfileRuns = { String configuredRuns, String workersOverride, String shardOverride ->
-    if (playwrightCiDiagnosticScopeEnabled) {
-        return ['workers=2']
-    }
     def requestedWorkers = workersOverride?.trim()
     if (requestedWorkers) {
         def requestedShard = shardOverride?.trim()
@@ -248,8 +240,7 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
                 "INTEGRATION_PW_INCLUDE_TAGS=${params.INTEGRATION_PW_INCLUDE_TAGS ?: ''}",
                 "INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=${params.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
             ]) {
-                def diagnosticArgs = playwrightCiDiagnosticScopeEnabled ? " ${playwrightCiDiagnosticIntegrationArgs}" : ''
-                yarnBuilder.yarn("test:playwright:integration:profile -- --workers=${runConfig.workers}${runConfig.shardArg}${diagnosticArgs}")
+                yarnBuilder.yarn("test:playwright:integration:profile -- --workers=${runConfig.workers}${runConfig.shardArg}")
             }
             echo "[playwright-integration] Completed test command for ${runConfig.displayName}; checking Odhín report at ${runConfig.reportDir}/${playwrightIntegrationReportFile}"
             assertHtmlReportExists(runConfig.reportDir, playwrightIntegrationReportFile)
@@ -267,7 +258,7 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
             ensureHtmlReportForPublishing(
                 runConfig.reportDir,
                 playwrightIntegrationReportFile,
-                "${reportNamePrefix} Playwright Integration Test (${runConfig.displayName})"
+                "${reportNamePrefix} Playwright Integration Tests"
             )
             publishHTML([
                 allowMissing         : true,
@@ -275,7 +266,7 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
                 keepAll              : true,
                 reportDir            : "${runConfig.reportDir}/",
                 reportFiles          : playwrightIntegrationReportFile,
-                reportName           : "${reportNamePrefix} Playwright Integration Test (${runConfig.displayName})"
+                reportName           : "${reportNamePrefix} Playwright Integration Tests"
             ])
             echo "[playwright-integration] Published Odhín HTML report for ${runConfig.displayName}"
         }
@@ -456,7 +447,7 @@ withPipeline(type, product, component) {
             reportFiles          : 'xui-playwright-e2e.html',
             reportName           : 'DEMO Playwright Smoke'
         ])
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/xui-playwright-e2e.html'
         archivePlaywrightDiagnostics()
     }
 
@@ -469,7 +460,7 @@ withPipeline(type, product, component) {
             reportFiles          : 'xui-playwright-e2e.html',
             reportName           : 'PREVIEW Playwright Smoke'
         ])
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/xui-playwright-e2e.html'
         archivePlaywrightDiagnostics()
 
         stage('Preview Functional Tests (Parallel)') {
@@ -503,7 +494,7 @@ withPipeline(type, product, component) {
                                     reportFiles          : 'xui-playwright-api.html',
                                     reportName           : 'PREVIEW API Functional Test'
                                 ])
-                                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
+                                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/**/odhin-report/**/xui-playwright-api.html'
                             }
                         }
                     }
@@ -520,7 +511,7 @@ withPipeline(type, product, component) {
                         } finally {
                             recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'Integration', 'finish')
                             echo '[playwright-integration] Archiving PREVIEW integration artifacts'
-                            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
+                            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/odhin-report/**/xui-playwright-integration.html'
                             echo '[playwright-integration] Archived PREVIEW integration artifacts'
                         }
                     }
@@ -538,8 +529,7 @@ withPipeline(type, product, component) {
                                 "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
                                 "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
                             ]) {
-                                def diagnosticArgs = playwrightCiDiagnosticScopeEnabled ? " -- ${playwrightCiDiagnosticE2EArgs}" : ''
-                                yarnBuilder.yarn("test:playwrightE2E${diagnosticArgs}")
+                                yarnBuilder.yarn('test:playwrightE2E')
                             }
                         } catch (Exception e) {
                             echo "[failFast] Playwright E2E catch: ${e.getClass().getName()}: ${e.getMessage()}"
@@ -555,7 +545,7 @@ withPipeline(type, product, component) {
                                 reportFiles          : 'xui-playwright-e2e.html',
                                 reportName           : 'PREVIEW Playwright E2E'
                             ])
-                            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
+                            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/xui-playwright-e2e.html'
                         }
                     }
                     }
@@ -576,7 +566,7 @@ withPipeline(type, product, component) {
             reportFiles          : 'xui-playwright-e2e.html',
             reportName           : 'AAT Playwright Smoke'
         ])
-        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
+        steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/xui-playwright-e2e.html'
         archivePlaywrightDiagnostics()
 
         stage('AAT Functional Tests (Parallel)') {
@@ -610,7 +600,7 @@ withPipeline(type, product, component) {
                                   reportFiles          : 'xui-playwright-api.html',
                                   reportName           : 'AAT API Functional Test'
                                 ])
-                                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
+                                steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/**/odhin-report/**/xui-playwright-api.html'
                             }
                         }
                     }
@@ -627,7 +617,7 @@ withPipeline(type, product, component) {
                         } finally {
                             recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'Integration', 'finish')
                             echo '[playwright-integration] Archiving AAT integration artifacts'
-                            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
+                            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/odhin-report/**/xui-playwright-integration.html'
                             echo '[playwright-integration] Archived AAT integration artifacts'
                         }
                     }
@@ -645,8 +635,7 @@ withPipeline(type, product, component) {
                                 "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
                                 "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
                             ]) {
-                                def diagnosticArgs = playwrightCiDiagnosticScopeEnabled ? " -- ${playwrightCiDiagnosticE2EArgs}" : ''
-                                yarnBuilder.yarn("test:playwrightE2E${diagnosticArgs}")
+                                yarnBuilder.yarn('test:playwrightE2E')
                             }
                         } catch (Exception e) {
                             echo "[failFast] Playwright E2E catch: ${e.getClass().getName()}: ${e.getMessage()}"
@@ -662,7 +651,7 @@ withPipeline(type, product, component) {
                                 reportFiles          : 'xui-playwright-e2e.html',
                                 reportName           : 'AAT Playwright E2E'
                             ])
-                            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
+                            steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/xui-playwright-e2e.html'
                         }
                     }
                     }

@@ -114,6 +114,13 @@ export const SYSTEM_USER_PASSWORD = 'secrets.rpx.system-user-password';
 export const LOGIN_ROLE_MATCHER = 'loginRoleMatcher';
 
 export const LOG4_J_CONFIG = 'log4JConfig';
+export const EVENT_LOOP_MONITOR_ENABLED = 'eventLoopMonitor.enabled';
+export const EVENT_LOOP_MONITOR_DEBUG_ENABLED = 'eventLoopMonitor.debugEnabled';
+export const EVENT_LOOP_MONITOR_SAMPLE_INTERVAL_MS = 'eventLoopMonitor.sampleIntervalMs';
+export const EVENT_LOOP_MONITOR_RESOLUTION_MS = 'eventLoopMonitor.resolutionMs';
+export const EVENT_LOOP_MONITOR_WARN_THRESHOLD_MS = 'eventLoopMonitor.warnThresholdMs';
+export const EVENT_LOOP_MONITOR_MAX_TRACKED_REQUESTS = 'eventLoopMonitor.maxTrackedRequests';
+export const EVENT_LOOP_MONITOR_SLOW_REQUEST_THRESHOLD_MS = 'eventLoopMonitor.slowRequestThresholdMs';
 
 export const FEATURE_SECURE_COOKIE_ENABLED = 'secureCookieEnabled';
 export const FEATURE_APP_INSIGHTS_ENABLED = 'appInsightsEnabled';

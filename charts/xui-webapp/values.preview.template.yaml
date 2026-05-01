@@ -1,4 +1,5 @@
 nodejs:
+  replicas: 2
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
   environment:
@@ -31,6 +32,13 @@ nodejs:
     SERVICES_IDAM_SERVICE_OVERRIDE: false
     SERVICES_IDAM_ISS_URL: https://forgerock-am.service.core-compute-idam-aat2.internal:8443/openam/oauth2/realms/root/realms/hmcts
     FEATURE_OIDC_ENABLED: true
+    EVENT_LOOP_MONITOR_ENABLED: true
+    EVENT_LOOP_MONITOR_DEBUG_ENABLED: true
+    EVENT_LOOP_MONITOR_SAMPLE_INTERVAL_MS: 1000
+    EVENT_LOOP_MONITOR_RESOLUTION_MS: 20
+    EVENT_LOOP_MONITOR_WARN_THRESHOLD_MS: 1000
+    EVENT_LOOP_MONITOR_MAX_TRACKED_REQUESTS: 25
+    EVENT_LOOP_MONITOR_SLOW_REQUEST_THRESHOLD_MS: 2000
   keyVaults:
     rpx:
       secrets:

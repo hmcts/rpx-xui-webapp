@@ -19,6 +19,7 @@ import {
 import * as health from './health';
 import * as log4jui from './lib/log4jui';
 import { JUILogger } from './lib/models';
+import { initialiseEventLoopMonitor } from './lib/eventLoopMonitor';
 import * as tunnel from './lib/tunnel';
 import csrf from '@dr.pogodin/csurf';
 import openRoutes from './openRoutes';
@@ -54,6 +55,7 @@ export async function createApp() {
   const app = express();
 
   const logger: JUILogger = log4jui.getLogger('Application');
+  initialiseEventLoopMonitor(app);
   if (showFeature(FEATURE_HELMET_ENABLED)) {
     const helmetConfig = getConfigValue(HELMET);
     if (helmetConfig && typeof helmetConfig === 'object') {

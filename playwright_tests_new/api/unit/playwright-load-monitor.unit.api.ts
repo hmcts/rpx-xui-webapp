@@ -225,19 +225,38 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
   });
 
   test('renders timeline marker labels in a prominent band above the plot', () => {
-    const chart = loadMonitor.buildInlineSvgChart(
+    const startEpochMs = Date.now() - 2000;
+    const summary = loadMonitor.buildSummary(
+      {
+        command: ['jenkins-functional-stages'],
+        startEpochMs,
+        sampleIntervalMs: 1000,
+        effectiveCpuCount: 4,
+        totalMemoryBytes: 8 * 1024 ** 3,
+        workers: 'config-default',
+        shard: '',
+      },
       [
         sample({ elapsedMs: 0, cpuPercent: 10, load1PerCore: 0.2, memoryUsedPercent: 40 }),
-        sample({ elapsedMs: 1000, cpuPercent: 30, load1PerCore: 0.3, memoryUsedPercent: 45 }),
+        sample({ elapsedMs: 2000, cpuPercent: 30, load1PerCore: 0.3, memoryUsedPercent: 45 }),
       ],
-      [{ label: 'Integration', type: 'start', elapsedMs: 500, inRange: true }]
+      0,
+      [
+        { label: 'Integration', type: 'start', epochMs: startEpochMs + 500 },
+        { label: 'Integration', type: 'finish', epochMs: startEpochMs + 1500 },
+      ]
     );
 
-    expect(chart).toContain('<rect x="0" y="0"');
-    expect(chart).toContain('height="46" fill="#f4f8fb"');
-    expect(chart).toContain('font-size="12" font-weight="700" fill="#00703c"');
-    expect(chart).toContain('Integration start');
-    expect(chart).toContain('y1="64"');
+    const html = loadMonitor.buildLoadProfileHtml(summary, [
+      sample({ elapsedMs: 0, cpuPercent: 10, load1PerCore: 0.2, memoryUsedPercent: 40 }),
+      sample({ elapsedMs: 2000, cpuPercent: 30, load1PerCore: 0.3, memoryUsedPercent: 45 }),
+    ]);
+
+    expect(html).toContain('class="stage-timeline"');
+    expect(html).toContain('CI stage timeline');
+    expect(html).toContain('Integration');
+    expect(html).toContain('start 0m 0s');
+    expect(html).toContain('end 0m 1s');
   });
 
   test('renders finish timeline markers as end labels', () => {
@@ -276,7 +295,7 @@ test.describe('Playwright load monitor script', { tag: '@svc-internal' }, () => 
     const html = loadMonitor.buildLoadProfileHtml(summary, [sample({ cpuPercent: 20 })]);
 
     expect(html).toContain('<title>Playwright load profile</title>');
-    expect(html).toContain('<th>Phase</th>');
+    expect(html).toContain('class="stage-timeline"');
     expect(html).toContain('API');
     expect(html).not.toContain('TabSystemLoad');
     expect(html).not.toContain('openMainTab');

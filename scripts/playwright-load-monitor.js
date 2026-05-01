@@ -604,18 +604,47 @@ function buildLoadProfileHtml(summary, samples) {
   <meta charset="utf-8">
   <title>Playwright load profile</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 24px; color: #172b4d; }
-    table { border-collapse: collapse; width: 100%; margin-top: 16px; }
-    th, td { border: 1px solid #d8e3ef; padding: 8px; text-align: left; }
-    th { background: #f4f7fb; }
-    .chart { max-width: 1100px; }
+    :root {
+      --ink: #102a43;
+      --muted: #52667a;
+      --panel: #ffffff;
+      --page: #f4f7fb;
+      --line: #d8e3ef;
+      --soft-line: #e8eef6;
+      --shadow: 0 10px 30px rgba(16, 42, 67, 0.08);
+    }
+    body { font-family: Arial, sans-serif; margin: 0; padding: 28px; color: var(--ink); background: var(--page); }
+    h1 { margin: 0 0 12px; color: #0b1f3f; font-size: 32px; line-height: 1.15; }
+    h2 { margin: 0 0 12px; color: #0b1f3f; font-size: 20px; line-height: 1.25; }
+    .recommendation { margin: 0 0 18px; color: #0b1f3f; font-size: 16px; font-weight: 700; }
+    table { border-collapse: collapse; width: 100%; max-width: 1160px; margin-top: 18px; background: var(--panel); box-shadow: var(--shadow); }
+    th, td { border: 1px solid var(--line); padding: 9px 10px; text-align: left; }
+    th { background: #eef4fb; }
+    details summary { cursor: pointer; color: #1d70b8; font-weight: 700; }
+    .chart { max-width: 1160px; margin-top: 18px; padding: 18px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); box-shadow: var(--shadow); }
+    .stage-timeline { max-width: 1160px; margin: 18px 0 12px; padding: 18px; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); box-shadow: var(--shadow); }
+    .stage-row { display: grid; grid-template-columns: 230px minmax(320px, 1fr) 292px; gap: 16px; align-items: center; min-height: 42px; border-top: 1px solid var(--soft-line); }
+    .stage-row:first-of-type { border-top: 0; }
+    .stage-name { font-size: 13px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .stage-lane { position: relative; height: 26px; }
+    .stage-lane::before { content: ""; position: absolute; left: 0; right: 0; top: 12px; height: 2px; background: #e3ebf4; border-radius: 999px; }
+    .stage-bar { position: absolute; top: 10px; height: 6px; min-width: 6px; border-radius: 999px; box-shadow: 0 2px 6px rgba(16, 42, 67, 0.16); }
+    .stage-dot { position: absolute; top: 6px; width: 14px; height: 14px; border-radius: 50%; transform: translateX(-50%); background: currentColor; box-shadow: 0 0 0 3px #fff, 0 1px 5px rgba(16, 42, 67, 0.24); }
+    .stage-times { color: var(--muted); font-size: 11px; font-weight: 800; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+    .stage-time { padding: 5px 6px; border: 1px solid var(--line); border-radius: 999px; background: #f8fbff; text-align: center; white-space: nowrap; }
+    .stage-axis { display: grid; grid-template-columns: 230px minmax(320px, 1fr) 292px; gap: 16px; margin-top: 12px; color: var(--muted); font-size: 12px; font-weight: 800; }
+    .stage-axis-line { display: flex; justify-content: space-between; border-top: 1px solid #b8c7d9; padding-top: 8px; }
+    @media (max-width: 760px) {
+      .stage-row, .stage-axis { grid-template-columns: 1fr; gap: 4px; }
+      .stage-times { grid-template-columns: 1fr 1fr; }
+    }
   </style>
 </head>
 <body>
   <h1>Playwright load profile</h1>
-  <p>${escapeHtml(summary.recommendation)}</p>
+  <p class="recommendation">${escapeHtml(summary.recommendation)}</p>
+  ${buildTimelineOverview(summary.timelineEvents, summary.durationMs)}
   <div class="chart">${buildInlineSvgChart(samples, summary.timelineEvents)}</div>
-  ${buildTimelinePhaseTimingTable(summary.timelineEvents)}
   ${buildSummaryTable(summary, '')}
 </body>
 </html>`;
@@ -665,51 +694,67 @@ function buildTimelineEventList(events) {
       return `<li>${escapeHtml(event.label)} ${escapeHtml(event.type)} (${escapeHtml(rangeLabel)})</li>`;
     })
     .join('');
-  return `<ul class="mb-0 ps-3">${items}</ul>`;
+  return `<details><summary>${events.length} raw timeline events</summary><ul class="mb-0 ps-3">${items}</ul></details>`;
 }
 
-function buildTimelinePhaseTimingTable(events = []) {
+function buildTimelineOverview(events = [], durationMs = 0) {
   const phases = buildTimelinePhases(events);
   if (!phases.length) {
     return '';
   }
 
+  const maxElapsed = Math.max(durationMs, ...phases.map((phase) => phase.endElapsedMs), 1);
   const rows = phases
-    .map(
-      (phase) => `<tr>
-        <td><span style="display:inline-block;width:10px;height:10px;background:${phase.color};margin-right:6px"></span>${escapeHtml(phase.label)}</td>
-        <td>${escapeHtml(formatDuration(phase.startElapsedMs))}</td>
-        <td>${escapeHtml(formatDuration(phase.endElapsedMs))}</td>
-        <td>${escapeHtml(formatDuration(phase.durationMs))}</td>
-      </tr>`
-    )
+    .map((phase) => {
+      const startPercent = round((phase.startElapsedMs / maxElapsed) * 100);
+      const endPercent = round((phase.endElapsedMs / maxElapsed) * 100);
+      const widthPercent = Math.max(0.5, endPercent - startPercent);
+      return `<div class="stage-row">
+        <div class="stage-name" style="color:${phase.color}" title="${escapeHtml(phase.label)}">${escapeHtml(phase.label)}</div>
+        <div class="stage-lane" aria-label="${escapeHtml(phase.label)} from ${escapeHtml(
+          formatDuration(phase.startElapsedMs)
+        )} to ${escapeHtml(formatDuration(phase.endElapsedMs))}">
+          <span class="stage-bar" style="left:${startPercent}%;width:${widthPercent}%;background:${phase.color}"></span>
+          <span class="stage-dot" style="left:${startPercent}%;color:${phase.color}" title="start ${escapeHtml(
+            formatDuration(phase.startElapsedMs)
+          )}"></span>
+          <span class="stage-dot" style="left:${endPercent}%;color:${phase.color}" title="end ${escapeHtml(
+            formatDuration(phase.endElapsedMs)
+          )}"></span>
+        </div>
+        <div class="stage-times">
+          <span class="stage-time">Start ${escapeHtml(formatDuration(phase.startElapsedMs))}</span>
+          <span class="stage-time">End ${escapeHtml(formatDuration(phase.endElapsedMs))}</span>
+          <span class="stage-time">${escapeHtml(formatDuration(phase.durationMs))}</span>
+        </div>
+      </div>`;
+    })
     .join('\n');
 
-  return `<div class="table-responsive">
-    <table class="table table-sm testcase-run-info-table" style="margin-top:12px">
-      <thead>
-        <tr>
-          <th>Phase</th>
-          <th>Start</th>
-          <th>End</th>
-          <th>Duration</th>
-        </tr>
-      </thead>
-      <tbody>${rows}</tbody>
-    </table>
-  </div>`;
+  return `<section class="stage-timeline" aria-label="CI stage timeline">
+    <h2>CI stage timeline</h2>
+    ${rows}
+    <div class="stage-axis" aria-hidden="true">
+      <span></span>
+      <div class="stage-axis-line"><span>0m 0s</span><span>${escapeHtml(formatDuration(maxElapsed))}</span></div>
+      <span></span>
+    </div>
+  </section>`;
 }
 
 function isSafeInlineHtml(value) {
-  return String(value).startsWith('<a ') || String(value).startsWith('<ul ') || String(value).startsWith('<div ');
+  return (
+    String(value).startsWith('<a ') ||
+    String(value).startsWith('<ul ') ||
+    String(value).startsWith('<div ') ||
+    String(value).startsWith('<details>')
+  );
 }
 
 function buildInlineSvgChart(samples, timelineEvents = []) {
   const width = 900;
-  const phases = buildTimelinePhases(timelineEvents);
-  const markerBandHeight = phases.length ? 22 + phases.length * 24 : 48;
-  const height = 242 + markerBandHeight;
-  const padding = { top: markerBandHeight + 18, right: 24, bottom: 36, left: phases.length ? 92 : 44 };
+  const height = 300;
+  const padding = { top: 20, right: 24, bottom: 36, left: 52 };
   const plotWidth = width - padding.left - padding.right;
   const plotHeight = height - padding.top - padding.bottom;
   const maxElapsed = Math.max(...samples.map((sample) => sample.elapsedMs), 1);
@@ -726,22 +771,23 @@ function buildInlineSvgChart(samples, timelineEvents = []) {
   const cpuPoints = points((sample) => sample.cpuPercent);
   const memoryPoints = points((sample) => sample.memoryUsedPercent);
   const eventMarkers = buildSvgEventMarkers(timelineEvents, maxElapsed, padding, plotWidth, plotHeight);
-  const phaseLanes = buildSvgPhaseLanes(phases, maxElapsed, padding, plotWidth);
 
-  return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="CPU memory and load profile" style="width:100%;max-height:${height}px;">
+  const gridMidY = round(toY(50));
+
+  return `<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="CPU memory and load profile" style="width:100%;max-height:${height}px;background:#fff;">
     <rect x="0" y="0" width="${width}" height="${height}" fill="#fff"></rect>
-    <rect x="0" y="0" width="${width}" height="${markerBandHeight}" fill="#f4f8fb"></rect>
-    <line x1="${padding.left}" y1="${markerBandHeight}" x2="${width - padding.right}" y2="${markerBandHeight}" stroke="#d8e3ef"></line>
-    ${phaseLanes}
+    <rect x="${padding.left}" y="${padding.top}" width="${plotWidth}" height="${plotHeight}" fill="#fbfdff" rx="6"></rect>
+    <line x1="${padding.left}" y1="${gridMidY}" x2="${width - padding.right}" y2="${gridMidY}" stroke="#e8eef6"></line>
     <line x1="${padding.left}" y1="${padding.top}" x2="${padding.left}" y2="${height - padding.bottom}" stroke="#d8e3ef"></line>
     <line x1="${padding.left}" y1="${height - padding.bottom}" x2="${width - padding.right}" y2="${height - padding.bottom}" stroke="#d8e3ef"></line>
     <line x1="${padding.left}" y1="${toY(85)}" x2="${width - padding.right}" y2="${toY(85)}" stroke="#d4351c" stroke-dasharray="4 4" opacity="0.65"></line>
     <text x="6" y="${toY(100) + 4}" font-size="11" fill="#53657d">100%</text>
     <text x="12" y="${toY(85) + 4}" font-size="11" fill="#d4351c">85%</text>
+    <text x="18" y="${gridMidY + 4}" font-size="11" fill="#53657d">50%</text>
     <text x="18" y="${toY(0) + 4}" font-size="11" fill="#53657d">0%</text>
-    <polyline points="${cpuPoints}" fill="none" stroke="#1d70b8" stroke-width="2.5"></polyline>
-    <polyline points="${memoryPoints}" fill="none" stroke="#00703c" stroke-width="2.5"></polyline>
-    <polyline points="${loadPoints}" fill="none" stroke="#f47738" stroke-width="2.5"></polyline>
+    <polyline points="${cpuPoints}" fill="none" stroke="#1d70b8" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></polyline>
+    <polyline points="${memoryPoints}" fill="none" stroke="#00703c" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></polyline>
+    <polyline points="${loadPoints}" fill="none" stroke="#f47738" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"></polyline>
     ${eventMarkers}
     <g font-size="12" fill="#172b4d">
       <rect x="${padding.left}" y="${height - 24}" width="12" height="4" fill="#1d70b8"></rect><text x="${padding.left + 18}" y="${height - 19}">CPU %</text>
@@ -774,28 +820,6 @@ function buildTimelinePhases(events = []) {
       };
     })
     .filter((phase) => Number.isFinite(phase.startElapsedMs) && Number.isFinite(phase.endElapsedMs));
-}
-
-function buildSvgPhaseLanes(phases, maxElapsed, padding, plotWidth) {
-  if (!phases.length) {
-    return '';
-  }
-
-  return phases
-    .map((phase, index) => {
-      const y = 22 + index * 24;
-      const startX = round(padding.left + (phase.startElapsedMs / maxElapsed) * plotWidth);
-      const endX = round(padding.left + (phase.endElapsedMs / maxElapsed) * plotWidth);
-      return `<g>
-        <text x="6" y="${y + 4}" font-size="12" font-weight="700" fill="${phase.color}">${escapeHtml(phase.label)}</text>
-        <line x1="${startX}" y1="${y}" x2="${endX}" y2="${y}" stroke="${phase.color}" stroke-width="4" stroke-linecap="round"></line>
-        <circle cx="${startX}" cy="${y}" r="4" fill="${phase.color}"></circle>
-        <circle cx="${endX}" cy="${y}" r="4" fill="${phase.color}"></circle>
-        <text x="${startX + 6}" y="${y - 6}" font-size="11" font-weight="700" fill="${phase.color}">start</text>
-        <text x="${endX + 6}" y="${y + 14}" font-size="11" font-weight="700" fill="${phase.color}">end</text>
-      </g>`;
-    })
-    .join('\n');
 }
 
 function buildSvgEventMarkers(events, maxElapsed, padding, plotWidth, plotHeight) {

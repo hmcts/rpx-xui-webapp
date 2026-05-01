@@ -62,7 +62,7 @@ def archivePlaywrightDiagnostics = {
     '''
     steps.archiveArtifacts(
         allowEmptyArchive: true,
-        artifacts: 'functional-output/tests/**/odhin-report/**/xui-playwright-*.html,functional-output/tests/playwright-diagnostics/failure-data/**/*',
+        artifacts: 'functional-output/tests/playwright-diagnostics/failure-data/**/*',
         excludes: 'test-results/.playwright-artifacts-*/**,**/.playwright-artifacts-*/**'
     )
 }
@@ -90,11 +90,20 @@ def ensureHtmlReportForPublishing = { String reportDir, String reportFile, Strin
 }
 
 def publishPlaywrightLoadProfile = { String reportDir, String reportName ->
+    def safeReportName = reportName.replaceAll(/[^A-Za-z0-9._-]/, '-')
+    def slimReportDir = "functional-output/tests/playwright-published-reports/load-profile/${safeReportName}"
+    steps.sh """
+      set +e
+      mkdir -p '${slimReportDir}'
+      if [ -f '${reportDir}/${playwrightLoadProfileReportFile}' ]; then
+        cp '${reportDir}/${playwrightLoadProfileReportFile}' '${slimReportDir}/${playwrightLoadProfileReportFile}'
+      fi
+    """
     publishHTML([
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
       keepAll              : true,
-      reportDir            : "${reportDir}/",
+      reportDir            : "${slimReportDir}/",
       reportFiles          : playwrightLoadProfileReportFile,
       reportName           : reportName
     ])
@@ -342,7 +351,6 @@ withNightlyPipeline(type, product, component) {
             reportFiles          : 'xui-playwright-api.html',
             reportName           : 'API Functional Test'
           ])
-          steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/**/odhin-report/**/xui-playwright-api.html'
           publishPlaywrightLoadProfile(
             'functional-output/tests/api_functional/odhin-report/load-profile',
             'API System Load'
@@ -365,9 +373,7 @@ withNightlyPipeline(type, product, component) {
                     runPlaywrightIntegrationProfileMatrix()
                 } finally {
                     recordPlaywrightLoadEvent('Integration', 'finish')
-                    echo '[playwright-integration] Archiving integration artifacts'
-                    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/odhin-report/**/xui-playwright-integration.html'
-                    echo '[playwright-integration] Archived integration artifacts'
+                    echo '[playwright-integration] Integration reports published via HTML Publisher'
                     archivePlaywrightDiagnostics()
                 }
         }
@@ -395,7 +401,6 @@ withNightlyPipeline(type, product, component) {
               reportFiles          : 'xui-playwright-e2e.html',
               reportName           : 'XUI Manage Cases Playwright Cross Browser Tests'
               ])
-              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/xui-playwright-e2e.html'
               publishPlaywrightLoadProfile(
                 'functional-output/tests/playwright-e2e/odhin-report/load-profile',
                 'Playwright E2E System Load'

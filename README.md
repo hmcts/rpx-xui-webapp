@@ -386,13 +386,11 @@ Key behaviour:
 
 Playwright-capable pipeline stages archive diagnostics for troubleshooting and triage:
 
-- `functional-output/tests/**/odhin-report/**/*`
-- `test-results/**/*`
 - `functional-output/tests/playwright-diagnostics/failure-data/**/*`
-- `**/failure-data.json`
 
 `failure-data.json` files attached by Playwright tests are also copied into
 `functional-output/tests/playwright-diagnostics/failure-data/` with flattened filenames so they are easier to find in Jenkins artifacts.
+Odhín HTML reports and standalone system-load reports are published through Jenkins HTML Publisher links rather than archived as raw build artifacts.
 
 ### Playwright locator audit
 

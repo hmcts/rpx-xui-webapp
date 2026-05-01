@@ -366,8 +366,6 @@ Useful controls:
 
 - `PW_LOAD_PROFILE_INTERVAL_MS=1000` changes the sample interval
 - `PW_LOAD_PROFILE_OUTPUT=<path>` changes the artifact folder
-- `PW_LOAD_PROFILE_INJECT_ODHIN=true` opts back into Odhín injection
-- `PW_LOAD_PROFILE_ODHIN_TAB=false` disables the Odhín **System Load** tab when injection is explicitly enabled
 - `PW_LOAD_PROFILE_EVENTS_FILE=<jsonl-or-json>` overlays external start/finish markers on the load chart
 
 Jenkins CNP and nightly integration stages use `INTEGRATION_PW_PROFILE_RUNS` to control the integration worker profile. The default is:
@@ -376,7 +374,7 @@ Jenkins CNP and nightly integration stages use `INTEGRATION_PW_PROFILE_RUNS` to 
 workers=4
 ```
 
-Use `INTEGRATION_PW_WORKERS=<n>` and optional `INTEGRATION_PW_SHARD=<index/total>` on Jenkins to run a targeted integration profile instead of the default `INTEGRATION_PW_PROFILE_RUNS` value. CNP and nightly publish API, E2E, and integration System Load profiles as separate HTML reports. They also write API, E2E, and integration stage markers to the profile event file so the report can show which suite was running when CPU, load, or memory changed.
+Use `INTEGRATION_PW_WORKERS=<n>` and optional `INTEGRATION_PW_SHARD=<index/total>` on Jenkins to run a targeted integration profile instead of the default `INTEGRATION_PW_PROFILE_RUNS` value. CNP and nightly publish one System Load HTML report for the whole functional-test block. They also write API, E2E, and integration stage markers to the profile event file so the report can show which suite was running when CPU, load, or memory changed.
 
 The wrapper always marks the wrapped command start and finish on the chart. To show API, E2E, and integration boundaries on one timeline, run a monitor across the parent pipeline window or write shared JSONL events into `PW_LOAD_PROFILE_EVENTS_FILE`:
 

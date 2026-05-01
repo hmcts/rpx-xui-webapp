@@ -15,7 +15,6 @@ const DEFAULT_REPORT_FOLDER = 'functional-output/tests/playwright-integration/od
 const SUMMARY_FILE = 'summary.json';
 const SAMPLES_FILE = 'samples.json';
 const REPORT_FILE = 'load-profile.html';
-const ODHIN_LOAD_TAB_ID = 'TabSystemLoad';
 
 function parseArgs(argv) {
   const separatorIndex = argv.indexOf('--');
@@ -25,7 +24,6 @@ function parseArgs(argv) {
   const options = {
     outputFolder: process.env.PW_LOAD_PROFILE_OUTPUT ?? DEFAULT_OUTPUT_FOLDER,
     reportFolder: defaultReportFolder,
-    reportFolders: [defaultReportFolder],
     sampleIntervalMs: parsePositiveInteger(process.env.PW_LOAD_PROFILE_INTERVAL_MS, DEFAULT_SAMPLE_INTERVAL_MS),
     childIdleTimeoutMs: parseNonNegativeInteger(process.env.PW_LOAD_PROFILE_CHILD_IDLE_TIMEOUT_MS, DEFAULT_CHILD_IDLE_TIMEOUT_MS),
     childCloseGraceMs: parseNonNegativeInteger(process.env.PW_LOAD_PROFILE_CHILD_CLOSE_GRACE_MS, DEFAULT_CHILD_CLOSE_GRACE_MS),
@@ -34,12 +32,9 @@ function parseArgs(argv) {
       DEFAULT_CHILD_TERMINATE_GRACE_MS
     ),
     label: process.env.PW_LOAD_PROFILE_LABEL ?? '',
-    injectOdhin: process.env.PW_LOAD_PROFILE_INJECT_ODHIN === 'true',
-    odhinTab: process.env.PW_LOAD_PROFILE_ODHIN_TAB !== 'false',
     eventsFile: process.env.PW_LOAD_PROFILE_EVENTS_FILE ?? '',
     stopFile: process.env.PW_LOAD_PROFILE_STOP_FILE ?? '',
   };
-  let explicitReportFolderSeen = false;
 
   for (let index = 0; index < optionArgs.length; index += 1) {
     const arg = optionArgs[index];
@@ -48,12 +43,7 @@ function parseArgs(argv) {
       options.outputFolder = next;
       index += 1;
     } else if (arg === '--report-folder' && next) {
-      if (!explicitReportFolderSeen) {
-        options.reportFolders = [];
-        options.reportFolder = next;
-        explicitReportFolderSeen = true;
-      }
-      options.reportFolders.push(next);
+      options.reportFolder = next;
       index += 1;
     } else if (arg === '--sample-interval-ms' && next) {
       options.sampleIntervalMs = parsePositiveInteger(next, DEFAULT_SAMPLE_INTERVAL_MS);
@@ -70,10 +60,6 @@ function parseArgs(argv) {
     } else if (arg === '--label' && next) {
       options.label = next;
       index += 1;
-    } else if (arg === '--no-odhin-inject') {
-      options.injectOdhin = false;
-    } else if (arg === '--no-odhin-tab') {
-      options.odhinTab = false;
     } else if (arg === '--events-file' && next) {
       options.eventsFile = next;
       index += 1;
@@ -84,11 +70,6 @@ function parseArgs(argv) {
   }
 
   return { options, commandArgs };
-}
-
-function normalizeReportFolders(options) {
-  const folders = options.reportFolders?.length ? options.reportFolders : [options.reportFolder];
-  return Array.from(new Set(folders.filter(Boolean)));
 }
 
 function parsePositiveInteger(value, fallback) {
@@ -391,18 +372,6 @@ async function runMonitoredCommand(commandArgs, options) {
   const summary = buildSummary(metadata, samples, exitCode, readTimelineEvents(options.eventsFile));
   writeProfileArtifacts(options.outputFolder, summary, samples);
 
-  if (options.injectOdhin) {
-    normalizeReportFolders(options).forEach((reportFolder) => {
-      injectLoadProfileIntoOdhin(
-        reportFolder,
-        summary,
-        samples,
-        path.relative(reportFolder, path.join(options.outputFolder, REPORT_FILE)),
-        { odhinTab: options.odhinTab }
-      );
-    });
-  }
-
   return exitCode;
 }
 
@@ -625,85 +594,6 @@ function writeProfileArtifacts(outputFolder, summary, samples) {
   fs.writeFileSync(path.join(outputFolder, SUMMARY_FILE), `${JSON.stringify(summary, null, 2)}\n`);
   fs.writeFileSync(path.join(outputFolder, SAMPLES_FILE), `${JSON.stringify(samples, null, 2)}\n`);
   fs.writeFileSync(path.join(outputFolder, REPORT_FILE), buildLoadProfileHtml(summary, samples));
-}
-
-function injectLoadProfileIntoOdhin(reportFolder, summary, samples, relativeProfilePath, options = {}) {
-  if (!reportFolder || !fs.existsSync(reportFolder)) {
-    console.warn(`[load-profile] Odhín report folder not found: ${reportFolder}`);
-    return;
-  }
-
-  const files = fs.readdirSync(reportFolder).filter((fileName) => fileName.toLowerCase().endsWith('.html'));
-  files.forEach((fileName) => {
-    const filePath = path.join(reportFolder, fileName);
-    let html = fs.readFileSync(filePath, 'utf8');
-    if (!html.includes('id="TabDashboard"')) {
-      return;
-    }
-    html = html.replace(
-      /<div class="row ms-3 me-3">\s*<div class="col-12[^>]*>\s*<div class="mt-3 mb-3 odhin-thin-border dashboard-block" id="odhin-system-load-profile">[\s\S]*?<\/div>\s*<\/div>\s*<\/div>/m,
-      ''
-    );
-    if (options.odhinTab !== false) {
-      html = injectLoadProfileTab(html, summary, samples, relativeProfilePath);
-    } else {
-      html = removeLoadProfileTab(html);
-    }
-    fs.writeFileSync(filePath, html, 'utf8');
-  });
-}
-
-function injectLoadProfileTab(html, summary, samples, relativeProfilePath) {
-  let updatedHtml = removeLoadProfileTab(html);
-  const button = `
-      <button
-        class="main-tablinks"
-        onclick="openMainTab(event, '${ODHIN_LOAD_TAB_ID}')"
-      >
-        System Load
-      </button>`;
-  const testsButtonPattern = /(\s*<button\b[\s\S]*?onclick="openMainTab\(event,\s*'TabTests'\)"[\s\S]*?<\/button>)/m;
-  if (testsButtonPattern.test(updatedHtml)) {
-    updatedHtml = updatedHtml.replace(testsButtonPattern, `$1${button}`);
-  }
-
-  const systemLoadTab = buildOdhinLoadTab(summary, samples, relativeProfilePath);
-  const bodyEndPattern = /(\s*<\/body>)/m;
-  if (bodyEndPattern.test(updatedHtml)) {
-    updatedHtml = updatedHtml.replace(bodyEndPattern, `${systemLoadTab}$1`);
-  } else {
-    updatedHtml += systemLoadTab;
-  }
-  return updatedHtml;
-}
-
-function removeLoadProfileTab(html) {
-  return html
-    .replace(/\s*<button\b[\s\S]*?onclick="openMainTab\(event,\s*'TabSystemLoad'\)"[\s\S]*?<\/button>/m, '')
-    .replace(/\s*<!-- odhin-system-load-tab:start -->[\s\S]*?<!-- odhin-system-load-tab:end -->/m, '');
-}
-
-function buildOdhinLoadTab(summary, samples, relativeProfilePath) {
-  return `
-          <!-- odhin-system-load-tab:start -->
-          <div id="${ODHIN_LOAD_TAB_ID}" style="display: none" class="main-tabcontent">
-            <div class="row ms-3 me-3">
-              <div class="col-12">
-                <div class="mt-3 mb-3 odhin-thin-border dashboard-block" id="odhin-system-load-profile-tab">
-                  <div class="info-box-header">System Load Profile</div>
-                  <p class="text-secondary-emphasis small mb-2 ps-2">
-                    ${escapeHtml(summary.recommendation)}
-                  </p>
-                  <div class="odhin-table">
-                    ${buildInlineSvgChart(samples, summary.timelineEvents)}
-                    ${buildTimelinePhaseTimingTable(summary.timelineEvents)}
-                    ${buildSummaryTable(summary, relativeProfilePath)}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- odhin-system-load-tab:end -->`;
 }
 
 function buildLoadProfileHtml(summary, samples) {
@@ -1001,7 +891,6 @@ module.exports = {
   buildRecommendation,
   buildSummary,
   formatBytes,
-  injectLoadProfileIntoOdhin,
   parseArgs,
   summarizeValues,
   __test__: {

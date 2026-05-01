@@ -25,16 +25,6 @@ properties([
         defaultValue: '',
         description: 'Optional Playwright integration shard override, for example 1/2. Used with INTEGRATION_PW_WORKERS.'
       ),
-      booleanParam(
-        name: 'INTEGRATION_PW_LOAD_PROFILE_ODHIN_TAB',
-        defaultValue: false,
-        description: 'Legacy opt-in for adding the System Load tab to generated Odhín integration reports. Jenkins publishes System Load separately by default.'
-      ),
-      booleanParam(
-        name: 'PW_LOAD_PROFILE_ODHIN_TAB',
-        defaultValue: false,
-        description: 'Legacy opt-in for adding the System Load tab to generated Odhín reports. Jenkins publishes System Load separately by default.'
-      )
     ])
 ])
 
@@ -212,7 +202,6 @@ def runPlaywrightIntegrationProfileMatrix = {
         try {
             withEnv([
               "PLAYWRIGHT_REPORT_FOLDER=${runConfig.reportDir}",
-              "PW_LOAD_PROFILE_INJECT_ODHIN=false",
               "PW_LOAD_PROFILE_EVENTS_FILE=${playwrightLoadProfileEventsFile()}",
               'ORG_USER_ASSIGNMENT_MODE=external',
               'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
@@ -379,7 +368,6 @@ withNightlyPipeline(type, product, component) {
           withEnv([
             'ORG_USER_ASSIGNMENT_MODE=external',
             'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
-            "PW_LOAD_PROFILE_INJECT_ODHIN=false",
             'FUNCTIONAL_TESTS_WORKERS=4'
           ]) {
             yarnBuilder.yarn('test:api:pw:coverage:raw')
@@ -423,7 +411,6 @@ withNightlyPipeline(type, product, component) {
               withEnv([
                 'ORG_USER_ASSIGNMENT_MODE=external',
                 'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
-                "PW_LOAD_PROFILE_INJECT_ODHIN=false",
                 'FUNCTIONAL_TESTS_WORKERS=2'
               ]) {
                 yarnBuilder.yarn('test:crossbrowser:raw')

@@ -3346,16 +3346,34 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.9":
-  version: 3.2.9
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.9"
+"@hmcts/rpx-xui-common-lib@npm:3.2.9-exui-4425-rc-2":
+  version: 3.2.9-exui-4425-rc-2
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.9-exui-4425-rc-2"
   dependencies:
+    "@hmcts/frontend": "npm:0.0.50-alpha"
+    core-js: "npm:^3.37.0"
+    govuk-frontend: "npm:4.9.0"
     tslib: "npm:^2.0.0"
   peerDependencies:
+    "@angular/animations": ^20.3.18
+    "@angular/cdk": 16.2.0
+    "@angular/common": ^20.3.18
+    "@angular/compiler": ^20.3.18
+    "@angular/core": ^20.3.18
+    "@angular/forms": ^20.3.18
+    "@angular/localize": ^20.3.18
+    "@angular/material": 16.2.0
+    "@angular/platform-browser": ^20.3.18
+    "@angular/platform-browser-dynamic": ^20.3.18
+    "@angular/router": ^20.3.18
+    "@ng-idle/core": ^16.0.0
+    "@ng-idle/keepalive": ^16.0.0
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
     rpx-xui-translation: 1.1.2-CME-780-9
-  checksum: 10/7d82a7509c756996f11a5c88f19f2ff79d85e3e90cda2c45f44bfb7dcf76bc7defb1f140b2e951df797cff5261da125ee1c718bb92cea055869e76250f50061e
+    rxjs: ^7.8.1
+    zone.js: ~0.15.1
+  checksum: 10/371ec0e1a1a1744e53a97efc726dd5e0265d883b9e7959cb2dc3eec4eee337b10b47363950f34c8f4892c7e7f081b8bbc2f3c3313f5a6c5ea13000be6aa443c2
   languageName: node
   linkType: hard
 
@@ -11025,6 +11043,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"core-js@npm:^3.37.0":
+  version: 3.49.0
+  resolution: "core-js@npm:3.49.0"
+  checksum: 10/31d018f9830b0240ae40869e380595f2d06a8800709ad63299a42a438ba0c8d5805045fa02a20a78f42761d83103b0b71eca982955f5e890fb7cf6b2fe6a9ab1
+  languageName: node
+  linkType: hard
+
 "core-util-is@npm:~1.0.0":
   version: 1.0.3
   resolution: "core-util-is@npm:1.0.3"
@@ -14204,6 +14229,13 @@ __metadata:
   dependencies:
     govuk_frontend_toolkit: "npm:^7.1.0"
   checksum: 10/eb18df760b16f4af404148ed58be423e89288e9f96caa236014a296d55b132078a669504acc997060b30964e37ed37dfb1fd7cb0b3f622cb45059433a611e576
+  languageName: node
+  linkType: hard
+
+"govuk-frontend@npm:4.9.0":
+  version: 4.9.0
+  resolution: "govuk-frontend@npm:4.9.0"
+  checksum: 10/03bae503b0c5aabcfb2724409f55f2221101a60f5334488319c9911408637efaa6737b733d4774436a520e9a79bf52bd9ae9a9e60f61a929c529b8125c0d5e29
   languageName: node
   linkType: hard
 
@@ -20273,7 +20305,7 @@ __metadata:
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.3.1"
-    "@hmcts/rpx-xui-common-lib": "npm:3.2.9"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.9-exui-4425-rc-2"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.12"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"

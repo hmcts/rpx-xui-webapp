@@ -3220,9 +3220,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.52-exui-4425-rc-3":
-  version: 7.3.52-exui-4425-rc-3
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.52-exui-4425-rc-3"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.52-exui-4425-rc-4":
+  version: 7.3.52-exui-4425-rc-4
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.52-exui-4425-rc-4"
   dependencies:
     "@edium/fsm": "npm:^2.1.2"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
@@ -3234,7 +3234,36 @@ __metadata:
     pegjs: "npm:^0.10.0"
     rx-polling-hmcts: "npm:1.1.1"
     tslib: "npm:^2.3.0"
-  checksum: 10/f1a886a448203b8a4513f8045c0165df43004ff3e97c50b09bdf1f063a4a866ae32b3ad7360ae6e50233622f94602a29e4a1b436e0fe30ca737a3ea265f494b8
+  peerDependencies:
+    "@angular-material-components/datetime-picker": 16.0.1
+    "@angular-material-components/moment-adapter": 16.0.1
+    "@angular/animations": ^20.3.18
+    "@angular/cdk": 17.3.5
+    "@angular/common": ^20.3.18
+    "@angular/compiler": ^20.3.18
+    "@angular/core": ^20.3.18
+    "@angular/forms": ^20.3.18
+    "@angular/localize": ^20.3.18
+    "@angular/material": ^16.2.0
+    "@angular/platform-browser": ^20.3.18
+    "@angular/platform-browser-dynamic": ^20.3.18
+    "@angular/router": ^20.3.18
+    "@angular/upgrade": ^20.3.18
+    "@ngrx/effects": 17.2.0
+    "@ngrx/store": ^17.2.0
+    "@nicky-lenaers/ngx-scroll-to": ^14.0.0
+    govuk-elements-sass: ^3.1.2
+    moment: ^2.30.1
+    moment-timezone: ^0.5.31
+    ngx-chips: ^3.0.0
+    ngx-markdown: ^20
+    ngx-pagination: 6.0.3
+    rpx-xui-translation: 1.2.0
+    rxjs: ^7.8.1
+    rxjs-compat: ^6.6.7
+    underscore: ^1.9.1
+    zone.js: ^0.15.1
+  checksum: 10/ec7d0e2609d27fc4d078d559f859a7c587ea485ca3410e653f4ecb30ff0ee6fad2ae3ef862fb58b60345b338a0c55a5c1742f91439d645479d894a1ac25c3f5f
   languageName: node
   linkType: hard
 
@@ -20298,7 +20327,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.52-exui-4425-rc-3"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.52-exui-4425-rc-4"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.16"

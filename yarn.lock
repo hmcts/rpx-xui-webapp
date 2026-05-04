@@ -12059,10 +12059,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dexie@npm:^3.2.2":
-  version: 3.2.7
-  resolution: "dexie@npm:3.2.7"
-  checksum: 10/e70dae162b1589ff02b98810d1cdc157be0e0f66710be28ab2477db4ccd5cc7364f8c681e3f21883c3835ea800f8100ec975b015fa3ac6cdcb5686d187b31043
+"dexie@npm:^4.0.8":
+  version: 4.4.2
+  resolution: "dexie@npm:4.4.2"
+  checksum: 10/29736168a74f3c840e7ec9f7fdd4abf695824a4c55f097c12a7d63c096286557663609301f6d9a36874bc82548c630de9d27ba4cd33a71d1cdc07b1a1298616e
   languageName: node
   linkType: hard
 
@@ -16719,7 +16719,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"luxon@npm:^2.4.0":
+"luxon@npm:^2.5.2":
   version: 2.5.2
   resolution: "luxon@npm:2.5.2"
   checksum: 10/9090506a702dac0edefbe87ad29836a842721b2ae255974b410ca705766502173b773ddfd1c918b2e19041679e2659b811d23085f8b23e28be54f063e6c1237a
@@ -20409,7 +20409,7 @@ __metadata:
     playwright: "npm:1.58.1"
     prettier: "npm:^3.8.0"
     proper-lockfile: "npm:^4.1.2"
-    rpx-xui-translation: "npm:1.2.3"
+    rpx-xui-translation: "npm:1.2.3-exui-4425-rc-2"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
     sass: "npm:^1.97.3"
@@ -20440,17 +20440,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:1.2.3":
-  version: 1.2.3
-  resolution: "rpx-xui-translation@npm:1.2.3"
+"rpx-xui-translation@npm:1.2.3-exui-4425-rc-2":
+  version: 1.2.3-exui-4425-rc-2
+  resolution: "rpx-xui-translation@npm:1.2.3-exui-4425-rc-2"
   dependencies:
-    dexie: "npm:^3.2.2"
-    luxon: "npm:^2.4.0"
+    dexie: "npm:^4.0.8"
+    luxon: "npm:^2.5.2"
     tslib: "npm:^2.0.0"
   peerDependencies:
-    "@angular/common": ^20.3.14
-    "@angular/core": ^20.3.14
-  checksum: 10/32388e2cbee3f2872c7e16541246606e131535d37c1a9869103efcbead0589a9c45d12a027e55e070e6913174041628cb5f1e6dc7e6310f39ba6f489a311bca8
+    "@angular/common": ^20.3.18
+    "@angular/core": ^20.3.18
+    rxjs: ^7.8.0
+  checksum: 10/d7c83109c68ddaaa2fd8f9e9915aba8fe094318c5f2a997085f8eb9a277b09214a726d66854beb2108fb10a33ad7d10b5282999f859c288a3672123f8de94e9b
   languageName: node
   linkType: hard
 

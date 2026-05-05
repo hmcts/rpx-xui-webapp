@@ -17639,23 +17639,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ngx-markdown@npm:^18.1.0":
-  version: 18.1.0
-  resolution: "ngx-markdown@npm:18.1.0"
+"ngx-markdown@npm:20":
+  version: 20.1.0
+  resolution: "ngx-markdown@npm:20.1.0"
   dependencies:
     clipboard: "npm:^2.0.11"
     emoji-toolkit: "npm:>= 8.0.0 < 10.0.0"
     katex: "npm:^0.16.0"
     mermaid: "npm:>= 10.6.0 < 12.0.0"
-    prismjs: "npm:^1.28.0"
+    prismjs: "npm:^1.30.0"
     tslib: "npm:^2.3.0"
   peerDependencies:
-    "@angular/common": ^18.0.0
-    "@angular/core": ^18.0.0
-    "@angular/platform-browser": ^18.0.0
-    marked: ">= 9.0.0 < 13.0.0"
+    "@angular/common": ^20.0.0
+    "@angular/core": ^20.0.0
+    "@angular/platform-browser": ^20.0.0
+    marked: ^15.0.0 || ^16.0.0
     rxjs: ^6.5.3 || ^7.4.0
-    zone.js: ~0.14.0
+    zone.js: ~0.15.0
   dependenciesMeta:
     clipboard:
       optional: true
@@ -17667,7 +17667,7 @@ __metadata:
       optional: true
     prismjs:
       optional: true
-  checksum: 10/e0c418e489066c079b17b2c86e0e8f9d0899e2d8f1582d303d5ce75028488b6cd76a693e2ea328f223dbc8c42dc63e29cd61460507ae2c7d82af078e6581e58f
+  checksum: 10/e63550b8b561ddcc29445de5edf034ea0fff6089fbaef5377bdffda3d5632cc829f0b55edbeb9235dfe30935e2a5ee4eb0e6dbd3b476a92f1313fa743cfc2f91
   languageName: node
   linkType: hard
 
@@ -19232,7 +19232,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prismjs@npm:^1.28.0, prismjs@npm:^1.29.0":
+"prismjs@npm:^1.29.0, prismjs@npm:^1.30.0":
   version: 1.30.0
   resolution: "prismjs@npm:1.30.0"
   checksum: 10/6b48a2439a82e5c6882f48ebc1564c3890e16463ba17ac10c3ad4f62d98dea5b5c915b172b63b83023a70ad4f5d7be3e8a60304420db34a161fae69dd4e3e2da
@@ -20357,7 +20357,7 @@ __metadata:
     ngrx-store-freeze: "npm:^0.2.4"
     ngx-chips: "npm:3.0.0"
     ngx-logger: "npm:^5.0.12"
-    ngx-markdown: "npm:^18.1.0"
+    ngx-markdown: "npm:20"
     ngx-pagination: "npm:^6.0.3"
     node-html-parser: "npm:^7.0.0"
     nodemon: "npm:^2.0.19"

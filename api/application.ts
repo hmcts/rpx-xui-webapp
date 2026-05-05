@@ -48,7 +48,11 @@ const staticRoot = resolveStaticRoot();
 const indexHtmlRaw = loadIndexHtml(staticRoot);
 
 function escapeHtmlAttribute(value: string): string {
-  return value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('"', '&quot;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;');
 }
 
 function buildDynatraceScriptTag(): string {
@@ -57,7 +61,9 @@ function buildDynatraceScriptTag(): string {
     return '';
   }
 
-  return `<script nonce="{{cspNonce}}" type="text/javascript" src="${escapeHtmlAttribute(dynatraceCdn)}" crossorigin="anonymous"></script>`;
+  return `<script nonce="{{cspNonce}}" type="text/javascript" src="${escapeHtmlAttribute(
+    dynatraceCdn
+  )}" crossorigin="anonymous"></script>`;
 }
 
 function injectTemplateValues(html: string, nonce: string): string {

@@ -1,13 +1,29 @@
 import { csp } from '@hmcts/rpx-xui-node-lib';
 
+function resolveDynatraceOrigin(): string | null {
+  const dynatraceCdn = process.env.DYNATRACE_CDN?.trim();
+  if (!dynatraceCdn) {
+    return null;
+  }
+
+  try {
+    return new URL(dynatraceCdn).origin;
+  } catch {
+    return null;
+  }
+}
+
+const dynatraceOrigin = resolveDynatraceOrigin();
+
 export const MC_CSP: Parameters<typeof csp>[0] = {
   /* ── hosts common to every MC environment ─────────────── */
   extraScript: [
     'https://www.googletagmanager.com',
     'https://www.google-analytics.com',
     'az416426.vo.msecnd.net',
+    dynatraceOrigin || '',
     "'unsafe-eval'",
-  ],
+  ].filter(Boolean),
 
   extraStyle: ['https://fonts.googleapis.com', 'https://fonts.gstatic.com', 'https://www.googletagmanager.com'],
 

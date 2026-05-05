@@ -173,7 +173,9 @@ withNightlyPipeline(type, product, component) {
               withEnv([
                 'ORG_USER_ASSIGNMENT_MODE=external',
                 'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
-                'FUNCTIONAL_TESTS_WORKERS=2'
+                'FUNCTIONAL_TESTS_WORKERS=2',
+                'E2E_PW_INCLUDE_TAGS=@nightly',
+                'E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none'
               ]) {
                 yarnBuilder.yarn('test:crossbrowser')
               }

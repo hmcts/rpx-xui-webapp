@@ -128,6 +128,12 @@ export function buildCreateCaseLocators(page: Page) {
     sameAsClaimantWorkAddressYes: page.locator('#claimantWorkAddressQuestion_Yes'),
     claimantRepresentedNo: page.locator('#claimantRepresentedQuestion_No'),
     hearingPreferenceVideo: page.locator('#claimantHearingPreference_hearing_preferences-Video'),
+    documentCollectionButton: page.locator('#documentCollection button'),
+    employmentDocumentCollectionButton: page.locator('#documentCollection button'),
+    employmentDocumentTypeSelect: page.locator('#documentCollection_0_topLevelDocuments'),
+    employmentDocumentMiscTypeSelect: page.locator('#documentCollection_0_miscDocuments'),
+    employmentRespondentCollectionItem: page.locator('[id^="respondentCollection_0"]').first(),
+    employmentClaimantRepresentationGroup: page.getByRole('group', { name: 'Is the Claimant Represented?' }),
 
     manualEntryLink: page.locator('.manual-link'),
     claimantAddressLine1Input: page.locator('#claimantType_claimant_addressUK__detailAddressLine1'),

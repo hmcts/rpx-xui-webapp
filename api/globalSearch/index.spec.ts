@@ -127,6 +127,19 @@ describe('Jurisdiction', () => {
         'WillLodgement',
       ],
     },
+    {
+      jurisdiction: 'Civil',
+      service_id: 3,
+      org_unit: 'HMCTS',
+      business_area: 'Civil, Family and Tribunals',
+      sub_business_area: 'Civil and Family',
+      service_description: 'Mortgage and Landlord Possession Claims',
+      service_code: 'AAA3',
+      service_short_description: 'Mortgage and Landlord Possession Claims',
+      ccd_service_name: 'PCS',
+      last_update: '2020-11-02T16:28:37.259752',
+      ccd_case_types: [],
+    },
   ];
   const serviceList: HMCTSServiceDetails[] = [
     { serviceId: 'IA', serviceName: 'Immigration and Asylum Appeals' },
@@ -135,6 +148,7 @@ describe('Jurisdiction', () => {
     { serviceId: 'PUBLICLAW', serviceName: 'Family Public Law' },
     { serviceId: 'EMPLOYMENT', serviceName: 'Employment Claims' },
     { serviceId: 'ST_CIC', serviceName: 'Criminal Injuries Compensation' },
+    { serviceId: 'PCS', serviceName: 'Mortgage and Landlord Possession Claims' },
   ];
 
   beforeEach(() => {
@@ -170,13 +184,13 @@ describe('Jurisdiction', () => {
 
   it('should return global search services', async () => {
     let services = globalSearchServices.generateServices(undefined);
-    expect(services.length).to.equal(6);
+    expect(services.length).to.equal(7);
 
     services = globalSearchServices.generateServices(null);
-    expect(services.length).to.equal(6);
+    expect(services.length).to.equal(7);
 
     services = globalSearchServices.generateServices([]);
-    expect(services.length).to.equal(6);
+    expect(services.length).to.equal(7);
   });
 
   it('should return global search services2', async () => {

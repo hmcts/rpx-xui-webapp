@@ -44,6 +44,7 @@ function loadIndexHtml(staticRoot: string): string {
   }
   return readFileSync(p, 'utf8');
 }
+
 const staticRoot = resolveStaticRoot();
 const indexHtmlRaw = loadIndexHtml(staticRoot);
 
@@ -57,7 +58,9 @@ function buildDynatraceScriptTag(): string {
     return '';
   }
 
-  return `<script nonce="{{cspNonce}}" type="text/javascript" src="${escapeHtmlAttribute(dynatraceCdn)}" crossorigin="anonymous"></script>`;
+  return `<script nonce="{{cspNonce}}" type="text/javascript" src="${escapeHtmlAttribute(
+    dynatraceCdn
+  )}" crossorigin="anonymous"></script>`;
 }
 
 function injectTemplateValues(html: string, nonce: string): string {

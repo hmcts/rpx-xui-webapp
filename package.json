@@ -151,7 +151,7 @@
     "moment-timezone": "^0.5.28",
     "ngx-chips": "3.0.0",
     "ngx-logger": "^5.0.12",
-    "ngx-markdown": "^18.1.0",
+    "ngx-markdown": "20",
     "ngx-pagination": "^6.0.3",
     "otplib": "^12.0.1",
     "pegjs": "^0.10.0",

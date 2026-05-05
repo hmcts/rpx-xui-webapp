@@ -64,9 +64,7 @@ function buildDynatraceScriptTag(): string {
 }
 
 function injectTemplateValues(html: string, nonce: string): string {
-  return html
-    .replaceAll(/{{cspNonce}}/g, nonce)
-    .replaceAll(/{{dynatraceScriptTag}}/g, buildDynatraceScriptTag());
+  return html.replaceAll(/{{cspNonce}}/g, nonce).replaceAll(/{{dynatraceScriptTag}}/g, buildDynatraceScriptTag());
 }
 
 export async function createApp() {

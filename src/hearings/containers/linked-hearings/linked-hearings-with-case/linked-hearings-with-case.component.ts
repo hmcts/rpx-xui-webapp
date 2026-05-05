@@ -143,11 +143,11 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     );
   }
 
-  public shouldSelected(hearingInfo): boolean {
-    return this.isManageLink
-      ? !!this.linkedHearingGroup.hearingsInGroup &&
-          this.linkedHearingGroup.hearingsInGroup.some((x) => x.hearingId === hearingInfo.hearingID)
-      : hearingInfo.isSelected;
+  public shouldSelected(hearingInfo: HearingDetailModel): boolean {
+    if (this.isManageLink) {
+      return this.linkedHearingGroup?.hearingsInGroup?.some((groupHearing) => groupHearing.hearingId === hearingInfo.hearingID);
+    }
+    return hearingInfo.isSelected;
   }
 
   public initForm(): void {
@@ -245,6 +245,14 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     this.linkedCases[casePos].caseHearings.forEach((hearingInfo, pos) => {
       this.getHearingsFormValue(casePos).controls[pos].get('isSelected').setValue(false);
     });
+  }
+
+  public showClear(casePos: number): boolean {
+    if (this.isManageLink) {
+      return true;
+    }
+    const hearings = this.getHearingsFormValue(casePos);
+    return hearings?.controls?.some((control) => !!control.get('isSelected')?.value);
   }
 
   public isSelectable(hearing: HearingDetailModel): boolean {

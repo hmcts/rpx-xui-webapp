@@ -242,6 +242,126 @@ describe('LinkedHearingsWithCaseComponent', () => {
     expect(component.linkHearingForm.valid).toBe(true);
   });
 
+  describe('onSubmit', () => {
+    const setLinkedHearingForm = (caseSelections: boolean[][]) => {
+      component.linkHearingForm = component['fb'].group(
+        {
+          linkedCasesWithHearings: component['fb'].array(
+            caseSelections.map((selectedValues, caseIndex) =>
+              component['fb'].group({
+                caseRef: `case-${caseIndex}`,
+                caseName: 'Smith vs Peterson',
+                reasonsForLink: component['fb'].array([]),
+                caseHearings: component['fb'].array(
+                  selectedValues.map((isSelected, hearingIndex) =>
+                    component['fb'].group({
+                      hearingID: `hearing-${caseIndex}-${hearingIndex}`,
+                      isSelected,
+                    })
+                  )
+                ),
+              })
+            )
+          ),
+        },
+        { validator: component['validators'].validateLinkedHearings() }
+      );
+
+      component.linkHearingForm.updateValueAndValidity();
+    };
+
+    it('should show individual selection error and stop when exactly one hearing is selected in link mode', () => {
+      component.isManageLink = false;
+      setLinkedHearingForm([[true], [false]]);
+
+      spyOn(component, 'saveLinkedHearingInfo');
+      spyOn(component, 'onUnlinkHearings');
+
+      component.onSubmit();
+
+      expect(component.linkedHearingSelectionError).toBe(component.linkedHearingEnum.IndividualSelectionError);
+      expect(component.errors).toContain({
+        id: 'linked-form',
+        message: component.linkedHearingEnum.IndividualSelectionError,
+      });
+      expect(component.saveLinkedHearingInfo).not.toHaveBeenCalled();
+      expect(component.onUnlinkHearings).not.toHaveBeenCalled();
+    });
+
+    it('should show individual manage selection error and stop when exactly one hearing is selected in manage mode', () => {
+      component.isManageLink = true;
+      setLinkedHearingForm([[false], [true]]);
+
+      spyOn(component, 'saveLinkedHearingInfo');
+      spyOn(component, 'onUnlinkHearings');
+
+      component.onSubmit();
+
+      expect(component.linkedHearingSelectionError).toBe(component.linkedHearingEnum.IndividualManageSelectionError);
+      expect(component.errors).toContain({
+        id: 'linked-form',
+        message: component.linkedHearingEnum.IndividualManageSelectionError,
+      });
+      expect(component.saveLinkedHearingInfo).not.toHaveBeenCalled();
+      expect(component.onUnlinkHearings).not.toHaveBeenCalled();
+    });
+
+    it('should save linked hearing info in manage mode when more than one hearing is selected', () => {
+      component.isManageLink = true;
+      setLinkedHearingForm([[true], [true]]);
+
+      spyOn(component, 'saveLinkedHearingInfo');
+      spyOn(component, 'onUnlinkHearings');
+
+      component.onSubmit();
+
+      expect(component.saveLinkedHearingInfo).toHaveBeenCalled();
+      expect(component.onUnlinkHearings).not.toHaveBeenCalled();
+    });
+
+    it('should unlink hearings in manage mode when no hearings are selected', () => {
+      component.isManageLink = true;
+      setLinkedHearingForm([[false], [false]]);
+
+      spyOn(component, 'saveLinkedHearingInfo');
+      spyOn(component, 'onUnlinkHearings');
+
+      component.onSubmit();
+
+      expect(component.onUnlinkHearings).toHaveBeenCalled();
+      expect(component.saveLinkedHearingInfo).not.toHaveBeenCalled();
+    });
+
+    it('should save linked hearing info in link mode when the form is valid and more than one hearing is selected', () => {
+      component.isManageLink = false;
+      setLinkedHearingForm([[true], [true]]);
+
+      spyOn(component, 'saveLinkedHearingInfo');
+
+      component.onSubmit();
+
+      expect(component.linkedHearingSelectionError).toBeNull();
+      expect(component.errors).toEqual([]);
+      expect(component.saveLinkedHearingInfo).toHaveBeenCalled();
+    });
+
+    it('should show valid selection error in link mode when no hearings are selected', () => {
+      component.isManageLink = false;
+      setLinkedHearingForm([[false], [false]]);
+
+      spyOn(component, 'saveLinkedHearingInfo');
+
+      component.onSubmit();
+
+      expect(component.linkedHearingSelectionError).toBe(component.linkedHearingEnum.ValidSelectionError);
+      expect(component.errors).toContain({
+        id: 'linked-form',
+        message: component.linkedHearingEnum.ValidSelectionError,
+      });
+      expect(component.saveLinkedHearingInfo).not.toHaveBeenCalled();
+    });
+  });
+
   it('should navigate to previous page', () => {
     component.caseId = '8254902572336147';
     component.hearingId = 'h1000002';

@@ -1,6 +1,10 @@
 // This code block will need to be removed when the frameworks supports creating users on the fly
 import testConfig from '../../common/appTestConfig';
-import { getRuntimeUserCredentialEnvMapping, getRuntimeUserCredentials } from './runtimeUserCredentials';
+import {
+  getRuntimeUserCredentialEnvMapping,
+  getRuntimeUserCredentials,
+  resolveRuntimeUserCredentialsFromEnv,
+} from './runtimeUserCredentials';
 
 type StaticUser = {
   userIdentifier: string;
@@ -36,12 +40,6 @@ export class UserUtils {
       return undefined;
     }
 
-    const email = process.env[mapping.username]?.trim();
-    const password = process.env[mapping.password];
-    if (!email || !password) {
-      return undefined;
-    }
-
-    return { email, password };
+    return resolveRuntimeUserCredentialsFromEnv(mapping);
   }
 }

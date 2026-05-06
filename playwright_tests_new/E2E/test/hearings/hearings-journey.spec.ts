@@ -15,6 +15,8 @@ const hearingRouteConfig = {
   caseReference: '',
 };
 
+const hearingLinkInfo = " If you choose 'No', you will be unable to link this hearing to any others without editing it. ";
+
 test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearings'] }, () => {
   let availableCaseReference: string;
   test.beforeAll(async () => {
@@ -31,6 +33,7 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
     //searchCasePage,
     hearingsTabPage,
     hearingsJourneyPage,
+    hearingsCYAPage,
     page,
   }) => {
     hearingRouteConfig.caseReference = '1775575928056201'; // hardcoding for now.
@@ -102,18 +105,42 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
     // hearing timings
     await test.step('Hearing Timings etc', async () => {
       await expect(page).toHaveURL(/\/hearings\/request\/hearing-timing$/);
-
-      await hearingsJourneyPage.setHearingTimings(hearingJourneyModel);
-
-      await page.waitForTimeout(12000);
+      await hearingsJourneyPage.setHearingDurationAndPriority(hearingJourneyModel);
+      await continueHearingsFlow(page);
     });
 
-    await test.step('Hearing Timings etc', async () => {
+    // linked hearings
+    await test.step('Hearing Linked etc', async () => {
       await expect(page).toHaveURL(/\/hearings\/request\/hearing-link$/);
+      await expect(page.getByRole('heading', { name: /Will this hearing need to be linked to other hearings?/i })).toBeVisible();
+      const linkInfo = await hearingsJourneyPage.hearingLinkInformation.allTextContents();
+      expect(linkInfo).toContain(hearingLinkInfo);
 
-      //await hearingsJourneyPage.setHearingTimings(hearingJourneyModel);
+      await continueHearingsFlow(page);
+    });
 
-      await page.waitForTimeout(12000);
+    // additional hearings
+    await test.step('Additional Instructions', async () => {
+      await expect(page).toHaveURL(/\/hearings\/request\/hearing-additional-instructions$/);
+      await expect(page.getByRole('heading', { name: /Enter any additional instructions for the hearing/i })).toBeVisible();
+      await hearingsJourneyPage.additionalInstructions.fill(' Additional instructions for E2E Playwright test ');
+      await continueHearingsFlow(page);
+    });
+
+    // CYA Page
+    await test.step('CYA page Hearings ', async () => {
+      await expect(page).toHaveURL(/\/hearings\/request\/hearing-create-edit-summary$/);
+      //await expect(page.getByRole('heading', { name: '/Check your answers before sending your request/i ' })).toBeVisible();
+      await expect(hearingsJourneyPage.submitRequestButton).toBeVisible();
+
+      // check CYA Page values
+      // start again here
+      // await hearingsCYAPage.verifySection('Participant attendance', {
+      //   'Will this be a paper hearing?': 'No',
+      //   'What will be the methods of attendance for this hearing?': 'In Person',
+      //   'How many people will attend the hearing in person?': '2',
+      // });
+      // await continueHearingsFlow(page);
     });
   });
 
@@ -137,5 +164,13 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
     hearingJourneyModel.set('hearingDetails', 'hearingInWelsh', 'No');
     hearingJourneyModel.set('hearingDetails', 'specificJudge', 'No');
     hearingJourneyModel.set('hearingDetails', 'judgeType', ['Deputy High Court Judge', 'Deputy Circuit Judge']);
+
+    // hearingDuration
+    hearingJourneyModel.set('hearingDuration', 'days', 0);
+    hearingJourneyModel.set('hearingDuration', 'hours', 1);
+    hearingJourneyModel.set('hearingDuration', 'minutes', 30);
+
+    // linked Hearings
+    hearingJourneyModel.set('hearingDetails', 'linkedHearing', 'No');
   }
 });

@@ -48,6 +48,10 @@ export class HearingsJourneyPage {
 
   readonly hearingPriority = this.page.locator('#hearingPriority');
 
+  readonly textField0FallbackInput = this.page.locator('input[id*="no"]').first();
+
+  readonly additionalInstructions = this.page.locator('#additionalInstructionsTextarea');
+
   readonly selectAllJudgesThatApply = this.page.locator('.govuk-fieldset .govuk-fieldset__legend').nth(1);
 
   // lengthOfHearing
@@ -68,6 +72,11 @@ export class HearingsJourneyPage {
   readonly specificDateRange: Locator = this.page.locator('#hearingDateRange');
 
   readonly selectedHearingPriority: Locator = this.page.locator('#hearing-priority .govuk-radios');
+  readonly hearingLinkInformation = this.page.locator('.govuk-inset-text').first();
+  readonly submitRequestButton = this.page.getByRole('button', { name: 'Submit request' });
+
+  readonly hearingPriorityStandard: Locator = this.page.locator('#hearing-priority .govuk-radios #Standard');
+  readonly hearingPriorityUrgent: Locator = this.page.locator('#hearing-priority .govuk-radios #Urgent');
 
   readonly linkedToOtherHearings = this.page.locator('#linkedToOtherHearings');
 
@@ -174,14 +183,13 @@ export class HearingsJourneyPage {
     await this.selectJudgeTypes(judgeTypes);
   }
 
-  async setHearingTimings(model: HearingJourneyModel): Promise<void> {
-    const lenghtOfHearing = model.get('hearingDetails', 'hearingLength') as LengthOfHearing;
+  async setHearingDurationAndPriority(model: HearingJourneyModel): Promise<void> {
     const specificDate = model.get('hearingDetails', 'hearingSpecificDate') as string;
     const hearingPriority = model.get('hearingDetails', 'hearingPriority') as string;
 
-    const days = lenghtOfHearing.days as number;
-    const hours = lenghtOfHearing.hours as number;
-    const minutes = lenghtOfHearing.minutes as number;
+    const days = model.get('hearingDuration', 'days') as number;
+    const hours = model.get('hearingDuration', 'hours') as number;
+    const minutes = model.get('hearingDuration', 'minutes') as number;
 
     if (days != null) {
       await this.durationDays.fill(days.toString());
@@ -208,9 +216,10 @@ export class HearingsJourneyPage {
         await this.specificDateRange.click();
         break;
     }
-
     this.setHearingPriority(hearingPriority);
   }
+
+  async linkedHearingsCheck(model: HearingJourneyModel): Promise<void> {}
 
   // helper methods
   async selectJudgeTypes(judgeTypes: TypeOfJudges[]): Promise<void> {
@@ -221,7 +230,7 @@ export class HearingsJourneyPage {
   }
 
   async setHearingPriority(priority: string): Promise<void> {
-    await this.selectedHearingPriority.getByLabel(priority).check();
+    priority === 'Standard' ? await this.hearingPriorityStandard.check() : await this.hearingPriorityStandard.check();
   }
 
   removeLocationLink(locationName: string): Locator {

@@ -671,6 +671,10 @@ export class CaseDetailsPage extends Base {
     return callbackValidationAlert.isVisible({ timeout: timeoutMs }).catch(() => false);
   }
 
+  caseViewerRow(label: string): Locator {
+    return this.caseViewerTable.getByRole('row', { name: label });
+  }
+
   async selectCaseDetailsTab(tabName: string) {
     const tabLoadTimeoutMs = this.getRecommendedTimeoutMs({
       min: TIMEOUTS.TAB_LOAD,
@@ -696,6 +700,10 @@ export class CaseDetailsPage extends Base {
 
     const visibleTabPanel = this.page.locator('[role="tabpanel"]:visible').first();
     await this.waitForTabPanelReadiness(visibleTabPanel, tabLoadTimeoutMs);
+  }
+
+  async waitForCaseDetailsReady(timeoutMs = 30_000): Promise<void> {
+    await this.waitForCaseDetailsTabsReady(timeoutMs);
   }
 
   getRoleAccessSection(title: 'Judiciary' | 'Legal Ops'): Locator {
@@ -771,6 +779,22 @@ export class CaseDetailsPage extends Base {
       .find((candidate) => MEDIA_VIEWER_ROUTE_PATTERN.test(candidate.url()));
 
     return matchingPage ?? this.page;
+  }
+
+  async waitForDocumentOneRowToContain(expectedText: string, timeoutMs = 45_000): Promise<void> {
+    await expect
+      .poll(
+        async () => {
+          await this.selectCaseDetailsTab('Tab 1').catch(() => undefined);
+          const rowVisible = await this.documentOneRow.isVisible().catch(() => false);
+          if (!rowVisible) {
+            return '';
+          }
+          return await this.documentOneRow.innerText().catch(() => '');
+        },
+        { timeout: timeoutMs, intervals: [1_000, 2_000, 3_000] }
+      )
+      .toContain(expectedText);
   }
 
   async getTabCount() {

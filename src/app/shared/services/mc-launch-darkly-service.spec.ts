@@ -8,10 +8,7 @@ describe('McLaunchDarklyService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        McLaunchDarklyService,
-        { provide: MCLAUNCHDARKLYKEY, useValue: mockLaunchDarklyKey }
-      ]
+      providers: [McLaunchDarklyService, { provide: MCLAUNCHDARKLYKEY, useValue: mockLaunchDarklyKey }],
     });
   });
 
@@ -50,10 +47,7 @@ describe('McLaunchDarklyService', () => {
     it('should handle null or undefined key gracefully', () => {
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
-        providers: [
-          McLaunchDarklyService,
-          { provide: MCLAUNCHDARKLYKEY, useValue: null }
-        ]
+        providers: [McLaunchDarklyService, { provide: MCLAUNCHDARKLYKEY, useValue: null }],
       });
 
       expect(() => {
@@ -64,10 +58,7 @@ describe('McLaunchDarklyService', () => {
     it('should handle empty string key', () => {
       TestBed.resetTestingModule();
       TestBed.configureTestingModule({
-        providers: [
-          McLaunchDarklyService,
-          { provide: MCLAUNCHDARKLYKEY, useValue: '' }
-        ]
+        providers: [McLaunchDarklyService, { provide: MCLAUNCHDARKLYKEY, useValue: '' }],
       });
 
       expect(() => {

@@ -25,10 +25,10 @@ class HeaderSearch {
     return this.container.locator('span');
   }
   get input() {
-    return this.container.locator("input#caseReference");
+    return this.container.locator('input#caseReference');
   }
   get button() {
-    return this.container.locator("button");
+    return this.container.locator('button');
   }
 
   async waitForContainer() {
@@ -129,7 +129,7 @@ class HeaderPage {
 
   async getMenuItemsCount() {
     return await this.getHeaderMenuItems().count();
-  };
+  }
 
   async clickCaseList() {
     await BrowserWaits.waitForSpinnerToDissappear();
@@ -174,7 +174,7 @@ class HeaderPage {
     await BrowserWaits.retryWithActionCallback(async () => {
       await BrowserWaits.waitForElement(this.getFindCase());
       await this.getFindCase().click();
-      const searchPageHeader = elementByXpath('//*[@id = \'content\']//h1[contains(text() , \'Search\')]');
+      const searchPageHeader = elementByXpath("//*[@id = 'content']//h1[contains(text() , 'Search')]");
       await BrowserWaits.waitForElement(searchPageHeader);
     });
   }
@@ -232,24 +232,33 @@ class HeaderPage {
 
   async isPrimaryTabPageDisplayed(primaryTab) {
     switch (primaryTab) {
-      case 'Case list': return await caseListPage.amOnPage();
+      case 'Case list':
+        return await caseListPage.amOnPage();
       case 'Create case':
         await BrowserWaits.retryWithActionCallback(async () => {
-          const loaded = await createCaseStartPage.getLoadedJurisdictionsCount() > 1;
+          const loaded = (await createCaseStartPage.getLoadedJurisdictionsCount()) > 1;
           if (!loaded) {
             await BrowserWaits.waitForSeconds(10);
             throw Error('Waiting for jurisdictions to load');
           }
         });
         return true;
-      case 'Find case': return await searchCasePage.amOnPage();
-      case 'Task list': return await taskListPage.amOnPage();
-      case 'Task manager': return await taskManagerPage.amOnPage();
-      case 'My work': return await myWorkPage.amOnPage();
-      case 'Search': return await globalSearchPage.amOnPage();
-      case 'All work': return await allWorkPage.amOnPage();
-      case 'Staff': return await staffSearchPage.amOnPage();
-      default: throw new Error(`Tab "${primaryTab}" is not recognised.`);
+      case 'Find case':
+        return await searchCasePage.amOnPage();
+      case 'Task list':
+        return await taskListPage.amOnPage();
+      case 'Task manager':
+        return await taskManagerPage.amOnPage();
+      case 'My work':
+        return await myWorkPage.amOnPage();
+      case 'Search':
+        return await globalSearchPage.amOnPage();
+      case 'All work':
+        return await allWorkPage.amOnPage();
+      case 'Staff':
+        return await staffSearchPage.amOnPage();
+      default:
+        throw new Error(`Tab "${primaryTab}" is not recognised.`);
     }
   }
 
@@ -260,9 +269,9 @@ class HeaderPage {
       await tab.click();
     });
   }
-  async clickAppLogoLink () {
+  async clickAppLogoLink() {
     await this.getHeaderAppLogoLink().click();
   }
 }
 
-module.exports = () => new HeaderPage(); 
+module.exports = () => new HeaderPage();

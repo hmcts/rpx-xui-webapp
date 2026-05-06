@@ -7,7 +7,8 @@ import { TaskNameFieldComponent } from './task-name-field.component';
 
 @Component({
   standalone: false,
-  template: '<exui-task-name-field [taskName]="taskName" [jurisdiction]=\'jurisdiction\' [caseType]=\'caseType\' [caseId]=\'caseId\'></exui-task-name-field>'
+  template:
+    "<exui-task-name-field [taskName]=\"taskName\" [jurisdiction]='jurisdiction' [caseType]='caseType' [caseId]='caseId'></exui-task-name-field>",
 })
 class WrapperComponent {
   @ViewChild(TaskNameFieldComponent, { static: true }) public appComponentRef: TaskNameFieldComponent;
@@ -25,7 +26,6 @@ describe('WorkAllocation', () => {
     const CASETYPE: string = 'CaseType';
     const CASE_ID: string = 'CaseId';
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let component: TaskNameFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
@@ -33,9 +33,8 @@ describe('WorkAllocation', () => {
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [WrapperComponent],
-        imports: [WorkAllocationComponentsModule, RouterTestingModule]
-      })
-        .compileComponents();
+        imports: [WorkAllocationComponentsModule, RouterTestingModule],
+      }).compileComponents();
     }));
 
     beforeEach(() => {

@@ -4,12 +4,22 @@ const BrowserWaits = require('../../../../support/customWaits');
 const CucucmberReporter = require('../../../../../codeceptCommon/reportLogger');
 
 class SelectRoleTypePage {
-  get container() { return $('exui-task-assignment-choose-role'); }
-  get header() { return $('exui-task-assignment-choose-role h1'); }
-  get headerCaption() { return $('exui-task-assignment-choose-role h1 span'); }
-  get roleSelectQuestion() { return $('exui-task-assignment-choose-role exui-choose-radio-option p'); }
+  get container() {
+    return $('exui-task-assignment-choose-role');
+  }
+  get header() {
+    return $('exui-task-assignment-choose-role h1');
+  }
+  get headerCaption() {
+    return $('exui-task-assignment-choose-role h1 span');
+  }
+  get roleSelectQuestion() {
+    return $('exui-task-assignment-choose-role exui-choose-radio-option p');
+  }
 
-  get rolesRadios() { return $$('exui-task-assignment-choose-role exui-choose-radio-option fieldset div .govuk-radios__item'); }
+  get rolesRadios() {
+    return $$('exui-task-assignment-choose-role exui-choose-radio-option fieldset div .govuk-radios__item');
+  }
 
   async amOnPage() {
     try {

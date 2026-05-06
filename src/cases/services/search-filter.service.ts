@@ -12,15 +12,15 @@ export class SearchFilterService {
     private readonly ccdSearchService: SearchService,
     private readonly appConfig: AbstractAppConfig,
     private readonly httpService: HttpService,
-    private readonly requestOptionsBuilder: RequestOptionsBuilder,
+    private readonly requestOptionsBuilder: RequestOptionsBuilder
   ) {}
 
   public search(payload, isElasticSearchEnabled: boolean = false): Observable<any> {
     const { jurisdictionId, caseTypeId, metadataFilters, caseFilters, view, sortParameters } = this.getParams(payload);
 
-    return isElasticSearchEnabled ?
-      this.ccdSearchService.searchCases(caseTypeId, metadataFilters, caseFilters, view, sortParameters) as any :
-      this.ccdSearchService.search(jurisdictionId, caseTypeId, metadataFilters, caseFilters, view) as any;
+    return isElasticSearchEnabled
+      ? (this.ccdSearchService.searchCases(caseTypeId, metadataFilters, caseFilters, view, sortParameters) as any)
+      : (this.ccdSearchService.search(jurisdictionId, caseTypeId, metadataFilters, caseFilters, view) as any);
   }
 
   private getParams(payload: any) {
@@ -30,13 +30,13 @@ export class SearchFilterService {
     if (filter.caseState) {
       searchParams = {
         ...searchParams,
-        state: filter.caseState.id
+        state: filter.caseState.id,
       };
     }
     if (filter.page) {
       searchParams = {
         ...searchParams,
-        page: filter.page
+        page: filter.page,
       };
     }
     const jurisdictionId = filter.jurisdiction ? filter.jurisdiction.id : null;
@@ -50,10 +50,10 @@ export class SearchFilterService {
     return { jurisdictionId, caseTypeId, metadataFilters, caseFilters, view, sortParameters };
   }
 
-  private getCaseFilterFromFormGroup(formGroup?: FormGroup): { caseFilter, metadataFilter } {
+  private getCaseFilterFromFormGroup(formGroup?: FormGroup): { caseFilter; metadataFilter } {
     const result = {
       caseFilter: {},
-      metadataFilter: {}
+      metadataFilter: {},
     };
 
     if (formGroup) {
@@ -73,7 +73,8 @@ export class SearchFilterService {
         const filterType = Utils.getFilterType(attributeName, this.metadataFields);
         target[filterType][prefix + Utils.sanitiseMetadataFieldName(filterType, attributeName)] = value;
       } else if (value) {
-        if (Array.isArray(value) && value.length > 0) { // is array and has index zero populated
+        if (Array.isArray(value) && value.length > 0) {
+          // is array and has index zero populated
           value = Utils.isStringOrNumber(value[0]) ? value : value[0]; // determine if it is a collection or a plain array
         }
         this.buildFormDetails(prefix + attributeName, target, value);

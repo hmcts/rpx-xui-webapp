@@ -1,17 +1,21 @@
 {
-    "name": "jui",
-    "version": "0.0.0",
-    "license": "MIT",
-    "scripts": {
-        "ng": "ng",
-        "build": "NODE_ENV=production webpack --config ./webpack-node.config.js",
-        "build:dev": "webpack --config ./webpack-node.config.js",
-        "coverage": "npx nyc mocha --config ./test/.mocharc.json  -r dotenv-extended/config",
-        "lint": "npx eslint .",
-        "watch": "nodemon -r dotenv-extended/config --watch '**/*.ts' --exec ts-node local.ts",
-        "test": "npx mocha --config ./test/.mocharc.json -r dotenv-extended/config",
-        "test:watch": "npx mocha --watch --recursive --watch-extensions ts -r ts-node/register",
-        "start": "node -r dotenv-extended/config ../dist/rpx-exui/api/server.bundle.js"
-    },
-    "private": true
+  "name": "jui",
+  "version": "0.0.0",
+  "license": "MIT",
+  "private": true,
+  "packageManager": "yarn@4.7.0",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "ng": "ng",
+    "build": "NODE_ENV=production webpack --config ./webpack-node.config.js",
+    "build:dev": "NODE_ENV=development webpack --config ./webpack-node.config.js",
+    "coverage": "c8 --config ./.c8rc.json mocha --config ./test/.mocharc.json -r dotenv-extended/config",
+    "lint": "eslint .",
+    "watch": "nodemon -r dotenv-extended/config --watch '**/*.ts' --exec ts-node local.ts",
+    "test": "mocha --config ./test/.mocharc.json -r dotenv-extended/config",
+    "test:watch": "mocha --watch --recursive --watch-extensions ts -r ts-node/register",
+    "start": "node -r dotenv-extended/config ../dist/rpx-exui/api/server.bundle.js"
+  }
 }

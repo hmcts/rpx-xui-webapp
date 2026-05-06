@@ -8,7 +8,7 @@ import { StaffDataFilterService } from '../services/staff-data-filter/staff-data
   standalone: false,
   selector: 'exui-staff-search',
   templateUrl: './staff-search.component.html',
-  styleUrls: ['./staff-search.component.scss']
+  styleUrls: ['./staff-search.component.scss'],
 })
 export class StaffSearchComponent implements OnInit, OnDestroy {
   public filterConfig: FilterConfig;
@@ -20,22 +20,24 @@ export class StaffSearchComponent implements OnInit, OnDestroy {
     private staffDataFilterService: StaffDataFilterService,
     private filterService: FilterService,
     private infoMessageCommService: InfoMessageCommService
-  ) { }
+  ) {}
 
   public ngOnInit() {
     this.filterConfig = {
       id: this.FILTER_NAME,
-      fields: [{
-        name: 'user-partial-name',
-        title: 'Search for a user by name',
-        subTitle: '',
-        options: [],
-        minSelected: 3,
-        minSelectedError: 'Enter staff details',
-        displayMinSelectedError: true,
-        maxSelected: 99,
-        type: 'text-input'
-      }],
+      fields: [
+        {
+          name: 'user-partial-name',
+          title: 'Search for a user by name',
+          subTitle: '',
+          options: [],
+          minSelected: 3,
+          minSelectedError: 'Enter staff details',
+          displayMinSelectedError: true,
+          maxSelected: 99,
+          type: 'text-input',
+        },
+      ],
       persistence: 'session',
       applyButtonText: 'Search',
       cancelButtonText: '',
@@ -43,22 +45,21 @@ export class StaffSearchComponent implements OnInit, OnDestroy {
       showCancelFilterButton: false,
       applyButtonCallback: () => {
         this.infoMessageCommService.removeAllMessages();
-      }
+      },
     };
 
-    this.filterSub = this.filterService.getStream(this.FILTER_NAME)
-      .subscribe((filterConfig) => {
-        if (filterConfig) {
-          const userPartialName = filterConfig.fields.find((item) => item.name === 'user-partial-name')?.value[0];
-          if (userPartialName) {
-            this.staffDataFilterService.search({
-              partialName: userPartialName,
-              pageNumber: 1,
-              pageSize: StaffDataFilterService.PAGE_SIZE
-            });
-          }
+    this.filterSub = this.filterService.getStream(this.FILTER_NAME).subscribe((filterConfig) => {
+      if (filterConfig) {
+        const userPartialName = filterConfig.fields.find((item) => item.name === 'user-partial-name')?.value[0];
+        if (userPartialName) {
+          this.staffDataFilterService.search({
+            partialName: userPartialName,
+            pageNumber: 1,
+            pageSize: StaffDataFilterService.PAGE_SIZE,
+          });
         }
-      });
+      }
+    });
 
     this.filterErrorsSub = this.filterService.givenErrors.subscribe((filterErrors) => {
       const errors = filterErrors ? [...filterErrors] : [];

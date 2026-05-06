@@ -6,7 +6,7 @@ import { AppConstants } from '../../../app/app.constants';
   standalone: false,
   selector: 'exui-case-name-field',
   templateUrl: './case-name-field.component.html',
-  styleUrls: ['case-name-field.component.scss']
+  styleUrls: ['case-name-field.component.scss'],
 })
 export class CaseNameFieldComponent implements OnChanges {
   /**

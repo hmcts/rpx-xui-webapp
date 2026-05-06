@@ -119,7 +119,7 @@ class TaskActionPage extends TaskList {
 
   async isBannermessageWithTextDisplayed(messageText) {
     const messages = await this.getBannerMessagesDisplayed();
-    return messages.some(msg => msg.includes(messageText));
+    return messages.some((msg) => msg.includes(messageText));
   }
 
   async getColumnValue(columnHeader) {
@@ -158,11 +158,15 @@ class TaskActionPage extends TaskList {
 
   getSubmitBtnText(action) {
     switch (action) {
-      case 'Reassign task': return 'Reassign';
-      case 'Unassign task': return 'Unassign';
+      case 'Reassign task':
+        return 'Reassign';
+      case 'Unassign task':
+        return 'Unassign';
       case 'Mark as done':
-      case 'Cancel task': return action;
-      default: return '';
+      case 'Cancel task':
+        return action;
+      default:
+        return '';
     }
   }
 }

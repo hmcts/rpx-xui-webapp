@@ -11,13 +11,17 @@ const prdUrl: string = getConfigValue(SERVICES_PRD_COMMONDATA_API);
  * getRefData from category and service ID
  */
 export async function getLovRefData(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const { serviceId, categoryId, isChildRequired } = req.query as { serviceId: string, categoryId: string, isChildRequired: string };
+  const { serviceId, categoryId, isChildRequired } = req.query as {
+    serviceId: string;
+    categoryId: string;
+    isChildRequired: string;
+  };
 
   const params = new URLSearchParams({ serviceId, isChildRequired });
   const markupPath: string = `${prdUrl}/refdata/commondata/lov/categories/${categoryId}?${params}`;
 
   try {
-    const { status, data }: { status: number, data: LovRefDataByServiceModel } = await sendGet(markupPath, req);
+    const { status, data }: { status: number; data: LovRefDataByServiceModel } = await sendGet(markupPath, req);
     res.status(status).send(data.list_of_values);
   } catch (error) {
     next(error);

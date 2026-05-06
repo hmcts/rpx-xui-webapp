@@ -11,13 +11,13 @@ class Dropdown {
    * Should be parsed ccs 'select' tag for a dropdown
    * @param css
    */
-  constructor(css){
+  constructor(css) {
     this._dropdownElement = css;
     this._currentDropdownOptionElement = `${css} option:checked`;
   }
 
   //private
-  async _getOptionElements(){
+  async _getOptionElements() {
     return await $$(`${this._dropdownElement} option`);
   }
 
@@ -25,10 +25,10 @@ class Dropdown {
    * Get list of string dropdown options
    * @returns String Array
    */
-  async getOptionsTextValues(){
+  async getOptionsTextValues() {
     const dropdownElements = await this._getOptionElements();
     const stringArray = [];
-    for (const option of dropdownElements){
+    for (const option of dropdownElements) {
       const optionText = await getText(option);
       stringArray.push(optionText);
     }
@@ -38,14 +38,14 @@ class Dropdown {
   /**
    * Will select given value or randomly select any dropdown option if value not present
    */
-  async selectAnOption(value){
+  async selectAnOption(value) {
     if (value) {
       await $(`${this._dropdownElement} option[value=${value}]`).click();
     } else {
       const options = await this._getOptionElements();
       const elementListSize = await options.length;
       const randomOptionArrayInt = await RandomUtils.generateRandomInt(1, await elementListSize);
-      const optionToSelect = await options[randomOptionArrayInt-1];
+      const optionToSelect = await options[randomOptionArrayInt - 1];
       await optionToSelect.click();
     }
   }
@@ -54,7 +54,7 @@ class Dropdown {
    * Returns the value of the current option selected for a dropdown
    * @returns String
    */
-  async getCurrentSelectedOption(){
+  async getCurrentSelectedOption() {
     const text = await getText($(this._currentDropdownOptionElement));
     return text.trim();
   }
@@ -63,23 +63,23 @@ class Dropdown {
    * Select a dropdown option by text value. Case insensitive
    * @param dropdownOption
    */
-  async _selectFromDropdownByText(dropdownOption){
+  async _selectFromDropdownByText(dropdownOption) {
     let optionToSelect;
     let found = false;
 
     const options = await this._getOptionElements();
     const optionsTextArray = [];
 
-    for (const option of options){
+    for (const option of options) {
       const optionText = await getText(option);
       await optionsTextArray.push(optionText);
-      if (optionText.trim().toLowerCase() === dropdownOption.trim().toLowerCase()){
+      if (optionText.trim().toLowerCase() === dropdownOption.trim().toLowerCase()) {
         optionToSelect = option;
         found = true;
         break;
       }
     }
-    if (!found){
+    if (!found) {
       const message = `option '${dropdownOption}' not found in dropdown '${this._dropdownElement.toString()}'. Available options: ${optionsTextArray}`;
       throw new CustomError(message);
     }
@@ -87,7 +87,7 @@ class Dropdown {
     await optionToSelect.click();
   }
 
-  async _selectFromDropdownByIndex(dropdownIndex){
+  async _selectFromDropdownByIndex(dropdownIndex) {
     let optionToSelect;
     let found = false;
 
@@ -95,22 +95,22 @@ class Dropdown {
     const optionsTextArrayTemp = [];
     const optionsTextArray = [];
 
-    for (const option of options){
+    for (const option of options) {
       const optionText = await getText(option);
       await optionsTextArrayTemp.push(optionText);
     }
 
-    for (const option of options){
+    for (const option of options) {
       const optionText = await getText(option);
       await optionsTextArray.push(optionText);
-      if (optionText.trim().toLowerCase() === optionsTextArrayTemp[dropdownIndex].trim().toLowerCase()){
+      if (optionText.trim().toLowerCase() === optionsTextArrayTemp[dropdownIndex].trim().toLowerCase()) {
         optionToSelect = option;
         found = true;
         break;
       }
     }
 
-    if (!found){
+    if (!found) {
       const message = `option '${dropdownIndex}' not found in dropdown '${this._dropdownElement.toString()}'. Available options: ${optionsTextArray}`;
       throw new CustomError(message);
     }
@@ -122,9 +122,9 @@ class Dropdown {
    * Check the the options exist and dropown is present
    * @returns {Promise<boolean|*>}
    */
-  async isPresent(expectedTextsValues){
+  async isPresent(expectedTextsValues) {
     const actualTextsValues = await this.getOptionsTextValues();
-    for (let i = actualTextsValues.length; i--;) {
+    for (let i = actualTextsValues.length; i--; ) {
       if (!expectedTextsValues.includes(actualTextsValues[i].trim())) {
         return false;
       }
@@ -136,12 +136,11 @@ class Dropdown {
    * Check the input tag is enabled
    * @returns {Promise<boolean|*>}
    */
-  async isEnabled(){
+  async isEnabled() {
     return await $(this._dropdownElement).isEnabled();
   }
 
-  async waitForElementToBeInvisible(){
-
+  async waitForElementToBeInvisible() {
     try {
       await browser.wait(EC.invisibilityOf(await elementByCss(this._dropdownElement)), DEFAULT_TIMEOUT);
       return true;
@@ -152,25 +151,25 @@ class Dropdown {
   }
 
   async waitForElementToBeVisible(page, timeout = DEFAULT_TIMEOUT) {
-  try {
-    const locator = page.locator(this._dropdownElement);
-    await locator.waitFor({ state: 'visible', timeout });
-    return true;
-  } catch (e) {
-    const message = `timed out after ${timeout}ms waiting for dropdown element "${this._dropdownElement}" to be visible`;
-    throw new CustomError(message, e);
+    try {
+      const locator = page.locator(this._dropdownElement);
+      await locator.waitFor({ state: 'visible', timeout });
+      return true;
+    } catch (e) {
+      const message = `timed out after ${timeout}ms waiting for dropdown element "${this._dropdownElement}" to be visible`;
+      throw new CustomError(message, e);
+    }
   }
-}
 
   /**
    * Select a dropdown option by text value. Retry 2 more times if fails.
    * @param dropdownOption
    */
-  async selectFromDropdownByText(dropdownOption){
+  async selectFromDropdownByText(dropdownOption) {
     let fail = true;
     let failmessage = null;
 
-    for (let i = 1; i < 4; i++){
+    for (let i = 1; i < 4; i++) {
       try {
         await this._selectFromDropdownByText(dropdownOption);
         fail = false;
@@ -183,16 +182,16 @@ class Dropdown {
       }
     }
 
-    if (fail){
+    if (fail) {
       throw new CustomError(failmessage, 'failed 3 retry attempts');
     }
   }
 
-  async selectFromDropdownByIndex(dropdownOption){
+  async selectFromDropdownByIndex(dropdownOption) {
     let fail = true;
     let failmessage = null;
 
-    for (let i = 1; i < 4; i++){
+    for (let i = 1; i < 4; i++) {
       try {
         await this._selectFromDropdownByIndex(dropdownOption);
         fail = false;
@@ -205,7 +204,7 @@ class Dropdown {
       }
     }
 
-    if (fail){
+    if (fail) {
       throw new CustomError(failmessage, 'failed 3 retry attempts');
     }
   }

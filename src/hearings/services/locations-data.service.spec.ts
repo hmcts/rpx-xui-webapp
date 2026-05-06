@@ -6,7 +6,9 @@ describe('LocationsData service', () => {
     it('getForService should make correct api call', () => {
       const service = new LocationsDataService(mockHttpService);
       service.getLocationById('venue', 'serviceCode');
-      expect(mockHttpService.get).toHaveBeenCalledWith('api/prd/location/getLocationById?epimms_id=venue&serviceCode=serviceCode');
+      expect(mockHttpService.get).toHaveBeenCalledWith(
+        'api/prd/location/getLocationById?epimms_id=venue&serviceCode=serviceCode'
+      );
     });
   });
 });

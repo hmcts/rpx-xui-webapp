@@ -1,6 +1,6 @@
 const { $, getText } = require('../../../../../helpers/globals');
 
-class HearingSubmitConfirmationPage{
+class HearingSubmitConfirmationPage {
   get pageContainer() {
     return $('exui-hearing-confirmation');
   }
@@ -9,7 +9,7 @@ class HearingSubmitConfirmationPage{
     return $('.govuk-panel--confirmation');
   }
 
-  async confirmationbannerMessage(){
+  async confirmationbannerMessage() {
     return await getText(this.confirmationBanner);
   }
 

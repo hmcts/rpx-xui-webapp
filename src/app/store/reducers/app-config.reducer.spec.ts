@@ -16,8 +16,8 @@ describe('App Config Reducer', () => {
       ...appConfigReducer.initialState,
       termsAndCondition: {
         isLoaded: true,
-        hasUserAcceptedTC: false
-      }
+        hasUserAcceptedTC: false,
+      },
     };
     expect(state).toEqual(expectedState);
   });
@@ -29,8 +29,8 @@ describe('App Config Reducer', () => {
       ...appConfigReducer.initialState,
       termsAndCondition: {
         isLoaded: true,
-        hasUserAcceptedTC: true
-      }
+        hasUserAcceptedTC: true,
+      },
     };
     expect(state).toEqual(expectedState);
   });
@@ -39,19 +39,19 @@ describe('App Config Reducer', () => {
     const action = new fromActions.LoadUserDetailsSuccess({
       sessionTimeout: {
         idleModalDisplayTime: 100,
-        totalIdleTime: 100
+        totalIdleTime: 100,
       },
       canShareCases: false,
-      userInfo: null
+      userInfo: null,
     });
     const state = appConfigReducer.reducer(appConfigReducer.initialState, action);
     const expectedState = {
       ...appConfigReducer.initialState.userDetails,
       sessionTimeout: {
         idleModalDisplayTime: 100,
-        totalIdleTime: 100
+        totalIdleTime: 100,
       },
-      userInfo: null
+      userInfo: null,
     };
     expect(state.userDetails.userInfo).toEqual(expectedState.userInfo);
     expect(state.userDetails.sessionTimeout).toEqual(expectedState.sessionTimeout);
@@ -62,7 +62,7 @@ describe('App Config Reducer', () => {
     const state = appConfigReducer.reducer(appConfigReducer.initialState, action);
     const expectedState = {
       ...appConfigReducer.initialState,
-      useIdleSessionTimeout: true
+      useIdleSessionTimeout: true,
     };
     expect(state).toEqual(expectedState);
   });
@@ -72,7 +72,7 @@ describe('App Config Reducer', () => {
     const state = appConfigReducer.reducer(appConfigReducer.initialState, action);
     const expectedState = {
       ...appConfigReducer.initialState,
-      useIdleSessionTimeout: false
+      useIdleSessionTimeout: false,
     };
     expect(state).toEqual(expectedState);
   });
@@ -83,7 +83,7 @@ describe('App Config Reducer', () => {
     const state = appConfigReducer.reducer(appConfigReducer.initialState, action);
     const expectedState = {
       ...appConfigReducer.initialState,
-      termsAndConditions: document
+      termsAndConditions: document,
     };
     expect(state).toEqual(expectedState);
   });
@@ -93,7 +93,7 @@ describe('App Config Reducer', () => {
     const state = appConfigReducer.reducer(appConfigReducer.initialState, action);
     const expectedState = {
       ...appConfigReducer.initialState,
-      useIdleSessionTimeout: true
+      useIdleSessionTimeout: true,
     };
     expect(state).toEqual(expectedState);
   });
@@ -103,7 +103,7 @@ describe('App Config Reducer', () => {
     const state = appConfigReducer.reducer(appConfigReducer.initialState, action);
     const expectedState = {
       ...appConfigReducer.initialState,
-      useIdleSessionTimeout: false
+      useIdleSessionTimeout: false,
     };
     expect(state).toEqual(expectedState);
   });
@@ -113,7 +113,7 @@ describe('App Config Reducer', () => {
     const state = appConfigReducer.reducer(appConfigReducer.initialState, action);
     const expectedState = {
       ...appConfigReducer.initialState,
-      decorate16digitCaseReferenceSearchBoxInHeader: true
+      decorate16digitCaseReferenceSearchBoxInHeader: true,
     };
     expect(state).toEqual(expectedState);
   });

@@ -1,6 +1,4 @@
-
 module.exports = {
-
   myWork: 'exui-task-home',
   myTasks: 'exui-task-home exui-my-tasks',
   availableTasks: 'exui-task-home exui-available-tasks',
@@ -9,13 +7,12 @@ module.exports = {
   subNavihationLinks: {
     myTasks: GetSubnavigationLinkCss('list'),
     availableTasks: GetSubnavigationLinkCss('available'),
-    myCases: GetSubnavigationLinkCss('my-cases')
+    myCases: GetSubnavigationLinkCss('my-cases'),
   },
   workFilterButton: 'exui-task-home exui-task-list-filter button',
-  workFilters: 'exui-task-home exui-task-list-filter .xui-generic-filter'
-
+  workFilters: 'exui-task-home exui-task-list-filter .xui-generic-filter',
 };
 
-function GetSubnavigationLinkCss(subNav){
+function GetSubnavigationLinkCss(subNav) {
   return `exui-task-home a.hmcts-sub-navigation__link[href*='${subNav}']`;
 }

@@ -1,5 +1,7 @@
 const RefundsPage = require('../pageObjects/refundsPage.js');
-function headerPage () { return require('../pageObjects/headerPage')(); }
+function headerPage() {
+  return require('../pageObjects/headerPage')();
+}
 
 const refundsPage = new RefundsPage();
 
@@ -8,11 +10,7 @@ When(/^I click on Refunds button$/, async function () {
 });
 
 Then(/^Refunds page should be displayed$/, async function () {
-  const refundPageHeadings = [
-    'Refund list',
-    'Refunds to be approved',
-    'Refunds returned to caseworker'
-  ];
+  const refundPageHeadings = ['Refund list', 'Refunds to be approved', 'Refunds returned to caseworker'];
   await browser.waitForAngular();
   const renderedHeadings = await refundsPage.amOnPage();
   expect(renderedHeadings).to.include.all.members(refundPageHeadings);
@@ -31,10 +29,7 @@ When(/^I click Process refund$/, async function () {
 });
 
 Then(/^Process refund page should be displayed$/, async function () {
-  const processRefundPageHeadings = [
-    'Review refund details',
-    'What do you want to do with this refund?'
-  ];
+  const processRefundPageHeadings = ['Review refund details', 'What do you want to do with this refund?'];
   const renderedHeadings = await refundsPage.amOnProcessRefundPage();
   const processRefundPageFields = {
     reviewRefundDetailsTableColumns: [
@@ -42,14 +37,10 @@ Then(/^Process refund page should be displayed$/, async function () {
       'Reason for refund',
       'Amount to be refunded',
       'Submitted by',
-      'Date submitted'
+      'Date submitted',
     ],
     refundActionsLabels: ['Approve', 'Reject', 'Return to caseworker'],
-    refundActionsHints: [
-      'Send to middle office',
-      'There is no refund due',
-      'Some information needs correcting'
-    ]
+    refundActionsHints: ['Send to middle office', 'There is no refund due', 'Some information needs correcting'],
   };
   const processDetailsInfo = await refundsPage.getProcessRefundsInfo();
   expect(renderedHeadings).to.include.all.members(processRefundPageHeadings);
@@ -63,19 +54,11 @@ When(/^I click Review refund$/, async function () {
 });
 
 Then(/^Review refund page should be displayed$/, async function () {
-  const reviewRefundPageHeadings = [
-    'Refund details',
-    'Refund status history'
-  ];
+  const reviewRefundPageHeadings = ['Refund details', 'Refund status history'];
   const renderedHeadings = await refundsPage.amOnReviewRefundPage();
   const reviewRefundPageFields = {
-    refundDetailsTableColumns: [
-      'Refund reference',
-      'Payment to be refunded',
-      'Reason for refund',
-      'Amount refunded'
-    ],
-    refundStatusHistoryColumns: ['Status', 'Date and time', 'Users', 'Notes']
+    refundDetailsTableColumns: ['Refund reference', 'Payment to be refunded', 'Reason for refund', 'Amount refunded'],
+    refundStatusHistoryColumns: ['Status', 'Date and time', 'Users', 'Notes'],
   };
   const reviewDetailsInfo = await refundsPage.getReviewRefundsInfo();
   expect(renderedHeadings).to.include.all.members(reviewRefundPageHeadings);
@@ -83,4 +66,3 @@ Then(/^Review refund page should be displayed$/, async function () {
     expect(reviewDetailsInfo[key]).to.include.all.members(reviewRefundPageFields[key]);
   });
 });
-

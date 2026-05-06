@@ -7,7 +7,7 @@ import { AbstractFieldWriteComponent } from '../abstract-field-write.component';
 @Component({
   standalone: false,
   selector: 'exui-noc-datetime-field',
-  templateUrl: './noc-datetime-field.component.html'
+  templateUrl: './noc-datetime-field.component.html',
 })
 export class NocDateTimeFieldComponent extends AbstractFieldWriteComponent implements OnInit, AfterViewInit {
   public datetimeControl: FormControl;
@@ -26,7 +26,7 @@ export class NocDateTimeFieldComponent extends AbstractFieldWriteComponent imple
       day: [null, Validators.required],
       hour: [null, Validators.required],
       minute: [null, Validators.required],
-      second: [null, Validators.required]
+      second: [null, Validators.required],
     });
     if (this.datetimeControl.value) {
       // convert UTC datetime to local time for display
@@ -49,12 +49,12 @@ export class NocDateTimeFieldComponent extends AbstractFieldWriteComponent imple
       const date = [
         this.datetimeGroup.value.year !== null ? this.datetimeGroup.value.year : '',
         this.datetimeGroup.value.month !== null ? AppUtils.pad(this.datetimeGroup.value.month) : '',
-        this.datetimeGroup.value.day !== null ? AppUtils.pad(this.datetimeGroup.value.day) : ''
+        this.datetimeGroup.value.day !== null ? AppUtils.pad(this.datetimeGroup.value.day) : '',
       ].join('-');
       const time = [
         this.datetimeGroup.value.hour !== null ? AppUtils.pad(this.datetimeGroup.value.hour) : '',
         this.datetimeGroup.value.minute !== null ? AppUtils.pad(this.datetimeGroup.value.minute) : '',
-        this.datetimeGroup.value.second !== null ? AppUtils.pad(this.datetimeGroup.value.second) : ''
+        this.datetimeGroup.value.second !== null ? AppUtils.pad(this.datetimeGroup.value.second) : '',
       ].join(':');
       const localDateTimeString = `${date}T${time}.000`;
 

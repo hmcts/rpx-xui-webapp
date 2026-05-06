@@ -5,7 +5,7 @@ import { HEARING_CANCELLED_SUMMARY_TEMPLATE } from '../../../templates/hearing-c
 @Component({
   standalone: false,
   selector: 'exui-hearing-cancelled-summary',
-  templateUrl: './hearing-cancelled-summary.component.html'
+  templateUrl: './hearing-cancelled-summary.component.html',
 })
 export class HearingCancelledSummaryComponent {
   public template = HEARING_CANCELLED_SUMMARY_TEMPLATE;

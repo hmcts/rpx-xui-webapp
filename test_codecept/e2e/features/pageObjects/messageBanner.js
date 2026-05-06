@@ -30,10 +30,7 @@ class MessageBanner {
       await this.bannerMessageContainer.waitFor({ state: 'visible', timeout: 5000 });
       return true;
     } catch (err) {
-      cucumberReporter.AddMessage(
-        'message banner not displayed: ' + err,
-        LOG_LEVELS.Error
-      );
+      cucumberReporter.AddMessage('message banner not displayed: ' + err, LOG_LEVELS.Error);
       return false;
     }
   }

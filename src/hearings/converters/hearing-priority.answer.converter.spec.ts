@@ -11,7 +11,7 @@ import { HearingPriorityAnswerConverter } from './hearing-priority.answer.conver
 
 describe('HearingPriorityAnswerConverter', () => {
   let converter: AnswerConverter;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let store: Store<any>;
   let router: any;
 
@@ -24,12 +24,12 @@ describe('HearingPriorityAnswerConverter', () => {
           useValue: {
             snapshot: {
               data: {
-                hearingPriorities: hearingPriorityRefData
-              }
-            }
-          }
-        }
-      ]
+                hearingPriorities: hearingPriorityRefData,
+              },
+            },
+          },
+        },
+      ],
     });
     store = TestBed.inject(Store);
     router = TestBed.inject(ActivatedRoute);
@@ -49,8 +49,8 @@ describe('HearingPriorityAnswerConverter', () => {
       ...initialStateImmutable.hearings,
       hearingConditions: {
         ...initialStateImmutable.hearings.hearingConditions,
-        isHearingAmendmentsEnabled: true
-      }
+        isHearingAmendmentsEnabled: true,
+      },
     };
     const result$ = converter.transformAnswer(of(STATE));
     const hearingPriorityType = 'Urgent';

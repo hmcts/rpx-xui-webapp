@@ -1,7 +1,13 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { backButtonVisibilityStates, checkAnswersButtonVisibilityStates, continueButtonVisibilityStates, setAnswersButtonVisibilityStates, submitButtonVisibilityStates } from '../../constants';
+import {
+  backButtonVisibilityStates,
+  checkAnswersButtonVisibilityStates,
+  continueButtonVisibilityStates,
+  setAnswersButtonVisibilityStates,
+  submitButtonVisibilityStates,
+} from '../../constants';
 import { NocNavigationEvent, NocState } from '../../models';
 import * as fromFeature from '../../store';
 
@@ -9,7 +15,7 @@ import * as fromFeature from '../../store';
   standalone: false,
   selector: 'exui-noc-navigation',
   templateUrl: 'noc-navigation.component.html',
-  styleUrls: ['noc-navigation.component.scss']
+  styleUrls: ['noc-navigation.component.scss'],
 })
 export class NocNavigationComponent implements OnInit {
   @Output() public eventTrigger = new EventEmitter();
@@ -24,9 +30,7 @@ export class NocNavigationComponent implements OnInit {
 
   public nocNavigationEvent = NocNavigationEvent;
 
-  constructor(
-    private readonly store: Store<fromFeature.State>,
-  ) {}
+  constructor(private readonly store: Store<fromFeature.State>) {}
 
   public ngOnInit() {
     this.nocNavigationCurrentState$ = this.store.pipe(select(fromFeature.currentNavigation));

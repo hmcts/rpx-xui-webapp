@@ -34,14 +34,16 @@ export class InitializeHearingRequest implements Action {
 export class LoadHearingRequest implements Action {
   public readonly type = LOAD_HEARING_REQUEST;
 
-  constructor(public payload: { hearingID: string, targetURL: string, caseRef: string }) {}
+  constructor(public payload: { hearingID: string; targetURL: string; caseRef: string }) {}
 }
 
 export class UpdateHearingRequest implements Action {
   public readonly type = UPDATE_HEARING_REQUEST;
 
-  constructor(public hearingRequestMainModel: HearingRequestMainModel,
-              public hearingCondition: HearingConditions) {}
+  constructor(
+    public hearingRequestMainModel: HearingRequestMainModel,
+    public hearingCondition: HearingConditions
+  ) {}
 }
 
 export class UpdateHearingRequestFailure implements Action {

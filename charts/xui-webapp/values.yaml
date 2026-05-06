@@ -7,22 +7,22 @@ redis:
   auth:
     enabled: false
   image:
-    registry: hmctspublic.azurecr.io
+    registry: hmctsprod.azurecr.io
     repository: imported/bitnami/redis
 
 global:
   security:
     allowInsecureImages: true
-    
+
 nodejs:
   applicationPort: 3000
   cpuRequests: 250m
   cpuLimits: 2000m
   memoryRequests: 512Mi
   memoryLimits: 2048Mi
-  autoscaling:        # Default is false
+  autoscaling: # Default is false
     enabled: false
-    maxReplicas: 16    # Required setting
+    maxReplicas: 16 # Required setting
     targetCPUUtilizationPercentage: 80 # Default is 80% target CPU utilization
   environment:
     REFORM_TEAM: rpx
@@ -36,7 +36,6 @@ nodejs:
     MAX_LOG_LINE: 80
     PROTOCOL: https
     MICROSERVICE: xui_webapp
-    SESSION_SECRET: secretSauce
     ALLOW_CONFIG_MUTATIONS: 1
     MC_HTTP_PROXY: http://172.16.0.7:8080
     MC_NO_PROXY: localhost
@@ -79,7 +78,7 @@ nodejs:
     # Services refunds  endpoints
     SERVICES_REFUNDS_API_URL: http://ccpay-refunds-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services Notification Url (for Ways To Pay)
-    SERVICES_NOTIFICATIONS_API_URL:  http://ccpay-notifications-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
+    SERVICES_NOTIFICATIONS_API_URL: http://ccpay-notifications-service-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services case endpoints
     SERVICES_CASE_CASEWORKER_API: http://rd-caseworker-ref-api-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal
     # Services judicial endpoints
@@ -110,6 +109,7 @@ nodejs:
     # Services Idam
     SERVICES_IDAM_API_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
     SERVICES_IDAM_CLIENT_ID: xuiwebapp
+
     SERVICES_IDAM_LOGIN_URL: https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net
     SERVICES_IDAM_INDEX_URL: /
     SERVICES_IDAM_OAUTH_CALLBACK_URL: /oauth2/callback
@@ -145,7 +145,6 @@ nodejs:
     FEATURE_SUBSTANTIVE_ROLE_ENABLED: true
     FEATURE_ACCESS_MANAGEMENT_ENABLED: false
     FEATURE_LAU_SPECIFIC_CHALLENGED_ENABLED: false
-    FEATURE_QUERY_IDAM_SERVICE_OVERRIDE: true
 
     # Redis
     REDIS_KEY_PREFIX: 'activity:'
@@ -164,9 +163,9 @@ nodejs:
         - launch-darkly-client-id
         - system-user-name
         - system-user-password
+        - mc-session-secret
   # Don't modify below here
   image: ${IMAGE_NAME}
   ingressHost: ${SERVICE_FQDN}
 idam-pr:
   enabled: false
-

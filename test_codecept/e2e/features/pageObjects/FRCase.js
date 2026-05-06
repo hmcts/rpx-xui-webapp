@@ -1,13 +1,13 @@
 const CaseManager = require('./common/CaseManager');
 
 class FRCase {
-  constructor(){
+  constructor() {
     this.caseManager = new CaseManager();
   }
 
-  async createCase(isAccessibilityTest){
+  async createCase(isAccessibilityTest) {
     const caseData = {
-      'Divorce Case Number': 'BV18D00152'
+      'Divorce Case Number': 'BV18D00152',
     };
     await this.caseManager.createCase(caseData, isAccessibilityTest);
   }

@@ -22,12 +22,12 @@ describe('IsAmendedPipe', () => {
               data: {
                 hearingPriorities: hearingPriorityRefData,
                 caseFlags: caseFlagsRefData,
-                partyChannels: partyChannelsRefData
-              }
-            }
-          }
-        }
-      ]
+                partyChannels: partyChannelsRefData,
+              },
+            },
+          },
+        },
+      ],
     });
     router = TestBed.inject(ActivatedRoute);
     isAmendedPipe = new IsAmendedPipe(router);
@@ -76,11 +76,13 @@ describe('IsAmendedPipe', () => {
   it('should transform is amended for panel inclusion', () => {
     const STATE: State = _.cloneDeep(initialStateImmutable.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
-      panelPreferences: [{
-        memberID: 'P000001',
-        memberType: MemberType.JUDGE,
-        requirementType: RequirementType.EXCLUDE
-      }]
+      panelPreferences: [
+        {
+          memberID: 'P000001',
+          memberType: MemberType.JUDGE,
+          requirementType: RequirementType.EXCLUDE,
+        },
+      ],
     };
     const result$ = isAmendedPipe.transform(AnswerSource.PANEL_INCLUSION, of(STATE));
     const isAmended = true;
@@ -91,11 +93,13 @@ describe('IsAmendedPipe', () => {
   it('should transform is amended for panel exclusion', () => {
     const STATE: State = _.cloneDeep(initialStateImmutable.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
-      panelPreferences: [{
-        memberID: 'P000001',
-        memberType: MemberType.JUDGE,
-        requirementType: RequirementType.EXCLUDE
-      }]
+      panelPreferences: [
+        {
+          memberID: 'P000001',
+          memberType: MemberType.JUDGE,
+          requirementType: RequirementType.EXCLUDE,
+        },
+      ],
     };
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.hearingType = 'final';
     const result$ = isAmendedPipe.transform(AnswerSource.PANEL_EXCLUSION, of(STATE));
@@ -107,11 +111,13 @@ describe('IsAmendedPipe', () => {
   it('should transform is amended for panel roles', () => {
     const STATE: State = _.cloneDeep(initialStateImmutable.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
-      panelPreferences: [{
-        memberID: 'P000001',
-        memberType: MemberType.JUDGE,
-        requirementType: RequirementType.EXCLUDE
-      }]
+      panelPreferences: [
+        {
+          memberID: 'P000001',
+          memberType: MemberType.JUDGE,
+          requirementType: RequirementType.EXCLUDE,
+        },
+      ],
     };
     const result$ = isAmendedPipe.transform(AnswerSource.PANEL_ROLES, of(STATE));
     const isAmended = true;

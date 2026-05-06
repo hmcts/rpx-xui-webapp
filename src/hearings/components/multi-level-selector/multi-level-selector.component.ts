@@ -8,12 +8,11 @@ import { ControlTypeEnum } from '../../models/hearings.enum';
   selector: 'exui-multi-level-selector',
   templateUrl: './multi-level-selector.component.html',
   styleUrls: ['./multi-level-selector.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
-
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MultiLevelSelectorComponent implements AfterViewInit, OnDestroy {
   @Input() public multiLevelSelect: FormArray;
-  @Input() public configLevels: { level: number, controlType: ControlTypeEnum }[];
+  @Input() public configLevels: { level: number; controlType: ControlTypeEnum }[];
   @Input() public level: number = 1;
   @Input() public hasValidationRequested: boolean = false;
   public formGroup: FormGroup;

@@ -7,7 +7,13 @@ import { provideMockStore } from '@ngrx/store/testing';
 import * as _ from 'lodash';
 import { Observable, of } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../../app/shared/test/mock-rpx-translate.pipe';
-import { hearingActualsMainModel, hearingStageRefData, initialState, partyChannelsRefData, partySubChannelsRefData } from '../../../hearing.test.data';
+import {
+  hearingActualsMainModel,
+  hearingStageRefData,
+  initialState,
+  partyChannelsRefData,
+  partySubChannelsRefData,
+} from '../../../hearing.test.data';
 import { ActualHearingDayModel } from '../../../models/hearingActualsMainModel';
 import { ACTION, HearingResult, PartyType } from '../../../models/hearings.enum';
 import { ConvertToValuePipe } from '../../../pipes/convert-to-value.pipe';
@@ -22,7 +28,7 @@ import { CaseReferencePipe } from 'src/hearings/pipes/case-reference.pipe';
 
 @Pipe({
   standalone: false,
-  name: 'transformAnswer'
+  name: 'transformAnswer',
 })
 export class MockHearingAnswersPipe implements PipeTransform {
   public transform(): string {
@@ -32,8 +38,7 @@ export class MockHearingAnswersPipe implements PipeTransform {
 
 @Component({
   standalone: false,
-  template: `
-    <div>Nothing</div>`
+  template: ` <div>Nothing</div>`,
 })
 class NothingComponent {}
 
@@ -57,7 +62,7 @@ describe('HearingActualsAddEditSummaryComponent', () => {
       parent_category: 'Applicant',
       parent_key: 'APPL',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'EntityRoleCode',
@@ -70,7 +75,7 @@ describe('HearingActualsAddEditSummaryComponent', () => {
       parent_category: 'Support',
       parent_key: 'SUPP',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'EntityRoleCode',
@@ -83,44 +88,53 @@ describe('HearingActualsAddEditSummaryComponent', () => {
       parent_category: 'Applicant',
       parent_key: 'APPL',
       active_flag: 'Y',
-      child_nodes: null
-    }
+      child_nodes: null,
+    },
   ];
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualsAddEditSummaryComponent, ConvertToValuePipe, MockHearingAnswersPipe, MockRpxTranslatePipe, DatePipe, CaseReferencePipe],
-      imports: [RouterTestingModule.withRoutes(
-        [
-          { path: 'hearings/actuals/1000000/hearing-actual-edit-summary', component: NothingComponent }
-        ]
-      )],
+      declarations: [
+        HearingActualsAddEditSummaryComponent,
+        ConvertToValuePipe,
+        MockHearingAnswersPipe,
+        MockRpxTranslatePipe,
+        DatePipe,
+        CaseReferencePipe,
+      ],
+      imports: [
+        RouterTestingModule.withRoutes([
+          { path: 'hearings/actuals/1000000/hearing-actual-edit-summary', component: NothingComponent },
+        ]),
+      ],
       providers: [
         provideMockStore({ initialState }),
         { provide: HearingsService, useValue: hearingsService },
         {
           provide: ActivatedRoute,
           useValue: {
-            paramMap: of(convertToParamMap({
-              id: '1'
-            })),
+            paramMap: of(
+              convertToParamMap({
+                id: '1',
+              })
+            ),
             snapshot: {
               params: {
-                id: '1'
+                id: '1',
               },
               data: {
                 partyChannels: partyChannelsRefData,
                 partySubChannels: partySubChannelsRefData,
-                hearingRole
-              }
-            }
-          }
+                hearingRole,
+              },
+            },
+          },
         },
         DatePipe,
         FormatTranslatorService,
-        { provide: SessionStorageService }
+        { provide: SessionStorageService },
       ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   }));
 
@@ -198,39 +212,39 @@ describe('HearingActualsAddEditSummaryComponent', () => {
           actualPartyId: '1',
           individualDetails: {
             firstName: 'Bob',
-            lastName: 'Jones'
+            lastName: 'Jones',
           },
           actualOrganisationName: 'Company A',
           didNotAttendFlag: false,
           partyChannelSubType: 'inPerson',
           partyRole: 'appellant',
-          representedParty: ''
+          representedParty: '',
         },
         {
           actualPartyId: '2',
           individualDetails: {
             firstName: 'Mary',
-            lastName: 'Jones'
+            lastName: 'Jones',
           },
           actualOrganisationName: 'Company B',
           didNotAttendFlag: false,
           partyChannelSubType: 'inPerson',
           partyRole: 'claimant',
-          representedParty: ''
+          representedParty: '',
         },
         {
           actualPartyId: '3',
           individualDetails: {
             firstName: 'James',
-            lastName: 'Gods'
+            lastName: 'Gods',
           },
           actualOrganisationName: 'Solicitors A',
           didNotAttendFlag: false,
           partyChannelSubType: 'inPerson',
           partyRole: 'interpreter',
-          representedParty: '1'
-        }
-      ]
+          representedParty: '1',
+        },
+      ],
     };
     const storeDispatchSpy = spyOn(store, 'dispatch');
     spyOn(ActualHearingsUtils, 'mergeSingleHearingPartActuals');
@@ -252,39 +266,39 @@ describe('HearingActualsAddEditSummaryComponent', () => {
           actualPartyId: '1',
           individualDetails: {
             firstName: 'Bob',
-            lastName: 'Jones'
+            lastName: 'Jones',
           },
           actualOrganisationName: 'Company A',
           didNotAttendFlag: false,
           partyChannelSubType: 'inPerson',
           partyRole: 'appellant',
-          representedParty: ''
+          representedParty: '',
         },
         {
           actualPartyId: '2',
           individualDetails: {
             firstName: 'Mary',
-            lastName: 'Jones'
+            lastName: 'Jones',
           },
           actualOrganisationName: 'Company B',
           didNotAttendFlag: false,
           partyChannelSubType: 'inPerson',
           partyRole: 'claimant',
-          representedParty: ''
+          representedParty: '',
         },
         {
           actualPartyId: '3',
           individualDetails: {
             firstName: 'James',
-            lastName: 'Gods'
+            lastName: 'Gods',
           },
           actualOrganisationName: 'Solicitors A',
           didNotAttendFlag: false,
           partyChannelSubType: 'inPerson',
           partyRole: 'interpreter',
-          representedParty: '1'
-        }
-      ]
+          representedParty: '1',
+        },
+      ],
     };
     const storeDispatchSpy = spyOn(store, 'dispatch');
     component.confirmActualHearingTimeForDay(hearingDay);
@@ -334,7 +348,11 @@ describe('HearingActualsAddEditSummaryComponent', () => {
   });
 
   it('should return updated notRequired', () => {
-    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals(component.hearingActualsMainModel, component.actualHearingDays[0].hearingDate, { notRequired: true } as ActualHearingDayModel);
+    const patchedHearingActuals = ActualHearingsUtils.mergeSingleHearingPartActuals(
+      component.hearingActualsMainModel,
+      component.actualHearingDays[0].hearingDate,
+      { notRequired: true } as ActualHearingDayModel
+    );
     expect(patchedHearingActuals.actualHearingDays[0].notRequired).toBe(true);
   });
 
@@ -344,12 +362,14 @@ describe('HearingActualsAddEditSummaryComponent', () => {
         hearingDate: '2021-03-12',
         hearingStartTime: '2021-03-12T09:00:00.000Z',
         hearingEndTime: '2021-03-12T10:00:00.000Z',
-        pauseDateTimes: [{
-          pauseStartTime: '2021-03-12T10:10:00.000Z',
-          pauseEndTime: '2021-03-12T11:15:00.000Z'
-        }],
+        pauseDateTimes: [
+          {
+            pauseStartTime: '2021-03-12T10:10:00.000Z',
+            pauseEndTime: '2021-03-12T11:15:00.000Z',
+          },
+        ],
         notRequired: false,
-        actualDayParties: []
+        actualDayParties: [],
       };
       const actual = component.getPauseDateTime(actualHearingDays, 'start');
       expect(actual).toEqual('10:10');
@@ -360,12 +380,14 @@ describe('HearingActualsAddEditSummaryComponent', () => {
         hearingDate: '2021-03-12',
         hearingStartTime: '2021-03-12T09:00:00.000Z',
         hearingEndTime: '2021-03-12T10:00:00.000Z',
-        pauseDateTimes: [{
-          pauseStartTime: '2021-03-12T10:10:00.000Z',
-          pauseEndTime: '2021-03-12T11:15:00.000Z'
-        }],
+        pauseDateTimes: [
+          {
+            pauseStartTime: '2021-03-12T10:10:00.000Z',
+            pauseEndTime: '2021-03-12T11:15:00.000Z',
+          },
+        ],
         notRequired: false,
-        actualDayParties: []
+        actualDayParties: [],
       };
       const actual = component.getPauseDateTime(actualHearingDays, 'end');
       expect(actual).toEqual('11:15');
@@ -378,7 +400,7 @@ describe('HearingActualsAddEditSummaryComponent', () => {
         hearingEndTime: '2021-03-12T10:00:00.000Z',
         pauseDateTimes: [],
         notRequired: false,
-        actualDayParties: []
+        actualDayParties: [],
       };
       const actual = component.getPauseDateTime(actualHearingDays, 'start');
       expect(actual).toEqual(null);
@@ -412,31 +434,31 @@ describe('HearingActualsAddEditSummaryComponent', () => {
     });
   });
   it('There are no changes in the number of participants, return false', () => {
-    const newIndividual1 : IndividualDetailsModel ={
+    const newIndividual1: IndividualDetailsModel = {
       title: 'Mr',
       firstName: 'John',
       lastName: 'Doe',
-      preferredHearingChannel: 'inPerson'
+      preferredHearingChannel: 'inPerson',
     };
-    const newIndividual2 : IndividualDetailsModel ={
+    const newIndividual2: IndividualDetailsModel = {
       title: 'Mr',
       firstName: 'John',
       lastName: 'Doe',
-      preferredHearingChannel: 'inPerson'
+      preferredHearingChannel: 'inPerson',
     };
-    const newParty1 : PartyDetailsModel ={
+    const newParty1: PartyDetailsModel = {
       partyID: 'P2',
       partyType: PartyType.IND,
       partyRole: 'appellant',
       partyName: 'John Doe',
-      individualDetails: newIndividual1
+      individualDetails: newIndividual1,
     };
-    const newParty2 : PartyDetailsModel ={
+    const newParty2: PartyDetailsModel = {
       partyID: 'P2',
       partyType: PartyType.IND,
       partyRole: 'appellant',
       partyName: 'John Doe',
-      individualDetails: newIndividual2
+      individualDetails: newIndividual2,
     };
     component.individualParties.push(newParty1);
     component.individualParties.push(newParty2);

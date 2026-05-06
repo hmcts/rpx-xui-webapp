@@ -12,7 +12,7 @@ import * as fromHearingStore from '../../store';
   standalone: false,
   selector: 'exui-hearing-summary',
   templateUrl: './hearing-summary.component.html',
-  styleUrls: ['./hearing-summary.component.scss']
+  styleUrls: ['./hearing-summary.component.scss'],
 })
 export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() public template: Section[];
@@ -20,32 +20,38 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy
   public listingTemplate: string = HearingTemplate.LISTING_INFORMATION;
   public partiesTemplate: string = HearingTemplate.PARTIES_TEMPLATE;
   public hearingState$: Observable<fromHearingStore.State>;
-  public validationErrors: { id: string, message: string }[] = [];
+  public validationErrors: { id: string; message: string }[] = [];
   public sub: Subscription;
   public showSpinner$: Observable<boolean>;
 
-  constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
+  constructor(
+    protected readonly hearingStore: Store<fromHearingStore.State>,
     protected readonly router: Router,
     protected readonly route: ActivatedRoute,
-    private readonly loadingService: LoadingService) {
+    private readonly loadingService: LoadingService
+  ) {
     this.hearingState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState));
   }
 
   public ngOnInit(): void {
     this.showSpinner$ = this.loadingService.isLoading as any;
     const loadingToken = this.loadingService.register();
-    this.sub = this.hearingState$.subscribe((state) => {
-      if (state.hearingRequest.lastError) {
-        this.validationErrors = [];
-        this.validationErrors.push({
-          id: '', message: HearingSummaryEnum.BackendError
-        });
-        window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
+    this.sub = this.hearingState$.subscribe(
+      (state) => {
+        if (state.hearingRequest.lastError) {
+          this.validationErrors = [];
+          this.validationErrors.push({
+            id: '',
+            message: HearingSummaryEnum.BackendError,
+          });
+          window.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
+        }
+        this.loadingService.unregister(loadingToken);
+      },
+      () => {
+        this.loadingService.unregister(loadingToken);
       }
-      this.loadingService.unregister(loadingToken);
-    }, () => {
-      this.loadingService.unregister(loadingToken);
-    });
+    );
   }
 
   public ngAfterViewInit(): void {
@@ -73,7 +79,7 @@ export class HearingSummaryComponent implements OnInit, AfterViewInit, OnDestroy
 
     const hearingCondition: HearingConditions = {
       fragmentId: id,
-      mode: this.mode
+      mode: this.mode,
     };
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
     this.router.navigateByUrl(changeLink);

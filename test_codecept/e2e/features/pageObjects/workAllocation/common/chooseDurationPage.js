@@ -2,11 +2,19 @@ const { $, $$, elementByXpath, getText, isPresent } = require('../../../../../he
 const BrowserWaits = require('../../../../support/customWaits');
 
 class ChooseDuration {
-  get container() { return $('exui-choose-duration'); }
-  get header() { return $('exui-choose-duration h1'); }
-  get headerCaption() { return $('exui-choose-duration h1 span'); }
+  get container() {
+    return $('exui-choose-duration');
+  }
+  get header() {
+    return $('exui-choose-duration h1');
+  }
+  get headerCaption() {
+    return $('exui-choose-duration h1 span');
+  }
 
-  get errorMessage() { return $('#error-message'); }
+  get errorMessage() {
+    return $('#error-message');
+  }
   get anotherPeriodValidationIndicator() {
     return $('exui-choose-duration #conditional-contact-3.form-group-error');
   }
@@ -14,7 +22,9 @@ class ChooseDuration {
   get radioConditional() {
     return elementByXpath('//div[contains(@class,"govuk-radios__conditional")]');
   }
-  get radioOptions() { return $$('exui-choose-duration .govuk-radios'); }
+  get radioOptions() {
+    return $$('exui-choose-duration .govuk-radios');
+  }
 
   async isDisplayed() {
     try {
@@ -56,15 +66,23 @@ class ChooseDuration {
   }
 
   async isRadioOptionPresent(radioLabel) {
-    return await this.container.locator(`//div[contains(@class,'govuk-radios__item')]//label[contains(text(),'${radioLabel}')]`).isVisible();
+    return await this.container
+      .locator(`//div[contains(@class,'govuk-radios__item')]//label[contains(text(),'${radioLabel}')]`)
+      .isVisible();
   }
 
   async getRadioOptionInputElement(radioLabel) {
-    return await this.container.locator(`//div[contains(@class,'govuk-radios__item')]//label[contains(text(),'${radioLabel}')]//../input`);
+    return await this.container.locator(
+      `//div[contains(@class,'govuk-radios__item')]//label[contains(text(),'${radioLabel}')]//../input`
+    );
   }
 
   async getRadioOptionCaptionText(radioLabel) {
-    return await getText(this.container.locator(`//div[contains(@class,'govuk-radios__item')]//label[contains(text(),'${radioLabel}')]/parent::div[contains(@class,'govuk-radios__item')]//span`));
+    return await getText(
+      this.container.locator(
+        `//div[contains(@class,'govuk-radios__item')]//label[contains(text(),'${radioLabel}')]/parent::div[contains(@class,'govuk-radios__item')]//span`
+      )
+    );
   }
 
   async selectRadioOption(radioLabel) {
@@ -79,7 +97,7 @@ class ChooseDuration {
 
   async isDateInputWithLabelDisplayed(label) {
     const dateInput = this.getDateInputFieldWithLabel(label);
-    return await isPresent(dateInput) && await dateInput.isVisible();
+    return (await isPresent(dateInput)) && (await dateInput.isVisible());
   }
 
   async enterDayInDateInputWithLabel(label, val) {
@@ -106,7 +124,7 @@ class ChooseDuration {
       return false;
     }
     const dateInput = this.getStartDateField();
-    return await isPresent(dateInput) && dateInput.isVisible();
+    return (await isPresent(dateInput)) && dateInput.isVisible();
   }
 
   async isValidationErrorDisplayedForDateInput(label) {
@@ -121,19 +139,25 @@ class ChooseDuration {
   }
 
   getDateInputErrorMessageElement(forFieldWithLabel) {
-    return elementByXpath(`//div[contains(@class,'govuk-radios__conditional')]//legend[contains(text(),'${forFieldWithLabel}')]/parent::fieldset//span[contains(@class ,'govuk-error-message')]`);
+    return elementByXpath(
+      `//div[contains(@class,'govuk-radios__conditional')]//legend[contains(text(),'${forFieldWithLabel}')]/parent::fieldset//span[contains(@class ,'govuk-error-message')]`
+    );
   }
 
   getFieldFromDatInput(forFieldWithLabel, fieldLabel) {
-    return elementByXpath(`//div[contains(@class,'govuk-radios__conditional')]//legend[contains(text(),'${forFieldWithLabel}')]/parent::fieldset//label[contains(text() ,'${fieldLabel}')]/following-sibling::input`);
+    return elementByXpath(
+      `//div[contains(@class,'govuk-radios__conditional')]//legend[contains(text(),'${forFieldWithLabel}')]/parent::fieldset//label[contains(text() ,'${fieldLabel}')]/following-sibling::input`
+    );
   }
 
   getDateInputFieldWithLabel(label) {
-    return this.container.locator(`//div[contains(@class,'govuk-radios__conditional')]//*[contains(text(),'${label}')]/parent::fieldset`);
+    return this.container.locator(
+      `//div[contains(@class,'govuk-radios__conditional')]//*[contains(text(),'${label}')]/parent::fieldset`
+    );
   }
 
   getStartDateField() {
-    return this.container.locator('//div[@id,\'date-start\']');
+    return this.container.locator("//div[@id,'date-start']");
   }
 }
 

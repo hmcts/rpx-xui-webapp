@@ -9,13 +9,17 @@ import { ExclusionNavigationEvent } from '../../../models';
 import { RoleExclusionsService } from '../../../services';
 import { ChoosePersonRoleComponent } from './choose-person-role.component';
 
-const mockRoles = [{ roleId: '1', roleName: 'Role 1' },
+const mockRoles = [
+  { roleId: '1', roleName: 'Role 1' },
   { roleId: '2', roleName: 'Role 2' },
-  { roleId: '3', roleName: 'Role 3' }];
+  { roleId: '3', roleName: 'Role 3' },
+];
 
-const mockRoleOptions = [{ optionId: '1', optionValue: 'Role 1' },
+const mockRoleOptions = [
+  { optionId: '1', optionValue: 'Role 1' },
   { optionId: '2', optionValue: 'Role 2' },
-  { optionId: '3', optionValue: 'Role 3' }];
+  { optionId: '3', optionValue: 'Role 3' },
+];
 
 describe('ChoosePersonRoleComponent', () => {
   const radioOptionControl: FormControl = new FormControl('');
@@ -30,15 +34,12 @@ describe('ChoosePersonRoleComponent', () => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ChooseRadioOptionComponent, ChoosePersonRoleComponent],
-      imports: [
-        ReactiveFormsModule
-      ],
+      imports: [ReactiveFormsModule],
       providers: [
         { provide: Store, useValue: mockStore },
-        { provide: RoleExclusionsService, useValue: mockRoleExclusionsService }
-      ]
-    })
-      .compileComponents();
+        { provide: RoleExclusionsService, useValue: mockRoleExclusionsService },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

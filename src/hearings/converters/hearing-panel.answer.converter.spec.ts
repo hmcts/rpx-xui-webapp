@@ -11,19 +11,19 @@ import { AnswerConverter } from './answer.converter';
 import { HearingPanelAnswerConverter } from './hearing-panel.answer.converter';
 describe('HearingPanelAnswerConverter', () => {
   let converter: AnswerConverter;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let store: Store<any>;
-  const JUDICAIL_USER_DETAILS = [{
-    memberID: 'P0000001',
-    memberType: MemberType.PANEL_MEMBER,
-    requirementType: RequirementType.MUSTINC
-  }];
+  const JUDICAIL_USER_DETAILS = [
+    {
+      memberID: 'P0000001',
+      memberType: MemberType.PANEL_MEMBER,
+      requirementType: RequirementType.MUSTINC,
+    },
+  ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        provideMockStore({ initialState })
-      ]
+      providers: [provideMockStore({ initialState })],
     });
     store = TestBed.inject(Store);
     converter = new HearingPanelAnswerConverter();
@@ -31,7 +31,7 @@ describe('HearingPanelAnswerConverter', () => {
   it('should transform hearing panel answer selection to yes', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
-      panelPreferences: JUDICAIL_USER_DETAILS
+      panelPreferences: JUDICAIL_USER_DETAILS,
     };
     const result$ = converter.transformAnswer(of(STATE));
     const option = RadioOptions.YES;
@@ -52,7 +52,7 @@ describe('HearingPanelAnswerConverter', () => {
       ...initialState.hearings,
       hearingConditions: {
         ...initialState.hearings.hearingConditions,
-        isHearingAmendmentsEnabled: true
+        isHearingAmendmentsEnabled: true,
       },
       hearingRequestToCompare: {
         ...initialState.hearings.hearingRequestToCompare,
@@ -60,10 +60,10 @@ describe('HearingPanelAnswerConverter', () => {
           ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel,
           hearingDetails: {
             ...initialState.hearings.hearingRequestToCompare.hearingRequestMainModel.hearingDetails,
-            panelRequirements: null
-          }
-        }
-      }
+            panelRequirements: null,
+          },
+        },
+      },
     };
     const result$ = converter.transformAnswer(of(STATE));
     const option = RadioOptions.NO;

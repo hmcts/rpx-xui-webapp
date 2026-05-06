@@ -1,4 +1,3 @@
-
 const CaseListPage = require('../pageObjects/CaseListPage');
 const FRCase = require('../pageObjects/FRCase');
 const ProbateCase = require('../pageObjects/ProbateCase');
@@ -13,7 +12,7 @@ const CaseManager = require('../pageObjects/common/CaseManager');
 // const CCDCaseDetails = require("../../../nodeMock/ccd/ccdCaseConfig/caseDetailsConfigGenerator");
 // const caseDetailsPage = require("../pageObjects/caseDetailsPage");
 
-const creatCaseStepTimeout = 600*1000;
+const creatCaseStepTimeout = 600 * 1000;
 
 const caseListPage = new CaseListPage();
 const frCase = new FRCase();
@@ -24,9 +23,12 @@ const hearingRecordingsCase = new HearingRecordingsCase();
 
 const caseManager = new CaseManager();
 
-When('I start case with jurisdiction {string} case type {string} and event {string}', async function (jurisidiction, casetype, event) {
-  await caseManager.startCaseCreation(jurisidiction, casetype, event);
-});
+When(
+  'I start case with jurisdiction {string} case type {string} and event {string}',
+  async function (jurisidiction, casetype, event) {
+    await caseManager.startCaseCreation(jurisidiction, casetype, event);
+  }
+);
 
 When('I create FR case', async function () {
   await frCase.createCase(false);

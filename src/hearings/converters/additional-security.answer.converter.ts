@@ -11,9 +11,7 @@ export class AdditionalSecurityAnswerConverter implements AnswerConverter {
         const caseAdditionalSecurityFlag = state.hearingConditions?.isHearingAmendmentsEnabled
           ? state.hearingRequestToCompare.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag
           : state.hearingRequest.hearingRequestMainModel.caseDetails.caseAdditionalSecurityFlag;
-        return caseAdditionalSecurityFlag
-          ? RadioOptions.YES
-          : RadioOptions.NO;
+        return caseAdditionalSecurityFlag ? RadioOptions.YES : RadioOptions.NO;
       })
     );
   }

@@ -21,7 +21,7 @@ import { WorkFieldComponent } from './work-field.component';
 
 @Component({
   standalone: false,
-  template: '<exui-work-field [config]="config" [workField]="task"></exui-work-field>'
+  template: '<exui-work-field [config]="config" [workField]="task"></exui-work-field>',
 })
 class WrapperComponent {
   @ViewChild(WorkFieldComponent, { static: true }) public appComponentRef: WorkFieldComponent;
@@ -31,7 +31,7 @@ class WrapperComponent {
 
 @Pipe({
   standalone: false,
-  name: 'rpxTranslate'
+  name: 'rpxTranslate',
 })
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
@@ -44,7 +44,7 @@ describe('WorkAllocation', () => {
     let component: WorkFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
+
     const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {}, getTranslation: (phrase: string) => phrase });
 
     function getConfig(name: string, type: FieldType): FieldConfig {
@@ -52,7 +52,7 @@ describe('WorkAllocation', () => {
         name,
         type,
         columnLabel: name,
-        views: TaskView.ALL_VIEWS
+        views: TaskView.ALL_VIEWS,
       };
     }
 
@@ -76,14 +76,11 @@ describe('WorkAllocation', () => {
           TwoDPPipe,
           YesNoPipe,
           DaysFromTodayPipe,
-          RpxTranslateMockPipe
+          RpxTranslateMockPipe,
         ],
         imports: [RouterTestingModule],
-        providers: [
-          { provide: RpxTranslationService, useFactory: rpxTranslationServiceStub }
-        ]
-      })
-        .compileComponents();
+        providers: [{ provide: RpxTranslationService, useFactory: rpxTranslationServiceStub }],
+      }).compileComponents();
     }));
 
     beforeEach(() => {
@@ -110,7 +107,7 @@ describe('WorkAllocation', () => {
         location: 'The location',
         taskName: 'The task name',
         dueDate: new Date(),
-        actions: []
+        actions: [],
       };
 
       // Add the config and it should still be empty (because there's no task).
@@ -143,7 +140,7 @@ describe('WorkAllocation', () => {
         location: 'The location',
         taskName: 'The task name',
         dueDate: new Date(),
-        actions: []
+        actions: [],
       };
 
       // Add the task and it should work (showing the case reference).
@@ -180,7 +177,7 @@ describe('WorkAllocation', () => {
         location: 'The location',
         taskName: 'The task name',
         dueDate: new Date(),
-        actions: []
+        actions: [],
       };
 
       // Add the task and it should work (showing the due date component).
@@ -233,7 +230,7 @@ describe('WorkAllocation', () => {
         location: 'The location',
         taskName: 'The task name',
         dueDate: new Date(), // TODAY
-        actions: []
+        actions: [],
       };
 
       // Add the task and it should work (showing the days from today).
@@ -282,7 +279,7 @@ describe('WorkAllocation', () => {
         location: 'The location',
         taskName: 'The task name',
         dueDate: new Date(2020, 10, 6, 1, 2, 3), // Month of 10 = November as it's 0-based.
-        actions: []
+        actions: [],
       };
 
       // Add the task and it should work (showing the due date).
@@ -316,7 +313,7 @@ describe('WorkAllocation', () => {
         location: 'The location',
         taskName: 'The task name',
         dueDate: new Date(2020, 10, 6, 1, 2, 3), // Month of 10 = November as it's 0-based.
-        actions: []
+        actions: [],
       };
 
       // Add the task and it should work (showing the due date and time).
@@ -351,7 +348,7 @@ describe('WorkAllocation', () => {
         taskName: 'The task name',
         dueDate: new Date(),
         happy: true,
-        actions: []
+        actions: [],
       };
 
       // Add the task and it should work (showing the result for "happy").
@@ -428,7 +425,7 @@ describe('WorkAllocation', () => {
         taskName: 'The task name',
         dueDate: new Date(),
         pi: Math.PI,
-        actions: []
+        actions: [],
       };
 
       // Add the task and it should work (showing the integer value of "pi").
@@ -495,7 +492,7 @@ describe('WorkAllocation', () => {
         taskName: 'The task name',
         dueDate: new Date(),
         pi: Math.PI,
-        actions: []
+        actions: [],
       };
 
       // Add the task and it should work (showing "pi" rounded to 2 decimal places).
@@ -568,7 +565,7 @@ describe('WorkAllocation', () => {
         taskName: 'The task name',
         dueDate: new Date(),
         actions: [],
-        link: HMCTS_URL
+        link: HMCTS_URL,
       };
 
       // Add the task and it should work (showing the due date component).
@@ -643,7 +640,7 @@ describe('WorkAllocation', () => {
         taskName: 'The task name',
         dueDate: new Date(),
         actions: [],
-        image: EXAMPLE1_IMAGE
+        image: EXAMPLE1_IMAGE,
       };
 
       // Add the task and it should work (showing the image component).
@@ -716,7 +713,7 @@ describe('WorkAllocation', () => {
         location: 'The location',
         taskName: 'The task name',
         dueDate: new Date(),
-        actions: []
+        actions: [],
       };
 
       // Add the task and it should work (showing the link).
@@ -726,7 +723,9 @@ describe('WorkAllocation', () => {
       let element: HTMLElement = fixture.debugElement.nativeElement.querySelector('a');
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(task.case_id);
-      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/The jurisdiction/The case type ID/The case reference')); // Spaces allowed
+      expect(element.getAttribute('href')).toBe(
+        encodeURI('/cases/case-details/The jurisdiction/The case type ID/The case reference')
+      ); // Spaces allowed
 
       // Change the value of task.case_id.
       task.case_id = 'NEW CASE REFERENCE';
@@ -734,7 +733,9 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe('NEW CASE REFERENCE');
-      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/The jurisdiction/The case type ID/NEW CASE REFERENCE')); // Spaces allowed
+      expect(element.getAttribute('href')).toBe(
+        encodeURI('/cases/case-details/The jurisdiction/The case type ID/NEW CASE REFERENCE')
+      ); // Spaces allowed
 
       // Clear out the value of task.link and we should no longer have the anchor.
       task.case_id = undefined;
@@ -747,7 +748,9 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe('The case reference');
-      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/The jurisdiction/The case type ID/The case reference'));
+      expect(element.getAttribute('href')).toBe(
+        encodeURI('/cases/case-details/The jurisdiction/The case type ID/The case reference')
+      );
 
       // Make task.link null.
       task.case_id = null;
@@ -775,7 +778,7 @@ describe('WorkAllocation', () => {
         taskName: 'The task name',
         dueDate: new Date(),
         actions: [],
-        hasAccess: true
+        hasAccess: true,
       };
 
       // Add the task and it should work (showing the link).
@@ -793,7 +796,9 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(task.caseName);
-      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/The jurisdiction/The case type ID/NEW CASE REFERENCE'));
+      expect(element.getAttribute('href')).toBe(
+        encodeURI('/cases/case-details/The jurisdiction/The case type ID/NEW CASE REFERENCE')
+      );
 
       // Clear out the value of task.link and we should no longer have the anchor.
       task.case_id = undefined;
@@ -806,7 +811,9 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(task.caseName);
-      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/The jurisdiction/The case type ID/The case reference'));
+      expect(element.getAttribute('href')).toBe(
+        encodeURI('/cases/case-details/The jurisdiction/The case type ID/The case reference')
+      );
 
       // Make task.link null.
       task.case_id = null;
@@ -834,7 +841,7 @@ describe('WorkAllocation', () => {
         location: 'The location',
         taskName: 'The task name',
         dueDate: new Date(),
-        actions: []
+        actions: [],
       };
 
       // Add the task and it should work (showing the link).
@@ -852,7 +859,9 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(task.taskName);
-      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/The jurisdiction/The case type ID/NEW CASE REFERENCE/tasks'));
+      expect(element.getAttribute('href')).toBe(
+        encodeURI('/cases/case-details/The jurisdiction/The case type ID/NEW CASE REFERENCE/tasks')
+      );
 
       // Clear out the value of task.link and we should no longer have the anchor.
       task.case_id = undefined;
@@ -865,7 +874,9 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       element = fixture.debugElement.nativeElement.querySelector('a');
       expect(element.textContent.trim()).toBe(task.taskName);
-      expect(element.getAttribute('href')).toBe(encodeURI('/cases/case-details/The jurisdiction/The case type ID/The case reference/tasks'));
+      expect(element.getAttribute('href')).toBe(
+        encodeURI('/cases/case-details/The jurisdiction/The case type ID/The case reference/tasks')
+      );
 
       // Make task.link null.
       task.case_id = null;
@@ -887,7 +898,7 @@ describe('WorkAllocation', () => {
         location: 'The location',
         taskName: 'The task name',
         dueDate: new Date(),
-        actions: []
+        actions: [],
       };
 
       // Add the task and it should work (showing the case reference).

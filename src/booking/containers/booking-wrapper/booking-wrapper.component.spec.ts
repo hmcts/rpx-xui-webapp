@@ -17,18 +17,17 @@ describe('BookingWrapperComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [BookingWrapperComponent],
       imports: [RouterTestingModule],
-      providers: [
-        { provide: SessionStorageService, useValue: sessionStorageService }
-      ]
-    })
-      .compileComponents();
+      providers: [{ provide: SessionStorageService, useValue: sessionStorageService }],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(BookingWrapperComponent);
     component = fixture.componentInstance;
     const userIdType = 'uid';
-    sessionStorageService.getItem.and.returnValue(`{"sub":"juser8@mailinator.com","${userIdType}":"44d5d2c2-7112-4bef-8d05-baaa610bf463","roles":["caseworker","caseworker-ia","caseworker-ia-iacjudge"],"name":"XUI test Judge","given_name":"XUI test","family_name":"Judge","token":""}`);
+    sessionStorageService.getItem.and.returnValue(
+      `{"sub":"juser8@mailinator.com","${userIdType}":"44d5d2c2-7112-4bef-8d05-baaa610bf463","roles":["caseworker","caseworker-ia","caseworker-ia-iacjudge"],"name":"XUI test Judge","given_name":"XUI test","family_name":"Judge","token":""}`
+    );
     fixture.detectChanges();
   });
 

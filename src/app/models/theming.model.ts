@@ -1,12 +1,12 @@
 import { ApplicationThemeLogo } from '../enums';
 
 export interface ApplicationTheme {
-  appTitle: { name: string; url: string; };
+  appTitle: { name: string; url: string };
   backgroundColor: string;
   logo: ApplicationThemeLogo;
 }
 
-export type FlagDefinition = string | { flagName: string; value: string; };
+export type FlagDefinition = string | { flagName: string; value: string };
 
 export interface NavigationItem {
   text: string;

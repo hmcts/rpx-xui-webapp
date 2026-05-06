@@ -21,23 +21,22 @@ export abstract class RequestHearingPageFlow {
   protected jurisdictionId: string;
   protected caseReference: string;
 
-  public constructor(protected readonly hearingStore: Store<fromHearingStore.State>,
-                     protected readonly hearingsService: HearingsService,
-                     protected readonly featureToggleService: FeatureToggleService,
-                     protected readonly route?: ActivatedRoute) {
-    this.navigationSub = this.hearingsService.navigateAction$.subscribe(
-      (action: ACTION) => this.executeAction(action)
-    );
-    this.hearingStateSub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe(
-      (hearingState) => {
-        this.hearingListMainModel = hearingState.hearingList.hearingListMainModel;
-        this.serviceHearingValuesModel = { ...hearingState.hearingValues.serviceHearingValuesModel };
-        this.hearingRequestMainModel = { ...hearingState.hearingRequest.hearingRequestMainModel };
-        this.hearingRequestToCompareMainModel = { ...hearingState.hearingRequestToCompare.hearingRequestMainModel };
-        this.hearingCondition = hearingState.hearingConditions;
-        this.jurisdictionId = this.hearingListMainModel?.jurisdictionId;
-        this.caseReference = this.hearingListMainModel?.caseRef;
-      });
+  public constructor(
+    protected readonly hearingStore: Store<fromHearingStore.State>,
+    protected readonly hearingsService: HearingsService,
+    protected readonly featureToggleService: FeatureToggleService,
+    protected readonly route?: ActivatedRoute
+  ) {
+    this.navigationSub = this.hearingsService.navigateAction$.subscribe((action: ACTION) => this.executeAction(action));
+    this.hearingStateSub = this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).subscribe((hearingState) => {
+      this.hearingListMainModel = hearingState.hearingList.hearingListMainModel;
+      this.serviceHearingValuesModel = { ...hearingState.hearingValues.serviceHearingValuesModel };
+      this.hearingRequestMainModel = { ...hearingState.hearingRequest.hearingRequestMainModel };
+      this.hearingRequestToCompareMainModel = { ...hearingState.hearingRequestToCompare.hearingRequestMainModel };
+      this.hearingCondition = hearingState.hearingConditions;
+      this.jurisdictionId = this.hearingListMainModel?.jurisdictionId;
+      this.caseReference = this.hearingListMainModel?.caseRef;
+    });
   }
 
   public fragmentFocus(): void {
@@ -56,7 +55,9 @@ export abstract class RequestHearingPageFlow {
         this.hearingStore.dispatch(new fromHearingStore.NavigateBackHearingRequest());
         break;
       case ACTION.CONTINUE:
-        this.hearingStore.dispatch(new fromHearingStore.UpdateHearingRequest(this.hearingRequestMainModel, this.hearingCondition));
+        this.hearingStore.dispatch(
+          new fromHearingStore.UpdateHearingRequest(this.hearingRequestMainModel, this.hearingCondition)
+        );
         break;
       case ACTION.SUBMIT:
         this.hearingStore.dispatch(new fromHearingStore.SubmitHearingRequest(this.hearingRequestMainModel));

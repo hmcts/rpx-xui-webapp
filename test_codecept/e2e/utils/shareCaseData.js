@@ -1,4 +1,3 @@
-
 const cases = [];
 
 class ShareCaseData {
@@ -13,15 +12,15 @@ class ShareCaseData {
         caseId: caseid,
         sharedWith: sharedWith,
         markedForShare: tobeShared,
-        markedForUnShare: tobeRemoved
+        markedForUnShare: tobeRemoved,
       };
       cases.push(caseData);
     }
   }
 
-  MarkUserToShare(caseid, email){
+  MarkUserToShare(caseid, email) {
     const caseData = this.getCaseWithId(caseid);
-    if (caseData.sharedWith.indexOf(email) === -1 && caseData.markedForShare.indexOf(email) === -1){
+    if (caseData.sharedWith.indexOf(email) === -1 && caseData.markedForShare.indexOf(email) === -1) {
       console.log('******* Test data Tracking: => Marking TO BE ADDED : ' + caseid + ' : ' + email);
       caseData.markedForShare.push(email);
     }
@@ -34,7 +33,7 @@ class ShareCaseData {
     caseData.markedForUnShare.push(email);
   }
 
-  CancelMarkedForShare(caseid, email){
+  CancelMarkedForShare(caseid, email) {
     const caseData = this.getCaseWithId(caseid);
     const index = caseData.markedForShare.indexOf(email);
     if (index > -1) {
@@ -52,7 +51,7 @@ class ShareCaseData {
     }
   }
 
-  ResetChanges(){
+  ResetChanges() {
     for (let i = 0; i < cases.length; i++) {
       const caseData = cases[i];
       caseData.markedForShare = [];
@@ -60,20 +59,20 @@ class ShareCaseData {
     }
   }
 
-  ResetChagesForCase(caseId){
+  ResetChagesForCase(caseId) {
     for (let i = 0; i < cases.length; i++) {
       const caseData = cases[i];
-      if (caseData.caseId = caseId){
+      if ((caseData.caseId = caseId)) {
         caseData.markedForShare = [];
         caseData.markedForUnShare = [];
       }
     }
   }
 
-  changesCommited(){
+  changesCommited() {
     for (let i = 0; i < cases.length; i++) {
       const caseData = cases[i];
-      for (let sharedWithUser = 0; sharedWithUser < caseData.markedForShare.length; sharedWithUser++){
+      for (let sharedWithUser = 0; sharedWithUser < caseData.markedForShare.length; sharedWithUser++) {
         const email = caseData.markedForShare[sharedWithUser];
         if (caseData.sharedWith.indexOf(email) < 0) {
           caseData.sharedWith.push(email);
@@ -100,7 +99,7 @@ class ShareCaseData {
     return null;
   }
 
-  GetStoredData(){
+  GetStoredData() {
     return cases;
   }
 }

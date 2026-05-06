@@ -7,14 +7,18 @@ class ManageSupportCommentPage {
 
   get fieldMapping() {
     return {
-      'Tell us why the support is no longer needed': elementByXpath('//ccd-update-flag//label[contains(text(),\'Tell us why the support is no longer needed\')]')
+      'Tell us why the support is no longer needed': elementByXpath(
+        "//ccd-update-flag//label[contains(text(),'Tell us why the support is no longer needed')]"
+      ),
     };
   }
 
   async inputValue(field, value) {
     switch (field) {
       case 'Tell us why the support is no longer needed':
-        const ele = elementByXpath('//ccd-update-flag//label[contains(text(),\'Tell us why the support is no longer needed\')]/../..//textarea');
+        const ele = elementByXpath(
+          "//ccd-update-flag//label[contains(text(),'Tell us why the support is no longer needed')]/../..//textarea"
+        );
         await ele.sendKeys(value);
         break;
       default:

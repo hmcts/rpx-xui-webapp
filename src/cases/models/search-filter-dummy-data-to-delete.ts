@@ -7,7 +7,7 @@ const CASE_TYPE_1: CaseType = {
   states: [],
   events: [],
   case_fields: [],
-  jurisdiction: null
+  jurisdiction: null,
 };
 
 const CASE_TYPE_2: CaseType = {
@@ -17,7 +17,7 @@ const CASE_TYPE_2: CaseType = {
   states: [],
   events: [],
   case_fields: [],
-  jurisdiction: null
+  jurisdiction: null,
 };
 
 const CASE_TYPE_3: CaseType = {
@@ -27,24 +27,24 @@ const CASE_TYPE_3: CaseType = {
   states: [],
   events: [],
   case_fields: [],
-  jurisdiction: null
+  jurisdiction: null,
 };
 
 const JURISDICTION_1: Jurisdiction = {
   id: 'J1',
   name: 'Jurisdiction 1',
   description: '',
-  caseTypes: [CASE_TYPE_1, CASE_TYPE_2]
+  caseTypes: [CASE_TYPE_1, CASE_TYPE_2],
 };
 
 const SSCS: Jurisdiction = {
   id: 'J2',
   name: 'SSCS',
   description: '',
-  caseTypes: [CASE_TYPE_3]
+  caseTypes: [CASE_TYPE_3],
 };
 
 export const mocked = {
   juristdiction1: JURISDICTION_1,
-  juristdiction2: SSCS
+  juristdiction2: SSCS,
 };

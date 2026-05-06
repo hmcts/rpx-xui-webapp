@@ -17,8 +17,8 @@ describe('HearingJurisdictionConfigService', () => {
       providers: [
         HearingJurisdictionConfigService,
         { provide: EnvironmentService, useValue: environmentSpy },
-        { provide: SessionStorageService, useValue: sessionStorageSpy }
-      ]
+        { provide: SessionStorageService, useValue: sessionStorageSpy },
+      ],
     });
 
     service = TestBed.inject(HearingJurisdictionConfigService);
@@ -33,14 +33,14 @@ describe('HearingJurisdictionConfigService', () => {
   it('should return the correct config based on user id', (done) => {
     const mockConfig = {
       '.+': [{ jurisdiction: 'defaultConfig' }],
-      '123': [{ jurisdiction: 'userConfig' }]
+      '123': [{ jurisdiction: 'userConfig' }],
     };
     const mockUserDetails = JSON.stringify({ id: '123' });
 
     environmentServiceSpy.config$ = of({
       hearingJurisdictionConfig: {
         hearingJurisdictions: mockConfig,
-        hearingAmendment: {}
+        hearingAmendment: {},
       },
       idamWeb: '',
       clientId: '',
@@ -48,7 +48,7 @@ describe('HearingJurisdictionConfigService', () => {
       protocol: '',
       oidcEnabled: '',
       paymentReturnUrl: '',
-      headerConfig: {}
+      headerConfig: {},
     });
     sessionStorageServiceSpy.getItem.and.returnValue(mockUserDetails);
 
@@ -61,14 +61,14 @@ describe('HearingJurisdictionConfigService', () => {
   it('should return the default config if no user-specific config is found', (done) => {
     const mockConfig = {
       '.+': [{ jurisdiction: 'defaultConfig' }],
-      '456': [{ jurisdiction: 'otherUserConfig' }]
+      '456': [{ jurisdiction: 'otherUserConfig' }],
     };
     const mockUserDetails = JSON.stringify({ id: '123' });
 
     environmentServiceSpy.config$ = of({
       hearingJurisdictionConfig: {
         hearingJurisdictions: mockConfig,
-        hearingAmendment: {}
+        hearingAmendment: {},
       },
       idamWeb: '',
       clientId: '',
@@ -76,7 +76,7 @@ describe('HearingJurisdictionConfigService', () => {
       protocol: '',
       oidcEnabled: '',
       paymentReturnUrl: '',
-      headerConfig: {}
+      headerConfig: {},
     });
     sessionStorageServiceSpy.getItem.and.returnValue(mockUserDetails);
 

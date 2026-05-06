@@ -3220,12 +3220,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.52":
-  version: 7.3.52
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.52"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.53-exui-4295-cve-fix":
+  version: 7.3.53-exui-4295-cve-fix
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.53-exui-4295-cve-fix"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/bed69595e8635329364764641cfc441c1dfc884f1f431ebd4790f6d64c2963426093e3db0f6fa12bf8d2a69c7534cf7625d38bbfc07f358279e1011dae93801b
+  checksum: 10/dbd4c60a5a426790c1d5c841fdd95a01b31087d26996dba7c4fff5b885b402a4455073bd53b439462a0cf5e74c774a8d30110d6daa644f80524a4bc616d84c00
   languageName: node
   linkType: hard
 
@@ -3248,9 +3248,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.16":
-  version: 4.2.16
-  resolution: "@hmcts/media-viewer@npm:4.2.16"
+"@hmcts/media-viewer@npm:4.2.17-exui-4295-cve-fix":
+  version: 4.2.17-exui-4295-cve-fix
+  resolution: "@hmcts/media-viewer@npm:4.2.17-exui-4295-cve-fix"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3269,7 +3269,7 @@ __metadata:
     "@ngrx/router-store": ^20
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
-  checksum: 10/3f49d013cf857a4d07c5a59722855ac348f0eead29203575824595211ab9d4af5ef0bc77cc0366c170206ffe09e6be33b46b4d1f43392dc3ee40552695334acb
+  checksum: 10/1737de3bc675f635bc948e86cad10b0ca4a15e402b21686644f5cdfe60f3c9ce67ef7bf49a992f9f02a0b29babfd3774a05fcb6c745236568a45caa990e339d0
   languageName: node
   linkType: hard
 
@@ -3350,12 +3350,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.12":
-  version: 2.30.12
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.12"
+"@hmcts/rpx-xui-node-lib@npm:2.30.13-exui-4295-axios-update-1":
+  version: 2.30.13-exui-4295-axios-update-1
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.13-exui-4295-axios-update-1"
   dependencies:
     "@dr.pogodin/csurf": "npm:^1.14.0"
-    axios: "npm:^1.11.0"
+    axios: "npm:^1.16.0"
     caller-path: "npm:^3.0.0"
     connect-redis: "npm:^4.0.4"
     debug: "npm:^4.3.7"
@@ -3372,7 +3372,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/9a9b2d536e17642d0c70b4787891a51faadb2d1bdfec1e13dffe2cd030862e0cfd4a2802985ae3b5d2620a3e575f2fc0a0c03c4043f3516c681a7bd6c4eee40b
+  checksum: 10/b1ab98be315c61fd6ae7f11c9ebf6485eddbcdf7d0e014a8790778aac94052c3566fb3105d827d633f18b73e576ab7bfec8212f02d9fec793c419ae1f28fc581
   languageName: node
   linkType: hard
 
@@ -9431,7 +9431,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.11.0, axios@npm:^1.12.1, axios@npm:^1.13.5, axios@npm:^1.8.4":
+"axios@npm:^1.12.1, axios@npm:^1.13.5, axios@npm:^1.8.4":
   version: 1.13.6
   resolution: "axios@npm:1.13.6"
   dependencies:
@@ -9439,6 +9439,17 @@ __metadata:
     form-data: "npm:^4.0.5"
     proxy-from-env: "npm:^1.1.0"
   checksum: 10/a7ed83c2af3ef21d64609df0f85e76893a915a864c5934df69241001d0578082d6521a0c730bf37518ee458821b5695957cb10db9fc705f2a8996c8686ea7a89
+  languageName: node
+  linkType: hard
+
+"axios@npm:^1.16.0":
+  version: 1.16.0
+  resolution: "axios@npm:1.16.0"
+  dependencies:
+    follow-redirects: "npm:^1.16.0"
+    form-data: "npm:^4.0.5"
+    proxy-from-env: "npm:^2.1.0"
+  checksum: 10/cf8b521ff732c21550b38c8739aef556ea5e14b268468bb89e4307416ab262b462e582474e810963a3d61c2392ab47ad35c11d05eff027de7c97113bc7411623
   languageName: node
   linkType: hard
 
@@ -13681,6 +13692,16 @@ __metadata:
     debug:
       optional: true
   checksum: 10/07372fd74b98c78cf4d417d68d41fdaa0be4dcacafffb9e67b1e3cf090bc4771515e65020651528faab238f10f9b9c0d9707d6c1574a6c0387c5de1042cde9ba
+  languageName: node
+  linkType: hard
+
+"follow-redirects@npm:^1.16.0":
+  version: 1.16.0
+  resolution: "follow-redirects@npm:1.16.0"
+  peerDependenciesMeta:
+    debug:
+      optional: true
+  checksum: 10/3fbe3d80b3b544c22705d837aa5d4a0d07a740d913534a2620b0a004c610af4148e3b58723536dd099aaa1c9d3a155964bde9665d6e5cb331460809a1fc572fd
   languageName: node
   linkType: hard
 
@@ -19370,6 +19391,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"proxy-from-env@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "proxy-from-env@npm:2.1.0"
+  checksum: 10/fbbaf4dab2a6231dc9e394903a5f66f20475e36b734335790b46feb9da07c37d6b32e2c02e3e2ea4d4b23774c53d8562e5b7cc73282cb43f4a597b7eacaee2ee
+  languageName: node
+  linkType: hard
+
 "prr@npm:~1.0.1":
   version: 1.0.1
   resolution: "prr@npm:1.0.1"
@@ -20257,15 +20285,15 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.52"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.53-exui-4295-cve-fix"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.2.16"
+    "@hmcts/media-viewer": "npm:4.2.17-exui-4295-cve-fix"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.3.1"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.9"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.12"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.13-exui-4295-axios-update-1"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"

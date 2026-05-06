@@ -130,7 +130,7 @@
     "cookie-parser": "^1.4.4",
     "core-js": "^3.19.3",
     "dotenv-extended": "^2.7.1",
-    "ejs": "^3.1.10",
+    "ejs": "^5.0.2",
     "eligrey-classlist.js": "^1.2.20180112",
     "exceljs": "^4.4.0",
     "exception-formatter": "1.0.7",

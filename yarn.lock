@@ -2580,14 +2580,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@edium/fsm@npm:^2.1.2":
-  version: 2.1.5
-  resolution: "@edium/fsm@npm:2.1.5"
+"@edium/fsm@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "@edium/fsm@npm:3.0.2"
   dependencies:
-    global: "npm:^4.4.0"
-    lodash: "npm:^4.17.21"
-    tslib: "npm:^2.6.3"
-  checksum: 10/3d8d66228dc2c2fd7f37ea0be4cf489302a018a6ab70b3d645d7d00cf422f9fef69b5b4ce2dd42f4bd8eb33a01d974d7904fb451ccc18681291bc17625318ecd
+    lodash-es: "npm:^4.18.1"
+  checksum: 10/7664b53489c40e36b7404fb6de6e73053d518ab683bb77a9d7d0e74c136a0710dfb98e40fa04e82da7f53d4138716ed62009cbc5467404c4c1ca2448da2c5678
   languageName: node
   linkType: hard
 
@@ -3220,12 +3218,50 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.52":
-  version: 7.3.52
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.52"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.52-exui-4291-1":
+  version: 7.3.52-exui-4291-1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.52-exui-4291-1"
   dependencies:
+    "@edium/fsm": "npm:^3.0.2"
+    "@hmcts/ccpay-web-component": "npm:6.5.17"
+    "@hmcts/media-viewer": "npm:4.2.16-exui-4425-rc1"
+    file-saver: "npm:^2.0.2"
+    govuk-frontend: "npm:^4.9.0"
+    lz-string: "npm:^1.5.0"
+    marked: "npm:^12.0.2"
+    pegjs: "npm:^0.10.0"
+    rx-polling-hmcts: "npm:1.1.1"
     tslib: "npm:^2.3.0"
-  checksum: 10/bed69595e8635329364764641cfc441c1dfc884f1f431ebd4790f6d64c2963426093e3db0f6fa12bf8d2a69c7534cf7625d38bbfc07f358279e1011dae93801b
+  peerDependencies:
+    "@angular-material-components/datetime-picker": 16.0.1
+    "@angular-material-components/moment-adapter": 16.0.1
+    "@angular/animations": ^20.3.18
+    "@angular/cdk": 17.3.5
+    "@angular/common": ^20.3.18
+    "@angular/compiler": ^20.3.18
+    "@angular/core": ^20.3.18
+    "@angular/forms": ^20.3.18
+    "@angular/localize": ^20.3.18
+    "@angular/material": ^16.2.0
+    "@angular/platform-browser": ^20.3.18
+    "@angular/platform-browser-dynamic": ^20.3.18
+    "@angular/router": ^20.3.18
+    "@angular/upgrade": ^20.3.18
+    "@ngrx/effects": 17.2.0
+    "@ngrx/store": ^17.2.0
+    "@nicky-lenaers/ngx-scroll-to": ^14.0.0
+    govuk-elements-sass: ^3.1.2
+    moment: ^2.30.1
+    moment-timezone: ^0.5.31
+    ngx-chips: ^3.0.0
+    ngx-markdown: ^20
+    ngx-pagination: 6.0.3
+    rpx-xui-translation: 1.2.0
+    rxjs: ^7.8.1
+    rxjs-compat: ^6.6.7
+    underscore: ^1.9.1
+    zone.js: ^0.15.1
+  checksum: 10/3ab88baa570cc3f50119a19760f61cd66f645d39c242f4723fb016bb431fdcdbf3f50ccaa33d64c4a60bb443bd2f68ce6d45baa37ad92b54bc9775ebc26f0126
   languageName: node
   linkType: hard
 
@@ -3270,6 +3306,36 @@ __metadata:
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
   checksum: 10/3f49d013cf857a4d07c5a59722855ac348f0eead29203575824595211ab9d4af5ef0bc77cc0366c170206ffe09e6be33b46b4d1f43392dc3ee40552695334acb
+  languageName: node
+  linkType: hard
+
+"@hmcts/media-viewer@npm:4.2.16-exui-4425-rc1":
+  version: 4.2.16-exui-4425-rc1
+  resolution: "@hmcts/media-viewer@npm:4.2.16-exui-4425-rc1"
+  dependencies:
+    "@swimlane/ngx-datatable": "npm:^20.0.0"
+    moment-timezone: "npm:^0.5.28"
+    mutable-div: "npm:^2.0.0"
+    pdfjs-dist: "npm:^4.10.38"
+    socket.io-client: "npm:^4.8.0"
+    tslib: "npm:^2.3.0"
+    uuid: "npm:^11.0.3"
+  peerDependencies:
+    "@angular/animations": ^20.0.0
+    "@angular/cdk": ^17.3.8
+    "@angular/common": ^20.0.0
+    "@angular/core": ^20.0.0
+    "@angular/forms": ^20.0.0
+    "@angular/material": ^17.3.8
+    "@angular/platform-browser": ^20.0.0
+    "@ngrx/effects": ^20
+    "@ngrx/router-store": ^20
+    "@ngrx/store": ^20
+    "@ngrx/store-devtools": ^20
+    ngx-chips: 3.0.0
+    rpx-xui-translation: 1.1.2-CME-780-9
+    rxjs: ^7.8.1
+  checksum: 10/2490a95a5d671dc288b8c66c982ea190ecca740fcee51842733f5ac580eaa0378d363bed1704613b109b859f0e309848254ba4f2fa18111b1b42ad20628bc880
   languageName: node
   linkType: hard
 
@@ -12134,13 +12200,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dom-walk@npm:^0.1.0":
-  version: 0.1.2
-  resolution: "dom-walk@npm:0.1.2"
-  checksum: 10/19eb0ce9c6de39d5e231530685248545d9cd2bd97b2cb3486e0bfc0f2a393a9addddfd5557463a932b52fdfcf68ad2a619020cd2c74a5fe46fbecaa8e80872f3
-  languageName: node
-  linkType: hard
-
 "domelementtype@npm:^2.3.0":
   version: 2.3.0
   resolution: "domelementtype@npm:2.3.0"
@@ -14136,16 +14195,6 @@ __metadata:
     semver: "npm:^7.3.2"
     serialize-error: "npm:^7.0.1"
   checksum: 10/a26d96d1d79af57a8ef957f66cef6f3889a8fa55131f0bbd72b8e1bc340a9b7ed7b627b96eaf5eb14aee08a8b4ad44395090e2cf77146e993f1d2df7abaa0a0d
-  languageName: node
-  linkType: hard
-
-"global@npm:^4.4.0":
-  version: 4.4.0
-  resolution: "global@npm:4.4.0"
-  dependencies:
-    min-document: "npm:^2.19.0"
-    process: "npm:^0.11.10"
-  checksum: 10/9c057557c8f5a5bcfbeb9378ba4fe2255d04679452be504608dd5f13b54edf79f7be1db1031ea06a4ec6edd3b9f5f17d2d172fb47e6c69dae57fd84b7e72b77f
   languageName: node
   linkType: hard
 
@@ -17015,15 +17064,6 @@ __metadata:
   version: 5.0.1
   resolution: "mimic-function@npm:5.0.1"
   checksum: 10/eb5893c99e902ccebbc267c6c6b83092966af84682957f79313311edb95e8bb5f39fb048d77132b700474d1c86d90ccc211e99bae0935447a4834eb4c882982c
-  languageName: node
-  linkType: hard
-
-"min-document@npm:^2.19.1":
-  version: 2.19.2
-  resolution: "min-document@npm:2.19.2"
-  dependencies:
-    dom-walk: "npm:^0.1.0"
-  checksum: 10/9c98ea950451ac3292762fdc7a076ef2d365d795280a2a9357a5d1a17d80c44ecab2354ad507432411c1605515731259b41ce97b87f0b7126e1dfe610b2674ae
   languageName: node
   linkType: hard
 
@@ -20254,10 +20294,9 @@ __metadata:
     "@angular/router": "npm:^20.3.17"
     "@axe-core/playwright": "npm:^4.9.1"
     "@dr.pogodin/csurf": "npm:^1.16.5"
-    "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.52"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.52-exui-4291-1"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.16"
@@ -22141,7 +22180,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:2.8.1, tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.1.0, tslib@npm:^2.2.0, tslib@npm:^2.3.0, tslib@npm:^2.6.0, tslib@npm:^2.6.1, tslib@npm:^2.6.2, tslib@npm:^2.6.3, tslib@npm:^2.8.0, tslib@npm:^2.8.1":
+"tslib@npm:2.8.1, tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.1.0, tslib@npm:^2.2.0, tslib@npm:^2.3.0, tslib@npm:^2.6.0, tslib@npm:^2.6.1, tslib@npm:^2.6.2, tslib@npm:^2.8.0, tslib@npm:^2.8.1":
   version: 2.8.1
   resolution: "tslib@npm:2.8.1"
   checksum: 10/3e2e043d5c2316461cb54e5c7fe02c30ef6dccb3384717ca22ae5c6b5bc95232a6241df19c622d9c73b809bea33b187f6dbc73030963e29950c2141bc32a79f7

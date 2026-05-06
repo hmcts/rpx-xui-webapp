@@ -332,10 +332,11 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   private getSelectedHearingsCount(): number {
     const linkedCases = this.linkHearingForm?.value?.linkedCasesWithHearings ?? [];
     let hearingCount = 0;
-    for (let i = 0; i < linkedCases.length; i++) {
-      const caseHearings = linkedCases[i].caseHearings ?? [];
-      for (let j = 0; j < caseHearings.length; j++) {
-        if (caseHearings[j].isSelected) {
+    for (const linkedCase of linkedCases) {
+      const caseHearings = linkedCase.caseHearings ?? [];
+
+      for (const hearing of caseHearings) {
+        if (hearing.isSelected) {
           hearingCount++;
         }
       }

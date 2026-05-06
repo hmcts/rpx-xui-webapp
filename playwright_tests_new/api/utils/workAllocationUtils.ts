@@ -139,13 +139,20 @@ export function assertCaseworkerListResponse(status: number, data: unknown): voi
   }
 }
 
-type WorkAllocationApiClient = Pick<ApiClient, 'post' | 'get'>;
+type WorkAllocationApiClient = Pick<ApiClient, 'post'> & Partial<Pick<ApiClient, 'get'>>;
+
+type FetchFirstTaskOptions = {
+  failOnRequestError?: boolean;
+  retries?: number;
+  timeoutMs?: number;
+};
 
 export async function fetchFirstTask(
   apiClient: WorkAllocationApiClient,
   locationId?: string,
   states: string[] = ['assigned', 'unassigned'],
-  view: 'AllWork' | 'MyTasks' = 'AllWork'
+  view: 'AllWork' | 'MyTasks' = 'AllWork',
+  options: FetchFirstTaskOptions = {}
 ): Promise<Task | undefined> {
   const body = buildTaskSearchRequest(view, {
     locations: toLocationList(locationId),
@@ -154,14 +161,23 @@ export async function fetchFirstTask(
     pageSize: 5,
   });
 
-  const response = (await withRetry(
-    () =>
-      apiClient.post('workallocation/task', {
-        data: body,
-        throwOnError: false,
-      }),
-    { retries: 1, retryStatuses: [502, 504] }
-  )) as { data: TaskListResponse | undefined; status: number };
+  let response: { data: TaskListResponse | undefined; status: number };
+  try {
+    response = (await withRetry(
+      () =>
+        apiClient.post('workallocation/task', {
+          data: body,
+          throwOnError: false,
+          ...(options.timeoutMs ? { timeoutMs: options.timeoutMs } : {}),
+        }),
+      { retries: options.retries ?? 1, retryStatuses: [502, 504] }
+    )) as { data: TaskListResponse | undefined; status: number };
+  } catch (error) {
+    if (options.failOnRequestError === true) {
+      throw error;
+    }
+    return undefined;
+  }
   const tasks = Array.isArray(response.data?.tasks) ? response.data.tasks : [];
   if (response.status !== 200 || tasks.length === 0) {
     return undefined;

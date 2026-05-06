@@ -344,6 +344,23 @@ az keyvault secret set \
 
 Then regenerate your local env file:
 
+For the Work Allocation solicitor used by Playwright API/E2E tests, store the
+long-lived dashboard-created user as:
+
+```bash
+az keyvault secret set \
+  --vault-name rpx-aat \
+  --name e2e-wa-solicitor-username \
+  --value '<dashboard-created-wa-solicitor-email>' \
+  --tags e2e=WA_SOLICITOR_USERNAME
+
+az keyvault secret set \
+  --vault-name rpx-aat \
+  --name e2e-wa-solicitor-password \
+  --value '<dashboard-created-wa-solicitor-password>' \
+  --tags e2e=WA_SOLICITOR_PASSWORD
+```
+
 ```bash
 yarn env:populate:aat
 yarn env:populate:demo

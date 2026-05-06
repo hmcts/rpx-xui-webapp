@@ -288,24 +288,6 @@ describe('LinkedHearingsWithCaseComponent', () => {
       expect(component.onUnlinkHearings).not.toHaveBeenCalled();
     });
 
-    it('should show individual manage selection error and stop when exactly one hearing is selected in manage mode', () => {
-      component.isManageLink = true;
-      setLinkedHearingForm([[false], [true]]);
-
-      spyOn(component, 'saveLinkedHearingInfo');
-      spyOn(component, 'onUnlinkHearings');
-
-      component.onSubmit();
-
-      expect(component.linkedHearingSelectionError).toBe(component.linkedHearingEnum.IndividualManageSelectionError);
-      expect(component.errors).toContain({
-        id: 'linked-form',
-        message: component.linkedHearingEnum.IndividualManageSelectionError,
-      });
-      expect(component.saveLinkedHearingInfo).not.toHaveBeenCalled();
-      expect(component.onUnlinkHearings).not.toHaveBeenCalled();
-    });
-
     it('should save linked hearing info in manage mode when more than one hearing is selected', () => {
       component.isManageLink = true;
       setLinkedHearingForm([[true], [true]]);

@@ -27,7 +27,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public hearingGroupRequestId: string;
   public hearingId: string;
   public caseName: string;
-  public linkedHearingSelectionError: string;
+  public linkedHearingSelectionError: string | null;
   public errors: { id: string; message: string }[] = [];
   public linkedCases: ServiceLinkedCasesWithHearingsModel[] = [];
   public linkedCasesWithNoAccessToLoggedInUser: ServiceLinkedCasesModel[];
@@ -223,27 +223,20 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   }
 
   public onSubmit(): void {
-    if (this.exactlyOneHearingSelected()) {
-      this.linkedHearingSelectionError = this.isManageLink
-        ? this.linkedHearingEnum.IndividualManageSelectionError
-        : this.linkedHearingEnum.IndividualSelectionError;
-      this.errors.push({
-        id: 'linked-form',
-        message: this.isManageLink
-          ? this.linkedHearingEnum.IndividualManageSelectionError
-          : this.linkedHearingEnum.IndividualSelectionError,
-      });
-      return;
-    }
+    this.resetErrors();
     if (this.isManageLink) {
       if (this.isGetHearingsSelected()) {
         this.saveLinkedHearingInfo();
       } else {
         this.onUnlinkHearings();
       }
+    } else if (this.exactlyOneHearingSelected()) {
+      this.linkedHearingSelectionError = this.linkedHearingEnum.IndividualSelectionError;
+      this.errors.push({
+        id: 'linked-form',
+        message: this.linkedHearingEnum.IndividualSelectionError,
+      });
     } else {
-      this.errors = [];
-      this.linkedHearingSelectionError = null;
       if (this.linkHearingForm.valid) {
         this.saveLinkedHearingInfo();
       } else {
@@ -342,5 +335,10 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
       }
     }
     return hearingCount;
+  }
+
+  private resetErrors(): void {
+    this.errors = [];
+    this.linkedHearingSelectionError = null;
   }
 }

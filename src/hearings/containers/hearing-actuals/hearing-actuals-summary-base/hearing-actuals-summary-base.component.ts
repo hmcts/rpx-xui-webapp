@@ -153,8 +153,8 @@ export class HearingActualsSummaryBaseComponent implements OnInit, OnDestroy {
     return this.getTime(ActualHearingsUtils.getPauseDateTime(day, state));
   }
 
-  private convertUTCDateToLocalDate(date): Date {
-    return new Date(date.getTime() - date.getTimezoneOffset() * 60 * 1000);
+  private convertUTCDateToLocalDate(utcDateTimeString): moment.Moment {
+    return moment.utc(utcDateTimeString).local();
   }
 
   // Convert UTC date/time string to a time string in the specified time zone and format using ccdDatePipe

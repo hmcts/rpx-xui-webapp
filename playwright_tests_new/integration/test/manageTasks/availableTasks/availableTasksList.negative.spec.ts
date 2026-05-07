@@ -1,13 +1,14 @@
 import { availableActionsList, buildTaskListMock } from '../../../mocks/taskList.mock';
 import { expect, test } from '../../../../E2E/fixtures';
-import { applySessionCookies, setupManageTasksBaseRoutes } from '../../../helpers';
+import { applySessionCookies, getLegacyStaffAdminSessionIdentity, setupManageTasksBaseRoutes } from '../../../helpers';
 
 const errorStates = [400, 403, 500, 503];
 const userIdentifier = 'STAFF_ADMIN';
+const staffAdminSession = getLegacyStaffAdminSessionIdentity();
 const broaderSupportedJurisdictionsMock = ['IA', 'PRIVATELAW', 'PUBLICLAW', 'CIVIL', 'ST_CIC', 'EMPLOYMENT', 'SSCS', 'DIVORCE'];
 
 test.beforeEach(async ({ page }) => {
-  await applySessionCookies(page, userIdentifier);
+  await applySessionCookies(page, staffAdminSession);
 });
 
 test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
@@ -25,12 +26,11 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
 
     await test.step('Navigate to the available tasks list page', async () => {
       await taskListPage.goto();
-      await taskListPage.taskTableTabs.filter({ hasText: 'Available tasks' }).first().click();
+      await taskListPage.clickTaskTabAndWaitForView('Available tasks', 'AvailableTasks', 'opening available tasks list');
       await taskListPage.waitForTaskListShellReady('available tasks tab');
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
-      await taskListPage.openFilterPanel();
-      await expect(taskListPage.selectAllServicesFilter).toBeVisible();
+      await taskListPage.expectAvailableTaskFilterControls();
     });
 
     await test.step('Verify table shows filter errors if no services are selected', async () => {
@@ -59,12 +59,11 @@ test.describe(`Available Task List as ${userIdentifier}`, { tag: ['@integration'
 
     await test.step('Navigate to the available tasks list page', async () => {
       await taskListPage.goto();
-      await taskListPage.taskTableTabs.filter({ hasText: 'Available tasks' }).first().click();
+      await taskListPage.clickTaskTabAndWaitForView('Available tasks', 'AvailableTasks', 'opening available tasks list');
       await taskListPage.waitForTaskListShellReady('available tasks tab');
       await expect(taskListPage.taskListTable).toBeVisible();
       await taskListPage.exuiSpinnerComponent.wait();
-      await taskListPage.openFilterPanel();
-      await expect(taskListPage.selectAllTypesOfWorksFilter).toBeVisible();
+      await taskListPage.expectAvailableTaskFilterControls();
     });
 
     await test.step('Verify table shows filter errors if no types of work are selected', async () => {

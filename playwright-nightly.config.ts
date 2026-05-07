@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 import { cpus, totalmem } from 'node:os';
 import { version as appVersion } from './package.json';
-import { resolveWorkerCount } from './playwright-config-utils';
+import { logResolvedTagFilters, resolveTagFilters, resolveWorkerCount } from './playwright-config-utils';
 
 type EnvMap = NodeJS.ProcessEnv;
 
@@ -49,6 +49,18 @@ const buildConfig = (env: EnvMap = process.env) => {
   const targetEnv = env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
   const runContext = env.CI ? 'ci' : 'local-run';
   const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
+  const e2eTagFilters = resolveTagFilters({
+    env,
+    includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
+    excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
+    configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
+    defaultConfigPath: 'playwright_tests_new/E2E/tag-filter.json',
+    suiteTag: '@e2e',
+    globalExcludedTagsEnvVar: 'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS',
+    ignoreGlobalExcludesEnvVar: 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES',
+    globalExcludedTagsPattern: /^@e2e(?:-.+)?$/,
+  });
+  logResolvedTagFilters('Cross-browser E2E', e2eTagFilters, env);
 
   return defineConfig({
     testDir: 'playwright_tests_new/E2E',
@@ -96,6 +108,8 @@ const buildConfig = (env: EnvMap = process.env) => {
     projects: [
       {
         name: 'firefox',
+        grep: e2eTagFilters.grep,
+        grepInvert: e2eTagFilters.grepInvert,
         use: {
           ...devices['Desktop Firefox'],
           headless: headlessMode,
@@ -109,6 +123,8 @@ const buildConfig = (env: EnvMap = process.env) => {
       },
       {
         name: 'webkit',
+        grep: e2eTagFilters.grep,
+        grepInvert: e2eTagFilters.grepInvert,
         use: {
           headless: headlessMode,
           trace: 'on-first-retry',

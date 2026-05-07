@@ -38,7 +38,7 @@ describe('configuration', () => {
     const value = getConfigValue('secrets.rpx.system-user-password');
 
     expect(value).to.equal('system-user-password-from-env');
-    expect(configGetStub).not.to.have.been.called;
+    sinon.assert.notCalled(configGetStub);
   });
 
   it('should read the Pact broker password directly from the environment when set', () => {
@@ -48,7 +48,7 @@ describe('configuration', () => {
     const value = getConfigValue('pact.brokerPassword');
 
     expect(value).to.equal('pact-broker-password-from-env');
-    expect(configGetStub).not.to.have.been.called;
+    sinon.assert.notCalled(configGetStub);
   });
 
   it('should fall back to config for env-only password references when the environment is not set', () => {
@@ -58,7 +58,7 @@ describe('configuration', () => {
     const value = getConfigValue('secrets.rpx.system-user-password');
 
     expect(value).to.equal('system-user-password-from-config');
-    expect(configGetStub).to.have.been.calledOnceWith('secrets.rpx.system-user-password');
+    sinon.assert.calledOnceWithExactly(configGetStub, 'secrets.rpx.system-user-password');
   });
 
   it('should continue to read normal references from config', () => {
@@ -68,6 +68,6 @@ describe('configuration', () => {
     const value = getConfigValue('services.idam.idamApiUrl');
 
     expect(value).to.equal('https://idam.example.test');
-    expect(configGetStub).to.have.been.calledOnceWith('services.idam.idamApiUrl');
+    sinon.assert.calledOnceWithExactly(configGetStub, 'services.idam.idamApiUrl');
   });
 });

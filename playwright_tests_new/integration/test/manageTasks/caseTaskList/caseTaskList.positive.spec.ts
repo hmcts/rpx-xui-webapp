@@ -6,9 +6,13 @@ import { buildCaseDetailsTasksMinimal } from '../../../mocks/caseDetailsTasks.bu
 import { buildAsylumCaseMock } from '../../../mocks/cases/asylumCase.mock';
 
 const userIdentifier = 'STAFF_ADMIN';
-const inSixHours = faker.date.soon({ days: 0.25 }).toISOString();
-const inTwoDays = faker.date.soon({ days: 2 }).toISOString();
-const in90Days = faker.date.future().toISOString();
+const futureDateAtNoonUtc = (daysFromNow: number): string => {
+  const date = new Date();
+  date.setUTCDate(date.getUTCDate() + daysFromNow);
+  date.setUTCHours(12, 0, 0, 0);
+  return date.toISOString();
+};
+const in90Days = futureDateAtNoonUtc(90);
 const caseId = faker.number.int({ min: 1000000000, max: 9999999999 }).toString();
 let assigneeId: string | null = null;
 const caseMockResponse = buildAsylumCaseMock({ caseId });
@@ -68,9 +72,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     });
 
     await test.step('Navigate to mocked case task list', async () => {
-      await page.goto(`/cases/case-details/IA/Asylum/${caseId}/tasks`);
-      await caseDetailsPage.taskListContainer.waitFor();
-      await caseDetailsPage.exuiSpinnerComponent.wait();
+      await caseDetailsPage.openTasksTab('IA', 'Asylum', caseId);
     });
 
     await test.step('Verify the task table shows the expected results', async () => {
@@ -106,6 +108,9 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     caseDetailsPage,
     page,
   }) => {
+    const fixedNow = new Date('2026-04-28T12:00:00.000Z');
+    const inTwelveHours = new Date('2026-04-29T00:00:00.000Z').toISOString();
+    const inTwoDays = new Date('2026-04-30T12:00:00.000Z').toISOString();
     const caseMockResponse = buildAsylumCaseMock({ caseId });
     const taskData = {
       id: [faker.string.uuid().toString()],
@@ -117,7 +122,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
       locations: [{ name: 'Manchester', id: '512401' }],
       assignees: assigneeId ? [assigneeId] : [],
       majorPriorities: [1000, 4000, 5000, 6000],
-      priorityDates: [inTwoDays, inTwoDays, inSixHours, inTwoDays],
+      priorityDates: [inTwoDays, inTwoDays, inTwelveHours, inTwoDays],
       dueDates: [inTwoDays, inTwoDays, inTwoDays, inTwoDays],
     };
 
@@ -126,8 +131,8 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     });
 
     await test.step('Navigate to mocked case task list', async () => {
-      await page.goto(`/cases/case-details/IA/Asylum/${caseId}/tasks`);
-      await caseDetailsPage.taskListContainer.waitFor();
+      await page.clock.setFixedTime(fixedNow);
+      await caseDetailsPage.openTasksTab('IA', 'Asylum', caseId);
     });
 
     await test.step('Verify the expected priority labels are shown', async () => {
@@ -190,8 +195,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     await setupCaseTaskListMockRoute(page, caseId, tasks);
 
     await test.step('Navigate to mocked case task list', async () => {
-      await page.goto(`/cases/case-details/IA/Asylum/${caseId}/tasks`);
-      await caseDetailsPage.taskListContainer.waitFor();
+      await caseDetailsPage.openTasksTab('IA', 'Asylum', caseId);
     });
 
     await test.step('Verify table shows results', async () => {
@@ -253,9 +257,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     await setupCaseTaskListMockRoute(page, caseId, tasks);
 
     await test.step('Navigate to mocked case task list', async () => {
-      await page.goto(`/cases/case-details/IA/Asylum/${caseId}/tasks`);
-      await caseDetailsPage.taskListContainer.waitFor();
-      await caseDetailsPage.exuiSpinnerComponent.wait();
+      await caseDetailsPage.openTasksTab('IA', 'Asylum', caseId);
     });
 
     await test.step('Verify task alerts are shown in the UI', async () => {
@@ -289,8 +291,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     });
 
     await test.step('Navigate to mocked case task list', async () => {
-      await page.goto(`/cases/case-details/IA/Asylum/${caseId}/tasks`);
-      await caseDetailsPage.taskListContainer.waitFor();
+      await caseDetailsPage.openTasksTab('IA', 'Asylum', caseId);
     });
 
     await test.step('Verify Next steps elements are shown as expected', async () => {

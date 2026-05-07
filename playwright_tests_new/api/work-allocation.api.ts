@@ -21,6 +21,7 @@ import {
   hasSeededEnvTasks,
   isActionSuccessStatus,
   maybeAssertStateTransition,
+  resolveTaskIdWithEnvFallback,
   resolveLocationId,
   resolveSeededTaskIds,
   resolveUserId,
@@ -525,6 +526,22 @@ test.describe('Work allocation helper coverage', { tag: '@svc-work-allocation' }
     expect(selectTaskId(['first', 'second'], 'fallback')).toBe('first');
     expect(selectTaskId([undefined, 'second'], 'fallback')).toBe('second');
     expect(selectTaskId([undefined, undefined], 'fallback')).toBe('fallback');
+    expect(resolveTaskIdWithEnvFallback('dynamic', 'assigned', 'unassigned', 'fallback')).toEqual({
+      taskId: 'dynamic',
+      source: 'dynamic',
+    });
+    expect(resolveTaskIdWithEnvFallback(undefined, 'assigned', 'unassigned', 'fallback')).toEqual({
+      taskId: 'assigned',
+      source: 'env-assigned',
+    });
+    expect(resolveTaskIdWithEnvFallback(undefined, undefined, 'unassigned', 'fallback')).toEqual({
+      taskId: 'unassigned',
+      source: 'env-unassigned',
+    });
+    expect(resolveTaskIdWithEnvFallback(undefined, undefined, undefined, 'fallback')).toEqual({
+      taskId: 'fallback',
+      source: 'none',
+    });
 
     expect(hasSeededEnvTasks()).toBe(false);
     expect(hasSeededEnvTasks('task')).toBe(true);

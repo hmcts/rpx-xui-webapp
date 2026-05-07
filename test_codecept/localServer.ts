@@ -39,7 +39,7 @@ class ApplicationServer {
     ]);
 
     // Catch-all → send the nonce-injected HTML
-    this.app.get('/*', (req, res) => {
+    this.app.get('/{*splat}', (req, res) => {
       res.set('Cache-Control', 'no-store, s-maxage=0, max-age=0, must-revalidate, proxy-revalidate');
       const html = injectNonce(indexHtmlRaw, res.locals.cspNonce as string);
       res.type('html').send(html);

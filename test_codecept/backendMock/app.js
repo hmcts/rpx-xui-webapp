@@ -195,7 +195,7 @@ class MockApp {
     app.use(express.static(staticRoot, { index: false, cacheControl: false }));
 
     // 2) SPA fallback: anything not matched by API routes returns index.html
-    app.get('*', (req, res) => {
+    app.get('/{*splat}', (req, res) => {
       res.sendFile(path.join(staticRoot, 'index.html'));
     });
 

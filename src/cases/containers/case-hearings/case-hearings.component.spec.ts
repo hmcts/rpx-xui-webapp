@@ -636,9 +636,7 @@ describe('CaseHearingsComponent', () => {
     });
 
     it('should return null when the route parameter does not exist', () => {
-      const rootRoute = routeSnapshot({}, [
-        routeSnapshot({ otherParam: 'not-the-case-id' }),
-      ]);
+      const rootRoute = routeSnapshot({}, [routeSnapshot({ otherParam: 'not-the-case-id' })]);
 
       const result = (component as any).findRouteParameter(rootRoute, 'cid');
 
@@ -651,8 +649,6 @@ describe('CaseHearingsComponent', () => {
       expect(result).toBeNull();
     });
   });
-
-
 
   it('should reset hearing list before loading hearings for the current case', () => {
     component.caseId = '1620409659381330';

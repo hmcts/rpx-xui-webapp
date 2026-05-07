@@ -8,19 +8,38 @@ import { __test__ as sessionStorageTest } from '../../E2E/utils/session-storage.
 import { __test__ as sessionCaptureTest } from '../../common/sessionCapture.js';
 import { resolveUiStoragePathForUser, writeUiStorageMetadata } from '../../E2E/utils/storage-state.utils.js';
 
+function fakeSessionPage() {
+  const locator = {
+    first: () => locator,
+    textContent: async () => '',
+  };
+
+  return {
+    locator: () => locator,
+    url: () => 'https://idam-web-public.aat.platform.hmcts.net/login',
+  };
+}
+
 test.describe('Session management hardening unit tests', { tag: '@svc-internal' }, () => {
   test('confirmAuthenticatedLogin accepts auth-cookie based success for fallback IDAM login', async () => {
     const infoCalls: Array<Record<string, unknown>> = [];
 
     await expect(
-      sessionCaptureTest.confirmAuthenticatedLogin({} as never, 'DYNAMIC_SOLICITOR', 'dynamic@example.test', '/login', 1, {
-        acceptCookies: async () => undefined,
-        waitForShell: async () => null,
-        waitForAuthCookies: async () => true,
-        info: (_message, meta) => {
-          infoCalls.push(meta);
-        },
-      })
+      sessionCaptureTest.confirmAuthenticatedLogin(
+        fakeSessionPage() as never,
+        'DYNAMIC_SOLICITOR',
+        'dynamic@example.test',
+        '/login',
+        1,
+        {
+          acceptCookies: async () => undefined,
+          waitForShell: async () => null,
+          waitForAuthCookies: async () => true,
+          info: (_message, meta) => {
+            infoCalls.push(meta);
+          },
+        }
+      )
     ).resolves.toBeUndefined();
 
     expect(infoCalls).toEqual([
@@ -33,12 +52,19 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
 
   test('confirmAuthenticatedLogin rejects when login establishes neither shell nor auth cookies', async () => {
     await expect(
-      sessionCaptureTest.confirmAuthenticatedLogin({} as never, 'DYNAMIC_SOLICITOR', 'dynamic@example.test', '/login', 1, {
-        acceptCookies: async () => undefined,
-        waitForShell: async () => null,
-        waitForAuthCookies: async () => false,
-        info: () => undefined,
-      })
+      sessionCaptureTest.confirmAuthenticatedLogin(
+        fakeSessionPage() as never,
+        'DYNAMIC_SOLICITOR',
+        'dynamic@example.test',
+        '/login',
+        1,
+        {
+          acceptCookies: async () => undefined,
+          waitForShell: async () => null,
+          waitForAuthCookies: async () => false,
+          info: () => undefined,
+        }
+      )
     ).rejects.toThrow(/did not establish authenticated session/i);
   });
 

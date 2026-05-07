@@ -9,10 +9,10 @@ targetCompatibility = 21
 // tag::repositories[]
 repositories {
     mavenLocal()
-    mavenCentral()
     maven {
         url = 'https://pkgs.dev.azure.com/hmcts/Artifacts/_packaging/hmcts-lib/maven/v1'
     }
+    mavenCentral()
 }
 // end::repositories[]
 
@@ -22,6 +22,12 @@ dependencies {
     testImplementation 'com.github.hmcts:fortify-client:1.4.10:all'
 }
 // end::dependencies[]
+
+tasks.register('resolveFortifyDependencies') {
+    doLast {
+        configurations.testRuntimeClasspath.resolve()
+    }
+}
 
 task fortifyScan(type: JavaExec)  {
     main = "uk.gov.hmcts.fortifyclient.FortifyClientMainApp"

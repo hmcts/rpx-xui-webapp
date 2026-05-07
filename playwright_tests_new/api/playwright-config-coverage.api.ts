@@ -269,11 +269,11 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
       CI: undefined,
     });
 
-    expect(filters.excludedTags).toEqual(['@wa-action', '@svc-work-allocation']);
+    expect(filters.excludedTags).toEqual(['@svc-work-allocation']);
     expect(filters.globalExcludedTags).toEqual(['@svc-work-allocation']);
     expect(filters.ignoredGlobalExcludedTags).toEqual(['@e2e-search-case', '@integration-manage-tasks']);
     expect(filters.grepInvert).toBeInstanceOf(RegExp);
-    expect(filters.grepInvert?.test('@wa-action')).toBe(true);
+    expect(filters.grepInvert?.test('@wa-action')).toBe(false);
     expect(filters.grepInvert?.test('@svc-work-allocation')).toBe(true);
     expect(filters.grepInvert?.test('@e2e-search-case')).toBe(false);
   });
@@ -298,10 +298,10 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
       CI: undefined,
     });
 
-    expect(filters.excludedTags).toEqual(['@wa-action']);
+    expect(filters.excludedTags).toEqual([]);
     expect(filters.globalExcludedTags).toEqual([]);
     expect(filters.ignoredGlobalExcludedTags).toEqual(['@svc-work-allocation']);
-    expect(filters.grepInvert?.test('@svc-work-allocation')).toBe(false);
+    expect(filters.grepInvert).toBeUndefined();
   });
 
   test('node-api treats @none as the global Key Vault no-op sentinel', () => {
@@ -310,7 +310,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
       CI: undefined,
     });
 
-    expect(filters.excludedTags).toEqual(['@wa-action']);
+    expect(filters.excludedTags).toEqual([]);
     expect(filters.globalExcludedTags).toEqual([]);
     expect(filters.ignoredGlobalExcludedTags).toEqual([]);
   });

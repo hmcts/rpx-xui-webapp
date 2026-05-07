@@ -157,6 +157,8 @@ Dynamic-user keys now available in Key Vault (`rpx-aat`, `rpx-demo`) and populat
 - `TEST_SOLICITOR_ORGANISATION_ID`
 - `MANAGE_ORG_API_PATH`
 - `RD_PROFESSIONAL_API_PATH`
+- `WA_SOLICITOR_USERNAME`
+- `WA_SOLICITOR_PASSWORD`
 
 Notes:
 
@@ -669,6 +671,7 @@ test.describe('My Test Suite', () => {
 
 - `SOLICITOR` - Standard solicitor user for Private Law / civil cases
 - `DIVORCE_SOLICITOR` - Divorce-entitled solicitor user for divorce create/update journeys
+- `WA_SOLICITOR` - Work Allocation solicitor user for low-assignment live task lookup coverage
 - `SEARCH_EMPLOYMENT_CASE` - Employment tribunal case user
 - `STAFF_ADMIN` - Administrative staff user
 - `USER_WITH_FLAGS` - User with case flags enabled

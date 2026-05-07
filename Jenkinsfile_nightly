@@ -284,6 +284,8 @@ def secrets = [
     secret('mc-session-secret', 'SESSION_SECRET'),
     secret('e2e-divorce-solicitor-username', 'DIVORCE_SOLICITOR_USERNAME'),
     secret('e2e-divorce-solicitor-password', 'DIVORCE_SOLICITOR_PASSWORD'),
+    secret('e2e-wa-solicitor-username', 'WA_SOLICITOR_USERNAME'),
+    secret('e2e-wa-solicitor-password', 'WA_SOLICITOR_PASSWORD'),
     secret('e2e-booking-ui-ft-on-username', 'BOOKING_UI_FT_ON_USERNAME'),
     secret('e2e-booking-ui-ft-on-password', 'BOOKING_UI_FT_ON_PASSWORD'),
     secret('e2e-booking-ui-ft-on-1-username', 'BOOKING_UI_FT_ON_1_USERNAME'),
@@ -457,6 +459,8 @@ withNightlyPipeline(type, product, component) {
                 'ORG_USER_ASSIGNMENT_MODE=external',
                 'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
                 'FUNCTIONAL_TESTS_WORKERS=2',
+                'E2E_PW_INCLUDE_TAGS=@nightly',
+                'E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none',
                 'PW_SESSION_CAPTURE_FAILURE_TTL_MS=0',
                 "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
               ]) {
@@ -477,7 +481,6 @@ withNightlyPipeline(type, product, component) {
               archivePlaywrightDiagnostics()
             }
         }
-      }
       } finally {
         recordPlaywrightLoadEvent('Nightly functional tests', 'finish')
       }

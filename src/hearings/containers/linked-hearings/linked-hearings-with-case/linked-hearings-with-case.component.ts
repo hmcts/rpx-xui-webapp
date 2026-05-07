@@ -230,12 +230,6 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
       } else {
         this.onUnlinkHearings();
       }
-    } else if (this.exactlyOneHearingSelected()) {
-      this.linkedHearingSelectionError = this.linkedHearingEnum.IndividualSelectionError;
-      this.errors.push({
-        id: 'linked-form',
-        message: this.linkedHearingEnum.IndividualSelectionError,
-      });
     } else {
       if (this.linkHearingForm.valid) {
         this.saveLinkedHearingInfo();
@@ -258,10 +252,6 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     }
     const hearings = this.getHearingsFormValue(casePos);
     return hearings?.controls?.some((control) => !!control.get('isSelected')?.value);
-  }
-
-  public exactlyOneHearingSelected(): boolean {
-    return this.getSelectedHearingsCount() === 1;
   }
 
   public isSelectable(hearing: HearingDetailModel): boolean {
@@ -320,21 +310,6 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     if (this.sub) {
       this.sub.unsubscribe();
     }
-  }
-
-  private getSelectedHearingsCount(): number {
-    const linkedCases = this.linkHearingForm?.value?.linkedCasesWithHearings ?? [];
-    let hearingCount = 0;
-    for (const linkedCase of linkedCases) {
-      const caseHearings = linkedCase.caseHearings ?? [];
-
-      for (const hearing of caseHearings) {
-        if (hearing.isSelected) {
-          hearingCount++;
-        }
-      }
-    }
-    return hearingCount;
   }
 
   private resetErrors(): void {

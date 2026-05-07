@@ -270,24 +270,6 @@ describe('LinkedHearingsWithCaseComponent', () => {
       component.linkHearingForm.updateValueAndValidity();
     };
 
-    it('should show individual selection error and stop when exactly one hearing is selected in link mode', () => {
-      component.isManageLink = false;
-      setLinkedHearingForm([[true], [false]]);
-
-      spyOn(component, 'saveLinkedHearingInfo');
-      spyOn(component, 'onUnlinkHearings');
-
-      component.onSubmit();
-
-      expect(component.linkedHearingSelectionError).toBe(component.linkedHearingEnum.IndividualSelectionError);
-      expect(component.errors).toContain({
-        id: 'linked-form',
-        message: component.linkedHearingEnum.IndividualSelectionError,
-      });
-      expect(component.saveLinkedHearingInfo).not.toHaveBeenCalled();
-      expect(component.onUnlinkHearings).not.toHaveBeenCalled();
-    });
-
     it('should save linked hearing info in manage mode when more than one hearing is selected', () => {
       component.isManageLink = true;
       setLinkedHearingForm([[true], [true]]);
@@ -448,48 +430,6 @@ describe('LinkedHearingsWithCaseComponent', () => {
       setLinkedHearingForm([false, false]);
 
       expect(component.showClear(0)).toBe(false);
-    });
-  });
-
-  describe('exactlyOneHearingSelected', () => {
-    const setLinkedHearingForm = (caseSelections: boolean[][]) => {
-      component.linkHearingForm = component['fb'].group({
-        linkedCasesWithHearings: component['fb'].array(
-          caseSelections.map((selectedValues, caseIndex) =>
-            component['fb'].group({
-              caseRef: `case-${caseIndex}`,
-              caseName: 'Smith vs Peterson',
-              reasonsForLink: component['fb'].array([]),
-              caseHearings: component['fb'].array(
-                selectedValues.map((isSelected, hearingIndex) =>
-                  component['fb'].group({
-                    hearingID: `hearing-${caseIndex}-${hearingIndex}`,
-                    isSelected,
-                  })
-                )
-              ),
-            })
-          )
-        ),
-      });
-    };
-
-    it('should return true when exactly one hearing is selected', () => {
-      setLinkedHearingForm([[false, true], [false]]);
-
-      expect(component.exactlyOneHearingSelected()).toBe(true);
-    });
-
-    it('should return false when no hearings are selected', () => {
-      setLinkedHearingForm([[false, false], [false]]);
-
-      expect(component.exactlyOneHearingSelected()).toBe(false);
-    });
-
-    it('should return false when more than one hearing is selected', () => {
-      setLinkedHearingForm([[true, false], [true]]);
-
-      expect(component.exactlyOneHearingSelected()).toBe(false);
     });
   });
 

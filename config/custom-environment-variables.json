@@ -117,6 +117,7 @@
     }
   },
   "protocol": "PROTOCOL",
+  "dynatraceCdn": "DYNATRACE_CDN",
   "secureCookie": "SECURE_COOKIE",
   "microservice": "MICROSERVICE",
   "secrets": {

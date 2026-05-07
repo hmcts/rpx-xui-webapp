@@ -82,6 +82,7 @@ export const SERVICES_LOCATION_REF_API_URL = 'services.locationref.api';
 export const SERVICES_TRANSLATION_API_URL = 'services.translation';
 
 export const PROTOCOL = 'protocol';
+export const DYNATRACE_CDN = 'dynatraceCdn';
 export const MICROSERVICE = 'microservice';
 export const NOW = 'now';
 

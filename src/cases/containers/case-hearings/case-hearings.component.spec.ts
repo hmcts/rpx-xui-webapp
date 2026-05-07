@@ -1,13 +1,13 @@
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, NavigationEnd, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseNotifier, CasesService, CaseView, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import moment from 'moment';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
 import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
@@ -21,6 +21,7 @@ import {
   EXUISectionStatusEnum,
   HMCStatus,
   HearingListingStatusEnum,
+  HearingSummaryEnum,
 } from '../../../hearings/models/hearings.enum';
 import { LovRefDataModel } from '../../../hearings/models/lovRefData.model';
 import { LovRefDataService } from '../../../hearings/services/lov-ref-data.service';
@@ -35,6 +36,8 @@ describe('CaseHearingsComponent', () => {
   let spyStore: any;
   let mockLovRefDataService: any;
   let mockSessionStore: jasmine.SpyObj<SessionStorageService>;
+  let loadingService: LoadingService;
+  let mockCaseNotifier: CaseNotifier;
 
   const HEARING_DAY_SCHEDULE_1: HearingDayScheduleModel = {
     hearingStartDateTime: '',
@@ -447,7 +450,7 @@ describe('CaseHearingsComponent', () => {
       return null;
     });
     const mockCasesService = jasmine.createSpyObj<CasesService>('mockCasesService', ['getCaseView']);
-    const mockCaseNotifier = new CaseNotifier(mockCasesService);
+    mockCaseNotifier = new CaseNotifier(mockCasesService);
     mockCaseNotifier.caseView = new BehaviorSubject(cv).asObservable();
     TestBed.configureTestingModule({
       declarations: [CaseHearingsComponent, MockRpxTranslatePipe],
@@ -478,9 +481,9 @@ describe('CaseHearingsComponent', () => {
     }).compileComponents();
     fixture = TestBed.createComponent(CaseHearingsComponent);
     mockStore = TestBed.inject(Store);
+    loadingService = TestBed.inject(LoadingService);
     component = fixture.componentInstance;
     spyStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
-    fixture.detectChanges();
   });
 
   it('should create hearing component', () => {
@@ -495,7 +498,164 @@ describe('CaseHearingsComponent', () => {
     );
   });
 
+  describe('ngOnInit route case id handling', () => {
+    it('should start hearing setup immediately when a case id is available from the route', () => {
+      const loadingToken = 'loading-token';
+      spyOn(loadingService, 'register').and.returnValue(loadingToken);
+      const unregisterSpy = spyOn(loadingService, 'unregister');
+      const startSetupSpy = spyOn<any>(component, 'startHearingSetupForCase').and.stub();
+      spyOn<any>(component, 'getCaseIdFromRouterState').and.returnValue(DEFAULT_CASE_INFO.caseId);
+
+      component.ngOnInit();
+
+      expect(component.caseId).toBe(DEFAULT_CASE_INFO.caseId);
+      expect(startSetupSpy).toHaveBeenCalledOnceWith(loadingToken);
+      expect(unregisterSpy).not.toHaveBeenCalledWith(loadingToken);
+    });
+
+    it('should unregister loading and not start setup when navigation has finished without a case id', () => {
+      const loadingToken = 'loading-token';
+      spyOn(loadingService, 'register').and.returnValue(loadingToken);
+      const unregisterSpy = spyOn(loadingService, 'unregister');
+      const startSetupSpy = spyOn<any>(component, 'startHearingSetupForCase').and.stub();
+      spyOn<any>(component, 'getCaseIdFromRouterState').and.returnValue('');
+
+      component.hearingListLastErrorState$ = new Subject<any>().asObservable();
+      component.hearingValuesLastErrorState$ = new Subject<any>().asObservable();
+      (mockRouter as any).navigated = true;
+
+      component.ngOnInit();
+
+      expect(startSetupSpy).not.toHaveBeenCalled();
+      expect(component.serverError).toEqual({
+        id: 'backendError',
+        message: 'There was a system error and your request could not be processed. Please try again.',
+      });
+      expect(unregisterSpy).toHaveBeenCalledWith(loadingToken);
+    });
+
+    it('should wait for NavigationEnd before starting setup when the case id is not initially available', () => {
+      const loadingToken = 'loading-token';
+      const routerEvents$ = new Subject<NavigationEnd>();
+      spyOn(loadingService, 'register').and.returnValue(loadingToken);
+      const startSetupSpy = spyOn<any>(component, 'startHearingSetupForCase').and.stub();
+      spyOn<any>(component, 'getCaseIdFromRouterState').and.returnValues('', DEFAULT_CASE_INFO.caseId);
+
+      (mockRouter as any).navigated = false;
+      (mockRouter as any).events = routerEvents$.asObservable();
+
+      component.ngOnInit();
+
+      expect(startSetupSpy).not.toHaveBeenCalled();
+
+      routerEvents$.next(new NavigationEnd(1, '/cases/case-details', '/cases/case-details'));
+
+      expect(component.caseId).toBe(DEFAULT_CASE_INFO.caseId);
+      expect(startSetupSpy).toHaveBeenCalledOnceWith(loadingToken);
+
+      routerEvents$.next(new NavigationEnd(2, '/again', '/again'));
+
+      expect(startSetupSpy).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('startHearingSetupForCase', () => {
+    it('should set server error, unregister loading, and stop setup when route case id does not match case notifier case id', () => {
+      const loadingToken = 'loading-token';
+      const dispatchSpy = spyOn(mockStore, 'dispatch');
+      const unregisterSpy = spyOn(loadingService, 'unregister');
+
+      component.caseId = DEFAULT_CASE_INFO.caseId;
+
+      mockCaseNotifier.caseView = of({
+        ...cv,
+        case_id: 'different-case-id',
+      } as CaseView);
+
+      (component as any).startHearingSetupForCase(loadingToken);
+
+      expect(component.serverError).toEqual({
+        id: 'backendError',
+        message: HearingSummaryEnum.BackendError,
+      });
+      expect(unregisterSpy).toHaveBeenCalledWith(loadingToken);
+      expect(dispatchSpy).not.toHaveBeenCalled();
+    });
+
+    it('should continue setup when route case id matches case notifier case id', () => {
+      const loadingToken = 'loading-token';
+      const dispatchSpy = spyOn(mockStore, 'dispatch');
+      const unregisterSpy = spyOn(loadingService, 'unregister');
+
+      component.caseId = DEFAULT_CASE_INFO.caseId;
+
+      mockCaseNotifier.caseView = of(cv as CaseView);
+
+      (component as any).startHearingSetupForCase(loadingToken);
+
+      expect(component.serverError).toBeNull();
+      expect(component.caseType).toBe('CIVIL');
+      expect(component.jurisdiction).toBe('CIVIL');
+      expect(dispatchSpy).toHaveBeenCalledWith(new fromHearingStore.ResetHearingList());
+      expect(dispatchSpy).toHaveBeenCalledWith(new fromHearingStore.LoadAllHearings(DEFAULT_CASE_INFO.caseId));
+      expect(unregisterSpy).not.toHaveBeenCalledWith(loadingToken);
+    });
+  });
+
+  describe('findRouteParameter', () => {
+    const routeSnapshot = (params = {}, children = []): any => ({
+      paramMap: convertToParamMap(params),
+      children,
+    });
+
+    it('should return the route parameter when it exists on the current route', () => {
+      const route = routeSnapshot({ cid: DEFAULT_CASE_INFO.caseId });
+
+      const result = (component as any).findRouteParameter(route, 'cid');
+
+      expect(result).toBe(DEFAULT_CASE_INFO.caseId);
+    });
+
+    it('should return the route parameter when it exists on a child route', () => {
+      const childRoute = routeSnapshot({ cid: DEFAULT_CASE_INFO.caseId });
+      const rootRoute = routeSnapshot({}, [childRoute]);
+
+      const result = (component as any).findRouteParameter(rootRoute, 'cid');
+
+      expect(result).toBe(DEFAULT_CASE_INFO.caseId);
+    });
+
+    it('should return the route parameter when it exists on a nested child route', () => {
+      const nestedRoute = routeSnapshot({ cid: DEFAULT_CASE_INFO.caseId });
+      const childRoute = routeSnapshot({}, [nestedRoute]);
+      const rootRoute = routeSnapshot({}, [childRoute]);
+
+      const result = (component as any).findRouteParameter(rootRoute, 'cid');
+
+      expect(result).toBe(DEFAULT_CASE_INFO.caseId);
+    });
+
+    it('should return null when the route parameter does not exist', () => {
+      const rootRoute = routeSnapshot({}, [
+        routeSnapshot({ otherParam: 'not-the-case-id' }),
+      ]);
+
+      const result = (component as any).findRouteParameter(rootRoute, 'cid');
+
+      expect(result).toBeNull();
+    });
+
+    it('should return null when the route node is null', () => {
+      const result = (component as any).findRouteParameter(null, 'cid');
+
+      expect(result).toBeNull();
+    });
+  });
+
+
+
   it('should reset hearing list before loading hearings for the current case', () => {
+    component.caseId = '1620409659381330';
     const dispatchSpy = spyOn(mockStore, 'dispatch');
 
     component.reloadHearings();
@@ -616,6 +776,7 @@ describe('CaseHearingsComponent', () => {
   });
 
   it('should getHearingsList by EXUISectionStatus', (done) => {
+    component.caseId = DEFAULT_CASE_INFO.caseId;
     const hearingList = component.getHearingListByStatus(EXUISectionStatusEnum.UPCOMING);
     hearingList.subscribe((hearing) => {
       expect(hearing.length).toBe(7);
@@ -624,6 +785,7 @@ describe('CaseHearingsComponent', () => {
   });
 
   it('should getHearingsList by EXUIDisplayStatus', (done) => {
+    component.caseId = DEFAULT_CASE_INFO.caseId;
     const hearingList = component.getHearingListByStatus(EXUIDisplayStatusEnum.LISTED);
     hearingList.subscribe((hearing) => {
       expect(hearing.length).toBe(1);
@@ -632,6 +794,7 @@ describe('CaseHearingsComponent', () => {
   });
 
   it('should have first Update section status hearing with hearing status as Waiting', (done) => {
+    component.ngOnInit();
     component.upcomingHearings$.subscribe((hearing) => {
       expect(hearing[0].exuiDisplayStatus).toEqual(EXUIDisplayStatusEnum.AWAITING_LISTING);
       done();
@@ -677,6 +840,7 @@ describe('CaseHearingsComponent', () => {
   });
 
   it('should have the Update section status hearings with out status as Waiting to be listed in hearing date order', (done) => {
+    component.ngOnInit();
     component.upcomingHearings$.subscribe((hearing) => {
       expect(moment(hearing[3].hearingRequestDateTime).isAfter(moment(hearing[2].hearingRequestDateTime))).toBeFalsy();
       done();
@@ -684,6 +848,7 @@ describe('CaseHearingsComponent', () => {
   });
 
   it('should have the cancel and passed section status hearings with Cancel listing state and no hearing date assigned in creation date order', (done) => {
+    component.ngOnInit();
     component.pastAndCancelledHearings$.subscribe((hearings) => {
       expect(hearings[0].exuiDisplayStatus).toEqual(EXUIDisplayStatusEnum.COMPLETED);
       expect(hearings[1].exuiDisplayStatus).toEqual(EXUIDisplayStatusEnum.COMPLETED);
@@ -692,6 +857,7 @@ describe('CaseHearingsComponent', () => {
   });
 
   it('should create hearing request', () => {
+    component.caseId = DEFAULT_CASE_INFO.caseId;
     const dispatchSpy = spyOn(mockStore, 'dispatch');
     spyOn(mockStore, 'select').and.returnValue(of(null));
     const hearingCondition: HearingConditions = {
@@ -708,6 +874,7 @@ describe('CaseHearingsComponent', () => {
 
   it('should call the reloadhearings when reload clicked', () => {
     spyOn(component, 'reloadHearings');
+    fixture.detectChanges();
     component.serverError = { id: '', message: 'server error' };
     fixture.detectChanges();
     const cancelledReasonElement: HTMLSelectElement = fixture.nativeElement.querySelector('#reload-hearing-tab');

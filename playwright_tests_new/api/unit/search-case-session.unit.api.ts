@@ -10,7 +10,7 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
     expect(resolveSearchCaseSessionUsers({} as NodeJS.ProcessEnv)).toEqual(['FPL_GLOBAL_SEARCH']);
   });
 
-  test('supports env-driven pool overrides and lets explicit warmup users narrow the prewarmed set', () => {
+  test('supports env-driven pool overrides and explicit warmup users', () => {
     const env = {
       PW_SEARCH_CASE_SESSION_USERS: 'SOLICITOR, STAFF_ADMIN',
       PW_INTEGRATION_SESSION_WARMUP_USERS: 'STAFF_ADMIN, FPL_GLOBAL_SEARCH, STAFF_ADMIN',
@@ -20,9 +20,14 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
     expect(resolveIntegrationSessionWarmupUsers(env)).toEqual(['STAFF_ADMIN', 'FPL_GLOBAL_SEARCH']);
   });
 
-  test('falls back to the default integration warmup pool when no explicit warmup override is provided', () => {
+  test('does not prewarm sessions by default', () => {
+    expect(resolveIntegrationSessionWarmupUsers({} as NodeJS.ProcessEnv)).toEqual([]);
+  });
+
+  test('supports explicit default integration warmup pool when requested', () => {
     const env = {
       PW_SEARCH_CASE_SESSION_USERS: 'FPL_GLOBAL_SEARCH, SEARCH_EMPLOYMENT_CASE',
+      PW_INTEGRATION_SESSION_WARMUP_USERS: '@default',
     } as NodeJS.ProcessEnv;
 
     expect(resolveIntegrationSessionWarmupUsers(env)).toEqual([
@@ -33,6 +38,14 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
       'RESTRICTED_CASE_FILE_VIEW_OFF',
       'SEARCH_EMPLOYMENT_CASE',
     ]);
+  });
+
+  test('supports explicit no-op warmup sentinel', () => {
+    const env = {
+      PW_INTEGRATION_SESSION_WARMUP_USERS: '@none,RESTRICTED_CASE_FILE_VIEW_ON',
+    } as NodeJS.ProcessEnv;
+
+    expect(resolveIntegrationSessionWarmupUsers(env)).toEqual([]);
   });
 
   test('assigns workers across the configured shared user pool', () => {

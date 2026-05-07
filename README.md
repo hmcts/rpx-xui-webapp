@@ -451,13 +451,11 @@ Key behaviour:
 
 Playwright-capable pipeline stages archive diagnostics for troubleshooting and triage:
 
-- `functional-output/tests/**/odhin-report/**/*`
-- `test-results/**/*`
 - `functional-output/tests/playwright-diagnostics/failure-data/**/*`
-- `**/failure-data.json`
 
 `failure-data.json` files attached by Playwright tests are also copied into
 `functional-output/tests/playwright-diagnostics/failure-data/` with flattened filenames so they are easier to find in Jenkins artifacts.
+Odhín HTML reports and standalone system-load reports are published through Jenkins HTML Publisher links rather than archived as raw build artifacts.
 
 ### Playwright locator audit
 
@@ -494,7 +492,7 @@ What it does not validate:
 
 ### Parallelism
 
-Playwright worker count scales with available CPU cores in both local and CI runs (approx. half of the logical cores, capped at 8).
+Playwright worker count defaults are suite-specific: 2 workers for E2E, 4 workers for API, and 4 workers for integration.
 Set `FUNCTIONAL_TESTS_WORKERS` to override this behaviour explicitly.
 
 ### Integration local progress timer

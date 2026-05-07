@@ -1,8 +1,9 @@
 {
-  "excludedTags": ["@nightly"],
+  "excludedTags": [],
   "availableTags": [
     "@e2e",
     "@nightly",
+    "@e2e-case-file-view",
     "@e2e-case-flags",
     "@e2e-create-case",
     "@e2e-document-upload",
@@ -10,6 +11,7 @@
     "@e2e-manage-tasks",
     "@e2e-media-viewer",
     "@e2e-search-case",
+    "@e2e-smoke",
     "@e2e-update-case"
   ]
 }

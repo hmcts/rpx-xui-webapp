@@ -291,6 +291,7 @@ type SeededActionDeps = {
   envTaskId?: string;
   envAssignedTaskId?: string;
   hasSeededEnvTasksFn?: typeof hasSeededEnvTasks;
+  role?: ApiUserRole;
   withXsrfFn?: (role: ApiUserRole, fn: (headers: Record<string, string>) => Promise<void>) => Promise<void>;
 };
 
@@ -303,7 +304,7 @@ export async function runSeededAction(action: string, getId: () => string, deps:
     return false;
   }
 
-  await withXsrfFn('solicitor', async (headers) => {
+  await withXsrfFn(deps.role ?? 'solicitor', async (headers) => {
     const res = await deps.apiClient.post(`workallocation/task/${taskId}/${action}`, {
       data: {},
       headers,

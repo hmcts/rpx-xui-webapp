@@ -13,14 +13,20 @@ import * as playwrightConfigUtils from '../../playwright-config-utils';
 const require = createRequire(import.meta.url);
 const integrationConfigSupport = require('../../playwright.integration.config.support.cjs') as {
   resolveOdhinConsoleCapture: (env: EnvMap) => { consoleLog: boolean; consoleError: boolean };
+  resolveOdhinForceExitOnCompletion: (env: EnvMap) => boolean;
   resolveOdhinHardTimeoutMs: (env: EnvMap) => number;
   resolveOdhinLightweight: (env: EnvMap) => boolean;
   resolveOdhinRuntimeHookTimeoutMs: (env: EnvMap) => number;
 };
 
 const { resolveTagFilters } = playwrightConfigUtils;
-const { resolveOdhinConsoleCapture, resolveOdhinHardTimeoutMs, resolveOdhinLightweight, resolveOdhinRuntimeHookTimeoutMs } =
-  integrationConfigSupport;
+const {
+  resolveOdhinConsoleCapture,
+  resolveOdhinForceExitOnCompletion,
+  resolveOdhinHardTimeoutMs,
+  resolveOdhinLightweight,
+  resolveOdhinRuntimeHookTimeoutMs,
+} = integrationConfigSupport;
 
 let configModule: TestableConfigModule;
 let integrationConfigModule: TestableConfigModule;
@@ -95,11 +101,13 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(configuredInCi).toBe(2);
 
     const ciCount = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' });
-    expect(ciCount).toBe(8);
+    expect(ciCount).toBe(2);
 
     const defaultCount = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: undefined });
-    expect(defaultCount).toBeGreaterThanOrEqual(2);
-    expect(defaultCount).toBeLessThanOrEqual(8);
+    expect(defaultCount).toBe(2);
+
+    const defaultApiCount = resolveApiProjectWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: undefined });
+    expect(defaultApiCount).toBe(4);
   });
 
   test('resolveConfigModule prefers __test__ and default exports', () => {
@@ -266,6 +274,33 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(filters.grepInvert?.test('@e2e-search-case')).toBe(true);
   });
 
+  test('E2E tag defaults enable every configured non-smoke feature by default', () => {
+    const filters = resolveTagFilters({
+      env: {},
+      includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
+      excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
+      configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
+      defaultConfigPath: 'playwright_tests_new/E2E/tag-filter.json',
+      suiteTag: '@e2e',
+    });
+
+    expect(filters.excludedTags).toEqual([]);
+    expect(filters.grepInvert).toBeUndefined();
+    expect(filters.availableTags).toEqual(
+      expect.arrayContaining([
+        '@e2e-case-file-view',
+        '@e2e-case-flags',
+        '@e2e-create-case',
+        '@e2e-document-upload',
+        '@e2e-document-upload-v1',
+        '@e2e-manage-tasks',
+        '@e2e-media-viewer',
+        '@e2e-search-case',
+        '@e2e-update-case',
+      ])
+    );
+  });
+
   test('shared tag filter helper treats suite plus feature includes as feature-only selection', () => {
     const filters = resolveTagFilters({
       env: {
@@ -323,6 +358,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     );
 
     expect(progressOptions?.hardTimeoutMs).toBe(resolveOdhinHardTimeoutMs({ CI: undefined }));
+    expect(progressOptions?.forceExitOnCompletion).toBe(resolveOdhinForceExitOnCompletion({ CI: undefined }));
     expect(progressOptions?.timeoutExitCode).toBe(1);
     expect(odhinOptions?.lightweight).toBe(resolveOdhinLightweight({ CI: undefined }));
     expect(odhinOptions?.consoleLog).toBe(resolveOdhinConsoleCapture({ CI: undefined }).consoleLog);
@@ -358,7 +394,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
 
   test('integration config exposes the documented resolveWorkerCount test helper', async () => {
     expect(resolveIntegrationWorkerCount({ FUNCTIONAL_TESTS_WORKERS: '3', CI: undefined })).toBe(3);
-    expect(resolveIntegrationWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' })).toBe(8);
+    expect(resolveIntegrationWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' })).toBe(4);
   });
 
   test('integration config allows local browser channel override for reproducible reruns', async () => {
@@ -422,6 +458,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     );
 
     expect(progressOptions?.hardTimeoutMs).toBe(resolveOdhinHardTimeoutMs({ CI: 'true' }));
+    expect(progressOptions?.forceExitOnCompletion).toBe(resolveOdhinForceExitOnCompletion({ CI: 'true' }));
     expect(odhinOptions?.lightweight).toBe(resolveOdhinLightweight({ CI: 'true' }));
     expect(odhinOptions?.consoleLog).toBe(resolveOdhinConsoleCapture({ CI: 'true' }).consoleLog);
     expect(odhinOptions?.consoleError).toBe(resolveOdhinConsoleCapture({ CI: 'true' }).consoleError);

@@ -44,6 +44,15 @@ export class SessionCapturePage {
     return [idamPage.submitBtn.first(), this.page.locator(IDAM_SUBMIT_FALLBACK_SELECTOR).first()];
   }
 
+  idamLoginErrorCandidates(): Locator[] {
+    return [
+      this.page.locator('.govuk-error-summary').first(),
+      this.page.locator('.govuk-error-message').first(),
+      this.page.locator('[data-testid="error-summary"]').first(),
+      this.page.locator('#error-summary').first(),
+    ];
+  }
+
   appShellMarkers(preferredSelector?: string): Array<{ name: string; locator: Locator }> {
     const markers: Array<{ name: string; locator: Locator }> = [];
 

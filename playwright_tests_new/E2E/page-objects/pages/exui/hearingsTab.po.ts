@@ -8,9 +8,28 @@ export class HearingsTabPage {
   readonly container = this.page.locator('exui-case-hearings-ce');
   readonly emptyState = this.page.getByText('No current and upcoming hearings found', { exact: false });
   readonly reloadButton = this.page.locator('#reload-hearing-tab');
+  readonly requestHearingButton = this.page.getByRole('button', { name: /request a hearing/i });
+  readonly continueButton = this.page.getByRole('button', { name: /^continue$/i });
+  readonly backLink = this.page.getByRole('link', { name: /^back$/i });
+  readonly linkedHearingRadio = this.page.locator('#linked-form input[type="radio"]').first();
+  readonly particularOrderRadio = this.page.locator('#particularOrder');
+  readonly hearingOrderSelects = this.page.locator('select[id^="hearingsOrder"]');
+  readonly viewDetailsButtons = this.page.locator('[id^="link-view-details-"]');
+
+  sectionHeading(name: string): Locator {
+    return this.page.locator('exui-case-hearings-list th.govuk-body-lead').filter({ hasText: name });
+  }
 
   currentAndUpcomingHeading(name: string): Locator {
-    return this.page.locator('exui-case-hearings-list th.govuk-body-lead').filter({ hasText: name });
+    return this.sectionHeading(name);
+  }
+
+  pastOrCancelledHeading(name = 'Past or cancelled'): Locator {
+    return this.sectionHeading(name);
+  }
+
+  linkHearingButton(hearingId: string): Locator {
+    return this.page.locator(`#link-hearing-link-${hearingId}`);
   }
 
   viewOrEditButton(hearingId: string): Locator {
@@ -43,6 +62,13 @@ export class HearingsTabPage {
     }
   }
 
+  hearingRow(hearingId: string, action: HearingAction = 'view-details'): Locator {
+    return this.page
+      .locator('tr.govuk-table__row')
+      .filter({ has: this.actionButton(hearingId, action) })
+      .first();
+  }
+
   async waitForReady(hearingId?: string, action: HearingAction = 'view-details'): Promise<void> {
     await expect(this.container).toBeVisible();
     await expect(this.currentAndUpcomingHeading('Current and upcoming')).toBeVisible();
@@ -71,7 +97,38 @@ export class HearingsTabPage {
     await this.viewDetailsButton(hearingId).click();
   }
 
+  async openLinkHearing(hearingId: string): Promise<void> {
+    await this.linkHearingButton(hearingId).click();
+  }
+
+  async openRequestHearing(): Promise<void> {
+    await this.requestHearingButton.click();
+  }
+
   async openViewOrEdit(hearingId: string): Promise<void> {
     await this.viewOrEditButton(hearingId).click();
+  }
+
+  async expectNoViewDetailsButtons(timeoutMs: number): Promise<void> {
+    await expect(this.viewDetailsButtons).toHaveCount(0, { timeout: timeoutMs });
+  }
+
+  async continueFlow(): Promise<void> {
+    await this.continueButton.click();
+  }
+
+  async goBack(): Promise<void> {
+    await this.backLink.click();
+  }
+
+  async selectOrderedLinkedHearings(): Promise<void> {
+    await this.linkedHearingRadio.check();
+    await this.continueFlow();
+    await this.particularOrderRadio.check();
+
+    const orderCount = await this.hearingOrderSelects.count();
+    for (let index = 0; index < orderCount; index += 1) {
+      await this.hearingOrderSelects.nth(index).selectOption(String(index + 1));
+    }
   }
 }

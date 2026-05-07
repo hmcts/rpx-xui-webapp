@@ -13,17 +13,24 @@ import * as playwrightConfigUtils from '../../playwright-config-utils';
 const require = createRequire(import.meta.url);
 const integrationConfigSupport = require('../../playwright.integration.config.support.cjs') as {
   resolveOdhinConsoleCapture: (env: EnvMap) => { consoleLog: boolean; consoleError: boolean };
+  resolveOdhinForceExitOnCompletion: (env: EnvMap) => boolean;
   resolveOdhinHardTimeoutMs: (env: EnvMap) => number;
   resolveOdhinLightweight: (env: EnvMap) => boolean;
   resolveOdhinRuntimeHookTimeoutMs: (env: EnvMap) => number;
 };
 
 const { resolveTagFilters } = playwrightConfigUtils;
-const { resolveOdhinConsoleCapture, resolveOdhinHardTimeoutMs, resolveOdhinLightweight, resolveOdhinRuntimeHookTimeoutMs } =
-  integrationConfigSupport;
+const {
+  resolveOdhinConsoleCapture,
+  resolveOdhinForceExitOnCompletion,
+  resolveOdhinHardTimeoutMs,
+  resolveOdhinLightweight,
+  resolveOdhinRuntimeHookTimeoutMs,
+} = integrationConfigSupport;
 
 let configModule: TestableConfigModule;
 let integrationConfigModule: TestableConfigModule;
+let nightlyConfigModule: TestableConfigModule;
 
 const buildConfig = (env: EnvMap) => configModule.__test__.buildConfig(env);
 const resolveWorkerCount = (env: EnvMap) => configModule.__test__.resolveWorkerCount(env);
@@ -58,6 +65,12 @@ const resolveIntegrationWorkerCount = (env: EnvMap) =>
       resolveWorkerCount: (env: EnvMap) => number;
     }
   ).resolveWorkerCount(env);
+const buildNightlyConfig = (env: EnvMap) =>
+  nightlyConfigModule.__test__.buildConfig(env) as {
+    reporter: [string, Record<string, unknown> | undefined][];
+    use: { baseURL: string };
+    projects: Array<{ name: string; use?: { headless?: boolean } }>;
+  };
 
 const getReporterTuple = (reporter: unknown, name: string): [string, Record<string, unknown> | undefined] => {
   if (!Array.isArray(reporter)) {
@@ -77,6 +90,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
   test.beforeAll(async () => {
     configModule = await loadConfig();
     integrationConfigModule = await loadConfigAt('playwright.integration.config.ts');
+    nightlyConfigModule = await loadConfigAt('playwright-nightly.config.ts');
   });
 
   test('resolveWorkerCount covers configured, CI, and default', async () => {
@@ -87,11 +101,13 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(configuredInCi).toBe(2);
 
     const ciCount = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' });
-    expect(ciCount).toBe(8);
+    expect(ciCount).toBe(2);
 
     const defaultCount = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: undefined });
-    expect(defaultCount).toBeGreaterThanOrEqual(2);
-    expect(defaultCount).toBeLessThanOrEqual(8);
+    expect(defaultCount).toBe(2);
+
+    const defaultApiCount = resolveApiProjectWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: undefined });
+    expect(defaultApiCount).toBe(4);
   });
 
   test('resolveConfigModule prefers __test__ and default exports', () => {
@@ -133,7 +149,10 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(config.workers).toBe(expectedWorkers);
     expect(config.use.baseURL).toBe('https://example.test');
     expect(config.reporter[0][0]).toBe('dot');
-    const [, odhinOptions] = getReporterTuple(config.reporter, 'odhin-reports-playwright');
+    const [, odhinOptions] = getReporterTuple(
+      config.reporter,
+      './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs'
+    );
     expect(odhinOptions?.outputFolder).toBe('custom-report');
     expect(odhinOptions?.project).toBe('Custom Project');
     expect(odhinOptions?.release).toBe('Custom Release');
@@ -169,7 +188,10 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
       HEAD: undefined,
     });
     expect(config.reporter[0][0]).toBe('list');
-    const [, odhinOptions] = getReporterTuple(config.reporter, 'odhin-reports-playwright');
+    const [, odhinOptions] = getReporterTuple(
+      config.reporter,
+      './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs'
+    );
     expect(odhinOptions?.outputFolder).toContain('playwright-e2e/odhin-report');
     expect(odhinOptions?.project).toBe('RPX XUI Webapp');
     expect(odhinOptions?.release).toContain('branch=');
@@ -190,7 +212,10 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
       TEST_TYPE: undefined,
       HEAD: undefined,
     });
-    const [, odhinOptions] = getReporterTuple(config.reporter, 'odhin-reports-playwright');
+    const [, odhinOptions] = getReporterTuple(
+      config.reporter,
+      './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs'
+    );
     expect(odhinOptions?.release).toContain('branch=feat/EXUI-3618-case-search-e2e');
   });
 
@@ -247,6 +272,33 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(filters.excludedTags).toEqual(['@e2e-search-case']);
     expect(filters.grepInvert).toBeInstanceOf(RegExp);
     expect(filters.grepInvert?.test('@e2e-search-case')).toBe(true);
+  });
+
+  test('E2E tag defaults enable every configured non-smoke feature by default', () => {
+    const filters = resolveTagFilters({
+      env: {},
+      includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
+      excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
+      configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
+      defaultConfigPath: 'playwright_tests_new/E2E/tag-filter.json',
+      suiteTag: '@e2e',
+    });
+
+    expect(filters.excludedTags).toEqual([]);
+    expect(filters.grepInvert).toBeUndefined();
+    expect(filters.availableTags).toEqual(
+      expect.arrayContaining([
+        '@e2e-case-file-view',
+        '@e2e-case-flags',
+        '@e2e-create-case',
+        '@e2e-document-upload',
+        '@e2e-document-upload-v1',
+        '@e2e-manage-tasks',
+        '@e2e-media-viewer',
+        '@e2e-search-case',
+        '@e2e-update-case',
+      ])
+    );
   });
 
   test('shared tag filter helper treats suite plus feature includes as feature-only selection', () => {
@@ -306,6 +358,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     );
 
     expect(progressOptions?.hardTimeoutMs).toBe(resolveOdhinHardTimeoutMs({ CI: undefined }));
+    expect(progressOptions?.forceExitOnCompletion).toBe(resolveOdhinForceExitOnCompletion({ CI: undefined }));
     expect(progressOptions?.timeoutExitCode).toBe(1);
     expect(odhinOptions?.lightweight).toBe(resolveOdhinLightweight({ CI: undefined }));
     expect(odhinOptions?.consoleLog).toBe(resolveOdhinConsoleCapture({ CI: undefined }).consoleLog);
@@ -314,21 +367,22 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(odhinOptions?.runtimeHookTimeoutMs).toBe(resolveOdhinRuntimeHookTimeoutMs({ CI: undefined }));
     expect(config.expect.timeout).toBe(60_000);
     expect(config.use.timezoneId).toBe('Europe/London');
-    expect(config.projects.find((project) => project.name === 'chromium-search-case')?.workers).toBeUndefined();
+    expect(config.projects).toHaveLength(1);
+    expect(config.projects[0]?.name).toBe('chromium');
+    expect(config.projects[0]?.workers).toBeUndefined();
   });
 
-  test('integration config applies shared tag filters to both integration projects', async () => {
+  test('integration config applies shared tag filters to the integration project', async () => {
     const config = buildIntegrationConfig({
       INTEGRATION_PW_INCLUDE_TAGS: '@integration-search-case',
       INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE: '@none',
       CI: undefined,
     });
 
-    for (const project of config.projects) {
-      expect(project.grep).toBeInstanceOf(RegExp);
-      expect(project.grep?.test('@integration-search-case')).toBe(true);
-      expect(project.grep?.test('@integration-manage-tasks')).toBe(false);
-    }
+    expect(config.projects).toHaveLength(1);
+    expect(config.projects[0]?.grep).toBeInstanceOf(RegExp);
+    expect(config.projects[0]?.grep?.test('@integration-search-case')).toBe(true);
+    expect(config.projects[0]?.grep?.test('@integration-manage-tasks')).toBe(false);
 
     const filters = resolveIntegrationTagFilters({
       INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE: '@none,@integration-manage-tasks',
@@ -340,7 +394,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
 
   test('integration config exposes the documented resolveWorkerCount test helper', async () => {
     expect(resolveIntegrationWorkerCount({ FUNCTIONAL_TESTS_WORKERS: '3', CI: undefined })).toBe(3);
-    expect(resolveIntegrationWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' })).toBe(8);
+    expect(resolveIntegrationWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' })).toBe(4);
   });
 
   test('integration config allows local browser channel override for reproducible reruns', async () => {
@@ -361,6 +415,24 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
 
     expect(withDefaultChannel.projects.find((project) => project.name === 'chromium')?.use?.channel).toBe('chrome');
     expect(withBundledChromium.projects.find((project) => project.name === 'chromium')?.use?.channel).toBeUndefined();
+  });
+
+  test('nightly config keeps a root baseURL so cross-browser relative navigation stays valid', async () => {
+    const config = buildNightlyConfig({
+      CI: 'true',
+      TEST_URL: 'https://example.test',
+      HEAD: 'true',
+    });
+
+    expect(config.use.baseURL).toBe('https://example.test');
+    expect(config.reporter[0][0]).toBe('dot');
+    const [, odhinOptions] = getReporterTuple(
+      config.reporter,
+      './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs'
+    );
+    expect(odhinOptions?.outputFolder).toContain('playwright-e2e/odhin-report');
+    expect(config.projects.find((project) => project.name === 'firefox')?.use?.headless).toBe(false);
+    expect(config.projects.find((project) => project.name === 'webkit')?.use?.headless).toBe(false);
   });
 
   test('integration config avoids forced Odhin timeout in CI', async () => {
@@ -386,6 +458,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     );
 
     expect(progressOptions?.hardTimeoutMs).toBe(resolveOdhinHardTimeoutMs({ CI: 'true' }));
+    expect(progressOptions?.forceExitOnCompletion).toBe(resolveOdhinForceExitOnCompletion({ CI: 'true' }));
     expect(odhinOptions?.lightweight).toBe(resolveOdhinLightweight({ CI: 'true' }));
     expect(odhinOptions?.consoleLog).toBe(resolveOdhinConsoleCapture({ CI: 'true' }).consoleLog);
     expect(odhinOptions?.consoleError).toBe(resolveOdhinConsoleCapture({ CI: 'true' }).consoleError);

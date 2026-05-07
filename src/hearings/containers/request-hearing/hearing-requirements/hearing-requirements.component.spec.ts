@@ -2410,7 +2410,7 @@ describe('HearingRequirementsComponent', () => {
             firstName: 'Jane',
             lastName: 'Smith',
             preferredHearingChannel: 'inPerson',
-            reasonableAdjustments: ['RA0042', 'RA0053', 'RA0013', 'RA0016', 'RA0042'],
+            reasonableAdjustments: ['RA0042', 'RA0053', 'RA0013', 'RA0016', 'RA0042', 'PF0002'],
             interpreterLanguage: 'POR',
           },
           unavailabilityRanges: [
@@ -2431,7 +2431,7 @@ describe('HearingRequirementsComponent', () => {
             firstName: 'DWP',
             lastName: null,
             preferredHearingChannel: 'byVideo',
-            reasonableAdjustments: ['RA0005'],
+            reasonableAdjustments: ['RA0005', 'PF0011', 'CF0002', 'CF0006', 'CF0007'],
             interpreterLanguage: null,
           },
           organisationDetails: {
@@ -2669,8 +2669,15 @@ describe('HearingRequirementsComponent', () => {
     // Assert
     expect(result.length).toEqual(2);
     const transformedPartyDetails = _.cloneDeep(partyDetails);
-    transformedPartyDetails[0].individualDetails.reasonableAdjustments = ['RA0042', 'RA0053', 'RA0013', 'RA0016', 'RA0042'];
-    transformedPartyDetails[1].individualDetails.reasonableAdjustments = ['RA0005'];
+    transformedPartyDetails[0].individualDetails.reasonableAdjustments = [
+      'RA0042',
+      'RA0053',
+      'RA0013',
+      'RA0016',
+      'RA0042',
+      'PF0002',
+    ];
+    transformedPartyDetails[1].individualDetails.reasonableAdjustments = ['RA0005', 'PF0011', 'CF0002', 'CF0006', 'CF0007'];
     expect(result).toEqual(transformedPartyDetails);
   });
 

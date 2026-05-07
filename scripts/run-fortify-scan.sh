@@ -17,12 +17,12 @@ run_fortify_gradle() {
   local output_file
   local status
 
-  output_file="$(mktemp "${TMPDIR:-/tmp}/fortify-scan.XXXXXX.log")"
+  output_file="${TMPDIR:-/tmp}/fortify-scan.$$.log"
+  : > "${output_file}"
 
   set +e
   "${GRADLEW}" -p "${PROJECT_DIR}" resolveFortifyDependencies fortifyScan 2>&1 | tee "${output_file}"
   status=${PIPESTATUS[0]}
-  set -e
 
   if [[ "${status}" -eq 0 ]]; then
     rm -f "${output_file}"

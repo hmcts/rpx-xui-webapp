@@ -140,7 +140,7 @@
     "eligrey-classlist.js": "^1.2.20180112",
     "exceljs": "^4.4.0",
     "exception-formatter": "1.0.7",
-    "express": "^4.22.0",
+    "express": "^5.2.1",
     "file-saver": "^2.0.2",
     "global-agent": "^3.0.0",
     "govuk-elements-sass": "^3.1.3",

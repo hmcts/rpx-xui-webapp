@@ -315,6 +315,7 @@ yarn test:api:pw:coverage
 - Tag inputs accept comma or space separated values, with or without `@`.
 - Set `API_PW_EXCLUDED_TAGS_OVERRIDE=@none` to clear repo defaults for one run.
 - Jenkins exposes these as string parameters with the same names.
+- Key Vault-backed global exclusions are additive through `PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS`; see [`docs/playwright-global-exclusions.md`](../docs/playwright-global-exclusions.md).
 
 ```bash
 # Exclude one service for this run (overrides file excludes)
@@ -451,6 +452,7 @@ rm -rf .sessions && npx playwright test
 - Tag inputs accept comma or space separated values, with or without `@`.
 - Set `E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none` to clear repo defaults for one run.
 - Jenkins exposes these as string parameters with the same names.
+- Key Vault-backed global exclusions are additive through `PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS`; see [`docs/playwright-global-exclusions.md`](../docs/playwright-global-exclusions.md).
 
 ```bash
 # Run only search-case E2E tests
@@ -506,6 +508,7 @@ PW_INTEGRATION_ODHIN=0 INTEGRATION_PW_INCLUDE_TAGS=@integration-search-case npx 
 - Tag inputs accept comma or space separated values, with or without `@`.
 - Set `INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=@none` to clear repo defaults for one run.
 - Jenkins exposes these as string parameters with the same names.
+- Key Vault-backed global exclusions are additive through `PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS`; see [`docs/playwright-global-exclusions.md`](../docs/playwright-global-exclusions.md).
 
 ```bash
 # Run only search-case integration tests

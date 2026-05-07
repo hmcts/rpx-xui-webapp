@@ -175,7 +175,7 @@ Detailed suite documentation and architecture:
 
 - **Session management:** Playwright uses lazy session capture and shared `.sessions/` storage to avoid repeated logins during parallel runs.
 - **Integration mocking model:** Integration specs in `playwright_tests_new/integration/test/` mock backend APIs with route interception and builders in `playwright_tests_new/integration/mocks/`.
-- **Tag-based execution:** Suites support include/exclude tag filters via environment variables (`E2E_PW_INCLUDE_TAGS`, `INTEGRATION_PW_INCLUDE_TAGS`, `API_PW_INCLUDE_TAGS` and corresponding `*_EXCLUDED_TAGS_OVERRIDE`).
+- **Tag-based execution:** Suites support include/exclude tag filters via environment variables (`E2E_PW_INCLUDE_TAGS`, `INTEGRATION_PW_INCLUDE_TAGS`, `API_PW_INCLUDE_TAGS` and corresponding `*_EXCLUDED_TAGS_OVERRIDE`). The emergency global exclusion switch is documented in [Playwright global test exclusions](./docs/playwright-global-exclusions.md).
 - **Parallelism:** worker count auto-scales unless overridden with `FUNCTIONAL_TESTS_WORKERS`.
 
 ### Reporting and diagnostics

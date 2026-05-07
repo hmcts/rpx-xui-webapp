@@ -3,6 +3,7 @@ import { execSync } from 'node:child_process';
 import { cpus, totalmem } from 'node:os';
 import { version as appVersion } from './package.json';
 import {
+  logResolvedTagFilters,
   parseNonNegativeInt,
   resolveApiProjectWorkerCount,
   resolveDefaultReporter,
@@ -108,6 +109,9 @@ const resolveApiTagFilters = (env: EnvMap = process.env) =>
     excludedTagsEnvVar: 'API_PW_EXCLUDED_TAGS_OVERRIDE',
     configPathEnvVar: 'API_PW_TAG_FILTER_CONFIG',
     defaultConfigPath: defaultApiTagFilterConfigPath,
+    globalExcludedTagsEnvVar: 'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS',
+    ignoreGlobalExcludesEnvVar: 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES',
+    globalExcludedTagsPattern: /^(@svc-.+|@wa-action)$/,
   });
 
 const buildConfig = (env: EnvMap = process.env) => {
@@ -117,6 +121,7 @@ const buildConfig = (env: EnvMap = process.env) => {
   const odhinOutputFolder = resolveOdhinOutputFolder(env);
   const reportBranch = resolveBranchName(env);
   const apiTagFilters = resolveApiTagFilters(env);
+  logResolvedTagFilters('API', apiTagFilters, env);
   const apiRetries = resolveApiRetries(env);
 
   return defineConfig({

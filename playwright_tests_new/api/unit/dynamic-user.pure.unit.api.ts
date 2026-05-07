@@ -13,9 +13,11 @@ import {
   getRuntimeUserCredentialEnvMapping,
   publishRuntimeUserCredentialsToEnv,
   restoreRuntimeUserCredentialsInEnv,
+  resolveRuntimeUserCredentialsFromEnv,
   setRuntimeUserCredentials,
 } from '../../E2E/utils/runtimeUserCredentials.js';
-import { resolveProvisionRoleNamesForAlias } from '../../E2E/utils/test-setup/provisionRoleResolution.js';
+import { getAliasBaselineRoles, resolveProvisionRoleNamesForAlias } from '../../E2E/utils/test-setup/provisionRoleResolution.js';
+import { isTransientWorkflowFailure } from '../../E2E/utils/transient-failure.utils.js';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -28,6 +30,40 @@ const ENV_KEYS = [
   'PW_E2E_CASE_SETUP_ALLOW_UI_FALLBACK',
   'DYNAMIC_DIVORCE_SOLICITOR_ROLE_SET',
   'DYNAMIC_SOLICITOR_TEMPLATE_ROLES',
+  'DIVORCE_SOLICITOR_USERNAME',
+  'DIVORCE_SOLICITOR_PASSWORD',
+  'BOOKING_UI_FT_ON_USERNAME',
+  'BOOKING_UI_FT_ON_PASSWORD',
+  'BOOKING_UI_FT_ON_1_USERNAME',
+  'BOOKING_UI_FT_ON_1_PASSWORD',
+  'BOOKING_UI_FT_ON_2_USERNAME',
+  'BOOKING_UI_FT_ON_2_PASSWORD',
+  'BOOKING_UI_FT_ON_3_USERNAME',
+  'BOOKING_UI_FT_ON_3_PASSWORD',
+  'BOOKING_UI_FT_ON_4_USERNAME',
+  'BOOKING_UI_FT_ON_4_PASSWORD',
+  'STAFF_ADMIN_USERNAME',
+  'STAFF_ADMIN_PASSWORD',
+  'STAFF_ADMIN_1_USERNAME',
+  'STAFF_ADMIN_1_PASSWORD',
+  'STAFF_ADMIN_2_USERNAME',
+  'STAFF_ADMIN_2_PASSWORD',
+  'STAFF_ADMIN_3_USERNAME',
+  'STAFF_ADMIN_3_PASSWORD',
+  'STAFF_ADMIN_4_USERNAME',
+  'STAFF_ADMIN_4_PASSWORD',
+  'HEARING_MANAGER_CR84_OFF_USERNAME',
+  'HEARING_MANAGER_CR84_OFF_PASSWORD',
+  'HEARING_MANAGER_CR84_OFF_1_USERNAME',
+  'HEARING_MANAGER_CR84_OFF_1_PASSWORD',
+  'HEARING_MANAGER_CR84_OFF_4_USERNAME',
+  'HEARING_MANAGER_CR84_OFF_4_PASSWORD',
+  'HEARING_MANAGER_CR84_ON_USERNAME',
+  'HEARING_MANAGER_CR84_ON_PASSWORD',
+  'HEARING_MANAGER_CR84_ON_1_USERNAME',
+  'HEARING_MANAGER_CR84_ON_1_PASSWORD',
+  'HEARING_MANAGER_CR84_ON_4_USERNAME',
+  'HEARING_MANAGER_CR84_ON_4_PASSWORD',
   'EMPLOYMENT_DYNAMIC_CASEWORKER_USERNAME',
   'EMPLOYMENT_DYNAMIC_CASEWORKER_PASSWORD',
 ] as const;
@@ -109,6 +145,59 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
       username: 'EMPLOYMENT_DYNAMIC_CASEWORKER_USERNAME',
       password: 'EMPLOYMENT_DYNAMIC_CASEWORKER_PASSWORD',
     });
+    const divorceSolicitorMapping = getRuntimeUserCredentialEnvMapping(' divorce_solicitor ');
+    expect(divorceSolicitorMapping).toEqual({
+      username: 'DIVORCE_SOLICITOR_USERNAME',
+      password: 'DIVORCE_SOLICITOR_PASSWORD',
+    });
+    const bookingUiFtOnMapping = getRuntimeUserCredentialEnvMapping(' booking_ui-ft-on ');
+    expect(bookingUiFtOnMapping).toEqual({
+      username: 'BOOKING_UI_FT_ON_USERNAME',
+      password: 'BOOKING_UI_FT_ON_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' booking_ui-ft-on-1 ')).toEqual({
+      username: 'BOOKING_UI_FT_ON_1_USERNAME',
+      password: 'BOOKING_UI_FT_ON_1_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' booking_ui-ft-on-4 ')).toEqual({
+      username: 'BOOKING_UI_FT_ON_4_USERNAME',
+      password: 'BOOKING_UI_FT_ON_4_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' staff_admin ')).toEqual({
+      username: 'STAFF_ADMIN_USERNAME',
+      password: 'STAFF_ADMIN_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' staff_admin-1 ')).toEqual({
+      username: 'STAFF_ADMIN_1_USERNAME',
+      password: 'STAFF_ADMIN_1_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' staff_admin-4 ')).toEqual({
+      username: 'STAFF_ADMIN_4_USERNAME',
+      password: 'STAFF_ADMIN_4_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' hearing_manager_cr84_off ')).toEqual({
+      username: 'HEARING_MANAGER_CR84_OFF_USERNAME',
+      password: 'HEARING_MANAGER_CR84_OFF_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' hearing_manager_cr84_off-1 ')).toEqual({
+      username: 'HEARING_MANAGER_CR84_OFF_1_USERNAME',
+      password: 'HEARING_MANAGER_CR84_OFF_1_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' hearing_manager_cr84_on ')).toEqual({
+      username: 'HEARING_MANAGER_CR84_ON_USERNAME',
+      password: 'HEARING_MANAGER_CR84_ON_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' hearing_manager_cr84_on-4 ')).toEqual({
+      username: 'HEARING_MANAGER_CR84_ON_4_USERNAME',
+      password: 'HEARING_MANAGER_CR84_ON_4_PASSWORD',
+    });
+
+    process.env.DIVORCE_SOLICITOR_USERNAME = 'divorce@example.test';
+    process.env.DIVORCE_SOLICITOR_PASSWORD = 'divorce-secret';
+    expect(resolveRuntimeUserCredentialsFromEnv(divorceSolicitorMapping!)).toEqual({
+      email: 'divorce@example.test',
+      password: 'divorce-secret',
+    });
 
     const publishedState = publishRuntimeUserCredentialsToEnv('EMPLOYMENT_DYNAMIC_CASEWORKER', {
       email: 'dynamic@example.test',
@@ -156,9 +245,23 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
     expect(caseSetupTest.resolveUiFallbackFlag(undefined)).toBe(true);
     expect(caseSetupTest.resolveUiFallbackFlag(false)).toBe(false);
     expect(caseSetupTest.resolveCaseNumberFromCreateResponse({ case_reference: 1773065942199262 })).toBe('1773065942199262');
+    expect(caseSetupTest.isTransientApiRequestError(new Error('api/user/details failed: read ECONNRESET'))).toBe(true);
+    expect(caseSetupTest.isTransientApiRequestError(new Error('Validation failed'))).toBe(false);
+    expect(isTransientWorkflowFailure(new Error('Validation error after submit after updating case fields'))).toBe(false);
+    expect(
+      isTransientWorkflowFailure(new Error('Case event failed after PoC personal details: The event could not be created'))
+    ).toBe(true);
+    expect(isTransientWorkflowFailure(new Error('Task list showed service down while waiting for task row'))).toBe(true);
+    expect(isTransientWorkflowFailure(new Error('read ECONNRESET while calling api/user/details'))).toBe(true);
+    expect(isTransientWorkflowFailure(new Error('Upload failed: server returned status 429 after 3 attempts'))).toBe(true);
     expect(() => buildCasePayloadFromTemplate('unsupported.template' as never)).toThrow(
       "Unsupported payload template 'unsupported.template'."
     );
+    expect(() =>
+      buildCasePayloadFromTemplate('divorce.xui-test-case-type.create-case', {
+        overrides: { TextFieldd: 'typo' } as never,
+      })
+    ).toThrow(/Unknown override field 'TextFieldd'/);
   });
 
   test('resolveProvisionRoleNamesForAlias honours explicit, template, and divorce noc role resolution', () => {
@@ -178,6 +281,15 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
 
     delete process.env.DYNAMIC_SOLICITOR_TEMPLATE_ROLES;
     process.env.DYNAMIC_DIVORCE_SOLICITOR_ROLE_SET = 'external-noc';
+
+    expect(
+      getAliasBaselineRoles({
+        alias: 'DIVORCE_SOLICITOR',
+        roleContext: {
+          jurisdiction: 'divorce',
+        },
+      })
+    ).toEqual([...DIVORCE_EXTERNAL_NOC_SOLICITOR_ROLE_NAMES]);
 
     expect(
       resolveProvisionRoleNamesForAlias({

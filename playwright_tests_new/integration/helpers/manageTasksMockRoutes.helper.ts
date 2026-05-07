@@ -1,5 +1,10 @@
 import type { Page, Route } from '@playwright/test';
-import { setupTaskListBootstrapRoutes, taskListRoutePattern } from './taskListMockRoutes.helper';
+import { assertValidWorkAllocationTaskListMock } from './workAllocationMockValidation.helper';
+import {
+  setupTaskListBootstrapRoutes,
+  taskListRoutePattern,
+  type TaskListBootstrapUserOptions,
+} from './taskListMockRoutes.helper';
 
 export const myCasesRoutePattern = /\/workallocation\/my-work\/cases(?:\?.*)?$/;
 export const myAccessRoutePattern = /\/workallocation\/my-work\/myaccess(?:\?.*)?$/;
@@ -11,10 +16,11 @@ type BaseManageTaskRouteOptions = {
   taskListHandler?: (route: Route) => Promise<void>;
   supportedJurisdictions?: string[];
   supportedJurisdictionDetails?: Array<{ serviceId: string; serviceName: string }>;
+  user?: TaskListBootstrapUserOptions;
 };
 
 export async function setupManageTasksBaseRoutes(page: Page, options: BaseManageTaskRouteOptions = {}): Promise<void> {
-  await setupTaskListBootstrapRoutes(page, options.supportedJurisdictions, options.supportedJurisdictionDetails);
+  await setupTaskListBootstrapRoutes(page, options.supportedJurisdictions, options.supportedJurisdictionDetails, options.user);
 
   await page.route('**/api/role-access/roles/getJudicialUsers*', async (route) => {
     await route.fulfill({
@@ -38,10 +44,13 @@ export async function setupManageTasksBaseRoutes(page: Page, options: BaseManage
       return;
     }
 
+    const resolvedTaskListResponse = options.taskListResponse ?? defaultTaskListResponse;
+    assertValidWorkAllocationTaskListMock(resolvedTaskListResponse);
+
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(options.taskListResponse ?? defaultTaskListResponse),
+      body: JSON.stringify(resolvedTaskListResponse),
     });
   });
 }

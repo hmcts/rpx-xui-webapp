@@ -2,10 +2,15 @@ import { Locator, Page } from '@playwright/test';
 import { Base } from '../../base';
 
 export class AccessRequestPage extends Base {
+  private static readonly NAVIGATION_ATTEMPTS = 3;
+  private static readonly NAVIGATION_TIMEOUT_MS = 30_000;
+
   readonly requestAccessButton = this.page.getByRole('button', { name: 'Request access' });
   readonly continueButton = this.page.getByRole('button', { name: 'Continue', exact: true });
   readonly submitButton = this.page.getByRole('button', { name: 'Submit', exact: true });
   readonly errorMessages = this.page.locator('.govuk-error-message');
+  readonly authorisationNeededText = this.page.getByText('Authorisation is needed to access this case');
+  readonly challengedAccessNeededText = this.page.getByText('This case requires challenged access.');
 
   readonly challengedAccessHeading = this.page.getByRole('heading', { name: 'Why do you need to access this case?' });
   readonly linkedCaseReasonRadio = this.page.getByLabel('The cases or parties are linked to the case I am working on');
@@ -49,9 +54,99 @@ export class AccessRequestPage extends Base {
     return this.errorMessages.filter({ hasText: text });
   }
 
+  public async gotoReviewSpecificRequest(path: string): Promise<void> {
+    await this.gotoPathAndWaitFor(path, this.reviewSpecificHeading, 'review specific access request');
+  }
+
+  public async gotoReviewSpecificRequestServiceDown(path: string): Promise<void> {
+    await this.gotoPathAndWaitForUrl(path, /\/service-down$/, 'review specific access service down');
+  }
+
+  public async gotoSpecificAccessCaseDetails(path: string): Promise<void> {
+    await this.gotoPathAndWaitFor(path, this.authorisationNeededText, 'specific access case details');
+  }
+
+  public async gotoChallengedAccessCaseDetails(path: string): Promise<void> {
+    await this.gotoPathAndWaitFor(path, this.challengedAccessNeededText, 'challenged access case details');
+  }
+
+  public async gotoSpecificAccessRequest(path: string): Promise<void> {
+    await this.gotoPathAndWaitFor(path, this.specificAccessReasonInput, 'specific access request');
+  }
+
+  public async gotoChallengedAccessRequest(path: string): Promise<void> {
+    await this.gotoPathAndWaitFor(path, this.challengedAccessHeading, 'challenged access request');
+  }
+
   public async fillReviewPeriodEndDate(day: string, month: string, year: string): Promise<void> {
     await this.endDateDayInput.fill(day);
     await this.endDateMonthInput.fill(month);
     await this.endDateYearInput.fill(year);
+  }
+
+  private async gotoPathAndWaitFor(path: string, readyLocator: Locator, label: string): Promise<void> {
+    const targetPattern = this.pathPattern(path);
+    let lastError: unknown;
+
+    for (let attempt = 1; attempt <= AccessRequestPage.NAVIGATION_ATTEMPTS; attempt += 1) {
+      try {
+        await this.page.goto(path, { waitUntil: 'domcontentloaded', timeout: AccessRequestPage.NAVIGATION_TIMEOUT_MS });
+        await this.page.waitForURL(targetPattern, { timeout: AccessRequestPage.NAVIGATION_TIMEOUT_MS }).catch(() => undefined);
+
+        if (/chrome-error:\/\/chromewebdata/i.test(this.page.url()) || !targetPattern.test(this.page.url())) {
+          throw new Error(`${label} navigation did not reach ${path}; current URL is ${this.page.url()}`);
+        }
+
+        await readyLocator.waitFor({ state: 'visible', timeout: AccessRequestPage.NAVIGATION_TIMEOUT_MS });
+        return;
+      } catch (error) {
+        lastError = error;
+        if (attempt >= AccessRequestPage.NAVIGATION_ATTEMPTS || !this.isRetriableNavigationError(error)) {
+          throw error;
+        }
+        await this.page.waitForTimeout(1_000);
+      }
+    }
+
+    throw new Error(`${label} navigation failed for ${path}: ${String(lastError)}`);
+  }
+
+  private async gotoPathAndWaitForUrl(path: string, targetPattern: RegExp, label: string): Promise<void> {
+    let lastError: unknown;
+
+    for (let attempt = 1; attempt <= AccessRequestPage.NAVIGATION_ATTEMPTS; attempt += 1) {
+      try {
+        await this.page.goto(path, { waitUntil: 'domcontentloaded', timeout: AccessRequestPage.NAVIGATION_TIMEOUT_MS });
+
+        if (/chrome-error:\/\/chromewebdata/i.test(this.page.url())) {
+          throw new Error(`${label} navigation reached ${this.page.url()}`);
+        }
+
+        await this.page.waitForURL(targetPattern, { timeout: AccessRequestPage.NAVIGATION_TIMEOUT_MS });
+        return;
+      } catch (error) {
+        lastError = error;
+        if (attempt >= AccessRequestPage.NAVIGATION_ATTEMPTS || !this.isRetriableNavigationError(error)) {
+          throw error;
+        }
+        await this.page.waitForTimeout(1_000);
+      }
+    }
+
+    throw new Error(`${label} navigation failed for ${path}: ${String(lastError)}`);
+  }
+
+  private pathPattern(path: string): RegExp {
+    const escapedPath = path.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+    return new RegExp(`${escapedPath}(?:[/?#]|$)`);
+  }
+
+  private isRetriableNavigationError(error: unknown): boolean {
+    return (
+      error instanceof Error &&
+      /net::ERR|ERR_|Timeout|waiting for|locator\.waitFor|chrome-error:\/\/chromewebdata|did not reach|Navigation failed|interrupted.*navigation/i.test(
+        error.message
+      )
+    );
   }
 }

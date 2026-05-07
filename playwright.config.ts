@@ -15,6 +15,7 @@ type EnvMap = NodeJS.ProcessEnv;
 
 const defaultBaseUrl = 'https://manage-case.aat.platform.hmcts.net';
 const defaultApiTagFilterConfigPath = 'playwright_tests_new/api/service-tag-filter.json';
+const defaultE2eTagFilterConfigPath = 'playwright_tests_new/E2E/tag-filter.json';
 
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
 
@@ -114,6 +115,19 @@ const resolveApiTagFilters = (env: EnvMap = process.env) =>
     globalExcludedTagsPattern: /^(@svc-.+|@wa-action)$/,
   });
 
+const resolveE2eTagFilters = (env: EnvMap = process.env) =>
+  resolveTagFilters({
+    env,
+    includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
+    excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
+    configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
+    defaultConfigPath: defaultE2eTagFilterConfigPath,
+    suiteTag: '@e2e',
+    globalExcludedTagsEnvVar: 'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS',
+    ignoreGlobalExcludesEnvVar: 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES',
+    globalExcludedTagsPattern: /^@e2e(?:-.+)?$/,
+  });
+
 const buildConfig = (env: EnvMap = process.env) => {
   const temporaryProbePattern = '**/_tmp_*.spec.ts';
   const workerCount = resolveWorkerCount(env);
@@ -121,7 +135,9 @@ const buildConfig = (env: EnvMap = process.env) => {
   const odhinOutputFolder = resolveOdhinOutputFolder(env);
   const reportBranch = resolveBranchName(env);
   const apiTagFilters = resolveApiTagFilters(env);
+  const e2eTagFilters = resolveE2eTagFilters(env);
   logResolvedTagFilters('API', apiTagFilters, env);
+  logResolvedTagFilters('E2E smoke', e2eTagFilters, env);
   const apiRetries = resolveApiRetries(env);
 
   return defineConfig({
@@ -187,6 +203,8 @@ const buildConfig = (env: EnvMap = process.env) => {
       {
         name: 'smoke',
         testMatch: ['playwright_tests_new/E2E/test/smoke/smokeTest.spec.ts'],
+        grep: e2eTagFilters.grep,
+        grepInvert: e2eTagFilters.grepInvert,
         use: {
           baseURL: resolveBaseUrl(env),
           ...devices['Desktop Chrome'],
@@ -231,6 +249,7 @@ const config = buildConfig(process.env);
   resolveApiProjectWorkerCount,
   resolveBranchName,
   resolveApiTagFilters,
+  resolveE2eTagFilters,
   resolveApiRetries,
   resolveDefaultReporter,
   buildConfig,

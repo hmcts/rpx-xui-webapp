@@ -18,6 +18,9 @@ const integrationConfigSupport = require('../../playwright.integration.config.su
   resolveOdhinLightweight: (env: EnvMap) => boolean;
   resolveOdhinRuntimeHookTimeoutMs: (env: EnvMap) => number;
 };
+const smokeRunner = require('../../scripts/run-playwright-smoke.cjs') as {
+  buildSmokePlaywrightArgs: (env: EnvMap, extraArgs?: string[]) => string[];
+};
 
 const { resolveTagFilters } = playwrightConfigUtils;
 const {
@@ -42,6 +45,16 @@ const resolveApiTagFilters = (env: EnvMap) =>
   (
     configModule.__test__ as TestableConfigModule['__test__'] & { resolveApiTagFilters: (env: EnvMap) => unknown }
   ).resolveApiTagFilters(env) as {
+    excludedTags: string[];
+    globalExcludedTags: string[];
+    ignoredGlobalExcludedTags: string[];
+    grep?: RegExp;
+    grepInvert?: RegExp;
+  };
+const resolveE2eTagFilters = (env: EnvMap) =>
+  (
+    configModule.__test__ as TestableConfigModule['__test__'] & { resolveE2eTagFilters: (env: EnvMap) => unknown }
+  ).resolveE2eTagFilters(env) as {
     excludedTags: string[];
     globalExcludedTags: string[];
     ignoredGlobalExcludedTags: string[];
@@ -419,6 +432,75 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(filters.ignoredGlobalExcludedTags).toEqual(['@svc-work-allocation', '@integration-manage-tasks']);
     expect(filters.grepInvert?.test('@e2e-search-case')).toBe(true);
     expect(filters.grepInvert?.test('@svc-work-allocation')).toBe(false);
+  });
+
+  test('root smoke project applies E2E-scoped global exclusions', () => {
+    const config = buildConfig({
+      PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@e2e-smoke @svc-work-allocation',
+      CI: undefined,
+    }) as {
+      projects: Array<{ name: string; grepInvert?: RegExp }>;
+    };
+    const smokeProject = config.projects.find((project) => project.name === 'smoke');
+    const filters = resolveE2eTagFilters({
+      PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@e2e-smoke @svc-work-allocation',
+      CI: undefined,
+    });
+
+    expect(smokeProject).toBeDefined();
+    expect(smokeProject?.grepInvert).toBeInstanceOf(RegExp);
+    expect(smokeProject?.grepInvert?.test('@e2e-smoke')).toBe(true);
+    expect(smokeProject?.grepInvert?.test('@svc-work-allocation')).toBe(false);
+    expect(filters.globalExcludedTags).toEqual(['@e2e-smoke']);
+    expect(filters.ignoredGlobalExcludedTags).toEqual(['@svc-work-allocation']);
+  });
+
+  test('root smoke project honours the global exclusion bypass', () => {
+    const config = buildConfig({
+      PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@e2e-smoke',
+      PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES: 'true',
+      CI: undefined,
+    }) as {
+      projects: Array<{ name: string; grepInvert?: RegExp }>;
+    };
+    const smokeProject = config.projects.find((project) => project.name === 'smoke');
+    const filters = resolveE2eTagFilters({
+      PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@e2e-smoke',
+      PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES: 'true',
+      CI: undefined,
+    });
+
+    expect(smokeProject).toBeDefined();
+    expect(smokeProject?.grepInvert?.test('@e2e-smoke')).not.toBe(true);
+    expect(filters.globalExcludedTags).toEqual([]);
+    expect(filters.ignoredGlobalExcludedTags).toEqual(['@e2e-smoke']);
+  });
+
+  test('smoke runner allows empty runs only for the global smoke exclusion layer', () => {
+    expect(
+      smokeRunner.buildSmokePlaywrightArgs({
+        PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@e2e-smoke @svc-work-allocation',
+        CI: undefined,
+      })
+    ).toEqual(['test', '--project=smoke', '--pass-with-no-tests', '--reporter=list']);
+
+    expect(
+      smokeRunner.buildSmokePlaywrightArgs({
+        PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: 'e2e-smoke',
+        PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES: 'true',
+        CI: undefined,
+      })
+    ).toEqual(['test', '--project=smoke']);
+
+    expect(
+      smokeRunner.buildSmokePlaywrightArgs(
+        {
+          PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@e2e-smoke',
+          CI: undefined,
+        },
+        ['--reporter=null', '--list']
+      )
+    ).toEqual(['test', '--project=smoke', '--reporter=null', '--list', '--pass-with-no-tests']);
   });
 
   test('integration config keeps Odhin enabled locally with lightweight defaults', async () => {

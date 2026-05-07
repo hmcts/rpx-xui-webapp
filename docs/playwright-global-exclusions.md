@@ -88,6 +88,7 @@ Local equivalent:
 
 ```bash
 PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=true yarn test:api:pw
+PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=true yarn test:smoke
 PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=true yarn test:playwrightE2E
 PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=true yarn test:playwright:integration
 ```
@@ -103,6 +104,10 @@ PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS=@svc-work-allocation yarn test:api:pw
 # Add one E2E and one integration exclusion. Each suite applies only its own tag.
 PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS='@e2e-manage-tasks @integration-manage-tasks' yarn test:playwrightE2E
 PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS='@e2e-manage-tasks @integration-manage-tasks' yarn test:playwright:integration
+
+# Exclude the standalone smoke project. The smoke script uses Playwright's
+# no-tests pass flag so this smoke-only project can be globally excluded.
+PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS=@e2e-smoke yarn test:smoke
 
 # Bypass the global layer
 PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS=@svc-work-allocation PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=true yarn test:api:pw

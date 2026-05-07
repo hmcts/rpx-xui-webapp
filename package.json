@@ -58,7 +58,7 @@
     "test:a11y": "",
     "test:a11y1": "echo disabled to fix tests",
     "test:all": "yarn test:ng && yarn test:node && yarn test:smoke && yarn test:functional && yarn test:crossbrowser",
-    "test:smoke": "npx playwright test --project=smoke",
+    "test:smoke": "node scripts/run-playwright-smoke.cjs",
     "test:crossbrowser": "sh -c 'if [ \"${1:-}\" = \"--\" ]; then shift; fi; PW_LOAD_PROFILE_OUTPUT=${PW_LOAD_PROFILE_OUTPUT:-functional-output/tests/playwright-e2e/odhin-report/load-profile} node scripts/playwright-load-monitor.js --report-folder functional-output/tests/playwright-e2e/odhin-report --label \"${PW_LOAD_PROFILE_LABEL:-E2E cross-browser}\" -- yarn test:crossbrowser:raw \"$@\"' --",
     "test:crossbrowser:raw": "yarn playwright install --with-deps && yarn playwright install webkit && yarn playwright install firefox && npx playwright test -c playwright-nightly.config.ts",
     "test:playwrightE2E": "sh -c 'if [ \"${1:-}\" = \"--\" ]; then shift; fi; PW_LOAD_PROFILE_OUTPUT=${PW_LOAD_PROFILE_OUTPUT:-functional-output/tests/playwright-e2e/odhin-report/load-profile} node scripts/playwright-load-monitor.js --report-folder functional-output/tests/playwright-e2e/odhin-report --label \"${PW_LOAD_PROFILE_LABEL:-E2E}\" -- yarn test:playwrightE2E:raw \"$@\"' --",

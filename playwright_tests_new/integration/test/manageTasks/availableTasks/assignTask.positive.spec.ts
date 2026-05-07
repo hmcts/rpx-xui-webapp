@@ -22,8 +22,8 @@ test.describe(`Assign Task as ${userIdentifier}`, { tag: ['@integration', '@inte
 
     await test.step('Navigate to the available tasks list page', async () => {
       await taskListPage.goto();
-      await taskListPage.taskTableTabs.filter({ hasText: 'Available tasks' }).first().click();
-      await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.clickTaskTabAndWaitForView('Available tasks', 'AvailableTasks', 'opening available tasks assign list');
+      await taskListPage.waitForTaskRowReady('available tasks assign list');
       await taskListPage.exuiSpinnerComponent.wait();
     });
 

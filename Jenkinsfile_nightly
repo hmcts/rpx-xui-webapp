@@ -472,7 +472,6 @@ withNightlyPipeline(type, product, component) {
               archivePlaywrightDiagnostics()
             }
         }
-      }
       } finally {
         recordPlaywrightLoadEvent('Nightly functional tests', 'finish')
       }

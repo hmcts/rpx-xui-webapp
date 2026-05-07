@@ -1,5 +1,4 @@
 import { readFileSync } from 'node:fs';
-import { cpus } from 'node:os';
 import * as path from 'node:path';
 
 /**
@@ -73,71 +72,27 @@ export function resolveConfiguredWorkerCount(env: EnvMap = process.env): number 
   return parsed;
 }
 
-function resolveWorkerTargetEnvironment(env: EnvMap = process.env): string | undefined {
-  const configuredTarget = env.TEST_TYPE?.trim().toLowerCase();
-  if (configuredTarget) {
-    return configuredTarget;
-  }
-
-  const configuredUrl = env.TEST_URL?.trim();
-  if (!configuredUrl) {
-    return undefined;
-  }
-
-  try {
-    const hostname = new URL(configuredUrl).hostname.toLowerCase();
-    if (hostname.includes('.aat.')) {
-      return 'aat';
-    }
-    if (hostname.includes('.demo.')) {
-      return 'demo';
-    }
-    return hostname;
-  } catch {
-    return undefined;
-  }
-}
-
 /**
  * Resolves Playwright worker count from FUNCTIONAL_TESTS_WORKERS or runtime defaults.
- * CI defaults to 8 workers unless explicitly overridden. Local runs use an
- * approximate physical-core heuristic and clamp to 2..8.
+ * Browser-heavy E2E runs default to 2 workers unless explicitly overridden.
  */
 export function resolveWorkerCount(env: EnvMap = process.env): number {
   const configured = resolveConfiguredWorkerCount(env);
   if (configured !== undefined) {
     return configured;
   }
-  if (env.CI) {
-    const targetEnv = resolveWorkerTargetEnvironment(env);
-    if (targetEnv === 'aat' || targetEnv === 'demo') {
-      return 2;
-    }
-    return 8;
-  }
-
-  const logical = cpus()?.length ?? 1;
-  const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));
-  return Math.min(8, Math.max(2, approxPhysical));
+  return 2;
 }
 
 /**
- * Keeps node-api parallelism slightly lower than browser projects in CI unless
- * Jenkins pins FUNCTIONAL_TESTS_WORKERS explicitly.
+ * Keeps node-api parallelism fixed unless Jenkins pins FUNCTIONAL_TESTS_WORKERS explicitly.
  */
 export function resolveApiProjectWorkerCount(env: EnvMap = process.env): number {
   const configured = resolveConfiguredWorkerCount(env);
   if (configured !== undefined) {
     return configured;
   }
-  if (env.CI) {
-    const targetEnv = resolveWorkerTargetEnvironment(env);
-    if (targetEnv === 'aat' || targetEnv === 'demo') {
-      return 2;
-    }
-    return 4;
-  }
-  return Math.max(1, Math.min(8, cpus()?.length ?? 4));
+  return 4;
 }
 
 function ensureTagPrefix(value: string): string {

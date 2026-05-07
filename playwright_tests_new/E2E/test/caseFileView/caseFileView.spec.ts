@@ -5,7 +5,7 @@ import { expect, test } from '../../fixtures';
 import { ensureAuthenticatedPage, ensureSession } from '../../../common/sessionCapture';
 import { buildCasePayloadFromTemplate } from '../../utils/test-setup/payloads/registry';
 import { setupCaseForJourney } from '../../utils/test-setup/caseSetup';
-import { createEmploymentCase, uploadEmploymentDraftDocumentViaApi } from '../../utils/test-setup/journeys/employmentJourneys';
+import { uploadEmploymentDraftDocumentViaApi } from '../../utils/test-setup/journeys/employmentJourneys';
 import { formatErrorMessage, isDependencyEnvironmentFailure, retryOnTransientFailure } from '../../utils/transient-failure.utils';
 
 const DOCUMENT_FILE_NAME = 'case-file-view-fixture.pdf';
@@ -40,11 +40,6 @@ test.describe('Case file view', { tag: ['@e2e', '@e2e-case-file-view'] }, () => 
             apiEventId: 'initiateCase',
             mode: 'api-required',
             apiPayload: buildCasePayloadFromTemplate('employment.et-england-wales.initiate-case'),
-            uiCreate: async () => {
-              await createEmploymentCase(createCasePage, jurisdiction, caseType, {
-                allowDraftClaimFallback: true,
-              });
-            },
             page,
             createCasePage,
             caseDetailsPage,

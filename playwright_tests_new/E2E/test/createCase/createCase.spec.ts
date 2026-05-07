@@ -2,6 +2,7 @@ import { expect, test } from '../../fixtures';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
 import { createLogger } from '@hmcts/playwright-common';
+import { RuntimeUserAlias } from '../../utils/runtimeUserCredentials';
 const jurisdiction = 'DIVORCE';
 const caseType = 'XUI Case PoC';
 let caseNumber: string;
@@ -14,15 +15,13 @@ test.describe('Verify creating cases works as expected', { tag: ['@e2e', '@e2e-c
   test.beforeEach(async ({ page, caseDetailsPage, createCasePage }) => {
     await retryOnTransientFailure(
       async () => {
-        await ensureAuthenticatedPage(page, 'SOLICITOR', { waitForSelector: 'exui-header' });
+        await ensureAuthenticatedPage(page, RuntimeUserAlias.DIVORCE_SOLICITOR, { waitForSelector: 'exui-header' });
         caseData = await createCasePage.generateDivorcePoCData({ textField0: 'Hide all', divorceReasons: ['Adultery'] });
         person1Data = await createCasePage.generateDivorcePoCPersonData({
           gender: 'Male',
         });
 
-        await createCasePage.createCase(jurisdiction, caseType, '', {
-          maxAttempts: 1,
-        });
+        await createCasePage.createCase(jurisdiction, caseType, '');
 
         await createCasePage.fillDivorcePocSections({
           data: person1Data,

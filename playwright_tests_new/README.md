@@ -29,10 +29,10 @@ yarn start:ng
 ### E2E commands
 
 ```bash
-# AAT: run all E2E
+# AAT: run all E2E. Produces Odhín plus a separate System Load profile by default.
 yarn test:playwrightE2E
 
-# LOCAL: run all E2E
+# LOCAL: run all E2E. Produces Odhín plus a separate System Load profile by default.
 TEST_URL=http://localhost:3000 yarn test:playwrightE2E
 
 # LOCAL: single spec file
@@ -55,6 +55,9 @@ TEST_URL=http://localhost:3000 yarn test:playwrightE2E --ui playwright_tests_new
 
 # LOCAL: single E2E by title/substring
 TEST_URL=http://localhost:3000 yarn test:playwrightE2E --project=chromium --workers=1 --grep "My tasks"
+
+# Direct E2E run without the load-profile wrapper
+yarn test:playwrightE2E:raw
 ```
 
 ### API commands
@@ -63,29 +66,37 @@ TEST_URL=http://localhost:3000 yarn test:playwrightE2E --project=chromium --work
 # AAT/LOCAL: run the Playwright support unit tests only
 PLAYWRIGHT_SKIP_INSTALL=true yarn playwright test --project=node-api playwright_tests_new/api/unit
 
-# AAT: include work-allocation tests only, disable excludes
+# AAT: include work-allocation tests only, disable excludes.
+# Produces Odhín plus a separate System Load profile by default.
 API_PW_INCLUDE_TAGS=@svc-work-allocation API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
 
-# LOCAL
+# LOCAL - produces Odhín plus a separate System Load profile by default
 TEST_URL=http://localhost:3000 yarn test:api:pw
 
-# LOCAL with coverage
+# LOCAL with coverage - produces Odhín plus a separate System Load profile by default
 TEST_URL=http://localhost:3000 yarn test:api:pw:coverage
+
+# Direct Playwright API runs without the load-profile wrapper
+yarn test:api:pw:raw
+yarn test:api:pw:coverage:raw
 ```
 
 ### Integration commands
 
 ```bash
-# LOCAL
+# LOCAL - produces Odhín plus a separate System Load profile by default
 TEST_URL=http://localhost:3000 yarn test:playwright:integration
 
-# AAT
+# AAT - produces Odhín plus a separate System Load profile by default
 yarn test:playwright:integration
+
+# Direct Playwright run without the load-profile wrapper
+yarn test:playwright:integration:raw
 ```
 
 ### Odhin report locations
 
-- API: `functional-output/tests/playwright-api/odhin-report/xui-playwright-api.html`
+- API: `functional-output/tests/api_functional/odhin-report/xui-playwright-api.html`
 - Integration: `functional-output/tests/playwright-integration/odhin-report/xui-playwright-integration.html`
 - E2E: `functional-output/tests/playwright-e2e/odhin-report/xui-playwright-e2e.html`
 
@@ -318,10 +329,65 @@ API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
 
 ### API Test Parallelism
 
-- In CI, Playwright defaults to **8 workers** unless `FUNCTIONAL_TESTS_WORKERS` is set
+- E2E defaults to **2 workers** unless `FUNCTIONAL_TESTS_WORKERS` is set
+- API and integration default to **4 workers** unless `FUNCTIONAL_TESTS_WORKERS` is set
 - Jenkins pins `FUNCTIONAL_TESTS_WORKERS=4` for API and integration suites, and `FUNCTIONAL_TESTS_WORKERS=2` for browser-heavy E2E and cross-browser suites
 - Keeping E2E below the Jenkins agent core count avoids saturating the preview/AAT backends while API and integration stages run in parallel
-- Locally, worker count is auto-sized from CPU capacity; override with `FUNCTIONAL_TESTS_WORKERS` or the Playwright `--workers` flag
+- Locally, the same suite defaults apply; override with `FUNCTIONAL_TESTS_WORKERS` or the Playwright `--workers` flag
+
+### Playwright Load Profiling
+
+The standard API, E2E, cross-browser E2E, and integration commands run through the load-profile wrapper by default. The wrapper samples the local/Jenkins host while the run is executing and writes a standalone **System Load** profile. Jenkins publishes that profile as a separate HTML report instead of adding it to Odhín.
+
+```bash
+# Run integration with a host-load profile and explicit workers
+yarn test:playwright:integration -- --workers=4
+
+# Compare a sharded run
+yarn test:playwright:integration -- --workers=4 --shard=1/2
+yarn test:playwright:integration -- --workers=4 --shard=2/2
+
+# Backwards-compatible alias
+yarn test:playwright:integration:profile -- --workers=4
+```
+
+Artifacts:
+
+- API Odhín report: `functional-output/tests/api_functional/odhin-report/xui-playwright-api.html`
+- E2E Odhín report: `functional-output/tests/playwright-e2e/odhin-report/xui-playwright-e2e.html`
+- Integration Odhín report: `functional-output/tests/playwright-integration/odhin-report/xui-playwright-integration.html`
+- API standalone chart: `functional-output/tests/api_functional/odhin-report/load-profile/load-profile.html`
+- E2E standalone chart: `functional-output/tests/playwright-e2e/odhin-report/load-profile/load-profile.html`
+- Integration standalone chart: `functional-output/tests/playwright-integration/load-profile/load-profile.html`
+- Integration raw samples: `functional-output/tests/playwright-integration/load-profile/samples.json`
+- Integration summary: `functional-output/tests/playwright-integration/load-profile/summary.json`
+
+Useful controls:
+
+- `PW_LOAD_PROFILE_INTERVAL_MS=1000` changes the sample interval
+- `PW_LOAD_PROFILE_OUTPUT=<path>` changes the artifact folder
+- `PW_LOAD_PROFILE_EVENTS_FILE=<jsonl-or-json>` overlays external start/finish markers on the load chart
+
+Jenkins CNP and nightly integration stages use `INTEGRATION_PW_PROFILE_RUNS` to control the integration worker profile. The default is:
+
+```text
+workers=4
+```
+
+Use `INTEGRATION_PW_WORKERS=<n>` and optional `INTEGRATION_PW_SHARD=<index/total>` on Jenkins to run a targeted integration profile instead of the default `INTEGRATION_PW_PROFILE_RUNS` value. CNP and nightly publish one **CI System Load** HTML report for the Jenkins run after checkout. They write checkout, install, build, browser install, report publishing, API, E2E, and integration stage markers to the profile event file so the report can show which stage was running when CPU, load, or memory changed.
+
+The wrapper always marks the wrapped command start and finish on the chart. To show API, E2E, and integration boundaries on one timeline, run a monitor across the parent pipeline window or write shared JSONL events into `PW_LOAD_PROFILE_EVENTS_FILE`:
+
+```json
+{"label":"API","type":"start","timestamp":"2026-04-30T09:00:00.000Z"}
+{"label":"API","type":"finish","timestamp":"2026-04-30T09:06:30.000Z"}
+{"label":"E2E","type":"start","timestamp":"2026-04-30T09:00:20.000Z"}
+{"label":"E2E","type":"finish","timestamp":"2026-04-30T09:18:10.000Z"}
+{"label":"Integration","type":"start","timestamp":"2026-04-30T09:01:00.000Z"}
+{"label":"Integration","type":"finish","timestamp":"2026-04-30T09:13:45.000Z"}
+```
+
+Treat the profile as capacity evidence. If failures appear while CPU, load/core, or memory are saturated, reduce workers or shard. If load is healthy, investigate the test/app contract instead of masking the failure with more retries.
 
 ### API Authentication Model
 
@@ -379,7 +445,7 @@ rm -rf .sessions && npx playwright test
 
 - E2E suites are tagged with `@e2e` plus feature tags such as `@e2e-search-case` and `@e2e-manage-tasks`.
 - Default excluded tags are read from `playwright_tests_new/E2E/tag-filter.json` (`excludedTags` array).
-- `@e2e-document-upload-v1` is excluded by default because the legacy V1 Employment case setup is timing out in Jenkins; V2 document upload coverage remains active under `@e2e-document-upload`.
+- E2E default exclusions are currently empty so the full non-smoke E2E suite runs by default; smoke remains a separate Playwright project and Jenkins smoke stage.
 - Override excludes at runtime with `E2E_PW_EXCLUDED_TAGS_OVERRIDE`.
 - Optionally run only selected E2E tags with `E2E_PW_INCLUDE_TAGS`.
 - Tag inputs accept comma or space separated values, with or without `@`.
@@ -455,7 +521,7 @@ INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:playwright:integration
 Notes:
 
 - Search-case integration specs now run in the main `chromium` project and can be isolated with `INTEGRATION_PW_INCLUDE_TAGS=@integration-search-case`
-- Integration specs continue to run on the auto-sized `chromium` project unless `FUNCTIONAL_TESTS_WORKERS` is pinned explicitly
+- Integration specs continue to run on the default 4-worker `chromium` project unless `FUNCTIONAL_TESTS_WORKERS` is pinned explicitly
 - Odhin remains enabled by default for integration runs, including local runs
 - Local integration Odhin uses a lightweight profile by default and emits explicit finalization timing so post-test report generation is visible and bounded
 - Local integration Odhin also bounds runtime reporter hooks by default; override with `PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS=<ms>` or set `0` to disable the local safeguard
@@ -563,7 +629,7 @@ expect(visibleRows.length).toBeGreaterThan(0);
 - Multiple workers can safely request the same user session
 - **Filesystem-based lock mechanism** prevents concurrent logins for the same user
 - Locks coordinate across **all Playwright worker processes** (API + E2E) using `proper-lockfile`
-- Jenkins currently runs API, E2E, and integration suites with **4 workers** on both Preview and AAT
+- Jenkins currently runs E2E with **2 workers**, and API and integration with **4 workers** on both Preview and AAT
 - When one worker logs in user X, the remaining workers **and parallel API tests** wait for lock release and reuse the session
 - After acquiring lock, workers recheck freshness to ensure session is still valid
 - `ensureSession()` intentionally avoids forced recapture so lock waiters can reuse the newly refreshed session instead of logging in again
@@ -597,7 +663,8 @@ test.describe('My Test Suite', () => {
 
 ### Available User Identifiers
 
-- `SOLICITOR` - Standard solicitor user for divorce/civil cases
+- `SOLICITOR` - Standard solicitor user for Private Law / civil cases
+- `DIVORCE_SOLICITOR` - Divorce-entitled solicitor user for divorce create/update journeys
 - `SEARCH_EMPLOYMENT_CASE` - Employment tribunal case user
 - `STAFF_ADMIN` - Administrative staff user
 - `USER_WITH_FLAGS` - User with case flags enabled

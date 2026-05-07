@@ -62,7 +62,8 @@ function classifyFailure(
 }
 
 export const test = base.extend<ApiFixtures>({
-  logger: async ({}, use, workerInfo) => {
+  logger: async ({ browserName: _browserName }, use, workerInfo) => {
+    void _browserName;
     const logger = createLogger({
       serviceName: 'rpx-xui-node-api',
       defaultMeta: { workerId: workerInfo.workerIndex },
@@ -70,7 +71,8 @@ export const test = base.extend<ApiFixtures>({
     });
     await use(logger);
   },
-  apiLogs: async ({}, use, testInfo) => {
+  apiLogs: async ({ browserName: _browserName }, use, testInfo) => {
+    void _browserName;
     const entries: ApiLogEntry[] = [];
     await use(entries);
     const isFailure = testInfo.status === 'failed' || testInfo.status === 'timedOut';

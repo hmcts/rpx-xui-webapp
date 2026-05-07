@@ -784,6 +784,23 @@ export class CreateCasePage extends Base {
     });
   }
 
+  async waitForCreateCaseFormReady(context: string) {
+    const formVisible = await this.person1TitleInput
+      .waitFor({ state: 'visible', timeout: 10_000 })
+      .then(() => true)
+      .catch(() => false);
+    if (formVisible) {
+      return;
+    }
+
+    this.logger.warn('Create case form did not render on first navigation, reloading once', {
+      context,
+      url: this.page.url(),
+    });
+    await this.page.reload({ waitUntil: 'domcontentloaded' });
+    await expect(this.person1TitleInput, `Create case form did not render ${context}`).toBeVisible();
+  }
+
   async addressLookup(postCode: string, addressOption: string) {
     await this.postCodeSearchInput.fill(postCode);
     await this.postCodeSearchButton.click();

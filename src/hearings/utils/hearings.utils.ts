@@ -282,9 +282,11 @@ export class HearingsUtils {
 
     const hrmCaseRef = hrmCaseDetails?.caseRef;
     const itemCaseRef = caseReference;
+    const shvCaseRef = shv?.caseId;
 
-    // Check against case reference if present
-    if (itemCaseRef && hrmCaseRef && itemCaseRef !== hrmCaseRef) {
+    // Check against case reference
+    // EXUI-4529 - shv is source of truth for case reference
+    if (hrmCaseRef && ((itemCaseRef && itemCaseRef !== hrmCaseRef) || (shvCaseRef && shvCaseRef !== hrmCaseRef))) {
       return false;
     }
 

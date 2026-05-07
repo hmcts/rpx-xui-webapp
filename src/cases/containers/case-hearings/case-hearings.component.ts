@@ -1,12 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
 import { CaseNotifier, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store, select } from '@ngrx/store';
 import moment from 'moment';
 import { Observable, Subscription, combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { filter, map, take } from 'rxjs/operators';
 import { UserRole } from '../../../app/models';
-import * as fromAppStore from '../../../app/store';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
 import { HearingListModel } from '../../../hearings/models/hearingList.model';
 import { HearingListViewModel } from '../../../hearings/models/hearingListView.model';
@@ -56,31 +55,26 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   public hearingValuesSubscription: Subscription;
   public refDataSubscription: Subscription;
   private userRoles: string[] = [];
+  private spinnerEndAttempted = false;
   jurisdiction: string;
   caseType: string;
 
   constructor(
-    private readonly appStore: Store<fromAppStore.State>,
     private readonly hearingStore: Store<fromHearingStore.State>,
-    private readonly activatedRoute: ActivatedRoute,
     private readonly router: Router,
     private readonly lovRefDataService: LovRefDataService,
     private readonly loadingService: LoadingService,
     private readonly sessionSvc: SessionStorageService,
     private readonly caseNotifier: CaseNotifier
   ) {
-    this.caseNotifierSubscription = this.caseNotifier.caseView.subscribe((caseDetails) => {
-      if (caseDetails) {
-        this.jurisdiction = caseDetails?.case_type?.jurisdiction?.id;
-        this.caseType = caseDetails?.case_type?.id;
-      }
-    });
-    this.caseId = JSON.parse(this.sessionSvc.getItem('caseInfo')).caseId;
-    this.loadHearingsForCurrentCase();
     this.hearingListLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingListLastError));
     this.hearingValuesLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesLastError));
   }
 
+  /* 
+    Reload hearings in case of error
+    There is a possibility case ID not present for reload but hearing list load would also fail indicating issue to user
+  */
   public reloadHearings() {
     this.loadHearingsForCurrentCase();
     this.hearingStore.dispatch(
@@ -93,23 +87,35 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    this.showSpinner$ = this.loadingService.isLoading as any;
+    this.showSpinner$ = this.loadingService.isLoading;
     const loadingToken = this.loadingService.register();
-    this.hearingStore.dispatch(
-      new fromHearingStore.StoreJurisdictionAndCaseRef({
-        jurisdictionId: this.jurisdiction,
-        caseReference: this.caseId,
-        caseType: this.caseType,
-      })
-    );
-    this.hearingStore.dispatch(new fromHearingStore.ResetHearingValues());
-    this.hearingStore.dispatch(
-      new fromHearingStore.LoadHearingValues({
-        jurisdictionId: this.jurisdiction,
-        caseReference: this.caseId,
-        caseType: this.caseType,
-      })
-    );
+
+    // Get case ID from route (if provided)
+    this.caseId = this.getCaseIdFromRouterState();
+
+    if (this.caseId && this.caseId !== '') {
+      // caseId exists, starting setup immediately
+      this.startHearingSetupForCase(loadingToken);
+    } else if (this.router.navigated) {
+      // navigation has already finished, but no case ID found in route - should never happen
+      // give error in unlikely scenario (to ensure subscribing to router events does not miss the NavigationEnd event)
+      this.serverError = { id: 'backendError', message: HearingSummaryEnum.BackendError };
+      this.loadingService.unregister(loadingToken);
+    } else {
+      // navigation has not finished yet, ensure it has before getting case ID
+      this.router.events
+        .pipe(
+          filter((event) => event instanceof NavigationEnd),
+          map(() => this.getCaseIdFromRouterState()),
+          filter((cid) => !!cid),
+          take(1)
+        )
+        .subscribe((cid) => {
+          // case ID found after navigation end, now starting setup
+          this.caseId = cid;
+          this.startHearingSetupForCase(loadingToken);
+        });
+    }
 
     this.hearingValuesSubscription = this.hearingStore
       .pipe(select(fromHearingStore.getHearingValuesModel))
@@ -134,13 +140,13 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
           // Reset the error context if there is no error on subsequent requests
           this.serverError = null;
         }
-        this.loadingService.unregister(loadingToken);
+        this.endSpinnerOnCompleteLoad(loadingToken);
       },
       error: () => {
-        this.loadingService.unregister(loadingToken);
+        this.endSpinnerOnCompleteLoad(loadingToken);
       },
       complete: () => {
-        this.loadingService.unregister(loadingToken);
+        this.endSpinnerOnCompleteLoad(loadingToken);
       },
     });
     this.upcomingHearings$ = this.getHearingListByStatus(EXUISectionStatusEnum.UPCOMING);
@@ -240,11 +246,6 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     this.router.navigate(['/', 'hearings', 'request']);
   }
 
-  private loadHearingsForCurrentCase(): void {
-    this.hearingStore.dispatch(new fromHearingStore.ResetHearingList());
-    this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
-  }
-
   public ngOnDestroy(): void {
     if (this.lastErrorSubscription) {
       this.lastErrorSubscription.unsubscribe();
@@ -257,6 +258,93 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     }
     if (this.caseNotifierSubscription) {
       this.caseNotifierSubscription.unsubscribe();
+    }
+  }
+
+  /* 
+    Case hearings tab setup - uses case details to set page (loadingToken unregistered in case of error or once setup complete)
+  */
+  private startHearingSetupForCase(loadingToken: string): void {
+    this.caseNotifierSubscription = this.caseNotifier.caseView
+      .pipe(
+        filter(
+          (caseDetails) => !!caseDetails?.case_id && !!caseDetails?.case_type?.id && !!caseDetails?.case_type?.jurisdiction?.id
+        ),
+        take(1)
+      )
+      .subscribe((caseDetails) => {
+        // Confirm case ID from notifier matches route
+        if (this.caseId && caseDetails.case_id && this.caseId !== caseDetails.case_id) {
+          this.serverError = { id: 'backendError', message: HearingSummaryEnum.BackendError };
+          this.loadingService.unregister(loadingToken);
+          return;
+        }
+
+        this.caseType = caseDetails.case_type.id;
+        this.jurisdiction = caseDetails.case_type.jurisdiction.id;
+
+        this.loadHearingsForCurrentCase();
+
+        this.hearingStore.dispatch(
+          new fromHearingStore.StoreJurisdictionAndCaseRef({
+            jurisdictionId: this.jurisdiction,
+            caseReference: this.caseId,
+            caseType: this.caseType,
+          })
+        );
+        this.hearingStore.dispatch(new fromHearingStore.ResetHearingValues());
+        this.hearingStore.dispatch(
+          new fromHearingStore.LoadHearingValues({
+            jurisdictionId: this.jurisdiction,
+            caseReference: this.caseId,
+            caseType: this.caseType,
+          })
+        );
+        this.endSpinnerOnCompleteLoad(loadingToken);
+      });
+  }
+
+  private loadHearingsForCurrentCase(): void {
+    this.hearingStore.dispatch(new fromHearingStore.ResetHearingList());
+    this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
+  }
+
+  /* 
+    Get case ID from route snapshot - accounts for case ID being in any level of route
+    Route is only source of truth for case ID and is present to user
+  */
+  private getCaseIdFromRouterState(): string {
+    return this.findRouteParameter(this.router.routerState.snapshot.root, 'cid') || '';
+  }
+
+  /* 
+    Loop through route snapshot tree to find parameter
+  */
+  private findRouteParameter(node: ActivatedRouteSnapshot | null, key: string): string | null {
+    if (!node) {
+      return null;
+    }
+    const value = node.paramMap.get(key);
+    if (value) {
+      return value;
+    }
+    for (const child of node.children) {
+      const childValue = this.findRouteParameter(child, key);
+      if (childValue) {
+        return childValue;
+      }
+    }
+    return null;
+  }
+
+  /* 
+    Ensure spinner is stopped after all loading complete
+  */
+  private endSpinnerOnCompleteLoad(loadingToken: string): void {
+    if (!this.spinnerEndAttempted) {
+      this.spinnerEndAttempted = true;
+    } else {
+      this.loadingService.unregister(loadingToken);
     }
   }
 }

@@ -1,7 +1,7 @@
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { CaseNotifier, CasesService, CaseView, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
@@ -335,7 +335,7 @@ describe('CaseHearingsComponent', () => {
 
   const HEARINGS_LIST: HearingListMainModel = {
     hmctsServiceID: 'BBA3',
-    caseRef: '1234',
+    caseRef: '1620409659381330',
     caseHearings: [
       CASE_HEARING_1,
       CASE_HEARING_2,
@@ -409,6 +409,16 @@ describe('CaseHearingsComponent', () => {
 
   const mockRouter = {
     navigate: jasmine.createSpy('navigate'),
+    navigated: true,
+    events: of(),
+    routerState: {
+      snapshot: {
+        root: {
+          paramMap: convertToParamMap({ cid: '1620409659381330' }),
+          children: [],
+        },
+      },
+    },
   };
 
   const cv = {
@@ -423,7 +433,7 @@ describe('CaseHearingsComponent', () => {
       },
     },
   } as CaseView;
-  const DEFAULT_CASE_INFO = { caseId: '1234', jurisdiction: 'CIVIL', caseType: 'CIVIL' };
+  const DEFAULT_CASE_INFO = { caseId: '1620409659381330', jurisdiction: 'CIVIL', caseType: 'CIVIL' };
 
   beforeEach(() => {
     mockLovRefDataService = jasmine.createSpyObj('LovRefDataService', ['getListOfValues']);
@@ -446,16 +456,6 @@ describe('CaseHearingsComponent', () => {
       providers: [
         LoadingService,
         provideMockStore({ initialState }),
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              params: {
-                cid: '1234',
-              },
-            },
-          },
-        },
         {
           provide: Router,
           useValue: mockRouter,
@@ -491,7 +491,7 @@ describe('CaseHearingsComponent', () => {
     expect(component.hearingValuesSubscription).toBeDefined();
     expect(component.refDataSubscription).toBeDefined();
     expect(dispatchSpy).toHaveBeenCalledWith(
-      new fromHearingStore.LoadHearingValues({ jurisdictionId: 'CIVIL', caseReference: '1234', caseType: 'CIVIL' })
+      new fromHearingStore.LoadHearingValues({ jurisdictionId: 'CIVIL', caseReference: '1620409659381330', caseType: 'CIVIL' })
     );
   });
 
@@ -501,7 +501,7 @@ describe('CaseHearingsComponent', () => {
     component.reloadHearings();
 
     expect(dispatchSpy.calls.argsFor(0)[0]).toEqual(new fromHearingStore.ResetHearingList());
-    expect(dispatchSpy.calls.argsFor(1)[0]).toEqual(new fromHearingStore.LoadAllHearings('1234'));
+    expect(dispatchSpy.calls.argsFor(1)[0]).toEqual(new fromHearingStore.LoadAllHearings('1620409659381330'));
   });
 
   it('should unsubscribe', () => {
@@ -697,7 +697,7 @@ describe('CaseHearingsComponent', () => {
     const hearingCondition: HearingConditions = {
       mode: 'create',
       isInit: true,
-      caseId: '1234',
+      caseId: '1620409659381330',
     };
     component.createHearingRequest();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/', 'hearings', 'request']);

@@ -141,7 +141,8 @@ export class HearingRequirementsComponent extends RequestHearingPageFlow impleme
       },
       caseDetails: {
         hmctsServiceCode: this.serviceHearingValuesModel.hmctsServiceID || null,
-        caseRef: this.hearingListMainModel?.caseRef || null,
+        // case reference/ID must be set by shv in order to maintain correct case ID
+        caseRef: this.serviceHearingValuesModel.caseId,
         requestTimeStamp: null,
         hearingID: null,
         caseDeepLink: this.serviceHearingValuesModel.caseDeepLink,

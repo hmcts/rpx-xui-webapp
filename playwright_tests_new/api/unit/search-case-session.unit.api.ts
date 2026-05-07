@@ -29,8 +29,6 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
       'FPL_GLOBAL_SEARCH',
       'SOLICITOR',
       'STAFF_ADMIN',
-      'RESTRICTED_CASE_FILE_VIEW_ON',
-      'RESTRICTED_CASE_FILE_VIEW_OFF',
       'SEARCH_EMPLOYMENT_CASE',
     ]);
   });

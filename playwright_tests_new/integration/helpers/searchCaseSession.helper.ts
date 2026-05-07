@@ -2,13 +2,7 @@ import type { Page, TestInfo } from '@playwright/test';
 import { applySessionCookies, loadSessionCookies } from '../../common/sessionCapture';
 
 const defaultSearchCaseSessionUsers = ['FPL_GLOBAL_SEARCH'] as const;
-const defaultIntegrationWarmupUsers = [
-  'FPL_GLOBAL_SEARCH',
-  'SOLICITOR',
-  'STAFF_ADMIN',
-  'RESTRICTED_CASE_FILE_VIEW_ON',
-  'RESTRICTED_CASE_FILE_VIEW_OFF',
-] as const;
+const defaultIntegrationWarmupUsers = ['FPL_GLOBAL_SEARCH', 'SOLICITOR', 'STAFF_ADMIN'] as const;
 
 function parseUserList(rawValue?: string): string[] {
   return Array.from(

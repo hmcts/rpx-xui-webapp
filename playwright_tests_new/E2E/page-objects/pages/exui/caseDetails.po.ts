@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { expect, Locator, Page } from '@playwright/test';
 import { Base } from '../../base';
 import { ValidatorUtils } from '../../../utils/validator.utils';
 import { TableUtils } from '@hmcts/playwright-common';
@@ -29,6 +29,8 @@ export interface CaseFlagItem {
   lastModified: string;
   status: string;
 }
+
+const MEDIA_VIEWER_ROUTE_PATTERN = /\/media-viewer(?:\?|$)/;
 
 export class CaseDetailsPage extends Base {
   readonly container = this.page.locator('exui-case-details-home');
@@ -70,6 +72,11 @@ export class CaseDetailsPage extends Base {
   readonly caseNotificationBannerTitle = this.page.locator('#govuk-notification-banner-title');
 
   readonly caseNotificationBannerBody = this.page.locator('.govuk-notification-banner__heading');
+  readonly documentOneRow = this.page
+    .getByRole('table', { name: 'case viewer table' })
+    .getByRole('row', { name: /^Document 1\b/i })
+    .first();
+  readonly documentOneAction = this.documentOneRow.locator('a,button').first();
 
   readonly eventCreationErrorHeading = this.page.getByRole('heading', { name: 'The event could not be created' });
   readonly generalProblemHeading = this.page.getByRole('heading', { name: /there is a problem/i }).first();
@@ -664,6 +671,10 @@ export class CaseDetailsPage extends Base {
     return callbackValidationAlert.isVisible({ timeout: timeoutMs }).catch(() => false);
   }
 
+  caseViewerRow(label: string): Locator {
+    return this.caseViewerTable.getByRole('row', { name: label });
+  }
+
   async selectCaseDetailsTab(tabName: string) {
     const tabLoadTimeoutMs = this.getRecommendedTimeoutMs({
       min: TIMEOUTS.TAB_LOAD,
@@ -691,13 +702,167 @@ export class CaseDetailsPage extends Base {
     await this.waitForTabPanelReadiness(visibleTabPanel, tabLoadTimeoutMs);
   }
 
+  async waitForCaseDetailsReady(timeoutMs = 30_000): Promise<void> {
+    await this.waitForCaseDetailsTabsReady(timeoutMs);
+  }
+
+  async openCaseDetails(jurisdiction: string, caseType: string, caseId: string, timeoutMs = 30_000): Promise<void> {
+    await this.gotoCaseDetailsPath(`/cases/case-details/${jurisdiction}/${caseType}/${caseId}`, timeoutMs);
+    await this.waitForCaseDetailsReady(timeoutMs);
+  }
+
+  async openTasksTab(jurisdiction: string, caseType: string, caseId: string, timeoutMs = 30_000): Promise<void> {
+    await this.gotoCaseDetailsPath(`/cases/case-details/${jurisdiction}/${caseType}/${caseId}/tasks`, timeoutMs);
+    await this.taskListContainer.waitFor({ state: 'visible', timeout: timeoutMs }).catch(async (error: Error) => {
+      await this.gotoCaseDetailsPath(`/cases/case-details/${jurisdiction}/${caseType}/${caseId}/tasks`, timeoutMs);
+      await this.taskListContainer.waitFor({ state: 'visible', timeout: timeoutMs }).catch(() => {
+        throw error;
+      });
+    });
+    await this.exuiSpinnerComponent.wait();
+  }
+
+  private async gotoCaseDetailsPath(targetUrl: string, timeoutMs: number): Promise<void> {
+    let lastError: unknown;
+    const targetPath = targetUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const targetPattern = new RegExp(`${targetPath}(?:[/?#]|$)`);
+
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+      try {
+        await this.page.goto(targetUrl, { waitUntil: 'domcontentloaded' });
+        await this.page.waitForURL(targetPattern, { timeout: timeoutMs }).catch(() => undefined);
+        if (!targetPattern.test(this.page.url())) {
+          throw new Error(`Case details navigation did not reach ${targetUrl}; current URL is ${this.page.url()}`);
+        }
+        if (/chrome-error:\/\/chromewebdata/i.test(this.page.url())) {
+          throw new Error(`Case details navigation reached ${this.page.url()}`);
+        }
+        return;
+      } catch (error) {
+        lastError = error;
+        if (attempt >= 3 || !this.isTransientNavigationError(error)) {
+          throw error;
+        }
+        await this.page.waitForTimeout(Math.min(1_000, timeoutMs));
+      }
+    }
+
+    throw new Error(`Case details navigation failed for ${targetUrl}: ${String(lastError)}`);
+  }
+
+  private isTransientNavigationError(error: unknown): boolean {
+    return (
+      error instanceof Error &&
+      /ERR_SOCKET_NOT_CONNECTED|ERR_ABORTED|net::ERR|Navigation failed|interrupted.*navigation|chrome-error:\/\/chromewebdata|did not reach/i.test(
+        error.message
+      )
+    );
+  }
+
+  getRoleAccessSection(title: 'Judiciary' | 'Legal Ops'): Locator {
+    return this.page.locator('exui-role-access-section').filter({
+      has: this.page.getByRole('heading', { level: 2, name: title }),
+    });
+  }
+
+  getAddExclusionLink(): Locator {
+    return this.page.locator('a.govuk-link[href*="/role-access/add-exclusion"]').first();
+  }
+
+  getAllocateJudicialRoleLink(): Locator {
+    return this.getRoleAccessSection('Judiciary').getByRole('link', { name: 'Allocate a judicial role' });
+  }
+
+  getAllocateLegalOpsRoleLink(): Locator {
+    return this.getRoleAccessSection('Legal Ops').getByRole('link', { name: 'Allocate a legal ops role' });
+  }
+
+  getManageRoleLink(sectionTitle: 'Judiciary' | 'Legal Ops'): Locator {
+    return this.getRoleAccessSection(sectionTitle).getByRole('link', { name: 'Manage' });
+  }
+
+  async openRoleActions(sectionTitle: 'Judiciary' | 'Legal Ops'): Promise<void> {
+    await this.getManageRoleLink(sectionTitle).click();
+  }
+
+  getRoleActionLink(sectionTitle: 'Judiciary' | 'Legal Ops', action: 'Reallocate' | 'Remove Allocation'): Locator {
+    return this.getRoleAccessSection(sectionTitle).getByRole('link', { name: action });
+  }
+
+  getDeleteExclusionLink(): Locator {
+    return this.page.locator('exui-exclusions-table').getByRole('link', { name: 'Delete' });
+  }
+
+  getExclusionsTable(): Locator {
+    return this.page.locator('exui-exclusions-table table.govuk-table').first();
+  }
+
+  async openRolesAndAccessTab(caseId: string): Promise<void> {
+    await this.openCaseDetails('IA', 'Asylum', caseId);
+
+    await this.selectCaseDetailsTab('Roles and access');
+    await this.page.waitForURL(new RegExp(`/cases/case-details/IA/Asylum/${caseId}(?:/roles-and-access)?(?:#.*)?$`));
+    await expect(this.page.getByRole('heading', { level: 2, name: 'Roles and access' })).toBeVisible();
+  }
+
+  async openDocumentOne() {
+    await this.documentOneAction.waitFor({ state: 'visible', timeout: this.getRecommendedTimeoutMs() });
+    await this.documentOneAction.click();
+  }
+
+  async openDocumentOneInMediaViewer(): Promise<Page> {
+    await this.openDocumentOne();
+
+    await this.page
+      .waitForFunction(
+        (routePatternSource) => {
+          const routePattern = new RegExp(routePatternSource);
+          return window.location.href.match(routePattern) !== null;
+        },
+        MEDIA_VIEWER_ROUTE_PATTERN.source,
+        { timeout: this.getRecommendedTimeoutMs() }
+      )
+      .catch(() => undefined);
+
+    const matchingPage = this.page
+      .context()
+      .pages()
+      .find((candidate) => MEDIA_VIEWER_ROUTE_PATTERN.test(candidate.url()));
+
+    return matchingPage ?? this.page;
+  }
+
+  async waitForDocumentOneRowToContain(expectedText: string, timeoutMs = 45_000): Promise<void> {
+    await expect
+      .poll(
+        async () => {
+          await this.selectCaseDetailsTab('Tab 1').catch(() => undefined);
+          const rowVisible = await this.documentOneRow.isVisible().catch(() => false);
+          if (!rowVisible) {
+            return '';
+          }
+          return await this.documentOneRow.innerText().catch(() => '');
+        },
+        { timeout: timeoutMs, intervals: [1_000, 2_000, 3_000] }
+      )
+      .toContain(expectedText);
+  }
+
   async getTabCount() {
     const tabsCount = await this.tablist2.count();
     return tabsCount;
   }
 
   private async waitForCaseDetailsTabsReady(timeoutMs: number): Promise<void> {
-    await this.container.waitFor({ state: 'visible', timeout: timeoutMs });
+    await this.container.waitFor({ state: 'visible', timeout: timeoutMs }).catch(async (error: Error) => {
+      if (!/\/cases\/case-details\//.test(this.page.url())) {
+        throw error;
+      }
+      await this.page.goto(this.page.url(), { waitUntil: 'domcontentloaded' });
+      await this.container.waitFor({ state: 'visible', timeout: timeoutMs }).catch(() => {
+        throw error;
+      });
+    });
     await this.tabList.waitFor({ state: 'visible', timeout: timeoutMs });
 
     const deadline = Date.now() + timeoutMs;

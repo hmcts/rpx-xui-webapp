@@ -22,10 +22,13 @@ export function resolveSearchCaseSessionUsers(env: NodeJS.ProcessEnv = process.e
 
 export function resolveIntegrationSessionWarmupUsers(env: NodeJS.ProcessEnv = process.env): string[] {
   const configured = parseUserList(env.PW_INTEGRATION_SESSION_WARMUP_USERS);
-  if (configured.length > 0) {
-    return configured;
+  if (configured.includes('@none')) {
+    return [];
   }
-  return Array.from(new Set([...defaultIntegrationWarmupUsers, ...resolveSearchCaseSessionUsers(env)]));
+  if (configured.includes('@default')) {
+    return Array.from(new Set([...defaultIntegrationWarmupUsers, ...resolveSearchCaseSessionUsers(env)]));
+  }
+  return configured;
 }
 
 export function resolveSearchCaseUserIdentifier(

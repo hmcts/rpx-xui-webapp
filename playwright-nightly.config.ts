@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 import { cpus, totalmem } from 'node:os';
 import { version as appVersion } from './package.json';
-import { resolveTagFilters, resolveWorkerCount } from './playwright-config-utils';
+import { logResolvedTagFilters, resolveTagFilters, resolveWorkerCount } from './playwright-config-utils';
 
 type EnvMap = NodeJS.ProcessEnv;
 
@@ -46,6 +46,9 @@ const buildConfig = (env: EnvMap = process.env) => {
   const headlessMode = resolveHeadlessMode(env);
   const baseUrl = resolveBaseUrl(env);
   const workerCount = resolveWorkerCount(env);
+  const targetEnv = env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
+  const runContext = env.CI ? 'ci' : 'local-run';
+  const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
   const e2eTagFilters = resolveTagFilters({
     env,
     includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
@@ -53,10 +56,11 @@ const buildConfig = (env: EnvMap = process.env) => {
     configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
     defaultConfigPath: 'playwright_tests_new/E2E/tag-filter.json',
     suiteTag: '@e2e',
+    globalExcludedTagsEnvVar: 'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS',
+    ignoreGlobalExcludesEnvVar: 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES',
+    globalExcludedTagsPattern: /^@e2e(?:-.+)?$/,
   });
-  const targetEnv = env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
-  const runContext = env.CI ? 'ci' : 'local-run';
-  const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
+  logResolvedTagFilters('Cross-browser E2E', e2eTagFilters, env);
 
   return defineConfig({
     testDir: 'playwright_tests_new/E2E',

@@ -1,11 +1,12 @@
 import { test, expect } from './fixtures';
 import { WA_SAMPLE_ASSIGNED_TASK_ID, WA_SAMPLE_TASK_ID } from './data/testIds';
 import { expectStatus, StatusSets, withXsrf } from './utils/apiTestUtils';
-import { fetchFirstTask, resolveTaskIdWithEnvFallback } from './utils/workAllocationUtils';
+import { resolveTaskIdWithEnvFallback } from './utils/workAllocationUtils';
 
 const fallbackTaskId = '00000000-0000-0000-0000-000000000000';
-let taskId = fallbackTaskId;
-let taskSource: 'dynamic' | 'env-assigned' | 'env-unassigned' | 'none' = 'none';
+const taskResolution = resolveTaskIdWithEnvFallback(undefined, WA_SAMPLE_ASSIGNED_TASK_ID, WA_SAMPLE_TASK_ID, fallbackTaskId);
+const taskId = taskResolution.taskId;
+const taskSource = taskResolution.source;
 
 const cancellationProcessMatrix = [
   {
@@ -19,13 +20,6 @@ const cancellationProcessMatrix = [
 ] as const;
 
 test.describe('Work allocation cancellation API coverage', { tag: ['@svc-work-allocation'] }, () => {
-  test.beforeAll(async ({ apiClient }) => {
-    const firstTask = await fetchFirstTask(apiClient, undefined, ['assigned', 'unassigned'], 'AllWork');
-    const resolution = resolveTaskIdWithEnvFallback(firstTask?.id, WA_SAMPLE_ASSIGNED_TASK_ID, WA_SAMPLE_TASK_ID, fallbackTaskId);
-    taskId = resolution.taskId;
-    taskSource = resolution.source;
-  });
-
   test('POST /workallocation/task/:id/cancel accepts the UI manual cancellation payload', async ({
     apiClient,
     apiLogs,

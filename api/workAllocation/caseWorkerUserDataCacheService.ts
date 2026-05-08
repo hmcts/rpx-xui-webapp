@@ -1,5 +1,5 @@
 import { NextFunction } from 'express';
-import { authenticator } from 'otplib';
+import { createGuardrails, generate, ScureBase32Plugin } from 'otplib';
 import * as log4jui from '../lib/log4jui';
 import { getConfigValue } from '../configuration';
 import {
@@ -231,7 +231,9 @@ export async function getAuthTokens(): Promise<AuthTokens> {
     const microservice = getConfigValue(MICROSERVICE);
     const s2sEndpointUrl = `${getConfigValue(SERVICE_S2S_PATH)}/lease`;
     const s2sSecret = getConfigValue(S2S_SECRET).trim();
-    const oneTimePassword = authenticator.generate(s2sSecret);
+    const secretBytes = new ScureBase32Plugin().decode(s2sSecret);
+    const guardrails = createGuardrails({ MIN_SECRET_BYTES: secretBytes.length });
+    const oneTimePassword = await generate({ secret: s2sSecret, guardrails, strategy: 'totp' });
     const idamPath = getConfigValue(SERVICES_IDAM_API_URL);
     const authURL = `${idamPath}/o/token`;
     const axiosConfig = {

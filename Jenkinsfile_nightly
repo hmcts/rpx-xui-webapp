@@ -25,6 +25,11 @@ properties([
         defaultValue: '',
         description: 'Optional Playwright integration shard override, for example 1/2. Used with INTEGRATION_PW_WORKERS.'
       ),
+      booleanParam(
+        name: 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES',
+        defaultValue: false,
+        description: 'Bypass Key Vault-backed Playwright global exclusions for a verification run that is fixing an excluded test.'
+      ),
     ])
 ])
 
@@ -259,7 +264,8 @@ def runPlaywrightIntegrationProfileMatrix = {
               'ORG_USER_ASSIGNMENT_MODE=external',
               'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
               "FUNCTIONAL_TESTS_WORKERS=${runConfig.workers}",
-              'PLAYWRIGHT_SKIP_INSTALL=true'
+              'PLAYWRIGHT_SKIP_INSTALL=true',
+              "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
             ]) {
               yarnBuilder.yarn("test:playwright:integration:raw -- --workers=${runConfig.workers}${runConfig.shardArg}")
             }
@@ -358,6 +364,7 @@ def secrets = [
     secret('e2e-restricted-case-file-view-v1-1-on-password', 'RESTRICTED_CASE_FILE_VIEW_V1_1_ON_PASSWORD'),
     secret('e2e-restricted-case-file-view-v1-1-off-username', 'RESTRICTED_CASE_FILE_VIEW_V1_1_OFF_USERNAME'),
     secret('e2e-restricted-case-file-view-v1-1-off-password', 'RESTRICTED_CASE_FILE_VIEW_V1_1_OFF_PASSWORD'),
+    secret('xui-playwright-global-excluded-tags', 'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS'),
   ],
 ]
 

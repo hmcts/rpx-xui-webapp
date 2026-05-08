@@ -2,13 +2,7 @@ import type { Page, TestInfo } from '@playwright/test';
 import { applySessionCookies, loadSessionCookies } from '../../common/sessionCapture';
 
 const defaultSearchCaseSessionUsers = ['FPL_GLOBAL_SEARCH'] as const;
-const defaultIntegrationWarmupUsers = [
-  'FPL_GLOBAL_SEARCH',
-  'SOLICITOR',
-  'STAFF_ADMIN',
-  'RESTRICTED_CASE_FILE_VIEW_ON',
-  'RESTRICTED_CASE_FILE_VIEW_OFF',
-] as const;
+const defaultIntegrationWarmupUsers = ['FPL_GLOBAL_SEARCH', 'SOLICITOR', 'STAFF_ADMIN'] as const;
 
 function parseUserList(rawValue?: string): string[] {
   return Array.from(
@@ -28,10 +22,13 @@ export function resolveSearchCaseSessionUsers(env: NodeJS.ProcessEnv = process.e
 
 export function resolveIntegrationSessionWarmupUsers(env: NodeJS.ProcessEnv = process.env): string[] {
   const configured = parseUserList(env.PW_INTEGRATION_SESSION_WARMUP_USERS);
-  if (configured.length > 0) {
-    return configured;
+  if (configured.includes('@none')) {
+    return [];
   }
-  return Array.from(new Set([...defaultIntegrationWarmupUsers, ...resolveSearchCaseSessionUsers(env)]));
+  if (configured.includes('@default')) {
+    return Array.from(new Set([...defaultIntegrationWarmupUsers, ...resolveSearchCaseSessionUsers(env)]));
+  }
+  return configured;
 }
 
 export function resolveSearchCaseUserIdentifier(

@@ -42,7 +42,10 @@ createApp().then((app: express.Application) => {
 
   app.use(appInsights);
   app.use(errorHandler);
-  app.listen(process.env.PORT || 3000, () => {
+  app.listen(process.env.PORT || 3000, (error) => {
+    if (error) {
+      throw error;
+    }
     console.log('Server listening on port 3000!');
   });
 });

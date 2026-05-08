@@ -28,6 +28,8 @@ import workAllocationRouter from './workAllocation/routes';
 import { idamCheck } from './idamCheck';
 import { MC_CSP } from './interfaces/csp-config';
 
+const PERMISSIONS_POLICY = 'geolocation=(), camera=(), microphone=()';
+
 function resolveStaticRoot(): string {
   const buildRoot = path.join(__dirname, '..');
   const browserRoot = path.join(buildRoot, 'browser');
@@ -75,6 +77,7 @@ export async function createApp() {
     app.use((req, res, next) => {
       res.setHeader('X-Robots-Tag', 'noindex');
       res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate, proxy-revalidate');
+      res.setHeader('Permissions-Policy', PERMISSIONS_POLICY);
       next();
     });
     app.get('/robots.txt', (req, res) => {

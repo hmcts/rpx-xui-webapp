@@ -498,7 +498,7 @@ withNightlyPipeline(type, product, component) {
                     }
                 },
                 playwrightE2E: {
-                    stage('Cross Browser Test') {
+                    stage('Playwright E2E Cross Browser') {
                         try {
                             recordPlaywrightLoadEvent('E2E', 'start')
                             withEnv([
@@ -525,7 +525,7 @@ withNightlyPipeline(type, product, component) {
                                 keepAll              : true,
                                 reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
                                 reportFiles          : 'xui-playwright-e2e.html',
-                                reportName           : 'Nightly Playwright Cross Browser Tests'
+                                reportName           : 'Nightly Playwright E2E Cross Browser'
                             ])
                         }
                     }

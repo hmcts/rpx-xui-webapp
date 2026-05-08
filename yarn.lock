@@ -3186,12 +3186,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.52":
-  version: 7.3.52
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.52"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.53-body-parser-update":
+  version: 7.3.53-body-parser-update
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.53-body-parser-update"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/bed69595e8635329364764641cfc441c1dfc884f1f431ebd4790f6d64c2963426093e3db0f6fa12bf8d2a69c7534cf7625d38bbfc07f358279e1011dae93801b
+  checksum: 10/623d36336bbf4f1c3c098f7b0733e9ebb9de723907a7e5d7b43580109d8514c3627573fab428990feca89cb0ecfb68c668426e4db59ad60b02fd1e73ca9551b1
   languageName: node
   linkType: hard
 
@@ -3214,9 +3214,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.16":
-  version: 4.2.16
-  resolution: "@hmcts/media-viewer@npm:4.2.16"
+"@hmcts/media-viewer@npm:4.2.19-body-parser-update":
+  version: 4.2.19-body-parser-update
+  resolution: "@hmcts/media-viewer@npm:4.2.19-body-parser-update"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3229,13 +3229,11 @@ __metadata:
     "@angular/common": ^20.0.0
     "@angular/core": ^20.0.0
     "@angular/forms": ^20.0.0
-    "@angular/material": ^17.3.8
     "@angular/platform-browser": ^20.0.0
     "@ngrx/effects": ^20
-    "@ngrx/router-store": ^20
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
-  checksum: 10/3f49d013cf857a4d07c5a59722855ac348f0eead29203575824595211ab9d4af5ef0bc77cc0366c170206ffe09e6be33b46b4d1f43392dc3ee40552695334acb
+  checksum: 10/776f2552a5d32ac89e01b125f7e1cf3e1e52373e1d57b6cc22406891af9da2a4d48c1b9d91fcd92c18634a5434d13352de60aa7df41dddc7a3fd156eefd40431
   languageName: node
   linkType: hard
 
@@ -3316,16 +3314,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.13":
-  version: 2.30.13
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.13"
+"@hmcts/rpx-xui-node-lib@npm:2.30.13-EXUI-4299-body-parser":
+  version: 2.30.13-EXUI-4299-body-parser
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.13-EXUI-4299-body-parser"
   dependencies:
     "@dr.pogodin/csurf": "npm:^1.14.0"
     axios: "npm:^1.11.0"
     connect-redis: "npm:^4.0.4"
     debug: "npm:^4.3.7"
     deepmerge: "npm:^4.2.2"
-    express: "npm:^4.20.0"
+    express: "npm:^5.2.1"
     express-session: "npm:^1.17.0"
     joi: "npm:^18.1.2"
     jwt-decode: "npm:^3.1.2"
@@ -3337,7 +3335,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/f02cf00f0a80ea2abcb69c725280dbac0de66a8f08bb1021cbf69fa24be81d2508c63c0979a90214944862541335735b6ae4f8c9574a508e4a9c3067721e3dca
+  checksum: 10/af66088a44e83b50920c51a5d79cd3fb375ad83f00a644dad051bb0c2297641c7793f0503436c3a260cdb1a287ee691d264cf692458245217bc2611bd997767a
   languageName: node
   linkType: hard
 
@@ -13436,7 +13434,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express@npm:^4.18.2, express@npm:^4.20.0, express@npm:^4.21.1, express@npm:^4.21.2, express@npm:^4.22.0":
+"express@npm:^4.18.2, express@npm:^4.21.1, express@npm:^4.21.2, express@npm:^4.22.0":
   version: 4.22.1
   resolution: "express@npm:4.22.1"
   dependencies:
@@ -20660,15 +20658,15 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.52"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.53-body-parser-update"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.2.16"
+    "@hmcts/media-viewer": "npm:4.2.19-body-parser-update"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.3.1"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.9"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.13"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.13-EXUI-4299-body-parser"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"

@@ -3229,12 +3229,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.50-fix-security-issue":
-  version: 7.3.50-fix-security-issue
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.50-fix-security-issue"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.49-exui-4150-rc-1":
+  version: 7.3.49-exui-4150-rc-1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.49-exui-4150-rc-1"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/a379c78e4683aa0ad1212fd63656cbec3675c24b7f7e019771bff8c0d01484921ea4044b5a5f6e6dbdcb92732c3101ab419032427a40cad9924f17b512123ea1
+  checksum: 10/0626fb765af5d62e61d71167c672fb9ba0d78e8985122fdf2f6b86e377d362f9a96dc6ab977528014d3a299e9115dd688899c3c5bf9b1f36efb53e3e64b58f79
   languageName: node
   linkType: hard
 
@@ -17331,21 +17331,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"marked@npm:^12.0.2":
-  version: 12.0.2
-  resolution: "marked@npm:12.0.2"
+"marked@npm:^16.2.1":
+  version: 16.4.2
+  resolution: "marked@npm:16.4.2"
   bin:
     marked: bin/marked.js
-  checksum: 10/24d4fc58d37c1779197fa7f93c504d8c71d4df54eb69cbbc14a55ba2a8e2ad83d723801fc25452c21ce74b38a483c5863c53449f130253a597be9e9c1d3e7e2b
+  checksum: 10/6e40e40661dce97e271198daa2054fc31e6445892a735e416c248fba046bdfa4573cafa08dc254529f105e7178a34485eb7f82573979cfb377a4530f66e79187
   languageName: node
   linkType: hard
 
-"marked@npm:^16.2.1":
-  version: 16.4.1
-  resolution: "marked@npm:16.4.1"
+"marked@npm:^17.0.3":
+  version: 17.0.3
+  resolution: "marked@npm:17.0.3"
   bin:
     marked: bin/marked.js
-  checksum: 10/b5f475dbe297162dc988b7f345b559d03248fde1023822b9f2a68f50cbca0981c78c42f380c3aa5e133b5f5c069a2c6cd683413c12c83710e983a7bc46cdf4a2
+  checksum: 10/2e3bce6bb012b0d39fba75689b4dea672156d372ae8f089de99e73932bf71f0bb3a5bffa43e58474d6476950b462b7580cb181d68134df3d222b12d190bfa4b2
   languageName: node
   linkType: hard
 
@@ -21172,7 +21172,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.50-fix-security-issue"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.49-exui-4150-rc-1"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.18"
@@ -21264,7 +21264,7 @@ __metadata:
     launchdarkly-js-client-sdk: "npm:3.8.1"
     lodash: "npm:^4.17.23"
     lz-string: "npm:^1.5.0"
-    marked: "npm:^12.0.2"
+    marked: "npm:^17.0.3"
     material-design-icons: "npm:^3.0.1"
     mocha: "npm:^10.0.0"
     mochawesome: "npm:^7.0.0"

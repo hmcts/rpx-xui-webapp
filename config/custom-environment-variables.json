@@ -128,8 +128,7 @@
       "mc-idam-client-secret": "IDAM_SECRET",
       "webapp-redis-connection-string": "REDISCLOUD_URL",
       "launch-darkly-client-id": "LAUNCH_DARKLY_CLIENT_ID",
-      "system-user-name": "SYSTEM_USER_NAME",
-      "system-user-password": "SYSTEM_USER_PASSWORD"
+      "system-user-name": "SYSTEM_USER_NAME"
     }
   },
   "caseworkerPageSize": "CASEWORKER_PAGE_SIZE",
@@ -224,8 +223,7 @@
     "brokerUrl": "PACT_BROKER_URL",
     "branchName": "PACT_BRANCH_NAME",
     "consumerVersion": "PACT_CONSUMER_VERSION",
-    "brokerUsername": "PACT_BROKER_USERNAME",
-    "brokerPassword": "PACT_BROKER_PASSWORD"
+    "brokerUsername": "PACT_BROKER_USERNAME"
   },
   "headerConfig": "HEADER_CONFIG"
 }

@@ -217,7 +217,7 @@
     "branchName": "master",
     "brokerUrl": "https://pact-broker.platform.hmcts.net",
     "consumerVersion": "",
-    "brokerUsername": "",
-    "brokerPassword": ""
+    "brokerUsername": null,
+    "brokerPassword": null
   }
 }

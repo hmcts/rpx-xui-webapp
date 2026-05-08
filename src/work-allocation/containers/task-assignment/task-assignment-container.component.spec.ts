@@ -106,9 +106,9 @@ describe('TaskAssignmentContainerComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                taskAndCaseworkers: {
+                taskAndCaseworker: {
                   task: { task: mockTasks[0] },
-                  caseworkers: [],
+                  caseworker: {},
                 },
                 ...TaskActionConstants.Reassign,
               },
@@ -211,9 +211,9 @@ describe('TaskAssignmentContainerComponent', () => {
       const mockActivatedRoute = TestBed.inject(ActivatedRoute) as any;
       mockActivatedRoute.snapshot = {
         data: {
-          taskAndCaseworkers: {
+          taskAndCaseworker: {
             task: { task: mockTasks[0] },
-            caseworkers: [],
+            caseworker: {},
           },
           verb: TaskActionType.Reassign,
         },
@@ -248,9 +248,9 @@ describe('TaskAssignmentContainerComponent', () => {
       const mockActivatedRoute = TestBed.inject(ActivatedRoute) as any;
       mockActivatedRoute.snapshot = {
         data: {
-          taskAndCaseworkers: {
+          taskAndCaseworker: {
             task: { task: mockTasks[0] },
-            caseworkers: [],
+            caseworker: {},
           },
           verb: TaskActionType.Reassign,
         },
@@ -277,9 +277,9 @@ describe('TaskAssignmentContainerComponent', () => {
       const mockActivatedRoute = TestBed.inject(ActivatedRoute) as any;
       mockActivatedRoute.snapshot = {
         data: {
-          taskAndCaseworkers: {
+          taskAndCaseworker: {
             task: { task: mockTasks[0] },
-            caseworkers: [],
+            caseworker: {},
           },
           verb: TaskActionType.Reassign,
         },
@@ -306,9 +306,9 @@ describe('TaskAssignmentContainerComponent', () => {
       const mockActivatedRoute = TestBed.inject(ActivatedRoute) as any;
       mockActivatedRoute.snapshot = {
         data: {
-          taskAndCaseworkers: {
+          taskAndCaseworker: {
             task: { task: mockTasks[0] },
-            caseworkers: [],
+            caseworker: {},
           },
           verb: TaskActionType.Reassign,
         },
@@ -335,9 +335,9 @@ describe('TaskAssignmentContainerComponent', () => {
       const mockActivatedRoute = TestBed.inject(ActivatedRoute) as any;
       mockActivatedRoute.snapshot = {
         data: {
-          taskAndCaseworkers: {
+          taskAndCaseworker: {
             task: { task: mockTasks[0] },
-            caseworkers: [],
+            caseworker: {},
           },
           verb: TaskActionType.Reassign,
         },

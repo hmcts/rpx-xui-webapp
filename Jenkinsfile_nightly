@@ -498,7 +498,7 @@ withNightlyPipeline(type, product, component) {
                     }
                 },
                 playwrightE2E: {
-                    stage('Playwright E2E') {
+                    stage('Playwright E2E Cross Browser') {
                         try {
                             recordPlaywrightLoadEvent('E2E', 'start')
                             withEnv([
@@ -511,7 +511,7 @@ withNightlyPipeline(type, product, component) {
                                 'PLAYWRIGHT_SKIP_INSTALL=true',
                                 "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
                             ]) {
-                                yarnBuilder.yarn('test:playwrightE2E:raw')
+                                yarnBuilder.yarn('test:crossbrowser:raw')
                             }
                         } catch (Exception e) {
                             echo "[failFast] Playwright E2E catch: ${e.getClass().getName()}: ${e.getMessage()}"
@@ -525,7 +525,7 @@ withNightlyPipeline(type, product, component) {
                                 keepAll              : true,
                                 reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
                                 reportFiles          : 'xui-playwright-e2e.html',
-                                reportName           : 'Nightly Playwright E2E'
+                                reportName           : 'Nightly Playwright E2E Cross Browser'
                             ])
                         }
                     }

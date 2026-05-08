@@ -30,4 +30,11 @@ fi
 
 echo "Populating ${OUT_FILE} using ${VAULT} and template ${TEMPLATE_FILE}"
 node ./node_modules/@hmcts/playwright-common/dist/scripts/get-secrets.js "${VAULT}" "${TEMPLATE_FILE}" "${OUT_FILE}"
+
+for REQUIRED_KEY in WA_SOLICITOR_USERNAME WA_SOLICITOR_PASSWORD; do
+  if ! grep -Eq "^${REQUIRED_KEY}=.+" "${OUT_FILE}"; then
+    echo "Warning: ${REQUIRED_KEY} was not populated from ${VAULT}; add a tagged Key Vault secret with e2e=${REQUIRED_KEY}."
+  fi
+done
+
 echo "Done. Generated ${OUT_FILE}"

@@ -149,7 +149,7 @@ export class AppComponent implements OnInit, OnDestroy {
       console.log('userDetailsHandler initialiseFeature is complete for user ' + userDetails.userInfo?.email);
       this.initialisationSyncService.initialisationComplete();
       if (propsExist(userDetails, ['sessionTimeout']) && userDetails.sessionTimeout.totalIdleTime > 0) {
-        const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
+        // const { idleModalDisplayTime, totalIdleTime } = userDetails.sessionTimeout;
         /**
          * Fix for EUI-4469 Live Defect - Google Tag Manager broken
          *
@@ -159,7 +159,7 @@ export class AppComponent implements OnInit, OnDestroy {
          */
         const uid = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
         this.setUserAndCheckCookie(uid);
-        this.initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime);
+        // this.initTimeoutNotificationService(idleModalDisplayTime, totalIdleTime);
       }
     }
   }
@@ -249,11 +249,11 @@ export class AppComponent implements OnInit, OnDestroy {
         return;
       }
       case 'keep-alive': {
-        this.authService.keepAlive().subscribe({
-          error: () => {
-            this.loggerService.log('Failed to call /auth/keepalive');
-          },
-        });
+        // this.authService.keepAlive().subscribe({
+        //   error: () => {
+        //     this.loggerService.log('Failed to call /auth/keepalive');
+        //   },
+        // });
         return;
       }
       default: {
@@ -263,16 +263,16 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   public revalidateSessionOnForeground(): void {
-    this.authService.keepAlive().subscribe({
-      next: (isAuthenticated) => {
-        if (!isAuthenticated) {
-          this.loggerService.log('Session invalid after returning to app.');
-        }
-      },
-      error: () => {
-        this.loggerService.log('Failed to revalidate session after returning to app. Leaving user on current page.');
-      },
-    });
+    // this.authService.keepAlive().subscribe({
+    //   next: (isAuthenticated) => {
+    //     if (!isAuthenticated) {
+    //       this.loggerService.log('Session invalid after returning to app.');
+    //     }
+    //   },
+    //   error: () => {
+    //     this.loggerService.log('Failed to revalidate session after returning to app. Leaving user on current page.');
+    //   },
+    // });
   }
 
   /**

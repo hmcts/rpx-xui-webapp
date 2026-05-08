@@ -14,10 +14,19 @@ export const logger: JUILogger = log4jui.getLogger('crud-service');
  * @param next
  * @returns {Promise<AxiosResponse>}
  */
-export async function handleGet(path: string, req: EnhancedRequest): Promise<AxiosResponse> {
-  logger.info('handle get:', path);
-  const headers = setHeaders(req);
-  return await http.get(path, { headers });
+export async function handleGet(path: string, req: EnhancedRequest, next?: NextFunction): Promise<AxiosResponse> {
+  try {
+    logger.info('handle get:', path);
+    const headers = setHeaders(req);
+    return await http.get(path, { headers });
+  } catch (e) {
+    logger.error('handleGet: ' + e.status + ' ' + path, e.statusText, e.statusText, JSON.stringify(e.data));
+    if (next) {
+      next(e);
+    } else {
+      throw e;
+    }
+  }
 }
 
 export async function sendGet(
@@ -120,13 +129,21 @@ export async function sendPut<T>(path: string, body: T, req: EnhancedRequest): P
  * @param next
  * @returns {Promise<AxiosResponse>}
  */
-export async function handleDelete<T>(path: string, body: T, req: EnhancedRequest): Promise<AxiosResponse> {
-  logger.info('handle delete:', path);
-  const headers = setHeaders(req);
-  return await http.delete(path, {
-    data: body,
-    headers,
-  });
+export async function handleDelete<T>(path: string, body: T, req: EnhancedRequest, next?: NextFunction): Promise<AxiosResponse> {
+  try {
+    logger.info('handle delete:', path);
+    const headers = setHeaders(req);
+    return await http.delete(path, {
+      data: body,
+      headers,
+    });
+  } catch (e) {
+    if (next) {
+      next(e);
+    } else {
+      throw e;
+    }
+  }
 }
 
 export async function sendDelete<T>(path: string, body: T, req: EnhancedRequest): Promise<AxiosResponse> {

@@ -1,7 +1,7 @@
 import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
+import { SessionStorageService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
 import { UserInfo } from '../../../app/models';
@@ -95,7 +95,10 @@ export class TaskActionContainerComponent implements OnInit {
   public isCurrentUserJudicial(): boolean {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      if (!userInfo) {
+        return false;
+      }
       // EXUI-2907 - Role category is used instead of roles
       return userInfo.roleCategory === RoleCategory.JUDICIAL;
     }
@@ -118,7 +121,10 @@ export class TaskActionContainerComponent implements OnInit {
         const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
         let userId: string;
         if (userInfoStr) {
-          const userInfo: UserInfo = JSON.parse(userInfoStr);
+          const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+          if (!userInfo) {
+            break;
+          }
           userId = userInfo.id ? userInfo.id : userInfo.uid;
           if (this.tasks[0].assignee !== userId) {
             action = ACTION.UNASSIGN;
@@ -168,7 +174,10 @@ export class TaskActionContainerComponent implements OnInit {
     }
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      if (!userInfo) {
+        return true;
+      }
       const id = userInfo.id ? userInfo.id : userInfo.uid;
       return id !== currentTask.assignee;
     }

@@ -27,7 +27,6 @@ import routes from './routes';
 import workAllocationRouter from './workAllocation/routes';
 import { idamCheck } from './idamCheck';
 import { MC_CSP } from './interfaces/csp-config';
-import { getNewUsersByServiceName } from './workAllocation';
 
 const PERMISSIONS_POLICY = 'geolocation=(), camera=(), microphone=()';
 
@@ -146,8 +145,6 @@ export async function createApp() {
   logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);
 
   new Promise(idamCheck).then(() => 'IDAM is up and running');
-  // EUI-2028 - Get the caseworkers, ideally prior to a user logging into application
-  new Promise(getNewUsersByServiceName).then(() => 'Caseworkers have been loaded');
 
   return app;
 }

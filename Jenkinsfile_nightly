@@ -25,6 +25,11 @@ properties([
         defaultValue: '',
         description: 'Optional Playwright integration shard override, for example 1/2. Used with INTEGRATION_PW_WORKERS.'
       ),
+      booleanParam(
+        name: 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES',
+        defaultValue: false,
+        description: 'Bypass Key Vault-backed Playwright global exclusions for a verification run that is fixing an excluded test.'
+      ),
     ])
 ])
 
@@ -225,7 +230,8 @@ def runPlaywrightIntegrationProfileMatrix = {
               'ORG_USER_ASSIGNMENT_MODE=external',
               'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
               "FUNCTIONAL_TESTS_WORKERS=${runConfig.workers}",
-              'PLAYWRIGHT_SKIP_INSTALL=true'
+              'PLAYWRIGHT_SKIP_INSTALL=true',
+              "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
             ]) {
               yarnBuilder.yarn("test:playwright:integration:raw -- --workers=${runConfig.workers}${runConfig.shardArg}")
             }
@@ -278,6 +284,8 @@ def secrets = [
     secret('mc-session-secret', 'SESSION_SECRET'),
     secret('e2e-divorce-solicitor-username', 'DIVORCE_SOLICITOR_USERNAME'),
     secret('e2e-divorce-solicitor-password', 'DIVORCE_SOLICITOR_PASSWORD'),
+    secret('e2e-wa-solicitor-username', 'WA_SOLICITOR_USERNAME'),
+    secret('e2e-wa-solicitor-password', 'WA_SOLICITOR_PASSWORD'),
     secret('e2e-booking-ui-ft-on-username', 'BOOKING_UI_FT_ON_USERNAME'),
     secret('e2e-booking-ui-ft-on-password', 'BOOKING_UI_FT_ON_PASSWORD'),
     secret('e2e-booking-ui-ft-on-1-username', 'BOOKING_UI_FT_ON_1_USERNAME'),
@@ -322,6 +330,7 @@ def secrets = [
     secret('e2e-restricted-case-file-view-v1-1-on-password', 'RESTRICTED_CASE_FILE_VIEW_V1_1_ON_PASSWORD'),
     secret('e2e-restricted-case-file-view-v1-1-off-username', 'RESTRICTED_CASE_FILE_VIEW_V1_1_OFF_USERNAME'),
     secret('e2e-restricted-case-file-view-v1-1-off-password', 'RESTRICTED_CASE_FILE_VIEW_V1_1_OFF_PASSWORD'),
+    secret('xui-playwright-global-excluded-tags', 'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS'),
   ],
 ]
 
@@ -402,7 +411,8 @@ withNightlyPipeline(type, product, component) {
           withEnv([
             'ORG_USER_ASSIGNMENT_MODE=external',
             'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
-            'FUNCTIONAL_TESTS_WORKERS=4'
+            'FUNCTIONAL_TESTS_WORKERS=4',
+            "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
           ]) {
             yarnBuilder.yarn('test:api:pw:coverage:raw')
           }
@@ -449,7 +459,10 @@ withNightlyPipeline(type, product, component) {
                 'ORG_USER_ASSIGNMENT_MODE=external',
                 'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
                 'FUNCTIONAL_TESTS_WORKERS=2',
-                'PW_SESSION_CAPTURE_FAILURE_TTL_MS=0'
+                'E2E_PW_INCLUDE_TAGS=@nightly',
+                'E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none',
+                'PW_SESSION_CAPTURE_FAILURE_TTL_MS=0',
+                "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
               ]) {
                 yarnBuilder.yarn('test:crossbrowser:raw')
               }
@@ -468,7 +481,6 @@ withNightlyPipeline(type, product, component) {
               archivePlaywrightDiagnostics()
             }
         }
-      }
       } finally {
         recordPlaywrightLoadEvent('Nightly functional tests', 'finish')
       }

@@ -7,14 +7,19 @@
  * ```
  */
 export * from './caseSearchMockRoutes.helper';
+export * from './caseList.helper';
 export * from './caseFileViewMockRoutes.helper';
 export * from './caseLinkingMockRoutes.helper';
 export { applySessionCookies } from '../../common/sessionCapture';
 export * from './searchCaseSession.helper';
 export * from './hearingsMockRoutes.helper';
+export * from './hearingManagerUserPool.helper';
 export * from './hearingJourneySetup.helper';
+export * from './caseworkerJurisdictionMockRoutes.helper';
 export * from './taskListMockRoutes.helper';
 export * from './bookingUiMockRoutes.helper';
+export * from './bookingUiUserPool.helper';
+export * from '../../common/staffAdminUserPool';
 export * from './manageTasksMockRoutes.helper';
 export * from './rolesAndAccessMockRoutes.helper';
 export * from './restrictedAccessMockRoutes.helper';

@@ -1,9 +1,10 @@
 import { RoleAccessHttpError, SpecificRole } from '../models';
 import { InfoMessageType } from '../models/enums/info-message-type';
-import { getTitleText, handleError, REDIRECTS } from './role-access-utils';
+import { getRoles, getTitleText, handleError, REDIRECTS } from './role-access-utils';
 
 describe('WorkAllocationUtils', () => {
   let mockRouter: any;
+  let sessionStorageService: any;
   const error: RoleAccessHttpError = {
     status: 400,
     message: 'Service down',
@@ -66,5 +67,12 @@ describe('WorkAllocationUtils', () => {
     expect(getTitleText(null, 'remove', 'LEGAL_OPS')).toBe('remove a LEGAL OPS role');
     // unspecific role
     expect(getTitleText(null, 'view', null)).toBe('view a role');
+  });
+
+  it('should return empty roles when stored JSON is invalid', () => {
+    sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem']);
+    sessionStorageService.getItem.and.returnValue('{not-json}');
+    const result = getRoles('service', sessionStorageService);
+    expect(result).toEqual([]);
   });
 });

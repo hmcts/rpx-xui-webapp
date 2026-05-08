@@ -37,7 +37,7 @@ test.beforeEach(async ({ page, createCasePage }) => {
     await route.fulfill({ status: 200, contentType: 'application/json', body });
   });
   await page.goto(`/cases/case-create/${jurisdiction}/${caseType}/createCase/`);
-  await expect(createCasePage.person1TitleInput).toBeVisible();
+  await createCasePage.waitForCreateCaseFormReady('positive create-case setup');
 });
 
 test.describe(`Create a ${jurisdiction} case as ${userIdentifier}`, { tag: ['@integration', '@integration-create-case'] }, () => {

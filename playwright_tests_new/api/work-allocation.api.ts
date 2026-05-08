@@ -21,6 +21,7 @@ import {
   hasSeededEnvTasks,
   isActionSuccessStatus,
   maybeAssertStateTransition,
+  resolveTaskIdWithEnvFallback,
   resolveLocationId,
   resolveSeededTaskIds,
   resolveUserId,
@@ -41,11 +42,12 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
   let sampleTaskId: string | undefined;
   let sampleMyTaskId: string | undefined;
 
-  test.beforeAll(async ({ apiClient }) => {
+  test.beforeAll(async ({ apiClientFor }) => {
     test.setTimeout(90_000);
+    const waClient = await apiClientFor('waSolicitor');
 
     try {
-      const userRes = await apiClient.get<UserDetailsResponse>('api/user/details', {
+      const userRes = await waClient.get<UserDetailsResponse>('api/user/details', {
         throwOnError: false,
         timeoutMs: BEFORE_ALL_REQUEST_TIMEOUT_MS,
       });
@@ -57,7 +59,7 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
     }
 
     try {
-      const listResponse = await apiClient.get<Array<{ id?: string }>>(
+      const listResponse = await waClient.get<Array<{ id?: string }>>(
         `workallocation/location?serviceCodes=${encodeURIComponent(serviceCodes.join(','))}`,
         {
           throwOnError: false,
@@ -71,7 +73,7 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
 
     try {
       // Seed task ids is optional; action tests already use guarded status assertions/fallback ids.
-      const seeded = await seedTaskId(apiClient, cachedLocationId, {
+      const seeded = await seedTaskId(waClient, cachedLocationId, {
         timeoutMs: BEFORE_ALL_REQUEST_TIMEOUT_MS,
       });
       const resolvedSeed = resolveSeededTaskIds(seeded);
@@ -320,12 +322,13 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
     }
 
     for (const action of actions) {
-      test(`POST /workallocation/task/:id/${action} rejects requests without XSRF-TOKEN header`, async ({ apiClient }) => {
+      test(`POST /workallocation/task/:id/${action} rejects requests without XSRF-TOKEN header`, async ({ apiClientFor }) => {
         // Given: An authenticated user with valid session
         // When: Attempting task action without XSRF protection header
         // Then: API rejects request or returns guarded status (XSRF validation failure)
-        await ensureStorageState('solicitor');
-        const response = await apiClient.post(`workallocation/task/${taskId()}/${action}`, {
+        await ensureStorageState('waSolicitor');
+        const waClient = await apiClientFor('waSolicitor');
+        const response = await waClient.post(`workallocation/task/${taskId()}/${action}`, {
           data: {},
           headers: {},
           throwOnError: false,
@@ -335,9 +338,10 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
     }
 
     for (const action of actions) {
-      test(`rejects ${action} with invalid XSRF token`, async ({ apiClient }) => {
-        await ensureStorageState('solicitor');
-        const response = await apiClient.post(`workallocation/task/${taskId()}/${action}`, {
+      test(`rejects ${action} with invalid XSRF token`, async ({ apiClientFor }) => {
+        await ensureStorageState('waSolicitor');
+        const waClient = await apiClientFor('waSolicitor');
+        const response = await waClient.post(`workallocation/task/${taskId()}/${action}`, {
           data: {},
           headers: { 'X-XSRF-TOKEN': 'invalid-token' },
           throwOnError: false,
@@ -347,9 +351,10 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
     }
 
     for (const action of actions) {
-      test(`${action} with XSRF header returns guarded status`, async ({ apiClient }) => {
-        const response = await withXsrf('solicitor', (headers) =>
-          apiClient.post(`workallocation/task/${taskId()}/${action}`, {
+      test(`${action} with XSRF header returns guarded status`, async ({ apiClientFor }) => {
+        const waClient = await apiClientFor('waSolicitor');
+        const response = await withXsrf('waSolicitor', (headers) =>
+          waClient.post(`workallocation/task/${taskId()}/${action}`, {
             data: {},
             headers,
             throwOnError: false,
@@ -387,11 +392,13 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
     ] as const;
 
     positive.forEach(({ action, id }) => {
-      test(`${action} succeeds with XSRF when task ids available`, async ({ apiClient }) => {
+      test(`${action} succeeds with XSRF when task ids available`, async ({ apiClientFor }) => {
+        const waClient = await apiClientFor('waSolicitor');
         const executed = await runSeededAction(action, id, {
-          apiClient,
+          apiClient: waClient,
           envTaskId: envTaskId || sampleTaskId,
           envAssignedTaskId: envAssignedTaskId || sampleMyTaskId,
+          role: 'waSolicitor',
         });
         if (!executed) {
           expect(true).toBe(true);
@@ -419,15 +426,16 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
     ];
 
     for (const { action, taskId } of positiveActions) {
-      test(`${action} returns allowed status with XSRF`, async ({ apiClient }) => {
-        const response = await withXsrf('solicitor', async (headers) => {
-          const before = await fetchTaskById(apiClient, taskId());
-          const res = await apiClient.post(`workallocation/task/${taskId()}/${action}`, {
+      test(`${action} returns allowed status with XSRF`, async ({ apiClientFor }) => {
+        const waClient = await apiClientFor('waSolicitor');
+        const response = await withXsrf('waSolicitor', async (headers) => {
+          const before = await fetchTaskById(waClient, taskId());
+          const res = await waClient.post(`workallocation/task/${taskId()}/${action}`, {
             data: {},
             headers,
             throwOnError: false,
           });
-          const after = await fetchTaskById(apiClient, taskId());
+          const after = await fetchTaskById(waClient, taskId());
           maybeAssertStateTransition(action, before?.task, after?.task, res.status);
 
           return res;
@@ -540,6 +548,22 @@ test.describe('Work allocation helper coverage', { tag: '@svc-work-allocation' }
     expect(selectTaskId(['first', 'second'], 'fallback')).toBe('first');
     expect(selectTaskId([undefined, 'second'], 'fallback')).toBe('second');
     expect(selectTaskId([undefined, undefined], 'fallback')).toBe('fallback');
+    expect(resolveTaskIdWithEnvFallback('dynamic', 'assigned', 'unassigned', 'fallback')).toEqual({
+      taskId: 'dynamic',
+      source: 'dynamic',
+    });
+    expect(resolveTaskIdWithEnvFallback(undefined, 'assigned', 'unassigned', 'fallback')).toEqual({
+      taskId: 'assigned',
+      source: 'env-assigned',
+    });
+    expect(resolveTaskIdWithEnvFallback(undefined, undefined, 'unassigned', 'fallback')).toEqual({
+      taskId: 'unassigned',
+      source: 'env-unassigned',
+    });
+    expect(resolveTaskIdWithEnvFallback(undefined, undefined, undefined, 'fallback')).toEqual({
+      taskId: 'fallback',
+      source: 'none',
+    });
 
     expect(hasSeededEnvTasks()).toBe(false);
     expect(hasSeededEnvTasks('task')).toBe(true);

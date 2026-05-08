@@ -20,6 +20,7 @@ const eventTriggerResponse = buildCaseEventTriggerMock({
   eventName,
   description: 'Complete the selected case task event',
 });
+const tasksTabPath = `/cases/case-details/IA/Asylum/${caseId}/tasks`;
 
 test.describe(`Task event completion as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   test('shows the no task available validation when the selected event has no completable tasks', async ({
@@ -51,19 +52,19 @@ test.describe(`Task event completion as ${userIdentifier}`, { tag: ['@integratio
     });
 
     await test.step('Open the task tab and trigger the event completion flow', async () => {
-      await page.goto(`/cases/case-details/IA/Asylum/${caseId}/tasks`);
-      await caseDetailsPage.taskListContainer.waitFor();
-      await caseDetailsPage.exuiSpinnerComponent.wait();
+      await caseDetailsPage.openTasksTab('IA', 'Asylum', caseId);
       await caseDetailsPage.selectCaseAction(eventName, { expectedLocator: caseDetailsPage.generalProblemHeading });
     });
 
     await test.step('Verify the no task available validation content', async () => {
+      await expect(page).toHaveURL(/\/no-tasks-available$/);
       await expect(caseDetailsPage.generalProblemHeading).toHaveText(/There is a problem/i);
-      await expect(page.locator('.govuk-error-summary')).toContainText('No task available');
-      await expect(page.locator('.govuk-form-group--error')).toContainText(
-        'You should have an assigned task for this event, but something has gone wrong'
-      );
-      await expect(page.getByRole('link', { name: 'Return to tasks tab' })).toBeVisible();
+      await expect(page.locator('.govuk-error-summary__body')).toContainText('No task available');
+      await expect(page.getByRole('heading', { name: 'No task available' })).toBeVisible();
+      await expect(page.getByText('You should have an assigned task for this event, but something has gone wrong')).toBeVisible();
+      const returnToTasksLink = page.getByRole('link', { name: 'Return to tasks tab' });
+      await expect(returnToTasksLink).toBeVisible();
+      await expect(returnToTasksLink).toHaveAttribute('href', tasksTabPath);
     });
   });
 
@@ -103,18 +104,21 @@ test.describe(`Task event completion as ${userIdentifier}`, { tag: ['@integratio
     });
 
     await test.step('Open the task tab and trigger the event completion flow', async () => {
-      await page.goto(`/cases/case-details/IA/Asylum/${caseId}/tasks`);
-      await caseDetailsPage.taskListContainer.waitFor();
-      await caseDetailsPage.exuiSpinnerComponent.wait();
+      await caseDetailsPage.openTasksTab('IA', 'Asylum', caseId);
       await caseDetailsPage.selectCaseAction(eventName, { expectedLocator: caseDetailsPage.generalProblemHeading });
     });
 
     await test.step('Verify the task assignment required validation content', async () => {
       await expect(page).toHaveURL(/\/task-unassigned$/);
       await expect(caseDetailsPage.generalProblemHeading).toHaveText(/There is a problem/i);
-      await expect(page.locator('.govuk-error-summary')).toContainText('Task assignment required');
-      await expect(page.locator('.govuk-form-group--error')).toContainText('You must assign one');
-      await expect(page.getByRole('link', { name: 'Return to tasks tab' })).toBeVisible();
+      await expect(page.locator('.govuk-error-summary__body')).toContainText('Task assignment required');
+      await expect(page.getByRole('heading', { name: 'Task assignment required' })).toBeVisible();
+      await expect(
+        page.getByText('You must assign one of the available tasks from the task tab to continue with your work.')
+      ).toBeVisible();
+      const returnToTasksLink = page.getByRole('link', { name: 'Return to tasks tab to assign a task' });
+      await expect(returnToTasksLink).toBeVisible();
+      await expect(returnToTasksLink).toHaveAttribute('href', tasksTabPath);
     });
   });
 });

@@ -19,7 +19,7 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
     });
 
     await test.step('Open the Case File View tab', async () => {
-      await page.goto(`/cases/case-details/PRIVATELAW/PRLAPPS/${caseId}`);
+      await caseDetailsPage.openCaseDetails('PRIVATELAW', 'PRLAPPS', caseId);
       await caseDetailsPage.selectCaseDetailsTab('Case File View');
       await caseFileViewPage.waitForReady();
     });
@@ -69,7 +69,7 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
     });
 
     await test.step('Open the Case File View tab', async () => {
-      await page.goto(`/cases/case-details/PRIVATELAW/PRLAPPS/${caseId}`);
+      await caseDetailsPage.openCaseDetails('PRIVATELAW', 'PRLAPPS', caseId);
       await caseDetailsPage.selectCaseDetailsTab('Case File View');
       await caseFileViewPage.waitForReady();
       await expect(caseFileViewPage.documentHeader).toContainText('Documents (6)');
@@ -109,7 +109,7 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
     });
 
     await test.step('Open the Case File View tab', async () => {
-      await page.goto(`/cases/case-details/PRIVATELAW/PRLAPPS/${caseId}`);
+      await caseDetailsPage.openCaseDetails('PRIVATELAW', 'PRLAPPS', caseId);
       await caseDetailsPage.selectCaseDetailsTab('Case File View');
       await caseFileViewPage.waitForReady();
       await expect(caseFileViewPage.documentHeader).toContainText('Documents (6)');
@@ -168,7 +168,7 @@ test.describe(`Case file view as ${fileViewOffUser}`, { tag: ['@integration', '@
     });
 
     await test.step('Open the Case File View tab in V1 mode', async () => {
-      await page.goto(`/cases/case-details/PRIVATELAW/PRLAPPS/${caseId}`);
+      await caseDetailsPage.openCaseDetails('PRIVATELAW', 'PRLAPPS', caseId);
       await caseDetailsPage.selectCaseDetailsTab('Case File View');
       await caseFileViewPage.waitForReady();
     });

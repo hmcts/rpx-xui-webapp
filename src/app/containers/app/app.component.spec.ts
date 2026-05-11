@@ -148,7 +148,7 @@ describe('AppComponent', () => {
   it('timeoutNotificationEventHandler keepalive', () => {
     const spyModal = spyOn(appComponent, 'updateTimeoutModal');
     appComponent.timeoutNotificationEventHandler({ eventType: 'keep-alive' });
-    // expect(authService.keepAlive).toHaveBeenCalled();
+    expect(authService.keepAlive).toHaveBeenCalled();
     expect(spyModal).not.toHaveBeenCalled();
   });
 
@@ -157,8 +157,8 @@ describe('AppComponent', () => {
 
     appComponent.revalidateSessionOnForeground();
 
-    // expect(authService.keepAlive).toHaveBeenCalled();
-    // expect(loggerService.log).toHaveBeenCalledWith('Session invalid after returning to app.');
+    expect(authService.keepAlive).toHaveBeenCalled();
+    expect(loggerService.log).toHaveBeenCalledWith('Session invalid after returning to app.');
     expect(authService.loginRedirect).not.toHaveBeenCalled();
   });
 
@@ -167,10 +167,10 @@ describe('AppComponent', () => {
 
     appComponent.revalidateSessionOnForeground();
 
-    // expect(authService.keepAlive).toHaveBeenCalled();
-    // expect(loggerService.log).toHaveBeenCalledWith(
-    //   'Failed to revalidate session after returning to app. Leaving user on current page.'
-    // );
+    expect(authService.keepAlive).toHaveBeenCalled();
+    expect(loggerService.log).toHaveBeenCalledWith(
+      'Failed to revalidate session after returning to app. Leaving user on current page.'
+    );
     expect(authService.loginRedirect).not.toHaveBeenCalled();
   });
 
@@ -179,7 +179,7 @@ describe('AppComponent', () => {
 
     appComponent.revalidateSessionOnForeground();
 
-    // expect(authService.keepAlive).toHaveBeenCalled();
+    expect(authService.keepAlive).toHaveBeenCalled();
     expect(authService.loginRedirect).not.toHaveBeenCalled();
   });
 

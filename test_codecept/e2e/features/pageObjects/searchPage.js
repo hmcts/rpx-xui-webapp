@@ -123,7 +123,7 @@ class SearchPage {
     await BrowserWaits.waitForSpinnerToDissappear();
   }
 
-  async selectJurisdiction(jurisdiction){
+  async selectJurisdiction(jurisdiction) {
     await this._waitForSearchComponent();
 
     await BrowserWaits.waitForElement(this.jurisdiction);
@@ -138,7 +138,7 @@ class SearchPage {
     RuntimeTestData.searchCasesInputs.casetypes = await this.caseType.getSelectOptions();
   }
 
-  async selectCaseType(option){
+  async selectCaseType(option) {
     await this._waitForSearchComponent();
     await BrowserWaits.waitForElement(this.caseType);
     // await this.caseType.selectWithLabelContains(option);
@@ -168,7 +168,7 @@ class SearchPage {
     });
   }
 
-  async openFirstCaseInResults(){
+  async openFirstCaseInResults() {
     await isPresent(this.searchResultsTopPagination);
     await BrowserWaits.waitForElement(this.firstResultCaseLink);
     const thisPageUrl = await currentUrl();
@@ -183,7 +183,7 @@ class SearchPage {
     await BrowserWaits.waitForPageNavigation(thisPageUrl);
   }
 
-  async openSecondCaseInResults(){
+  async openSecondCaseInResults() {
     await isPresent(this.searchResultsTopPagination);
     await BrowserWaits.waitForElement(this.secondResultCaseLink);
     const thisPageUrl = await currentUrl();
@@ -196,26 +196,26 @@ class SearchPage {
     await BrowserWaits.waitForPageNavigation(thisPageUrl);
   }
 
-  async getPageHeader(){
+  async getPageHeader() {
     return await $(this.header).textContent();
   }
 
-  async amOnPage(){
+  async amOnPage() {
     await this._waitForSearchComponent();
     const header = await this.getPageHeader();
-    console.log('Header test : '+header);
+    console.log('Header test : ' + header);
     return header === 'Search';
   }
 
-  async hasSearchReturnedResults(){
+  async hasSearchReturnedResults() {
     return await isPresent(this.searchResultsTopPagination);
   }
 
-  async waitForAtleastOneSearchResult(){
+  async waitForAtleastOneSearchResult() {
     await BrowserWaits.waitForElement(this.searchResultsTopPagination);
   }
 
-  async waitForSearchWithNoResults(){
+  async waitForSearchWithNoResults() {
     await BrowserWaits.waitForElement(this.noResultsNotification);
   }
 }

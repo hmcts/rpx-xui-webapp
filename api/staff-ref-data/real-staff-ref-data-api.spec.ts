@@ -29,72 +29,91 @@ describe('RealStaffRefDataAPI', () => {
   const mockServiceRefData: Service[] = [
     { service: 'Family', serviceCodes: ['AA1', 'AA2'] },
     { service: 'Civil', serviceCodes: ['BB1', 'BB2'] },
-    { service: 'Criminal', serviceCodes: ['CC1', 'CC2'] }
+    { service: 'Criminal', serviceCodes: ['CC1', 'CC2'] },
   ];
 
-  const mockStaffUsers: StaffUser[] = [{
-    email_id: 'test@test.com',
-    first_name: 'John',
-    last_name: 'Doe',
-    suspended: false,
-    user_type: 'legal',
-    task_supervisor: true,
-    case_allocator: false,
-    staff_admin: false,
-    idam_roles: ['caseworker'],
-    up_idam_status: 'ACTIVE',
-    roles: [{
-      role_id: '1',
-      role: 'Senior Legal Caseworker',
-      is_primary: true
-    }],
-    skills: [{
-      skill_id: 1,
-      description: 'Family Law'
-    }],
-    services: [{
-      service: 'Family',
-      service_code: 'AA1'
-    }],
-    base_locations: [{
-      location_id: 123,
-      location: 'Birmingham',
-      is_primary: true
-    }],
-    region: 'Midlands',
-    region_id: 1
-  }, {
-    email_id: 'disabled@test.com',
-    first_name: 'Disabled',
-    last_name: 'User',
-    suspended: true,
-    user_type: 'legal',
-    task_supervisor: true,
-    case_allocator: false,
-    staff_admin: false,
-    idam_roles: ['caseworker'],
-    up_idam_status: 'SUSPENDED',
-    roles: [{
-      role_id: '1',
-      role: 'Senior Legal Caseworker',
-      is_primary: true
-    }],
-    skills: [{
-      skill_id: 1,
-      description: 'Family Law'
-    }],
-    services: [{
-      service: 'Family',
-      service_code: 'AA1'
-    }],
-    base_locations: [{
-      location_id: 123,
-      location: 'Birmingham',
-      is_primary: true
-    }],
-    region: 'Midlands',
-    region_id: 1
-  }];
+  const mockStaffUsers: StaffUser[] = [
+    {
+      email_id: 'test@test.com',
+      first_name: 'John',
+      last_name: 'Doe',
+      suspended: false,
+      user_type: 'legal',
+      task_supervisor: true,
+      case_allocator: false,
+      staff_admin: false,
+      idam_roles: ['caseworker'],
+      up_idam_status: 'ACTIVE',
+      roles: [
+        {
+          role_id: '1',
+          role: 'Senior Legal Caseworker',
+          is_primary: true,
+        },
+      ],
+      skills: [
+        {
+          skill_id: 1,
+          description: 'Family Law',
+        },
+      ],
+      services: [
+        {
+          service: 'Family',
+          service_code: 'AA1',
+        },
+      ],
+      base_locations: [
+        {
+          location_id: 123,
+          location: 'Birmingham',
+          is_primary: true,
+        },
+      ],
+      region: 'Midlands',
+      region_id: 1,
+    },
+    {
+      email_id: 'disabled@test.com',
+      first_name: 'Disabled',
+      last_name: 'User',
+      suspended: true,
+      user_type: 'legal',
+      task_supervisor: true,
+      case_allocator: false,
+      staff_admin: false,
+      idam_roles: ['caseworker'],
+      up_idam_status: 'SUSPENDED',
+      roles: [
+        {
+          role_id: '1',
+          role: 'Senior Legal Caseworker',
+          is_primary: true,
+        },
+      ],
+      skills: [
+        {
+          skill_id: 1,
+          description: 'Family Law',
+        },
+      ],
+      services: [
+        {
+          service: 'Family',
+          service_code: 'AA1',
+        },
+      ],
+      base_locations: [
+        {
+          location_id: 123,
+          location: 'Birmingham',
+          is_primary: true,
+        },
+      ],
+      region: 'Midlands',
+      region_id: 1,
+    },
+  ];
 
   beforeEach(() => {
     sandbox = sinon.createSandbox();
@@ -128,7 +147,7 @@ describe('RealStaffRefDataAPI', () => {
       sendGetStub.resolves({
         status: 200,
         data: mockUsers,
-        headers: mockHeaders
+        headers: mockHeaders,
       });
 
       await realStaffRefDataAPI.getFilteredUsers(req, res, next);
@@ -139,7 +158,7 @@ describe('RealStaffRefDataAPI', () => {
         req,
         {
           'page-number': '2',
-          'page-size': '10'
+          'page-size': '10',
         }
       );
       expect(res.status).to.have.been.calledWith(200);
@@ -147,7 +166,7 @@ describe('RealStaffRefDataAPI', () => {
         items: mockUsers,
         pageSize: 10,
         pageNumber: 2,
-        totalItems: 50
+        totalItems: 50,
       });
       expect(next).to.not.have.been.called;
     });
@@ -162,7 +181,7 @@ describe('RealStaffRefDataAPI', () => {
       sendGetStub.resolves({
         status: 200,
         data: mockUsers,
-        headers: mockHeaders
+        headers: mockHeaders,
       });
 
       await realStaffRefDataAPI.getFilteredUsers(req, res, next);
@@ -173,7 +192,7 @@ describe('RealStaffRefDataAPI', () => {
         req,
         {
           'page-number': '2',
-          'page-size': '10'
+          'page-size': '10',
         }
       );
       expect(res.status).to.have.been.calledWith(200);
@@ -181,7 +200,7 @@ describe('RealStaffRefDataAPI', () => {
         items: [mockUsers[1]],
         pageSize: 10,
         pageNumber: 2,
-        totalItems: 50
+        totalItems: 50,
       });
       expect(next).to.not.have.been.called;
     });
@@ -196,24 +215,20 @@ describe('RealStaffRefDataAPI', () => {
       sendGetStub.resolves({
         status: 200,
         data: mockUsers,
-        headers: mockHeaders
+        headers: mockHeaders,
       });
 
       await realStaffRefDataAPI.getFilteredUsers(req, res, next);
 
-      expect(sendGetStub).to.have.been.calledWith(
-        `${mockBaseUrl}/refdata/case-worker/profile/search?`,
-        req,
-        {
-          'page-number': 1,
-          'page-size': 20
-        }
-      );
+      expect(sendGetStub).to.have.been.calledWith(`${mockBaseUrl}/refdata/case-worker/profile/search?`, req, {
+        'page-number': 1,
+        'page-size': 20,
+      });
       expect(res.send).to.have.been.calledWith({
         items: mockUsers,
         pageSize: 20,
         pageNumber: 1,
-        totalItems: 100
+        totalItems: 100,
       });
     });
 
@@ -238,22 +253,19 @@ describe('RealStaffRefDataAPI', () => {
         user_type: [
           { id: 'type1', code: 'Legal Officer' },
           { id: 'type2', code: 'Admin Staff' },
-          { id: 'type3', code: 'Case Worker' }
-        ]
+          { id: 'type3', code: 'Case Worker' },
+        ],
       };
 
       sendGetStub.resolves({
         status: 200,
-        data: mockResponse
+        data: mockResponse,
       });
 
       await realStaffRefDataAPI.getUserTypes(req, res, next);
 
       expect(sendGetStub).to.have.been.calledOnce;
-      expect(sendGetStub).to.have.been.calledWith(
-        `${mockBaseUrl}/refdata/case-worker/user-type`,
-        req
-      );
+      expect(sendGetStub).to.have.been.calledWith(`${mockBaseUrl}/refdata/case-worker/user-type`, req);
       expect(res.status).to.have.been.calledWith(200);
 
       const sentData = res.send.firstCall.args[0];
@@ -269,7 +281,7 @@ describe('RealStaffRefDataAPI', () => {
 
       sendGetStub.resolves({
         status: 200,
-        data: mockResponse
+        data: mockResponse,
       });
 
       await realStaffRefDataAPI.getUserTypes(req, res, next);
@@ -295,21 +307,18 @@ describe('RealStaffRefDataAPI', () => {
         job_title: [
           { role_id: 1, role_description: 'Senior Legal Caseworker' },
           { role_id: 2, role_description: 'Legal Caseworker' },
-          { role_id: 3, role_description: 'Admin Officer' }
-        ]
+          { role_id: 3, role_description: 'Admin Officer' },
+        ],
       };
 
       sendGetStub.resolves({
         status: 200,
-        data: mockResponse
+        data: mockResponse,
       });
 
       await realStaffRefDataAPI.getJobTitles(req, res, next);
 
-      expect(sendGetStub).to.have.been.calledWith(
-        `${mockBaseUrl}/refdata/case-worker/job-title`,
-        req
-      );
+      expect(sendGetStub).to.have.been.calledWith(`${mockBaseUrl}/refdata/case-worker/job-title`, req);
       expect(res.status).to.have.been.calledWith(200);
 
       const sentData = res.send.firstCall.args[0];
@@ -337,21 +346,18 @@ describe('RealStaffRefDataAPI', () => {
           { id: 'AA1', description: 'Family Service 1' },
           { id: 'BB1', description: 'Civil Service 1' },
           { id: 'CC1', description: 'Criminal Service 1' },
-          { id: 'DD1', description: 'Unknown Service' }
-        ]
+          { id: 'DD1', description: 'Unknown Service' },
+        ],
       };
 
       sendGetStub.resolves({
         status: 200,
-        data: mockResponse
+        data: mockResponse,
       });
 
       await realStaffRefDataAPI.getServices(req, res, next);
 
-      expect(sendGetStub).to.have.been.calledWith(
-        `${mockBaseUrl}/refdata/case-worker/skill`,
-        req
-      );
+      expect(sendGetStub).to.have.been.calledWith(`${mockBaseUrl}/refdata/case-worker/skill`, req);
       expect(res.status).to.have.been.calledWith(200);
 
       const sentData = res.send.firstCall.args[0];
@@ -367,7 +373,7 @@ describe('RealStaffRefDataAPI', () => {
 
       sendGetStub.resolves({
         status: 200,
-        data: mockResponse
+        data: mockResponse,
       });
 
       await realStaffRefDataAPI.getServices(req, res, next);
@@ -393,29 +399,24 @@ describe('RealStaffRefDataAPI', () => {
             id: 'family-service',
             skills: [
               { id: 'skill1', description: 'Family Law' },
-              { id: 'skill2', description: 'Child Protection' }
-            ]
+              { id: 'skill2', description: 'Child Protection' },
+            ],
           },
           {
             id: 'civil-service',
-            skills: [
-              { id: 'skill3', description: 'Civil Litigation' }
-            ]
-          }
-        ]
+            skills: [{ id: 'skill3', description: 'Civil Litigation' }],
+          },
+        ],
       };
 
       sendGetStub.resolves({
         status: 200,
-        data: mockResponse
+        data: mockResponse,
       });
 
       await realStaffRefDataAPI.getSkills(req, res, next);
 
-      expect(sendGetStub).to.have.been.calledWith(
-        `${mockBaseUrl}/refdata/case-worker/skill`,
-        req
-      );
+      expect(sendGetStub).to.have.been.calledWith(`${mockBaseUrl}/refdata/case-worker/skill`, req);
       expect(res.status).to.have.been.calledWith(200);
 
       const sentData = res.send.firstCall.args[0];
@@ -425,14 +426,12 @@ describe('RealStaffRefDataAPI', () => {
         group: 'family-service',
         options: [
           { key: 'skill1', label: 'Family Law' },
-          { key: 'skill2', label: 'Child Protection' }
-        ]
+          { key: 'skill2', label: 'Child Protection' },
+        ],
       });
       expect(sentData[1]).to.deep.equal({
         group: 'civil-service',
-        options: [
-          { key: 'skill3', label: 'Civil Litigation' }
-        ]
+        options: [{ key: 'skill3', label: 'Civil Litigation' }],
       });
     });
 
@@ -441,7 +440,7 @@ describe('RealStaffRefDataAPI', () => {
 
       sendGetStub.resolves({
         status: 200,
-        data: mockResponse
+        data: mockResponse,
       });
 
       await realStaffRefDataAPI.getSkills(req, res, next);
@@ -470,25 +469,21 @@ describe('RealStaffRefDataAPI', () => {
       sendGetStub.resolves({
         status: 200,
         data: mockUsers,
-        headers: mockHeaders
+        headers: mockHeaders,
       });
 
       await realStaffRefDataAPI.getUsersByPartialName(req, res, next);
 
-      expect(sendGetStub).to.have.been.calledWith(
-        `${mockBaseUrl}/refdata/case-worker/profile/search-by-name?search=John`,
-        req,
-        {
-          'page-number': '3',
-          'page-size': '15'
-        }
-      );
+      expect(sendGetStub).to.have.been.calledWith(`${mockBaseUrl}/refdata/case-worker/profile/search-by-name?search=John`, req, {
+        'page-number': '3',
+        'page-size': '15',
+      });
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith({
         items: mockUsers,
         pageSize: 15,
         pageNumber: 3,
-        totalItems: 25
+        totalItems: 25,
       });
     });
 
@@ -502,19 +497,15 @@ describe('RealStaffRefDataAPI', () => {
       sendGetStub.resolves({
         status: 200,
         data: mockUsers,
-        headers: mockHeaders
+        headers: mockHeaders,
       });
 
       await realStaffRefDataAPI.getUsersByPartialName(req, res, next);
 
-      expect(sendGetStub).to.have.been.calledWith(
-        `${mockBaseUrl}/refdata/case-worker/profile/search-by-name?search=`,
-        req,
-        {
-          'page-number': 1,
-          'page-size': 20
-        }
-      );
+      expect(sendGetStub).to.have.been.calledWith(`${mockBaseUrl}/refdata/case-worker/profile/search-by-name?search=`, req, {
+        'page-number': 1,
+        'page-size': 20,
+      });
     });
 
     it('should handle errors and call next', async () => {
@@ -534,7 +525,7 @@ describe('RealStaffRefDataAPI', () => {
       const unsortedArray: StaffFilterOption[] = [
         { key: '3', label: 'Zebra' },
         { key: '1', label: 'Apple' },
-        { key: '2', label: 'Banana' }
+        { key: '2', label: 'Banana' },
       ];
 
       const result = realStaffRefDataAPI.sortArray(unsortedArray);
@@ -542,7 +533,7 @@ describe('RealStaffRefDataAPI', () => {
       expect(result).to.deep.equal([
         { key: '1', label: 'Apple' },
         { key: '2', label: 'Banana' },
-        { key: '3', label: 'Zebra' }
+        { key: '3', label: 'Zebra' },
       ]);
     });
 
@@ -561,7 +552,7 @@ describe('RealStaffRefDataAPI', () => {
       const mixedCaseArray: StaffFilterOption[] = [
         { key: '1', label: 'apple' },
         { key: '2', label: 'Banana' },
-        { key: '3', label: 'CHERRY' }
+        { key: '3', label: 'CHERRY' },
       ];
 
       const result = realStaffRefDataAPI.sortArray(mixedCaseArray);
@@ -577,24 +568,20 @@ describe('RealStaffRefDataAPI', () => {
       const newUser = {
         email_id: 'newuser@test.com',
         first_name: 'Jane',
-        last_name: 'Smith'
+        last_name: 'Smith',
       };
 
       req.body = newUser;
 
       sendPostStub.resolves({
         status: 201,
-        data: { ...newUser, id: '123' }
+        data: { ...newUser, id: '123' },
       });
 
       await realStaffRefDataAPI.addNewUser(req, res, next);
 
       expect(sendPostStub).to.have.been.calledOnce;
-      expect(sendPostStub).to.have.been.calledWith(
-        `${mockBaseUrl}/refdata/case-worker/profile`,
-        newUser,
-        req
-      );
+      expect(sendPostStub).to.have.been.calledWith(`${mockBaseUrl}/refdata/case-worker/profile`, newUser, req);
       expect(res.status).to.have.been.calledWith(201);
       expect(res.send).to.have.been.calledWith({ ...newUser, id: '123' });
     });
@@ -620,16 +607,12 @@ describe('RealStaffRefDataAPI', () => {
 
       sendPostStub.resolves({
         status: 200,
-        data: mockUsers
+        data: mockUsers,
       });
 
       await realStaffRefDataAPI.fetchUsersById(req, res, next);
 
-      expect(sendPostStub).to.have.been.calledWith(
-        `${mockBaseUrl}/refdata/case-worker/users/fetchUsersById`,
-        userIds,
-        req
-      );
+      expect(sendPostStub).to.have.been.calledWith(`${mockBaseUrl}/refdata/case-worker/users/fetchUsersById`, userIds, req);
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockUsers);
     });
@@ -639,7 +622,7 @@ describe('RealStaffRefDataAPI', () => {
 
       sendPostStub.resolves({
         status: 200,
-        data: []
+        data: [],
       });
 
       await realStaffRefDataAPI.fetchUsersById(req, res, next);
@@ -664,15 +647,12 @@ describe('RealStaffRefDataAPI', () => {
 
       sendGetStub.resolves({
         status: 200,
-        data: mockStaffUsers[0]
+        data: mockStaffUsers[0],
       });
 
       await realStaffRefDataAPI.fetchSingleUserById(req, res, next);
 
-      expect(sendGetStub).to.have.been.calledWith(
-        `${mockBaseUrl}/refdata/case-worker/profile/search-by-id?id=user123`,
-        req
-      );
+      expect(sendGetStub).to.have.been.calledWith(`${mockBaseUrl}/refdata/case-worker/profile/search-by-id?id=user123`, req);
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockStaffUsers[0]);
     });
@@ -682,15 +662,12 @@ describe('RealStaffRefDataAPI', () => {
 
       sendGetStub.resolves({
         status: 404,
-        data: null
+        data: null,
       });
 
       await realStaffRefDataAPI.fetchSingleUserById(req, res, next);
 
-      expect(sendGetStub).to.have.been.calledWith(
-        `${mockBaseUrl}/refdata/case-worker/profile/search-by-id?id=undefined`,
-        req
-      );
+      expect(sendGetStub).to.have.been.calledWith(`${mockBaseUrl}/refdata/case-worker/profile/search-by-id?id=undefined`, req);
     });
 
     it('should handle errors', async () => {
@@ -708,23 +685,19 @@ describe('RealStaffRefDataAPI', () => {
     it('should successfully update a user', async () => {
       const updatedUser = {
         ...mockStaffUsers[0],
-        first_name: 'Updated'
+        first_name: 'Updated',
       };
 
       req.body = updatedUser;
 
       sendPutStub.resolves({
         status: 200,
-        data: updatedUser
+        data: updatedUser,
       });
 
       await realStaffRefDataAPI.updateUser(req, res, next);
 
-      expect(sendPutStub).to.have.been.calledWith(
-        `${mockBaseUrl}/refdata/case-worker/profile`,
-        updatedUser,
-        req
-      );
+      expect(sendPutStub).to.have.been.calledWith(`${mockBaseUrl}/refdata/case-worker/profile`, updatedUser, req);
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(updatedUser);
     });
@@ -741,4 +714,3 @@ describe('RealStaffRefDataAPI', () => {
     });
   });
 });
-

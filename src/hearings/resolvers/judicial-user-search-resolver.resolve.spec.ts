@@ -26,8 +26,8 @@ describe('Ref Data Resolver', () => {
         JudicialRefDataService,
         { provide: APP_BASE_HREF, useValue: '/' },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     });
     mockStore = TestBed.inject(Store);
     judicialRefDataService = TestBed.inject(JudicialRefDataService) as JudicialRefDataService;
@@ -57,7 +57,9 @@ describe('Ref Data Resolver', () => {
 
   it('should handle getUsersData$ error', inject([JudicialUserSearchResolver], (service: JudicialUserSearchResolver) => {
     const judgePersonalCodesList = ['123', '456'];
-    const mockError = { error: { errorCode: 404, errorDescription: 'string', errorMessage: 'string', status: 'string', timeStamp: 'string' } };
+    const mockError = {
+      error: { errorCode: 404, errorDescription: 'string', errorMessage: 'string', status: 'string', timeStamp: 'string' },
+    };
     spyOn(judicialRefDataService, 'searchJudicialUserByPersonalCodes').and.returnValue(throwError(() => mockError));
     spyOn(mockStore, 'dispatch').and.callThrough();
     service.getUsersData$(judgePersonalCodesList).subscribe((users) => {

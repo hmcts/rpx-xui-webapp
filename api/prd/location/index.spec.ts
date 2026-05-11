@@ -14,7 +14,7 @@ describe('prd Locations', () => {
   const GET = 'get';
 
   let sandbox: sinon.SinonSandbox;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let spy: sinon.SinonSpy;
   const getLocationsRes = mockRes({ status: 200, data: mockLocations });
   const getLocationByIdRes = mockRes({ status: 200, data: mockLocations });
@@ -36,12 +36,12 @@ describe('prd Locations', () => {
         query: {
           searchTerm: 'Gla',
           serviceIds: 'IA,CIVIL,SSCS,BHA1,ABA1,AAA1',
-          locationType: 'hearing'
-        }
+          locationType: 'hearing',
+        },
       });
 
       const response = mockRes({
-        data: mockLocations
+        data: mockLocations,
       });
 
       try {
@@ -60,12 +60,12 @@ describe('prd Locations', () => {
       const req = mockReq({
         query: {
           epimms_id: '2345',
-          serviceCode: 'ABA1'
-        }
+          serviceCode: 'ABA1',
+        },
       });
 
       const response = mockRes({
-        data: mockLocations.slice(2, 3)
+        data: mockLocations.slice(2, 3),
       });
 
       try {

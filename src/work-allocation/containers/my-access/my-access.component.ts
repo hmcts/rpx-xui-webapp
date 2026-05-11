@@ -12,7 +12,7 @@ import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-cas
 @Component({
   standalone: false,
   selector: 'exui-my-access',
-  templateUrl: 'my-access.component.html'
+  templateUrl: 'my-access.component.html',
 })
 export class MyAccessComponent extends WorkCaseListWrapperComponent {
   public get emptyMessage(): string {
@@ -40,11 +40,9 @@ export class MyAccessComponent extends WorkCaseListWrapperComponent {
       const id = userInfo.id ? userInfo.id : userInfo.uid;
       const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
       return {
-        search_parameters: [
-          { key: 'user', operator: 'IN', values: [id] }
-        ],
+        search_parameters: [{ key: 'user', operator: 'IN', values: [id] }],
         sorting_parameters: [this.getSortParameter()],
-        search_by: userRole
+        search_by: userRole,
       };
     }
   }
@@ -54,11 +52,11 @@ export class MyAccessComponent extends WorkCaseListWrapperComponent {
       if (item.role.startsWith('challenged-access')) {
         CasesService.updateChallengedAccessRequestAttributes(this.httpClient, item.case_id, { isNew: false })
           .pipe(take(1))
-          .subscribe(() => item.isNew = false);
+          .subscribe(() => (item.isNew = false));
       } else if (item.role.startsWith('specific-access') && item.startDate !== 'Pending') {
         CasesService.updateSpecificAccessRequestAttributes(this.httpClient, item.case_id, { isNew: false })
           .pipe(take(1))
-          .subscribe(() => item.isNew = false);
+          .subscribe(() => (item.isNew = false));
       }
     }
   }

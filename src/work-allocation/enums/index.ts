@@ -25,5 +25,5 @@ export {
   TaskSort,
   TaskPriority,
   TaskView,
-  TaskContext
+  TaskContext,
 };

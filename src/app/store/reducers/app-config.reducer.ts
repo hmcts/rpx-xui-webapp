@@ -25,24 +25,22 @@ export const initialState: AppConfigState = {
   userDetails: {
     sessionTimeout: {
       idleModalDisplayTime: 0,
-      totalIdleTime: 0
+      totalIdleTime: 0,
     },
     canShareCases: false,
-    userInfo: null
+    userInfo: null,
   },
-  decorate16digitCaseReferenceSearchBoxInHeader: false
+  decorate16digitCaseReferenceSearchBoxInHeader: false,
 };
 
-export function reducer(
-  state = initialState,
-  action: fromActions.AppActions): AppConfigState {
+export function reducer(state = initialState, action: fromActions.AppActions): AppConfigState {
   switch (action.type) {
     case fromActions.APP_LOAD_CONFIG_SUCCESS: {
       const config = action.payload;
       return {
         ...state,
         config,
-        loaded: true
+        loaded: true,
       };
     }
     // TO add appropriate state as/ when ,reqd.
@@ -50,7 +48,7 @@ export function reducer(
       return {
         ...state,
         loading: false,
-        loaded: false
+        loaded: false,
       };
     }
     case fromActions.LOAD_HAS_ACCEPTED_TC_SUCCESS: {
@@ -58,8 +56,8 @@ export function reducer(
         ...state,
         termsAndCondition: {
           isLoaded: true,
-          hasUserAcceptedTC: action.payload
-        }
+          hasUserAcceptedTC: action.payload,
+        },
       };
     }
     case fromActions.LOAD_HAS_ACCEPTED_TC_FAIL: {
@@ -67,8 +65,8 @@ export function reducer(
         ...state,
         termsAndCondition: {
           isLoaded: false,
-          hasUserAcceptedTC: false
-        }
+          hasUserAcceptedTC: false,
+        },
       };
     }
     case fromActions.ACCEPT_T_AND_C_SUCCESS: {
@@ -76,43 +74,43 @@ export function reducer(
         ...state,
         termsAndCondition: {
           isLoaded: true,
-          hasUserAcceptedTC: action.payload
-        }
+          hasUserAcceptedTC: action.payload,
+        },
       };
     }
     case fromActions.LOAD_TERMS_CONDITIONS_SUCCESS:
       return {
         ...state,
-        termsAndConditions: action.payload
+        termsAndConditions: action.payload,
       };
     case fromActions.LOAD_FEATURE_TOGGLE_CONFIG_SUCCESS:
       return {
         ...state,
-        isTermsAndConditionsFeatureEnabled: action.payload
+        isTermsAndConditionsFeatureEnabled: action.payload,
       };
     case fromActions.LOAD_USER_DETAILS_SUCCESS:
       return {
         ...state,
-        userDetails: action.payload
+        userDetails: action.payload,
       };
     case fromActions.START_IDLE_SESSION_TIMEOUT:
       return {
         ...state,
-        useIdleSessionTimeout: true
+        useIdleSessionTimeout: true,
       };
     case fromActions.STOP_IDLE_SESSION_TIMEOUT:
       return {
         ...state,
-        useIdleSessionTimeout: false
+        useIdleSessionTimeout: false,
       };
     case fromActions.DECORATE_16_DIGIT_CASE_REFERENCE_SEARCH_BOX_IN_HEADER:
       return {
         ...state,
-        decorate16digitCaseReferenceSearchBoxInHeader: action.payload
+        decorate16digitCaseReferenceSearchBoxInHeader: action.payload,
       };
     default:
       return {
-        ...state
+        ...state,
       };
   }
 }
@@ -122,4 +120,5 @@ export const getTandCLoadedConfig = (state: AppConfigState) => state.termsAndCon
 export const getTermsConditions = (state: AppConfigState) => state.termsAndConditions;
 export const getUseIdleSessionTimeout = (state: AppConfigState) => state.useIdleSessionTimeout;
 export const getUserDetails = (state: AppConfigState) => state.userDetails;
-export const getDecorate16digitCaseReferenceSearchBoxInHeader = (state: AppConfigState) => state.decorate16digitCaseReferenceSearchBoxInHeader;
+export const getDecorate16digitCaseReferenceSearchBoxInHeader = (state: AppConfigState) =>
+  state.decorate16digitCaseReferenceSearchBoxInHeader;

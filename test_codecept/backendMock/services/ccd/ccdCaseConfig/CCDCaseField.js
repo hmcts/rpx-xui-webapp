@@ -1,38 +1,35 @@
-
 const ccdFieldTemplate = {
-  'id': 'testTextField',
-  'label': 'Organisation ID',
-  'hidden': null,
-  'order': null,
-  'metadata': false,
-  'case_type_id': null,
-  'hint_text': null,
-  'field_type': {
-    'id': 'Text',
-    'type': 'Text',
-    'min': null,
-    'max': null,
-    'regular_expression': null,
-    'fixed_list_items': [],
-    'complex_fields': [],
-    'collection_field_type': null
+  id: 'testTextField',
+  label: 'Organisation ID',
+  hidden: null,
+  order: null,
+  metadata: false,
+  case_type_id: null,
+  hint_text: null,
+  field_type: {
+    id: 'Text',
+    type: 'Text',
+    min: null,
+    max: null,
+    regular_expression: null,
+    fixed_list_items: [],
+    complex_fields: [],
+    collection_field_type: null,
   },
-  'security_classification': 'PUBLIC',
-  'live_from': null,
-  'live_until': null,
-  'show_condition': null,
-  'acls': [
-
-  ],
-  'complexACLs': [],
-  'display_context': null,
-  'display_context_parameter': null,
-  'formatted_value': null,
-  'default_value': null,
-  'retain_hidden_value': null,
-  'show_summary_change_option': true,
-  'show_summary_content_option': null,
-  'retain_hidden_value': null
+  security_classification: 'PUBLIC',
+  live_from: null,
+  live_until: null,
+  show_condition: null,
+  acls: [],
+  complexACLs: [],
+  display_context: null,
+  display_context_parameter: null,
+  formatted_value: null,
+  default_value: null,
+  retain_hidden_value: null,
+  show_summary_change_option: true,
+  show_summary_content_option: null,
+  retain_hidden_value: null,
 };
 
 class CCDcaseField {
@@ -85,7 +82,6 @@ class CCDcaseField {
         break;
       case 'OrderSummary':
       case 'CaseLink':
-
         template.field_type.id = 'CaseLink';
         template.field_type.type = 'Complex';
 
@@ -99,7 +95,11 @@ class CCDcaseField {
         template.field_type.id = 'OrganisationPolicy';
         template.field_type.type = 'Complex';
         template.display_context = 'COMPLEX';
-        const OrgPolicyCaseAssignedRole = this.getCCDFieldTemplateCopy({ type: 'Text', id: 'OrgPolicyCaseAssignedRole', label: 'Case Assigned Role' });
+        const OrgPolicyCaseAssignedRole = this.getCCDFieldTemplateCopy({
+          type: 'Text',
+          id: 'OrgPolicyCaseAssignedRole',
+          label: 'Case Assigned Role',
+        });
         const OrgReference = this.getCCDFieldTemplateCopy({ type: 'Text', id: 'OrgPolicyReference', label: 'Reference' });
 
         const organisation = this.getCCDFieldTemplateCopy({ type: 'Complex', id: 'Organisation', label: 'Organisation' });
@@ -108,7 +108,11 @@ class CCDcaseField {
         const orgNaMe = this.getCCDFieldTemplateCopy({ type: 'Text', id: 'OrganisationName', label: 'Name' });
         organisation.field_type.complex_fields = [orgId, orgNaMe];
 
-        const PrepopulateOrgVal = this.getCCDFieldTemplateCopy({ type: 'YesOrNo', id: 'PrepopulateToUsersOrganisation', label: 'Prepopulate User Organisation' });
+        const PrepopulateOrgVal = this.getCCDFieldTemplateCopy({
+          type: 'YesOrNo',
+          id: 'PrepopulateToUsersOrganisation',
+          label: 'Prepopulate User Organisation',
+        });
 
         template.field_type.complex_fields = [OrgPolicyCaseAssignedRole, organisation, OrgReference, PrepopulateOrgVal];
         break;
@@ -123,8 +127,16 @@ class CCDcaseField {
       template.field_type.fixed_list_items = listItems;
     }
 
-    template.id = fieldConfig.id ? fieldConfig.id : fieldConfig.label ? this.toCamelCase(fieldConfig.label) : 'No id or label provided';
-    template.label = fieldConfig.label ? fieldConfig.label : fieldConfig.id ? this.toDeCamelize(fieldConfig.id) : 'Nameless field';
+    template.id = fieldConfig.id
+      ? fieldConfig.id
+      : fieldConfig.label
+        ? this.toCamelCase(fieldConfig.label)
+        : 'No id or label provided';
+    template.label = fieldConfig.label
+      ? fieldConfig.label
+      : fieldConfig.id
+        ? this.toDeCamelize(fieldConfig.id)
+        : 'Nameless field';
     this.ConfigureCCDField(template, fieldConfig);
     if (fieldConfig.value) {
       template.value = fieldConfig.value;
@@ -159,14 +171,17 @@ class CCDcaseField {
   }
 
   toCamelCase(str) {
-    return str.split(' ').map(function (word, index) {
-      // If it is the first word make sure to lowercase all the chars.
-      if (index == 0) {
-        return word.toLowerCase();
-      }
-      // If it is not the first word only upper case the first char and lowercase the rest.
-      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-    }).join('');
+    return str
+      .split(' ')
+      .map(function (word, index) {
+        // If it is the first word make sure to lowercase all the chars.
+        if (index == 0) {
+          return word.toLowerCase();
+        }
+        // If it is not the first word only upper case the first char and lowercase the rest.
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+      })
+      .join('');
   }
 
   toDeCamelize(str) {

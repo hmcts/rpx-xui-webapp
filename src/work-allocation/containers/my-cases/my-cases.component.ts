@@ -9,7 +9,7 @@ import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-cas
 @Component({
   standalone: false,
   selector: 'exui-my-cases',
-  templateUrl: 'my-cases.component.html'
+  templateUrl: 'my-cases.component.html',
 })
 export class MyCasesComponent extends WorkCaseListWrapperComponent {
   public get emptyMessage(): string {
@@ -44,13 +44,13 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
       let serviceFilters = [];
       let locationFilters = [];
       /* istanbul ignore else */
-      if (locationsFromLS && locationsFromLS.fields) {
+      if (locationsFromLS?.fields) {
         const services = locationsFromLS.fields.find((field) => field.name === 'services');
         const locations = locationsFromLS.fields.find((field) => field.name === 'locations');
-        if (services && services.hasOwnProperty('value')) {
+        if (services?.hasOwnProperty('value')) {
           serviceFilters = services.value;
         }
-        if (locations && locations.hasOwnProperty('value')) {
+        if (locations?.hasOwnProperty('value')) {
           locationFilters = locations.value.map((l) => l.epimms_id);
         }
       }
@@ -59,10 +59,10 @@ export class MyCasesComponent extends WorkCaseListWrapperComponent {
         search_parameters: [
           { key: 'user', operator: 'IN', values: [id] },
           { key: 'services', operator: 'IN', values: serviceFilters },
-          { key: 'locations', operator: 'IN', values: locationFilters }
+          { key: 'locations', operator: 'IN', values: locationFilters },
         ],
         sorting_parameters: [this.getSortParameter()],
-        search_by: userRole
+        search_by: userRole,
       };
     }
   }

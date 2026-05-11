@@ -1,27 +1,24 @@
-
 const axios = require('axios');
 
-const axiosInstance = axios.create({
+const axiosInstance = axios.create({});
 
-});
-
-class BackendMockClient{
-  constructor(){
+class BackendMockClient {
+  constructor() {
     this.baseUrl = 'http://localhost:8080/client/';
     this.activeSession = null;
   }
 
-  async updateAuthSessionWithRoles(auth, roles){
+  async updateAuthSessionWithRoles(auth, roles) {
     return await axiosInstance.post(`${this.baseUrl}session/user/roles`, {
       auth: auth,
-      roles: roles
+      roles: roles,
     });
   }
 
   async updateAuthSessionWithUserInfo(auth, userInfo) {
     return await axiosInstance.post(`${this.baseUrl}session/user/info`, {
       auth: auth,
-      userInfo: userInfo
+      userInfo: userInfo,
     });
   }
 
@@ -29,7 +26,7 @@ class BackendMockClient{
     await this.setUserApiData(auth, 'OnUserRoleAssignments', { status: 200, data: roleAssignments });
     return await axiosInstance.post(`${this.baseUrl}session/user/roleAssignments`, {
       auth: auth,
-      roleAssignments: roleAssignments
+      roleAssignments: roleAssignments,
     });
   }
 
@@ -37,49 +34,48 @@ class BackendMockClient{
     return await axiosInstance.post(`${this.baseUrl}session/userApiData`, {
       auth: auth,
       apiMethod: apiMethod,
-      apiResponse: response
+      apiResponse: response,
     });
   }
 
   async getRequestBody(auth, apiMethod) {
     return await axiosInstance.post(`${this.baseUrl}session/get/capturedRequest`, {
       auth: auth,
-      apiMethod: apiMethod
+      apiMethod: apiMethod,
     });
   }
 
-  async getSessionRolesAndRoleAssignments(auth){
+  async getSessionRolesAndRoleAssignments(auth) {
     return await axiosInstance.post(`${this.baseUrl}session/getUserRolesAndRoleAssignments`, {
-      auth: auth
+      auth: auth,
     });
   }
 
   async getUserSesionData(auth) {
     return await axiosInstance.post(`${this.baseUrl}session/user/sessionData`, {
-      auth: auth
+      auth: auth,
     });
   }
 
-  async clearUserSessionData(auth){
+  async clearUserSessionData(auth) {
     return await axiosInstance.post(`${this.baseUrl}session/user/sessionData/clear`, {
-      auth: auth
+      auth: auth,
     });
   }
 
-  async logMessage(mesage){
+  async logMessage(mesage) {
     if (process.env.TEST_TYPE !== 'e2e') {
       return await axiosInstance.post(`${this.baseUrl}session/logMessage`, {
-        message: mesage
+        message: mesage,
       });
     }
   }
 
-  async addReusableSession(xuiCallbackResponse){
+  async addReusableSession(xuiCallbackResponse) {
     return await axiosInstance.post(`${this.baseUrl}session/add`, {
-      data: xuiCallbackResponse
+      data: xuiCallbackResponse,
     });
   }
 }
 
 module.exports = new BackendMockClient();
-

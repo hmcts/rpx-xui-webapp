@@ -4,5 +4,5 @@ export enum SpecificAccessNavigationEvent {
   CONTINUE,
   RETURNTOMYTASKS,
   RETURNTOTASKSTAB,
-  SUBMIT
+  SUBMIT,
 }

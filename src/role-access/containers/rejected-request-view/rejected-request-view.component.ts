@@ -9,7 +9,7 @@ import { AllocateRoleService } from '../../services';
 @Component({
   standalone: false,
   selector: 'exui-rejected-request',
-  templateUrl: './rejected-request-view.component.html'
+  templateUrl: './rejected-request-view.component.html',
 })
 export class RejectedRequestViewComponent implements OnInit {
   public caseName: string;
@@ -27,35 +27,53 @@ export class RejectedRequestViewComponent implements OnInit {
   public endDate: string;
   public caseType: string;
 
-  constructor(private readonly route: ActivatedRoute,
-              private readonly router: Router,
-              private readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService,
-              private readonly caseworkerDataService: CaseworkerDataService,
-              private readonly allocateRoleService: AllocateRoleService) {
-    this.caseName = this.route.snapshot.queryParams && this.route.snapshot.queryParams.caseName ?
-      this.route.snapshot.queryParams.caseName : '';
-    this.caseReference = this.route.snapshot.queryParams && this.route.snapshot.queryParams.caseReference ?
-      this.route.snapshot.queryParams.caseReference : '';
-    this.roleCategory = this.route.snapshot.queryParams && this.route.snapshot.queryParams.reviewerRoleCategory ?
-      this.route.snapshot.queryParams.reviewerRoleCategory : '';
-    this.jurisdiction = this.route.snapshot.queryParams && this.route.snapshot.queryParams.jurisdiction ?
-      this.route.snapshot.queryParams.jurisdiction : '';
-    this.dateSubmitted = this.route.snapshot.queryParams && this.route.snapshot.queryParams.dateSubmitted ?
-      this.route.snapshot.queryParams.dateSubmitted : '';
-    this.accessReason = this.route.snapshot.queryParams && this.route.snapshot.queryParams.specificAccessReason ?
-      this.route.snapshot.queryParams.specificAccessReason : '';
+  constructor(
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService,
+    private readonly caseworkerDataService: CaseworkerDataService,
+    private readonly allocateRoleService: AllocateRoleService
+  ) {
+    this.caseName =
+      this.route.snapshot.queryParams && this.route.snapshot.queryParams.caseName ? this.route.snapshot.queryParams.caseName : '';
+    this.caseReference =
+      this.route.snapshot.queryParams && this.route.snapshot.queryParams.caseReference
+        ? this.route.snapshot.queryParams.caseReference
+        : '';
+    this.roleCategory =
+      this.route.snapshot.queryParams && this.route.snapshot.queryParams.reviewerRoleCategory
+        ? this.route.snapshot.queryParams.reviewerRoleCategory
+        : '';
+    this.jurisdiction =
+      this.route.snapshot.queryParams && this.route.snapshot.queryParams.jurisdiction
+        ? this.route.snapshot.queryParams.jurisdiction
+        : '';
+    this.dateSubmitted =
+      this.route.snapshot.queryParams && this.route.snapshot.queryParams.dateSubmitted
+        ? this.route.snapshot.queryParams.dateSubmitted
+        : '';
+    this.accessReason =
+      this.route.snapshot.queryParams && this.route.snapshot.queryParams.specificAccessReason
+        ? this.route.snapshot.queryParams.specificAccessReason
+        : '';
 
-    this.dateRejected = this.route.snapshot.queryParams && this.route.snapshot.queryParams.dateRejected ?
-      this.route.snapshot.queryParams.dateRejected : '';
-    this.reviewer = this.route.snapshot.queryParams && this.route.snapshot.queryParams.reviewer ?
-      this.route.snapshot.queryParams.reviewer : '';
-    this.reviewReason = this.route.snapshot.queryParams && this.route.snapshot.queryParams.infoRequired ?
-      this.getRejectReason(JSON.parse(this.route.snapshot.queryParams.infoRequired), this.route.snapshot.queryParams.infoRequiredComment)
-      : 'No reason for rejection found';
-    this.endDate = this.route.snapshot.queryParams && this.route.snapshot.queryParams.endDate ?
-      this.route.snapshot.queryParams.endDate : '';
-    this.caseType = this.route.snapshot.queryParams && this.route.snapshot.queryParams.caseType ?
-      this.route.snapshot.queryParams.caseType : '';
+    this.dateRejected =
+      this.route.snapshot.queryParams && this.route.snapshot.queryParams.dateRejected
+        ? this.route.snapshot.queryParams.dateRejected
+        : '';
+    this.reviewer =
+      this.route.snapshot.queryParams && this.route.snapshot.queryParams.reviewer ? this.route.snapshot.queryParams.reviewer : '';
+    this.reviewReason =
+      this.route.snapshot.queryParams && this.route.snapshot.queryParams.infoRequired
+        ? this.getRejectReason(
+            JSON.parse(this.route.snapshot.queryParams.infoRequired),
+            this.route.snapshot.queryParams.infoRequiredComment
+          )
+        : 'No reason for rejection found';
+    this.endDate =
+      this.route.snapshot.queryParams && this.route.snapshot.queryParams.endDate ? this.route.snapshot.queryParams.endDate : '';
+    this.caseType =
+      this.route.snapshot.queryParams && this.route.snapshot.queryParams.caseType ? this.route.snapshot.queryParams.caseType : '';
   }
 
   public ngOnInit(): void {
@@ -63,20 +81,17 @@ export class RejectedRequestViewComponent implements OnInit {
       return;
     }
     if (this.roleCategory === RoleCategory.JUDICIAL) {
-      this.allocateRoleService.getCaseRolesUserDetails([this.reviewer], [this.jurisdiction]).subscribe(
-        (caseRoleUserDetails) => {
-          this.reviewerName = caseRoleUserDetails[0].full_name;
-        }
-      );
+      this.allocateRoleService.getCaseRolesUserDetails([this.reviewer], [this.jurisdiction]).subscribe((caseRoleUserDetails) => {
+        this.reviewerName = caseRoleUserDetails[0].full_name;
+      });
     } else {
       this.waSupportedJurisdictionsService.getWASupportedJurisdictions().subscribe((services) => {
-        this.caseworkerDataService.getUsersFromServices(services).subscribe(
-          (caseworkers) => {
-            const caseworker = caseworkers.find((thisCaseworker) => thisCaseworker.idamId === this.reviewer);
-            if (caseworker) {
-              this.reviewerName = `${caseworker.firstName} ${caseworker.lastName}`;
-            }
-          });
+        this.caseworkerDataService.getUsersFromServices(services).subscribe((caseworkers) => {
+          const caseworker = caseworkers.find((thisCaseworker) => thisCaseworker.idamId === this.reviewer);
+          if (caseworker) {
+            this.reviewerName = `${caseworker.firstName} ${caseworker.lastName}`;
+          }
+        });
       });
     }
   }
@@ -91,8 +106,10 @@ export class RejectedRequestViewComponent implements OnInit {
   }
 
   public getRejectReason(infoRequired: boolean, infoRequiredComment: string): string {
-    return infoRequired ?
-      infoRequiredComment ? infoRequiredComment : RejectionReasonText.MoreInformation :
-      RejectionReasonText.Rejected;
+    return infoRequired
+      ? infoRequiredComment
+        ? infoRequiredComment
+        : RejectionReasonText.MoreInformation
+      : RejectionReasonText.Rejected;
   }
 }

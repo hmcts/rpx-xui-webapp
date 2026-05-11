@@ -1,6 +1,8 @@
-class WAUtils{
+class WAUtils {
   getTaskListReqSearchParam(reqBody, key, operator) {
-    const searhParam = reqBody.searchRequest.search_parameters.filter((searchParam) => searchParam.key === key && searchParam.operator === operator);
+    const searhParam = reqBody.searchRequest.search_parameters.filter(
+      (searchParam) => searchParam.key === key && searchParam.operator === operator
+    );
     if (searhParam.length === 0) {
       return null;
     }

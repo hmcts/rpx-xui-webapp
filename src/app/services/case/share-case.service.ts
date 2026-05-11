@@ -16,8 +16,8 @@ export class CaseShareService {
     const caseIds = shareCases.map((aCase) => aCase.caseId).join(',');
     const options = {
       params: {
-        case_ids: caseIds
-      }
+        case_ids: caseIds,
+      },
     };
     return this.http.get<SharedCase[]>('api/caseshare/cases', options);
   }

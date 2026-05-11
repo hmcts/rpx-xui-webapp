@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -12,7 +13,7 @@ import { TaskPermission, TaskRole } from '../../models/tasks';
   standalone: false,
   selector: 'exui-task-assignment-choose-role',
   templateUrl: './task-assignment-choose-role.component.html',
-  styleUrls: ['./task-assignment-choose-role.component.scss']
+  styleUrls: ['./task-assignment-choose-role.component.scss'],
 })
 export class TaskAssignmentChooseRoleComponent implements OnInit {
   private static readonly userDetails: string = 'userDetails';
@@ -26,20 +27,24 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
   public form: FormGroup;
   public roles: OptionsModel[];
 
-  constructor(private readonly fb: FormBuilder,
-              private readonly router: Router,
-              private readonly sessionStorageService: SessionStorageService,
-              private readonly route: ActivatedRoute) {}
+  constructor(
+    private readonly fb: FormBuilder,
+    private readonly router: Router,
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly route: ActivatedRoute,
+    private readonly location: Location
+  ) {}
 
   private get returnUrl(): string {
     // Default URL is '' because this is the only sensible return navigation if the user has used browser navigation
-    // buttons, which clear the `window.history.state` object
+    // buttons, which clear the state object
     let url: string = '';
+    const state = this.location.getState() as { returnUrl?: string } | null;
 
     // The returnUrl is undefined if the user has used browser navigation buttons, so check for its presence
-    if (window && window.history && window.history.state && window.history.state.returnUrl) {
+    if (state?.returnUrl) {
       // Truncate any portion of the URL beginning with '#', as is appended when clicking "Manage" on a task
-      url = window.history.state.returnUrl.split('#')[0];
+      url = state.returnUrl.split('#')[0];
     }
 
     return url;
@@ -47,14 +52,14 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
 
   public ngOnInit(): void {
     this.taskRoles = this.route.snapshot.data.roles;
-    this.roles = getOptions(this.taskRoles, this.sessionStorageService);
+    this.roles = this.taskRoles ? getOptions(this.taskRoles, this.sessionStorageService) : [];
     const taskId = this.route.snapshot.paramMap.get('taskId');
     this.service = this.route.snapshot.queryParamMap.get('service');
     this.verb = this.route.snapshot.data.verb;
     this.setCaptionAndDescription(this.verb);
     this.form = this.fb.group({
       role: [this.setUpDefaultRoleType(this.getCurrentUserRoleCategory(), this.taskRoles), Validators.required],
-      taskId: [taskId, Validators.required]
+      taskId: [taskId, Validators.required],
     });
   }
 
@@ -66,8 +71,11 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
     if (valid) {
       const role = values.role;
       const taskId = values.taskId;
-      const state = window.history.state;
-      this.router.navigate(['work', taskId, this.verb.toLowerCase(), 'person'], { queryParams: { role, service: this.service }, state });
+      const state = this.location.getState();
+      this.router.navigate(['work', taskId, this.verb.toLowerCase(), 'person'], {
+        queryParams: { role, service: this.service },
+        state,
+      });
     }
   }
 
@@ -94,12 +102,12 @@ export class TaskAssignmentChooseRoleComponent implements OnInit {
     } else if (roles.length) {
       const roleCategories = this.taskWithOwnPermission(roles);
       // if there is only one role with relevant permissions, use that role
-      if (roleCategories && roleCategories.length === 1) {
+      if (roleCategories?.length === 1) {
         return roleCategories[0].toUpperCase();
-      // if the user has a role that matches the relevant task role category
+        // if the user has a role that matches the relevant task role category
       } else if (roleCategories.includes(userRoleCategory)) {
         return userRoleCategory;
-      // else return simply the first role with an own permission
+        // else return simply the first role with an own permission
       }
 
       return roleCategories[0];

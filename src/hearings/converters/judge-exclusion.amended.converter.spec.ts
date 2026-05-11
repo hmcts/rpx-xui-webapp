@@ -16,11 +16,13 @@ describe('JudgeExclusionAmendedConverter', () => {
   it('should transform judge exclude amened flag based on selection', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {};
-    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences = [{
-      memberID: 'P000001',
-      memberType: MemberType.JUDGE,
-      requirementType: RequirementType.EXCLUDE
-    }];
+    STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements.panelPreferences = [
+      {
+        memberID: 'P000001',
+        memberType: MemberType.JUDGE,
+        requirementType: RequirementType.EXCLUDE,
+      },
+    ];
     const result$ = judgeExclusionAmendedConverter.transformIsAmended(of(STATE));
     const isAmended = true;
     const expected = cold('(b|)', { b: isAmended });

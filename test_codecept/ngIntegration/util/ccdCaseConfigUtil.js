@@ -1,5 +1,5 @@
-class caseConfigUtil{
-  getWizardPages(caseConfig){
+class caseConfigUtil {
+  getWizardPages(caseConfig) {
     const wizardpages = [];
   }
 }

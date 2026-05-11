@@ -11,7 +11,7 @@ const pactSetUp = new PactV3TestSetup({ provider: 'am_orgRoleMapping_refresh', p
 
 describe('get /am/role-mapping/judicial/refresh', () => {
   const sandbox: sinon.SinonSandbox = sinon.createSandbox();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let next;
 
   beforeEach(() => {
@@ -26,21 +26,22 @@ describe('get /am/role-mapping/judicial/refresh', () => {
         method: 'POST',
         path: '/am/role-mapping/judicial/refresh',
         headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/json'
+          Authorization: 'Bearer someAuthorizationToken',
+          ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+          'content-type': 'application/json',
         },
-        body: { refreshRequest: { userIds: ['5629957f-4dcd-40b8-a0b2-e64ff5898b28'] } }
+        body: { refreshRequest: { userIds: ['5629957f-4dcd-40b8-a0b2-e64ff5898b28'] } },
       },
       willRespondWith: {
         status: 200,
         headers: {
-          'Content-Type': 'application/vnd.uk.gov.hmcts.am-org-role-mapping-service.map-judicial-assignments+json;charset=UTF-8;version=1.0'
+          'Content-Type':
+            'application/vnd.uk.gov.hmcts.am-org-role-mapping-service.map-judicial-assignments+json;charset=UTF-8;version=1.0',
         },
         body: {
-          'Message': somethingLike('Role assignments have been refreshed successfully')
-        }
-      }
+          Message: somethingLike('Role assignments have been refreshed successfully'),
+        },
+      },
     };
 
     pactSetUp.provider.addInteraction(interaction);
@@ -62,13 +63,13 @@ describe('get /am/role-mapping/judicial/refresh', () => {
 
       const req = mockReq({
         headers: {
-          'Authorization': 'Bearer someAuthorizationToken',
-          'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-          'content-type': 'application/json'
+          Authorization: 'Bearer someAuthorizationToken',
+          ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+          'content-type': 'application/json',
         },
         body: {
-          userId: '5629957f-4dcd-40b8-a0b2-e64ff5898b28'
-        }
+          userId: '5629957f-4dcd-40b8-a0b2-e64ff5898b28',
+        },
       });
 
       let returnedResponse = null;

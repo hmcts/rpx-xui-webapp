@@ -12,7 +12,7 @@ import * as fromCaseCreate from '../../store';
 @Component({
   standalone: false,
   selector: 'exui-case-details',
-  templateUrl: './case-details.component.html'
+  templateUrl: './case-details.component.html',
 })
 export class CaseDetailsComponent implements OnDestroy, OnInit {
   public caseId: string;
@@ -21,8 +21,7 @@ export class CaseDetailsComponent implements OnDestroy, OnInit {
   constructor(private readonly store: Store<fromCaseCreate.State>) {}
 
   public ngOnInit(): void {
-    this.$caseIdSubscription = this.store.pipe(select(fromCaseCreate.getCaseId))
-      .subscribe((caseId) => this.caseId = caseId);
+    this.$caseIdSubscription = this.store.pipe(select(fromCaseCreate.getCaseId)).subscribe((caseId) => (this.caseId = caseId));
   }
 
   public ngOnDestroy(): void {

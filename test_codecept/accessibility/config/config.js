@@ -8,16 +8,9 @@ const conf = {
   baseUrl: baseUrl,
   params: {
     username: 'lukesuperuserxui_new@mailnesia.com',
-    password: 'Monday01'
+    password: 'Monday01',
   },
-  unauthenticatedUrls: [
-    'accessibility',
-    'cookies',
-    'privacy-policy',
-    'get-help'
-  ]
-
+  unauthenticatedUrls: ['accessibility', 'cookies', 'privacy-policy', 'get-help'],
 };
 
 module.exports = { conf };
-

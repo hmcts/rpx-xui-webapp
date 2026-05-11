@@ -10,19 +10,16 @@ export interface OrganisationState {
 export const initialState: OrganisationState = {
   organisationDetails: new Organisation({}),
   loaded: false,
-  loading: false
+  loading: false,
 };
 
-export function reducer(
-  state = initialState,
-  action: fromOrganisation.organisationActions
-): OrganisationState {
+export function reducer(state = initialState, action: fromOrganisation.organisationActions): OrganisationState {
   switch (action.type) {
     case fromOrganisation.LOAD_ORGANISATION: {
       return {
         ...state,
         loaded: false,
-        loading: true
+        loading: true,
       };
     }
     case fromOrganisation.LOAD_ORGANISATION_SUCCESS: {
@@ -30,7 +27,7 @@ export function reducer(
       return {
         ...state,
         organisationDetails,
-        loaded: true
+        loaded: true,
       };
     }
     default:

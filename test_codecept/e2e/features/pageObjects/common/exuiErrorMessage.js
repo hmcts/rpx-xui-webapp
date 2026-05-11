@@ -1,8 +1,7 @@
 const { $, elementByXpath, getText, isPresent } = require('../../../../helpers/globals');
 const BrowserWaits = require('../../../support/customWaits');
 
-class EXUIErrorMessageComponent{
-
+class EXUIErrorMessageComponent {
   get component() {
     return $('exui-error-message');
   }
@@ -15,25 +14,25 @@ class EXUIErrorMessageComponent{
     return this.component.locator('.govuk-error-summary__body .govuk-list.govuk-error-summary__list');
   }
 
-  async isDisplayed(){
+  async isDisplayed() {
     try {
       await BrowserWaits.waitForElement(this.component);
       return true;
-    } catch (err){
+    } catch (err) {
       return false;
     }
   }
 
-  async getSummaryTitle(){
+  async getSummaryTitle() {
     return await getText(this.summaryTitle);
   }
 
-  async isMessageDisplayedInSummary(message){
+  async isMessageDisplayedInSummary(message) {
     const messages = await await getText(this.summaryBody);
     return messages.includes(message);
   }
 
-  async getFieldLevelErrorMessage(fieldText){
+  async getFieldLevelErrorMessage(fieldText) {
     const formGroupErrorFieldElement = this.getFormGroupErrorFieldWithText(fieldText);
     expect(await isPresent(formGroupErrorFieldElement)).to.be.true;
 
@@ -41,13 +40,15 @@ class EXUIErrorMessageComponent{
     return await getText(fieldLevelErrorMessageElement);
   }
 
-  async isFieldLevelErrorDisplayed(fieldText){
+  async isFieldLevelErrorDisplayed(fieldText) {
     const formGroupErrorFieldElement = this.getFormGroupErrorFieldWithText(fieldText);
     return await isPresent(formGroupErrorFieldElement);
   }
 
-  getFormGroupErrorFieldWithText(fieldtext){
-    return elementByXpath(`//div[contains(@class,'form-group-error')]//*[contains(text(),'${fieldtext}')]//ancestor::div[contains(@class,'form-group-error')]`);
+  getFormGroupErrorFieldWithText(fieldtext) {
+    return elementByXpath(
+      `//div[contains(@class,'form-group-error')]//*[contains(text(),'${fieldtext}')]//ancestor::div[contains(@class,'form-group-error')]`
+    );
   }
 }
 

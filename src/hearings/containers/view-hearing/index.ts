@@ -15,5 +15,5 @@ export const containers: any[] = [
   HearingAdjournedSummaryComponent,
   HearingViewActualSummaryComponent,
   HearingRequestFailedSummaryComponent,
-  HearingViewSummaryComponent
+  HearingViewSummaryComponent,
 ];

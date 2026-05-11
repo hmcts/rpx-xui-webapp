@@ -1,15 +1,27 @@
 const { $, elementByXpath, getText } = require('../../../../helpers/globals');
 
 class AddUserCheckYourAnswersPage {
-  get container() { return $('exui-staff-user-check-answers'); }
+  get container() {
+    return $('exui-staff-user-check-answers');
+  }
 
-  get heading() { return $('exui-staff-user-details h1'); }
+  get heading() {
+    return $('exui-staff-user-details h1');
+  }
 
-  get summaryListRows() { return $$('exui-staff-user-check-answers .govuk-summary-list__row'); }
+  get summaryListRows() {
+    return $$('exui-staff-user-check-answers .govuk-summary-list__row');
+  }
 
-  get backLink() { return $('exui-staff-main-container .govuk-back-link'); }
-  get submitButton() { return elementByXpath('//button[contains(text(),\'Submit\')]'); }
-  get cancelButton() { return elementByXpath('//button[contains(text(),\'Cancel\')]'); }
+  get backLink() {
+    return $('exui-staff-main-container .govuk-back-link');
+  }
+  get submitButton() {
+    return elementByXpath("//button[contains(text(),'Submit')]");
+  }
+  get cancelButton() {
+    return elementByXpath("//button[contains(text(),'Cancel')]");
+  }
 
   async isDisplayed() {
     await this.container.wait();

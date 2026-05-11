@@ -11,9 +11,9 @@ import { PanelRolesAmendedConverter } from './panel-roles.amended.converter';
 
 describe('PanelRolesAmendedConverter', () => {
   let converter: PanelRolesAmendedConverter;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let store: Store<any>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let router: any;
 
   beforeEach(() => {
@@ -25,12 +25,12 @@ describe('PanelRolesAmendedConverter', () => {
           useValue: {
             snapshot: {
               data: {
-                hearingStageOptions: hearingStageRefData
-              }
-            }
-          }
-        }
-      ]
+                hearingStageOptions: hearingStageRefData,
+              },
+            },
+          },
+        },
+      ],
     });
     store = TestBed.inject(Store);
     router = TestBed.inject(ActivatedRoute);
@@ -40,7 +40,7 @@ describe('PanelRolesAmendedConverter', () => {
   it('should not transform the amended flag when previous vs current hearing type are equal', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
-      panelSpecialisms: ['BBA3-DQPM', 'BBA3-MQPM2-002']
+      panelSpecialisms: ['BBA3-DQPM', 'BBA3-MQPM2-002'],
     };
     const result$ = converter.transformIsAmended(of(STATE));
     const isAmended = true;
@@ -48,4 +48,3 @@ describe('PanelRolesAmendedConverter', () => {
     expect(result$).toBeObservable(expected);
   });
 });
-

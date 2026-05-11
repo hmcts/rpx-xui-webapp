@@ -8,20 +8,20 @@ import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import { ChooseRadioOptionComponent } from '../../../components';
 import { CHOOSE_A_ROLE } from '../../../constants';
-import {
-  AllocateRoleNavigationEvent,
-  AllocateRoleState
-} from '../../../models';
+import { AllocateRoleNavigationEvent, AllocateRoleState } from '../../../models';
 import * as fromFeature from '../../../store';
 import { ChooseRoleComponent } from './choose-role.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-const firstRoleOptions = [{ optionId: 'lead-judge', optionValue: 'Lead judge' },
-  { optionId: 'hearing-judge', optionValue: 'Hearing judge' }];
+const firstRoleOptions = [
+  { optionId: 'lead-judge', optionValue: 'Lead judge' },
+  { optionId: 'hearing-judge', optionValue: 'Hearing judge' },
+];
 
 const personRoles = [
   { roleId: 'lead-judge', roleName: 'Lead judge', roleCategory: RoleCategory.JUDICIAL },
-  { roleId: 'hearing-judge', roleName: 'Hearing judge', roleCategory: RoleCategory.JUDICIAL }];
+  { roleId: 'hearing-judge', roleName: 'Hearing judge', roleCategory: RoleCategory.JUDICIAL },
+];
 
 describe('ChooseRoleComponent', () => {
   const radioOptionControl: FormControl = new FormControl('');
@@ -43,16 +43,15 @@ describe('ChooseRoleComponent', () => {
           useValue: {
             snapshot: {
               queryParams: {
-                roleCategory: 'JUDICIAL'
-              }
-            }
-          }
+                roleCategory: 'JUDICIAL',
+              },
+            },
+          },
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -95,10 +94,12 @@ describe('ChooseRoleComponent', () => {
     component.radioOptionControl.setValue('Lead judge');
     component.dispatchEvent(navEvent);
     fixture.detectChanges();
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseRoleAndGo({
-      typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
-      allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
-    }));
+    expect(mockStore.dispatch).toHaveBeenCalledWith(
+      new fromFeature.ChooseRoleAndGo({
+        typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
+        allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO,
+      })
+    );
   });
 
   it('should dispatchEvent for legal ops user assign legal ops', () => {
@@ -106,10 +107,12 @@ describe('ChooseRoleComponent', () => {
     component.radioOptionControl.setValue('Lead judge');
     component.dispatchEvent(navEvent);
     fixture.detectChanges();
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseRoleAndGo({
-      typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
-      allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
-    }));
+    expect(mockStore.dispatch).toHaveBeenCalledWith(
+      new fromFeature.ChooseRoleAndGo({
+        typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
+        allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO,
+      })
+    );
   });
 
   it('should dispatchEvent for judicial user assign judicial role', () => {
@@ -117,10 +120,12 @@ describe('ChooseRoleComponent', () => {
     component.radioOptionControl.setValue('Lead judge');
     component.dispatchEvent(navEvent);
     fixture.detectChanges();
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseRoleAndGo({
-      typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
-      allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
-    }));
+    expect(mockStore.dispatch).toHaveBeenCalledWith(
+      new fromFeature.ChooseRoleAndGo({
+        typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
+        allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO,
+      })
+    );
   });
 
   it('should dispatchEvent for CTSC user assign ctsc role', () => {
@@ -128,10 +133,12 @@ describe('ChooseRoleComponent', () => {
     component.radioOptionControl.setValue('Lead judge');
     component.dispatchEvent(navEvent);
     fixture.detectChanges();
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseRoleAndGo({
-      typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
-      allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
-    }));
+    expect(mockStore.dispatch).toHaveBeenCalledWith(
+      new fromFeature.ChooseRoleAndGo({
+        typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
+        allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO,
+      })
+    );
   });
 
   it('should dispatchEvent for CTSC user assign judicial role', () => {
@@ -139,10 +146,12 @@ describe('ChooseRoleComponent', () => {
     component.radioOptionControl.setValue('Lead judge');
     component.dispatchEvent(navEvent);
     fixture.detectChanges();
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseRoleAndGo({
-      typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
-      allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
-    }));
+    expect(mockStore.dispatch).toHaveBeenCalledWith(
+      new fromFeature.ChooseRoleAndGo({
+        typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
+        allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO,
+      })
+    );
   });
 
   it('should dispatchEvent for judicial user assign legal ops user', () => {
@@ -150,10 +159,12 @@ describe('ChooseRoleComponent', () => {
     component.radioOptionControl.setValue('Lead judge');
     component.dispatchEvent(navEvent);
     fixture.detectChanges();
-    expect(mockStore.dispatch).toHaveBeenCalledWith(new fromFeature.ChooseRoleAndGo({
-      typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
-      allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO
-    }));
+    expect(mockStore.dispatch).toHaveBeenCalledWith(
+      new fromFeature.ChooseRoleAndGo({
+        typeOfRole: { id: 'lead-judge', name: 'Lead judge' },
+        allocateRoleState: AllocateRoleState.CHOOSE_ALLOCATE_TO,
+      })
+    );
   });
 
   afterEach(() => {

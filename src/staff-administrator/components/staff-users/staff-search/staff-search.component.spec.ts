@@ -19,10 +19,10 @@ describe('StaffSearchComponent', () => {
     fields: [
       {
         name: 'user-partial-name',
-        value: ['Pat']
-      }
+        value: ['Pat'],
+      },
     ],
-    reset: false
+    reset: false,
   };
   let mockFilterStreamSubject: BehaviorSubject<FilterSetting>;
   let mockFilterErrorsSubject: BehaviorSubject<FilterError[]>;
@@ -36,14 +36,17 @@ describe('StaffSearchComponent', () => {
       get: jasmine.createSpy(),
       persist: jasmine.createSpy(),
       givenErrors: mockFilterErrorsSubject,
-      clearSessionAndLocalPersistance: jasmine.createSpy()
+      clearSessionAndLocalPersistance: jasmine.createSpy(),
     };
 
-    mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>('mockStaffDataAccessService',
-      ['getUsersByPartialName']
-    );
-    mockStaffDataFilterService = jasmine.createSpyObj<StaffDataFilterService>('mockStaffDataFilterService',
-      ['search', 'changePage', 'setErrors']);
+    mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>('mockStaffDataAccessService', [
+      'getUsersByPartialName',
+    ]);
+    mockStaffDataFilterService = jasmine.createSpyObj<StaffDataFilterService>('mockStaffDataFilterService', [
+      'search',
+      'changePage',
+      'setErrors',
+    ]);
     mockStaffDataFilterService.search.and.callThrough();
     TestBed.configureTestingModule({
       declarations: [StaffSearchComponent],
@@ -53,10 +56,9 @@ describe('StaffSearchComponent', () => {
         { provide: StaffDataFilterService, useValue: mockStaffDataFilterService },
         { provide: FilterService, useValue: mockFilterService },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

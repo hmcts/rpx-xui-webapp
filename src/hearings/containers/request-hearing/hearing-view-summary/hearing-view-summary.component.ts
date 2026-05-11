@@ -19,7 +19,7 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
   standalone: false,
   selector: 'exui-hearing-viewsummary',
   templateUrl: './hearing-view-summary.component.html',
-  styleUrls: ['./hearing-view-summary.component.scss']
+  styleUrls: ['./hearing-view-summary.component.scss'],
 })
 export class HearingViewSummaryComponent extends RequestHearingPageFlow implements OnInit {
   public template: Section[];
@@ -29,7 +29,8 @@ export class HearingViewSummaryComponent extends RequestHearingPageFlow implemen
   public jurisdiction: string;
   public caseType: string;
 
-  constructor(protected readonly appStore: Store<fromAppStore.State>,
+  constructor(
+    protected readonly appStore: Store<fromAppStore.State>,
     private readonly router: Router,
     private readonly hearingsFeatureService: HearingsFeatureService,
     protected readonly hearingsService: HearingsService,
@@ -43,9 +44,9 @@ export class HearingViewSummaryComponent extends RequestHearingPageFlow implemen
   public ngOnInit(): void {
     this.isHearingAmendmentsEnabled$ = this.hearingsFeatureService.hearingAmendmentsEnabled();
 
-    this.isHearingManager$ = this.appStore.pipe(select(fromAppStore.getUserDetails)).pipe(
-      map((userDetails) => userDetails?.userInfo?.roles.includes(UserRole.HearingManager))
-    );
+    this.isHearingManager$ = this.appStore
+      .pipe(select(fromAppStore.getUserDetails))
+      .pipe(map((userDetails) => userDetails?.userInfo?.roles.includes(UserRole.HearingManager)));
 
     this.hearingStore.pipe(select(fromHearingStore.getHearingValues)).subscribe((hearingValues) => {
       if (hearingValues) {
@@ -54,12 +55,14 @@ export class HearingViewSummaryComponent extends RequestHearingPageFlow implemen
       }
     });
 
-    combineLatest([this.isHearingAmendmentsEnabled$, this.isHearingManager$])
-      .subscribe(([isHearingAmendmentsEnabled, isHearingManager]) => {
-        this.template = isHearingAmendmentsEnabled && isHearingManager
-          ? HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE
-          : HEARING_VIEW_ONLY_SUMMARY_TEMPLATE;
-      });
+    combineLatest([this.isHearingAmendmentsEnabled$, this.isHearingManager$]).subscribe(
+      ([isHearingAmendmentsEnabled, isHearingManager]) => {
+        this.template =
+          isHearingAmendmentsEnabled && isHearingManager
+            ? HEARING_REQUEST_VIEW_SUMMARY_TEMPLATE
+            : HEARING_VIEW_ONLY_SUMMARY_TEMPLATE;
+      }
+    );
   }
 
   public onEdit(): void {
@@ -69,7 +72,15 @@ export class HearingViewSummaryComponent extends RequestHearingPageFlow implemen
   public executeAction(action: ACTION): void {
     if (action === ACTION.BACK) {
       // Navigate to the hearings tab
-      this.router.navigate(['/', 'cases', 'case-details', this.jurisdiction, this.caseType, this.hearingRequestMainModel.caseDetails.caseRef, 'hearings']);
+      this.router.navigate([
+        '/',
+        'cases',
+        'case-details',
+        this.jurisdiction,
+        this.caseType,
+        this.hearingRequestMainModel.caseDetails.caseRef,
+        'hearings',
+      ]);
     }
   }
 }

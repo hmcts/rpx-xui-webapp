@@ -7,14 +7,16 @@ const BrowserWaits = require('../../support/customWaits');
 const globalSearchPage = require('../pageObjects/globalSearchCases');
 const globalSearchResultsPage = require('../pageObjects/globalSearchResultsPage');
 
-function headerPage () { return require('../pageObjects/headerPage')(); }
+function headerPage() {
+  return require('../pageObjects/headerPage')();
+}
 const SoftAssert = require('../../../ngIntegration/util/softAssert');
 const CaseManager = require('../pageObjects/common/CaseManager');
 
 const { DataTableArgument } = require('codeceptjs');
 
 const caseManager = new CaseManager();
-When('I input case reference in header search field {string}', async function(caseRef){
+When('I input case reference in header search field {string}', async function (caseRef) {
   await headerPage().headerSearch.input.clear();
   await headerPage().headerSearch.input.sendKeys(caseRef);
 });
@@ -27,19 +29,19 @@ When('I validate case search field is displayed in header', async function () {
   expect(await headerPage().headerSearch.container.isDisplayed()).to.be.true;
 });
 
-Then('I see global search Page', async function(){
+Then('I see global search Page', async function () {
   expect(await globalSearchPage.amOnPage()).to.be.true;
 });
 
-When('I click search button in global search page', async function(){
+When('I click search button in global search page', async function () {
   await globalSearchPage.searchButton.click();
 });
 
-Then('I see global search results page', async function(){
+Then('I see global search results page', async function () {
   expect(await globalSearchResultsPage.amOnPage()).to.be.true;
 });
 
-When('I click Change search link in global search results page', async function(){
+When('I click Change search link in global search results page', async function () {
   await globalSearchResultsPage.changeSearchLink.click();
 });
 
@@ -50,8 +52,8 @@ When('I click Change search link in global search results page, then I see globa
   });
 });
 
-When('I input field {string} with value {string} in global search Page', async function(fieldName, fieldValue){
-  switch (fieldName.toLowerCase()){
+When('I input field {string} with value {string} in global search Page', async function (fieldName, fieldValue) {
+  switch (fieldName.toLowerCase()) {
     case '16-digit case reference':
       await globalSearchPage.caseReference.sendKeys(fieldValue);
       break;
@@ -75,9 +77,9 @@ When('I input field {string} with value {string} in global search Page', async f
   }
 });
 
-Then('I validate input field {string} has value {string} in global search page', async function(fieldName, fieldValue){
+Then('I validate input field {string} has value {string} in global search page', async function (fieldName, fieldValue) {
   let dateSplitArr = null;
-  switch (fieldName.toLowerCase()){
+  switch (fieldName.toLowerCase()) {
     case '16-digit case reference':
       expect(await globalSearchPage.caseReference.getInputFieldValue()).to.includes(fieldValue);
       break;
@@ -97,7 +99,7 @@ Then('I validate input field {string} has value {string} in global search page',
       expect(await globalSearchPage.emailAddress.getInputFieldValue()).to.includes(fieldValue);
       break;
     case 'date of birth':
-      if (fieldValue === ''){
+      if (fieldValue === '') {
         expect(await globalSearchPage.dateOfBirth.getDayValue()).to.equal('');
         expect(await globalSearchPage.dateOfBirth.getMonthValue()).to.equal('');
         expect(await globalSearchPage.dateOfBirth.getYearValue()).to.equal('');
@@ -110,7 +112,7 @@ Then('I validate input field {string} has value {string} in global search page',
 
       break;
     case 'date of death':
-      if (fieldValue === ''){
+      if (fieldValue === '') {
         expect(await globalSearchPage.dateOfdeath.getDayValue()).to.equal('');
         expect(await globalSearchPage.dateOfdeath.getMonthValue()).to.equal('');
         expect(await globalSearchPage.dateOfdeath.getYearValue()).to.equal('');
@@ -127,17 +129,17 @@ Then('I validate input field {string} has value {string} in global search page',
   }
 });
 
-When('I input date field {string} with format DD-MM-YYYY {string} in global search page', async function(fieldName, fieldValue){
+When('I input date field {string} with format DD-MM-YYYY {string} in global search page', async function (fieldName, fieldValue) {
   const dateValues = fieldValue.split('-');
-  if (fieldValue !== '' && dateValues.length !== 3){
+  if (fieldValue !== '' && dateValues.length !== 3) {
     throw new Error(`Date value ${fieldValue} not in expected format DD-MM-YYYY`);
   }
-  switch (fieldName.toLowerCase()){
+  switch (fieldName.toLowerCase()) {
     case 'date of birth':
       await globalSearchPage.dateOfBirth.day.clear();
       await globalSearchPage.dateOfBirth.month.clear();
       await globalSearchPage.dateOfBirth.year.clear();
-      if (fieldValue !== ''){
+      if (fieldValue !== '') {
         await globalSearchPage.dateOfBirth.day.sendKeys(dateValues[0]);
         await globalSearchPage.dateOfBirth.month.sendKeys(dateValues[1]);
         await globalSearchPage.dateOfBirth.year.sendKeys(dateValues[2]);
@@ -149,7 +151,7 @@ When('I input date field {string} with format DD-MM-YYYY {string} in global sear
       await globalSearchPage.dateOfdeath.month.clear();
       await globalSearchPage.dateOfdeath.year.clear();
 
-      if (fieldValue !== ''){
+      if (fieldValue !== '') {
         await globalSearchPage.dateOfdeath.day.sendKeys(dateValues[0]);
         await globalSearchPage.dateOfdeath.month.sendKeys(dateValues[1]);
         await globalSearchPage.dateOfdeath.year.sendKeys(dateValues[2]);
@@ -161,8 +163,8 @@ When('I input date field {string} with format DD-MM-YYYY {string} in global sear
   }
 });
 
-Then('I see error message {string} for field {string} in global search Page', async function(errormessage, fieldName){
-  switch (fieldName.toLowerCase()){
+Then('I see error message {string} for field {string} in global search Page', async function (errormessage, fieldName) {
+  switch (fieldName.toLowerCase()) {
     case '16-digit case reference':
       expect(await globalSearchPage.caseReference.isErrorMessageDisplayed()).to.be.true;
       expect(await globalSearchPage.caseReference.getErrorMessageText()).to.includes(errormessage);
@@ -202,21 +204,25 @@ Then('I see error message {string} for field {string} in global search Page', as
     default:
       throw new Error(`Field ${fieldName} is not recognised in test`);
   }
-  expect(await globalSearchPage.errorSummaryContainer.isPresent() && await globalSearchPage.errorSummaryContainer.isDisplayed()).to.be.true;
+  expect(
+    (await globalSearchPage.errorSummaryContainer.isPresent()) && (await globalSearchPage.errorSummaryContainer.isDisplayed())
+  ).to.be.true;
   expect(await globalSearchPage.errorSummaryContainer.getText()).to.includes(errormessage);
   await CucumberReportLogger.AddScreenshot(global.screenshotUtils);
 });
 
 Then('I see error message {string} in global search Page', async function (errormessage) {
-  expect(await globalSearchPage.errorSummaryContainer.isPresent() && await globalSearchPage.errorSummaryContainer.isDisplayed()).to.be.true;
+  expect(
+    (await globalSearchPage.errorSummaryContainer.isPresent()) && (await globalSearchPage.errorSummaryContainer.isDisplayed())
+  ).to.be.true;
   expect(await globalSearchPage.errorSummaryContainer.getText()).to.includes(errormessage);
 });
 
-Then('I validate global search results displayed count {int}', async function(count){
+Then('I validate global search results displayed count {int}', async function (count) {
   const i = 0;
   await BrowserWaits.retryWithActionCallback(async (i) => {
-    CucumberReportLogger.AddMessage(`Waiting for ${i*2} sec before validation`);
-    await BrowserWaits.waitForSeconds(i* 2);
+    CucumberReportLogger.AddMessage(`Waiting for ${i * 2} sec before validation`);
+    await BrowserWaits.waitForSeconds(i * 2);
     expect(await globalSearchResultsPage.getTableRowsCount()).to.equal(count);
     i++;
   });
@@ -228,17 +234,17 @@ Then('I validate global search results displayed', async function () {
   });
 });
 
-Then('I validate global search results values', async function(datatable){
+Then('I validate global search results values', async function (datatable) {
   const datatableHashes = datatable.parse().hashes();
   CucumberReportLogger.reportDatatable(datatable);
-  for (const tableHash of datatableHashes){
+  for (const tableHash of datatableHashes) {
     const columns = Object.keys(tableHash);
     const rowNum = tableHash.Row_Num;
 
-    for (const column of columns){
-      if (column === 'Row_Num'){
+    for (const column of columns) {
+      if (column === 'Row_Num') {
         //do nothing - test support col
-      } else if (column === 'ACTION_LINK_COLUMN'){
+      } else if (column === 'ACTION_LINK_COLUMN') {
         const linkElement = await globalSearchResultsPage.getTableRowColumnElement(rowNum, column);
         const linkText = await linkElement.getText();
         expect(linkText).to.includes(tableHash[column]);
@@ -275,15 +281,15 @@ When('I click action link {string} at row {int} in global search results page', 
   await linkElement.$('a').click();
 });
 
-Then('I validate global search no results page is displayed', async function(){
+Then('I validate global search no results page is displayed', async function () {
   expect(await globalSearchResultsPage.isNoResultsPageDisplayed()).to.be.true;
 });
 
-Then('I validate global searh no results page displays message {string}', async function(message){
+Then('I validate global searh no results page displays message {string}', async function (message) {
   expect(await globalSearchResultsPage.getNoResultsPageMessage()).to.includes(message);
 });
 
-Then('I validate global search no results back link displayed', async function(){
+Then('I validate global search no results back link displayed', async function () {
   expect(await globalSearchResultsPage.noResultsPageBackLink.isDisplayed()).to.be.true;
 });
 
@@ -291,8 +297,8 @@ When('I click global search no results back link', async function () {
   await globalSearchResultsPage.noResultsPageBackLink.click();
 });
 
-Then('I validate global search results pagination link {string} is enabled', async function(paginationLink){
-  if (paginationLink.toLowerCase().includes('next')){
+Then('I validate global search results pagination link {string} is enabled', async function (paginationLink) {
+  if (paginationLink.toLowerCase().includes('next')) {
     expect(await globalSearchResultsPage.nextpageLink.getTagName()).to.equal('a');
   } else {
     expect(await globalSearchResultsPage.previousPageLink.getTagName()).to.equal('a');
@@ -307,7 +313,7 @@ Then('I validate global search results pagination link {string} is disabled', as
   }
 });
 
-When('I click global search results pagination link {string}', async function(paginationLink){
+When('I click global search results pagination link {string}', async function (paginationLink) {
   if (paginationLink.toLowerCase().includes('next')) {
     await globalSearchResultsPage.nextpageLink.click();
   } else {
@@ -315,22 +321,22 @@ When('I click global search results pagination link {string}', async function(pa
   }
 });
 
-Then('I validate field services has following values in global search page', async function(datatable){
+Then('I validate field services has following values in global search page', async function (datatable) {
   const optionValues = await globalSearchPage.getServicesFieldsOptions();
   const datatableHashes = datatable.parse().hashes();
   CucumberReportLogger.reportDatatable(datatable);
 
-  for (const hash of datatableHashes){
+  for (const hash of datatableHashes) {
     expect(optionValues).to.includes(hash.value);
   }
 });
 
-Then('I validate valid global search case reference searches', async function(datatable){
+Then('I validate valid global search case reference searches', async function (datatable) {
   const scenarios = datatable.parse().hashes();
   CucumberReportLogger.reportDatatable(datatable);
 
   const softAssert = new SoftAssert();
-  for (const scenario of scenarios){
+  for (const scenario of scenarios) {
     await headerPage().clickPrimaryNavigationWithLabel('Search');
     expect(await globalSearchPage.amOnPage()).to.be.true;
 
@@ -362,4 +368,3 @@ Then('I validate invalid global search case reference searches', async function 
   }
   softAssert.finally();
 });
-

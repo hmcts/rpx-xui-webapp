@@ -11,7 +11,7 @@ import {
   getSubstantiveRoles,
   getPossibleRoles,
   getRoleByAssignmentId,
-  getRolesByCaseId
+  getRolesByCaseId,
 } from './roleAssignmentService';
 import { Role, RefinedRole, RolesByService } from './models/roleType';
 
@@ -35,10 +35,10 @@ describe('roleAssignmentService', () => {
           grantType: { mandatory: false, values: ['STANDARD'] },
           classification: { mandatory: false, values: ['PUBLIC'] },
           attributes: {
-            jurisdiction: { mandatory: true, values: ['IA', 'SSCS'] }
-          }
-        }
-      ]
+            jurisdiction: { mandatory: true, values: ['IA', 'SSCS'] },
+          },
+        },
+      ],
     },
     {
       id: 'role-2',
@@ -53,10 +53,10 @@ describe('roleAssignmentService', () => {
           grantType: { mandatory: false, values: ['STANDARD'] },
           classification: { mandatory: false, values: ['PUBLIC'] },
           attributes: {
-            jurisdiction: { mandatory: true, values: ['DIVORCE'] }
-          }
-        }
-      ]
+            jurisdiction: { mandatory: true, values: ['DIVORCE'] },
+          },
+        },
+      ],
     },
     {
       id: 'role-3',
@@ -71,11 +71,11 @@ describe('roleAssignmentService', () => {
           grantType: { mandatory: false, values: ['STANDARD'] },
           classification: { mandatory: false, values: ['PUBLIC'] },
           attributes: {
-            jurisdiction: { mandatory: true, values: ['ADMIN'] }
-          }
-        }
-      ]
-    }
+            jurisdiction: { mandatory: true, values: ['ADMIN'] },
+          },
+        },
+      ],
+    },
   ];
 
   const mockRefinedRoles: RefinedRole[] = [
@@ -83,14 +83,14 @@ describe('roleAssignmentService', () => {
       roleCategory: 'LEGAL_OPERATIONS',
       roleId: 'case-manager',
       roleName: 'Case Manager',
-      roleJurisdiction: { mandatory: true, values: ['IA', 'SSCS'] }
+      roleJurisdiction: { mandatory: true, values: ['IA', 'SSCS'] },
     },
     {
       roleCategory: 'JUDICIAL',
       roleId: 'judge',
       roleName: 'Judge',
-      roleJurisdiction: { mandatory: true, values: ['DIVORCE'] }
-    }
+      roleJurisdiction: { mandatory: true, values: ['DIVORCE'] },
+    },
   ];
 
   beforeEach(() => {
@@ -98,17 +98,17 @@ describe('roleAssignmentService', () => {
     req = mockReq({
       session: {},
       headers: {
-        'ServiceAuthorization': 's2s-token',
-        'Authorization': 'Bearer user-token'
-      }
+        ServiceAuthorization: 's2s-token',
+        Authorization: 'Bearer user-token',
+      },
     });
     res = mockRes();
     next = sandbox.stub();
 
     sandbox.stub(config, 'getConfigValue').returns('http://role-assignment-api');
     sandbox.stub(proxyLib, 'setHeaders').returns({
-      'ServiceAuthorization': 's2s-token',
-      'Authorization': 'Bearer user-token'
+      ServiceAuthorization: 's2s-token',
+      Authorization: 'Bearer user-token',
     });
   });
 
@@ -122,10 +122,9 @@ describe('roleAssignmentService', () => {
 
       const result = await getAllRoles(req);
 
-      expect(httpGetStub).to.have.been.calledWith(
-        'http://role-assignment-api/am/role-assignments/roles',
-        { headers: { 'ServiceAuthorization': 's2s-token', 'Authorization': 'Bearer user-token' } }
-      );
+      expect(httpGetStub).to.have.been.calledWith('http://role-assignment-api/am/role-assignments/roles', {
+        headers: { ServiceAuthorization: 's2s-token', Authorization: 'Bearer user-token' },
+      });
       expect(result.data).to.deep.equal(mockRoles);
     });
 
@@ -148,10 +147,9 @@ describe('roleAssignmentService', () => {
 
       const result = await getRolesByCaseId(req);
 
-      expect(httpGetStub).to.have.been.calledWith(
-        'http://role-assignment-api/am/role-assignments/roles',
-        { headers: { 'ServiceAuthorization': 's2s-token', 'Authorization': 'Bearer user-token' } }
-      );
+      expect(httpGetStub).to.have.been.calledWith('http://role-assignment-api/am/role-assignments/roles', {
+        headers: { ServiceAuthorization: 's2s-token', Authorization: 'Bearer user-token' },
+      });
       expect(result.data).to.deep.equal(mockRoles);
     });
   });
@@ -177,22 +175,24 @@ describe('roleAssignmentService', () => {
         roleCategory: 'LEGAL_OPERATIONS',
         roleId: 'case-manager',
         roleName: 'Case Manager',
-        roleJurisdiction: { mandatory: true, values: ['IA', 'SSCS'] }
+        roleJurisdiction: { mandatory: true, values: ['IA', 'SSCS'] },
       });
       expect(result[1]).to.deep.equal({
         roleCategory: 'JUDICIAL',
         roleId: 'judge',
         roleName: 'Judge',
-        roleJurisdiction: { mandatory: true, values: ['DIVORCE'] }
+        roleJurisdiction: { mandatory: true, values: ['DIVORCE'] },
       });
       expect(req.session.subStantiveRoles).to.deep.equal(result);
     });
 
     it('should handle roles with no patterns', async () => {
-      const rolesWithNoPatterns = [{
-        ...mockRoles[0],
-        patterns: []
-      }];
+      const rolesWithNoPatterns = [
+        {
+          ...mockRoles[0],
+          patterns: [],
+        },
+      ];
       sandbox.stub(http, 'get').resolves({ data: rolesWithNoPatterns });
 
       const result = await getSubstantiveRoles(req);
@@ -201,15 +201,19 @@ describe('roleAssignmentService', () => {
     });
 
     it('should handle roles with patterns but no attributes', async () => {
-      const rolesWithNoAttributes = [{
-        ...mockRoles[0],
-        patterns: [{
-          roleType: { mandatory: true, values: ['CASE'] },
-          grantType: { mandatory: false, values: ['STANDARD'] },
-          classification: { mandatory: false, values: ['PUBLIC'] },
-          attributes: null
-        }]
-      }];
+      const rolesWithNoAttributes = [
+        {
+          ...mockRoles[0],
+          patterns: [
+            {
+              roleType: { mandatory: true, values: ['CASE'] },
+              grantType: { mandatory: false, values: ['STANDARD'] },
+              classification: { mandatory: false, values: ['PUBLIC'] },
+              attributes: null,
+            },
+          ],
+        },
+      ];
       sandbox.stub(http, 'get').resolves({ data: rolesWithNoAttributes });
 
       const result = await getSubstantiveRoles(req);
@@ -233,22 +237,26 @@ describe('roleAssignmentService', () => {
       const expectedResponse: RolesByService[] = [
         {
           service: 'IA',
-          roles: [{
-            roleCategory: 'LEGAL_OPERATIONS',
-            roleId: 'case-manager',
-            roleName: 'Case Manager',
-            roleJurisdiction: { mandatory: true, values: ['IA', 'SSCS'] }
-          }]
+          roles: [
+            {
+              roleCategory: 'LEGAL_OPERATIONS',
+              roleId: 'case-manager',
+              roleName: 'Case Manager',
+              roleJurisdiction: { mandatory: true, values: ['IA', 'SSCS'] },
+            },
+          ],
         },
         {
           service: 'SSCS',
-          roles: [{
-            roleCategory: 'LEGAL_OPERATIONS',
-            roleId: 'case-manager',
-            roleName: 'Case Manager',
-            roleJurisdiction: { mandatory: true, values: ['IA', 'SSCS'] }
-          }]
-        }
+          roles: [
+            {
+              roleCategory: 'LEGAL_OPERATIONS',
+              roleId: 'case-manager',
+              roleName: 'Case Manager',
+              roleJurisdiction: { mandatory: true, values: ['IA', 'SSCS'] },
+            },
+          ],
+        },
       ];
 
       expect(res.send).to.have.been.calledWith(expectedResponse);
@@ -296,8 +304,8 @@ describe('roleAssignmentService', () => {
       const expectedResponse: RolesByService[] = [
         {
           service: 'PROBATE',
-          roles: []
-        }
+          roles: [],
+        },
       ];
 
       expect(res.send).to.have.been.calledWith(expectedResponse);
@@ -305,15 +313,19 @@ describe('roleAssignmentService', () => {
     });
 
     it('should handle roles with no jurisdiction values', async () => {
-      const rolesWithNoJurisdiction = [{
-        ...mockRoles[0],
-        patterns: [{
-          ...mockRoles[0].patterns[0],
-          attributes: {
-            jurisdiction: { mandatory: true, values: null }
-          }
-        }]
-      }];
+      const rolesWithNoJurisdiction = [
+        {
+          ...mockRoles[0],
+          patterns: [
+            {
+              ...mockRoles[0].patterns[0],
+              attributes: {
+                jurisdiction: { mandatory: true, values: null },
+              },
+            },
+          ],
+        },
+      ];
       req.body = { serviceIds: ['IA'] };
       sandbox.stub(http, 'get').resolves({ data: rolesWithNoJurisdiction });
 
@@ -322,8 +334,8 @@ describe('roleAssignmentService', () => {
       const expectedResponse: RolesByService[] = [
         {
           service: 'IA',
-          roles: []
-        }
+          roles: [],
+        },
       ];
 
       expect(res.send).to.have.been.calledWith(expectedResponse);
@@ -387,11 +399,13 @@ describe('roleAssignmentService', () => {
         {
           ...mockRoles[0],
           substantive: true,
-          patterns: [{
-            ...mockRoles[0].patterns[0],
-            roleType: { mandatory: true, values: ['ORGANISATION'] }
-          }]
-        }
+          patterns: [
+            {
+              ...mockRoles[0].patterns[0],
+              roleType: { mandatory: true, values: ['ORGANISATION'] },
+            },
+          ],
+        },
       ];
       sandbox.stub(http, 'get').resolves({ data: rolesWithoutCaseType });
 

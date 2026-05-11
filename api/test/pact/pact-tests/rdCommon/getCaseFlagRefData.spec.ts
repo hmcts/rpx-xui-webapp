@@ -22,7 +22,7 @@ describe('RD get case flag ref data', async () => {
     Path: somethingLike(['/flag1']),
     childFlags: somethingLike([]),
     defaultStatus: somethingLike('Active'),
-    externallyAvailable: somethingLike(false)
+    externallyAvailable: somethingLike(false),
   };
 
   describe('get case flag ref data', () => {
@@ -42,18 +42,18 @@ describe('RD get case flag ref data', async () => {
           path: `/refdata/commondata/caseflags/service-id=${serviceId}`,
           // query also present on API but not on current function, e.g. ?flag-type=PARTY
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
-          }
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
+          },
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: RESPONSE_BODY
-        }
+          body: RESPONSE_BODY,
+        },
       };
 
       pactSetUp.provider.addInteraction(interaction);
@@ -73,11 +73,11 @@ describe('RD get case flag ref data', async () => {
         const { getCaseFlagRefData } = requireReloaded('../../../../prd/caseFlag');
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
-          query: { serviceId }
+          query: { serviceId },
         });
         let returnedResponse = null;
         const response = mockRes();

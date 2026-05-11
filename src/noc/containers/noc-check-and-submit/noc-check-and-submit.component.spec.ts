@@ -10,7 +10,7 @@ import { NocCheckAndSubmitComponent } from './noc-check-and-submit.component';
 
 @Pipe({
   standalone: false,
-  name: 'rpxTranslate'
+  name: 'rpxTranslate',
 })
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
@@ -25,61 +25,64 @@ describe('NocCheckAndSubmitComponent', () => {
   let spyOnPipeToStore: any;
   let spyOnDispatchToStore = jasmine.createSpy();
 
-  const nocQuestions: NocQuestion[] = [{
-    case_type_id: 't1',
-    order: '1',
-    question_text: 'first name',
-    answer_field_type: {
-      id: 'q1',
-      type: 'text',
-      min: null,
-      max: null,
-      regular_expression: null,
-      fixed_list_items: null,
-      complex_fields: null,
-      collection_field_type: null
+  const nocQuestions: NocQuestion[] = [
+    {
+      case_type_id: 't1',
+      order: '1',
+      question_text: 'first name',
+      answer_field_type: {
+        id: 'q1',
+        type: 'text',
+        min: null,
+        max: null,
+        regular_expression: null,
+        fixed_list_items: null,
+        complex_fields: null,
+        collection_field_type: null,
+      },
+      display_context_parameter: '',
+      challenge_question_id: '',
+      answer_field: '',
+      question_id: 'q1',
     },
-    display_context_parameter: '',
-    challenge_question_id: '',
-    answer_field: '',
-    question_id: 'q1'
-  }, {
-    case_type_id: 't2',
-    order: '2',
-    question_text: 'last name',
-    answer_field_type: {
-      id: 'q2',
-      type: 'text',
-      min: null,
-      max: null,
-      regular_expression: null,
-      fixed_list_items: null,
-      complex_fields: null,
-      collection_field_type: null
+    {
+      case_type_id: 't2',
+      order: '2',
+      question_text: 'last name',
+      answer_field_type: {
+        id: 'q2',
+        type: 'text',
+        min: null,
+        max: null,
+        regular_expression: null,
+        fixed_list_items: null,
+        complex_fields: null,
+        collection_field_type: null,
+      },
+      display_context_parameter: '',
+      challenge_question_id: '',
+      answer_field: '',
+      question_id: 'q2',
     },
-    display_context_parameter: '',
-    challenge_question_id: '',
-    answer_field: '',
-    question_id: 'q2'
-  }];
+  ];
 
-  const nocAnswers: NocAnswer[] = [{
-    question_id: 'q1',
-    value: 'James'
-  }, {
-    question_id: 'q2',
-    value: 'Priest'
-  }];
+  const nocAnswers: NocAnswer[] = [
+    {
+      question_id: 'q1',
+      value: 'James',
+    },
+    {
+      question_id: 'q2',
+      value: 'Priest',
+    },
+  ];
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [NocCheckAndSubmitComponent, RpxTranslateMockPipe],
-      providers: [
-        provideMockStore()
-      ]
-    })
-      .compileComponents();
+      providers: [provideMockStore()],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -107,11 +110,18 @@ describe('NocCheckAndSubmitComponent', () => {
   });
 
   it('should assign the input value of our component', () => {
-    const answers: NocAnswer[] = [{
-      question_id: 'Question_123456', value: 'bob', question_text: of('What is your first name?')
-    }, {
-      question_id: 'Question_678910', value: 'the builder', question_text: of('What is your last name?')
-    }];
+    const answers: NocAnswer[] = [
+      {
+        question_id: 'Question_123456',
+        value: 'bob',
+        question_text: of('What is your first name?'),
+      },
+      {
+        question_id: 'Question_678910',
+        value: 'the builder',
+        question_text: of('What is your last name?'),
+      },
+    ];
     const answers$ = of(answers);
     component.qAndA$ = answers$;
     fixture.detectChanges();
@@ -135,16 +145,20 @@ describe('NocCheckAndSubmitComponent', () => {
     component.notifyEveryParty = true;
     const nocEvent: NocEvent = {
       case_id: '1111222233334444',
-      answers: [{
-        question_id: 'q1',
-        value: 'a1'
-      }]
+      answers: [
+        {
+          question_id: 'q1',
+          value: 'a1',
+        },
+      ],
     };
     component.caseRefernce = '1111222233334444';
-    component.nocAnswers = [{
-      question_id: 'q1',
-      value: 'a1'
-    }];
+    component.nocAnswers = [
+      {
+        question_id: 'q1',
+        value: 'a1',
+      },
+    ];
     component.verifyAndSubmitNoC();
     expect(spyOnDispatchToStore).toHaveBeenCalledWith(new fromFeature.SubmitNoc(nocEvent));
   });
@@ -154,7 +168,7 @@ describe('NocCheckAndSubmitComponent', () => {
     component.notifyEveryParty = false;
     const affirmationError = {
       AFFIRMATION_DEFAULT_DISAGREE_ERROR,
-      AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR
+      AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR,
     };
     component.verifyAndSubmitNoC();
     expect(spyOnDispatchToStore).toHaveBeenCalledWith(new fromFeature.SetAffirmationError(affirmationError));
@@ -164,7 +178,7 @@ describe('NocCheckAndSubmitComponent', () => {
     component.affirmationAgreed = true;
     component.notifyEveryParty = false;
     const affirmationError = {
-      AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR
+      AFFIRMATION_NOTIFY_EVERY_PARTY_ERROR,
     };
     component.verifyAndSubmitNoC();
     expect(spyOnDispatchToStore).toHaveBeenCalledWith(new fromFeature.SetAffirmationError(affirmationError));
@@ -174,7 +188,7 @@ describe('NocCheckAndSubmitComponent', () => {
     component.affirmationAgreed = false;
     component.notifyEveryParty = true;
     const affirmationError = {
-      AFFIRMATION_DEFAULT_DISAGREE_ERROR
+      AFFIRMATION_DEFAULT_DISAGREE_ERROR,
     };
     component.verifyAndSubmitNoC();
     expect(spyOnDispatchToStore).toHaveBeenCalledWith(new fromFeature.SetAffirmationError(affirmationError));

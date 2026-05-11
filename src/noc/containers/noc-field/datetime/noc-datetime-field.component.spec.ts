@@ -5,10 +5,11 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { UtilsModule } from '../utils/utils.module';
 import { NocDateTimeFieldComponent } from './noc-datetime-field.component';
+import { NocQuestion } from 'src/noc/models';
 
 @Pipe({
   standalone: false,
-  name: 'rpxTranslate'
+  name: 'rpxTranslate',
 })
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
@@ -22,7 +23,7 @@ describe('NocDateTimeFieldComponent', () => {
     FORM_GROUP.addControl('DateTime', control);
     return control;
   };
-  const QUESTION_FIELD = {
+  const QUESTION_FIELD: NocQuestion = {
     case_type_id: 'AAT',
     order: '2',
     question_text: 'What is the current date and time?',
@@ -34,12 +35,12 @@ describe('NocDateTimeFieldComponent', () => {
       regular_expression: null,
       fixed_list_items: [],
       complex_fields: [],
-      collection_field_type: null
+      collection_field_type: null,
     },
     display_context_parameter: '2',
     challenge_question_id: 'NoC',
     answer_field: '',
-    question_id: 'question2'
+    question_id: 'question2',
   };
   const ANSWER_VALUE = of('24/12/2019 09:15:00');
   let component: NocDateTimeFieldComponent;
@@ -48,17 +49,9 @@ describe('NocDateTimeFieldComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [
-        NocDateTimeFieldComponent,
-        RpxTranslateMockPipe
-      ],
-      imports: [
-        ReactiveFormsModule,
-        UtilsModule
-      ],
-      providers: [
-        provideMockStore()
-      ]
+      declarations: [NocDateTimeFieldComponent, RpxTranslateMockPipe],
+      imports: [ReactiveFormsModule, UtilsModule],
+      providers: [provideMockStore()],
     }).compileComponents();
   }));
 
@@ -68,7 +61,6 @@ describe('NocDateTimeFieldComponent', () => {
     component.formGroup = FORM_GROUP;
     component.registerControl = REGISTER_CONTROL;
     component.answerValue$ = ANSWER_VALUE;
-    // @ts-ignore
     component.questionField = QUESTION_FIELD;
     fixture.detectChanges();
   });

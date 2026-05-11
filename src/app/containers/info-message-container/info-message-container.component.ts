@@ -5,7 +5,7 @@ import { InfoMessageCommService } from '../../../app/shared/services/info-messag
 @Component({
   standalone: false,
   selector: 'exui-info-message-container',
-  templateUrl: './info-message-container.component.html'
+  templateUrl: './info-message-container.component.html',
 })
 export class InfoMessageContainerComponent implements OnInit {
   public showInfoMessage: boolean = false;
@@ -32,21 +32,20 @@ export class InfoMessageContainerComponent implements OnInit {
   }
 
   public ngOnInit(): void {
-    this.router.events
-      .subscribe((event) => {
-        if (event instanceof NavigationStart) {
-          // keep the current url the navigation started from
-          this.currentUrl = this.router.url;
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationStart) {
+        // keep the current url the navigation started from
+        this.currentUrl = this.router.url;
+      }
+      if (event instanceof NavigationEnd) {
+        // check whether manage link is open
+        // messages should not be cleared when following action via manage link
+        if (!this.excludeUrls.includes(this.currentUrl)) {
+          // remove current messages when redirected to other page or not part of action
+          this.resetMessages();
         }
-        if (event instanceof NavigationEnd) {
-          // check whether manage link is open
-          // messages should not be cleared when following action via manage link
-          if (!this.excludeUrls.includes(this.currentUrl)) {
-            // remove current messages when redirected to other page or not part of action
-            this.resetMessages();
-          }
-        }
-      });
+      }
+    });
 
     this.getInfoMessages();
   }
@@ -57,11 +56,12 @@ export class InfoMessageContainerComponent implements OnInit {
       this.infoMessages = messages;
 
       // add any additional information messages that have been passed in the state (i.e. role access exclusion)
-      if (window && window.history && window.history.state.showMessage && window.history.state.message) {
-        if (this.lastMessage !== window.history.state.message) {
+      const state = window?.history?.state;
+      if (state?.showMessage && state?.message) {
+        if (this.lastMessage !== state.message) {
           // ensure that messages are not duplicated by state
-          this.infoMessages.push(window.history.state.message);
-          this.lastMessage = window.history.state.message;
+          this.infoMessages.push(state.message);
+          this.lastMessage = state.message;
         }
       }
       this.removeDuplicateMessages();

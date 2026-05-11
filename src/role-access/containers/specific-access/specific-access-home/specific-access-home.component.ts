@@ -10,16 +10,14 @@ import {
   specificAccessDuplicateRecordVisibilityStates,
   specificAccessDurationVisibilityStates,
   specificAccessInformationVisibilityStates,
-  specificAccessReviewVisibilityStates
+  specificAccessReviewVisibilityStates,
 } from '../../../constants';
 import { CaseRole, SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessNavigation } from '../../../models';
 import * as fromFeature from '../../../store';
 import { SpecificAccessApprovedComponent } from '../specific-access-approved/specific-access-approved.component';
 import { SpecificAccessDeniedComponent } from '../specific-access-denied/specific-access-denied.component';
 import { SpecificAccessDurationComponent } from '../specific-access-duration/specific-access-duration.component';
-import {
-  SpecificAccessInformationComponent
-} from '../specific-access-information/specific-access-information.component';
+import { SpecificAccessInformationComponent } from '../specific-access-information/specific-access-information.component';
 import { SpecificAccessReviewComponent } from '../specific-access-review/specific-access-review.component';
 import { LoggerService } from '../../../../app/services/logger/logger.service';
 
@@ -27,7 +25,7 @@ import { LoggerService } from '../../../../app/services/logger/logger.service';
   standalone: false,
   selector: 'exui-specific-access-home',
   templateUrl: './specific-access-home.component.html',
-  styleUrls: ['./specific-access-home.component.scss']
+  styleUrls: ['./specific-access-home.component.scss'],
 })
 export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
   @ViewChild('specificAccessReview', { read: SpecificAccessReviewComponent })
@@ -69,12 +67,16 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
 
   public ngOnInit(): void {
     this.task = this.route.snapshot.data.taskAndRole.task.task;
-    this.role = (this.route.snapshot.data.taskAndRole.role && this.route.snapshot.data.taskAndRole.role.length > 0) &&
+    this.role =
+      this.route.snapshot.data.taskAndRole.role &&
+      this.route.snapshot.data.taskAndRole.role.length > 0 &&
       this.route.snapshot.data.taskAndRole.role[0];
-    const isDuplicateSpecificAccessRequestDuplicate = !Boolean(this.role);
+    const isDuplicateSpecificAccessRequestDuplicate = !this.role;
 
     const initData = {
-      state: isDuplicateSpecificAccessRequestDuplicate ? SpecificAccessState.SPECIFIC_ACCESS_DUPLICATE_RECORD : SpecificAccessState.SPECIFIC_ACCESS_REVIEW,
+      state: isDuplicateSpecificAccessRequestDuplicate
+        ? SpecificAccessState.SPECIFIC_ACCESS_DUPLICATE_RECORD
+        : SpecificAccessState.SPECIFIC_ACCESS_REVIEW,
       caseId: this.task.case_id,
       taskId: this.task.id,
       jurisdiction: this.task.jurisdiction,
@@ -85,53 +87,57 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
       accessReason: this.role && this.role.notes,
       specificAccessReason: this.role.notes,
       roleCategory: this.role && this.role.roleCategory,
-      requestedRole: this.role && this.role.requestedRole
+      requestedRole: this.role && this.role.requestedRole,
     };
 
     this.store.dispatch(new fromFeature.SetSpecificAccessInitData(initData));
 
-    this.specificAccessStateDataSub = this.store.pipe(
-      select(fromFeature.getSpecificAccessState),
-    )
-      .subscribe(
-        (specificAccessReviewStateData) => {
-          this.navigationCurrentState = specificAccessReviewStateData.state;
-          this.caseId = specificAccessReviewStateData.caseId;
-        }
-      );
+    this.specificAccessStateDataSub = this.store
+      .pipe(select(fromFeature.getSpecificAccessState))
+      .subscribe((specificAccessReviewStateData) => {
+        this.navigationCurrentState = specificAccessReviewStateData.state;
+        this.caseId = specificAccessReviewStateData.caseId;
+      });
   }
 
   public onNavEvent(event: SpecificAccessNavigationEvent): void {
     this.navEvent = {
       event,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
     this.navigationHandler(event);
   }
 
-  public isComponentVisible(currentNavigationState: SpecificAccessState, requiredNavigationState: SpecificAccessState[]): boolean {
+  public isComponentVisible(
+    currentNavigationState: SpecificAccessState,
+    requiredNavigationState: SpecificAccessState[]
+  ): boolean {
     return requiredNavigationState.includes(currentNavigationState);
   }
 
   public navigationHandler(navEvent: SpecificAccessNavigationEvent): void {
-    const selectedDurationOption = this.specificAccessDurationComponent ? this.specificAccessDurationComponent.selectedDuration : null;
-    const selectedDurationPeriod = this.specificAccessDurationComponent ? this.specificAccessDurationComponent.getRawData() : null;
+    const selectedDurationOption = this.specificAccessDurationComponent
+      ? this.specificAccessDurationComponent.selectedDuration
+      : null;
+    const selectedDurationPeriod = this.specificAccessDurationComponent
+      ? this.specificAccessDurationComponent.getRawData()
+      : null;
     const moreInformation = this.specificAccessInformationComponent ? this.specificAccessInformationComponent.getRawData() : null;
 
     if (this.specificAccessDurationComponent) {
-      this.store.dispatch(new fromFeature.SetSpecificAccessFormData(
-        {
-          specificAccessDurationForm: { selectedOption: selectedDurationOption, selectedDuration: selectedDurationPeriod }
-        }
-      ));
+      this.store.dispatch(
+        new fromFeature.SetSpecificAccessFormData({
+          specificAccessDurationForm: { selectedOption: selectedDurationOption, selectedDuration: selectedDurationPeriod },
+        })
+      );
     }
 
     if (this.specificAccessInformationComponent) {
-      this.store.dispatch(new fromFeature.SetSpecificAccessInfoFormData(
-        {
-          InfoText: moreInformation
-        }
-      ));
+      this.store.dispatch(
+        new fromFeature.SetSpecificAccessInfoFormData({
+          InfoText: moreInformation,
+        })
+      );
     }
     switch (navEvent) {
       case SpecificAccessNavigationEvent.BACK: {
@@ -170,14 +176,18 @@ export class SpecificAccessHomeComponent implements OnInit, OnDestroy {
       }
 
       case SpecificAccessNavigationEvent.RETURNTOMYTASKS:
-        this.router.navigateByUrl('/work/my-work/list')
+        this.router
+          .navigateByUrl('/work/my-work/list')
           .catch((err) => this.loggerService.error('Error navigating to /work/my-work/list ', err));
         break;
 
       case SpecificAccessNavigationEvent.RETURNTOTASKSTAB:
       case SpecificAccessNavigationEvent.CANCEL:
-        this.router.navigateByUrl(`/cases/case-details/${this.task.jurisdiction}/${this.task.case_type_id}/${this.caseId}/tasks`)
-          .catch((err) => this.loggerService.error('Error navigating to /cases/case-details/jurisdiction/caseType/caseId/tasks ', err));
+        this.router
+          .navigateByUrl(`/cases/case-details/${this.task.jurisdiction}/${this.task.case_type_id}/${this.caseId}/tasks`)
+          .catch((err) =>
+            this.loggerService.error('Error navigating to /cases/case-details/jurisdiction/caseType/caseId/tasks ', err)
+          );
         break;
 
       default:

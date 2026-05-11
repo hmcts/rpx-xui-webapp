@@ -1,6 +1,5 @@
-
-class ElasticSearchCases{
-  getCAseeTemplate(){
+class ElasticSearchCases {
+  getCAseeTemplate() {
     return {
       id: 1551731054913653,
       jurisdiction: 'IA',
@@ -14,7 +13,7 @@ class ElasticSearchCases{
       case_data: {
         caseManagementLocation: {
           baseLocation: '765324',
-          region: '1'
+          region: '1',
         },
         hmctsCaseNameInternal: 'Tim Burton',
         caseNameHmctsInternal: 'Tim Burton',
@@ -22,8 +21,8 @@ class ElasticSearchCases{
           OtherCaseReferences: [
             {
               id: '456a9242-04cf-4852-a473-546b1e74c1ec',
-              value: 'PA/50032/2019'
-            }
+              value: 'PA/50032/2019',
+            },
           ],
           SearchParties: [
             {
@@ -32,11 +31,11 @@ class ElasticSearchCases{
                 DateOfBirth: '1980-12-24',
                 AddressLine1: '2-3',
                 PostCode: 'TW14 0LS',
-                Name: 'Mr Tim Burton'
-              }
-            }
-          ]
-        }
+                Name: 'Mr Tim Burton',
+              },
+            },
+          ],
+        },
       },
       data_classification: {
         staffLocation: 'PUBLIC',
@@ -45,8 +44,8 @@ class ElasticSearchCases{
         appealGroundsHumanRights: {
           classification: 'PUBLIC',
           value: {
-            values: 'PUBLIC'
-          }
+            values: 'PUBLIC',
+          },
         },
         newMatters: 'PUBLIC',
         appellantAddress: {
@@ -58,8 +57,8 @@ class ElasticSearchCases{
             Country: 'PUBLIC',
             PostTown: 'PUBLIC',
             PostCode: 'PUBLIC',
-            County: 'PUBLIC'
-          }
+            County: 'PUBLIC',
+          },
         },
         haveHearingAttendeesAndDurationBeenRecorded: 'PUBLIC',
         uploadAddendumEvidenceActionAvailable: 'PUBLIC',
@@ -76,10 +75,10 @@ class ElasticSearchCases{
               id: 'fe2ead2d-dc8a-42e5-b401-701828774eaa',
               value: {
                 document: 'PUBLIC',
-                description: 'PUBLIC'
-              }
-            }
-          ]
+                description: 'PUBLIC',
+              },
+            },
+          ],
         },
         currentCaseStateVisibleToHomeOfficePou: 'PUBLIC',
         directions: {
@@ -92,8 +91,8 @@ class ElasticSearchCases{
                 parties: 'PUBLIC',
                 tag: 'PUBLIC',
                 dateSent: 'PUBLIC',
-                explanation: 'PUBLIC'
-              }
+                explanation: 'PUBLIC',
+              },
             },
             {
               id: '2',
@@ -102,8 +101,8 @@ class ElasticSearchCases{
                 parties: 'PUBLIC',
                 tag: 'PUBLIC',
                 dateSent: 'PUBLIC',
-                explanation: 'PUBLIC'
-              }
+                explanation: 'PUBLIC',
+              },
             },
             {
               id: '1',
@@ -112,10 +111,10 @@ class ElasticSearchCases{
                 parties: 'PUBLIC',
                 tag: 'PUBLIC',
                 dateSent: 'PUBLIC',
-                explanation: 'PUBLIC'
-              }
-            }
-          ]
+                explanation: 'PUBLIC',
+              },
+            },
+          ],
         },
         hmctsCaseNameInternal: 'PUBLIC',
         currentCaseStateVisibleToAdminOfficer: 'PUBLIC',
@@ -131,8 +130,8 @@ class ElasticSearchCases{
           classification: 'PUBLIC',
           value: {
             baseLocation: 'PUBLIC',
-            region: 'PUBLIC'
-          }
+            region: 'PUBLIC',
+          },
         },
         appealGroundsForDisplay: 'PUBLIC',
         ccdReferenceNumberForDisplay: 'PUBLIC',
@@ -147,8 +146,8 @@ class ElasticSearchCases{
                 document: 'PUBLIC',
                 dateUploaded: 'PUBLIC',
                 description: 'PUBLIC',
-                tag: 'PUBLIC'
-              }
+                tag: 'PUBLIC',
+              },
             },
             {
               id: '1',
@@ -156,10 +155,10 @@ class ElasticSearchCases{
                 document: 'PUBLIC',
                 dateUploaded: 'PUBLIC',
                 description: 'PUBLIC',
-                tag: 'PUBLIC'
-              }
-            }
-          ]
+                tag: 'PUBLIC',
+              },
+            },
+          ],
         },
         hasOtherAppeals: 'PUBLIC',
         currentCaseStateVisibleToHomeOfficeLart: 'PUBLIC',
@@ -175,10 +174,10 @@ class ElasticSearchCases{
             {
               id: 'a148830d-48ee-4636-8a10-f4e46be00f48',
               value: {
-                code: 'PUBLIC'
-              }
-            }
-          ]
+                code: 'PUBLIC',
+              },
+            },
+          ],
         },
         homeOfficeDecisionDate: 'PUBLIC',
         changeDirectionDueDateActionAvailable: 'PUBLIC',
@@ -192,17 +191,17 @@ class ElasticSearchCases{
                 document: 'PUBLIC',
                 dateUploaded: 'PUBLIC',
                 description: 'PUBLIC',
-                tag: 'PUBLIC'
-              }
-            }
-          ]
+                tag: 'PUBLIC',
+              },
+            },
+          ],
         },
         uploadAdditionalEvidenceHomeOfficeActionAvailable: 'PUBLIC',
         appealGroundsProtection: {
           classification: 'PUBLIC',
           value: {
-            values: 'PUBLIC'
-          }
+            values: 'PUBLIC',
+          },
         },
         appellantDateOfBirth: 'PUBLIC',
         caseNameHmctsInternal: 'PUBLIC',
@@ -214,9 +213,9 @@ class ElasticSearchCases{
               value: [
                 {
                   id: '456a9242-04cf-4852-a473-546b1e74c1ec',
-                  classification: 'PUBLIC'
-                }
-              ]
+                  classification: 'PUBLIC',
+                },
+              ],
             },
             SearchParties: {
               classification: 'PUBLIC',
@@ -227,12 +226,12 @@ class ElasticSearchCases{
                     DateOfBirth: 'PUBLIC',
                     AddressLine1: 'PUBLIC',
                     PostCode: 'PUBLIC',
-                    Name: 'PUBLIC'
-                  }
-                }
-              ]
-            }
-          }
+                    Name: 'PUBLIC',
+                  },
+                },
+              ],
+            },
+          },
         },
         currentCaseStateVisibleToHomeOfficeApc: 'PUBLIC',
         currentCaseStateVisibleToCaseOfficer: 'PUBLIC',
@@ -242,13 +241,13 @@ class ElasticSearchCases{
           value: [
             {
               id: '1551731054913653_APPEAL_SUBMITTED_CASE_OFFICER',
-              classification: 'PUBLIC'
+              classification: 'PUBLIC',
             },
             {
               id: '1551731054913653_BUILD_CASE_DIRECTION',
-              classification: 'PUBLIC'
-            }
-          ]
+              classification: 'PUBLIC',
+            },
+          ],
         },
         respondentReviewAppealResponseAdded: 'PUBLIC',
         searchPostcode: 'PUBLIC',
@@ -263,21 +262,20 @@ class ElasticSearchCases{
                 caseNoteSubject: 'PUBLIC',
                 caseNoteDescription: 'PUBLIC',
                 user: 'PUBLIC',
-                dateAdded: 'PUBLIC'
-              }
-            }
-          ]
-        }
+                dateAdded: 'PUBLIC',
+              },
+            },
+          ],
+        },
       },
       supplementary_data: null,
       after_submit_callback_response: null,
       callback_response_status_code: null,
       callback_response_status: null,
       delete_draft_response_status_code: null,
-      delete_draft_response_status: null
+      delete_draft_response_status: null,
     };
   }
 }
 
 module.exports = new ElasticSearchCases();
-

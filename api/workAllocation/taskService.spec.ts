@@ -40,9 +40,9 @@ describe('workAllocation.taskService', () => {
   describe('handleTaskGet', () => {
     beforeEach(() => {
       setHeadersStub.returns({
-        'Accept': 'application/json',
-        'Authorization': 'Bearer token',
-        'Content-Type': 'application/json'
+        Accept: 'application/json',
+        Authorization: 'Bearer token',
+        'Content-Type': 'application/json',
       });
     });
 
@@ -61,9 +61,9 @@ describe('workAllocation.taskService', () => {
       const path = '/task/123456';
       const req = mockReq();
       const mockHeaders = {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer token',
-        'Content-Type': 'text/html'
+        Accept: 'application/json',
+        Authorization: 'Bearer token',
+        'Content-Type': 'text/html',
       };
       setHeadersStub.returns(mockHeaders);
 
@@ -71,8 +71,8 @@ describe('workAllocation.taskService', () => {
 
       expect(setHeadersStub).to.have.been.calledWith(req);
       const expectedHeaders = {
-        'Authorization': 'Bearer token',
-        'Content-Type': 'application/json'
+        Authorization: 'Bearer token',
+        'Content-Type': 'application/json',
       };
       expect(spy).to.have.been.calledWith(path, { headers: expectedHeaders });
     });
@@ -134,9 +134,9 @@ describe('workAllocation.taskService', () => {
   describe('handleTaskRolesGet', () => {
     beforeEach(() => {
       setHeadersStub.returns({
-        'Accept': 'application/json',
-        'Authorization': 'Bearer token123',
-        'Content-Type': 'application/json'
+        Accept: 'application/json',
+        Authorization: 'Bearer token123',
+        'Content-Type': 'application/json',
       });
     });
 
@@ -157,9 +157,9 @@ describe('workAllocation.taskService', () => {
       const path = '/task/roles';
       const req = mockReq();
       const mockHeaders = {
-        'Accept': 'application/xml',
-        'Authorization': 'Bearer token123',
-        'User-Agent': 'test-agent'
+        Accept: 'application/xml',
+        Authorization: 'Bearer token123',
+        'User-Agent': 'test-agent',
       };
       setHeadersStub.returns(mockHeaders);
 
@@ -167,9 +167,9 @@ describe('workAllocation.taskService', () => {
 
       expect(setHeadersStub).to.have.been.calledWith(req);
       const expectedHeaders = {
-        'Authorization': 'Bearer token123',
+        Authorization: 'Bearer token123',
         'User-Agent': 'test-agent',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       };
       expect(spy).to.have.been.calledWith(path, { headers: expectedHeaders });
     });
@@ -217,8 +217,8 @@ describe('workAllocation.taskService', () => {
   describe('handleTaskSearch', () => {
     beforeEach(() => {
       setHeadersStub.returns({
-        'Authorization': 'Bearer searchtoken',
-        'Content-Type': 'application/json'
+        Authorization: 'Bearer searchtoken',
+        'Content-Type': 'application/json',
       });
     });
 
@@ -240,7 +240,7 @@ describe('workAllocation.taskService', () => {
       const path = '/task/search';
       const payload = { search: 'criteria' };
       const req = mockReq();
-      const mockHeaders = { 'Authorization': 'Bearer token' };
+      const mockHeaders = { Authorization: 'Bearer token' };
       setHeadersStub.returns(mockHeaders);
 
       await handleTaskSearch(path, payload, req);
@@ -259,10 +259,10 @@ describe('workAllocation.taskService', () => {
           jurisdiction: ['IA'],
           location: ['231596'],
           user: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
-          taskTypes: ['reviewAppealSkeletonArgument', 'reviewTheAppeal']
+          taskTypes: ['reviewAppealSkeletonArgument', 'reviewTheAppeal'],
         },
         sortingParameters: [{ sortBy: 'dueDate', sortOrder: 'asc' }],
-        paginationParameters: { pageNumber: 0, pageSize: 25 }
+        paginationParameters: { pageNumber: 0, pageSize: 25 },
       };
       const req = mockReq();
 
@@ -313,8 +313,8 @@ describe('workAllocation.taskService', () => {
   describe('handleTaskPost', () => {
     beforeEach(() => {
       setHeadersStub.returns({
-        'Authorization': 'Bearer posttoken',
-        'Content-Type': 'application/json'
+        Authorization: 'Bearer posttoken',
+        'Content-Type': 'application/json',
       });
     });
 
@@ -346,7 +346,7 @@ describe('workAllocation.taskService', () => {
       handlePostStub.resolves(assignResponse);
       const path = '/task/0d22d836-b25a-11eb-a18c-f2d58a9b7ba1/assign';
       const assignPayload = {
-        userId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3'
+        userId: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
       };
       const req = mockReq();
 
@@ -374,8 +374,8 @@ describe('workAllocation.taskService', () => {
       const completePayload = {
         completionOptions: {
           assignee: '38eb0c5e-29c7-453e-b92d-f2029aaed6c3',
-          completionMode: 'Auto'
-        }
+          completionMode: 'Auto',
+        },
       };
       const req = mockReq();
 
@@ -401,8 +401,8 @@ describe('workAllocation.taskService', () => {
       const path = '/task/0d22d836-b25a-11eb-a18c-f2d58a9b7ba1/cancel';
       const cancelPayload = {
         cancelRequest: {
-          reason: 'No longer needed'
-        }
+          reason: 'No longer needed',
+        },
       };
       const req = mockReq();
 

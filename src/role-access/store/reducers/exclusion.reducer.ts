@@ -10,7 +10,7 @@ export const initialState: ExclusionStateData = {
   person: null,
   exclusionDescription: null,
   lastError: null,
-  caseType: null
+  caseType: null,
 };
 
 export function exclusionReducer(currentState = initialState, action: ExclusionAction): ExclusionStateData {
@@ -18,12 +18,12 @@ export function exclusionReducer(currentState = initialState, action: ExclusionA
     case ExclusionActionTypes.CHANGE_NAVIGATION: {
       return {
         ...currentState,
-        state: action.payload
+        state: action.payload,
       };
     }
     case ExclusionActionTypes.EXCLUSION_RESET: {
       return {
-        ...initialState
+        ...initialState,
       };
     }
     case ExclusionActionTypes.EXCLUSION_SET_CASE_ID: {
@@ -31,21 +31,21 @@ export function exclusionReducer(currentState = initialState, action: ExclusionA
         ...currentState,
         caseId: action.caseId,
         jurisdiction: action.jurisdiction,
-        caseType: action.caseType
+        caseType: action.caseType,
       };
     }
     case ExclusionActionTypes.UPDATE_DESCRIBE_EXCLUSION_TEXT: {
       return {
         ...currentState,
         state: action.payload,
-        exclusionDescription: action.describeExclusionText
+        exclusionDescription: action.describeExclusionText,
       };
     }
     case ExclusionActionTypes.SAVE_EXCLUSION_OPTION_AND_GO: {
       return {
         ...currentState,
         exclusionOption: action.payload.exclusionOption,
-        state: action.payload.exclusionState
+        state: action.payload.exclusionState,
       };
     }
     case ExclusionActionTypes.SAVE_PERSON_ROLE_AND_GO: {
@@ -53,19 +53,19 @@ export function exclusionReducer(currentState = initialState, action: ExclusionA
         ...currentState,
         person: action.payload.personRole === currentState.personRole ? currentState.person : null,
         personRole: action.payload.personRole,
-        state: action.payload.exclusionState
+        state: action.payload.exclusionState,
       };
     }
     case ExclusionActionTypes.UPDATE_PERSON_EXCLUSION: {
       return {
         ...currentState,
         state: action.payload,
-        person: action.person
+        person: action.person,
       };
     }
     default: {
       return {
-        ...currentState
+        ...currentState,
       };
     }
   }

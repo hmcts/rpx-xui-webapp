@@ -11,7 +11,7 @@ class HearingStagePage {
 
   get fieldMapping() {
     return {
-      'What stage is this hearing at?': $('#hearing-stage')
+      'What stage is this hearing at?': $('#hearing-stage'),
     };
   }
 

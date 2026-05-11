@@ -28,7 +28,7 @@ router.use('/healthCheck', healthCheck);
 router.get('/monitoring-tools', (req, res) => {
   res.send({
     key: getConfigValue(APP_INSIGHTS_KEY),
-    connectionString: getConfigValue(APP_INSIGHTS_CONNECTION_STRING)
+    connectionString: getConfigValue(APP_INSIGHTS_CONNECTION_STRING),
   });
 });
 
@@ -57,6 +57,7 @@ router.use('/role-access', roleAccessRouter);
 
 router.use('/locations', locationsRouter);
 // TODO: potentially can be moved to proxy but with onRes callback
+// EXUI-3967 - above ask requires further thought and investigation
 router.use('/caseshare', caseShareRoutes);
 router.use('/noc', nocRouter);
 router.use('/organisation', organisationRouter);

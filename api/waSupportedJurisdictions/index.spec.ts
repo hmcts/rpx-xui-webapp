@@ -71,17 +71,17 @@ describe('WA Supported Jurisdictions', () => {
       data: [
         {
           ccd_service_name: 'IA',
-          service_short_description: 'Immigration and Asylum'
+          service_short_description: 'Immigration and Asylum',
         },
         {
           ccd_service_name: 'CIVIL',
-          service_short_description: 'Civil'
+          service_short_description: 'Civil',
         },
         {
           ccd_service_name: 'CIVIL',
-          service_short_description: 'Civil Money Claims'
-        }
-      ]
+          service_short_description: 'Civil Money Claims',
+        },
+      ],
     };
 
     beforeEach(() => {
@@ -96,10 +96,9 @@ describe('WA Supported Jurisdictions', () => {
 
       expect(setHeadersStub).to.have.been.calledWith(req);
       expect(httpGetStub).to.have.been.calledOnce;
-      expect(httpGetStub).to.have.been.calledWith(
-        'http://test-api/refdata/location/orgServices',
-        { headers: { 'Content-Type': 'application/json' } }
-      );
+      expect(httpGetStub).to.have.been.calledWith('http://test-api/refdata/location/orgServices', {
+        headers: { 'Content-Type': 'application/json' },
+      });
 
       expect(res.send).to.have.been.called;
       const actualServices = res.send.getCall(0).args[0];
@@ -144,7 +143,7 @@ describe('WA Supported Jurisdictions', () => {
   });
 
   describe('getWASupportedJurisdictions', () => {
-    it('should get supported jurisdictions', async() => {
+    it('should get supported jurisdictions', async () => {
       await waSupportedJurisdictions.getWASupportedJurisdictions(req, res, next);
 
       const response = ['IA', 'CIVIL', 'PRIVATELAW', 'PUBLICLAW', 'EMPLOYMENT', 'ST_CIC'];
@@ -216,7 +215,7 @@ describe('WA Supported Jurisdictions', () => {
           service_description: 'Immigration and Asylum',
           service_code: 'BFA1',
           last_update: '2023-01-01',
-          ccd_case_types: ['Asylum']
+          ccd_case_types: ['Asylum'],
         },
         {
           ccd_service_name: 'CIVIL',
@@ -229,7 +228,7 @@ describe('WA Supported Jurisdictions', () => {
           service_description: 'Civil',
           service_code: 'AAA1',
           last_update: '2023-01-01',
-          ccd_case_types: ['CIVIL']
+          ccd_case_types: ['CIVIL'],
         },
         {
           ccd_service_name: 'CIVIL',
@@ -242,7 +241,7 @@ describe('WA Supported Jurisdictions', () => {
           service_description: 'Civil Money Claims',
           service_code: 'AAA2',
           last_update: '2023-01-01',
-          ccd_case_types: ['CIVIL']
+          ccd_case_types: ['CIVIL'],
         },
         {
           ccd_service_name: 'PRIVATELAW',
@@ -255,8 +254,8 @@ describe('WA Supported Jurisdictions', () => {
           service_description: 'Private Law',
           service_code: 'ABA1',
           last_update: '2023-01-01',
-          ccd_case_types: ['PRLAPPS']
-        }
+          ccd_case_types: ['PRLAPPS'],
+        },
       ];
 
       getConfigValueStub.withArgs('waSupportedJurisdictions').returns('IA,CIVIL,PRIVATELAW,UNKNOWN');
@@ -316,7 +315,7 @@ describe('WA Supported Jurisdictions', () => {
           service_description: 'Immigration and Asylum',
           service_code: 'BFA1',
           last_update: '2023-01-01',
-          ccd_case_types: ['Asylum']
+          ccd_case_types: ['Asylum'],
         },
         {
           ccd_service_name: 'Civil',
@@ -329,8 +328,8 @@ describe('WA Supported Jurisdictions', () => {
           service_description: 'Civil',
           service_code: 'AAA1',
           last_update: '2023-01-01',
-          ccd_case_types: ['CIVIL']
-        }
+          ccd_case_types: ['CIVIL'],
+        },
       ];
 
       const result = waSupportedJurisdictions.generateServices(refData);
@@ -353,7 +352,7 @@ describe('WA Supported Jurisdictions', () => {
           service_description: 'Some Service',
           service_code: 'UNK1',
           last_update: '2023-01-01',
-          ccd_case_types: []
+          ccd_case_types: [],
         },
         {
           ccd_service_name: 'IA',
@@ -366,8 +365,8 @@ describe('WA Supported Jurisdictions', () => {
           service_description: 'Immigration and Asylum',
           service_code: 'BFA1',
           last_update: '2023-01-01',
-          ccd_case_types: ['Asylum']
-        }
+          ccd_case_types: ['Asylum'],
+        },
       ];
 
       const result = waSupportedJurisdictions.generateServices(refData);
@@ -391,8 +390,8 @@ describe('WA Supported Jurisdictions', () => {
           service_description: 'Immigration and Asylum',
           service_code: 'BFA1',
           last_update: '2023-01-01',
-          ccd_case_types: ['Asylum']
-        }
+          ccd_case_types: ['Asylum'],
+        },
       ];
 
       const result = waSupportedJurisdictions.generateServices(refData);

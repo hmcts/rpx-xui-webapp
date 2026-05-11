@@ -7,7 +7,7 @@ import { StaffUserResponseError } from '../../models/staff-user-response-error.m
 describe('staffSelectReducer', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideMockStore({ initialState })]
+      providers: [provideMockStore({ initialState })],
     });
   });
 
@@ -31,14 +31,14 @@ describe('staffSelectReducer', () => {
       errorCode: 123,
       errorDescription: 'Test error description',
       status: 'Error',
-      timeStamp: '2022-01-01T00:00:00Z'
+      timeStamp: '2022-01-01T00:00:00Z',
     };
     const action = new ErrorActions.SetError(error);
     const result = staffSelectReducer(initialState, action);
 
     expect(result).toEqual({
       ...initialState,
-      staffGetError: error
+      staffGetError: error,
     });
   });
 });

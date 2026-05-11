@@ -25,14 +25,9 @@ describe('ChooseExclusionComponent', () => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [ChooseRadioOptionComponent, ChooseExclusionComponent],
-      imports: [
-        ReactiveFormsModule
-      ],
-      providers: [
-        provideMockStore()
-      ]
-    })
-      .compileComponents();
+      imports: [ReactiveFormsModule],
+      providers: [provideMockStore()],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

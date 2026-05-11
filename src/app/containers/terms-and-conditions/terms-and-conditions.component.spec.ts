@@ -12,8 +12,8 @@ import { TermsAndConditionsComponent } from './terms-and-conditions.component';
 
 const storeMock = {
   pipe: () => of(null),
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  dispatch: () => { }
+
+  dispatch: () => {},
 };
 let pipeSpy: jasmine.Spy;
 let dispatchSpy: jasmine.Spy;
@@ -22,23 +22,26 @@ describe('TermsAndConditionsComponent', () => {
   @Component({
     standalone: false,
     selector: 'exui-app-host-dummy-component',
-    template: '<exui-terms-and-conditions></exui-terms-and-conditions>'
+    template: '<exui-terms-and-conditions></exui-terms-and-conditions>',
   })
   class TestDummyHostComponent {
     @ViewChild(TermsAndConditionsComponent, { static: false })
     public footerComponent: TermsAndConditionsComponent;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let testHostComponent: TestDummyHostComponent;
   let testHostFixture: ComponentFixture<TestDummyHostComponent>;
   let component: TermsAndConditionsComponent;
   let fixture: ComponentFixture<TermsAndConditionsComponent>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let element: DebugElement;
   let termsConditionsService: TermsConditionsService;
 
-  const rpxTranslationServiceStub = () => ({ language: 'en', translate: (key: string) => key === 'Get help' ? 'Get help' : key, getTranslation$: (phrase: string) => phrase === 'Get help' ? of('Get help') : of(phrase) });
+  const rpxTranslationServiceStub = () => ({
+    language: 'en',
+    translate: (key: string) => (key === 'Get help' ? 'Get help' : key),
+    getTranslation$: (phrase: string) => (phrase === 'Get help' ? of('Get help') : of(phrase)),
+  });
 
   beforeEach(waitForAsync(() => {
     pipeSpy = spyOn(storeMock, 'pipe');
@@ -47,17 +50,20 @@ describe('TermsAndConditionsComponent', () => {
       declarations: [TermsAndConditionsComponent, TestDummyHostComponent, RpxTranslatePipe],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       imports: [RouterTestingModule],
-      providers: [{
-        provide: Store,
-        useValue: storeMock
-      },
-      {
-        provide: RpxTranslationService,
-        useFactory: rpxTranslationServiceStub
-      },
-      TermsConditionsService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
-    })
-      .compileComponents();
+      providers: [
+        {
+          provide: Store,
+          useValue: storeMock,
+        },
+        {
+          provide: RpxTranslationService,
+          useFactory: rpxTranslationServiceStub,
+        },
+        TermsConditionsService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

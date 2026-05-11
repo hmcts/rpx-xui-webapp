@@ -8,7 +8,7 @@ import { WindowLocationService } from '../window-location/window-location.servic
 import { AuthService } from './auth.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthGuard {
   constructor(
@@ -18,16 +18,18 @@ export class AuthGuard {
   ) {}
 
   public canActivate(): Observable<boolean> {
-    return this.authService.isAuthenticated().pipe(map((isAuth) => {
-      if (!isAuth) {
-        this.storeRedirectUrl();
-        this.authService.loginRedirect();
-        return false;
-      }
+    return this.authService.isAuthenticated().pipe(
+      map((isAuth) => {
+        if (!isAuth) {
+          this.storeRedirectUrl();
+          this.authService.loginRedirect();
+          return false;
+        }
 
-      this.redirectToStoredUrl();
-      return true;
-    }));
+        this.redirectToStoredUrl();
+        return true;
+      })
+    );
   }
 
   private storeRedirectUrl(): void {
@@ -37,6 +39,7 @@ export class AuthGuard {
   public getJSONObject(value: string): UserInfo {
     try {
       return JSON.parse(value);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       return null;
     }

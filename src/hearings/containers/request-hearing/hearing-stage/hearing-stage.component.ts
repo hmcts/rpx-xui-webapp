@@ -12,29 +12,32 @@ import { RequestHearingPageFlow } from '../request-hearing.page.flow';
 @Component({
   standalone: false,
   selector: 'exui-hearing-stage',
-  templateUrl: './hearing-stage.component.html'
+  templateUrl: './hearing-stage.component.html',
 })
 export class HearingStageComponent extends RequestHearingPageFlow implements OnInit, AfterViewInit, OnDestroy {
   public hearingStageOptions: LovRefDataModel[];
   public stageForm: FormGroup;
   public hearingType: string;
   public hearingStageSelectionError: string;
-  public validationErrors: { id: string, message: string }[] = [];
+  public validationErrors: { id: string; message: string }[] = [];
 
-  constructor(private readonly fb: FormBuilder,
-              protected readonly hearingStore: Store<fromHearingStore.State>,
-              protected readonly hearingsService: HearingsService,
-              protected readonly featureToggleService: FeatureToggleService,
-              protected readonly route: ActivatedRoute) {
+  constructor(
+    private readonly fb: FormBuilder,
+    protected readonly hearingStore: Store<fromHearingStore.State>,
+    protected readonly hearingsService: HearingsService,
+    protected readonly featureToggleService: FeatureToggleService,
+    protected readonly route: ActivatedRoute
+  ) {
     super(hearingStore, hearingsService, featureToggleService, route);
   }
 
   public ngOnInit() {
-    this.hearingType = this.hearingRequestMainModel.hearingDetails ?
-      this.hearingRequestMainModel.hearingDetails.hearingType : this.hearingType;
+    this.hearingType = this.hearingRequestMainModel.hearingDetails
+      ? this.hearingRequestMainModel.hearingDetails.hearingType
+      : this.hearingType;
     this.hearingStageOptions = this.route.snapshot.data.hearingStages;
     this.stageForm = this.fb.group({
-      'stage-option': ['', Validators.required]
+      'stage-option': ['', Validators.required],
     });
     this.stageForm.controls['stage-option'].setValue(this.hearingType);
   }
@@ -56,8 +59,8 @@ export class HearingStageComponent extends RequestHearingPageFlow implements OnI
       ...this.hearingRequestMainModel,
       hearingDetails: {
         ...this.hearingRequestMainModel.hearingDetails,
-        hearingType: this.stageForm.value['stage-option']
-      }
+        hearingType: this.stageForm.value['stage-option'],
+      },
     };
   }
 
@@ -72,7 +75,7 @@ export class HearingStageComponent extends RequestHearingPageFlow implements OnI
       this.hearingStageSelectionError = HearingStageEnum.SelectHearingStageError;
       this.validationErrors.push({
         id: this.hearingStageOptions[0].key,
-        message: HearingStageEnum.SelectHearingStageError
+        message: HearingStageEnum.SelectHearingStageError,
       });
     }
   }

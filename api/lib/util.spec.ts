@@ -70,14 +70,14 @@ describe('util', () => {
 
   describe('valueOrNull', () => {
     it('Should return a value if string is present in object', () => {
-      const object = { 'a': 'b', 'c': 'd' };
+      const object = { a: 'b', c: 'd' };
       const nestled = 'a';
       const result = valueOrNull(object, nestled);
       expect(result).to.equal('b');
     });
 
     it('Should return null if string is not present in object', () => {
-      const object = { 'a': 'b', 'c': 'd' };
+      const object = { a: 'b', c: 'd' };
       const nestled = 'z';
       const result = valueOrNull(object, nestled);
       expect(result).to.equal(null);
@@ -133,12 +133,12 @@ describe('util', () => {
   describe('fieldNameMapper', () => {
     // @todo take a look at this - what values are intended to be passed in?
     it('Should return mapped value if it is in mapping', () => {
-      const result = fieldNameMapper('dummy', { 'dummy': 'singer' });
+      const result = fieldNameMapper('dummy', { dummy: 'singer' });
       expect(result).to.equal('singer');
     });
 
     it('Should return itself it is not in mapping', () => {
-      const result = fieldNameMapper('dummy', { 'dummy2': 'drummer' });
+      const result = fieldNameMapper('dummy', { dummy2: 'drummer' });
       expect(result).to.equal('dummy');
     });
   });

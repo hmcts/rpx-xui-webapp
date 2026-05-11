@@ -21,18 +21,18 @@ describe('CaseUserDTO', () => {
         idamId: 'test-idam-id-123',
         email: 'user@example.com',
         firstName: 'John',
-        lastName: 'Doe'
+        lastName: 'Doe',
       };
 
       const mockSharedCase: SharedCase = {
         caseId: 'test-case-id-456',
         caseTitle: 'Test Case Title',
-        caseTypeId: 'TestCaseType'
+        caseTypeId: 'TestCaseType',
       };
 
       const expectedMapping: CaseAssigneeMappingModel = {
         assignee_id: 'test-idam-id-123',
-        case_id: 'test-case-id-456'
+        case_id: 'test-case-id-456',
       };
 
       const result = toCaseAssigneeMappingModel(mockUserDetails, mockSharedCase);
@@ -45,18 +45,18 @@ describe('CaseUserDTO', () => {
         idamId: 'minimal-idam-id',
         email: '',
         firstName: '',
-        lastName: ''
+        lastName: '',
       };
 
       const mockSharedCase: SharedCase = {
         caseId: 'case-123',
         caseTitle: 'Case Title',
-        caseTypeId: 'CaseType'
+        caseTypeId: 'CaseType',
       };
 
       const expectedMapping: CaseAssigneeMappingModel = {
         assignee_id: 'minimal-idam-id',
-        case_id: 'case-123'
+        case_id: 'case-123',
       };
 
       const result = toCaseAssigneeMappingModel(minimalUserDetails, mockSharedCase);
@@ -71,18 +71,18 @@ describe('CaseUserDTO', () => {
         idamId: 'user-456',
         email: 'user@example.com',
         firstName: 'Jane',
-        lastName: 'Smith'
+        lastName: 'Smith',
       };
 
       const minimalSharedCase: SharedCase = {
         caseId: 'minimal-case-id',
         caseTitle: '',
-        caseTypeId: ''
+        caseTypeId: '',
       };
 
       const expectedMapping: CaseAssigneeMappingModel = {
         assignee_id: 'user-456',
-        case_id: 'minimal-case-id'
+        case_id: 'minimal-case-id',
         // No case_type_id expected since it's an empty string
       };
 
@@ -100,7 +100,7 @@ describe('CaseUserDTO', () => {
         firstName: 'Complex',
         lastName: 'User',
         // Adding additional properties that would be present in real data
-        caseRoles: ['[CREATOR]', '[DEFENDANT]']
+        caseRoles: ['[CREATOR]', '[DEFENDANT]'],
       } as UserDetails & { caseRoles: string[] };
 
       const complexSharedCase: SharedCase = {
@@ -110,16 +110,16 @@ describe('CaseUserDTO', () => {
         // Adding additional properties that would be present in real data
         pendingShares: [],
         sharedWith: [],
-        pendingUnshares: []
+        pendingUnshares: [],
       } as SharedCase & {
-        pendingShares: UserDetails[],
-        sharedWith: UserDetails[],
-        pendingUnshares: UserDetails[]
+        pendingShares: UserDetails[];
+        sharedWith: UserDetails[];
+        pendingUnshares: UserDetails[];
       };
 
       const expectedMapping: CaseAssigneeMappingModel = {
         assignee_id: 'complex-user-id',
-        case_id: 'complex-case-id'
+        case_id: 'complex-case-id',
       };
 
       const result = toCaseAssigneeMappingModel(complexUserDetails, complexSharedCase);
@@ -133,18 +133,18 @@ describe('CaseUserDTO', () => {
         idamId: 'test-user-id',
         email: 'user@example.com',
         firstName: 'John',
-        lastName: 'Doe'
+        lastName: 'Doe',
       };
 
       const mockSharedCase: SharedCase = {
         caseId: 'case-123',
         caseTitle: 'Case Title',
-        caseTypeId: 'TestCaseType123'
+        caseTypeId: 'TestCaseType123',
       };
 
       const expectedMapping: CaseAssigneeMappingModel = {
         assignee_id: 'test-user-id',
-        case_id: 'case-123'
+        case_id: 'case-123',
       };
 
       const result = toCaseAssigneeMappingModel(mockUserDetails, mockSharedCase);

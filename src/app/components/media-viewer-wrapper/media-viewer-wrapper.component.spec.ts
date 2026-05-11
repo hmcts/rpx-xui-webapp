@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AbstractAppConfig, DocumentUrlPipe, WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
 import { MediaViewerModule } from '@hmcts/media-viewer';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { EffectsModule } from '@ngrx/effects';
@@ -16,7 +17,7 @@ const REMOTE_DOCUMENT_URL = 'https://www.example.com/binary';
 const MEDIA_VIEWER_DATA = {
   document_binary_url: GATEWAY_DOCUMENT_URL,
   document_filename: 'sample.pdf',
-  content_type: 'pdf'
+  content_type: 'pdf',
 };
 
 describe('MediaViewerWrapperComponent', () => {
@@ -24,6 +25,7 @@ describe('MediaViewerWrapperComponent', () => {
   let fixture: ComponentFixture<MediaViewerWrapperComponent>;
   let windowService;
   let sessionStorageService;
+  let activatedRoute;
   let mockAppConfig: any;
   let featureToggleService;
   let titleService;
@@ -36,6 +38,11 @@ describe('MediaViewerWrapperComponent', () => {
     sessionStorageService = createSpyObj('sessionStorageService', ['setItem', 'getItem']);
     featureToggleService = createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
     titleService = createSpyObj('titleService', ['setTitle']);
+    activatedRoute = {
+      snapshot: {
+        queryParamMap: convertToParamMap({}),
+      },
+    };
     TestBed.configureTestingModule({
       imports: [
         MediaViewerModule,
@@ -46,25 +53,22 @@ describe('MediaViewerWrapperComponent', () => {
           baseUrl: '',
           debounceTimeMs: 300,
           validity: {
-            days: 1
+            days: 1,
           },
-          testMode: true
-        })
+          testMode: true,
+        }),
       ],
-      declarations: [
-        MediaViewerWrapperComponent,
-        DocumentUrlPipe
-      ],
+      declarations: [MediaViewerWrapperComponent, DocumentUrlPipe],
       providers: [
         { provide: AbstractAppConfig, useValue: mockAppConfig },
         { provide: WindowService, useValue: windowService },
+        { provide: ActivatedRoute, useValue: activatedRoute },
         { provide: FeatureToggleService, useValue: featureToggleService },
         { provide: SessionStorageService, useValue: sessionStorageService },
-        { provide: Title, useValue: titleService }
+        { provide: Title, useValue: titleService },
       ],
-      teardown: { destroyAfterEach: false }
-    })
-      .compileComponents();
+      teardown: { destroyAfterEach: false },
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -78,7 +82,8 @@ describe('MediaViewerWrapperComponent', () => {
   });
 
   describe('ngOnInit', () => {
-    it('should load media viewer data from local storage', () => {
+    it('should load media viewer data from local storage using mvToken', () => {
+      activatedRoute.snapshot.queryParamMap = convertToParamMap({ mvToken: 'token-1' });
       windowService.getLocalStorage.and.returnValues(JSON.stringify(MEDIA_VIEWER_DATA));
       fixture.detectChanges();
       expect(component).toBeTruthy();
@@ -88,13 +93,16 @@ describe('MediaViewerWrapperComponent', () => {
       expect(component.mediaContentType).toBe('pdf');
     });
 
-    it('should move media viewer data from local to session storage', () => {
+    it('should move media viewer data from local to session storage and clean url', () => {
+      activatedRoute.snapshot.queryParamMap = convertToParamMap({ mvToken: 'token-1' });
       windowService.getLocalStorage.and.returnValues(JSON.stringify(MEDIA_VIEWER_DATA));
+      const replaceStateSpy = spyOn(window.history, 'replaceState');
       fixture.detectChanges();
       expect(component).toBeTruthy();
       component.ngOnInit();
       expect(sessionStorageService.setItem).toHaveBeenCalledTimes(1);
-      expect(windowService.removeLocalStorage).toHaveBeenCalledTimes(1);
+      expect(windowService.removeLocalStorage).toHaveBeenCalledWith('media-viewer-info:token-1');
+      expect(replaceStateSpy).toHaveBeenCalled();
     });
 
     it('should not set the session or remove the local storage media viewer data if there is already media viewer data in session storage', () => {
@@ -104,6 +112,15 @@ describe('MediaViewerWrapperComponent', () => {
       component.ngOnInit();
       expect(sessionStorageService.setItem).toHaveBeenCalledTimes(0);
       expect(windowService.removeLocalStorage).toHaveBeenCalledTimes(0);
+    });
+
+    it('should set default title when no media data found', () => {
+      sessionStorageService.getItem.and.returnValues(null);
+      activatedRoute.snapshot.queryParamMap = convertToParamMap({ mvToken: null });
+      windowService.getLocalStorage.and.returnValues(null);
+      fixture.detectChanges();
+      component.ngOnInit();
+      expect(titleService.setTitle).toHaveBeenCalledWith('View Document');
     });
   });
 

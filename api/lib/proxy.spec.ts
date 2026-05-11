@@ -4,9 +4,7 @@ import 'mocha';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { getConfigValue } from '../configuration';
-import {
-  SERVICES_CCD_COMPONENT_API_PATH
-} from '../configuration/references';
+import { SERVICES_CCD_COMPONENT_API_PATH } from '../configuration/references';
 import { http } from './http';
 import * as proxy from './proxy';
 
@@ -28,7 +26,7 @@ describe('proxy', () => {
     sandbox = sinon.createSandbox();
 
     result = {
-      data: 'okay'
+      data: 'okay',
     };
 
     spy = sandbox.stub(http, 'get').resolves(result);
@@ -42,15 +40,15 @@ describe('proxy', () => {
       baseUrl: '/api/documents/',
       cookies: [],
       headers: {
-        'accept': '*/*',
+        accept: '*/*',
         'content-type': 'text/test',
-        'experimental': 'experiment/test'
+        experimental: 'experiment/test',
       },
       session: {
         save: (fun) => {
           fun();
-        }
-      }
+        },
+      },
     });
   });
 

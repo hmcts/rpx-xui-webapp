@@ -6,7 +6,7 @@ describe('App Actions', () => {
       const action = new fromApp.LoadConfig();
 
       expect({ ...action }).toEqual({
-        type: fromApp.APP_LOAD_CONFIG
+        type: fromApp.APP_LOAD_CONFIG,
       });
     });
   });
@@ -18,7 +18,7 @@ describe('App Actions', () => {
 
       expect({ ...action }).toEqual({
         type: fromApp.APP_LOAD_CONFIG_SUCCESS,
-        payload
+        payload,
       });
     });
   });
@@ -30,7 +30,7 @@ describe('App Actions', () => {
 
       expect({ ...action }).toEqual({
         type: fromApp.APP_LOAD_CONFIG_FAIL,
-        payload
+        payload,
       });
     });
   });
@@ -40,7 +40,7 @@ describe('App Actions', () => {
       const action = new fromApp.StartAppInitilizer();
 
       expect({ ...action }).toEqual({
-        type: fromApp.START_APP_INITIALIZER
+        type: fromApp.START_APP_INITIALIZER,
       });
     });
   });
@@ -50,7 +50,7 @@ describe('App Actions', () => {
       const action = new fromApp.FinishAppInitilizer();
 
       expect({ ...action }).toEqual({
-        type: fromApp.FINISH_APP_INITIALIZER
+        type: fromApp.FINISH_APP_INITIALIZER,
       });
     });
   });

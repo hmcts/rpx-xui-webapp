@@ -1,7 +1,7 @@
 const { $, elementByXpath } = require('../../../../helpers/globals');
 
-class ChallengedAccessRequestPage{
-  constructor(){}
+class ChallengedAccessRequestPage {
+  constructor() {}
 
   get container() {
     return $('ccd-case-challenged-access-request');
@@ -31,15 +31,16 @@ class ChallengedAccessRequestPage{
     return $('ccd-case-challenged-access-success');
   }
 
-  getRadioInputWithLabel(label){
-    return elementByXpath(`//ccd-case-challenged-access-request//label[contains(@class,'govuk-radios__label')][contains(text(),'${label}')]/../input`);
+  getRadioInputWithLabel(label) {
+    return elementByXpath(
+      `//ccd-case-challenged-access-request//label[contains(@class,'govuk-radios__label')][contains(text(),'${label}')]/../input`
+    );
   }
 
-  async selectRadioOption(option){
+  async selectRadioOption(option) {
     const radioInput = this.getRadioInputWithLabel(option);
     await radioInput.click();
   }
 }
 
 module.exports = new ChallengedAccessRequestPage();
-

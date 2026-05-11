@@ -9,7 +9,7 @@ import { HearingsUtils } from '../../utils/hearings.utils';
 @Component({
   standalone: false,
   selector: 'exui-hearing-amend-warning-msg',
-  templateUrl: './hearing-amend-warning-msg.component.html'
+  templateUrl: './hearing-amend-warning-msg.component.html',
 })
 export class HearingAmendWarningMsgComponent implements OnInit, OnDestroy {
   @Input() public warningMsg: string = '';
@@ -18,10 +18,10 @@ export class HearingAmendWarningMsgComponent implements OnInit, OnDestroy {
   constructor(private readonly hearingStore: Store<fromHearingStore.State>) {}
 
   public ngOnInit(): void {
-    this.hearingConditionsSub = this.hearingStore.pipe(select(fromHearingStore.getHearingConditions)).subscribe(
-      (hearingConditions) => {
-        this.isViewEditMode = HearingsUtils.hasPropertyAndValue(
-          hearingConditions, KEY_MODE, Mode.VIEW_EDIT);
+    this.hearingConditionsSub = this.hearingStore
+      .pipe(select(fromHearingStore.getHearingConditions))
+      .subscribe((hearingConditions) => {
+        this.isViewEditMode = HearingsUtils.hasPropertyAndValue(hearingConditions, KEY_MODE, Mode.VIEW_EDIT);
       });
   }
 

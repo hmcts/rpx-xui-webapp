@@ -12,12 +12,15 @@ const baseLocationRefUrl = getConfigValue(SERVICES_LOCATION_REF_API_URL);
 
 export async function getServices(req, res, next: NextFunction) {
   const apiPath = `${baseLocationRefUrl}/refdata/location/orgServices`;
-  const enabledServiceCodes = (getConfigValue(SERVICE_REF_DATA_MAPPING) as Service[])
-    .reduce((prevValue, currentValue) => [...prevValue, ...currentValue.serviceCodes], [] as string[]);
+  const enabledServiceCodes = getConfigValue<Service[]>(SERVICE_REF_DATA_MAPPING).reduce(
+    (prevValue, currentValue) => [...prevValue, ...currentValue.serviceCodes],
+    [] as string[]
+  );
 
   try {
-    const { status, data }: { status: number; data: RefDataHMCTSService[] } =
-      await http.get(`${apiPath}`, { headers: setHeaders(req) });
+    const { status, data }: { status: number; data: RefDataHMCTSService[] } = await http.get(`${apiPath}`, {
+      headers: setHeaders(req),
+    });
     const enabledServicesData = data.filter((service) => enabledServiceCodes.includes(service.service_code));
     enabledServicesData.push({
       jurisdiction: 'HRS',
@@ -44,8 +47,9 @@ export async function getRegions(req, res, next: NextFunction) {
   urlSearchParams.append('regionId', 'ALL');
 
   try {
-    const { status, data }: { status: number; data: RefDataRegion[] } =
-      await http.get(`${apiPath}?${urlSearchParams}`, { headers: setHeaders(req) });
+    const { status, data }: { status: number; data: RefDataRegion[] } = await http.get(`${apiPath}?${urlSearchParams}`, {
+      headers: setHeaders(req),
+    });
 
     res.status(status).send(data);
   } catch (error) {
@@ -100,12 +104,14 @@ export async function getLocationsByServiceCode(req, res, next: NextFunction) {
   }
 
   try {
-    const { status, data }: { status: number; data: LocationByServiceCodeResponse }
-      = await http.get(`${apiPath}?${queryParams}`, { headers: setHeaders(req) });
-      console.log('court venue before:', data.court_venues.map(cv => cv.serviceCodes));
+    const { status, data }: { status: number; data: LocationByServiceCodeResponse } = await http.get(
+      `${apiPath}?${queryParams}`,
+      { headers: setHeaders(req) }
+    );
+    console.log('court venue before:', data.court_venues.map(cv => cv.serviceCodes));
     data.court_venues.map((court_venue) => {
       // EUI-8051 - List value as we want to store all services with that location
-      court_venue.serviceCodes = [queryParams.substring(queryParams.indexOf('=')+1)];
+      court_venue.serviceCodes = [queryParams.substring(queryParams.indexOf('=') + 1)];
     });
     console.log('court venue after:', data.court_venues.map(cv => cv.serviceCodes));
     res.status(status).send(data);
@@ -118,8 +124,10 @@ export async function getLocations(req, res, next: NextFunction) {
   const apiPath: string = `${baseLocationRefUrl}/refdata/location/court-venues`;
   const queryParams = new URLSearchParams(req.query).toString();
   try {
-    const { status, data }: { status: number; data: LocationByServiceCodeResponse }
-      = await http.get(`${apiPath}?${queryParams}`, { headers: setHeaders(req) });
+    const { status, data }: { status: number; data: LocationByServiceCodeResponse } = await http.get(
+      `${apiPath}?${queryParams}`,
+      { headers: setHeaders(req) }
+    );
 
     res.status(status).send(data);
   } catch (error) {

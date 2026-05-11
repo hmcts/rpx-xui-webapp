@@ -4,7 +4,7 @@ import { AmendmentLabelStatus } from '../../../../hearings/models/hearingsUpdate
 @Component({
   standalone: false,
   selector: 'exui-amendment-label',
-  templateUrl: './amendment-label.component.html'
+  templateUrl: './amendment-label.component.html',
 })
 export class AmendmentLabelComponent {
   @Input() public displayLabel: AmendmentLabelStatus;

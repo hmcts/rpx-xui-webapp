@@ -11,7 +11,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 
 @Pipe({
   standalone: false,
-  name: 'rpxTranslate'
+  name: 'rpxTranslate',
 })
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
@@ -21,12 +21,16 @@ class RpxTranslateMockPipe implements PipeTransform {
 
 describe('Header Component', () => {
   let mockStore: any;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let mockService: any;
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {}, getTranslation$: (phrase: string) => of(phrase) });
+
+  const rpxTranslationServiceStub = () => ({
+    language: 'en',
+    translate: () => {},
+    getTranslation$: (phrase: string) => of(phrase),
+  });
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -37,13 +41,12 @@ describe('Header Component', () => {
         { provide: Store, useValue: mockStore },
         {
           provide: RpxTranslationService,
-          useFactory: rpxTranslationServiceStub
+          useFactory: rpxTranslationServiceStub,
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

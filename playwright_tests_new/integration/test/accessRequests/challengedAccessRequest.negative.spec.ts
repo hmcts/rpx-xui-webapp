@@ -13,7 +13,7 @@ test.describe(
   () => {
     test('User cannot submit challenged access request without selecting a reason', async ({ accessRequestPage, page }) => {
       await setupChallengedAccessMockRoutes(page);
-      await page.goto(CHALLENGED_ACCESS_PATH, { waitUntil: 'domcontentloaded' });
+      await accessRequestPage.gotoChallengedAccessRequest(CHALLENGED_ACCESS_PATH);
 
       await accessRequestPage.submitButton.click();
 
@@ -23,7 +23,7 @@ test.describe(
 
     test('User cannot submit challenged access request without a linked case reference', async ({ accessRequestPage, page }) => {
       await setupChallengedAccessMockRoutes(page);
-      await page.goto(CHALLENGED_ACCESS_PATH, { waitUntil: 'domcontentloaded' });
+      await accessRequestPage.gotoChallengedAccessRequest(CHALLENGED_ACCESS_PATH);
 
       await accessRequestPage.linkedCaseReasonRadio.check();
       await accessRequestPage.submitButton.click();
@@ -36,7 +36,7 @@ test.describe(
       page,
     }) => {
       await setupChallengedAccessMockRoutes(page);
-      await page.goto(CHALLENGED_ACCESS_PATH, { waitUntil: 'domcontentloaded' });
+      await accessRequestPage.gotoChallengedAccessRequest(CHALLENGED_ACCESS_PATH);
 
       await accessRequestPage.otherReasonRadio.check();
       await accessRequestPage.submitButton.click();
@@ -49,7 +49,7 @@ test.describe(
         challengedAccessStatus: 500,
         challengedAccessBody: { message: 'challenged access failed' },
       });
-      await page.goto(CHALLENGED_ACCESS_PATH, { waitUntil: 'domcontentloaded' });
+      await accessRequestPage.gotoChallengedAccessRequest(CHALLENGED_ACCESS_PATH);
 
       await accessRequestPage.otherReasonRadio.check();
       await accessRequestPage.challengedOtherReasonInput.fill('Need access for urgent case progression review.');

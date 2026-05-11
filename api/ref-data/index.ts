@@ -33,7 +33,7 @@ export async function getServices(req, res, next: NextFunction) {
       service_short_description: 'HRS',
       ccd_service_name: 'HRS',
       last_update: new Date().toISOString(),
-      ccd_case_types: []
+      ccd_case_types: [],
     });
     res.status(status).send(enabledServicesData);
   } catch (error) {
@@ -96,9 +96,9 @@ export async function getLocationsByServiceCode(req, res, next: NextFunction) {
           dx_address: '',
           phone_number: '',
           postcode: '',
-          serviceCodes: ['HRS']
-        }
-      ]
+          serviceCodes: ['HRS'],
+        },
+      ],
     };
     return res.status(200).send(mockData);
   }
@@ -108,12 +108,18 @@ export async function getLocationsByServiceCode(req, res, next: NextFunction) {
       `${apiPath}?${queryParams}`,
       { headers: setHeaders(req) }
     );
-    console.log('court venue before:', data.court_venues.map(cv => cv.serviceCodes));
+    console.log(
+      'court venue before:',
+      data.court_venues.map((cv) => cv.serviceCodes)
+    );
     data.court_venues.map((court_venue) => {
       // EUI-8051 - List value as we want to store all services with that location
       court_venue.serviceCodes = [queryParams.substring(queryParams.indexOf('=') + 1)];
     });
-    console.log('court venue after:', data.court_venues.map(cv => cv.serviceCodes));
+    console.log(
+      'court venue after:',
+      data.court_venues.map((cv) => cv.serviceCodes)
+    );
     res.status(status).send(data);
   } catch (error) {
     next(error);

@@ -27,7 +27,19 @@ describe('Staff Supported Jurisdictions', () => {
   it('should get supported jurisdictions', async () => {
     await staffSupportedJurisdictions.getStaffSupportedJurisdictions(req, res, null);
     // note: CMC not included for caseworker errors
-    const response = ['ST_CIC', 'CIVIL', 'EMPLOYMENT', 'PRIVATELAW', 'PUBLICLAW', 'IA', 'SSCS', 'DIVORCE', 'FR', 'PROBATE', 'HRS'];
+    const response = [
+      'ST_CIC',
+      'CIVIL',
+      'EMPLOYMENT',
+      'PRIVATELAW',
+      'PUBLICLAW',
+      'IA',
+      'SSCS',
+      'DIVORCE',
+      'FR',
+      'PROBATE',
+      'HRS',
+    ];
     expect(res.send).to.have.been.calledWith(sinon.match(response));
   });
 
@@ -44,7 +56,7 @@ describe('Staff Supported Jurisdictions', () => {
       'DIVORCE',
       'FR',
       'PROBATE',
-      'HRS'
+      'HRS',
     ]);
   });
 });

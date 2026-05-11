@@ -27,7 +27,6 @@ import routes from './routes';
 import workAllocationRouter from './workAllocation/routes';
 import { idamCheck } from './idamCheck';
 import { MC_CSP } from './interfaces/csp-config';
-import { getNewUsersByServiceName } from './workAllocation';
 
 function resolveStaticRoot(): string {
   const buildRoot = path.join(__dirname, '..');
@@ -48,7 +47,7 @@ const staticRoot = resolveStaticRoot();
 const indexHtmlRaw = loadIndexHtml(staticRoot);
 
 function injectNonce(html: string, nonce: string): string {
-  return html.replace(/{{cspNonce}}/g, nonce);
+  return html.replaceAll(/{{cspNonce}}/g, nonce);
 }
 
 export async function createApp() {
@@ -101,6 +100,7 @@ export async function createApp() {
   }
 
   // TODO: remove tunnel and configurations
+  // EXUI-3967 - the above ask requires further investigation and testing on production environments
   tunnel.init();
   /**
    * Add Reform Standard health checks.
@@ -142,8 +142,6 @@ export async function createApp() {
   logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);
 
   new Promise(idamCheck).then(() => 'IDAM is up and running');
-  // EUI-2028 - Get the caseworkers, ideally prior to a user logging into application
-  new Promise(getNewUsersByServiceName).then(() => 'Caseworkers have been loaded');
 
   return app;
 }

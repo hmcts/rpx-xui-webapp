@@ -3,13 +3,16 @@ export const DEFAULT_TRANSIENT_MAX_ATTEMPTS = 2;
 const TRANSIENT_FAILURE_PATTERNS: RegExp[] = [
   /DOWNSTREAM_API_5\d\d/,
   /status\s+5\d\d/i,
+  /status\s+429/i,
+  /HTTP\s+429/i,
   /NETWORK_TIMEOUT/,
   /SLOW_API_RESPONSE/,
   /The event could not be created/i,
-  /Validation error after/i,
   /Something went wrong page was displayed/i,
+  /Task list showed service down while/i,
   /callback data failed validation/i,
   /timeout of \d+ms exceeded/i,
+  /timeout \d+ms exceeded/i,
   /ECONNRESET/i,
   /ETIMEDOUT/i,
   /Exceeded \d+ auto-advance attempts before submit/i,
@@ -17,6 +20,7 @@ const TRANSIENT_FAILURE_PATTERNS: RegExp[] = [
   /Submit button not visible/i,
   /Continue button not visible while retrying wizard advance/i,
   /Critical wizard endpoint failure/i,
+  /Transient dependency instability after submit/i,
   /Test ended/i,
 ];
 
@@ -27,6 +31,23 @@ const FATAL_PAGE_CLOSED_PATTERNS: RegExp[] = [
 
 function asErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
+}
+
+export function formatErrorMessage(error: unknown): string {
+  return asErrorMessage(error);
+}
+
+export function isDependencyEnvironmentFailure(error: unknown): boolean {
+  const message = asErrorMessage(error);
+  return (
+    /returned HTTP 5\d\d/i.test(message) ||
+    /status\s+5\d\d/i.test(message) ||
+    /something went wrong page/i.test(message) ||
+    /network timeout/i.test(message) ||
+    /ECONNRESET|ETIMEDOUT/i.test(message) ||
+    /Target page, context or browser has been closed/i.test(message) ||
+    /setup exceeded \d+ms/i.test(message)
+  );
 }
 
 export function isTransientWorkflowFailure(error: unknown): boolean {

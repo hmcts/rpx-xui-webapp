@@ -58,7 +58,7 @@ class MockSessionService {
 
   async getSessionCookies() {
     try {
-      const res = await this.http.get('/external/configuration-ui/');
+      const res = await this.http.get('/external/config/ui/');
       return res.headers?.['set-cookie'] || [];
     } catch {
       return [];

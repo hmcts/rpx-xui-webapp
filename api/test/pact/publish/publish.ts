@@ -1,5 +1,5 @@
 import pact from '@pact-foundation/pact-node';
-import * as git from 'git-rev-sync';
+import { execSync } from 'child_process';
 import * as path from 'path';
 import { getConfigValue } from '../../../configuration';
 import {
@@ -39,7 +39,9 @@ const publish = async (): Promise<void> => {
 
     const resolveConsumerVersion = (): string => {
       try {
-        return git.short();
+        return execSync('git rev-parse --short=12 HEAD', { stdio: ['ignore', 'pipe', 'ignore'] })
+          .toString()
+          .trim();
       } catch {
         const envSha = process.env.GIT_COMMIT || process.env.CI_COMMIT_SHA || process.env.BUILD_VCS_NUMBER;
         if (envSha && envSha.trim()) {
@@ -52,15 +54,17 @@ const publish = async (): Promise<void> => {
     const configuredConsumerVersion = getConfigValue(PACT_CONSUMER_VERSION);
     const consumerVersion =
       configuredConsumerVersion && configuredConsumerVersion.trim() !== '' ? configuredConsumerVersion : resolveConsumerVersion();
+    const pactBrokerPassword = getConfigValue<string | null>(PACT_BROKER_PASSWORD);
+    const pactBrokerUsername = getConfigValue<string | null>(PACT_BROKER_USERNAME);
 
     const opts = {
       consumerVersion,
       pactBroker,
-      pactBrokerPassword: getConfigValue(PACT_BROKER_PASSWORD),
-      pactBrokerUsername: getConfigValue(PACT_BROKER_USERNAME),
       pactFilesOrDirs: [path.resolve(__dirname, '../pacts/')],
       publishVerificationResult: true,
       tags: [pactTag],
+      ...(pactBrokerPassword ? { pactBrokerPassword } : {}),
+      ...(pactBrokerUsername ? { pactBrokerUsername } : {}),
     };
     await pact.publishPacts(opts);
     console.log('Pact contract publishing complete!');

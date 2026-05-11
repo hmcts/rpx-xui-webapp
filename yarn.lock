@@ -522,7 +522,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/cli@npm:^20.3.17":
+"@angular/cli@npm:^20.3.18":
   version: 20.3.25
   resolution: "@angular/cli@npm:20.3.25"
   dependencies:
@@ -562,9 +562,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@angular/compiler-cli@npm:^20.3.17":
-  version: 20.3.19
-  resolution: "@angular/compiler-cli@npm:20.3.19"
+"@angular/compiler-cli@npm:^20.3.18":
+  version: 20.3.20
+  resolution: "@angular/compiler-cli@npm:20.3.20"
   dependencies:
     "@babel/core": "npm:7.28.3"
     "@jridgewell/sourcemap-codec": "npm:^1.4.14"
@@ -575,7 +575,7 @@ __metadata:
     tslib: "npm:^2.3.0"
     yargs: "npm:^18.0.0"
   peerDependencies:
-    "@angular/compiler": 20.3.19
+    "@angular/compiler": 20.3.20
     typescript: ">=5.8 <6.0"
   peerDependenciesMeta:
     typescript:
@@ -583,7 +583,16 @@ __metadata:
   bin:
     ng-xi18n: bundles/src/bin/ng_xi18n.js
     ngc: bundles/src/bin/ngc.js
-  checksum: 10/d7b1d6ba6a8ed2a4ad7f2729e5732025b55106b06d71a8603e49caab656ef5521c9a1fd33800b24119ec650bf213ada017ae0de3bf42a91a0f801fa7b4ab2810
+  checksum: 10/381e9c1326953f6ef73036d6f7770452a39ff3348d0cb810298a063b2ce53e66789531cefeceb8a64dcaed114e8c39d50a073438bda293a2ba3dc4a08739ecf6
+  languageName: node
+  linkType: hard
+
+"@angular/compiler@npm:^20.3.18":
+  version: 20.3.20
+  resolution: "@angular/compiler@npm:20.3.20"
+  dependencies:
+    tslib: "npm:^2.3.0"
+  checksum: 10/b67726e982a7836749b034affe32dfb892af216ddd11ec639f8fbabcbc479bd910bd023227f2c2e2ab65ac315f750b9c1a0520a55f6f64c7894ea57d164fd195
   languageName: node
   linkType: hard
 
@@ -21268,9 +21277,10 @@ __metadata:
     "@angular-material-components/moment-adapter": "npm:^16.0.1"
     "@angular/animations": "npm:^20.3.17"
     "@angular/cdk": "npm:^16.2.0"
-    "@angular/cli": "npm:^20.3.17"
+    "@angular/cli": "npm:^20.3.18"
     "@angular/common": "npm:^20.3.18"
-    "@angular/compiler-cli": "npm:^20.3.17"
+    "@angular/compiler": "npm:^20.3.18"
+    "@angular/compiler-cli": "npm:^20.3.18"
     "@angular/core": "npm:^20.3.18"
     "@angular/elements": "npm:^20.3.18"
     "@angular/forms": "npm:^20.3.18"

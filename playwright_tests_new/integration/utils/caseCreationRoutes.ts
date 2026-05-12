@@ -106,6 +106,6 @@ export async function submitCaseAndCaptureRequest(
   createCasePage: Pick<CreateCasePage, 'testSubmitButton'>
 ): Promise<unknown> {
   const interceptedCreateCaseRequestBodyPromise = routeCaseCreationFlow(page);
-  await Promise.all([interceptedCreateCaseRequestBodyPromise, createCasePage.testSubmitButton.click()]);
+  await Promise.all([interceptedCreateCaseRequestBodyPromise, createCasePage.testSubmitButton.click({ noWaitAfter: true })]);
   return interceptedCreateCaseRequestBodyPromise;
 }

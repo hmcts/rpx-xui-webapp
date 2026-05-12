@@ -502,7 +502,9 @@ function resolveCivilApiConfig(): CivilApiConfig {
     idamTestSupportApiUrl: trimTrailingSlash(
       firstNonEmpty(process.env.IDAM_TEST_SUPPORT_API_URL, process.env.IDAM_TESTING_SUPPORT_URL) ?? ''
     ),
-    serviceAuthProviderUrl: trimTrailingSlash(firstNonEmpty(process.env.SERVICE_AUTH_PROVIDER_API_BASE_URL, process.env.S2S_URL) ?? ''),
+    serviceAuthProviderUrl: trimTrailingSlash(
+      firstNonEmpty(process.env.SERVICE_AUTH_PROVIDER_API_BASE_URL, process.env.S2S_URL) ?? ''
+    ),
     s2sToken: firstNonEmpty(process.env.S2S_TOKEN),
     s2sSecret: firstNonEmpty(process.env.S2S_SECRET),
     claimantUser: {
@@ -560,7 +562,10 @@ function requireCivilApiConfig(): CivilApiConfig {
   return resolveCivilApiConfig();
 }
 
-async function createCivilApiTokens(page: Page, config: CivilApiConfig): Promise<{
+async function createCivilApiTokens(
+  page: Page,
+  config: CivilApiConfig
+): Promise<{
   claimantIdamToken: string;
   defendantIdamToken: string;
   s2sToken: string;
@@ -688,7 +693,9 @@ async function getIdamAccessToken(page: Page, config: CivilApiConfig, user: Civi
     }
 
     const body = await response.text().catch(() => '');
-    lastError = new Error(`Failed to get IDAM token for '${user.email}' (HTTP ${response.status()}). Body='${body.slice(0, 500)}'`);
+    lastError = new Error(
+      `Failed to get IDAM token for '${user.email}' (HTTP ${response.status()}). Body='${body.slice(0, 500)}'`
+    );
     await page.waitForTimeout(3_000);
   }
 
@@ -731,7 +738,8 @@ async function getCivilS2sToken(page: Page, config: CivilApiConfig): Promise<str
     : `${config.serviceAuthProviderUrl}/lease`;
   const response = await page.request.post(leaseUrl, {
     data: {
-      microservice: firstNonEmpty(process.env.PW_CIVIL_S2S_MICROSERVICE, process.env.S2S_MICROSERVICE_NAME) ?? DEFAULT_CIVIL_S2S_MICROSERVICE,
+      microservice:
+        firstNonEmpty(process.env.PW_CIVIL_S2S_MICROSERVICE, process.env.S2S_MICROSERVICE_NAME) ?? DEFAULT_CIVIL_S2S_MICROSERVICE,
       oneTimePassword: authenticator.generate(config.s2sSecret),
     },
     failOnStatusCode: false,
@@ -833,7 +841,9 @@ async function assignCivilCaseRoleToUser(options: {
 
   if (!response.ok() && response.status() !== 409) {
     const body = await response.text().catch(() => '');
-    throw new Error(`Failed to assign Civil case role '${options.caseRole}' (HTTP ${response.status()}). Body='${body.slice(0, 500)}'`);
+    throw new Error(
+      `Failed to assign Civil case role '${options.caseRole}' (HTTP ${response.status()}). Body='${body.slice(0, 500)}'`
+    );
   }
 }
 
@@ -848,13 +858,16 @@ async function waitForFinishedCivilBusinessProcess(
   let incidentMessage = '';
 
   while (Date.now() < deadline) {
-    const response = await page.request.get(`${config.civilServiceUrl}/testing-support/case/${encodeURIComponent(caseNumber)}/business-process`, {
-      failOnStatusCode: false,
-      headers: {
-        Authorization: `Bearer ${idamToken}`,
-      },
-      timeout: 60_000,
-    });
+    const response = await page.request.get(
+      `${config.civilServiceUrl}/testing-support/case/${encodeURIComponent(caseNumber)}/business-process`,
+      {
+        failOnStatusCode: false,
+        headers: {
+          Authorization: `Bearer ${idamToken}`,
+        },
+        timeout: 60_000,
+      }
+    );
 
     if (response.ok()) {
       const body = (await response.json()) as {
@@ -1063,10 +1076,7 @@ function defendantResponseCarmCompanyPayload(): JsonRecord {
         isMediationPhoneCorrect: 'No',
         alternativeMediationTelephone: '07744444444',
         hasUnavailabilityNextThreeMonths: 'Yes',
-        unavailableDatesForMediation: [
-          createUnavailableDate('defendant', 30),
-          createUnavailableDate('defendant', 40, 45),
-        ],
+        unavailableDatesForMediation: [createUnavailableDate('defendant', 30), createUnavailableDate('defendant', 40, 45)],
       },
       respondent1LiPFinancialDetails: {},
       detailsOfWhyDoesYouDisputeTheClaim: 'reasons',
@@ -1137,10 +1147,7 @@ function defendantResponseCarmCompanyPayload(): JsonRecord {
       },
       respondent1DQHearingSmallClaim: {
         unavailableDatesRequired: 'Yes',
-        smallClaimUnavailableDate: [
-          createUnavailableDate('defendant', 30),
-          createUnavailableDate('defendant', 40, 45),
-        ],
+        smallClaimUnavailableDate: [createUnavailableDate('defendant', 30), createUnavailableDate('defendant', 40, 45)],
       },
       respondent1DQExperts: {},
     },
@@ -1197,10 +1204,7 @@ function claimantLipIntendsToProceedCarmPayload(): JsonRecord {
         isMediationPhoneCorrect: 'No',
         alternativeMediationTelephone: '07755555555',
         hasUnavailabilityNextThreeMonths: 'Yes',
-        unavailableDatesForMediation: [
-          createUnavailableDate('defendant', 6),
-          createUnavailableDate('defendant', 10, 15),
-        ],
+        unavailableDatesForMediation: [createUnavailableDate('defendant', 6), createUnavailableDate('defendant', 10, 15)],
       },
       applicant1DQLanguage: {
         court: 'ENGLISH',
@@ -1238,10 +1242,7 @@ function claimantLipIntendsToProceedCarmPayload(): JsonRecord {
       },
       applicant1DQSmallClaimHearing: {
         unavailableDatesRequired: 'Yes',
-        smallClaimUnavailableDate: [
-          createUnavailableDate('defendant', 6),
-          createUnavailableDate('defendant', 10, 15),
-        ],
+        smallClaimUnavailableDate: [createUnavailableDate('defendant', 6), createUnavailableDate('defendant', 10, 15)],
       },
       applicant1DQExperts: {},
       applicant1DQHearingSupport: {

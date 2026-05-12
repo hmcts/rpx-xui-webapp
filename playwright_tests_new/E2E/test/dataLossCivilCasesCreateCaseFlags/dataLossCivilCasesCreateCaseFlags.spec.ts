@@ -55,9 +55,7 @@ function objectLooksCaseFlagRelated(value: JsonRecord): boolean {
 
 function normaliseCaseDataForDataLossComparison(value: unknown): unknown {
   if (Array.isArray(value)) {
-    return value
-      .map((entry) => normaliseCaseDataForDataLossComparison(entry))
-      .filter((entry) => entry !== undefined);
+    return value.map((entry) => normaliseCaseDataForDataLossComparison(entry)).filter((entry) => entry !== undefined);
   }
 
   if (!value || typeof value !== 'object') {
@@ -100,7 +98,11 @@ async function clickCaseFlagNext(page: Page): Promise<void> {
   const nextButton = page.getByRole('button', { name: /^(Next|Continue)$/i }).first();
   await nextButton.waitFor({ state: 'visible', timeout: 30_000 });
   await nextButton.click();
-  await page.locator('xuilib-loading-spinner').first().waitFor({ state: 'hidden', timeout: 30_000 }).catch(() => undefined);
+  await page
+    .locator('xuilib-loading-spinner')
+    .first()
+    .waitFor({ state: 'hidden', timeout: 30_000 })
+    .catch(() => undefined);
 }
 
 async function selectPartyFlagLocation(page: Page): Promise<void> {

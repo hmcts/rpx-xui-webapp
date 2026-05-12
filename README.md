@@ -175,7 +175,7 @@ Detailed suite documentation and architecture:
 
 - **Session management:** Playwright uses lazy session capture and shared `.sessions/` storage to avoid repeated logins during parallel runs.
 - **Integration mocking model:** Integration specs in `playwright_tests_new/integration/test/` mock backend APIs with route interception and builders in `playwright_tests_new/integration/mocks/`.
-- **Tag-based execution:** Suites support include/exclude tag filters via environment variables (`E2E_PW_INCLUDE_TAGS`, `INTEGRATION_PW_INCLUDE_TAGS`, `API_PW_INCLUDE_TAGS` and corresponding `*_EXCLUDED_TAGS_OVERRIDE`).
+- **Tag-based execution:** Suites support include/exclude tag filters via environment variables (`E2E_PW_INCLUDE_TAGS`, `INTEGRATION_PW_INCLUDE_TAGS`, `API_PW_INCLUDE_TAGS` and corresponding `*_EXCLUDED_TAGS_OVERRIDE`). The emergency global exclusion switch is documented in [Playwright global test exclusions](./docs/playwright-global-exclusions.md).
 - **Parallelism:** worker count auto-scales unless overridden with `FUNCTIONAL_TESTS_WORKERS`.
 
 ### Reporting and diagnostics
@@ -344,6 +344,23 @@ az keyvault secret set \
 
 Then regenerate your local env file:
 
+For the Work Allocation solicitor used by Playwright API/E2E tests, store the
+long-lived dashboard-created user as:
+
+```bash
+az keyvault secret set \
+  --vault-name rpx-aat \
+  --name e2e-wa-solicitor-username \
+  --value '<dashboard-created-wa-solicitor-email>' \
+  --tags e2e=WA_SOLICITOR_USERNAME
+
+az keyvault secret set \
+  --vault-name rpx-aat \
+  --name e2e-wa-solicitor-password \
+  --value '<dashboard-created-wa-solicitor-password>' \
+  --tags e2e=WA_SOLICITOR_PASSWORD
+```
+
 ```bash
 yarn env:populate:aat
 yarn env:populate:demo
@@ -434,13 +451,11 @@ Key behaviour:
 
 Playwright-capable pipeline stages archive diagnostics for troubleshooting and triage:
 
-- `functional-output/tests/**/odhin-report/**/*`
-- `test-results/**/*`
 - `functional-output/tests/playwright-diagnostics/failure-data/**/*`
-- `**/failure-data.json`
 
 `failure-data.json` files attached by Playwright tests are also copied into
 `functional-output/tests/playwright-diagnostics/failure-data/` with flattened filenames so they are easier to find in Jenkins artifacts.
+Odhín HTML reports and standalone system-load reports are published through Jenkins HTML Publisher links rather than archived as raw build artifacts.
 
 ### Playwright locator audit
 
@@ -477,7 +492,7 @@ What it does not validate:
 
 ### Parallelism
 
-Playwright worker count scales with available CPU cores in both local and CI runs (approx. half of the logical cores, capped at 8).
+Playwright worker count defaults are suite-specific: 2 workers for E2E, 4 workers for API, and 4 workers for integration.
 Set `FUNCTIONAL_TESTS_WORKERS` to override this behaviour explicitly.
 
 ### Integration local progress timer

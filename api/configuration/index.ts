@@ -18,7 +18,20 @@ propertiesVolume.addTo(config);
  * @see references.ts
  * @param reference - ie. 'services.ccdDefApi'
  */
-export const getConfigValue = <T = string>(reference: string): T => config.get<T>(reference);
+const ENV_ONLY_CONFIG_REFERENCES: Record<string, string> = {
+  'pact.brokerPassword': 'PACT_BROKER_PASSWORD',
+  'secrets.rpx.system-user-password': 'SYSTEM_USER_PASSWORD',
+};
+
+export const getConfigValue = <T = string>(reference: string): T => {
+  const envName = ENV_ONLY_CONFIG_REFERENCES[reference];
+
+  if (envName && process.env[envName]) {
+    return process.env[envName] as T;
+  }
+
+  return config.get<T>(reference);
+};
 
 /**
  * Show Feature

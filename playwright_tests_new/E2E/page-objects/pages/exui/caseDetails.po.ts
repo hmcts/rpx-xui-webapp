@@ -671,6 +671,10 @@ export class CaseDetailsPage extends Base {
     return callbackValidationAlert.isVisible({ timeout: timeoutMs }).catch(() => false);
   }
 
+  caseViewerRow(label: string): Locator {
+    return this.caseViewerTable.getByRole('row', { name: label });
+  }
+
   async selectCaseDetailsTab(tabName: string) {
     const tabLoadTimeoutMs = this.getRecommendedTimeoutMs({
       min: TIMEOUTS.TAB_LOAD,
@@ -696,6 +700,63 @@ export class CaseDetailsPage extends Base {
 
     const visibleTabPanel = this.page.locator('[role="tabpanel"]:visible').first();
     await this.waitForTabPanelReadiness(visibleTabPanel, tabLoadTimeoutMs);
+  }
+
+  async waitForCaseDetailsReady(timeoutMs = 30_000): Promise<void> {
+    await this.waitForCaseDetailsTabsReady(timeoutMs);
+  }
+
+  async openCaseDetails(jurisdiction: string, caseType: string, caseId: string, timeoutMs = 30_000): Promise<void> {
+    await this.gotoCaseDetailsPath(`/cases/case-details/${jurisdiction}/${caseType}/${caseId}`, timeoutMs);
+    await this.waitForCaseDetailsReady(timeoutMs);
+  }
+
+  async openTasksTab(jurisdiction: string, caseType: string, caseId: string, timeoutMs = 30_000): Promise<void> {
+    await this.gotoCaseDetailsPath(`/cases/case-details/${jurisdiction}/${caseType}/${caseId}/tasks`, timeoutMs);
+    await this.taskListContainer.waitFor({ state: 'visible', timeout: timeoutMs }).catch(async (error: Error) => {
+      await this.gotoCaseDetailsPath(`/cases/case-details/${jurisdiction}/${caseType}/${caseId}/tasks`, timeoutMs);
+      await this.taskListContainer.waitFor({ state: 'visible', timeout: timeoutMs }).catch(() => {
+        throw error;
+      });
+    });
+    await this.exuiSpinnerComponent.wait();
+  }
+
+  private async gotoCaseDetailsPath(targetUrl: string, timeoutMs: number): Promise<void> {
+    let lastError: unknown;
+    const targetPath = targetUrl.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const targetPattern = new RegExp(`${targetPath}(?:[/?#]|$)`);
+
+    for (let attempt = 1; attempt <= 3; attempt += 1) {
+      try {
+        await this.page.goto(targetUrl, { waitUntil: 'domcontentloaded' });
+        await this.page.waitForURL(targetPattern, { timeout: timeoutMs }).catch(() => undefined);
+        if (!targetPattern.test(this.page.url())) {
+          throw new Error(`Case details navigation did not reach ${targetUrl}; current URL is ${this.page.url()}`);
+        }
+        if (/chrome-error:\/\/chromewebdata/i.test(this.page.url())) {
+          throw new Error(`Case details navigation reached ${this.page.url()}`);
+        }
+        return;
+      } catch (error) {
+        lastError = error;
+        if (attempt >= 3 || !this.isTransientNavigationError(error)) {
+          throw error;
+        }
+        await this.page.waitForTimeout(Math.min(1_000, timeoutMs));
+      }
+    }
+
+    throw new Error(`Case details navigation failed for ${targetUrl}: ${String(lastError)}`);
+  }
+
+  private isTransientNavigationError(error: unknown): boolean {
+    return (
+      error instanceof Error &&
+      /ERR_SOCKET_NOT_CONNECTED|ERR_ABORTED|net::ERR|Navigation failed|interrupted.*navigation|chrome-error:\/\/chromewebdata|did not reach/i.test(
+        error.message
+      )
+    );
   }
 
   getRoleAccessSection(title: 'Judiciary' | 'Legal Ops'): Locator {
@@ -737,9 +798,7 @@ export class CaseDetailsPage extends Base {
   }
 
   async openRolesAndAccessTab(caseId: string): Promise<void> {
-    await this.page.goto(`/cases/case-details/IA/Asylum/${caseId}`);
-    await expect(this.container).toBeVisible();
-    await expect(this.page.getByRole('tab', { name: /Roles and access/i }).first()).toBeVisible();
+    await this.openCaseDetails('IA', 'Asylum', caseId);
 
     await this.selectCaseDetailsTab('Roles and access');
     await this.page.waitForURL(new RegExp(`/cases/case-details/IA/Asylum/${caseId}(?:/roles-and-access)?(?:#.*)?$`));
@@ -773,13 +832,37 @@ export class CaseDetailsPage extends Base {
     return matchingPage ?? this.page;
   }
 
+  async waitForDocumentOneRowToContain(expectedText: string, timeoutMs = 45_000): Promise<void> {
+    await expect
+      .poll(
+        async () => {
+          await this.selectCaseDetailsTab('Tab 1').catch(() => undefined);
+          const rowVisible = await this.documentOneRow.isVisible().catch(() => false);
+          if (!rowVisible) {
+            return '';
+          }
+          return await this.documentOneRow.innerText().catch(() => '');
+        },
+        { timeout: timeoutMs, intervals: [1_000, 2_000, 3_000] }
+      )
+      .toContain(expectedText);
+  }
+
   async getTabCount() {
     const tabsCount = await this.tablist2.count();
     return tabsCount;
   }
 
   private async waitForCaseDetailsTabsReady(timeoutMs: number): Promise<void> {
-    await this.container.waitFor({ state: 'visible', timeout: timeoutMs });
+    await this.container.waitFor({ state: 'visible', timeout: timeoutMs }).catch(async (error: Error) => {
+      if (!/\/cases\/case-details\//.test(this.page.url())) {
+        throw error;
+      }
+      await this.page.goto(this.page.url(), { waitUntil: 'domcontentloaded' });
+      await this.container.waitFor({ state: 'visible', timeout: timeoutMs }).catch(() => {
+        throw error;
+      });
+    });
     await this.tabList.waitFor({ state: 'visible', timeout: timeoutMs });
 
     const deadline = Date.now() + timeoutMs;

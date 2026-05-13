@@ -13,7 +13,7 @@ test.describe(
   () => {
     test('User cannot submit a specific access request without a reason', async ({ accessRequestPage, page }) => {
       await setupSpecificAccessRequestMockRoutes(page);
-      await page.goto(SPECIFIC_ACCESS_PATH, { waitUntil: 'domcontentloaded' });
+      await accessRequestPage.gotoSpecificAccessRequest(SPECIFIC_ACCESS_PATH);
 
       await accessRequestPage.submitButton.click();
 
@@ -26,7 +26,7 @@ test.describe(
         specificAccessStatus: 500,
         specificAccessBody: { message: 'specific access request failed' },
       });
-      await page.goto(SPECIFIC_ACCESS_PATH, { waitUntil: 'domcontentloaded' });
+      await accessRequestPage.gotoSpecificAccessRequest(SPECIFIC_ACCESS_PATH);
 
       await accessRequestPage.specificAccessReasonInput.fill('Urgent linked hearing preparation required.');
 

@@ -4,6 +4,8 @@ type JsonRecord = Record<string, unknown>;
 type DataLossNormalisationOptions = {
   ignoredFlagComment?: string;
 };
+const FLAG_METADATA_KEYS = new Set(['partyName', 'roleOnCase']);
+const FLAG_CONTAINER_KEYS = new Set(['partyName', 'roleOnCase', 'details', 'flagDetails', 'flags']);
 
 export function isPageClosingError(error: unknown): boolean {
   const message = error instanceof Error ? error.message : String(error);
@@ -59,6 +61,10 @@ export function normaliseCaseDataForDataLossComparison(value: unknown, options: 
     if (cleanedValue !== undefined) {
       normalised[key] = cleanedValue;
     }
+  }
+
+  if (objectIsEmptyFlagMetadataContainer(record, normalised)) {
+    return undefined;
   }
 
   return normalised;
@@ -177,6 +183,29 @@ function arrayOnlyContainedIgnoredCreatedFlag(
 
   return originalValue.every((entry) => {
     return entry !== null && typeof entry === 'object' && objectIsIgnoredCreatedFlag(entry as JsonRecord, ignoredFlagComment);
+  });
+}
+
+function objectIsEmptyFlagMetadataContainer(originalValue: JsonRecord, normalisedValue: JsonRecord): boolean {
+  const originalKeys = Object.keys(originalValue);
+  if (!originalKeys.length || !originalKeys.every((key) => FLAG_CONTAINER_KEYS.has(key))) {
+    return false;
+  }
+
+  return !objectContainsFlagEntry(normalisedValue);
+}
+
+function objectContainsFlagEntry(value: unknown): boolean {
+  if (Array.isArray(value)) {
+    return value.length > 0;
+  }
+
+  if (!value || typeof value !== 'object') {
+    return value !== '' && value !== null && value !== undefined;
+  }
+
+  return Object.entries(value as JsonRecord).some(([key, entryValue]) => {
+    return !FLAG_METADATA_KEYS.has(key) && objectContainsFlagEntry(entryValue);
   });
 }
 

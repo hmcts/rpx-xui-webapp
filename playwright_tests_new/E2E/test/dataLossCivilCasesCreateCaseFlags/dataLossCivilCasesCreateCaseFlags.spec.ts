@@ -105,23 +105,23 @@ test.describe('Civil Create Case Flag data loss regression', { tag: ['@e2e', '@e
         .soft(resolveCcdCaseStateId(updatedCaseDetails), 'Post-flag case state should remain Mediation')
         .toBe(MEDIATION_STATE);
 
-      await testInfo.attach('civil-case-before-create-flag.json', {
+      await testInfo.attach('civil case before create flag.json', {
         body: JSON.stringify(baselineCaseDetails, null, 2),
         contentType: 'application/json',
       });
-      await testInfo.attach('civil-case-after-create-flag.json', {
+      await testInfo.attach('civil case after create flag.json', {
         body: JSON.stringify(updatedCaseDetails, null, 2),
         contentType: 'application/json',
       });
-      await testInfo.attach('civil-case-before-create-flag-normalised.json', {
+      await testInfo.attach('civil case before create flag normalised.json', {
         body: JSON.stringify(normalisedBaselineCaseDetails, null, 2),
         contentType: 'application/json',
       });
-      await testInfo.attach('civil-case-after-create-flag-normalised.json', {
+      await testInfo.attach('civil case after create flag normalised.json', {
         body: JSON.stringify(normalisedUpdatedCaseDetails, null, 2),
         contentType: 'application/json',
       });
-      await testInfo.attach('civil-case-create-flag-data-loss-report.md', {
+      await testInfo.attach('civil case create flag data loss report.md', {
         body: buildDataLossComparisonReport({
           baselineCaseDetails,
           caseNumber,

@@ -28,7 +28,6 @@ variable "application_type" {
 }
 
 variable "sampling_percentage" {
-  default     = 1
   description = "Specifies the sampling percentage for Application Insights"
 }
 

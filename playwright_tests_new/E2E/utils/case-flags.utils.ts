@@ -4,7 +4,6 @@ type JsonRecord = Record<string, unknown>;
 type DataLossNormalisationOptions = {
   ignoredFlagComment?: string;
 };
-const CASE_FLAG_CONTAINER_METADATA_KEYS = new Set(['partyName', 'roleOnCase']);
 
 export function isPageClosingError(error: unknown): boolean {
   const message = error instanceof Error ? error.message : String(error);
@@ -32,7 +31,13 @@ export function resolveCaseNumberFromPayload(payload: CcdCaseDetails): string | 
 
 export function normaliseCaseDataForDataLossComparison(value: unknown, options: DataLossNormalisationOptions = {}): unknown {
   if (Array.isArray(value)) {
-    return value.map((entry) => normaliseCaseDataForDataLossComparison(entry, options)).filter((entry) => entry !== undefined);
+    const normalised = value
+      .map((entry) => normaliseCaseDataForDataLossComparison(entry, options))
+      .filter((entry) => entry !== undefined);
+    if (arrayOnlyContainedIgnoredCreatedFlag(value, normalised, options.ignoredFlagComment)) {
+      return undefined;
+    }
+    return normalised;
   }
 
   if (!value || typeof value !== 'object') {
@@ -54,10 +59,6 @@ export function normaliseCaseDataForDataLossComparison(value: unknown, options: 
     if (cleanedValue !== undefined) {
       normalised[key] = cleanedValue;
     }
-  }
-
-  if (objectIsEmptyIgnoredFlagContainer(record, normalised, options.ignoredFlagComment)) {
-    return undefined;
   }
 
   return normalised;
@@ -161,58 +162,22 @@ function objectHasDirectStringValue(value: JsonRecord, expectedText: string): bo
   return Object.values(value).some((candidate) => typeof candidate === 'string' && candidate.includes(expectedText));
 }
 
-function objectIsEmptyIgnoredFlagContainer(
-  originalValue: JsonRecord,
-  normalisedValue: JsonRecord,
+function arrayOnlyContainedIgnoredCreatedFlag(
+  originalValue: unknown[],
+  normalisedValue: unknown[],
   ignoredFlagComment: string | undefined
 ): boolean {
   if (!ignoredFlagComment) {
     return false;
   }
 
-  return (
-    objectContainsStringValue(originalValue, ignoredFlagComment) &&
-    objectLooksCaseFlagContainer(originalValue) &&
-    objectHasNoRemainingFlagEntries(normalisedValue)
-  );
-}
-
-function objectLooksCaseFlagContainer(value: JsonRecord): boolean {
-  const keys = Object.keys(value);
-  return (
-    keys.some((key) => /^(details|flagDetails|flags)$/i.test(key) || /^flag/i.test(key)) ||
-    (typeof value.partyName === 'string' && typeof value.roleOnCase === 'string' && 'details' in value)
-  );
-}
-
-function objectHasNoRemainingFlagEntries(value: unknown): boolean {
-  if (Array.isArray(value)) {
-    return value.length === 0;
-  }
-
-  if (!value || typeof value !== 'object') {
-    return value === '' || value === null || value === undefined;
-  }
-
-  return Object.entries(value as JsonRecord).every(([key, entryValue]) => {
-    return CASE_FLAG_CONTAINER_METADATA_KEYS.has(key) || objectHasNoRemainingFlagEntries(entryValue);
-  });
-}
-
-function objectContainsStringValue(value: unknown, expectedText: string): boolean {
-  if (typeof value === 'string') {
-    return value.includes(expectedText);
-  }
-
-  if (Array.isArray(value)) {
-    return value.some((entry) => objectContainsStringValue(entry, expectedText));
-  }
-
-  if (!value || typeof value !== 'object') {
+  if (originalValue.length === 0 || normalisedValue.length > 0) {
     return false;
   }
 
-  return Object.values(value as JsonRecord).some((entryValue) => objectContainsStringValue(entryValue, expectedText));
+  return originalValue.every((entry) => {
+    return entry !== null && typeof entry === 'object' && objectIsIgnoredCreatedFlag(entry as JsonRecord, ignoredFlagComment);
+  });
 }
 
 function resolveCaseDataPayload(caseDetails: CcdCaseDetails): JsonRecord {

@@ -57,6 +57,10 @@ export function normaliseCaseDataForDataLossComparison(value: unknown, options: 
       continue;
     }
 
+    if (key === 'flags' && objectIsEmptyFlagMetadataValue(entryValue)) {
+      continue;
+    }
+
     const cleanedValue = normaliseCaseDataForDataLossComparison(entryValue, options);
     if (cleanedValue !== undefined) {
       normalised[key] = cleanedValue;
@@ -193,6 +197,15 @@ function objectIsEmptyFlagMetadataContainer(originalValue: JsonRecord, normalise
   }
 
   return !objectContainsFlagEntry(normalisedValue);
+}
+
+function objectIsEmptyFlagMetadataValue(value: unknown): boolean {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return false;
+  }
+
+  const keys = Object.keys(value as JsonRecord);
+  return keys.length > 0 && keys.every((key) => FLAG_METADATA_KEYS.has(key));
 }
 
 function objectContainsFlagEntry(value: unknown): boolean {

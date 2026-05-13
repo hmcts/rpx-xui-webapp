@@ -1,6 +1,10 @@
 import { resolveCcdCaseStateId, type CcdCaseDetails } from './test-setup/journeys/civilCaseJourneys';
 
 type JsonRecord = Record<string, unknown>;
+type DataLossNormalisationOptions = {
+  ignoredFlagComment?: string;
+};
+const CASE_FLAG_CONTAINER_METADATA_KEYS = new Set(['partyName', 'roleOnCase']);
 
 export function isPageClosingError(error: unknown): boolean {
   const message = error instanceof Error ? error.message : String(error);
@@ -26,9 +30,12 @@ export function resolveCaseNumberFromPayload(payload: CcdCaseDetails): string | 
   return typeof candidate === 'string' || typeof candidate === 'number' ? String(candidate).replace(/\D/g, '') : undefined;
 }
 
-export function normaliseCaseDataForDataLossComparison(value: unknown): unknown {
+export function normaliseCaseDataForDataLossComparison(
+  value: unknown,
+  options: DataLossNormalisationOptions = {}
+): unknown {
   if (Array.isArray(value)) {
-    return value.map((entry) => normaliseCaseDataForDataLossComparison(entry)).filter((entry) => entry !== undefined);
+    return value.map((entry) => normaliseCaseDataForDataLossComparison(entry, options)).filter((entry) => entry !== undefined);
   }
 
   if (!value || typeof value !== 'object') {
@@ -36,20 +43,24 @@ export function normaliseCaseDataForDataLossComparison(value: unknown): unknown 
   }
 
   const record = value as JsonRecord;
-  if (objectLooksCaseFlagRelated(record) || objectLooksVolatileCaseViewField(record)) {
+  if (objectIsIgnoredCreatedFlag(record, options.ignoredFlagComment) || objectLooksVolatileCaseViewField(record)) {
     return undefined;
   }
 
   const normalised: JsonRecord = {};
   for (const [key, entryValue] of Object.entries(record)) {
-    if (isVolatileCaseMetadataKey(key) || isCaseFlagRelatedKey(key)) {
+    if (isVolatileCaseMetadataKey(key)) {
       continue;
     }
 
-    const cleanedValue = normaliseCaseDataForDataLossComparison(entryValue);
+    const cleanedValue = normaliseCaseDataForDataLossComparison(entryValue, options);
     if (cleanedValue !== undefined) {
       normalised[key] = cleanedValue;
     }
+  }
+
+  if (objectIsEmptyIgnoredFlagContainer(record, normalised, options.ignoredFlagComment)) {
+    return undefined;
   }
 
   return normalised;
@@ -87,7 +98,7 @@ export function buildDataLossComparisonReport(options: {
     `Normalised case data match: ${normalisedMatch ? 'Yes' : 'No'}`,
     '',
     'Ignored expected changes:',
-    '- Case flag fields added by CREATE_CASE_FLAGS',
+    '- Case flag entry created by this test',
     '- CCD event history / case history entries',
     '- CCD last modified timestamps and trigger/action metadata',
     '',
@@ -97,10 +108,6 @@ export function buildDataLossComparisonReport(options: {
     'Raw and normalised JSON snapshots are attached to this test result.',
     '',
   ].join('\n');
-}
-
-function isCaseFlagRelatedKey(key: string): boolean {
-  return /flag/i.test(key);
 }
 
 function isVolatileCaseMetadataKey(key: string): boolean {
@@ -136,11 +143,79 @@ function objectLooksVolatileCaseViewField(value: JsonRecord): boolean {
   );
 }
 
-function objectLooksCaseFlagRelated(value: JsonRecord): boolean {
-  return ['id', 'label', 'name', 'display_context_parameter'].some((key) => {
-    const candidate = value[key];
-    return typeof candidate === 'string' && /flag/i.test(candidate);
+function objectIsIgnoredCreatedFlag(value: JsonRecord, ignoredFlagComment: string | undefined): boolean {
+  if (!ignoredFlagComment) {
+    return false;
+  }
+
+  if (objectHasDirectStringValue(value, ignoredFlagComment)) {
+    return true;
+  }
+
+  const collectionValue = value.value;
+  return (
+    collectionValue !== null &&
+    typeof collectionValue === 'object' &&
+    objectHasDirectStringValue(collectionValue as JsonRecord, ignoredFlagComment)
+  );
+}
+
+function objectHasDirectStringValue(value: JsonRecord, expectedText: string): boolean {
+  return Object.values(value).some((candidate) => typeof candidate === 'string' && candidate.includes(expectedText));
+}
+
+function objectIsEmptyIgnoredFlagContainer(
+  originalValue: JsonRecord,
+  normalisedValue: JsonRecord,
+  ignoredFlagComment: string | undefined
+): boolean {
+  if (!ignoredFlagComment) {
+    return false;
+  }
+
+  return (
+    objectContainsStringValue(originalValue, ignoredFlagComment) &&
+    objectLooksCaseFlagContainer(originalValue) &&
+    objectHasNoRemainingFlagEntries(normalisedValue)
+  );
+}
+
+function objectLooksCaseFlagContainer(value: JsonRecord): boolean {
+  const keys = Object.keys(value);
+  return (
+    keys.some((key) => /^(details|flagDetails|flags)$/i.test(key) || /^flag/i.test(key)) ||
+    (typeof value.partyName === 'string' && typeof value.roleOnCase === 'string' && 'details' in value)
+  );
+}
+
+function objectHasNoRemainingFlagEntries(value: unknown): boolean {
+  if (Array.isArray(value)) {
+    return value.length === 0;
+  }
+
+  if (!value || typeof value !== 'object') {
+    return value === '' || value === null || value === undefined;
+  }
+
+  return Object.entries(value as JsonRecord).every(([key, entryValue]) => {
+    return CASE_FLAG_CONTAINER_METADATA_KEYS.has(key) || objectHasNoRemainingFlagEntries(entryValue);
   });
+}
+
+function objectContainsStringValue(value: unknown, expectedText: string): boolean {
+  if (typeof value === 'string') {
+    return value.includes(expectedText);
+  }
+
+  if (Array.isArray(value)) {
+    return value.some((entry) => objectContainsStringValue(entry, expectedText));
+  }
+
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+
+  return Object.values(value as JsonRecord).some((entryValue) => objectContainsStringValue(entryValue, expectedText));
 }
 
 function resolveCaseDataPayload(caseDetails: CcdCaseDetails): JsonRecord {

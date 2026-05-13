@@ -1,9 +1,10 @@
 import { createLogger } from '@hmcts/playwright-common';
-import type { Page, TestInfo } from '@playwright/test';
+import type { Browser, Page, TestInfo } from '@playwright/test';
 import { authenticator } from 'otplib';
 
 import type { CaseDetailsPage } from '../../../page-objects/pages/exui/caseDetails.po';
 import type { CreateCasePage } from '../../../page-objects/pages/exui/createCase.po';
+import { setRuntimeUserCredentials } from '../../runtimeUserCredentials';
 import { setupCaseForJourney } from '../caseSetup';
 
 type JsonRecord = Record<string, unknown>;
@@ -13,7 +14,7 @@ export type CcdCaseDetails = JsonRecord & {
   case_id?: string | number;
   case_reference?: string | number;
   caseReference?: string | number;
-  state?: string;
+  state?: string | { id?: string; name?: string };
   data?: JsonRecord;
   case_data?: JsonRecord;
 };
@@ -48,7 +49,7 @@ export type CreateCivilMediationCaseViaApiResult = {
   caseDetails: CcdCaseDetails;
 };
 
-type CivilApiUser = {
+export type CivilApiUser = {
   email: string;
   password: string;
 };
@@ -83,9 +84,27 @@ const DEFAULT_CIVIL_CREATE_EVENT_ID = 'CREATE_CLAIM';
 const DEFAULT_MEDIATION_STATE = 'IN_MEDIATION';
 const DEFAULT_STATE_WAIT_TIMEOUT_MS = 180_000;
 const DEFAULT_STATE_WAIT_INTERVAL_MS = 3_000;
-const DEFAULT_BUSINESS_PROCESS_WAIT_TIMEOUT_MS = 180_000;
+const DEFAULT_CASE_DETAILS_FETCH_WAIT_TIMEOUT_MS = 60_000;
+const DEFAULT_CIVIL_SERVICE_BUSINESS_PROCESS_WAIT_TIMEOUT_MS = 420_000;
 const DEFAULT_BUSINESS_PROCESS_WAIT_INTERVAL_MS = 3_000;
+const DEFAULT_CCD_EVENT_TRIGGER_WAIT_TIMEOUT_MS = 420_000;
+const DEFAULT_CCD_EVENT_TRIGGER_WAIT_INTERVAL_MS = 3_000;
+const DEFAULT_CIVIL_ROLE_ASSIGNMENT_WAIT_TIMEOUT_MS = 60_000;
 const DEFAULT_CIVIL_S2S_MICROSERVICE = 'civil_service';
+const DEFAULT_CIVIL_CLAIMANT_EMAIL = 'civilmoneyclaimsdemo@gmail.com';
+const DEFAULT_CIVIL_DEFENDANT_EMAIL = 'cuiuseraat@gmail.com';
+const DEFAULT_CIVIL_CASE_FLAGS_SETUP_ALIAS = 'CIVIL_SOLICITOR';
+const DEFAULT_CIVIL_COURT_STAFF_ALIAS = 'CIVIL_COURT_STAFF';
+const DEFAULT_CIVIL_COURT_STAFF_EMAIL = 'hearing_center_admin_reg1@justice.gov.uk';
+const DEFAULT_CIVIL_SOLICITOR_EMAIL = 'hmcts.civil+organisation.1.solicitor.1@gmail.com';
+const DEFAULT_CIVIL_COURT_STAFF_ROLES = [
+  'caseworker',
+  'caseworker-civil',
+  'caseworker-civil-staff',
+  'caseworker-civil-admin',
+  'wlu-admin',
+  'pui-case-manager',
+];
 const CIVIL_SMALL_CLAIM_AMOUNT = '1500';
 
 const CCD_INTERNAL_START_EVENT_HEADERS = {
@@ -110,7 +129,7 @@ export function getCivilLipMediationApiMissingConfiguration(): string[] {
     missing.push('IDAM_API_URL or SERVICES_IDAM_API_URL');
   }
   if (!config.s2sToken && !config.serviceAuthProviderUrl) {
-    missing.push('SERVICE_AUTH_PROVIDER_API_BASE_URL or S2S_URL or S2S_TOKEN');
+    missing.push('SERVICE_AUTH_PROVIDER_API_BASE_URL or S2S_URL or PW_CIVIL_S2S_TOKEN');
   }
   if (!config.s2sToken && config.serviceAuthProviderUrl && !config.s2sSecret) {
     missing.push('S2S_SECRET');
@@ -122,12 +141,122 @@ export function getCivilLipMediationApiMissingConfiguration(): string[] {
   return missing;
 }
 
+export function getCivilCaseFlagsSetupAlias(): string {
+  return process.env.PW_CIVIL_CASE_FLAGS_SETUP_ALIAS?.trim() || DEFAULT_CIVIL_CASE_FLAGS_SETUP_ALIAS;
+}
+
+export function getCivilCaseFlagsCourtStaffAlias(): string {
+  return process.env.PW_CIVIL_CASE_FLAGS_COURT_STAFF_ALIAS?.trim() || DEFAULT_CIVIL_COURT_STAFF_ALIAS;
+}
+
+export async function configureCivilCaseFlagsRuntimeUsers(browser: Browser): Promise<void> {
+  configureCivilCaseFlagsSetupAliasCredentials();
+  await configureCivilCaseFlagsCourtStaffAliasCredentials(browser);
+}
+
+function configureCivilCaseFlagsSetupAliasCredentials(): void {
+  if (getCivilCaseFlagsSetupAlias() !== DEFAULT_CIVIL_CASE_FLAGS_SETUP_ALIAS) {
+    return;
+  }
+
+  const email =
+    firstNonEmpty(
+      process.env.CIVIL_SOLICITOR_USERNAME,
+      process.env.PW_CIVIL_SOLICITOR_EMAIL,
+      process.env.CIVIL_SOLICITOR_EMAIL
+    ) ?? DEFAULT_CIVIL_SOLICITOR_EMAIL;
+  const password = firstNonEmpty(
+    process.env.CIVIL_SOLICITOR_PASSWORD,
+    process.env.PW_CIVIL_SOLICITOR_PASSWORD,
+    process.env.CITIZEN_PASSWORD,
+    process.env.PW_CIVIL_CITIZEN_PASSWORD,
+    process.env.TEST_PASSWORD
+  );
+
+  if (!password) {
+    return;
+  }
+
+  process.env.CIVIL_SOLICITOR_USERNAME = email;
+  process.env.CIVIL_SOLICITOR_PASSWORD = password;
+  setRuntimeUserCredentials(DEFAULT_CIVIL_CASE_FLAGS_SETUP_ALIAS, { email, password });
+}
+
+async function configureCivilCaseFlagsCourtStaffAliasCredentials(browser: Browser): Promise<void> {
+  if (getCivilCaseFlagsCourtStaffAlias() !== DEFAULT_CIVIL_COURT_STAFF_ALIAS) {
+    return;
+  }
+
+  const email =
+    firstNonEmpty(process.env.CIVIL_COURT_STAFF_USERNAME, process.env.PW_CIVIL_COURT_STAFF_EMAIL) ??
+    DEFAULT_CIVIL_COURT_STAFF_EMAIL;
+  const password = firstNonEmpty(
+    process.env.CIVIL_COURT_STAFF_PASSWORD,
+    process.env.PW_CIVIL_COURT_STAFF_PASSWORD,
+    process.env.DEFAULT_PASSWORD,
+    process.env.TEST_PASSWORD
+  );
+  if (password) {
+    setRuntimeUserCredentials(DEFAULT_CIVIL_COURT_STAFF_ALIAS, { email, password });
+    return;
+  }
+
+  if (isTruthy(process.env.PW_CIVIL_DISABLE_DYNAMIC_COURT_STAFF)) {
+    throw new Error(`Civil court staff UI setup is missing a password for '${email}'.`);
+  }
+
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  try {
+    const credentials = await createCivilCourtStaffAccountViaApi(page);
+    process.env.CIVIL_COURT_STAFF_USERNAME = credentials.email;
+    process.env.CIVIL_COURT_STAFF_PASSWORD = credentials.password;
+    setRuntimeUserCredentials(DEFAULT_CIVIL_COURT_STAFF_ALIAS, credentials);
+  } finally {
+    await context.close();
+  }
+}
+
+export async function createCivilCourtStaffAccountViaApi(page: Page): Promise<CivilApiUser> {
+  const config = requireCivilApiConfig();
+  const password = resolveCivilGeneratedAccountPassword();
+  const email =
+    firstNonEmpty(process.env.CIVIL_COURT_STAFF_USERNAME, process.env.PW_CIVIL_COURT_STAFF_EMAIL) ??
+    `civilcourtstaff-${Date.now()}-${Math.floor(Math.random() * 1_000_000)}@justice.gov.uk`;
+  const roles =
+    firstNonEmpty(process.env.PW_CIVIL_COURT_STAFF_ROLES)
+      ?.split(',')
+      .map((role) => role.trim())
+      .filter(Boolean) ?? DEFAULT_CIVIL_COURT_STAFF_ROLES;
+
+  const response = await postIdamAccountWithRetry(page, config, {
+    email,
+    forename: 'Civil',
+    password,
+    roles,
+    surname: 'Court Staff',
+    userGroup: 'caseworker',
+  });
+
+  if (!response.ok() && response.status() !== 409) {
+    const body = await response.text().catch(() => '');
+    throw new Error(
+      `Failed to create Civil court staff account '${email}' through IDAM testing-support/accounts ` +
+        `(HTTP ${response.status()}). Roles='${roles.join(',')}'. Body='${body.slice(0, 500)}'. ` +
+        "Use a Civil admin role set that IDAM burner users accept, for example 'caseworker,caseworker-civil,caseworker-civil-admin,pui-case-manager'."
+    );
+  }
+
+  return { email, password };
+}
+
 export async function createCivilLipCaseInMediationViaApi(options: {
   page: Page;
   expectedState?: string;
+  useGeneratedUsers?: boolean;
 }): Promise<CreateCivilMediationCaseViaApiResult> {
   const expectedState = options.expectedState ?? DEFAULT_MEDIATION_STATE;
-  const config = requireCivilApiConfig();
+  const config = options.useGeneratedUsers ? withGeneratedCivilCitizenUsers(requireCivilApiConfig()) : requireCivilApiConfig();
 
   if (config.createClaimantAccount) {
     await createIdamCitizenAccount(options.page, config, config.claimantUser);
@@ -153,7 +282,7 @@ export async function createCivilLipCaseInMediationViaApi(options: {
 
   await waitForFinishedCivilBusinessProcess(options.page, config, tokens.claimantIdamToken, caseNumber);
 
-  await submitCivilCitizenEvent({
+  const claimantResponseDetails = await submitCivilCitizenEvent({
     page: options.page,
     config,
     caseNumber,
@@ -197,13 +326,6 @@ export async function createCivilLipCaseInMediationViaApi(options: {
   });
   await waitForFinishedCivilBusinessProcess(options.page, config, tokens.claimantIdamToken, caseNumber);
 
-  const caseDetails = await waitForCaseState({
-    page: options.page,
-    caseNumber,
-    expectedState,
-    context: 'after Civil LiP API mediation setup',
-  });
-
   logger.info('Created Civil LiP mediation case via Civil API', {
     caseNumber,
     claimantEmail: config.claimantUser.email,
@@ -213,7 +335,7 @@ export async function createCivilLipCaseInMediationViaApi(options: {
 
   return {
     caseNumber,
-    caseDetails,
+    caseDetails: claimantResponseDetails,
   };
 }
 
@@ -284,23 +406,50 @@ export async function createCivilMediationCaseViaApi(
 }
 
 export async function fetchCaseDetailsViaApi(page: Page, caseNumber: string): Promise<CcdCaseDetails> {
-  const response = await page.request.get(`data/internal/cases/${encodeURIComponent(caseNumber)}`, {
-    failOnStatusCode: false,
-    headers: {
-      experimental: 'true',
-      Accept: 'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-case-view.v2+json;charset=UTF-8',
-    },
-  });
+  const path = `data/internal/cases/${encodeURIComponent(caseNumber)}`;
+  const deadline = Date.now() + DEFAULT_CASE_DETAILS_FETCH_WAIT_TIMEOUT_MS;
+  let lastStatus = 0;
+  let lastBody = '';
 
-  if (!response.ok()) {
-    const body = await response.text().catch(() => '');
-    throw new Error(
-      `Failed to fetch case ${caseNumber} via API: HTTP ${response.status()}. ` +
-        `Path='data/internal/cases/${caseNumber}'. Body='${body.slice(0, 500)}'`
-    );
+  while (Date.now() < deadline) {
+    const response = await page.request.get(path, {
+      failOnStatusCode: false,
+      headers: {
+        experimental: 'true',
+        Accept: 'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-case-view.v2+json;charset=UTF-8',
+      },
+      timeout: 60_000,
+    });
+
+    lastStatus = response.status();
+    if (response.ok()) {
+      return (await response.json()) as CcdCaseDetails;
+    }
+
+    lastBody = await response.text().catch(() => '');
+    if (!isRetryableCaseDetailsFetchStatus(lastStatus)) {
+      break;
+    }
+
+    await waitForCivilRetryDelay(page, deadline, `retrying case details fetch for ${caseNumber}`);
   }
 
-  return (await response.json()) as CcdCaseDetails;
+  throw new Error(
+    `Failed to fetch case ${caseNumber} via API: HTTP ${lastStatus}. Path='data/internal/cases/${caseNumber}'. ` +
+      `Body='${lastBody.slice(0, 500)}'`
+  );
+}
+
+function isRetryableCaseDetailsFetchStatus(status: number): boolean {
+  return [404, 409, 429, 500, 502, 503, 504].includes(status);
+}
+
+export function resolveCcdCaseStateId(caseDetails: CcdCaseDetails): string | undefined {
+  const state = caseDetails.state;
+  if (typeof state === 'string') {
+    return state;
+  }
+  return state?.id;
 }
 
 async function submitCcdCaseEventViaApi(options: {
@@ -313,23 +462,11 @@ async function submitCcdCaseEventViaApi(options: {
   summary: string;
   description: string;
 }): Promise<void> {
-  const eventTriggerPath = `data/internal/cases/${encodeURIComponent(options.caseNumber)}/event-triggers/${encodeURIComponent(
-    options.eventId
-  )}?ignore-warning=false`;
-  const eventTriggerResponse = await options.page.request.get(eventTriggerPath, {
-    failOnStatusCode: false,
-    headers: CCD_INTERNAL_START_EVENT_HEADERS,
-    timeout: 60_000,
+  const eventTrigger = await fetchCcdCaseEventTriggerWithRetry({
+    page: options.page,
+    caseNumber: options.caseNumber,
+    eventId: options.eventId,
   });
-  if (!eventTriggerResponse.ok()) {
-    const body = await eventTriggerResponse.text().catch(() => '');
-    throw new Error(
-      `Civil case setup failed to fetch event trigger (HTTP ${eventTriggerResponse.status()}). ` +
-        `Path='${eventTriggerPath}'. Body='${body.slice(0, 500)}'`
-    );
-  }
-
-  const eventTrigger = (await eventTriggerResponse.json()) as InternalEventTriggerResponse;
   const eventToken = eventTrigger.event_token?.trim() || eventTrigger.token?.trim();
   if (!eventToken) {
     throw new Error(`Civil case setup event '${options.eventId}' did not include an event token.`);
@@ -382,6 +519,51 @@ async function submitCcdCaseEventViaApi(options: {
         `Path='${submitPath}'. Body='${body.slice(0, 500)}'`
     );
   }
+}
+
+async function fetchCcdCaseEventTriggerWithRetry(options: {
+  page: Page;
+  caseNumber: string;
+  eventId: string;
+}): Promise<InternalEventTriggerResponse> {
+  const eventTriggerPath = `data/internal/cases/${encodeURIComponent(options.caseNumber)}/event-triggers/${encodeURIComponent(
+    options.eventId
+  )}?ignore-warning=false`;
+  const deadline = Date.now() + DEFAULT_CCD_EVENT_TRIGGER_WAIT_TIMEOUT_MS;
+  let lastStatus = 0;
+  let lastBody = '';
+
+  while (Date.now() < deadline) {
+    const response = await options.page.request.get(eventTriggerPath, {
+      failOnStatusCode: false,
+      headers: CCD_INTERNAL_START_EVENT_HEADERS,
+      timeout: 60_000,
+    });
+    lastStatus = response.status();
+
+    if (response.ok()) {
+      return (await response.json()) as InternalEventTriggerResponse;
+    }
+
+    lastBody = await response.text().catch(() => '');
+    if (!isRetryableCcdEventTriggerResponse(lastStatus, lastBody)) {
+      break;
+    }
+    await waitForCivilRetryDelay(options.page, deadline, `retrying event trigger '${options.eventId}'`);
+  }
+
+  throw new Error(
+    `Civil case setup failed to fetch event trigger '${options.eventId}' (HTTP ${lastStatus}). ` +
+      `Path='${eventTriggerPath}'. Body='${lastBody.slice(0, 500)}'`
+  );
+}
+
+function isRetryableCcdEventTriggerResponse(status: number, body: string): boolean {
+  if ([400, 404, 409, 429, 500, 502, 503, 504].includes(status)) {
+    return true;
+  }
+
+  return status === 422 && /case status did not qualify for the event/i.test(body);
 }
 
 async function validateCcdCaseEventPage(options: {
@@ -451,6 +633,47 @@ function resolveEventId(event: CivilCaseProgressionEvent): string {
   return eventId;
 }
 
+async function waitForCivilRetryDelay(
+  page: Page,
+  deadline?: number,
+  context = 'waiting before Civil setup retry'
+): Promise<void> {
+  if (page.isClosed()) {
+    throw new Error(`Civil setup ${context} aborted because the Playwright page was closed.`);
+  }
+  const remainingMs = deadline ? deadline - Date.now() : DEFAULT_CCD_EVENT_TRIGGER_WAIT_INTERVAL_MS;
+  const delayMs = Math.min(DEFAULT_CCD_EVENT_TRIGGER_WAIT_INTERVAL_MS, remainingMs);
+  if (delayMs <= 0) {
+    return;
+  }
+
+  try {
+    await page.waitForTimeout(delayMs);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (/Target page, context or browser has been closed/i.test(message)) {
+      throw new Error(`Civil setup ${context} aborted because the Playwright page was closed.`);
+    }
+    throw error;
+  }
+}
+
+async function waitForCivilPollingDelay(page: Page, delayMs: number, context: string): Promise<void> {
+  if (page.isClosed()) {
+    throw new Error(`Civil setup ${context} aborted because the Playwright page was closed.`);
+  }
+
+  try {
+    await page.waitForTimeout(delayMs);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (/Target page, context or browser has been closed/i.test(message)) {
+      throw new Error(`Civil setup ${context} aborted because the Playwright page was closed.`);
+    }
+    throw error;
+  }
+}
+
 async function waitForCaseState(options: {
   page: Page;
   caseNumber: string;
@@ -459,19 +682,40 @@ async function waitForCaseState(options: {
 }): Promise<CcdCaseDetails> {
   const deadline = Date.now() + DEFAULT_STATE_WAIT_TIMEOUT_MS;
   let lastCaseDetails: CcdCaseDetails | undefined;
+  let lastFetchError: string | undefined;
 
   while (Date.now() < deadline) {
-    lastCaseDetails = await fetchCaseDetailsViaApi(options.page, options.caseNumber);
-    if (lastCaseDetails.state === options.expectedState) {
+    try {
+      lastCaseDetails = await fetchCaseDetailsViaApi(options.page, options.caseNumber);
+      lastFetchError = undefined;
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      if (!isRetryableCaseDetailsFetchError(message)) {
+        throw error;
+      }
+      lastFetchError = message;
+      await waitForCivilPollingDelay(options.page, DEFAULT_STATE_WAIT_INTERVAL_MS, 'waiting for Civil case state');
+      continue;
+    }
+
+    if (resolveCcdCaseStateId(lastCaseDetails) === options.expectedState) {
       return lastCaseDetails;
     }
-    await options.page.waitForTimeout(DEFAULT_STATE_WAIT_INTERVAL_MS);
+    await waitForCivilPollingDelay(options.page, DEFAULT_STATE_WAIT_INTERVAL_MS, 'waiting for Civil case state');
   }
 
+  const actualState = lastCaseDetails
+    ? (resolveCcdCaseStateId(lastCaseDetails) ?? JSON.stringify(lastCaseDetails.state))
+    : 'unknown';
+  const fetchErrorSuffix = lastFetchError ? ` Last fetch error: ${lastFetchError}` : '';
   throw new Error(
     `Civil case ${options.caseNumber} expected state '${options.expectedState}' ${options.context} ` +
-      `but was '${lastCaseDetails?.state ?? 'unknown'}'.`
+      `but was '${actualState}'.${fetchErrorSuffix}`
   );
+}
+
+function isRetryableCaseDetailsFetchError(message: string): boolean {
+  return /Failed to fetch case .* via API: HTTP (404|409|429|500|502|503|504)/i.test(message);
 }
 
 function extractCaseData(caseDetails: CcdCaseDetails): JsonRecord {
@@ -492,9 +736,10 @@ function resolveCivilApiConfig(): CivilApiConfig {
   );
   const claimantEmail = firstNonEmpty(process.env.PW_CIVIL_CLAIMANT_EMAIL, process.env.CLAIMANT_CITIZEN_EMAIL);
   const defendantEmail = firstNonEmpty(process.env.PW_CIVIL_DEFENDANT_EMAIL, process.env.DEFENDANT_CITIZEN_EMAIL);
+  const createCitizenAccounts = !isFalsy(process.env.PW_CIVIL_CREATE_CITIZEN_ACCOUNTS);
   const generatedRunId = createUniqueRunId();
-  const claimantGenerated = !claimantEmail;
-  const defendantGenerated = !defendantEmail;
+  const claimantGenerated = createCitizenAccounts && !claimantEmail;
+  const defendantGenerated = createCitizenAccounts && !defendantEmail;
 
   return {
     civilServiceUrl: resolveCivilServiceUrl(),
@@ -505,14 +750,15 @@ function resolveCivilApiConfig(): CivilApiConfig {
     serviceAuthProviderUrl: trimTrailingSlash(
       firstNonEmpty(process.env.SERVICE_AUTH_PROVIDER_API_BASE_URL, process.env.S2S_URL) ?? ''
     ),
-    s2sToken: firstNonEmpty(process.env.S2S_TOKEN),
+    s2sToken: firstNonEmpty(process.env.PW_CIVIL_S2S_TOKEN, process.env.CIVIL_S2S_TOKEN),
     s2sSecret: firstNonEmpty(process.env.S2S_SECRET),
     claimantUser: {
-      email: claimantEmail ?? `claimantcitizen-${generatedRunId}@gmail.com`,
+      email: claimantEmail ?? (claimantGenerated ? `claimantcitizen-${generatedRunId}@gmail.com` : DEFAULT_CIVIL_CLAIMANT_EMAIL),
       password: citizenPassword ?? '',
     },
     defendantUser: {
-      email: defendantEmail ?? `defendantcitizen-${generatedRunId}@gmail.com`,
+      email:
+        defendantEmail ?? (defendantGenerated ? `defendantcitizen-${generatedRunId}@gmail.com` : DEFAULT_CIVIL_DEFENDANT_EMAIL),
       password: citizenPassword ?? '',
     },
     createClaimantAccount: claimantGenerated,
@@ -526,14 +772,22 @@ function resolveIdamApiUrl(): string {
 }
 
 function resolveCivilServiceUrl(): string {
+  const explicitOverride = firstNonEmpty(process.env.PW_CIVIL_SERVICE_URL);
+  if (explicitOverride) {
+    return trimTrailingSlash(explicitOverride);
+  }
+
   const configured = firstNonEmpty(process.env.CIVIL_SERVICE_URL);
+  if (configured?.includes('civil-cui-civil-service-staging.aat.platform.hmcts.net')) {
+    return 'http://civil-service-aat.service.core-compute-aat.internal';
+  }
   if (configured) {
     return trimTrailingSlash(configured);
   }
 
   const ccdDataStoreUrl = firstNonEmpty(process.env.CCD_DATA_STORE_URL, process.env.SERVICES_CCD_DATA_STORE_API);
   if (ccdDataStoreUrl?.includes('civil-cui-data-store-staging.aat.platform.hmcts.net')) {
-    return 'https://civil-cui-civil-service-staging.aat.platform.hmcts.net';
+    return 'http://civil-service-aat.service.core-compute-aat.internal';
   }
   if (ccdDataStoreUrl?.includes('ccd-data-store-api-aat.service.core-compute-aat.internal')) {
     return 'http://civil-service-aat.service.core-compute-aat.internal';
@@ -548,7 +802,7 @@ function resolveCivilServiceUrl(): string {
   }
 
   if (testEnv === 'aat' || isAatUrl(firstNonEmpty(process.env.TEST_URL, process.env.EXUI_BASE_URL))) {
-    return 'https://civil-cui-civil-service-staging.aat.platform.hmcts.net';
+    return 'http://civil-service-aat.service.core-compute-aat.internal';
   }
 
   return '';
@@ -560,6 +814,50 @@ function requireCivilApiConfig(): CivilApiConfig {
     throw new Error(`Civil LiP mediation API setup is missing configuration: ${missing.join(', ')}`);
   }
   return resolveCivilApiConfig();
+}
+
+function resolveCivilGeneratedAccountPassword(): string {
+  const password = firstNonEmpty(
+    process.env.CIVIL_COURT_STAFF_PASSWORD,
+    process.env.PW_CIVIL_COURT_STAFF_PASSWORD,
+    process.env.PW_CIVIL_CITIZEN_PASSWORD,
+    process.env.CIVIL_CITIZEN_PASSWORD,
+    process.env.CITIZEN_PASSWORD,
+    process.env.PW_CIVIL_SOLICITOR_PASSWORD,
+    process.env.TEST_PASSWORD
+  );
+
+  if (!password) {
+    throw new Error(
+      'Civil generated account setup is missing CIVIL_COURT_STAFF_PASSWORD, PW_CIVIL_CITIZEN_PASSWORD, CIVIL_CITIZEN_PASSWORD, or TEST_PASSWORD.'
+    );
+  }
+
+  return password;
+}
+
+function withGeneratedCivilCitizenUsers(config: CivilApiConfig): CivilApiConfig {
+  const password = resolveCivilGeneratedAccountPassword();
+
+  const runId = createUniqueRunId();
+  return {
+    ...config,
+    claimantUser: {
+      email: `claimant-civil-${runId}@example.com`,
+      password,
+    },
+    defendantUser: {
+      email: `defendant-civil-${runId}@example.com`,
+      password,
+    },
+    createClaimantAccount: true,
+    createDefendantAccount: true,
+  };
+}
+
+function resolveCivilServiceBusinessProcessWaitTimeoutMs(): number {
+  const parsed = Number.parseInt(process.env.PW_CIVIL_SERVICE_BUSINESS_PROCESS_WAIT_TIMEOUT_MS ?? '', 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : DEFAULT_CIVIL_SERVICE_BUSINESS_PROCESS_WAIT_TIMEOUT_MS;
 }
 
 async function createCivilApiTokens(
@@ -584,27 +882,7 @@ async function createCivilApiTokens(
 }
 
 async function createIdamCitizenAccount(page: Page, config: CivilApiConfig, user: CivilApiUser): Promise<void> {
-  const response = await page.request.post(`${config.idamApiUrl}/testing-support/accounts`, {
-    data: {
-      email: user.email,
-      forename: 'Civil',
-      surname: 'Citizen',
-      password: user.password,
-      roles: [
-        {
-          code: 'citizen',
-        },
-      ],
-      userGroup: {
-        code: 'citizen',
-      },
-    },
-    failOnStatusCode: false,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    timeout: 60_000,
-  });
+  const response = await postIdamCitizenAccountWithRetry(page, config, user);
 
   if (response.ok() || response.status() === 409) {
     return;
@@ -618,6 +896,58 @@ async function createIdamCitizenAccount(page: Page, config: CivilApiConfig, user
         `(HTTP ${response.status()}). Body='${body.slice(0, 500)}'. Legacy fallback: ${fallbackError.message}`
     );
   }
+}
+
+async function postIdamCitizenAccountWithRetry(page: Page, config: CivilApiConfig, user: CivilApiUser) {
+  return postIdamAccountWithRetry(page, config, {
+    email: user.email,
+    forename: 'Civil',
+    password: user.password,
+    roles: ['citizen'],
+    surname: 'Citizen',
+    userGroup: 'citizen',
+  });
+}
+
+async function postIdamAccountWithRetry(
+  page: Page,
+  config: CivilApiConfig,
+  account: {
+    email: string;
+    forename: string;
+    password: string;
+    roles: string[];
+    surname: string;
+    userGroup: string;
+  }
+) {
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= 5; attempt += 1) {
+    try {
+      return await page.request.post(`${config.idamApiUrl}/testing-support/accounts`, {
+        data: {
+          email: account.email,
+          forename: account.forename,
+          surname: account.surname,
+          password: account.password,
+          roles: account.roles.map((code) => ({ code })),
+          userGroup: {
+            code: account.userGroup,
+          },
+        },
+        failOnStatusCode: false,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        timeout: 60_000,
+      });
+    } catch (error) {
+      lastError = error;
+      await page.waitForTimeout(5_000);
+    }
+  }
+
+  throw lastError instanceof Error ? lastError : new Error(String(lastError));
 }
 
 async function createIdamCitizenAccountViaLegacyEndpoint(
@@ -673,29 +1003,33 @@ async function createIdamCitizenAccountViaLegacyEndpoint(
 async function getIdamAccessToken(page: Page, config: CivilApiConfig, user: CivilApiUser): Promise<string> {
   let lastError: Error | undefined;
   for (let attempt = 1; attempt <= 5; attempt++) {
-    const response = await page.request.post(
-      `${config.idamApiUrl}/loginUser?username=${encodeURIComponent(user.email)}&password=${encodeURIComponent(user.password)}`,
-      {
-        failOnStatusCode: false,
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        timeout: 60_000,
-      }
-    );
+    try {
+      const response = await page.request.post(
+        `${config.idamApiUrl}/loginUser?username=${encodeURIComponent(user.email)}&password=${encodeURIComponent(user.password)}`,
+        {
+          failOnStatusCode: false,
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          timeout: 60_000,
+        }
+      );
 
-    if (response.ok()) {
-      const body = (await response.json()) as { access_token?: string };
-      if (!body.access_token) {
-        throw new Error(`IDAM token response for '${user.email}' did not include access_token.`);
+      if (response.ok()) {
+        const body = (await response.json()) as { access_token?: string };
+        if (!body.access_token) {
+          throw new Error(`IDAM token response for '${user.email}' did not include access_token.`);
+        }
+        return body.access_token;
       }
-      return body.access_token;
+
+      const body = await response.text().catch(() => '');
+      lastError = new Error(
+        `Failed to get IDAM token for '${user.email}' (HTTP ${response.status()}). Body='${body.slice(0, 500)}'`
+      );
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
     }
-
-    const body = await response.text().catch(() => '');
-    lastError = new Error(
-      `Failed to get IDAM token for '${user.email}' (HTTP ${response.status()}). Body='${body.slice(0, 500)}'`
-    );
     await page.waitForTimeout(3_000);
   }
 
@@ -730,24 +1064,35 @@ async function getCivilS2sToken(page: Page, config: CivilApiConfig): Promise<str
   }
 
   if (!config.serviceAuthProviderUrl || !config.s2sSecret) {
-    throw new Error('Civil S2S token requires S2S_TOKEN or SERVICE_AUTH_PROVIDER_API_BASE_URL/S2S_URL and S2S_SECRET.');
+    throw new Error('Civil S2S token requires PW_CIVIL_S2S_TOKEN or SERVICE_AUTH_PROVIDER_API_BASE_URL/S2S_URL and S2S_SECRET.');
   }
 
   const leaseUrl = config.serviceAuthProviderUrl.endsWith('/lease')
     ? config.serviceAuthProviderUrl
     : `${config.serviceAuthProviderUrl}/lease`;
-  const response = await page.request.post(leaseUrl, {
-    data: {
-      microservice:
-        firstNonEmpty(process.env.PW_CIVIL_S2S_MICROSERVICE, process.env.S2S_MICROSERVICE_NAME) ?? DEFAULT_CIVIL_S2S_MICROSERVICE,
-      oneTimePassword: authenticator.generate(config.s2sSecret),
-    },
-    failOnStatusCode: false,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    timeout: 60_000,
-  });
+  let response;
+  try {
+    response = await page.request.post(leaseUrl, {
+      data: {
+        microservice: firstNonEmpty(process.env.PW_CIVIL_S2S_MICROSERVICE) ?? DEFAULT_CIVIL_S2S_MICROSERVICE,
+        oneTimePassword: authenticator.generate(config.s2sSecret),
+      },
+      failOnStatusCode: false,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      timeout: 60_000,
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (/ENOTFOUND|getaddrinfo/i.test(message)) {
+      throw new Error(
+        `Civil S2S token setup cannot reach '${leaseUrl}'. ` +
+          'Provide a civil_service token through PW_CIVIL_S2S_TOKEN, or run from an environment that can resolve the HMCTS internal S2S host.'
+      );
+    }
+    throw error;
+  }
 
   if (!response.ok()) {
     const body = await response.text().catch(() => '');
@@ -824,11 +1169,16 @@ async function assignCivilCaseRoleToUser(options: {
   caseRole: string;
   idamToken: string;
 }): Promise<void> {
-  const response = await options.page.request.post(
-    `${options.config.civilServiceUrl}/testing-support/assign-case/${encodeURIComponent(options.caseNumber)}/${encodeURIComponent(
-      options.caseRole
-    )}`,
-    {
+  const assignUrl = `${options.config.civilServiceUrl}/testing-support/assign-case/${encodeURIComponent(
+    options.caseNumber
+  )}/${encodeURIComponent(options.caseRole)}`;
+  const timeoutMs = resolveCivilRoleAssignmentWaitTimeoutMs();
+  const deadline = Date.now() + timeoutMs;
+  let lastStatus = 0;
+  let lastBody = '';
+
+  while (Date.now() < deadline) {
+    const response = await options.page.request.post(assignUrl, {
       data: {},
       failOnStatusCode: false,
       headers: {
@@ -836,24 +1186,53 @@ async function assignCivilCaseRoleToUser(options: {
         'Content-Type': 'application/json',
       },
       timeout: 60_000,
-    }
-  );
+    });
 
-  if (!response.ok() && response.status() !== 409) {
-    const body = await response.text().catch(() => '');
-    throw new Error(
-      `Failed to assign Civil case role '${options.caseRole}' (HTTP ${response.status()}). Body='${body.slice(0, 500)}'`
+    lastStatus = response.status();
+    if (response.ok() || response.status() === 409) {
+      return;
+    }
+
+    lastBody = await response.text().catch(() => '');
+    if (!isRetryableCivilRoleAssignmentResponse(lastStatus, lastBody)) {
+      break;
+    }
+
+    await waitForCivilRetryDelay(
+      options.page,
+      deadline,
+      `retrying Civil case role '${options.caseRole}' assignment for case ${options.caseNumber}`
     );
   }
+
+  throw new Error(
+    `Failed to assign Civil case role '${options.caseRole}' after ${timeoutMs}ms (HTTP ${lastStatus}). ` +
+      `Body='${lastBody.slice(0, 500)}'`
+  );
+}
+
+function isRetryableCivilRoleAssignmentResponse(status: number, body: string): boolean {
+  if ([429, 500, 502, 503, 504].includes(status) && /case status did not qualify for the event/i.test(body)) {
+    return true;
+  }
+
+  return [429, 502, 503, 504].includes(status);
+}
+
+function resolveCivilRoleAssignmentWaitTimeoutMs(): number {
+  const parsed = Number.parseInt(process.env.PW_CIVIL_ROLE_ASSIGNMENT_WAIT_TIMEOUT_MS ?? '', 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : DEFAULT_CIVIL_ROLE_ASSIGNMENT_WAIT_TIMEOUT_MS;
 }
 
 async function waitForFinishedCivilBusinessProcess(
   page: Page,
   config: CivilApiConfig,
   idamToken: string,
-  caseNumber: string
+  caseNumber: string,
+  options: { timeoutMs?: number } = {}
 ): Promise<void> {
-  const deadline = Date.now() + DEFAULT_BUSINESS_PROCESS_WAIT_TIMEOUT_MS;
+  const timeoutMs = options.timeoutMs ?? resolveCivilServiceBusinessProcessWaitTimeoutMs();
+  const deadline = Date.now() + timeoutMs;
   let lastStatus = 'unknown';
   let incidentMessage = '';
 
@@ -889,7 +1268,9 @@ async function waitForFinishedCivilBusinessProcess(
     await page.waitForTimeout(DEFAULT_BUSINESS_PROCESS_WAIT_INTERVAL_MS);
   }
 
-  throw new Error(`Civil business process did not finish for case ${caseNumber}. Last status: ${lastStatus}`);
+  throw new Error(
+    `Civil business process did not finish for case ${caseNumber} after ${timeoutMs}ms. Last status: ${lastStatus}`
+  );
 }
 
 function resolveCaseNumberFromCivilResponse(payload: CcdCaseDetails): string {
@@ -1288,6 +1669,14 @@ function trimTrailingSlash(value: string): string {
 
 function isAatUrl(value: string | undefined): boolean {
   return value?.includes('.aat.platform.hmcts.net') ?? false;
+}
+
+function isFalsy(value: string | undefined): boolean {
+  return ['0', 'false', 'no', 'n'].includes(value?.trim().toLowerCase() ?? '');
+}
+
+function isTruthy(value: string | undefined): boolean {
+  return ['1', 'true', 'yes', 'y'].includes(value?.trim().toLowerCase() ?? '');
 }
 
 function createUniqueRunId(): string {

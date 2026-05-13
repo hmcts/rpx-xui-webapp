@@ -47,7 +47,7 @@ properties([
         ),
         text(
             name: 'INTEGRATION_PW_PROFILE_RUNS',
-            defaultValue: '''workers=6''',
+            defaultValue: '''workers=5''',
             description: 'Integration load-profile matrix. One run per line or semicolon. Supported keys: workers=<n> and optional shard=<index/total>.'
         ),
         string(
@@ -271,7 +271,7 @@ def resolveIntegrationProfileRuns = { String configuredRuns, String workersOverr
     }
     def configured = configuredRuns?.trim()
     if (!configured) {
-        configured = 'workers=6'
+        configured = 'workers=5'
     }
     return configured
         .split(/[\r\n;]+/)
@@ -577,7 +577,7 @@ withPipeline(type, product, component) {
                                 "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}",
                                 "ORG_USER_ASSIGNMENT_MODE=external",
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                                "FUNCTIONAL_TESTS_WORKERS=6"
+                                "FUNCTIONAL_TESTS_WORKERS=5"
                         ]) {
                                 try {
                                     recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'API', 'start')
@@ -622,7 +622,7 @@ withPipeline(type, product, component) {
                             withEnv([
                                 "ORG_USER_ASSIGNMENT_MODE=external",
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                                "FUNCTIONAL_TESTS_WORKERS=6",
+                                "FUNCTIONAL_TESTS_WORKERS=5",
                                 "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
                                 "PLAYWRIGHT_SKIP_INSTALL=true",
                                 "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
@@ -684,7 +684,7 @@ withPipeline(type, product, component) {
                             "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}",
                             "ORG_USER_ASSIGNMENT_MODE=external",
                             "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                            "FUNCTIONAL_TESTS_WORKERS=6"
+                            "FUNCTIONAL_TESTS_WORKERS=5"
                         ]) {
                                 try {
                                     recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'API', 'start')
@@ -729,7 +729,7 @@ withPipeline(type, product, component) {
                             withEnv([
                                 "ORG_USER_ASSIGNMENT_MODE=external",
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                                "FUNCTIONAL_TESTS_WORKERS=2",
+                                "FUNCTIONAL_TESTS_WORKERS=3",
                                 "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
                                 "PLAYWRIGHT_SKIP_INSTALL=true",
                                 "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",

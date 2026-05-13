@@ -264,7 +264,7 @@ describe('AppComponent', () => {
     appComponent.userDetailsHandler('clientId', user);
 
     expect(featureToggleService.initialize).toHaveBeenCalled();
-    // expect(timeoutNotificationService.initialise).toHaveBeenCalled();
+    expect(timeoutNotificationService.initialise).toHaveBeenCalled();
   });
 
   xit('loadAndListenForUserDetails', () => {

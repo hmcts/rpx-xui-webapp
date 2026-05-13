@@ -30,10 +30,7 @@ export function resolveCaseNumberFromPayload(payload: CcdCaseDetails): string | 
   return typeof candidate === 'string' || typeof candidate === 'number' ? String(candidate).replace(/\D/g, '') : undefined;
 }
 
-export function normaliseCaseDataForDataLossComparison(
-  value: unknown,
-  options: DataLossNormalisationOptions = {}
-): unknown {
+export function normaliseCaseDataForDataLossComparison(value: unknown, options: DataLossNormalisationOptions = {}): unknown {
   if (Array.isArray(value)) {
     return value.map((entry) => normaliseCaseDataForDataLossComparison(entry, options)).filter((entry) => entry !== undefined);
   }

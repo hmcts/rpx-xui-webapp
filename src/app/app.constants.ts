@@ -195,7 +195,7 @@ const menuFlags = {
   MC_Work_Allocation: true,
   MC_Notice_of_Change: true,
   'feature-global-search': true,
-  'feature-refunds': true
+  'feature-refunds': true,
 };
 
 export class AppConstants {

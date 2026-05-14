@@ -1,10 +1,8 @@
 const menuConfig = {
   '(judge)|(judiciary)': [
     {
-      'active': true,
-      'flags': [
-        'MC_Work_Allocation'
-      ],
+      active: true,
+      flags: ['MC_Work_Allocation'],
       href: '/work/my-work/list',
       roles: [
         'caseworker-civil',
@@ -16,10 +14,8 @@ const menuConfig = {
       text: 'My work',
     },
     {
-      'active': false,
-      'flags': [
-        'MC_Work_Allocation'
-      ],
+      active: false,
+      flags: ['MC_Work_Allocation'],
       href: '/work/all-work/tasks',
       roles: ['task-supervisor'],
       text: 'All work',
@@ -125,10 +121,8 @@ const menuConfig = {
   ],
   '.+': [
     {
-      'active': true,
-      'flags': [
-        'MC_Work_Allocation'
-      ],
+      active: true,
+      flags: ['MC_Work_Allocation'],
       href: '/work/my-work/list',
       roles: [
         'caseworker-civil',
@@ -142,28 +136,22 @@ const menuConfig = {
       text: 'My work',
     },
     {
-      'active': false,
-      'flags': [
-        'MC_Work_Allocation'
-      ],
+      active: false,
+      flags: ['MC_Work_Allocation'],
       href: '/work/all-work/tasks',
       roles: ['task-supervisor'],
       text: 'All work',
     },
     {
-      'active': false,
-      'flags': [
-        'MC_Work_Allocation'
-      ],
+      active: false,
+      flags: ['MC_Work_Allocation'],
       href: '/tasks',
       roles: ['caseworker-ia-caseofficer'],
       text: 'Task list',
     },
     {
-      'active': false,
-      'flags': [
-        'MC_Work_Allocation'
-      ],
+      active: false,
+      flags: ['MC_Work_Allocation'],
       href: '/tasks/task-manager',
       roles: ['caseworker-ia-caseofficer', 'task-supervisor'],
       text: 'Task manager',

@@ -22,7 +22,6 @@ const COURT_STAFF_ALIAS = getCivilCaseFlagsCourtStaffAlias();
 const MEDIATION_STATE = process.env.PW_CIVIL_MEDIATION_CASE_STATE?.trim() || 'IN_MEDIATION';
 const TEST_FLAG_COMMENT = 'Data loss Civil Create Case Flag';
 
-
 test.describe('Civil Create Case Flag data loss regression', { tag: ['@e2e', '@e2e-case-flags', '@e2e-civil-data-loss'] }, () => {
   let caseNumber: string;
   let baselineCaseDetails: CcdCaseDetails;

@@ -3,6 +3,8 @@ import { Base } from '../../base';
 import { EXUI_TIMEOUTS } from './exui-timeouts';
 
 export class CaseListPage extends Base {
+  private static readonly NAVIGATION_ATTEMPTS = 3;
+
   readonly errorPageHeading = this.page.getByRole('heading', { name: /something went wrong/i });
   readonly serviceDownError = this.exuiBodyComponent.serviceDownError;
   readonly container = this.page.locator('exui-case-home');
@@ -182,8 +184,36 @@ export class CaseListPage extends Base {
   }
 
   async goto() {
-    await this.page.goto('/cases', { waitUntil: 'domcontentloaded' });
-    await this.waitForCasesShellReady();
+    let lastError: unknown;
+
+    for (let attempt = 1; attempt <= CaseListPage.NAVIGATION_ATTEMPTS; attempt += 1) {
+      try {
+        await this.page.goto('/cases', { waitUntil: 'domcontentloaded' });
+        await this.waitForCasesShellReady().catch(async (error: Error) => {
+          await this.page.reload({ waitUntil: 'domcontentloaded' });
+          await this.waitForCasesShellReady().catch(() => {
+            throw error;
+          });
+        });
+        return;
+      } catch (error) {
+        lastError = error;
+        if (attempt >= CaseListPage.NAVIGATION_ATTEMPTS || !this.isTransientCasesNavigationError(error)) {
+          throw error;
+        }
+      }
+    }
+
+    throw new Error(`Cases page navigation failed: ${String(lastError)}`);
+  }
+
+  private isTransientCasesNavigationError(error: unknown): boolean {
+    return (
+      error instanceof Error &&
+      /ERR_SOCKET_NOT_CONNECTED|ERR_ABORTED|net::ERR|ERR_NETWORK_CHANGED|Navigation failed|interrupted.*navigation|chrome-error:\/\/chromewebdata|Cases page shell did not become ready/i.test(
+        error.message
+      )
+    );
   }
 
   async navigateTo() {

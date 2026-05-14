@@ -1,6 +1,9 @@
 import { NextFunction, Response, Router } from 'express';
 import { getConfigValue } from '../configuration';
-import { SERVICES_LOCATION_REF_API_URL, WA_SUPPORTED_JURISDICTIONS } from '../configuration/references';
+import {
+  SERVICES_LOCATION_REF_API_URL,
+  WA_SUPPORTED_JURISDICTIONS,
+} from '../configuration/references';
 import { HMCTSServiceDetails } from '../interfaces/hmctsServiceDetails';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';

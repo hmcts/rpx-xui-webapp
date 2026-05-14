@@ -10,7 +10,8 @@ import {
 } from './app.constants';
 import { Theme } from './models/theme.model';
 import { NavigationItem } from './models/theming.model';
-import { UserDetails, UserRole } from './models/user-details.model';
+import { RoleAssignmentInfo, UserDetails, UserRole } from './models/user-details.model';
+import { WAVerificationModel } from './models';
 
 export class AppUtils {
   public static getEnvironment(url: string): string {
@@ -164,6 +165,65 @@ export class AppUtils {
     // check that userRoles do not have pui-case-manager
   }
 
+  public static getAMRoleBuckets(
+    userRoles: string[] = [],
+    roleAssignmentInfo: RoleAssignmentInfo[] = []
+  ): { amRoles: string[]; nonAMRoles: string[] } {
+    const roleAssignmentRoleNames = new Set(
+      roleAssignmentInfo
+        .map((roleAssignment) => roleAssignment.roleName)
+        .filter((roleName): roleName is string => !!roleName)
+    );
+
+    return userRoles.reduce<{ amRoles: string[]; nonAMRoles: string[] }>(
+      (roleBuckets, userRole) => {
+        if (roleAssignmentRoleNames.has(userRole)) {
+          roleBuckets.amRoles.push(userRole);
+        } else {
+          roleBuckets.nonAMRoles.push(userRole);
+        }
+        return roleBuckets;
+      },
+      { amRoles: [], nonAMRoles: [] }
+    );
+  }
+
+  public static isRoleAssignmentSupported(
+    waVerification: WAVerificationModel,
+    roleAssignment: RoleAssignmentInfo,
+    roleAssignmentInfo: RoleAssignmentInfo[] = []
+  ): boolean {
+    const jurisdictions = roleAssignment.jurisdiction
+      ? [roleAssignment.jurisdiction]
+      : AppUtils.getDistinctJurisdictionsForRoleAssignment(roleAssignmentInfo, roleAssignment);
+
+    return (
+      jurisdictions.some((jurisdiction) => waVerification.waSupportedJurisdictions.includes(jurisdiction)) &&
+      !!roleAssignment.roleCategory &&
+      waVerification.waSupportedCategories.includes(roleAssignment.roleCategory) &&
+      !!roleAssignment.roleType &&
+      waVerification.waSupportedRoleTypes.includes(roleAssignment.roleType)
+    );
+  }
+
+  public static getDistinctJurisdictionsForRoleAssignment(
+    roleAssignmentInfo: RoleAssignmentInfo[] = [],
+    roleAssignment: RoleAssignmentInfo
+  ): string[] {
+    return Array.from(
+      new Set(
+        roleAssignmentInfo
+          .filter(
+            (matchedRoleAssignment): matchedRoleAssignment is RoleAssignmentInfo & { jurisdiction: string } =>
+              !!matchedRoleAssignment.jurisdiction &&
+              matchedRoleAssignment.roleCategory === roleAssignment.roleCategory &&
+              matchedRoleAssignment.roleType === roleAssignment.roleType
+          )
+          .map((matchedRoleAssignment) => matchedRoleAssignment.jurisdiction)
+      )
+    );
+  }
+
   public static getUserRole(userRoles: string[]): UserRole {
     if (userRoles.some((userRole) => JUDICIAL_ROLE_LIST.includes(userRole))) {
       return UserRole.Judicial;
@@ -259,5 +319,26 @@ export class AppUtils {
     const msBetweenDates = Math.abs(dateTime.getTime() - currentDate.getTime());
     const hoursBetweenDates = msBetweenDates / (60 * 60 * 1000);
     return hoursBetweenDates <= 24;
+  }
+
+  public static checkRoleIsSupported(
+    waVerification: WAVerificationModel,
+    landingRole: string,
+    userDetails: UserDetails
+  ): boolean {
+    const userRoles = userDetails?.userInfo?.roles || [];
+    if (!userRoles.includes(landingRole)) {
+      return false;
+    }
+
+    const { amRoles, nonAMRoles } = AppUtils.getAMRoleBuckets(userRoles, userDetails?.roleAssignmentInfo || []);
+    if (!amRoles.includes(landingRole)) {
+      return nonAMRoles.includes(landingRole);
+    }
+
+    const roleAssignmentInfo = userDetails?.roleAssignmentInfo || [];
+    return roleAssignmentInfo
+      .filter((roleAssignment) => roleAssignment.roleName === landingRole)
+      .some((roleAssignment) => AppUtils.isRoleAssignmentSupported(waVerification, roleAssignment, roleAssignmentInfo));
   }
 }

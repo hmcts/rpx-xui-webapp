@@ -9,6 +9,9 @@ describe('ApplicationRoutingComponent', () => {
   let router;
 
   let waFeatureService;
+  let wasupportedJurisdictionsService;
+  let wasupportedRoleDetailsService;
+  let loggerService;
   let mockStore: any;
   const featureToggleMock = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValueOnce', 'getValue']);
 
@@ -18,10 +21,29 @@ describe('ApplicationRoutingComponent', () => {
     }).compileComponents();
     router = jasmine.createSpyObj('router', ['navigate']);
     waFeatureService = jasmine.createSpyObj('service', ['getActiveWAFeature']);
+    wasupportedJurisdictionsService = jasmine.createSpyObj('wasupportedJurisdictionsService', [
+      'getWASupportedJurisdictions',
+    ]);
+    wasupportedRoleDetailsService = jasmine.createSpyObj('wasupportedRoleDetailsService', [
+      'getWASupportedRoleCategories',
+      'getWASupportedRoleTypes',
+    ]);
+    loggerService = jasmine.createSpyObj('loggerService', ['log']);
     mockStore = jasmine.createSpyObj('store', ['pipe']);
     router.url = '/';
     featureToggleMock.isEnabled.and.returnValue(of(true));
-    component = new ApplicationRoutingComponent(router, mockStore, featureToggleMock);
+    featureToggleMock.getValueOnce.and.returnValue(of({ roles: [] }));
+    wasupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of([]));
+    wasupportedRoleDetailsService.getWASupportedRoleCategories.and.returnValue(of([]));
+    wasupportedRoleDetailsService.getWASupportedRoleTypes.and.returnValue(of([]));
+    component = new ApplicationRoutingComponent(
+      router,
+      mockStore,
+      featureToggleMock,
+      wasupportedJurisdictionsService,
+      wasupportedRoleDetailsService,
+      loggerService
+    );
   });
 
   it('should create', () => {

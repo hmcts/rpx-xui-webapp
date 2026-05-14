@@ -21,11 +21,9 @@ const CIVIL_API_SETUP_ALIAS = getCivilCaseFlagsSetupAlias();
 const COURT_STAFF_ALIAS = getCivilCaseFlagsCourtStaffAlias();
 const MEDIATION_STATE = process.env.PW_CIVIL_MEDIATION_CASE_STATE?.trim() || 'IN_MEDIATION';
 const TEST_FLAG_COMMENT = 'Data loss Civil Create Case Flag';
-const CIVIL_DATA_LOSS_SUITE_TIMEOUT_MS = 1_800_000;
+
 
 test.describe('Civil Create Case Flag data loss regression', { tag: ['@e2e', '@e2e-case-flags', '@e2e-civil-data-loss'] }, () => {
-  test.describe.configure({ timeout: CIVIL_DATA_LOSS_SUITE_TIMEOUT_MS });
-
   let caseNumber: string;
   let baselineCaseDetails: CcdCaseDetails;
 

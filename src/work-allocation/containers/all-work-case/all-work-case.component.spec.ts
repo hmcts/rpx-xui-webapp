@@ -1,3 +1,4 @@
+import { Location as StateLocation } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
@@ -21,7 +22,7 @@ import {
   JurisdictionsService,
   LocationDataService,
   WASupportedJurisdictionsService,
-  WorkAllocationCaseService
+  WorkAllocationCaseService,
 } from '../../services';
 import { getMockCaseRoles, getMockCases } from '../../tests/utils.spec';
 import { AllWorkCaseComponent } from './all-work-case.component';
@@ -39,9 +40,9 @@ describe('AllWorkCaseComponent', () => {
   const mockCheckReleaseVersionService = {
     isRelease4: () => {
       return {
-        subscribe: () => true
+        subscribe: () => true,
       };
-    }
+    },
   };
   const initializeComponent = ({
     changeDetectorRef = {},
@@ -60,26 +61,29 @@ describe('AllWorkCaseComponent', () => {
     allocateRoleService = {},
     httpClient = {},
     store = {},
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    checkReleaseVersionService = {}
-  }) => new AllWorkCaseComponent(
-    changeDetectorRef as ChangeDetectorRef,
-    workAllocationTaskService as WorkAllocationCaseService,
-    filterService as FilterService,
-    router as Router,
-    infoMessageCommService as InfoMessageCommService,
-    sessionStorageService as SessionStorageService,
-    alertService as AlertService,
-    caseworkerDataService as CaseworkerDataService,
-    loadingService as LoadingService,
-    locationDataService as LocationDataService,
-    featureToggleService as FeatureToggleService,
-    waSupportedJurisdictionsService as WASupportedJurisdictionsService,
-    jurisdictionsService as JurisdictionsService,
-    allocateRoleService as AllocateRoleService,
-    httpClient as HttpClient,
-    store as Store<fromActions.State>
-  );
+    stateLocation = {},
+
+    checkReleaseVersionService = {},
+  }) =>
+    new AllWorkCaseComponent(
+      changeDetectorRef as ChangeDetectorRef,
+      workAllocationTaskService as WorkAllocationCaseService,
+      filterService as FilterService,
+      router as Router,
+      infoMessageCommService as InfoMessageCommService,
+      sessionStorageService as SessionStorageService,
+      alertService as AlertService,
+      caseworkerDataService as CaseworkerDataService,
+      loadingService as LoadingService,
+      locationDataService as LocationDataService,
+      featureToggleService as FeatureToggleService,
+      waSupportedJurisdictionsService as WASupportedJurisdictionsService,
+      jurisdictionsService as JurisdictionsService,
+      allocateRoleService as AllocateRoleService,
+      httpClient as HttpClient,
+      store as Store<fromActions.State>,
+      stateLocation as StateLocation
+    );
 
   const cases: Case[] = getMockCases();
   const caseRoles: CaseRoleDetails[] = getMockCaseRoles();
@@ -93,8 +97,12 @@ describe('AllWorkCaseComponent', () => {
   mockSessionStorageService.getItem.and.returnValue(undefined);
 
   describe('ngOnInit', () => {
-    it('should call \'setupCaseWorkers\' and update \'locations\' and \'waSupportedJurisdictions\'', () => {
-      component = initializeComponent({ locationDataService: mockLocationService, waSupportedJurisdictionsService: mockWASupportedJurisdictionService, checkReleaseVersionService: mockCheckReleaseVersionService });
+    it("should call 'setupCaseWorkers' and update 'locations' and 'waSupportedJurisdictions'", () => {
+      component = initializeComponent({
+        locationDataService: mockLocationService,
+        waSupportedJurisdictionsService: mockWASupportedJurisdictionService,
+        checkReleaseVersionService: mockCheckReleaseVersionService,
+      });
       spyOn(component, 'setupCaseWorkers');
       spyOn(component, 'loadSupportedJurisdictions');
       component.waSupportedJurisdictions$ = of(['IA']);
@@ -108,7 +116,10 @@ describe('AllWorkCaseComponent', () => {
 
   describe('getSearchCaseRequestPagination', () => {
     it('should return a SearchCaseRequest', async () => {
-      component = initializeComponent({ sessionStorageService: mockSessionStorageService, checkReleaseVersionService: mockCheckReleaseVersionService });
+      component = initializeComponent({
+        sessionStorageService: mockSessionStorageService,
+        checkReleaseVersionService: mockCheckReleaseVersionService,
+      });
 
       const userInfo = { roles: [UserRole.Admin] };
       mockSessionStorageService.getItem.and.returnValue(JSON.stringify(userInfo));
@@ -116,24 +127,31 @@ describe('AllWorkCaseComponent', () => {
 
       const actual = component.getSearchCaseRequestPagination();
 
-      expect(actual).toEqual(jasmine.objectContaining({
-        search_parameters: [
-          { key: 'jurisdiction', operator: 'EQUAL', values: component.selectedServices[0] },
-          { key: 'location_id', operator: 'EQUAL', values: '231596' },
-          { key: 'actorId', operator: 'EQUAL', values: '' },
-          { key: 'role', operator: 'EQUAL', values: 'All' }
-        ],
-        sorting_parameters: [{
-          sort_by: component.sortedBy.fieldName,
-          sort_order: component.sortedBy.order
-        }],
-        search_by: UserRole.Admin,
-        pagination_parameters: { ...component.pagination }
-      }));
+      expect(actual).toEqual(
+        jasmine.objectContaining({
+          search_parameters: [
+            { key: 'jurisdiction', operator: 'EQUAL', values: component.selectedServices[0] },
+            { key: 'location_id', operator: 'EQUAL', values: '231596' },
+            { key: 'actorId', operator: 'EQUAL', values: '' },
+            { key: 'role', operator: 'EQUAL', values: 'All' },
+          ],
+          sorting_parameters: [
+            {
+              sort_by: component.sortedBy.fieldName,
+              sort_order: component.sortedBy.order,
+            },
+          ],
+          search_by: UserRole.Admin,
+          pagination_parameters: { ...component.pagination },
+        })
+      );
     });
 
     it('should NOT return a SearchCaseRequest', () => {
-      component = initializeComponent({ sessionStorageService: mockSessionStorageService, checkReleaseVersionService: mockCheckReleaseVersionService });
+      component = initializeComponent({
+        sessionStorageService: mockSessionStorageService,
+        checkReleaseVersionService: mockCheckReleaseVersionService,
+      });
 
       mockSessionStorageService.getItem.and.returnValue(undefined);
 
@@ -144,7 +162,7 @@ describe('AllWorkCaseComponent', () => {
   });
 
   describe('onPaginationEvent', () => {
-    it('should call \'onPaginationHandler\'', () => {
+    it("should call 'onPaginationHandler'", () => {
       component = initializeComponent({ checkReleaseVersionService: mockCheckReleaseVersionService });
 
       spyOn(component, 'onPaginationHandler');
@@ -159,24 +177,24 @@ describe('AllWorkCaseComponent', () => {
     const getters = [
       {
         method: 'emptyMessage',
-        result: ListConstants.EmptyMessage.AllWorkCases
+        result: ListConstants.EmptyMessage.AllWorkCases,
       },
       {
         method: 'sortSessionKey',
-        result: SortConstants.Session.AllWorkCases
+        result: SortConstants.Session.AllWorkCases,
       },
       {
         method: 'pageSessionKey',
-        result: PageConstants.Session.AllWorkCases
+        result: PageConstants.Session.AllWorkCases,
       },
       {
         method: 'view',
-        result: ListConstants.View.AllWorkCases
+        result: ListConstants.View.AllWorkCases,
       },
       {
         method: 'fields',
-        result: ConfigConstants.AllWorkCases
-      }
+        result: ConfigConstants.AllWorkCases,
+      },
     ];
     getters.forEach(({ method, result }) => {
       it(`should return '${result}'`, () => {

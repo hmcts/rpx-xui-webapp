@@ -20,13 +20,13 @@ describe('CaseList Filter Reducer', () => {
           caseState: {
             id: '1',
             name: 'One',
-            description: 'One desc'
+            description: 'One desc',
           },
           jurisdiction: {
             id: '2',
             name: 'Two',
             description: 'Two desc',
-            caseTypes: []
+            caseTypes: [],
           },
           caseType: {
             id: '3',
@@ -36,9 +36,9 @@ describe('CaseList Filter Reducer', () => {
             states: [],
             case_fields: [],
             jurisdiction: null,
-            printEnabled: false
-          }
-        }
+            printEnabled: false,
+          },
+        },
       });
 
       const state = filterCaseList.caselistReducer(initialCaselistState, action);
@@ -48,13 +48,13 @@ describe('CaseList Filter Reducer', () => {
       expect(state.filter.caseState).toEqual({
         id: '1',
         name: 'One',
-        description: 'One desc'
+        description: 'One desc',
       });
       expect(state.filter.jurisdiction).toEqual({
         id: '2',
         name: 'Two',
         description: 'Two desc',
-        caseTypes: []
+        caseTypes: [],
       });
       expect(state.filter.caseType).toEqual({
         id: '3',
@@ -64,7 +64,7 @@ describe('CaseList Filter Reducer', () => {
         states: [],
         case_fields: [],
         jurisdiction: null,
-        printEnabled: false
+        printEnabled: false,
       });
     });
   });
@@ -77,13 +77,13 @@ describe('CaseList Filter Reducer', () => {
           caseState: {
             id: '1',
             name: 'One',
-            description: 'One desc'
+            description: 'One desc',
           },
           jurisdiction: {
             id: '2',
             name: 'Two',
             description: 'Two desc',
-            caseTypes: []
+            caseTypes: [],
           },
           caseType: {
             id: '3',
@@ -93,9 +93,9 @@ describe('CaseList Filter Reducer', () => {
             states: [],
             case_fields: [],
             jurisdiction: null,
-            printEnabled: false
-          }
-        }
+            printEnabled: false,
+          },
+        },
       });
 
       const state = filterCaseList.caselistReducer(initialCaselistState, action);
@@ -105,13 +105,13 @@ describe('CaseList Filter Reducer', () => {
       expect(state.filter.caseState).toEqual({
         id: '1',
         name: 'One',
-        description: 'One desc'
+        description: 'One desc',
       });
       expect(state.filter.jurisdiction).toEqual({
         id: '2',
         name: 'Two',
         description: 'Two desc',
-        caseTypes: []
+        caseTypes: [],
       });
       expect(state.filter.caseType).toEqual({
         id: '3',
@@ -121,7 +121,7 @@ describe('CaseList Filter Reducer', () => {
         states: [],
         case_fields: [],
         jurisdiction: null,
-        printEnabled: false
+        printEnabled: false,
       });
     });
   });
@@ -131,7 +131,7 @@ describe('CaseList Filter Reducer', () => {
       const { initialCaselistState } = filterCaseList;
       const action = new fromCases.FindCaselistPaginationMetadataSuccess({
         totalPagesCount: 10,
-        totalResultsCount: 25
+        totalResultsCount: 25,
       });
 
       const state = filterCaseList.caselistReducer(initialCaselistState, action);

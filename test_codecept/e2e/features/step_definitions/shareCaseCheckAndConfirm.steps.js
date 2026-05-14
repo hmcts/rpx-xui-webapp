@@ -1,4 +1,3 @@
-
 const ShareCaseCheckAndConfirmPage = require('../pageObjects/shareCaseCheckAndConfirmPage');
 const BrowserWaits = require('../../support/customWaits');
 
@@ -28,5 +27,6 @@ When('I click Confirm button in Share Case check and confirm page', async functi
 });
 
 Then('I see success message for Share case changes', async function () {
-  expect(await shareCaseCheckAndConfirmPage.isSubmissionSuccessful(), 'Share Case changes submission is not successful').to.be.true;
+  expect(await shareCaseCheckAndConfirmPage.isSubmissionSuccessful(), 'Share Case changes submission is not successful').to.be
+    .true;
 });

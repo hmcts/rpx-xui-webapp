@@ -17,8 +17,8 @@ export const init = () => {
       [
         { label: 'Service 01', key: '01' },
         { label: 'Service 02', key: '02' },
-        { label: 'Service 03', key: '03' }
-      ]
+        { label: 'Service 03', key: '03' },
+      ],
     ];
   });
 
@@ -27,8 +27,8 @@ export const init = () => {
       200,
       [
         { key: 'userType', label: 'User Types' },
-        { key: 'ctsc', label: 'CTSC' }
-      ]
+        { key: 'ctsc', label: 'CTSC' },
+      ],
     ];
   });
 
@@ -40,9 +40,8 @@ export const init = () => {
         { key: 'legal-caseworker', label: 'Legal Caseworker' },
         { key: 'hearing-centre-team-leader', label: 'Hearing Centre Team Leader' },
         { key: 'hearing-centre-administrator', label: 'Hearing Centre Administrator' },
-        { key: 'court-clerk', label: 'Court Clerk' }
-
-      ]
+        { key: 'court-clerk', label: 'Court Clerk' },
+      ],
     ];
   });
 
@@ -52,7 +51,7 @@ export const init = () => {
       { key: 'adoption-caseworker', label: 'Caseworker', service: 'adoption', id: '2' },
       { key: 'family-private-law-caseworker', label: 'Caseworker', service: 'family-private-law', id: '3' },
       { key: 'family-private-law-casemanager', label: 'Casemanager', service: 'family-private-law', id: '4' },
-      { key: 'family-public-law-underwriter', label: 'Underwriter', service: 'family-public-law', id: '5' }
+      { key: 'family-public-law-underwriter', label: 'Underwriter', service: 'family-public-law', id: '5' },
     ];
     const services = _.uniq(_.map(skills, 'service'));
     const response = [];
@@ -62,7 +61,7 @@ export const init = () => {
         if (filteredSkills) {
           const res = {
             group: ser,
-            options: filteredSkills
+            options: filteredSkills,
           };
           response.push(res);
         }
@@ -70,10 +69,7 @@ export const init = () => {
     } catch (error) {
       console.log('error', error);
     }
-    return [
-      200,
-      response
-    ];
+    return [200, response];
   });
 
   mock.onGet(getServices).reply(() => {
@@ -84,8 +80,8 @@ export const init = () => {
         { key: 'family-private-law', label: 'Family Private Law' },
         { key: 'adoption', label: 'Adoption' },
         { key: 'employment-tribunals', label: 'Employment Tribunals' },
-        { key: 'financial-remedy', label: 'Financial Remedy' }
-      ]
+        { key: 'financial-remedy', label: 'Financial Remedy' },
+      ],
     ];
   });
 
@@ -96,8 +92,8 @@ export const init = () => {
     return [
       200,
       {
-        suspended: updatedStatus
-      }
+        suspended: updatedStatus,
+      },
     ];
   });
 };

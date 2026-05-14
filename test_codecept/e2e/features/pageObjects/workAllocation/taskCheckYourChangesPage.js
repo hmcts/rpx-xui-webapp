@@ -8,13 +8,25 @@ class TaskCheckYourChangesPage {
     return new CheckyourChangesTable(this.pageContainer);
   }
 
-  get pageContainer() { return $('exui-task-assignment-confirm'); }
-  get header() { return this.pageContainer.locator('h1'); }
-  get headerCaption() { return this.header.locator('span'); }
-  get checkYourChangesHintText() { return $('exui-task-assignment-confirm #reassign-confirm-hint, exui-task-assignment-confirm #assign-confirm-hint'); }
+  get pageContainer() {
+    return $('exui-task-assignment-confirm');
+  }
+  get header() {
+    return this.pageContainer.locator('h1');
+  }
+  get headerCaption() {
+    return this.header.locator('span');
+  }
+  get checkYourChangesHintText() {
+    return $('exui-task-assignment-confirm #reassign-confirm-hint, exui-task-assignment-confirm #assign-confirm-hint');
+  }
 
-  get submitButton() { return this.pageContainer.locator('button[type="submit"]'); }
-  get cancelLink() { return elementByXpath('//exui-task-assignment-confirm//p/a[contains(text(),"Cancel")]'); }
+  get submitButton() {
+    return this.pageContainer.locator('button[type="submit"]');
+  }
+  get cancelLink() {
+    return elementByXpath('//exui-task-assignment-confirm//p/a[contains(text(),"Cancel")]');
+  }
 
   async amOnPage() {
     try {

@@ -2,10 +2,11 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import * as express from 'express';
 import authInterceptor from '../lib/middleware/auth';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('NoC Routes', () => {
@@ -22,7 +23,7 @@ describe('NoC Routes', () => {
       post: sandbox.stub(),
       put: sandbox.stub(),
       delete: sandbox.stub(),
-      patch: sandbox.stub()
+      patch: sandbox.stub(),
     };
 
     expressStub = sandbox.stub(express, 'Router').returns(mockRouter);

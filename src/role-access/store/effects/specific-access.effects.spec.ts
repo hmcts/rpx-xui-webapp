@@ -14,7 +14,8 @@ describe('Specific Access Effects', () => {
   let actions$;
 
   const allocateRoleServiceMock = jasmine.createSpyObj('AllocateRoleService', [
-    'specificAccessApproval', 'requestMoreInfoSpecificAccessRequest'
+    'specificAccessApproval',
+    'requestMoreInfoSpecificAccessRequest',
   ]);
 
   beforeEach(() => {
@@ -22,11 +23,11 @@ describe('Specific Access Effects', () => {
       providers: [
         {
           provide: AllocateRoleService,
-          useValue: allocateRoleServiceMock
+          useValue: allocateRoleServiceMock,
         },
         SpecificAccessEffects,
-        provideMockActions(() => actions$)
-      ]
+        provideMockActions(() => actions$),
+      ],
     });
     effects = TestBed.inject(SpecificAccessEffects);
   });
@@ -35,7 +36,7 @@ describe('Specific Access Effects', () => {
     it('should return SetSubmissionSuccessPending', () => {
       const period = {
         startDate: new Date(),
-        endDate: new Date()
+        endDate: new Date(),
       };
       const specificAccessStateData: SpecificAccessStateData = {
         state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
@@ -59,20 +60,23 @@ describe('Specific Access Effects', () => {
               startDate: {
                 day: 11,
                 month: 11,
-                year: 2024
+                year: 2024,
               },
               endDate: {
                 day: 11,
                 month: 11,
-                year: 2024
-              }
-            }
-          }
-        }
+                year: 2024,
+              },
+            },
+          },
+        },
       };
-      allocateRoleServiceMock.specificAccessApproval.and.returnValue(of({
-      }));
-      const action = new specificAccessAction.ApproveSpecificAccessRequest({ specificAccessStateData, period: { startDate: new Date('01-01-2000'), endDate: new Date('01-01-2025') } }); actions$ = hot('-a', { a: action });
+      allocateRoleServiceMock.specificAccessApproval.and.returnValue(of({}));
+      const action = new specificAccessAction.ApproveSpecificAccessRequest({
+        specificAccessStateData,
+        period: { startDate: new Date('01-01-2000'), endDate: new Date('01-01-2025') },
+      });
+      actions$ = hot('-a', { a: action });
       effects.approveSpecificAccessRequest$.subscribe(() => {
         expect(allocateRoleServiceMock.specificAccessApproval).toHaveBeenCalled();
       });
@@ -89,10 +93,11 @@ describe('Specific Access Effects', () => {
         jurisdiction: 'IA',
         roleCategory: RoleCategory.LEGAL_OPERATIONS,
         requestedRole: 'specific-access-legal-operations',
-        person: { id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null }
+        person: { id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null },
       };
       allocateRoleServiceMock.specificAccessApproval.and.returnValue(of({}));
-      const action = new specificAccessAction.RequestMoreInfoSpecificAccessRequest(specificAccessState); actions$ = hot('-a', { a: action });
+      const action = new specificAccessAction.RequestMoreInfoSpecificAccessRequest(specificAccessState);
+      actions$ = hot('-a', { a: action });
       effects.approveSpecificAccessRequest$.subscribe(() => {
         expect(allocateRoleServiceMock.requestMoreInformation).toHaveBeenCalled();
       });

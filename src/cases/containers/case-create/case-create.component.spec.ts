@@ -17,7 +17,7 @@ import {
   RequestOptionsBuilder,
   RouterHelperService,
   SearchFiltersModule,
-  SearchService
+  SearchService,
 } from '@hmcts/ccd-case-ui-toolkit';
 import { EffectsModule } from '@ngrx/effects';
 import { combineReducers, StoreModule } from '@ngrx/store';
@@ -32,10 +32,10 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 
 class MockSortService {
   public features = {};
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  public getFeatureToggle() { }
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  public getEditorConfiguration() { }
+
+  public getFeatureToggle() {}
+
+  public getEditorConfiguration() {}
 }
 
 describe('CaseCreateComponent', () => {
@@ -51,11 +51,13 @@ describe('CaseCreateComponent', () => {
       declarations: [CasesCreateComponent],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       teardown: { destroyAfterEach: false },
-      imports: [RouterTestingModule,
+      imports: [
+        RouterTestingModule,
         StoreModule.forRoot({ ...reducers, cases: combineReducers(fromCases.reducers) }),
         EffectsModule.forRoot([]),
         SharedModule,
-        SearchFiltersModule],
+        SearchFiltersModule,
+      ],
       providers: [
         PlaceholderService,
         CasesService,
@@ -75,23 +77,22 @@ describe('CaseCreateComponent', () => {
         {
           provide: SearchService,
           useValue: {
-            requestOptionsBuilder: RequestOptionsBuilder
-          }
+            requestOptionsBuilder: RequestOptionsBuilder,
+          },
         },
         {
           provide: AbstractAppConfig,
-          useExisting: AppConfig
+          useExisting: AppConfig,
         },
         {
           provide: AppConfigService,
-          useClass: MockSortService
+          useClass: MockSortService,
         },
         ScrollToService,
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -103,8 +104,7 @@ describe('CaseCreateComponent', () => {
   });
 
   afterEach(() => {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    spyOn(component, 'ngOnDestroy').and.callFake(() => { });
+    spyOn(component, 'ngOnDestroy').and.callFake(() => {});
     fixture.destroy();
   });
 

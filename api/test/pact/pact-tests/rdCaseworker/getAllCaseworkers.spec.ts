@@ -14,20 +14,18 @@ const MockApp = require('../../../../../test_codecept/nodeMock/app');
 
 xdescribe('Caseworker ref data api, get all caseworkers', () => {
   const REQUEST_BODY = {
-    userIds: [somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe'), somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe')]
+    userIds: [somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe'), somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe')],
   };
 
-  const baseLocations = [
-    { location_id: somethingLike(1), location: somethingLike('National'), is_primary: somethingLike(true) }
-  ];
+  const baseLocations = [{ location_id: somethingLike(1), location: somethingLike('National'), is_primary: somethingLike(true) }];
   const RESPONSE_BODY = [
     {
-      'email_id': somethingLike('test_person@test.gov.uk'),
-      'first_name': somethingLike('testfn'),
-      'last_name': somethingLike('testln'),
-      'id': somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe'),
-      'base_location': baseLocations
-    }
+      email_id: somethingLike('test_person@test.gov.uk'),
+      first_name: somethingLike('testfn'),
+      last_name: somethingLike('testln'),
+      id: somethingLike('004b7164-0943-41b5-95fc-39794af4a9fe'),
+      base_location: baseLocations,
+    },
   ];
 
   describe('get /caseworker', () => {
@@ -46,19 +44,19 @@ xdescribe('Caseworker ref data api, get all caseworkers', () => {
           method: 'POST',
           path: '/refdata/case-worker/users/fetchUsersById',
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
-          body: REQUEST_BODY
+          body: REQUEST_BODY,
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: RESPONSE_BODY
-        }
+          body: RESPONSE_BODY,
+        },
       };
 
       pactSetUp.provider.addInteraction(interaction);
@@ -78,8 +76,8 @@ xdescribe('Caseworker ref data api, get all caseworkers', () => {
         res.send({
           roleAssignmentResponse: [
             { actorId: '004b7164-0943-41b5-95fc-39794af4a9fe', roleCategory: 'case-worker' },
-            { actorId: '004b7164-0943-41b5-95fc-39794af4a9fe', roleCategory: 'case-worker' }
-          ]
+            { actorId: '004b7164-0943-41b5-95fc-39794af4a9fe', roleCategory: 'case-worker' },
+          ],
         });
       });
       await MockApp.startServer();
@@ -88,7 +86,6 @@ xdescribe('Caseworker ref data api, get all caseworkers', () => {
         const configValues = getCaseworkerRefDataAPIOverrides(mockServer.url);
         configValues['services.role_assignment.roleApi'] = 'http://localhost:9000';
 
-        // @ts-ignore
         configValues.waSupportedJurisdictions = 'IA';
         sandbox.stub(config, 'get').callsFake((prop) => {
           return configValues[prop];
@@ -98,11 +95,10 @@ xdescribe('Caseworker ref data api, get all caseworkers', () => {
 
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
-          }
-
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
+          },
         });
         let returnedResponse = null;
         const response = mockRes();

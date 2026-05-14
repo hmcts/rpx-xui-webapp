@@ -21,16 +21,15 @@ describe('ChooseRoleErrorComponent', () => {
             snapshot: {
               queryParams: {
                 roleCategory: 'JUDICIAL',
-                jurisdiction: 'IA'
-              }
-            }
-          }
+                jurisdiction: 'IA',
+              },
+            },
+          },
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

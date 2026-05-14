@@ -7,15 +7,15 @@ const reportObj = {
   appName: 'Manage cases',
   pass: 0,
   fail: 0,
-  tests: []
+  tests: [],
 };
 
 let testTitle = '';
-function setA11yTestDetails(title){
+function setA11yTestDetails(title) {
   testTitle = title;
 }
 
-async function accessibilityCheckerAuditor(description){
+async function accessibilityCheckerAuditor(description) {
   const pageContent = await browser.getPageSource();
   // const returnCode = aChecker.assertCompliance(result.report);
   // console.log(result.report.results);
@@ -24,17 +24,17 @@ async function accessibilityCheckerAuditor(description){
 
   const result = await geta11yResult(complianceResult.report);
 
-  if (returnCode === 0){
+  if (returnCode === 0) {
     reportObj.pass++;
   } else {
     reportObj.fail++;
   }
   const url = await browser.getCurrentUrl();
   const urlArr = url.split('/');
-  reportObj.tests.push(getTestDetails(urlArr[urlArr.length -1], returnCode === 0 ? 'passed':'failed', null, result));
+  reportObj.tests.push(getTestDetails(urlArr[urlArr.length - 1], returnCode === 0 ? 'passed' : 'failed', null, result));
 }
 
-async function takeScreenShot(){
+async function takeScreenShot() {
   let screenshotPath = process.env.PWD + '/' + conf.reportPath + 'assets/';
   if (!fs.existsSync(screenshotPath)) {
     fs.mkdirSync(screenshotPath, { recursive: true });
@@ -49,17 +49,17 @@ async function takeScreenShot(){
   return screenshotReportRef;
 }
 
-async function geta11yResult(report){
+async function geta11yResult(report) {
   const resultDetails = {
     documentTitle: await browser.getTitle(),
     pageUrl: await browser.getCurrentUrl(),
     screenshot: await takeScreenShot(),
-    issues: []
+    issues: [],
   };
 
-  for (let resultCounter = 0; resultCounter < report.results.length; resultCounter++){
+  for (let resultCounter = 0; resultCounter < report.results.length; resultCounter++) {
     const result = report.results[resultCounter];
-    if (result.level !== 'pass'){
+    if (result.level !== 'pass') {
       resultDetails.issues.push({
         code: result.ruleId,
         type: result.level,
@@ -68,8 +68,7 @@ async function geta11yResult(report){
         context: result.snippet,
         selector: 'path: ' + result.path.dom + ' , Aria roles: ' + result.path.aria,
         runner: 'accessibility-checker',
-        runnerExtras: {}
-
+        runnerExtras: {},
       });
     }
   }
@@ -81,7 +80,7 @@ function getTestDetails(title, status, error, result) {
     name: testTitle + ' | ' + title,
     status: status,
     error: error,
-    a11yResult: result
+    a11yResult: result,
   };
 }
 

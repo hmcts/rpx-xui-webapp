@@ -22,7 +22,7 @@ describe('ReasonForRequestCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'CaseManagementCancellationReasons',
@@ -35,7 +35,7 @@ describe('ReasonForRequestCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'CaseManagementCancellationReasons',
@@ -48,7 +48,7 @@ describe('ReasonForRequestCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'CaseManagementCancellationReasons',
@@ -61,7 +61,7 @@ describe('ReasonForRequestCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'CaseManagementCancellationReasons',
@@ -74,7 +74,7 @@ describe('ReasonForRequestCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'CaseManagementCancellationReasons',
@@ -87,7 +87,7 @@ describe('ReasonForRequestCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'CaseManagementCancellationReasons',
@@ -100,7 +100,7 @@ describe('ReasonForRequestCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'CaseManagementCancellationReasons',
@@ -113,7 +113,7 @@ describe('ReasonForRequestCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'CaseManagementCancellationReasons',
@@ -126,7 +126,7 @@ describe('ReasonForRequestCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'CaseManagementCancellationReasons',
@@ -139,7 +139,7 @@ describe('ReasonForRequestCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'CaseManagementCancellationReasons',
@@ -152,7 +152,7 @@ describe('ReasonForRequestCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'CaseManagementCancellationReasons',
@@ -165,11 +165,11 @@ describe('ReasonForRequestCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
-    }
+      child_nodes: null,
+    },
   ];
   let converter: ReasonForRequestCancellationAnswerConverter;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let store: Store<any>;
   let router: any;
 
@@ -182,12 +182,12 @@ describe('ReasonForRequestCancellationAnswerConverter', () => {
           useValue: {
             snapshot: {
               data: {
-                cancelHearingReasons: CANCEL_HEARING_REQUEST_REASONS
-              }
-            }
-          }
-        }
-      ]
+                cancelHearingReasons: CANCEL_HEARING_REQUEST_REASONS,
+              },
+            },
+          },
+        },
+      ],
     });
     store = TestBed.inject(Store);
     router = TestBed.inject(ActivatedRoute);

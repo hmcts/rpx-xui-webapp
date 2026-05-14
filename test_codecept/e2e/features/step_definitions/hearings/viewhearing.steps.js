@@ -43,4 +43,3 @@ Then('I validate fields displayed in view hearing page', async function (datatab
 When('In view hearing page, I click Edit hearing button', async function () {
   await viewHearingPage.editHearingBtn.click();
 });
-

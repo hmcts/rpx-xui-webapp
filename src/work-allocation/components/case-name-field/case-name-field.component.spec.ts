@@ -7,7 +7,9 @@ import { WorkAllocationComponentsModule } from '../work-allocation.components.mo
 import { CaseNameFieldComponent } from './case-name-field.component';
 
 @Component({
-  template: '<exui-case-name-field [caseName]="caseName" [jurisdiction]="jurisdiction" [caseType]="caseType" [caseId]="caseId" [hasAccess]="hasAccess"></exui-case-name-field>'
+  standalone: false,
+  template:
+    '<exui-case-name-field [caseName]="caseName" [jurisdiction]="jurisdiction" [caseType]="caseType" [caseId]="caseId" [hasAccess]="hasAccess"></exui-case-name-field>',
 })
 class WrapperComponent {
   @ViewChild(CaseNameFieldComponent) public appComponentRef: CaseNameFieldComponent;
@@ -26,7 +28,6 @@ describe('WorkAllocation', () => {
     const CASETYPE: string = 'Asylum';
     const CASE_ID: string = 'CaseId';
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let component: CaseNameFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
@@ -34,9 +35,8 @@ describe('WorkAllocation', () => {
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [WrapperComponent],
-        imports: [WorkAllocationComponentsModule, RouterTestingModule]
-      })
-        .compileComponents();
+        imports: [WorkAllocationComponentsModule, RouterTestingModule],
+      }).compileComponents();
     }));
 
     beforeEach(() => {
@@ -133,7 +133,9 @@ describe('WorkAllocation', () => {
 });
 
 @Component({
-  template: '<exui-case-name-field [caseName]="caseName" [jurisdiction]="jurisdiction" [caseType]="caseType" [caseId]="caseId" ></exui-case-name-field>'
+  template:
+    '<exui-case-name-field [caseName]="caseName" [jurisdiction]="jurisdiction" [caseType]="caseType" [caseId]="caseId" ></exui-case-name-field>',
+  standalone: false,
 })
 class Wrapper1Component {
   @ViewChild(CaseNameFieldComponent) public appComponentRef: CaseNameFieldComponent;
@@ -152,7 +154,6 @@ describe('WorkAllocation', () => {
     const CASETYPE: string = 'Asylum';
     const CASE_ID: string = 'CaseId';
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let component: CaseNameFieldComponent;
     let wrapper: Wrapper1Component;
     let fixture: ComponentFixture<WrapperComponent>;
@@ -160,9 +161,8 @@ describe('WorkAllocation', () => {
     beforeEach(waitForAsync(() => {
       TestBed.configureTestingModule({
         declarations: [Wrapper1Component],
-        imports: [WorkAllocationComponentsModule, RouterTestingModule]
-      })
-        .compileComponents();
+        imports: [WorkAllocationComponentsModule, RouterTestingModule],
+      }).compileComponents();
     }));
 
     beforeEach(() => {
@@ -186,6 +186,54 @@ describe('WorkAllocation', () => {
       expect(element).not.toBeNull();
       expect(element.textContent.trim()).toBe(CASE_NAME);
       expect(element.getAttribute('href')).toBe(`${CASE_DETAILS_URL}${JURISDICTION}/${CASETYPE}/${CASE_ID}`); // No spaces
+    });
+
+    describe('ngOnChanges', () => {
+      let caseNameFieldComponent: CaseNameFieldComponent;
+
+      beforeEach(() => {
+        caseNameFieldComponent = new CaseNameFieldComponent();
+      });
+
+      it('should set href with jurisdiction, caseType and caseId', () => {
+        caseNameFieldComponent.caseId = '123';
+        caseNameFieldComponent.jurisdiction = 'JUR';
+        caseNameFieldComponent.caseType = 'TYPE';
+        caseNameFieldComponent.ngOnChanges();
+        expect(caseNameFieldComponent.href).toBe(`${AppConstants.CASE_DETAILS_URL}JUR/TYPE/123`);
+      });
+
+      it('should set href with only caseId if jurisdiction and caseType are missing', () => {
+        caseNameFieldComponent.caseId = '456';
+        caseNameFieldComponent.jurisdiction = undefined;
+        caseNameFieldComponent.caseType = undefined;
+        caseNameFieldComponent.ngOnChanges();
+        expect(caseNameFieldComponent.href).toBe(`${AppConstants.CASE_DETAILS_URL}456`);
+      });
+
+      it('should set href with only caseId if jurisdiction and caseType are empty strings', () => {
+        caseNameFieldComponent.caseId = '789';
+        caseNameFieldComponent.jurisdiction = '';
+        caseNameFieldComponent.caseType = '';
+        caseNameFieldComponent.ngOnChanges();
+        expect(caseNameFieldComponent.href).toBe(`${AppConstants.CASE_DETAILS_URL}789`);
+      });
+
+      it('should set href to undefined if caseId is undefined', () => {
+        caseNameFieldComponent.caseId = undefined;
+        caseNameFieldComponent.jurisdiction = 'JUR';
+        caseNameFieldComponent.caseType = 'TYPE';
+        caseNameFieldComponent.ngOnChanges();
+        expect(caseNameFieldComponent.href).toBeUndefined();
+      });
+
+      it('should set href to undefined if caseId is null', () => {
+        caseNameFieldComponent.caseId = null;
+        caseNameFieldComponent.jurisdiction = 'JUR';
+        caseNameFieldComponent.caseType = 'TYPE';
+        caseNameFieldComponent.ngOnChanges();
+        expect(caseNameFieldComponent.href).toBeUndefined();
+      });
     });
   });
 });

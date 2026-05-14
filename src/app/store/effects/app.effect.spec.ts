@@ -14,9 +14,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 describe('App Effects', () => {
   let actions$;
   let effects: fromAppEffects.AppEffects;
-  const AuthServiceMock = jasmine.createSpyObj('AuthService', [
-    'signOut'
-  ]);
+  const AuthServiceMock = jasmine.createSpyObj('AuthService', ['signOut']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -25,14 +23,14 @@ describe('App Effects', () => {
         AppConfigService,
         {
           provide: AuthService,
-          useValue: AuthServiceMock
+          useValue: AuthServiceMock,
         },
         RoleService,
         fromAppEffects.AppEffects,
         provideMockActions(() => actions$),
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     });
 
     effects = TestBed.inject(fromAppEffects.AppEffects);

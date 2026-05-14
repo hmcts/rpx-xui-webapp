@@ -7,7 +7,10 @@ import { NocNavigationEvent } from '../../models';
 import * as fromNocStore from '../../store';
 import { NocNavigationComponent } from './noc-navigation.component';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate',
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;
@@ -25,13 +28,10 @@ describe('NocNavigationComponent', () => {
       imports: [
         StoreModule.forRoot({
           ...fromRoot.reducers,
-          feature: combineReducers(fromNocStore.reducers)
-        })
+          feature: combineReducers(fromNocStore.reducers),
+        }),
       ],
-      declarations: [
-        NocNavigationComponent,
-        RpxTranslateMockPipe
-      ]
+      declarations: [NocNavigationComponent, RpxTranslateMockPipe],
     }).compileComponents();
 
     store = TestBed.inject(Store);

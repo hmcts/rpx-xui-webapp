@@ -7,8 +7,9 @@ import { FeatureVariation } from 'src/cases/models/feature-variation.model';
 
 @Injectable({ providedIn: 'root' })
 export class HearingJurisdictionConfigService {
-  constructor(private readonly environmentService: EnvironmentService,
-              protected readonly sessionStorageService: SessionStorageService,
+  constructor(
+    private readonly environmentService: EnvironmentService,
+    protected readonly sessionStorageService: SessionStorageService
   ) {}
 
   public getHearingJurisdictionsConfig(): Observable<Array<FeatureVariation>> {
@@ -25,7 +26,7 @@ export class HearingJurisdictionConfigService {
     );
   }
 
-  private filterConfigs(configs): Observable<Array<FeatureVariation>>{
+  private filterConfigs(configs): Observable<Array<FeatureVariation>> {
     const userDetails = JSON.parse(this.sessionStorageService.getItem('userDetails'));
     const userId = userDetails?.id ? userDetails.id : userDetails.uid;
     const configKeys = Object.keys(configs);

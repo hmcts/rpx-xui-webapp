@@ -5,8 +5,9 @@ import { Observable, Subscription } from 'rxjs';
 import * as fromHearingStore from '../../../store';
 
 @Component({
+  standalone: false,
   selector: 'exui-hearing-actuals-final-confirmation',
-  templateUrl: './hearing-actuals-final-confirmation.component.html'
+  templateUrl: './hearing-actuals-final-confirmation.component.html',
 })
 export class HearingActualsFinalConfirmationComponent implements OnInit, OnDestroy {
   public heading: string;
@@ -15,9 +16,10 @@ export class HearingActualsFinalConfirmationComponent implements OnInit, OnDestr
   public sub: Subscription;
   public showSpinner$: Observable<boolean>;
 
-  constructor(protected readonly hearingStore: Store<fromHearingStore.State>, private readonly loadingService: LoadingService) {
-
-  }
+  constructor(
+    protected readonly hearingStore: Store<fromHearingStore.State>,
+    private readonly loadingService: LoadingService
+  ) {}
 
   public ngOnInit(): void {
     this.showSpinner$ = this.loadingService.isLoading as any;
@@ -28,9 +30,11 @@ export class HearingActualsFinalConfirmationComponent implements OnInit, OnDestr
         this.caseId = hearingList.hearingListMainModel ? hearingList.hearingListMainModel.caseRef : '';
         this.heading = 'You have successfully submitted the hearing details.';
         this.subheading = 'What happens next';
-      }, () => {
+      },
+      () => {
         this.loadingService.unregister(loadingToken);
-      });
+      }
+    );
   }
 
   public ngOnDestroy(): void {

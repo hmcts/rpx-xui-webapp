@@ -3,15 +3,15 @@
 @import 'shims';
 @import 'conditionals';
 @import 'measurements';
-@import '~material-design-icons/iconfont/material-icons.css';
+@import 'material-design-icons/iconfont/material-icons.css';
 
 $black: #323232;
 
-$path: "/assets/";
+$path: '/assets/';
 
-$fa-font-path: "/node_modules/font-awesome/fonts";
-$govuk-frontend-toolkit-image-path: "/assets";
-$govuk-template-image-path: "/assets";
+$fa-font-path: '/node_modules/font-awesome/fonts';
+$govuk-frontend-toolkit-image-path: '/assets';
+$govuk-template-image-path: '/assets';
 
 $govuk-compatibility-govukelements: true;
 $govuk-compatibility-govuktemplate: true;
@@ -23,15 +23,15 @@ $govuk-compatibility-govukfrontendtoolkit: true;
 // @import 'node_modules/govuk_frontend_toolkit/stylesheets/_grid_layout.scss';
 // @import 'node_modules/govuk-elements-sass/public/sass/_elements.scss';
 
-@import "govuk-elements";
+@import 'govuk-elements';
 
 // Organise SASS (TODO / TS)
-@import "./buttons";
-@import "./forms";
-@import "./markdown";
-@import "./print";
-@import "./vendor/prism.scss";
-@import "./material";
+@import './buttons';
+@import './forms';
+@import './markdown';
+@import './print';
+@import './vendor/prism.scss';
+@import './material';
 
 // Ensure Media Viewer CSS styles and icons are available globally across Manage Cases. Required for correct display
 // of the Media Viewer toolbar when this component is embedded in another CCD Case UI Toolkit component
@@ -39,7 +39,7 @@ $govuk-compatibility-govukfrontendtoolkit: true;
 
 body {
   margin: 0;
-  font-family: "nta", Arial, sans-serif;
+  font-family: 'nta', Arial, sans-serif;
 }
 
 // Bootstrap
@@ -71,9 +71,8 @@ main {
 }
 
 @media (max-width: 991px) {
-
   // Add bottom margin when column are stacked up
-  [class*="col-md"] {
+  [class*='col-md'] {
     margin-bottom: 30px;
   }
 }
@@ -94,12 +93,12 @@ table.form-table {
 }
 
 @media (min-width: 641px) {
-  a[rel="external"]:after {
-    content: "\A0\A0\A0\A0";
+  a[rel='external']:after {
+    content: '\A0\A0\A0\A0';
     background-position: right 4px;
   }
 
-  a[rel="external"]:hover:after {
+  a[rel='external']:hover:after {
     background-position: right -384px;
   }
 }
@@ -141,7 +140,7 @@ table.form-table {
 }
 
 .tooltip .tooltiptext::after {
-  content: "";
+  content: '';
   position: absolute;
   top: 100%;
   left: 50%;
@@ -164,7 +163,7 @@ select::-ms-expand {
 }
 
 .ccd-dropdown {
-  background: url("../assets/img/dropdown-arrow.PNG") no-repeat 98%;
+  background: url('../assets/img/dropdown-arrow.PNG') no-repeat 98%;
   background-size: 9px;
   font-size: 16px;
   -moz-appearance: none;
@@ -210,7 +209,7 @@ select::-ms-expand {
   padding-right: 15px;
   box-sizing: border-box;
   padding-left: 1.3%;
-  border-left: 1px solid #BFC1C3;
+  border-left: 1px solid #bfc1c3;
 }
 
 .screen-990 {
@@ -273,11 +272,11 @@ select::-ms-expand {
   font-size: 16px;
   margin-top: 5px;
   margin-bottom: 5px;
-  font-family: "nta", Arial, sans-serif;
+  font-family: 'nta', Arial, sans-serif;
 }
 
 .multiple-choice {
-  [type=checkbox]+label::before {
+  [type='checkbox'] + label::before {
     border: 1px solid;
   }
 }
@@ -303,7 +302,7 @@ select::-ms-expand {
 .text-16,
 .error-message {
   font-size: 16px;
-  font-family: "nta", Arial, sans-serif;
+  font-family: 'nta', Arial, sans-serif;
   white-space: normal;
 }
 
@@ -383,7 +382,7 @@ form.check-your-answers table td .markdown p {
 
 .label-text {
   font-size: 16px;
-  font-family: "nta", Arial, sans-serif;
+  font-family: 'nta', Arial, sans-serif;
   font-weight: bold;
 }
 
@@ -426,12 +425,13 @@ form.check-your-answers table td .markdown p {
 
 header {
   .govuk-skip-link {
-    &:link, &:visited {
-      color: #fff;
+    &:link,
+    &:visited {
+      background-color: #ffdd00;
+      color: #0b0c0c;
     }
   }
 }
-
 
 .show-condition-grey-bar {
   border-left: 10px solid #bfc1c3;
@@ -475,7 +475,6 @@ button:focus {
   }
 }
 
-
 /** Error Summary 
 * Make border color consistent with other error messages for HMCTS
 */
@@ -495,7 +494,7 @@ button:focus {
 .qm-confirmation markdown * {
   font-size: 36px;
   font-weight: 400;
-  color: #FFF;
+  color: #fff;
 }
 
 /**
@@ -534,7 +533,9 @@ button:focus {
     outline: 3px solid transparent;
     color: #0b0c0c;
     background-color: #fd0;
-    box-shadow: 0 -2px #fd0, 0 4px #0b0c0c;
+    box-shadow:
+      0 -2px #fd0,
+      0 4px #0b0c0c;
   }
 }
 .xui-manage-text {

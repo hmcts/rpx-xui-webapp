@@ -10,7 +10,7 @@ describe('HearingConfirmationComponent', () => {
   beforeEach(async () => {
     TestBed.configureTestingModule({
       declarations: [HearingConfirmationComponent, MockRpxTranslatePipe],
-      imports: [RouterTestingModule]
+      imports: [RouterTestingModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingConfirmationComponent);

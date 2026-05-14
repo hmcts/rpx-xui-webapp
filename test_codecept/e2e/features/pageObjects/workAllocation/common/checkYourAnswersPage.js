@@ -2,17 +2,32 @@ const { $, elementByXpath, getText, isPresent } = require('../../../../../helper
 const BrowserWaits = require('../../../../support/customWaits');
 
 class CheckYourAnswersPage {
+  get container() {
+    return $('exui-answers');
+  }
+  get header() {
+    return this.container.locator('h1');
+  }
+  get headerCaption() {
+    return this.header.locator('span');
+  }
 
-  get container() { return $('exui-answers'); }
-  get header() { return this.container.locator('h1'); }
-  get headerCaption() { return this.header.locator('span'); }
+  get hintText() {
+    return this.container.locator('.govuk-hint');
+  }
+  get summaryListContainer() {
+    return this.container.locator('.govuk-summary-list');
+  }
+  get questionRows() {
+    return this.container.locator('.govuk-summary-list__row');
+  }
 
-  get hintText() { return this.container.locator('.govuk-hint'); }
-  get summaryListContainer() { return this.container.locator('.govuk-summary-list'); }
-  get questionRows() { return this.container.locator('.govuk-summary-list__row'); }
-
-  get submitButton() { return $('.govuk-button-group button'); }
-  get cancelLink() { return $('.govuk-button-group p>a'); }
+  get submitButton() {
+    return $('.govuk-button-group button');
+  }
+  get cancelLink() {
+    return $('.govuk-button-group p>a');
+  }
 
   async waitForPage() {
     await BrowserWaits.waitForElement(this.container);
@@ -31,7 +46,7 @@ class CheckYourAnswersPage {
   }
 
   async clickCancelLink() {
-    await elementByXpath('//div[contains(@class,\'govuk-button-group\')]//p/a[contains(text(),\'Cancel\')]').click();
+    await elementByXpath("//div[contains(@class,'govuk-button-group')]//p/a[contains(text(),'Cancel')]").click();
   }
 
   getSubmitButtonElementWithLabel(label) {
@@ -101,7 +116,9 @@ class CheckYourAnswersPage {
   }
 
   getRowElementWithQuestion(question) {
-    return this.summaryListContainer.locator(`//*[contains(@class,'govuk-summary-list__row')]//dt[contains(@class,'govuk-summary-list__key') and contains(text(),"${question}")]//ancestor::div[contains(@class,'govuk-summary-list__row')]`);
+    return this.summaryListContainer.locator(
+      `//*[contains(@class,'govuk-summary-list__row')]//dt[contains(@class,'govuk-summary-list__key') and contains(text(),"${question}")]//ancestor::div[contains(@class,'govuk-summary-list__row')]`
+    );
   }
 }
 

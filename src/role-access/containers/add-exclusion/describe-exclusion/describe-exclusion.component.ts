@@ -8,8 +8,9 @@ import { ExclusionNavigation } from '../../../models/exclusion-navigation.interf
 import * as fromFeature from '../../../store';
 
 @Component({
+  standalone: false,
   selector: 'exui-describe-exclusion',
-  templateUrl: './describe-exclusion.component.html'
+  templateUrl: './describe-exclusion.component.html',
 })
 export class DescribeExclusionComponent implements OnInit, OnDestroy {
   @Input() public navEvent: ExclusionNavigation;
@@ -22,15 +23,18 @@ export class DescribeExclusionComponent implements OnInit, OnDestroy {
   public error: ErrorMessage = null;
   public subscription: Subscription;
 
-  constructor(public readonly store: Store<fromFeature.State>,
-              public readonly fb: FormBuilder) {
-    this.formGroup = this.fb.group({ [this.controlName]: ['', [Validators.required]]
-    });
+  constructor(
+    public readonly store: Store<fromFeature.State>,
+    public readonly fb: FormBuilder
+  ) {
+    this.formGroup = this.fb.group({ [this.controlName]: ['', [Validators.required]] });
   }
 
   public ngOnInit(): void {
     this.submitted = false;
-    this.subscription = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe((exclusion) => this.setExclusionDescription(exclusion));
+    this.subscription = this.store
+      .pipe(select(fromFeature.getRoleAccessState))
+      .subscribe((exclusion) => this.setExclusionDescription(exclusion));
   }
 
   public setExclusionDescription(exclusion: ExclusionStateData): void {
@@ -64,7 +68,7 @@ export class DescribeExclusionComponent implements OnInit, OnDestroy {
     return {
       title: 'There is a problem',
       description: 'Enter exclusion',
-      fieldId: 'exclusion-description'
+      fieldId: 'exclusion-description',
     };
   }
 

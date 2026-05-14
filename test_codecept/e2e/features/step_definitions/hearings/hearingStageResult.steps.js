@@ -1,12 +1,11 @@
-
 const hearingStageAndResultUpdatePage = require('../../pageObjects/hearings/editHearingStageAndResultPage');
 
-Then('I see Hearing stage and result update page', async function(){
+Then('I see Hearing stage and result update page', async function () {
   expect(await hearingStageAndResultUpdatePage.container.isVisible()).to.be.true;
 });
 
 When('In Hearing stage and result page, I set {string} to {string}', async function (field, value) {
-  switch (field){
+  switch (field) {
     case 'Hearing stage':
       await hearingStageAndResultUpdatePage.selectHearingStage(value);
       break;
@@ -21,4 +20,3 @@ When('In Hearing stage and result page, I set {string} to {string}', async funct
 When('In Hearing stage and result update page, click save and continue', async function () {
   await hearingStageAndResultUpdatePage.saveAndContinueButton.click();
 });
-

@@ -1,12 +1,11 @@
-
-class User{
-  getUserRoleType(roles){
+class User {
+  getUserRoleType(roles) {
     let roleType = '';
-    for (const role of roles){
-      if (role.includes('pui-case-manager')){
+    for (const role of roles) {
+      if (role.includes('pui-case-manager')) {
         roleType = 'SOLICITOR';
         break;
-      } else if (role.includes('judge')){
+      } else if (role.includes('judge')) {
         roleType = 'JUDICIAL';
         break;
       }

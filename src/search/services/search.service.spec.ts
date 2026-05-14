@@ -19,15 +19,11 @@ describe('Search Service', () => {
       },
       setItem: (key: string, value: string) => {
         store[key] = `${value}`;
-      }
+      },
     };
     TestBed.configureTestingModule({
       imports: [],
-      providers: [
-        SearchService,
-        provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+      providers: [SearchService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()],
     });
     service = TestBed.inject(SearchService);
     httpMock = TestBed.inject(HttpTestingController);
@@ -43,9 +39,7 @@ describe('Search Service', () => {
   });
 
   it('should get global search services', () => {
-    const dummyResponse: HMCTSServiceDetails[] = [
-      { serviceId: 'TEST', serviceName: 'Test service' }
-    ];
+    const dummyResponse: HMCTSServiceDetails[] = [{ serviceId: 'TEST', serviceName: 'Test service' }];
     service.getServices().subscribe((response) => {
       expect(response).toEqual(dummyResponse);
     });
@@ -64,7 +58,7 @@ describe('Search Service', () => {
   it('should retrieve state from session storage', () => {
     const item = {
       field1: 'Abc',
-      field2: '123'
+      field2: '123',
     };
     mockSessionStorage.setItem('test', JSON.stringify(item));
     spyOn(window.sessionStorage, 'getItem').and.callFake(mockSessionStorage.getItem);
@@ -83,7 +77,7 @@ describe('Search Service', () => {
       postcode: 'SW1H 9AJ',
       emailAddress: 'test@example.com',
       dateOfBirth: null,
-      dateOfDeath: null
+      dateOfDeath: null,
     };
     const serviceSpy = spyOn(service, 'retrieveState').and.callFake((key: string) => {
       if (key === SearchStatePersistenceKey.SEARCH_PARAMS) {
@@ -100,23 +94,25 @@ describe('Search Service', () => {
         caseManagementRegionIds: null,
         caseReferences: searchParameters.caseReferences,
         otherReferences: searchParameters.otherReferences,
-        parties: [{
-          addressLine1: searchParameters.address,
-          dateOfBirth: searchParameters.dateOfBirth,
-          dateOfDeath: searchParameters.dateOfDeath,
-          emailAddress: searchParameters.emailAddress,
-          partyName: searchParameters.fullName,
-          postCode: searchParameters.postcode
-        }],
-        stateIds: null
+        parties: [
+          {
+            addressLine1: searchParameters.address,
+            dateOfBirth: searchParameters.dateOfBirth,
+            dateOfDeath: searchParameters.dateOfDeath,
+            emailAddress: searchParameters.emailAddress,
+            partyName: searchParameters.fullName,
+            postCode: searchParameters.postcode,
+          },
+        ],
+        stateIds: null,
       },
       sortCriteria: null,
       maxReturnRecordCount: service.RECORD_PAGE_SIZE,
-      startRecordNumber: 1
+      startRecordNumber: 1,
     };
     const dummySearchResult: SearchResult = {
       resultInfo: null,
-      results: [null, null]
+      results: [null, null],
     };
 
     service.getResults().subscribe((result) => {
@@ -133,7 +129,7 @@ describe('Search Service', () => {
     req.flush(dummySearchResult);
   });
 
-  it('should ensure the case reference is sanitised of any separators (spaces and \'-\' characters) before being sent in a request', () => {
+  it("should ensure the case reference is sanitised of any separators (spaces and '-' characters) before being sent in a request", () => {
     const searchParameters: SearchParameters = {
       caseReferences: ['1234 1234-1234 -1234'],
       CCDJurisdictionIds: ['TEST'],
@@ -143,7 +139,7 @@ describe('Search Service', () => {
       postcode: 'SW1H 9AJ',
       emailAddress: 'test@example.com',
       dateOfBirth: null,
-      dateOfDeath: null
+      dateOfDeath: null,
     };
     const serviceSpy = spyOn(service, 'retrieveState').and.callFake((key: string) => {
       if (key === SearchStatePersistenceKey.SEARCH_PARAMS) {
@@ -161,23 +157,25 @@ describe('Search Service', () => {
         // Case references are expected to be sanitised of any separators (spaces and '-' characters)
         caseReferences: searchParameters.caseReferences.map((caseRef) => caseRef.replace(/[\s-]/g, '')),
         otherReferences: searchParameters.otherReferences,
-        parties: [{
-          addressLine1: searchParameters.address,
-          dateOfBirth: searchParameters.dateOfBirth,
-          dateOfDeath: searchParameters.dateOfDeath,
-          emailAddress: searchParameters.emailAddress,
-          partyName: searchParameters.fullName,
-          postCode: searchParameters.postcode
-        }],
-        stateIds: null
+        parties: [
+          {
+            addressLine1: searchParameters.address,
+            dateOfBirth: searchParameters.dateOfBirth,
+            dateOfDeath: searchParameters.dateOfDeath,
+            emailAddress: searchParameters.emailAddress,
+            partyName: searchParameters.fullName,
+            postCode: searchParameters.postcode,
+          },
+        ],
+        stateIds: null,
       },
       sortCriteria: null,
       maxReturnRecordCount: service.RECORD_PAGE_SIZE,
-      startRecordNumber: 1
+      startRecordNumber: 1,
     };
     const dummySearchResult: SearchResult = {
       resultInfo: null,
-      results: [null, null]
+      results: [null, null],
     };
 
     service.getResults().subscribe((result) => {
@@ -204,7 +202,7 @@ describe('Search Service', () => {
       postcode: 'SW1H 9AJ',
       emailAddress: 'test@example.com',
       dateOfBirth: '1980-10-1',
-      dateOfDeath: '2020-2-2'
+      dateOfDeath: '2020-2-2',
     };
     const serviceSpy = spyOn(service, 'retrieveState').and.callFake((key: string) => {
       if (key === SearchStatePersistenceKey.SEARCH_PARAMS) {
@@ -222,24 +220,26 @@ describe('Search Service', () => {
         // Case references are expected to be sanitised of any separators (spaces and '-' characters)
         caseReferences: searchParameters.caseReferences.map((caseRef) => caseRef.replace(/[\s-]/g, '')),
         otherReferences: searchParameters.otherReferences,
-        parties: [{
-          addressLine1: searchParameters.address,
-          // Dates are expected to have a leading zero for numbers less than 10
-          dateOfBirth: searchParameters.dateOfBirth.replace(/\b(\d)\b/g, '0$1'),
-          dateOfDeath: searchParameters.dateOfDeath.replace(/\b(\d)\b/g, '0$1'),
-          emailAddress: searchParameters.emailAddress,
-          partyName: searchParameters.fullName,
-          postCode: searchParameters.postcode
-        }],
-        stateIds: null
+        parties: [
+          {
+            addressLine1: searchParameters.address,
+            // Dates are expected to have a leading zero for numbers less than 10
+            dateOfBirth: searchParameters.dateOfBirth.replace(/\b(\d)\b/g, '0$1'),
+            dateOfDeath: searchParameters.dateOfDeath.replace(/\b(\d)\b/g, '0$1'),
+            emailAddress: searchParameters.emailAddress,
+            partyName: searchParameters.fullName,
+            postCode: searchParameters.postcode,
+          },
+        ],
+        stateIds: null,
       },
       sortCriteria: null,
       maxReturnRecordCount: service.RECORD_PAGE_SIZE,
-      startRecordNumber: 1
+      startRecordNumber: 1,
     };
     const dummySearchResult: SearchResult = {
       resultInfo: null,
-      results: [null, null]
+      results: [null, null],
     };
 
     service.getResults().subscribe((result) => {

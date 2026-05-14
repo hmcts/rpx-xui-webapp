@@ -21,7 +21,7 @@ const healthCheckEndpointDictionary = {
   '/cases/case-details': ['ccdComponentApi'],
   '/cases/case-filter': ['ccdComponentApi'],
   '/cases/case-search': ['ccdComponentApi'],
-  '/cases/case-share': ['ccdComponentApi']
+  '/cases/case-share': ['ccdComponentApi'],
 };
 
 /*
@@ -39,7 +39,7 @@ export function getPromises(path): any[] {
   /* Checking whether path can be simplified, ie route has parameters*/
   const dictionaryKeys = Object.keys(healthCheckEndpointDictionary).reverse();
   for (const key of dictionaryKeys) {
-    if (path.indexOf(key) > -1) {
+    if (path.includes(key)) {
       path = key;
       break;
     }
@@ -47,6 +47,7 @@ export function getPromises(path): any[] {
   if (healthCheckEndpointDictionary[path]) {
     healthCheckEndpointDictionary[path].forEach((endpoint) => {
       // TODO: Have health config for this.
+      // EXUI-3967 - the above ask requires further investigation and config changes
       logger.info('healthEndpoints', endpoint);
       logger.info(healthEndpoints()[endpoint]);
       Promises.push(http.get(healthEndpoints()[endpoint]));
@@ -66,9 +67,11 @@ export async function healthCheckRoute(req, res) {
     }
 
     // comment out following block to bypass actual check
-    await Promise.all(PromiseArr).then().catch(() => {
-      response = { healthState: false };
-    });
+    await Promise.all(PromiseArr)
+      .then()
+      .catch(() => {
+        response = { healthState: false };
+      });
 
     logger.info('response::', response);
     res.send(response);

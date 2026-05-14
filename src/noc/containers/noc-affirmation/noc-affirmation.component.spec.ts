@@ -4,7 +4,10 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { NocAffirmationComponent } from './noc-affirmation.component';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate',
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;
@@ -13,7 +16,7 @@ class RpxTranslateMockPipe implements PipeTransform {
 
 describe('NocAffirmationComponent', () => {
   let store;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let spyOnPipeToStore = jasmine.createSpy();
   let spyOnDispatchToStore = jasmine.createSpy();
   let component: NocAffirmationComponent;
@@ -22,11 +25,8 @@ describe('NocAffirmationComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [NocAffirmationComponent, RpxTranslateMockPipe],
-      providers: [
-        provideMockStore()
-      ]
-    })
-      .compileComponents();
+      providers: [provideMockStore()],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -46,8 +46,9 @@ describe('NocAffirmationComponent', () => {
   it('should change affirmation', () => {
     const event = {
       currentTarget: {
-        checked: true
-      } };
+        checked: true,
+      },
+    };
     component.onChangeAffirmation(event);
     expect(spyOnDispatchToStore).toHaveBeenCalled();
   });

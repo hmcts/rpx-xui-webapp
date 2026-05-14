@@ -18,12 +18,12 @@ describe('ParticipantChannelAttendenceAmendedConverter', () => {
           useValue: {
             snapshot: {
               data: {
-                hearingStageOptions: hearingStageRefData
-              }
-            }
-          }
-        }
-      ]
+                hearingStageOptions: hearingStageRefData,
+              },
+            },
+          },
+        },
+      ],
     });
     converter = new ParticipantChannelAttendenceAmendedConverter();
   });
@@ -35,4 +35,3 @@ describe('ParticipantChannelAttendenceAmendedConverter', () => {
     expect(result$).toBeObservable(expected);
   });
 });
-

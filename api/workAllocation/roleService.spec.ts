@@ -1,11 +1,12 @@
 import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
-import * as sinonChai from 'sinon-chai';
 import { mockReq } from 'sinon-express-mock';
 import { CASE_ALLOCATOR_ROLE, JUDICIAL_TYPE, LEGAL_OPS_TYPE } from '../user/constants';
 import { checkIfCaseAllocator } from './roleService';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 describe('RoleService', () => {
   const roleAssignmentResponse = [
@@ -22,8 +23,8 @@ describe('RoleService', () => {
       created: Date.UTC.toString(),
       attributes: {
         baseLocation: '231596',
-        jurisdiction: 'IA'
-      }
+        jurisdiction: 'IA',
+      },
     },
     {
       id: '478c83f8-0ed0-4651-b8bf-cd2b1e206ac2',
@@ -38,16 +39,16 @@ describe('RoleService', () => {
       created: Date.UTC.toString(),
       attributes: {
         baseLocation: '331234',
-        jurisdiction: 'IA'
-      }
-    }
+        jurisdiction: 'IA',
+      },
+    },
   ];
   describe('handleShowAllocator jurisdiction locationId', () => {
     it('Legal Ops user', () => {
       const req = mockReq({
         session: {
-          roleAssignmentResponse
-        }
+          roleAssignmentResponse,
+        },
       });
       const response = checkIfCaseAllocator('IA', '231596', req);
       expect(response).to.be.equal(true);
@@ -56,8 +57,8 @@ describe('RoleService', () => {
     it('Judicial user', () => {
       const req = mockReq({
         session: {
-          roleAssignmentResponse
-        }
+          roleAssignmentResponse,
+        },
       });
       const response = checkIfCaseAllocator('IA', '331234', req);
       expect(response).to.be.equal(true);

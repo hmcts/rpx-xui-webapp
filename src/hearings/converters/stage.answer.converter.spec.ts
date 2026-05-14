@@ -11,7 +11,7 @@ import { StageAnswerConverter } from './stage.answer.converter';
 
 describe('StageAnswerConverter', () => {
   let converter: AnswerConverter;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let store: Store<any>;
   let router: any;
 
@@ -24,12 +24,12 @@ describe('StageAnswerConverter', () => {
           useValue: {
             snapshot: {
               data: {
-                hearingStageOptions: hearingStageRefData
-              }
-            }
-          }
-        }
-      ]
+                hearingStageOptions: hearingStageRefData,
+              },
+            },
+          },
+        },
+      ],
     });
     store = TestBed.inject(Store);
     router = TestBed.inject(ActivatedRoute);

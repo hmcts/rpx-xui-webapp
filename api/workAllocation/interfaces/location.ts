@@ -4,7 +4,7 @@ export interface Location {
 }
 
 export interface LocationResponse {
-  court_venues: CourtVenue [];
+  court_venues: CourtVenue[];
 }
 
 export interface CourtVenue {

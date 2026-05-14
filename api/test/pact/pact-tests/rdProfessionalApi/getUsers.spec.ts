@@ -18,21 +18,21 @@ describe('RD Professional API Interactions with webapp', () => {
           path: '/refdata/external/v1/organisations/users',
           query: {
             returnRoles: 'true',
-            status: 'active'
+            status: 'active',
           },
           headers: {
-            'Authorization': 'Bearer some-access-token',
+            Authorization: 'Bearer some-access-token',
             'Content-Type': 'application/json',
-            'ServiceAuthorization': 'serviceAuthToken'
-          }
+            ServiceAuthorization: 'serviceAuthToken',
+          },
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: getUsersResponse
-        }
+          body: getUsersResponse,
+        },
       };
 
       pactSetUp.provider.addInteraction(interaction);
@@ -42,7 +42,7 @@ describe('RD Professional API Interactions with webapp', () => {
       return pactSetUp.provider.executeTest(async (mockServer) => {
         const path: string = `${mockServer.url}/refdata/external/v1/organisations/users?returnRoles=true&status=active`;
         const resp = await getUsers(path);
-        const responseDto: ProfessionalUserResponse = <ProfessionalUserResponse>resp.data;
+        const responseDto: ProfessionalUserResponse = resp.data as ProfessionalUserResponse;
         assertResponse(responseDto);
       });
     });
@@ -58,12 +58,12 @@ function assertResponse(dto: ProfessionalUserResponse) {
 }
 
 const getUsersResponse = {
-  'users': eachLike({
-    'userIdentifier': '123456',
-    'firstName': 'firstName',
-    'lastName': 'lastName',
-    'email': 'email@org.com',
-    'idamStatus': 'ACTIVE',
-    'roles': eachLike('pui-user-manage')
-  })
+  users: eachLike({
+    userIdentifier: '123456',
+    firstName: 'firstName',
+    lastName: 'lastName',
+    email: 'email@org.com',
+    idamStatus: 'ACTIVE',
+    roles: eachLike('pui-user-manage'),
+  }),
 };

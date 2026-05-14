@@ -9,6 +9,7 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
 import { MockRpxTranslatePipe } from '../../../app/shared/test/mock-rpx-translate.pipe';
 import { hearingActualsMainModel, initialState } from '../../hearing.test.data';
+import { HearingResult } from '../../models/hearings.enum';
 import { LovRefDataModel } from '../../models/lovRefData.model';
 import { ConvertToValuePipe } from '../../pipes/convert-to-value.pipe';
 import { HearingAnswersPipe } from '../../pipes/hearing-answers.pipe';
@@ -19,9 +20,9 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 describe('HearingActualSummaryComponent', () => {
   let component: HearingActualSummaryComponent;
   let fixture: ComponentFixture<HearingActualSummaryComponent>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let router: Router;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let mockStore: any;
   const PARTY_CHANNELS: LovRefDataModel[] = [
     {
@@ -35,7 +36,7 @@ describe('HearingActualSummaryComponent', () => {
       category_key: 'HearingChannel',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       key: 'byPhone',
@@ -60,7 +61,7 @@ describe('HearingActualSummaryComponent', () => {
           category_key: 'HearingChannel',
           parent_category: 'byPhone',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           key: 'telephone-CVP',
@@ -73,7 +74,7 @@ describe('HearingActualSummaryComponent', () => {
           category_key: 'HearingChannel',
           parent_category: 'byPhone',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           key: 'telephone-other',
@@ -86,7 +87,7 @@ describe('HearingActualSummaryComponent', () => {
           category_key: 'HearingChannel',
           parent_category: 'byPhone',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           key: 'telephone-skype',
@@ -99,9 +100,9 @@ describe('HearingActualSummaryComponent', () => {
           category_key: 'HearingChannel',
           parent_category: 'byPhone',
           active_flag: 'Y',
-          child_nodes: null
-        }
-      ]
+          child_nodes: null,
+        },
+      ],
     },
     {
       key: 'byVideo',
@@ -126,7 +127,7 @@ describe('HearingActualSummaryComponent', () => {
           category_key: 'HearingChannel',
           parent_category: 'byVideo',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           key: 'video-other',
@@ -139,7 +140,7 @@ describe('HearingActualSummaryComponent', () => {
           category_key: 'HearingChannel',
           parent_category: 'byVideo',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           key: 'video-skype',
@@ -152,7 +153,7 @@ describe('HearingActualSummaryComponent', () => {
           category_key: 'HearingChannel',
           parent_category: 'byVideo',
           active_flag: 'Y',
-          child_nodes: null
+          child_nodes: null,
         },
         {
           key: 'video-teams',
@@ -165,9 +166,9 @@ describe('HearingActualSummaryComponent', () => {
           category_key: 'HearingChannel',
           parent_category: 'byVideo',
           active_flag: 'Y',
-          child_nodes: null
-        }
-      ]
+          child_nodes: null,
+        },
+      ],
     },
     {
       key: 'notAttending',
@@ -180,8 +181,8 @@ describe('HearingActualSummaryComponent', () => {
       category_key: 'HearingChannel',
       parent_category: '',
       active_flag: 'Y',
-      child_nodes: null
-    }
+      child_nodes: null,
+    },
   ];
   const HEARING_ROLES: LovRefDataModel[] = [
     {
@@ -195,7 +196,7 @@ describe('HearingActualSummaryComponent', () => {
       parent_category: 'Applicant',
       parent_key: 'APPL',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'EntityRoleCode',
@@ -208,7 +209,7 @@ describe('HearingActualSummaryComponent', () => {
       parent_category: 'Support',
       parent_key: 'SUPP',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'EntityRoleCode',
@@ -221,7 +222,7 @@ describe('HearingActualSummaryComponent', () => {
       parent_category: 'Applicant',
       parent_key: 'APPL',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'EntityRoleCode',
@@ -234,7 +235,7 @@ describe('HearingActualSummaryComponent', () => {
       parent_category: 'Respondent',
       parent_key: 'RESP',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'EntityRoleCode',
@@ -247,7 +248,7 @@ describe('HearingActualSummaryComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'EntityRoleCode',
@@ -260,7 +261,7 @@ describe('HearingActualSummaryComponent', () => {
       parent_category: 'Representative',
       parent_key: 'RPTT',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'EntityRoleCode',
@@ -273,7 +274,7 @@ describe('HearingActualSummaryComponent', () => {
       parent_category: 'Representative',
       parent_key: 'RPTT',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'EntityRoleCode',
@@ -286,7 +287,7 @@ describe('HearingActualSummaryComponent', () => {
       parent_category: 'Representative',
       parent_key: 'RPTT',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'EntityRoleCode',
@@ -299,7 +300,7 @@ describe('HearingActualSummaryComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'EntityRoleCode',
@@ -312,7 +313,7 @@ describe('HearingActualSummaryComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'EntityRoleCode',
@@ -325,7 +326,7 @@ describe('HearingActualSummaryComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'EntityRoleCode',
@@ -338,7 +339,7 @@ describe('HearingActualSummaryComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'EntityRoleCode',
@@ -351,8 +352,8 @@ describe('HearingActualSummaryComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
-    }
+      child_nodes: null,
+    },
   ];
   const HEARING_TYPES: LovRefDataModel[] = [
     {
@@ -366,7 +367,7 @@ describe('HearingActualSummaryComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'HearingType',
@@ -379,7 +380,7 @@ describe('HearingActualSummaryComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'HearingType',
@@ -392,15 +393,13 @@ describe('HearingActualSummaryComponent', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
-    }
+      child_nodes: null,
+    },
   ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [HearingActualSummaryComponent,
-        HearingAnswersPipe, ConvertToValuePipe, MockRpxTranslatePipe, DatePipe
-      ],
+      declarations: [HearingActualSummaryComponent, HearingAnswersPipe, ConvertToValuePipe, MockRpxTranslatePipe, DatePipe],
       schemas: [NO_ERRORS_SCHEMA],
       imports: [ReactiveFormsModule, RouterTestingModule],
       providers: [
@@ -412,18 +411,18 @@ describe('HearingActualSummaryComponent', () => {
               data: {
                 partyChannels: PARTY_CHANNELS,
                 hearingRoles: HEARING_ROLES,
-                hearingStageOptions: HEARING_TYPES
-              }
+                hearingStageOptions: HEARING_TYPES,
+              },
             },
-            fragment: of('point-to-me')
-          }
+            fragment: of('point-to-me'),
+          },
         },
-        DatePipe, FormatTranslatorService,
+        DatePipe,
+        FormatTranslatorService,
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
     mockStore = TestBed.inject(Store);
     mockStore = jasmine.createSpyObj('Store', ['pipe', 'dispatch']);
     fixture = TestBed.createComponent(HearingActualSummaryComponent);
@@ -439,6 +438,30 @@ describe('HearingActualSummaryComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should detect changes', () => {
+    // Confirm updates to hearing actuals are processed
+    component.adjournReasons = [{ key: 'Some Reason', value_en: 'Some Reason', value_cy: '' }] as LovRefDataModel[];
+    hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResult = HearingResult.ADJOURNED;
+    hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResultReasonType = 'Some Reason';
+    component.hearingActualsMainModel = hearingActualsMainModel;
+    const changes = {
+      hearingActualsMainModel: {
+        currentValue: hearingActualsMainModel,
+        previousValue: null,
+        firstChange: true,
+        isFirstChange: () => true,
+      },
+    };
+    component.ngOnChanges(changes);
+    expect(component.adjournReasonTypeValue).toEqual('Some Reason');
+
+    // Confirm changes can be reverted
+    hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResult = HearingResult.CANCELLED;
+    changes.hearingActualsMainModel.currentValue = hearingActualsMainModel;
+    component.ngOnChanges(changes);
+    expect(component.isAdjourned).toBeFalse();
+  });
+
   it('should set hearing type description', () => {
     component.hearingActualsMainModel = {
       ...hearingActualsMainModel,
@@ -446,9 +469,9 @@ describe('HearingActualSummaryComponent', () => {
         ...hearingActualsMainModel.hearingActuals,
         hearingOutcome: {
           ...hearingActualsMainModel.hearingActuals.hearingOutcome,
-          hearingType: 'BBA3-SUB'
-        }
-      }
+          hearingType: 'BBA3-SUB',
+        },
+      },
     };
     fixture.detectChanges();
     expect(component.hearingTypeDescription).toEqual('Substantive');

@@ -3,22 +3,22 @@ const fs = require('fs');
 const testType = process.env.TEST_TYPE;
 
 class StatsReporter {
-  constructor(){
+  constructor() {
     this.analysisOutputFile = `${__dirname}/../../functional-output/tests/run-analysis-${testType}.txt`;
     this.statLogsDir = `${__dirname}/../../functional-output/tests/featureRunLogs-${testType}`;
     this.stats = {
-      features: []
+      features: [],
     };
 
     this.analysis = [];
   }
 
-  updateScenario(featureName, scenarioName, status, result){
+  updateScenario(featureName, scenarioName, status, result) {
     let feature = this.stats.features.find((f) => f.name === featureName);
-    if (!feature){
+    if (!feature) {
       feature = {
         name: featureName,
-        scenarios: []
+        scenarios: [],
       };
       this.stats.features.push(feature);
     }
@@ -27,7 +27,7 @@ class StatsReporter {
     if (!scenario) {
       scenario = {
         name: scenarioName,
-        status: status
+        status: status,
       };
       feature.scenarios.push(scenario);
     }
@@ -36,14 +36,14 @@ class StatsReporter {
     scenario.result = result;
   }
 
-  collectLogs(){
+  collectLogs() {
     const dir = fs.readdirSync(this.statLogsDir);
-    for (const f of dir){
+    for (const f of dir) {
       const fileContent = fs.readFileSync(`${this.statLogsDir}/${f}`, 'utf-8');
 
-      for (const line of fileContent.split(/\r?\n/)){
+      for (const line of fileContent.split(/\r?\n/)) {
         // console.log(`Line from file: ${line}`);
-        if (line.includes('************ Test started')){
+        if (line.includes('************ Test started')) {
           let testName = line.split('|')[2];
           testName = testName.endsWith('{') ? testName.replace('{', '') : testName;
           this.updateScenario(f.replace('.txt', ''), testName, 'Started', 'unknown');
@@ -57,7 +57,7 @@ class StatsReporter {
     }
   }
 
-  generateStats(){
+  generateStats() {
     const featureStats = [];
 
     this.stats.features.forEach((f) => {
@@ -70,14 +70,22 @@ class StatsReporter {
       const passed = f.scenarios.filter((scr) => scr.result !== 'unknown' && scr.result.toLowerCase().includes('passed')).length;
       const failed = f.scenarios.filter((scr) => scr.result !== 'unknown' && scr.result.toLowerCase().includes('failed')).length;
 
-      featureStats.push({ name: f.name, startedCount: scrStarted, completedCount: scrCompleted, inProgress: inProgress, completed: completed, passed: passed, failed: failed });
+      featureStats.push({
+        name: f.name,
+        startedCount: scrStarted,
+        completedCount: scrCompleted,
+        inProgress: inProgress,
+        completed: completed,
+        passed: passed,
+        failed: failed,
+      });
     });
     this.analysis = {
-      features: featureStats
+      features: featureStats,
     };
   }
 
-  run(){
+  run() {
     if (!fs.existsSync(this.statLogsDir)) {
       return;
     }
@@ -89,7 +97,7 @@ class StatsReporter {
     // console.log(JSON.stringify(this.analysis, null, 2))
   }
 
-  logsStatsToFile(analysis){
+  logsStatsToFile(analysis) {
     fs.writeFileSync(this.analysisOutputFile, '');
 
     this.reportStats(analysis, (message) => {
@@ -108,16 +116,20 @@ class StatsReporter {
     // fs.writeFileSync(this.analysisOutputFile, JSON.stringify(analysis,null,2))
     callback('**** Run nalaysis *****');
 
-    callback(`${'Inprogress'.padEnd(15, ' ')} ${'Done'.padEnd(15, ' ')} ${'passed'.padEnd(10, ' ')} ${'failed'.padEnd(10, ' ')}  Feature `);
+    callback(
+      `${'Inprogress'.padEnd(15, ' ')} ${'Done'.padEnd(15, ' ')} ${'passed'.padEnd(10, ' ')} ${'failed'.padEnd(10, ' ')}  Feature `
+    );
 
     analysis.features.forEach((f) => {
-      callback(`${f.startedCount.toString().padEnd(15, ' ')} ${f.completedCount.toString().padEnd(15, ' ')} ${f.passed.toString().padEnd(10, ' ')} ${f.failed.toString().padEnd(10, ' ')} ${f.name}`);
+      callback(
+        `${f.startedCount.toString().padEnd(15, ' ')} ${f.completedCount.toString().padEnd(15, ' ')} ${f.passed.toString().padEnd(10, ' ')} ${f.failed.toString().padEnd(10, ' ')} ${f.name}`
+      );
 
       const inprogress = f.inProgress.map((scr) => scr.name);
       const completed = f.completed.map((scr) => scr.name);
 
-      if (inprogress.length > 0){
-        for (const scr of inprogress){
+      if (inprogress.length > 0) {
+        for (const scr of inprogress) {
           callback(`     - ${scr}`);
         }
         // fs.appendFileSync(this.analysisOutputFile, `\n${JSON.stringify(completed, null, 2)}`)

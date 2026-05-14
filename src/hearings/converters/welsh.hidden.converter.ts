@@ -17,12 +17,16 @@ export class WelshHiddenConverter implements HiddenConverter {
           : state.hearingRequest.hearingRequestMainModel.hearingDetails.hearingLocations;
         const locationIds = hearingLocations.map((location) => location.locationId).join(',');
         const serviceCode = state.hearingRequest?.hearingRequestMainModel?.caseDetails?.hmctsServiceCode;
-        const locations$: Observable<LocationByEpimmsModel[]> = this.locationsDataService.getLocationById(locationIds, serviceCode);
-        return locations$.pipe(map(
-          (locations) => {
+        const locations$: Observable<LocationByEpimmsModel[]> = this.locationsDataService.getLocationById(
+          locationIds,
+          serviceCode
+        );
+        return locations$.pipe(
+          map((locations) => {
             return !locations.some((location) => location.region_id === '7');
           })
         );
-      }));
+      })
+    );
   }
 }

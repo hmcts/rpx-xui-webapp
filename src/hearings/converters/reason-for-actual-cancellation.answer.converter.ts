@@ -21,10 +21,11 @@ export class ReasonForActualCancellationAnswerConverter implements AnswerConvert
         const values: string[] = HearingsUtils.getValues(cancellationReasonCodes, cancelHearingReasons);
         const valuesFromRequest = values && values.length ? values.join('<br>') : '';
 
-        const hearingResultReasonType = state.hearingActuals.hearingActualsMainModel
-          && state.hearingActuals.hearingActualsMainModel.hearingActuals
-          && state.hearingActuals.hearingActualsMainModel.hearingActuals.hearingOutcome
-          && state.hearingActuals.hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResultReasonType;
+        const hearingResultReasonType =
+          state.hearingActuals.hearingActualsMainModel &&
+          state.hearingActuals.hearingActualsMainModel.hearingActuals &&
+          state.hearingActuals.hearingActualsMainModel.hearingActuals.hearingOutcome &&
+          state.hearingActuals.hearingActualsMainModel.hearingActuals.hearingOutcome.hearingResultReasonType;
         const valueFromActual = HearingsUtils.getValue(hearingResultReasonType, cancelHearingActualReasons);
 
         return valuesFromRequest || valueFromActual;

@@ -13,12 +13,13 @@ export const redisHealth = async (): Promise<boolean> => {
   return new Promise<boolean>((resolve) => {
     try {
       redisClient.ping((err, pong) => {
-        if (err || (pong !== 'PONG')) {
+        if (err || pong !== 'PONG') {
           logger.error(err || 'redis server is not responsive');
           return resolve(false);
         }
         return resolve(true);
       });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       resolve(false);
     }

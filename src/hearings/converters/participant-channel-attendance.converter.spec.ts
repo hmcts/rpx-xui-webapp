@@ -10,7 +10,7 @@ import { ParticipantChannelAttendenceAnswerConverter } from './participant-chann
 
 describe('ParticipantChannelAttendance', () => {
   let converter: ParticipantChannelAttendenceAnswerConverter;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let store: Store<any>;
   let router: any;
 
@@ -24,12 +24,12 @@ describe('ParticipantChannelAttendance', () => {
             snapshot: {
               data: {
                 partyChannels: partyChannelsRefData,
-                partySubChannels: partySubChannelsRefData
-              }
-            }
-          }
-        }
-      ]
+                partySubChannels: partySubChannelsRefData,
+              },
+            },
+          },
+        },
+      ],
     });
     store = TestBed.inject(Store);
     router = TestBed.inject(ActivatedRoute);

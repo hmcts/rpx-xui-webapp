@@ -2,15 +2,26 @@ const { $, getText } = require('../../../../helpers/globals');
 const SummaryTable = require('../common/summaryTable');
 
 class ViewOrEditHearingPage {
+  get container() {
+    return $('exui-hearing-edit-summary');
+  }
+  get headerElement() {
+    return $('exui-hearing-edit-summary h1');
+  }
 
-  get container() { return $('exui-hearing-edit-summary'); }
-  get headerElement() { return $('exui-hearing-edit-summary h1'); }
+  get summaryTable() {
+    return new SummaryTable('exui-hearing-edit-summary');
+  }
 
-  get summaryTable() { return new SummaryTable('exui-hearing-edit-summary'); }
-
-  get warningMessage() { return $('exui-warning-and-error-section .govuk-warning-text__text'); }
-  get errorSummaryMessage() { return $('.govuk-error-summary__body'); }
-  get errorMessage() { return $('.govuk-error-message').first(); }
+  get warningMessage() {
+    return $('exui-warning-and-error-section .govuk-warning-text__text');
+  }
+  get errorSummaryMessage() {
+    return $('.govuk-error-summary__body');
+  }
+  get errorMessage() {
+    return $('.govuk-error-message').first();
+  }
 
   async getHeader() {
     return await getText(this.headerElement);
@@ -50,4 +61,3 @@ class ViewOrEditHearingPage {
 }
 
 module.exports = new ViewOrEditHearingPage();
-

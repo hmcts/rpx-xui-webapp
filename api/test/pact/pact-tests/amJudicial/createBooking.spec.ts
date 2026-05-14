@@ -17,16 +17,18 @@ const RESPONSE_BODY = {
   beginTime: somethingLike('01-01-2000'),
   endTime: somethingLike('01-01-3000'),
   created: somethingLike('01-01-1999'),
-  log: somethingLike('Booking created')
+  log: somethingLike('Booking created'),
 };
 
-const REQUEST_BODY = { bookingRequest: {
-  beginTime: somethingLike('01-01-2000'),
-  endTime: somethingLike('01-01-3000'),
-  locationId: somethingLike('123'),
-  regionId: somethingLike('1'),
-  userId: somethingLike('018a0310-f122-4377-9504-f635301f39ed-test2')
-} };
+const REQUEST_BODY = {
+  bookingRequest: {
+    beginTime: somethingLike('01-01-2000'),
+    endTime: somethingLike('01-01-3000'),
+    locationId: somethingLike('123'),
+    regionId: somethingLike('1'),
+    userId: somethingLike('018a0310-f122-4377-9504-f635301f39ed-test2'),
+  },
+};
 
 describe('Access management api, create booking', () => {
   describe('post /am/bookings', () => {
@@ -45,19 +47,19 @@ describe('Access management api, create booking', () => {
           method: 'POST',
           path: '/am/bookings',
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
-          body: REQUEST_BODY
+          body: REQUEST_BODY,
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: RESPONSE_BODY
-        }
+          body: RESPONSE_BODY,
+        },
       };
 
       pactSetUp.provider.addInteraction(interaction);
@@ -79,18 +81,17 @@ describe('Access management api, create booking', () => {
 
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
           body: {
             beginTime: '01-01-2000',
             endTime: '01-01-3000',
             locationId: '123',
             regionId: '1',
-            userId: '018a0310-f122-4377-9504-f635301f39ed-test2'
-          }
-
+            userId: '018a0310-f122-4377-9504-f635301f39ed-test2',
+          },
         });
         let returnedResponse = null;
         const response = mockRes();

@@ -2,7 +2,8 @@ import { Component, Input } from '@angular/core';
 import { AbstractFormFieldComponent } from './abstract-form-field.component';
 
 @Component({
-  template: ''
+  standalone: false,
+  template: '',
 })
 export abstract class AbstractFieldWriteComponent extends AbstractFormFieldComponent {
   @Input()

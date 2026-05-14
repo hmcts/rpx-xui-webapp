@@ -23,7 +23,7 @@ describe('ReasonForActualCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'CaseManagementCancellationReasons',
@@ -36,7 +36,7 @@ describe('ReasonForActualCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'CaseManagementCancellationReasons',
@@ -49,7 +49,7 @@ describe('ReasonForActualCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'CaseManagementCancellationReasons',
@@ -62,7 +62,7 @@ describe('ReasonForActualCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'CaseManagementCancellationReasons',
@@ -75,7 +75,7 @@ describe('ReasonForActualCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'CaseManagementCancellationReasons',
@@ -88,7 +88,7 @@ describe('ReasonForActualCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'CaseManagementCancellationReasons',
@@ -101,7 +101,7 @@ describe('ReasonForActualCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'CaseManagementCancellationReasons',
@@ -114,7 +114,7 @@ describe('ReasonForActualCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'CaseManagementCancellationReasons',
@@ -127,7 +127,7 @@ describe('ReasonForActualCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'CaseManagementCancellationReasons',
@@ -140,7 +140,7 @@ describe('ReasonForActualCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'CaseManagementCancellationReasons',
@@ -153,7 +153,7 @@ describe('ReasonForActualCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'CaseManagementCancellationReasons',
@@ -166,8 +166,8 @@ describe('ReasonForActualCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
-    }
+      child_nodes: null,
+    },
   ];
   const CANCEL_HEARING_ACTUAL_REASONS: LovRefDataModel[] = [
     {
@@ -181,7 +181,7 @@ describe('ReasonForActualCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'ActualCancellationReasonCodes',
@@ -194,7 +194,7 @@ describe('ReasonForActualCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'ActualCancellationReasonCodes',
@@ -207,7 +207,7 @@ describe('ReasonForActualCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'ActualCancellationReasonCodes',
@@ -220,7 +220,7 @@ describe('ReasonForActualCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'ActualCancellationReasonCodes',
@@ -233,7 +233,7 @@ describe('ReasonForActualCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'ActualCancellationReasonCodes',
@@ -246,7 +246,7 @@ describe('ReasonForActualCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'ActualCancellationReasonCodes',
@@ -259,7 +259,7 @@ describe('ReasonForActualCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'ActualCancellationReasonCodes',
@@ -272,7 +272,7 @@ describe('ReasonForActualCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'ActualCancellationReasonCodes',
@@ -285,7 +285,7 @@ describe('ReasonForActualCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
+      child_nodes: null,
     },
     {
       category_key: 'ActualCancellationReasonCodes',
@@ -298,11 +298,11 @@ describe('ReasonForActualCancellationAnswerConverter', () => {
       parent_category: '',
       parent_key: '',
       active_flag: 'Y',
-      child_nodes: null
-    }
+      child_nodes: null,
+    },
   ];
   let converter: ReasonForActualCancellationAnswerConverter;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let store: Store<any>;
   let router: any;
 
@@ -316,12 +316,12 @@ describe('ReasonForActualCancellationAnswerConverter', () => {
             snapshot: {
               data: {
                 cancelHearingReasons: CANCEL_HEARING_REQUEST_REASONS,
-                cancelHearingActualReasons: CANCEL_HEARING_ACTUAL_REASONS
-              }
-            }
-          }
-        }
-      ]
+                cancelHearingActualReasons: CANCEL_HEARING_ACTUAL_REASONS,
+              },
+            },
+          },
+        },
+      ],
     });
     store = TestBed.inject(Store);
     router = TestBed.inject(ActivatedRoute);

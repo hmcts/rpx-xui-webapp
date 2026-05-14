@@ -1,4 +1,3 @@
-
 const createHearingWorkflow = require('../../pageObjects/hearings/createHearingWorkflow/createhearingWorkflow');
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
 
@@ -24,7 +23,7 @@ Then('In hearings requirements page, I see case flags displayed for parties', as
   const parties = await hearingRequirementPage.getPartiesWithCaseFlagsDisplayed();
 
   reportLogger.AddMessage(`Parties with case flags ${JSON.stringify(parties)}`);
-  for (const party of expectedPartyNames){
+  for (const party of expectedPartyNames) {
     const partyWithName = parties.find((p) => p.includes(party.partyName));
 
     expect(partyWithName, `${parties} missing expected ${party.partyName}`).to.not.equal(undefined);
@@ -39,7 +38,7 @@ Then('In hearings requirements page, I see case flags displayed for parties', as
   }
 });
 
-Then('In hearings Participant attendance page, I see parties', async function (partiesDatatable){
+Then('In hearings Participant attendance page, I see parties', async function (partiesDatatable) {
   const expectedPartyNames = partiesDatatable.parse().hashes();
   const participantsPage = getPageObject('Participant attendance');
   const parties = await participantsPage.getPartiesDisplayed();
@@ -48,8 +47,8 @@ Then('In hearings Participant attendance page, I see parties', async function (p
   for (const party of expectedPartyNames) {
     const partyWithName = parties.find((p) => p.includes(party.partyName));
     expect(partyWithName, `${parties} missing expected ${party.partyName}`).to.not.equal(undefined);
-    if (party.label){
-      if (party.label === ''){
+    if (party.label) {
+      if (party.label === '') {
         expect(partyWithName, `${parties} missing expected ${party.partyName}`).to.not.includes('AMENDED');
         expect(partyWithName, `${parties} missing expected ${party.partyName}`).to.not.includes('ACTION NEEDED');
       } else {
@@ -66,11 +65,14 @@ Then('In Additional facilities page, I see case flags displayed for parties', as
 
   reportLogger.AddMessage(`Parties  ${JSON.stringify(parties)}`);
   for (const party of expectedPartyNames) {
-    expect(parties.find((p) => p.includes(party.partyName)), `${parties} missing expected ${party.partyName}`).to.not.equal(undefined);
+    expect(
+      parties.find((p) => p.includes(party.partyName)),
+      `${parties} missing expected ${party.partyName}`
+    ).to.not.equal(undefined);
   }
 });
 
-async function validatePartyFlagsDisplayed(partyName, flagsDatatable){
+async function validatePartyFlagsDisplayed(partyName, flagsDatatable) {
   const flags = flagsDatatable.parse().hashes();
   const additionalFacilitiesPage = getPageObject('Do you require any additional facilities?');
   const partyFlags = await additionalFacilitiesPage.getCaseFlagsDisplayedForParty(partyName);
@@ -97,7 +99,7 @@ Then('In Additional facilities page, I see party {string} with case flags', asyn
   await validatePartyFlagsDisplayed(partyName, flagsDatatable);
 });
 
-Then('In additional facilities page, I see case flags displayed for parties', async function (partiesDatatable){
+Then('In additional facilities page, I see case flags displayed for parties', async function (partiesDatatable) {
   const expectedPartyNames = partiesDatatable.parse().hashes();
   const additionalFacilitiesPage = getPageObject('Do you require any additional facilities?');
   let parties = await additionalFacilitiesPage.getPartiesWithCaseFlagsDisplayed();
@@ -108,28 +110,39 @@ Then('In additional facilities page, I see case flags displayed for parties', as
   }
 });
 
-Then('In Length, date and priority level of hearing page, I see ACTION NEEDED label displayed for The first date of the hearing must be', async function () {
-  const page = getPageObject('Length, date and priority level of hearing');
-  expect(await page.isActionNeededLabelDisplayedForField('The first date of the hearing must be')).to.be.true;
-});
+Then(
+  'In Length, date and priority level of hearing page, I see ACTION NEEDED label displayed for The first date of the hearing must be',
+  async function () {
+    const page = getPageObject('Length, date and priority level of hearing');
+    expect(await page.isActionNeededLabelDisplayedForField('The first date of the hearing must be')).to.be.true;
+  }
+);
 
-Then('In Length, date and priority level of hearing page, I see AMENDED label displayed for Length of hearing', async function () {
-  const page = getPageObject('Length, date and priority level of hearing');
-  expect(await page.isActionNeededLabelDisplayedForField('Length of hearing')).to.be.true;
-});
+Then(
+  'In Length, date and priority level of hearing page, I see AMENDED label displayed for Length of hearing',
+  async function () {
+    const page = getPageObject('Length, date and priority level of hearing');
+    expect(await page.isActionNeededLabelDisplayedForField('Length of hearing')).to.be.true;
+  }
+);
 
-Then('In Length, date and priority level of hearing page, I see AMENDED label displayed for the latest end date', async function () {
-  const page = getPageObject('Length, date and priority level of hearing');
-  expect(await page.isActionNeededLabelDisplayedForField('Latest end date')).to.be.true;
-});
+Then(
+  'In Length, date and priority level of hearing page, I see AMENDED label displayed for the latest end date',
+  async function () {
+    const page = getPageObject('Length, date and priority level of hearing');
+    expect(await page.isActionNeededLabelDisplayedForField('Must list before')).to.be.true;
+  }
+);
 
 Then('In Length, date and priority level of hearing page, I see no label displayed for the earliest end date', async function () {
   const page = getPageObject('Length, date and priority level of hearing');
-  expect(await page.isActionNeededLabelDisplayedForField('Earliest start date')).to.be.false;
+  expect(await page.isActionNeededLabelDisplayedForField('Must list after')).to.be.false;
 });
 
-Then('In Length, date and priority level of hearing page, I dont see ACTION NEEDED label displayed for The first date of the hearing must be', async function () {
-  const page = getPageObject('Length, date and priority level of hearing');
-  expect(await page.isActionNeededLabelDisplayedForField('The first date of the hearing must be')).to.be.false;
-});
-
+Then(
+  'In Length, date and priority level of hearing page, I dont see ACTION NEEDED label displayed for The first date of the hearing must be',
+  async function () {
+    const page = getPageObject('Length, date and priority level of hearing');
+    expect(await page.isActionNeededLabelDisplayedForField('The first date of the hearing must be')).to.be.false;
+  }
+);

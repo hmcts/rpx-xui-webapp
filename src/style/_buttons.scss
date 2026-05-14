@@ -4,10 +4,9 @@
 Buttons
 */
 
-$module: "button";
+$module: 'button';
 
 .#{$module} {
-
   &-secondary {
     @include button($grey-3);
   }

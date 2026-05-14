@@ -1,4 +1,3 @@
-
 function getActor() {
   return actor().retry({ retries: 3, minTimeout: 5 });
 }
@@ -25,14 +24,14 @@ class ElementCollection {
     return selectors;
   }
 
-  first(){
+  first() {
     // await this.count();
     // const nativeLement = new PuppeteerNativeElement(0, null);
     // return nativeLement;
     return this.get(0);
   }
 
-  get(index){
+  get(index) {
     0;
     // // await this.count();
     // if (index >= this.nativeElements.length ){
@@ -46,11 +45,11 @@ class ElementCollection {
     return new Element(selector);
   }
 
-  async wait(){
+  async wait() {
     return new Promise((resolve, reject) => {
       const interval = setInterval(async () => {
         const count = await this.count();
-        if (count !== 0){
+        if (count !== 0) {
           clearInterval(interval);
           resolve(true);
         }
@@ -62,13 +61,13 @@ class ElementCollection {
     });
   }
 
-  async getItemWithText(text){
+  async getItemWithText(text) {
     const count = await this.count();
     let element = null;
-    for (let i = 0; i < count; i++){
+    for (let i = 0; i < count; i++) {
       const e = this.get(i);
       const eText = await e.getText();
-      if (eText.includes(text)){
+      if (eText.includes(text)) {
         element = e;
         break;
       }
@@ -76,7 +75,7 @@ class ElementCollection {
     return element;
   }
 
-  async count(){
+  async count() {
     // if(this.selector){
     //     const helperNativeElement = new PuppeteerNativeElement(null, null)
     //     this.nativeElements = await helperNativeElement.getNativeElements(this.selector);
@@ -103,9 +102,7 @@ class ElementCollection {
     return elements.length;
   }
 
-  async getText(){
-
-  }
+  async getText() {}
 }
 
 class Element {
@@ -113,14 +110,14 @@ class Element {
     this.selector = selector;
   }
 
-  _childElement(locator){
+  _childElement(locator) {
     let newSelector = '';
 
     newSelector = locate(this.selector).find(locator).locator;
     return new Element(newSelector);
   }
 
-  withChild(childSelector){
+  withChild(childSelector) {
     const selector = locate(this.selector).withChild(childSelector);
     return new Element(selector.locator);
   }
@@ -142,7 +139,7 @@ class Element {
     return this.selector;
   }
 
-  async getText(){
+  async getText() {
     await this.wait();
     reportLogger.AddMessage(`getText: ${JSON.stringify(this.selector)}`);
     const selectorType = Object.keys(this.selector)[0];
@@ -157,18 +154,18 @@ class Element {
     return await getActor().grabTextFromAll(this.selector);
   }
 
-  async sendKeys(keys){
+  async sendKeys(keys) {
     await this.wait();
     // await this.click();
     await getActor().fillField(this.selector, keys);
   }
 
-  async clear(){
+  async clear() {
     await this.wait();
     await getActor().clearField(this.selector);
   }
 
-  async click(){
+  async click() {
     await this.wait();
     reportLogger.AddMessage(`click: ${JSON.stringify(this.selector)}`);
 
@@ -182,79 +179,79 @@ class Element {
     return labels;
   }
 
-  async selectOptionWithLabel(label){
+  async selectOptionWithLabel(label) {
     await this.wait();
     const options = await this.getSelectOptions();
     const option = options.find((option) => option.includes(label));
     await this.select(option);
   }
 
-  async select(option){
+  async select(option) {
     await this.wait();
     await getActor().selectOption(this.selector, option);
   }
 
-  async selectOptionAtIndex(index){
+  async selectOptionAtIndex(index) {
     await this.wait();
     let options = await this.getSelectOptions();
     options = options.map((option) => option.trim());
     await this.select(options[index]);
   }
 
-  async selectWithLabelContains(label){
+  async selectWithLabelContains(label) {
     const options = await this.getSelectOptions();
     const optionWithLabel = options.find((opt) => opt.includes(label));
     await this.select(optionWithLabel);
   }
 
-  async isPresent(){
+  async isPresent() {
     try {
       const e = await getActor().getPlaywrightlocator(this.selector);
       const count = await e.count();
       return count > 0;
-    } catch (err){
+    } catch (err) {
       reportLogger.AddMessage(`error occured ${err.message}`);
       return false;
     }
   }
 
-  async isEnabled(){
+  async isEnabled() {
     const isDisabled = await getActor().grabAttributeFrom(this.selector, 'disabled');
     return !isDisabled;
   }
 
-  async isChecked(){
+  async isChecked() {
     const selectorType = Object.keys(this.selector)[0];
     const selector = selectorType === 'css' ? this.selector.css : `xpath=${this.selector.xpath}`;
     return await getActor().isElementChecked(selector);
   }
 
-  async isDisplayed(){
+  async isDisplayed() {
     reportLogger.AddMessage(`isDisplayed: ${JSON.stringify(this.selector)}`);
     return await getActor().isVisible(this.selector);
   }
 
-  async count(){
+  async count() {
     // await this.wait();
     const elements = new ElementCollection(this.selector);
     return await elements.count();
   }
 
-  async get(index){
+  async get(index) {
     await this.wait();
-    return new Element(locate(this.selector).at(index+1));
+    return new Element(locate(this.selector).at(index + 1));
   }
 
-  async getAttribute(attr){
+  async getAttribute(attr) {
     await this.wait();
     reportLogger.AddMessage(`getAttribute "${attr}" from ${JSON.stringify(this.selector)}`);
     const selectorType = Object.keys(this.selector)[0];
     const selector = selectorType === 'css' ? this.selector.css : `xpath=${this.selector.xpath}`;
     const attributeValue = await getActor().getAttributeUsingPlaywright(selector, attr);
-    if (attributeValue instanceof Object){
+    if (attributeValue instanceof Object) {
       const values = Object.values(attributeValue);
       let attributeItemValues = '';
-      for (const prop of values){
+      for (const prop of values) {
         const v = await getActor().grabCssPropertyFrom(this.selector, prop);
         attributeItemValues = `${prop}: ${v};`;
       }
@@ -263,77 +260,77 @@ class Element {
     return attributeValue;
   }
 
-  async getTagName(){
+  async getTagName() {
     await this.wait();
     const locatorType = Object.keys(this.selector);
     let tagName = null;
 
-    if (locatorType.includes('css')){
+    if (locatorType.includes('css')) {
       tagName = await getActor().executeScript(function (selector) {
         return document.querySelector(selector.css).tagName.toLowerCase();
       }, this.selector);
     } else {
       tagName = await getActor().executeScript(function (selector) {
         const snapshots = document.evaluate(selector.xpath, document, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-        if (snapshots.snapshotLength === 0){
+        if (snapshots.snapshotLength === 0) {
           return null;
         }
         return snapshots.snapshotItem(0).tagName.toLowerCase();
       }, this.selector);
     }
-    if (tagName === null){
+    if (tagName === null) {
       reportLogger.AddMessage(`ELEMENT_NOT_FOUND: ${JSON.stringify(this.selector)}`);
     }
     return tagName;
   }
 
-  async uploadFile(file){
+  async uploadFile(file) {
     await this.wait();
-    await getActor().attachFile(this.selector, '../e2e/documents/'+file);
+    await getActor().attachFile(this.selector, '../e2e/documents/' + file);
   }
 
   static all(locator) {
     return new ElementCollection(locator);
   }
 
-  async wait(waitInSec){
-    reportLogger.AddMessage('ELEMENT_WAIT: ' + JSON.stringify(this.selector) +' at '+this.__getCallingFunctionName());
+  async wait(waitInSec) {
+    reportLogger.AddMessage('ELEMENT_WAIT: ' + JSON.stringify(this.selector) + ' at ' + this.__getCallingFunctionName());
     const waitTime = waitInSec ? waitInSec : 40;
     let isPresentStatus = null;
     let elapsedWait = 0;
     do {
-      if (isPresentStatus === false){
+      if (isPresentStatus === false) {
         await browser.sleepInMillisec(100);
       }
       isPresentStatus = await this.isPresent();
       elapsedWait += 100;
     } while (!isPresentStatus && elapsedWait / 1000 < waitTime);
 
-    if (!isPresentStatus){
+    if (!isPresentStatus) {
       throw new Error(`Element not found after wait for ${waitTime}sec`);
     }
     return isPresentStatus;
     // await getActor().waitForPlaywrightLocator(this.selector)
   }
 
-  async scrollIntoView(){
+  async scrollIntoView() {
     await this.wait();
     await getActor().scrollTo(this.selector);
   }
 
-  async isSelected(){
+  async isSelected() {
     await this.wait();
     return await getActor().grabAttributeFrom(this.selector, 'checked');
   }
 
-  async getSelectOptions(){
+  async getSelectOptions() {
     await this.wait();
     const options = await this._childElement('option');
     const labels = await getActor().grabTextFromAll(options.selector);
     return labels;
   }
 
-  __getCallingFunctionName(){
+  __getCallingFunctionName() {
     const e = new Error();
     const frame = e.stack.split('\n')[3]; // change to 3 for grandparent func
     const lineNumber = frame.split(':').reverse()[1];
@@ -346,7 +343,7 @@ class Element {
     return functionName;
   }
 
-  async waitForElementdetach(){
+  async waitForElementdetach() {
     await getActor().waitForPlaywrightLocatorState(this.selector, 'detached');
   }
 }

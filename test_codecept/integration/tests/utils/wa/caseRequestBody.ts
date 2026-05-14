@@ -7,9 +7,9 @@ class CaseRequestBody {
         sorting_parameters: [],
         search_parameters: [],
         pagination_parameters: { page_number: 1, page_size: 25 },
-        search_by: ''
+        search_by: '',
       },
-      view: ''
+      view: '',
     };
   }
 
@@ -18,7 +18,7 @@ class CaseRequestBody {
     return this;
   }
 
-  public withSearchBy(searchBy: string){
+  public withSearchBy(searchBy: string) {
     this.requestBody.searchRequest.search_by = searchBy;
     return this;
   }
@@ -29,7 +29,7 @@ class CaseRequestBody {
       this.requestBody.searchRequest.search_parameters.push({
         key: 'user',
         operator: 'IN',
-        values: idamId ? [idamId] : []
+        values: idamId ? [idamId] : [],
       });
     } else {
       idamId ? usersConfig[0].values.push(idamId) : '';
@@ -43,7 +43,7 @@ class CaseRequestBody {
       this.requestBody.searchRequest.search_parameters.push({
         key: 'location',
         operator: 'IN',
-        values: locationId ? [locationId] : []
+        values: locationId ? [locationId] : [],
       });
     } else {
       locationId ? usersConfig[0].values.push(locationId) : '';
@@ -57,7 +57,7 @@ class CaseRequestBody {
       this.requestBody.searchRequest.search_parameters.push({
         key: 'state',
         operator: 'IN',
-        values: state ? [state] : []
+        values: state ? [state] : [],
       });
     } else {
       state ? usersConfig[0].values.push(state) : '';

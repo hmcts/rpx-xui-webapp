@@ -1,12 +1,11 @@
-
 const globalSearchDataModel = require('../../../dataModels/globalSearch');
-class GlobalSearchMockData{
-  constructor(){
+class GlobalSearchMockData {
+  constructor() {
     this.mockName = 'TEST_1';
     this.reset();
   }
 
-  reset(){
+  reset() {
     this.searchResponse = globalSearchDataModel.getResults();
 
     this.searchResponse.results[10].processForAccess = 'CHALLENGED';
@@ -17,24 +16,23 @@ class GlobalSearchMockData{
     // this.searchResponse.results = singleCase;
   }
 
-  getResults(){
-    console.log(this.mockName+ ' [ GlobalSearchMockData.getResults ] global search results response requested');
+  getResults() {
+    console.log(this.mockName + ' [ GlobalSearchMockData.getResults ] global search results response requested');
     return this.searchResponse;
   }
 
-  getServices(){
+  getServices() {
     return [
       {
-        'serviceId': 'BEFTA_MASTER',
-        'serviceName': 'BEFTA Master'
+        serviceId: 'BEFTA_MASTER',
+        serviceName: 'BEFTA Master',
       },
       {
-        'serviceId': 'IA',
-        'serviceName': 'Immigration & Asylum'
-      }
+        serviceId: 'IA',
+        serviceName: 'Immigration & Asylum',
+      },
     ];
   }
 }
 
 module.exports = new GlobalSearchMockData();
-

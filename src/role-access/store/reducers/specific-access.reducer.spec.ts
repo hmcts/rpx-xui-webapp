@@ -1,5 +1,10 @@
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
-import { SpecificAccessFormData, SpecificAccessMoreInformationForm, SpecificAccessState, SpecificAccessStateData } from '../../models';
+import {
+  SpecificAccessFormData,
+  SpecificAccessMoreInformationForm,
+  SpecificAccessState,
+  SpecificAccessStateData,
+} from '../../models';
 import { AccessReason, DurationType } from '../../models/enums';
 import * as fromActions from '../actions/specific-access.action';
 import * as fromReducer from './specific-access.reducer';
@@ -19,8 +24,8 @@ describe('Specific Access Reducer', () => {
         const specificAccessFormData: SpecificAccessFormData = {
           specificAccessDurationForm: {
             selectedDuration: {},
-            selectedOption: 1
-          }
+            selectedOption: 1,
+          },
         };
         const action = new fromActions.SetSpecificAccessFormData(specificAccessFormData);
         const specificAccessState = fromReducer.specificAccessReducer(initialState, action);
@@ -30,7 +35,7 @@ describe('Specific Access Reducer', () => {
       it('should set correct object', () => {
         const initialState = fromReducer.specificAccessInitialState;
         const specificAccessMoreInformationForm: SpecificAccessMoreInformationForm = {
-          InfoText: 'test text'
+          InfoText: 'test text',
         };
         const action = new fromActions.SetSpecificAccessInfoFormData(specificAccessMoreInformationForm);
         const specificAccessState = fromReducer.specificAccessReducer(initialState, action);
@@ -40,7 +45,7 @@ describe('Specific Access Reducer', () => {
       it('should set correct object', () => {
         const period = {
           startDate: new Date(),
-          endDate: new Date()
+          endDate: new Date(),
         };
         const specificAccessStateData: SpecificAccessStateData = {
           state: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
@@ -64,16 +69,16 @@ describe('Specific Access Reducer', () => {
                 startDate: {
                   day: 11,
                   month: 11,
-                  year: 2024
+                  year: 2024,
                 },
                 endDate: {
                   day: 11,
                   month: 11,
-                  year: 2024
-                }
-              }
-            }
-          }
+                  year: 2024,
+                },
+              },
+            },
+          },
         };
         const action = new fromActions.ApproveSpecificAccessRequest({ specificAccessStateData, period });
         const specificAccessState = fromReducer.specificAccessReducer(specificAccessStateData, action);
@@ -96,9 +101,12 @@ describe('Specific Access Reducer', () => {
           requestId: '59bedc19-9cc6-4bff-9f58-041c3ba664a0',
           jurisdiction: 'IA',
           roleCategory: RoleCategory.LEGAL_OPERATIONS,
-          requestedRole: 'specific-access-legal-ops'
+          requestedRole: 'specific-access-legal-ops',
         };
-        const action: fromActions.SpecificAccessAction = { type: fromActions.SpecificAccessActionTypes.SET_SPECIFIC_ACCESS_INITIAL_DATA, payload: specificAccessStateData };
+        const action: fromActions.SpecificAccessAction = {
+          type: fromActions.SpecificAccessActionTypes.SET_SPECIFIC_ACCESS_INITIAL_DATA,
+          payload: specificAccessStateData,
+        };
         const specificAccessState = fromReducer.specificAccessReducer(initialState, action);
         expect(specificAccessState.state).toEqual(SpecificAccessState.SPECIFIC_ACCESS_REVIEW);
       });
@@ -114,7 +122,7 @@ describe('Specific Access Reducer', () => {
           jurisdiction: 'IA',
           roleCategory: RoleCategory.LEGAL_OPERATIONS,
           requestedRole: 'specific-access-legal-operations',
-          person: { id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null }
+          person: { id: 'db17f6f7-1abf-4223-8b5e-1eece04ee5d8', name: null, domain: null },
         };
         const action = new fromActions.RequestMoreInfoSpecificAccessRequest(specificAccessData);
         const specificAccessState = fromReducer.specificAccessReducer(specificAccessData, action);

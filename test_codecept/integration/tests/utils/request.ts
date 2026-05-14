@@ -1,4 +1,4 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { config } from '../config/config';
 import { getSessionCookieString, updateSessionCookieString } from './authUtil';
 import { reporterMsg, reporterJson } from './helper';
@@ -6,23 +6,23 @@ import { reporterMsg, reporterJson } from './helper';
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 axios.defaults.headers.common['Content-Type'] = 'application/json';
-const axiosOptions = {};
+const axiosOptions: AxiosRequestConfig = {};
 axios.defaults.withCredentials = true;
 axios.defaults.baseURL = config.baseUrl;
 const http: AxiosInstance = axios.create(axiosOptions);
 
-const requestInterceptor = (request) => {
-  console.log(`${request.method.toUpperCase()} to ${request.url}`);
+const requestInterceptor = (request: InternalAxiosRequestConfig) => {
+  console.log(`${request.method?.toUpperCase()} to ${request.url}`);
   return request;
 };
 
-const responseInterceptor = (response) => {
+const responseInterceptor = (response: AxiosResponse) => {
   if (response.status === 200) {
     if (Object.keys(response.headers).includes('set-cookie')) {
       const setCookies = response.headers['set-cookie'].toString().split(',');
-      for (let i = 0; i < setCookies.length; i++) {
-        const cookiesNameValue = setCookies.toString().split(';')[0].toString().split('=');
-        request.sessionUpdateSetCookie(cookiesNameValue[0], cookiesNameValue[1]);
+      for (const setCookie of setCookies) {
+        const cookieNameValue = setCookie.toString().split(';')[0].toString().split('=');
+        request.sessionUpdateSetCookie(cookieNameValue[0], cookieNameValue[1]);
       }
     }
   }
@@ -33,7 +33,6 @@ http.interceptors.request.use(requestInterceptor);
 http.interceptors.response.use(responseInterceptor);
 
 class Request {
-  private testContext;
   private cookieString: string = '';
   private sessionUser = '';
 
@@ -42,7 +41,7 @@ class Request {
     this.sessionUser = username;
   }
 
-  public sessionUpdateSetCookie(name, value){
+  public sessionUpdateSetCookie(name: string, value: string) {
     this.cookieString = updateSessionCookieString(this.sessionUser, name, value);
   }
 
@@ -50,8 +49,8 @@ class Request {
     this.cookieString = '';
   }
 
-  private getRequestConfig(headers: any) {
-    let reqheaders: any = {};
+  private getRequestConfig(headers?: Record<string, string>): AxiosRequestConfig {
+    let reqheaders: Record<string, string> = {};
     if (headers) {
       reqheaders = { ...headers };
     }
@@ -62,17 +61,19 @@ class Request {
     return { headers: reqheaders };
   }
 
-  private getResponseFromError(error): any {
+  private getResponseFromError(error: unknown): AxiosResponse | null {
     console.log('error occured : ', error);
-    if (error.response) {
-      return error.response;
-    } else if (error.request) {
-      return error.request;
+    const maybeError = error as { response?: AxiosResponse; request?: unknown };
+    if (maybeError.response) {
+      return maybeError.response;
     }
-    return error;
+    if (maybeError.request) {
+      return null;
+    }
+    return null;
   }
 
-  public async get(reqpath: string, headers: any, expectedStatus:any){
+  public async get(reqpath: string, headers: Record<string, string> | undefined, expectedStatus: number | number[]) {
     reporterMsg('<<-----------------------------------------------------');
     reporterMsg(`GET : ${reqpath}`);
     reporterMsg('----------------------------------------------------->>');
@@ -80,7 +81,7 @@ class Request {
     return await this.retryRequest(() => http.get(reqpath, this.getRequestConfig(headers)), expectedStatus);
   }
 
-  public async post(reqpath: string, data, headers: any, expectedStatus: number) {
+  public async post(reqpath: string, data: unknown, headers: Record<string, string> | undefined, expectedStatus: number) {
     reporterMsg('<<-----------------------------------------------------');
     reporterMsg(`POST : ${reqpath}`);
     reporterJson(data);
@@ -89,7 +90,7 @@ class Request {
     return await this.retryRequest(() => http.post(reqpath, data, this.getRequestConfig(headers)), expectedStatus);
   }
 
-  public async put(reqpath: string, data, headers: any, expectedStatus: number){
+  public async put(reqpath: string, data: unknown, headers: Record<string, string> | undefined, expectedStatus: number) {
     reporterMsg('<<-----------------------------------------------------');
     reporterMsg(`PUT : ${reqpath}`);
     reporterJson(data);
@@ -98,7 +99,12 @@ class Request {
     return await this.retryRequest(() => http.put(reqpath, data, this.getRequestConfig(headers)), expectedStatus);
   }
 
-  public async delete(reqpath: string, payload, moreHeaders: any, expectedStatus:any) {
+  public async delete(
+    reqpath: string,
+    payload: unknown,
+    moreHeaders: Record<string, string> | undefined,
+    expectedStatus: number | number[]
+  ) {
     reporterMsg('<<-----------------------------------------------------');
     reporterMsg(`DELETE : ${reqpath}`);
     reporterJson(payload);
@@ -111,65 +117,70 @@ class Request {
     return await this.retryRequest(() => http.delete(reqpath, requestConfig), expectedStatus);
   }
 
-  async retryRequest(callback, expectedResponsecode){
-    let retryAttemptCounter = 0;
-    const isCallbackSuccess = false;
-    let retVal = null;
+  async retryRequest(callback: () => Promise<AxiosResponse>, expectedResponsecode: number | number[]) {
+    const retryErrorLogs: string[] = [];
+    const maxRetries = 3;
 
-    const retryErrorLogs = [];
-    let error = null;
-    let isExpectedResponseReceived = false;
-    while (retryAttemptCounter < 3 && !isExpectedResponseReceived){
-      retryAttemptCounter++;
-      isExpectedResponseReceived = false;
-      retVal = null;
-      error = null;
-      try {
-        retVal = await callback();
-        reporterMsg(`Response: Status code ${retVal.status}`);
-      } catch (err) {
-        // retryErrorLogs.push(err.response ? err.response : err);
-        error = err;
-        retVal = err.response ? err.response : null;
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      const { response, error } = await this.executeRequest(callback);
+      if (response) {
+        reporterMsg(`Response: Status code ${response.status}`);
       }
 
-      if (retVal && expectedResponsecode instanceof Array){
-        isExpectedResponseReceived = expectedResponsecode.includes(retVal.status);
-      } else if (retVal){
-        isExpectedResponseReceived = expectedResponsecode === retVal.status;
+      if (this.isExpectedResponse(response, expectedResponsecode)) {
+        return response;
       }
 
-      if (!isExpectedResponseReceived){
-        // console.log(retVal);
-        // console.log(error);
-        const status = retVal ? retVal.status : 'unknown';
-        const responseBody = retVal ? retVal.data : 'unknown';
-        const errorMessage = retVal ? `STATUS CODE : ${status} =>RESPONSE BODY :  ${JSON.stringify(responseBody)}` : `unknown request error occured ${error} `;
-        retryErrorLogs.push(`\n Retry ${retryAttemptCounter } : ${errorMessage}`);
-        reporterMsg('<<-------------------- ERROR RESPONSE---------------------------------');
-        reporterMsg(` Unexpected response : ${errorMessage}`);
-        reporterMsg('-------------------- ERROR RESPONSE--------------------------------->>');
-
-        reporterMsg(` Retrying atempt ${retryAttemptCounter}`);
-        // console.log(` Unexpected response : ${errorMessage}`);
-        // console.log(` Retrying atempt ${retryAttemptCounter}`);
-
-        const sleepInSec = retryAttemptCounter * (status === 502 ? 20 : 2);
-        await new Promise((resolve, reject) => {
-          setTimeout(() => {
-            reporterMsg(` <<<<<<<<<<<< Sleep for ${sleepInSec} sec before retry`);
-            resolve(true);
-          }, sleepInSec);
-        });
-      }
+      this.logRetryError(attempt, response, error, retryErrorLogs);
+      await this.sleepBeforeRetry(attempt, response?.status);
     }
 
-    if (isExpectedResponseReceived){
-      return retVal;
+    throw new Error('Following errors occured in retry attempts ' + retryErrorLogs);
+  }
+
+  private async executeRequest(callback: () => Promise<AxiosResponse>) {
+    try {
+      const response = await callback();
+      return { response, error: null };
+    } catch (error) {
+      const response = (error as { response?: AxiosResponse }).response ?? null;
+      return { response, error };
     }
-    throw new Error('Following errors occured in retry attempts '+(retryErrorLogs));
+  }
+
+  private isExpectedResponse(response: AxiosResponse | null, expectedResponsecode: number | number[]) {
+    if (!response) {
+      return false;
+    }
+    if (Array.isArray(expectedResponsecode)) {
+      return expectedResponsecode.includes(response.status);
+    }
+    return expectedResponsecode === response.status;
+  }
+
+  private logRetryError(attempt: number, response: AxiosResponse | null, error: unknown, retryErrorLogs: string[]) {
+    const status = response?.status ?? 'unknown';
+    const responseBody = response?.data ?? 'unknown';
+    const errorDetails = error instanceof Error ? error.message : JSON.stringify(error);
+    const errorMessage = response
+      ? `STATUS CODE : ${status} =>RESPONSE BODY :  ${JSON.stringify(responseBody)}`
+      : `unknown request error occured ${errorDetails} `;
+    retryErrorLogs.push(`\n Retry ${attempt} : ${errorMessage}`);
+    reporterMsg('<<-------------------- ERROR RESPONSE---------------------------------');
+    reporterMsg(` Unexpected response : ${errorMessage}`);
+    reporterMsg('-------------------- ERROR RESPONSE--------------------------------->>');
+    reporterMsg(` Retrying atempt ${attempt}`);
+  }
+
+  private async sleepBeforeRetry(attempt: number, status: number | undefined) {
+    const sleepInSec = attempt * (status === 502 ? 20 : 2);
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        reporterMsg(` <<<<<<<<<<<< Sleep for ${sleepInSec} sec before retry`);
+        resolve(true);
+      }, sleepInSec);
+    });
   }
 }
 const request = new Request();
 export default request;
-

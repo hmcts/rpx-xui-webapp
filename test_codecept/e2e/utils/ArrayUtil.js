@@ -1,4 +1,3 @@
-
 class ArrayUtil {
   async map(arr, callback) {
     return await Promise.all(arr.map(callback));

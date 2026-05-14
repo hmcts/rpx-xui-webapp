@@ -10,12 +10,12 @@ export const processErrorInit = () => {
   });
 
   process.on('uncaughtException', (err) => {
-    logger._logger.error((new Date()).toUTCString() + ' uncaughtException:', err.message);
+    logger._logger.error(new Date().toUTCString() + ' uncaughtException:', err.message);
     logger._logger.error(err.stack);
   });
 
   process.on('unhandledRejection', (reason, promise) => {
-    logger._logger.error((new Date()).toUTCString() + 'Unhandled Rejection at:', promise, 'reason:', reason);
+    logger._logger.error(new Date().toUTCString() + 'Unhandled Rejection at:', promise, 'reason:', reason);
     // Application specific logging, throwing an error, or other logic here
   });
 };

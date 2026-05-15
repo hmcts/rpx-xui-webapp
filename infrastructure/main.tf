@@ -2,6 +2,7 @@ locals {
   app_full_name     = "xui-${var.component}"
   ase_name          = "core-compute-${var.env}"
   local_env         = (var.env == "preview" || var.env == "spreview") ? (var.env == "preview") ? "aat" : "saat" : var.env
+  reporting_enabled = var.welsh_reporting_enabled || var.exui_weekly_stats_enabled
   shared_vault_name = "${var.shared_product_name}-${local.local_env}"
 }
 
@@ -110,7 +111,14 @@ data "azurerm_key_vault_secret" "welsh_report_email" {
   key_vault_id = data.azurerm_key_vault.key_vault.id
 }
 
+data "azurerm_key_vault_secret" "exui_weekly_stats_email" {
+  count        = var.exui_weekly_stats_enabled ? 1 : 0
+  name         = var.exui_weekly_stats_email_address_key
+  key_vault_id = data.azurerm_key_vault.key_vault.id
+}
+
 locals {
-  welsh_emails = var.welsh_reporting_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.welsh_report_email.0.value)) : []
+  welsh_emails             = var.welsh_reporting_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.welsh_report_email.0.value)) : []
+  exui_weekly_stats_emails = var.exui_weekly_stats_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.exui_weekly_stats_email.0.value)) : []
 }
 

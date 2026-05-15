@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test';
+import nodeAppDataModels from '../../api/data/nodeAppDataModels';
 
 import {
   buildCaseFileViewCaseMock,
@@ -12,6 +13,28 @@ export interface CaseFileViewMockRoutesConfig {
   categoriesStatus?: number;
   caseDetailsMock?: object;
   caseDetailsStatus?: number;
+}
+
+export interface CaseFileViewUserDetailsConfig {
+  idamId: string;
+  email: string;
+}
+
+export async function setupCaseFileViewUserDetailsRoute(page: Page, config: CaseFileViewUserDetailsConfig): Promise<void> {
+  const userDetails = nodeAppDataModels.getUserDetails_oauth();
+  userDetails.userInfo = {
+    ...userDetails.userInfo,
+    id: config.idamId,
+    email: config.email,
+  };
+
+  await page.route('**/api/user/details*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(userDetails),
+    });
+  });
 }
 
 export async function setupCaseFileViewMockRoutes(

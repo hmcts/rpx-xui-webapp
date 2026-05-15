@@ -118,7 +118,8 @@ Why these env vars are required:
 The following code changes were made to support fully mocked local auth + integration flow:
 
 Refer to `api/test/pact/pact-mocks/` for Pact-only mock service implementations.
-   - Added safe token normalization and null guards to avoid crashes when auth headers are absent/malformed.
+
+- Added safe token normalization and null guards to avoid crashes when auth headers are absent/malformed.
 
 4. `api/user/index.ts`
    - Hardened active role-assignment extraction to handle undefined role arrays without crashing.

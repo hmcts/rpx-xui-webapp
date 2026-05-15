@@ -159,6 +159,12 @@ Dynamic-user keys now available in Key Vault (`rpx-aat`, `rpx-demo`) and populat
 - `RD_PROFESSIONAL_API_PATH`
 - `WA_SOLICITOR_USERNAME`
 - `WA_SOLICITOR_PASSWORD`
+- `PW_IAC_CASEOFFICER_R1_EMAIL`
+- `PW_IAC_CASEOFFICER_R1_PASSWORD`
+- `PW_IAC_JUDGE_WA_R1_EMAIL`
+- `PW_IAC_JUDGE_WA_R1_PASSWORD`
+
+These are populated from Key Vault using the same `e2e=<ENV_VAR_NAME>` tag convention.
 
 Notes:
 

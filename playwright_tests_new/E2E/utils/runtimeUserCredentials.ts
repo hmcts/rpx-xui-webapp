@@ -23,8 +23,8 @@ export type PublishedRuntimeUserCredentialEnvState = RuntimeUserCredentialEnvMap
 const runtimeUserCredentials = new Map<string, RuntimeUserCredentials>();
 const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
   SOLICITOR: {
-    username: 'SOLICITOR_USERNAME',
-    password: 'SOLICITOR_PASSWORD',
+    username: 'WA_SOLICITOR_USERNAME',
+    password: 'WA_SOLICITOR_PASSWORD',
   },
   DIVORCE_SOLICITOR: {
     username: 'DIVORCE_SOLICITOR_USERNAME',
@@ -134,10 +134,6 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
     username: 'RESTRICTED_CASE_FILE_VIEW_V1_1_ON_USERNAME',
     password: 'RESTRICTED_CASE_FILE_VIEW_V1_1_ON_PASSWORD',
   },
-  RESTRICTED_CASE_FILE_VIEW_OFF: {
-    username: 'RESTRICTED_CASE_FILE_VIEW_V1_1_OFF_USERNAME',
-    password: 'RESTRICTED_CASE_FILE_VIEW_V1_1_OFF_PASSWORD',
-  },
   ORG_USER_ASSIGNMENT: {
     username: 'ORG_USER_ASSIGNMENT_USERNAME',
     password: 'ORG_USER_ASSIGNMENT_PASSWORD',
@@ -146,9 +142,25 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
     username: 'PW_IAC_JUDGE_WA_R1_EMAIL',
     password: 'PW_IAC_JUDGE_WA_R1_PASSWORD',
   },
+  IAC_CASEOFFICER_R1: {
+    username: 'PW_IAC_CASEOFFICER_R1_EMAIL',
+    password: 'PW_IAC_CASEOFFICER_R1_PASSWORD',
+  },
   IAC_CASEOFFICER_R2: {
     username: 'PW_IAC_CASEOFFICER_R2_EMAIL',
     password: 'PW_IAC_CASEOFFICER_R2_PASSWORD',
+  },
+  FPL_GLOBAL_SEARCH: {
+    username: 'FPL_GLOBAL_SEARCH_USERNAME',
+    password: 'FPL_GLOBAL_SEARCH_PASSWORD',
+  },
+  NOC_SOLICITOR: {
+    username: 'NOC_SOLICITOR_USERNAME',
+    password: 'NOC_SOLICITOR_PASSWORD',
+  },
+  PRL_SOLICITOR: {
+    username: 'PRL_SOLICITOR_USERNAME',
+    password: 'PRL_SOLICITOR_PASSWORD',
   },
 };
 

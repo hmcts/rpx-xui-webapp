@@ -9,6 +9,7 @@ import type { IdamPage } from '@hmcts/playwright-common';
 import { isSessionFresh, loadSessionCookies, __test__ as sessionCaptureTest } from '../common/sessionCapture.js';
 import { resolveSessionStorageKey } from '../common/sessionIdentity.js';
 import type { Cookie } from 'playwright-core';
+import { withEnv } from './utils/testEnv';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -36,11 +37,24 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
   });
 
   test('UserUtils returns credentials for known users and errors on unknown', () => {
-    const userUtils = new UserUtils();
-    const creds = userUtils.getUserCredentials('IAC_CaseOfficer_R1');
-    expect(creds.email).toContain('@');
-    expect(creds.password).toBeTruthy();
-    expect(() => userUtils.getUserCredentials('UNKNOWN_USER')).toThrow('User "UNKNOWN_USER" not found');
+    return withEnv(
+      {
+        PW_IAC_CASEOFFICER_R1_EMAIL: 'caseofficer-r1@example.test',
+        PW_IAC_CASEOFFICER_R1_PASSWORD: mockPassword,
+        PW_IAC_JUDGE_WA_R1_EMAIL: undefined,
+        PW_IAC_JUDGE_WA_R1_PASSWORD: undefined,
+      },
+      () => {
+        const userUtils = new UserUtils();
+        const creds = userUtils.getUserCredentials('IAC_CaseOfficer_R1');
+        expect(creds.email).toContain('@');
+        expect(creds.password).toBeTruthy();
+        expect(() => userUtils.getUserCredentials('UNKNOWN_USER')).toThrow('User "UNKNOWN_USER" not found');
+        expect(() => userUtils.getUserCredentials('IAC_Judge_WA_R1')).toThrow(
+          'Populate env vars "PW_IAC_JUDGE_WA_R1_EMAIL" and "PW_IAC_JUDGE_WA_R1_PASSWORD" from Azure Key Vault.'
+        );
+      }
+    );
   });
 
   test('CookieUtils writes and updates session files', async () => {

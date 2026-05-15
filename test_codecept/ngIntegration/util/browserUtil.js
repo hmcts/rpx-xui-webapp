@@ -5,7 +5,6 @@ const minimist = require('minimist');
 const argv = minimist(process.argv.slice(2));
 
 const axios = require('axios');
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 const axiosOptions = {};

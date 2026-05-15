@@ -7,7 +7,7 @@ redis:
   auth:
     enabled: false
   image:
-    registry: hmctspublic.azurecr.io
+    registry: hmctsprod.azurecr.io
     repository: imported/bitnami/redis
 
 global:
@@ -109,6 +109,7 @@ nodejs:
     # Services Idam
     SERVICES_IDAM_API_URL: https://idam-api.{{ .Values.global.environment }}.platform.hmcts.net
     SERVICES_IDAM_CLIENT_ID: xuiwebapp
+
     SERVICES_IDAM_LOGIN_URL: https://idam-web-public.{{ .Values.global.environment }}.platform.hmcts.net
     SERVICES_IDAM_INDEX_URL: /
     SERVICES_IDAM_OAUTH_CALLBACK_URL: /oauth2/callback
@@ -137,14 +138,13 @@ nodejs:
     FEATURE_TERMS_AND_CONDITIONS_ENABLED: false
     FEATURE_HELMET_ENABLED: true
     FEATURE_REDIS_ENABLED: true
-    FEATURE_OIDC_ENABLED: true
+    FEATURE_OIDC_ENABLED: false
     FEATURE_UPDATED_TASK_PERMISSIONS_ENABLED: true
     FEATURE_WORKALLOCATION_ENABLED: false
     FEATURE_JRD_E_LINKS_V2_ENABLED: true
     FEATURE_SUBSTANTIVE_ROLE_ENABLED: true
     FEATURE_ACCESS_MANAGEMENT_ENABLED: false
     FEATURE_LAU_SPECIFIC_CHALLENGED_ENABLED: false
-    FEATURE_QUERY_IDAM_SERVICE_OVERRIDE: true
 
     # Redis
     REDIS_KEY_PREFIX: 'activity:'

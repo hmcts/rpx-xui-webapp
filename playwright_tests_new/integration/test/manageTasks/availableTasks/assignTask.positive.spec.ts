@@ -1,8 +1,7 @@
 import { expect, test } from '../../../../E2E/fixtures';
 import { applySessionCookies } from '../../../../common/sessionCapture';
 import { availableActionsList, buildTaskListMock } from '../../../mocks/taskList.mock';
-import { setupTaskListBootstrapRoutes } from '../../../helpers';
-import { TASK_LIST_ROUTE_REGEX } from '../../../testData';
+import { setupManageTasksBaseRoutes } from '../../../helpers';
 
 const userIdentifier = 'STAFF_ADMIN';
 
@@ -14,11 +13,7 @@ test.describe(`Assign Task as ${userIdentifier}`, { tag: ['@integration', '@inte
   test(`User can assign a task to themselves and see the expected notifications`, async ({ taskListPage, page }) => {
     const taskListMockResponse = buildTaskListMock(3, '', availableActionsList);
     await test.step('Setup route mock for task list', async () => {
-      await setupTaskListBootstrapRoutes(page);
-      await page.route(TASK_LIST_ROUTE_REGEX, async (route) => {
-        const body = JSON.stringify(taskListMockResponse);
-        await route.fulfill({ status: 200, contentType: 'application/json', body });
-      });
+      await setupManageTasksBaseRoutes(page, { taskListResponse: taskListMockResponse });
       await page.route('**/claim', async (route) => {
         const body = JSON.stringify({});
         await route.fulfill({ status: 200, contentType: 'application/json', body });
@@ -27,8 +22,8 @@ test.describe(`Assign Task as ${userIdentifier}`, { tag: ['@integration', '@inte
 
     await test.step('Navigate to the available tasks list page', async () => {
       await taskListPage.goto();
-      await taskListPage.taskTableTabs.filter({ hasText: 'Available tasks' }).first().click();
-      await expect(taskListPage.taskListTable).toBeVisible();
+      await taskListPage.clickTaskTabAndWaitForView('Available tasks', 'AvailableTasks', 'opening available tasks assign list');
+      await taskListPage.waitForTaskRowReady('available tasks assign list');
       await taskListPage.exuiSpinnerComponent.wait();
     });
 
@@ -43,7 +38,6 @@ test.describe(`Assign Task as ${userIdentifier}`, { tag: ['@integration', '@inte
       const claimAction = taskListPage.getTaskActionForRow(rowIndex, 'claim');
 
       await taskListPage.openManageActionsForRow(rowIndex, 'available tasks claim action');
-      await expect(claimAction).toBeVisible();
       await taskListPage.clickTaskActionForRow(rowIndex, 'claim', 'available tasks claim action');
       await expect(claimAction).not.toBeVisible();
       await expect(taskListPage.exuiBodyComponent.infoMessage).toBeVisible();

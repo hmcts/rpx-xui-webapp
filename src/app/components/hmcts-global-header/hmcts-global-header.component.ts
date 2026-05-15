@@ -1,14 +1,18 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest, of } from 'rxjs';
 import { map, skipWhile, switchMap } from 'rxjs/operators';
+import { AppUtils } from '../../../app/app-utils';
 import { UserDetails } from '../../../app/models/user-details.model';
+import { WAVerificationModel } from '../../../app/models/wa-verification-model';
 import * as fromAppStore from '../../../app/store';
 import * as fromNocStore from '../../../noc/store';
 import { SearchStatePersistenceKey } from '../../../search/enums';
 import { SearchService } from '../../../search/services/search.service';
+import { WASupportedJurisdictionsService, WASupportedRoleDetailsService } from '../../../work-allocation/services';
 import { FlagDefinition, NavigationItem, UserNavModel } from '../../models';
+import { LoggerService } from '../../services/logger/logger.service';
 import { UserService } from '../../services/user/user.service';
 import { AppConstants } from 'src/app/app.constants';
 
@@ -58,6 +62,9 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     private readonly nocStore: Store<fromNocStore.State>,
     private readonly userService: UserService,
     private readonly featureToggleService: FeatureToggleService,
+    private readonly wasupportedJurisdictionsService: WASupportedJurisdictionsService,
+    private readonly wasupportedRoleDetailsService: WASupportedRoleDetailsService,
+    private readonly loggerService: LoggerService,
     private readonly searchService: SearchService
   ) {}
 
@@ -126,18 +133,42 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     };
   }
 
+  private isNavRoleSupported(
+    waVerification: WAVerificationModel,
+    role: string,
+    userDetails: UserDetails,
+    item: NavigationItem
+  ): boolean {
+    const roleSupported = AppUtils.checkRoleIsSupported(waVerification, role, userDetails);
+    if (roleSupported) {
+      this.loggerService.log(`HmctsGlobalHeaderComponent: matched navigation role ${role} for item ${item.text}`);
+    }
+    return roleSupported;
+  }
+
   private filterNavItemsOnRole(items: NavigationItem[]): Observable<NavigationItem[]> {
     items = items || [];
     const userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
-    return userDetails$.pipe(
-      skipWhile((details) => !('userInfo' in details)),
-      map((details) => details?.userInfo?.roles),
-      map((roles) => {
+    const waSupportedCategories$ = this.wasupportedRoleDetailsService.getWASupportedRoleCategories();
+    const waSupportedRoleTypes$ = this.wasupportedRoleDetailsService.getWASupportedRoleTypes();
+    const waSupportedJurisdictions$ = this.wasupportedJurisdictionsService.getWASupportedJurisdictions();
+    return combineLatest([userDetails$, waSupportedCategories$, waSupportedRoleTypes$, waSupportedJurisdictions$]).pipe(
+      skipWhile(([details]) => !details || !('userInfo' in details)),
+      map(([userDetails, waSupportedCategories, waSupportedRoleTypes, waSupportedJurisdictions]) => {
+        const waVerification: WAVerificationModel = {
+          waSupportedCategories,
+          waSupportedRoleTypes,
+          waSupportedJurisdictions,
+        };
         const i = items.filter((item) =>
-          item.roles && item.roles.length > 0 ? item.roles.some((role) => roles.includes(role)) : true
+          item.roles && item.roles.length > 0
+            ? item.roles.some((role) => this.isNavRoleSupported(waVerification, role, userDetails, item))
+            : true
         );
         return i.filter((item) =>
-          item.notRoles && item.notRoles.length > 0 ? item.notRoles.every((role) => !roles.includes(role)) : true
+          item.notRoles && item.notRoles.length > 0
+            ? item.notRoles.every((role) => !AppUtils.checkRoleIsSupported(waVerification, role, userDetails))
+            : true
         );
       })
     );

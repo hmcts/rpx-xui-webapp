@@ -135,6 +135,8 @@
   "jurisdictions": "JURISDICTIONS",
   "staffSupportedJurisdictions": "STAFF_SUPPORTED_JURISDICTIONS",
   "waSupportedJurisdictions": "WA_SUPPORTED_JURISDICTIONS",
+  "waSupportedRoleCategories": "WA_SUPPORTED_ROLE_CATEGORIES",
+  "waSupportedRoleTypes": "WA_SUPPORTED_ROLE_TYPES",
   "globalSearchServices": "GLOBAL_SEARCH_SERVICES",
   "serviceRefDataMapping": {
     "__name": "SERVICE_REF_DATA_MAPPING",

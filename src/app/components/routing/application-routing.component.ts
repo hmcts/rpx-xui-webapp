@@ -7,7 +7,11 @@ import { map } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { AppConstants } from '../../../app/app.constants';
 import { WALandingPageRoles } from '../../../work-allocation/models/common/service-config.model';
+import { WASupportedJurisdictionsService } from '../../../work-allocation/services';
+import { WASupportedRoleDetailsService } from '../../../work-allocation/services';
 import * as fromActions from '../../store';
+import { WAVerificationModel } from '../../models/wa-verification-model';
+import { LoggerService } from '../../services/logger/logger.service';
 
 @Component({
   standalone: false,
@@ -17,7 +21,10 @@ export class ApplicationRoutingComponent implements OnInit {
   constructor(
     private readonly router: Router,
     private readonly store: Store<fromActions.State>,
-    private readonly featureToggleService: FeatureToggleService
+    private readonly featureToggleService: FeatureToggleService,
+    private readonly wasupportedJurisdictionsService: WASupportedJurisdictionsService,
+    private readonly wasupportedRoleDetailsService: WASupportedRoleDetailsService,
+    private readonly loggerService: LoggerService
   ) {}
 
   public static defaultWAPage = '/work/my-work/list';
@@ -32,10 +39,19 @@ export class ApplicationRoutingComponent implements OnInit {
   public navigateBasedOnUserRole() {
     const userDetails$ = this.store.pipe(select(fromActions.getUserDetails));
     const waLandingPageRoles$ = this.featureToggleService.getValueOnce(AppConstants.FEATURE_NAMES.waLandingPageRoles, null);
-    const userAccess$ = combineLatest([userDetails$, waLandingPageRoles$]);
+    const waSupportedCategories$ = this.wasupportedRoleDetailsService.getWASupportedRoleCategories();
+    const waSupportedRoleTypes$ = this.wasupportedRoleDetailsService.getWASupportedRoleTypes();
+    const waSupportedJurisdictions$ = this.wasupportedJurisdictionsService.getWASupportedJurisdictions();
+    const userAccess$ = combineLatest([
+      userDetails$,
+      waLandingPageRoles$,
+      waSupportedCategories$,
+      waSupportedRoleTypes$,
+      waSupportedJurisdictions$,
+    ]);
     userAccess$
       .pipe(
-        map(([userDetails, landingRoles]) => {
+        map(([userDetails, landingRoles, waSupportedCategories, waSupportedRoleTypes, waSupportedJurisdictions]) => {
           if (this.router.url !== '/') {
             return;
           }
@@ -43,10 +59,17 @@ export class ApplicationRoutingComponent implements OnInit {
             return this.router.navigate([ApplicationRoutingComponent.bookingUrl]);
           }
           if (!userDetails?.userInfo?.roles?.includes('pui-case-manager')) {
-            const userRoles = userDetails.userInfo.roles;
             let rolePresent = false;
-            for (let i = 0, len = landingRoles?.roles?.length; i < len; i++) {
-              if (userRoles.includes(landingRoles?.roles[i])) {
+            const waVerification: WAVerificationModel = {
+              waSupportedCategories,
+              waSupportedRoleTypes,
+              waSupportedJurisdictions,
+            };
+
+            for (let i = 0, len = landingRoles?.roles?.length || 0; i < len; i++) {
+              const landingRole = landingRoles.roles[i];
+              if (AppUtils.checkRoleIsSupported(waVerification, landingRole, userDetails)) {
+                this.loggerService.log(`ApplicationRoutingComponent: matched landing role ${landingRole}`);
                 rolePresent = true;
                 break;
               }

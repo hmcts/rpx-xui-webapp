@@ -2,7 +2,13 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { SessionErrorPageComponent, SessionErrorRoute, SessionJsonErrorLogger, WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import {
+  SessionErrorPageComponent,
+  SessionErrorRoute,
+  SessionJsonErrorLogger,
+  WindowService,
+  FocusService,
+} from '@hmcts/ccd-case-ui-toolkit';
 import { MediaViewerModule } from '@hmcts/media-viewer';
 import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { RpxTranslationModule } from 'rpx-xui-translation';
@@ -55,6 +61,7 @@ import { McLaunchDarklyService } from './services/mc-launch-darkly-service';
       },
       deps: [LoggerService],
     },
+    FocusService,
   ],
 })
 export class SharedModule {}

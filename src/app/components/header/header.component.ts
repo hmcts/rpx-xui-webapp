@@ -5,6 +5,7 @@ import { AppTitleModel } from '../../models/app-title.model';
 import { UserNavModel } from '../../models/user-nav.model';
 import * as fromRoot from '../../store';
 import { NavItemsModel } from './../../models/nav-item.model';
+import { FocusService } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
   standalone: false,
@@ -25,7 +26,10 @@ export class HeaderComponent {
 
   public contentHash: string = '#content';
 
-  constructor(public store: Store<fromRoot.State>) {}
+  constructor(
+    public store: Store<fromRoot.State>,
+    public readonly focusService: FocusService
+  ) {}
 
   public onNavigate(event) {
     this.emitNavigate(event, this.navigate);

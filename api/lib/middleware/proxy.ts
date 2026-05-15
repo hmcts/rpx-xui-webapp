@@ -1,4 +1,6 @@
-import { createProxyMiddleware, responseInterceptor } from 'http-proxy-middleware';
+import { legacyCreateProxyMiddleware as proxy, LegacyOptions, responseInterceptor } from 'http-proxy-middleware';
+import { getConfigValue } from '../../configuration';
+import { LOGGING } from '../../configuration/references';
 import * as log4jui from '../log4jui';
 import authInterceptor from './auth';
 
@@ -22,100 +24,81 @@ export const onProxyError = (err, req, res) => {
   }
 };
 
-export interface ProxyConfig {
-  source: string | string[];
-  target: string;
-  rewrite?: boolean;
-  rewriteUrl?: string | ((path: string, req: any) => string);
-  filter?: string | string[];
-  middlewares?: any[];
-  onReq?: (proxyReq: any, req: any, res: any) => void;
-  onRes?: (responseBody: string | any, req: any, res: any) => any;
-  ws?: boolean;
-}
-
-function buildPathRewrite(config: ProxyConfig) {
-  const sources = Array.isArray(config.source) ? config.source : [config.source];
-  if (config.rewrite === false) {
-    return (path: string, req: any) => {
-      if (path.startsWith('/?')) {
-        path = path.replace('/', '');
-      }
-      const prefix = req.baseUrl || sources[0] || '';
-      return path === '/' || path === '' ? prefix : prefix + path;
-    };
-  }
-  if (typeof config.rewriteUrl === 'function') {
-    return config.rewriteUrl;
-  }
-  const buildMapping = (replacement: string) => {
-    const mapping: Record<string, string> = {};
-    sources.forEach((src) => {
-      mapping[`^${src}`] = replacement;
-    });
-    return mapping;
-  };
-  if (config.rewriteUrl !== undefined) {
-    console.log('buildMapping called with: ' + (config.rewriteUrl as string));
-    return buildMapping((config.rewriteUrl as string) || '');
-  }
-  if (config.rewrite === undefined || config.rewrite === true) {
-    console.log('buildMapping called with: ' + '');
-    return buildMapping('');
-  }
-  return undefined;
-}
-
-export const applyProxy = (app: any, config: ProxyConfig, modifyBody: boolean = true) => {
-  logger.info(config);
-  const pathRewrite = buildPathRewrite(config);
-
-  const hasCustomHandlers = !!config.onRes || !!config.onReq;
-
-  const isDocumentsSource = (Array.isArray(config.source) ? config.source : [config.source]).some(
-    (src) => src === '/documents' || src.startsWith('/documents')
-  );
-
-  const proxyMiddleware = createProxyMiddleware({
-    target: config.target,
+export const applyProxy = (app, config, modifyBody: boolean = true) => {
+  const options: LegacyOptions = {
     changeOrigin: true,
-    logger,
-    selfHandleResponse: hasCustomHandlers && !isDocumentsSource,
-    pathFilter: config.filter,
-    ws: config.ws ? true : false,
-    ...(pathRewrite && { pathRewrite }),
-    on: {
-      proxyReq: (proxyReq, req, res) => {
-        if (config.onReq) {
-          config.onReq(proxyReq, req, res);
-        }
-      },
-      proxyRes: (proxyRes, req, res) => {
-        if (isDocumentsSource) {
-          if (config.onRes) {
-            config.onRes(proxyRes, req, res);
-          }
-          return proxyRes;
-        }
-        if (!(config.onRes && modifyBody)) {
-          if (config.onRes) {
-            config.onRes('', req, res);
-          }
-          return proxyRes;
-        }
-        return responseInterceptor(async (responseBuffer) => {
-          const response = responseBuffer ? responseBuffer.toString('utf8') : '';
-          const result = config.onRes!(response, req, res);
-          if (typeof result === 'object' && result !== null && !Buffer.isBuffer(result)) {
-            return JSON.stringify(result);
-          }
-          return result;
-        })(proxyRes, req, res);
-      },
-      error: (err, req, res) => onProxyError(err, req, res),
+    logLevel: getConfigValue(LOGGING),
+    logProvider: () => {
+      return {
+        debug: (msg) => logger.debug(msg),
+        error: (msg) => logger.error(msg),
+        info: (msg) => logger.info(msg),
+        log: (msg) => logger.info(msg),
+        warn: (msg) => logger.warn(msg),
+      };
     },
-  });
+    onError: onProxyError,
+    target: config.target,
+  };
 
-  const middlewares = [authInterceptor, ...(config.middlewares || [])];
-  app.use(config.source, middlewares, proxyMiddleware);
+  if (config.onReq) {
+    options.onProxyReq = config.onReq;
+  }
+
+  if (config.onRes) {
+    if (modifyBody) {
+      options.selfHandleResponse = true;
+      options.onProxyRes = responseInterceptor(async (responseBuffer, proxyRes, req, res) => {
+        const rawBody = responseBuffer ? responseBuffer.toString('utf8') : '';
+        let body: unknown = rawBody;
+
+        if (rawBody) {
+          try {
+            body = JSON.parse(rawBody);
+          } catch {
+            body = rawBody;
+          }
+        }
+
+        const updatedBody = await config.onRes(body, req, res, proxyRes);
+        if (Buffer.isBuffer(updatedBody) || typeof updatedBody === 'string') {
+          return updatedBody;
+        }
+        if (updatedBody === undefined || updatedBody === null) {
+          return '';
+        }
+        return JSON.stringify(updatedBody);
+      });
+    } else {
+      options.onProxyRes = (proxyRes, req, res) => {
+        config.onRes(proxyRes, req, res);
+      };
+    }
+  }
+
+  if (config.ws) {
+    options.ws = config.ws;
+  }
+
+  if (config.rewrite !== false) {
+    if (typeof config.rewriteUrl === 'function') {
+      options.pathRewrite = config.rewriteUrl;
+    } else {
+      options.pathRewrite = {
+        [`^${config.source}`]: config.rewriteUrl || '',
+      };
+    }
+  }
+
+  let middlewares = config.skipAuth ? [] : [authInterceptor];
+
+  if (config.middlewares) {
+    middlewares = [...middlewares, ...config.middlewares];
+  }
+
+  if (config.filter) {
+    app.use(config.source, middlewares, proxy(config.filter, options));
+  } else {
+    app.use(config.source, middlewares, proxy(options));
+  }
 };

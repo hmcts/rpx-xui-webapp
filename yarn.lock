@@ -3393,12 +3393,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.49-4435-3":
-  version: 7.3.49-4435-3
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.49-4435-3"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.52-4435":
+  version: 7.3.52-4435
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.52-4435"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/8e3a76b2399e04f59db8ab0a2bbed499d0263e9f2cf369ad1754b891bbee1feee88edb9e01d88ab5242860c8b3433800e5d8b17932b2a4c7d5bfa68a513b4777
+  checksum: 10/4f238da01b3311b4444afe69a8b5fbc7d607d61e041216e54af287052057cb791a0d76a5eb60cc70d800419d6e80bebf625cdb35fcd28bf197cab6cac41d6db5
   languageName: node
   linkType: hard
 
@@ -3421,9 +3421,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.16-4435-2":
-  version: 4.2.16-4435-2
-  resolution: "@hmcts/media-viewer@npm:4.2.16-4435-2"
+"@hmcts/media-viewer@npm:4.2.18-4435":
+  version: 4.2.18-4435
+  resolution: "@hmcts/media-viewer@npm:4.2.18-4435"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3436,13 +3436,11 @@ __metadata:
     "@angular/common": ^20.0.0
     "@angular/core": ^20.0.0
     "@angular/forms": ^20.0.0
-    "@angular/material": ^17.3.8
     "@angular/platform-browser": ^20.0.0
     "@ngrx/effects": ^20
-    "@ngrx/router-store": ^20
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
-  checksum: 10/72367509556573ac192511f808c3572de9eda045d9f78cae442493353af5858e69a0d5d2478769f78e2001d32294ff6b2d7a348d6f9d974dda769becb2379a72
+  checksum: 10/dd0d292aad4241bb88118ecbe7df0e19c086604e226b4367fc5fd28ee96c47db95780a7ff58a337322600bb93399498113cd8ac8690d7b5aba21d9b8e0129db8
   languageName: node
   linkType: hard
 
@@ -21420,10 +21418,10 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.49-4435-3"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.52-4435"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.2.16-4435-2"
+    "@hmcts/media-viewer": "npm:4.2.18-4435"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.3.1"

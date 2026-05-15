@@ -45,7 +45,6 @@ describe('RemoveRoleComponent', () => {
   const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getAll']);
   const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
   const allworkUrl = 'work/all-work/cases';
-  window.history.pushState({ backUrl: allworkUrl }, '', allworkUrl);
 
   class AllocateRoleMockService extends AllocateRoleService {
     public confirmAllocation(allocateRoleStateData: AllocateRoleStateData): Observable<any> {

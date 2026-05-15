@@ -1,4 +1,3 @@
-import { NextFunction } from 'express';
 import { authenticator } from 'otplib';
 
 import { getConfigValue } from '../configuration';
@@ -30,6 +29,8 @@ import { mapUsersToCachedCaseworkers, prepareGetUsersUrl, prepareRoleApiRequest,
 
 // 10 minutes
 const TTL = 600;
+const WA_DEPENDENCY_UNAVAILABLE_CODE = 'WA_DEPENDENCY_UNAVAILABLE';
+const WA_DEPENDENCY_UNAVAILABLE_MESSAGE = 'Work Allocation dependency is temporarily unavailable';
 
 let timestamp: Date;
 let refreshRoles: boolean;
@@ -39,7 +40,33 @@ let initialAuthToken: string;
 let cachedUsers: StaffUserDetails[];
 let cachedUsersWithRoles: CachedCaseworker[];
 
-export async function fetchUserData(req: EnhancedRequest, next: NextFunction): Promise<StaffUserDetails[]> {
+export type WADependencyUnavailableError = Error & {
+  status: number;
+  diagnostics: {
+    code: string;
+    message: string;
+    upstream: string;
+  };
+};
+
+export function createWADependencyUnavailableError(upstream: string): WADependencyUnavailableError {
+  const error = new Error(WA_DEPENDENCY_UNAVAILABLE_MESSAGE) as WADependencyUnavailableError;
+  error.name = 'WADependencyUnavailableError';
+  error.status = 503;
+  error.diagnostics = {
+    code: WA_DEPENDENCY_UNAVAILABLE_CODE,
+    message: WA_DEPENDENCY_UNAVAILABLE_MESSAGE,
+    upstream,
+  };
+  return error;
+}
+
+export function isWADependencyUnavailableError(error: unknown): error is WADependencyUnavailableError {
+  const dependencyError = error as Partial<WADependencyUnavailableError>;
+  return dependencyError?.status === 503 && dependencyError?.diagnostics?.code === WA_DEPENDENCY_UNAVAILABLE_CODE;
+}
+
+export async function fetchUserData(req: EnhancedRequest): Promise<StaffUserDetails[]> {
   try {
     if (hasTTLExpired() || !cachedUsers || cachedUsers.length === 0) {
       // hasTTLExpired to determine whether roles require refreshing
@@ -55,11 +82,11 @@ export async function fetchUserData(req: EnhancedRequest, next: NextFunction): P
       refreshRoles = false;
     }
     return cachedUsers;
-  } catch (error) {
-    if (cachedUsers) {
+  } catch {
+    if (cachedUsers?.length > 0) {
       return cachedUsers;
     }
-    next(error);
+    throw createWADependencyUnavailableError('rd-caseworker-ref-api');
   }
 }
 
@@ -79,7 +106,7 @@ export async function fetchNewUserData(): Promise<StaffUserDetails[]> {
     cachedUsers = getUniqueUsersFromResponse(userResponse);
     return cachedUsers;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (error) {
+  } catch {
     if (cachedUsers) {
       return cachedUsers;
     }
@@ -91,8 +118,7 @@ export async function fetchNewUserData(): Promise<StaffUserDetails[]> {
 
 export async function fetchRoleAssignments(
   cachedUserData: StaffUserDetails[],
-  req: EnhancedRequest,
-  next: NextFunction
+  req: EnhancedRequest
 ): Promise<CachedCaseworker[]> {
   // note: this has been done to cache role categories
   // it is separate from the above as above caching will be done by backend
@@ -108,12 +134,13 @@ export async function fetchRoleAssignments(
       cachedUsersWithRoles = mapUsersToCachedCaseworkers(cachedUserData, roleAssignments);
       FullUserDetailCache.setUserDetails(cachedUsersWithRoles);
     }
-    return FullUserDetailCache.getAllUserDetails();
-  } catch (error) {
-    if (FullUserDetailCache.getAllUserDetails()) {
-      return FullUserDetailCache.getAllUserDetails();
+    return FullUserDetailCache.getAllUserDetails() || [];
+  } catch {
+    const cachedUserDetails = FullUserDetailCache.getAllUserDetails();
+    if (cachedUserDetails?.length > 0) {
+      return cachedUserDetails;
     }
-    next(error);
+    throw createWADependencyUnavailableError('am-role-assignment-service');
   }
 }
 

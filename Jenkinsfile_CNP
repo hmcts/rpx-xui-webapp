@@ -40,6 +40,11 @@ properties([
             defaultValue: '',
             description: 'Optional comma/space separated Playwright integration tags to exclude; overrides playwright_tests_new/integration/tag-filter.json. Examples: @integration-manage-tasks, @integration-case-list @integration-welsh-language, @none to clear repo defaults'
         ),
+        booleanParam(
+            name: 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES',
+            defaultValue: false,
+            description: 'Bypass Key Vault-backed Playwright global exclusions for a verification run that is fixing an excluded test.'
+        ),
         text(
             name: 'INTEGRATION_PW_PROFILE_RUNS',
             defaultValue: '''workers=4''',
@@ -310,7 +315,8 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
                 "FUNCTIONAL_TESTS_WORKERS=${runConfig.workers}",
                 "PLAYWRIGHT_SKIP_INSTALL=true",
                 "INTEGRATION_PW_INCLUDE_TAGS=${params.INTEGRATION_PW_INCLUDE_TAGS ?: ''}",
-                "INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=${params.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
+                "INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=${params.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
+                "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
             ]) {
                 yarnBuilder.yarn("test:playwright:integration:raw -- --workers=${runConfig.workers}${runConfig.shardArg}")
             }
@@ -367,6 +373,8 @@ def secrets = [
     secret('idam-caseworker-divorce-password', 'IDAM_CASEWORKER_DIVORCE_PASSWORD'),
     secret('e2e-divorce-solicitor-username', 'DIVORCE_SOLICITOR_USERNAME'),
     secret('e2e-divorce-solicitor-password', 'DIVORCE_SOLICITOR_PASSWORD'),
+    secret('e2e-wa-solicitor-username', 'WA_SOLICITOR_USERNAME'),
+    secret('e2e-wa-solicitor-password', 'WA_SOLICITOR_PASSWORD'),
     secret('e2e-booking-ui-ft-on-username', 'BOOKING_UI_FT_ON_USERNAME'),
     secret('e2e-booking-ui-ft-on-password', 'BOOKING_UI_FT_ON_PASSWORD'),
     secret('e2e-booking-ui-ft-on-1-username', 'BOOKING_UI_FT_ON_1_USERNAME'),
@@ -423,6 +431,7 @@ def secrets = [
     secret('xui-dynamic-test-solicitor-organisation-id', 'TEST_SOLICITOR_ORGANISATION_ID'),
     secret('xui-dynamic-manage-org-api-path', 'MANAGE_ORG_API_PATH'),
     secret('xui-dynamic-rd-professional-api-path', 'RD_PROFESSIONAL_API_PATH'),
+    secret('xui-playwright-global-excluded-tags', 'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS'),
   ],
 ]
 
@@ -565,6 +574,7 @@ withPipeline(type, product, component) {
                         withEnv([
                             "API_PW_INCLUDE_TAGS=${params.API_PW_INCLUDE_TAGS ?: ''}",
                                 "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
+                                "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}",
                                 "ORG_USER_ASSIGNMENT_MODE=external",
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                 "FUNCTIONAL_TESTS_WORKERS=4"
@@ -616,7 +626,8 @@ withPipeline(type, product, component) {
                                 "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
                                 "PLAYWRIGHT_SKIP_INSTALL=true",
                                 "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
-                                "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
+                                "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
+                                "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
                                 ]) {
                                     yarnBuilder.yarn('test:playwrightE2E:raw')
                                 }
@@ -670,6 +681,7 @@ withPipeline(type, product, component) {
                         withEnv([
                             "API_PW_INCLUDE_TAGS=${params.API_PW_INCLUDE_TAGS ?: ''}",
                             "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
+                            "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}",
                             "ORG_USER_ASSIGNMENT_MODE=external",
                             "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                             "FUNCTIONAL_TESTS_WORKERS=4"
@@ -721,7 +733,8 @@ withPipeline(type, product, component) {
                                 "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
                                 "PLAYWRIGHT_SKIP_INSTALL=true",
                                 "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
-                                "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}"
+                                "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
+                                "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
                                 ]) {
                                     yarnBuilder.yarn('test:playwrightE2E:raw')
                                 }

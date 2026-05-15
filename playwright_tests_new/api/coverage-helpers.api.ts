@@ -1,9 +1,10 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type APIRequestContext } from '@playwright/test';
 
 import { expectStatus, withRetry, __test__ as apiTestUtilsTest } from './utils/apiTestUtils';
 import { resolveRoleAccessCaseId } from './data/testIds';
 import { __test__ as fixturesTest } from './fixtures';
 import { buildTaskSearchRequest, seedTaskId } from './utils/work-allocation';
+import { fetchFirstTask } from './utils/workAllocationUtils';
 import { seedRoleAccessCaseId } from './utils/role-access';
 
 test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () => {
@@ -123,6 +124,42 @@ test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () =
     expect(noId).toBeUndefined();
   });
 
+  test('fetchFirstTask degrades to undefined on request timeout unless strict mode is requested', async () => {
+    const timeoutClient = {
+      post: async () => {
+        throw new Error('Timeout 30000ms exceeded');
+      },
+    };
+
+    await expect(fetchFirstTask(timeoutClient)).resolves.toBeUndefined();
+    await expect(fetchFirstTask(timeoutClient, undefined, ['assigned'], 'AllWork', { failOnRequestError: true })).rejects.toThrow(
+      'Timeout 30000ms exceeded'
+    );
+
+    const observedOptions: Array<{ timeoutMs?: number }> = [];
+    const successfulClient = {
+      post: async (_endpoint: string, options: { timeoutMs?: number }) => {
+        observedOptions.push(options);
+        return { status: 200, data: { tasks: [{ id: 'task-1' }] } };
+      },
+    };
+
+    await expect(fetchFirstTask(successfulClient, undefined, ['assigned'], 'AllWork', { timeoutMs: 7_500 })).resolves.toEqual({
+      id: 'task-1',
+    });
+    expect(observedOptions[0]?.timeoutMs).toBe(7_500);
+
+    let retryCalls = 0;
+    const retryClient = {
+      post: async () => {
+        retryCalls += 1;
+        return { status: 502, data: { tasks: [] } };
+      },
+    };
+    await expect(fetchFirstTask(retryClient, undefined, ['assigned'], 'AllWork', { retries: 0 })).resolves.toBeUndefined();
+    expect(retryCalls).toBe(1);
+  });
+
   test('seedRoleAccessCaseId covers success and failure paths', async () => {
     const headers = { 'X-XSRF-TOKEN': 'token' };
     const withXsrfFn = async <T>(_role: string, fn: (h: Record<string, string>) => Promise<T>) => fn(headers);
@@ -180,7 +217,7 @@ test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () =
     expect(anonymous['X-XSRF-TOKEN']).toBeUndefined();
 
     let calls = 0;
-    const fakeContext: any = {};
+    const fakeContext = {} as APIRequestContext;
     const requestFactory = async () => {
       calls += 1;
       if (calls === 1) {

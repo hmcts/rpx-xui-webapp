@@ -21,9 +21,7 @@ describe('ApplicationRoutingComponent', () => {
     }).compileComponents();
     router = jasmine.createSpyObj('router', ['navigate']);
     waFeatureService = jasmine.createSpyObj('service', ['getActiveWAFeature']);
-    wasupportedJurisdictionsService = jasmine.createSpyObj('wasupportedJurisdictionsService', [
-      'getWASupportedJurisdictions',
-    ]);
+    wasupportedJurisdictionsService = jasmine.createSpyObj('wasupportedJurisdictionsService', ['getWASupportedJurisdictions']);
     wasupportedRoleDetailsService = jasmine.createSpyObj('wasupportedRoleDetailsService', [
       'getWASupportedRoleCategories',
       'getWASupportedRoleTypes',

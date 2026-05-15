@@ -1,9 +1,6 @@
 import { NextFunction, Response, Router } from 'express';
 import { getConfigValue } from '../configuration';
-import {
-  WA_SUPPORTED_ROLE_CATEGORIES,
-  WA_SUPPORTED_ROLE_TYPES,
-} from '../configuration/references';
+import { WA_SUPPORTED_ROLE_CATEGORIES, WA_SUPPORTED_ROLE_TYPES } from '../configuration/references';
 import { EnhancedRequest } from '../lib/models';
 
 // Only used within node layer

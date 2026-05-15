@@ -30,7 +30,6 @@ export class ApplicationRoutingComponent implements OnInit {
   public static defaultWAPage = '/work/my-work/list';
   public static defaultPage = '/cases';
   public static bookingUrl: string = '../booking';
-  public static testOnlyLandingRole = 'hmcts-legal-operations';
   public waLandingPageRoles$: Observable<WALandingPageRoles>;
   public ngOnInit(): void {
     // EUI-6768 - release 1 blocks on this removed to progress onto release 2/3
@@ -67,12 +66,8 @@ export class ApplicationRoutingComponent implements OnInit {
               waSupportedJurisdictions,
             };
 
-            const landingRolesForRouting = Array.from(
-              new Set([ApplicationRoutingComponent.testOnlyLandingRole, ...(landingRoles?.roles || [])])
-            );
-
-            for (let i = 0, len = landingRolesForRouting.length; i < len; i++) {
-              const landingRole = landingRolesForRouting[i];
+            for (let i = 0, len = landingRoles?.roles?.length || 0; i < len; i++) {
+              const landingRole = landingRoles.roles[i];
               if (AppUtils.checkRoleIsSupported(waVerification, landingRole, userDetails)) {
                 this.loggerService.log(`ApplicationRoutingComponent: matched landing role ${landingRole}`);
                 rolePresent = true;

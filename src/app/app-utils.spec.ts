@@ -181,10 +181,10 @@ describe('getFeatureToggledUrl', () => {
 
 describe('getAMRoleBuckets', () => {
   it('should separate matching role assignment names into AM roles', () => {
-    const result = AppUtils.getAMRoleBuckets(['caseworker-civil', 'task-supervisor', 'caseworker'], [
-      { roleName: 'task-supervisor' } as any,
-      { roleName: 'caseworker-civil' } as any,
-    ]);
+    const result = AppUtils.getAMRoleBuckets(
+      ['caseworker-civil', 'task-supervisor', 'caseworker'],
+      [{ roleName: 'task-supervisor' } as any, { roleName: 'caseworker-civil' } as any]
+    );
 
     expect(result).toEqual({
       amRoles: ['caseworker-civil', 'task-supervisor'],
@@ -193,9 +193,7 @@ describe('getAMRoleBuckets', () => {
   });
 
   it('should put unmatched user roles into non-AM roles', () => {
-    const result = AppUtils.getAMRoleBuckets(['caseworker-civil', 'caseworker-ia'], [
-      { roleName: 'task-supervisor' } as any,
-    ]);
+    const result = AppUtils.getAMRoleBuckets(['caseworker-civil', 'caseworker-ia'], [{ roleName: 'task-supervisor' } as any]);
 
     expect(result).toEqual({
       amRoles: [],
@@ -204,11 +202,10 @@ describe('getAMRoleBuckets', () => {
   });
 
   it('should ignore role assignments without a role name', () => {
-    const result = AppUtils.getAMRoleBuckets(['caseworker-civil', 'caseworker-ia'], [
-      { roleName: '' } as any,
-      {} as any,
-      { roleName: 'caseworker-ia' } as any,
-    ]);
+    const result = AppUtils.getAMRoleBuckets(
+      ['caseworker-civil', 'caseworker-ia'],
+      [{ roleName: '' } as any, {} as any, { roleName: 'caseworker-ia' } as any]
+    );
 
     expect(result).toEqual({
       amRoles: ['caseworker-ia'],
@@ -350,9 +347,7 @@ describe('checkRoleIsSupported', () => {
       ],
     } as UserDetails;
 
-    expect(AppUtils.checkRoleIsSupported(supportedWaVerification, 'case-manager', userDetailsWithUnsupportedAMRole)).toBe(
-      false
-    );
+    expect(AppUtils.checkRoleIsSupported(supportedWaVerification, 'case-manager', userDetailsWithUnsupportedAMRole)).toBe(false);
   });
 
   it('should return false when the AM role category is not supported', () => {
@@ -375,9 +370,7 @@ describe('checkRoleIsSupported', () => {
       ],
     } as UserDetails;
 
-    expect(AppUtils.checkRoleIsSupported(supportedWaVerification, 'case-manager', userDetailsWithUnsupportedAMRole)).toBe(
-      false
-    );
+    expect(AppUtils.checkRoleIsSupported(supportedWaVerification, 'case-manager', userDetailsWithUnsupportedAMRole)).toBe(false);
   });
 
   it('should return false when the AM role type is not supported', () => {
@@ -400,9 +393,7 @@ describe('checkRoleIsSupported', () => {
       ],
     } as UserDetails;
 
-    expect(AppUtils.checkRoleIsSupported(supportedWaVerification, 'case-manager', userDetailsWithUnsupportedAMRole)).toBe(
-      false
-    );
+    expect(AppUtils.checkRoleIsSupported(supportedWaVerification, 'case-manager', userDetailsWithUnsupportedAMRole)).toBe(false);
   });
 
   it('should return true when a jurisdiction-less AM role has a supported jurisdiction from matching role assignments', () => {
@@ -430,9 +421,9 @@ describe('checkRoleIsSupported', () => {
       ],
     } as UserDetails;
 
-    expect(
-      AppUtils.checkRoleIsSupported(supportedWaVerification, 'case-manager', userDetailsWithJurisdictionlessAMRole)
-    ).toBe(true);
+    expect(AppUtils.checkRoleIsSupported(supportedWaVerification, 'case-manager', userDetailsWithJurisdictionlessAMRole)).toBe(
+      true
+    );
   });
 
   it('should return false when a jurisdiction-less AM role has no supported jurisdictions from matching role assignments', () => {
@@ -460,9 +451,9 @@ describe('checkRoleIsSupported', () => {
       ],
     } as UserDetails;
 
-    expect(
-      AppUtils.checkRoleIsSupported(supportedWaVerification, 'case-manager', userDetailsWithJurisdictionlessAMRole)
-    ).toBe(false);
+    expect(AppUtils.checkRoleIsSupported(supportedWaVerification, 'case-manager', userDetailsWithJurisdictionlessAMRole)).toBe(
+      false
+    );
   });
 
   it('should not build AM role buckets when the landing role is not in the user roles', () => {

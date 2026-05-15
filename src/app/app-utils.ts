@@ -170,9 +170,7 @@ export class AppUtils {
     roleAssignmentInfo: RoleAssignmentInfo[] = []
   ): { amRoles: string[]; nonAMRoles: string[] } {
     const roleAssignmentRoleNames = new Set(
-      roleAssignmentInfo
-        .map((roleAssignment) => roleAssignment.roleName)
-        .filter((roleName): roleName is string => !!roleName)
+      roleAssignmentInfo.map((roleAssignment) => roleAssignment.roleName).filter((roleName): roleName is string => !!roleName)
     );
 
     return userRoles.reduce<{ amRoles: string[]; nonAMRoles: string[] }>(

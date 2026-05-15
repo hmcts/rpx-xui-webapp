@@ -81,9 +81,7 @@ describe('WA Supported Role Details', () => {
 
   describe('router', () => {
     it('should register role detail routes', () => {
-      const routes = waSupportedRoleDetails.router.stack
-        .filter((layer) => layer.route)
-        .map((layer) => layer.route.path);
+      const routes = waSupportedRoleDetails.router.stack.filter((layer) => layer.route).map((layer) => layer.route.path);
 
       expect(routes).to.deep.equal(['/getRoleCategories', '/getRoleTypes']);
       expect(waSupportedRoleDetails.default).to.equal(waSupportedRoleDetails.router);

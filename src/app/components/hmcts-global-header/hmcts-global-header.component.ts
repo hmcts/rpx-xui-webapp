@@ -152,12 +152,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     const waSupportedCategories$ = this.wasupportedRoleDetailsService.getWASupportedRoleCategories();
     const waSupportedRoleTypes$ = this.wasupportedRoleDetailsService.getWASupportedRoleTypes();
     const waSupportedJurisdictions$ = this.wasupportedJurisdictionsService.getWASupportedJurisdictions();
-    return combineLatest([
-      userDetails$,
-      waSupportedCategories$,
-      waSupportedRoleTypes$,
-      waSupportedJurisdictions$,
-    ]).pipe(
+    return combineLatest([userDetails$, waSupportedCategories$, waSupportedRoleTypes$, waSupportedJurisdictions$]).pipe(
       skipWhile(([details]) => !details || !('userInfo' in details)),
       map(([userDetails, waSupportedCategories, waSupportedRoleTypes, waSupportedJurisdictions]) => {
         const waVerification: WAVerificationModel = {

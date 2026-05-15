@@ -69,9 +69,7 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
 
   beforeEach(waitForAsync(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-    wasupportedJurisdictionsService = jasmine.createSpyObj('wasupportedJurisdictionsService', [
-      'getWASupportedJurisdictions',
-    ]);
+    wasupportedJurisdictionsService = jasmine.createSpyObj('wasupportedJurisdictionsService', ['getWASupportedJurisdictions']);
     wasupportedRoleDetailsService = jasmine.createSpyObj('wasupportedRoleDetailsService', [
       'getWASupportedRoleCategories',
       'getWASupportedRoleTypes',
@@ -601,9 +599,7 @@ describe('HmctsGlobalHeaderComponent - logged out', () => {
 
   beforeEach(waitForAsync(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
-    wasupportedJurisdictionsService = jasmine.createSpyObj('wasupportedJurisdictionsService', [
-      'getWASupportedJurisdictions',
-    ]);
+    wasupportedJurisdictionsService = jasmine.createSpyObj('wasupportedJurisdictionsService', ['getWASupportedJurisdictions']);
     wasupportedRoleDetailsService = jasmine.createSpyObj('wasupportedRoleDetailsService', [
       'getWASupportedRoleCategories',
       'getWASupportedRoleTypes',

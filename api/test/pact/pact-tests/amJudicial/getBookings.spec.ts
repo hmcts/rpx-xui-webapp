@@ -10,7 +10,7 @@ const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 const pactSetUp = new PactV3TestSetup({ provider: 'am_judicialBooking', port: 8000 });
 
-const MockApp = require('../../../../../test_codecept/nodeMock/app');
+const MockApp = require('../../pact-mocks/app');
 
 const REQUEST_BODY = {
   queryRequest: { userIds: ['018a0310-f122-4377-9504-f635301f39ed-test2'] },

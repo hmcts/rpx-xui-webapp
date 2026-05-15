@@ -117,17 +117,7 @@ Why these env vars are required:
 
 The following code changes were made to support fully mocked local auth + integration flow:
 
-1. `test_codecept/backendMock/services/idam/index.js`
-   - OIDC discovery metadata now points to local mock endpoints on `http://localhost:8080`.
-
-2. `test_codecept/backendMock/services/idam/routes.js`
-   - Added `/login` route to redirect to local `/o/authorize`.
-   - Added `/details` endpoint with role-bearing mock user profile.
-   - Added shared token responder for both `/o/token` and `/oauth2/token`.
-   - Corrected token response shape (`token_type: Bearer`, numeric `expires_in`, JWT `exp` in seconds).
-   - Updated OAuth callback `iss` to local `http://localhost:8080/o`.
-
-3. `test_codecept/backendMock/services/userApiData.js`
+Refer to `api/test/pact/pact-mocks/` for Pact-only mock service implementations.
    - Added safe token normalization and null guards to avoid crashes when auth headers are absent/malformed.
 
 4. `api/user/index.ts`

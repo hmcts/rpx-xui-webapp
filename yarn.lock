@@ -3376,12 +3376,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.52":
-  version: 7.3.52
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.52"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.52-exui-4298":
+  version: 7.3.52-exui-4298
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.52-exui-4298"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/bed69595e8635329364764641cfc441c1dfc884f1f431ebd4790f6d64c2963426093e3db0f6fa12bf8d2a69c7534cf7625d38bbfc07f358279e1011dae93801b
+  checksum: 10/04df37335e6e750d97d4aa07f6a639eebb67b2894646db714d6ca8f8d2c101099c06af1b34378739fccd9de0647f2a97723ac84d2f85d789b2d58ecf1db1ad4a
   languageName: node
   linkType: hard
 
@@ -3504,16 +3504,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-node-lib@npm:2.30.13":
-  version: 2.30.13
-  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.13"
+"@hmcts/rpx-xui-node-lib@npm:2.30.13-exui-4298-1":
+  version: 2.30.13-exui-4298-1
+  resolution: "@hmcts/rpx-xui-node-lib@npm:2.30.13-exui-4298-1"
   dependencies:
     "@dr.pogodin/csurf": "npm:^1.14.0"
     axios: "npm:^1.11.0"
     connect-redis: "npm:^4.0.4"
     debug: "npm:^4.3.7"
     deepmerge: "npm:^4.2.2"
-    express: "npm:^4.20.0"
+    express: "npm:^5.2.1"
     express-session: "npm:^1.17.0"
     joi: "npm:^18.1.2"
     jwt-decode: "npm:^3.1.2"
@@ -3525,7 +3525,7 @@ __metadata:
     session-file-store: "npm:^1.5.0"
   peerDependencies:
     helmet: ^7.0.0
-  checksum: 10/f02cf00f0a80ea2abcb69c725280dbac0de66a8f08bb1021cbf69fa24be81d2508c63c0979a90214944862541335735b6ae4f8c9574a508e4a9c3067721e3dca
+  checksum: 10/2bdd949f435137bf510df4c87acffdab36ecc8ffb01b39f29483a6a14eb3e9f7ad5802d9759a0ca36f56c47153a0e9f95890a2f39a565630419aff243a130d6b
   languageName: node
   linkType: hard
 
@@ -13868,7 +13868,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express@npm:^4.20.0, express@npm:^4.21.1, express@npm:^4.21.2":
+"express@npm:^4.21.1, express@npm:^4.21.2":
   version: 4.21.2
   resolution: "express@npm:4.21.2"
   dependencies:
@@ -21411,7 +21411,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.52"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.52-exui-4298"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.18"
@@ -21419,7 +21419,7 @@ __metadata:
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.3.1"
     "@hmcts/rpx-xui-common-lib": "npm:3.2.9"
-    "@hmcts/rpx-xui-node-lib": "npm:2.30.13"
+    "@hmcts/rpx-xui-node-lib": "npm:2.30.13-exui-4298-1"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"
     "@ng-idle/keepalive": "npm:^16.0.0"

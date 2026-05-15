@@ -3440,29 +3440,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.18":
-  version: 4.2.18
-  resolution: "@hmcts/media-viewer@npm:4.2.18"
-  dependencies:
-    "@swimlane/ngx-datatable": "npm:^20.0.0"
-    mutable-div: "npm:^2.0.0"
-    pdfjs-dist: "npm:^4.10.38"
-    socket.io-client: "npm:^4.8.0"
-    tslib: "npm:^2.3.0"
-    uuid: "npm:^11.0.3"
-  peerDependencies:
-    "@angular/animations": ^20.0.0
-    "@angular/common": ^20.0.0
-    "@angular/core": ^20.0.0
-    "@angular/forms": ^20.0.0
-    "@angular/platform-browser": ^20.0.0
-    "@ngrx/effects": ^20
-    "@ngrx/store": ^20
-    "@ngrx/store-devtools": ^20
-  checksum: 10/896cd16083e541adcd78868b9b872a75ed9c6810a15d3a1176187050b3c2ce6994f5d5cbeb2d691d1cfffed018bca9f8e433ebec32923a402aa6fa0745ee2dc5
-  languageName: node
-  linkType: hard
-
 "@hmcts/media-viewer@npm:4.2.16-exui-4425-rc1":
   version: 4.2.16-exui-4425-rc1
   resolution: "@hmcts/media-viewer@npm:4.2.16-exui-4425-rc1"
@@ -3490,6 +3467,29 @@ __metadata:
     rpx-xui-translation: 1.1.2-CME-780-9
     rxjs: ^7.8.1
   checksum: 10/2490a95a5d671dc288b8c66c982ea190ecca740fcee51842733f5ac580eaa0378d363bed1704613b109b859f0e309848254ba4f2fa18111b1b42ad20628bc880
+  languageName: node
+  linkType: hard
+
+"@hmcts/media-viewer@npm:4.2.18":
+  version: 4.2.18
+  resolution: "@hmcts/media-viewer@npm:4.2.18"
+  dependencies:
+    "@swimlane/ngx-datatable": "npm:^20.0.0"
+    mutable-div: "npm:^2.0.0"
+    pdfjs-dist: "npm:^4.10.38"
+    socket.io-client: "npm:^4.8.0"
+    tslib: "npm:^2.3.0"
+    uuid: "npm:^11.0.3"
+  peerDependencies:
+    "@angular/animations": ^20.0.0
+    "@angular/common": ^20.0.0
+    "@angular/core": ^20.0.0
+    "@angular/forms": ^20.0.0
+    "@angular/platform-browser": ^20.0.0
+    "@ngrx/effects": ^20
+    "@ngrx/store": ^20
+    "@ngrx/store-devtools": ^20
+  checksum: 10/896cd16083e541adcd78868b9b872a75ed9c6810a15d3a1176187050b3c2ce6994f5d5cbeb2d691d1cfffed018bca9f8e433ebec32923a402aa6fa0745ee2dc5
   languageName: node
   linkType: hard
 

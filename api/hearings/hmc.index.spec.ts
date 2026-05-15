@@ -26,7 +26,6 @@ xdescribe('HMC Hearings API', () => {
   let handlePutStub: sinon.SinonStub;
   let handleDeleteStub: sinon.SinonStub;
   let sendPutStub: sinon.SinonStub;
-  let sendPostStub: sinon.SinonStub;
   let trackTraceStub: sinon.SinonStub;
   let getConfigValueStub: sinon.SinonStub;
 
@@ -53,7 +52,6 @@ xdescribe('HMC Hearings API', () => {
 
     handleGetStub = sandbox.stub(crudService, 'handleGet');
     handlePostStub = sandbox.stub(crudService, 'handlePost');
-    sendPostStub = sandbox.stub(crudService, 'sendPost');
     handlePutStub = sandbox.stub(crudService, 'handlePut');
     handleDeleteStub = sandbox.stub(crudService, 'handleDelete');
     sendPutStub = sandbox.stub(crudService, 'sendPut');
@@ -77,7 +75,7 @@ xdescribe('HMC Hearings API', () => {
 
       await hmcIndex.getHearings(req, res, next);
 
-      expect(handleGetStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearings/1584618195804035`, req);
+      expect(handleGetStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearings/1584618195804035`, req, next);
 
       // Verify that the status mapping was applied
       const sentData = (res.send as sinon.SinonStub).firstCall.args[0];
@@ -142,7 +140,7 @@ xdescribe('HMC Hearings API', () => {
 
       await hmcIndex.getHearing(req, res, next);
 
-      expect(handleGetStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearing/h100001`, req);
+      expect(handleGetStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearing/h100001`, req, next);
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
     });
@@ -175,12 +173,12 @@ xdescribe('HMC Hearings API', () => {
         data: { hearingRequestId: 'h100001', status: 'HEARING_REQUESTED' },
       };
 
-      sendPostStub.resolves(mockResponse);
+      handlePostStub.resolves(mockResponse);
 
       await hmcIndex.submitHearingRequest(req, res, next);
 
       expect(trackTraceStub).to.have.been.calledWith('submitting hearing request');
-      expect(sendPostStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearing`, req.body, req);
+      expect(handlePostStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearing`, req.body, req);
       expect(res.status).to.have.been.calledWith(201);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
     });
@@ -194,7 +192,7 @@ xdescribe('HMC Hearings API', () => {
       };
       const error = { status: 400, statusText: 'Bad Request', message: 'Invalid request', data: { error: 'validation failed' } };
 
-      sendPostStub.rejects(error);
+      handlePostStub.rejects(error);
 
       await hmcIndex.submitHearingRequest(req, res, next);
 
@@ -219,7 +217,7 @@ xdescribe('HMC Hearings API', () => {
         data: { error: 'server failure' },
       };
 
-      sendPostStub.rejects(error);
+      handlePostStub.rejects(error);
 
       await hmcIndex.submitHearingRequest(req, res, next);
 
@@ -245,7 +243,7 @@ xdescribe('HMC Hearings API', () => {
 
       await hmcIndex.cancelHearingRequest(req, res, next);
 
-      expect(handleDeleteStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearing/h100001`, req.body, req);
+      expect(handleDeleteStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearing/h100001`, req.body, req, next);
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
     });
@@ -285,11 +283,11 @@ xdescribe('HMC Hearings API', () => {
         data: { message: 'Hearing updated' },
       };
 
-      sendPutStub.resolves(mockResponse);
+      handlePutStub.resolves(mockResponse);
 
       await hmcIndex.updateHearingRequest(req, res, next);
 
-      expect(sendPutStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearing/h100001`, req.body, req);
+      expect(handlePutStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearing/h100001`, req.body, req, next);
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
     });
@@ -309,7 +307,7 @@ xdescribe('HMC Hearings API', () => {
         data: { error: 'invalid update' },
       };
 
-      sendPutStub.rejects(error);
+      handlePutStub.rejects(error);
 
       await hmcIndex.updateHearingRequest(req, res, next);
 
@@ -332,7 +330,7 @@ xdescribe('HMC Hearings API', () => {
 
       await hmcIndex.getHearingActuals(req, res, next);
 
-      expect(handleGetStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearingActuals/h100001`, req);
+      expect(handleGetStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearingActuals/h100001`, req, next);
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
     });
@@ -386,11 +384,11 @@ xdescribe('HMC Hearings API', () => {
 
       const mockResponse = { status: 204 };
 
-      sendPostStub.resolves(mockResponse);
+      handlePostStub.resolves(mockResponse);
 
       await hmcIndex.submitHearingActuals(req, res, next);
 
-      expect(sendPostStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearingActualsCompletion/h100001`, null, req);
+      expect(handlePostStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearingActualsCompletion/h100001`, null, req);
       expect(res.status).to.have.been.calledWith(204);
       expect(res.send).to.have.been.calledWith(null);
     });
@@ -399,7 +397,7 @@ xdescribe('HMC Hearings API', () => {
       req.params = { hearingId: 'h100001' };
       const error = new Error('Submission failed');
 
-      sendPostStub.rejects(error);
+      handlePostStub.rejects(error);
 
       await hmcIndex.submitHearingActuals(req, res, next);
 
@@ -446,11 +444,11 @@ xdescribe('HMC Hearings API', () => {
         data: { hearingGroupRequestId: 'g1000001' },
       };
 
-      sendPostStub.resolves(mockResponse);
+      handlePostStub.resolves(mockResponse);
 
       await hmcIndex.postLinkedHearingGroup(req, res, next);
 
-      expect(sendPostStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/linkedHearingGroup`, req.body, req);
+      expect(handlePostStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/linkedHearingGroup`, req.body, req);
       expect(res.status).to.have.been.calledWith(201);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
     });
@@ -459,7 +457,7 @@ xdescribe('HMC Hearings API', () => {
       req.body = { ...LINKED_HEARING_GROUP };
       const error = new Error('Creation failed');
 
-      sendPostStub.rejects(error);
+      handlePostStub.rejects(error);
 
       await hmcIndex.postLinkedHearingGroup(req, res, next);
 
@@ -477,11 +475,16 @@ xdescribe('HMC Hearings API', () => {
         data: { hearingGroupRequestId: 'g1000000' },
       };
 
-      sendPutStub.resolves(mockResponse);
+      handlePutStub.resolves(mockResponse);
 
       await hmcIndex.putLinkedHearingGroup(req, res, next);
 
-      expect(sendPutStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/linkedHearingGroup?id=g1000000`, req.body, req);
+      expect(handlePutStub).to.have.been.calledWith(
+        `${hmcIndex.hmcHearingsUrl}/linkedHearingGroup?id=g1000000`,
+        req.body,
+        req,
+        next
+      );
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
     });
@@ -490,7 +493,7 @@ xdescribe('HMC Hearings API', () => {
       req.query = { groupId: 'g1000000' };
       const error = new Error('Update failed');
 
-      sendPutStub.rejects(error);
+      handlePutStub.rejects(error);
 
       await hmcIndex.putLinkedHearingGroup(req, res, next);
 
@@ -512,7 +515,12 @@ xdescribe('HMC Hearings API', () => {
 
       await hmcIndex.deleteLinkedHearingGroup(req, res, next);
 
-      expect(handleDeleteStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/linkedHearingGroup/g1000000`, req.body, req);
+      expect(handleDeleteStub).to.have.been.calledWith(
+        `${hmcIndex.hmcHearingsUrl}/linkedHearingGroup/g1000000`,
+        req.body,
+        req,
+        next
+      );
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockResponse.data);
     });
@@ -670,7 +678,7 @@ xdescribe('HMC Hearings API', () => {
 
       await hmcIndex.getHearings(req, res, next);
 
-      expect(handleGetStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearings/undefined`, req);
+      expect(handleGetStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearings/undefined`, req, next);
     });
 
     it('should handle null response data gracefully', async () => {
@@ -699,11 +707,11 @@ xdescribe('HMC Hearings API', () => {
         data: { hearingRequestId: 'h100001' },
       };
 
-      sendPostStub.resolves(mockResponse);
+      handlePostStub.resolves(mockResponse);
 
       await hmcIndex.submitHearingRequest(req, res, next);
 
-      expect(sendPostStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearing`, {}, req);
+      expect(handlePostStub).to.have.been.calledWith(`${hmcIndex.hmcHearingsUrl}/hearing`, {}, req);
     });
   });
 });

@@ -113,7 +113,7 @@ export class CaseHearingsListComponent implements OnInit {
       new fromHearingStore.LoadServiceLinkedCases({
         jurisdictionId: this.jurisdictionId,
         caseReference: this.caseId,
-        hearingId: hearing.hearingID.toString(),
+        hearingId: hearing.hearingID,
       })
     );
     this.hearingStore.dispatch(

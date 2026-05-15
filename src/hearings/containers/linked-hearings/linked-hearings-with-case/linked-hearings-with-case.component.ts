@@ -27,7 +27,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   public hearingGroupRequestId: string;
   public hearingId: string;
   public caseName: string;
-  public linkedHearingSelectionError: string | null;
+  public linkedHearingSelectionError: string;
   public errors: { id: string; message: string }[] = [];
   public linkedCases: ServiceLinkedCasesWithHearingsModel[] = [];
   public linkedCasesWithNoAccessToLoggedInUser: ServiceLinkedCasesModel[];
@@ -93,7 +93,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   }
 
   public get getCasesFormValue(): FormArray {
-    return this.linkHearingForm ? (this.linkHearingForm.get('linkedCasesWithHearings') as FormArray) : this.fb.array([]);
+    return this.linkHearingForm.get('linkedCasesWithHearings') as FormArray;
   }
 
   public isHearingsSelected(linkedCases: ServiceLinkedCasesWithHearingsModel[]) {
@@ -117,7 +117,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
         )
       );
     }
-    return this.fb.array([]);
+    return null;
   }
 
   public getHearingsFormArray(hearings: HearingDetailModel[]): FormArray {
@@ -143,11 +143,11 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     );
   }
 
-  public shouldSelected(hearingInfo: HearingDetailModel): boolean {
-    if (this.isManageLink) {
-      return this.linkedHearingGroup?.hearingsInGroup?.some((groupHearing) => groupHearing.hearingId === hearingInfo.hearingID);
-    }
-    return hearingInfo.isSelected;
+  public shouldSelected(hearingInfo): boolean {
+    return this.isManageLink
+      ? !!this.linkedHearingGroup.hearingsInGroup &&
+          this.linkedHearingGroup.hearingsInGroup.some((x) => x.hearingId === hearingInfo.hearingID)
+      : hearingInfo.isSelected;
   }
 
   public initForm(): void {
@@ -172,17 +172,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
   }
 
   public getHearingsFormValue(casePos: number, hearingPos?: number): FormArray {
-    const casesFormArray = this.getCasesFormValue;
-    // Defensive check to ensure caseGrooup below exists
-    if (!casesFormArray?.controls?.length || casePos < 0 || casePos >= casesFormArray.controls.length) {
-      return this.fb.array([]);
-    }
-    const caseGroup = casesFormArray.controls[casePos] as FormGroup;
-    const formArray = caseGroup.get('caseHearings') as FormArray;
-    // Second defensive check to confirm formArray exists
-    if (!formArray) {
-      return this.fb.array([]);
-    }
+    const formArray: FormArray = this.getCasesFormValue.controls[casePos].get('caseHearings') as FormArray;
     if (String(hearingPos && formArray.controls[hearingPos].get('hearingID').value) === this.hearingId) {
       this.updateLinkedCase(casePos, hearingPos);
     }
@@ -222,8 +212,7 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     return isHearingsSelected;
   }
 
-  public onSubmit(): void {
-    this.resetErrors();
+  public onSubmit() {
     if (this.isManageLink) {
       if (this.isGetHearingsSelected()) {
         this.saveLinkedHearingInfo();
@@ -231,6 +220,8 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
         this.onUnlinkHearings();
       }
     } else {
+      this.errors = [];
+      this.linkedHearingSelectionError = null;
       if (this.linkHearingForm.valid) {
         this.saveLinkedHearingInfo();
       } else {
@@ -244,14 +235,6 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     this.linkedCases[casePos].caseHearings.forEach((hearingInfo, pos) => {
       this.getHearingsFormValue(casePos).controls[pos].get('isSelected').setValue(false);
     });
-  }
-
-  public showClear(casePos: number): boolean {
-    if (this.isManageLink) {
-      return true;
-    }
-    const hearings = this.getHearingsFormValue(casePos);
-    return hearings?.controls?.some((control) => !!control.get('isSelected')?.value);
   }
 
   public isSelectable(hearing: HearingDetailModel): boolean {
@@ -310,10 +293,5 @@ export class LinkedHearingsWithCaseComponent implements OnInit, OnDestroy {
     if (this.sub) {
       this.sub.unsubscribe();
     }
-  }
-
-  private resetErrors(): void {
-    this.errors = [];
-    this.linkedHearingSelectionError = null;
   }
 }

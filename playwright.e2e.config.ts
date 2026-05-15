@@ -2,7 +2,13 @@ import { defineConfig, devices } from '@playwright/test';
 import { execSync } from 'node:child_process';
 import { cpus, totalmem } from 'node:os';
 import { version as appVersion } from './package.json';
-import { parseNonNegativeInt, resolveDefaultReporter, resolveTagFilters, resolveWorkerCount } from './playwright-config-utils';
+import {
+  logResolvedTagFilters,
+  parseNonNegativeInt,
+  resolveDefaultReporter,
+  resolveTagFilters,
+  resolveWorkerCount,
+} from './playwright-config-utils';
 
 export default (() => {
   const temporaryProbePattern = '**/_tmp_*.spec.ts';
@@ -15,7 +21,11 @@ export default (() => {
     configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
     defaultConfigPath: 'playwright_tests_new/E2E/tag-filter.json',
     suiteTag: '@e2e',
+    globalExcludedTagsEnvVar: 'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS',
+    ignoreGlobalExcludesEnvVar: 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES',
+    globalExcludedTagsPattern: /^@e2e(?:-.+)?$/,
   });
+  logResolvedTagFilters('E2E', e2eTagFilters, process.env);
 
   const parsePositiveInt = (raw: string | undefined): number | undefined => {
     if (!raw) {
@@ -109,7 +119,7 @@ export default (() => {
       [resolveDefaultReporter(process.env)],
       ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs'],
       [
-        'odhin-reports-playwright',
+        './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
         {
           outputFolder: odhinOutputFolder,
           indexFilename: 'xui-playwright-e2e.html',

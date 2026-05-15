@@ -1,4 +1,5 @@
-const express = require('express');
+const nodeProcess = globalThis.process;
+const nodeConsole = globalThis.console;
 
 class PactMockApp {
   serverPort = 8080;
@@ -48,6 +49,7 @@ class PactMockApp {
       return;
     }
 
+    const { default: express } = await import('express');
     const app = express();
     app.disable('x-powered-by');
     app.use(express.json());
@@ -90,13 +92,19 @@ class PactMockApp {
 
 const mockApp = new PactMockApp();
 
-if (require.main === module) {
-  const portArg = process.argv[2];
-  mockApp.setServerPort(portArg || process.env.PORT || 8080);
-  mockApp.init();
-  mockApp.startServer().then(() => {
-    console.log(`[PACT_MOCK] Running on port ${mockApp.serverPort}`);
-  });
+if (this && typeof this === 'object') {
+  Object.setPrototypeOf(this, PactMockApp.prototype);
+  Object.assign(this, mockApp);
 }
 
-module.exports = mockApp;
+const processArgv = Array.isArray(nodeProcess?.argv) ? nodeProcess.argv : [];
+const isDirectRun = typeof processArgv[1] === 'string' && processArgv[1].includes('pact-mocks/app.js');
+
+if (isDirectRun) {
+  const portArg = nodeProcess.argv[2];
+  mockApp.setServerPort(portArg || nodeProcess.env.PORT || 8080);
+  mockApp.init();
+  mockApp.startServer().then(() => {
+    nodeConsole.log(`[PACT_MOCK] Running on port ${mockApp.serverPort}`);
+  });
+}

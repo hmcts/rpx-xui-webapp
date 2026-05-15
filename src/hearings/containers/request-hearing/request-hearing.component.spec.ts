@@ -204,6 +204,7 @@ describe('RequestHearingComponent', () => {
       ],
     };
     const serviceHearingValuesModel: ServiceHearingValuesModel = {
+      caseId: '1234567890',
       hmctsServiceID: 'BBA3',
       hmctsInternalCaseName: 'Jane vs DWP',
       publicCaseName: 'Jane vs DWP',

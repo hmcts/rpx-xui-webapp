@@ -49,6 +49,7 @@ class MockHearingPartiesComponent {
 
 describe('HearingRequirementsComponent', () => {
   const serviceHearingValuesModel: ServiceHearingValuesModel = {
+    caseId: '1234567890',
     hmctsServiceID: 'BBA3',
     hmctsInternalCaseName: 'Jane vs DWP',
     publicCaseName: 'Jane vs DWP',
@@ -852,7 +853,7 @@ describe('HearingRequirementsComponent', () => {
         lastError: null,
       },
       hearingConditions: {
-        caseId: '1111222233334444',
+        caseId: '1234567890',
         mode: 'create',
         isInit: true,
         fragmentId: 'venue',
@@ -2365,7 +2366,7 @@ describe('HearingRequirementsComponent', () => {
       },
       caseDetails: {
         hmctsServiceCode: 'BBA3',
-        caseRef: '1111222233334444',
+        caseRef: '1234567890',
         requestTimeStamp: null,
         hearingID: null,
         caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
@@ -2694,6 +2695,7 @@ describe('HearingRequirementsComponent', () => {
       mode: 'create',
     };
     const serviceHearingValuesModel: ServiceHearingValuesModel = {
+      caseId: '1234567890',
       hmctsServiceID: 'BBA3',
       hmctsInternalCaseName: 'Jane vs DWP',
       publicCaseName: 'Jane vs DWP',

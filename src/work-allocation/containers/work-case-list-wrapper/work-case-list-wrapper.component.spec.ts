@@ -4,7 +4,7 @@ import { ComponentFixture, fakeAsync, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { Store, StoreModule } from '@ngrx/store';
 import { Observable, of } from 'rxjs';
 
@@ -79,9 +79,7 @@ describe('WorkCaseListWrapperComponent', () => {
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['']);
-  const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
-  const mockFeatureToggleService = jasmine.createSpyObj('mockLoadingService', ['isEnabled']);
   const mockCaseworkerDataService = jasmine.createSpyObj('mockCaseworkerDataService', ['getAll']);
   const mockAllocateRoleService = jasmine.createSpyObj('mockAllocateRoleService', ['getCaseRolesUserDetails', 'getValidRoles']);
   let storeMock: jasmine.SpyObj<Store<fromActions.State>>;
@@ -111,7 +109,6 @@ describe('WorkCaseListWrapperComponent', () => {
         { provide: SessionStorageService, useValue: mockSessionStorageService },
         { provide: AlertService, useValue: mockAlertService },
         { provide: LoadingService, useValue: mockLoadingService },
-        { provide: FeatureToggleService, useValue: mockFeatureToggleService },
         { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
         { provide: AllocateRoleService, useValue: mockAllocateRoleService },
         { provide: WASupportedJurisdictionsService, useValue: mockWASupportedJurisdictionService },
@@ -126,8 +123,6 @@ describe('WorkCaseListWrapperComponent', () => {
     mockWorkAllocationService.searchCase.and.returnValue(of({ cases }));
     mockWorkAllocationService.getMyCases.and.returnValue(of({ cases }));
     mockWorkAllocationService.getMyAccess.and.returnValue(of({ cases }));
-    mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
-    mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockCaseworkerDataService.getAll.and.returnValue(of([]));
     mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(of(caseRoles));
     mockAllocateRoleService.getValidRoles.and.returnValue(of([]));
@@ -165,7 +160,7 @@ describe('WorkCaseListWrapperComponent', () => {
 
     it('should filter out duplicates values', () => {
       const loadSpy = spyOn(component, 'loadSupportedJurisdictions');
-      let jurisdictionValue = [];
+      let jurisdictionValue: string[] = [];
       component.waSupportedJurisdictions$ = new Observable((jr) => {
         jr.next(['Public Law', 'Immigration', 'Public Law']);
       });

@@ -22,6 +22,7 @@ export async function getServices(req, res, next: NextFunction) {
       headers: setHeaders(req),
     });
     const enabledServicesData = data.filter((service) => enabledServiceCodes.includes(service.service_code));
+    // mock the data for HRS service as it is not available in reference data API.
     enabledServicesData.push({
       jurisdiction: 'HRS',
       service_id: 1,
@@ -60,8 +61,6 @@ export async function getRegions(req, res, next: NextFunction) {
 export async function getLocationsByServiceCode(req, res, next: NextFunction) {
   const apiPath: string = `${baseLocationRefUrl}/refdata/location/court-venues/services`;
   const queryParams = new URLSearchParams(req.query).toString();
-  console.log('location API path', apiPath);
-  console.log('location API queryParams', queryParams);
 
   // Return mock data for HRS service
   if (queryParams.includes('service_code=HRS')) {
@@ -108,18 +107,12 @@ export async function getLocationsByServiceCode(req, res, next: NextFunction) {
       `${apiPath}?${queryParams}`,
       { headers: setHeaders(req) }
     );
-    console.log(
-      'court venue before:',
-      data.court_venues.map((cv) => cv.serviceCodes)
-    );
+
     data.court_venues.map((court_venue) => {
       // EUI-8051 - List value as we want to store all services with that location
       court_venue.serviceCodes = [queryParams.substring(queryParams.indexOf('=') + 1)];
     });
-    console.log(
-      'court venue after:',
-      data.court_venues.map((cv) => cv.serviceCodes)
-    );
+
     res.status(status).send(data);
   } catch (error) {
     next(error);

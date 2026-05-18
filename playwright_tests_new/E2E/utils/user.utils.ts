@@ -1,6 +1,7 @@
 import {
   getRuntimeUserCredentialEnvMapping,
   getRuntimeUserCredentials,
+  resolveRuntimeUserCredentialsForIdentifier,
   resolveRuntimeUserCredentialsFromEnv,
 } from './runtimeUserCredentials';
 
@@ -22,6 +23,11 @@ export class UserUtils {
   }
 
   private getDynamicCredentials(userIdentifier: string): { email: string; password: string } | undefined {
+    const fallbackResolvedCredentials = resolveRuntimeUserCredentialsForIdentifier(userIdentifier);
+    if (fallbackResolvedCredentials) {
+      return fallbackResolvedCredentials;
+    }
+
     const runtimeCredentials = getRuntimeUserCredentials(userIdentifier);
     if (runtimeCredentials) {
       return runtimeCredentials;

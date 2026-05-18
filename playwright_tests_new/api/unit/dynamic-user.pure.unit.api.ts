@@ -12,6 +12,7 @@ import {
   getRuntimeUserCredentials,
   getRuntimeUserCredentialEnvMapping,
   publishRuntimeUserCredentialsToEnv,
+  resolveRuntimeUserCredentialsForIdentifier,
   restoreRuntimeUserCredentialsInEnv,
   resolveRuntimeUserCredentialsFromEnv,
   setRuntimeUserCredentials,
@@ -64,8 +65,16 @@ const ENV_KEYS = [
   'HEARING_MANAGER_CR84_ON_1_PASSWORD',
   'HEARING_MANAGER_CR84_ON_4_USERNAME',
   'HEARING_MANAGER_CR84_ON_4_PASSWORD',
+  'FPL_GLOBAL_SEARCH_USERNAME',
+  'FPL_GLOBAL_SEARCH_PASSWORD',
+  'USER_WITH_FLAGS_USERNAME',
+  'USER_WITH_FLAGS_PASSWORD',
+  'SEARCH_EMPLOYMENT_CASE_USERNAME',
+  'SEARCH_EMPLOYMENT_CASE_PASSWORD',
   'EMPLOYMENT_DYNAMIC_CASEWORKER_USERNAME',
   'EMPLOYMENT_DYNAMIC_CASEWORKER_PASSWORD',
+  'TEST_PARALLEL_INDEX',
+  'TEST_WORKER_INDEX',
 ] as const;
 
 let originalEnvValues: Record<string, string | undefined> = {};
@@ -211,6 +220,29 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
 
     expect(process.env.EMPLOYMENT_DYNAMIC_CASEWORKER_USERNAME).toBe('previous@example.test');
     expect(process.env.EMPLOYMENT_DYNAMIC_CASEWORKER_PASSWORD).toBe('previous-secret');
+  });
+
+  test('runtime credential resolution supports CI fallback aliases', () => {
+    process.env.STAFF_ADMIN_2_USERNAME = 'staff-admin-2@example.test';
+    process.env.STAFF_ADMIN_2_PASSWORD = 'staff-admin-2-secret';
+    process.env.TEST_PARALLEL_INDEX = '1';
+
+    expect(resolveRuntimeUserCredentialsForIdentifier('STAFF_ADMIN')).toEqual({
+      email: 'staff-admin-2@example.test',
+      password: 'staff-admin-2-secret',
+    });
+
+    process.env.DIVORCE_SOLICITOR_USERNAME = 'divorce-flags@example.test';
+    process.env.DIVORCE_SOLICITOR_PASSWORD = 'divorce-flags-secret';
+    expect(resolveRuntimeUserCredentialsForIdentifier('USER_WITH_FLAGS')).toEqual({
+      email: 'divorce-flags@example.test',
+      password: 'divorce-flags-secret',
+    });
+
+    expect(resolveRuntimeUserCredentialsForIdentifier('FPL_GLOBAL_SEARCH')).toEqual({
+      email: 'staff-admin-2@example.test',
+      password: 'staff-admin-2-secret',
+    });
   });
 
   test('payload registry builds seeded payloads and setup helpers resolve defaults', () => {

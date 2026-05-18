@@ -164,6 +164,20 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
   },
 };
 
+const staffAdminPoolIdentifiers = ['STAFF_ADMIN-1', 'STAFF_ADMIN-2', 'STAFF_ADMIN-3', 'STAFF_ADMIN-4'] as const;
+
+const runtimeUserIdentifierFallbacks: Record<string, string[] | ((env: NodeJS.ProcessEnv) => string[])> = {
+  STAFF_ADMIN: (env) => {
+    const envIndex = Number(env.TEST_PARALLEL_INDEX ?? env.TEST_WORKER_INDEX);
+    const startIndex = Number.isInteger(envIndex) && envIndex >= 0 ? envIndex % staffAdminPoolIdentifiers.length : 0;
+    return staffAdminPoolIdentifiers.map(
+      (_, offset) => staffAdminPoolIdentifiers[(startIndex + offset) % staffAdminPoolIdentifiers.length]
+    );
+  },
+  FPL_GLOBAL_SEARCH: ['STAFF_ADMIN', 'SEARCH_EMPLOYMENT_CASE', 'DIVORCE_SOLICITOR'],
+  USER_WITH_FLAGS: ['DIVORCE_SOLICITOR', 'STAFF_ADMIN', 'SOLICITOR'],
+};
+
 function normalizeUserIdentifier(userIdentifier: string): string {
   return userIdentifier.trim().toUpperCase();
 }
@@ -186,6 +200,56 @@ export function resolveRuntimeUserCredentialsFromEnv(
   }
 
   return { email, password };
+}
+
+function resolveRuntimeUserCredentialsForIdentifierInternal(
+  userIdentifier: string,
+  env: NodeJS.ProcessEnv,
+  visited: Set<string>
+): RuntimeUserCredentials | undefined {
+  const normalizedIdentifier = normalizeUserIdentifier(userIdentifier);
+  if (visited.has(normalizedIdentifier)) {
+    return undefined;
+  }
+  visited.add(normalizedIdentifier);
+
+  const runtimeCredentials = runtimeUserCredentials.get(normalizedIdentifier);
+  if (runtimeCredentials) {
+    return runtimeCredentials;
+  }
+
+  const mapping = dynamicUserEnvMap[normalizedIdentifier];
+  if (mapping) {
+    const email = env[mapping.username]?.trim();
+    const password = env[mapping.password];
+    if (email && password) {
+      return { email, password };
+    }
+  }
+
+  const fallbackEntry = runtimeUserIdentifierFallbacks[normalizedIdentifier];
+  let fallbackIdentifiers: string[] = [];
+  if (typeof fallbackEntry === 'function') {
+    fallbackIdentifiers = fallbackEntry(env);
+  } else if (Array.isArray(fallbackEntry)) {
+    fallbackIdentifiers = fallbackEntry;
+  }
+
+  for (const fallbackIdentifier of fallbackIdentifiers) {
+    const resolved = resolveRuntimeUserCredentialsForIdentifierInternal(fallbackIdentifier, env, visited);
+    if (resolved) {
+      return resolved;
+    }
+  }
+
+  return undefined;
+}
+
+export function resolveRuntimeUserCredentialsForIdentifier(
+  userIdentifier: string,
+  env: NodeJS.ProcessEnv = process.env
+): RuntimeUserCredentials | undefined {
+  return resolveRuntimeUserCredentialsForIdentifierInternal(userIdentifier, env, new Set<string>());
 }
 
 export function setRuntimeUserCredentials(userIdentifier: string, credentials: RuntimeUserCredentials): void {

@@ -631,6 +631,30 @@ describe('HearingsUtils', () => {
       ).toBeTrue();
     });
 
+    it('should return true even if publicCaseName differs between HRM and SHV', () => {
+      const hearingRequestMainModel: HearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        caseDetails: {
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+          caseRef: '1234567890123456',
+          hmctsServiceCode: 'ABA5',
+          hmctsInternalCaseName: 'Internal Name',
+          publicCaseName: 'Public Name A',
+        },
+      };
+
+      const serviceHearingValuesModel: ServiceHearingValuesModel = {
+        ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+        hmctsServiceID: 'ABA5',
+        hmctsInternalCaseName: 'Internal Name',
+        publicCaseName: 'Public Name B',
+      };
+
+      expect(
+        HearingsUtils.checkHearingCaseConsistency(hearingRequestMainModel, serviceHearingValuesModel, '1234567890123456')
+      ).toBeTrue();
+    });
+
     it('should ignore empty-string caseReference and still return true when names/service match', () => {
       const hearingRequestMainModel: HearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
@@ -651,6 +675,50 @@ describe('HearingsUtils', () => {
       };
 
       expect(HearingsUtils.checkHearingCaseConsistency(hearingRequestMainModel, serviceHearingValuesModel, '')).toBeTruthy();
+    });
+  });
+
+  describe('getHearingConsistencyLogMessages', () => {
+    it('should return no log messages when internal and public names are equal', () => {
+      const hearingRequestMainModel: HearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        caseDetails: {
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+          caseRef: '1234567890123456',
+          hmctsInternalCaseName: 'Internal Name',
+          publicCaseName: 'Public Name',
+        },
+      };
+
+      const serviceHearingValuesModel: ServiceHearingValuesModel = {
+        ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+        hmctsInternalCaseName: 'Internal Name',
+        publicCaseName: 'Public Name',
+      };
+
+      expect(HearingsUtils.getHearingConsistencyLogMessages(hearingRequestMainModel, serviceHearingValuesModel)).toEqual([]);
+    });
+
+    it('should use the HRM caseRef when creating public name log messages for mismatched names', () => {
+      const hearingRequestMainModel: HearingRequestMainModel = {
+        ...initialState.hearings.hearingRequest.hearingRequestMainModel,
+        caseDetails: {
+          ...initialState.hearings.hearingRequest.hearingRequestMainModel.caseDetails,
+          caseRef: '1111111111111111',
+          hmctsInternalCaseName: 'Internal Name',
+          publicCaseName: 'Public Name',
+        },
+      };
+
+      const serviceHearingValuesModel: ServiceHearingValuesModel = {
+        ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+        hmctsInternalCaseName: 'Internal Name',
+        publicCaseName: 'Different Public Name',
+      };
+
+      expect(HearingsUtils.getHearingConsistencyLogMessages(hearingRequestMainModel, serviceHearingValuesModel)).toEqual([
+        'Hearing public name mismatch detected. HRM: Public Name SHV: Different Public Name for caseId: 1111111111111111 and hearingId: 1000000 at 2021-11-30T09:00:00.000Z with status LISTED',
+      ]);
     });
   });
 

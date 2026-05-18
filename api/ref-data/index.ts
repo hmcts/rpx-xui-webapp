@@ -22,7 +22,20 @@ export async function getServices(req, res, next: NextFunction) {
       headers: setHeaders(req),
     });
     const enabledServicesData = data.filter((service) => enabledServiceCodes.includes(service.service_code));
-
+    // mock the data for HRS service as it is not available in reference data API.
+    enabledServicesData.push({
+      jurisdiction: 'HRS',
+      service_id: 1,
+      org_unit: 'HMCTS',
+      business_area: 'HRS',
+      sub_business_area: 'HRS',
+      service_description: 'HRS',
+      service_code: 'HRS',
+      service_short_description: 'HRS',
+      ccd_service_name: 'HRS',
+      last_update: new Date().toISOString(),
+      ccd_case_types: [],
+    });
     res.status(status).send(enabledServicesData);
   } catch (error) {
     next(error);
@@ -49,15 +62,57 @@ export async function getLocationsByServiceCode(req, res, next: NextFunction) {
   const apiPath: string = `${baseLocationRefUrl}/refdata/location/court-venues/services`;
   const queryParams = new URLSearchParams(req.query).toString();
 
+  // Return mock data for HRS service
+  if (queryParams.includes('service_code=HRS')) {
+    const mockData: LocationByServiceCodeResponse = {
+      court_type: '',
+      court_type_id: '',
+      service_code: 'HRS',
+      welsh_court_type: '',
+      court_venues: [
+        {
+          court_venue_id: '',
+          site_name: '',
+          region_id: '',
+          region: '',
+          cluster_id: '',
+          cluster_name: '',
+          open_for_public: 'Yes',
+          court_type_id: '',
+          court_type: '',
+          court_name: '',
+          venue_name: 'Birmingham CTSC',
+          epimms_id: '815833',
+          is_hearing_location: '',
+          is_case_management_location: '',
+          welsh_site_name: '',
+          welsh_court_address: '',
+          court_address: '',
+          court_location_code: '',
+          court_open_date: '',
+          court_status: 'Open',
+          closed_date: '',
+          dx_address: '',
+          phone_number: '',
+          postcode: '',
+          serviceCodes: ['HRS'],
+        },
+      ],
+    };
+    return res.status(200).send(mockData);
+  }
+
   try {
     const { status, data }: { status: number; data: LocationByServiceCodeResponse } = await http.get(
       `${apiPath}?${queryParams}`,
       { headers: setHeaders(req) }
     );
+
     data.court_venues.map((court_venue) => {
       // EUI-8051 - List value as we want to store all services with that location
       court_venue.serviceCodes = [queryParams.substring(queryParams.indexOf('=') + 1)];
     });
+
     res.status(status).send(data);
   } catch (error) {
     next(error);

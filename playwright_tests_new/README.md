@@ -931,7 +931,7 @@ If a session appears stale but isn't refreshing:
 
 ### Best Practices
 
-1. **Always use `ensureSession()` in `beforeAll`** - Not in `beforeEach` to avoid redundant checks
+1. **Always use `ensureSession()` in `beforeAll`** - Not in `beforeEach` to avoid redundant checks.
 2. **Load cookies in `beforeEach`** - Ensures each test starts with valid session
 3. **Specify only required users** - Don't capture sessions you won't use
 4. **Let sessions expire naturally** - Don't manually refresh unless necessary

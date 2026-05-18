@@ -73,13 +73,13 @@ const sharedUiConfigKeys = [
 
 const solicitorUsername = resolveCredential(
   process.env.SOLICITOR_USERNAME,
-  process.env.WA_SOLICITOR_USERNAME,
-  process.env.DIVORCE_SOLICITOR_USERNAME
+  process.env.DIVORCE_SOLICITOR_USERNAME,
+  process.env.WA_SOLICITOR_USERNAME
 );
 const solicitorPassword = resolveCredential(
   process.env.SOLICITOR_PASSWORD,
-  process.env.WA_SOLICITOR_PASSWORD,
-  process.env.DIVORCE_SOLICITOR_PASSWORD
+  process.env.DIVORCE_SOLICITOR_PASSWORD,
+  process.env.WA_SOLICITOR_PASSWORD
 );
 
 const users = {

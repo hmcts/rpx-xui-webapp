@@ -50,9 +50,7 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
         expect(creds.email).toContain('@');
         expect(creds.password).toBeTruthy();
         expect(() => userUtils.getUserCredentials('UNKNOWN_USER')).toThrow('User "UNKNOWN_USER" not found');
-        expect(() => userUtils.getUserCredentials('IAC_Judge_WA_R1')).toThrow(
-          'Populate env vars "PW_IAC_JUDGE_WA_R1_EMAIL" and "PW_IAC_JUDGE_WA_R1_PASSWORD" from Azure Key Vault.'
-        );
+        expect(userUtils.getUserCredentials('IAC_Judge_WA_R1')).toEqual(creds);
       }
     );
   });

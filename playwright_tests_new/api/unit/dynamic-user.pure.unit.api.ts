@@ -69,6 +69,12 @@ const ENV_KEYS = [
   'FPL_GLOBAL_SEARCH_PASSWORD',
   'USER_WITH_FLAGS_USERNAME',
   'USER_WITH_FLAGS_PASSWORD',
+  'PW_IAC_JUDGE_WA_R1_EMAIL',
+  'PW_IAC_JUDGE_WA_R1_PASSWORD',
+  'PW_IAC_CASEOFFICER_R1_EMAIL',
+  'PW_IAC_CASEOFFICER_R1_PASSWORD',
+  'PW_IAC_CASEOFFICER_R2_EMAIL',
+  'PW_IAC_CASEOFFICER_R2_PASSWORD',
   'SEARCH_EMPLOYMENT_CASE_USERNAME',
   'SEARCH_EMPLOYMENT_CASE_PASSWORD',
   'EMPLOYMENT_DYNAMIC_CASEWORKER_USERNAME',
@@ -242,6 +248,32 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
     expect(resolveRuntimeUserCredentialsForIdentifier('FPL_GLOBAL_SEARCH')).toEqual({
       email: 'staff-admin-2@example.test',
       password: 'staff-admin-2-secret',
+    });
+
+    expect(resolveRuntimeUserCredentialsForIdentifier('IAC_Judge_WA_R1')).toEqual({
+      email: 'staff-admin-2@example.test',
+      password: 'staff-admin-2-secret',
+    });
+
+    process.env.PW_IAC_CASEOFFICER_R1_EMAIL = 'iac-caseofficer-r1@example.test';
+    process.env.PW_IAC_CASEOFFICER_R1_PASSWORD = 'iac-caseofficer-r1-secret';
+    expect(resolveRuntimeUserCredentialsForIdentifier('IAC_Judge_WA_R1')).toEqual({
+      email: 'iac-caseofficer-r1@example.test',
+      password: 'iac-caseofficer-r1-secret',
+    });
+
+    process.env.PW_IAC_CASEOFFICER_R2_EMAIL = 'iac-caseofficer-r2@example.test';
+    process.env.PW_IAC_CASEOFFICER_R2_PASSWORD = 'iac-caseofficer-r2-secret';
+    expect(resolveRuntimeUserCredentialsForIdentifier('IAC_CaseOfficer_R2')).toEqual({
+      email: 'iac-caseofficer-r2@example.test',
+      password: 'iac-caseofficer-r2-secret',
+    });
+
+    delete process.env.PW_IAC_CASEOFFICER_R2_EMAIL;
+    delete process.env.PW_IAC_CASEOFFICER_R2_PASSWORD;
+    expect(resolveRuntimeUserCredentialsForIdentifier('IAC_CaseOfficer_R2')).toEqual({
+      email: 'iac-caseofficer-r1@example.test',
+      password: 'iac-caseofficer-r1-secret',
     });
   });
 

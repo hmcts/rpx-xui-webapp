@@ -71,8 +71,16 @@ const sharedUiConfigKeys = [
   'waWorkflowApi',
 ] as const;
 
-const solicitorUsername = resolveCredential(process.env.SOLICITOR_USERNAME, process.env.WA_SOLICITOR_USERNAME);
-const solicitorPassword = resolveCredential(process.env.SOLICITOR_PASSWORD, process.env.WA_SOLICITOR_PASSWORD);
+const solicitorUsername = resolveCredential(
+  process.env.SOLICITOR_USERNAME,
+  process.env.WA_SOLICITOR_USERNAME,
+  process.env.DIVORCE_SOLICITOR_USERNAME
+);
+const solicitorPassword = resolveCredential(
+  process.env.SOLICITOR_PASSWORD,
+  process.env.WA_SOLICITOR_PASSWORD,
+  process.env.DIVORCE_SOLICITOR_PASSWORD
+);
 
 const users = {
   aat: {
@@ -80,8 +88,8 @@ const users = {
     waSolicitor: resolveRequiredUser(
       'wa.solicitor@example.test',
       'not-configured',
-      [process.env.WA_SOLICITOR_USERNAME, process.env.SOLICITOR_USERNAME],
-      [process.env.WA_SOLICITOR_PASSWORD, process.env.SOLICITOR_PASSWORD]
+      [process.env.WA_SOLICITOR_USERNAME, process.env.SOLICITOR_USERNAME, process.env.DIVORCE_SOLICITOR_USERNAME],
+      [process.env.WA_SOLICITOR_PASSWORD, process.env.SOLICITOR_PASSWORD, process.env.DIVORCE_SOLICITOR_PASSWORD]
     ),
     caseOfficer_r1: resolveOptionalUser(
       [process.env.PW_IAC_CASEOFFICER_R1_EMAIL, process.env.IAC_CASEOFFICER_R1_USERNAME],
@@ -97,8 +105,8 @@ const users = {
     waSolicitor: resolveRequiredUser(
       'wa.solicitor@example.test',
       'not-configured',
-      [process.env.WA_SOLICITOR_USERNAME, process.env.SOLICITOR_USERNAME],
-      [process.env.WA_SOLICITOR_PASSWORD, process.env.SOLICITOR_PASSWORD]
+      [process.env.WA_SOLICITOR_USERNAME, process.env.SOLICITOR_USERNAME, process.env.DIVORCE_SOLICITOR_USERNAME],
+      [process.env.WA_SOLICITOR_PASSWORD, process.env.SOLICITOR_PASSWORD, process.env.DIVORCE_SOLICITOR_PASSWORD]
     ),
     caseOfficer_r1: resolveOptionalUser(
       [process.env.PW_IAC_CASEOFFICER_R1_EMAIL, process.env.IAC_CASEOFFICER_R1_USERNAME],

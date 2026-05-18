@@ -8,6 +8,7 @@ import { RpxTranslationService } from 'rpx-xui-translation';
 import { of } from 'rxjs';
 import { HeaderComponent } from './header.component';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { FocusService } from '@hmcts/ccd-case-ui-toolkit';
 
 @Pipe({
   standalone: false,
@@ -21,6 +22,7 @@ class RpxTranslateMockPipe implements PipeTransform {
 
 describe('Header Component', () => {
   let mockStore: any;
+  const focusService = jasmine.createSpyObj('FocusService', ['focus']);
 
   let mockService: any;
   let component: HeaderComponent;
@@ -39,6 +41,7 @@ describe('Header Component', () => {
       imports: [RouterTestingModule],
       providers: [
         { provide: Store, useValue: mockStore },
+        { provide: FocusService, useValue: focusService },
         {
           provide: RpxTranslationService,
           useFactory: rpxTranslationServiceStub,
@@ -53,7 +56,7 @@ describe('Header Component', () => {
     fixture = TestBed.createComponent(HeaderComponent);
     mockStore = jasmine.createSpyObj('store', ['pipe']);
     mockService = jasmine.createSpyObj('service', ['get']);
-    component = new HeaderComponent(mockStore);
+    component = new HeaderComponent(mockStore, focusService);
   });
 
   it('should render the skip to content link', () => {

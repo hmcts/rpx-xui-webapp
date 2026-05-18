@@ -2,6 +2,8 @@
   <!-- The background color is dynamic so that we can change the background color of the navigation,
    dependent on the User. -->
   <div [ngStyle]="{ 'background-color': backgroundColor }">
+    <!-- This empty DIV provides components something to focus on so the next tab action moves focus onto the "Skip to main content" link below -->
+    <div id="{{ focusService.elementIdToFocus }}" tabIndex="-1" aria-hidden="true"></div>
     <a [href]="currentUrl?.split('#')[0] + contentHash" class="govuk-skip-link">{{ 'Skip to main content' | rpxTranslate }}</a>
 
     <exui-hmcts-global-header

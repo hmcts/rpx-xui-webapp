@@ -265,7 +265,7 @@
     "crypto": false
   },
   "resolutions": {
-    "form-data": "4.0.4",
+    "form-data": "4.0.5",
     "flat": "~5.0.1",
     "loader-utils": "~2.0.3",
     "minimist": "^1.2.8",

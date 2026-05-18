@@ -1,19 +1,17 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { RoleGuard, RoleMatching } from '@hmcts/rpx-xui-common-lib';
+import { RoleMatching } from '@hmcts/rpx-xui-common-lib';
+import { NavigationAccessGuard } from '../app/shared/guards/navigation-access.guard';
 import { NoResultsComponent, SearchFormComponent, SearchResultsComponent } from './containers';
 
 const routes: Routes = [
   {
     path: '',
     component: SearchFormComponent,
-    canActivate: [RoleGuard],
+    canActivate: [NavigationAccessGuard],
     data: {
-      // EXUI-3967 - Needs to be looked at
-      // TODO: Roles will need replacing with actual ones to be granted access, or loaded from configuration
-      needsRole: ['pui-case-manager', 'caseworker'],
-      roleMatching: RoleMatching.ANY,
-      noRoleMatchRedirect: '/',
+      accessDeniedRedirectUrl: '/',
+      requiredNavigationHref: '/search',
     },
   },
   {
@@ -30,12 +28,11 @@ const routes: Routes = [
   {
     path: 'results',
     component: SearchResultsComponent,
+    canActivate: [NavigationAccessGuard],
     data: {
       title: 'Search cases | Search Results',
-      // TODO: Roles will need replacing with actual ones to be granted access, or loaded from configuration
-      needsRole: ['pui-case-manager', 'caseworker'],
-      roleMatching: RoleMatching.ANY,
-      noRoleMatchRedirect: '/',
+      accessDeniedRedirectUrl: '/',
+      requiredNavigationHref: '/search',
     },
   },
 ];

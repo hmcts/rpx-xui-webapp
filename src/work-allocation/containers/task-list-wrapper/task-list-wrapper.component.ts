@@ -1,7 +1,7 @@
 import { Location as StateLocation } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, LoadingService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription, of } from 'rxjs';
@@ -28,7 +28,7 @@ import {
   WASupportedJurisdictionsService,
   WorkAllocationTaskService,
 } from '../../services';
-import { REDIRECTS, WILDCARD_SERVICE_DOWN, getAssigneeName, handleFatalErrors, handleTasksFatalErrors } from '../../utils';
+import { REDIRECTS, WILDCARD_SERVICE_DOWN, handleFatalErrors, handleTasksFatalErrors } from '../../utils';
 
 @Component({
   standalone: false,
@@ -195,33 +195,19 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public setupTaskList() {
-    // NOTE - staffSupportedJurisdictions can replace waSupportedJurisdictions for quick testing purposes
-    const caseworkersByService$ = this.waSupportedJurisdictions$.pipe(
-      switchMap((jurisdictions) => this.caseworkerService.getUsersFromServices(jurisdictions))
-    );
-    // similar to case list wrapper changes
-    caseworkersByService$.subscribe(
-      (caseworkers) => {
-        this.caseworkers = caseworkers;
-        // EUI-2027 - Load tasks again in case this is start of new caching of caseworkers
-        // note: the if is relevant to stop the same request happening at exactly the same time on available tasks causing an error
-        if (this.tasks.length > 0) {
-          this.doLoad();
-        }
-      },
-      (error) => {
-        handleFatalErrors(error.status, this.router);
-      }
-    );
     // Try to get the sort order out of the session.
     const sortStored = this.sessionStorageService.getItem(this.sortSessionKey);
     if (sortStored) {
-      const { fieldName, order } = JSON.parse(sortStored);
-      this.sortedBy = {
-        fieldName,
-        order: order as SortOrder,
-      };
-    } else {
+      const parsed = safeJsonParse<{ fieldName: string; order: SortOrder }>(sortStored, null);
+      if (parsed) {
+        const { fieldName, order } = parsed;
+        this.sortedBy = {
+          fieldName,
+          order: order as SortOrder,
+        };
+      }
+    }
+    if (!this.sortedBy?.fieldName) {
       // Otherwise, set up the default sorting.
       this.sortedBy = {
         fieldName: this.taskServiceConfig.defaultSortFieldName,
@@ -293,7 +279,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public getPaginationParameter(): PaginationParameter {
-    const savedPaginationNumber = JSON.parse(this.sessionStorageService.getItem(this.pageSessionKey));
+    const savedPaginationNumber = safeJsonParse<number>(this.sessionStorageService.getItem(this.pageSessionKey), null);
     if (savedPaginationNumber && typeof savedPaginationNumber === 'number') {
       return { ...this.pagination, page_number: savedPaginationNumber };
     }
@@ -418,7 +404,10 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   private doLoad(): void {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      if (!userInfo) {
+        return;
+      }
       this.currentUser = userInfo.uid ? userInfo.uid : userInfo.id;
     }
     this.showSpinner$ = this.loadingService.isLoading as any;
@@ -428,8 +417,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       mergeMap((result: TaskResponse) => {
         const assignedJudicialUsers: string[] = [];
         result.tasks.forEach((task) => {
-          task.assigneeName = getAssigneeName(this.caseworkers, task.assignee);
           if (!task.assigneeName && task.assignee) {
+            // EXUI-2645 - only needs to be added for judicial users now
             assignedJudicialUsers.push(task.assignee);
           }
         });
@@ -494,7 +483,10 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public getCurrentUserRoleCategory(): string {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      if (!userInfo) {
+        return;
+      }
       return userInfo.roleCategory;
     }
   }

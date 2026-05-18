@@ -10,7 +10,7 @@ const { Matchers } = require('@pact-foundation/pact');
 const { somethingLike } = Matchers;
 
 const pactSetUp = new PactV3TestSetup({ provider: 'ccdDataStoreAPI_search', port: 8000 });
-// const MockApp = require('../../../../../test_codecept/nodeMock/app');
+// const MockApp = require('../../pact-mocks/app');
 
 describe('Global serarch API', () => {
   let next;

@@ -159,6 +159,12 @@ Dynamic-user keys now available in Key Vault (`rpx-aat`, `rpx-demo`) and populat
 - `RD_PROFESSIONAL_API_PATH`
 - `WA_SOLICITOR_USERNAME`
 - `WA_SOLICITOR_PASSWORD`
+- `PW_IAC_CASEOFFICER_R1_EMAIL`
+- `PW_IAC_CASEOFFICER_R1_PASSWORD`
+- `PW_IAC_JUDGE_WA_R1_EMAIL`
+- `PW_IAC_JUDGE_WA_R1_PASSWORD`
+
+These are populated from Key Vault using the same `e2e=<ENV_VAR_NAME>` tag convention.
 
 Notes:
 
@@ -925,7 +931,7 @@ If a session appears stale but isn't refreshing:
 
 ### Best Practices
 
-1. **Always use `ensureSession()` in `beforeAll`** - Not in `beforeEach` to avoid redundant checks
+1. **Always use `ensureSession()` in `beforeAll`** - Not in `beforeEach` to avoid redundant checks.
 2. **Load cookies in `beforeEach`** - Ensures each test starts with valid session
 3. **Specify only required users** - Don't capture sessions you won't use
 4. **Let sessions expire naturally** - Don't manually refresh unless necessary

@@ -9,6 +9,7 @@ import type { IdamPage } from '@hmcts/playwright-common';
 import { isSessionFresh, loadSessionCookies, __test__ as sessionCaptureTest } from '../common/sessionCapture.js';
 import { resolveSessionStorageKey } from '../common/sessionIdentity.js';
 import type { Cookie } from 'playwright-core';
+import { withEnv } from './utils/testEnv';
 
 test.describe.configure({ mode: 'serial' });
 
@@ -36,11 +37,22 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
   });
 
   test('UserUtils returns credentials for known users and errors on unknown', () => {
-    const userUtils = new UserUtils();
-    const creds = userUtils.getUserCredentials('IAC_CaseOfficer_R1');
-    expect(creds.email).toContain('@');
-    expect(creds.password).toBeTruthy();
-    expect(() => userUtils.getUserCredentials('UNKNOWN_USER')).toThrow('User "UNKNOWN_USER" not found');
+    return withEnv(
+      {
+        PW_IAC_CASEOFFICER_R1_EMAIL: 'caseofficer-r1@example.test',
+        PW_IAC_CASEOFFICER_R1_PASSWORD: mockPassword,
+        PW_IAC_JUDGE_WA_R1_EMAIL: undefined,
+        PW_IAC_JUDGE_WA_R1_PASSWORD: undefined,
+      },
+      () => {
+        const userUtils = new UserUtils();
+        const creds = userUtils.getUserCredentials('IAC_CaseOfficer_R1');
+        expect(creds.email).toContain('@');
+        expect(creds.password).toBeTruthy();
+        expect(() => userUtils.getUserCredentials('UNKNOWN_USER')).toThrow('User "UNKNOWN_USER" not found');
+        expect(userUtils.getUserCredentials('IAC_Judge_WA_R1')).toEqual(creds);
+      }
+    );
   });
 
   test('CookieUtils writes and updates session files', async () => {
@@ -102,41 +114,49 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
   });
 
   test('sessionCapture helpers handle fresh, stale, and missing sessions', async () => {
-    const tmpDir = await fsp.mkdtemp(path.join(process.cwd(), 'test-results', 'session-utils-'));
-    const originalCwd = process.cwd();
-    process.chdir(tmpDir);
-    try {
-      const sessionsDir = path.join(tmpDir, '.sessions');
-      await fsp.mkdir(sessionsDir, { recursive: true });
+    await withEnv(
+      {
+        PW_IAC_CASEOFFICER_R1_EMAIL: 'caseofficer-r1@example.test',
+        PW_IAC_CASEOFFICER_R1_PASSWORD: mockPassword,
+      },
+      async () => {
+        const tmpDir = await fsp.mkdtemp(path.join(process.cwd(), 'test-results', 'session-utils-'));
+        const originalCwd = process.cwd();
+        process.chdir(tmpDir);
+        try {
+          const sessionsDir = path.join(tmpDir, '.sessions');
+          await fsp.mkdir(sessionsDir, { recursive: true });
 
-      const userUtils = new UserUtils();
-      const storageKey = resolveSessionStorageKey('IAC_CaseOfficer_R1', { userUtils });
-      const storagePath = path.join(sessionsDir, `${storageKey}.storage.json`);
+          const userUtils = new UserUtils();
+          const storageKey = resolveSessionStorageKey('IAC_CaseOfficer_R1', { userUtils });
+          const storagePath = path.join(sessionsDir, `${storageKey}.storage.json`);
 
-      expect(isSessionFresh(storagePath)).toBe(false);
+          expect(isSessionFresh(storagePath)).toBe(false);
 
-      await fsp.writeFile(storagePath, JSON.stringify({ cookies: [baseCookie('a', 'b')] }), 'utf8');
-      expect(isSessionFresh(storagePath, 60 * 1000)).toBe(true);
+          await fsp.writeFile(storagePath, JSON.stringify({ cookies: [baseCookie('a', 'b')] }), 'utf8');
+          expect(isSessionFresh(storagePath, 60 * 1000)).toBe(true);
 
-      const oldTime = Date.now() - 10 * 60 * 1000;
-      await fsp.utimes(storagePath, oldTime / 1000, oldTime / 1000);
-      expect(isSessionFresh(storagePath, 60 * 1000)).toBe(false);
+          const oldTime = Date.now() - 10 * 60 * 1000;
+          await fsp.utimes(storagePath, oldTime / 1000, oldTime / 1000);
+          expect(isSessionFresh(storagePath, 60 * 1000)).toBe(false);
 
-      const loaded = loadSessionCookies('IAC_CaseOfficer_R1');
-      expect(loaded.cookies.length).toBe(1);
+          const loaded = loadSessionCookies('IAC_CaseOfficer_R1');
+          expect(loaded.cookies.length).toBe(1);
 
-      await fsp.writeFile(storagePath, JSON.stringify({ cookies: {} }), 'utf8');
-      const invalidCookies = loadSessionCookies('IAC_CaseOfficer_R1');
-      expect(invalidCookies.cookies).toHaveLength(0);
+          await fsp.writeFile(storagePath, JSON.stringify({ cookies: {} }), 'utf8');
+          const invalidCookies = loadSessionCookies('IAC_CaseOfficer_R1');
+          expect(invalidCookies.cookies).toHaveLength(0);
 
-      await fsp.writeFile(storagePath, '{bad-json', 'utf8');
-      expect(() => loadSessionCookies('IAC_CaseOfficer_R1')).toThrow('Storage file corrupted');
+          await fsp.writeFile(storagePath, '{bad-json', 'utf8');
+          expect(() => loadSessionCookies('IAC_CaseOfficer_R1')).toThrow('Storage file corrupted');
 
-      await fsp.rm(storagePath, { force: true });
-      expect(() => loadSessionCookies('IAC_CaseOfficer_R1')).toThrow('Failed parsing storage file');
-    } finally {
-      process.chdir(originalCwd);
-    }
+          await fsp.rm(storagePath, { force: true });
+          expect(() => loadSessionCookies('IAC_CaseOfficer_R1')).toThrow('Failed parsing storage file');
+        } finally {
+          process.chdir(originalCwd);
+        }
+      }
+    );
   });
 
   test('isSessionFresh rejects sessions whose auth cookies target a different host', async () => {

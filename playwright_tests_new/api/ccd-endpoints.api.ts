@@ -1,5 +1,5 @@
 import { test, expect } from './fixtures';
-import { config as testConfig } from '../common/apiTestConfig';
+import { config as testConfig } from './utils/apiTestRuntimeConfig';
 import { withXsrf, expectStatus, withRetry } from './utils/apiTestUtils';
 import { assertJurisdictionsForUser } from './utils/ccdUtils';
 import { stringifyCaseTypeId } from './utils/caseTypeIdUtils';

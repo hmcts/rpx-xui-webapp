@@ -332,9 +332,8 @@ API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
 
 ### API Test Parallelism
 
-- E2E defaults to **2 workers** unless `FUNCTIONAL_TESTS_WORKERS` is set
-- API and integration default to **4 workers** unless `FUNCTIONAL_TESTS_WORKERS` is set
-- Jenkins pins `FUNCTIONAL_TESTS_WORKERS=4` for API and integration suites, and `FUNCTIONAL_TESTS_WORKERS=2` for browser-heavy E2E and cross-browser suites
+- API, E2E, and local integration defaults are controlled by each Playwright config unless `FUNCTIONAL_TESTS_WORKERS` is set
+- Jenkins pins `FUNCTIONAL_TESTS_WORKERS=4` for API, E2E, cross-browser E2E, and integration profiles
 - Keeping E2E below the Jenkins agent core count avoids saturating the preview/AAT backends while API and integration stages run in parallel
 - Locally, the same suite defaults apply; override with `FUNCTIONAL_TESTS_WORKERS` or the Playwright `--workers` flag
 
@@ -635,7 +634,7 @@ expect(visibleRows.length).toBeGreaterThan(0);
 - Multiple workers can safely request the same user session
 - **Filesystem-based lock mechanism** prevents concurrent logins for the same user
 - Locks coordinate across **all Playwright worker processes** (API + E2E) using `proper-lockfile`
-- Jenkins currently runs E2E with **2 workers**, and API and integration with **4 workers** on both Preview and AAT
+- Jenkins currently runs API, E2E, and integration with **4 workers** on both Preview and AAT
 - When one worker logs in user X, the remaining workers **and parallel API tests** wait for lock release and reuse the session
 - After acquiring lock, workers recheck freshness to ensure session is still valid
 - `ensureSession()` intentionally avoids forced recapture so lock waiters can reuse the newly refreshed session instead of logging in again
@@ -803,11 +802,11 @@ npx playwright test --project chromium
 
 ```bash
 # Running simultaneously:
-npx playwright test --project chromium --workers=2  # Preview E2E tests
+npx playwright test --project chromium --workers=4  # Preview E2E tests
 npx playwright test --project node-api --workers=4  # Preview API tests
 
 # AAT:
-npx playwright test --project chromium --workers=2  # AAT E2E tests
+npx playwright test --project chromium --workers=4  # AAT E2E tests
 npx playwright test --project node-api --workers=4  # AAT API tests
 
 # Local or unpinned CI:

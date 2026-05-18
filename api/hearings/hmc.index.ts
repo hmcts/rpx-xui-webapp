@@ -1,5 +1,5 @@
 import { NextFunction, Response } from 'express';
-import { handleDelete, handleGet, handlePost, handlePut, sendPut } from '../common/crudService';
+import { handleDelete, handleGet, sendPost, sendPut } from '../common/crudService';
 import { getConfigValue } from '../configuration';
 import {
   SERVICES_CCD_DATA_STORE_API_PATH,
@@ -101,7 +101,7 @@ export async function submitHearingRequest(req: EnhancedRequest, res: Response, 
   const markupPath: string = `${hmcHearingsUrl}/hearing`;
   try {
     trackTrace('submitting hearing request');
-    const { status, data }: { status: number; data: any } = await handlePost(markupPath, reqBody, req);
+    const { status, data }: { status: number; data: any } = await sendPost(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, null, 'SubmitHearingRequest', req, markupPath, next);
@@ -132,7 +132,7 @@ export async function updateHearingRequest(req: EnhancedRequest, res: Response, 
   const reqBody = req.body;
   const markupPath: string = `${hmcHearingsUrl}/hearing/${hearingId}`;
   try {
-    const { status, data }: { status: number; data: any } = await handlePut(markupPath, reqBody, req);
+    const { status, data }: { status: number; data: any } = await sendPut(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, null, 'updateHearingRequest', req, markupPath, next);
@@ -147,10 +147,7 @@ export async function getHearingActuals(req: EnhancedRequest, res: Response, nex
   const caseId = req.query.caseRef as string;
   const markupPath = `${hmcHearingsUrl}/hearingActuals/${hearingId}`;
   try {
-    const { status, data }: { status: number; data: HearingActualsMainModel } = await handleGet(
-      `${hmcHearingsUrl}/hearingActuals/${hearingId}`,
-      req
-    );
+    const { status, data }: { status: number; data: HearingActualsMainModel } = await handleGet(markupPath, req);
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, caseId, 'getHearingActuals', req, markupPath, next);
@@ -181,7 +178,7 @@ export async function submitHearingActuals(req: EnhancedRequest, res: Response, 
   const caseId = req.query.caseRef as string;
   const markupPath = `${hmcHearingsUrl}/hearingActualsCompletion/${hearingId}`;
   try {
-    const { status }: { status: number } = await handlePost(markupPath, null, req);
+    const { status }: { status: number } = await sendPost(markupPath, null, req);
     res.status(status).send(null);
   } catch (error) {
     handleHearingError(error, caseId, 'submitHearingActuals', req, markupPath, next);
@@ -211,11 +208,7 @@ export async function postLinkedHearingGroup(req: EnhancedRequest, res: Response
   const caseId = req.query.caseId as string;
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup`;
   try {
-    const { status, data }: { status: number; data: LinkedHearingGroupResponseModel } = await handlePost(
-      markupPath,
-      reqBody,
-      req
-    );
+    const { status, data }: { status: number; data: LinkedHearingGroupResponseModel } = await sendPost(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, caseId, 'postLinkedHearingGroup', req, markupPath, next);
@@ -231,7 +224,7 @@ export async function putLinkedHearingGroup(req: EnhancedRequest, res: Response,
   const reqBody = req.body;
   const markupPath: string = `${hmcHearingsUrl}/linkedHearingGroup?id=${groupId}`;
   try {
-    const { status, data }: { status: number; data: LinkedHearingGroupResponseModel } = await handlePut(markupPath, reqBody, req);
+    const { status, data }: { status: number; data: LinkedHearingGroupResponseModel } = await sendPut(markupPath, reqBody, req);
     res.status(status).send(data);
   } catch (error) {
     handleHearingError(error, caseId, 'putLinkedHearingGroup', req, markupPath, next);

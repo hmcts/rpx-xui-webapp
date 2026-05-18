@@ -47,7 +47,7 @@ properties([
         ),
         text(
             name: 'INTEGRATION_PW_PROFILE_RUNS',
-            defaultValue: '''workers=4''',
+            defaultValue: '''workers=6''',
             description: 'Integration load-profile matrix. One run per line or semicolon. Supported keys: workers=<n> and optional shard=<index/total>.'
         ),
         string(
@@ -65,7 +65,7 @@ properties([
 
 // use Infrastructure branch in PR for long running FT's beyond 40mins for DEBUG only
 // @Library("Infrastructure@fpl-long-ft-timeout")
-@Library("Infrastructure")
+@Library("Infrastructure@xui-jenkins-8cpu-agent")
 
 import uk.gov.hmcts.contino.AppPipelineDsl
 
@@ -271,7 +271,7 @@ def resolveIntegrationProfileRuns = { String configuredRuns, String workersOverr
     }
     def configured = configuredRuns?.trim()
     if (!configured) {
-        configured = 'workers=4'
+        configured = 'workers=6'
     }
     return configured
         .split(/[\r\n;]+/)
@@ -280,7 +280,7 @@ def resolveIntegrationProfileRuns = { String configuredRuns, String workersOverr
 }
 
 def integrationProfileRunConfig = { String spec, String testType ->
-    def workers = '4'
+    def workers = '6'
     def shard = ''
     spec.split(/\s+/).each { token ->
         if (token.startsWith('workers=')) {

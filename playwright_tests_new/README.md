@@ -333,8 +333,8 @@ API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
 ### API Test Parallelism
 
 - E2E defaults to **2 workers** unless `FUNCTIONAL_TESTS_WORKERS` is set
-- API and integration default to **4 workers** unless `FUNCTIONAL_TESTS_WORKERS` is set
-- Jenkins pins `FUNCTIONAL_TESTS_WORKERS=4` for API and integration suites, and `FUNCTIONAL_TESTS_WORKERS=2` for browser-heavy E2E and cross-browser suites
+- API and local integration default to **4 workers** unless `FUNCTIONAL_TESTS_WORKERS` is set
+- Jenkins pins `FUNCTIONAL_TESTS_WORKERS=4` for API suites, `FUNCTIONAL_TESTS_WORKERS=6` for integration profiles, and `FUNCTIONAL_TESTS_WORKERS=2` for browser-heavy E2E and cross-browser suites
 - Keeping E2E below the Jenkins agent core count avoids saturating the preview/AAT backends while API and integration stages run in parallel
 - Locally, the same suite defaults apply; override with `FUNCTIONAL_TESTS_WORKERS` or the Playwright `--workers` flag
 
@@ -344,14 +344,14 @@ The standard API, E2E, cross-browser E2E, and integration commands run through t
 
 ```bash
 # Run integration with a host-load profile and explicit workers
-yarn test:playwright:integration -- --workers=4
+yarn test:playwright:integration -- --workers=6
 
 # Compare a sharded run
-yarn test:playwright:integration -- --workers=4 --shard=1/2
-yarn test:playwright:integration -- --workers=4 --shard=2/2
+yarn test:playwright:integration -- --workers=6 --shard=1/2
+yarn test:playwright:integration -- --workers=6 --shard=2/2
 
 # Backwards-compatible alias
-yarn test:playwright:integration:profile -- --workers=4
+yarn test:playwright:integration:profile -- --workers=6
 ```
 
 Artifacts:
@@ -374,7 +374,7 @@ Useful controls:
 Jenkins CNP and nightly integration stages use `INTEGRATION_PW_PROFILE_RUNS` to control the integration worker profile. The default is:
 
 ```text
-workers=4
+workers=6
 ```
 
 Use `INTEGRATION_PW_WORKERS=<n>` and optional `INTEGRATION_PW_SHARD=<index/total>` on Jenkins to run a targeted integration profile instead of the default `INTEGRATION_PW_PROFILE_RUNS` value. CNP and nightly publish one **CI System Load** HTML report for the Jenkins run after checkout. They write checkout, install, build, browser install, report publishing, API, E2E, and integration stage markers to the profile event file so the report can show which stage was running when CPU, load, or memory changed.

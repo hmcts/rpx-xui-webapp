@@ -1,4 +1,5 @@
 import { expect, Locator, Page } from '@playwright/test';
+import { HearingJourneyModel } from '../../../utils/hearing-model.ts';
 
 type HearingAction = 'view-details' | 'view-or-edit' | 'cancel' | 'add-or-edit';
 
@@ -15,6 +16,8 @@ export class HearingsTabPage {
   readonly particularOrderRadio = this.page.locator('#particularOrder');
   readonly hearingOrderSelects = this.page.locator('select[id^="hearingsOrder"]');
   readonly viewDetailsButtons = this.page.locator('[id^="link-view-details-"]');
+  readonly additionalSecurityYes = this.page.locator('#addition-security-confirmation #additionalSecurityYes');
+  readonly additionalSecurityNo = this.page.locator('#addition-security-confirmation #additionalSecurityNo');
 
   sectionHeading(name: string): Locator {
     return this.page.locator('exui-case-hearings-list th.govuk-body-lead').filter({ hasText: name });
@@ -117,18 +120,16 @@ export class HearingsTabPage {
     await this.continueButton.click();
   }
 
-  async goBack(): Promise<void> {
-    await this.backLink.click();
-  }
+  async additionalSecurity(model: HearingJourneyModel, page: Page): Promise<void> {
+    const value = model.get('hearingFacilities', 'additionalSecurity');
+    console.log('~~~~~~~~~~~SET VALUE for hearingFacilities ===', value);
 
-  async selectOrderedLinkedHearings(): Promise<void> {
-    await this.linkedHearingRadio.check();
-    await this.continueFlow();
-    await this.particularOrderRadio.check();
-
-    const orderCount = await this.hearingOrderSelects.count();
-    for (let index = 0; index < orderCount; index += 1) {
-      await this.hearingOrderSelects.nth(index).selectOption(String(index + 1));
+    if (value === 'Yes') {
+      await this.additionalSecurityYes.click();
+    } else {
+      await this.additionalSecurityNo.click();
     }
+    const getValue = model.get('hearingFacilities', 'additionalSecurity');
+    console.log('~~~~~~~~~~~GET VALUE for hearingFacilities ===', getValue);
   }
 }

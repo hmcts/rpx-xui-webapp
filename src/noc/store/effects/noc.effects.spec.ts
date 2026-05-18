@@ -3,6 +3,7 @@ import { provideMockActions } from '@ngrx/effects/testing';
 import { cold, hot } from 'jasmine-marbles';
 import { of, throwError } from 'rxjs';
 import { Go } from '../../../app/store';
+import { DecentralisedRedirectService } from '../../../cases/services/decentralised-redirect.service';
 import { NocAnswer, NocHttpError } from '../../models/';
 import { NocService } from '../../services';
 import * as nocActions from '../actions/noc.action';
@@ -12,13 +13,19 @@ describe('Noc Effects', () => {
   let actions$;
   let effects: NocEffects;
   const nocServiceMock = jasmine.createSpyObj('NocService', ['getNoCQuestions', 'validateNoCAnswers', 'submitNoCEvent']);
+  const decentralisedRedirectServiceMock = jasmine.createSpyObj('DecentralisedRedirectService', ['tryNocRedirect']);
 
   beforeEach(() => {
+    decentralisedRedirectServiceMock.tryNocRedirect.and.returnValue(false);
     TestBed.configureTestingModule({
       providers: [
         {
           provide: NocService,
           useValue: nocServiceMock,
+        },
+        {
+          provide: DecentralisedRedirectService,
+          useValue: decentralisedRedirectServiceMock,
         },
         NocEffects,
         provideMockActions(() => actions$),
@@ -59,6 +66,47 @@ describe('Noc Effects', () => {
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.setCaseReference$).toBeObservable(expected);
+      expect(decentralisedRedirectServiceMock.tryNocRedirect).toHaveBeenCalledWith({
+        caseType: 'AAT',
+        caseId: '1223221244223131',
+      });
+    });
+
+    it('should redirect to decentralised noc and emit no action', () => {
+      const dummy: any = {
+        questions: [
+          {
+            case_type_id: 'PCS',
+            order: '1',
+            question_text: 'What is their Email?',
+            answer_field_type: {
+              id: 'Email',
+              type: 'Email',
+              min: null,
+              max: null,
+              regular_expression: null,
+              fixed_list_items: [],
+              complex_fields: [],
+              collection_field_type: null,
+            },
+            display_context_parameter: '1',
+            challenge_question_id: 'NoC',
+            answer_field: '',
+            question_id: 'QuestionId67745',
+          },
+        ],
+      };
+      nocServiceMock.getNoCQuestions.and.returnValue(of(dummy));
+      decentralisedRedirectServiceMock.tryNocRedirect.and.returnValue(true);
+      const action = new nocActions.SetCaseReference('1223-2212-4422-3131');
+      actions$ = hot('-a', { a: action });
+      const expected = cold('--');
+
+      expect(effects.setCaseReference$).toBeObservable(expected);
+      expect(decentralisedRedirectServiceMock.tryNocRedirect).toHaveBeenCalledWith({
+        caseType: 'PCS',
+        caseId: '1223221244223131',
+      });
     });
 
     it('should return SetCaseRefValidationFailure', () => {

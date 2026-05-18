@@ -97,6 +97,9 @@ describe('uiConfigRouter', () => {
       getConfigValueStub.withArgs('services.idam.oauthCallbackUrl').returns('https://callback.url');
       getConfigValueStub.withArgs('protocol').returns('https');
       getConfigValueStub.withArgs('services.payment_return_url').returns('https://payment.return.url');
+      getConfigValueStub
+        .withArgs('decentralisedCaseTypeConfig')
+        .returns({ PCS: { baseUrl: 'https://pcs-frontend.service.gov.uk' } });
       getConfigValueStub.withArgs('services.waWorkflowApi').returns('https://wa.workflow.api');
       getConfigValueStub.withArgs('services.judicialBookingApi').returns('https://judicial.booking.api');
 
@@ -118,6 +121,7 @@ describe('uiConfigRouter', () => {
         protocol: 'https',
         substantiveEnabled: true,
         paymentReturnUrl: 'https://payment.return.url',
+        decentralisedCaseTypeConfig: { PCS: { baseUrl: 'https://pcs-frontend.service.gov.uk' } },
         waWorkflowApi: 'https://wa.workflow.api',
         judicialBookingApi: 'https://judicial.booking.api',
         headerConfig: mockMenuConfig,

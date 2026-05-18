@@ -1,27 +1,43 @@
 import { Injectable } from '@angular/core';
 import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { map } from 'rxjs/operators';
+import { EMPTY, of } from 'rxjs';
+import { map, mergeMap } from 'rxjs/operators';
 import { LoggerService } from '../../../app/services/logger/logger.service';
 import * as fromRoot from '../../../app/store';
 import * as fromActions from '../actions';
+import { DecentralisedRedirectService } from '../../services/decentralised-redirect.service';
 
 @Injectable()
 export class CaseCreateEffects {
   constructor(
     private readonly actions$: Actions,
     private readonly alertService: AlertService,
-    private readonly loggerService: LoggerService
+    private readonly loggerService: LoggerService,
+    private readonly decentralisedRedirectService: DecentralisedRedirectService
   ) {}
 
   public applyChangeCaseCreateFilter$ = createEffect(() =>
     this.actions$.pipe(
       ofType(fromActions.CREATE_CASE_FILTER_APPLY),
       map((action: fromActions.CaseCreateFilterApply) => action.payload),
-      map((param) => {
-        return new fromRoot.Go({
-          path: [`/cases/case-create/${param.jurisdictionId}/${param.caseTypeId}/${param.eventId}`],
-        });
+      mergeMap((param) => {
+        if (
+          this.decentralisedRedirectService.tryEventRedirect({
+            caseType: param.caseTypeId,
+            jurisdiction: param.jurisdictionId,
+            eventId: param.eventId,
+            isCaseCreate: true,
+          })
+        ) {
+          return EMPTY;
+        }
+
+        return of(
+          new fromRoot.Go({
+            path: [`/cases/case-create/${param.jurisdictionId}/${param.caseTypeId}/${param.eventId}`],
+          })
+        );
       })
     )
   );

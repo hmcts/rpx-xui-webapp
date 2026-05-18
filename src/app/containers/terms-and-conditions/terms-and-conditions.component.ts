@@ -15,6 +15,9 @@ export class TermsAndConditionsComponent implements OnInit, OnDestroy {
   private readonly subscriptions = new Subscription();
 
   public isTandCEnabled: boolean = false;
+  public readonly introWithPrivacyPolicyText =
+    'By accessing this service (‘the Service’), you’re agreeing to the following terms of use. This includes the %privacyPolicyLink%.';
+  public readonly privacyPolicyLinkHtml = '<a href="/privacy-policy">privacy policy</a>';
   public readonly accessingServiceIntroText =
     'By accessing this service (‘the Service’), you’re agreeing to the following terms of use. This includes the';
   public readonly serviceIncludesText =

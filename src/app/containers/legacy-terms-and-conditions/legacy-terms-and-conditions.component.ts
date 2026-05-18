@@ -6,6 +6,9 @@ import { Component } from '@angular/core';
   templateUrl: './legacy-terms-and-conditions.component.html',
 })
 export class LegacyTermsAndConditionsComponent {
+  public readonly introWithPrivacyPolicyText =
+    'By accessing this service (‘the Service’), you’re agreeing to the following terms of use. This includes the %privacyPolicyLink%.';
+  public readonly privacyPolicyLinkHtml = '<a href="/privacy-policy">privacy policy</a>';
   public readonly accessingServiceIntroKey =
     'By accessing this service (‘the Service’), you’re agreeing to the following terms of use. This includes the';
   public readonly serviceIncludesKey =

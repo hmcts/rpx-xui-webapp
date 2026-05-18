@@ -4,8 +4,8 @@
     <div class="govuk-grid-row">
       <div class="govuk-grid-column-two-thirds">
         <h1 class="govuk-heading-xl">{{ 'Terms and conditions' | rpxTranslate }}</h1>
-        <!-- prettier-ignore -->
-        <p class="govuk-body">{{ accessingServiceIntroKey | rpxTranslate }} <a routerLink="/privacy-policy">{{ 'privacy policy' | rpxTranslate }}</a>.</p>
+
+        <p class="govuk-body" [innerHTML]="introWithPrivacyPolicyText | rpxTranslate: { privacyPolicyLink: privacyPolicyLinkHtml }"></p>
         <p class="govuk-body">
           {{ serviceIncludesKey | rpxTranslate }}
         </p>

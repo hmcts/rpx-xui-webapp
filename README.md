@@ -1,4 +1,4 @@
-# Manage Cases
+# Manage Cases 
 
 To generate a local repo-root `.env` from Azure Key Vault, use the checked-in
 template [`.env.example`](./.env.example) with the population script:

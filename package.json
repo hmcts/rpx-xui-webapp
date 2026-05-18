@@ -162,7 +162,7 @@
     "otplib": "^13.4.0",
     "pegjs": "^0.10.0",
     "prettier": "^3.8.0",
-    "rpx-xui-translation": "1.2.3",
+    "rpx-xui-translation": "1.2.3-unused-package-1",
     "rx-polling-hmcts": "1.1.1",
     "rxjs": "^7.8.1",
     "stream": "^0.0.3",

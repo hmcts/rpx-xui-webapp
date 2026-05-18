@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { BehaviorSubject, Observable, combineLatest, of } from 'rxjs';
-import { map, skipWhile, switchMap } from 'rxjs/operators';
+import { catchError, map, skipWhile, switchMap } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { UserDetails } from '../../../app/models/user-details.model';
 import { WAVerificationModel } from '../../../app/models/wa-verification-model';
@@ -149,9 +149,13 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   private filterNavItemsOnRole(items: NavigationItem[]): Observable<NavigationItem[]> {
     items = items || [];
     const userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
-    const waSupportedCategories$ = this.wasupportedRoleDetailsService.getWASupportedRoleCategories();
-    const waSupportedRoleTypes$ = this.wasupportedRoleDetailsService.getWASupportedRoleTypes();
-    const waSupportedJurisdictions$ = this.wasupportedJurisdictionsService.getWASupportedJurisdictions();
+    const waSupportedCategories$ = this.wasupportedRoleDetailsService
+      .getWASupportedRoleCategories()
+      .pipe(catchError(() => of([])));
+    const waSupportedRoleTypes$ = this.wasupportedRoleDetailsService.getWASupportedRoleTypes().pipe(catchError(() => of([])));
+    const waSupportedJurisdictions$ = this.wasupportedJurisdictionsService
+      .getWASupportedJurisdictions()
+      .pipe(catchError(() => of([])));
     return combineLatest([userDetails$, waSupportedCategories$, waSupportedRoleTypes$, waSupportedJurisdictions$]).pipe(
       skipWhile(([details]) => !details || !('userInfo' in details)),
       map(([userDetails, waSupportedCategories, waSupportedRoleTypes, waSupportedJurisdictions]) => {

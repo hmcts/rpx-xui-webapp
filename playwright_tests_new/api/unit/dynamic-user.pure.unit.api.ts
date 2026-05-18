@@ -250,10 +250,8 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
       password: 'staff-admin-2-secret',
     });
 
-    expect(resolveRuntimeUserCredentialsForIdentifier('IAC_Judge_WA_R1')).toEqual({
-      email: 'staff-admin-2@example.test',
-      password: 'staff-admin-2-secret',
-    });
+    expect(resolveRuntimeUserCredentialsForIdentifier('IAC_Judge_WA_R1')).toBeUndefined();
+    expect(resolveRuntimeUserCredentialsForIdentifier('IAC_CaseOfficer_R1')).toBeUndefined();
 
     process.env.PW_IAC_CASEOFFICER_R1_EMAIL = 'iac-caseofficer-r1@example.test';
     process.env.PW_IAC_CASEOFFICER_R1_PASSWORD = 'iac-caseofficer-r1-secret';

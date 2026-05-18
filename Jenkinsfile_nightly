@@ -33,7 +33,7 @@ properties([
     ])
 ])
 
-@Library("Infrastructure@DTSPO-32024")
+@Library("Infrastructure@xui-jenkins-8cpu-agent")
 
 def type      = "nodejs"
 def product   = "xui"

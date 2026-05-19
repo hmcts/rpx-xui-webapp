@@ -37,11 +37,12 @@ export const successCallback = (req: EnhancedRequest, res: Response, next: NextF
   const { accessToken } = user.tokenset;
   const cookieToken = getConfigValue(COOKIES_TOKEN);
   const cookieUserId = getConfigValue(COOKIES_USER_ID);
+  const secureCookie = showFeature(FEATURE_SECURE_COOKIE_ENABLED);
 
   logger.info('Setting session and cookies');
 
-  res.cookie(cookieUserId, userinfo.uid, { sameSite: 'strict' });
-  res.cookie(cookieToken, accessToken, { sameSite: 'strict' });
+  res.cookie(cookieUserId, userinfo.uid, { sameSite: 'strict', httpOnly: true, secure: secureCookie });
+  res.cookie(cookieToken, accessToken, { sameSite: 'strict', httpOnly: true, secure: secureCookie });
 
   if (!req.isRefresh) {
     return res.redirect('/');
@@ -81,6 +82,8 @@ export const getXuiNodeMiddleware = () => {
       '/api/role-access/roles/getJudicialUsers',
       '/workallocation/getJudicialUsers',
       '/workallocation/caseworker/getUsersByServiceName',
+      '/workallocation/caseworker/getUsersByIdamIds',
+      '/workallocation/caseworker/getUserByIdamId',
       '/api/prd/judicial/searchJudicialUserByPersonalCodes',
       '/api/prd/judicial/searchJudicialUserByIdamId',
     ],

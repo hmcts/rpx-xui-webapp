@@ -5,8 +5,11 @@ import { UserUtils } from './user.utils.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const sessionPath = path.resolve(__dirname, '../../.sessions/');
+const workspaceEnvPath = path.resolve(__dirname, '../../../.env');
 
-// This needs to be placed somewhere before attempting to access any environment variables
+// Load the workspace root .env regardless of the process working directory.
+dotenv.config({ path: workspaceEnvPath });
+// Preserve compatibility for ad-hoc runs that provide a local .env in the current directory.
 dotenv.config();
 
 // This should be removed when we move to API based user creation

@@ -16,6 +16,8 @@ type TagFilterConfig = {
 export type ResolvedTagFilters = {
   includeTags: string[];
   excludedTags: string[];
+  globalExcludedTags: string[];
+  ignoredGlobalExcludedTags: string[];
   availableTags: string[];
   grep?: RegExp;
   grepInvert?: RegExp;
@@ -31,6 +33,9 @@ export type ResolveTagFiltersOptions = {
   configPathEnvVar: string;
   defaultConfigPath: string;
   suiteTag?: string;
+  globalExcludedTagsEnvVar?: string;
+  ignoreGlobalExcludesEnvVar?: string;
+  globalExcludedTagsPattern?: RegExp;
 };
 
 /**
@@ -153,6 +158,76 @@ function normalizeConfiguredTags(rawTags?: string[]): string[] {
   return splitTagInput(rawTags?.join(','));
 }
 
+function mergeTags(...tagGroups: string[][]): string[] {
+  const seen = new Set<string>();
+  const merged: string[] = [];
+  for (const tags of tagGroups) {
+    for (const tag of tags) {
+      if (seen.has(tag)) {
+        continue;
+      }
+      seen.add(tag);
+      merged.push(tag);
+    }
+  }
+  return merged;
+}
+
+function matchesTagPattern(tag: string, pattern: RegExp): boolean {
+  pattern.lastIndex = 0;
+  return pattern.test(tag);
+}
+
+function resolveGlobalExcludedTags({
+  env,
+  globalExcludedTagsEnvVar,
+  ignoreGlobalExcludesEnvVar,
+  globalExcludedTagsPattern,
+}: {
+  env: EnvMap;
+  globalExcludedTagsEnvVar?: string;
+  ignoreGlobalExcludesEnvVar?: string;
+  globalExcludedTagsPattern?: RegExp;
+}): {
+  globalExcludedTags: string[];
+  ignoredGlobalExcludedTags: string[];
+  ignoreGlobalExcludes: boolean;
+} {
+  if (!globalExcludedTagsEnvVar) {
+    return {
+      globalExcludedTags: [],
+      ignoredGlobalExcludedTags: [],
+      ignoreGlobalExcludes: false,
+    };
+  }
+
+  const ignoreGlobalExcludes = resolveBooleanEnvFlag(env[ignoreGlobalExcludesEnvVar ?? 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES']);
+  const configuredGlobalTags = splitTagInput(env[globalExcludedTagsEnvVar]).filter((tag) => tag !== '@none');
+
+  if (ignoreGlobalExcludes) {
+    return {
+      globalExcludedTags: [],
+      ignoredGlobalExcludedTags: configuredGlobalTags,
+      ignoreGlobalExcludes,
+    };
+  }
+
+  if (!globalExcludedTagsPattern) {
+    return {
+      globalExcludedTags: configuredGlobalTags,
+      ignoredGlobalExcludedTags: [],
+      ignoreGlobalExcludes,
+    };
+  }
+
+  const globalExcludedTags = configuredGlobalTags.filter((tag) => matchesTagPattern(tag, globalExcludedTagsPattern));
+  return {
+    globalExcludedTags,
+    ignoredGlobalExcludedTags: configuredGlobalTags.filter((tag) => !globalExcludedTags.includes(tag)),
+    ignoreGlobalExcludes,
+  };
+}
+
 function readTagFilterConfig(configPath: string): TagFilterConfig {
   try {
     const raw = readFileSync(configPath, 'utf8');
@@ -249,6 +324,9 @@ export function resolveTagFilters({
   configPathEnvVar,
   defaultConfigPath,
   suiteTag,
+  globalExcludedTagsEnvVar,
+  ignoreGlobalExcludesEnvVar,
+  globalExcludedTagsPattern,
 }: ResolveTagFiltersOptions): ResolvedTagFilters {
   const includeTags = splitTagInput(env[includeTagsEnvVar]);
   const configPath = resolveTagFilterConfigPath(env, configPathEnvVar, defaultConfigPath);
@@ -269,6 +347,13 @@ export function resolveTagFilters({
     : overrideExcludedTags.length > 0
       ? overrideExcludedTags
       : configuredExcludedTags;
+  const { globalExcludedTags, ignoredGlobalExcludedTags, ignoreGlobalExcludes } = resolveGlobalExcludedTags({
+    env,
+    globalExcludedTagsEnvVar,
+    ignoreGlobalExcludesEnvVar,
+    globalExcludedTagsPattern,
+  });
+  const combinedExcludedTags = mergeTags(excludedTags, globalExcludedTags);
 
   validateKnownTags({
     tags: configuredExcludedTags,
@@ -288,13 +373,19 @@ export function resolveTagFilters({
     tagSource: excludedTagsEnvVar,
     configPath,
   });
+  validateKnownTags({
+    tags: globalExcludedTags,
+    allowedTags: allowedTagSet,
+    tagSource: globalExcludedTagsEnvVar ?? 'Global excluded tags',
+    configPath,
+  });
 
   const normalizedIncludeTags = normalizeIncludedTags(includeTags, suiteTag);
   if (suiteTag) {
     validateNonEmptyTaggedSelection({
       env,
       includeTags: normalizedIncludeTags,
-      excludedTags,
+      excludedTags: combinedExcludedTags,
       availableTags,
       suiteTag,
       includeTagsEnvVar,
@@ -304,12 +395,39 @@ export function resolveTagFilters({
 
   return {
     includeTags: normalizedIncludeTags,
-    excludedTags,
+    excludedTags: combinedExcludedTags,
+    globalExcludedTags,
+    ignoredGlobalExcludedTags,
     availableTags,
     grep: buildTagRegex(normalizedIncludeTags),
-    grepInvert: buildTagRegex(excludedTags),
-    excludedTagsSource: overrideExcludedTags.length > 0 || clearExcludedTagsOverride ? 'env' : 'file',
+    grepInvert: buildTagRegex(combinedExcludedTags),
+    excludedTagsSource:
+      overrideExcludedTags.length > 0 || clearExcludedTagsOverride || globalExcludedTags.length > 0 || ignoreGlobalExcludes
+        ? 'env'
+        : 'file',
     configPath,
     suiteTag,
   };
+}
+
+function formatTagLogValue(tags: string[]): string {
+  return tags.length ? tags.join(',') : '<none>';
+}
+
+export function logResolvedTagFilters(suiteName: string, filters: ResolvedTagFilters, env: EnvMap = process.env): void {
+  if (!env.CI && !resolveBooleanEnvFlag(env.PLAYWRIGHT_LOG_TAG_FILTERS)) {
+    return;
+  }
+
+  process.stdout.write(
+    [
+      `[playwright-tags] ${suiteName}`,
+      `include=${formatTagLogValue(filters.includeTags)}`,
+      `exclude=${formatTagLogValue(filters.excludedTags)}`,
+      `globalApplied=${formatTagLogValue(filters.globalExcludedTags)}`,
+      `globalIgnored=${formatTagLogValue(filters.ignoredGlobalExcludedTags)}`,
+      `source=${filters.excludedTagsSource}`,
+      `config=${path.relative(process.cwd(), filters.configPath)}`,
+    ].join(' | ') + '\n'
+  );
 }

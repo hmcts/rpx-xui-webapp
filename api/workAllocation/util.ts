@@ -39,6 +39,7 @@ import { Person, PersonRole } from './interfaces/person';
 import { RoleCaseData } from './interfaces/roleCaseData';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { StaffProfile, StaffUserDetails } from './interfaces/staffUserDetails';
+import { Task } from './interfaces/task';
 
 export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
   return `${baseUrl}/task/${taskId}`;
@@ -81,9 +82,9 @@ export function prepareGetSpecificLocationUrl(baseUrl: string, epimmsId: string)
   return `${baseUrl}/refdata/location/court-venues?epimms_id=${epimmsId}`;
 }
 
-export function prepareGetUsersUrl(baseUrl: string, service: string): string {
-  const pageSize = Number.parseInt(getConfigValue(CASEWORKER_PAGE_SIZE));
-  return `${baseUrl}/refdata/internal/staff/usersByServiceName?ccd_service_names=${service}&page_size=${pageSize}`;
+export function prepareGetUsersUrl(baseUrl: string, service: string, pageNumber: number = 0): string {
+  const pageSize = parseInt(getConfigValue(CASEWORKER_PAGE_SIZE));
+  return `${baseUrl}/refdata/internal/staff/usersByServiceName?ccd_service_names=${service}&page_size=${pageSize}&page_number=${pageNumber}`;
 }
 
 export function prepareRoleApiUrl(baseUrl: string) {
@@ -1019,6 +1020,9 @@ export function getAppropriateLocation(services: string[], locations: Location[]
 }
 
 export function searchAndReturnRefinedUsers(services: string[], term: string, users: CachedCaseworker[]): Caseworker[] {
+  if (!users) {
+    return [];
+  }
   if (services) {
     // filter out the caseworkers who are of the services required
     users = users.filter((user) => services.some((service) => user.services?.includes(service)));
@@ -1044,4 +1048,20 @@ export function searchAndReturnRefinedUsers(services: string[], term: string, us
     });
   }
   return filteredCaseworkers;
+}
+
+export function getAssigneeIdsFromTasks(tasks: Task[]): string[] {
+  if (!tasks?.length) {
+    return [];
+  }
+  const assignees = tasks.map((task) => task.assignee).filter((id) => !!id);
+  return [...new Set(assignees)];
+}
+
+export function getAssigneeIdsFromCases(cases: Case[]): string[] {
+  if (!cases?.length) {
+    return [];
+  }
+  const assignees = cases.map((caseItem) => caseItem.assignee).filter((id) => !!id);
+  return [...new Set(assignees)];
 }

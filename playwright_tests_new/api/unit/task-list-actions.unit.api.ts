@@ -174,9 +174,9 @@ test.describe('Task list action helper unit tests', { tag: '@svc-internal' }, ()
           },
         },
         'unit stale task api failure',
-        { timeoutMs: 1, pollMs: 50 }
+        { timeoutMs: 100, pollMs: 50 }
       )
-    ).rejects.toThrow('Timed out after 1ms waiting for task row (unit stale task api failure)');
+    ).rejects.toThrow('Timed out after 100ms waiting for task row (unit stale task api failure)');
 
     expect(waitIntervals.length).toBeGreaterThan(0);
   });

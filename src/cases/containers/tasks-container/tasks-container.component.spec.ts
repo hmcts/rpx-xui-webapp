@@ -129,7 +129,7 @@ const cv = {
 describe('TasksContainerComponent', () => {
   const mockAlertService = jasmine.createSpyObj('alertService', ['success', 'setPreserveAlerts', 'error']);
   const mockWACaseService = jasmine.createSpyObj('waCaseService', ['getTasksByCaseId']);
-  const mockCaseworkerService = jasmine.createSpyObj('caseworkerService', ['getUsersByIdamIds']);
+  const mockCaseworkerService = jasmine.createSpyObj('caseworkerService', ['getUsersFromServices']);
   const mockRoleService = jasmine.createSpyObj('mockRolesService', ['getCaseRolesUserDetails']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
@@ -182,7 +182,7 @@ describe('TasksContainerComponent', () => {
     fixture = TestBed.createComponent(TasksContainerComponent);
     component = fixture.componentInstance;
     mockWACaseService.getTasksByCaseId.and.returnValue(of(getMockTasks()));
-    mockCaseworkerService.getUsersByIdamIds.and.returnValue(of([]));
+    mockCaseworkerService.getUsersFromServices.and.returnValue([]);
     mockRoleService.getCaseRolesUserDetails.and.returnValue(of(getMockTasks()));
     fixture.detectChanges();
   });

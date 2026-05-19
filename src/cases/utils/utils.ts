@@ -30,6 +30,10 @@ export class Utils {
     return caseRoles.filter((role) => role.roleCategory === RoleCategory.JUDICIAL).map((caseRole) => caseRole.actorId);
   }
 
+  public static getNonJudicialUserIds(caseRoles: CaseRole[]): string[] {
+    return caseRoles.filter((role) => role.roleCategory !== RoleCategory.JUDICIAL).map((caseRole) => caseRole.actorId);
+  }
+
   public static getJudicialUserIdsFromExclusions(exclusions: RoleExclusion[]): string[] {
     return exclusions
       .filter((role) => role.userType.toUpperCase() === RoleCategory.JUDICIAL)

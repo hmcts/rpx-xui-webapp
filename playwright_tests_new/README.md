@@ -299,7 +299,7 @@ API tests are located in `api/` and replace the legacy Mocha `yarn test:api` run
   - `TEST_URL` (e.g. `https://manage-case.aat.platform.hmcts.net/`)
   - `TEST_ENV` (`aat`/`demo`)
   - IDAM/S2S endpoints used by `@hmcts/playwright-common`: `IDAM_WEB_URL`, `IDAM_TESTING_SUPPORT_URL`, `S2S_URL`, optional `S2S_SECRET`
-- User credentials are read from `common/apiTestConfig.ts` for the selected `TEST_ENV`
+- User credentials are resolved from `api/utils/apiTestRuntimeConfig.ts` for the selected `TEST_ENV`
 
 ### Running API Tests
 
@@ -1015,4 +1015,4 @@ export function isSessionFresh(
 
 - `api/utils/auth.ts` - API authentication helper
 - `api/data/testIds.ts` - Environment-driven test IDs
-- `common/apiTestConfig.ts` - User credentials and configuration
+- `api/utils/apiTestRuntimeConfig.ts` - Runtime user credential and environment configuration

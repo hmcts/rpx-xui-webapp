@@ -406,7 +406,7 @@ export function mapUserLocation(baseLocation: LocationApi[]): Location {
   return thisBaseLocation;
 }
 
-export function prepareRoleApiRequest(_jurisdictions?: string[]): any {
+export function prepareRoleApiRequest(): any {
   const payload = {
     roleName: ['hmcts-admin', 'hmcts-ctsc', 'hmcts-legal-operations'],
     roleType: ['ORGANISATION'],

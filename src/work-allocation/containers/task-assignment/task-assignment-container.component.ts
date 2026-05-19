@@ -2,7 +2,7 @@ import { Location as StateLocation } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
+import { SessionStorageService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { Person, PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Subscription } from 'rxjs';
 
@@ -86,7 +86,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     this.isJudicial = this.isCurrentUserJudicial();
     // Get the task from the route, which will have been put there by the resolver.
-    const task = this.route.snapshot.data.taskAndCaseworkers.task.task;
+    const task = this.route.snapshot.data.taskAndCaseworker.task.task;
     this.assignedUser = task.assignee;
     this.tasks = [task];
     this.verb = this.route.snapshot.data.verb as TaskActionType;
@@ -101,7 +101,10 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   public isCurrentUserJudicial(): boolean {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      if (!userInfo) {
+        return false;
+      }
       // EXUI-2907 - Role category is used instead of roles
       return userInfo.roleCategory === RoleCategory.JUDICIAL;
     }

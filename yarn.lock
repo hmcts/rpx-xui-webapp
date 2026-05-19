@@ -3376,12 +3376,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.53":
-  version: 7.3.53
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.53"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.54-unused-package":
+  version: 7.3.54-unused-package
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.54-unused-package"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/0e7eee21e7c8b5ba347f5ec327cfccb2ee0f9e5c5e0d23a2cf5e2efc513c8553fffcb2b75113d5de40430bfdf8b936adbd5281295f825164624f65839637475f
+  checksum: 10/7243353aaa51579d9e39048008e23bdeb782ab4a00303def01d984f2c9cbc7cc04e921bfd10c1ceb81622dfe3607bfd61fc2e9dde65fdf84031e26dcf52146bf
   languageName: node
   linkType: hard
 
@@ -3491,16 +3491,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/rpx-xui-common-lib@npm:3.2.9":
-  version: 3.2.9
-  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.9"
+"@hmcts/rpx-xui-common-lib@npm:3.2.10-unused-package":
+  version: 3.2.10-unused-package
+  resolution: "@hmcts/rpx-xui-common-lib@npm:3.2.10-unused-package"
   dependencies:
     tslib: "npm:^2.0.0"
   peerDependencies:
     launchdarkly-js-client-sdk: ^3.3.0
     ngx-pagination: ^3.2.1
-    rpx-xui-translation: 1.1.2-CME-780-9
-  checksum: 10/7d82a7509c756996f11a5c88f19f2ff79d85e3e90cda2c45f44bfb7dcf76bc7defb1f140b2e951df797cff5261da125ee1c718bb92cea055869e76250f50061e
+    rpx-xui-translation: 1.2.3-unused-package-1
+  checksum: 10/43ad2fa499d9a9855129d4c6b900f5d692c250084e9e039646784c6e06f61131f7a331f2e3fdcdd4a5482ce779bda8f9c478813bbbfe33c1212c0d9fd210d2c8
   languageName: node
   linkType: hard
 
@@ -21332,14 +21332,14 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.53"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.54-unused-package"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.18"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.3.1"
-    "@hmcts/rpx-xui-common-lib": "npm:3.2.9"
+    "@hmcts/rpx-xui-common-lib": "npm:3.2.10-unused-package"
     "@hmcts/rpx-xui-node-lib": "npm:2.30.14"
     "@microsoft/applicationinsights-web": "npm:^3.1.0"
     "@ng-idle/core": "npm:^16.0.0"

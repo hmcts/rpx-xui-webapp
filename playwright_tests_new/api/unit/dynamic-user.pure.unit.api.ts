@@ -79,6 +79,7 @@ const ENV_KEYS = [
   'SEARCH_EMPLOYMENT_CASE_PASSWORD',
   'EMPLOYMENT_DYNAMIC_CASEWORKER_USERNAME',
   'EMPLOYMENT_DYNAMIC_CASEWORKER_PASSWORD',
+  'STAFF_ADMIN_POOL_ENABLED',
   'TEST_PARALLEL_INDEX',
   'TEST_WORKER_INDEX',
 ] as const;
@@ -231,6 +232,7 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
   test('runtime credential resolution supports CI fallback aliases', () => {
     process.env.STAFF_ADMIN_2_USERNAME = 'staff-admin-2@example.test';
     process.env.STAFF_ADMIN_2_PASSWORD = 'staff-admin-2-secret';
+    process.env.STAFF_ADMIN_POOL_ENABLED = 'true';
     process.env.TEST_PARALLEL_INDEX = '1';
 
     expect(resolveRuntimeUserCredentialsForIdentifier('STAFF_ADMIN')).toEqual({

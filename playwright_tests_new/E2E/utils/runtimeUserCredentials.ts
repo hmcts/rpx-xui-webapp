@@ -168,6 +168,10 @@ const staffAdminPoolIdentifiers = ['STAFF_ADMIN-1', 'STAFF_ADMIN-2', 'STAFF_ADMI
 
 const runtimeUserIdentifierFallbacks: Record<string, string[] | ((env: NodeJS.ProcessEnv) => string[])> = {
   STAFF_ADMIN: (env) => {
+    if (env.STAFF_ADMIN_POOL_ENABLED !== 'true') {
+      return [];
+    }
+
     const envIndex = Number(env.TEST_PARALLEL_INDEX ?? env.TEST_WORKER_INDEX);
     const startIndex = Number.isInteger(envIndex) && envIndex >= 0 ? envIndex % staffAdminPoolIdentifiers.length : 0;
     return staffAdminPoolIdentifiers.map(

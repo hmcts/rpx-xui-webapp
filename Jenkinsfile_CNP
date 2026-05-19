@@ -626,6 +626,7 @@ withPipeline(type, product, component) {
                             withEnv([
                                 "ORG_USER_ASSIGNMENT_MODE=external",
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
+                                "STAFF_ADMIN_POOL_ENABLED=true",
                                 "FUNCTIONAL_TESTS_WORKERS=2",
                                 "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
                                 "PLAYWRIGHT_SKIP_INSTALL=true",
@@ -733,6 +734,7 @@ withPipeline(type, product, component) {
                             withEnv([
                                 "ORG_USER_ASSIGNMENT_MODE=external",
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
+                                "STAFF_ADMIN_POOL_ENABLED=true",
                                 "FUNCTIONAL_TESTS_WORKERS=2",
                                 "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
                                 "PLAYWRIGHT_SKIP_INSTALL=true",

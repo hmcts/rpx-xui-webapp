@@ -103,6 +103,7 @@ describe('NoC API', (): void => {
       await getNoCQuestions(req, res, next);
 
       expect(handleGetStub).to.have.been.calledOnce;
+      expect(handleGetStub.firstCall.args[0]).to.include('http://localhost:3206');
       expect(handleGetStub.firstCall.args[0]).to.include('/noc/noc-questions?case_id=1234567890123456');
       expect(handleGetStub.firstCall.args[1]).to.equal(req);
       expect(res.status).to.have.been.calledWith(200);
@@ -179,6 +180,27 @@ describe('NoC API', (): void => {
       expect(next).to.have.been.calledWith(transformedError);
       expect(res.status).to.not.have.been.called;
       expect(res.send).to.not.have.been.called;
+    });
+
+    it('should fall back to case assignment when PCS does not own the case', async () => {
+      const mockResponse = createMockResponse(200, mockNoCQuestions);
+      const pcsNotFoundError = {
+        response: {
+          status: 404,
+          data: { code: 'case-not-found' },
+        },
+      };
+      handleGetStub.onFirstCall().rejects(pcsNotFoundError);
+      handleGetStub.onSecondCall().resolves(mockResponse);
+
+      await getNoCQuestions(req, res, next);
+
+      expect(handleGetStub).to.have.been.calledTwice;
+      expect(handleGetStub.firstCall.args[0]).to.include('http://localhost:3206');
+      expect(handleGetStub.secondCall.args[0]).to.include('/noc/noc-questions?case_id=1234567890123456');
+      expect(handleGetStub.secondCall.args[0]).not.to.include('http://localhost:3206');
+      expect(res.status).to.have.been.calledWith(200);
+      expect(res.send).to.have.been.calledWith(mockNoCQuestions);
     });
 
     it('should handle network errors', async () => {

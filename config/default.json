@@ -110,6 +110,9 @@
     "judicialBookingApi": "http://am-judicial-booking-service-prod.service.core-compute-prod.internal",
     "lau": {
       "specificChallengedAccessApi": "http://lau-case-backend-prod.service.core-compute-prod.internal"
+    },
+    "pcs": {
+      "nocApi": "http://localhost:3206"
     }
   },
   "protocol": "https",

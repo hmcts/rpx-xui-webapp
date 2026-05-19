@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
-import { EMPTY, Observable, of } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import * as fromActions from '../../../app/store/actions';
-import { DecentralisedRedirectService } from '../../../cases/services/decentralised-redirect.service';
 import { NocHttpError } from '../../models';
 import { NocService } from '../../services';
 import * as nocActions from '../actions/noc.action';
@@ -13,8 +12,7 @@ import * as nocActions from '../actions/noc.action';
 export class NocEffects {
   constructor(
     private readonly actions$: Actions,
-    private readonly nocService: NocService,
-    private readonly decentralisedRedirectService: DecentralisedRedirectService
+    private readonly nocService: NocService
   ) {}
 
   public setCaseReference$ = createEffect(() =>
@@ -26,21 +24,7 @@ export class NocEffects {
 
         if (caseReference.length === 16) {
           return this.nocService.getNoCQuestions(caseReference).pipe(
-            switchMap((response) => {
-              // All questions in the response share the same case_type_id, so we can safely use the first question's value
-              const caseType = response.questions?.[0]?.case_type_id;
-              if (
-                caseType &&
-                this.decentralisedRedirectService.tryNocRedirect({
-                  caseType,
-                  caseId: caseReference,
-                })
-              ) {
-                return EMPTY;
-              }
-
-              return of(new nocActions.SetQuestions({ questions: response.questions, caseReference }));
-            }),
+            map((response) => new nocActions.SetQuestions({ questions: response.questions, caseReference })),
             catchError((error) => {
               return NocEffects.handleError(error, nocActions.SET_CASE_REFERENCE);
             })

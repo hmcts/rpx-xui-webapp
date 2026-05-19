@@ -337,6 +337,8 @@ def secrets = [
     secret('e2e-staff-admin-3-password', 'STAFF_ADMIN_3_PASSWORD'),
     secret('e2e-staff-admin-4-username', 'STAFF_ADMIN_4_USERNAME'),
     secret('e2e-staff-admin-4-password', 'STAFF_ADMIN_4_PASSWORD'),
+    secret('staff-admin-username', 'STAFF_ADMIN_USERNAME'),
+    secret('staff-admin-password', 'STAFF_ADMIN_PASSWORD'),
     secret('e2e-hearing-manager-cr84-off-username', 'HEARING_MANAGER_CR84_OFF_USERNAME'),
     secret('e2e-hearing-manager-cr84-off-password', 'HEARING_MANAGER_CR84_OFF_PASSWORD'),
     secret('e2e-hearing-manager-cr84-off-1-username', 'HEARING_MANAGER_CR84_OFF_1_USERNAME'),
@@ -507,7 +509,6 @@ withNightlyPipeline(type, product, component) {
                             withEnv([
                                 'ORG_USER_ASSIGNMENT_MODE=external',
                                 'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
-                                'STAFF_ADMIN_POOL_ENABLED=true',
                                 'FUNCTIONAL_TESTS_WORKERS=2',
                                 'E2E_PW_INCLUDE_TAGS=@nightly',
                                 'E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none',

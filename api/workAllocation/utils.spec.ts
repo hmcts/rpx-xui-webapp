@@ -339,31 +339,15 @@ describe('workAllocation.utils', () => {
   });
 
   describe('prepareRoleApiRequest', () => {
-    it('should correctly prepare a payload with jurisdictions and location parameters', () => {
-      const jurisdictions: string[] = ['IA', 'Not-IA'];
+    it('should correctly prepare a payload', () => {
       const expectedResult = {
-        attributes: {
-          jurisdiction: jurisdictions,
-        },
-        roleName: [
-          'hearing-centre-admin',
-          'case-manager',
-          'ctsc',
-          'tribunal-caseworker',
-          'hmcts-legal-operations',
-          'task-supervisor',
-          'hmcts-admin',
-          'national-business-centre',
-          'senior-tribunal-caseworker',
-          'case-allocator',
-          'regional-centre-admin',
-        ],
+        roleName: ['hmcts-admin', 'hmcts-ctsc', 'hmcts-legal-operations'],
         validAt: Date.UTC,
         roleType: ['ORGANISATION'],
       } as any;
-      const payload = prepareRoleApiRequest(jurisdictions);
+      const payload = prepareRoleApiRequest();
       expect(payload).to.deep.equal(expectedResult);
-      const allRolesPayload = prepareRoleApiRequest(jurisdictions);
+      const allRolesPayload = prepareRoleApiRequest();
       expect(allRolesPayload).to.deep.equal(expectedResult);
     });
   });

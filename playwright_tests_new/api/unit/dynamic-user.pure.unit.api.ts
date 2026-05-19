@@ -240,15 +240,11 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
 
     process.env.DIVORCE_SOLICITOR_USERNAME = 'divorce-flags@example.test';
     process.env.DIVORCE_SOLICITOR_PASSWORD = 'divorce-flags-secret';
-    expect(resolveRuntimeUserCredentialsForIdentifier('USER_WITH_FLAGS')).toEqual({
-      email: 'divorce-flags@example.test',
-      password: 'divorce-flags-secret',
-    });
+    process.env.SEARCH_EMPLOYMENT_CASE_USERNAME = 'search-employment@example.test';
+    process.env.SEARCH_EMPLOYMENT_CASE_PASSWORD = 'search-employment-secret';
+    expect(resolveRuntimeUserCredentialsForIdentifier('USER_WITH_FLAGS')).toBeUndefined();
 
-    expect(resolveRuntimeUserCredentialsForIdentifier('FPL_GLOBAL_SEARCH')).toEqual({
-      email: 'staff-admin-2@example.test',
-      password: 'staff-admin-2-secret',
-    });
+    expect(resolveRuntimeUserCredentialsForIdentifier('FPL_GLOBAL_SEARCH')).toBeUndefined();
 
     expect(resolveRuntimeUserCredentialsForIdentifier('IAC_Judge_WA_R1')).toBeUndefined();
     expect(resolveRuntimeUserCredentialsForIdentifier('IAC_CaseOfficer_R1')).toBeUndefined();

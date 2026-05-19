@@ -174,8 +174,8 @@ const runtimeUserIdentifierFallbacks: Record<string, string[] | ((env: NodeJS.Pr
       (_, offset) => staffAdminPoolIdentifiers[(startIndex + offset) % staffAdminPoolIdentifiers.length]
     );
   },
-  FPL_GLOBAL_SEARCH: ['STAFF_ADMIN', 'SEARCH_EMPLOYMENT_CASE', 'DIVORCE_SOLICITOR'],
-  USER_WITH_FLAGS: ['DIVORCE_SOLICITOR', 'STAFF_ADMIN', 'SOLICITOR'],
+  FPL_GLOBAL_SEARCH: [],
+  USER_WITH_FLAGS: [],
   IAC_JUDGE_WA_R1: ['IAC_CASEOFFICER_R1', 'IAC_CASEOFFICER_R2'],
   IAC_CASEOFFICER_R2: ['IAC_CASEOFFICER_R1'],
   IAC_CASEOFFICER_R1: [],

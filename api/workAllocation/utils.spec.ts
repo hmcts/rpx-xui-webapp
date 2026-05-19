@@ -1273,6 +1273,7 @@ describe('workAllocation.utils', () => {
           },
         ],
         roleCategory: 'LEGAL_OPERATIONS',
+        roleCategories: [{ roleCategory: 'LEGAL_OPERATIONS', services: undefined }],
         services: ['IA', 'CIVIL'],
       },
       {
@@ -1288,6 +1289,10 @@ describe('workAllocation.utils', () => {
           },
         ],
         roleCategory: 'ADMIN',
+        roleCategories: [
+          { roleCategory: 'ADMIN', services: ['IA'] },
+          { roleCategory: 'LEGAL_OPERATIONS', services: undefined },
+        ],
         services: ['PRIVATELAW', 'IA'],
       },
     ];
@@ -1322,6 +1327,14 @@ describe('workAllocation.utils', () => {
       expect(util.getUserRoleCategory(specificMockRole, mockUsers[0].staff_profile, ['PRIVATELAW'])).to.equal('CTSC');
       specificMockRole[0].roleCategory = undefined;
       expect(util.getUserRoleCategory(specificMockRole, mockUsers[0].staff_profile, ['PRIVATELAW'])).to.equal(null);
+    });
+
+    it('should return all role categories for a user', () => {
+      const roleCategories = util.getUserRoleCategories(mockRoleAssignment, mockUsers[1].staff_profile, ['PRIVATELAW', 'IA']);
+      expect(roleCategories).to.deep.equal([
+        { roleCategory: 'ADMIN', services: ['IA'] },
+        { roleCategory: 'LEGAL_OPERATIONS', services: undefined },
+      ]);
     });
 
     it('should correctly get the users location', () => {
@@ -1596,6 +1609,86 @@ describe('workAllocation.utils', () => {
       searchedCaseworkers[0].service = 'IA';
       expect(searchAndReturnRefinedUsers(['IA', 'PRIVATELAW'], 'User', cachedCaseworkers)).to.deep.equal(searchedCaseworkers);
       expect(searchAndReturnRefinedUsers(['IA', 'PRIVATELAW'], 'IA', cachedCaseworkers)).to.deep.equal([searchedCaseworkers[0]]);
+    });
+
+    it('should return role categories that match the requested service and role category filter', () => {
+      const cachedCaseworkers = [
+        {
+          email: 'multi@test.com',
+          firstName: 'Multi',
+          idamId: '1',
+          lastName: 'User',
+          locations: [{ id: 'a', locationName: 'IA location', services: ['IA', 'CIVIL'] }],
+          roleCategory: 'ADMIN',
+          roleCategories: [
+            { roleCategory: 'ADMIN', services: ['IA'] },
+            { roleCategory: 'CTSC', services: ['CIVIL'] },
+            { roleCategory: 'LEGAL_OPERATIONS', services: undefined },
+          ],
+          services: ['IA', 'CIVIL'],
+        },
+      ];
+
+      expect(searchAndReturnRefinedUsers(['IA'], 'Multi', cachedCaseworkers)).to.deep.equal([
+        {
+          email: 'multi@test.com',
+          firstName: 'Multi',
+          idamId: '1',
+          lastName: 'User',
+          location: { id: 'a', locationName: 'IA location', services: ['IA', 'CIVIL'] },
+          roleCategory: 'ADMIN',
+          service: 'IA',
+        },
+        {
+          email: 'multi@test.com',
+          firstName: 'Multi',
+          idamId: '1',
+          lastName: 'User',
+          location: { id: 'a', locationName: 'IA location', services: ['IA', 'CIVIL'] },
+          roleCategory: 'LEGAL_OPERATIONS',
+          service: 'IA',
+        },
+      ]);
+      expect(searchAndReturnRefinedUsers(['CIVIL'], 'Multi', cachedCaseworkers, 'CTSC')).to.deep.equal([
+        {
+          email: 'multi@test.com',
+          firstName: 'Multi',
+          idamId: '1',
+          lastName: 'User',
+          location: { id: 'a', locationName: 'IA location', services: ['IA', 'CIVIL'] },
+          roleCategory: 'CTSC',
+          service: 'CIVIL',
+        },
+      ]);
+      expect(searchAndReturnRefinedUsers(['IA', 'CIVIL'], 'Multi', cachedCaseworkers)).to.deep.equal([
+        {
+          email: 'multi@test.com',
+          firstName: 'Multi',
+          idamId: '1',
+          lastName: 'User',
+          location: { id: 'a', locationName: 'IA location', services: ['IA', 'CIVIL'] },
+          roleCategory: 'ADMIN',
+          service: 'IA',
+        },
+        {
+          email: 'multi@test.com',
+          firstName: 'Multi',
+          idamId: '1',
+          lastName: 'User',
+          location: { id: 'a', locationName: 'IA location', services: ['IA', 'CIVIL'] },
+          roleCategory: 'CTSC',
+          service: 'CIVIL',
+        },
+        {
+          email: 'multi@test.com',
+          firstName: 'Multi',
+          idamId: '1',
+          lastName: 'User',
+          location: { id: 'a', locationName: 'IA location', services: ['IA', 'CIVIL'] },
+          roleCategory: 'LEGAL_OPERATIONS',
+          service: 'IA',
+        },
+      ]);
     });
   });
 

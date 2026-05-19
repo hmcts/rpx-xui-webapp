@@ -584,6 +584,7 @@ export async function getUsersByServiceName(req: EnhancedRequest, res: Response,
     const currentUser: UserInfo = req.session.passport.user.userinfo;
     const term = req.body.term;
     const services = req.body.services;
+    const roleCategories = req.body.roleCategories || req.body.roleCategory;
     let cachedUsers = [];
     let firstEntry = true;
     if (currentUser.roles.includes(PUI_CASE_MANAGER)) {
@@ -594,7 +595,13 @@ export async function getUsersByServiceName(req: EnhancedRequest, res: Response,
         firstEntry = false;
         cachedUsers = FullUserDetailCache.getAllUserDetails();
 
-        cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
+        cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers, roleCategories);
+        logger.info('Returning users from caseworker role cache', {
+          hasTerm: !!term,
+          requestedRoleCategories: roleCategories,
+          requestedServices: services,
+          resultCount: cachedUsers.length,
+        });
         res.send(cachedUsers).status(200);
       }
       // always update the cache after getting the cache if needed
@@ -603,7 +610,7 @@ export async function getUsersByServiceName(req: EnhancedRequest, res: Response,
       if (firstEntry) {
         // if not previously ran ensure the new values are given back to angular layer
         // note: this is now only a safeguard to ensure caching (caching should have run pre login)
-        cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
+        cachedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers, roleCategories);
         res.send(cachedUsers).status(200);
       }
     }

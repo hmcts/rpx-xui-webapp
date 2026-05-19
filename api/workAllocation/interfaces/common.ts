@@ -50,6 +50,12 @@ export interface CachedCaseworker {
   email: string;
   locations: Location[];
   roleCategory: string;
+  roleCategories?: RoleCategoryAssignment[];
+  services?: string[];
+}
+
+export interface RoleCategoryAssignment {
+  roleCategory: string;
   services?: string[];
 }
 

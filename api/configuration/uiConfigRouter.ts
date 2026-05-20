@@ -49,15 +49,20 @@ function getHearingJurisdictions() {
 }
 
 function getDecentralisedWebUrlConfig(): Record<string, { webUrl: string }> {
-  const caseTypeConfig = getConfigValue<Record<string, { webUrl?: string }>>(DECENTRALISED_CASE_TYPE_CONFIG);
+  const caseTypeConfig = getConfigValue<Record<string, { webUrl?: string }>>(DECENTRALISED_CASE_TYPE_CONFIG) || {};
   const webUrlConfig: Record<string, { webUrl: string }> = {};
 
-  if (!caseTypeConfig || typeof caseTypeConfig !== 'object' || Array.isArray(caseTypeConfig)) {
-    return webUrlConfig;
+  if (typeof caseTypeConfig !== 'object' || Array.isArray(caseTypeConfig)) {
+    throw new Error(`${DECENTRALISED_CASE_TYPE_CONFIG} must be an object`);
   }
 
   Object.keys(caseTypeConfig).forEach((caseType) => {
-    const webUrl = caseTypeConfig[caseType].webUrl;
+    const config = caseTypeConfig[caseType];
+    if (!config || typeof config !== 'object' || Array.isArray(config)) {
+      throw new Error(`${DECENTRALISED_CASE_TYPE_CONFIG}.${caseType} must be an object`);
+    }
+
+    const webUrl = config.webUrl;
     if (webUrl) {
       webUrlConfig[caseType] = { webUrl };
     }

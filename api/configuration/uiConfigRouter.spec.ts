@@ -49,6 +49,7 @@ describe('uiConfigRouter', () => {
     setupMenuConfigStub = sandbox.stub(menuConfigs, 'setupMenuConfig');
     setupHearingConfigsStub = sandbox.stub(hearingConfigs, 'setupHearingConfigs');
 
+    getConfigValueStub.withArgs('decentralisedCaseTypeConfig').returns({});
     setupMenuConfigStub.returns(mockMenuConfig);
     setupHearingConfigsStub.returns(mockHearingConfig);
   });
@@ -97,14 +98,12 @@ describe('uiConfigRouter', () => {
       getConfigValueStub.withArgs('services.idam.oauthCallbackUrl').returns('https://callback.url');
       getConfigValueStub.withArgs('protocol').returns('https');
       getConfigValueStub.withArgs('services.payment_return_url').returns('https://payment.return.url');
-      getConfigValueStub
-        .withArgs('decentralisedCaseTypeConfig')
-        .returns({
-          PCS: {
-            webUrl: 'https://pcs-frontend.service.gov.uk',
-            nocBaseUrl: 'http://pcs-api.service.core-compute.internal',
-          },
-        });
+      getConfigValueStub.withArgs('decentralisedCaseTypeConfig').returns({
+        PCS: {
+          webUrl: 'https://pcs-frontend.service.gov.uk',
+          nocBaseUrl: 'http://pcs-api.service.core-compute.internal',
+        },
+      });
       getConfigValueStub.withArgs('services.waWorkflowApi').returns('https://wa.workflow.api');
       getConfigValueStub.withArgs('services.judicialBookingApi').returns('https://judicial.booking.api');
 
@@ -179,6 +178,14 @@ describe('uiConfigRouter', () => {
       setupHearingConfigsStub.throws(new Error('Hearing config error'));
 
       await expect(routeHandler(req, res, next)).to.be.rejectedWith('Hearing config error');
+    });
+
+    it('should fail fast when decentralised case type config is malformed', async () => {
+      getConfigValueStub.returns(undefined);
+      getConfigValueStub.withArgs('services.idam.idamLoginUrl').returns('https://prod.idam.com');
+      getConfigValueStub.withArgs('decentralisedCaseTypeConfig').returns('bad-config');
+
+      await expect(routeHandler(req, res, next)).to.be.rejectedWith('decentralisedCaseTypeConfig must be an object');
     });
   });
 

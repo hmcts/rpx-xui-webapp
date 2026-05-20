@@ -14,7 +14,6 @@ import { RoleCategory } from '../roleAccess/models/allocate-role.enum';
 import { release2ContentType } from '../roleAccess/models/release2ContentType';
 import { Role } from '../roleAccess/models/roleType';
 import { ElasticSearchQuery } from '../searchCases/interfaces/ElasticSearchQuery';
-import { CASE_ALLOCATOR_ROLE } from '../user/constants';
 import { RoleAssignment } from '../user/interfaces/roleAssignment';
 import { exists, reflect } from '../lib/util';
 import {
@@ -25,7 +24,7 @@ import {
 } from './constants/actions';
 import { getCaseListPromises } from './index';
 import { Case, CaseList } from './interfaces/case';
-import { CaseworkerPayload, ServiceCaseworkerData } from './interfaces/caseworkerPayload';
+import { ServiceCaseworkerData } from './interfaces/caseworkerPayload';
 import {
   Action,
   CachedCaseworker,
@@ -40,6 +39,7 @@ import { Person, PersonRole } from './interfaces/person';
 import { RoleCaseData } from './interfaces/roleCaseData';
 import { SearchTaskParameter } from './interfaces/taskSearchParameter';
 import { StaffProfile, StaffUserDetails } from './interfaces/staffUserDetails';
+import { Task } from './interfaces/task';
 
 export function prepareGetTaskUrl(baseUrl: string, taskId: string): string {
   return `${baseUrl}/task/${taskId}`;
@@ -82,9 +82,9 @@ export function prepareGetSpecificLocationUrl(baseUrl: string, epimmsId: string)
   return `${baseUrl}/refdata/location/court-venues?epimms_id=${epimmsId}`;
 }
 
-export function prepareGetUsersUrl(baseUrl: string, service: string): string {
+export function prepareGetUsersUrl(baseUrl: string, service: string, pageNumber: number = 0): string {
   const pageSize = parseInt(getConfigValue(CASEWORKER_PAGE_SIZE));
-  return `${baseUrl}/refdata/internal/staff/usersByServiceName?ccd_service_names=${service}&page_size=${pageSize}`;
+  return `${baseUrl}/refdata/internal/staff/usersByServiceName?ccd_service_names=${service}&page_size=${pageSize}&page_number=${pageNumber}`;
 }
 
 export function prepareRoleApiUrl(baseUrl: string) {
@@ -113,7 +113,7 @@ export function prepareCaseWorkerForLocationAndService(baseUrl: string, location
 
 export function preparePaginationUrl(req: EnhancedRequest, postPath: string): string {
   // Assign actions to the tasks on the data from the API.
-  if (req.body && req.body.searchRequest && req.body.searchRequest.pagination_parameters) {
+  if (req.body?.searchRequest?.pagination_parameters) {
     const paginationConfig = req.body.searchRequest.pagination_parameters;
     const pageSize = paginationConfig.page_size;
     const pageNumber = (paginationConfig.page_number - 1) * pageSize;
@@ -142,7 +142,7 @@ export function assignActionsToUpdatedTasks(tasks: any[], view: any, currentUser
   const activeTasksView = ViewType.ACTIVE_TASKS;
   const tasksWithActions: any[] = [];
   tasks.forEach((task) => {
-    if (task && task.permissions && task.permissions.values) {
+    if (task?.permissions?.values) {
       task.permissions.values = getLoweredStringList(task.permissions.values);
     }
   });
@@ -165,9 +165,7 @@ export function assignActionsToUpdatedTasks(tasks: any[], view: any, currentUser
         }
       }
       const permissions =
-        task.permissions && task.permissions.values && Array.isArray(task.permissions.values)
-          ? task.permissions.values
-          : task.permissions;
+        task.permissions?.values && Array.isArray(task.permissions.values) ? task.permissions.values : task.permissions;
       let actions: Action[] = getActionsByRefinedPermissions(thisView, permissions);
       // EUI-5549 - to do with cases
       if (task.assignee && currentUser !== task.assignee && view === ViewType.ACTIVE_TASKS) {
@@ -250,7 +248,7 @@ export function getSessionCaseworkerInfo(
     const currentCaseworkers = caseworkersByServices.find(
       (caseworkerServiceList) => caseworkerServiceList.service === thisService
     );
-    if (currentCaseworkers && currentCaseworkers.caseworkers) {
+    if (currentCaseworkers?.caseworkers) {
       caseworkersInSession.push(currentCaseworkers);
     } else {
       servicesNotInSession.push(thisService);
@@ -320,7 +318,6 @@ export function getRoleCategory(roleAssignments: RoleAssignment[], caseWorkerApi
 }
 
 export function getUserRoleCategory(roleAssignments: RoleAssignment[], user: StaffProfile, services: string[]): string {
-  // TODO: Will need to be updated
   const roleAssignment = roleAssignments.find(
     (roleAssign) =>
       roleAssign.actorId === user.id &&
@@ -381,17 +378,14 @@ export function mapUserLocation(baseLocation: LocationApi[]): Location {
   return thisBaseLocation;
 }
 
-export function prepareRoleApiRequest(jurisdictions: string[], locationId?: number, allRoles?: boolean): any {
-  let attributes: any = {};
-  if (!allRoles) {
-    attributes = {
-      jurisdiction: jurisdictions,
-    };
-  }
-
+export function prepareRoleApiRequest(jurisdictions: string[]): any {
+  const attributes: any = {
+    jurisdiction: jurisdictions,
+  };
   const payload = {
     attributes,
     // TODO: This should not be hard-coded list
+    // EXUI-3967 - needs review as to where roles should come from
     roleName: [
       'hearing-centre-admin',
       'case-manager',
@@ -408,34 +402,7 @@ export function prepareRoleApiRequest(jurisdictions: string[], locationId?: numb
     roleType: ['ORGANISATION'],
     validAt: Date.UTC,
   };
-  if (locationId) {
-    // TODO: Not sure whether this is even being used
-    payload.attributes.baseLocation = [locationId];
-  }
   return payload;
-}
-
-export function prepareServiceRoleApiRequest(jurisdictions: string[], roles: Role[], locationId?: number): CaseworkerPayload[] {
-  // note that this could be moved to index method if required
-  const roleIds = getRoleIdsFromRoles(roles);
-  const payloads: CaseworkerPayload[] = [];
-  jurisdictions.forEach((jurisdiction) => {
-    const attributes: any = {
-      jurisdiction: [jurisdiction],
-    };
-    if (locationId) {
-      // TODO: Again does not seem to be being used
-      attributes.baseLocation = [locationId];
-    }
-    const payload = {
-      attributes,
-      roleName: roleIds,
-      roleType: ['ORGANISATION'],
-      validAt: Date.UTC,
-    };
-    payloads.push(payload);
-  });
-  return payloads;
 }
 
 export function getRoleIdsFromRoles(roles: Role[]): string[] {
@@ -580,13 +547,13 @@ export function getActionsByPermissions(view, permissions: TaskPermission[]): Ac
 
 export function getActionsFromMatrix(view, permission: TaskPermission, currentActionList: Action[]): Action[] {
   const newActionList = currentActionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX[view][permission]);
-  currentActionList = !newActionList.includes(undefined) ? newActionList : currentActionList;
+  currentActionList = newActionList.includes(undefined) ? currentActionList : newActionList;
   return currentActionList;
 }
 
 export function getActionsFromRefinedMatrix(view, permission: TaskPermission, currentActionList: Action[]): Action[] {
   const newActionList = currentActionList.concat(VIEW_PERMISSIONS_ACTIONS_MATRIX_REFINED[view][permission]);
-  currentActionList = !newActionList.includes(undefined) ? newActionList : currentActionList;
+  currentActionList = newActionList.includes(undefined) ? currentActionList : newActionList;
   return currentActionList;
 }
 
@@ -600,9 +567,9 @@ export function getActionsFromAllocatorRole(isAllocator: boolean): Action[] {
 
 export function applySearchFilter(person: Person, domain: string, searchTerm: any): boolean {
   if (domain === PersonRole.ALL) {
-    return person && person.name.toLowerCase().includes(searchTerm.toLowerCase());
+    return person?.name.toLowerCase().includes(searchTerm.toLowerCase());
   }
-  return person && person.domain === domain && person.name.toLowerCase().includes(searchTerm.toLowerCase());
+  return person?.domain === domain && person.name.toLowerCase().includes(searchTerm.toLowerCase());
 }
 
 export async function handlePost(path: string, payload: any, req: EnhancedRequest): Promise<any> {
@@ -635,7 +602,7 @@ export function filterMyAccessRoleAssignments(roleAssignmentList: RoleAssignment
       (roleAssignment.grantType === 'SPECIFIC' ||
         roleAssignment.roleName === 'specific-access-requested' ||
         roleAssignment.roleName === 'specific-access-denied') &&
-      (!roleAssignment.attributes || roleAssignment.attributes.substantive !== 'Y')
+      roleAssignment.attributes?.substantive !== 'Y'
   );
 }
 
@@ -709,19 +676,6 @@ export async function searchCasesById(queryParams: string, query: any, req: expr
   return null;
 }
 
-// Only called in test function - why is it here?
-export function getCaseAllocatorLocations(roleAssignments: RoleAssignment[]): string[] {
-  return roleAssignments
-    .filter(
-      (roleAssignment) =>
-        roleAssignment.attributes && roleAssignment.attributes.baseLocation && roleAssignment.roleName === CASE_ALLOCATOR_ROLE
-    )
-    .map((roleAssignment) => roleAssignment.attributes.baseLocation)
-    .reduce((acc, locationId) => (acc.includes(locationId) ? acc : `${acc}${locationId},`), '')
-    .split(',')
-    .filter((location) => location.length);
-}
-
 export function constructRoleAssignmentQuery(searchTaskParameters: SearchTaskParameter[]): any {
   searchTaskParameters = [...searchTaskParameters, { key: 'roleType', values: 'CASE', operator: '' }];
   return {
@@ -744,7 +698,7 @@ export function constructRoleAssignmentQuery(searchTaskParameters: SearchTaskPar
             values: param.values.length ? [param.values] : [],
           };
         })
-        .filter((param: SearchTaskParameter) => param.values && param.values.length)
+        .filter((param: SearchTaskParameter) => param.values?.length)
         .reduce((acc: any, param: SearchTaskParameter) => {
           if (param.key === 'jurisdiction') {
             const attributes = acc.attributes || {};
@@ -774,7 +728,7 @@ export function constructRoleAssignmentCaseAllocatorQuery(searchTaskParameters: 
   return {
     queryRequests: [
       newSearchTaskParameters
-        .filter((param: SearchTaskParameter) => param.key === 'actorId' || (param.values && param.values.length))
+        .filter((param: SearchTaskParameter) => param.key === 'actorId' || param.values?.length)
         .map((param: SearchTaskParameter) => {
           if (param.key === 'location_id') {
             param.key = 'baseLocation';
@@ -826,8 +780,7 @@ export function filterByLocationId(cases: Case[], locations: string[]): Case[] {
     ? cases
     : cases.filter(
         (caseDetail: Case) =>
-          caseDetail.case_data.caseManagementLocation &&
-          caseDetail.case_data.caseManagementLocation.baseLocation &&
+          caseDetail.case_data.caseManagementLocation?.baseLocation &&
           locations.includes(caseDetail.case_data.caseManagementLocation.baseLocation)
       );
 }
@@ -842,9 +795,7 @@ export function mapCasesFromData(
   }
   const roleCaseList = [];
   caseDetails.forEach((caseDetail) => {
-    const rolesForCaseId = roleAssignmentList.filter(
-      (role) => role.attributes && caseDetail.id.toString() === role.attributes.caseId
-    );
+    const rolesForCaseId = roleAssignmentList.filter((role) => caseDetail.id.toString() === role.attributes?.caseId);
     rolesForCaseId.forEach((roleAssignment) => {
       const roleCase = mapRoleCaseData(roleAssignment, caseDetail, newRoleAssignmentList);
       roleCaseList.push(roleCase);
@@ -874,12 +825,9 @@ export function mapRoleCaseData(
     jurisdiction: caseDetail.jurisdiction,
     jurisdictionId: caseDetail.jurisdiction,
     role_category: roleAssignment.roleCategory,
-    location_id:
-      caseDetail.case_data &&
-      caseDetail.case_data.caseManagementLocation &&
-      caseDetail.case_data.caseManagementLocation.baseLocation
-        ? caseDetail.case_data.caseManagementLocation.baseLocation
-        : null,
+    location_id: caseDetail.case_data?.caseManagementLocation?.baseLocation
+      ? caseDetail.case_data.caseManagementLocation.baseLocation
+      : null,
     startDate: getStartDate(roleAssignment),
     access: getGrantType(roleAssignment),
     dateSubmitted: roleAssignment.created,
@@ -891,10 +839,9 @@ export function mapRoleCaseData(
     specificAccessReason: roleAssignment.attributes.specificAccessReason,
     requestDate: roleAssignment.attributes.requestDate,
     reviewerRoleCategory: roleAssignment.attributes.reviewerRoleCategory,
-    next_hearing_date:
-      caseDetail.case_data && caseDetail.case_data.nextHearingDetails && caseDetail.case_data.nextHearingDetails.hearingDateTime
-        ? caseDetail.case_data.nextHearingDetails.hearingDateTime
-        : null,
+    next_hearing_date: caseDetail.case_data?.nextHearingDetails?.hearingDateTime
+      ? caseDetail.case_data.nextHearingDetails.hearingDateTime
+      : null,
   };
 }
 
@@ -902,7 +849,7 @@ export function getCaseCategory(caseDetail: Case): string {
   if (caseDetail.case_data?.caseManagementCategory?.value?.label) {
     return caseDetail.case_data.caseManagementCategory.value.label;
   }
-  return caseDetail.case_data && caseDetail.case_data.hmctsCaseCategory ? caseDetail.case_data.hmctsCaseCategory : '';
+  return caseDetail.case_data?.hmctsCaseCategory ? caseDetail.case_data.hmctsCaseCategory : '';
 }
 
 export function checkIsNew(roleAssignment: RoleAssignment, newRoleAssignmentList: RoleAssignment[]): boolean {
@@ -926,7 +873,7 @@ export function getGrantType(roleAssignment: RoleAssignment) {
   ) {
     return 'Specific';
   } else if (roleAssignment.grantType) {
-    return roleAssignment.grantType.replace(/(\w)(\w*)/g, (g0, second, third) => {
+    return roleAssignment.grantType.replaceAll(/(\w)(\w*)/g, (g0, second, third) => {
       return second.toUpperCase() + third.toLowerCase();
     });
   }
@@ -985,7 +932,7 @@ export function formatDate(date: Date) {
 
 export function getAccessType(roleAssignment: RoleAssignment) {
   return roleAssignment.grantType
-    ? roleAssignment.grantType.replace(/\w+/g, (replacableString) => {
+    ? roleAssignment.grantType.replaceAll(/\w+/g, (replacableString) => {
         return replacableString[0].toUpperCase() + replacableString.slice(1).toLowerCase();
       })
     : undefined;
@@ -993,9 +940,9 @@ export function getAccessType(roleAssignment: RoleAssignment) {
 
 export function getCaseName(caseDetail: Case): string {
   let caseName: string = '';
-  if (caseDetail.case_data && caseDetail.case_data.hmctsCaseNameInternal) {
+  if (caseDetail.case_data?.hmctsCaseNameInternal) {
     caseName = caseDetail.case_data.hmctsCaseNameInternal;
-  } else if (caseDetail.case_data && caseDetail.case_data.caseNameHmctsInternal) {
+  } else if (caseDetail.case_data?.caseNameHmctsInternal) {
     caseName = caseDetail.case_data.caseNameHmctsInternal;
   } else {
     caseName = caseDetail.id;
@@ -1026,9 +973,7 @@ export function getCaseDataFromRoleAssignments(roleAssignments: RoleAssignment[]
 }
 
 export function getSubstantiveRoles(roleAssignments: RoleAssignment[]): RoleAssignment[] {
-  return roleAssignments.filter(
-    (roleAssignment: RoleAssignment) => roleAssignment.attributes && roleAssignment.attributes.substantive === 'Y'
-  );
+  return roleAssignments.filter((roleAssignment: RoleAssignment) => roleAssignment.attributes?.substantive === 'Y');
 }
 
 // Note: array type may need to be changed depending on where pagination called
@@ -1075,6 +1020,9 @@ export function getAppropriateLocation(services: string[], locations: Location[]
 }
 
 export function searchAndReturnRefinedUsers(services: string[], term: string, users: CachedCaseworker[]): Caseworker[] {
+  if (!users) {
+    return [];
+  }
   if (services) {
     // filter out the caseworkers who are of the services required
     users = users.filter((user) => services.some((service) => user.services?.includes(service)));
@@ -1100,4 +1048,20 @@ export function searchAndReturnRefinedUsers(services: string[], term: string, us
     });
   }
   return filteredCaseworkers;
+}
+
+export function getAssigneeIdsFromTasks(tasks: Task[]): string[] {
+  if (!tasks?.length) {
+    return [];
+  }
+  const assignees = tasks.map((task) => task.assignee).filter((id) => !!id);
+  return [...new Set(assignees)];
+}
+
+export function getAssigneeIdsFromCases(cases: Case[]): string[] {
+  if (!cases?.length) {
+    return [];
+  }
+  const assignees = cases.map((caseItem) => caseItem.assignee).filter((id) => !!id);
+  return [...new Set(assignees)];
 }

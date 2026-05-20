@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AppUtils } from '../../../app/app-utils';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { UserInfo, UserRole } from '../../../app/models';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { SortOrder } from '../../enums';
@@ -67,7 +68,10 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
 
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      if (!userInfo) {
+        return;
+      }
       const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
       return {
         search_parameters: [
@@ -97,7 +101,7 @@ export class AllWorkCaseComponent extends WorkCaseListWrapperComponent implement
     role: string;
     person: any;
   }): void {
-    this.selectedLocation.id = !selection.location ? '' : selection.location;
+    this.selectedLocation.id = selection.location ? selection.location : '';
     this.selectedServices = [selection.jurisdiction];
     this.selectedPerson = selection.actorId === 'All' ? '' : selection.person.id;
     this.selectedRole = selection.role;

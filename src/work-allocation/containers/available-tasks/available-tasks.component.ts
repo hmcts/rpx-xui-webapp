@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { InfoMessage } from '../../../app/shared/enums/info-message';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { ConfigConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { TaskActionIds, TaskContext } from '../../enums';
 import { FieldConfig } from '../../models/common';
@@ -37,14 +38,13 @@ export class AvailableTasksComponent extends TaskListWrapperComponent {
     return ListConstants.EmptyMessage.AvailableTasks;
   }
 
-  /**
-   * TODO: When implementing filtering this may need to be changed to get location(s) from filter
-   * Override the default.
-   */
   public getSearchTaskRequestPagination(): SearchTaskRequest {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      if (!userInfo) {
+        return;
+      }
       const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
       const searchParameters: SearchTaskParameter[] = [{ key: 'jurisdiction', operator: 'IN', values: this.selectedServices }];
       const locationParameter = this.getLocationParameter();

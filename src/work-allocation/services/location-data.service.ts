@@ -4,17 +4,18 @@ import { Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
 import { SessionStorageService } from '../../app/services';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { Location, LocationByEpimmsModel, LocationsByRegion, Region } from '../models/dtos';
 
 @Injectable({ providedIn: 'root' })
 export class LocationDataService {
-  public static locationUrl: string = '/workallocation/location';
-  public static fullLocationUrl: string = '/workallocation/full-location';
-  public static regionLocationUrl: string = '/workallocation/region-location';
-  public static regionUrl: string = '/workallocation/region';
-  public static allLocationsKey: string = 'allLocations';
-  public static regionLocationsKey: string = 'regionLocations';
-  public static regionsKey: string = 'regions';
+  public static readonly locationUrl: string = '/workallocation/location';
+  public static readonly fullLocationUrl: string = '/workallocation/full-location';
+  public static readonly regionLocationUrl: string = '/workallocation/region-location';
+  public static readonly regionUrl: string = '/workallocation/region';
+  public static readonly allLocationsKey: string = 'allLocations';
+  public static readonly regionLocationsKey: string = 'regionLocations';
+  public static readonly regionsKey: string = 'regions';
   public constructor(
     private readonly http: HttpClient,
     private readonly sessionStorageService: SessionStorageService
@@ -22,8 +23,8 @@ export class LocationDataService {
 
   public getLocations(jurisdictions?: string[]): Observable<Location[]> {
     if (this.sessionStorageService.getItem(LocationDataService.allLocationsKey)) {
-      const locations = JSON.parse(this.sessionStorageService.getItem(LocationDataService.allLocationsKey));
-      return of(locations as Location[]);
+      const locations = safeJsonParse<Location[]>(this.sessionStorageService.getItem(LocationDataService.allLocationsKey), []);
+      return of(locations);
     }
     const options = {
       params: new HttpParams().set('serviceCodes', jurisdictions.join()),
@@ -39,8 +40,11 @@ export class LocationDataService {
 
   public getLocationsByRegion(serviceIds?: string[]): Observable<LocationsByRegion[]> {
     if (this.sessionStorageService.getItem(LocationDataService.regionLocationsKey)) {
-      const locationRegions = JSON.parse(this.sessionStorageService.getItem(LocationDataService.regionLocationsKey));
-      return of(locationRegions as LocationsByRegion[]);
+      const locationRegions = safeJsonParse<LocationsByRegion[]>(
+        this.sessionStorageService.getItem(LocationDataService.regionLocationsKey),
+        []
+      );
+      return of(locationRegions);
     }
     return this.http
       .post<LocationsByRegion[]>(`${LocationDataService.regionLocationUrl}`, { serviceIds })
@@ -55,7 +59,7 @@ export class LocationDataService {
     if (!locationIds || locationIds.length === 0) {
       return of([]);
     }
-    const bookableServices = JSON.parse(this.sessionStorageService.getItem('bookableServices')) || [];
+    const bookableServices = safeJsonParse<string[]>(this.sessionStorageService.getItem('bookableServices'), []);
     const serviceCodes: string[] = bookableServices.length ? bookableServices : locationServices;
     const options = {
       params: new HttpParams().set('serviceCodes', serviceCodes.join()),
@@ -68,8 +72,8 @@ export class LocationDataService {
 
   public getRegions(): Observable<Region[]> {
     if (this.sessionStorageService.getItem(LocationDataService.regionsKey)) {
-      const regions = JSON.parse(this.sessionStorageService.getItem(LocationDataService.regionsKey));
-      return of(regions as Region[]);
+      const regions = safeJsonParse<Region[]>(this.sessionStorageService.getItem(LocationDataService.regionsKey), []);
+      return of(regions);
     }
     return this.http
       .get<Region[]>(`${LocationDataService.regionUrl}`)

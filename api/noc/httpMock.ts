@@ -1,7 +1,8 @@
 import axios, { AxiosInstance } from 'axios';
 import { errorInterceptor, requestInterceptor, successInterceptor } from './interceptorsMock';
 
-// TODO: once mocks are no longer needed this can be replaced by standard http
+// Not actively used - kept for potential future use in tests/mocks but could be removed if not needed
+
 export const httpMock: AxiosInstance = axios.create({});
 
 axios.defaults.headers.common['Content-Type'] = 'application/json';

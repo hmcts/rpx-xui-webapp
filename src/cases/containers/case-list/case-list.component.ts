@@ -17,6 +17,7 @@ import { Store, select } from '@ngrx/store';
 import { BehaviorSubject, Observable, Subject, Subscription, combineLatest, of } from 'rxjs';
 import { mergeMap, takeUntil } from 'rxjs/operators';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import * as fromRoot from '../../../app/store';
 import { OrganisationDetails } from '../../../organisation/models';
 import * as fromStore from '../../../organisation/store';
@@ -185,7 +186,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public setCaseListFilterDefaults = () => {
     this.jurisdictionsBehaviourSubject$.asObservable().subscribe((jurisdictions) => {
       if (jurisdictions.length > 0) {
-        this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
+        this.savedQueryParams = safeJsonParse(localStorage.getItem('savedQueryParams'), null);
         if (
           this.savedQueryParams &&
           this.savedQueryParams.jurisdiction &&
@@ -199,12 +200,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
             case_type_id: this.savedQueryParams['case-type'],
             state_id: null,
           };
-        } else if (
-          jurisdictions[0] &&
-          jurisdictions[0].id &&
-          jurisdictions[0].caseTypes[0] &&
-          jurisdictions[0].caseTypes[0].states[0]
-        ) {
+        } else if (jurisdictions[0]?.id && jurisdictions[0].caseTypes[0]?.states[0]) {
           this.defaults = {
             jurisdiction_id: jurisdictions[0].id,
             case_type_id: jurisdictions[0].caseTypes[0].id,
@@ -306,8 +302,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
       caseTypeGroupFromLS = { id: this.selected.caseType.id };
       caseStateGroupFromLS = { id: this.selected.caseState ? this.selected.caseState.id : null };
     } else if (this.savedQueryParams) {
-      this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
-      formGroupFromLS = JSON.parse(localStorage.getItem('workbasket-filter-form-group-value'));
+      this.savedQueryParams = safeJsonParse(localStorage.getItem('savedQueryParams'), null);
+      formGroupFromLS = safeJsonParse(localStorage.getItem('workbasket-filter-form-group-value'), null);
       jurisdictionFromLS = { id: this.savedQueryParams.jurisdiction };
       caseTypeGroupFromLS = { id: this.savedQueryParams['case-type'] };
       caseStateGroupFromLS = { id: this.savedQueryParams['case-state'] };
@@ -454,10 +450,10 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   private triggerQuery() {
-    if (!this.elasticSearchFlag) {
-      this.findCaseListPaginationMetadata(this.getEvent());
-    } else {
+    if (this.elasticSearchFlag) {
       this.getElasticSearchResults(this.getEvent());
+    } else {
+      this.findCaseListPaginationMetadata(this.getEvent());
     }
   }
 
@@ -483,7 +479,7 @@ export class CaseListComponent implements OnInit, OnDestroy {
     this.store.dispatch(new fromStore.LoadOrganisation());
     this.orgStore.pipe(select(fromStore.getOrganisationSel)).subscribe((response) => {
       this.organisationDetails = response;
-      if (this.organisationDetails && this.organisationDetails.organisationIdentifier) {
+      if (this.organisationDetails?.organisationIdentifier) {
         sessionStorage.setItem('organisationDetails', JSON.stringify(this.organisationDetails));
       }
     });

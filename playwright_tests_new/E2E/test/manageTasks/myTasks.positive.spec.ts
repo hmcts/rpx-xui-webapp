@@ -1,8 +1,8 @@
-import { faker } from '@faker-js/faker';
 import { expect, test } from '../../fixtures';
 import { ensureSessionCookies } from '../../../common/sessionCapture';
+import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
 
-test.describe('Verify the my tasks page tabs appear as expected', () => {
+test.describe('Verify the my tasks page tabs appear as expected', { tag: ['@e2e', '@e2e-manage-tasks'] }, () => {
   test.beforeEach(async ({ page, taskListPage }) => {
     const { cookies } = await ensureSessionCookies('STAFF_ADMIN');
     if (cookies.length) {
@@ -22,7 +22,18 @@ test.describe('Verify the my tasks page tabs appear as expected', () => {
   test('Verify My tasks actions appear as expected', async ({ taskListPage, tableUtils }) => {
     await test.step('Navigate to the task list page', async () => {
       await expect(taskListPage.taskListTable).toBeVisible();
-      await taskListPage.waitForManageButton('my tasks tab', { timeoutMs: 60_000 });
+      await retryOnTransientFailure(
+        async () => {
+          taskListPage.clearApiCalls();
+          await taskListPage.waitForManageButton('my tasks tab', { timeoutMs: 60_000 });
+        },
+        {
+          maxAttempts: 2,
+          onRetry: async () => {
+            await taskListPage.goto();
+          },
+        }
+      );
     });
 
     await test.step('Check my available tasks has data in the table', async () => {
@@ -43,9 +54,20 @@ test.describe('Verify the my tasks page tabs appear as expected', () => {
 
   test('Verify Available tasks actions appear as expected', async ({ taskListPage, tableUtils }) => {
     await test.step('Navigate to the task list page', async () => {
-      await taskListPage.selectWorkMenuItem('Available tasks');
-      await expect(taskListPage.taskListTable).toBeVisible();
-      await taskListPage.waitForManageButton('available tasks tab', { timeoutMs: 60_000 });
+      await retryOnTransientFailure(
+        async () => {
+          taskListPage.clearApiCalls();
+          await taskListPage.selectWorkMenuItem('Available tasks');
+          await expect(taskListPage.taskListTable).toBeVisible();
+          await taskListPage.waitForManageButton('available tasks tab', { timeoutMs: 60_000 });
+        },
+        {
+          maxAttempts: 2,
+          onRetry: async () => {
+            await taskListPage.goto();
+          },
+        }
+      );
     });
 
     await test.step('Check my available tasks has data in the table', async () => {

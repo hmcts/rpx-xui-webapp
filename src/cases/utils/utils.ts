@@ -8,7 +8,7 @@ export class Utils {
   }
 
   public static getFilterType(fieldName: string, metadataFields): string {
-    return metadataFields && metadataFields.indexOf(fieldName) > -1 ? 'metadataFilter' : 'caseFilter';
+    return metadataFields && metadataFields.includes(fieldName) ? 'metadataFilter' : 'caseFilter';
   }
 
   public static sanitiseMetadataFieldName(filterType: string, fieldName: string): string {
@@ -28,6 +28,10 @@ export class Utils {
 
   public static getJudicialUserIds(caseRoles: CaseRole[]): string[] {
     return caseRoles.filter((role) => role.roleCategory === RoleCategory.JUDICIAL).map((caseRole) => caseRole.actorId);
+  }
+
+  public static getNonJudicialUserIds(caseRoles: CaseRole[]): string[] {
+    return caseRoles.filter((role) => role.roleCategory !== RoleCategory.JUDICIAL).map((caseRole) => caseRole.actorId);
   }
 
   public static getJudicialUserIdsFromExclusions(exclusions: RoleExclusion[]): string[] {

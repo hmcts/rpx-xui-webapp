@@ -86,9 +86,9 @@ describe('WorkAllocation', () => {
             useValue: {
               snapshot: {
                 data: {
-                  taskAndCaseworkers: {
+                  taskAndCaseworker: {
                     task: { task: mockTasks[0] },
-                    caseworkers: [],
+                    caseworker: {},
                   },
                   ...TaskActionConstants.Unassign,
                 },
@@ -111,7 +111,6 @@ describe('WorkAllocation', () => {
       router = TestBed.inject(Router);
 
       wrapper.tasks = null;
-      window.history.pushState({ returnUrl: 'mywork/list' }, '', 'mywork/list');
       fixture.detectChanges();
     }));
 
@@ -314,9 +313,9 @@ describe('WorkAllocation', () => {
             useValue: {
               snapshot: {
                 data: {
-                  taskAndCaseworkers: {
+                  taskAndCaseworker: {
                     task: { task: mockTask[0] },
-                    caseworkers: [],
+                    caseworker: {},
                   },
                   ...TaskActionConstants.Unassign,
                 },
@@ -335,7 +334,6 @@ describe('WorkAllocation', () => {
       router = TestBed.inject(Router);
 
       wrapper.tasks = null;
-      window.history.pushState({ returnUrl: 'mywork/list' }, '', 'mywork/list');
       fixture.detectChanges();
     });
 
@@ -402,9 +400,9 @@ describe('WorkAllocation', () => {
             useValue: {
               snapshot: {
                 data: {
-                  taskAndCaseworkers: {
+                  taskAndCaseworker: {
                     task: { task: mockTask[0] },
-                    caseworkers: [],
+                    caseworker: {},
                   },
                   ...TaskActionConstants.Unassign,
                 },
@@ -424,7 +422,6 @@ describe('WorkAllocation', () => {
       router = TestBed.inject(Router);
 
       wrapper.tasks = null;
-      window.history.pushState({ returnUrl: 'mywork/list' }, '', 'mywork/list');
       fixture.detectChanges();
     });
 
@@ -485,9 +482,9 @@ describe('WorkAllocation', () => {
             useValue: {
               snapshot: {
                 data: {
-                  taskAndCaseworkers: {
+                  taskAndCaseworker: {
                     task: { task: mockTask[0] },
-                    caseworkers: [],
+                    caseworker: {},
                   },
                   ...TaskActionConstants.Unassign,
                 },
@@ -504,7 +501,6 @@ describe('WorkAllocation', () => {
       wrapper = fixture.componentInstance;
 
       wrapper.tasks = null;
-      window.history.pushState({ returnUrl: 'mywork/list' }, '', 'mywork/list');
       fixture.detectChanges();
     });
 
@@ -567,9 +563,9 @@ describe('WorkAllocation', () => {
             useValue: {
               snapshot: {
                 data: {
-                  taskAndCaseworkers: {
+                  taskAndCaseworker: {
                     task: { task: mockTask[0] },
-                    caseworkers: [],
+                    caseworker: {},
                   },
                   ...TaskActionConstants.Unassign,
                 },
@@ -587,7 +583,6 @@ describe('WorkAllocation', () => {
       wrapper = fixture.componentInstance;
 
       wrapper.tasks = null;
-      window.history.pushState({ returnUrl: 'mywork/list' }, '', 'mywork/list');
       fixture.detectChanges();
     });
 

@@ -21,7 +21,6 @@ import {
 import { getEmail, getJudicialUsersFromApi, getUserName, mapRoleCategory } from './exclusionService';
 import { CaseRoleRequestPayload } from './models/caseRoleRequestPayload';
 import { release2ContentType } from './models/release2ContentType';
-import { Role } from './models/roleType';
 import { getAllRoles, getSubstantiveRoles } from './roleAssignmentService';
 
 const baseRoleAccessUrl = getConfigValue(SERVICES_ROLE_ASSIGNMENT_API_PATH);
@@ -34,11 +33,7 @@ export async function getRolesByCaseId(req: EnhancedRequest, res: Response, next
   const headers = setHeaders(req, release2ContentType);
   try {
     const response: AxiosResponse = await http.post(fullPath, requestPayload, { headers });
-    const judicialAndLegalOps: CaseRole[] = mapResponseToCaseRoles(
-      response.data.roleAssignmentResponse,
-      req.body.exclusionId,
-      req
-    );
+    const judicialAndLegalOps: CaseRole[] = mapResponseToCaseRoles(response.data.roleAssignmentResponse, req.body.exclusionId);
     const substantiveRoles = await getSubstantiveRoles(req);
     const finalRoles = [];
     judicialAndLegalOps.forEach((unknownRole) => {
@@ -63,7 +58,7 @@ export async function getAccessRoles(req: EnhancedRequest, res: Response, next: 
   const headers = setHeaders(req, release2ContentType);
   try {
     const response: AxiosResponse = await http.post(fullPath, requestPayload, { headers });
-    const finalRoles: CaseRole[] = mapResponseToCaseRoles(response.data.roleAssignmentResponse, req.body.assignmentId, req);
+    const finalRoles: CaseRole[] = mapResponseToCaseRoles(response.data.roleAssignmentResponse, req.body.assignmentId);
     return res.status(response.status).send(finalRoles);
   } catch (error) {
     next(error);
@@ -77,10 +72,10 @@ export async function getAccessRolesByCaseId(req: EnhancedRequest, res: Response
   const headers = setHeaders(req, release2ContentType);
   try {
     const response: AxiosResponse = await http.post(fullPath, requestPayload, { headers });
-    const finalRoles: CaseRole[] = mapResponseToCaseRoles(response.data.roleAssignmentResponse, req.body.assignmentId, req);
+    const finalRoles: CaseRole[] = mapResponseToCaseRoles(response.data.roleAssignmentResponse, req.body.assignmentId);
     if (finalRoles) {
       const rolesResponse = await getAllRoles(req);
-      const roles = rolesResponse.data as Role[];
+      const roles = rolesResponse.data;
       finalRoles?.forEach((finalRole) => {
         const role = roles?.find((role) => role.name === finalRole.roleName);
         if (role) {
@@ -119,7 +114,7 @@ export async function getJudicialUsers(req: EnhancedRequest, res: Response, next
     }
     return res.status(200).send(searchResult);
   } catch (error) {
-    if (error && error.status === 404) {
+    if (error?.status === 404) {
       return res.status(200).send(searchResult);
     }
     next(error);
@@ -158,11 +153,7 @@ export async function manageLabellingRoleAssignment(req: EnhancedRequest, resp: 
   }
 }
 
-export function mapResponseToCaseRoles(
-  roleAssignments: RoleAssignment[],
-  assignmentId: string,
-  req: EnhancedRequest
-): CaseRole[] {
+export function mapResponseToCaseRoles(roleAssignments: RoleAssignment[], assignmentId: string): CaseRole[] {
   if (assignmentId) {
     roleAssignments = roleAssignments.filter((roleAssignment) => roleAssignment.id === assignmentId);
   }
@@ -172,22 +163,20 @@ export function mapResponseToCaseRoles(
       { id: 'remove', title: 'Remove Allocation' },
     ],
     actorId: roleAssignment.actorId,
-    email: roleAssignment.actorId ? getEmail(roleAssignment.actorId, req) : null,
+    email: roleAssignment.actorId ? getEmail(roleAssignment.actorId) : null,
     end: roleAssignment.endTime ? roleAssignment.endTime.toString() : null,
     id: roleAssignment.id,
     roleId: null,
     location: null,
-    name: roleAssignment.actorId ? getUserName(roleAssignment.actorId, req) : null,
+    name: roleAssignment.actorId ? getUserName(roleAssignment.actorId) : null,
     roleCategory: mapRoleCategory(roleAssignment.roleCategory),
     roleName: roleAssignment.roleName,
     start: roleAssignment.beginTime ? roleAssignment.beginTime.toString() : null,
     created: roleAssignment.created ? roleAssignment.created : null,
-    notes:
-      roleAssignment.attributes && roleAssignment.attributes.specificAccessReason
-        ? getSpecificReason(roleAssignment.attributes.specificAccessReason)
-        : 'No reason for case access given',
-    requestedRole:
-      roleAssignment.attributes && roleAssignment.attributes.requestedRole ? roleAssignment.attributes.requestedRole : null,
+    notes: roleAssignment.attributes?.specificAccessReason
+      ? getSpecificReason(roleAssignment.attributes.specificAccessReason)
+      : 'No reason for case access given',
+    requestedRole: roleAssignment.attributes?.requestedRole ? roleAssignment.attributes.requestedRole : null,
   }));
 }
 

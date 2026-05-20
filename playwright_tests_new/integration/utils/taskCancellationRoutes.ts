@@ -1,4 +1,5 @@
 import type { Page, Route } from '@playwright/test';
+import { setupManageTasksBaseRoutes } from '../helpers';
 
 export type CancellationScenario = {
   scenario: string;
@@ -86,18 +87,20 @@ export async function routeMyTaskActionFlow(
         actions: actions.filter((action) => action?.id !== actionId),
       };
 
-  await page.route(/\/workallocation\/task(?:\?.*)?$/, async (route: Route) => {
-    if (route.request().method() !== 'POST') {
-      await route.fallback();
-      return;
-    }
+  await setupManageTasksBaseRoutes(page, {
+    taskListHandler: async (route: Route) => {
+      if (route.request().method() !== 'POST') {
+        await route.fallback();
+        return;
+      }
 
-    const tasks = actionInvoked ? [] : [taskWithActions];
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({ tasks, total_records: tasks.length }),
-    });
+      const tasks = actionInvoked ? [] : [taskWithActions];
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ tasks, total_records: tasks.length }),
+      });
+    },
   });
 
   await page.route(`**/workallocation/task/${taskId}/roles*`, async (route: Route) => {
@@ -110,6 +113,14 @@ export async function routeMyTaskActionFlow(
 
   await page.route('**/workallocation/caseworker/getUsersByServiceName', async (route: Route) => {
     await route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
+  });
+
+  await page.route('**/workallocation/caseworker/getUsersByIdamIds*', async (route: Route) => {
+    await route.fulfill({ status: 200, contentType: 'application/json', body: '[]' });
+  });
+
+  await page.route('**/workallocation/caseworker/getUserByIdamId*', async (route: Route) => {
+    await route.fulfill({ status: 200, contentType: 'application/json', body: '' });
   });
 
   await page.route(`**/workallocation/task/${taskId}/${actionId}*`, async (route: Route) => {
@@ -197,6 +208,42 @@ export async function routeCaseDetailsTaskActionFlow(
           locations: [],
         },
       ]),
+    });
+  });
+
+  await page.route('**/workallocation/caseworker/getUsersByIdamIds*', async (route: Route) => {
+    const assignee = typeof task.assignee === 'string' ? task.assignee : '';
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([
+        {
+          idamId: assignee,
+          firstName: 'Test',
+          lastName: 'User',
+          email: 'test.user@justice.gov.uk',
+          roleCategory: 'LEGAL_OPERATIONS',
+          services: [scenario.jurisdiction],
+          locations: [],
+        },
+      ]),
+    });
+  });
+
+  await page.route('**/workallocation/caseworker/getUserByIdamId*', async (route: Route) => {
+    const assignee = typeof task.assignee === 'string' ? task.assignee : '';
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        idamId: assignee,
+        firstName: 'Test',
+        lastName: 'User',
+        email: 'test.user@justice.gov.uk',
+        roleCategory: 'LEGAL_OPERATIONS',
+        services: [scenario.jurisdiction],
+        locations: [],
+      }),
     });
   });
 

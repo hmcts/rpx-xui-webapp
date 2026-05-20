@@ -30,7 +30,7 @@ export async function getUserDetails(req, res: Response, next: NextFunction): Pr
     const { roles } = rawUserInfo;
     const permissions = CASE_SHARE_PERMISSIONS.split(',');
     const canShareCases = roles?.some((role) => permissions.includes(role));
-    const sessionTimeouts = getConfigValue(SESSION_TIMEOUTS) as RoleGroupSessionTimeout[];
+    const sessionTimeouts = getConfigValue<RoleGroupSessionTimeout[]>(SESSION_TIMEOUTS);
     const sessionTimeout = getUserSessionTimeout(roles, sessionTimeouts);
     const roleAssignmentInfo = await getUserRoleAssignments(rawUserInfo, req);
     const bearerToken = req.session.passport.user.tokenset.accessToken;
@@ -89,13 +89,12 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
     }
     delete headers.accept;
     try {
-      const response: AxiosResponse = await http.get(path, { headers });
-      const activeRoleAssignments = getActiveRoleAssignments(response?.data?.roleAssignmentResponse, new Date());
-      req.session.roleAssignmentResponse = activeRoleAssignments;
-      userRoleAssignments = setUserRoles(userInfo, req, id);
-      req.session.roleRequestEtag = response?.headers?.etag;
-    } catch (error) {
-      if (error.status === 304) {
+      const response: AxiosResponse = await http.get(path, {
+        headers,
+        validateStatus: (status) => (status >= 200 && status < 300) || status === 304,
+      });
+
+      if (response.status === 304) {
         // as user role assignments are not returned use session to send expected results
         trackTrace(`user ${id} details from session:- ${JSON.stringify(req?.session?.userRoleAssignments)}`, {
           functionCall: 'refreshRoleAssignmentForUser',
@@ -103,6 +102,12 @@ export async function refreshRoleAssignmentForUser(userInfo: UserInfo, req: any)
         userRoleAssignments = setUserRoles(userInfo, req, id);
         return userRoleAssignments;
       }
+
+      const activeRoleAssignments = getActiveRoleAssignments(response?.data?.roleAssignmentResponse, new Date());
+      req.session.roleAssignmentResponse = activeRoleAssignments;
+      userRoleAssignments = setUserRoles(userInfo, req, id);
+      req.session.roleRequestEtag = response?.headers?.etag;
+    } catch (error) {
       let err = error;
       if (typeof error === 'object' && error !== null) {
         err = JSON.stringify(error);
@@ -148,7 +153,7 @@ export function extractRoleCategories(userRoleAssignments: any[]): string[] {
 }
 
 export function getActiveRoleAssignments(roleAssignments: RoleAssignment[], filterDate: Date): RoleAssignment[] {
-  const activeRoleAssignments = roleAssignments.filter((rm) => {
+  const activeRoleAssignments = (roleAssignments || []).filter((rm) => {
     return rm?.endTime ? filterDate <= new Date(rm.endTime) : true;
   });
   return activeRoleAssignments;

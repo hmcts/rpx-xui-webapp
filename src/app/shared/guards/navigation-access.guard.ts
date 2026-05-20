@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
-import { combineLatest, Observable, of } from 'rxjs';
-import { catchError, filter, map, switchMap, take, tap } from 'rxjs/operators';
+import { combineLatest, Observable } from 'rxjs';
+import { filter, map, switchMap, take, tap } from 'rxjs/operators';
+import { WAVerificationService } from '../../../work-allocation/services';
 import { AppConstants } from '../../app.constants';
 import { UserDetails } from '../../models';
 import { HeaderConfigService } from '../../services/header-config/header-config.service';
-import { filterNavigationItemsByAccess } from '../utils/navigation-access.utils';
 import * as fromAppStore from '../../store';
-import { WASupportedJurisdictionsService, WASupportedRoleDetailsService } from '../../../work-allocation/services';
+import { filterNavigationItemsByAccess } from '../utils/navigation-access.utils';
 
 interface NavigationAccessGuardData {
   accessDeniedRedirectUrl: string;
@@ -23,8 +23,7 @@ export class NavigationAccessGuard {
     private readonly router: Router,
     private readonly store: Store<fromAppStore.State>,
     private readonly headerConfigService: HeaderConfigService,
-    private readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService,
-    private readonly waSupportedRoleDetailsService: WASupportedRoleDetailsService
+    private readonly waVerificationService: WAVerificationService
   ) {}
 
   public canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
@@ -34,33 +33,15 @@ export class NavigationAccessGuard {
       select(fromAppStore.getUserDetails),
       filter((userDetails: UserDetails) => !!userDetails?.userInfo),
       switchMap((userDetails) => {
-        console.log('in navigation access guard');
         const userRoles = userDetails.userInfo.roles ?? [];
-
-        const waSupportedCategories$ = this.waSupportedRoleDetailsService
-          .getWASupportedRoleCategories()
-          .pipe(catchError(() => of([])));
-
-        const waSupportedRoleTypes$ = this.waSupportedRoleDetailsService.getWASupportedRoleTypes().pipe(catchError(() => of([])));
-
-        const waSupportedJurisdictions$ = this.waSupportedJurisdictionsService
-          .getWASupportedJurisdictions()
-          .pipe(catchError(() => of([])));
-
         return combineLatest([
           this.headerConfigService.constructHeaderConfig(userRoles),
-          waSupportedCategories$,
-          waSupportedRoleTypes$,
-          waSupportedJurisdictions$,
+          this.waVerificationService.getWAVerification(),
         ]).pipe(
-          map(([headerItems, waSupportedCategories, waSupportedRoleTypes, waSupportedJurisdictions]) =>
+          map(([headerItems, waVerification]) =>
             filterNavigationItemsByAccess(headerItems, userRoles, AppConstants.MENU_FLAGS, {
               userDetails,
-              waVerification: {
-                waSupportedCategories,
-                waSupportedRoleTypes,
-                waSupportedJurisdictions,
-              },
+              waVerification,
             })
           ),
           map((headerItems) => headerItems.some((item) => item.href === requiredNavigationHref))

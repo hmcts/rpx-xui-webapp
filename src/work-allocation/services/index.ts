@@ -6,6 +6,7 @@ import { WASupportedJurisdictionsService } from './wa-supported-jurisdiction.ser
 import { WASupportedRoleDetailsService } from './wa-supported-role-details.service';
 import { WorkAllocationCaseService } from './work-allocation-case.service';
 import { WorkAllocationTaskService } from './work-allocation-task.service';
+import { WAVerificationService } from './wa-verification.service';
 
 export {
   CaseworkerDataService,
@@ -16,4 +17,5 @@ export {
   WASupportedRoleDetailsService,
   WorkAllocationCaseService,
   WorkAllocationTaskService,
+  WAVerificationService,
 };

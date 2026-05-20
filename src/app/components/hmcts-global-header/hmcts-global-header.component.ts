@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
-import { catchError, map, skipWhile, switchMap } from 'rxjs/operators';
+import { map, skipWhile, switchMap } from 'rxjs/operators';
 import { UserDetails } from '../../../app/models/user-details.model';
 import * as fromAppStore from '../../../app/store';
 import * as fromNocStore from '../../../noc/store';
@@ -13,7 +13,7 @@ import { LoggerService } from '../../services/logger/logger.service';
 import { UserService } from '../../services/user/user.service';
 import { AppConstants } from 'src/app/app.constants';
 import { filterNavigationItemsByFlags, filterNavigationItemsByRoles } from '../../shared/utils/navigation-access.utils';
-import { WASupportedJurisdictionsService, WASupportedRoleDetailsService } from '../../../work-allocation/services';
+import { WAVerificationService } from '../../../work-allocation/services';
 
 @Component({
   standalone: false,
@@ -62,8 +62,7 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     private readonly userService: UserService,
     private readonly featureToggleService: FeatureToggleService,
     private readonly searchService: SearchService,
-    private readonly wasupportedRoleDetailsService: WASupportedRoleDetailsService,
-    private readonly wasupportedJurisdictionsService: WASupportedJurisdictionsService,
+    private readonly waVerificationService: WAVerificationService,
     private readonly loggerService: LoggerService
   ) {}
 
@@ -135,23 +134,14 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
   private filterNavItemsOnRole(items: NavigationItem[]): Observable<NavigationItem[]> {
     items = items || [];
     const userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
-    const waSupportedCategories$ = this.wasupportedRoleDetailsService
-      .getWASupportedRoleCategories()
-      .pipe(catchError(() => of([])));
-    const waSupportedRoleTypes$ = this.wasupportedRoleDetailsService.getWASupportedRoleTypes().pipe(catchError(() => of([])));
-    const waSupportedJurisdictions$ = this.wasupportedJurisdictionsService
-      .getWASupportedJurisdictions()
-      .pipe(catchError(() => of([])));
-    return combineLatest([userDetails$, waSupportedCategories$, waSupportedRoleTypes$, waSupportedJurisdictions$]).pipe(
+    const waVerification$ = this.waVerificationService.getWAVerification();
+
+    return combineLatest([userDetails$, waVerification$]).pipe(
       skipWhile(([userDetails]) => !userDetails || !('userInfo' in userDetails)),
-      map(([userDetails, waSupportedCategories, waSupportedRoleTypes, waSupportedJurisdictions]) =>
+      map(([userDetails, waVerification]) =>
         filterNavigationItemsByRoles(items, userDetails?.userInfo?.roles, {
           userDetails,
-          waVerification: {
-            waSupportedCategories,
-            waSupportedRoleTypes,
-            waSupportedJurisdictions,
-          },
+          waVerification,
           onRoleMatched: (role, item) =>
             this.loggerService.log(`HmctsGlobalHeaderComponent: matched navigation role ${role} for item ${item.text}`),
         })

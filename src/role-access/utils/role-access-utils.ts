@@ -1,6 +1,7 @@
 import { NavigationExtras } from '@angular/router';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { ISessionStorageService } from '../../work-allocation/interfaces/common';
 import { Role, RoleAccessHttpError, RolesByService, SpecificRole, TypeOfRole } from '../models';
 import { InfoMessageType } from '../models/enums';
@@ -60,8 +61,9 @@ export const getRoles = (serviceId: string, sessionStorageService: ISessionStora
   const sessionKey = getRoleSessionStorageKeyForServiceId(serviceId);
   const value = sessionStorageService.getItem(sessionKey);
   if (value) {
-    return JSON.parse(value) as Role[];
+    return safeJsonParse<Role[]>(value, []);
   }
+  return [];
 };
 
 export const setRoles = (serviceId: string, roles: Role[], sessionStorageService: ISessionStorageService): void => {

@@ -10,6 +10,7 @@ import {
 } from './app.constants';
 import { Theme } from './models/theme.model';
 import { NavigationItem } from './models/theming.model';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { RoleAssignmentInfo, UserDetails, UserRole } from './models/user-details.model';
 import { WAVerificationModel } from './models';
 
@@ -70,7 +71,7 @@ export class AppUtils {
    * @return - ['pui-organisation-manager', 'caseworker-publiclaw', 'caseworker', 'etc...']
    */
   public static getCookieRolesAsArray(userRoles: string): string[] {
-    return JSON.parse(userRoles);
+    return safeJsonParse<string[]>(userRoles, []);
   }
 
   /**

@@ -1,20 +1,19 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
-import { BehaviorSubject, Observable, combineLatest, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, of } from 'rxjs';
 import { catchError, map, skipWhile, switchMap } from 'rxjs/operators';
-import { AppUtils } from '../../../app/app-utils';
 import { UserDetails } from '../../../app/models/user-details.model';
-import { WAVerificationModel } from '../../../app/models/wa-verification-model';
 import * as fromAppStore from '../../../app/store';
 import * as fromNocStore from '../../../noc/store';
 import { SearchStatePersistenceKey } from '../../../search/enums';
 import { SearchService } from '../../../search/services/search.service';
-import { WASupportedJurisdictionsService, WASupportedRoleDetailsService } from '../../../work-allocation/services';
-import { FlagDefinition, NavigationItem, UserNavModel } from '../../models';
+import { NavigationItem, UserNavModel } from '../../models';
 import { LoggerService } from '../../services/logger/logger.service';
 import { UserService } from '../../services/user/user.service';
 import { AppConstants } from 'src/app/app.constants';
+import { filterNavigationItemsByFlags, filterNavigationItemsByRoles } from '../../shared/utils/navigation-access.utils';
+import { WASupportedJurisdictionsService, WASupportedRoleDetailsService } from '../../../work-allocation/services';
 
 @Component({
   standalone: false,
@@ -62,16 +61,16 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     private readonly nocStore: Store<fromNocStore.State>,
     private readonly userService: UserService,
     private readonly featureToggleService: FeatureToggleService,
-    private readonly wasupportedJurisdictionsService: WASupportedJurisdictionsService,
+    private readonly searchService: SearchService,
     private readonly wasupportedRoleDetailsService: WASupportedRoleDetailsService,
-    private readonly loggerService: LoggerService,
-    private readonly searchService: SearchService
+    private readonly wasupportedJurisdictionsService: WASupportedJurisdictionsService,
+    private readonly loggerService: LoggerService
   ) {}
 
   public ngOnInit(): void {
     this.userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
     this.isUserCaseManager$ = this.userDetails$.pipe(
-      skipWhile((details) => !('userInfo' in details)),
+      skipWhile((details) => !details || !('userInfo' in details)),
       map((details) => details?.userInfo?.roles),
       map((roles) => {
         const givenRoles = [
@@ -133,19 +132,6 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
     };
   }
 
-  private isNavRoleSupported(
-    waVerification: WAVerificationModel,
-    role: string,
-    userDetails: UserDetails,
-    item: NavigationItem
-  ): boolean {
-    const roleSupported = AppUtils.checkRoleIsSupported(waVerification, role, userDetails);
-    if (roleSupported) {
-      this.loggerService.log(`HmctsGlobalHeaderComponent: matched navigation role ${role} for item ${item.text}`);
-    }
-    return roleSupported;
-  }
-
   private filterNavItemsOnRole(items: NavigationItem[]): Observable<NavigationItem[]> {
     items = items || [];
     const userDetails$ = this.appStore.pipe(select(fromAppStore.getUserDetails));
@@ -157,59 +143,23 @@ export class HmctsGlobalHeaderComponent implements OnInit, OnChanges {
       .getWASupportedJurisdictions()
       .pipe(catchError(() => of([])));
     return combineLatest([userDetails$, waSupportedCategories$, waSupportedRoleTypes$, waSupportedJurisdictions$]).pipe(
-      skipWhile(([details]) => !details || !('userInfo' in details)),
-      map(([userDetails, waSupportedCategories, waSupportedRoleTypes, waSupportedJurisdictions]) => {
-        const waVerification: WAVerificationModel = {
-          waSupportedCategories,
-          waSupportedRoleTypes,
-          waSupportedJurisdictions,
-        };
-        const i = items.filter((item) =>
-          item.roles && item.roles.length > 0
-            ? item.roles.some((role) => this.isNavRoleSupported(waVerification, role, userDetails, item))
-            : true
-        );
-        return i.filter((item) =>
-          item.notRoles && item.notRoles.length > 0
-            ? item.notRoles.every((role) => !AppUtils.checkRoleIsSupported(waVerification, role, userDetails))
-            : true
-        );
-      })
+      skipWhile(([userDetails]) => !userDetails || !('userInfo' in userDetails)),
+      map(([userDetails, waSupportedCategories, waSupportedRoleTypes, waSupportedJurisdictions]) =>
+        filterNavigationItemsByRoles(items, userDetails?.userInfo?.roles, {
+          userDetails,
+          waVerification: {
+            waSupportedCategories,
+            waSupportedRoleTypes,
+            waSupportedJurisdictions,
+          },
+          onRoleMatched: (role, item) =>
+            this.loggerService.log(`HmctsGlobalHeaderComponent: matched navigation role ${role} for item ${item.text}`),
+        })
+      )
     );
   }
 
   private filterNavItemsOnFlag(items: NavigationItem[]): Observable<NavigationItem[]> {
-    items = items || [];
-    return of(
-      items
-        .filter((item) => {
-          // If item.flags exists, check every flag against AppConstants.MENU_FLAGS
-          if (item.flags && item.flags.length > 0) {
-            return item.flags.every((flag) => {
-              const flagName = this.isPlainFlag(flag) ? flag : flag.flagName;
-              const flagValue = this.isPlainFlag(flag)
-                ? AppConstants.MENU_FLAGS[flagName]
-                : AppConstants.MENU_FLAGS[flagName] === flag.value;
-              return flagValue;
-            });
-          }
-          return true;
-        })
-        .filter((item) =>
-          item.notFlags && item.notFlags.length > 0
-            ? item.notFlags.every((flag) => {
-                const flagName = this.isPlainFlag(flag) ? flag : flag.flagName;
-                const flagValue = this.isPlainFlag(flag)
-                  ? AppConstants.MENU_FLAGS[flagName]
-                  : AppConstants.MENU_FLAGS[flagName] !== flag.value;
-                return !flagValue;
-              })
-            : true
-        )
-    );
-  }
-
-  private isPlainFlag(flag: FlagDefinition): flag is string {
-    return !flag.hasOwnProperty('flagName');
+    return of(filterNavigationItemsByFlags(items, AppConstants.MENU_FLAGS));
   }
 }

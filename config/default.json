@@ -114,6 +114,7 @@
   "protocol": "https",
   "microservice": "xui_webapp",
   "caseworkerPageSize": "30000",
+  "roleAssignmentPageSize": "20000",
   "globalSearchServices": "IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT,ST_CIC",
   "waSupportedJurisdictions": "IA,CIVIL,PRIVATELAW,PUBLICLAW,EMPLOYMENT,ST_CIC",
   "waSupportedRoleCategories": "LEGAL_OPERATIONS,ADMIN,CTSC,JUDICIAL",

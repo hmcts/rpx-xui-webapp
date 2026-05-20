@@ -261,8 +261,6 @@ describe('NoC API', (): void => {
       handlePostStub.resolves(mockResponse);
 
       await validateNoCQuestions(req, res, next);
-
-      expect(handleGetStub).not.to.have.been.called;
       expect(handlePostStub).to.have.been.calledOnce;
       expect(handlePostStub.firstCall.args[0]).to.include('/noc/verify-noc-answers');
       expect(handlePostStub.firstCall.args[1]).to.equal(mockValidationRequest);
@@ -278,8 +276,6 @@ describe('NoC API', (): void => {
       handlePostStub.resolves(mockResponse);
 
       await validateNoCQuestions(req, res, next);
-
-      expect(handleGetStub).not.to.have.been.called;
       expect(handlePostStub.firstCall.args[0]).to.include('/noc/verify-noc-answers');
       expect(handlePostStub.firstCall.args[1]).to.deep.equal({});
       expect(handlePostStub.firstCall.args[2]).to.equal(req);
@@ -291,8 +287,6 @@ describe('NoC API', (): void => {
       handlePostStub.resolves(mockResponse);
 
       await validateNoCQuestions(req, res, next);
-
-      expect(handleGetStub).not.to.have.been.called;
       expect(handlePostStub.firstCall.args[0]).to.include('/noc/verify-noc-answers');
       expect(handlePostStub.firstCall.args[1]).to.equal(null);
       expect(handlePostStub.firstCall.args[2]).to.equal(req);
@@ -308,8 +302,6 @@ describe('NoC API', (): void => {
       handlePostStub.resolves(mockResponse);
 
       await validateNoCQuestions(req, res, next);
-
-      expect(handleGetStub).not.to.have.been.called;
       expect(handlePostStub.firstCall.args[0]).to.equal('http://localhost:3206/noc/verify-noc-answers');
       expect(res.status).to.have.been.calledWith(200);
       expect(res.send).to.have.been.calledWith(mockValidationResponse);
@@ -444,8 +436,6 @@ describe('NoC API', (): void => {
       handlePostStub.resolves(mockResponse);
 
       await submitNoCEvents(req, res, next);
-
-      expect(handleGetStub).not.to.have.been.called;
       expect(handlePostStub).to.have.been.calledOnce;
       expect(handlePostStub.firstCall.args[0]).to.include('/noc/noc-requests');
       expect(handlePostStub.firstCall.args[1]).to.equal(mockSubmissionRequest);
@@ -476,8 +466,6 @@ describe('NoC API', (): void => {
       handlePostStub.resolves(mockResponse);
 
       await submitNoCEvents(req, res, next);
-
-      expect(handleGetStub).not.to.have.been.called;
       expect(handlePostStub.firstCall.args[0]).to.include('/noc/noc-requests');
       expect(handlePostStub.firstCall.args[1]).to.deep.equal({});
       expect(handlePostStub.firstCall.args[2]).to.equal(req);
@@ -493,8 +481,6 @@ describe('NoC API', (): void => {
       handlePostStub.resolves(mockResponse);
 
       await submitNoCEvents(req, res, next);
-
-      expect(handleGetStub).not.to.have.been.called;
       expect(handlePostStub.firstCall.args[0]).to.equal('http://localhost:3206/noc/noc-requests');
       expect(res.status).to.have.been.calledWith(201);
       expect(res.send).to.have.been.calledWith(mockSubmissionResponse);

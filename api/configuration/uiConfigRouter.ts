@@ -26,13 +26,6 @@ router.get('/', uiConfigurationRouter);
 let menuConfigCache;
 let hearingJurisdictionsConfigCache;
 
-type DecentralisedCaseTypeConfig = {
-  webUrl?: string;
-  nocBaseUrl?: string;
-};
-
-type DecentralisedCaseTypeConfigMap = Record<string, DecentralisedCaseTypeConfig>;
-
 function getBackendEnvironment() {
   const hasPreviewID = process.env.PREVIEW_DEPLOYMENT_ID;
   const envUrl = getConfigValue(SERVICES_IDAM_LOGIN_URL);
@@ -55,19 +48,22 @@ function getHearingJurisdictions() {
   return hearingJurisdictionsConfigCache;
 }
 
-function getBrowserDecentralisedCaseTypeConfig() {
-  const caseTypeConfig = getConfigValue<DecentralisedCaseTypeConfigMap>(DECENTRALISED_CASE_TYPE_CONFIG);
-  if (!caseTypeConfig || typeof caseTypeConfig !== 'object') {
-    return caseTypeConfig;
+function getDecentralisedWebUrlConfig(): Record<string, { webUrl: string }> {
+  const caseTypeConfig = getConfigValue<Record<string, { webUrl?: string }>>(DECENTRALISED_CASE_TYPE_CONFIG);
+  const webUrlConfig: Record<string, { webUrl: string }> = {};
+
+  if (!caseTypeConfig || typeof caseTypeConfig !== 'object' || Array.isArray(caseTypeConfig)) {
+    return webUrlConfig;
   }
 
-  return Object.keys(caseTypeConfig).reduce((browserConfig, caseType) => {
-    const config = caseTypeConfig[caseType];
-    if (config?.webUrl) {
-      browserConfig[caseType] = { webUrl: config.webUrl };
+  Object.keys(caseTypeConfig).forEach((caseType) => {
+    const webUrl = caseTypeConfig[caseType].webUrl;
+    if (webUrl) {
+      webUrlConfig[caseType] = { webUrl };
     }
-    return browserConfig;
-  }, {} as DecentralisedCaseTypeConfigMap);
+  });
+
+  return webUrlConfig;
 }
 
 /**
@@ -90,7 +86,7 @@ async function uiConfigurationRouter(req, res) {
     protocol: getConfigValue(PROTOCOL),
     substantiveEnabled: showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED),
     paymentReturnUrl: getConfigValue(SERVICES_PAYMENT_RETURN_URL),
-    decentralisedCaseTypeConfig: getBrowserDecentralisedCaseTypeConfig(),
+    decentralisedCaseTypeConfig: getDecentralisedWebUrlConfig(),
     waWorkflowApi: getConfigValue(SERVICES_WA_WORKFLOW_API_URL),
     judicialBookingApi: getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH),
     headerConfig: getHeaderConfig(),

@@ -63,9 +63,7 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
       await taskListPage.openFilterPanel();
 
       await expect(taskListPage.taskListFilterToggle).toContainText('Hide work filter');
-      await expect(taskListPage.filterPanel.getByText('Services', { exact: true })).toBeVisible();
-      await expect(taskListPage.filterPanel.locator('#locations')).toBeVisible();
-      await expect(taskListPage.filterPanel.getByText('Types of work', { exact: true })).toBeVisible();
+      await taskListPage.expectWorkFilterControls();
 
       await taskListPage.applyCurrentFilters();
 
@@ -80,21 +78,13 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
         'checking filter fields on Available tasks'
       );
       await taskListPage.waitForTaskListShellReady('available tasks filter view');
-      await taskListPage.openFilterPanel();
-
-      await expect(taskListPage.filterPanel.getByText('Services', { exact: true })).toBeVisible();
-      await expect(taskListPage.filterPanel.locator('#locations')).toBeVisible();
-      await expect(taskListPage.filterPanel.getByText('Types of work', { exact: true })).toBeVisible();
+      await taskListPage.expectWorkFilterControls();
     });
 
     await test.step('My cases keeps services and location search while keeping work types hidden', async () => {
       await taskListPage.gotoMyCases();
       await taskListPage.waitForTaskListShellReady('my cases filter view');
-      await taskListPage.openFilterPanel();
-
-      await expect(taskListPage.filterPanel.getByText('Services', { exact: true })).toBeVisible();
-      await expect(taskListPage.filterPanel.locator('#locations')).toBeVisible();
-      await expect(taskListPage.filterPanel.locator('#types-of-work')).toBeHidden();
+      await taskListPage.expectWorkFilterControls({ typesOfWorkVisible: false });
     });
   });
 
@@ -143,7 +133,7 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
       task_field: 'Review filtered task',
     };
 
-    await setupWorkFiltersUser(page);
+    const expectedUserId = await setupWorkFiltersUser(page);
 
     await setupManageTasksBaseRoutes(page, {
       supportedJurisdictions: workFiltersSupportedJurisdictions,
@@ -182,17 +172,11 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
     });
 
     await taskListPage.gotoAndWaitForTaskRow('capturing My tasks filter requests');
-    await taskListPage.openFilterPanel();
-
-    await taskListPage.clearServicesFilters();
-    selectedService = await taskListPage.serviceFilterCheckboxes.first().getAttribute('value');
+    selectedService = await taskListPage.selectOnlyFirstServiceFilter();
     expect(selectedService).toBeTruthy();
-    await taskListPage.serviceFilterCheckboxes.first().check({ force: true });
 
-    await taskListPage.clearTypesOfWorkFilters();
-    selectedWorkType = await taskListPage.typesOfWorkFilterCheckboxes.first().getAttribute('value');
+    selectedWorkType = await taskListPage.selectOnlyFirstTypeOfWorkFilter();
     expect(selectedWorkType).toBeTruthy();
-    await taskListPage.typesOfWorkFilterCheckboxes.first().check({ force: true });
 
     const initialRequestCount = taskRequests.length;
     await taskListPage.applyCurrentFilters();
@@ -201,7 +185,7 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
     const latestRequest = taskRequests.at(-1);
     expect(latestRequest?.searchRequest?.search_parameters).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ key: 'user', values: [workFiltersUserId] }),
+        expect.objectContaining({ key: 'user', values: [expect.stringMatching(/^[0-9a-f-]{36}$/)] }),
         expect.objectContaining({ key: 'state', values: ['assigned'] }),
         expect.objectContaining({ key: 'jurisdiction', values: [selectedService] }),
         expect.objectContaining({ key: 'work_type', values: [selectedWorkType] }),
@@ -223,8 +207,10 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
     tableUtils,
   }) => {
     const myCasesResponse = buildMyCasesMock();
+    const expectedIaServiceLabel =
+      workFiltersSupportedJurisdictionDetails.find((jurisdiction) => jurisdiction.serviceId === 'IA')?.serviceName ?? 'IA';
     const filteredMyCasesResponse = {
-      cases: [myCasesResponse.cases[0]],
+      cases: [{ ...myCasesResponse.cases[0], expectedServiceLabel: expectedIaServiceLabel }],
       total_records: 1,
       unique_cases: 1,
     };
@@ -289,6 +275,12 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
     await setupWorkFiltersUser(page);
 
     await setupManageTasksBaseRoutes(page, {
+      user: {
+        roleAssignments: [
+          { jurisdiction: 'IA', substantive: 'Y', roleType: 'ORGANISATION', baseLocation: '765324' },
+          { jurisdiction: 'CIVIL', substantive: 'Y', roleType: 'ORGANISATION', baseLocation: '231596' },
+        ],
+      },
       taskListResponse,
       supportedJurisdictions: workFiltersSupportedJurisdictions,
       supportedJurisdictionDetails: workFiltersSupportedJurisdictionDetails,
@@ -310,13 +302,11 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
     await expect.poll(() => fullLocationServiceCodes.length).toBeGreaterThan(0);
     expect(fullLocationServiceCodes.at(-1)?.split(',').sort()).toEqual(['CIVIL', 'IA']);
 
-    await expect(page.getByText('Access tasks and cases.', { exact: true })).toBeVisible();
-
     await taskListPage.openFilterPanel();
-    await expect(taskListPage.filterPanel.locator('.hmcts-filter__tag', { hasText: 'Taylor House' })).toBeVisible();
-    await expect(
-      taskListPage.filterPanel.locator('.hmcts-filter__tag', { hasText: 'Birmingham Civil and Family Justice Centre' })
-    ).toBeVisible();
+
+    await taskListPage.expectAccessTasksAndCasesTextVisible();
+
+    await taskListPage.expectSelectedFilterTagsVisible(['Taylor House', 'Birmingham Civil and Family Justice Centre']);
   });
 
   for (const scenario of workFiltersLocationSearchScenarios) {
@@ -335,6 +325,10 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
       });
 
       await setupManageTasksBaseRoutes(page, {
+        user: {
+          roles: ['caseworker-ia', 'caseworker-ia-caseofficer', 'caseworker-sscs'],
+          roleAssignments: scenario.roleAssignments,
+        },
         taskListResponse,
         supportedJurisdictions: workFiltersLocationSearchSupportedJurisdictions,
         supportedJurisdictionDetails: workFiltersLocationSearchSupportedJurisdictionDetails,
@@ -373,13 +367,9 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
         await expect.poll(() => fullLocationRequests.length).toBe(0);
       }
 
-      if (scenario.expectedInitialLocations.length > 0) {
-        await expect(taskListPage.selectedLocationTags).toHaveText(scenario.expectedInitialLocations);
-      } else {
-        await expect(taskListPage.selectedLocationTags).toHaveCount(0);
-      }
+      await taskListPage.expectSelectedLocations(scenario.expectedInitialLocations);
       await taskListPage.removeAllSelectedLocations();
-      await expect(taskListPage.selectedLocationTags).toHaveCount(0);
+      await taskListPage.expectSelectedLocations([]);
 
       await taskListPage.searchForLocation('Court');
       await expect(taskListPage.allWorkLocationSearchInput).toHaveValue('Court');

@@ -1,5 +1,4 @@
 import { createLogger } from '@hmcts/playwright-common';
-import { expect } from '@playwright/test';
 import { randomUUID } from 'node:crypto';
 
 import type { CreateCasePage } from '../../../page-objects/pages/exui/createCase.po';
@@ -19,12 +18,6 @@ type InternalEventTriggerResponse = {
   event_token?: string;
 };
 
-const CCD_API_JSON_HEADERS = {
-  experimental: 'true',
-  Accept: 'application/json',
-  'Content-Type': 'application/json',
-} as const;
-
 const CCD_INTERNAL_START_EVENT_HEADERS = {
   experimental: 'true',
   Accept: 'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-event-trigger.v2+json',
@@ -43,10 +36,9 @@ export async function uploadEmploymentDraftDocument(
   fileContent: string | Buffer
 ): Promise<void> {
   await prepareEmploymentDraftUploadPage(createCasePage);
-  await createCasePage.page.locator('#documentCollection button').click();
+  await clickEmploymentDocumentCollectionAddButton(createCasePage);
   await createCasePage.uploadFile(fileName, mimeType, fileContent);
-  await createCasePage.page.locator('#documentCollection_0_topLevelDocuments').selectOption('Misc');
-  await createCasePage.page.locator('#documentCollection_0_miscDocuments').selectOption('Other');
+  await createCasePage.selectEmploymentDocumentCategory('Misc', 'Other');
   await createCasePage.clickSubmitAndWait('after uploading employment document', {
     timeoutMs: 60_000,
     maxAutoAdvanceAttempts: 1,
@@ -365,8 +357,7 @@ export async function createEmploymentCase(
 async function prepareEmploymentDraftUploadPage(createCasePage: CreateCasePage): Promise<void> {
   const maxAdvanceAttempts = 8;
   for (let attempt = 1; attempt <= maxAdvanceAttempts; attempt += 1) {
-    const documentCollectionButton = createCasePage.page.locator('#documentCollection button');
-    if (await documentCollectionButton.isVisible().catch(() => false)) {
+    if (await createCasePage.isEmploymentDocumentUploadReady()) {
       logger.info('Employment draft update: document upload controls ready', {
         attempt,
         url: createCasePage.page.url(),
@@ -378,8 +369,7 @@ async function prepareEmploymentDraftUploadPage(createCasePage: CreateCasePage):
     await ensureEmploymentDraftRespondentCollectionItem(createCasePage);
     await ensureEmploymentDraftClaimantRepresentationAnswered(createCasePage);
 
-    const visibleContinueButton = createCasePage.page.getByRole('button', { name: /^continue\b/i }).first();
-    if (!(await visibleContinueButton.isVisible().catch(() => false))) {
+    if (!(await createCasePage.hasVisibleContinueButton())) {
       throw new Error(
         `Employment draft update did not reach a document upload page; no Continue button visible at ${createCasePage.page.url()}`
       );
@@ -390,19 +380,22 @@ async function prepareEmploymentDraftUploadPage(createCasePage: CreateCasePage):
   throw new Error(`Employment draft update did not reach the document upload page after ${maxAdvanceAttempts} steps`);
 }
 
+async function clickEmploymentDocumentCollectionAddButton(createCasePage: CreateCasePage): Promise<void> {
+  await createCasePage.clickEmploymentDocumentCollectionAddButton();
+}
+
 async function ensureEmploymentDraftRespondentCollectionItem(createCasePage: CreateCasePage): Promise<void> {
   if (!createCasePage.page.url().includes('/UPDATE_CASE_DRAFT3')) {
     return;
   }
 
-  const existingCollectionItem = createCasePage.page.locator('[id^="respondentCollection_0"]').first();
-  if ((await existingCollectionItem.count()) > 0) {
+  if (await createCasePage.hasEmploymentDraftRespondentCollectionItem()) {
     return;
   }
 
   await createCasePage.addRespondentButton.waitFor({ state: 'visible' });
   await createCasePage.addRespondentButton.click();
-  await expect(createCasePage.page.locator('[id^="respondentCollection_0"]').first()).toBeAttached();
+  await createCasePage.expectEmploymentDraftRespondentCollectionItemAttached();
   logger.info('Employment draft update: added minimal respondent collection item', {
     url: createCasePage.page.url(),
   });
@@ -413,17 +406,10 @@ async function ensureEmploymentDraftClaimantRepresentationAnswered(createCasePag
     return;
   }
 
-  const claimantRepresentationGroup = createCasePage.page.getByRole('group', { name: 'Is the Claimant Represented?' });
-  if (!(await claimantRepresentationGroup.isVisible().catch(() => false))) {
+  if (!(await createCasePage.answerEmploymentClaimantRepresentationNoIfVisible())) {
     return;
   }
 
-  const noRadio = claimantRepresentationGroup.getByRole('radio', { name: 'No' });
-  if (await noRadio.isChecked().catch(() => false)) {
-    return;
-  }
-
-  await noRadio.check();
   logger.info('Employment draft update: answered claimant representation question', {
     answer: 'No',
     url: createCasePage.page.url(),

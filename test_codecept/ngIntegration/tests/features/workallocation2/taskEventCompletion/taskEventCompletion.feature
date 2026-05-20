@@ -1,5 +1,4 @@
 
-@functional_enabled
 Feature: WA Release 2: Case events and Task completion and states when task_required is true
 
     Background: Setup
@@ -66,6 +65,8 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
             | caseworker-ia,caseworker-ia-caseofficer,caseworker-ia-admofficer,task-supervisor |
 
 
+    @ignore
+    # Legacy Codecept scenario retained for reference only. Active coverage lives in playwright_tests_new/integration/test/manageTasks/caseTaskList/taskEventCompletion.negative.spec.ts.
     Scenario Outline: Task not assigned
 
         Given I set MOCK with user "IAC_CaseOfficer_R2" and roles "<roles>,task-supervisor,case-allocator" with reference "userDetails"
@@ -97,7 +98,7 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
         Given I set MOCK task required for event as "true"
         Given I set MOCK tasks required for event
             | assignee | task_state |
-            | null     | unassigned |
+            | | unassigned |
 
 
         Given I start MockApp
@@ -116,7 +117,7 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
             | Summary header  | There is a problem                         |
             | Summary message | Task assignment required                   |
             | Details header  | Task assignment required                   |
-            | Details message | You must assign it to yourself to continue |
+            | Details message | You must assign one of the available tasks from the task tab to continue with your work |
             | Link            | Return to tasks tab                        |
         Examples:
             | roles                                                                            |
@@ -154,8 +155,8 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
         Given I set MOCK task required for event as "true"
         Given I set MOCK tasks required for event
             | assignee | task_state |
-            | null     | unassigned |
-            | null     | unassigned |
+            | | unassigned |
+            | | unassigned |
 
 
         Given I start MockApp
@@ -174,7 +175,7 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
             | Summary header  | There is a problem                         |
             | Summary message | Task assignment required                   |
             | Details header  | Task assignment required                   |
-            | Details message | You must assign it to yourself to continue |
+            | Details message | You must assign one of the available tasks from the task tab to continue with your work |
             | Link            | Return to tasks tab                        |
         Examples:
             | roles                                                                            |

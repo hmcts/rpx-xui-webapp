@@ -1,82 +1,24 @@
 import { Params } from '@angular/router';
+import { resolveDecentralisedCaseTypeConfig } from '../../../shared/decentralised-case-type-config.util';
 import type { DecentralisedCaseTypeConfig, DecentralisedCaseTypeConfigMap } from '../../models/environmentConfig.model';
 
 const DECENTRALISED_EVENT_PREFIX = 'ext:';
-const TEMPLATE_PLACEHOLDER = '%s';
-const DECENTRALISED_NOC_PATH = '/noc';
 
 const isDecentralisedEvent = (eventId?: string): eventId is string => {
   return !!eventId && eventId.startsWith(DECENTRALISED_EVENT_PREFIX);
-};
-
-const resolveUrlTemplate = (params: { template: string; prefix: string; caseType: string }): string | null => {
-  const { template, prefix, caseType } = params;
-
-  const placeholderCount = template.split(TEMPLATE_PLACEHOLDER).length - 1;
-  if (placeholderCount > 1) {
-    console.error(
-      `Decentralised case type base URL template for prefix '${prefix}' contains multiple '${TEMPLATE_PLACEHOLDER}' placeholders`
-    );
-    return null;
-  }
-
-  if (placeholderCount === 0) {
-    return template;
-  }
-
-  const suffix = caseType.substring(prefix.length);
-  if (!suffix || suffix.trim().length === 0) {
-    console.error(
-      `Case type '${caseType}' matches prefix '${prefix}' but has no suffix for template substitution in '${template}'`
-    );
-    return null;
-  }
-
-  return template.replace(TEMPLATE_PLACEHOLDER, suffix);
 };
 
 const getDecentralisedCaseTypeConfig = (
   caseTypeConfig: DecentralisedCaseTypeConfigMap,
   caseType?: string
 ): DecentralisedCaseTypeConfig | null => {
-  if (!caseTypeConfig || !caseType || caseType.trim().length === 0) {
-    return null;
-  }
-
-  const lowerCaseType = caseType.toLowerCase();
-  const matchingPrefixes = Object.keys(caseTypeConfig).filter((prefix) => lowerCaseType.startsWith(prefix.toLowerCase()));
-  if (matchingPrefixes.length === 0) {
-    return null;
-  }
-
-  const maxPrefixLength = matchingPrefixes.reduce((max, prefix) => Math.max(max, prefix.length), 0);
-  const longestMatches = matchingPrefixes.filter((prefix) => prefix.length === maxPrefixLength);
-
-  if (longestMatches.length > 1) {
-    console.error(
-      `Ambiguous decentralised case type base URL configuration for case type '${caseType}'. Multiple longest prefix matches found: [${longestMatches.join(
-        ', '
-      )}]`
-    );
-    return null;
-  }
-
-  const prefix = longestMatches[0];
-  const config = caseTypeConfig[prefix];
-  if (!config?.baseUrl) {
-    return null;
-  }
-
-  const resolvedUrl = resolveUrlTemplate({ template: config.baseUrl, prefix, caseType });
-  if (!resolvedUrl) {
-    return null;
-  }
-
-  let trimmedUrl = resolvedUrl;
-  while (trimmedUrl.endsWith('/')) {
-    trimmedUrl = trimmedUrl.slice(0, -1);
-  }
-  return { ...config, baseUrl: trimmedUrl };
+  return resolveDecentralisedCaseTypeConfig({
+    caseTypeConfig,
+    caseType,
+    urlKey: 'webUrl',
+    urlLabel: 'web URL',
+    onError: (message) => console.error(message),
+  });
 };
 
 export const getExpectedSubFromUserDetails = (userInfoStr?: string | null): string | null => {
@@ -127,11 +69,6 @@ interface BuildDecentralisedCaseEventUrlInput extends BuildDecentralisedEventUrl
 
 export type BuildDecentralisedEventUrlInput = BuildDecentralisedCaseCreateEventUrlInput | BuildDecentralisedCaseEventUrlInput;
 
-export interface BuildDecentralisedNocUrlInput {
-  caseType: string;
-  caseId: string;
-}
-
 export const buildDecentralisedEventUrl = (
   params: BuildDecentralisedEventUrlInput,
   caseTypeConfig: DecentralisedCaseTypeConfigMap,
@@ -160,24 +97,5 @@ export const buildDecentralisedEventUrl = (
   }
 
   const queryString = searchParams.toString();
-  return queryString ? `${config.baseUrl}${eventPath}?${queryString}` : `${config.baseUrl}${eventPath}`;
-};
-
-export const buildDecentralisedNocUrl = (
-  params: BuildDecentralisedNocUrlInput,
-  caseTypeConfig: DecentralisedCaseTypeConfigMap,
-  expectedSub?: string
-): string | null => {
-  const config = getDecentralisedCaseTypeConfig(caseTypeConfig, params.caseType);
-  if (!config || config.nocRedirectEnabled === false) {
-    return null;
-  }
-
-  const searchParams = new URLSearchParams();
-  searchParams.set('caseId', params.caseId);
-  if (expectedSub) {
-    searchParams.set('expected_sub', expectedSub);
-  }
-
-  return `${config.baseUrl}${DECENTRALISED_NOC_PATH}?${searchParams.toString()}`;
+  return queryString ? `${config.webUrl}${eventPath}?${queryString}` : `${config.webUrl}${eventPath}`;
 };

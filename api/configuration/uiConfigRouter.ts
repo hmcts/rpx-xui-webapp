@@ -26,6 +26,13 @@ router.get('/', uiConfigurationRouter);
 let menuConfigCache;
 let hearingJurisdictionsConfigCache;
 
+type DecentralisedCaseTypeConfig = {
+  webUrl?: string;
+  nocBaseUrl?: string;
+};
+
+type DecentralisedCaseTypeConfigMap = Record<string, DecentralisedCaseTypeConfig>;
+
 function getBackendEnvironment() {
   const hasPreviewID = process.env.PREVIEW_DEPLOYMENT_ID;
   const envUrl = getConfigValue(SERVICES_IDAM_LOGIN_URL);
@@ -48,6 +55,21 @@ function getHearingJurisdictions() {
   return hearingJurisdictionsConfigCache;
 }
 
+function getBrowserDecentralisedCaseTypeConfig() {
+  const caseTypeConfig = getConfigValue<DecentralisedCaseTypeConfigMap>(DECENTRALISED_CASE_TYPE_CONFIG);
+  if (!caseTypeConfig || typeof caseTypeConfig !== 'object') {
+    return caseTypeConfig;
+  }
+
+  return Object.keys(caseTypeConfig).reduce((browserConfig, caseType) => {
+    const config = caseTypeConfig[caseType];
+    if (config?.webUrl) {
+      browserConfig[caseType] = { webUrl: config.webUrl };
+    }
+    return browserConfig;
+  }, {} as DecentralisedCaseTypeConfigMap);
+}
+
 /**
  * UI Configuration Route
  *
@@ -68,7 +90,7 @@ async function uiConfigurationRouter(req, res) {
     protocol: getConfigValue(PROTOCOL),
     substantiveEnabled: showFeature(FEATURE_SUBSTANTIVE_ROLE_ENABLED),
     paymentReturnUrl: getConfigValue(SERVICES_PAYMENT_RETURN_URL),
-    decentralisedCaseTypeConfig: getConfigValue(DECENTRALISED_CASE_TYPE_CONFIG),
+    decentralisedCaseTypeConfig: getBrowserDecentralisedCaseTypeConfig(),
     waWorkflowApi: getConfigValue(SERVICES_WA_WORKFLOW_API_URL),
     judicialBookingApi: getConfigValue(SERVICES_JUDICIAL_BOOKING_API_PATH),
     headerConfig: getHeaderConfig(),

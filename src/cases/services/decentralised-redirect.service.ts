@@ -3,9 +3,7 @@ import { SessionStorageService } from '../../app/services';
 import { EnvironmentService } from '../../app/shared/services/environment.service';
 import {
   buildDecentralisedEventUrl,
-  buildDecentralisedNocUrl,
   BuildDecentralisedEventUrlInput,
-  BuildDecentralisedNocUrlInput,
   getExpectedSubFromUserDetails,
 } from '../utils/decentralised-redirect.util';
 
@@ -22,16 +20,6 @@ export class DecentralisedRedirectService {
   public tryEventRedirect(params: BuildDecentralisedEventUrlInput): boolean {
     return this.redirect(
       buildDecentralisedEventUrl(
-        params,
-        this.environmentService.get('decentralisedCaseTypeConfig'),
-        getExpectedSubFromUserDetails(this.sessionStorageService.getItem('userDetails'))
-      )
-    );
-  }
-
-  public tryNocRedirect(params: BuildDecentralisedNocUrlInput): boolean {
-    return this.redirect(
-      buildDecentralisedNocUrl(
         params,
         this.environmentService.get('decentralisedCaseTypeConfig'),
         getExpectedSubFromUserDetails(this.sessionStorageService.getItem('userDetails'))

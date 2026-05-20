@@ -83,5 +83,5 @@ export function filterNavigationItemsByAccess(
 }
 
 function isPlainFlag(flag: FlagDefinition): flag is string {
-  return !flag.hasOwnProperty('flagName');
+  return !Object.prototype.hasOwnProperty.call(flag, 'flagName');
 }

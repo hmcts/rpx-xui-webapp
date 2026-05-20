@@ -61,8 +61,10 @@ describe('Header Component', () => {
 
   it('should render the skip to content link', () => {
     const translatePipeSpy = spyOn(RpxTranslateMockPipe.prototype, 'transform').and.callThrough();
+    fixture.componentInstance.currentUrl = 'http://localhost:8080/A/B#C';
     fixture.detectChanges();
     const element = fixture.debugElement.query(By.css('.govuk-skip-link')).nativeElement;
+    expect(element.getAttribute('href')).toEqual('http://localhost:8080/A/B#content');
     expect(element.textContent).toEqual('Skip to main content');
     expect(translatePipeSpy).toHaveBeenCalledWith('Skip to main content');
   });
@@ -88,5 +90,11 @@ describe('Header Component', () => {
     const emitter = jasmine.createSpyObj('emitter', ['emit']);
     component.emitNavigate(event, emitter);
     expect(emitter.emit).toHaveBeenCalled();
+  });
+
+  it('matches the skip to main content URL', () => {
+    expect(HeaderComponent.isSkipToMainContent('url')).toBeFalsy();
+    expect(HeaderComponent.isSkipToMainContent('#url')).toBeFalsy();
+    expect(HeaderComponent.isSkipToMainContent('#content')).toBeTruthy();
   });
 });

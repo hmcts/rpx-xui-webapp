@@ -14,7 +14,7 @@ import { Store } from '@ngrx/store';
 import { combineLatest, Observable, Subscription } from 'rxjs';
 import { delay, map } from 'rxjs/operators';
 import { GoActionParams } from '../../../cases/models/go-action-params.model';
-
+import { HeaderComponent } from '../../../app/components';
 import * as fromRoot from '../../../app/store';
 import * as fromFeature from '../../store';
 
@@ -67,7 +67,8 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
     );
 
     this.routerEventSubscription = this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
+      // do not focus if coming from the header skip link, since that is where focus will go to
+      if (event instanceof NavigationEnd && !HeaderComponent.isSkipToMainContent(event.url)) {
         this.focusService.focus();
       }
     });

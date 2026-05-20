@@ -24,7 +24,7 @@ export class HeaderComponent {
   @Input() public decorate16DigitCaseReferenceSearchBoxInHeader: boolean;
   @Output() public navigate = new EventEmitter<string>();
 
-  public contentHash: string = '#content';
+  private static contentHash: string = '#content';
 
   constructor(
     public store: Store<fromRoot.State>,
@@ -40,5 +40,17 @@ export class HeaderComponent {
    */
   public emitNavigate(event: any, emitter: EventEmitter<string>) {
     emitter.emit(event);
+  }
+
+  public getSkipToMainContentUrl(): string {
+    return this.currentUrl?.split('#')[0] + HeaderComponent.contentHash;
+  }
+
+  /**
+   * @param url to test
+   * @return true if the given url will navigate to the main content
+   */
+  public static isSkipToMainContent(url: string): boolean {
+    return url?.endsWith(HeaderComponent.contentHash);
   }
 }

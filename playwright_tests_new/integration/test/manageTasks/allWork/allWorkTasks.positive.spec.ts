@@ -1,15 +1,9 @@
 import { expect, test } from '../../../../E2E/fixtures';
-import {
-  applySessionCookies,
-  getLegacyStaffAdminSessionIdentity,
-  setupManageTasksBaseRoutes,
-  taskListRoutePattern,
-} from '../../../helpers';
+import { applySessionCookies, setupManageTasksBaseRoutes, taskListRoutePattern } from '../../../helpers';
 import { buildTaskListMock, myActionsList } from '../../../mocks/taskList.mock';
 import { buildMyCases } from '../../../mocks/myCases.mock';
 
 const userIdentifier = 'STAFF_ADMIN';
-const staffAdminSession = getLegacyStaffAdminSessionIdentity();
 const allWorkCasesRoutePattern = /\/workallocation\/all-work\/cases(?:\?.*)?$/;
 
 const supportedJurisdictions = ['IA', 'CIVIL'];
@@ -20,7 +14,7 @@ const supportedJurisdictionDetails = [
 
 test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   test.beforeEach(async ({ page }) => {
-    await applySessionCookies(page, staffAdminSession);
+    await applySessionCookies(page, userIdentifier);
   });
 
   test('User can view all-work task table, links, and pagination', async ({ taskListPage, page, tableUtils }) => {

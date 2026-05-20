@@ -42,7 +42,7 @@ function assertAliasCredentialsPresent(alias: string): void {
     }
 
     throw new Error(
-      `Document upload tests require credentials for alias '${alias}' via static config or env vars '${mapping.username}' and '${mapping.password}'.`,
+      `Document upload tests require credentials for alias '${alias}' via env vars '${mapping.username}' and '${mapping.password}'.`,
       { cause: error }
     );
   }

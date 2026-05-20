@@ -42,7 +42,7 @@ describe('RD Professional API Interactions with webapp', () => {
       return pactSetUp.provider.executeTest(async (mockServer) => {
         const path: string = `${mockServer.url}/refdata/external/v1/organisations/users?returnRoles=true&status=active`;
         const resp = await getUsers(path);
-        const responseDto: ProfessionalUserResponse = <ProfessionalUserResponse>resp.data;
+        const responseDto: ProfessionalUserResponse = resp.data as ProfessionalUserResponse;
         assertResponse(responseDto);
       });
     });

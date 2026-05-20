@@ -8,11 +8,11 @@ class HearingsTabPage {
   }
 
   get tabContainer() {
-    return $('exui-case-hearings');
+    return $('exui-case-hearings-ce');
   }
 
   get requesthearingBtn() {
-    return elementByXpath("//exui-case-hearings//a[contains(text(),'Request a hearing')]");
+    return elementByXpath("//exui-case-hearings-ce//a[contains(text(),'Request a hearing')]");
   }
 
   isDisplayed() {

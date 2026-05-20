@@ -50,7 +50,7 @@ describe('Post Cases from CaseAssignment Api', () => {
         const taskUrl: string = `${mockServer.url}/case-assignments`;
         const resp = await postAssignCasesToUsers(taskUrl, mockRequest as any);
         expect(resp.status).to.be.equal(201);
-        const responseDto: AssignAccessWithinOrganisationDto = <AssignAccessWithinOrganisationDto>resp.data;
+        const responseDto: AssignAccessWithinOrganisationDto = resp.data as AssignAccessWithinOrganisationDto;
         assertCaseAssignmentResponses(responseDto);
       });
     });

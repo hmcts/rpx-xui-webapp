@@ -12,9 +12,9 @@ import {
   CasesService,
   HttpErrorService,
 } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
-import { of } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { CASEROLES } from '../../../../api/workAllocation/constants/roles.mock.data';
 import { CaseRolesTableComponent } from '../../../role-access/components/case-roles-table/case-roles-table.component';
 import { ExclusionsTableComponent } from '../../../role-access/components/exclusions-table/exclusions-table.component';
@@ -132,8 +132,26 @@ const CASE_VIEW: CaseView = {
   ],
 };
 
+const cv = {
+  case_id: '123456789',
+  case_type: {
+    id: 'Test',
+    name: '',
+    jurisdiction: {
+      id: 'Test',
+      name: '',
+      description: '',
+    },
+  },
+  metadataFields: [
+    {
+      id: '[JURISDICTION]',
+      value: 'JUDICIAL',
+    },
+  ],
+} as CaseView;
+
 describe('RolesContainerComponent', () => {
-  const featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   let component: RolesAndAccessContainerComponent;
 
   const route = {
@@ -143,9 +161,12 @@ describe('RolesContainerComponent', () => {
   const store = jasmine.createSpyObj('store', ['pipe', 'select']);
   const roleExclusionsService = jasmine.createSpyObj('roleExclusionsService', ['getCurrentUserRoleExclusions']);
   const allocateService = jasmine.createSpyObj('allocateService', ['getCaseRoles', 'getCaseRolesUserDetails']);
-  const caseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['loadAll', 'getUsersFromServices']);
+  const caseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['loadAll', 'getUsersByIdamIds']);
   const sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem', 'setItem']);
 
+  const mockCasesService = jasmine.createSpyObj<CasesService>('mockCasesService', ['getCaseView']);
+  const mockCaseNotifier = new CaseNotifier(mockCasesService);
+  mockCaseNotifier.caseView = new BehaviorSubject(cv).asObservable();
   const mockNotifierService = jasmine.createSpyObj('caseNotifier', ['cachedCaseView']);
   mockNotifierService.cachedCaseView = {};
 
@@ -173,13 +194,6 @@ describe('RolesContainerComponent', () => {
           provide: RoleExclusionsService,
           useClass: RoleExclusionsMockService,
         },
-        {
-          provide: FeatureToggleService,
-          useValue: {
-            isEnabled: (flag) => of(flags[flag]),
-            getValue: (flag) => of(flags[flag]),
-          },
-        },
         provideMockStore({ initialState: initialMockState }),
         {
           provide: ActivatedRoute,
@@ -199,56 +213,6 @@ describe('RolesContainerComponent', () => {
     }).compileComponents();
   }));
 
-  // beforeEach(async(() => {
-  //   TestBed.configureTestingModule({
-  //     imports: [RouterTestingModule.withRoutes([]), ExuiCommonLibModule, HttpClientTestingModule, HttpClientModule],
-  //     providers: [
-  //       CasesService, HttpErrorService, HttpErrorService, AuthService, AbstractAppConfig, AlertService,
-  //       { provide: CaseNotifier, useValue: mockNotifierService },
-  //       {
-  //         provide: RoleExclusionsService,
-  //         useClass: RoleExclusionsMockService
-  //       },
-  //       {
-  //         provide: FeatureToggleService,
-  //         useValue: {
-  //           isEnabled: (flag) => of(flags[flag]),
-  //           getValue: (flag) => of(flags[flag])
-  //         }
-  //       },
-  //       provideMockStore({ initialState: initialMockState }),
-  //       {
-  //         provide: ActivatedRoute,
-  //         useValue: {
-  //           snapshot: {
-  //             data: {
-  //               roles: CASEROLES,
-  //               showAllocateRoleLink: true,
-  //               case: CASE_VIEW
-  //             }
-  //           }
-  //         }
-  //       },
-  //     ],
-  //     declarations: [
-  //       RolesAndAccessContainerComponent,
-  //       RolesAndAccessComponent,
-  //       CaseRolesTableComponent,
-  //       ShowAllocateLinkDirective,
-  //       ExclusionsTableComponent,
-  //       RoleAccessSectionComponent,
-  //       AllocateARoleLinkComponent
-  //     ]
-  //   })
-  //     .compileComponents();
-  // }));
-
-  // beforeEach(() => {
-  //   fixture = TestBed.createComponent(RolesAndAccessContainerComponent);
-  //   component = fixture.componentInstance;
-  //   fixture.detectChanges();
-  // });
-
   it('setDisplayAllocateLink to set true for JUDICIAL', () => {
     component = new RolesAndAccessContainerComponent(
       route,
@@ -257,7 +221,7 @@ describe('RolesContainerComponent', () => {
       allocateService,
       caseworkerDataService,
       sessionStorageService,
-      featureToggleService
+      mockCaseNotifier
     );
     component.setDisplayAllocateLink(initialMockState.appConfig.userDetails, 'JUDICIAL');
 
@@ -272,17 +236,16 @@ describe('RolesContainerComponent', () => {
       allocateService,
       caseworkerDataService,
       sessionStorageService,
-      featureToggleService
+      mockCaseNotifier
     );
 
     spyOn(component, 'applyJurisdiction');
     spyOn(component, 'loadExclusions');
     spyOn(component, 'loadRoles');
-    caseworkerDataService.getUsersFromServices.and.returnValue(of({}));
+    caseworkerDataService.getUsersByIdamIds.and.returnValue(of({}));
 
     component.ngOnInit();
 
-    expect(caseworkerDataService.getUsersFromServices).toHaveBeenCalled();
     expect(component.applyJurisdiction).toHaveBeenCalled();
     expect(component.loadExclusions).toHaveBeenCalled();
     expect(component.loadRoles).toHaveBeenCalled();
@@ -296,7 +259,7 @@ describe('RolesContainerComponent', () => {
       allocateService,
       caseworkerDataService,
       sessionStorageService,
-      featureToggleService
+      mockCaseNotifier
     );
     const caseDetails = {} as CaseView;
     caseDetails.case_id = '123456789';
@@ -334,7 +297,7 @@ describe('RolesContainerComponent', () => {
       allocateService,
       caseworkerDataService,
       sessionStorageService,
-      featureToggleService
+      mockCaseNotifier
     );
     const caseDetails = {} as CaseView;
     caseDetails.case_id = '123456789';
@@ -369,7 +332,7 @@ describe('RolesContainerComponent', () => {
       allocateService,
       caseworkerDataService,
       sessionStorageService,
-      featureToggleService
+      mockCaseNotifier
     );
 
     const jurisdiction = { value: 'ia' };
@@ -402,7 +365,7 @@ describe('RolesContainerComponent', () => {
       allocateService,
       caseworkerDataService,
       sessionStorageService,
-      featureToggleService
+      mockCaseNotifier
     );
 
     const jurisdiction = { value: 'ia' };
@@ -424,7 +387,7 @@ describe('RolesContainerComponent', () => {
       allocateService,
       caseworkerDataService,
       sessionStorageService,
-      featureToggleService
+      mockCaseNotifier
     );
     spyOn(component, 'setDisplayAllocateLink');
 

@@ -32,7 +32,7 @@ const CASESHARE_ENDPOINTS = [
   },
 ] as const;
 
-test.describe('Case share endpoints', () => {
+test.describe('Case share endpoints', { tag: '@svc-case-share' }, () => {
   for (const { path, property, schema } of CASESHARE_ENDPOINTS) {
     test(`GET ${path}`, async ({ apiClient }) => {
       await withXsrf('solicitor', async (headers) => {
@@ -45,7 +45,7 @@ test.describe('Case share endpoints', () => {
   }
 });
 
-test.describe('Case share helper coverage', () => {
+test.describe('Case share helper coverage', { tag: '@svc-case-share' }, () => {
   test('assertCaseShareEntries covers function and object schemas', () => {
     const casesPayload = { cases: [{ caseId: 'case-1', sharedWith: [] }] };
     assertCaseShareEntries(casesPayload, 'cases', expectCaseShareShape);

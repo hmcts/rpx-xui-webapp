@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-// import mocha from 'mocha';
 import { config } from '../config/config';
 import { getXSRFToken } from '../utils/authUtil';
 import { reporterMsg, setTestContext } from '../utils/helper';
@@ -8,9 +7,6 @@ import Request from '../utils/request';
 const workAllocationDataModels = require('../../../dataModels/workAllocation');
 
 describe('Work allocations Release 2', () => {
-  const userName = config.users[config.testEnv].solicitor.e;
-  const password = config.users[config.testEnv].solicitor.sec;
-
   const caseOfficer = config.users[config.testEnv].caseOfficer_r2.e;
   const caseofficerPass = config.users[config.testEnv].caseOfficer_r2.sec;
 
@@ -77,7 +73,7 @@ describe('Work allocations Release 2', () => {
 
     const headers = {
       'X-XSRF-TOKEN': xsrfToken,
-      'content-length': JSON.stringify(reqBody).length,
+      'content-length': JSON.stringify(reqBody).length.toString(),
     };
 
     const response = await Request.post('workallocation/searchForCompletable', reqBody, headers, 200);

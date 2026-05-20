@@ -18,7 +18,6 @@ import { CaseRoleDetails } from '../../../role-access/models';
 import { AllocateRoleService } from '../../../role-access/services';
 import { ConfigConstants, FilterConstants, ListConstants, PageConstants, SortConstants } from '../../components/constants';
 import { SortOrder, TaskContext } from '../../../work-allocation/enums';
-import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Task } from '../../models/tasks';
 import {
   CaseworkerDataService,
@@ -27,6 +26,7 @@ import {
   WorkAllocationTaskService,
 } from '../../services';
 import { getMockCaseRoles, getMockTasks } from '../../tests/utils.spec';
+import { setServiceList } from '../../utils';
 import { AllWorkTaskComponent } from './all-work-task.component';
 
 @Component({
@@ -178,6 +178,7 @@ describe('AllWorkTaskComponent', () => {
       taskType: 'JUDICIAL',
       priority: 'High',
       taskName: 'Review Hearing bundle',
+      workTypes: ['Type1', 'Type2'],
     };
     component.onSelectionChanged(selection);
     const searchRequest = component.getSearchTaskRequestPagination();
@@ -252,6 +253,7 @@ describe('AllWorkTaskComponent', () => {
     it('should have default sortedBy values', () => {
       // The sortedBy property is declared in the component with initial values
       const freshComponent = new AllWorkTaskComponent(
+        null,
         null,
         null,
         null,
@@ -431,6 +433,7 @@ describe('AllWorkTaskComponent', () => {
         person: { id: 'person789', name: 'Test Person' } as Person,
         taskType: 'ADMIN',
         taskName: { task_type_id: 'task456', task_type_name: 'Test Task' },
+        workTypes: ['Type1', 'Type2'],
       };
 
       component.onSelectionChanged(selection);
@@ -455,6 +458,7 @@ describe('AllWorkTaskComponent', () => {
         person: null,
         taskType: 'ADMIN',
         taskName: null,
+        workTypes: [],
       };
 
       component.onSelectionChanged(selection);
@@ -472,10 +476,10 @@ describe('AllWorkTaskComponent', () => {
           { serviceId: 'SSCS', serviceName: 'Social Security' },
         ];
 
-        const result = (component as any).setServiceList([null], detailedServices);
+        const result = setServiceList([null], detailedServices);
 
-        expect(result).toEqual(detailedServices);
-        expect(component.supportedJurisdictions).toEqual(['IA', 'SSCS']);
+        expect(result).toEqual({ supportedJurisdictions: ['IA', 'SSCS'], detailedWAServices: detailedServices });
+        expect(component.supportedJurisdictions).toEqual(['IA']);
       });
 
       it('should handle matching role jurisdictions', () => {
@@ -484,20 +488,21 @@ describe('AllWorkTaskComponent', () => {
           { serviceId: 'SSCS', serviceName: 'Social Security' },
         ];
 
-        const result = (component as any).setServiceList(['IA', 'CIVIL'], detailedServices);
-
-        expect(result).toEqual([
+        const result = setServiceList(['IA', 'CIVIL'], detailedServices);
+        const detailedMockServices = [
           { serviceId: 'IA', serviceName: 'Immigration' },
           { serviceId: 'CIVIL', serviceName: 'CIVIL' },
-        ]);
+        ];
+
+        expect(result).toEqual({ supportedJurisdictions: ['IA', 'SSCS'], detailedWAServices: detailedMockServices });
       });
 
       it('should handle empty roleServiceIds', () => {
         const detailedServices: HMCTSServiceDetails[] = [{ serviceId: 'IA', serviceName: 'Immigration' }];
 
-        const result = (component as any).setServiceList([], detailedServices);
+        const result = setServiceList([], detailedServices);
 
-        expect(result).toEqual(detailedServices);
+        expect(result).toEqual({ supportedJurisdictions: ['IA'], detailedWAServices: detailedServices });
       });
     });
 

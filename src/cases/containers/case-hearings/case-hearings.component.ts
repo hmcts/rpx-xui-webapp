@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CaseNotifier, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { CaseNotifier, LoadingService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { Store, select } from '@ngrx/store';
 import moment from 'moment';
 import { Observable, Subscription, combineLatest } from 'rxjs';
@@ -32,6 +32,7 @@ import { SessionStorageService } from '../../../app/services';
 export class CaseHearingsComponent implements OnInit, OnDestroy {
   public hearingTypesRefData$: Observable<LovRefDataModel[]>;
   public upcomingHearings$: Observable<HearingListViewModel[]>;
+  public currentCaseHearingsLoaded$: Observable<boolean>;
   public upcomingStatus: EXUISectionStatusEnum = EXUISectionStatusEnum.UPCOMING;
 
   public pastAndCancelledHearings$: Observable<HearingListViewModel[]>;
@@ -74,15 +75,21 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
         this.caseType = caseDetails?.case_type?.id;
       }
     });
-    this.caseId = this.activatedRoute.snapshot.params.cid;
-    this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
+    this.caseId = JSON.parse(this.sessionSvc.getItem('caseInfo')).caseId;
+    this.loadHearingsForCurrentCase();
     this.hearingListLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingListLastError));
     this.hearingValuesLastErrorState$ = this.hearingStore.pipe(select(fromHearingStore.getHearingValuesLastError));
   }
 
   public reloadHearings() {
-    this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues());
+    this.loadHearingsForCurrentCase();
+    this.hearingStore.dispatch(
+      new fromHearingStore.LoadHearingValues({
+        jurisdictionId: this.jurisdiction,
+        caseReference: this.caseId,
+        caseType: this.caseType,
+      })
+    );
   }
 
   public ngOnInit(): void {
@@ -96,7 +103,13 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
       })
     );
     this.hearingStore.dispatch(new fromHearingStore.ResetHearingValues());
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingValues());
+    this.hearingStore.dispatch(
+      new fromHearingStore.LoadHearingValues({
+        jurisdictionId: this.jurisdiction,
+        caseReference: this.caseId,
+        caseType: this.caseType,
+      })
+    );
 
     this.hearingValuesSubscription = this.hearingStore
       .pipe(select(fromHearingStore.getHearingValuesModel))
@@ -133,10 +146,14 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     this.upcomingHearings$ = this.getHearingListByStatus(EXUISectionStatusEnum.UPCOMING);
     this.pastAndCancelledHearings$ = this.getHearingListByStatus(EXUISectionStatusEnum.PAST_OR_CANCELLED);
     this.listedHearings$ = this.getHearingListByStatus(EXUIDisplayStatusEnum.LISTED);
+    this.currentCaseHearingsLoaded$ = this.hearingStore.pipe(
+      select(fromHearingStore.getHearingList),
+      map((hearingListStateData) => hearingListStateData?.hearingListMainModel?.caseRef === this.caseId)
+    );
     this.userRoles = [];
     const detailsStr = this.sessionSvc.getItem('userDetails');
     if (detailsStr) {
-      const details = JSON.parse(detailsStr) as object;
+      const details = safeJsonParse<any>(detailsStr, null);
       if (details && details.hasOwnProperty('roles')) {
         this.userRoles = details['roles'] as string[];
       }
@@ -161,6 +178,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
         if (
           hearingListStateData &&
           hearingListStateData.hearingListMainModel &&
+          hearingListStateData.hearingListMainModel.caseRef === this.caseId &&
           hearingListStateData.hearingListMainModel.caseHearings
         ) {
           let caseHearingModels: HearingListModel[] = [];
@@ -220,6 +238,11 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     };
     this.hearingStore.dispatch(new fromHearingStore.SaveHearingConditions(hearingCondition));
     this.router.navigate(['/', 'hearings', 'request']);
+  }
+
+  private loadHearingsForCurrentCase(): void {
+    this.hearingStore.dispatch(new fromHearingStore.ResetHearingList());
+    this.hearingStore.dispatch(new fromHearingStore.LoadAllHearings(this.caseId));
   }
 
   public ngOnDestroy(): void {

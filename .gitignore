@@ -55,10 +55,13 @@ api/.nyc_output
 # Do not commit local files
 /config/local*.*
 .env
+.env_copy
 .tool-versions
 /.agent
 execplan-api-pw-coverage.md
 /.ssr.lock
+/.sonar
+/.scannerwork
 
 # System Files
 .DS_Store
@@ -120,5 +123,21 @@ test-results/
 /playwright_tests_new/api/auth.ts
 /playwright_tests_new/api/auth-coverage.api.ts
 
+*.zip
 # Fortify scan artifacts
 Fortify Scan/
+
+# Local orchestration scratch docs
+/docs/NODE_API_SERVICES_REVIEW_RECOMMENDATIONS.md
+
+# Local agent review artefacts
+/.agents/
+/AGENTS.md
+/DECISIONS.md
+/PLAN.md
+/RESULT.md
+/TODO.md
+/docs/DECISIONS.md
+/docs/PLAN.md
+/docs/RESULT.md
+/docs/TODO.md

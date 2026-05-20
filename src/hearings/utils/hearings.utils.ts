@@ -4,14 +4,19 @@ import { HearingConditions } from '../models/hearingConditions';
 import { HearingDayScheduleModel } from '../models/hearingDaySchedule.model';
 import { HearingRequestMainModel } from '../models/hearingRequestMain.model';
 import { HearingWindowModel } from '../models/hearingWindow.model';
-import { HearingDateEnum } from '../models/hearings.enum';
+import { HearingChannelEnum, HearingDateEnum } from '../models/hearings.enum';
 import { IndividualDetailsModel } from '../models/individualDetails.model';
 import { LovRefDataModel } from '../models/lovRefData.model';
 import { PartyDetailsModel } from '../models/partyDetails.model';
 import { ServiceHearingValuesModel } from '../models/serviceHearingValues.model';
 import { PartyType } from 'api/hearings/models/hearings.enum';
 
+type DateOption = 'noDate' | 'specificDate' | 'dateRange';
+
 export class HearingsUtils {
+  public static readonly DISCREPANCY_MESSAGE =
+    'The Party IDs and/or case information for this request appear mismatched, please reload and start the request again.';
+
   public static hasPropertyAndValue(conditions: HearingConditions, propertyName: string, propertyValue: any): boolean {
     return conditions && conditions.hasOwnProperty(propertyName) && conditions[propertyName] === propertyValue;
   }
@@ -151,6 +156,15 @@ export class HearingsUtils {
     return false;
   }
 
+  public static hasPartyHearingChannelChanged(partyInHMC: PartyDetailsModel, partyInSHV: PartyDetailsModel): boolean {
+    if (partyInHMC.individualDetails && partyInSHV.individualDetails) {
+      if (partyInHMC.individualDetails.preferredHearingChannel !== partyInSHV.individualDetails.preferredHearingChannel) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   /**
    * Returns a boolean value on the difference between
    * the unavailability dates of the parties
@@ -171,11 +185,11 @@ export class HearingsUtils {
     return !_.isEqual(partiesNotAvailableDatesSHV, partiesNotAvailableDatesHMC);
   }
 
-  public static hasHearingDurationChanged(length: number, lengthToCompare: number): boolean {
+  public static hasHearingNumberChanged(length: number, lengthToCompare: number): boolean {
     return !_.isEqual(length, lengthToCompare);
   }
 
-  public static hasHearingPriorityChanged(priority: string, priorityToCompare: string): boolean {
+  public static hasHearingStringChanged(priority: string, priorityToCompare: string): boolean {
     return !_.isEqual(priority, priorityToCompare);
   }
 
@@ -244,6 +258,52 @@ export class HearingsUtils {
 
   static convertStringToDate(date: string): number {
     return new Date(date).setHours(0, 0, 0, 0);
+  }
+
+  public static checkHearingConsistency(
+    hearingRequestMainModel: HearingRequestMainModel,
+    serviceHearingValuesModel: ServiceHearingValuesModel,
+    caseReference?: string
+  ): boolean {
+    const dataMatches =
+      this.checkHearingPartiesConsistency(hearingRequestMainModel, serviceHearingValuesModel) &&
+      this.checkHearingCaseConsistency(hearingRequestMainModel, serviceHearingValuesModel, caseReference);
+    return dataMatches;
+  }
+
+  // EXUI-4080 - Ensure case data is also checked for consistency
+  public static checkHearingCaseConsistency(
+    hearingRequestMainModel: HearingRequestMainModel,
+    serviceHearingValuesModel: ServiceHearingValuesModel,
+    caseReference?: string
+  ): boolean {
+    const hrmCaseDetails = hearingRequestMainModel?.caseDetails;
+    const shv = serviceHearingValuesModel;
+
+    const hrmCaseRef = hrmCaseDetails?.caseRef;
+    const itemCaseRef = caseReference;
+
+    // Check against case reference if present
+    if (itemCaseRef && hrmCaseRef && itemCaseRef !== hrmCaseRef) {
+      return false;
+    }
+
+    // If either side is missing, don't block
+    if (!hrmCaseDetails || !shv) {
+      return true;
+    }
+
+    const hrmServiceCode = hrmCaseDetails.hmctsServiceCode;
+    const shvServiceCode = shv.hmctsServiceID;
+
+    // Service code mismatch
+    if (hrmServiceCode && shvServiceCode && hrmServiceCode !== shvServiceCode) {
+      return false;
+    }
+
+    // Note: Check for case name removed - case name can change during hearing journey
+
+    return true;
   }
 
   public static checkHearingPartiesConsistency(
@@ -316,5 +376,115 @@ export class HearingsUtils {
     );
 
     return { caseAdditionalSecurityFlagChanged, facilitiesChanged };
+  }
+
+  static isPaperHearing(hearingChannel: string[], isPaperHearing = true): boolean {
+    return hearingChannel?.includes(HearingChannelEnum.ONPPR) || !!isPaperHearing;
+  }
+
+  static hasPaperHearingChanged(hearingChannels: string[], hearingChannelToCompare: string[]) {
+    const hearingChannelPaper = this.isPaperHearing(hearingChannels, null);
+    const hearingChannelToComparePaper = this.isPaperHearing(hearingChannelToCompare, null);
+    return hearingChannelPaper !== hearingChannelToComparePaper;
+  }
+
+  static hasSpecificDateChanged(
+    hearingWindowMainModel: HearingWindowModel | undefined,
+    hearingWindowCompareMainModel: HearingWindowModel | undefined
+  ): boolean {
+    const mainDateOption: DateOption = this.determineDateOption(hearingWindowMainModel);
+    const compareDateOption: DateOption = this.determineDateOption(hearingWindowCompareMainModel);
+
+    if (mainDateOption !== compareDateOption) {
+      return true;
+    }
+    return false;
+  }
+
+  private static determineDateOption(hearingWindow: HearingWindowModel | undefined): DateOption {
+    if (!hearingWindow || Object.keys(hearingWindow).length === 0) {
+      return 'noDate';
+    } else if (hearingWindow.firstDateTimeMustBe) {
+      return 'specificDate';
+    } else if (hearingWindow.dateRangeStart || hearingWindow.dateRangeEnd) {
+      return 'dateRange';
+    }
+    return 'noDate';
+  }
+
+  static hasListingCommentsChange(listingCommentsinput1: string | undefined, listingCommentsinput2: string | undefined) {
+    const listingComments1 = listingCommentsinput1 ? listingCommentsinput1.trim() : '';
+    const listingComments2 = listingCommentsinput2 ? listingCommentsinput2.trim() : '';
+    return listingComments1 !== listingComments2;
+  }
+
+  static havePartyDetailsChanged(partiesSHV: PartyDetailsModel[], partiesHMC: PartyDetailsModel[]) {
+    if (partiesSHV.length !== partiesHMC.length) {
+      return true;
+    }
+    // Number of parties are the same in both SHV and HMC
+    // Loop through the parties in SHV, locate the corresponding party in HMC
+    // and return true if there are any changes in the party name of party type
+    for (const partySHV of partiesSHV) {
+      const party = partiesHMC.find((partyHMC) => partyHMC.partyID === partySHV.partyID);
+      if (!party || party.partyType !== partySHV.partyType || this.hasPartyNameChanged(party, partySHV)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  static havePartyHearingChannelChanged(partiesSHV: PartyDetailsModel[], partiesHMC: PartyDetailsModel[]) {
+    if (partiesSHV.length !== partiesHMC.length) {
+      return true;
+    }
+    // Number of parties are the same in both SHV and HMC
+    // Loop through the parties in SHV, locate the corresponding party in HMC
+    // and return true if there are any changes in the preferred hearing channel
+    for (const partySHV of partiesSHV) {
+      const party = partiesHMC.find((partyHMC) => partyHMC.partyID === partySHV.partyID);
+      if (!party || party.partyType !== partySHV.partyType || this.hasPartyHearingChannelChanged(party, partySHV)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  static setHearingChannelsForPaperHearing(partyDetails: PartyDetailsModel[]): PartyDetailsModel[] {
+    const updatedPartyDetails = [];
+    JSON.parse(JSON.stringify(partyDetails)).forEach((party) => {
+      if (party.partyType === PartyType.IND) {
+        party.individualDetails = {
+          ...party.individualDetails,
+          preferredHearingChannel: 'NA',
+        };
+      }
+      updatedPartyDetails.push(party);
+    });
+    return updatedPartyDetails;
+  }
+
+  public static toCompareServiceHearingValueField(value: any): boolean {
+    if (value === null || value === undefined) {
+      return false;
+    }
+
+    if (typeof value === 'string' && value.trim() === '') {
+      return false;
+    }
+
+    if (Array.isArray(value) && value.length === 0) {
+      return false;
+    }
+
+    if (value instanceof Date) {
+      return true;
+    }
+
+    if (typeof value === 'object' && Object.keys(value).length === 0) {
+      return false;
+    }
+
+    return true;
   }
 }

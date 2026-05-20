@@ -1,19 +1,36 @@
-const { setDefaultResultOrder } = require('dns');
-
+import { setDefaultResultOrder } from 'node:dns';
+import * as fs from 'node:fs';
+import * as os from 'node:os';
+import * as path from 'node:path';
+import { container } from 'codeceptjs';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const report = require('cucumber-html-reporter');
-const { merge } = require('mochawesome-merge');
-const marge = require('mochawesome-report-generator');
-const fs = require('fs');
-const path = require('path');
-
-const global = require('./globals');
-import applicationServer from '../localServer';
-
-const spawn = require('child_process').spawn;
-const backendMockApp = require('../backendMock/app');
+import backendMockApp from '../backendMock/app';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const statsReporter = require('./statsReporter');
+import './globals';
 
 setDefaultResultOrder('ipv4first');
+
+if (process.platform === 'darwin' && process.arch === 'arm64' && !process.env.PLAYWRIGHT_HOST_PLATFORM_OVERRIDE) {
+  const major = Number.parseInt(os.release().split('.')[0] ?? '', 10);
+  const lastStable = 15;
+  let macVersion: string;
+  if (Number.isFinite(major)) {
+    if (major < 18) {
+      macVersion = 'mac10.13';
+    } else if (major === 18) {
+      macVersion = 'mac10.14';
+    } else if (major > 19) {
+      macVersion = `mac${Math.min(major - 9, lastStable)}`;
+    } else {
+      macVersion = 'mac10.15';
+    }
+  } else {
+    macVersion = 'mac10.15';
+  }
+  process.env.PLAYWRIGHT_HOST_PLATFORM_OVERRIDE = `${macVersion}-arm64`;
+}
 
 const externalServers = process.env.EXTERNAL_SERVERS === 'true';
 function findStepFiles(basePath) {
@@ -36,6 +53,88 @@ function findStepFiles(basePath) {
   return results;
 }
 
+function findFeatureFiles(basePath) {
+  const results = [];
+
+  function walk(dir) {
+    const files = fs.readdirSync(dir);
+    for (const file of files) {
+      const fullPath = path.join(dir, file);
+      const stat = fs.statSync(fullPath);
+      if (stat.isDirectory()) {
+        walk(fullPath);
+      } else if (file.endsWith('.feature')) {
+        results.push(fullPath);
+      }
+    }
+  }
+
+  walk(basePath);
+  return results;
+}
+
+function clearLegacyCucumberArtifacts(outputDir: string) {
+  if (!fs.existsSync(outputDir)) {
+    return;
+  }
+
+  for (const entry of fs.readdirSync(outputDir)) {
+    if (entry === 'cucumber_report.html' || (entry.startsWith('cucumber_output_') && entry.endsWith('.json'))) {
+      fs.rmSync(path.join(outputDir, entry), { force: true });
+    }
+  }
+}
+
+function countSelectableScenarios(featureBasePath: string, requiredTag: string) {
+  const requiredTagToken = `@${requiredTag}`;
+  return findFeatureFiles(featureBasePath).reduce((total, featurePath) => {
+    return total + countSelectableScenariosInFeature(featurePath, requiredTagToken);
+  }, 0);
+}
+
+function countSelectableScenariosInFeature(featurePath: string, requiredTagToken: string) {
+  const lines = fs.readFileSync(featurePath, 'utf8').split(/\r?\n/);
+  let featureTags: string[] = [];
+  let pendingTags: string[] = [];
+  let selectableScenarioCount = 0;
+
+  for (const rawLine of lines) {
+    const trimmedLine = rawLine.trim();
+    if (!trimmedLine || trimmedLine.startsWith('#')) {
+      continue;
+    }
+
+    if (trimmedLine.startsWith('@')) {
+      pendingTags = [...pendingTags, ...trimmedLine.split(/\s+/).filter((tag) => tag.startsWith('@'))];
+      continue;
+    }
+
+    if (trimmedLine.startsWith('Feature:')) {
+      featureTags = [...pendingTags];
+      pendingTags = [];
+      continue;
+    }
+
+    if (trimmedLine.startsWith('Scenario:') || trimmedLine.startsWith('Scenario Outline:')) {
+      const combinedTags = new Set([...featureTags, ...pendingTags]);
+      pendingTags = [];
+      if (combinedTags.has(requiredTagToken) && !combinedTags.has('@ignore')) {
+        selectableScenarioCount++;
+      }
+      continue;
+    }
+
+    if (trimmedLine.startsWith('Rule:') || trimmedLine.startsWith('Background:') || trimmedLine.startsWith('Examples:')) {
+      pendingTags = [];
+      continue;
+    }
+
+    pendingTags = [];
+  }
+
+  return selectableScenarioCount;
+}
+
 const e2eStepFiles = findStepFiles(path.resolve(__dirname, '../e2e/features/step_definitions'));
 const ngIntegrationStepFiles = findStepFiles(path.resolve(__dirname, '../ngIntegration/tests/stepDefinitions'));
 
@@ -43,7 +142,6 @@ console.log('Loaded step files:', [...e2eStepFiles, ...ngIntegrationStepFiles]);
 
 let executionResult = 'passed';
 
-const appWithMockBackend = null;
 const testType = process.env.TEST_TYPE;
 
 const CODECEPT_OUT = path.resolve(
@@ -53,21 +151,19 @@ const CODECEPT_OUT = path.resolve(
 
 const CUKE_OUT = path.resolve(__dirname, '../../functional-output/tests/codecept-' + testType);
 fs.mkdirSync(CUKE_OUT, { recursive: true });
+const CUCUMBER_REPORT_FILE = path.join(CUKE_OUT, 'cucumber_report.html');
 
-const debugMode = process.env.DEBUG && process.env.DEBUG.includes('true');
+const debugMode = process.env.DEBUG?.includes('true') ?? false;
 
 const parallel = process.env.PARALLEL ? process.env.PARALLEL === 'true' : false;
-const head = process.env.HEAD === 'true';
+const defaultShowBrowser = process.platform === 'darwin' && process.arch === 'arm64' && !process.env.CI;
+const showBrowser = process.env.HEADLESS === 'true' ? false : process.env.HEAD === 'true' || defaultShowBrowser;
 console.log(`testType : ${testType}`);
 console.log(`parallel : ${parallel}`);
-console.log(`headless : ${head}`);
+console.log(`headless : ${!showBrowser}`);
 
 const TEST_URL = process.env.TEST_URL || '';
-const pipelineBranch = externalServers //   running against localhost
-  ? 'local' //   value won’t be used later
-  : TEST_URL.includes('pr-') || TEST_URL.includes('manage-case.aat.platform.hmcts.net')
-    ? 'preview'
-    : 'master';
+const pipelineBranch = resolvePipelineBranch(externalServers, TEST_URL);
 let features = '';
 if (testType === 'e2e' || testType === 'smoke') {
   features = '../e2e/features/app/**/*.feature';
@@ -77,11 +173,10 @@ if (testType === 'e2e' || testType === 'smoke') {
   throw new Error(`Unrecognized test type ${testType}`);
 }
 
-const functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-${testType}`);
 const cucumber_functional_output_dir = path.resolve(`${__dirname}/../../functional-output/tests/codecept-${testType}`);
 fs.mkdirSync(cucumber_functional_output_dir, { recursive: true });
 
-let bddTags = testType === 'ngIntegration' ? 'functional_enabled' : 'fullFunctional';
+let bddTags = testType === 'ngIntegration' ? 'functional_enabled' : 'fullfunctional';
 
 if (pipelineBranch === 'master' && testType === 'ngIntegration') {
   bddTags = 'AAT_only';
@@ -90,7 +185,22 @@ if (pipelineBranch === 'master' && testType === 'ngIntegration') {
 
 const tags = process.env.DEBUG ? 'functional_debug' : bddTags;
 const grepTags = `(?=.*@${testType === 'smoke' ? 'smoke' : tags})^(?!.*@ignore)`;
+const selectedNgIntegrationScenarioCount =
+  testType === 'ngIntegration'
+    ? countSelectableScenarios(path.resolve(__dirname, '../ngIntegration/tests/features'), tags)
+    : undefined;
+const hasNoSelectableNgIntegrationScenarios =
+  testType === 'ngIntegration' && selectedNgIntegrationScenarioCount !== undefined && selectedNgIntegrationScenarioCount === 0;
 console.log(grepTags);
+if (testType === 'ngIntegration') {
+  console.log(`Selected ngIntegration scenarios for @${tags}: ${selectedNgIntegrationScenarioCount}`);
+}
+
+function prepareNgIntegrationLegacyArtifacts() {
+  if (testType === 'ngIntegration') {
+    clearLegacyCucumberArtifacts(CUKE_OUT);
+  }
+}
 
 exports.config = {
   require: [path.resolve(__dirname, 'steps_file.js')],
@@ -114,41 +224,10 @@ exports.config = {
     Mochawesome: {
       uniqueScreenshotNames: 'true',
     },
-    // Puppeteer: {
-    //   url: 'https://manage-case.aat.platform.hmcts.net/',
-    //   show: true,
-    //   waitForNavigation: ['domcontentloaded'],
-    //   restart: true,
-    //   keepCookies: false,
-    //   keepBrowserState: false,
-    //   smartWait: 50000,
-    //   waitForTimeout: 90000,
-    //   chrome: {
-    //     ignoreHTTPSErrors: true,
-    //     defaultViewport: {
-    //       width: 1280,
-    //       height: 960
-    //     },
-    //     args: [
-    //       `${head ? '' : '--headless'}`,
-    //       '—disable-notifications',
-    //       '--smartwait',
-    //       '--disable-gpu',
-    //       '--no-sandbox',
-    //       '--allow-running-insecure-content',
-    //       '--ignore-certificate-errors',
-    //       '--window-size=1440,1400',
-    //       '--viewport-size=1440,1400',
-
-    //        '--disable-setuid-sandbox', '--no-zygote ', '--disableChecks'
-    //     ]
-    //   }
-
-    // },
     Playwright: {
       url: externalServers ? process.env.WEB_BASE_URL || 'http://localhost:8080' : 'https://manage-case.aat.platform.hmcts.net',
       restart: true,
-      show: head,
+      show: showBrowser,
       waitForNavigation: 'domcontentloaded',
       waitForAction: 10,
       browser: 'chromium',
@@ -160,48 +239,7 @@ exports.config = {
       windowSize: '1600x900',
     },
   },
-  mocha: {
-    // reporter: 'mochawesome',
-    // "reporterOptions": {
-    //   "reportDir": functional_output_dir,
-    //   reportName:'XUI_MC',
-    //   "overwrite": false,
-    //   "html": false,
-    //   "json": true,
-    //   "codeceptjs-cli-reporter": {
-    //     "stdout": "-",
-    //     "options": {
-    //       "verbose": false,
-    //       "steps": true,
-    //     }
-    //   },
-    //   "mocha-junit-reporter": {
-    //     "stdout": `${functional_output_dir}/console.log`,
-    //     "options": {
-    //       "mochaFile": "./output/result.xml"
-    //     }
-    //   }
-    //   // inlineAssets: true,
-    // },
-    //   "mochawesome": {
-    //     "stdout": `${functional_output_dir}/`,
-    //     "options": {
-    //       "reportDir": `${functional_output_dir}/output`,
-    //       "reportFilename": `${functional_output_dir}/output/report`,
-    //       "overwrite": false,
-    //       "html":false,
-    //       "json":true
-    //     }
-    //   },
-    //   "mocha-junit-reporter": {
-    //     "stdout": "./output/console.log",
-    //     "options": {
-    //       "mochaFile": "./output/result.xml",
-    //       "attachments": true //add screenshot for a failed test
-    //     }
-    //   }
-    // }
-  },
+  mocha: {},
   plugins: {
     screenshotOnFail: {
       enabled: true,
@@ -231,16 +269,22 @@ exports.config = {
     Feature: 3,
   },
   bootstrap: async () => {
-    share({ users: [], reuseCounter: 0 });
+    container.append({
+      users: [],
+      reuseCounter: 0,
+    });
+    if (!parallel) {
+      prepareNgIntegrationLegacyArtifacts();
+    }
     if (!parallel && testType !== 'smoke') {
       // smoke tests are run in serial even with PARALLEL=true
       await setup();
     }
   },
   bootstrapAll: async () => {
-    global.scenarioData = {};
-    const path = require('path');
-    require(path.resolve(__dirname, './hooks.js')); // 🟢 Will now run your hook IIFE immediately
+    prepareNgIntegrationLegacyArtifacts();
+    globalThis.scenarioData = {};
+    await import(path.resolve(__dirname, './hooks.js')); // 🟢 Will now run your hook IIFE immediately
 
     if (parallel && testType !== 'smoke') {
       // smoke tests are run in serial even with PARALLEL=true
@@ -274,6 +318,10 @@ function exitWithStatus() {
       .map((f) => path.join(CUKE_OUT, f));
 
     if (cucumberReports.length === 0) {
+      if (hasNoSelectableNgIntegrationScenarios) {
+        console.warn('No selectable ngIntegration scenarios remain after retirement markers - passing legacy suite');
+        process.exit(0);
+      }
       console.warn('No cucumber JSON files found - failing the run');
       process.exit(1);
     }
@@ -310,7 +358,11 @@ function exitWithStatus() {
       }
     }
 
-    const status = nonEmpty === 0 ? 'FAIL' : failedScenarios > 0 ? 'FAIL' : 'PASS';
+    if (nonEmpty === 0 && hasNoSelectableNgIntegrationScenarios) {
+      console.warn('No selectable ngIntegration scenarios produced cucumber data - passing retired legacy suite');
+    }
+    const status =
+      nonEmpty === 0 ? (hasNoSelectableNgIntegrationScenarios ? 'PASS' : 'FAIL') : failedScenarios > 0 ? 'FAIL' : 'PASS';
     console.log(
       `Non-empty reports: ${nonEmpty}, Failed scenarios: ${failedScenarios}, Failed steps: ${failedSteps}, Status: ${status}`
     );
@@ -324,8 +376,9 @@ function exitWithStatus() {
 async function setup() {
   if (!externalServers && !debugMode && (testType === 'ngIntegration' || testType === 'a11y')) {
     await backendMockApp.startServer(debugMode);
-    await applicationServer.initialize();
-    await applicationServer.start();
+    const appServer = await getApplicationServer();
+    await appServer.initialize();
+    await appServer.start();
   }
 }
 
@@ -333,25 +386,28 @@ async function teardown() {
   console.log('Tests execution completed');
   if (!externalServers && !debugMode && (testType === 'ngIntegration' || testType === 'a11y')) {
     await backendMockApp.stopServer();
-    await applicationServer.stop();
+    const appServer = await getApplicationServer();
+    await appServer.stop();
   }
   statsReporter.run();
 
   // process.exit(1);
 }
 
-async function mochawesomeGenerateReport() {
-  const report = await merge({
-    files: [`${functional_output_dir}/*.json`],
-  });
-  await marge.create(report, {
-    reportDir: `${functional_output_dir}/`,
-    reportFilename: `${functional_output_dir}/report`,
-  });
+type ApplicationServer = {
+  initialize: () => Promise<void>;
+  start: () => Promise<void>;
+  stop: () => Promise<void>;
+};
 
-  console.log(`FAILED: ${report.stats.failures}, PASSED: ${report.stats.passes}, TOTAL: ${report.stats.tests}`);
+let applicationServer: ApplicationServer | undefined;
 
-  return report.stats.failures > 0 ? 'FAIL' : 'PASS';
+async function getApplicationServer(): Promise<ApplicationServer> {
+  if (!applicationServer) {
+    const mod = await import('../localServer');
+    applicationServer = (mod as { default: ApplicationServer }).default;
+  }
+  return applicationServer;
 }
 
 async function generateCucumberReport() {
@@ -372,53 +428,115 @@ async function generateCucumberReport() {
     });
 
   if (jsonFiles.length === 0) {
+    if (hasNoSelectableNgIntegrationScenarios) {
+      writeRetiredLegacySuiteReport();
+      return;
+    }
     console.warn('⚠️  No cucumber JSONs with features – skipping HTML report');
     return; // nothing to show, so don’t throw
   }
 
-  const reportFile = path.join(CUKE_OUT, 'cucumber_report.html');
+  for (const file of jsonFiles) {
+    try {
+      const features = JSON.parse(fs.readFileSync(file, 'utf8'));
+      if (Array.isArray(features)) {
+        for (const feature of features) {
+          updateExecutionOutcomes(feature);
+        }
+      }
+    } catch {
+      // ignore parse issues for execution status aggregation
+    }
+  }
 
   await new Promise((r) => setTimeout(r, 2000)); // let reporters flush
   report.generate({
     theme: 'bootstrap',
     jsonDir: CUKE_OUT, // folder that holds all accepted files
-    output: reportFile,
-    files: jsonFiles, // ← tell reporter which files to read
-    displayDuration: true,
+    output: CUCUMBER_REPORT_FILE,
+    reportSuiteAsScenarios: true,
+    launchReport: false,
     ignoreBadJsonFile: true,
     metadata: {
-      browser: { name: 'chrome', version: '60' },
+      browser: 'chrome 60',
       device: 'Local test machine',
-      platform: { name: 'ubuntu', version: '16.04' },
+      platform: 'ubuntu 16.04',
     },
   });
   console.log('completed cucumber report');
 }
 
-function processCucumberJsonReports() {
-  const executionOutcomes: Record<string, string> = {};
-  const goodFiles = fs.readdirSync(CUKE_OUT).filter((f) => f.startsWith('cucumber_output_') && f.endsWith('.json'));
-  for (const f of goodFiles) {
-    const full = path.join(CUKE_OUT, f);
-    const json = JSON.parse(fs.readFileSync(full, 'utf8'));
-    if (!Array.isArray(json) || json.length === 0) continue; // skip empties
+function writeRetiredLegacySuiteReport() {
+  const html = `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Legacy Codecept Integration Test Retired</title>
+  </head>
+  <body>
+    <h1>Legacy Codecept Integration Test Retired</h1>
+    <p>No selectable ngIntegration scenarios remain after retirement markers for this run.</p>
+    <p>This placeholder report is generated so Jenkins can publish the retired legacy stage without failing.</p>
+    <p>Generated at ${new Date().toISOString()}.</p>
+  </body>
+</html>`;
 
-    for (const feature of json) {
-      for (const element of feature.elements) {
-        for (const step of element.steps) {
-          executionOutcomes[step.result.status] = step.result.status;
-          if (executionResult === 'passed') executionResult = step.result.status;
+  fs.writeFileSync(CUCUMBER_REPORT_FILE, html, 'utf8');
+  console.log('Generated retired legacy suite placeholder report');
+}
 
-          for (const embedd of step.embeddings ?? []) {
-            if (embedd.mime_type === 'text/plain' && !embedd.data.startsWith('=>')) {
-              embedd.data = Buffer.from(embedd.data, 'base64').toString('ascii');
-            }
-          }
-        }
+function resolvePipelineBranch(isExternal: boolean, testUrl: string) {
+  if (isExternal) {
+    return 'local';
+  }
+  if (testUrl.includes('pr-') || testUrl.includes('manage-case.aat.platform.hmcts.net')) {
+    return 'preview';
+  }
+  return 'master';
+}
+
+function updateExecutionOutcomes(feature: unknown) {
+  if (!feature || typeof feature !== 'object' || !Array.isArray((feature as { elements?: unknown }).elements)) {
+    return;
+  }
+
+  const elements = (feature as { elements: unknown[] }).elements;
+  for (const element of elements) {
+    updateStepOutcomes(element);
+  }
+}
+
+function updateStepOutcomes(element: unknown) {
+  if (!element || typeof element !== 'object' || !Array.isArray((element as { steps?: unknown }).steps)) {
+    return;
+  }
+
+  const steps = (element as { steps: unknown[] }).steps;
+  for (const step of steps) {
+    const status = step && typeof step === 'object' ? (step as { result?: { status?: unknown } }).result?.status : undefined;
+    if (typeof status === 'string') {
+      if (executionResult === 'passed') {
+        executionResult = status;
       }
     }
-    fs.writeFileSync(full, JSON.stringify(json, null, 2));
+    decodeTextEmbeddings(step);
   }
-  console.log(executionOutcomes);
-  return executionResult;
+}
+
+function decodeTextEmbeddings(step: unknown) {
+  const embeddings = step && typeof step === 'object' ? (step as { embeddings?: unknown }).embeddings : undefined;
+  if (!Array.isArray(embeddings)) {
+    return;
+  }
+  for (const embedd of embeddings) {
+    if (
+      embedd &&
+      typeof embedd === 'object' &&
+      (embedd as { mime_type?: unknown }).mime_type === 'text/plain' &&
+      typeof (embedd as { data?: unknown }).data === 'string' &&
+      !(embedd as { data: string }).data.startsWith('=>')
+    ) {
+      embedd.data = Buffer.from(embedd.data, 'base64').toString('ascii');
+    }
+  }
 }

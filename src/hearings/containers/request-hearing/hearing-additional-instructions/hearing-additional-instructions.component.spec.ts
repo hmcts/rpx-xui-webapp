@@ -18,6 +18,21 @@ describe('HearingAdditionalInstructionsComponent', () => {
   const hearingsService = new HearingsService(mockedHttpClient);
   hearingsService.navigateAction$ = of(ACTION.CONTINUE);
 
+  // Factory function to create mock AfterPageVisitProperties with defaults
+  function createMockAfterPageVisit(overrides: any = {}): any {
+    return {
+      reasonableAdjustmentChangesRequired: false,
+      nonReasonableAdjustmentChangesRequired: false,
+      participantAttendanceChangesRequired: false,
+      hearingWindowChangesRequired: false,
+      hearingFacilitiesChangesRequired: false,
+      hearingUnavailabilityDatesChanged: false,
+      additionalInsructionsChangesRequired: false, // Using typo from interface
+      additionalInstructionsChangesRequired: false, // Also add correct spelling for component check
+      ...overrides,
+    };
+  }
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule],
@@ -37,14 +52,15 @@ describe('HearingAdditionalInstructionsComponent', () => {
 
     fixture = TestBed.createComponent(HearingAdditionalInstructionsComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('should create', () => {
+    fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
   it('should check form validity', () => {
+    fixture.detectChanges();
     spyOn<HearingsService>(hearingsService, 'navigateAction$' as never);
     component.instructionsForm.controls.instructions.setValue('instructions');
     component.executeAction(ACTION.CONTINUE);
@@ -52,6 +68,7 @@ describe('HearingAdditionalInstructionsComponent', () => {
   });
 
   it('should check AutoListFlag', () => {
+    fixture.detectChanges();
     component.initForm();
     component.instructionsForm.controls.instructions.setValue(null);
     component.serviceHearingValuesModel.autoListFlag = true;
@@ -61,6 +78,7 @@ describe('HearingAdditionalInstructionsComponent', () => {
   });
 
   it('should getListingAutoChangeReasonCode', () => {
+    fixture.detectChanges();
     component.initForm();
     component.instructionsForm.controls.instructions.setValue(null);
     component.serviceHearingValuesModel.autoListFlag = true;
@@ -72,6 +90,302 @@ describe('HearingAdditionalInstructionsComponent', () => {
   it('should sanitise HTML strings', () => {
     const sanitisedString = component.santiseHTML('<h1>this is a test</h1>');
     expect(sanitisedString).toBe('this is a test');
+  });
+
+  describe('initForm with VIEW_EDIT mode and additionalInsructionsChangesRequired', () => {
+    it('should set showReviewBox to true when in VIEW_EDIT mode with additionalInsructionsChangesRequired', () => {
+      // Set up the service properties BEFORE component initialization
+      hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
+        caseFlags: null,
+        parties: null,
+        hearingWindow: null,
+        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: true }),
+      } as any;
+
+      component.hearingCondition = { mode: 'view-edit' };
+      component.serviceHearingValuesModel = {
+        ...component.serviceHearingValuesModel,
+        listingComments: 'Service hearing comments',
+      };
+      component.hearingRequestMainModel = {
+        ...component.hearingRequestMainModel,
+        hearingDetails: {
+          ...component.hearingRequestMainModel.hearingDetails,
+          listingComments: 'Main model comments',
+        },
+      };
+
+      // Initialize component after setting up service and models
+      component.ngOnInit();
+
+      expect(component.showReviewBox).toBe(true);
+    });
+
+    it('should create instructionsForm with serviceHearingValuesModel listingComments when additionalInsructionsChangesRequired', () => {
+      // Set up the service properties BEFORE component initialization
+      hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
+        caseFlags: null,
+        parties: null,
+        hearingWindow: null,
+        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: true }),
+      } as any;
+
+      component.hearingCondition = { mode: 'view-edit' };
+      component.serviceHearingValuesModel = {
+        ...component.serviceHearingValuesModel,
+        listingComments: 'Service hearing comments',
+      };
+      component.hearingRequestMainModel = {
+        ...component.hearingRequestMainModel,
+        hearingDetails: {
+          ...component.hearingRequestMainModel.hearingDetails,
+          listingComments: 'Main model comments',
+        },
+      };
+
+      component.ngOnInit();
+
+      expect(component.instructionsForm.value.instructions).toBe('Service hearing comments');
+    });
+
+    it('should create instructionsFormViewOnly with hearingRequestMainModel listingComments when additionalInsructionsChangesRequired', () => {
+      // Set up the service properties BEFORE component initialization
+      hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
+        caseFlags: null,
+        parties: null,
+        hearingWindow: null,
+        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: true }),
+      } as any;
+
+      component.hearingCondition = { mode: 'view-edit' };
+      component.serviceHearingValuesModel = {
+        ...component.serviceHearingValuesModel,
+        listingComments: 'Service hearing comments',
+      };
+      component.hearingRequestMainModel = {
+        ...component.hearingRequestMainModel,
+        hearingDetails: {
+          ...component.hearingRequestMainModel.hearingDetails,
+          listingComments: 'Main model comments',
+        },
+      };
+
+      component.ngOnInit();
+
+      expect(component.instructionsFormViewOnly).toBeDefined();
+      expect(component.instructionsFormViewOnly.value.instructionsViewOnly).toBe('Main model comments');
+    });
+
+    it('should set showReviewBox to false when not in VIEW_EDIT mode', () => {
+      component.hearingCondition = { mode: 'create' };
+      component.hearingRequestMainModel = {
+        ...component.hearingRequestMainModel,
+        hearingDetails: {
+          ...component.hearingRequestMainModel.hearingDetails,
+          listingComments: 'Main model comments',
+        },
+      };
+
+      component.initForm();
+
+      expect(component.showReviewBox).toBe(false);
+    });
+
+    it('should not set showReviewBox to true when additionalInstructionsChangesRequired is false but defined', () => {
+      // Set up the service properties BEFORE component initialization
+      hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
+        caseFlags: null,
+        parties: null,
+        hearingWindow: null,
+        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: false }),
+      } as any;
+
+      component.hearingCondition = { mode: 'view-edit' };
+      component.hearingRequestMainModel = {
+        ...component.hearingRequestMainModel,
+        hearingDetails: {
+          ...component.hearingRequestMainModel.hearingDetails,
+          listingComments: 'Main model comments',
+        },
+      };
+
+      component.initForm();
+
+      expect(component.showReviewBox).toBe(false);
+    });
+
+    it('should set showReviewBox to false when additionalInstructionsChangesRequired is undefined', () => {
+      // Set up the service properties BEFORE component initialization
+      hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
+        caseFlags: null,
+        parties: null,
+        hearingWindow: null,
+        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: undefined }),
+      } as any;
+
+      component.hearingCondition = { mode: 'view-edit' };
+      component.hearingRequestMainModel = {
+        ...component.hearingRequestMainModel,
+        hearingDetails: {
+          ...component.hearingRequestMainModel.hearingDetails,
+          listingComments: 'Main model comments',
+        },
+      };
+
+      component.initForm();
+
+      expect(component.showReviewBox).toBe(false);
+    });
+
+    it('should only create instructionsForm when not in VIEW_EDIT mode with additionalInsructionsChangesRequired', () => {
+      component.hearingCondition = { mode: 'create' };
+      component.hearingRequestMainModel = {
+        ...component.hearingRequestMainModel,
+        hearingDetails: {
+          ...component.hearingRequestMainModel.hearingDetails,
+          listingComments: 'Main model comments',
+        },
+      };
+
+      component.initForm();
+
+      expect(component.instructionsForm).toBeDefined();
+      expect(component.instructionsForm.value.instructions).toBe('Main model comments');
+      expect(component.instructionsFormViewOnly).toBeUndefined();
+    });
+
+    it('should handle null serviceHearingValuesModel listingComments when additionalInsructionsChangesRequired', () => {
+      // Set up the service properties BEFORE component initialization
+      hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
+        caseFlags: null,
+        parties: null,
+        hearingWindow: null,
+        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: true }),
+      } as any;
+
+      component.hearingCondition = { mode: 'view-edit' };
+      component.serviceHearingValuesModel = {
+        ...component.serviceHearingValuesModel,
+        listingComments: null,
+      };
+      component.hearingRequestMainModel = {
+        ...component.hearingRequestMainModel,
+        hearingDetails: {
+          ...component.hearingRequestMainModel.hearingDetails,
+          listingComments: 'Main model comments',
+        },
+      };
+
+      component.initForm();
+
+      expect(component.instructionsForm.value.instructions).toBeNull();
+      expect(component.instructionsFormViewOnly.value.instructionsViewOnly).toBe('Main model comments');
+    });
+
+    it('should handle undefined propertiesUpdatedOnPageVisit', () => {
+      component.hearingCondition = { mode: 'view-edit' };
+      hearingsService.propertiesUpdatedOnPageVisit = undefined;
+      component.hearingRequestMainModel = {
+        ...component.hearingRequestMainModel,
+        hearingDetails: {
+          ...component.hearingRequestMainModel.hearingDetails,
+          listingComments: 'Main model comments',
+        },
+      };
+
+      component.initForm();
+
+      expect(component.showReviewBox).toBe(false);
+      expect(component.instructionsForm.value.instructions).toBe('Main model comments');
+      expect(component.instructionsFormViewOnly).toBeUndefined();
+    });
+  });
+
+  describe('prepareHearingRequestData', () => {
+    it('should set additionalInstructionsChangesConfirmed to true when in VIEW_EDIT mode and additionalInstructionsChangesRequired is true', () => {
+      hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
+        caseFlags: null,
+        parties: null,
+        hearingWindow: null,
+        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: true }),
+      } as any;
+
+      fixture.detectChanges();
+
+      component.hearingCondition = { mode: 'view-edit' };
+      component.serviceHearingValuesModel = {
+        ...component.serviceHearingValuesModel,
+        autoListFlag: false,
+      };
+      component.instructionsForm.controls.instructions.setValue('Test instructions');
+
+      component.prepareHearingRequestData();
+
+      expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.additionalInstructionsChangesConfirmed).toBe(true);
+      expect(component.hearingRequestMainModel.hearingDetails.listingComments).toBe('Test instructions');
+      expect(component.hearingRequestMainModel.hearingDetails.autolistFlag).toBe(false);
+      expect(component.hearingRequestMainModel.hearingDetails.listingAutoChangeReasonCode).toBe('user-added-comments');
+    });
+
+    it('should set additionalInstructionsChangesConfirmed to true when additionalInstructionsChangesRequired is false but defined', () => {
+      hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
+        caseFlags: null,
+        parties: null,
+        hearingWindow: null,
+        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: false }),
+      } as any;
+
+      fixture.detectChanges();
+
+      component.hearingCondition = { mode: 'view-edit' };
+      component.serviceHearingValuesModel = {
+        ...component.serviceHearingValuesModel,
+        autoListFlag: false,
+      };
+      component.instructionsForm.controls.instructions.setValue('Test instructions');
+
+      component.prepareHearingRequestData();
+
+      expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.additionalInstructionsChangesConfirmed).toBe(true);
+      expect(component.hearingRequestMainModel.hearingDetails.listingComments).toBe('Test instructions');
+    });
+
+    it('should not set additionalInstructionsChangesConfirmed when additionalInstructionsChangesRequired is undefined', () => {
+      hearingsService.propertiesUpdatedOnPageVisit = {
+        hearingId: 'h000001',
+        caseFlags: null,
+        parties: null,
+        hearingWindow: null,
+        afterPageVisit: createMockAfterPageVisit({ additionalInstructionsChangesRequired: undefined }),
+      } as any;
+
+      fixture.detectChanges();
+
+      component.hearingCondition = { mode: 'view-edit' };
+      component.serviceHearingValuesModel = {
+        ...component.serviceHearingValuesModel,
+        autoListFlag: false,
+      };
+      component.instructionsForm.controls.instructions.setValue('Test instructions');
+
+      const originalConfirmedValue =
+        hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.additionalInstructionsChangesConfirmed;
+
+      component.prepareHearingRequestData();
+
+      expect(hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.additionalInstructionsChangesConfirmed).toBe(
+        originalConfirmedValue
+      );
+      expect(component.hearingRequestMainModel.hearingDetails.listingComments).toBe('Test instructions');
+    });
   });
 
   afterEach(() => {

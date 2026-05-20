@@ -335,7 +335,7 @@ describe('CaseHearingsComponent', () => {
 
   const HEARINGS_LIST: HearingListMainModel = {
     hmctsServiceID: 'BBA3',
-    caseRef: '1568642646198441',
+    caseRef: '1234',
     caseHearings: [
       CASE_HEARING_1,
       CASE_HEARING_2,
@@ -423,12 +423,19 @@ describe('CaseHearingsComponent', () => {
       },
     },
   } as CaseView;
+  const DEFAULT_CASE_INFO = { caseId: '1234', jurisdiction: 'CIVIL', caseType: 'CIVIL' };
 
   beforeEach(() => {
     mockLovRefDataService = jasmine.createSpyObj('LovRefDataService', ['getListOfValues']);
     mockLovRefDataService.getListOfValues.and.returnValue(of(HEARING_TYPES_REF_DATA));
 
     mockSessionStore = jasmine.createSpyObj<SessionStorageService>('sessionStorageService', ['getItem']);
+    mockSessionStore.getItem.and.callFake((key: string) => {
+      if (key === 'caseInfo') {
+        return JSON.stringify(DEFAULT_CASE_INFO);
+      }
+      return null;
+    });
     const mockCasesService = jasmine.createSpyObj<CasesService>('mockCasesService', ['getCaseView']);
     const mockCaseNotifier = new CaseNotifier(mockCasesService);
     mockCaseNotifier.caseView = new BehaviorSubject(cv).asObservable();
@@ -483,7 +490,18 @@ describe('CaseHearingsComponent', () => {
     expect(component).toBeTruthy();
     expect(component.hearingValuesSubscription).toBeDefined();
     expect(component.refDataSubscription).toBeDefined();
-    expect(dispatchSpy).toHaveBeenCalledWith(new fromHearingStore.LoadHearingValues());
+    expect(dispatchSpy).toHaveBeenCalledWith(
+      new fromHearingStore.LoadHearingValues({ jurisdictionId: 'CIVIL', caseReference: '1234', caseType: 'CIVIL' })
+    );
+  });
+
+  it('should reset hearing list before loading hearings for the current case', () => {
+    const dispatchSpy = spyOn(mockStore, 'dispatch');
+
+    component.reloadHearings();
+
+    expect(dispatchSpy.calls.argsFor(0)[0]).toEqual(new fromHearingStore.ResetHearingList());
+    expect(dispatchSpy.calls.argsFor(1)[0]).toEqual(new fromHearingStore.LoadAllHearings('1234'));
   });
 
   it('should unsubscribe', () => {
@@ -700,7 +718,23 @@ describe('CaseHearingsComponent', () => {
   it('should dispatch events to load all hearings and hearing values', () => {
     const dispatchSpy = spyOn(mockStore, 'dispatch');
     component.reloadHearings();
-    expect(dispatchSpy).toHaveBeenCalledTimes(2);
+    expect(dispatchSpy).toHaveBeenCalledTimes(3);
+  });
+
+  it('should not return hearings for a different case', (done) => {
+    spyOn(mockStore, 'pipe').and.returnValue(
+      of({
+        hearingListMainModel: {
+          ...HEARINGS_LIST,
+          caseRef: 'another-case',
+        },
+      })
+    );
+
+    component.getHearingListByStatus(EXUISectionStatusEnum.UPCOMING).subscribe((hearing) => {
+      expect(hearing).toEqual([]);
+      done();
+    });
   });
 
   afterEach(() => {

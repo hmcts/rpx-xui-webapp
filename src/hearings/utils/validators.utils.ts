@@ -102,8 +102,8 @@ export class ValidatorsUtils {
       const isValidSecondDate = secondDateRangeList.every((value) => value !== null);
       const firstDateNullLength = firstDateRangeList.filter((value) => value === null).length;
       const secondDateNullLength = secondDateRangeList.filter((value) => value === null).length;
-      const firstDate = moment(firstDateRangeList.join('-'), HearingDateEnum.DefaultFormat);
-      const secondDate = moment(secondDateRangeList.join('-'), HearingDateEnum.DefaultFormat);
+      const firstDate = moment(firstDateRangeList.join('-'), HearingDateEnum.DefaultFormat).add(1, 'day');
+      const secondDate = moment(secondDateRangeList.join('-'), HearingDateEnum.DefaultFormat).subtract(1, 'day');
       const isLatestDate =
         isValidFirstDate && isValidSecondDate ? secondDate >= firstDate : isValidFirstDate || isValidSecondDate;
       const isEarliestDateWeekendDate = this.isWeekendDate(firstDate);

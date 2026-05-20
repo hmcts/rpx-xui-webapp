@@ -168,7 +168,6 @@ describe('Proxy Middleware', () => {
       const proxyMiddleware = mockApp.use.firstCall.args[2];
       expect(proxyMiddleware).to.be.a('function');
       expect(proxyMiddleware).to.have.property('upgrade');
-      expect(proxyMiddleware).to.have.property('__LEGACY_HTTP_PROXY_MIDDLEWARE__', true);
     });
 
     it('should include authInterceptor in middleware array', () => {

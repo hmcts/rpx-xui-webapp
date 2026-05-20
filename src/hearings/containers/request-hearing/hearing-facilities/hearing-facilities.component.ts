@@ -31,6 +31,8 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
   public amendmentLabelEnum = AmendmentLabelStatus;
   public hearingFacilitiesChangesRequired: boolean;
   public hearingFacilitiesChangesConfirmed: boolean;
+  public additionalSecurityRequiredChanged: boolean;
+  public additionalFacilitiesChanged: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -50,6 +52,10 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
         this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesRequired;
       this.hearingFacilitiesChangesConfirmed =
         this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesConfirmed;
+      this.additionalSecurityRequiredChanged =
+        this.serviceHearingValuesModel.caseAdditionalSecurityFlag !==
+        this.hearingRequestMainModel.caseDetails?.caseAdditionalSecurityFlag;
+      this.additionalFacilitiesChanged = this.checkAdditionalFacilitiesChanged();
     }
 
     this.setNonReasonableAdjustmentFlags();
@@ -64,6 +70,12 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
     } else {
       this.hearingFactilitiesForm.controls['addition-security-required'].setValue('No');
     }
+  }
+
+  private checkAdditionalFacilitiesChanged(): boolean {
+    const facilitiesInHMC = this.hearingRequestMainModel.hearingDetails.facilitiesRequired || [];
+    const facilitiesInSHV = this.serviceHearingValuesModel.facilitiesRequired || [];
+    return CaseFlagsUtils.areFacilitiesChanged(facilitiesInHMC, facilitiesInSHV);
   }
 
   public ngAfterViewInit(): void {
@@ -151,8 +163,7 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
         propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags') &&
         propertiesUpdatedOnPageVisit?.afterPageVisit.nonReasonableAdjustmentChangesRequired
       ) {
-        this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesConfirmed =
-          this.haveUpdatesMadeToSelections();
+        this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.nonReasonableAdjustmentChangesConfirmed = true;
       }
       if (propertiesUpdatedOnPageVisit?.afterPageVisit?.hearingFacilitiesChangesRequired) {
         this.hearingsService.propertiesUpdatedOnPageVisit.afterPageVisit.hearingFacilitiesChangesConfirmed = true;
@@ -184,7 +195,7 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
       this.hearingCondition.mode === Mode.VIEW_EDIT &&
       propertiesUpdatedOnPageVisit?.hasOwnProperty('caseFlags') &&
       (propertiesUpdatedOnPageVisit?.afterPageVisit.nonReasonableAdjustmentChangesRequired ||
-        propertiesUpdatedOnPageVisit?.afterPageVisit.partyDetailsChangesRequired)
+        HearingsUtils.havePartyDetailsChanged(this.serviceHearingValuesModel.parties, this.hearingRequestMainModel.partyDetails))
     ) {
       const partyDetails = this.hearingsService.propertiesUpdatedOnPageVisit?.afterPageVisit
         ?.nonReasonableAdjustmentChangesConfirmed
@@ -205,14 +216,5 @@ export class HearingFacilitiesComponent extends RequestHearingPageFlow implement
         this.caseFlagType
       );
     }
-  }
-
-  private haveUpdatesMadeToSelections() {
-    const { caseAdditionalSecurityFlagChanged, facilitiesChanged } = HearingsUtils.haveAdditionalFacilitiesChanged(
-      this.hearingRequestMainModel,
-      this.hearingRequestToCompareMainModel
-    );
-
-    return caseAdditionalSecurityFlagChanged || facilitiesChanged;
   }
 }

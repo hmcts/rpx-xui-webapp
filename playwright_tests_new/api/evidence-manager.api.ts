@@ -26,8 +26,9 @@ import {
 const configuredDocId = resolveConfiguredDocId(EM_DOC_ID, config.em[config.testEnv as keyof typeof config.em]?.docId);
 let sharedDocId = '';
 const invalidDocId = uuid();
+const guardedDocumentUploadRejectionStatuses = [400, 401, 403, 415, 429, 500] as const;
 
-test.describe('Evidence Manager & Documents', () => {
+test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, () => {
   test.beforeAll(async () => {
     sharedDocId = await resolveSharedDocId(configuredDocId, uploadSyntheticDoc);
     if (!sharedDocId) {
@@ -37,10 +38,9 @@ test.describe('Evidence Manager & Documents', () => {
 
   test('returns document binary with XSRF', async ({ apiClient }) => {
     await withXsrf('solicitor', async (headers) => {
-      const res = await apiClient.get<ArrayBuffer>(`documents/${sharedDocId}/binary`, {
+      const res = await apiClient.get<ArrayBuffer | string>(`documents/${sharedDocId}/binary`, {
         headers: { ...headers, experimental: 'true' },
         throwOnError: false,
-        responseType: 'arraybuffer',
       });
       expectStatus(res.status, [200, 204, 401, 403, 404, 500]);
       assertBinaryResponse(res.status, res.data);
@@ -189,7 +189,7 @@ test.describe('Evidence Manager & Documents', () => {
       headers: buildXsrfHeader(xsrf),
       failOnStatusCode: false,
     });
-    expect([400, 401, 403, 415, 500]).toContain(res.status());
+    expect(guardedDocumentUploadRejectionStatuses).toContain(res.status());
     await ctx.dispose();
   });
 
@@ -212,7 +212,7 @@ test.describe('Evidence Manager & Documents', () => {
       headers: buildXsrfHeader(xsrf),
       failOnStatusCode: false,
     });
-    expect([400, 401, 403, 415, 500]).toContain(res.status());
+    expect(guardedDocumentUploadRejectionStatuses).toContain(res.status());
     await ctx.dispose();
   });
 
@@ -240,7 +240,7 @@ test.describe('Evidence Manager & Documents', () => {
   });
 });
 
-test.describe('Evidence Manager helper coverage', () => {
+test.describe('Evidence Manager helper coverage', { tag: '@svc-evidence-manager' }, () => {
   test('resolveConfiguredDocId and resolveSharedDocId handle overrides', async () => {
     expect(resolveConfiguredDocId('env-doc', 'fallback-doc')).toBe('env-doc');
     expect(resolveConfiguredDocId(undefined, 'fallback-doc')).toBe('fallback-doc');

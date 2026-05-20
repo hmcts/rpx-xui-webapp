@@ -5,7 +5,6 @@ import {
   CaseCreateSubmitComponent,
   CaseDetailsHomeComponent,
   CaseFilterComponent,
-  CaseHearingsComponent,
   CaseHomeComponent,
   CaseListComponent,
   CaseShareCompleteComponent,
@@ -17,8 +16,6 @@ import { CaseLoaderComponent } from './containers/case-loader/case-loader.compon
 import { CaseSearchComponent } from './containers/case-search/case-search.component';
 import { CaseViewerContainerComponent } from './containers/case-viewer-container/case-viewer-container.component';
 import { RestrictedCaseAccessContainerComponent } from './containers/restricted-case-access-container/restricted-case-access-container.component';
-import { RolesAndAccessContainerComponent } from './containers/roles-and-access-container/roles-and-access-container.component';
-import { TasksContainerComponent } from './containers/tasks-container/tasks-container.component';
 import { ActivityResolver } from './resolvers/activity.resolver';
 import { CreateCaseEventTriggerResolver } from './resolvers/create-case-event-trigger.resolver';
 
@@ -113,15 +110,12 @@ export const ROUTES: Routes = [
               },
               {
                 path: 'tasks',
-                component: TasksContainerComponent,
               },
               {
                 path: 'roles-and-access',
-                component: RolesAndAccessContainerComponent,
               },
               {
                 path: 'hearings',
-                component: CaseHearingsComponent,
               },
             ],
           },
@@ -147,15 +141,12 @@ export const ROUTES: Routes = [
               },
               {
                 path: 'tasks',
-                component: TasksContainerComponent,
               },
               {
                 path: 'roles-and-access',
-                component: RolesAndAccessContainerComponent,
               },
               {
                 path: 'hearings',
-                component: CaseHearingsComponent,
               },
             ],
           },

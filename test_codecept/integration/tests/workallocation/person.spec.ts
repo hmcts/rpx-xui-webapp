@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-// import mocha from 'mocha';
 import { config } from '../config/config';
 import { getXSRFToken } from '../utils/authUtil';
 import { setTestContext } from '../utils/helper';
@@ -27,7 +26,7 @@ describe('Work allocation Release 2: persons, caseworkers and judicial users', (
 
     const headers = {
       'X-XSRF-TOKEN': xsrfToken,
-      'content-length': JSON.stringify(reqBody).length,
+      'content-length': String(JSON.stringify(reqBody).length),
     };
 
     const response = await Request.post('workallocation/caseworker/getUsersByServiceName', reqBody, headers, 200);
@@ -51,7 +50,7 @@ describe('Work allocation Release 2: persons, caseworkers and judicial users', (
 
     const headers = {
       'X-XSRF-TOKEN': xsrfToken,
-      'content-length': JSON.stringify(reqBody).length,
+      'content-length': String(JSON.stringify(reqBody).length),
     };
 
     const response = await Request.post('api/role-access/roles/getJudicialUsers', reqBody, headers, 200);
@@ -74,7 +73,7 @@ describe('Work allocation Release 2: persons, caseworkers and judicial users', (
 
     const headers = {
       'X-XSRF-TOKEN': xsrfToken,
-      'content-length': JSON.stringify(reqBody).length,
+      'content-length': String(JSON.stringify(reqBody).length),
     };
 
     const response = await Request.post('workallocation/findPerson', reqBody, headers, 200);

@@ -4,8 +4,7 @@ import { WAFeatureConfig } from '../work-allocation/models/common/service-config
 export const ENVIRONMENT_CONFIG = new InjectionToken<EnvironmentConfig>('environment.config');
 
 export interface DecentralisedCaseTypeConfig {
-  baseUrl: string;
-  nocRedirectEnabled?: boolean;
+  webUrl?: string;
 }
 
 export type DecentralisedCaseTypeConfigMap = Record<string, DecentralisedCaseTypeConfig>;

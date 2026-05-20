@@ -1,28 +1,32 @@
 import { NextFunction, Response } from 'express';
 import { getConfigValue } from '../configuration';
-import { SERVICES_CCD_CASE_ASSIGNMENT_API_PATH, SERVICES_PCS_NOC_API_PATH } from '../configuration/references';
+import { DECENTRALISED_CASE_TYPE_CONFIG, SERVICES_CCD_CASE_ASSIGNMENT_API_PATH } from '../configuration/references';
 import { EnhancedRequest } from '../lib/models';
 import { generateErrorMessageWithCode } from './errorCodeConverter';
 import { NoCQuestions } from './models/noCQuestions.interface';
 import { handleGet, handlePost } from './noCService';
+import { resolveDecentralisedCaseTypeConfig } from '../../shared/decentralised-case-type-config.util';
 
 const caseAssignmentUrl: string = getConfigValue(SERVICES_CCD_CASE_ASSIGNMENT_API_PATH);
-const pcsNocUrl: string = getConfigValue(SERVICES_PCS_NOC_API_PATH);
+const NOC_CASE_TYPE_SESSION_KEY = 'nocCaseTypesByCaseId';
+
+type DecentralisedCaseTypeConfig = {
+  webUrl?: string;
+  nocBaseUrl?: string;
+};
+
+type DecentralisedCaseTypeConfigMap = Record<string, DecentralisedCaseTypeConfig>;
 
 /**
  * getNoCQuestions
  */
 export async function getNoCQuestions(req: EnhancedRequest, res: Response, next: NextFunction) {
   const caseId = req.query.caseId;
-  const pcsPath: string = `${pcsNocUrl}/noc/noc-questions?case_id=${caseId}`;
-  const caseAssignmentPath: string = `${caseAssignmentUrl}/noc/noc-questions?case_id=${caseId}`;
+  const caseAssignmentPath: string = buildNoCQuestionsPath(caseAssignmentUrl, caseId);
 
   try {
-    const { status, data }: { status: number; data: NoCQuestions } = await handleGetWithPcsFallback(
-      pcsPath,
-      caseAssignmentPath,
-      req
-    );
+    const { status, data }: { status: number; data: NoCQuestions } = await handleGet(caseAssignmentPath, req);
+    cacheNoCCaseType(req, caseId, data);
     res.status(status).send(data);
   } catch (error) {
     next(generateErrorMessageWithCode(error));
@@ -30,14 +34,12 @@ export async function getNoCQuestions(req: EnhancedRequest, res: Response, next:
 }
 
 export async function validateNoCQuestions(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const pcsPath: string = `${pcsNocUrl}/noc/verify-noc-answers`;
-  const caseAssignmentPath: string = `${caseAssignmentUrl}/noc/verify-noc-answers`;
-  const body: any = req.body;
+  const body = req.body;
 
   try {
-    const { status, data }: { status: number; data: NoCQuestions } = await handlePostWithPcsFallback(
-      pcsPath,
-      caseAssignmentPath,
+    const baseUrl = getNoCBaseUrl(body?.case_id, req);
+    const { status, data }: { status: number; data: NoCQuestions } = await handlePost(
+      `${baseUrl}/noc/verify-noc-answers`,
       body,
       req
     );
@@ -48,53 +50,83 @@ export async function validateNoCQuestions(req: EnhancedRequest, res: Response, 
 }
 
 export async function submitNoCEvents(req: EnhancedRequest, res: Response, next: NextFunction) {
-  const pcsPath: string = `${pcsNocUrl}/noc/noc-requests`;
-  const caseAssignmentPath: string = `${caseAssignmentUrl}/noc/noc-requests`;
-  const body: any = req.body;
+  const body = req.body;
 
   try {
-    const { status, data }: { status: number; data: NoCQuestions } = await handlePostWithPcsFallback(
-      pcsPath,
-      caseAssignmentPath,
-      body,
-      req
-    );
+    const baseUrl = getNoCBaseUrl(body?.case_id, req);
+    const { status, data }: { status: number; data: NoCQuestions } = await handlePost(`${baseUrl}/noc/noc-requests`, body, req);
     res.status(status).send(data);
   } catch (error) {
     next(generateErrorMessageWithCode(error));
   }
 }
 
-async function handleGetWithPcsFallback(pcsPath: string, caseAssignmentPath: string, req: EnhancedRequest) {
-  try {
-    return await handleGet(pcsPath, req);
-  } catch (error) {
-    if (shouldFallbackToCaseAssignment(error)) {
-      return handleGet(caseAssignmentPath, req);
-    }
-    throw error;
+function getNoCBaseUrl(caseId: unknown, req: EnhancedRequest): string {
+  const caseType = getCachedNoCCaseType(req, caseId);
+  if (!caseType) {
+    return caseAssignmentUrl;
   }
+
+  const decentralisedNocBaseUrl = getDecentralisedNoCBaseUrl(caseType);
+  return decentralisedNocBaseUrl || caseAssignmentUrl;
 }
 
-async function handlePostWithPcsFallback(
-  pcsPath: string,
-  caseAssignmentPath: string,
-  body: any,
-  req: EnhancedRequest
-) {
-  try {
-    return await handlePost(pcsPath, body, req);
-  } catch (error) {
-    if (shouldFallbackToCaseAssignment(error)) {
-      return handlePost(caseAssignmentPath, body, req);
-    }
-    throw error;
+function getDecentralisedNoCBaseUrl(caseType: string): string | null {
+  const config = getDecentralisedCaseTypeConfig(caseType);
+  if (!config?.nocBaseUrl) {
+    return null;
   }
+
+  return config.nocBaseUrl;
 }
 
-function shouldFallbackToCaseAssignment(error: any): boolean {
-  const status = error?.response?.status ?? error?.status;
-  const code = error?.response?.data?.code ?? error?.data?.code;
+function getDecentralisedCaseTypeConfig(caseType: string): DecentralisedCaseTypeConfig | null {
+  const caseTypeConfig = getConfigValue<DecentralisedCaseTypeConfigMap>(DECENTRALISED_CASE_TYPE_CONFIG);
+  return resolveDecentralisedCaseTypeConfig({
+    caseTypeConfig,
+    caseType,
+    urlKey: 'nocBaseUrl',
+    urlLabel: 'NoC base URL',
+  });
+}
 
-  return status === 404 || code === 'case-not-found';
+function buildNoCQuestionsPath(baseUrl: string, caseId: unknown): string {
+  const searchParams = new URLSearchParams({ case_id: String(caseId) });
+  return `${baseUrl}/noc/noc-questions?${searchParams.toString()}`;
+}
+
+function cacheNoCCaseType(req: EnhancedRequest, caseId: unknown, data: NoCQuestions): void {
+  const caseIdKey = getCaseIdKey(caseId);
+  const caseType = data?.questions?.[0]?.case_type_id;
+  if (!req.session || !caseIdKey || !caseType) {
+    return;
+  }
+
+  req.session[NOC_CASE_TYPE_SESSION_KEY] = {
+    ...(isObject(req.session[NOC_CASE_TYPE_SESSION_KEY]) ? req.session[NOC_CASE_TYPE_SESSION_KEY] : {}),
+    [caseIdKey]: caseType,
+  };
+}
+
+function getCachedNoCCaseType(req: EnhancedRequest, caseId: unknown): string | null {
+  const caseIdKey = getCaseIdKey(caseId);
+  if (!req.session || !caseIdKey || !isObject(req.session[NOC_CASE_TYPE_SESSION_KEY])) {
+    return null;
+  }
+
+  const caseType = req.session[NOC_CASE_TYPE_SESSION_KEY][caseIdKey];
+  return typeof caseType === 'string' && caseType.trim().length > 0 ? caseType : null;
+}
+
+function getCaseIdKey(caseId: unknown): string | null {
+  if (caseId === undefined || caseId === null) {
+    return null;
+  }
+
+  const caseIdKey = String(caseId);
+  return caseIdKey.length > 0 ? caseIdKey : null;
+}
+
+function isObject(value: unknown): value is Record<string, unknown> {
+  return !!value && typeof value === 'object' && !Array.isArray(value);
 }

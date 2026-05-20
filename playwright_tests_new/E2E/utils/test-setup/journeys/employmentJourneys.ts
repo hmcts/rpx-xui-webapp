@@ -276,12 +276,18 @@ export async function createEmploymentCase(
       await createCasePage.addRespondentButton.click();
       await createCasePage.respondentOneNameInput.waitFor({ state: 'visible' });
       await createCasePage.respondentOneNameInput.fill('Respondent One');
-      await createCasePage.respondentOrganisation.waitFor({ state: 'visible' });
-      await createCasePage.respondentOrganisation.check();
+
+      const respondentTypeAvailable = await createCasePage.respondentOrganisation.isEnabled().catch(() => false);
+      if (respondentTypeAvailable) {
+        await createCasePage.respondentOrganisation.check({ force: true });
+      }
+
       await createCasePage.respondentAcasCertifcateSelectYes.waitFor({ state: 'visible' });
       await createCasePage.respondentAcasCertifcateSelectYes.check();
       await createCasePage.respondentAcasCertificateNumberInput.fill('ACAS123456');
-      await createCasePage.respondentCompanyNameInput.fill('Respondent Company');
+      if (await createCasePage.respondentCompanyNameInput.isVisible().catch(() => false)) {
+        await createCasePage.respondentCompanyNameInput.fill('Respondent Company');
+      }
       await createCasePage.manualEntryLink.waitFor({ state: 'visible' });
       await createCasePage.manualEntryLink.click();
       await createCasePage.respondentAddressLine1Input.waitFor({ state: 'visible' });

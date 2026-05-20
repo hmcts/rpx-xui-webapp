@@ -785,12 +785,18 @@ export class CreateCasePage extends Base {
         await this.addRespondentButton.click();
         await this.respondentOneNameInput.waitFor({ state: 'visible' });
         await this.respondentOneNameInput.fill('Respondent One');
-        await this.respondentOrganisation.waitFor({ state: 'visible' });
-        await this.respondentOrganisation.check();
+
+        const respondentTypeAvailable = await this.respondentOrganisation.isEnabled().catch(() => false);
+        if (respondentTypeAvailable) {
+          await this.respondentOrganisation.check({ force: true });
+        }
+
         await this.respondentAcasCertifcateSelectYes.waitFor({ state: 'visible' });
         await this.respondentAcasCertifcateSelectYes.check();
         await this.respondentAcasCertificateNumberInput.fill('ACAS123456');
-        await this.respondentCompanyNameInput.fill('Respondent Company');
+        if (await this.respondentCompanyNameInput.isVisible().catch(() => false)) {
+          await this.respondentCompanyNameInput.fill('Respondent Company');
+        }
         await this.manualEntryLink.waitFor({ state: 'visible' });
         await this.manualEntryLink.click();
         await this.respondentAddressLine1Input.waitFor({ state: 'visible' });

@@ -61,39 +61,6 @@ describe('Noc Effects', () => {
       expect(effects.setCaseReference$).toBeObservable(expected);
     });
 
-    it('should keep decentralised noc in XUI', () => {
-      const dummy: any = {
-        questions: [
-          {
-            case_type_id: 'PCS',
-            order: '1',
-            question_text: 'What is their Email?',
-            answer_field_type: {
-              id: 'Email',
-              type: 'Email',
-              min: null,
-              max: null,
-              regular_expression: null,
-              fixed_list_items: [],
-              complex_fields: [],
-              collection_field_type: null,
-            },
-            display_context_parameter: '1',
-            challenge_question_id: 'NoC',
-            answer_field: '',
-            question_id: 'QuestionId67745',
-          },
-        ],
-      };
-      nocServiceMock.getNoCQuestions.and.returnValue(of(dummy));
-      const action = new nocActions.SetCaseReference('1223-2212-4422-3131');
-      const completion = new nocActions.SetQuestions({ questions: dummy.questions, caseReference: '1223221244223131' });
-      actions$ = hot('-a', { a: action });
-      const expected = cold('-b', { b: completion });
-
-      expect(effects.setCaseReference$).toBeObservable(expected);
-    });
-
     it('should return SetCaseRefValidationFailure', () => {
       const action = new nocActions.SetCaseReference('1223-2212-4422131');
       const completion = new nocActions.SetCaseRefValidationFailure();

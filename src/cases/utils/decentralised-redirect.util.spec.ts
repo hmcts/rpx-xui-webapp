@@ -1,12 +1,6 @@
 import { buildDecentralisedEventUrl, getExpectedSubFromUserDetails } from './decentralised-redirect.util';
 
 describe('decentralised-event-redirect.util', () => {
-  let consoleErrorSpy: jasmine.Spy;
-
-  beforeEach(() => {
-    consoleErrorSpy = spyOn(console, 'error');
-  });
-
   it('should build an external URL for existing case events', () => {
     const url = buildDecentralisedEventUrl(
       {
@@ -23,7 +17,6 @@ describe('decentralised-event-redirect.util', () => {
     expect(url).toBe(
       'https://pcs-frontend.service.gov.uk/cases/1234567890/event/ext%3AfooEvent?tid=task-1&foo=bar&expected_sub=user-123'
     );
-    expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
 
   it('should build an external URL for case-create events', () => {
@@ -39,7 +32,6 @@ describe('decentralised-event-redirect.util', () => {
     );
 
     expect(url).toBe('https://pcs-frontend.service.gov.uk/cases/case-create/IA/PCS/ext%3AcreateCase?expected_sub=user-456');
-    expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
 
   it('should return null when the event is not decentralised', () => {
@@ -55,7 +47,6 @@ describe('decentralised-event-redirect.util', () => {
     );
 
     expect(url).toBeNull();
-    expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
 
   it('should return null when case type is missing at runtime', () => {
@@ -71,7 +62,6 @@ describe('decentralised-event-redirect.util', () => {
     );
 
     expect(url).toBeNull();
-    expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
 
   it('should prefer the longest matching prefix for web URL resolution', () => {
@@ -90,7 +80,6 @@ describe('decentralised-event-redirect.util', () => {
     );
 
     expect(url).toBe('https://two.test/cases/123/event/ext%3AfooEvent?expected_sub=user-123');
-    expect(consoleErrorSpy).not.toHaveBeenCalled();
   });
 
   it('should resolve web URL from a template with %s placeholder', () => {
@@ -108,62 +97,6 @@ describe('decentralised-event-redirect.util', () => {
     );
 
     expect(url).toBe('https://pcs-xui-pr-1234.preview.platform/cases/123/event/ext%3AfooEvent?expected_sub=user-123');
-    expect(consoleErrorSpy).not.toHaveBeenCalled();
-  });
-
-  it('should return null when multiple longest prefixes match (ambiguous)', () => {
-    const url = buildDecentralisedEventUrl(
-      {
-        caseType: 'AB123',
-        caseId: '123',
-        isCaseCreate: false,
-        eventId: 'ext:fooEvent',
-      },
-      {
-        ab: { webUrl: 'https://one.test' },
-        AB: { webUrl: 'https://two.test' },
-      },
-      'user-123'
-    );
-
-    expect(url).toBeNull();
-    expect(consoleErrorSpy).toHaveBeenCalled();
-  });
-
-  it('should return null when template has multiple %s placeholders', () => {
-    const url = buildDecentralisedEventUrl(
-      {
-        caseType: 'PCS_PR_1234',
-        caseId: '123',
-        isCaseCreate: false,
-        eventId: 'ext:fooEvent',
-      },
-      {
-        PCS_PR_: { webUrl: 'https://%s.%s.preview.platform' },
-      },
-      'user-123'
-    );
-
-    expect(url).toBeNull();
-    expect(consoleErrorSpy).toHaveBeenCalled();
-  });
-
-  it('should return null when template substitution suffix is missing', () => {
-    const url = buildDecentralisedEventUrl(
-      {
-        caseType: 'PCS_PR_',
-        caseId: '123',
-        isCaseCreate: false,
-        eventId: 'ext:fooEvent',
-      },
-      {
-        PCS_PR_: { webUrl: 'https://pcs-xui-pr-%s.preview.platform' },
-      },
-      'user-123'
-    );
-
-    expect(url).toBeNull();
-    expect(consoleErrorSpy).toHaveBeenCalled();
   });
 
   [

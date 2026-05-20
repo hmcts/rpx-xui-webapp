@@ -125,7 +125,12 @@ describe('uiConfigRouter', () => {
         protocol: 'https',
         substantiveEnabled: true,
         paymentReturnUrl: 'https://payment.return.url',
-        decentralisedCaseTypeConfig: { PCS: { webUrl: 'https://pcs-frontend.service.gov.uk' } },
+        decentralisedCaseTypeConfig: {
+          PCS: {
+            webUrl: 'https://pcs-frontend.service.gov.uk',
+            nocBaseUrl: 'http://pcs-api.service.core-compute.internal',
+          },
+        },
         waWorkflowApi: 'https://wa.workflow.api',
         judicialBookingApi: 'https://judicial.booking.api',
         headerConfig: mockMenuConfig,
@@ -178,14 +183,6 @@ describe('uiConfigRouter', () => {
       setupHearingConfigsStub.throws(new Error('Hearing config error'));
 
       await expect(routeHandler(req, res, next)).to.be.rejectedWith('Hearing config error');
-    });
-
-    it('should fail fast when decentralised case type config is malformed', async () => {
-      getConfigValueStub.returns(undefined);
-      getConfigValueStub.withArgs('services.idam.idamLoginUrl').returns('https://prod.idam.com');
-      getConfigValueStub.withArgs('decentralisedCaseTypeConfig').returns('bad-config');
-
-      await expect(routeHandler(req, res, next)).to.be.rejectedWith('decentralisedCaseTypeConfig must be an object');
     });
   });
 

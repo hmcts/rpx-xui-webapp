@@ -5,13 +5,12 @@ import { EnhancedRequest } from '../lib/models';
 import { generateErrorMessageWithCode } from './errorCodeConverter';
 import { NoCQuestions } from './models/noCQuestions.interface';
 import { handleGet, handlePost } from './noCService';
-import { resolveDecentralisedCaseTypeConfig } from '../../shared/decentralised-case-type-config.util';
 
 const caseAssignmentUrl: string = getConfigValue(SERVICES_CCD_CASE_ASSIGNMENT_API_PATH);
 const NOC_CASE_TYPE_SESSION_KEY = 'nocCaseTypesByCaseId';
+const TEMPLATE_PLACEHOLDER = '%s';
 
 type DecentralisedCaseTypeConfig = {
-  webUrl?: string;
   nocBaseUrl?: string;
 };
 
@@ -72,22 +71,14 @@ function getNoCBaseUrl(caseId: unknown, req: EnhancedRequest): string {
 }
 
 function getDecentralisedNoCBaseUrl(caseType: string): string | null {
-  const config = getDecentralisedCaseTypeConfig(caseType);
-  if (!config?.nocBaseUrl) {
+  const caseTypeConfig = getConfigValue<DecentralisedCaseTypeConfigMap>(DECENTRALISED_CASE_TYPE_CONFIG) || {};
+  const configuredCaseType = getConfiguredCaseType(caseTypeConfig, caseType);
+  if (!configuredCaseType) {
     return null;
   }
 
-  return config.nocBaseUrl;
-}
-
-function getDecentralisedCaseTypeConfig(caseType: string): DecentralisedCaseTypeConfig | null {
-  const caseTypeConfig = getConfigValue<DecentralisedCaseTypeConfigMap>(DECENTRALISED_CASE_TYPE_CONFIG);
-  return resolveDecentralisedCaseTypeConfig({
-    caseTypeConfig,
-    caseType,
-    urlKey: 'nocBaseUrl',
-    urlLabel: 'NoC base URL',
-  });
+  const nocBaseUrl = caseTypeConfig[configuredCaseType].nocBaseUrl;
+  return nocBaseUrl ? resolveUrl(nocBaseUrl, configuredCaseType, caseType) : null;
 }
 
 function buildNoCQuestionsPath(baseUrl: string, caseId: unknown): string {
@@ -96,37 +87,43 @@ function buildNoCQuestionsPath(baseUrl: string, caseId: unknown): string {
 }
 
 function cacheNoCCaseType(req: EnhancedRequest, caseId: unknown, data: NoCQuestions): void {
-  const caseIdKey = getCaseIdKey(caseId);
   const caseType = data?.questions?.[0]?.case_type_id;
-  if (!req.session || !caseIdKey || !caseType) {
+  if (!req.session || caseId === undefined || caseId === null || !caseType) {
     return;
   }
 
-  req.session[NOC_CASE_TYPE_SESSION_KEY] = {
-    ...(isObject(req.session[NOC_CASE_TYPE_SESSION_KEY]) ? req.session[NOC_CASE_TYPE_SESSION_KEY] : {}),
-    [caseIdKey]: caseType,
-  };
+  const caseIdKey = String(caseId);
+  if (!caseIdKey) {
+    return;
+  }
+
+  const caseTypesByCaseId = req.session[NOC_CASE_TYPE_SESSION_KEY] || {};
+  caseTypesByCaseId[caseIdKey] = caseType;
+  req.session[NOC_CASE_TYPE_SESSION_KEY] = caseTypesByCaseId;
 }
 
 function getCachedNoCCaseType(req: EnhancedRequest, caseId: unknown): string | null {
-  const caseIdKey = getCaseIdKey(caseId);
-  if (!req.session || !caseIdKey || !isObject(req.session[NOC_CASE_TYPE_SESSION_KEY])) {
+  if (!req.session || caseId === undefined || caseId === null) {
     return null;
   }
 
-  const caseType = req.session[NOC_CASE_TYPE_SESSION_KEY][caseIdKey];
-  return typeof caseType === 'string' && caseType.trim().length > 0 ? caseType : null;
+  const caseType = req.session[NOC_CASE_TYPE_SESSION_KEY]?.[String(caseId)];
+  return caseType || null;
 }
 
-function getCaseIdKey(caseId: unknown): string | null {
-  if (caseId === undefined || caseId === null) {
-    return null;
+function getConfiguredCaseType(caseTypeConfig: DecentralisedCaseTypeConfigMap, caseType: string): string | null {
+  const lowerCaseType = caseType.toLowerCase();
+  return (
+    Object.keys(caseTypeConfig)
+      .filter((configuredCaseType) => lowerCaseType.startsWith(configuredCaseType.toLowerCase()))
+      .sort((first, second) => second.length - first.length)[0] || null
+  );
+}
+
+function resolveUrl(url: string, configuredCaseType: string, caseType: string): string {
+  let resolvedUrl = url.replace(TEMPLATE_PLACEHOLDER, caseType.substring(configuredCaseType.length));
+  while (resolvedUrl.endsWith('/')) {
+    resolvedUrl = resolvedUrl.slice(0, -1);
   }
-
-  const caseIdKey = String(caseId);
-  return caseIdKey.length > 0 ? caseIdKey : null;
-}
-
-function isObject(value: unknown): value is Record<string, unknown> {
-  return !!value && typeof value === 'object' && !Array.isArray(value);
+  return resolvedUrl;
 }

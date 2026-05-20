@@ -1,24 +1,25 @@
 import { Params } from '@angular/router';
-import { resolveDecentralisedCaseTypeConfig } from '../../../shared/decentralised-case-type-config.util';
-import type { DecentralisedCaseTypeConfig, DecentralisedCaseTypeConfigMap } from '../../models/environmentConfig.model';
+import type { DecentralisedCaseTypeConfigMap } from '../../models/environmentConfig.model';
 
 const DECENTRALISED_EVENT_PREFIX = 'ext:';
+const TEMPLATE_PLACEHOLDER = '%s';
 
 const isDecentralisedEvent = (eventId?: string): eventId is string => {
   return !!eventId && eventId.startsWith(DECENTRALISED_EVENT_PREFIX);
 };
 
-const getDecentralisedCaseTypeConfig = (
-  caseTypeConfig: DecentralisedCaseTypeConfigMap,
-  caseType?: string
-): DecentralisedCaseTypeConfig | null => {
-  return resolveDecentralisedCaseTypeConfig({
-    caseTypeConfig,
-    caseType,
-    urlKey: 'webUrl',
-    urlLabel: 'web URL',
-    onError: (message) => console.error(message),
-  });
+const getDecentralisedWebUrl = (caseTypeConfig: DecentralisedCaseTypeConfigMap, caseType?: string): string | null => {
+  if (!caseTypeConfig || !caseType) {
+    return null;
+  }
+
+  const configuredCaseType = getConfiguredCaseType(caseTypeConfig, caseType);
+  if (!configuredCaseType) {
+    return null;
+  }
+
+  const webUrl = caseTypeConfig[configuredCaseType].webUrl;
+  return webUrl ? resolveUrl(webUrl, configuredCaseType, caseType) : null;
 };
 
 export const getExpectedSubFromUserDetails = (userInfoStr?: string | null): string | null => {
@@ -78,8 +79,8 @@ export const buildDecentralisedEventUrl = (
     return null;
   }
 
-  const config = getDecentralisedCaseTypeConfig(caseTypeConfig, params.caseType);
-  if (!config) {
+  const webUrl = getDecentralisedWebUrl(caseTypeConfig, params.caseType);
+  if (!webUrl) {
     return null;
   }
 
@@ -97,5 +98,22 @@ export const buildDecentralisedEventUrl = (
   }
 
   const queryString = searchParams.toString();
-  return queryString ? `${config.webUrl}${eventPath}?${queryString}` : `${config.webUrl}${eventPath}`;
+  return queryString ? `${webUrl}${eventPath}?${queryString}` : `${webUrl}${eventPath}`;
+};
+
+const getConfiguredCaseType = (caseTypeConfig: DecentralisedCaseTypeConfigMap, caseType: string): string | null => {
+  const lowerCaseType = caseType.toLowerCase();
+  return (
+    Object.keys(caseTypeConfig)
+      .filter((configuredCaseType) => lowerCaseType.startsWith(configuredCaseType.toLowerCase()))
+      .sort((first, second) => second.length - first.length)[0] || null
+  );
+};
+
+const resolveUrl = (url: string, configuredCaseType: string, caseType: string): string => {
+  let resolvedUrl = url.replace(TEMPLATE_PLACEHOLDER, caseType.substring(configuredCaseType.length));
+  while (resolvedUrl.endsWith('/')) {
+    resolvedUrl = resolvedUrl.slice(0, -1);
+  }
+  return resolvedUrl;
 };

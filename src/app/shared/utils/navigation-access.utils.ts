@@ -38,6 +38,7 @@ export function filterNavigationItemsByRoles(
   const roleFilteredItems = (items || []).filter((item) =>
     item.roles?.length > 0 ? item.roles.some((role) => isRoleSupported(item, role, true)) : true
   );
+
   return roleFilteredItems.filter((item) =>
     item.notRoles?.length > 0 ? item.notRoles.every((role) => !isRoleSupported(item, role)) : true
   );

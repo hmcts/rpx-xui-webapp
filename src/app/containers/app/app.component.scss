@@ -46,8 +46,7 @@ body .govuk-width-container {
   cursor: pointer;
 }
 
-@import 'govuk-frontend/govuk/all';
-@import 'node_modules/@hmcts/frontend/all';
+@import 'govuk-frontend/dist/govuk/all';
 
 // TODO move this in more appropriate place - perhaps get it from govuk-frontend
 // Find case button START
@@ -88,14 +87,6 @@ a.hmcts-search-toggle__button {
 table,
 td {
   vertical-align: middle;
-}
-
-.hmcts-primary-navigation__search {
-  float: right;
-}
-
-.hmcts-primary-navigation__container {
-  text-align: initial;
 }
 
 // gov uk frond-end template is not installed on this

@@ -1,5 +1,6 @@
 @import '_typography';
-@import 'govuk-frontend/govuk/all';
+@import 'govuk-frontend/dist/govuk/all';
+@import './hmcts-shim';
 @import 'shims';
 @import 'conditionals';
 @import 'measurements';
@@ -32,6 +33,61 @@ $govuk-compatibility-govukfrontendtoolkit: true;
 @import './print';
 @import './vendor/prism.scss';
 @import './material';
+
+@mixin mq($from: false, $until: false, $and: false) {
+  $tablet-breakpoint: 40.0625em;
+  $desktop-breakpoint: 48.0625em;
+  $min-width: null;
+  $max-width: null;
+
+  @if $from == tablet {
+    $min-width: $tablet-breakpoint;
+  } @else if $from == desktop {
+    $min-width: $desktop-breakpoint;
+  } @else if $from {
+    $min-width: $from;
+  }
+
+  @if $until == tablet {
+    $max-width: 40.0525em;
+  } @else if $until == desktop {
+    $max-width: 48.0525em;
+  } @else if $until {
+    $max-width: $until;
+  }
+
+  @if $and and $min-width and $max-width {
+    @media screen and (min-width: $min-width) and (max-width: $max-width) and #{$and} {
+      @content;
+    }
+  } @else if $and and $min-width {
+    @media screen and (min-width: $min-width) and #{$and} {
+      @content;
+    }
+  } @else if $and and $max-width {
+    @media screen and (max-width: $max-width) and #{$and} {
+      @content;
+    }
+  } @else if $and {
+    @media #{$and} {
+      @content;
+    }
+  } @else if $min-width and $max-width {
+    @media screen and (min-width: $min-width) and (max-width: $max-width) {
+      @content;
+    }
+  } @else if $min-width {
+    @media screen and (min-width: $min-width) {
+      @content;
+    }
+  } @else if $max-width {
+    @media screen and (max-width: $max-width) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}
 
 // Ensure Media Viewer CSS styles and icons are available globally across Manage Cases. Required for correct display
 // of the Media Viewer toolbar when this component is embedded in another CCD Case UI Toolkit component

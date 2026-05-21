@@ -130,16 +130,21 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
     // CYA Page
     await test.step('CYA page Hearings ', async () => {
       await expect(page).toHaveURL(/\/hearings\/request\/hearing-create-edit-summary$/);
-      //await expect(page.getByRole('heading', { name: '/Check your answers before sending your request/i ' })).toBeVisible();
       await expect(hearingsJourneyPage.submitRequestButton).toBeVisible();
 
-      // check CYA Page values
-      // start again here
+      await hearingsCYAPage.verifySection('Participant attendance', {
+        'Will this be a paper hearing?': 'No',
+        'What will be the methods of attendance for this hearing?': 'In Person',
+        //'How many people will attend the hearing in person?': '2',
+      });
+
       // await hearingsCYAPage.verifySection('Participant attendance', {
-      //   'Will this be a paper hearing?': 'No',
       //   'What will be the methods of attendance for this hearing?': 'In Person',
+      // });
+      // await hearingsCYAPage.verifySection('Participant attendance', {
       //   'How many people will attend the hearing in person?': '2',
       // });
+
       // await continueHearingsFlow(page);
     });
   });

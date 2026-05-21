@@ -2,6 +2,7 @@ import { fakeAsync, TestBed } from '@angular/core/testing';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { of } from 'rxjs';
 import { AppTestConstants } from '../../../app/app.test-constants.spec';
+import { WAVerificationService } from '../../../work-allocation/services';
 import { ApplicationRoutingComponent } from './application-routing.component';
 
 describe('ApplicationRoutingComponent', () => {
@@ -9,11 +10,15 @@ describe('ApplicationRoutingComponent', () => {
   let router;
 
   let waFeatureService;
-  let wasupportedJurisdictionsService;
-  let wasupportedRoleDetailsService;
+  let waVerificationService;
   let loggerService;
   let mockStore: any;
   const featureToggleMock = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValueOnce', 'getValue']);
+  const waVerification = {
+    waSupportedCategories: [],
+    waSupportedRoleTypes: [],
+    waSupportedJurisdictions: [],
+  };
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -21,27 +26,14 @@ describe('ApplicationRoutingComponent', () => {
     }).compileComponents();
     router = jasmine.createSpyObj('router', ['navigate']);
     waFeatureService = jasmine.createSpyObj('service', ['getActiveWAFeature']);
-    wasupportedJurisdictionsService = jasmine.createSpyObj('wasupportedJurisdictionsService', ['getWASupportedJurisdictions']);
-    wasupportedRoleDetailsService = jasmine.createSpyObj('wasupportedRoleDetailsService', [
-      'getWASupportedRoleCategories',
-      'getWASupportedRoleTypes',
-    ]);
+    waVerificationService = jasmine.createSpyObj<WAVerificationService>('waVerificationService', ['getWAVerification']);
     loggerService = jasmine.createSpyObj('loggerService', ['log']);
     mockStore = jasmine.createSpyObj('store', ['pipe']);
     router.url = '/';
     featureToggleMock.isEnabled.and.returnValue(of(true));
     featureToggleMock.getValueOnce.and.returnValue(of({ roles: [] }));
-    wasupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of([]));
-    wasupportedRoleDetailsService.getWASupportedRoleCategories.and.returnValue(of([]));
-    wasupportedRoleDetailsService.getWASupportedRoleTypes.and.returnValue(of([]));
-    component = new ApplicationRoutingComponent(
-      router,
-      mockStore,
-      featureToggleMock,
-      wasupportedJurisdictionsService,
-      wasupportedRoleDetailsService,
-      loggerService
-    );
+    waVerificationService.getWAVerification.and.returnValue(of(waVerification));
+    component = new ApplicationRoutingComponent(router, mockStore, featureToggleMock, waVerificationService, loggerService);
   });
 
   it('should create', () => {

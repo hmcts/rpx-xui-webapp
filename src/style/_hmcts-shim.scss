@@ -11,8 +11,8 @@ $hmcts-page-width: 1920px !default;
 }
 
 .hmcts-page-heading__title {
-  @include govuk-font($size: 36, $weight: bold);
   margin: 0;
+  @include govuk-font($size: 36, $weight: bold);
 }
 
 .hmcts-access {
@@ -31,7 +31,6 @@ $hmcts-page-width: 1920px !default;
 }
 
 .hmcts-header__link {
-  @include govuk-font($size: 24, $weight: bold);
   border-bottom: 1px solid transparent;
   color: govuk-colour('white');
   display: inline-block;
@@ -40,6 +39,7 @@ $hmcts-page-width: 1920px !default;
   margin-bottom: -1px;
   overflow: hidden;
   vertical-align: middle;
+  @include govuk-font($size: 24, $weight: bold);
 
   &:link,
   &:visited,
@@ -96,8 +96,8 @@ $hmcts-page-width: 1920px !default;
 }
 
 .hmcts-header__navigation-item {
-  @include govuk-font($size: 19);
   margin-right: govuk-spacing(4);
+  @include govuk-font($size: 19);
 
   &:last-child {
     margin-right: 0;
@@ -270,7 +270,9 @@ $hmcts-page-width: 1920px !default;
 }
 
 .hmcts-badge {
-  @include govuk-font($size: 14);
+  @include govuk-font($size: 16);
+  font-size: 14px;
+  line-height: 1.2;
   border: 2px solid govuk-colour('blue');
   color: govuk-colour('blue');
   font-weight: bold;

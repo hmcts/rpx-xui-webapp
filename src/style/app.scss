@@ -1,9 +1,9 @@
 @import '_typography';
-@import 'govuk-frontend/dist/govuk/all';
+$govuk-suppressed-warnings: (
+  'govuk-typography-scale-14': true,
+);
+@import 'govuk-frontend/dist/govuk/index';
 @import './hmcts-shim';
-@import 'shims';
-@import 'conditionals';
-@import 'measurements';
 @import 'material-design-icons/iconfont/material-icons.css';
 
 $black: #323232;
@@ -18,13 +18,10 @@ $govuk-compatibility-govukelements: true;
 $govuk-compatibility-govuktemplate: true;
 $govuk-compatibility-govukfrontendtoolkit: true;
 
-@import 'node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_buttons.scss';
 // @import 'node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_breadcrumbs.scss';
 
 // @import 'node_modules/govuk_frontend_toolkit/stylesheets/_grid_layout.scss';
 // @import 'node_modules/govuk-elements-sass/public/sass/_elements.scss';
-
-@import 'govuk-elements';
 
 // Organise SASS (TODO / TS)
 @import './buttons';
@@ -57,15 +54,15 @@ $govuk-compatibility-govukfrontendtoolkit: true;
   }
 
   @if $and and $min-width and $max-width {
-    @media screen and (min-width: $min-width) and (max-width: $max-width) and #{$and} {
+    @media screen and (min-width: $min-width) and (max-width: $max-width) and (#{$and}) {
       @content;
     }
   } @else if $and and $min-width {
-    @media screen and (min-width: $min-width) and #{$and} {
+    @media screen and (min-width: $min-width) and (#{$and}) {
       @content;
     }
   } @else if $and and $max-width {
-    @media screen and (max-width: $max-width) and #{$and} {
+    @media screen and (max-width: $max-width) and (#{$and}) {
       @content;
     }
   } @else if $and {

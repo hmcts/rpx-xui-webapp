@@ -1,4 +1,60 @@
-@import 'govuk-frontend/dist/govuk/all';
+@import 'govuk-frontend/dist/govuk/index';
+
+@mixin mq($from: false, $until: false, $and: false) {
+  $tablet-breakpoint: 40.0625em;
+  $desktop-breakpoint: 48.0625em;
+  $min-width: null;
+  $max-width: null;
+
+  @if $from == tablet {
+    $min-width: $tablet-breakpoint;
+  } @else if $from == desktop {
+    $min-width: $desktop-breakpoint;
+  } @else if $from {
+    $min-width: $from;
+  }
+
+  @if $until == tablet {
+    $max-width: 40.0525em;
+  } @else if $until == desktop {
+    $max-width: 48.0525em;
+  } @else if $until {
+    $max-width: $until;
+  }
+
+  @if $and and $min-width and $max-width {
+    @media screen and (min-width: $min-width) and (max-width: $max-width) and (#{$and}) {
+      @content;
+    }
+  } @else if $and and $min-width {
+    @media screen and (min-width: $min-width) and (#{$and}) {
+      @content;
+    }
+  } @else if $and and $max-width {
+    @media screen and (max-width: $max-width) and (#{$and}) {
+      @content;
+    }
+  } @else if $and {
+    @media #{$and} {
+      @content;
+    }
+  } @else if $min-width and $max-width {
+    @media screen and (min-width: $min-width) and (max-width: $max-width) {
+      @content;
+    }
+  } @else if $min-width {
+    @media screen and (min-width: $min-width) {
+      @content;
+    }
+  } @else if $max-width {
+    @media screen and (max-width: $max-width) {
+      @content;
+    }
+  } @else {
+    @content;
+  }
+}
+
 @import '@hmcts/media-viewer/assets/all';
 
 html {

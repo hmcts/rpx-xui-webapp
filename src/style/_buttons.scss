@@ -8,10 +8,12 @@ $module: 'button';
 
 .#{$module} {
   &-secondary {
-    @include button($grey-3);
+    background-color: #f3f2f1;
+    color: #0b0c0c;
   }
 
   &-tertiary {
-    @include button($grey-4);
+    background-color: #b1b4b6;
+    color: #0b0c0c;
   }
 }

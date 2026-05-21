@@ -4,7 +4,7 @@
       <!-- Logo for Judicial Users -->
       <ng-container *ngSwitchCase="'judicial'">
         <div class="judicial-header__logo" *ngIf="showItems">
-          <a href="#">
+          <a [routerLink]="'/'" class="govuk-header__link govuk-header__link--homepage">
             <img class="img-responsive" alt="GOV.UK logo" src="/assets/images/govuk-crest-jcm.png" width="83px" />
           </a>
         </div>
@@ -17,7 +17,7 @@
       <!-- Logo for Case Manager Users -->
       <ng-container *ngSwitchCase="'myhmcts'">
         <div class="govuk-header__logo">
-          <a href="#" class="govuk-header__link govuk-header__link--homepage">
+          <a [routerLink]="'/'" class="govuk-header__link govuk-header__link--homepage">
             <span class="govuk-header__logotype">
               <span class="govuk-header__logotype-text"> MyHMCTS </span>
             </span>
@@ -30,13 +30,13 @@
       <!-- Logo for Users (Default) -->
       <ng-container *ngSwitchDefault>
         <div *ngIf="!headerTitle?.name" class="govuk-header__logo">
-          <a href="#" class="govuk-header__link govuk-header__link--homepage">
+          <a [routerLink]="'/'" class="govuk-header__link govuk-header__link--homepage">
             <span class="govuk-header__logotype">
               <span class="govuk-header__logotype-text"> MyHMCTS </span>
             </span>
           </a>
         </div>
-        <div class="hmcts-header__logo">
+        <div class="hmcts-header__logo" *ngIf="headerTitle?.name">
           <a class="hmcts-header__link" [routerLink]="'/'" [attr.aria-label]="headerTitle?.name | rpxTranslate">
             {{ headerTitle?.name | rpxTranslate }}
           </a>
@@ -49,16 +49,9 @@
       <nav class="hmcts-header__navigation" attr.aria-label="{{ navigation?.label | rpxTranslate }}">
         <ul class="hmcts-header__navigation-list">
           <li *ngFor="let item of navigation?.items; let i = index" class="hmcts-header__navigation-item">
-            <a
-              class="hmcts-header__navigation-link"
-              tabindex="0"
-              (click)="onEmitEvent(i)"
-              (keyup.enter)="onEmitEvent(i)"
-              *ngIf="userValue"
-              [routerLink]=""
-            >
+            <button type="button" class="hmcts-header__navigation-link" (click)="onEmitEvent(i)" *ngIf="userValue">
               {{ item.text | rpxTranslate }}
-            </a>
+            </button>
           </li>
         </ul>
       </nav>
@@ -70,7 +63,7 @@
   <div class="hmcts-primary-navigation__container">
     <div class="govuk-header__logo" *ngIf="logoIsUsed"></div>
     <div class="hmcts-primary-navigation__nav">
-      <nav class="hmcts-primary-navigation transparent-background" aria-label="Primary navigation">
+      <div class="hmcts-primary-navigation transparent-background">
         <ul class="hmcts-primary-navigation__list">
           <li class="hmcts-primary-navigation__item" *ngFor="let item of leftItems | async">
             <a
@@ -83,7 +76,7 @@
             </a>
           </li>
         </ul>
-      </nav>
+      </div>
     </div>
     <div class="hmcts-primary-navigation__search">
       <div class="hmcts-primary-navigation__item">

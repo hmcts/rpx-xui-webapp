@@ -1,4 +1,4 @@
-<div class="govuk-form-group" [id]="id()" [ngClass]="{ 'form-group-error': !yesNoControl.valid }">
+<div class="govuk-form-group" [id]="id()" [ngClass]="{ 'govuk-form-group--error': !yesNoControl.valid }">
   <fieldset class="inline">
     <legend>
       <span class="form-label govuk-!-font-weight-bold" *ngIf="questionField.question_text">{{
@@ -9,7 +9,7 @@
       }}</span>
     </legend>
 
-    <div class="form-group" [id]="id()">
+    <div class="govuk-form-group" [id]="id()">
       <div class="multiple-choice" *ngFor="let value of yesNoValues" [ngClass]="{ selected: yesNoControl.value === value }">
         <input
           class="form-control"

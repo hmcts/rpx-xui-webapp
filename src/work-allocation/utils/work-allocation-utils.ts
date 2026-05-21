@@ -1,10 +1,11 @@
 import { NavigationExtras } from '@angular/router';
 import { PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { HMCTSServiceDetails, UserInfo } from '../../app/models';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { OptionsModel } from '../../role-access/models/options-model';
 import { ISessionStorageService } from '../interfaces/common';
 import { Caseworker, CaseworkersByService, LocationsByRegion, LocationsByService } from '../models/dtos';
-import { TaskPermission, TaskRole } from '../models/tasks';
+import { Task, TaskPermission, TaskRole } from '../models/tasks';
 
 interface Navigator {
   url: string;
@@ -115,8 +116,9 @@ export const getCaseworkers = (serviceId: string, sessionStorageService: ISessio
   const sessionKey = getCaseworkerSessionStorageKeyForServiceId(serviceId);
   const value = sessionStorageService.getItem(sessionKey);
   if (value) {
-    return JSON.parse(value) as Caseworker[];
+    return safeJsonParse<Caseworker[]>(value, []);
   }
+  return [];
 };
 
 export const setCaseworkers = (
@@ -128,10 +130,24 @@ export const setCaseworkers = (
   sessionStorageService.setItem(sessionKey, JSON.stringify(caseworkers));
 };
 
-export const getAssigneeName = (caseworkers: any[], assignee: string): string => {
+export const getAssigneeNameFromList = (caseworkers: any[], assignee: string): string => {
   if (assignee && caseworkers?.some((cw) => cw.idamId === assignee)) {
     const assignedCW = caseworkers.filter((cw) => cw.idamId === assignee)[0];
     return `${assignedCW.firstName} ${assignedCW.lastName}`;
+  }
+  return null;
+};
+
+export const getAssigneeIdsFromTasks = (tasks: Task[]): string[] => {
+  if (tasks && tasks.length > 0) {
+    const ids = tasks.map((task) => task.assignee).filter((id) => !!id);
+    return [...new Set(ids)];
+  }
+};
+
+export const getAssigneeName = (caseworker: Caseworker, assignee: string): string => {
+  if (assignee && caseworker) {
+    return `${caseworker.firstName} ${caseworker.lastName}`;
   }
   return null;
 };
@@ -254,7 +270,10 @@ export function getDestinationUrl(url: string): string {
 export function getCurrentUserRoleCategory(sessionStorageService: ISessionStorageService): RoleCategory {
   const userInfoStr = sessionStorageService.getItem('userDetails');
   if (userInfoStr) {
-    const userInfo: UserInfo = JSON.parse(userInfoStr);
+    const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+    if (!userInfo) {
+      return null;
+    }
     return userInfo.roleCategory as RoleCategory;
   }
   return null;

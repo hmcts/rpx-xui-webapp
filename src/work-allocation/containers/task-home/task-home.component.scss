@@ -12,8 +12,13 @@
     margin-left: 12px;
   }
 
-  .hmcts-badge--black {
+  .exui-tag--black {
+    background: transparent;
     border-color: #0b0c0c;
     color: #0b0c0c;
   }
+}
+
+.exui-sub-navigation-roundel {
+  margin-left: 8px;
 }

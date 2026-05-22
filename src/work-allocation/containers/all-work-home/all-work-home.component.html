@@ -4,7 +4,19 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-full">
       <p>View and manage all tasks and cases.</p>
-      <xuilib-hmcts-sub-navigation [items]="subNavigationItems" label="Sub navigation"></xuilib-hmcts-sub-navigation>
+      <nav class="govuk-service-navigation" aria-label="Sub navigation">
+        <ul class="govuk-service-navigation__list">
+          <li
+            *ngFor="let item of subNavigationItems"
+            class="govuk-service-navigation__item"
+            [class.govuk-service-navigation__item--active]="item.active"
+          >
+            <a class="govuk-service-navigation__link" [routerLink]="item.href" [attr.aria-current]="item.active ? 'page' : null">
+              {{ item.text }}
+            </a>
+          </li>
+        </ul>
+      </nav>
     </div>
   </div>
   <router-outlet></router-outlet>

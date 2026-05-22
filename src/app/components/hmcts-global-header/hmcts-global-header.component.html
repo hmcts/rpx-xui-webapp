@@ -1,5 +1,5 @@
-<div class="hmcts-header">
-  <div class="hmcts-header__container">
+<header class="govuk-header hmcts-header" role="banner">
+  <div class="govuk-header__container govuk-width-container hmcts-header__container">
     <ng-container [ngSwitch]="logo">
       <!-- Logo for Judicial Users -->
       <ng-container *ngSwitchCase="'judicial'">
@@ -9,7 +9,12 @@
           </a>
         </div>
         <div class="govuk-header__logo"></div>
-        <a class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name | rpxTranslate">
+        <a
+          *ngIf="headerTitle?.name"
+          class="govuk-header__link exui-header-title"
+          [routerLink]="headerTitle?.url"
+          [attr.aria-label]="headerTitle?.name | rpxTranslate"
+        >
           {{ headerTitle?.name | rpxTranslate }}
         </a>
       </ng-container>
@@ -23,7 +28,12 @@
             </span>
           </a>
         </div>
-        <a class="hmcts-header__link" [routerLink]="headerTitle?.url" [attr.aria-label]="headerTitle?.name | rpxTranslate">
+        <a
+          *ngIf="headerTitle?.name"
+          class="govuk-header__link exui-header-title"
+          [routerLink]="headerTitle?.url"
+          [attr.aria-label]="headerTitle?.name | rpxTranslate"
+        >
           {{ headerTitle?.name | rpxTranslate }}
         </a>
       </ng-container>
@@ -36,8 +46,8 @@
             </span>
           </a>
         </div>
-        <div class="hmcts-header__logo" *ngIf="headerTitle?.name">
-          <a class="hmcts-header__link" [routerLink]="'/'" [attr.aria-label]="headerTitle?.name | rpxTranslate">
+        <div class="govuk-header__logo" *ngIf="headerTitle?.name">
+          <a class="govuk-header__link exui-header-title" [routerLink]="'/'" [attr.aria-label]="headerTitle?.name | rpxTranslate">
             {{ headerTitle?.name | rpxTranslate }}
           </a>
         </div>
@@ -45,11 +55,11 @@
     </ng-container>
 
     <!-- HMCTS header navigation items displayed in top right-hand corner (currently, just one: "Sign out") -->
-    <div class="hmcts-header__content">
-      <nav class="hmcts-header__navigation" attr.aria-label="{{ navigation?.label | rpxTranslate }}">
-        <ul class="hmcts-header__navigation-list">
-          <li *ngFor="let item of navigation?.items; let i = index" class="hmcts-header__navigation-item">
-            <button type="button" class="hmcts-header__navigation-link" (click)="onEmitEvent(i)" *ngIf="userValue">
+    <div class="govuk-header__content exui-header-actions">
+      <nav class="govuk-header__navigation" attr.aria-label="{{ navigation?.label | rpxTranslate }}">
+        <ul class="govuk-header__navigation-list">
+          <li *ngFor="let item of navigation?.items; let i = index" class="govuk-header__navigation-item">
+            <button type="button" class="govuk-link exui-header-action-link" (click)="onEmitEvent(i)" *ngIf="userValue">
               {{ item.text | rpxTranslate }}
             </button>
           </li>
@@ -57,50 +67,54 @@
       </nav>
     </div>
   </div>
-</div>
+</header>
 
-<nav *ngIf="showItems" class="hmcts-primary-navigation transparent-background">
-  <div class="hmcts-primary-navigation__container">
-    <div class="govuk-header__logo" *ngIf="logoIsUsed"></div>
-    <div class="hmcts-primary-navigation__nav">
-      <div class="hmcts-primary-navigation transparent-background">
-        <ul class="hmcts-primary-navigation__list">
-          <li class="hmcts-primary-navigation__item" *ngFor="let item of leftItems | async">
-            <a
-              class="hmcts-primary-navigation__link"
-              (click)="onEmitSubMenu(item)"
-              [attr.aria-current]="item?.active ? true : null"
-              [routerLink]="item?.href"
-            >
-              {{ item.text | rpxTranslate }}
-            </a>
-          </li>
-        </ul>
-      </div>
+<nav *ngIf="showItems" class="govuk-service-navigation" aria-label="Primary navigation">
+  <div class="govuk-width-container exui-service-navigation__container">
+    <div class="govuk-service-navigation__wrapper exui-service-navigation__left">
+      <ul class="govuk-service-navigation__list">
+        <li
+          class="govuk-service-navigation__item"
+          [class.govuk-service-navigation__item--active]="item?.active"
+          *ngFor="let item of leftItems | async"
+        >
+          <a
+            class="govuk-service-navigation__link"
+            (click)="onEmitSubMenu(item)"
+            [attr.aria-current]="item?.active ? 'page' : null"
+            [routerLink]="item?.href"
+          >
+            {{ item.text | rpxTranslate }}
+          </a>
+        </li>
+      </ul>
     </div>
-    <div class="hmcts-primary-navigation__search">
-      <div class="hmcts-primary-navigation__item">
-        <ul class="hmcts-primary-navigation__list">
-          <li class="hmcts-primary-navigation__item" *ngFor="let item of rightItems | async">
-            <a
-              *ngIf="(isUserCaseManager$ | async) || !isGlobalSearchEnabled"
-              class="hmcts-primary-navigation__link transparent-background"
-              [ngClass]="item.ngClass"
-              (click)="onEmitSubMenu(item)"
-              [attr.aria-current]="item.active ? true : null"
-              [routerLink]="item.href"
-            >
-              {{ item.text | rpxTranslate }}
-            </a>
-            <exui-case-reference-search-box
-              *ngIf="!(isUserCaseManager$ | async) && isGlobalSearchEnabled"
-              [item]="item"
-              [decorate16DigitCaseReferenceSearchBoxInHeader]="decorate16DigitCaseReferenceSearchBoxInHeader"
-            >
-            </exui-case-reference-search-box>
-          </li>
-        </ul>
-      </div>
+
+    <div class="govuk-service-navigation__wrapper exui-service-navigation__right">
+      <ul class="govuk-service-navigation__list">
+        <li
+          class="govuk-service-navigation__item"
+          [class.govuk-service-navigation__item--active]="item.active"
+          *ngFor="let item of rightItems | async"
+        >
+          <a
+            *ngIf="(isUserCaseManager$ | async) || !isGlobalSearchEnabled"
+            class="govuk-service-navigation__link"
+            [ngClass]="item.ngClass"
+            (click)="onEmitSubMenu(item)"
+            [attr.aria-current]="item.active ? 'page' : null"
+            [routerLink]="item.href"
+          >
+            {{ item.text | rpxTranslate }}
+          </a>
+          <exui-case-reference-search-box
+            *ngIf="!(isUserCaseManager$ | async) && isGlobalSearchEnabled"
+            [item]="item"
+            [decorate16DigitCaseReferenceSearchBoxInHeader]="decorate16DigitCaseReferenceSearchBoxInHeader"
+          >
+          </exui-case-reference-search-box>
+        </li>
+      </ul>
     </div>
   </div>
 </nav>

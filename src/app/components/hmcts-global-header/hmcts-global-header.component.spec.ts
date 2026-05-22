@@ -152,7 +152,7 @@ describe('HmctsGlobalHeaderComponent - with active user', () => {
         text: 'Find case',
         href: '/cases/case-search',
         active: false,
-        ngClass: 'hmcts-search-toggle__button',
+        ngClass: 'exui-search-toggle__button',
       },
       {
         text: '2',

@@ -50,11 +50,11 @@ body .govuk-width-container {
 
 // TODO move this in more appropriate place - perhaps get it from govuk-frontend
 // Find case button START
-a.hmcts-search-toggle__button {
+a.exui-search-toggle__button {
   color: govuk-colour('white');
 }
 
-.hmcts-search-toggle__button {
+.exui-search-toggle__button {
   background-color: govuk-colour('black');
   border: none;
   color: govuk-colour('white');
@@ -97,10 +97,10 @@ td {
 
 // Find case button END
 
-.hmcts-header__navigation-link:hover {
-  color: inherit;
-}
+// .hmcts-header__navigation-link:hover {
+//   color: inherit;
+// }
 
-a.hmcts-header__navigation-link {
-  cursor: pointer;
-}
+// a.hmcts-header__navigation-link {
+//   cursor: pointer;
+// }

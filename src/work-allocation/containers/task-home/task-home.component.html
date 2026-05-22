@@ -6,7 +6,22 @@
     <div class="govuk-grid-column-full">
       <exui-task-list-filter (errorChanged)="errorChangedHandler($event)" [persistence]="persistence$ | async">
       </exui-task-list-filter>
-      <xuilib-hmcts-sub-navigation [items]="subNavigationItems" label="Sub navigation"></xuilib-hmcts-sub-navigation>
+      <nav class="govuk-service-navigation" aria-label="Sub navigation">
+        <ul class="govuk-service-navigation__list">
+          <li
+            *ngFor="let item of subNavigationItems"
+            class="govuk-service-navigation__item"
+            [class.govuk-service-navigation__item--active]="item.active"
+          >
+            <a class="govuk-service-navigation__link" [routerLink]="item.href" [attr.aria-current]="item.active ? 'page' : null">
+              {{ item.text }}
+              <strong *ngIf="item.roundel" class="govuk-tag govuk-tag--blue exui-sub-navigation-roundel">{{
+                item.roundel
+              }}</strong>
+            </a>
+          </li>
+        </ul>
+      </nav>
     </div>
   </div>
   <router-outlet></router-outlet>

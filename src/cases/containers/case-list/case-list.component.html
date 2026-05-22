@@ -1,15 +1,15 @@
 <exui-page-wrapper [title]="'Case list' | rpxTranslate">
   <div class="case-list-component">
-    <div class="hmcts-action-bar">
-      <div class="hmcts-action-bar__filter">
-        <button class="govuk-button hmcts-button--secondary" (click)="toggleFilter()" type="button">
+    <div class="exui-action-bar">
+      <div class="exui-action-bar__filter">
+        <button class="govuk-button govuk-button--secondary" (click)="toggleFilter()" type="button">
           {{ toggleButtonName | rpxTranslate }}
         </button>
       </div>
-      <div class="hmcts-action-bar__filter" *ngIf="isCaseShareVisible$ | async">
+      <div class="exui-action-bar__filter" *ngIf="isCaseShareVisible$ | async">
         <button
           id="btn-share-button"
-          class="govuk-button hmcts-button--secondary"
+          class="govuk-button govuk-button--secondary"
           type="button"
           [disabled]="checkIfButtonDisabled()"
           (click)="shareCaseSubmit()"
@@ -20,7 +20,7 @@
     </div>
 
     <div class="search-block">
-      <div class="hmcts-filter-layout__filter" [hidden]="!showFilter">
+      <div class="exui-filter-layout__filter" [hidden]="!showFilter">
         <div class="form-group">
           <div class="container-fluid">
             <exui-ccd-connector
@@ -39,7 +39,7 @@
         </div>
       </div>
 
-      <div aria-live="polite" class="hmcts-filter-layout__content" id="search-result" rightbody="" role="region">
+      <div aria-live="polite" class="exui-filter-layout__content" id="search-result" rightbody="" role="region">
         <ccd-search-result
           #ccdSearchResult
           *ngIf="resultViewIsReady"

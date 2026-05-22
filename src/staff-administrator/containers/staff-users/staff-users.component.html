@@ -14,8 +14,8 @@
     <ng-container *ngIf="(staffDataFilterService.errors$ | async).errors.length">
       <exui-error-message [error]="staffDataFilterService.errors$ | async"></exui-error-message>
     </ng-container>
-    <div class="hmcts-filter-layout">
-      <div class="hmcts-filter-layout__filter staff-filters">
+    <div class="exui-filter-layout">
+      <div class="exui-filter-layout__filter staff-filters">
         <div class="container-fluid govuk-!-margin-top-4">
           <h2 class="govuk-heading-l">User search</h2>
 
@@ -37,7 +37,7 @@
         </div>
       </div>
 
-      <div class="hmcts-filter-layout__content">
+      <div class="exui-filter-layout__content">
         <div class="govuk-!-margin-bottom-6">
           <div class="govuk-!-text-align-right">
             <button

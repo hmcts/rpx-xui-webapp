@@ -5,7 +5,24 @@
   <xuilib-loading-spinner *ngIf="loading"></xuilib-loading-spinner>
   <exui-info-message-container></exui-info-message-container>
   <div *ngIf="status">
-    <xuilib-hmcts-banner [type]="status" [title]="title" [message]="message" [messageBoldText]="true"> </xuilib-hmcts-banner>
+    <div
+      class="govuk-notification-banner"
+      [class.govuk-notification-banner--success]="status === 'success'"
+      role="alert"
+      aria-labelledby="staff-user-status-banner-title"
+      data-module="govuk-notification-banner"
+    >
+      <div class="govuk-notification-banner__header">
+        <h2 class="govuk-notification-banner__title" id="staff-user-status-banner-title">
+          {{ title || (status === 'success' ? 'Success' : 'Important') }}
+        </h2>
+      </div>
+      <div class="govuk-notification-banner__content">
+        <p class="govuk-notification-banner__heading">
+          <strong>{{ message }}</strong>
+        </p>
+      </div>
+    </div>
   </div>
 
   <div class="govuk-grid-row">

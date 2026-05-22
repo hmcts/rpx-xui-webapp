@@ -58,7 +58,7 @@ const defaultMenuItems: NavigationItem[] = [
     active: false,
     align: 'right',
     href: '/cases/case-search',
-    ngClass: 'hmcts-search-toggle__button',
+    ngClass: 'exui-search-toggle__button',
     text: 'Find case',
   },
 ];

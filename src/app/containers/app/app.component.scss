@@ -46,7 +46,11 @@ body .govuk-width-container {
   cursor: pointer;
 }
 
-@import 'govuk-frontend/govuk/all';
+@import 'govuk-frontend/dist/govuk/index';
+@import '../../../style/govuk-v5-compat-hmcts';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_shims';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_conditionals';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_measurements';
 @import 'node_modules/@hmcts/frontend/all';
 
 // TODO move this in more appropriate place - perhaps get it from govuk-frontend

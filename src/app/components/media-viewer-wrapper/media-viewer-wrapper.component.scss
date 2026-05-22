@@ -1,4 +1,8 @@
-@import 'govuk-frontend/govuk/all';
+@import 'govuk-frontend/dist/govuk/index';
+@import '../../../style/govuk-v5-compat-hmcts';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_shims';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_conditionals';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_measurements';
 @import '@hmcts/frontend/all';
 @import '@hmcts/media-viewer/assets/all';
 

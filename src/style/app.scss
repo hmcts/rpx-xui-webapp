@@ -1,8 +1,9 @@
 @import '_typography';
-@import 'govuk-frontend/govuk/all';
-@import 'shims';
-@import 'conditionals';
-@import 'measurements';
+@import 'govuk-frontend/dist/govuk/index';
+@import 'govuk-v5-compat-hmcts';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_shims';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_conditionals';
+@import 'node_modules/govuk_frontend_toolkit/stylesheets/_measurements';
 @import 'material-design-icons/iconfont/material-icons.css';
 
 $black: #323232;

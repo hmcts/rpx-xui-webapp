@@ -1,0 +1,27 @@
+@mixin govuk-if-ie8 {
+  @content;
+}
+
+@mixin mq($from: null, $until: null, $and: null) {
+  $query: 'screen';
+
+  @if $from == tablet {
+    $query: '#{$query} and (min-width: 641px)';
+  } @else if $from == desktop {
+    $query: '#{$query} and (min-width: 769px)';
+  } @else if $from {
+    $query: '#{$query} and (min-width: #{$from})';
+  }
+
+  @if $until {
+    $query: '#{$query} and (max-width: #{$until})';
+  }
+
+  @if $and {
+    $query: '#{$query} and #{$and}';
+  }
+
+  @media #{$query} {
+    @content;
+  }
+}

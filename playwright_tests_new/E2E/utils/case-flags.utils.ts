@@ -4,8 +4,6 @@ type JsonRecord = Record<string, unknown>;
 type DataLossNormalisationOptions = {
   ignoredFlagComment?: string;
 };
-const FLAG_METADATA_KEYS = new Set(['partyName', 'roleOnCase']);
-const FLAG_CONTAINER_KEYS = new Set(['partyName', 'roleOnCase', 'details', 'flagDetails', 'flags']);
 
 export function isPageClosingError(error: unknown): boolean {
   const message = error instanceof Error ? error.message : String(error);
@@ -29,6 +27,28 @@ export function rowMatchesExpected(row: Record<string, string>, expected: Record
 export function resolveCaseNumberFromPayload(payload: CcdCaseDetails): string | undefined {
   const candidate = payload.caseReference ?? payload.case_reference ?? payload.case_id ?? payload.id;
   return typeof candidate === 'string' || typeof candidate === 'number' ? String(candidate).replace(/\D/g, '') : undefined;
+}
+
+export function resolveCivilClaimantPartyName(payload: CcdCaseDetails): string | undefined {
+  const caseData = resolveCaseDataPayload(payload);
+  const applicant = caseData.applicant1 ?? findCivilClaimantPartyRecord(payload);
+  if (!applicant || typeof applicant !== 'object') {
+    return undefined;
+  }
+
+  return formatCivilPartyName(applicant as JsonRecord);
+}
+
+export function rawCivilDataLossAttachmentsEnabled(): boolean {
+  return process.env.PW_CIVIL_DATA_LOSS_ATTACH_RAW_JSON === 'true' && !process.env.CI;
+}
+
+export function redactCaseReference(caseNumber: string): string {
+  const digits = caseNumber.replace(/\D/g, '');
+  if (digits.length <= 4) {
+    return '****';
+  }
+  return `${'*'.repeat(Math.max(0, digits.length - 4))}${digits.slice(-4)}`;
 }
 
 export function normaliseCaseDataForDataLossComparison(value: unknown, options: DataLossNormalisationOptions = {}): unknown {
@@ -57,18 +77,10 @@ export function normaliseCaseDataForDataLossComparison(value: unknown, options: 
       continue;
     }
 
-    if (key === 'flags' && objectIsEmptyFlagMetadataValue(entryValue)) {
-      continue;
-    }
-
     const cleanedValue = normaliseCaseDataForDataLossComparison(entryValue, options);
     if (cleanedValue !== undefined) {
       normalised[key] = cleanedValue;
     }
-  }
-
-  if (objectIsEmptyFlagMetadataContainer(record, normalised)) {
-    return undefined;
   }
 
   return normalised;
@@ -79,6 +91,7 @@ export function buildDataLossComparisonReport(options: {
   caseNumber: string;
   normalisedBaseline: unknown;
   normalisedUpdated: unknown;
+  rawJsonAttached?: boolean;
   updatedCaseDetails: CcdCaseDetails;
 }): string {
   const baselineDataKeys = Object.keys(resolveCaseDataPayload(options.baselineCaseDetails)).sort((a, b) => a.localeCompare(b));
@@ -89,7 +102,7 @@ export function buildDataLossComparisonReport(options: {
   return [
     '# Civil Create Case Flags Data Loss Report',
     '',
-    `Case number: ${options.caseNumber}`,
+    `Case number: ${redactCaseReference(options.caseNumber)}`,
     '',
     '## Before Create Case Flags',
     '',
@@ -113,7 +126,9 @@ export function buildDataLossComparisonReport(options: {
     'Changed normalised paths:',
     ...(changedPaths.length > 0 ? changedPaths.map((change) => `- ${change}`) : ['- None']),
     '',
-    'Raw and normalised JSON snapshots are attached to this test result.',
+    options.rawJsonAttached
+      ? 'Raw and normalised JSON snapshots are attached because PW_CIVIL_DATA_LOSS_ATTACH_RAW_JSON=true was set outside CI.'
+      : 'Raw and normalised JSON snapshots are not attached; set PW_CIVIL_DATA_LOSS_ATTACH_RAW_JSON=true in a local run only if debugging requires them.',
     '',
   ].join('\n');
 }
@@ -190,41 +205,71 @@ function arrayOnlyContainedIgnoredCreatedFlag(
   });
 }
 
-function objectIsEmptyFlagMetadataContainer(originalValue: JsonRecord, normalisedValue: JsonRecord): boolean {
-  const originalKeys = Object.keys(originalValue);
-  if (!originalKeys.length || !originalKeys.every((key) => FLAG_CONTAINER_KEYS.has(key))) {
-    return false;
-  }
-
-  return !objectContainsFlagEntry(normalisedValue);
-}
-
-function objectIsEmptyFlagMetadataValue(value: unknown): boolean {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) {
-    return false;
-  }
-
-  const keys = Object.keys(value as JsonRecord);
-  return keys.length > 0 && keys.every((key) => FLAG_METADATA_KEYS.has(key));
-}
-
-function objectContainsFlagEntry(value: unknown): boolean {
-  if (Array.isArray(value)) {
-    return value.length > 0;
-  }
-
-  if (!value || typeof value !== 'object') {
-    return value !== '' && value !== null && value !== undefined;
-  }
-
-  return Object.entries(value as JsonRecord).some(([key, entryValue]) => {
-    return !FLAG_METADATA_KEYS.has(key) && objectContainsFlagEntry(entryValue);
-  });
-}
-
 function resolveCaseDataPayload(caseDetails: CcdCaseDetails): JsonRecord {
   const data = caseDetails.data ?? caseDetails.case_data;
   return data && typeof data === 'object' ? data : {};
+}
+
+function findCivilClaimantPartyRecord(value: unknown, visited = new WeakSet<object>()): JsonRecord | undefined {
+  if (!value || typeof value !== 'object') {
+    return undefined;
+  }
+
+  if (visited.has(value)) {
+    return undefined;
+  }
+  visited.add(value);
+
+  if (Array.isArray(value)) {
+    for (const entry of value) {
+      const match = findCivilClaimantPartyRecord(entry, visited);
+      if (match) {
+        return match;
+      }
+    }
+    return undefined;
+  }
+
+  const record = value as JsonRecord;
+  if (formatCivilPartyName(record) && recordLooksLikeClaimant1(record)) {
+    return record;
+  }
+
+  for (const preferredKey of ['applicant1', 'value', 'formatted_value']) {
+    const match = findCivilClaimantPartyRecord(record[preferredKey], visited);
+    if (match) {
+      return match;
+    }
+  }
+
+  for (const [key, entryValue] of Object.entries(record)) {
+    if (['applicant1', 'value', 'formatted_value'].includes(key)) {
+      continue;
+    }
+    const match = findCivilClaimantPartyRecord(entryValue, visited);
+    if (match) {
+      return match;
+    }
+  }
+
+  return formatCivilPartyName(record) ? record : undefined;
+}
+
+function recordLooksLikeClaimant1(record: JsonRecord): boolean {
+  const flags = record.flags;
+  if (!flags || typeof flags !== 'object' || Array.isArray(flags)) {
+    return false;
+  }
+
+  const roleOnCase = (flags as JsonRecord).roleOnCase;
+  return typeof roleOnCase === 'string' && /claimant\s*1/i.test(roleOnCase);
+}
+
+function formatCivilPartyName(record: JsonRecord): string | undefined {
+  const name = [record.individualTitle, record.individualFirstName, record.individualLastName]
+    .filter((part): part is string => typeof part === 'string' && part.trim().length > 0)
+    .join(' ');
+  return name || undefined;
 }
 
 function formatReportValue(value: unknown): string {

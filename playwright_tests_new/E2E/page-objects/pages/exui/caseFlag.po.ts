@@ -1,4 +1,4 @@
-import { expect, type Page } from '@playwright/test';
+import { type Locator, type Page } from '@playwright/test';
 
 import { Base } from '../../base';
 import { caseBannerMatches } from '../../../utils/banner.utils';
@@ -12,20 +12,18 @@ type CcdCaseTrigger = {
 };
 
 const CREATE_CASE_FLAG_ACTION_LABELS = ['Create case flag', 'Create a case flag', 'Create Case Flag', 'Create Case Flags'];
-const CREATE_CASE_FLAG_EVENT_ID_CANDIDATES = [
-  process.env.PW_CIVIL_CREATE_CASE_FLAG_EVENT_ID?.trim(),
-  'CREATE_CASE_FLAGS',
-  'manageFlags',
-  'createCaseFlag',
-  'createCaseFlags',
-  'CREATE_CASE_FLAG',
-].filter((eventId): eventId is string => Boolean(eventId));
+const EXPECTED_CREATE_CASE_FLAG_EVENT_ID = process.env.PW_CIVIL_CREATE_CASE_FLAG_EVENT_ID?.trim() || 'CREATE_CASE_FLAGS';
 const CCD_INTERNAL_START_EVENT_HEADERS = {
   experimental: 'true',
   Accept: 'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-start-event-trigger.v2+json',
 } as const;
 
 export class CaseFlagPage extends Base {
+  readonly caseFlagLocationQuestion: Locator = this.page.getByText(/Where should this flag be added\?/i).first();
+  readonly reviewFlagDetailsHeading: Locator = this.page
+    .getByRole('heading', { name: /review flag details|check your answers|review details/i })
+    .first();
+
   private readonly caseAlertSuccessMessage = this.page
     .locator('.hmcts-banner--success .alert-message, .exui-alert .alert-message')
     .first();
@@ -58,10 +56,15 @@ export class CaseFlagPage extends Base {
           `Direct event probes: ${probeResults.join(' | ') || 'none'}`
       );
     }
+    if (triggerId !== EXPECTED_CREATE_CASE_FLAG_EVENT_ID) {
+      throw new Error(
+        `Expected Civil create-case-flag event '${EXPECTED_CREATE_CASE_FLAG_EVENT_ID}' but resolved '${triggerId}'. ` +
+          `Available triggers: ${this.describeAvailableTriggers(caseDetails) || 'none'}`
+      );
+    }
 
     await this.page.goto(`/cases/case-details/CIVIL/CIVIL/${caseNumber}/trigger/${triggerId}`);
     await this.exuiSpinnerComponent.wait();
-    await expect(this.page.getByText(/Where should this flag be added\?/i).first()).toBeVisible({ timeout: 60_000 });
   }
 
   async completePartyOtherCaseFlagForClaimant1(comment: string): Promise<void> {
@@ -69,34 +72,28 @@ export class CaseFlagPage extends Base {
     await this.selectOtherFlagType();
     await this.addCaseFlagCommentsIfRequested(comment);
     await this.confirmActiveFlagStatusIfRequested();
-    await expect(
-      this.page.getByRole('heading', { name: /review flag details|check your answers|review details/i }).first()
-    ).toBeVisible();
   }
 
-  async waitForCreateCaseFlagSuccess(caseNumber: string): Promise<void> {
-    await expect
-      .poll(
-        async () => {
-          await this.throwIfCreateCaseFlagErrorVisible();
+  async submitCreateCaseFlag(): Promise<void> {
+    await this.page.getByRole('button', { name: /^Submit$/i }).click();
+    await this.exuiSpinnerComponent.wait();
+  }
 
-          const bannerVisible = await this.caseAlertSuccessMessage.isVisible().catch(() => false);
-          if (!bannerVisible) {
-            return false;
-          }
+  async isCreateCaseFlagSuccessVisible(caseNumber: string): Promise<boolean> {
+    await this.throwIfCreateCaseFlagErrorVisible();
 
-          const bannerText = await this.caseAlertSuccessMessage.innerText();
-          return this.isCreateCaseFlagBannerVisible(bannerText, caseNumber);
-        },
-        { timeout: 60_000, intervals: [1_000, 2_000, 3_000] }
-      )
-      .toBe(true);
+    const bannerVisible = await this.caseAlertSuccessMessage.isVisible().catch(() => false);
+    if (!bannerVisible) {
+      return false;
+    }
+
+    const bannerText = await this.caseAlertSuccessMessage.innerText();
+    return this.isCreateCaseFlagBannerVisible(bannerText, caseNumber);
   }
 
   private resolveCreateCaseFlagTriggerIdFromCaseDetails(caseDetails: CcdCaseDetails): string | undefined {
     const triggers = Array.isArray(caseDetails.triggers) ? (caseDetails.triggers as CcdCaseTrigger[]) : [];
-    const allowedLabels = new Set(CREATE_CASE_FLAG_ACTION_LABELS.map((label) => label.toLowerCase()));
-    return triggers.find((trigger) => allowedLabels.has((trigger.name ?? trigger.label ?? '').trim().toLowerCase()))?.id;
+    return triggers.find((trigger) => trigger.id === EXPECTED_CREATE_CASE_FLAG_EVENT_ID)?.id;
   }
 
   private describeAvailableTriggers(caseDetails: CcdCaseDetails): string {
@@ -111,24 +108,23 @@ export class CaseFlagPage extends Base {
     caseNumber: string
   ): Promise<{ probeResults: string[]; triggerId?: string }> {
     const probeResults: string[] = [];
-    for (const eventId of new Set(CREATE_CASE_FLAG_EVENT_ID_CANDIDATES)) {
-      const path = `data/internal/cases/${encodeURIComponent(caseNumber)}/event-triggers/${encodeURIComponent(
-        eventId
-      )}?ignore-warning=false`;
-      const response = await this.page.request.get(path, {
-        failOnStatusCode: false,
-        headers: CCD_INTERNAL_START_EVENT_HEADERS,
-        timeout: 15_000,
-      });
+    const path = `data/internal/cases/${encodeURIComponent(caseNumber)}/event-triggers/${encodeURIComponent(
+      EXPECTED_CREATE_CASE_FLAG_EVENT_ID
+    )}?ignore-warning=false`;
+    const response = await this.page.request.get(path, {
+      failOnStatusCode: false,
+      headers: CCD_INTERNAL_START_EVENT_HEADERS,
+      timeout: 15_000,
+    });
 
-      if (response.ok()) {
-        return { probeResults, triggerId: eventId };
-      }
-
-      const body = await response.text().catch(() => '');
-      probeResults.push(`${eventId}: HTTP ${response.status()} ${body.slice(0, 180).replace(/\s+/g, ' ')}`.trim());
+    if (response.ok()) {
+      return { probeResults, triggerId: EXPECTED_CREATE_CASE_FLAG_EVENT_ID };
     }
 
+    const body = await response.text().catch(() => '');
+    probeResults.push(
+      `${EXPECTED_CREATE_CASE_FLAG_EVENT_ID}: HTTP ${response.status()} ${body.slice(0, 180).replace(/\s+/g, ' ')}`.trim()
+    );
     return { probeResults };
   }
 

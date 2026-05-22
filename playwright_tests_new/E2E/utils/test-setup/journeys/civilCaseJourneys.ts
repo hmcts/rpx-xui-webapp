@@ -1,10 +1,10 @@
+import { faker } from '@faker-js/faker';
 import { createLogger } from '@hmcts/playwright-common';
-import type { Browser, Page, TestInfo } from '@playwright/test';
+import type { Page, TestInfo } from '@playwright/test';
 import { authenticator } from 'otplib';
 
 import type { CaseDetailsPage } from '../../../page-objects/pages/exui/caseDetails.po';
 import type { CreateCasePage } from '../../../page-objects/pages/exui/createCase.po';
-import { setRuntimeUserCredentials } from '../../runtimeUserCredentials';
 import { setupCaseForJourney } from '../caseSetup';
 
 type JsonRecord = Record<string, unknown>;
@@ -85,18 +85,24 @@ const DEFAULT_MEDIATION_STATE = 'IN_MEDIATION';
 const DEFAULT_STATE_WAIT_TIMEOUT_MS = 180_000;
 const DEFAULT_STATE_WAIT_INTERVAL_MS = 3_000;
 const DEFAULT_CASE_DETAILS_FETCH_WAIT_TIMEOUT_MS = 60_000;
+const DEFAULT_CIVIL_API_REQUEST_TIMEOUT_MS = 60_000;
+const DEFAULT_CIVIL_SERVICE_EVENT_REQUEST_TIMEOUT_MS = 90_000;
 const DEFAULT_CIVIL_SERVICE_BUSINESS_PROCESS_WAIT_TIMEOUT_MS = 420_000;
 const DEFAULT_BUSINESS_PROCESS_WAIT_INTERVAL_MS = 3_000;
 const DEFAULT_CCD_EVENT_TRIGGER_WAIT_TIMEOUT_MS = 420_000;
 const DEFAULT_CCD_EVENT_TRIGGER_WAIT_INTERVAL_MS = 3_000;
 const DEFAULT_CIVIL_ROLE_ASSIGNMENT_WAIT_TIMEOUT_MS = 60_000;
 const DEFAULT_CIVIL_S2S_MICROSERVICE = 'civil_service';
-const DEFAULT_CIVIL_CLAIMANT_EMAIL = 'civilmoneyclaimsdemo@gmail.com';
-const DEFAULT_CIVIL_DEFENDANT_EMAIL = 'cuiuseraat@gmail.com';
-const DEFAULT_CIVIL_CASE_FLAGS_SETUP_ALIAS = 'CIVIL_SOLICITOR';
-const DEFAULT_CIVIL_COURT_STAFF_ALIAS = 'CIVIL_COURT_STAFF';
-const DEFAULT_CIVIL_COURT_STAFF_EMAIL = 'hearing_center_admin_reg1@justice.gov.uk';
-const DEFAULT_CIVIL_SOLICITOR_EMAIL = 'hmcts.civil+organisation.1.solicitor.1@gmail.com';
+const CIVIL_SERVICE_INTERNAL_URLS_BY_ENV = {
+  aat: 'http://civil-service-aat.service.core-compute-aat.internal',
+  demo: 'http://civil-service-demo.service.core-compute-demo.internal',
+} as const;
+const CIVIL_SERVICE_AAT_STAGING_HOST = 'civil-cui-civil-service-staging.aat.platform.hmcts.net';
+const CCD_DATA_STORE_HOST_TO_CIVIL_SERVICE_ENV = new Map<string, keyof typeof CIVIL_SERVICE_INTERNAL_URLS_BY_ENV>([
+  ['civil-cui-data-store-staging.aat.platform.hmcts.net', 'aat'],
+  ['ccd-data-store-api-aat.service.core-compute-aat.internal', 'aat'],
+  ['ccd-data-store-api-demo.service.core-compute-demo.internal', 'demo'],
+]);
 const DEFAULT_CIVIL_COURT_STAFF_ROLES = [
   'caseworker',
   'caseworker-civil',
@@ -118,7 +124,7 @@ const CCD_CREATE_EVENT_HEADERS = {
   'Content-Type': 'application/json',
 } as const;
 
-export function getCivilLipMediationApiMissingConfiguration(): string[] {
+export function getCivilLipMediationApiMissingConfiguration(options: { allowMissingCitizenUsers?: boolean } = {}): string[] {
   const config = resolveCivilApiConfig();
   const missing: string[] = [];
 
@@ -137,92 +143,22 @@ export function getCivilLipMediationApiMissingConfiguration(): string[] {
   if (!config.claimantUser.password || !config.defendantUser.password) {
     missing.push('CITIZEN_PASSWORD or PW_CIVIL_CITIZEN_PASSWORD');
   }
+  if (!options.allowMissingCitizenUsers && (!config.claimantUser.email || !config.defendantUser.email)) {
+    missing.push('generated Civil users or PW_CIVIL_CLAIMANT_EMAIL/PW_CIVIL_DEFENDANT_EMAIL');
+  }
 
   return missing;
 }
 
-export function getCivilCaseFlagsSetupAlias(): string {
-  return process.env.PW_CIVIL_CASE_FLAGS_SETUP_ALIAS?.trim() || DEFAULT_CIVIL_CASE_FLAGS_SETUP_ALIAS;
-}
-
-export function getCivilCaseFlagsCourtStaffAlias(): string {
-  return process.env.PW_CIVIL_CASE_FLAGS_COURT_STAFF_ALIAS?.trim() || DEFAULT_CIVIL_COURT_STAFF_ALIAS;
-}
-
-export async function configureCivilCaseFlagsRuntimeUsers(browser: Browser): Promise<void> {
-  configureCivilCaseFlagsSetupAliasCredentials();
-  await configureCivilCaseFlagsCourtStaffAliasCredentials(browser);
-}
-
-function configureCivilCaseFlagsSetupAliasCredentials(): void {
-  if (getCivilCaseFlagsSetupAlias() !== DEFAULT_CIVIL_CASE_FLAGS_SETUP_ALIAS) {
-    return;
-  }
-
-  const email =
-    firstNonEmpty(
-      process.env.CIVIL_SOLICITOR_USERNAME,
-      process.env.PW_CIVIL_SOLICITOR_EMAIL,
-      process.env.CIVIL_SOLICITOR_EMAIL
-    ) ?? DEFAULT_CIVIL_SOLICITOR_EMAIL;
-  const password = firstNonEmpty(
-    process.env.CIVIL_SOLICITOR_PASSWORD,
-    process.env.PW_CIVIL_SOLICITOR_PASSWORD,
-    process.env.CITIZEN_PASSWORD,
-    process.env.PW_CIVIL_CITIZEN_PASSWORD,
-    process.env.TEST_PASSWORD
-  );
-
-  if (!password) {
-    return;
-  }
-
-  process.env.CIVIL_SOLICITOR_USERNAME = email;
-  process.env.CIVIL_SOLICITOR_PASSWORD = password;
-  setRuntimeUserCredentials(DEFAULT_CIVIL_CASE_FLAGS_SETUP_ALIAS, { email, password });
-}
-
-async function configureCivilCaseFlagsCourtStaffAliasCredentials(browser: Browser): Promise<void> {
-  if (getCivilCaseFlagsCourtStaffAlias() !== DEFAULT_CIVIL_COURT_STAFF_ALIAS) {
-    return;
-  }
-
-  const email =
-    firstNonEmpty(process.env.CIVIL_COURT_STAFF_USERNAME, process.env.PW_CIVIL_COURT_STAFF_EMAIL) ??
-    DEFAULT_CIVIL_COURT_STAFF_EMAIL;
-  const password = firstNonEmpty(
-    process.env.CIVIL_COURT_STAFF_PASSWORD,
-    process.env.PW_CIVIL_COURT_STAFF_PASSWORD,
-    process.env.DEFAULT_PASSWORD,
-    process.env.TEST_PASSWORD
-  );
-  if (password) {
-    setRuntimeUserCredentials(DEFAULT_CIVIL_COURT_STAFF_ALIAS, { email, password });
-    return;
-  }
-
-  if (isTruthy(process.env.PW_CIVIL_DISABLE_DYNAMIC_COURT_STAFF)) {
-    throw new Error(`Civil court staff UI setup is missing a password for '${email}'.`);
-  }
-
-  const context = await browser.newContext();
-  const page = await context.newPage();
-  try {
-    const credentials = await createCivilCourtStaffAccountViaApi(page);
-    process.env.CIVIL_COURT_STAFF_USERNAME = credentials.email;
-    process.env.CIVIL_COURT_STAFF_PASSWORD = credentials.password;
-    setRuntimeUserCredentials(DEFAULT_CIVIL_COURT_STAFF_ALIAS, credentials);
-  } finally {
-    await context.close();
-  }
-}
-
 export async function createCivilCourtStaffAccountViaApi(page: Page): Promise<CivilApiUser> {
-  const config = requireCivilApiConfig();
+  const config = requireCivilApiConfig({ allowMissingCitizenUsers: true });
   const password = resolveCivilGeneratedAccountPassword();
+  const generatedEmailDomain = firstNonEmpty(process.env.PW_CIVIL_COURT_STAFF_EMAIL_DOMAIN) ?? 'example.com';
   const email =
     firstNonEmpty(process.env.CIVIL_COURT_STAFF_USERNAME, process.env.PW_CIVIL_COURT_STAFF_EMAIL) ??
-    `civilcourtstaff-${Date.now()}-${Math.floor(Math.random() * 1_000_000)}@justice.gov.uk`;
+    `civilcourtstaff-${createUniqueRunId()}@${generatedEmailDomain}`;
+  const forename = faker.person.firstName();
+  const surname = faker.person.lastName();
   const roles =
     firstNonEmpty(process.env.PW_CIVIL_COURT_STAFF_ROLES)
       ?.split(',')
@@ -231,17 +167,17 @@ export async function createCivilCourtStaffAccountViaApi(page: Page): Promise<Ci
 
   const response = await postIdamAccountWithRetry(page, config, {
     email,
-    forename: 'Civil',
+    forename,
     password,
     roles,
-    surname: 'Court Staff',
+    surname,
     userGroup: 'caseworker',
   });
 
   if (!response.ok() && response.status() !== 409) {
     const body = await response.text().catch(() => '');
     throw new Error(
-      `Failed to create Civil court staff account '${email}' through IDAM testing-support/accounts ` +
+      `Failed to create Civil court staff account '${email}' through IDAM testing support ` +
         `(HTTP ${response.status()}). Roles='${roles.join(',')}'. Body='${body.slice(0, 500)}'. ` +
         "Use a Civil admin role set that IDAM burner users accept, for example 'caseworker,caseworker-civil,caseworker-civil-admin,pui-case-manager'."
     );
@@ -256,7 +192,9 @@ export async function createCivilLipCaseInMediationViaApi(options: {
   useGeneratedUsers?: boolean;
 }): Promise<CreateCivilMediationCaseViaApiResult> {
   const expectedState = options.expectedState ?? DEFAULT_MEDIATION_STATE;
-  const config = options.useGeneratedUsers ? withGeneratedCivilCitizenUsers(requireCivilApiConfig()) : requireCivilApiConfig();
+  const config = options.useGeneratedUsers
+    ? withGeneratedCivilCitizenUsers(requireCivilApiConfig({ allowMissingCitizenUsers: true }))
+    : requireCivilApiConfig();
 
   if (config.createClaimantAccount) {
     await createIdamCitizenAccount(options.page, config, config.claimantUser);
@@ -418,7 +356,7 @@ export async function fetchCaseDetailsViaApi(page: Page, caseNumber: string): Pr
         experimental: 'true',
         Accept: 'application/vnd.uk.gov.hmcts.ccd-data-store-api.ui-case-view.v2+json;charset=UTF-8',
       },
-      timeout: 60_000,
+      timeout: resolveCivilApiRequestTimeoutMs(),
     });
 
     lastStatus = response.status();
@@ -438,6 +376,15 @@ export async function fetchCaseDetailsViaApi(page: Page, caseNumber: string): Pr
     `Failed to fetch case ${caseNumber} via API: HTTP ${lastStatus}. Path='data/internal/cases/${caseNumber}'. ` +
       `Body='${lastBody.slice(0, 500)}'`
   );
+}
+
+export async function waitForCivilCaseStateViaApi(options: {
+  page: Page;
+  caseNumber: string;
+  expectedState: string;
+  context: string;
+}): Promise<CcdCaseDetails> {
+  return waitForCaseState(options);
 }
 
 function isRetryableCaseDetailsFetchStatus(status: number): boolean {
@@ -510,7 +457,7 @@ async function submitCcdCaseEventViaApi(options: {
     data: eventBody,
     failOnStatusCode: false,
     headers: CCD_CREATE_EVENT_HEADERS,
-    timeout: 60_000,
+    timeout: resolveCivilApiRequestTimeoutMs(),
   });
   if (!submitResponse.ok()) {
     const body = await submitResponse.text().catch(() => '');
@@ -537,7 +484,7 @@ async function fetchCcdCaseEventTriggerWithRetry(options: {
     const response = await options.page.request.get(eventTriggerPath, {
       failOnStatusCode: false,
       headers: CCD_INTERNAL_START_EVENT_HEADERS,
-      timeout: 60_000,
+      timeout: resolveCivilApiRequestTimeoutMs(),
     });
     lastStatus = response.status();
 
@@ -590,7 +537,7 @@ async function validateCcdCaseEventPage(options: {
     },
     failOnStatusCode: false,
     headers: CCD_CREATE_EVENT_HEADERS,
-    timeout: 60_000,
+    timeout: resolveCivilApiRequestTimeoutMs(),
   });
 
   if (!validateResponse.ok()) {
@@ -741,24 +688,23 @@ function resolveCivilApiConfig(): CivilApiConfig {
   const claimantGenerated = createCitizenAccounts && !claimantEmail;
   const defendantGenerated = createCitizenAccounts && !defendantEmail;
 
+  const idamApiUrl = resolveIdamApiUrl();
+
   return {
     civilServiceUrl: resolveCivilServiceUrl(),
-    idamApiUrl: resolveIdamApiUrl(),
-    idamTestSupportApiUrl: trimTrailingSlash(
-      firstNonEmpty(process.env.IDAM_TEST_SUPPORT_API_URL, process.env.IDAM_TESTING_SUPPORT_URL) ?? ''
-    ),
+    idamApiUrl,
+    idamTestSupportApiUrl: resolveIdamTestingSupportApiUrl(idamApiUrl),
     serviceAuthProviderUrl: trimTrailingSlash(
       firstNonEmpty(process.env.SERVICE_AUTH_PROVIDER_API_BASE_URL, process.env.S2S_URL) ?? ''
     ),
     s2sToken: firstNonEmpty(process.env.PW_CIVIL_S2S_TOKEN, process.env.CIVIL_S2S_TOKEN),
     s2sSecret: firstNonEmpty(process.env.S2S_SECRET),
     claimantUser: {
-      email: claimantEmail ?? (claimantGenerated ? `claimantcitizen-${generatedRunId}@gmail.com` : DEFAULT_CIVIL_CLAIMANT_EMAIL),
+      email: claimantEmail ?? (claimantGenerated ? `claimantcitizen-${generatedRunId}@example.com` : ''),
       password: citizenPassword ?? '',
     },
     defendantUser: {
-      email:
-        defendantEmail ?? (defendantGenerated ? `defendantcitizen-${generatedRunId}@gmail.com` : DEFAULT_CIVIL_DEFENDANT_EMAIL),
+      email: defendantEmail ?? (defendantGenerated ? `defendantcitizen-${generatedRunId}@example.com` : ''),
       password: citizenPassword ?? '',
     },
     createClaimantAccount: claimantGenerated,
@@ -771,6 +717,31 @@ function resolveIdamApiUrl(): string {
   return configured.replace(/\/o\/token$/i, '').replace(/\/o$/i, '');
 }
 
+function resolveIdamTestingSupportApiUrl(idamApiUrl: string): string {
+  const configured = trimTrailingSlash(
+    firstNonEmpty(
+      process.env.IDAM_TEST_SUPPORT_API_URL,
+      process.env.IDAM_TESTING_SUPPORT_URL,
+      process.env.PW_IDAM_TEST_SUPPORT_API_URL,
+      process.env.PW_IDAM_TESTING_SUPPORT_API_URL
+    ) ?? ''
+  );
+  if (configured) {
+    return normaliseIdamTestingSupportBaseUrl(configured);
+  }
+
+  return normaliseIdamTestingSupportBaseUrl(
+    idamApiUrl.replace(/^https?:\/\/idam-api\./i, (match) => match.replace(/idam-api/i, 'idam-testing-support-api'))
+  );
+}
+
+function normaliseIdamTestingSupportBaseUrl(value: string): string {
+  return trimTrailingSlash(value)
+    .replace(/\/test\/idam\/burner\/users$/i, '')
+    .replace(/\/test\/idam\/users$/i, '')
+    .replace(/\/testing-support\/accounts$/i, '');
+}
+
 function resolveCivilServiceUrl(): string {
   const explicitOverride = firstNonEmpty(process.env.PW_CIVIL_SERVICE_URL);
   if (explicitOverride) {
@@ -778,38 +749,53 @@ function resolveCivilServiceUrl(): string {
   }
 
   const configured = firstNonEmpty(process.env.CIVIL_SERVICE_URL);
-  if (configured?.includes('civil-cui-civil-service-staging.aat.platform.hmcts.net')) {
-    return 'http://civil-service-aat.service.core-compute-aat.internal';
+  if (configured?.includes(CIVIL_SERVICE_AAT_STAGING_HOST)) {
+    return resolveCivilServiceInternalUrl('aat');
   }
   if (configured) {
     return trimTrailingSlash(configured);
   }
 
   const ccdDataStoreUrl = firstNonEmpty(process.env.CCD_DATA_STORE_URL, process.env.SERVICES_CCD_DATA_STORE_API);
-  if (ccdDataStoreUrl?.includes('civil-cui-data-store-staging.aat.platform.hmcts.net')) {
-    return 'http://civil-service-aat.service.core-compute-aat.internal';
-  }
-  if (ccdDataStoreUrl?.includes('ccd-data-store-api-aat.service.core-compute-aat.internal')) {
-    return 'http://civil-service-aat.service.core-compute-aat.internal';
-  }
-  if (ccdDataStoreUrl?.includes('ccd-data-store-api-demo.service.core-compute-demo.internal')) {
-    return 'http://civil-service-demo.service.core-compute-demo.internal';
+  const civilServiceEnvFromCcd = resolveCivilServiceEnvironmentFromCcdDataStoreUrl(ccdDataStoreUrl);
+  if (civilServiceEnvFromCcd) {
+    return resolveCivilServiceInternalUrl(civilServiceEnvFromCcd);
   }
 
   const testEnv = firstNonEmpty(process.env.TEST_ENV, process.env.ENVIRONMENT)?.toLowerCase();
   if (testEnv === 'demo') {
-    return 'http://civil-service-demo.service.core-compute-demo.internal';
+    return resolveCivilServiceInternalUrl('demo');
   }
 
   if (testEnv === 'aat' || isAatUrl(firstNonEmpty(process.env.TEST_URL, process.env.EXUI_BASE_URL))) {
-    return 'http://civil-service-aat.service.core-compute-aat.internal';
+    return resolveCivilServiceInternalUrl('aat');
   }
 
   return '';
 }
 
-function requireCivilApiConfig(): CivilApiConfig {
-  const missing = getCivilLipMediationApiMissingConfiguration();
+function resolveCivilServiceInternalUrl(environment: keyof typeof CIVIL_SERVICE_INTERNAL_URLS_BY_ENV): string {
+  return CIVIL_SERVICE_INTERNAL_URLS_BY_ENV[environment];
+}
+
+function resolveCivilServiceEnvironmentFromCcdDataStoreUrl(
+  ccdDataStoreUrl: string | undefined
+): keyof typeof CIVIL_SERVICE_INTERNAL_URLS_BY_ENV | undefined {
+  if (!ccdDataStoreUrl) {
+    return undefined;
+  }
+
+  for (const [host, environment] of CCD_DATA_STORE_HOST_TO_CIVIL_SERVICE_ENV) {
+    if (ccdDataStoreUrl.includes(host)) {
+      return environment;
+    }
+  }
+
+  return undefined;
+}
+
+function requireCivilApiConfig(options: { allowMissingCitizenUsers?: boolean } = {}): CivilApiConfig {
+  const missing = getCivilLipMediationApiMissingConfiguration(options);
   if (missing.length) {
     throw new Error(`Civil LiP mediation API setup is missing configuration: ${missing.join(', ')}`);
   }
@@ -853,6 +839,17 @@ function withGeneratedCivilCitizenUsers(config: CivilApiConfig): CivilApiConfig 
     createClaimantAccount: true,
     createDefendantAccount: true,
   };
+}
+
+function resolveCivilApiRequestTimeoutMs(): number {
+  return resolvePositiveInt(process.env.PW_CIVIL_API_REQUEST_TIMEOUT_MS, DEFAULT_CIVIL_API_REQUEST_TIMEOUT_MS);
+}
+
+function resolveCivilServiceEventRequestTimeoutMs(): number {
+  return resolvePositiveInt(
+    process.env.PW_CIVIL_SERVICE_EVENT_REQUEST_TIMEOUT_MS ?? process.env.PW_CIVIL_API_REQUEST_TIMEOUT_MS,
+    DEFAULT_CIVIL_SERVICE_EVENT_REQUEST_TIMEOUT_MS
+  );
 }
 
 function resolveCivilServiceBusinessProcessWaitTimeoutMs(): number {
@@ -922,32 +919,85 @@ async function postIdamAccountWithRetry(
   }
 ) {
   let lastError: unknown;
+  let lastResponse: Awaited<ReturnType<Page['request']['post']>> | undefined;
+  const accountCreationTargets = resolveIdamAccountCreationTargets(config, account);
   for (let attempt = 1; attempt <= 5; attempt += 1) {
-    try {
-      return await page.request.post(`${config.idamApiUrl}/testing-support/accounts`, {
-        data: {
-          email: account.email,
-          forename: account.forename,
-          surname: account.surname,
-          password: account.password,
-          roles: account.roles.map((code) => ({ code })),
-          userGroup: {
-            code: account.userGroup,
+    for (const target of accountCreationTargets) {
+      try {
+        const response = await page.request.post(target.url, {
+          data: target.data,
+          failOnStatusCode: false,
+          headers: {
+            'Content-Type': 'application/json',
           },
-        },
-        failOnStatusCode: false,
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        timeout: 60_000,
-      });
-    } catch (error) {
-      lastError = error;
-      await page.waitForTimeout(5_000);
+          timeout: resolveCivilApiRequestTimeoutMs(),
+        });
+        lastResponse = response;
+        if (response.ok() || response.status() === 409) {
+          return response;
+        }
+        if (!isRetryableIdamAccountCreationStatus(response.status())) {
+          return response;
+        }
+      } catch (error) {
+        lastError = error;
+      }
     }
+    await page.waitForTimeout(5_000);
   }
 
+  if (lastResponse) {
+    return lastResponse;
+  }
   throw lastError instanceof Error ? lastError : new Error(String(lastError));
+}
+
+function isRetryableIdamAccountCreationStatus(status: number): boolean {
+  return [401, 403, 404, 409, 429, 500, 502, 503, 504].includes(status);
+}
+
+function resolveIdamAccountCreationTargets(
+  config: CivilApiConfig,
+  account: {
+    email: string;
+    forename: string;
+    password: string;
+    roles: string[];
+    surname: string;
+    userGroup: string;
+  }
+): Array<{ data: JsonRecord; url: string }> {
+  const accountPayload = {
+    email: account.email,
+    forename: account.forename,
+    surname: account.surname,
+    password: account.password,
+    roles: account.roles.map((code) => ({ code })),
+    userGroup: {
+      code: account.userGroup,
+    },
+  };
+  const userPayload = {
+    password: account.password,
+    user: {
+      email: account.email,
+      forename: account.forename,
+      surname: account.surname,
+      displayName: `${account.forename} ${account.surname}`,
+      roleNames: account.roles,
+    },
+  };
+
+  return [
+    ...(config.idamTestSupportApiUrl
+      ? [
+          { url: `${config.idamTestSupportApiUrl}/test/idam/users`, data: userPayload },
+          { url: `${config.idamTestSupportApiUrl}/test/idam/burner/users`, data: accountPayload },
+          { url: `${config.idamTestSupportApiUrl}/testing-support/accounts`, data: accountPayload },
+        ]
+      : []),
+    ...(config.idamApiUrl ? [{ url: `${config.idamApiUrl}/testing-support/accounts`, data: accountPayload }] : []),
+  ];
 }
 
 async function createIdamCitizenAccountViaLegacyEndpoint(
@@ -986,7 +1036,7 @@ async function createIdamCitizenAccountViaLegacyEndpoint(
         Authorization: `Bearer ${adminToken}`,
         'Content-Type': 'application/json',
       },
-      timeout: 60_000,
+      timeout: resolveCivilApiRequestTimeoutMs(),
     });
 
     if (response.ok() || response.status() === 409) {
@@ -1004,16 +1054,14 @@ async function getIdamAccessToken(page: Page, config: CivilApiConfig, user: Civi
   let lastError: Error | undefined;
   for (let attempt = 1; attempt <= 5; attempt++) {
     try {
-      const response = await page.request.post(
-        `${config.idamApiUrl}/loginUser?username=${encodeURIComponent(user.email)}&password=${encodeURIComponent(user.password)}`,
-        {
-          failOnStatusCode: false,
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-          },
-          timeout: 60_000,
-        }
-      );
+      const response = await page.request.post(`${config.idamApiUrl}/loginUser`, {
+        failOnStatusCode: false,
+        form: {
+          username: user.email,
+          password: user.password,
+        },
+        timeout: resolveCivilApiRequestTimeoutMs(),
+      });
 
       if (response.ok()) {
         const body = (await response.json()) as { access_token?: string };
@@ -1043,7 +1091,7 @@ async function getIdamUserId(page: Page, config: CivilApiConfig, idamToken: stri
       Authorization: `Bearer ${idamToken}`,
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-    timeout: 60_000,
+    timeout: resolveCivilApiRequestTimeoutMs(),
   });
 
   if (!response.ok()) {
@@ -1081,7 +1129,7 @@ async function getCivilS2sToken(page: Page, config: CivilApiConfig): Promise<str
       headers: {
         'Content-Type': 'application/json',
       },
-      timeout: 60_000,
+      timeout: resolveCivilApiRequestTimeoutMs(),
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
@@ -1151,7 +1199,7 @@ async function submitCivilServiceEvent(options: {
       ServiceAuthorization: options.s2sToken,
       'Content-Type': 'application/json',
     },
-    timeout: 90_000,
+    timeout: resolveCivilServiceEventRequestTimeoutMs(),
   });
 
   if (!response.ok()) {
@@ -1185,7 +1233,7 @@ async function assignCivilCaseRoleToUser(options: {
         Authorization: `Bearer ${options.idamToken}`,
         'Content-Type': 'application/json',
       },
-      timeout: 60_000,
+      timeout: resolveCivilApiRequestTimeoutMs(),
     });
 
     lastStatus = response.status();
@@ -1244,7 +1292,7 @@ async function waitForFinishedCivilBusinessProcess(
         headers: {
           Authorization: `Bearer ${idamToken}`,
         },
-        timeout: 60_000,
+        timeout: resolveCivilApiRequestTimeoutMs(),
       }
     );
 
@@ -1282,35 +1330,43 @@ function resolveCaseNumberFromCivilResponse(payload: CcdCaseDetails): string {
 }
 
 function createLipClaimWithCompanyDefendantPayload(user: CivilApiUser, userId: string): JsonRecord {
+  const applicantFirstName = faker.person.firstName();
+  const applicantLastName = faker.person.lastName();
+  const applicantTitle = faker.person.prefix();
+  const defendantCompanyName = faker.company.name();
+  const claimReason = faker.lorem.words(3);
+  const claimantContactPerson = faker.person.fullName();
+  const timelineDescription = faker.lorem.sentence();
+
   return {
     event: 'CREATE_LIP_CLAIM',
     caseDataUpdate: {
       applicant1: {
         individualDateOfBirth: '1995-08-28',
-        individualFirstName: 'Jane',
-        individualLastName: 'Doe',
-        individualTitle: 'Miss',
+        individualFirstName: applicantFirstName,
+        individualLastName: applicantLastName,
+        individualTitle: applicantTitle,
         partyEmail: user.email,
         partyPhone: '07446777177',
         primaryAddress: {
-          AddressLine1: '123',
-          AddressLine2: 'Fake Street',
+          AddressLine1: faker.location.buildingNumber(),
+          AddressLine2: faker.location.street(),
           AddressLine3: '',
           PostCode: 'S12eu',
-          PostTown: 'sheffield',
+          PostTown: faker.location.city(),
         },
         type: 'INDIVIDUAL',
       },
       respondent1: {
-        companyName: 'Test Company Defendant',
+        companyName: defendantCompanyName,
         partyEmail: user.email,
         partyPhone: '07800000000',
         primaryAddress: {
-          AddressLine1: 'TestAddressLine1',
-          AddressLine2: 'TestAddressLine2',
-          AddressLine3: 'TestAddressLine3',
+          AddressLine1: faker.location.buildingNumber(),
+          AddressLine2: faker.location.street(),
+          AddressLine3: '',
           PostCode: 'IG61JD',
-          PostTown: 'TestCity',
+          PostTown: faker.location.city(),
         },
         type: 'COMPANY',
       },
@@ -1321,11 +1377,11 @@ function createLipClaimWithCompanyDefendantPayload(user: CivilApiUser, userId: s
           id: '0',
           value: {
             claimAmount: CIVIL_SMALL_CLAIM_AMOUNT,
-            claimReason: 'Injury',
+            claimReason,
           },
         },
       ],
-      detailsOfClaim: 'Injury',
+      detailsOfClaim: claimReason,
       claimInterest: 'No',
       claimantUserDetails: {
         email: user.email,
@@ -1349,24 +1405,24 @@ function createLipClaimWithCompanyDefendantPayload(user: CivilApiUser, userId: s
       pcqId: '4c10fec5-1278-45f3-89f0-d3d016d47f95',
       respondent1AdditionalLipPartyDetails: {
         correspondenceAddress: {},
-        contactPerson: 'Test Company',
+        contactPerson: defendantCompanyName,
       },
       applicant1AdditionalLipPartyDetails: {
         correspondenceAddress: {
-          AddressLine1: '123',
-          AddressLine2: 'Test Street',
+          AddressLine1: faker.location.buildingNumber(),
+          AddressLine2: faker.location.street(),
           AddressLine3: '',
           PostCode: 'L7 2pz',
-          PostTown: 'Liverpool',
+          PostTown: faker.location.city(),
         },
-        contactPerson: 'Test Company',
+        contactPerson: claimantContactPerson,
       },
       timelineOfEvents: [
         {
           id: '0',
           value: {
             timelineDate: '2000-01-01',
-            timelineDescription: 'test',
+            timelineDescription,
           },
         },
       ],
@@ -1406,7 +1462,7 @@ function defendantResponseCarmCompanyPayload(): JsonRecord {
       totalClaimAmount: 1500,
       respondent1: {
         companyName: 'Test Company Defendant',
-        partyEmail: 'civilmoneyclaimsdemo@gmail.com',
+        partyEmail: faker.internet.email({ provider: 'example.com' }),
         partyPhone: '07800000000',
         primaryAddress: {
           AddressLine1: 'TestAddressLine1',
@@ -1453,7 +1509,7 @@ function defendantResponseCarmCompanyPayload(): JsonRecord {
         isMediationContactNameCorrect: 'No',
         alternativeMediationContactPerson: 'new defendant cp',
         isMediationEmailCorrect: 'No',
-        alternativeMediationEmail: 'defendantmediation@email.com',
+        alternativeMediationEmail: faker.internet.email({ provider: 'example.com' }),
         isMediationPhoneCorrect: 'No',
         alternativeMediationTelephone: '07744444444',
         hasUnavailabilityNextThreeMonths: 'Yes',
@@ -1581,7 +1637,7 @@ function claimantLipIntendsToProceedCarmPayload(): JsonRecord {
         isMediationContactNameCorrect: 'No',
         alternativeMediationContactPerson: 'new contact person',
         isMediationEmailCorrect: 'No',
-        alternativeMediationEmail: 'anotherem@ail.com',
+        alternativeMediationEmail: faker.internet.email({ provider: 'example.com' }),
         isMediationPhoneCorrect: 'No',
         alternativeMediationTelephone: '07755555555',
         hasUnavailabilityNextThreeMonths: 'Yes',
@@ -1663,6 +1719,11 @@ function firstNonEmpty(...values: Array<string | undefined>): string | undefined
   return values.map((value) => value?.trim()).find((value): value is string => Boolean(value));
 }
 
+function resolvePositiveInt(value: string | undefined, fallback: number): number {
+  const parsed = Number.parseInt(value ?? '', 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
 function trimTrailingSlash(value: string): string {
   return value.replace(/\/+$/, '');
 }
@@ -1673,10 +1734,6 @@ function isAatUrl(value: string | undefined): boolean {
 
 function isFalsy(value: string | undefined): boolean {
   return ['0', 'false', 'no', 'n'].includes(value?.trim().toLowerCase() ?? '');
-}
-
-function isTruthy(value: string | undefined): boolean {
-  return ['1', 'true', 'yes', 'y'].includes(value?.trim().toLowerCase() ?? '');
 }
 
 function createUniqueRunId(): string {

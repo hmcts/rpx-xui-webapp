@@ -87,6 +87,9 @@ export class HearingsJourneyPage {
 
   readonly addLocationsButton = this.page.locator('.search-location').getByRole('link', { name: ' Add location ' });
 
+  //const submitButton =
+  readonly submitButton = this.page.locator('button.govuk-button', { hasText: 'Submit request' });
+
   async additionalSecurityAndFacilities(model: HearingJourneyModel, page: Page): Promise<void> {
     const value = model.get('hearingFacilities', 'additionalSecurity');
 
@@ -235,5 +238,14 @@ export class HearingsJourneyPage {
 
   removeLocationLink(locationName: string): Locator {
     return this.page.locator('.hmcts-filter-tags a.hmcts-filter__tag').filter({ hasText: locationName });
+  }
+
+  async clickLinkToViewHearings(page: Page): Promise<void> {
+    const hearingsTabLink = this.page.getByRole('link', {
+      name: 'view the status of this hearing in the hearings tab',
+    });
+
+    await expect(hearingsTabLink, 'Hearings tab link should be visible').toBeVisible();
+    await hearingsTabLink.click();
   }
 }

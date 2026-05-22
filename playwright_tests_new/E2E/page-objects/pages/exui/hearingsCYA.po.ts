@@ -5,7 +5,6 @@ export class HearingsCYAPage {
 
   // Locate a section by its heading text
   private getSection(sectionTitle: string): Locator {
-    console.log(`~~~~~~~~~   section Title is : ${sectionTitle}`);
     return this.page.locator('div#hearing-summary', {
       has: this.page.getByRole('heading', { name: sectionTitle }),
     });
@@ -44,7 +43,7 @@ export class HearingsCYAPage {
   async verifySectionRow(sectionTitle: string, key: string, expectedValue: string) {
     await expect(this.getRowValue(sectionTitle, key)).toHaveText(expectedValue);
     //*[contains(@class, 'govuk-summary-list__row')]//*[contains(@class, 'govuk-summary-list__key') and contains(text(), 'What will be the methods of attendance for this hearing?')]
-    await expect(this.getRowChangeLink(sectionTitle, key)).toBeVisible();
+    //await expect(this.getRowChangeLink(sectionTitle, key)).toBeVisible();
   }
 
   // Verify that the Section exists
@@ -52,12 +51,54 @@ export class HearingsCYAPage {
     await expect(this.getSection(sectionTitle)).toBeVisible();
   }
 
-  async verifySection(sectionTitle: string, expectedRows: Record<string, string>) {
-    await this.verifySectionVisible(sectionTitle);
+  async verifyHearingSummarySection(
+    page: Page,
+    sectionTitle: string,
+    expectedRows: Array<{ key: string; value: string | string[] }>
+  ): Promise<void> {
+    // Find the section whose <h2> matches the title.
+    // Note: id="hearing-summary" is duplicated across sections, so we locate by heading.
+    const section: Locator = page.locator('exui-hearing-summary #hearing-summary').filter({
+      has: page.locator('h2.govuk-heading-m', { hasText: new RegExp(`^\\s*${this.escapeRegex(sectionTitle)}\\s*$`) }),
+    });
 
-    // //*[contains(@class, 'govuk-summary-list__row')]//*[contains(@class, 'govuk-summary-list__key') and contains(text(), 'What will be the methods of attendance for this hearing?')]
-    for (const [key, value] of Object.entries(expectedRows)) {
-      await this.verifySectionRow(sectionTitle, key, value);
+    await expect(section, `${sectionTitle}" should be visible`).toBeVisible();
+
+    const rows = section.locator('.govuk-summary-list__row');
+    await expect(rows, `Row count for "${this.escapeRegex(sectionTitle)}"`).toHaveCount(expectedRows.length);
+
+    for (let i = 0; i < expectedRows.length; i++) {
+      const row = rows.nth(i);
+      const { key, value } = expectedRows[i];
+
+      console.log(`~~~~~ LOGGING THE ROW details ..... [Row ${i}]`, { key, value, isArray: Array.isArray(value) });
+
+      // Key (label)
+      await expect(row.locator('.govuk-summary-list__key'), `Row ${i} key in "${sectionTitle}"`).toHaveText(
+        new RegExp(`\\s*${this.escapeRegex(key)}\\s*`)
+      );
+
+      // Value — This can be either a Array of <ul> > <li> items or just a plain piece of text String
+      const valueCell = row.locator('.govuk-summary-list__value');
+      if (Array.isArray(value)) {
+        const listItems = valueCell.locator('ul > li');
+        await expect(listItems, `Row ${i} list item count in "${sectionTitle}"`).toHaveCount(value.length);
+        for (let j = 0; j < value.length; j++) {
+          await expect(listItems.nth(j)).toHaveText(value[j]);
+        }
+      } else {
+        await expect(valueCell, `Row ${i} value in "${sectionTitle}"`).toHaveText(value);
+      }
+
+      // Action — exactly one "Change" link to be present and are hyperlinks that are 'clickable'
+      const changeLink = row.locator('.govuk-summary-list__actions a.change-link');
+      await expect(changeLink, `Row ${i} should have exactly one Change link in "${sectionTitle}"`).toHaveCount(1);
+      await expect(changeLink).toHaveText('Change');
+      await changeLink.click({ trial: true });
     }
+  }
+
+  private escapeRegex(value: string): string {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 }

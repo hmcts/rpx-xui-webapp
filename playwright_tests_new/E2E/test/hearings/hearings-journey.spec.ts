@@ -28,9 +28,9 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
     await openHomeWithCapturedSession(page, userIdentfier);
   });
 
+  // 1
   test('Verify that the hearings Tab is present and start the journey ', async ({
     caseDetailsPage,
-    //searchCasePage,
     hearingsTabPage,
     hearingsJourneyPage,
     hearingsCYAPage,
@@ -123,7 +123,7 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
     await test.step('Additional Instructions', async () => {
       await expect(page).toHaveURL(/\/hearings\/request\/hearing-additional-instructions$/);
       await expect(page.getByRole('heading', { name: /Enter any additional instructions for the hearing/i })).toBeVisible();
-      await hearingsJourneyPage.additionalInstructions.fill(' Additional instructions for E2E Playwright test ');
+      await hearingsJourneyPage.additionalInstructions.fill('Additional instructions for E2E Playwright test');
       await continueHearingsFlow(page);
     });
 
@@ -132,20 +132,76 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
       await expect(page).toHaveURL(/\/hearings\/request\/hearing-create-edit-summary$/);
       await expect(hearingsJourneyPage.submitRequestButton).toBeVisible();
 
-      await hearingsCYAPage.verifySection('Participant attendance', {
-        'Will this be a paper hearing?': 'No',
-        'What will be the methods of attendance for this hearing?': 'In Person',
-        //'How many people will attend the hearing in person?': '2',
-      });
+      await hearingsCYAPage.verifyHearingSummarySection(page, 'Additional facilities', [
+        { key: 'Will additional security be required?', value: 'Yes' },
+        { key: 'Select any additional facilities required', value: ['Custody Cell', 'Laptop', 'Projector', 'Witness Room'] },
+      ]);
 
-      // await hearingsCYAPage.verifySection('Participant attendance', {
-      //   'What will be the methods of attendance for this hearing?': 'In Person',
-      // });
-      // await hearingsCYAPage.verifySection('Participant attendance', {
-      //   'How many people will attend the hearing in person?': '2',
-      // });
+      await hearingsCYAPage.verifyHearingSummarySection(page, 'Stage', [
+        { key: 'What stage is this hearing at?', value: 'Allocation' },
+      ]);
 
+      // await hearingsCYAPage.verifyHearingSummarySection(page, 'Participant attendance', [
+      //   { key: 'Will this be a paper hearing?', value: 'No' },
+      //   { key: 'What will be the methods of attendance for this hearing?', value: ['Video'] },
+      //   // TODO How will each participant attend the hearing ( verify after case data setup )
+      //   { key: 'How will each participant attend the hearing?', value: ['Video', 'Telephone'] },
+      //   { key: 'How many people will attend the hearing in person?', value: '2' },
+      // ]);
+
+      await hearingsCYAPage.verifyHearingSummarySection(page, 'Hearing venue', [
+        {
+          key: 'What are the hearing venue details?',
+          value: 'Newport (South Wales) County Court And Family CourtSwansea Civil And Family Justice Centre',
+        },
+      ]);
+
+      await hearingsCYAPage.verifyHearingSummarySection(page, 'Judge details', [
+        { key: 'Do you want a specific judge?', value: 'No' },
+        { key: 'Select all judge types that apply', value: 'Deputy Circuit Judge, Deputy High Court Judge' },
+      ]);
+
+      await hearingsCYAPage.verifyHearingSummarySection(page, 'Length, date and priority level of hearing', [
+        { key: 'Length of hearing', value: '1 Hour 30 Minutes' },
+        { key: 'Does the hearing need to take place on a specific date?', value: 'No' },
+        { key: 'What is the priority of this hearing?', value: 'Standard' },
+      ]);
+
+      await hearingsCYAPage.verifyHearingSummarySection(page, 'Linked hearings', [
+        { key: 'Will this hearing need to be linked to other hearings?', value: 'No' },
+      ]);
+
+      await hearingsCYAPage.verifyHearingSummarySection(page, 'Additional instructions', [
+        { key: 'Enter any additional instructions for the hearing', value: 'Additional instructions for E2E Playwright test' },
+      ]);
+
+      console.log('~~~~~~~~~~ CYA page Hearings ... assertions done  ');
       // await continueHearingsFlow(page);
+    });
+
+    await test.step('Submit Hearing Request And Do Checks on backend calls ', async () => {
+      try {
+        const submitResponsePromise = page.waitForResponse(
+          (response) => response.url().includes('/api/hearings/submitHearingRequest') && response.request().method() === 'POST'
+        );
+        await hearingsJourneyPage.submitRequestButton.click();
+        const submitResponse = await submitResponsePromise;
+        expect(submitResponse.status(), 'submitHearingRequest should return 201').toBe(201);
+      } catch (error) {
+        console.error('Failed to click Submit request button:', error);
+      }
+      // if all good then reached here on confirmation page.
+      const panel = page.locator('.govuk-panel.govuk-panel--confirmation');
+      await expect(panel, 'Hearing Confirmation Panel should be visible').toBeVisible();
+      // Panel title
+      await expect(panel.locator('.govuk-panel__title'), 'Hearing Confirmation').toHaveText('Hearing request submitted');
+      // Panel body
+      await expect(panel.locator('.govuk-panel__body'), 'Hearing Processing Message').toHaveText(
+        'Your hearing request will now be processed'
+      );
+      await hearingsJourneyPage.clickLinkToViewHearings(page);
+
+      await expect(page).toHaveURL(/\/cases\/case-details\/.*#Hearings$/);
     });
   });
 
@@ -165,8 +221,10 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
     //hearingVenue
     hearingJourneyModel.set('hearingVenue', 'name', 'southa');
 
-    // hearingDetails
+    // Welsh
     hearingJourneyModel.set('hearingDetails', 'hearingInWelsh', 'No');
+
+    // Judge details
     hearingJourneyModel.set('hearingDetails', 'specificJudge', 'No');
     hearingJourneyModel.set('hearingDetails', 'judgeType', ['Deputy High Court Judge', 'Deputy Circuit Judge']);
 

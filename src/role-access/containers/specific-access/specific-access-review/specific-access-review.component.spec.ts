@@ -8,7 +8,7 @@ import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
-import { WASupportedJurisdictionsService } from '../../../../work-allocation/services';
+import { CaseworkerDataService, WASupportedJurisdictionsService } from '../../../../work-allocation/services';
 import { SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
 import { AccessReason, SpecificAccessText } from '../../../models/enums';
 import { DecideSpecificAccessAndGo } from '../../../store';
@@ -137,6 +137,50 @@ describe('SpecificAccessReviewComponent', () => {
       spyOn(component.specificAccessStateDataSub, 'unsubscribe').and.callThrough();
       component.ngOnDestroy();
       expect(component.specificAccessStateDataSub.unsubscribe).toHaveBeenCalled();
+    });
+  });
+
+  describe('SpecificAccessReviewComponent requesterName population (non-judicial)', () => {
+    let fixture: ComponentFixture<SpecificAccessReviewComponent>;
+    let component: SpecificAccessReviewComponent;
+    let store: Store;
+    let caseworkerDataService: any;
+
+    beforeEach(() => {
+      store = TestBed.inject(Store);
+      caseworkerDataService = TestBed.inject(CaseworkerDataService) as jasmine.SpyObj<any>;
+
+      const nonJudicialState: SpecificAccessStateData = {
+        state: SpecificAccessState.SPECIFIC_ACCESS_REVIEW,
+        caseId: 'caseId',
+        caseName: 'Example case name',
+        taskId: 'taskId',
+        actorId: 'actor-nonjudicial',
+        jurisdiction: 'IA',
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
+        requestedRole: 'specific-access-legal',
+        requestCreated: '01-01-2001',
+        accessReason: null,
+        period: { startDate: new Date('01-01-2001'), endDate: null },
+        person: null,
+        requestId: 'requestId',
+        specificAccessReason: null,
+      };
+
+      (store.pipe as jasmine.Spy).and.returnValue(of(nonJudicialState));
+
+      // Mock caseworker lookup
+      spyOn(caseworkerDataService, 'getUserByIdamId').and.returnValue(of({ firstName: 'Test', lastName: 'Beta' }));
+
+      fixture = TestBed.createComponent(SpecificAccessReviewComponent);
+      component = fixture.componentInstance;
+      component.formGroup = new FormGroup({});
+      fixture.detectChanges();
+    });
+
+    it('sets requesterName from caseworkerDataService for non-judicial roleCategory', () => {
+      expect(caseworkerDataService.getUserByIdamId).toHaveBeenCalledWith('actor-nonjudicial');
+      expect(component.requesterName).toBe('Test Beta');
     });
   });
 });

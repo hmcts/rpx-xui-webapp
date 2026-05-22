@@ -77,6 +77,35 @@ export async function setupRolesAndAccessMockRoutes(
     });
   });
 
+  // Leaving this route as prior implementation to keep consistent
+  await page.route('**/workallocation/caseworker/getUsersByIdamIds*', async (route) => {
+    const requestBody = (route.request().postDataJSON() as { services?: string[] }) ?? {};
+    const requestedServices = Array.isArray(requestBody.services) ? requestBody.services : [];
+    const filteredCaseworkers = requestedServices.includes(options.jurisdiction ?? 'IA')
+      ? entityView.caseworkers.filter((caseworker) => requestedServices.includes(caseworker.service))
+      : [];
+
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(filteredCaseworkers),
+    });
+  });
+
+  await page.route('**/workallocation/caseworker/getUserByIdamId*', async (route) => {
+    const requestBody = (route.request().postDataJSON() as { services?: string[] }) ?? {};
+    const requestedServices = Array.isArray(requestBody.services) ? requestBody.services : [];
+    const filteredCaseworkers = requestedServices.includes(options.jurisdiction ?? 'IA')
+      ? entityView.caseworkers.filter((caseworker) => requestedServices.includes(caseworker.service))
+      : [];
+
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(filteredCaseworkers[0]),
+    });
+  });
+
   await page.route('**/api/role-access/roles/post*', async (route) => {
     await route.fulfill({
       status: 200,

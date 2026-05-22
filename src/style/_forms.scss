@@ -9,7 +9,7 @@ $module: 'form';
   &-money {
     .#{$module}-currency {
       font-weight: 600;
-      margin-right: em(10);
+      margin-right: 0.625rem;
     }
   }
 }

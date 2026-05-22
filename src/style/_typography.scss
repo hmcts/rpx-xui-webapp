@@ -1,139 +1,60 @@
-@import 'node_modules/govuk_frontend_toolkit/stylesheets/_colours.scss';
-@import 'node_modules/govuk_frontend_toolkit/stylesheets/_typography';
+@mixin _core-font-generator(
+  $font-size,
+  $font-size-640,
+  $font-size-print,
+  $line-height,
+  $line-height-640,
+  $tabular-numbers: false,
+  $font-weight: 400
+) {
+  font-size: $font-size;
+  line-height: $line-height;
+  font-weight: $font-weight;
+
+  @media (max-width: 640px) {
+    font-size: $font-size-640;
+    line-height: $line-height-640;
+  }
+
+  @media print {
+    font-size: $font-size-print;
+  }
+}
 
 @mixin core-24pt($line-height: calc(30 / 24), $line-height-640: calc(24 / 20), $tabular-numbers: false, $font-weight: 400) {
-  $font-size: 24pt;
-  $font-size-640: 18pt;
-  $font-size-print: 16pt;
-  @include _core-font-generator(
-    $font-size,
-    $font-size-640,
-    $font-size-print,
-    $line-height,
-    $line-height-640,
-    $tabular-numbers,
-    $font-weight
-  );
+  @include _core-font-generator(24pt, 18pt, 16pt, $line-height, $line-height-640, $tabular-numbers, $font-weight);
 }
 
 @mixin core-20pt($line-height: calc(26 / 20), $line-height-640: calc(20 / 16), $tabular-numbers: false, $font-weight: 400) {
-  $font-size: 20pt;
-  $font-size-640: 16pt;
-  $font-size-print: 12pt;
-  @include _core-font-generator(
-    $font-size,
-    $font-size-640,
-    $font-size-print,
-    $line-height,
-    $line-height-640,
-    $tabular-numbers,
-    $font-weight
-  );
+  @include _core-font-generator(20pt, 16pt, 12pt, $line-height, $line-height-640, $tabular-numbers, $font-weight);
 }
 
 @mixin core-18pt($line-height: calc(23 / 18), $line-height-640: calc(18 / 16), $tabular-numbers: false, $font-weight: 400) {
-  $font-size: 18pt;
-  $font-size-640: 14pt;
-  $font-size-print: 12pt;
-  @include _core-font-generator(
-    $font-size,
-    $font-size-640,
-    $font-size-print,
-    $line-height,
-    $line-height-640,
-    $tabular-numbers,
-    $font-weight
-  );
+  @include _core-font-generator(18pt, 14pt, 12pt, $line-height, $line-height-640, $tabular-numbers, $font-weight);
 }
 
 @mixin core-17pt($line-height: calc(20 / 17), $line-height-640: calc(16 / 14), $tabular-numbers: false, $font-weight: 400) {
-  $font-size: 17pt;
-  $font-size-640: 14pt;
-  $font-size-print: 12pt;
-  @include _core-font-generator(
-    $font-size,
-    $font-size-640,
-    $font-size-print,
-    $line-height,
-    $line-height-640,
-    $tabular-numbers,
-    $font-weight
-  );
+  @include _core-font-generator(17pt, 14pt, 12pt, $line-height, $line-height-640, $tabular-numbers, $font-weight);
 }
 
 @mixin core-16pt($line-height: calc(20 / 16), $line-height-640: calc(16 / 14), $tabular-numbers: false, $font-weight: 400) {
-  $font-size: 16pt;
-  $font-size-640: 14pt;
-  $font-size-print: 12pt;
-  @include _core-font-generator(
-    $font-size,
-    $font-size-640,
-    $font-size-print,
-    $line-height,
-    $line-height-640,
-    $tabular-numbers,
-    $font-weight
-  );
+  @include _core-font-generator(16pt, 14pt, 12pt, $line-height, $line-height-640, $tabular-numbers, $font-weight);
 }
 
 @mixin core-15pt($line-height: calc(20 / 15), $line-height-640: calc(16 / 14), $tabular-numbers: false, $font-weight: 400) {
-  $font-size: 15pt;
-  $font-size-640: 14pt;
-  $font-size-print: 12pt;
-  @include _core-font-generator(
-    $font-size,
-    $font-size-640,
-    $font-size-print,
-    $line-height,
-    $line-height-640,
-    $tabular-numbers,
-    $font-weight
-  );
+  @include _core-font-generator(15pt, 14pt, 12pt, $line-height, $line-height-640, $tabular-numbers, $font-weight);
 }
 
 @mixin core-14pt($line-height: calc(20 / 14), $line-height-640: calc(15 / 12), $tabular-numbers: false, $font-weight: 400) {
-  $font-size: 14pt;
-  $font-size-640: 12pt;
-  $font-size-print: 11pt;
-  @include _core-font-generator(
-    $font-size,
-    $font-size-640,
-    $font-size-print,
-    $line-height,
-    $line-height-640,
-    $tabular-numbers,
-    $font-weight
-  );
+  @include _core-font-generator(14pt, 12pt, 11pt, $line-height, $line-height-640, $tabular-numbers, $font-weight);
 }
 
 @mixin core-12pt($line-height: calc(16 / 12), $line-height-640: calc(14 / 11), $tabular-numbers: false, $font-weight: 400) {
-  $font-size: 12pt;
-  $font-size-640: 11pt;
-  $font-size-print: 10pt;
-  @include _core-font-generator(
-    $font-size,
-    $font-size-640,
-    $font-size-print,
-    $line-height,
-    $line-height-640,
-    $tabular-numbers,
-    $font-weight
-  );
+  @include _core-font-generator(12pt, 11pt, 10pt, $line-height, $line-height-640, $tabular-numbers, $font-weight);
 }
 
 @mixin core-10pt($line-height: calc(14 / 10), $line-height-640: calc(12 / 9), $tabular-numbers: false, $font-weight: 400) {
-  $font-size: 10pt;
-  $font-size-640: 9pt;
-  $font-size-print: 8pt;
-  @include _core-font-generator(
-    $font-size,
-    $font-size-640,
-    $font-size-print,
-    $line-height,
-    $line-height-640,
-    $tabular-numbers,
-    $font-weight
-  );
+  @include _core-font-generator(10pt, 9pt, 8pt, $line-height, $line-height-640, $tabular-numbers, $font-weight);
 }
 
 @mixin bold-24pt($line-height: calc(30 / 24), $line-height-640: calc(24 / 20), $tabular-numbers: false) {

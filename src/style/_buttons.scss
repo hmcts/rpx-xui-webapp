@@ -5,13 +5,39 @@ Buttons
 */
 
 $module: 'button';
+$button-padding-y: 0.5rem;
+$button-padding-x: 0.9375rem;
+
+@mixin exui-button-variant($background, $hover) {
+  background-color: $background;
+  border: 2px solid transparent;
+  box-shadow: 0 2px 0 govuk-colour('black');
+  color: govuk-colour('black');
+  cursor: pointer;
+  display: inline-block;
+  font-weight: 700;
+  line-height: 1.1875;
+  margin: 0;
+  padding: $button-padding-y $button-padding-x;
+  text-decoration: none;
+
+  &:hover {
+    background-color: $hover;
+    color: govuk-colour('black');
+  }
+
+  &:focus {
+    outline: 3px solid govuk-colour('yellow');
+    outline-offset: 0;
+  }
+}
 
 .#{$module} {
   &-secondary {
-    @include button($grey-3);
+    @include exui-button-variant(govuk-colour('light-grey'), govuk-colour('mid-grey'));
   }
 
   &-tertiary {
-    @include button($grey-4);
+    @include exui-button-variant(govuk-colour('white'), govuk-colour('light-grey'));
   }
 }

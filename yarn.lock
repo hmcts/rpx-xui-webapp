@@ -5698,6 +5698,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@noble/hashes@npm:^2.0.1":
+  version: 2.2.0
+  resolution: "@noble/hashes@npm:2.2.0"
+  checksum: 10/b1b78bedc2a01394be047429f3d888905015fe8a09f1b7e43e0b5736b54133df62f73dcc73ede43af38e96e86156afb45b86973fdeaa95d9f0880333c3fc0907
+  languageName: node
+  linkType: hard
+
 "@nodelib/fs.scandir@npm:2.1.5":
   version: 2.1.5
   resolution: "@nodelib/fs.scandir@npm:2.1.5"
@@ -6221,10 +6228,47 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@otplib/core@npm:13.4.0":
+  version: 13.4.0
+  resolution: "@otplib/core@npm:13.4.0"
+  checksum: 10/2dbb85c7647af1eea7f16eecf38455428499a90e2708720a9e9940b4f5104945b4b45989f222a3eeb6045b269a6dc2b31867ede1462a97b1ce1566a4fcd9e930
+  languageName: node
+  linkType: hard
+
 "@otplib/core@npm:^12.0.1":
   version: 12.0.1
   resolution: "@otplib/core@npm:12.0.1"
   checksum: 10/d6edc1ed5fd744cd7be5fd0886e627f42f5e25f9593c7c6f4cac6a64a078eeaf1f70a190f1bb7f366f4eafdabe445c272e699292daa84da266e43b89bb40a6c0
+  languageName: node
+  linkType: hard
+
+"@otplib/hotp@npm:13.4.0":
+  version: 13.4.0
+  resolution: "@otplib/hotp@npm:13.4.0"
+  dependencies:
+    "@otplib/core": "npm:13.4.0"
+    "@otplib/uri": "npm:13.4.0"
+  checksum: 10/4e2ca48076387a09deb7d11e0b62beddd2bc2f2eb2a3d1a869f77c54519e4ccb674060b99fcc13e210138a673e6fe1eb361ccab9d63a552b8e2ecfa3a1eab33b
+  languageName: node
+  linkType: hard
+
+"@otplib/plugin-base32-scure@npm:13.4.0":
+  version: 13.4.0
+  resolution: "@otplib/plugin-base32-scure@npm:13.4.0"
+  dependencies:
+    "@otplib/core": "npm:13.4.0"
+    "@scure/base": "npm:^2.0.0"
+  checksum: 10/8325a8ba6055c6166131cdb8e3b0f473c2a7d8821640d26b43ac15ed7085baf494c4c9950f8ee56bccc07546da5c305d78f93b80b15505d97f15ea55311646f7
+  languageName: node
+  linkType: hard
+
+"@otplib/plugin-crypto-noble@npm:13.4.0":
+  version: 13.4.0
+  resolution: "@otplib/plugin-crypto-noble@npm:13.4.0"
+  dependencies:
+    "@noble/hashes": "npm:^2.0.1"
+    "@otplib/core": "npm:13.4.0"
+  checksum: 10/7fdba4f95afb526d2cfcc12009b134ab0142f354b2713cb817715ae88bd432e470a1e3f64bd77901d9b7d22c148b62964d82237dfe4515530d1e1b984f1679f3
   languageName: node
   linkType: hard
 
@@ -6266,6 +6310,26 @@ __metadata:
     "@otplib/plugin-crypto": "npm:^12.0.1"
     "@otplib/plugin-thirty-two": "npm:^12.0.1"
   checksum: 10/367cb09397e617c21ec748d54e920ab43f1c5dfba70cbfd88edf73aecca399cf0c09fefe32518f79c7ee8a06e7058d14b200da378cc7d46af3cac4e22a153e2f
+  languageName: node
+  linkType: hard
+
+"@otplib/totp@npm:13.4.0":
+  version: 13.4.0
+  resolution: "@otplib/totp@npm:13.4.0"
+  dependencies:
+    "@otplib/core": "npm:13.4.0"
+    "@otplib/hotp": "npm:13.4.0"
+    "@otplib/uri": "npm:13.4.0"
+  checksum: 10/c5e8e3696a82cd43ac1b478c2cd47dd63ad30cdb1cdeb575451e50a1905690b59403b8587d22807160e4e9f39c4cb63925675570d68c5f62a936cc1d302bc3a6
+  languageName: node
+  linkType: hard
+
+"@otplib/uri@npm:13.4.0":
+  version: 13.4.0
+  resolution: "@otplib/uri@npm:13.4.0"
+  dependencies:
+    "@otplib/core": "npm:13.4.0"
+  checksum: 10/0bf659e7b81747f76a7d85eddee2d6b7a14368e7c5edcf246d58c56a3bb7c6c7d5a7eacc2dfcda799089c43c397ac75b28d5be2e77147d71caf5ae918756c3ed
   languageName: node
   linkType: hard
 
@@ -6996,6 +7060,13 @@ __metadata:
     "@angular-devkit/schematics": "npm:20.3.25"
     jsonc-parser: "npm:3.3.1"
   checksum: 10/2874400863fe4d6e2eb5b6a90e36f3ee49f73a85cd84448a29fd5ca49cc2abfca455f0e8bf50d05db6c651c9db82ea8d5737472a89242e78b32db0fbabe680ff
+  languageName: node
+  linkType: hard
+
+"@scure/base@npm:^2.0.0":
+  version: 2.2.0
+  resolution: "@scure/base@npm:2.2.0"
+  checksum: 10/b52ec9cd54bad77e22f881b6924ccab692dc1c6dd10287d1787bf263e9f1e560d6d2bda906538fb9a39615d61a1b5c2f53f57a511667fd10e93b9cdaa6fb5d2a
   languageName: node
   linkType: hard
 
@@ -17006,21 +17077,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"marked@npm:^12.0.2":
-  version: 12.0.2
-  resolution: "marked@npm:12.0.2"
-  bin:
-    marked: bin/marked.js
-  checksum: 10/24d4fc58d37c1779197fa7f93c504d8c71d4df54eb69cbbc14a55ba2a8e2ad83d723801fc25452c21ce74b38a483c5863c53449f130253a597be9e9c1d3e7e2b
-  languageName: node
-  linkType: hard
-
 "marked@npm:^16.3.0":
   version: 16.4.2
   resolution: "marked@npm:16.4.2"
   bin:
     marked: bin/marked.js
   checksum: 10/6e40e40661dce97e271198daa2054fc31e6445892a735e416c248fba046bdfa4573cafa08dc254529f105e7178a34485eb7f82573979cfb377a4530f66e79187
+  languageName: node
+  linkType: hard
+
+"marked@npm:^17.0.3":
+  version: 17.0.6
+  resolution: "marked@npm:17.0.6"
+  bin:
+    marked: bin/marked.js
+  checksum: 10/46dac9481c028b6ab36f093084842f5c020329eb5529fa96ed22112f1f3a79b51b2f2c169a8b104b28c3ed09842ef372260dee08946fb1f7b1c70a7fb6f5cdc0
   languageName: node
   linkType: hard
 
@@ -18656,6 +18727,20 @@ __metadata:
     "@otplib/preset-default": "npm:^12.0.1"
     "@otplib/preset-v11": "npm:^12.0.1"
   checksum: 10/37415ce3706b9e186c1bdcef3e975d96f24bdd97d66dff6148d31a523d4e84009154f7ad1d491afc326d85f7adf0afcd2daf3750b6e6cfc4151d3deec8c0dcc3
+  languageName: node
+  linkType: hard
+
+"otplib@npm:^13.4.0":
+  version: 13.4.0
+  resolution: "otplib@npm:13.4.0"
+  dependencies:
+    "@otplib/core": "npm:13.4.0"
+    "@otplib/hotp": "npm:13.4.0"
+    "@otplib/plugin-base32-scure": "npm:13.4.0"
+    "@otplib/plugin-crypto-noble": "npm:13.4.0"
+    "@otplib/totp": "npm:13.4.0"
+    "@otplib/uri": "npm:13.4.0"
+  checksum: 10/0c9b81a288f5dec35ab53b621138fe462ebea4a155bd76e019ffbe15d755b5f4931bc405a3a81c22fa3e01a3bc9a00999703608227e51f3e23875c9dd3af00c8
   languageName: node
   linkType: hard
 
@@ -20750,7 +20835,7 @@ __metadata:
     launchdarkly-js-client-sdk: "npm:3.8.1"
     lodash: "npm:^4.17.23"
     lz-string: "npm:^1.5.0"
-    marked: "npm:^12.0.2"
+    marked: "npm:^17.0.3"
     material-design-icons: "npm:^3.0.1"
     mocha: "npm:^10.0.0"
     mochawesome: "npm:^7.0.0"
@@ -20764,7 +20849,7 @@ __metadata:
     nodemon: "npm:^2.0.19"
     npm-run-all2: "npm:^7.0.0"
     odhin-reports-playwright: "patch:odhin-reports-playwright@npm%3A1.1.8#~/.yarn/patches/odhin-reports-playwright-npm-1.1.8-a445ed88b7.patch"
-    otplib: "npm:^12.0.1"
+    otplib: "npm:^13.4.0"
     pegjs: "npm:^0.10.0"
     playwright: "npm:1.59.1"
     prettier: "npm:^3.8.0"

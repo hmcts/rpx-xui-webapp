@@ -113,7 +113,6 @@
     "@edium/fsm": "^2.1.2",
     "@hmcts/ccd-case-ui-toolkit": "7.3.53",
     "@hmcts/ccpay-web-component": "6.5.17",
-    "@hmcts/frontend": "0.0.50-alpha",
     "@hmcts/media-viewer": "4.2.18",
     "@hmcts/nodejs-healthcheck": "1.8.5",
     "@hmcts/properties-volume": "^1.3.1",

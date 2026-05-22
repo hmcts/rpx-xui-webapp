@@ -190,7 +190,7 @@ describe('TaskListFilterComponent', () => {
   });
 
   it('should show the toggle filter button', () => {
-    const button: DebugElement = fixture.debugElement.query(By.css('.govuk-button.hmcts-button--secondary'));
+    const button: DebugElement = fixture.debugElement.query(By.css('.button-heading button[type="button"]'));
     expect(button.nativeElement.innerText).toContain('Show work filter');
   });
 

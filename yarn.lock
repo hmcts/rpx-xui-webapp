@@ -3186,12 +3186,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.53-body-parser-update":
-  version: 7.3.53-body-parser-update
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.53-body-parser-update"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.54-body-parser-update":
+  version: 7.3.54-body-parser-update
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.54-body-parser-update"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/623d36336bbf4f1c3c098f7b0733e9ebb9de723907a7e5d7b43580109d8514c3627573fab428990feca89cb0ecfb68c668426e4db59ad60b02fd1e73ca9551b1
+  checksum: 10/b34418609f7ab3f6e0c448457a995d0a7bf927b5f533a51e762bdfcf10e3a1e4403261152c32cca244e2067a93e92f474a89ae21381adb7ecac69ddc2f797556
   languageName: node
   linkType: hard
 
@@ -20743,7 +20743,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.53-body-parser-update"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.54-body-parser-update"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.19-body-parser-update"

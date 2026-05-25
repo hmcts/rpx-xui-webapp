@@ -298,7 +298,7 @@ describe('checkRoleIsSupported', () => {
     expect(AppUtils.checkRoleIsSupported(supportedWaVerification, 'case-manager', userDetailsWithSupportedAMRole)).toBe(true);
   });
 
-  it('should return true when any matching AM role assignment details are supported', () => {
+  it('should return true for a config AM role when a later matching role assignment has a supported jurisdiction', () => {
     const supportedWaVerification = {
       waSupportedCategories: ['LEGAL_OPERATIONS'],
       waSupportedRoleTypes: ['CASE'],

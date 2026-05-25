@@ -322,22 +322,22 @@ export class AppUtils {
 
   public static checkRoleIsSupported(
     waVerification: WAVerificationModel,
-    landingRole: string,
+    configRole: string,
     userDetails: UserDetails
   ): boolean {
     const userRoles = userDetails?.userInfo?.roles || [];
-    if (!userRoles.includes(landingRole)) {
+    if (!userRoles.includes(configRole)) {
       return false;
     }
 
     const { amRoles, nonAMRoles } = AppUtils.getAMRoleBuckets(userRoles, userDetails?.roleAssignmentInfo || []);
-    if (!amRoles.includes(landingRole)) {
-      return nonAMRoles.includes(landingRole);
+    if (!amRoles.includes(configRole)) {
+      return nonAMRoles.includes(configRole);
     }
 
     const roleAssignmentInfo = userDetails?.roleAssignmentInfo || [];
     return roleAssignmentInfo
-      .filter((roleAssignment) => roleAssignment.roleName === landingRole)
+      .filter((roleAssignment) => roleAssignment.roleName === configRole)
       .some((roleAssignment) => AppUtils.isRoleAssignmentSupported(waVerification, roleAssignment, roleAssignmentInfo));
   }
 }

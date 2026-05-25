@@ -320,11 +320,7 @@ export class AppUtils {
     return hoursBetweenDates <= 24;
   }
 
-  public static checkRoleIsSupported(
-    waVerification: WAVerificationModel,
-    configRole: string,
-    userDetails: UserDetails
-  ): boolean {
+  public static checkRoleIsSupported(waVerification: WAVerificationModel, configRole: string, userDetails: UserDetails): boolean {
     const userRoles = userDetails?.userInfo?.roles || [];
     if (!userRoles.includes(configRole)) {
       return false;

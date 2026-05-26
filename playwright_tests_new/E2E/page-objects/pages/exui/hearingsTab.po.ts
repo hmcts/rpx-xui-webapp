@@ -120,16 +120,28 @@ export class HearingsTabPage {
     await this.continueButton.click();
   }
 
+  async goBack(): Promise<void> {
+    await this.backLink.click();
+  }
+
+  async selectOrderedLinkedHearings(): Promise<void> {
+    await this.linkedHearingRadio.check();
+    await this.continueFlow();
+    await this.particularOrderRadio.check();
+
+    const orderCount = await this.hearingOrderSelects.count();
+    for (let index = 0; index < orderCount; index += 1) {
+      await this.hearingOrderSelects.nth(index).selectOption(String(index + 1));
+    }
+  }
+
   async additionalSecurity(model: HearingJourneyModel, page: Page): Promise<void> {
     const value = model.get('hearingFacilities', 'additionalSecurity');
-    console.log('~~~~~~~~~~~SET VALUE for hearingFacilities ===', value);
 
     if (value === 'Yes') {
       await this.additionalSecurityYes.click();
     } else {
       await this.additionalSecurityNo.click();
     }
-    const getValue = model.get('hearingFacilities', 'additionalSecurity');
-    console.log('~~~~~~~~~~~GET VALUE for hearingFacilities ===', getValue);
   }
 }

@@ -7,6 +7,7 @@ continueHearingsFlow;
 
 const userIdentfier = 'PRL_HEARINGS';
 const hearingJourneyModel = new HearingJourneyModel();
+let hearingId: string;
 
 const hearingRouteConfig = {
   jurisdictionId: 'PRIVATELAW',
@@ -192,22 +193,17 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
         console.error('Failure seen on  Hearings Submit CYA Page :', error);
       }
       // if all good then reached here on confirmation page./;
-      const panel = page.locator('.govuk-panel.govuk-panel--confirmation');
-      await expect(panel, 'Hearing Confirmation Panel should be visible').toBeVisible();
-      // Panel title
-      await expect(panel.locator('.govuk-panel__title'), 'Hearing Confirmation').toHaveText('Hearing request submitted');
-      // Panel body
-      await expect(panel.locator('.govuk-panel__body'), 'Hearing Processing Message').toHaveText(
-        'Your hearing request will now be processed'
-      );
+      await hearingsJourneyPage.checkHearingConfirmationPage(page);
+
       await hearingsJourneyPage.clickLinkToViewHearings(page);
 
       await expect(page).toHaveURL(/\/cases\/case-details\/.*#Hearings$/);
       await expect(hearingsTabPage.currentAndUpcomingHeading('Current and upcoming')).toBeVisible();
+      hearingId = await hearingsJourneyPage.getMostRecentHearingId();
       await expect(hearingsTabPage.pastOrCancelledHeading('Past or cancelled')).toBeVisible();
     });
 
-    console.error(' all test.steps completed successfully ................. ..... ~~~~~~~~~ ');
+    console.log('~~~~~~~~~~ Hearings Journey E2E Test Completed  ~~~~~~~~~~ Created Hearing with ID  === ' + hearingId);
   });
 
   // TODO Data SetUp - Possibly Refactor To a different Helper

@@ -90,6 +90,17 @@ export class HearingsJourneyPage {
   //const submitButton =
   readonly submitButton = this.page.locator('button.govuk-button', { hasText: 'Submit request' });
 
+  // hearingsTable
+  readonly hearingsTable = this.page.locator('exui-case-hearings-ce exui-case-hearings-list table.govuk-table');
+  readonly hearingsTableHeader = this.page.locator('th.govuk-table__header');
+
+  // hearingConfirmationPAge
+  readonly hearingPanel = this.page.locator('.govuk-panel.govuk-panel--confirmation');
+
+  // hearing hearingPanelTitle & hearingPanelBody
+  readonly hearingPanelTitle = this.hearingPanel.locator('.govuk-panel__title');
+  readonly hearingPanelBody = this.hearingPanel.locator('.govuk-panel__body');
+
   async additionalSecurityAndFacilities(model: HearingJourneyModel, page: Page): Promise<void> {
     const value = model.get('hearingFacilities', 'additionalSecurity');
 
@@ -247,5 +258,43 @@ export class HearingsJourneyPage {
 
     await expect(hearingsTabLink, 'Hearings tab link should be visible').toBeVisible();
     await hearingsTabLink.click();
+  }
+
+  async checkHearingConfirmationPage(page: Page): Promise<void> {
+    const hearingPanel = this.hearingPanelBody;
+    await expect(hearingPanel, 'Hearing Confirmation Panel should be visible').toBeVisible();
+    // Panel title
+    await expect(this.hearingPanelTitle, 'Hearing Confirmation').toHaveText('Hearing request submitted');
+    // Panel body
+    await expect(this.hearingPanelBody, 'Hearing Processing Message').toHaveText('Your hearing request will now be processed');
+  }
+
+  /**
+   * Returns the Hearing Id of the most recently created hearing from the "Current and upcoming" section.
+   * The table is sorted with the latest hearing in the first data row, so we read the Hearing Id cell (2nd column)
+   * of the first row.
+   */
+
+  async getMostRecentHearingId(): Promise<string> {
+    // Scope to the "Current and upcoming" table only — there's a second
+    const currentTable: Locator = this.hearingsTable.filter({
+      has: this.hearingsTableHeader.filter({ hasText: 'Current and upcoming' }),
+    });
+
+    await expect(currentTable, '"Current and upcoming" hearings table should be visible').toBeVisible();
+
+    const firstDataRow = currentTable.locator('tbody tr.govuk-table__row').first();
+    await expect(firstDataRow, 'At least one hearing row should be present').toBeVisible();
+
+    // Column layout: [Stage, Hearing Id, Hearing date, Status, Actions]
+    // Hearing Id is the 2nd cell (index 1).
+    const hearingIdCell = firstDataRow.locator('td').nth(1);
+    const hearingId = (await hearingIdCell.textContent())?.trim() ?? '';
+
+    if (!/^\d+$/.test(hearingId)) {
+      throw new Error(`Expected a numeric Hearing Id, got: "${hearingId}"`);
+    }
+
+    return hearingId;
   }
 }

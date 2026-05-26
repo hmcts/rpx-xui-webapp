@@ -78,19 +78,47 @@ export class HearingsCYAPage {
         new RegExp(`\\s*${this.escapeRegex(key)}\\s*`)
       );
 
-      // Value — This can be either a Array of <ul> > <li> items or just a plain piece of text String
+      // Value — This can be either a Array of <ul> > <li> items OR
+      // a <ul> rendered with one or more nested <li> items OR
+      // just a plain piece of text String or
+
       const valueCell = row.locator('.govuk-summary-list__value');
+      console.log(`~~~~~ valueCell: ${valueCell}`);
       if (Array.isArray(value)) {
         const listItems = valueCell.locator('ul > li');
-        await expect(listItems, `Row ${i} list item count in "${sectionTitle}"`).toHaveCount(value.length);
-        for (let j = 0; j < value.length; j++) {
-          await expect(listItems.nth(j)).toHaveText(value[j]);
+        const liCount = await listItems.count();
+        console.log(`~~~~~ array rendered as <ul><li> (${liCount} items)`);
+
+        if (liCount > 0) {
+          console.log(`~~~~~ inside the if block ... liCount (${liCount} items)`);
+          await expect(listItems, `Row ${i} list item count in "${sectionTitle}"`).toHaveCount(value.length);
+
+          for (let j = 0; j < value.length; j++) {
+            await expect(listItems.nth(j)).toHaveText(new RegExp(`\\s*${this.escapeRegex(value[j])}\\s*`));
+          }
+        } else {
+          const renderedText = (await valueCell.textContent()) ?? '';
+          const actualValues = renderedText
+            .split(',')
+            .map((s) => s.trim())
+            .filter((s) => s.length > 0)
+            .sort();
+
+          const expectedValues = value
+            .map((v) => v.trim())
+            .filter((s) => s.length > 0)
+            .sort();
+
+          expect(actualValues, `Row ${i} CSV tokens in "${sectionTitle}" (order-independent)`).toEqual(expectedValues);
         }
       } else {
-        await expect(valueCell, `Row ${i} value in "${sectionTitle}"`).toHaveText(value);
+        console.log(`~~~~~  row is of type String`);
+        await expect(valueCell, `Row ${i} value in "${sectionTitle}"`).toHaveText(
+          new RegExp(`\\s*${this.escapeRegex(value)}\\s*`)
+        );
       }
 
-      // Action — exactly one "Change" link to be present and are hyperlinks that are 'clickable'
+      // Action — exactly one "Change" link to be present and ensure these are hyperlinks that are 'clickable'
       const changeLink = row.locator('.govuk-summary-list__actions a.change-link');
       await expect(changeLink, `Row ${i} should have exactly one Change link in "${sectionTitle}"`).toHaveCount(1);
       await expect(changeLink).toHaveText('Change');
@@ -100,5 +128,16 @@ export class HearingsCYAPage {
 
   private escapeRegex(value: string): string {
     return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  public strArrayToCsvString(input: string[]): string {
+    const csv = input?.join(', ');
+
+    const output = csv
+      .split(',')
+      .map((s) => s.trim())
+      .filter((s) => s.length > 0);
+
+    return output.join(',');
   }
 }

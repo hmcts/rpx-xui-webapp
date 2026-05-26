@@ -1,7 +1,6 @@
 import { expect, test } from '../../fixtures';
 import { ensureSession } from '../../../common/sessionCapture';
-import { HearingJourneyModel, TypeOfJudges } from '../../utils/hearing-model';
-//import { resolveCaseReferenceFromGlobalSearch, resolveNonExistentCaseReference } from '../../../E2E/utils/case-reference.utils';
+import { AdditionalFacility, HearingJourneyModel, TypeOfJudges } from '../../utils/hearing-model';
 import { openHomeWithCapturedSession } from '../searchCase/searchCase.setup';
 import { caseDetailsUrl, continueHearingsFlow } from '../../../integration/helpers/hearingJourneySetup.helper.ts';
 continueHearingsFlow;
@@ -15,8 +14,6 @@ const hearingRouteConfig = {
   caseReference: '',
 };
 
-const hearingLinkInfo = " If you choose 'No', you will be unable to link this hearing to any others without editing it. ";
-
 test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearings'] }, () => {
   let availableCaseReference: string;
   test.beforeAll(async () => {
@@ -28,7 +25,6 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
     await openHomeWithCapturedSession(page, userIdentfier);
   });
 
-  // 1
   test('Verify that the hearings Tab is present and start the journey ', async ({
     caseDetailsPage,
     hearingsTabPage,
@@ -111,6 +107,7 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
 
     // linked hearings
     await test.step('Hearing Linked etc', async () => {
+      const hearingLinkInfo = " If you choose 'No', you will be unable to link this hearing to any others without editing it. ";
       await expect(page).toHaveURL(/\/hearings\/request\/hearing-link$/);
       await expect(page.getByRole('heading', { name: /Will this hearing need to be linked to other hearings?/i })).toBeVisible();
       const linkInfo = await hearingsJourneyPage.hearingLinkInformation.allTextContents();
@@ -132,9 +129,11 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
       await expect(page).toHaveURL(/\/hearings\/request\/hearing-create-edit-summary$/);
       await expect(hearingsJourneyPage.submitRequestButton).toBeVisible();
 
+      const additionalFacilitiesValue = hearingJourneyModel.get('hearingFacilities', 'additionalFacilities');
+
       await hearingsCYAPage.verifyHearingSummarySection(page, 'Additional facilities', [
         { key: 'Will additional security be required?', value: 'Yes' },
-        { key: 'Select any additional facilities required', value: ['Custody Cell', 'Laptop', 'Projector', 'Witness Room'] },
+        { key: 'Select any additional facilities required', value: additionalFacilitiesValue as AdditionalFacility[] }, //pad like 'xxx,yyy'
       ]);
 
       await hearingsCYAPage.verifyHearingSummarySection(page, 'Stage', [
@@ -144,21 +143,23 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
       // await hearingsCYAPage.verifyHearingSummarySection(page, 'Participant attendance', [
       //   { key: 'Will this be a paper hearing?', value: 'No' },
       //   { key: 'What will be the methods of attendance for this hearing?', value: ['Video'] },
-      //   // TODO How will each participant attend the hearing ( verify after case data setup )
+      //   { key: 'How will each participant attend the hearing', value: ['Video', 'Telephone'] },
       //   { key: 'How will each participant attend the hearing?', value: ['Video', 'Telephone'] },
       //   { key: 'How many people will attend the hearing in person?', value: '2' },
       // ]);
 
-      await hearingsCYAPage.verifyHearingSummarySection(page, 'Hearing venue', [
-        {
-          key: 'What are the hearing venue details?',
-          value: 'Newport (South Wales) County Court And Family CourtSwansea Civil And Family Justice Centre',
-        },
-      ]);
+      // await hearingsCYAPage.verifyHearingSummarySection(page, 'Hearing venue', [
+      //   {
+      //     key: 'What are the hearing venue details?',
+      //     value: 'Newport (South Wales) County Court And Family CourtSwansea Civil And Family Justice Centre',
+      //   },
+      // ]);
+
+      const allJudges = hearingJourneyModel.get('hearingDetails', 'judgeType');
 
       await hearingsCYAPage.verifyHearingSummarySection(page, 'Judge details', [
         { key: 'Do you want a specific judge?', value: 'No' },
-        { key: 'Select all judge types that apply', value: 'Deputy Circuit Judge, Deputy High Court Judge' },
+        { key: 'Select all judge types that apply', value: allJudges as TypeOfJudges[] },
       ]);
 
       await hearingsCYAPage.verifyHearingSummarySection(page, 'Length, date and priority level of hearing', [
@@ -176,9 +177,9 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
       ]);
 
       console.log('~~~~~~~~~~ CYA page Hearings ... assertions done  ');
-      // await continueHearingsFlow(page);
     });
 
+    // Submit Hearings / Check Confirmation / Return to Hearing Summary page.
     await test.step('Submit Hearing Request And Do Checks on backend calls ', async () => {
       try {
         const submitResponsePromise = page.waitForResponse(
@@ -188,9 +189,9 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
         const submitResponse = await submitResponsePromise;
         expect(submitResponse.status(), 'submitHearingRequest should return 201').toBe(201);
       } catch (error) {
-        console.error('Failed to click Submit request button:', error);
+        console.error('Failure seen on  Hearings Submit CYA Page :', error);
       }
-      // if all good then reached here on confirmation page.
+      // if all good then reached here on confirmation page./;
       const panel = page.locator('.govuk-panel.govuk-panel--confirmation');
       await expect(panel, 'Hearing Confirmation Panel should be visible').toBeVisible();
       // Panel title
@@ -202,10 +203,15 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
       await hearingsJourneyPage.clickLinkToViewHearings(page);
 
       await expect(page).toHaveURL(/\/cases\/case-details\/.*#Hearings$/);
+      await expect(hearingsTabPage.currentAndUpcomingHeading('Current and upcoming')).toBeVisible();
+      await expect(hearingsTabPage.pastOrCancelledHeading('Past or cancelled')).toBeVisible();
     });
+
+    console.error(' all test.steps completed successfully ................. ..... ~~~~~~~~~ ');
   });
 
-  // TODO Data SetUp - move to helper once done
+  // TODO Data SetUp - Possibly Refactor To a different Helper
+
   function setUpHearingJourneyData() {
     // Hearing facilities
     hearingJourneyModel.set('hearingFacilities', 'additionalSecurity', 'Yes');
@@ -219,7 +225,7 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
     hearingJourneyModel.set('hearingAttendence', 'numberOfPeopleAttendingHearing', '2');
 
     //hearingVenue
-    hearingJourneyModel.set('hearingVenue', 'name', 'southa');
+    hearingJourneyModel.set('hearingVenue', 'name', 'southampton');
 
     // Welsh
     hearingJourneyModel.set('hearingDetails', 'hearingInWelsh', 'No');

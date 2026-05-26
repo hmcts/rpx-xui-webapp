@@ -2,6 +2,7 @@
 @import 'govuk-frontend/dist/govuk/index';
 @import 'govuk-v5-compat-hmcts';
 @import 'hmcts-local-ownership';
+@import 'custom-layouts';
 @import 'material-design-icons/iconfont/material-icons.css';
 
 $black: #323232;
@@ -234,42 +235,12 @@ select::-ms-expand {
   display: block;
 }
 
-.form-group,
 .bottom-0 {
   margin-bottom: 0;
 }
 
 .bottom-30 {
   margin-bottom: 30px;
-}
-
-.panel .form-group {
-  margin-bottom: 15px;
-}
-
-.form-label {
-  font-size: 16px;
-  margin-bottom: 5px;
-  padding-bottom: 0px;
-}
-
-.form-hint {
-  font-size: 16px;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  font-family: 'nta', Arial, sans-serif;
-}
-
-.multiple-choice {
-  [type='checkbox'] + label::before {
-    border: 1px solid;
-  }
-}
-
-.form-control {
-  border: 1px solid;
-  font-size: 16px;
-  width: 100%;
 }
 
 .dropdown-50 {
@@ -284,8 +255,7 @@ select::-ms-expand {
   width: 50%;
 }
 
-.text-16,
-.error-message {
+.text-16 {
   font-size: 16px;
   font-family: 'nta', Arial, sans-serif;
   white-space: normal;

@@ -2,8 +2,8 @@
 
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds-from-desktop">
-    <div class="error-summary" *ngIf="errMsg">
-      <h2 class="heading-medium error-summary-heading">
+    <div class="govuk-error-summary" *ngIf="errMsg" role="alert" tabindex="-1">
+      <h2 class="govuk-error-summary__title">
         {{ 'Error: ' | rpxTranslate }} {{ errMsg?.error?.errorDescription | rpxTranslate }}
       </h2>
     </div>

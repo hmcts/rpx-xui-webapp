@@ -1,9 +1,9 @@
-<div class="govuk-form-group" [ngClass]="{ 'form-group-error': !emailControl.valid }">
-  <label [for]="id()">
-    <span class="form-label govuk-!-font-weight-bold" questionField.question_text>{{
+<div class="govuk-form-group" [ngClass]="{ 'govuk-form-group--error': !emailControl.valid }">
+  <label class="govuk-label" [for]="id()">
+    <span class="govuk-!-font-weight-bold" questionField.question_text>{{
       questionField.question_text | rpxTranslate
     }}</span>
-    <span class="error-message" *ngIf="emailControl.errors && emailControl.touched">{{
+    <span class="govuk-error-message" *ngIf="emailControl.errors && emailControl.touched">{{
       emailControl.errors | nocError | rpxTranslate
     }}</span>
   </label>

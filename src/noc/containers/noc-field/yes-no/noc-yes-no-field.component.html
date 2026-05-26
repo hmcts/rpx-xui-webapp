@@ -1,18 +1,18 @@
-<div class="govuk-form-group" [id]="id()" [ngClass]="{ 'form-group-error': !yesNoControl.valid }">
+<div class="govuk-form-group" [id]="id()" [ngClass]="{ 'govuk-form-group--error': !yesNoControl.valid }">
   <fieldset class="inline">
     <legend>
-      <span class="form-label govuk-!-font-weight-bold" *ngIf="questionField.question_text">{{
+      <span class="govuk-!-font-weight-bold" *ngIf="questionField.question_text">{{
         questionField.question_text | rpxTranslate
       }}</span>
-      <span class="error-message" *ngIf="yesNoControl.errors && yesNoControl.touched">{{
+      <span class="govuk-error-message" *ngIf="yesNoControl.errors && yesNoControl.touched">{{
         yesNoControl.errors | nocError | rpxTranslate
       }}</span>
     </legend>
 
-    <div class="form-group" [id]="id()">
-      <div class="multiple-choice" *ngFor="let value of yesNoValues" [ngClass]="{ selected: yesNoControl.value === value }">
+    <div class="govuk-radios" [id]="id()">
+      <div class="govuk-radios__item" *ngFor="let value of yesNoValues" [ngClass]="{ selected: yesNoControl.value === value }">
         <input
-          class="form-control"
+          class="govuk-radios__input"
           [id]="id() + '-' + value"
           [attr.name]="id()"
           [name]="id()"
@@ -20,7 +20,7 @@
           [formControl]="yesNoControl"
           [value]="value"
         />
-        <label class="form-label" [for]="id() + '-' + value">{{ value | rpxTranslate }}</label>
+        <label class="govuk-label govuk-radios__label" [for]="id() + '-' + value">{{ value | rpxTranslate }}</label>
       </div>
     </div>
   </fieldset>

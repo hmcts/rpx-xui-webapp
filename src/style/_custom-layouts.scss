@@ -1,0 +1,55 @@
+// Custom layout utilities with no GOV.UK Design System equivalent.
+// These are project-specific flex/grid patterns kept here permanently.
+
+.hmcts-action-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: govuk-spacing(2);
+  margin-bottom: govuk-spacing(4);
+}
+
+.hmcts-action-bar__filter {
+  display: inline-flex;
+  align-items: center;
+  gap: govuk-spacing(2);
+}
+
+.hmcts-filter-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: govuk-spacing(4);
+}
+
+.hmcts-filter-layout__filter {
+  flex: 0 0 280px;
+  min-width: 240px;
+}
+
+.hmcts-filter-layout__content {
+  flex: 1 1 640px;
+  min-width: 0;
+}
+
+.hmcts-filter-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: govuk-spacing(2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.hmcts-filter__tag {
+  border: 1px solid govuk-colour('mid-grey');
+  color: govuk-colour('black');
+  display: inline-block;
+  padding: 4px 8px;
+  text-decoration: none;
+}
+
+@media (max-width: 900px) {
+  .hmcts-filter-layout__filter,
+  .hmcts-filter-layout__content {
+    flex: 1 1 100%;
+  }
+}

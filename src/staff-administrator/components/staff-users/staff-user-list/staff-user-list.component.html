@@ -6,7 +6,7 @@
   <ng-container *ngIf="staffDataFilterService.tableData$ | async as tableData">
     <ng-container *ngIf="tableData.items.length; else noResultsFound">
       <div class="govuk-!-margin-bottom-4">
-        <p class="hmcts-pagination__results">
+        <p class="govuk-body-s">
           Showing <b>{{ tableData.pageNumber * tableData.pageSize - tableData.pageSize + 1 }}</b> to
           <b>{{
             tableData.pageNumber * tableData.pageSize > tableData?.totalItems

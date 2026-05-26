@@ -7,14 +7,14 @@ describe('Case Share Actions', () => {
       const action = new fromCaseShare.NavigateToShareCase(payload);
       expect({ ...action }).toEqual({
         type: fromCaseShare.NAVIGATE_TO_SHARE_CASES,
-        payload
+        payload,
       });
     });
 
     it('LoadUserFromOrgForCase', () => {
       const action = new fromCaseShare.LoadUserFromOrgForCase();
       expect({ ...action }).toEqual({
-        type: fromCaseShare.LOAD_USERS_FROM_ORG_FOR_CASE
+        type: fromCaseShare.LOAD_USERS_FROM_ORG_FOR_CASE,
       });
     });
 
@@ -23,7 +23,7 @@ describe('Case Share Actions', () => {
       const action = new fromCaseShare.LoadShareCase(payload);
       expect({ ...action }).toEqual({
         type: fromCaseShare.LOAD_SHARE_CASES,
-        payload
+        payload,
       });
     });
 
@@ -32,7 +32,7 @@ describe('Case Share Actions', () => {
       const action = new fromCaseShare.LoadShareCaseSuccess(payload);
       expect({ ...action }).toEqual({
         type: fromCaseShare.LOAD_SHARE_CASES_SUCCESS,
-        payload
+        payload,
       });
     });
 
@@ -41,7 +41,7 @@ describe('Case Share Actions', () => {
       const action = new fromCaseShare.LoadUserFromOrgForCaseSuccess(payload);
       expect({ ...action }).toEqual({
         type: fromCaseShare.LOAD_USERS_FROM_ORG_FOR_CASE_SUCCESS,
-        payload
+        payload,
       });
     });
 
@@ -50,41 +50,41 @@ describe('Case Share Actions', () => {
       const action = new fromCaseShare.LoadShareCaseFailure(payload);
       expect({ ...action }).toEqual({
         type: fromCaseShare.LOAD_SHARE_CASES_FAILURE,
-        payload
+        payload,
       });
     });
 
     it('AddShareCases', () => {
       const payload = {
-        sharedCases: []
+        sharedCases: [],
       };
       const action = new fromCaseShare.AddShareCases(payload);
       expect({ ...action }).toEqual({
         type: fromCaseShare.ADD_SHARE_CASES,
-        payload
+        payload,
       });
     });
 
     it('AddShareCaseGo', () => {
       const payload = {
         path: [],
-        sharedCases: []
+        sharedCases: [],
       };
       const action = new fromCaseShare.AddShareCaseGo(payload);
       expect({ ...action }).toEqual({
         type: fromCaseShare.ADD_SHARE_CASE_GO,
-        payload
+        payload,
       });
     });
 
     it('DeleteAShareCase', () => {
       const payload = {
-        caseId: '1'
+        caseId: '1',
       };
       const action = new fromCaseShare.DeleteAShareCase(payload);
       expect({ ...action }).toEqual({
         type: fromCaseShare.DELETE_A_SHARE_CASE,
-        payload
+        payload,
       });
     });
 
@@ -93,7 +93,7 @@ describe('Case Share Actions', () => {
       const action = new fromCaseShare.SynchronizeStateToStore(payload);
       expect({ ...action }).toEqual({
         type: fromCaseShare.SYNCHRONIZE_STATE_TO_STORE,
-        payload
+        payload,
       });
     });
 
@@ -102,7 +102,7 @@ describe('Case Share Actions', () => {
       const action = new fromCaseShare.AssignUsersToCase(payload);
       expect({ ...action }).toEqual({
         type: fromCaseShare.ASSIGN_USERS_TO_CASE,
-        payload
+        payload,
       });
     });
   });

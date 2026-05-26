@@ -11,11 +11,8 @@ describe('HearingAmendWarningMsgComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       declarations: [HearingAmendWarningMsgComponent, MockRpxTranslatePipe],
-      providers: [
-        provideMockStore({ initialState })
-      ]
-    })
-      .compileComponents();
+      providers: [provideMockStore({ initialState })],
+    }).compileComponents();
     fixture = TestBed.createComponent(HearingAmendWarningMsgComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

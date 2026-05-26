@@ -19,22 +19,24 @@ describe('submitNoCEvents API', () => {
     sandbox.restore();
   });
 
-  const answers: NocAnswer[] = [{
-    question_id: '1233434',
-    value: 'test@email.com'
-  }];
+  const answers: NocAnswer[] = [
+    {
+      question_id: '1233434',
+      value: 'test@email.com',
+    },
+  ];
   const mockRequest = {
     case_id: '1234567812345670',
-    answers: answers
+    answers: answers,
   };
 
   const req = mockReq({
     headers: {
-      'Authorization': 'Bearer someAuthorizationToken',
-      'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-      'content-Type': 'application/json'
+      Authorization: 'Bearer someAuthorizationToken',
+      ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+      'content-Type': 'application/json',
     },
-    body: mockRequest
+    body: mockRequest,
   });
 
   function setUpMockConfigForFunction(url) {
@@ -50,7 +52,7 @@ describe('submitNoCEvents API', () => {
     const expectedResponse = {
       approval_status: somethingLike('APPROVED'),
       case_role: somethingLike('[Claimant]'),
-      status_message: somethingLike('Notice of request has been successfully submitted.')
+      status_message: somethingLike('Notice of request has been successfully submitted.'),
     };
 
     before(async () => {
@@ -60,12 +62,12 @@ describe('submitNoCEvents API', () => {
         withRequest: {
           method: 'POST',
           path: '/noc/noc-requests',
-          body: mockRequest
+          body: mockRequest,
         },
         willRespondWith: {
           status: 201,
-          body: expectedResponse
-        }
+          body: expectedResponse,
+        },
       });
     });
 
@@ -96,4 +98,3 @@ function assertResponse(returnedResponse: any) {
   expect(returnedResponse.case_role).to.be.equal('[Claimant]');
   expect(returnedResponse.status_message).to.be.equal('Notice of request has been successfully submitted.');
 }
-

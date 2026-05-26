@@ -25,5 +25,5 @@ export const containers: any[] = [
   LanguageRequirementsSectionComponent,
   LinkedHearingSectionComponent,
   PanelDetailsSectionComponent,
-  ParticipantAttendanceSectionComponent
+  ParticipantAttendanceSectionComponent,
 ];

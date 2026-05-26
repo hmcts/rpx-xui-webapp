@@ -5,11 +5,11 @@ import * as fromRoot from '../../store';
 import { Helper, Navigation, NavigationItems } from './footer.model';
 
 @Component({
+  standalone: false,
   selector: 'exui-app-footer',
   templateUrl: './footer.component.html',
-  styleUrls: ['./footer.component.scss']
+  styleUrls: ['./footer.component.scss'],
 })
-
 export class FooterComponent implements OnInit {
   public helpData: Helper = AppConstants.FOOTER_DATA;
   public navigationData: Navigation = AppConstants.FOOTER_DATA_NAVIGATION;
@@ -19,9 +19,7 @@ export class FooterComponent implements OnInit {
   public ngOnInit() {
     const tAndCNavItem = this.getNavigationItemForTandC(this.navigationData.items);
     if (tAndCNavItem) {
-      this.store.pipe(
-        select(fromRoot.getIsTermsAndConditionsFeatureEnabled)
-      ).subscribe((isEnabled) => {
+      this.store.pipe(select(fromRoot.getIsTermsAndConditionsFeatureEnabled)).subscribe((isEnabled) => {
         tAndCNavItem.href = isEnabled ? '/terms-and-conditions' : '/legacy-terms-and-conditions';
       });
     }

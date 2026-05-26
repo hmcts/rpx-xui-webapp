@@ -22,19 +22,19 @@ export interface RoleCaseData {
   last_state_modified_date?: string;
   security_classification?: string;
   case_data?: {
-    appellantHasFixedAddress?: string,
-    legalRepReferenceNumber?: string,
-    legalRepDeclaration?: string[],
-    appellantDateOfBirth?: string,
-    hasOtherAppeals?: string,
-    hmctsCaseCategory?: string,
-    appellantGivenNames?: string,
-    appellantTitle?: string,
-    appellantNationalities?: string[],
-    homeOfficeDecisionDate?: string,
-    sendDirectionActionAvailable?: string,
-    hasNewMatters?: string,
-    homeOfficeReferenceNumber?: string
+    appellantHasFixedAddress?: string;
+    legalRepReferenceNumber?: string;
+    legalRepDeclaration?: string[];
+    appellantDateOfBirth?: string;
+    hasOtherAppeals?: string;
+    hmctsCaseCategory?: string;
+    appellantGivenNames?: string;
+    appellantTitle?: string;
+    appellantNationalities?: string[];
+    homeOfficeDecisionDate?: string;
+    sendDirectionActionAvailable?: string;
+    hasNewMatters?: string;
+    homeOfficeReferenceNumber?: string;
   };
   isNew?: boolean;
   hasAccess?: boolean;

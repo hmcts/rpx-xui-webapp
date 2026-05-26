@@ -1,6 +1,7 @@
 import { NavigationExtras } from '@angular/router';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { ISessionStorageService } from '../../work-allocation/interfaces/common';
 import { Role, RoleAccessHttpError, RolesByService, SpecificRole, TypeOfRole } from '../models';
 import { InfoMessageType } from '../models/enums';
@@ -12,7 +13,7 @@ interface Navigator {
 
 export enum REDIRECTS {
   NotAuthorised = '/not-authorised',
-  ServiceDown = '/service-down'
+  ServiceDown = '/service-down',
 }
 
 export const vowels = ['a', 'e', 'i', 'o', 'u'];
@@ -21,7 +22,9 @@ export const vowels = ['a', 'e', 'i', 'o', 'u'];
 export const getTitleText = (role: SpecificRole, action: string, roleCategory: string): string => {
   if (role && role.name) {
     const aOrAn = vowels.includes(role.name.toLowerCase().charAt(0)) ? 'an' : 'a';
-    return role.name === TypeOfRole.CaseManager ? `${action} ${RoleCaptionText.ALegalOpsCaseManager}` : `${action} ${aOrAn} ${role.name}`;
+    return role.name === TypeOfRole.CaseManager
+      ? `${action} ${RoleCaptionText.ALegalOpsCaseManager}`
+      : `${action} ${aOrAn} ${role.name}`;
   }
 
   if (roleCategory === RoleCategory.ADMIN) {
@@ -58,8 +61,9 @@ export const getRoles = (serviceId: string, sessionStorageService: ISessionStora
   const sessionKey = getRoleSessionStorageKeyForServiceId(serviceId);
   const value = sessionStorageService.getItem(sessionKey);
   if (value) {
-    return JSON.parse(value) as Role[];
+    return safeJsonParse<Role[]>(value, []);
   }
+  return [];
 };
 
 export const setRoles = (serviceId: string, roles: Role[], sessionStorageService: ISessionStorageService): void => {
@@ -86,8 +90,8 @@ export const handleError = (error: RoleAccessHttpError, navigator: Navigator, de
           state: {
             showMessage: true,
             // show message based on error
-            message: { type: InfoMessageType.WARNING, message: error.message }
-          }
+            message: { type: InfoMessageType.WARNING, message: error.message },
+          },
         });
       }
     }

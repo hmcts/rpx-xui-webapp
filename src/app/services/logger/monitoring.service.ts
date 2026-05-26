@@ -3,8 +3,7 @@ import { Injectable, Optional } from '@angular/core';
 import { ApplicationInsights, IConfig, IEventTelemetry, IPageViewPerformanceTelemetry } from '@microsoft/applicationinsights-web';
 
 export interface IMonitoringService {
-  logPageView(name?: string, url?: string, properties?: any,
-              measurements?: any, duration?: number);
+  logPageView(name?: string, url?: string, properties?: any, measurements?: any, duration?: number);
   logEvent(name: string, properties?: any, measurements?: any);
   logException(exception: Error);
 }
@@ -52,12 +51,15 @@ export class MonitoringService implements IMonitoringService {
   @Optional() appInsights: ApplicationInsights;
   @Optional() private config?: MonitorConfig;
 
-  constructor(private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient) {}
 
-  public logPageView(name?: string, url?: string, properties?: any,
-    measurements?: any, duration?: number) {
+  public logPageView(name?: string, url?: string, properties?: any, measurements?: any, duration?: number) {
     const pageViewTelemetry: IPageViewPerformanceTelemetry = {
-      name, uri: url, properties, measurements, duration: duration.toString()
+      name,
+      uri: url,
+      properties,
+      measurements,
+      duration: duration.toString(),
     };
     this.send(() => {
       this.appInsights.trackPageView(pageViewTelemetry);
@@ -66,7 +68,9 @@ export class MonitoringService implements IMonitoringService {
 
   public logEvent(name: string, properties?: any, measurements?: any) {
     const eventTelemetry: IEventTelemetry = {
-      name, properties, measurements
+      name,
+      properties,
+      measurements,
     };
     this.send(() => {
       this.appInsights.trackEvent(eventTelemetry);
@@ -89,17 +93,16 @@ export class MonitoringService implements IMonitoringService {
     } else {
       // will only get run once per login
       this.http.get('/api/monitoring-tools').subscribe((monitor) => {
-        // eslint-disable-next-line dot-notation
         const connStr = monitor['connectionString'];
         this.config = {
-          connectionString: connStr
+          connectionString: connStr,
         };
         if (!this.areCookiesEnabled) {
           this.config = {
             ...this.config,
             isCookieUseDisabled: true,
             isStorageUseDisabled: true,
-            enableSessionStorageBuffer: true
+            enableSessionStorageBuffer: true,
           };
         }
         this.appInsights = new ApplicationInsights({ config: this.config });

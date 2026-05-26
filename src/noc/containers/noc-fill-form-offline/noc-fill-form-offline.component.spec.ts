@@ -2,7 +2,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { NocFillFormOfflineComponent } from './noc-fill-form-offline.component';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate',
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;
@@ -15,9 +18,8 @@ describe('NocFillFormOfflineComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      declarations: [NocFillFormOfflineComponent, RpxTranslateMockPipe]
-    })
-      .compileComponents();
+      declarations: [NocFillFormOfflineComponent, RpxTranslateMockPipe],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

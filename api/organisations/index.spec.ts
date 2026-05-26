@@ -1,7 +1,6 @@
 import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
-import * as sinonChai from 'sinon-chai';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { AxiosResponse } from 'axios';
@@ -10,12 +9,10 @@ import * as crudService from '../common/crudService';
 import * as configuration from '../configuration';
 import * as util from '../lib/util';
 import { SERVICES_PRD_API_URL } from '../configuration/references';
-import {
-  handleGetOrganisationsRoute,
-  handleOrganisationRoute,
-  router
-} from './';
+import { handleGetOrganisationsRoute, handleOrganisationRoute, router } from './';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 const createMockResponse = (status: number, data: any, statusText: string = 'OK'): AxiosResponse => ({
@@ -24,7 +21,7 @@ const createMockResponse = (status: number, data: any, statusText: string = 'OK'
   statusText,
   headers: {},
   config: { headers: {} } as any,
-  request: {}
+  request: {},
 });
 
 describe('Organisations API', () => {
@@ -61,7 +58,7 @@ describe('Organisations API', () => {
     it('should successfully get organisations with organisations array in response', async () => {
       const mockOrganisations = [
         { organisationIdentifier: 'org1', name: 'Organisation 1' },
-        { organisationIdentifier: 'org2', name: 'Organisation 2' }
+        { organisationIdentifier: 'org2', name: 'Organisation 2' },
       ];
       const mockResponse = createMockResponse(200, { organisations: mockOrganisations });
 
@@ -70,7 +67,7 @@ describe('Organisations API', () => {
       await handleGetOrganisationsRoute(req, res, next);
 
       expect(getConfigValueStub).to.have.been.calledWith(SERVICES_PRD_API_URL);
-      expect(handleGetStub).to.have.been.calledWith(expectedPath, req, next);
+      expect(handleGetStub).to.have.been.calledWith(expectedPath, req);
       expect(res.send).to.have.been.calledWith(mockOrganisations);
       expect(next).to.not.have.been.called;
     });
@@ -78,7 +75,7 @@ describe('Organisations API', () => {
     it('should successfully get organisations without organisations array in response', async () => {
       const mockData = {
         someOtherProperty: 'value',
-        organisationData: 'test'
+        organisationData: 'test',
       };
       const mockResponse = createMockResponse(200, mockData);
 
@@ -87,7 +84,7 @@ describe('Organisations API', () => {
       await handleGetOrganisationsRoute(req, res, next);
 
       expect(getConfigValueStub).to.have.been.calledWith(SERVICES_PRD_API_URL);
-      expect(handleGetStub).to.have.been.calledWith(expectedPath, req, next);
+      expect(handleGetStub).to.have.been.calledWith(expectedPath, req);
       expect(res.send).to.have.been.calledWith(mockData);
       expect(next).to.not.have.been.called;
     });
@@ -99,7 +96,7 @@ describe('Organisations API', () => {
       await handleGetOrganisationsRoute(req, res, next);
 
       expect(getConfigValueStub).to.have.been.calledWith(SERVICES_PRD_API_URL);
-      expect(handleGetStub).to.have.been.calledWith(expectedPath, req, next);
+      expect(handleGetStub).to.have.been.calledWith(expectedPath, req);
       expect(next).to.have.been.calledWith(error);
       expect(res.send).to.not.have.been.called;
     });
@@ -177,7 +174,7 @@ describe('Organisations API', () => {
       const mockData = {
         organisationIdentifier: 'org1',
         name: 'Test Organisation',
-        status: 'ACTIVE'
+        status: 'ACTIVE',
       };
       const mockResponse = createMockResponse(200, mockData);
 
@@ -186,7 +183,7 @@ describe('Organisations API', () => {
       await handleOrganisationRoute(req, res);
 
       expect(getConfigValueStub).to.have.been.calledWith(SERVICES_PRD_API_URL);
-      expect(handleGetStub).to.have.been.calledWith(expectedPath, req, sinon.match.func);
+      expect(handleGetStub).to.have.been.calledWith(expectedPath, req);
       expect(res.send).to.have.been.calledWith(mockData);
       expect(res.status).to.not.have.been.called;
     });
@@ -194,7 +191,7 @@ describe('Organisations API', () => {
     it('should handle errors with data.message and status', async () => {
       const error = {
         data: { message: 'Organisation not found' },
-        status: 404
+        status: 404,
       };
 
       existsStub.withArgs(error, 'data.message').returns('Organisation not found');
@@ -209,13 +206,13 @@ describe('Organisations API', () => {
       expect(res.send).to.have.been.calledWith({
         apiError: 'Organisation not found',
         apiStatusCode: 404,
-        message: 'Organisation route error'
+        message: 'Organisation route error',
       });
     });
 
     it('should handle errors without data.message but with status', async () => {
       const error = {
-        status: 500
+        status: 500,
       };
 
       existsStub.withArgs(error, 'data.message').returns(null);
@@ -228,7 +225,7 @@ describe('Organisations API', () => {
       expect(res.send).to.have.been.calledWith({
         apiError: 'Unknown Error Occurred',
         apiStatusCode: 500,
-        message: 'Organisation route error'
+        message: 'Organisation route error',
       });
     });
 
@@ -245,13 +242,13 @@ describe('Organisations API', () => {
       expect(res.send).to.have.been.calledWith({
         apiError: 'Unknown Error Occurred',
         apiStatusCode: 500,
-        message: 'Organisation route error'
+        message: 'Organisation route error',
       });
     });
 
     it('should handle errors with data.message but without status', async () => {
       const error = {
-        data: { message: 'Unauthorized access' }
+        data: { message: 'Unauthorized access' },
       };
 
       existsStub.withArgs(error, 'data.message').returns('Unauthorized access');
@@ -264,14 +261,14 @@ describe('Organisations API', () => {
       expect(res.send).to.have.been.calledWith({
         apiError: 'Unauthorized access',
         apiStatusCode: 500,
-        message: 'Organisation route error'
+        message: 'Organisation route error',
       });
     });
 
     it('should handle network errors', async () => {
       const error = {
         code: 'ECONNREFUSED',
-        message: 'Connection refused'
+        message: 'Connection refused',
       };
 
       existsStub.withArgs(error, 'data.message').returns(null);
@@ -284,7 +281,7 @@ describe('Organisations API', () => {
       expect(res.send).to.have.been.calledWith({
         apiError: 'Unknown Error Occurred',
         apiStatusCode: 500,
-        message: 'Organisation route error'
+        message: 'Organisation route error',
       });
     });
 
@@ -311,7 +308,7 @@ describe('Organisations API', () => {
     it('should handle array response data', async () => {
       const mockData = [
         { organisationIdentifier: 'org1', name: 'Org 1' },
-        { organisationIdentifier: 'org2', name: 'Org 2' }
+        { organisationIdentifier: 'org2', name: 'Org 2' },
       ];
       const mockResponse = createMockResponse(200, mockData);
 
@@ -356,14 +353,14 @@ describe('Organisations API', () => {
       expect(res.send).to.have.been.calledWith({
         apiError: 'Unknown Error Occurred',
         apiStatusCode: 403,
-        message: 'Organisation route error'
+        message: 'Organisation route error',
       });
     });
 
     it('should handle timeout errors', async () => {
       const error = {
         code: 'ETIMEDOUT',
-        message: 'Request timeout'
+        message: 'Request timeout',
       };
 
       existsStub.withArgs(error, 'data.message').returns(null);
@@ -376,7 +373,7 @@ describe('Organisations API', () => {
       expect(res.send).to.have.been.calledWith({
         apiError: 'Unknown Error Occurred',
         apiStatusCode: 500,
-        message: 'Organisation route error'
+        message: 'Organisation route error',
       });
     });
   });
@@ -392,7 +389,7 @@ describe('Organisations API', () => {
 
       await handleGetOrganisationsRoute(req, res, next);
 
-      expect(handleGetStub).to.have.been.calledWith(expectedPath, req, next);
+      expect(handleGetStub).to.have.been.calledWith(expectedPath, req);
     });
 
     it('should use different PRD API URL when configuration changes', async () => {
@@ -404,7 +401,7 @@ describe('Organisations API', () => {
 
       await handleGetOrganisationsRoute(req, res, next);
 
-      expect(handleGetStub).to.have.been.calledWith(expectedPath, req, next);
+      expect(handleGetStub).to.have.been.calledWith(expectedPath, req);
     });
   });
 
@@ -415,9 +412,8 @@ describe('Organisations API', () => {
 
       getConfigValueStub.withArgs(SERVICES_PRD_API_URL).returns(mockPrdApiUrl);
 
-      handleGetStub.callsFake((path, req, errorCallback) => {
-        errorCallback(testError);
-        return Promise.reject(testError);
+      handleGetStub.callsFake(() => {
+        throw testError;
       });
 
       existsStub.withArgs(testError, 'data.message').returns(null);
@@ -429,7 +425,7 @@ describe('Organisations API', () => {
       expect(res.send).to.have.been.calledWith({
         apiError: 'Unknown Error Occurred',
         apiStatusCode: 500,
-        message: 'Organisation route error'
+        message: 'Organisation route error',
       });
     });
   });

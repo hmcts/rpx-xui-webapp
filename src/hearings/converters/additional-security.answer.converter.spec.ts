@@ -24,7 +24,7 @@ describe('AdditionalSecurityAnswerConverter', () => {
       ...initialStateImmutable.hearings,
       hearingConditions: {
         ...initialStateImmutable.hearings.hearingConditions,
-        isHearingAmendmentsEnabled: true
+        isHearingAmendmentsEnabled: true,
       },
       hearingRequestToCompare: {
         ...initialStateImmutable.hearings.hearingRequestToCompare,
@@ -32,10 +32,10 @@ describe('AdditionalSecurityAnswerConverter', () => {
           ...initialStateImmutable.hearings.hearingRequestToCompare.hearingRequestMainModel,
           caseDetails: {
             ...initialStateImmutable.hearings.hearingRequestToCompare.hearingRequestMainModel.caseDetails,
-            caseAdditionalSecurityFlag: true
-          }
-        }
-      }
+            caseAdditionalSecurityFlag: true,
+          },
+        },
+      },
     };
     const result$ = converter.transformAnswer(of(STATE));
     const expected = cold('(b|)', { b: 'Yes' });

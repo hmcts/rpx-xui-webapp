@@ -5,16 +5,22 @@ import { CookiePolicyComponent } from './cookie-policy.component';
 
 describe('CookiePolicyComponentTest', () => {
   const translationServiceMock = {
-    language: 'cy'
+    language: 'cy',
   };
 
-  @Component({ selector: 'exui-app-header', template: '' })
-  class HeaderStubComponent {
-  }
+  @Component({
+    standalone: false,
+    selector: 'exui-app-header',
+    template: '',
+  })
+  class HeaderStubComponent {}
 
-  @Component({ selector: 'exui-app-footer', template: '' })
-  class FooterStubComponent {
-  }
+  @Component({
+    standalone: false,
+    selector: 'exui-app-footer',
+    template: '',
+  })
+  class FooterStubComponent {}
 
   let component: CookiePolicyComponent;
   let fixture: ComponentFixture<CookiePolicyComponent>;
@@ -22,11 +28,8 @@ describe('CookiePolicyComponentTest', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [HeaderStubComponent, FooterStubComponent, CookiePolicyComponent],
-      providers: [
-        { provide: RpxTranslationService, useValue: translationServiceMock }
-      ]
-    })
-      .compileComponents();
+      providers: [{ provide: RpxTranslationService, useValue: translationServiceMock }],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

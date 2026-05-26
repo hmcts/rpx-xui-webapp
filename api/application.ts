@@ -14,7 +14,7 @@ import {
   FEATURE_COMPRESSION_ENABLED,
   HELMET,
   PROTOCOL,
-  SESSION_SECRET
+  SESSION_SECRET,
 } from './configuration/references';
 import * as health from './health';
 import * as log4jui from './lib/log4jui';
@@ -27,21 +27,29 @@ import routes from './routes';
 import workAllocationRouter from './workAllocation/routes';
 import { idamCheck } from './idamCheck';
 import { MC_CSP } from './interfaces/csp-config';
-import { getNewUsersByServiceName } from './workAllocation';
 
-function loadIndexHtml(): string {
+const PERMISSIONS_POLICY = 'geolocation=(), camera=(), microphone=()';
+
+function resolveStaticRoot(): string {
+  const buildRoot = path.join(__dirname, '..');
+  const browserRoot = path.join(buildRoot, 'browser');
+  return existsSync(browserRoot) ? browserRoot : buildRoot;
+}
+
+function loadIndexHtml(staticRoot: string): string {
   // production build output
-  let p = path.join(__dirname, '..', 'index.html');
+  let p = path.join(staticRoot, 'index.html');
   if (!existsSync(p)) {
     // running from sources - use the template inside src/
     p = path.join(__dirname, '..', 'src', 'index.html');
   }
   return readFileSync(p, 'utf8');
 }
-const indexHtmlRaw = loadIndexHtml();
+const staticRoot = resolveStaticRoot();
+const indexHtmlRaw = loadIndexHtml(staticRoot);
 
 function injectNonce(html: string, nonce: string): string {
-  return html.replace(/{{cspNonce}}/g, nonce);
+  return html.replaceAll(/{{cspNonce}}/g, nonce);
 }
 
 export async function createApp() {
@@ -61,18 +69,15 @@ export async function createApp() {
     app.use(helmet({ crossOriginResourcePolicy: { policy: 'same-site' } }));
     app.use(helmet.hidePoweredBy());
     app.use(helmet.hsts({ maxAge: 28800000 }));
-    app.use(
-      csp({
-        defaultCsp: SECURITY_POLICY,
-        ...MC_CSP
-      })
-    );
+    const cspMiddleware = csp({
+      defaultCsp: SECURITY_POLICY,
+      ...MC_CSP,
+    }) as unknown as express.RequestHandler;
+    app.use(cspMiddleware);
     app.use((req, res, next) => {
-      res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-      res.header('Access-Control-Allow-Credentials', 'true');
-      res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
       res.setHeader('X-Robots-Tag', 'noindex');
       res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate, proxy-revalidate');
+      res.setHeader('Permissions-Policy', PERMISSIONS_POLICY);
       next();
     });
     app.get('/robots.txt', (req, res) => {
@@ -87,21 +92,23 @@ export async function createApp() {
     app.disable('X-Powered-By');
   }
 
-  app.use(cookieParser(getConfigValue(SESSION_SECRET)));
+  const cookieParserMiddleware = cookieParser(getConfigValue(SESSION_SECRET)) as unknown as express.RequestHandler;
+  app.use(cookieParserMiddleware);
 
   if (showFeature(FEATURE_COMPRESSION_ENABLED)) {
     app.use(compression());
   }
 
   // TODO: remove tunnel and configurations
+  // EXUI-3967 - the above ask requires further investigation and testing on production environments
   tunnel.init();
   /**
- * Add Reform Standard health checks.
- */
+   * Add Reform Standard health checks.
+   */
   health.addReformHealthCheck(app);
 
   const xuiNodeMiddleware = await getXuiNodeMiddleware();
-  app.use(xuiNodeMiddleware);
+  app.use(xuiNodeMiddleware as unknown as express.RequestHandler);
 
   // applyProxy needs to be used before bodyParser
   initProxy(app);
@@ -113,21 +120,19 @@ export async function createApp() {
   app.use('/api', routes);
   app.use('/external', openRoutes);
   app.use('/workallocation', workAllocationRouter);
-  app.use(csrf({ cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true, path: '/' }, ignoreMethods: ['GET'] }));
+  const csrfMiddleware = csrf({
+    cookie: { key: 'XSRF-TOKEN', httpOnly: false, secure: true, path: '/' },
+    ignoreMethods: ['GET'],
+  }) as unknown as express.RequestHandler;
+  app.use(csrfMiddleware);
   // Serve /index.html through the same nonce injector
   // This is to ensure that <MC URL>/index.html works with CSP
   app.get('/index.html', (req, res) => {
     const html = injectNonce(indexHtmlRaw, res.locals.cspNonce as string);
-    res
-      .type('html')
-      .set('Cache-Control', 'no-store, max-age=0')
-      .send(html);
+    res.type('html').set('Cache-Control', 'no-store, max-age=0').send(html);
   });
-  const staticRoot = path.join(__dirname, '..');
   // runs for every incoming request in the order middleware are declared
-  app.use(
-    express.static(staticRoot, { index: false })
-  );
+  app.use(express.static(staticRoot, { index: false }));
   // Catch-all handler for every URL that the static middleware didn’t serve
   app.use('/*', (req, res) => {
     const html = injectNonce(indexHtmlRaw, res.locals.cspNonce as string);
@@ -137,9 +142,6 @@ export async function createApp() {
   logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);
 
   new Promise(idamCheck).then(() => 'IDAM is up and running');
-  // EUI-2028 - Get the caseworkers, ideally prior to a user logging into application
-  new Promise(getNewUsersByServiceName).then(() => 'Caseworkers have been loaded');
 
   return app;
 }
-

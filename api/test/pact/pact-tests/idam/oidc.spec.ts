@@ -13,13 +13,13 @@ describe('OpenId Connect API', () => {
         uponReceiving: 'a request for configuration',
         withRequest: {
           method: 'GET',
-          path: '/o/.well-known/openid-configuration'
+          path: '/o/.well-known/openid-configuration',
         },
         willRespondWith: {
           status: 200,
           headers: { 'Content-Type': 'application/json' },
-          body: mockResponse
-        }
+          body: mockResponse,
+        },
       });
     });
 
@@ -41,7 +41,7 @@ describe('OpenId Connect API', () => {
           sessionKey: 'xui-webapp',
           tokenEndpointAuthMethod: 'client_secret_post',
           tokenURL: `${oidcUrl}/token`,
-          useRoutes: false
+          useRoutes: false,
         });
         await oidc.discover();
         assert.isDefined(issuer, 'issuer exists');

@@ -8,7 +8,7 @@ import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { Observable, of } from 'rxjs';
-import { WASupportedJurisdictionsService } from '../../../../work-allocation/services';
+import { CaseworkerDataService, WASupportedJurisdictionsService } from '../../../../work-allocation/services';
 import { SpecificAccessNavigationEvent, SpecificAccessState, SpecificAccessStateData } from '../../../models';
 import { AccessReason, SpecificAccessText } from '../../../models/enums';
 import { DecideSpecificAccessAndGo } from '../../../store';
@@ -20,12 +20,13 @@ describe('SpecificAccessReviewComponent', () => {
   let mockStore: any;
   const FORM_GROUP: FormGroup = new FormGroup({});
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let spyOnPipeToStore = jasmine.createSpy();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let spyOnStoreDispatch = jasmine.createSpy();
 
-  const mockSupportedJurisdictionsService = jasmine.createSpyObj('WASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
+  const mockSupportedJurisdictionsService = jasmine.createSpyObj('WASupportedJurisdictionsService', [
+    'getWASupportedJurisdictions',
+  ]);
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -37,10 +38,9 @@ describe('SpecificAccessReviewComponent', () => {
         FormBuilder,
         { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -58,11 +58,9 @@ describe('SpecificAccessReviewComponent', () => {
       accessReason: null,
       period: { startDate: new Date('01-01-2001'), endDate: null },
       person: null,
-      requestId: 'requestId'
+      requestId: 'requestId',
     };
-    spyOnPipeToStore = spyOn(mockStore, 'pipe').and.returnValue(
-      of(mockSpecificAccessStateData)
-    );
+    spyOnPipeToStore = spyOn(mockStore, 'pipe').and.returnValue(of(mockSpecificAccessStateData));
     spyOnStoreDispatch = spyOn(mockStore, 'dispatch');
     fixture = TestBed.createComponent(SpecificAccessReviewComponent);
     component = fixture.componentInstance;
@@ -81,18 +79,10 @@ describe('SpecificAccessReviewComponent', () => {
 
   describe('navigation', () => {
     it('should create component and show the "review access" info message banner', () => {
-      const headingElement = fixture.debugElement.nativeElement.querySelector(
-        '.govuk-fieldset__heading'
-      );
-      expect(headingElement.textContent).toContain(
-        SpecificAccessText.TITLE
-      );
-      const hintElement = fixture.debugElement.nativeElement.querySelector(
-        '.govuk-fieldset__legend--m'
-      );
-      expect(hintElement.textContent).toContain(
-        SpecificAccessText.HINT
-      );
+      const headingElement = fixture.debugElement.nativeElement.querySelector('.govuk-fieldset__heading');
+      expect(headingElement.textContent).toContain(SpecificAccessText.TITLE);
+      const hintElement = fixture.debugElement.nativeElement.querySelector('.govuk-fieldset__legend--m');
+      expect(hintElement.textContent).toContain(SpecificAccessText.HINT);
     });
 
     it('should show validation error when any radio button selected and the form submitted', () => {
@@ -116,7 +106,11 @@ describe('SpecificAccessReviewComponent', () => {
       component.reviewOptionControl.setValue(AccessReason.APPROVE_REQUEST);
       component.navigationHandler(SpecificAccessNavigationEvent.CONTINUE);
       expect(mockStore.dispatch).toHaveBeenCalledWith(
-        new DecideSpecificAccessAndGo({ accessReason: AccessReason.APPROVE_REQUEST, specificAccessState: SpecificAccessState.SPECIFIC_ACCESS_DURATION }));
+        new DecideSpecificAccessAndGo({
+          accessReason: AccessReason.APPROVE_REQUEST,
+          specificAccessState: SpecificAccessState.SPECIFIC_ACCESS_DURATION,
+        })
+      );
     });
 
     it('should correctly navigate on click of continue button for reject request', () => {
@@ -129,7 +123,11 @@ describe('SpecificAccessReviewComponent', () => {
       component.reviewOptionControl.setValue(AccessReason.REQUEST_MORE_INFORMATION);
       component.navigationHandler(SpecificAccessNavigationEvent.CONTINUE);
       expect(mockStore.dispatch).toHaveBeenCalledWith(
-        new DecideSpecificAccessAndGo({ accessReason: AccessReason.REQUEST_MORE_INFORMATION, specificAccessState: SpecificAccessState.SPECIFIC_ACCESS_INFORMATION }));
+        new DecideSpecificAccessAndGo({
+          accessReason: AccessReason.REQUEST_MORE_INFORMATION,
+          specificAccessState: SpecificAccessState.SPECIFIC_ACCESS_INFORMATION,
+        })
+      );
     });
   });
 
@@ -139,6 +137,50 @@ describe('SpecificAccessReviewComponent', () => {
       spyOn(component.specificAccessStateDataSub, 'unsubscribe').and.callThrough();
       component.ngOnDestroy();
       expect(component.specificAccessStateDataSub.unsubscribe).toHaveBeenCalled();
+    });
+  });
+
+  describe('SpecificAccessReviewComponent requesterName population (non-judicial)', () => {
+    let fixture: ComponentFixture<SpecificAccessReviewComponent>;
+    let component: SpecificAccessReviewComponent;
+    let store: Store;
+    let caseworkerDataService: any;
+
+    beforeEach(() => {
+      store = TestBed.inject(Store);
+      caseworkerDataService = TestBed.inject(CaseworkerDataService) as jasmine.SpyObj<any>;
+
+      const nonJudicialState: SpecificAccessStateData = {
+        state: SpecificAccessState.SPECIFIC_ACCESS_REVIEW,
+        caseId: 'caseId',
+        caseName: 'Example case name',
+        taskId: 'taskId',
+        actorId: 'actor-nonjudicial',
+        jurisdiction: 'IA',
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
+        requestedRole: 'specific-access-legal',
+        requestCreated: '01-01-2001',
+        accessReason: null,
+        period: { startDate: new Date('01-01-2001'), endDate: null },
+        person: null,
+        requestId: 'requestId',
+        specificAccessReason: null,
+      };
+
+      (store.pipe as jasmine.Spy).and.returnValue(of(nonJudicialState));
+
+      // Mock caseworker lookup
+      spyOn(caseworkerDataService, 'getUserByIdamId').and.returnValue(of({ firstName: 'Test', lastName: 'Beta' }));
+
+      fixture = TestBed.createComponent(SpecificAccessReviewComponent);
+      component = fixture.componentInstance;
+      component.formGroup = new FormGroup({});
+      fixture.detectChanges();
+    });
+
+    it('sets requesterName from caseworkerDataService for non-judicial roleCategory', () => {
+      expect(caseworkerDataService.getUserByIdamId).toHaveBeenCalledWith('actor-nonjudicial');
+      expect(component.requesterName).toBe('Test Beta');
     });
   });
 });

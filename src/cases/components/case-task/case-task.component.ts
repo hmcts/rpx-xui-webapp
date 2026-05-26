@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertService } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { UserInfo } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
@@ -14,9 +14,10 @@ import { REDIRECTS, handleTasksFatalErrors } from '../../../work-allocation/util
 import { appendTaskIdAsQueryStringToTaskDescription } from './case-task.util';
 
 @Component({
+  standalone: false,
   selector: 'exui-case-task',
   templateUrl: './case-task.component.html',
-  styleUrls: ['./case-task.component.scss']
+  styleUrls: ['./case-task.component.scss'],
 })
 export class CaseTaskComponent implements OnInit {
   private static readonly CASE_REFERENCE_VARIABLE = '${[CASE_REFERENCE]}';
@@ -25,24 +26,27 @@ export class CaseTaskComponent implements OnInit {
   private static readonly VARIABLES: string[] = [
     CaseTaskComponent?.CASE_REFERENCE_VARIABLE,
     CaseTaskComponent?.CASE_ID_VARIABLE,
-    CaseTaskComponent?.TASK_ID_VARIABLE
+    CaseTaskComponent?.TASK_ID_VARIABLE,
   ];
 
-  public manageOptions: { id: string, title: string }[];
+  public manageOptions: { id: string; title: string }[];
   public isUserJudicial: boolean;
   public isTaskUrgent: boolean;
   private pTask: Task;
   public userRoleCategory: string;
 
-  constructor(private readonly alertService: AlertService,
-              private readonly router: Router,
-              private readonly sessionStorageService: SessionStorageService,
-              protected taskService: WorkAllocationTaskService,
-              private readonly window: Window) {
-  }
+  constructor(
+    private readonly alertService: AlertService,
+    private readonly router: Router,
+    private readonly sessionStorageService: SessionStorageService,
+    protected taskService: WorkAllocationTaskService,
+    private readonly window: Window
+  ) {}
 
   public get returnUrl(): string {
-    return this.router ? this.router.url : `case-details/${this.task.jurisdiction}/${this.task.case_type_id}/${this.task.case_id}/tasks`;
+    return this.router
+      ? this.router.url
+      : `case-details/${this.task.jurisdiction}/${this.task.case_type_id}/${this.task.case_id}/tasks`;
   }
 
   public get task(): Task {
@@ -62,8 +66,7 @@ export class CaseTaskComponent implements OnInit {
   /**
    * Emit an event to refresh tasks
    */
-  @Output() public taskRefreshRequired: EventEmitter<void>
-    = new EventEmitter();
+  @Output() public taskRefreshRequired: EventEmitter<void> = new EventEmitter();
 
   public static replaceVariablesWithRealValues(task: Task): string {
     if (!task.description) {
@@ -92,7 +95,10 @@ export class CaseTaskComponent implements OnInit {
   public isTaskAssignedToCurrentUser(task: Task): boolean {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      if (!userInfo) {
+        return false;
+      }
       const userId = userInfo.id ? userInfo.id : userInfo.uid;
       this.userRoleCategory = userInfo.roleCategory;
       this.isUserJudicial = this.userRoleCategory === RoleCategory.JUDICIAL;
@@ -114,14 +120,14 @@ export class CaseTaskComponent implements OnInit {
         },
         error: (error) => {
           this.claimTaskErrors(error.status);
-        }
+        },
       });
       return;
     }
     const state = {
       returnUrl: this.returnUrl,
       keepUrl: true,
-      showAssigneeColumn: true
+      showAssigneeColumn: true,
     };
     const actionUrl = `/work/${task.id}/${option.id}`;
     // Had to add then() due to the below Sonarcloud failure
@@ -167,7 +173,7 @@ export class CaseTaskComponent implements OnInit {
         u.searchParams.delete('tid');
       }
       await this.router.navigate([u.toString()], {
-        queryParams: qp
+        queryParams: qp,
       });
     } catch (e) {
       console.log('Invalid url found in task onClick', e);

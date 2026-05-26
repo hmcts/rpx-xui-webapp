@@ -14,12 +14,21 @@ import { RoleAccessModule } from '../role-access/role-access.module';
 import { WorkAllocationComponentsModule } from './components/work-allocation.components.module';
 import * as fromContainers from './containers';
 import { WorkAllocationAccessGuard } from './guards';
-import { CaseworkerDataService, LocationDataService, StaffSupportedJurisdictionsService, WASupportedJurisdictionsService, WorkAllocationTaskService } from './services';
+import {
+  CaseworkerDataService,
+  LocationDataService,
+  StaffSupportedJurisdictionsService,
+  WASupportedJurisdictionsService,
+  WorkAllocationTaskService,
+} from './services';
 import { workAllocationRouting } from './work-allocation-feature.routes';
 
 // from containers
-@NgModule({ declarations: [...fromContainers.containers],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA], imports: [CommonModule,
+@NgModule({
+  declarations: [...fromContainers.containers],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  imports: [
+    CommonModule,
     SharedModule,
     MatDialogModule,
     WorkAllocationComponentsModule,
@@ -30,7 +39,9 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
     ReactiveFormsModule,
     RoleAccessModule,
     PaginationModule,
-    NgxPaginationModule], providers: [
+    NgxPaginationModule,
+  ],
+  providers: [
     WorkAllocationTaskService,
     WorkAllocationAccessGuard,
     AlertService,
@@ -41,6 +52,7 @@ import { workAllocationRouting } from './work-allocation-feature.routes';
     WASupportedJurisdictionsService,
     LoadingService,
     SessionStorageService,
-    provideHttpClient(withInterceptorsFromDi())
-  ] })
+    provideHttpClient(withInterceptorsFromDi()),
+  ],
+})
 export class WorkAllocationModule {}

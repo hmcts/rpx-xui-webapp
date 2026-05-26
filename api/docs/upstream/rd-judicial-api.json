@@ -1,0 +1,241 @@
+{
+  "openapi": "3.1.0",
+  "info": { "title": "OpenAPI definition", "version": "v0" },
+  "servers": [{ "url": "http://localhost", "description": "Generated server url" }],
+  "paths": {
+    "/refdata/judicial/users": {
+      "post": {
+        "tags": ["jrd-elink-controller"],
+        "summary": "This endpoint will be used for user search based on partial query. When the consumers inputs any 3 characters, they will call this api to fetch the required result.",
+        "description": "**IDAM Roles to access API** :\n jrd-system-user,\n jrd-admin",
+        "operationId": "refreshUserProfile",
+        "parameters": [
+          { "name": "page_size", "in": "header", "required": false, "schema": { "type": "integer", "format": "int32" } },
+          { "name": "page_number", "in": "header", "required": false, "schema": { "type": "integer", "format": "int32" } },
+          { "name": "sort_direction", "in": "header", "required": false, "schema": { "type": "string" } },
+          {
+            "name": "sort_column",
+            "in": "header",
+            "description": "Example Notations for the sort columns are personalCode,sidamId, emailId, fullName, surName, objectId etc.,",
+            "required": false,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "ServiceAuthorization",
+            "in": "header",
+            "description": "Keyword `Bearer` followed by a service-to-service token for a whitelisted micro-service",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/RefreshRoleRequest" } } },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Retrieve the user profiles for the given request. ",
+            "content": {
+              "application/vnd.jrd.api+json;Version=2.0": {
+                "schema": { "$ref": "#/components/schemas/UserProfileRefreshResponse" }
+              }
+            }
+          },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "User Authentication Failed" },
+          "403": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        },
+        "security": [{ "Authorization": [] }, { "ServiceAuthorization": [] }]
+      }
+    },
+    "/refdata/judicial/users/search": {
+      "post": {
+        "tags": ["jrd-elink-controller"],
+        "summary": "This endpoint will be used for user search based on partial query. When the consumers inputs any 3 characters, they will call this api to fetch the required result.",
+        "description": "**Valid IDAM role is required to access this endpoint**",
+        "operationId": "retrieveUsers",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "ServiceAuthorization",
+            "in": "header",
+            "description": "Keyword `Bearer` followed by a service-to-service token for a whitelisted micro-service",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UserSearchRequest" } } },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Retrieve the user profiles for the given request. ",
+            "content": {
+              "application/vnd.jrd.api+json;Version=2.0": { "schema": { "$ref": "#/components/schemas/UserSearchResponse" } }
+            }
+          },
+          "400": { "description": "Bad Request" },
+          "401": { "description": "User Authentication Failed" },
+          "403": { "description": "Unauthorized" },
+          "500": { "description": "Internal Server Error" }
+        },
+        "security": [{ "Authorization": [] }, { "ServiceAuthorization": [] }]
+      }
+    },
+    "/": {
+      "get": {
+        "tags": ["welcome-controller"],
+        "summary": "Welcome message for the Judicial API",
+        "operationId": "welcome",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Authorization token",
+            "required": true,
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "ServiceAuthorization",
+            "in": "header",
+            "description": "Keyword `Bearer` followed by a service-to-service token for a whitelisted micro-service",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Welcome message", "content": { "application/json": { "schema": { "type": "string" } } } }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RefreshRoleRequest": {
+        "type": "object",
+        "properties": {
+          "ccdServiceName": { "type": "string" },
+          "object_ids": { "type": "array", "items": { "type": "string" } },
+          "sidam_ids": { "type": "array", "items": { "type": "string" } },
+          "personal_code": { "type": "array", "items": { "type": "string" } }
+        }
+      },
+      "AppointmentRefreshResponse": {
+        "type": "object",
+        "properties": {
+          "base_location_id": { "type": "string" },
+          "epimms_id": { "type": "string" },
+          "cft_region_id": { "type": "string" },
+          "cft_region": { "type": "string" },
+          "is_principal_appointment": { "type": "string" },
+          "appointment": { "type": "string" },
+          "appointment_type": { "type": "string" },
+          "service_codes": { "type": "array", "items": { "type": "string" } },
+          "start_date": { "type": "string" },
+          "end_date": { "type": "string" },
+          "appointment_id": { "type": "string" },
+          "role_name_id": { "type": "string" },
+          "type": { "type": "string" },
+          "contract_type_id": { "type": "string" }
+        }
+      },
+      "AuthorisationRefreshResponse": {
+        "type": "object",
+        "properties": {
+          "jurisdiction": { "type": "string" },
+          "ticket_description": { "type": "string" },
+          "ticket_code": { "type": "string" },
+          "service_codes": { "type": "array", "items": { "type": "string" } },
+          "start_date": { "type": "string" },
+          "end_date": { "type": "string" },
+          "appointment_id": { "type": "string" },
+          "authorisation_id": { "type": "string" },
+          "jurisdiction_id": { "type": "string" }
+        }
+      },
+      "JudicialRoleTypeRefresh": {
+        "type": "object",
+        "properties": {
+          "jurisdiction_role_name": { "type": "string" },
+          "start_date": { "type": "string" },
+          "end_date": { "type": "string" },
+          "jurisdiction_role_id": { "type": "string" }
+        }
+      },
+      "UserProfileRefreshResponse": {
+        "type": "object",
+        "properties": {
+          "sidam_id": { "type": "string" },
+          "object_id": { "type": "string" },
+          "known_as": { "type": "string" },
+          "surname": { "type": "string" },
+          "full_name": { "type": "string" },
+          "post_nominals": { "type": "string" },
+          "email_id": { "type": "string" },
+          "personal_code": { "type": "string" },
+          "title": { "type": "string" },
+          "initials": { "type": "string" },
+          "retirement_date": { "type": "string" },
+          "active_flag": { "type": "string" },
+          "deleted_flag": { "type": "string" },
+          "appointments": { "type": "array", "items": { "$ref": "#/components/schemas/AppointmentRefreshResponse" } },
+          "authorisations": { "type": "array", "items": { "$ref": "#/components/schemas/AuthorisationRefreshResponse" } },
+          "roles": { "type": "array", "items": { "$ref": "#/components/schemas/JudicialRoleTypeRefresh" } }
+        }
+      },
+      "UserSearchRequest": {
+        "type": "object",
+        "properties": {
+          "searchString": {
+            "type": "string",
+            "example": "string",
+            "minLength": 1,
+            "pattern": "^[(a-zA-Z0-9 )\\p{L}\\p{N}'’-]{3,}"
+          },
+          "serviceCode": { "type": "string", "example": "string", "pattern": "[a-zA-Z0-9]+" },
+          "location": { "type": "string", "example": "string", "pattern": "[a-zA-Z0-9]+" }
+        },
+        "required": ["searchString"]
+      },
+      "UserSearchResponse": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "knownAs": { "type": "string" },
+          "surname": { "type": "string" },
+          "fullName": { "type": "string" },
+          "emailId": { "type": "string" },
+          "idamId": { "type": "string" },
+          "initials": { "type": "string" },
+          "postNominals": { "type": "string" },
+          "personalCode": { "type": "string" }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Authorization": { "type": "http", "scheme": "bearer", "bearerFormat": "JWT" },
+      "ServiceAuthorization": {
+        "type": "apiKey",
+        "description": "ServiceAuthorization",
+        "name": "ServiceAuthorization",
+        "in": "header",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

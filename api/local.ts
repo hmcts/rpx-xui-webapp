@@ -9,12 +9,11 @@ import errorHandler from './lib/error.handler';
 /**
  * Show the developer the application configuration when they are developing locally.
  */
-createApp()
-  .then((app) => {
-    console.log(applicationConfiguration());
+createApp().then((app) => {
+  console.log(applicationConfiguration());
 
-    app.use(appInsights);
-    app.use(errorHandler);
+  app.use(appInsights);
+  app.use(errorHandler);
 
-    app.listen(3001, () => console.log('Dev server listening on port 3001!'));
-  });
+  app.listen(3001, () => console.log('Dev server listening on port 3001!'));
+});

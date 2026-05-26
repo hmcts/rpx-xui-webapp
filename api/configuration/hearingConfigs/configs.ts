@@ -2,25 +2,25 @@ import { previewHearingJurisdictions, previewEnableHearingAmendments } from './p
 import { aatHearingJurisdictions, aatEnableHearingAmendments } from './aat';
 import { prodHearingJurisdictions, prodEnableHearingAmendment } from './prod';
 
-export function setupHearingConfigs(environment){
+export function setupHearingConfigs(environment) {
   let config;
-  switch (environment){
+  switch (environment) {
     case 'aat':
       config = {
         hearingJurisdictions: aatHearingJurisdictions,
-        hearingAmendment: aatEnableHearingAmendments
+        hearingAmendment: aatEnableHearingAmendments,
       };
       break;
     case 'preview':
       config = {
         hearingJurisdictions: previewHearingJurisdictions,
-        hearingAmendment: previewEnableHearingAmendments
+        hearingAmendment: previewEnableHearingAmendments,
       };
       break;
     default:
       config = {
         hearingJurisdictions: prodHearingJurisdictions,
-        hearingAmendment: prodEnableHearingAmendment
+        hearingAmendment: prodEnableHearingAmendment,
       };
       break;
   }

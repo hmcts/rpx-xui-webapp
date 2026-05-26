@@ -7,22 +7,10 @@ export const getSpecificAccessState = createSelector(
   (state: fromFeature.State) => state.specificAccess
 );
 
-export const currentSpecificAccessNavigation = createSelector(
-  getSpecificAccessState,
-  fromFeature.getSpecificAccessActiveState
-);
+export const currentSpecificAccessNavigation = createSelector(getSpecificAccessState, fromFeature.getSpecificAccessActiveState);
 
-export const specificAccessLastError = createSelector(
-  getSpecificAccessState,
-  fromFeature.getSpecificAccessLastErrors
-);
+export const specificAccessLastError = createSelector(getSpecificAccessState, fromFeature.getSpecificAccessLastErrors);
 
-export const specificAccessFormData = createSelector(
-  getSpecificAccessState,
-  fromFeature.getSpecificAccessFormData
-);
+export const specificAccessFormData = createSelector(getSpecificAccessState, fromFeature.getSpecificAccessFormData);
 
-export const specificAccessInfoFormData = createSelector(
-  getSpecificAccessState,
-  fromFeature.getSpecificAccessInfoFormData
-);
+export const specificAccessInfoFormData = createSelector(getSpecificAccessState, fromFeature.getSpecificAccessInfoFormData);

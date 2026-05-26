@@ -6,7 +6,7 @@ describe('noPrimaryLocationValidator', () => {
 
   beforeEach(() => {
     form = new FormGroup({
-      locations: new FormControl([], [noPrimaryLocationValidator()])
+      locations: new FormControl([], [noPrimaryLocationValidator()]),
     });
   });
 
@@ -19,7 +19,7 @@ describe('noPrimaryLocationValidator', () => {
     form.controls.locations.setValue([
       { name: 'Location A', is_primary: false },
       { name: 'Location B', is_primary: false },
-      { name: 'Location C', is_primary: false }
+      { name: 'Location C', is_primary: false },
     ]);
     expect(form.controls.locations.hasError('noPrimaryLocation')).toBe(true);
   });
@@ -28,7 +28,7 @@ describe('noPrimaryLocationValidator', () => {
     form.controls.locations.setValue([
       { name: 'Location A', is_primary: false },
       { name: 'Location B', is_primary: true },
-      { name: 'Location C', is_primary: false }
+      { name: 'Location C', is_primary: false },
     ]);
     expect(form.controls.locations.hasError('noPrimaryLocation')).toBe(false);
   });

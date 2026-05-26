@@ -17,10 +17,11 @@ import { AnswerLabelText, RemoveRoleText } from '../../models/enums/answer-text'
 import { AllocateRoleService } from '../../services';
 import { RemoveRoleComponent } from './remove-role.component';
 import { LoggerService } from '../../../app/services/logger/logger.service';
+import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
-  template: `
-    <exui-remove-role></exui-remove-role>`
+  standalone: false,
+  template: ` <exui-remove-role></exui-remove-role>`,
 })
 class WrapperComponent {
   @ViewChild(RemoveRoleComponent, { static: true }) public appComponentRef: RemoveRoleComponent;
@@ -32,32 +33,27 @@ const mockCaseworker: Caseworker = {
   lastName: 'testing',
   email: 'test@test.com',
   location: null,
-  roleCategory: RoleCategory.LEGAL_OPERATIONS
+  roleCategory: RoleCategory.LEGAL_OPERATIONS,
 };
 
 describe('RemoveRoleComponent', () => {
   let component: RemoveRoleComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
-  const routerMock = jasmine.createSpyObj('Router', [
-    'navigateByUrl', 'navigate', 'getCurrentNavigation'
-  ]);
+  let sessionStorageServiceMock: jasmine.SpyObj<any>;
+  const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate', 'getCurrentNavigation']);
   routerMock.navigate.and.returnValue(Promise.resolve(true));
-  const locationMock = jasmine.createSpyObj('Location', [
-    'back'
-  ]);
-  const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getAll']);
+  const locationMock = jasmine.createSpyObj('Location', ['back']);
+  const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getAll', 'getUserByIdamId']);
   const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
   const allworkUrl = 'work/all-work/cases';
   window.history.pushState({ backUrl: allworkUrl }, '', allworkUrl);
 
   class AllocateRoleMockService extends AllocateRoleService {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public confirmAllocation(allocateRoleStateData: AllocateRoleStateData): Observable<any> {
       return of(null);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public getCaseRoles(caseId: string, jurisdiction: string, caseType: string, assignmentId?: string): Observable<CaseRole[]> {
       return of([
         {
@@ -68,8 +64,8 @@ describe('RemoveRoleComponent', () => {
           notes: 'Test exclusion',
           roleName: TypeOfRole.CaseManager,
           roleCategory: RoleCategory.JUDICIAL,
-          email: 'user@test.com'
-        }
+          email: 'user@test.com',
+        },
       ] as unknown as CaseRole[]);
     }
 
@@ -77,12 +73,10 @@ describe('RemoveRoleComponent', () => {
       return of(null);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public removeAllocation(assigmentId: string): Observable<any> {
       return of(null);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public getCaseRolesUserDetails(caseRoles: string[]): Observable<CaseRoleDetails[]> {
       const caseRoleDetail: CaseRoleDetails = {
         idam_id: '999999999',
@@ -90,17 +84,16 @@ describe('RemoveRoleComponent', () => {
         email_id: 'user@test.com',
         full_name: 'Mr Test',
         known_as: '',
-        sidam_id: '999999999'
+        sidam_id: '999999999',
       };
       return of([caseRoleDetail]);
     }
   }
 
   beforeEach(waitForAsync(() => {
+    sessionStorageServiceMock = jasmine.createSpyObj('SessionStorageService', ['getItem']);
     TestBed.configureTestingModule({
-      schemas: [
-        NO_ERRORS_SCHEMA
-      ],
+      schemas: [NO_ERRORS_SCHEMA],
       declarations: [AnswersComponent, RemoveRoleComponent, WrapperComponent],
       imports: [RouterTestingModule],
       providers: [
@@ -120,51 +113,57 @@ describe('RemoveRoleComponent', () => {
                     id: '999999999',
                     actorId: '1234567',
                     actions: [],
-                    email: 'user@test.com'
-                  }
-                ]
+                    email: 'user@test.com',
+                  },
+                ],
               },
               queryParams: {
                 caseId: '123456789',
-                assignmentId: '999999999'
-              }
+                assignmentId: '999999999',
+              },
             },
-            queryParamMap: of(convertToParamMap({
-              caseId: '123456789',
-              assignmentId: '999999999',
-              jurisdiction: 'IA',
-              caseType: 'Alsyum'
-            }))
-          }
+            queryParamMap: of(
+              convertToParamMap({
+                caseId: '123456789',
+                assignmentId: '999999999',
+                jurisdiction: 'IA',
+                caseType: 'Alsyum',
+              })
+            ),
+          },
         },
         {
           provide: Router,
-          useValue: routerMock
+          useValue: routerMock,
         },
         {
           provide: Location,
-          useValue: locationMock
+          useValue: locationMock,
         },
         {
           provide: AllocateRoleService,
-          useClass: AllocateRoleMockService
+          useClass: AllocateRoleMockService,
         },
         {
           provide: CaseworkerDataService,
-          useValue: mockCaseworkerDataService
+          useValue: mockCaseworkerDataService,
         },
         {
           provide: LoggerService,
-          useValue: loggerServiceMock
+          useValue: loggerServiceMock,
+        },
+        {
+          provide: SessionStorageService,
+          useValue: sessionStorageServiceMock,
         },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
+    window.history.pushState({ backUrl: allworkUrl }, '', allworkUrl);
     routerMock.getCurrentNavigation.and.returnValue({ extras: { state: { backUrl: allworkUrl } } });
     mockCaseworkerDataService.getAll.and.returnValue(of([mockCaseworker]));
     fixture = TestBed.createComponent(WrapperComponent);
@@ -196,12 +195,42 @@ describe('RemoveRoleComponent', () => {
   });
 
   it('should navigate correctly on click', () => {
+    (component as any).backUrl = allworkUrl;
     component.onNavEvent(RemoveAllocationNavigationEvent.CANCEL);
     expect(locationMock.back).toHaveBeenCalled();
     component.onNavEvent(RemoveAllocationNavigationEvent.REMOVE_ROLE_ALLOCATION);
     const message: any = { type: 'success', message: RemoveRoleText.infoMessage };
-    const additionalState = { state: { showMessage: true, retainMessages: true, message, messageText: RemoveRoleText.infoMessage } };
+    const additionalState = {
+      state: { showMessage: true, retainMessages: true, message, messageText: RemoveRoleText.infoMessage },
+    };
     expect(routerMock.navigate).toHaveBeenCalledWith([allworkUrl], additionalState);
+  });
+
+  it('should not set email when caseworkers JSON is invalid', () => {
+    const allocateRoleService = TestBed.inject(AllocateRoleService) as AllocateRoleService;
+    sessionStorageServiceMock.getItem.and.returnValue('{not-json}');
+    spyOn(allocateRoleService, 'getCaseRoles').and.returnValue(
+      of([
+        {
+          added: Date.UTC(2021, 6, 1),
+          id: '999999999',
+          actorId: '999999999',
+          name: 'Mr Test',
+          notes: 'Test exclusion',
+          roleName: TypeOfRole.CaseManager,
+          roleCategory: RoleCategory.JUDICIAL,
+          email: null,
+        },
+      ] as unknown as CaseRole[])
+    );
+    spyOn(allocateRoleService, 'getCaseRolesUserDetails').and.returnValue(of([]));
+
+    const localFixture = TestBed.createComponent(WrapperComponent);
+    const localComponent = localFixture.componentInstance.appComponentRef;
+    localComponent.assignmentId = '999999999';
+    localFixture.detectChanges();
+
+    expect(localComponent.role.email).toBeNull();
   });
 
   describe('showSpinner', () => {
@@ -229,6 +258,65 @@ describe('RemoveRoleComponent', () => {
 
     afterEach(() => {
       fixture.destroy();
+    });
+  });
+
+  describe('RemoveRoleComponent getNamesIfNeeded', () => {
+    let fixture: ComponentFixture<RemoveRoleComponent>;
+    let component: RemoveRoleComponent;
+    let mockCaseworkerService: jasmine.SpyObj<CaseworkerDataService>;
+
+    beforeEach(() => {
+      // Reuse existing TestBed (already configured in previous beforeEach(waitForAsync))
+      fixture = TestBed.createComponent(RemoveRoleComponent);
+      component = fixture.componentInstance;
+      mockCaseworkerService = TestBed.inject(CaseworkerDataService) as jasmine.SpyObj<CaseworkerDataService>;
+
+      // Role with missing name/email to trigger fetch logic
+      component.role = {
+        id: 'role123',
+        actorId: '999999999',
+        added: Date.UTC(2024, 0, 1),
+        roleName: TypeOfRole.CaseManager,
+        roleCategory: RoleCategory.LEGAL_OPERATIONS,
+        name: undefined,
+        email: undefined,
+        notes: '',
+      } as any;
+
+      component.answers = [];
+      mockCaseworkerService.getUserByIdamId.calls.reset();
+      mockCaseworkerService.getUserByIdamId.and.returnValue(
+        of({
+          idamId: '999999999',
+          firstName: 'Fetch',
+          lastName: 'Target',
+          email: 'fetch.target@test.com',
+        } as Caseworker)
+      );
+
+      fixture.detectChanges();
+
+      // Invoke private method
+      component.role.name = undefined;
+      (component as any).getNamesIfNeeded();
+      fixture.detectChanges();
+    });
+
+    it('should fetch and populate name/email when missing', () => {
+      expect(mockCaseworkerService.getUserByIdamId).toHaveBeenCalledWith('999999999');
+      expect(component.role.name).toBe('Fetch Target');
+      expect(component.role.email).toBe('fetch.target@test.com');
+      expect(component.answers.length).toBe(2);
+      expect(component.answers[1].value).toContain('Fetch Target');
+      expect(component.answers[1].value).toContain('fetch.target@test.com');
+    });
+
+    it('should not call service when name already present', () => {
+      mockCaseworkerService.getUserByIdamId.calls.reset();
+      component.role.name = 'Already Present';
+      (component as any).getNamesIfNeeded();
+      expect(mockCaseworkerService.getUserByIdamId).not.toHaveBeenCalled();
     });
   });
 });

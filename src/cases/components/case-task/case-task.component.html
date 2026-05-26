@@ -1,53 +1,57 @@
-<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
+<hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible" />
 <p class="govuk-body">
-    <strong>{{task.task_title}}</strong>
-    <span class="hmcts-badge_right"></span>
+  <strong>{{ task.task_title }}</strong>
+  <span class="hmcts-badge_right"></span>
 </p>
 <dl class="govuk-summary-list govuk-summary-list--no-border">
   <!-- Display priority label:  Judges will be able to see only URGENT priority labels; others can see all priority labels (URGENT/HIGH/LOW)-->
   <div *ngIf="(isUserJudicial && isTaskUrgent) || !isUserJudicial" class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-            <span class="row-padding">Priority</span>
-        </dt>
-        <dd class="govuk-summary-list__value">
-            <exui-priority-field [priorityDate]="toDate(task.priority_date)" [majorPriority]="task.major_priority"
-                                 [dueDate]="toDate(task.dueDate)" [jurisdiction]="task.jurisdiction"
-            >
-            </exui-priority-field>
-        </dd>
-    </div>
-    <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-            <span class="row-padding">{{getDueDateTitle()}}</span>
-        </dt>
-        <dd class="govuk-summary-list__value">
-            <span *ngIf="userRoleCategory && userRoleCategory === 'JUDICIAL'">{{task.created_date | date:'d MMMM yyyy'}}</span>
-            <span *ngIf="userRoleCategory && userRoleCategory !== 'JUDICIAL'">{{task.due_date | date:'d MMMM yyyy'}}</span>
-        </dd>
-    </div>
-    <div class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-            <span class="row-padding">Assigned to</span>
-        </dt>
-        <dd class="govuk-summary-list__value">{{getAssigneeName(task)}}</dd>
-    </div>
-    <div class="govuk-summary-list__row" *ngIf="manageOptions && manageOptions.length > 0">
-        <dt class="govuk-summary-list__key">
-            <span class="row-padding">Manage</span>
-        </dt>
-        <dd class="govuk-summary-list__value">
-            <ng-container *ngFor="let option of manageOptions">
-                <a [routerLink]="" tabindex="0" (click)="onActionHandler(task, option)" class="right"
-                  [id]="'action_' + option.id">{{option.title}}</a>
-            </ng-container>
-        </dd>
-    </div>
-    <div *ngIf="isTaskAssignedToCurrentUser(task)" class="govuk-summary-list__row">
-        <dt class="govuk-summary-list__key">
-            <span class="row-padding">Next steps</span>
-        </dt>
-        <dd class="govuk-summary-list__value">
-          <ccd-markdown [content]="task?.description" [markdownUseHrefAsRouterLink]="true" (clicked)="onClick($event)"></ccd-markdown>
-        </dd>
-    </div>
+    <dt class="govuk-summary-list__key">
+      <span class="row-padding">Priority</span>
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <exui-priority-field
+        [priorityDate]="toDate(task.priority_date)"
+        [majorPriority]="task.major_priority"
+        [dueDate]="toDate(task.dueDate)"
+        [jurisdiction]="task.jurisdiction"
+      >
+      </exui-priority-field>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      <span class="row-padding">{{ getDueDateTitle() }}</span>
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <span *ngIf="userRoleCategory && userRoleCategory === 'JUDICIAL'">{{ task.created_date | date: 'd MMMM yyyy' }}</span>
+      <span *ngIf="userRoleCategory && userRoleCategory !== 'JUDICIAL'">{{ task.due_date | date: 'd MMMM yyyy' }}</span>
+    </dd>
+  </div>
+  <div class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      <span class="row-padding">Assigned to</span>
+    </dt>
+    <dd class="govuk-summary-list__value">{{ getAssigneeName(task) }}</dd>
+  </div>
+  <div class="govuk-summary-list__row" *ngIf="manageOptions && manageOptions.length > 0">
+    <dt class="govuk-summary-list__key">
+      <span class="row-padding">Manage</span>
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <ng-container *ngFor="let option of manageOptions">
+        <a [routerLink]="" tabindex="0" (click)="onActionHandler(task, option)" class="right" [id]="'action_' + option.id">{{
+          option.title
+        }}</a>
+      </ng-container>
+    </dd>
+  </div>
+  <div *ngIf="isTaskAssignedToCurrentUser(task)" class="govuk-summary-list__row">
+    <dt class="govuk-summary-list__key">
+      <span class="row-padding">Next steps</span>
+    </dt>
+    <dd class="govuk-summary-list__value">
+      <ccd-markdown [content]="task?.description" [markdownUseHrefAsRouterLink]="true" (clicked)="onClick($event)"></ccd-markdown>
+    </dd>
+  </div>
 </dl>

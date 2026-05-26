@@ -1,60 +1,56 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import {
-  GovUkErrorMessageComponent,
-  GovUkFieldsetComponent,
-  GovUkLabelComponent
-} from '@hmcts/rpx-xui-common-lib';
+import { GovUkErrorMessageComponent, GovUkFieldsetComponent, GovUkLabelComponent } from '@hmcts/rpx-xui-common-lib';
 import { RpxTranslationService } from 'rpx-xui-translation';
-import { BookingDateFormErrorMessage, BookingDateOption, BookingDatePageText, BookingProcess, DateFormControl } from '../../models';
+import {
+  BookingDateFormErrorMessage,
+  BookingDateOption,
+  BookingDatePageText,
+  BookingProcess,
+  DateFormControl,
+} from '../../models';
 import { BookingDateComponent } from './booking-date.component';
 
 describe('BookingDateComponent', () => {
   let component: BookingDateComponent;
   let fixture: ComponentFixture<BookingDateComponent>;
   window.onbeforeunload = jasmine.createSpy();
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+
   const rpxTranslationServiceStub = () => ({ language: 'en', translate: () => {} });
 
   const dateInterval = [
     { date: BookingDateOption.TODAY, checked: false },
     { date: BookingDateOption.WEEK, checked: false },
-    { date: BookingDateOption.DATERANGE, checked: false }
+    { date: BookingDateOption.DATERANGE, checked: false },
   ];
   const configStart = {
     id: 'startDate',
     name: 'startDate',
     hint: 'For example, 19 11 2021',
     label: 'Booking Starts',
-    isPageHeading: false
+    isPageHeading: false,
   };
   const configEnd = {
     id: 'endDate',
     name: 'endDate',
     hint: 'For example, 19 12 2021',
     label: 'Booking Ends',
-    isPageHeading: false
+    isPageHeading: false,
   };
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, FormsModule],
-      declarations: [
-        BookingDateComponent,
-        GovUkFieldsetComponent,
-        GovUkErrorMessageComponent,
-        GovUkLabelComponent
-      ],
+      declarations: [BookingDateComponent, GovUkFieldsetComponent, GovUkErrorMessageComponent, GovUkLabelComponent],
       providers: [
         FormBuilder,
         {
           provide: RpxTranslationService,
-          useFactory: rpxTranslationServiceStub
-        }
-      ]
-    })
-      .compileComponents();
+          useFactory: rpxTranslationServiceStub,
+        },
+      ],
+    }).compileComponents();
     fixture = TestBed.createComponent(BookingDateComponent);
     component = fixture.componentInstance;
     component.bookingProcess = { selectedDateOption: 0 } as BookingProcess;
@@ -68,7 +64,7 @@ describe('BookingDateComponent', () => {
       endDate_year: '',
       endDate_month: '',
       endDate_day: '',
-      dateOption: ''
+      dateOption: '',
     });
     component.setValidators();
     fixture.detectChanges();

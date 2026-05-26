@@ -19,8 +19,8 @@ describe('CaseAllocateRoleLinkResolverService', () => {
         { provide: Router, useValue: routerSpy },
         { provide: APP_BASE_HREF, useValue: '/' },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     });
     httpClient = TestBed.inject(HttpClient) as HttpClient;
   }));
@@ -30,7 +30,7 @@ describe('CaseAllocateRoleLinkResolverService', () => {
     const service: CaseAllocateRoleLinkResolverService = await TestBed.inject(CaseAllocateRoleLinkResolverService);
     const activatedRoute = new ActivatedRouteSnapshot();
     activatedRoute.params = {
-      cid: '1546883526751282'
+      cid: '1546883526751282',
     };
     service.resolve(activatedRoute).subscribe((value: boolean) => {
       expect(value).toBeTruthy();

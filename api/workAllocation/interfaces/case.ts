@@ -29,6 +29,8 @@ export interface Case {
   caseName: string;
   caseCategory: string;
   assigneeName: string;
+  // actorName used in parts of application - may not be needed
+  actorName?: string;
   name: string;
   isNew?: boolean;
   hearing_date?: string;
@@ -45,7 +47,7 @@ export interface CaseInternalData {
   caseManagementCategory?: CaseManagementCategory;
   caseManagementLocation?: CaseManagementLocation;
   hmctsCaseNameInternal?: string;
-  nextHearingDetails?: {hearingDateTime: Date};
+  nextHearingDetails?: { hearingDateTime: Date };
   caseNameHmctsInternal?: string;
 }
 
@@ -55,8 +57,8 @@ export interface CaseManagementLocation {
 }
 
 export interface CaseManagementCategory {
-  value: CaseManagementCategoryData,
-  list_items: CaseManagementCategoryData[]
+  value: CaseManagementCategoryData;
+  list_items: CaseManagementCategoryData[];
 }
 
 export interface CaseManagementCategoryData {

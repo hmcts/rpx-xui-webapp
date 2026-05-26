@@ -8,7 +8,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { AlertService, CaseNotifier, CasesService, LoadingService, PaginationModule } from '@hmcts/ccd-case-ui-toolkit';
 import { ExuiCommonLibModule, FeatureToggleService, FilterService } from '@hmcts/rpx-xui-common-lib';
 import { StoreModule } from '@ngrx/store';
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
 import { SessionStorageService } from '../../../app/services';
@@ -19,14 +19,22 @@ import { AllocateRoleService } from '../../../role-access/services';
 import { ListConstants, SortConstants, ConfigConstants } from '../../components/constants';
 import { WorkAllocationComponentsModule } from '../../components/work-allocation.components.module';
 import { Case } from '../../models/cases';
-import { CaseworkerDataService, LocationDataService, WASupportedJurisdictionsService, WorkAllocationCaseService } from '../../services';
+import {
+  CaseworkerDataService,
+  LocationDataService,
+  WASupportedJurisdictionsService,
+  WorkAllocationCaseService,
+} from '../../services';
 import { JurisdictionsService } from '../../services/juridictions.service';
 import { getMockCases } from '../../tests/utils.spec';
 import { WorkCaseListComponent } from '../work-case-list/work-case-list.component';
 import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-case-list-wrapper.component';
 import { MyAccessComponent } from './my-access.component';
 
-@Component({ template: '<exui-my-access></exui-my-access>' })
+@Component({
+  standalone: false,
+  template: '<exui-my-access></exui-my-access>',
+})
 class WrapperComponent {
   @ViewChild(MyAccessComponent) public appComponentRef: MyAccessComponent;
 }
@@ -36,19 +44,21 @@ describe('MyAccessComponent', () => {
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let router: Router;
   const mockCaseService = jasmine.createSpyObj('mockCaseService', ['searchCase', 'getMyAccess']);
   const mockAlertService = jasmine.createSpyObj('mockAlertService', ['destroy']);
   const mockSessionStorageService = jasmine.createSpyObj('mockSessionStorageService', ['getItem', 'setItem']);
-  const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll']);
+  const mockCaseworkerService = jasmine.createSpyObj('mockCaseworkerService', ['getAll', 'getUserByIdamId']);
   const mockFeatureService = jasmine.createSpyObj('mockFeatureService', ['getActiveWAFeature']);
   const mockLoadingService = jasmine.createSpyObj('mockLoadingService', ['register', 'unregister']);
   const mockFeatureToggleService = jasmine.createSpyObj('mockFeatureToggleService', ['isEnabled']);
   const mockFilterService = jasmine.createSpyObj('mockFilterService', ['getStream', 'get']);
   const mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['nextMessage']);
   const mockLocationService = jasmine.createSpyObj('mockLocationService', ['getLocations']);
-  const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', ['getWASupportedJurisdictions', 'getDetailedWASupportedJurisdictions']);
+  const mockWASupportedJurisdictionsService = jasmine.createSpyObj('mockWASupportedJurisdictionsService', [
+    'getWASupportedJurisdictions',
+    'getDetailedWASupportedJurisdictions',
+  ]);
   const mockJurisdictionsService = jasmine.createSpyObj('mockJurisdictionsService', ['getJurisdictions']);
   const mockRolesService = jasmine.createSpyObj('mockRolesService', ['getRoles', 'getValidRoles']);
 
@@ -59,12 +69,12 @@ describe('MyAccessComponent', () => {
         ExuiCommonLibModule,
         RouterTestingModule.withRoutes([
           { path: 'service-down', component: WrapperComponent },
-          { path: '**', component: WrapperComponent }
+          { path: '**', component: WrapperComponent },
         ]),
         HttpClientTestingModule,
         StoreModule.forRoot({ ...reducers }),
         WorkAllocationComponentsModule,
-        PaginationModule
+        PaginationModule,
       ],
       declarations: [MyAccessComponent, WrapperComponent, WorkCaseListComponent],
       providers: [
@@ -81,8 +91,8 @@ describe('MyAccessComponent', () => {
         { provide: JurisdictionsService, useValue: mockJurisdictionsService },
         { provide: AllocateRoleService, useValue: mockRolesService },
         CaseNotifier,
-        HttpClient
-      ]
+        HttpClient,
+      ],
     }).compileComponents();
   }));
 
@@ -90,13 +100,11 @@ describe('MyAccessComponent', () => {
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
 
-    // TODO: CAM_BOOKING 0 not neeed
-    // component.isPaginationEnabled$ = of(false);
     router = TestBed.inject(Router);
     const cases: Case[] = getMockCases();
     mockCaseService.searchCase.and.returnValue(of({ cases }));
     mockCaseService.getMyAccess.and.returnValue(of({ cases }));
-    mockCaseworkerService.getAll.and.returnValue(of([]));
+    mockCaseworkerService.getUserByIdamId.and.returnValue(of({}));
     mockFeatureService.getActiveWAFeature.and.returnValue(of('WorkAllocationRelease2'));
     mockFeatureToggleService.isEnabled.and.returnValue(of(false));
     mockFilterService.getStream.and.returnValue(of({}));
@@ -209,7 +217,7 @@ describe('MyAccessComponent', () => {
         email: 'test@test.com',
         forename: 'Test',
         surname: 'User',
-        active: true
+        active: true,
       };
       const mockUserRole = UserRole.LegalOps;
 
@@ -220,11 +228,9 @@ describe('MyAccessComponent', () => {
       const result = component.getSearchCaseRequestPagination();
 
       expect(result).toEqual({
-        search_parameters: [
-          { key: 'user', operator: 'IN', values: ['user123'] }
-        ],
+        search_parameters: [{ key: 'user', operator: 'IN', values: ['user123'] }],
         sorting_parameters: [{ sort_by: 'case_name', sort_order: 'asc' }],
-        search_by: mockUserRole
+        search_by: mockUserRole,
       });
       expect(mockSessionStorageService.getItem).toHaveBeenCalledWith('userDetails');
       expect(AppUtils.getUserRole).toHaveBeenCalledWith(mockUserInfo.roles);
@@ -238,7 +244,7 @@ describe('MyAccessComponent', () => {
         email: 'test@test.com',
         forename: 'Test',
         surname: 'User',
-        active: true
+        active: true,
       };
       const mockUserRole = UserRole.LegalOps;
 
@@ -288,7 +294,7 @@ describe('MyAccessComponent', () => {
         isNew: true,
         role: 'challenged-access-legal-ops',
         startDate: '2023-01-01',
-        endDate: '2023-12-31'
+        endDate: '2023-12-31',
       } as Case;
     });
 
@@ -296,23 +302,21 @@ describe('MyAccessComponent', () => {
       it('should update challenged access request when isNew is true', () => {
         const mockResponse: RoleAssignmentResponse = {
           roleRequest: null,
-          requestedRoles: []
+          requestedRoles: [],
         };
         spyOn(CasesService, 'updateChallengedAccessRequestAttributes').and.returnValue(of(mockResponse));
 
         component.onItemClickHandler(mockCase);
 
-        expect(CasesService.updateChallengedAccessRequestAttributes).toHaveBeenCalledWith(
-          httpClient,
-          'case123',
-          { isNew: false }
-        );
+        expect(CasesService.updateChallengedAccessRequestAttributes).toHaveBeenCalledWith(httpClient, 'case123', {
+          isNew: false,
+        });
       });
 
       it('should set isNew to false after successful update', () => {
         const mockResponse: RoleAssignmentResponse = {
           roleRequest: null,
-          requestedRoles: []
+          requestedRoles: [],
         };
         spyOn(CasesService, 'updateChallengedAccessRequestAttributes').and.returnValue(of(mockResponse));
 
@@ -342,23 +346,19 @@ describe('MyAccessComponent', () => {
       it('should update specific access request when isNew is true and startDate is not Pending', () => {
         const mockResponse: RoleAssignmentResponse = {
           roleRequest: null,
-          requestedRoles: []
+          requestedRoles: [],
         };
         spyOn(CasesService, 'updateSpecificAccessRequestAttributes').and.returnValue(of(mockResponse));
 
         component.onItemClickHandler(mockCase);
 
-        expect(CasesService.updateSpecificAccessRequestAttributes).toHaveBeenCalledWith(
-          httpClient,
-          'case123',
-          { isNew: false }
-        );
+        expect(CasesService.updateSpecificAccessRequestAttributes).toHaveBeenCalledWith(httpClient, 'case123', { isNew: false });
       });
 
       it('should set isNew to false after successful update', () => {
         const mockResponse: RoleAssignmentResponse = {
           roleRequest: null,
-          requestedRoles: []
+          requestedRoles: [],
         };
         spyOn(CasesService, 'updateSpecificAccessRequestAttributes').and.returnValue(of(mockResponse));
 

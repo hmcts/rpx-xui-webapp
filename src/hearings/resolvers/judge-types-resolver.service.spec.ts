@@ -24,10 +24,9 @@ describe('JudgeTypesResolverService', () => {
         LovRefDataService,
         { provide: APP_BASE_HREF, useValue: '/' },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    }
-    );
+        provideHttpClientTesting(),
+      ],
+    });
     lovRefDataService = TestBed.inject(LovRefDataService) as LovRefDataService;
   });
 
@@ -41,7 +40,7 @@ describe('JudgeTypesResolverService', () => {
     spyOn(service, 'getReferenceData$').and.callThrough();
     const route = new ActivatedRouteSnapshot();
     route.data = {
-      title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing'
+      title: 'HMCTS Manage cases | Request Hearing | Date Priority Hearing',
     };
     service.resolve(route).subscribe((refData: LovRefDataModel[]) => {
       expect(service.getReferenceData$).toHaveBeenCalled();

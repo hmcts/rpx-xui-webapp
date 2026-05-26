@@ -49,8 +49,17 @@ describe('ReasonableAdjustmentsAmendedConverter', () => {
     it('should transform is amended correctly if reasonable adjustments have been amended', () => {
       // Arrange
       const STATE: State = _.cloneDeep(initialState.hearings);
-      STATE.hearingRequest.hearingRequestMainModel.partyDetails[0].individualDetails.reasonableAdjustments = ['RA0042', 'RA0053', 'RA0013', 'RA0016', 'RA0042'];
-      STATE.hearingRequestToCompare.hearingRequestMainModel.partyDetails[0].individualDetails.reasonableAdjustments = ['RA0042', 'RA0053'];
+      STATE.hearingRequest.hearingRequestMainModel.partyDetails[0].individualDetails.reasonableAdjustments = [
+        'RA0042',
+        'RA0053',
+        'RA0013',
+        'RA0016',
+        'RA0042',
+      ];
+      STATE.hearingRequestToCompare.hearingRequestMainModel.partyDetails[0].individualDetails.reasonableAdjustments = [
+        'RA0042',
+        'RA0053',
+      ];
       // Act
       const result$ = reasonableAdjustmentsAmendedConverter.transformIsAmended(of(STATE));
       const isAmended = true;
@@ -62,8 +71,20 @@ describe('ReasonableAdjustmentsAmendedConverter', () => {
     it('should transform is amended correctly if reasonable adjustments have not been amended', () => {
       // Arrange
       const STATE: State = _.cloneDeep(initialState.hearings);
-      STATE.hearingRequest.hearingRequestMainModel.partyDetails[0].individualDetails.reasonableAdjustments = ['RA0042', 'RA0053', 'RA0013', 'RA0016', 'RA0042'];
-      STATE.hearingRequestToCompare.hearingRequestMainModel.partyDetails[0].individualDetails.reasonableAdjustments = ['RA0042', 'RA0053', 'RA0013', 'RA0016', 'RA0042'];
+      STATE.hearingRequest.hearingRequestMainModel.partyDetails[0].individualDetails.reasonableAdjustments = [
+        'RA0042',
+        'RA0053',
+        'RA0013',
+        'RA0016',
+        'RA0042',
+      ];
+      STATE.hearingRequestToCompare.hearingRequestMainModel.partyDetails[0].individualDetails.reasonableAdjustments = [
+        'RA0042',
+        'RA0053',
+        'RA0013',
+        'RA0016',
+        'RA0042',
+      ];
       // Act
       const result$ = reasonableAdjustmentsAmendedConverter.transformIsAmended(of(STATE));
       const isAmended = false;
@@ -82,7 +103,10 @@ describe('ReasonableAdjustmentsAmendedConverter', () => {
       originalPartyDetails[0].individualDetails.reasonableAdjustments = ['RA0042', 'RA0053', 'RA0013', 'RA0016', 'RA0042'];
       partyDetailsToCompare[0].individualDetails.reasonableAdjustments = ['RA0042', 'RA0053'];
       // Act
-      const result = reasonableAdjustmentsAmendedConverter.checkReasonableAdjustments(originalPartyDetails, partyDetailsToCompare);
+      const result = reasonableAdjustmentsAmendedConverter.checkReasonableAdjustments(
+        originalPartyDetails,
+        partyDetailsToCompare
+      );
       // Assert
       expect(result).toBe(true);
     });
@@ -95,7 +119,10 @@ describe('ReasonableAdjustmentsAmendedConverter', () => {
       originalPartyDetails[0].individualDetails.reasonableAdjustments = ['RA0042', 'RA0053', 'RA0013', 'RA0016', 'RA0042'];
       partyDetailsToCompare[0].individualDetails.reasonableAdjustments = ['RA0042', 'RA0053', 'RA0013', 'RA0016', 'RA0042'];
       // Act
-      const result = reasonableAdjustmentsAmendedConverter.checkReasonableAdjustments(originalPartyDetails, partyDetailsToCompare);
+      const result = reasonableAdjustmentsAmendedConverter.checkReasonableAdjustments(
+        originalPartyDetails,
+        partyDetailsToCompare
+      );
       // Assert
       expect(result).toBe(false);
     });
@@ -106,7 +133,10 @@ describe('ReasonableAdjustmentsAmendedConverter', () => {
       const originalPartyDetails: PartyDetailsModel[] = [STATE.hearingRequest.hearingRequestMainModel.partyDetails[1]];
       const partyDetailsToCompare: PartyDetailsModel[] = STATE.hearingRequestToCompare.hearingRequestMainModel.partyDetails;
       // Act
-      const result = reasonableAdjustmentsAmendedConverter.checkReasonableAdjustments(originalPartyDetails, partyDetailsToCompare);
+      const result = reasonableAdjustmentsAmendedConverter.checkReasonableAdjustments(
+        originalPartyDetails,
+        partyDetailsToCompare
+      );
       // Assert
       expect(result).toBe(false);
     });

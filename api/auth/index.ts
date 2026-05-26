@@ -20,18 +20,14 @@ import {
   SERVICES_IDAM_ISS_URL,
   SERVICES_IDAM_LOGIN_URL,
   SERVICES_IDAM_OAUTH_CALLBACK_URL,
-  SERVICES_IDAM_SERVICE_OVERRIDE,
   SERVICE_S2S_PATH,
   SESSION_SECRET,
   SYSTEM_USER_NAME,
   SYSTEM_USER_PASSWORD,
-  FEATURE_QUERY_IDAM_SERVICE_OVERRIDE
 } from '../configuration/references';
 import { client } from '../lib/appInsights';
 import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest } from '../lib/models';
-import axios from 'axios';
-import qs = require('qs');
 
 const logger = log4jui.getLogger('auth');
 
@@ -41,11 +37,12 @@ export const successCallback = (req: EnhancedRequest, res: Response, next: NextF
   const { accessToken } = user.tokenset;
   const cookieToken = getConfigValue(COOKIES_TOKEN);
   const cookieUserId = getConfigValue(COOKIES_USER_ID);
+  const secureCookie = showFeature(FEATURE_SECURE_COOKIE_ENABLED);
 
   logger.info('Setting session and cookies');
 
-  res.cookie(cookieUserId, userinfo.uid, { sameSite: 'strict' });
-  res.cookie(cookieToken, accessToken, { sameSite: 'strict' });
+  res.cookie(cookieUserId, userinfo.uid, { sameSite: 'strict', httpOnly: true, secure: secureCookie });
+  res.cookie(cookieToken, accessToken, { sameSite: 'strict', httpOnly: true, secure: secureCookie });
 
   if (!req.isRefresh) {
     return res.redirect('/');
@@ -66,7 +63,7 @@ export const failureCallback = (req: EnhancedRequest, res: Response) => {
 xuiNode.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback);
 xuiNode.on(AUTH.EVENT.AUTHENTICATE_FAILURE, failureCallback);
 
-export const getXuiNodeMiddleware = async () => {
+export const getXuiNodeMiddleware = () => {
   const idamWebUrl = getConfigValue(SERVICES_IDAM_LOGIN_URL);
   const authorizationUrl = `${idamWebUrl}/login`;
   const secret = getConfigValue(IDAM_SECRET);
@@ -77,7 +74,6 @@ export const getXuiNodeMiddleware = async () => {
   const tokenUrl = `${getConfigValue(SERVICES_IDAM_API_URL)}/oauth2/token`;
   const userName = getConfigValue(SYSTEM_USER_NAME);
   const password = getConfigValue(SYSTEM_USER_PASSWORD);
-  const clientServiceDetailsUrl = `${getConfigValue(SERVICES_IDAM_API_URL)}/api/v2/services/${idamClient}`;
 
   const routeCredential = {
     password,
@@ -86,14 +82,17 @@ export const getXuiNodeMiddleware = async () => {
       '/api/role-access/roles/getJudicialUsers',
       '/workallocation/getJudicialUsers',
       '/workallocation/caseworker/getUsersByServiceName',
+      '/workallocation/caseworker/getUsersByIdamIds',
+      '/workallocation/caseworker/getUserByIdamId',
       '/api/prd/judicial/searchJudicialUserByPersonalCodes',
-      '/api/prd/judicial/searchJudicialUserByIdamId'
+      '/api/prd/judicial/searchJudicialUserByIdamId',
     ],
     scope: 'openid profile roles manage-user create-user search-user',
-    userName
+    userName,
   };
 
   //TODO: we can move these out into proper config at some point to tidy up even further
+  // EXUI-3967 - above needs to be looked at further as unclear on best approach at this time
   const options: AuthOptions = {
     allowRolesRegex: getConfigValue(LOGIN_ROLE_MATCHER),
     authorizationURL: authorizationUrl,
@@ -110,42 +109,43 @@ export const getXuiNodeMiddleware = async () => {
     tokenEndpointAuthMethod: 'client_secret_post',
     tokenURL: tokenUrl,
     useRoutes: true,
-    serviceOverride: getConfigValue(SERVICES_IDAM_SERVICE_OVERRIDE),
-    ssoLogoutURL: `${idamWebUrl}/o/endSession`
+    ssoLogoutURL: `${idamWebUrl}/o/endSession`,
   };
 
   const baseStoreOptions = {
     cookie: {
       httpOnly: true,
       sameSite: 'Lax',
-      secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED)
+      secure: showFeature(FEATURE_SECURE_COOKIE_ENABLED),
     },
     name: 'xui-webapp',
     resave: false,
     saveUninitialized: false,
-    secret: getConfigValue(SESSION_SECRET)
+    secret: getConfigValue(SESSION_SECRET),
   } as SessionMetadata;
 
   const redisStoreOptions = {
     redisStore: {
-      ...baseStoreOptions, ...{
+      ...baseStoreOptions,
+      ...{
         redisStoreOptions: {
           redisCloudUrl: getConfigValue(REDIS_CLOUD_URL),
           redisKeyPrefix: getConfigValue(REDIS_KEY_PREFIX),
-          redisTtl: getConfigValue(REDIS_TTL)
-        }
-      }
-    }
+          redisTtl: getConfigValue(REDIS_TTL),
+        },
+      },
+    },
   };
 
   const fileStoreOptions = {
     fileStore: {
-      ...baseStoreOptions, ...{
+      ...baseStoreOptions,
+      ...{
         fileStoreOptions: {
-          filePath: getConfigValue(NOW) ? '/tmp/sessions' : '.sessions'
-        }
-      }
-    }
+          filePath: getConfigValue(NOW) ? '/tmp/sessions' : '.sessions',
+        },
+      },
+    },
   };
 
   const nodeLibOptions = {
@@ -153,52 +153,12 @@ export const getXuiNodeMiddleware = async () => {
       s2s: {
         microservice: getConfigValue(MICROSERVICE),
         s2sEndpointUrl: `${getConfigValue(SERVICE_S2S_PATH)}/lease`,
-        s2sSecret: s2sSecret.trim()
-      }
+        s2sSecret: s2sSecret.trim(),
+      },
     },
-    session: showFeature(FEATURE_REDIS_ENABLED) ? redisStoreOptions : fileStoreOptions
+    session: showFeature(FEATURE_REDIS_ENABLED) ? redisStoreOptions : fileStoreOptions,
   };
 
-  const getToken = async () => {
-    const data = qs.stringify({
-      grant_type: 'client_credentials',
-      client_id: idamClient,
-      client_secret: secret,
-      scope: 'profile roles view-service-provider'
-    });
-    try {
-      const response = await axios.post(tokenUrl, data, {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
-      });
-      return response.data.access_token;
-    } catch (error) {
-      logger.error('Error fetching token:', error);
-    }
-  };
-
-  const getClientServiceDetails = async () => {
-    try {
-      const accessToken = await getToken();
-      if (!accessToken) {
-        throw new Error('Failed to get access token');
-      }
-      const response = await axios.get(clientServiceDetailsUrl, { headers: {
-        'Authorization': `Bearer ${accessToken}`
-      } });
-      logger.info('Successfully retrieved service override from API');
-      return response.data.oauth2.issuerOverride;
-    } catch (error) {
-      logger.error('Error retrieving service override from API, falling back to config value', error);
-      return getConfigValue(SERVICES_IDAM_SERVICE_OVERRIDE);
-    }
-  };
-
-  if (showFeature(FEATURE_QUERY_IDAM_SERVICE_OVERRIDE)) {
-    logger.info('Querying IDAM service override');
-    options.serviceOverride = await getClientServiceDetails();
-  }
   const type = showFeature(FEATURE_OIDC_ENABLED) ? 'oidc' : 'oauth2';
   nodeLibOptions.auth[type] = options;
   logger._logger.info('Setting XuiNodeLib options');

@@ -16,43 +16,43 @@ const strCourtTypeIds = '10';
 describe('Locations ref data api, get matching location for search term', () => {
   const RESPONSE_BODY = [
     {
-      'court_venue_id': somethingLike('10576'),
-      'epimms_id': somethingLike('20262'),
-      'site_name': somethingLike('Central London County Court'),
-      'region_id': somethingLike('1'),
-      'region': somethingLike('London'),
-      'court_type': somethingLike('County Court'),
-      'court_type_id': somethingLike('10'),
-      'cluster_id': null,
-      'cluster_name': null,
-      'open_for_public': somethingLike('YES'),
-      'court_address': somethingLike('Thomas More Building, Royal Courts of Justice, Strand, London'),
-      'postcode': somethingLike('WC2A 2LL'),
-      'phone_number': somethingLike('0207 947 7502'),
-      'closed_date': null,
-      'court_location_code': somethingLike('372'),
-      'dx_address': somethingLike('DX: 44453 STRAND'),
-      'welsh_site_name': somethingLike(''),
-      'welsh_court_address': somethingLike(''),
-      'court_status': somethingLike('Open'),
-      'court_open_date': null,
-      'court_name': somethingLike('Central London County Court'),
-      'venue_name': somethingLike('Central London'),
-      'is_case_management_location': somethingLike('Y'),
-      'is_hearing_location': somethingLike('Y'),
-      'welsh_venue_name': somethingLike(''),
-      'is_temporary_location': somethingLike('N'),
-      'is_nightingale_court': somethingLike('N'),
-      'location_type': somethingLike('COURT'),
-      'parent_location': somethingLike(''),
-      'welsh_court_name': somethingLike(''),
-      'uprn': somethingLike(''),
-      'venue_ou_code': somethingLike(''),
-      'mrd_building_location_id': somethingLike('MRD-BLD-295'),
-      'mrd_venue_id': somethingLike('MRD-CRT-0808'),
-      'service_url': somethingLike(''),
-      'fact_url': somethingLike('https://www.find-court-tribunal.service.gov.uk/courts/administrative-court')
-    }
+      court_venue_id: somethingLike('10576'),
+      epimms_id: somethingLike('20262'),
+      site_name: somethingLike('Central London County Court'),
+      region_id: somethingLike('1'),
+      region: somethingLike('London'),
+      court_type: somethingLike('County Court'),
+      court_type_id: somethingLike('10'),
+      cluster_id: null,
+      cluster_name: null,
+      open_for_public: somethingLike('YES'),
+      court_address: somethingLike('Thomas More Building, Royal Courts of Justice, Strand, London'),
+      postcode: somethingLike('WC2A 2LL'),
+      phone_number: somethingLike('0207 947 7502'),
+      closed_date: null,
+      court_location_code: somethingLike('372'),
+      dx_address: somethingLike('DX: 44453 STRAND'),
+      welsh_site_name: somethingLike(''),
+      welsh_court_address: somethingLike(''),
+      court_status: somethingLike('Open'),
+      court_open_date: null,
+      court_name: somethingLike('Central London County Court'),
+      venue_name: somethingLike('Central London'),
+      is_case_management_location: somethingLike('Y'),
+      is_hearing_location: somethingLike('Y'),
+      welsh_venue_name: somethingLike(''),
+      is_temporary_location: somethingLike('N'),
+      is_nightingale_court: somethingLike('N'),
+      location_type: somethingLike('COURT'),
+      parent_location: somethingLike(''),
+      welsh_court_name: somethingLike(''),
+      uprn: somethingLike(''),
+      venue_ou_code: somethingLike(''),
+      mrd_building_location_id: somethingLike('MRD-BLD-295'),
+      mrd_venue_id: somethingLike('MRD-CRT-0808'),
+      service_url: somethingLike(''),
+      fact_url: somethingLike('https://www.find-court-tribunal.service.gov.uk/courts/administrative-court'),
+    },
   ];
 
   describe('get /getLocations}', () => {
@@ -72,21 +72,21 @@ describe('Locations ref data api, get matching location for search term', () => 
           path: '/refdata/location/court-venues/venue-search',
           query: {
             'search-string': searchTerm,
-            'court-type-id': strCourtTypeIds
+            'court-type-id': strCourtTypeIds,
           },
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
-          }
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
+          },
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'content-type': 'application/json'
+            'content-type': 'application/json',
           },
-          body: RESPONSE_BODY
-        }
+          body: RESPONSE_BODY,
+        },
       };
       pactSetUp.provider.addInteraction(interaction);
     });
@@ -107,31 +107,28 @@ describe('Locations ref data api, get matching location for search term', () => 
 
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
           body: {
-            'serviceIds': 'CIVIL',
-            'locationType': 'case-management',
-            'searchTerm': 'cen',
-            'userLocations': [
+            serviceIds: 'CIVIL',
+            locationType: 'case-management',
+            searchTerm: 'cen',
+            userLocations: [
               {
-                'service': 'CIVIL',
-                'locations': [
+                service: 'CIVIL',
+                locations: [
                   {
-                    'userId': '4ea1f8b9-b862-4fbe-b33d-9a3afdcc9936',
-                    'locationName': '',
-                    'services': [
-                      'CIVIL'
-                    ],
-                    'regionId': '1'
-                  }
-                ]
-              }
-            ]
-          }
-
+                    userId: '4ea1f8b9-b862-4fbe-b33d-9a3afdcc9936',
+                    locationName: '',
+                    services: ['CIVIL'],
+                    regionId: '1',
+                  },
+                ],
+              },
+            ],
+          },
         });
         let returnedResponse = null;
         const response = mockRes();

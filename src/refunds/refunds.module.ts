@@ -7,15 +7,9 @@ import { RefundsRoutingModule } from './refunds-routing.module';
 import { RefundsComponent } from './refunds/refunds.component';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RefundsRoutingModule,
-    SharedModule,
-    PaymentLibModule,
-    ExuiCommonLibModule
-  ],
+  imports: [CommonModule, RefundsRoutingModule, SharedModule, PaymentLibModule, ExuiCommonLibModule],
   declarations: [RefundsComponent],
   exports: [RefundsComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
-export class RefundsModule { }
+export class RefundsModule {}

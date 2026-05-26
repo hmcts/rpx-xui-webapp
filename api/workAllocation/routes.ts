@@ -18,12 +18,15 @@ import {
   postTaskSearchForCompletable,
   searchCaseWorker,
   searchTask,
+  searchTypesOfWork,
   showAllocateRoleLink,
   getTaskNames,
-  getUsersByServiceName
+  getUsersByServiceName,
+  getUsersByIdamIds,
+  getUserByIdamId,
 } from '.';
 import authInterceptor from '../lib/middleware/auth';
-import { getFullLocations, getLocationById, getLocations, getLocationsByRegion } from './locationController';
+import { getFullLocations, getLocations, getLocationsByRegion } from './locationController';
 import { postFindPersonSearch } from './personService';
 
 const router = Router({ mergeParams: true });
@@ -31,6 +34,8 @@ const router = Router({ mergeParams: true });
 router.use(authInterceptor);
 
 router.post('/caseworker/getUsersByServiceName', getUsersByServiceName);
+router.post('/caseworker/getUsersByIdamIds', getUsersByIdamIds);
+router.post('/caseworker/getUserByIdamId', getUserByIdamId);
 router.use('/caseworker/location/:locationId/service/:serviceId', getCaseWorkersForLocationAndService);
 router.use('/caseworker/location/:locationId', getAllCaseWorkersForLocation);
 router.use('/caseworker/service/:serviceId', getCaseWorkersForService);
@@ -38,7 +43,6 @@ router.use('/caseworker/search', searchCaseWorker);
 
 router.use('/findPerson', postFindPersonSearch);
 
-router.use('/location/:locationId', getLocationById);
 router.use('/location', getLocations);
 router.use('/full-location', getFullLocations);
 router.use('/region-location', getLocationsByRegion);
@@ -46,6 +50,7 @@ router.use('/region-location', getLocationsByRegion);
 router.use('/searchForCompletable', postTaskSearchForCompletable);
 
 router.use('/task/types-of-work', getTypesOfWork);
+router.use('/task/search-types-of-work', searchTypesOfWork);
 router.use('/task/:taskId/roles', getTaskRoles);
 router.use('/task/:taskId/:action', postTaskAction);
 router.use('/task/:taskId', getTask);

@@ -7,8 +7,9 @@ import * as fromRoot from '../../store';
 import { NavItemsModel } from './../../models/nav-item.model';
 
 @Component({
+  standalone: false,
   selector: 'exui-header',
-  templateUrl: './header.component.html'
+  templateUrl: './header.component.html',
 })
 export class HeaderComponent {
   @Input() public navItems: NavItemsModel[];
@@ -24,9 +25,7 @@ export class HeaderComponent {
 
   public contentHash: string = '#content';
 
-  constructor(
-    public store: Store<fromRoot.State>,
-  ) {}
+  constructor(public store: Store<fromRoot.State>) {}
 
   public onNavigate(event) {
     this.emitNavigate(event, this.navigate);

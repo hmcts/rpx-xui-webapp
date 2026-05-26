@@ -16,7 +16,7 @@ describe('Task Role Access Resolver', () => {
       id: 'roleId',
       actorId: 'actorId',
       actions: null,
-      email: null
+      email: null,
     };
     const mockService = jasmine.createSpyObj('WorkAllocationTaskService', ['getTask']);
     const mockAllocateRoleService = jasmine.createSpyObj('AllocateRoleService', ['getCaseAccessRoles']);
@@ -28,7 +28,7 @@ describe('Task Role Access Resolver', () => {
     route.paramMap = {
       get: () => {
         return 'somevalue';
-      }
+      },
     };
 
     const taskAndRole$ = taskRoleAccessResolver.resolve(route);

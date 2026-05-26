@@ -1,68 +1,258 @@
 import { defineConfig, devices } from '@playwright/test';
+import { execSync } from 'node:child_process';
+import { cpus, totalmem } from 'node:os';
+import { version as appVersion } from './package.json';
+import {
+  logResolvedTagFilters,
+  parseNonNegativeInt,
+  resolveApiProjectWorkerCount,
+  resolveDefaultReporter,
+  resolveTagFilters,
+  resolveWorkerCount,
+} from './playwright-config-utils';
 
-const { cpus } = require('os');
-const { version: appVersion } = require('./package.json');
+type EnvMap = NodeJS.ProcessEnv;
 
-const headlessMode = process.env.HEAD !== 'true';
+const defaultBaseUrl = 'https://manage-case.aat.platform.hmcts.net';
+const defaultApiTagFilterConfigPath = 'playwright_tests_new/api/service-tag-filter.json';
+const defaultE2eTagFilterConfigPath = 'playwright_tests_new/E2E/tag-filter.json';
+
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
 
-const resolveWorkerCount = () => {
-  const configured = process.env.FUNCTIONAL_TESTS_WORKERS;
+const resolveBaseUrl = (env: EnvMap = process.env) => env.TEST_URL || defaultBaseUrl;
+
+const resolveHeadlessMode = (env: EnvMap = process.env) => env.HEAD !== 'true';
+
+const resolveOdhinOutputFolder = (env: EnvMap = process.env) =>
+  env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
+
+const resolveOdhinIndexFilename = (env: EnvMap = process.env): string => {
+  const configured = env.PLAYWRIGHT_REPORT_INDEX_FILENAME?.trim();
   if (configured) {
-    return parseInt(configured, 10);
+    return configured;
   }
-  if (process.env.CI) {
-    return 1;
+  const outputFolder = resolveOdhinOutputFolder(env).toLowerCase();
+  if (outputFolder.includes('playwright-api') || outputFolder.includes('api_functional')) {
+    return 'xui-playwright-api.html';
   }
-  const logical = cpus()?.length ?? 1;
-  const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));
-  const suggested = Math.min(8, Math.max(2, approxPhysical));
-  return suggested;
+  if (outputFolder.includes('playwright-integration')) {
+    return 'xui-playwright-integration.html';
+  }
+  return 'xui-playwright-e2e.html';
 };
-const workerCount = resolveWorkerCount();
 
-module.exports = defineConfig({
-  testDir: './playwright_tests/E2E',
-  /* Run tests in files in parallel */
-  fullyParallel: true,
-  /* Fail the build on CI if you accidentally left test.only in the source code. */
-  forbidOnly: !!process.env.CI,
-  /* Retry on CI only */
-  retries: 3, // Set the number of retries for all projects
-
-  timeout: 3 * 60 * 1000,
-  expect: {
-    timeout: 1 * 60 * 1000
-  },
-  reportSlowTests: null,
-
-  /* Opt out of parallel tests on CI. */
-  workers: workerCount,
-
-  reporter: [
-    [process.env.CI ? 'dot' : 'list'],
-    ['odhin-reports-playwright', {
-      outputFolder: 'functional-output/tests/playwright-e2e/odhin-report',
-      indexFilename: 'xui-playwright.html',
-      title: 'RPX XUI Playwright',
-      testEnvironment: `${process.env.TEST_TYPE ?? (process.env.CI ? 'ci' : 'local')} | workers=${workerCount}`,
-      project: process.env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
-      release: process.env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${process.env.GIT_BRANCH ?? 'local'}`,
-      startServer: false,
-      consoleLog: true,
-      consoleError: true,
-      testOutput: 'only-on-failure'
-    }]
-  ],
-
-  projects: [
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'],
-        channel: 'chrome',
-        headless: headlessMode,
-        trace: 'on-first-retry'
-      }
+const resolveBranchName = (env: EnvMap = process.env): string => {
+  const envBranch =
+    env.PLAYWRIGHT_REPORT_BRANCH ||
+    env.GIT_BRANCH ||
+    env.BRANCH_NAME ||
+    env.GITHUB_REF_NAME ||
+    env.GITHUB_HEAD_REF ||
+    env.BUILD_SOURCEBRANCHNAME;
+  if (envBranch) {
+    return envBranch.replace(/^refs\/heads\//, '').trim();
+  }
+  try {
+    const gitBranch = execSync('git rev-parse --abbrev-ref HEAD', {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    })
+      .trim()
+      .replace(/^refs\/heads\//, '');
+    if (gitBranch && gitBranch !== 'HEAD') {
+      return gitBranch;
     }
-  ]
-});
+  } catch {
+    // Fall back to local label when branch cannot be resolved.
+  }
+  return 'local';
+};
+
+const resolveApiRetries = (env: EnvMap = process.env) =>
+  parseNonNegativeInt(env.PW_API_RETRIES) ?? parseNonNegativeInt(env.PW_E2E_RETRIES) ?? 2;
+
+const resolveEnvironmentFromUrl = (baseUrl: string): string => {
+  try {
+    const hostname = new URL(baseUrl).hostname.toLowerCase();
+    if (hostname === 'localhost' || hostname === '127.0.0.1') {
+      return 'local';
+    }
+    if (hostname.includes('.aat.')) {
+      return 'aat';
+    }
+    if (hostname.includes('.ithc.')) {
+      return 'ithc';
+    }
+    if (hostname.includes('.demo.')) {
+      return 'demo';
+    }
+    if (hostname.includes('.perftest.')) {
+      return 'perftest';
+    }
+    return hostname;
+  } catch {
+    return 'unknown';
+  }
+};
+
+const resolveTestEnvironmentLabel = (env: EnvMap, workerCount: number): string => {
+  const targetEnv = env.TEST_TYPE ?? resolveEnvironmentFromUrl(resolveBaseUrl(env));
+  const runContext = env.CI ? 'ci' : 'local-run';
+  const cpuCores = cpus()?.length ?? 'unknown';
+  const totalRamGiB = Math.round((totalmem() / 1024 ** 3) * 10) / 10;
+  return `${targetEnv} | ${runContext} | workers=${workerCount} | agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
+};
+
+const resolveApiTagFilters = (env: EnvMap = process.env) =>
+  resolveTagFilters({
+    env,
+    includeTagsEnvVar: 'API_PW_INCLUDE_TAGS',
+    excludedTagsEnvVar: 'API_PW_EXCLUDED_TAGS_OVERRIDE',
+    configPathEnvVar: 'API_PW_TAG_FILTER_CONFIG',
+    defaultConfigPath: defaultApiTagFilterConfigPath,
+    globalExcludedTagsEnvVar: 'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS',
+    ignoreGlobalExcludesEnvVar: 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES',
+    globalExcludedTagsPattern: /^(@svc-.+|@wa-action)$/,
+  });
+
+const resolveE2eTagFilters = (env: EnvMap = process.env) =>
+  resolveTagFilters({
+    env,
+    includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
+    excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
+    configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
+    defaultConfigPath: defaultE2eTagFilterConfigPath,
+    suiteTag: '@e2e',
+    globalExcludedTagsEnvVar: 'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS',
+    ignoreGlobalExcludesEnvVar: 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES',
+    globalExcludedTagsPattern: /^@e2e(?:-.+)?$/,
+  });
+
+const buildConfig = (env: EnvMap = process.env) => {
+  const temporaryProbePattern = '**/_tmp_*.spec.ts';
+  const workerCount = resolveWorkerCount(env);
+  const headlessMode = resolveHeadlessMode(env);
+  const odhinOutputFolder = resolveOdhinOutputFolder(env);
+  const reportBranch = resolveBranchName(env);
+  const apiTagFilters = resolveApiTagFilters(env);
+  const e2eTagFilters = resolveE2eTagFilters(env);
+  logResolvedTagFilters('API', apiTagFilters, env);
+  logResolvedTagFilters('E2E smoke', e2eTagFilters, env);
+  const apiRetries = resolveApiRetries(env);
+
+  return defineConfig({
+    use: {
+      baseURL: resolveBaseUrl(env),
+    },
+    testDir: '.',
+    testMatch: [
+      'playwright_tests/**/*.test.ts',
+      'playwright_tests_new/E2E/**/*.spec.ts',
+      'playwright_tests_new/integration/**/*.spec.ts',
+    ],
+    testIgnore: [temporaryProbePattern],
+    fullyParallel: true,
+    forbidOnly: !!env.CI,
+    retries: 2,
+    timeout: 180_000,
+    expect: {
+      timeout: 60_000,
+    },
+    reportSlowTests: null,
+    workers: workerCount,
+    reporter: [
+      [resolveDefaultReporter(env)],
+      ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs'],
+      [
+        './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
+        {
+          outputFolder: odhinOutputFolder,
+          indexFilename: resolveOdhinIndexFilename(env),
+          title: 'RPX XUI Playwright',
+          testEnvironment: resolveTestEnvironmentLabel(env, workerCount),
+          project: env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
+          release: env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${reportBranch}`,
+          startServer: false,
+          consoleLog: true,
+          consoleError: true,
+          testOutput: 'only-on-failure',
+        },
+      ],
+    ],
+    projects: [
+      {
+        name: 'chromium',
+        testIgnore: [
+          'playwright_tests_new/api/**',
+          'playwright_tests_new/E2E/test/smoke/smokeTest.spec.ts',
+          temporaryProbePattern,
+        ],
+        use: {
+          baseURL: resolveBaseUrl(env),
+          ...devices['Desktop Chrome'],
+          channel: 'chrome',
+          headless: headlessMode,
+          trace: 'retain-on-failure',
+          screenshot: {
+            mode: 'only-on-failure',
+            fullPage: true,
+          },
+          video: 'off',
+        },
+      },
+      {
+        name: 'smoke',
+        testMatch: ['playwright_tests_new/E2E/test/smoke/smokeTest.spec.ts'],
+        grep: e2eTagFilters.grep,
+        grepInvert: e2eTagFilters.grepInvert,
+        use: {
+          baseURL: resolveBaseUrl(env),
+          ...devices['Desktop Chrome'],
+          channel: 'chrome',
+          headless: headlessMode,
+          trace: 'retain-on-failure',
+          screenshot: {
+            mode: 'only-on-failure',
+            fullPage: true,
+          },
+          video: 'off',
+        },
+      },
+      {
+        name: 'node-api',
+        testMatch: ['playwright_tests_new/api/**/*.api.ts'],
+        grep: apiTagFilters.grep,
+        grepInvert: apiTagFilters.grepInvert,
+        fullyParallel: true,
+        workers: resolveApiProjectWorkerCount(env),
+        retries: apiRetries,
+        timeout: 60_000,
+        expect: {
+          timeout: 10_000,
+        },
+        use: {
+          headless: true,
+          screenshot: 'off',
+          video: 'off',
+          trace: 'off',
+        },
+      },
+    ],
+  });
+};
+
+const config = buildConfig(process.env);
+
+(config as { __test__?: unknown }).__test__ = {
+  resolveBaseUrl,
+  resolveWorkerCount,
+  resolveApiProjectWorkerCount,
+  resolveBranchName,
+  resolveApiTagFilters,
+  resolveE2eTagFilters,
+  resolveApiRetries,
+  resolveDefaultReporter,
+  buildConfig,
+};
+
+export default config;

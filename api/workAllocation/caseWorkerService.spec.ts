@@ -2,7 +2,6 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { http } from '../lib/http';
 import * as proxy from '../lib/proxy';
@@ -16,14 +15,14 @@ import {
   handleNewUsersGet,
   handlePostSearch,
   handlePostRoleAssignments,
-  handlePostRoleAssignmentsWithNewUsers,
-  handleCaseWorkersForServicesPost,
   handlePostCaseWorkersRefData,
   handlePostJudicialWorkersRefData,
   getUserIdsFromRoleApiResponse,
-  getUserIdsFromJurisdictionRoleResponse
+  getUserIdsFromJurisdictionRoleResponse,
 } from './caseWorkerService';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('CaseWorker Service', () => {
@@ -34,7 +33,7 @@ describe('CaseWorker Service', () => {
     sandbox.stub(console, 'warn');
     sandbox.stub(proxy, 'setHeaders').returns({
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer token'
+      Authorization: 'Bearer token',
     });
   });
 
@@ -44,7 +43,10 @@ describe('CaseWorker Service', () => {
 
   describe('handleUsersGet', () => {
     it('should make a get request and return users data', async () => {
-      const mockUsers = [{ id: '1', name: 'User 1' }, { id: '2', name: 'User 2' }];
+      const mockUsers = [
+        { id: '1', name: 'User 1' },
+        { id: '2', name: 'User 2' },
+      ];
       const mockResponse = { status: 200, data: mockUsers };
       sandbox.stub(http, 'get').resolves(mockResponse);
       const path = '/users';
@@ -73,7 +75,7 @@ describe('CaseWorker Service', () => {
       const mockResponse = { status: 200, data: mockUsers };
       sandbox.stub(http, 'get').resolves(mockResponse);
       const path = '/new-users';
-      const headers = { 'Authorization': 'Bearer custom-token' };
+      const headers = { Authorization: 'Bearer custom-token' };
 
       const data = await handleNewUsersGet(path, headers);
 
@@ -232,199 +234,42 @@ describe('CaseWorker Service', () => {
   });
 
   describe('handlePostRoleAssignments', () => {
-    it('should make a post request with MAX_RECORDS size', async () => {
+    it('should make a post request with path and payload', async () => {
       const mockResponse = {
         status: 200,
         data: {
-          roleAssignmentResponse: [{ id: '1' }, { id: '2' }]
-        }
+          roleAssignmentResponse: [{ id: '1' }, { id: '2' }],
+        },
       };
       sandbox.stub(http, 'post').resolves(mockResponse);
       const path = '/role-assignments';
       const payload = { jurisdiction: 'SSCS' };
       const req = mockReq();
 
-      const response = await handlePostRoleAssignments(path, payload, req);
+      const roleAssignments = await handlePostRoleAssignments(path, payload, req);
 
-      expect(response).to.deep.equal(mockResponse);
+      expect(roleAssignments).to.deep.equal(mockResponse.data.roleAssignmentResponse);
       expect(http.post).to.have.been.calledOnce;
       const callArgs = (http.post as sinon.SinonStub).getCall(0).args;
       expect(callArgs[0]).to.equal(path);
       expect(callArgs[1]).to.deep.equal(payload);
-      expect(callArgs[2].headers.pageNumber).to.equal(0);
-      expect(callArgs[2].headers.size).to.equal(100000);
-    });
-
-    it('should handle response with MAX_RECORDS (100000 items)', async () => {
-      const roleAssignments = Array(100000).fill({ id: 'test' });
-      const mockResponse = {
-        status: 200,
-        data: {
-          roleAssignmentResponse: roleAssignments
-        }
-      };
-      sandbox.stub(http, 'post').resolves(mockResponse);
-      const path = '/role-assignments';
-      const payload = { jurisdiction: 'SSCS' };
-      const req = mockReq();
-
-      const response = await handlePostRoleAssignments(path, payload, req);
-
-      // Verify the function completes successfully even with MAX_RECORDS
-      expect(response).to.deep.equal(mockResponse);
-      expect(response.data.roleAssignmentResponse).to.have.length(100000);
     });
 
     it('should handle empty response', async () => {
       const mockResponse = {
         status: 200,
         data: {
-          roleAssignmentResponse: []
-        }
+          roleAssignmentResponse: [],
+        },
       };
       sandbox.stub(http, 'post').resolves(mockResponse);
       const path = '/role-assignments';
       const payload = {};
       const req = mockReq();
 
-      const response = await handlePostRoleAssignments(path, payload, req);
+      const roleAssignments = await handlePostRoleAssignments(path, payload, req);
 
-      expect(response.data.roleAssignmentResponse).to.be.empty;
-    });
-  });
-
-  describe('handlePostRoleAssignmentsWithNewUsers', () => {
-    it('should make a post request with provided headers', async () => {
-      const mockResponse = {
-        status: 200,
-        data: {
-          roleAssignmentResponse: [{ id: '1' }]
-        }
-      };
-      sandbox.stub(http, 'post').resolves(mockResponse);
-      const path = '/role-assignments';
-      const payload = { jurisdiction: 'SSCS' };
-      const headers = { 'Authorization': 'Bearer token' };
-
-      const response = await handlePostRoleAssignmentsWithNewUsers(path, payload, headers);
-
-      expect(response).to.deep.equal(mockResponse);
-      expect(http.post).to.have.been.calledWith(path, payload, { headers });
-    });
-
-    it('should handle response with MAX_RECORDS (100000 items) for new users', async () => {
-      const roleAssignments = Array(100000).fill({ id: 'test' });
-      const mockResponse = {
-        status: 200,
-        data: {
-          roleAssignmentResponse: roleAssignments
-        }
-      };
-      sandbox.stub(http, 'post').resolves(mockResponse);
-      const path = '/role-assignments';
-      const payload = { jurisdiction: 'SSCS' };
-      const headers = {};
-
-      const response = await handlePostRoleAssignmentsWithNewUsers(path, payload, headers);
-
-      // Verify the function completes successfully even with MAX_RECORDS
-      expect(response).to.deep.equal(mockResponse);
-      expect(response.data.roleAssignmentResponse).to.have.length(100000);
-    });
-  });
-
-  describe('handleCaseWorkersForServicesPost', () => {
-    it('should make multiple post requests for each payload', async () => {
-      const payloads = [
-        {
-          attributes: { jurisdiction: ['SSCS'] },
-          roleName: ['caseworker'],
-          roleType: ['ctsc'],
-          validAt: new Date().toISOString()
-        },
-        {
-          attributes: { jurisdiction: ['IA'] },
-          roleName: ['caseworker'],
-          roleType: ['ctsc'],
-          validAt: new Date().toISOString()
-        }
-      ];
-      const mockResponses = [
-        { status: 200, data: { roleAssignmentResponse: [{ id: '1' }] } },
-        { status: 200, data: { roleAssignmentResponse: [{ id: '2' }] } }
-      ];
-      const httpStub = sandbox.stub(http, 'post');
-      httpStub.onCall(0).resolves(mockResponses[0]);
-      httpStub.onCall(1).resolves(mockResponses[1]);
-      const path = '/caseworkers';
-      const req = mockReq();
-
-      const result = await handleCaseWorkersForServicesPost(path, payloads, req);
-
-      expect(result).to.have.length(2);
-      expect(result[0]).to.deep.equal({ jurisdiction: 'SSCS', data: mockResponses[0].data });
-      expect(result[1]).to.deep.equal({ jurisdiction: 'IA', data: mockResponses[1].data });
-      expect(httpStub).to.have.been.calledTwice;
-    });
-
-    it('should handle empty payloads array', async () => {
-      const payloads: any[] = [];
-      const path = '/caseworkers';
-      const req = mockReq();
-
-      const result = await handleCaseWorkersForServicesPost(path, payloads, req);
-
-      expect(result).to.be.empty;
-    });
-
-    it('should handle response with MAX_RECORDS (100000 items) for any service', async () => {
-      const payloads = [
-        {
-          attributes: { jurisdiction: ['SSCS'] },
-          roleName: ['caseworker'],
-          roleType: ['ctsc'],
-          validAt: new Date().toISOString()
-        }
-      ];
-      const roleAssignments = Array(100000).fill({ id: 'test' });
-      const mockResponse = {
-        status: 200,
-        data: { roleAssignmentResponse: roleAssignments }
-      };
-      sandbox.stub(http, 'post').resolves(mockResponse);
-      const path = '/caseworkers';
-      const req = mockReq();
-
-      const result = await handleCaseWorkersForServicesPost(path, payloads, req);
-
-      // Verify the function completes successfully even with MAX_RECORDS
-      expect(result).to.have.length(1);
-      expect(result[0].jurisdiction).to.equal('SSCS');
-      expect(result[0].data.roleAssignmentResponse).to.have.length(100000);
-    });
-
-    it('should handle post request error in loop', async () => {
-      const payloads = [
-        {
-          attributes: { jurisdiction: ['SSCS'] },
-          roleName: ['caseworker'],
-          roleType: ['ctsc'],
-          validAt: new Date().toISOString()
-        },
-        {
-          attributes: { jurisdiction: ['IA'] },
-          roleName: ['caseworker'],
-          roleType: ['ctsc'],
-          validAt: new Date().toISOString()
-        }
-      ];
-      const httpStub = sandbox.stub(http, 'post');
-      httpStub.onCall(0).resolves({ status: 200, data: { roleAssignmentResponse: [] } });
-      httpStub.onCall(1).rejects(new Error('Service error'));
-      const path = '/caseworkers';
-      const req = mockReq();
-
-      await expect(handleCaseWorkersForServicesPost(path, payloads, req)).to.be.rejectedWith('Service error');
+      expect(roleAssignments).to.be.empty;
     });
   });
 
@@ -432,11 +277,11 @@ describe('CaseWorker Service', () => {
     it('should make post requests for each jurisdiction with userIds', async () => {
       const userIdsByJurisdiction = [
         { jurisdiction: 'SSCS', userIds: ['user1', 'user2'] },
-        { jurisdiction: 'IA', userIds: ['user3'] }
+        { jurisdiction: 'IA', userIds: ['user3'] },
       ];
       const mockResponses = [
         { status: 200, data: [{ id: 'user1', name: 'User 1' }] },
-        { status: 200, data: [{ id: 'user3', name: 'User 3' }] }
+        { status: 200, data: [{ id: 'user3', name: 'User 3' }] },
       ];
       const httpStub = sandbox.stub(http, 'post');
       httpStub.onCall(0).resolves(mockResponses[0]);
@@ -458,7 +303,7 @@ describe('CaseWorker Service', () => {
       const userIdsByJurisdiction = [
         { jurisdiction: 'SSCS', userIds: ['user1'] },
         { jurisdiction: 'IA', userIds: [] },
-        { jurisdiction: 'CIVIL', userIds: null }
+        { jurisdiction: 'CIVIL', userIds: null },
       ];
       const mockResponse = { status: 200, data: [{ id: 'user1' }] };
       sandbox.stub(http, 'post').resolves(mockResponse);
@@ -535,8 +380,8 @@ describe('CaseWorker Service', () => {
         roleAssignmentResponse: [
           { actorId: 'user1', roleId: 'role1' },
           { actorId: 'user2', roleId: 'role2' },
-          { actorId: 'user3', roleId: 'role3' }
-        ]
+          { actorId: 'user3', roleId: 'role3' },
+        ],
       };
 
       const userIds = getUserIdsFromRoleApiResponse(response);
@@ -549,8 +394,8 @@ describe('CaseWorker Service', () => {
         roleAssignmentResponse: [
           { actorId: 'user1', roleId: 'role1' },
           { actorId: 'user1', roleId: 'role2' },
-          { actorId: 'user2', roleId: 'role3' }
-        ]
+          { actorId: 'user2', roleId: 'role3' },
+        ],
       };
 
       const userIds = getUserIdsFromRoleApiResponse(response);
@@ -603,18 +448,16 @@ describe('CaseWorker Service', () => {
           data: {
             roleAssignmentResponse: [
               { actorId: 'user1', roleId: 'role1' },
-              { actorId: 'user2', roleId: 'role2' }
-            ]
-          }
+              { actorId: 'user2', roleId: 'role2' },
+            ],
+          },
         },
         {
           jurisdiction: 'IA',
           data: {
-            roleAssignmentResponse: [
-              { actorId: 'user3', roleId: 'role3' }
-            ]
-          }
-        }
+            roleAssignmentResponse: [{ actorId: 'user3', roleId: 'role3' }],
+          },
+        },
       ];
 
       const result = getUserIdsFromJurisdictionRoleResponse(response);
@@ -637,9 +480,9 @@ describe('CaseWorker Service', () => {
         {
           jurisdiction: 'SSCS',
           data: {
-            roleAssignmentResponse: []
-          }
-        }
+            roleAssignmentResponse: [],
+          },
+        },
       ];
 
       const result = getUserIdsFromJurisdictionRoleResponse(response);
@@ -652,8 +495,8 @@ describe('CaseWorker Service', () => {
       const response = [
         {
           jurisdiction: 'SSCS',
-          data: null
-        }
+          data: null,
+        },
       ];
 
       expect(() => getUserIdsFromJurisdictionRoleResponse(response)).to.throw();

@@ -11,33 +11,39 @@
             <exui-choose-role-error
               #chooseRole
               *ngIf="isComponentVisible(navigationCurrentState, noRolesErrorVisibilityStates)"
-              [navEvent]="navEvent">
+              [navEvent]="navEvent"
+            >
             </exui-choose-role-error>
             <exui-choose-role
               #chooseRole
               *ngIf="isComponentVisible(navigationCurrentState, chooseRoleVisibilityStates)"
-              [navEvent]="navEvent">
+              [navEvent]="navEvent"
+            >
             </exui-choose-role>
             <exui-choose-allocate-to
               #chooseAllocateTo
               *ngIf="isComponentVisible(navigationCurrentState, chooseAllocateToVisibilityStates)"
-              [navEvent]="navEvent">
+              [navEvent]="navEvent"
+            >
             </exui-choose-allocate-to>
             <exui-allocate-role-search-person
               #searchPerson
               *ngIf="isComponentVisible(navigationCurrentState, searchPersonVisibilityStates)"
               [navEvent]="navEvent"
-              [existingUsers]="existingUsers">
+              [existingUsers]="existingUsers"
+            >
             </exui-allocate-role-search-person>
             <exui-choose-duration
               #chooseDuration
               *ngIf="isComponentVisible(navigationCurrentState, chooseDurationVisibilityStates)"
-              [navEvent]="navEvent">
+              [navEvent]="navEvent"
+            >
             </exui-choose-duration>
             <exui-allocate-role-check-answers
               #checkAnswers
               *ngIf="isComponentVisible(navigationCurrentState, checkAnswersVisibilityStates)"
-              [navEvent]="navEvent">
+              [navEvent]="navEvent"
+            >
             </exui-allocate-role-check-answers>
           </div>
         </exui-allocate-role-navigation>

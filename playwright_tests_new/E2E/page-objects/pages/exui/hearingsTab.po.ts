@@ -135,7 +135,7 @@ export class HearingsTabPage {
     }
   }
 
-  async additionalSecurity(model: HearingJourneyModel, page: Page): Promise<void> {
+  async additionalSecurity(model: HearingJourneyModel): Promise<void> {
     const value = model.get('hearingFacilities', 'additionalSecurity');
 
     if (value === 'Yes') {

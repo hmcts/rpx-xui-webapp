@@ -95,7 +95,7 @@ EXUI_BASE_URL=http://localhost:3000 \
 MANAGE_CASES_BASE_URL=http://localhost:3000/cases \
 IDAM_WEB_URL=http://localhost:8080 \
 IDAM_TESTING_SUPPORT_URL=http://localhost:8080 \
-FUNCTIONAL_TESTS_WORKERS=4 \
+FUNCTIONAL_TESTS_WORKERS=6 \
 PLAYWRIGHT_SKIP_INSTALL=true \
 yarn test:playwright:integration
 ```
@@ -492,7 +492,7 @@ What it does not validate:
 
 ### Parallelism
 
-Playwright worker count defaults are suite-specific: 2 workers for E2E, 4 workers for API, and 4 workers for integration.
+Playwright worker count defaults are 6 workers for E2E, API, and integration.
 Set `FUNCTIONAL_TESTS_WORKERS` to override this behaviour explicitly.
 
 ### Integration local progress timer

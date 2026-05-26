@@ -26,7 +26,7 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
     await openHomeWithCapturedSession(page, userIdentfier);
   });
 
-  test('Verify that the hearings Tab is present and start the journey ', async ({
+  test('Submit a new Hearing - Happy Path journey ', async ({
     caseDetailsPage,
     hearingsTabPage,
     hearingsJourneyPage,
@@ -203,10 +203,8 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
       await expect(hearingsTabPage.pastOrCancelledHeading('Past or cancelled')).toBeVisible();
     });
 
-    console.log('~~~~~~~~~~ Hearings Journey E2E Test Completed  ~~~~~~~~~~ Created Hearing with ID  === ' + hearingId);
+    console.log('~~~~~~~~~~  Created Hearing with ID  === ' + hearingId);
   });
-
-  // TODO Data SetUp - Possibly Refactor To a different Helper
 
   function setUpHearingJourneyData() {
     // Hearing facilities

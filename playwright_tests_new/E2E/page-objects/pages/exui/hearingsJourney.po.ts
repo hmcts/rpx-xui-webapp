@@ -71,7 +71,6 @@ export class HearingsJourneyPage {
   readonly specificDateYes: Locator = this.page.locator('#hearingSingleDate');
   readonly specificDateRange: Locator = this.page.locator('#hearingDateRange');
 
-  readonly selectedHearingPriority: Locator = this.page.locator('#hearing-priority .govuk-radios');
   readonly hearingLinkInformation = this.page.locator('.govuk-inset-text').first();
   readonly submitRequestButton = this.page.getByRole('button', { name: 'Submit request' });
 
@@ -82,7 +81,6 @@ export class HearingsJourneyPage {
 
   readonly overlayLocationPanel = this.page
     .locator('.cdk-overlay-container .cdk-overlay-pane')
-    // .filter({ has: this.page.getByRole('listbox') });
     .filter({ has: this.page.locator('.mat-autocomplete-panel[role="listbox"]') });
 
   readonly addLocationsButton = this.page.locator('.search-location').getByRole('link', { name: ' Add location ' });
@@ -116,7 +114,6 @@ export class HearingsJourneyPage {
     for (const facility of facilities) {
       await this.facilitiesCheckbox(facility).check();
     }
-    //const getAdditionalFacilities = model.get('hearingFacilities', 'additionalFacilities');
   }
 
   async setHearingStage(model: HearingJourneyModel): Promise<void> {
@@ -165,15 +162,10 @@ export class HearingsJourneyPage {
   async setHearingVenue(model: HearingJourneyModel): Promise<void> {
     const hearingVenue = model.get('hearingVenue', 'name') as string;
 
-    //await this.removeAllSelectedLocations();
-    //await this.removeLocationLink('Swansea Civil And Family Justice Centre').click();
     await this.hearingVenue.pressSequentially(hearingVenue, { delay: 1000 });
-    //await this.page.waitForTimeout(2000);
-    //await this.locationAutocomplete.waitFor({ state: 'visible' });
     await this.locationAutocomplete.waitFor({ state: 'visible' });
     await this.page.keyboard.press('ArrowDown');
     await this.page.keyboard.press('Enter');
-
     await this.addLocationsButton.click();
   }
 
@@ -181,7 +173,6 @@ export class HearingsJourneyPage {
     // WelshHearing
     const welshHearing = model.get('hearingDetails', 'hearingInWelsh') as string;
     await this.hearingInWelshYes.waitFor({ state: 'visible' });
-    //    await this.hearingInWelshYes.click();
     await (welshHearing === 'Yes' ? this.hearingInWelshYes : this.hearingInWelshNo).click();
   }
 
@@ -294,7 +285,6 @@ export class HearingsJourneyPage {
     if (!/^\d+$/.test(hearingId)) {
       throw new Error(`Expected a numeric Hearing Id, got: "${hearingId}"`);
     }
-
     return hearingId;
   }
 }

@@ -6,9 +6,8 @@ properties([
         displayName  : 'Expert UI Webapp',
         projectUrlStr: 'https://github.com/hmcts/rpx-xui-webapp/'
     ],
-    pipelineTriggers([
-    cron('30 17 * * *')
-    ]),
+    // Keep master scheduled, but leave nightly-dev and PR branches manual-only.
+    pipelineTriggers(env.BRANCH_NAME == 'master' ? [cron('30 17 * * 1-5')] : []),
     parameters([
       text(
         name: 'INTEGRATION_PW_PROFILE_RUNS',
@@ -42,6 +41,40 @@ def vault     = "rpx"
 def channel   = '#xui-pipeline'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+// When failFast interrupts other branches, Jenkins may surface either:
+// - FlowInterruptedException with a FailFastCause, or
+// - AbortException from a terminated `sh` (e.g. exit 143).
+// Normalize those to ABORTED so truly failing branches stay FAILED.
+def handleFailFastAbort = { Exception e ->
+    def abortedByFailFast = false
+    def failFastExitCodes = ['129', '137', '143']
+    if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+        try {
+            def fie = (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) e
+            def causes = (fie.getCauses() ?: []).collect { c -> c?.getClass()?.getName() }.findAll { it }
+            abortedByFailFast = causes.any { it?.endsWith('FailFastCause') }
+            echo "[failFast] FlowInterruptedException: causes=${causes}"
+        } catch (ignored) {
+            echo "[failFast] FlowInterruptedException: causes=<unavailable>"
+        }
+    } else if (e instanceof hudson.AbortException) {
+        def msg = e.getMessage() ?: ''
+        def matcher = (msg =~ /(exit code|status)\s+(\d+)/)
+        def exitCode = matcher.find() ? matcher.group(2) : null
+        abortedByFailFast = (currentBuild?.result == 'ABORTED') || (exitCode in failFastExitCodes)
+        echo "[failFast] AbortException: buildResult=${currentBuild?.result}, exitCode=${exitCode}"
+    } else {
+        echo "[failFast] Non-abort exception: ${e.getClass().getName()}: ${e.getMessage()}"
+    }
+    if (abortedByFailFast) {
+        echo "[failFast] Marking stage as ABORTED due to failFast interruption"
+        catchError(buildResult: 'ABORTED', stageResult: 'ABORTED') { throw e }
+        return true
+    }
+    echo "[failFast] Not a failFast interruption; rethrowing"
+    return false
+}
+
 def archivePlaywrightDiagnostics = {
     steps.sh '''
         set +e
@@ -405,31 +438,6 @@ withNightlyPipeline(type, product, component) {
     afterSuccess('fortify-scan') {
       try {
       recordPlaywrightLoadEvent('Nightly functional tests', 'start')
-      stage('API Tests') {
-        try {
-          recordPlaywrightLoadEvent('API', 'start')
-          withEnv([
-            'ORG_USER_ASSIGNMENT_MODE=external',
-            'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
-            'FUNCTIONAL_TESTS_WORKERS=4',
-            "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
-          ]) {
-            yarnBuilder.yarn('test:api:pw:coverage:raw')
-          }
-        } finally {
-          recordPlaywrightLoadEvent('API', 'finish')
-          publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : 'functional-output/tests/api_functional/odhin-report/',
-            reportFiles          : 'xui-playwright-api.html',
-            reportName           : 'API Functional Test'
-          ])
-          archivePlaywrightDiagnostics()
-        }
-      }
-      
         stage('Playwright Install All Browsers') {
             try {
               recordPlaywrightLoadEvent('Playwright browser install', 'start')
@@ -441,48 +449,91 @@ withNightlyPipeline(type, product, component) {
             }
         }
 
-        stage('Playwright Integration Tests') {
-                try {
-                    recordPlaywrightLoadEvent('Integration', 'start')
-                    runPlaywrightIntegrationProfileMatrix()
-                } finally {
-                    recordPlaywrightLoadEvent('Integration', 'finish')
-                    echo '[playwright-integration] Integration reports published via HTML Publisher'
-                    archivePlaywrightDiagnostics()
+        stage('Nightly Functional Tests (Parallel)') {
+            parallel(
+                failFast: true,
+                api: {
+                    stage('API Tests') {
+                        try {
+                            recordPlaywrightLoadEvent('API', 'start')
+                            withEnv([
+                                'ORG_USER_ASSIGNMENT_MODE=external',
+                                'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
+                                'FUNCTIONAL_TESTS_WORKERS=4',
+                                "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
+                            ]) {
+                                yarnBuilder.yarn('test:api:pw:coverage:raw')
+                            }
+                        } catch (Exception e) {
+                            echo "[failFast] API Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
+                            if (handleFailFastAbort(e)) { return }
+                            throw e
+                        } finally {
+                            recordPlaywrightLoadEvent('API', 'finish')
+                            publishHTML([
+                                allowMissing         : true,
+                                alwaysLinkToLastBuild: true,
+                                keepAll              : true,
+                                reportDir            : 'functional-output/tests/api_functional/odhin-report/',
+                                reportFiles          : 'xui-playwright-api.html',
+                                reportName           : 'Nightly API Functional Test'
+                            ])
+                        }
+                    }
+                },
+                playwrightIntegration: {
+                    stage('Playwright Integration Tests') {
+                        try {
+                            recordPlaywrightLoadEvent('Integration', 'start')
+                            runPlaywrightIntegrationProfileMatrix()
+                        } catch (Exception e) {
+                            echo "[failFast] Playwright Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
+                            if (handleFailFastAbort(e)) { return }
+                            throw e
+                        } finally {
+                            recordPlaywrightLoadEvent('Integration', 'finish')
+                            echo '[playwright-integration] Integration reports published via HTML Publisher'
+                        }
+                    }
+                },
+                playwrightE2E: {
+                    stage('Playwright E2E Cross Browser') {
+                        try {
+                            recordPlaywrightLoadEvent('E2E', 'start')
+                            withEnv([
+                                'ORG_USER_ASSIGNMENT_MODE=external',
+                                'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
+                                'FUNCTIONAL_TESTS_WORKERS=2',
+                                'E2E_PW_INCLUDE_TAGS=@nightly',
+                                'E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none',
+                                'PW_SESSION_CAPTURE_FAILURE_TTL_MS=0',
+                                'PLAYWRIGHT_SKIP_INSTALL=true',
+                                "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
+                            ]) {
+                                yarnBuilder.yarn('test:crossbrowser:raw')
+                            }
+                        } catch (Exception e) {
+                            echo "[failFast] Playwright E2E catch: ${e.getClass().getName()}: ${e.getMessage()}"
+                            if (handleFailFastAbort(e)) { return }
+                            throw e
+                        } finally {
+                            recordPlaywrightLoadEvent('E2E', 'finish')
+                            publishHTML([
+                                allowMissing         : true,
+                                alwaysLinkToLastBuild: true,
+                                keepAll              : true,
+                                reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
+                                reportFiles          : 'xui-playwright-e2e.html',
+                                reportName           : 'Nightly Playwright E2E Cross Browser'
+                            ])
+                        }
+                    }
                 }
-        }
-
-      stage('Cross Browser Test') {
-            try {
-              recordPlaywrightLoadEvent('E2E', 'start')
-              withEnv([
-                'ORG_USER_ASSIGNMENT_MODE=external',
-                'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
-                'FUNCTIONAL_TESTS_WORKERS=2',
-                'E2E_PW_INCLUDE_TAGS=@nightly',
-                'E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none',
-                'PW_SESSION_CAPTURE_FAILURE_TTL_MS=0',
-                "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
-              ]) {
-                yarnBuilder.yarn('test:crossbrowser:raw')
-              }
-            } catch (Error) {
-              unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
-            } finally {
-              recordPlaywrightLoadEvent('E2E', 'finish')
-              publishHTML([
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
-              reportFiles          : 'xui-playwright-e2e.html',
-              reportName           : 'XUI Manage Cases Playwright Cross Browser Tests'
-              ])
-              archivePlaywrightDiagnostics()
-            }
+            )
         }
       } finally {
         recordPlaywrightLoadEvent('Nightly functional tests', 'finish')
+        archivePlaywrightDiagnostics()
       }
 
         // yarnBuilder.yarn('test:a11y')

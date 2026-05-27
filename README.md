@@ -494,7 +494,7 @@ What it does not validate:
 
 Playwright worker count defaults are 6 workers for E2E, API, and integration.
 Set `FUNCTIONAL_TESTS_WORKERS` to override this behaviour explicitly.
-Jenkins CNP and nightly keep API, integration, and E2E/cross-browser suites parallel, but use report-gathering fan-out so a failed suite does not abort sibling Odhín and load-report publication.
+Jenkins CNP and nightly run API first, integration second, and E2E/cross-browser last. API and integration run with 6 workers; browser-heavy E2E and cross-browser run with 4 workers.
 
 ### Integration local progress timer
 

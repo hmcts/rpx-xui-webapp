@@ -333,9 +333,9 @@ API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
 ### API Test Parallelism
 
 - API, E2E, and local integration defaults are controlled by each Playwright config unless `FUNCTIONAL_TESTS_WORKERS` is set
-- Jenkins pins `FUNCTIONAL_TESTS_WORKERS=6` for API, E2E, cross-browser E2E, and integration profiles
-- Keeping E2E below the Jenkins agent core count avoids saturating the preview/AAT backends while API and integration stages run in parallel
-- Jenkins runs API, integration, and E2E in parallel report-gathering mode: a failed suite fails its branch, but sibling suites continue so their Odhín and load reports are still published
+- Jenkins pins `FUNCTIONAL_TESTS_WORKERS=6` for API and integration profiles, and `FUNCTIONAL_TESTS_WORKERS=4` for browser-heavy E2E and cross-browser E2E suites
+- CNP and nightly run API first, integration second, and E2E/cross-browser last so failures stop the pipeline at the first broken suite
+- Keeping E2E below the Jenkins agent core count avoids saturating the preview/AAT backends while still using the 8CPU XUI agent effectively
 - Locally, the same suite defaults apply; override with `FUNCTIONAL_TESTS_WORKERS` or the Playwright `--workers` flag
 
 ### Playwright Load Profiling
@@ -377,7 +377,7 @@ Jenkins CNP and nightly integration stages use `INTEGRATION_PW_PROFILE_RUNS` to 
 workers=6
 ```
 
-Use `INTEGRATION_PW_WORKERS=<n>` and optional `INTEGRATION_PW_SHARD=<index/total>` on Jenkins to run a targeted integration profile instead of the default `INTEGRATION_PW_PROFILE_RUNS` value. CNP and nightly publish one **CI System Load** HTML report for the Jenkins run after checkout. They write checkout, install, build, browser install, report publishing, API, E2E, and integration stage markers to the profile event file so the report can show which stage was running when CPU, load, or memory changed. Functional suite fan-out is parallel with `failFast=false` so one failed suite does not prevent the remaining suite reports from being collected.
+Use `INTEGRATION_PW_WORKERS=<n>` and optional `INTEGRATION_PW_SHARD=<index/total>` on Jenkins to run a targeted integration profile instead of the default `INTEGRATION_PW_PROFILE_RUNS` value. CNP and nightly publish one **CI System Load** HTML report for the Jenkins run after checkout. They write checkout, install, build, browser install, report publishing, API, E2E, and integration stage markers to the profile event file so the report can show which stage was running when CPU, load, or memory changed. Functional suites run sequentially in fail-fast order: API, integration, then E2E/cross-browser.
 
 The wrapper always marks the wrapped command start and finish on the chart. To show API, E2E, and integration boundaries on one timeline, run a monitor across the parent pipeline window or write shared JSONL events into `PW_LOAD_PROFILE_EVENTS_FILE`:
 
@@ -769,17 +769,17 @@ npx playwright test documentUpload.spec.ts --project chromium --workers=1
 - Logs in SEARCH_EMPLOYMENT_CASE once (~30s)
 - Total login time: ~60s
 
-#### 2 Workers (Preview Jenkins Pipeline)
+#### 4 Workers (Browser E2E Jenkins Stage)
 
 ```bash
-npx playwright test --project chromium --workers=2
+npx playwright test --project chromium --workers=4
 ```
 
 - Worker 1 logs in SOLICITOR → stores session
-- Worker 2 waits for lock → reuse SOLICITOR session
+- Workers 2-4 wait for lock → reuse SOLICITOR session
 - Total login time per user: ~30-45s (shared across all workers)
 
-#### 6 Workers (AAT Jenkins Pipeline)
+#### 6 Workers (API and Integration Jenkins Stages)
 
 ```bash
 npx playwright test --project chromium --workers=6
@@ -799,25 +799,27 @@ npx playwright test --project chromium
 - Other workers wait for lock release and reuse the fresh session
 - Total login time per user remains shared across all workers
 
-#### Parallel Test Suites (CI Pipeline)
+#### Sequential Functional Suites (CI Pipeline)
 
 ```bash
-# Running simultaneously:
-npx playwright test --project chromium --workers=6  # Preview E2E tests
-npx playwright test --project node-api --workers=6  # Preview API tests
+# Preview:
+npx playwright test --project node-api --workers=6  # API tests
+npx playwright test --project chromium --workers=6  # Integration tests
+npx playwright test --project chromium --workers=4  # E2E tests
 
 # AAT:
-npx playwright test --project chromium --workers=6  # AAT E2E tests
 npx playwright test --project node-api --workers=6  # AAT API tests
+npx playwright test --project chromium --workers=6  # AAT integration tests
+npx playwright test --project chromium --workers=4  # AAT E2E tests
 
 # Local or unpinned CI:
 npx playwright test --project chromium  # E2E tests
 npx playwright test --project node-api  # API tests
 ```
 
-- E2E Worker 1 logs in solicitor → stores session
-- API workers detect fresh session → reuse IDAM token
-- **Total login time: ~30s (not 60s!)** ⚡
+- The first worker for a user captures or refreshes the session
+- Later workers in the same stage reuse the fresh session under the lock
+- Later stages reuse compatible fresh state where available, otherwise they capture once under their own namespace
 
 ### Session Storage
 

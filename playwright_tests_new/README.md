@@ -333,9 +333,9 @@ API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
 ### API Test Parallelism
 
 - API, E2E, and local integration defaults are controlled by each Playwright config unless `FUNCTIONAL_TESTS_WORKERS` is set
-- Jenkins pins `FUNCTIONAL_TESTS_WORKERS=6` for API and integration profiles, and `FUNCTIONAL_TESTS_WORKERS=4` for browser-heavy E2E and cross-browser E2E suites
+- Jenkins pins `FUNCTIONAL_TESTS_WORKERS=8` for API and integration profiles, and `FUNCTIONAL_TESTS_WORKERS=6` for browser-heavy E2E and cross-browser E2E suites
 - CNP and nightly run API first, integration second, and E2E/cross-browser last so failures stop the pipeline at the first broken suite
-- Keeping E2E below the Jenkins agent core count avoids saturating the preview/AAT backends while still using the 8CPU XUI agent effectively
+- Keeping E2E below the Jenkins agent core count leaves headroom for browser-heavy work while still using the 8CPU XUI agent effectively
 - Locally, the same suite defaults apply; override with `FUNCTIONAL_TESTS_WORKERS` or the Playwright `--workers` flag
 
 ### Playwright Load Profiling
@@ -344,14 +344,14 @@ The standard API, E2E, cross-browser E2E, and integration commands run through t
 
 ```bash
 # Run integration with a host-load profile and explicit workers
-yarn test:playwright:integration -- --workers=6
+yarn test:playwright:integration -- --workers=8
 
 # Compare a sharded run
-yarn test:playwright:integration -- --workers=6 --shard=1/2
-yarn test:playwright:integration -- --workers=6 --shard=2/2
+yarn test:playwright:integration -- --workers=8 --shard=1/2
+yarn test:playwright:integration -- --workers=8 --shard=2/2
 
 # Backwards-compatible alias
-yarn test:playwright:integration:profile -- --workers=6
+yarn test:playwright:integration:profile -- --workers=8
 ```
 
 Artifacts:
@@ -374,7 +374,7 @@ Useful controls:
 Jenkins CNP and nightly integration stages use `INTEGRATION_PW_PROFILE_RUNS` to control the integration worker profile. The default is:
 
 ```text
-workers=6
+workers=8
 ```
 
 Use `INTEGRATION_PW_WORKERS=<n>` and optional `INTEGRATION_PW_SHARD=<index/total>` on Jenkins to run a targeted integration profile instead of the default `INTEGRATION_PW_PROFILE_RUNS` value. CNP and nightly publish one **CI System Load** HTML report for the Jenkins run after checkout. They write checkout, install, build, browser install, report publishing, API, E2E, and integration stage markers to the profile event file so the report can show which stage was running when CPU, load, or memory changed. Functional suites run sequentially in fail-fast order: API, integration, then E2E/cross-browser.
@@ -592,7 +592,7 @@ expect(visibleRows.length).toBeGreaterThan(0);
 
 ### Overview
 
-**Both E2E and API tests** use **lazy session loading** with **unified storage** to minimize execution time and prevent redundant logins when running in parallel CI pipelines. Sessions are captured on-demand and shared across parallel test workers.
+**E2E, API, and integration tests** use **lazy session loading** with **unified storage** to minimize execution time and prevent redundant logins across CI stages. Sessions are captured on-demand and shared across parallel test workers.
 
 ### Unified Storage Location
 
@@ -635,8 +635,8 @@ expect(visibleRows.length).toBeGreaterThan(0);
 - Multiple workers can safely request the same user session
 - **Filesystem-based lock mechanism** prevents concurrent logins for the same user
 - Locks coordinate across **all Playwright worker processes** (API + E2E) using `proper-lockfile`
-- Jenkins currently runs API, E2E, and integration with **6 workers** on both Preview and AAT
-- When one worker logs in user X, the remaining workers **and parallel API tests** wait for lock release and reuse the session
+- Jenkins currently runs API and integration with **8 workers**, and browser-heavy E2E with **6 workers** on both Preview and AAT
+- When one worker logs in user X, the remaining workers wait for lock release and reuse the session
 - After acquiring lock, workers recheck freshness to ensure session is still valid
 - `ensureSession()` intentionally avoids forced recapture so lock waiters can reuse the newly refreshed session instead of logging in again
 - The `searchCase` integration suite runs on a dedicated Playwright project so it can be targeted independently without affecting the rest of the integration matrix
@@ -687,7 +687,7 @@ test.describe('My Test Suite', () => {
 
 ### Cross-Suite Coordination in CI
 
-When **API and E2E tests run in parallel** (common in CI pipelines):
+When **API, integration, and E2E suites run in sequence** in CI, their worker processes can still reuse compatible fresh session state:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -695,7 +695,7 @@ When **API and E2E tests run in parallel** (common in CI pipelines):
 │                                                                  │
 │  ┌──────────────────────┐        ┌──────────────────────┐      │
 │  │  E2E Tests            │        │  API Tests            │      │
-│  │  (2-6 workers)        │        │  (2-6 workers)        │      │
+│  │  (up to 6 workers)    │        │  (up to 8 workers)    │      │
 │  │  Need: solicitor      │        │  Need: solicitor      │      │
 │  └──────────┬────────────┘        └──────────┬────────────┘     │
 │             │                                 │                  │
@@ -769,24 +769,24 @@ npx playwright test documentUpload.spec.ts --project chromium --workers=1
 - Logs in SEARCH_EMPLOYMENT_CASE once (~30s)
 - Total login time: ~60s
 
-#### 4 Workers (Browser E2E Jenkins Stage)
-
-```bash
-npx playwright test --project chromium --workers=4
-```
-
-- Worker 1 logs in SOLICITOR → stores session
-- Workers 2-4 wait for lock → reuse SOLICITOR session
-- Total login time per user: ~30-45s (shared across all workers)
-
-#### 6 Workers (API and Integration Jenkins Stages)
+#### 6 Workers (Browser E2E Jenkins Stage)
 
 ```bash
 npx playwright test --project chromium --workers=6
 ```
 
 - Worker 1 logs in SOLICITOR → stores session
-- Workers 2-4 wait for lock → reuse SOLICITOR session
+- Workers 2-6 wait for lock → reuse SOLICITOR session
+- Total login time per user: ~30-45s (shared across all workers)
+
+#### 8 Workers (API and Integration Jenkins Stages)
+
+```bash
+npx playwright test --project chromium --workers=8
+```
+
+- Worker 1 logs in SOLICITOR → stores session
+- Workers 2-8 wait for lock → reuse SOLICITOR session
 - Total login time per user: ~30-45s (shared across all workers)
 
 #### Auto-Sized Workers (Local or Unpinned CI)
@@ -803,14 +803,14 @@ npx playwright test --project chromium
 
 ```bash
 # Preview:
-npx playwright test --project node-api --workers=6  # API tests
-npx playwright test --project chromium --workers=6  # Integration tests
-npx playwright test --project chromium --workers=4  # E2E tests
+npx playwright test --project node-api --workers=8  # API tests
+npx playwright test --project chromium --workers=8  # Integration tests
+npx playwright test --project chromium --workers=6  # E2E tests
 
 # AAT:
-npx playwright test --project node-api --workers=6  # AAT API tests
-npx playwright test --project chromium --workers=6  # AAT integration tests
-npx playwright test --project chromium --workers=4  # AAT E2E tests
+npx playwright test --project node-api --workers=8  # AAT API tests
+npx playwright test --project chromium --workers=8  # AAT integration tests
+npx playwright test --project chromium --workers=6  # AAT E2E tests
 
 # Local or unpinned CI:
 npx playwright test --project chromium  # E2E tests

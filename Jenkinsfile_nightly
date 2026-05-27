@@ -11,7 +11,7 @@ properties([
     parameters([
       text(
         name: 'INTEGRATION_PW_PROFILE_RUNS',
-        defaultValue: '''workers=6''',
+        defaultValue: '''workers=8''',
         description: 'Integration load-profile matrix. One run per line or semicolon. Supported keys: workers=<n> and optional shard=<index/total>.'
       ),
       string(
@@ -189,7 +189,7 @@ def resolveIntegrationProfileRuns = { String configuredRuns, String workersOverr
     }
     def configured = configuredRuns?.trim()
     if (!configured) {
-        configured = 'workers=6'
+        configured = 'workers=8'
     }
     return configured
         .split(/[\r\n;]+/)
@@ -198,7 +198,7 @@ def resolveIntegrationProfileRuns = { String configuredRuns, String workersOverr
 }
 
 def integrationProfileRunConfig = { String spec ->
-    def workers = '6'
+    def workers = '8'
     def shard = ''
     spec.split(/\s+/).each { token ->
         if (token.startsWith('workers=')) {
@@ -423,7 +423,7 @@ withNightlyPipeline(type, product, component) {
                     withEnv([
                         'ORG_USER_ASSIGNMENT_MODE=external',
                         'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
-                        'FUNCTIONAL_TESTS_WORKERS=6',
+                        'FUNCTIONAL_TESTS_WORKERS=8',
                         "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
                     ]) {
                         yarnBuilder.yarn('test:api:pw:coverage:raw')
@@ -455,7 +455,7 @@ withNightlyPipeline(type, product, component) {
                     withEnv([
                         'ORG_USER_ASSIGNMENT_MODE=external',
                         'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
-                        'FUNCTIONAL_TESTS_WORKERS=4',
+                        'FUNCTIONAL_TESTS_WORKERS=6',
                         'E2E_PW_INCLUDE_TAGS=@nightly',
                         'E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none',
                         'PW_SESSION_CAPTURE_FAILURE_TTL_MS=0',

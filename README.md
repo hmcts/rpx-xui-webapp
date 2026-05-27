@@ -492,7 +492,7 @@ What it does not validate:
 
 ### Parallelism
 
-Playwright worker count defaults are 6 workers for E2E and API, with Jenkins CNP/nightly integration profiles defaulting to 8 workers on the XUI 8CPU agent.
+Playwright worker count defaults are 6 workers for E2E and API, with Jenkins CNP/nightly integration profiles defaulting to 10 workers on the XUI 8CPU agent.
 Set `FUNCTIONAL_TESTS_WORKERS` to override this behaviour explicitly.
 Jenkins CNP and nightly keep API, integration, and E2E/cross-browser suites parallel, but use report-gathering fan-out so a failed suite does not abort sibling Odhín and load-report publication. Default PR timing runs do not shard integration because split shard reports are harder to compare.
 

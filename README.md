@@ -7,7 +7,7 @@ template [`.env.example`](./.env.example) with the population script:
 yarn env:populate:aat
 ```
 
-Use `demo` instead of `aat` when needed:
+Use `demo` instead of `aat` when needed: 
 
 ```bash
 yarn env:populate:demo

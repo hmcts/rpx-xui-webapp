@@ -12,7 +12,7 @@ import {
   CasesService,
   HttpErrorService,
 } from '@hmcts/ccd-case-ui-toolkit';
-import { ExuiCommonLibModule } from '@hmcts/rpx-xui-common-lib';
+import { ExuiCommonLibModule, FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { provideMockStore } from '@ngrx/store/testing';
 import { BehaviorSubject, of } from 'rxjs';
 import { CASEROLES } from '../../../../api/workAllocation/constants/roles.mock.data';
@@ -152,6 +152,7 @@ const cv = {
 } as CaseView;
 
 describe('RolesContainerComponent', () => {
+  const featureToggleService = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValue']);
   let component: RolesAndAccessContainerComponent;
 
   const route = {
@@ -161,7 +162,7 @@ describe('RolesContainerComponent', () => {
   const store = jasmine.createSpyObj('store', ['pipe', 'select']);
   const roleExclusionsService = jasmine.createSpyObj('roleExclusionsService', ['getCurrentUserRoleExclusions']);
   const allocateService = jasmine.createSpyObj('allocateService', ['getCaseRoles', 'getCaseRolesUserDetails']);
-  const caseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['loadAll', 'getUsersByIdamIds']);
+  const caseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['loadAll', 'getUsersFromServices']);
   const sessionStorageService = jasmine.createSpyObj('sessionStorageService', ['getItem', 'setItem']);
 
   const mockCasesService = jasmine.createSpyObj<CasesService>('mockCasesService', ['getCaseView']);
@@ -194,6 +195,13 @@ describe('RolesContainerComponent', () => {
           provide: RoleExclusionsService,
           useClass: RoleExclusionsMockService,
         },
+        {
+          provide: FeatureToggleService,
+          useValue: {
+            isEnabled: (flag) => of(flags[flag]),
+            getValue: (flag) => of(flags[flag]),
+          },
+        },
         provideMockStore({ initialState: initialMockState }),
         {
           provide: ActivatedRoute,
@@ -221,6 +229,7 @@ describe('RolesContainerComponent', () => {
       allocateService,
       caseworkerDataService,
       sessionStorageService,
+      featureToggleService,
       mockCaseNotifier
     );
     component.setDisplayAllocateLink(initialMockState.appConfig.userDetails, 'JUDICIAL');
@@ -236,16 +245,18 @@ describe('RolesContainerComponent', () => {
       allocateService,
       caseworkerDataService,
       sessionStorageService,
+      featureToggleService,
       mockCaseNotifier
     );
 
     spyOn(component, 'applyJurisdiction');
     spyOn(component, 'loadExclusions');
     spyOn(component, 'loadRoles');
-    caseworkerDataService.getUsersByIdamIds.and.returnValue(of({}));
+    caseworkerDataService.getUsersFromServices.and.returnValue(of({}));
 
     component.ngOnInit();
 
+    expect(caseworkerDataService.getUsersFromServices).toHaveBeenCalled();
     expect(component.applyJurisdiction).toHaveBeenCalled();
     expect(component.loadExclusions).toHaveBeenCalled();
     expect(component.loadRoles).toHaveBeenCalled();
@@ -259,6 +270,7 @@ describe('RolesContainerComponent', () => {
       allocateService,
       caseworkerDataService,
       sessionStorageService,
+      featureToggleService,
       mockCaseNotifier
     );
     const caseDetails = {} as CaseView;
@@ -297,6 +309,7 @@ describe('RolesContainerComponent', () => {
       allocateService,
       caseworkerDataService,
       sessionStorageService,
+      featureToggleService,
       mockCaseNotifier
     );
     const caseDetails = {} as CaseView;
@@ -332,6 +345,7 @@ describe('RolesContainerComponent', () => {
       allocateService,
       caseworkerDataService,
       sessionStorageService,
+      featureToggleService,
       mockCaseNotifier
     );
 
@@ -365,6 +379,7 @@ describe('RolesContainerComponent', () => {
       allocateService,
       caseworkerDataService,
       sessionStorageService,
+      featureToggleService,
       mockCaseNotifier
     );
 
@@ -387,6 +402,7 @@ describe('RolesContainerComponent', () => {
       allocateService,
       caseworkerDataService,
       sessionStorageService,
+      featureToggleService,
       mockCaseNotifier
     );
     spyOn(component, 'setDisplayAllocateLink');

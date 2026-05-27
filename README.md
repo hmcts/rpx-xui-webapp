@@ -95,7 +95,7 @@ EXUI_BASE_URL=http://localhost:3000 \
 MANAGE_CASES_BASE_URL=http://localhost:3000/cases \
 IDAM_WEB_URL=http://localhost:8080 \
 IDAM_TESTING_SUPPORT_URL=http://localhost:8080 \
-FUNCTIONAL_TESTS_WORKERS=6 \
+FUNCTIONAL_TESTS_WORKERS=8 \
 PLAYWRIGHT_SKIP_INSTALL=true \
 yarn test:playwright:integration
 ```
@@ -494,7 +494,7 @@ What it does not validate:
 
 Playwright worker count defaults are 6 workers for E2E, API, and integration.
 Set `FUNCTIONAL_TESTS_WORKERS` to override this behaviour explicitly.
-Jenkins CNP and nightly run API first, integration second, and E2E/cross-browser last. API and integration run with 8 workers; browser-heavy E2E and cross-browser run with 6 workers.
+Jenkins CNP and nightly run API first, integration second, and E2E/cross-browser last. API, integration, E2E, and cross-browser all run with 8 workers on the XUI 8CPU Jenkins agent.
 
 ### Integration local progress timer
 

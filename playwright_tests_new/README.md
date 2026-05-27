@@ -333,9 +333,9 @@ API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
 ### API Test Parallelism
 
 - API, E2E, and local integration defaults are controlled by each Playwright config unless `FUNCTIONAL_TESTS_WORKERS` is set
-- Jenkins pins `FUNCTIONAL_TESTS_WORKERS=8` for API and integration profiles, and `FUNCTIONAL_TESTS_WORKERS=6` for browser-heavy E2E and cross-browser E2E suites
+- Jenkins pins `FUNCTIONAL_TESTS_WORKERS=8` for API, integration, E2E, and cross-browser E2E suites on the XUI 8CPU Jenkins agent
 - CNP and nightly run API first, integration second, and E2E/cross-browser last so failures stop the pipeline at the first broken suite
-- Keeping E2E below the Jenkins agent core count leaves headroom for browser-heavy work while still using the 8CPU XUI agent effectively
+- The full 8-worker profile is used only in Jenkins; local runs can still lower workers when browser load affects the developer machine
 - Locally, the same suite defaults apply; override with `FUNCTIONAL_TESTS_WORKERS` or the Playwright `--workers` flag
 
 ### Playwright Load Profiling
@@ -635,7 +635,7 @@ expect(visibleRows.length).toBeGreaterThan(0);
 - Multiple workers can safely request the same user session
 - **Filesystem-based lock mechanism** prevents concurrent logins for the same user
 - Locks coordinate across **all Playwright worker processes** (API + E2E) using `proper-lockfile`
-- Jenkins currently runs API and integration with **8 workers**, and browser-heavy E2E with **6 workers** on both Preview and AAT
+- Jenkins currently runs API, integration, and browser-heavy E2E with **8 workers** on both Preview and AAT
 - When one worker logs in user X, the remaining workers wait for lock release and reuse the session
 - After acquiring lock, workers recheck freshness to ensure session is still valid
 - `ensureSession()` intentionally avoids forced recapture so lock waiters can reuse the newly refreshed session instead of logging in again
@@ -695,7 +695,7 @@ When **API, integration, and E2E suites run in sequence** in CI, their worker pr
 │                                                                  │
 │  ┌──────────────────────┐        ┌──────────────────────┐      │
 │  │  E2E Tests            │        │  API Tests            │      │
-│  │  (up to 6 workers)    │        │  (up to 8 workers)    │      │
+│  │  (up to 8 workers)    │        │  (up to 8 workers)    │      │
 │  │  Need: solicitor      │        │  Need: solicitor      │      │
 │  └──────────┬────────────┘        └──────────┬────────────┘     │
 │             │                                 │                  │
@@ -769,14 +769,14 @@ npx playwright test documentUpload.spec.ts --project chromium --workers=1
 - Logs in SEARCH_EMPLOYMENT_CASE once (~30s)
 - Total login time: ~60s
 
-#### 6 Workers (Browser E2E Jenkins Stage)
+#### 8 Workers (Browser E2E Jenkins Stage)
 
 ```bash
-npx playwright test --project chromium --workers=6
+npx playwright test --project chromium --workers=8
 ```
 
 - Worker 1 logs in SOLICITOR → stores session
-- Workers 2-6 wait for lock → reuse SOLICITOR session
+- Workers 2-8 wait for lock → reuse SOLICITOR session
 - Total login time per user: ~30-45s (shared across all workers)
 
 #### 8 Workers (API and Integration Jenkins Stages)
@@ -805,12 +805,12 @@ npx playwright test --project chromium
 # Preview:
 npx playwright test --project node-api --workers=8  # API tests
 npx playwright test --project chromium --workers=8  # Integration tests
-npx playwright test --project chromium --workers=6  # E2E tests
+npx playwright test --project chromium --workers=8  # E2E tests
 
 # AAT:
 npx playwright test --project node-api --workers=8  # AAT API tests
 npx playwright test --project chromium --workers=8  # AAT integration tests
-npx playwright test --project chromium --workers=6  # AAT E2E tests
+npx playwright test --project chromium --workers=8  # AAT E2E tests
 
 # Local or unpinned CI:
 npx playwright test --project chromium  # E2E tests

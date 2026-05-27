@@ -11,7 +11,7 @@ properties([
     parameters([
       text(
         name: 'INTEGRATION_PW_PROFILE_RUNS',
-        defaultValue: '''workers=8''',
+        defaultValue: '''workers=6''',
         description: 'Integration load-profile matrix. One run per line or semicolon. Supported keys: workers=<n> and optional shard=<index/total>.'
       ),
       string(
@@ -22,7 +22,7 @@ properties([
       string(
         name: 'INTEGRATION_PW_SHARD',
         defaultValue: '',
-        description: 'Optional Playwright integration shard override, for example 1/2. Used with INTEGRATION_PW_WORKERS.'
+        description: 'Manual diagnostic-only integration shard override, for example 1/2. Leave empty for PR timing runs because shard reports are split.'
       ),
       booleanParam(
         name: 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES',
@@ -189,7 +189,7 @@ def resolveIntegrationProfileRuns = { String configuredRuns, String workersOverr
     }
     def configured = configuredRuns?.trim()
     if (!configured) {
-        configured = 'workers=8'
+        configured = 'workers=6'
     }
     return configured
         .split(/[\r\n;]+/)
@@ -198,7 +198,7 @@ def resolveIntegrationProfileRuns = { String configuredRuns, String workersOverr
 }
 
 def integrationProfileRunConfig = { String spec ->
-    def workers = '8'
+    def workers = '6'
     def shard = ''
     spec.split(/\s+/).each { token ->
         if (token.startsWith('workers=')) {
@@ -416,66 +416,85 @@ withNightlyPipeline(type, product, component) {
             }
         }
 
-        stage('Nightly Functional Tests (Sequential Fail Fast)') {
-            stage('API Tests') {
-                try {
-                    recordPlaywrightLoadEvent('API', 'start')
-                    withEnv([
-                        'ORG_USER_ASSIGNMENT_MODE=external',
-                        'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
-                        'FUNCTIONAL_TESTS_WORKERS=8',
-                        "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
-                    ]) {
-                        yarnBuilder.yarn('test:api:pw:coverage:raw')
+        stage('Nightly Functional Tests (Parallel Report Gathering)') {
+            // Keep suites parallel for fast feedback, but let sibling suites publish reports when one branch fails.
+            parallel(
+                failFast: false,
+                api: {
+                    stage('API Tests') {
+                        try {
+                            recordPlaywrightLoadEvent('API', 'start')
+                            withEnv([
+                                'ORG_USER_ASSIGNMENT_MODE=external',
+                                'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
+                                'FUNCTIONAL_TESTS_WORKERS=6',
+                                "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
+                            ]) {
+                                yarnBuilder.yarn('test:api:pw:coverage:raw')
+                            }
+                        } catch (Exception e) {
+                            echo "[parallel-report-gathering] API Tests failed: ${e.getClass().getName()}: ${e.getMessage()}"
+                            throw e
+                        } finally {
+                            recordPlaywrightLoadEvent('API', 'finish')
+                            publishHTML([
+                                allowMissing         : true,
+                                alwaysLinkToLastBuild: true,
+                                keepAll              : true,
+                                reportDir            : 'functional-output/tests/api_functional/odhin-report/',
+                                reportFiles          : 'xui-playwright-api.html',
+                                reportName           : 'Nightly API Functional Test'
+                            ])
+                        }
                     }
-                } finally {
-                    recordPlaywrightLoadEvent('API', 'finish')
-                    publishHTML([
-                        allowMissing         : true,
-                        alwaysLinkToLastBuild: true,
-                        keepAll              : true,
-                        reportDir            : 'functional-output/tests/api_functional/odhin-report/',
-                        reportFiles          : 'xui-playwright-api.html',
-                        reportName           : 'Nightly API Functional Test'
-                    ])
-                }
-            }
-            stage('Playwright Integration Tests') {
-                try {
-                    recordPlaywrightLoadEvent('Integration', 'start')
-                    runPlaywrightIntegrationProfileMatrix()
-                } finally {
-                    recordPlaywrightLoadEvent('Integration', 'finish')
-                    echo '[playwright-integration] Integration reports published via HTML Publisher'
-                }
-            }
-            stage('Playwright E2E Cross Browser') {
-                try {
-                    recordPlaywrightLoadEvent('E2E', 'start')
-                    withEnv([
-                        'ORG_USER_ASSIGNMENT_MODE=external',
-                        'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
-                        'FUNCTIONAL_TESTS_WORKERS=8',
-                        'E2E_PW_INCLUDE_TAGS=@nightly',
-                        'E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none',
-                        'PW_SESSION_CAPTURE_FAILURE_TTL_MS=0',
-                        'PLAYWRIGHT_SKIP_INSTALL=true',
-                        "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
-                    ]) {
-                        yarnBuilder.yarn('test:crossbrowser:raw')
+                },
+                playwrightIntegration: {
+                    stage('Playwright Integration Tests') {
+                        try {
+                            recordPlaywrightLoadEvent('Integration', 'start')
+                            runPlaywrightIntegrationProfileMatrix()
+                        } catch (Exception e) {
+                            echo "[parallel-report-gathering] Playwright Integration Tests failed: ${e.getClass().getName()}: ${e.getMessage()}"
+                            throw e
+                        } finally {
+                            recordPlaywrightLoadEvent('Integration', 'finish')
+                            echo '[playwright-integration] Integration reports published via HTML Publisher'
+                        }
                     }
-                } finally {
-                    recordPlaywrightLoadEvent('E2E', 'finish')
-                    publishHTML([
-                        allowMissing         : true,
-                        alwaysLinkToLastBuild: true,
-                        keepAll              : true,
-                        reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
-                        reportFiles          : 'xui-playwright-e2e.html',
-                        reportName           : 'Nightly Playwright E2E Cross Browser'
-                    ])
+                },
+                playwrightE2E: {
+                    stage('Playwright E2E Cross Browser') {
+                        try {
+                            recordPlaywrightLoadEvent('E2E', 'start')
+                            withEnv([
+                                'ORG_USER_ASSIGNMENT_MODE=external',
+                                'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
+                                'FUNCTIONAL_TESTS_WORKERS=6',
+                                'E2E_PW_INCLUDE_TAGS=@nightly',
+                                'E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none',
+                                'PW_SESSION_CAPTURE_FAILURE_TTL_MS=0',
+                                'PLAYWRIGHT_SKIP_INSTALL=true',
+                                "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
+                            ]) {
+                                yarnBuilder.yarn('test:crossbrowser:raw')
+                            }
+                        } catch (Exception e) {
+                            echo "[parallel-report-gathering] Playwright E2E failed: ${e.getClass().getName()}: ${e.getMessage()}"
+                            throw e
+                        } finally {
+                            recordPlaywrightLoadEvent('E2E', 'finish')
+                            publishHTML([
+                                allowMissing         : true,
+                                alwaysLinkToLastBuild: true,
+                                keepAll              : true,
+                                reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
+                                reportFiles          : 'xui-playwright-e2e.html',
+                                reportName           : 'Nightly Playwright E2E Cross Browser'
+                            ])
+                        }
+                    }
                 }
-            }
+            )
         }
       } finally {
         recordPlaywrightLoadEvent('Nightly functional tests', 'finish')

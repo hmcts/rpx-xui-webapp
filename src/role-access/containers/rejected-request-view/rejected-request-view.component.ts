@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RoleCategory } from '@hmcts/rpx-xui-common-lib';
-import { first } from 'rxjs/operators';
 
 import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
-import { CaseworkerDataService } from '../../../work-allocation/services';
+import { CaseworkerDataService, WASupportedJurisdictionsService } from '../../../work-allocation/services';
 import { RejectionReasonText } from '../../models/enums/answer-text';
 import { AllocateRoleService } from '../../services';
 
@@ -32,6 +31,7 @@ export class RejectedRequestViewComponent implements OnInit {
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
+    private readonly waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     private readonly caseworkerDataService: CaseworkerDataService,
     private readonly allocateRoleService: AllocateRoleService
   ) {
@@ -86,14 +86,14 @@ export class RejectedRequestViewComponent implements OnInit {
         this.reviewerName = caseRoleUserDetails[0].full_name;
       });
     } else {
-      this.caseworkerDataService
-        .getUserByIdamId(this.reviewer)
-        .pipe(first())
-        .subscribe((caseworker) => {
+      this.waSupportedJurisdictionsService.getWASupportedJurisdictions().subscribe((services) => {
+        this.caseworkerDataService.getUsersFromServices(services).subscribe((caseworkers) => {
+          const caseworker = caseworkers.find((thisCaseworker) => thisCaseworker.idamId === this.reviewer);
           if (caseworker) {
             this.reviewerName = `${caseworker.firstName} ${caseworker.lastName}`;
           }
         });
+      });
     }
   }
 

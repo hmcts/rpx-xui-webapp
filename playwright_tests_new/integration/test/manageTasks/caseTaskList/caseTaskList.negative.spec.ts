@@ -1,19 +1,15 @@
 import { faker } from '@faker-js/faker';
-import { extractUserIdFromCookies } from '../../../utils/extractUserIdFromCookies';
 import { expect, test } from '../../../../E2E/fixtures';
-import { applySessionCookies } from '../../../../common/sessionCapture';
+import { applySessionCookiesAndExtractUserId } from '../../../helpers';
 import { buildAsylumCaseMock } from '../../../mocks/cases/asylumCase.mock';
 
 const userIdentifier = 'STAFF_ADMIN';
 const caseId = faker.number.int({ min: 1000000000, max: 9999999999 }).toString();
-let sessionCookies: any[] = [];
 let assigneeId: string | null = null;
 const caseMockResponse = buildAsylumCaseMock({ caseId });
 
 test.beforeEach(async ({ page }) => {
-  const { cookies } = await applySessionCookies(page, userIdentifier);
-  sessionCookies = cookies;
-  assigneeId = extractUserIdFromCookies(sessionCookies);
+  assigneeId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
   await page.route(`**data/internal/cases/${caseId}*`, async (route) => {
     const body = JSON.stringify(caseMockResponse);
     await route.fulfill({ status: 200, contentType: 'application/json', body });
@@ -48,9 +44,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     });
 
     await test.step('Navigate to mocked case task list', async () => {
-      await page.goto(`/cases/case-details/IA/Asylum/${caseId}/tasks`);
-      await caseDetailsPage.taskListContainer.waitFor();
-      await caseDetailsPage.exuiSpinnerComponent.wait();
+      await caseDetailsPage.openTasksTab('IA', 'Asylum', caseId);
     });
 
     await test.step('Verify the task table shows no results', async () => {
@@ -86,9 +80,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     });
 
     await test.step('Navigate to mocked case task list', async () => {
-      await page.goto(`/cases/case-details/IA/Asylum/${caseId}/tasks`);
-      await caseDetailsPage.taskListContainer.waitFor();
-      await caseDetailsPage.exuiSpinnerComponent.wait();
+      await caseDetailsPage.openTasksTab('IA', 'Asylum', caseId);
     });
 
     await test.step('Verify malformed task data is handled gracefully', async () => {
@@ -108,8 +100,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
       });
 
       await test.step('Navigate to mocked case task list', async () => {
-        await page.goto(`/cases/case-details/IA/Asylum/${caseId}/tasks`);
-        await caseDetailsPage.taskListContainer.waitFor();
+        await caseDetailsPage.openTasksTab('IA', 'Asylum', caseId);
       });
 
       await test.step('Verify the expected priority labels are shown', async () => {

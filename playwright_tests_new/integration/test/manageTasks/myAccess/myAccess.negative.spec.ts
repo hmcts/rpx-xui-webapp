@@ -1,17 +1,12 @@
 import { expect, test } from '../../../../E2E/fixtures';
-import {
-  applyPrewarmedSessionCookies,
-  myAccessRoutePattern,
-  setupManageTasksBaseRoutes,
-  setupMyAccessRoutes,
-} from '../../../helpers';
+import { applySessionCookies, myAccessRoutePattern, setupManageTasksBaseRoutes, setupMyAccessRoutes } from '../../../helpers';
 
 const userIdentifier = 'STAFF_ADMIN';
 const serviceDownStatuses = [400, 500];
 const notAuthorisedStatuses = [401, 403];
 
 test.beforeEach(async ({ page }) => {
-  await applyPrewarmedSessionCookies(page, userIdentifier);
+  await applySessionCookies(page, userIdentifier);
 });
 
 test.describe(`My Access as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
@@ -22,7 +17,7 @@ test.describe(`My Access as ${userIdentifier}`, { tag: ['@integration', '@integr
       });
 
       await test.step('Navigate to My access', async () => {
-        await taskListPage.gotoMyAccess();
+        await taskListPage.gotoMyAccessExpectingServiceDown();
       });
 
       await test.step('Verify the service down page is shown', async () => {
@@ -40,7 +35,7 @@ test.describe(`My Access as ${userIdentifier}`, { tag: ['@integration', '@integr
       });
 
       await test.step('Navigate to My access', async () => {
-        await page.goto('/work/my-work/my-access', { waitUntil: 'domcontentloaded' });
+        await taskListPage.gotoMyAccessExpectingNotAuthorised();
       });
 
       await test.step('Verify the not authorised page is shown', async () => {
@@ -66,7 +61,7 @@ test.describe(`My Access as ${userIdentifier}`, { tag: ['@integration', '@integr
     });
 
     await test.step('Navigate to My access', async () => {
-      await taskListPage.gotoMyAccess();
+      await taskListPage.gotoMyAccessExpectingServiceDown();
     });
 
     await test.step('Verify the service down page is shown', async () => {

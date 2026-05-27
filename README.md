@@ -1,7 +1,21 @@
 # Manage Cases
 
-To run the application locally please make sure you follow the prerequisite task of
-Setting up Secrets locally as documented below.
+To generate a local repo-root `.env` from Azure Key Vault, use the checked-in
+template [`.env.example`](./.env.example) with the population script:
+
+```bash
+yarn env:populate:aat
+```
+
+Use `demo` instead of `aat` when needed:
+
+```bash
+yarn env:populate:demo
+```
+
+This writes `.env` in the repo root using `.env.example` plus any Azure Key
+Vault secrets tagged with `e2e=<ENV_VAR_NAME>`. The generated `.env` is
+gitignored and must not be committed.
 
 Then follow:
 
@@ -23,9 +37,10 @@ NODE_CONFIG_ENV=development sets the machine so that the config that is used is 
 
 Run `yarn start:ng` to start up the UI.
 
-## Fully mocked local setup (no downstream environments)
+## Backend-mock-assisted local setup (mixed mode)
 
-Use this mode when AAT/downstream services are unavailable and you want local integration development.
+Use this mode for local integration development when you want local UI/Node plus local auth and selected mocked routes.
+By default, this is **not** fully isolated from downstream environments: with standard local Node config, many service calls still target test downstream services.
 
 ### Ports used
 
@@ -135,6 +150,53 @@ Node API test commands (complementary):
 - `yarn test:node:local` – quick Mocha run for Node with dev config (`NODE_CONFIG_DIR=../config`, `NODE_CONFIG_ENV=development`, `ALLOW_CONFIG_MUTATIONS=1`) and stubs for external calls; good for local iteration.
 - `yarn test:api:pw:coverage` – Playwright API functional tests with `c8` coverage over live API flows; complements the unit coverage above by exercising end-to-end routes.
 
+## Playwright test automation (E2E, integration, reporting)
+
+Use this section as the quick entry point for Playwright testing in this repo.
+
+Detailed suite documentation and architecture:
+
+- [`playwright_tests_new/README.md`](./playwright_tests_new/README.md)
+- [`playwright_tests_new/TEST_FRAMEWORK_ARCHITECTURE.md`](./playwright_tests_new/TEST_FRAMEWORK_ARCHITECTURE.md)
+
+### Test layers and commands
+
+- **E2E UI journeys (browser + backend):**
+  - AAT: `yarn test:playwrightE2E`
+  - Local app target: `TEST_URL=http://localhost:3000 yarn test:playwrightE2E`
+- **Integration tests (UI with mocked backend routes):**
+  - AAT: `yarn test:playwright:integration`
+  - Fully mocked local mode: `TEST_URL=http://localhost:3000 EXUI_BASE_URL=http://localhost:3000 IDAM_WEB_URL=http://localhost:8080 IDAM_TESTING_SUPPORT_URL=http://localhost:8080 PLAYWRIGHT_SKIP_INSTALL=true yarn test:playwright:integration`
+- **API functional tests (Playwright node-api project):**
+  - `yarn test:api:pw`
+  - With coverage/report copy: `yarn test:api:pw:coverage`
+
+### How tests operate
+
+- **Session management:** Playwright uses lazy session capture and shared `.sessions/` storage to avoid repeated logins during parallel runs.
+- **Integration mocking model:** Integration specs in `playwright_tests_new/integration/test/` mock backend APIs with route interception and builders in `playwright_tests_new/integration/mocks/`.
+- **Tag-based execution:** Suites support include/exclude tag filters via environment variables (`E2E_PW_INCLUDE_TAGS`, `INTEGRATION_PW_INCLUDE_TAGS`, `API_PW_INCLUDE_TAGS` and corresponding `*_EXCLUDED_TAGS_OVERRIDE`). The emergency global exclusion switch is documented in [Playwright global test exclusions](./docs/playwright-global-exclusions.md).
+- **Parallelism:** worker count auto-scales unless overridden with `FUNCTIONAL_TESTS_WORKERS`.
+
+### Reporting and diagnostics
+
+- **Odhin HTML reports:**
+  - E2E: `functional-output/tests/playwright-e2e/odhin-report/xui-playwright-e2e.html`
+  - Integration: `functional-output/tests/playwright-integration/odhin-report/xui-playwright-integration.html`
+  - API: `functional-output/tests/playwright-api/odhin-report/xui-playwright-api.html`
+- **Playwright diagnostics:**
+  - Trace/video/screenshot outputs (on failures): `test-results/`
+  - Additional failure payloads: `functional-output/tests/playwright-diagnostics/failure-data/`
+- **CI publishing:** Jenkins archives Odhin reports and Playwright diagnostics artifacts for troubleshooting.
+
+### Key considerations for developers
+
+- Use backend mock + local IDAM routes for local auth and selected endpoint stubbing.
+- Treat the default local setup as **mixed mode**: unless Node is explicitly configured for mock service endpoints, many calls still go to test downstream services.
+- If auth behavior looks incorrect or stale, clear sessions and rerun: `rm -rf .sessions`.
+- Prefer running targeted subsets first (file path or tags), then full suites.
+- For locator hygiene in E2E code, run `yarn lint:playwright:locators`.
+
 ## Linting
 
 Run `yarn lint` to execute all linting across both Angular and Node layers. Note that this
@@ -182,47 +244,135 @@ values contained within values.preview.template.yaml and values.aat.template.yam
 
 # Setting up Secrets locally (Required)
 
-You need to setup secrets locally before you run the project. Why? - When you push this application
-up through AKS deployed through Flux to AAT, ITHC and Prod, the application will take in the secrets on these environments.
+Before you run local flows, generate a repo-root `.env` from Azure Key Vault.
+This keeps the local env file aligned with the checked-in
+[`.env.example`](./.env.example) template and avoids committing live secrets.
 
-The developer needs to set these up locally, so that the developer can see any issues early in
-the development process, and not when the application is placed up onto the higher AKS environments.
+Prerequisites:
 
-To setup the secrets locally do the following:
+1. Install Azure CLI.
+2. Run `az login`.
+3. Make sure you can access the relevant vault:
+   - `rpx-aat`
+   - `rpx-demo`
 
-Note that Mac OS Catalina introduced a new feature that overlaps and reinforces the filesystem,
-therefore you will not be able to make changes in the root directory of your file system, hence there are different
-ways to setup secrets, Pre Catalina and Post Catalina, note that the Post Catalina way should work
-for all operating system, but I have yet to try this.
+Generate `.env` for AAT:
 
-####MAC OS - Pre Catalina
-
-1. Create a Mount point on your local machine<br/>
-   Create the folder: `/mnt/secrets/rpx`
-2. In this folder we create a file per secret.
-   ie.
-   We create the file postgresql-admin-pw (no extension).
-   Within the file we have one line of characters which is the secret.
-
-####MAC OS - Post Catalina
-
-1. Create a Mount point on your local machine within the Volumes folder<br/>
-   Create the folder: `/Volumes/mnt/secrets/rpx`
-2. In this folder we create a file per secret.
-   ie.
-   We create the file postgresql-admin-pw (no extension).
-   Within the file we have one line of characters which is the secret.
-3. If you want to test the secrets locally override the default mountPoint with the following additional option added to .addTo
-   ie.
-   `propertiesVolume.addTo(secretsConfig, { mountPoint: '/Volumes/mnt/secrets/' });`
-
-Note that this is connected into the application via the following pieces of code:
-
-```javascript
-keyVaults: rpx: secrets: -postgresql - admin - pw - appinsights - instrumentationkey - tc;
+```bash
+yarn env:populate:aat
 ```
 
-which in turn uses `propertiesVolume.addTo()`
+Generate `.env` for demo:
+
+```bash
+yarn env:populate:demo
+```
+
+Optional custom output path and template:
+
+```bash
+bash ./scripts/populate-env-from-keyvault.sh aat /tmp/xui.env .env.example
+```
+
+What the script does:
+
+- reads [`.env.example`](./.env.example)
+- looks up secrets in Azure Key Vault using the `e2e=<ENV_VAR_NAME>` tag
+- writes the resolved values into `.env`
+- applies compatibility fills for `CLIENT_ID`, `CREATE_USER_CLIENT_ID`, `CREATE_USER_CLIENT_SECRET`, `IDAM_API_URL`, `MANAGE_CASE_REDIRECT_URI`, `SOLICITOR_CASE_TYPE`, and `SOLICITOR_JURISDICTION`
+- leaves blank values in place when a value is intentionally local-only or no tagged secret exists
+
+Notes:
+
+- [`.env`](./.env) is gitignored and must not be committed
+- if a generated value is blank, either add or fix the Key Vault tag/secret, or set the value locally if it is intentionally not stored in Key Vault
+- this section replaces the old local mount-point secret setup instructions for this branch
+
+### Adding new usernames and passwords to Azure Key Vault
+
+If you add a new credential to [`.env.example`](./.env.example), you must add it
+to the relevant Key Vault with the correct `e2e` tag so the population script
+can write it into `.env`.
+
+Use these vaults:
+
+- AAT: `rpx-aat`
+- DEMO: `rpx-demo`
+
+Important rules:
+
+- The env var name must exist in [`.env.example`](./.env.example).
+- The secret is matched by `tags.e2e`, not by the secret name.
+- If the same key is needed in both environments, create or update it in both
+  `rpx-aat` and `rpx-demo`.
+- Username and password should normally be stored as two separate secrets.
+
+Example: add a new username/password pair for `NEW_CASEWORKER_USERNAME` and
+`NEW_CASEWORKER_PASSWORD`.
+
+Create or update the AAT secrets:
+
+```bash
+az keyvault secret set \
+  --vault-name rpx-aat \
+  --name new-caseworker-username \
+  --value 'user@example.com' \
+  --tags e2e=NEW_CASEWORKER_USERNAME
+
+az keyvault secret set \
+  --vault-name rpx-aat \
+  --name new-caseworker-password \
+  --value 'SuperSecretPassword' \
+  --tags e2e=NEW_CASEWORKER_PASSWORD
+```
+
+Create or update the DEMO secrets:
+
+```bash
+az keyvault secret set \
+  --vault-name rpx-demo \
+  --name new-caseworker-username \
+  --value 'user@example.com' \
+  --tags e2e=NEW_CASEWORKER_USERNAME
+
+az keyvault secret set \
+  --vault-name rpx-demo \
+  --name new-caseworker-password \
+  --value 'SuperSecretPassword' \
+  --tags e2e=NEW_CASEWORKER_PASSWORD
+```
+
+Then regenerate your local env file:
+
+For the Work Allocation solicitor used by Playwright API/E2E tests, store the
+long-lived dashboard-created user as:
+
+```bash
+az keyvault secret set \
+  --vault-name rpx-aat \
+  --name e2e-wa-solicitor-username \
+  --value '<dashboard-created-wa-solicitor-email>' \
+  --tags e2e=WA_SOLICITOR_USERNAME
+
+az keyvault secret set \
+  --vault-name rpx-aat \
+  --name e2e-wa-solicitor-password \
+  --value '<dashboard-created-wa-solicitor-password>' \
+  --tags e2e=WA_SOLICITOR_PASSWORD
+```
+
+```bash
+yarn env:populate:aat
+yarn env:populate:demo
+```
+
+Quick checklist when adding a new credential:
+
+- add the placeholder key to [`.env.example`](./.env.example) if it is missing
+- create or update the secret in `rpx-aat` and/or `rpx-demo`
+- set `--tags e2e=<EXACT_ENV_VAR_NAME>`
+- rerun the env population command for the target environment
+- if the generated value is still blank, check the tag spelling and your vault access first
 
 # How Application Configuration (Node Config) Works
 
@@ -301,13 +451,11 @@ Key behaviour:
 
 Playwright-capable pipeline stages archive diagnostics for troubleshooting and triage:
 
-- `functional-output/tests/**/odhin-report/**/*`
-- `test-results/**/*`
 - `functional-output/tests/playwright-diagnostics/failure-data/**/*`
-- `**/failure-data.json`
 
 `failure-data.json` files attached by Playwright tests are also copied into
 `functional-output/tests/playwright-diagnostics/failure-data/` with flattened filenames so they are easier to find in Jenkins artifacts.
+Odhín HTML reports and standalone system-load reports are published through Jenkins HTML Publisher links rather than archived as raw build artifacts.
 
 ### Playwright locator audit
 
@@ -344,7 +492,7 @@ What it does not validate:
 
 ### Parallelism
 
-Playwright worker count scales with available CPU cores in both local and CI runs (approx. half of the logical cores, capped at 8).
+Playwright worker count defaults are suite-specific: 2 workers for E2E, 4 workers for API, and 4 workers for integration.
 Set `FUNCTIONAL_TESTS_WORKERS` to override this behaviour explicitly.
 
 ### Integration local progress timer

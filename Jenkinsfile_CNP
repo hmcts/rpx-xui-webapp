@@ -47,7 +47,7 @@ properties([
         ),
         text(
             name: 'INTEGRATION_PW_PROFILE_RUNS',
-            defaultValue: '''workers=4''',
+            defaultValue: '''workers=7''',
             description: 'Integration load-profile matrix. One run per line or semicolon. Supported keys: workers=<n> and optional shard=<index/total>.'
         ),
         string(
@@ -58,7 +58,7 @@ properties([
         string(
             name: 'INTEGRATION_PW_SHARD',
             defaultValue: '',
-            description: 'Optional Playwright integration shard override, for example 1/2. Used with INTEGRATION_PW_WORKERS.'
+            description: 'Manual diagnostic-only integration shard override, for example 1/2. Leave empty for PR timing runs because shard reports are split.'
         ),
     ])
 ])
@@ -76,53 +76,6 @@ def vault = "rpx"
 def channel   = '#xui-pipeline'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
-// In `parallel(failFast: true, ...)`, non-failing branches are stopped by Jenkins via a
-// FlowInterruptedException. We only want those *interrupted* branches to show as ABORTED.
-// The genuinely failing branch should remain FAILED.
-def isFailFastInterruption = { org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e ->
-    try {
-        return (e.getCauses() ?: []).any { c ->
-            // FailFastCause exists under different packages across Jenkins versions.
-            def name = c?.getClass()?.getName()
-            return name?.endsWith('FailFastCause')
-        }
-    } catch (ignored) {
-        return false
-    }
-}
-// When failFast interrupts other branches, Jenkins may surface either:
-// - FlowInterruptedException with a FailFastCause, or
-// - AbortException from a terminated `sh` (e.g., exit 143).
-// Normalize those to ABORTED so truly failing branches stay FAILED.
-def handleFailFastAbort = { Exception e ->
-    def abortedByFailFast = false
-    def failFastExitCodes = ['129', '137', '143']
-    if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
-        try {
-            def fie = (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) e
-            def causes = (fie.getCauses() ?: []).collect { c -> c?.getClass()?.getName() }.findAll { it }
-            abortedByFailFast = causes.any { it?.endsWith('FailFastCause') }
-            echo "[failFast] FlowInterruptedException: causes=${causes}"
-        } catch (ignored) {
-            echo "[failFast] FlowInterruptedException: causes=<unavailable>"
-        }
-    } else if (e instanceof hudson.AbortException) {
-        def msg = e.getMessage() ?: ''
-        def matcher = (msg =~ /(exit code|status)\s+(\d+)/)
-        def exitCode = matcher.find() ? matcher.group(2) : null
-        abortedByFailFast = (currentBuild?.result == 'ABORTED') || (exitCode in failFastExitCodes)
-        echo "[failFast] AbortException: buildResult=${currentBuild?.result}, exitCode=${exitCode}"
-    } else {
-        echo "[failFast] Non-abort exception: ${e.getClass().getName()}: ${e.getMessage()}"
-    }
-    if (abortedByFailFast) {
-        echo "[failFast] Marking stage as ABORTED due to failFast interruption"
-        catchError(buildResult: 'ABORTED', stageResult: 'ABORTED') { throw e }
-        return true
-    }
-    echo "[failFast] Not a failFast interruption; rethrowing"
-    return false
-}
 
 def archivePlaywrightDiagnostics = {
     steps.sh '''
@@ -271,7 +224,7 @@ def resolveIntegrationProfileRuns = { String configuredRuns, String workersOverr
     }
     def configured = configuredRuns?.trim()
     if (!configured) {
-        configured = 'workers=4'
+        configured = 'workers=7'
     }
     return configured
         .split(/[\r\n;]+/)
@@ -280,7 +233,7 @@ def resolveIntegrationProfileRuns = { String configuredRuns, String workersOverr
 }
 
 def integrationProfileRunConfig = { String spec, String testType ->
-    def workers = '4'
+    def workers = '7'
     def shard = ''
     spec.split(/\s+/).each { token ->
         if (token.startsWith('workers=')) {
@@ -563,90 +516,88 @@ withPipeline(type, product, component) {
         archivePlaywrightDiagnostics()
         recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'PREVIEW smoke report publish', 'finish')
 
-        stage('Preview Functional Tests (Parallel)') {
+        stage('Preview Functional Tests (Parallel Report Gathering)') {
             def previewLoadProfileEvents = playwrightLoadProfileEventsFile('preview')
             try {
                 recordPlaywrightLoadEvent(previewLoadProfileEvents, 'PREVIEW functional tests', 'start')
+                // Keep suites parallel for fast feedback, but let sibling suites publish reports when one branch fails.
                 parallel(
-                    failFast: true,
+                    failFast: false,
                     api: {
-                    stage('API Tests') {
-                        withEnv([
-                            "API_PW_INCLUDE_TAGS=${params.API_PW_INCLUDE_TAGS ?: ''}",
+                        stage('API Tests') {
+                            withEnv([
+                                "API_PW_INCLUDE_TAGS=${params.API_PW_INCLUDE_TAGS ?: ''}",
                                 "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                                 "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}",
                                 "ORG_USER_ASSIGNMENT_MODE=external",
                                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                                "FUNCTIONAL_TESTS_WORKERS=4"
-                        ]) {
+                                "FUNCTIONAL_TESTS_WORKERS=6"
+                            ]) {
                                 try {
                                     recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'API', 'start')
                                     yarnBuilder.yarn('test:api:pw:raw')
+                                } catch (Exception e) {
+                                    echo "[parallel-report-gathering] API Tests failed: ${e.getClass().getName()}: ${e.getMessage()}"
+                                    throw e
+                                } finally {
+                                    recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'API', 'finish')
+                                    publishHTML([
+                                        allowMissing         : true,
+                                        alwaysLinkToLastBuild: true,
+                                        keepAll              : true,
+                                        reportDir            : 'functional-output/tests/api_functional/odhin-report/',
+                                        reportFiles          : 'xui-playwright-api.html',
+                                        reportName           : 'PREVIEW API Functional Test'
+                                    ])
+                                }
+                            }
+                        }
+                    },
+                    playwrightIntegration: {
+                        stage('Playwright Integration Tests') {
+                            try {
+                                recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'Integration', 'start')
+                                runPlaywrightIntegrationProfileMatrix('preview', 'PREVIEW')
                             } catch (Exception e) {
-                                echo "[failFast] API Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
-                                if (handleFailFastAbort(e)) { return }
+                                echo "[parallel-report-gathering] Playwright Integration Tests failed: ${e.getClass().getName()}: ${e.getMessage()}"
                                 throw e
                             } finally {
-                                recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'API', 'finish')
+                                recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'Integration', 'finish')
+                                echo '[playwright-integration] PREVIEW integration reports published via HTML Publisher'
+                            }
+                        }
+                    },
+                    playwrightE2E: {
+                        stage('Playwright E2E') {
+                            try {
+                                recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'E2E', 'start')
+                                withEnv([
+                                    "ORG_USER_ASSIGNMENT_MODE=external",
+                                    "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
+                                    "FUNCTIONAL_TESTS_WORKERS=6",
+                                    "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
+                                    "PLAYWRIGHT_SKIP_INSTALL=true",
+                                    "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
+                                    "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
+                                    "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
+                                ]) {
+                                    yarnBuilder.yarn('test:playwrightE2E:raw')
+                                }
+                            } catch (Exception e) {
+                                echo "[parallel-report-gathering] Playwright E2E failed: ${e.getClass().getName()}: ${e.getMessage()}"
+                                throw e
+                            } finally {
+                                recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'E2E', 'finish')
                                 publishHTML([
                                     allowMissing         : true,
                                     alwaysLinkToLastBuild: true,
                                     keepAll              : true,
-                                    reportDir            : 'functional-output/tests/api_functional/odhin-report/',
-                                    reportFiles          : 'xui-playwright-api.html',
-                                    reportName           : 'PREVIEW API Functional Test'
+                                    reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
+                                    reportFiles          : 'xui-playwright-e2e.html',
+                                    reportName           : 'PREVIEW Playwright E2E'
                                 ])
-                                }
-                        }
-                    }
-                    },
-                    playwrightIntegration: {
-                    stage('Playwright Integration Tests') {
-                        try {
-                            recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'Integration', 'start')
-                            runPlaywrightIntegrationProfileMatrix('preview', 'PREVIEW')
-                        } catch (Exception e) {
-                            echo "[failFast] Playwright Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
-                            if (handleFailFastAbort(e)) { return }
-                            throw e
-                        } finally {
-                            recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'Integration', 'finish')
-                            echo '[playwright-integration] PREVIEW integration reports published via HTML Publisher'
-                        }
-                    }
-                    },
-                    playwrightE2E: {
-                    stage('Playwright E2E') {
-                        try {
-                            recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'E2E', 'start')
-                            withEnv([
-                                "ORG_USER_ASSIGNMENT_MODE=external",
-                                "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                                "FUNCTIONAL_TESTS_WORKERS=2",
-                                "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
-                                "PLAYWRIGHT_SKIP_INSTALL=true",
-                                "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
-                                "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
-                                "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
-                                ]) {
-                                    yarnBuilder.yarn('test:playwrightE2E:raw')
-                                }
-                        } catch (Exception e) {
-                            echo "[failFast] Playwright E2E catch: ${e.getClass().getName()}: ${e.getMessage()}"
-                            if (handleFailFastAbort(e)) { return }
-                            throw e
-                        } finally {
-                            recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'E2E', 'finish')
-                            publishHTML([
-                                allowMissing         : true,
-                                alwaysLinkToLastBuild: true,
-                                keepAll              : true,
-                                reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
-                                reportFiles          : 'xui-playwright-e2e.html',
-                                reportName           : 'PREVIEW Playwright E2E'
-                            ])
                             }
-                    }
+                        }
                     }
                 )
             } finally {
@@ -670,90 +621,88 @@ withPipeline(type, product, component) {
         archivePlaywrightDiagnostics()
         recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'AAT smoke report publish', 'finish')
 
-        stage('AAT Functional Tests (Parallel)') {
+        stage('AAT Functional Tests (Parallel Report Gathering)') {
             def aatLoadProfileEvents = playwrightLoadProfileEventsFile('aat')
             try {
                 recordPlaywrightLoadEvent(aatLoadProfileEvents, 'AAT functional tests', 'start')
+                // Keep suites parallel for fast feedback, but let sibling suites publish reports when one branch fails.
                 parallel(
-                    failFast: true,
+                    failFast: false,
                     api: {
-                    stage('API Tests') {
-                        withEnv([
-                            "API_PW_INCLUDE_TAGS=${params.API_PW_INCLUDE_TAGS ?: ''}",
-                            "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
-                            "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}",
-                            "ORG_USER_ASSIGNMENT_MODE=external",
-                            "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                            "FUNCTIONAL_TESTS_WORKERS=4"
-                        ]) {
+                        stage('API Tests') {
+                            withEnv([
+                                "API_PW_INCLUDE_TAGS=${params.API_PW_INCLUDE_TAGS ?: ''}",
+                                "API_PW_EXCLUDED_TAGS_OVERRIDE=${params.API_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
+                                "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}",
+                                "ORG_USER_ASSIGNMENT_MODE=external",
+                                "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
+                                "FUNCTIONAL_TESTS_WORKERS=6"
+                            ]) {
                                 try {
                                     recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'API', 'start')
                                     yarnBuilder.yarn('test:api:pw:raw')
-                            } catch (Exception e) {
-                                echo "[failFast] API Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
-                                if (handleFailFastAbort(e)) { return }
-                                throw e
-                            } finally {
-                                recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'API', 'finish')
-                                publishHTML([
-                                  allowMissing         : true,
-                                  alwaysLinkToLastBuild: true,
-                                  keepAll              : true,
-                                  reportDir            : 'functional-output/tests/api_functional/odhin-report/',
-                                  reportFiles          : 'xui-playwright-api.html',
-                                  reportName           : 'AAT API Functional Test'
-                                ])
+                                } catch (Exception e) {
+                                    echo "[parallel-report-gathering] API Tests failed: ${e.getClass().getName()}: ${e.getMessage()}"
+                                    throw e
+                                } finally {
+                                    recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'API', 'finish')
+                                    publishHTML([
+                                        allowMissing         : true,
+                                        alwaysLinkToLastBuild: true,
+                                        keepAll              : true,
+                                        reportDir            : 'functional-output/tests/api_functional/odhin-report/',
+                                        reportFiles          : 'xui-playwright-api.html',
+                                        reportName           : 'AAT API Functional Test'
+                                    ])
                                 }
+                            }
                         }
-                    }
                     },
                     playwrightIntegration: {
-                    stage('Playwright Integration Tests') {
-                        try {
-                            recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'Integration', 'start')
-                            runPlaywrightIntegrationProfileMatrix('aat', 'AAT')
-                        } catch (Exception e) {
-                            echo "[failFast] Playwright Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
-                            if (handleFailFastAbort(e)) { return }
-                            throw e
-                        } finally {
-                            recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'Integration', 'finish')
-                            echo '[playwright-integration] AAT integration reports published via HTML Publisher'
+                        stage('Playwright Integration Tests') {
+                            try {
+                                recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'Integration', 'start')
+                                runPlaywrightIntegrationProfileMatrix('aat', 'AAT')
+                            } catch (Exception e) {
+                                echo "[parallel-report-gathering] Playwright Integration Tests failed: ${e.getClass().getName()}: ${e.getMessage()}"
+                                throw e
+                            } finally {
+                                recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'Integration', 'finish')
+                                echo '[playwright-integration] AAT integration reports published via HTML Publisher'
+                            }
                         }
-                    }
                     },
                     playwrightE2E: {
-                    stage('Playwright E2E') {
-                        try {
-                            recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'E2E', 'start')
-                            withEnv([
-                                "ORG_USER_ASSIGNMENT_MODE=external",
-                                "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                                "FUNCTIONAL_TESTS_WORKERS=2",
-                                "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
-                                "PLAYWRIGHT_SKIP_INSTALL=true",
-                                "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
-                                "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
-                                "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
+                        stage('Playwright E2E') {
+                            try {
+                                recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'E2E', 'start')
+                                withEnv([
+                                    "ORG_USER_ASSIGNMENT_MODE=external",
+                                    "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
+                                    "FUNCTIONAL_TESTS_WORKERS=6",
+                                    "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
+                                    "PLAYWRIGHT_SKIP_INSTALL=true",
+                                    "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
+                                    "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
+                                    "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
                                 ]) {
                                     yarnBuilder.yarn('test:playwrightE2E:raw')
                                 }
-                        } catch (Exception e) {
-                            echo "[failFast] Playwright E2E catch: ${e.getClass().getName()}: ${e.getMessage()}"
-                            if (handleFailFastAbort(e)) { return }
-                            throw e
-                        } finally {
-                            recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'E2E', 'finish')
-                            publishHTML([
-                                allowMissing         : true,
-                                alwaysLinkToLastBuild: true,
-                                keepAll              : true,
-                                reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
-                                reportFiles          : 'xui-playwright-e2e.html',
-                                reportName           : 'AAT Playwright E2E'
-                            ])
+                            } catch (Exception e) {
+                                echo "[parallel-report-gathering] Playwright E2E failed: ${e.getClass().getName()}: ${e.getMessage()}"
+                                throw e
+                            } finally {
+                                recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'E2E', 'finish')
+                                publishHTML([
+                                    allowMissing         : true,
+                                    alwaysLinkToLastBuild: true,
+                                    keepAll              : true,
+                                    reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
+                                    reportFiles          : 'xui-playwright-e2e.html',
+                                    reportName           : 'AAT Playwright E2E'
+                                ])
                             }
-                    }
+                        }
                     }
                 )
             } finally {

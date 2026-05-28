@@ -38,7 +38,7 @@ const resolveWorkerCount = (env = process.env) => {
     }
   }
 
-  return 8;
+  return 7;
 };
 
 const resolveBrowserChannel = (env = process.env) => {

@@ -720,6 +720,40 @@ export function isSessionFresh(
   }
 }
 
+function clearSessionCaptureFailureIfReusableSession({
+  fsApi,
+  failurePath,
+  force,
+  isFresh,
+  sessionPath,
+  targetUrl,
+  userIdentifier,
+  waitContext,
+}: {
+  fsApi: typeof fs;
+  failurePath: string;
+  force: boolean;
+  isFresh: typeof isSessionFresh;
+  sessionPath: string;
+  targetUrl: string;
+  userIdentifier: string;
+  waitContext: 'before-lock' | 'after-lock';
+}): boolean {
+  if (force || !isFresh(sessionPath, DEFAULT_SESSION_MAX_AGE_MS, { targetUrl })) {
+    return false;
+  }
+
+  logger.warn('Clearing session capture failure marker because a reusable session is already present', {
+    userIdentifier,
+    sessionPath,
+    failurePath,
+    waitContext,
+    operation: 'session-capture',
+  });
+  clearSessionCaptureFailure(fsApi, failurePath);
+  return true;
+}
+
 // local helper to persist session: write session file, add cookies to context and save storageState
 async function persistSession(
   localSessionPath: string,
@@ -1106,6 +1140,20 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
     try {
       const recentFailureMessage = recentSessionCaptureFailureMessage(fsApi, failurePath, resolveSessionCaptureFailureTtlMs(env));
       if (recentFailureMessage) {
+        if (
+          clearSessionCaptureFailureIfReusableSession({
+            fsApi,
+            failurePath,
+            force,
+            isFresh,
+            sessionPath,
+            targetUrl,
+            userIdentifier: identity.userIdentifier,
+            waitContext: 'before-lock',
+          })
+        ) {
+          continue;
+        }
         throw new SessionCaptureError(
           `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${recentFailureMessage}`,
           identity.userIdentifier,
@@ -1149,6 +1197,20 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
         resolveSessionCaptureFailureTtlMs(env)
       );
       if (lockedRecentFailureMessage) {
+        if (
+          clearSessionCaptureFailureIfReusableSession({
+            fsApi,
+            failurePath,
+            force,
+            isFresh,
+            sessionPath,
+            targetUrl,
+            userIdentifier: identity.userIdentifier,
+            waitContext: 'after-lock',
+          })
+        ) {
+          continue;
+        }
         throw new SessionCaptureError(
           `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${lockedRecentFailureMessage}`,
           identity.userIdentifier,

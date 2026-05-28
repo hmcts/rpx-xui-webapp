@@ -50,16 +50,16 @@ test.describe('ensure Odhín report script', { tag: '@svc-internal' }, () => {
     expect(
       ensureReport.parseArgs([
         '--report-dir',
-        'functional-output/tests/playwright-integration/odhin-report/aat-workers-6',
+        'functional-output/tests/playwright-integration/odhin-report/aat-workers-8',
         '--report-file',
         'xui-playwright-integration.html',
         '--suite-name',
-        'AAT Playwright Integration Test (6 workers)',
+        'AAT Playwright Integration Test (8 workers)',
       ])
     ).toEqual({
-      reportDir: 'functional-output/tests/playwright-integration/odhin-report/aat-workers-6',
+      reportDir: 'functional-output/tests/playwright-integration/odhin-report/aat-workers-8',
       reportFile: 'xui-playwright-integration.html',
-      suiteName: 'AAT Playwright Integration Test (6 workers)',
+      suiteName: 'AAT Playwright Integration Test (8 workers)',
     });
   });
 });

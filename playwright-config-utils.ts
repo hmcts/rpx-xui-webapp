@@ -79,14 +79,14 @@ export function resolveConfiguredWorkerCount(env: EnvMap = process.env): number 
 
 /**
  * Resolves Playwright worker count from FUNCTIONAL_TESTS_WORKERS or runtime defaults.
- * Browser-heavy E2E runs default to 6 workers unless explicitly overridden.
+ * Browser-heavy E2E runs default to 8 workers unless explicitly overridden.
  */
 export function resolveWorkerCount(env: EnvMap = process.env): number {
   const configured = resolveConfiguredWorkerCount(env);
   if (configured !== undefined) {
     return configured;
   }
-  return 6;
+  return 8;
 }
 
 /**
@@ -97,7 +97,7 @@ export function resolveApiProjectWorkerCount(env: EnvMap = process.env): number 
   if (configured !== undefined) {
     return configured;
   }
-  return 6;
+  return 8;
 }
 
 function ensureTagPrefix(value: string): string {

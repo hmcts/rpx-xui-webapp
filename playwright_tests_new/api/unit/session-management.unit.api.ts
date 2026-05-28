@@ -144,6 +144,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     const sessionPath = path.join(sessionsDir, 'booking-ui-user-example.test.storage.json');
     const failurePath = path.join(sessionsDir, 'booking-ui-user-example.test.capture-failed.json');
     let lockCalled = false;
+    let freshnessMaxAgeMs: number | undefined;
 
     try {
       fs.mkdirSync(sessionsDir, { recursive: true });
@@ -178,8 +179,11 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
               exuiDefaultUrl: 'https://manage-case.aat.platform.hmcts.net',
             },
           } as never,
-          env: {},
-          isSessionFresh: () => true,
+          env: { PW_SESSION_MAX_AGE_MS: '1234' },
+          isSessionFresh: (_sessionPath, maxAgeMs) => {
+            freshnessMaxAgeMs = maxAgeMs;
+            return true;
+          },
           lockfile: {
             lock: async () => {
               lockCalled = true;
@@ -195,6 +199,7 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       ).resolves.toBeUndefined();
 
       expect(lockCalled).toBe(false);
+      expect(freshnessMaxAgeMs).toBe(1234);
       expect(fs.existsSync(failurePath)).toBe(false);
     } finally {
       process.chdir(previousCwd);

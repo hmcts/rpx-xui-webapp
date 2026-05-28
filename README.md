@@ -95,7 +95,7 @@ EXUI_BASE_URL=http://localhost:3000 \
 MANAGE_CASES_BASE_URL=http://localhost:3000/cases \
 IDAM_WEB_URL=http://localhost:8080 \
 IDAM_TESTING_SUPPORT_URL=http://localhost:8080 \
-FUNCTIONAL_TESTS_WORKERS=6 \
+FUNCTIONAL_TESTS_WORKERS=8 \
 PLAYWRIGHT_SKIP_INSTALL=true \
 yarn test:playwright:integration
 ```
@@ -492,7 +492,7 @@ What it does not validate:
 
 ### Parallelism
 
-Playwright worker count defaults are 6 workers for E2E and API, with Jenkins CNP/nightly integration profiles defaulting to 8 workers on the XUI 8CPU agent.
+Playwright worker count defaults are 8 workers for E2E, API, and integration on the XUI 8CPU agent.
 Set `FUNCTIONAL_TESTS_WORKERS` to override this behaviour explicitly.
 Jenkins CNP and nightly keep API, integration, and E2E/cross-browser suites parallel, but use report-gathering fan-out so a failed suite does not abort sibling Odhín and load-report publication. Default PR timing runs do not shard integration because split shard reports are harder to compare.
 

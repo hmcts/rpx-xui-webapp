@@ -116,13 +116,13 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(configuredInCi).toBe(2);
 
     const ciCount = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' });
-    expect(ciCount).toBe(6);
+    expect(ciCount).toBe(8);
 
     const defaultCount = resolveWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: undefined });
-    expect(defaultCount).toBe(6);
+    expect(defaultCount).toBe(8);
 
     const defaultApiCount = resolveApiProjectWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: undefined });
-    expect(defaultApiCount).toBe(6);
+    expect(defaultApiCount).toBe(8);
   });
 
   test('resolveConfigModule prefers __test__ and default exports', () => {
@@ -573,7 +573,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
 
   test('integration config exposes the documented resolveWorkerCount test helper', async () => {
     expect(resolveIntegrationWorkerCount({ FUNCTIONAL_TESTS_WORKERS: '3', CI: undefined })).toBe(3);
-    expect(resolveIntegrationWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' })).toBe(6);
+    expect(resolveIntegrationWorkerCount({ FUNCTIONAL_TESTS_WORKERS: undefined, CI: 'true' })).toBe(8);
   });
 
   test('integration config allows local browser channel override for reproducible reruns', async () => {

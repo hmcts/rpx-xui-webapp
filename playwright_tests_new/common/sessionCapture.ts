@@ -725,6 +725,7 @@ function clearSessionCaptureFailureIfReusableSession({
   failurePath,
   force,
   isFresh,
+  maxAgeMs,
   sessionPath,
   targetUrl,
   userIdentifier,
@@ -734,12 +735,13 @@ function clearSessionCaptureFailureIfReusableSession({
   failurePath: string;
   force: boolean;
   isFresh: typeof isSessionFresh;
+  maxAgeMs: number;
   sessionPath: string;
   targetUrl: string;
   userIdentifier: string;
   waitContext: 'before-lock' | 'after-lock';
 }): boolean {
-  if (force || !isFresh(sessionPath, DEFAULT_SESSION_MAX_AGE_MS, { targetUrl })) {
+  if (force || !isFresh(sessionPath, maxAgeMs, { targetUrl })) {
     return false;
   }
 
@@ -1121,6 +1123,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
   const lockfileApi = deps.lockfile ?? lockfile;
   const force = deps.force ?? false;
   const targetUrl = env.TEST_URL || activeConfig.urls.exuiDefaultUrl;
+  const sessionMaxAgeMs = resolveSessionMaxAgeMs(env);
 
   const sessionsDir = path.join(process.cwd(), '.sessions');
   ensureDirectory(fsApi, sessionsDir);
@@ -1146,6 +1149,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
             failurePath,
             force,
             isFresh,
+            maxAgeMs: sessionMaxAgeMs,
             sessionPath,
             targetUrl,
             userIdentifier: identity.userIdentifier,
@@ -1172,7 +1176,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
         lockfileApi,
         lockFilePath,
         userIdentifier: identity.userIdentifier,
-        isSessionReusable: () => isFresh(sessionPath, DEFAULT_SESSION_MAX_AGE_MS, { targetUrl }),
+        isSessionReusable: () => isFresh(sessionPath, sessionMaxAgeMs, { targetUrl }),
         force,
       });
 
@@ -1203,6 +1207,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
             failurePath,
             force,
             isFresh,
+            maxAgeMs: sessionMaxAgeMs,
             sessionPath,
             targetUrl,
             userIdentifier: identity.userIdentifier,
@@ -1219,7 +1224,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
       }
 
       // Recheck freshness after acquiring lock (another worker may have logged in)
-      if (!force && isFresh(sessionPath, DEFAULT_SESSION_MAX_AGE_MS, { targetUrl })) {
+      if (!force && isFresh(sessionPath, sessionMaxAgeMs, { targetUrl })) {
         logger.info('Session became fresh while waiting for lock', {
           userIdentifier: identity.userIdentifier,
           email: identity.email,

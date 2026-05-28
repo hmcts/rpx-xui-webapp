@@ -427,7 +427,7 @@ withNightlyPipeline(type, product, component) {
                             withEnv([
                                 'ORG_USER_ASSIGNMENT_MODE=external',
                                 'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
-                                'FUNCTIONAL_TESTS_WORKERS=6',
+                                'FUNCTIONAL_TESTS_WORKERS=8',
                                 "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
                             ]) {
                                 yarnBuilder.yarn('test:api:pw:coverage:raw')
@@ -469,7 +469,7 @@ withNightlyPipeline(type, product, component) {
                             withEnv([
                                 'ORG_USER_ASSIGNMENT_MODE=external',
                                 'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
-                                'FUNCTIONAL_TESTS_WORKERS=6',
+                                'FUNCTIONAL_TESTS_WORKERS=8',
                                 'E2E_PW_INCLUDE_TAGS=@nightly',
                                 'E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none',
                                 'PW_SESSION_CAPTURE_FAILURE_TTL_MS=0',

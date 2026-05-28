@@ -1,10 +1,11 @@
 import integrationConfigSupport from './playwright.integration.config.support.cjs';
-import { resolveTagFilters } from './playwright-config-utils';
+import { logResolvedTagFilters, resolveTagFilters } from './playwright-config-utils';
 
 const {
   buildConfig: buildSupportConfig,
   resolveOdhinConsoleCapture,
   resolveOdhinHardTimeoutMs,
+  resolveOdhinForceExitOnCompletion,
   resolveOdhinLightweight,
   resolveOdhinRuntimeHookTimeoutMs,
   resolveWorkerCount,
@@ -14,6 +15,7 @@ const {
     projects: Array<{ name: string; workers?: number; grep?: RegExp; grepInvert?: RegExp; use?: { channel?: string } }>;
   };
   resolveOdhinConsoleCapture: (env: NodeJS.ProcessEnv) => { consoleLog: boolean; consoleError: boolean };
+  resolveOdhinForceExitOnCompletion: (env: NodeJS.ProcessEnv) => boolean;
   resolveOdhinHardTimeoutMs: (env: NodeJS.ProcessEnv) => number;
   resolveOdhinLightweight: (env: NodeJS.ProcessEnv) => boolean;
   resolveOdhinRuntimeHookTimeoutMs: (env: NodeJS.ProcessEnv) => number;
@@ -28,11 +30,15 @@ const resolveIntegrationTagFilters = (env: NodeJS.ProcessEnv = process.env) =>
     configPathEnvVar: 'INTEGRATION_PW_TAG_FILTER_CONFIG',
     defaultConfigPath: 'playwright_tests_new/integration/tag-filter.json',
     suiteTag: '@integration',
+    globalExcludedTagsEnvVar: 'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS',
+    ignoreGlobalExcludesEnvVar: 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES',
+    globalExcludedTagsPattern: /^@integration(?:-.+)?$/,
   });
 
 const buildConfig = (env: NodeJS.ProcessEnv = process.env) => {
   const config = buildSupportConfig(env);
   const integrationTagFilters = resolveIntegrationTagFilters(env);
+  logResolvedTagFilters('Integration', integrationTagFilters, env);
 
   for (const project of config.projects ?? []) {
     project.grep = integrationTagFilters.grep;
@@ -48,6 +54,7 @@ const config = buildConfig(process.env);
   resolveWorkerCount,
   resolveIntegrationTagFilters,
   resolveOdhinHardTimeoutMs,
+  resolveOdhinForceExitOnCompletion,
   resolveOdhinConsoleCapture,
   resolveOdhinLightweight,
   resolveOdhinRuntimeHookTimeoutMs,

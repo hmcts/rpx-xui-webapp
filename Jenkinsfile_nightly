@@ -6,8 +6,29 @@ properties([
         displayName  : 'Expert UI Webapp',
         projectUrlStr: 'https://github.com/hmcts/rpx-xui-webapp/'
     ],
-    pipelineTriggers([
-    cron('30 17 * * *')
+    // Keep master scheduled, but leave nightly-dev and PR branches manual-only.
+    pipelineTriggers(env.BRANCH_NAME == 'master' ? [cron('30 17 * * 1-5')] : []),
+    parameters([
+      text(
+        name: 'INTEGRATION_PW_PROFILE_RUNS',
+        defaultValue: '''workers=4''',
+        description: 'Integration load-profile matrix. One run per line or semicolon. Supported keys: workers=<n> and optional shard=<index/total>.'
+      ),
+      string(
+        name: 'INTEGRATION_PW_WORKERS',
+        defaultValue: '',
+        description: 'Optional integration worker-count override. When set, runs one integration profile with this worker count instead of INTEGRATION_PW_PROFILE_RUNS.'
+      ),
+      string(
+        name: 'INTEGRATION_PW_SHARD',
+        defaultValue: '',
+        description: 'Optional Playwright integration shard override, for example 1/2. Used with INTEGRATION_PW_WORKERS.'
+      ),
+      booleanParam(
+        name: 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES',
+        defaultValue: false,
+        description: 'Bypass Key Vault-backed Playwright global exclusions for a verification run that is fixing an excluded test.'
+      ),
     ])
 ])
 
@@ -20,6 +41,40 @@ def vault     = "rpx"
 def channel   = '#xui-pipeline'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
+// When failFast interrupts other branches, Jenkins may surface either:
+// - FlowInterruptedException with a FailFastCause, or
+// - AbortException from a terminated `sh` (e.g. exit 143).
+// Normalize those to ABORTED so truly failing branches stay FAILED.
+def handleFailFastAbort = { Exception e ->
+    def abortedByFailFast = false
+    def failFastExitCodes = ['129', '137', '143']
+    if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+        try {
+            def fie = (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) e
+            def causes = (fie.getCauses() ?: []).collect { c -> c?.getClass()?.getName() }.findAll { it }
+            abortedByFailFast = causes.any { it?.endsWith('FailFastCause') }
+            echo "[failFast] FlowInterruptedException: causes=${causes}"
+        } catch (ignored) {
+            echo "[failFast] FlowInterruptedException: causes=<unavailable>"
+        }
+    } else if (e instanceof hudson.AbortException) {
+        def msg = e.getMessage() ?: ''
+        def matcher = (msg =~ /(exit code|status)\s+(\d+)/)
+        def exitCode = matcher.find() ? matcher.group(2) : null
+        abortedByFailFast = (currentBuild?.result == 'ABORTED') || (exitCode in failFastExitCodes)
+        echo "[failFast] AbortException: buildResult=${currentBuild?.result}, exitCode=${exitCode}"
+    } else {
+        echo "[failFast] Non-abort exception: ${e.getClass().getName()}: ${e.getMessage()}"
+    }
+    if (abortedByFailFast) {
+        echo "[failFast] Marking stage as ABORTED due to failFast interruption"
+        catchError(buildResult: 'ABORTED', stageResult: 'ABORTED') { throw e }
+        return true
+    }
+    echo "[failFast] Not a failFast interruption; rethrowing"
+    return false
+}
+
 def archivePlaywrightDiagnostics = {
     steps.sh '''
         set +e
@@ -35,9 +90,216 @@ def archivePlaywrightDiagnostics = {
     '''
     steps.archiveArtifacts(
         allowEmptyArchive: true,
-        artifacts: 'functional-output/tests/**/odhin-report/**/*,functional-output/tests/playwright-diagnostics/failure-data/**/*',
+        artifacts: 'functional-output/tests/playwright-diagnostics/failure-data/**/*',
         excludes: 'test-results/.playwright-artifacts-*/**,**/.playwright-artifacts-*/**'
     )
+}
+
+def playwrightIntegrationReportFile = 'xui-playwright-integration.html'
+def playwrightLoadProfileReportFile = 'load-profile.html'
+
+def assertHtmlReportExists = { String reportDir, String reportFile ->
+    steps.sh "test -f '${reportDir}/${reportFile}'"
+}
+
+def ensureHtmlReportForPublishing = { String reportDir, String reportFile, String suiteName ->
+    withEnv([
+        "PW_ODHIN_ENSURE_REPORT_DIR=${reportDir}",
+        "PW_ODHIN_ENSURE_REPORT_FILE=${reportFile}",
+        "PW_ODHIN_ENSURE_SUITE_NAME=${suiteName}"
+    ]) {
+        steps.sh '''
+            node scripts/ensure-odhin-report.js \
+              --report-dir "$PW_ODHIN_ENSURE_REPORT_DIR" \
+              --report-file "$PW_ODHIN_ENSURE_REPORT_FILE" \
+              --suite-name "$PW_ODHIN_ENSURE_SUITE_NAME"
+        '''
+    }
+}
+
+def publishPlaywrightLoadProfile = { String reportDir, String reportName ->
+    def safeReportName = reportName.replaceAll(/[^A-Za-z0-9._-]/, '-')
+    def slimReportDir = "functional-output/tests/playwright-published-reports/load-profile/${safeReportName}"
+    steps.sh """
+      set +e
+      node scripts/ensure-load-profile-report.js \\
+        --report-dir '${reportDir}' \\
+        --report-file '${playwrightLoadProfileReportFile}' \\
+        --report-name '${reportName}'
+    """
+    steps.sh """
+      set +e
+      mkdir -p '${slimReportDir}'
+      if [ -f '${reportDir}/${playwrightLoadProfileReportFile}' ]; then
+        cp '${reportDir}/${playwrightLoadProfileReportFile}' '${slimReportDir}/${playwrightLoadProfileReportFile}'
+      fi
+    """
+    steps.archiveArtifacts(
+      allowEmptyArchive: true,
+      artifacts: "${slimReportDir}/${playwrightLoadProfileReportFile}"
+    )
+    publishHTML([
+      allowMissing         : true,
+      alwaysLinkToLastBuild: true,
+      keepAll              : true,
+      reportDir            : "${slimReportDir}/",
+      reportFiles          : playwrightLoadProfileReportFile,
+      reportName           : reportName
+    ])
+}
+
+def startPlaywrightLoadProfile = { String reportDir, String label, String eventsFile ->
+    steps.sh """
+      set +e
+      mkdir -p '${reportDir}'
+      rm -f '${reportDir}/stop' '${reportDir}/monitor.pid'
+      JENKINS_NODE_COOKIE=dontKillMe nohup node scripts/playwright-load-monitor.js \\
+        --output-folder '${reportDir}' \\
+        --label '${label}' \\
+        --events-file '${eventsFile}' \\
+        --stop-file '${reportDir}/stop' \\
+        > '${reportDir}/monitor.log' 2>&1 &
+      echo \$! > '${reportDir}/monitor.pid'
+    """
+}
+
+def stopPlaywrightLoadProfile = { String reportDir ->
+    steps.sh """
+      set +e
+      if [ -f '${reportDir}/monitor.pid' ]; then
+        pid=\$(cat '${reportDir}/monitor.pid')
+        touch '${reportDir}/stop'
+        for i in \$(seq 1 30); do
+          kill -0 "\${pid}" 2>/dev/null || break
+          sleep 1
+        done
+        if kill -0 "\${pid}" 2>/dev/null; then
+          kill -TERM "\${pid}" 2>/dev/null || true
+          sleep 2
+        fi
+      fi
+      if [ -f '${reportDir}/monitor.log' ]; then
+        cat '${reportDir}/monitor.log'
+      fi
+    """
+}
+
+def ciLoadProfileDir = 'functional-output/tests/playwright-integration/load-profile/ci'
+def ciLoadProfileEventsFile = 'functional-output/tests/playwright-integration/load-profile/ci-stage-events.jsonl'
+def ciLoadProfilePublished = false
+
+def playwrightLoadProfileEventsFile = { ->
+    ciLoadProfileEventsFile
+}
+
+def recordPlaywrightLoadEvent = { String label, String eventType ->
+    try {
+        steps.sh "node scripts/playwright-load-event.js '${playwrightLoadProfileEventsFile()}' '${label}' '${eventType}'"
+    } catch (Exception e) {
+        echo "[load-profile] failed to record ${label} ${eventType}: ${e.getMessage()}"
+    }
+}
+
+def startCiLoadProfile = {
+    startPlaywrightLoadProfile(ciLoadProfileDir, 'Jenkins nightly CI run', ciLoadProfileEventsFile)
+    recordPlaywrightLoadEvent('Checkout', 'finish')
+}
+
+def publishCiLoadProfile = { String reportName ->
+    if (ciLoadProfilePublished) {
+        return
+    }
+    ciLoadProfilePublished = true
+    stopPlaywrightLoadProfile(ciLoadProfileDir)
+    publishPlaywrightLoadProfile(ciLoadProfileDir, reportName)
+}
+
+def resolveIntegrationProfileRuns = { String configuredRuns, String workersOverride, String shardOverride ->
+    def requestedWorkers = workersOverride?.trim()
+    if (requestedWorkers) {
+        def requestedShard = shardOverride?.trim()
+        return ["workers=${requestedWorkers}${requestedShard ? " shard=${requestedShard}" : ''}"]
+    }
+    def configured = configuredRuns?.trim()
+    if (!configured) {
+        configured = 'workers=4'
+    }
+    return configured
+        .split(/[\r\n;]+/)
+        .collect { it.trim() }
+        .findAll { it }
+}
+
+def integrationProfileRunConfig = { String spec ->
+    def workers = '4'
+    def shard = ''
+    spec.split(/\s+/).each { token ->
+        if (token.startsWith('workers=')) {
+            workers = token.replaceFirst('workers=', '')
+        }
+        if (token.startsWith('shard=')) {
+            shard = token.replaceFirst('shard=', '')
+        }
+    }
+    def safeName = "workers-${workers}${shard ? "-shard-${shard}" : ''}".replaceAll(/[^A-Za-z0-9._-]/, '-')
+    return [
+        workers: workers,
+        shard: shard,
+        shardArg: shard ? " --shard=${shard}" : '',
+        label: "nightly-${safeName}",
+        reportDir: "functional-output/tests/playwright-integration/odhin-report/nightly-${safeName}",
+        displayName: "${workers} workers${shard ? ", shard ${shard}" : ''}"
+    ]
+}
+
+def runPlaywrightIntegrationProfileMatrix = {
+    def failures = []
+    resolveIntegrationProfileRuns(params.INTEGRATION_PW_PROFILE_RUNS ?: '', params.INTEGRATION_PW_WORKERS ?: '', params.INTEGRATION_PW_SHARD ?: '').each { spec ->
+        def runConfig = integrationProfileRunConfig(spec)
+        try {
+            withEnv([
+              "PLAYWRIGHT_REPORT_FOLDER=${runConfig.reportDir}",
+              "PW_LOAD_PROFILE_EVENTS_FILE=${playwrightLoadProfileEventsFile()}",
+              'ORG_USER_ASSIGNMENT_MODE=external',
+              'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
+              "FUNCTIONAL_TESTS_WORKERS=${runConfig.workers}",
+              'PLAYWRIGHT_SKIP_INSTALL=true',
+              "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
+            ]) {
+              yarnBuilder.yarn("test:playwright:integration:raw -- --workers=${runConfig.workers}${runConfig.shardArg}")
+            }
+            echo "[playwright-integration] Completed test command for ${runConfig.displayName}; checking Odhín report at ${runConfig.reportDir}/${playwrightIntegrationReportFile}"
+            assertHtmlReportExists(runConfig.reportDir, playwrightIntegrationReportFile)
+            echo "[playwright-integration] Odhín report exists for ${runConfig.displayName}"
+        } catch (Exception e) {
+            if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
+                throw e
+            }
+            if (e instanceof hudson.AbortException && ((e.getMessage() ?: '') =~ /(exit code|status)\s+(129|137|143)/).find()) {
+                throw e
+            }
+            failures << "${runConfig.displayName}: ${e.getMessage()}"
+        } finally {
+            echo "[playwright-integration] Publishing Odhín HTML report for ${runConfig.displayName}"
+            ensureHtmlReportForPublishing(
+              runConfig.reportDir,
+              playwrightIntegrationReportFile,
+              "Playwright Integration Tests"
+            )
+            publishHTML([
+              allowMissing         : true,
+              alwaysLinkToLastBuild: true,
+              keepAll              : true,
+              reportDir            : "${runConfig.reportDir}/",
+              reportFiles          : playwrightIntegrationReportFile,
+              reportName           : "Playwright Integration Tests"
+            ])
+            echo "[playwright-integration] Published Odhín HTML report for ${runConfig.displayName}"
+        }
+    }
+    if (failures) {
+        error("Playwright integration profile matrix failed:\n${failures.join('\n')}")
+    }
 }
 
 def secrets = [
@@ -55,12 +317,53 @@ def secrets = [
     secret('mc-session-secret', 'SESSION_SECRET'),
     secret('e2e-divorce-solicitor-username', 'DIVORCE_SOLICITOR_USERNAME'),
     secret('e2e-divorce-solicitor-password', 'DIVORCE_SOLICITOR_PASSWORD'),
+    secret('e2e-wa-solicitor-username', 'WA_SOLICITOR_USERNAME'),
+    secret('e2e-wa-solicitor-password', 'WA_SOLICITOR_PASSWORD'),
+    secret('e2e-booking-ui-ft-on-username', 'BOOKING_UI_FT_ON_USERNAME'),
+    secret('e2e-booking-ui-ft-on-password', 'BOOKING_UI_FT_ON_PASSWORD'),
+    secret('e2e-booking-ui-ft-on-1-username', 'BOOKING_UI_FT_ON_1_USERNAME'),
+    secret('e2e-booking-ui-ft-on-1-password', 'BOOKING_UI_FT_ON_1_PASSWORD'),
+    secret('e2e-booking-ui-ft-on-2-username', 'BOOKING_UI_FT_ON_2_USERNAME'),
+    secret('e2e-booking-ui-ft-on-2-password', 'BOOKING_UI_FT_ON_2_PASSWORD'),
+    secret('e2e-booking-ui-ft-on-3-username', 'BOOKING_UI_FT_ON_3_USERNAME'),
+    secret('e2e-booking-ui-ft-on-3-password', 'BOOKING_UI_FT_ON_3_PASSWORD'),
+    secret('e2e-booking-ui-ft-on-4-username', 'BOOKING_UI_FT_ON_4_USERNAME'),
+    secret('e2e-booking-ui-ft-on-4-password', 'BOOKING_UI_FT_ON_4_PASSWORD'),
+    secret('e2e-staff-admin-1-username', 'STAFF_ADMIN_1_USERNAME'),
+    secret('e2e-staff-admin-1-password', 'STAFF_ADMIN_1_PASSWORD'),
+    secret('e2e-staff-admin-2-username', 'STAFF_ADMIN_2_USERNAME'),
+    secret('e2e-staff-admin-2-password', 'STAFF_ADMIN_2_PASSWORD'),
+    secret('e2e-staff-admin-3-username', 'STAFF_ADMIN_3_USERNAME'),
+    secret('e2e-staff-admin-3-password', 'STAFF_ADMIN_3_PASSWORD'),
+    secret('e2e-staff-admin-4-username', 'STAFF_ADMIN_4_USERNAME'),
+    secret('e2e-staff-admin-4-password', 'STAFF_ADMIN_4_PASSWORD'),
+    secret('e2e-hearing-manager-cr84-off-username', 'HEARING_MANAGER_CR84_OFF_USERNAME'),
+    secret('e2e-hearing-manager-cr84-off-password', 'HEARING_MANAGER_CR84_OFF_PASSWORD'),
+    secret('e2e-hearing-manager-cr84-off-1-username', 'HEARING_MANAGER_CR84_OFF_1_USERNAME'),
+    secret('e2e-hearing-manager-cr84-off-1-password', 'HEARING_MANAGER_CR84_OFF_1_PASSWORD'),
+    secret('e2e-hearing-manager-cr84-off-2-username', 'HEARING_MANAGER_CR84_OFF_2_USERNAME'),
+    secret('e2e-hearing-manager-cr84-off-2-password', 'HEARING_MANAGER_CR84_OFF_2_PASSWORD'),
+    secret('e2e-hearing-manager-cr84-off-3-username', 'HEARING_MANAGER_CR84_OFF_3_USERNAME'),
+    secret('e2e-hearing-manager-cr84-off-3-password', 'HEARING_MANAGER_CR84_OFF_3_PASSWORD'),
+    secret('e2e-hearing-manager-cr84-off-4-username', 'HEARING_MANAGER_CR84_OFF_4_USERNAME'),
+    secret('e2e-hearing-manager-cr84-off-4-password', 'HEARING_MANAGER_CR84_OFF_4_PASSWORD'),
+    secret('e2e-hearing-manager-cr84-on-username', 'HEARING_MANAGER_CR84_ON_USERNAME'),
+    secret('e2e-hearing-manager-cr84-on-password', 'HEARING_MANAGER_CR84_ON_PASSWORD'),
+    secret('e2e-hearing-manager-cr84-on-1-username', 'HEARING_MANAGER_CR84_ON_1_USERNAME'),
+    secret('e2e-hearing-manager-cr84-on-1-password', 'HEARING_MANAGER_CR84_ON_1_PASSWORD'),
+    secret('e2e-hearing-manager-cr84-on-2-username', 'HEARING_MANAGER_CR84_ON_2_USERNAME'),
+    secret('e2e-hearing-manager-cr84-on-2-password', 'HEARING_MANAGER_CR84_ON_2_PASSWORD'),
+    secret('e2e-hearing-manager-cr84-on-3-username', 'HEARING_MANAGER_CR84_ON_3_USERNAME'),
+    secret('e2e-hearing-manager-cr84-on-3-password', 'HEARING_MANAGER_CR84_ON_3_PASSWORD'),
+    secret('e2e-hearing-manager-cr84-on-4-username', 'HEARING_MANAGER_CR84_ON_4_USERNAME'),
+    secret('e2e-hearing-manager-cr84-on-4-password', 'HEARING_MANAGER_CR84_ON_4_PASSWORD'),
     secret('e2e-search-employment-case-username', 'SEARCH_EMPLOYMENT_CASE_USERNAME'),
     secret('e2e-search-employment-case-password', 'SEARCH_EMPLOYMENT_CASE_PASSWORD'),
     secret('e2e-restricted-case-file-view-v1-1-on-username', 'RESTRICTED_CASE_FILE_VIEW_V1_1_ON_USERNAME'),
     secret('e2e-restricted-case-file-view-v1-1-on-password', 'RESTRICTED_CASE_FILE_VIEW_V1_1_ON_PASSWORD'),
     secret('e2e-restricted-case-file-view-v1-1-off-username', 'RESTRICTED_CASE_FILE_VIEW_V1_1_OFF_USERNAME'),
     secret('e2e-restricted-case-file-view-v1-1-off-password', 'RESTRICTED_CASE_FILE_VIEW_V1_1_OFF_PASSWORD'),
+    secret('xui-playwright-global-excluded-tags', 'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS'),
   ],
 ]
 
@@ -82,19 +385,38 @@ withNightlyPipeline(type, product, component) {
     enableFortifyScan('rpx-aat')
     
       afterSuccess('checkout') {
+        startCiLoadProfile()
         stage('Yarn Install') {
-          yarnBuilder.yarn('install --immutable')
+          try {
+            recordPlaywrightLoadEvent('Yarn install', 'start')
+            yarnBuilder.yarn('install --immutable')
+          } finally {
+            recordPlaywrightLoadEvent('Yarn install', 'finish')
+          }
         }
-        yarnBuilder.yarn('cache clean')
+        try {
+          recordPlaywrightLoadEvent('Yarn cache clean', 'start')
+          yarnBuilder.yarn('cache clean')
+        } finally {
+          recordPlaywrightLoadEvent('Yarn cache clean', 'finish')
+        }
     }
 
     afterAlways('fortify-scan') {
+        recordPlaywrightLoadEvent('Fortify artifact archive', 'start')
         steps.archiveArtifacts allowEmptyArchive: true, artifacts: '**/Fortify Scan/**/*'
+        recordPlaywrightLoadEvent('Fortify artifact archive', 'finish')
     }
 
   afterSuccess('build') {
-        yarnBuilder.yarn('build')
+        try {
+            recordPlaywrightLoadEvent('Build', 'start')
+            yarnBuilder.yarn('build')
+        } finally {
+            recordPlaywrightLoadEvent('Build', 'finish')
+        }
 
+        recordPlaywrightLoadEvent('Lint report publish', 'start')
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -111,87 +433,108 @@ withNightlyPipeline(type, product, component) {
             reportFiles          : 'index.html',
             reportName           : 'ng lint Report'
         ])
+        recordPlaywrightLoadEvent('Lint report publish', 'finish')
      }
     afterSuccess('fortify-scan') {
-  
-      stage('API Tests') {
-        try {
-          withEnv([
-            'ORG_USER_ASSIGNMENT_MODE=external',
-            'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
-            'FUNCTIONAL_TESTS_WORKERS=4'
-          ]) {
-            yarnBuilder.yarn('test:api:pw:coverage')
-          }
-        } finally {
-          publishHTML([
-            allowMissing         : true,
-            alwaysLinkToLastBuild: true,
-            keepAll              : true,
-            reportDir            : 'functional-output/tests/api_functional/odhin-report/',
-            reportFiles          : 'xui-playwright-api.html',
-            reportName           : 'API Functional Test'
-          ])
-          steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/api_functional/**/*'
-          archivePlaywrightDiagnostics()
-        }
-      }
-      
-      stage('Playwright Install All Browsers') {
+      try {
+      recordPlaywrightLoadEvent('Nightly functional tests', 'start')
+        stage('Playwright Install All Browsers') {
             try {
+              recordPlaywrightLoadEvent('Playwright browser install', 'start')
               yarnBuilder.yarn('test:setup:playwright-install-all')
             } catch (Error) {
               error(message: "${STAGE_NAME} is unstable: " + Error.toString())
-            }  
-        }
-
-        stage('Playwright Integration Tests') {
-                try {
-                    withEnv([
-                      'ORG_USER_ASSIGNMENT_MODE=external',
-                      'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
-                      'FUNCTIONAL_TESTS_WORKERS=4'
-                    ]) {
-                      yarnBuilder.yarn('test:playwright:integration')
-                    }
-                } finally {
-                    publishHTML([
-                      allowMissing         : true,
-                      alwaysLinkToLastBuild: true,
-                      keepAll              : true,
-                      reportDir            : 'functional-output/tests/playwright-integration/odhin-report/',
-                      reportFiles          : 'xui-playwright-integration.html',
-                      reportName           : 'Playwright Integration Test'
-                    ])
-                    steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-integration/**/*'
-                    archivePlaywrightDiagnostics()
-                }
-        }
-
-      stage('Cross Browser Test') {
-            try {
-              withEnv([
-                'ORG_USER_ASSIGNMENT_MODE=external',
-                'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
-                'FUNCTIONAL_TESTS_WORKERS=2'
-              ]) {
-                yarnBuilder.yarn('test:crossbrowser')
-              }
-            } catch (Error) {
-              unstable(message: "${STAGE_NAME} is unstable: " + Error.toString())
             } finally {
-              publishHTML([
-              allowMissing         : true,
-              alwaysLinkToLastBuild: true,
-              keepAll              : true,
-              reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
-              reportFiles          : 'xui-playwright-e2e.html',
-              reportName           : 'XUI Manage Cases Playwright Cross Browser Tests'
-              ])
-              steps.archiveArtifacts allowEmptyArchive: true, artifacts: 'functional-output/tests/playwright-e2e/odhin-report/*'
-              archivePlaywrightDiagnostics()
+              recordPlaywrightLoadEvent('Playwright browser install', 'finish')
             }
         }
+
+        stage('Nightly Functional Tests (Parallel)') {
+            parallel(
+                failFast: true,
+                api: {
+                    stage('API Tests') {
+                        try {
+                            recordPlaywrightLoadEvent('API', 'start')
+                            withEnv([
+                                'ORG_USER_ASSIGNMENT_MODE=external',
+                                'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
+                                'FUNCTIONAL_TESTS_WORKERS=4',
+                                "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
+                            ]) {
+                                yarnBuilder.yarn('test:api:pw:coverage:raw')
+                            }
+                        } catch (Exception e) {
+                            echo "[failFast] API Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
+                            if (handleFailFastAbort(e)) { return }
+                            throw e
+                        } finally {
+                            recordPlaywrightLoadEvent('API', 'finish')
+                            publishHTML([
+                                allowMissing         : true,
+                                alwaysLinkToLastBuild: true,
+                                keepAll              : true,
+                                reportDir            : 'functional-output/tests/api_functional/odhin-report/',
+                                reportFiles          : 'xui-playwright-api.html',
+                                reportName           : 'Nightly API Functional Test'
+                            ])
+                        }
+                    }
+                },
+                playwrightIntegration: {
+                    stage('Playwright Integration Tests') {
+                        try {
+                            recordPlaywrightLoadEvent('Integration', 'start')
+                            runPlaywrightIntegrationProfileMatrix()
+                        } catch (Exception e) {
+                            echo "[failFast] Playwright Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
+                            if (handleFailFastAbort(e)) { return }
+                            throw e
+                        } finally {
+                            recordPlaywrightLoadEvent('Integration', 'finish')
+                            echo '[playwright-integration] Integration reports published via HTML Publisher'
+                        }
+                    }
+                },
+                playwrightE2E: {
+                    stage('Playwright E2E Cross Browser') {
+                        try {
+                            recordPlaywrightLoadEvent('E2E', 'start')
+                            withEnv([
+                                'ORG_USER_ASSIGNMENT_MODE=external',
+                                'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
+                                'FUNCTIONAL_TESTS_WORKERS=2',
+                                'E2E_PW_INCLUDE_TAGS=@nightly',
+                                'E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none',
+                                'PW_SESSION_CAPTURE_FAILURE_TTL_MS=0',
+                                'PLAYWRIGHT_SKIP_INSTALL=true',
+                                "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
+                            ]) {
+                                yarnBuilder.yarn('test:crossbrowser:raw')
+                            }
+                        } catch (Exception e) {
+                            echo "[failFast] Playwright E2E catch: ${e.getClass().getName()}: ${e.getMessage()}"
+                            if (handleFailFastAbort(e)) { return }
+                            throw e
+                        } finally {
+                            recordPlaywrightLoadEvent('E2E', 'finish')
+                            publishHTML([
+                                allowMissing         : true,
+                                alwaysLinkToLastBuild: true,
+                                keepAll              : true,
+                                reportDir            : "functional-output/tests/playwright-e2e/odhin-report/",
+                                reportFiles          : 'xui-playwright-e2e.html',
+                                reportName           : 'Nightly Playwright E2E Cross Browser'
+                            ])
+                        }
+                    }
+                }
+            )
+        }
+      } finally {
+        recordPlaywrightLoadEvent('Nightly functional tests', 'finish')
+        archivePlaywrightDiagnostics()
+      }
 
         // yarnBuilder.yarn('test:a11y')
         // publishHTML([
@@ -207,6 +550,7 @@ withNightlyPipeline(type, product, component) {
 
 
     afterSuccess('mutationTest') {
+        recordPlaywrightLoadEvent('Mutation report publish', 'start')
         publishHTML([
             allowMissing         : true,
             alwaysLinkToLastBuild: true,
@@ -215,9 +559,11 @@ withNightlyPipeline(type, product, component) {
             reportFiles          : 'index.html',
             reportName           : 'XUI Manage Cases Mutation tests'
         ])
+        recordPlaywrightLoadEvent('Mutation report publish', 'finish')
     }
 
-  afterSuccess('securityScan') {
+  afterAlways('securityScan') {
+    recordPlaywrightLoadEvent('Security scan report publish', 'start')
     publishHTML([
       allowMissing         : true,
       alwaysLinkToLastBuild: true,
@@ -226,5 +572,7 @@ withNightlyPipeline(type, product, component) {
       reportFiles          : 'activescan.html',
       reportName           : 'XUIMC ZAP Security Scan Report'
     ])
+    recordPlaywrightLoadEvent('Security scan report publish', 'finish')
+    publishCiLoadProfile('Nightly CI System Load')
   }
 }

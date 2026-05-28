@@ -189,22 +189,6 @@ export async function setupRestrictedAccessMocks(page: Page, overrides: Restrict
     });
   });
 
-  await page.route('**/workallocation/caseworker/getUsersByIdamIds*', async (route) => {
-    await route.fulfill({
-      status: caseworkersStatus,
-      contentType: 'application/json',
-      body: JSON.stringify(caseworkersBody),
-    });
-  });
-
-  await page.route('**/workallocation/caseworker/getUserByIdamId*', async (route) => {
-    await route.fulfill({
-      status: caseworkersStatus,
-      contentType: 'application/json',
-      body: JSON.stringify(caseworkersBody[0]),
-    });
-  });
-
   await page.route('**/api/prd/judicial/searchJudicialUserByIdamId*', async (route) => {
     let responseBody = judicialUsersBody;
 

@@ -74,8 +74,6 @@ export const authenticatedRoutes = [
   { endpoint: 'api/staff-ref-data/addNewUser' },
   { endpoint: 'api/staff-ref-data/updateUser' },
   { endpoint: 'workallocation/caseworker/getUsersByServiceName' },
-  { endpoint: 'workallocation/caseworker/getUsersByIdamIds' },
-  { endpoint: 'workallocation/caseworker/getUserByIdamId' },
   { endpoint: 'workallocation/caseworker/location/:locationId/service/:serviceId' },
   { endpoint: 'workallocation/caseworker/service/:serviceId' },
   { endpoint: 'workallocation/caseworker/search' },

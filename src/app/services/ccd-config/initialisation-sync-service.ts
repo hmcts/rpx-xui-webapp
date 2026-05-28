@@ -12,7 +12,7 @@ export class InitialisationSyncService {
       this.isComplete = true;
       this.subscriptions.forEach((s) => s.unsubscribe());
       this.subscriptions = [];
-    }
+    },
   };
 
   public constructor() {
@@ -28,7 +28,7 @@ export class InitialisationSyncService {
 
   // Call this function to specify code to be run after initialisation has completed
   // calls the supplied callback when the initialisationComplete function has been called
-  public waitForInitialisation(callback: (arg:boolean) => void): void {
+  public waitForInitialisation(callback: (arg: boolean) => void): void {
     console.log('InitialiseSyncService: waitForInitialisation');
     // No need to wait if the initilisation has already completed
     if (!this.isComplete) {

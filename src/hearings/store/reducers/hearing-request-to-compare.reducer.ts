@@ -3,21 +3,23 @@ import * as fromHearingRequestCompareActions from '../actions/hearing-request-to
 import * as fromHearingRequestReducer from './hearing-request.reducer';
 
 export const initialHearingRequestToCompareState: HearingRequestStateData = {
-  ...fromHearingRequestReducer.initialHearingRequestState
+  ...fromHearingRequestReducer.initialHearingRequestState,
 };
 
-export function hearingRequestToCompareReducer(currentState = initialHearingRequestToCompareState,
-  action: fromHearingRequestCompareActions.HearingRequestToCompareAction): HearingRequestStateData {
+export function hearingRequestToCompareReducer(
+  currentState = initialHearingRequestToCompareState,
+  action: fromHearingRequestCompareActions.HearingRequestToCompareAction
+): HearingRequestStateData {
   switch (action.type) {
     case fromHearingRequestCompareActions.INITIALIZE_HEARING_REQUEST_TO_COMPARE: {
       return {
         ...currentState,
-        hearingRequestMainModel: action.payload
+        hearingRequestMainModel: action.payload,
       };
     }
     default: {
       return {
-        ...currentState
+        ...currentState,
       };
     }
   }

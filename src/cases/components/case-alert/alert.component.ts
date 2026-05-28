@@ -7,9 +7,8 @@ import { Observable, Subscription } from 'rxjs';
   standalone: false,
   selector: 'exui-alert',
   templateUrl: './alert.component.html',
-  styleUrls: ['./alert.component.scss']
+  styleUrls: ['./alert.component.scss'],
 })
-
 export class AlertComponent implements OnInit, OnDestroy {
   public successMessage = '';
   public errorMessage = '';
@@ -19,9 +18,7 @@ export class AlertComponent implements OnInit, OnDestroy {
 
   private alertMessageObservable: Observable<Alert>;
 
-  constructor(
-    private readonly alertService: AlertService
-  ) {}
+  constructor(private readonly alertService: AlertService) {}
 
   public ngOnInit() {
     this.alertMessageObservable = this.alertService.alerts.pipe(select((alert) => alert));

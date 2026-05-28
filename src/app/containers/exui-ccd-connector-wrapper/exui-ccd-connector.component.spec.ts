@@ -6,7 +6,7 @@ import { ExuiCcdConnectorComponent } from './exui-ccd-connector.component';
 @Component({
   standalone: false,
   selector: 'ccd-test-component',
-  template: ''
+  template: '',
 })
 class MockCcdComponent {
   @Output() submitted = new EventEmitter();
@@ -16,13 +16,10 @@ class MockCcdComponent {
 @Component({
   standalone: false,
   template: `
-    <exui-ccd-connector
-      [store]="store"
-      [fromFeatureStore]="fromFeatureStore"
-      [eventsBindings]="eventsBindings">
+    <exui-ccd-connector [store]="store" [fromFeatureStore]="fromFeatureStore" [eventsBindings]="eventsBindings">
       <ccd-test-component #ccdComponent></ccd-test-component>
     </exui-ccd-connector>
-  `
+  `,
 })
 class TestHostComponent {
   store: any;
@@ -42,14 +39,8 @@ describe('CCD Connector Component', () => {
     mockStore = jasmine.createSpyObj('Store', ['dispatch']);
 
     TestBed.configureTestingModule({
-      declarations: [
-        ExuiCcdConnectorComponent,
-        MockCcdComponent,
-        TestHostComponent
-      ],
-      providers: [
-        { provide: Store, useValue: mockStore }
-      ]
+      declarations: [ExuiCcdConnectorComponent, MockCcdComponent, TestHostComponent],
+      providers: [{ provide: Store, useValue: mockStore }],
     }).compileComponents();
   }));
 
@@ -59,7 +50,7 @@ describe('CCD Connector Component', () => {
     component.store = mockStore;
     component.eventsBindings = [
       { type: 'cancelled', action: 'CreateCaseReset' },
-      { type: 'submitted', action: 'ApplyChange' }
+      { type: 'submitted', action: 'ApplyChange' },
     ];
     component.fromFeatureStore = {
       CreateCaseReset: class {
@@ -67,7 +58,7 @@ describe('CCD Connector Component', () => {
       },
       ApplyChange: class {
         constructor(public payload: any) {}
-      }
+      },
     };
     fixture.detectChanges();
   });
@@ -79,7 +70,7 @@ describe('CCD Connector Component', () => {
   describe('simplifyFormGroup()', () => {
     it('should return an object', () => {
       const object = {
-        a: 'value'
+        a: 'value',
       };
 
       expect(component.simplifyFormGroup(object)).toEqual({ a: 'value' });
@@ -87,7 +78,7 @@ describe('CCD Connector Component', () => {
 
     it('should set the formGroupValue as the key.', () => {
       const object = {
-        formGroup: 'formGroupValue'
+        formGroup: 'formGroupValue',
       };
 
       expect(component.simplifyFormGroup(object)).toEqual({ formGroup: { value: undefined } });
@@ -101,7 +92,7 @@ describe('CCD Connector Component', () => {
       hostComponent.store = mockStore;
       hostComponent.eventsBindings = [
         { type: 'submitted', action: 'ApplyChange' },
-        { type: 'cancelled', action: 'CreateCaseReset' }
+        { type: 'cancelled', action: 'CreateCaseReset' },
       ];
       hostComponent.fromFeatureStore = {
         CreateCaseReset: class {
@@ -109,7 +100,7 @@ describe('CCD Connector Component', () => {
         },
         ApplyChange: class {
           constructor(public payload: any) {}
-        }
+        },
       };
       hostFixture.detectChanges();
       component = hostFixture.debugElement.children[0].componentInstance;
@@ -205,7 +196,7 @@ describe('CCD Connector Component', () => {
     it('should handle objects with formGroup property', () => {
       const original = {
         formGroup: { value: 'test', other: 'prop' },
-        normalProp: 'value'
+        normalProp: 'value',
       };
       const cloned = component.deepClone(original);
 
@@ -237,9 +228,9 @@ describe('CCD Connector Component', () => {
         level1: {
           formGroup: { value: 'nested', extra: 'prop' },
           level2: {
-            formGroup: { value: 'deeper', another: 'prop' }
-          }
-        }
+            formGroup: { value: 'deeper', another: 'prop' },
+          },
+        },
       };
 
       const result = component.simplifyFormGroup(obj);
@@ -257,7 +248,7 @@ describe('CCD Connector Component', () => {
 
     it('should handle formGroup with undefined value', () => {
       const obj = {
-        formGroup: { value: undefined, other: 'prop' }
+        formGroup: { value: undefined, other: 'prop' },
       };
 
       const result = component.simplifyFormGroup(obj);
@@ -280,7 +271,7 @@ describe('CCD Connector Component', () => {
       hostComponent.store = mockStore;
       hostComponent.eventsBindings = [
         { type: 'submitted', action: 'ApplyChange' },
-        { type: 'cancelled', action: 'CreateCaseReset' }
+        { type: 'cancelled', action: 'CreateCaseReset' },
       ];
       hostComponent.fromFeatureStore = {
         CreateCaseReset: class {
@@ -288,7 +279,7 @@ describe('CCD Connector Component', () => {
         },
         ApplyChange: class {
           constructor(public payload: any) {}
-        }
+        },
       };
       hostFixture.detectChanges();
       component = hostFixture.debugElement.children[0].componentInstance;

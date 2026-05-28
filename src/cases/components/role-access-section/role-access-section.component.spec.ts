@@ -11,7 +11,7 @@ import { RoleAccessSectionComponent } from './role-access-section.component';
 @Component({
   standalone: false,
   selector: 'exui-case-roles-table',
-  template: ''
+  template: '',
 })
 class MockCaseRolesTableComponent {
   @Input() public roles: CaseRole[];
@@ -23,7 +23,7 @@ class MockCaseRolesTableComponent {
 @Component({
   standalone: false,
   selector: 'exui-allocate-a-role-link',
-  template: ''
+  template: '',
 })
 class MockAllocateRoleLinkComponent {
   @Input() public routerLink: string;
@@ -48,17 +48,17 @@ describe('RoleAccessSectionComponent', () => {
       name: 'Test Case Type',
       jurisdiction: {
         id: 'TEST_JURISDICTION',
-        name: 'Test Jurisdiction'
-      }
+        name: 'Test Jurisdiction',
+      },
     },
     state: {
       id: 'CREATED',
-      name: 'Created'
+      name: 'Created',
     },
     channels: [],
     tabs: [],
     triggers: [],
-    events: []
+    events: [],
   };
 
   const mockRoles: CaseRole[] = [
@@ -71,7 +71,7 @@ describe('RoleAccessSectionComponent', () => {
       actorId: 'actor1',
       roleCategory: RoleCategory.JUDICIAL,
       start: '2023-01-01',
-      end: '2023-12-31'
+      end: '2023-12-31',
     },
     {
       id: 'role2',
@@ -82,17 +82,13 @@ describe('RoleAccessSectionComponent', () => {
       actorId: 'actor2',
       roleCategory: RoleCategory.LEGAL_OPERATIONS,
       start: '2023-02-01',
-      end: '2023-11-30'
-    }
+      end: '2023-11-30',
+    },
   ];
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        RoleAccessSectionComponent,
-        MockCaseRolesTableComponent,
-        MockAllocateRoleLinkComponent
-      ]
+      declarations: [RoleAccessSectionComponent, MockCaseRolesTableComponent, MockAllocateRoleLinkComponent],
     });
 
     fixture = TestBed.createComponent(RoleAccessSectionComponent);

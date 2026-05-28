@@ -16,16 +16,15 @@ import { ResponseErrorMessage } from '../../../../app/models/error-message.model
   standalone: false,
   selector: 'exui-staff-user-check-answers',
   templateUrl: './staff-user-check-answers.component.html',
-  styleUrls: ['./staff-user-check-answers.component.scss']
+  styleUrls: ['./staff-user-check-answers.component.scss'],
 })
-
 export class StaffUserCheckAnswersComponent implements OnInit {
   public staffUser: StaffUser;
   public staffFilterOptions: {
-    userTypes: StaffFilterOption[],
-    jobTitles: StaffFilterOption[],
-    skills: GroupOptions[],
-    services: StaffFilterOption[]
+    userTypes: StaffFilterOption[];
+    jobTitles: StaffFilterOption[];
+    skills: GroupOptions[];
+    services: StaffFilterOption[];
   };
 
   public isLoading = false;
@@ -48,7 +47,7 @@ export class StaffUserCheckAnswersComponent implements OnInit {
       userTypes: this.activatedRoute.snapshot.data.userTypes,
       jobTitles: this.activatedRoute.snapshot.data.jobTitles,
       skills: this.activatedRoute.snapshot.data.skills,
-      services: this.activatedRoute.snapshot.data.services
+      services: this.activatedRoute.snapshot.data.services,
     };
   }
 
@@ -61,44 +60,53 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   }
 
   public onSubmitAddUser() {
-    this.staffDataAccessService.addNewUser(this.staffUser).subscribe(() => {
-      // success banner
-      this.messageService.nextMessage({
-        message: InfoMessage.ADD_NEW_USER,
-        type: InfoMessageType.SUCCESS
-      } as InformationMessage);
-      this.router.navigateByUrl('/staff', { state: { retainMessages: true } });
-    }, (err) => {
-      if (!err?.error?.errorDescription) {
-        this.errMsg = { error: { errorDescription: 'Your user creation request could not be processed' } };
-      }
+    this.staffDataAccessService.addNewUser(this.staffUser).subscribe(
+      () => {
+        // success banner
+        this.messageService.nextMessage({
+          message: InfoMessage.ADD_NEW_USER,
+          type: InfoMessageType.SUCCESS,
+        } as InformationMessage);
+        this.router.navigateByUrl('/staff', { state: { retainMessages: true } });
+      },
+      (err) => {
+        if (!err?.error?.errorDescription) {
+          this.errMsg = { error: { errorDescription: 'Your user creation request could not be processed' } };
+        }
 
-      if (err && err?.status === 400) {
-        this.errMsg = err;
-        window.scrollTo(0, 0);
-      } else {
-        this.router.navigateByUrl('/service-down');
+        if (err && err?.status === 400) {
+          this.errMsg = err;
+          window.scrollTo(0, 0);
+        } else {
+          this.router.navigateByUrl('/service-down');
+        }
       }
-    });
+    );
   }
 
   public onSubmitUpdateUser() {
     this.isLoading = true;
-    this.staffDataAccessService.updateUser(this.staffUser)
-      .pipe(finalize(() => {
-        this.isLoading = false;
-      }))
-      .subscribe((response) => {
-        this.messageService.nextMessage({
-          message: InfoMessage.UPDATED_USER,
-          type: InfoMessageType.SUCCESS
-        } as InformationMessage);
-        this.router.navigateByUrl(`/staff/user-details/${response.case_worker_id}`, { state: { retainMessages: true } });
-      }, (error) => {
-        console.log(error);
-        window.scrollTo(0, 0);
-        this.router.navigateByUrl('/service-down');
-      });
+    this.staffDataAccessService
+      .updateUser(this.staffUser)
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+        })
+      )
+      .subscribe(
+        (response) => {
+          this.messageService.nextMessage({
+            message: InfoMessage.UPDATED_USER,
+            type: InfoMessageType.SUCCESS,
+          } as InformationMessage);
+          this.router.navigateByUrl(`/staff/user-details/${response.case_worker_id}`, { state: { retainMessages: true } });
+        },
+        (error) => {
+          console.log(error);
+          window.scrollTo(0, 0);
+          this.router.navigateByUrl('/service-down');
+        }
+      );
   }
 
   public cancel() {
@@ -106,11 +114,10 @@ export class StaffUserCheckAnswersComponent implements OnInit {
   }
 
   public getServiceNameFromSkillId(skillId: number) {
-    const serviceCode = this.staffFilterOptions.skills
-      .find((group) => group.options.find((option) =>
-        Number(option.key) === skillId))?.group;
+    const serviceCode = this.staffFilterOptions.skills.find((group) =>
+      group.options.find((option) => Number(option.key) === skillId)
+    )?.group;
 
-    return this.staffFilterOptions.services
-      .find((service) => service.key === serviceCode)?.label;
+    return this.staffFilterOptions.services.find((service) => service.key === serviceCode)?.label;
   }
 }

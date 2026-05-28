@@ -15,7 +15,7 @@ import { HearingWelshComponent } from './hearing-welsh.component';
 @Component({
   standalone: false,
   selector: 'exui-error-message',
-  template: ''
+  template: '',
 })
 class MockTestComponent {
   @Input() public error: ErrorMessage;
@@ -24,7 +24,7 @@ class MockTestComponent {
 @Component({
   standalone: false,
   selector: 'exui-hearing-parties-title',
-  template: ''
+  template: '',
 })
 class MockHearingPartiesComponent {
   @Input() public error: ErrorMessage;
@@ -40,16 +40,8 @@ describe('HearingWelshComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ReactiveFormsModule, RouterTestingModule],
-      declarations: [
-        HearingWelshComponent,
-        MockTestComponent,
-        MockHearingPartiesComponent,
-        MockRpxTranslatePipe
-      ],
-      providers: [
-        provideMockStore({ initialState }),
-        { provide: HearingsService, useValue: hearingsService }
-      ]
+      declarations: [HearingWelshComponent, MockTestComponent, MockHearingPartiesComponent, MockRpxTranslatePipe],
+      providers: [provideMockStore({ initialState }), { provide: HearingsService, useValue: hearingsService }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HearingWelshComponent);

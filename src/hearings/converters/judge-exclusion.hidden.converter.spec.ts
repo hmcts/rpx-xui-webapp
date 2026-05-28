@@ -8,11 +8,13 @@ import { JudgeExclusionHiddenConverter } from './judge-exclusion.hidden.converte
 
 describe('JudgeExclusionHiddenConverter', () => {
   let judgeExclusionHiddenConverter: JudgeExclusionHiddenConverter;
-  const JUDICAIL_USER_DETAILS = [{
-    memberID: 'P0000001',
-    memberType: MemberType.JUDGE,
-    requirementType: RequirementType.EXCLUDE
-  }];
+  const JUDICAIL_USER_DETAILS = [
+    {
+      memberID: 'P0000001',
+      memberType: MemberType.JUDGE,
+      requirementType: RequirementType.EXCLUDE,
+    },
+  ];
 
   beforeEach(() => {
     judgeExclusionHiddenConverter = new JudgeExclusionHiddenConverter();
@@ -29,7 +31,7 @@ describe('JudgeExclusionHiddenConverter', () => {
   it('should transform hidden of false answer', () => {
     const STATE: State = _.cloneDeep(initialState.hearings);
     STATE.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements = {
-      panelPreferences: JUDICAIL_USER_DETAILS
+      panelPreferences: JUDICAIL_USER_DETAILS,
     };
     const result$ = judgeExclusionHiddenConverter.transformHidden(of(STATE));
     const expected = cold('(b|)', { b: false });

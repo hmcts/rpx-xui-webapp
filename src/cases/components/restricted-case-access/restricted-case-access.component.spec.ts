@@ -4,7 +4,7 @@ import { RestrictedCaseAccessComponent } from './restricted-case-access.componen
 
 @Pipe({
   standalone: false,
-  name: 'rpxTranslate'
+  name: 'rpxTranslate',
 })
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
@@ -19,9 +19,8 @@ describe('RestrictedCaseAccessComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
-      declarations: [RestrictedCaseAccessComponent, RpxTranslateMockPipe]
-    })
-      .compileComponents();
+      declarations: [RestrictedCaseAccessComponent, RpxTranslateMockPipe],
+    }).compileComponents();
     fixture = TestBed.createComponent(RestrictedCaseAccessComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

@@ -7,7 +7,8 @@ import { CaseReferenceFieldComponent } from './case-reference-field.component';
 
 @Component({
   standalone: false,
-  template: '<exui-case-reference-field [jurisdiction]="jurisdiction" [caseType]="caseType" [caseReference]="caseReference"></exui-case-reference-field>'
+  template:
+    '<exui-case-reference-field [jurisdiction]="jurisdiction" [caseType]="caseType" [caseReference]="caseReference"></exui-case-reference-field>',
 })
 class WrapperComponent {
   @ViewChild(CaseReferenceFieldComponent, { static: true }) public appComponentRef: CaseReferenceFieldComponent;
@@ -23,7 +24,6 @@ describe('WorkAllocation', () => {
     const JURISDICTION: string = 'IA';
     const CASETYPE: string = 'Asylum';
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let component: CaseReferenceFieldComponent;
     let wrapper: WrapperComponent;
     let fixture: ComponentFixture<WrapperComponent>;
@@ -31,9 +31,8 @@ describe('WorkAllocation', () => {
     beforeEach(async () => {
       TestBed.configureTestingModule({
         declarations: [WrapperComponent],
-        imports: [WorkAllocationComponentsModule, RouterTestingModule]
-      })
-        .compileComponents();
+        imports: [WorkAllocationComponentsModule, RouterTestingModule],
+      }).compileComponents();
 
       fixture = TestBed.createComponent(WrapperComponent);
       wrapper = fixture.componentInstance;

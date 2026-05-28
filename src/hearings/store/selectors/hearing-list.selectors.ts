@@ -7,7 +7,4 @@ export const getHearingList = createSelector(
   (state: fromFeature.State) => state.hearingList
 );
 
-export const getHearingListLastError = createSelector(
-  getHearingList,
-  fromFeature.hearingListLastError
-);
+export const getHearingListLastError = createSelector(getHearingList, fromFeature.hearingListLastError);

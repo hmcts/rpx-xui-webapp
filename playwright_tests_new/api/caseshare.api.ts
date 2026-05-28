@@ -9,30 +9,30 @@ const CASESHARE_ENDPOINTS = [
     property: 'organisations',
     schema: expect.objectContaining({
       organisationIdentifier: expect.any(String),
-      name: expect.any(String)
-    })
+      name: expect.any(String),
+    }),
   },
   {
     path: 'caseshare/users',
     property: 'users',
     schema: expect.objectContaining({
       userIdentifier: expect.any(String),
-      email: expect.any(String)
-    })
+      email: expect.any(String),
+    }),
   },
   {
     path: 'caseshare/cases',
     property: 'cases',
-    schema: expectCaseShareShape
+    schema: expectCaseShareShape,
   },
   {
     path: 'caseshare/case-assignments',
     property: 'sharedCases',
-    schema: expectCaseShareShape
-  }
+    schema: expectCaseShareShape,
+  },
 ] as const;
 
-test.describe('Case share endpoints', () => {
+test.describe('Case share endpoints', { tag: '@svc-case-share' }, () => {
   for (const { path, property, schema } of CASESHARE_ENDPOINTS) {
     test(`GET ${path}`, async ({ apiClient }) => {
       await withXsrf('solicitor', async (headers) => {
@@ -45,7 +45,7 @@ test.describe('Case share endpoints', () => {
   }
 });
 
-test.describe('Case share helper coverage', () => {
+test.describe('Case share helper coverage', { tag: '@svc-case-share' }, () => {
   test('assertCaseShareEntries covers function and object schemas', () => {
     const casesPayload = { cases: [{ caseId: 'case-1', sharedWith: [] }] };
     assertCaseShareEntries(casesPayload, 'cases', expectCaseShareShape);
@@ -56,7 +56,7 @@ test.describe('Case share helper coverage', () => {
       'organisations',
       expect.objectContaining({
         organisationIdentifier: expect.any(String),
-        name: expect.any(String)
+        name: expect.any(String),
       })
     );
   });

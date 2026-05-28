@@ -1,4 +1,4 @@
-Feature: IA create case workflow
+Feature: IA complete create case workflow
 
     Background:
         When I navigate to Expert UI Url

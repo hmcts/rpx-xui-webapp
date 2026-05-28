@@ -13,12 +13,8 @@ describe('AllocateRoleNavigationComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [
-        AllocateRoleNavigationComponent
-      ],
-      providers: [
-        provideMockStore()
-      ]
+      declarations: [AllocateRoleNavigationComponent],
+      providers: [provideMockStore()],
     }).compileComponents();
 
     store = TestBed.inject(Store);

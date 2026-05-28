@@ -4,7 +4,7 @@ import { withXsrf, expectStatus, withRetry } from './utils/apiTestUtils';
 import { assertJurisdictionsForUser } from './utils/ccdUtils';
 import { stringifyCaseTypeId } from './utils/caseTypeIdUtils';
 
-test.describe('CCD endpoints', () => {
+test.describe('CCD endpoints', { tag: '@svc-ccd' }, () => {
   test('lists jurisdictions for current user', async ({ apiClient }) => {
     const expectedNames = testConfig.jurisdictionNames[testConfig.testEnv] ?? [];
     await assertJurisdictionsForUser(apiClient, expectedNames);
@@ -36,7 +36,7 @@ test.describe('CCD endpoints', () => {
         const response = await apiClient.get<WorkbasketData>(
           `data/internal/case-types/${encodeURIComponent(caseTypeIdText)}/work-basket-inputs`,
           {
-            headers: { experimental: 'true' }
+            headers: { experimental: 'true' },
           }
         );
         expectStatus(response.status, [200, 401, 403, 500, 502, 504]);
@@ -54,9 +54,9 @@ test.describe('CCD endpoints', () => {
                   id: expect.any(String),
                   field_type: expect.objectContaining({
                     id: expect.any(String),
-                    type: expect.any(String)
-                  })
-                })
+                    type: expect.any(String),
+                  }),
+                }),
               })
             );
           });
@@ -72,9 +72,9 @@ test.describe('CCD endpoints', () => {
           apiClient.get('data/internal/profile', {
             headers: {
               ...headers,
-              experimental: 'true'
+              experimental: 'true',
             },
-            throwOnError: false
+            throwOnError: false,
           }),
         { retries: 1, retryStatuses: [502, 504] }
       )
@@ -87,7 +87,7 @@ test.describe('CCD endpoints', () => {
   });
 });
 
-test.describe('CCD helper coverage', () => {
+test.describe('CCD helper coverage', { tag: '@svc-ccd' }, () => {
   test('stringifyCaseTypeId handles basic variants', () => {
     expect(stringifyCaseTypeId('XUI-1')).toBe('XUI-1');
     expect(stringifyCaseTypeId(123)).toBe('123');
@@ -98,7 +98,7 @@ test.describe('CCD helper coverage', () => {
 
   test('assertJurisdictionsForUser handles guarded status', async () => {
     const apiClient = {
-      get: async () => ({ status: 403, data: undefined })
+      get: async () => ({ status: 403, data: undefined }),
     };
     await assertJurisdictionsForUser(apiClient as any, []);
   });
@@ -112,14 +112,14 @@ test.describe('CCD helper coverage', () => {
           return { status: 200, data: { userInfo: { uid: 'user-1' } } };
         }
         return { status: 200, data: { foo: 'bar' } };
-      }
+      },
     };
     await assertJurisdictionsForUser(apiClient as any, []);
   });
 
   test('assertJurisdictionsForUser handles missing user id', async () => {
     const apiClient = {
-      get: async () => ({ status: 200, data: { userInfo: {} } })
+      get: async () => ({ status: 200, data: { userInfo: {} } }),
     };
     await assertJurisdictionsForUser(apiClient as any, []);
   });
@@ -136,10 +136,10 @@ test.describe('CCD helper coverage', () => {
           status: 200,
           data: [
             { id: 'jur-1', name: 'Jurisdiction 1', description: 'Desc' },
-            { id: 'jur-2', name: 'Jurisdiction 2', description: 'Desc' }
-          ]
+            { id: 'jur-2', name: 'Jurisdiction 2', description: 'Desc' },
+          ],
         };
-      }
+      },
     };
     await assertJurisdictionsForUser(apiClient as any, ['Jurisdiction 1']);
   });

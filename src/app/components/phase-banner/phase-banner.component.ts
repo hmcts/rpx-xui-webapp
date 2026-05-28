@@ -2,11 +2,12 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { RpxLanguage, RpxTranslationService } from 'rpx-xui-translation';
 import { Subscription } from 'rxjs';
 import { SessionStorageService } from '../../../app/services';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 
 @Component({
   standalone: false,
   selector: 'exui-phase-banner',
-  templateUrl: './phase-banner.component.html'
+  templateUrl: './phase-banner.component.html',
 })
 export class PhaseBannerComponent implements OnInit, OnDestroy {
   @Input() public type: string;
@@ -18,8 +19,10 @@ export class PhaseBannerComponent implements OnInit, OnDestroy {
     return this.langService.language;
   }
 
-  constructor(private readonly langService: RpxTranslationService,
-              private readonly sessionStorageService: SessionStorageService) { }
+  constructor(
+    private readonly langService: RpxTranslationService,
+    private readonly sessionStorageService: SessionStorageService
+  ) {}
 
   public ngOnInit(): void {
     this.applyLanguageChanges(this.currentLang);
@@ -58,15 +61,15 @@ export class PhaseBannerComponent implements OnInit, OnDestroy {
   }
 
   private updateClientContextLanguage(language: RpxLanguage): void {
-    const clientContextObj = JSON.parse(this.sessionStorageService.getItem('clientContext')) || {};
+    const clientContextObj = safeJsonParse<any>(this.sessionStorageService.getItem('clientContext'), {}) || {};
     const clientContextAddLanguage = {
       ...clientContextObj,
       client_context: {
         ...clientContextObj.client_context,
         user_language: {
-          language: language
-        }
-      }
+          language: language,
+        },
+      },
     };
     this.sessionStorageService.setItem('clientContext', JSON.stringify(clientContextAddLanguage));
   }

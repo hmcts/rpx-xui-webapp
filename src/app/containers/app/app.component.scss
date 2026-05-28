@@ -1,5 +1,5 @@
 $govuk-global-styles: true;
-$hmcts-images-path: "/assets/images/";
+$hmcts-images-path: '/assets/images/';
 
 // Width of main container
 $hmcts-page-width: 1920px;
@@ -46,8 +46,8 @@ body .govuk-width-container {
   cursor: pointer;
 }
 
-@import "govuk-frontend/govuk/all";
-@import "node_modules/@hmcts/frontend/all";
+@import 'govuk-frontend/govuk/all';
+@import 'node_modules/@hmcts/frontend/all';
 
 // TODO move this in more appropriate place - perhaps get it from govuk-frontend
 // Find case button START
@@ -57,9 +57,9 @@ a.hmcts-search-toggle__button {
 
 .hmcts-search-toggle__button {
   @include govuk-font($size: 19, $weight: bold);
-  background-color: govuk-colour("black");
+  background-color: govuk-colour('black');
   border: none;
-  color: govuk-colour("white");
+  color: govuk-colour('white');
   cursor: pointer;
   display: inline-block;
   padding-top: 12px;
@@ -92,7 +92,6 @@ td {
 
 .hmcts-primary-navigation__search {
   float: right;
-  ;
 }
 
 .hmcts-primary-navigation__container {

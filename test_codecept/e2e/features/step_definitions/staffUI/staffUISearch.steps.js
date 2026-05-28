@@ -1,4 +1,3 @@
-
 const reportLogger = require('../../../../codeceptCommon/reportLogger');
 
 const BrowserWaits = require('../../../support/customWaits');
@@ -9,10 +8,9 @@ const addUserCheckYourAnswersPage = require('../../pageObjects/staffUI/addUserCh
 
 const testDataManager = require('../../../utils/testDataManager/index');
 
-function getUserDetailsFromDatatable(datatable){
+function getUserDetailsFromDatatable(datatable) {
   const inputdata = datatable.parse().rowsHash();
-  const details = {
-  };
+  const details = {};
 
   const datatableInputKeys = Object.keys(inputdata);
   for (const inputKey of datatableInputKeys) {
@@ -51,12 +49,12 @@ Then('I validate basic search in Staff UI', async function (tabLabel, boolString
 
 Then('I validate advanced search in Staff UI', async function (tabLabel, boolString) {
   const inputs = {
-    'Services': ['Damages'],
-    'Locations': ['Bir'],
+    Services: ['Damages'],
+    Locations: ['Bir'],
     'User type': 'Legal',
     'Job title': 'Legal',
-    'Skill': '',
-    'Roles': ['Case Allocator']
+    Skill: '',
+    Roles: ['Case Allocator'],
   };
   await BrowserWaits.retryWithActionCallback(async () => {
     await staffSearchPage.performAdvancedSearch(inputs);
@@ -68,7 +66,7 @@ Then('I validate staff UI search results displayed', async function (tabLabel, b
   await staffSearchPage.validateListValuesNotEmpty();
 });
 
-Then('I validate staff user details display', async function(){
+Then('I validate staff user details display', async function () {
   let username = null;
   await BrowserWaits.retryWithActionCallback(async () => {
     username = await staffSearchPage.staffUsersList.clickUserNameAtRow(0);
@@ -90,14 +88,14 @@ Then('I validate staff user details display', async function(){
     'Role',
     'Job title',
     'Skills',
-    'Status'
+    'Status',
   ].forEach((row) => {
     expect(rows, `missing ${row}`, `${row} is missing ${JSON.stringify(rows)}`).to.includes(row);
   });
 
-  expect(userDetails['Email address'] !== '', 'missing value for \'Email address\'').to.be.true;
-  expect(userDetails['User type'] !== '', 'missing value for \'User type\'').to.be.true;
-  expect(userDetails.Status !== '', 'missing value for \'Status\'').to.be.true;
+  expect(userDetails['Email address'] !== '', "missing value for 'Email address'").to.be.true;
+  expect(userDetails['User type'] !== '', "missing value for 'User type'").to.be.true;
+  expect(userDetails.Status !== '', "missing value for 'Status'").to.be.true;
   // expect(userDetails['Job title'] !== '', `missing value for 'Job title'`).to.be.true;
 });
 
@@ -119,7 +117,7 @@ When('I add new staff user details', async function (datatable) {
 
   expect(checkAnswers.Name).to.includes(`${details['First name']} ${details['Last name']}`);
   expect(checkAnswers['Email address']).to.includes(`${details.Email}`);
-  for (const service of details.Services){
+  for (const service of details.Services) {
     expect(checkAnswers.Service).to.includes(service);
   }
 
@@ -133,7 +131,7 @@ When('I add new staff user details', async function (datatable) {
   });
 });
 
-Then('I validate add new staff user work flow controls', async function(datatable){
+Then('I validate add new staff user work flow controls', async function (datatable) {
   const details = getUserDetailsFromDatatable(datatable);
 
   reportLogger.AddMessage('*********** validation: Cancel on new user page');
@@ -167,7 +165,7 @@ Then('I validate add new staff user work flow controls', async function(datatabl
   expect(await addUserCheckYourAnswersPage.isDisplayed()).to.be.true;
 
   const checkYourAnswersFields = ['Name', 'Email address'];
-  for (const field of checkYourAnswersFields){
+  for (const field of checkYourAnswersFields) {
     reportLogger.AddMessage(`*********** validation: change link for field ${field} from check your answers`);
 
     await addUserCheckYourAnswersPage.clickChangeLinkFor(field);
@@ -177,7 +175,7 @@ Then('I validate add new staff user work flow controls', async function(datatabl
   }
 });
 
-Then('I validate user profile {string} update in staff UI', async function(usernameInput, datatable){
+Then('I validate user profile {string} update in staff UI', async function (usernameInput, datatable) {
   const details = getUserDetailsFromDatatable(datatable);
 
   await staffSearchPage.performBasicSearch(usernameInput);
@@ -236,4 +234,3 @@ Then('I validate user profile {string} copy in staff UI', async function (userna
   expect(await staffSearchPage.amOnPage()).to.be.true;
   await staffSearchPage.validateSuccessMessageBanner('You have added a new user');
 });
-

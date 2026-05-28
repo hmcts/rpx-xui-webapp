@@ -68,7 +68,7 @@ class CaseDetailsPage {
   }
 
   async getEvents() {
-    if (!await this.isEventTriggerDisplayed()) {
+    if (!(await this.isEventTriggerDisplayed())) {
       throw new Error('Event trigger element not displayed');
     }
     const options = this.eventTriggerContainer.locator('option');

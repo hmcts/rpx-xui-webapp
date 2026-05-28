@@ -5,10 +5,11 @@ import { provideMockStore } from '@ngrx/store/testing';
 import { of } from 'rxjs';
 import { UtilsModule } from '../utils/utils.module';
 import { NocEmailFieldComponent } from './noc-email-field.component';
+import { NocQuestion } from 'src/noc/models';
 
 @Pipe({
   standalone: false,
-  name: 'rpxTranslate'
+  name: 'rpxTranslate',
 })
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
@@ -22,7 +23,7 @@ describe('NocEmailFieldComponent', () => {
     FORM_GROUP.addControl('Email', control);
     return control;
   };
-  const QUESTION_FIELD = {
+  const QUESTION_FIELD: NocQuestion = {
     case_type_id: 'AAT',
     order: '1',
     question_text: 'What is their Email?',
@@ -34,12 +35,12 @@ describe('NocEmailFieldComponent', () => {
       regular_expression: null,
       fixed_list_items: [],
       complex_fields: [],
-      collection_field_type: null
+      collection_field_type: null,
     },
     display_context_parameter: '1',
     challenge_question_id: 'NoC',
     answer_field: '',
-    question_id: 'question1'
+    question_id: 'question1',
   };
   const ANSWER_VALUE = of('test@test.com');
 
@@ -49,17 +50,9 @@ describe('NocEmailFieldComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      declarations: [
-        NocEmailFieldComponent,
-        RpxTranslateMockPipe
-      ],
-      imports: [
-        ReactiveFormsModule,
-        UtilsModule
-      ],
-      providers: [
-        provideMockStore()
-      ]
+      declarations: [NocEmailFieldComponent, RpxTranslateMockPipe],
+      imports: [ReactiveFormsModule, UtilsModule],
+      providers: [provideMockStore()],
     }).compileComponents();
   }));
 
@@ -69,7 +62,6 @@ describe('NocEmailFieldComponent', () => {
     component.formGroup = FORM_GROUP;
     component.registerControl = REGISTER_CONTROL;
     component.answerValue$ = ANSWER_VALUE;
-    // @ts-ignore
     component.questionField = QUESTION_FIELD;
     fixture.detectChanges();
   });

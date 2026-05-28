@@ -5,7 +5,7 @@ import { AmendmentLabelStatus } from '../../../hearings/models/hearingsUpdateMod
   standalone: false,
   selector: 'exui-parties-unavailable-dates',
   templateUrl: './parties-unavailable-dates.component.html',
-  styleUrls: ['./parties-unavailable-dates.component.scss']
+  styleUrls: ['./parties-unavailable-dates.component.scss'],
 })
 export class PartiesUnavailableDatesComponent {
   @Input() public unAvailableDates: string[];

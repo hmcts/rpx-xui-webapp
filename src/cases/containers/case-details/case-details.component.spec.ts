@@ -11,19 +11,16 @@ describe('CaseDetailsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [
-      ],
+      imports: [],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [CaseDetailsComponent],
       providers: [
         {
           provide: Store,
-          useValue: storeMock
-        }
-
-      ]
-    })
-      .compileComponents();
+          useValue: storeMock,
+        },
+      ],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

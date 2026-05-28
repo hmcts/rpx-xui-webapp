@@ -3,4 +3,3 @@ import { FeatureToggleDirective } from './feature-toggle/feature-toggle.directiv
 export const directives: any[] = [FeatureToggleDirective];
 
 export * from './feature-toggle/feature-toggle.directive';
-

@@ -15,7 +15,7 @@ const MockApp = require('../../../../../test_codecept/nodeMock/app');
 
 const REQUEST_BODY = {
   userIds: ['004b7164-0943-41b5-95fc-39794af4a9fe', '004b7164-0943-41b5-95fc-39794af4a9ff'],
-  services: ['IA']
+  services: ['IA'],
 };
 
 const user1 = getDummyJudgeUserDetails();
@@ -45,19 +45,19 @@ describe('Judicial ref data api, get all judge users', () => {
           method: 'POST',
           path: '/refdata/judicial/users',
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
-          body: REQUEST_BODY
+          body: REQUEST_BODY,
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
-          body: RESPONSE_BODY
-        }
+          body: RESPONSE_BODY,
+        },
       };
 
       pactSetUp.provider.addInteraction(interaction);
@@ -74,9 +74,9 @@ describe('Judicial ref data api, get all judge users', () => {
         const configValues = getJudicialRefDataAPIOverrides(mockServer.url);
         configValues['services.role_assignment.roleApi'] = 'http://localhost:8080';
 
-        // @ts-ignore
         configValues.serviceRefDataMapping = [
-          { 'service': 'IA', 'serviceCodes': ['BFA1'] }, { 'service': 'CIVIL', 'serviceCodes': ['AAA6', 'AAA7'] }
+          { service: 'IA', serviceCodes: ['BFA1'] },
+          { service: 'CIVIL', serviceCodes: ['AAA6', 'AAA7'] },
         ];
 
         sandbox.stub(config, 'get').callsFake((prop) => {
@@ -87,15 +87,14 @@ describe('Judicial ref data api, get all judge users', () => {
 
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
           body: {
             userIds: ['004b7164-0943-41b5-95fc-39794af4a9fe', '004b7164-0943-41b5-95fc-39794af4a9ff'],
-            services: ['IA']
-          }
-
+            services: ['IA'],
+          },
         });
         let returnedResponse = null;
         const response = mockRes();
@@ -121,40 +120,40 @@ function assertResponses(dto: any) {
 
 function getDummyJudgeUserDetails() {
   return {
-    'sidam_id': somethingLike('018a0310-f122-4377-9504-f635301f39ed-test2'),
-    'object_id': somethingLike('018a0310-f122-4377-9504-f635301f39ed-test2'),
-    'known_as': somethingLike('Joe'),
-    'surname': somethingLike('snjudge'),
-    'full_name': somethingLike('fntest'),
-    'post_nominals': somethingLike('Ms'),
-    'email_id': somethingLike('test@judicial.com'),
-    'appointments': [
+    sidam_id: somethingLike('018a0310-f122-4377-9504-f635301f39ed-test2'),
+    object_id: somethingLike('018a0310-f122-4377-9504-f635301f39ed-test2'),
+    known_as: somethingLike('Joe'),
+    surname: somethingLike('snjudge'),
+    full_name: somethingLike('fntest'),
+    post_nominals: somethingLike('Ms'),
+    email_id: somethingLike('test@judicial.com'),
+    appointments: [
       {
-        'base_location_id': somethingLike('testBaseLocID'),
-        'epimms_id': somethingLike('testEpimmsId'),
-        'court_name': somethingLike('Social Entitlement'),
-        'cft_region_id': somethingLike('1'),
-        'cft_region': somethingLike('National'),
-        'location_id': somethingLike('1'),
-        'location': somethingLike('National'),
-        'is_principal_appointment': somethingLike('true'),
-        'appointment': somethingLike('Tribunal Member Disability'),
-        'appointment_type': somethingLike('Fee Paid'),
-        'service_code': somethingLike('testServiceCode'),
-        'roles': ['testTitle'],
-        'start_date': somethingLike('2018-12-05'),
-        'end_date': somethingLike('2022-03-04')
-      }
+        base_location_id: somethingLike('testBaseLocID'),
+        epimms_id: somethingLike('testEpimmsId'),
+        court_name: somethingLike('Social Entitlement'),
+        cft_region_id: somethingLike('1'),
+        cft_region: somethingLike('National'),
+        location_id: somethingLike('1'),
+        location: somethingLike('National'),
+        is_principal_appointment: somethingLike('true'),
+        appointment: somethingLike('Tribunal Member Disability'),
+        appointment_type: somethingLike('Fee Paid'),
+        service_code: somethingLike('testServiceCode'),
+        roles: ['testTitle'],
+        start_date: somethingLike('2018-12-05'),
+        end_date: somethingLike('2022-03-04'),
+      },
     ],
-    'authorisations': [
+    authorisations: [
       {
-        'jurisdiction': somethingLike('Authorisation Tribunals'),
-        'ticket_description': somethingLike('Social Security and Child Support'),
-        'ticket_code': somethingLike('357'),
-        'service_codes': [],
-        'start_date': somethingLike('2013-12-05T00:00'),
-        'end_date': term(DateTimeMatcher2('2022-03-04T10:11:00.619526'))
-      }
-    ]
+        jurisdiction: somethingLike('Authorisation Tribunals'),
+        ticket_description: somethingLike('Social Security and Child Support'),
+        ticket_code: somethingLike('357'),
+        service_codes: [],
+        start_date: somethingLike('2013-12-05T00:00'),
+        end_date: term(DateTimeMatcher2('2022-03-04T10:11:00.619526')),
+      },
+    ],
   };
 }

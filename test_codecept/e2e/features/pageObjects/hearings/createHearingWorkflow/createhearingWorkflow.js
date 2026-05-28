@@ -14,7 +14,7 @@ const HearingSubmitConfirmationPage = require('./HearingSubmitConfirmationPage')
 const HearingWelshPage = require('./hearingWelshPage');
 const HearingChangeReasonsPage = require('./HearingChangeReasonsPage');
 
-class CreateHearingWorkflow{
+class CreateHearingWorkflow {
   get pages() {
     return {
       'Hearing requirements': new HearingRequirementsPage(),
@@ -30,8 +30,8 @@ class CreateHearingWorkflow{
       'Enter any additional instructions for the hearing': new HearingAdditionalInstructionsPage(),
       'Check your answers before sending your request': new HearingCreateEditSummaryPage(),
       'Hearing request submitted': new HearingSubmitConfirmationPage(),
-      'Provide a reason for changing this hearing': new HearingChangeReasonsPage()
-    }
+      'Provide a reason for changing this hearing': new HearingChangeReasonsPage(),
+    };
   }
 
   get continueBtn() {
@@ -54,11 +54,11 @@ class CreateHearingWorkflow{
     return $('exui-request-hearing');
   }
 
-  async isCreateHearingWorkflowDIsplayed(){
+  async isCreateHearingWorkflowDIsplayed() {
     return await this.createhearingContainer.isVisible();
   }
 
-  async clickSubmitRequest(){
+  async clickSubmitRequest() {
     await this.submitBtn.click();
   }
 }

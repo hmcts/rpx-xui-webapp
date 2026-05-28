@@ -11,7 +11,7 @@ import * as fromFeature from '../../../store';
 @Component({
   standalone: false,
   selector: 'exui-add-exclusion-search-person',
-  templateUrl: './add-exclusion-search-person.component.html'
+  templateUrl: './add-exclusion-search-person.component.html',
 })
 export class AddExclusionSearchPersonComponent implements OnInit {
   public ERROR_MESSAGE = PERSON_ERROR_MESSAGE;
@@ -28,7 +28,9 @@ export class AddExclusionSearchPersonComponent implements OnInit {
   constructor(private readonly store: Store<fromFeature.State>) {}
 
   public ngOnInit(): void {
-    this.subscription = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe((exclusion) => this.setPerson(exclusion));
+    this.subscription = this.store
+      .pipe(select(fromFeature.getRoleAccessState))
+      .subscribe((exclusion) => this.setPerson(exclusion));
   }
 
   private setPerson(exclusion: ExclusionStateData): void {
@@ -50,7 +52,7 @@ export class AddExclusionSearchPersonComponent implements OnInit {
       }
     } else {
       this.formGroup.setErrors({
-        invalid: true
+        invalid: true,
       });
       return;
     }
@@ -58,7 +60,7 @@ export class AddExclusionSearchPersonComponent implements OnInit {
 
   public selectedPerson(person: Person): void {
     if (person && !person.domain) {
-      this.person = { ... person, domain: this.personRole };
+      this.person = { ...person, domain: this.personRole };
     } else {
       this.person = person;
     }

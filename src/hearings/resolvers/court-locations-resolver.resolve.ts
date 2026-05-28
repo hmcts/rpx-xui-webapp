@@ -8,7 +8,7 @@ import { LocationsDataService } from '../services/locations-data.service';
 import * as fromHearingStore from '../store';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CourtLocationsDataResolver {
   constructor(
@@ -19,25 +19,26 @@ export class CourtLocationsDataResolver {
   private serviceCode: string;
 
   public resolve(): Observable<LocationModel> {
-    return this.getLocationId$()
-      .pipe(
-        switchMap((id) => of(id)),
-        take(1),
-        switchMap((locationId) => {
-          return this.getCourtLocationData$(locationId);
-        })
-      );
+    return this.getLocationId$().pipe(
+      switchMap((id) => of(id)),
+      take(1),
+      switchMap((locationId) => {
+        return this.getCourtLocationData$(locationId);
+      })
+    );
   }
 
   public getLocationId$(): Observable<string> {
     return this.hearingStore.pipe(select(fromHearingStore.getHearingRequest)).pipe(
-      tap((value) => this.serviceCode = value?.hearingRequestMainModel?.caseDetails?.hmctsServiceCode),
-      map((hearingRequest) =>
-        hearingRequest.hearingRequestMainModel
-        && hearingRequest.hearingRequestMainModel.hearingResponse
-        && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule
-        && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0]
-        && hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingVenueId)
+      tap((value) => (this.serviceCode = value?.hearingRequestMainModel?.caseDetails?.hmctsServiceCode)),
+      map(
+        (hearingRequest) =>
+          hearingRequest.hearingRequestMainModel &&
+          hearingRequest.hearingRequestMainModel.hearingResponse &&
+          hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule &&
+          hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0] &&
+          hearingRequest.hearingRequestMainModel.hearingResponse.hearingDaySchedule[0].hearingVenueId
+      )
     );
   }
 

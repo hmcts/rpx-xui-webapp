@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { provideMockStore } from '@ngrx/store/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { of } from 'rxjs';
+import { firstValueFrom, of, take } from 'rxjs';
 import { Go } from '../../../app/store';
 import { initialState } from '../../hearing.test.data';
 import { CategoryType, MemberType, PartyType, RequirementType, UnavailabilityType } from '../../models/hearings.enum';
@@ -14,9 +14,7 @@ import { HearingValuesEffects } from './hearing-values.effects';
 describe('Hearing Values Effects', () => {
   let actions$;
   let effects: HearingValuesEffects;
-  const hearingsServiceMock = jasmine.createSpyObj('HearingsService', [
-    'loadHearingValues'
-  ]);
+  const hearingsServiceMock = jasmine.createSpyObj('HearingsService', ['loadHearingValues']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -24,11 +22,11 @@ describe('Hearing Values Effects', () => {
         provideMockStore({ initialState }),
         {
           provide: HearingsService,
-          useValue: hearingsServiceMock
+          useValue: hearingsServiceMock,
         },
         HearingValuesEffects,
-        provideMockActions(() => actions$)
-      ]
+        provideMockActions(() => actions$),
+      ],
     });
     effects = TestBed.inject(HearingValuesEffects);
   });
@@ -45,20 +43,23 @@ describe('Hearing Values Effects', () => {
       caseCategories: [
         {
           categoryType: CategoryType.CaseType,
-          categoryValue: 'BBA3-002'
-        }, {
+          categoryValue: 'BBA3-002',
+        },
+        {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002CC',
-          categoryParent: 'BBA3-002'
-        }, {
+          categoryParent: 'BBA3-002',
+        },
+        {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002GC',
-          categoryParent: 'BBA3-002'
-        }, {
+          categoryParent: 'BBA3-002',
+        },
+        {
           categoryType: CategoryType.CaseSubType,
           categoryValue: 'BBA3-002RC',
-          categoryParent: 'BBA3-002'
-        }
+          categoryParent: 'BBA3-002',
+        },
       ],
       caseDeepLink: 'https://manage-case.demo.platform.hmcts.net/',
       caserestrictedFlag: false,
@@ -68,7 +69,7 @@ describe('Hearing Values Effects', () => {
       hearingWindow: {
         dateRangeStart: '2021-11-23T09:00:00.000Z',
         dateRangeEnd: '2021-11-30T09:00:00.000Z',
-        firstDateTimeMustBe: ''
+        firstDateTimeMustBe: '',
       },
       duration: 45,
       hearingPriorityType: 'standard',
@@ -86,18 +87,20 @@ describe('Hearing Values Effects', () => {
         roleType: [''],
         authorisationTypes: [''],
         authorisationSubType: [''],
-        panelComposition: [{
-          memberType: '',
-          count: 1
-        }],
+        panelComposition: [
+          {
+            memberType: '',
+            count: 1,
+          },
+        ],
         judiciaryPreferences: [
           {
             memberID: 'p1000000',
             memberType: MemberType.JUDGE,
-            requirementType: RequirementType.EXCLUDE
-          }
+            requirementType: RequirementType.EXCLUDE,
+          },
         ],
-        judiciarySpecialisms: ['']
+        judiciarySpecialisms: [''],
       },
       hearingIsLinkedFlag: false,
       parties: [
@@ -110,9 +113,9 @@ describe('Hearing Values Effects', () => {
             {
               unavailableFromDate: '2021-12-10T09:00:00.000Z',
               unavailableToDate: '2021-12-31T09:00:00.000Z',
-              unavailabilityType: UnavailabilityType.ALL_DAY
-            }
-          ]
+              unavailabilityType: UnavailabilityType.ALL_DAY,
+            },
+          ],
         },
         {
           partyID: 'P2',
@@ -123,10 +126,11 @@ describe('Hearing Values Effects', () => {
             {
               unavailableFromDate: '2021-12-20T09:00:00.000Z',
               unavailableToDate: '2021-12-31T09:00:00.000Z',
-              unavailabilityType: UnavailabilityType.ALL_DAY
-            }
-          ]
-        }],
+              unavailabilityType: UnavailabilityType.ALL_DAY,
+            },
+          ],
+        },
+      ],
       caseFlags: {
         flags: [
           {
@@ -134,33 +138,61 @@ describe('Hearing Values Effects', () => {
             partyName: 'Jane and Smith',
             flagId: 'Language Interpreter',
             flagDescription: 'Spanish interpreter required',
-            flagStatus: 'ACTIVE'
+            flagStatus: 'ACTIVE',
           },
           {
             partyId: 'P2',
             partyName: 'DWP',
             flagId: 'case flag 1',
             flagDescription: 'case flag 1 description',
-            flagStatus: 'ACTIVE'
-          }
+            flagStatus: 'ACTIVE',
+          },
         ],
-        flagAmendURL: '/'
+        flagAmendURL: '/',
       },
       screenFlow: [],
       vocabulary: [
         {
-          word1: ''
-        }
-      ]
+          word1: '',
+        },
+      ],
     };
 
     it('should return a response with service hearing values', () => {
       hearingsServiceMock.loadHearingValues.and.returnValue(of(SERVICE_HEARING_VALUES));
-      const action = new hearingValuesActions.LoadHearingValues();
+      const action = new hearingValuesActions.LoadHearingValues({ jurisdictionId: 'IA', caseReference: '1111222233334444' });
       const completion = new hearingValuesActions.LoadHearingValuesSuccess(SERVICE_HEARING_VALUES);
       actions$ = hot('-a', { a: action });
       const expected = cold('-b', { b: completion });
       expect(effects.loadHearingValue$).toBeObservable(expected);
+    });
+
+    it('should use payload to override caseInfo values', async () => {
+      hearingsServiceMock.loadHearingValues.and.returnValue(of(SERVICE_HEARING_VALUES));
+
+      const action = new hearingValuesActions.LoadHearingValues({
+        jurisdictionId: 'OVERRIDE_JURIS',
+        caseReference: '9999000011112222',
+      });
+
+      actions$ = of(action);
+
+      await firstValueFrom(effects.loadHearingValue$.pipe(take(1)));
+      expect(hearingsServiceMock.loadHearingValues).toHaveBeenCalledWith('OVERRIDE_JURIS', '9999000011112222');
+    });
+
+    it('should still load hearing values when payload has empty jurisdictionId/caseReference', async () => {
+      hearingsServiceMock.loadHearingValues.and.returnValue(of(SERVICE_HEARING_VALUES));
+
+      const action = new hearingValuesActions.LoadHearingValues({
+        jurisdictionId: undefined,
+        caseReference: '',
+      });
+
+      actions$ = of(action);
+
+      await firstValueFrom(effects.loadHearingValue$.pipe(take(1)));
+      expect(hearingsServiceMock.loadHearingValues).toHaveBeenCalledWith('IA', '1111222233334444');
     });
   });
 
@@ -168,22 +200,32 @@ describe('Hearing Values Effects', () => {
     const caseInfo = {
       caseReference: '1111222233334444',
       caseType: 'PRLAPPS',
-      jurisdictionId: 'PRIVATELAW'
+      jurisdictionId: 'PRIVATELAW',
     };
     it('should handle 500', () => {
-      const action$ = HearingValuesEffects.handleError({
-        status: 500,
-        message: 'error'
-      }, caseInfo);
-      action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/cases/case-details/PRIVATELAW/PRLAPPS/1111222233334444/hearings'] })));
+      const action$ = HearingValuesEffects.handleError(
+        {
+          status: 500,
+          message: 'error',
+        },
+        caseInfo
+      );
+      action$.subscribe((action) =>
+        expect(action).toEqual(new Go({ path: ['/cases/case-details/PRIVATELAW/PRLAPPS/1111222233334444/hearings'] }))
+      );
     });
 
     it('should handle 4xx related errors', () => {
-      const action$ = HearingValuesEffects.handleError({
-        status: 403,
-        message: 'error'
-      }, caseInfo);
-      action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/cases/case-details/PRIVATELAW/PRLAPPS/1111222233334444/hearings'] })));
+      const action$ = HearingValuesEffects.handleError(
+        {
+          status: 403,
+          message: 'error',
+        },
+        caseInfo
+      );
+      action$.subscribe((action) =>
+        expect(action).toEqual(new Go({ path: ['/cases/case-details/PRIVATELAW/PRLAPPS/1111222233334444/hearings'] }))
+      );
     });
   });
 });

@@ -7,7 +7,7 @@ import {
   chooseExclusionStates,
   choosePersonRoleStates,
   describeExclusionVisibilityStates,
-  findPersonVisibilityStates
+  findPersonVisibilityStates,
 } from '../../../constants';
 import { ExcludeOption, ExclusionNavigationEvent, ExclusionState, ExclusionStateData } from '../../../models';
 import { ExclusionNavigation } from '../../../models/exclusion-navigation.interface';
@@ -22,7 +22,7 @@ import { DescribeExclusionComponent } from '../describe-exclusion/describe-exclu
   standalone: false,
   selector: 'exui-add-exclusion-home',
   templateUrl: './add-exclusion-home.component.html',
-  styleUrls: ['./add-exclusion-home.component.scss']
+  styleUrls: ['./add-exclusion-home.component.scss'],
 })
 export class AddExclusionHomeComponent implements OnInit, OnDestroy {
   @ViewChild('chooseExclusion', { static: false, read: ChooseExclusionComponent })
@@ -59,31 +59,28 @@ export class AddExclusionHomeComponent implements OnInit, OnDestroy {
 
   public showSpinner: boolean;
 
-  constructor(private readonly store: Store<fromFeature.State>,
-              private readonly route: ActivatedRoute,
-              private readonly router: Router) {
-    this.caseId = this.route.snapshot.queryParams?.caseId ?
-      this.route.snapshot.queryParams.caseId : '';
-    this.jurisdiction = this.route.snapshot.queryParams?.jurisdiction ?
-      this.route.snapshot.queryParams.jurisdiction : '';
-    this.caseType = this.route.snapshot.queryParams?.caseType ?
-      this.route.snapshot.queryParams.caseType : '';
+  constructor(
+    private readonly store: Store<fromFeature.State>,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router
+  ) {
+    this.caseId = this.route.snapshot.queryParams?.caseId ? this.route.snapshot.queryParams.caseId : '';
+    this.jurisdiction = this.route.snapshot.queryParams?.jurisdiction ? this.route.snapshot.queryParams.jurisdiction : '';
+    this.caseType = this.route.snapshot.queryParams?.caseType ? this.route.snapshot.queryParams.caseType : '';
     this.store.dispatch(new fromFeature.ExclusionSetCaseId(this.caseId, this.jurisdiction, this.caseType));
   }
 
   public ngOnInit(): void {
-    this.exclusionStateDataSub = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe(
-      (exclusionStateData) => {
-        this.navigationCurrentState = exclusionStateData.state;
-        this.exclusionOption = exclusionStateData.exclusionOption;
-      }
-    );
+    this.exclusionStateDataSub = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe((exclusionStateData) => {
+      this.navigationCurrentState = exclusionStateData.state;
+      this.exclusionOption = exclusionStateData.exclusionOption;
+    });
   }
 
   public onNavEvent(event: ExclusionNavigationEvent): void {
     this.navEvent = {
       event,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
     this.navigationHandler(event);
   }

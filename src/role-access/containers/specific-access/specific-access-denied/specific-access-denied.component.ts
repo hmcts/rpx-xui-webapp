@@ -9,7 +9,7 @@ import * as fromFeature from '../../../store';
 @Component({
   standalone: false,
   selector: 'exui-specific-access-denied',
-  templateUrl: './specific-access-denied.component.html'
+  templateUrl: './specific-access-denied.component.html',
 })
 export class SpecificAccessDeniedComponent implements OnDestroy {
   @Input() public navEvent: SpecificAccessNavigation;
@@ -20,8 +20,10 @@ export class SpecificAccessDeniedComponent implements OnDestroy {
   public readonly retunToTask = 'Return to the Tasks tab for this case';
   public readonly returnToMyTask = 'Return to My tasks';
 
-  constructor(private readonly router: Router,
-              private readonly store: Store<fromFeature.State>) {
+  constructor(
+    private readonly router: Router,
+    private readonly store: Store<fromFeature.State>
+  ) {
     this.storeSubscription = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe();
   }
 
@@ -35,4 +37,3 @@ export class SpecificAccessDeniedComponent implements OnDestroy {
     this.store.dispatch(new fromFeature.ChangeSpecificAccessNavigation(action));
   }
 }
-

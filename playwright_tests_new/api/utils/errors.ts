@@ -30,10 +30,12 @@ export abstract class ExuiTestError extends Error {
       message: this.message,
       context: this.context,
       stack: this.stack,
-      cause: this.cause ? {
-        name: this.cause.name,
-        message: this.cause.message
-      } : undefined
+      cause: this.cause
+        ? {
+            name: this.cause.name,
+            message: this.cause.message,
+          }
+        : undefined,
     };
   }
 }

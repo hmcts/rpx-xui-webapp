@@ -20,29 +20,29 @@ describe('createAccessLogFromRequest', () => {
   beforeEach(() => {
     mockRequest = {
       headers: {
-        ServiceAuthorization: 'mock-service-token'
+        ServiceAuthorization: 'mock-service-token',
       },
       body: {
         roleRequest: {
-          process: 'specific-access'
+          process: 'specific-access',
         },
         requestedRoles: [
           {
             attributes: {
-              caseId: 'mock-case-id'
+              caseId: 'mock-case-id',
             },
             actorId: 'mock-user-id',
             notes: [
               {
                 comment: JSON.stringify({ specificReason: 'mock-specific-reason' }),
-                time: '2023-09-06T12:34:56.789Z'
-              }
+                time: '2023-09-06T12:34:56.789Z',
+              },
             ],
             beginTime: '2023-09-06T10:00:00.000Z',
-            endTime: '2023-09-06T11:00:00.000Z'
-          }
-        ]
-      }
+            endTime: '2023-09-06T11:00:00.000Z',
+          },
+        ],
+      },
     };
 
     mockHttpPost = sinon.stub(http, 'post').resolves({ status: 201 });
@@ -54,10 +54,10 @@ describe('createAccessLogFromRequest', () => {
       passport: {
         user: {
           userinfo: {
-            uid: '1234'
-          }
-        }
-      }
+            uid: '1234',
+          },
+        },
+      },
     };
 
     sinon.resetHistory();
@@ -71,26 +71,25 @@ describe('createAccessLogFromRequest', () => {
 
   it('should create an access log with specific-access requestType', async () => {
     const result = await lauService.logAccessRequest(mockRequest, true);
-    if (result){
+    if (result) {
       expect(result.status).to.equal(201);
     }
   });
 
   it('should create an access log with specific-access approve requestType', async () => {
     mockRequest.body = {
-      'specificAccessStateData':
-        {
-          'caseId': '1708968484691010',
-          'actorId': '7a51b87d-36c6-47fa-b9ef-4257af8001c5',
-          'specificAccessReason': 'mock-specific-reason'
-        },
-      'period': {
-        'startDate': '2024-09-24T01:00:00.000Z',
-        'endDate': '2024-10-23T00:59:59.999Z'
-      }
+      specificAccessStateData: {
+        caseId: '1708968484691010',
+        actorId: '7a51b87d-36c6-47fa-b9ef-4257af8001c5',
+        specificAccessReason: 'mock-specific-reason',
+      },
+      period: {
+        startDate: '2024-09-24T01:00:00.000Z',
+        endDate: '2024-10-23T00:59:59.999Z',
+      },
     };
     const result = await lauService.logAccessRequest(mockRequest, false);
-    if (result){
+    if (result) {
       expect(result.status).to.equal(201);
     }
   });
@@ -99,10 +98,10 @@ describe('createAccessLogFromRequest', () => {
     mockRequest.body = {
       accessReason: 'Reject request',
       specificAccessReason: 'mock specific reason',
-      caseId: '1708968484691010'
+      caseId: '1708968484691010',
     };
     const result = await lauService.logAccessRequest(mockRequest, false);
-    if (result){
+    if (result) {
       expect(result.status).to.equal(201);
     }
   });
@@ -121,7 +120,6 @@ describe('createAccessLogFromRequest', () => {
 
     await lauService.logAccessRequest(mockRequest, true);
 
-    // eslint-disable-next-line no-unused-expressions
     expect(createAccessLogStub).to.not.have.been.called;
     createAccessLogStub.restore();
   });
@@ -146,7 +144,7 @@ describe('createAccessLog', () => {
       action: 'CREATED',
       timestamp: '2023-09-06T12:34:56.789Z',
       reason: 'mock-reason',
-      requestEndTimestamp: '2023-09-06T11:00:00.000Z'
+      requestEndTimestamp: '2023-09-06T11:00:00.000Z',
     };
 
     const mockResponse = { status: 200 };
@@ -175,7 +173,7 @@ describe('createAccessLog', () => {
       action: 'CREATED',
       timestamp: '2023-09-06T12:34:56.789Z',
       reason: 'mock-reason',
-      requestEndTimestamp: '2023-09-06T11:00:00.000Z'
+      requestEndTimestamp: '2023-09-06T11:00:00.000Z',
     };
 
     const serviceToken = 'mock-service-token';

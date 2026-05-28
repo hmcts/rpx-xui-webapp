@@ -29,17 +29,17 @@ Given('I restart MockApp', async function () {
   // await MockApp.startServer();
 });
 
-When('I set MOCK with user roles', async function(rolesTable){
+When('I set MOCK with user roles', async function (rolesTable) {
   const roles = [];
   const rolesTablerows = rolesTable.parse().rows();
-  for (const row of rolesTablerows){
+  for (const row of rolesTablerows) {
     roles.push(row[0]);
   }
 
   const userDetails = nodeAppMockData.getUserDetailsWithRoles(roles);
 });
 
-Given('I set MOCK request {string} intercept with reference {string}', async function(url, reference){
+Given('I set MOCK request {string} intercept with reference {string}', async function (url, reference) {
   // global.scenarioData[reference] = null;
   // MockApp.addIntercept(url,(req,res,next) => {
   //     CucumberReporter.AddMessage(`Intercepted: ${url}`)
@@ -82,15 +82,15 @@ Given('I set MOCK request {string} intercept, hold response with reference {stri
   // })
 });
 
-Given('I reset reference {string} value to null', async function(reference){
+Given('I reset reference {string} value to null', async function (reference) {
   global.scenarioData[reference] = null;
 });
 
-Then('I verify reference {string} value is null', async function (reference){
+Then('I verify reference {string} value is null', async function (reference) {
   expect(global.scenarioData[reference] === null, `Assertion failed: ${reference} is not null`).to.be.true;
 });
 
-When('I wait for reference {string} value not null', async function(reference){
+When('I wait for reference {string} value not null', async function (reference) {
   //  await BrowserWaits.retryWithActionCallback(async () => {
   //      expect(global.scenarioData[reference] !== null, `reference ${reference} is null`).to.be.true;
   //      try{
@@ -98,54 +98,56 @@ When('I wait for reference {string} value not null', async function(reference){
   //      }catch(err){
   //          reportLogger.AddMessage(global.scenarioData[reference]);
   //      }
-
   //  });
 });
 
-Given('I set MOCK api method {string} endpoint {string} with error response code {int}', async function(apiMethod, apiEndpoint, responseCode){
-  switch (apiMethod.toLowerCase()){
-    case 'get':
-      MockApp.onGet(apiEndpoint, (req, res) => {
-        reportLogger.AddMessage(`Mock response code returned ${responseCode}`);
-        res.status(responseCode).send({ error: 'Test error from mock' });
-      });
-      break;
-    case 'post':
-      MockApp.onPost(apiEndpoint, (req, res) => {
-        reportLogger.AddMessage(`Mock response code returned ${responseCode}`);
-        res.status(responseCode).send({ error: 'Test error from mock' });
-      });
-      break;
-    case 'put':
-      MockApp.onPut(apiEndpoint, (req, res) => {
-        reportLogger.AddMessage(`Mock response code returned ${responseCode}`);
-        res.status(responseCode).send({ error: 'Test error from mock' });
-      });
-      break;
-    case 'delete':
-      MockApp.onDelete(apiEndpoint, (req, res) => {
-        reportLogger.AddMessage(`Mock response code returned ${responseCode}`);
-        res.status(responseCode).send({ error: 'Test error from mock' });
-      });
-      break;
+Given(
+  'I set MOCK api method {string} endpoint {string} with error response code {int}',
+  async function (apiMethod, apiEndpoint, responseCode) {
+    switch (apiMethod.toLowerCase()) {
+      case 'get':
+        MockApp.onGet(apiEndpoint, (req, res) => {
+          reportLogger.AddMessage(`Mock response code returned ${responseCode}`);
+          res.status(responseCode).send({ error: 'Test error from mock' });
+        });
+        break;
+      case 'post':
+        MockApp.onPost(apiEndpoint, (req, res) => {
+          reportLogger.AddMessage(`Mock response code returned ${responseCode}`);
+          res.status(responseCode).send({ error: 'Test error from mock' });
+        });
+        break;
+      case 'put':
+        MockApp.onPut(apiEndpoint, (req, res) => {
+          reportLogger.AddMessage(`Mock response code returned ${responseCode}`);
+          res.status(responseCode).send({ error: 'Test error from mock' });
+        });
+        break;
+      case 'delete':
+        MockApp.onDelete(apiEndpoint, (req, res) => {
+          reportLogger.AddMessage(`Mock response code returned ${responseCode}`);
+          res.status(responseCode).send({ error: 'Test error from mock' });
+        });
+        break;
 
-    default:
-      throw new Error('api method provided not recognised ' + apiMethod);
+      default:
+        throw new Error('api method provided not recognised ' + apiMethod);
+    }
   }
-});
+);
 
-Given('I set MOCK find person response for jurisdictions', async function(datatable){
+Given('I set MOCK find person response for jurisdictions', async function (datatable) {
   const personsConfigHashes = datatable.parse().hashes();
 
   for (const person of personsConfigHashes) {
-    if (person.domain === 'Judicial'){
+    if (person.domain === 'Judicial') {
       const judge = JSON.parse(JSON.stringify(workAllocationMockData.judgeUsers[0]));
       judge.sidam_id = person.id;
       judge.email_id = person.email;
       judge.full_name = person.name;
 
       workAllocationMockData.judgeUsers.push(judge);
-    } else if (person.domain === 'Legal Ops'){
+    } else if (person.domain === 'Legal Ops') {
       const cw = JSON.parse(JSON.stringify(workAllocationMockData.caseWorkersList[0]));
       const fullNameArr = person.name.split(' ');
       cw.idamId = person.id;

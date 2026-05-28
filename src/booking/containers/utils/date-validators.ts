@@ -15,12 +15,12 @@ export class DateValidators {
 
   public static bookingEmptyValidator(): ValidatorFn {
     return (formGroup: AbstractControl): ValidationErrors | null => {
-      const { startDateDay, startDateMonth, startDateYear, endDateDay, endDateMonth, endDateYear, dateOption } = this.getFormValues(formGroup);
+      const { startDateDay, startDateMonth, startDateYear, endDateDay, endDateMonth, endDateYear, dateOption } =
+        this.getFormValues(formGroup);
       if (dateOption !== BookingDateOption.DATERANGE) {
         return;
       }
-      if ((!startDateDay || !startDateMonth || !startDateYear) &&
-      (!endDateDay || !endDateMonth || !endDateYear)) {
+      if ((!startDateDay || !startDateMonth || !startDateYear) && (!endDateDay || !endDateMonth || !endDateYear)) {
         return { isValid: false, errorType: BookingDateFormErrorMessage.BOOKING_BOTH_DATE_EMPTY_CHECK };
       }
       if (!startDateDay || !startDateMonth || !startDateYear) {
@@ -34,7 +34,8 @@ export class DateValidators {
 
   public static bookingDateValidator(): ValidatorFn {
     return (formGroup: AbstractControl): ValidationErrors | null => {
-      const { startDateDay, startDateMonth, startDateYear, endDateDay, endDateMonth, endDateYear, dateOption } = this.getFormValues(formGroup);
+      const { startDateDay, startDateMonth, startDateYear, endDateDay, endDateMonth, endDateYear, dateOption } =
+        this.getFormValues(formGroup);
       if (dateOption !== BookingDateOption.DATERANGE) {
         return;
       }
@@ -44,8 +45,7 @@ export class DateValidators {
       if (new Date() > startDate) {
         return { isValid: false, errorType: BookingDateFormErrorMessage.PAST_DATE_CHECK };
       }
-      if (!startDateDay || !startDateMonth || !startDateYear ||
-        !endDateDay || !endDateMonth || !endDateYear) {
+      if (!startDateDay || !startDateMonth || !startDateYear || !endDateDay || !endDateMonth || !endDateYear) {
         return { isValid: true };
       }
       if (startDate > endDate) {

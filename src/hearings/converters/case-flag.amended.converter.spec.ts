@@ -18,12 +18,12 @@ describe('CaseFlagAmendedConverter', () => {
           useValue: {
             snapshot: {
               data: {
-                caseFlags: caseFlagsRefData
-              }
-            }
-          }
-        }
-      ]
+                caseFlags: caseFlagsRefData,
+              },
+            },
+          },
+        },
+      ],
     });
     router = TestBed.inject(ActivatedRoute);
     caseFlagAmendedConverter = new CaseFlagAmendedConverter(router);

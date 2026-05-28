@@ -10,8 +10,9 @@ const source = path.resolve('functional-output', 'tests', 'playwright-api', 'odh
 const targetRoot = path.resolve('functional-output', 'tests', 'api_functional');
 const target = path.join(targetRoot, 'odhin-report');
 const coverageRoot = path.resolve('reports', 'tests', 'coverage', 'api-playwright');
-const coverageTarget = path.join(target, 'coverage');
 const coverageLinkFlag = process.env.PW_ODHIN_LINK_COVERAGE === 'true';
+const LEGACY_ODHIN_REPORT_FILENAME = 'xui-playwright.html';
+const API_ODHIN_REPORT_FILENAME = 'xui-playwright-api.html';
 
 try {
   if (!fs.existsSync(source)) {
@@ -23,24 +24,41 @@ try {
   fs.rmSync(target, { recursive: true, force: true });
   fs.cpSync(source, target, { recursive: true, force: true });
 
+  normalizeApiOdhinFilename(source);
+  normalizeApiOdhinFilename(target);
+
+  // Support both report publish locations (source and legacy copied target).
+  const reportFolders = [source, target];
   const { endpoints, totalHits, logFiles } = collectApiEndpointsFromLogs(resolveNodeApiLogRoots());
-  injectNodeApiTab(target, endpoints, totalHits, logFiles);
+  reportFolders.forEach((folder) => injectNodeApiTab(folder, endpoints, totalHits, logFiles));
 
   if (coverageLinkFlag && fs.existsSync(coverageRoot)) {
-    fs.rmSync(coverageTarget, { recursive: true, force: true });
-    fs.cpSync(coverageRoot, coverageTarget, { recursive: true, force: true });
-    const coverageIndex = renameCoverageIndex(findCoverageIndex(coverageTarget));
-    const coverageSummary = loadCoverageSummary(coverageTarget);
-    if (coverageIndex) {
-      injectCoverageLink(target, path.relative(target, coverageIndex), coverageSummary);
-      injectCoverageTab(target, path.relative(target, coverageIndex));
-    } else {
-      console.warn('copy-odhin-report: coverage index not found; skipping coverage block injection.');
-    }
+    reportFolders.forEach((folder) => {
+      const coverageTarget = path.join(folder, 'coverage');
+      fs.rmSync(coverageTarget, { recursive: true, force: true });
+      fs.cpSync(coverageRoot, coverageTarget, { recursive: true, force: true });
+      const coverageIndex = renameCoverageIndex(findCoverageIndex(coverageTarget));
+      const coverageSummary = loadCoverageSummary(coverageTarget);
+      if (coverageIndex) {
+        injectCoverageLink(folder, path.relative(folder, coverageIndex), coverageSummary);
+        injectCoverageTab(folder, path.relative(folder, coverageIndex));
+      } else {
+        console.warn(`copy-odhin-report: coverage index not found for ${folder}; skipping coverage block injection.`);
+      }
+    });
   }
 } catch (error) {
   console.warn(`copy-odhin-report: ${error.message}`);
   process.exit(0); // do not fail the build if copy fails
+}
+
+function normalizeApiOdhinFilename(reportFolder) {
+  const legacyFile = path.join(reportFolder, LEGACY_ODHIN_REPORT_FILENAME);
+  const apiFile = path.join(reportFolder, API_ODHIN_REPORT_FILENAME);
+  if (!fs.existsSync(legacyFile) || fs.existsSync(apiFile)) {
+    return;
+  }
+  fs.renameSync(legacyFile, apiFile);
 }
 
 function findCoverageIndex(rootDir) {
@@ -85,7 +103,7 @@ function injectCoverageLink(reportFolder, relativeCoveragePath, totals) {
         ['Lines', totals.lines],
         ['Functions', totals.functions],
         ['Branches', totals.branches],
-        ['Statements', totals.statements]
+        ['Statements', totals.statements],
       ]
         .map(([label, data]) => {
           const pct = typeof data?.pct === 'number' ? data.pct.toFixed(2) : 'n/a';
@@ -137,7 +155,10 @@ function injectCoverageLink(reportFolder, relativeCoveragePath, totals) {
         return;
       }
       // Remove any previously injected coverage block
-      html = html.replace(/<div class="row ms-3 me-3">\s*<div class="col-12[^>]*>\s*<div class="mt-3 mb-3 odhin-thin-border dashboard-block">\s*<div class="info-box-header">Coverage[\s\S]*?<\/div>\s*<\/div>\s*<\/div>\s*<\/div>/m, '');
+      html = html.replace(
+        /<div class="row ms-3 me-3">\s*<div class="col-12[^>]*>\s*<div class="mt-3 mb-3 odhin-thin-border dashboard-block">\s*<div class="info-box-header">Coverage[\s\S]*?<\/div>\s*<\/div>\s*<\/div>\s*<\/div>/m,
+        ''
+      );
 
       const tabDashPattern = /(<div[^>]+id="TabDashboard"[\s\S]*?)(<\/div>\s*<div[^>]+id="TabTests")/m;
       if (tabDashPattern.test(html)) {
@@ -201,11 +222,7 @@ function injectCoverageTab(reportFolder, relativeCoveragePath) {
 
 function resolveNodeApiLogRoots() {
   const roots = new Set();
-  const envRoots = [
-    process.env.PW_NODE_API_LOG_ROOT,
-    process.env.PLAYWRIGHT_OUTPUT_DIR,
-    process.env.PLAYWRIGHT_TEST_OUTPUT_DIR
-  ];
+  const envRoots = [process.env.PW_NODE_API_LOG_ROOT, process.env.PLAYWRIGHT_OUTPUT_DIR, process.env.PLAYWRIGHT_TEST_OUTPUT_DIR];
   envRoots.filter(Boolean).forEach((root) => roots.add(path.resolve(root)));
   roots.add(path.resolve('test-results'));
   return Array.from(roots).filter((root) => fs.existsSync(root));

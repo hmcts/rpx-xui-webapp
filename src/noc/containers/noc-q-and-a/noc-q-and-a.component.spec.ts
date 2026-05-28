@@ -11,7 +11,7 @@ import { NocQAndAComponent } from './noc-q-and-a.component';
 
 @Pipe({
   standalone: false,
-  name: 'rpxTranslate'
+  name: 'rpxTranslate',
 })
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
@@ -29,15 +29,9 @@ describe('NocQAndAComponent', () => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [NocQAndAComponent, RpxTranslateMockPipe],
-      imports: [
-        ReactiveFormsModule
-      ],
-      providers: [
-        provideMockStore(),
-        NocErrorPipe
-      ]
-    })
-      .compileComponents();
+      imports: [ReactiveFormsModule],
+      providers: [provideMockStore(), NocErrorPipe],
+    }).compileComponents();
     store = TestBed.inject(Store);
     spyOn(store, 'dispatch').and.callThrough();
   }));
@@ -56,7 +50,7 @@ describe('NocQAndAComponent', () => {
   describe('navigationHandler', () => {
     const FORM_GROUP_WITH_ANSWERS = new FormGroup({
       question1: new FormControl('An answer'),
-      question2: new FormControl('Another answer')
+      question2: new FormControl('Another answer'),
     });
     const caseReference = '1111222233334444';
 
@@ -67,19 +61,21 @@ describe('NocQAndAComponent', () => {
 
     it('should handle the SET_ANSWERS NoC navigation event and set the question answers on the store', () => {
       component.navigationHandler(NocNavigationEvent.SET_ANSWERS);
-      expect(store.dispatch).toHaveBeenCalledWith(new fromNocStore.SetAnswers({
-        case_id: '1111222233334444',
-        answers: [
-          {
-            question_id: 'question1',
-            value: 'An answer'
-          },
-          {
-            question_id: 'question2',
-            value: 'Another answer'
-          }
-        ]
-      }));
+      expect(store.dispatch).toHaveBeenCalledWith(
+        new fromNocStore.SetAnswers({
+          case_id: '1111222233334444',
+          answers: [
+            {
+              question_id: 'question1',
+              value: 'An answer',
+            },
+            {
+              question_id: 'question2',
+              value: 'Another answer',
+            },
+          ],
+        })
+      );
     });
 
     it('should setPossibleIncorrectAnswerError', () => {
@@ -88,8 +84,8 @@ describe('NocQAndAComponent', () => {
         message: 'Bad request',
         error: {
           code: 'answers-not-matched-any-litigant',
-          message: 'The answers did not match those for any litigant'
-        }
+          message: 'The answers did not match those for any litigant',
+        },
       });
       component.setPossibleIncorrectAnswerError();
       Object.keys(component.formGroup.controls).forEach((key) => {
@@ -112,10 +108,12 @@ describe('NocQAndAComponent', () => {
     });
 
     it('should get answerInStore', () => {
-      component.answers$ = of([{
-        question_id: 'Q111111',
-        value: 'A111111'
-      }]);
+      component.answers$ = of([
+        {
+          question_id: 'Q111111',
+          value: 'A111111',
+        },
+      ]);
       const answer1$ = component.answerInStore('Q111111');
       answer1$.toPromise().then((result) => {
         expect(result).toBe('A111111');

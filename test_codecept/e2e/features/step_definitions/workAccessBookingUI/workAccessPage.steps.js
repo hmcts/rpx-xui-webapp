@@ -6,7 +6,7 @@ const createNewBookingWorkflow = require('../../pageObjects/workAccessBookingUI/
 const workAccessPage = require('../../pageObjects/workAccessBookingUI/workAccessPage');
 const workAllocationDateUtil = require('../../pageObjects/workAllocation/common/workAllocationDateUtil');
 
-function getWorkAccessRadioButton(radioButtonName){
+function getWorkAccessRadioButton(radioButtonName) {
   const normalisedName = radioButtonName.toLowerCase();
   let retElement = null;
   if (normalisedName.includes('existing')) {
@@ -16,36 +16,37 @@ function getWorkAccessRadioButton(radioButtonName){
   } else if (normalisedName.includes('view')) {
     retElement = workAccessPage.radioViewtasksAndCases;
   }
-  if (!retElement){
+  if (!retElement) {
     throw new Error(`Work access radio option "${radioButtonName}" not found in page `);
   }
   return retElement;
 }
 
-function getDateWithFormatForDays(inDays){
+function getDateWithFormatForDays(inDays) {
   let todayObj = moment();
-  if (inDays > 0){
+  if (inDays > 0) {
     todayObj = todayObj.add(inDays, 'days');
-  } else if (inDays > 0){
+  } else if (inDays > 0) {
     todayObj = todayObj.substract(inDays, 'days');
   }
   return todayObj.format(workAccessPage.dateFormat);
 }
 
-Then('I validate work access page isDisplayed is {string}', async function(isDisplayedString){
+Then('I validate work access page isDisplayed is {string}', async function (isDisplayedString) {
   await BrowserWaits.retryWithActionCallback(async () => {
-    const expectedDisplayStatus = isDisplayedString.toLowerCase().includes('true') || isDisplayedString.toLowerCase().includes('yes');
+    const expectedDisplayStatus =
+      isDisplayedString.toLowerCase().includes('true') || isDisplayedString.toLowerCase().includes('yes');
     expect(await workAccessPage.amOnPage()).to.equal(expectedDisplayStatus);
   });
 });
 
-Then('I see work access page displayed', async function(){
+Then('I see work access page displayed', async function () {
   await BrowserWaits.retryWithActionCallback(async () => {
     expect(await workAccessPage.amOnPage()).to.be.true;
   });
 });
 
-Then('I see work access radio button {string} displayed', async function(radioButtonName){
+Then('I see work access radio button {string} displayed', async function (radioButtonName) {
   await BrowserWaits.retryWithActionCallback(async () => {
     const radioButton = getWorkAccessRadioButton(radioButtonName);
     expect(await radioButton.isVisible()).to.be.true;
@@ -62,12 +63,13 @@ Then('I see work access radio button {string} not displayed', async function (ra
 When('I select work access radio button {string}', async function (radioButtonName) {
   await BrowserWaits.retryWithActionCallback(async () => {
     const radioButton = getWorkAccessRadioButton(radioButtonName);
-    expect((await isPresent(radioButton) && await radioButton.isVisible()), `Radio option ${radioButtonName} is not displayed`).to.be.true;
+    expect((await isPresent(radioButton)) && (await radioButton.isVisible()), `Radio option ${radioButtonName} is not displayed`)
+      .to.be.true;
     await radioButton.click();
   });
 });
 
-Then('I see work access continue button displayed', async function(){
+Then('I see work access continue button displayed', async function () {
   await BrowserWaits.retryWithActionCallback(async () => {
     const ispresent = await isPresent(workAccessPage.continueButton);
     if (ispresent) {
@@ -87,19 +89,19 @@ Then('I see work access continue button not displayed', async function () {
   });
 });
 
-When('I click work access continue button', async function(){
+When('I click work access continue button', async function () {
   await BrowserWaits.retryWithActionCallback(async () => {
     await workAccessPage.continueButton.click();
   });
 });
 
-Then('I see work access existing bookings list container', async function(){
+Then('I see work access existing bookings list container', async function () {
   await BrowserWaits.retryWithActionCallback(async () => {
     expect(await workAccessPage.existingBookingsList.isVisible()).to.be.true;
   });
 });
 
-Then('I see work access existing bookings displayed with details', async function(datatable){
+Then('I see work access existing bookings displayed with details', async function (datatable) {
   CucumberReportLogger.reportDatatable(datatable);
   const bookingsHashes = datatable.parse().hashes();
   await BrowserWaits.retryWithActionCallback(async () => {
@@ -107,14 +109,17 @@ Then('I see work access existing bookings displayed with details', async functio
       workAllocationDateUtil.getDateFormat_DD_Month_YYYY(booking.fromDate);
       const fromDate = workAllocationDateUtil.getDateFormat_DD_Month_YYYY(booking.fromDate);
       const toDate = workAllocationDateUtil.getDateFormat_DD_Month_YYYY(booking.toDate);
-      expect(await workAccessPage.isBookingDisplayed(booking.location, fromDate, toDate), `Booking with details not displayed: ${booking.location}, ${fromDate} to ${toDate}`).to.be.true;
+      expect(
+        await workAccessPage.isBookingDisplayed(booking.location, fromDate, toDate),
+        `Booking with details not displayed: ${booking.location}, ${fromDate} to ${toDate}`
+      ).to.be.true;
     }
   });
 });
 
 Then('I validate work access existing bookings', async function () {
   const displayedBookingsCount = await workAccessPage.getExistingBooksingCount();
-  for (let i = 0; i < displayedBookingsCount; i++){
+  for (let i = 0; i < displayedBookingsCount; i++) {
     const bookingDetails = await workAccessPage.getBookingDetails(i);
     expect(bookingDetails.location.length > 0, `Booking location at index ${i} is not displayed or empty`).to.be.true;
     expect(bookingDetails.fromDate.length > 0, `Booking from date at index ${i} is not displayed or empty`).to.be.true;
@@ -122,25 +127,25 @@ Then('I validate work access existing bookings', async function () {
   }
 });
 
-When('I click continue for any existing booking in work access page', async function(){
+When('I click continue for any existing booking in work access page', async function () {
   const allBookings = await workAccessPage.getExistingBookingsDetails();
-  if (allBookings.length === 0){
+  if (allBookings.length === 0) {
     throw new Error('No existing bookings avilable.displayed');
   }
   await allBookings[0].continueBtnElement.click();
 });
 
-When('I click existing booking with matching location {string} from work access page', async function(location){
+When('I click existing booking with matching location {string} from work access page', async function (location) {
   const allBookings = await workAccessPage.getExistingBookingsDetails();
   const bookingsForLocation = allBookings.filter((booking) => booking.location.includes(location));
 
-  if (bookingsForLocation.length === 0){
+  if (bookingsForLocation.length === 0) {
     throw new Error(`No maytching bookings for location ${location} found`);
   }
   await bookingsForLocation[0].continueBtnElement.click();
 });
 
-When('I enter location search text {string} in create booking page', async function(locationSearch){
+When('I enter location search text {string} in create booking page', async function (locationSearch) {
   await createNewBookingWorkflow.searchLocation.waitForPage();
   await createNewBookingWorkflow.searchLocation.inputLocationText(locationSearch);
 });
@@ -151,7 +156,7 @@ When('I select location at index {int} in create booking location search', async
   });
 });
 
-When('I click continue in create new booking work flow', async function(){
+When('I click continue in create new booking work flow', async function () {
   await createNewBookingWorkflow.continueButton.click();
 });
 
@@ -163,7 +168,7 @@ When('I click continue to submit new booking work flow', async function () {
   });
 });
 
-Then('I see create booking duration selection page', async function(){
+Then('I see create booking duration selection page', async function () {
   await createNewBookingWorkflow.chooseDurationPage.waitforPage();
 });
 
@@ -172,12 +177,11 @@ When('I select duartion option {string} in create booking page', async function 
   await createNewBookingWorkflow.chooseDurationPage.selectRadioOption(option);
 });
 
-Then('I see create booking summary details', async function(){
+Then('I see create booking summary details', async function () {
   await createNewBookingWorkflow.checkAnswersPage.waitForPage();
   const details = await createNewBookingWorkflow.checkAnswersPage.getSummaryListDetails();
 
-  for (const bookingDetails of details){
+  for (const bookingDetails of details) {
     expect(bookingDetails.value.length > 0, `Create booking details ${bookingDetails.key} is not displayed`).to.be.true;
   }
 });
-

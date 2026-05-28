@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CasesService } from '@hmcts/ccd-case-ui-toolkit';
+import { CasesService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { take } from 'rxjs/operators';
 import { AppUtils } from '../../../app/app-utils';
 import { UserInfo, UserRole } from '../../../app/models';
@@ -12,7 +12,7 @@ import { WorkCaseListWrapperComponent } from '../work-case-list-wrapper/work-cas
 @Component({
   standalone: false,
   selector: 'exui-my-access',
-  templateUrl: 'my-access.component.html'
+  templateUrl: 'my-access.component.html',
 })
 export class MyAccessComponent extends WorkCaseListWrapperComponent {
   public get emptyMessage(): string {
@@ -36,15 +36,16 @@ export class MyAccessComponent extends WorkCaseListWrapperComponent {
   public getSearchCaseRequestPagination(): SearchCaseRequest {
     const userInfoStr = this.sessionStorageService.getItem('userDetails');
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      if (!userInfo) {
+        return;
+      }
       const id = userInfo.id ? userInfo.id : userInfo.uid;
       const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
       return {
-        search_parameters: [
-          { key: 'user', operator: 'IN', values: [id] }
-        ],
+        search_parameters: [{ key: 'user', operator: 'IN', values: [id] }],
         sorting_parameters: [this.getSortParameter()],
-        search_by: userRole
+        search_by: userRole,
       };
     }
   }
@@ -54,11 +55,11 @@ export class MyAccessComponent extends WorkCaseListWrapperComponent {
       if (item.role.startsWith('challenged-access')) {
         CasesService.updateChallengedAccessRequestAttributes(this.httpClient, item.case_id, { isNew: false })
           .pipe(take(1))
-          .subscribe(() => item.isNew = false);
+          .subscribe(() => (item.isNew = false));
       } else if (item.role.startsWith('specific-access') && item.startDate !== 'Pending') {
         CasesService.updateSpecificAccessRequestAttributes(this.httpClient, item.case_id, { isNew: false })
           .pipe(take(1))
-          .subscribe(() => item.isNew = false);
+          .subscribe(() => (item.isNew = false));
       }
     }
   }

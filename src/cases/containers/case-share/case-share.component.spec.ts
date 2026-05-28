@@ -8,7 +8,7 @@ import { CaseShareComponent } from './case-share.component';
 
 @Pipe({
   standalone: false,
-  name: 'rpxTranslate'
+  name: 'rpxTranslate',
 })
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
@@ -24,17 +24,20 @@ describe('CaseShareComponent', () => {
   let dispatchSpy: jasmine.Spy;
   const mockFeatureToggleService = jasmine.createSpyObj('FeatureToggleService', ['getValue']);
 
-  const sharedCases = [{
-    caseId: '9417373995765133',
-    caseTitle: 'Sam Green Vs Williams Lee',
-    sharedWith: [
-      {
-        idamId: 'u666666',
-        firstName: 'Kate',
-        lastName: 'Grant',
-        email: 'kate.grant@lambbrooks.com'
-      }]
-  }];
+  const sharedCases = [
+    {
+      caseId: '9417373995765133',
+      caseTitle: 'Sam Green Vs Williams Lee',
+      sharedWith: [
+        {
+          idamId: 'u666666',
+          firstName: 'Kate',
+          lastName: 'Grant',
+          email: 'kate.grant@lambbrooks.com',
+        },
+      ],
+    },
+  ];
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
@@ -44,9 +47,9 @@ describe('CaseShareComponent', () => {
         provideMockStore(),
         {
           provide: FeatureToggleService,
-          useValue: mockFeatureToggleService
-        }
-      ]
+          useValue: mockFeatureToggleService,
+        },
+      ],
     }).compileComponents();
     mockStore = TestBed.inject(Store);
     mockFeatureToggleService.getValue.and.returnValue(of(true));

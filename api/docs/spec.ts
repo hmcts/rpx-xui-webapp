@@ -3,17 +3,17 @@ const openApiSpec = {
   info: {
     title: 'rpx-xui-webapp API (local endpoints)',
     version: '1.0.0',
-    description: 'Local-only gateway endpoints. Upstream service APIs are linked separately in Swagger UI.'
+    description: 'Local-only gateway endpoints. Upstream service APIs are linked separately in Swagger UI.',
   },
   servers: [
     {
       url: '/api',
-      description: 'Current environment'
-    }
+      description: 'Current environment',
+    },
   ],
   tags: [
     { name: 'Core', description: 'Local service endpoints' },
-    { name: 'Case Share', description: 'Case share stubs and helpers' }
+    { name: 'Case Share', description: 'Case share stubs and helpers' },
   ],
   paths: {
     '/healthCheck': {
@@ -26,12 +26,12 @@ const openApiSpec = {
             description: 'Health status',
             content: {
               'application/json': {
-                schema: { $ref: '#/components/schemas/HealthStatus' }
-              }
-            }
-          }
-        }
-      }
+                schema: { $ref: '#/components/schemas/HealthStatus' },
+              },
+            },
+          },
+        },
+      },
     },
     '/monitoring-tools': {
       get: {
@@ -43,12 +43,12 @@ const openApiSpec = {
             description: 'Monitoring keys',
             content: {
               'application/json': {
-                schema: { $ref: '#/components/schemas/MonitoringConfig' }
-              }
-            }
-          }
-        }
-      }
+                schema: { $ref: '#/components/schemas/MonitoringConfig' },
+              },
+            },
+          },
+        },
+      },
     },
     '/configuration': {
       get: {
@@ -60,20 +60,20 @@ const openApiSpec = {
             name: 'configurationKey',
             in: 'query',
             required: true,
-            schema: { type: 'string' }
-          }
+            schema: { type: 'string' },
+          },
         ],
         responses: {
           200: {
             description: 'Configuration value',
             content: {
               'application/json': {
-                schema: { $ref: '#/components/schemas/ConfigurationValue' }
-              }
-            }
-          }
-        }
-      }
+                schema: { $ref: '#/components/schemas/ConfigurationValue' },
+              },
+            },
+          },
+        },
+      },
     },
     '/user/details': {
       get: {
@@ -86,13 +86,13 @@ const openApiSpec = {
             description: 'User details',
             content: {
               'application/json': {
-                schema: { $ref: '#/components/schemas/UserDetailsResponse' }
-              }
-            }
+                schema: { $ref: '#/components/schemas/UserDetailsResponse' },
+              },
+            },
           },
-          401: { description: 'Unauthenticated' }
-        }
-      }
+          401: { description: 'Unauthenticated' },
+        },
+      },
     },
     '/caseshare/orgs': {
       get: {
@@ -106,13 +106,13 @@ const openApiSpec = {
               'application/json': {
                 schema: {
                   type: 'array',
-                  items: { $ref: '#/components/schemas/Organisation' }
-                }
-              }
-            }
-          }
-        }
-      }
+                  items: { $ref: '#/components/schemas/Organisation' },
+                },
+              },
+            },
+          },
+        },
+      },
     },
     '/caseshare/users': {
       get: {
@@ -125,8 +125,8 @@ const openApiSpec = {
             in: 'query',
             required: false,
             description: 'Optional search text for users',
-            schema: { type: 'string' }
-          }
+            schema: { type: 'string' },
+          },
         ],
         responses: {
           200: {
@@ -135,14 +135,14 @@ const openApiSpec = {
               'application/json': {
                 schema: {
                   type: 'array',
-                  items: { $ref: '#/components/schemas/UserDetails' }
-                }
-              }
-            }
+                  items: { $ref: '#/components/schemas/UserDetails' },
+                },
+              },
+            },
           },
-          404: { description: 'User not found' }
-        }
-      }
+          404: { description: 'User not found' },
+        },
+      },
     },
     '/caseshare/cases': {
       get: {
@@ -156,14 +156,14 @@ const openApiSpec = {
               'application/json': {
                 schema: {
                   type: 'array',
-                  items: { $ref: '#/components/schemas/SharedCase' }
-                }
-              }
-            }
+                  items: { $ref: '#/components/schemas/SharedCase' },
+                },
+              },
+            },
           },
-          404: { description: 'Cases not found' }
-        }
-      }
+          404: { description: 'Cases not found' },
+        },
+      },
     },
     '/caseshare/case-assignments': {
       get: {
@@ -177,12 +177,12 @@ const openApiSpec = {
               'application/json': {
                 schema: {
                   type: 'array',
-                  items: { $ref: '#/components/schemas/SharedCase' }
-                }
-              }
-            }
-          }
-        }
+                  items: { $ref: '#/components/schemas/SharedCase' },
+                },
+              },
+            },
+          },
+        },
       },
       post: {
         summary: 'Assign cases to users',
@@ -197,13 +197,13 @@ const openApiSpec = {
                 properties: {
                   sharedCases: {
                     type: 'array',
-                    items: { $ref: '#/components/schemas/SharedCase' }
-                  }
+                    items: { $ref: '#/components/schemas/SharedCase' },
+                  },
                 },
-                required: ['sharedCases']
-              }
-            }
-          }
+                required: ['sharedCases'],
+              },
+            },
+          },
         },
         responses: {
           200: {
@@ -212,30 +212,30 @@ const openApiSpec = {
               'application/json': {
                 schema: {
                   type: 'array',
-                  items: { $ref: '#/components/schemas/SharedCase' }
-                }
-              }
-            }
+                  items: { $ref: '#/components/schemas/SharedCase' },
+                },
+              },
+            },
           },
-          500: { description: 'Assignment failed' }
-        }
-      }
-    }
+          500: { description: 'Assignment failed' },
+        },
+      },
+    },
   },
   components: {
     schemas: {
       HealthStatus: {
         type: 'object',
         properties: {
-          healthState: { type: 'boolean' }
-        }
+          healthState: { type: 'boolean' },
+        },
       },
       MonitoringConfig: {
         type: 'object',
         properties: {
           key: { type: 'string', nullable: true },
-          connectionString: { type: 'string', nullable: true }
-        }
+          connectionString: { type: 'string', nullable: true },
+        },
       },
       ConfigurationValue: {
         type: 'object',
@@ -247,10 +247,10 @@ const openApiSpec = {
               { type: 'number' },
               { type: 'object' },
               { type: 'array', items: {} },
-              { type: 'null' }
-            ]
-          }
-        }
+              { type: 'null' },
+            ],
+          },
+        },
       },
       UserInfoPayload: {
         type: 'object',
@@ -260,8 +260,8 @@ const openApiSpec = {
           email: { type: 'string', format: 'email', nullable: true },
           roles: { type: 'array', items: { type: 'string' } },
           roleCategory: { type: 'string', nullable: true },
-          token: { type: 'string', nullable: true }
-        }
+          token: { type: 'string', nullable: true },
+        },
       },
       UserDetailsResponse: {
         type: 'object',
@@ -269,8 +269,8 @@ const openApiSpec = {
           canShareCases: { type: 'boolean' },
           roleAssignmentInfo: { type: 'array', items: { type: 'object' } },
           sessionTimeout: { type: 'number', description: 'Seconds' },
-          userInfo: { $ref: '#/components/schemas/UserInfoPayload' }
-        }
+          userInfo: { $ref: '#/components/schemas/UserInfoPayload' },
+        },
       },
       UserDetails: {
         type: 'object',
@@ -281,10 +281,10 @@ const openApiSpec = {
           lastName: { type: 'string' },
           caseRoles: {
             type: 'array',
-            items: { type: 'string' }
-          }
+            items: { type: 'string' },
+          },
         },
-        required: ['idamId', 'email', 'firstName', 'lastName']
+        required: ['idamId', 'email', 'firstName', 'lastName'],
       },
       SharedCase: {
         type: 'object',
@@ -295,18 +295,18 @@ const openApiSpec = {
           roles: { type: 'array', items: { type: 'string' } },
           sharedWith: {
             type: 'array',
-            items: { $ref: '#/components/schemas/UserDetails' }
+            items: { $ref: '#/components/schemas/UserDetails' },
           },
           pendingShares: {
             type: 'array',
-            items: { $ref: '#/components/schemas/UserDetails' }
+            items: { $ref: '#/components/schemas/UserDetails' },
           },
           pendingUnshares: {
             type: 'array',
-            items: { $ref: '#/components/schemas/UserDetails' }
-          }
+            items: { $ref: '#/components/schemas/UserDetails' },
+          },
         },
-        required: ['caseId', 'caseTitle']
+        required: ['caseId', 'caseTitle'],
       },
       Organisation: {
         type: 'object',
@@ -315,25 +315,25 @@ const openApiSpec = {
           orgName: { type: 'string' },
           users: {
             type: 'array',
-            items: { $ref: '#/components/schemas/UserDetails' }
-          }
+            items: { $ref: '#/components/schemas/UserDetails' },
+          },
         },
-        required: ['orgId', 'orgName']
-      }
+        required: ['orgId', 'orgName'],
+      },
     },
     securitySchemes: {
       sessionCookie: {
         type: 'apiKey',
         in: 'cookie',
-        name: '__auth__'
+        name: '__auth__',
       },
       bearerAuth: {
         type: 'http',
         scheme: 'bearer',
-        bearerFormat: 'JWT'
-      }
-    }
-  }
+        bearerFormat: 'JWT',
+      },
+    },
+  },
 } as const;
 
 export default openApiSpec;

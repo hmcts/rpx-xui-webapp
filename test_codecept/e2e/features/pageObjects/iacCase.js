@@ -4,57 +4,120 @@ const CaseManager = require('./common/CaseManager');
 const CcdFields = require('./common/ccdFields');
 
 class IACCase {
-  get caseManager() { return new CaseManager(); }
-  get ccdField() { return new CcdFields(); }
+  get caseManager() {
+    return new CaseManager();
+  }
+  get ccdField() {
+    return new CcdFields();
+  }
 
-  get continueBtn() { return elementByXpath("//button[contains(text(),'Continue')]"); }
-  get validationError() { return $('.validation-error'); }
-  get addNewBtn() { return elementByXpath("//button[contains(text(),'Add new')]"); }
-  get docUploadField() { return $('#uploadTheNoticeOfDecisionDocs_0_document'); }
-  get findAddressBtn() { return elementByXpath("//button[contains(text(),'Find address')]"); }
-  get firstOption() { return elementByXpath("//option[@value='1: Object']"); }
+  get continueBtn() {
+    return elementByXpath("//button[contains(text(),'Continue')]");
+  }
+  get validationError() {
+    return $('.validation-error');
+  }
+  get addNewBtn() {
+    return elementByXpath("//button[contains(text(),'Add new')]");
+  }
+  get docUploadField() {
+    return $('#uploadTheNoticeOfDecisionDocs_0_document');
+  }
+  get findAddressBtn() {
+    return elementByXpath("//button[contains(text(),'Find address')]");
+  }
+  get firstOption() {
+    return elementByXpath("//option[@value='1: Object']");
+  }
 
-  get clientDetentionCheckbox() { return $('#checklist_checklist2-isNotDetained'); }
-  get clientEUDecisionCheckbox() { return $('#checklist_checklist7-isNotEUDecision'); }
+  get clientDetentionCheckbox() {
+    return $('#checklist_checklist2-isNotDetained');
+  }
+  get clientEUDecisionCheckbox() {
+    return $('#checklist_checklist7-isNotEUDecision');
+  }
 
-  get yesAppellantUK() { return elementByXpath("//input[@id='appellantInUk_Yes']"); }
+  get yesAppellantUK() {
+    return elementByXpath("//input[@id='appellantInUk_Yes']");
+  }
 
-  get HORefferenceField() { return $('#homeOfficeReferenceNumber'); }
-  get dayField() { return $('#homeOfficeDecisionDate-day'); }
-  get monthField() { return $('#homeOfficeDecisionDate-month'); }
-  get yearField() { return $('#homeOfficeDecisionDate-year'); }
+  get HORefferenceField() {
+    return $('#homeOfficeReferenceNumber');
+  }
+  get dayField() {
+    return $('#homeOfficeDecisionDate-day');
+  }
+  get monthField() {
+    return $('#homeOfficeDecisionDate-month');
+  }
+  get yearField() {
+    return $('#homeOfficeDecisionDate-year');
+  }
 
-  get appelantTitle() { return $('#appellantTitle'); }
-  get appelantFirstName() { return $('#appellantGivenNames'); }
-  get appelantLastName() { return $('#appellantFamilyName'); }
-  get dayOfBirth() { return $('#appellantDateOfBirth-day'); }
-  get monthOfBirth() { return $('#appellantDateOfBirth-month'); }
-  get yearOfBirth() { return $('#appellantDateOfBirth-year'); }
+  get appelantTitle() {
+    return $('#appellantTitle');
+  }
+  get appelantFirstName() {
+    return $('#appellantGivenNames');
+  }
+  get appelantLastName() {
+    return $('#appellantFamilyName');
+  }
+  get dayOfBirth() {
+    return $('#appellantDateOfBirth-day');
+  }
+  get monthOfBirth() {
+    return $('#appellantDateOfBirth-month');
+  }
+  get yearOfBirth() {
+    return $('#appellantDateOfBirth-year');
+  }
 
-  get isStateless() { return $('#appellantStateless-isStateless'); }
+  get isStateless() {
+    return $('#appellantStateless-isStateless');
+  }
 
-  get contacEmail() { return elementByXpath("//input[@id='contactPreference-wantsEmail']"); }
-  get emailField() { return $('#email'); }
+  get contacEmail() {
+    return elementByXpath("//input[@id='contactPreference-wantsEmail']");
+  }
+  get emailField() {
+    return $('#email');
+  }
 
-  get appealType() { return $('#appealType-revocationOfProtection'); }
-  get appealGrounds() { return $('#appealGroundsRevocation_values-revocationRefugeeConvention'); }
+  get appealType() {
+    return $('#appealType-revocationOfProtection');
+  }
+  get appealGrounds() {
+    return $('#appealGroundsRevocation_values-revocationRefugeeConvention');
+  }
 
-  get noDeportation() { return $('#deportationOrderOptions_No'); }
-  get noNewMatters() { return $('#hasNewMatters_No'); }
-  get otherAppeals() { return $('#hasOtherAppeals'); }
+  get noDeportation() {
+    return $('#deportationOrderOptions_No');
+  }
+  get noNewMatters() {
+    return $('#hasNewMatters_No');
+  }
+  get otherAppeals() {
+    return $('#hasOtherAppeals');
+  }
 
-  get legalRepName() { return $('#legalRepName'); }
-  get legalRepRef() { return $('#legalRepReferenceNumber'); }
+  get legalRepName() {
+    return $('#legalRepName');
+  }
+  get legalRepRef() {
+    return $('#legalRepReferenceNumber');
+  }
 
-  get yesFixedAddress() { return $('#appellantHasFixedAddress_Yes'); }
+  get yesFixedAddress() {
+    return $('#appellantHasFixedAddress_Yes');
+  }
 
   async createCase(isAccessibilityTest) {
     const caseData = {
       'Home Office Reference/Case ID': '012345678',
       'Appeal number[0].': 'IA123451234',
       'Other appeals': 'No',
-      'Has your client appealed against any other UK immigration decisions?': 'No'
-
+      'Has your client appealed against any other UK immigration decisions?': 'No',
     };
 
     await this.caseManager.createCase(caseData, isAccessibilityTest);
@@ -161,7 +224,7 @@ class IACCase {
   async appealAgainstOtherDecisionsPage() {
     await BrowserWaits.waitForPresenceOfElement(this.otherAppeals);
     await this.otherAppeals.click();
-    await elementByXpath('//option[contains(text(),\'No\')]').click();
+    await elementByXpath("//option[contains(text(),'No')]").click();
     await this.continueBtn.click();
   }
 

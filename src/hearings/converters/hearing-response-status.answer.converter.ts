@@ -14,4 +14,3 @@ export class HearingResponseStatusAnswerConverter implements AnswerConverter {
     );
   }
 }
-

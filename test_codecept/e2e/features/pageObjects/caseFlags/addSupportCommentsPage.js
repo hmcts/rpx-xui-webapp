@@ -9,14 +9,18 @@ class AddSupportCommentsPage {
 
   get fieldMapping() {
     return {
-      'Tell us more about the request': elementByXpath('//ccd-add-comments//label[contains(text(),\'Tell us more about the request\')]')
+      'Tell us more about the request': elementByXpath(
+        "//ccd-add-comments//label[contains(text(),'Tell us more about the request')]"
+      ),
     };
   }
 
   async inputValue(field, value) {
     switch (field) {
       case 'Tell us more about the request':
-        const ele = elementByXpath('//ccd-add-comments//label[contains(text(),\'Tell us more about the request\')]/../..//textarea');
+        const ele = elementByXpath(
+          "//ccd-add-comments//label[contains(text(),'Tell us more about the request')]/../..//textarea"
+        );
         await ele.fill(value);
         break;
       default:

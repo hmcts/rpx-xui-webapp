@@ -4,7 +4,7 @@ import { EXUIDisplayStatusEnum } from '../models/hearings.enum';
 @Pipe({
   standalone: false,
 
-  name: 'hearingsBadge'
+  name: 'hearingsBadge',
 })
 export class HearingsBadgePipe implements PipeTransform {
   public transform(value: EXUIDisplayStatusEnum): string {

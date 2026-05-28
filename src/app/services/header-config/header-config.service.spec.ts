@@ -10,61 +10,64 @@ describe('HeaderConfigService', () => {
   let environmentServiceSpy: jasmine.SpyObj<EnvironmentService>;
 
   const mockHeaderConfig = {
-    '(admin)|(superuser)': [{
-      text: 'Admin Menu',
-      href: '/admin/menu',
-      active: true,
-      ngClass: 'admin-class',
-      align: 'right'
-    },
-    {
-      text: 'User Management',
-      href: '/admin/users',
-      active: false,
-      roles: ['admin'],
-      ngClass: 'user-management-class',
-      align: 'left'
-    }],
-    '(user)': [{
-      text: 'User Dashboard',
-      href: '/user/dashboard',
-      active: true,
-      ngClass: 'user-class',
-      align: 'right'
-    },
-    {
-      text: 'User Management',
-      href: '/user/users',
-      active: false,
-      roles: ['user'],
-      ngClass: 'user-management-class',
-      align: 'left'
-    }],
-    '.+': [{
-      text: 'default Dashboard',
-      href: '/default/dashboard',
-      active: true,
-      ngClass: 'default-class',
-      align: 'right'
-    },
-    {
-      text: 'default Management',
-      href: '/default/defaults',
-      active: false,
-      roles: ['default'],
-      ngClass: 'default-management-class',
-      align: 'left'
-    }]
+    '(admin)|(superuser)': [
+      {
+        text: 'Admin Menu',
+        href: '/admin/menu',
+        active: true,
+        ngClass: 'admin-class',
+        align: 'right',
+      },
+      {
+        text: 'User Management',
+        href: '/admin/users',
+        active: false,
+        roles: ['admin'],
+        ngClass: 'user-management-class',
+        align: 'left',
+      },
+    ],
+    '(user)': [
+      {
+        text: 'User Dashboard',
+        href: '/user/dashboard',
+        active: true,
+        ngClass: 'user-class',
+        align: 'right',
+      },
+      {
+        text: 'User Management',
+        href: '/user/users',
+        active: false,
+        roles: ['user'],
+        ngClass: 'user-management-class',
+        align: 'left',
+      },
+    ],
+    '.+': [
+      {
+        text: 'default Dashboard',
+        href: '/default/dashboard',
+        active: true,
+        ngClass: 'default-class',
+        align: 'right',
+      },
+      {
+        text: 'default Management',
+        href: '/default/defaults',
+        active: false,
+        roles: ['default'],
+        ngClass: 'default-management-class',
+        align: 'left',
+      },
+    ],
   };
 
   beforeEach(() => {
     const spy = jasmine.createSpyObj('EnvironmentService', ['config$']);
 
     TestBed.configureTestingModule({
-      providers: [
-        HeaderConfigService,
-        { provide: EnvironmentService, useValue: spy }
-      ]
+      providers: [HeaderConfigService, { provide: EnvironmentService, useValue: spy }],
     });
 
     service = TestBed.inject(HeaderConfigService);
@@ -88,8 +91,8 @@ describe('HeaderConfigService', () => {
         headerConfig: mockHeaderConfig,
         hearingJurisdictionConfig: {
           hearingAmendment: {},
-          hearingJurisdictions: {}
-        }
+          hearingJurisdictions: {},
+        },
       };
 
       environmentServiceSpy.config$ = of(mockConfig);
@@ -112,8 +115,8 @@ describe('HeaderConfigService', () => {
         headerConfig: mockHeaderConfig,
         hearingJurisdictionConfig: {
           hearingAmendment: {},
-          hearingJurisdictions: {}
-        }
+          hearingJurisdictions: {},
+        },
       };
 
       environmentServiceSpy.config$ = of(mockConfig);
@@ -136,8 +139,8 @@ describe('HeaderConfigService', () => {
         headerConfig: mockHeaderConfig,
         hearingJurisdictionConfig: {
           hearingAmendment: {},
-          hearingJurisdictions: {}
-        }
+          hearingJurisdictions: {},
+        },
       };
 
       environmentServiceSpy.config$ = of(mockConfig);
@@ -160,8 +163,8 @@ describe('HeaderConfigService', () => {
         headerConfig: mockHeaderConfig,
         hearingJurisdictionConfig: {
           hearingAmendment: {},
-          hearingJurisdictions: {}
-        }
+          hearingJurisdictions: {},
+        },
       };
 
       environmentServiceSpy.config$ = of(mockConfig);

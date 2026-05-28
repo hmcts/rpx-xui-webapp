@@ -4,15 +4,14 @@ import { HearingsService } from '../../../../../hearings/services/hearings.servi
 @Component({
   standalone: false,
   selector: 'exui-warning-and-error-section',
-  templateUrl: './warning-and-error-section.component.html'
+  templateUrl: './warning-and-error-section.component.html',
 })
 export class WarningAndErrorSectionComponent {
   @Input() public isPagelessAttributeChanged: boolean;
   @Input() public isWithinPageAttributeChanged: boolean;
   @Input() public pageVisitChangeExists: boolean;
 
-  constructor(protected readonly hearingsService: HearingsService) {
-  }
+  constructor(protected readonly hearingsService: HearingsService) {}
 
   public displayValidationError(): boolean {
     return this.hearingsService.displayValidationError && this.hearingsService.submitUpdatedRequestClicked;

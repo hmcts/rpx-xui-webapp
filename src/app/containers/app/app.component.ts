@@ -1,13 +1,20 @@
 import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { NavigationStart, Router, RoutesRecognized } from '@angular/router';
-import { CookieService, FeatureToggleService, FeatureUser, GoogleTagManagerService, TimeoutNotificationsService } from '@hmcts/rpx-xui-common-lib';
+import {
+  CookieService,
+  FeatureToggleService,
+  FeatureUser,
+  GoogleTagManagerService,
+  TimeoutNotificationsService,
+} from '@hmcts/rpx-xui-common-lib';
 import { select, Store } from '@ngrx/store';
-import { combineLatest, Subscription } from 'rxjs';
+import { combineLatest, fromEvent, Subscription } from 'rxjs';
 import { propsExist } from '../../../../api/lib/objectUtilities';
 import { SessionStorageService } from '../../services';
 import { environment as config } from '../../../environments/environment';
 import { UserDetails, UserInfo } from '../../models';
+import { AuthService } from '../../services/auth/auth.service';
 import { LoggerService } from '../../services/logger/logger.service';
 import { EnvironmentService } from '../../shared/services/environment.service';
 import * as fromRoot from '../../store';
@@ -17,12 +24,12 @@ import { InitialisationSyncService } from '../../services/ccd-config/initialisat
   selector: 'exui-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class AppComponent implements OnInit, OnDestroy {
   public timeoutModalConfig = {
     countdown: '0 seconds',
-    isVisible: false
+    isVisible: false,
   };
 
   private userId: string = null;
@@ -31,6 +38,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private cookieBannerEnabledSubscription: Subscription;
   private cookieBannerEnabled: boolean = false;
   public subscription: Subscription;
+  private foregroundSessionSubscription: Subscription;
   private pageReloading: boolean = false;
   private timeoutNotificationServiceInitialised: boolean = false;
   private idleModalDisplayTimeInMilliseconds: number;
@@ -44,6 +52,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly titleService: Title,
     private readonly featureService: FeatureToggleService,
     private readonly loggerService: LoggerService,
+    private readonly authService: AuthService,
     private readonly cookieService: CookieService,
     private readonly environmentService: EnvironmentService,
     private readonly sessionStorageService: SessionStorageService,
@@ -71,6 +80,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit() {
+    this.setupForegroundSessionCheck();
     this.store.pipe(select(fromRoot.getUseIdleSessionTimeout)).subscribe((useIdleTimeout) => {
       if (useIdleTimeout) {
         this.loadAndListenForUserDetails();
@@ -94,14 +104,17 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this.subscription) {
       this.subscription.unsubscribe();
     }
+
+    if (this.foregroundSessionSubscription) {
+      this.foregroundSessionSubscription.unsubscribe();
+    }
   }
 
   public handleCookieBannerFeatureToggle(): void {
-    this.cookieBannerEnabledSubscription = this.featureService.isEnabled('mc-cookie-banner-enabled')
-      .subscribe((flag) => {
-        this.cookieBannerEnabled = flag;
-        this.setCookieBannerVisibility();
-      });
+    this.cookieBannerEnabledSubscription = this.featureService.isEnabled('mc-cookie-banner-enabled').subscribe((flag) => {
+      this.cookieBannerEnabled = flag;
+      this.setCookieBannerVisibility();
+    });
   }
 
   /**
@@ -143,8 +156,6 @@ export class AppComponent implements OnInit, OnDestroy {
          * I've changed the order of execution in order to make the cookie banner
          * visible in production.
          *
-         * TODO: The "TypeError: Cannot read properties of undefined (reading 'setIdleName')"
-         * issue will need to be fixed as part of EUI-4482. Remove comment once EUI-4482 is done.
          */
         const uid = userDetails.userInfo.id ? userDetails.userInfo.id : userDetails.userInfo.uid;
         this.setUserAndCheckCookie(uid);
@@ -158,7 +169,7 @@ export class AppComponent implements OnInit, OnDestroy {
       const featureUser: FeatureUser = {
         key: userInfo.id || userInfo.uid,
         roles: userInfo?.roles,
-        orgId: '-1'
+        orgId: '-1',
       };
       console.log(`LD Client: ${ldClientId}`);
       this.featureService.initialize(featureUser, ldClientId);
@@ -169,7 +180,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
   public setUserAndCheckCookie(userId) {
     this.userId = userId;
-    if (this.userId) { // check if cookie selection has been made *after* user id is available
+    if (this.userId) {
+      // check if cookie selection has been made *after* user id is available
       this.cookieName = `hmcts-exui-cookies-${this.userId}-mc-accepted`;
       this.setCookieBannerVisibility();
     }
@@ -189,7 +201,7 @@ export class AppComponent implements OnInit, OnDestroy {
     // DynaTrace
     this.cookieService.deleteCookieByPartialMatch('rxVisitor');
     this.cookieService.deleteCookieByPartialMatch('dt');
-    const domainElements = window.location.hostname.split('.');
+    const domainElements = (globalThis?.location?.hostname ?? '').split('.').filter(Boolean);
     for (let i = 0; i < domainElements.length; i++) {
       const domainName = domainElements.slice(i).join('.');
       this.cookieService.deleteCookieByPartialMatch('_ga', '/', domainName);
@@ -215,7 +227,7 @@ export class AppComponent implements OnInit, OnDestroy {
    *
    * If the 'countdown' timer is above a minute this event is dispatched every minute.
    *
-   * The 'keep-alive' event dispatches when the User has interacted with the page again.
+   * The 'keep-alive' event dispatches on keepalive pings from the timeout library.
    *
    * The 'sign-out' event dispatches when the countdown timer has come to an end - when the User
    * should be signed out.
@@ -237,13 +249,30 @@ export class AppComponent implements OnInit, OnDestroy {
         return;
       }
       case 'keep-alive': {
-        this.updateTimeoutModal('0 seconds', false);
+        this.authService.keepAlive().subscribe({
+          error: () => {
+            this.loggerService.log('Failed to call /auth/keepalive');
+          },
+        });
         return;
       }
       default: {
         throw new Error('Invalid Timeout Notification Event');
       }
     }
+  }
+
+  public revalidateSessionOnForeground(): void {
+    this.authService.keepAlive().subscribe({
+      next: (isAuthenticated) => {
+        if (!isAuthenticated) {
+          this.loggerService.log('Session invalid after returning to app.');
+        }
+      },
+      error: () => {
+        this.loggerService.log('Failed to revalidate session after returning to app. Leaving user on current page.');
+      },
+    });
   }
 
   /**
@@ -254,7 +283,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public updateTimeoutModal(countdown: string, isVisible: boolean): void {
     this.timeoutModalConfig = {
       countdown,
-      isVisible
+      isVisible,
     };
   }
 
@@ -305,7 +334,7 @@ export class AppComponent implements OnInit, OnDestroy {
     const idleModalDisplayTimeInSeconds = idleModalDisplayTime * 60;
 
     this.idleModalDisplayTimeInMilliseconds = idleModalDisplayTimeInSeconds * 1000;
-    this.totalIdleTimeInMilliseconds = (totalIdleTime * 60) * 1000;
+    this.totalIdleTimeInMilliseconds = totalIdleTime * 60 * 1000;
 
     this.setupTimeoutNotificationService();
   }
@@ -314,7 +343,8 @@ export class AppComponent implements OnInit, OnDestroy {
     const timeoutNotificationConfig: any = {
       idleModalDisplayTime: this.idleModalDisplayTimeInMilliseconds,
       totalIdleTime: this.totalIdleTimeInMilliseconds,
-      idleServiceName: 'idleSession'
+      keepAliveInSeconds: 600,
+      idleServiceName: 'idleSession',
     };
 
     this.timeoutNotificationsService.notificationOnChange().subscribe((event) => {
@@ -323,6 +353,12 @@ export class AppComponent implements OnInit, OnDestroy {
     this.loggerService.log('Initialising TimeoutNotificationService');
     this.timeoutNotificationsService.initialise(timeoutNotificationConfig);
     this.timeoutNotificationServiceInitialised = true;
+  }
+
+  private setupForegroundSessionCheck(): void {
+    this.foregroundSessionSubscription = fromEvent(window, 'focus').subscribe(() => {
+      this.revalidateSessionOnForeground();
+    });
   }
 
   public setCookieBannerVisibility(): void {

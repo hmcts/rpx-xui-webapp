@@ -7,7 +7,7 @@ import { Caseworker } from '../models/dtos';
  */
 @Pipe({
   standalone: false,
-  name: 'caseworkerDisplayName'
+  name: 'caseworkerDisplayName',
 })
 export class CaseworkerDisplayName implements PipeTransform {
   public transform(caseworker: Caseworker, includeEmail = true): string {

@@ -25,10 +25,9 @@ import { CaseViewerContainerComponent } from './case-viewer-container.component'
   selector: 'ccd-case-viewer',
   template: `
     <mat-tab-group>
-      <mat-tab *ngFor="let tab of prependedTabs" [id]="tab.id" [label]="tab.label">
-      </mat-tab>
+      <mat-tab *ngFor="let tab of prependedTabs" [id]="tab.id" [label]="tab.label"> </mat-tab>
     </mat-tab-group>
-  `
+  `,
 })
 class CaseViewerComponent {
   @Input() public caseDetails: CaseView;
@@ -46,14 +45,14 @@ const CASE_VIEW: CaseView = {
     name: 'Test Address Book Case',
     jurisdiction: {
       id: 'SSCS',
-      name: 'SSCS'
+      name: 'SSCS',
     },
-    printEnabled: true
+    printEnabled: true,
   },
   channels: [],
   state: {
     id: 'CaseCreated',
-    name: 'Case created'
+    name: 'Case created',
   },
   tabs: [
     {
@@ -67,12 +66,12 @@ const CASE_VIEW: CaseView = {
           display_context: 'OPTIONAL',
           field_type: {
             id: 'Text',
-            type: 'Text'
+            type: 'Text',
           },
           order: 2,
           value: 'Janet',
           show_condition: '',
-          hint_text: ''
+          hint_text: '',
         }),
         Object.assign(new CaseField(), {
           id: 'PersonLastName',
@@ -80,12 +79,12 @@ const CASE_VIEW: CaseView = {
           display_context: 'OPTIONAL',
           field_type: {
             id: 'Text',
-            type: 'Text'
+            type: 'Text',
           },
           order: 1,
           value: 'Parker',
           show_condition: 'PersonFirstName="Jane*"',
-          hint_text: ''
+          hint_text: '',
         }),
         Object.assign(new CaseField(), {
           id: 'PersonComplex',
@@ -94,86 +93,87 @@ const CASE_VIEW: CaseView = {
           field_type: {
             id: 'Complex',
             type: 'Complex',
-            complex_fields: []
+            complex_fields: [],
           },
           order: 3,
           show_condition: 'PersonFirstName="Park"',
-          hint_text: ''
-        })
+          hint_text: '',
+        }),
       ],
-      show_condition: 'PersonFirstName="Janet"'
+      show_condition: 'PersonFirstName="Janet"',
     },
     {
       id: 'HistoryTab',
       label: 'History',
       order: 1,
-      fields: [Object.assign(new CaseField(), {
-        id: 'CaseHistory',
-        label: 'Case History',
-        display_context: 'OPTIONAL',
-        field_type: {
-          id: 'CaseHistoryViewer',
-          type: 'CaseHistoryViewer'
-        },
-        order: 1,
-        value: null,
-        show_condition: '',
-        hint_text: ''
-      })],
-      show_condition: ''
+      fields: [
+        Object.assign(new CaseField(), {
+          id: 'CaseHistory',
+          label: 'Case History',
+          display_context: 'OPTIONAL',
+          field_type: {
+            id: 'CaseHistoryViewer',
+            type: 'CaseHistoryViewer',
+          },
+          order: 1,
+          value: null,
+          show_condition: '',
+          hint_text: '',
+        }),
+      ],
+      show_condition: '',
     },
     {
       id: 'SomeTab',
       label: 'Some Tab',
       order: 3,
       fields: [],
-      show_condition: ''
-    }
-  ]
+      show_condition: '',
+    },
+  ],
 };
 
-const mockSupportedJurisdictionsService = jasmine.createSpyObj('WASupportedJurisdictionsService', ['getWASupportedJurisdictions']);
+const mockSupportedJurisdictionsService = jasmine.createSpyObj('WASupportedJurisdictionsService', [
+  'getWASupportedJurisdictions',
+]);
 
 class MockFeatureToggleService implements FeatureToggleService {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public getValue<R>(_key: string, _defaultValue: R): Observable<R> {
+    const value = [];
     if (_key === 'wa-service-config') {
-      // @ts-ignore
-      return of({ configurations: [{ serviceName: 'SSCS', caseTypes: ['Benefit'], releaseVersion: '3.0' }] });
+      value.push({ configurations: [{ serviceName: 'SSCS', caseTypes: ['Benefit'], releaseVersion: '3.0' }] });
     }
-    // @ts-ignore
-    return of([]);
+
+    // @ts-expect-error - mocked type is generic but returning a specific form
+    return of(value);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public getValueOnce<R>(_key: string, _defaultValue: R): Observable<R> {
-    return of([{
-      jurisdiction: 'SSCS',
-      caseType: 'Benefit',
-      roles: ['caseworker-sscs-judge', 'caseworker-sscs']
-    }] as unknown as R);
+    return of([
+      {
+        jurisdiction: 'SSCS',
+        caseType: 'Benefit',
+        roles: ['caseworker-sscs-judge', 'caseworker-sscs'],
+      },
+    ] as unknown as R);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public getValueSync<R>(_key: string, _defaultValue: R): R {
     return {
       jurisdiction: 'SSCS',
       caseType: 'Benefit',
-      roles: ['caseworker-sscs-judge', 'caseworker-sscs']
+      roles: ['caseworker-sscs-judge', 'caseworker-sscs'],
     } as unknown as R;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
-  public initialize(_user: FeatureUser, _clientId: string): void { }
+  public initialize(_user: FeatureUser, _clientId: string): void {}
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public isEnabled(_feature: string): Observable<boolean> {
     return undefined;
   }
 }
 
 class MockAllocateRoleService {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   public manageLabellingRoleAssignment(caseId: string): Observable<string[]> {
     return of([]);
   }
@@ -185,14 +185,14 @@ const TABS: CaseTab[] = [
     id: 'tasks',
     label: 'Tasks',
     fields: [],
-    show_condition: null
+    show_condition: null,
   },
   {
     id: 'roles-and-access',
     label: 'Roles and access',
     fields: [],
-    show_condition: null
-  }
+    show_condition: null,
+  },
 ];
 
 const roles = [
@@ -207,13 +207,10 @@ const roles = [
   'payments-refund-approver',
   'pui-finance-manager',
   'pui-organisation-manager',
-  'pui-user-manager'
+  'pui-user-manager',
 ];
 
-const rolesWithHearingRoles = [
-  'caseworker',
-  'hearing-manager'
-];
+const rolesWithHearingRoles = ['caseworker', 'hearing-manager'];
 
 describe('CaseViewerContainerComponent', () => {
   let component: CaseViewerContainerComponent;
@@ -234,7 +231,7 @@ describe('CaseViewerContainerComponent', () => {
       userDetails: {
         sessionTimeout: {
           idleModalDisplayTime: 0,
-          totalIdleTime: 0
+          totalIdleTime: 0,
         },
         canShareCases: true,
         userInfo: {
@@ -244,12 +241,12 @@ describe('CaseViewerContainerComponent', () => {
           forename: 'XUI test',
           roles: roles,
           uid: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
-          surname: 'judge'
+          surname: 'judge',
         },
-        roleAssignmentInfo: []
+        roleAssignmentInfo: [],
       },
-      decorate16digitCaseReferenceSearchBoxInHeader: false
-    }
+      decorate16digitCaseReferenceSearchBoxInHeader: false,
+    },
   };
 
   beforeEach(() => {
@@ -263,10 +260,10 @@ describe('CaseViewerContainerComponent', () => {
           useValue: {
             snapshot: {
               data: {
-                case: CASE_VIEW
-              }
-            }
-          }
+                case: CASE_VIEW,
+              },
+            },
+          },
         },
         { provide: LoggerService, useValue: loggerServiceMock },
         { provide: FeatureToggleService, useClass: MockFeatureToggleService },
@@ -274,10 +271,9 @@ describe('CaseViewerContainerComponent', () => {
         { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService },
         { provide: Window, useValue: dummyWindowAat },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -327,7 +323,7 @@ describe('CaseViewerContainerComponent - Hearings tab visible', () => {
       userDetails: {
         sessionTimeout: {
           idleModalDisplayTime: 0,
-          totalIdleTime: 0
+          totalIdleTime: 0,
         },
         canShareCases: true,
         userInfo: {
@@ -337,12 +333,12 @@ describe('CaseViewerContainerComponent - Hearings tab visible', () => {
           forename: 'XUI test',
           roles: rolesWithHearingRoles,
           uid: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
-          surname: 'judge'
+          surname: 'judge',
         },
-        roleAssignmentInfo: []
+        roleAssignmentInfo: [],
       },
-      decorate16digitCaseReferenceSearchBoxInHeader: false
-    }
+      decorate16digitCaseReferenceSearchBoxInHeader: false,
+    },
   };
 
   beforeEach(() => {
@@ -356,10 +352,10 @@ describe('CaseViewerContainerComponent - Hearings tab visible', () => {
           useValue: {
             snapshot: {
               data: {
-                case: CASE_VIEW
-              }
-            }
-          }
+                case: CASE_VIEW,
+              },
+            },
+          },
         },
         { provide: LoggerService, useValue: loggerServiceMock },
         { provide: FeatureToggleService, useClass: MockFeatureToggleService },
@@ -367,10 +363,9 @@ describe('CaseViewerContainerComponent - Hearings tab visible', () => {
         { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService },
         { provide: Window, useValue: dummyWindowAat },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -384,9 +379,7 @@ describe('CaseViewerContainerComponent - Hearings tab visible', () => {
   });
 
   it('should display Hearings tab', () => {
-    component.appendedTabs$.subscribe((tabs) =>
-      expect(tabs[0].id).toEqual('hearings')
-    );
+    component.appendedTabs$.subscribe((tabs) => expect(tabs[0].id).toEqual('hearings'));
   });
 });
 
@@ -408,7 +401,7 @@ describe('CaseViewerContainerComponent - retrieving user info when no roles are 
       userDetails: {
         sessionTimeout: {
           idleModalDisplayTime: 0,
-          totalIdleTime: 0
+          totalIdleTime: 0,
         },
         canShareCases: true,
         userInfo: {
@@ -418,12 +411,12 @@ describe('CaseViewerContainerComponent - retrieving user info when no roles are 
           forename: 'XUI test',
           roles: [],
           uid: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
-          surname: 'judge'
+          surname: 'judge',
         },
-        roleAssignmentInfo: []
+        roleAssignmentInfo: [],
       },
-      decorate16digitCaseReferenceSearchBoxInHeader: false
-    }
+      decorate16digitCaseReferenceSearchBoxInHeader: false,
+    },
   };
 
   beforeEach(() => {
@@ -437,10 +430,10 @@ describe('CaseViewerContainerComponent - retrieving user info when no roles are 
           useValue: {
             snapshot: {
               data: {
-                case: CASE_VIEW
-              }
-            }
-          }
+                case: CASE_VIEW,
+              },
+            },
+          },
         },
         { provide: LoggerService, useValue: loggerServiceMock },
         { provide: FeatureToggleService, useClass: MockFeatureToggleService },
@@ -448,10 +441,9 @@ describe('CaseViewerContainerComponent - retrieving user info when no roles are 
         { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService },
         { provide: Window, useValue: dummyWindowAat },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -489,7 +481,7 @@ describe('CaseViewerContainerComponent - Hearings tab hidden', () => {
       userDetails: {
         sessionTimeout: {
           idleModalDisplayTime: 0,
-          totalIdleTime: 0
+          totalIdleTime: 0,
         },
         canShareCases: true,
         userInfo: {
@@ -499,12 +491,12 @@ describe('CaseViewerContainerComponent - Hearings tab hidden', () => {
           forename: 'XUI test',
           roles: roles,
           uid: 'd90ae606-98e8-47f8-b53c-a7ab77fde22b',
-          surname: 'judge'
+          surname: 'judge',
         },
-        roleAssignmentInfo: []
+        roleAssignmentInfo: [],
       },
-      decorate16digitCaseReferenceSearchBoxInHeader: false
-    }
+      decorate16digitCaseReferenceSearchBoxInHeader: false,
+    },
   };
 
   beforeEach(() => {
@@ -518,10 +510,10 @@ describe('CaseViewerContainerComponent - Hearings tab hidden', () => {
           useValue: {
             snapshot: {
               data: {
-                case: CASE_VIEW
-              }
-            }
-          }
+                case: CASE_VIEW,
+              },
+            },
+          },
         },
         { provide: LoggerService, useValue: loggerServiceMock },
         { provide: FeatureToggleService, useClass: MockFeatureToggleService },
@@ -529,10 +521,9 @@ describe('CaseViewerContainerComponent - Hearings tab hidden', () => {
         { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService },
         { provide: Window, useValue: dummyWindowAat },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
-    })
-      .compileComponents();
+        provideHttpClientTesting(),
+      ],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -546,8 +537,6 @@ describe('CaseViewerContainerComponent - Hearings tab hidden', () => {
   });
 
   it('should not display the Hearings tab', () => {
-    component.appendedTabs$.subscribe((tabs) =>
-      expect(tabs.length).toEqual(0)
-    );
+    component.appendedTabs$.subscribe((tabs) => expect(tabs.length).toEqual(0));
   });
 });

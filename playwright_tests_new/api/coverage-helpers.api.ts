@@ -1,13 +1,13 @@
-
-import { test, expect } from '@playwright/test';
+import { test, expect, type APIRequestContext } from '@playwright/test';
 
 import { expectStatus, withRetry, __test__ as apiTestUtilsTest } from './utils/apiTestUtils';
 import { resolveRoleAccessCaseId } from './data/testIds';
 import { __test__ as fixturesTest } from './fixtures';
 import { buildTaskSearchRequest, seedTaskId } from './utils/work-allocation';
+import { fetchFirstTask } from './utils/workAllocationUtils';
 import { seedRoleAccessCaseId } from './utils/role-access';
 
-test.describe('Helper utilities and retry logic', () => {
+test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () => {
   test('expectStatus and withRetry cover success and retry paths', async () => {
     expectStatus(200, [200, 201]);
     expect(() => expectStatus(500, [200])).toThrow();
@@ -38,21 +38,19 @@ test.describe('Helper utilities and retry logic', () => {
     const defaultRes = await withRetry(async () => ({ status: 200 }));
     expect(defaultRes.status).toBe(200);
 
-    await expect(withRetry(async () => ({ status: 200 }), { retries: -1 })).rejects.toThrow(
-      'withRetry failed unexpectedly'
-    );
+    await expect(withRetry(async () => ({ status: 200 }), { retries: -1 })).rejects.toThrow('withRetry failed unexpectedly');
   });
 
   test('buildXsrfHeadersWith covers token present and missing', async () => {
     const tokenHeaders = await apiTestUtilsTest.buildXsrfHeadersWith('solicitor', {
       ensureStorageState: async () => 'state',
-      getStoredCookie: async () => 'token'
+      getStoredCookie: async () => 'token',
     });
     expect(tokenHeaders).toEqual({ 'X-XSRF-TOKEN': 'token' });
 
     const emptyHeaders = await apiTestUtilsTest.buildXsrfHeadersWith('solicitor', {
       ensureStorageState: async () => 'state',
-      getStoredCookie: async () => undefined
+      getStoredCookie: async () => undefined,
     });
     expect(emptyHeaders).toEqual({});
   });
@@ -69,7 +67,7 @@ test.describe('Helper utilities and retry logic', () => {
       states: ['assigned'],
       pageNumber: 2,
       pageSize: 10,
-      searchBy: 'caseworker'
+      searchBy: 'caseworker',
     });
     expect(full.searchRequest.search_parameters).toHaveLength(5);
     expect(full.searchRequest.search_parameters.map((entry) => entry.key)).toEqual([
@@ -77,7 +75,7 @@ test.describe('Helper utilities and retry logic', () => {
       'location',
       'jurisdiction',
       'taskType',
-      'state'
+      'state',
     ]);
   });
 
@@ -90,13 +88,13 @@ test.describe('Helper utilities and retry logic', () => {
           return { status: 200, data: { tasks: [{ id: 'assigned-task' }] } };
         }
         return { status: 200, data: { tasks: [{ id: 'unassigned-task' }] } };
-      }
+      },
     };
     const assigned = await seedTaskId(apiClient, 'loc-1');
     expect(assigned).toEqual({ id: 'assigned-task', type: 'assigned' });
 
     const apiClientFallback = {
-      post: async () => ({ status: 200, data: { tasks: [] } })
+      post: async () => ({ status: 200, data: { tasks: [] } }),
     };
     const missing = await seedTaskId(apiClientFallback);
     expect(missing).toBeUndefined();
@@ -108,22 +106,58 @@ test.describe('Helper utilities and retry logic', () => {
         return fallbackCalls === 1
           ? { status: 200, data: { tasks: [] } }
           : { status: 200, data: { tasks: [{ id: 'unassigned-task' }] } };
-      }
+      },
     };
     const unassigned = await seedTaskId(apiClientSecond);
     expect(unassigned).toEqual({ id: 'unassigned-task', type: 'unassigned' });
 
     const apiClientError = {
-      post: async () => ({ status: 500, data: { tasks: [{ id: 'task-3' }] } })
+      post: async () => ({ status: 500, data: { tasks: [{ id: 'task-3' }] } }),
     };
     const errorResult = await seedTaskId(apiClientError);
     expect(errorResult).toBeUndefined();
 
     const apiClientNoId = {
-      post: async () => ({ status: 200, data: { tasks: [{}] } })
+      post: async () => ({ status: 200, data: { tasks: [{}] } }),
     };
     const noId = await seedTaskId(apiClientNoId);
     expect(noId).toBeUndefined();
+  });
+
+  test('fetchFirstTask degrades to undefined on request timeout unless strict mode is requested', async () => {
+    const timeoutClient = {
+      post: async () => {
+        throw new Error('Timeout 30000ms exceeded');
+      },
+    };
+
+    await expect(fetchFirstTask(timeoutClient)).resolves.toBeUndefined();
+    await expect(fetchFirstTask(timeoutClient, undefined, ['assigned'], 'AllWork', { failOnRequestError: true })).rejects.toThrow(
+      'Timeout 30000ms exceeded'
+    );
+
+    const observedOptions: Array<{ timeoutMs?: number }> = [];
+    const successfulClient = {
+      post: async (_endpoint: string, options: { timeoutMs?: number }) => {
+        observedOptions.push(options);
+        return { status: 200, data: { tasks: [{ id: 'task-1' }] } };
+      },
+    };
+
+    await expect(fetchFirstTask(successfulClient, undefined, ['assigned'], 'AllWork', { timeoutMs: 7_500 })).resolves.toEqual({
+      id: 'task-1',
+    });
+    expect(observedOptions[0]?.timeoutMs).toBe(7_500);
+
+    let retryCalls = 0;
+    const retryClient = {
+      post: async () => {
+        retryCalls += 1;
+        return { status: 502, data: { tasks: [] } };
+      },
+    };
+    await expect(fetchFirstTask(retryClient, undefined, ['assigned'], 'AllWork', { retries: 0 })).resolves.toBeUndefined();
+    expect(retryCalls).toBe(1);
   });
 
   test('seedRoleAccessCaseId covers success and failure paths', async () => {
@@ -132,8 +166,8 @@ test.describe('Helper utilities and retry logic', () => {
 
     const apiClient = {
       get: async () => ({
-        data: { cases: [{ caseId: 'case-1' }, { case_id: 'case-2' }] }
-      })
+        data: { cases: [{ caseId: 'case-1' }, { case_id: 'case-2' }] },
+      }),
     };
 
     const resolved = await seedRoleAccessCaseId(apiClient, { withXsrfFn });
@@ -141,16 +175,16 @@ test.describe('Helper utilities and retry logic', () => {
 
     const apiClientCaseId = {
       get: async () => ({
-        data: { cases: [{ case_id: 'case-2' }] }
-      })
+        data: { cases: [{ case_id: 'case-2' }] },
+      }),
     };
     const resolvedCaseId = await seedRoleAccessCaseId(apiClientCaseId, { withXsrfFn });
     expect(resolvedCaseId).toBe('case-2');
 
     const apiClientEmpty = {
       get: async () => ({
-        data: { cases: [{}] }
-      })
+        data: { cases: [{}] },
+      }),
     };
     const resolvedEmpty = await seedRoleAccessCaseId(apiClientEmpty, { withXsrfFn });
     expect(resolvedEmpty).toBeUndefined();
@@ -158,7 +192,7 @@ test.describe('Helper utilities and retry logic', () => {
     const failing = await seedRoleAccessCaseId(apiClient, {
       withXsrfFn: async () => {
         throw new Error('boom');
-      }
+      },
     });
     expect(failing).toBeUndefined();
   });
@@ -166,24 +200,24 @@ test.describe('Helper utilities and retry logic', () => {
   test('fixture helpers cover default headers and request recovery', async () => {
     const headers = await fixturesTest.buildDefaultHeaders('solicitor', {
       shouldAutoInjectXsrf: () => true,
-      getStoredCookie: async () => 'token'
+      getStoredCookie: async () => 'token',
     });
     expect(headers['X-XSRF-TOKEN']).toBe('token');
 
     const noXsrf = await fixturesTest.buildDefaultHeaders('solicitor', {
       shouldAutoInjectXsrf: () => false,
-      getStoredCookie: async () => 'token'
+      getStoredCookie: async () => 'token',
     });
     expect(noXsrf['X-XSRF-TOKEN']).toBeUndefined();
 
     const anonymous = await fixturesTest.buildDefaultHeaders('anonymous', {
       shouldAutoInjectXsrf: () => true,
-      getStoredCookie: async () => 'token'
+      getStoredCookie: async () => 'token',
     });
     expect(anonymous['X-XSRF-TOKEN']).toBeUndefined();
 
     let calls = 0;
-    const fakeContext: any = {};
+    const fakeContext = {} as APIRequestContext;
     const requestFactory = async () => {
       calls += 1;
       if (calls === 1) {
@@ -198,7 +232,7 @@ test.describe('Helper utilities and retry logic', () => {
       {
         requestFactory,
         ensureStorageState: async () => 'state-2',
-        unlink: async () => {}
+        unlink: async () => {},
       }
     );
     expect(recovered).toBe(fakeContext);
@@ -222,7 +256,7 @@ test.describe('Helper utilities and retry logic', () => {
         unlink: async () => {
           unlinkCalls += 1;
           throw new Error('unlink failed');
-        }
+        },
       }
     );
     expect(recoveredAfterUnlink).toBe(fakeContext);

@@ -9,7 +9,7 @@ export const initialHearingRequestState: HearingRequestStateData = {
   hearingRequestMainModel: {
     requestDetails: {
       timestamp: null,
-      versionNumber: 0
+      versionNumber: 0,
     },
     hearingDetails: {
       duration: null,
@@ -30,7 +30,7 @@ export const initialHearingRequestState: HearingRequestStateData = {
       leadJudgeContractType: null,
       amendReasonCodes: null,
       hearingChannels: [],
-      listingAutoChangeReasonCode: null
+      listingAutoChangeReasonCode: null,
     },
     caseDetails: {
       hmctsServiceCode: null,
@@ -46,20 +46,22 @@ export const initialHearingRequestState: HearingRequestStateData = {
       caseCategories: [],
       caseManagementLocationCode: null,
       caserestrictedFlag: false,
-      caseSLAStartDate: null
+      caseSLAStartDate: null,
     },
-    partyDetails: []
+    partyDetails: [],
   },
   lastError: null,
-  getJudicialUsersError: null
+  getJudicialUsersError: null,
 };
 
-export function hearingRequestReducer(currentState = initialHearingRequestState,
-  action: fromActions.HearingRequestAction): HearingRequestStateData {
+export function hearingRequestReducer(
+  currentState = initialHearingRequestState,
+  action: fromActions.HearingRequestAction
+): HearingRequestStateData {
   switch (action.type) {
     case fromActions.RESET_HEARING_REQUEST: {
       return {
-        ...initialHearingRequestState
+        ...initialHearingRequestState,
       };
     }
     case fromActions.INITIALIZE_HEARING_REQUEST: {
@@ -70,7 +72,7 @@ export function hearingRequestReducer(currentState = initialHearingRequestState,
         if (party.partyName === undefined && party?.individualDetails?.firstName !== undefined) {
           updateParty = {
             ...party,
-            partyName: `${party?.individualDetails?.firstName} ${party?.individualDetails?.lastName}`
+            partyName: `${party?.individualDetails?.firstName} ${party?.individualDetails?.lastName}`,
           };
         }
         updatedPartyDetails.push(updateParty);
@@ -79,8 +81,8 @@ export function hearingRequestReducer(currentState = initialHearingRequestState,
         ...currentState,
         hearingRequestMainModel: {
           ...action.payload,
-          partyDetails: updatedPartyDetails
-        }
+          partyDetails: updatedPartyDetails,
+        },
       };
     }
     case fromActions.UPDATE_HEARING_REQUEST: {
@@ -97,7 +99,7 @@ export function hearingRequestReducer(currentState = initialHearingRequestState,
       let updatedHearingRequestMainModel: HearingRequestMainModel = action.hearingRequestMainModel;
       if (mode === Mode.VIEW_EDIT) {
         updatedHearingRequestMainModel = {
-          ...action.hearingRequestMainModel
+          ...action.hearingRequestMainModel,
         };
       } else {
         // On create or create-edit mode if no Wales location is selected, it needs to set hearingInWelshFlag as false
@@ -106,40 +108,40 @@ export function hearingRequestReducer(currentState = initialHearingRequestState,
             ...action.hearingRequestMainModel,
             hearingDetails: {
               ...action.hearingRequestMainModel.hearingDetails,
-              hearingInWelshFlag: false
-            }
+              hearingInWelshFlag: false,
+            },
           };
         }
       }
       return {
         ...currentState,
         hearingRequestMainModel: updatedHearingRequestMainModel,
-        lastError: null
+        lastError: null,
       };
     }
     case fromActions.SUBMIT_HEARING_REQUEST_FAILURE:
     case fromActions.UPDATE_HEARING_REQUEST_FAILURE: {
       return {
         ...currentState,
-        lastError: action.payload
+        lastError: action.payload,
       };
     }
     case fromActions.GET_JUDICIAL_USER_FAILURE: {
       return {
         ...currentState,
-        getJudicialUsersError: action.payload
+        getJudicialUsersError: action.payload,
       };
     }
     case fromActions.RESET_HEARING_REQUEST_LAST_ERROR: {
       return {
         ...currentState,
-        lastError: null
+        lastError: null,
       };
     }
     default: {
       return {
         ...currentState,
-        lastError: null
+        lastError: null,
       };
     }
   }

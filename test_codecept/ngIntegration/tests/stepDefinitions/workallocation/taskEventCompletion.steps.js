@@ -29,9 +29,9 @@ Given('I set MOCK tasks required for event', async function (tasksDatatable) {
   await taskApiMockService.setTaskRequiredForEventTasks(tasksDatatable.parse().hashes());
 });
 
-When('I complete and submit test event {string}', async function(eventId){
-  const continueBtn = $('ccd-case-edit-page button[type=\'submit\']');
-  const submitBtn = $('ccd-case-edit-submit button[type=\'submit\']');
+When('I complete and submit test event {string}', async function (eventId) {
+  const continueBtn = $("ccd-case-edit-page button[type='submit']");
+  const submitBtn = $("ccd-case-edit-submit button[type='submit']");
   if (eventId === 'text') {
     await BrowserWaits.retryWithActionCallback(async () => {
       await BrowserWaits.waitForElement(continueBtn);
@@ -45,7 +45,7 @@ When('I complete and submit test event {string}', async function(eventId){
   }
 });
 
-Given('I set MOCK task details', async function(datatable){
+Given('I set MOCK task details', async function (datatable) {
   const taskRow = datatable.parse().rowsHash();
   waMockData.setTaskDetails(taskRow);
 });

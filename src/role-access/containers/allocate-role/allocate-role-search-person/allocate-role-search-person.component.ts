@@ -14,7 +14,7 @@ import {
   AllocateRoleState,
   AllocateRoleStateData,
   AllocateTo,
-  SpecificRole
+  SpecificRole,
 } from '../../../models';
 import * as fromFeature from '../../../store';
 import { getTitleText } from '../../../utils';
@@ -22,7 +22,7 @@ import { getTitleText } from '../../../utils';
 @Component({
   standalone: false,
   selector: 'exui-allocate-role-search-person',
-  templateUrl: './allocate-role-search-person.component.html'
+  templateUrl: './allocate-role-search-person.component.html',
 })
 export class AllocateRoleSearchPersonComponent implements OnInit {
   public allocateAction = 'Allocate';
@@ -43,10 +43,15 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
   public services: string;
   public assignedUser: string;
 
-  constructor(private readonly store: Store<fromFeature.State>, private route: ActivatedRoute) {}
+  constructor(
+    private readonly store: Store<fromFeature.State>,
+    private route: ActivatedRoute
+  ) {}
 
   public ngOnInit(): void {
-    this.subscription = this.store.pipe(select(fromFeature.getAllocateRoleState)).subscribe((allocateRoleStateData) => this.setData(allocateRoleStateData));
+    this.subscription = this.store
+      .pipe(select(fromFeature.getAllocateRoleState))
+      .subscribe((allocateRoleStateData) => this.setData(allocateRoleStateData));
   }
 
   private setData(allocateRoleStateData: AllocateRoleStateData): void {
@@ -59,12 +64,14 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
       this.domain = PersonRole.CTSC;
     }
     this.title = getTitleText(allocateRoleStateData.typeOfRole, action, allocateRoleStateData.roleCategory);
-    this.personName = allocateRoleStateData && allocateRoleStateData.person ? this.getDisplayName(allocateRoleStateData.person) : null;
+    this.personName =
+      allocateRoleStateData && allocateRoleStateData.person ? this.getDisplayName(allocateRoleStateData.person) : null;
     this.person = allocateRoleStateData.person;
     // hide user when allocate as user can select allocate to me
     this.userIncluded = !(allocateRoleStateData.action === Actions.Allocate);
     // Set assigned user from state data.
-    this.assignedUser = allocateRoleStateData && allocateRoleStateData.personToBeRemoved && allocateRoleStateData.personToBeRemoved.id;
+    this.assignedUser =
+      allocateRoleStateData && allocateRoleStateData.personToBeRemoved && allocateRoleStateData.personToBeRemoved.id;
 
     // Add assigned user to existingUsers array if both are given
     if (this.existingUsers && this.existingUsers.length > 0 && this.assignedUser) {
@@ -80,18 +87,20 @@ export class AllocateRoleSearchPersonComponent implements OnInit {
       switch (navEvent) {
         case AllocateRoleNavigationEvent.CONTINUE:
           const person = this.person;
-          this.store.dispatch(new fromFeature.ChoosePersonAndGo({
-            person,
-            allocateRoleState: AllocateRoleState.CHOOSE_DURATION,
-            allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON
-          }));
+          this.store.dispatch(
+            new fromFeature.ChoosePersonAndGo({
+              person,
+              allocateRoleState: AllocateRoleState.CHOOSE_DURATION,
+              allocateTo: AllocateTo.ALLOCATE_TO_ANOTHER_PERSON,
+            })
+          );
           break;
         default:
           throw new Error('Invalid option');
       }
     } else {
       this.formGroup.setErrors({
-        invalid: true
+        invalid: true,
       });
       return;
     }

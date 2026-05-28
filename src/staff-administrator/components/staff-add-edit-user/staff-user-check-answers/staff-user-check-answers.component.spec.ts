@@ -13,7 +13,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 
 @Pipe({
   standalone: false,
-  name: 'rpxTranslate'
+  name: 'rpxTranslate',
 })
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
@@ -31,7 +31,10 @@ describe('StaffUserCheckAnswersComponent', () => {
   let testStaffUser: StaffUser;
 
   beforeEach(waitForAsync(() => {
-    mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>('mockStaffDataAccessService', ['addNewUser', 'updateUser']);
+    mockStaffDataAccessService = jasmine.createSpyObj<StaffDataAccessService>('mockStaffDataAccessService', [
+      'addNewUser',
+      'updateUser',
+    ]);
     mockInfoMessageCommService = jasmine.createSpyObj('mockInfoMessageCommService', ['nextMessage']);
     testStaffUser = StaffUser.from({
       email_id: 'email@test.hmcts',
@@ -47,35 +50,35 @@ describe('StaffUserCheckAnswersComponent', () => {
         {
           role_id: 1,
           role: 'Role',
-          is_primary: true
-        }
+          is_primary: true,
+        },
       ],
       skills: [
         {
           skill_id: 1,
           description: 'SKILLDESCRIPTION',
-          skill_code: 'SKILLCODE'
-        }
+          skill_code: 'SKILLCODE',
+        },
       ],
       work_area: [
         {
           area_of_work: 'service',
-          service_code: 'SERVICE_CODE'
-        }
+          service_code: 'SERVICE_CODE',
+        },
       ],
       base_location: [
         {
           location_id: 333,
           location: 'Location',
-          is_primary: true
-        }
+          is_primary: true,
+        },
       ],
       region: 'West Midlands',
-      region_id: 12
+      region_id: 12,
     });
 
     mockStaffAddEditFormService = {
-      valuesAsStaffUser: testStaffUser
+      valuesAsStaffUser: testStaffUser,
     };
 
     TestBed.configureTestingModule({
@@ -94,52 +97,52 @@ describe('StaffUserCheckAnswersComponent', () => {
                 userTypes: [
                   {
                     key: 'userType',
-                    label: 'User Types'
+                    label: 'User Types',
                   },
                   {
                     key: 'ctsc',
-                    label: 'CTSC'
-                  }
+                    label: 'CTSC',
+                  },
                 ],
                 jobTitles: [
                   {
                     key: 'senior-legal-caseworker',
-                    label: 'Senior Legal Caseworker'
+                    label: 'Senior Legal Caseworker',
                   },
                   {
                     key: 'legal-caseworker',
-                    label: 'Legal Caseworker'
+                    label: 'Legal Caseworker',
                   },
                   {
                     key: 'hearing-centre-team-leader',
-                    label: 'Hearing Centre Team Leader'
+                    label: 'Hearing Centre Team Leader',
                   },
                   {
                     key: 'hearing-centre-administrator',
-                    label: 'Hearing Centre Administrator'
+                    label: 'Hearing Centre Administrator',
                   },
                   {
                     key: 'court-clerk',
-                    label: 'Court Clerk'
-                  }
+                    label: 'Court Clerk',
+                  },
                 ],
                 services: [
                   {
                     key: 'ABC1',
-                    label: 'Service A'
+                    label: 'Service A',
                   },
                   {
                     key: 'BCD2',
-                    label: 'Service B'
+                    label: 'Service B',
                   },
                   {
                     key: 'CDE3',
-                    label: 'Service C'
+                    label: 'Service C',
                   },
                   {
                     key: 'DEF4',
-                    label: 'Service D'
-                  }
+                    label: 'Service D',
+                  },
                 ],
                 skills: [
                   {
@@ -147,45 +150,45 @@ describe('StaffUserCheckAnswersComponent', () => {
                     options: [
                       {
                         key: '1',
-                        label: 'Underwriter'
+                        label: 'Underwriter',
                       },
                       {
                         key: '2',
-                        label: 'Caseworker'
-                      }
-                    ]
+                        label: 'Caseworker',
+                      },
+                    ],
                   },
                   {
                     group: 'BCD2',
                     options: [
                       {
                         key: '3',
-                        label: 'Caseworker'
+                        label: 'Caseworker',
                       },
                       {
                         key: '4',
-                        label: 'Case manager'
-                      }
-                    ]
+                        label: 'Case manager',
+                      },
+                    ],
                   },
                   {
                     group: 'CDE3',
                     options: [
                       {
                         key: '5',
-                        label: 'Underwriter'
-                      }
-                    ]
-                  }
-                ]
-              }
-            }
-          }
+                        label: 'Underwriter',
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
+          },
         },
         { provide: StaffAddEditFormService, useValue: mockStaffAddEditFormService },
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     }).compileComponents();
   }));
 
@@ -258,9 +261,9 @@ describe('StaffUserCheckAnswersComponent', () => {
         errorDescription: 'Invalid Email',
         errorMessage: 'Invalid email',
         status: 400,
-        timeStamp: ''
+        timeStamp: '',
       },
-      headers: 'any'
+      headers: 'any',
     };
     spyOn(window, 'scrollTo');
     mockStaffDataAccessService.addNewUser.and.returnValue(throwError(errorResponse));
@@ -282,9 +285,9 @@ describe('StaffUserCheckAnswersComponent', () => {
         errorDescription: 'Error: You must add a valid email address',
         errorMessage: 'Invalid email',
         status: '400',
-        timeStamp: ''
+        timeStamp: '',
       },
-      headers: 'any'
+      headers: 'any',
     };
     fixture.detectChanges();
 
@@ -309,7 +312,9 @@ describe('StaffUserCheckAnswersComponent', () => {
     component.onSubmitUpdateUser();
     tick();
     expect(mockStaffDataAccessService.updateUser).toHaveBeenCalled();
-    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(`/staff/user-details/${caseworkerId}`, { state: { retainMessages: true } });
+    expect(mockRouter.navigateByUrl).toHaveBeenCalledWith(`/staff/user-details/${caseworkerId}`, {
+      state: { retainMessages: true },
+    });
     flush();
   }));
 

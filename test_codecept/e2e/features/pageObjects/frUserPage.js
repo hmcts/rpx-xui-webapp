@@ -7,14 +7,30 @@ class FrUserPage {
     this.header = '#content h1';
   }
 
-  get continueButton() { return new Button('button[type=submit]'); }
-  get firmName() { return $('#solsSolicitorFirmName'); }
-  get postCodeTextField() { return $('#solsSolicitorAddress_solsSolicitorAddress_postcodeInput'); }
-  get addressList() { return $('#solsSolicitorAddress_solsSolicitorAddress_addressList'); }
-  get reference() { return $('#solsSolicitorAppReference'); }
-  get emailAddress() { return $('#solsSolicitorEmail'); }
-  get findAddress() { return new Button('button[type=button]'); }
-  get saveandContinueButton() { return new Button('button[type=submit]'); }
+  get continueButton() {
+    return new Button('button[type=submit]');
+  }
+  get firmName() {
+    return $('#solsSolicitorFirmName');
+  }
+  get postCodeTextField() {
+    return $('#solsSolicitorAddress_solsSolicitorAddress_postcodeInput');
+  }
+  get addressList() {
+    return $('#solsSolicitorAddress_solsSolicitorAddress_addressList');
+  }
+  get reference() {
+    return $('#solsSolicitorAppReference');
+  }
+  get emailAddress() {
+    return $('#solsSolicitorEmail');
+  }
+  get findAddress() {
+    return new Button('button[type=button]');
+  }
+  get saveandContinueButton() {
+    return new Button('button[type=submit]');
+  }
 
   async getPageHeader() {
     return await $(this.header).textContent();

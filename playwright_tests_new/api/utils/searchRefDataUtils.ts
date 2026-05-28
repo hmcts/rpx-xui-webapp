@@ -8,7 +8,7 @@ export function assertGlobalSearchServices(status: number, data: unknown): void 
     expect(data[0]).toEqual(
       expect.objectContaining({
         serviceId: expect.any(String),
-        serviceName: expect.any(String)
+        serviceName: expect.any(String),
       })
     );
   }
@@ -70,7 +70,7 @@ export function assertStaffRefDataResponse(status: number, data: unknown): void 
     expect(staffEntry).toEqual(
       expect.objectContaining({
         known_as: expect.any(String),
-        email_id: expect.any(String)
+        email_id: expect.any(String),
       })
     );
   }
@@ -112,7 +112,7 @@ export function assertValidRolesResponse(status: number, data: unknown): void {
     expect(data[0]).toEqual(
       expect.objectContaining({
         roleId: expect.any(String),
-        roleName: expect.any(String)
+        roleName: expect.any(String),
       })
     );
   }
@@ -154,9 +154,7 @@ interface StorageStateWithCookies {
 
 export function buildExpiredCookies(state: unknown): Cookie[] {
   const typed = state as Partial<StorageStateWithCookies>;
-  return Array.isArray(typed.cookies)
-    ? typed.cookies.map((c) => ({ ...c, expires: 0 }))
-    : [];
+  return Array.isArray(typed.cookies) ? typed.cookies.map((c) => ({ ...c, expires: 0 })) : [];
 }
 
 interface RequestContext {

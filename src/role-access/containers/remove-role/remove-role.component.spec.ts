@@ -17,6 +17,7 @@ import { AnswerLabelText, RemoveRoleText } from '../../models/enums/answer-text'
 import { AllocateRoleService } from '../../services';
 import { RemoveRoleComponent } from './remove-role.component';
 import { LoggerService } from '../../../app/services/logger/logger.service';
+import { SessionStorageService } from '../../../app/services';
 
 @Component({
   standalone: false,
@@ -39,10 +40,11 @@ describe('RemoveRoleComponent', () => {
   let component: RemoveRoleComponent;
   let wrapper: WrapperComponent;
   let fixture: ComponentFixture<WrapperComponent>;
+  let sessionStorageServiceMock: jasmine.SpyObj<any>;
   const routerMock = jasmine.createSpyObj('Router', ['navigateByUrl', 'navigate', 'getCurrentNavigation']);
   routerMock.navigate.and.returnValue(Promise.resolve(true));
   const locationMock = jasmine.createSpyObj('Location', ['back']);
-  const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getAll']);
+  const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getAll', 'getUsersFromServices']);
   const loggerServiceMock = jasmine.createSpyObj('loggerService', ['error']);
   const allworkUrl = 'work/all-work/cases';
 
@@ -88,6 +90,7 @@ describe('RemoveRoleComponent', () => {
   }
 
   beforeEach(waitForAsync(() => {
+    sessionStorageServiceMock = jasmine.createSpyObj('SessionStorageService', ['getItem']);
     TestBed.configureTestingModule({
       schemas: [NO_ERRORS_SCHEMA],
       declarations: [AnswersComponent, RemoveRoleComponent, WrapperComponent],
@@ -148,6 +151,10 @@ describe('RemoveRoleComponent', () => {
           provide: LoggerService,
           useValue: loggerServiceMock,
         },
+        {
+          provide: SessionStorageService,
+          useValue: sessionStorageServiceMock,
+        },
         provideHttpClient(withInterceptorsFromDi()),
         provideHttpClientTesting(),
       ],
@@ -157,7 +164,9 @@ describe('RemoveRoleComponent', () => {
   beforeEach(() => {
     window.history.pushState({ backUrl: allworkUrl }, '', allworkUrl);
     routerMock.getCurrentNavigation.and.returnValue({ extras: { state: { backUrl: allworkUrl } } });
+    sessionStorageServiceMock.getItem.and.returnValue(null);
     mockCaseworkerDataService.getAll.and.returnValue(of([mockCaseworker]));
+    mockCaseworkerDataService.getUsersFromServices.and.returnValue(of([mockCaseworker]));
     fixture = TestBed.createComponent(WrapperComponent);
     wrapper = fixture.componentInstance;
     component = wrapper.appComponentRef;
@@ -196,6 +205,103 @@ describe('RemoveRoleComponent', () => {
       state: { showMessage: true, retainMessages: true, message, messageText: RemoveRoleText.infoMessage },
     };
     expect(routerMock.navigate).toHaveBeenCalledWith([allworkUrl], additionalState);
+  });
+
+  it('should not set email when caseworkers JSON is invalid', () => {
+    const allocateRoleService = TestBed.inject(AllocateRoleService) as AllocateRoleService;
+    sessionStorageServiceMock.getItem.and.returnValue('{not-json}');
+    spyOn(allocateRoleService, 'getCaseRoles').and.returnValue(
+      of([
+        {
+          added: Date.UTC(2021, 6, 1),
+          id: '999999999',
+          actorId: '999999999',
+          name: 'Mr Test',
+          notes: 'Test exclusion',
+          roleName: TypeOfRole.CaseManager,
+          roleCategory: RoleCategory.JUDICIAL,
+          email: null,
+        },
+      ] as unknown as CaseRole[])
+    );
+    spyOn(allocateRoleService, 'getCaseRolesUserDetails').and.returnValue(of([]));
+
+    const localFixture = TestBed.createComponent(WrapperComponent);
+    const localComponent = localFixture.componentInstance.appComponentRef;
+    localComponent.assignmentId = '999999999';
+    localFixture.detectChanges();
+
+    expect(localComponent.role.email).toBeNull();
+  });
+
+  // to be changed/amended when EXUI-2645 implementation is complete
+  it('should set email from cached caseworker when role has no email', () => {
+    const allocateRoleService = TestBed.inject(AllocateRoleService) as AllocateRoleService;
+    sessionStorageServiceMock.getItem.and.returnValue(JSON.stringify([mockCaseworker]));
+    mockCaseworkerDataService.getUsersFromServices.calls.reset();
+    spyOn(allocateRoleService, 'getCaseRoles').and.returnValue(
+      of([
+        {
+          added: Date.UTC(2021, 6, 1),
+          id: '999999999',
+          actorId: mockCaseworker.idamId,
+          name: 'Mr Test',
+          notes: 'Test exclusion',
+          roleName: TypeOfRole.CaseManager,
+          roleCategory: RoleCategory.LEGAL_OPERATIONS,
+          email: null,
+        },
+      ] as unknown as CaseRole[])
+    );
+    spyOn(allocateRoleService, 'getCaseRolesUserDetails').and.returnValue(of([]));
+
+    const localFixture = TestBed.createComponent(WrapperComponent);
+    const localComponent = localFixture.componentInstance.appComponentRef;
+    localComponent.assignmentId = '999999999';
+    localFixture.detectChanges();
+
+    expect(localComponent.role.email).toBe(mockCaseworker.email);
+    expect(localComponent.answers[1].value).toBe(`Mr Test\n${mockCaseworker.email}`);
+    expect(mockCaseworkerDataService.getUsersFromServices).not.toHaveBeenCalled();
+
+    localFixture.destroy();
+  });
+
+  it('should get caseworker name and email when role has no name', () => {
+    const allocateRoleService = TestBed.inject(AllocateRoleService) as AllocateRoleService;
+    spyOn(allocateRoleService, 'getCaseRoles').and.returnValue(
+      of([
+        {
+          added: Date.UTC(2021, 6, 1),
+          id: '999999999',
+          actorId: mockCaseworker.idamId,
+          name: null,
+          notes: 'Test exclusion',
+          roleName: TypeOfRole.CaseManager,
+          roleCategory: RoleCategory.LEGAL_OPERATIONS,
+          email: null,
+        },
+      ] as unknown as CaseRole[])
+    );
+    spyOn(allocateRoleService, 'getCaseRolesUserDetails').and.returnValue(of([]));
+
+    const localFixture = TestBed.createComponent(WrapperComponent);
+    const localComponent = localFixture.componentInstance.appComponentRef;
+    localComponent.assignmentId = '999999999';
+    localFixture.detectChanges();
+
+    expect(mockCaseworkerDataService.getUsersFromServices).toHaveBeenCalledWith(['IA']);
+    expect(localComponent.role.name).toBe(`${mockCaseworker.firstName}-${mockCaseworker.lastName}`);
+    expect(localComponent.role.email).toBe(mockCaseworker.email);
+    expect(localComponent.answers).toEqual([
+      { label: 'Type of role', value: TypeOfRole.CaseManager },
+      {
+        label: 'Person',
+        value: `${mockCaseworker.firstName}-${mockCaseworker.lastName}\n${mockCaseworker.email}`,
+      },
+    ]);
+
+    localFixture.destroy();
   });
 
   describe('showSpinner', () => {

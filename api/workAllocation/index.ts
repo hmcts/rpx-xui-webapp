@@ -642,15 +642,15 @@ export async function getUsersByServiceName(req: EnhancedRequest, res: Response,
     const refinedUsers = searchAndReturnRefinedUsers(services, term, cachedUsers);
     res.status(200).send(refinedUsers);
   } catch (error) {
-    const term = req?.body?.term;
-    const services = Array.isArray(req?.body?.services) ? req.body.services : [];
-    const fullUserDetailCache = FullUserDetailCache.getAllUserDetails() || [];
-    if (fullUserDetailCache.length > 0) {
-      const refinedCachedUsers = searchAndReturnRefinedUsers(services, term, fullUserDetailCache);
-      res.status(200).send(refinedCachedUsers);
-      return;
-    }
     if (isWADependencyUnavailableError(error)) {
+      const term = req?.body?.term;
+      const services = Array.isArray(req?.body?.services) ? req.body.services : [];
+      const fullUserDetailCache = FullUserDetailCache.getAllUserDetails() || [];
+      if (fullUserDetailCache.length > 0) {
+        const refinedCachedUsers = searchAndReturnRefinedUsers(services, term, fullUserDetailCache);
+        res.status(200).send(refinedCachedUsers);
+        return;
+      }
       res.status(503).send(error.diagnostics);
       return;
     }

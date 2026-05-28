@@ -1,4 +1,4 @@
-import { authenticator } from 'otplib';
+import { createGuardrails, generate, ScureBase32Plugin } from 'otplib';
 
 import { getConfigValue } from '../configuration';
 import {
@@ -105,7 +105,6 @@ export async function fetchNewUserData(): Promise<StaffUserDetails[]> {
     const userResponse = await handleNewUsersGet(getUsersPath, caseworkerHeaders);
     cachedUsers = getUniqueUsersFromResponse(userResponse);
     return cachedUsers;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch {
     if (cachedUsers) {
       return cachedUsers;
@@ -165,8 +164,7 @@ export async function fetchRoleAssignmentsForNewUsers(cachedUserData: StaffUserD
       FullUserDetailCache.setUserDetails(cachedUsersWithRoles);
     }
     return FullUserDetailCache.getAllUserDetails();
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (error) {
+  } catch {
     if (FullUserDetailCache.getAllUserDetails()) {
       return FullUserDetailCache.getAllUserDetails();
     }
@@ -179,7 +177,9 @@ export async function getAuthTokens(): Promise<void> {
     const microservice = getConfigValue(MICROSERVICE);
     const s2sEndpointUrl = `${getConfigValue(SERVICE_S2S_PATH)}/lease`;
     const s2sSecret = getConfigValue(S2S_SECRET).trim();
-    const oneTimePassword = authenticator.generate(s2sSecret);
+    const secretBytes = new ScureBase32Plugin().decode(s2sSecret);
+    const guardrails = createGuardrails({ MIN_SECRET_BYTES: secretBytes.length });
+    const oneTimePassword = await generate({ secret: s2sSecret, guardrails, strategy: 'totp' });
     const idamPath = getConfigValue(SERVICES_IDAM_API_URL);
     const authURL = `${idamPath}/o/token`;
     const axiosConfig = {
@@ -194,8 +194,7 @@ export async function getAuthTokens(): Promise<void> {
     initialServiceAuthToken = serviceAuthResponse.data;
     const authResponse = await http.post(authURL, authBody, axiosConfig);
     initialAuthToken = authResponse.data.access_token;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (error) {
+  } catch {
     console.log('Cannot get auth tokens');
   }
 }

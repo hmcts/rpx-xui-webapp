@@ -3,11 +3,13 @@ import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
+import * as configuration from '../configuration';
 import { http } from '../lib/http';
 import {
   createWADependencyUnavailableError,
   fetchNewUserData,
   fetchRoleAssignmentsForNewUsers,
+  getAuthTokens,
 } from './caseWorkerUserDataCacheService';
 import * as caseWorkerUserDataCacheService from './caseWorkerUserDataCacheService';
 import { getUsersByServiceName } from './index';
@@ -319,6 +321,97 @@ describe('Caseworker Cache Service', () => {
         upstream: 'rd-caseworker-ref-api',
       });
       expect(next).to.not.have.been.called;
+    });
+
+    it('passes non-dependency errors to next even when cache is available', async () => {
+      const req = mockReq({
+        body: {
+          term: 'Alice',
+          services: ['IA'],
+        },
+        session: {
+          passport: {
+            user: {
+              userinfo: {
+                roles: ['caseworker'],
+              },
+            },
+          },
+        },
+      });
+      const res = mockRes();
+      const next = sandbox.spy();
+      const error = new Error('unexpected failure');
+      const cachedUsers = [
+        {
+          idamId: 'user-1',
+          firstName: 'Alice',
+          lastName: 'Example',
+          email: 'alice@example.com',
+          roleCategory: 'JUDICIAL',
+          services: ['IA'],
+          locations: [{ id: '1', locationName: 'Taylor House', services: ['IA'] }],
+        },
+      ];
+
+      FullUserDetailCache.setUserDetails(cachedUsers as any);
+      sandbox.stub(caseWorkerUserDataCacheService, 'timestampExists').returns(false);
+      sandbox.stub(caseWorkerUserDataCacheService, 'fetchUserData').rejects(error);
+
+      await getUsersByServiceName(req as any, res as any, next);
+
+      expect(res.status).to.not.have.been.called;
+      expect(res.send).to.not.have.been.called;
+      expect(next).to.have.been.calledOnceWith(error);
+    });
+  });
+
+  describe('getAuthTokens', () => {
+    it('should generate an OTP from the trimmed v13 secret and fetch both auth tokens', async () => {
+      const getConfigValueStub = sandbox.stub(configuration, 'getConfigValue');
+      getConfigValueStub.callsFake((key) => {
+        const values = {
+          microservice: 'xui_webapp',
+          'services.s2s': 'https://s2s.test.com',
+          'secrets.rpx.mc-s2s-client-secret': '  JBSWY3DPEHPK3PXP  ',
+          'services.idam.idamApiUrl': 'https://idam-api.test.com',
+          'services.idam.idamClientID': 'test-client-id',
+          'secrets.rpx.system-user-name': 'system-user',
+          'secrets.rpx.system-user-password': 'system-password',
+          'secrets.rpx.mc-idam-client-secret': 'test-idam-secret',
+        };
+
+        return values[key];
+      });
+
+      const postStub = sandbox.stub(http, 'post');
+      postStub.onFirstCall().resolves({ data: 'service-token' });
+      postStub.onSecondCall().resolves({ data: { access_token: 'access-token' } });
+
+      await getAuthTokens();
+
+      const firstRequestBody = postStub.firstCall.args[1] as { microservice: string; oneTimePassword: string };
+
+      expect(postStub.firstCall.args[0]).to.equal('https://s2s.test.com/lease');
+      expect(firstRequestBody).to.deep.include({
+        microservice: 'xui_webapp',
+      });
+      expect(firstRequestBody.oneTimePassword).to.satisfy(sinon.match.string.test);
+      expect(firstRequestBody.oneTimePassword).to.have.length(6);
+
+      expect(postStub.secondCall.args[0]).to.equal('https://idam-api.test.com/o/token');
+      const authBody = new URLSearchParams(postStub.secondCall.args[1] as string);
+      expect(Object.fromEntries(authBody.entries())).to.deep.equal({
+        grant_type: 'password',
+        password: 'system-password',
+        username: 'system-user',
+        scope: 'openid profile roles manage-user create-user search-user',
+        client_id: 'test-client-id',
+        client_secret: 'test-idam-secret',
+      });
+      expect(postStub.secondCall.args[2]).to.deep.equal({
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+      });
     });
   });
 });

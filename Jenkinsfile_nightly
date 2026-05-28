@@ -6,9 +6,8 @@ properties([
         displayName  : 'Expert UI Webapp',
         projectUrlStr: 'https://github.com/hmcts/rpx-xui-webapp/'
     ],
-    pipelineTriggers([
-    cron('30 17 * * *')
-    ]),
+    // Keep master scheduled, but leave nightly-dev and PR branches manual-only.
+    pipelineTriggers(env.BRANCH_NAME == 'master' ? [cron('30 17 * * 1-5')] : []),
     parameters([
       text(
         name: 'INTEGRATION_PW_PROFILE_RUNS',

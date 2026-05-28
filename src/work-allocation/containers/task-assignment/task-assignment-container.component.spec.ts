@@ -658,7 +658,9 @@ describe('TaskAssignmentContainerComponent', () => {
     it('should handle invalid JSON in sessionStorage', () => {
       mockSessionStorageService.getItem.and.returnValue('invalid json');
 
-      expect(() => component.isCurrentUserJudicial()).toThrow();
+      const result = component.isCurrentUserJudicial();
+
+      expect(result).toBe(false);
     });
   });
 

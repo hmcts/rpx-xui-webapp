@@ -7,16 +7,14 @@ import { ApplicationRoutingComponent } from './application-routing.component';
 describe('ApplicationRoutingComponent', () => {
   let component: ApplicationRoutingComponent;
   let router;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let waFeatureService;
   let mockStore: any;
   const featureToggleMock = jasmine.createSpyObj('featureToggleService', ['isEnabled', 'getValueOnce', 'getValue']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        { provide: FeatureToggleService, useValue: featureToggleMock }
-      ]
+      providers: [{ provide: FeatureToggleService, useValue: featureToggleMock }],
     }).compileComponents();
     router = jasmine.createSpyObj('router', ['navigate']);
     waFeatureService = jasmine.createSpyObj('service', ['getActiveWAFeature']);

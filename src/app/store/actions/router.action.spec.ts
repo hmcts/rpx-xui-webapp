@@ -6,7 +6,7 @@ describe('Router Actions', () => {
       const action = new fromRouter.NewCaseLoadedSuccessfully();
 
       expect({ ...action }).toEqual({
-        type: fromRouter.NEW_CASE_LOADED
+        type: fromRouter.NEW_CASE_LOADED,
       });
     });
   });
@@ -18,7 +18,7 @@ describe('Router Actions', () => {
 
       expect({ ...action }).toEqual({
         type: fromRouter.CREATE_CASE_GO,
-        payload
+        payload,
       });
     });
   });
@@ -28,7 +28,7 @@ describe('Router Actions', () => {
       const action = new fromRouter.Back();
 
       expect({ ...action }).toEqual({
-        type: fromRouter.BACK
+        type: fromRouter.BACK,
       });
     });
   });
@@ -38,7 +38,7 @@ describe('Router Actions', () => {
       const action = new fromRouter.Forward();
 
       expect({ ...action }).toEqual({
-        type: fromRouter.FORWARD
+        type: fromRouter.FORWARD,
       });
     });
   });

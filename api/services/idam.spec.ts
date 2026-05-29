@@ -2,13 +2,12 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
-import * as sinonChai from 'sinon-chai';
 import { getConfigValue } from '../configuration';
-import {
-  SERVICES_IDAM_API_URL
-} from '../configuration/references';
+import { SERVICES_IDAM_API_URL } from '../configuration/references';
 import { http } from '../lib/http';
 import * as idam from './idam';
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('cohQA', () => {
@@ -25,7 +24,7 @@ describe('cohQA', () => {
     // this doesn't change much but it is different for createHearing
     // so is just set by default and overridden in that test, to be reset after
     res = {
-      data: 'okay'
+      data: 'okay',
     };
 
     spy = sinon.stub(http, 'get').callsFake(() => {

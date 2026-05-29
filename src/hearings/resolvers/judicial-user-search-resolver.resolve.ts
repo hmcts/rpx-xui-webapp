@@ -10,7 +10,7 @@ import { JudicialRefDataService } from '../services/judicial-ref-data.service';
 import * as fromHearingStore from '../store';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class JudicialUserSearchResolver {
   constructor(
@@ -19,17 +19,21 @@ export class JudicialUserSearchResolver {
   ) {}
 
   public resolve(route?: ActivatedRouteSnapshot): Observable<JudicialUserModel[]> {
-    return this.getUsersByPanelRequirements$()
-      .pipe(
-        switchMap((panelRequirements) => {
-          return of(
-            panelRequirements && panelRequirements.panelPreferences && panelRequirements.panelPreferences.filter((preferences) => this.checkMemberType(preferences, route)).map((preferences) => preferences.memberID)
-          );
-        }), take(1),
-        switchMap((personalCodes) => {
-          return personalCodes && personalCodes.length ? this.getUsersData$(personalCodes) : of([]);
-        })
-      );
+    return this.getUsersByPanelRequirements$().pipe(
+      switchMap((panelRequirements) => {
+        return of(
+          panelRequirements &&
+            panelRequirements.panelPreferences &&
+            panelRequirements.panelPreferences
+              .filter((preferences) => this.checkMemberType(preferences, route))
+              .map((preferences) => preferences.memberID)
+        );
+      }),
+      take(1),
+      switchMap((personalCodes) => {
+        return personalCodes && personalCodes.length ? this.getUsersData$(personalCodes) : of([]);
+      })
+    );
   }
 
   private checkMemberType(preferences: PanelPreferenceModel, route: ActivatedRouteSnapshot): boolean {
@@ -40,9 +44,14 @@ export class JudicialUserSearchResolver {
   }
 
   public getUsersByPanelRequirements$(): Observable<PanelRequirementsModel> {
-    return this.hearingStore.pipe(select(fromHearingStore.getHearingsFeatureState)).pipe(
-      map((hearingState) => hearingState.hearingRequest && hearingState.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements)
-    );
+    return this.hearingStore
+      .pipe(select(fromHearingStore.getHearingsFeatureState))
+      .pipe(
+        map(
+          (hearingState) =>
+            hearingState.hearingRequest && hearingState.hearingRequest.hearingRequestMainModel.hearingDetails.panelRequirements
+        )
+      );
   }
 
   public getUsersData$(judgePersonalCodesList: string[]): Observable<JudicialUserModel[]> {

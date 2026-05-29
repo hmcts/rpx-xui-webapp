@@ -9,11 +9,11 @@ class ApplyForProbatePage {
     this.saveandContinueButton = new Button('button[type=submit]');
   }
 
-  async getPageHeader(){
+  async getPageHeader() {
     return await $(this.header).textContent();
   }
 
-  async amOnPage(){
+  async amOnPage() {
     const header = await this.getPageHeader();
     return header === 'Apply for probate';
   }

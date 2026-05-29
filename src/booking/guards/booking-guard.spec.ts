@@ -10,13 +10,15 @@ describe('BookingGuard', () => {
   const USER_1: UserDetails = {
     canShareCases: true,
     sessionTimeout: { idleModalDisplayTime: 10, totalIdleTime: 50 },
-    roleAssignmentInfo: [{
-      primaryLocation: '',
-      jurisdiction: '',
-      isCaseAllocator: true,
-      // note: bookable can be boolean or string
-      bookable: 'true'
-    }],
+    roleAssignmentInfo: [
+      {
+        primaryLocation: '',
+        jurisdiction: '',
+        isCaseAllocator: true,
+        // note: bookable can be boolean or string
+        bookable: 'true',
+      },
+    ],
     userInfo: {
       id: AppTestConstants.TEST_USER_ID,
       forename: 'Luke',
@@ -35,40 +37,42 @@ describe('BookingGuard', () => {
         'pui-case-manager',
         'pui-finance-manager',
         'pui-organisation-manager',
-        'pui-user-manager'
-      ]
-    }
+        'pui-user-manager',
+      ],
+    },
   };
 
   const USER_2: UserDetails = {
     canShareCases: true,
     sessionTimeout: { idleModalDisplayTime: 10, totalIdleTime: 50 },
-    roleAssignmentInfo: [{
-      primaryLocation: '', jurisdiction: '', isCaseAllocator: true, bookable: true // boolean
-    }],
+    roleAssignmentInfo: [
+      {
+        primaryLocation: '',
+        jurisdiction: '',
+        isCaseAllocator: true,
+        bookable: true, // boolean
+      },
+    ],
     userInfo: {
       id: AppTestConstants.TEST_USER_ID,
       forename: 'Luke',
       surname: 'Wilson',
       email: 'lukesuperuserxui@mailnesia.com',
       active: true,
-      roles: [
-        'caseworker',
-        'pui-caa',
-        'pui-case-manager',
-        'pui-finance-manager',
-        'pui-organisation-manager',
-        'pui-user-manager'
-      ]
-    }
+      roles: ['caseworker', 'pui-caa', 'pui-case-manager', 'pui-finance-manager', 'pui-organisation-manager', 'pui-user-manager'],
+    },
   };
 
   const USER_3: UserDetails = {
     canShareCases: true,
     sessionTimeout: { idleModalDisplayTime: 10, totalIdleTime: 50 },
-    roleAssignmentInfo: [{
-      primaryLocation: '', jurisdiction: '', isCaseAllocator: true // no "bookable"
-    }],
+    roleAssignmentInfo: [
+      {
+        primaryLocation: '',
+        jurisdiction: '',
+        isCaseAllocator: true, // no "bookable"
+      },
+    ],
     userInfo: {
       id: AppTestConstants.TEST_USER_ID,
       forename: 'Luke',
@@ -82,32 +86,29 @@ describe('BookingGuard', () => {
         'pui-case-manager',
         'pui-finance-manager',
         'pui-organisation-manager',
-        'pui-user-manager'
-      ]
-    }
+        'pui-user-manager',
+      ],
+    },
   };
 
   const USER_4: UserDetails = {
     canShareCases: true,
     sessionTimeout: { idleModalDisplayTime: 10, totalIdleTime: 50 },
-    roleAssignmentInfo: [{
-      primaryLocation: '', jurisdiction: '', isCaseAllocator: true // no "bookable"
-    }],
+    roleAssignmentInfo: [
+      {
+        primaryLocation: '',
+        jurisdiction: '',
+        isCaseAllocator: true, // no "bookable"
+      },
+    ],
     userInfo: {
       id: AppTestConstants.TEST_USER_ID,
       forename: 'Luke',
       surname: 'Wilson',
       email: 'lukesuperuserxui@mailnesia.com',
       active: true,
-      roles: [
-        'caseworker',
-        'pui-caa',
-        'pui-case-manager',
-        'pui-finance-manager',
-        'pui-organisation-manager',
-        'pui-user-manager'
-      ]
-    }
+      roles: ['caseworker', 'pui-caa', 'pui-case-manager', 'pui-finance-manager', 'pui-organisation-manager', 'pui-user-manager'],
+    },
   };
 
   let bookingGuard: BookingGuard;

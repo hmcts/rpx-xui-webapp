@@ -27,14 +27,14 @@ describe('access management service, delete exclusion', () => {
           method: 'DELETE',
           path: `/am/role-assignments/${exclusionId}`,
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
-          }
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
+          },
         },
         willRespondWith: {
-          status: 204
-        }
+          status: 204,
+        },
       };
 
       pactSetUp.provider.addInteraction(interaction);
@@ -55,15 +55,15 @@ describe('access management service, delete exclusion', () => {
         const { deleteUserExclusion } = requireReloaded('../../../../roleAccess/exclusionService');
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
           body: {
             roleExclusion: {
-              id: exclusionId
-            }
-          }
+              id: exclusionId,
+            },
+          },
         });
         let returnedResponse = null;
         const response = mockRes();

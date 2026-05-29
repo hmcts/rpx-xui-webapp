@@ -5,17 +5,33 @@ const caseDetailsPage = require('../pageObjects/caseDetailsPage');
 const CcdFields = require('./common/ccdFields');
 
 class HearingRecordingsCase {
-  get ccdFields() { return new CcdFields(); }
+  get ccdFields() {
+    return new CcdFields();
+  }
 
-  get addNewBtn() { return elementByXpath("//button[contains(text(),'Add new')]"); }
-  get continueBtn() { return elementByXpath("//button[contains(text(),'Continue')]"); }
-  get submitBtn() { return elementByXpath("//button[contains(text(),'Submit')]"); }
+  get addNewBtn() {
+    return elementByXpath("//button[contains(text(),'Add new')]");
+  }
+  get continueBtn() {
+    return elementByXpath("//button[contains(text(),'Continue')]");
+  }
+  get submitBtn() {
+    return elementByXpath("//button[contains(text(),'Submit')]");
+  }
 
-  get hearingFilesTabBtn() { return elementByXpath("//div[contains(text(),'Case Hearing Files')]"); }
-  get hearingFilesTabContainer() { return $('.mat-tab-body-content .CaseFiles'); }
+  get hearingFilesTabBtn() {
+    return elementByXpath("//div[contains(text(),'Case Hearing Files')]");
+  }
+  get hearingFilesTabContainer() {
+    return $('.mat-tab-body-content .CaseFiles');
+  }
 
-  get fileLink() { return elementByXpath("//a[contains(text(),'dummy.pdf')]"); }
-  get fileText() { return elementByXpath("//span[contains(text(),'Dumm')]"); }
+  get fileLink() {
+    return elementByXpath("//a[contains(text(),'dummy.pdf')]");
+  }
+  get fileText() {
+    return elementByXpath("//span[contains(text(),'Dumm')]");
+  }
 
   async createCase() {
     await BrowserWaits.waitForSeconds(3);

@@ -6,9 +6,7 @@ describe('InitialisationSyncService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [],
-      providers: [
-        InitialisationSyncService
-      ]
+      providers: [InitialisationSyncService],
     });
   });
 

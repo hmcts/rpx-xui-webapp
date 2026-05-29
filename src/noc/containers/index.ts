@@ -39,7 +39,7 @@ export const containers: any[] = [
   NocPostcodeFieldComponent,
   NocDateFieldComponent,
   NocDateTimeFieldComponent,
-  NocTimeFieldComponent
+  NocTimeFieldComponent,
 ];
 
 export * from './noc-home/noc-home.component';

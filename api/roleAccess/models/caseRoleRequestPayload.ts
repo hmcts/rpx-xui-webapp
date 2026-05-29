@@ -1,5 +1,5 @@
 export interface CaseRoleRequestPayload {
-  queryRequests: CaseRoleQueryRequest [];
+  queryRequests: CaseRoleQueryRequest[];
 }
 
 export interface CaseRoleQueryRequest {
@@ -8,9 +8,9 @@ export interface CaseRoleQueryRequest {
     jurisdiction?: string[];
     caseType?: string[];
   };
-  grantType?: string [];
-  roleCategory?: string [];
-  roleName?: string [];
+  grantType?: string[];
+  roleCategory?: string[];
+  roleName?: string[];
 }
 
 export interface RoleExclusion {

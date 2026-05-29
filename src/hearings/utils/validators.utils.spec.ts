@@ -1,15 +1,13 @@
 import { inject, TestBed } from '@angular/core/testing';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
-import * as moment from 'moment';
+import moment from 'moment';
 import { HearingDateEnum } from '../models/hearings.enum';
 import { ValidatorsUtils } from './validators.utils';
 
 describe('ValidatorsUtils', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        ValidatorsUtils
-      ]
+      providers: [ValidatorsUtils],
     });
   });
 
@@ -57,7 +55,7 @@ describe('ValidatorsUtils', () => {
     const form = new FormGroup({
       days: new FormControl(),
       hours: new FormControl(),
-      minutes: new FormControl()
+      minutes: new FormControl(),
     });
     form.setValidators(service.hearingLengthValidator());
     form.controls.days.setValue('5');
@@ -81,7 +79,7 @@ describe('ValidatorsUtils', () => {
     const form = new FormGroup({
       day: new FormControl(),
       month: new FormControl(),
-      year: new FormControl()
+      year: new FormControl(),
     });
     const control = new FormControl();
     control.setValue('null-null-null');
@@ -108,13 +106,13 @@ describe('ValidatorsUtils', () => {
       earliestHearing: new FormGroup({
         day: new FormControl(),
         month: new FormControl(),
-        year: new FormControl()
+        year: new FormControl(),
       }),
       latestHearing: new FormGroup({
         day: new FormControl(),
         month: new FormControl(),
-        year: new FormControl()
-      })
+        year: new FormControl(),
+      }),
     });
     form.setValidators(service.hearingDateRangeValidator());
     form.controls.earliestHearing.get('day').setValue('12');
@@ -130,10 +128,11 @@ describe('ValidatorsUtils', () => {
 
   it('should check formArraySelectedValidator', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
     const form = new FormGroup({
-      arrayControl: new FormArray([new FormGroup({
-        selection: new FormGroup({})
-      })]
-      )
+      arrayControl: new FormArray([
+        new FormGroup({
+          selection: new FormGroup({}),
+        }),
+      ]),
     });
     form.setValidators(service.formArraySelectedValidator());
     expect(form.hasError('isValid')).toBeFalsy();
@@ -141,7 +140,7 @@ describe('ValidatorsUtils', () => {
 
   it('should set time 12:00 as valid', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
     const form = new FormGroup({
-      arrayControl: new FormControl('12:00', service.validTime('Enter a valid time'))
+      arrayControl: new FormControl('12:00', service.validTime('Enter a valid time')),
     });
     form.get('arrayControl').setValue('12:00');
     form.updateValueAndValidity();
@@ -150,7 +149,7 @@ describe('ValidatorsUtils', () => {
 
   it('should show error as mandatory', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
     const form = new FormGroup({
-      arrayControl: new FormControl(null, [service.mandatory('Enter a time')])
+      arrayControl: new FormControl(null, [service.mandatory('Enter a time')]),
     });
     expect(form.get('arrayControl').hasError('mandatory')).toBeTruthy();
     expect(form.get('arrayControl').getError('mandatory').message).toBe('Enter a time');
@@ -158,63 +157,103 @@ describe('ValidatorsUtils', () => {
 
   it('should set time 33:00 as invalid', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
     const form = new FormGroup({
-      arrayControl: new FormControl('33:00', [service.validTime('Enter a valid time')])
+      arrayControl: new FormControl('33:00', [service.validTime('Enter a valid time')]),
     });
     expect(form.get('arrayControl').hasError('invalidTime')).toBeTruthy();
   }));
 
   it('should set startTime 13:00 and endTime 12:00 to be invalid', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
-    const form = new FormGroup({
-      start: new FormControl('13:00', [service.validTime('Enter a valid start time')]),
-      end: new FormControl('12:00', [service.validTime('Enter a valid end time')])
-    }, { validators: [service.validateTimeRange('start', 'end', 'Start time must be before finish time')] });
+    const form = new FormGroup(
+      {
+        start: new FormControl('13:00', [service.validTime('Enter a valid start time')]),
+        end: new FormControl('12:00', [service.validTime('Enter a valid end time')]),
+      },
+      { validators: [service.validateTimeRange('start', 'end', 'Start time must be before finish time')] }
+    );
     expect(form.hasError('invalidTimeRange')).toBeTruthy();
     expect(form.getError('invalidTimeRange').start.message).toBe('Start time must be before finish time');
   }));
 
   it('should set startTime 12:00 and endTime 13:00 to be valid', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
-    const form = new FormGroup({
-      start: new FormControl('12:00', [service.validTime('Enter a valid start time')]),
-      end: new FormControl('13:00', [service.validTime('Enter a valid end time')])
-    }, { validators: [service.validateTimeRange('start', 'end', 'Start time must be before finish time')] });
+    const form = new FormGroup(
+      {
+        start: new FormControl('12:00', [service.validTime('Enter a valid start time')]),
+        end: new FormControl('13:00', [service.validTime('Enter a valid end time')]),
+      },
+      { validators: [service.validateTimeRange('start', 'end', 'Start time must be before finish time')] }
+    );
     expect(form.valid).toBeTruthy();
   }));
 
-  it('should set pauseTime 9:30 to be invalid if not between the start time and end time', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
-    const form = new FormGroup({
-      start: new FormControl('12:00', [service.validTime('Enter a valid start time')]),
-      end: new FormControl('13:00', [service.validTime('Enter a valid end time')]),
-      pause: new FormControl('09:30', [service.validTime('Enter a valid end time')])
-    }, { validators: [service.validatePauseTimeRange('pause', { startTime: 'start', endTime: 'end' }, 'Pause time must be between the hearing start and finish times', 'invalidPauseStartTimeRange')] });
-    expect(form.hasError('invalidPauseStartTimeRange')).toBeTruthy();
-    expect(form.getError('invalidPauseStartTimeRange').pause.message).toBe('Pause time must be between the hearing start and finish times');
-  }));
+  it('should set pauseTime 9:30 to be invalid if not between the start time and end time', inject(
+    [ValidatorsUtils],
+    (service: ValidatorsUtils) => {
+      const form = new FormGroup(
+        {
+          start: new FormControl('12:00', [service.validTime('Enter a valid start time')]),
+          end: new FormControl('13:00', [service.validTime('Enter a valid end time')]),
+          pause: new FormControl('09:30', [service.validTime('Enter a valid end time')]),
+        },
+        {
+          validators: [
+            service.validatePauseTimeRange(
+              'pause',
+              { startTime: 'start', endTime: 'end' },
+              'Pause time must be between the hearing start and finish times',
+              'invalidPauseStartTimeRange'
+            ),
+          ],
+        }
+      );
+      expect(form.hasError('invalidPauseStartTimeRange')).toBeTruthy();
+      expect(form.getError('invalidPauseStartTimeRange').pause.message).toBe(
+        'Pause time must be between the hearing start and finish times'
+      );
+    }
+  ));
 
-  it('should set resumeTime 9:30 to be invalid if not between the start time and end time', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
-    const form = new FormGroup({
-      start: new FormControl('12:00', [service.validTime('Enter a valid start time')]),
-      end: new FormControl('13:00', [service.validTime('Enter a valid end time')]),
-      resume: new FormControl('09:30', [service.validTime('Enter a valid end time')])
-    }, { validators: [service.validatePauseTimeRange('resume', { startTime: 'start', endTime: 'end' }, 'Resume time must be between the hearing start and finish times', 'invalidPauseEndTimeRange')] });
-    expect(form.hasError('invalidPauseEndTimeRange')).toBeTruthy();
-    expect(form.getError('invalidPauseEndTimeRange').resume.message).toBe('Resume time must be between the hearing start and finish times');
-  }));
+  it('should set resumeTime 9:30 to be invalid if not between the start time and end time', inject(
+    [ValidatorsUtils],
+    (service: ValidatorsUtils) => {
+      const form = new FormGroup(
+        {
+          start: new FormControl('12:00', [service.validTime('Enter a valid start time')]),
+          end: new FormControl('13:00', [service.validTime('Enter a valid end time')]),
+          resume: new FormControl('09:30', [service.validTime('Enter a valid end time')]),
+        },
+        {
+          validators: [
+            service.validatePauseTimeRange(
+              'resume',
+              { startTime: 'start', endTime: 'end' },
+              'Resume time must be between the hearing start and finish times',
+              'invalidPauseEndTimeRange'
+            ),
+          ],
+        }
+      );
+      expect(form.hasError('invalidPauseEndTimeRange')).toBeTruthy();
+      expect(form.getError('invalidPauseEndTimeRange').resume.message).toBe(
+        'Resume time must be between the hearing start and finish times'
+      );
+    }
+  ));
 
   it('should detect duplicate entries', inject([ValidatorsUtils], (service: ValidatorsUtils) => {
     const parties = new FormArray([]);
     const form1 = new FormGroup({
       start: new FormControl('12:00'),
-      end: new FormControl('13:00')
+      end: new FormControl('13:00'),
     });
     const form2 = new FormGroup({
       start: new FormControl('22:00'),
-      end: new FormControl('24:00')
+      end: new FormControl('24:00'),
     });
     parties.push(form1);
     parties.push(form2);
     const evaluatedForm = new FormGroup({
       start: new FormControl('12:00'),
-      end: new FormControl('13:00')
+      end: new FormControl('13:00'),
     }) as FormGroup;
     evaluatedForm.setParent(parties);
     const result = service.validateDuplicateEntries(1, 'Duplicate entry')(evaluatedForm);

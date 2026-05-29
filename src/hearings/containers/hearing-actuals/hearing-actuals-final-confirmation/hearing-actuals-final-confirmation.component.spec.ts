@@ -14,12 +14,9 @@ describe('HearingActualsFinalConfirmationComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [HearingActualsFinalConfirmationComponent],
-      providers: [
-        provideMockStore({ initialState }), LoadingService
-      ],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    })
-      .compileComponents();
+      providers: [provideMockStore({ initialState }), LoadingService],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

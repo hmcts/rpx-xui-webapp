@@ -8,24 +8,24 @@
             <exui-noc-case-ref
               #nocCaseRef
               *ngIf="isComponentVisible(nocNavigationCurrentState, caseRefVisibilityStates)"
-              [navEvent]="navEvent">
+              [navEvent]="navEvent"
+            >
             </exui-noc-case-ref>
             <exui-noc-q-and-a
               #nocQandA
               *ngIf="isComponentVisible(nocNavigationCurrentState, qAndAVisibilityStates)"
-              [navEvent]="navEvent">
+              [navEvent]="navEvent"
+            >
             </exui-noc-q-and-a>
-            <exui-noc-error
-              *ngIf="isComponentVisible(nocNavigationCurrentState, nocErrorVisibilityStates)"
-              [navEvent]="navEvent">
+            <exui-noc-error *ngIf="isComponentVisible(nocNavigationCurrentState, nocErrorVisibilityStates)" [navEvent]="navEvent">
             </exui-noc-error>
             <exui-noc-check-and-submit
               #nocCheckAndSubmit
               *ngIf="isComponentVisible(nocNavigationCurrentState, checkAnswerVisibilityStates)"
-              [navEvent]="navEvent">
+              [navEvent]="navEvent"
+            >
             </exui-noc-check-and-submit>
-            <exui-noc-submit-success
-              *ngIf="isComponentVisible(nocNavigationCurrentState, nocSubmitSuccessStates)">
+            <exui-noc-submit-success *ngIf="isComponentVisible(nocNavigationCurrentState, nocSubmitSuccessStates)">
             </exui-noc-submit-success>
           </div>
         </exui-noc-navigation>

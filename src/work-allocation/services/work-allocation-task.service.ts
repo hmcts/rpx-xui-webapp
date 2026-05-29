@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { AppUtils } from '../../app/app-utils';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { UserInfo, UserRole } from '../../app/models';
 import { SearchTaskRequest, TaskNamesResponse, TaskSearchParameters } from '../models/dtos';
 import { Task, TaskRole } from '../models/tasks';
@@ -17,14 +18,14 @@ export enum ACTION {
   CLAIM = 'claim',
   COMPLETE = 'complete',
   UNCLAIM = 'unclaim',
-  UNASSIGN = 'unassign'
+  UNASSIGN = 'unassign',
 }
 
 @Injectable({ providedIn: 'root' })
 export class WorkAllocationTaskService {
   public currentTasks$: BehaviorSubject<Task[]> = new BehaviorSubject<Task[]>([]);
 
-  constructor(private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient) {}
 
   /**
    * Call the API to complete a task.
@@ -52,10 +53,13 @@ export class WorkAllocationTaskService {
     return this.http.post<any>(`${BASE_URL}`, task);
   }
 
-  public searchTask(body: { searchRequest: SearchTaskRequest, view: string, currentUser: string, refined: boolean }): Observable<TaskResponse> {
-    return this.http.post<any>(`${BASE_URL}`, body).pipe(
-      tap((response) => this.currentTasks$.next(response.tasks)),
-    );
+  public searchTask(body: {
+    searchRequest: SearchTaskRequest;
+    view: string;
+    currentUser: string;
+    refined: boolean;
+  }): Observable<TaskResponse> {
+    return this.http.post<any>(`${BASE_URL}`, body).pipe(tap((response) => this.currentTasks$.next(response.tasks)));
   }
 
   public claimTask(taskId: string): Observable<Response> {
@@ -88,17 +92,20 @@ export class WorkAllocationTaskService {
   public getUsersAssignedTasks(): Observable<Task[]> {
     const userInfoStr = sessionStorage.getItem('userDetails');
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      if (!userInfo) {
+        return of(null);
+      }
       const id = userInfo.id ? userInfo.id : userInfo.uid;
       const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);
       const searchParameters = [
         { key: 'user', operator: 'IN', values: [id] },
-        { key: 'state', operator: 'IN', values: ['assigned'] }
+        { key: 'state', operator: 'IN', values: ['assigned'] },
       ];
       const searchRequest: SearchTaskRequest = {
         search_parameters: searchParameters,
         sorting_parameters: [],
-        search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker'
+        search_by: userRole === UserRole.Judicial ? 'judge' : 'caseworker',
       };
       return this.http.post<any>(`${BASE_URL}`, { searchRequest, view: 'MyTasks' }).pipe(map((response) => response.tasks));
     }

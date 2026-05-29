@@ -2,64 +2,74 @@ const { $, elementByXpath } = require('../../../helpers/globals');
 
 const BrowserWaits = require('../../support/customWaits');
 
-function headerPage () { return require('./headerPage')(); }
+function headerPage() {
+  return require('./headerPage')();
+}
 
-class DateSearchField{
+class DateSearchField {
   constructor(fieldname) {
     this.fieldname = fieldname;
   }
 
   get day() {
-    return elementByXpath(`//xuilib-gov-uk-date//fieldset/legend[contains(text(),'${this.fieldname}')]/..//input[contains(@name,'day')]`);
+    return elementByXpath(
+      `//xuilib-gov-uk-date//fieldset/legend[contains(text(),'${this.fieldname}')]/..//input[contains(@name,'day')]`
+    );
   }
 
   get month() {
-    return elementByXpath(`//xuilib-gov-uk-date//fieldset/legend[contains(text(),'${this.fieldname}')]/..//input[contains(@name,'month')]`);
+    return elementByXpath(
+      `//xuilib-gov-uk-date//fieldset/legend[contains(text(),'${this.fieldname}')]/..//input[contains(@name,'month')]`
+    );
   }
 
   get year() {
-    return elementByXpath(`//xuilib-gov-uk-date//fieldset/legend[contains(text(),'${this.fieldname}')]/..//input[contains(@name,'year')]`);
+    return elementByXpath(
+      `//xuilib-gov-uk-date//fieldset/legend[contains(text(),'${this.fieldname}')]/..//input[contains(@name,'year')]`
+    );
   }
 
   get errorMessage() {
-    return elementByXpath(`//xuilib-gov-uk-date//fieldset/legend[contains(text(),'${this.fieldname}')]/..//xuilib-gov-uk-error-message//span`);
+    return elementByXpath(
+      `//xuilib-gov-uk-date//fieldset/legend[contains(text(),'${this.fieldname}')]/..//xuilib-gov-uk-error-message//span`
+    );
   }
 
-  async getErrorMessageText(){
+  async getErrorMessageText() {
     return await this.errorMessage.textContent();
   }
 
-  async isErrorMessageDisplayed(){
+  async isErrorMessageDisplayed() {
     return await this.errorMessage.isVisible();
   }
 
-  async getDayValue(){
+  async getDayValue() {
     return await this.day.getAttribute('value');
   }
 
-  async getMonthValue(){
+  async getMonthValue() {
     return await this.month.getAttribute('value');
   }
 
-  async getYearValue(){
+  async getYearValue() {
     return await this.year.getAttribute('value');
   }
 
-  async isHeaderSearchDisplayed(){
+  async isHeaderSearchDisplayed() {
     return await headerPage().headerSearch.container.isVisible();
   }
 
-  async inputHeaderSearchFiled(inputVal){
+  async inputHeaderSearchFiled(inputVal) {
     await headerPage().headerSearch.input.clear();
     await headerPage().headerSearch.input.fill(inputVal);
   }
 
-  async clickHeaderSearchFind(){
+  async clickHeaderSearchFind() {
     await headerPage().headerSearch.button.click();
   }
 }
 
-class InputSearchField{
+class InputSearchField {
   constructor(fieldid) {
     this.fieldid = fieldid;
   }
@@ -80,35 +90,35 @@ class InputSearchField{
     return elementByXpath(`//xuilib-gov-uk-input//input[@id='${this.fieldid}']/../xuilib-gov-uk-error-message`);
   }
 
-  async getInputFieldValue(){
+  async getInputFieldValue() {
     return await this.input.getAttribute('value');
   }
 
-  async inputText(inputVal){
+  async inputText(inputVal) {
     await this.input.clear();
-    if (inputVal !== ''){
+    if (inputVal !== '') {
       await this.input.fill(inputVal);
     }
   }
 
-  async getLabel(){
+  async getLabel() {
     return await this.label.textContent();
   }
 
-  async getHintText(){
+  async getHintText() {
     return await this.hintTex.textContent();
   }
 
-  async getErrorMessageText(){
+  async getErrorMessageText() {
     return await this.errorMessage.textContent();
   }
 
-  async isErrorMessageDisplayed(){
+  async isErrorMessageDisplayed() {
     return await this.errorMessage.isVisible();
   }
 }
 
-class GlobalSearchCasesPage{
+class GlobalSearchCasesPage {
   constructor() {
     this.otherReference = new InputSearchField('otherRef');
     this.fullName = new InputSearchField('fullName');
@@ -147,11 +157,11 @@ class GlobalSearchCasesPage{
     return $('exui-case-reference-search-box button');
   }
 
-  async amOnPage(){
+  async amOnPage() {
     try {
       await BrowserWaits.waitForElement(this.pageHeader);
       return true;
-    } catch (err){
+    } catch (err) {
       return false;
     }
   }

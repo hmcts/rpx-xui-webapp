@@ -4,15 +4,19 @@ export const environment = {
   cookies: {
     token: '__auth__',
     userId: '__userid__',
-    roles: 'roles'
+    roles: 'roles',
   },
   googleAnalyticsKey: 'UA-124734893-1',
   googleTagManagerKey: 'GTM-TQ7PKDF',
   themes: {
-    '(judge)|(judiciary)': { appTitle: { name: 'Judicial Case Manager', url: '/' }, backgroundColor: '#8d0f0e', logo: 'judicial' },
+    '(judge)|(judiciary)': {
+      appTitle: { name: 'Judicial Case Manager', url: '/' },
+      backgroundColor: '#8d0f0e',
+      logo: 'judicial',
+    },
     'pui-case-manager': { appTitle: { name: 'Manage Cases', url: '/' }, backgroundColor: '#202020', logo: 'myhmcts' },
-    '.+': { appTitle: { name: 'Manage Cases', url: '/' }, backgroundColor: '#202020', logo: 'none' }
-  }
+    '.+': { appTitle: { name: 'Manage Cases', url: '/' }, backgroundColor: '#202020', logo: 'none' },
+  },
 };
 
 /**

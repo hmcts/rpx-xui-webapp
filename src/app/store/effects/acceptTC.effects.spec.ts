@@ -12,9 +12,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 describe('acceptTC Effects', () => {
   let actions$;
   let effects: fromTcEffects.AcceptTcEffects;
-  const AcceptTermsServiceMock = jasmine.createSpyObj('AcceptTermsService', [
-    'getIsUserAccepted', 'postUserAccepted'
-  ]);
+  const AcceptTermsServiceMock = jasmine.createSpyObj('AcceptTermsService', ['getIsUserAccepted', 'postUserAccepted']);
 
   beforeEach(() => {
     TestBed.configureTestingModule({
@@ -22,13 +20,13 @@ describe('acceptTC Effects', () => {
       providers: [
         {
           provide: AcceptTermsService,
-          useValue: AcceptTermsServiceMock
+          useValue: AcceptTermsServiceMock,
         },
         fromTcEffects.AcceptTcEffects,
         provideMockActions(() => actions$),
         provideHttpClient(withInterceptorsFromDi()),
-        provideHttpClientTesting()
-      ]
+        provideHttpClientTesting(),
+      ],
     });
 
     effects = TestBed.inject(fromTcEffects.AcceptTcEffects);

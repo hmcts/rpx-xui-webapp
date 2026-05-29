@@ -5,7 +5,10 @@ import { Store } from '@ngrx/store';
 import { provideMockStore } from '@ngrx/store/testing';
 import { CaseShareConfirmComponent } from './case-share-confirm.component';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate',
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;
@@ -15,16 +18,14 @@ class RpxTranslateMockPipe implements PipeTransform {
 describe('CaseShareConfirmComponent', () => {
   let component: CaseShareConfirmComponent;
   let fixture: ComponentFixture<CaseShareConfirmComponent>;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
   let store;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
       declarations: [CaseShareConfirmComponent, RpxTranslateMockPipe],
-      providers: [
-        provideMockStore(), LoadingService
-      ]
+      providers: [provideMockStore(), LoadingService],
     }).compileComponents();
     store = TestBed.inject(Store);
     fixture = TestBed.createComponent(CaseShareConfirmComponent);

@@ -19,22 +19,22 @@ export class CaseFlagAnswerConverter implements AnswerConverter {
         const partyDetails = state.hearingConditions?.isHearingAmendmentsEnabled
           ? state.hearingRequestToCompare.hearingRequestMainModel.partyDetails
           : state.hearingRequest.hearingRequestMainModel.partyDetails;
-        return CaseFlagsUtils.convertPartiesToPartyWithFlags(this.caseFlagsRefData,
-          partyDetails, state.hearingValues.serviceHearingValuesModel.parties);
-      }
-      ),
+        return CaseFlagsUtils.convertPartiesToPartyWithFlags(
+          this.caseFlagsRefData,
+          partyDetails,
+          state.hearingValues.serviceHearingValuesModel.parties
+        );
+      }),
       take(1),
       map((partyWithFlags: Map<string, CaseFlagReferenceModel[]>) => {
         let result = '';
-        partyWithFlags.forEach(
-          (value, key) => {
-            if (value.length > 0) {
-              result += `<strong class='bold'>${key}</strong>\n<ul>`;
-              value.forEach((flag) => result += `<li>${flag && flag.name ? flag.name : ''}</li>`);
-              result += '</ul><br>';
-            }
+        partyWithFlags.forEach((value, key) => {
+          if (value.length > 0) {
+            result += `<strong class='bold'>${key}</strong>\n<ul>`;
+            value.forEach((flag) => (result += `<li>${flag && flag.name ? flag.name : ''}</li>`));
+            result += '</ul><br>';
           }
-        );
+        });
         return result;
       })
     );

@@ -3,7 +3,7 @@ export enum BookingDateOption {
   WEEK = 'This week (ends on Sunday at midnight)',
   DATERANGE = 'Select a date range',
   BOOKINGSTART = 'Booking start',
-  BOOKINGEND = 'Booking ends'
+  BOOKINGEND = 'Booking ends',
 }
 
 export enum BookingDatePageText {
@@ -27,7 +27,7 @@ export enum BookingDateFormErrorMessage {
   BOOKING_BOTH_DATE_CHECK = 'booking-both-date-check',
   DATE_COMPARISON = 'date-comparison',
   NO_SELECTION = 'Select an option to book your time at the location',
-  PAST_DATE_CHECK= 'past-date-check'
+  PAST_DATE_CHECK = 'past-date-check',
 }
 
 export enum DateFormControl {
@@ -37,6 +37,5 @@ export enum DateFormControl {
   BOOKING_START_YEAR = 'startDate_year',
   BOOKING_END_DAY = 'endDate_day',
   BOOKING_END_MONTH = 'endDate_month',
-  BOOKING_END_YEAR = 'endDate_year'
+  BOOKING_END_YEAR = 'endDate_year',
 }
-

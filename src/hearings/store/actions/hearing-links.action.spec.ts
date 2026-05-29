@@ -7,7 +7,11 @@ describe('Hearing Links Actions', () => {
   });
 
   it('should load service linked cases', () => {
-    const action = new fromHearingLinksAction.LoadServiceLinkedCases({ jurisdictionId: 'JURISDICTION', caseReference: '1111222233334444', hearingId: 'h1000000' });
+    const action = new fromHearingLinksAction.LoadServiceLinkedCases({
+      jurisdictionId: 'JURISDICTION',
+      caseReference: '1111222233334444',
+      hearingId: 'h1000000',
+    });
     expect(action.type).toBe(fromHearingLinksAction.LOAD_SERVICE_LINKED_CASES);
   });
 
@@ -19,7 +23,7 @@ describe('Hearing Links Actions', () => {
   it('should load service linked cases success', () => {
     const action = new fromHearingLinksAction.LoadServiceLinkedCasesFailure({
       status: 500,
-      message: 'failed'
+      message: 'failed',
     });
     expect(action.type).toBe(fromHearingLinksAction.LOAD_SERVICE_LINKED_CASES_FAILURE);
   });
@@ -30,7 +34,7 @@ describe('Hearing Links Actions', () => {
       caseId: null,
       hearingGroupRequestId: null,
       hearingId: null,
-      isManageLink: null
+      isManageLink: null,
     };
     const action = new fromHearingLinksAction.SubmitLinkedHearingGroup(payload);
     expect(action.type).toBe(fromHearingLinksAction.SUBMIT_LINKED_HEARING_GROUP);
@@ -40,7 +44,7 @@ describe('Hearing Links Actions', () => {
     const payload = {
       status: 403,
       errors: null,
-      message: 'Http failure response: 403 Forbidden'
+      message: 'Http failure response: 403 Forbidden',
     };
     const action = new fromHearingLinksAction.SubmitLinkedHearingGroupFailure(payload);
     expect(action.type).toBe(fromHearingLinksAction.SUBMIT_LINKED_HEARING_GROUP_FAILURE);

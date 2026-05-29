@@ -1,7 +1,6 @@
 import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
-import * as sinonChai from 'sinon-chai';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import * as configIndex from './index';
@@ -13,6 +12,8 @@ import * as chaiAsPromised from 'chai-as-promised';
 // Access the module to clear cache
 const uiConfigModule = require('./uiConfigRouter');
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
 
@@ -69,9 +70,7 @@ describe('uiConfigRouter', () => {
     });
 
     it('should register GET / route', () => {
-      const routes = router.stack
-        .filter((layer) => layer.route)
-        .map((layer) => layer.route.path);
+      const routes = router.stack.filter((layer) => layer.route).map((layer) => layer.route.path);
       expect(routes).to.include('/');
     });
   });
@@ -122,7 +121,7 @@ describe('uiConfigRouter', () => {
         waWorkflowApi: 'https://wa.workflow.api',
         judicialBookingApi: 'https://judicial.booking.api',
         headerConfig: mockMenuConfig,
-        hearingJurisdictionConfig: mockHearingConfig
+        hearingJurisdictionConfig: mockHearingConfig,
       });
     });
 
@@ -160,8 +159,7 @@ describe('uiConfigRouter', () => {
       setupMenuConfigStub.resetBehavior();
       setupMenuConfigStub.throws(new Error('Menu config error'));
 
-      await expect(routeHandler(req, res, next))
-        .to.be.rejectedWith('Menu config error');
+      await expect(routeHandler(req, res, next)).to.be.rejectedWith('Menu config error');
     });
 
     it('should handle errors in setupHearingConfigs', async () => {
@@ -171,8 +169,7 @@ describe('uiConfigRouter', () => {
       setupHearingConfigsStub.resetBehavior();
       setupHearingConfigsStub.throws(new Error('Hearing config error'));
 
-      await expect(routeHandler(req, res, next))
-        .to.be.rejectedWith('Hearing config error');
+      await expect(routeHandler(req, res, next)).to.be.rejectedWith('Hearing config error');
     });
   });
 

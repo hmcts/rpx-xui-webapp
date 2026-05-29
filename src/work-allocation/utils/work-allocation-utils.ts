@@ -1,6 +1,7 @@
 import { NavigationExtras } from '@angular/router';
 import { PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { HMCTSServiceDetails, UserInfo } from '../../app/models';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { OptionsModel } from '../../role-access/models/options-model';
 import { ISessionStorageService } from '../interfaces/common';
 import { Caseworker, CaseworkersByService, LocationsByRegion, LocationsByService } from '../models/dtos';
@@ -18,12 +19,10 @@ export interface FatalRedirect {
 
 export enum REDIRECTS {
   NotAuthorised = '/not-authorised',
-  ServiceDown = '/service-down'
+  ServiceDown = '/service-down',
 }
 
-export const WILDCARD_SERVICE_DOWN: FatalRedirect[] = [
-  { status: 0, redirectTo: REDIRECTS.ServiceDown }
-];
+export const WILDCARD_SERVICE_DOWN: FatalRedirect[] = [{ status: 0, redirectTo: REDIRECTS.ServiceDown }];
 
 export const treatAsFatal = (status: number, navigator: Navigator, fatals: FatalRedirect[]): number => {
   if (fatals && fatals.length > 0) {
@@ -66,7 +65,12 @@ export const handleFatalErrors = (status: number, navigator: Navigator, fatals?:
   }
 };
 
-export const handleTasksFatalErrors = (status: number, navigator: Navigator, fatals?: FatalRedirect[], returnUrl?: string): number => {
+export const handleTasksFatalErrors = (
+  status: number,
+  navigator: Navigator,
+  fatals?: FatalRedirect[],
+  returnUrl?: string
+): number => {
   switch (status) {
     case 401:
     case 403:
@@ -112,17 +116,22 @@ export const getCaseworkers = (serviceId: string, sessionStorageService: ISessio
   const sessionKey = getCaseworkerSessionStorageKeyForServiceId(serviceId);
   const value = sessionStorageService.getItem(sessionKey);
   if (value) {
-    return JSON.parse(value) as Caseworker[];
+    return safeJsonParse<Caseworker[]>(value, []);
   }
+  return [];
 };
 
-export const setCaseworkers = (serviceId: string, caseworkers: Caseworker[], sessionStorageService: ISessionStorageService): void => {
+export const setCaseworkers = (
+  serviceId: string,
+  caseworkers: Caseworker[],
+  sessionStorageService: ISessionStorageService
+): void => {
   const sessionKey = getCaseworkerSessionStorageKeyForServiceId(serviceId);
   sessionStorageService.setItem(sessionKey, JSON.stringify(caseworkers));
 };
 
 export const getAssigneeName = (caseworkers: any[], assignee: string): string => {
-  if (assignee && caseworkers && caseworkers.some((cw) => cw.idamId === assignee)) {
+  if (assignee && caseworkers?.some((cw) => cw.idamId === assignee)) {
     const assignedCW = caseworkers.filter((cw) => cw.idamId === assignee)[0];
     return `${assignedCW.firstName} ${assignedCW.lastName}`;
   }
@@ -135,15 +144,19 @@ export const servicesMap: { [key: string]: string } = {
   CIVIL: 'Civil',
   PRIVATELAW: 'Private Law',
   PUBLICLAW: 'Public Law',
-  EMPLOYMENT: 'Employment'
+  EMPLOYMENT: 'Employment',
 };
 
 export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessionStorageService): OptionsModel[] {
   const options = new Array<OptionsModel>();
   // Consider role categories only with either OWN or EXECUTE permissions
-  const roleCategories = taskRoles.filter((role) => role.role_category
-    && (roleIncludes(role.permissions, TaskPermission.OWN) || roleIncludes(role.permissions, TaskPermission.EXECUTE))).
-    map((taskRole) => taskRole.role_category as RoleCategory);
+  const roleCategories = taskRoles
+    .filter(
+      (role) =>
+        role.role_category &&
+        (roleIncludes(role.permissions, TaskPermission.OWN) || roleIncludes(role.permissions, TaskPermission.EXECUTE))
+    )
+    .map((taskRole) => taskRole.role_category as RoleCategory);
 
   // Decide the category to be selected by default
   const roleCategoryToSelectByDefault = getRoleCategoryToBeSelectedByDefault(taskRoles, sessionStorageService);
@@ -152,12 +165,12 @@ export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessio
       let label;
       try {
         label = getLabel(roleCategory);
-        // eslint-disable-next-line no-empty
-      } catch (error) { }
+        // eslint-disable-next-line no-empty, @typescript-eslint/no-unused-vars
+      } catch (error) {}
       const option: OptionsModel = {
         optionId: roleCategory,
         optionValue: roleCategory,
-        label
+        label,
       };
       if (roleCategory === roleCategoryToSelectByDefault) {
         option.checked = 'checked';
@@ -170,18 +183,22 @@ export function getOptions(taskRoles: TaskRole[], sessionStorageService: ISessio
   return options;
 }
 
-export function getRoleCategoryToBeSelectedByDefault(taskRoles: TaskRole[], sessionStorageService: ISessionStorageService): RoleCategory {
+export function getRoleCategoryToBeSelectedByDefault(
+  taskRoles: TaskRole[],
+  sessionStorageService: ISessionStorageService
+): RoleCategory {
   // Consider only role categories with OWN permission for radio button default selection
-  const uniqueRoleCategoriesWithOwnPermissions = taskRoles.filter((role) => role.role_category
-    && (roleIncludes(role.permissions, TaskPermission.OWN))).
-    map((taskRole) => taskRole.role_category as RoleCategory).
-    filter((role, index, taskRolesToFilter) => {
+  const uniqueRoleCategoriesWithOwnPermissions = taskRoles
+    .filter((role) => role.role_category && roleIncludes(role.permissions, TaskPermission.OWN))
+    .map((taskRole) => taskRole.role_category as RoleCategory)
+    .filter((role, index, taskRolesToFilter) => {
       return taskRolesToFilter.indexOf(role) === index;
     });
 
   // If more than one role category with OWN permission then use current user's role category
   return uniqueRoleCategoriesWithOwnPermissions.length === 1
-    ? uniqueRoleCategoriesWithOwnPermissions[0] : getCurrentUserRoleCategory(sessionStorageService);
+    ? uniqueRoleCategoriesWithOwnPermissions[0]
+    : getCurrentUserRoleCategory(sessionStorageService);
 }
 
 export function getLabel(roleCategory: RoleCategory): PersonRole {
@@ -239,26 +256,38 @@ export function getDestinationUrl(url: string): string {
 export function getCurrentUserRoleCategory(sessionStorageService: ISessionStorageService): RoleCategory {
   const userInfoStr = sessionStorageService.getItem('userDetails');
   if (userInfoStr) {
-    const userInfo: UserInfo = JSON.parse(userInfoStr);
+    const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+    if (!userInfo) {
+      return null;
+    }
     return userInfo.roleCategory as RoleCategory;
   }
   return null;
 }
 
-export function addLocationToLocationsByService(locationsByServices: LocationsByService[], location: any, service: string, allLocationServices: string[]): LocationsByService[] {
+export function addLocationToLocationsByService(
+  locationsByServices: LocationsByService[],
+  location: any,
+  service: string,
+  allLocationServices: string[]
+): LocationsByService[] {
   if (allLocationServices.includes(service)) {
     // if we know that all location services includes the current service we need to ensure this is present
     return locationsByServices;
   }
   let locationsByService = locationsByServices.find((serviceLocations) => serviceLocations.service === service);
-  if (!locationsByService) {
-    // check to ensure that if service present with null location (i.e. a base location not within region), we register this
-    !location.id && !location.regionId ? locationsByServices.push({ service, locations: [] }) : locationsByServices.push({ service, locations: [location] });
-  } else {
+  if (locationsByService) {
     const finalDataWithoutService = locationsByServices.filter((serviceLocations) => serviceLocations.service !== service);
     // Need this to keep bookable attribute as true even if there is a non-bookable role on the same service
     locationsByService = { service, locations: locationsByService.locations.concat([location]) };
     locationsByServices = finalDataWithoutService.concat([locationsByService]);
+  } else {
+    // check to ensure that if service present with null location (i.e. a base location not within region), we register this
+    if (!location.id && !location.regionId) {
+      locationsByServices.push({ service, locations: [] });
+    } else {
+      locationsByServices.push({ service, locations: [location] });
+    }
   }
   return locationsByServices;
 }
@@ -276,7 +305,10 @@ export function locationWithinRegion(regionLocations: LocationsByRegion[], regio
   return withinRegion;
 }
 
-export function setServiceList(roleServiceIds: string[], detailedWAServices: HMCTSServiceDetails[]): { supportedJurisdictions: string[], detailedWAServices: HMCTSServiceDetails[] } {
+export function setServiceList(
+  roleServiceIds: string[],
+  detailedWAServices: HMCTSServiceDetails[]
+): { supportedJurisdictions: string[]; detailedWAServices: HMCTSServiceDetails[] } {
   const supportedJurisdictions = [];
   detailedWAServices.forEach((jurisdiction) => {
     // get the serviceIds from the detailed service

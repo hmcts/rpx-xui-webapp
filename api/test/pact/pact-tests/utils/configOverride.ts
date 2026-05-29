@@ -1,109 +1,111 @@
 const defaultConfig = {
   log4JConfig: {
-    'appenders': {
-      'out': {
-        'layout': {
-          'pattern': '%[%d | %p |%X{catFormatted}|%] %m%n',
-          'type': 'pattern'
+    appenders: {
+      out: {
+        layout: {
+          pattern: '%[%d | %p |%X{catFormatted}|%] %m%n',
+          type: 'pattern',
         },
-        'type': 'stdout'
-      }
+        type: 'stdout',
+      },
     },
-    'categories': {
-      'default': { 'appenders': ['out'], 'level': 'info' }
-    }
+    categories: {
+      default: { appenders: ['out'], level: 'info' },
+    },
   },
-  'maxLogLine': 80
+  serviceRefDataMapping: undefined,
+  waSupportedJurisdictions: undefined,
+  maxLogLine: 80,
 };
 export function getSearchTaskOverrides(waTaskAPiUrl) {
   return {
+    ...defaultConfig,
     'services.work_allocation.taskApi': waTaskAPiUrl,
-    'waSupportedJurisdictions': 'IA',
-    ...defaultConfig
+    waSupportedJurisdictions: 'IA',
   };
 }
 
 export function getWorkAllocationAPIOverrides(waTaskAPiUrl) {
   return {
     'services.work_allocation.taskApi': waTaskAPiUrl,
-    ...defaultConfig
+    ...defaultConfig,
   };
 }
 
 export function getCaseworkerRefDataAPIOverrides(cwRefApiUrl) {
   return {
     'services.case.caseworkerApi': cwRefApiUrl,
-    ...defaultConfig
+    ...defaultConfig,
   };
 }
 
 export function getLocationsRefDataAPIOverrides(locationRefApiUrl) {
   return {
     'services.location_api': locationRefApiUrl,
-    ...defaultConfig
+    ...defaultConfig,
   };
 }
 
 export function getPrdLocationsRefDataAPIOverrides(prdLocationRefApiUrl) {
   return {
     'services.prd.locationApi': prdLocationRefApiUrl,
-    ...defaultConfig
+    ...defaultConfig,
   };
 }
 
 export function getAccessManagementServiceAPIOverrides(accessManagementAPI) {
   return {
     'services.role_assignment.roleApi': accessManagementAPI,
-    ...defaultConfig
+    ...defaultConfig,
   };
 }
 
 export function getJudicialRefDataAPIOverrides(judicialRefApiUrl) {
   return {
     'services.prd.judicialApi': judicialRefApiUrl,
-    ...defaultConfig
+    ...defaultConfig,
   };
 }
 
 export function getCcdDataAPIOverrides(ccdDataApiUrl) {
   return {
     'services.ccd.dataApi': ccdDataApiUrl,
-    ...defaultConfig
+    ...defaultConfig,
   };
 }
 
 export function getNocAPIOverrides(nocAPiUrl) {
   return {
     'services.ccd.caseAssignmentApi': nocAPiUrl,
-    'waSupportedJurisdictions': 'IA',
-    ...defaultConfig
+    waSupportedJurisdictions: 'IA',
+    ...defaultConfig,
   };
 }
 
 export function getHearingsAPIOverrides(hearingsRefApiUrl: string) {
   return {
     'services.hearings.hmcApi': hearingsRefApiUrl,
-    ...defaultConfig
+    ...defaultConfig,
   };
 }
 
 export function getRdCommonDataAPIOverrides(rdCommonDataApiUrl) {
   return {
     'services.prd.commondataApi': rdCommonDataApiUrl,
-    ...defaultConfig
+    ...defaultConfig,
   };
 }
 
 export function getAccessManagementRoleMappingServiceAPIOverrides(accessManagementRoleMappingAPI) {
   return {
     'services.role_assignment.roleMappingApi': accessManagementRoleMappingAPI,
-    ...defaultConfig
+    ...defaultConfig,
   };
 }
 
 export function getJudicialBookingAPIOverrides(judicialBookingApiUrl) {
   return {
     'services.judicialBookingApi': judicialBookingApiUrl,
-    ...defaultConfig
+    ...defaultConfig,
   };
 }

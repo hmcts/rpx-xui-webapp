@@ -4,18 +4,6 @@ import { IntegerPipe } from './integer.pipe';
 import { TwoDPPipe } from './two-dp.pipe';
 import { YesNoPipe } from './yes-no.pipe';
 
-export const pipes: any[] = [
-  CaseworkerDisplayName,
-  DaysFromTodayPipe,
-  IntegerPipe,
-  TwoDPPipe,
-  YesNoPipe
-];
+export const pipes: any[] = [CaseworkerDisplayName, DaysFromTodayPipe, IntegerPipe, TwoDPPipe, YesNoPipe];
 
-export {
-  CaseworkerDisplayName,
-  DaysFromTodayPipe,
-  IntegerPipe,
-  TwoDPPipe,
-  YesNoPipe
-};
+export { CaseworkerDisplayName, DaysFromTodayPipe, IntegerPipe, TwoDPPipe, YesNoPipe };

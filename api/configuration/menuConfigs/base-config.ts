@@ -1,44 +1,42 @@
 export const baseConfig = {
   '(judge)|(judiciary)|(panelmember)': [
     {
-      'active': true,
-      'flags': [
+      active: true,
+      flags: [
         'MC_Work_Allocation',
         {
-          'flagName': 'mc-work-allocation-active-feature',
-          'value': 'WorkAllocationRelease2'
-        }
+          flagName: 'mc-work-allocation-active-feature',
+          value: 'WorkAllocationRelease2',
+        },
       ],
-      'href': '/work/my-work/list',
-      'roles': [
+      href: '/work/my-work/list',
+      roles: [
         'caseworker-civil',
         'caseworker-ia-iacjudge',
         'caseworker-privatelaw',
         'caseworker-publiclaw',
         'caseworker-employment-etjudge',
-        'caseworker-st_cic'
+        'caseworker-st_cic',
       ],
-      'text': 'My work'
+      text: 'My work',
     },
     {
-      'active': false,
-      'flags': [
+      active: false,
+      flags: [
         'MC_Work_Allocation',
         {
-          'flagName': 'mc-work-allocation-active-feature',
-          'value': 'WorkAllocationRelease2'
-        }
+          flagName: 'mc-work-allocation-active-feature',
+          value: 'WorkAllocationRelease2',
+        },
       ],
-      'href': '/work/all-work/tasks',
-      'roles': [
-        'task-supervisor'
-      ],
-      'text': 'All work'
+      href: '/work/all-work/tasks',
+      roles: ['task-supervisor'],
+      text: 'All work',
     },
     {
-      'active': false,
-      'href': '/cases',
-      'roles': [
+      active: false,
+      href: '/cases',
+      roles: [
         'caseworker-sscs-judge',
         'caseworker-sscs-panelmember',
         'caseworker-cmc-judge',
@@ -51,18 +49,16 @@ export const baseConfig = {
         'caseworker-publiclaw-judiciary',
         'caseworker-employment-etjudge',
         'caseworker-st_cic',
-        'caseworker-pcs'
+        'caseworker-pcs',
       ],
-      'text': 'Case list'
+      text: 'Case list',
     },
     {
-      'active': false,
-      'flags': [
-        'feature-global-search'
-      ],
-      'href': '/cases/case-search',
-      'ngClass': 'hmcts-search-toggle__button',
-      'roles': [
+      active: false,
+      flags: ['feature-global-search'],
+      href: '/cases/case-search',
+      ngClass: 'hmcts-search-toggle__button',
+      roles: [
         'caseworker-sscs-judge',
         'caseworker-sscs-panelmember',
         'caseworker-cmc-judge',
@@ -72,17 +68,15 @@ export const baseConfig = {
         'caseworker-publiclaw-judiciary',
         'caseworker-employment-etjudge',
         'caseworker-st_cic',
-        'caseworker-pcs'
+        'caseworker-pcs',
       ],
-      'text': 'Find case'
+      text: 'Find case',
     },
     {
-      'active': false,
-      'flags': [
-        'feature-global-search'
-      ],
-      'href': '/search',
-      'roles': [
+      active: false,
+      flags: ['feature-global-search'],
+      href: '/search',
+      roles: [
         'caseworker-civil',
         'caseworker-ia-iacjudge',
         'caseworker-privatelaw',
@@ -91,83 +85,71 @@ export const baseConfig = {
         'caseworker-st_cic-senior-judge',
         'caseworker-employment-etjudge',
         'caseworker-st_cic',
-        'caseworker-pcs'
+        'caseworker-pcs',
       ],
-      'text': 'Search'
+      text: 'Search',
     },
     {
-      'active': false,
-      'align': 'right',
-      'href': '/cases/case-search',
-      'ngClass': 'hmcts-search-toggle__button',
-      'notFlags': [
-        'feature-global-search'
-      ],
-      'text': 'Find case'
+      active: false,
+      align: 'right',
+      href: '/cases/case-search',
+      ngClass: 'hmcts-search-toggle__button',
+      notFlags: ['feature-global-search'],
+      text: 'Find case',
     },
     {
-      'active': false,
-      'href': '/booking',
-      'roles': [
-        'fee-paid-judge'
-      ],
-      'text': 'Work access'
+      active: false,
+      href: '/booking',
+      roles: ['fee-paid-judge'],
+      text: 'Work access',
     },
     {
-      'active': true,
-      'align': 'right',
-      'flags': [
-        'feature-global-search'
-      ],
-      'href': '/cases/case-search',
-      'ngClass': 'hmcts-search-toggle__button',
-      'text': '16-digit-ref-search'
-    }
+      active: true,
+      align: 'right',
+      flags: ['feature-global-search'],
+      href: '/cases/case-search',
+      ngClass: 'hmcts-search-toggle__button',
+      text: '16-digit-ref-search',
+    },
   ],
   '(pui-case-manager)': [
     {
-      'active': false,
-      'href': '/cases',
-      'text': 'Case list'
+      active: false,
+      href: '/cases',
+      text: 'Case list',
     },
     {
-      'active': false,
-      'href': '/cases/case-filter',
-      'text': 'Create case'
+      active: false,
+      href: '/cases/case-filter',
+      text: 'Create case',
     },
     {
-      'active': false,
-      'flags': [
-        'MC_Notice_of_Change'
-      ],
-      'href': '/noc',
-      'roles': [
-        'caseworker-divorce-solicitor',
-        'caseworker-probate-solicitor',
-        'caseworker-privatelaw-solicitor'
-      ],
-      'text': 'Notice of change'
+      active: false,
+      flags: ['MC_Notice_of_Change'],
+      href: '/noc',
+      roles: ['caseworker-divorce-solicitor', 'caseworker-probate-solicitor', 'caseworker-privatelaw-solicitor'],
+      text: 'Notice of change',
     },
     {
-      'active': false,
-      'align': 'right',
-      'href': '/cases/case-search',
-      'ngClass': 'hmcts-search-toggle__button',
-      'text': 'Find case'
-    }
+      active: false,
+      align: 'right',
+      href: '/cases/case-search',
+      ngClass: 'hmcts-search-toggle__button',
+      text: 'Find case',
+    },
   ],
   '.+': [
     {
-      'active': true,
-      'flags': [
+      active: true,
+      flags: [
         'MC_Work_Allocation',
         {
-          'flagName': 'mc-work-allocation-active-feature',
-          'value': 'WorkAllocationRelease2'
-        }
+          flagName: 'mc-work-allocation-active-feature',
+          value: 'WorkAllocationRelease2',
+        },
       ],
-      'href': '/work/my-work/list',
-      'roles': [
+      href: '/work/my-work/list',
+      roles: [
         'caseworker-civil',
         'caseworker-civil-staff',
         'caseworker-ia-caseofficer',
@@ -175,60 +157,53 @@ export const baseConfig = {
         'caseworker-privatelaw',
         'caseworker-publiclaw',
         'caseworker-employment',
-        'caseworker-st_cic'
+        'caseworker-st_cic',
       ],
-      'text': 'My work'
+      text: 'My work',
     },
     {
-      'active': false,
-      'flags': [
+      active: false,
+      flags: [
         'MC_Work_Allocation',
         {
-          'flagName': 'mc-work-allocation-active-feature',
-          'value': 'WorkAllocationRelease2'
-        }
+          flagName: 'mc-work-allocation-active-feature',
+          value: 'WorkAllocationRelease2',
+        },
       ],
-      'href': '/work/all-work/tasks',
-      'roles': [
-        'task-supervisor'
-      ],
-      'text': 'All work'
+      href: '/work/all-work/tasks',
+      roles: ['task-supervisor'],
+      text: 'All work',
     },
     {
-      'active': false,
-      'flags': [
+      active: false,
+      flags: [
         'MC_Work_Allocation',
         {
-          'flagName': 'mc-work-allocation-active-feature',
-          'value': 'WorkAllocationRelease1'
-        }
+          flagName: 'mc-work-allocation-active-feature',
+          value: 'WorkAllocationRelease1',
+        },
       ],
-      'href': '/tasks',
-      'roles': [
-        'caseworker-ia-caseofficer'
-      ],
-      'text': 'Task list'
+      href: '/tasks',
+      roles: ['caseworker-ia-caseofficer'],
+      text: 'Task list',
     },
     {
-      'active': false,
-      'flags': [
+      active: false,
+      flags: [
         'MC_Work_Allocation',
         {
-          'flagName': 'mc-work-allocation-active-feature',
-          'value': 'WorkAllocationRelease1'
-        }
+          flagName: 'mc-work-allocation-active-feature',
+          value: 'WorkAllocationRelease1',
+        },
       ],
-      'href': '/tasks/task-manager',
-      'roles': [
-        'caseworker-ia-caseofficer',
-        'task-supervisor'
-      ],
-      'text': 'Task manager'
+      href: '/tasks/task-manager',
+      roles: ['caseworker-ia-caseofficer', 'task-supervisor'],
+      text: 'Task manager',
     },
     {
-      'active': false,
-      'href': '/cases',
-      'roles': [
+      active: false,
+      href: '/cases',
+      roles: [
         'caseworker-caa',
         'caseworker-divorce',
         'caseworker-sscs',
@@ -242,23 +217,21 @@ export const baseConfig = {
         'caseworker-ia',
         'caseworker-publiclaw',
         'caseworker-st_cic',
-        'caseworker-pcs'
+        'caseworker-pcs',
       ],
-      'text': 'Case list'
+      text: 'Case list',
     },
     {
-      'active': false,
-      'href': '/cases/case-filter',
-      'text': 'Create case'
+      active: false,
+      href: '/cases/case-filter',
+      text: 'Create case',
     },
     {
-      'active': false,
-      'flags': [
-        'feature-global-search'
-      ],
-      'href': '/cases/case-search',
-      'ngClass': 'hmcts-search-toggle__button',
-      'roles': [
+      active: false,
+      flags: ['feature-global-search'],
+      href: '/cases/case-search',
+      ngClass: 'hmcts-search-toggle__button',
+      roles: [
         'caseworker-caa',
         'caseworker-divorce',
         'caseworker-sscs',
@@ -272,17 +245,15 @@ export const baseConfig = {
         'caseworker-publiclaw',
         'caseworker-publiclaw-courtadmin',
         'caseworker-st_cic',
-        'caseworker-pcs'
+        'caseworker-pcs',
       ],
-      'text': 'Find case'
+      text: 'Find case',
     },
     {
-      'active': false,
-      'flags': [
-        'feature-global-search'
-      ],
-      'href': '/search',
-      'roles': [
+      active: false,
+      flags: ['feature-global-search'],
+      href: '/search',
+      roles: [
         'caseworker-civil',
         'caseworker-ia-caseofficer',
         'senior-tribunal-caseworker',
@@ -295,49 +266,38 @@ export const baseConfig = {
         'caseworker-st_cic-senior-caseworker',
         'caseworker-sscs',
         'caseworker-employment',
-        'caseworker-pcs'
+        'caseworker-pcs',
       ],
-      'text': 'Search'
+      text: 'Search',
     },
     {
-      'active': false,
-      'flags': [
-        'feature-refunds'
-      ],
-      'href': '/refunds',
-      'roles': [
-        'payments-refund-approver',
-        'payments-refund'
-      ],
-      'text': 'Refunds'
+      active: false,
+      flags: ['feature-refunds'],
+      href: '/refunds',
+      roles: ['payments-refund-approver', 'payments-refund'],
+      text: 'Refunds',
     },
     {
-      'active': false,
-      'align': 'right',
-      'href': '/cases/case-search',
-      'ngClass': 'hmcts-search-toggle__button',
-      'notFlags': [
-        'feature-global-search'
-      ],
-      'text': 'Find case'
+      active: false,
+      align: 'right',
+      href: '/cases/case-search',
+      ngClass: 'hmcts-search-toggle__button',
+      notFlags: ['feature-global-search'],
+      text: 'Find case',
     },
     {
-      'active': false,
-      'align': 'right',
-      'flags': [
-        'feature-global-search'
-      ],
-      'href': '',
-      'text': 'Find case'
+      active: false,
+      align: 'right',
+      flags: ['feature-global-search'],
+      href: '',
+      text: 'Find case',
     },
     {
-      'active': false,
-      'flags': [],
-      'href': '/staff',
-      'roles': [
-        'staff-admin'
-      ],
-      'text': 'Staff'
-    }
-  ]
+      active: false,
+      flags: [],
+      href: '/staff',
+      roles: ['staff-admin'],
+      text: 'Staff',
+    },
+  ],
 };

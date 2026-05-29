@@ -4,7 +4,7 @@ import { getConfigValue } from '../configuration';
 import {
   GLOBAL_SEARCH_SERVICES,
   SERVICES_CCD_DATA_STORE_API_PATH,
-  SERVICES_LOCATION_REF_API_URL
+  SERVICES_LOCATION_REF_API_URL,
 } from '../configuration/references';
 import { HMCTSServiceDetails } from '../interfaces/hmctsServiceDetails';
 import { EnhancedRequest, JUILogger } from '../lib/models';
@@ -72,15 +72,24 @@ export function generateServices(refDataHMCTS: RefDataHMCTSService[]): HMCTSServ
   const globalSearchServices: HMCTSServiceDetails[] = [];
   globalSearchServiceIdsArray.forEach((serviceId) => {
     // search for the service name based on the globalSearchServiceId
-    const jurisdiction = refDataHMCTS?.length > 0 ? refDataHMCTS.filter((x) => {
-      return x && (x.ccd_service_name?.toLowerCase() === serviceId.toLowerCase());
-    }) : null;
+    const jurisdiction =
+      refDataHMCTS?.length > 0
+        ? refDataHMCTS.filter((x) => {
+            return x && x.ccd_service_name?.toLowerCase() === serviceId.toLowerCase();
+          })
+        : null;
     if (jurisdiction && jurisdiction.length > 0) {
       // handle Civil service which has different service_short_description
       if (jurisdiction.length > 1) {
-        globalSearchServices.push({ serviceId: jurisdiction[0].ccd_service_name, serviceName: toTitleCase(jurisdiction[0].ccd_service_name) });
+        globalSearchServices.push({
+          serviceId: jurisdiction[0].ccd_service_name,
+          serviceName: toTitleCase(jurisdiction[0].ccd_service_name),
+        });
       } else {
-        globalSearchServices.push({ serviceId: jurisdiction[0].ccd_service_name, serviceName: jurisdiction[0].service_short_description });
+        globalSearchServices.push({
+          serviceId: jurisdiction[0].ccd_service_name,
+          serviceName: jurisdiction[0].service_short_description,
+        });
       }
     } else {
       globalSearchServices.push({ serviceId, serviceName: serviceId });

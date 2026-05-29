@@ -12,8 +12,9 @@ import { RoleExclusionsService } from '../../../services';
 import * as fromFeature from '../../../store';
 
 @Component({
+  standalone: false,
   selector: 'exui-choose-person-role',
-  templateUrl: './choose-person-role.component.html'
+  templateUrl: './choose-person-role.component.html',
 })
 export class ChoosePersonRoleComponent implements OnInit, OnDestroy {
   public ERROR_MESSAGE = ERROR_MESSAGE;
@@ -34,15 +35,15 @@ export class ChoosePersonRoleComponent implements OnInit, OnDestroy {
 
   public personRole: PersonRole;
 
-  constructor(private readonly store: Store<fromFeature.State>,
-              private readonly roleExclusionsService: RoleExclusionsService) {}
+  constructor(
+    private readonly store: Store<fromFeature.State>,
+    private readonly roleExclusionsService: RoleExclusionsService
+  ) {}
 
   public ngOnInit(): void {
-    this.exclusionStateDataSub = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe(
-      (exclusionStateData) => {
-        this.personRole = exclusionStateData.personRole;
-      }
-    );
+    this.exclusionStateDataSub = this.store.pipe(select(fromFeature.getRoleAccessState)).subscribe((exclusionStateData) => {
+      this.personRole = exclusionStateData.personRole;
+    });
 
     this.radioOptionControl = new FormControl(this.personRole ? this.personRole : '', [Validators.required]);
     this.formGroup = new FormGroup({ [this.radioControlName]: this.radioOptionControl });
@@ -51,7 +52,8 @@ export class ChoosePersonRoleComponent implements OnInit, OnDestroy {
     this.roles$.subscribe((roles) => {
       this.optionsList = roles.map((role) => {
         return {
-          optionId: role.roleId, optionValue: role.roleName
+          optionId: role.roleId,
+          optionValue: role.roleName,
         } as OptionsModel;
       });
     });
@@ -61,7 +63,7 @@ export class ChoosePersonRoleComponent implements OnInit, OnDestroy {
     this.submitted = true;
     if (this.radioOptionControl.invalid) {
       this.radioOptionControl.setErrors({
-        invalid: true
+        invalid: true,
       });
       return;
     }
@@ -72,8 +74,7 @@ export class ChoosePersonRoleComponent implements OnInit, OnDestroy {
     switch (navEvent) {
       case ExclusionNavigationEvent.CONTINUE:
         const personRole = this.radioOptionControl.value;
-        this.store.dispatch(new fromFeature.SavePersonRoleAndGo({ personRole,
-          exclusionState: ExclusionState.FIND_PERSON }));
+        this.store.dispatch(new fromFeature.SavePersonRoleAndGo({ personRole, exclusionState: ExclusionState.FIND_PERSON }));
         break;
       default:
         throw new Error('Invalid option');

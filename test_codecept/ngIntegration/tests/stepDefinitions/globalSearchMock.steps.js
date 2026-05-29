@@ -14,14 +14,14 @@ Given('I set global search mock results count {int}', async function (count) {
   globalSearchMockData.searchResponse.resultInfo.moreResultsToGo = false;
   globalSearchMockData.searchResponse.results = [];
 
-  for (let i = 0; i < count; i++){
+  for (let i = 0; i < count; i++) {
     globalSearchMockData.searchResponse.results.push(globalSearchDataModel.getCaseResult());
   }
 
   globalSearchMockData.mockName = 'TEST_UPDATED_1';
 });
 
-Given('I set set global search mock results response and resultInfo', async function (datatable){
+Given('I set set global search mock results response and resultInfo', async function (datatable) {
   const datatableHashes = datatable.parse().hashes();
 
   globalSearchMockData.searchResponse.resultInfo.caseStartRecord = parseInt(datatableHashes[0].caseStartRecord);
@@ -35,7 +35,10 @@ Given('I set set global search mock results response and resultInfo', async func
   const authCookies = await browser.driver.manage().getCookies();
   const authCookie = authCookies.find((cookie) => cookie.name === '__auth__');
 
-  await backendMockClient.setUserApiData(authCookie.value, 'GlobalSearchResults', { status: 200, data: globalSearchMockData.searchResponse });
+  await backendMockClient.setUserApiData(authCookie.value, 'GlobalSearchResults', {
+    status: 200,
+    data: globalSearchMockData.searchResponse,
+  });
 
   // MockApp.onPost('/api/globalsearch/results', (req, res) => {
   //     res.send(globalSearchMockData.getResults());
@@ -45,15 +48,15 @@ Given('I set set global search mock results response and resultInfo', async func
 Given('I set global search mock results with values', async function (datatable) {
   const datatableHashes = datatable.parse().hashes();
 
-  for (const datatableHash of datatableHashes){
+  for (const datatableHash of datatableHashes) {
     const caseInResult = globalSearchMockData.searchResponse.results[parseInt(datatableHash.index)];
 
     const keys = Object.keys(datatableHash);
 
-    for (const key of keys){
-      if (key === 'index'){
+    for (const key of keys) {
+      if (key === 'index') {
         //do nothing
-      } else if (key === 'otherReferences'){
+      } else if (key === 'otherReferences') {
         caseInResult.otherReferences.push(datatableHash[key]);
       } else {
         caseInResult[key] = datatableHash[key];
@@ -63,5 +66,8 @@ Given('I set global search mock results with values', async function (datatable)
   const authCookies = await browser.driver.manage().getCookies();
   const authCookie = authCookies.find((cookie) => cookie.name === '__auth__');
 
-  await backendMockClient.setUserApiData(authCookie.value, 'GlobalSearchResults', { status: 200, data: globalSearchMockData.searchResponse });
+  await backendMockClient.setUserApiData(authCookie.value, 'GlobalSearchResults', {
+    status: 200,
+    data: globalSearchMockData.searchResponse,
+  });
 });

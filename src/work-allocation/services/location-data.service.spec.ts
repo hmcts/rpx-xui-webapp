@@ -15,8 +15,7 @@ describe('WorkAllocation', () => {
     it('getLocations should make correct api call', () => {
       const service = new LocationDataService(mockHttpService, sessionStorageService);
       const options = {
-        params: new HttpParams()
-          .set('serviceCodes', 'CIVIL')
+        params: new HttpParams().set('serviceCodes', 'CIVIL'),
       };
       sessionStorageService.getItem.and.returnValue(null);
       mockHttpService.get.and.returnValue(of([]));
@@ -35,8 +34,7 @@ describe('WorkAllocation', () => {
     it('getSpecificLocations should make correct api call', () => {
       const service = new LocationDataService(mockHttpService, sessionStorageService);
       const options = {
-        params: new HttpParams()
-          .set('serviceCodes', 'CIVIL')
+        params: new HttpParams().set('serviceCodes', 'CIVIL'),
       };
       sessionStorageService.getItem.and.returnValue(null);
       mockHttpService.get.and.returnValue(of([]));

@@ -1,4 +1,3 @@
-
 const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 
 const ArrayUtil = require('../../utils/ArrayUtil');
@@ -7,10 +6,12 @@ const SoftAssert = require('../../../ngIntegration/util/softAssert');
 const errorPageObject = require('../pageObjects/common/errorPage');
 const MessageBanner = require('../pageObjects/messageBanner');
 const exuiErrorMessage = require('../pageObjects/common/exuiErrorMessage');
-function headerPage () { return require('../pageObjects/headerPage')(); }
+function headerPage() {
+  return require('../pageObjects/headerPage')();
+}
 
 const messageBanner = new MessageBanner($('exui-root'));
-Then('I see error message of type {string} displayed with message {string}', async function(errorType, errorMessage){
+Then('I see error message of type {string} displayed with message {string}', async function (errorType, errorMessage) {
   const errorTypePage = errorType.toLowerCase();
 
   await BrowserWaits.retryWithActionCallback(async () => {
@@ -24,9 +25,10 @@ Then('I see error message of type {string} displayed with message {string}', asy
         return msg.includes(errorMessage);
       });
       expect(matchingMessages.length > 1, `${errorMessage} is not displayed, Actual message(s) ${bannerMessages}`).to.be.true;
-    } else if (errorTypePage.includes('message')){
+    } else if (errorTypePage.includes('message')) {
       expect(await exuiErrorMessage.isDisplayed()).to.be.true;
-      expect(await exuiErrorMessage.isMessageDisplayedInSummary(errorMessage), 'Message diaplayed does noyt include expected').to.be.true;
+      expect(await exuiErrorMessage.isMessageDisplayedInSummary(errorMessage), 'Message diaplayed does noyt include expected').to
+        .be.true;
     } else if (errorTypePage.includes('validation')) {
       const validationError = $('.validation-error');
       await BrowserWaits.waitForElement(validationError);
@@ -38,16 +40,18 @@ Then('I see error message of type {string} displayed with message {string}', asy
   });
 });
 
-Then('I validate for error messge type {string}, if it is banner message I see page {string} displayed', async function (errorType, page){
-  await BrowserWaits.retryWithActionCallback(async () => {
-    if (errorTypePage.includes('page')) {
-      return;
-    } else if (errorTypePage.includes('banner')) {
-      expect(await messageBanner.isBannerMessageDisplayed()).to.be.true;
-      expect(await headerPage().isPrimaryTabPageDisplayed(page)).to.be.true;
-    } else {
-      throw new Error(`${errorType} is not recognised or not implemented in step definition of tests`);
-    }
-  });
-});
-
+Then(
+  'I validate for error messge type {string}, if it is banner message I see page {string} displayed',
+  async function (errorType, page) {
+    await BrowserWaits.retryWithActionCallback(async () => {
+      if (errorTypePage.includes('page')) {
+        return;
+      } else if (errorTypePage.includes('banner')) {
+        expect(await messageBanner.isBannerMessageDisplayed()).to.be.true;
+        expect(await headerPage().isPrimaryTabPageDisplayed(page)).to.be.true;
+      } else {
+        throw new Error(`${errorType} is not recognised or not implemented in step definition of tests`);
+      }
+    });
+  }
+);

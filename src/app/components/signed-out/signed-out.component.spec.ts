@@ -3,7 +3,10 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { SignedOutComponent } from './signed-out.component';
 
-@Pipe({ name: 'rpxTranslate' })
+@Pipe({
+  standalone: false,
+  name: 'rpxTranslate',
+})
 class RpxTranslateMockPipe implements PipeTransform {
   public transform(value: string): string {
     return value;
@@ -17,9 +20,8 @@ describe('Signed Out component', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [SignedOutComponent, RpxTranslateMockPipe],
-      schemas: [CUSTOM_ELEMENTS_SCHEMA]
-    })
-      .compileComponents();
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
+    }).compileComponents();
   }));
 
   beforeEach(() => {
@@ -38,8 +40,8 @@ describe('Signed Out component', () => {
     expect(headingElement.textContent).toContain('We have signed you out');
     expect(translatePipeSpy).toHaveBeenCalledWith('We have signed you out');
     const bodyElement = fixture.debugElement.query(By.css('.govuk-body')).nativeElement;
-    expect(bodyElement.textContent).toContain('For your security, we\'ve signed you out of your account');
-    expect(translatePipeSpy).toHaveBeenCalledWith('For your security, we\'ve signed you out of your account');
+    expect(bodyElement.textContent).toContain("For your security, we've signed you out of your account");
+    expect(translatePipeSpy).toHaveBeenCalledWith("For your security, we've signed you out of your account");
     const linkButtonElement = fixture.debugElement.query(By.css('.govuk-button')).nativeElement;
     expect(linkButtonElement.textContent).toContain('Sign in');
     expect(translatePipeSpy).toHaveBeenCalledWith('Sign in');

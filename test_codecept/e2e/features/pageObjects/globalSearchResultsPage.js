@@ -3,19 +3,43 @@ const { $, elementByXpath } = require('../../../helpers/globals');
 const BrowserWaits = require('../../support/customWaits');
 
 class GlobalSearchResultsPage {
-  get pageHeader() { return elementByXpath('//exui-search-results//exui-page-wrapper//h1[contains(text(),"Search results")]'); }
-  get changeSearchLink() { return elementByXpath('//exui-search-results//exui-page-wrapper//p//a[contains(text(),"Change search")]'); }
+  get pageHeader() {
+    return elementByXpath('//exui-search-results//exui-page-wrapper//h1[contains(text(),"Search results")]');
+  }
+  get changeSearchLink() {
+    return elementByXpath('//exui-search-results//exui-page-wrapper//p//a[contains(text(),"Change search")]');
+  }
 
-  get previousPageLink() { return elementByXpath('//exui-search-results//xuilib-pagination//*[contains(@class,"hmcts-pagination__link") and contains(text(),"Previous page")]'); }
-  get nextpageLink() { return elementByXpath('//exui-search-results//xuilib-pagination//*[contains(@class,"hmcts-pagination__link") and contains(text(),"Next page")]'); }
+  get previousPageLink() {
+    return elementByXpath(
+      '//exui-search-results//xuilib-pagination//*[contains(@class,"hmcts-pagination__link") and contains(text(),"Previous page")]'
+    );
+  }
+  get nextpageLink() {
+    return elementByXpath(
+      '//exui-search-results//xuilib-pagination//*[contains(@class,"hmcts-pagination__link") and contains(text(),"Next page")]'
+    );
+  }
 
-  get table() { return $('exui-search-results exui-page-wrapper table'); }
-  get tableHeaderColumns() { return $$('exui-search-results exui-page-wrapper table thead tr th'); }
-  get tableDataRows() { return $$('exui-search-results exui-page-wrapper table tbody tr'); }
+  get table() {
+    return $('exui-search-results exui-page-wrapper table');
+  }
+  get tableHeaderColumns() {
+    return $$('exui-search-results exui-page-wrapper table thead tr th');
+  }
+  get tableDataRows() {
+    return $$('exui-search-results exui-page-wrapper table tbody tr');
+  }
 
-  get noResultsPageHeader() { return elementByXpath('//exui-no-results//exui-page-wrapper//h1[contains(text(),"No results found")]'); }
-  get noResultsPageContainer() { return elementByXpath('//exui-no-results//exui-page-wrapper//h1[contains(text(),"No results found")]/..'); }
-  get noResultsPageBackLink() { return elementByXpath('//exui-no-results//a[contains(text(),"Back")]'); }
+  get noResultsPageHeader() {
+    return elementByXpath('//exui-no-results//exui-page-wrapper//h1[contains(text(),"No results found")]');
+  }
+  get noResultsPageContainer() {
+    return elementByXpath('//exui-no-results//exui-page-wrapper//h1[contains(text(),"No results found")]/..');
+  }
+  get noResultsPageBackLink() {
+    return elementByXpath('//exui-no-results//a[contains(text(),"Back")]');
+  }
 
   async amOnPage() {
     try {
@@ -97,4 +121,3 @@ class GlobalSearchResultsPage {
 }
 
 module.exports = new GlobalSearchResultsPage();
-

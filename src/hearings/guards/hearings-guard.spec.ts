@@ -15,7 +15,7 @@ describe('HearingsGuard', () => {
     canShareCases: true,
     sessionTimeout: {
       idleModalDisplayTime: 10,
-      totalIdleTime: 50
+      totalIdleTime: 50,
     },
     userInfo: {
       id: AppTestConstants.TEST_USER_ID,
@@ -23,20 +23,15 @@ describe('HearingsGuard', () => {
       surname: 'Wilson',
       email: 'lukesuperuserxui@mailnesia.com',
       active: true,
-      roles: [
-        'caseworker',
-        'caseworker-sscs'
-      ]
-    }
+      roles: ['caseworker', 'caseworker-sscs'],
+    },
   };
 
   const FEATURE_FLAG: FeatureVariation[] = [
     {
       jurisdiction: 'SSCS',
-      includeCaseTypes: [
-        'Benefit'
-      ]
-    }
+      includeCaseTypes: ['Benefit'],
+    },
   ];
   const CASE_VIEW: CaseView = {
     case_id: '1546518523959179',
@@ -45,17 +40,17 @@ describe('HearingsGuard', () => {
       name: 'Benefit',
       jurisdiction: {
         id: 'SSCS',
-        name: 'SSCS'
-      }
+        name: 'SSCS',
+      },
     },
     channels: [],
     state: {
       id: 'CaseCreated',
-      name: 'Case created'
+      name: 'Case created',
     },
     tabs: [],
     triggers: [],
-    events: []
+    events: [],
   };
   const CASE_VIEW_INV: CaseView = {
     case_id: '1546518523959179',
@@ -64,17 +59,17 @@ describe('HearingsGuard', () => {
       name: 'Benefit',
       jurisdiction: {
         id: 'IA',
-        name: 'IA'
-      }
+        name: 'IA',
+      },
     },
     channels: [],
     state: {
       id: 'CaseCreated',
-      name: 'Case created'
+      name: 'Case created',
     },
     tabs: [],
     triggers: [],
-    events: []
+    events: [],
   };
   const CASE_VIEW_INV2: CaseView = {
     case_id: undefined,
@@ -83,17 +78,17 @@ describe('HearingsGuard', () => {
       name: undefined,
       jurisdiction: {
         id: undefined,
-        name: undefined
-      }
+        name: undefined,
+      },
     },
     channels: [],
     state: {
       id: undefined,
-      name: undefined
+      name: undefined,
     },
     tabs: [],
     triggers: [],
-    events: []
+    events: [],
   };
 
   const CASE_INFO = { caseReference: '1546518523959179', caseType: 'Benefit', jurisdictionId: 'SSCS' };
@@ -108,7 +103,9 @@ describe('HearingsGuard', () => {
   beforeEach(() => {
     routerMock = jasmine.createSpyObj<Router>('router', ['navigate']);
     storeMock = jasmine.createSpyObj<Store<fromAppStore.State>>('store', ['pipe', 'select']);
-    hearingJurisdictionConfigMock = jasmine.createSpyObj<HearingJurisdictionConfigService>('hearingJurisdictionConfigService', ['getHearingJurisdictionsConfig']);
+    hearingJurisdictionConfigMock = jasmine.createSpyObj<HearingJurisdictionConfigService>('hearingJurisdictionConfigService', [
+      'getHearingJurisdictionsConfig',
+    ]);
     caseNotifierMock = jasmine.createSpyObj<CaseNotifier>('caseNotifier', [], { caseView: of(CASE_VIEW) });
   });
 

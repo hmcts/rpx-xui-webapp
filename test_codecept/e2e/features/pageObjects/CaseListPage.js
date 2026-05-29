@@ -5,7 +5,7 @@ const TaskMessageBanner = require('./messageBanner');
 const RuntimeTestData = require('../../support/runtimeTestData');
 const CucumberReportLogger = require('../../../codeceptCommon/reportLogger');
 const { LOG_LEVELS } = require('../../support/constants');
-class CaseListPage{
+class CaseListPage {
   constructor() {
     console.log('CaseListPage constructor called');
     this.taskInfoMessageBanner = new TaskMessageBanner('.case-list-component');
@@ -103,31 +103,29 @@ class CaseListPage{
     return $('.loading-spinner-in-action');
   }
 
-  async amOnPage(){
+  async amOnPage() {
     await BrowserWaits.waitForElement(this.caselistComponent);
     await BrowserWaits.waitForElement(this.searchFilterContainer);
 
-    return (await this.caselistComponent.isVisible());
+    return await this.caselistComponent.isVisible();
   }
 
-  async _waitForSearchComponent(){
+  async _waitForSearchComponent() {
     await BrowserWaits.waitForElement(this.searchFilterContainer);
     await BrowserWaits.waitForSpinnerToDissappear();
   }
 
   async _getOptionLocator(optionText) {
-  // Split “A | B | C” into tokens
-  const parts = optionText.split('|').map(t => t.trim());
+    // Split “A | B | C” into tokens
+    const parts = optionText.split('|').map((t) => t.trim());
 
-  // Build the predicate:  contains(text(),'A') or contains(text(),'B') …
-  const predicate = parts
-    .map(p => `contains(normalize-space(.), '${p}')`)
-    .join(' or ');
+    // Build the predicate:  contains(text(),'A') or contains(text(),'B') …
+    const predicate = parts.map((p) => `contains(normalize-space(.), '${p}')`).join(' or ');
 
-  return elementByXpath(`//option[${predicate}]`);
-}
+    return elementByXpath(`//option[${predicate}]`);
+  }
 
-  async selectJurisdiction(jurisdiction){
+  async selectJurisdiction(jurisdiction) {
     await BrowserWaits.waitForSeconds(1);
     await BrowserWaits.waitForSpinnerToDissappear();
     await this._waitForSearchComponent();
@@ -171,7 +169,7 @@ class CaseListPage{
     RuntimeTestData.workbasketInputs.state = state;
   }
 
-  async clickSearchApplyBtn(){
+  async clickSearchApplyBtn() {
     await BrowserWaits.retryWithActionCallback(async () => {
       await this._waitForSearchComponent();
       await BrowserWaits.waitForSpinnerToDissappear();
@@ -187,9 +185,12 @@ class CaseListPage{
     await this.searchReset.click();
   }
 
-  async waitForCaseResultsToDisplay(){
+  async waitForCaseResultsToDisplay() {
     await BrowserWaits.waitForElement(this.searchResultsTopPagination);
-    await CucumberReportLogger.AddMessage('starting wait for 2 sec for list to render  : ' + new Date().toTimeString(), LOG_LEVELS.Debug);
+    await CucumberReportLogger.AddMessage(
+      'starting wait for 2 sec for list to render  : ' + new Date().toTimeString(),
+      LOG_LEVELS.Debug
+    );
     await BrowserWaits.waitForSeconds(2);
     await CucumberReportLogger.AddMessage('wait complete : ' + new Date().toTimeString(), LOG_LEVELS.Debug);
   }
@@ -198,58 +199,60 @@ class CaseListPage{
     await BrowserWaits.waitForElement(this.noResultsNotification);
   }
 
-  async hasCaseListAnyResults(){
+  async hasCaseListAnyResults() {
     await this.searchResultsTopPagination.isVisible();
   }
 
-  async clickFirstCaseLink(){
+  async clickFirstCaseLink() {
     const currentPageUrl = await currentUrl();
     CucumberReportLogger.AddMessage(` Before navigation :   ${currentPageUrl}`);
     await BrowserWaits.waitForElement(this.ccdCaseSearchResult);
     let isNavigationSuccess = false;
     let retryAttemptsCounter = 0;
-    while (retryAttemptsCounter <= 3 && !isNavigationSuccess){
+    while (retryAttemptsCounter <= 3 && !isNavigationSuccess) {
       try {
         await this.caseListRows.nth(0).locator('td a').click();
         await BrowserWaits.waitForPageNavigation(currentPageUrl);
         isNavigationSuccess = true;
-      } catch (err){
+      } catch (err) {
         retryAttemptsCounter++;
-        CucumberReportLogger.AddMessage(`Error opening first case from case list. Retrying attempt ${retryAttemptsCounter} :   ${err}`);
+        CucumberReportLogger.AddMessage(
+          `Error opening first case from case list. Retrying attempt ${retryAttemptsCounter} :   ${err}`
+        );
       }
     }
     CucumberReportLogger.AddMessage(` After navigation :   ${await currentUrl()}`);
   }
 
-  async getCountOfCasesListedInPage(){
+  async getCountOfCasesListedInPage() {
     return await this.caseListRows.count();
   }
 
-  async isSelectAllColumnDisplayed(){
+  async isSelectAllColumnDisplayed() {
     return await this.tableHeaderSelectAllInput.isVisible();
   }
 
-  async isSelectCheckboxDisplayedForAllCases(){
+  async isSelectCheckboxDisplayedForAllCases() {
     const casesInPage = await this.getCountOfCasesListedInPage();
     const countOfSelectCheckboxes = await this.caseSelectionCheckboxes.count();
     return casesInPage === countOfSelectCheckboxes;
   }
 
-  async isSelectAllCheckboxSelected(){
+  async isSelectAllCheckboxSelected() {
     return await this.tableHeaderSelectAllInput.isChecked();
   }
 
-  async clickSelectAll(){
+  async clickSelectAll() {
     await this.tableHeaderSelectAllInput.click();
   }
 
-  async isCaseSelectCheckboxSelected(rowNum){
+  async isCaseSelectCheckboxSelected(rowNum) {
     const checkBoxAtRowNum = await this.caseSelectionCheckboxes.nth(rowNum - 1);
     // await BrowserWaits.waitForElement(checkBoxAtRowNum);
     return await checkBoxAtRowNum.isChecked();
   }
 
-  async clickCaseSelectCheckBoxAtRow(rowNum){
+  async clickCaseSelectCheckBoxAtRow(rowNum) {
     const checkBoxAtRowNum = await this.caseSelectionCheckboxes.nth(rowNum - 1);
     await checkBoxAtRowNum.click();
   }
@@ -257,18 +260,19 @@ class CaseListPage{
   async getCountOfCasesSelectedInPage() {
     const totalCasesInPage = await this.caseSelectionCheckboxes.count();
     let seledtedCaseCount = 0;
-    for (let counter = 0; counter < totalCasesInPage; counter++){
+    for (let counter = 0; counter < totalCasesInPage; counter++) {
       const checkBox = await this.caseSelectionCheckboxes.nth(counter);
-      if (await checkBox.isChecked()){
+      if (await checkBox.isChecked()) {
         seledtedCaseCount++;
       }
     }
     return seledtedCaseCount;
   }
 
-  async clickPaginationNextPage(){
+  async clickPaginationNextPage() {
     const paginationInfobefore = await getText(this.paginationInfotext);
-    expect(await this.nextPageLink.isVisible(), 'Case list next page not present. current page info : ' + paginationInfobefore).to.be.true;
+    expect(await this.nextPageLink.isVisible(), 'Case list next page not present. current page info : ' + paginationInfobefore).to
+      .be.true;
 
     await this.nextPageLink.click();
     await BrowserWaits.waitForCondition(async () => {
@@ -280,7 +284,10 @@ class CaseListPage{
 
   async clickPaginationPreviousPage() {
     const paginationInfobefore = await getText(this.paginationInfotext);
-    expect(await this.previousPageLink.isVisible(), 'Case list previous page not present. current page info : ' + paginationInfobefore).to.be.true;
+    expect(
+      await this.previousPageLink.isVisible(),
+      'Case list previous page not present. current page info : ' + paginationInfobefore
+    ).to.be.true;
 
     await this.previousPageLink.click();
     await BrowserWaits.waitForCondition(async () => {
@@ -290,18 +297,18 @@ class CaseListPage{
     await BrowserWaits.waitForElement(this.paginationControlsContainer, undefined, 'Data load taking too long on pagination');
   }
 
-  async clickCaseLinkAtRow(rowNum){
+  async clickCaseLinkAtRow(rowNum) {
     const caseRow = await this.caseListRows.nth(rowNum - 1);
     await caseRow.$('.search-result-column-cell a').click();
     await BrowserWaits.waitForElement(this.ccdCaseViewer, undefined, 'Case view page is not displayed');
   }
 
-  async sortTableByColAt(colNum){
-    (await this.sortColumnsIconLinks.nth(colNum-1)).click();
+  async sortTableByColAt(colNum) {
+    (await this.sortColumnsIconLinks.nth(colNum - 1)).click();
     await BrowserWaits.waitForSeconds(1);
   }
 
-  async clickShareCaseButton(){
+  async clickShareCaseButton() {
     await this.shareCaseButton.click();
   }
 }

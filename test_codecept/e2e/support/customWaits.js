@@ -44,18 +44,17 @@ class BrowserWaits {
   }
 
   async waitForElementTime(element, waitTime) {
-    await browser.wait(EC.presenceOf(element), waitTime ? waitTime : 10000, 'Error waitForElementTime : ' + JSON.stringify(element.selector));
+    await browser.wait(
+      EC.presenceOf(element),
+      waitTime ? waitTime : 10000,
+      'Error waitForElementTime : ' + JSON.stringify(element.selector)
+    );
   }
 
   async waitForElement(element, message, waitForSeconds) {
-    CucumberReporter.AddMessage(
-      'ELEMENT_WAIT: … ' + (element.selector || element)
-    );
+    CucumberReporter.AddMessage('ELEMENT_WAIT: … ' + (element.selector || element));
 
-    const target =
-      element?.locator && element.getText
-        ? toLocator(element)
-        : element;
+    const target = element?.locator && element.getText ? toLocator(element) : element;
 
     await waitForElement(target, { timeout: this.waitTime });
   }
@@ -67,12 +66,12 @@ class BrowserWaits {
   async waitForElementClickable(element, waitInSec) {
     const startTime = Date.now();
     const waitTimeInMilliSec = waitInSec ? waitInSec * 1000 : this.waitTime;
-    CucumberReporter.AddMessage('starting wait for element clickable max in sec ' + waitTimeInMilliSec + ' : ' + JSON.stringify(element.selector));
-    const locator = element?.locator && element.getText
-      ? toLocator(element)
-      : element;
+    CucumberReporter.AddMessage(
+      'starting wait for element clickable max in sec ' + waitTimeInMilliSec + ' : ' + JSON.stringify(element.selector)
+    );
+    const locator = element?.locator && element.getText ? toLocator(element) : element;
 
-    await locator.waitFor({ state: 'visible',  timeout: waitTimeInMilliSec });
+    await locator.waitFor({ state: 'visible', timeout: waitTimeInMilliSec });
     await locator.waitFor({ state: 'attached', timeout: waitTimeInMilliSec });
     const isEnabled = await locator.isEnabled();
 
@@ -105,7 +104,9 @@ class BrowserWaits {
 
       setTimeout(() => {
         clearInterval(conditionCheckInterval);
-        reject(new Error(`wait condition not satisfied after total wait time ${waitForMillisec} : ${waitMessage ? waitMessage : ''}`));
+        reject(
+          new Error(`wait condition not satisfied after total wait time ${waitForMillisec} : ${waitMessage ? waitMessage : ''}`)
+        );
       }, waitForMillisec);
     });
   }
@@ -210,7 +211,9 @@ class BrowserWaits {
       retryCounter += 1;
     }
     if (!isSuccess) {
-      CucumberReporter.AddMessage(`ACTION_FAILURE: Action failed to meet success condition after ${this.retriesCount} retry attempts. ${functionName}`);
+      CucumberReporter.AddMessage(
+        `ACTION_FAILURE: Action failed to meet success condition after ${this.retriesCount} retry attempts. ${functionName}`
+      );
       throw error;
     }
   }
@@ -223,9 +226,9 @@ class BrowserWaits {
       CucumberReporter.AddMessage('waiting for spinner to disappear');
 
       await this.waitForSeconds(2);
-      counter++; null;
-    }
-    while (status && counter < 10);
+      counter++;
+      null;
+    } while (status && counter < 10);
     CucumberReporter.AddMessage(status ? 'spinner closed' : 'spinner still displayed');
 
     // const isSpinnerPresent = await $("div.spinner-container").isPresent();

@@ -3,20 +3,20 @@ const { LOG_LEVELS } = require('../../support/constants');
 const BrowserWaits = require('../../support/customWaits');
 const CucumberReporter = require('../../../codeceptCommon/reportLogger');
 
-class MediaViewerPage{
+class MediaViewerPage {
   get mediaViewerContainer() {
     return $('exui-media-viewer');
   }
 
-  async isDisplayed(){
+  async isDisplayed() {
     return isPresent(this.mediaViewerContainer);
   }
 
-  async amOnPage(){
+  async amOnPage() {
     try {
       await BrowserWaits.waitForElement(this.mediaViewerContainer);
       return true;
-    } catch (err){
+    } catch (err) {
       CucumberReporter.AddMessage(err.stack, LOG_LEVELS.Error);
       return false;
     }

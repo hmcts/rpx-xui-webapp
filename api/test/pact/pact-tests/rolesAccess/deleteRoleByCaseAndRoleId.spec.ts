@@ -12,7 +12,7 @@ const pactSetUp = new PactV3TestSetup({ provider: 'am_roleAssignment_deleteRoleB
 const assignmentId = '704c8b1c-e89b-436a-90f6-953b1dc40157';
 
 const REQUEST_BODY = {
-  'assignmentId': assignmentId
+  assignmentId: assignmentId,
 };
 
 xdescribe('access management service, delete role by case and role id', () => {
@@ -32,17 +32,17 @@ xdescribe('access management service, delete role by case and role id', () => {
           method: 'DELETE',
           path: `/am/role-assignments/${assignmentId}`,
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
           body: {
-            'assignmentId': somethingLike(assignmentId)
-          }
+            assignmentId: somethingLike(assignmentId),
+          },
         },
         willRespondWith: {
-          status: 204
-        }
+          status: 204,
+        },
       };
 
       const refreshRoleAssignmentInteraction = {
@@ -52,18 +52,19 @@ xdescribe('access management service, delete role by case and role id', () => {
           method: 'GET',
           path: '/am/role-assignments/actors/123',
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
-          }
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
+          },
         },
         willRespondWith: {
           status: 200,
           headers: {
-            'content-type': 'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0'
+            'content-type':
+              'application/vnd.uk.gov.hmcts.role-assignment-service.post-assignment-query-request+json;charset=UTF-8;version=2.0',
           },
-          body: {}
-        }
+          body: {},
+        },
       };
 
       pactSetUp.provider.addInteraction(interaction);
@@ -85,12 +86,12 @@ xdescribe('access management service, delete role by case and role id', () => {
         const { deleteRoleByCaseAndRoleId } = requireReloaded('../../../../roleAccess/index');
         const req = mockReq({
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'content-type': 'application/json'
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'content-type': 'application/json',
           },
           session: { passport: { user: { userinfo: { id: '123' } } } },
-          body: REQUEST_BODY
+          body: REQUEST_BODY,
         });
 
         let returnedResponse = null;

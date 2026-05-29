@@ -14,12 +14,12 @@ describe('Task management api, tasks by jurisdiction', () => {
   const RESPONSE_BODY = {
     task_types: [
       {
-        'task_type': {
-          'task_type_id': somethingLike('someTaskTypeId'),
-          'task_type_name': somethingLike('Some task type name')
-        }
-      }
-    ]
+        task_type: {
+          task_type_id: somethingLike('someTaskTypeId'),
+          task_type_name: somethingLike('Some task type name'),
+        },
+      },
+    ],
   };
 
   describe('get task/task-types?jurisdictionserviceId', () => {
@@ -38,19 +38,19 @@ describe('Task management api, tasks by jurisdiction', () => {
           method: 'GET',
           path: '/task/task-types',
           query: {
-            jurisdiction: 'wa'
+            jurisdiction: 'wa',
           },
           headers: {
-            'Authorization': 'Bearer someAuthorizationToken',
-            'ServiceAuthorization': 'Bearer someServiceAuthorizationToken',
-            'Content-Type': 'application/json'
-          }
+            Authorization: 'Bearer someAuthorizationToken',
+            ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
+            'Content-Type': 'application/json',
+          },
         },
         willRespondWith: {
           status: 200,
           headers: {},
-          body: RESPONSE_BODY
-        }
+          body: RESPONSE_BODY,
+        },
       };
       pactSetUp.provider.addInteraction(interaction);
     });
@@ -73,11 +73,11 @@ describe('Task management api, tasks by jurisdiction', () => {
           headers: {
             Authorization: 'Bearer someAuthorizationToken',
             ServiceAuthorization: 'Bearer someServiceAuthorizationToken',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
           body: {
-            service: 'wa'
-          }
+            service: 'wa',
+          },
         });
         let returnedResponse = null;
         const response = mockRes();

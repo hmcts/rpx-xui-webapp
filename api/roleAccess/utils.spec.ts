@@ -12,30 +12,28 @@ describe('roleAssignment.utils', () => {
           roleName: 'test role',
           roleJurisdiction: {
             mandatory: false,
-            values: ['1', '2']
-          }
-        }
+            values: ['1', '2'],
+          },
+        },
       ];
       expect(substantiveRolesValid(mockSubstantiveRoles)).to.equal(true);
       const mockDangerousRole = {
         roleCategory: 'ADMIN',
         roleId: '1',
-        roleName: 'test role<script>',
+        roleName: 'test role<script></script>',
         roleJurisdiction: {
           mandatory: false,
-          values: ['1', '2']
-        }
+          values: ['1', '2'],
+        },
       };
       mockSubstantiveRoles.push(mockDangerousRole);
-      // todo: add assertion back in following updated list of valid characters
-      // expect(substantiveRolesValid(mockSubstantiveRoles)).to.equal(false);
+      expect(substantiveRolesValid(mockSubstantiveRoles)).to.equal(false);
       mockSubstantiveRoles.pop();
       expect(substantiveRolesValid(mockSubstantiveRoles)).to.equal(true);
-      mockDangerousRole.roleJurisdiction.values.push('<script>');
+      mockDangerousRole.roleJurisdiction.values.push('<script></script>');
       mockDangerousRole.roleName = 'test role';
       mockSubstantiveRoles.push(mockDangerousRole);
-      // todo: add assertion back in following updated list of valid characters
-      // expect(substantiveRolesValid(mockSubstantiveRoles)).to.equal(false);
+      expect(substantiveRolesValid(mockSubstantiveRoles)).to.equal(false);
     });
   });
 });

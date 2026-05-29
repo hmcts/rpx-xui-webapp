@@ -6,14 +6,7 @@ type CreateCaseFixedListItem = {
   order: null;
 };
 
-type CreateCaseFieldTypeName =
-  | 'Text'
-  | 'YesOrNo'
-  | 'MultiSelectList'
-  | 'FixedRadioList'
-  | 'FixedList'
-  | 'Complex'
-  | 'Collection';
+type CreateCaseFieldTypeName = 'Text' | 'YesOrNo' | 'MultiSelectList' | 'FixedRadioList' | 'FixedList' | 'Complex' | 'Collection';
 
 type CreateCaseFieldType = {
   id: string;

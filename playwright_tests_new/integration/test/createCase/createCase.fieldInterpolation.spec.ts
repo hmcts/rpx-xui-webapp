@@ -46,10 +46,7 @@ test.describe(
       await expect(page.locator('#judgeApproval1')).toBeVisible();
     });
 
-    test('Interpolates complex child labels in required validation and check your answers', async ({
-      createCasePage,
-      page,
-    }) => {
+    test('Interpolates complex child labels in required validation and check your answers', async ({ createCasePage, page }) => {
       await test.step('Verify the complex child label is resolved on the event page', async () => {
         await expect(page.getByText(expectedInterpolatedLabel)).toBeVisible();
         await expect(page.getByText('${judgeApproval1.inlineDocType}')).toHaveCount(0);

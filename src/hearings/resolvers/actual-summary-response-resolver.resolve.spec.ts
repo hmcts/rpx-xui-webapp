@@ -15,7 +15,6 @@ describe('ActualSummaryResponseResolver', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes([])],
       providers: [
         provideMockStore(),
         ActualSummaryResponseResolver,

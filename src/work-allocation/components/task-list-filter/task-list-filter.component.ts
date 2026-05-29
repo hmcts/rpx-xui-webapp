@@ -1,7 +1,7 @@
 import { Location as AngularLocation } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router';
-import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
+import { SessionStorageService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import {
   BookingCheckType,
   FeatureToggleService,
@@ -145,7 +145,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   }
 
   public ngOnInit(): void {
-    // Clear Fileds to prevent duplication of filter
+    // Clear fields to prevent duplication of filter
     this.fieldsConfig.fields = [];
 
     this.setPersistenceAndDefaultLocations();
@@ -238,10 +238,11 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
   private setPersistenceAndDefaultLocations(): void {
     this.fieldsConfig.persistence = this.persistence || 'session';
     const filterService = this.filterService.get(TaskListFilterComponent.FILTER_NAME);
-    const availableLocations = filterService?.fields?.find((field) => field.name === 'locations');
-    const isLocationsAvailable: boolean = availableLocations?.value?.length > 0;
-    const regionLocations = JSON.parse(this.sessionStorageService.getItem('regionLocations'));
-    const bookableServices = JSON.parse(this.sessionStorageService.getItem('bookableServices'));
+    const availableLocations =
+      filterService && filterService.fields && filterService.fields.find((field) => field.name === 'locations');
+    const isLocationsAvailable: boolean = availableLocations && availableLocations.value && availableLocations.value.length > 0;
+    const regionLocations = safeJsonParse<any[]>(this.sessionStorageService.getItem('regionLocations'), []);
+    const bookableServices = safeJsonParse<string[]>(this.sessionStorageService.getItem('bookableServices'), []);
     // get booking locations
     if (this.bookingLocations && this.bookingLocations.length > 0) {
       this.defaultLocations = this.bookingLocations;
@@ -252,7 +253,7 @@ export class TaskListFilterComponent implements OnInit, OnDestroy {
     this.appStoreSub = this.appStore.pipe(select(fromAppStore.getUserDetails)).subscribe((userDetails) => {
       const isFeePaidJudgeWithNoBooking: boolean =
         this.bookingLocations.length === 0 &&
-        userDetails.roleAssignmentInfo.filter((p) => p.roleType && p.roleType === 'ORGANISATION' && !p.bookable).length === 0;
+        !userDetails.roleAssignmentInfo?.some((p) => p.roleType && p.roleType === 'ORGANISATION' && !p.bookable);
       if (isFeePaidJudgeWithNoBooking) {
         localStorage.removeItem(TaskListFilterComponent.FILTER_NAME);
       } else if (!isLocationsAvailable) {

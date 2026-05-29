@@ -19,6 +19,7 @@ import {
   buildServiceLinkedCasesMock,
   buildServiceHearingValuesMock,
 } from '../mocks/hearings.mock';
+import { setupCaseworkerJurisdictionsRoute } from './caseworkerJurisdictionMockRoutes.helper';
 
 type HearingsEndpoint =
   | 'getHearings'
@@ -141,6 +142,10 @@ export async function setupHearingsMockRoutes(page: Page, config: HearingsMockRo
     window.sessionStorage.setItem('userDetails', JSON.stringify(seededUserInfo));
   }, userDetails.userInfo);
 
+  const jurisdictionId = String(caseDetails.case_type?.jurisdiction?.id ?? 'IA');
+  const jurisdictionName = String(caseDetails.case_type?.jurisdiction?.name ?? jurisdictionId);
+  await setupCaseworkerJurisdictionsRoute(page, [jurisdictionId], [{ serviceId: jurisdictionId, serviceName: jurisdictionName }]);
+
   await page.route('**/api/user/details*', async (route) => {
     await route.fulfill({
       status: 200,
@@ -157,7 +162,7 @@ export async function setupHearingsMockRoutes(page: Page, config: HearingsMockRo
     });
   });
 
-  await page.route('**/external/config/ui*', async (route) => {
+  await page.route(/\/external\/config\/ui(?:\/|\?|$)/, async (route) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',

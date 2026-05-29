@@ -6,7 +6,14 @@ type CreateCaseFixedListItem = {
   order: null;
 };
 
-type CreateCaseFieldTypeName = 'Text' | 'MultiSelectList' | 'FixedRadioList' | 'FixedList' | 'Complex' | 'Collection';
+type CreateCaseFieldTypeName =
+  | 'Text'
+  | 'YesOrNo'
+  | 'MultiSelectList'
+  | 'FixedRadioList'
+  | 'FixedList'
+  | 'Complex'
+  | 'Collection';
 
 type CreateCaseFieldType = {
   id: string;
@@ -31,6 +38,12 @@ const CREATE_CASE_BASE_FIELD_TYPE: Omit<CreateCaseFieldType, 'id' | 'type'> = {
 const CREATE_CASE_TEXT_FIELD_TYPE: CreateCaseFieldType = {
   id: 'Text',
   type: 'Text',
+  ...CREATE_CASE_BASE_FIELD_TYPE,
+};
+
+const CREATE_CASE_YES_NO_FIELD_TYPE: CreateCaseFieldType = {
+  id: 'YesOrNo',
+  type: 'YesOrNo',
   ...CREATE_CASE_BASE_FIELD_TYPE,
 };
 
@@ -512,6 +525,86 @@ export function divorcePocCaseData() {
           {
             case_field_id: 'Gender',
             order: 4,
+            page_column_no: null,
+            complex_field_overrides: [],
+          },
+        ],
+        show_condition: null,
+        callback_url_mid_event: null,
+        retries_timeout_mid_event: [],
+      },
+    ],
+    show_summary: true,
+    show_event_notes: false,
+    end_button_label: 'Test submit',
+    can_save_draft: null,
+    access_granted: 'STANDARD',
+    access_process: 'NONE',
+    title_display: null,
+    supplementary_data: null,
+    _links: {
+      self: {
+        href: `${process.env.TEST_URL}/internal/case-types/xuiTestJurisdiction/event-triggers/createCase?ignore-warning=false`,
+      },
+    },
+  };
+}
+
+export function interpolatedMandatoryComplexCaseData() {
+  return {
+    id: 'createCase',
+    name: 'Create a case',
+    description: 'Create a case',
+    case_id: null,
+    case_fields: [
+      {
+        id: 'judgeApproval1',
+        label: 'Judge approval',
+        ...CREATE_CASE_DEFAULT_FIELD,
+        value: {
+          inlineDocType: 'order',
+          isReady: null,
+        },
+        field_type: buildComplexFieldType({
+          id: 'JudgeApproval',
+          complexFields: [
+            {
+              ...buildPersonComplexField({
+                id: 'inlineDocType',
+                label: 'Document type',
+              }),
+              value: 'order',
+              display_context: 'READONLY',
+              show_summary_change_option: true,
+            },
+            {
+              ...buildPersonComplexField({
+                id: 'isReady',
+                label: 'Is this ${judgeApproval1.inlineDocType} ready to be sealed and issued',
+                fieldType: CREATE_CASE_YES_NO_FIELD_TYPE,
+              }),
+              value: null,
+              display_context: 'MANDATORY',
+              show_summary_change_option: true,
+            },
+          ],
+        }),
+        display_context: 'MANDATORY',
+        show_condition: null,
+        retain_hidden_value: null,
+        acls: CREATE_CASE_SHARED_ACLS,
+      },
+    ],
+    event_token: faker.string.uuid(),
+    wizard_pages: [
+      {
+        id: 'createCasePage_1',
+        label: 'Judge approval',
+        order: 1,
+        wizard_page_fields: [
+          {
+            case_field_id: 'judgeApproval1',
+            order: 1,
             page_column_no: null,
             complex_field_overrides: [],
           },

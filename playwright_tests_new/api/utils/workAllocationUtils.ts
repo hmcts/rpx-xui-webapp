@@ -1,4 +1,5 @@
 import { expect } from '@playwright/test';
+import type { ApiClient } from '@hmcts/playwright-common';
 
 import { expectStatus, withRetry, withXsrf } from './apiTestUtils';
 import { expectTaskList } from './assertions';
@@ -138,16 +139,20 @@ export function assertCaseworkerListResponse(status: number, data: unknown): voi
   }
 }
 
-type WorkAllocationApiClient = {
-  post: (path: string, options?: unknown) => Promise<{ status: number; data?: unknown }>;
-  get?: (path: string, options?: unknown) => Promise<{ status: number; data?: unknown }>;
+type WorkAllocationApiClient = Pick<ApiClient, 'post'> & Partial<Pick<ApiClient, 'get'>>;
+
+type FetchFirstTaskOptions = {
+  failOnRequestError?: boolean;
+  retries?: number;
+  timeoutMs?: number;
 };
 
 export async function fetchFirstTask(
   apiClient: WorkAllocationApiClient,
   locationId?: string,
   states: string[] = ['assigned', 'unassigned'],
-  view: 'AllWork' | 'MyTasks' = 'AllWork'
+  view: 'AllWork' | 'MyTasks' = 'AllWork',
+  options: FetchFirstTaskOptions = {}
 ): Promise<Task | undefined> {
   const body = buildTaskSearchRequest(view, {
     locations: toLocationList(locationId),
@@ -156,14 +161,23 @@ export async function fetchFirstTask(
     pageSize: 5,
   });
 
-  const response = (await withRetry(
-    () =>
-      apiClient.post('workallocation/task', {
-        data: body,
-        throwOnError: false,
-      }),
-    { retries: 1, retryStatuses: [502, 504] }
-  )) as { data: TaskListResponse | undefined; status: number };
+  let response: { data: TaskListResponse | undefined; status: number };
+  try {
+    response = (await withRetry(
+      () =>
+        apiClient.post('workallocation/task', {
+          data: body,
+          throwOnError: false,
+          ...(options.timeoutMs ? { timeoutMs: options.timeoutMs } : {}),
+        }),
+      { retries: options.retries ?? 1, retryStatuses: [502, 504] }
+    )) as { data: TaskListResponse | undefined; status: number };
+  } catch (error) {
+    if (options.failOnRequestError === true) {
+      throw error;
+    }
+    return undefined;
+  }
   const tasks = Array.isArray(response.data?.tasks) ? response.data.tasks : [];
   if (response.status !== 200 || tasks.length === 0) {
     return undefined;
@@ -252,11 +266,32 @@ export function selectTaskId(candidates: Array<string | undefined>, fallback: st
   return fallback;
 }
 
+type TaskIdResolutionSource = 'dynamic' | 'env-assigned' | 'env-unassigned' | 'none';
+
+export function resolveTaskIdWithEnvFallback(
+  primaryTaskId: string | undefined,
+  envAssignedTaskId: string | undefined,
+  envTaskId: string | undefined,
+  fallback: string
+): { taskId: string; source: TaskIdResolutionSource } {
+  if (primaryTaskId) {
+    return { taskId: primaryTaskId, source: 'dynamic' };
+  }
+  if (envAssignedTaskId) {
+    return { taskId: envAssignedTaskId, source: 'env-assigned' };
+  }
+  if (envTaskId) {
+    return { taskId: envTaskId, source: 'env-unassigned' };
+  }
+  return { taskId: fallback, source: 'none' };
+}
+
 type SeededActionDeps = {
   apiClient: WorkAllocationApiClient;
   envTaskId?: string;
   envAssignedTaskId?: string;
   hasSeededEnvTasksFn?: typeof hasSeededEnvTasks;
+  role?: ApiUserRole;
   withXsrfFn?: (role: ApiUserRole, fn: (headers: Record<string, string>) => Promise<void>) => Promise<void>;
 };
 
@@ -269,7 +304,7 @@ export async function runSeededAction(action: string, getId: () => string, deps:
     return false;
   }
 
-  await withXsrfFn('solicitor', async (headers) => {
+  await withXsrfFn(deps.role ?? 'solicitor', async (headers) => {
     const res = await deps.apiClient.post(`workallocation/task/${taskId}/${action}`, {
       data: {},
       headers,

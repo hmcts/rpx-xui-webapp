@@ -1,6 +1,7 @@
+import { Location as StateLocation } from '@angular/common';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertService, LoadingService } from '@hmcts/ccd-case-ui-toolkit';
+import { AlertService, LoadingService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService, FilterService, FilterSetting, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Store } from '@ngrx/store';
 import { Observable, Subscription, of } from 'rxjs';
@@ -74,7 +75,8 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     protected waSupportedJurisdictionsService: WASupportedJurisdictionsService,
     protected filterService: FilterService,
     protected rolesService: AllocateRoleService,
-    protected store: Store<fromActions.State>
+    protected store: Store<fromActions.State>,
+    protected stateLocation: StateLocation
   ) {}
 
   public get tasks(): Task[] {
@@ -129,13 +131,11 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   /**
    * Flag to indicate whether or not we've arrived here following a bad
    * request with a flag having been set on another route. The flag is
-   * passed through the router and so is held in window.history.state.
+   * passed through the router and so is held in location state
    */
   private get wasBadRequest(): boolean {
-    if (window && window.history && window.history.state) {
-      return !!window.history.state.badRequest;
-    }
-    return false;
+    const state = this.stateLocation.getState() as { badRequest?: boolean } | null;
+    return !!state?.badRequest;
   }
 
   public getTaskServiceConfig(): TaskServiceConfig {
@@ -175,7 +175,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
       .getStream(TaskListFilterComponent.FILTER_NAME)
       .pipe(
         debounceTime(200),
-        filter((f: FilterSetting) => f && f.hasOwnProperty('fields'))
+        filter((f: FilterSetting) => f?.hasOwnProperty('fields'))
       )
       .subscribe((f: FilterSetting) => {
         const newLocations = f.fields.find((field) => field.name === 'locations')?.value;
@@ -216,12 +216,16 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     // Try to get the sort order out of the session.
     const sortStored = this.sessionStorageService.getItem(this.sortSessionKey);
     if (sortStored) {
-      const { fieldName, order } = JSON.parse(sortStored);
-      this.sortedBy = {
-        fieldName,
-        order: order as SortOrder,
-      };
-    } else {
+      const parsed = safeJsonParse<{ fieldName: string; order: SortOrder }>(sortStored, null);
+      if (parsed) {
+        const { fieldName, order } = parsed;
+        this.sortedBy = {
+          fieldName,
+          order: order as SortOrder,
+        };
+      }
+    }
+    if (!this.sortedBy?.fieldName) {
       // Otherwise, set up the default sorting.
       this.sortedBy = {
         fieldName: this.taskServiceConfig.defaultSortFieldName,
@@ -293,7 +297,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   }
 
   public getPaginationParameter(): PaginationParameter {
-    const savedPaginationNumber = JSON.parse(this.sessionStorageService.getItem(this.pageSessionKey));
+    const savedPaginationNumber = safeJsonParse<number>(this.sessionStorageService.getItem(this.pageSessionKey), null);
     if (savedPaginationNumber && typeof savedPaginationNumber === 'number') {
       return { ...this.pagination, page_number: savedPaginationNumber };
     }
@@ -418,7 +422,10 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   private doLoad(): void {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      if (!userInfo) {
+        return;
+      }
       this.currentUser = userInfo.uid ? userInfo.uid : userInfo.id;
     }
     this.showSpinner$ = this.loadingService.isLoading as any;
@@ -463,7 +470,7 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
     this.tasks = result.tasks;
     this.tasksTotal = result.total_records;
     this.ref.detectChanges();
-    if (result.tasks && result.tasks.length === 0 && this.pagination.page_number > 1) {
+    if (result.tasks?.length === 0 && this.pagination.page_number > 1) {
       // if possibly back at a page that has been removed by actions to task, go back one to attempt to get tasks
       this.goneBackCount++;
       if (this.goneBackCount < 10) {
@@ -494,7 +501,10 @@ export class TaskListWrapperComponent implements OnDestroy, OnInit {
   public getCurrentUserRoleCategory(): string {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      if (!userInfo) {
+        return;
+      }
       return userInfo.roleCategory;
     }
   }

@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { WindowService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { SessionStorageService } from '../../services/session-storage/session-storage.service';
 import { Title } from '@angular/platform-browser';
 
@@ -53,14 +53,17 @@ export class MediaViewerWrapperComponent implements OnInit {
     }
 
     if (sessionStorageMedia) {
-      const media: {
+      const media = safeJsonParse<{
         document_binary_url: string;
         document_filename: string;
         content_type: string;
         annotation_api_url?: string;
         case_id?: string;
         case_jurisdiction?: string;
-      } = JSON.parse(sessionStorageMedia);
+      }>(sessionStorageMedia, null);
+      if (!media) {
+        return;
+      }
       this.mediaURL = media.document_binary_url;
       this.mediaFilename = media.document_filename;
       this.mediaContentType = media.content_type;
@@ -74,7 +77,7 @@ export class MediaViewerWrapperComponent implements OnInit {
     }
 
     this.icpJurisdictions$ = this.featureToggleService.getValue('icp-jurisdictions', []);
-    this.icpEnabled$ = this.featureToggleService.isEnabled('icp-enabled');
+    this.icpEnabled$ = of(true);
     this.enableRedactSearch$ = this.featureToggleService.isEnabled('enable-redact-search');
   }
 

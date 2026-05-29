@@ -1,5 +1,5 @@
 import { NextFunction } from 'express';
-import { authenticator } from 'otplib';
+import { createGuardrails, generate, ScureBase32Plugin } from 'otplib';
 
 import { getConfigValue } from '../configuration';
 import {
@@ -49,7 +49,7 @@ export async function fetchUserData(req: EnhancedRequest, next: NextFunction): P
       const jurisdictions = getConfigValue(STAFF_SUPPORTED_JURISDICTIONS);
       const getUsersPath: string = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions);
       const userResponse = await handleUsersGet(getUsersPath, req);
-      // TODO: Response will be cached eventually via API so caching below should be removed eventually
+      // EXUI-3967 - Caching may be removed in future in favour of API caching
       cachedUsers = getUniqueUsersFromResponse(userResponse);
     } else {
       refreshRoles = false;
@@ -102,7 +102,7 @@ export async function fetchRoleAssignments(
       // cachedUsersWithRoles to ensure rerun if user restarts request early
       const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
       const jurisdictions = getStaffSupportedJurisdictionsList();
-      const payload = prepareRoleApiRequest(jurisdictions, null, true);
+      const payload = prepareRoleApiRequest(jurisdictions);
       const { data } = await handlePostRoleAssignments(roleApiPath, payload, req);
       const roleAssignments = data.roleAssignmentResponse;
       cachedUsersWithRoles = mapUsersToCachedCaseworkers(cachedUserData, roleAssignments);
@@ -126,7 +126,7 @@ export async function fetchRoleAssignmentsForNewUsers(cachedUserData: StaffUserD
       // cachedUsersWithRoles to ensure rerun if user restarts request early
       const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
       const jurisdictions = getStaffSupportedJurisdictionsList();
-      const payload = prepareRoleApiRequest(jurisdictions, null, true);
+      const payload = prepareRoleApiRequest(jurisdictions);
       const roleAssignmentHeaders = {
         ...getRequestHeaders(),
         pageNumber: 0,
@@ -152,7 +152,9 @@ export async function getAuthTokens(): Promise<void> {
     const microservice = getConfigValue(MICROSERVICE);
     const s2sEndpointUrl = `${getConfigValue(SERVICE_S2S_PATH)}/lease`;
     const s2sSecret = getConfigValue(S2S_SECRET).trim();
-    const oneTimePassword = authenticator.generate(s2sSecret);
+    const secretBytes = new ScureBase32Plugin().decode(s2sSecret);
+    const guardrails = createGuardrails({ MIN_SECRET_BYTES: secretBytes.length });
+    const oneTimePassword = await generate({ secret: s2sSecret, guardrails, strategy: 'totp' });
     const idamPath = getConfigValue(SERVICES_IDAM_API_URL);
     const authURL = `${idamPath}/o/token`;
     const axiosConfig = {

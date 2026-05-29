@@ -56,11 +56,12 @@ export class InfoMessageContainerComponent implements OnInit {
       this.infoMessages = messages;
 
       // add any additional information messages that have been passed in the state (i.e. role access exclusion)
-      if (window && window.history && window.history.state.showMessage && window.history.state.message) {
-        if (this.lastMessage !== window.history.state.message) {
+      const state = window?.history?.state;
+      if (state?.showMessage && state?.message) {
+        if (this.lastMessage !== state.message) {
           // ensure that messages are not duplicated by state
-          this.infoMessages.push(window.history.state.message);
-          this.lastMessage = window.history.state.message;
+          this.infoMessages.push(state.message);
+          this.lastMessage = state.message;
         }
       }
       this.removeDuplicateMessages();

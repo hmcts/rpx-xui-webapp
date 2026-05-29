@@ -1,7 +1,8 @@
+import { Location as StateLocation } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SessionStorageService } from '@hmcts/ccd-case-ui-toolkit';
+import { SessionStorageService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { Person, PersonRole, RoleCategory } from '@hmcts/rpx-xui-common-lib';
 import { Subscription } from 'rxjs';
 
@@ -48,7 +49,8 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   constructor(
     private readonly route: ActivatedRoute,
     private readonly router: Router,
-    private readonly sessionStorageService: SessionStorageService
+    private readonly sessionStorageService: SessionStorageService,
+    private readonly stateLocation: StateLocation
   ) {}
 
   public get fields(): FieldConfig[] {
@@ -61,21 +63,22 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
 
   private get returnUrl(): string {
     // Default URL is '' because this is the only sensible return navigation if the user has used browser navigation
-    // buttons, which clear the `window.history.state` object
+    // buttons, which clear the state object
     let url: string = '';
-
+    const state = this.stateLocation.getState() as { returnUrl?: string } | null;
     // The returnUrl is undefined if the user has used browser navigation buttons, so check for its presence
-    if (window && window.history && window.history.state && window.history.state.returnUrl) {
+    if (state?.returnUrl) {
       // Truncate any portion of the URL beginning with '#', as is appended when clicking "Manage" on a task
-      url = window.history.state.returnUrl.split('#')[0];
+      url = state.returnUrl.split('#')[0];
     }
 
     return url;
   }
 
   private get showAssigneeColumn(): boolean {
-    if (window && window.history && window.history.state) {
-      return !!window.history.state.showAssigneeColumn;
+    const state = this.stateLocation.getState() as { showAssigneeColumn?: boolean } | null;
+    if (state) {
+      return !!state.showAssigneeColumn;
     }
     return false;
   }
@@ -98,7 +101,10 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   public isCurrentUserJudicial(): boolean {
     const userInfoStr = this.sessionStorageService.getItem(this.userDetailsKey);
     if (userInfoStr) {
-      const userInfo: UserInfo = JSON.parse(userInfoStr);
+      const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
+      if (!userInfo) {
+        return false;
+      }
       // EXUI-2907 - Role category is used instead of roles
       return userInfo.roleCategory === RoleCategory.JUDICIAL;
     }
@@ -116,12 +122,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
   }
 
   public assign(): void {
-    if (
-      this.formGroup &&
-      this.formGroup.value &&
-      this.formGroup.value.findPersonControl &&
-      this.formGroup.value.findPersonControl.email
-    ) {
+    if (this.formGroup?.value?.findPersonControl?.email) {
       // Pass the returnUrl in the `state` parameter, so it can be used for navigation by the Task Assignment Confirm
       // component
       this.router.navigate([this.rootPath, this.taskId, this.verb.toLowerCase(), 'confirm'], {

@@ -3,6 +3,8 @@ import { expect, test } from '../../fixtures';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 import { caseBannerMatches, getTodayFormats, matchesToday } from '../../utils';
 import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
+import { createDivorceCase } from '../../utils/test-setup/journeys/divorceCaseJourneys';
+import { RuntimeUserAlias } from '../../utils/runtimeUserCredentials';
 let caseNumber: string;
 const updatedFirstName = faker.person.firstName();
 const updatedLastName = faker.person.lastName();
@@ -10,16 +12,16 @@ const testField = faker.lorem.word() + new Date().toLocaleTimeString();
 const UPDATE_CASE_ACTION_TIMEOUT_MS = 60_000;
 const UPDATE_CASE_SETUP_CREATE_MAX_ATTEMPTS = 1;
 
-test.describe('Verify creating and updating a case works as expected', () => {
+test.describe('Verify creating and updating a case works as expected', { tag: ['@e2e', '@e2e-update-case'] }, () => {
   test.describe.configure({ timeout: 240_000 });
   test.beforeEach(async ({ page, createCasePage, caseDetailsPage }) => {
     await retryOnTransientFailure(
       async () => {
-        await ensureAuthenticatedPage(page, 'SOLICITOR', {
+        await ensureAuthenticatedPage(page, RuntimeUserAlias.DIVORCE_SOLICITOR, {
           waitForSelector: 'exui-header',
           timeoutMs: 30_000,
         });
-        await createCasePage.createDivorceCase('DIVORCE', 'XUI Case PoC', testField, {
+        await createDivorceCase(createCasePage, 'DIVORCE', 'XUI Case PoC', testField, {
           maxAttempts: UPDATE_CASE_SETUP_CREATE_MAX_ATTEMPTS,
           createCaseMaxAttempts: UPDATE_CASE_SETUP_CREATE_MAX_ATTEMPTS,
         });
@@ -43,6 +45,7 @@ test.describe('Verify creating and updating a case works as expected', () => {
 
     await test.step('Start Update Case event', async () => {
       caseDetailsUrl = await caseDetailsPage.getCurrentPageUrl();
+      await caseDetailsPage.reopenCaseDetails(caseDetailsUrl);
       await caseDetailsPage.selectCaseAction('Update case', {
         expectedLocator: createCasePage.person2FirstNameInput,
         timeoutMs: UPDATE_CASE_ACTION_TIMEOUT_MS,
@@ -54,9 +57,14 @@ test.describe('Verify creating and updating a case works as expected', () => {
         async () => {
           await createCasePage.person2FirstNameInput.fill(updatedFirstName);
           await createCasePage.person2LastNameInput.fill(updatedLastName);
+          await createCasePage.clickContinueAndEnsureWizardAdvanced('after updating person 2 fields', {
+            expectedLocator: createCasePage.doYouAgreeGroup,
+            timeoutMs: 30_000,
+          });
+          await createCasePage.ensureDoYouAgreeAnswered();
           await createCasePage.clickSubmitAndWait('after updating case fields', {
             timeoutMs: 60_000,
-            maxAutoAdvanceAttempts: 3,
+            maxAutoAdvanceAttempts: 0,
           });
         },
         {
@@ -110,7 +118,6 @@ test.describe('Verify creating and updating a case works as expected', () => {
     await test.step('Verify that event details are shown on the History tab', async () => {
       await caseDetailsPage.selectCaseDetailsTab('History');
       const { updateRow, updateDate, updateAuthor, expectedDate } = await caseDetailsPage.getCaseHistoryByEvent('Update case');
-
       expect.soft(updateRow, 'Update case row should be present').toBeTruthy();
 
       const { numericFormat } = getTodayFormats();

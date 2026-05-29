@@ -87,10 +87,6 @@
       "idamClientID": "SERVICES_IDAM_CLIENT_ID",
       "idamLoginUrl": "SERVICES_IDAM_LOGIN_URL",
       "oauthCallbackUrl": "SERVICES_IDAM_OAUTH_CALLBACK_URL",
-      "serviceOverride": {
-        "__name": "SERVICES_IDAM_SERVICE_OVERRIDE",
-        "__format": "json"
-      },
       "iss": "SERVICES_IDAM_ISS_URL"
     },
     "location_api": "SERVICES_LOCATION_API",
@@ -123,17 +119,16 @@
   "protocol": "PROTOCOL",
   "secureCookie": "SECURE_COOKIE",
   "microservice": "MICROSERVICE",
-  "sessionSecret": "SESSION_SECRET",
   "secrets": {
     "rpx": {
       "appinsights-instrumentationkey-mc": "APPINSIGHTS_INSTRUMENTATIONKEY",
       "appinsights-connection-string-mc": "APPINSIGHTS_CONNECTION_STRING",
+      "mc-session-secret": "SESSION_SECRET",
       "mc-s2s-client-secret": "S2S_SECRET",
       "mc-idam-client-secret": "IDAM_SECRET",
       "webapp-redis-connection-string": "REDISCLOUD_URL",
       "launch-darkly-client-id": "LAUNCH_DARKLY_CLIENT_ID",
-      "system-user-name": "SYSTEM_USER_NAME",
-      "system-user-password": "SYSTEM_USER_PASSWORD"
+      "system-user-name": "SYSTEM_USER_NAME"
     }
   },
   "caseworkerPageSize": "CASEWORKER_PAGE_SIZE",
@@ -227,8 +222,7 @@
     "brokerUrl": "PACT_BROKER_URL",
     "branchName": "PACT_BRANCH_NAME",
     "consumerVersion": "PACT_CONSUMER_VERSION",
-    "brokerUsername": "PACT_BROKER_USERNAME",
-    "brokerPassword": "PACT_BROKER_PASSWORD"
+    "brokerUsername": "PACT_BROKER_USERNAME"
   },
   "headerConfig": "HEADER_CONFIG"
 }

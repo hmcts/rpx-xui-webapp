@@ -14,7 +14,9 @@ import {
   ServiceDownComponent,
   SignedOutComponent,
   ExpiredLoginLinkComponent,
+  SessionErrorWrapperComponent,
 } from './components';
+import { SessionStorageGuard } from '@hmcts/ccd-case-ui-toolkit';
 import { AcceptTcWrapperComponent, LegacyTermsAndConditionsComponent, TermsAndConditionsComponent } from './containers';
 import { AcceptTermsGuard } from './guards/acceptTerms.guard';
 import { AuthGuard } from './services/auth/auth.guard';
@@ -28,30 +30,30 @@ export const routingConfiguration: ExtraOptions = {
 export const ROUTES: Routes = [
   {
     path: '',
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, SessionStorageGuard],
     component: ApplicationRoutingComponent,
     pathMatch: 'full',
   },
   {
     path: 'cases',
-    canActivate: [AuthGuard, AcceptTermsGuard],
+    canActivate: [AuthGuard, SessionStorageGuard, AcceptTermsGuard],
     loadChildren: () => import('../cases/cases.module').then((m) => m.CasesModule),
   },
   {
     path: 'booking',
-    canActivate: [AuthGuard, AcceptTermsGuard],
+    canActivate: [AuthGuard, SessionStorageGuard, AcceptTermsGuard],
     loadChildren: () => import('../booking/booking.module').then((m) => m.BookingModule),
   },
   {
     path: 'work',
-    canActivate: [AuthGuard, AcceptTermsGuard],
+    canActivate: [AuthGuard, SessionStorageGuard, AcceptTermsGuard],
     loadChildren: () => import('../work-allocation/work-allocation.module').then((m) => m.WorkAllocationModule),
   },
   {
     // EUI-6555 - Stop WA1 urls from being accessible via bookmarks
     path: 'tasks/:subRoute',
     pathMatch: 'prefix',
-    canActivate: [AuthGuard, AcceptTermsGuard],
+    canActivate: [AuthGuard, SessionStorageGuard, AcceptTermsGuard],
     component: MyTasksComponent,
   },
   {
@@ -61,10 +63,10 @@ export const ROUTES: Routes = [
   },
   {
     path: 'role-access',
-    canActivate: [AuthGuard, AcceptTermsGuard],
+    canActivate: [AuthGuard, SessionStorageGuard, AcceptTermsGuard],
     loadChildren: () => import('../role-access/role-access.module').then((m) => m.RoleAccessModule),
   },
-  // TODO: remove redundant redirections
+  // TODO: remove redundant redirections - EXUI-3967 - needs further checks
   {
     path: 'case/:jurisdiction/:case-type/:cid',
     redirectTo: 'cases/case-details/:jurisdiction/:caseType/:cid',
@@ -89,12 +91,12 @@ export const ROUTES: Routes = [
   },
   {
     path: 'noc',
-    canActivate: [AuthGuard, AcceptTermsGuard],
+    canActivate: [AuthGuard, SessionStorageGuard, AcceptTermsGuard],
     loadChildren: () => import('../noc/noc.module').then((m) => m.NocModule),
   },
   {
     path: 'hearings',
-    canActivate: [AuthGuard, AcceptTermsGuard],
+    canActivate: [AuthGuard, SessionStorageGuard, AcceptTermsGuard],
     loadChildren: () => import('../hearings/hearings.module').then((m) => m.HearingsModule),
   },
   {
@@ -109,6 +111,13 @@ export const ROUTES: Routes = [
     component: PrivacyPolicyComponent,
     data: {
       title: 'Privacy Policy',
+    },
+  },
+  {
+    path: 'session-error',
+    component: SessionErrorWrapperComponent,
+    data: {
+      title: 'Session Error',
     },
   },
   {
@@ -224,9 +233,9 @@ export const ROUTES: Routes = [
   },
   {
     path: 'query-management',
-    canActivate: [AuthGuard, AcceptTermsGuard],
+    canActivate: [AuthGuard, SessionStorageGuard, AcceptTermsGuard],
     loadChildren: () => import('../cases/cases.module').then((m) => m.CasesModule),
-    // TODO Define feature toggle
+    // EXUI-3967 - Feature toggle guard can be added here if required
   },
   {
     path: '**',

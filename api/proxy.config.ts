@@ -92,11 +92,7 @@ export const initProxy = (app: Express) => {
 
   applyProxy(app, {
     rewrite: true,
-    rewriteUrl: (path: string) => {
-      const rewrittenPath = path.replace(/^\/api\/addresses/, '');
-      const suffix = rewrittenPath === '/' || rewrittenPath === '' ? '' : rewrittenPath.replace(/^\//, '');
-      return `/addresses/${suffix}`;
-    },
+    rewriteUrl: (path: string) => '/addresses' + (path === '/' ? '' : path),
     source: '/api/addresses',
     target: getConfigValue(SERVICES_CCD_COMPONENT_API_PATH),
   });

@@ -34,8 +34,6 @@ export const authenticatedRoutes = [
   { endpoint: 'api/staff-supported-jurisdiction/get' },
   { endpoint: 'api/wa-supported-jurisdiction/get' },
   { endpoint: 'api/wa-supported-jurisdiction/detail' },
-  { endpoint: 'api/wa-supported-role-details/getRoleCategories' },
-  { endpoint: 'api/wa-supported-role-details/getRoleTypes' },
   { endpoint: 'api/globalSearch/services' },
   { endpoint: 'api/globalSearch/results' },
   { endpoint: 'api/ref-data/services' },

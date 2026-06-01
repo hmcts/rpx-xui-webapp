@@ -95,10 +95,6 @@ export const JURISDICTIONS = 'jurisdictions';
 
 export const WA_SUPPORTED_JURISDICTIONS = 'waSupportedJurisdictions';
 
-export const WA_SUPPORTED_ROLE_CATEGORIES = 'waSupportedRoleCategories';
-
-export const WA_SUPPORTED_ROLE_TYPES = 'waSupportedRoleTypes';
-
 export const STAFF_SUPPORTED_JURISDICTIONS = 'staffSupportedJurisdictions';
 
 export const HEARINGS_SUPPORTED_JURISDICTIONS = 'services.hearings.hearingsJurisdictions';

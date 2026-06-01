@@ -282,4 +282,12 @@ export class AppConfig extends AbstractAppConfig {
   public getEnableServiceSpecificMultiFollowups(): string[] {
     return this.config.enable_service_specific_multi_followups;
   }
+
+  public getWASupportedRoleCategories(): string[] {
+    return this.config.wa_supported_role_categories || [];
+  }
+
+  public getWASupportedRoleTypes(): string[] {
+    return this.config.wa_supported_role_types || [];
+  }
 }

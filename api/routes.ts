@@ -20,7 +20,6 @@ import staffRefDataRouter from './staff-ref-data/routes';
 import { router as staffSupportedJurisdictionsRouter } from './staffSupportedJurisdictions';
 import userRouter from './user/routes';
 import { router as waSupportedJurisdictionRouter } from './waSupportedJurisdictions';
-import { router as waSupportedRoleDetailsRouter } from './waSupportedRoleDetails';
 
 const router = express.Router({ mergeParams: true });
 
@@ -60,7 +59,6 @@ router.use('/noc', nocRouter);
 router.use('/organisation', organisationRouter);
 router.use('/staff-supported-jurisdiction', staffSupportedJurisdictionsRouter);
 router.use('/wa-supported-jurisdiction', waSupportedJurisdictionRouter);
-router.use('/wa-supported-role-details', waSupportedRoleDetailsRouter);
 router.use('/globalSearch', globalSearchRoutes);
 router.use('/locations', locationsRouter);
 router.use('/ref-data', refDataRouter);

@@ -58,7 +58,6 @@ import { HearingsPipesModule } from '../hearings/pipes/hearings.pipes.module';
 import { HearingsService } from '../hearings/services/hearings.service';
 import { OrganisationModule } from '../organisation/organisation.module';
 import { WASupportedJurisdictionsService } from '../work-allocation/services';
-import { WASupportedRoleDetailsService } from '../work-allocation/services';
 import { casesRouting } from './case-feature.routes';
 // from components
 import * as fromComponents from './components';
@@ -137,7 +136,6 @@ import { WorkAllocationComponentsModule } from '../work-allocation/components/wo
     HearingsService,
     FormatTranslatorService,
     WASupportedJurisdictionsService,
-    WASupportedRoleDetailsService,
     OrganisationService,
     OrganisationConverter,
     IsCompoundPipe,

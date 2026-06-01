@@ -1,23 +1,23 @@
 import { lastValueFrom, of, throwError } from 'rxjs';
 import { WASupportedJurisdictionsService } from './wa-supported-jurisdiction.service';
-import { WASupportedRoleDetailsService } from './wa-supported-role-details.service';
 import { WAVerificationService } from './wa-verification.service';
+import { AppConfig } from '../../app/services/ccd-config/ccd-case.config';
 
 describe('WorkAllocation', () => {
   describe('WAVerificationService', () => {
     let service: WAVerificationService;
-    let waSupportedRoleDetailsService: jasmine.SpyObj<WASupportedRoleDetailsService>;
+    let appConfig: jasmine.SpyObj<AppConfig>;
     let waSupportedJurisdictionsService: jasmine.SpyObj<WASupportedJurisdictionsService>;
 
     beforeEach(() => {
-      waSupportedRoleDetailsService = jasmine.createSpyObj<WASupportedRoleDetailsService>('waSupportedRoleDetailsService', [
+      appConfig = jasmine.createSpyObj<AppConfig>('appConfig', [
         'getWASupportedRoleCategories',
         'getWASupportedRoleTypes',
       ]);
       waSupportedJurisdictionsService = jasmine.createSpyObj<WASupportedJurisdictionsService>('waSupportedJurisdictionsService', [
         'getWASupportedJurisdictions',
       ]);
-      service = new WAVerificationService(waSupportedRoleDetailsService, waSupportedJurisdictionsService);
+      service = new WAVerificationService(waSupportedJurisdictionsService, appConfig);
     });
 
     it('should be Truthy', () => {
@@ -25,8 +25,8 @@ describe('WorkAllocation', () => {
     });
 
     it('combines supported role categories, role types and jurisdictions into WA verification details', async () => {
-      waSupportedRoleDetailsService.getWASupportedRoleCategories.and.returnValue(of(['LEGAL_OPERATIONS']));
-      waSupportedRoleDetailsService.getWASupportedRoleTypes.and.returnValue(of(['ORGANISATION']));
+      appConfig.getWASupportedRoleCategories.and.returnValue(['LEGAL_OPERATIONS']);
+      appConfig.getWASupportedRoleTypes.and.returnValue(['ORGANISATION']);
       waSupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['IA', 'CIVIL']));
 
       const result = await lastValueFrom(service.getWAVerification());
@@ -36,16 +36,28 @@ describe('WorkAllocation', () => {
         waSupportedRoleTypes: ['ORGANISATION'],
         waSupportedJurisdictions: ['IA', 'CIVIL'],
       });
-      expect(waSupportedRoleDetailsService.getWASupportedRoleCategories).toHaveBeenCalled();
-      expect(waSupportedRoleDetailsService.getWASupportedRoleTypes).toHaveBeenCalled();
+      expect(appConfig.getWASupportedRoleCategories).toHaveBeenCalled();
+      expect(appConfig.getWASupportedRoleTypes).toHaveBeenCalled();
       expect(waSupportedJurisdictionsService.getWASupportedJurisdictions).toHaveBeenCalled();
     });
 
-    it('returns empty arrays for failed supported role detail and jurisdiction lookups', async () => {
-      waSupportedRoleDetailsService.getWASupportedRoleCategories.and.returnValue(
-        throwError(() => new Error('role categories failed'))
-      );
-      waSupportedRoleDetailsService.getWASupportedRoleTypes.and.returnValue(of(['ORGANISATION']));
+    it('returns empty role categories and role types when AppConfig provides empty arrays', async () => {
+      appConfig.getWASupportedRoleCategories.and.returnValue([]);
+      appConfig.getWASupportedRoleTypes.and.returnValue([]);
+      waSupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
+
+      const result = await lastValueFrom(service.getWAVerification());
+
+      expect(result).toEqual({
+        waSupportedCategories: [],
+        waSupportedRoleTypes: [],
+        waSupportedJurisdictions: ['IA'],
+      });
+    });
+
+    it('returns empty array for failed supported jurisdiction lookup', async () => {
+      appConfig.getWASupportedRoleCategories.and.returnValue(['LEGAL_OPERATIONS']);
+      appConfig.getWASupportedRoleTypes.and.returnValue(['ORGANISATION']);
       waSupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(
         throwError(() => new Error('jurisdictions failed'))
       );
@@ -53,7 +65,7 @@ describe('WorkAllocation', () => {
       const result = await lastValueFrom(service.getWAVerification());
 
       expect(result).toEqual({
-        waSupportedCategories: [],
+        waSupportedCategories: ['LEGAL_OPERATIONS'],
         waSupportedRoleTypes: ['ORGANISATION'],
         waSupportedJurisdictions: [],
       });

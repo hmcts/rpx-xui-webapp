@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { createLogger } from '@hmcts/playwright-common';
 import type { Page, TestInfo } from '@playwright/test';
-import { authenticator } from 'otplib';
+import { createGuardrails, generate as generateOneTimePassword, ScureBase32Plugin } from 'otplib';
 
 import type { CaseDetailsPage } from '../../../page-objects/pages/exui/caseDetails.po';
 import type { CreateCasePage } from '../../../page-objects/pages/exui/createCase.po';
@@ -220,7 +220,7 @@ export async function createCivilLipCaseInMediationViaApi(options: {
 
   await waitForFinishedCivilBusinessProcess(options.page, config, tokens.claimantIdamToken, caseNumber);
 
-  const claimantResponseDetails = await submitCivilCitizenEvent({
+  await submitCivilCitizenEvent({
     page: options.page,
     config,
     caseNumber,
@@ -264,6 +264,12 @@ export async function createCivilLipCaseInMediationViaApi(options: {
   });
   await waitForFinishedCivilBusinessProcess(options.page, config, tokens.claimantIdamToken, caseNumber);
 
+  const caseDetails = await waitForCivilLipMediationCaseDetails({
+    page: options.page,
+    caseNumber,
+    expectedState,
+  });
+
   logger.info('Created Civil LiP mediation case via Civil API', {
     caseNumber,
     claimantEmail: config.claimantUser.email,
@@ -273,8 +279,29 @@ export async function createCivilLipCaseInMediationViaApi(options: {
 
   return {
     caseNumber,
-    caseDetails: claimantResponseDetails,
+    caseDetails,
   };
+}
+
+async function waitForCivilLipMediationCaseDetails(
+  options: {
+    page: Page;
+    caseNumber: string;
+    expectedState: string;
+  },
+  waitForState: (options: {
+    page: Page;
+    caseNumber: string;
+    expectedState: string;
+    context: string;
+  }) => Promise<CcdCaseDetails> = waitForCaseState
+): Promise<CcdCaseDetails> {
+  return waitForState({
+    page: options.page,
+    caseNumber: options.caseNumber,
+    expectedState: options.expectedState,
+    context: 'after Civil LiP mediation setup',
+  });
 }
 
 export async function createCivilMediationCaseViaApi(
@@ -1118,12 +1145,18 @@ async function getCivilS2sToken(page: Page, config: CivilApiConfig): Promise<str
   const leaseUrl = config.serviceAuthProviderUrl.endsWith('/lease')
     ? config.serviceAuthProviderUrl
     : `${config.serviceAuthProviderUrl}/lease`;
+  const secretBytes = new ScureBase32Plugin().decode(config.s2sSecret);
+  const oneTimePassword = await generateOneTimePassword({
+    secret: config.s2sSecret,
+    guardrails: createGuardrails({ MIN_SECRET_BYTES: secretBytes.length }),
+    strategy: 'totp',
+  });
   let response;
   try {
     response = await page.request.post(leaseUrl, {
       data: {
         microservice: firstNonEmpty(process.env.PW_CIVIL_S2S_MICROSERVICE) ?? DEFAULT_CIVIL_S2S_MICROSERVICE,
-        oneTimePassword: authenticator.generate(config.s2sSecret),
+        oneTimePassword,
       },
       failOnStatusCode: false,
       headers: {
@@ -1739,3 +1772,7 @@ function isFalsy(value: string | undefined): boolean {
 function createUniqueRunId(): string {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`.toLowerCase();
 }
+
+export const __test__ = {
+  waitForCivilLipMediationCaseDetails,
+};

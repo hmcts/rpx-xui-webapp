@@ -9,6 +9,7 @@ import {
   resolveCivilClaimantPartyName,
 } from '../../E2E/utils/case-flags.utils.js';
 import {
+  __test__ as civilCaseJourneyTestHelpers,
   getCivilLipMediationApiMissingConfiguration,
   type CcdCaseDetails,
 } from '../../E2E/utils/test-setup/journeys/civilCaseJourneys.js';
@@ -154,17 +155,52 @@ test.describe('Civil case flag data-loss helpers', { tag: '@svc-internal' }, () 
     );
   });
 
+  test('Civil LiP mediation setup returns the payload fetched after the expected state wait', async () => {
+    const expectedCaseDetails = createCaseDetails({ marker: faker.string.uuid() });
+    const caseNumber = faker.string.numeric(16);
+    const waitCalls: Array<{
+      caseNumber: string;
+      expectedState: string;
+      context: string;
+    }> = [];
+
+    const result = await civilCaseJourneyTestHelpers.waitForCivilLipMediationCaseDetails(
+      {
+        caseNumber,
+        expectedState: MEDIATION_STATE,
+        page: {} as never,
+      },
+      async (options) => {
+        waitCalls.push({
+          caseNumber: options.caseNumber,
+          expectedState: options.expectedState,
+          context: options.context,
+        });
+        return expectedCaseDetails;
+      }
+    );
+
+    expect(result).toBe(expectedCaseDetails);
+    expect(waitCalls).toEqual([
+      {
+        caseNumber,
+        expectedState: MEDIATION_STATE,
+        context: 'after Civil LiP mediation setup',
+      },
+    ]);
+  });
+
   test('case reference redaction keeps only the final four digits', () => {
     expect(redactCaseReference(TEST_CASE_REFERENCE)).toBe(REDACTED_TEST_CASE_REFERENCE);
     expect(redactCaseReference('123')).toBe('****');
   });
 });
 
-function createCaseDetails(data: Record<string, unknown> = {}): CcdCaseDetails {
+function createCaseDetails(data: Record<string, unknown> = {}, state = MEDIATION_STATE): CcdCaseDetails {
   return {
     data,
     state: {
-      id: MEDIATION_STATE,
+      id: state,
     },
   };
 }

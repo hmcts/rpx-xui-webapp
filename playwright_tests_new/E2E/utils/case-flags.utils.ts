@@ -272,15 +272,6 @@ function formatCivilPartyName(record: JsonRecord): string | undefined {
   return name || undefined;
 }
 
-function formatReportValue(value: unknown): string {
-  if (value === undefined) {
-    return 'undefined';
-  }
-
-  const serialised = typeof value === 'string' ? value : JSON.stringify(value);
-  return serialised.length > 120 ? `${serialised.slice(0, 117)}...` : serialised;
-}
-
 function collectChangedPaths(before: unknown, after: unknown, path = '$', changes: string[] = []): string[] {
   if (changes.length >= 50 || Object.is(before, after)) {
     return changes;
@@ -288,11 +279,11 @@ function collectChangedPaths(before: unknown, after: unknown, path = '$', change
 
   if (Array.isArray(before) || Array.isArray(after)) {
     if (!Array.isArray(before) || !Array.isArray(after)) {
-      changes.push(`${path}: ${formatReportValue(before)} => ${formatReportValue(after)}`);
+      changes.push(path);
       return changes;
     }
     if (before.length !== after.length) {
-      changes.push(`${path}.length: ${before.length} => ${after.length}`);
+      changes.push(`${path}.length`);
     }
     for (let index = 0; index < Math.max(before.length, after.length); index += 1) {
       collectChangedPaths(before[index], after[index], `${path}[${index}]`, changes);
@@ -310,6 +301,6 @@ function collectChangedPaths(before: unknown, after: unknown, path = '$', change
     return changes;
   }
 
-  changes.push(`${path}: ${formatReportValue(before)} => ${formatReportValue(after)}`);
+  changes.push(path);
   return changes;
 }

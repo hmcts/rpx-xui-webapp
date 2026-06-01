@@ -16,14 +16,11 @@ import {
   createCivilLipCaseInMediationViaApi,
   fetchCaseDetailsViaApi,
   getCivilCaseFlagsCourtStaffAlias,
-  getCivilCaseFlagsSetupAlias,
   resolveCcdCaseStateId,
-  waitForCivilCaseStateViaApi,
   type CcdCaseDetails,
 } from '../../utils/test-setup/civil/civilCaseFlagsSetup';
 import { formatErrorMessage, isDependencyEnvironmentFailure, retryOnTransientFailure } from '../../utils/transient-failure.utils';
 
-const CIVIL_API_SETUP_ALIAS = getCivilCaseFlagsSetupAlias();
 const COURT_STAFF_ALIAS = getCivilCaseFlagsCourtStaffAlias();
 const MEDIATION_STATE = process.env.PW_CIVIL_MEDIATION_CASE_STATE?.trim() || 'IN_MEDIATION';
 const TEST_FLAG_COMMENT = 'Data loss Civil Create Case Flag';
@@ -39,14 +36,13 @@ test.describe('Civil Create Case Flag data loss regression', { tag: DATA_LOSS_TE
 
   test.beforeAll(async ({ browser }) => {
     await configureCivilCaseFlagsRuntimeUsers(browser);
-    await ensureSession(CIVIL_API_SETUP_ALIAS);
     await ensureSession(COURT_STAFF_ALIAS);
   });
 
   test.beforeEach(async ({ page }, testInfo) => {
     await retryOnTransientFailure(
       async () => {
-        await ensureAuthenticatedPage(page, CIVIL_API_SETUP_ALIAS, { waitForSelector: 'exui-header' });
+        await ensureAuthenticatedPage(page, COURT_STAFF_ALIAS, { waitForSelector: 'exui-header' });
 
         const setup = await createCivilLipCaseInMediationViaApi({
           expectedState: MEDIATION_STATE,
@@ -54,14 +50,7 @@ test.describe('Civil Create Case Flag data loss regression', { tag: DATA_LOSS_TE
           useGeneratedUsers: true,
         });
         caseNumber = setup.caseNumber;
-
-        await ensureAuthenticatedPage(page, COURT_STAFF_ALIAS, { waitForSelector: 'exui-header' });
-        baselineCaseDetails = await waitForCivilCaseStateViaApi({
-          page,
-          caseNumber,
-          expectedState: MEDIATION_STATE,
-          context: 'before Civil data-loss baseline',
-        });
+        baselineCaseDetails = setup.caseDetails;
         expect(resolveCcdCaseStateId(baselineCaseDetails)).toBe(MEDIATION_STATE);
       },
       {
@@ -134,7 +123,6 @@ test.describe('Civil Create Case Flag data loss regression', { tag: DATA_LOSS_TE
             }
             try {
               const claimantFlagsTable = await caseDetailsPage.waitForTableByName(claimantPartyName, {
-                timeoutMs: 15_000,
               });
               const visibleRows = filterEmptyRows(await tableUtils.parseDataTable(claimantFlagsTable));
               return visibleRows.some((row) => rowMatchesExpected(row, expectedFlag));
@@ -147,7 +135,6 @@ test.describe('Civil Create Case Flag data loss regression', { tag: DATA_LOSS_TE
           },
           {
             message: `Expected Claimant 1 (${claimantPartyName}) party-level Other flag to be visible in the Flags tab`,
-            timeout: 60_000,
             intervals: CASE_FLAG_SUCCESS_POLL_INTERVALS,
           }
         )

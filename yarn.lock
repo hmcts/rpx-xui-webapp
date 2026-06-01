@@ -21198,11 +21198,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-<<<<<<< exui-4442
     "@hmcts/ccd-case-ui-toolkit": "npm:7.3.54-exui-4442-rc-1"
-=======
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.54"
->>>>>>> master
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.18"

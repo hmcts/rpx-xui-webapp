@@ -159,7 +159,7 @@ export class CaseHearingsComponent implements OnInit, OnDestroy {
     this.userRoles = [];
     const detailsStr = this.sessionSvc.getItem('userDetails');
     if (detailsStr) {
-      const details = JSON.parse(detailsStr) as object;
+      const details = safeJsonParse<any>(detailsStr, null);
       if (details && details.hasOwnProperty('roles')) {
         this.userRoles = details['roles'] as string[];
       }

@@ -13,7 +13,6 @@ export class WAVerificationService {
   ) {}
 
   public getWAVerification(): Observable<WAVerificationModel> {
-
     const waSupportedCategories = this.appConfig.getWASupportedRoleCategories();
     const waSupportedRoleTypes = this.appConfig.getWASupportedRoleTypes();
 
@@ -21,7 +20,7 @@ export class WAVerificationService {
       map((waSupportedJurisdictions) => ({
         waSupportedCategories,
         waSupportedRoleTypes,
-        waSupportedJurisdictions
+        waSupportedJurisdictions,
       }))
     );
   }

@@ -10,10 +10,7 @@ describe('WorkAllocation', () => {
     let waSupportedJurisdictionsService: jasmine.SpyObj<WASupportedJurisdictionsService>;
 
     beforeEach(() => {
-      appConfig = jasmine.createSpyObj<AppConfig>('appConfig', [
-        'getWASupportedRoleCategories',
-        'getWASupportedRoleTypes',
-      ]);
+      appConfig = jasmine.createSpyObj<AppConfig>('appConfig', ['getWASupportedRoleCategories', 'getWASupportedRoleTypes']);
       waSupportedJurisdictionsService = jasmine.createSpyObj<WASupportedJurisdictionsService>('waSupportedJurisdictionsService', [
         'getWASupportedJurisdictions',
       ]);

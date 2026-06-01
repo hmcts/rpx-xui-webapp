@@ -1,6 +1,6 @@
 import { ActivityService } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
-import { of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { ActivityResolver } from './activity.resolver';
 
 describe('ActivityResolver', () => {
@@ -9,13 +9,24 @@ describe('ActivityResolver', () => {
   let activityResolver: ActivityResolver;
 
   beforeEach(() => {
+    let currentMode = ActivityService.MODES.off;
     activityService = {
       verifyUserIsAuthorizedCalls: 0,
-      mode: ActivityService.MODES.polling, // Current default from toolkit.
       verifyUserIsAuthorized: (): void => {
         activityService.verifyUserIsAuthorizedCalls++;
       },
     };
+    Object.defineProperty(activityService, 'mode', {
+      get: () => currentMode,
+      set: (mode) => {
+        if (currentMode !== mode) {
+          currentMode = mode;
+          if (currentMode !== ActivityService.MODES.off) {
+            activityService.verifyUserIsAuthorized();
+          }
+        }
+      },
+    });
     featureToggleService = jasmine.createSpyObj<FeatureToggleService>('featureToggleService', ['getValue']);
   });
 
@@ -92,5 +103,31 @@ describe('ActivityResolver', () => {
       expect(activityService.verifyUserIsAuthorizedCalls).toEqual(1);
       expect(result).toBe(true);
     });
+  });
+
+  describe('when activity tracking is set to "socket-long-poll"', () => {
+    beforeEach(() => {
+      instantiate('socket-long-poll');
+    });
+
+    it('should use socket long-poll mode and return true', () => {
+      let result: boolean;
+      activityResolver.resolve().subscribe((r) => (result = r));
+      expect(activityService.mode).toEqual(ActivityService.MODES.socketLongPoll);
+      expect(activityService.verifyUserIsAuthorizedCalls).toEqual(1);
+      expect(result).toBe(true);
+    });
+  });
+
+  it('should ignore duplicate mode emissions', () => {
+    const modeSubject = new Subject<string>();
+    featureToggleService.getValue.and.returnValue(modeSubject.asObservable());
+    activityResolver = new ActivityResolver(activityService, featureToggleService);
+
+    modeSubject.next('socket');
+    modeSubject.next('socket');
+
+    expect(activityService.mode).toEqual(ActivityService.MODES.socket);
+    expect(activityService.verifyUserIsAuthorizedCalls).toEqual(1);
   });
 });

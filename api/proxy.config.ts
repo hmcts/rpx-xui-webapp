@@ -28,10 +28,9 @@ export const initProxy = (app: Express) => {
   applyProxy(app, {
     rewrite: true,
     rewriteUrl: '/socket.io',
-    skipAuth: true, // WebSocket upgrades don't work with standard HTTP auth middleware
+    skipAuth: true, // socket.io transport auth is handled by the activity service
     source: '/socket.io',
     target: getConfigValue(SERVICES_CCD_ACTIVITY_API),
-    ws: true,
   });
 
   applyProxy(app, {

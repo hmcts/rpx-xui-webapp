@@ -10,15 +10,12 @@ import { createApp } from './application';
 import * as ejs from 'ejs';
 import * as express from 'express';
 import * as http from 'http';
-import * as net from 'net';
 import * as path from 'path';
 import { appInsights } from './lib/appInsights';
 import errorHandler from './lib/error.handler';
 import { removeCacheHeaders } from './lib/middleware/removeCacheHeaders';
 import { corsMw } from './security/cors';
-import { legacyCreateProxyMiddleware } from 'http-proxy-middleware';
-import { getConfigValue } from './configuration';
-import { SERVICES_CCD_ACTIVITY_API } from './configuration/references';
+import { attachSocketProxy } from './socket-proxy';
 
 createApp().then((app: express.Application) => {
   app.engine('html', ejs.renderFile);
@@ -47,28 +44,7 @@ createApp().then((app: express.Application) => {
 
   const server = http.createServer(app);
 
-  // Create a dedicated WebSocket proxy for socket.io
-  // This bypasses the auth middleware which doesn't work with WebSocket upgrades
-  const wsProxy = legacyCreateProxyMiddleware({
-    target: getConfigValue(SERVICES_CCD_ACTIVITY_API),
-    ws: true,
-    changeOrigin: true,
-    pathRewrite: {
-      '^/socket.io': '/socket.io',
-    },
-  });
-
-  // Handle WebSocket upgrade requests
-  server.on('upgrade', (req, socket: net.Socket, head) => {
-    console.log('🔧 UPGRADE EVENT TRIGGERED:', req.url, req.headers);
-    if (req.url && req.url.startsWith('/socket.io')) {
-      console.log('✅ Upgrading socket.io connection');
-      wsProxy.upgrade(req, socket, head);
-    } else {
-      console.log('❌ Non-socket.io upgrade request, destroying:', req.url);
-      socket.destroy();
-    }
-  });
+  attachSocketProxy(server);
 
   server.listen(process.env.PORT || 3000, () => {
     console.log('Server listening on port 3000!');

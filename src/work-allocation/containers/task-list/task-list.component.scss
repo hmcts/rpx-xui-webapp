@@ -48,13 +48,6 @@
   }
 }
 
-.header-cell {
-  display: flex;
-  .arrow {
-    border: 1px solid red;
-    padding: 0 0 0 10px;
-  }
-}
 
 .govuk-table__row {
   border-bottom: solid 1px #ddd;
@@ -100,6 +93,10 @@
       }
     }
   }
+}
+
+.cell-footer {
+  padding: 10px 20px;
 }
 
 .column-label {

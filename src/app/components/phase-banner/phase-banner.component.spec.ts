@@ -57,7 +57,7 @@ describe('PhaseBannerComponent', () => {
   it('should render the feedback link', () => {
     const feedbackLinkClass = '.govuk-phase-banner .govuk-link';
     const feedbackLinkElement = fixture.debugElement.query(By.css(feedbackLinkClass)).nativeElement;
-    const feedbackLinkSpanElement = fixture.debugElement.query(By.css(`${feedbackLinkClass} span.visuallyhidden`)).nativeElement;
+    const feedbackLinkSpanElement = fixture.debugElement.query(By.css(`${feedbackLinkClass} span.govuk-visually-hidden`)).nativeElement;
 
     expect(feedbackLinkElement.getAttribute('target')).toBe('_blank');
     expect(feedbackLinkSpanElement.innerHTML).toEqual('(Opens in a new window)');

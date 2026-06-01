@@ -122,8 +122,7 @@ test.describe('Civil Create Case Flag data loss regression', { tag: DATA_LOSS_TE
               return false;
             }
             try {
-              const claimantFlagsTable = await caseDetailsPage.waitForTableByName(claimantPartyName, {
-              });
+              const claimantFlagsTable = await caseDetailsPage.waitForTableByName(claimantPartyName, {});
               const visibleRows = filterEmptyRows(await tableUtils.parseDataTable(claimantFlagsTable));
               return visibleRows.some((row) => rowMatchesExpected(row, expectedFlag));
             } catch (error) {

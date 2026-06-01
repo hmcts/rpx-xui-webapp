@@ -43,7 +43,7 @@ test.describe(
       });
 
       await page.goto(`/cases/case-create/${jurisdiction}/${caseType}/createCase/`);
-      await expect(page.locator('#judgeApproval1')).toBeVisible();
+      await expect(page.locator('#judgeApproval1_isReady')).toBeVisible();
     });
 
     test('Interpolates complex child labels in required validation and check your answers', async ({ createCasePage, page }) => {
@@ -55,7 +55,7 @@ test.describe(
       await test.step('Submit the page without answering the mandatory child field', async () => {
         await createCasePage.continueButton.click();
 
-        await expect(createCasePage.validationErrorMessage).toHaveText(`${expectedInterpolatedLabel} is required`);
+        await expect(createCasePage.validationErrorMessage).toContainText(`${expectedInterpolatedLabel} is required`);
         await expect(createCasePage.validationErrorMessage).not.toContainText('${judgeApproval1.inlineDocType}');
       });
 

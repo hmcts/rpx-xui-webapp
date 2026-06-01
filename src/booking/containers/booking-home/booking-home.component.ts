@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { NavigationExtras, Router } from '@angular/router';
-import { WindowService } from '@hmcts/ccd-case-ui-toolkit';
+import { WindowService, safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import moment from 'moment';
 import { Subscription } from 'rxjs';
@@ -40,7 +40,7 @@ export class BookingHomeComponent implements OnInit, OnDestroy {
     this.bookingTypeForm = this.fb.group({
       bookingType: new FormControl(null),
     });
-    const bookableServices = JSON.parse(this.sessionStorageService.getItem('bookableServices'));
+    const bookableServices = safeJsonParse<string[]>(this.sessionStorageService.getItem('bookableServices'), []);
     if (this.userId) {
       this.existingBookingsSubscription = this.bookingService.getBookings(this.userId, bookableServices).subscribe(
         (bookings) => {

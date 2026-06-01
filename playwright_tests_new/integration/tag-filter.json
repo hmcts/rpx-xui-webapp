@@ -7,6 +7,8 @@
     "@integration-create-case",
     "@integration-manage-tasks",
     "@integration-search-case",
-    "@integration-welsh-language"
+    "@integration-welsh-language",
+    "@integration-access-requests",
+    "@integration-booking-ui"
   ]
 }

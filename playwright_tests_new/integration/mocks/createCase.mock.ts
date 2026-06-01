@@ -543,7 +543,7 @@ export function divorcePocCaseData() {
   };
 }
 
-export function interpolatedMandatoryComplexCaseData() {
+export function interpolatedMandatoryComplexCaseData(inlineDocType = 'order') {
   return {
     id: 'createCase',
     name: 'Create a case',
@@ -555,7 +555,7 @@ export function interpolatedMandatoryComplexCaseData() {
         label: 'Judge approval',
         ...CREATE_CASE_DEFAULT_FIELD,
         value: {
-          inlineDocType: 'order',
+          inlineDocType,
           isReady: null,
         },
         field_type: buildComplexFieldType({
@@ -566,7 +566,7 @@ export function interpolatedMandatoryComplexCaseData() {
                 id: 'inlineDocType',
                 label: 'Document type',
               }),
-              value: 'order',
+              value: inlineDocType,
               display_context: 'READONLY',
               show_summary_change_option: true,
             },

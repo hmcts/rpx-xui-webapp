@@ -6,7 +6,8 @@ import { TEST_USERS } from '../../testData';
 const userIdentifier = TEST_USERS.SOLICITOR;
 const jurisdiction = 'DIVORCE';
 const caseType = 'xuiTestJurisdiction';
-const expectedInterpolatedLabel = 'Is this order ready to be sealed and issued';
+const inlineDocType = 'order';
+const expectedInterpolatedLabel = `Is this ${inlineDocType} ready to be sealed and issued`;
 
 test.describe(
   `Create case field interpolation as ${userIdentifier}`,
@@ -38,7 +39,7 @@ test.describe(
         await route.fulfill({
           status: 200,
           contentType: 'application/json',
-          body: JSON.stringify(interpolatedMandatoryComplexCaseData()),
+          body: JSON.stringify(interpolatedMandatoryComplexCaseData(inlineDocType)),
         });
       });
 

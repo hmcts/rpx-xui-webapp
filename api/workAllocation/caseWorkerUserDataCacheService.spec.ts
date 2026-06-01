@@ -132,6 +132,62 @@ describe('Caseworker Cache Service', () => {
       const data = await fetchNewUserData();
       expect(data).to.deep.equal(mockMergedStaffUsers);
     });
+
+    it('should share an in-flight get request across concurrent refreshes', async () => {
+      const mockStaffDetails = [
+        {
+          ccd_service_name: 'IA',
+          staff_profile: {
+            id: '1',
+            first_name: 'IA',
+            last_name: 'User',
+            email_id: 'IAUser@test.com',
+            base_location: [
+              {
+                location: 'IA location',
+                location_id: 'a',
+                is_primary: true,
+              },
+            ],
+          },
+        },
+      ];
+      const mockMergedStaffUsers = [
+        {
+          ccd_service_name: 'IA',
+          staff_profile: {
+            id: '1',
+            first_name: 'IA',
+            last_name: 'User',
+            email_id: 'IAUser@test.com',
+            base_location: [
+              {
+                location: 'IA location',
+                location_id: 'a',
+                is_primary: true,
+              },
+            ],
+          },
+          ccd_service_names: ['IA'],
+        },
+      ];
+      let resolveGetRequest: (value: any) => void;
+      const getRequest = new Promise((resolve) => {
+        resolveGetRequest = resolve;
+      });
+      const getStub = sandbox.stub(http, 'get').returns(getRequest as any);
+      sandbox.stub(http, 'post').resolves(mockRes({ status: 200, data: { access_token: 'token' } }));
+
+      const firstRequest = fetchNewUserData();
+      const secondRequest = fetchNewUserData();
+      resolveGetRequest(mockRes({ status: 200, data: mockStaffDetails }));
+
+      const [firstResponse, secondResponse] = await Promise.all([firstRequest, secondRequest]);
+
+      expect(getStub).to.have.been.calledOnce;
+      expect(firstResponse).to.deep.equal(mockMergedStaffUsers);
+      expect(secondResponse).to.deep.equal(mockMergedStaffUsers);
+    });
   });
 
   describe('fetchRoleAssignmentsForNewUsers', () => {
@@ -201,6 +257,7 @@ describe('Caseworker Cache Service', () => {
           lastName: 'User',
           locations: [{ id: 'a', locationName: 'IA location', services: ['IA', 'CIVIL'] }],
           roleCategory: 'ADMIN',
+          roleCategories: [{ roleCategory: 'ADMIN', services: undefined }],
           services: ['IA', 'CIVIL'],
         },
         {
@@ -210,6 +267,7 @@ describe('Caseworker Cache Service', () => {
           lastName: 'User',
           locations: [{ id: 'c', locationName: 'PL location', services: undefined }],
           roleCategory: 'CTSC',
+          roleCategories: [{ roleCategory: 'CTSC', services: undefined }],
           services: ['PRIVATELAW'],
         },
       ];

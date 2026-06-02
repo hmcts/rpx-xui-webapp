@@ -10,7 +10,6 @@ const { cpus, totalmem } = require('node:os');
 const path = require('node:path');
 
 const temporaryProbePattern = '**/_tmp_*.spec.ts';
-const searchCasePattern = '**/test/searchCase/**/*.spec.ts';
 const defaultBaseUrl = 'https://manage-case.aat.platform.hmcts.net';
 const defaultLiveTimerIntervalMs = '30000';
 const defaultOdhinOutputFolder = 'functional-output/tests/playwright-integration/odhin-report';
@@ -30,31 +29,6 @@ const resolveDefaultReporter = (env = process.env) => {
   return env.CI ? 'dot' : 'list';
 };
 
-const resolveWorkerTargetEnvironment = (env = process.env) => {
-  const configuredTarget = env.TEST_TYPE?.trim().toLowerCase();
-  if (configuredTarget) {
-    return configuredTarget;
-  }
-
-  const configuredUrl = env.TEST_URL?.trim();
-  if (!configuredUrl) {
-    return undefined;
-  }
-
-  try {
-    const hostname = new URL(configuredUrl).hostname.toLowerCase();
-    if (hostname.includes('.aat.')) {
-      return 'aat';
-    }
-    if (hostname.includes('.demo.')) {
-      return 'demo';
-    }
-    return hostname;
-  } catch {
-    return undefined;
-  }
-};
-
 const resolveWorkerCount = (env = process.env) => {
   const configured = env.FUNCTIONAL_TESTS_WORKERS?.trim();
   if (configured) {
@@ -64,17 +38,7 @@ const resolveWorkerCount = (env = process.env) => {
     }
   }
 
-  if (env.CI) {
-    const targetEnv = resolveWorkerTargetEnvironment(env);
-    if (targetEnv === 'aat' || targetEnv === 'demo') {
-      return 2;
-    }
-    return 8;
-  }
-
-  const logical = cpus()?.length ?? 1;
-  const approxPhysical = logical <= 2 ? 1 : Math.max(1, Math.round(logical / 2));
-  return Math.min(8, Math.max(2, approxPhysical));
+  return 7;
 };
 
 const resolveBrowserChannel = (env = process.env) => {
@@ -187,6 +151,20 @@ const resolveOdhinTimeoutExitCode = (env = process.env) => {
   return 1;
 };
 
+const resolveOdhinCompletionExitDelayMs = (env = process.env) => {
+  const raw = env.PW_ODHIN_COMPLETION_EXIT_DELAY_MS;
+  if (raw !== undefined) {
+    const parsed = Number.parseInt(raw, 10);
+    if (Number.isFinite(parsed) && parsed >= 0) {
+      return parsed;
+    }
+  }
+  return env.CI ? 1000 : 0;
+};
+
+const resolveOdhinForceExitOnCompletion = (env = process.env) =>
+  resolveFlag(env.PW_ODHIN_FORCE_EXIT_ON_COMPLETION, Boolean(env.CI));
+
 const buildConfig = (env = process.env) => {
   const headlessMode = env.HEAD !== 'true';
   const odhinOutputFolder = env.PLAYWRIGHT_REPORT_FOLDER ?? defaultOdhinOutputFolder;
@@ -216,6 +194,8 @@ const buildConfig = (env = process.env) => {
         intervalMs: Number.parseInt(env.PW_ODHIN_PROGRESS_INTERVAL_MS ?? '5000', 10) || 5000,
         hardTimeoutMs: resolveOdhinHardTimeoutMs(env),
         timeoutExitCode: resolveOdhinTimeoutExitCode(env),
+        completionExitDelayMs: resolveOdhinCompletionExitDelayMs(env),
+        forceExitOnCompletion: resolveOdhinForceExitOnCompletion(env),
       },
     ]);
     reporter.push([
@@ -261,16 +241,7 @@ const buildConfig = (env = process.env) => {
     },
     projects: [
       {
-        name: 'chromium-search-case',
-        testMatch: [searchCasePattern],
-        use: {
-          ...devices['Desktop Chrome'],
-          ...(browserChannel ? { channel: browserChannel } : {}),
-        },
-      },
-      {
         name: 'chromium',
-        testIgnore: [searchCasePattern],
         use: {
           ...devices['Desktop Chrome'],
           ...(browserChannel ? { channel: browserChannel } : {}),
@@ -293,4 +264,6 @@ module.exports = {
   resolveOdhinRuntimeHookTimeoutMs,
   resolveOdhinHardTimeoutMs,
   resolveOdhinTimeoutExitCode,
+  resolveOdhinCompletionExitDelayMs,
+  resolveOdhinForceExitOnCompletion,
 };

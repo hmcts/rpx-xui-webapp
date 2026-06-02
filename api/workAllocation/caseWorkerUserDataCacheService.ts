@@ -14,8 +14,8 @@ import {
   SYSTEM_USER_PASSWORD,
 } from '../configuration/references';
 import { http } from '../lib/http';
-import * as log4jui from '../lib/log4jui';
-import { EnhancedRequest, JUILogger } from '../lib/models';
+import { EnhancedRequest } from '../lib/models';
+import { getStaffSupportedJurisdictionsList } from '../staffSupportedJurisdictions';
 import {
   handleNewUsersGet,
   handlePostRoleAssignments,
@@ -30,14 +30,6 @@ import { mapUsersToCachedCaseworkers, prepareGetUsersUrl, prepareRoleApiRequest,
 
 // 10 minutes
 const TTL = 600;
-const logger: JUILogger = log4jui.getLogger('caseworker-cache');
-
-interface RoleCacheSummary {
-  roleCategoryAssignmentCount: number;
-  roleCategoryCounts: Record<string, number>;
-  userCount: number;
-  usersWithMultipleRoleCategories: number;
-}
 
 let timestamp: Date;
 let refreshRoles: boolean;
@@ -46,137 +38,55 @@ let initialAuthToken: string;
 
 let cachedUsers: StaffUserDetails[];
 let cachedUsersWithRoles: CachedCaseworker[];
-let cachedUsersRefreshPromise: Promise<StaffUserDetails[]>;
-let cachedUsersWithRolesRefreshPromise: Promise<CachedCaseworker[]>;
-
-function getCacheAgeSeconds(): number | null {
-  return timestamp ? Math.floor((Date.now() - timestamp.getTime()) / 1000) : null;
-}
-
-function getRoleCacheSummary(users: CachedCaseworker[]): RoleCacheSummary {
-  const roleCategoryCounts: Record<string, number> = {};
-  const userCount = users?.length || 0;
-  const roleCategoryAssignmentCount =
-    users?.reduce((total, user) => total + (user.roleCategories?.length || (user.roleCategory ? 1 : 0)), 0) || 0;
-  const usersWithMultipleRoleCategoriesList = users?.filter((user) => user.roleCategories?.length > 1) || [];
-  const usersWithMultipleRoleCategories = usersWithMultipleRoleCategoriesList.length;
-  users?.forEach((user) => {
-    const roleCategories = user.roleCategories?.length
-      ? user.roleCategories.map((role) => role.roleCategory)
-      : [user.roleCategory];
-    roleCategories
-      .filter((roleCategory) => roleCategory)
-      .forEach((roleCategory) => {
-        roleCategoryCounts[roleCategory] = (roleCategoryCounts[roleCategory] || 0) + 1;
-      });
-  });
-  return {
-    roleCategoryAssignmentCount,
-    roleCategoryCounts,
-    userCount,
-    usersWithMultipleRoleCategories,
-  };
-}
 
 export async function fetchUserData(req: EnhancedRequest, next: NextFunction): Promise<StaffUserDetails[]> {
   try {
-    if (cachedUsersRefreshPromise) {
-      logger.debug('Waiting for in-flight caseworker user cache refresh', {
-        cachedUsersCount: cachedUsers?.length || 0,
-      });
-      return await cachedUsersRefreshPromise;
-    }
-
-    const ttlExpired = hasTTLExpired();
-    const isCacheEmpty = !cachedUsers || cachedUsers.length === 0;
-    if (ttlExpired || isCacheEmpty) {
+    if (hasTTLExpired() || !cachedUsers || cachedUsers.length === 0) {
       // hasTTLExpired to determine whether roles require refreshing
       // cachedUsers to ensure rerun if user restarts request early
       refreshRoles = true;
-      cachedUsersRefreshPromise = refreshUserData(req, isCacheEmpty, ttlExpired).finally(() => {
-        cachedUsersRefreshPromise = null;
-      });
-      return await cachedUsersRefreshPromise;
+      cachedUsers = [];
+      const jurisdictions = getConfigValue(STAFF_SUPPORTED_JURISDICTIONS);
+      const getUsersPath: string = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions);
+      const userResponse = await handleUsersGet(getUsersPath, req);
+      // EXUI-3967 - Caching may be removed in future in favour of API caching
+      cachedUsers = getUniqueUsersFromResponse(userResponse);
     } else {
       refreshRoles = false;
-      logger.debug('Using caseworker user cache', {
-        cacheAgeSeconds: getCacheAgeSeconds(),
-        cachedUsersCount: cachedUsers.length,
-      });
     }
     return cachedUsers;
   } catch (error) {
     if (cachedUsers) {
-      logger.warn('Using stale caseworker user cache after refresh failure', {
-        cachedUsersCount: cachedUsers.length,
-        error: error?.message,
-      });
       return cachedUsers;
     }
     next(error);
   }
 }
 
-async function refreshUserData(req: EnhancedRequest, isCacheEmpty: boolean, ttlExpired: boolean): Promise<StaffUserDetails[]> {
-  logger.info('Refreshing caseworker user cache', { cachedUsersCount: cachedUsers?.length || 0, isCacheEmpty, ttlExpired });
-  const jurisdictions = getConfigValue(STAFF_SUPPORTED_JURISDICTIONS);
-  const getUsersPath: string = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions);
-  const userResponse = await handleUsersGet(getUsersPath, req);
-  // EXUI-3967 - Caching may be removed in future in favour of API caching
-  cachedUsers = getUniqueUsersFromResponse(userResponse);
-  logger.info('Caseworker user cache refreshed', {
-    cacheAgeSeconds: getCacheAgeSeconds(),
-    rawUserCount: userResponse?.length || 0,
-    uniqueUserCount: cachedUsers.length,
-  });
-  return cachedUsers;
-}
-
 // Note: May not be needed once API caching is in effect
 export async function fetchNewUserData(): Promise<StaffUserDetails[]> {
   try {
-    if (cachedUsersRefreshPromise) {
-      logger.debug('Waiting for in-flight caseworker user cache refresh before sign-in', {
-        cachedUsersCount: cachedUsers?.length || 0,
-      });
-      return await cachedUsersRefreshPromise;
-    }
-
     // first ensure that there is no immediate re-caching
     timestamp = new Date();
     refreshRoles = true;
-    cachedUsersRefreshPromise = refreshNewUserData().finally(() => {
-      cachedUsersRefreshPromise = null;
-    });
-    return await cachedUsersRefreshPromise;
+    await getAuthTokens();
+    // add the tokens to the request headers
+    const caseworkerHeaders = getRequestHeaders();
+    const jurisdictions = getConfigValue(STAFF_SUPPORTED_JURISDICTIONS);
+    cachedUsers = [];
+    const getUsersPath: string = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions);
+    const userResponse = await handleNewUsersGet(getUsersPath, caseworkerHeaders);
+    cachedUsers = getUniqueUsersFromResponse(userResponse);
+    return cachedUsers;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     if (cachedUsers) {
-      logger.warn('Using stale caseworker user cache before sign-in after refresh failure', {
-        cachedUsersCount: cachedUsers.length,
-        error: error?.message,
-      });
       return cachedUsers;
     }
     // in case of error, reset the cache on application start up
     timestamp = null;
     refreshRoles = false;
   }
-}
-
-async function refreshNewUserData(): Promise<StaffUserDetails[]> {
-  logger.info('Refreshing caseworker user cache before sign-in');
-  await getAuthTokens();
-  // add the tokens to the request headers
-  const caseworkerHeaders = getRequestHeaders();
-  const jurisdictions = getConfigValue(STAFF_SUPPORTED_JURISDICTIONS);
-  const getUsersPath: string = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions);
-  const userResponse = await handleNewUsersGet(getUsersPath, caseworkerHeaders);
-  cachedUsers = getUniqueUsersFromResponse(userResponse);
-  logger.info('Caseworker user cache refreshed before sign-in', {
-    rawUserCount: userResponse?.length || 0,
-    uniqueUserCount: cachedUsers.length,
-  });
-  return cachedUsers;
 }
 
 export async function fetchRoleAssignments(
@@ -187,113 +97,53 @@ export async function fetchRoleAssignments(
   // note: this has been done to cache role categories
   // it is separate from the above as above caching will be done by backend
   try {
-    if (cachedUsersWithRolesRefreshPromise) {
-      logger.debug(
-        'Waiting for in-flight caseworker role cache refresh',
-        getRoleCacheSummary(FullUserDetailCache.getAllUserDetails())
-      );
-      return await cachedUsersWithRolesRefreshPromise;
-    }
-
     if (refreshRoles || !cachedUsersWithRoles) {
       // refreshRoles to determine whether roles require refreshing
       // cachedUsersWithRoles to ensure rerun if user restarts request early
-      cachedUsersWithRolesRefreshPromise = refreshRoleAssignments(cachedUserData, req).finally(() => {
-        cachedUsersWithRolesRefreshPromise = null;
-      });
-      return await cachedUsersWithRolesRefreshPromise;
-    } else {
-      logger.debug('Using caseworker role cache', getRoleCacheSummary(FullUserDetailCache.getAllUserDetails()));
+      const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
+      const jurisdictions = getStaffSupportedJurisdictionsList();
+      const payload = prepareRoleApiRequest(jurisdictions);
+      const { data } = await handlePostRoleAssignments(roleApiPath, payload, req);
+      const roleAssignments = data.roleAssignmentResponse;
+      cachedUsersWithRoles = mapUsersToCachedCaseworkers(cachedUserData, roleAssignments);
+      FullUserDetailCache.setUserDetails(cachedUsersWithRoles);
     }
     return FullUserDetailCache.getAllUserDetails();
   } catch (error) {
     if (FullUserDetailCache.getAllUserDetails()) {
-      logger.warn('Using stale caseworker role cache after refresh failure', {
-        error: error?.message,
-        ...getRoleCacheSummary(FullUserDetailCache.getAllUserDetails()),
-      });
       return FullUserDetailCache.getAllUserDetails();
     }
     next(error);
   }
 }
 
-async function refreshRoleAssignments(cachedUserData: StaffUserDetails[], req: EnhancedRequest): Promise<CachedCaseworker[]> {
-  logger.info('Refreshing caseworker role cache', {
-    cachedUsersCount: cachedUserData?.length || 0,
-    hasRoleCache: !!cachedUsersWithRoles,
-    refreshRoles,
-  });
-  const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
-  const payload = prepareRoleApiRequest();
-  const { data } = await handlePostRoleAssignments(roleApiPath, payload, req);
-  const roleAssignments = data.roleAssignmentResponse;
-  cachedUsersWithRoles = mapUsersToCachedCaseworkers(cachedUserData, roleAssignments);
-  FullUserDetailCache.setUserDetails(cachedUsersWithRoles);
-  refreshRoles = false;
-  logger.info('Caseworker role cache refreshed', {
-    roleAssignmentResponseCount: roleAssignments?.length || 0,
-    ...getRoleCacheSummary(cachedUsersWithRoles),
-  });
-  return FullUserDetailCache.getAllUserDetails();
-}
-
 export async function fetchRoleAssignmentsForNewUsers(cachedUserData: StaffUserDetails[]): Promise<CachedCaseworker[]> {
   // note: this has been done to cache role categories
   // it is separate from the above as above caching will be done by backend
   try {
-    if (cachedUsersWithRolesRefreshPromise) {
-      logger.debug(
-        'Waiting for in-flight caseworker role cache refresh before sign-in',
-        getRoleCacheSummary(FullUserDetailCache.getAllUserDetails())
-      );
-      return await cachedUsersWithRolesRefreshPromise;
-    }
-
     if (refreshRoles && !cachedUsersWithRoles) {
       // refreshRoles to determine whether roles require refreshing
       // cachedUsersWithRoles to ensure rerun if user restarts request early
-      cachedUsersWithRolesRefreshPromise = refreshRoleAssignmentsForNewUsers(cachedUserData).finally(() => {
-        cachedUsersWithRolesRefreshPromise = null;
-      });
-      return await cachedUsersWithRolesRefreshPromise;
-    } else {
-      logger.debug('Using caseworker role cache before sign-in', getRoleCacheSummary(FullUserDetailCache.getAllUserDetails()));
+      const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
+      const jurisdictions = getStaffSupportedJurisdictionsList();
+      const payload = prepareRoleApiRequest(jurisdictions);
+      const roleAssignmentHeaders = {
+        ...getRequestHeaders(),
+        pageNumber: 0,
+        size: 10000,
+      };
+      const { data } = await handlePostRoleAssignmentsWithNewUsers(roleApiPath, payload, roleAssignmentHeaders);
+      const roleAssignments = data.roleAssignmentResponse;
+      cachedUsersWithRoles = mapUsersToCachedCaseworkers(cachedUserData, roleAssignments);
+      FullUserDetailCache.setUserDetails(cachedUsersWithRoles);
     }
     return FullUserDetailCache.getAllUserDetails();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     if (FullUserDetailCache.getAllUserDetails()) {
-      logger.warn('Using stale caseworker role cache before sign-in after refresh failure', {
-        error: error?.message,
-        ...getRoleCacheSummary(FullUserDetailCache.getAllUserDetails()),
-      });
       return FullUserDetailCache.getAllUserDetails();
     }
   }
-}
-
-async function refreshRoleAssignmentsForNewUsers(cachedUserData: StaffUserDetails[]): Promise<CachedCaseworker[]> {
-  logger.info('Refreshing caseworker role cache before sign-in', {
-    cachedUsersCount: cachedUserData?.length || 0,
-    refreshRoles,
-  });
-  const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
-  const payload = prepareRoleApiRequest();
-  const roleAssignmentHeaders = {
-    ...getRequestHeaders(),
-    pageNumber: 0,
-    size: 10000,
-  };
-  const { data } = await handlePostRoleAssignmentsWithNewUsers(roleApiPath, payload, roleAssignmentHeaders);
-  const roleAssignments = data.roleAssignmentResponse;
-  cachedUsersWithRoles = mapUsersToCachedCaseworkers(cachedUserData, roleAssignments);
-  FullUserDetailCache.setUserDetails(cachedUsersWithRoles);
-  refreshRoles = false;
-  logger.info('Caseworker role cache refreshed before sign-in', {
-    roleAssignmentResponseCount: roleAssignments?.length || 0,
-    ...getRoleCacheSummary(cachedUsersWithRoles),
-  });
-  return FullUserDetailCache.getAllUserDetails();
 }
 
 export async function getAuthTokens(): Promise<void> {
@@ -319,8 +169,9 @@ export async function getAuthTokens(): Promise<void> {
     initialServiceAuthToken = serviceAuthResponse.data;
     const authResponse = await http.post(authURL, authBody, axiosConfig);
     initialAuthToken = authResponse.data.access_token;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
-    logger.warn('Cannot get auth tokens', { error: error?.message });
+    console.log('Cannot get auth tokens');
   }
 }
 

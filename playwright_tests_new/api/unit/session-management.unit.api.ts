@@ -136,4 +136,74 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
   });
+
+  test('session capture reuses a fresh session instead of failing on a recent failure marker', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-unit-'));
+    const previousCwd = process.cwd();
+    const sessionsDir = path.join(tempDir, '.sessions');
+    const sessionPath = path.join(sessionsDir, 'booking-ui-user-example.test.storage.json');
+    const failurePath = path.join(sessionsDir, 'booking-ui-user-example.test.capture-failed.json');
+    let lockCalled = false;
+    let freshnessMaxAgeMs: number | undefined;
+
+    try {
+      fs.mkdirSync(sessionsDir, { recursive: true });
+      fs.writeFileSync(
+        sessionPath,
+        JSON.stringify({
+          cookies: [
+            { name: 'Idam.Session', value: 'session', expires: Math.floor(Date.now() / 1_000) + 600 },
+            { name: '__auth__', value: 'auth', expires: Math.floor(Date.now() / 1_000) + 600 },
+          ],
+        })
+      );
+      fs.writeFileSync(
+        failurePath,
+        JSON.stringify({
+          timestamp: Date.now(),
+          message: 'Login failed for BOOKING_UI-FT-ON-4',
+        })
+      );
+
+      process.chdir(tempDir);
+
+      await expect(
+        sessionCaptureTest.sessionCaptureWith(['BOOKING_UI-FT-ON-4'], {
+          chromiumLauncher: {
+            launch: async () => {
+              throw new Error('should not launch browser when a fresh session exists');
+            },
+          } as never,
+          config: {
+            urls: {
+              exuiDefaultUrl: 'https://manage-case.aat.platform.hmcts.net',
+            },
+          } as never,
+          env: { PW_SESSION_MAX_AGE_MS: '1234' },
+          isSessionFresh: (_sessionPath, maxAgeMs) => {
+            freshnessMaxAgeMs = maxAgeMs;
+            return true;
+          },
+          lockfile: {
+            lock: async () => {
+              lockCalled = true;
+              throw new Error('should not acquire lock when a fresh session exists');
+            },
+          } as never,
+          resolveSessionIdentity: () => ({
+            userIdentifier: 'BOOKING_UI-FT-ON-4',
+            email: 'booking-ui-user@example.test',
+            password: 'not-used',
+          }),
+        })
+      ).resolves.toBeUndefined();
+
+      expect(lockCalled).toBe(false);
+      expect(freshnessMaxAgeMs).toBe(1234);
+      expect(fs.existsSync(failurePath)).toBe(false);
+    } finally {
+      process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
 });

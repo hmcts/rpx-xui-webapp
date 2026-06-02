@@ -13,8 +13,22 @@
   max-width: 120px;
 }
 
+:host ::ng-deep xuilib-gov-uk-input .govuk-form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+:host ::ng-deep .govuk-label--m {
+  margin-bottom: 5px;
+}
+
 :host ::ng-deep xuilib-gov-uk-input .govuk-hint {
   display: block;
+  order: 1;
+}
+
+:host ::ng-deep xuilib-gov-uk-input input {
+  order: 0;
 }
 
 :host ::ng-deep xuilib-gov-uk-input div.govuk-form-group:first-of-type,

@@ -1671,3 +1671,154 @@ td.govuk-table__cell {
 .cdk-column-priority {
   width: 4.2em !important;
 }
+
+// =============================================================================
+// ccd-search-result column styles — compatibility shim
+// These are embedded in the ccd-case-ui-toolkit bundle as component styles but
+// may not reach the DOM when encapsulation or build ordering works against them.
+// Adding globally ensures they always apply.
+// =============================================================================
+
+.search-result-column-header {
+  width: unset;
+  table-layout: normal;
+
+  div {
+    display: table-cell;
+    width: auto;
+  }
+
+  @media screen and (max-width: 379px) {
+    div {
+      display: block;
+      float: right;
+    }
+  }
+}
+
+.search-result-column-label {
+  font-size: 16px;
+  font-weight: 700;
+  word-wrap: break-word;
+  cursor: pointer;
+  padding-right: 15px;
+}
+
+.search-result-column-sort {
+  font-size: 16px;
+}
+
+.sort-widget {
+  cursor: pointer;
+  text-decoration: none;
+  color: #231f20;
+}
+
+// =============================================================================
+// Plain table styles — compatibility shim
+// govuk-elements-sass applied global table styles to all plain <table> elements.
+// ccd-search-result renders a <table> with no govuk-table class and relies on these.
+// Scoped to :not(.govuk-table) to avoid overriding govuk-frontend's own table styles.
+// =============================================================================
+
+table:not(.govuk-table) {
+  border-collapse: collapse;
+  border-spacing: 0;
+  width: 100%;
+}
+
+table caption {
+  text-align: left;
+}
+
+table:not(.govuk-table) th,
+table:not(.govuk-table) td {
+  font-size: 19px;
+  padding: 12px 20px 9px 0;
+  text-align: left;
+  border-bottom: 1px solid #bfc1c3;
+  vertical-align: top;
+}
+
+table:not(.govuk-table) thead th {
+  font-weight: 700;
+}
+
+table:not(.govuk-table) tbody td {
+  font-size: 16px;
+  word-wrap: break-word;
+}
+
+table:not(.govuk-table) th:last-child,
+table:not(.govuk-table) td:last-child {
+  padding-right: 0;
+}
+
+table:not(.govuk-table) tbody td a {
+  float: left;
+}
+
+table:not(.govuk-table) .numeric {
+  text-align: right;
+}
+
+// =============================================================================
+// govuk-elements date input — compatibility shim
+// Provided by govuk-elements-sass (removed in govuk-frontend v5 migration).
+// Required by ccd-case-ui-toolkit's cut-date-input which has no embedded styles.
+// =============================================================================
+
+.form-date {
+  overflow: hidden;
+}
+
+.form-group-day,
+.form-group-month {
+  clear: none;
+  float: left;
+  margin-right: 10px;
+
+  input {
+    width: 50px;
+  }
+}
+
+.form-group-year {
+  clear: none;
+  float: left;
+
+  input {
+    width: 70px;
+  }
+}
+
+// Used by ccd-workbasket-filters on its root <form> element
+.global-display {
+  display: block;
+}
+
+// =============================================================================
+// govuk-tag — compatibility shim for older govuk-frontend versions
+// =============================================================================
+
+.govuk-tag {
+  display: inline-block;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+  color: #fff;
+  background-color: #1d70b8;
+  letter-spacing: 1px;
+  text-decoration: none;
+  text-transform: uppercase;
+  font-family:
+    GDS Transport,
+    arial,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 700;
+  font-size: 14px;
+  font-size: 0.875rem;
+  line-height: 1;
+  padding: 5px 8px 4px;
+}

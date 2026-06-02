@@ -720,6 +720,42 @@ export function isSessionFresh(
   }
 }
 
+function clearSessionCaptureFailureIfReusableSession({
+  fsApi,
+  failurePath,
+  force,
+  isFresh,
+  maxAgeMs,
+  sessionPath,
+  targetUrl,
+  userIdentifier,
+  waitContext,
+}: {
+  fsApi: typeof fs;
+  failurePath: string;
+  force: boolean;
+  isFresh: typeof isSessionFresh;
+  maxAgeMs: number;
+  sessionPath: string;
+  targetUrl: string;
+  userIdentifier: string;
+  waitContext: 'before-lock' | 'after-lock';
+}): boolean {
+  if (force || !isFresh(sessionPath, maxAgeMs, { targetUrl })) {
+    return false;
+  }
+
+  logger.warn('Clearing session capture failure marker because a reusable session is already present', {
+    userIdentifier,
+    sessionPath,
+    failurePath,
+    waitContext,
+    operation: 'session-capture',
+  });
+  clearSessionCaptureFailure(fsApi, failurePath);
+  return true;
+}
+
 // local helper to persist session: write session file, add cookies to context and save storageState
 async function persistSession(
   localSessionPath: string,
@@ -1087,6 +1123,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
   const lockfileApi = deps.lockfile ?? lockfile;
   const force = deps.force ?? false;
   const targetUrl = env.TEST_URL || activeConfig.urls.exuiDefaultUrl;
+  const sessionMaxAgeMs = resolveSessionMaxAgeMs(env);
 
   const sessionsDir = path.join(process.cwd(), '.sessions');
   ensureDirectory(fsApi, sessionsDir);
@@ -1106,6 +1143,21 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
     try {
       const recentFailureMessage = recentSessionCaptureFailureMessage(fsApi, failurePath, resolveSessionCaptureFailureTtlMs(env));
       if (recentFailureMessage) {
+        if (
+          clearSessionCaptureFailureIfReusableSession({
+            fsApi,
+            failurePath,
+            force,
+            isFresh,
+            maxAgeMs: sessionMaxAgeMs,
+            sessionPath,
+            targetUrl,
+            userIdentifier: identity.userIdentifier,
+            waitContext: 'before-lock',
+          })
+        ) {
+          continue;
+        }
         throw new SessionCaptureError(
           `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${recentFailureMessage}`,
           identity.userIdentifier,
@@ -1124,7 +1176,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
         lockfileApi,
         lockFilePath,
         userIdentifier: identity.userIdentifier,
-        isSessionReusable: () => isFresh(sessionPath, DEFAULT_SESSION_MAX_AGE_MS, { targetUrl }),
+        isSessionReusable: () => isFresh(sessionPath, sessionMaxAgeMs, { targetUrl }),
         force,
       });
 
@@ -1149,6 +1201,21 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
         resolveSessionCaptureFailureTtlMs(env)
       );
       if (lockedRecentFailureMessage) {
+        if (
+          clearSessionCaptureFailureIfReusableSession({
+            fsApi,
+            failurePath,
+            force,
+            isFresh,
+            maxAgeMs: sessionMaxAgeMs,
+            sessionPath,
+            targetUrl,
+            userIdentifier: identity.userIdentifier,
+            waitContext: 'after-lock',
+          })
+        ) {
+          continue;
+        }
         throw new SessionCaptureError(
           `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${lockedRecentFailureMessage}`,
           identity.userIdentifier,
@@ -1157,7 +1224,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
       }
 
       // Recheck freshness after acquiring lock (another worker may have logged in)
-      if (!force && isFresh(sessionPath, DEFAULT_SESSION_MAX_AGE_MS, { targetUrl })) {
+      if (!force && isFresh(sessionPath, sessionMaxAgeMs, { targetUrl })) {
         logger.info('Session became fresh while waiting for lock', {
           userIdentifier: identity.userIdentifier,
           email: identity.email,

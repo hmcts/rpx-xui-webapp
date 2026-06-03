@@ -92,7 +92,7 @@ export interface HearingDetailsData {
 }
 
 export interface HearingVenueData {
-  name?: string;
+  name?: string[];
 }
 
 export interface HearingStageData {

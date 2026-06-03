@@ -150,19 +150,19 @@ export class HearingsJourneyPage {
       'Not in Attendence': this.hearingInPerson,
     };
     const party1Select = this.firstParty;
-    party1Select.selectOption('Video');
+    await party1Select.selectOption('Video');
 
     const party2Select = this.secondParty;
-    party2Select.selectOption('Telephone');
+    await party2Select.selectOption('Telephone');
 
     // how many will Attend.
-    this.numberAttendingHearing.fill('2');
+    await this.numberAttendingHearing.fill('2');
   }
 
   async setHearingVenue(model: HearingJourneyModel): Promise<void> {
-    const hearingVenue = model.get('hearingVenue', 'name') as string;
+    const hearingVenue = model.get('hearingVenue', 'name') as string[];
 
-    await this.hearingVenue.pressSequentially(hearingVenue, { delay: 1000 });
+    await this.hearingVenue.pressSequentially(hearingVenue[0], { delay: 1000 });
     await this.locationAutocomplete.waitFor({ state: 'visible' });
     await this.page.keyboard.press('ArrowDown');
     await this.page.keyboard.press('Enter');
@@ -221,7 +221,7 @@ export class HearingsJourneyPage {
         await this.specificDateRange.click();
         break;
     }
-    this.setHearingPriority(hearingPriority);
+    await this.setHearingPriority(hearingPriority);
   }
 
   async linkedHearingsCheck(model: HearingJourneyModel): Promise<void> {}
@@ -235,7 +235,9 @@ export class HearingsJourneyPage {
   }
 
   async setHearingPriority(priority: string): Promise<void> {
-    priority === 'Standard' ? await this.hearingPriorityStandard.check() : await this.hearingPriorityStandard.check();
+    const option = priority === 'Urgent' ? this.hearingPriorityUrgent : this.hearingPriorityStandard;
+    await option.check();
+    //priority === 'Standard' ? await this.hearingPriorityStandard.check() : await this.hearingPriorityStandard.check();
   }
 
   removeLocationLink(locationName: string): Locator {
@@ -267,7 +269,7 @@ export class HearingsJourneyPage {
    */
 
   async getMostRecentHearingId(): Promise<string> {
-    // Scope to the "Current and upcoming" table only — there's a second
+    // Scope  to the "Current and upcoming" table only
     const currentTable: Locator = this.hearingsTable.filter({
       has: this.hearingsTableHeader.filter({ hasText: 'Current and upcoming' }),
     });

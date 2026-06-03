@@ -1,6 +1,13 @@
 import { expect, test } from '../../fixtures';
 import { ensureSession } from '../../../common/sessionCapture';
-import { AdditionalFacility, HearingJourneyModel, TypeOfJudges } from '../../utils/hearing-model';
+import {
+  AdditionalFacility,
+  HearingJourneyModel,
+  HearingMethod,
+  howWillParticipantAttend,
+  TypeOfJudges,
+  YesNo,
+} from '../../utils/hearing-model';
 import { openHomeWithCapturedSession } from '../searchCase/searchCase.setup';
 import { caseDetailsUrl, continueHearingsFlow } from '../../../integration/helpers/hearingJourneySetup.helper.ts';
 continueHearingsFlow;
@@ -15,7 +22,7 @@ const hearingRouteConfig = {
   caseReference: '',
 };
 
-test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearings'] }, () => {
+test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] }, () => {
   let availableCaseReference: string;
   test.beforeAll(async () => {
     await ensureSession(userIdentfier);
@@ -29,6 +36,7 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
   test('Submit a new Hearing - Happy Path journey ', async ({
     caseDetailsPage,
     hearingsTabPage,
+    hearingViewSummaryPage,
     hearingsJourneyPage,
     hearingsCYAPage,
     page,
@@ -141,20 +149,9 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
         { key: 'What stage is this hearing at?', value: 'Allocation' },
       ]);
 
-      // await hearingsCYAPage.verifyHearingSummarySection(page, 'Participant attendance', [
-      //   { key: 'Will this be a paper hearing?', value: 'No' },
-      //   { key: 'What will be the methods of attendance for this hearing?', value: ['Video'] },
-      //   { key: 'How will each participant attend the hearing', value: ['Video', 'Telephone'] },
-      //   { key: 'How will each participant attend the hearing?', value: ['Video', 'Telephone'] },
-      //   { key: 'How many people will attend the hearing in person?', value: '2' },
-      // ]);
+      await hearingsCYAPage.verifyParticipantAttendanceSection(page, hearingJourneyModel);
 
-      // await hearingsCYAPage.verifyHearingSummarySection(page, 'Hearing venue', [
-      //   {
-      //     key: 'What are the hearing venue details?',
-      //     value: 'Newport (South Wales) County Court And Family CourtSwansea Civil And Family Justice Centre',
-      //   },
-      // ]);
+      await hearingsCYAPage.verifyHearingLocation(page, hearingJourneyModel);
 
       const allJudges = hearingJourneyModel.get('hearingDetails', 'judgeType');
 
@@ -182,25 +179,52 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
 
     // Submit Hearings / Check Confirmation / Return to Hearing Summary page.
     await test.step('Submit Hearing Request And Do Checks on backend calls ', async () => {
+      let submitHearingResponse: any;
+      let apiResponseHearingId: string;
+
       try {
         const submitResponsePromise = page.waitForResponse(
           (response) => response.url().includes('/api/hearings/submitHearingRequest') && response.request().method() === 'POST'
         );
         await hearingsJourneyPage.submitRequestButton.click();
-        const submitResponse = await submitResponsePromise;
-        expect(submitResponse.status(), 'submitHearingRequest should return 201').toBe(201);
+        submitHearingResponse = await submitResponsePromise;
+
+        expect(submitHearingResponse.status(), 'submitHearingRequest should return 201').toBe(201);
+
+        const submitBody = await submitHearingResponse.json();
+        apiResponseHearingId = submitBody.hearingRequestID;
       } catch (error) {
-        console.error('Failure seen on  Hearings Submit CYA Page :', error);
+        if (submitHearingResponse) {
+          const status = submitHearingResponse.status();
+          let body;
+          try {
+            body = await submitHearingResponse.text();
+          } catch {
+            body = `<unable to read response body>`;
+          }
+          console.error(`Failure seen on Hearings Submit CYA Page. Status: ${status}, Body: ${body}`);
+        } else {
+          console.error('Failure seen on Hearings Submit CYA Page (no response captured):', error);
+        }
+        throw error; // re-throw so the test actually fails
       }
-      // if all good then reached here on confirmation page./;
+      // if all good then reached Confirmation page./;
       await hearingsJourneyPage.checkHearingConfirmationPage(page);
 
       await hearingsJourneyPage.clickLinkToViewHearings(page);
 
       await expect(page).toHaveURL(/\/cases\/case-details\/.*#Hearings$/);
       await expect(hearingsTabPage.currentAndUpcomingHeading('Current and upcoming')).toBeVisible();
+
       hearingId = await hearingsJourneyPage.getMostRecentHearingId();
+      // check  hearingId in API response matches the hearingId on UI
+      await expect(hearingId).toEqual(String(apiResponseHearingId));
       await expect(hearingsTabPage.pastOrCancelledHeading('Past or cancelled')).toBeVisible();
+
+      const hearingRow = hearingsTabPage.hearingRow(hearingId, 'view-or-edit');
+
+      await expect(hearingRow).toContainText('WAITING TO BE LISTED');
+      await expect(hearingsTabPage.viewOrEditButton(hearingId)).toBeVisible();
     });
 
     console.log('~~~~~~~~~~  Created Hearing with ID  === ' + hearingId);
@@ -219,7 +243,7 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-prl-hearing
     hearingJourneyModel.set('hearingAttendence', 'numberOfPeopleAttendingHearing', '2');
 
     //hearingVenue
-    hearingJourneyModel.set('hearingVenue', 'name', 'southampton');
+    hearingJourneyModel.set('hearingVenue', 'name', ['Southamp']);
 
     // Welsh
     hearingJourneyModel.set('hearingDetails', 'hearingInWelsh', 'No');

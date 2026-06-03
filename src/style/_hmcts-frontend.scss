@@ -1805,8 +1805,6 @@ table:not(.govuk-table) .numeric {
   display: inline-block;
   outline: 2px solid transparent;
   outline-offset: -2px;
-  color: #fff;
-  background-color: #1d70b8;
   letter-spacing: 1px;
   text-decoration: none;
   text-transform: uppercase;
@@ -1821,4 +1819,19 @@ table:not(.govuk-table) .numeric {
   font-size: 0.875rem;
   line-height: 1;
   padding: 5px 8px 4px;
+}
+
+.govuk-phase-banner__content__tag {
+  color: #fff;
+  background-color: #1d70b8;
+}
+
+a:link,
+.govuk-link:link {
+  color: #1d70b8;
+}
+
+a:visited,
+.govuk-link:visited {
+  color: #4c2c92;
 }

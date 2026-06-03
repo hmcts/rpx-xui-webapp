@@ -1,3 +1,4 @@
+import { fakeAsync, tick } from '@angular/core/testing';
 import { RoutesRecognized } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { AppComponent } from './app.component';
@@ -93,6 +94,10 @@ describe('AppComponent', () => {
     );
   });
 
+  afterEach(() => {
+    appComponent.ngOnDestroy();
+  });
+
   it('Truthy', () => {
     expect(appComponent).toBeTruthy();
   });
@@ -177,6 +182,47 @@ describe('AppComponent', () => {
     expect(authService.keepAlive).toHaveBeenCalled();
     expect(authService.loginRedirect).not.toHaveBeenCalled();
   });
+
+  it('setupForegroundSessionCheck revalidates on focus', fakeAsync(() => {
+    const revalidateSpy = spyOn(appComponent, 'revalidateSessionOnForeground');
+
+    appComponent['setupForegroundSessionCheck']();
+    window.dispatchEvent(new Event('focus'));
+    tick(201);
+
+    expect(revalidateSpy).toHaveBeenCalledTimes(1);
+  }));
+
+  it('setupForegroundSessionCheck revalidates on pageshow', fakeAsync(() => {
+    const revalidateSpy = spyOn(appComponent, 'revalidateSessionOnForeground');
+
+    appComponent['setupForegroundSessionCheck']();
+    window.dispatchEvent(new Event('pageshow'));
+    tick(201);
+
+    expect(revalidateSpy).toHaveBeenCalledTimes(1);
+  }));
+
+  it('setupForegroundSessionCheck revalidates on online', fakeAsync(() => {
+    const revalidateSpy = spyOn(appComponent, 'revalidateSessionOnForeground');
+
+    appComponent['setupForegroundSessionCheck']();
+    window.dispatchEvent(new Event('online'));
+    tick(201);
+
+    expect(revalidateSpy).toHaveBeenCalledTimes(1);
+  }));
+
+  it('setupForegroundSessionCheck debounces back-to-back resume events', fakeAsync(() => {
+    const revalidateSpy = spyOn(appComponent, 'revalidateSessionOnForeground');
+
+    appComponent['setupForegroundSessionCheck']();
+    window.dispatchEvent(new Event('focus'));
+    window.dispatchEvent(new Event('online'));
+    tick(201);
+
+    expect(revalidateSpy).toHaveBeenCalledTimes(1);
+  }));
 
   it('should call initializeFeature', () => {
     const userInfo = {

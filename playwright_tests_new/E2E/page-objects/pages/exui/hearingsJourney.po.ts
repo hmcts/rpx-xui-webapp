@@ -125,7 +125,6 @@ export class HearingsJourneyPage {
     const paperHearingYesNo = model.get('hearingAttendence', 'paperHearing');
     const hearingMethod = model.get('hearingAttendence', 'hearingMethod') ?? [];
     const attendHearingHow = model.get('hearingAttendence', 'attendHearingHow');
-    const noOfPeopleAttending = model.get('hearingAttendence', 'numberOfPeopleAttendingHearing');
 
     // Paper Hearing ?
     await (paperHearingYesNo === 'Yes' ? this.paperHearingYes : this.paperHearingNo).click();
@@ -149,14 +148,17 @@ export class HearingsJourneyPage {
       Video: this.hearingViaVideo,
       'Not in Attendence': this.hearingInPerson,
     };
+
+    const howIsHearingAttended = model.get('hearingAttendence', 'attendHearingHow') as string[];
+
     const party1Select = this.firstParty;
-    await party1Select.selectOption('Video');
+    await party1Select.selectOption(howIsHearingAttended[0] as string);
 
     const party2Select = this.secondParty;
-    await party2Select.selectOption('Telephone');
+    await party2Select.selectOption(howIsHearingAttended[1] as string);
 
-    // how many will Attend.
-    await this.numberAttendingHearing.fill('2');
+    const noOfPeopleAttending = model.get('hearingAttendence', 'numberOfPeopleAttendingHearing') as string;
+    await this.numberAttendingHearing.fill(noOfPeopleAttending);
   }
 
   async setHearingVenue(model: HearingJourneyModel): Promise<void> {

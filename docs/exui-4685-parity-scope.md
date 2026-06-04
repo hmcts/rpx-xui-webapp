@@ -12,6 +12,7 @@ This document tracks the P1 parity journeys to be implemented in Playwright.
 ## Delivery slices
 
 - Slice 1: Share case and case list selection integration coverage
+	- Adds `@integration-share-case` coverage for share button enablement, selected-case persistence across pagination, navigation to `/cases/case-share?init=true`, `api/caseshare/cases` query ids, and `api/caseshare/case-assignments` payload capture.
 - Slice 2: Media viewer tools coverage
 - Slice 3: Create case hidden-field and collection-matrix parity
 

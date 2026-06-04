@@ -27,6 +27,7 @@ export * from './manageTasksMockRoutes.helper';
 export * from './rolesAndAccessMockRoutes.helper';
 export * from './restrictedAccessMockRoutes.helper';
 export * from './accessRequestsMockRoutes.helper';
+export * from './shareCaseMockRoutes.helper';
 export * from './workAllocationMockValidation.helper';
 export * from './summaryList.helper';
 export * from './challengedAccessRequest.helper';

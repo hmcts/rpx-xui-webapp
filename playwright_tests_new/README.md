@@ -451,6 +451,13 @@ rm -rf .sessions && npx playwright test
 - Set `E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none` to clear repo defaults for one run.
 - Jenkins exposes these as string parameters with the same names.
 - Key Vault-backed global exclusions are additive through `PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS`; see [`docs/playwright-global-exclusions.md`](../docs/playwright-global-exclusions.md).
+- The Civil data-loss regression is tagged `@e2e-civil-data-loss` and `@nightly`, so it does not run in the default PR E2E set. Capture explicit evidence with a targeted run such as:
+
+```bash
+E2E_PW_INCLUDE_TAGS=@e2e-civil-data-loss \
+E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none \
+yarn test:playwrightE2E:raw
+```
 
 ```bash
 # Run only search-case E2E tests

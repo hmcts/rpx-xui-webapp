@@ -648,19 +648,22 @@ async function waitForCivilPollingDelay(page: Page, delayMs: number, context: st
   }
 }
 
-async function waitForCaseState(options: {
-  page: Page;
-  caseNumber: string;
-  expectedState: string;
-  context: string;
-}): Promise<CcdCaseDetails> {
+async function waitForCaseState(
+  options: {
+    page: Page;
+    caseNumber: string;
+    expectedState: string;
+    context: string;
+  },
+  fetchCaseDetails: (page: Page, caseNumber: string) => Promise<CcdCaseDetails> = fetchCaseDetailsViaApi
+): Promise<CcdCaseDetails> {
   const deadline = Date.now() + DEFAULT_STATE_WAIT_TIMEOUT_MS;
   let lastCaseDetails: CcdCaseDetails | undefined;
   let lastFetchError: string | undefined;
 
   while (Date.now() < deadline) {
     try {
-      lastCaseDetails = await fetchCaseDetailsViaApi(options.page, options.caseNumber);
+      lastCaseDetails = await fetchCaseDetails(options.page, options.caseNumber);
       lastFetchError = undefined;
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
@@ -1774,5 +1777,9 @@ function createUniqueRunId(): string {
 }
 
 export const __test__ = {
+  assignCivilCaseRoleToUser,
+  resolveCivilApiConfig,
+  waitForCaseState,
   waitForCivilLipMediationCaseDetails,
+  withGeneratedCivilCitizenUsers,
 };

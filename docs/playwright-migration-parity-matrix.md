@@ -1,6 +1,6 @@
 # Playwright Migration Parity Matrix
 
-This matrix is the source of truth for Codecept to Playwright migration closure in rpx-xui-webapp.
+This matrix is the source of truth for Codecept to Playwright migration closure in rpx-xui-webapp. The machine-readable source is `docs/playwright-migration-parity-map.json`; run `yarn test:parity:report` to check that every executable legacy file is classified and that covered/partial Playwright targets exist.
 
 ## Status definitions
 
@@ -10,16 +10,36 @@ This matrix is the source of truth for Codecept to Playwright migration closure 
 - obsolete: Legacy journey is intentionally retired.
 - out-of-scope: Owned by another repo or test suite.
 
-## Matrix
+## P1 / P2 Migration Matrix
 
-| Legacy source | Journey | Target Playwright layer | Target spec(s) | Status | Evidence |
-| --- | --- | --- | --- | --- | --- |
-| test_codecept/e2e/features/app/shareCase.feature | Share Case flow | integration | playwright_tests_new/integration/test/shareCase/shareCase.positive.spec.ts | port | pending |
-| test_codecept/e2e/features/app/caseListSelection.feature | Case list multi-selection | integration | playwright_tests_new/integration/test/shareCase/caseListSelection.positive.spec.ts | port | pending |
-| test_codecept/e2e/features/app/mediaViewer.feature | Media viewer tools | e2e | playwright_tests_new/E2E/test/mediaViewer/mediaViewerTools.positive.spec.ts | port | pending |
-| test_codecept/ngIntegration/tests/hiddenFields.test.js | Hidden fields payload omission | integration | playwright_tests_new/integration/test/createCase/createCase.fields.positive.spec.ts | partial | EXUI-4317 open |
-| test_codecept/ngIntegration/tests/caseFieldCollectionsPermissions.test.js | Collection display context matrix | integration | playwright_tests_new/integration/test/createCase/createCase.fields.negative.spec.ts | port | pending |
+| ID | Legacy scope | Journey | Target Playwright layer | Status | Priority | Evidence / owner |
+| --- | --- | --- | --- | --- | --- | --- |
+| share-case-ui | `test_codecept/e2e/features/app/shareCase.feature` | Share case selected-case, add/remove user, confirmation, and completion flows | integration | port | P1 | EXUI-4685 |
+| case-list-selection-ui | `test_codecept/e2e/features/app/caseListSelection.feature` | Case list checkbox selection persistence across navigation, filters, pagination, sorting, and share-case handoff | integration | port | P1 | EXUI-4685 |
+| media-viewer-tools | `test_codecept/e2e/features/app/mediaViewer.feature` | Media Viewer redaction, bookmark, and comment tools | e2e | partial | P1 | Happy-path coverage exists; future tool spec pending |
+| ccd-hidden-fields | `test_codecept/ngIntegration/tests/hiddenFields.test.js`, `test_codecept/ngIntegration/tests_mocha/hiddenFields.test.js` | CCD retain_hidden_field submit payload behaviour | integration | partial | P1 | EXUI-4317 dependency |
+| ccd-collection-permissions | `test_codecept/ngIntegration/tests/caseFieldCollectionsPermissions.test.js`, `test_codecept/ngIntegration/tests/features/ccdCollectionFieldPermissions.feature` | CCD collection allowInsert/allowDelete display context matrix | integration | port | P1 | Planned create-case integration coverage |
+| a11y-legacy-suite | `test_codecept/accessibility/tests/**` | Legacy accessibility smoke coverage | e2e/a11y | partial | P1 | EXUI-4688 release gate |
+| case-create-service-breadth | FR, Divorce, FPL, IA, Probate create-case legacy files | Create-case service and CCD toolkit journey breadth | e2e/integration | partial | P2 | Ownership decision required |
+| case-flags | `test_codecept/e2e/features/app/caseFlags/**` | Case flags create/manage/support flows | e2e | partial | P2 | Scenario-level review required |
+| case-list-base | `test_codecept/ngIntegration/tests/features/ccdTookitCaselistPage.feature`, `test_codecept/accessibility/tests/caseList.test.js` | Base case-list rendering, filters, pagination, optional fields, and a11y smoke | integration/e2e/a11y | partial | P2 | Selection-specific parity tracked as P1 |
+| navigation-header-and-shell | header, cookie, footer, timestamp shell checks | Header tabs, cookie banner, footer pages, timestamp, and shell navigation | e2e/integration/a11y | port | P2 | Needs shell contract slice |
+| launchdarkly-and-activity | LaunchDarkly and activity tracker features | Feature-toggle contract and activity tracking | integration/api | port | P2 | Needs layer decision |
+| probate-refunds-and-exui-vs-ccd | Probate refunds and EXUI versus CCD UI comparison | Refunds and UI comparison checks | e2e/integration | port | P2 | Needs ownership decision or waiver |
+
+## Covered / Retired Migration Groups
+
+| ID | Legacy scope | Target evidence | Status |
+| --- | --- | --- | --- |
+| search-and-global-search | Search and global-search Codecept journeys | E2E, integration, and API Playwright coverage | covered |
+| work-allocation | Work allocation, manage tasks, work filters, case task tabs, and role actions | Manage-tasks integration, API, and E2E coverage | covered |
+| access-and-restricted-access | Specific access request, challenged access request, and restricted case access | Access-request and restricted-access integration coverage | covered |
+| case-file-view | Case file view and document sorting | E2E and integration case-file-view coverage | covered |
+| booking-ui | Judicial booking and work access booking UI | Positive and negative booking UI integration coverage | covered |
+| evidence-manager-api | Evidence manager API contract | Playwright API evidence-manager coverage | covered |
+| smoke | Legacy smoke journey | Playwright E2E smoke coverage | covered |
+| debug-only-mock-browser | Debug mock browser diagnostic feature | Retired diagnostic-only flow | obsolete |
 
 ## Notes
 
-This is the initial seed matrix for EXUI-4684 and will be expanded to include all legacy suites in scope before closure sign-off.
+The matrix is file-level rather than scenario-level for broad legacy areas that already have strong Playwright coverage. P1 `port` or `partial` rows need executable evidence or an accepted waiver before Codecept retirement. `covered` rows should still be spot-checked during final sign-off, but they are not the first implementation lane.

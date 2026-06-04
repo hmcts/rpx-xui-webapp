@@ -57,6 +57,7 @@
     "test:coverage:ng": "ng test --code-coverage --source-map",
     "test:a11y": "",
     "test:parity:report": "node ./scripts/generate-parity-report.mjs",
+    "test:parity:gate": "node ./scripts/generate-parity-report.mjs --gate",
     "test:a11y1": "echo disabled to fix tests",
     "test:all": "yarn test:ng && yarn test:node && yarn test:smoke && yarn test:functional && yarn test:crossbrowser",
     "test:smoke": "node scripts/run-playwright-smoke.cjs",

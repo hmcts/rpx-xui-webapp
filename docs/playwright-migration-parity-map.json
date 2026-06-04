@@ -1,0 +1,272 @@
+{
+  "statusDefinitions": {
+    "covered": "Legacy journey is implemented in Playwright and passing or ready to run in CI.",
+    "partial": "Legacy journey has Playwright coverage, but scenario or assertion gaps remain.",
+    "port": "Legacy journey is still required and planned for Playwright implementation.",
+    "obsolete": "Legacy journey is intentionally retired because the workflow or diagnostic value no longer applies.",
+    "out-of-scope": "Legacy journey is owned by another repo, suite, or release gate."
+  },
+  "entries": [
+    {
+      "id": "a11y-legacy-suite",
+      "legacy": ["test_codecept/accessibility/tests/**"],
+      "journey": "Legacy accessibility smoke coverage",
+      "targetLayer": "e2e/a11y",
+      "targets": ["docs/go-live-gate-checklist.md"],
+      "status": "partial",
+      "priority": "P1",
+      "evidence": "EXUI-4688 owns the a11y release gate and threshold evidence.",
+      "notes": "Keep as sign-off evidence rather than one-for-one legacy a11y test ports."
+    },
+    {
+      "id": "share-case-ui",
+      "legacy": ["test_codecept/e2e/features/app/shareCase.feature"],
+      "journey": "Share case selected-case, add/remove user, confirmation, and completion flows",
+      "targetLayer": "integration",
+      "targets": ["playwright_tests_new/integration/test/shareCase/shareCase.positive.spec.ts"],
+      "status": "port",
+      "priority": "P1",
+      "evidence": "EXUI-4685 implementation branch seeded; executable tests still pending.",
+      "notes": "Highest-value functional parity gap."
+    },
+    {
+      "id": "case-list-selection-ui",
+      "legacy": ["test_codecept/e2e/features/app/caseListSelection.feature"],
+      "journey": "Case list checkbox selection persistence across navigation, filters, pagination, sorting, and share-case handoff",
+      "targetLayer": "integration",
+      "targets": ["playwright_tests_new/integration/test/shareCase/caseListSelection.positive.spec.ts"],
+      "status": "port",
+      "priority": "P1",
+      "evidence": "EXUI-4685 implementation branch seeded; executable tests still pending.",
+      "notes": "Implement with shared case-list mocks and direct share-case routing assertions."
+    },
+    {
+      "id": "media-viewer-tools",
+      "legacy": ["test_codecept/e2e/features/app/mediaViewer.feature"],
+      "journey": "Media Viewer redaction, bookmark, and comment tools",
+      "targetLayer": "e2e",
+      "targets": ["playwright_tests_new/E2E/test/mediaViewer/mediaViewerHappyPath.spec.ts"],
+      "status": "partial",
+      "priority": "P1",
+      "evidence": "Happy-path document opening exists; tool-level coverage is still pending.",
+      "notes": "Add tool assertions only after confirming stable media-viewer locators and safe document fixtures."
+    },
+    {
+      "id": "case-create-service-breadth",
+      "legacy": [
+        "test_codecept/e2e/features/app/FRCreateCase_CaseWorker.feature",
+        "test_codecept/e2e/features/app/FRCreateCase_solicitor.feature",
+        "test_codecept/e2e/features/app/divorceCreateCase.feature",
+        "test_codecept/e2e/features/app/fplCreateCase.feature",
+        "test_codecept/e2e/features/app/iaCompleteCreateCaseJourney.feature",
+        "test_codecept/e2e/features/app/iaCreateCase.feature",
+        "test_codecept/e2e/features/app/probateCreateCase.feature",
+        "test_codecept/ngIntegration/tests/features/ccdFields.feature",
+        "test_codecept/ngIntegration/tests/features/ccdToolkit_caseCreate.feature"
+      ],
+      "journey": "Create-case service and CCD toolkit journey breadth",
+      "targetLayer": "e2e/integration",
+      "targets": ["playwright_tests_new/E2E/test/createCase/createCase.spec.ts", "playwright_tests_new/integration/test/createCase/createCase.positive.spec.ts", "playwright_tests_new/integration/test/createCase/createCase.negative.spec.ts"],
+      "status": "partial",
+      "priority": "P2",
+      "evidence": "Core create-case coverage exists; Probate, Financial Remedy, IA, and FPL ownership needs an explicit port/retire decision.",
+      "notes": "Do not block EXUI-4685 on this P2 breadth decision."
+    },
+    {
+      "id": "ccd-hidden-fields",
+      "legacy": ["test_codecept/ngIntegration/tests/hiddenFields.test.js", "test_codecept/ngIntegration/tests_mocha/hiddenFields.test.js"],
+      "journey": "CCD retain_hidden_field submit payload behaviour",
+      "targetLayer": "integration",
+      "targets": ["playwright_tests_new/integration/test/createCase/createCase.positive.spec.ts"],
+      "status": "partial",
+      "priority": "P1",
+      "evidence": "Create-case field coverage exists, but EXUI-4317 hidden-field parity remains open.",
+      "notes": "Treat EXUI-4317 as the dependency for closure."
+    },
+    {
+      "id": "ccd-collection-permissions",
+      "legacy": ["test_codecept/ngIntegration/tests/caseFieldCollectionsPermissions.test.js", "test_codecept/ngIntegration/tests/features/ccdCollectionFieldPermissions.feature"],
+      "journey": "CCD collection allowInsert/allowDelete display context matrix",
+      "targetLayer": "integration",
+      "targets": ["playwright_tests_new/integration/test/createCase/createCase.negative.spec.ts"],
+      "status": "port",
+      "priority": "P1",
+      "evidence": "No complete Playwright matrix found.",
+      "notes": "Can be added after share-case because it is isolated to create-case mocks."
+    },
+    {
+      "id": "case-flags",
+      "legacy": ["test_codecept/e2e/features/app/caseFlags/**"],
+      "journey": "Case flags create/manage/support flows",
+      "targetLayer": "e2e",
+      "targets": ["playwright_tests_new/E2E/test/caseFlags/caseFlags.positive.spec.ts"],
+      "status": "partial",
+      "priority": "P2",
+      "evidence": "Current E2E coverage exists; scenario-level parity requires separate case-flags review.",
+      "notes": "Not part of the immediate P1 share-case closure."
+    },
+    {
+      "id": "search-and-global-search",
+      "legacy": [
+        "test_codecept/e2e/features/app/globalSearch/searchPage.feature",
+        "test_codecept/e2e/features/app/searchCase.feature",
+        "test_codecept/ngIntegration/tests/features/ccdToolkitSearchCase.feature",
+        "test_codecept/ngIntegration/tests/features/globalSearch.feature"
+      ],
+      "journey": "Search case and global search flows",
+      "targetLayer": "e2e/integration/api",
+      "targets": ["playwright_tests_new/E2E/test/searchCase/findCase.spec.ts", "playwright_tests_new/E2E/test/searchCase/globalSearch.spec.ts", "playwright_tests_new/E2E/test/searchCase/searchCase.spec.ts", "playwright_tests_new/integration/test/searchCase/search.positive.spec.ts", "playwright_tests_new/api/search-and-refdata.api.ts"],
+      "status": "covered",
+      "priority": "P3",
+      "evidence": "E2E, integration, and API coverage exists.",
+      "notes": "Only revisit if scenario-level review finds missing assertions."
+    },
+    {
+      "id": "work-allocation",
+      "legacy": [
+        "test_codecept/e2e/features/app/workAllocation/**",
+        "test_codecept/integration/tests/workallocation/**",
+        "test_codecept/ngIntegration/tests/features/workallocation2/**",
+        "test_codecept/ngIntegration/tests/workAllocation/**"
+      ],
+      "journey": "Work allocation, manage tasks, work filters, case task tabs, and role actions",
+      "targetLayer": "integration/api/e2e",
+      "targets": ["playwright_tests_new/integration/test/manageTasks", "playwright_tests_new/api/work-allocation.api.ts", "playwright_tests_new/api/work-allocation-cancellation.api.ts", "playwright_tests_new/E2E/test/manageTasks/myTasks.positive.spec.ts"],
+      "status": "covered",
+      "priority": "P3",
+      "evidence": "Extensive manage-tasks and work-allocation coverage exists in Playwright.",
+      "notes": "Keep under evidence review, not a current P1 gap."
+    },
+    {
+      "id": "access-and-restricted-access",
+      "legacy": [
+        "test_codecept/ngIntegration/tests/features/caseAccessManagement/**",
+        "test_codecept/ngIntegration/tests/features/restrictedCaseAccess.feature"
+      ],
+      "journey": "Specific access request, challenged access request, and restricted case access",
+      "targetLayer": "integration/api",
+      "targets": ["playwright_tests_new/integration/test/accessRequests", "playwright_tests_new/integration/test/restrictedAccess", "playwright_tests_new/api/unit/challenged-access-request.unit.api.ts"],
+      "status": "covered",
+      "priority": "P3",
+      "evidence": "Positive and negative Playwright integration coverage exists with direct unit coverage.",
+      "notes": "No immediate migration action."
+    },
+    {
+      "id": "case-file-view",
+      "legacy": ["test_codecept/ngIntegration/tests/features/caseFileView/**"],
+      "journey": "Case file view and document sorting",
+      "targetLayer": "e2e/integration",
+      "targets": ["playwright_tests_new/E2E/test/caseFileView/caseFileView.spec.ts", "playwright_tests_new/integration/test/caseFileView"],
+      "status": "covered",
+      "priority": "P3",
+      "evidence": "E2E and integration coverage exists.",
+      "notes": "No immediate migration action."
+    },
+    {
+      "id": "booking-ui",
+      "legacy": [
+        "test_codecept/e2e/features/app/judicialBookingUI/**",
+        "test_codecept/ngIntegration/tests/features/workAccessBookingUI/**"
+      ],
+      "journey": "Judicial booking and work access booking UI",
+      "targetLayer": "integration",
+      "targets": ["playwright_tests_new/integration/test/bookingUI/booking-ui.positive.spec.ts", "playwright_tests_new/integration/test/bookingUI/booking-ui.negative.spec.ts"],
+      "status": "covered",
+      "priority": "P3",
+      "evidence": "Positive and negative booking UI coverage exists.",
+      "notes": "No immediate migration action."
+    },
+    {
+      "id": "case-list-base",
+      "legacy": [
+        "test_codecept/ngIntegration/tests/features/ccdTookitCaselistPage.feature",
+        "test_codecept/accessibility/tests/caseList.test.js"
+      ],
+      "journey": "Base case-list rendering, filters, pagination, optional fields, and a11y smoke",
+      "targetLayer": "integration/e2e/a11y",
+      "targets": ["playwright_tests_new/integration/test/caseList/caseList.positive.spec.ts", "playwright_tests_new/integration/test/caseList/caseList.negative.spec.ts"],
+      "status": "partial",
+      "priority": "P2",
+      "evidence": "Core case-list coverage exists; a11y evidence is owned by EXUI-4688.",
+      "notes": "Selection-specific parity is tracked separately under P1."
+    },
+    {
+      "id": "navigation-header-and-shell",
+      "legacy": [
+        "test_codecept/ngIntegration/tests/headerTabs.test.js",
+        "test_codecept/ngIntegration/tests/features/navigationHeader.feature",
+        "test_codecept/e2e/features/app/cookieBanner.feature",
+        "test_codecept/e2e/features/app/timestamp.feature",
+        "test_codecept/accessibility/tests/footerPages.test.js"
+      ],
+      "journey": "Header tabs, cookie banner, footer pages, timestamp, and shell navigation",
+      "targetLayer": "e2e/integration/a11y",
+      "targets": ["playwright_tests_new/E2E/test/smoke/smokeTest.spec.ts"],
+      "status": "port",
+      "priority": "P2",
+      "evidence": "Smoke coverage exists but no explicit shell contract parity was found.",
+      "notes": "Can be implemented as a small shell/navigation integration slice after P1 work."
+    },
+    {
+      "id": "launchdarkly-and-activity",
+      "legacy": [
+        "test_codecept/ngIntegration/tests/features/launchDarklyService.feature",
+        "test_codecept/ngIntegration/tests/features/activityTracker.feature"
+      ],
+      "journey": "LaunchDarkly feature-toggle contract and activity tracking",
+      "targetLayer": "integration/api",
+      "targets": [],
+      "status": "port",
+      "priority": "P2",
+      "evidence": "No direct Playwright target found in the parity scan.",
+      "notes": "Needs a layer decision before implementation."
+    },
+    {
+      "id": "probate-refunds-and-exui-vs-ccd",
+      "legacy": [
+        "test_codecept/e2e/features/app/probateRefunds.feature",
+        "test_codecept/e2e/features/app/exuiVsccdUI.feature"
+      ],
+      "journey": "Probate refunds and EXUI versus CCD UI comparison checks",
+      "targetLayer": "e2e/integration",
+      "targets": [],
+      "status": "port",
+      "priority": "P2",
+      "evidence": "No direct Playwright target found in the parity scan.",
+      "notes": "Requires ownership decision; likely not a blocker for Codecept retirement if product accepts waiver."
+    },
+    {
+      "id": "evidence-manager-api",
+      "legacy": ["test_codecept/integration/tests/evidenceManager.spec.ts"],
+      "journey": "Evidence manager API contract",
+      "targetLayer": "api",
+      "targets": ["playwright_tests_new/api/evidence-manager.api.ts"],
+      "status": "covered",
+      "priority": "P3",
+      "evidence": "Playwright API coverage exists.",
+      "notes": "No immediate migration action."
+    },
+    {
+      "id": "smoke",
+      "legacy": ["test_codecept/e2e/features/app/smoke.feature"],
+      "journey": "Legacy smoke journey",
+      "targetLayer": "e2e",
+      "targets": ["playwright_tests_new/E2E/test/smoke/smokeTest.spec.ts"],
+      "status": "covered",
+      "priority": "P3",
+      "evidence": "Playwright E2E smoke coverage exists.",
+      "notes": "No immediate migration action."
+    },
+    {
+      "id": "debug-only-mock-browser",
+      "legacy": ["test_codecept/ngIntegration/tests/features/debugMockBrowser.feature"],
+      "journey": "Debug mock browser diagnostic feature",
+      "targetLayer": "none",
+      "targets": [],
+      "status": "obsolete",
+      "priority": "P3",
+      "evidence": "Debug-only legacy diagnostic flow; not required for Playwright parity.",
+      "notes": "Keep retired unless a maintainer identifies current diagnostic value."
+    }
+  ]
+}

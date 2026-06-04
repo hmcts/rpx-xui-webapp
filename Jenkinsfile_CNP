@@ -413,12 +413,26 @@ withPipeline(type, product, component) {
 
     afterSuccess('checkout') {
         startCiLoadProfile()
+        env.PLAYWRIGHT_BROWSERS_PATH = "${env.WORKSPACE}/.cache/ms-playwright"
         stage('Yarn Install') {
             try {
                 recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Yarn install', 'start')
                 yarnBuilder.yarn('install --immutable')
             } finally {
                 recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Yarn install', 'finish')
+            }
+        }
+
+        stage('Playwright Install Chromium') {
+            try {
+                recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Playwright chromium install', 'start')
+                yarnBuilder.yarn('test:setup:playwright-install-chromium')
+                yarnBuilder.yarn('test:setup:playwright-verify-chromium')
+                env.PLAYWRIGHT_SKIP_INSTALL = 'true'
+            } catch (Error) {
+                error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            } finally {
+                recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Playwright chromium install', 'finish')
             }
         }
     }
@@ -429,22 +443,6 @@ withPipeline(type, product, component) {
             yarnBuilder.yarn('build:dev')
         } finally {
             recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Build', 'finish')
-        }
-    }
-
-    afterAlways('checkout'){
-        stage('Playwright Install Chromium') {
-            try {
-                recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Playwright chromium install', 'start')
-                env.PLAYWRIGHT_BROWSERS_PATH = "${env.WORKSPACE}/.cache/ms-playwright"
-                yarnBuilder.yarn('test:setup:playwright-install-chromium')
-                yarnBuilder.yarn('test:setup:playwright-verify-chromium')
-                env.PLAYWRIGHT_SKIP_INSTALL = 'true'
-            } catch (Error) {
-                error(message: "${STAGE_NAME} is unstable: " + Error.toString())
-            } finally {
-                recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Playwright chromium install', 'finish')
-            }
         }
     }
 

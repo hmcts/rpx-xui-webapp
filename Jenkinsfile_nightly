@@ -352,6 +352,7 @@ withNightlyPipeline(type, product, component) {
     
       afterSuccess('checkout') {
         startCiLoadProfile()
+        env.PLAYWRIGHT_BROWSERS_PATH = "${env.WORKSPACE}/.cache/ms-playwright"
         stage('Yarn Install') {
           try {
             recordPlaywrightLoadEvent('Yarn install', 'start')
@@ -365,6 +366,18 @@ withNightlyPipeline(type, product, component) {
           yarnBuilder.yarn('cache clean')
         } finally {
           recordPlaywrightLoadEvent('Yarn cache clean', 'finish')
+        }
+        stage('Playwright Install All Browsers') {
+            try {
+              recordPlaywrightLoadEvent('Playwright browser install', 'start')
+              yarnBuilder.yarn('test:setup:playwright-install-all')
+              yarnBuilder.yarn('test:setup:playwright-verify-all')
+              env.PLAYWRIGHT_SKIP_INSTALL = 'true'
+            } catch (Error) {
+              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            } finally {
+              recordPlaywrightLoadEvent('Playwright browser install', 'finish')
+            }
         }
     }
 
@@ -404,20 +417,6 @@ withNightlyPipeline(type, product, component) {
     afterSuccess('fortify-scan') {
       try {
       recordPlaywrightLoadEvent('Nightly functional tests', 'start')
-        stage('Playwright Install All Browsers') {
-            try {
-              recordPlaywrightLoadEvent('Playwright browser install', 'start')
-              env.PLAYWRIGHT_BROWSERS_PATH = "${env.WORKSPACE}/.cache/ms-playwright"
-              yarnBuilder.yarn('test:setup:playwright-install-all')
-              yarnBuilder.yarn('test:setup:playwright-verify-all')
-              env.PLAYWRIGHT_SKIP_INSTALL = 'true'
-            } catch (Error) {
-              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
-            } finally {
-              recordPlaywrightLoadEvent('Playwright browser install', 'finish')
-            }
-        }
-
         stage('Nightly Functional Tests (Parallel Report Gathering)') {
             // Keep suites parallel for fast feedback, but let sibling suites publish reports when one branch fails.
             parallel(

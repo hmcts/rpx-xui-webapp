@@ -99,40 +99,9 @@ def archivePlaywrightDiagnostics = {
 
 def playwrightIntegrationReportFile = 'xui-playwright-integration.html'
 def playwrightLoadProfileReportFile = 'load-profile.html'
-def playwrightBrowsersPath = '.cache/ms-playwright'
 
 def assertHtmlReportExists = { String reportDir, String reportFile ->
     steps.sh "test -f '${reportDir}/${reportFile}'"
-}
-
-def verifyPlaywrightBrowsers = { List<String> browserNames ->
-    withEnv(["PW_VERIFY_BROWSERS=${browserNames.join(',')}"]) {
-        steps.sh '''
-            node - <<'NODE'
-const fs = require('fs');
-const playwright = require('@playwright/test');
-
-const browsers = (process.env.PW_VERIFY_BROWSERS || '')
-  .split(',')
-  .map((browser) => browser.trim())
-  .filter(Boolean);
-
-for (const browserName of browsers) {
-  const browser = playwright[browserName];
-  if (!browser) {
-    throw new Error(`Unknown Playwright browser: ${browserName}`);
-  }
-
-  const executablePath = browser.executablePath();
-  if (!fs.existsSync(executablePath)) {
-    throw new Error(`Missing Playwright ${browserName} executable at ${executablePath}`);
-  }
-
-  console.log(`Verified Playwright ${browserName} executable at ${executablePath}`);
-}
-NODE
-        '''
-    }
 }
 
 def ensureHtmlReportForPublishing = { String reportDir, String reportFile, String suiteName ->
@@ -297,7 +266,6 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
                 "ORG_USER_ASSIGNMENT_MODE=external",
                 "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                 "FUNCTIONAL_TESTS_WORKERS=${runConfig.workers}",
-                "PLAYWRIGHT_SKIP_INSTALL=true",
                 "INTEGRATION_PW_INCLUDE_TAGS=${params.INTEGRATION_PW_INCLUDE_TAGS ?: ''}",
                 "INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE=${params.INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                 "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
@@ -435,7 +403,6 @@ withPipeline(type, product, component) {
     env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net'
     env.MICROSERVICE = env.MICROSERVICE ?: 'xui_webapp'
     env.S2S_MICROSERVICE_NAME = env.S2S_MICROSERVICE_NAME ?: env.MICROSERVICE
-    env.PLAYWRIGHT_BROWSERS_PATH = playwrightBrowsersPath
     enableAksStagingDeployment()
     disableLegacyDeployment()
     syncBranchesWithMaster(branchesToSync)    
@@ -469,8 +436,10 @@ withPipeline(type, product, component) {
         stage('Playwright Install Chromium') {
             try {
                 recordPlaywrightLoadEvent(ciLoadProfileEventsFile, 'Playwright chromium install', 'start')
+                env.PLAYWRIGHT_BROWSERS_PATH = "${env.WORKSPACE}/.cache/ms-playwright"
                 yarnBuilder.yarn('test:setup:playwright-install-chromium')
-                verifyPlaywrightBrowsers(['chromium'])
+                yarnBuilder.yarn('test:setup:playwright-verify-chromium')
+                env.PLAYWRIGHT_SKIP_INSTALL = 'true'
             } catch (Error) {
                 error(message: "${STAGE_NAME} is unstable: " + Error.toString())
             } finally {
@@ -609,7 +578,6 @@ withPipeline(type, product, component) {
                                     "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                     "FUNCTIONAL_TESTS_WORKERS=6",
                                     "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
-                                    "PLAYWRIGHT_SKIP_INSTALL=true",
                                     "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
                                     "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                                     "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
@@ -714,7 +682,6 @@ withPipeline(type, product, component) {
                                     "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                     "FUNCTIONAL_TESTS_WORKERS=6",
                                     "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
-                                    "PLAYWRIGHT_SKIP_INSTALL=true",
                                     "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
                                     "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                                     "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"

@@ -165,12 +165,15 @@ test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () =
     const withXsrfFn = async <T>(_role: string, fn: (h: Record<string, string>) => Promise<T>) => fn(headers);
 
     const apiClient = {
-      get: async () => ({
-        data: { cases: [{ caseId: 'case-1' }, { case_id: 'case-2' }] },
-      }),
+      get: async (_path: string, options?: { query?: Record<string, string> }) => {
+        expect(options?.query?.case_ids).toBe('1234567890123456');
+        return {
+          data: { cases: [{ caseId: 'case-1' }, { case_id: 'case-2' }] },
+        };
+      },
     };
 
-    const resolved = await seedRoleAccessCaseId(apiClient, { withXsrfFn });
+    const resolved = await seedRoleAccessCaseId(apiClient, { withXsrfFn, caseId: '1234567890123456' });
     expect(resolved).toBe('case-1');
 
     const apiClientCaseId = {
@@ -178,7 +181,7 @@ test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () =
         data: { cases: [{ case_id: 'case-2' }] },
       }),
     };
-    const resolvedCaseId = await seedRoleAccessCaseId(apiClientCaseId, { withXsrfFn });
+    const resolvedCaseId = await seedRoleAccessCaseId(apiClientCaseId, { withXsrfFn, caseId: '1234567890123456' });
     expect(resolvedCaseId).toBe('case-2');
 
     const apiClientEmpty = {
@@ -186,10 +189,14 @@ test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () =
         data: { cases: [{}] },
       }),
     };
-    const resolvedEmpty = await seedRoleAccessCaseId(apiClientEmpty, { withXsrfFn });
+    const resolvedEmpty = await seedRoleAccessCaseId(apiClientEmpty, { withXsrfFn, caseId: '1234567890123456' });
     expect(resolvedEmpty).toBeUndefined();
 
+    const resolvedWithoutCandidate = await seedRoleAccessCaseId(apiClient, { withXsrfFn });
+    expect(resolvedWithoutCandidate).toBeUndefined();
+
     const failing = await seedRoleAccessCaseId(apiClient, {
+      caseId: '1234567890123456',
       withXsrfFn: async () => {
         throw new Error('boom');
       },

@@ -10,12 +10,26 @@ import {
   resolveWorkerCount,
 } from './playwright-config-utils';
 
-export default (() => {
+type EnvMap = NodeJS.ProcessEnv;
+
+const resolveOdhinIndexFilename = (env: EnvMap = process.env): string =>
+  env.PLAYWRIGHT_REPORT_INDEX_FILENAME?.trim() || 'xui-playwright-e2e.html';
+
+const resolveOdhinTitle = (env: EnvMap = process.env): string => {
+  const configured = env.PW_ODHIN_TITLE?.trim();
+  if (configured) {
+    return configured;
+  }
+  return env.PLAYWRIGHT_INCLUDE_A11Y === 'true' ? 'RPX-XUI-WEBAPP Accessibility' : 'RPX-XUI-WEBAPP Playwright E2E';
+};
+
+const buildConfig = (env: EnvMap = process.env) => {
   const temporaryProbePattern = '**/_tmp_*.spec.ts';
-  const headlessMode = process.env.HEAD !== 'true';
-  const odhinOutputFolder = process.env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
-  const baseUrl = process.env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';
+  const headlessMode = env.HEAD !== 'true';
+  const odhinOutputFolder = env.PLAYWRIGHT_REPORT_FOLDER ?? 'functional-output/tests/playwright-e2e/odhin-report';
+  const baseUrl = env.TEST_URL || 'https://manage-case.aat.platform.hmcts.net';
   const e2eTagFilters = resolveTagFilters({
+    env,
     includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
     excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
     configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
@@ -25,7 +39,7 @@ export default (() => {
     ignoreGlobalExcludesEnvVar: 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES',
     globalExcludedTagsPattern: /^@e2e(?:-.+)?$/,
   });
-  logResolvedTagFilters('E2E', e2eTagFilters, process.env);
+  logResolvedTagFilters('E2E', e2eTagFilters, env);
 
   const parsePositiveInt = (raw: string | undefined): number | undefined => {
     if (!raw) {
@@ -38,8 +52,12 @@ export default (() => {
     return parsed;
   };
 
-  const retries = parseNonNegativeInt(process.env.PW_E2E_RETRIES) ?? 2;
-  const globalTimeoutMs = parsePositiveInt(process.env.PW_E2E_GLOBAL_TIMEOUT_MS);
+  const retries = parseNonNegativeInt(env.PW_E2E_RETRIES) ?? 2;
+  const globalTimeoutMs = parsePositiveInt(env.PW_E2E_GLOBAL_TIMEOUT_MS);
+  const isAccessibilityRun = env.PLAYWRIGHT_INCLUDE_A11Y === 'true';
+  const prewarmAccessibilitySession = isAccessibilityRun && env.PW_A11Y_PREWARM_SESSION !== 'false';
+  const testTimeoutMs = isAccessibilityRun ? (parsePositiveInt(env.PW_A11Y_TEST_TIMEOUT_MS) ?? 60_000) : 180_000;
+  const expectTimeoutMs = isAccessibilityRun ? (parsePositiveInt(env.PW_A11Y_EXPECT_TIMEOUT_MS) ?? 7_000) : 60_000;
 
   const resolveEnvironmentFromUrl = (url: string) => {
     try {
@@ -67,12 +85,12 @@ export default (() => {
 
   const resolveBranchName = () => {
     const envBranch =
-      process.env.PLAYWRIGHT_REPORT_BRANCH ||
-      process.env.GIT_BRANCH ||
-      process.env.BRANCH_NAME ||
-      process.env.GITHUB_REF_NAME ||
-      process.env.GITHUB_HEAD_REF ||
-      process.env.BUILD_SOURCEBRANCHNAME;
+      env.PLAYWRIGHT_REPORT_BRANCH ||
+      env.GIT_BRANCH ||
+      env.BRANCH_NAME ||
+      env.GITHUB_REF_NAME ||
+      env.GITHUB_HEAD_REF ||
+      env.BUILD_SOURCEBRANCHNAME;
     if (envBranch) {
       return envBranch.replace(/^refs\/heads\//, '').trim();
     }
@@ -92,41 +110,45 @@ export default (() => {
     return 'local';
   };
 
-  const workerCount = resolveWorkerCount(process.env);
+  const workerCount = resolveWorkerCount(env);
   const resolveAgentHardware = () => {
     const cpuCores = cpus()?.length ?? 'unknown';
     const totalRamGiB = Math.round((totalmem() / 1024 ** 3) * 10) / 10;
     return `agent_cpu_cores=${cpuCores} | agent_ram_gib=${totalRamGiB}`;
   };
-  const targetEnv = process.env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
-  const runContext = process.env.CI ? 'ci' : 'local-run';
+  const targetEnv = env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
+  const runContext = env.CI ? 'ci' : 'local-run';
   const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
   const reportBranch = resolveBranchName();
 
   return defineConfig({
     testDir: 'playwright_tests_new/E2E',
     testMatch: ['**/test/**/*.spec.ts'],
-    testIgnore: [temporaryProbePattern, '**/test/smoke/smokeTest.spec.ts'],
+    testIgnore:
+      env.PLAYWRIGHT_INCLUDE_A11Y === 'true'
+        ? [temporaryProbePattern, '**/test/smoke/smokeTest.spec.ts']
+        : [temporaryProbePattern, '**/test/smoke/smokeTest.spec.ts', '**/*.a11y.spec.ts'],
+    ...(prewarmAccessibilitySession ? { globalSetup: './playwright_tests_new/E2E/setup/a11ySession.global-setup.ts' } : {}),
     fullyParallel: true,
     retries,
-    timeout: 180_000,
+    timeout: testTimeoutMs,
     expect: {
-      timeout: 60_000,
+      timeout: expectTimeoutMs,
     },
     ...(globalTimeoutMs ? { globalTimeout: globalTimeoutMs } : {}),
     workers: workerCount,
     reporter: [
-      [resolveDefaultReporter(process.env)],
+      [resolveDefaultReporter(env)],
       ['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs'],
       [
         './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
         {
           outputFolder: odhinOutputFolder,
-          indexFilename: 'xui-playwright-e2e.html',
-          title: 'RPX-XUI-WEBAPP Playwright E2E',
+          indexFilename: resolveOdhinIndexFilename(env),
+          title: resolveOdhinTitle(env),
           testEnvironment,
-          project: process.env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp - E2E',
-          release: process.env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${reportBranch}`,
+          project: env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp - E2E',
+          release: env.PLAYWRIGHT_REPORT_RELEASE ?? `${appVersion} | branch=${reportBranch}`,
           startServer: false,
           consoleLog: true,
           consoleError: true,
@@ -156,4 +178,15 @@ export default (() => {
       },
     ],
   });
-})();
+};
+
+const config = buildConfig(process.env);
+
+(config as { __test__?: unknown }).__test__ = {
+  buildConfig,
+  resolveOdhinIndexFilename,
+  resolveOdhinTitle,
+  resolveWorkerCount,
+};
+
+export default config;

@@ -60,7 +60,7 @@ export interface CaseShareOrganisation {
 }
 
 export interface CaseShareUser {
-  userIdentifier?: string;
+  idamId?: string;
   email?: string;
   [key: string]: unknown;
 }
@@ -137,7 +137,7 @@ export const CaseShareOrganisationSchema = z
 
 export const CaseShareUserSchema = z
   .object({
-    userIdentifier: z.string().optional(),
+    idamId: z.string().optional(),
     email: z.string().optional(),
   })
   .passthrough();

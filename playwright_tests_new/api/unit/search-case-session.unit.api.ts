@@ -24,10 +24,47 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
     expect(resolveIntegrationSessionWarmupUsers({} as NodeJS.ProcessEnv)).toEqual([]);
   });
 
+  test('prewarms sessions for selected integration tags when no explicit override is provided', () => {
+    const env = {
+      PW_SEARCH_CASE_SESSION_USERS: 'FPL_GLOBAL_SEARCH, SEARCH_EMPLOYMENT_CASE',
+    } as NodeJS.ProcessEnv;
+
+    expect(
+      resolveIntegrationSessionWarmupUsers(env, {
+        includeTags: ['@integration-case-file-view', '@integration-search-case'],
+        excludedTags: [],
+        availableTags: ['@integration', '@integration-case-file-view', '@integration-search-case', '@integration-manage-tasks'],
+        suiteTag: '@integration',
+      })
+    ).toEqual(['RESTRICTED_CASE_FILE_VIEW_ON', 'FPL_GLOBAL_SEARCH', 'SEARCH_EMPLOYMENT_CASE']);
+  });
+
+  test('prewarms only the shared contention sessions for full integration runs', () => {
+    expect(
+      resolveIntegrationSessionWarmupUsers({} as NodeJS.ProcessEnv, {
+        includeTags: [],
+        excludedTags: ['@integration-manage-tasks'],
+        availableTags: ['@integration', '@integration-case-file-view', '@integration-hearings', '@integration-manage-tasks'],
+        suiteTag: '@integration',
+      })
+    ).toEqual(['FPL_GLOBAL_SEARCH', 'SOLICITOR', 'STAFF_ADMIN', 'RESTRICTED_CASE_FILE_VIEW_ON']);
+  });
+
+  test('does not prewarm case-file-view session when the full run excludes that tag', () => {
+    expect(
+      resolveIntegrationSessionWarmupUsers({} as NodeJS.ProcessEnv, {
+        includeTags: ['@integration'],
+        excludedTags: ['@integration-case-file-view'],
+        availableTags: ['@integration', '@integration-case-file-view', '@integration-hearings', '@integration-manage-tasks'],
+        suiteTag: '@integration',
+      })
+    ).toEqual(['FPL_GLOBAL_SEARCH', 'SOLICITOR', 'STAFF_ADMIN']);
+  });
+
   test('supports explicit default integration warmup pool when requested', () => {
     const env = {
       PW_SEARCH_CASE_SESSION_USERS: 'FPL_GLOBAL_SEARCH, SEARCH_EMPLOYMENT_CASE',
-      PW_INTEGRATION_SESSION_WARMUP_USERS: '@default',
+      PW_INTEGRATION_SESSION_WARMUP_USERS: '@default,RESTRICTED_CASE_FILE_VIEW_ON',
     } as NodeJS.ProcessEnv;
 
     expect(resolveIntegrationSessionWarmupUsers(env)).toEqual([
@@ -35,6 +72,7 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
       'SOLICITOR',
       'STAFF_ADMIN',
       'SEARCH_EMPLOYMENT_CASE',
+      'RESTRICTED_CASE_FILE_VIEW_ON',
     ]);
   });
 

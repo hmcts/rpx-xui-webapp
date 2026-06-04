@@ -284,4 +284,65 @@ test.describe('Odhin reporter unit tests', { tag: '@svc-internal' }, () => {
     });
     expect(stderrWrites.some((entry) => entry.includes('onTestEnd timed out'))).toBe(true);
   });
+
+  test('adaptive reporter can trim failed-test artifacts before handing results to Odhín', async () => {
+    let forwardedResult: {
+      stdout?: unknown[];
+      stderr?: unknown[];
+      steps?: unknown[];
+      attachments?: unknown[];
+    };
+    const reporter = new OdhinAdaptiveReporter({
+      lightweight: true,
+      profile: false,
+      trimFailedArtifacts: true,
+      createInnerReporter: () => ({
+        onTestEnd: async (_test: unknown, result: unknown) => {
+          forwardedResult = result;
+        },
+        onEnd: async () => undefined,
+      }),
+    });
+
+    await reporter.onTestEnd(
+      { title: 'failed accessibility test' },
+      {
+        status: 'failed',
+        stdout: [{ text: 'failure output' }],
+        stderr: [{ text: 'failure error' }],
+        steps: [{ title: 'step' }],
+        attachments: [{ name: 'highlighted screenshot' }],
+      }
+    );
+    await reporter.onEnd({ status: 'failed' });
+
+    expect(forwardedResult.stdout).toEqual([{ text: 'failure output' }]);
+    expect(forwardedResult.stderr).toEqual([{ text: 'failure error' }]);
+    expect(forwardedResult.steps).toEqual([]);
+    expect(forwardedResult.attachments).toEqual([]);
+  });
+
+  test('adaptive reporter bounds stalled Odhín finalization', async () => {
+    const reporter = new OdhinAdaptiveReporter({
+      profile: false,
+      finalizationTimeoutMs: 20,
+      createInnerReporter: () => ({
+        onEnd: async () => new Promise(() => {}),
+      }),
+    });
+    const stderrWrites: string[] = [];
+    const originalWrite = process.stderr.write.bind(process.stderr);
+    process.stderr.write = ((chunk: string | Uint8Array) => {
+      stderrWrites.push(String(chunk));
+      return true;
+    }) as typeof process.stderr.write;
+
+    try {
+      await reporter.onEnd({ status: 'failed' });
+    } finally {
+      process.stderr.write = originalWrite;
+    }
+
+    expect(stderrWrites.some((entry) => entry.includes('onEnd timed out after 20ms'))).toBe(true);
+  });
 });

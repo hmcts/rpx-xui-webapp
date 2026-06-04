@@ -40,6 +40,12 @@ function toError(error: unknown): Error {
 }
 
 type StorageState = { cookies?: Array<{ name?: string; value?: string }> };
+type AuthRequestContext = AuthCheckContext & {
+  post: (url: string, options?: Record<string, unknown>) => Promise<AuthCheckResponse>;
+  storageState: (options?: { path?: string }) => Promise<unknown>;
+  dispose: () => Promise<void>;
+};
+type AuthRequestFactory = (options: Parameters<typeof request.newContext>[0]) => Promise<AuthRequestContext>;
 
 type StorageDeps = {
   createStorageState: (role: ApiUserRole) => Promise<string>;
@@ -61,14 +67,36 @@ type TokenBootstrapDeps = {
   env?: NodeJS.ProcessEnv;
   idamUtils?: { generateIdamToken: (opts: Record<string, unknown>) => Promise<string> };
   serviceAuthUtils?: { retrieveToken: (opts: Record<string, unknown>) => Promise<string> };
-  requestFactory?: typeof request.newContext;
+  requestFactory?: AuthRequestFactory;
   logger?: LoggerInstance;
   readState?: typeof tryReadState;
+  authCheckAttempts?: number;
+  authCheckDelayMs?: number;
 };
 
 type FormLoginDeps = {
-  requestFactory?: typeof request.newContext;
+  requestFactory?: AuthRequestFactory;
   extractCsrf?: typeof extractCsrf;
+  authCheckAttempts?: number;
+  authCheckDelayMs?: number;
+};
+
+type AuthCheckResponse = {
+  status: () => number;
+  headers?: () => Record<string, string>;
+  text?: () => Promise<string>;
+  json?: () => Promise<unknown>;
+};
+
+type AuthCheckResult = {
+  isAuthenticated: boolean;
+  status: number;
+  contentType?: string;
+  bodyPreview?: string;
+};
+
+type AuthCheckContext = {
+  get: (url: string, options?: Record<string, unknown>) => Promise<AuthCheckResponse>;
 };
 
 const defaultStorageDeps: StorageDeps = {
@@ -227,18 +255,20 @@ async function tryTokenBootstrap(
 
     // Touch auth endpoints so the gateway can create a session + xsrf cookies.
     await context.get('auth/login', { failOnStatusCode: false });
-    const authCheck = await context.get('auth/isAuthenticated', { failOnStatusCode: false });
-    const isAuth = authCheck.status() === 200 ? await authCheck.json().catch(() => false) : false;
+    const authStatus = await waitForAuthenticated(context, {
+      attempts: deps.authCheckAttempts,
+      delayMs: deps.authCheckDelayMs,
+    });
 
     await context.storageState({ path: storagePath });
     const state = await readState(storagePath);
     const hasCookies = Array.isArray(state?.cookies) && state.cookies.length > 0;
 
-    if (isAuth && hasCookies) {
+    if (authStatus.isAuthenticated && hasCookies) {
       return true;
     }
     activeLogger.warn(
-      `Token bootstrap for role "${role}" returned isAuthenticated=${String(isAuth)}; falling back to form login`
+      `Token bootstrap for role "${role}" returned isAuthenticated=${String(authStatus.isAuthenticated)}; falling back to form login`
     );
     return false;
   } catch (error) {
@@ -294,16 +324,20 @@ async function createStorageStateViaForm(
 
     // Ensure XSRF/session cookies are refreshed on the application domain
     await context.get('/');
-    const authCheck = await context.get('auth/isAuthenticated', { failOnStatusCode: false });
-    let isAuth = false;
-    if (authCheck.status() === 200 && typeof authCheck.json === 'function') {
-      isAuth = await authCheck.json().catch(() => false);
-    }
-    if (!isAuth) {
+    const authStatus = await waitForAuthenticated(context, {
+      attempts: deps.authCheckAttempts,
+      delayMs: deps.authCheckDelayMs,
+    });
+    if (!authStatus.isAuthenticated) {
       throw new AuthenticationError(
-        `Login failed for role "${role}" (auth/isAuthenticated returned ${authCheck.status()})`,
+        `Login failed for role "${role}" (auth/isAuthenticated returned ${authStatus.status}; content-type=${authStatus.contentType ?? 'unknown'}; body=${authStatus.bodyPreview ?? '<empty>'})`,
         role,
-        { endpoint: 'auth/isAuthenticated', status: authCheck.status() }
+        {
+          endpoint: 'auth/isAuthenticated',
+          status: authStatus.status,
+          contentType: authStatus.contentType,
+          bodyPreview: authStatus.bodyPreview,
+        }
       );
     }
     await context.storageState({ path: storagePath });
@@ -337,6 +371,108 @@ function getCredentials(role: ApiUserRole): { username: string; password: string
 function extractCsrf(html: string): string | undefined {
   const match = /name="_csrf"\s+value="([^"]+)"/i.exec(html);
   return match?.[1];
+}
+
+async function readAuthCheck(response: AuthCheckResponse): Promise<AuthCheckResult> {
+  const status = response.status();
+  const headers = typeof response.headers === 'function' ? response.headers() : {};
+  const contentType = headers['content-type'] ?? headers['Content-Type'];
+  const body = await readResponseBody(response);
+  const bodyPreview = previewBody(body);
+
+  if (status !== 200) {
+    return { isAuthenticated: false, status, contentType, bodyPreview };
+  }
+
+  return {
+    isAuthenticated: parseAuthValue(body),
+    status,
+    contentType,
+    bodyPreview,
+  };
+}
+
+async function waitForAuthenticated(
+  context: AuthCheckContext,
+  options: { attempts?: number; delayMs?: number } = {}
+): Promise<AuthCheckResult> {
+  const attempts = readPositiveInteger(options.attempts, process.env.API_AUTH_CHECK_ATTEMPTS, 5);
+  const delayMs = readPositiveInteger(options.delayMs, process.env.API_AUTH_CHECK_DELAY_MS, 1000, { allowZero: true });
+  let lastResult: AuthCheckResult | undefined;
+
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    const authCheck = await context.get('auth/isAuthenticated', { failOnStatusCode: false });
+    lastResult = await readAuthCheck(authCheck);
+    if (lastResult.isAuthenticated || lastResult.status !== 200 || attempt === attempts) {
+      return lastResult;
+    }
+    await sleep(delayMs);
+  }
+
+  return lastResult ?? { isAuthenticated: false, status: 0 };
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function readPositiveInteger(
+  override: number | undefined,
+  envValue: string | undefined,
+  fallback: number,
+  options: { allowZero?: boolean } = {}
+): number {
+  const value = override ?? (envValue ? Number.parseInt(envValue, 10) : fallback);
+  if (!Number.isFinite(value)) {
+    return fallback;
+  }
+  const minimum = options.allowZero ? 0 : 1;
+  return Math.max(minimum, value);
+}
+
+async function readResponseBody(response: AuthCheckResponse): Promise<string | undefined> {
+  if (typeof response.text === 'function') {
+    return response.text().catch(() => undefined);
+  }
+  if (typeof response.json === 'function') {
+    return response
+      .json()
+      .then((value) => JSON.stringify(value))
+      .catch(() => undefined);
+  }
+  return undefined;
+}
+
+function parseAuthValue(body: string | undefined): boolean {
+  if (!body) {
+    return false;
+  }
+
+  const trimmed = body.trim();
+  if (trimmed === 'true') {
+    return true;
+  }
+  if (trimmed === 'false') {
+    return false;
+  }
+
+  try {
+    const parsed = JSON.parse(trimmed);
+    if (typeof parsed === 'boolean') {
+      return parsed;
+    }
+    if (parsed && typeof parsed === 'object' && typeof (parsed as { isAuthenticated?: unknown }).isAuthenticated === 'boolean') {
+      return (parsed as { isAuthenticated: boolean }).isAuthenticated;
+    }
+  } catch {
+    // Non-JSON 200 responses are treated as unauthenticated and reported with a body preview.
+  }
+
+  return false;
+}
+
+function previewBody(body: string | undefined): string | undefined {
+  return body?.replace(/\s+/g, ' ').trim().slice(0, 200);
 }
 
 function stripTrailingSlash(value: string): string {
@@ -401,4 +537,7 @@ export const __test__ = {
   tryTokenBootstrap,
   createStorageStateViaForm,
   getCredentials,
+  readAuthCheck,
+  waitForAuthenticated,
+  parseAuthValue,
 };

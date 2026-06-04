@@ -30,12 +30,12 @@ export class CaseFileViewPage extends Base {
   readonly standaloneMediaViewPanel = this.page.locator('#viewerContainer');
 
   readonly documentHeader = this.container.locator('.document-folders-header .document-folders-header__title');
-  readonly sortButton = this.container.locator('ccd-case-file-view-folder-sort button').first();
-  readonly sortMenu = this.page.locator('.cdk-overlay-pane').first();
-  readonly sortAscendingOption = this.sortMenu.getByText('A to Z ascending', { exact: true });
-  readonly sortDescendingOption = this.sortMenu.getByText('Z to A descending', { exact: true });
-  readonly sortRecentFirstOption = this.sortMenu.getByText('Recent first', { exact: true });
-  readonly sortOldestFirstOption = this.sortMenu.getByText('Oldest first', { exact: true });
+  readonly sortButton = this.container.locator('ccd-case-file-view-folder-sort .overlay-toggle').first();
+  readonly sortMenu = this.page.locator('.overlay-menu').filter({ hasText: 'Sort documents by name' });
+  readonly sortAscendingOption = this.sortMenu.locator('.overlay-menu__item').filter({ hasText: 'A to Z ascending' });
+  readonly sortDescendingOption = this.sortMenu.locator('.overlay-menu__item').filter({ hasText: 'Z to A descending' });
+  readonly sortRecentFirstOption = this.sortMenu.locator('.overlay-menu__item').filter({ hasText: 'Recent first' });
+  readonly sortOldestFirstOption = this.sortMenu.locator('.overlay-menu__item').filter({ hasText: 'Oldest first' });
 
   constructor(page: Page) {
     super(page);
@@ -138,12 +138,13 @@ export class CaseFileViewPage extends Base {
   }
 
   public async openSortMenu(): Promise<void> {
-    if (await this.sortMenu.isVisible()) {
+    if (await this.sortAscendingOption.isVisible()) {
       return;
-    } else {
-      await this.sortButton.click();
-      await this.sortMenu.waitFor({ state: 'visible' });
     }
+
+    await this.sortButton.click();
+    await this.sortMenu.waitFor({ state: 'visible' });
+    await this.sortAscendingOption.waitFor({ state: 'visible' });
   }
 
   public async sortByAscending(): Promise<void> {

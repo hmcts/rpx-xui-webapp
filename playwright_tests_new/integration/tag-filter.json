@@ -2,13 +2,17 @@
   "excludedTags": [],
   "availableTags": [
     "@integration",
+    "@integration-access-requests",
+    "@integration-booking-ui",
+    "@integration-case-details",
     "@integration-case-file-view",
+    "@integration-case-linking",
     "@integration-case-list",
     "@integration-create-case",
+    "@integration-hearings",
     "@integration-manage-tasks",
+    "@integration-restricted-case",
     "@integration-search-case",
-    "@integration-welsh-language",
-    "@integration-access-requests",
-    "@integration-booking-ui"
+    "@integration-welsh-language"
   ]
 }

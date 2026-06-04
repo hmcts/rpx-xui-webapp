@@ -32,6 +32,7 @@ const {
 } = integrationConfigSupport;
 
 let configModule: TestableConfigModule;
+let e2eConfigModule: TestableConfigModule;
 let integrationConfigModule: TestableConfigModule;
 let nightlyConfigModule: TestableConfigModule;
 
@@ -60,6 +61,14 @@ const resolveE2eTagFilters = (env: EnvMap) =>
     ignoredGlobalExcludedTags: string[];
     grep?: RegExp;
     grepInvert?: RegExp;
+  };
+const buildE2eConfig = (env: EnvMap) =>
+  e2eConfigModule.__test__.buildConfig(env) as {
+    reporter: [string, Record<string, unknown> | undefined][];
+    globalSetup?: string;
+    testIgnore: string[];
+    timeout: number;
+    expect: { timeout: number };
   };
 
 const buildIntegrationConfig = (env: EnvMap) =>
@@ -104,6 +113,7 @@ test.describe.configure({ mode: 'serial' });
 test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
   test.beforeAll(async () => {
     configModule = await loadConfig();
+    e2eConfigModule = await loadConfigAt('playwright.e2e.config.ts');
     integrationConfigModule = await loadConfigAt('playwright.integration.config.ts');
     nightlyConfigModule = await loadConfigAt('playwright-nightly.config.ts');
   });
@@ -213,6 +223,40 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(odhinOptions?.testEnvironment).toContain('aat');
     expect(odhinOptions?.testEnvironment).toContain('local-run');
     expect(config.use.baseURL).toContain('manage-case');
+  });
+
+  test('E2E config honours a11y report file overrides', async () => {
+    const config = buildE2eConfig({
+      PLAYWRIGHT_INCLUDE_A11Y: 'true',
+      PLAYWRIGHT_REPORT_FOLDER: 'functional-output/tests/playwright-a11y/odhin-report',
+      PLAYWRIGHT_REPORT_INDEX_FILENAME: 'xui-playwright-a11y.html',
+      CI: undefined,
+      TEST_URL: 'https://example.test',
+    });
+    const [, odhinOptions] = getReporterTuple(
+      config.reporter,
+      './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs'
+    );
+
+    expect(config.testIgnore).not.toContain('**/*.a11y.spec.ts');
+    expect(odhinOptions?.outputFolder).toBe('functional-output/tests/playwright-a11y/odhin-report');
+    expect(odhinOptions?.indexFilename).toBe('xui-playwright-a11y.html');
+    expect(odhinOptions?.title).toBe('RPX-XUI-WEBAPP Accessibility');
+    expect(config.globalSetup).toBe('./playwright_tests_new/E2E/setup/a11ySession.global-setup.ts');
+    expect(config.timeout).toBe(60_000);
+    expect(config.expect.timeout).toBe(7_000);
+  });
+
+  test('E2E config can disable a11y session prewarm for list-only checks', async () => {
+    const config = buildE2eConfig({
+      PLAYWRIGHT_INCLUDE_A11Y: 'true',
+      PW_A11Y_PREWARM_SESSION: 'false',
+      CI: undefined,
+      TEST_URL: 'https://example.test',
+    });
+
+    expect(config.globalSetup).toBeUndefined();
+    expect(config.timeout).toBe(60_000);
   });
 
   test('config uses branch from environment when provided', async () => {
@@ -612,6 +656,22 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(odhinOptions?.outputFolder).toContain('playwright-e2e/odhin-report');
     expect(config.projects.find((project) => project.name === 'firefox')?.use?.headless).toBe(false);
     expect(config.projects.find((project) => project.name === 'webkit')?.use?.headless).toBe(false);
+  });
+
+  test('nightly config honours report folder and file overrides', async () => {
+    const config = buildNightlyConfig({
+      CI: 'true',
+      TEST_URL: 'https://example.test',
+      PLAYWRIGHT_REPORT_FOLDER: 'functional-output/tests/playwright-a11y/odhin-report',
+      PLAYWRIGHT_REPORT_INDEX_FILENAME: 'xui-playwright-a11y.html',
+    });
+    const [, odhinOptions] = getReporterTuple(
+      config.reporter,
+      './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs'
+    );
+
+    expect(odhinOptions?.outputFolder).toBe('functional-output/tests/playwright-a11y/odhin-report');
+    expect(odhinOptions?.indexFilename).toBe('xui-playwright-a11y.html');
   });
 
   test('nightly cross-browser config applies E2E-scoped global exclusions', async () => {

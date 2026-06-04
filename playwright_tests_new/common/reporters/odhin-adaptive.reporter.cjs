@@ -46,6 +46,9 @@ class OdhinAdaptiveReporter {
           : true;
     const configuredRuntimeHookTimeoutMs = options.runtimeHookTimeoutMs ?? process.env.PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS;
     this.runtimeHookTimeoutMs = normalizeRuntimeHookTimeoutMs(configuredRuntimeHookTimeoutMs, process.env.CI ? 0 : 15000);
+    const configuredFinalizationTimeoutMs = options.finalizationTimeoutMs ?? process.env.PW_ODHIN_FINALIZATION_TIMEOUT_MS;
+    this.finalizationTimeoutMs = normalizeRuntimeHookTimeoutMs(configuredFinalizationTimeoutMs, 30000);
+    this.trimFailedArtifacts = normalizeBoolean(options.trimFailedArtifacts ?? process.env.PW_ODHIN_TRIM_FAILED_ARTIFACTS, false);
     this.statusCounts = {
       passed: 0,
       failed: 0,
@@ -84,7 +87,7 @@ class OdhinAdaptiveReporter {
 
     let nextResult = result;
     const passedOrSkipped = result?.status === 'passed' || result?.status === 'skipped';
-    const shouldTrimHeavyArtifacts = this.lightweight && passedOrSkipped;
+    const shouldTrimHeavyArtifacts = this.lightweight && (passedOrSkipped || (this.trimFailedArtifacts && !passedOrSkipped));
 
     const shouldDropTestOutput = this.testOutputMode === false || (this.testOutputMode === 'only-on-failure' && passedOrSkipped);
 
@@ -118,7 +121,17 @@ class OdhinAdaptiveReporter {
     }
     await this.flushInnerCallbacks();
     if (typeof this.inner.onEnd === 'function') {
-      await this.inner.onEnd(result);
+      try {
+        await withTimeout(this.inner.onEnd(result), this.finalizationTimeoutMs);
+      } catch (error) {
+        if (isTimeoutError(error)) {
+          process.stderr.write(
+            `[odhin-profile] onEnd timed out after ${this.finalizationTimeoutMs}ms; continuing with available evidence.\n`
+          );
+        } else {
+          process.stderr.write(`[odhin-profile] onEnd failed: ${formatErrorMessage(error)}\n`);
+        }
+      }
     }
     try {
       enhanceGeneratedReport(this.outputFolder, this.featureStats);
@@ -238,6 +251,22 @@ const normalizeRuntimeHookTimeoutMs = (raw, fallbackMs) => {
   return fallbackMs;
 };
 
+const normalizeBoolean = (raw, fallback) => {
+  if (typeof raw === 'boolean') {
+    return raw;
+  }
+  const normalized = String(raw ?? '')
+    .trim()
+    .toLowerCase();
+  if (normalized === 'true') {
+    return true;
+  }
+  if (normalized === 'false') {
+    return false;
+  }
+  return fallback;
+};
+
 const normalizeFinalStatus = (status, retry) => {
   if (status === 'passed' && Number(retry ?? 0) > 0) {
     return 'flaky';
@@ -335,6 +364,7 @@ exportedReporter.__test__ = {
 
     return { nextResult, trimmedCounts: reporter.trimmedCounts };
   },
+  normalizeBoolean,
   normalizeRuntimeHookTimeoutMs,
   withTimeout,
 };

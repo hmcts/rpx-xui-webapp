@@ -1,11 +1,15 @@
 import { test, expect } from './fixtures';
+import { ROLE_ACCESS_CASE_ID, resolveRoleAccessCaseId } from './data/testIds';
 import { withXsrf } from './utils/apiTestUtils';
 import { expectCaseShareShape } from './utils/assertions';
 import { assertCaseShareEntries, resolveEntries } from './utils/caseShareUtils';
+import { resolveHeader } from './utils/nodeAppUtils';
+
+const configuredCaseShareCaseIds = ROLE_ACCESS_CASE_ID ? resolveRoleAccessCaseId(ROLE_ACCESS_CASE_ID) : undefined;
 
 const CASESHARE_ENDPOINTS = [
   {
-    path: 'caseshare/orgs',
+    path: 'api/caseshare/orgs',
     property: 'organisations',
     schema: expect.objectContaining({
       organisationIdentifier: expect.any(String),
@@ -13,32 +17,53 @@ const CASESHARE_ENDPOINTS = [
     }),
   },
   {
-    path: 'caseshare/users',
+    path: 'api/caseshare/users',
     property: 'users',
     schema: expect.objectContaining({
-      userIdentifier: expect.any(String),
+      idamId: expect.any(String),
       email: expect.any(String),
     }),
   },
   {
-    path: 'caseshare/cases',
+    path: 'api/caseshare/cases',
+    query: configuredCaseShareCaseIds ? { case_ids: configuredCaseShareCaseIds } : undefined,
+    requiresConfiguredCaseIds: true,
     property: 'cases',
-    schema: expectCaseShareShape,
+    schema: expect.objectContaining({
+      caseId: expect.any(String),
+      sharedWith: expect.any(Array),
+    }),
   },
   {
-    path: 'caseshare/case-assignments',
+    path: 'api/caseshare/case-assignments',
+    query: configuredCaseShareCaseIds ? { case_ids: configuredCaseShareCaseIds } : undefined,
+    requiresConfiguredCaseIds: true,
     property: 'sharedCases',
-    schema: expectCaseShareShape,
+    schema: expect.objectContaining({
+      caseId: expect.any(String),
+      sharedWith: expect.any(Array),
+    }),
   },
 ] as const;
 
 test.describe('Case share endpoints', { tag: '@svc-case-share' }, () => {
-  for (const { path, property, schema } of CASESHARE_ENDPOINTS) {
+  for (const { path, query, requiresConfiguredCaseIds, property, schema } of CASESHARE_ENDPOINTS) {
     test(`GET ${path}`, async ({ apiClient }) => {
+      test.skip(
+        requiresConfiguredCaseIds && !configuredCaseShareCaseIds,
+        `${path} requires ROLE_ACCESS_CASE_ID to avoid exercising the downstream case-assignment API with a fake case ID`
+      );
       await withXsrf('solicitor', async (headers) => {
-        const response = await apiClient.get(path, { headers: { ...headers, experimental: 'true' }, throwOnError: false });
-        expect([200, 500, 502, 504]).toContain(response.status);
+        const response = await apiClient.get(path, {
+          headers: { ...headers, experimental: 'true' },
+          query,
+          throwOnError: false,
+        });
+        expect(response.status).toBe(200);
         expect(response.data).toBeTruthy();
+        expect(resolveHeader(response.headers, 'content-type') ?? '').toContain('application/json');
+        expect(typeof response.data).not.toBe('string');
+        expect(resolveEntries(response.data, property), `${path} should return ${property} entries`).not.toHaveLength(0);
         assertCaseShareEntries(response.data, property, schema);
       });
     });

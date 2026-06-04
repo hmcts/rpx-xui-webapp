@@ -40,7 +40,7 @@ test.describe('Assertion shape validators', { tag: '@svc-internal' }, () => {
 
   test('expectCaseShareShape handles property variants', () => {
     expectCaseShareShape({ organisations: [{ organisationIdentifier: 'org-1', name: 'Org' }] }, 'organisations');
-    expectCaseShareShape({ users: [{ userIdentifier: 'user-1', email: 'user@example.com' }] }, 'users');
+    expectCaseShareShape({ users: [{ idamId: 'user-1', email: 'user@example.com' }] }, 'users');
     expectCaseShareShape({ cases: [{ caseId: 'case-1', sharedWith: [] }] }, 'cases');
     expectCaseShareShape({ sharedCases: [{ caseId: 'case-2', sharedWith: [] }] }, 'sharedCases');
     expectCaseShareShape({ payload: {} }, 'unknown');

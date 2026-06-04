@@ -230,7 +230,6 @@ def runPlaywrightIntegrationProfileMatrix = {
               'ORG_USER_ASSIGNMENT_MODE=external',
               'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
               "FUNCTIONAL_TESTS_WORKERS=${runConfig.workers}",
-              'PLAYWRIGHT_SKIP_INSTALL=true',
               "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
             ]) {
               yarnBuilder.yarn("test:playwright:integration:raw -- --workers=${runConfig.workers}${runConfig.shardArg}")
@@ -473,7 +472,6 @@ withNightlyPipeline(type, product, component) {
                                 'E2E_PW_INCLUDE_TAGS=@nightly',
                                 'E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none',
                                 'PW_SESSION_CAPTURE_FAILURE_TTL_MS=0',
-                                'PLAYWRIGHT_SKIP_INSTALL=true',
                                 "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
                             ]) {
                                 yarnBuilder.yarn('test:crossbrowser:raw')

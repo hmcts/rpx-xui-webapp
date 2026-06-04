@@ -4,11 +4,11 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { EXUI_TIMEOUTS } from '../../E2E/page-objects/pages/exui/exui-timeouts';
-import type { CaseListPage } from '../../E2E/page-objects/pages/exui/caseList.po';
 import type { GlobalSearchPage } from '../../E2E/page-objects/pages/exui/globalSearch.po';
 import type { SearchCasePage } from '../../E2E/page-objects/pages/exui/searchCase.po';
 
 const helperDir = path.dirname(fileURLToPath(import.meta.url));
+const CASES_SHELL_NAVIGATION_ATTEMPTS = 2;
 const appConfig = JSON.parse(readFileSync(path.resolve(helperDir, '../../../src/assets/config/config.json'), 'utf8')) as {
   caseEditorConfig: {
     activity_retry: number;
@@ -347,21 +347,19 @@ export async function setupFastCaseRetrievalConfigRoute(page: Page): Promise<voi
 
 /**
  * Submits a header quick-search using a 16-digit case reference.
- * Navigates to the case list, waits for the search input, and submits the reference.
+ * Navigates to the cases area, waits only for the quick-search contract used by the header,
+ * and submits the reference.
  *
  * Extracted from spec-level inline helpers for reuse across positive and negative search suites.
  *
  * @param caseReference - 16-digit case reference to search for
- * @param caseListPage - Page object for the case list page
  * @param searchCasePage - Page object for the search case (header search) page
  */
-export async function submitHeaderQuickSearch(
-  caseReference: string,
-  caseListPage: CaseListPage,
-  searchCasePage: SearchCasePage
-): Promise<void> {
-  await caseListPage.navigateTo();
-  // Defensive check: confirms search input is present before interacting
+export async function submitHeaderQuickSearch(caseReference: string, searchCasePage: SearchCasePage): Promise<void> {
+  await openCasesShell(searchCasePage.page, async () => {
+    await searchCasePage.exuiHeader.appHeaderLink.waitFor({ state: 'attached', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
+    await expect(searchCasePage.caseIdTextBox).toBeVisible({ timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
+  });
   await expect(searchCasePage.caseIdTextBox).toBeVisible({ timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
   await searchCasePage.searchWith16DigitCaseId(caseReference);
 }
@@ -381,9 +379,9 @@ export async function submitGlobalSearchFromMenu(
   globalSearchPage: GlobalSearchPage,
   page: Page
 ): Promise<void> {
-  await page.goto('/cases', { waitUntil: 'domcontentloaded' });
-  await page.getByRole('banner').waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
-  await expect(globalSearchPage.searchLinkOnMenuBar).toBeVisible({ timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
+  await openCasesShell(page, async () => {
+    await expect(globalSearchPage.searchLinkOnMenuBar).toBeVisible({ timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
+  });
   await globalSearchPage.searchLinkOnMenuBar.click();
   await page.waitForURL(/\/search/);
   await globalSearchPage.caseIdTextBox.waitFor({ state: 'visible' });
@@ -391,4 +389,38 @@ export async function submitGlobalSearchFromMenu(
   await globalSearchPage.servicesOption.selectOption('PUBLICLAW');
   await globalSearchPage.searchButton.click();
   await globalSearchPage.exuiSpinnerComponent.wait();
+}
+
+async function openCasesShell(page: Page, waitForShell: () => Promise<void>): Promise<void> {
+  await navigateToCasesShell(page);
+  await waitForShell().catch(async (error: Error) => {
+    await navigateToCasesShell(page);
+    await waitForShell().catch(() => {
+      throw error;
+    });
+  });
+}
+
+async function navigateToCasesShell(page: Page): Promise<void> {
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= CASES_SHELL_NAVIGATION_ATTEMPTS; attempt += 1) {
+    try {
+      await page.goto('/cases', { waitUntil: 'domcontentloaded' });
+      await page.waitForURL(/\/cases(?:[/?#]|$)/, { timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE }).catch(() => undefined);
+      return;
+    } catch (error) {
+      lastError = error;
+      if (!isBrowserNavigationFailure(error) || attempt === CASES_SHELL_NAVIGATION_ATTEMPTS) {
+        throw error;
+      }
+    }
+  }
+
+  throw lastError;
+}
+
+function isBrowserNavigationFailure(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  return /net::ERR_CONNECTION_CLOSED|net::ERR_ABORTED|chrome-error:\/\/chromewebdata/i.test(message);
 }

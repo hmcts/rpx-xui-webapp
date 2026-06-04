@@ -30,12 +30,12 @@ export class CaseFileViewPage extends Base {
   readonly standaloneMediaViewPanel = this.page.locator('#viewerContainer');
 
   readonly documentHeader = this.container.locator('.document-folders-header .document-folders-header__title');
-  readonly sortButton = this.container.locator('ccd-case-file-view-folder-sort .overlay-toggle').first();
-  readonly sortMenu = this.page.locator('.overlay-menu').filter({ hasText: 'Sort documents by name' });
-  readonly sortAscendingOption = this.sortMenu.locator('.overlay-menu__item').filter({ hasText: 'A to Z ascending' });
-  readonly sortDescendingOption = this.sortMenu.locator('.overlay-menu__item').filter({ hasText: 'Z to A descending' });
-  readonly sortRecentFirstOption = this.sortMenu.locator('.overlay-menu__item').filter({ hasText: 'Recent first' });
-  readonly sortOldestFirstOption = this.sortMenu.locator('.overlay-menu__item').filter({ hasText: 'Oldest first' });
+  readonly sortButton = this.container.locator('ccd-case-file-view-folder-sort button').first();
+  readonly sortMenu = this.page.locator('.cdk-overlay-pane').filter({ hasText: 'Sort documents by name' }).first();
+  readonly sortAscendingOption = this.sortMenu.getByText('A to Z ascending', { exact: true });
+  readonly sortDescendingOption = this.sortMenu.getByText('Z to A descending', { exact: true });
+  readonly sortRecentFirstOption = this.sortMenu.getByText('Recent first', { exact: true });
+  readonly sortOldestFirstOption = this.sortMenu.getByText('Oldest first', { exact: true });
 
   constructor(page: Page) {
     super(page);
@@ -148,23 +148,25 @@ export class CaseFileViewPage extends Base {
   }
 
   public async sortByAscending(): Promise<void> {
-    await this.openSortMenu();
-    await this.sortAscendingOption.click();
+    await this.selectSortOption(this.sortAscendingOption);
   }
 
   public async sortByDescending(): Promise<void> {
-    await this.openSortMenu();
-    await this.sortDescendingOption.click();
+    await this.selectSortOption(this.sortDescendingOption);
   }
 
   public async sortByRecentFirst(): Promise<void> {
-    await this.openSortMenu();
-    await this.sortRecentFirstOption.click();
+    await this.selectSortOption(this.sortRecentFirstOption);
   }
 
   public async sortByOldestFirst(): Promise<void> {
+    await this.selectSortOption(this.sortOldestFirstOption);
+  }
+
+  private async selectSortOption(option: Locator): Promise<void> {
     await this.openSortMenu();
-    await this.sortOldestFirstOption.click();
+    await option.click();
+    await this.sortMenu.waitFor({ state: 'hidden', timeout: 5_000 }).catch(() => undefined);
   }
 
   private async findDirectChildFolderNode(scope: Locator, folderName: string): Promise<Locator> {

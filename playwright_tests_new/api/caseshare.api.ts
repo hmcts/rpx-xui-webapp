@@ -48,17 +48,18 @@ const CASESHARE_ENDPOINTS = [
 
 test.describe('Case share endpoints', { tag: '@svc-case-share' }, () => {
   for (const { path, query, requiresConfiguredCaseIds, property, schema } of CASESHARE_ENDPOINTS) {
-    test(`GET ${path}`, async ({ apiClient }) => {
-      test.skip(
-        requiresConfiguredCaseIds && !configuredCaseShareCaseIds,
-        `${path} requires ROLE_ACCESS_CASE_ID to avoid exercising the downstream case-assignment API with a fake case ID`
-      );
+    test(`GET ${path} returns a usable contract`, async ({ apiClient }) => {
       await withXsrf('solicitor', async (headers) => {
         const response = await apiClient.get(path, {
           headers: { ...headers, experimental: 'true' },
           query,
           throwOnError: false,
         });
+        if (requiresConfiguredCaseIds && !configuredCaseShareCaseIds) {
+          expect(response.status).toBe(400);
+          return;
+        }
+
         expect(response.status).toBe(200);
         expect(response.data).toBeTruthy();
         expect(resolveHeader(response.headers, 'content-type') ?? '').toContain('application/json');

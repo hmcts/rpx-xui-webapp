@@ -13,7 +13,26 @@ function resolveDynatraceOrigin(): string | null {
   }
 }
 
+function resolveDynatraceBeaconOrigin(): string | null {
+  const dynatraceCdn = process.env.DYNATRACE_CDN?.trim();
+  if (!dynatraceCdn) {
+    return null;
+  }
+
+  try {
+    // CDN path format: /jstag/<version>/<tenantId>/<appId>_complete.js
+    const tenantId = new URL(dynatraceCdn).pathname.split('/')[3];
+    if (!tenantId) {
+      return null;
+    }
+    return `https://${tenantId}.bf.dynatrace.com`;
+  } catch {
+    return null;
+  }
+}
+
 const dynatraceOrigin = resolveDynatraceOrigin();
+const dynatraceBeaconOrigin = resolveDynatraceBeaconOrigin();
 
 export const MC_CSP: Parameters<typeof csp>[0] = {
   /* ── hosts common to every MC environment ─────────────── */
@@ -53,5 +72,6 @@ export const MC_CSP: Parameters<typeof csp>[0] = {
     //below is put in in case the WEBPUBSUB_URL double dot causes issues
     'wss://em-icp-webpubsub.platform.hmcts.net',
     process.env.WEBPUBSUB_URL || '',
+    dynatraceBeaconOrigin || '',
   ].filter(Boolean),
 };

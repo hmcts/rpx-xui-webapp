@@ -444,19 +444,17 @@ rm -rf .sessions && npx playwright test
 
 - E2E suites are tagged with `@e2e` plus feature tags such as `@e2e-search-case` and `@e2e-manage-tasks`.
 - Default excluded tags are read from `playwright_tests_new/E2E/tag-filter.json` (`excludedTags` array).
-- E2E default exclusions are currently empty so the full non-smoke E2E suite runs by default; smoke remains a separate Playwright project and Jenkins smoke stage.
+- E2E default exclusions currently skip `@nightly`; smoke remains a separate Playwright project and Jenkins smoke stage.
 - Override excludes at runtime with `E2E_PW_EXCLUDED_TAGS_OVERRIDE`.
 - Optionally run only selected E2E tags with `E2E_PW_INCLUDE_TAGS`.
 - Tag inputs accept comma or space separated values, with or without `@`.
 - Set `E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none` to clear repo defaults for one run.
 - Jenkins exposes these as string parameters with the same names.
 - Key Vault-backed global exclusions are additive through `PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS`; see [`docs/playwright-global-exclusions.md`](../docs/playwright-global-exclusions.md).
-- The Civil data-loss regression is tagged `@e2e-civil-data-loss` and `@nightly`, so it does not run in the default PR E2E set. Capture explicit evidence with a targeted run such as:
+- The Civil data-loss regression is tagged `@e2e-civil-data-loss`, so it runs in the default CNP/PR E2E set and can also be run directly with:
 
 ```bash
-E2E_PW_INCLUDE_TAGS=@e2e-civil-data-loss \
-E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none \
-yarn test:playwrightE2E:raw
+E2E_PW_INCLUDE_TAGS=@e2e-civil-data-loss yarn test:playwrightE2E:raw
 ```
 
 ```bash

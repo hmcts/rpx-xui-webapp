@@ -1,5 +1,6 @@
+import { fakeAsync, tick } from '@angular/core/testing';
 import { RoutesRecognized } from '@angular/router';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { AppComponent } from './app.component';
 
 describe('AppComponent', () => {
@@ -29,7 +30,7 @@ describe('AppComponent', () => {
     featureToggleService = jasmine.createSpyObj('FeatureToggleService', ['isEnabled', 'getValue', 'initialize']);
     cookieService = jasmine.createSpyObj('CookieService', ['deleteCookieByPartialMatch']);
     loggerService = jasmine.createSpyObj('LoggerService', ['enableCookies', 'log']);
-    authService = jasmine.createSpyObj('AuthService', ['keepAlive']);
+    authService = jasmine.createSpyObj('AuthService', ['keepAlive', 'loginRedirect']);
     authService.keepAlive.and.returnValue(of(true));
     environmentService = jasmine.createSpyObj('environmentService', ['config$']);
     sessionStorageService = jasmine.createSpyObj('SessionStorageService', ['setItem']);
@@ -93,6 +94,10 @@ describe('AppComponent', () => {
     );
   });
 
+  afterEach(() => {
+    appComponent.ngOnDestroy();
+  });
+
   it('Truthy', () => {
     expect(appComponent).toBeTruthy();
   });
@@ -146,6 +151,78 @@ describe('AppComponent', () => {
     expect(authService.keepAlive).toHaveBeenCalled();
     expect(spyModal).not.toHaveBeenCalled();
   });
+
+  it('revalidateSessionOnForeground does not redirect when keepalive reports unauthenticated', () => {
+    authService.keepAlive.and.returnValue(of(false));
+
+    appComponent.revalidateSessionOnForeground();
+
+    expect(authService.keepAlive).toHaveBeenCalled();
+    expect(loggerService.log).toHaveBeenCalledWith('Session invalid after returning to app.');
+    expect(authService.loginRedirect).not.toHaveBeenCalled();
+  });
+
+  it('revalidateSessionOnForeground does not redirect when keepalive fails', () => {
+    authService.keepAlive.and.returnValue(throwError(() => new Error('keepalive failed')));
+
+    appComponent.revalidateSessionOnForeground();
+
+    expect(authService.keepAlive).toHaveBeenCalled();
+    expect(loggerService.log).toHaveBeenCalledWith(
+      'Failed to revalidate session after returning to app. Leaving user on current page.'
+    );
+    expect(authService.loginRedirect).not.toHaveBeenCalled();
+  });
+
+  it('revalidateSessionOnForeground does not redirect when keepalive succeeds', () => {
+    authService.keepAlive.and.returnValue(of(true));
+
+    appComponent.revalidateSessionOnForeground();
+
+    expect(authService.keepAlive).toHaveBeenCalled();
+    expect(authService.loginRedirect).not.toHaveBeenCalled();
+  });
+
+  it('setupForegroundSessionCheck revalidates on focus', fakeAsync(() => {
+    const revalidateSpy = spyOn(appComponent, 'revalidateSessionOnForeground');
+
+    appComponent['setupForegroundSessionCheck']();
+    window.dispatchEvent(new Event('focus'));
+    tick(201);
+
+    expect(revalidateSpy).toHaveBeenCalledTimes(1);
+  }));
+
+  it('setupForegroundSessionCheck revalidates on pageshow', fakeAsync(() => {
+    const revalidateSpy = spyOn(appComponent, 'revalidateSessionOnForeground');
+
+    appComponent['setupForegroundSessionCheck']();
+    window.dispatchEvent(new Event('pageshow'));
+    tick(201);
+
+    expect(revalidateSpy).toHaveBeenCalledTimes(1);
+  }));
+
+  it('setupForegroundSessionCheck revalidates on online', fakeAsync(() => {
+    const revalidateSpy = spyOn(appComponent, 'revalidateSessionOnForeground');
+
+    appComponent['setupForegroundSessionCheck']();
+    window.dispatchEvent(new Event('online'));
+    tick(201);
+
+    expect(revalidateSpy).toHaveBeenCalledTimes(1);
+  }));
+
+  it('setupForegroundSessionCheck debounces back-to-back resume events', fakeAsync(() => {
+    const revalidateSpy = spyOn(appComponent, 'revalidateSessionOnForeground');
+
+    appComponent['setupForegroundSessionCheck']();
+    window.dispatchEvent(new Event('focus'));
+    window.dispatchEvent(new Event('online'));
+    tick(201);
+
+    expect(revalidateSpy).toHaveBeenCalledTimes(1);
+  }));
 
   it('should call initializeFeature', () => {
     const userInfo = {

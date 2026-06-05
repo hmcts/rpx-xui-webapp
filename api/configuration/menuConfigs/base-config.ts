@@ -127,7 +127,12 @@ export const baseConfig = {
       active: false,
       flags: ['MC_Notice_of_Change'],
       href: '/noc',
-      roles: ['caseworker-divorce-solicitor', 'caseworker-probate-solicitor', 'caseworker-privatelaw-solicitor'],
+      roles: [
+        'caseworker-divorce-solicitor',
+        'caseworker-probate-solicitor',
+        'caseworker-privatelaw-solicitor',
+        'caseworker-employment-legalrep-solicitor',
+      ],
       text: 'Notice of change',
     },
     {

@@ -27,7 +27,8 @@ import routes from './routes';
 import workAllocationRouter from './workAllocation/routes';
 import { idamCheck } from './idamCheck';
 import { MC_CSP } from './interfaces/csp-config';
-import { getNewUsersByServiceName } from './workAllocation';
+
+const PERMISSIONS_POLICY = 'geolocation=(), camera=(), microphone=()';
 
 function resolveStaticRoot(): string {
   const buildRoot = path.join(__dirname, '..');
@@ -74,11 +75,9 @@ export async function createApp() {
     }) as unknown as express.RequestHandler;
     app.use(cspMiddleware);
     app.use((req, res, next) => {
-      res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-      res.header('Access-Control-Allow-Credentials', 'true');
-      res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
       res.setHeader('X-Robots-Tag', 'noindex');
       res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate, proxy-revalidate');
+      res.setHeader('Permissions-Policy', PERMISSIONS_POLICY);
       next();
     });
     app.get('/robots.txt', (req, res) => {
@@ -143,8 +142,6 @@ export async function createApp() {
   logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);
 
   new Promise(idamCheck).then(() => 'IDAM is up and running');
-  // EUI-2028 - Get the caseworkers, ideally prior to a user logging into application
-  new Promise(getNewUsersByServiceName).then(() => 'Caseworkers have been loaded');
 
   return app;
 }

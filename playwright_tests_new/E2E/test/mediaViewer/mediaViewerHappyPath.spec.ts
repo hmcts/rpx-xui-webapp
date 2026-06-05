@@ -19,10 +19,13 @@ const MEDIA_VIEWER_FIXTURE_PATH = path.resolve(
   'playwright_tests_new/integration/testData/documents/case-file-view-document-delivery.pdf'
 );
 const MEDIA_VIEWER_FIXTURE_CONTENT = readFileSync(MEDIA_VIEWER_FIXTURE_PATH, 'latin1');
+const MEDIA_VIEWER_TEST_TIMEOUT_MS = Number.parseInt(process.env.PW_MEDIA_VIEWER_TEST_TIMEOUT_MS ?? '', 10) || 300_000;
 const SESSION_BOOTSTRAP_TIMEOUT_MS =
   Number.parseInt(process.env.PW_MEDIA_VIEWER_SESSION_BOOTSTRAP_TIMEOUT_MS ?? '', 10) || 300_000;
 
 test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] }, () => {
+  test.describe.configure({ timeout: MEDIA_VIEWER_TEST_TIMEOUT_MS });
+
   test.beforeAll(async ({}, testInfo) => {
     testInfo.setTimeout(SESSION_BOOTSTRAP_TIMEOUT_MS);
     await ensureSession(RuntimeUserAlias.DIVORCE_SOLICITOR);

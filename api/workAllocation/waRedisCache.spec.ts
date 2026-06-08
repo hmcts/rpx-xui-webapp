@@ -105,7 +105,7 @@ describe('waRedisCache', () => {
 
       await waRedisCache.setCachedUsers(cachedUsers);
 
-      expect(client.set).to.have.been.calledWith('wa:cachedUsers', JSON.stringify(cachedUsers), 'EX', 600, sinon.match.func);
+      expect(client.set).to.have.been.calledWith('wa:cachedUsers', JSON.stringify(cachedUsers), 'EX', 720, sinon.match.func);
     });
 
     it('should not throw when redis client is unavailable', async () => {
@@ -151,7 +151,7 @@ describe('waRedisCache', () => {
         'wa:cachedUsersWithRoles',
         JSON.stringify(cachedUsersWithRoles),
         'EX',
-        600,
+        720,
         sinon.match.func
       );
     });
@@ -201,7 +201,7 @@ describe('waRedisCache', () => {
         expect(result.key).to.equal('wa:cachedUsers:lock');
         expect(result.value).to.be.a('string');
 
-        expect(client.set).to.have.been.calledWith('wa:cachedUsers:lock', result.value, 'EX', 30, 'NX', sinon.match.func);
+        expect(client.set).to.have.been.calledWith('wa:cachedUsers:lock', result.value, 'EX', 90, 'NX', sinon.match.func);
       }
     });
 
@@ -231,7 +231,7 @@ describe('waRedisCache', () => {
           'wa:cachedUsersWithRoles:lock',
           result.value,
           'EX',
-          30,
+          90,
           'NX',
           sinon.match.func
         );

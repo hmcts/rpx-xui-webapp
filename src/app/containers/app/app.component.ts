@@ -188,6 +188,7 @@ export class AppComponent implements OnInit, OnDestroy {
       // until dtrum.enable() is called by the cookie banner on acceptance
       if (!this.cookieService.getCookie(this.cookieName) && (window as any).dtrum) {
         (window as any).dtrum.disable();
+        (window as any).dtrum.disableSessionReplay();
       }
     }
   }
@@ -201,6 +202,7 @@ export class AppComponent implements OnInit, OnDestroy {
     // Disable Dynatrace monitoring
     if ((window as any).dtrum) {
       (window as any).dtrum.disable();
+      (window as any).dtrum.disableSessionReplay();
     }
     // AppInsights
     this.cookieService.deleteCookieByPartialMatch('ai_');

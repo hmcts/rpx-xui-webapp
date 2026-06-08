@@ -140,11 +140,14 @@ export async function getOrRefreshCachedUsers(req?: EnhancedRequest): Promise<St
     return setLocalCachedUsers(redisUsers);
   }
 
+  console.log('No cached users in redis, attempting to acquire lock to refresh cache');
+
   // get redis lock to ensure only one pod refreshes cache from backend, others will wait
   const lock = await acquireCachedUsersLock().catch(() => ({ status: 'unavailable' as const }));
 
   if (lock.status === 'held') {
     // if lock is held, another pod is refreshing the cache
+    console.log('Lock is held for caseworkers, waiting for other pod to refresh');
     const usersFromOtherPod = await waitForCachedUsers();
     if (usersFromOtherPod?.length) {
       refreshRoles = false;
@@ -154,6 +157,7 @@ export async function getOrRefreshCachedUsers(req?: EnhancedRequest): Promise<St
 
   if (lock.status === 'acquired') {
     // current pod has lock, so refresh cache from backend
+    console.log('Lock has been acquired for caseworkers');
     try {
       // if cache was refreshed while acquiring lock, use that instead
       const usersAfterLock = await getCachedUsers().catch(() => null);
@@ -190,6 +194,7 @@ export async function refreshUsersFromBackend(req?: EnhancedRequest): Promise<St
 // reset local cache
 export function setLocalCachedUsers(users: StaffUserDetails[]): StaffUserDetails[] {
   cachedUsers = users;
+  console.log(`Setting local cached users with ${users.length} users`);
   return cachedUsers;
 }
 
@@ -203,9 +208,12 @@ export async function getOrRefreshCachedUsersWithRoles(
     return setLocalCachedUsersWithRoles(redisUsersWithRoles);
   }
 
+  console.log('No cached users with roles in redis, attempting to acquire lock to refresh cache');
+
   const lock = await acquireCachedUsersWithRolesLock().catch(() => ({ status: 'unavailable' as const }));
 
   if (lock.status === 'held') {
+    console.log('Lock is held for caseworker roles, waiting for other pod to refresh');
     const usersWithRolesFromOtherPod = await waitForCachedUsersWithRoles();
     if (usersWithRolesFromOtherPod?.length) {
       return setLocalCachedUsersWithRoles(usersWithRolesFromOtherPod);
@@ -214,6 +222,7 @@ export async function getOrRefreshCachedUsersWithRoles(
 
   if (lock.status === 'acquired') {
     try {
+      console.log('Lock has been acquired for caseworker roles');
       const usersWithRolesAfterLock = await getCachedUsersWithRoles().catch(() => null);
       if (!refreshRoles && usersWithRolesAfterLock?.length) {
         return setLocalCachedUsersWithRoles(usersWithRolesAfterLock);
@@ -252,13 +261,15 @@ export async function refreshUsersWithRolesFromBackend(
 
 export function setLocalCachedUsersWithRoles(usersWithRoles: CachedCaseworker[]): CachedCaseworker[] {
   cachedUsersWithRoles = usersWithRoles;
+  console.log(`Setting local cached users with roles with ${usersWithRoles.length} users`);
   FullUserDetailCache.setUserDetails(cachedUsersWithRoles);
   return cachedUsersWithRoles;
 }
 
-// Will attempt to acquire lock every second for 10 seconds before giving up and proceeding without cache
+// Will attempt to receive redis cache every second for 90 seconds before giving up and proceeding without cache
+// 90 seconds is used as it is the TTL for the lock
 export async function waitForCachedUsers(): Promise<StaffUserDetails[] | null> {
-  for (let attempt = 0; attempt < 10; attempt++) {
+  for (let attempt = 0; attempt < 90; attempt++) {
     await wait(1000);
     const users = await getCachedUsers().catch(() => null);
     if (users?.length) {
@@ -271,7 +282,7 @@ export async function waitForCachedUsers(): Promise<StaffUserDetails[] | null> {
 
 // Same as above but for users with roles
 export async function waitForCachedUsersWithRoles(): Promise<CachedCaseworker[] | null> {
-  for (let attempt = 0; attempt < 10; attempt++) {
+  for (let attempt = 0; attempt < 90; attempt++) {
     await wait(1000);
     const usersWithRoles = await getCachedUsersWithRoles().catch(() => null);
     if (usersWithRoles?.length) {

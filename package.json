@@ -221,7 +221,6 @@
     "eslint-plugin-eslint-comments": "^3.2.0",
     "get-port": "^7.0.0",
     "git-rev-sync": "^3.0.2",
-    "husky": "^9.1.7",
     "jasmine-core": "~5.1.0",
     "jasmine-marbles": "^0.9.1",
     "jiti": "^2.6.1",

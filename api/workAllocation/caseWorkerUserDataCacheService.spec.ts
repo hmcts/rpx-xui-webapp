@@ -6,7 +6,14 @@ import { mockRes } from 'sinon-express-mock';
 import * as configuration from '../configuration';
 import { http } from '../lib/http';
 import * as caseWorkerService from './caseWorkerService';
-import { fetchNewUserData, fetchRoleAssignmentsForNewUsers, getAuthTokens, getOrRefreshCachedUsers, getOrRefreshCachedUsersWithRoles, waitForCachedUsers } from './caseWorkerUserDataCacheService';
+import {
+  fetchNewUserData,
+  fetchRoleAssignmentsForNewUsers,
+  getAuthTokens,
+  getOrRefreshCachedUsers,
+  getOrRefreshCachedUsersWithRoles,
+  waitForCachedUsers,
+} from './caseWorkerUserDataCacheService';
 import { StaffUserDetails } from './interfaces/staffUserDetails';
 import * as waRedisCache from './waRedisCache';
 
@@ -311,9 +318,7 @@ describe('Caseworker Cache Service', () => {
 
       const lock = { status: 'acquired' as const, key: 'wa:cachedUsers:lock', value: 'lock-id' };
 
-      sandbox.stub(waRedisCache, 'getCachedUsers')
-        .onFirstCall().resolves(null)
-        .onSecondCall().resolves(null);
+      sandbox.stub(waRedisCache, 'getCachedUsers').onFirstCall().resolves(null).onSecondCall().resolves(null);
 
       sandbox.stub(waRedisCache, 'acquireCachedUsersLock').resolves(lock);
       const setCachedUsersStub = sandbox.stub(waRedisCache, 'setCachedUsers').resolves();
@@ -344,9 +349,7 @@ describe('Caseworker Cache Service', () => {
 
       const lock = { status: 'acquired' as const, key: 'wa:cachedUsers:lock', value: 'lock-id' };
 
-      sandbox.stub(waRedisCache, 'getCachedUsers')
-        .onFirstCall().resolves(null)
-        .onSecondCall().resolves(redisUsers);
+      sandbox.stub(waRedisCache, 'getCachedUsers').onFirstCall().resolves(null).onSecondCall().resolves(redisUsers);
 
       sandbox.stub(waRedisCache, 'acquireCachedUsersLock').resolves(lock);
       sandbox.stub(waRedisCache, 'releaseLock').resolves();
@@ -415,9 +418,12 @@ describe('Caseworker Cache Service', () => {
         return {} as NodeJS.Timeout;
       });
 
-      const getCachedUsersStub = sandbox.stub(waRedisCache, 'getCachedUsers')
-        .onFirstCall().resolves(null)
-        .onSecondCall().resolves(redisUsers);
+      const getCachedUsersStub = sandbox
+        .stub(waRedisCache, 'getCachedUsers')
+        .onFirstCall()
+        .resolves(null)
+        .onSecondCall()
+        .resolves(redisUsers);
 
       const result = await waitForCachedUsers();
 

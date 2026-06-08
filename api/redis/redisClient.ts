@@ -1,4 +1,3 @@
-
 import * as redis from 'redis';
 
 let client: redis.RedisClient | null = null;

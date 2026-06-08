@@ -182,9 +182,7 @@ export async function getOrRefreshCachedUsers(req?: EnhancedRequest): Promise<St
 export async function refreshUsersFromBackend(req?: EnhancedRequest): Promise<StaffUserDetails[]> {
   const jurisdictions = getConfigValue(STAFF_SUPPORTED_JURISDICTIONS);
   const getUsersPath: string = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions);
-  const userResponse = req
-    ? await handleUsersGet(getUsersPath, req)
-    : await handleNewUsersGet(getUsersPath, getRequestHeaders());
+  const userResponse = req ? await handleUsersGet(getUsersPath, req) : await handleNewUsersGet(getUsersPath, getRequestHeaders());
 
   return getUniqueUsersFromResponse(userResponse);
 }
@@ -242,12 +240,12 @@ export async function refreshUsersWithRolesFromBackend(
   const roleAssignments = req
     ? (await handlePostRoleAssignments(roleApiPath, payload, req)).data.roleAssignmentResponse
     : (
-      await handlePostRoleAssignmentsWithNewUsers(roleApiPath, payload, {
-        ...getRequestHeaders(),
-        pageNumber: 0,
-        size: 10000,
-      })
-    ).data.roleAssignmentResponse;
+        await handlePostRoleAssignmentsWithNewUsers(roleApiPath, payload, {
+          ...getRequestHeaders(),
+          pageNumber: 0,
+          size: 10000,
+        })
+      ).data.roleAssignmentResponse;
 
   return mapUsersToCachedCaseworkers(cachedUserData, roleAssignments);
 }

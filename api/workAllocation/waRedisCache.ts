@@ -5,18 +5,15 @@ import { getRedisClient } from '../redis/redisClient';
 import { CachedCaseworker } from './interfaces/common';
 import { StaffUserDetails } from './interfaces/staffUserDetails';
 
-const CACHE_TTL_SECONDS = 600;
-const LOCK_TTL_SECONDS = 30;
+const CACHE_TTL_SECONDS = 720;
+const LOCK_TTL_SECONDS = 90;
 
 const CACHED_USERS_KEY = 'wa:cachedUsers';
 const CACHED_USERS_WITH_ROLES_KEY = 'wa:cachedUsersWithRoles';
 const CACHED_USERS_LOCK_KEY = `${CACHED_USERS_KEY}:lock`;
 const CACHED_USERS_WITH_ROLES_LOCK_KEY = `${CACHED_USERS_WITH_ROLES_KEY}:lock`;
 
-export type RedisLock =
-  | { status: 'acquired'; key: string; value: string }
-  | { status: 'held' }
-  | { status: 'unavailable' };
+export type RedisLock = { status: 'acquired'; key: string; value: string } | { status: 'held' } | { status: 'unavailable' };
 
 export type AcquiredRedisLock = Extract<RedisLock, { status: 'acquired' }>;
 
@@ -37,6 +34,7 @@ async function getJson<T>(key: string): Promise<T | null> {
   if (!client) {
     return null;
   }
+  // Note that there can be prefix attached to key but this will still work
   const value = await new Promise<string | null>((resolve, reject) => {
     client.get(key, (error, result) => {
       if (error) {
@@ -48,7 +46,7 @@ async function getJson<T>(key: string): Promise<T | null> {
     });
   });
 
-  return value ? JSON.parse(value) as T : null;
+  return value ? (JSON.parse(value) as T) : null;
 }
 
 async function setJson<T>(key: string, value: T, ttlSeconds = CACHE_TTL_SECONDS): Promise<void> {
@@ -118,8 +116,7 @@ export async function releaseLock(lock: AcquiredRedisLock): Promise<void> {
   }
 
   // use a Lua script to ensure we only delete the key if the value matches
-  const releaseScript = 
-    `if redis.call("get", KEYS[1]) == ARGV[1] then
+  const releaseScript = `if redis.call("get", KEYS[1]) == ARGV[1] then
       return redis.call("del", KEYS[1])
     end
     return 0`;

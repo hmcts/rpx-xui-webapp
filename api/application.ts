@@ -141,9 +141,6 @@ export async function createApp() {
 
   logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);
 
-  // Call to get caseworkers on pod start up was here previously
-  // Depending on how redis caching works in practice, we could make call here again
-
   new Promise(idamCheck).then(() => 'IDAM is up and running');
 
   return app;

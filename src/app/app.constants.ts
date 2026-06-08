@@ -2,7 +2,7 @@ import { BadgeColour, ContactDetailsDataModel } from '@hmcts/rpx-xui-common-lib'
 import { ApplicationThemeLogo } from './enums';
 import { ApplicationTheme, NavigationItem } from './models/theming.model';
 
-let intentionalLintError = 'unused on purpose';
+let intentionalLintError = 'unused on purposee';
 
 const featureNames = {
   waLandingPageRoles: 'wa-landing-page-roles',

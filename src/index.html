@@ -81,7 +81,20 @@
     </script>
 
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
-    {{dynatraceScriptTag}}
+
+    <!-- ▸ Dynatrace CDN URL injected by the server; empty string = disabled -->
+    <meta name="dynatrace-cdn" content="{{dynatraceCdn}}" />
+    <script nonce="{{cspNonce}}">
+      (() => {
+        const cdn = document.querySelector('meta[name="dynatrace-cdn"]')?.content?.trim();
+        if (!cdn || cdn.startsWith('{{')) return; // unsubstituted in dev → skip
+        const s = document.createElement('script');
+        s.src = cdn;
+        s.type = 'text/javascript';
+        s.crossOrigin = 'anonymous';
+        document.head.appendChild(s);
+      })();
+    </script>
   </head>
 
   <body class="govuk-template__body js-enabled">

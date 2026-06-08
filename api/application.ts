@@ -54,19 +54,11 @@ function escapeHtmlAttribute(value: string): string {
   return value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
 }
 
-function buildDynatraceScriptTag(): string {
-  const dynatraceCdn = getConfigValue<string>(DYNATRACE_CDN)?.trim();
-  if (!dynatraceCdn) {
-    return '';
-  }
-
-  return `<script nonce="{{cspNonce}}" type="text/javascript" src="${escapeHtmlAttribute(
-    dynatraceCdn
-  )}" crossorigin="anonymous"></script>`;
-}
-
 function injectTemplateValues(html: string, nonce: string): string {
-  return html.replaceAll(/{{dynatraceScriptTag}}/g, buildDynatraceScriptTag()).replaceAll(/{{cspNonce}}/g, nonce);
+  const cdn = getConfigValue<string>(DYNATRACE_CDN)?.trim() ?? '';
+  return html
+    .replaceAll('{{dynatraceCdn}}', escapeHtmlAttribute(cdn))
+    .replaceAll(/{{cspNonce}}/g, nonce);
 }
 
 export async function createApp() {

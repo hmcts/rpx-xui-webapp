@@ -1,11 +1,10 @@
 import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
 import { getConfigValue } from '../configuration';
-import { SERVICE_REF_DATA_MAPPING, SERVICES_LOCATION_API_PATH } from '../configuration/references';
+import { SERVICES_LOCATION_API_PATH } from '../configuration/references';
 import { http } from '../lib/http';
 import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
-import { Service } from '../staff-ref-data/models/staff-filter-option.model';
 import { CourtVenue } from '../workAllocation/interfaces/location';
 import { handleLocationGet } from '../workAllocation/locationService';
 import { prepareGetSpecificLocationUrl } from '../workAllocation/util';
@@ -36,15 +35,10 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
     serviceIds = serviceIds.split(',');
   }
   const courtTypeIds = getCourtTypeIdsByService(serviceIds);
-
-  if (!isValidServiceId(serviceIds[0])) {
-    serviceIds = getServiceIdsByService(serviceIds);
-  }
-  const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${courtTypeIds}&service_code=${serviceIds}`;
+  const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${courtTypeIds}`;
   try {
     const headers = setHeaders(req);
     const response: AxiosResponse<any> = await http.get(markupPath, { headers });
-    const containsServiceID = response.data.some((item) => Object.prototype.hasOwnProperty.call(item, 'service_id'));
     let results: LocationModel[] = response.data;
     if (locationType === LocationTypeEnum.HEARING) {
       results = results.filter((location) => location.is_hearing_location === 'Y');
@@ -58,16 +52,11 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
       const locationIds = getLocationIdsFromLocationList(userLocation.locations);
       const regionIds = getRegionIdsFromLocationList(userLocation.locations);
       // when we are trying to filter out locations when booking location is present - my work
-      if (containsServiceID) {
-        results = filterOutResultsWhenServiceIdPresent(results, locationIds, regionIds);
-      } else {
-        results = filterOutResults(results, locationIds, regionIds, courtTypes);
-      }
+      results = filterOutResults(results, locationIds, regionIds, courtTypes);
     });
-    // Legacy API ignores service_code, so keep the court type cleanup for that response shape only.
-    if (!containsServiceID) {
-      results = results.filter((location) => courtTypeIds.includes(location.court_type_id));
-    }
+    // added line below to ensure any locations from non-used services are removes
+    // (API occasionally sending irrelevant location previously)
+    results = results.filter((location) => courtTypeIds.includes(location.court_type_id));
     response.data.results = results.filter(
       (locationInfo, index, self) => index === self.findIndex((location) => location.epimms_id === locationInfo.epimms_id)
     );
@@ -90,14 +79,6 @@ export function filterOutResults(
       locationIds.includes(location.epimms_id) ||
       regions.includes(location.region_id)
   );
-}
-
-export function filterOutResultsWhenServiceIdPresent(
-  locations: LocationModel[],
-  locationIds: string[],
-  regions: string[]
-): LocationModel[] {
-  return locations.filter((location) => locationIds.includes(location.epimms_id) || regions.includes(location.region_id));
 }
 
 /**
@@ -162,22 +143,7 @@ function getCourtTypeIdsByService(serviceIdArray: string[]): string[] {
   return [''];
 }
 
-export function getServiceIdsByService(serviceIdArray: string[]): string[] {
-  const serviceRefDataMappings = getConfigValue<Service[]>(SERVICE_REF_DATA_MAPPING) || [];
-  const serviceCodesArray = serviceIdArray
-    .map((serviceId) => serviceRefDataMappings.find((serviceMapping) => serviceMapping.service === serviceId)?.serviceCodes)
-    .reduce(concatCourtTypeWithoutDuplicates, []);
-  if (serviceCodesArray.length) {
-    return serviceCodesArray;
-  }
-  return [''];
-}
-
-export function isValidServiceId(serviceId: string): boolean {
-  return /^[A-Za-z]{3}\d$/.test(serviceId?.trim());
-}
-
-function concatCourtTypeWithoutDuplicates<T>(array1: T[], array2: T[]) {
+function concatCourtTypeWithoutDuplicates(array1: number[], array2: number[]) {
   array1 = array1 ? array1 : [];
   array2 = array2 ? array2 : [];
   return array1.concat(array2.filter((item) => !array1.includes(item)));

@@ -23,7 +23,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   const serviceIdArray = serviceIds.split(',');
   const courtTypeIdsArray: string[] = getCourtTypeIdsByServices(serviceIdArray);
   const strCourtTypeIds = courtTypeIdsArray ? courtTypeIdsArray.join(',') : '';
-  const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${strCourtTypeIds}&service_code=${serviceIds}`;
+  const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${strCourtTypeIds}`;
   try {
     const { status, data }: { status: number; data: LocationModel[] } = await handleGet(markupPath, req);
     let result: LocationModel[] = data;

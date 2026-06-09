@@ -64,7 +64,7 @@ properties([
 ])
 
 // Use a temporary Infrastructure branch in PR for long running FT's beyond 40mins for DEBUG only.
-@Library("Infrastructure@2.0.0")
+@Library("Infrastructure@master")
 
 import uk.gov.hmcts.contino.AppPipelineDsl
 

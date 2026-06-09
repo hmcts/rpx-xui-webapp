@@ -25,6 +25,7 @@ export class CaseShareComponent implements OnInit {
   public shareCases: SharedCase[];
   public orgUsers$: Observable<UserDetails[]>;
   public removeUserFromCaseToggleOn$: Observable<boolean>;
+  private hasLoadedInitialShareCaseState = false;
 
   constructor(
     private readonly store: Store<fromCaseList.State>,
@@ -32,19 +33,22 @@ export class CaseShareComponent implements OnInit {
   ) {}
 
   public ngOnInit() {
-    this.routerState$ = this.store.pipe(select(getRouterState));
-    this.routerState$.subscribe((router) => (this.init = router.state.queryParams.init));
     this.shareCases$ = this.store.pipe(select(fromCasesFeature.getShareCaseListState));
     this.shareCases$.subscribe((shareCases) => {
       this.shareCases = shareCases;
     });
     this.orgUsers$ = this.store.pipe(select(fromCasesFeature.getOrganisationUsersState));
-    if (this.init) {
-      // call api to retrieve case assigned users
-      this.store.dispatch(new LoadShareCase(this.shareCases));
-      // call api to retrieve users in the same organisation
-      this.store.dispatch(new LoadUserFromOrgForCase());
-    }
+    this.routerState$ = this.store.pipe(select(getRouterState));
+    this.routerState$.subscribe((router) => {
+      this.init = router?.state?.queryParams?.init;
+      if (this.init && !this.hasLoadedInitialShareCaseState) {
+        this.hasLoadedInitialShareCaseState = true;
+        // call api to retrieve case assigned users
+        this.store.dispatch(new LoadShareCase(this.shareCases));
+        // call api to retrieve users in the same organisation
+        this.store.dispatch(new LoadUserFromOrgForCase());
+      }
+    });
     this.removeUserFromCaseToggleOn$ = this.featureToggleService.getValue(LD_FLAG_REMOVE_USER_FROM_CASE_MC, false);
 
     // initialize javascript for accordion component to enable open/close button

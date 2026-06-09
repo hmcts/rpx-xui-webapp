@@ -6,6 +6,7 @@ import { LoadingService } from '@hmcts/ccd-case-ui-toolkit';
 import { Store } from '@ngrx/store';
 import { of } from 'rxjs';
 import * as fromCasesFeature from '../../store';
+import { AssignUsersToCase } from '../../store/actions';
 import { CaseShareCompleteComponent } from './case-share-complete.component';
 
 @Pipe({
@@ -31,6 +32,14 @@ describe('CaseShareCompleteComponent', () => {
           firstName: 'Kate',
           lastName: 'Grant',
           email: 'kate.grant@lambbrooks.com',
+        },
+      ],
+      pendingShares: [
+        {
+          idamId: 'u222222',
+          firstName: 'Steve',
+          lastName: 'Harrison',
+          email: 'steve.harrison@woodford.example.com',
         },
       ],
     },
@@ -62,6 +71,10 @@ describe('CaseShareCompleteComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should assign users to selected cases with pending share context on init', () => {
+    expect(mockStore.dispatch).toHaveBeenCalledWith(new AssignUsersToCase(SHARED_CASE));
   });
 
   it('should check if pending', () => {

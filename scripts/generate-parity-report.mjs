@@ -4,7 +4,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
 const parityMapPath = 'docs/playwright-migration-parity-map.json';
-const isGateMode = process.argv.includes('--gate');
+const isClassificationGateMode = process.argv.includes('--classification-gate') || process.argv.includes('--gate');
 const legacyRoots = ['test_codecept'];
 const targetRoots = ['playwright_tests_new/E2E/test', 'playwright_tests_new/integration/test', 'playwright_tests_new/api'];
 const legacyExecutablePattern = /(?:\.feature|\.test\.[jt]s|\.spec\.[jt]s)$/;
@@ -128,6 +128,6 @@ const output = {
 
 process.stdout.write(`${JSON.stringify(output, null, 2)}\n`);
 
-if (isGateMode && (unclassified.length > 0 || missingRequiredTargets.length > 0 || blockingEntries.length > 0)) {
+if (isClassificationGateMode && (unclassified.length > 0 || missingRequiredTargets.length > 0)) {
   process.exitCode = 1;
 }

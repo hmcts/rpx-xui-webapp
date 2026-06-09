@@ -1,6 +1,6 @@
 # Playwright Migration Parity Matrix
 
-This matrix is the source of truth for Codecept to Playwright migration closure in rpx-xui-webapp. The machine-readable source is `docs/playwright-migration-parity-map.json`; run `yarn test:parity:report` to check that every executable legacy file is classified and that covered/partial Playwright targets exist.
+This matrix is the source of truth for Codecept to Playwright migration closure in rpx-xui-webapp. The machine-readable source is `docs/playwright-migration-parity-map.json`; run `yarn test:parity:report` to inspect all rows, and `yarn test:parity:gate` to check that every executable legacy file is classified and that covered/partial Playwright targets exist.
 
 ## Status definitions
 
@@ -42,4 +42,4 @@ This matrix is the source of truth for Codecept to Playwright migration closure 
 
 ## Notes
 
-The matrix is file-level rather than scenario-level for broad legacy areas that already have strong Playwright coverage. P1 `port` or `partial` rows need executable evidence or an accepted waiver before Codecept retirement. `covered` rows should still be spot-checked during final sign-off, but they are not the first implementation lane.
+The matrix is file-level rather than scenario-level for broad legacy areas that already have strong Playwright coverage. `yarn test:parity:gate` is a classification-integrity gate, not a Codecept retirement approval. P1 `port` or `partial` rows need executable evidence or an accepted waiver before Codecept retirement. `covered` rows should still be spot-checked during final sign-off, but they are not the first implementation lane.

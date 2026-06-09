@@ -6,7 +6,11 @@ import { TEST_DATA } from './constants';
 import { expectCaseBanner } from '../../utils';
 import { createLogger } from '@hmcts/playwright-common';
 import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
-import { uploadEmploymentDraftDocument } from '../../utils/test-setup/journeys/employmentJourneys';
+import {
+  completeEmploymentDraftUpdate,
+  createEmploymentCase,
+  uploadEmploymentDraftDocument,
+} from '../../utils/test-setup/journeys/employmentJourneys';
 import { buildCasePayloadFromTemplate } from '../../utils/test-setup/payloads/registry';
 import { setupCaseForJourney } from '../../utils/test-setup/caseSetup';
 import { RuntimeUserAlias, getRuntimeUserCredentialEnvMapping } from '../../utils/runtimeUserCredentials';
@@ -216,6 +220,7 @@ test.describe('Document upload V1', { tag: ['@e2e', '@e2e-document-upload', '@e2
   let testValue: string;
   let testFileName: string;
   let caseNumber: string;
+  let uploadAction: string;
   test.beforeAll(async () => {
     // Set deterministic seed once per suite
     faker.seed(67890);
@@ -225,6 +230,7 @@ test.describe('Document upload V1', { tag: ['@e2e', '@e2e-document-upload', '@e2
     // Generate fresh values per test for retry safety
     testValue = `${faker.person.firstName()}-${Date.now()}-w${process.env.TEST_WORKER_INDEX || '0'}`;
     testFileName = `${faker.string.alphanumeric(8)}-${Date.now()}.pdf`;
+    const caseSetupMode = process.env.PW_E2E_CASE_SETUP_MODE === 'ui-only' ? 'ui-only' : 'api-first';
     logger.info('Generated test values', { testValue, testFileName, worker: process.env.TEST_WORKER_INDEX });
 
     await ensureAuthenticatedPage(page, RuntimeUserAlias.SEARCH_EMPLOYMENT_CASE, { waitForSelector: 'exui-header' });
@@ -233,25 +239,41 @@ test.describe('Document upload V1', { tag: ['@e2e', '@e2e-document-upload', '@e2
       jurisdiction: TEST_DATA.V1.JURISDICTION,
       caseType: TEST_DATA.V1.CASE_TYPE,
       apiEventId: 'initiateCase',
-      mode: 'api-required',
+      mode: caseSetupMode,
+      allowUiFallback: true,
       apiPayload: buildCasePayloadFromTemplate('employment.et-england-wales.initiate-case'),
+      uiCreate: () =>
+        createEmploymentCase(createCasePage, TEST_DATA.V1.JURISDICTION, TEST_DATA.V1.CASE_TYPE, {
+          allowDraftClaimFallback: true,
+          preferDraftClaim: true,
+        }),
       page,
       createCasePage,
       caseDetailsPage,
       testInfo,
     });
     caseNumber = setup.caseNumber;
+    uploadAction = setup.mode === 'ui' ? 'Update Draft Case' : TEST_DATA.V1.ACTION;
     logger.info('Created employment case', { caseNumber, testValue });
   });
 
   test('Check the documentV1 upload works as expected', async ({ createCasePage, caseDetailsPage, tableUtils }) => {
     await test.step('Start document upload process', async () => {
-      await caseDetailsPage.selectCaseAction(TEST_DATA.V1.ACTION, {
-        expectedLocator: createCasePage.documentCollectionButton,
+      await caseDetailsPage.selectCaseAction(uploadAction, {
+        expectedLocator: uploadAction === TEST_DATA.V1.ACTION ? createCasePage.documentCollectionButton : undefined,
       });
+      if (uploadAction !== TEST_DATA.V1.ACTION) {
+        await createCasePage.continueButton.waitFor({ state: 'visible', timeout: 60_000 });
+      }
     });
 
     await test.step('Upload a document to the case', async () => {
+      if (uploadAction !== TEST_DATA.V1.ACTION) {
+        await completeEmploymentDraftUpdate(createCasePage);
+        await caseDetailsPage.selectCaseAction(TEST_DATA.V1.ACTION, {
+          expectedLocator: createCasePage.documentCollectionButton,
+        });
+      }
       await uploadEmploymentDraftDocument(createCasePage, testFileName, TEST_DATA.V1.FILE_TYPE, TEST_DATA.V1.FILE_CONTENT);
     });
 

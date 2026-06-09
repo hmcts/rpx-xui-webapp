@@ -122,6 +122,11 @@ export function buildCreateCaseLocators(page: Page) {
     respondentOrganisation: page.locator('#respondentCollection_0_respondentType-Organisation'),
     respondentCompanyNameInput: page.locator('#respondentCollection_0_respondentOrganisation'),
     respondentAcasCertifcateSelectYes: page.locator('#respondentCollection_0_respondent_ACAS_question_Yes'),
+    respondentAcasCertificateYesLabel: page
+      .locator('ccd-write-yes-no-field')
+      .filter({ hasText: 'Is there an ACAS Certificate number?' })
+      .getByText('Yes', { exact: true })
+      .first(),
     respondentAcasCertificateNumberInput: page.locator('#respondentCollection_0_respondent_ACAS'),
     respondentAddressLine1Input: page.locator('#respondentCollection_0_respondent_address__detailAddressLine1'),
     respondentAddressPostcodeInput: page.locator('#respondentCollection_0_respondent_address__detailPostCode'),

@@ -2,7 +2,7 @@ import { createLogger } from '@hmcts/playwright-common';
 import { randomUUID } from 'node:crypto';
 
 import type { CreateCasePage } from '../../../page-objects/pages/exui/createCase.po';
-import type { Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 import { uploadDocumentViaApi } from '../uploadDocumentViaApi';
 
 const logger = createLogger({
@@ -12,7 +12,20 @@ const logger = createLogger({
 
 type CreateEmploymentCaseOptions = {
   allowDraftClaimFallback?: boolean;
+  preferDraftClaim?: boolean;
 };
+
+type RespondentDetailsState = {
+  respondentOrganisationChecked: boolean;
+  respondentOrganisationVisible: boolean;
+  respondentOrganisationEnabled: boolean;
+  respondentCompanyNameVisible: boolean;
+  respondentCompanyNameEnabled: boolean;
+  respondentAcasQuestionVisible: boolean;
+  respondentAcasQuestionEnabled: boolean;
+};
+
+type RespondentDetailsAction = 'select-organisation' | 'use-company-page-state' | 'use-name-only-page-state';
 
 type InternalEventTriggerResponse = {
   event_token?: string;
@@ -29,6 +42,61 @@ const CCD_CREATE_EVENT_HEADERS = {
   'Content-Type': 'application/json',
 } as const;
 
+function resolveRespondentDetailsAction(state: RespondentDetailsState): RespondentDetailsAction {
+  if (state.respondentOrganisationChecked) {
+    if (state.respondentCompanyNameVisible && state.respondentCompanyNameEnabled) {
+      return 'use-company-page-state';
+    }
+    throw new Error('Employment create: respondent organisation is selected but company name field is not ready.');
+  }
+
+  if (state.respondentOrganisationVisible && state.respondentOrganisationEnabled) {
+    return 'select-organisation';
+  }
+
+  if (state.respondentCompanyNameVisible && state.respondentCompanyNameEnabled) {
+    return 'use-company-page-state';
+  }
+
+  if (state.respondentAcasQuestionVisible && state.respondentAcasQuestionEnabled) {
+    return 'use-name-only-page-state';
+  }
+
+  throw new Error(
+    'Employment create: respondent details page shape is invalid; no supported organisation, company, or name-only controls are ready.'
+  );
+}
+
+async function isLocatorChecked(locator: Locator): Promise<boolean> {
+  if ((await locator.count().catch(() => 0)) === 0) {
+    return false;
+  }
+  return locator
+    .first()
+    .isChecked({ timeout: 0 })
+    .catch(() => false);
+}
+
+async function isLocatorVisible(locator: Locator): Promise<boolean> {
+  if ((await locator.count().catch(() => 0)) === 0) {
+    return false;
+  }
+  return locator
+    .first()
+    .isVisible()
+    .catch(() => false);
+}
+
+async function isLocatorEnabled(locator: Locator): Promise<boolean> {
+  if ((await locator.count().catch(() => 0)) === 0) {
+    return false;
+  }
+  return locator
+    .first()
+    .isEnabled({ timeout: 0 })
+    .catch(() => false);
+}
+
 export async function uploadEmploymentDraftDocument(
   createCasePage: CreateCasePage,
   fileName: string,
@@ -44,6 +112,43 @@ export async function uploadEmploymentDraftDocument(
     maxAutoAdvanceAttempts: 1,
   });
   await createCasePage.waitForCaseDetails('after uploading employment document');
+}
+
+export async function completeEmploymentDraftUpdate(createCasePage: CreateCasePage): Promise<void> {
+  const maxAdvanceAttempts = 12;
+  for (let attempt = 1; attempt <= maxAdvanceAttempts; attempt += 1) {
+    if (!createCasePage.page.url().includes('/trigger/UPDATE_CASE_DRAFT/')) {
+      await createCasePage.waitForCaseDetails('after completing employment draft update');
+      return;
+    }
+
+    await createCasePage.assertNoEventCreationError(`during employment draft update completion (attempt ${attempt})`);
+    await ensureEmploymentDraftReceiptDetails(createCasePage);
+    await ensureEmploymentDraftClaimantDetails(createCasePage);
+    await ensureEmploymentDraftRespondentCollectionItem(createCasePage);
+    await ensureEmploymentDraftWorkAddressAnswered(createCasePage);
+    await ensureEmploymentDraftClaimantRepresentationAnswered(createCasePage);
+    await ensureEmploymentDraftHearingPreferenceAnswered(createCasePage);
+    await ensureEmploymentDraftClaimDetails(createCasePage);
+
+    if (await createCasePage.submitButton.isVisible().catch(() => false)) {
+      await createCasePage.clickSubmitAndWait(`employment draft update completion step ${attempt}`, {
+        timeoutMs: 60_000,
+        maxAutoAdvanceAttempts: 1,
+      });
+      await createCasePage.waitForCaseDetails('after completing employment draft update');
+      return;
+    }
+
+    if (!(await createCasePage.hasVisibleContinueButton())) {
+      throw new Error(
+        `Employment draft update could not continue; no Continue or Submit button visible at ${createCasePage.page.url()}`
+      );
+    }
+    await advanceEmploymentDraftUpdateStep(createCasePage, attempt);
+  }
+
+  throw new Error(`Employment draft update did not complete after ${maxAdvanceAttempts} steps`);
 }
 
 export async function uploadEmploymentDraftDocumentViaApi(options: {
@@ -132,7 +237,11 @@ export async function createEmploymentCase(
   options: CreateEmploymentCaseOptions = {}
 ): Promise<void> {
   const maxAttempts = 2;
-  const preferredEventLabels = options.allowDraftClaimFallback ? ['Create Case', 'Create draft claim'] : ['Create Case'];
+  const preferredEventLabels = options.preferDraftClaim
+    ? ['Create draft claim', 'Create Case']
+    : options.allowDraftClaimFallback
+      ? ['Create Case', 'Create draft claim']
+      : ['Create Case'];
 
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     try {
@@ -268,40 +377,49 @@ export async function createEmploymentCase(
       await createCasePage.addRespondentButton.click();
       await createCasePage.respondentOneNameInput.waitFor({ state: 'visible' });
       await createCasePage.respondentOneNameInput.fill('Respondent One');
-      const respondentOrganisationSelected =
-        (await createCasePage.respondentOrganisation.isChecked().catch(() => false)) ||
-        (await createCasePage.respondentCompanyNameInput.isVisible().catch(() => false));
+      const respondentState: RespondentDetailsState = {
+        respondentOrganisationChecked: await isLocatorChecked(createCasePage.respondentOrganisation),
+        respondentOrganisationVisible: await isLocatorVisible(createCasePage.respondentOrganisation),
+        respondentOrganisationEnabled: await isLocatorEnabled(createCasePage.respondentOrganisation),
+        respondentCompanyNameVisible: await isLocatorVisible(createCasePage.respondentCompanyNameInput),
+        respondentCompanyNameEnabled: await isLocatorEnabled(createCasePage.respondentCompanyNameInput),
+        respondentAcasQuestionVisible: await isLocatorVisible(createCasePage.respondentAcasCertificateYesLabel),
+        respondentAcasQuestionEnabled: await isLocatorEnabled(createCasePage.respondentAcasCertificateYesLabel),
+      };
+      const respondentDetailsAction = resolveRespondentDetailsAction(respondentState);
 
-      if (!respondentOrganisationSelected) {
-        const respondentOrganisationReady =
-          (await createCasePage.respondentOrganisation.isVisible().catch(() => false)) &&
-          (await createCasePage.respondentOrganisation.isEnabled().catch(() => false));
-
-        if (respondentOrganisationReady) {
-          await createCasePage.respondentOrganisation.check();
-          logger.info('Employment create: respondent organisation type selected explicitly', {
-            attempt,
-            url: createCasePage.page.url(),
-          });
-        } else {
-          logger.info('Employment create: respondent organisation type already fixed by the page state', {
-            attempt,
-            url: createCasePage.page.url(),
-          });
-        }
-      }
-
-      await createCasePage.respondentAcasCertifcateSelectYes.waitFor({ state: 'visible' });
-      await createCasePage.respondentAcasCertifcateSelectYes.check();
-      await createCasePage.respondentAcasCertificateNumberInput.fill('ACAS123456');
-      if (await createCasePage.respondentCompanyNameInput.isVisible().catch(() => false)) {
-        await createCasePage.respondentCompanyNameInput.fill('Respondent Company');
-        logger.info('Employment create: respondent company name captured', {
+      if (respondentDetailsAction === 'select-organisation') {
+        await createCasePage.respondentOrganisation.check();
+        logger.info('Employment create: respondent organisation type selected explicitly', {
+          attempt,
+          url: createCasePage.page.url(),
+        });
+      } else if (respondentDetailsAction === 'use-company-page-state') {
+        logger.info('Employment create: respondent organisation type already fixed by the page state', {
           attempt,
           url: createCasePage.page.url(),
         });
       } else {
-        logger.info('Employment create: respondent company name field not present in current page shape', {
+        logger.info('Employment create: respondent details page uses name-only respondent shape', {
+          attempt,
+          url: createCasePage.page.url(),
+        });
+      }
+
+      await createCasePage.respondentAcasCertificateYesLabel.waitFor({ state: 'visible' });
+      await createCasePage.respondentAcasCertificateYesLabel.click();
+      await createCasePage.respondentAcasCertificateNumberInput.fill('ACAS123456');
+      if (respondentDetailsAction !== 'use-name-only-page-state') {
+        if (
+          !(await createCasePage.respondentCompanyNameInput.isVisible().catch(() => false)) ||
+          !(await createCasePage.respondentCompanyNameInput.isEnabled().catch(() => false))
+        ) {
+          throw new Error(
+            `Employment create: respondent company name field is not ready after organisation selection. URL='${createCasePage.page.url()}'.`
+          );
+        }
+        await createCasePage.respondentCompanyNameInput.fill('Respondent Company');
+        logger.info('Employment create: respondent company name captured', {
           attempt,
           url: createCasePage.page.url(),
         });
@@ -392,8 +510,13 @@ async function prepareEmploymentDraftUploadPage(createCasePage: CreateCasePage):
     }
 
     await createCasePage.assertNoEventCreationError(`during employment draft upload preparation (attempt ${attempt})`);
+    await ensureEmploymentDraftReceiptDetails(createCasePage);
+    await ensureEmploymentDraftClaimantDetails(createCasePage);
     await ensureEmploymentDraftRespondentCollectionItem(createCasePage);
+    await ensureEmploymentDraftWorkAddressAnswered(createCasePage);
     await ensureEmploymentDraftClaimantRepresentationAnswered(createCasePage);
+    await ensureEmploymentDraftHearingPreferenceAnswered(createCasePage);
+    await ensureEmploymentDraftClaimDetails(createCasePage);
 
     if (!(await createCasePage.hasVisibleContinueButton())) {
       throw new Error(
@@ -406,6 +529,93 @@ async function prepareEmploymentDraftUploadPage(createCasePage: CreateCasePage):
   throw new Error(`Employment draft update did not reach the document upload page after ${maxAdvanceAttempts} steps`);
 }
 
+async function ensureEmploymentDraftReceiptDetails(createCasePage: CreateCasePage): Promise<void> {
+  if (!createCasePage.page.url().includes('/UPDATE_CASE_DRAFT/UPDATE_CASE_DRAFT1')) {
+    return;
+  }
+
+  const today = new Date();
+  if (!(await createCasePage.receiptDayInput.inputValue().catch(() => ''))) {
+    await createCasePage.receiptDayInput.fill(today.getDate().toString());
+  }
+  if (!(await createCasePage.receiptMonthInput.inputValue().catch(() => ''))) {
+    await createCasePage.receiptMonthInput.fill((today.getMonth() + 1).toString());
+  }
+  if (!(await createCasePage.receiptYearInput.inputValue().catch(() => ''))) {
+    await createCasePage.receiptYearInput.fill(today.getFullYear().toString());
+  }
+
+  const digitalCaseReferenceInput = createCasePage.page.getByLabel('Digital Case Reference');
+  if (!(await digitalCaseReferenceInput.inputValue().catch(() => ''))) {
+    const caseNumber = createCasePage.page.url().match(/\b\d{16}\b/)?.[0];
+    if (!caseNumber) {
+      throw new Error(`Employment draft update could not derive digital case reference from ${createCasePage.page.url()}`);
+    }
+    await digitalCaseReferenceInput.fill(caseNumber);
+  }
+
+  const tribunalOfficeSelect = createCasePage.page.getByLabel('Tribunal Office');
+  const selectedTribunalOffice = await tribunalOfficeSelect.inputValue().catch(() => '');
+  if (isUnselectedCcdFixedListValue(selectedTribunalOffice)) {
+    await tribunalOfficeSelect.selectOption({ label: 'Leeds' });
+    const selectedAfter = await tribunalOfficeSelect.inputValue().catch(() => '');
+    if (isUnselectedCcdFixedListValue(selectedAfter)) {
+      throw new Error('Employment draft update could not select Tribunal Office.');
+    }
+  }
+}
+
+async function advanceEmploymentDraftUpdateStep(createCasePage: CreateCasePage, attempt: number): Promise<void> {
+  const initialUrl = createCasePage.page.url();
+  await createCasePage.continueButton.waitFor({ state: 'visible', timeout: 15_000 });
+  await createCasePage.continueButton.focus({ timeout: 15_000 });
+  await Promise.all([
+    createCasePage.page.waitForURL((url) => url.toString() !== initialUrl, { timeout: 30_000 }),
+    createCasePage.page.keyboard.press('Enter'),
+  ]);
+  await createCasePage.page.waitForLoadState('domcontentloaded', { timeout: 5_000 }).catch(() => {
+    // CCD wizard pages can keep long-running network activity open; the URL change is the contract here.
+  });
+  await createCasePage.assertNoEventCreationError(`after employment draft update completion step ${attempt}`);
+}
+
+function isUnselectedCcdFixedListValue(value: string): boolean {
+  const normalizedValue = value.trim();
+  return !normalizedValue || normalizedValue === '--Select a value--' || normalizedValue.endsWith(': null');
+}
+
+async function ensureEmploymentDraftClaimantDetails(createCasePage: CreateCasePage): Promise<void> {
+  if (!createCasePage.page.url().includes('/UPDATE_CASE_DRAFT/UPDATE_CASE_DRAFT2')) {
+    return;
+  }
+
+  if (!(await createCasePage.claimantIndividualRadio.isChecked().catch(() => false))) {
+    await createCasePage.claimantIndividualRadio.check();
+  }
+
+  if (await createCasePage.claimantIndividualFirstNameInput.isVisible().catch(() => false)) {
+    if (!(await createCasePage.claimantIndividualFirstNameInput.inputValue().catch(() => ''))) {
+      await createCasePage.claimantIndividualFirstNameInput.fill('Test');
+    }
+  }
+
+  if (await createCasePage.claimantIndividualLastNameInput.isVisible().catch(() => false)) {
+    if (!(await createCasePage.claimantIndividualLastNameInput.inputValue().catch(() => ''))) {
+      await createCasePage.claimantIndividualLastNameInput.fill('Person');
+    }
+  }
+
+  if (!(await createCasePage.claimantAddressLine1Input.isVisible().catch(() => false))) {
+    await createCasePage.manualEntryLink.waitFor({ state: 'visible' });
+    await createCasePage.manualEntryLink.click();
+  }
+
+  await createCasePage.claimantAddressLine1Input.waitFor({ state: 'visible' });
+  if (!(await createCasePage.claimantAddressLine1Input.inputValue().catch(() => ''))) {
+    await createCasePage.claimantAddressLine1Input.fill('1 Test Street');
+  }
+}
+
 async function clickEmploymentDocumentCollectionAddButton(createCasePage: CreateCasePage): Promise<void> {
   await createCasePage.clickEmploymentDocumentCollectionAddButton();
 }
@@ -415,16 +625,62 @@ async function ensureEmploymentDraftRespondentCollectionItem(createCasePage: Cre
     return;
   }
 
-  if (await createCasePage.hasEmploymentDraftRespondentCollectionItem()) {
+  if (!(await createCasePage.hasEmploymentDraftRespondentCollectionItem())) {
+    await createCasePage.addRespondentButton.waitFor({ state: 'visible' });
+    await createCasePage.addRespondentButton.click();
+    await createCasePage.expectEmploymentDraftRespondentCollectionItemAttached();
+    logger.info('Employment draft update: added minimal respondent collection item', {
+      url: createCasePage.page.url(),
+    });
+  }
+
+  await createCasePage.respondentOneNameInput.waitFor({ state: 'visible' });
+  if (!(await createCasePage.respondentOneNameInput.inputValue().catch(() => ''))) {
+    await createCasePage.respondentOneNameInput.fill('Respondent One');
+  }
+
+  const acasCertificateQuestion = createCasePage.page.getByRole('group', {
+    name: /Is there an ACAS Certificate number\?/,
+  });
+  const acasCertificateNo = acasCertificateQuestion.getByRole('radio', { name: 'No' });
+  if (!(await acasCertificateNo.isChecked().catch(() => false))) {
+    await acasCertificateNo.check();
+  }
+
+  const noAcasReasonQuestion = createCasePage.page.getByRole('group', {
+    name: /What are the reasons for not having an ACAS Certificate number\?/,
+  });
+  const noAcasReason = noAcasReasonQuestion
+    .getByRole('radio', {
+      name: /ACAS doesn't have the power to conciliate on all or part of my claim/,
+    })
+    .first();
+  await noAcasReason.waitFor({ state: 'visible', timeout: 5_000 }).catch(() => {
+    // The ACAS reason list is conditional; only select it when the page exposes it after the "No" answer.
+  });
+  if ((await noAcasReason.isVisible().catch(() => false)) && !(await noAcasReason.isChecked().catch(() => false))) {
+    await noAcasReason.check();
+  }
+
+  if (!(await createCasePage.respondentAddressLine1Input.isVisible().catch(() => false))) {
+    await createCasePage.page.getByRole('link', { name: "I can't enter a UK postcode" }).last().click();
+  }
+
+  await createCasePage.respondentAddressLine1Input.waitFor({ state: 'visible' });
+  if (!(await createCasePage.respondentAddressLine1Input.inputValue().catch(() => ''))) {
+    await createCasePage.respondentAddressLine1Input.fill('1 Test Street');
+  }
+}
+
+async function ensureEmploymentDraftWorkAddressAnswered(createCasePage: CreateCasePage): Promise<void> {
+  if (!createCasePage.page.url().includes('/UPDATE_CASE_DRAFT4')) {
     return;
   }
 
-  await createCasePage.addRespondentButton.waitFor({ state: 'visible' });
-  await createCasePage.addRespondentButton.click();
-  await createCasePage.expectEmploymentDraftRespondentCollectionItemAttached();
-  logger.info('Employment draft update: added minimal respondent collection item', {
-    url: createCasePage.page.url(),
-  });
+  await createCasePage.sameAsClaimantWorkAddressYes.waitFor({ state: 'visible' });
+  if (!(await createCasePage.sameAsClaimantWorkAddressYes.isChecked().catch(() => false))) {
+    await createCasePage.sameAsClaimantWorkAddressYes.check();
+  }
 }
 
 async function ensureEmploymentDraftClaimantRepresentationAnswered(createCasePage: CreateCasePage): Promise<void> {
@@ -442,6 +698,96 @@ async function ensureEmploymentDraftClaimantRepresentationAnswered(createCasePag
   });
 }
 
+async function ensureEmploymentDraftHearingPreferenceAnswered(createCasePage: CreateCasePage): Promise<void> {
+  if (!createCasePage.page.url().includes('/UPDATE_CASE_DRAFT9')) {
+    return;
+  }
+
+  await createCasePage.hearingPreferenceVideo.waitFor({ state: 'visible', timeout: 5_000 }).catch(() => {
+    // This draft step can render without editable controls when the draft has no hearing preference field exposed.
+  });
+
+  if (!(await createCasePage.hearingPreferenceVideo.isVisible().catch(() => false))) {
+    logger.info('Employment draft update: hearing preference control not exposed on draft step', {
+      url: createCasePage.page.url(),
+    });
+    return;
+  }
+
+  if (!(await createCasePage.hearingPreferenceVideo.isChecked().catch(() => false))) {
+    await createCasePage.hearingPreferenceVideo.check();
+  }
+
+  logger.info('Employment draft update: answered hearing preference question', {
+    answer: 'Video',
+    url: createCasePage.page.url(),
+  });
+}
+
+async function ensureEmploymentDraftClaimDetails(createCasePage: CreateCasePage): Promise<void> {
+  if (!createCasePage.page.url().includes('/UPDATE_CASE_DRAFT10')) {
+    return;
+  }
+
+  const page = createCasePage.page;
+  const caseTypeSelect = page.locator('#caseType');
+  if ((await caseTypeSelect.isVisible().catch(() => false)) && isUnselectedCcdFixedListValue(await caseTypeSelect.inputValue())) {
+    await caseTypeSelect.selectOption({ label: 'Single' }, { timeout: 5_000 });
+  } else {
+    const firstVisibleSelect = page.getByRole('combobox').first();
+    if (
+      (await firstVisibleSelect.isVisible().catch(() => false)) &&
+      isUnselectedCcdFixedListValue(await firstVisibleSelect.inputValue())
+    ) {
+      await firstVisibleSelect.selectOption({ label: 'Single' }, { timeout: 5_000 });
+    }
+  }
+
+  const et1OnlineSubmissionYes = page.locator('#et1OnlineSubmission_Yes');
+  if (
+    (await et1OnlineSubmissionYes.isVisible().catch(() => false)) &&
+    !(await et1OnlineSubmissionYes.isChecked().catch(() => false))
+  ) {
+    await et1OnlineSubmissionYes.check({ timeout: 5_000 });
+  }
+
+  const positionTypeSelect = page.locator('#positionType');
+  if (
+    (await positionTypeSelect.isVisible().catch(() => false)) &&
+    isUnselectedCcdFixedListValue(await positionTypeSelect.inputValue())
+  ) {
+    await positionTypeSelect.selectOption({ label: 'ET1 Online submission' }, { timeout: 5_000 });
+  }
+
+  const conciliationTrackSelect = page.locator('#conciliationTrack');
+  if (
+    (await conciliationTrackSelect.isVisible().catch(() => false)) &&
+    isUnselectedCcdFixedListValue(await conciliationTrackSelect.inputValue())
+  ) {
+    await conciliationTrackSelect.selectOption({ label: 'Open Track' }, { timeout: 5_000 });
+  }
+
+  const discriminationClaimType = page
+    .locator('#typesOfClaim-discrimination')
+    .or(page.getByRole('checkbox', { name: 'discrimination' }));
+  if (
+    (await discriminationClaimType
+      .first()
+      .isVisible()
+      .catch(() => false)) &&
+    !(await discriminationClaimType
+      .first()
+      .isChecked()
+      .catch(() => false))
+  ) {
+    await discriminationClaimType.first().check({ timeout: 5_000 });
+  }
+
+  logger.info('Employment draft update: completed minimal claim details', {
+    url: createCasePage.page.url(),
+  });
+}
+
 function describeUnknownError(error: unknown): string {
   if (error instanceof Error) {
     return error.message;
@@ -455,3 +801,7 @@ function describeUnknownError(error: unknown): string {
     return '[Unstringifiable error object]';
   }
 }
+
+export const __test__ = {
+  resolveRespondentDetailsAction,
+};

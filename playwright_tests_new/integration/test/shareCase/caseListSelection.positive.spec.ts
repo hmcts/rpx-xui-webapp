@@ -3,8 +3,7 @@ import { applySessionCookies } from '../../../common/sessionCapture';
 import {
   clearPersistedCaseListState,
   expectCaseListSummary,
-  expectSelectedCaseRows,
-  expectShareCaseFeatureReady,
+  getCaseSelectionControls,
   selectCaseRows,
   setupCaseListMocks,
   setupShareCaseApiRoutes,
@@ -45,21 +44,22 @@ test.describe('Case list selection parity', { tag: ['@integration', '@integratio
 
     await caseListPage.navigateTo();
     await expectCaseListSummary(caseListPage, totalResults, 1);
-    await expectShareCaseFeatureReady(page);
+    await expect(page.locator('#btn-share-button')).toBeVisible();
+    await expect(getCaseSelectionControls(page).first()).toBeVisible();
     await expect(page.locator('#btn-share-button')).toBeDisabled();
 
     await selectCaseRows(page, [0]);
-    await expectSelectedCaseRows(page, 1);
+    await expect(page.locator('#search-result table tbody input[type="checkbox"]:checked')).toHaveCount(1);
     await expect(page.locator('#btn-share-button')).toBeEnabled();
 
     await caseListPage.clickPaginationPage(2);
     await expectCaseListSummary(caseListPage, totalResults, 2);
     await selectCaseRows(page, [0]);
-    await expectSelectedCaseRows(page, 1);
+    await expect(page.locator('#search-result table tbody input[type="checkbox"]:checked')).toHaveCount(1);
 
     await caseListPage.clickPaginationPage(1);
     await expectCaseListSummary(caseListPage, totalResults, 1);
-    await expectSelectedCaseRows(page, 1);
+    await expect(page.locator('#search-result table tbody input[type="checkbox"]:checked')).toHaveCount(1);
 
     const shareCasesRequest = page.waitForRequest((request) => {
       const requestUrl = new URL(request.url());
@@ -81,7 +81,8 @@ test.describe('Case list selection parity', { tag: ['@integration', '@integratio
     await setupCaseListMocks(page, { searchResponse: caseListMock });
 
     await caseListPage.navigateTo();
-    await expectShareCaseFeatureReady(page);
+    await expect(page.locator('#btn-share-button')).toBeVisible();
+    await expect(getCaseSelectionControls(page).first()).toBeVisible();
     await expect(page.locator('#btn-share-button')).toBeDisabled();
 
     await selectCaseRows(page, [0]);

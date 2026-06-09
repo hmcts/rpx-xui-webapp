@@ -2,7 +2,7 @@ import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookies } from '../../../common/sessionCapture';
 import {
   clearPersistedCaseListState,
-  expectShareCaseFeatureReady,
+  getCaseSelectionControls,
   selectCaseRows,
   setupCaseListMocks,
   setupShareCaseApiRoutes,
@@ -31,7 +31,8 @@ test.describe('Share case journeys', { tag: ['@integration', '@integration-share
     await setupCaseListMocks(page, { searchResponse: caseListMock });
 
     await caseListPage.navigateTo();
-    await expectShareCaseFeatureReady(page);
+    await expect(page.locator('#btn-share-button')).toBeVisible();
+    await expect(getCaseSelectionControls(page).first()).toBeVisible();
     await selectCaseRows(page, [0, 1]);
     await page.locator('#btn-share-button').click();
 

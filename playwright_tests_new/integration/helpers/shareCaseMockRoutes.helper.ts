@@ -1,4 +1,4 @@
-import { expect, type Locator, type Page, type Route } from '@playwright/test';
+import type { Locator, Page, Route } from '@playwright/test';
 import {
   buildAssignedSharedCases,
   buildShareCaseUserDetails,
@@ -119,7 +119,6 @@ export function getCaseSelectionControls(page: Page): Locator {
 
 export async function selectCaseRows(page: Page, rowIndexes: number[]): Promise<void> {
   const selectionControls = getCaseSelectionControls(page);
-  await expect(selectionControls.first()).toBeVisible();
 
   for (const rowIndex of rowIndexes) {
     const selectionControl = selectionControls.nth(rowIndex);
@@ -129,14 +128,4 @@ export async function selectCaseRows(page: Page, rowIndexes: number[]): Promise<
       await selectionControl.click();
     }
   }
-}
-
-export async function expectSelectedCaseRows(page: Page, expectedSelectedCount: number): Promise<void> {
-  const selectedCount = await page.locator('#search-result table tbody input[type="checkbox"]:checked').count();
-  expect(selectedCount).toBe(expectedSelectedCount);
-}
-
-export async function expectShareCaseFeatureReady(page: Page): Promise<void> {
-  await expect(page.locator('#btn-share-button')).toBeVisible();
-  await expect(getCaseSelectionControls(page).first()).toBeVisible();
 }

@@ -26,13 +26,22 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
   });
 
   test('User can view all-work task table, links, and pagination', async ({ taskListPage, page, tableUtils }) => {
-    const taskListMockResponse = buildTaskListMock(2000, '', myActionsList);
+    const totalAllWorkTaskRecords = 50;
+    const firstPageTaskListResponse = buildTaskListMock(25, '', myActionsList);
+    const secondPageTaskListResponse = buildTaskListMock(25, '', myActionsList);
+    const taskListMockResponse = { ...firstPageTaskListResponse, total_records: totalAllWorkTaskRecords };
+    const secondPageTaskListMockResponse = { ...secondPageTaskListResponse, total_records: totalAllWorkTaskRecords };
     const firstTask = taskListMockResponse.tasks[0];
+    const secondPageFirstTask = secondPageTaskListMockResponse.tasks[0];
 
     firstTask.case_name = 'All work migrated case';
     firstTask.case_name_field = firstTask.case_name;
     firstTask.task_title = 'All work migrated task';
     firstTask.task_field = firstTask.task_title;
+    secondPageFirstTask.case_name = 'All work migrated page 2 case';
+    secondPageFirstTask.case_name_field = secondPageFirstTask.case_name;
+    secondPageFirstTask.task_title = 'All work migrated page 2 task';
+    secondPageFirstTask.task_field = secondPageFirstTask.task_title;
 
     const caseMockResponse = buildAsylumCaseMock({
       caseId: firstTask.case_id,
@@ -79,7 +88,20 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
 
     await test.step('Setup route mocks for all-work tasks', async () => {
       await setupManageTasksBaseRoutes(page, {
-        taskListResponse: taskListMockResponse,
+        taskListHandler: async (route) => {
+          const requestBody = route.request().postDataJSON() as {
+            searchRequest?: {
+              pagination_parameters?: { page_number?: number };
+            };
+          };
+          const pageNumber = requestBody.searchRequest?.pagination_parameters?.page_number ?? 1;
+
+          await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify(pageNumber === 2 ? secondPageTaskListMockResponse : taskListMockResponse),
+          });
+        },
         supportedJurisdictions,
         supportedJurisdictionDetails,
       });
@@ -188,6 +210,8 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
       expect
         .soft(await taskListPage.getResultsText())
         .toContain(`Showing 26 to 50 of ${taskListMockResponse.total_records} results`);
+      await expect(taskListPage.taskListTable.getByRole('link', { name: secondPageFirstTask.case_name })).toBeVisible();
+      await expect(taskListPage.taskListTable.getByRole('link', { name: firstTask.case_name })).toHaveCount(0);
     });
   });
 

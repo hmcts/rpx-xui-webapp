@@ -225,7 +225,9 @@ test.describe(`All Work cases as ${userIdentifier}`, { tag: ['@integration', '@i
       await expect(taskListPage.sortByCaseCategoryTableHeader).toHaveCount(0);
     });
 
-    await test.step('Move to page 3 and verify the backend pagination request and summary', async () => {
+    await test.step('Move to page 3 and verify the backend pagination request, summary, and rendered rows', async () => {
+      const firstPageCase = pagedAllWorkCases[0];
+      const thirdPageFirstCase = pagedAllWorkCases[50];
       const thirdPageRequestPromise = waitForAllWorkCasesPageRequest(page, 3);
 
       await taskListPage.openPaginationPage(3);
@@ -237,6 +239,8 @@ test.describe(`All Work cases as ${userIdentifier}`, { tag: ['@integration', '@i
       });
       await expect(taskListPage.paginationCurrentPage).toContainText('3');
       expect(await taskListPage.getPaginationSummaryText()).toBe('Showing 51 to 75 of 140 results');
+      await expect(taskListPage.taskListTable.getByRole('link', { name: thirdPageFirstCase.case_name })).toBeVisible();
+      await expect(taskListPage.taskListTable.getByRole('link', { name: firstPageCase.case_name })).toHaveCount(0);
     });
   });
 });

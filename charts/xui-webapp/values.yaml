@@ -132,7 +132,7 @@ nodejs:
     # Pub Sub API for Content Security Policy
     WEBPUBSUB_URL: wss://em-icp-webpubsub.{{ .Values.global.environment }}.platform.hmcts.net
     # URL for Dynatrace CDN script injection
-    DYNATRACE_CDN: 'https://js-cdn.dynatrace.com/jstag/17177a07246/bf00910jpo/7add8544fe394473_complete.js'
+    DYNATRACE_CDN: https://js-cdn.dynatrace.com/jstag/17177a07246/bf00910jpo/7add8544fe394473_complete.js
     #Feature Flags
     FEATURE_APP_INSIGHTS_ENABLED: true
     FEATURE_SECURE_COOKIE_ENABLED: true

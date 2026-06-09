@@ -4,6 +4,7 @@ import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 import { caseBannerMatches, getTodayFormats, matchesToday } from '../../utils';
 import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
 import { createDivorceCase } from '../../utils/test-setup/journeys/divorceCaseJourneys';
+import { RuntimeUserAlias } from '../../utils/runtimeUserCredentials';
 let caseNumber: string;
 const updatedFirstName = faker.person.firstName();
 const updatedLastName = faker.person.lastName();
@@ -16,7 +17,7 @@ test.describe('Verify creating and updating a case works as expected', { tag: ['
   test.beforeEach(async ({ page, createCasePage, caseDetailsPage }) => {
     await retryOnTransientFailure(
       async () => {
-        await ensureAuthenticatedPage(page, 'SOLICITOR', {
+        await ensureAuthenticatedPage(page, RuntimeUserAlias.DIVORCE_SOLICITOR, {
           waitForSelector: 'exui-header',
           timeoutMs: 30_000,
         });
@@ -44,6 +45,7 @@ test.describe('Verify creating and updating a case works as expected', { tag: ['
 
     await test.step('Start Update Case event', async () => {
       caseDetailsUrl = await caseDetailsPage.getCurrentPageUrl();
+      await caseDetailsPage.reopenCaseDetails(caseDetailsUrl);
       await caseDetailsPage.selectCaseAction('Update case', {
         expectedLocator: createCasePage.person2FirstNameInput,
         timeoutMs: UPDATE_CASE_ACTION_TIMEOUT_MS,
@@ -55,9 +57,14 @@ test.describe('Verify creating and updating a case works as expected', { tag: ['
         async () => {
           await createCasePage.person2FirstNameInput.fill(updatedFirstName);
           await createCasePage.person2LastNameInput.fill(updatedLastName);
+          await createCasePage.clickContinueAndEnsureWizardAdvanced('after updating person 2 fields', {
+            expectedLocator: createCasePage.doYouAgreeGroup,
+            timeoutMs: 30_000,
+          });
+          await createCasePage.ensureDoYouAgreeAnswered();
           await createCasePage.clickSubmitAndWait('after updating case fields', {
             timeoutMs: 60_000,
-            maxAutoAdvanceAttempts: 3,
+            maxAutoAdvanceAttempts: 0,
           });
         },
         {

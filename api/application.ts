@@ -56,9 +56,7 @@ function escapeHtmlAttribute(value: string): string {
 
 function injectTemplateValues(html: string, nonce: string): string {
   const cdn = getConfigValue<string>(DYNATRACE_CDN)?.trim() ?? '';
-  return html
-    .replaceAll('{{dynatraceCdn}}', escapeHtmlAttribute(cdn))
-    .replaceAll(/{{cspNonce}}/g, nonce);
+  return html.replaceAll('{{dynatraceCdn}}', escapeHtmlAttribute(cdn)).replaceAll(/{{cspNonce}}/g, nonce);
 }
 
 export async function createApp() {

@@ -19,4 +19,4 @@ nodejs:
     HEALTH_EM_DOCASSEMBLY_API: http://dg-docassembly-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
     HEALTH_S2S_SERVICE: http://rpe-service-auth-provider-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
     HEALTH_TERMS_AND_CONDITIONS_API: http://xui-terms-and-conditions-{{ .Values.global.environment }}.service.core-compute-{{ .Values.global.environment }}.internal/health
-    DYNATRACE_CDN: ""
+    DYNATRACE_CDN: ''

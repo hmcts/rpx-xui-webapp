@@ -156,17 +156,18 @@ export class CookiePolicyComponent {
       name: 'dtPC',
       catAlias: this.USAGE_WELSH,
       cat: this.USAGE,
-      purpose: 'Angenrheidiol i nodi pwyntiau terfyn priodol ar gyfer trosglwyddo beacon; yn cynnwys ID sesiwn ar gyfer cydberthynas.',
+      purpose:
+        'Angenrheidiol i nodi pwyntiau terfyn priodol ar gyfer trosglwyddo beacon; yn cynnwys ID sesiwn ar gyfer cydberthynas.',
       expires: 'Sesiwn yn dod i ben',
     },
     {
       name: 'dtSa',
       catAlias: this.USAGE_WELSH,
       cat: this.USAGE,
-      purpose: 'Storfa ganolradd ar gyfer gweithredoedd sy\'n cwmpasu tudalennau.',
+      purpose: "Storfa ganolradd ar gyfer gweithredoedd sy'n cwmpasu tudalennau.",
       expires: 'Sesiwn yn dod i ben',
     },
-     {
+    {
       name: 'rxvt',
       catAlias: this.USAGE_WELSH,
       cat: this.USAGE,

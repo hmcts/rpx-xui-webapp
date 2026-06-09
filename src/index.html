@@ -82,12 +82,12 @@
 
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
 
-    <!-- ▸ Dynatrace CDN URL injected by the server; empty string = disabled -->
+    <!-- Dynatrace CDN URL injected by the server; empty string = disabled -->
     <meta name="dynatrace-cdn" content="{{dynatraceCdn}}" />
     <script nonce="{{cspNonce}}">
       (() => {
         const cdn = document.querySelector('meta[name="dynatrace-cdn"]')?.content?.trim();
-        if (!cdn || cdn.startsWith('{{')) return; // unsubstituted in dev → skip
+        if (!cdn || cdn.startsWith('{{')) return;
         const s = document.createElement('script');
         s.src = cdn;
         s.type = 'text/javascript';

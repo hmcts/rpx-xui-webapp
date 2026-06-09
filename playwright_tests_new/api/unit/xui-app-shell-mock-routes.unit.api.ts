@@ -1,10 +1,10 @@
 import { expect, test } from '@playwright/test';
 import {
-  buildNgIntegrationClientContextMock,
-  buildNgIntegrationEnvironmentConfigMock,
-  buildNgIntegrationUserDetailsMock,
-  setupNgIntegrationBaseRoutes,
-} from '../../integration/helpers/ngIntegrationMockRoutes.helper.js';
+  buildXuiAppShellClientContextMock,
+  buildXuiAppShellEnvironmentConfigMock,
+  buildXuiAppShellUserDetailsMock,
+  setupXuiAppShellBaseRoutes,
+} from '../../integration/helpers/xuiAppShellMockRoutes.helper.js';
 
 type RegisteredRoute = {
   pattern: string | RegExp;
@@ -39,9 +39,9 @@ async function invokeRoute(route: RegisteredRoute) {
   return fulfillCalls;
 }
 
-test.describe('ng integration mock routes helper', { tag: '@svc-internal' }, () => {
+test.describe('XUI app shell mock routes helper', { tag: '@svc-internal' }, () => {
   test('builds user details with explicit role-assignment data', () => {
-    const userDetails = buildNgIntegrationUserDetailsMock({
+    const userDetails = buildXuiAppShellUserDetailsMock({
       userId: 'wave2-user-id',
       roleAssignmentInfo: [{ jurisdiction: 'IA', roleType: 'ORGANISATION' }],
       roles: ['caseworker-ia'],
@@ -58,7 +58,7 @@ test.describe('ng integration mock routes helper', { tag: '@svc-internal' }, () 
   });
 
   test('builds environment config with work-allocation defaults enabled', () => {
-    const environmentConfig = buildNgIntegrationEnvironmentConfigMock({
+    const environmentConfig = buildXuiAppShellEnvironmentConfigMock({
       accessManagementEnabled: true,
       waWorkflowApi: '/workallocation',
     });
@@ -73,7 +73,7 @@ test.describe('ng integration mock routes helper', { tag: '@svc-internal' }, () 
   });
 
   test('seeds the expected client-context feature flags', () => {
-    const clientContext = buildNgIntegrationClientContextMock({
+    const clientContext = buildXuiAppShellClientContextMock({
       'feature-refunds': false,
       'feature-wave2-test-flag': true,
     });
@@ -93,10 +93,10 @@ test.describe('ng integration mock routes helper', { tag: '@svc-internal' }, () 
     });
   });
 
-  test('registers the base ng-integration routes and seeds session storage', async () => {
+  test('registers the base XUI app shell routes and seeds session storage', async () => {
     const fakePage = createFakePage();
 
-    await setupNgIntegrationBaseRoutes(fakePage as never, {
+    await setupXuiAppShellBaseRoutes(fakePage as never, {
       userDetails: {
         userId: 'wave2-user-id',
         roles: ['caseworker-ia'],

@@ -4,11 +4,11 @@ import type { Page } from '@playwright/test';
 const require = createRequire(import.meta.url);
 
 const appConfigTemplate = require('../../../src/assets/config/config.json');
-const headerConfigTemplate = require('../mocks/ngIntegrationHeaderConfig.mock.js');
+const headerConfigTemplate = require('../mocks/xuiAppShellHeaderConfig.mock.js');
 
 type UnknownRecord = Record<string, unknown>;
 
-export interface NgIntegrationUserDetailsOptions {
+export interface XuiAppShellUserDetailsOptions {
   userId?: string;
   forename?: string;
   surname?: string;
@@ -18,7 +18,7 @@ export interface NgIntegrationUserDetailsOptions {
   roleAssignmentInfo?: UnknownRecord[];
 }
 
-export interface NgIntegrationEnvironmentConfigOptions {
+export interface XuiAppShellEnvironmentConfigOptions {
   accessManagementEnabled?: boolean;
   ccdGatewayUrl?: string;
   headerConfig?: UnknownRecord;
@@ -26,9 +26,9 @@ export interface NgIntegrationEnvironmentConfigOptions {
   waWorkflowApi?: string;
 }
 
-export interface NgIntegrationBaseRoutesOptions {
-  userDetails?: NgIntegrationUserDetailsOptions;
-  environmentConfig?: NgIntegrationEnvironmentConfigOptions;
+export interface XuiAppShellBaseRoutesOptions {
+  userDetails?: XuiAppShellUserDetailsOptions;
+  environmentConfig?: XuiAppShellEnvironmentConfigOptions;
   clientContextFeatureFlags?: Record<string, unknown>;
 }
 
@@ -36,7 +36,7 @@ function deepClone<T>(value: T): T {
   return JSON.parse(JSON.stringify(value)) as T;
 }
 
-export function buildNgIntegrationUserDetailsMock(options?: NgIntegrationUserDetailsOptions) {
+export function buildXuiAppShellUserDetailsMock(options?: XuiAppShellUserDetailsOptions) {
   const roles = options?.roles ?? ['caseworker-ia-caseofficer', 'caseworker-ia-admofficer'];
   const userId = options?.userId ?? 'wave2-user-id';
 
@@ -60,11 +60,11 @@ export function buildNgIntegrationUserDetailsMock(options?: NgIntegrationUserDet
   };
 }
 
-export function buildNgIntegrationAppConfigMock(): UnknownRecord {
+export function buildXuiAppShellAppConfigMock(): UnknownRecord {
   return deepClone(appConfigTemplate) as UnknownRecord;
 }
 
-export function buildNgIntegrationEnvironmentConfigMock(options?: NgIntegrationEnvironmentConfigOptions): UnknownRecord {
+export function buildXuiAppShellEnvironmentConfigMock(options?: XuiAppShellEnvironmentConfigOptions): UnknownRecord {
   return {
     accessManagementEnabled: options?.accessManagementEnabled ?? true,
     ccdGatewayUrl: options?.ccdGatewayUrl ?? 'http://localhost:3001',
@@ -79,7 +79,7 @@ export function buildNgIntegrationEnvironmentConfigMock(options?: NgIntegrationE
   };
 }
 
-export function buildNgIntegrationClientContextMock(featureFlags?: Record<string, unknown>): UnknownRecord {
+export function buildXuiAppShellClientContextMock(featureFlags?: Record<string, unknown>): UnknownRecord {
   return {
     client_context: {
       feature_flags: {
@@ -97,11 +97,11 @@ export function buildNgIntegrationClientContextMock(featureFlags?: Record<string
   };
 }
 
-export async function setupNgIntegrationBaseRoutes(page: Page, options?: NgIntegrationBaseRoutesOptions): Promise<void> {
-  const userDetails = buildNgIntegrationUserDetailsMock(options?.userDetails);
-  const appConfig = buildNgIntegrationAppConfigMock();
-  const environmentConfig = buildNgIntegrationEnvironmentConfigMock(options?.environmentConfig);
-  const clientContext = buildNgIntegrationClientContextMock(options?.clientContextFeatureFlags);
+export async function setupXuiAppShellBaseRoutes(page: Page, options?: XuiAppShellBaseRoutesOptions): Promise<void> {
+  const userDetails = buildXuiAppShellUserDetailsMock(options?.userDetails);
+  const appConfig = buildXuiAppShellAppConfigMock();
+  const environmentConfig = buildXuiAppShellEnvironmentConfigMock(options?.environmentConfig);
+  const clientContext = buildXuiAppShellClientContextMock(options?.clientContextFeatureFlags);
 
   await page.addInitScript(
     ([seededUserInfo, seededClientContext]) => {

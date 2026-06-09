@@ -16,7 +16,7 @@ export * from './hearingsMockRoutes.helper';
 export * from './hearingManagerUserPool.helper';
 export * from './hearingJourneySetup.helper';
 export * from './caseworkerJurisdictionMockRoutes.helper';
-export * from './ngIntegrationMockRoutes.helper';
+export * from './xuiAppShellMockRoutes.helper';
 export * from './allWorkCasesRequest.helper';
 export * from './myWorkFiltersMockRoutes.helper';
 export * from './taskListMockRoutes.helper';

@@ -3,10 +3,10 @@ import { buildMyCases } from '../mocks/myCases.mock';
 import { buildTaskListMock, myActionsList } from '../mocks/taskList.mock';
 import { setupMyCasesRoutes } from './manageTasksMockRoutes.helper';
 import {
-  buildNgIntegrationAppConfigMock,
-  buildNgIntegrationClientContextMock,
-  buildNgIntegrationEnvironmentConfigMock,
-} from './ngIntegrationMockRoutes.helper';
+  buildXuiAppShellAppConfigMock,
+  buildXuiAppShellClientContextMock,
+  buildXuiAppShellEnvironmentConfigMock,
+} from './xuiAppShellMockRoutes.helper';
 import type { TaskListBootstrapRoleAssignment } from './taskListMockRoutes.helper';
 
 const myWorkUserId = 'wave2-my-work-user';
@@ -97,9 +97,9 @@ export async function setupMyWorkFilterRoutes(page: Page, options: MyWorkFilterR
     },
   });
 
-  const appConfig = buildNgIntegrationAppConfigMock();
-  const environmentConfig = buildNgIntegrationEnvironmentConfigMock();
-  const clientContext = buildNgIntegrationClientContextMock();
+  const appConfig = buildXuiAppShellAppConfigMock();
+  const environmentConfig = buildXuiAppShellEnvironmentConfigMock();
+  const clientContext = buildXuiAppShellClientContextMock();
 
   await page.addInitScript((seededClientContext) => {
     window.sessionStorage.setItem('clientContext', JSON.stringify(seededClientContext));

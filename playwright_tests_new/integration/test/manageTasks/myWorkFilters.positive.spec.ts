@@ -116,9 +116,9 @@ test.describe('My work filter parity', { tag: ['@integration', '@integration-man
       await taskListPage.gotoMyCases();
       await taskListPage.openFilterPanel();
 
-      await taskListPage.filterPanel.getByLabel('Civil').uncheck({ force: true });
+      await taskListPage.filterPanel.getByLabel('Civil').uncheck();
       await expect(taskListPage.filterPanel.getByLabel('Civil')).not.toBeChecked();
-      await taskListPage.filterPanel.getByLabel('Immigration and Asylum').uncheck({ force: true });
+      await taskListPage.filterPanel.getByLabel('Immigration and Asylum').uncheck();
       await expect(taskListPage.filterPanel.getByLabel('Immigration and Asylum')).not.toBeChecked();
 
       await taskListPage.applyCurrentFilters();
@@ -128,7 +128,7 @@ test.describe('My work filter parity', { tag: ['@integration', '@integration-man
     });
 
     await test.step('Re-select Immigration and Asylum and verify the filter can be applied again', async () => {
-      await taskListPage.filterPanel.getByLabel('Immigration and Asylum').check({ force: true });
+      await taskListPage.filterPanel.getByLabel('Immigration and Asylum').check();
       await expect(taskListPage.filterPanel.getByLabel('Immigration and Asylum')).toBeChecked();
       await expect(taskListPage.filterPanel.getByLabel('Civil')).not.toBeChecked();
 

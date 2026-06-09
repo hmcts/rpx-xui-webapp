@@ -66,7 +66,7 @@ test.describe('my work filters mock routes helper', { tag: '@svc-internal' }, ()
       ],
     });
 
-    expect(fakePage.initScripts).toHaveLength(1);
+    expect(fakePage.initScripts).toHaveLength(2);
     expect(fakePage.routes.map(({ pattern }) => pattern)).toEqual(
       expect.arrayContaining([
         '**/api/user/details*',
@@ -97,7 +97,7 @@ test.describe('my work filters mock routes helper', { tag: '@svc-internal' }, ()
       expect.objectContaining({
         userInfo: expect.objectContaining({
           id: 'wave2-my-work-user',
-          roles: ['caseworker-ia', 'caseworker-ia-caseofficer', 'caseworker-ia-admofficer'],
+          roles: expect.arrayContaining(['caseworker-ia', 'caseworker-ia-caseofficer', 'caseworker-ia-admofficer']),
         }),
         roleAssignmentInfo: [
           {
@@ -116,9 +116,9 @@ test.describe('my work filters mock routes helper', { tag: '@svc-internal' }, ()
     );
     expect(JSON.parse(myCasesPayload.body).cases).toHaveLength(2);
     expect(JSON.parse(aggregatedJurisdictionsPayload.body)).toEqual([
-      { id: 'IA', name: 'Immigration and Asylum' },
-      { id: 'SSCS', name: 'Social security and child support' },
-      { id: 'CIVIL', name: 'Civil' },
+      { id: 'IA', name: 'Immigration and Asylum', caseTypes: [] },
+      { id: 'SSCS', name: 'Social security and child support', caseTypes: [] },
+      { id: 'CIVIL', name: 'Civil', caseTypes: [] },
     ]);
     expect(JSON.parse(fullLocationPayload.body)).toEqual(myWorkSelectableLocations);
   });

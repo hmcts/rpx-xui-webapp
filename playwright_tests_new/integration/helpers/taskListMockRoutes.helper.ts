@@ -14,16 +14,19 @@ type TaskMockRouteOptions = {
   status?: number;
 };
 
+export type TaskListBootstrapRoleAssignment = Record<string, unknown> & {
+  baseLocation?: string;
+  bookable?: boolean | string;
+  jurisdiction: string;
+  region?: string;
+  roleName?: string;
+  roleType: string;
+  substantive?: boolean | string;
+};
+
 export type TaskListBootstrapUserOptions = {
-  roleAssignments?: Array<{
-    baseLocation?: string;
-    bookable?: boolean | string;
-    jurisdiction: string;
-    region?: string;
-    roleName?: string;
-    roleType: string;
-    substantive: string;
-  }>;
+  replaceRoleAssignments?: boolean;
+  roleAssignments?: TaskListBootstrapRoleAssignment[];
   roleCategory?: string;
   roles?: string[];
   userId?: string;
@@ -75,14 +78,6 @@ export async function setupTaskListBootstrapRoutes(
     supportedJurisdictions,
     supportedJurisdictionDetails
   );
-  const aggregatedJurisdictions = supportedJurisdictions.map((serviceId) => {
-    const detailedService = resolvedSupportedJurisdictionDetails.find((service) => service.serviceId === serviceId);
-    return {
-      id: serviceId,
-      name: detailedService?.serviceName ?? serviceId,
-    };
-  });
-
   const userDetails = nodeAppDataModels.getUserDetails_oauth();
   if (userOptions.userId) {
     userDetails.userInfo.id = userOptions.userId;
@@ -102,7 +97,11 @@ export async function setupTaskListBootstrapRoutes(
       substantive: 'Y',
     }));
   userDetails.roleAssignmentInfo = [
-    ...(Array.isArray(userDetails.roleAssignmentInfo) ? userDetails.roleAssignmentInfo : []),
+    ...(userOptions.replaceRoleAssignments
+      ? []
+      : Array.isArray(userDetails.roleAssignmentInfo)
+        ? userDetails.roleAssignmentInfo
+        : []),
     ...routeRoleAssignments,
   ];
 
@@ -179,14 +178,6 @@ export async function setupTaskListBootstrapRoutes(
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify(resolvedSupportedJurisdictionDetails),
-    });
-  });
-
-  await page.route('**/aggregated/caseworkers/**/jurisdictions*', async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify(aggregatedJurisdictions),
     });
   });
 

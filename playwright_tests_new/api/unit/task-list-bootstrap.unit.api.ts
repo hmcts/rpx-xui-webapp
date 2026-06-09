@@ -11,9 +11,14 @@ type RegisteredRoute = {
 
 function createFakePage() {
   const routes: RegisteredRoute[] = [];
+  const initScripts: unknown[] = [];
 
   return {
+    initScripts,
     routes,
+    async addInitScript(handler: unknown, args: unknown[]) {
+      initScripts.push({ handler, args });
+    },
     async route(pattern: string | RegExp, handler: RegisteredRoute['handler']) {
       routes.push({ pattern, handler });
     },
@@ -64,8 +69,8 @@ test.describe('task list bootstrap routes helper', { tag: '@svc-internal' }, () 
       { serviceId: 'CIVIL', serviceName: 'Civil' },
     ]);
     expect(JSON.parse(aggregatedJurisdictionsPayload.body)).toEqual([
-      { id: 'IA', name: 'Immigration and Asylum' },
-      { id: 'CIVIL', name: 'Civil' },
+      { id: 'IA', name: 'Immigration and Asylum', caseTypes: [] },
+      { id: 'CIVIL', name: 'Civil', caseTypes: [] },
     ]);
   });
 
@@ -88,8 +93,8 @@ test.describe('task list bootstrap routes helper', { tag: '@svc-internal' }, () 
       { serviceId: 'SSCS', serviceName: 'Social security and child support' },
     ]);
     expect(JSON.parse(aggregatedJurisdictionsPayload.body)).toEqual([
-      { id: 'IA', name: 'Custom IA' },
-      { id: 'SSCS', name: 'Social security and child support' },
+      { id: 'IA', name: 'Custom IA', caseTypes: [] },
+      { id: 'SSCS', name: 'Social security and child support', caseTypes: [] },
     ]);
   });
 });

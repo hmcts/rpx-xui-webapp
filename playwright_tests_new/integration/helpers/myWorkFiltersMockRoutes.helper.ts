@@ -2,7 +2,12 @@ import type { Page } from '@playwright/test';
 import { buildMyCases } from '../mocks/myCases.mock';
 import { buildTaskListMock, myActionsList } from '../mocks/taskList.mock';
 import { setupMyCasesRoutes } from './manageTasksMockRoutes.helper';
-import { setupNgIntegrationBaseRoutes } from './ngIntegrationMockRoutes.helper';
+import {
+  buildNgIntegrationAppConfigMock,
+  buildNgIntegrationClientContextMock,
+  buildNgIntegrationEnvironmentConfigMock,
+} from './ngIntegrationMockRoutes.helper';
+import type { TaskListBootstrapRoleAssignment } from './taskListMockRoutes.helper';
 
 const myWorkUserId = 'wave2-my-work-user';
 const supportedJurisdictions = ['IA', 'SSCS', 'CIVIL'];
@@ -75,23 +80,45 @@ const resolvedBaseLocations = [
 
 export type MyWorkFilterRoutesOptions = {
   myCasesRouteHandler?: Parameters<typeof setupMyCasesRoutes>[2]['routeHandler'];
-  roleAssignmentInfo: Array<Record<string, unknown>>;
+  roleAssignmentInfo: TaskListBootstrapRoleAssignment[];
 };
 
 export async function setupMyWorkFilterRoutes(page: Page, options: MyWorkFilterRoutesOptions): Promise<void> {
-  await setupNgIntegrationBaseRoutes(page, {
-    userDetails: {
-      userId: myWorkUserId,
-      roles: ['caseworker-ia', 'caseworker-ia-caseofficer', 'caseworker-ia-admofficer'],
-      roleAssignmentInfo: [...options.roleAssignmentInfo],
-    },
-  });
-
   await setupMyCasesRoutes(page, buildMyCases(2), {
     routeHandler: options.myCasesRouteHandler,
     supportedJurisdictionDetails,
     supportedJurisdictions,
     taskListResponse: buildTaskListMock(4, myWorkUserId, myActionsList),
+    user: {
+      replaceRoleAssignments: true,
+      roleAssignments: [...options.roleAssignmentInfo],
+      roles: ['caseworker-ia', 'caseworker-ia-caseofficer', 'caseworker-ia-admofficer'],
+      userId: myWorkUserId,
+    },
+  });
+
+  const appConfig = buildNgIntegrationAppConfigMock();
+  const environmentConfig = buildNgIntegrationEnvironmentConfigMock();
+  const clientContext = buildNgIntegrationClientContextMock();
+
+  await page.addInitScript((seededClientContext) => {
+    window.sessionStorage.setItem('clientContext', JSON.stringify(seededClientContext));
+  }, clientContext);
+
+  await page.route('**/assets/config/config.json*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(appConfig),
+    });
+  });
+
+  await page.route(/\/external\/config\/ui(?:\/|\?|$)/, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(environmentConfig),
+    });
   });
 
   await page.route('**/workallocation/caseworker/getUsersByServiceName*', async (route) => {

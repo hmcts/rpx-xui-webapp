@@ -8,6 +8,7 @@ const FILTER_CONTROL_READY_TIMEOUT_MS = 15_000;
 const FILTER_GROUP_OPERATION_TIMEOUT_MS = 30_000;
 const FILTER_CHECKBOX_STATE_TIMEOUT_MS = 5_000;
 const FILTER_INTERACTION_ATTEMPTS = 2;
+const FILTER_APPLY_CLICK_ATTEMPTS = 3;
 const TASK_LIST_NAVIGATION_ATTEMPTS = 2;
 const PRIORITY_LIMIT_URGENT = 2000;
 const PRIORITY_LIMIT_HIGH = 5000;
@@ -40,6 +41,7 @@ export class TaskListPage extends Base {
   readonly allWorkTaskCategoryAssignedToPersonRadio = this.filterPanel
     .getByRole('radio', { name: 'Assigned to a person' })
     .first();
+  readonly allWorkRoleTypeFilter = this.filterPanel.locator('select').nth(1);
   readonly allWorkTaskTypeFilter = this.filterPanel
     .locator('#taskType select, select[name="taskType"], select[id*="taskType"]')
     .first();
@@ -72,6 +74,8 @@ export class TaskListPage extends Base {
   readonly uniqueCasesSummary = this.page.locator('.second-line');
   readonly myAccessNewCasesBadge = this.page.locator('.xui-alert-link__number');
   readonly manageCaseButtons = this.taskListTable.getByRole('button', { name: 'Manage' });
+  readonly allWorkCasesApplyPrompt = this.page.getByText('Please select filters and click Apply', { exact: true });
+  readonly allWorkCasesEmptyMessage = this.page.getByText('Change your selection to view cases.', { exact: true });
   readonly errorPageHeading = this.page.getByRole('heading', { name: /something went wrong/i });
   readonly serviceDownError = this.exuiBodyComponent.serviceDownError;
   readonly serviceDownHeading = this.page.getByRole('heading', { name: 'Sorry, there is a problem with the service' });
@@ -194,6 +198,10 @@ export class TaskListPage extends Base {
     await this.navigateToTaskListView('/work/all-work/tasks', /\/work\/all-work\/tasks(?:\?.*)?$/, 'all work tasks navigation');
   }
 
+  async gotoAllWorkCases() {
+    await this.navigateToTaskListView('/work/all-work/cases', /\/work\/all-work\/cases(?:\?.*)?$/, 'all work cases navigation');
+  }
+
   async selectWorkMenuItem(menuItemText: string) {
     const menuItem = this.page.getByRole('link', { name: menuItemText, exact: true });
     await menuItem.click();
@@ -201,6 +209,20 @@ export class TaskListPage extends Base {
 
   async getResultsText() {
     return await this.taskListResultsAmount.textContent();
+  }
+
+  async getPaginationSummaryText(): Promise<string> {
+    for (const summaryLocator of [this.taskListResultsAmount, this.myCasesResultsAmount]) {
+      const summaryText = await summaryLocator
+        .first()
+        .innerText({ timeout: 1_000 })
+        .catch(() => '');
+      if (summaryText.trim()) {
+        return summaryText.replace(/\s+/g, ' ').trim();
+      }
+    }
+
+    return '';
   }
 
   getExpectedPriorityLabel(majorPriority?: number | string, priorityDate?: string | Date, currentDate: Date = new Date()) {
@@ -594,11 +616,62 @@ export class TaskListPage extends Base {
   async applyCurrentFilters() {
     const deadlineMs = Date.now() + FILTER_GROUP_OPERATION_TIMEOUT_MS;
     await this.openFilterPanel(deadlineMs);
-    await this.applyFilterButton.waitFor({
-      state: 'visible',
-      timeout: this.resolveInteractionTimeout(deadlineMs, FILTER_GROUP_OPERATION_TIMEOUT_MS),
+    let lastError: Error | undefined;
+
+    for (let attempt = 1; attempt <= FILTER_APPLY_CLICK_ATTEMPTS; attempt += 1) {
+      await this.applyFilterButton.waitFor({
+        state: 'visible',
+        timeout: this.resolveInteractionTimeout(deadlineMs, FILTER_GROUP_OPERATION_TIMEOUT_MS),
+      });
+      await expect(this.applyFilterButton).toBeEnabled({ timeout: this.resolveInteractionTimeout(deadlineMs, 5_000) });
+
+      try {
+        await this.applyFilterButton.click({ timeout: this.resolveInteractionTimeout(deadlineMs, 5_000) });
+        return;
+      } catch (error) {
+        lastError = error as Error;
+        if (await this.filterPanel.isHidden().catch(() => false)) {
+          return;
+        }
+        if (!this.isTransientFilterApplyClickError(lastError) || attempt === FILTER_APPLY_CLICK_ATTEMPTS) {
+          throw lastError;
+        }
+        await this.page.waitForTimeout(250);
+      }
+    }
+
+    throw lastError ?? new Error('Task list filter Apply click did not complete.');
+  }
+
+  private isTransientFilterApplyClickError(error: Error): boolean {
+    return /element is not stable|element was detached|not attached to the DOM/i.test(error.message);
+  }
+
+  async applyAllWorkCasesPersonFilter(searchText: string, optionText: string) {
+    await this.openFilterPanel();
+    await this.allWorkRoleTypeFilter.selectOption({ label: 'Legal Ops' });
+    await this.allWorkPersonSearchInput.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+    await expect(this.allWorkPersonSearchInput).toBeEditable({ timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+    await this.allWorkPersonSearchInput.fill(searchText);
+    await this.page.getByRole('option', { name: optionText }).first().click();
+    await expect(this.applyFilterButton).toBeEnabled({ timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
+    await this.applyCurrentFilters();
+  }
+
+  async openPaginationPage(pageNumber: number) {
+    const pageText = pageNumber.toString();
+    const labelledPageControl = this.page.getByLabel(`Page ${pageText}`, { exact: true }).first();
+    if (await labelledPageControl.isVisible().catch(() => false)) {
+      await labelledPageControl.click();
+      await this.waitForTaskListSpinnerToSettle(10_000);
+      return;
+    }
+
+    const legacyPageControl = this.paginationControls.locator('a, button').filter({
+      hasText: new RegExp(String.raw`^\s*${pageText}\s*$`),
     });
-    await this.applyFilterButton.click();
+    await legacyPageControl.first().click();
+    await this.waitForTaskListSpinnerToSettle(10_000);
   }
 
   async waitForAllWorkFilterControlsReady() {

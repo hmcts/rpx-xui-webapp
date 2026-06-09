@@ -25,6 +25,7 @@ import openRoutes from './openRoutes';
 import { initProxy } from './proxy.config';
 import routes from './routes';
 import workAllocationRouter from './workAllocation/routes';
+import { getNewUsersByServiceName } from './workAllocation';
 import { idamCheck } from './idamCheck';
 import { MC_CSP } from './interfaces/csp-config';
 
@@ -142,6 +143,9 @@ export async function createApp() {
   logger.info(`Started up using ${getConfigValue(PROTOCOL)}`);
 
   new Promise(idamCheck).then(() => 'IDAM is up and running');
+
+  // REMOVE AFTER TESTING - This is to ensure that the new users are loaded in all pods for testing
+  new Promise(getNewUsersByServiceName).then(() => 'Caseworkers have been loaded');
 
   return app;
 }

@@ -163,6 +163,7 @@ export class CreateCasePage extends Base {
   readonly respondentOrganisation!: Locator;
   readonly respondentCompanyNameInput!: Locator;
   readonly respondentAcasCertifcateSelectYes!: Locator;
+  readonly respondentAcasCertificateYesLabel!: Locator;
   readonly respondentAcasCertificateNumberInput!: Locator;
   readonly respondentAddressLine1Input!: Locator;
   readonly respondentAddressPostcodeInput!: Locator;

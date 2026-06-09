@@ -21,6 +21,7 @@ import {
 } from '../configuration/references';
 import * as log4jui from '../lib/log4jui';
 import { JUILogger } from '../lib/models';
+import { setRedisClient } from '../redis/redisClient';
 const logger: JUILogger = log4jui.getLogger('health');
 
 export const checkServiceHealth = (service) =>
@@ -77,6 +78,8 @@ export const addReformHealthCheck = (app) => {
   }
   if (showFeature(FEATURE_REDIS_ENABLED)) {
     xuiNode.on(SESSION.EVENT.REDIS_CLIENT_READY, (redisClient: any) => {
+      // use redis client from xuiNode for use with caching
+      setRedisClient(redisClient);
       logger.info('REDIS EVENT FIRED!!');
       config.checks = {
         ...config.checks,

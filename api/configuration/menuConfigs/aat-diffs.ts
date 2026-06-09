@@ -1,11 +1,11 @@
 export const aatDifferences = {
   '(judge)|(judiciary)|(panelmember)': [
     {
-      roles: ['caseworker-sscs-judge', 'caseworker-sscs-panelmember'],
+      roles: ['caseworker-sscs-judge', 'caseworker-sscs-panelmember', 'hmcts-judiciary'],
       text: 'My work',
     },
     {
-      roles: ['caseworker-sscs-judge', 'caseworker-sscs-panelmember'],
+      roles: ['caseworker-sscs-judge', 'caseworker-sscs-panelmember', 'hmcts-judiciary'],
       text: 'Search',
     },
   ],
@@ -17,15 +17,15 @@ export const aatDifferences = {
   ],
   '.+': [
     {
-      roles: ['caseworker-sscs-clerk', 'caseworker-sscs-registrar', 'hmcts-admin', 'hmcts-ctsc'],
+      roles: ['caseworker-sscs-clerk', 'caseworker-sscs-registrar', 'hmcts-admin', 'hmcts-ctsc', 'hmcts-legal-operations'],
       text: 'My work',
     },
     {
-      roles: ['caseworker-sscs-clerk', 'caseworker-sscs-registrar', 'hmcts-admin', 'hmcts-ctsc'],
+      roles: ['caseworker-sscs-clerk', 'caseworker-sscs-registrar', 'hmcts-admin', 'hmcts-ctsc', 'hmcts-legal-operations'],
       text: 'Search',
     },
     {
-      roles: ['hmcts-admin', 'hmcts-ctsc'],
+      roles: ['hmcts-admin', 'hmcts-ctsc', 'hmcts-legal-operations'],
       text: 'Find case',
     },
   ],

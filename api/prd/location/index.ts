@@ -23,7 +23,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   const serviceIdArray = serviceIds.split(',');
   const courtTypeIdsArray: string[] = getCourtTypeIdsByServices(serviceIdArray);
   const strCourtTypeIds = courtTypeIdsArray ? courtTypeIdsArray.join(',') : '';
-  const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${strCourtTypeIds}`;
+  const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${strCourtTypeIds}&service_code=${serviceIds}`;
   try {
     const { status, data }: { status: number; data: LocationModel[] } = await handleGet(markupPath, req);
     let result: LocationModel[] = data;
@@ -48,11 +48,15 @@ export async function getLocationById(req: EnhancedRequest, res: Response, next:
   const epimmsID = req.query.epimms_id;
   const serviceCode = req.query.serviceCode && req.query.serviceCode !== '' ? (req.query.serviceCode as string) : null;
   delete req.query.serviceCode;
-  const courtTypeIdsArray: string[] = getCourtTypeIdsByServices([serviceCode]);
-  const markupPath: string = `${url}/refdata/location/court-venues?epimms_id=${epimmsID}`;
+  const serviceCodeParam = serviceCode ? `&service_code=${serviceCode}` : '';
+  const markupPath: string = `${url}/refdata/location/court-venues?epimms_id=${epimmsID}${serviceCodeParam}`;
   try {
     const { status, data }: { status: number; data: LocationModel[] } = await handleGet(markupPath, req);
-    const courtLocations = serviceCode && courtTypeIdsArray?.length > 0 ? getLocationsByCourtType(data, courtTypeIdsArray) : data;
+
+    const containsServiceID = data.some((item) => Object.prototype.hasOwnProperty.call(item, 'service_id'));
+    const courtLocations =
+      serviceCode && !containsServiceID ? getLocationsByCourtType(data, getCourtTypeIdsByServices([serviceCode])) : data;
+
     const identicalLocationByEpimmsId = getIdenticalLocationByEpimmsId(courtLocations);
     res.status(status).send(identicalLocationByEpimmsId);
   } catch (error) {

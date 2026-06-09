@@ -99,7 +99,7 @@ test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, (
     logger.info('Created divorce case', { caseNumber, testValue });
   });
 
-  test('Check the documentV2 upload works as expected', async ({ createCasePage, caseDetailsPage }) => {
+  test('Check the documentV2 drag-and-drop upload works as expected', async ({ createCasePage, caseDetailsPage }) => {
     let caseDetailsUrl = '';
 
     await test.step('Verify case details tab does not contain an uploaded file', async () => {
@@ -130,7 +130,7 @@ test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, (
           async () => {
             await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
             await caseDetailsPage.selectCaseAction(TEST_DATA.V2.ACTION);
-            await createCasePage.uploadFile(
+            await createCasePage.dragAndDropFile(
               TEST_DATA.V2.FILE_NAME,
               TEST_DATA.V2.FILE_TYPE,
               TEST_DATA.V2.FILE_CONTENT,

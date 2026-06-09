@@ -814,9 +814,59 @@ export class CreateCasePage extends Base {
     fileInput?: Locator,
     fileContentEncoding?: BufferEncoding
   ) {
+    const resolvedFileInput = fileInput ?? this.page.locator('input[type="file"]').first();
+    await this.runDocumentUploadWithRetry('file input upload', async () => {
+      await resolvedFileInput.setInputFiles({
+        name: fileName,
+        mimeType,
+        buffer: Buffer.from(fileContent, fileContentEncoding ?? 'utf8'),
+      });
+    });
+  }
+
+  async dragAndDropFile(
+    fileName: string,
+    mimeType: string,
+    fileContent: string,
+    fileInput?: Locator,
+    fileContentEncoding?: BufferEncoding
+  ) {
+    const resolvedFileInput = fileInput ?? this.page.locator('input[type="file"]').first();
+    await expect(resolvedFileInput, 'Document upload input must be visible for drag-and-drop upload').toBeVisible();
+    await resolvedFileInput.scrollIntoViewIfNeeded();
+
+    await this.runDocumentUploadWithRetry('drag-and-drop upload', async () => {
+      const fileContentBase64 = Buffer.from(fileContent, fileContentEncoding ?? 'utf8').toString('base64');
+      await resolvedFileInput.evaluate(
+        (inputElement, { droppedFileName, droppedFileMimeType, droppedFileContentBase64 }) => {
+          const input = inputElement as HTMLInputElement;
+          const binary = window.atob(droppedFileContentBase64);
+          const bytes = new Uint8Array(binary.length);
+          for (let index = 0; index < binary.length; index++) {
+            bytes[index] = binary.charCodeAt(index);
+          }
+
+          const dataTransfer = new DataTransfer();
+          dataTransfer.items.add(new File([bytes], droppedFileName, { type: droppedFileMimeType }));
+
+          input.dispatchEvent(new DragEvent('dragenter', { bubbles: true, cancelable: true, dataTransfer }));
+          input.dispatchEvent(new DragEvent('dragover', { bubbles: true, cancelable: true, dataTransfer }));
+          input.dispatchEvent(new DragEvent('drop', { bubbles: true, cancelable: true, dataTransfer }));
+          input.files = dataTransfer.files;
+          input.dispatchEvent(new Event('change', { bubbles: true }));
+        },
+        {
+          droppedFileName: fileName,
+          droppedFileMimeType: mimeType,
+          droppedFileContentBase64: fileContentBase64,
+        }
+      );
+    });
+  }
+
+  private async runDocumentUploadWithRetry(uploadActionDescription: string, uploadAction: () => Promise<void>) {
     const maxRetries = 3;
     const baseDelayMs = 1000;
-    const resolvedFileInput = fileInput ?? this.page.locator('input[type="file"]').first();
     const uploadResponseTimeoutMs = this.getRecommendedTimeoutMs({
       min: EXUI_TIMEOUTS.UPLOAD_RESPONSE,
       max: 30_000,
@@ -825,14 +875,14 @@ export class CreateCasePage extends Base {
     });
     const safeBackoff = async (attempt: number) => {
       if (this.page.isClosed()) {
-        throw new Error('Page closed during upload retry backoff');
+        throw new Error(`Page closed during ${uploadActionDescription} retry backoff`);
       }
       await this.page.waitForTimeout(baseDelayMs * Math.pow(2, attempt - 1));
     };
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       if (this.page.isClosed()) {
-        throw new Error('Page closed before upload retry attempt');
+        throw new Error(`Page closed before ${uploadActionDescription} retry attempt`);
       }
       const responsePromise = this.page
         .waitForResponse((r) => r.url().includes('/document') && r.request().method() === 'POST', {
@@ -840,11 +890,7 @@ export class CreateCasePage extends Base {
         })
         .catch((error: Error) => error);
 
-      await resolvedFileInput.setInputFiles({
-        name: fileName,
-        mimeType,
-        buffer: Buffer.from(fileContent, fileContentEncoding ?? 'utf8'),
-      });
+      await uploadAction();
 
       const uploadResponse = await responsePromise;
 
@@ -853,7 +899,7 @@ export class CreateCasePage extends Base {
           throw uploadResponse;
         }
         if (attempt < maxRetries) {
-          logger.warn('Document upload response was not observed; retrying upload', {
+          logger.warn(`Document ${uploadActionDescription} response was not observed; retrying upload`, {
             attempt,
             maxRetries,
             timeoutMs: uploadResponseTimeoutMs,
@@ -862,12 +908,12 @@ export class CreateCasePage extends Base {
           await safeBackoff(attempt);
           continue;
         }
-        throw new Error(`Upload timed out after ${maxRetries} attempts: ${uploadResponse.message}`);
+        throw new Error(`Document ${uploadActionDescription} timed out after ${maxRetries} attempts: ${uploadResponse.message}`);
       }
 
       if (uploadResponse.status() !== 200) {
         if (attempt < maxRetries) {
-          logger.warn('Document upload returned non-200 response; retrying upload', {
+          logger.warn(`Document ${uploadActionDescription} returned non-200 response; retrying upload`, {
             attempt,
             maxRetries,
             status: uploadResponse.status(),
@@ -875,13 +921,16 @@ export class CreateCasePage extends Base {
           await safeBackoff(attempt);
           continue;
         }
-        throw new Error(`Upload failed: server returned status ${uploadResponse.status()} after ${maxRetries} attempts`);
+        throw new Error(
+          `Document ${uploadActionDescription} failed: server returned status ${uploadResponse.status()} after ${maxRetries} attempts`
+        );
       }
 
       break;
     }
     await this.fileUploadStatusLabel.waitFor({ state: 'hidden', timeout: uploadResponseTimeoutMs });
   }
+
   async createCaseEmployment(jurisdiction: string, caseType: string) {
     const maxAttempts = 2;
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {

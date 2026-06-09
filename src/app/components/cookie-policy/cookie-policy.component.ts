@@ -28,16 +28,46 @@ export class CookiePolicyComponent {
 
   public readonly cookieDetails: CookieDetails[] = [
     {
-      name: 'xui-mo-webapp',
+      name: 'xui-webapp',
       cat: this.SECURITY,
       purpose: 'Used to secure communications with HMCTS data services',
       expires: '8 hours',
     },
     {
+      name: 'dtCookie',
+      cat: this.USAGE,
+      purpose: 'Tracks a visit across multiple requests.',
+      expires: 'Session ends',
+    },
+    {
+      name: 'dtLatC',
+      cat: this.USAGE,
+      purpose: 'Measures server latency for performance monitoring.',
+      expires: 'Session ends',
+    },
+    {
+      name: 'dtPC',
+      cat: this.USAGE,
+      purpose: 'Required to identify proper endpoints for beacon transmission; includes session ID for correlation.',
+      expires: 'Session ends',
+    },
+    {
+      name: 'dtSa',
+      cat: this.USAGE,
+      purpose: 'Intermediate store for page-spanning actions',
+      expires: 'Session ends',
+    },
+    {
+      name: 'rxvt',
+      cat: this.USAGE,
+      purpose: 'Session timeout',
+      expires: 'Session ends',
+    },
+    {
       name: 'rxVisitor',
       cat: this.USAGE,
       purpose: 'Generated user ID for usage tracking (Dynatrace)',
-      expires: '2 years',
+      expires: '1 year',
     },
     {
       name: 'ai_user',
@@ -103,17 +133,52 @@ export class CookiePolicyComponent {
 
   public readonly cookieDetailsWelsh: CookieDetails[] = [
     {
-      name: 'xui-mo-webapp',
+      name: 'xui-webapp',
       cat: this.SECURITY,
       purpose: 'Defnyddir i ddiogelu cyfathrebu gyda gwasanaethau data GLlTEF.',
       expires: '8 awr',
+    },
+    {
+      name: 'dtCookie',
+      catAlias: this.USAGE_WELSH,
+      cat: this.USAGE,
+      purpose: 'Yn olrhain ymweliad ar draws sawl cais.',
+      expires: 'Sesiwn yn dod i ben',
+    },
+    {
+      name: 'dtLatC',
+      catAlias: this.USAGE_WELSH,
+      cat: this.USAGE,
+      purpose: 'Yn mesur oedi gweinydd ar gyfer monitro perfformiad.',
+      expires: 'Sesiwn yn dod i ben',
+    },
+    {
+      name: 'dtPC',
+      catAlias: this.USAGE_WELSH,
+      cat: this.USAGE,
+      purpose: 'Angenrheidiol i nodi pwyntiau terfyn priodol ar gyfer trosglwyddo beacon; yn cynnwys ID sesiwn ar gyfer cydberthynas.',
+      expires: 'Sesiwn yn dod i ben',
+    },
+    {
+      name: 'dtSa',
+      catAlias: this.USAGE_WELSH,
+      cat: this.USAGE,
+      purpose: 'Storfa ganolradd ar gyfer gweithredoedd sy\'n cwmpasu tudalennau.',
+      expires: 'Sesiwn yn dod i ben',
+    },
+     {
+      name: 'rxvt',
+      catAlias: this.USAGE_WELSH,
+      cat: this.USAGE,
+      purpose: 'Terfyn amser y sesiwn',
+      expires: 'Sesiwn yn dod i ben',
     },
     {
       name: 'rxVisitor',
       catAlias: this.USAGE_WELSH,
       cat: this.USAGE,
       purpose: 'ID defnyddiwr a gynhyrchwyd ar gyfer tracio defnydd (Dynatrace)',
-      expires: '2 years',
+      expires: '1 year',
     },
     {
       name: 'ai_defnyddiwr',

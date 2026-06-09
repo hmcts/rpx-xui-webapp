@@ -148,7 +148,7 @@ nodejs:
 
     # Redis
     REDIS_KEY_PREFIX: 'activity:'
-    REDIS_TTL: 6000
+    REDIS_TTL: 28800
 
   keyVaults:
     rpx:

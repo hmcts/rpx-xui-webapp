@@ -224,6 +224,27 @@ describe('PhaseBannerComponent additional tests', () => {
     expect(mockSessionStorage.setItem).toHaveBeenCalledWith('clientContext', JSON.stringify(expectedContext));
   });
 
+  it('should fall back to empty client context when stored JSON is invalid', () => {
+    mockSessionStorage.getItem.and.callFake((key: string) => {
+      if (key === 'bannerClosed') {
+        return 'false';
+      }
+      if (key === 'clientContext') {
+        return '{not-json}';
+      }
+      return null;
+    });
+    component.ngOnInit();
+    expect(mockSessionStorage.setItem).toHaveBeenCalledWith(
+      'clientContext',
+      JSON.stringify({
+        client_context: {
+          user_language: { language: 'en' },
+        },
+      })
+    );
+  });
+
   it('should unsubscribe on destroy', () => {
     component.ngOnInit();
     const sub = (component as any).langSub;

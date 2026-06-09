@@ -291,7 +291,7 @@ export class HearingsUtils {
     const hearingId = hearingRequestMainModel?.requestDetails?.hearingRequestID;
     const timeStamp = hearingRequestMainModel?.requestDetails?.timestamp;
 
-    if (hrmInternalName && shvInternalName && hrmInternalName === shvInternalName) {
+    if (hrmInternalName && shvInternalName && hrmInternalName !== shvInternalName) {
       logMessages.push(
         `Hearing internal name mismatch detected. HRM: ${hrmInternalName} SHV: ${shvInternalName} for caseId: ${caseId} and hearingId: ${hearingId} at ${timeStamp} with status ${status}`
       );
@@ -300,7 +300,7 @@ export class HearingsUtils {
       );
     }
 
-    if (hrmPublicName && shvPublicName && hrmPublicName === shvPublicName) {
+    if (hrmPublicName && shvPublicName && hrmPublicName !== shvPublicName) {
       logMessages.push(
         `Hearing public name mismatch detected. HRM: ${hrmPublicName} SHV: ${shvPublicName} for caseId: ${caseId} and hearingId: ${hearingId} at ${timeStamp} with status ${status}`
       );

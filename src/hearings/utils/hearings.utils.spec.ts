@@ -679,7 +679,7 @@ describe('HearingsUtils', () => {
   });
 
   describe('getHearingConsistencyLogMessages', () => {
-    xit('should return no log messages when internal and public names are equal', () => {
+    it('should return no log messages when internal and public names are equal', () => {
       const hearingRequestMainModel: HearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         caseDetails: {
@@ -699,7 +699,7 @@ describe('HearingsUtils', () => {
       expect(HearingsUtils.getHearingConsistencyLogMessages(hearingRequestMainModel, serviceHearingValuesModel)).toEqual([]);
     });
 
-    xit('should use the HRM caseRef when creating public name log messages for mismatched names', () => {
+    it('should use the HRM caseRef when creating public name log messages for mismatched names', () => {
       const hearingRequestMainModel: HearingRequestMainModel = {
         ...initialState.hearings.hearingRequest.hearingRequestMainModel,
         caseDetails: {

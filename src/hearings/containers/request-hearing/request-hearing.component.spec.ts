@@ -131,7 +131,7 @@ describe('RequestHearingComponent', () => {
     expect(hearingsService.propertiesUpdatedOnPageVisit).toBeNull();
   });
 
-  xit('should check for mismatched Party IDs on submission', () => {
+  it('should check for mismatched Party IDs on submission', () => {
     const hearingRequestMainModel: HearingRequestMainModel = {
       hearingDetails: {
         duration: 45,
@@ -393,7 +393,7 @@ describe('RequestHearingComponent', () => {
     expect(component.validationErrors).toEqual({ id: 'reload-error-message', message: HearingsUtils.DISCREPANCY_MESSAGE });
   });
 
-  xit('should log public name when names are mismatched and still submit successfully', () => {
+  it('should log public name when names are mismatched and still submit successfully', () => {
     component.hearingRequestMainModel = {
       ...initialState.hearings.hearingRequest.hearingRequestMainModel,
       caseDetails: {

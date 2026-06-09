@@ -15,7 +15,14 @@ const { getDLCaseConfig } = require('../ngIntegration/mockData/ccdCaseMock');
 // const nodeAppMock = require('./nodeApp/mockData');
 
 // const waMockDataService = require('./workAllocation/mockData');
-const CucumberReporter = require('../codeceptCommon/reportLogger');
+const CucumberReporter = {
+  AddMessage(message) {
+    console.log(message);
+  },
+  AddJson(json) {
+    console.log(JSON.stringify(json, null, 2));
+  },
+};
 
 const nodeMockConfig = require('./config');
 

@@ -62,10 +62,10 @@ xdescribe('Caseworker ref data api, search caseworker', () => {
       pactSetUp.provider.addInteraction(interaction);
     });
 
-    afterEach(() => {
+    afterEach(async () => {
       sandbox.restore();
       sinon.reset();
-      MockApp.stopServer();
+      await MockApp.stopServer();
     });
 
     it('returns the correct response', async () => {

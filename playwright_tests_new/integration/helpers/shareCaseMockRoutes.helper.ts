@@ -36,6 +36,15 @@ export async function setupShareCaseBootstrapRoutes(page: Page): Promise<void> {
 
   await page.addInitScript((seededUserInfo) => {
     window.sessionStorage.setItem('userDetails', JSON.stringify(seededUserInfo));
+    window.localStorage.setItem(
+      'savedQueryParams',
+      JSON.stringify({
+        jurisdiction: shareableJurisdiction,
+        'case-type': 'xuiTestJurisdiction',
+        'case-state': null,
+      })
+    );
+    window.localStorage.setItem('workbasket-filter-form-group-value', JSON.stringify({}));
   }, userDetails.userInfo);
 
   await page.route('**/auth/isAuthenticated*', async (route) => fulfillJson(route, true));
@@ -50,8 +59,17 @@ export async function setupShareCaseBootstrapRoutes(page: Page): Promise<void> {
     })
   );
 
-  await page.route('**launchdarkly.com/**', async (route) => {
+  await page.route('**/*launchdarkly.com/**', async (route) => {
     const request = route.request();
+    const requestPath = new URL(request.url()).pathname;
+    if (requestPath.includes('/sdk/eval')) {
+      await fulfillJson(route, launchDarklyFlagSet);
+      return;
+    }
+    if (requestPath.includes('/sdk/goals')) {
+      await fulfillJson(route, []);
+      return;
+    }
     if (request.method() !== 'GET') {
       await route.fulfill({ status: 202, body: '' });
       return;

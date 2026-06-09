@@ -590,10 +590,24 @@ export class TaskListPage extends Base {
     if (await this.isFilterPanelOpen()) {
       return;
     }
+    if (await this.filterPanel.isVisible().catch(() => false)) {
+      await this.applyFilterButton.waitFor({
+        state: 'visible',
+        timeout: this.resolveInteractionTimeout(deadlineMs, FILTER_CONTROL_READY_TIMEOUT_MS),
+      });
+      return;
+    }
     const panelDeadlineMs = deadlineMs ?? Date.now() + FILTER_PANEL_READY_TIMEOUT_MS;
     while (Date.now() < panelDeadlineMs) {
       this.assertFilterInteractionAlive('opening filter panel', deadlineMs);
       if (await this.isFilterPanelOpen()) {
+        return;
+      }
+      if (await this.filterPanel.isVisible().catch(() => false)) {
+        await this.applyFilterButton.waitFor({
+          state: 'visible',
+          timeout: this.resolveInteractionTimeout(panelDeadlineMs, FILTER_CONTROL_READY_TIMEOUT_MS),
+        });
         return;
       }
       await this.taskListFilterToggle.click();

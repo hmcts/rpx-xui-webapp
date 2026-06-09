@@ -24,10 +24,10 @@
       "journey": "Share case selected-case, add/remove user, confirmation, and completion flows",
       "targetLayer": "integration",
       "targets": ["playwright_tests_new/integration/test/shareCase/shareCase.positive.spec.ts"],
-      "status": "port",
+      "status": "covered",
       "priority": "P1",
-      "evidence": "EXUI-4685 implementation branch seeded; executable tests still pending.",
-      "notes": "Highest-value functional parity gap."
+      "evidence": "Implemented in Playwright and locally verified with shareCase.positive.spec.ts on 2026-06-09.",
+      "notes": "Keep under normal regression evidence; no remaining P1 port work for this legacy journey."
     },
     {
       "id": "case-list-selection-ui",
@@ -35,10 +35,10 @@
       "journey": "Case list checkbox selection persistence across navigation, filters, pagination, sorting, and share-case handoff",
       "targetLayer": "integration",
       "targets": ["playwright_tests_new/integration/test/shareCase/caseListSelection.positive.spec.ts"],
-      "status": "port",
+      "status": "covered",
       "priority": "P1",
-      "evidence": "EXUI-4685 implementation branch seeded; executable tests still pending.",
-      "notes": "Implement with shared case-list mocks and direct share-case routing assertions."
+      "evidence": "Implemented in Playwright and locally verified with caseListSelection.positive.spec.ts on 2026-06-09.",
+      "notes": "Shared case-list mocks and direct share-case routing assertions are in place."
     },
     {
       "id": "media-viewer-tools",
@@ -66,7 +66,11 @@
       ],
       "journey": "Create-case service and CCD toolkit journey breadth",
       "targetLayer": "e2e/integration",
-      "targets": ["playwright_tests_new/E2E/test/createCase/createCase.spec.ts", "playwright_tests_new/integration/test/createCase/createCase.positive.spec.ts", "playwright_tests_new/integration/test/createCase/createCase.negative.spec.ts"],
+      "targets": [
+        "playwright_tests_new/E2E/test/createCase/createCase.spec.ts",
+        "playwright_tests_new/integration/test/createCase/createCase.positive.spec.ts",
+        "playwright_tests_new/integration/test/createCase/createCase.negative.spec.ts"
+      ],
       "status": "partial",
       "priority": "P2",
       "evidence": "Core create-case coverage exists; Probate, Financial Remedy, IA, and FPL ownership needs an explicit port/retire decision.",
@@ -74,7 +78,10 @@
     },
     {
       "id": "ccd-hidden-fields",
-      "legacy": ["test_codecept/ngIntegration/tests/hiddenFields.test.js", "test_codecept/ngIntegration/tests_mocha/hiddenFields.test.js"],
+      "legacy": [
+        "test_codecept/ngIntegration/tests/hiddenFields.test.js",
+        "test_codecept/ngIntegration/tests_mocha/hiddenFields.test.js"
+      ],
       "journey": "CCD retain_hidden_field submit payload behaviour",
       "targetLayer": "integration",
       "targets": ["playwright_tests_new/integration/test/createCase/createCase.positive.spec.ts"],
@@ -85,7 +92,10 @@
     },
     {
       "id": "ccd-collection-permissions",
-      "legacy": ["test_codecept/ngIntegration/tests/caseFieldCollectionsPermissions.test.js", "test_codecept/ngIntegration/tests/features/ccdCollectionFieldPermissions.feature"],
+      "legacy": [
+        "test_codecept/ngIntegration/tests/caseFieldCollectionsPermissions.test.js",
+        "test_codecept/ngIntegration/tests/features/ccdCollectionFieldPermissions.feature"
+      ],
       "journey": "CCD collection allowInsert/allowDelete display context matrix",
       "targetLayer": "integration",
       "targets": ["playwright_tests_new/integration/test/createCase/createCase.negative.spec.ts"],
@@ -115,7 +125,13 @@
       ],
       "journey": "Search case and global search flows",
       "targetLayer": "e2e/integration/api",
-      "targets": ["playwright_tests_new/E2E/test/searchCase/findCase.spec.ts", "playwright_tests_new/E2E/test/searchCase/globalSearch.spec.ts", "playwright_tests_new/E2E/test/searchCase/searchCase.spec.ts", "playwright_tests_new/integration/test/searchCase/search.positive.spec.ts", "playwright_tests_new/api/search-and-refdata.api.ts"],
+      "targets": [
+        "playwright_tests_new/E2E/test/searchCase/findCase.spec.ts",
+        "playwright_tests_new/E2E/test/searchCase/globalSearch.spec.ts",
+        "playwright_tests_new/E2E/test/searchCase/searchCase.spec.ts",
+        "playwright_tests_new/integration/test/searchCase/search.positive.spec.ts",
+        "playwright_tests_new/api/search-and-refdata.api.ts"
+      ],
       "status": "covered",
       "priority": "P3",
       "evidence": "E2E, integration, and API coverage exists.",
@@ -131,7 +147,12 @@
       ],
       "journey": "Work allocation, manage tasks, work filters, case task tabs, and role actions",
       "targetLayer": "integration/api/e2e",
-      "targets": ["playwright_tests_new/integration/test/manageTasks", "playwright_tests_new/api/work-allocation.api.ts", "playwright_tests_new/api/work-allocation-cancellation.api.ts", "playwright_tests_new/E2E/test/manageTasks/myTasks.positive.spec.ts"],
+      "targets": [
+        "playwright_tests_new/integration/test/manageTasks",
+        "playwright_tests_new/api/work-allocation.api.ts",
+        "playwright_tests_new/api/work-allocation-cancellation.api.ts",
+        "playwright_tests_new/E2E/test/manageTasks/myTasks.positive.spec.ts"
+      ],
       "status": "covered",
       "priority": "P3",
       "evidence": "Extensive manage-tasks and work-allocation coverage exists in Playwright.",
@@ -145,7 +166,11 @@
       ],
       "journey": "Specific access request, challenged access request, and restricted case access",
       "targetLayer": "integration/api",
-      "targets": ["playwright_tests_new/integration/test/accessRequests", "playwright_tests_new/integration/test/restrictedAccess", "playwright_tests_new/api/unit/challenged-access-request.unit.api.ts"],
+      "targets": [
+        "playwright_tests_new/integration/test/accessRequests",
+        "playwright_tests_new/integration/test/restrictedAccess",
+        "playwright_tests_new/api/unit/challenged-access-request.unit.api.ts"
+      ],
       "status": "covered",
       "priority": "P3",
       "evidence": "Positive and negative Playwright integration coverage exists with direct unit coverage.",
@@ -156,7 +181,10 @@
       "legacy": ["test_codecept/ngIntegration/tests/features/caseFileView/**"],
       "journey": "Case file view and document sorting",
       "targetLayer": "e2e/integration",
-      "targets": ["playwright_tests_new/E2E/test/caseFileView/caseFileView.spec.ts", "playwright_tests_new/integration/test/caseFileView"],
+      "targets": [
+        "playwright_tests_new/E2E/test/caseFileView/caseFileView.spec.ts",
+        "playwright_tests_new/integration/test/caseFileView"
+      ],
       "status": "covered",
       "priority": "P3",
       "evidence": "E2E and integration coverage exists.",
@@ -170,7 +198,10 @@
       ],
       "journey": "Judicial booking and work access booking UI",
       "targetLayer": "integration",
-      "targets": ["playwright_tests_new/integration/test/bookingUI/booking-ui.positive.spec.ts", "playwright_tests_new/integration/test/bookingUI/booking-ui.negative.spec.ts"],
+      "targets": [
+        "playwright_tests_new/integration/test/bookingUI/booking-ui.positive.spec.ts",
+        "playwright_tests_new/integration/test/bookingUI/booking-ui.negative.spec.ts"
+      ],
       "status": "covered",
       "priority": "P3",
       "evidence": "Positive and negative booking UI coverage exists.",
@@ -184,7 +215,10 @@
       ],
       "journey": "Base case-list rendering, filters, pagination, optional fields, and a11y smoke",
       "targetLayer": "integration/e2e/a11y",
-      "targets": ["playwright_tests_new/integration/test/caseList/caseList.positive.spec.ts", "playwright_tests_new/integration/test/caseList/caseList.negative.spec.ts"],
+      "targets": [
+        "playwright_tests_new/integration/test/caseList/caseList.positive.spec.ts",
+        "playwright_tests_new/integration/test/caseList/caseList.negative.spec.ts"
+      ],
       "status": "partial",
       "priority": "P2",
       "evidence": "Core case-list coverage exists; a11y evidence is owned by EXUI-4688.",
@@ -223,10 +257,7 @@
     },
     {
       "id": "probate-refunds-and-exui-vs-ccd",
-      "legacy": [
-        "test_codecept/e2e/features/app/probateRefunds.feature",
-        "test_codecept/e2e/features/app/exuiVsccdUI.feature"
-      ],
+      "legacy": ["test_codecept/e2e/features/app/probateRefunds.feature", "test_codecept/e2e/features/app/exuiVsccdUI.feature"],
       "journey": "Probate refunds and EXUI versus CCD UI comparison checks",
       "targetLayer": "e2e/integration",
       "targets": [],

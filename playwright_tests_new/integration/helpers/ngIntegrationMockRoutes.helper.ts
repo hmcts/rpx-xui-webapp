@@ -4,7 +4,7 @@ import type { Page } from '@playwright/test';
 const require = createRequire(import.meta.url);
 
 const appConfigTemplate = require('../../../src/assets/config/config.json');
-const headerConfigTemplate = require('../../../test_codecept/ngIntegration/config/baseConfig.js');
+const headerConfigTemplate = require('../mocks/ngIntegrationHeaderConfig.mock.js');
 
 type UnknownRecord = Record<string, unknown>;
 

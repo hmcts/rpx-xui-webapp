@@ -37,10 +37,7 @@ const patternToRegex = (pattern) => {
     return new RegExp(`^${escapeRegex(normalised.slice(0, -3))}(?:/.*)?$`);
   }
 
-  const regex = normalised
-    .split('*')
-    .map(escapeRegex)
-    .join('[^/]*');
+  const regex = normalised.split('*').map(escapeRegex).join('[^/]*');
   return new RegExp(`^${regex}$`);
 };
 
@@ -50,12 +47,8 @@ const entries = parityMap.entries.map((entry) => ({
   matchers: entry.legacy.map(patternToRegex),
 }));
 
-const legacyFiles = legacyRoots
-  .flatMap((root) => walk(root, (file) => legacyExecutablePattern.test(file)))
-  .sort();
-const discoveredTargets = targetRoots
-  .flatMap((root) => walk(root, (file) => targetExecutablePattern.test(file)))
-  .sort();
+const legacyFiles = legacyRoots.flatMap((root) => walk(root, (file) => legacyExecutablePattern.test(file))).sort();
+const discoveredTargets = targetRoots.flatMap((root) => walk(root, (file) => targetExecutablePattern.test(file))).sort();
 
 const findEntry = (legacyFile) => entries.find((entry) => entry.matchers.some((matcher) => matcher.test(legacyFile)));
 const classified = legacyFiles.map((legacyFile) => ({ legacyFile, entry: findEntry(legacyFile) }));
@@ -83,9 +76,7 @@ const targetExists = (target) => {
 const missingRequiredTargets = entries
   .filter((entry) => ['covered', 'partial'].includes(entry.status))
   .flatMap((entry) =>
-    entry.targets
-      .filter((target) => !targetExists(target))
-      .map((target) => ({ id: entry.id, status: entry.status, target }))
+    entry.targets.filter((target) => !targetExists(target)).map((target) => ({ id: entry.id, status: entry.status, target }))
   );
 
 const statusCounts = entries.reduce((counts, entry) => {

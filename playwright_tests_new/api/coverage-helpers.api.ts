@@ -4,7 +4,7 @@ import { expectStatus, withRetry, __test__ as apiTestUtilsTest } from './utils/a
 import { resolveRoleAccessCaseId } from './data/testIds';
 import { __test__ as fixturesTest } from './fixtures';
 import { buildTaskSearchRequest, seedTaskId } from './utils/work-allocation';
-import { fetchFirstTask, guardedTaskSearch } from './utils/workAllocationUtils';
+import { fetchFirstTask, guardedTaskSearch, resolveWaCancellationTask } from './utils/workAllocationUtils';
 import { seedRoleAccessCaseId } from './utils/role-access';
 
 test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () => {
@@ -201,6 +201,80 @@ test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () =
     const successResult = await guardedTaskSearch(successClient, { view: 'AllWork' }, { timeoutMs: 7_500 });
     expect(successResult.status).toBe(200);
     expect(observedOptions[0]).toEqual(expect.objectContaining({ throwOnError: false, timeoutMs: 7_500 }));
+  });
+
+  test('resolveWaCancellationTask enforces strict live lookup only for dedicated WA solicitor runs', async () => {
+    const timeoutClient = {
+      post: async () => {
+        throw new Error('Timeout 10000ms exceeded');
+      },
+    };
+
+    await expect(
+      resolveWaCancellationTask(timeoutClient, {
+        envAssignedTaskId: 'env-assigned-task',
+        envTaskId: 'env-unassigned-task',
+        fallbackTaskId: 'fallback-task',
+        hasDedicatedWaSolicitor: true,
+        lookupLiveTask: true,
+      })
+    ).rejects.toThrow('Timeout 10000ms exceeded');
+
+    await expect(
+      resolveWaCancellationTask(timeoutClient, {
+        envAssignedTaskId: 'env-assigned-task',
+        envTaskId: 'env-unassigned-task',
+        fallbackTaskId: 'fallback-task',
+        hasDedicatedWaSolicitor: false,
+        lookupLiveTask: true,
+      })
+    ).resolves.toEqual({
+      liveLookupRequired: false,
+      liveLookupUsed: true,
+      taskId: 'env-assigned-task',
+      taskSource: 'env-assigned',
+    });
+  });
+
+  test('resolveWaCancellationTask keeps no-lookup and successful dynamic lookup paths explicit', async () => {
+    const noLookupClient = {
+      post: async () => {
+        throw new Error('Live lookup should not run when lookupLiveTask is false');
+      },
+    };
+
+    await expect(
+      resolveWaCancellationTask(noLookupClient, {
+        envTaskId: 'env-unassigned-task',
+        fallbackTaskId: 'fallback-task',
+        hasDedicatedWaSolicitor: false,
+        lookupLiveTask: false,
+      })
+    ).resolves.toEqual({
+      liveLookupRequired: false,
+      liveLookupUsed: false,
+      taskId: 'env-unassigned-task',
+      taskSource: 'env-unassigned',
+    });
+
+    const dynamicClient = {
+      post: async () => ({ status: 200, data: { tasks: [{ id: 'dynamic-task' }] } }),
+    };
+
+    await expect(
+      resolveWaCancellationTask(dynamicClient, {
+        envAssignedTaskId: 'env-assigned-task',
+        envTaskId: 'env-unassigned-task',
+        fallbackTaskId: 'fallback-task',
+        hasDedicatedWaSolicitor: true,
+        lookupLiveTask: true,
+      })
+    ).resolves.toEqual({
+      liveLookupRequired: true,
+      liveLookupUsed: true,
+      taskId: 'dynamic-task',
+      taskSource: 'dynamic',
+    });
   });
 
   test('seedRoleAccessCaseId covers success and failure paths', async () => {

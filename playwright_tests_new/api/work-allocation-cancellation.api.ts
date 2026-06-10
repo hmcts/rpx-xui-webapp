@@ -4,21 +4,19 @@ import type { TestInfo } from '@playwright/test';
 import { test, expect, type ApiFixtures } from './fixtures';
 import { WA_SAMPLE_ASSIGNED_TASK_ID, WA_SAMPLE_TASK_ID } from './data/testIds';
 import { expectStatus, StatusSets, withXsrf } from './utils/apiTestUtils';
-import { fetchFirstTask, resolveTaskIdWithEnvFallback } from './utils/workAllocationUtils';
+import { resolveWaCancellationTask, type WaCancellationTaskResolution } from './utils/workAllocationUtils';
 
 const fallbackTaskId = '00000000-0000-0000-0000-000000000000';
 const waSolicitorRole = 'waSolicitor';
-type TaskSource = 'dynamic' | 'env-assigned' | 'env-unassigned' | 'none';
-type TaskResolution = { liveLookupRequired: boolean; liveLookupUsed: boolean; taskId: string; taskSource: TaskSource };
 type ApiClientFactory = ApiFixtures['apiClientFor'];
 type WaRuntime = {
   client: PlaywrightApiClient;
   xsrfHeaders: Record<string, string>;
   hasDedicatedWaSolicitor: boolean;
-  task: TaskResolution;
+  task: WaCancellationTaskResolution;
 };
 
-let taskResolutionPromise: Promise<TaskResolution> | undefined;
+let taskResolutionPromise: Promise<WaCancellationTaskResolution> | undefined;
 
 const cancellationProcessMatrix = [
   {
@@ -46,43 +44,15 @@ function shouldLookupLiveWaTask(hasDedicatedWaSolicitor: boolean): boolean {
   return isTruthy(process.env.API_WA_CANCELLATION_LOOKUP_TASK);
 }
 
-async function resolveTask(client: PlaywrightApiClient, hasDedicatedWaSolicitor: boolean): Promise<TaskResolution> {
+async function resolveTask(client: PlaywrightApiClient, hasDedicatedWaSolicitor: boolean): Promise<WaCancellationTaskResolution> {
   if (!taskResolutionPromise) {
-    taskResolutionPromise = (async () => {
-      const liveLookupUsed = shouldLookupLiveWaTask(hasDedicatedWaSolicitor);
-      const configuredResolution = resolveTaskIdWithEnvFallback(
-        undefined,
-        WA_SAMPLE_ASSIGNED_TASK_ID,
-        WA_SAMPLE_TASK_ID,
-        fallbackTaskId
-      );
-      if (!liveLookupUsed) {
-        return {
-          liveLookupRequired: false,
-          liveLookupUsed,
-          taskId: configuredResolution.taskId,
-          taskSource: configuredResolution.source,
-        };
-      }
-
-      const firstTask = await fetchFirstTask(client, undefined, ['assigned', 'unassigned'], 'AllWork', {
-        failOnRequestError: false,
-        retries: 0,
-        timeoutMs: 10_000,
-      });
-      const resolution = resolveTaskIdWithEnvFallback(
-        firstTask?.id,
-        WA_SAMPLE_ASSIGNED_TASK_ID,
-        WA_SAMPLE_TASK_ID,
-        fallbackTaskId
-      );
-      return {
-        liveLookupRequired: hasDedicatedWaSolicitor,
-        liveLookupUsed,
-        taskId: resolution.taskId,
-        taskSource: resolution.source,
-      };
-    })();
+    taskResolutionPromise = resolveWaCancellationTask(client, {
+      envAssignedTaskId: WA_SAMPLE_ASSIGNED_TASK_ID,
+      envTaskId: WA_SAMPLE_TASK_ID,
+      fallbackTaskId,
+      hasDedicatedWaSolicitor,
+      lookupLiveTask: shouldLookupLiveWaTask(hasDedicatedWaSolicitor),
+    });
   }
   return taskResolutionPromise;
 }
@@ -116,7 +86,7 @@ function annotateTaskFallback(testInfo: TestInfo, runtime: WaRuntime): void {
     testInfo.annotations.push({
       type: task.liveLookupRequired ? 'warning' : 'notice',
       description: task.liveLookupRequired
-        ? 'Live AllWork lookup for the dedicated WA solicitor was unavailable or returned no task; using fallback task id for cancellation endpoint coverage.'
+        ? 'Live AllWork lookup for the dedicated WA solicitor completed but returned no task; using fallback task id for cancellation endpoint coverage.'
         : 'Optional live AllWork lookup was unavailable or returned no task; using fallback task id for cancellation endpoint coverage.',
     });
   }

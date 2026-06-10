@@ -1,11 +1,18 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { setupCaseFileViewDocumentBinaryMockRoutes, setupCaseFileViewMockRoutes } from '../../helpers';
+import {
+  setupCaseFileViewDocumentBinaryMockRoutes,
+  setupCaseFileViewMockRoutes,
+  setupCaseFileViewUserDetailsRoute,
+} from '../../helpers';
 import { CASE_FILE_VIEW_DOC_IDS, CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF } from '../../mocks/caseFileView.mock';
 import { applySessionCookies } from '../../../common/sessionCapture';
 
 const caseId = '1690807693531270';
 const fileViewOnUser = 'RESTRICTED_CASE_FILE_VIEW_ON';
-const fileViewOffUser = 'RESTRICTED_CASE_FILE_VIEW_OFF';
+const fileViewV1ModeUser = {
+  idamId: '6bd95a7f-9065-42a0-af4b-c0b6ed84e960',
+  email: 'xui_casefileview_v11_off@mailinator.com',
+};
 
 test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@integration-case-file-view'] }, () => {
   test('V1.1 shows tree view, media viewer, document count, folder hierarchy and upload stamps', async ({
@@ -159,10 +166,11 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
   });
 });
 
-test.describe(`Case file view as ${fileViewOffUser}`, { tag: ['@integration', '@integration-case-file-view'] }, () => {
-  test('V1 mode User still sees core case file view content', async ({ caseDetailsPage, caseFileViewPage, page }) => {
+test.describe('Case file view V1 mode', { tag: ['@integration', '@integration-case-file-view'] }, () => {
+  test('V1 mode user still sees core case file view content', async ({ caseDetailsPage, caseFileViewPage, page }) => {
     await test.step('Set up V1 case file view mocks', async () => {
-      await applySessionCookies(page, fileViewOffUser);
+      await applySessionCookies(page, fileViewOnUser);
+      await setupCaseFileViewUserDetailsRoute(page, fileViewV1ModeUser);
       await setupCaseFileViewMockRoutes(page, caseId);
       await setupCaseFileViewDocumentBinaryMockRoutes(page);
     });

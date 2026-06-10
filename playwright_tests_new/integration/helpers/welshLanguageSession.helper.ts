@@ -15,7 +15,6 @@ type SolicitorCredentialMapping = {
 const defaultWelshLanguageSessionMappings: readonly SolicitorCredentialMapping[] = [
   { userIdentifier: 'SOLICITOR', usernameEnv: 'SOLICITOR_USERNAME', passwordEnv: 'SOLICITOR_PASSWORD' },
   { userIdentifier: 'PRL_SOLICITOR', usernameEnv: 'PRL_SOLICITOR_USERNAME', passwordEnv: 'PRL_SOLICITOR_PASSWORD' },
-  { userIdentifier: 'WA_SOLICITOR', usernameEnv: 'WA_SOLICITOR_USERNAME', passwordEnv: 'WA_SOLICITOR_PASSWORD' },
   { userIdentifier: 'NOC_SOLICITOR', usernameEnv: 'NOC_SOLICITOR_USERNAME', passwordEnv: 'NOC_SOLICITOR_PASSWORD' },
 ] as const;
 const WELSH_LANGUAGE_LEASE_ROOT = path.join(process.cwd(), '.sessions', 'welsh-language-leases');

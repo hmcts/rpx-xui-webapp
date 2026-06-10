@@ -31,7 +31,7 @@ export class CaseFileViewPage extends Base {
 
   readonly documentHeader = this.container.locator('.document-folders-header .document-folders-header__title');
   readonly sortButton = this.container.locator('ccd-case-file-view-folder-sort button').first();
-  readonly sortMenu = this.page.locator('.cdk-overlay-pane').first();
+  readonly sortMenu = this.page.locator('.cdk-overlay-pane').filter({ hasText: 'Sort documents by name' }).first();
   readonly sortAscendingOption = this.sortMenu.getByText('A to Z ascending', { exact: true });
   readonly sortDescendingOption = this.sortMenu.getByText('Z to A descending', { exact: true });
   readonly sortRecentFirstOption = this.sortMenu.getByText('Recent first', { exact: true });
@@ -45,10 +45,7 @@ export class CaseFileViewPage extends Base {
     await this.container.waitFor({ state: 'visible' });
     await this.treeContainer.waitFor({ state: 'visible' });
     await this.treeRoot.waitFor({ state: 'attached' });
-    await Promise.any([
-      this.waitForVisibleDirectChildFolders(this.treeRoot),
-      this.emptyStateMessage.waitFor({ state: 'visible' }),
-    ]);
+    await this.waitForTreeContentReady();
     await this.mediaViewerContainer.waitFor({ state: 'visible' });
   }
 
@@ -141,32 +138,35 @@ export class CaseFileViewPage extends Base {
   }
 
   public async openSortMenu(): Promise<void> {
-    if (await this.sortMenu.isVisible()) {
+    if (await this.sortAscendingOption.isVisible()) {
       return;
-    } else {
-      await this.sortButton.click();
-      await this.sortMenu.waitFor({ state: 'visible' });
     }
+
+    await this.sortButton.click();
+    await this.sortMenu.waitFor({ state: 'visible' });
+    await this.sortAscendingOption.waitFor({ state: 'visible' });
   }
 
   public async sortByAscending(): Promise<void> {
-    await this.openSortMenu();
-    await this.sortAscendingOption.click();
+    await this.selectSortOption(this.sortAscendingOption);
   }
 
   public async sortByDescending(): Promise<void> {
-    await this.openSortMenu();
-    await this.sortDescendingOption.click();
+    await this.selectSortOption(this.sortDescendingOption);
   }
 
   public async sortByRecentFirst(): Promise<void> {
-    await this.openSortMenu();
-    await this.sortRecentFirstOption.click();
+    await this.selectSortOption(this.sortRecentFirstOption);
   }
 
   public async sortByOldestFirst(): Promise<void> {
+    await this.selectSortOption(this.sortOldestFirstOption);
+  }
+
+  private async selectSortOption(option: Locator): Promise<void> {
     await this.openSortMenu();
-    await this.sortOldestFirstOption.click();
+    await option.click();
+    await this.sortMenu.waitFor({ state: 'hidden', timeout: 5_000 }).catch(() => undefined);
   }
 
   private async findDirectChildFolderNode(scope: Locator, folderName: string): Promise<Locator> {
@@ -226,7 +226,9 @@ export class CaseFileViewPage extends Base {
         return fileButton;
       }
 
-      await folderButton.click({ timeout: CASE_FILE_VIEW_DOCUMENT_TIMEOUT_MS }).catch(() => undefined);
+      if ((await folderButton.getAttribute('aria-expanded').catch(() => null)) !== 'true') {
+        await folderButton.click({ timeout: CASE_FILE_VIEW_DOCUMENT_TIMEOUT_MS }).catch(() => undefined);
+      }
       if (await this.waitForLocatorVisible(fileButton, 1_000)) {
         return fileButton;
       }
@@ -276,8 +278,8 @@ export class CaseFileViewPage extends Base {
     return /detached|not attached|not stable|not visible/i.test(String(error));
   }
 
-  private async waitForVisibleDirectChildFolders(scope: Locator): Promise<void> {
-    const folderLabels = scope.locator(
+  private async waitForTreeContentReady(): Promise<void> {
+    const folderLabels = this.treeRoot.locator(
       ':scope > cdk-nested-tree-node.document-tree-container__folder > button .node__name--folder:not(.document-tree-invisible)'
     );
     const deadline = Date.now() + CASE_FILE_VIEW_FOLDER_TIMEOUT_MS;
@@ -288,10 +290,14 @@ export class CaseFileViewPage extends Base {
         return;
       }
 
+      if (await this.emptyStateMessage.isVisible().catch(() => false)) {
+        return;
+      }
+
       await this.page.waitForTimeout(CASE_FILE_VIEW_FOLDER_POLL_INTERVAL_MS);
     }
 
-    throw new Error('Case file view did not render any visible direct child folders before timeout.');
+    throw new Error('Case file view did not render visible folders or the empty state before timeout.');
   }
 
   private async collectVisibleFolderNames(folderLabels: Locator): Promise<string[]> {

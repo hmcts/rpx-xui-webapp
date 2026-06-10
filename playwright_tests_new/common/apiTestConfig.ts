@@ -6,6 +6,12 @@ export function resolveTestEnv(value?: string): string {
   return value !== undefined && (value.includes('aat') || value.includes('demo')) ? value : 'aat';
 }
 
+function resolveCredential(fallback: string, ...candidates: Array<string | undefined>): string {
+  return (
+    candidates.map((candidate) => candidate?.trim()).find((candidate): candidate is string => Boolean(candidate)) ?? fallback
+  );
+}
+
 export const config = {
   baseUrl: resolveBaseUrl(process.env.TEST_URL),
   jurisdictions: {
@@ -32,11 +38,27 @@ export const config = {
   users: {
     aat: {
       solicitor: { e: 'xui_auto_test_user_solicitor@mailinator.com', sec: 'Monday01' },
+      waSolicitor: {
+        e: resolveCredential(
+          'xui_auto_test_user_solicitor@mailinator.com',
+          process.env.WA_SOLICITOR_USERNAME,
+          process.env.SOLICITOR_USERNAME
+        ),
+        sec: resolveCredential('Monday01', process.env.WA_SOLICITOR_PASSWORD, process.env.SOLICITOR_PASSWORD),
+      },
       caseOfficer_r1: { e: 'xui_auto_co_r1@justice.gov.uk', sec: 'Welcome01' },
       caseOfficer_r2: { e: 'xui_auto_co_r2@justice.gov.uk', sec: 'Welcome01' },
     },
     demo: {
       solicitor: { e: 'peterxuisuperuser@mailnesia.com', sec: 'Monday01' },
+      waSolicitor: {
+        e: resolveCredential(
+          'peterxuisuperuser@mailnesia.com',
+          process.env.WA_SOLICITOR_USERNAME,
+          process.env.SOLICITOR_USERNAME
+        ),
+        sec: resolveCredential('Monday01', process.env.WA_SOLICITOR_PASSWORD, process.env.SOLICITOR_PASSWORD),
+      },
       caseOfficer_r1: { e: 'xui_caseofficer@justice.gov.uk', sec: 'Welcome01' },
       caseOfficer_r2: { e: 'CRD_func_test_demo_user@justice.gov.uk', sec: 'AldgateT0wer' },
     },

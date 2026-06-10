@@ -117,6 +117,7 @@ ignore/
 
 #playwright
 test-results/
+.cache/
 
 # Accidental duplicates (do not commit)
 /.c8rc.json

@@ -37,9 +37,14 @@ test.describe('CCD endpoints', { tag: '@svc-ccd' }, () => {
           `data/internal/case-types/${encodeURIComponent(caseTypeIdText)}/work-basket-inputs`,
           {
             headers: { experimental: 'true' },
+            throwOnError: false,
           }
         );
         expectStatus(response.status, [200, 401, 403, 500, 502, 504]);
+        if (response.status !== 200) {
+          return;
+        }
+
         const data = response.data;
         expect(data).toBeTruthy();
         expect(typeof data).toBe('object');

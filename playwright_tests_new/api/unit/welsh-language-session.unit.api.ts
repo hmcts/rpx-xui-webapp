@@ -9,13 +9,13 @@ test.describe('welsh language session helper', { tag: '@svc-internal' }, () => {
     expect(resolveWelshLanguageSessionUsers({} as NodeJS.ProcessEnv)).toEqual(['SOLICITOR']);
   });
 
-  test('uses the configured solicitor pool and removes duplicate underlying accounts', () => {
+  test('uses the configured Welsh-compatible solicitor pool and ignores WA-specific credentials', () => {
     const env = {
       SOLICITOR_USERNAME: 'solicitor@example.test',
       SOLICITOR_PASSWORD: 'sol-password',
       PRL_SOLICITOR_USERNAME: 'prl@example.test',
       PRL_SOLICITOR_PASSWORD: 'prl-password',
-      WA_SOLICITOR_USERNAME: 'solicitor@example.test',
+      WA_SOLICITOR_USERNAME: 'wa@example.test',
       WA_SOLICITOR_PASSWORD: 'wa-password',
     } as NodeJS.ProcessEnv;
 

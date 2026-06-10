@@ -164,7 +164,11 @@ export class CaseHearingsListComponent implements OnInit {
         this.loadHearingRequestAndRedirect(hearing.hearingID, '/hearings/view/hearing-cancellation-summary', this.caseId);
         break;
       case EXUIDisplayStatusEnum.CANCELLED:
-        this.loadHearingRequestAndRedirect(hearing.hearingID, `/hearings/view/hearing-cancelled-summary/${hearing.hearingID}`);
+        this.loadHearingRequestAndRedirect(
+          hearing.hearingID,
+          `/hearings/view/hearing-cancelled-summary/${hearing.hearingID}`,
+          this.caseId
+        );
         break;
       case EXUIDisplayStatusEnum.COMPLETED:
         this.loadHearingRequestAndRedirect(

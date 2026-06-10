@@ -7,6 +7,7 @@ const FILTER_PANEL_READY_TIMEOUT_MS = 10_000;
 const FILTER_CONTROL_READY_TIMEOUT_MS = 15_000;
 const FILTER_GROUP_OPERATION_TIMEOUT_MS = 30_000;
 const FILTER_CHECKBOX_STATE_TIMEOUT_MS = 5_000;
+const FILTER_APPLY_READY_TIMEOUT_MS = 2_000;
 const FILTER_INTERACTION_ATTEMPTS = 2;
 const FILTER_APPLY_CLICK_ATTEMPTS = 3;
 const TASK_LIST_NAVIGATION_ATTEMPTS = 2;
@@ -339,18 +340,28 @@ export class TaskListPage extends Base {
   }
 
   private async waitForTaskListShellReadyAfterNavigation(urlPattern: RegExp, context: string, timeoutMs: number): Promise<void> {
-    try {
-      await this.waitForTaskListShellReady(context);
-      return;
-    } catch (error) {
-      if (!(await this.isBlankTaskListDocument(urlPattern))) {
-        throw error;
-      }
+    const shellReadyAttemptTimeoutMs = Math.min(timeoutMs, 15_000);
+    let lastError: unknown;
 
-      await this.reloadBlankTaskListDocumentIfNeeded(urlPattern, context, timeoutMs);
-      await this.waitForTaskListSpinnerToSettle(10_000);
-      await this.waitForTaskListShellReady(`${context} after blank-page reload`);
+    for (let attempt = 1; attempt <= TASK_LIST_NAVIGATION_ATTEMPTS; attempt += 1) {
+      try {
+        await this.waitForTaskListShellReady(
+          attempt === 1 ? context : `${context} after blank-page reload`,
+          shellReadyAttemptTimeoutMs
+        );
+        return;
+      } catch (error) {
+        lastError = error;
+        if (!(await this.isBlankTaskListDocument(urlPattern))) {
+          throw error;
+        }
+
+        await this.reloadBlankTaskListDocumentIfNeeded(urlPattern, `${context} shell attempt ${attempt}`, timeoutMs);
+        await this.waitForTaskListSpinnerToSettle(10_000);
+      }
     }
+
+    throw lastError instanceof Error ? lastError : new Error(`Task list shell was not ready while ${context}.`);
   }
 
   private async recoverBlankTaskListDocumentAfterNavigation(
@@ -414,10 +425,10 @@ export class TaskListPage extends Base {
     return this.page.url().includes('/service-down') || (await this.serviceDownError.isVisible().catch(() => false));
   }
 
-  async waitForTaskListShellReady(context: string) {
+  async waitForTaskListShellReady(context: string, timeoutMs = TASK_LIST_READY_TIMEOUT_MS) {
     await this.page
       .waitForURL(/\/(?:work\/(?:my-work\/(?:list|available|my-cases|my-access)|all-work\/(?:tasks|cases)))/, {
-        timeout: TASK_LIST_READY_TIMEOUT_MS,
+        timeout: timeoutMs,
       })
       .catch(() => undefined);
     await this.waitForTaskListSpinnerToSettle(10_000);
@@ -433,7 +444,7 @@ export class TaskListPage extends Base {
         ['error-page', this.errorPageHeading],
       ],
       `task list shell (${context})`,
-      TASK_LIST_READY_TIMEOUT_MS
+      timeoutMs
     );
 
     if (bootstrapSignal === 'error-page') {
@@ -513,6 +524,9 @@ export class TaskListPage extends Base {
 
     while (Date.now() < targetDeadlineMs) {
       this.assertFilterInteractionAlive(`waiting for checkbox "${description}"`, deadlineMs);
+      if (!(await this.isFilterPanelOpen())) {
+        await this.openFilterPanel(deadlineMs);
+      }
       if (await targetCheckbox.isVisible().catch(() => false)) {
         await expect(targetCheckbox).toBeEnabled({
           timeout: this.resolveInteractionTimeout(deadlineMs, FILTER_CHECKBOX_STATE_TIMEOUT_MS),
@@ -633,10 +647,22 @@ export class TaskListPage extends Base {
     let lastError: Error | undefined;
 
     for (let attempt = 1; attempt <= FILTER_APPLY_CLICK_ATTEMPTS; attempt += 1) {
-      await this.applyFilterButton.waitFor({
-        state: 'visible',
-        timeout: this.resolveInteractionTimeout(deadlineMs, FILTER_GROUP_OPERATION_TIMEOUT_MS),
-      });
+      await this.openFilterPanel(deadlineMs);
+
+      try {
+        await this.applyFilterButton.waitFor({
+          state: 'visible',
+          timeout: this.resolveInteractionTimeout(deadlineMs, FILTER_APPLY_READY_TIMEOUT_MS),
+        });
+      } catch (error) {
+        lastError = error as Error;
+        await this.assertTaskListInteractive(`waiting for Apply filter button attempt ${attempt}`);
+        if (attempt === FILTER_APPLY_CLICK_ATTEMPTS) {
+          throw lastError;
+        }
+        await this.page.waitForTimeout(250);
+        continue;
+      }
 
       try {
         await this.applyFilterButton.click({ timeout: this.resolveInteractionTimeout(deadlineMs, 5_000) });
@@ -763,6 +789,15 @@ export class TaskListPage extends Base {
     await this.openFilterPanel();
     await this.waitForFilterCheckboxVisible(this.selectAllServicesFilter, 'select all services');
     await this.waitForFilterCheckboxVisible(this.selectAllTypesOfWorksFilter, 'select all types of work');
+  }
+
+  async waitForServiceFilterOptionVisible(serviceLabel: string, deadlineMs?: number): Promise<Locator> {
+    await this.openFilterPanel(deadlineMs);
+    return this.waitForFilterCheckboxVisible(
+      this.filterPanel.getByLabel(serviceLabel),
+      `service filter option "${serviceLabel}"`,
+      deadlineMs
+    );
   }
 
   async expectAccessTasksAndCasesTextVisible() {

@@ -35,8 +35,8 @@ test.describe('My work filter parity', { tag: ['@integration', '@integration-man
 
       await taskListPage.openFilterPanel();
       await expect(taskListPage.taskListFilterToggle).toHaveText('Hide work filter');
-      await expect(taskListPage.filterPanel.getByLabel('Immigration and Asylum')).toBeVisible();
-      await expect(taskListPage.filterPanel.getByLabel('Social security and child support')).toBeVisible();
+      await taskListPage.waitForServiceFilterOptionVisible('Immigration and Asylum');
+      await taskListPage.waitForServiceFilterOptionVisible('Social security and child support');
       await expect(taskListPage.filterPanel).toContainText('Search for a location by name');
 
       await taskListPage.applyCurrentFilters();
@@ -52,8 +52,8 @@ test.describe('My work filter parity', { tag: ['@integration', '@integration-man
 
         await taskListPage.openFilterPanel();
         await expect(taskListPage.taskListFilterToggle).toHaveText('Hide work filter');
-        await expect(taskListPage.filterPanel.getByLabel('Immigration and Asylum')).toBeVisible();
-        await expect(taskListPage.filterPanel.getByLabel('Social security and child support')).toBeVisible();
+        await taskListPage.waitForServiceFilterOptionVisible('Immigration and Asylum');
+        await taskListPage.waitForServiceFilterOptionVisible('Social security and child support');
         await expect(taskListPage.filterPanel).toContainText('Search for a location by name');
 
         await taskListPage.applyCurrentFilters();
@@ -116,10 +116,12 @@ test.describe('My work filter parity', { tag: ['@integration', '@integration-man
       await taskListPage.gotoMyCases();
       await taskListPage.openFilterPanel();
 
-      await taskListPage.filterPanel.getByLabel('Civil').uncheck();
-      await expect(taskListPage.filterPanel.getByLabel('Civil')).not.toBeChecked();
-      await taskListPage.filterPanel.getByLabel('Immigration and Asylum').uncheck();
-      await expect(taskListPage.filterPanel.getByLabel('Immigration and Asylum')).not.toBeChecked();
+      const civilServiceFilter = await taskListPage.waitForServiceFilterOptionVisible('Civil');
+      await civilServiceFilter.uncheck();
+      await expect(civilServiceFilter).not.toBeChecked();
+      const immigrationServiceFilter = await taskListPage.waitForServiceFilterOptionVisible('Immigration and Asylum');
+      await immigrationServiceFilter.uncheck();
+      await expect(immigrationServiceFilter).not.toBeChecked();
 
       await taskListPage.applyCurrentFilters();
       await taskListPage.openFilterPanel();
@@ -128,17 +130,21 @@ test.describe('My work filter parity', { tag: ['@integration', '@integration-man
     });
 
     await test.step('Re-select Immigration and Asylum and verify the filter can be applied again', async () => {
-      await taskListPage.filterPanel.getByLabel('Immigration and Asylum').check();
-      await expect(taskListPage.filterPanel.getByLabel('Immigration and Asylum')).toBeChecked();
-      await expect(taskListPage.filterPanel.getByLabel('Civil')).not.toBeChecked();
+      const immigrationServiceFilter = await taskListPage.waitForServiceFilterOptionVisible('Immigration and Asylum');
+      await immigrationServiceFilter.check();
+      await expect(immigrationServiceFilter).toBeChecked();
+      const civilServiceFilter = await taskListPage.waitForServiceFilterOptionVisible('Civil');
+      await expect(civilServiceFilter).not.toBeChecked();
 
       await taskListPage.applyCurrentFilters();
       await expect(taskListPage.taskListFilterToggle).toHaveText('Show work filter');
       await expect(taskListPage.filterPanel).toBeHidden();
 
       await taskListPage.openFilterPanel();
-      await expect(taskListPage.filterPanel.getByLabel('Immigration and Asylum')).toBeChecked();
-      await expect(taskListPage.filterPanel.getByLabel('Civil')).not.toBeChecked();
+      const reopenedImmigrationServiceFilter = await taskListPage.waitForServiceFilterOptionVisible('Immigration and Asylum');
+      await expect(reopenedImmigrationServiceFilter).toBeChecked();
+      const reopenedCivilServiceFilter = await taskListPage.waitForServiceFilterOptionVisible('Civil');
+      await expect(reopenedCivilServiceFilter).not.toBeChecked();
     });
   });
 
@@ -192,32 +198,31 @@ test.describe('My work filter parity', { tag: ['@integration', '@integration-man
       const fullLocationServiceCodeCalls: string[][] = [];
 
       await setupMyWorkFilterRoutes(page, {
+        fullLocationRouteHandler: async (route) => {
+          const requestUrl = new URL(route.request().url());
+          const rawServiceCodes = requestUrl.searchParams.get('serviceCodes') ?? '';
+          fullLocationServiceCodeCalls.push(
+            rawServiceCodes
+              .split(',')
+              .map((serviceCode) => serviceCode.trim())
+              .filter(Boolean)
+              .sort()
+          );
+
+          await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify(myWorkSelectableLocations),
+          });
+        },
         roleAssignmentInfo: scenario.roleAssignmentInfo,
-      });
-
-      await page.route('**/workallocation/full-location*', async (route) => {
-        const requestUrl = new URL(route.request().url());
-        const rawServiceCodes = requestUrl.searchParams.get('serviceCodes') ?? '';
-        fullLocationServiceCodeCalls.push(
-          rawServiceCodes
-            .split(',')
-            .map((serviceCode) => serviceCode.trim())
-            .filter(Boolean)
-            .sort()
-        );
-
-        await route.fulfill({
-          status: 200,
-          contentType: 'application/json',
-          body: JSON.stringify(myWorkSelectableLocations),
-        });
       });
 
       await taskListPage.goto();
       await taskListPage.openFilterPanel();
 
       for (const expectedServiceLabel of scenario.expectedVisibleServices) {
-        await expect(taskListPage.filterPanel.getByLabel(expectedServiceLabel)).toBeVisible();
+        await taskListPage.waitForServiceFilterOptionVisible(expectedServiceLabel);
       }
 
       for (const unexpectedServiceLabel of scenario.unexpectedServices) {

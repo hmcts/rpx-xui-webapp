@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test';
+import type { Page, Route } from '@playwright/test';
 import { buildMyCases } from '../mocks/myCases.mock';
 import { buildTaskListMock, myActionsList } from '../mocks/taskList.mock';
 import { setupMyCasesRoutes } from './manageTasksMockRoutes.helper';
@@ -79,6 +79,7 @@ const resolvedBaseLocations = [
 ];
 
 export type MyWorkFilterRoutesOptions = {
+  fullLocationRouteHandler?: (route: Route) => Promise<void>;
   myCasesRouteHandler?: Parameters<typeof setupMyCasesRoutes>[2]['routeHandler'];
   roleAssignmentInfo: TaskListBootstrapRoleAssignment[];
 };
@@ -138,6 +139,11 @@ export async function setupMyWorkFilterRoutes(page: Page, options: MyWorkFilterR
   });
 
   await page.route('**/workallocation/full-location*', async (route) => {
+    if (options.fullLocationRouteHandler) {
+      await options.fullLocationRouteHandler(route);
+      return;
+    }
+
     await route.fulfill({
       status: 200,
       contentType: 'application/json',

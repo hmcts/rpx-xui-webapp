@@ -6,7 +6,7 @@ import { catchError, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import * as fromAppStoreActions from '../../../app/store/actions';
 import * as hearingValuesActions from '../../../hearings/store/actions/hearing-values.action';
 import { HttpError } from '../../../models/httpError.model';
-import { HearingValuesCaseContext, ResolvedHearingValuesCaseContext } from '../../models/hearingValuesStateData';
+import { HearingValuesCaseContext, ResolvedHearingValuesCaseContext } from '../../models/hearingCaseContext.model';
 import { HearingsService } from '../../services/hearings.service';
 import * as fromHearingReducers from '../../store/reducers';
 

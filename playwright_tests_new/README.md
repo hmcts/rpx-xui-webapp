@@ -58,6 +58,9 @@ TEST_URL=http://localhost:3000 yarn test:playwrightE2E --project=chromium --work
 
 # Direct E2E run without the load-profile wrapper
 yarn test:playwrightE2E:raw
+
+# Dedicated accessibility suite. Produces functional-output/tests/playwright-a11y/odhin-report/xui-playwright-a11y.html.
+yarn test:a11y:playwright
 ```
 
 ### API commands
@@ -443,6 +446,8 @@ rm -rf .sessions && npx playwright test
 ### E2E Tag Filtering
 
 - E2E suites are tagged with `@e2e` plus feature tags such as `@e2e-search-case` and `@e2e-manage-tasks`.
+- Accessibility specs use `@a11y` and are excluded from default E2E unless `PLAYWRIGHT_INCLUDE_A11Y=true` or `yarn test:a11y:playwright` is used.
+- Accessibility runs default to 6 workers; override with `PW_A11Y_WORKERS` when a lower local worker count is needed.
 - Default excluded tags are read from `playwright_tests_new/E2E/tag-filter.json` (`excludedTags` array).
 - E2E default exclusions are currently empty so the full non-smoke E2E suite runs by default; smoke remains a separate Playwright project and Jenkins smoke stage.
 - Override excludes at runtime with `E2E_PW_EXCLUDED_TAGS_OVERRIDE`.

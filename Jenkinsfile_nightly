@@ -64,6 +64,8 @@ def archivePlaywrightDiagnostics = {
 
 def playwrightIntegrationReportFile = 'xui-playwright-integration.html'
 def playwrightLoadProfileReportFile = 'load-profile.html'
+def playwrightA11yReportDir = 'functional-output/tests/playwright-a11y/odhin-report'
+def playwrightA11yReportFile = 'xui-playwright-a11y.html'
 
 def assertHtmlReportExists = { String reportDir, String reportFile ->
     steps.sh "test -f '${reportDir}/${reportFile}'"
@@ -81,6 +83,26 @@ def ensureHtmlReportForPublishing = { String reportDir, String reportFile, Strin
               --report-file "$PW_ODHIN_ENSURE_REPORT_FILE" \
               --suite-name "$PW_ODHIN_ENSURE_SUITE_NAME"
         '''
+    }
+}
+
+def publishPlaywrightA11yReport = { String reportName ->
+    try {
+        ensureHtmlReportForPublishing(
+            playwrightA11yReportDir,
+            playwrightA11yReportFile,
+            reportName
+        )
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "${playwrightA11yReportDir}/",
+            reportFiles          : playwrightA11yReportFile,
+            reportName           : reportName
+        ])
+    } catch (Exception e) {
+        echo "[playwright-a11y] Report publish failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
     }
 }
 
@@ -230,7 +252,6 @@ def runPlaywrightIntegrationProfileMatrix = {
               'ORG_USER_ASSIGNMENT_MODE=external',
               'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
               "FUNCTIONAL_TESTS_WORKERS=${runConfig.workers}",
-              'PLAYWRIGHT_SKIP_INSTALL=true',
               "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
             ]) {
               yarnBuilder.yarn("test:playwright:integration:raw -- --workers=${runConfig.workers}${runConfig.shardArg}")
@@ -353,6 +374,7 @@ withNightlyPipeline(type, product, component) {
     
       afterSuccess('checkout') {
         startCiLoadProfile()
+        env.PLAYWRIGHT_BROWSERS_PATH = "${env.WORKSPACE}/.cache/ms-playwright"
         stage('Yarn Install') {
           try {
             recordPlaywrightLoadEvent('Yarn install', 'start')
@@ -366,6 +388,18 @@ withNightlyPipeline(type, product, component) {
           yarnBuilder.yarn('cache clean')
         } finally {
           recordPlaywrightLoadEvent('Yarn cache clean', 'finish')
+        }
+        stage('Playwright Install All Browsers') {
+            try {
+              recordPlaywrightLoadEvent('Playwright browser install', 'start')
+              yarnBuilder.yarn('test:setup:playwright-install-all')
+              yarnBuilder.yarn('test:setup:playwright-verify-all')
+              env.PLAYWRIGHT_SKIP_INSTALL = 'true'
+            } catch (Error) {
+              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            } finally {
+              recordPlaywrightLoadEvent('Playwright browser install', 'finish')
+            }
         }
     }
 
@@ -405,17 +439,6 @@ withNightlyPipeline(type, product, component) {
     afterSuccess('fortify-scan') {
       try {
       recordPlaywrightLoadEvent('Nightly functional tests', 'start')
-        stage('Playwright Install All Browsers') {
-            try {
-              recordPlaywrightLoadEvent('Playwright browser install', 'start')
-              yarnBuilder.yarn('test:setup:playwright-install-all')
-            } catch (Error) {
-              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
-            } finally {
-              recordPlaywrightLoadEvent('Playwright browser install', 'finish')
-            }
-        }
-
         stage('Nightly Functional Tests (Parallel Report Gathering)') {
             // Keep suites parallel for fast feedback, but let sibling suites publish reports when one branch fails.
             parallel(
@@ -473,7 +496,6 @@ withNightlyPipeline(type, product, component) {
                                 'E2E_PW_INCLUDE_TAGS=@nightly',
                                 'E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none',
                                 'PW_SESSION_CAPTURE_FAILURE_TTL_MS=0',
-                                'PLAYWRIGHT_SKIP_INSTALL=true',
                                 "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
                             ]) {
                                 yarnBuilder.yarn('test:crossbrowser:raw')
@@ -493,6 +515,33 @@ withNightlyPipeline(type, product, component) {
                             ])
                         }
                     }
+                },
+                playwrightA11y: {
+                    stage('Playwright Accessibility Tests') {
+                        try {
+                            recordPlaywrightLoadEvent('A11y', 'start')
+                            withEnv([
+                                'ORG_USER_ASSIGNMENT_MODE=external',
+                                'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
+                                'PW_A11Y_WORKERS=6',
+                                'FUNCTIONAL_TESTS_WORKERS=6',
+                                'PLAYWRIGHT_SKIP_INSTALL=true',
+                                'PW_SESSION_CAPTURE_FAILURE_TTL_MS=0',
+                                "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
+                            ]) {
+                                yarnBuilder.yarn('test:a11y:playwright')
+                            }
+                            assertHtmlReportExists(
+                                playwrightA11yReportDir,
+                                playwrightA11yReportFile
+                            )
+                        } catch (Exception e) {
+                            echo "[parallel-report-gathering] Playwright Accessibility failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
+                        } finally {
+                            recordPlaywrightLoadEvent('A11y', 'finish')
+                            publishPlaywrightA11yReport('Nightly Playwright Accessibility Test Report')
+                        }
+                    }
                 }
             )
         }
@@ -500,16 +549,6 @@ withNightlyPipeline(type, product, component) {
         recordPlaywrightLoadEvent('Nightly functional tests', 'finish')
         archivePlaywrightDiagnostics()
       }
-
-        // yarnBuilder.yarn('test:a11y')
-        // publishHTML([
-        //     allowMissing         : true,
-        //     alwaysLinkToLastBuild: true,
-        //     keepAll              : true,
-        //     reportDir            : "reports/tests/a11y/",
-        //     reportFiles          : 'Report.html',
-        //     reportName           : 'Manage Cases a11y Test Report'
-        // ])
     }
 
 

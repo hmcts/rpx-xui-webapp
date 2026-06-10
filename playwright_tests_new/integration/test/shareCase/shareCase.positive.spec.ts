@@ -3,6 +3,8 @@ import { applySessionCookies } from '../../../common/sessionCapture';
 import {
   clearPersistedCaseListState,
   getCaseSelectionControls,
+  hasExpectedShareCaseIds,
+  parseShareCaseIds,
   selectCaseRows,
   setupCaseListMocks,
   setupShareCaseApiRoutes,
@@ -24,7 +26,7 @@ test.describe('Share case journeys', { tag: ['@integration', '@integration-share
     const selectedCaseIds = caseListMock.results.map((result) => result.case_fields['[CASE_REFERENCE]']);
     const shareCasesRequest = page.waitForRequest((request) => {
       const requestUrl = new URL(request.url());
-      return requestUrl.pathname === '/api/caseshare/cases' && selectedCaseIds.every((caseId) => request.url().includes(caseId));
+      return requestUrl.pathname === '/api/caseshare/cases' && hasExpectedShareCaseIds(requestUrl.searchParams, selectedCaseIds);
     });
 
     await setupShareCaseApiRoutes(page, { caseIds: selectedCaseIds });
@@ -40,7 +42,6 @@ test.describe('Share case journeys', { tag: ['@integration', '@integration-share
     await expect(page.getByRole('heading', { name: /add recipient/i })).toBeVisible();
 
     const requestUrl = new URL((await shareCasesRequest).url());
-    expect(requestUrl.searchParams.get('case_ids')).toContain(selectedCaseIds[0]);
-    expect(requestUrl.searchParams.get('case_ids')).toContain(selectedCaseIds[1]);
+    expect(parseShareCaseIds(requestUrl.searchParams).sort()).toEqual([...selectedCaseIds].sort());
   });
 });

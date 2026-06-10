@@ -4,6 +4,8 @@ import {
   clearPersistedCaseListState,
   expectCaseListSummary,
   getCaseSelectionControls,
+  hasExpectedShareCaseIds,
+  parseShareCaseIds,
   selectCaseRows,
   setupCaseListMocks,
   setupShareCaseApiRoutes,
@@ -30,6 +32,7 @@ test.describe('Case list selection parity', { tag: ['@integration', '@integratio
     const pageTwoMock = buildCaseListMockForPage(totalResults, 2, PAGE_SIZE);
     const firstCaseId = pageOneMock.results[0].case_fields['[CASE_REFERENCE]'];
     const secondCaseId = pageTwoMock.results[0].case_fields['[CASE_REFERENCE]'];
+    const selectedCaseIds = [firstCaseId, secondCaseId];
 
     await setupShareCaseApiRoutes(page, { caseIds: [firstCaseId, secondCaseId] });
     await setupCaseListMocks(page, {
@@ -63,16 +66,14 @@ test.describe('Case list selection parity', { tag: ['@integration', '@integratio
 
     const shareCasesRequest = page.waitForRequest((request) => {
       const requestUrl = new URL(request.url());
-      const caseIds = requestUrl.searchParams.get('case_ids') ?? '';
-      return requestUrl.pathname === '/api/caseshare/cases' && caseIds.includes(firstCaseId) && caseIds.includes(secondCaseId);
+      return requestUrl.pathname === '/api/caseshare/cases' && hasExpectedShareCaseIds(requestUrl.searchParams, selectedCaseIds);
     });
 
     await page.locator('#btn-share-button').click();
     await expect(page).toHaveURL(/\/cases\/case-share\?init=true/);
 
     const requestUrl = new URL((await shareCasesRequest).url());
-    expect(requestUrl.searchParams.get('case_ids')).toContain(firstCaseId);
-    expect(requestUrl.searchParams.get('case_ids')).toContain(secondCaseId);
+    expect(parseShareCaseIds(requestUrl.searchParams).sort()).toEqual([...selectedCaseIds].sort());
   });
 
   test('keep the share action disabled until at least one case is selected', async ({ caseListPage, page }) => {

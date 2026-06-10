@@ -31,6 +31,17 @@ async function fulfillJson(route: Route, body: unknown, status = 200): Promise<v
   await route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) });
 }
 
+export function parseShareCaseIds(searchParams: URLSearchParams): string[] {
+  return (searchParams.get('case_ids') ?? '')
+    .split(',')
+    .map((caseId) => caseId.trim())
+    .filter(Boolean);
+}
+
+export function hasExpectedShareCaseIds(searchParams: URLSearchParams, expectedCaseIds: string[]): boolean {
+  return [...parseShareCaseIds(searchParams)].sort().join(',') === [...expectedCaseIds].sort().join(',');
+}
+
 export async function setupShareCaseBootstrapRoutes(page: Page): Promise<void> {
   const userDetails = buildShareCaseUserDetails();
 
@@ -90,10 +101,7 @@ export async function setupShareCaseApiRoutes(
   await page.route('**/api/caseshare/users*', async (route) => fulfillJson(route, users));
   await page.route('**/api/caseshare/cases*', async (route) => {
     const requestUrl = new URL(route.request().url());
-    const caseIds = (requestUrl.searchParams.get('case_ids') ?? '')
-      .split(',')
-      .map((caseId) => caseId.trim())
-      .filter(Boolean);
+    const caseIds = parseShareCaseIds(requestUrl.searchParams);
     await fulfillJson(route, buildSharedCases(caseIds.length > 0 ? caseIds : seededCaseIds));
   });
   await page.route('**/api/caseshare/case-assignments*', async (route) => {

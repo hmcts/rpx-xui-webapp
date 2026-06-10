@@ -40,7 +40,7 @@ export class MockHearingAnswersPipe implements PipeTransform {
   standalone: false,
   template: ` <div>Nothing</div>`,
 })
-class NothingComponent {}
+class NothingComponent { }
 
 describe('HearingActualsAddEditSummaryComponent', () => {
   let component: HearingActualsAddEditSummaryComponent;
@@ -174,7 +174,7 @@ describe('HearingActualsAddEditSummaryComponent', () => {
 
   it('should navigate to back page if caseId not available when click back button', () => {
     spyOn(component.sessionStorageService, 'getItem').and.returnValue(null);
-    const historyBackSpy = spyOn(window.history, 'back');
+    const historyBackSpy = spyOn(component.location, 'back');
 
     component.onBack();
     expect(historyBackSpy).toHaveBeenCalled();

@@ -1,6 +1,6 @@
 import { Action } from '@ngrx/store';
 import { HttpError } from '../../../models/httpError.model';
-import { HearingValuesCaseContext } from '../../models/hearingCaseContext.model';
+import { HearingValuesCaseContext } from '../../models/hearingValuesStateData';
 import { ServiceHearingValuesModel } from '../../models/serviceHearingValues.model';
 
 export const RESET_HEARING_VALUES = '[HEARING VALUES] Reset Hearing Values';
@@ -38,7 +38,7 @@ export class ResetHearingValuesLastError implements Action {
 
 export class StoreJurisdictionAndCaseRef implements Action {
   public readonly type = STORE_JURISDICTION_AND_CASE_REF;
-  constructor(public payload: HearingValuesCaseContext) {}
+  constructor(public payload: any) {}
 }
 export class ResetJurisdictionAndCaseRef implements Action {
   public readonly type = RESET_JURISDICTION_AND_CASE_REF;

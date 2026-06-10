@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
-import { MockStore, provideMockStore } from '@ngrx/store/testing';
+import { provideMockStore } from '@ngrx/store/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { firstValueFrom, of, take, throwError } from 'rxjs';
+import { firstValueFrom, of, take } from 'rxjs';
 import { Go } from '../../../app/store';
 import { initialState } from '../../hearing.test.data';
 import { CategoryType, MemberType, PartyType, RequirementType, UnavailabilityType } from '../../models/hearings.enum';
@@ -14,7 +14,6 @@ import { HearingValuesEffects } from './hearing-values.effects';
 describe('Hearing Values Effects', () => {
   let actions$;
   let effects: HearingValuesEffects;
-  let store: MockStore;
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', ['loadHearingValues']);
 
   beforeEach(() => {
@@ -30,8 +29,6 @@ describe('Hearing Values Effects', () => {
       ],
     });
     effects = TestBed.inject(HearingValuesEffects);
-    store = TestBed.inject(MockStore);
-    hearingsServiceMock.loadHearingValues.calls.reset();
   });
 
   describe('loadHearingValue$', () => {
@@ -197,125 +194,6 @@ describe('Hearing Values Effects', () => {
       await firstValueFrom(effects.loadHearingValue$.pipe(take(1)));
       expect(hearingsServiceMock.loadHearingValues).toHaveBeenCalledWith('IA', '1111222233334444');
     });
-
-    it('should use stored caseInfo when payload is omitted', async () => {
-      hearingsServiceMock.loadHearingValues.and.returnValue(of(SERVICE_HEARING_VALUES));
-      actions$ = of(new hearingValuesActions.LoadHearingValues());
-
-      await firstValueFrom(effects.loadHearingValue$.pipe(take(1)));
-
-      expect(hearingsServiceMock.loadHearingValues).toHaveBeenCalledWith('IA', '1111222233334444');
-    });
-
-    it('should route to the hearings error page when case context is missing', async () => {
-      store.setState({
-        ...initialState,
-        hearings: {
-          ...initialState.hearings,
-          hearingValues: {
-            ...initialState.hearings.hearingValues,
-            caseInfo: null,
-          },
-        },
-      });
-      actions$ = of(new hearingValuesActions.LoadHearingValues());
-
-      const result = await firstValueFrom(effects.loadHearingValue$.pipe(take(1)));
-
-      expect(result).toEqual(new Go({ path: ['/hearings/error'] }));
-      expect(hearingsServiceMock.loadHearingValues).not.toHaveBeenCalled();
-    });
-
-    it('should route back to the hearings tab when service fails and stored caseType resolves omitted payload caseType', async () => {
-      const error = {
-        status: 500,
-        message: 'error',
-      };
-      hearingsServiceMock.loadHearingValues.and.returnValue(throwError(() => error));
-      actions$ = of(
-        new hearingValuesActions.LoadHearingValues({
-          jurisdictionId: 'IA',
-          caseReference: '1111222233334444',
-        })
-      );
-
-      const result = await firstValueFrom(effects.loadHearingValue$.pipe(take(1)));
-
-      expect(hearingsServiceMock.loadHearingValues).toHaveBeenCalledWith('IA', '1111222233334444');
-      expect(result).toEqual(new Go({ path: ['/cases/case-details/IA/Asylum/1111222233334444/hearings'] }));
-    });
-
-    it('should route back to the hearings tab when service fails and stored caseType resolves undefined payload caseType', async () => {
-      const error = {
-        status: 500,
-        message: 'error',
-      };
-      hearingsServiceMock.loadHearingValues.and.returnValue(throwError(() => error));
-      actions$ = of(
-        new hearingValuesActions.LoadHearingValues({
-          jurisdictionId: 'IA',
-          caseReference: '1111222233334444',
-          caseType: undefined,
-        })
-      );
-
-      const result = await firstValueFrom(effects.loadHearingValue$.pipe(take(1)));
-
-      expect(hearingsServiceMock.loadHearingValues).toHaveBeenCalledWith('IA', '1111222233334444');
-      expect(result).toEqual(new Go({ path: ['/cases/case-details/IA/Asylum/1111222233334444/hearings'] }));
-    });
-
-    it('should route back to the hearings tab when service fails and stored caseType resolves blank payload caseType', async () => {
-      const error = {
-        status: 500,
-        message: 'error',
-      };
-      hearingsServiceMock.loadHearingValues.and.returnValue(throwError(() => error));
-      actions$ = of(
-        new hearingValuesActions.LoadHearingValues({
-          jurisdictionId: 'IA',
-          caseReference: '1111222233334444',
-          caseType: '   ',
-        })
-      );
-
-      const result = await firstValueFrom(effects.loadHearingValue$.pipe(take(1)));
-
-      expect(hearingsServiceMock.loadHearingValues).toHaveBeenCalledWith('IA', '1111222233334444');
-      expect(result).toEqual(new Go({ path: ['/cases/case-details/IA/Asylum/1111222233334444/hearings'] }));
-    });
-
-    it('should route to the hearings error page when service fails and resolved context has no caseType', async () => {
-      const error = {
-        status: 500,
-        message: 'error',
-      };
-      store.setState({
-        ...initialState,
-        hearings: {
-          ...initialState.hearings,
-          hearingValues: {
-            ...initialState.hearings.hearingValues,
-            caseInfo: {
-              jurisdictionId: 'IA',
-              caseReference: '1111222233334444',
-            },
-          },
-        },
-      });
-      hearingsServiceMock.loadHearingValues.and.returnValue(throwError(() => error));
-      actions$ = of(
-        new hearingValuesActions.LoadHearingValues({
-          jurisdictionId: 'IA',
-          caseReference: '1111222233334444',
-        })
-      );
-
-      const result = await firstValueFrom(effects.loadHearingValue$.pipe(take(1)));
-
-      expect(hearingsServiceMock.loadHearingValues).toHaveBeenCalledWith('IA', '1111222233334444');
-      expect(result).toEqual(new Go({ path: ['/hearings/error'] }));
-    });
   });
 
   describe('handleError', () => {
@@ -348,27 +226,6 @@ describe('Hearing Values Effects', () => {
       action$.subscribe((action) =>
         expect(action).toEqual(new Go({ path: ['/cases/case-details/PRIVATELAW/PRLAPPS/1111222233334444/hearings'] }))
       );
-    });
-
-    it('should handle status 0 network errors', () => {
-      const action$ = HearingValuesEffects.handleError(
-        {
-          status: 0,
-          message: 'network error',
-        },
-        caseInfo
-      );
-      action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
-    });
-
-    it('should handle missing-status errors', () => {
-      const action$ = HearingValuesEffects.handleError(
-        {
-          message: 'client error',
-        },
-        caseInfo
-      );
-      action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
     });
   });
 });

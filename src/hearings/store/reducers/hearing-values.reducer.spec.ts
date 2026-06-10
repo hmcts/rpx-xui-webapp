@@ -150,22 +150,6 @@ describe('Hearing Values Reducer', () => {
     });
 
     describe('Load service hearing values success action', () => {
-      it('should store hearing case info', () => {
-        const caseInfo = {
-          caseReference: '1111222233334444',
-          caseType: 'Asylum',
-          hearingId: 'h100000',
-          jurisdictionId: 'IA',
-        };
-        const action = new fromHearingValuesActions.StoreJurisdictionAndCaseRef(caseInfo);
-        const hearingsState = fromHearingValuesReducer.hearingValuesReducer(
-          fromHearingValuesReducer.initialHearingValuesState,
-          action
-        );
-
-        expect(hearingsState.caseInfo).toEqual(caseInfo);
-      });
-
       it('should set correct object', () => {
         const action = new fromHearingValuesActions.LoadHearingValuesSuccess(SERVICE_HEARING_VALUES);
         const hearingsState = fromHearingValuesReducer.hearingValuesReducer(

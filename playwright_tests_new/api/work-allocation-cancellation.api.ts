@@ -37,10 +37,7 @@ function hasDedicatedWaSolicitorCredentials(): boolean {
   return Boolean(process.env.WA_SOLICITOR_USERNAME?.trim() && process.env.WA_SOLICITOR_PASSWORD?.trim());
 }
 
-function shouldLookupLiveWaTask(hasDedicatedWaSolicitor: boolean): boolean {
-  if (hasDedicatedWaSolicitor) {
-    return true;
-  }
+function shouldLookupLiveWaTask(): boolean {
   return isTruthy(process.env.API_WA_CANCELLATION_LOOKUP_TASK);
 }
 
@@ -51,7 +48,7 @@ async function resolveTask(client: PlaywrightApiClient, hasDedicatedWaSolicitor:
       envTaskId: WA_SAMPLE_TASK_ID,
       fallbackTaskId,
       hasDedicatedWaSolicitor,
-      lookupLiveTask: shouldLookupLiveWaTask(hasDedicatedWaSolicitor),
+      lookupLiveTask: shouldLookupLiveWaTask(),
     });
   }
   return taskResolutionPromise;
@@ -73,7 +70,7 @@ function annotateTaskFallback(testInfo: TestInfo, runtime: WaRuntime): void {
   testInfo.annotations.push({
     type: 'notice',
     description: runtime.hasDedicatedWaSolicitor
-      ? 'Using dedicated WA solicitor credentials from WA_SOLICITOR_USERNAME/PASSWORD. Live AllWork lookup is required for this run.'
+      ? 'Using dedicated WA solicitor credentials from WA_SOLICITOR_USERNAME/PASSWORD. Live AllWork lookup is explicit opt-in via API_WA_CANCELLATION_LOOKUP_TASK.'
       : 'Using degraded waSolicitor fallback credentials. Set WA_SOLICITOR_USERNAME/PASSWORD to the dashboard-created low-assignment solicitor for full WA lookup coverage.',
   });
   if (task.liveLookupUsed && task.taskSource === 'dynamic') {

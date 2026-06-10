@@ -7,6 +7,8 @@ import {
   HEARINGS_SERVICE_ID,
   LISTED_HEARING_SCENARIO,
   UPDATE_REQUESTED_HEARING_SCENARIO,
+  buildCourtLocationMock,
+  buildHearingsCaseDetailsMock,
   buildHearingRequestMock,
   buildLinkedCasesWithHearingsMock,
   buildLovRefDataMock,
@@ -163,6 +165,89 @@ test.describe('Hearings mock builders', { tag: '@svc-internal' }, () => {
       laCaseStatus: UPDATE_REQUESTED_HEARING_SCENARIO.hmcStatus,
       listingStatus: 'DRAFT',
     });
+  });
+
+  test('hearing DTO builders preserve non-default case context across mocked API surfaces', () => {
+    const caseConfig = {
+      caseReference: '9988776655443322',
+      jurisdictionId: 'SSCS',
+      caseTypeId: 'Benefit',
+      serviceId: 'BFA1',
+      locationId: '231596',
+      locationName: 'Birmingham Civil and Family Justice Centre',
+    };
+
+    const caseDetails = buildHearingsCaseDetailsMock(caseConfig) as {
+      case_id: string;
+      case_type: { id: string; jurisdiction: { id: string } };
+      metadataFields: Array<{ id: string; value: string | number }>;
+    };
+    const hearingsList = buildHearingsListMock([LISTED_HEARING_SCENARIO], caseConfig) as {
+      caseRef: string;
+      hmctsServiceID: string;
+      hmctsServiceCode: string;
+      caseHearings: Array<{ hearingDaySchedule: Array<{ hearingVenueId: string }> }>;
+    };
+    const serviceValues = buildServiceHearingValuesMock(caseConfig, LISTED_HEARING_SCENARIO) as {
+      hmctsServiceID: string;
+      hmctsInternalCaseName: string;
+      caseDeepLink: string;
+      caseManagementLocationCode: string;
+      hearingLocations: Array<{ locationId: string }>;
+    };
+    const hearingRequest = buildHearingRequestMock(LISTED_HEARING_SCENARIO, caseConfig) as {
+      caseDetails: { caseRef: string; hmctsServiceCode: string; caseManagementLocationCode: string };
+      hearingDetails: { hearingLocations: Array<{ locationId: string }> };
+      hearingResponse: { hearingDaySchedule: Array<{ hearingVenueId: string }> };
+    };
+    const courtLocation = buildCourtLocationMock(caseConfig) as Array<{ epimms_id: string; court_name: string }>;
+    const caseTypes = buildLovRefDataMock('caseType', { caseTypeId: caseConfig.caseTypeId }) as Array<{ key: string }>;
+
+    expect(caseDetails).toMatchObject({
+      case_id: caseConfig.caseReference,
+      case_type: {
+        id: caseConfig.caseTypeId,
+        jurisdiction: {
+          id: caseConfig.jurisdictionId,
+        },
+      },
+    });
+    expect(caseDetails.metadataFields).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ id: '[CASE_REFERENCE]', value: Number(caseConfig.caseReference) }),
+        expect.objectContaining({ id: '[JURISDICTION]', value: caseConfig.jurisdictionId }),
+        expect.objectContaining({ id: '[CASE_TYPE]', value: caseConfig.caseTypeId }),
+      ])
+    );
+    expect(hearingsList).toMatchObject({
+      caseRef: caseConfig.caseReference,
+      hmctsServiceID: caseConfig.serviceId,
+      hmctsServiceCode: caseConfig.serviceId,
+    });
+    expect(hearingsList.caseHearings[0].hearingDaySchedule[0].hearingVenueId).toBe(caseConfig.locationId);
+    expect(serviceValues).toMatchObject({
+      hmctsServiceID: caseConfig.serviceId,
+      hmctsInternalCaseName: caseConfig.caseReference,
+      caseManagementLocationCode: caseConfig.locationId,
+      hearingLocations: [expect.objectContaining({ locationId: caseConfig.locationId })],
+    });
+    expect(serviceValues.caseDeepLink).toContain(caseConfig.caseReference);
+    expect(hearingRequest.caseDetails).toMatchObject({
+      caseRef: caseConfig.caseReference,
+      hmctsServiceCode: caseConfig.serviceId,
+      caseManagementLocationCode: caseConfig.locationId,
+    });
+    expect(hearingRequest.hearingDetails.hearingLocations).toEqual([
+      expect.objectContaining({ locationId: caseConfig.locationId }),
+    ]);
+    expect(hearingRequest.hearingResponse.hearingDaySchedule[0].hearingVenueId).toBe(caseConfig.locationId);
+    expect(courtLocation).toEqual([
+      expect.objectContaining({
+        epimms_id: caseConfig.locationId,
+        court_name: caseConfig.locationName,
+      }),
+    ]);
+    expect(caseTypes).toEqual([expect.objectContaining({ key: caseConfig.caseTypeId })]);
   });
 
   test('buildLovRefDataMock provides hearing type and case type options needed by the request journey', () => {

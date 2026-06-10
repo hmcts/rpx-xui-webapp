@@ -7,10 +7,10 @@ redis_capacity = "2"
 welsh_reporting_enabled = true
 
 # ExUI Weekly Stats Reporting
-exui_weekly_stats_enabled = true
+exui_weekly_stats_enabled = false
 
 # ExUI Throughput Stats Reporting
-exui_throughput_stats_enabled = true
+exui_throughput_stats_enabled = false
 
 # ExUI PUI Activations Reporting
-exui_pui_activations_enabled = true
+exui_pui_activations_enabled = false

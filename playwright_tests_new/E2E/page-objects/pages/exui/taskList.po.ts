@@ -674,18 +674,39 @@ export class TaskListPage extends Base {
 
   async openPaginationPage(pageNumber: number) {
     const pageText = pageNumber.toString();
-    const labelledPageControl = this.page.getByLabel(`Page ${pageText}`, { exact: true }).first();
-    if (await labelledPageControl.isVisible().catch(() => false)) {
+    const labelledPageControl = await this.findVisiblePaginationControl(
+      this.page.getByLabel(`Page ${pageText}`, { exact: true })
+    );
+    if (labelledPageControl) {
       await labelledPageControl.click();
       await this.waitForTaskListSpinnerToSettle(10_000);
       return;
     }
 
-    const legacyPageControl = this.paginationControls.locator('a, button').filter({
-      hasText: new RegExp(String.raw`^\s*${pageText}\s*$`),
-    });
-    await legacyPageControl.first().click();
+    const legacyPageControl = await this.findVisiblePaginationControl(
+      this.paginationControls
+        .locator('li:not(.current):not(.ellipsis)')
+        .filter({ hasText: new RegExp(String.raw`${pageText}\s*$`) })
+        .locator('a, button, [tabindex="0"]')
+    );
+    if (!legacyPageControl) {
+      throw new Error(`Visible pagination control for page ${pageText} was not found.`);
+    }
+
+    await legacyPageControl.click();
     await this.waitForTaskListSpinnerToSettle(10_000);
+  }
+
+  private async findVisiblePaginationControl(candidates: Locator): Promise<Locator | null> {
+    const candidateCount = await candidates.count();
+    for (let index = 0; index < candidateCount; index += 1) {
+      const candidate = candidates.nth(index);
+      if (await candidate.isVisible().catch(() => false)) {
+        return candidate;
+      }
+    }
+
+    return null;
   }
 
   async waitForAllWorkFilterControlsReady() {

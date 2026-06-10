@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
 import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { cold, hot } from 'jasmine-marbles';
-import { firstValueFrom, of, take } from 'rxjs';
+import { firstValueFrom, of, take, throwError } from 'rxjs';
 import { Go } from '../../../app/store';
 import { initialState } from '../../hearing.test.data';
 import { CategoryType, MemberType, PartyType, RequirementType, UnavailabilityType } from '../../models/hearings.enum';
@@ -224,6 +224,57 @@ describe('Hearing Values Effects', () => {
 
       expect(result).toEqual(new Go({ path: ['/hearings/error'] }));
       expect(hearingsServiceMock.loadHearingValues).not.toHaveBeenCalled();
+    });
+
+    it('should route back to the hearings tab when service fails and stored caseType resolves omitted payload caseType', async () => {
+      const error = {
+        status: 500,
+        message: 'error',
+      };
+      hearingsServiceMock.loadHearingValues.and.returnValue(throwError(() => error));
+      actions$ = of(
+        new hearingValuesActions.LoadHearingValues({
+          jurisdictionId: 'IA',
+          caseReference: '1111222233334444',
+        })
+      );
+
+      const result = await firstValueFrom(effects.loadHearingValue$.pipe(take(1)));
+
+      expect(hearingsServiceMock.loadHearingValues).toHaveBeenCalledWith('IA', '1111222233334444');
+      expect(result).toEqual(new Go({ path: ['/cases/case-details/IA/Asylum/1111222233334444/hearings'] }));
+    });
+
+    it('should route to the hearings error page when service fails and resolved context has no caseType', async () => {
+      const error = {
+        status: 500,
+        message: 'error',
+      };
+      store.setState({
+        ...initialState,
+        hearings: {
+          ...initialState.hearings,
+          hearingValues: {
+            ...initialState.hearings.hearingValues,
+            caseInfo: {
+              jurisdictionId: 'IA',
+              caseReference: '1111222233334444',
+            },
+          },
+        },
+      });
+      hearingsServiceMock.loadHearingValues.and.returnValue(throwError(() => error));
+      actions$ = of(
+        new hearingValuesActions.LoadHearingValues({
+          jurisdictionId: 'IA',
+          caseReference: '1111222233334444',
+        })
+      );
+
+      const result = await firstValueFrom(effects.loadHearingValue$.pipe(take(1)));
+
+      expect(hearingsServiceMock.loadHearingValues).toHaveBeenCalledWith('IA', '1111222233334444');
+      expect(result).toEqual(new Go({ path: ['/hearings/error'] }));
     });
   });
 

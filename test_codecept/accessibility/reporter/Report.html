@@ -7,11 +7,6 @@
   <!--<![endif]-->
   <head>
     <meta charset="utf-8" />
-    <!-- <meta http-equiv="Content-Security-Policy"
-            content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'
-             https://cdnjs.cloudflare.com https://ajax.googleapis.com http://www.google.com"> -->
-    <script src="./resources/angular.min.js"></script>
-
     <title>EXUI Web Accesibility Test Report</title>
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -106,6 +101,10 @@
         display: none;
       }
 
+      .toggleDetails {
+        cursor: pointer;
+      }
+
       table {
         border-collapse: collapse;
         margin: 2px;
@@ -122,7 +121,7 @@
     </style>
   </head>
   <body>
-    <div ng-app="myApp" ng-controller="myCtrl">
+    <div>
       <div class="header">
         <div class="titleText">
           <div>
@@ -131,106 +130,128 @@
 
           <div>
             <div id="reportHeaderTitle">Accessibility Test Report for Expert UI</div>
-            <div id="reportHeaderAppName">{{data.appName}}</div>
+            <div id="reportHeaderAppName"></div>
           </div>
         </div>
 
         <div class="stats">
-          <i class="fas fa-check-circle" style="font-size: 40px; color: lightgreen"></i>{{data.passed}}
-          <i class="fas fa-times-circle" style="font-size: 40px; color: red"></i>{{data.failed}}
+          <i class="fas fa-check-circle" style="font-size: 40px; color: lightgreen"></i><span id="passedCount"></span>
+          <i class="fas fa-times-circle" style="font-size: 40px; color: red"></i><span id="failedCount"></span>
         </div>
       </div>
-
-      <div class="testResult" ng-repeat="test in data.tests">
-        <div
-          class="testTitle"
-          ng-class="{pass : test.status == 'passed', fail: test.status == 'failed'}"
-          ng-click="showDetails(test)"
-        >
-          {{ test.name }}
-        </div>
-        <div ng-if="test.status == 'failed'">
-          <pre>
-              <code>{{test.error}}</code> 
-           </pre
-          >
-        </div>
-
-        <div class="a11yResult" ng-class="{show: test.show, hide:!test.show}">
-          <!-- {{test.a11yResult}} -->
-          <div>
-            <h3>Test Steps</h3>
-            <div ng-if="test.a11yResult.steps !== null" ng-repeat="step in test.a11yResult.steps">
-              <code>{{step}}</code>
-            </div>
-          </div>
-          <table class="resultTable">
-            <tr>
-              <th>Document title:</th>
-              <td>{{test.a11yResult.documentTitle}}</td>
-            </tr>
-            <tr>
-              <th>Page URL:</th>
-              <td>{{test.a11yResult.pageUrl}}</td>
-            </tr>
-            <tr>
-              <th>Total issues:</th>
-              <td>{{test.a11yResult.issues.length}}</td>
-            </tr>
-          </table>
-
-          <h4>Issues:</h4>
-          <div ng-repeat="issue in test.a11yResult.issues">
-            <table class="issuesTable">
-              <tr>
-                <th>Issue code</th>
-                <td>{{issue.code}}</td>
-              </tr>
-              <tr>
-                <th>Issue type</th>
-                <td>{{issue.type}}</td>
-              </tr>
-              <tr>
-                <th>Runner</th>
-                <td>{{issue.runner}}</td>
-              </tr>
-              <tr>
-                <th>Message</th>
-                <td>{{issue.message}}</td>
-              </tr>
-              <tr>
-                <th>Selector</th>
-                <td>{{issue.selector}}</td>
-              </tr>
-              <tr>
-                <th>Context</th>
-                <td>
-                  <pre><code>{{issue.context}}</code></pre>
-                </td>
-              </tr>
-            </table>
-          </div>
-          <div ng-repeat="screenshot in test.screenshots">
-            <div>---------------------- Attempt {{$index +1}} ----------------------</div>
-            <img ng-src="{{screenshot}}" alt="a11y test page" width="500" height="500" />
-          </div>
-          <!-- <img ng-src="{{test.a11yResult.screenshot}}" alt="a11y test page" width="500" height="500"> -->
-        </div>
-      </div>
+      <div id="testsContainer"></div>
     </div>
     <script src="./report_output.js"></script>
 
     <script>
       var data = replacejsoncontent;
 
-      var app = angular.module('myApp', []);
-      app.controller('myCtrl', function ($scope) {
-        $scope.data = data;
-        $scope.showDetails = function (test) {
-          console.log('test ' + test);
-          test.show = !test.show;
-        };
-      });
+      function escapeHtml(input) {
+        if (input === null || input === undefined) {
+          return '';
+        }
+        return String(input)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function renderIssue(issue) {
+        return [
+          '<table class="issuesTable">',
+          '<tr><th>Issue code</th><td>' + escapeHtml(issue.code) + '</td></tr>',
+          '<tr><th>Issue type</th><td>' + escapeHtml(issue.type) + '</td></tr>',
+          '<tr><th>Runner</th><td>' + escapeHtml(issue.runner) + '</td></tr>',
+          '<tr><th>Message</th><td>' + escapeHtml(issue.message) + '</td></tr>',
+          '<tr><th>Selector</th><td>' + escapeHtml(issue.selector) + '</td></tr>',
+          '<tr><th>Context</th><td><pre><code>' + escapeHtml(issue.context) + '</code></pre></td></tr>',
+          '</table>',
+        ].join('');
+      }
+
+      function renderScreenshot(screenshot, index) {
+        return [
+          '<div>---------------------- Attempt ' + (index + 1) + ' ----------------------</div>',
+          '<img src="' + escapeHtml(screenshot) + '" alt="a11y test page" width="500" height="500" />',
+        ].join('');
+      }
+
+      function renderTest(test, index) {
+        var statusClass = test.status === 'passed' ? 'pass' : 'fail';
+        var result = test.a11yResult || {};
+        var issues = Array.isArray(result.issues) ? result.issues : [];
+        var screenshots = Array.isArray(test.screenshots) ? test.screenshots : [];
+        var steps = Array.isArray(result.steps) ? result.steps : [];
+
+        var stepsHtml = steps
+          .map(function (step) {
+            return '<div><code>' + escapeHtml(step) + '</code></div>';
+          })
+          .join('');
+
+        var issuesHtml = issues.map(renderIssue).join('');
+        var screenshotsHtml = screenshots.map(renderScreenshot).join('');
+
+        var errorHtml = test.status === 'failed' ? '<div><pre><code>' + escapeHtml(test.error) + '</code></pre></div>' : '';
+
+        return [
+          '<div class="testResult">',
+          '<div class="testTitle ' +
+            statusClass +
+            ' toggleDetails" data-target="detail-' +
+            index +
+            '">' +
+            escapeHtml(test.name) +
+            '</div>',
+          errorHtml,
+          '<div class="a11yResult hide" id="detail-' + index + '">',
+          '<div><h3>Test Steps</h3>' + stepsHtml + '</div>',
+          '<table class="resultTable">',
+          '<tr><th>Document title:</th><td>' + escapeHtml(result.documentTitle) + '</td></tr>',
+          '<tr><th>Page URL:</th><td>' + escapeHtml(result.pageUrl) + '</td></tr>',
+          '<tr><th>Total issues:</th><td>' + issues.length + '</td></tr>',
+          '</table>',
+          '<h4>Issues:</h4>',
+          issuesHtml,
+          screenshotsHtml,
+          '</div>',
+          '</div>',
+        ].join('');
+      }
+
+      function renderReport() {
+        var reportData = data || { appName: '', passed: 0, failed: 0, tests: [] };
+        var tests = Array.isArray(reportData.tests) ? reportData.tests : [];
+
+        document.getElementById('reportHeaderAppName').textContent = reportData.appName || '';
+        document.getElementById('passedCount').textContent = reportData.passed || 0;
+        document.getElementById('failedCount').textContent = reportData.failed || 0;
+
+        var html = tests.map(renderTest).join('');
+        var container = document.getElementById('testsContainer');
+        container.innerHTML = html;
+
+        container.addEventListener('click', function (event) {
+          var header = event.target.closest('.toggleDetails');
+          if (!header) {
+            return;
+          }
+
+          var targetId = header.getAttribute('data-target');
+          var detail = document.getElementById(targetId);
+          if (!detail) {
+            return;
+          }
+
+          var isHidden = detail.classList.contains('hide');
+          detail.classList.toggle('hide', !isHidden);
+          detail.classList.toggle('show', isHidden);
+        });
+      }
+
+      renderReport();
     </script>
   </body>
 </html>

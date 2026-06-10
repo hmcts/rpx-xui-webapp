@@ -1,6 +1,5 @@
 import { expect, test } from '@playwright/test';
 import {
-  AWAITING_LISTING_HEARING_SCENARIO,
   HEARINGS_CASE_REFERENCE,
   HEARINGS_CASE_TYPE,
   HEARINGS_LOCATION_ID,
@@ -19,50 +18,95 @@ import {
 } from '../integration/mocks/hearings.mock';
 
 test.describe('Hearings mock builders', { tag: '@svc-internal' }, () => {
-  test('buildHearingsListMock maps CR84 hearing statuses into the expected sections', () => {
-    const payload = buildHearingsListMock([
-      LISTED_HEARING_SCENARIO,
-      AWAITING_LISTING_HEARING_SCENARIO,
-      UPDATE_REQUESTED_HEARING_SCENARIO,
+  test('buildHearingsListMock maps every supported hearing status into the expected display section', () => {
+    const statusExpectations = [
       {
-        hearingId: '1705614528109',
-        hmcStatus: 'COMPLETED',
-        hearingType: 'ABA5-COMPLETED',
+        hmcStatus: 'HEARING_REQUESTED',
+        exuiDisplayStatus: 'WAITING TO BE LISTED',
+        exuiSectionStatus: 'Current and upcoming',
       },
-    ]);
+      {
+        hmcStatus: 'AWAITING_LISTING',
+        exuiDisplayStatus: 'WAITING TO BE LISTED',
+        exuiSectionStatus: 'Current and upcoming',
+      },
+      {
+        hmcStatus: 'LISTED',
+        exuiDisplayStatus: 'LISTED',
+        exuiSectionStatus: 'Current and upcoming',
+      },
+      {
+        hmcStatus: 'UPDATE_REQUESTED',
+        exuiDisplayStatus: 'UPDATE REQUESTED',
+        exuiSectionStatus: 'Current and upcoming',
+      },
+      {
+        hmcStatus: 'UPDATE_SUBMITTED',
+        exuiDisplayStatus: 'UPDATE REQUESTED',
+        exuiSectionStatus: 'Current and upcoming',
+      },
+      {
+        hmcStatus: 'EXCEPTION',
+        exuiDisplayStatus: 'REQUEST FAILURE',
+        exuiSectionStatus: 'Current and upcoming',
+      },
+      {
+        hmcStatus: 'CANCELLATION_REQUESTED',
+        exuiDisplayStatus: 'CANCELLATION REQUESTED',
+        exuiSectionStatus: 'Current and upcoming',
+      },
+      {
+        hmcStatus: 'CANCELLATION_SUBMITTED',
+        exuiDisplayStatus: 'CANCELLATION REQUESTED',
+        exuiSectionStatus: 'Current and upcoming',
+      },
+      {
+        hmcStatus: 'AWAITING_ACTUALS',
+        exuiDisplayStatus: 'AWAITING HEARING DETAILS',
+        exuiSectionStatus: 'Current and upcoming',
+      },
+      {
+        hmcStatus: 'CANCELLED',
+        exuiDisplayStatus: 'CANCELLED',
+        exuiSectionStatus: 'Past or cancelled',
+      },
+      {
+        hmcStatus: 'COMPLETED',
+        exuiDisplayStatus: 'COMPLETED',
+        exuiSectionStatus: 'Past or cancelled',
+      },
+      {
+        hmcStatus: 'ADJOURNED',
+        exuiDisplayStatus: 'ADJOURNED',
+        exuiSectionStatus: 'Past or cancelled',
+      },
+    ];
+
+    const payload = buildHearingsListMock(
+      statusExpectations.map((statusExpectation, index) => ({
+        hearingId: String(1705614528100 + index),
+        hmcStatus: statusExpectation.hmcStatus,
+        hearingType: `ABA5-${statusExpectation.hmcStatus}`,
+      }))
+    );
 
     expect(payload.caseRef).toBe(HEARINGS_CASE_REFERENCE);
-    expect(payload.caseHearings).toHaveLength(4);
-    expect(payload.caseHearings[0]).toMatchObject({
-      hearingID: Number(LISTED_HEARING_SCENARIO.hearingId),
-      hmcStatus: 'LISTED',
-      exuiDisplayStatus: 'LISTED',
-      exuiSectionStatus: 'Current and upcoming',
-    });
-    expect(payload.caseHearings[1]).toMatchObject({
-      hearingID: Number(AWAITING_LISTING_HEARING_SCENARIO.hearingId),
-      hmcStatus: 'AWAITING_LISTING',
-      exuiDisplayStatus: 'WAITING TO BE LISTED',
-      exuiSectionStatus: 'Current and upcoming',
-    });
-    expect(payload.caseHearings[2]).toMatchObject({
-      hearingID: Number(UPDATE_REQUESTED_HEARING_SCENARIO.hearingId),
-      hmcStatus: 'UPDATE_REQUESTED',
-      exuiDisplayStatus: 'UPDATE REQUESTED',
-      exuiSectionStatus: 'Current and upcoming',
-    });
-    expect(payload.caseHearings[3]).toMatchObject({
-      hmcStatus: 'COMPLETED',
-      exuiDisplayStatus: 'COMPLETED',
-      exuiSectionStatus: 'Past or cancelled',
+    expect(payload.caseHearings).toHaveLength(statusExpectations.length);
+    statusExpectations.forEach((statusExpectation, index) => {
+      expect(payload.caseHearings[index]).toMatchObject({
+        hearingID: 1705614528100 + index,
+        hmcStatus: statusExpectation.hmcStatus,
+        exuiDisplayStatus: statusExpectation.exuiDisplayStatus,
+        exuiSectionStatus: statusExpectation.exuiSectionStatus,
+      });
     });
   });
 
-  test('buildHearingsListMock falls back unmapped statuses into a safe upcoming section', () => {
+  test('buildHearingsListMock falls back unknown statuses into a safe upcoming section', () => {
     const unmappedScenario: HearingScenario = {
       hearingId: '1705614528115',
-      hmcStatus: 'VACATED',
-      hearingType: 'ABA5-VACATED',
+      hmcStatus: 'UNKNOWN_TO_EXUI',
+      hearingType: 'ABA5-UNKNOWN',
     };
 
     const payload = buildHearingsListMock([unmappedScenario]);
@@ -70,8 +114,8 @@ test.describe('Hearings mock builders', { tag: '@svc-internal' }, () => {
     expect(payload.caseHearings).toEqual([
       expect.objectContaining({
         hearingID: Number(unmappedScenario.hearingId),
-        hmcStatus: 'VACATED',
-        exuiDisplayStatus: 'VACATED',
+        hmcStatus: 'UNKNOWN_TO_EXUI',
+        exuiDisplayStatus: 'UNKNOWN_TO_EXUI',
         exuiSectionStatus: 'Current and upcoming',
       }),
     ]);

@@ -109,6 +109,10 @@ function escapeHtml(value) {
     .replace(/'/g, '&#39;');
 }
 
+function escapeAttribute(value) {
+  return escapeHtml(value).replace(/`/g, '&#96;');
+}
+
 function injectEnhancerStyles(root) {
   const head = root.querySelector('head');
   if (!head || root.querySelector('#odhin-enhancer-styles')) {
@@ -197,6 +201,100 @@ function injectEnhancerStyles(root) {
     margin-top: 8px;
     font-size: 13px;
     font-weight: 600;
+  }
+
+  #odhin-accessibility-evidence .odhin-a11y-evidence-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    padding: 16px;
+  }
+
+  #odhin-accessibility-evidence .odhin-a11y-evidence-card {
+    border: 2px solid #d4351c;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #0b0c0c;
+    overflow: hidden;
+  }
+
+  #odhin-accessibility-evidence .odhin-a11y-evidence-card-body {
+    padding: 12px;
+  }
+
+  #odhin-accessibility-evidence .odhin-a11y-evidence-title {
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+
+  #odhin-accessibility-evidence .odhin-a11y-evidence-meta {
+    margin: 0 0 10px;
+    font-size: 13px;
+  }
+
+  #odhin-accessibility-evidence .odhin-a11y-evidence-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    font-size: 13px;
+  }
+
+  #odhin-accessibility-evidence .odhin-a11y-evidence-screenshot {
+    display: block;
+    width: 100%;
+    max-height: 260px;
+    object-fit: contain;
+    background: #f3f2f1;
+    border-bottom: 1px solid #b1b4b6;
+  }
+
+  .odhin-a11y-test-evidence {
+    background: #fff4f4;
+    border-left: 10px solid #d4351c;
+    border-top: 4px solid #ffdd00;
+    color: #0b0c0c;
+    font-family: Arial, sans-serif;
+    margin: 0 0 16px;
+    padding: 14px;
+  }
+
+  .odhin-a11y-test-evidence h2 {
+    color: #0b0c0c;
+    font-size: 22px;
+    margin: 0 0 8px;
+  }
+
+  .odhin-a11y-test-evidence p {
+    margin: 0 0 8px;
+  }
+
+  .odhin-a11y-test-evidence code {
+    background: #f3f2f1;
+    color: #0b0c0c;
+    padding: 2px 4px;
+  }
+
+  .odhin-a11y-test-evidence a {
+    color: #0b0c0c;
+    display: inline-block;
+    font-weight: bold;
+    margin: 4px 8px 0 0;
+    padding: 8px 12px;
+  }
+
+  .odhin-a11y-test-evidence a:first-of-type {
+    background: #d4351c;
+    color: #ffffff;
+  }
+
+  .odhin-a11y-test-evidence a:nth-of-type(2) {
+    background: #ffdd00;
+  }
+
+  .odhin-a11y-test-evidence a:nth-of-type(3) {
+    background: #f3f2f1;
   }
 
   #odhin-feature-summary .odhin-feature-overview-largest {
@@ -397,6 +495,135 @@ function buildFeatureOverviewBlock(featureStats) {
 </div>`;
 }
 
+function normalizeEvidenceEntries(entries) {
+  return (Array.isArray(entries) ? entries : [])
+    .filter(
+      (entry) =>
+        entry &&
+        typeof entry.testTitle === 'string' &&
+        typeof entry.htmlFileName === 'string' &&
+        typeof entry.jsonFileName === 'string' &&
+        typeof entry.screenshotFileName === 'string' &&
+        Number.isFinite(Number(entry.violationCount))
+    )
+    .map((entry) => ({
+      testTitle: entry.testTitle,
+      htmlFileName: entry.htmlFileName,
+      jsonFileName: entry.jsonFileName,
+      screenshotFileName: entry.screenshotFileName,
+      violationCount: Number(entry.violationCount),
+      rules: Array.isArray(entry.rules) ? entry.rules.map(String) : [],
+      targets: Array.isArray(entry.targets) ? entry.targets.map(String) : [],
+    }))
+    .sort((left, right) => left.testTitle.localeCompare(right.testTitle));
+}
+
+function buildAccessibilityEvidenceBlock(entries) {
+  const normalizedEntries = normalizeEvidenceEntries(entries);
+  if (!normalizedEntries.length) {
+    return '';
+  }
+
+  const cards = normalizedEntries
+    .map((entry) => {
+      const screenshotPath = `./accessibility-evidence/${entry.screenshotFileName}`;
+      return `
+        <article class="odhin-a11y-evidence-card">
+          <a href="${escapeAttribute(screenshotPath)}">
+            <img class="odhin-a11y-evidence-screenshot" src="${escapeAttribute(screenshotPath)}" alt="Highlighted accessibility screenshot for ${escapeAttribute(entry.testTitle)}" />
+          </a>
+          <div class="odhin-a11y-evidence-card-body">
+            <div class="odhin-a11y-evidence-title">${escapeHtml(entry.testTitle)}</div>
+            <p class="odhin-a11y-evidence-meta">
+              ${entry.violationCount} axe issue(s): ${escapeHtml(entry.rules.join(', ') || 'unknown rule')}
+            </p>
+            <p class="odhin-a11y-evidence-meta">
+              Targets: ${escapeHtml(entry.targets.join(', ') || 'no target recorded')}
+            </p>
+            <div class="odhin-a11y-evidence-links">
+              <a href="${escapeAttribute(`./accessibility-evidence/${entry.htmlFileName}`)}">issue detail</a>
+              <a href="${escapeAttribute(screenshotPath)}">highlighted screenshot</a>
+              <a href="${escapeAttribute(`./accessibility-evidence/${entry.jsonFileName}`)}">DOM and axe JSON</a>
+            </div>
+          </div>
+        </article>
+      `;
+    })
+    .join('');
+
+  return `
+    <div class="col-12">
+      <div class="mt-3 mb-3 odhin-thin-border dashboard-block" id="odhin-accessibility-evidence">
+        <div class="info-box-header">Accessibility Evidence</div>
+        <div class="odhin-table">
+          <div class="odhin-a11y-evidence-grid">${cards}</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function injectAccessibilityEvidence(root, evidenceEntries) {
+  const evidenceHtml = buildAccessibilityEvidenceBlock(evidenceEntries);
+  if (!evidenceHtml || root.querySelector('#odhin-accessibility-evidence')) {
+    return false;
+  }
+
+  const dashboardRow =
+    root.querySelector('#TabDashboard .row') ?? root.querySelector('#TabDashboard') ?? root.querySelector('body');
+  if (!dashboardRow) {
+    return false;
+  }
+
+  dashboardRow.appendChild(parse(evidenceHtml));
+  return true;
+}
+
+function buildTestEvidencePanel(entry) {
+  const ruleSummary = entry.rules.length > 0 ? entry.rules.join(', ') : 'axe rule violation';
+  const targetSummary = entry.targets.length > 0 ? entry.targets.slice(0, 6).join(', ') : 'No DOM target recorded';
+
+  return `
+    <div class="odhin-a11y-test-evidence" data-a11y-test-evidence-link="${escapeAttribute(entry.htmlFileName)}">
+      <h2>Accessibility evidence for this test</h2>
+      <p><strong>${entry.violationCount} issue(s):</strong> ${escapeHtml(ruleSummary)}</p>
+      <p><strong>DOM target(s):</strong> <code>${escapeHtml(targetSummary)}</code></p>
+      <a href="${escapeAttribute(`./accessibility-evidence/${entry.htmlFileName}`)}">Open highlighted issue report</a>
+      <a href="${escapeAttribute(`./accessibility-evidence/${entry.screenshotFileName}`)}">Open screenshot</a>
+      <a href="${escapeAttribute(`./accessibility-evidence/${entry.jsonFileName}`)}">Open DOM JSON</a>
+    </div>
+  `;
+}
+
+function injectAccessibilityEvidenceIntoTestModals(root, evidenceEntries) {
+  const normalizedEntries = normalizeEvidenceEntries(evidenceEntries);
+  if (!normalizedEntries.length) {
+    return 0;
+  }
+
+  let injectedCount = 0;
+  const modalContents = root.querySelectorAll('.modal-content');
+  normalizedEntries.forEach((entry) => {
+    const marker = `[data-a11y-test-evidence-link="${entry.htmlFileName.replace(/"/g, '\\"')}"]`;
+    if (root.querySelector(marker)) {
+      return;
+    }
+
+    const matchingModal = modalContents.find(
+      (modalContent) => modalContent.querySelector('.header-col-center')?.text.trim() === entry.testTitle
+    );
+    const modalBody = matchingModal?.querySelector('.modal-body.odhin-bg-2');
+    if (!modalBody) {
+      return;
+    }
+
+    modalBody.insertAdjacentHTML('afterbegin', buildTestEvidencePanel(entry));
+    injectedCount += 1;
+  });
+
+  return injectedCount;
+}
+
 function replaceDashboardBlock(root, title, replacementHtml) {
   const block = root
     .querySelectorAll('.dashboard-block')
@@ -438,22 +665,72 @@ function stripLegacyFileChartArtifacts(root) {
   });
 }
 
-function enhanceDashboardHtml(html, featureStats) {
+function defaultTestListRowsPerPage(html) {
+  return String(html)
+    .replace(
+      /\$\("#test-list-table"\)\.DataTable\(\{\}\)/g,
+      '$("#test-list-table").DataTable({pageLength:100,lengthMenu:[10,25,50,100]})'
+    )
+    .replace(
+      /\$\('#test-list-table'\)\.DataTable\(\{\}\)/g,
+      "$('#test-list-table').DataTable({pageLength:100,lengthMenu:[10,25,50,100]})"
+    );
+}
+
+function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
+  const htmlWithDefaultTestRows = defaultTestListRowsPerPage(html);
   const normalizedStats = normalizeFeatureStats(featureStats);
-  if (!normalizedStats.length) {
-    return html;
+  const normalizedEvidenceEntries = normalizeEvidenceEntries(evidenceEntries);
+  if (!normalizedStats.length && !normalizedEvidenceEntries.length) {
+    return htmlWithDefaultTestRows;
   }
 
-  const root = parse(html);
+  const root = parse(htmlWithDefaultTestRows);
   injectEnhancerStyles(root);
 
-  replaceDashboardBlock(root, 'Files Summary', buildFeatureOverviewBlock(normalizedStats));
-  removeDuplicateFeatureStatusBlock(root);
-  rebalanceTopDashboardColumns(root);
+  if (normalizedStats.length) {
+    replaceDashboardBlock(root, 'Files Summary', buildFeatureOverviewBlock(normalizedStats));
+    removeDuplicateFeatureStatusBlock(root);
+    rebalanceTopDashboardColumns(root);
+    stripLegacyFileChartArtifacts(root);
+  }
 
-  stripLegacyFileChartArtifacts(root);
+  injectAccessibilityEvidence(root, normalizedEvidenceEntries);
+  injectAccessibilityEvidenceIntoTestModals(root, normalizedEvidenceEntries);
 
   return root.toString();
+}
+
+function readAccessibilityEvidenceEntries(outputFolder) {
+  const evidenceDir = path.join(outputFolder, 'accessibility-evidence');
+  if (!fs.existsSync(evidenceDir)) {
+    return [];
+  }
+
+  const entriesByKey = new Map();
+
+  try {
+    const manifest = JSON.parse(fs.readFileSync(path.join(evidenceDir, 'manifest.json'), 'utf8'));
+    normalizeEvidenceEntries(manifest).forEach((entry) => {
+      entriesByKey.set(`${entry.testTitle}\u0000${entry.htmlFileName}`, entry);
+    });
+  } catch {
+    // Per-test entry files below are the source of truth when parallel workers race on the aggregate manifest.
+  }
+
+  fs.readdirSync(evidenceDir)
+    .filter((fileName) => fileName.startsWith('manifest-entry-') && fileName.endsWith('.json'))
+    .forEach((fileName) => {
+      try {
+        normalizeEvidenceEntries([JSON.parse(fs.readFileSync(path.join(evidenceDir, fileName), 'utf8'))]).forEach((entry) => {
+          entriesByKey.set(`${entry.testTitle}\u0000${entry.htmlFileName}`, entry);
+        });
+      } catch {
+        // Ignore corrupt per-test evidence so one bad entry cannot suppress the full report.
+      }
+    });
+
+  return Array.from(entriesByKey.values());
 }
 
 function enhanceGeneratedReport(outputFolder, featureStats) {
@@ -462,7 +739,8 @@ function enhanceGeneratedReport(outputFolder, featureStats) {
   }
 
   const normalizedStats = normalizeFeatureStats(featureStats);
-  if (!normalizedStats.length) {
+  const evidenceEntries = readAccessibilityEvidenceEntries(outputFolder);
+  if (!normalizedStats.length && !normalizeEvidenceEntries(evidenceEntries).length) {
     return;
   }
 
@@ -471,7 +749,7 @@ function enhanceGeneratedReport(outputFolder, featureStats) {
   reportFiles.forEach((fileName) => {
     const filePath = path.join(outputFolder, fileName);
     const currentHtml = fs.readFileSync(filePath, 'utf8');
-    const nextHtml = enhanceDashboardHtml(currentHtml, normalizedStats);
+    const nextHtml = enhanceDashboardHtml(currentHtml, normalizedStats, evidenceEntries);
     fs.writeFileSync(filePath, nextHtml, 'utf8');
   });
 }
@@ -486,10 +764,14 @@ module.exports = {
   percentOf,
   __test__: {
     buildFeatureOverviewBlock,
+    buildAccessibilityEvidenceBlock,
     createEmptyFeatureStat,
+    defaultTestListRowsPerPage,
     deriveFeatureName,
     enhanceDashboardHtml,
     formatDuration,
+    normalizeEvidenceEntries,
+    readAccessibilityEvidenceEntries,
     removeLegacyFileChartInitializer,
     normalizeFeatureStats,
     percentOf,

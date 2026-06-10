@@ -63,6 +63,8 @@ properties([
     ])
 ])
 
+// use Infrastructure branch in PR for long running FT's beyond 40mins for DEBUG only
+// @Library("Infrastructure@fpl-long-ft-timeout")
 @Library("Infrastructure")
 
 import uk.gov.hmcts.contino.AppPipelineDsl
@@ -327,7 +329,7 @@ def runPlaywrightIntegrationProfileMatrix = { String testType, String reportName
     }
 }
 
-def branchesToSync = ['perftest', 'ithc', 'demo']
+def branchesToSync = ['perftest', 'ithc']
 
 def secrets = [
   'rpx-${env}': [

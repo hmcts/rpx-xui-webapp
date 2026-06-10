@@ -57,10 +57,10 @@ describe('Caseworker ref data api, get all caseworkers for a specific service', 
       pactSetUp.provider.addInteraction(interaction);
     });
 
-    afterEach(async () => {
+    afterEach(() => {
       sandbox.restore();
       sinon.reset();
-      await MockApp.stopServer();
+      MockApp.stopServer();
     });
 
     it('returns the correct response', async () => {

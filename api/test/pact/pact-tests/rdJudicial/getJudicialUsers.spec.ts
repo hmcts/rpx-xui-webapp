@@ -73,11 +73,11 @@ describe('Judicial ref data api, get all judge users', () => {
       pactSetUp.provider.addInteraction(interaction);
     });
 
-    afterEach(async () => {
+    afterEach(() => {
       sandbox.restore();
       sinon.reset();
-      await MockApp.stopServer();
-      });
+      MockApp.stopServer();
+    });
 
     it('returns the correct response', async () => {
       const configValues = getJudicialRefDataAPIOverrides(pactSetUp.provider.mockService.baseUrl);

@@ -650,7 +650,10 @@ export class TaskListPage extends Base {
         if (!this.isTransientFilterApplyClickError(lastError) || attempt === FILTER_APPLY_CLICK_ATTEMPTS) {
           throw lastError;
         }
-        await this.page.waitForTimeout(250);
+        await this.applyFilterButton.waitFor({
+          state: 'visible',
+          timeout: this.resolveInteractionTimeout(deadlineMs, FILTER_CONTROL_READY_TIMEOUT_MS),
+        });
       }
     }
 

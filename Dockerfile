@@ -21,7 +21,6 @@ WORKDIR /opt/app
 # Copy only dependency files for better layer caching
 COPY --chown=hmcts:hmcts .yarn/ ./.yarn/
 COPY --chown=hmcts:hmcts package.json yarn.lock .yarnrc.yml ./
-COPY --chown=hmcts:hmcts api/package.json ./api/package.json
 
 # Install dependencies once
 RUN yarn install

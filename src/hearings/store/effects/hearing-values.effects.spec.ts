@@ -245,6 +245,46 @@ describe('Hearing Values Effects', () => {
       expect(result).toEqual(new Go({ path: ['/cases/case-details/IA/Asylum/1111222233334444/hearings'] }));
     });
 
+    it('should route back to the hearings tab when service fails and stored caseType resolves undefined payload caseType', async () => {
+      const error = {
+        status: 500,
+        message: 'error',
+      };
+      hearingsServiceMock.loadHearingValues.and.returnValue(throwError(() => error));
+      actions$ = of(
+        new hearingValuesActions.LoadHearingValues({
+          jurisdictionId: 'IA',
+          caseReference: '1111222233334444',
+          caseType: undefined,
+        })
+      );
+
+      const result = await firstValueFrom(effects.loadHearingValue$.pipe(take(1)));
+
+      expect(hearingsServiceMock.loadHearingValues).toHaveBeenCalledWith('IA', '1111222233334444');
+      expect(result).toEqual(new Go({ path: ['/cases/case-details/IA/Asylum/1111222233334444/hearings'] }));
+    });
+
+    it('should route back to the hearings tab when service fails and stored caseType resolves blank payload caseType', async () => {
+      const error = {
+        status: 500,
+        message: 'error',
+      };
+      hearingsServiceMock.loadHearingValues.and.returnValue(throwError(() => error));
+      actions$ = of(
+        new hearingValuesActions.LoadHearingValues({
+          jurisdictionId: 'IA',
+          caseReference: '1111222233334444',
+          caseType: '   ',
+        })
+      );
+
+      const result = await firstValueFrom(effects.loadHearingValue$.pipe(take(1)));
+
+      expect(hearingsServiceMock.loadHearingValues).toHaveBeenCalledWith('IA', '1111222233334444');
+      expect(result).toEqual(new Go({ path: ['/cases/case-details/IA/Asylum/1111222233334444/hearings'] }));
+    });
+
     it('should route to the hearings error page when service fails and resolved context has no caseType', async () => {
       const error = {
         status: 500,
@@ -308,6 +348,27 @@ describe('Hearing Values Effects', () => {
       action$.subscribe((action) =>
         expect(action).toEqual(new Go({ path: ['/cases/case-details/PRIVATELAW/PRLAPPS/1111222233334444/hearings'] }))
       );
+    });
+
+    it('should handle status 0 network errors', () => {
+      const action$ = HearingValuesEffects.handleError(
+        {
+          status: 0,
+          message: 'network error',
+        },
+        caseInfo
+      );
+      action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
+    });
+
+    it('should handle missing-status errors', () => {
+      const action$ = HearingValuesEffects.handleError(
+        {
+          message: 'client error',
+        },
+        caseInfo
+      );
+      action$.subscribe((action) => expect(action).toEqual(new Go({ path: ['/hearings/error'] })));
     });
   });
 });

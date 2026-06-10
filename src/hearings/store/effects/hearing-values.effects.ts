@@ -53,6 +53,7 @@ export class HearingValuesEffects {
       ...payload,
       jurisdictionId: HearingValuesEffects.resolveTextValue(payload?.jurisdictionId, storedCaseInfo?.jurisdictionId),
       caseReference: HearingValuesEffects.resolveTextValue(payload?.caseReference, storedCaseInfo?.caseReference),
+      caseType: HearingValuesEffects.resolveTextValue(payload?.caseType, storedCaseInfo?.caseType),
     };
   }
 
@@ -60,17 +61,19 @@ export class HearingValuesEffects {
     return !!caseInfo?.jurisdictionId?.trim() && !!caseInfo?.caseReference?.trim();
   }
 
-  public static handleError(error: HttpError, caseInfo: HearingValuesCaseContext | null): Observable<Action> {
-    if (error && error.status) {
-      if (!HearingValuesEffects.hasRequiredCaseContext(caseInfo) || !caseInfo.caseType?.trim()) {
-        return of(new fromAppStoreActions.Go({ path: ['/hearings/error'] }));
-      }
+  public static handleError(error: Partial<HttpError> | null, caseInfo: HearingValuesCaseContext | null): Observable<Action> {
+    if (!HearingValuesEffects.hasRequiredCaseContext(caseInfo) || !caseInfo.caseType?.trim()) {
+      return of(new fromAppStoreActions.Go({ path: ['/hearings/error'] }));
+    }
+
+    if (error?.status) {
       return of(
         new fromAppStoreActions.Go({
           path: [`/cases/case-details/${caseInfo.jurisdictionId}/${caseInfo.caseType}/${caseInfo.caseReference}/hearings`],
         })
       );
     }
+    return of(new fromAppStoreActions.Go({ path: ['/hearings/error'] }));
   }
 
   private static resolveTextValue(candidate?: string, fallback?: string): string | undefined {

@@ -147,6 +147,13 @@ type FetchFirstTaskOptions = {
   timeoutMs?: number;
 };
 
+type GuardedTaskSearchOptions = {
+  onRequestTimeout?: (message: string) => void;
+  retries?: number;
+  retryStatuses?: number[];
+  timeoutMs?: number;
+};
+
 export async function fetchFirstTask(
   apiClient: WorkAllocationApiClient,
   locationId?: string,
@@ -183,6 +190,31 @@ export async function fetchFirstTask(
     return undefined;
   }
   return tasks[0];
+}
+
+export async function guardedTaskSearch(
+  apiClient: WorkAllocationApiClient,
+  body: unknown,
+  options: GuardedTaskSearchOptions = {}
+): Promise<{ data: TaskListResponse | undefined; status: number }> {
+  try {
+    return (await withRetry(
+      () =>
+        apiClient.post('workallocation/task', {
+          data: body,
+          throwOnError: false,
+          ...(options.timeoutMs ? { timeoutMs: options.timeoutMs } : {}),
+        }),
+      { retries: options.retries ?? 1, retryStatuses: options.retryStatuses ?? [502, 504] }
+    )) as { data: TaskListResponse | undefined; status: number };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (/timeout|timed out|ETIMEDOUT|ECONNRESET|socket hang up/i.test(message)) {
+      options.onRequestTimeout?.(message);
+      return { data: undefined, status: 504 };
+    }
+    throw error;
+  }
 }
 
 type TaskDetails = {

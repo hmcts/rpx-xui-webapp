@@ -4,7 +4,7 @@ import { expectStatus, withRetry, __test__ as apiTestUtilsTest } from './utils/a
 import { resolveRoleAccessCaseId } from './data/testIds';
 import { __test__ as fixturesTest } from './fixtures';
 import { buildTaskSearchRequest, seedTaskId } from './utils/work-allocation';
-import { fetchFirstTask } from './utils/workAllocationUtils';
+import { fetchFirstTask, guardedTaskSearch } from './utils/workAllocationUtils';
 import { seedRoleAccessCaseId } from './utils/role-access';
 
 test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () => {
@@ -158,6 +158,45 @@ test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () =
     };
     await expect(fetchFirstTask(retryClient, undefined, ['assigned'], 'AllWork', { retries: 0 })).resolves.toBeUndefined();
     expect(retryCalls).toBe(1);
+  });
+
+  test('guardedTaskSearch returns guarded timeout status after bounded retries', async () => {
+    let timeoutAnnotations = 0;
+    let timeoutCalls = 0;
+    const timeoutClient = {
+      post: async () => {
+        timeoutCalls += 1;
+        throw new Error('Timeout 10000ms exceeded');
+      },
+    };
+
+    const timeoutResult = await guardedTaskSearch(
+      timeoutClient,
+      { view: 'AvailableTasks' },
+      {
+        onRequestTimeout: () => {
+          timeoutAnnotations += 1;
+        },
+        retries: 2,
+        timeoutMs: 10_000,
+      }
+    );
+
+    expect(timeoutResult).toEqual({ data: undefined, status: 504 });
+    expect(timeoutAnnotations).toBe(1);
+    expect(timeoutCalls).toBe(3);
+
+    const observedOptions: Array<{ timeoutMs?: number; throwOnError?: boolean }> = [];
+    const successClient = {
+      post: async (_endpoint: string, options: { timeoutMs?: number; throwOnError?: boolean }) => {
+        observedOptions.push(options);
+        return { status: 200, data: { tasks: [] } };
+      },
+    };
+
+    const successResult = await guardedTaskSearch(successClient, { view: 'AllWork' }, { timeoutMs: 7_500 });
+    expect(successResult.status).toBe(200);
+    expect(observedOptions[0]).toEqual(expect.objectContaining({ throwOnError: false, timeoutMs: 7_500 }));
   });
 
   test('seedRoleAccessCaseId covers success and failure paths', async () => {

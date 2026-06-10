@@ -1,8 +1,10 @@
+import type { TestInfo } from '@playwright/test';
+
 import { test, expect } from './fixtures';
 import { ensureStorageState } from './utils/auth';
 import { WA_SAMPLE_ASSIGNED_TASK_ID, WA_SAMPLE_TASK_ID } from './data/testIds';
 import { expectStatus, StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
-import type { TaskListResponse, UserDetailsResponse } from './utils/types';
+import type { UserDetailsResponse } from './utils/types';
 import { buildTaskSearchRequest, seedTaskId } from './utils/work-allocation';
 import {
   assertAllWorkResponse,
@@ -18,6 +20,7 @@ import {
   extractMyWorkCases,
   fetchFirstTask,
   fetchTaskById,
+  guardedTaskSearch,
   hasSeededEnvTasks,
   isActionSuccessStatus,
   maybeAssertStateTransition,
@@ -35,6 +38,8 @@ const serviceCodes = ['IA', 'CIVIL', 'PRIVATELAW'];
 const envTaskId = WA_SAMPLE_TASK_ID;
 const envAssignedTaskId = WA_SAMPLE_ASSIGNED_TASK_ID;
 const BEFORE_ALL_REQUEST_TIMEOUT_MS = 10_000;
+const TASK_SEARCH_REQUEST_TIMEOUT_MS = 10_000;
+const TASK_SEARCH_TEST_TIMEOUT_MS = 120_000;
 
 test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, () => {
   let cachedLocationId: string | undefined;
@@ -188,6 +193,15 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
   });
 
   test.describe('task search', () => {
+    test.setTimeout(TASK_SEARCH_TEST_TIMEOUT_MS);
+
+    const annotateTaskSearchTimeout = (testInfo: TestInfo) => (message: string) => {
+      testInfo.annotations.push({
+        type: 'downstream timeout',
+        description: `workallocation/task exhausted bounded retries: ${message.substring(0, 120)}`,
+      });
+    };
+
     test('MyTasks returns structured response', async ({ apiClient }, testInfo) => {
       if (!userId) {
         testInfo.annotations.push({
@@ -206,36 +220,34 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
         searchBy: 'caseworker',
       });
 
-      const response = (await withRetry(
-        () =>
-          apiClient.post('workallocation/task', {
-            data: body,
-          }),
-        { retries: 1, retryStatuses: [502, 504] }
-      )) as { data: TaskListResponse; status: number };
+      const response = await guardedTaskSearch(apiClient, body, {
+        onRequestTimeout: annotateTaskSearchTimeout(testInfo),
+        retries: 2,
+        timeoutMs: TASK_SEARCH_REQUEST_TIMEOUT_MS,
+      });
+      expectStatus(response.status, StatusSets.guardedBasic);
       assertTaskSearchResponse(response.status, response.data);
     });
 
-    test('AvailableTasks returns structured response', async ({ apiClient }) => {
+    test('AvailableTasks returns structured response', async ({ apiClient }, testInfo) => {
       const body = buildTaskSearchRequest('AvailableTasks', {
         locations: toLocationList(cachedLocationId),
         states: ['unassigned'],
         searchBy: 'caseworker',
       });
 
-      const response = (await withRetry(
-        () =>
-          apiClient.post('workallocation/task', {
-            data: body,
-            throwOnError: false,
-          }),
-        { retries: 1, retryStatuses: [502, 504] }
-      )) as { data: TaskListResponse; status: number };
+      const response = await guardedTaskSearch(apiClient, body, {
+        onRequestTimeout: annotateTaskSearchTimeout(testInfo),
+        retries: 2,
+        timeoutMs: TASK_SEARCH_REQUEST_TIMEOUT_MS,
+      });
       expectStatus(response.status, StatusSets.guardedBasic);
       assertAvailableTasksResponse(response.status, response.data);
     });
 
-    test('POST /workallocation/task with AllWork returns paginated task list with structured response', async ({ apiClient }) => {
+    test('POST /workallocation/task with AllWork returns paginated task list with structured response', async ({
+      apiClient,
+    }, testInfo) => {
       // Given: A solicitor user with access to configured locations
       // When: Searching for all work (assigned and unassigned tasks) in specified location
       const body = buildTaskSearchRequest('AllWork', {
@@ -244,14 +256,12 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
         searchBy: 'caseworker',
       });
 
-      const response = (await withRetry(
-        () =>
-          apiClient.post('workallocation/task', {
-            data: body,
-            throwOnError: false,
-          }),
-        { retries: 1, retryStatuses: [502, 504] }
-      )) as { data: TaskListResponse; status: number };
+      const response = await guardedTaskSearch(apiClient, body, {
+        onRequestTimeout: annotateTaskSearchTimeout(testInfo),
+        retries: 2,
+        timeoutMs: TASK_SEARCH_REQUEST_TIMEOUT_MS,
+      });
+      expectStatus(response.status, StatusSets.guardedBasic);
       assertAllWorkResponse(response.status, response.data);
     });
   });

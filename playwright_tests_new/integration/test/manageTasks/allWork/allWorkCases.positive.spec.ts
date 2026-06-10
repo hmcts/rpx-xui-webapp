@@ -7,67 +7,16 @@ import {
   waitForAllWorkCasesPageRequest,
   waitForFilteredAllWorkCasesRequest,
 } from '../../../helpers';
-import { buildMyCaseMock, type MyCaseMock } from '../../../mocks/myCases.mock';
+import {
+  allFilterPeople,
+  allWorkCasesSupportedJurisdictionDetails,
+  allWorkCasesSupportedJurisdictions,
+  currentFilterPerson,
+  emptyFilterPerson,
+  pagedAllWorkCases,
+} from '../../../mocks/manageTasksAllWork.mock';
 
 const userIdentifier = 'STAFF_ADMIN';
-
-const supportedJurisdictions = ['IA', 'SSCS'];
-const supportedJurisdictionDetails = [
-  { serviceId: 'IA', serviceName: 'Immigration and Asylum' },
-  { serviceId: 'SSCS', serviceName: 'Social security and child support' },
-];
-
-const currentFilterPerson = {
-  email: 'current.caseworker@example.com',
-  firstName: 'Current',
-  idamId: 'all-work-current-caseworker',
-  lastName: 'Allocation',
-  location: {
-    id: 231596,
-    locationName: 'Birmingham',
-    services: ['IA', 'SSCS'],
-  },
-  roleCategory: 'LEGAL_OPERATIONS',
-  service: 'IA',
-};
-
-const emptyFilterPerson = {
-  email: 'empty.caseworker@example.com',
-  firstName: 'Empty',
-  idamId: 'all-work-empty-caseworker',
-  lastName: 'Allocation',
-  location: {
-    id: 231596,
-    locationName: 'Birmingham',
-    services: ['IA', 'SSCS'],
-  },
-  roleCategory: 'LEGAL_OPERATIONS',
-  service: 'IA',
-};
-
-const allFilterPeople = [currentFilterPerson, emptyFilterPerson];
-
-const buildAllWorkCase = (index: number, overrides: Partial<MyCaseMock> = {}): MyCaseMock => {
-  const caseNumber = index + 1;
-  return buildMyCaseMock({
-    id: `all-work-allocation-${caseNumber}`,
-    case_id: `180000000000${String(caseNumber).padStart(4, '0')}`,
-    case_name: `All work case ${caseNumber}`,
-    case_category: caseNumber % 2 === 0 ? 'Protection' : 'Human rights',
-    case_type: 'Asylum',
-    jurisdiction: caseNumber % 2 === 0 ? 'SSCS' : 'IA',
-    jurisdictionId: caseNumber % 2 === 0 ? 'SSCS' : 'IA',
-    expectedServiceLabel: caseNumber % 2 === 0 ? 'Social security and child support' : 'Immigration and Asylum',
-    case_role: 'case-manager',
-    role: 'Case Manager',
-    role_category: 'LEGAL_OPERATIONS',
-    assignee: currentFilterPerson.idamId,
-    actions: [],
-    ...overrides,
-  });
-};
-
-const pagedAllWorkCases = Array.from({ length: 140 }, (_, index) => buildAllWorkCase(index));
 
 test.beforeEach(async ({ page }) => {
   await applySessionCookies(page, userIdentifier);
@@ -83,8 +32,8 @@ test.describe(`All Work cases as ${userIdentifier}`, { tag: ['@integration', '@i
         page,
         { cases: [], total_records: 0, unique_cases: 0 },
         {
-          supportedJurisdictions,
-          supportedJurisdictionDetails,
+          supportedJurisdictions: allWorkCasesSupportedJurisdictions,
+          supportedJurisdictionDetails: allWorkCasesSupportedJurisdictionDetails,
           routeHandler: async (route) => {
             const requestBody = parseAllWorkCasesRequest(route.request());
             const actorId = requestBody.searchRequest?.search_parameters?.find(
@@ -149,8 +98,8 @@ test.describe(`All Work cases as ${userIdentifier}`, { tag: ['@integration', '@i
         page,
         { cases: [], total_records: 0, unique_cases: 0 },
         {
-          supportedJurisdictions,
-          supportedJurisdictionDetails,
+          supportedJurisdictions: allWorkCasesSupportedJurisdictions,
+          supportedJurisdictionDetails: allWorkCasesSupportedJurisdictionDetails,
           routeHandler: async (route) => {
             const requestBody = parseAllWorkCasesRequest(route.request());
             const pageNumber = requestBody.searchRequest?.pagination_parameters?.page_number ?? 1;

@@ -5,20 +5,17 @@ import {
   setupManageTasksBaseRoutes,
   taskListRoutePattern,
 } from '../../../helpers';
-import { buildCaseDetailsTasksFromParams } from '../../../mocks/caseDetailsTasks.builder';
-import { buildAsylumCaseMock } from '../../../mocks/cases/asylumCase.mock';
 import { buildTaskListMock, myActionsList } from '../../../mocks/taskList.mock';
 import { buildMyCases } from '../../../mocks/myCases.mock';
+import {
+  allWorkTasksSupportedJurisdictionDetails,
+  allWorkTasksSupportedJurisdictions,
+  buildAllWorkTaskTableScenario,
+} from '../../../mocks/manageTasksAllWork.mock';
 
 const userIdentifier = 'STAFF_ADMIN';
 const staffAdminSession = getLegacyStaffAdminSessionIdentity();
 const allWorkCasesRoutePattern = /\/workallocation\/all-work\/cases(?:\?.*)?$/;
-
-const supportedJurisdictions = ['IA', 'CIVIL'];
-const supportedJurisdictionDetails = [
-  { serviceId: 'IA', serviceName: 'Immigration and Asylum' },
-  { serviceId: 'CIVIL', serviceName: 'Civil' },
-];
 
 test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   test.beforeEach(async ({ page }) => {
@@ -26,65 +23,15 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
   });
 
   test('User can view all-work task table, links, and pagination', async ({ taskListPage, page, tableUtils }) => {
-    const totalAllWorkTaskRecords = 50;
-    const firstPageTaskListResponse = buildTaskListMock(25, '', myActionsList);
-    const secondPageTaskListResponse = buildTaskListMock(25, '', myActionsList);
-    const taskListMockResponse = { ...firstPageTaskListResponse, total_records: totalAllWorkTaskRecords };
-    const secondPageTaskListMockResponse = { ...secondPageTaskListResponse, total_records: totalAllWorkTaskRecords };
-    const firstTask = taskListMockResponse.tasks[0];
-    const secondPageFirstTask = secondPageTaskListMockResponse.tasks[0];
-
-    firstTask.case_name = 'All work migrated case';
-    firstTask.case_name_field = firstTask.case_name;
-    firstTask.task_title = 'All work migrated task';
-    firstTask.task_field = firstTask.task_title;
-    secondPageFirstTask.case_name = 'All work migrated page 2 case';
-    secondPageFirstTask.case_name_field = secondPageFirstTask.case_name;
-    secondPageFirstTask.task_title = 'All work migrated page 2 task';
-    secondPageFirstTask.task_field = secondPageFirstTask.task_title;
-
-    const caseMockResponse = buildAsylumCaseMock({
-      caseId: firstTask.case_id,
-      caseTypeId: firstTask.case_type_id,
-      jurisdictionId: firstTask.jurisdiction,
-    });
-    const caseTasksResponse = buildCaseDetailsTasksFromParams({
-      caseId: firstTask.case_id,
-      tasks: [
-        {
-          id: firstTask.id,
-          title: firstTask.task_title,
-          state: 'assigned',
-          assignee: 'all-work-assignee-1',
-          createdDate: firstTask.created_date,
-          dueDate: firstTask.due_date,
-          priorityDate: firstTask.priority_date,
-          jurisdiction: firstTask.jurisdiction,
-          caseTypeId: firstTask.case_type_id,
-          caseId: firstTask.case_id,
-          caseName: firstTask.case_name,
-          caseCategory: firstTask.case_category,
-          locationName: firstTask.location_name,
-          location: firstTask.location,
-          description: 'Task opened from the all-work task link.',
-          actions: [{ id: 'go', title: 'Go to task' }],
-        },
-      ],
-    });
-    const caseworkerLookupResponse = [
-      {
-        email: 'all.work.caseworker@example.com',
-        firstName: 'All',
-        idamId: 'all-work-assignee-1',
-        lastName: 'Work',
-        location: {
-          id: 227101,
-          locationName: 'Taylor House',
-        },
-        roleCategory: 'LEGAL_OPERATIONS',
-        service: 'IA',
-      },
-    ];
+    const {
+      caseMockResponse,
+      caseTasksResponse,
+      caseworkerLookupResponse,
+      firstTask,
+      secondPageFirstTask,
+      secondPageTaskListMockResponse,
+      taskListMockResponse,
+    } = buildAllWorkTaskTableScenario();
 
     await test.step('Setup route mocks for all-work tasks', async () => {
       await setupManageTasksBaseRoutes(page, {
@@ -102,8 +49,8 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
             body: JSON.stringify(pageNumber === 2 ? secondPageTaskListMockResponse : taskListMockResponse),
           });
         },
-        supportedJurisdictions,
-        supportedJurisdictionDetails,
+        supportedJurisdictions: allWorkTasksSupportedJurisdictions,
+        supportedJurisdictionDetails: allWorkTasksSupportedJurisdictionDetails,
       });
 
       await page.route(`**/data/internal/cases/${firstTask.case_id}*`, async (route) => {
@@ -221,8 +168,8 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
     await test.step('Setup route mocks for all-work tasks sorting', async () => {
       await setupManageTasksBaseRoutes(page, {
         taskListResponse: taskListMockResponse,
-        supportedJurisdictions,
-        supportedJurisdictionDetails,
+        supportedJurisdictions: allWorkTasksSupportedJurisdictions,
+        supportedJurisdictionDetails: allWorkTasksSupportedJurisdictionDetails,
       });
       await page.route(allWorkCasesRoutePattern, async (route) => {
         await route.fulfill({
@@ -291,8 +238,8 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
     await test.step('Setup route mocks for all-work filters', async () => {
       await setupManageTasksBaseRoutes(page, {
         taskListResponse: taskListMockResponse,
-        supportedJurisdictions,
-        supportedJurisdictionDetails,
+        supportedJurisdictions: allWorkTasksSupportedJurisdictions,
+        supportedJurisdictionDetails: allWorkTasksSupportedJurisdictionDetails,
       });
     });
 
@@ -338,8 +285,8 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
     await test.step('Setup route mocks for all-work manage action matrix', async () => {
       await setupManageTasksBaseRoutes(page, {
         taskListResponse: taskListMockResponse,
-        supportedJurisdictions,
-        supportedJurisdictionDetails,
+        supportedJurisdictions: allWorkTasksSupportedJurisdictions,
+        supportedJurisdictionDetails: allWorkTasksSupportedJurisdictionDetails,
       });
     });
 
@@ -401,8 +348,8 @@ test.describe('All Work role-based task columns', { tag: ['@integration', '@inte
         await test.step('Setup route mocks for all-work role-based columns', async () => {
           await setupManageTasksBaseRoutes(page, {
             taskListResponse: taskListMockResponse,
-            supportedJurisdictions,
-            supportedJurisdictionDetails,
+            supportedJurisdictions: allWorkTasksSupportedJurisdictions,
+            supportedJurisdictionDetails: allWorkTasksSupportedJurisdictionDetails,
             user: {
               roleCategory: scenario.roleCategory,
               roles: scenario.roles,

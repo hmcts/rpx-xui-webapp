@@ -11,3 +11,6 @@ exui_weekly_stats_enabled = false
 
 # ExUI Throughput Stats Reporting
 exui_throughput_stats_enabled = false
+
+# ExUI PUI Activations Reporting
+exui_pui_activations_enabled = false

@@ -43,14 +43,8 @@ variable "redis_capacity" {
 }
 
 variable "welsh_reporting_enabled" {
-  default     = true
+  default     = false
   description = "Enable Welsh language usage reporting"
-  type        = bool
-}
-
-variable "exui_weekly_stats_enabled" {
-  default     = true
-  description = "Enable ExUI weekly stats reporting"
   type        = bool
 }
 
@@ -60,15 +54,15 @@ variable "welsh_email_address_key" {
   type        = string
 }
 
+variable "exui_weekly_stats_enabled" {
+  default     = true
+  description = "Enable ExUI weekly stats reporting"
+  type        = bool
+}
+
 variable "exui_weekly_stats_email_address_key" {
   default     = "exui-weekly-stats-email"
   description = "Email address key in azure Key Vault for ExUI weekly stats reporting."
-  type        = string
-}
-
-variable "exui_throughput_stats_email_address_key" {
-  default     = "exui-throughput-stats-email"
-  description = "Email address key in azure Key Vault for ExUI throughput stats reporting."
   type        = string
 }
 
@@ -76,6 +70,12 @@ variable "exui_throughput_stats_enabled" {
   default     = true
   description = "Enable ExUI request throughput stats reporting"
   type        = bool
+}
+
+variable "exui_throughput_stats_email_address_key" {
+  default     = "exui-throughput-stats-email"
+  description = "Email address key in azure Key Vault for ExUI throughput stats reporting."
+  type        = string
 }
 
 variable "exui_pui_activations_enabled" {

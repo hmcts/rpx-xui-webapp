@@ -3136,12 +3136,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.54":
-  version: 7.3.54
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.54"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.55":
+  version: 7.3.55
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.55"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/8821244e75de2d9a2504054e576f70cd4f77dca14154981436106a97cdcf64fd0508122fe735623beb7952240b8c7588ee3caa6128b4c7ce7af8b2fb43e3172b
+  checksum: 10/857ccc125c98572de495c18dcd6f772cb151323c4d222f2f5e27ba64fb5013e6f8bb316bcdc91d09eb320dd093fb97ad63c2a879ee2cefa7ae754287c0185108
   languageName: node
   linkType: hard
 
@@ -20421,7 +20421,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.54"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.55"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.18"
@@ -20532,7 +20532,7 @@ __metadata:
     prettier: "npm:^3.8.0"
     proper-lockfile: "npm:^4.1.2"
     redis: "npm:^3.0.2"
-    rpx-xui-translation: "npm:1.2.3"
+    rpx-xui-translation: "npm:1.2.5"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
     sass: "npm:^1.97.3"
@@ -20563,9 +20563,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:1.2.3":
-  version: 1.2.3
-  resolution: "rpx-xui-translation@npm:1.2.3"
+"rpx-xui-translation@npm:1.2.5":
+  version: 1.2.5
+  resolution: "rpx-xui-translation@npm:1.2.5"
   dependencies:
     dexie: "npm:^3.2.2"
     luxon: "npm:^2.4.0"
@@ -20573,7 +20573,7 @@ __metadata:
   peerDependencies:
     "@angular/common": ^20.3.14
     "@angular/core": ^20.3.14
-  checksum: 10/32388e2cbee3f2872c7e16541246606e131535d37c1a9869103efcbead0589a9c45d12a027e55e070e6913174041628cb5f1e6dc7e6310f39ba6f489a311bca8
+  checksum: 10/3e1b37a817ff8b55580105bf8dbfb275faf9bc28d953b542f2ab27a70151918e5ec7562714a5832ad426744d922b18d7d534d12c8a00e014342ac6d394011658
   languageName: node
   linkType: hard
 

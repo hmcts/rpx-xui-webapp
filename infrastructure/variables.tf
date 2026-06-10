@@ -54,3 +54,39 @@ variable "welsh_email_address_key" {
   type        = string
 }
 
+variable "exui_weekly_stats_enabled" {
+  default     = true
+  description = "Enable ExUI weekly stats reporting"
+  type        = bool
+}
+
+variable "exui_weekly_stats_email_address_key" {
+  default     = "exui-weekly-stats-email"
+  description = "Email address key in azure Key Vault for ExUI weekly stats reporting."
+  type        = string
+}
+
+variable "exui_throughput_stats_enabled" {
+  default     = true
+  description = "Enable ExUI request throughput stats reporting"
+  type        = bool
+}
+
+variable "exui_throughput_stats_email_address_key" {
+  default     = "exui-throughput-stats-email"
+  description = "Email address key in azure Key Vault for ExUI throughput stats reporting."
+  type        = string
+}
+
+variable "exui_pui_activations_enabled" {
+  default     = true
+  description = "Enable ExUI PUI activations weekly reporting (daily unique IDAM activations via pui- clients)"
+  type        = bool
+}
+
+variable "exui_pui_activations_email_address_key" {
+  default     = "exui-pui-activations-email"
+  description = "Email address key in Azure Key Vault for ExUI PUI activations reporting."
+  type        = string
+}
+

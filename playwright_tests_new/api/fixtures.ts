@@ -203,6 +203,9 @@ async function createNodeApiClient(
     baseUrl,
     name: `node-api-${role}`,
     logger,
+    redaction: {
+      patterns: ['responseBody'],
+    },
     captureRawBodies: process.env.PLAYWRIGHT_DEBUG_API === '1',
     onResponse: (entry) => {
       entries.push(entry);

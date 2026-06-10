@@ -55,7 +55,7 @@ variable "welsh_email_address_key" {
 }
 
 variable "exui_weekly_stats_enabled" {
-  default     = true
+  default     = false
   description = "Enable ExUI weekly stats reporting"
   type        = bool
 }
@@ -67,7 +67,7 @@ variable "exui_weekly_stats_email_address_key" {
 }
 
 variable "exui_throughput_stats_enabled" {
-  default     = true
+  default     = false
   description = "Enable ExUI request throughput stats reporting"
   type        = bool
 }
@@ -79,7 +79,7 @@ variable "exui_throughput_stats_email_address_key" {
 }
 
 variable "exui_pui_activations_enabled" {
-  default     = true
+  default     = false
   description = "Enable ExUI PUI activations weekly reporting (daily unique IDAM activations via pui- clients)"
   type        = bool
 }

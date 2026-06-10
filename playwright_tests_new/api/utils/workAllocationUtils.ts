@@ -148,6 +148,7 @@ type FetchFirstTaskOptions = {
 };
 
 type GuardedTaskSearchOptions = {
+  failOnRequestError?: boolean;
   onRequestTimeout?: (message: string) => void;
   retries?: number;
   retryStatuses?: number[];
@@ -210,6 +211,9 @@ export async function guardedTaskSearch(
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     if (/timeout|timed out|ETIMEDOUT|ECONNRESET|socket hang up/i.test(message)) {
+      if (options.failOnRequestError === true) {
+        throw error;
+      }
       options.onRequestTimeout?.(message);
       return { data: undefined, status: 504 };
     }

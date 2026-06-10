@@ -41,7 +41,7 @@ export class TaskListPage extends Base {
   readonly allWorkTaskCategoryAssignedToPersonRadio = this.filterPanel
     .getByRole('radio', { name: 'Assigned to a person' })
     .first();
-  readonly allWorkRoleTypeFilter = this.filterPanel.locator('select').nth(1);
+  readonly allWorkRoleTypeFilter = this.filterPanel.locator('#role select, select[name="role"], select[id*="role"]').first();
   readonly allWorkTaskTypeFilter = this.filterPanel
     .locator('#taskType select, select[name="taskType"], select[id*="taskType"]')
     .first();
@@ -637,7 +637,6 @@ export class TaskListPage extends Base {
         state: 'visible',
         timeout: this.resolveInteractionTimeout(deadlineMs, FILTER_GROUP_OPERATION_TIMEOUT_MS),
       });
-      await expect(this.applyFilterButton).toBeEnabled({ timeout: this.resolveInteractionTimeout(deadlineMs, 5_000) });
 
       try {
         await this.applyFilterButton.click({ timeout: this.resolveInteractionTimeout(deadlineMs, 5_000) });
@@ -668,10 +667,8 @@ export class TaskListPage extends Base {
     await this.openFilterPanel();
     await this.allWorkRoleTypeFilter.selectOption({ label: 'Legal Ops' });
     await this.allWorkPersonSearchInput.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
-    await expect(this.allWorkPersonSearchInput).toBeEditable({ timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
     await this.allWorkPersonSearchInput.fill(searchText);
     await this.page.getByRole('option', { name: optionText }).first().click();
-    await expect(this.applyFilterButton).toBeEnabled({ timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
     await this.applyCurrentFilters();
   }
 

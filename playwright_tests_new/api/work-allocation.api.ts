@@ -203,7 +203,7 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
       });
     };
 
-    test('MyTasks returns structured response', async ({ apiClient }, testInfo) => {
+    test('MyTasks returns structured response without masking transport failure', async ({ apiClient }, testInfo) => {
       if (!userId) {
         testInfo.annotations.push({
           type: 'notice',
@@ -222,6 +222,7 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
       });
 
       const response = await guardedTaskSearch(apiClient, body, {
+        failOnRequestError: true,
         onRequestTimeout: annotateTaskSearchTimeout(testInfo),
         retries: 2,
         retryStatuses: TASK_SEARCH_RETRY_STATUSES,
@@ -248,7 +249,7 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
       assertAvailableTasksResponse(response.status, response.data);
     });
 
-    test('POST /workallocation/task with AllWork returns paginated task list with structured response', async ({
+    test('POST /workallocation/task with AllWork returns paginated task list or guarded downstream timeout', async ({
       apiClient,
     }, testInfo) => {
       // Given: A solicitor user with access to configured locations

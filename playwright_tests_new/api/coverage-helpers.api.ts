@@ -186,6 +186,10 @@ test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () =
     expect(timeoutAnnotations).toBe(1);
     expect(timeoutCalls).toBe(3);
 
+    await expect(
+      guardedTaskSearch(timeoutClient, { view: 'AvailableTasks' }, { failOnRequestError: true, retries: 0 })
+    ).rejects.toThrow('Timeout 10000ms exceeded');
+
     const observedOptions: Array<{ timeoutMs?: number; throwOnError?: boolean }> = [];
     const successClient = {
       post: async (_endpoint: string, options: { timeoutMs?: number; throwOnError?: boolean }) => {

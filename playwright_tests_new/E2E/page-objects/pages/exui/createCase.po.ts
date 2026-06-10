@@ -455,20 +455,21 @@ export class CreateCasePage extends Base {
 
   async clickEmploymentDocumentCollectionAddButton(): Promise<void> {
     const addButton = this.employmentDocumentCollectionButton.first();
+    const spinnerSettleTimeoutMs = 45_000;
+
     await addButton.waitFor({ state: 'visible', timeout: 15_000 });
+    await this.waitForSpinnerToComplete('before clicking employment document collection add button', spinnerSettleTimeoutMs);
 
     try {
       await addButton.click({ timeout: 15_000 });
     } catch (error) {
-      const spinner = this.page.locator('xuilib-loading-spinner').first();
-      const spinnerVisible = await spinner.isVisible().catch(() => false);
-
-      if (!spinnerVisible) {
+      const message = this.normalizeUnknownError(error);
+      if (!message.includes('intercepts pointer events')) {
         throw error;
       }
 
-      this.logger.warn('Retrying employment document collection add after spinner overlay cleared');
-      await spinner.waitFor({ state: 'hidden', timeout: 15_000 });
+      this.logger.warn('Employment document collection add click intercepted by spinner; waiting and retrying click');
+      await this.waitForSpinnerToComplete('before retrying employment document collection add button', spinnerSettleTimeoutMs);
       await addButton.click({ timeout: 15_000 });
     }
 

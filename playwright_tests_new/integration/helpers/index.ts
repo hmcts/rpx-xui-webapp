@@ -35,3 +35,4 @@ export * from './workAllocationAccessScenarios.helper';
 export * from './sessionUser.helper';
 export * from './welshLanguageSession.helper';
 export * from './welshLanguageAssertions.helper';
+export * from './caseShareMockRoutes.helper';

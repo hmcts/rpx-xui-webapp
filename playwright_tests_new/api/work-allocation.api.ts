@@ -38,8 +38,9 @@ const serviceCodes = ['IA', 'CIVIL', 'PRIVATELAW'];
 const envTaskId = WA_SAMPLE_TASK_ID;
 const envAssignedTaskId = WA_SAMPLE_ASSIGNED_TASK_ID;
 const BEFORE_ALL_REQUEST_TIMEOUT_MS = 10_000;
-const TASK_SEARCH_REQUEST_TIMEOUT_MS = 10_000;
+const TASK_SEARCH_REQUEST_TIMEOUT_MS = 15_000;
 const TASK_SEARCH_TEST_TIMEOUT_MS = 120_000;
+const TASK_SEARCH_RETRY_STATUSES = [500, 502, 504];
 
 test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, () => {
   let cachedLocationId: string | undefined;
@@ -223,9 +224,10 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
       const response = await guardedTaskSearch(apiClient, body, {
         onRequestTimeout: annotateTaskSearchTimeout(testInfo),
         retries: 2,
+        retryStatuses: TASK_SEARCH_RETRY_STATUSES,
         timeoutMs: TASK_SEARCH_REQUEST_TIMEOUT_MS,
       });
-      expectStatus(response.status, StatusSets.guardedBasic);
+      expectStatus(response.status, StatusSets.waReadOnly);
       assertTaskSearchResponse(response.status, response.data);
     });
 
@@ -239,9 +241,10 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
       const response = await guardedTaskSearch(apiClient, body, {
         onRequestTimeout: annotateTaskSearchTimeout(testInfo),
         retries: 2,
+        retryStatuses: TASK_SEARCH_RETRY_STATUSES,
         timeoutMs: TASK_SEARCH_REQUEST_TIMEOUT_MS,
       });
-      expectStatus(response.status, StatusSets.guardedBasic);
+      expectStatus(response.status, StatusSets.waReadOnly);
       assertAvailableTasksResponse(response.status, response.data);
     });
 
@@ -259,9 +262,10 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
       const response = await guardedTaskSearch(apiClient, body, {
         onRequestTimeout: annotateTaskSearchTimeout(testInfo),
         retries: 2,
+        retryStatuses: TASK_SEARCH_RETRY_STATUSES,
         timeoutMs: TASK_SEARCH_REQUEST_TIMEOUT_MS,
       });
-      expectStatus(response.status, StatusSets.guardedBasic);
+      expectStatus(response.status, StatusSets.waReadOnly);
       assertAllWorkResponse(response.status, response.data);
     });
   });

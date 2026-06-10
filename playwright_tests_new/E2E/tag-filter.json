@@ -1,16 +1,22 @@
 {
   "excludedTags": [],
   "availableTags": [
+    "@a11y",
     "@e2e",
     "@nightly",
+    "@validation",
+    "@e2e-access-requests",
     "@e2e-case-file-view",
+    "@e2e-case-list",
     "@e2e-case-flags",
     "@e2e-create-case",
     "@e2e-document-upload",
     "@e2e-document-upload-v1",
+    "@e2e-footer",
     "@e2e-manage-tasks",
     "@e2e-media-viewer",
     "@e2e-search-case",
+    "@e2e-system",
     "@e2e-smoke",
     "@e2e-update-case"
   ]

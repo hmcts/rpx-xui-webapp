@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { createRequire } from 'node:module';
 import {
   HEARINGS_CASE_REFERENCE,
   HEARINGS_CASE_TYPE,
@@ -16,6 +17,11 @@ import {
   buildServiceHearingValuesMock,
   type HearingScenario,
 } from '../integration/mocks/hearings.mock';
+
+const require = createRequire(import.meta.url);
+const { hearingStatusMappings } = require('../../src/hearings/models/hearingStatusMappings') as {
+  hearingStatusMappings: Array<{ hmcStatus: string }>;
+};
 
 test.describe('Hearings mock builders', { tag: '@svc-internal' }, () => {
   test('buildHearingsListMock maps every supported hearing status into the expected display section', () => {
@@ -92,6 +98,9 @@ test.describe('Hearings mock builders', { tag: '@svc-internal' }, () => {
 
     expect(payload.caseRef).toBe(HEARINGS_CASE_REFERENCE);
     expect(payload.caseHearings).toHaveLength(statusExpectations.length);
+    expect(statusExpectations.map((statusExpectation) => statusExpectation.hmcStatus).sort()).toEqual(
+      hearingStatusMappings.map((statusMapping) => statusMapping.hmcStatus).sort()
+    );
     statusExpectations.forEach((statusExpectation, index) => {
       expect(payload.caseHearings[index]).toMatchObject({
         hearingID: 1705614528100 + index,
@@ -326,19 +335,49 @@ test.describe('Hearings mock builders', { tag: '@svc-internal' }, () => {
   test('buildLinkedCasesWithHearingsMock exposes linked hearing aggregation data for orchestration coverage', () => {
     const linkedCases = buildLinkedCasesWithHearingsMock() as Array<{
       caseRef: string;
-      caseHearings: Array<{ hearingID: string | number; hearingIsLinkedFlag: boolean; isSelected: boolean }>;
+      reasonsForLink: string[];
+      caseHearings: Array<{
+        hearingID: string | number;
+        hearingType: string;
+        hearingIsLinkedFlag: boolean;
+        isSelected: boolean;
+      }>;
     }>;
 
-    expect(linkedCases.length).toBeGreaterThan(0);
-    expect(linkedCases.some((linkedCase) => linkedCase.caseHearings.length === 0)).toBe(true);
-    expect(linkedCases.flatMap((linkedCase) => linkedCase.caseHearings)).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          hearingID: 'h100001',
-          hearingIsLinkedFlag: true,
-          isSelected: true,
-        }),
-      ])
-    );
+    expect(linkedCases.map((linkedCase) => linkedCase.caseRef)).toEqual([
+      '4652724902696213',
+      '5283819672542864',
+      '8254902572336147',
+    ]);
+    expect(linkedCases.map((linkedCase) => linkedCase.reasonsForLink)).toEqual([
+      ['Linked for a hearing'],
+      ['Linked for a hearing', 'Progressed as part of lead case'],
+      ['Familial', 'Guardian', 'Linked for a hearing'],
+    ]);
+
+    const casesWithHearings = linkedCases.filter((linkedCase) => linkedCase.caseHearings.length > 0);
+    expect(casesWithHearings.map((linkedCase) => linkedCase.caseRef)).toEqual(['4652724902696213', '8254902572336147']);
+    expect(linkedCases.find((linkedCase) => linkedCase.caseRef === '5283819672542864')?.caseHearings).toEqual([]);
+    expect(
+      casesWithHearings.map((linkedCase) => ({
+        caseRef: linkedCase.caseRef,
+        hearingIds: linkedCase.caseHearings.map((hearing) => hearing.hearingID),
+        selectedFlags: linkedCase.caseHearings.map((hearing) => hearing.isSelected),
+        linkedFlags: linkedCase.caseHearings.map((hearing) => hearing.hearingIsLinkedFlag),
+      }))
+    ).toEqual([
+      {
+        caseRef: '4652724902696213',
+        hearingIds: ['h100001'],
+        selectedFlags: [true],
+        linkedFlags: [true],
+      },
+      {
+        caseRef: '8254902572336147',
+        hearingIds: ['h100010', 'h100012'],
+        selectedFlags: [true, true],
+        linkedFlags: [true, true],
+      },
+    ]);
   });
 });

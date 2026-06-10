@@ -1,3 +1,4 @@
+import { FullConfig } from '@playwright/test';
 import { sessionCapture } from './sessionCapture';
 import { resolveIntegrationSessionWarmupUsers } from '../integration/helpers';
 import playwrightConfigUtils from '../../playwright-config-utils';
@@ -29,9 +30,5 @@ async function globalSetup(fullConfig: FullConfig) {
     await sessionCapture(userIdentifiers);
   }
 }
-
-(globalSetup as { __test__?: unknown }).__test__ = {
-  resolveIntegrationSessionWarmupUsers,
-};
 
 export default globalSetup;

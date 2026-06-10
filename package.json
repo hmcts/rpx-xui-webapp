@@ -248,7 +248,7 @@
     "sinon": "^7.3.2",
     "sinon-chai": "^3.3.0",
     "sinon-express-mock": "^2.2.0",
-    "sonarqube-scanner": "4.3.6",
+    "sonarqube-scanner": "^4.3.6",
     "start-server-and-test": "^2.0.13",
     "terser-webpack-plugin": "^5.3.3",
     "ts-loader": "^9.4.4",

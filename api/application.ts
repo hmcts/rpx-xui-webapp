@@ -11,6 +11,7 @@ import { getXuiNodeMiddleware } from './auth';
 import { getConfigValue, showFeature } from './configuration';
 import {
   DYNATRACE_CDN,
+  FEATURE_DYNATRACE_ENABLED,
   FEATURE_HELMET_ENABLED,
   FEATURE_COMPRESSION_ENABLED,
   HELMET,
@@ -55,7 +56,8 @@ function escapeHtmlAttribute(value: string): string {
 }
 
 function injectTemplateValues(html: string, nonce: string): string {
-  const cdn = getConfigValue<string>(DYNATRACE_CDN)?.trim() ?? '';
+  const dynatraceEnabled = showFeature(FEATURE_DYNATRACE_ENABLED);
+  const cdn = dynatraceEnabled ? getConfigValue<string>(DYNATRACE_CDN)?.trim() ?? '' : '';
   return html.replaceAll('{{dynatraceCdn}}', escapeHtmlAttribute(cdn)).replaceAll(/{{cspNonce}}/g, nonce);
 }
 

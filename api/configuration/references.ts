@@ -128,6 +128,7 @@ export const FEATURE_ACCESS_MANAGEMENT_ENABLED = 'accessManagementEnabled';
 export const FEATURE_COMPRESSION_ENABLED = 'compressionEnabled';
 export const FEATURE_DOCS_ENABLED = 'docsEnabled';
 export const FEATURE_QUERY_IDAM_SERVICE_OVERRIDE = 'queryIdamServiceOverride';
+export const FEATURE_DYNATRACE_ENABLED = 'dynatraceEnabled';
 
 export const FEATURE_WORKALLOCATION_ENABLED = 'workAllocationEnabled';
 

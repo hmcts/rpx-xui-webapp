@@ -5,8 +5,17 @@ import * as sinon from 'sinon';
 import { mockRes } from 'sinon-express-mock';
 import * as configuration from '../configuration';
 import { http } from '../lib/http';
-import { fetchNewUserData, fetchRoleAssignmentsForNewUsers, getAuthTokens } from './caseWorkerUserDataCacheService';
+import * as caseWorkerService from './caseWorkerService';
+import {
+  fetchNewUserData,
+  fetchRoleAssignmentsForNewUsers,
+  getAuthTokens,
+  getOrRefreshCachedUsers,
+  getOrRefreshCachedUsersWithRoles,
+  waitForCachedUsers,
+} from './caseWorkerUserDataCacheService';
 import { StaffUserDetails } from './interfaces/staffUserDetails';
+import * as waRedisCache from './waRedisCache';
 
 // Import sinon-chai using require to avoid ES module issues
 const sinonChai = require('sinon-chai');
@@ -132,62 +141,6 @@ describe('Caseworker Cache Service', () => {
       const data = await fetchNewUserData();
       expect(data).to.deep.equal(mockMergedStaffUsers);
     });
-
-    it('should share an in-flight get request across concurrent refreshes', async () => {
-      const mockStaffDetails = [
-        {
-          ccd_service_name: 'IA',
-          staff_profile: {
-            id: '1',
-            first_name: 'IA',
-            last_name: 'User',
-            email_id: 'IAUser@test.com',
-            base_location: [
-              {
-                location: 'IA location',
-                location_id: 'a',
-                is_primary: true,
-              },
-            ],
-          },
-        },
-      ];
-      const mockMergedStaffUsers = [
-        {
-          ccd_service_name: 'IA',
-          staff_profile: {
-            id: '1',
-            first_name: 'IA',
-            last_name: 'User',
-            email_id: 'IAUser@test.com',
-            base_location: [
-              {
-                location: 'IA location',
-                location_id: 'a',
-                is_primary: true,
-              },
-            ],
-          },
-          ccd_service_names: ['IA'],
-        },
-      ];
-      let resolveGetRequest: (value: any) => void;
-      const getRequest = new Promise((resolve) => {
-        resolveGetRequest = resolve;
-      });
-      const getStub = sandbox.stub(http, 'get').returns(getRequest as any);
-      sandbox.stub(http, 'post').resolves(mockRes({ status: 200, data: { access_token: 'token' } }));
-
-      const firstRequest = fetchNewUserData();
-      const secondRequest = fetchNewUserData();
-      resolveGetRequest(mockRes({ status: 200, data: mockStaffDetails }));
-
-      const [firstResponse, secondResponse] = await Promise.all([firstRequest, secondRequest]);
-
-      expect(getStub).to.have.been.calledOnce;
-      expect(firstResponse).to.deep.equal(mockMergedStaffUsers);
-      expect(secondResponse).to.deep.equal(mockMergedStaffUsers);
-    });
   });
 
   describe('fetchRoleAssignmentsForNewUsers', () => {
@@ -257,7 +210,6 @@ describe('Caseworker Cache Service', () => {
           lastName: 'User',
           locations: [{ id: 'a', locationName: 'IA location', services: ['IA', 'CIVIL'] }],
           roleCategory: 'ADMIN',
-          roleCategories: [{ roleCategory: 'ADMIN', services: undefined }],
           services: ['IA', 'CIVIL'],
         },
         {
@@ -267,7 +219,6 @@ describe('Caseworker Cache Service', () => {
           lastName: 'User',
           locations: [{ id: 'c', locationName: 'PL location', services: undefined }],
           roleCategory: 'CTSC',
-          roleCategories: [{ roleCategory: 'CTSC', services: undefined }],
           services: ['PRIVATELAW'],
         },
       ];
@@ -324,6 +275,160 @@ describe('Caseworker Cache Service', () => {
       expect(postStub.secondCall.args[2]).to.deep.equal({
         headers: { 'content-type': 'application/x-www-form-urlencoded' },
       });
+    });
+  });
+
+  describe('redisCache integration', () => {
+    it('should return cached users from redis without acquiring lock', async () => {
+      const redisUsers = [
+        {
+          ccd_service_name: 'IA',
+          staff_profile: {
+            id: '1',
+            first_name: 'Test',
+            last_name: 'User',
+            email_id: 'user@test.com',
+            base_location: [],
+          },
+        },
+      ] as any;
+
+      sandbox.stub(waRedisCache, 'getCachedUsers').resolves(redisUsers);
+      const acquireLockStub = sandbox.stub(waRedisCache, 'acquireCachedUsersLock');
+
+      const result = await getOrRefreshCachedUsers();
+
+      expect(result).to.deep.equal(redisUsers);
+      expect(acquireLockStub).not.to.have.been.called;
+    });
+
+    it('should refresh users, correctly setting redis cache and lock', async () => {
+      const freshUsers = [
+        {
+          ccd_service_name: 'IA',
+          staff_profile: {
+            id: '1',
+            first_name: 'Fresh',
+            last_name: 'User',
+            email_id: 'fresh@test.com',
+            base_location: [],
+          },
+        },
+      ] as any;
+
+      const lock = { status: 'acquired' as const, key: 'wa:cachedUsers:lock', value: 'lock-id' };
+
+      sandbox.stub(waRedisCache, 'getCachedUsers').onFirstCall().resolves(null).onSecondCall().resolves(null);
+
+      sandbox.stub(waRedisCache, 'acquireCachedUsersLock').resolves(lock);
+      const setCachedUsersStub = sandbox.stub(waRedisCache, 'setCachedUsers').resolves();
+      const releaseLockStub = sandbox.stub(waRedisCache, 'releaseLock').resolves();
+
+      sandbox.stub(caseWorkerService, 'handleNewUsersGet').resolves(freshUsers);
+
+      const result = await getOrRefreshCachedUsers();
+
+      expect(result).to.deep.equal(freshUsers);
+      expect(setCachedUsersStub).to.have.been.calledWith(freshUsers);
+      expect(releaseLockStub).to.have.been.calledWith(lock);
+    });
+
+    it('should use redis users found after acquiring lock without refreshing backend', async () => {
+      const redisUsers = [
+        {
+          ccd_service_name: 'IA',
+          staff_profile: {
+            id: '1',
+            first_name: 'Other',
+            last_name: 'Pod',
+            email_id: 'other@test.com',
+            base_location: [],
+          },
+        },
+      ] as any;
+
+      const lock = { status: 'acquired' as const, key: 'wa:cachedUsers:lock', value: 'lock-id' };
+
+      sandbox.stub(waRedisCache, 'getCachedUsers').onFirstCall().resolves(null).onSecondCall().resolves(redisUsers);
+
+      sandbox.stub(waRedisCache, 'acquireCachedUsersLock').resolves(lock);
+      sandbox.stub(waRedisCache, 'releaseLock').resolves();
+      const backendStub = sandbox.stub(caseWorkerService, 'handleNewUsersGet');
+
+      const result = await getOrRefreshCachedUsers();
+
+      expect(result).to.deep.equal(redisUsers);
+      expect(backendStub).not.to.have.been.called;
+    });
+
+    // Note: If this occurs in production it will cause a cache miss and put extra load on the backend
+    // However, this is a fallback to ensure users are still returned
+    // Could be improved in future by adding retry logic to attempt to acquire the lock if problems occur (e.g. redis connection issues), but not always guarantees issue fix
+    // Could also consider cancellation of backend request if lock is unavailable
+    it('should refresh from backend when redis lock is unavailable', async () => {
+      const freshUsers = [
+        {
+          ccd_service_name: 'IA',
+          staff_profile: {
+            id: '1',
+            first_name: 'Fallback',
+            last_name: 'User',
+            email_id: 'fallback@test.com',
+            base_location: [],
+          },
+        },
+      ] as any;
+
+      sandbox.stub(waRedisCache, 'getCachedUsers').resolves(null);
+      sandbox.stub(waRedisCache, 'acquireCachedUsersLock').resolves({ status: 'unavailable' });
+      sandbox.stub(caseWorkerService, 'handleNewUsersGet').resolves(freshUsers);
+
+      const result = await getOrRefreshCachedUsers();
+
+      expect(result).to.deep.equal(freshUsers);
+    });
+
+    it('should return cached users with roles from redis when roles do not need refreshing', async () => {
+      const usersWithRoles = [
+        {
+          idamId: '1',
+          firstName: 'Redis',
+          lastName: 'Role',
+          email: 'role@test.com',
+          roleCategory: 'ADMIN',
+          services: ['IA'],
+          locations: [],
+        },
+      ] as any;
+
+      sandbox.stub(waRedisCache, 'getCachedUsersWithRoles').resolves(usersWithRoles);
+      const acquireLockStub = sandbox.stub(waRedisCache, 'acquireCachedUsersWithRolesLock');
+
+      const result = await getOrRefreshCachedUsersWithRoles([]);
+
+      expect(result).to.deep.equal(usersWithRoles);
+      expect(acquireLockStub).not.to.have.been.called;
+    });
+
+    it('should wait for cached users and return them when they appear', async () => {
+      const redisUsers = [{ ccd_service_name: 'IA', staff_profile: { id: '1' } }] as any;
+
+      sandbox.stub(global, 'setTimeout').callsFake((callback: (...args: any[]) => void) => {
+        callback();
+        return {} as NodeJS.Timeout;
+      });
+
+      const getCachedUsersStub = sandbox
+        .stub(waRedisCache, 'getCachedUsers')
+        .onFirstCall()
+        .resolves(null)
+        .onSecondCall()
+        .resolves(redisUsers);
+
+      const result = await waitForCachedUsers();
+
+      expect(result).to.deep.equal(redisUsers);
+      expect(getCachedUsersStub).to.have.been.calledTwice;
     });
   });
 });

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideMockActions } from '@ngrx/effects/testing';
-import { provideMockStore } from '@ngrx/store/testing';
+import { MockStore, provideMockStore } from '@ngrx/store/testing';
 import { cold, hot } from 'jasmine-marbles';
 import { firstValueFrom, of, take } from 'rxjs';
 import { Go } from '../../../app/store';
@@ -14,6 +14,7 @@ import { HearingValuesEffects } from './hearing-values.effects';
 describe('Hearing Values Effects', () => {
   let actions$;
   let effects: HearingValuesEffects;
+  let store: MockStore;
   const hearingsServiceMock = jasmine.createSpyObj('HearingsService', ['loadHearingValues']);
 
   beforeEach(() => {
@@ -29,6 +30,8 @@ describe('Hearing Values Effects', () => {
       ],
     });
     effects = TestBed.inject(HearingValuesEffects);
+    store = TestBed.inject(MockStore);
+    hearingsServiceMock.loadHearingValues.calls.reset();
   });
 
   describe('loadHearingValue$', () => {
@@ -193,6 +196,34 @@ describe('Hearing Values Effects', () => {
 
       await firstValueFrom(effects.loadHearingValue$.pipe(take(1)));
       expect(hearingsServiceMock.loadHearingValues).toHaveBeenCalledWith('IA', '1111222233334444');
+    });
+
+    it('should use stored caseInfo when payload is omitted', async () => {
+      hearingsServiceMock.loadHearingValues.and.returnValue(of(SERVICE_HEARING_VALUES));
+      actions$ = of(new hearingValuesActions.LoadHearingValues());
+
+      await firstValueFrom(effects.loadHearingValue$.pipe(take(1)));
+
+      expect(hearingsServiceMock.loadHearingValues).toHaveBeenCalledWith('IA', '1111222233334444');
+    });
+
+    it('should route to the hearings error page when case context is missing', async () => {
+      store.setState({
+        ...initialState,
+        hearings: {
+          ...initialState.hearings,
+          hearingValues: {
+            ...initialState.hearings.hearingValues,
+            caseInfo: null,
+          },
+        },
+      });
+      actions$ = of(new hearingValuesActions.LoadHearingValues());
+
+      const result = await firstValueFrom(effects.loadHearingValue$.pipe(take(1)));
+
+      expect(result).toEqual(new Go({ path: ['/hearings/error'] }));
+      expect(hearingsServiceMock.loadHearingValues).not.toHaveBeenCalled();
     });
   });
 

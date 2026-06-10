@@ -31,7 +31,7 @@ async function globalSetup(fullConfig: FullConfig) {
 }
 
 (globalSetup as { __test__?: unknown }).__test__ = {
-  resolveWarmupUsersWithCredentials,
+  resolveIntegrationSessionWarmupUsers,
 };
 
 export default globalSetup;

@@ -82,8 +82,6 @@ export const getXuiNodeMiddleware = () => {
       '/api/role-access/roles/getJudicialUsers',
       '/workallocation/getJudicialUsers',
       '/workallocation/caseworker/getUsersByServiceName',
-      '/workallocation/caseworker/getUsersByIdamIds',
-      '/workallocation/caseworker/getUserByIdamId',
       '/api/prd/judicial/searchJudicialUserByPersonalCodes',
       '/api/prd/judicial/searchJudicialUserByIdamId',
     ],

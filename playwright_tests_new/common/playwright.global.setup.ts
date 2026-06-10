@@ -1,31 +1,30 @@
 import { sessionCapture } from './sessionCapture';
 import { resolveIntegrationSessionWarmupUsers } from '../integration/helpers';
-import { UserUtils } from '../E2E/utils/user.utils';
+import playwrightConfigUtils from '../../playwright-config-utils';
 
-function resolveWarmupUsersWithCredentials(userIdentifiers: string[], userUtils: UserUtils = new UserUtils()): string[] {
-  return userIdentifiers.filter((userIdentifier) => {
-    try {
-      userUtils.getUserCredentials(userIdentifier);
-      return true;
-    } catch (error) {
-      const message = (error as Error)?.message ?? String(error);
-      const isMissingCredentialError =
-        message.includes('credentials are missing') || message.includes(`User "${userIdentifier}" not found`);
+const { resolveTagFilters } = playwrightConfigUtils;
 
-      if (!isMissingCredentialError) {
-        throw error;
-      }
+function isIntegrationConfig(fullConfig: FullConfig): boolean {
+  return fullConfig.projects.some((project) => project.testDir.replace(/\\/g, '/').endsWith('playwright_tests_new/integration'));
+}
 
-      // Warmup is an optimisation; skip users that are intentionally not configured.
-      console.warn(`[playwright.global.setup] Skipping warmup user "${userIdentifier}": ${message}`);
-      return false;
-    }
+function resolveIntegrationTagSelection(env: NodeJS.ProcessEnv) {
+  return resolveTagFilters({
+    env,
+    includeTagsEnvVar: 'INTEGRATION_PW_INCLUDE_TAGS',
+    excludedTagsEnvVar: 'INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE',
+    configPathEnvVar: 'INTEGRATION_PW_TAG_FILTER_CONFIG',
+    defaultConfigPath: 'playwright_tests_new/integration/tag-filter.json',
+    suiteTag: '@integration',
+    globalExcludedTagsEnvVar: 'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS',
+    ignoreGlobalExcludesEnvVar: 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES',
+    globalExcludedTagsPattern: /^@integration(?:-.+)?$/,
   });
 }
 
-async function globalSetup() {
-  const requestedUserIdentifiers = resolveIntegrationSessionWarmupUsers(process.env);
-  const userIdentifiers = resolveWarmupUsersWithCredentials(requestedUserIdentifiers);
+async function globalSetup(fullConfig: FullConfig) {
+  const tagSelection = isIntegrationConfig(fullConfig) ? resolveIntegrationTagSelection(process.env) : undefined;
+  const userIdentifiers = resolveIntegrationSessionWarmupUsers(process.env, tagSelection);
   if (userIdentifiers.length > 0) {
     await sessionCapture(userIdentifiers);
   }

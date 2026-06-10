@@ -21,8 +21,11 @@ describe('RejectedRequestViewComponent', () => {
     navigate: jasmine.createSpy('navigate'),
   };
 
+  const mockSupportedJurisdictionsService = jasmine.createSpyObj('WASupportedJurisdictionsService', [
+    'getWASupportedJurisdictions',
+  ]);
   const mockAllocateRoleService = jasmine.createSpyObj('allocateRoleService', ['getCaseRolesUserDetails']);
-  const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getUserByIdamId']);
+  const mockCaseworkerDataService = jasmine.createSpyObj('caseworkerDataService', ['getUsersFromServices']);
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
@@ -30,6 +33,7 @@ describe('RejectedRequestViewComponent', () => {
       declarations: [RejectedRequestViewComponent],
       imports: [PipesModule],
       providers: [
+        { provide: WASupportedJurisdictionsService, useValue: mockSupportedJurisdictionsService },
         { provide: AllocateRoleService, useValue: mockAllocateRoleService },
         { provide: CaseworkerDataService, useValue: mockCaseworkerDataService },
         { provide: Router, useValue: router },
@@ -64,8 +68,9 @@ describe('RejectedRequestViewComponent', () => {
     component = fixture.componentInstance;
     const caseRoles: CaseRoleDetails[] = getMockCaseRoles();
     component.roleCategory = RoleCategory.JUDICIAL;
-    mockCaseworkerDataService.getUserByIdamId.and.returnValue(of({}));
+    mockCaseworkerDataService.getUsersFromServices.and.returnValue(of([]));
     mockAllocateRoleService.getCaseRolesUserDetails.and.returnValue(of(caseRoles));
+    mockSupportedJurisdictionsService.getWASupportedJurisdictions.and.returnValue(of(['IA']));
     fixture.detectChanges();
   });
 
@@ -77,7 +82,8 @@ describe('RejectedRequestViewComponent', () => {
     expect(mockAllocateRoleService.getCaseRolesUserDetails).toHaveBeenCalled();
     component.roleCategory = RoleCategory.ADMIN;
     component.ngOnInit();
-    expect(mockCaseworkerDataService.getUserByIdamId).toHaveBeenCalled();
+    expect(mockSupportedJurisdictionsService.getWASupportedJurisdictions).toHaveBeenCalled();
+    expect(mockCaseworkerDataService.getUsersFromServices).toHaveBeenCalled();
   });
 
   it('should allow the user to go to request again', () => {

@@ -5,6 +5,7 @@ export type DynamicProvisionAttempt = {
   attempt: number;
   durationMs: number;
   outcome: 'success' | 'failed';
+  retryable?: boolean;
   error?: string;
 };
 
@@ -57,6 +58,39 @@ type ProvisionDynamicUserFlowDeps = {
   outputCreatedUserData: boolean;
 };
 
+const MAX_DIAGNOSTIC_ERROR_LENGTH = 240;
+
+function sanitizeProvisionErrorForDiagnostics(error: string): string {
+  const redacted = error
+    .replaceAll(/Bearer\s+[A-Za-z0-9._~+/-]+=*/gi, 'Bearer [redacted]')
+    .replaceAll(/([?&])(access_token|id_token|refresh_token|client_secret|password)=[^&\s]+/gi, (_match, prefix, key) => {
+      return `${prefix}${key}=[redacted]`;
+    })
+    .replaceAll(
+      /(["']?(?:access_token|id_token|refresh_token|client_secret|password)["']?\s*[:=]\s*)["']?[^"',&\s}]+["']?/gi,
+      (_match, prefix) => {
+        return `${prefix}[redacted]`;
+      }
+    )
+    .replaceAll(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, '[redacted-email]');
+
+  return redacted.length > MAX_DIAGNOSTIC_ERROR_LENGTH ? `${redacted.slice(0, MAX_DIAGNOSTIC_ERROR_LENGTH)}...` : redacted;
+}
+
+export function formatProvisionAttemptDiagnostics(attempts: readonly DynamicProvisionAttempt[]): string {
+  if (attempts.length === 0) {
+    return 'no provisioning attempts were recorded';
+  }
+
+  return attempts
+    .map((attempt) => {
+      const retryable = attempt.outcome === 'failed' ? `, retryable=${attempt.retryable === true ? 'yes' : 'no'}` : '';
+      const error = attempt.error ? `, error=${sanitizeProvisionErrorForDiagnostics(attempt.error)}` : '';
+      return `attempt ${attempt.attempt}: ${attempt.outcome} after ${attempt.durationMs}ms${retryable}${error}`;
+    })
+    .join('; ');
+}
+
 export async function provisionUserWithRetries(
   args: ProvisionDynamicUserFlowArgs,
   deps: ProvisionDynamicUserFlowDeps
@@ -104,6 +138,7 @@ export async function provisionUserWithRetries(
         attempt,
         durationMs: deps.now() - startedAt,
         outcome: 'failed',
+        retryable,
         error: errorMessage,
       });
       lastProvisionError = error;
@@ -123,8 +158,9 @@ export async function provisionUserWithRetries(
   }
 
   const lastErrorMessage = deps.describeError(lastProvisionError);
+  const attemptDiagnostics = formatProvisionAttemptDiagnostics(attempts);
   throw new DynamicProvisioningError(
-    `Dynamic user provisioning failed for alias '${args.alias}' after ${attempts.length} attempt(s). Last error: ${lastErrorMessage}`,
+    `Dynamic user provisioning failed for alias '${args.alias}' after ${attempts.length} attempt(s). Last error: ${lastErrorMessage}. Attempt diagnostics: ${attemptDiagnostics}`,
     attempts,
     lastProvisionError
   );

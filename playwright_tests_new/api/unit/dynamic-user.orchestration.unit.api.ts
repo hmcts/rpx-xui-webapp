@@ -20,6 +20,7 @@ import { ProfessionalUserUtils } from '../../E2E/utils/professional-user.utils.j
 import {
   DynamicProvisionTimeoutError,
   DynamicProvisioningError,
+  formatProvisionAttemptDiagnostics,
   provisionUserWithRetries,
 } from '../../E2E/utils/test-setup/dynamicProvisioningFlow.js';
 import { __test__ as dynamicSessionTest } from '../../E2E/utils/test-setup/dynamicSolicitorSession.js';
@@ -230,6 +231,7 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
         attempt: 1,
         durationMs: 10,
         outcome: 'failed',
+        retryable: true,
         error: 'HTTP 503',
       },
       {
@@ -279,15 +281,20 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
         attempt: 1,
         durationMs: 10,
         outcome: 'failed',
+        retryable: true,
         error: 'HTTP 503',
       },
       {
         attempt: 2,
         durationMs: 20,
         outcome: 'failed',
+        retryable: true,
         error: 'HTTP 503',
       },
     ]);
+    expect((error as DynamicProvisioningError).message).toContain(
+      'Attempt diagnostics: attempt 1: failed after 10ms, retryable=yes, error=HTTP 503; attempt 2: failed after 20ms, retryable=yes, error=HTTP 503'
+    );
   });
 
   test('provisionUserWithRetries does not retry wrapper timeouts because the original attempt may still complete in the background', async () => {
@@ -335,9 +342,72 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
         attempt: 1,
         durationMs: 30,
         outcome: 'failed',
+        retryable: false,
         error: "Dynamic user provisioning timed out after 30000ms for alias 'SOLICITOR' on attempt 1/2.",
       },
     ]);
+  });
+
+  test('formatProvisionAttemptDiagnostics gives setup failures a compact Jenkins-friendly summary', () => {
+    expect(
+      formatProvisionAttemptDiagnostics([
+        {
+          attempt: 1,
+          durationMs: 250,
+          outcome: 'failed',
+          retryable: true,
+          error: 'HTTP 503',
+        },
+        {
+          attempt: 2,
+          durationMs: 100,
+          outcome: 'success',
+        },
+      ])
+    ).toBe('attempt 1: failed after 250ms, retryable=yes, error=HTTP 503; attempt 2: success after 100ms');
+  });
+
+  test('formatProvisionAttemptDiagnostics redacts sensitive error detail before terminal output', () => {
+    const diagnostics = formatProvisionAttemptDiagnostics([
+      {
+        attempt: 1,
+        durationMs: 25,
+        outcome: 'failed',
+        retryable: true,
+        error:
+          'HTTP 500 for test@example.test?access_token=abc123&password=letmein Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.secret client_secret=very-secret',
+      },
+    ]);
+
+    expect(diagnostics).toContain('[redacted-email]');
+    expect(diagnostics).toContain('access_token=[redacted]');
+    expect(diagnostics).toContain('password=[redacted]');
+    expect(diagnostics).toContain('Bearer [redacted]');
+    expect(diagnostics).toContain('client_secret=[redacted]');
+    expect(diagnostics).not.toContain('test@example.test');
+    expect(diagnostics).not.toContain('abc123');
+    expect(diagnostics).not.toContain('letmein');
+    expect(diagnostics).not.toContain('eyJhbGciOiJIUzI1NiJ9.secret');
+    expect(diagnostics).not.toContain('very-secret');
+  });
+
+  test('formatProvisionAttemptDiagnostics truncates long downstream error bodies', () => {
+    const diagnostics = formatProvisionAttemptDiagnostics([
+      {
+        attempt: 1,
+        durationMs: 25,
+        outcome: 'failed',
+        retryable: false,
+        error: `HTTP 500 ${'x'.repeat(500)}`,
+      },
+    ]);
+
+    expect(diagnostics.length).toBeLessThan(340);
+    expect(diagnostics).toContain('...');
+  });
+
+  test('formatProvisionAttemptDiagnostics reports missing attempt history explicitly', () => {
+    expect(formatProvisionAttemptDiagnostics([])).toBe('no provisioning attempts were recorded');
   });
 
   test('updateExistingUserFlow reuses the existing id and returns the updated account details', async () => {

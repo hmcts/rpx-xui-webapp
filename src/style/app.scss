@@ -569,6 +569,26 @@ textarea.form-control {
   white-space: normal;
 }
 
+@media (min-width: 641px) {
+  .error-message {
+    font-size: 19px;
+    line-height: 1.3157894737;
+  }
+}
+
+.error-message {
+  font-family: 'nta', Arial, sans-serif;
+  font-weight: 700;
+  text-transform: none;
+  font-size: 16px;
+  line-height: 1.25;
+  color: #b10e1e;
+  display: block;
+  clear: both;
+  margin: 0;
+  padding: 2px 0;
+}
+
 .postcodeinput {
   width: 49%;
 }

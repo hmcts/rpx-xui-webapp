@@ -7,7 +7,7 @@ import { test as base, request } from '@playwright/test';
 export { expect } from '@playwright/test';
 export { buildApiAttachment } from '@hmcts/playwright-common';
 
-import { config } from '../common/apiTestConfig';
+import { config } from './utils/apiTestRuntimeConfig';
 import { ensureStorageState, getStoredCookie, type ApiUserRole } from './utils/auth';
 
 const baseUrl = stripTrailingSlash(config.baseUrl);

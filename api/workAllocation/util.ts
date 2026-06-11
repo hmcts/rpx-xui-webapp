@@ -34,7 +34,6 @@ import {
   CaseworkersByService,
   Location,
   LocationApi,
-  RoleCategoryAssignment,
 } from './interfaces/common';
 import { Person, PersonRole } from './interfaces/person';
 import { RoleCaseData } from './interfaces/roleCaseData';
@@ -297,15 +296,13 @@ export function mapUsersToCachedCaseworkers(users: StaffUserDetails[], roleAssig
   const caseworkers: CachedCaseworker[] = [];
   if (users) {
     users.forEach((staffUser: StaffUserDetails) => {
-      const roleCategories = getUserRoleCategories(roleAssignments, staffUser.staff_profile, staffUser.ccd_service_names);
       const thisCaseWorker: CachedCaseworker = {
         email: staffUser.staff_profile.email_id,
         firstName: staffUser.staff_profile.first_name,
         idamId: staffUser.staff_profile.id,
         lastName: staffUser.staff_profile.last_name,
         locations: mapCachedCaseworkerLocation(staffUser.staff_profile.base_location),
-        roleCategory: roleCategories[0]?.roleCategory || null,
-        roleCategories,
+        roleCategory: getUserRoleCategory(roleAssignments, staffUser.staff_profile, staffUser.ccd_service_names),
         services: staffUser.ccd_service_names,
       };
       caseworkers.push(thisCaseWorker);
@@ -320,41 +317,15 @@ export function getRoleCategory(roleAssignments: RoleAssignment[], caseWorkerApi
 }
 
 export function getUserRoleCategory(roleAssignments: RoleAssignment[], user: StaffProfile, services: string[]): string {
-  return getUserRoleCategories(roleAssignments, user, services)[0]?.roleCategory || null;
-}
-
-export function getUserRoleCategories(
-  roleAssignments: RoleAssignment[],
-  user: StaffProfile,
-  services: string[]
-): RoleCategoryAssignment[] {
-  const roleCategories: RoleCategoryAssignment[] = [];
-  roleAssignments
-    .filter(
-      (roleAssign) =>
-        roleAssign.actorId === user.id &&
-        roleAssign.roleCategory &&
-        // added line below to stop irrelevant role setting role category
-        // note - we know services are already capitalised
-        (!roleAssign.attributes?.jurisdiction || services.includes(roleAssign.attributes.jurisdiction.toUpperCase()))
-    )
-    .forEach((roleAssign) => {
-      const servicesForRole = roleAssign.attributes?.jurisdiction
-        ? [roleAssign.attributes.jurisdiction.toUpperCase()]
-        : undefined;
-      const existingRoleCategory = roleCategories.find(
-        (roleCategory) =>
-          roleCategory.roleCategory === roleAssign.roleCategory &&
-          JSON.stringify(roleCategory.services || []) === JSON.stringify(servicesForRole || [])
-      );
-      if (!existingRoleCategory) {
-        roleCategories.push({
-          roleCategory: roleAssign.roleCategory,
-          services: servicesForRole,
-        });
-      }
-    });
-  return roleCategories;
+  const roleAssignment = roleAssignments.find(
+    (roleAssign) =>
+      roleAssign.actorId === user.id &&
+      roleAssign.roleCategory &&
+      // added line below to stop irrelevant role setting role category
+      // note - we know services are already capitalised
+      (!roleAssign.attributes?.jurisdiction || services.includes(roleAssign.attributes.jurisdiction.toUpperCase()))
+  );
+  return roleAssignment ? roleAssignment.roleCategory : null;
 }
 
 export function mapCaseworkerLocation(baseLocation: LocationApi[]): Location {
@@ -406,9 +377,27 @@ export function mapUserLocation(baseLocation: LocationApi[]): Location {
   return thisBaseLocation;
 }
 
-export function prepareRoleApiRequest(): any {
+export function prepareRoleApiRequest(jurisdictions: string[]): any {
+  const attributes: any = {
+    jurisdiction: jurisdictions,
+  };
   const payload = {
-    roleName: ['hmcts-admin', 'hmcts-ctsc', 'hmcts-legal-operations'],
+    attributes,
+    // TODO: This should not be hard-coded list
+    // EXUI-3967 - needs review as to where roles should come from
+    roleName: [
+      'hearing-centre-admin',
+      'case-manager',
+      'ctsc',
+      'tribunal-caseworker',
+      'hmcts-legal-operations',
+      'task-supervisor',
+      'hmcts-admin',
+      'national-business-centre',
+      'senior-tribunal-caseworker',
+      'case-allocator',
+      'regional-centre-admin',
+    ],
     roleType: ['ORGANISATION'],
     validAt: Date.UTC,
   };
@@ -1022,59 +1011,14 @@ export function getAppropriateService(searchedServices: string[], caseworkerServ
 // get location that matches the services or that has no service information
 export function getAppropriateLocation(services: string[], locations: Location[]): Location {
   if (services?.length > 0) {
-    const matchingLocation = locations.find(
-      (location) => !location.services || services.some((service) => location.services.includes(service))
-    );
-    if (matchingLocation) {
-      return matchingLocation;
-    }
+    services.forEach((service) => {
+      return locations.find((location) => !location.services || location.services.includes(service));
+    });
   }
   return locations[0];
 }
 
-function normaliseRoleCategoryFilter(roleCategories: string | string[]): string[] {
-  if (Array.isArray(roleCategories)) {
-    return roleCategories;
-  }
-  return roleCategories ? [roleCategories] : [];
-}
-
-function roleCategoryAssignmentMatchesServices(roleCategory: RoleCategoryAssignment, services: string[]): boolean {
-  if (!services?.length || !roleCategory.services?.length) {
-    return true;
-  }
-  return services.some((service) => roleCategory.services.includes(service));
-}
-
-function getRoleCategoriesForService(
-  cachedCaseworker: CachedCaseworker,
-  services: string[],
-  roleCategoryFilter: string[]
-): RoleCategoryAssignment[] {
-  const roleCategories = cachedCaseworker.roleCategories?.length
-    ? cachedCaseworker.roleCategories
-    : [{ roleCategory: cachedCaseworker.roleCategory }];
-  return roleCategories
-    .filter((roleCategory) => roleCategory.roleCategory)
-    .filter((roleCategory) => roleCategoryAssignmentMatchesServices(roleCategory, services))
-    .filter(
-      (roleCategory, index, allRoleCategories) =>
-        allRoleCategories.findIndex(
-          (thisRoleCategory) =>
-            thisRoleCategory.roleCategory === roleCategory.roleCategory &&
-            JSON.stringify(thisRoleCategory.services || []) === JSON.stringify(roleCategory.services || [])
-        ) === index
-    )
-    .filter((roleCategory) => !roleCategoryFilter.length || roleCategoryFilter.includes(roleCategory.roleCategory));
-}
-
-export function searchAndReturnRefinedUsers(
-  services: string[],
-  term: string,
-  users: CachedCaseworker[],
-  roleCategories?: string | string[]
-): Caseworker[] {
-  const roleCategoryFilter = normaliseRoleCategoryFilter(roleCategories);
+export function searchAndReturnRefinedUsers(services: string[], term: string, users: CachedCaseworker[]): Caseworker[] {
   if (services) {
     // filter out the caseworkers who are of the services required
     users = users.filter((user) => services.some((service) => user.services?.includes(service)));
@@ -1082,20 +1026,16 @@ export function searchAndReturnRefinedUsers(
   let filteredCaseworkers: Caseworker[] = [];
   // convert 'cached caseworkers' to caseworkers
   users.forEach((cachedCaseworker: CachedCaseworker) => {
-    const matchingRoleCategories = getRoleCategoriesForService(cachedCaseworker, services, roleCategoryFilter);
-    matchingRoleCategories.forEach((roleCategory) => {
-      const service = getAppropriateService(roleCategory.services || services, cachedCaseworker.services);
-      const thisCaseWorker: Caseworker = {
-        email: cachedCaseworker.email,
-        firstName: cachedCaseworker.firstName,
-        idamId: cachedCaseworker.idamId,
-        lastName: cachedCaseworker.lastName,
-        location: getAppropriateLocation(services, cachedCaseworker.locations),
-        roleCategory: roleCategory.roleCategory,
-        service,
-      };
-      filteredCaseworkers.push(thisCaseWorker);
-    });
+    const thisCaseWorker: Caseworker = {
+      email: cachedCaseworker.email,
+      firstName: cachedCaseworker.firstName,
+      idamId: cachedCaseworker.idamId,
+      lastName: cachedCaseworker.lastName,
+      location: getAppropriateLocation(services, cachedCaseworker.locations),
+      roleCategory: cachedCaseworker.roleCategory,
+      service: getAppropriateService(services, cachedCaseworker.services),
+    };
+    filteredCaseworkers.push(thisCaseWorker);
   });
   if (term) {
     filteredCaseworkers = filteredCaseworkers.filter((user) => {

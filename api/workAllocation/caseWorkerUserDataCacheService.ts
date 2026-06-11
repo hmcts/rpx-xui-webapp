@@ -14,8 +14,8 @@ import {
   SYSTEM_USER_PASSWORD,
 } from '../configuration/references';
 import { http } from '../lib/http';
-import * as log4jui from '../lib/log4jui';
-import { EnhancedRequest, JUILogger } from '../lib/models';
+import { EnhancedRequest } from '../lib/models';
+import { getStaffSupportedJurisdictionsList } from '../staffSupportedJurisdictions';
 import {
   handleNewUsersGet,
   handlePostRoleAssignments,
@@ -27,17 +27,18 @@ import { baseCaseWorkerRefUrl, baseRoleAssignmentUrl } from './index';
 import { CachedCaseworker, LocationApi } from './interfaces/common';
 import { StaffProfile, StaffUserDetails } from './interfaces/staffUserDetails';
 import { mapUsersToCachedCaseworkers, prepareGetUsersUrl, prepareRoleApiRequest, prepareRoleApiUrl } from './util';
+import {
+  acquireCachedUsersLock,
+  acquireCachedUsersWithRolesLock,
+  getCachedUsers,
+  getCachedUsersWithRoles,
+  releaseLock,
+  setCachedUsers,
+  setCachedUsersWithRoles,
+} from './waRedisCache';
 
 // 10 minutes
 const TTL = 600;
-const logger: JUILogger = log4jui.getLogger('caseworker-cache');
-
-interface RoleCacheSummary {
-  roleCategoryAssignmentCount: number;
-  roleCategoryCounts: Record<string, number>;
-  userCount: number;
-  usersWithMultipleRoleCategories: number;
-}
 
 let timestamp: Date;
 let refreshRoles: boolean;
@@ -46,137 +47,49 @@ let initialAuthToken: string;
 
 let cachedUsers: StaffUserDetails[];
 let cachedUsersWithRoles: CachedCaseworker[];
-let cachedUsersRefreshPromise: Promise<StaffUserDetails[]>;
-let cachedUsersWithRolesRefreshPromise: Promise<CachedCaseworker[]>;
 
-function getCacheAgeSeconds(): number | null {
-  return timestamp ? Math.floor((Date.now() - timestamp.getTime()) / 1000) : null;
-}
-
-function getRoleCacheSummary(users: CachedCaseworker[]): RoleCacheSummary {
-  const roleCategoryCounts: Record<string, number> = {};
-  const userCount = users?.length || 0;
-  const roleCategoryAssignmentCount =
-    users?.reduce((total, user) => total + (user.roleCategories?.length || (user.roleCategory ? 1 : 0)), 0) || 0;
-  const usersWithMultipleRoleCategoriesList = users?.filter((user) => user.roleCategories?.length > 1) || [];
-  const usersWithMultipleRoleCategories = usersWithMultipleRoleCategoriesList.length;
-  users?.forEach((user) => {
-    const roleCategories = user.roleCategories?.length
-      ? user.roleCategories.map((role) => role.roleCategory)
-      : [user.roleCategory];
-    roleCategories
-      .filter((roleCategory) => roleCategory)
-      .forEach((roleCategory) => {
-        roleCategoryCounts[roleCategory] = (roleCategoryCounts[roleCategory] || 0) + 1;
-      });
-  });
-  return {
-    roleCategoryAssignmentCount,
-    roleCategoryCounts,
-    userCount,
-    usersWithMultipleRoleCategories,
-  };
+function wait(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export async function fetchUserData(req: EnhancedRequest, next: NextFunction): Promise<StaffUserDetails[]> {
   try {
-    if (cachedUsersRefreshPromise) {
-      logger.debug('Waiting for in-flight caseworker user cache refresh', {
-        cachedUsersCount: cachedUsers?.length || 0,
-      });
-      return await cachedUsersRefreshPromise;
-    }
+    // cache needs refreshing if TTl expired or cache empty
+    const shouldRefreshCache = hasTTLExpired() || !cachedUsers || cachedUsers.length === 0;
 
-    const ttlExpired = hasTTLExpired();
-    const isCacheEmpty = !cachedUsers || cachedUsers.length === 0;
-    if (ttlExpired || isCacheEmpty) {
-      // hasTTLExpired to determine whether roles require refreshing
-      // cachedUsers to ensure rerun if user restarts request early
+    if (shouldRefreshCache) {
       refreshRoles = true;
-      cachedUsersRefreshPromise = refreshUserData(req, isCacheEmpty, ttlExpired).finally(() => {
-        cachedUsersRefreshPromise = null;
-      });
-      return await cachedUsersRefreshPromise;
+      cachedUsers = await getOrRefreshCachedUsers(req);
     } else {
       refreshRoles = false;
-      logger.debug('Using caseworker user cache', {
-        cacheAgeSeconds: getCacheAgeSeconds(),
-        cachedUsersCount: cachedUsers.length,
-      });
     }
+    // always return cached users (even if error)
     return cachedUsers;
   } catch (error) {
     if (cachedUsers) {
-      logger.warn('Using stale caseworker user cache after refresh failure', {
-        cachedUsersCount: cachedUsers.length,
-        error: error?.message,
-      });
       return cachedUsers;
     }
     next(error);
   }
 }
 
-async function refreshUserData(req: EnhancedRequest, isCacheEmpty: boolean, ttlExpired: boolean): Promise<StaffUserDetails[]> {
-  logger.info('Refreshing caseworker user cache', { cachedUsersCount: cachedUsers?.length || 0, isCacheEmpty, ttlExpired });
-  const jurisdictions = getConfigValue(STAFF_SUPPORTED_JURISDICTIONS);
-  const getUsersPath: string = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions);
-  const userResponse = await handleUsersGet(getUsersPath, req);
-  // EXUI-3967 - Caching may be removed in future in favour of API caching
-  cachedUsers = getUniqueUsersFromResponse(userResponse);
-  logger.info('Caseworker user cache refreshed', {
-    cacheAgeSeconds: getCacheAgeSeconds(),
-    rawUserCount: userResponse?.length || 0,
-    uniqueUserCount: cachedUsers.length,
-  });
-  return cachedUsers;
-}
-
-// Note: May not be needed once API caching is in effect
+// Note: Could be removed in future if pod start up no longer calls this
 export async function fetchNewUserData(): Promise<StaffUserDetails[]> {
   try {
-    if (cachedUsersRefreshPromise) {
-      logger.debug('Waiting for in-flight caseworker user cache refresh before sign-in', {
-        cachedUsersCount: cachedUsers?.length || 0,
-      });
-      return await cachedUsersRefreshPromise;
-    }
-
     // first ensure that there is no immediate re-caching
     timestamp = new Date();
     refreshRoles = true;
-    cachedUsersRefreshPromise = refreshNewUserData().finally(() => {
-      cachedUsersRefreshPromise = null;
-    });
-    return await cachedUsersRefreshPromise;
-  } catch (error) {
+    await getAuthTokens();
+    cachedUsers = await getOrRefreshCachedUsers();
+    return cachedUsers;
+  } catch {
     if (cachedUsers) {
-      logger.warn('Using stale caseworker user cache before sign-in after refresh failure', {
-        cachedUsersCount: cachedUsers.length,
-        error: error?.message,
-      });
       return cachedUsers;
     }
     // in case of error, reset the cache on application start up
     timestamp = null;
     refreshRoles = false;
   }
-}
-
-async function refreshNewUserData(): Promise<StaffUserDetails[]> {
-  logger.info('Refreshing caseworker user cache before sign-in');
-  await getAuthTokens();
-  // add the tokens to the request headers
-  const caseworkerHeaders = getRequestHeaders();
-  const jurisdictions = getConfigValue(STAFF_SUPPORTED_JURISDICTIONS);
-  const getUsersPath: string = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions);
-  const userResponse = await handleNewUsersGet(getUsersPath, caseworkerHeaders);
-  cachedUsers = getUniqueUsersFromResponse(userResponse);
-  logger.info('Caseworker user cache refreshed before sign-in', {
-    rawUserCount: userResponse?.length || 0,
-    uniqueUserCount: cachedUsers.length,
-  });
-  return cachedUsers;
 }
 
 export async function fetchRoleAssignments(
@@ -187,113 +100,197 @@ export async function fetchRoleAssignments(
   // note: this has been done to cache role categories
   // it is separate from the above as above caching will be done by backend
   try {
-    if (cachedUsersWithRolesRefreshPromise) {
-      logger.debug(
-        'Waiting for in-flight caseworker role cache refresh',
-        getRoleCacheSummary(FullUserDetailCache.getAllUserDetails())
-      );
-      return await cachedUsersWithRolesRefreshPromise;
-    }
-
     if (refreshRoles || !cachedUsersWithRoles) {
       // refreshRoles to determine whether roles require refreshing
       // cachedUsersWithRoles to ensure rerun if user restarts request early
-      cachedUsersWithRolesRefreshPromise = refreshRoleAssignments(cachedUserData, req).finally(() => {
-        cachedUsersWithRolesRefreshPromise = null;
-      });
-      return await cachedUsersWithRolesRefreshPromise;
-    } else {
-      logger.debug('Using caseworker role cache', getRoleCacheSummary(FullUserDetailCache.getAllUserDetails()));
+      cachedUsersWithRoles = await getOrRefreshCachedUsersWithRoles(cachedUserData, req);
     }
     return FullUserDetailCache.getAllUserDetails();
   } catch (error) {
     if (FullUserDetailCache.getAllUserDetails()) {
-      logger.warn('Using stale caseworker role cache after refresh failure', {
-        error: error?.message,
-        ...getRoleCacheSummary(FullUserDetailCache.getAllUserDetails()),
-      });
       return FullUserDetailCache.getAllUserDetails();
     }
     next(error);
   }
 }
 
-async function refreshRoleAssignments(cachedUserData: StaffUserDetails[], req: EnhancedRequest): Promise<CachedCaseworker[]> {
-  logger.info('Refreshing caseworker role cache', {
-    cachedUsersCount: cachedUserData?.length || 0,
-    hasRoleCache: !!cachedUsersWithRoles,
-    refreshRoles,
-  });
-  const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
-  const payload = prepareRoleApiRequest();
-  const { data } = await handlePostRoleAssignments(roleApiPath, payload, req);
-  const roleAssignments = data.roleAssignmentResponse;
-  cachedUsersWithRoles = mapUsersToCachedCaseworkers(cachedUserData, roleAssignments);
-  FullUserDetailCache.setUserDetails(cachedUsersWithRoles);
-  refreshRoles = false;
-  logger.info('Caseworker role cache refreshed', {
-    roleAssignmentResponseCount: roleAssignments?.length || 0,
-    ...getRoleCacheSummary(cachedUsersWithRoles),
-  });
-  return FullUserDetailCache.getAllUserDetails();
-}
-
+// Note: Could be removed in future if pod start up no longer calls this
 export async function fetchRoleAssignmentsForNewUsers(cachedUserData: StaffUserDetails[]): Promise<CachedCaseworker[]> {
   // note: this has been done to cache role categories
   // it is separate from the above as above caching will be done by backend
   try {
-    if (cachedUsersWithRolesRefreshPromise) {
-      logger.debug(
-        'Waiting for in-flight caseworker role cache refresh before sign-in',
-        getRoleCacheSummary(FullUserDetailCache.getAllUserDetails())
-      );
-      return await cachedUsersWithRolesRefreshPromise;
-    }
-
     if (refreshRoles && !cachedUsersWithRoles) {
       // refreshRoles to determine whether roles require refreshing
       // cachedUsersWithRoles to ensure rerun if user restarts request early
-      cachedUsersWithRolesRefreshPromise = refreshRoleAssignmentsForNewUsers(cachedUserData).finally(() => {
-        cachedUsersWithRolesRefreshPromise = null;
-      });
-      return await cachedUsersWithRolesRefreshPromise;
-    } else {
-      logger.debug('Using caseworker role cache before sign-in', getRoleCacheSummary(FullUserDetailCache.getAllUserDetails()));
+      cachedUsersWithRoles = await getOrRefreshCachedUsersWithRoles(cachedUserData);
     }
     return FullUserDetailCache.getAllUserDetails();
-  } catch (error) {
+  } catch {
     if (FullUserDetailCache.getAllUserDetails()) {
-      logger.warn('Using stale caseworker role cache before sign-in after refresh failure', {
-        error: error?.message,
-        ...getRoleCacheSummary(FullUserDetailCache.getAllUserDetails()),
-      });
       return FullUserDetailCache.getAllUserDetails();
     }
   }
 }
 
-async function refreshRoleAssignmentsForNewUsers(cachedUserData: StaffUserDetails[]): Promise<CachedCaseworker[]> {
-  logger.info('Refreshing caseworker role cache before sign-in', {
-    cachedUsersCount: cachedUserData?.length || 0,
-    refreshRoles,
-  });
+export async function getOrRefreshCachedUsers(req?: EnhancedRequest): Promise<StaffUserDetails[]> {
+  // first check redis cache, if not there then acquire lock and check again before refreshing from backend
+  const redisUsers = await getCachedUsers().catch(() => null);
+  if (redisUsers?.length) {
+    refreshRoles = false;
+    return setLocalCachedUsers(redisUsers);
+  }
+
+  console.log('No cached users in redis, attempting to acquire lock to refresh cache');
+
+  // get redis lock to ensure only one pod refreshes cache from backend, others will wait
+  const lock = await acquireCachedUsersLock().catch(() => ({ status: 'unavailable' as const }));
+
+  if (lock.status === 'held') {
+    // if lock is held, another pod is refreshing the cache
+    console.log('Lock is held for caseworkers, waiting for other pod to refresh');
+    const usersFromOtherPod = await waitForCachedUsers();
+    if (usersFromOtherPod?.length) {
+      refreshRoles = false;
+      return setLocalCachedUsers(usersFromOtherPod);
+    }
+  }
+
+  if (lock.status === 'acquired') {
+    // current pod has lock, so refresh cache from backend
+    console.log('Lock has been acquired for caseworkers');
+    try {
+      // if cache was refreshed while acquiring lock, use that instead
+      const usersAfterLock = await getCachedUsers().catch(() => null);
+      if (usersAfterLock?.length) {
+        refreshRoles = false;
+        return setLocalCachedUsers(usersAfterLock);
+      }
+
+      // refresh cache from backend and set in redis, local cache as fallback
+      const freshUsers = await refreshUsersFromBackend(req);
+      await setCachedUsers(freshUsers).catch(() => undefined);
+      return setLocalCachedUsers(freshUsers);
+    } finally {
+      // release lock so other pods can refresh cache when TTL expires
+      await releaseLock(lock).catch(() => undefined);
+    }
+  }
+
+  // if redis is unavailable, just get from backend without caching
+  // should only happen on startup if redis is unavailable, as cache will be used until TTL expires even if redis goes down after
+  // note: also for local environments where redis is not used
+  return setLocalCachedUsers(await refreshUsersFromBackend(req));
+}
+
+// actually make backend calls to get user data
+export async function refreshUsersFromBackend(req?: EnhancedRequest): Promise<StaffUserDetails[]> {
+  const jurisdictions = getConfigValue(STAFF_SUPPORTED_JURISDICTIONS);
+  const getUsersPath: string = prepareGetUsersUrl(baseCaseWorkerRefUrl, jurisdictions);
+  const userResponse = req ? await handleUsersGet(getUsersPath, req) : await handleNewUsersGet(getUsersPath, getRequestHeaders());
+
+  return getUniqueUsersFromResponse(userResponse);
+}
+
+// reset local cache
+export function setLocalCachedUsers(users: StaffUserDetails[]): StaffUserDetails[] {
+  cachedUsers = users;
+  console.log(`Setting local cached users with ${users.length} users`);
+  return cachedUsers;
+}
+
+// see above getOrRefreshCachedUsers
+export async function getOrRefreshCachedUsersWithRoles(
+  cachedUserData: StaffUserDetails[],
+  req?: EnhancedRequest
+): Promise<CachedCaseworker[]> {
+  const redisUsersWithRoles = await getCachedUsersWithRoles().catch(() => null);
+  if (!refreshRoles && redisUsersWithRoles?.length) {
+    return setLocalCachedUsersWithRoles(redisUsersWithRoles);
+  }
+
+  console.log('No cached users with roles in redis, attempting to acquire lock to refresh cache');
+
+  const lock = await acquireCachedUsersWithRolesLock().catch(() => ({ status: 'unavailable' as const }));
+
+  if (lock.status === 'held') {
+    console.log('Lock is held for caseworker roles, waiting for other pod to refresh');
+    const usersWithRolesFromOtherPod = await waitForCachedUsersWithRoles();
+    if (usersWithRolesFromOtherPod?.length) {
+      return setLocalCachedUsersWithRoles(usersWithRolesFromOtherPod);
+    }
+  }
+
+  if (lock.status === 'acquired') {
+    try {
+      console.log('Lock has been acquired for caseworker roles');
+      const usersWithRolesAfterLock = await getCachedUsersWithRoles().catch(() => null);
+      if (!refreshRoles && usersWithRolesAfterLock?.length) {
+        return setLocalCachedUsersWithRoles(usersWithRolesAfterLock);
+      }
+
+      const freshUsersWithRoles = await refreshUsersWithRolesFromBackend(cachedUserData, req);
+      await setCachedUsersWithRoles(freshUsersWithRoles).catch(() => undefined);
+      return setLocalCachedUsersWithRoles(freshUsersWithRoles);
+    } finally {
+      await releaseLock(lock).catch(() => undefined);
+    }
+  }
+
+  return setLocalCachedUsersWithRoles(await refreshUsersWithRolesFromBackend(cachedUserData, req));
+}
+
+export async function refreshUsersWithRolesFromBackend(
+  cachedUserData: StaffUserDetails[],
+  req?: EnhancedRequest
+): Promise<CachedCaseworker[]> {
   const roleApiPath: string = prepareRoleApiUrl(baseRoleAssignmentUrl);
-  const payload = prepareRoleApiRequest();
-  const roleAssignmentHeaders = {
-    ...getRequestHeaders(),
-    pageNumber: 0,
-    size: 10000,
-  };
-  const { data } = await handlePostRoleAssignmentsWithNewUsers(roleApiPath, payload, roleAssignmentHeaders);
-  const roleAssignments = data.roleAssignmentResponse;
-  cachedUsersWithRoles = mapUsersToCachedCaseworkers(cachedUserData, roleAssignments);
+  const jurisdictions = getStaffSupportedJurisdictionsList();
+  const payload = prepareRoleApiRequest(jurisdictions);
+  const roleAssignments = req
+    ? (await handlePostRoleAssignments(roleApiPath, payload, req)).data.roleAssignmentResponse
+    : (
+        await handlePostRoleAssignmentsWithNewUsers(roleApiPath, payload, {
+          ...getRequestHeaders(),
+          pageNumber: 0,
+          size: 10000,
+        })
+      ).data.roleAssignmentResponse;
+
+  return mapUsersToCachedCaseworkers(cachedUserData, roleAssignments);
+}
+
+export function setLocalCachedUsersWithRoles(usersWithRoles: CachedCaseworker[]): CachedCaseworker[] {
+  cachedUsersWithRoles = usersWithRoles;
+  console.log(`Setting local cached users with roles with ${usersWithRoles.length} users`);
   FullUserDetailCache.setUserDetails(cachedUsersWithRoles);
-  refreshRoles = false;
-  logger.info('Caseworker role cache refreshed before sign-in', {
-    roleAssignmentResponseCount: roleAssignments?.length || 0,
-    ...getRoleCacheSummary(cachedUsersWithRoles),
-  });
-  return FullUserDetailCache.getAllUserDetails();
+  return cachedUsersWithRoles;
+}
+
+// Will attempt to receive redis cache every second for 90 seconds before giving up and proceeding without cache
+// 90 seconds is used as it is the TTL for the lock
+export async function waitForCachedUsers(): Promise<StaffUserDetails[] | null> {
+  for (let attempt = 0; attempt < 90; attempt++) {
+    await wait(1000);
+    const users = await getCachedUsers().catch(() => null);
+    if (users?.length) {
+      return users;
+    }
+  }
+
+  return null;
+}
+
+// Same as above but for users with roles
+export async function waitForCachedUsersWithRoles(): Promise<CachedCaseworker[] | null> {
+  for (let attempt = 0; attempt < 90; attempt++) {
+    await wait(1000);
+    const usersWithRoles = await getCachedUsersWithRoles().catch(() => null);
+    if (usersWithRoles?.length) {
+      return usersWithRoles;
+    }
+  }
+
+  return null;
 }
 
 export async function getAuthTokens(): Promise<void> {
@@ -319,8 +316,8 @@ export async function getAuthTokens(): Promise<void> {
     initialServiceAuthToken = serviceAuthResponse.data;
     const authResponse = await http.post(authURL, authBody, axiosConfig);
     initialAuthToken = authResponse.data.access_token;
-  } catch (error) {
-    logger.warn('Cannot get auth tokens', { error: error?.message });
+  } catch {
+    console.log('Cannot get auth tokens');
   }
 }
 

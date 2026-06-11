@@ -93,6 +93,8 @@ function buildCreatedCaseDetails(createdCaseId: string, submittedData: Submitted
 
 export async function routeCaseCreationFlow(page: Page): Promise<unknown> {
   const createdCaseId = '1234123412341234';
+  const createdCaseJurisdiction = 'DIVORCE';
+  const createdCaseType = 'xuiTestJurisdiction';
   let submittedData: SubmittedCaseData = {};
   let resolveInterceptedRequest: (body: unknown) => void;
   const interceptedRequestPromise = new Promise<unknown>((resolve) => {
@@ -113,7 +115,12 @@ export async function routeCaseCreationFlow(page: Page): Promise<unknown> {
     await route.fulfill({
       status: 201,
       contentType: 'application/json',
-      body: JSON.stringify({ id: createdCaseId }),
+      body: JSON.stringify({
+        id: createdCaseId,
+        caseId: createdCaseId,
+        jurisdiction: createdCaseJurisdiction,
+        caseType: createdCaseType,
+      }),
     });
   });
 
@@ -131,12 +138,12 @@ export async function routeCaseCreationFlow(page: Page): Promise<unknown> {
       contentType: 'application/json',
       body: JSON.stringify([
         {
-          id: 'DIVORCE',
-          name: 'DIVORCE',
+          id: createdCaseJurisdiction,
+          name: createdCaseJurisdiction,
           caseTypes: [
             {
-              id: 'xuiTestJurisdiction',
-              name: 'xuiTestJurisdiction',
+              id: createdCaseType,
+              name: createdCaseType,
               states: [
                 {
                   id: 'CaseCreated',
@@ -147,6 +154,64 @@ export async function routeCaseCreationFlow(page: Page): Promise<unknown> {
           ],
         },
       ]),
+    });
+  });
+
+  await page.route(/\/caseworkers\/[^/]+\/jurisdictions(?:\?.*)?$/, async (route: Route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([
+        {
+          id: createdCaseJurisdiction,
+          name: createdCaseJurisdiction,
+          caseTypes: [
+            {
+              id: createdCaseType,
+              name: createdCaseType,
+              states: [
+                {
+                  id: 'CaseCreated',
+                  name: 'Case created',
+                },
+              ],
+            },
+          ],
+        },
+      ]),
+    });
+  });
+
+  const emptyCaseListInputs = { workbasketInputs: [], searchInputs: [] };
+  await page.route('**/data/internal/case-types/**/work-basket-inputs*', async (route: Route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(emptyCaseListInputs),
+    });
+  });
+
+  await page.route('**/caseworkers/**/jurisdictions/**/case-types/**/work-basket-inputs*', async (route: Route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(emptyCaseListInputs),
+    });
+  });
+
+  await page.route('**/data/internal/case-types/**/search-inputs*', async (route: Route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ searchInputs: [] }),
+    });
+  });
+
+  await page.route('**/data/internal/searchCases*', async (route: Route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ cases: [], total: 0 }),
     });
   });
 

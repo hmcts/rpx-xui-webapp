@@ -31,6 +31,7 @@ nodejs:
     SERVICES_IDAM_SERVICE_OVERRIDE: false
     SERVICES_IDAM_ISS_URL: https://forgerock-am.service.core-compute-idam-aat2.internal:8443/openam/oauth2/realms/root/realms/hmcts
     FEATURE_OIDC_ENABLED: true
+    DYNATRACE_CDN: https://js-cdn.dynatrace.com/jstag/17177a07246/bf24054dsx/55f97384adadaf88_complete.js
   keyVaults:
     rpx:
       secrets:

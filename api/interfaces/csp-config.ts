@@ -1,7 +1,17 @@
 import { csp } from '@hmcts/rpx-xui-node-lib';
+import { getConfigValue, showFeature } from '../configuration';
+import { DYNATRACE_CDN, FEATURE_DYNATRACE_ENABLED } from '../configuration/references';
+
+function getDynatraceCdn(): string | null {
+  if (!showFeature(FEATURE_DYNATRACE_ENABLED)) {
+    return null;
+  }
+
+  return getConfigValue<string>(DYNATRACE_CDN)?.trim() || null;
+}
 
 function resolveDynatraceOrigin(): string | null {
-  const dynatraceCdn = process.env.DYNATRACE_CDN?.trim();
+  const dynatraceCdn = getDynatraceCdn();
   if (!dynatraceCdn) {
     return null;
   }
@@ -14,7 +24,7 @@ function resolveDynatraceOrigin(): string | null {
 }
 
 function resolveDynatraceBeaconOrigin(): string | null {
-  const dynatraceCdn = process.env.DYNATRACE_CDN?.trim();
+  const dynatraceCdn = getDynatraceCdn();
   if (!dynatraceCdn) {
     return null;
   }

@@ -55,10 +55,16 @@ function escapeHtmlAttribute(value: string): string {
   return value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
 }
 
+function getDynatraceCdn(): string | null {
+  if (!showFeature(FEATURE_DYNATRACE_ENABLED)) {
+    return null;
+  }
+
+  return getConfigValue<string>(DYNATRACE_CDN)?.trim() || null;
+}
+
 function injectTemplateValues(html: string, nonce: string): string {
-  const dynatraceEnabled = showFeature(FEATURE_DYNATRACE_ENABLED);
-  const cdn = dynatraceEnabled ? getConfigValue<string>(DYNATRACE_CDN)?.trim() ?? '' : '';
-  return html.replaceAll('{{dynatraceCdn}}', escapeHtmlAttribute(cdn)).replaceAll(/{{cspNonce}}/g, nonce);
+  return html.replaceAll('{{dynatraceCdn}}', escapeHtmlAttribute(getDynatraceCdn() ?? '')).replaceAll(/{{cspNonce}}/g, nonce);
 }
 
 export async function createApp() {

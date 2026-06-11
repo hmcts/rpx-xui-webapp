@@ -179,6 +179,7 @@ Detailed suite documentation and architecture:
   - Trace/video/screenshot outputs (on failures): `test-results/`
   - Additional failure payloads: `functional-output/tests/playwright-diagnostics/failure-data/`
 - **CI publishing:** Jenkins archives Odhin reports and Playwright diagnostics artifacts for troubleshooting.
+- **Migration closure:** the Playwright parity matrix, Codecept retirement gate, closure checklist, and ticket coverage snapshot live in [Playwright parity matrix and migration closure gate](./docs/playwright-parity-matrix.md).
 
 ### Key considerations for developers
 

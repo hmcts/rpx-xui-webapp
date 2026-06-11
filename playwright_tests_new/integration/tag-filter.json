@@ -13,6 +13,7 @@
     "@integration-manage-tasks",
     "@integration-restricted-case",
     "@integration-search-case",
+    "@integration-share-case",
     "@integration-welsh-language"
   ]
 }

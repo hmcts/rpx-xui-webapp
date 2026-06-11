@@ -357,7 +357,10 @@ test.describe('Hearings mock builders', { tag: '@svc-internal' }, () => {
 
     const casesWithHearings = linkedCases.filter((linkedCase) => linkedCase.caseHearings.length > 0);
     expect(casesWithHearings.map((linkedCase) => linkedCase.caseRef)).toEqual(['4652724902696213', '8254902572336147']);
-    expect(linkedCases.find((linkedCase) => linkedCase.caseRef === '5283819672542864')?.caseHearings).toEqual([]);
+    expect(linkedCases[1]).toMatchObject({
+      caseRef: '5283819672542864',
+      caseHearings: [],
+    });
     expect(
       casesWithHearings.map((linkedCase) => ({
         caseRef: linkedCase.caseRef,

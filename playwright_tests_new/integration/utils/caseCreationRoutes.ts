@@ -1,8 +1,99 @@
 import type { Page, Route } from '@playwright/test';
 import type { CreateCasePage } from '../../E2E/page-objects/pages/exui/createCase.po';
 
+type SubmittedCaseData = {
+  TextField0?: string;
+  TextField1?: string;
+  TextField2?: string;
+  TextField3?: string;
+  Person1?: {
+    Title?: string;
+    FirstName?: string;
+    LastName?: string;
+    PersonGender?: string;
+  };
+};
+
+function buildTextCaseField(id: string, label: string, value: string | undefined) {
+  return {
+    id,
+    label,
+    value: value ?? '',
+    field_type: {
+      id: 'Text',
+      type: 'Text',
+    },
+  };
+}
+
+function buildCreatedCaseDetails(createdCaseId: string, submittedData: SubmittedCaseData) {
+  return {
+    case_id: createdCaseId,
+    case_type: {
+      id: 'xuiTestJurisdiction',
+      name: 'xuiTestJurisdiction',
+      jurisdiction: {
+        id: 'DIVORCE',
+        name: 'DIVORCE',
+      },
+    },
+    state: {
+      id: 'CaseCreated',
+      name: 'Case created',
+    },
+    metadataFields: [
+      {
+        id: '[CASE_REFERENCE]',
+        value: Number(createdCaseId),
+      },
+      {
+        id: '[JURISDICTION]',
+        value: 'DIVORCE',
+      },
+      {
+        id: '[CASE_TYPE]',
+        value: 'xuiTestJurisdiction',
+      },
+    ],
+    tabs: [
+      {
+        id: 'Data',
+        label: 'Data',
+        fields: [
+          buildTextCaseField('TextField0', 'Text Field 0', submittedData.TextField0),
+          buildTextCaseField('TextField2', 'Text Field 2', submittedData.TextField2),
+          buildTextCaseField('TextField3', 'Text Field 3', submittedData.TextField3),
+          buildTextCaseField('Person1Title', 'Title', submittedData.Person1?.Title),
+          buildTextCaseField('Person1FirstName', 'First Name', submittedData.Person1?.FirstName),
+          buildTextCaseField('Person1LastName', 'Last Name', submittedData.Person1?.LastName),
+          buildTextCaseField('Person1Gender', 'Gender', submittedData.Person1?.PersonGender),
+        ],
+      },
+      {
+        id: 'History',
+        label: 'History',
+        fields: [
+          buildTextCaseField('Date', 'Date', '01 Jan 2026'),
+          buildTextCaseField('Author', 'Author', 'Integration solicitor'),
+          buildTextCaseField('EndState', 'End state', 'Case created'),
+          buildTextCaseField('Event', 'Event', 'Create a case'),
+          buildTextCaseField('Summary', 'Summary', '-'),
+          buildTextCaseField('Comment', 'Comment', '-'),
+        ],
+      },
+    ],
+    triggers: [
+      {
+        id: 'updateCase',
+        name: 'Update case',
+      },
+    ],
+  };
+}
+
 export async function routeCaseCreationFlow(page: Page): Promise<unknown> {
   const createdCaseId = '1234123412341234';
+  let submittedData: SubmittedCaseData = {};
   let resolveInterceptedRequest: (body: unknown) => void;
   const interceptedRequestPromise = new Promise<unknown>((resolve) => {
     resolveInterceptedRequest = resolve;
@@ -12,7 +103,9 @@ export async function routeCaseCreationFlow(page: Page): Promise<unknown> {
     const request = route.request();
     if (request.method() === 'POST') {
       try {
-        resolveInterceptedRequest(request.postDataJSON());
+        const requestBody = request.postDataJSON() as { data?: SubmittedCaseData };
+        submittedData = requestBody.data ?? {};
+        resolveInterceptedRequest(requestBody);
       } catch {
         resolveInterceptedRequest(null);
       }
@@ -28,48 +121,7 @@ export async function routeCaseCreationFlow(page: Page): Promise<unknown> {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify({
-        case_id: createdCaseId,
-        case_type: {
-          id: 'xuiTestJurisdiction',
-          name: 'xuiTestJurisdiction',
-          jurisdiction: {
-            id: 'DIVORCE',
-            name: 'DIVORCE',
-          },
-        },
-        state: {
-          id: 'CaseCreated',
-          name: 'Case created',
-        },
-        metadataFields: [
-          {
-            id: '[CASE_REFERENCE]',
-            value: Number(createdCaseId),
-          },
-          {
-            id: '[JURISDICTION]',
-            value: 'DIVORCE',
-          },
-          {
-            id: '[CASE_TYPE]',
-            value: 'xuiTestJurisdiction',
-          },
-        ],
-        tabs: [
-          {
-            id: 'caseSummary',
-            label: 'Case summary',
-            fields: [],
-          },
-        ],
-        triggers: [
-          {
-            id: 'updateCase',
-            name: 'Update case',
-          },
-        ],
-      }),
+      body: JSON.stringify(buildCreatedCaseDetails(createdCaseId, submittedData)),
     });
   });
 

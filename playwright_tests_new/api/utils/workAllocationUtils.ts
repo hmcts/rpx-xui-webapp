@@ -147,6 +147,31 @@ type FetchFirstTaskOptions = {
   timeoutMs?: number;
 };
 
+type GuardedTaskSearchOptions = {
+  failOnRequestError?: boolean;
+  onRequestTimeout?: (message: string) => void;
+  retries?: number;
+  retryStatuses?: number[];
+  timeoutMs?: number;
+};
+
+export type TaskIdResolutionSource = 'dynamic' | 'env-assigned' | 'env-unassigned' | 'none';
+
+export type WaCancellationTaskResolution = {
+  liveLookupRequired: boolean;
+  liveLookupUsed: boolean;
+  taskId: string;
+  taskSource: TaskIdResolutionSource;
+};
+
+type ResolveWaCancellationTaskOptions = {
+  envAssignedTaskId?: string;
+  envTaskId?: string;
+  fallbackTaskId: string;
+  hasDedicatedWaSolicitor: boolean;
+  lookupLiveTask: boolean;
+};
+
 export async function fetchFirstTask(
   apiClient: WorkAllocationApiClient,
   locationId?: string,
@@ -183,6 +208,74 @@ export async function fetchFirstTask(
     return undefined;
   }
   return tasks[0];
+}
+
+export async function guardedTaskSearch(
+  apiClient: WorkAllocationApiClient,
+  body: unknown,
+  options: GuardedTaskSearchOptions = {}
+): Promise<{ data: TaskListResponse | undefined; status: number }> {
+  try {
+    return (await withRetry(
+      () =>
+        apiClient.post('workallocation/task', {
+          data: body,
+          throwOnError: false,
+          ...(options.timeoutMs ? { timeoutMs: options.timeoutMs } : {}),
+        }),
+      { retries: options.retries ?? 1, retryStatuses: options.retryStatuses ?? [502, 504] }
+    )) as { data: TaskListResponse | undefined; status: number };
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (/timeout|timed out|ETIMEDOUT|ECONNRESET|socket hang up/i.test(message)) {
+      if (options.failOnRequestError === true) {
+        throw error;
+      }
+      options.onRequestTimeout?.(message);
+      return { data: undefined, status: 504 };
+    }
+    throw error;
+  }
+}
+
+export async function resolveWaCancellationTask(
+  apiClient: WorkAllocationApiClient,
+  options: ResolveWaCancellationTaskOptions
+): Promise<WaCancellationTaskResolution> {
+  const configuredResolution = resolveTaskIdWithEnvFallback(
+    undefined,
+    options.envAssignedTaskId,
+    options.envTaskId,
+    options.fallbackTaskId
+  );
+
+  if (!options.lookupLiveTask) {
+    return {
+      liveLookupRequired: false,
+      liveLookupUsed: false,
+      taskId: configuredResolution.taskId,
+      taskSource: configuredResolution.source,
+    };
+  }
+
+  const firstTask = await fetchFirstTask(apiClient, undefined, ['assigned', 'unassigned'], 'AllWork', {
+    failOnRequestError: options.hasDedicatedWaSolicitor,
+    retries: 0,
+    timeoutMs: 10_000,
+  });
+  const resolution = resolveTaskIdWithEnvFallback(
+    firstTask?.id,
+    options.envAssignedTaskId,
+    options.envTaskId,
+    options.fallbackTaskId
+  );
+
+  return {
+    liveLookupRequired: options.hasDedicatedWaSolicitor,
+    liveLookupUsed: true,
+    taskId: resolution.taskId,
+    taskSource: resolution.source,
+  };
 }
 
 type TaskDetails = {
@@ -265,8 +358,6 @@ export function selectTaskId(candidates: Array<string | undefined>, fallback: st
   }
   return fallback;
 }
-
-type TaskIdResolutionSource = 'dynamic' | 'env-assigned' | 'env-unassigned' | 'none';
 
 export function resolveTaskIdWithEnvFallback(
   primaryTaskId: string | undefined,

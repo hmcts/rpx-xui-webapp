@@ -95,7 +95,7 @@ EXUI_BASE_URL=http://localhost:3000 \
 MANAGE_CASES_BASE_URL=http://localhost:3000/cases \
 IDAM_WEB_URL=http://localhost:8080 \
 IDAM_TESTING_SUPPORT_URL=http://localhost:8080 \
-FUNCTIONAL_TESTS_WORKERS=4 \
+FUNCTIONAL_TESTS_WORKERS=7 \
 PLAYWRIGHT_SKIP_INSTALL=true \
 yarn test:playwright:integration
 ```
@@ -117,18 +117,9 @@ Why these env vars are required:
 
 The following code changes were made to support fully mocked local auth + integration flow:
 
-1. `test_codecept/backendMock/services/idam/index.js`
-   - OIDC discovery metadata now points to local mock endpoints on `http://localhost:8080`.
+Refer to `api/test/pact/pact-mocks/` for Pact-only mock service implementations.
 
-2. `test_codecept/backendMock/services/idam/routes.js`
-   - Added `/login` route to redirect to local `/o/authorize`.
-   - Added `/details` endpoint with role-bearing mock user profile.
-   - Added shared token responder for both `/o/token` and `/oauth2/token`.
-   - Corrected token response shape (`token_type: Bearer`, numeric `expires_in`, JWT `exp` in seconds).
-   - Updated OAuth callback `iss` to local `http://localhost:8080/o`.
-
-3. `test_codecept/backendMock/services/userApiData.js`
-   - Added safe token normalization and null guards to avoid crashes when auth headers are absent/malformed.
+- Added safe token normalization and null guards to avoid crashes when auth headers are absent/malformed.
 
 4. `api/user/index.ts`
    - Hardened active role-assignment extraction to handle undefined role arrays without crashing.
@@ -492,8 +483,9 @@ What it does not validate:
 
 ### Parallelism
 
-Playwright worker count defaults are suite-specific: 2 workers for E2E, 4 workers for API, and 4 workers for integration.
+Playwright worker count defaults are 6 workers for E2E/API and 7 workers for integration on the XUI 8CPU agent.
 Set `FUNCTIONAL_TESTS_WORKERS` to override this behaviour explicitly.
+Jenkins CNP and nightly keep API, integration, and E2E/cross-browser suites parallel, but use report-gathering fan-out so a failed suite does not abort sibling Odhín and load-report publication. Default PR timing runs do not shard integration because split shard reports are harder to compare.
 
 ### Integration local progress timer
 

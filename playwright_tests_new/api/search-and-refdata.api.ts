@@ -2,7 +2,7 @@ import { promises as fs } from 'node:fs';
 
 import { request } from '@playwright/test';
 
-import { config } from '../common/apiTestConfig';
+import { config } from './utils/apiTestRuntimeConfig';
 import { ensureStorageState } from './utils/auth';
 import { test, expect } from './fixtures';
 import { ROLE_ACCESS_CASE_ID, resolveRoleAccessCaseId } from './data/testIds';
@@ -137,9 +137,10 @@ test.describe('Role access / AM', { tag: '@svc-role-assignment' }, () => {
     const res = await withRetry(
       () =>
         apiClient.get<{ count?: number } | number>('api/role-access/roles/get-my-access-new-count', {
+          timeoutMs: 20_000,
           throwOnError: false,
         }),
-      { retries: 1, retryStatuses: [502, 504] }
+      { retries: 1, retryStatuses: [500, 502, 504] }
     );
     expectStatus(res.status, [200, 401, 403, 500, 502, 504]);
     assertMyAccessCount(res.status, res.data);

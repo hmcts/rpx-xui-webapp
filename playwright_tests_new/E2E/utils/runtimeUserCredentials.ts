@@ -23,8 +23,8 @@ export type PublishedRuntimeUserCredentialEnvState = RuntimeUserCredentialEnvMap
 const runtimeUserCredentials = new Map<string, RuntimeUserCredentials>();
 const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
   SOLICITOR: {
-    username: 'SOLICITOR_USERNAME',
-    password: 'SOLICITOR_PASSWORD',
+    username: 'WA_SOLICITOR_USERNAME',
+    password: 'WA_SOLICITOR_PASSWORD',
   },
   DIVORCE_SOLICITOR: {
     username: 'DIVORCE_SOLICITOR_USERNAME',
@@ -134,10 +134,6 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
     username: 'RESTRICTED_CASE_FILE_VIEW_V1_1_ON_USERNAME',
     password: 'RESTRICTED_CASE_FILE_VIEW_V1_1_ON_PASSWORD',
   },
-  RESTRICTED_CASE_FILE_VIEW_OFF: {
-    username: 'RESTRICTED_CASE_FILE_VIEW_V1_1_OFF_USERNAME',
-    password: 'RESTRICTED_CASE_FILE_VIEW_V1_1_OFF_PASSWORD',
-  },
   ORG_USER_ASSIGNMENT: {
     username: 'ORG_USER_ASSIGNMENT_USERNAME',
     password: 'ORG_USER_ASSIGNMENT_PASSWORD',
@@ -146,10 +142,47 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
     username: 'PW_IAC_JUDGE_WA_R1_EMAIL',
     password: 'PW_IAC_JUDGE_WA_R1_PASSWORD',
   },
+  IAC_CASEOFFICER_R1: {
+    username: 'PW_IAC_CASEOFFICER_R1_EMAIL',
+    password: 'PW_IAC_CASEOFFICER_R1_PASSWORD',
+  },
   IAC_CASEOFFICER_R2: {
     username: 'PW_IAC_CASEOFFICER_R2_EMAIL',
     password: 'PW_IAC_CASEOFFICER_R2_PASSWORD',
   },
+  FPL_GLOBAL_SEARCH: {
+    username: 'FPL_GLOBAL_SEARCH_USERNAME',
+    password: 'FPL_GLOBAL_SEARCH_PASSWORD',
+  },
+  NOC_SOLICITOR: {
+    username: 'NOC_SOLICITOR_USERNAME',
+    password: 'NOC_SOLICITOR_PASSWORD',
+  },
+  PRL_SOLICITOR: {
+    username: 'PRL_SOLICITOR_USERNAME',
+    password: 'PRL_SOLICITOR_PASSWORD',
+  },
+};
+
+const staffAdminPoolIdentifiers = ['STAFF_ADMIN-1', 'STAFF_ADMIN-2', 'STAFF_ADMIN-3', 'STAFF_ADMIN-4'] as const;
+
+const runtimeUserIdentifierFallbacks: Record<string, string[] | ((env: NodeJS.ProcessEnv) => string[])> = {
+  STAFF_ADMIN: (env) => {
+    if (env.STAFF_ADMIN_POOL_ENABLED !== 'true') {
+      return [];
+    }
+
+    const envIndex = Number(env.TEST_PARALLEL_INDEX ?? env.TEST_WORKER_INDEX);
+    const startIndex = Number.isInteger(envIndex) && envIndex >= 0 ? envIndex % staffAdminPoolIdentifiers.length : 0;
+    return staffAdminPoolIdentifiers.map(
+      (_, offset) => staffAdminPoolIdentifiers[(startIndex + offset) % staffAdminPoolIdentifiers.length]
+    );
+  },
+  FPL_GLOBAL_SEARCH: [],
+  USER_WITH_FLAGS: [],
+  IAC_JUDGE_WA_R1: ['IAC_CASEOFFICER_R1', 'IAC_CASEOFFICER_R2'],
+  IAC_CASEOFFICER_R2: ['IAC_CASEOFFICER_R1'],
+  IAC_CASEOFFICER_R1: [],
 };
 
 function normalizeUserIdentifier(userIdentifier: string): string {
@@ -174,6 +207,56 @@ export function resolveRuntimeUserCredentialsFromEnv(
   }
 
   return { email, password };
+}
+
+function resolveRuntimeUserCredentialsForIdentifierInternal(
+  userIdentifier: string,
+  env: NodeJS.ProcessEnv,
+  visited: Set<string>
+): RuntimeUserCredentials | undefined {
+  const normalizedIdentifier = normalizeUserIdentifier(userIdentifier);
+  if (visited.has(normalizedIdentifier)) {
+    return undefined;
+  }
+  visited.add(normalizedIdentifier);
+
+  const runtimeCredentials = runtimeUserCredentials.get(normalizedIdentifier);
+  if (runtimeCredentials) {
+    return runtimeCredentials;
+  }
+
+  const mapping = dynamicUserEnvMap[normalizedIdentifier];
+  if (mapping) {
+    const email = env[mapping.username]?.trim();
+    const password = env[mapping.password];
+    if (email && password) {
+      return { email, password };
+    }
+  }
+
+  const fallbackEntry = runtimeUserIdentifierFallbacks[normalizedIdentifier];
+  let fallbackIdentifiers: string[] = [];
+  if (typeof fallbackEntry === 'function') {
+    fallbackIdentifiers = fallbackEntry(env);
+  } else if (Array.isArray(fallbackEntry)) {
+    fallbackIdentifiers = fallbackEntry;
+  }
+
+  for (const fallbackIdentifier of fallbackIdentifiers) {
+    const resolved = resolveRuntimeUserCredentialsForIdentifierInternal(fallbackIdentifier, env, visited);
+    if (resolved) {
+      return resolved;
+    }
+  }
+
+  return undefined;
+}
+
+export function resolveRuntimeUserCredentialsForIdentifier(
+  userIdentifier: string,
+  env: NodeJS.ProcessEnv = process.env
+): RuntimeUserCredentials | undefined {
+  return resolveRuntimeUserCredentialsForIdentifierInternal(userIdentifier, env, new Set<string>());
 }
 
 export function setRuntimeUserCredentials(userIdentifier: string, credentials: RuntimeUserCredentials): void {

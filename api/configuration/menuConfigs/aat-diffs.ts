@@ -21,7 +21,7 @@ export const aatDifferences = {
       text: 'My work',
     },
     {
-      roles: ['caseworker-sscs-clerk', 'caseworker-sscs-registrar', 'hmcts-admin', 'hmcts-ctsc', 'hmcts-legal-operations'],
+      roles: ['caseworker-sscs-clerk', 'caseworker-sscs-registrar', 'caseworker-probate', 'hmcts-admin', 'hmcts-ctsc', 'hmcts-legal-operations'],
       text: 'Search',
     },
     {

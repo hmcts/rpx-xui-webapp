@@ -9,6 +9,10 @@ import { applySessionCookies } from '../../../common/sessionCapture';
 
 const caseId = '1690807693531270';
 const fileViewOnUser = 'RESTRICTED_CASE_FILE_VIEW_ON';
+const sortedDocumentOrderTimeoutMs = 15_000;
+const evidenceDocumentsAscending = ['Alpha evidence.pdf', 'Middle evidence.pdf', 'Zeta evidence.pdf'];
+const evidenceDocumentsDescending = ['Zeta evidence.pdf', 'Middle evidence.pdf', 'Alpha evidence.pdf'];
+const orderDocumentsOldestFirst = ['Approved order.pdf', 'Root order.pdf'];
 const fileViewV1ModeUser = {
   idamId: '6bd95a7f-9065-42a0-af4b-c0b6ed84e960',
   email: 'xui_casefileview_v11_off@mailinator.com',
@@ -133,35 +137,40 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
 
     await test.step('Sort evidence documents A to Z', async () => {
       await caseFileViewPage.sortByAscending();
+      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Evidence', evidenceDocumentsAscending.length);
       await expect
-        .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'))
-        .toEqual(['Alpha evidence.pdf', 'Middle evidence.pdf', 'Zeta evidence.pdf']);
+        .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'), { timeout: sortedDocumentOrderTimeoutMs })
+        .toEqual(evidenceDocumentsAscending);
     });
 
     await test.step('Sort evidence documents Z to A', async () => {
       await caseFileViewPage.sortByDescending();
+      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Evidence', evidenceDocumentsDescending.length);
       await expect
-        .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'))
-        .toEqual(['Zeta evidence.pdf', 'Middle evidence.pdf', 'Alpha evidence.pdf']);
+        .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'), { timeout: sortedDocumentOrderTimeoutMs })
+        .toEqual(evidenceDocumentsDescending);
     });
 
     await test.step('Sort evidence documents by most recent first', async () => {
       await caseFileViewPage.sortByRecentFirst();
+      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Evidence', evidenceDocumentsDescending.length);
       await expect
-        .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'))
-        .toEqual(['Zeta evidence.pdf', 'Middle evidence.pdf', 'Alpha evidence.pdf']);
+        .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'), { timeout: sortedDocumentOrderTimeoutMs })
+        .toEqual(evidenceDocumentsDescending);
     });
 
     await test.step('Sort evidence documents by oldest first', async () => {
       await caseFileViewPage.getFolderNode('Orders.Approved orders');
       await caseFileViewPage.sortByOldestFirst();
+      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Evidence', evidenceDocumentsAscending.length);
       await expect
-        .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'))
-        .toEqual(['Alpha evidence.pdf', 'Middle evidence.pdf', 'Zeta evidence.pdf']);
+        .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'), { timeout: sortedDocumentOrderTimeoutMs })
+        .toEqual(evidenceDocumentsAscending);
 
+      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Orders', orderDocumentsOldestFirst.length);
       await expect
-        .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Orders'))
-        .toEqual(['Approved order.pdf', 'Root order.pdf']);
+        .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Orders'), { timeout: sortedDocumentOrderTimeoutMs })
+        .toEqual(orderDocumentsOldestFirst);
     });
   });
 });

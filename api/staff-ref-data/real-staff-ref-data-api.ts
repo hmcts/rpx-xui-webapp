@@ -11,10 +11,11 @@ export class RealStaffRefDataAPI implements StaffRefDataAPI {
   public baseCaseWorkerRefUrl = getConfigValue(SERVICES_CASE_CASEWORKER_REF_PATH);
 
   async getFilteredUsers(req, res: Response, next: NextFunction) {
-    const statusFilter = req.query.status;
-    delete req.query.status;
+    const query = { ...req.query };
+    const statusFilter = query.status;
+    delete query.status;
 
-    const queryStrings = querystring.stringify(req.query);
+    const queryStrings = querystring.stringify(query);
     const pageSize = req.headers['page-size'] || 20;
     const pageNumber = req.headers['page-number'] || 1;
 

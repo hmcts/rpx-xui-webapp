@@ -21476,8 +21476,7 @@ __metadata:
     playwright: "npm:1.59.1"
     prettier: "npm:^3.8.0"
     proper-lockfile: "npm:^4.1.2"
-    redis: "npm:^3.0.2"
-    rpx-xui-translation: "npm:1.2.3"
+    rpx-xui-translation: "npm:1.2.5-alignment-issue"
     rx-polling-hmcts: "npm:1.1.1"
     rxjs: "npm:^7.8.1"
     sass: "npm:^1.97.3"
@@ -21508,9 +21507,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"rpx-xui-translation@npm:1.2.3":
-  version: 1.2.3
-  resolution: "rpx-xui-translation@npm:1.2.3"
+"rpx-xui-translation@npm:1.2.5-alignment-issue":
+  version: 1.2.5-alignment-issue
+  resolution: "rpx-xui-translation@npm:1.2.5-alignment-issue"
   dependencies:
     dexie: "npm:^3.2.2"
     luxon: "npm:^2.4.0"
@@ -21518,7 +21517,7 @@ __metadata:
   peerDependencies:
     "@angular/common": ^20.3.14
     "@angular/core": ^20.3.14
-  checksum: 10/32388e2cbee3f2872c7e16541246606e131535d37c1a9869103efcbead0589a9c45d12a027e55e070e6913174041628cb5f1e6dc7e6310f39ba6f489a311bca8
+  checksum: 10/bd8522f3a631160387eb480d873671d0ee8e267f7ceee2c90deb12cb79b3c4aa8c1361030a55cc3c6fd2d6bc685940629c3043acb0c8e403e5c1a84af465a553
   languageName: node
   linkType: hard
 

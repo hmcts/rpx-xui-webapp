@@ -98,7 +98,7 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
         Given I set MOCK task required for event as "true"
         Given I set MOCK tasks required for event
             | assignee | task_state |
-            | | unassigned |
+            | null     | unassigned |
 
 
         Given I start MockApp
@@ -117,7 +117,7 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
             | Summary header  | There is a problem                         |
             | Summary message | Task assignment required                   |
             | Details header  | Task assignment required                   |
-            | Details message | You must assign one of the available tasks from the task tab to continue with your work |
+            | Details message | You must assign it to yourself to continue |
             | Link            | Return to tasks tab                        |
         Examples:
             | roles                                                                            |
@@ -155,8 +155,8 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
         Given I set MOCK task required for event as "true"
         Given I set MOCK tasks required for event
             | assignee | task_state |
-            | | unassigned |
-            | | unassigned |
+            | null     | unassigned |
+            | null     | unassigned |
 
 
         Given I start MockApp
@@ -175,7 +175,7 @@ Feature: WA Release 2: Case events and Task completion and states when task_requ
             | Summary header  | There is a problem                         |
             | Summary message | Task assignment required                   |
             | Details header  | Task assignment required                   |
-            | Details message | You must assign one of the available tasks from the task tab to continue with your work |
+            | Details message | You must assign it to yourself to continue |
             | Link            | Return to tasks tab                        |
         Examples:
             | roles                                                                            |

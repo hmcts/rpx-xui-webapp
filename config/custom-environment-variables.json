@@ -132,7 +132,6 @@
     }
   },
   "caseworkerPageSize": "CASEWORKER_PAGE_SIZE",
-  "roleAssignmentPageSize": "ROLE_ASSIGNMENT_PAGE_SIZE",
   "jurisdictions": "JURISDICTIONS",
   "staffSupportedJurisdictions": "STAFF_SUPPORTED_JURISDICTIONS",
   "waSupportedJurisdictions": "WA_SUPPORTED_JURISDICTIONS",

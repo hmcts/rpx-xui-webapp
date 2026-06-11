@@ -142,7 +142,7 @@ test.describe('Role access / AM', { tag: '@svc-role-assignment' }, () => {
         }),
       { retries: 1, retryStatuses: [500, 502, 504] }
     );
-    expectStatus(res.status, [200, 401, 403, 500, 502, 504]);
+    expectStatus(res.status, StatusSets.roleAccessRead);
     assertMyAccessCount(res.status, res.data);
   });
 
@@ -153,12 +153,12 @@ test.describe('Role access / AM', { tag: '@svc-role-assignment' }, () => {
         postWaWithDiagnostics<RoleAssignmentContainer>(apiClient, {
           endpoint: 'api/role-access/roles/access-get',
           payload,
-          allowedStatuses: [200, 400, 401, 403, 404, 500],
+          allowedStatuses: StatusSets.roleAccessRead,
           testInfo,
         }),
       { retries: 1, retryStatuses: [502, 504] }
     );
-    expectStatus(res.status, [200, 400, 401, 403, 404, 500]);
+    expectStatus(res.status, StatusSets.roleAccessRead);
     assertRoleAccessGetResponse(res.status, res.data);
   });
 
@@ -173,13 +173,17 @@ test.describe('Role access / AM', { tag: '@svc-role-assignment' }, () => {
 
   test('roles/access-get-by-caseId responds with roles when present', async ({ apiClient }, testInfo) => {
     const payload = buildCaseIdPayload(resolveRoleAccessCaseId(roleAccessCaseId));
-    const res = await postWaWithDiagnostics<RoleAssignmentContainer>(apiClient, {
-      endpoint: 'api/role-access/roles/access-get-by-caseId',
-      payload,
-      allowedStatuses: [200, 400, 401, 403, 404, 500],
-      testInfo,
-    });
-    expectStatus(res.status, [200, 400, 401, 403, 404, 500]);
+    const res = await withRetry(
+      () =>
+        postWaWithDiagnostics<RoleAssignmentContainer>(apiClient, {
+          endpoint: 'api/role-access/roles/access-get-by-caseId',
+          payload,
+          allowedStatuses: StatusSets.roleAccessRead,
+          testInfo,
+        }),
+      { retries: 1, retryStatuses: [502, 504] }
+    );
+    expectStatus(res.status, StatusSets.roleAccessRead);
     assertRoleAccessByCaseIdResponse(res.status, res.data);
   });
 

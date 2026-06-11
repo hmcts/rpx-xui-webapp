@@ -811,9 +811,9 @@ export class CreateCasePage extends Base {
     fileInput?: Locator,
     fileContentEncoding?: BufferEncoding
   ) {
+    const resolvedFileInput = fileInput ?? this.page.locator('input[type="file"]').first();
     const maxRetries = 3;
     const baseDelayMs = 1000;
-    const resolvedFileInput = fileInput ?? this.page.locator('input[type="file"]').first();
     const uploadResponseTimeoutMs = this.getRecommendedTimeoutMs({
       min: EXUI_TIMEOUTS.UPLOAD_RESPONSE,
       max: 30_000,

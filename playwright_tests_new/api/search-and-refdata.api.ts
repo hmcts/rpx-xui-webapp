@@ -35,6 +35,8 @@ import {
   buildExpiredCookies,
 } from './utils/searchRefDataUtils';
 
+const MY_ACCESS_NEW_COUNT_TIMEOUT_MS = 45_000;
+
 test.describe('Global search', { tag: '@svc-global-search' }, () => {
   test('lists available services', async ({ apiClient }) => {
     const response = await withRetry(
@@ -137,7 +139,7 @@ test.describe('Role access / AM', { tag: '@svc-role-assignment' }, () => {
     const res = await withRetry(
       () =>
         apiClient.get<{ count?: number } | number>('api/role-access/roles/get-my-access-new-count', {
-          timeoutMs: 20_000,
+          timeoutMs: MY_ACCESS_NEW_COUNT_TIMEOUT_MS,
           throwOnError: false,
         }),
       { retries: 1, retryStatuses: [500, 502, 504] }

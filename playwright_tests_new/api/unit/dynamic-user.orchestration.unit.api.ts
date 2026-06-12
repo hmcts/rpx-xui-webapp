@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { inspect } from 'node:util';
 
 import {
   createUserViaSidamFirstFlow,
@@ -394,6 +395,7 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
   test('provisionUserWithRetries stores only redacted failure detail for attached attempt evidence', async () => {
     const rawError =
       'HTTP 500 for test@example.test?access_token=abc123&password=letmein Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.secret client_secret=very-secret';
+    const rawNestedCause = 'SECRET_RAW_CAUSE_VALUE';
 
     const error = await provisionUserWithRetries(
       {
@@ -406,7 +408,7 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
       },
       {
         createSolicitorUserForOrganisation: async () => {
-          throw new Error(rawError);
+          throw Object.assign(new Error(rawError), { cause: new Error(rawNestedCause) });
         },
         withTimeout: async (action) => action,
         shouldRetry: () => false,
@@ -420,13 +422,22 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
     ).catch((failure) => failure);
 
     expect(error).toBeInstanceOf(DynamicProvisioningError);
-    expect((error as DynamicProvisioningError).attempts[0].error).toContain('[redacted-email]');
-    expect((error as DynamicProvisioningError).message).toContain('[redacted-email]');
-    expect(JSON.stringify((error as DynamicProvisioningError).attempts)).not.toContain('test@example.test');
-    expect((error as DynamicProvisioningError).message).not.toContain('abc123');
-    expect((error as DynamicProvisioningError).message).not.toContain('letmein');
-    expect((error as DynamicProvisioningError).message).not.toContain('eyJhbGciOiJIUzI1NiJ9.secret');
-    expect((error as DynamicProvisioningError).message).not.toContain('very-secret');
+    const provisioningError = error as DynamicProvisioningError;
+    const serializedError = JSON.stringify(provisioningError);
+    const inspectedError = inspect(provisioningError);
+    const reporterVisibleError = `${provisioningError.message}\n${serializedError}\n${inspectedError}`;
+
+    expect(provisioningError.attempts[0].error).toContain('[redacted-email]');
+    expect(provisioningError.diagnosticCause).toContain('[redacted-email]');
+    expect(provisioningError.message).toContain('[redacted-email]');
+    expect((provisioningError as Error & { cause?: unknown }).cause).toBeUndefined();
+    expect(inspectedError).not.toContain('[cause]');
+    expect(reporterVisibleError).not.toContain('test@example.test');
+    expect(reporterVisibleError).not.toContain('abc123');
+    expect(reporterVisibleError).not.toContain('letmein');
+    expect(reporterVisibleError).not.toContain('eyJhbGciOiJIUzI1NiJ9.secret');
+    expect(reporterVisibleError).not.toContain('very-secret');
+    expect(reporterVisibleError).not.toContain(rawNestedCause);
   });
 
   test('formatProvisionAttemptDiagnostics truncates long downstream error bodies', () => {

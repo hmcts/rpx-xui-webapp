@@ -270,8 +270,7 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
     });
   });
 
-  // Skipped until EXUI-4127 is resolved
-  test.skip(`Complex Markdown label renders correctly`, async ({ taskListPage, caseDetailsPage, page }) => {
+  test(`Complex Markdown label renders correctly`, async ({ caseDetailsPage, page }) => {
     const taskData = {
       id: [faker.string.uuid().toString()],
       caseId: caseMockResponse.case_id,

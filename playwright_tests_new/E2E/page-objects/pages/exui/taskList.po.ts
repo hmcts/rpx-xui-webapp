@@ -521,6 +521,7 @@ export class TaskListPage extends Base {
     const targetCheckbox = checkbox.first();
     const timeoutMs = this.resolveInteractionTimeout(deadlineMs, FILTER_CONTROL_READY_TIMEOUT_MS);
     const targetDeadlineMs = Date.now() + timeoutMs;
+    let checkboxWasVisible = false;
 
     while (Date.now() < targetDeadlineMs) {
       this.assertFilterInteractionAlive(`waiting for checkbox "${description}"`, deadlineMs);
@@ -528,16 +529,23 @@ export class TaskListPage extends Base {
         await this.openFilterPanel(deadlineMs);
       }
       if (await targetCheckbox.isVisible().catch(() => false)) {
-        await expect(targetCheckbox).toBeEnabled({
-          timeout: this.resolveInteractionTimeout(deadlineMs, FILTER_CHECKBOX_STATE_TIMEOUT_MS),
-        });
-        return targetCheckbox;
+        checkboxWasVisible = true;
+        const stateTimeoutMs = Math.min(
+          this.resolveInteractionTimeout(deadlineMs, FILTER_CHECKBOX_STATE_TIMEOUT_MS),
+          Math.max(targetDeadlineMs - Date.now(), 0)
+        );
+        if (stateTimeoutMs > 0 && (await targetCheckbox.isEnabled({ timeout: stateTimeoutMs }).catch(() => false))) {
+          return targetCheckbox;
+        }
       }
       await this.assertTaskListInteractive(`waiting for ${description}`);
       await this.page.waitForTimeout(250);
     }
 
     await this.assertTaskListInteractive(`waiting for ${description}`);
+    if (checkboxWasVisible) {
+      throw new Error(`Task list filter checkbox "${description}" did not become enabled within ${timeoutMs}ms.`);
+    }
     throw new Error(`Task list filter checkbox "${description}" did not become visible within ${timeoutMs}ms.`);
   }
 

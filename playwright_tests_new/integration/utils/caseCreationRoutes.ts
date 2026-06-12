@@ -4,6 +4,7 @@ import type { CreateCasePage } from '../../E2E/page-objects/pages/exui/createCas
 export const CREATED_CASE_ID = '1234123412341234';
 export const CREATED_CASE_JURISDICTION = 'DIVORCE';
 export const CREATED_CASE_TYPE = 'xuiTestJurisdiction';
+export const CREATED_CASE_DETAILS_PATH = `/cases/case-details/${CREATED_CASE_JURISDICTION}/${CREATED_CASE_TYPE}/${CREATED_CASE_ID}`;
 
 type SubmittedCaseData = {
   Gender?: string;
@@ -283,11 +284,37 @@ export async function routeCaseCreationFlow(page: Page): Promise<unknown> {
   return interceptedRequestPromise;
 }
 
+function escapeRegex(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+async function waitForCreatedCaseDetailsPage(page: Page): Promise<void> {
+  const expectedUrlPattern = new RegExp(`${escapeRegex(CREATED_CASE_DETAILS_PATH)}(?:$|[?#])`);
+
+  try {
+    await page.waitForURL(expectedUrlPattern, { timeout: 30_000 });
+  } catch (error) {
+    const timeoutMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(
+      `Expected case creation submit to route to ${CREATED_CASE_DETAILS_PATH}, but current URL is ${page.url()}. ${timeoutMessage}`
+    );
+  }
+}
+
+type SubmitCaseOptions = {
+  waitForCreatedCaseDetails?: boolean;
+};
+
 export async function submitCaseAndCaptureRequest(
   page: Page,
-  createCasePage: Pick<CreateCasePage, 'testSubmitButton'>
+  createCasePage: Pick<CreateCasePage, 'testSubmitButton'>,
+  options: SubmitCaseOptions = {}
 ): Promise<unknown> {
   const interceptedCreateCaseRequestBodyPromise = routeCaseCreationFlow(page);
   await Promise.all([interceptedCreateCaseRequestBodyPromise, createCasePage.testSubmitButton.click({ noWaitAfter: true })]);
-  return interceptedCreateCaseRequestBodyPromise;
+  const interceptedCreateCaseRequestBody = await interceptedCreateCaseRequestBodyPromise;
+  if (options.waitForCreatedCaseDetails) {
+    await waitForCreatedCaseDetailsPage(page);
+  }
+  return interceptedCreateCaseRequestBody;
 }

@@ -27,13 +27,23 @@ const DOCUMENT_UPLOAD_WELSH_TRANSLATIONS = {
     },
   },
 };
-const DOCUMENT_UPLOAD_DRAG_DROP_SCENARIOS = [
+const DOCUMENT_UPLOAD_V2_SCENARIOS = [
   {
+    title: 'file chooser upload works in English',
     language: 'English',
+    uploadMode: 'file-input',
     cancelUploadLabel: 'Cancel upload',
   },
   {
+    title: 'browser file drag-and-drop upload works in English',
+    language: 'English',
+    uploadMode: 'drag-drop',
+    cancelUploadLabel: 'Cancel upload',
+  },
+  {
+    title: 'browser file drag-and-drop upload works in Cymraeg',
     language: 'Cymraeg',
+    uploadMode: 'drag-drop',
     cancelUploadLabel: DOCUMENT_UPLOAD_WELSH_TRANSLATIONS.translations['Cancel upload'].translation,
   },
 ] as const;
@@ -129,11 +139,8 @@ test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, (
     logger.info('Created divorce case', { caseNumber, testValue });
   });
 
-  for (const scenario of DOCUMENT_UPLOAD_DRAG_DROP_SCENARIOS) {
-    test(`Check the documentV2 drag-and-drop upload works in ${scenario.language}`, async ({
-      createCasePage,
-      caseDetailsPage,
-    }) => {
+  for (const scenario of DOCUMENT_UPLOAD_V2_SCENARIOS) {
+    test(`Check the documentV2 ${scenario.title}`, async ({ createCasePage, caseDetailsPage }) => {
       let caseDetailsUrl = '';
 
       await test.step('Verify case details tab does not contain an uploaded file', async () => {
@@ -170,19 +177,25 @@ test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, (
               await expect(createCasePage.fileUploadCancelButton).toContainText(scenario.cancelUploadLabel);
               await expect(createCasePage.fileUploadComponent).not.toContainText(TEST_DATA.V2.FILE_NAME);
               const uploadFormUrl = caseDetailsPage.page.url();
-              await createCasePage.dragAndDropFile(
-                TEST_DATA.V2.FILE_NAME,
-                TEST_DATA.V2.FILE_TYPE,
-                TEST_DATA.V2.FILE_CONTENT,
-                createCasePage.fileUploadInput,
-                {
-                  dropTarget: createCasePage.fileUploadComponent,
-                }
-              );
-              await expect(
-                caseDetailsPage.page,
-                'Document drag-and-drop should not navigate away or open the file in the browser'
-              ).toHaveURL(uploadFormUrl);
+              if (scenario.uploadMode === 'drag-drop') {
+                await createCasePage.dragAndDropFile(
+                  TEST_DATA.V2.FILE_NAME,
+                  TEST_DATA.V2.FILE_TYPE,
+                  TEST_DATA.V2.FILE_CONTENT,
+                  createCasePage.fileUploadInput
+                );
+                await expect(
+                  caseDetailsPage.page,
+                  'Document drag-and-drop should not navigate away or open the file in the browser'
+                ).toHaveURL(uploadFormUrl);
+              } else {
+                await createCasePage.uploadFile(
+                  TEST_DATA.V2.FILE_NAME,
+                  TEST_DATA.V2.FILE_TYPE,
+                  TEST_DATA.V2.FILE_CONTENT,
+                  createCasePage.fileUploadInput
+                );
+              }
               await createCasePage.clickContinueMultipleTimes(3);
               await createCasePage.uploadFile(
                 'complex-type-required-document.pdf',

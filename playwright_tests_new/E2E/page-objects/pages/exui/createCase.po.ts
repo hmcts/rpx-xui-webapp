@@ -1,3 +1,6 @@
+import { mkdtemp, rm, writeFile } from 'fs/promises';
+import os from 'os';
+import path from 'path';
 import { Page, Locator, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 import { createLogger } from '@hmcts/playwright-common';
@@ -840,69 +843,50 @@ export class CreateCasePage extends Base {
     await resolvedFileInput.scrollIntoViewIfNeeded();
     await resolvedDropTarget.scrollIntoViewIfNeeded();
 
-    await this.runDocumentUploadWithRetry('drag-and-drop upload', async () => {
-      const fileContentEncoding = options.fileContentEncoding ?? 'utf8';
-      const fileContentBase64 = Buffer.from(fileContent, fileContentEncoding).toString('base64');
-      const dataTransfer = await this.page.evaluateHandle(
-        ({ droppedFileContentBase64, droppedFileMimeType, droppedFileName }) => {
-          const binary = window.atob(droppedFileContentBase64);
-          const bytes = new Uint8Array(binary.length);
-          for (let index = 0; index < binary.length; index++) {
-            bytes[index] = binary.charCodeAt(index);
-          }
+    const tempDirectory = await mkdtemp(path.join(os.tmpdir(), 'xui-document-drag-drop-'));
+    const filePath = path.join(tempDirectory, path.basename(fileName));
+    await writeFile(filePath, Buffer.from(fileContent, options.fileContentEncoding ?? 'utf8'));
 
-          const transfer = new DataTransfer();
-          transfer.items.add(new File([bytes], droppedFileName, { type: droppedFileMimeType }));
-          return transfer;
-        },
-        {
-          droppedFileName: fileName,
-          droppedFileMimeType: mimeType,
-          droppedFileContentBase64: fileContentBase64,
+    try {
+      await this.runDocumentUploadWithRetry('browser file drag-and-drop upload', async () => {
+        const box = await resolvedDropTarget.boundingBox();
+        if (!box) {
+          throw new Error(`Document drag-and-drop target for "${fileName}" has no visible bounding box`);
         }
-      );
 
-      try {
-        await resolvedDropTarget.dispatchEvent('dragenter', { dataTransfer });
-        await resolvedDropTarget.dispatchEvent('dragover', { dataTransfer });
-        await resolvedDropTarget.dispatchEvent('drop', { dataTransfer });
-        const droppedFile = await resolvedFileInput.evaluate((inputElement, transfer) => {
-          const input = inputElement as HTMLInputElement;
-          input.value = '';
-          Object.defineProperty(input, 'files', {
-            configurable: true,
-            value: (transfer as DataTransfer).files,
+        const x = box.x + box.width / 2;
+        const y = box.y + box.height / 2;
+        let cdpSession;
+        try {
+          cdpSession = await this.page.context().newCDPSession(this.page);
+        } catch (error) {
+          throw new Error('Document browser drag-and-drop upload requires a Chromium-backed Playwright project.', {
+            cause: error,
           });
-
-          const file = input.files?.[0];
-          return file
-            ? {
-                name: file.name,
-                size: file.size,
-                type: file.type,
-              }
-            : undefined;
-        }, dataTransfer);
-        const expectedDroppedFile = {
-          name: fileName,
-          size: Buffer.byteLength(fileContent, fileContentEncoding),
-          type: mimeType,
-        };
-        if (
-          !droppedFile ||
-          droppedFile.name !== expectedDroppedFile.name ||
-          droppedFile.size !== expectedDroppedFile.size ||
-          droppedFile.type !== expectedDroppedFile.type
-        ) {
-          throw new Error(
-            `Document drag-and-drop payload mismatch: expected ${JSON.stringify(expectedDroppedFile)}, got ${JSON.stringify(droppedFile)}`
-          );
         }
-        await resolvedFileInput.dispatchEvent('change', { bubbles: true });
-      } finally {
-        await dataTransfer.dispose();
-      }
-    });
+        const dragData = {
+          items: [
+            {
+              mimeType,
+              data: '',
+              title: fileName,
+            },
+          ],
+          files: [filePath],
+          dragOperationsMask: 1,
+        };
+
+        try {
+          await cdpSession.send('Input.dispatchDragEvent', { type: 'dragEnter', x, y, data: dragData });
+          await cdpSession.send('Input.dispatchDragEvent', { type: 'dragOver', x, y, data: dragData });
+          await cdpSession.send('Input.dispatchDragEvent', { type: 'drop', x, y, data: dragData });
+        } finally {
+          await cdpSession.detach().catch(() => undefined);
+        }
+      });
+    } finally {
+      await rm(tempDirectory, { recursive: true, force: true });
+    }
   }
 
   private async runDocumentUploadWithRetry(uploadActionDescription: string, uploadAction: () => Promise<void>) {

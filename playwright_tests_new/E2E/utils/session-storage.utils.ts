@@ -14,6 +14,15 @@ type EnsureStorageOptions = {
   baseUrl?: string;
 };
 
+const DEFAULT_UI_LOGIN_TIMEOUT_MS = 60_000;
+const UI_STORAGE_REFRESH_LOCK_STALE_MS = DEFAULT_UI_LOGIN_TIMEOUT_MS;
+const UI_STORAGE_REFRESH_LOCK_RETRIES = {
+  retries: 30,
+  factor: 1.2,
+  minTimeout: 1_000,
+  maxTimeout: 5_000,
+} as const;
+
 const buildStorageRefreshLockPath = (storagePath: string): string => `${storagePath}.refresh.lock`;
 
 const withUiStorageStateRefreshLock = async <T>(storagePath: string, action: () => Promise<T>): Promise<T> => {
@@ -21,12 +30,8 @@ const withUiStorageStateRefreshLock = async <T>(storagePath: string, action: () 
   fs.mkdirSync(path.dirname(lockPath), { recursive: true });
   fs.closeSync(fs.openSync(lockPath, 'a'));
   const release = await lockfile.lock(lockPath, {
-    retries: {
-      retries: 20,
-      factor: 1.2,
-      minTimeout: 250,
-      maxTimeout: 2_000,
-    },
+    retries: UI_STORAGE_REFRESH_LOCK_RETRIES,
+    stale: UI_STORAGE_REFRESH_LOCK_STALE_MS,
     realpath: false,
   });
   try {
@@ -51,10 +56,10 @@ const resolveStorageTtlMs = (): number => {
 const resolveLoginTimeoutMs = (): number => {
   const raw = process.env.PW_UI_LOGIN_TIMEOUT_MS;
   if (!raw) {
-    return 60_000;
+    return DEFAULT_UI_LOGIN_TIMEOUT_MS;
   }
   const parsed = Number.parseInt(raw, 10);
-  return Number.isNaN(parsed) ? 60_000 : Math.max(5_000, parsed);
+  return Number.isNaN(parsed) ? DEFAULT_UI_LOGIN_TIMEOUT_MS : Math.max(5_000, parsed);
 };
 
 const hasRequiredAuthCookies = (cookies: { name: string }[]) => {
@@ -287,6 +292,9 @@ export async function ensureUiStorageStateForUser(userIdentifier: string, option
 
 export const __test__ = {
   buildStorageRefreshLockPath,
+  defaultUiLoginTimeoutMs: DEFAULT_UI_LOGIN_TIMEOUT_MS,
   shouldRefreshStorageState,
+  uiStorageRefreshLockRetries: UI_STORAGE_REFRESH_LOCK_RETRIES,
+  uiStorageRefreshLockStaleMs: UI_STORAGE_REFRESH_LOCK_STALE_MS,
   withUiStorageStateRefreshLock,
 };

@@ -20,6 +20,17 @@ function fakeSessionPage() {
   };
 }
 
+function calculateRetryBudgetMs(retryOptions: {
+  retries: number;
+  factor: number;
+  minTimeout: number;
+  maxTimeout: number;
+}): number {
+  return Array.from({ length: retryOptions.retries }, (_unused, attemptIndex) =>
+    Math.min(retryOptions.minTimeout * retryOptions.factor ** attemptIndex, retryOptions.maxTimeout)
+  ).reduce((total, retryDelayMs) => total + retryDelayMs, 0);
+}
+
 test.describe('Session management hardening unit tests', { tag: '@svc-internal' }, () => {
   test('confirmAuthenticatedLogin accepts auth-cookie based success for fallback IDAM login', async () => {
     const infoCalls: Array<Record<string, unknown>> = [];
@@ -166,6 +177,13 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
+  });
+
+  test('storage refresh lock wait budget covers slow UI login contention', () => {
+    const retryBudgetMs = calculateRetryBudgetMs(sessionStorageTest.uiStorageRefreshLockRetries);
+
+    expect(sessionStorageTest.uiStorageRefreshLockStaleMs).toBe(sessionStorageTest.defaultUiLoginTimeoutMs);
+    expect(retryBudgetMs).toBeGreaterThan(sessionStorageTest.defaultUiLoginTimeoutMs * 2);
   });
 
   test('session capture reuses a fresh session instead of failing on a recent failure marker', async () => {

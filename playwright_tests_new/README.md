@@ -255,6 +255,7 @@ sequenceDiagram
 - Dynamic-user provisioning starts in `dynamicSolicitorSession.ts` and delegates most heavy lifting into `dynamicProvisioningFlow.ts`, `professional-user.utils.ts`, and the extracted `professional-user/` collaborators.
 - API case setup starts in `caseSetup.ts` and uses `payloads/registry.ts` plus the journey templates under `E2E/utils/test-setup/payloads/templates/`.
 - The returned case number or runtime user credentials are then consumed by the spec or fixture layer, not hidden inside the page objects.
+- Provisioning failures should be triaged from the recorded attempt diagnostics before changing retry policy. The terminal `DynamicProvisioningError` includes every attempt, duration, retryability decision, and last error, and the fixture attaches the same attempt history to the test evidence.
 
 ---
 
@@ -265,6 +266,7 @@ Unit-style tests for Playwright support code live under `playwright_tests_new/ap
 Current files:
 
 - `playwright_tests_new/api/unit/create-case.flow.unit.api.ts`
+- `playwright_tests_new/api/unit/data-loss-scenarios.unit.api.ts`
 - `playwright_tests_new/api/unit/dynamic-solicitor-session.unit.api.ts`
 - `playwright_tests_new/api/unit/dynamic-user.pure.unit.api.ts`
 - `playwright_tests_new/api/unit/dynamic-user.orchestration.unit.api.ts`
@@ -282,6 +284,14 @@ PLAYWRIGHT_SKIP_INSTALL=true yarn playwright test --project=node-api playwright_
 # Run one unit test by title
 PLAYWRIGHT_SKIP_INSTALL=true yarn playwright test --project=node-api playwright_tests_new/api/unit -g "resolveSolicitorRoleStrategy"
 ```
+
+### Data Loss Scenario Coverage
+
+The historical data-loss coverage map for `EXUI-848`, `EXUI-811`, `EXUI-433`, `EXUI-942`, and `EXUI-702` lives in `E2E/utils/test-setup/dataLossScenarioMatrix.ts`.
+
+- `EXUI-848`, `EXUI-811`, `EXUI-433`, and `EXUI-942` are covered by the tagged create-case E2E journey `@e2e-data-loss`, which creates a fresh Divorce PoC case and asserts the Data and History tab values after submit.
+- `EXUI-702` is deliberately marked as follow-up until the NoC owning mock contract is agreed, because closing that path needs an API-required NoC route-backed scenario rather than a looser UI-only assertion.
+- `playwright_tests_new/api/unit/data-loss-scenarios.unit.api.ts` fails if any historical ticket loses its case type, setup route, protected tabs, protected fields, or assertion layer mapping.
 
 ### Placement Rules
 
@@ -904,6 +914,15 @@ try {
 ```
 
 ### Troubleshooting
+
+#### Dynamic Provisioning Failures
+
+When a run fails before the browser journey starts, check the setup evidence first:
+
+1. Open the Playwright failure attachment named `<alias>-dynamic-user-provision-attempts.json`.
+2. In the Playwright HTML/Odhín artifacts, open the `failure-data.json` attachment for the failed test.
+3. Read the terminal `DynamicProvisioningError` attempt diagnostics. It should show each provisioning attempt, whether it was retryable, and the final downstream error.
+4. Keep the default retry policy unless the failure evidence proves that the retry budget itself is the problem.
 
 #### Session Expired During Test
 

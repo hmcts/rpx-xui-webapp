@@ -311,12 +311,8 @@ test.describe(`User ${userIdentifier} can see assigned tasks on a case`, () => {
         .toContain(
           'Do this next You still need to submit your appeal. Submit your appeal You can also review and edit your appeal.'
         );
-      expect
-        .soft(nextStepsHtml)
-        .toContain(`href="/case/IA/Asylum/${caseId}/trigger/submitAppeal"`);
-      expect
-        .soft(nextStepsHtml)
-        .toContain(`href="/case/IA/Asylum/${caseId}/trigger/editAppeal?tid=${taskId}"`);
+      expect.soft(nextStepsHtml).toContain(`href="/case/IA/Asylum/${caseId}/trigger/submitAppeal"`);
+      expect.soft(nextStepsHtml).toContain(`href="/case/IA/Asylum/${caseId}/trigger/editAppeal?tid=${taskId}"`);
     });
   });
 });

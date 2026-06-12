@@ -207,9 +207,7 @@ test.describe(
       });
 
       await test.step('Check EXUI-848/EXUI-811/EXUI-433 retained data renders on the created case', async () => {
-        await expect(page).toHaveURL(
-          new RegExp(`/cases/case-details/(?:${jurisdiction}/${caseType}/)?1234123412341234(?:$|#)`)
-        );
+        await expect(page).toHaveURL(new RegExp(`/cases/case-details/(?:${jurisdiction}/${caseType}/)?1234123412341234(?:$|#)`));
         await caseDetailsPage.divorceDataTable.waitFor({ state: 'visible', timeout: 30_000 });
 
         const table = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.divorceDataTable);
@@ -230,9 +228,7 @@ test.describe(
       await test.step('Check EXUI-942 retained history data renders on the created case', async () => {
         await caseDetailsPage.selectCaseDetailsTab('History');
 
-        const historyTable = page
-          .getByRole('tabpanel', { name: /History/ })
-          .getByRole('table', { name: 'case viewer table' });
+        const historyTable = page.getByRole('tabpanel', { name: /History/ }).getByRole('table', { name: 'case viewer table' });
         const table = await caseDetailsPage.trRowsToObjectInPage(historyTable);
         expect(table).toMatchObject({
           Author: 'Integration solicitor',

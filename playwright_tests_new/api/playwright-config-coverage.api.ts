@@ -74,6 +74,7 @@ const buildE2eConfig = (env: EnvMap) =>
 const buildIntegrationConfig = (env: EnvMap) =>
   integrationConfigModule.__test__.buildConfig(env) as {
     reporter: [string, Record<string, unknown> | undefined][];
+    testIgnore: string[];
     projects: Array<{ name: string; workers?: number; grep?: RegExp; grepInvert?: RegExp; use?: { channel?: string } }>;
   };
 
@@ -92,6 +93,7 @@ const resolveIntegrationWorkerCount = (env: EnvMap) =>
 const buildNightlyConfig = (env: EnvMap) =>
   nightlyConfigModule.__test__.buildConfig(env) as {
     reporter: [string, Record<string, unknown> | undefined][];
+    testIgnore: string[];
     use: { baseURL: string };
     projects: Array<{ name: string; grep?: RegExp; grepInvert?: RegExp; use?: { headless?: boolean } }>;
   };
@@ -106,6 +108,12 @@ const getReporterTuple = (reporter: unknown, name: string): [string, Record<stri
   }
   const [, options] = match as [string, Record<string, unknown> | undefined];
   return [name, options];
+};
+
+const expectLocalWorktreeIgnores = (testIgnore: string[]) => {
+  expect(testIgnore).toEqual(
+    expect.arrayContaining([expect.stringMatching(/\/\.worktrees\/\*\*$/), expect.stringMatching(/\/worktrees\/\*\*$/)])
+  );
 };
 
 test.describe.configure({ mode: 'serial' });
@@ -239,12 +247,36 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     );
 
     expect(config.testIgnore).not.toContain('**/*.a11y.spec.ts');
+    expectLocalWorktreeIgnores(config.testIgnore);
     expect(odhinOptions?.outputFolder).toBe('functional-output/tests/playwright-a11y/odhin-report');
     expect(odhinOptions?.indexFilename).toBe('xui-playwright-a11y.html');
     expect(odhinOptions?.title).toBe('RPX-XUI-WEBAPP Accessibility');
     expect(config.globalSetup).toBe('./playwright_tests_new/E2E/setup/a11ySession.global-setup.ts');
     expect(config.timeout).toBe(60_000);
     expect(config.expect.timeout).toBe(7_000);
+  });
+
+  test('E2E config adds JUnit reporter when a JUnit output path is requested', async () => {
+    const config = buildE2eConfig({
+      PLAYWRIGHT_JUNIT_OUTPUT: 'functional-output/tests/playwright-a11y/playwright-a11y-junit.xml',
+      CI: undefined,
+      TEST_URL: 'https://example.test',
+    });
+
+    const [, junitOptions] = getReporterTuple(config.reporter, 'junit');
+    expect(junitOptions?.outputFile).toBe('functional-output/tests/playwright-a11y/playwright-a11y-junit.xml');
+  });
+
+  test('Playwright configs ignore nested local worktrees', async () => {
+    const config = buildConfig({ CI: undefined, TEST_URL: 'https://example.test' });
+    const e2eConfig = buildE2eConfig({ CI: undefined, TEST_URL: 'https://example.test' });
+    const integrationConfig = buildIntegrationConfig({ CI: undefined, TEST_URL: 'https://example.test' });
+    const nightlyConfig = buildNightlyConfig({ CI: undefined, TEST_URL: 'https://example.test' });
+
+    expectLocalWorktreeIgnores(config.testIgnore);
+    expectLocalWorktreeIgnores(e2eConfig.testIgnore);
+    expectLocalWorktreeIgnores(integrationConfig.testIgnore);
+    expectLocalWorktreeIgnores(nightlyConfig.testIgnore);
   });
 
   test('E2E config can disable a11y session prewarm for list-only checks', async () => {

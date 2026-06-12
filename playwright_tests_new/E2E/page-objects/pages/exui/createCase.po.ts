@@ -390,10 +390,7 @@ export class CreateCasePage extends Base {
     return fallbackVisibleButton;
   }
 
-  private async clickContinueAndWait(
-    context: string,
-    options: { force?: boolean; timeoutMs?: number; continueButton?: Locator } = {}
-  ) {
+  private async clickContinueAndWait(context: string, options: { timeoutMs?: number; continueButton?: Locator } = {}) {
     const visibleContinueButton = options.continueButton ?? (await this.getVisibleActionButton(this.continueButton));
     if (!visibleContinueButton) {
       throw new Error(`Continue button not visible ${context}`);
@@ -403,7 +400,7 @@ export class CreateCasePage extends Base {
     const stepTimeout = options.timeoutMs ?? EXUI_TIMEOUTS.CONTINUE_CLICK_DEFAULT;
     const clickTimeout = Math.min(stepTimeout, EXUI_TIMEOUTS.CONTINUE_CLICK_DEFAULT);
     try {
-      await visibleContinueButton.click({ force: options.force, timeout: clickTimeout });
+      await visibleContinueButton.click({ timeout: clickTimeout });
     } catch (error) {
       const message = this.normalizeUnknownError(error);
       if (!message.includes('intercepts pointer events')) {
@@ -419,14 +416,13 @@ export class CreateCasePage extends Base {
           // Best-effort wait; retry click below handles residual spinner overlays.
         });
       try {
-        await visibleContinueButton.click({ force: options.force, timeout: clickTimeout });
+        await visibleContinueButton.click({ timeout: clickTimeout });
       } catch (retryError) {
         const retryMessage = this.normalizeUnknownError(retryError);
-        if (!retryMessage.includes('intercepts pointer events') || options.force === true) {
+        if (!retryMessage.includes('intercepts pointer events')) {
           throw retryError;
         }
-        this.logger.warn('Continue click still intercepted after wait; retrying with force', { context });
-        await visibleContinueButton.click({ force: true, timeout: clickTimeout });
+        throw new Error(`Continue click still intercepted after spinner wait ${context}: ${retryMessage.slice(0, 220)}`);
       }
     }
     await this.waitForSpinnerToComplete(`after ${context}`, stepTimeout);
@@ -517,8 +513,8 @@ export class CreateCasePage extends Base {
       if (!message.includes('intercepts pointer events')) {
         throw error;
       }
-      this.logger.warn('Submit click intercepted; retrying with force', { context });
-      await visibleSubmitButton.click({ force: true, timeout: EXUI_TIMEOUTS.SUBMIT_CLICK });
+      await this.waitForSpinnerToComplete(`before retrying submit ${context}`, EXUI_TIMEOUTS.SUBMIT_AUTO_ADVANCE_MAX);
+      await visibleSubmitButton.click({ timeout: EXUI_TIMEOUTS.SUBMIT_CLICK });
     }
   }
 
@@ -1061,7 +1057,8 @@ export class CreateCasePage extends Base {
     for (const reason of reasons) {
       const divorceReasonCheckbox = divorceReasonField.getByLabel(reason, { exact: true }).first();
       await divorceReasonCheckbox.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
-      await divorceReasonCheckbox.check({ force: true });
+      await expect(divorceReasonCheckbox).toBeEnabled({ timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
+      await divorceReasonCheckbox.check();
     }
   }
 

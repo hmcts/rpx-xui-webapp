@@ -137,6 +137,40 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     }
   });
 
+  test('storage refresh lock serialises concurrent refresh writers', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-storage-lock-unit-'));
+    const storagePath = path.join(tempDir, 'storage.json');
+    const entries: string[] = [];
+    let firstCanFinish: (() => void) | undefined;
+
+    try {
+      const first = sessionStorageTest.withUiStorageStateRefreshLock(storagePath, async () => {
+        entries.push('first:start');
+        await new Promise<void>((resolve) => {
+          firstCanFinish = resolve;
+        });
+        entries.push('first:end');
+      });
+
+      await expect.poll(() => entries.join(','), { timeout: 5_000 }).toBe('first:start');
+
+      const second = sessionStorageTest.withUiStorageStateRefreshLock(storagePath, async () => {
+        entries.push('second:start');
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
+      expect(entries).toEqual(['first:start']);
+
+      firstCanFinish?.();
+      await Promise.all([first, second]);
+
+      expect(entries).toEqual(['first:start', 'first:end', 'second:start']);
+      expect(sessionStorageTest.buildStorageRefreshLockPath(storagePath)).toBe(`${storagePath}.refresh.lock`);
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
   test('session capture reuses a fresh session instead of failing on a recent failure marker', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-unit-'));
     const previousCwd = process.cwd();

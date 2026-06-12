@@ -10,6 +10,10 @@ const { cpus, totalmem } = require('node:os');
 const path = require('node:path');
 
 const temporaryProbePattern = '**/_tmp_*.spec.ts';
+const resolveLocalWorktreeTestIgnorePatterns = (rootDir = process.cwd()) => {
+  const normalizedRoot = rootDir.replace(/\\/g, '/').replace(/\/$/, '');
+  return [`${normalizedRoot}/.worktrees/**`, `${normalizedRoot}/worktrees/**`];
+};
 const defaultBaseUrl = 'https://manage-case.aat.platform.hmcts.net';
 const defaultLiveTimerIntervalMs = '30000';
 const defaultOdhinOutputFolder = 'functional-output/tests/playwright-integration/odhin-report';
@@ -170,6 +174,7 @@ const buildConfig = (env = process.env) => {
   const odhinOutputFolder = env.PLAYWRIGHT_REPORT_FOLDER ?? defaultOdhinOutputFolder;
   const baseUrl = env.TEST_URL || defaultBaseUrl;
   const workerCount = resolveWorkerCount(env);
+  const localWorktreeTestIgnorePatterns = resolveLocalWorktreeTestIgnorePatterns();
   const browserChannel = resolveBrowserChannel(env);
   const enableOdhinReporter = resolveFlag(env.PW_INTEGRATION_ODHIN, true);
   const targetEnv = env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
@@ -221,7 +226,7 @@ const buildConfig = (env = process.env) => {
   return defineConfig({
     testDir: 'playwright_tests_new/integration',
     testMatch: ['**/test/**/*.spec.ts'],
-    testIgnore: [temporaryProbePattern],
+    testIgnore: [temporaryProbePattern, ...localWorktreeTestIgnorePatterns],
     retries: 2,
     timeout: 120_000,
     expect: { timeout: 60_000 },

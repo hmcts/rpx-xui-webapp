@@ -209,6 +209,7 @@ test.describe(
 
         const table = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.divorceDataTable);
         expect(table).toMatchObject({
+          'Select your gender': caseData.gender,
           'Text Field 0': caseData.textField0,
           'Text Field 2': caseData.textField2,
           'Text Field 3': caseData.textField3,

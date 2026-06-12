@@ -2,6 +2,7 @@ import type { Page, Route } from '@playwright/test';
 import type { CreateCasePage } from '../../E2E/page-objects/pages/exui/createCase.po';
 
 type SubmittedCaseData = {
+  Gender?: string;
   TextField0?: string;
   TextField1?: string;
   TextField2?: string;
@@ -60,6 +61,7 @@ function buildCreatedCaseDetails(createdCaseId: string, submittedData: Submitted
         id: 'Data',
         label: 'Data',
         fields: [
+          buildTextCaseField('Gender', 'Select your gender', submittedData.Gender),
           buildTextCaseField('TextField0', 'Text Field 0', submittedData.TextField0),
           buildTextCaseField('TextField2', 'Text Field 2', submittedData.TextField2),
           buildTextCaseField('TextField3', 'Text Field 3', submittedData.TextField3),

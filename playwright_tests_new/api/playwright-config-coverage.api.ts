@@ -623,6 +623,19 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(filters.grepInvert?.test('@integration-manage-tasks')).toBe(true);
   });
 
+  test('integration config selects the data-loss feature tag', async () => {
+    const config = buildIntegrationConfig({
+      INTEGRATION_PW_INCLUDE_TAGS: '@integration-data-loss',
+      INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE: '@none',
+      CI: undefined,
+    });
+
+    expect(config.projects).toHaveLength(1);
+    expect(config.projects[0]?.grep).toBeInstanceOf(RegExp);
+    expect(config.projects[0]?.grep?.test('@integration-data-loss')).toBe(true);
+    expect(config.projects[0]?.grep?.test('@integration-search-case')).toBe(false);
+  });
+
   test('integration config applies only integration-scoped global exclusions', async () => {
     const filters = resolveIntegrationTagFilters({
       PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@svc-work-allocation,@e2e-search-case,@integration-manage-tasks',

@@ -129,7 +129,7 @@ Detailed suite documentation and architecture:
   - Local app target: `TEST_URL=http://localhost:3000 yarn test:playwrightE2E`
 - **Integration tests (UI with mocked backend routes):**
   - AAT: `yarn test:playwright:integration`
-  - Fully mocked local mode: `TEST_URL=http://localhost:3000 EXUI_BASE_URL=http://localhost:3000 PLAYWRIGHT_SKIP_INSTALL=true yarn test:playwright:integration`
+  - Local app target with Playwright route mocks: `TEST_URL=http://localhost:3000 EXUI_BASE_URL=http://localhost:3000 PLAYWRIGHT_SKIP_INSTALL=true yarn test:playwright:integration`
 - **API functional tests (Playwright node-api project):**
   - `yarn test:api:pw`
   - With coverage/report copy: `yarn test:api:pw:coverage`

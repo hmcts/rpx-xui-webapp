@@ -3,6 +3,10 @@ import type { Page } from '@playwright/test';
 export function buildCreateCaseLocators(page: Page) {
   const doYouAgreeGroup = page.getByRole('group', { name: /Do you agree\?/i });
   const refreshModal = page.locator('.refresh-modal');
+  const primaryDocumentUploadComponent = page
+    .locator('ccd-write-document-field')
+    .filter({ has: page.locator('#DocumentUrl') })
+    .first();
 
   return {
     container: page.locator('exui-case-home'),
@@ -93,9 +97,9 @@ export function buildCreateCaseLocators(page: Page) {
     doYouAgreeYesRadio: doYouAgreeGroup.getByRole('radio', { name: /^Yes$/i }).first(),
     doYouAgreeNoRadio: doYouAgreeGroup.getByRole('radio', { name: /^No$/i }).first(),
 
-    fileUploadComponent: page.locator('ccd-write-document-field').first(),
+    fileUploadComponent: primaryDocumentUploadComponent,
     fileUploadInput: page.locator('#DocumentUrl'),
-    fileUploadCancelButton: page.locator('ccd-write-document-field button.button-secondary').first(),
+    fileUploadCancelButton: primaryDocumentUploadComponent.locator('button.button-secondary').first(),
     fileUploadStatusLabel: page.locator('ccd-write-document-field .error-message'),
     textField0Input: page.locator('#TextField0'),
     textField1Input: page.locator('#TextField1'),

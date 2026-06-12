@@ -831,14 +831,12 @@ export class CreateCasePage extends Base {
     options: {
       fileContentEncoding?: BufferEncoding;
       dropTarget?: Locator;
-      expectUrlUnchanged?: boolean;
     } = {}
   ) {
     const resolvedFileInput = fileInput ?? this.page.locator('input[type="file"]').first();
     const resolvedDropTarget = options.dropTarget ?? resolvedFileInput;
-    const initialUrl = this.page.url();
-    await expect(resolvedFileInput, 'Document upload input must be visible for drag-and-drop upload').toBeVisible();
-    await expect(resolvedDropTarget, 'Document upload drop target must be visible for drag-and-drop upload').toBeVisible();
+    await resolvedFileInput.waitFor({ state: 'visible' });
+    await resolvedDropTarget.waitFor({ state: 'visible' });
     await resolvedFileInput.scrollIntoViewIfNeeded();
     await resolvedDropTarget.scrollIntoViewIfNeeded();
 
@@ -885,21 +883,26 @@ export class CreateCasePage extends Base {
               }
             : undefined;
         }, dataTransfer);
-        expect(droppedFile, 'Document drag-and-drop payload should attach one file to the upload input').toEqual({
+        const expectedDroppedFile = {
           name: fileName,
           size: Buffer.byteLength(fileContent, fileContentEncoding),
           type: mimeType,
-        });
+        };
+        if (
+          !droppedFile ||
+          droppedFile.name !== expectedDroppedFile.name ||
+          droppedFile.size !== expectedDroppedFile.size ||
+          droppedFile.type !== expectedDroppedFile.type
+        ) {
+          throw new Error(
+            `Document drag-and-drop payload mismatch: expected ${JSON.stringify(expectedDroppedFile)}, got ${JSON.stringify(droppedFile)}`
+          );
+        }
         await resolvedFileInput.dispatchEvent('change', { bubbles: true });
       } finally {
         await dataTransfer.dispose();
       }
     });
-    if (options.expectUrlUnchanged ?? true) {
-      await expect(this.page, 'Document drag-and-drop should not navigate away or open the file in the browser').toHaveURL(
-        initialUrl
-      );
-    }
   }
 
   private async runDocumentUploadWithRetry(uploadActionDescription: string, uploadAction: () => Promise<void>) {

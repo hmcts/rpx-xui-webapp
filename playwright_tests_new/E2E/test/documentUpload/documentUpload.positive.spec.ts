@@ -169,6 +169,7 @@ test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, (
               await createCasePage.exuiHeader.waitForRenderedLanguageState(scenario.language);
               await expect(createCasePage.fileUploadCancelButton).toContainText(scenario.cancelUploadLabel);
               await expect(createCasePage.fileUploadComponent).not.toContainText(TEST_DATA.V2.FILE_NAME);
+              const uploadFormUrl = caseDetailsPage.page.url();
               await createCasePage.dragAndDropFile(
                 TEST_DATA.V2.FILE_NAME,
                 TEST_DATA.V2.FILE_TYPE,
@@ -178,6 +179,10 @@ test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, (
                   dropTarget: createCasePage.fileUploadComponent,
                 }
               );
+              await expect(
+                caseDetailsPage.page,
+                'Document drag-and-drop should not navigate away or open the file in the browser'
+              ).toHaveURL(uploadFormUrl);
               await createCasePage.clickContinueMultipleTimes(3);
               await createCasePage.uploadFile(
                 'complex-type-required-document.pdf',

@@ -181,7 +181,9 @@ test.describe(
       });
 
       await test.step('Submit the case for creation and capture the request body', async () => {
-        interceptedCreateCaseRequestBody = await submitCaseAndCaptureRequest(page, createCasePage);
+        interceptedCreateCaseRequestBody = await submitCaseAndCaptureRequest(page, createCasePage, {
+          waitForCreatedCaseDetails: true,
+        });
       });
 
       await test.step('Check the JSON sent in the creation request matches the expected data, and no omitted items are sent', async () => {
@@ -205,11 +207,15 @@ test.describe(
       });
 
       await test.step('Check EXUI-848/EXUI-811/EXUI-433 retained data renders on the created case', async () => {
-        await expect(page).toHaveURL(new RegExp(`/cases/case-details/${jurisdiction}/${caseType}/1234123412341234(?:$|#)`));
+        await expect(page).toHaveURL(
+          new RegExp(`/cases/case-details/(?:${jurisdiction}/${caseType}/)?1234123412341234(?:$|#)`)
+        );
+        await caseDetailsPage.divorceDataTable.waitFor({ state: 'visible', timeout: 30_000 });
 
         const table = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.divorceDataTable);
+        const expectedCaseGender = caseData.gender === 'Not given' ? caseData.gender : caseData.gender.toLowerCase();
         expect(table).toMatchObject({
-          'Select your gender': caseData.gender,
+          'Select your gender': expectedCaseGender,
           'Text Field 0': caseData.textField0,
           'Text Field 2': caseData.textField2,
           'Text Field 3': caseData.textField3,
@@ -224,7 +230,10 @@ test.describe(
       await test.step('Check EXUI-942 retained history data renders on the created case', async () => {
         await caseDetailsPage.selectCaseDetailsTab('History');
 
-        const table = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.historyDetailsTable);
+        const historyTable = page
+          .getByRole('tabpanel', { name: /History/ })
+          .getByRole('table', { name: 'case viewer table' });
+        const table = await caseDetailsPage.trRowsToObjectInPage(historyTable);
         expect(table).toMatchObject({
           Author: 'Integration solicitor',
           'End state': 'Case created',

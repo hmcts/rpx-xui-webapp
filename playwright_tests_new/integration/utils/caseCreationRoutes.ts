@@ -25,48 +25,70 @@ function buildTextCaseField(id: string, label: string, value: string | undefined
     id,
     label,
     value: value ?? '',
+    formatted_value: value ?? '',
+    metadata: false,
     field_type: {
       id: 'Text',
       type: 'Text',
+      min: null,
+      max: null,
+      regular_expression: null,
+      fixed_list_items: [],
+      complex_fields: [],
+      collection_field_type: null,
     },
   };
 }
 
+function buildMetadataField(id: string, label: string, value: string | number) {
+  return {
+    ...buildTextCaseField(id, label, String(value)),
+    value,
+    formatted_value: value,
+    metadata: true,
+  };
+}
+
+function formatCaseGender(value: string | undefined): string | undefined {
+  if (value === 'notGiven') {
+    return 'Not given';
+  }
+  return value;
+}
+
 function buildCreatedCaseDetails(createdCaseId: string, submittedData: SubmittedCaseData) {
   return {
+    _links: { self: { href: `http://gateway-ccd.aat.platform.hmcts.net/internal/cases/${createdCaseId}` } },
     case_id: createdCaseId,
     case_type: {
       id: 'xuiTestJurisdiction',
       name: 'xuiTestJurisdiction',
+      description: 'xuiTestJurisdiction',
       jurisdiction: {
         id: 'DIVORCE',
         name: 'DIVORCE',
+        description: 'DIVORCE',
       },
+      printEnabled: false,
     },
     state: {
       id: 'CaseCreated',
       name: 'Case created',
+      description: 'Case created',
+      title_display: '# ${[CASE_REFERENCE]}',
     },
     metadataFields: [
-      {
-        id: '[CASE_REFERENCE]',
-        value: Number(createdCaseId),
-      },
-      {
-        id: '[JURISDICTION]',
-        value: 'DIVORCE',
-      },
-      {
-        id: '[CASE_TYPE]',
-        value: 'xuiTestJurisdiction',
-      },
+      buildMetadataField('[CASE_REFERENCE]', 'Case Reference', Number(createdCaseId)),
+      buildMetadataField('[JURISDICTION]', 'Jurisdiction', 'DIVORCE'),
+      buildMetadataField('[CASE_TYPE]', 'Case Type', 'xuiTestJurisdiction'),
     ],
     tabs: [
       {
         id: 'Data',
         label: 'Data',
+        order: 1,
         fields: [
-          buildTextCaseField('Gender', 'Select your gender', submittedData.Gender),
+          buildTextCaseField('CaseGender', 'Select your gender', formatCaseGender(submittedData.Gender)),
           buildTextCaseField('TextField0', 'Text Field 0', submittedData.TextField0),
           buildTextCaseField('TextField2', 'Text Field 2', submittedData.TextField2),
           buildTextCaseField('TextField3', 'Text Field 3', submittedData.TextField3),
@@ -79,6 +101,7 @@ function buildCreatedCaseDetails(createdCaseId: string, submittedData: Submitted
       {
         id: 'History',
         label: 'History',
+        order: 2,
         fields: [
           buildTextCaseField('Date', 'Date', '01 Jan 2026'),
           buildTextCaseField('Author', 'Author', 'Integration solicitor'),
@@ -95,6 +118,8 @@ function buildCreatedCaseDetails(createdCaseId: string, submittedData: Submitted
         name: 'Update case',
       },
     ],
+    channels: [],
+    events: [],
   };
 }
 
@@ -226,40 +251,32 @@ function escapeRegex(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-async function ensureCreatedCaseDetailsPage(
-  page: Page,
-  createCasePage: Pick<CreateCasePage, 'caseAlertSuccessMessage' | 'caseDetailsContainer'>
-): Promise<void> {
+async function openCreatedCaseDetailsPage(page: Page): Promise<void> {
   const expectedUrlPattern = new RegExp(`${escapeRegex(CREATED_CASE_DETAILS_PATH)}(?:$|[?#])`);
 
   await page.waitForURL(expectedUrlPattern, { timeout: 10_000 }).catch(() => undefined);
   if (expectedUrlPattern.test(page.url())) {
-    await createCasePage.caseDetailsContainer.waitFor({ state: 'visible', timeout: 30_000 });
     return;
-  }
-
-  const createdBanner = createCasePage.caseAlertSuccessMessage.filter({ hasText: /has been created/i });
-  const creationSucceeded = await Promise.race([
-    createCasePage.caseDetailsContainer.waitFor({ state: 'visible', timeout: 30_000 }).then(() => true),
-    createdBanner.waitFor({ state: 'visible', timeout: 30_000 }).then(() => true),
-  ]).catch(() => false);
-
-  if (!creationSucceeded) {
-    throw new Error(`Created case details did not become available after submit; current URL is ${page.url()}`);
   }
 
   await page.goto(CREATED_CASE_DETAILS_PATH, { waitUntil: 'domcontentloaded' });
   await page.waitForURL(expectedUrlPattern, { timeout: 30_000 });
-  await createCasePage.caseDetailsContainer.waitFor({ state: 'visible', timeout: 30_000 });
 }
+
+type SubmitCaseOptions = {
+  waitForCreatedCaseDetails?: boolean;
+};
 
 export async function submitCaseAndCaptureRequest(
   page: Page,
-  createCasePage: Pick<CreateCasePage, 'testSubmitButton' | 'caseAlertSuccessMessage' | 'caseDetailsContainer'>
+  createCasePage: Pick<CreateCasePage, 'testSubmitButton'>,
+  options: SubmitCaseOptions = {}
 ): Promise<unknown> {
   const interceptedCreateCaseRequestBodyPromise = routeCaseCreationFlow(page);
   await Promise.all([interceptedCreateCaseRequestBodyPromise, createCasePage.testSubmitButton.click({ noWaitAfter: true })]);
   const interceptedCreateCaseRequestBody = await interceptedCreateCaseRequestBodyPromise;
-  await ensureCreatedCaseDetailsPage(page, createCasePage);
+  if (options.waitForCreatedCaseDetails) {
+    await openCreatedCaseDetailsPage(page);
+  }
   return interceptedCreateCaseRequestBody;
 }

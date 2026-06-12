@@ -3,7 +3,7 @@ import { NextFunction, Response } from 'express';
 import { getConfigValue } from '../configuration';
 import { SERVICE_REF_DATA_MAPPING, SERVICES_LOCATION_API_PATH } from '../configuration/references';
 import { http } from '../lib/http';
-import { EnhancedRequest } from '../lib/models';
+import { EnhancedRequest, JUILogger } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
 import { Service } from '../staff-ref-data/models/staff-filter-option.model';
 import { CourtVenue } from '../workAllocation/interfaces/location';
@@ -12,9 +12,12 @@ import { prepareGetSpecificLocationUrl } from '../workAllocation/util';
 import { LocationTypeEnum } from './data/locationType.enum';
 import { SERVICES_COURT_TYPE_MAPPINGS } from './data/serviceCourtType.mapping';
 import { LocationModel } from './models/location.model';
+import { trackTrace } from '../lib/appInsights';
+import * as log4jui from '../lib/log4jui';
 
 // const url: string = getConfigValue(SERVICES_PRD_API_URL);
 const url: string = getConfigValue(SERVICES_LOCATION_API_PATH);
+const logger: JUILogger = log4jui.getLogger('location work allocation');
 
 /**
  * @description getLocations from service ID/location type/search term
@@ -41,6 +44,8 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
     serviceIds = getServiceIdsByService(serviceIds);
   }
   const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${courtTypeIds}&service_code=${serviceIds}`;
+  trackTrace(`getLocations, markupPath used -->: ${markupPath}`, { functionCall: 'getLocations' });
+  logger.info(`getLocations, markupPath used -->: ${markupPath}`);
   try {
     const headers = setHeaders(req);
     const response: AxiosResponse<any> = await http.get(markupPath, { headers });
@@ -84,6 +89,10 @@ export function filterOutResults(
   regions: string[],
   courtTypes: string[]
 ): LocationModel[] {
+  trackTrace(`in old filter method filterOutResults`, {
+    functionCall: 'filterOutResults',
+  });
+  logger.info('in old filter method filterOutResults');
   return locations.filter(
     (location) =>
       !courtTypes.includes(location.court_type_id) ||
@@ -97,6 +106,10 @@ export function filterOutResultsWhenServiceIdPresent(
   locationIds: string[],
   regions: string[]
 ): LocationModel[] {
+  trackTrace(`in new filter method filterOutResultsWhenServiceIdPresent`, {
+    functionCall: 'filterOutResultsWhenServiceIdPresent',
+  });
+  logger.info('in new filter method filterOutResultsWhenServiceIdPresent');
   return locations.filter((location) => locationIds.includes(location.epimms_id) || regions.includes(location.region_id));
 }
 

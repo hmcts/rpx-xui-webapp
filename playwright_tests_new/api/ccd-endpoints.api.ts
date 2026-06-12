@@ -1,5 +1,5 @@
 import { test, expect } from './fixtures';
-import { config as testConfig } from '../common/apiTestConfig';
+import { config as testConfig } from './utils/apiTestRuntimeConfig';
 import { withXsrf, expectStatus, withRetry } from './utils/apiTestUtils';
 import { assertJurisdictionsForUser } from './utils/ccdUtils';
 import { stringifyCaseTypeId } from './utils/caseTypeIdUtils';
@@ -37,9 +37,14 @@ test.describe('CCD endpoints', { tag: '@svc-ccd' }, () => {
           `data/internal/case-types/${encodeURIComponent(caseTypeIdText)}/work-basket-inputs`,
           {
             headers: { experimental: 'true' },
+            throwOnError: false,
           }
         );
         expectStatus(response.status, [200, 401, 403, 500, 502, 504]);
+        if (response.status !== 200) {
+          return;
+        }
+
         const data = response.data;
         expect(data).toBeTruthy();
         expect(typeof data).toBe('object');

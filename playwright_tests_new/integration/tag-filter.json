@@ -9,6 +9,7 @@
     "@integration-case-linking",
     "@integration-case-list",
     "@integration-create-case",
+    "@integration-data-loss",
     "@integration-hearings",
     "@integration-manage-tasks",
     "@integration-restricted-case",

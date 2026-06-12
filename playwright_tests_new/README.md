@@ -266,6 +266,7 @@ Unit-style tests for Playwright support code live under `playwright_tests_new/ap
 Current files:
 
 - `playwright_tests_new/api/unit/create-case.flow.unit.api.ts`
+- `playwright_tests_new/api/unit/data-loss-scenarios.unit.api.ts`
 - `playwright_tests_new/api/unit/dynamic-solicitor-session.unit.api.ts`
 - `playwright_tests_new/api/unit/dynamic-user.pure.unit.api.ts`
 - `playwright_tests_new/api/unit/dynamic-user.orchestration.unit.api.ts`
@@ -283,6 +284,14 @@ PLAYWRIGHT_SKIP_INSTALL=true yarn playwright test --project=node-api playwright_
 # Run one unit test by title
 PLAYWRIGHT_SKIP_INSTALL=true yarn playwright test --project=node-api playwright_tests_new/api/unit -g "resolveSolicitorRoleStrategy"
 ```
+
+### Data Loss Scenario Coverage
+
+The historical data-loss coverage map for `EXUI-848`, `EXUI-811`, `EXUI-433`, `EXUI-942`, and `EXUI-702` lives in `E2E/utils/test-setup/dataLossScenarioMatrix.ts`.
+
+- `EXUI-848`, `EXUI-811`, `EXUI-433`, and `EXUI-942` are covered by the tagged create-case E2E journey `@e2e-data-loss`, which creates a fresh Divorce PoC case and asserts the Data and History tab values after submit.
+- `EXUI-702` is deliberately marked as follow-up until the NoC owning mock contract is agreed, because closing that path needs an API-required NoC route-backed scenario rather than a looser UI-only assertion.
+- `playwright_tests_new/api/unit/data-loss-scenarios.unit.api.ts` fails if any historical ticket loses its case type, setup route, protected tabs, protected fields, or assertion layer mapping.
 
 ### Placement Rules
 

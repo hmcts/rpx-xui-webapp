@@ -288,16 +288,17 @@ function escapeRegex(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
-async function openCreatedCaseDetailsPage(page: Page): Promise<void> {
+async function waitForCreatedCaseDetailsPage(page: Page): Promise<void> {
   const expectedUrlPattern = new RegExp(`${escapeRegex(CREATED_CASE_DETAILS_PATH)}(?:$|[?#])`);
 
-  await page.waitForURL(expectedUrlPattern, { timeout: 10_000 }).catch(() => undefined);
-  if (expectedUrlPattern.test(page.url())) {
-    return;
+  try {
+    await page.waitForURL(expectedUrlPattern, { timeout: 30_000 });
+  } catch (error) {
+    const timeoutMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(
+      `Expected case creation submit to route to ${CREATED_CASE_DETAILS_PATH}, but current URL is ${page.url()}. ${timeoutMessage}`
+    );
   }
-
-  await page.goto(CREATED_CASE_DETAILS_PATH, { waitUntil: 'domcontentloaded' });
-  await page.waitForURL(expectedUrlPattern, { timeout: 30_000 });
 }
 
 type SubmitCaseOptions = {
@@ -313,7 +314,7 @@ export async function submitCaseAndCaptureRequest(
   await Promise.all([interceptedCreateCaseRequestBodyPromise, createCasePage.testSubmitButton.click({ noWaitAfter: true })]);
   const interceptedCreateCaseRequestBody = await interceptedCreateCaseRequestBodyPromise;
   if (options.waitForCreatedCaseDetails) {
-    await openCreatedCaseDetailsPage(page);
+    await waitForCreatedCaseDetailsPage(page);
   }
   return interceptedCreateCaseRequestBody;
 }

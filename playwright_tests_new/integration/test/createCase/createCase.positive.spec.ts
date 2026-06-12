@@ -206,7 +206,7 @@ test.describe(
         expect(submittedData).not.toHaveProperty('TextField1');
       });
 
-      await test.step('Check the case tab Data, matches previously entered data (EXUI-848/EXUI-811/EXUI-433)', async () => {
+      await test.step('Check EXUI-848/EXUI-811/EXUI-433 case tab data-loss fields', async () => {
         await expect(page).toHaveURL(new RegExp(`/cases/case-details/(?:${jurisdiction}/${caseType}/)?1234123412341234(?:$|#)`));
         await caseDetailsPage.divorceDataTable.waitFor({ state: 'visible', timeout: 30_000 });
 
@@ -225,7 +225,7 @@ test.describe(
         expect(table).not.toHaveProperty('Text Field 1');
       });
 
-      await test.step('Check the History tab shows the case creation event (EXUI-942)', async () => {
+      await test.step('Check EXUI-942 history tab event data is retained', async () => {
         await caseDetailsPage.selectCaseDetailsTab('History');
 
         const historyTable = page.getByRole('tabpanel', { name: /History/ }).getByRole('table', { name: 'case viewer table' });

@@ -117,18 +117,9 @@ Why these env vars are required:
 
 The following code changes were made to support fully mocked local auth + integration flow:
 
-1. `test_codecept/backendMock/services/idam/index.js`
-   - OIDC discovery metadata now points to local mock endpoints on `http://localhost:8080`.
+Refer to `api/test/pact/pact-mocks/` for Pact-only mock service implementations.
 
-2. `test_codecept/backendMock/services/idam/routes.js`
-   - Added `/login` route to redirect to local `/o/authorize`.
-   - Added `/details` endpoint with role-bearing mock user profile.
-   - Added shared token responder for both `/o/token` and `/oauth2/token`.
-   - Corrected token response shape (`token_type: Bearer`, numeric `expires_in`, JWT `exp` in seconds).
-   - Updated OAuth callback `iss` to local `http://localhost:8080/o`.
-
-3. `test_codecept/backendMock/services/userApiData.js`
-   - Added safe token normalization and null guards to avoid crashes when auth headers are absent/malformed.
+- Added safe token normalization and null guards to avoid crashes when auth headers are absent/malformed.
 
 4. `api/user/index.ts`
    - Hardened active role-assignment extraction to handle undefined role arrays without crashing.
@@ -188,6 +179,7 @@ Detailed suite documentation and architecture:
   - Trace/video/screenshot outputs (on failures): `test-results/`
   - Additional failure payloads: `functional-output/tests/playwright-diagnostics/failure-data/`
 - **CI publishing:** Jenkins archives Odhin reports and Playwright diagnostics artifacts for troubleshooting.
+- **Migration closure:** the Playwright parity matrix, Codecept retirement gate, closure checklist, and ticket coverage snapshot live in [Playwright parity matrix and migration closure gate](./docs/playwright-parity-matrix.md).
 
 ### Key considerations for developers
 

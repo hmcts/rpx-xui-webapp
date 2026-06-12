@@ -20,6 +20,41 @@ type SubmittedCaseData = {
   };
 };
 
+type CaseCreationRouteEnv = {
+  CCD_DATA_STORE_URL?: string;
+  TEST_ENV?: string;
+  TEST_URL?: string;
+};
+
+const defaultTestEnv = 'aat';
+
+function buildCcdGatewayUrl(protocol: string, environment: string): string {
+  const environmentSegment = ['prod', 'production'].includes(environment) ? '' : `.${environment}`;
+  return `${protocol}//gateway-ccd${environmentSegment}.platform.hmcts.net`;
+}
+
+export function resolveCcdDataStoreUrl(env: CaseCreationRouteEnv = process.env): string {
+  const configuredUrl = env.CCD_DATA_STORE_URL?.trim();
+  if (configuredUrl) {
+    return configuredUrl.replace(/\/+$/, '');
+  }
+
+  const testUrl = env.TEST_URL?.trim();
+  if (testUrl) {
+    try {
+      const { protocol, hostname } = new URL(testUrl);
+      const hmctsPlatformMatch = hostname.match(/^manage-case(?:-[^.]+)?(?:\.([^.]+))?\.platform\.hmcts\.net$/);
+      if (hmctsPlatformMatch) {
+        return buildCcdGatewayUrl(protocol, hmctsPlatformMatch[1] ?? 'prod');
+      }
+    } catch {
+      // Fall back to the default below; invalid TEST_URL should not break mock route setup.
+    }
+  }
+
+  return buildCcdGatewayUrl('http:', env.TEST_ENV?.trim() || defaultTestEnv);
+}
+
 function buildTextCaseField(id: string, label: string, value: string | undefined) {
   return {
     id,
@@ -57,8 +92,10 @@ function formatCaseGender(value: string | undefined): string | undefined {
 }
 
 function buildCreatedCaseDetails(createdCaseId: string, submittedData: SubmittedCaseData) {
+  const ccdDataStoreUrl = resolveCcdDataStoreUrl();
+
   return {
-    _links: { self: { href: `http://gateway-ccd.aat.platform.hmcts.net/internal/cases/${createdCaseId}` } },
+    _links: { self: { href: `${ccdDataStoreUrl}/internal/cases/${createdCaseId}` } },
     case_id: createdCaseId,
     case_type: {
       id: 'xuiTestJurisdiction',

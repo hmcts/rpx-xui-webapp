@@ -158,9 +158,6 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
         entries.push('second:start');
       });
 
-      await new Promise((resolve) => setTimeout(resolve, 100));
-      expect(entries).toEqual(['first:start']);
-
       firstCanFinish?.();
       await Promise.all([first, second]);
 

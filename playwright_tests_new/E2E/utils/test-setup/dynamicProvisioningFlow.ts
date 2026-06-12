@@ -133,13 +133,14 @@ export async function provisionUserWithRetries(
       return { user, attempts };
     } catch (error) {
       const errorMessage = deps.describeError(error);
+      const diagnosticErrorMessage = sanitizeProvisionErrorForDiagnostics(errorMessage);
       const retryable = deps.shouldRetry(error);
       attempts.push({
         attempt,
         durationMs: deps.now() - startedAt,
         outcome: 'failed',
         retryable,
-        error: errorMessage,
+        error: diagnosticErrorMessage,
       });
       lastProvisionError = error;
       deps.warn('Dynamic solicitor provisioning attempt failed', {
@@ -148,7 +149,7 @@ export async function provisionUserWithRetries(
         maxAttempts: args.maxAttempts,
         retryable,
         retryDelayMs: args.retryDelayMs,
-        error: errorMessage,
+        error: diagnosticErrorMessage,
       });
       if (attempt === args.maxAttempts || !retryable) {
         break;
@@ -158,9 +159,10 @@ export async function provisionUserWithRetries(
   }
 
   const lastErrorMessage = deps.describeError(lastProvisionError);
+  const diagnosticLastErrorMessage = sanitizeProvisionErrorForDiagnostics(lastErrorMessage);
   const attemptDiagnostics = formatProvisionAttemptDiagnostics(attempts);
   throw new DynamicProvisioningError(
-    `Dynamic user provisioning failed for alias '${args.alias}' after ${attempts.length} attempt(s). Last error: ${lastErrorMessage}. Attempt diagnostics: ${attemptDiagnostics}`,
+    `Dynamic user provisioning failed for alias '${args.alias}' after ${attempts.length} attempt(s). Last error: ${diagnosticLastErrorMessage}. Attempt diagnostics: ${attemptDiagnostics}`,
     attempts,
     lastProvisionError
   );

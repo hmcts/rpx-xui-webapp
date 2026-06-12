@@ -391,6 +391,44 @@ test.describe('Dynamic user support unit tests: orchestration flows', { tag: '@s
     expect(diagnostics).not.toContain('very-secret');
   });
 
+  test('provisionUserWithRetries stores only redacted failure detail for attached attempt evidence', async () => {
+    const rawError =
+      'HTTP 500 for test@example.test?access_token=abc123&password=letmein Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.secret client_secret=very-secret';
+
+    const error = await provisionUserWithRetries(
+      {
+        alias: 'SOLICITOR',
+        organisationId: 'org-123',
+        mode: 'auto',
+        timeoutMs: 30_000,
+        maxAttempts: 1,
+        retryDelayMs: 5,
+      },
+      {
+        createSolicitorUserForOrganisation: async () => {
+          throw new Error(rawError);
+        },
+        withTimeout: async (action) => action,
+        shouldRetry: () => false,
+        describeError: (failure) => (failure instanceof Error ? failure.message : String(failure)),
+        sleep: async () => undefined,
+        now: () => 100,
+        info: () => undefined,
+        warn: () => undefined,
+        outputCreatedUserData: false,
+      }
+    ).catch((failure) => failure);
+
+    expect(error).toBeInstanceOf(DynamicProvisioningError);
+    expect((error as DynamicProvisioningError).attempts[0].error).toContain('[redacted-email]');
+    expect((error as DynamicProvisioningError).message).toContain('[redacted-email]');
+    expect(JSON.stringify((error as DynamicProvisioningError).attempts)).not.toContain('test@example.test');
+    expect((error as DynamicProvisioningError).message).not.toContain('abc123');
+    expect((error as DynamicProvisioningError).message).not.toContain('letmein');
+    expect((error as DynamicProvisioningError).message).not.toContain('eyJhbGciOiJIUzI1NiJ9.secret');
+    expect((error as DynamicProvisioningError).message).not.toContain('very-secret');
+  });
+
   test('formatProvisionAttemptDiagnostics truncates long downstream error bodies', () => {
     const diagnostics = formatProvisionAttemptDiagnostics([
       {

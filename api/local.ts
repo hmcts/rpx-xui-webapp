@@ -15,5 +15,10 @@ createApp().then((app) => {
   app.use(appInsights);
   app.use(errorHandler);
 
-  app.listen(3001, () => console.log('Dev server listening on port 3001!'));
+  app.listen(3001, (error) => {
+    if (error) {
+      throw error;
+    }
+    console.log('Dev server listening on port 3001!');
+  });
 });

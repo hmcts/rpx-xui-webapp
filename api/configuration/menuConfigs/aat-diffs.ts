@@ -6,5 +6,10 @@ export const aatDifferences = {
       text: 'Notice of change',
     },
   ],
-  '.+': [],
+  '.+': [
+    {
+      roles: ['caseworker-befta_master'],
+      text: 'Search',
+    },
+  ],
 };

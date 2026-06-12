@@ -237,7 +237,6 @@ export const baseConfig = {
       flags: ['feature-global-search'],
       href: '/search',
       roles: [
-        'caseworker-befta_master',
         'hmcts-admin',
         'hmcts-ctsc',
         'hmcts-legal-operations',

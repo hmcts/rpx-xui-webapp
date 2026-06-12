@@ -138,15 +138,32 @@ export async function expectCaseListRows(
   tableUtils: TableUtils,
   mock: CaseListMockResponse
 ): Promise<void> {
-  const table = await tableUtils.parseDataTable(caseListPage.exuiCaseListComponent.caseListTable);
-  expect(table).toHaveLength(mock.results.length);
+  const expectedRows = new Map(mock.results.map((result) => [result.case_fields['[CASE_REFERENCE]'], result.case_fields]));
+  const expectedReferences = Array.from(expectedRows.keys()).sort();
+  let table: Record<string, string>[] = [];
 
-  for (let index = 0; index < mock.results.length; index += 1) {
-    const expectedFields = mock.results[index].case_fields;
-    expect(table[index]['Case reference']).toBe(expectedFields['[CASE_REFERENCE]']);
-    expect(table[index]['Text Field 0']).toBe(expectedFields['TextField0']);
-    expect(table[index]['Text Field 1']).toBe(expectedFields['TextField1']);
-    expect(table[index]['Text Field 2']).toBe(expectedFields['TextField2']);
+  await expect
+    .poll(
+      async () => {
+        table = await tableUtils.parseDataTable(caseListPage.exuiCaseListComponent.caseListTable);
+        return table.map((row) => row['Case reference']).sort();
+      },
+      { message: 'Expected case list rows to match the mocked case references' }
+    )
+    .toEqual(expectedReferences);
+
+  const tableByReference = new Map(table.map((row) => [row['Case reference'], row]));
+
+  for (const [caseReference, expectedFields] of expectedRows) {
+    const row = tableByReference.get(caseReference);
+
+    if (!row) {
+      throw new Error(`Expected case list row for ${caseReference}`);
+    }
+
+    expect(row['Text Field 0']).toBe(expectedFields['TextField0']);
+    expect(row['Text Field 1']).toBe(expectedFields['TextField1']);
+    expect(row['Text Field 2']).toBe(expectedFields['TextField2']);
   }
 }
 

@@ -1057,8 +1057,7 @@ export class CreateCasePage extends Base {
     for (const reason of reasons) {
       const divorceReasonCheckbox = divorceReasonField.getByLabel(reason, { exact: true }).first();
       await divorceReasonCheckbox.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
-      await expect(divorceReasonCheckbox).toBeEnabled({ timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
-      await divorceReasonCheckbox.check();
+      await divorceReasonCheckbox.check({ timeout: EXUI_TIMEOUTS.POC_FIELD_VISIBLE });
     }
   }
 

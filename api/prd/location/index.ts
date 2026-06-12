@@ -2,11 +2,12 @@ import { NextFunction, Response } from 'express';
 import { handleGet } from '../../common/crudService';
 import { getConfigValue } from '../../configuration';
 import { SERVICES_PRD_LOCATION_API } from '../../configuration/references';
+import * as log4jui from '../../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../../lib/models';
+import { trackTrace } from '../../lib/appInsights';
 import { getCourtTypeIdsByServices } from '../mappings.utils';
 import { LocationTypeEnum } from './data/locationType.enum';
 import { LocationByEpimmsModel, LocationModel, toEpimmsLocation } from './models/location.model';
-import { trackTrace } from '../../lib/appInsights';
 
 const url: string = getConfigValue(SERVICES_PRD_LOCATION_API);
 const logger: JUILogger = log4jui.getLogger('location hearings');

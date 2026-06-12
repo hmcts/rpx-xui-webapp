@@ -2054,6 +2054,15 @@ textarea {
   margin-bottom: 10px;
 }
 
+.form-group.flex {
+  display: flex;
+
+  button {
+    margin: 1rem 0.25rem 0.25rem;
+    height: 2rem;
+  }
+}
+
 .form-label,
 .form-label-bold {
   display: block;

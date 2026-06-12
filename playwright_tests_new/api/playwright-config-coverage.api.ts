@@ -443,6 +443,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
         '@e2e-case-file-view',
         '@e2e-case-flags',
         '@e2e-create-case',
+        '@e2e-data-loss',
         '@e2e-document-upload',
         '@e2e-document-upload-v1',
         '@e2e-manage-tasks',
@@ -469,6 +470,24 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(filters.grep).toBeInstanceOf(RegExp);
     expect(filters.grep?.test('@e2e-search-case')).toBe(true);
     expect(filters.grep?.test('@e2e-manage-tasks')).toBe(false);
+  });
+
+  test('shared tag filter helper selects the data-loss E2E feature tag', () => {
+    const filters = resolveTagFilters({
+      env: {
+        E2E_PW_INCLUDE_TAGS: '@e2e-data-loss',
+      },
+      includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
+      excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
+      configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
+      defaultConfigPath: 'playwright_tests_new/E2E/tag-filter.json',
+      suiteTag: '@e2e',
+    });
+
+    expect(filters.includeTags).toEqual(['@e2e-data-loss']);
+    expect(filters.grep).toBeInstanceOf(RegExp);
+    expect(filters.grep?.test('@e2e-data-loss')).toBe(true);
+    expect(filters.grep?.test('@e2e-create-case')).toBe(false);
   });
 
   test('shared tag filter helper rejects suite-plus-feature includes that are fully excluded after normalization', () => {
@@ -634,6 +653,19 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     });
     expect(filters.excludedTags).toEqual(['@integration-manage-tasks']);
     expect(filters.grepInvert?.test('@integration-manage-tasks')).toBe(true);
+  });
+
+  test('integration config selects the data-loss feature tag', async () => {
+    const config = buildIntegrationConfig({
+      INTEGRATION_PW_INCLUDE_TAGS: '@integration-data-loss',
+      INTEGRATION_PW_EXCLUDED_TAGS_OVERRIDE: '@none',
+      CI: undefined,
+    });
+
+    expect(config.projects).toHaveLength(1);
+    expect(config.projects[0]?.grep).toBeInstanceOf(RegExp);
+    expect(config.projects[0]?.grep?.test('@integration-data-loss')).toBe(true);
+    expect(config.projects[0]?.grep?.test('@integration-search-case')).toBe(false);
   });
 
   test('integration config applies only integration-scoped global exclusions', async () => {

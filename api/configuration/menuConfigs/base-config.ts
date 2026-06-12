@@ -137,11 +137,7 @@ export const baseConfig = {
         },
       ],
       href: '/work/my-work/list',
-      roles: [
-        'hmcts-admin',
-        'hmcts-ctsc',
-        'hmcts-legal-operations',
-      ],
+      roles: ['hmcts-admin', 'hmcts-ctsc', 'hmcts-legal-operations'],
       text: 'My work',
     },
     {
@@ -236,11 +232,7 @@ export const baseConfig = {
       active: false,
       flags: ['feature-global-search'],
       href: '/search',
-      roles: [
-        'hmcts-admin',
-        'hmcts-ctsc',
-        'hmcts-legal-operations',
-      ],
+      roles: ['hmcts-admin', 'hmcts-ctsc', 'hmcts-legal-operations'],
       text: 'Search',
     },
     {

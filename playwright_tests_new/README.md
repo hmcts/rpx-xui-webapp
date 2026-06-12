@@ -255,6 +255,7 @@ sequenceDiagram
 - Dynamic-user provisioning starts in `dynamicSolicitorSession.ts` and delegates most heavy lifting into `dynamicProvisioningFlow.ts`, `professional-user.utils.ts`, and the extracted `professional-user/` collaborators.
 - API case setup starts in `caseSetup.ts` and uses `payloads/registry.ts` plus the journey templates under `E2E/utils/test-setup/payloads/templates/`.
 - The returned case number or runtime user credentials are then consumed by the spec or fixture layer, not hidden inside the page objects.
+- Provisioning failures should be triaged from the recorded attempt diagnostics before changing retry policy. The terminal `DynamicProvisioningError` includes every attempt, duration, retryability decision, and last error, and the fixture attaches the same attempt history to the test evidence.
 
 ---
 
@@ -913,6 +914,15 @@ try {
 ```
 
 ### Troubleshooting
+
+#### Dynamic Provisioning Failures
+
+When a run fails before the browser journey starts, check the setup evidence first:
+
+1. Open the Playwright failure attachment named `<alias>-dynamic-user-provision-attempts.json`.
+2. In the Playwright HTML/Odhín artifacts, open the `failure-data.json` attachment for the failed test.
+3. Read the terminal `DynamicProvisioningError` attempt diagnostics. It should show each provisioning attempt, whether it was retryable, and the final downstream error.
+4. Keep the default retry policy unless the failure evidence proves that the retry budget itself is the problem.
 
 #### Session Expired During Test
 

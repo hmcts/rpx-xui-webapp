@@ -338,7 +338,7 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
                   { attempt: 1, durationMs: 5, outcome: 'failed', error: 'HTTP 503' },
                   { attempt: 2, durationMs: 7, outcome: 'failed', error: 'HTTP 503' },
                 ],
-                new Error('HTTP 503')
+                'HTTP 503'
               );
             },
             resolveProvisionTimeoutMs: () => 5_000,

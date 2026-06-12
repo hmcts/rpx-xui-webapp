@@ -2,13 +2,14 @@ import { NextFunction, Response } from 'express';
 import { handleGet } from '../../common/crudService';
 import { getConfigValue } from '../../configuration';
 import { SERVICES_PRD_LOCATION_API } from '../../configuration/references';
-import { EnhancedRequest } from '../../lib/models';
+import { EnhancedRequest, JUILogger } from '../../lib/models';
 import { getCourtTypeIdsByServices } from '../mappings.utils';
 import { LocationTypeEnum } from './data/locationType.enum';
 import { LocationByEpimmsModel, LocationModel, toEpimmsLocation } from './models/location.model';
+import { trackTrace } from '../../lib/appInsights';
 
 const url: string = getConfigValue(SERVICES_PRD_LOCATION_API);
-
+const logger: JUILogger = log4jui.getLogger('location hearings');
 /**
  * @description getLocations from service ID/location type/search term
  * @overview API sample: /api/locations/getLocations?serviceIds=BBA3,BFA1&locationType=hearing&searchTerm=CT91RL
@@ -50,6 +51,8 @@ export async function getLocationById(req: EnhancedRequest, res: Response, next:
   delete req.query.serviceCode;
   const serviceCodeParam = serviceCode ? `&service_code=${serviceCode}` : '';
   const markupPath: string = `${url}/refdata/location/court-venues?epimms_id=${epimmsID}${serviceCodeParam}`;
+  trackTrace(`prd (hearings) getLocationById, markupPath used -->: ${markupPath}`, { functionCall: 'getLocationById' });
+  logger.info(`prd (hearings) getLocationById, markupPath used -->: ${markupPath}`);
   try {
     const { status, data }: { status: number; data: LocationModel[] } = await handleGet(markupPath, req);
 

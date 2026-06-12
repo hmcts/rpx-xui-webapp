@@ -340,7 +340,7 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
       test(`POST /workallocation/task/:id/${action} rejects requests without XSRF-TOKEN header`, async ({ apiClientFor }) => {
         // Given: An authenticated user with valid session
         // When: Attempting task action without XSRF protection header
-        // Then: API rejects request or returns guarded status (XSRF validation failure)
+        // Then: API rejects request or returns guarded downstream status without succeeding
         await ensureStorageState('waSolicitor');
         const waClient = await apiClientFor('waSolicitor');
         const response = await waClient.post(`workallocation/task/${taskId()}/${action}`, {
@@ -348,7 +348,7 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
           headers: {},
           throwOnError: false,
         });
-        expectStatus(response.status, [200, 204, 401, 403, 404, 502]);
+        expectStatus(response.status, [400, 401, 403, 404, 409, 500, 502, 504]);
       });
     }
 

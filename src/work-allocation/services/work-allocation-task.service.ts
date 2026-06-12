@@ -153,7 +153,7 @@ export class WorkAllocationTaskService {
     if (userInfoStr) {
       const userInfo = safeJsonParse<UserInfo>(userInfoStr, null);
       if (!userInfo) {
-        return of(null);
+        return of([]);
       }
       const id = userInfo.id ? userInfo.id : userInfo.uid;
       const userRole: UserRole = AppUtils.getUserRole(userInfo.roles);

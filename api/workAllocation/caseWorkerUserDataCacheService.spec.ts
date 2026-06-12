@@ -9,10 +9,13 @@ import * as caseWorkerService from './caseWorkerService';
 import {
   createWADependencyUnavailableError,
   fetchNewUserData,
+  fetchRoleAssignments,
   fetchRoleAssignmentsForNewUsers,
+  fetchUserData,
   getAuthTokens,
   getOrRefreshCachedUsers,
   getOrRefreshCachedUsersWithRoles,
+  isWADependencyUnavailableError,
   waitForCachedUsers,
 } from './caseWorkerUserDataCacheService';
 import * as caseWorkerUserDataCacheService from './caseWorkerUserDataCacheService';
@@ -34,6 +37,77 @@ describe('Caseworker Cache Service', () => {
 
   afterEach(() => {
     sandbox.restore();
+  });
+
+  describe('fetchUserData dependency handling', () => {
+    const req = mockReq({
+      headers: {
+        accept: 'application/json',
+      },
+    });
+
+    it('wraps known downstream failures as dependency unavailable when no cache is available', async () => {
+      sandbox.stub(http, 'get').rejects({
+        isAxiosError: true,
+        response: {
+          status: 503,
+        },
+      });
+
+      try {
+        await fetchUserData(req as any);
+        expect.fail('expected dependency error');
+      } catch (error) {
+        expect(isWADependencyUnavailableError(error)).to.equal(true);
+        expect((error as any).diagnostics.upstream).to.equal('rd-caseworker-ref-api');
+      }
+    });
+
+    it('rethrows unexpected local failures instead of converting them to dependency unavailable', async () => {
+      const error = new Error('unexpected mapper failure');
+      sandbox.stub(http, 'get').rejects(error);
+
+      try {
+        await fetchUserData(req as any);
+        expect.fail('expected original error');
+      } catch (actualError) {
+        expect(actualError).to.equal(error);
+      }
+    });
+  });
+
+  describe('fetchRoleAssignments dependency handling', () => {
+    const req = mockReq({
+      headers: {
+        accept: 'application/json',
+      },
+    });
+
+    it('wraps known downstream failures as dependency unavailable when no cache is available', async () => {
+      sandbox.stub(http, 'post').rejects({
+        code: 'ECONNREFUSED',
+      });
+
+      try {
+        await fetchRoleAssignments([], req as any);
+        expect.fail('expected dependency error');
+      } catch (error) {
+        expect(isWADependencyUnavailableError(error)).to.equal(true);
+        expect((error as any).diagnostics.upstream).to.equal('am-role-assignment-service');
+      }
+    });
+
+    it('rethrows unexpected local failures instead of converting them to dependency unavailable', async () => {
+      const error = new Error('unexpected role mapping failure');
+      sandbox.stub(http, 'post').rejects(error);
+
+      try {
+        await fetchRoleAssignments([], req as any);
+        expect.fail('expected original error');
+      } catch (actualError) {
+        expect(actualError).to.equal(error);
+      }
+    });
   });
 
   describe('fetchNewUserData', () => {

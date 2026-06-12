@@ -75,6 +75,40 @@ export function isWADependencyUnavailableError(error: unknown): error is WADepen
   return dependencyError?.status === 503 && dependencyError?.diagnostics?.code === WA_DEPENDENCY_UNAVAILABLE_CODE;
 }
 
+function isKnownDependencyFailure(error: unknown): boolean {
+  if (isWADependencyUnavailableError(error)) {
+    return true;
+  }
+  if (!error || typeof error !== 'object') {
+    return false;
+  }
+
+  const dependencyError = error as {
+    code?: string;
+    isAxiosError?: boolean;
+    request?: unknown;
+    response?: { status?: number };
+  };
+  const dependencyErrorCodes = ['ECONNABORTED', 'ECONNRESET', 'ENOTFOUND', 'ECONNREFUSED', 'ETIMEDOUT'];
+
+  return Boolean(
+    dependencyError.isAxiosError ||
+    dependencyError.response?.status ||
+    dependencyError.request ||
+    (dependencyError.code && dependencyErrorCodes.includes(dependencyError.code))
+  );
+}
+
+function handleCacheRefreshError<T>(error: unknown, cachedFallback: T[] | undefined, upstream: string): T[] {
+  if (isKnownDependencyFailure(error)) {
+    if (cachedFallback?.length > 0) {
+      return cachedFallback;
+    }
+    throw createWADependencyUnavailableError(upstream);
+  }
+  throw error;
+}
+
 function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -92,11 +126,8 @@ export async function fetchUserData(req: EnhancedRequest): Promise<StaffUserDeta
     }
     // always return cached users (even if error)
     return cachedUsers;
-  } catch {
-    if (cachedUsers?.length > 0) {
-      return cachedUsers;
-    }
-    throw createWADependencyUnavailableError('rd-caseworker-ref-api');
+  } catch (error) {
+    return handleCacheRefreshError(error, cachedUsers, 'rd-caseworker-ref-api');
   }
 }
 
@@ -132,12 +163,9 @@ export async function fetchRoleAssignments(
       cachedUsersWithRoles = await getOrRefreshCachedUsersWithRoles(cachedUserData, req);
     }
     return FullUserDetailCache.getAllUserDetails() || [];
-  } catch {
+  } catch (error) {
     const cachedUserDetails = FullUserDetailCache.getAllUserDetails();
-    if (cachedUserDetails?.length > 0) {
-      return cachedUserDetails;
-    }
-    throw createWADependencyUnavailableError('am-role-assignment-service');
+    return handleCacheRefreshError(error, cachedUserDetails, 'am-role-assignment-service');
   }
 }
 

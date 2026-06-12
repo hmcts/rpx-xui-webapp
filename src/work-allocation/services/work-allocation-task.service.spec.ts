@@ -118,6 +118,17 @@ describe('WorkAllocationTaskService', () => {
   it('getUsersAssignedTasks should return [] when userDetails missing', (done) => {
     service.getUsersAssignedTasks().subscribe((res) => {
       expect(res).toEqual([]);
+      expect(mockHttpService.post).not.toHaveBeenCalled();
+      done();
+    });
+  });
+
+  it('getUsersAssignedTasks should return [] when userDetails is malformed', (done) => {
+    sessionStorage.setItem('userDetails', '{not-json');
+
+    service.getUsersAssignedTasks().subscribe((res) => {
+      expect(res).toEqual([]);
+      expect(mockHttpService.post).not.toHaveBeenCalled();
       done();
     });
   });

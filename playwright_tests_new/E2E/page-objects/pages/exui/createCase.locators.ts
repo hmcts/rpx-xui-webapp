@@ -93,7 +93,9 @@ export function buildCreateCaseLocators(page: Page) {
     doYouAgreeYesRadio: doYouAgreeGroup.getByRole('radio', { name: /^Yes$/i }).first(),
     doYouAgreeNoRadio: doYouAgreeGroup.getByRole('radio', { name: /^No$/i }).first(),
 
+    fileUploadComponent: page.locator('ccd-write-document-field').first(),
     fileUploadInput: page.locator('#DocumentUrl'),
+    fileUploadCancelButton: page.locator('ccd-write-document-field button.button-secondary').first(),
     fileUploadStatusLabel: page.locator('ccd-write-document-field .error-message'),
     textField0Input: page.locator('#TextField0'),
     textField1Input: page.locator('#TextField1'),

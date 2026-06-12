@@ -1,6 +1,11 @@
 import type { Page, Route } from '@playwright/test';
 import type { CreateCasePage } from '../../E2E/page-objects/pages/exui/createCase.po';
 
+export const CREATED_CASE_ID = '1234123412341234';
+export const CREATED_CASE_JURISDICTION = 'DIVORCE';
+export const CREATED_CASE_TYPE = 'xuiTestJurisdiction';
+export const CREATED_CASE_DETAILS_PATH = `/cases/case-details/${CREATED_CASE_JURISDICTION}/${CREATED_CASE_TYPE}/${CREATED_CASE_ID}`;
+
 type SubmittedCaseData = {
   Gender?: string;
   TextField0?: string;
@@ -94,9 +99,6 @@ function buildCreatedCaseDetails(createdCaseId: string, submittedData: Submitted
 }
 
 export async function routeCaseCreationFlow(page: Page): Promise<unknown> {
-  const createdCaseId = '1234123412341234';
-  const createdCaseJurisdiction = 'DIVORCE';
-  const createdCaseType = 'xuiTestJurisdiction';
   let submittedData: SubmittedCaseData = {};
   let resolveInterceptedRequest: (body: unknown) => void;
   const interceptedRequestPromise = new Promise<unknown>((resolve) => {
@@ -118,19 +120,19 @@ export async function routeCaseCreationFlow(page: Page): Promise<unknown> {
       status: 201,
       contentType: 'application/json',
       body: JSON.stringify({
-        id: createdCaseId,
-        caseId: createdCaseId,
-        jurisdiction: createdCaseJurisdiction,
-        caseType: createdCaseType,
+        id: CREATED_CASE_ID,
+        caseId: CREATED_CASE_ID,
+        jurisdiction: CREATED_CASE_JURISDICTION,
+        caseType: CREATED_CASE_TYPE,
       }),
     });
   });
 
-  await page.route('**/data/internal/cases/1234123412341234*', async (route: Route) => {
+  await page.route(`**/data/internal/cases/${CREATED_CASE_ID}*`, async (route: Route) => {
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(buildCreatedCaseDetails(createdCaseId, submittedData)),
+      body: JSON.stringify(buildCreatedCaseDetails(CREATED_CASE_ID, submittedData)),
     });
   });
 
@@ -140,12 +142,12 @@ export async function routeCaseCreationFlow(page: Page): Promise<unknown> {
       contentType: 'application/json',
       body: JSON.stringify([
         {
-          id: createdCaseJurisdiction,
-          name: createdCaseJurisdiction,
+          id: CREATED_CASE_JURISDICTION,
+          name: CREATED_CASE_JURISDICTION,
           caseTypes: [
             {
-              id: createdCaseType,
-              name: createdCaseType,
+              id: CREATED_CASE_TYPE,
+              name: CREATED_CASE_TYPE,
               states: [
                 {
                   id: 'CaseCreated',
@@ -165,12 +167,12 @@ export async function routeCaseCreationFlow(page: Page): Promise<unknown> {
       contentType: 'application/json',
       body: JSON.stringify([
         {
-          id: createdCaseJurisdiction,
-          name: createdCaseJurisdiction,
+          id: CREATED_CASE_JURISDICTION,
+          name: CREATED_CASE_JURISDICTION,
           caseTypes: [
             {
-              id: createdCaseType,
-              name: createdCaseType,
+              id: CREATED_CASE_TYPE,
+              name: CREATED_CASE_TYPE,
               states: [
                 {
                   id: 'CaseCreated',
@@ -220,11 +222,44 @@ export async function routeCaseCreationFlow(page: Page): Promise<unknown> {
   return interceptedRequestPromise;
 }
 
+function escapeRegex(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+async function ensureCreatedCaseDetailsPage(
+  page: Page,
+  createCasePage: Pick<CreateCasePage, 'caseAlertSuccessMessage' | 'caseDetailsContainer'>
+): Promise<void> {
+  const expectedUrlPattern = new RegExp(`${escapeRegex(CREATED_CASE_DETAILS_PATH)}(?:$|[?#])`);
+
+  await page.waitForURL(expectedUrlPattern, { timeout: 10_000 }).catch(() => undefined);
+  if (expectedUrlPattern.test(page.url())) {
+    await createCasePage.caseDetailsContainer.waitFor({ state: 'visible', timeout: 30_000 });
+    return;
+  }
+
+  const createdBanner = createCasePage.caseAlertSuccessMessage.filter({ hasText: /has been created/i });
+  const creationSucceeded = await Promise.race([
+    createCasePage.caseDetailsContainer.waitFor({ state: 'visible', timeout: 30_000 }).then(() => true),
+    createdBanner.waitFor({ state: 'visible', timeout: 30_000 }).then(() => true),
+  ]).catch(() => false);
+
+  if (!creationSucceeded) {
+    throw new Error(`Created case details did not become available after submit; current URL is ${page.url()}`);
+  }
+
+  await page.goto(CREATED_CASE_DETAILS_PATH, { waitUntil: 'domcontentloaded' });
+  await page.waitForURL(expectedUrlPattern, { timeout: 30_000 });
+  await createCasePage.caseDetailsContainer.waitFor({ state: 'visible', timeout: 30_000 });
+}
+
 export async function submitCaseAndCaptureRequest(
   page: Page,
-  createCasePage: Pick<CreateCasePage, 'testSubmitButton'>
+  createCasePage: Pick<CreateCasePage, 'testSubmitButton' | 'caseAlertSuccessMessage' | 'caseDetailsContainer'>
 ): Promise<unknown> {
   const interceptedCreateCaseRequestBodyPromise = routeCaseCreationFlow(page);
   await Promise.all([interceptedCreateCaseRequestBodyPromise, createCasePage.testSubmitButton.click({ noWaitAfter: true })]);
-  return interceptedCreateCaseRequestBodyPromise;
+  const interceptedCreateCaseRequestBody = await interceptedCreateCaseRequestBodyPromise;
+  await ensureCreatedCaseDetailsPage(page, createCasePage);
+  return interceptedCreateCaseRequestBody;
 }

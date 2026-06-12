@@ -6,10 +6,10 @@ test.describe('case creation integration route helpers', { tag: '@svc-internal' 
   test('uses configured CCD data store URL when supplied', () => {
     expect(
       resolveCcdDataStoreUrl({
-        CCD_DATA_STORE_URL: 'https://ccd-data-store.demo.platform.hmcts.net/',
+        CCD_DATA_STORE_URL: 'https://gateway-ccd.aat.platform.hmcts.net/',
         TEST_URL: 'https://manage-case.aat.platform.hmcts.net',
       })
-    ).toBe('https://ccd-data-store.demo.platform.hmcts.net');
+    ).toBe('https://gateway-ccd.aat.platform.hmcts.net');
   });
 
   test('derives the CCD gateway URL from AAT and demo manage-case URLs', () => {

@@ -3,6 +3,7 @@ import {
   buildSupportedAMRoleAssignments,
   defaultStaffAMMenuRole,
   ensureSupportedAMRoleAssignment,
+  isSupportedAMMenuAssignment,
   resolveAMRoleCategory,
   uniqueRoles,
 } from '../../integration/helpers/amRoleAssignmentMock.helper.js';
@@ -71,6 +72,25 @@ test.describe('AM role assignment mock helper', { tag: '@svc-internal' }, () => 
       { jurisdiction: 'IA', roleName: 'task-supervisor', roleType: 'ORGANISATION', substantive: 'Y' },
       expect.objectContaining({
         jurisdiction: 'CIVIL',
+        roleCategory: 'LEGAL_OPERATIONS',
+        roleName: defaultStaffAMMenuRole,
+        roleType: 'ORGANISATION',
+      }),
+    ]);
+  });
+
+  test('does not treat a matching role name as supported without the AM category and type contract', () => {
+    const assignments = ensureSupportedAMRoleAssignment(
+      [{ jurisdiction: 'IA', roleName: defaultStaffAMMenuRole, roleType: 'CASE', substantive: 'Y' }],
+      defaultStaffAMMenuRole,
+      ['IA']
+    );
+
+    expect(isSupportedAMMenuAssignment(assignments[0], defaultStaffAMMenuRole)).toBe(false);
+    expect(assignments).toEqual([
+      { jurisdiction: 'IA', roleName: defaultStaffAMMenuRole, roleType: 'CASE', substantive: 'Y' },
+      expect.objectContaining({
+        jurisdiction: 'IA',
         roleCategory: 'LEGAL_OPERATIONS',
         roleName: defaultStaffAMMenuRole,
         roleType: 'ORGANISATION',

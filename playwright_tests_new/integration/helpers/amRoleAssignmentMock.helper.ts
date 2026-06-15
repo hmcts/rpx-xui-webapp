@@ -36,6 +36,17 @@ export function uniqueRoles(roles: string[]): string[] {
   return Array.from(new Set(roles));
 }
 
+export function isSupportedAMMenuAssignment<T extends Record<string, unknown>>(
+  roleAssignment: T,
+  roleName: AMMenuRoleName = defaultStaffAMMenuRole
+): boolean {
+  return (
+    roleAssignment.roleName === roleName &&
+    roleAssignment.roleCategory === resolveAMRoleCategory(roleName) &&
+    roleAssignment.roleType === 'ORGANISATION'
+  );
+}
+
 export function buildSupportedAMRoleAssignments(
   roleNames: AMMenuRoleName[] = [defaultStaffAMMenuRole],
   jurisdictions: string[] = defaultAMSupportedJurisdictions
@@ -57,7 +68,7 @@ export function ensureSupportedAMRoleAssignment<T extends Record<string, unknown
   roleName: AMMenuRoleName = defaultStaffAMMenuRole,
   fallbackJurisdictions: string[] = defaultAMSupportedJurisdictions
 ): T[] {
-  if (roleAssignments.some((roleAssignment) => roleAssignment.roleName === roleName)) {
+  if (roleAssignments.some((roleAssignment) => isSupportedAMMenuAssignment(roleAssignment, roleName))) {
     return roleAssignments;
   }
 

@@ -1,4 +1,6 @@
-import type { Page } from '@playwright/test';
+import type { Page, TestInfo } from '@playwright/test';
+import * as fs from 'fs/promises';
+import * as path from 'path';
 
 export const WAVE_LIKE_A11Y_TAG = '@wave-a11y';
 export const waveLikeA11ySpecPattern = '**/*.wave-a11y.spec.ts';
@@ -19,6 +21,20 @@ type WaveLikeViolation = {
   selector?: string;
   html?: string;
 };
+
+type PublishedEvidenceEntry = {
+  testTitle: string;
+  attachmentPrefix: string;
+  htmlFileName: string;
+  jsonFileName: string;
+  screenshotFileName: string;
+  violationCount: number;
+  rules: string[];
+  targets: string[];
+};
+
+const EVIDENCE_MANIFEST_FILE = 'manifest.json';
+const EVIDENCE_ENTRY_PREFIX = 'manifest-entry-';
 
 export async function collectWaveLikeAccessibilityViolations(page: Page): Promise<WaveLikeViolation[]> {
   return page.evaluate<WaveLikeViolation[]>(() => {
@@ -184,4 +200,315 @@ export async function collectWaveLikeAccessibilityViolations(page: Page): Promis
 
     return violations;
   });
+}
+
+export async function attachWaveLikeAccessibilityEvidence(
+  page: Page,
+  testInfo: TestInfo | undefined,
+  violations: WaveLikeViolation[],
+  attachmentPrefix = 'wave-accessibility-issues'
+): Promise<void> {
+  if (!testInfo || violations.length === 0) {
+    return;
+  }
+
+  const json = JSON.stringify({ url: page.url(), violationCount: violations.length, violations }, null, 2);
+  await testInfo.attach(`${attachmentPrefix}.json`, {
+    body: json,
+    contentType: 'application/json',
+  });
+  await testInfo.attach(`${attachmentPrefix}.html`, {
+    body: buildIssueSummaryHtml(page.url(), violations),
+    contentType: 'text/html',
+  });
+
+  const cleanup = await markViolationsOnPage(page, violations);
+  let screenshot: Buffer;
+  try {
+    screenshot = await page.screenshot({ fullPage: true });
+    await testInfo.attach(`${attachmentPrefix}-highlighted-screenshot.png`, {
+      body: screenshot,
+      contentType: 'image/png',
+    });
+  } finally {
+    await cleanup();
+  }
+
+  await writePublishedEvidence(testInfo, page.url(), violations, screenshot, attachmentPrefix);
+}
+
+function buildIssueSummaryHtml(url: string, violations: WaveLikeViolation[]): string {
+  const cards = violations
+    .map(
+      (violation, index) => `
+        <section class="issue">
+          <h2>${index + 1}. ${escapeHtml(violation.rule)}</h2>
+          <p><strong>${escapeHtml(violation.message)}</strong></p>
+          <p><strong>Selector:</strong> <code>${escapeHtml(violation.selector ?? 'page')}</code></p>
+          <pre>${escapeHtml(violation.html ?? '')}</pre>
+        </section>
+      `
+    )
+    .join('');
+
+  return `
+    <html>
+      <head>
+        <title>WAVE-like Accessibility Issues</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 24px; color: #0b0c0c; }
+          .banner { background: #d4351c; color: #fff; padding: 16px; margin-bottom: 24px; }
+          .issue { border: 4px solid #d4351c; padding: 16px; margin-bottom: 18px; }
+          .issue h2 { margin-top: 0; }
+          code, pre { background: #f3f2f1; padding: 4px; white-space: pre-wrap; }
+        </style>
+      </head>
+      <body>
+        <div class="banner">
+          <h1>WAVE-LIKE ACCESSIBILITY ISSUES FOUND</h1>
+          <p>${violations.length} issue(s) on ${escapeHtml(url)}. Match marker numbers here to the highlighted screenshot.</p>
+        </div>
+        ${cards}
+      </body>
+    </html>
+  `;
+}
+
+async function markViolationsOnPage(page: Page, violations: WaveLikeViolation[]): Promise<() => Promise<void>> {
+  await page.evaluate(
+    (items) => {
+      const overlayRoot = document.createElement('div');
+      overlayRoot.setAttribute('data-testid', 'wave-violation-overlays');
+      overlayRoot.style.position = 'absolute';
+      overlayRoot.style.left = '0';
+      overlayRoot.style.top = '0';
+      overlayRoot.style.width = '0';
+      overlayRoot.style.height = '0';
+      overlayRoot.style.zIndex = '2147483647';
+      overlayRoot.style.pointerEvents = 'none';
+      document.body.appendChild(overlayRoot);
+
+      for (const item of items) {
+        if (!item.selector) {
+          continue;
+        }
+        let element: Element | null = null;
+        try {
+          element = document.querySelector(item.selector);
+        } catch {
+          element = null;
+        }
+        if (!element) {
+          continue;
+        }
+        const rect = element.getBoundingClientRect();
+        const marker = document.createElement('div');
+        marker.style.position = 'absolute';
+        marker.style.left = `${rect.left + window.scrollX}px`;
+        marker.style.top = `${rect.top + window.scrollY}px`;
+        marker.style.width = `${Math.max(rect.width, 2)}px`;
+        marker.style.height = `${Math.max(rect.height, 2)}px`;
+        marker.style.outline = '6px solid #d4351c';
+        marker.style.background = 'rgba(255, 221, 0, 0.24)';
+        marker.style.boxSizing = 'border-box';
+
+        const label = document.createElement('div');
+        label.textContent = `${item.index + 1} ${item.rule}`;
+        label.style.position = 'absolute';
+        label.style.left = '0';
+        label.style.top = '-32px';
+        label.style.background = '#d4351c';
+        label.style.color = '#fff';
+        label.style.font = 'bold 16px Arial, sans-serif';
+        label.style.padding = '4px 8px';
+        label.style.whiteSpace = 'nowrap';
+
+        marker.appendChild(label);
+        overlayRoot.appendChild(marker);
+      }
+    },
+    violations.map((violation, index) => ({ ...violation, index }))
+  );
+
+  return async () => {
+    await page.evaluate(() => {
+      document.querySelector('[data-testid="wave-violation-overlays"]')?.remove();
+    });
+  };
+}
+
+async function writePublishedEvidence(
+  testInfo: TestInfo,
+  url: string,
+  violations: WaveLikeViolation[],
+  screenshot: Buffer,
+  attachmentPrefix: string
+): Promise<void> {
+  const evidenceDir = path.resolve(
+    process.env.PW_A11Y_EVIDENCE_DIR ||
+      path.join(
+        process.env.PLAYWRIGHT_REPORT_FOLDER || 'functional-output/tests/playwright-wave-a11y/odhin-report',
+        'accessibility-evidence'
+      )
+  );
+  const safeTitle = sanitiseFileName(testInfo.title);
+  const baseName = `${safeTitle}-${attachmentPrefix}`;
+  const htmlFileName = `${baseName}.html`;
+  const jsonFileName = `${baseName}.json`;
+  const screenshotFileName = `${baseName}-highlighted-screenshot.png`;
+  const entry: PublishedEvidenceEntry = {
+    testTitle: testInfo.title,
+    attachmentPrefix,
+    htmlFileName,
+    jsonFileName,
+    screenshotFileName,
+    violationCount: violations.length,
+    rules: violations.map((violation) => violation.rule),
+    targets: violations.map((violation) => violation.selector ?? url),
+  };
+
+  await fs.mkdir(evidenceDir, { recursive: true });
+  await fs.writeFile(path.join(evidenceDir, htmlFileName), buildIssueSummaryHtml(url, violations));
+  await fs.writeFile(
+    path.join(evidenceDir, jsonFileName),
+    JSON.stringify({ url, violationCount: violations.length, violations }, null, 2)
+  );
+  await fs.writeFile(path.join(evidenceDir, screenshotFileName), screenshot);
+  await writeEvidenceEntry(evidenceDir, baseName, entry);
+  await writeEvidenceManifest(evidenceDir, entry);
+  await writeEvidenceIndex(evidenceDir);
+}
+
+async function writeEvidenceEntry(evidenceDir: string, baseName: string, entry: PublishedEvidenceEntry): Promise<void> {
+  await fs.writeFile(path.join(evidenceDir, `${EVIDENCE_ENTRY_PREFIX}${baseName}.json`), JSON.stringify(entry, null, 2));
+}
+
+async function writeEvidenceManifest(evidenceDir: string, entry: PublishedEvidenceEntry): Promise<void> {
+  const manifestPath = path.join(evidenceDir, EVIDENCE_MANIFEST_FILE);
+  const existingEntries = await readEvidenceManifest(evidenceDir);
+  const retainedEntries = existingEntries.filter(
+    (existingEntry) => existingEntry.testTitle !== entry.testTitle || existingEntry.attachmentPrefix !== entry.attachmentPrefix
+  );
+
+  await fs.writeFile(manifestPath, JSON.stringify([...retainedEntries, entry], null, 2));
+}
+
+async function readEvidenceManifest(evidenceDir: string): Promise<PublishedEvidenceEntry[]> {
+  const manifestPath = path.join(evidenceDir, EVIDENCE_MANIFEST_FILE);
+  const entriesByKey = new Map<string, PublishedEvidenceEntry>();
+
+  try {
+    const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8'));
+    if (Array.isArray(manifest)) {
+      for (const entry of manifest.filter(isPublishedEvidenceEntry)) {
+        entriesByKey.set(evidenceEntryKey(entry), entry);
+      }
+    }
+  } catch {
+    // Missing or partially written aggregate manifests are tolerated; per-test entry files are the source of truth.
+  }
+
+  try {
+    const fileNames = await fs.readdir(evidenceDir);
+    await Promise.all(
+      fileNames
+        .filter((fileName) => fileName.startsWith(EVIDENCE_ENTRY_PREFIX) && fileName.endsWith('.json'))
+        .map(async (fileName) => {
+          try {
+            const entry = JSON.parse(await fs.readFile(path.join(evidenceDir, fileName), 'utf8'));
+            if (isPublishedEvidenceEntry(entry)) {
+              entriesByKey.set(evidenceEntryKey(entry), entry);
+            }
+          } catch {
+            // Ignore a single corrupt entry so one failed write does not break the whole report.
+          }
+        })
+    );
+  } catch {
+    return Array.from(entriesByKey.values());
+  }
+
+  return Array.from(entriesByKey.values());
+}
+
+function evidenceEntryKey(entry: PublishedEvidenceEntry): string {
+  return `${entry.testTitle}\u0000${entry.attachmentPrefix}`;
+}
+
+function isPublishedEvidenceEntry(value: unknown): value is PublishedEvidenceEntry {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+
+  const candidate = value as Partial<PublishedEvidenceEntry>;
+  return (
+    typeof candidate.testTitle === 'string' &&
+    typeof candidate.attachmentPrefix === 'string' &&
+    typeof candidate.htmlFileName === 'string' &&
+    typeof candidate.jsonFileName === 'string' &&
+    typeof candidate.screenshotFileName === 'string' &&
+    typeof candidate.violationCount === 'number' &&
+    Array.isArray(candidate.rules) &&
+    Array.isArray(candidate.targets)
+  );
+}
+
+async function writeEvidenceIndex(evidenceDir: string): Promise<void> {
+  const manifestEntries = await readEvidenceManifest(evidenceDir);
+  const rows = manifestEntries
+    .sort((a, b) => a.testTitle.localeCompare(b.testTitle) || a.attachmentPrefix.localeCompare(b.attachmentPrefix))
+    .map((entry) => {
+      return `
+        <li>
+          <a class="issue-link" href="./${escapeAttribute(entry.htmlFileName)}">${escapeHtml(entry.testTitle)}</a>
+          <p>${entry.violationCount} WAVE-like rule issue(s): ${escapeHtml(entry.rules.join(', '))}</p>
+          <br />
+          <a href="./${escapeAttribute(entry.screenshotFileName)}">highlighted screenshot</a>
+          |
+          <a href="./${escapeAttribute(entry.jsonFileName)}">DOM and WAVE-like JSON</a>
+        </li>
+      `;
+    })
+    .join('');
+
+  await fs.writeFile(
+    path.join(evidenceDir, 'index.html'),
+    `
+      <html>
+        <head>
+          <title>WAVE-like Accessibility Evidence</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 24px; color: #0b0c0c; }
+            .banner { background: #d4351c; color: #fff; padding: 16px; margin-bottom: 24px; }
+            .issue-link { font-weight: bold; font-size: 18px; }
+            li { margin-bottom: 16px; }
+          </style>
+        </head>
+        <body>
+          <div class="banner">
+            <h1>WAVE-LIKE ACCESSIBILITY EVIDENCE</h1>
+            <p>Open each item for rule, DOM selector, failing HTML, and a red highlighted screenshot.</p>
+          </div>
+          <ol>${rows}</ol>
+        </body>
+      </html>
+    `
+  );
+}
+
+function escapeHtml(value: string): string {
+  return value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function escapeAttribute(value: string): string {
+  return escapeHtml(value).replace(/`/g, '&#96;');
+}
+
+function sanitiseFileName(value: string): string {
+  return (
+    value
+      .replace(/[^a-z0-9._-]+/gi, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 120) || 'wave-accessibility'
+  );
 }

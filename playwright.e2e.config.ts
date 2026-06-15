@@ -63,6 +63,7 @@ const buildConfig = (env: EnvMap = process.env) => {
   const retries = parseNonNegativeInt(env.PW_E2E_RETRIES) ?? 2;
   const globalTimeoutMs = parsePositiveInt(env.PW_E2E_GLOBAL_TIMEOUT_MS);
   const isAccessibilityRun = env.PLAYWRIGHT_INCLUDE_A11Y === 'true';
+  const disableGenericFailureArtifacts = env.PLAYWRIGHT_DISABLE_GENERIC_FAILURE_ARTIFACTS === 'true';
   const prewarmAccessibilitySession = isAccessibilityRun && env.PW_A11Y_PREWARM_SESSION !== 'false';
   const testTimeoutMs = isAccessibilityRun ? (parsePositiveInt(env.PW_A11Y_TEST_TIMEOUT_MS) ?? 60_000) : 180_000;
   const expectTimeoutMs = isAccessibilityRun ? (parsePositiveInt(env.PW_A11Y_EXPECT_TIMEOUT_MS) ?? 7_000) : 60_000;
@@ -168,11 +169,13 @@ const buildConfig = (env: EnvMap = process.env) => {
     ],
     use: {
       baseURL: baseUrl,
-      trace: 'retain-on-failure',
-      screenshot: {
-        mode: 'only-on-failure',
-        fullPage: true,
-      },
+      trace: disableGenericFailureArtifacts ? 'off' : 'retain-on-failure',
+      screenshot: disableGenericFailureArtifacts
+        ? 'off'
+        : {
+            mode: 'only-on-failure',
+            fullPage: true,
+          },
       video: 'off',
       headless: headlessMode,
     },

@@ -696,7 +696,11 @@ withPipeline(type, product, component) {
                                 echo "[parallel-report-gathering] Playwright WAVE-like Accessibility failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
                             } finally {
                                 recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'WAVE-like A11y', 'finish')
-                                publishPlaywrightWaveA11yReport('PREVIEW Playwright WAVE-like Accessibility')
+                                try {
+                                    publishPlaywrightWaveA11yReport('PREVIEW Playwright WAVE-like Accessibility')
+                                } catch (Exception publishException) {
+                                    echo "[playwright-wave-a11y] Report publish wrapper failed but is non-blocking: ${publishException.getClass().getName()}: ${publishException.getMessage()}"
+                                }
                             }
                         }
                     }

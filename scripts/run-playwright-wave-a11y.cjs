@@ -24,6 +24,7 @@ const env = {
   PW_A11Y_TEST_TIMEOUT_MS: process.env.PW_A11Y_TEST_TIMEOUT_MS || '60000',
   PW_ODHIN_TRIM_FAILED_ARTIFACTS: process.env.PW_ODHIN_TRIM_FAILED_ARTIFACTS || 'true',
   PW_ODHIN_FINALIZATION_TIMEOUT_MS: process.env.PW_ODHIN_FINALIZATION_TIMEOUT_MS || '30000',
+  PLAYWRIGHT_DISABLE_GENERIC_FAILURE_ARTIFACTS: 'true',
 };
 
 const run = (command, args) => spawnSync(command, args, { env, stdio: 'inherit' });

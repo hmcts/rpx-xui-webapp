@@ -245,7 +245,23 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
           describeUnknownError: (error) => (error instanceof Error ? error.message : String(error)),
           sleep: async () => undefined,
           now: () => 100,
+          resolveOrganisationId: async () => {
+            observedCallOrder.push('resolve-org');
+            return {
+              source: 'static',
+              organisationId: 'org-123',
+              mode: 'static',
+              fallbackReason: 'static-configured',
+            };
+          },
           outputCreatedUserData: false,
+          attachOrganisationResolution: async (testInfo, alias) => {
+            observedCallOrder.push(`attach-org:${alias}`);
+            await testInfo.attach(`${alias.toLowerCase()}-dynamic-organisation.json`, {
+              body: '{}',
+              contentType: 'application/json',
+            });
+          },
           attachProvisionAttempts: async (testInfo, alias) => {
             observedCallOrder.push(`attach-provision:${alias}`);
             await testInfo.attach(`${alias.toLowerCase()}-attempts.json`, {
@@ -285,13 +301,19 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
       });
 
       expect(observedCallOrder).toEqual([
+        'resolve-org',
+        'attach-org:SOLICITOR',
         'provision',
         'attach-provision:SOLICITOR',
         'assert-contract',
         'wait-exui',
         'attach-user:SOLICITOR',
       ]);
-      expect(attachmentNames).toEqual(['solicitor-attempts.json', 'solicitor-dynamic-user.json']);
+      expect(attachmentNames).toEqual([
+        'solicitor-dynamic-organisation.json',
+        'solicitor-attempts.json',
+        'solicitor-dynamic-user.json',
+      ]);
     } finally {
       if (typeof originalOrganisationId === 'string') {
         process.env.TEST_SOLICITOR_ORGANISATION_ID = originalOrganisationId;
@@ -349,7 +371,23 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
             describeUnknownError: (error) => (error instanceof Error ? error.message : String(error)),
             sleep: async () => undefined,
             now: () => 100,
+            resolveOrganisationId: async () => {
+              observedCallOrder.push('resolve-org');
+              return {
+                source: 'static',
+                organisationId: 'org-123',
+                mode: 'static',
+                fallbackReason: 'static-configured',
+              };
+            },
             outputCreatedUserData: false,
+            attachOrganisationResolution: async (testInfo, alias) => {
+              observedCallOrder.push(`attach-org:${alias}`);
+              await testInfo.attach(`${alias.toLowerCase()}-dynamic-organisation.json`, {
+                body: '{}',
+                contentType: 'application/json',
+              });
+            },
             attachProvisionAttempts: async (testInfo, alias) => {
               observedCallOrder.push(`attach-provision:${alias}`);
               await testInfo.attach(`${alias.toLowerCase()}-attempts.json`, {
@@ -376,8 +414,8 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
         )
       ).rejects.toThrow(/Dynamic user provisioning failed/);
 
-      expect(observedCallOrder).toEqual(['provision', 'attach-provision:SOLICITOR']);
-      expect(attachmentNames).toEqual(['solicitor-attempts.json']);
+      expect(observedCallOrder).toEqual(['resolve-org', 'attach-org:SOLICITOR', 'provision', 'attach-provision:SOLICITOR']);
+      expect(attachmentNames).toEqual(['solicitor-dynamic-organisation.json', 'solicitor-attempts.json']);
     } finally {
       if (typeof originalOrganisationId === 'string') {
         process.env.TEST_SOLICITOR_ORGANISATION_ID = originalOrganisationId;

@@ -92,6 +92,11 @@ import {
   uniqueScopes,
   withBearerPrefix,
 } from './professional-user/runtime.js';
+import {
+  createApprovedOrganisationFlow,
+  type DynamicOrganisationProvisioningOptions,
+  type DynamicOrganisationProvisioningResult,
+} from './professional-user/organisationProvisioning.js';
 import { ensureUiStorageStateForUser } from './session-storage.utils.js';
 import { resolveUiStoragePathForUser } from './storage-state.utils.js';
 
@@ -354,6 +359,30 @@ export class ProfessionalUserUtils {
         shouldFallbackToAlternateAssignmentMode,
       }
     );
+  }
+
+  public async createApprovedOrganisationForTest(
+    options: DynamicOrganisationProvisioningOptions = {}
+  ): Promise<DynamicOrganisationProvisioningResult> {
+    return createApprovedOrganisationFlow(options, {
+      resolvePrerequisites: async () => {
+        const assignmentBearerToken = await this.resolveAssignmentBearerToken();
+        const serviceToken = await this.resolveServiceToken(undefined, true);
+        const assignmentUserRoles = await this.resolveAssignmentUserRoles(assignmentBearerToken);
+        return {
+          rdProfessionalApiPath: resolveRdProfessionalApiPath(),
+          headers: buildHeaders(assignmentBearerToken, serviceToken, assignmentUserRoles.roles),
+        };
+      },
+      createApiContext: (baseURL, headers) =>
+        request.newContext({
+          baseURL,
+          ignoreHTTPSErrors: true,
+          extraHTTPHeaders: headers,
+        }),
+      now: () => Date.now(),
+      sleep,
+    });
   }
 
   public async createUser({

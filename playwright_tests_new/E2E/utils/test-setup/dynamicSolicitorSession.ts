@@ -9,6 +9,7 @@ import config from '../config.utils';
 import { ensureSessionCookies, sessionCapture } from '../../../common/sessionCapture';
 import { DynamicProvisionTimeoutError, DynamicProvisioningError, provisionUserWithRetries } from './dynamicProvisioningFlow.js';
 import type { DynamicProvisionAttempt } from './dynamicProvisioningFlow.js';
+import { resolveDynamicOrganisationId, type DynamicOrganisationResolution } from './dynamicOrganisationResolver.js';
 import {
   getAliasBaselineRoles,
   resolveProvisionRoleNamesForAlias,
@@ -96,7 +97,16 @@ type ProvisionDynamicSolicitorFlowDeps = {
   describeUnknownError: (error: unknown) => string;
   sleep: (ms: number) => Promise<void>;
   now: () => number;
+  resolveOrganisationId: (params: {
+    professionalUserUtils: ProfessionalUserUtils;
+    testInfo: TestInfo;
+  }) => Promise<DynamicOrganisationResolution>;
   outputCreatedUserData: boolean;
+  attachOrganisationResolution: (
+    testInfo: TestInfo,
+    alias: DynamicSolicitorAlias,
+    resolution: DynamicOrganisationResolution
+  ) => Promise<void>;
   attachProvisionAttempts: (
     testInfo: TestInfo,
     alias: DynamicSolicitorAlias,
@@ -338,6 +348,17 @@ async function attachProvisionAttempts(
 ): Promise<void> {
   await testInfo.attach(`${alias.toLowerCase()}-dynamic-user-provision-attempts.json`, {
     body: JSON.stringify({ alias, attempts }, null, 2),
+    contentType: 'application/json',
+  });
+}
+
+async function attachOrganisationResolution(
+  testInfo: TestInfo,
+  alias: DynamicSolicitorAlias,
+  resolution: DynamicOrganisationResolution
+): Promise<void> {
+  await testInfo.attach(`${alias.toLowerCase()}-dynamic-organisation.json`, {
+    body: JSON.stringify({ alias, ...resolution }, null, 2),
     contentType: 'application/json',
   });
 }
@@ -635,7 +656,9 @@ export async function provisionDynamicSolicitorForAlias({
       describeUnknownError,
       sleep,
       now: () => Date.now(),
+      resolveOrganisationId: ({ professionalUserUtils: utils }) => resolveDynamicOrganisationId({ professionalUserUtils: utils }),
       outputCreatedUserData: process.env.PW_DYNAMIC_USER_OUTPUT_CREATED_DATA === '1',
+      attachOrganisationResolution,
       attachProvisionAttempts,
       assertDynamicUserRoleContract,
       waitForExuiUserPropagation,
@@ -674,10 +697,9 @@ async function provisionDynamicSolicitorForAliasFlow(
   }: ProvisionDynamicSolicitorArgs,
   deps: ProvisionDynamicSolicitorFlowDeps
 ): Promise<DynamicProvisionHandle> {
-  const organisationId = process.env.TEST_SOLICITOR_ORGANISATION_ID?.trim();
-  if (!organisationId) {
-    throw new Error('Missing dynamic-user prerequisite: TEST_SOLICITOR_ORGANISATION_ID');
-  }
+  const organisationResolution = await deps.resolveOrganisationId({ professionalUserUtils, testInfo });
+  const organisationId = organisationResolution.organisationId;
+  await deps.attachOrganisationResolution(testInfo, alias, organisationResolution);
   const resolvedRoleNames = resolveProvisionRoleNamesForAlias({
     alias,
     roleContext,

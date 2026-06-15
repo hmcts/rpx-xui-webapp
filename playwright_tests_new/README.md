@@ -158,6 +158,18 @@ Dynamic-user keys now available in Key Vault (`rpx-aat`, `rpx-demo`) and populat
 - `ORG_USER_ASSIGNMENT_UI_USER`
 - `ORG_USER_ASSIGNMENT_USER_ROLES`
 - `TEST_SOLICITOR_ORGANISATION_ID`
+- `PW_DYNAMIC_ORGANISATION_ENABLED`
+- `PW_DYNAMIC_ORGANISATION_MODE`
+- `PW_DYNAMIC_ORGANISATION_REQUIRED`
+- `PW_DYNAMIC_ORGANISATION_FALLBACK_TO_STATIC`
+- `PW_DYNAMIC_ORGANISATION_RUN_ID`
+- `PW_DYNAMIC_ORGANISATION_NAME_PREFIX`
+- `PW_DYNAMIC_ORGANISATION_CACHE_DIR`
+- `PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY`
+- `PW_DYNAMIC_ORGANISATION_ACTIVE_TIMEOUT_MS`
+- `PW_DYNAMIC_ORGANISATION_ACTIVE_POLL_INTERVAL_MS`
+- `PW_APPROVE_ORG_API_BASE_URL`
+- `PW_APPROVE_ORG_API_STORAGE_STATE`
 - `MANAGE_ORG_API_PATH`
 - `RD_PROFESSIONAL_API_PATH`
 - `WA_SOLICITOR_USERNAME`
@@ -172,6 +184,20 @@ These are populated from Key Vault using the same `e2e=<ENV_VAR_NAME>` tag conve
 Notes:
 
 - Local dynamic-user creation requires F5 VPN (AAT/DEMO private services).
+- `TEST_SOLICITOR_ORGANISATION_ID` remains the default static path. With no explicit dynamic-org mode, the framework uses this value when it is present; if it is unset and `PW_DYNAMIC_ORGANISATION_ENABLED=1`, the framework creates and approves one run-scoped organisation, caches its id under `test-results/dynamic-organisations/`, and passes that id into the existing dynamic solicitor user creation flow.
+- `PW_DYNAMIC_ORGANISATION_MODE` controls rollout safety:
+  - `static` requires `TEST_SOLICITOR_ORGANISATION_ID` and never attempts dynamic org creation.
+  - `auto` attempts dynamic org creation first, but falls back to `TEST_SOLICITOR_ORGANISATION_ID` when dynamic approval fails. The attached `*-dynamic-organisation.json` evidence includes the failed dynamic attempt, stage, status, timings, and fallback reason.
+  - `dynamic` requires the full dynamic create -> approve -> active-poll path to pass and does not fall back to a static org, even if `TEST_SOLICITOR_ORGANISATION_ID` is configured.
+- `PW_DYNAMIC_ORGANISATION_REQUIRED=1` is an alias for `PW_DYNAMIC_ORGANISATION_MODE=dynamic`. `PW_DYNAMIC_ORGANISATION_FALLBACK_TO_STATIC=1` is an alias for `PW_DYNAMIC_ORGANISATION_MODE=auto`.
+- Retire the static organisation only after a live AAT/CI run succeeds with `PW_DYNAMIC_ORGANISATION_MODE=dynamic` through organisation creation, approval, dynamic solicitor creation, and EXUI login/readiness.
+- Set `PW_DYNAMIC_ORGANISATION_RUN_ID` in CI to keep parallel workers in the same framework run on one approved organisation. If it is unset, the resolver falls back to CI run identifiers where available and then to `local`.
+- `PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY` controls how the pending organisation is approved:
+  - `rd-professional-api` uses the existing RD Professional internal approval endpoint.
+  - `approve-org-api` uses Administer Organisations API with `PW_APPROVE_ORG_API_STORAGE_STATE`.
+  - `auto` tries RD Professional first and falls back to Administer Organisations only when RD returns `403`.
+- `PW_APPROVE_ORG_API_STORAGE_STATE` must point to a Playwright storage state captured for an approval-capable Administer Organisations user when `approve-org-api` is used. This keeps approval credentials out of test code and avoids depending on a static organisation.
+- Dynamic organisation resolution attaches and caches `approvalStrategy`, per-stage timings, `totalElapsedMs`, create/approve statuses, and poll attempts, so a run that enables this feature records the setup-time impact alongside the existing dynamic user provisioning attempts.
 - Do not commit `.env`.
 
 ---
@@ -191,15 +217,20 @@ sequenceDiagram
     actor Spec as E2E Spec / Fixture
     participant Session as dynamicSolicitorSession
     participant Roles as provisionRoleResolution
+    participant Org as dynamicOrganisationResolver
     participant Retry as dynamicProvisioningFlow
     participant Users as ProfessionalUserUtils
     participant IDAM as IDAM / SIDAM
+    participant PRDOrg as RD Professional organisation APIs
     participant PRD as Org Assignment APIs
     participant Probe as propagationProbe
     participant Runtime as runtimeUserCredentials
     participant EXUI as EXUI readiness check
 
     Spec->>Session: provisionDynamicSolicitorForAlias(alias, roleContext)
+    Session->>Org: resolve static or dynamic organisation id
+    Org->>PRDOrg: create, approve, and poll ACTIVE when enabled
+    Org-->>Session: organisation id
     Session->>Roles: resolveProvisionRoleNamesForAlias(...)
     Roles-->>Session: resolved role names
     Session->>Retry: provisionUserWithRetries(...)

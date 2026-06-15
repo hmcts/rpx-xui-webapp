@@ -86,7 +86,7 @@ export function expectCaseShareShape(payload: unknown, property: string) {
         expect.objectContaining({
           users: expect.arrayContaining([
             expect.objectContaining({
-              userIdentifier: expect.any(String),
+              idamId: expect.any(String),
               email: expect.any(String),
             }),
           ]),

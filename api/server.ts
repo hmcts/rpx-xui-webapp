@@ -27,7 +27,7 @@ createApp().then((app: express.Application) => {
   app.use([removeCacheHeaders, express.static(path.join(__dirname, '..', 'assets'), { index: false, cacheControl: false })]);
   app.use([removeCacheHeaders, express.static(path.join(__dirname, '..'), { index: false, cacheControl: false })]);
 
-  app.use('/*', (req, res) => {
+  app.use('/{*splat}', (req, res) => {
     res.set('Cache-Control', 'no-store, s-maxage=0, max-age=0, must-revalidate, proxy-revalidate');
     res.render('../index', {
       providers: [
@@ -46,7 +46,15 @@ createApp().then((app: express.Application) => {
 
   attachSocketProxy(server);
 
-  server.listen(process.env.PORT || 3000, () => {
-    console.log('Server listening on port 3000!');
+  const port = process.env.PORT || 3000;
+
+  server.on('error', (error) => {
+    if (error) {
+      throw error;
+    }
+  });
+
+  server.listen(port, () => {
+    console.log(`Server listening on port ${port}!`);
   });
 });

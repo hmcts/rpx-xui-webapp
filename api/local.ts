@@ -16,6 +16,11 @@ createApp().then((app) => {
   app.use(appInsights);
   app.use(errorHandler);
 
-  const server = app.listen(3001, () => console.log('Dev server listening on port 3001!'));
+  const server = app.listen(3001, (error) => {
+    if (error) {
+      throw error;
+    }
+    console.log('Dev server listening on port 3001!');
+  });
   attachSocketProxy(server);
 });

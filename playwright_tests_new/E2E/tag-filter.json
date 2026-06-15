@@ -2,6 +2,7 @@
   "excludedTags": [],
   "availableTags": [
     "@a11y",
+    "@wave-a11y",
     "@e2e",
     "@nightly",
     "@validation",

@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test';
-import { applySessionCookies, getLegacyStaffAdminSessionIdentity } from '../../helpers';
+import { applySessionCookies } from '../../helpers';
 import { buildHearingsUserDetailsMock } from '../../mocks/hearings.mock';
 import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
 import {
@@ -66,7 +66,7 @@ const workFiltersKnownLocations = [
 ];
 
 export async function setupWorkFiltersUser(page: Page, options: SetupWorkFiltersUserOptions = {}): Promise<string> {
-  const session = await applySessionCookies(page, getLegacyStaffAdminSessionIdentity());
+  const session = await applySessionCookies(page, workFiltersUserIdentifier);
   const sessionUserId = extractUserIdFromCookies(session.cookies) ?? workFiltersUserId;
 
   const userDetails = buildHearingsUserDetailsMock(

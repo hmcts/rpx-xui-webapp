@@ -1,5 +1,4 @@
 import { expect, Locator, Page } from '@playwright/test';
-import { howWillParticipantAttend, HearingAttendenceData } from '../../../utils/hearing-model';
 
 type RowMatch = 'exact' | 'contains';
 
@@ -12,34 +11,12 @@ interface ExpectedRow {
 export class HearingsCYAPage {
   constructor(private readonly page: Page) {}
 
-  // Locate a section by its heading text
   private getSection(sectionTitle: string): Locator {
     return this.page.locator('div#hearing-summary', {
       has: this.page.getByRole('heading', { name: sectionTitle }),
     });
   }
 
-  // Get the Change link for a specific row
-  private getRowChangeLink(sectionTitle: string, key: string): Locator {
-    const section = this.getSection(sectionTitle);
-    console.log(` ~~~~~~~~~ section count: ${section.count()}`);
-
-    const row = section.locator('.govuk-summary-list__row', {
-      has: this.page.locator('.govuk-summary-list__key', { hasText: key }),
-    });
-    console.log(`~~~~~~~~~   row count: ${row.count()}`);
-
-    const value = row.locator('.govuk-summary-list__value');
-    console.log(`~~~~~~~~~ value count: ${value.count()}`);
-
-    return this.getSection(sectionTitle)
-      .locator('.govuk-summary-list__row', {
-        has: this.page.locator('.govuk-summary-list__key', { hasText: new RegExp(`^\\s*${key}\\s*$`) }),
-      })
-      .locator('.govuk-summary-list__actions a.change-link');
-  }
-
-  // Get the value for a specific key within a section
   private getRowValue(sectionTitle: string, key: string): Locator {
     return this.getSection(sectionTitle)
       .locator('.govuk-summary-list__row', {
@@ -48,28 +25,19 @@ export class HearingsCYAPage {
       .locator('.govuk-summary-list__value');
   }
 
-  // Row Value and change link is visible
   async verifySectionRow(sectionTitle: string, key: string, expectedValue: string) {
     await expect(this.getRowValue(sectionTitle, key)).toHaveText(expectedValue);
-    //*[contains(@class, 'govuk-summary-list__row')]//*[contains(@class, 'govuk-summary-list__key') and contains(text(), 'What will be the methods of attendance for this hearing?')]
-    //await expect(this.getRowChangeLink(sectionTitle, key)).toBeVisible();
   }
 
-  // Verify that the Section exists
   async verifySectionVisible(sectionTitle: string) {
     await expect(this.getSection(sectionTitle)).toBeVisible();
   }
 
-  async verifyHearingSummarySection(
-    page: Page,
-    sectionTitle: string,
-    //expectedRows: Array<{ key: string; value: string | string[] }>
-    expectedRows: ExpectedRow[]
-  ): Promise<void> {
-    // Find the section whose <h2> matches the title.
-    // Note: id="hearing-summary" is duplicated across sections, so we locate by heading.
-    const section: Locator = page.locator('exui-hearing-summary #hearing-summary').filter({
-      has: page.locator('h2.govuk-heading-m', { hasText: new RegExp(`^\\s*${this.escapeRegex(sectionTitle)}\\s*$`) }),
+  async verifyHearingSummarySection(sectionTitle: string, expectedRows: ExpectedRow[]): Promise<void> {
+    const section: Locator = this.page.locator('exui-hearing-summary #hearing-summary').filter({
+      has: this.page.locator('h2.govuk-heading-m', {
+        hasText: new RegExp(`^\\s*${this.escapeRegex(sectionTitle)}\\s*$`),
+      }),
     });
 
     await expect(section, `${sectionTitle}" should be visible`).toBeVisible();
@@ -77,26 +45,16 @@ export class HearingsCYAPage {
     const rows = section.locator('.govuk-summary-list__row');
     await expect(rows, `Row count for "${this.escapeRegex(sectionTitle)}"`).toHaveCount(expectedRows.length);
 
-    //const { key, value, match = 'exact ' } = expectedRows[i];
-
     for (let i = 0; i < expectedRows.length; i++) {
-      const { key, value, match = 'exact ' } = expectedRows[i];
+      const { key, value, match = 'exact' } = expectedRows[i];
 
       const row = rows.nth(i);
 
-      console.log(`~~~~~ LOGGING THE ROW details ..... [Row ${i}]`, { key, value, isArray: Array.isArray(value) });
-
-      // Key (label)
       await expect(row.locator('.govuk-summary-list__key'), `Row ${i} key in "${sectionTitle}"`).toHaveText(
         new RegExp(`\\s*${this.escapeRegex(key)}\\s*`)
       );
 
-      // Value — This can be either a Array of <ul> > <li> items OR
-      // a <ul> rendered with one or more nested <li> items OR
-      // just a plain piece of text String or
-
       const valueCell = row.locator('.govuk-summary-list__value');
-      console.log(`~~~~~ valueCell: ${valueCell}`);
       if (Array.isArray(value)) {
         const listItems = valueCell.locator('ul > li');
         const liCount = await listItems.count();
@@ -143,7 +101,6 @@ export class HearingsCYAPage {
         }
       }
 
-      // Action — exactly one "Change" link present and  the link is 'clickable'
       const changeLink = row.locator('.govuk-summary-list__actions a.change-link');
       await expect(changeLink, `Row ${i} should have exactly one Change link in "${sectionTitle}"`).toHaveCount(1);
       await expect(changeLink).toHaveText('Change');
@@ -155,18 +112,7 @@ export class HearingsCYAPage {
     return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 
-  public strArrayToCsvString(input: string[]): string {
-    const csv = input?.join(', ');
-
-    const output = csv
-      .split(',')
-      .map((s) => s.trim())
-      .filter((s) => s.length > 0);
-
-    return output.join(',');
-  }
-
-  public async verifyParticipantAttendanceSection(page: Page, hearingJourneyModel) {
+  public async verifyParticipantAttendanceSection(hearingJourneyModel) {
     const paperHearingYesNo = hearingJourneyModel.get('hearingAttendence', 'paperHearing') as string;
     const numberOfPeopleAttendingHearing = hearingJourneyModel.get(
       'hearingAttendence',
@@ -210,10 +156,10 @@ export class HearingsCYAPage {
       value: numberOfPeopleAttendingHearing,
     });
 
-    await this.verifyHearingSummarySection(this.page, 'Participant attendance', expectedRows);
+    await this.verifyHearingSummarySection('Participant attendance', expectedRows);
   }
 
-  public async verifyHearingVenueSection(page: Page, hearingJourneyModel) {
+  public async verifyHearingVenueSection(hearingJourneyModel) {
     const hearingVenue = hearingJourneyModel.get('hearingVenue', 'name') as string[];
 
     if (!Array.isArray(hearingVenue)) {
@@ -227,53 +173,6 @@ export class HearingsCYAPage {
     const expectedRows: Array<{ key: string; value: string | string[]; match?: 'exact' | 'contains' }> = [
       { key: 'What are the hearing venue details?', value: hearingVenue, match: 'contains' },
     ];
-    await this.verifyHearingSummarySection(this.page, 'Hearing Venue', expectedRows);
-  }
-
-  public async verifyHearingLocation(page: Page, hearingJourneyModel) {
-    const paperHearingYesNo = hearingJourneyModel.get('hearingAttendence', 'paperHearing') as string;
-
-    const numberOfPeopleAttendingHearing = hearingJourneyModel.get(
-      'hearingAttendence',
-      'numberOfPeopleAttendingHearing'
-    ) as string;
-
-    const participantHearingMethod = hearingJourneyModel.get('hearingAttendence', 'hearingMethod');
-    const participantAttendHearingHow = hearingJourneyModel.get('hearingAttendence', 'attendHearingHow');
-
-    if (!Array.isArray(participantHearingMethod)) {
-      throw new Error(
-        `participantHearingMethod must be an array, got ${typeof participantHearingMethod}: ${JSON.stringify(participantHearingMethod)}`
-      );
-    }
-
-    if (!Array.isArray(participantAttendHearingHow)) {
-      throw new Error(
-        `participantAttendHearingHow must be an array, got ${typeof participantAttendHearingHow}: ${JSON.stringify(participantAttendHearingHow)}`
-      );
-    }
-
-    const expectedRows: Array<{ key: string; value: string | string[]; match?: 'exact' | 'contains' }> = [
-      { key: 'Will this be a paper hearing?', value: paperHearingYesNo },
-    ];
-
-    expectedRows.push(
-      {
-        key: 'What will be the methods of attendance for this hearing?',
-        value: participantHearingMethod,
-      },
-      {
-        key: 'How will each participant attend the hearing?',
-        value: participantAttendHearingHow,
-        match: 'contains',
-      }
-    );
-
-    expectedRows.push({
-      key: 'How many people will attend the hearing in person?',
-      value: numberOfPeopleAttendingHearing,
-    });
-
-    await this.verifyHearingSummarySection(this.page, 'Participant attendance', expectedRows);
+    await this.verifyHearingSummarySection('Hearing Venue', expectedRows);
   }
 }

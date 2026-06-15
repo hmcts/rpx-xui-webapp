@@ -1,14 +1,5 @@
 import { expect, Locator, Page } from '@playwright/test';
-import {
-  AdditionalFacility,
-  HearingJourneyModel,
-  HearingMethod,
-  howWillParticipantAttend,
-  LengthOfHearing,
-  TypeOfJudges,
-} from '../../../utils/hearing-model.ts';
-
-type HearingAction = 'view-details' | 'view-or-edit' | 'cancel' | 'add-or-edit';
+import { AdditionalFacility, HearingJourneyModel, HearingMethod, TypeOfJudges } from '../../../utils/hearing-model.ts';
 
 export class HearingsJourneyPage {
   constructor(private readonly page: Page) {}
@@ -42,7 +33,6 @@ export class HearingsJourneyPage {
   readonly hearingInWelshNo = this.page.locator('#welsh_hearing_no');
   readonly hearingInWelshYes = this.page.locator('#welsh_hearing_yes');
 
-  #noSpecificJudge;
   readonly noSpecificJudgeRadio = this.page.locator('#noSpecificJudge');
   readonly specificJudgeRadio = this.page.locator('#specificJudgeName');
 
@@ -85,9 +75,6 @@ export class HearingsJourneyPage {
 
   readonly addLocationsButton = this.page.locator('.search-location').getByRole('link', { name: ' Add location ' });
 
-  //const submitButton =
-  readonly submitButton = this.page.locator('button.govuk-button', { hasText: 'Submit request' });
-
   // hearingsTable
   readonly hearingsTable = this.page.locator('exui-case-hearings-ce exui-case-hearings-list table.govuk-table');
   readonly hearingsTableHeader = this.page.locator('th.govuk-table__header');
@@ -99,15 +86,11 @@ export class HearingsJourneyPage {
   readonly hearingPanelTitle = this.hearingPanel.locator('.govuk-panel__title');
   readonly hearingPanelBody = this.hearingPanel.locator('.govuk-panel__body');
 
-  async additionalSecurityAndFacilities(model: HearingJourneyModel, page: Page): Promise<void> {
+  async additionalSecurityAndFacilities(model: HearingJourneyModel): Promise<void> {
     const value = model.get('hearingFacilities', 'additionalSecurity');
 
     await (value === 'Yes' ? this.additionalSecurityYes : this.additionalSecurityNo).click();
 
-    const getHearingFacilities = model.get('hearingFacilities', 'additionalSecurity');
-    console.log('~~~~~~~~~~~GET VALUE for hearingFacilities ===', getHearingFacilities);
-
-    // additional facilities
     const facilities: AdditionalFacility[] = model.get('hearingFacilities', 'additionalFacilities') ?? [];
     expect(facilities.length).toBeGreaterThan(0);
 
@@ -124,12 +107,9 @@ export class HearingsJourneyPage {
   async setParticipantAttendence(model: HearingJourneyModel): Promise<void> {
     const paperHearingYesNo = model.get('hearingAttendence', 'paperHearing');
     const hearingMethod = model.get('hearingAttendence', 'hearingMethod') ?? [];
-    const attendHearingHow = model.get('hearingAttendence', 'attendHearingHow');
 
-    // Paper Hearing ?
     await (paperHearingYesNo === 'Yes' ? this.paperHearingYes : this.paperHearingNo).click();
 
-    // hearingMethod
     const hearingMethodAndLocatorMap: Record<HearingMethod, Locator> = {
       'In Person': this.hearingInPerson,
       Telephone: this.hearingOnTelephone,
@@ -138,16 +118,9 @@ export class HearingsJourneyPage {
 
     for (const method of hearingMethod ?? []) {
       const locator = hearingMethodAndLocatorMap[method];
-      await locator.click({ force: true });
+      await expect(locator, `${method} hearing method should be selectable`).toBeVisible();
+      await locator.check();
     }
-
-    // How will Participant Attend ?
-    const participantAttendingLocatorMap: Record<howWillParticipantAttend, Locator> = {
-      'In Person': this.hearingInPerson,
-      Telephone: this.hearingOnTelephone,
-      Video: this.hearingViaVideo,
-      'Not in Attendence': this.hearingInPerson,
-    };
 
     const howIsHearingAttended = model.get('hearingAttendence', 'attendHearingHow') as string[];
 
@@ -163,23 +136,27 @@ export class HearingsJourneyPage {
 
   async setHearingVenue(model: HearingJourneyModel): Promise<void> {
     const hearingVenue = model.get('hearingVenue', 'name') as string[];
+    const requestedVenue = hearingVenue?.[0];
 
-    await this.hearingVenue.pressSequentially(hearingVenue[0], { delay: 1000 });
-    await this.locationAutocomplete.waitFor({ state: 'visible' });
-    await this.page.keyboard.press('ArrowDown');
-    await this.page.keyboard.press('Enter');
+    if (!requestedVenue) {
+      throw new Error(`Expected a hearing venue search term, got: ${JSON.stringify(hearingVenue)}`);
+    }
+
+    await this.hearingVenue.fill(requestedVenue);
+    const venueOption = this.page.getByRole('option').filter({ hasText: requestedVenue }).first();
+    await expect(venueOption, `Venue option matching "${requestedVenue}" should be visible`).toBeVisible();
+    await venueOption.click();
     await this.addLocationsButton.click();
+    await expect(this.removeLocationLink(requestedVenue), `Selected venue "${requestedVenue}" should be removable`).toBeVisible();
   }
 
   async isWelshHearing(model: HearingJourneyModel): Promise<void> {
-    // WelshHearing
     const welshHearing = model.get('hearingDetails', 'hearingInWelsh') as string;
     await this.hearingInWelshYes.waitFor({ state: 'visible' });
     await (welshHearing === 'Yes' ? this.hearingInWelshYes : this.hearingInWelshNo).click();
   }
 
   async setJudgeOptions(model: HearingJourneyModel): Promise<void> {
-    // Judge options
     await this.noSpecificJudgeRadio.waitFor({ state: 'visible' });
     await this.specificJudgeRadio.waitFor({ state: 'visible' });
 
@@ -226,9 +203,6 @@ export class HearingsJourneyPage {
     await this.setHearingPriority(hearingPriority);
   }
 
-  async linkedHearingsCheck(model: HearingJourneyModel): Promise<void> {}
-
-  // helper methods
   async selectJudgeTypes(judgeTypes: TypeOfJudges[]): Promise<void> {
     const fieldset = this.page.locator('#judgeTypes .govuk-fieldset');
     for (const judgeType of judgeTypes) {
@@ -239,14 +213,13 @@ export class HearingsJourneyPage {
   async setHearingPriority(priority: string): Promise<void> {
     const option = priority === 'Urgent' ? this.hearingPriorityUrgent : this.hearingPriorityStandard;
     await option.check();
-    //priority === 'Standard' ? await this.hearingPriorityStandard.check() : await this.hearingPriorityStandard.check();
   }
 
   removeLocationLink(locationName: string): Locator {
     return this.page.locator('.hmcts-filter-tags a.hmcts-filter__tag').filter({ hasText: locationName });
   }
 
-  async clickLinkToViewHearings(page: Page): Promise<void> {
+  async clickLinkToViewHearings(): Promise<void> {
     const hearingsTabLink = this.page.getByRole('link', {
       name: 'view the status of this hearing in the hearings tab',
     });
@@ -255,7 +228,7 @@ export class HearingsJourneyPage {
     await hearingsTabLink.click();
   }
 
-  async checkHearingConfirmationPage(page: Page): Promise<void> {
+  async checkHearingConfirmationPage(): Promise<void> {
     const hearingPanel = this.hearingPanelBody;
     await expect(hearingPanel, 'Hearing Confirmation Panel should be visible').toBeVisible();
     // Panel title

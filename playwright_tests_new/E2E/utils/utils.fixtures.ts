@@ -1,5 +1,4 @@
 import {
-  AxeUtils,
   BrowserUtils,
   IdamUtils,
   LighthouseUtils,
@@ -19,6 +18,7 @@ import { ValidatorUtils } from './validator.utils.js';
 import { UserUtils } from './user.utils.js';
 import { ProfessionalUserUtils } from './professional-user.utils.js';
 import { logger } from './logger.utils.js';
+import { AxeUtils } from './accessibility/axeEvidence';
 
 export interface UtilsFixtures {
   config: Config;

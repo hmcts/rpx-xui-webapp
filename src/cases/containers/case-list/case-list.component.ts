@@ -17,6 +17,7 @@ import { Store, select } from '@ngrx/store';
 import { BehaviorSubject, Observable, Subject, Subscription, combineLatest, of } from 'rxjs';
 import { mergeMap, takeUntil } from 'rxjs/operators';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
+import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import * as fromRoot from '../../../app/store';
 import { OrganisationDetails } from '../../../organisation/models';
 import * as fromStore from '../../../organisation/store';
@@ -185,8 +186,12 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public setCaseListFilterDefaults = () => {
     this.jurisdictionsBehaviourSubject$.asObservable().subscribe((jurisdictions) => {
       if (jurisdictions.length > 0) {
-        this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
-        if (this.savedQueryParams?.jurisdiction && !this.doesIdExist(this.jurisdictions, this.savedQueryParams.jurisdiction)) {
+        this.savedQueryParams = safeJsonParse(localStorage.getItem('savedQueryParams'), null);
+        if (
+          this.savedQueryParams &&
+          this.savedQueryParams.jurisdiction &&
+          !this.doesIdExist(this.jurisdictions, this.savedQueryParams.jurisdiction)
+        ) {
           this.windowService.removeLocalStorage('savedQueryParams');
         }
         if (this.savedQueryParams) {
@@ -297,8 +302,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
       caseTypeGroupFromLS = { id: this.selected.caseType.id };
       caseStateGroupFromLS = { id: this.selected.caseState ? this.selected.caseState.id : null };
     } else if (this.savedQueryParams) {
-      this.savedQueryParams = JSON.parse(localStorage.getItem('savedQueryParams'));
-      formGroupFromLS = JSON.parse(localStorage.getItem('workbasket-filter-form-group-value'));
+      this.savedQueryParams = safeJsonParse(localStorage.getItem('savedQueryParams'), null);
+      formGroupFromLS = safeJsonParse(localStorage.getItem('workbasket-filter-form-group-value'), null);
       jurisdictionFromLS = { id: this.savedQueryParams.jurisdiction };
       caseTypeGroupFromLS = { id: this.savedQueryParams['case-type'] };
       caseStateGroupFromLS = { id: this.savedQueryParams['case-state'] };

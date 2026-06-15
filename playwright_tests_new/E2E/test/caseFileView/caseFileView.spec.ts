@@ -15,11 +15,15 @@ const DOCUMENT_FILE_FOLDER_PATH = 'Miscellaneous.Other';
 const DOCUMENT_MIME_TYPE = 'application/pdf';
 const DOCUMENT_TOP_LEVEL_CATEGORY = 'Misc';
 const DOCUMENT_SUBCATEGORY = 'Other';
+const CASE_FILE_VIEW_DOCUMENT_TEST_TIMEOUT_MS =
+  Number.parseInt(process.env.PW_CASE_FILE_VIEW_DOCUMENT_TEST_TIMEOUT_MS ?? '', 10) || 300_000;
 const DOCUMENT_BUFFER = readFileSync(
   path.resolve(process.cwd(), 'playwright_tests_new/integration/testData/documents/case-file-view-document-delivery.pdf')
 );
 
 test.describe('Case file view', { tag: ['@e2e', '@e2e-case-file-view'] }, () => {
+  test.describe.configure({ timeout: CASE_FILE_VIEW_DOCUMENT_TEST_TIMEOUT_MS });
+
   const jurisdiction = 'EMPLOYMENT';
   const caseType = 'ET_EnglandWales';
   let caseNumber: string;

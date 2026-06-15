@@ -6,13 +6,12 @@ properties([
         displayName  : 'Expert UI Webapp',
         projectUrlStr: 'https://github.com/hmcts/rpx-xui-webapp/'
     ],
-    pipelineTriggers([
-    cron('30 17 * * 1-5')
-    ]),
+    // Keep master scheduled, but leave nightly-dev and PR branches manual-only.
+    pipelineTriggers(env.BRANCH_NAME == 'master' ? [cron('30 17 * * 1-5')] : []),
     parameters([
       text(
         name: 'INTEGRATION_PW_PROFILE_RUNS',
-        defaultValue: '''workers=4''',
+        defaultValue: '''workers=7''',
         description: 'Integration load-profile matrix. One run per line or semicolon. Supported keys: workers=<n> and optional shard=<index/total>.'
       ),
       string(
@@ -23,7 +22,7 @@ properties([
       string(
         name: 'INTEGRATION_PW_SHARD',
         defaultValue: '',
-        description: 'Optional Playwright integration shard override, for example 1/2. Used with INTEGRATION_PW_WORKERS.'
+        description: 'Manual diagnostic-only integration shard override, for example 1/2. Leave empty for PR timing runs because shard reports are split.'
       ),
       booleanParam(
         name: 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES',
@@ -42,39 +41,6 @@ def vault     = "rpx"
 def channel   = '#xui-pipeline'
 
 def yarnBuilder = new uk.gov.hmcts.contino.YarnBuilder(this)
-// When failFast interrupts other branches, Jenkins may surface either:
-// - FlowInterruptedException with a FailFastCause, or
-// - AbortException from a terminated `sh` (e.g. exit 143).
-// Normalize those to ABORTED so truly failing branches stay FAILED.
-def handleFailFastAbort = { Exception e ->
-    def abortedByFailFast = false
-    def failFastExitCodes = ['129', '137', '143']
-    if (e instanceof org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) {
-        try {
-            def fie = (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException) e
-            def causes = (fie.getCauses() ?: []).collect { c -> c?.getClass()?.getName() }.findAll { it }
-            abortedByFailFast = causes.any { it?.endsWith('FailFastCause') }
-            echo "[failFast] FlowInterruptedException: causes=${causes}"
-        } catch (ignored) {
-            echo "[failFast] FlowInterruptedException: causes=<unavailable>"
-        }
-    } else if (e instanceof hudson.AbortException) {
-        def msg = e.getMessage() ?: ''
-        def matcher = (msg =~ /(exit code|status)\s+(\d+)/)
-        def exitCode = matcher.find() ? matcher.group(2) : null
-        abortedByFailFast = (currentBuild?.result == 'ABORTED') || (exitCode in failFastExitCodes)
-        echo "[failFast] AbortException: buildResult=${currentBuild?.result}, exitCode=${exitCode}"
-    } else {
-        echo "[failFast] Non-abort exception: ${e.getClass().getName()}: ${e.getMessage()}"
-    }
-    if (abortedByFailFast) {
-        echo "[failFast] Marking stage as ABORTED due to failFast interruption"
-        catchError(buildResult: 'ABORTED', stageResult: 'ABORTED') { throw e }
-        return true
-    }
-    echo "[failFast] Not a failFast interruption; rethrowing"
-    return false
-}
 
 def archivePlaywrightDiagnostics = {
     steps.sh '''
@@ -98,6 +64,8 @@ def archivePlaywrightDiagnostics = {
 
 def playwrightIntegrationReportFile = 'xui-playwright-integration.html'
 def playwrightLoadProfileReportFile = 'load-profile.html'
+def playwrightA11yReportDir = 'functional-output/tests/playwright-a11y/odhin-report'
+def playwrightA11yReportFile = 'xui-playwright-a11y.html'
 
 def assertHtmlReportExists = { String reportDir, String reportFile ->
     steps.sh "test -f '${reportDir}/${reportFile}'"
@@ -115,6 +83,26 @@ def ensureHtmlReportForPublishing = { String reportDir, String reportFile, Strin
               --report-file "$PW_ODHIN_ENSURE_REPORT_FILE" \
               --suite-name "$PW_ODHIN_ENSURE_SUITE_NAME"
         '''
+    }
+}
+
+def publishPlaywrightA11yReport = { String reportName ->
+    try {
+        ensureHtmlReportForPublishing(
+            playwrightA11yReportDir,
+            playwrightA11yReportFile,
+            reportName
+        )
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "${playwrightA11yReportDir}/",
+            reportFiles          : playwrightA11yReportFile,
+            reportName           : reportName
+        ])
+    } catch (Exception e) {
+        echo "[playwright-a11y] Report publish failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
     }
 }
 
@@ -223,7 +211,7 @@ def resolveIntegrationProfileRuns = { String configuredRuns, String workersOverr
     }
     def configured = configuredRuns?.trim()
     if (!configured) {
-        configured = 'workers=4'
+        configured = 'workers=7'
     }
     return configured
         .split(/[\r\n;]+/)
@@ -232,7 +220,7 @@ def resolveIntegrationProfileRuns = { String configuredRuns, String workersOverr
 }
 
 def integrationProfileRunConfig = { String spec ->
-    def workers = '4'
+    def workers = '7'
     def shard = ''
     spec.split(/\s+/).each { token ->
         if (token.startsWith('workers=')) {
@@ -264,7 +252,6 @@ def runPlaywrightIntegrationProfileMatrix = {
               'ORG_USER_ASSIGNMENT_MODE=external',
               'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
               "FUNCTIONAL_TESTS_WORKERS=${runConfig.workers}",
-              'PLAYWRIGHT_SKIP_INSTALL=true',
               "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
             ]) {
               yarnBuilder.yarn("test:playwright:integration:raw -- --workers=${runConfig.workers}${runConfig.shardArg}")
@@ -338,6 +325,14 @@ def secrets = [
     secret('e2e-staff-admin-3-password', 'STAFF_ADMIN_3_PASSWORD'),
     secret('e2e-staff-admin-4-username', 'STAFF_ADMIN_4_USERNAME'),
     secret('e2e-staff-admin-4-password', 'STAFF_ADMIN_4_PASSWORD'),
+    secret('staff-admin-username', 'STAFF_ADMIN_USERNAME'),
+    secret('staff-admin-password', 'STAFF_ADMIN_PASSWORD'),
+    secret('e2e-iac-caseofficer-r1-username', 'PW_IAC_CASEOFFICER_R1_EMAIL'),
+    secret('e2e-iac-caseofficer-r1-password', 'PW_IAC_CASEOFFICER_R1_PASSWORD'),
+    secret('e2e-iac-caseofficer-r2-username', 'PW_IAC_CASEOFFICER_R2_EMAIL'),
+    secret('e2e-iac-caseofficer-r2-password', 'PW_IAC_CASEOFFICER_R2_PASSWORD'),
+    secret('e2e-iac-judge-wa-r1-username', 'PW_IAC_JUDGE_WA_R1_EMAIL'),
+    secret('e2e-iac-judge-wa-r1-password', 'PW_IAC_JUDGE_WA_R1_PASSWORD'),
     secret('e2e-hearing-manager-cr84-off-username', 'HEARING_MANAGER_CR84_OFF_USERNAME'),
     secret('e2e-hearing-manager-cr84-off-password', 'HEARING_MANAGER_CR84_OFF_PASSWORD'),
     secret('e2e-hearing-manager-cr84-off-1-username', 'HEARING_MANAGER_CR84_OFF_1_USERNAME'),
@@ -358,6 +353,10 @@ def secrets = [
     secret('e2e-hearing-manager-cr84-on-3-password', 'HEARING_MANAGER_CR84_ON_3_PASSWORD'),
     secret('e2e-hearing-manager-cr84-on-4-username', 'HEARING_MANAGER_CR84_ON_4_USERNAME'),
     secret('e2e-hearing-manager-cr84-on-4-password', 'HEARING_MANAGER_CR84_ON_4_PASSWORD'),
+    secret('e2e-fpl-global-search-username', 'FPL_GLOBAL_SEARCH_USERNAME'),
+    secret('e2e-fpl-global-search-password', 'FPL_GLOBAL_SEARCH_PASSWORD'),
+    secret('e2e-user-with-flags-username', 'USER_WITH_FLAGS_USERNAME'),
+    secret('e2e-user-with-flags-password', 'USER_WITH_FLAGS_PASSWORD'),
     secret('e2e-search-employment-case-username', 'SEARCH_EMPLOYMENT_CASE_USERNAME'),
     secret('e2e-search-employment-case-password', 'SEARCH_EMPLOYMENT_CASE_PASSWORD'),
     secret('e2e-restricted-case-file-view-v1-1-on-username', 'RESTRICTED_CASE_FILE_VIEW_V1_1_ON_USERNAME'),
@@ -387,6 +386,7 @@ withNightlyPipeline(type, product, component) {
     
       afterSuccess('checkout') {
         startCiLoadProfile()
+        env.PLAYWRIGHT_BROWSERS_PATH = "${env.WORKSPACE}/.cache/ms-playwright"
         stage('Yarn Install') {
           try {
             recordPlaywrightLoadEvent('Yarn install', 'start')
@@ -400,6 +400,18 @@ withNightlyPipeline(type, product, component) {
           yarnBuilder.yarn('cache clean')
         } finally {
           recordPlaywrightLoadEvent('Yarn cache clean', 'finish')
+        }
+        stage('Playwright Install All Browsers') {
+            try {
+              recordPlaywrightLoadEvent('Playwright browser install', 'start')
+              yarnBuilder.yarn('test:setup:playwright-install-all')
+              yarnBuilder.yarn('test:setup:playwright-verify-all')
+              env.PLAYWRIGHT_SKIP_INSTALL = 'true'
+            } catch (Error) {
+              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
+            } finally {
+              recordPlaywrightLoadEvent('Playwright browser install', 'finish')
+            }
         }
     }
 
@@ -439,20 +451,10 @@ withNightlyPipeline(type, product, component) {
     afterSuccess('fortify-scan') {
       try {
       recordPlaywrightLoadEvent('Nightly functional tests', 'start')
-        stage('Playwright Install All Browsers') {
-            try {
-              recordPlaywrightLoadEvent('Playwright browser install', 'start')
-              yarnBuilder.yarn('test:setup:playwright-install-all')
-            } catch (Error) {
-              error(message: "${STAGE_NAME} is unstable: " + Error.toString())
-            } finally {
-              recordPlaywrightLoadEvent('Playwright browser install', 'finish')
-            }
-        }
-
-        stage('Nightly Functional Tests (Parallel)') {
+        stage('Nightly Functional Tests (Parallel Report Gathering)') {
+            // Keep suites parallel for fast feedback, but let sibling suites publish reports when one branch fails.
             parallel(
-                failFast: true,
+                failFast: false,
                 api: {
                     stage('API Tests') {
                         try {
@@ -460,14 +462,13 @@ withNightlyPipeline(type, product, component) {
                             withEnv([
                                 'ORG_USER_ASSIGNMENT_MODE=external',
                                 'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
-                                'FUNCTIONAL_TESTS_WORKERS=4',
+                                'FUNCTIONAL_TESTS_WORKERS=6',
                                 "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
                             ]) {
                                 yarnBuilder.yarn('test:api:pw:coverage:raw')
                             }
                         } catch (Exception e) {
-                            echo "[failFast] API Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
-                            if (handleFailFastAbort(e)) { return }
+                            echo "[parallel-report-gathering] API Tests failed: ${e.getClass().getName()}: ${e.getMessage()}"
                             throw e
                         } finally {
                             recordPlaywrightLoadEvent('API', 'finish')
@@ -488,8 +489,7 @@ withNightlyPipeline(type, product, component) {
                             recordPlaywrightLoadEvent('Integration', 'start')
                             runPlaywrightIntegrationProfileMatrix()
                         } catch (Exception e) {
-                            echo "[failFast] Playwright Integration Tests catch: ${e.getClass().getName()}: ${e.getMessage()}"
-                            if (handleFailFastAbort(e)) { return }
+                            echo "[parallel-report-gathering] Playwright Integration Tests failed: ${e.getClass().getName()}: ${e.getMessage()}"
                             throw e
                         } finally {
                             recordPlaywrightLoadEvent('Integration', 'finish')
@@ -504,18 +504,16 @@ withNightlyPipeline(type, product, component) {
                             withEnv([
                                 'ORG_USER_ASSIGNMENT_MODE=external',
                                 'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
-                                'FUNCTIONAL_TESTS_WORKERS=2',
+                                'FUNCTIONAL_TESTS_WORKERS=6',
                                 'E2E_PW_INCLUDE_TAGS=@nightly',
                                 'E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none',
                                 'PW_SESSION_CAPTURE_FAILURE_TTL_MS=0',
-                                'PLAYWRIGHT_SKIP_INSTALL=true',
                                 "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
                             ]) {
                                 yarnBuilder.yarn('test:crossbrowser:raw')
                             }
                         } catch (Exception e) {
-                            echo "[failFast] Playwright E2E catch: ${e.getClass().getName()}: ${e.getMessage()}"
-                            if (handleFailFastAbort(e)) { return }
+                            echo "[parallel-report-gathering] Playwright E2E failed: ${e.getClass().getName()}: ${e.getMessage()}"
                             throw e
                         } finally {
                             recordPlaywrightLoadEvent('E2E', 'finish')
@@ -529,6 +527,33 @@ withNightlyPipeline(type, product, component) {
                             ])
                         }
                     }
+                },
+                playwrightA11y: {
+                    stage('Playwright Accessibility Tests') {
+                        try {
+                            recordPlaywrightLoadEvent('A11y', 'start')
+                            withEnv([
+                                'ORG_USER_ASSIGNMENT_MODE=external',
+                                'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
+                                'PW_A11Y_WORKERS=6',
+                                'FUNCTIONAL_TESTS_WORKERS=6',
+                                'PLAYWRIGHT_SKIP_INSTALL=true',
+                                'PW_SESSION_CAPTURE_FAILURE_TTL_MS=0',
+                                "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
+                            ]) {
+                                yarnBuilder.yarn('test:a11y:playwright')
+                            }
+                            assertHtmlReportExists(
+                                playwrightA11yReportDir,
+                                playwrightA11yReportFile
+                            )
+                        } catch (Exception e) {
+                            echo "[parallel-report-gathering] Playwright Accessibility failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
+                        } finally {
+                            recordPlaywrightLoadEvent('A11y', 'finish')
+                            publishPlaywrightA11yReport('Nightly Playwright Accessibility Test Report')
+                        }
+                    }
                 }
             )
         }
@@ -536,16 +561,6 @@ withNightlyPipeline(type, product, component) {
         recordPlaywrightLoadEvent('Nightly functional tests', 'finish')
         archivePlaywrightDiagnostics()
       }
-
-        // yarnBuilder.yarn('test:a11y')
-        // publishHTML([
-        //     allowMissing         : true,
-        //     alwaysLinkToLastBuild: true,
-        //     keepAll              : true,
-        //     reportDir            : "reports/tests/a11y/",
-        //     reportFiles          : 'Report.html',
-        //     reportName           : 'Manage Cases a11y Test Report'
-        // ])
     }
 
 

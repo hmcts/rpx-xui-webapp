@@ -6,7 +6,7 @@
 
 import { test, expect } from '@playwright/test';
 
-import { config } from '../common/apiTestConfig';
+import { config } from './utils/apiTestRuntimeConfig';
 import { __test__ as authTest } from './utils/auth';
 
 test.describe.configure({ mode: 'serial' });

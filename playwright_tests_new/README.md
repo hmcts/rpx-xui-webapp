@@ -187,8 +187,9 @@ Notes:
   - `rd-professional-api` uses the existing RD Professional internal approval endpoint.
   - `approve-org-api` uses Administer Organisations API with `PW_APPROVE_ORG_API_STORAGE_STATE`.
   - `auto` tries RD Professional first and falls back to Administer Organisations only when RD returns `403`.
+    Unsupported values fail fast instead of silently changing the approval path.
 - `PW_APPROVE_ORG_API_STORAGE_STATE` must point to a Playwright storage state captured for an approval-capable Administer Organisations user when `approve-org-api` is used. This keeps approval credentials out of test code and avoids depending on a static organisation.
-- Dynamic organisation resolution attaches and caches `approvalStrategy`, per-stage timings, `totalElapsedMs`, create/approve statuses, and poll attempts, so a run that enables this feature records the setup-time impact alongside the existing dynamic user provisioning attempts.
+- Dynamic organisation resolution only reuses a cached entry when its cache key matches the current run. The cache records `approvalStrategy`, per-stage timings, `totalElapsedMs`, create/approve statuses, and poll attempts, so a run that enables this feature records the setup-time impact alongside the existing dynamic user provisioning attempts.
 - Do not commit `.env`.
 
 ---

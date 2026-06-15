@@ -17,6 +17,7 @@ type ApiCall = {
 type DynamicOrganisationEnvSnapshot = {
   PW_DYNAMIC_ORGANISATION_MODE?: string;
   PW_DYNAMIC_ORGANISATION_RUN_ID?: string;
+  PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY?: string;
 };
 
 function response(status: number, body: unknown) {
@@ -31,6 +32,7 @@ function snapshotDynamicOrganisationEnv(): DynamicOrganisationEnvSnapshot {
   return {
     PW_DYNAMIC_ORGANISATION_MODE: process.env.PW_DYNAMIC_ORGANISATION_MODE,
     PW_DYNAMIC_ORGANISATION_RUN_ID: process.env.PW_DYNAMIC_ORGANISATION_RUN_ID,
+    PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY: process.env.PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY,
   };
 }
 
@@ -246,6 +248,24 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
       { stage: 'approve', status: 200, strategy: 'approve-org-api' },
       { stage: 'poll-active', status: 200 },
     ]);
+  });
+
+  test('approval strategy parsing accepts case-insensitive supported values and rejects invalid values', () => {
+    const originalEnv = snapshotDynamicOrganisationEnv();
+    try {
+      process.env.PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY = 'AUTO';
+      expect(organisationProvisioningTest.resolveApprovalStrategy({})).toBe('auto');
+
+      process.env.PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY = 'approve-org-api';
+      expect(organisationProvisioningTest.resolveApprovalStrategy({})).toBe('approve-org-api');
+
+      process.env.PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY = 'approve-org';
+      expect(() => organisationProvisioningTest.resolveApprovalStrategy({})).toThrow(
+        /Unsupported PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY='approve-org'/
+      );
+    } finally {
+      restoreDynamicOrganisationEnv(originalEnv);
+    }
   });
 
   test('requires an approve-org storage state when approve-org approval strategy has no injected context', async () => {
@@ -516,6 +536,64 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
         approvalStrategy: 'rd-professional-api',
         totalElapsedMs: 60,
         reusedFromCache: true,
+      });
+      expect(createCount).toBe(1);
+    } finally {
+      restoreDynamicOrganisationEnv(originalEnv);
+    }
+  });
+
+  test('resolver ignores a cache entry that belongs to a different run id', async () => {
+    const originalEnv = snapshotDynamicOrganisationEnv();
+    process.env.PW_DYNAMIC_ORGANISATION_RUN_ID = 'EXUI-4767-current-run';
+    const cache: Record<string, unknown> = {};
+    let createCount = 0;
+
+    try {
+      const result = await organisationResolverTest.resolveDynamicOrganisationId(
+        { professionalUserUtils: {} as never },
+        {
+          createApprovedOrganisation: async () => {
+            createCount += 1;
+            return {
+              organisationId: 'ORG-CURRENT',
+              name: 'PW Dynamic Org EXUI-4767-current-run',
+              status: 'ACTIVE',
+              createStatus: 201,
+              approveStatus: 200,
+              pollAttempts: 1,
+              approvalStrategy: 'rd-professional-api',
+              timings: [
+                { stage: 'create', elapsedMs: 10, status: 201 },
+                { stage: 'approve', elapsedMs: 10, status: 200, strategy: 'rd-professional-api' },
+                { stage: 'poll-active', elapsedMs: 10, status: 200 },
+              ],
+              totalElapsedMs: 30,
+            };
+          },
+          readCache: async (cachePath) => {
+            cache[cachePath] ??= {
+              organisationId: 'ORG-STALE',
+              name: 'PW Dynamic Org stale',
+              status: 'ACTIVE',
+              cacheKey: 'EXUI-4767-stale-run',
+              createdAt: '2026-06-14T00:00:00.000Z',
+            };
+            return cache[cachePath] as never;
+          },
+          writeCache: async (cachePath, entry) => {
+            cache[cachePath] = entry;
+          },
+          withLock: async (_lockPath, action) => action(),
+          nowIso: () => '2026-06-15T00:00:00.000Z',
+        }
+      );
+
+      expect(result).toMatchObject({
+        source: 'dynamic',
+        organisationId: 'ORG-CURRENT',
+        cacheKey: 'EXUI-4767-current-run',
+        reusedFromCache: false,
       });
       expect(createCount).toBe(1);
     } finally {

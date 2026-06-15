@@ -235,6 +235,13 @@ function toCachedDynamicResolution(
   };
 }
 
+function isCacheEntryForRun(
+  entry: DynamicOrganisationCacheEntry | undefined,
+  expectedCacheKey: string
+): entry is DynamicOrganisationCacheEntry {
+  return Boolean(entry && entry.cacheKey === expectedCacheKey);
+}
+
 async function createOrReuseDynamicOrganisation(
   args: ResolveDynamicOrganisationArgs,
   deps: DynamicOrganisationResolverDeps,
@@ -244,13 +251,13 @@ async function createOrReuseDynamicOrganisation(
   const cachePath = resolveCachePath(cacheKey);
   const lockPath = `${cachePath}.lock`;
   const cachedBeforeLock = await deps.readCache(cachePath);
-  if (cachedBeforeLock) {
+  if (isCacheEntryForRun(cachedBeforeLock, cacheKey)) {
     return toCachedDynamicResolution(cachedBeforeLock, cacheKey, mode);
   }
 
   return deps.withLock(lockPath, async () => {
     const cachedAfterLock = await deps.readCache(cachePath);
-    if (cachedAfterLock) {
+    if (isCacheEntryForRun(cachedAfterLock, cacheKey)) {
       return toCachedDynamicResolution(cachedAfterLock, cacheKey, mode);
     }
 

@@ -157,11 +157,17 @@ function resolvePositiveInt(value: number | undefined, envValue: string | undefi
 }
 
 function resolveApprovalStrategy(options: DynamicOrganisationProvisioningOptions): DynamicOrganisationApprovalStrategy {
-  const value = firstNonEmpty(options.approvalStrategy, process.env.PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY);
+  const rawValue = firstNonEmpty(options.approvalStrategy, process.env.PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY);
+  if (!rawValue) {
+    return 'rd-professional-api';
+  }
+  const value = rawValue.toLowerCase();
   if (value === 'rd-professional-api' || value === 'approve-org-api' || value === 'auto') {
     return value;
   }
-  return 'rd-professional-api';
+  throw new Error(
+    `Unsupported PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY='${rawValue}'. Supported values: rd-professional-api, approve-org-api, auto.`
+  );
 }
 
 function resolveApproveOrgApiBaseUrl(): string {
@@ -553,4 +559,5 @@ export const __test__ = {
   createApprovedOrganisationFlow,
   isActiveOrganisation,
   readOrganisationIdentifier,
+  resolveApprovalStrategy,
 };

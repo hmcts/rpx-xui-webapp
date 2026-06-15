@@ -2,7 +2,6 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
 import type {
-  DynamicOrganisationProvisioningError,
   DynamicOrganisationProvisioningStageTiming,
   DynamicOrganisationResolvedApprovalStrategy,
   DynamicOrganisationProvisioningOptions,
@@ -10,42 +9,23 @@ import type {
 } from '../professional-user/organisationProvisioning.js';
 import type { ProfessionalUserUtils } from '../professional-user.utils';
 
-export type DynamicOrganisationMode = 'static' | 'dynamic' | 'auto';
+export type DynamicOrganisationMode = 'dynamic';
 
-export type DynamicOrganisationAttemptFailure = {
-  attempted: true;
-  errorName: string;
-  message: string;
-  stage?: 'create' | 'approve' | 'poll-active';
-  endpoint?: string;
-  status?: number | 'timeout' | 'unknown';
+export type DynamicOrganisationResolution = {
+  source: 'dynamic';
+  organisationId: string;
+  name: string;
+  status: 'ACTIVE';
+  mode: DynamicOrganisationMode;
+  cacheKey: string;
+  createStatus?: number;
+  approveStatus?: number;
+  pollAttempts?: number;
+  approvalStrategy?: DynamicOrganisationResolvedApprovalStrategy;
   timings?: DynamicOrganisationProvisioningStageTiming[];
   totalElapsedMs?: number;
+  reusedFromCache: boolean;
 };
-
-export type DynamicOrganisationResolution =
-  | {
-      source: 'static';
-      organisationId: string;
-      mode: DynamicOrganisationMode;
-      fallbackReason: 'static-configured' | 'dynamic-disabled' | 'dynamic-failed';
-      dynamicAttempt?: DynamicOrganisationAttemptFailure;
-    }
-  | {
-      source: 'dynamic';
-      organisationId: string;
-      name: string;
-      status: 'ACTIVE';
-      mode: DynamicOrganisationMode;
-      cacheKey: string;
-      createStatus?: number;
-      approveStatus?: number;
-      pollAttempts?: number;
-      approvalStrategy?: DynamicOrganisationResolvedApprovalStrategy;
-      timings?: DynamicOrganisationProvisioningStageTiming[];
-      totalElapsedMs?: number;
-      reusedFromCache: boolean;
-    };
 
 type DynamicOrganisationCacheEntry = {
   organisationId: string;
@@ -76,10 +56,8 @@ type DynamicOrganisationResolverDeps = {
   nowIso: () => string;
 };
 
-const truthyValues = new Set(['1', 'true', 'yes', 'on']);
 const DEFAULT_LOCK_TIMEOUT_MS = 60_000;
 const DEFAULT_LOCK_POLL_INTERVAL_MS = 250;
-const DYNAMIC_ORGANISATION_MODES = new Set<DynamicOrganisationMode>(['static', 'dynamic', 'auto']);
 
 function firstNonEmpty(...values: Array<string | undefined>): string | undefined {
   for (const value of values) {
@@ -89,30 +67,14 @@ function firstNonEmpty(...values: Array<string | undefined>): string | undefined
   return undefined;
 }
 
-function isTruthy(value: string | undefined): boolean {
-  return truthyValues.has((value ?? '').trim().toLowerCase());
-}
-
-function resolveExplicitDynamicOrganisationMode(): DynamicOrganisationMode | undefined {
+function resolveDynamicOrganisationMode(): 'dynamic' {
   const mode = firstNonEmpty(process.env.PW_DYNAMIC_ORGANISATION_MODE)?.toLowerCase();
-  if (DYNAMIC_ORGANISATION_MODES.has(mode as DynamicOrganisationMode)) {
-    return mode as DynamicOrganisationMode;
-  }
-  if (isTruthy(process.env.PW_DYNAMIC_ORGANISATION_REQUIRED)) {
+  if (!mode || mode === 'dynamic') {
     return 'dynamic';
   }
-  if (isTruthy(process.env.PW_DYNAMIC_ORGANISATION_FALLBACK_TO_STATIC)) {
-    return 'auto';
-  }
-  return undefined;
-}
-
-function resolveDynamicOrganisationMode(staticOrganisationId: string | undefined): DynamicOrganisationMode {
-  const explicitMode = resolveExplicitDynamicOrganisationMode();
-  if (explicitMode) return explicitMode;
-  if (staticOrganisationId) return 'static';
-  if (isTruthy(process.env.PW_DYNAMIC_ORGANISATION_ENABLED)) return 'dynamic';
-  return 'static';
+  throw new Error(
+    `Unsupported PW_DYNAMIC_ORGANISATION_MODE='${mode}'. Static organisation fallback has been retired; use dynamic organisation provisioning.`
+  );
 }
 
 function sanitizeCacheKey(value: string): string {
@@ -156,20 +118,6 @@ function resolveDynamicOrganisationOptions(cacheKey: string): DynamicOrganisatio
     runId: cacheKey,
     name: firstNonEmpty(process.env.PW_DYNAMIC_ORGANISATION_NAME),
     superUserEmail: firstNonEmpty(process.env.PW_DYNAMIC_ORGANISATION_SUPER_USER_EMAIL),
-  };
-}
-
-function toDynamicAttemptFailure(error: unknown): DynamicOrganisationAttemptFailure {
-  const provisioningError = error as Partial<DynamicOrganisationProvisioningError>;
-  return {
-    attempted: true,
-    errorName: error instanceof Error ? error.name : 'UnknownError',
-    message: error instanceof Error ? error.message : String(error),
-    stage: provisioningError.stage,
-    endpoint: provisioningError.endpoint,
-    status: provisioningError.status,
-    timings: provisioningError.timings,
-    totalElapsedMs: provisioningError.totalElapsedMs,
   };
 }
 
@@ -331,46 +279,11 @@ export async function resolveDynamicOrganisationId(
   args: ResolveDynamicOrganisationArgs,
   deps: DynamicOrganisationResolverDeps = DEFAULT_DEPS
 ): Promise<DynamicOrganisationResolution> {
-  const staticOrganisationId = process.env.TEST_SOLICITOR_ORGANISATION_ID?.trim();
-  const mode = resolveDynamicOrganisationMode(staticOrganisationId);
-
-  if (mode === 'static') {
-    if (!staticOrganisationId) {
-      throw new Error(
-        'Missing dynamic-user prerequisite: TEST_SOLICITOR_ORGANISATION_ID. Set TEST_SOLICITOR_ORGANISATION_ID or enable PW_DYNAMIC_ORGANISATION_MODE=dynamic.'
-      );
-    }
-    return {
-      source: 'static',
-      organisationId: staticOrganisationId,
-      mode,
-      fallbackReason: isTruthy(process.env.PW_DYNAMIC_ORGANISATION_ENABLED) ? 'static-configured' : 'dynamic-disabled',
-    };
-  }
-
-  if (mode === 'dynamic') {
-    return createOrReuseDynamicOrganisation(args, deps, mode);
-  }
-
-  try {
-    return await createOrReuseDynamicOrganisation(args, deps, mode);
-  } catch (error) {
-    if (!staticOrganisationId) {
-      throw error;
-    }
-    return {
-      source: 'static',
-      organisationId: staticOrganisationId,
-      mode,
-      fallbackReason: 'dynamic-failed',
-      dynamicAttempt: toDynamicAttemptFailure(error),
-    };
-  }
+  return createOrReuseDynamicOrganisation(args, deps, resolveDynamicOrganisationMode());
 }
 
 export const __test__ = {
   resolveDynamicOrganisationId,
   resolveDynamicOrganisationMode,
   sanitizeCacheKey,
-  toDynamicAttemptFailure,
 };

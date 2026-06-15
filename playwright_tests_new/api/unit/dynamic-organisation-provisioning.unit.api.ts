@@ -15,11 +15,7 @@ type ApiCall = {
 };
 
 type DynamicOrganisationEnvSnapshot = {
-  TEST_SOLICITOR_ORGANISATION_ID?: string;
-  PW_DYNAMIC_ORGANISATION_ENABLED?: string;
   PW_DYNAMIC_ORGANISATION_MODE?: string;
-  PW_DYNAMIC_ORGANISATION_REQUIRED?: string;
-  PW_DYNAMIC_ORGANISATION_FALLBACK_TO_STATIC?: string;
   PW_DYNAMIC_ORGANISATION_RUN_ID?: string;
 };
 
@@ -33,11 +29,7 @@ function response(status: number, body: unknown) {
 
 function snapshotDynamicOrganisationEnv(): DynamicOrganisationEnvSnapshot {
   return {
-    TEST_SOLICITOR_ORGANISATION_ID: process.env.TEST_SOLICITOR_ORGANISATION_ID,
-    PW_DYNAMIC_ORGANISATION_ENABLED: process.env.PW_DYNAMIC_ORGANISATION_ENABLED,
     PW_DYNAMIC_ORGANISATION_MODE: process.env.PW_DYNAMIC_ORGANISATION_MODE,
-    PW_DYNAMIC_ORGANISATION_REQUIRED: process.env.PW_DYNAMIC_ORGANISATION_REQUIRED,
-    PW_DYNAMIC_ORGANISATION_FALLBACK_TO_STATIC: process.env.PW_DYNAMIC_ORGANISATION_FALLBACK_TO_STATIC,
     PW_DYNAMIC_ORGANISATION_RUN_ID: process.env.PW_DYNAMIC_ORGANISATION_RUN_ID,
   };
 }
@@ -338,10 +330,8 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
     });
   });
 
-  test('resolver prefers static organisation id over dynamic creation', async () => {
+  test('resolver creates a dynamic organisation by default without a static organisation id', async () => {
     const originalEnv = snapshotDynamicOrganisationEnv();
-    process.env.TEST_SOLICITOR_ORGANISATION_ID = 'static-org';
-    process.env.PW_DYNAMIC_ORGANISATION_ENABLED = '1';
     delete process.env.PW_DYNAMIC_ORGANISATION_MODE;
     let createCount = 0;
 
@@ -351,7 +341,17 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
         {
           createApprovedOrganisation: async () => {
             createCount += 1;
-            throw new Error('should not create when static org is set');
+            return {
+              organisationId: 'ORG-DEFAULT',
+              name: 'PW Dynamic Org local',
+              status: 'ACTIVE',
+              createStatus: 201,
+              approveStatus: 200,
+              pollAttempts: 1,
+              approvalStrategy: 'rd-professional-api',
+              timings: [{ stage: 'create', elapsedMs: 10, status: 201 }],
+              totalElapsedMs: 10,
+            };
           },
           readCache: async () => undefined,
           writeCache: async () => undefined,
@@ -360,13 +360,14 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
         }
       );
 
-      expect(result).toEqual({
-        source: 'static',
-        organisationId: 'static-org',
-        mode: 'static',
-        fallbackReason: 'static-configured',
+      expect(result).toMatchObject({
+        source: 'dynamic',
+        organisationId: 'ORG-DEFAULT',
+        mode: 'dynamic',
+        cacheKey: 'local',
+        reusedFromCache: false,
       });
-      expect(createCount).toBe(0);
+      expect(createCount).toBe(1);
     } finally {
       restoreDynamicOrganisationEnv(originalEnv);
     }
@@ -374,8 +375,6 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
 
   test('resolver creates and caches one active organisation when dynamic mode is enabled', async () => {
     const originalEnv = snapshotDynamicOrganisationEnv();
-    delete process.env.TEST_SOLICITOR_ORGANISATION_ID;
-    process.env.PW_DYNAMIC_ORGANISATION_ENABLED = 'true';
     process.env.PW_DYNAMIC_ORGANISATION_RUN_ID = 'EXUI-4767/run 1';
     delete process.env.PW_DYNAMIC_ORGANISATION_MODE;
 
@@ -472,58 +471,26 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
     }
   });
 
-  test('resolver auto mode falls back to static org and attaches sanitized dynamic failure evidence', async () => {
+  test('resolver rejects deprecated static or auto modes now that static org fallback is retired', async () => {
     const originalEnv = snapshotDynamicOrganisationEnv();
-    process.env.TEST_SOLICITOR_ORGANISATION_ID = 'static-org';
-    process.env.PW_DYNAMIC_ORGANISATION_MODE = 'auto';
-    process.env.PW_DYNAMIC_ORGANISATION_RUN_ID = 'EXUI-4767-auto';
-
     try {
-      const result = await organisationResolverTest.resolveDynamicOrganisationId(
-        { professionalUserUtils: {} as never },
-        {
-          createApprovedOrganisation: async () => {
-            const error = new DynamicOrganisationProvisioningError(
-              'approve',
-              '/refdata/internal/v1/organisations/ORG-403',
-              403,
-              'PW Dynamic Org EXUI-4767-auto',
-              { message: 'forbidden' }
-            );
-            error.timings = [
-              { stage: 'create', elapsedMs: 20, status: 201 },
-              { stage: 'approve', elapsedMs: 30, status: 403, strategy: 'rd-professional-api' },
-            ];
-            error.totalElapsedMs = 50;
-            throw error;
-          },
-          readCache: async () => undefined,
-          writeCache: async () => undefined,
-          withLock: async (_lockPath, action) => action(),
-          nowIso: () => '2026-06-15T00:00:00.000Z',
-        }
-      );
-
-      expect(result).toEqual({
-        source: 'static',
-        organisationId: 'static-org',
-        mode: 'auto',
-        fallbackReason: 'dynamic-failed',
-        dynamicAttempt: {
-          attempted: true,
-          errorName: 'DynamicOrganisationProvisioningError',
-          message:
-            'Dynamic organisation approve failed for \'PW Dynamic Org EXUI-4767-auto\' at /refdata/internal/v1/organisations/ORG-403: status=403, response={"message":"forbidden"}',
-          stage: 'approve',
-          endpoint: '/refdata/internal/v1/organisations/ORG-403',
-          status: 403,
-          timings: [
-            { stage: 'create', elapsedMs: 20, status: 201 },
-            { stage: 'approve', elapsedMs: 30, status: 403, strategy: 'rd-professional-api' },
-          ],
-          totalElapsedMs: 50,
-        },
-      });
+      for (const deprecatedMode of ['static', 'auto']) {
+        process.env.PW_DYNAMIC_ORGANISATION_MODE = deprecatedMode;
+        await expect(
+          organisationResolverTest.resolveDynamicOrganisationId(
+            { professionalUserUtils: {} as never },
+            {
+              createApprovedOrganisation: async () => {
+                throw new Error('deprecated mode should fail before provisioning');
+              },
+              readCache: async () => undefined,
+              writeCache: async () => undefined,
+              withLock: async (_lockPath, action) => action(),
+              nowIso: () => '2026-06-15T00:00:00.000Z',
+            }
+          )
+        ).rejects.toThrow(/Static organisation fallback has been retired/);
+      }
     } finally {
       restoreDynamicOrganisationEnv(originalEnv);
     }
@@ -531,7 +498,6 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
 
   test('resolver dynamic mode does not fall back to static org when approval fails', async () => {
     const originalEnv = snapshotDynamicOrganisationEnv();
-    process.env.TEST_SOLICITOR_ORGANISATION_ID = 'static-org';
     process.env.PW_DYNAMIC_ORGANISATION_MODE = 'dynamic';
 
     try {
@@ -563,9 +529,8 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
     }
   });
 
-  test('resolver explicit dynamic mode creates a dynamic org even when a static org is configured', async () => {
+  test('resolver explicit dynamic mode creates a dynamic org', async () => {
     const originalEnv = snapshotDynamicOrganisationEnv();
-    process.env.TEST_SOLICITOR_ORGANISATION_ID = 'static-org';
     process.env.PW_DYNAMIC_ORGANISATION_MODE = 'dynamic';
     process.env.PW_DYNAMIC_ORGANISATION_RUN_ID = 'EXUI-4767-dynamic';
 

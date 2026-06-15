@@ -10,7 +10,6 @@ import { uploadEmploymentDraftDocument } from '../../utils/test-setup/journeys/e
 import { buildCasePayloadFromTemplate } from '../../utils/test-setup/payloads/registry';
 import { setupCaseForJourney } from '../../utils/test-setup/caseSetup';
 import { RuntimeUserAlias, getRuntimeUserCredentialEnvMapping } from '../../utils/runtimeUserCredentials';
-import { UserUtils } from '../../utils/user.utils';
 
 const logger = createLogger({ serviceName: 'document-upload-tests', format: 'pretty' });
 const DOCUMENT_UPLOAD_SUBMIT_TIMEOUT_MS = 60_000;
@@ -31,23 +30,6 @@ const SESSION_BOOTSTRAP_TIMEOUT_MS =
 // when both aliases bootstrap concurrently in the same worker.
 test.describe.configure({ mode: 'serial', timeout: DOCUMENT_UPLOAD_TEST_TIMEOUT_MS });
 
-function assertAliasCredentialsPresent(alias: string): void {
-  try {
-    new UserUtils().getUserCredentials(alias);
-    return;
-  } catch (error) {
-    const mapping = getRuntimeUserCredentialEnvMapping(alias);
-    if (!mapping) {
-      throw new Error(`Document upload tests require alias '${alias}' to be configured.`, { cause: error });
-    }
-
-    throw new Error(
-      `Document upload tests require credentials for alias '${alias}' via env vars '${mapping.username}' and '${mapping.password}'.`,
-      { cause: error }
-    );
-  }
-}
-
 function assertRuntimeAliasConfigured(alias: string): void {
   const mapping = getRuntimeUserCredentialEnvMapping(alias);
   if (!mapping) {
@@ -58,9 +40,7 @@ function assertRuntimeAliasConfigured(alias: string): void {
 test.beforeAll(async ({ browserName: _browserName }, testInfo) => {
   testInfo.setTimeout(SESSION_BOOTSTRAP_TIMEOUT_MS);
   assertRuntimeAliasConfigured(RuntimeUserAlias.DIVORCE_SOLICITOR);
-  assertAliasCredentialsPresent(RuntimeUserAlias.DIVORCE_SOLICITOR);
   assertRuntimeAliasConfigured(RuntimeUserAlias.SEARCH_EMPLOYMENT_CASE);
-  assertAliasCredentialsPresent(RuntimeUserAlias.SEARCH_EMPLOYMENT_CASE);
   await ensureSession(RuntimeUserAlias.DIVORCE_SOLICITOR);
   await ensureSession(RuntimeUserAlias.SEARCH_EMPLOYMENT_CASE);
 });

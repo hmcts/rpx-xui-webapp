@@ -157,11 +157,7 @@ Dynamic-user keys now available in Key Vault (`rpx-aat`, `rpx-demo`) and populat
 - `ORG_USER_ASSIGNMENT_REDIRECT_URI`
 - `ORG_USER_ASSIGNMENT_UI_USER`
 - `ORG_USER_ASSIGNMENT_USER_ROLES`
-- `TEST_SOLICITOR_ORGANISATION_ID`
-- `PW_DYNAMIC_ORGANISATION_ENABLED`
 - `PW_DYNAMIC_ORGANISATION_MODE`
-- `PW_DYNAMIC_ORGANISATION_REQUIRED`
-- `PW_DYNAMIC_ORGANISATION_FALLBACK_TO_STATIC`
 - `PW_DYNAMIC_ORGANISATION_RUN_ID`
 - `PW_DYNAMIC_ORGANISATION_NAME_PREFIX`
 - `PW_DYNAMIC_ORGANISATION_CACHE_DIR`
@@ -184,13 +180,8 @@ These are populated from Key Vault using the same `e2e=<ENV_VAR_NAME>` tag conve
 Notes:
 
 - Local dynamic-user creation requires F5 VPN (AAT/DEMO private services).
-- `TEST_SOLICITOR_ORGANISATION_ID` remains the default static path. With no explicit dynamic-org mode, the framework uses this value when it is present; if it is unset and `PW_DYNAMIC_ORGANISATION_ENABLED=1`, the framework creates and approves one run-scoped organisation, caches its id under `test-results/dynamic-organisations/`, and passes that id into the existing dynamic solicitor user creation flow.
-- `PW_DYNAMIC_ORGANISATION_MODE` controls rollout safety:
-  - `static` requires `TEST_SOLICITOR_ORGANISATION_ID` and never attempts dynamic org creation.
-  - `auto` attempts dynamic org creation first, but falls back to `TEST_SOLICITOR_ORGANISATION_ID` when dynamic approval fails. The attached `*-dynamic-organisation.json` evidence includes the failed dynamic attempt, stage, status, timings, and fallback reason.
-  - `dynamic` requires the full dynamic create -> approve -> active-poll path to pass and does not fall back to a static org, even if `TEST_SOLICITOR_ORGANISATION_ID` is configured.
-- `PW_DYNAMIC_ORGANISATION_REQUIRED=1` is an alias for `PW_DYNAMIC_ORGANISATION_MODE=dynamic`. `PW_DYNAMIC_ORGANISATION_FALLBACK_TO_STATIC=1` is an alias for `PW_DYNAMIC_ORGANISATION_MODE=auto`.
-- Retire the static organisation only after a live AAT/CI run succeeds with `PW_DYNAMIC_ORGANISATION_MODE=dynamic` through organisation creation, approval, dynamic solicitor creation, and EXUI login/readiness.
+- Dynamic solicitor-style users create or reuse one run-scoped approved organisation. The static `TEST_SOLICITOR_ORGANISATION_ID` fallback has been retired.
+- `PW_DYNAMIC_ORGANISATION_MODE` is optional and only supports `dynamic`. Deprecated `static` and `auto` values fail fast so CI cannot silently fall back to a shared organisation.
 - Set `PW_DYNAMIC_ORGANISATION_RUN_ID` in CI to keep parallel workers in the same framework run on one approved organisation. If it is unset, the resolver falls back to CI run identifiers where available and then to `local`.
 - `PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY` controls how the pending organisation is approved:
   - `rd-professional-api` uses the existing RD Professional internal approval endpoint.

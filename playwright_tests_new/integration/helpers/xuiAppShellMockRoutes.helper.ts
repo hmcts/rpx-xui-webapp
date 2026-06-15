@@ -1,5 +1,13 @@
 import { createRequire } from 'node:module';
 import type { Page } from '@playwright/test';
+import {
+  buildSupportedAMRoleAssignments,
+  defaultAMSupportedJurisdictions,
+  defaultAMSupportedRoleCategories,
+  defaultAMSupportedRoleTypes,
+  defaultStaffAMMenuRole,
+  uniqueRoles,
+} from './amRoleAssignmentMock.helper';
 
 const require = createRequire(import.meta.url);
 
@@ -30,6 +38,9 @@ export interface XuiAppShellBaseRoutesOptions {
   userDetails?: XuiAppShellUserDetailsOptions;
   environmentConfig?: XuiAppShellEnvironmentConfigOptions;
   clientContextFeatureFlags?: Record<string, unknown>;
+  waSupportedJurisdictions?: string[];
+  waSupportedRoleCategories?: string[];
+  waSupportedRoleTypes?: string[];
 }
 
 function deepClone<T>(value: T): T {
@@ -37,7 +48,7 @@ function deepClone<T>(value: T): T {
 }
 
 export function buildXuiAppShellUserDetailsMock(options?: XuiAppShellUserDetailsOptions) {
-  const roles = options?.roles ?? ['caseworker-ia-caseofficer', 'caseworker-ia-admofficer'];
+  const roles = options?.roles ?? uniqueRoles(['caseworker-ia-caseofficer', 'caseworker-ia-admofficer', defaultStaffAMMenuRole]);
   const userId = options?.userId ?? 'wave2-user-id';
 
   return {
@@ -56,7 +67,7 @@ export function buildXuiAppShellUserDetailsMock(options?: XuiAppShellUserDetails
       roleCategory: options?.roleCategory ?? 'LEGAL_OPERATIONS',
       roles,
     },
-    roleAssignmentInfo: deepClone(options?.roleAssignmentInfo ?? []),
+    roleAssignmentInfo: deepClone(options?.roleAssignmentInfo ?? buildSupportedAMRoleAssignments([defaultStaffAMMenuRole])),
   };
 }
 
@@ -155,7 +166,23 @@ export async function setupXuiAppShellBaseRoutes(page: Page, options?: XuiAppShe
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify([]),
+      body: JSON.stringify(options?.waSupportedJurisdictions ?? defaultAMSupportedJurisdictions),
+    });
+  });
+
+  await page.route('**/api/wa-supported-role-details/getRoleCategories*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(options?.waSupportedRoleCategories ?? defaultAMSupportedRoleCategories),
+    });
+  });
+
+  await page.route('**/api/wa-supported-role-details/getRoleTypes*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(options?.waSupportedRoleTypes ?? defaultAMSupportedRoleTypes),
     });
   });
 

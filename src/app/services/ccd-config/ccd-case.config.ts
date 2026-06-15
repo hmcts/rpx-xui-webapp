@@ -12,6 +12,10 @@ import { DeploymentEnvironmentEnum } from '../../enums/deployment-environment-en
 import { LoggerService } from '../logger/logger.service';
 
 type ConfigValue = string | boolean | Array<string> | object;
+type WAConfig = {
+  wa_supported_role_categories?: unknown;
+  wa_supported_role_types?: unknown;
+};
 /**
  * https://tools.hmcts.net/confluence/pages/viewpage.action?pageId=797343913#Integrationsteps-Caseview(`ccd-case-view`)
  * explains why this is needed
@@ -77,6 +81,21 @@ export class AppConfig extends AbstractAppConfig {
     };
     ob.subscribe(cbFn);
     obArray.push(ob);
+  }
+
+  private static normaliseStringList(value: unknown): string[] {
+    if (Array.isArray(value)) {
+      return value.filter((item): item is string => typeof item === 'string');
+    }
+
+    if (typeof value !== 'string') {
+      return [];
+    }
+
+    return value
+      .split(',')
+      .map((item) => item.trim())
+      .filter(Boolean);
   }
 
   // Add a named attribute to an object in a properly typed way
@@ -284,10 +303,10 @@ export class AppConfig extends AbstractAppConfig {
   }
 
   public getWASupportedRoleCategories(): string[] {
-    return this.config.wa_supported_role_categories || [];
+    return AppConfig.normaliseStringList((this.config as CaseEditorConfig & WAConfig).wa_supported_role_categories);
   }
 
   public getWASupportedRoleTypes(): string[] {
-    return this.config.wa_supported_role_types || [];
+    return AppConfig.normaliseStringList((this.config as CaseEditorConfig & WAConfig).wa_supported_role_types);
   }
 }

@@ -57,6 +57,23 @@ test.describe('XUI app shell mock routes helper', { tag: '@svc-internal' }, () =
     expect(userDetails.roleAssignmentInfo).toEqual([{ jurisdiction: 'IA', roleType: 'ORGANISATION' }]);
   });
 
+  test('builds a default user that satisfies AM-backed staff navigation roles', () => {
+    const userDetails = buildXuiAppShellUserDetailsMock();
+
+    expect(userDetails.userInfo.roles).toEqual(
+      expect.arrayContaining(['caseworker-ia-caseofficer', 'caseworker-ia-admofficer', 'hmcts-legal-operations'])
+    );
+    expect(userDetails.roleAssignmentInfo).toEqual([
+      expect.objectContaining({
+        jurisdiction: 'IA',
+        roleCategory: 'LEGAL_OPERATIONS',
+        roleName: 'hmcts-legal-operations',
+        roleType: 'ORGANISATION',
+        substantive: 'Y',
+      }),
+    ]);
+  });
+
   test('builds environment config with work-allocation defaults enabled', () => {
     const environmentConfig = buildXuiAppShellEnvironmentConfigMock({
       accessManagementEnabled: true,
@@ -114,6 +131,8 @@ test.describe('XUI app shell mock routes helper', { tag: '@svc-internal' }, () =
       '**/api/role-access/roles/manageLabellingRoleAssignment/**',
       '**/api/role-access/roles/access-get-by-caseId*',
       '**/api/wa-supported-jurisdiction/get*',
+      '**/api/wa-supported-role-details/getRoleCategories*',
+      '**/api/wa-supported-role-details/getRoleTypes*',
       '**/workallocation/caseworker/getUsersByServiceName*',
       '**/api/prd/judicial/searchJudicialUserByIdamId*',
       '**/api/role-access/roles/getJudicialUsers*',
@@ -138,7 +157,28 @@ test.describe('XUI app shell mock routes helper', { tag: '@svc-internal' }, () =
         roles: ['caseworker-ia'],
       })
     );
-    expect(fulfilledBodies[9]).toEqual([
+    expect(fulfilledBodies[5]).toEqual([
+      {
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(['IA']),
+      },
+    ]);
+    expect(fulfilledBodies[6]).toEqual([
+      {
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(['LEGAL_OPERATIONS', 'ADMIN', 'CTSC', 'JUDICIAL']),
+      },
+    ]);
+    expect(fulfilledBodies[7]).toEqual([
+      {
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(['ORGANISATION']),
+      },
+    ]);
+    expect(fulfilledBodies[11]).toEqual([
       {
         status: 200,
         contentType: 'application/json',

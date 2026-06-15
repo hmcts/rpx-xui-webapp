@@ -5,6 +5,14 @@ import {
   assertValidWorkAllocationTaskListMock,
 } from './workAllocationMockValidation.helper';
 import { setupCaseworkerJurisdictionsRoute, type SupportedJurisdictionDetail } from './caseworkerJurisdictionMockRoutes.helper';
+import {
+  buildSupportedAMRoleAssignments,
+  defaultAMSupportedRoleCategories,
+  defaultAMSupportedRoleTypes,
+  defaultStaffAMMenuRole,
+  ensureSupportedAMRoleAssignment,
+  uniqueRoles,
+} from './amRoleAssignmentMock.helper';
 
 export const taskListRoutePattern = /\/workallocation\/task(?:\?.*)?$/;
 const defaultSupportedJurisdictionsMock = ['IA', 'SSCS', 'Other'];
@@ -19,6 +27,7 @@ export type TaskListBootstrapRoleAssignment = Record<string, unknown> & {
   bookable?: boolean | string;
   jurisdiction: string;
   region?: string;
+  roleCategory?: string;
   roleName?: string;
   roleType: string;
   substantive?: boolean | string;
@@ -57,10 +66,6 @@ export const defaultSupportedJurisdictionDetailsMock: SupportedJurisdictionDetai
   defaultSupportedJurisdictionsMock
 );
 
-const defaultWASupportedRoleCategories = ['LEGAL_OPERATIONS', 'ADMIN', 'CTSC', 'JUDICIAL'];
-
-const defaultWASupportedRoleTypes = ['ORGANISATION'];
-
 const defaultTaskListLocationMock = {
   epimms_id: '765324',
   site_name: 'Taylor House',
@@ -90,17 +95,25 @@ export async function setupTaskListBootstrapRoutes(
   const existingRoles = Array.isArray(userDetails.userInfo.roles)
     ? userDetails.userInfo.roles.filter((role): role is string => typeof role === 'string')
     : [];
-  userDetails.userInfo.roles = Array.from(new Set([...existingRoles, ...(userOptions.roles ?? []), 'task-supervisor']));
+  userDetails.userInfo.roles = uniqueRoles([
+    ...existingRoles,
+    ...(userOptions.roles ?? []),
+    'task-supervisor',
+    defaultStaffAMMenuRole,
+  ]);
   userDetails.userInfo.roleCategory = userOptions.roleCategory ?? 'LEGAL_OPERATIONS';
-  const routeRoleAssignments =
-    userOptions.roleAssignments ??
-    supportedJurisdictions.map((jurisdiction) => ({
-      jurisdiction,
-      roleName: 'task-supervisor',
-      roleType: 'ORGANISATION',
-      substantive: 'Y',
-      roleCategory: userOptions.roleCategory ?? 'LEGAL_OPERATIONS',
-    }));
+  const routeRoleAssignments = userOptions.roleAssignments
+    ? ensureSupportedAMRoleAssignment(userOptions.roleAssignments, defaultStaffAMMenuRole, supportedJurisdictions)
+    : [
+        ...supportedJurisdictions.map((jurisdiction) => ({
+          jurisdiction,
+          roleCategory: userOptions.roleCategory ?? 'LEGAL_OPERATIONS',
+          roleName: 'task-supervisor',
+          roleType: 'ORGANISATION',
+          substantive: 'Y',
+        })),
+        ...buildSupportedAMRoleAssignments([defaultStaffAMMenuRole], supportedJurisdictions),
+      ];
   userDetails.roleAssignmentInfo = [
     ...(userOptions.replaceRoleAssignments
       ? []
@@ -190,7 +203,7 @@ export async function setupTaskListBootstrapRoutes(
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(defaultWASupportedRoleCategories),
+      body: JSON.stringify(defaultAMSupportedRoleCategories),
     });
   });
 
@@ -198,7 +211,7 @@ export async function setupTaskListBootstrapRoutes(
     await route.fulfill({
       status: 200,
       contentType: 'application/json',
-      body: JSON.stringify(defaultWASupportedRoleTypes),
+      body: JSON.stringify(defaultAMSupportedRoleTypes),
     });
   });
 

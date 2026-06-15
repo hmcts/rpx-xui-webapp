@@ -28,7 +28,7 @@ test.describe('Verify users can switch the language', { tag: ['@integration', '@
     await test.step('Change the language to Welsh', async () => {
       await Promise.all([
         page.waitForResponse((response) => response.url().includes('/api/translation/cy') && response.status() === 500),
-        caseListPage.exuiHeader.switchLanguage('Cymraeg'),
+        caseListPage.exuiHeader.switchLanguage('Cymraeg', { waitForTranslatedContent: false }),
       ]);
       await caseListPage.exuiSpinnerComponent.wait();
       await page.waitForLoadState('domcontentloaded');

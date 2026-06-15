@@ -2,6 +2,20 @@ import { expect, test } from '../../../E2E/fixtures';
 import { applySessionCookies, myWorkSelectableLocations, setupMyWorkFilterRoutes } from '../../helpers';
 
 const authenticatedUserIdentifier = 'STAFF_ADMIN';
+const myWorkFilterTabs = [
+  {
+    name: 'Available tasks',
+    urlPattern: /\/work\/my-work\/available(?:\?.*)?$/,
+  },
+  {
+    name: 'My cases',
+    urlPattern: /\/work\/my-work\/my-cases(?:\?.*)?$/,
+  },
+  {
+    name: 'My tasks',
+    urlPattern: /\/work\/my-work\/list(?:\?.*)?$/,
+  },
+];
 
 test.describe('My work filter parity', { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   test.beforeEach(async ({ page }) => {
@@ -37,7 +51,7 @@ test.describe('My work filter parity', { tag: ['@integration', '@integration-man
       await expect(taskListPage.taskListFilterToggle).toHaveText('Hide work filter');
       await taskListPage.waitForServiceFilterOptionVisible('Immigration and Asylum');
       await taskListPage.waitForServiceFilterOptionVisible('Social security and child support');
-      await expect(taskListPage.filterPanel).toContainText('Search for a location by name');
+      await expect(taskListPage.filterPanel.locator('#locations:visible').first()).toBeVisible();
 
       await taskListPage.applyCurrentFilters();
       await expect(taskListPage.taskListFilterToggle).toHaveText('Show work filter');
@@ -45,8 +59,11 @@ test.describe('My work filter parity', { tag: ['@integration', '@integration-man
     });
 
     await test.step('Verify the same Services and Locations filter surface on Available tasks, My cases, and My tasks', async () => {
-      for (const tabName of ['Available tasks', 'My cases', 'My tasks']) {
-        await taskListPage.taskTableTabs.filter({ hasText: tabName }).first().click();
+      for (const { name: tabName, urlPattern } of myWorkFilterTabs) {
+        await Promise.all([
+          page.waitForURL(urlPattern, { timeout: 30_000 }),
+          taskListPage.taskTableTabs.filter({ hasText: tabName }).first().click(),
+        ]);
         await taskListPage.waitForTaskListShellReady(`${tabName} filter parity`);
         await expect(taskListPage.taskListFilterToggle).toHaveText('Show work filter');
 
@@ -54,7 +71,7 @@ test.describe('My work filter parity', { tag: ['@integration', '@integration-man
         await expect(taskListPage.taskListFilterToggle).toHaveText('Hide work filter');
         await taskListPage.waitForServiceFilterOptionVisible('Immigration and Asylum');
         await taskListPage.waitForServiceFilterOptionVisible('Social security and child support');
-        await expect(taskListPage.filterPanel).toContainText('Search for a location by name');
+        await expect(taskListPage.filterPanel.locator('#locations:visible').first()).toBeVisible();
 
         await taskListPage.applyCurrentFilters();
         await expect(taskListPage.taskListFilterToggle).toHaveText('Show work filter');

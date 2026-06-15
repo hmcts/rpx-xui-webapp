@@ -4,7 +4,7 @@ import 'mocha';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import { http } from '../lib/http';
-import { getLocations } from './index';
+import { getLocations, getLocationsById } from './index';
 import { mockLocations } from './locationTestData.spec';
 
 // Import sinon-chai using require to avoid ES module issues
@@ -212,6 +212,38 @@ describe('Fee Pay Judge', () => {
         console.log(err.stack);
         throw new Error(err);
       }
+    });
+  });
+
+  describe('getLocationsById', () => {
+    it('should use the first mapped service code when building the specific location URL', async () => {
+      spy = sandbox.stub(http, GET).resolves({ status: 200, data: mockLocations });
+      const req = mockReq({
+        body: {
+          locations: [{ locationId: '2345', services: ['CIVIL'] }],
+        },
+      });
+      const response = mockRes();
+
+      await getLocationsById(req, response, next);
+
+      expect(spy.firstCall.args[0]).to.contain('/refdata/location/court-venues?epimms_id=2345&service_code=AAA6');
+      expect(response.send).to.have.been.calledWith([mockLocations[2]]);
+    });
+
+    it('should pass through an existing service code when building the specific location URL', async () => {
+      spy = sandbox.stub(http, GET).resolves({ status: 200, data: mockLocations });
+      const req = mockReq({
+        body: {
+          locations: [{ locationId: '2345', services: ['BFA1'] }],
+        },
+      });
+      const response = mockRes();
+
+      await getLocationsById(req, response, next);
+
+      expect(spy.firstCall.args[0]).to.contain('/refdata/location/court-venues?epimms_id=2345&service_code=BFA1');
+      expect(response.send).to.have.been.calledWith([mockLocations[2]]);
     });
   });
 });

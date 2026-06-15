@@ -297,6 +297,58 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
     }
   });
 
+  test('approve-org approval fails before PUT when read response has no matching organisation', async () => {
+    const approveOrgCalls: ApiCall[] = [];
+    const rdApiContext = {
+      post: async () => response(201, { organisationIdentifier: 'ORG-MISSING' }),
+      dispose: async () => undefined,
+    };
+    const approveOrgApiContext = {
+      get: async (url: string) => {
+        approveOrgCalls.push({ method: 'GET', url });
+        return response(200, {
+          organisations: [{ organisationIdentifier: 'ORG-OTHER', name: 'Other org' }],
+        });
+      },
+      put: async (url: string, options: { data?: unknown }) => {
+        approveOrgCalls.push({ method: 'PUT', url, data: options.data });
+        return response(200, { organisationIdentifier: 'ORG-MISSING', status: 'ACTIVE' });
+      },
+      dispose: async () => undefined,
+    };
+
+    await expect(
+      organisationProvisioningTest.createApprovedOrganisationFlow(
+        {
+          runId: 'missing-approve-org-match',
+          approvalStrategy: 'approve-org-api',
+          timeoutMs: 1_000,
+          pollIntervalMs: 1,
+        },
+        {
+          resolvePrerequisites: async () => ({
+            rdProfessionalApiPath: 'https://rd-professional-api.example.test',
+            headers: {},
+          }),
+          createApiContext: async () => rdApiContext as never,
+          createApproveOrgApiContext: async () => approveOrgApiContext as never,
+          now: () => Date.now(),
+          sleep: async () => undefined,
+        }
+      )
+    ).rejects.toMatchObject<Partial<DynamicOrganisationProvisioningError>>({
+      stage: 'approve',
+      endpoint: '/api/organisations?organisationId=ORG-MISSING&version=v1',
+      status: 200,
+      responsePreview: {
+        message: "Approve-org API did not return organisation 'ORG-MISSING'.",
+      },
+    });
+    expect(approveOrgCalls.map((call) => `${call.method} ${call.url}`)).toEqual([
+      'GET /api/organisations?organisationId=ORG-MISSING&version=v1',
+    ]);
+  });
+
   test('surfaces sanitized create-stage diagnostics when RD Professional rejects the organisation', async () => {
     const apiContext = {
       post: async () => response(500, { message: 'downstream unavailable' }),

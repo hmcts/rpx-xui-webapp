@@ -249,11 +249,11 @@ function extractOrganisationEntries(body: unknown): Record<string, unknown>[] {
   return [];
 }
 
-function extractSingleOrganisation(body: unknown, organisationId: string): Record<string, unknown> {
+function extractSingleOrganisation(body: unknown, organisationId: string): Record<string, unknown> | undefined {
   if (body && typeof body === 'object' && readOrganisationIdentifier(body) === organisationId) {
     return body as Record<string, unknown>;
   }
-  return extractOrganisationEntries(body).find((entry) => readOrganisationIdentifier(entry) === organisationId) ?? {};
+  return extractOrganisationEntries(body).find((entry) => readOrganisationIdentifier(entry) === organisationId);
 }
 
 function isActiveOrganisation(body: unknown, organisationId: string): boolean {
@@ -345,6 +345,12 @@ async function approveOrganisationViaApproveOrgApi(
 
     const approveEndpoint = `/api/organisations/${encodeURIComponent(organisationId)}`;
     const organisation = extractSingleOrganisation(readBody, organisationId);
+    if (!organisation) {
+      throw new DynamicOrganisationProvisioningError('approve', readEndpoint, readResponse.status(), payload.name, {
+        message: `Approve-org API did not return organisation '${organisationId}'.`,
+        responsePreview: readBody,
+      });
+    }
     const approveResponse = await apiContext.put(approveEndpoint, {
       data: {
         ...organisation,

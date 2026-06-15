@@ -219,9 +219,9 @@ sequenceDiagram
     participant EXUI as EXUI readiness check
 
     Spec->>Session: provisionDynamicSolicitorForAlias(alias, roleContext)
-    Session->>Org: resolve static or dynamic organisation id
-    Org->>PRDOrg: create, approve, and poll ACTIVE when enabled
-    Org-->>Session: organisation id
+    Session->>Org: resolve run-scoped dynamic organisation id
+    Org->>PRDOrg: create, approve, and poll ACTIVE
+    Org-->>Session: dynamic organisation id
     Session->>Roles: resolveProvisionRoleNamesForAlias(...)
     Roles-->>Session: resolved role names
     Session->>Retry: provisionUserWithRetries(...)

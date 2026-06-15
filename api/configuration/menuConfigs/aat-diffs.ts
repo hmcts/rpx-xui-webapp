@@ -1,35 +1,4 @@
 export const aatDifferences = {
-  '(judge)|(judiciary)|(panelmember)': [
-    {
-      roles: [
-        'caseworker-sscs-judge',
-        'caseworker-sscs-panyelmember',
-        'caseworker-civil',
-        'caseworker-ia-iacjudge',
-        'caseworker-privatelaw',
-        'caseworker-publiclaw',
-        'caseworker-employment-etjudge',
-        'caseworker-st_cic',
-      ],
-      text: 'My work',
-    },
-    {
-      roles: [
-        'caseworker-sscs-judge',
-        'caseworker-sscs-panelmember',
-        'caseworker-civil',
-        'caseworker-ia-iacjudge',
-        'caseworker-privatelaw',
-        'caseworker-publiclaw',
-        'caseworker-st_cic-judge',
-        'caseworker-st_cic-senior-judge',
-        'caseworker-employment-etjudge',
-        'caseworker-st_cic',
-        'caseworker-pcs',
-      ],
-      text: 'Search',
-    },
-  ],
   '(pui-case-manager)': [
     {
       roles: ['caseworker-civil', 'caseworker-civil-solictor', 'caseworker-befta_master-solicitor'],
@@ -38,39 +7,7 @@ export const aatDifferences = {
   ],
   '.+': [
     {
-      roles: [
-        'caseworker-sscs-clerk',
-        'caseworker-sscs-registrar',
-        'caseworker-civil',
-        'caseworker-civil-staff',
-        'caseworker-ia-caseofficer',
-        'caseworker-ia-admofficer',
-        'caseworker-privatelaw',
-        'caseworker-publiclaw',
-        'caseworker-employment',
-        'caseworker-st_cic',
-      ],
-      text: 'My work',
-    },
-    {
-      roles: [
-        'caseworker-sscs-clerk',
-        'caseworker-sscs-registrar',
-        'caseworker-probate',
-        'caseworker-civil',
-        'caseworker-ia-caseofficer',
-        'senior-tribunal-caseworker',
-        'tribunal-caseworker',
-        'caseworker-ia-admofficer',
-        'caseworker-befta_master',
-        'caseworker-privatelaw',
-        'caseworker-publiclaw',
-        'caseworker-st_cic',
-        'caseworker-st_cic-senior-caseworker',
-        'caseworker-sscs',
-        'caseworker-employment',
-        'caseworker-pcs',
-      ],
+      roles: ['caseworker-befta_master'],
       text: 'Search',
     },
   ],

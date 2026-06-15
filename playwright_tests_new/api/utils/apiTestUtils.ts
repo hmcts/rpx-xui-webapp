@@ -31,6 +31,27 @@ export function expectStatus(actual: number, allowed: ReadonlyArray<number>, mes
   }
 }
 
+export function isRequestTimeoutError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  return /timeout|timed out|ETIMEDOUT|ECONNRESET|socket hang up|Request context disposed/i.test(message);
+}
+
+export async function guardedRequest<T extends { data?: unknown; status: number }>(
+  fn: () => Promise<T>,
+  opts: { onRequestTimeout?: (message: string) => void; timeoutStatus?: number } = {}
+): Promise<T> {
+  try {
+    return await fn();
+  } catch (error) {
+    if (!isRequestTimeoutError(error)) {
+      throw error;
+    }
+    const message = error instanceof Error ? error.message : String(error);
+    opts.onRequestTimeout?.(message);
+    return { data: undefined, status: opts.timeoutStatus ?? 504 } as T;
+  }
+}
+
 export async function buildXsrfHeaders(role: ApiUserRole): Promise<Record<string, string>> {
   return buildXsrfHeadersWith(role);
 }

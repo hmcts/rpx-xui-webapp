@@ -37,6 +37,11 @@ type CreateDivorceCaseOptions = {
   createCaseMaxAttempts?: number;
 };
 
+type DocumentDragDropPoint = {
+  x: number;
+  y: number;
+};
+
 const logger = createLogger({
   serviceName: 'create-case',
   format: 'pretty',
@@ -849,13 +854,7 @@ export class CreateCasePage extends Base {
 
     try {
       await this.runDocumentUploadWithRetry('browser file drag-and-drop upload', async () => {
-        const box = await resolvedDropTarget.boundingBox();
-        if (!box) {
-          throw new Error(`Document drag-and-drop target for "${fileName}" has no visible bounding box`);
-        }
-
-        const x = box.x + box.width / 2;
-        const y = box.y + box.height / 2;
+        const { x, y } = await this.resolveDocumentDragDropPoint(resolvedFileInput, resolvedDropTarget, fileName);
         let cdpSession;
         try {
           cdpSession = await this.page.context().newCDPSession(this.page);
@@ -887,6 +886,33 @@ export class CreateCasePage extends Base {
     } finally {
       await rm(tempDirectory, { recursive: true, force: true });
     }
+  }
+
+  private async resolveDocumentDragDropPoint(
+    fileInput: Locator,
+    dropTarget: Locator,
+    fileName: string
+  ): Promise<DocumentDragDropPoint> {
+    const targetBox = await dropTarget.boundingBox();
+    if (!targetBox) {
+      throw new Error(`Document drag-and-drop target for "${fileName}" has no visible bounding box`);
+    }
+
+    const inputBox = await fileInput.boundingBox();
+    if (!inputBox) {
+      throw new Error(`Document drag-and-drop file input for "${fileName}" has no visible bounding box`);
+    }
+
+    const x = inputBox.x + inputBox.width / 2;
+    const y = inputBox.y + inputBox.height / 2;
+    const isInsideDropTarget =
+      x >= targetBox.x && x <= targetBox.x + targetBox.width && y >= targetBox.y && y <= targetBox.y + targetBox.height;
+
+    if (!isInsideDropTarget) {
+      throw new Error(`Document drag-and-drop file input for "${fileName}" is not inside the requested drop target`);
+    }
+
+    return { x, y };
   }
 
   private async runDocumentUploadWithRetry(uploadActionDescription: string, uploadAction: () => Promise<void>) {

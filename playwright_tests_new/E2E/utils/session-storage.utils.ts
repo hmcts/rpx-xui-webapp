@@ -15,9 +15,8 @@ type EnsureStorageOptions = {
 };
 
 const DEFAULT_UI_LOGIN_TIMEOUT_MS = 60_000;
-const UI_STORAGE_REFRESH_LOCK_STALE_MS = DEFAULT_UI_LOGIN_TIMEOUT_MS;
-const UI_STORAGE_REFRESH_LOCK_RETRIES = {
-  retries: 30,
+const UI_STORAGE_REFRESH_LOCK_MIN_RETRIES = 30;
+const UI_STORAGE_REFRESH_LOCK_RETRY_BASE = {
   factor: 1.2,
   minTimeout: 1_000,
   maxTimeout: 5_000,
@@ -25,13 +24,57 @@ const UI_STORAGE_REFRESH_LOCK_RETRIES = {
 
 const buildStorageRefreshLockPath = (storagePath: string): string => `${storagePath}.refresh.lock`;
 
+const resolveLoginTimeoutMs = (): number => {
+  const raw = process.env.PW_UI_LOGIN_TIMEOUT_MS;
+  if (!raw) {
+    return DEFAULT_UI_LOGIN_TIMEOUT_MS;
+  }
+  const parsed = Number.parseInt(raw, 10);
+  return Number.isNaN(parsed) ? DEFAULT_UI_LOGIN_TIMEOUT_MS : Math.max(5_000, parsed);
+};
+
+const calculateRetryBudgetMs = (retryOptions: {
+  retries: number;
+  factor: number;
+  minTimeout: number;
+  maxTimeout: number;
+}): number =>
+  Array.from({ length: retryOptions.retries }, (_unused, attemptIndex) =>
+    Math.min(retryOptions.minTimeout * retryOptions.factor ** attemptIndex, retryOptions.maxTimeout)
+  ).reduce((total, retryDelayMs) => total + retryDelayMs, 0);
+
+const resolveRetryCountForBudget = (minimumBudgetMs: number): number => {
+  let retries = UI_STORAGE_REFRESH_LOCK_MIN_RETRIES;
+  while (
+    calculateRetryBudgetMs({
+      ...UI_STORAGE_REFRESH_LOCK_RETRY_BASE,
+      retries,
+    }) <= minimumBudgetMs
+  ) {
+    retries += 1;
+  }
+  return retries;
+};
+
+const resolveStorageRefreshLockOptions = (loginTimeoutMs = resolveLoginTimeoutMs()) => {
+  const requiredWaitBudgetMs = loginTimeoutMs * 2;
+  return {
+    staleMs: loginTimeoutMs,
+    retries: {
+      ...UI_STORAGE_REFRESH_LOCK_RETRY_BASE,
+      retries: resolveRetryCountForBudget(requiredWaitBudgetMs),
+    },
+  };
+};
+
 const withUiStorageStateRefreshLock = async <T>(storagePath: string, action: () => Promise<T>): Promise<T> => {
   const lockPath = buildStorageRefreshLockPath(storagePath);
   fs.mkdirSync(path.dirname(lockPath), { recursive: true });
   fs.closeSync(fs.openSync(lockPath, 'a'));
+  const lockOptions = resolveStorageRefreshLockOptions();
   const release = await lockfile.lock(lockPath, {
-    retries: UI_STORAGE_REFRESH_LOCK_RETRIES,
-    stale: UI_STORAGE_REFRESH_LOCK_STALE_MS,
+    retries: lockOptions.retries,
+    stale: lockOptions.staleMs,
     realpath: false,
   });
   try {
@@ -51,15 +94,6 @@ const resolveStorageTtlMs = (): number => {
     return 15 * 60_000;
   }
   return Math.max(0, parsed) * 60_000;
-};
-
-const resolveLoginTimeoutMs = (): number => {
-  const raw = process.env.PW_UI_LOGIN_TIMEOUT_MS;
-  if (!raw) {
-    return DEFAULT_UI_LOGIN_TIMEOUT_MS;
-  }
-  const parsed = Number.parseInt(raw, 10);
-  return Number.isNaN(parsed) ? DEFAULT_UI_LOGIN_TIMEOUT_MS : Math.max(5_000, parsed);
 };
 
 const hasRequiredAuthCookies = (cookies: { name: string }[]) => {
@@ -292,9 +326,12 @@ export async function ensureUiStorageStateForUser(userIdentifier: string, option
 
 export const __test__ = {
   buildStorageRefreshLockPath,
+  calculateRetryBudgetMs,
   defaultUiLoginTimeoutMs: DEFAULT_UI_LOGIN_TIMEOUT_MS,
+  resolveLoginTimeoutMs,
+  resolveStorageRefreshLockOptions,
   shouldRefreshStorageState,
-  uiStorageRefreshLockRetries: UI_STORAGE_REFRESH_LOCK_RETRIES,
-  uiStorageRefreshLockStaleMs: UI_STORAGE_REFRESH_LOCK_STALE_MS,
+  uiStorageRefreshLockRetries: resolveStorageRefreshLockOptions(DEFAULT_UI_LOGIN_TIMEOUT_MS).retries,
+  uiStorageRefreshLockStaleMs: resolveStorageRefreshLockOptions(DEFAULT_UI_LOGIN_TIMEOUT_MS).staleMs,
   withUiStorageStateRefreshLock,
 };

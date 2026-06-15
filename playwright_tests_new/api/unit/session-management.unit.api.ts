@@ -20,17 +20,6 @@ function fakeSessionPage() {
   };
 }
 
-function calculateRetryBudgetMs(retryOptions: {
-  retries: number;
-  factor: number;
-  minTimeout: number;
-  maxTimeout: number;
-}): number {
-  return Array.from({ length: retryOptions.retries }, (_unused, attemptIndex) =>
-    Math.min(retryOptions.minTimeout * retryOptions.factor ** attemptIndex, retryOptions.maxTimeout)
-  ).reduce((total, retryDelayMs) => total + retryDelayMs, 0);
-}
-
 test.describe('Session management hardening unit tests', { tag: '@svc-internal' }, () => {
   test('confirmAuthenticatedLogin accepts auth-cookie based success for fallback IDAM login', async () => {
     const infoCalls: Array<Record<string, unknown>> = [];
@@ -180,10 +169,30 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
   });
 
   test('storage refresh lock wait budget covers slow UI login contention', () => {
-    const retryBudgetMs = calculateRetryBudgetMs(sessionStorageTest.uiStorageRefreshLockRetries);
+    const retryBudgetMs = sessionStorageTest.calculateRetryBudgetMs(sessionStorageTest.uiStorageRefreshLockRetries);
 
     expect(sessionStorageTest.uiStorageRefreshLockStaleMs).toBe(sessionStorageTest.defaultUiLoginTimeoutMs);
     expect(retryBudgetMs).toBeGreaterThan(sessionStorageTest.defaultUiLoginTimeoutMs * 2);
+  });
+
+  test('storage refresh lock budget follows configured UI login timeout', () => {
+    const previousTimeout = process.env.PW_UI_LOGIN_TIMEOUT_MS;
+
+    try {
+      process.env.PW_UI_LOGIN_TIMEOUT_MS = '180000';
+      const lockOptions = sessionStorageTest.resolveStorageRefreshLockOptions();
+      const retryBudgetMs = sessionStorageTest.calculateRetryBudgetMs(lockOptions.retries);
+
+      expect(sessionStorageTest.resolveLoginTimeoutMs()).toBe(180_000);
+      expect(lockOptions.staleMs).toBe(180_000);
+      expect(retryBudgetMs).toBeGreaterThan(180_000 * 2);
+    } finally {
+      if (previousTimeout === undefined) {
+        delete process.env.PW_UI_LOGIN_TIMEOUT_MS;
+      } else {
+        process.env.PW_UI_LOGIN_TIMEOUT_MS = previousTimeout;
+      }
+    }
   });
 
   test('session capture reuses a fresh session instead of failing on a recent failure marker', async () => {

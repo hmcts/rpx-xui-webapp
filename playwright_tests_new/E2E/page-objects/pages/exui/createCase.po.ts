@@ -437,7 +437,7 @@ export class CreateCasePage extends Base {
     }
   }
 
-  async clickContinueAndWaitForNext(context: string, options: { force?: boolean; timeoutMs?: number } = {}) {
+  async clickContinueAndWaitForNext(context: string, options: { timeoutMs?: number } = {}) {
     await this.clickContinueAndWait(context, options);
   }
 
@@ -642,7 +642,7 @@ export class CreateCasePage extends Base {
     await this.ensureWizardAdvanced(context, initialUrl, options);
   }
 
-  async clickContinueMultipleTimes(count: number, options: { force?: boolean } = {}) {
+  async clickContinueMultipleTimes(count: number) {
     for (let i = 0; i < count; i++) {
       const visibleContinueButton = await this.getVisibleActionButton(this.continueButton);
       if (!visibleContinueButton) {
@@ -654,7 +654,6 @@ export class CreateCasePage extends Base {
       }
       await this.clickContinueAndWait(`after continue ${i + 1} of ${count}`, {
         continueButton: visibleContinueButton,
-        force: options.force,
       });
       logger.info('Clicked continue button', { iteration: i + 1, total: count });
     }

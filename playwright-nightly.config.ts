@@ -7,9 +7,14 @@ import { logResolvedTagFilters, resolveTagFilters, resolveWorkerCount } from './
 type EnvMap = NodeJS.ProcessEnv;
 
 const defaultBaseUrl = 'https://manage-case.aat.platform.hmcts.net';
+const defaultOdhinOutputFolder = 'functional-output/tests/playwright-e2e/odhin-report';
+const defaultOdhinIndexFilename = 'xui-playwright-e2e.html';
 
 const resolveHeadlessMode = (env: EnvMap = process.env) => env.HEAD !== 'true';
 const resolveBaseUrl = (env: EnvMap = process.env) => env.TEST_URL || defaultBaseUrl;
+const resolveOdhinOutputFolder = (env: EnvMap = process.env) => env.PLAYWRIGHT_REPORT_FOLDER || defaultOdhinOutputFolder;
+const resolveOdhinIndexFilename = (env: EnvMap = process.env) =>
+  env.PLAYWRIGHT_REPORT_INDEX_FILENAME?.trim() || defaultOdhinIndexFilename;
 export const axeTestEnabled = process.env.ENABLE_AXE_TESTS === 'true';
 
 const resolveEnvironmentFromUrl = (url: string): string => {
@@ -65,7 +70,10 @@ const buildConfig = (env: EnvMap = process.env) => {
   return defineConfig({
     testDir: 'playwright_tests_new/E2E',
     testMatch: ['**/test/**/*.spec.ts'],
-    testIgnore: ['**/test/smoke/smokeTest.spec.ts'],
+    testIgnore:
+      env.PLAYWRIGHT_INCLUDE_A11Y === 'true'
+        ? ['**/test/smoke/smokeTest.spec.ts']
+        : ['**/test/smoke/smokeTest.spec.ts', '**/*.a11y.spec.ts'],
     use: {
       baseURL: baseUrl,
     },
@@ -91,8 +99,8 @@ const buildConfig = (env: EnvMap = process.env) => {
       [
         './playwright_tests_new/common/reporters/odhin-adaptive.reporter.cjs',
         {
-          outputFolder: 'functional-output/tests/playwright-e2e/odhin-report',
-          indexFilename: 'xui-playwright-e2e.html',
+          outputFolder: resolveOdhinOutputFolder(env),
+          indexFilename: resolveOdhinIndexFilename(env),
           title: 'RPX XUI Playwright',
           testEnvironment,
           project: env.PLAYWRIGHT_REPORT_PROJECT ?? 'RPX XUI Webapp',
@@ -143,6 +151,8 @@ const config = buildConfig(process.env);
 
 (config as { __test__?: unknown }).__test__ = {
   buildConfig,
+  resolveOdhinIndexFilename,
+  resolveOdhinOutputFolder,
   resolveWorkerCount,
 };
 

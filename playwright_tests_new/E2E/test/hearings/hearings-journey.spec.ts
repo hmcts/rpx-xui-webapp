@@ -2,21 +2,25 @@ import { expect, test } from '../../fixtures';
 import { ensureSession } from '../../../common/sessionCapture';
 import { AdditionalFacility, TypeOfJudges } from '../../utils/hearing-model';
 import { openHomeWithCapturedSession } from '../searchCase/searchCase.setup';
-import { caseDetailsUrl, continueHearingsFlow } from '../../../integration/helpers/hearingJourneySetup.helper.ts';
+import { continueHearingsFlow } from '../../../integration/helpers/hearingJourneySetup.helper.ts';
+import { resolveHearingManagerUserIdentifier } from '../../../integration/helpers/hearingManagerUserPool.helper';
+import { openEligibleHearingsCase } from '../../utils/test-setup/hearingsCaseResolver';
 import {
   createHearingJourneyModel,
   HEARING_REQUEST_EXPECTED_STATUS,
-  PRL_HEARINGS_USER_IDENTIFIER,
+  HEARINGS_USER_IDENTIFIER,
   prlHearingHappyPathScenario,
 } from '../../testData/hearings/hearingJourneyScenarios';
 
 test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] }, () => {
+  const hearingsUserIdentifier = resolveHearingManagerUserIdentifier(HEARINGS_USER_IDENTIFIER);
+
   test.beforeAll(async () => {
-    await ensureSession(PRL_HEARINGS_USER_IDENTIFIER);
+    await ensureSession(hearingsUserIdentifier);
   });
 
   test.beforeEach(async ({ page }) => {
-    await openHomeWithCapturedSession(page, PRL_HEARINGS_USER_IDENTIFIER);
+    await openHomeWithCapturedSession(page, hearingsUserIdentifier);
   });
 
   test('Submit a new Hearing - Happy Path journey ', async ({
@@ -28,11 +32,10 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
   }) => {
     const scenario = prlHearingHappyPathScenario;
     const hearingJourneyModel = createHearingJourneyModel();
+    let selectedVenue = '';
 
     await test.step('Navigate to Hearings Page and click on the hearings tab', async () => {
-      await page.goto(caseDetailsUrl(scenario.route.jurisdictionId, scenario.route.caseTypeId, scenario.route.caseReference), {
-        waitUntil: 'domcontentloaded',
-      });
+      await openEligibleHearingsCase(page, scenario.route);
       await caseDetailsPage.selectCaseDetailsTab('Hearings');
       await expect(page).toHaveURL(/\/cases\/case-details\/.*#Hearings$/);
     });
@@ -65,7 +68,7 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
       await expect(page).toHaveURL(/\/hearings\/request\/hearing-attendance$/);
       await expect(page.getByRole('heading', { name: /Participant attendance/i })).toBeVisible();
 
-      await hearingsJourneyPage.setParticipantAttendence(hearingJourneyModel);
+      await hearingsJourneyPage.setParticipantAttendance(hearingJourneyModel);
       await continueHearingsFlow(page);
     });
 
@@ -73,7 +76,8 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
       await expect(page).toHaveURL(/\/hearings\/request\/hearing-venue$/);
       await expect(page.getByRole('heading', { name: /What are the hearing venue details?/i })).toBeVisible();
 
-      await hearingsJourneyPage.setHearingVenue(hearingJourneyModel);
+      selectedVenue = await hearingsJourneyPage.setHearingVenue(hearingJourneyModel);
+      await expect(hearingsJourneyPage.removeLocationLink(selectedVenue)).toBeVisible();
       await continueHearingsFlow(page);
     });
 
@@ -89,6 +93,7 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
       await expect(page.getByRole('heading', { name: /Do you want a specific judge?/i })).toBeVisible();
 
       await hearingsJourneyPage.setJudgeOptions(hearingJourneyModel);
+      await expect(hearingsJourneyPage.selectAllJudgesThatApply).toHaveText('Select all judge types that apply');
       await continueHearingsFlow(page);
     });
 
@@ -119,41 +124,72 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
       await expect(page).toHaveURL(/\/hearings\/request\/hearing-create-edit-summary$/);
       await expect(hearingsJourneyPage.submitRequestButton).toBeVisible();
 
-      const additionalFacilitiesValue = hearingJourneyModel.get('hearingFacilities', 'additionalFacilities');
+      const additionalFacilitiesValue = hearingJourneyModel.get(
+        'hearingFacilities',
+        'additionalFacilities'
+      ) as AdditionalFacility[];
 
-      await hearingsCYAPage.verifyHearingSummarySection('Additional facilities', [
-        { key: 'Will additional security be required?', value: 'Yes' },
-        { key: 'Select any additional facilities required', value: additionalFacilitiesValue as AdditionalFacility[] },
-      ]);
+      await expect(hearingsCYAPage.sectionRows('Additional facilities')).toHaveCount(2);
+      await expect(hearingsCYAPage.rowValue('Additional facilities', 'Will additional security be required?')).toHaveText('Yes');
+      await expect(hearingsCYAPage.rowListItems('Additional facilities', 'Select any additional facilities required')).toHaveText(
+        additionalFacilitiesValue
+      );
 
-      await hearingsCYAPage.verifyHearingSummarySection('Stage', [
-        { key: 'What stage is this hearing at?', value: 'Allocation' },
-      ]);
+      await expect(hearingsCYAPage.sectionRows('Stage')).toHaveCount(1);
+      await expect(hearingsCYAPage.rowValue('Stage', 'What stage is this hearing at?')).toHaveText('Allocation');
 
-      await hearingsCYAPage.verifyParticipantAttendanceSection(hearingJourneyModel);
+      const participantHearingMethod = hearingJourneyModel.get('hearingAttendance', 'hearingMethod');
+      const participantAttendHearingHow = hearingJourneyModel.get('hearingAttendance', 'attendHearingHow');
 
-      await hearingsCYAPage.verifyHearingVenueSection(hearingJourneyModel);
+      await expect(hearingsCYAPage.sectionRows('Participant attendance')).toHaveCount(4);
+      await expect(hearingsCYAPage.rowValue('Participant attendance', 'Will this be a paper hearing?')).toHaveText('No');
+      await expect(
+        hearingsCYAPage.rowListItems('Participant attendance', 'What will be the methods of attendance for this hearing?')
+      ).toHaveText(participantHearingMethod ?? []);
+      const participantAttendanceText = await hearingsCYAPage
+        .rowListItems('Participant attendance', 'How will each participant attend the hearing?')
+        .allTextContents();
+      for (const attendanceMethod of participantAttendHearingHow ?? []) {
+        expect(participantAttendanceText.some((text) => text.includes(attendanceMethod))).toBe(true);
+      }
+      await expect(
+        hearingsCYAPage.rowValue('Participant attendance', 'How many people will attend the hearing in person?')
+      ).toHaveText('2');
+
+      await expect(hearingsCYAPage.sectionRows('Hearing Venue')).toHaveCount(1);
+      await expect(hearingsCYAPage.rowValue('Hearing Venue', 'What are the hearing venue details?')).toContainText(selectedVenue);
 
       const allJudges = hearingJourneyModel.get('hearingDetails', 'judgeType');
 
-      await hearingsCYAPage.verifyHearingSummarySection('Judge details', [
-        { key: 'Do you want a specific judge?', value: 'No' },
-        { key: 'Select all judge types that apply', value: allJudges as TypeOfJudges[] },
-      ]);
+      await expect(hearingsCYAPage.sectionRows('Judge details')).toHaveCount(2);
+      await expect(hearingsCYAPage.rowValue('Judge details', 'Do you want a specific judge?')).toHaveText('No');
+      await expect(hearingsCYAPage.rowListItems('Judge details', 'Select all judge types that apply')).toHaveText(
+        allJudges as TypeOfJudges[]
+      );
 
-      await hearingsCYAPage.verifyHearingSummarySection('Length, date and priority level of hearing', [
-        { key: 'Length of hearing', value: '1 Hour 30 Minutes' },
-        { key: 'Does the hearing need to take place on a specific date?', value: 'No' },
-        { key: 'What is the priority of this hearing?', value: 'Standard' },
-      ]);
+      await expect(hearingsCYAPage.sectionRows('Length, date and priority level of hearing')).toHaveCount(3);
+      await expect(hearingsCYAPage.rowValue('Length, date and priority level of hearing', 'Length of hearing')).toHaveText(
+        '1 Hour 30 Minutes'
+      );
+      await expect(
+        hearingsCYAPage.rowValue(
+          'Length, date and priority level of hearing',
+          'Does the hearing need to take place on a specific date?'
+        )
+      ).toHaveText('No');
+      await expect(
+        hearingsCYAPage.rowValue('Length, date and priority level of hearing', 'What is the priority of this hearing?')
+      ).toHaveText('Standard');
 
-      await hearingsCYAPage.verifyHearingSummarySection('Linked hearings', [
-        { key: 'Will this hearing need to be linked to other hearings?', value: 'No' },
-      ]);
+      await expect(hearingsCYAPage.sectionRows('Linked hearings')).toHaveCount(1);
+      await expect(
+        hearingsCYAPage.rowValue('Linked hearings', 'Will this hearing need to be linked to other hearings?')
+      ).toHaveText('No');
 
-      await hearingsCYAPage.verifyHearingSummarySection('Additional instructions', [
-        { key: 'Enter any additional instructions for the hearing', value: scenario.additionalInstructions },
-      ]);
+      await expect(hearingsCYAPage.sectionRows('Additional instructions')).toHaveCount(1);
+      await expect(
+        hearingsCYAPage.rowValue('Additional instructions', 'Enter any additional instructions for the hearing')
+      ).toHaveText(scenario.additionalInstructions);
     });
 
     await test.step('Submit Hearing Request And Do Checks on backend calls ', async () => {
@@ -174,21 +210,22 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
       } catch (error) {
         if (submitHearingResponse) {
           const status = submitHearingResponse.status();
-          let body;
-          try {
-            body = await submitHearingResponse.text();
-          } catch {
-            body = `<unable to read response body>`;
-          }
-          console.error(`Failure seen on Hearings Submit CYA Page. Status: ${status}, Body: ${body}`);
+          console.error(`Failure seen on Hearings Submit CYA Page. Status: ${status}. Check sanitized service logs.`);
         } else {
-          console.error('Failure seen on Hearings Submit CYA Page (no response captured):', error);
+          console.error(
+            `Failure seen on Hearings Submit CYA Page (no response captured): ${error instanceof Error ? error.message : String(error)}`
+          );
         }
         throw error;
       }
 
-      await hearingsJourneyPage.checkHearingConfirmationPage();
+      await expect(hearingsJourneyPage.hearingPanelBody, 'Hearing Confirmation Panel should be visible').toBeVisible();
+      await expect(hearingsJourneyPage.hearingPanelTitle, 'Hearing Confirmation').toHaveText('Hearing request submitted');
+      await expect(hearingsJourneyPage.hearingPanelBody, 'Hearing Processing Message').toHaveText(
+        'Your hearing request will now be processed'
+      );
 
+      await expect(hearingsJourneyPage.hearingsTabStatusLink(), 'Hearings tab link should be visible').toBeVisible();
       await hearingsJourneyPage.clickLinkToViewHearings();
 
       await expect(page).toHaveURL(/\/cases\/case-details\/.*#Hearings$/);

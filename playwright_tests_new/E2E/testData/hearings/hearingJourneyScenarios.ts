@@ -2,19 +2,21 @@ import {
   AdditionalFacility,
   HearingJourneyModel,
   HearingMethod,
+  HowWillParticipantAttend,
   TypeOfJudges,
   YesNo,
-  howWillParticipantAttend,
 } from '../../utils/hearing-model';
 
-export const PRL_HEARINGS_USER_IDENTIFIER = 'STAFF_ADMIN';
+export const HEARINGS_USER_IDENTIFIER = 'HEARING_MANAGER_CR84_ON';
 export const HEARING_REQUEST_EXPECTED_STATUS = 'WAITING TO BE LISTED';
 
 export const prlHearingHappyPathScenario = {
   route: {
     jurisdictionId: 'PRIVATELAW',
     caseTypeId: 'PRLAPPS',
-    caseReference: '1775575928056201',
+    caseReference: process.env.PRL_HEARINGS_CASE_REFERENCE,
+    caseReferencePattern: process.env.PRL_HEARINGS_CASE_REFERENCE_PATTERN ?? '*',
+    preferredStates: ['Judicial review', 'Prepare for hearing', 'Submitted', 'Case management'],
   },
   additionalInstructions: 'Additional instructions for E2E Playwright test',
   hearingFacilities: {
@@ -31,7 +33,7 @@ export const prlHearingHappyPathScenario = {
     numberOfPeopleAttendingHearing: '2',
   },
   hearingVenue: {
-    name: ['Southamp'],
+    searchTerm: 'Southampton',
   },
   hearingDetails: {
     hearingInWelsh: 'No',
@@ -50,7 +52,9 @@ export const prlHearingHappyPathScenario = {
   route: {
     jurisdictionId: string;
     caseTypeId: string;
-    caseReference: string;
+    caseReference?: string;
+    caseReferencePattern: string;
+    preferredStates: string[];
   };
   additionalInstructions: string;
   hearingFacilities: {
@@ -63,11 +67,11 @@ export const prlHearingHappyPathScenario = {
   hearingAttendance: {
     paperHearing: YesNo;
     hearingMethod: HearingMethod[];
-    attendHearingHow: howWillParticipantAttend[];
+    attendHearingHow: HowWillParticipantAttend[];
     numberOfPeopleAttendingHearing: string;
   };
   hearingVenue: {
-    name: string[];
+    searchTerm: string;
   };
   hearingDetails: {
     hearingInWelsh: YesNo;
@@ -90,11 +94,11 @@ export function createHearingJourneyModel(scenario = prlHearingHappyPathScenario
   model.set('hearingFacilities', 'additionalSecurity', scenario.hearingFacilities.additionalSecurity);
   model.set('hearingFacilities', 'additionalFacilities', scenario.hearingFacilities.additionalFacilities);
   model.set('hearingStage', 'stage', scenario.hearingStage.stage);
-  model.set('hearingAttendence', 'paperHearing', scenario.hearingAttendance.paperHearing);
-  model.set('hearingAttendence', 'hearingMethod', scenario.hearingAttendance.hearingMethod);
-  model.set('hearingAttendence', 'attendHearingHow', scenario.hearingAttendance.attendHearingHow);
-  model.set('hearingAttendence', 'numberOfPeopleAttendingHearing', scenario.hearingAttendance.numberOfPeopleAttendingHearing);
-  model.set('hearingVenue', 'name', scenario.hearingVenue.name);
+  model.set('hearingAttendance', 'paperHearing', scenario.hearingAttendance.paperHearing);
+  model.set('hearingAttendance', 'hearingMethod', scenario.hearingAttendance.hearingMethod);
+  model.set('hearingAttendance', 'attendHearingHow', scenario.hearingAttendance.attendHearingHow);
+  model.set('hearingAttendance', 'numberOfPeopleAttendingHearing', scenario.hearingAttendance.numberOfPeopleAttendingHearing);
+  model.set('hearingVenue', 'name', [scenario.hearingVenue.searchTerm]);
   model.set('hearingDetails', 'hearingInWelsh', scenario.hearingDetails.hearingInWelsh);
   model.set('hearingDetails', 'specificJudge', scenario.hearingDetails.specificJudge);
   model.set('hearingDetails', 'judgeType', scenario.hearingDetails.judgeType);

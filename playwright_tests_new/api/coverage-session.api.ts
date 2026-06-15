@@ -43,6 +43,10 @@ test.describe('Session and cookie utilities coverage', { tag: '@svc-internal' },
         PW_IAC_CASEOFFICER_R1_PASSWORD: mockPassword,
         PW_IAC_JUDGE_WA_R1_EMAIL: undefined,
         PW_IAC_JUDGE_WA_R1_PASSWORD: undefined,
+        IAC_CASEOFFICER_R1_USERNAME: undefined,
+        IAC_CASEOFFICER_R1_PASSWORD: undefined,
+        IAC_JUDGE_WA_R1_USERNAME: undefined,
+        IAC_JUDGE_WA_R1_PASSWORD: undefined,
       },
       () => {
         const userUtils = new UserUtils();

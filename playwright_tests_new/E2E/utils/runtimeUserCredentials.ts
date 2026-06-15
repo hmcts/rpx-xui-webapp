@@ -6,6 +6,8 @@ export type RuntimeUserCredentials = {
 type RuntimeUserCredentialEnvMapping = {
   username: string;
   password: string;
+  alternateUsernames?: string[];
+  alternatePasswords?: string[];
 };
 
 export const RuntimeUserAlias = {
@@ -141,14 +143,20 @@ const dynamicUserEnvMap: Record<string, RuntimeUserCredentialEnvMapping> = {
   IAC_JUDGE_WA_R1: {
     username: 'PW_IAC_JUDGE_WA_R1_EMAIL',
     password: 'PW_IAC_JUDGE_WA_R1_PASSWORD',
+    alternateUsernames: ['IAC_JUDGE_WA_R1_USERNAME'],
+    alternatePasswords: ['IAC_JUDGE_WA_R1_PASSWORD'],
   },
   IAC_CASEOFFICER_R1: {
     username: 'PW_IAC_CASEOFFICER_R1_EMAIL',
     password: 'PW_IAC_CASEOFFICER_R1_PASSWORD',
+    alternateUsernames: ['IAC_CASEOFFICER_R1_USERNAME'],
+    alternatePasswords: ['IAC_CASEOFFICER_R1_PASSWORD'],
   },
   IAC_CASEOFFICER_R2: {
     username: 'PW_IAC_CASEOFFICER_R2_EMAIL',
     password: 'PW_IAC_CASEOFFICER_R2_PASSWORD',
+    alternateUsernames: ['IAC_CASEOFFICER_R2_USERNAME'],
+    alternatePasswords: ['IAC_CASEOFFICER_R2_PASSWORD'],
   },
   FPL_GLOBAL_SEARCH: {
     username: 'FPL_GLOBAL_SEARCH_USERNAME',
@@ -200,8 +208,12 @@ export function getRuntimeUserCredentials(userIdentifier: string): RuntimeUserCr
 export function resolveRuntimeUserCredentialsFromEnv(
   mapping: RuntimeUserCredentialEnvMapping
 ): RuntimeUserCredentials | undefined {
-  const email = process.env[mapping.username]?.trim();
-  const password = process.env[mapping.password];
+  const email = [mapping.username, ...(mapping.alternateUsernames ?? [])]
+    .map((key) => process.env[key]?.trim())
+    .find((value): value is string => Boolean(value));
+  const password = [mapping.password, ...(mapping.alternatePasswords ?? [])]
+    .map((key) => process.env[key])
+    .find((value): value is string => Boolean(value));
   if (!email || !password) {
     return undefined;
   }
@@ -227,8 +239,12 @@ function resolveRuntimeUserCredentialsForIdentifierInternal(
 
   const mapping = dynamicUserEnvMap[normalizedIdentifier];
   if (mapping) {
-    const email = env[mapping.username]?.trim();
-    const password = env[mapping.password];
+    const email = [mapping.username, ...(mapping.alternateUsernames ?? [])]
+      .map((key) => env[key]?.trim())
+      .find((value): value is string => Boolean(value));
+    const password = [mapping.password, ...(mapping.alternatePasswords ?? [])]
+      .map((key) => env[key])
+      .find((value): value is string => Boolean(value));
     if (email && password) {
       return { email, password };
     }

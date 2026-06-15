@@ -1,4 +1,4 @@
-import { expect, Locator, Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import { AdditionalFacility, HearingJourneyModel, HearingMethod, TypeOfJudges } from '../../../utils/hearing-model.ts';
 
 export class HearingsJourneyPage {
@@ -16,7 +16,7 @@ export class HearingsJourneyPage {
   readonly paperHearingYes = this.page.locator('#addition-security-confirmation  .govuk-radios__item #paperHearingYes');
   readonly paperHearingNo = this.page.locator('#addition-security-confirmation  .govuk-radios__item #paperHearingNo');
 
-  // #methodsOfAttendence
+  // #methodsOfAttendance
   readonly hearingInPerson = this.page.locator('#hearingLevelChannelList #INTER');
   readonly hearingOnTelephone = this.page.locator('#hearingLevelChannelList #TEL');
   readonly hearingViaVideo = this.page.locator('#hearingLevelChannelList #VID');
@@ -92,7 +92,9 @@ export class HearingsJourneyPage {
     await (value === 'Yes' ? this.additionalSecurityYes : this.additionalSecurityNo).click();
 
     const facilities: AdditionalFacility[] = model.get('hearingFacilities', 'additionalFacilities') ?? [];
-    expect(facilities.length).toBeGreaterThan(0);
+    if (facilities.length === 0) {
+      throw new Error('Expected at least one additional facility to select.');
+    }
 
     for (const facility of facilities) {
       await this.facilitiesCheckbox(facility).check();
@@ -104,9 +106,9 @@ export class HearingsJourneyPage {
     await this.hearingStageRadioButton.first().getByLabel(`${hearingStage}`).check();
   }
 
-  async setParticipantAttendence(model: HearingJourneyModel): Promise<void> {
-    const paperHearingYesNo = model.get('hearingAttendence', 'paperHearing');
-    const hearingMethod = model.get('hearingAttendence', 'hearingMethod') ?? [];
+  async setParticipantAttendance(model: HearingJourneyModel): Promise<void> {
+    const paperHearingYesNo = model.get('hearingAttendance', 'paperHearing');
+    const hearingMethod = model.get('hearingAttendance', 'hearingMethod') ?? [];
 
     await (paperHearingYesNo === 'Yes' ? this.paperHearingYes : this.paperHearingNo).click();
 
@@ -118,11 +120,11 @@ export class HearingsJourneyPage {
 
     for (const method of hearingMethod ?? []) {
       const locator = hearingMethodAndLocatorMap[method];
-      await expect(locator, `${method} hearing method should be selectable`).toBeVisible();
+      await locator.waitFor({ state: 'visible' });
       await locator.check();
     }
 
-    const howIsHearingAttended = model.get('hearingAttendence', 'attendHearingHow') as string[];
+    const howIsHearingAttended = model.get('hearingAttendance', 'attendHearingHow') as string[];
 
     const party1Select = this.firstParty;
     await party1Select.selectOption(howIsHearingAttended[0] as string);
@@ -130,24 +132,28 @@ export class HearingsJourneyPage {
     const party2Select = this.secondParty;
     await party2Select.selectOption(howIsHearingAttended[1] as string);
 
-    const noOfPeopleAttending = model.get('hearingAttendence', 'numberOfPeopleAttendingHearing') as string;
+    const noOfPeopleAttending = model.get('hearingAttendance', 'numberOfPeopleAttendingHearing') as string;
     await this.numberAttendingHearing.fill(noOfPeopleAttending);
   }
 
-  async setHearingVenue(model: HearingJourneyModel): Promise<void> {
+  async setHearingVenue(model: HearingJourneyModel): Promise<string> {
     const hearingVenue = model.get('hearingVenue', 'name') as string[];
-    const requestedVenue = hearingVenue?.[0];
+    const venueSearchTerm = hearingVenue?.[0];
 
-    if (!requestedVenue) {
+    if (!venueSearchTerm) {
       throw new Error(`Expected a hearing venue search term, got: ${JSON.stringify(hearingVenue)}`);
     }
 
-    await this.hearingVenue.fill(requestedVenue);
-    const venueOption = this.page.getByRole('option').filter({ hasText: requestedVenue }).first();
-    await expect(venueOption, `Venue option matching "${requestedVenue}" should be visible`).toBeVisible();
+    await this.hearingVenue.fill(venueSearchTerm);
+    const venueOption = this.page.getByRole('option').filter({ hasText: venueSearchTerm }).first();
+    await venueOption.waitFor({ state: 'visible' });
+    const selectedVenue = (await venueOption.textContent())?.replace(/\s+/g, ' ').trim();
+    if (!selectedVenue) {
+      throw new Error(`Venue option matching "${venueSearchTerm}" did not expose visible text.`);
+    }
     await venueOption.click();
     await this.addLocationsButton.click();
-    await expect(this.removeLocationLink(requestedVenue), `Selected venue "${requestedVenue}" should be removable`).toBeVisible();
+    return selectedVenue;
   }
 
   async isWelshHearing(model: HearingJourneyModel): Promise<void> {
@@ -161,7 +167,6 @@ export class HearingsJourneyPage {
     await this.specificJudgeRadio.waitFor({ state: 'visible' });
 
     await this.noSpecificJudgeRadio.click();
-    await expect(this.selectAllJudgesThatApply).toHaveText('Select all judge types that apply');
 
     const judgeTypes = model.get('hearingDetails', 'judgeType') as TypeOfJudges[];
     await this.selectJudgeTypes(judgeTypes);
@@ -219,22 +224,14 @@ export class HearingsJourneyPage {
     return this.page.locator('.hmcts-filter-tags a.hmcts-filter__tag').filter({ hasText: locationName });
   }
 
-  async clickLinkToViewHearings(): Promise<void> {
-    const hearingsTabLink = this.page.getByRole('link', {
+  hearingsTabStatusLink(): Locator {
+    return this.page.getByRole('link', {
       name: 'view the status of this hearing in the hearings tab',
     });
-
-    await expect(hearingsTabLink, 'Hearings tab link should be visible').toBeVisible();
-    await hearingsTabLink.click();
   }
 
-  async checkHearingConfirmationPage(): Promise<void> {
-    const hearingPanel = this.hearingPanelBody;
-    await expect(hearingPanel, 'Hearing Confirmation Panel should be visible').toBeVisible();
-    // Panel title
-    await expect(this.hearingPanelTitle, 'Hearing Confirmation').toHaveText('Hearing request submitted');
-    // Panel body
-    await expect(this.hearingPanelBody, 'Hearing Processing Message').toHaveText('Your hearing request will now be processed');
+  async clickLinkToViewHearings(): Promise<void> {
+    await this.hearingsTabStatusLink().click();
   }
 
   /**
@@ -249,10 +246,8 @@ export class HearingsJourneyPage {
       has: this.hearingsTableHeader.filter({ hasText: 'Current and upcoming' }),
     });
 
-    await expect(currentTable, '"Current and upcoming" hearings table should be visible').toBeVisible();
-
     const firstDataRow = currentTable.locator('tbody tr.govuk-table__row').first();
-    await expect(firstDataRow, 'At least one hearing row should be present').toBeVisible();
+    await firstDataRow.waitFor({ state: 'visible' });
 
     // Column layout: [Stage, Hearing Id, Hearing date, Status, Actions]
     // Hearing Id is the 2nd cell (index 1).

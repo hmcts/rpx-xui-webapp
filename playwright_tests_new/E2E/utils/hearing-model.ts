@@ -4,11 +4,11 @@ export type AdditionalFacility = 'Custody Cell' | 'Laptop' | 'Projector' | 'Witn
 
 export type HearingMethod = 'In Person' | 'Telephone' | 'Video';
 
-export type specificJudge = YesNo;
+export type SpecificJudge = YesNo;
 
-export type hearingPriority = 'Standard' | 'Urgent';
+export type HearingPriority = 'Standard' | 'Urgent';
 
-export type howWillParticipantAttend = 'In Person' | 'Telephone' | 'Video' | 'Not in Attendence';
+export type HowWillParticipantAttend = 'In Person' | 'Telephone' | 'Video' | 'Not in Attendance';
 
 export type LengthOfHearing = {
   days: number;
@@ -71,10 +71,10 @@ export interface HearingFacilitiesData {
   additionalFacilities?: AdditionalFacility[];
 }
 
-export interface HearingAttendenceData {
+export interface HearingAttendanceData {
   paperHearing?: YesNo;
   hearingMethod?: HearingMethod[];
-  attendHearingHow?: howWillParticipantAttend[];
+  attendHearingHow?: HowWillParticipantAttend[];
   numberOfPeopleAttendingHearing?: string;
 }
 
@@ -86,7 +86,7 @@ export interface HearingDetailsData {
   hearingSpecificDate?: YesNo;
   firstDateOfHearing?: HearingDate;
   secondDateOfHearing?: HearingDate;
-  hearingPriority?: hearingPriority;
+  hearingPriority?: HearingPriority;
   linkedHearing?: YesNo;
   additionalInstructions?: string;
 }
@@ -108,7 +108,7 @@ export interface HearingDuration {
 export interface JourneyPages {
   hearingFacilities: HearingFacilitiesData;
   hearingStage: HearingStageData;
-  hearingAttendence: HearingAttendenceData;
+  hearingAttendance: HearingAttendanceData;
   hearingVenue: HearingVenueData;
   hearingDetails: HearingDetailsData;
   hearingDuration: HearingDuration;
@@ -121,7 +121,7 @@ export class HearingJourneyModel {
   private data: JourneyPages = {
     hearingFacilities: {},
     hearingStage: {},
-    hearingAttendence: {},
+    hearingAttendance: {},
     hearingVenue: {},
     hearingDetails: {},
     hearingDuration: {},

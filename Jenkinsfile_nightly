@@ -66,6 +66,8 @@ def playwrightIntegrationReportFile = 'xui-playwright-integration.html'
 def playwrightLoadProfileReportFile = 'load-profile.html'
 def playwrightA11yReportDir = 'functional-output/tests/playwright-a11y/odhin-report'
 def playwrightA11yReportFile = 'xui-playwright-a11y.html'
+def playwrightWaveA11yReportDir = 'functional-output/tests/playwright-wave-a11y/odhin-report'
+def playwrightWaveA11yReportFile = 'xui-playwright-wave-a11y.html'
 
 def assertHtmlReportExists = { String reportDir, String reportFile ->
     steps.sh "test -f '${reportDir}/${reportFile}'"
@@ -103,6 +105,26 @@ def publishPlaywrightA11yReport = { String reportName ->
         ])
     } catch (Exception e) {
         echo "[playwright-a11y] Report publish failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
+    }
+}
+
+def publishPlaywrightWaveA11yReport = { String reportName ->
+    try {
+        ensureHtmlReportForPublishing(
+            playwrightWaveA11yReportDir,
+            playwrightWaveA11yReportFile,
+            reportName
+        )
+        publishHTML([
+            allowMissing         : true,
+            alwaysLinkToLastBuild: true,
+            keepAll              : true,
+            reportDir            : "${playwrightWaveA11yReportDir}/",
+            reportFiles          : playwrightWaveA11yReportFile,
+            reportName           : reportName
+        ])
+    } catch (Exception e) {
+        echo "[playwright-wave-a11y] Report publish failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
     }
 }
 
@@ -552,6 +574,33 @@ withNightlyPipeline(type, product, component) {
                         } finally {
                             recordPlaywrightLoadEvent('A11y', 'finish')
                             publishPlaywrightA11yReport('Nightly Playwright Accessibility Test Report')
+                        }
+                    }
+                },
+                playwrightWaveA11y: {
+                    stage('Playwright WAVE-like Accessibility Tests') {
+                        try {
+                            recordPlaywrightLoadEvent('WAVE-like A11y', 'start')
+                            withEnv([
+                                'ORG_USER_ASSIGNMENT_MODE=external',
+                                'ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal',
+                                'PW_WAVE_A11Y_WORKERS=6',
+                                'FUNCTIONAL_TESTS_WORKERS=6',
+                                'PLAYWRIGHT_SKIP_INSTALL=true',
+                                'PW_SESSION_CAPTURE_FAILURE_TTL_MS=0',
+                                "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
+                            ]) {
+                                yarnBuilder.yarn('test:wave-a11y:playwright')
+                            }
+                            assertHtmlReportExists(
+                                playwrightWaveA11yReportDir,
+                                playwrightWaveA11yReportFile
+                            )
+                        } catch (Exception e) {
+                            echo "[parallel-report-gathering] Playwright WAVE-like Accessibility failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
+                        } finally {
+                            recordPlaywrightLoadEvent('WAVE-like A11y', 'finish')
+                            publishPlaywrightWaveA11yReport('Nightly Playwright WAVE-like Accessibility Test Report')
                         }
                     }
                 }

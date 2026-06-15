@@ -6,6 +6,12 @@ import {
 } from './workAllocationMockValidation.helper';
 import { setupCaseworkerJurisdictionsRoute, type SupportedJurisdictionDetail } from './caseworkerJurisdictionMockRoutes.helper';
 import {
+  buildXuiAppShellAppConfigMock,
+  buildXuiAppShellClientContextMock,
+  buildXuiAppShellEnvironmentConfigMock,
+} from './xuiAppShellMockRoutes.helper';
+import {
+  type AMMenuRoleName,
   buildSupportedAMRoleAssignments,
   defaultAMSupportedRoleCategories,
   defaultAMSupportedRoleTypes,
@@ -34,6 +40,7 @@ export type TaskListBootstrapRoleAssignment = Record<string, unknown> & {
 };
 
 export type TaskListBootstrapUserOptions = {
+  amMenuRole?: AMMenuRoleName;
   replaceRoleAssignments?: boolean;
   roleAssignments?: TaskListBootstrapRoleAssignment[];
   roleCategory?: string;
@@ -76,6 +83,7 @@ const defaultTaskListLocationMock = {
   is_case_management_location: 'Y',
   is_hearing_location: 'Y',
 };
+const defaultStaffWorkAllocationRoles = ['caseworker', 'caseworker-ia', 'caseworker-ia-caseofficer', 'caseworker-ia-admofficer'];
 
 export async function setupTaskListBootstrapRoutes(
   page: Page,
@@ -87,23 +95,27 @@ export async function setupTaskListBootstrapRoutes(
     supportedJurisdictions,
     supportedJurisdictionDetails
   );
+  const appConfig = {
+    ...buildXuiAppShellAppConfigMock(),
+    wa_supported_role_categories: defaultAMSupportedRoleCategories.join(','),
+    wa_supported_role_types: defaultAMSupportedRoleTypes.join(','),
+  };
+  const environmentConfig = buildXuiAppShellEnvironmentConfigMock();
+  const clientContext = buildXuiAppShellClientContextMock();
   const userDetails = nodeAppDataModels.getUserDetails_oauth();
   if (userOptions.userId) {
     userDetails.userInfo.id = userOptions.userId;
     userDetails.userInfo.uid = userOptions.userId;
   }
-  const existingRoles = Array.isArray(userDetails.userInfo.roles)
-    ? userDetails.userInfo.roles.filter((role): role is string => typeof role === 'string')
-    : [];
+  const amMenuRole = userOptions.amMenuRole ?? defaultStaffAMMenuRole;
   userDetails.userInfo.roles = uniqueRoles([
-    ...existingRoles,
-    ...(userOptions.roles ?? []),
+    ...(userOptions.roles ?? defaultStaffWorkAllocationRoles),
     'task-supervisor',
-    defaultStaffAMMenuRole,
+    amMenuRole,
   ]);
   userDetails.userInfo.roleCategory = userOptions.roleCategory ?? 'LEGAL_OPERATIONS';
   const routeRoleAssignments = userOptions.roleAssignments
-    ? ensureSupportedAMRoleAssignment(userOptions.roleAssignments, defaultStaffAMMenuRole, supportedJurisdictions)
+    ? ensureSupportedAMRoleAssignment(userOptions.roleAssignments, amMenuRole, supportedJurisdictions)
     : [
         ...supportedJurisdictions.map((jurisdiction) => ({
           jurisdiction,
@@ -112,7 +124,7 @@ export async function setupTaskListBootstrapRoutes(
           roleType: 'ORGANISATION',
           substantive: 'Y',
         })),
-        ...buildSupportedAMRoleAssignments([defaultStaffAMMenuRole], supportedJurisdictions),
+        ...buildSupportedAMRoleAssignments([amMenuRole], supportedJurisdictions),
       ];
   userDetails.roleAssignmentInfo = [
     ...(userOptions.replaceRoleAssignments
@@ -123,9 +135,13 @@ export async function setupTaskListBootstrapRoutes(
     ...routeRoleAssignments,
   ];
 
-  await page.addInitScript((seededUserInfo) => {
-    window.sessionStorage.setItem('userDetails', JSON.stringify(seededUserInfo));
-  }, userDetails.userInfo);
+  await page.addInitScript(
+    ([seededUserInfo, seededClientContext]) => {
+      window.sessionStorage.setItem('userDetails', JSON.stringify(seededUserInfo));
+      window.sessionStorage.setItem('clientContext', JSON.stringify(seededClientContext));
+    },
+    [userDetails.userInfo, clientContext]
+  );
 
   await page.route('**/auth/isAuthenticated*', async (route) => {
     await route.fulfill({
@@ -140,6 +156,22 @@ export async function setupTaskListBootstrapRoutes(
       status: 200,
       contentType: 'application/json',
       body: JSON.stringify(userDetails),
+    });
+  });
+
+  await page.route('**/assets/config/config.json*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(appConfig),
+    });
+  });
+
+  await page.route(/\/external\/config\/ui(?:\/|\?|$)/, async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(environmentConfig),
     });
   });
 

@@ -182,6 +182,7 @@ const buildConfig = (env = process.env) => {
   const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
   const reporter = [[resolveDefaultReporter(env)]];
   const { consoleLog, consoleError } = resolveOdhinConsoleCapture(env);
+  reporter.push(['./playwright_tests_new/common/reporters/flake-gate.reporter.cjs']);
 
   if (!env.CI && env.PW_LIVE_TEST_TIMER === undefined) {
     env.PW_LIVE_TEST_TIMER = '1';

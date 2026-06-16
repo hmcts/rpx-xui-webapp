@@ -284,10 +284,7 @@ export async function postTaskAction(req: EnhancedRequest, res: Response, next: 
     }
     if (actionByEvent === true) {
       mode = 'EXUI_CASE-EVENT_COMPLETION';
-      trackTrace(
-        `${action} on task Id: ${taskId} due to automated task completion by ${eventName} event`,
-        traceProps
-      );
+      trackTrace(`${action} on task Id: ${taskId} due to automated task completion by ${eventName} event`, traceProps);
     } else {
       mode = action === 'cancel' ? 'EXUI_USER_CANCELLATION' : 'EXUI_USER_COMPLETION';
       trackTrace(`${action} on task Id: ${taskId} due to manual task action`, traceProps);
@@ -368,11 +365,7 @@ export async function getCaseWorkersForLocationAndService(req: EnhancedRequest, 
   const locationId = req.params.locationId as string;
   const serviceId = req.params.serviceId as string;
   try {
-    const getCaseWorkerPath: string = prepareCaseWorkerForLocationAndService(
-      baseUrl,
-      locationId,
-      serviceId
-    );
+    const getCaseWorkerPath: string = prepareCaseWorkerForLocationAndService(baseUrl, locationId, serviceId);
     const jsonResponse = await handleCaseWorkerForLocationAndService(getCaseWorkerPath, req);
     res.status(200);
     res.send(jsonResponse);

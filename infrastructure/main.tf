@@ -10,6 +10,25 @@ data "azurerm_key_vault" "key_vault" {
   resource_group_name = local.shared_vault_name
 }
 
+data "azurerm_client_config" "current" {}
+
+data "azurerm_user_assigned_identity" "jenkins_preview" {
+  count               = var.env == "aat" ? 1 : 0
+  name                = "jenkins-preview-mi"
+  resource_group_name = "managed-identities-preview-rg"
+}
+
+resource "azurerm_key_vault_access_policy" "jenkins_preview" {
+  count        = var.env == "aat" ? 1 : 0
+  key_vault_id = data.azurerm_key_vault.key_vault.id
+  object_id    = data.azurerm_user_assigned_identity.jenkins_preview[0].principal_id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+
+  key_permissions         = ["Get", "List"]
+  certificate_permissions = ["Get", "List"]
+  secret_permissions      = ["Get", "List"]
+}
+
 data "azurerm_key_vault_secret" "s2s_secret" {
   name         = "mc-s2s-client-secret"
   key_vault_id = data.azurerm_key_vault.key_vault.id
@@ -113,4 +132,3 @@ data "azurerm_key_vault_secret" "welsh_report_email" {
 locals {
   welsh_emails = var.welsh_reporting_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.welsh_report_email.0.value)) : []
 }
-

@@ -180,6 +180,7 @@ These are populated from Key Vault using the same `e2e=<ENV_VAR_NAME>` tag conve
 Notes:
 
 - Local dynamic-user creation requires F5 VPN (AAT/DEMO private services).
+- Value added: dynamic solicitor-style setup now provisions an approved organisation for the framework run, creates the solicitor users inside that organisation, validates the role/readiness contract, and records setup timings. This removes the shared static-organisation capacity risk while keeping one approved organisation reused across parallel workers in the same run.
 - Dynamic solicitor-style users create or reuse one run-scoped approved organisation. The static `TEST_SOLICITOR_ORGANISATION_ID` fallback has been retired.
 - `PW_DYNAMIC_ORGANISATION_MODE` is optional and only supports `dynamic`. Deprecated `static` and `auto` values fail fast so CI cannot silently fall back to a shared organisation.
 - Set `PW_DYNAMIC_ORGANISATION_RUN_ID` in CI to keep parallel workers in the same framework run on one approved organisation. If it is unset, the resolver falls back to CI run identifiers where available and then to `local`.

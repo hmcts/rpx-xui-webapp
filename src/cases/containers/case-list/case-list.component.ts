@@ -187,29 +187,32 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   public setCaseListFilterDefaults = () => {
-    this.jurisdictionsBehaviourSubject$.asObservable().subscribe((jurisdictions) => {
-      if (jurisdictions.length > 0) {
-        this.savedQueryParams = safeJsonParse(localStorage.getItem(SAVED_QUERY_PARAM_LOC_STORAGE), null);
-        if (this.savedQueryParams && !this.areSavedQueryParamsValid(jurisdictions, this.savedQueryParams)) {
-          this.clearSavedCaseListFilters();
-          this.savedQueryParams = null;
-        }
-        if (this.savedQueryParams) {
-          this.defaults = {
-            jurisdiction_id: this.savedQueryParams.jurisdiction,
-            case_type_id: this.savedQueryParams['case-type'],
-            state_id: null,
-          };
-        } else if (jurisdictions[0]?.id && jurisdictions[0].caseTypes[0]?.states[0]) {
-          this.defaults = {
-            jurisdiction_id: jurisdictions[0].id,
-            case_type_id: jurisdictions[0].caseTypes[0].id,
-            state_id: null,
-          };
-        }
+    const jurisdictions = this.jurisdictionsBehaviourSubject$.getValue();
+    if (jurisdictions.length > 0) {
+      this.savedQueryParams = this.getSavedQueryParams();
+      if (this.savedQueryParams && !this.areSavedQueryParamsValid(jurisdictions, this.savedQueryParams)) {
+        this.clearSavedCaseListFilters();
+        this.savedQueryParams = null;
       }
-    });
+      if (this.savedQueryParams) {
+        this.defaults = {
+          jurisdiction_id: this.savedQueryParams.jurisdiction,
+          case_type_id: this.savedQueryParams['case-type'],
+          state_id: null,
+        };
+      } else if (jurisdictions[0]?.id && jurisdictions[0].caseTypes[0]?.states[0]) {
+        this.defaults = {
+          jurisdiction_id: jurisdictions[0].id,
+          case_type_id: jurisdictions[0].caseTypes[0].id,
+          state_id: null,
+        };
+      }
+    }
   };
+
+  public getSavedQueryParams(): any {
+    return safeJsonParse(localStorage.getItem(SAVED_QUERY_PARAM_LOC_STORAGE), null);
+  }
 
   public areSavedQueryParamsValid(jurisdictions: Jurisdiction[], savedQueryParams): boolean {
     const jurisdiction = jurisdictions.find((item) => item.id === savedQueryParams?.jurisdiction);

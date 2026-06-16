@@ -460,12 +460,11 @@ describe('CaseListComponent', () => {
     });
 
     it('should clear saved query params and stored dynamic filters when saved defaults are invalid.', () => {
-      const localStorageGetItemSpy = spyOn(localStorage, 'getItem');
-      localStorageGetItemSpy.and.returnValue(JSON.stringify({
+      spyOn(component, 'getSavedQueryParams').and.returnValue({
         jurisdiction: 'DIVORCE',
         'case-type': 'PROBATE_CASE_TYPE',
         'case-state': null,
-      }));
+      });
       mockWindowService.removeLocalStorage.calls.reset();
 
       component.jurisdictionsBehaviourSubject$.next([

@@ -51,6 +51,35 @@ export class ExuiHeaderComponent {
     return ExuiHeaderComponent.LANGUAGE_RENDER_STATE[languageCode];
   }
 
+  private async waitForLanguageContext(language: string): Promise<void> {
+    const target = this.resolveLanguageTarget(language);
+    const renderState = this.getExpectedRenderState(target.code);
+
+    await this.page.waitForFunction(
+      ({ expectedLanguageCode, expectedToggleLabel }) => {
+        const languageToggle = document.querySelector('exui-header button.language');
+        const toggleText = languageToggle?.textContent?.trim() ?? '';
+        const rawClientContext = window.sessionStorage.getItem('clientContext');
+        if (!rawClientContext) {
+          return false;
+        }
+
+        try {
+          const clientContext = JSON.parse(rawClientContext);
+          const currentLanguage = clientContext?.client_context?.user_language?.language;
+          return currentLanguage === expectedLanguageCode && toggleText.includes(expectedToggleLabel);
+        } catch {
+          return false;
+        }
+      },
+      {
+        expectedLanguageCode: target.code,
+        expectedToggleLabel: renderState.toggleLabel,
+      },
+      { timeout: ExuiHeaderComponent.LANGUAGE_STATE_TIMEOUT_MS }
+    );
+  }
+
   public async waitForRenderedLanguageState(language: string): Promise<void> {
     const target = this.resolveLanguageTarget(language);
     const renderState = this.getExpectedRenderState(target.code);
@@ -97,40 +126,27 @@ export class ExuiHeaderComponent {
     await menuItem.click();
   }
 
-  public async switchLanguage(language: string): Promise<void> {
+  public async switchLanguage(language: string, options: { waitForTranslatedContent?: boolean } = {}): Promise<void> {
+    const waitForTranslatedContent = options.waitForTranslatedContent ?? true;
     const target = this.resolveLanguageTarget(language);
     await this.languageToggle.waitFor({ state: 'visible' });
     const toggleText = ((await this.languageToggle.textContent()) ?? '').trim();
     if (!toggleText.includes(target.label)) {
       logger.debug(`Language is already set to ${target.label}`, { language: target.label });
+      if (waitForTranslatedContent) {
+        await this.waitForRenderedLanguageState(language);
+      } else {
+        await this.waitForLanguageContext(language);
+      }
       return;
     }
 
     await this.languageToggle.click();
     await this.page.waitForLoadState('domcontentloaded');
-    // Wait for the EXUI language state and toggle label to settle after the switch.
-    await this.page.waitForFunction(
-      ({ expectedLanguageCode, expectedToggleLabel }) => {
-        const languageToggle = document.querySelector('exui-header button.language');
-        const toggleText = languageToggle?.textContent?.trim() ?? '';
-        const rawClientContext = window.sessionStorage.getItem('clientContext');
-        if (!rawClientContext) {
-          return false;
-        }
-
-        try {
-          const clientContext = JSON.parse(rawClientContext);
-          const currentLanguage = clientContext?.client_context?.user_language?.language;
-          return currentLanguage === expectedLanguageCode && toggleText.includes(expectedToggleLabel);
-        } catch {
-          return false;
-        }
-      },
-      {
-        expectedLanguageCode: target.code,
-        expectedToggleLabel: this.getExpectedRenderState(target.code).toggleLabel,
-      },
-      { timeout: ExuiHeaderComponent.LANGUAGE_STATE_TIMEOUT_MS }
-    );
+    if (waitForTranslatedContent) {
+      await this.waitForRenderedLanguageState(language);
+    } else {
+      await this.waitForLanguageContext(language);
+    }
   }
 }

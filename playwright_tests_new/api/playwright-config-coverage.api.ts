@@ -426,7 +426,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(filters.grepInvert?.test('@e2e-search-case')).toBe(true);
   });
 
-  test('E2E tag defaults enable every configured non-smoke feature by default', () => {
+  test('E2E tag defaults exclude browser Work Allocation until a valid UI user is restored', () => {
     const filters = resolveTagFilters({
       env: {},
       includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
@@ -436,8 +436,10 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
       suiteTag: '@e2e',
     });
 
-    expect(filters.excludedTags).toEqual([]);
-    expect(filters.grepInvert).toBeUndefined();
+    expect(filters.excludedTags).toEqual(['@e2e-manage-tasks']);
+    expect(filters.grepInvert).toBeInstanceOf(RegExp);
+    expect(filters.grepInvert?.test('@e2e-manage-tasks')).toBe(true);
+    expect(filters.grepInvert?.test('@e2e-search-case')).toBe(false);
     expect(filters.availableTags).toEqual(
       expect.arrayContaining([
         '@e2e-case-file-view',

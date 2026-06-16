@@ -5,3 +5,6 @@ redis_capacity = "2"
 
 # Welsh Reporting
 welsh_reporting_enabled = false
+
+# ExUI Weekly Stats Reporting
+exui_weekly_stats_enabled = false

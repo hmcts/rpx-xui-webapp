@@ -13,6 +13,13 @@ type TagFilterConfig = {
   availableServiceTags?: string[];
 };
 
+const toPosixPath = (value: string): string => value.replace(/\\/g, '/');
+
+export function resolveLocalWorktreeTestIgnorePatterns(rootDir: string = process.cwd()): string[] {
+  const normalizedRoot = toPosixPath(rootDir).replace(/\/$/, '');
+  return [`${normalizedRoot}/.worktrees/**`, `${normalizedRoot}/worktrees/**`];
+}
+
 export type ResolvedTagFilters = {
   includeTags: string[];
   excludedTags: string[];

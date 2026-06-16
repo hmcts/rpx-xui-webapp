@@ -44,12 +44,14 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
     serviceIds = getServiceIdsByService(serviceIds);
   }
   const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${courtTypeIds}&service_code=${serviceIds}`;
-  trackTrace(`getLocations, markupPath used -->: ${markupPath}`, { functionCall: 'getLocations' });
-  logger.info(`getLocations, markupPath used -->: ${markupPath}`);
+  trackTrace(`POFCC-138 - Track trace - getLocations, markupPath used -->: ${markupPath}`, { functionCall: 'getLocations' });
+  logger.info(`POFCC-138 - Logger - getLocations, markupPath used -->: ${markupPath}`);
   try {
     const headers = setHeaders(req);
     const response: AxiosResponse<any> = await http.get(markupPath, { headers });
     const containsServiceID = response.data.some((item) => Object.prototype.hasOwnProperty.call(item, 'service_id'));
+    trackTrace(`POFCC-138 - containse service id new api -->: ${containsServiceID}`, { functionCall: 'getLocations' });
+    logger.info(`POFCC-138 - containse service id new api -->: ${containsServiceID}`);
     let results: LocationModel[] = response.data;
     if (locationType === LocationTypeEnum.HEARING) {
       results = results.filter((location) => location.is_hearing_location === 'Y');
@@ -89,10 +91,10 @@ export function filterOutResults(
   regions: string[],
   courtTypes: string[]
 ): LocationModel[] {
-  trackTrace(`in old filter method filterOutResults`, {
+  trackTrace(`POFCC-138 - in old filter method filterOutResults`, {
     functionCall: 'filterOutResults',
   });
-  logger.info('in old filter method filterOutResults');
+  logger.info('POFCC-138 - in old filter method filterOutResults');
   return locations.filter(
     (location) =>
       !courtTypes.includes(location.court_type_id) ||
@@ -106,10 +108,10 @@ export function filterOutResultsWhenServiceIdPresent(
   locationIds: string[],
   regions: string[]
 ): LocationModel[] {
-  trackTrace(`in new filter method filterOutResultsWhenServiceIdPresent`, {
+  trackTrace(`POFCC-138 - in new filter method filterOutResultsWhenServiceIdPresent`, {
     functionCall: 'filterOutResultsWhenServiceIdPresent',
   });
-  logger.info('in new filter method filterOutResultsWhenServiceIdPresent');
+  logger.info('POFCC-138 - in new filter method filterOutResultsWhenServiceIdPresent');
   return locations.filter((location) => locationIds.includes(location.epimms_id) || regions.includes(location.region_id));
 }
 

@@ -52,7 +52,6 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
     const containsServiceCode = response.data.some((item) => Object.prototype.hasOwnProperty.call(item, 'service_code'));
     trackTrace(`POFCC-138 - containse service id new api -->: ${containsServiceCode}`, { functionCall: 'getLocations' });
     logger.info(`POFCC-138 - containse service id new api -->: ${containsServiceCode}`);
-    logger.info('response data --> ', response.data);
     let results: LocationModel[] = response.data;
     if (locationType === LocationTypeEnum.HEARING) {
       results = results.filter((location) => location.is_hearing_location === 'Y');

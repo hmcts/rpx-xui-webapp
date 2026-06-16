@@ -9,7 +9,7 @@ import { buildCasePayloadFromTemplate } from './payloads/registry';
 import { setupCaseForJourney } from './caseSetup';
 import { provisionDynamicSolicitorForAlias } from './dynamicSolicitorSession';
 import { createEmploymentCase } from './journeys/employmentJourneys';
-import { provisionWaTaskForManageTasksCase } from './waLiveTaskProvisioning';
+import { cleanupWaTaskRoleAssignmentsForManageTasksCase, provisionWaTaskForManageTasksCase } from './waLiveTaskProvisioning';
 
 export type ManageTasksLiveTask = {
   id: string;
@@ -25,6 +25,7 @@ export type ManageTasksLiveSetup = {
   sessionIdentity: SessionIdentity;
   userId?: string;
   task: ManageTasksLiveTask;
+  cleanup: () => Promise<void>;
 };
 
 type CaseRoleDiagnostic = {
@@ -327,7 +328,7 @@ export async function setupClaimableManageTasksCase({
     testInfo,
   });
 
-  await provisionWaTaskForManageTasksCase({
+  const waProvisioning = await provisionWaTaskForManageTasksCase({
     user,
     caseNumber: setup.caseNumber,
     jurisdiction: EMPLOYMENT_JURISDICTION,
@@ -335,17 +336,32 @@ export async function setupClaimableManageTasksCase({
     testInfo,
   });
 
-  const task = await waitForClaimableTaskForCase({
-    page,
-    caseNumber: setup.caseNumber,
-    testInfo,
-  });
+  const cleanup = async (): Promise<void> => {
+    await cleanupWaTaskRoleAssignmentsForManageTasksCase({
+      roleAssignmentIds: waProvisioning.roleAssignmentIds,
+      roleAssignmentReference: waProvisioning.roleAssignmentReference,
+      testInfo,
+    });
+  };
+
+  let task: ManageTasksLiveTask;
+  try {
+    task = await waitForClaimableTaskForCase({
+      page,
+      caseNumber: setup.caseNumber,
+      testInfo,
+    });
+  } catch (error) {
+    await cleanup();
+    throw error;
+  }
 
   const liveSetup = {
     caseNumber: setup.caseNumber,
     sessionIdentity,
     userId: user.id,
     task,
+    cleanup,
   };
 
   await testInfo.attach('manage-tasks-live-setup.json', {

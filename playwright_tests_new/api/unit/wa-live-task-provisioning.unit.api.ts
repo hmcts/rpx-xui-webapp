@@ -108,6 +108,38 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
     expect(attachments[0].body).toContain('WA task provisioning prerequisites missing');
   });
 
+  test('fails early when workflow mode is required but live prerequisites are missing', async () => {
+    const attachments: Array<{ name: string; body: string }> = [];
+
+    await expect(
+      provisionWaTaskForManageTasksCaseWithDeps(
+        {
+          user: {
+            id: 'dynamic-user-id',
+            email: 'dynamic@example.test',
+            password: 'password',
+          },
+          caseNumber: '1781628830476801',
+          jurisdiction: 'EMPLOYMENT',
+          caseType: 'ET_EnglandWales',
+          testInfo: {
+            attach: async (name: string, payload: { body: string | Buffer }) => {
+              attachments.push({ name, body: String(payload.body) });
+            },
+          } as never,
+        },
+        {
+          env: {
+            PW_E2E_MANAGE_TASKS_WA_PROVISIONING: 'workflow',
+          },
+        }
+      )
+    ).rejects.toThrow(/WA task provisioning is required.*prerequisites are missing/);
+
+    expect(attachments[0].name).toBe('manage-tasks-wa-provisioning.json');
+    expect(attachments[0].body).toContain('WA task provisioning prerequisites missing');
+  });
+
   test('creates role assignments before sending the workflow message', async () => {
     const calls: Array<{ baseURL: string; url: string; data: unknown }> = [];
     const contexts: Array<{ disposed: boolean }> = [];
@@ -174,6 +206,7 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
       attempted: true,
       taskId: 'task-123',
       roleAssignmentIds: ['assignment-1', 'assignment-2'],
+      roleAssignmentReference: 'playwright-manage-tasks-1781628830476801',
       diagnostics: {
         roleAssignmentStatus: 201,
         workflowStatus: 204,
@@ -184,5 +217,133 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
     expect(calls[1].baseURL).toBe('http://wa-workflow.test');
     expect(contexts.every((context) => context.disposed)).toBe(true);
     expect(attachments[0].body).toContain('"taskId": "task-123"');
+  });
+
+  test('cleans up created role assignments when workflow message creation fails', async () => {
+    const calls: Array<{ method: string; baseURL: string; url: string }> = [];
+    const attachments: Array<{ name: string; body: string }> = [];
+
+    await expect(
+      provisionWaTaskForManageTasksCaseWithDeps(
+        {
+          user: {
+            id: 'dynamic-user-id',
+            email: 'dynamic@example.test',
+            password: 'password',
+          },
+          caseNumber: '1781628830476801',
+          jurisdiction: 'EMPLOYMENT',
+          caseType: 'ET_EnglandWales',
+          testInfo: {
+            attach: async (name: string, payload: { body: string | Buffer }) => {
+              attachments.push({ name, body: String(payload.body) });
+            },
+          } as never,
+        },
+        {
+          env: {
+            PW_E2E_MANAGE_TASKS_WA_PROVISIONING: 'workflow',
+            SERVICES_WA_WORKFLOW_API_URL: 'http://wa-workflow.test',
+            SERVICES_ROLE_ASSIGNMENT_API: 'http://am-role-assignment.test',
+            PW_E2E_MANAGE_TASKS_ROLE_ASSIGNMENT_BEARER_TOKEN: 'admin-token',
+            S2S_TOKEN: 's2s-token',
+            PW_E2E_MANAGE_TASKS_IDAM_SECRET: 'idam-secret',
+          },
+          idamUtils: {
+            generateIdamToken: async () => 'dynamic-user-token',
+          },
+          now: () => new Date('2026-06-16T10:00:00.000Z'),
+          uuid: () => 'task-123',
+          newContext: (async ({ baseURL }: { baseURL?: string }) => {
+            return {
+              post: async (url: string) => {
+                calls.push({ method: 'POST', baseURL: baseURL ?? '', url });
+                if (url === '/am/role-assignments') {
+                  return response(201, {
+                    roleAssignmentResponse: {
+                      requestedRoles: [{ id: 'assignment-1' }, { id: 'assignment-2' }],
+                    },
+                  });
+                }
+                return response(500, { error: 'workflow unavailable' });
+              },
+              delete: async (url: string) => {
+                calls.push({ method: 'DELETE', baseURL: baseURL ?? '', url });
+                return response(204, '');
+              },
+              dispose: async () => undefined,
+            };
+          }) as never,
+        }
+      )
+    ).rejects.toThrow(/WA workflow task creation failed with HTTP 500/);
+
+    expect(calls).toEqual([
+      { method: 'POST', baseURL: 'http://am-role-assignment.test', url: '/am/role-assignments' },
+      { method: 'POST', baseURL: 'http://wa-workflow.test', url: '/workflow/message' },
+      {
+        method: 'DELETE',
+        baseURL: 'http://am-role-assignment.test',
+        url: '/am/role-assignments?process=playwright-manage-tasks-live-setup&reference=playwright-manage-tasks-1781628830476801',
+      },
+    ]);
+    expect(attachments.find((attachment) => attachment.name === 'manage-tasks-wa-role-assignment-cleanup.json')?.body).toContain(
+      '"reference": "playwright-manage-tasks-1781628830476801"'
+    );
+  });
+
+  test('prefers role-assignment reference cleanup when a reference is available', async () => {
+    const calls: string[] = [];
+    const cleanup = await waLiveTaskProvisioningTest.deleteRoleAssignments(
+      {
+        delete: async (url: string) => {
+          calls.push(url);
+          return response(204, '');
+        },
+      } as never,
+      [],
+      'playwright-manage-tasks-1781628830476801'
+    );
+
+    expect(calls).toEqual([
+      '/am/role-assignments?process=playwright-manage-tasks-live-setup&reference=playwright-manage-tasks-1781628830476801',
+    ]);
+    expect(cleanup).toEqual([
+      {
+        reference: 'playwright-manage-tasks-1781628830476801',
+        status: 204,
+        ok: true,
+        note: undefined,
+      },
+    ]);
+  });
+
+  test('deletes role assignments by idempotent assignment id cleanup', async () => {
+    const calls: string[] = [];
+    const cleanup = await waLiveTaskProvisioningTest.deleteRoleAssignments(
+      {
+        delete: async (url: string) => {
+          calls.push(url);
+          return response(url.endsWith('assignment-2') ? 404 : 204, '');
+        },
+      } as never,
+      ['assignment-1', 'assignment-2', 'assignment-1']
+    );
+
+    expect(calls).toEqual(['/am/role-assignments/assignment-1', '/am/role-assignments/assignment-2']);
+    expect(cleanup).toEqual([
+      {
+        assignmentId: 'assignment-1',
+        status: 204,
+        ok: true,
+        note: undefined,
+      },
+      {
+        assignmentId: 'assignment-2',
+        status: 404,
+        ok: true,
+        note: 'already absent',
+      },
+    ]);
   });
 });

@@ -50,106 +50,112 @@ test.describe('Manage Tasks with dynamic organisation and user', { tag: ['@e2e',
   }, testInfo) => {
     let liveSetup: ManageTasksLiveSetup | undefined;
 
-    await test.step('Create a dynamic organisation, solicitor, case, and claimable WA task', async () => {
-      liveSetup = await setupClaimableManageTasksCase({
-        page,
-        createCasePage,
-        caseDetailsPage,
-        professionalUserUtils,
-        testInfo,
+    try {
+      await test.step('Create a dynamic organisation, solicitor, case, and claimable WA task', async () => {
+        liveSetup = await setupClaimableManageTasksCase({
+          page,
+          createCasePage,
+          caseDetailsPage,
+          professionalUserUtils,
+          testInfo,
+        });
+        await applySessionCookies(page, liveSetup.sessionIdentity);
+        await taskListPage.goto();
+        await taskListPage.taskListTable.waitFor({ state: 'visible', timeout: 60_000 });
       });
-      await applySessionCookies(page, liveSetup.sessionIdentity);
-      await taskListPage.goto();
-      await taskListPage.taskListTable.waitFor({ state: 'visible', timeout: 60_000 });
-    });
 
-    if (!liveSetup) {
-      throw new Error('Manage Tasks live setup did not complete.');
-    }
+      if (!liveSetup) {
+        throw new Error('Manage Tasks live setup did not complete.');
+      }
 
-    await test.step('Open Available tasks and verify the created case task is claimable', async () => {
-      await retryOnTransientFailure(
-        async () => {
-          taskListPage.clearApiCalls();
-          await taskListPage.clickTaskTabAndWaitForView(
-            'Available tasks',
-            'AvailableTasks',
-            'opening dynamic case available task',
+      await test.step('Open Available tasks and verify the created case task is claimable', async () => {
+        await retryOnTransientFailure(
+          async () => {
+            taskListPage.clearApiCalls();
+            await taskListPage.clickTaskTabAndWaitForView(
+              'Available tasks',
+              'AvailableTasks',
+              'opening dynamic case available task',
+              {
+                timeoutMs: 60_000,
+              }
+            );
+            await taskListPage.waitForTaskRowReady('dynamic case available task', { timeoutMs: 60_000 });
+          },
+          {
+            maxAttempts: 2,
+            onRetry: async () => {
+              await taskListPage.goto();
+            },
+          }
+        );
+
+        const rows = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
+        const rowIndex = await expectCreatedTaskRow({
+          rows,
+          task: liveSetup.task,
+          viewName: 'Available tasks',
+        });
+
+        await taskListPage.openManageActionsForRow(rowIndex, 'dynamic case available task');
+        await expect(taskListPage.getTaskActionForRow(rowIndex, 'claim')).toBeVisible();
+        await expect(taskListPage.getTaskActionForRow(rowIndex, 'claim-and-go')).toBeVisible();
+      });
+
+      await test.step('Claim the created task and verify the success message', async () => {
+        const rows = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
+        const rowIndex = await expectCreatedTaskRow({
+          rows,
+          task: liveSetup.task,
+          viewName: 'Available tasks before claim',
+        });
+
+        await taskListPage.openManageActionsForRow(rowIndex, 'dynamic case claim task');
+        await Promise.all([
+          page.waitForResponse(
+            (response) => response.url().includes(`/workallocation/task/${liveSetup.task.id}/claim`) && response.ok(),
             {
-              timeoutMs: 60_000,
+              timeout: 60_000,
             }
-          );
-          await taskListPage.waitForTaskRowReady('dynamic case available task', { timeoutMs: 60_000 });
-        },
-        {
-          maxAttempts: 2,
-          onRetry: async () => {
-            await taskListPage.goto();
+          ),
+          taskListPage.clickTaskActionForRow(rowIndex, 'claim', 'dynamic case claim task', { timeoutMs: 30_000 }),
+        ]);
+
+        await expect(taskListPage.exuiBodyComponent.successMessage).toContainText(
+          `You've assigned yourself a task. It's available in My tasks.`
+        );
+        await expect(taskListPage.exuiBodyComponent.infoMessage).toContainText('The list has been refreshed.');
+      });
+
+      await test.step('Open My tasks and verify the claimed task is actionable', async () => {
+        await retryOnTransientFailure(
+          async () => {
+            taskListPage.clearApiCalls();
+            await taskListPage.clickTaskTabAndWaitForView('My tasks', 'MyTasks', 'opening dynamic case claimed task', {
+              timeoutMs: 60_000,
+            });
+            await taskListPage.waitForTaskRowReady('dynamic case claimed task', { timeoutMs: 60_000 });
           },
-        }
-      );
+          {
+            maxAttempts: 2,
+            onRetry: async () => {
+              await taskListPage.goto();
+            },
+          }
+        );
 
-      const rows = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
-      const rowIndex = await expectCreatedTaskRow({
-        rows,
-        task: liveSetup.task,
-        viewName: 'Available tasks',
+        const rows = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
+        const rowIndex = await expectCreatedTaskRow({
+          rows,
+          task: liveSetup.task,
+          viewName: 'My tasks',
+        });
+
+        await taskListPage.openManageActionsForRow(rowIndex, 'dynamic case my task');
+        await expect(taskListPage.getTaskActionForRow(rowIndex, 'go')).toBeVisible();
       });
-
-      await taskListPage.openManageActionsForRow(rowIndex, 'dynamic case available task');
-      await expect(taskListPage.getTaskActionForRow(rowIndex, 'claim')).toBeVisible();
-      await expect(taskListPage.getTaskActionForRow(rowIndex, 'claim-and-go')).toBeVisible();
-    });
-
-    await test.step('Claim the created task and verify the success message', async () => {
-      const rows = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
-      const rowIndex = await expectCreatedTaskRow({
-        rows,
-        task: liveSetup.task,
-        viewName: 'Available tasks before claim',
-      });
-
-      await taskListPage.openManageActionsForRow(rowIndex, 'dynamic case claim task');
-      await Promise.all([
-        page.waitForResponse(
-          (response) => response.url().includes(`/workallocation/task/${liveSetup.task.id}/claim`) && response.ok(),
-          { timeout: 60_000 }
-        ),
-        taskListPage.clickTaskActionForRow(rowIndex, 'claim', 'dynamic case claim task', { timeoutMs: 30_000 }),
-      ]);
-
-      await expect(taskListPage.exuiBodyComponent.successMessage).toContainText(
-        `You've assigned yourself a task. It's available in My tasks.`
-      );
-      await expect(taskListPage.exuiBodyComponent.infoMessage).toContainText('The list has been refreshed.');
-    });
-
-    await test.step('Open My tasks and verify the claimed task is actionable', async () => {
-      await retryOnTransientFailure(
-        async () => {
-          taskListPage.clearApiCalls();
-          await taskListPage.clickTaskTabAndWaitForView('My tasks', 'MyTasks', 'opening dynamic case claimed task', {
-            timeoutMs: 60_000,
-          });
-          await taskListPage.waitForTaskRowReady('dynamic case claimed task', { timeoutMs: 60_000 });
-        },
-        {
-          maxAttempts: 2,
-          onRetry: async () => {
-            await taskListPage.goto();
-          },
-        }
-      );
-
-      const rows = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
-      const rowIndex = await expectCreatedTaskRow({
-        rows,
-        task: liveSetup.task,
-        viewName: 'My tasks',
-      });
-
-      await taskListPage.openManageActionsForRow(rowIndex, 'dynamic case my task');
-      await expect(taskListPage.getTaskActionForRow(rowIndex, 'go')).toBeVisible();
-    });
+    } finally {
+      await liveSetup?.cleanup();
+    }
   });
 });

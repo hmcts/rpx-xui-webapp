@@ -21,10 +21,19 @@ type ProvisionDeps = TokenDeps & {
   uuid?: () => string;
 };
 
+export type WaRoleAssignmentCleanupResult = {
+  assignmentId?: string;
+  reference?: string;
+  status: number | 'skipped';
+  ok: boolean;
+  note?: string;
+};
+
 export type WaTaskProvisioningResult = {
   attempted: boolean;
   taskId?: string;
   roleAssignmentIds: string[];
+  roleAssignmentReference?: string;
   diagnostics: {
     mode: string;
     workflowApiUrl?: string;
@@ -71,6 +80,7 @@ const DEFAULT_TASK_CATEGORY = 'Case Progression';
 const DEFAULT_SECURITY_CLASSIFICATION = 'PUBLIC';
 const DEFAULT_CASE_MANAGEMENT_CATEGORY = 'Protection';
 const DEFAULT_ROLE_NAMES = ['tribunal-caseworker', 'task-supervisor'] as const;
+const ROLE_ASSIGNMENT_PROCESS = 'playwright-manage-tasks-live-setup';
 
 function firstNonEmpty(...values: Array<string | undefined>): string | undefined {
   return values.map((value) => value?.trim()).find((value): value is string => Boolean(value));
@@ -100,6 +110,14 @@ function resolveProvisioningMode(env: Env = process.env): string {
 
 function shouldProvision(mode: string): boolean {
   return ['auto', 'workflow', 'direct', 'true', '1'].includes(mode.toLowerCase());
+}
+
+function requiresProvisioning(mode: string): boolean {
+  return ['workflow', 'direct', 'true', '1'].includes(mode.toLowerCase());
+}
+
+function buildRoleAssignmentReference(caseNumber: string): string {
+  return `playwright-manage-tasks-${caseNumber}`;
 }
 
 function resolveWorkflowApiUrl(env: Env = process.env): string | undefined {
@@ -245,7 +263,7 @@ export function buildWaRoleAssignmentRequest({
   return {
     roleRequest: {
       assignerId: actorId,
-      process: 'playwright-manage-tasks-live-setup',
+      process: ROLE_ASSIGNMENT_PROCESS,
       reference,
       replaceExisting: false,
     },
@@ -318,13 +336,14 @@ async function postRoleAssignments(params: {
   caseNumber: string;
   beginTime: string;
 }) {
+  const reference = buildRoleAssignmentReference(params.caseNumber);
   const response = await params.context.post('/am/role-assignments', {
     data: buildWaRoleAssignmentRequest({
       actorId: params.actorId,
       jurisdiction: params.jurisdiction,
       caseType: params.caseType,
       beginTime: params.beginTime,
-      reference: `playwright-manage-tasks-${params.caseNumber}`,
+      reference,
     }),
     failOnStatusCode: false,
   });
@@ -336,7 +355,58 @@ async function postRoleAssignments(params: {
   return {
     status,
     ids: extractRoleAssignmentIds(payload),
+    reference,
   };
+}
+
+async function deleteRoleAssignments(
+  context: APIRequestContext,
+  roleAssignmentIds: readonly string[],
+  roleAssignmentReference?: string
+): Promise<WaRoleAssignmentCleanupResult[]> {
+  if (roleAssignmentReference?.trim()) {
+    const reference = roleAssignmentReference.trim();
+    const response = await context.delete(
+      `/am/role-assignments?process=${encodeURIComponent(ROLE_ASSIGNMENT_PROCESS)}&reference=${encodeURIComponent(reference)}`,
+      {
+        failOnStatusCode: false,
+      }
+    );
+    const status = response.status();
+    return [
+      {
+        reference,
+        status,
+        ok: status === 204 || status === 404,
+        note: status === 404 ? 'already absent' : undefined,
+      },
+    ];
+  }
+
+  const uniqueIds = [...new Set(roleAssignmentIds.map((id) => id.trim()).filter(Boolean))];
+  const results: WaRoleAssignmentCleanupResult[] = [];
+
+  for (const assignmentId of uniqueIds) {
+    const response = await context.delete(`/am/role-assignments/${encodeURIComponent(assignmentId)}`, {
+      failOnStatusCode: false,
+    });
+    const status = response.status();
+    results.push({
+      assignmentId,
+      status,
+      ok: status === 204 || status === 404,
+      note: status === 404 ? 'already absent' : undefined,
+    });
+  }
+
+  return results;
+}
+
+async function attachRoleAssignmentCleanup(testInfo: TestInfo, cleanup: readonly WaRoleAssignmentCleanupResult[]): Promise<void> {
+  await testInfo.attach('manage-tasks-wa-role-assignment-cleanup.json', {
+    body: JSON.stringify({ cleanup }, null, 2),
+    contentType: 'application/json',
+  });
 }
 
 async function postWorkflowMessage(params: {
@@ -437,6 +507,12 @@ export async function provisionWaTaskForManageTasksCaseWithDeps(
       body: JSON.stringify(result, null, 2),
       contentType: 'application/json',
     });
+    if (requiresProvisioning(mode)) {
+      throw new Error(
+        `WA task provisioning is required by PW_E2E_MANAGE_TASKS_WA_PROVISIONING='${mode}', ` +
+          `but prerequisites are missing: ${missing.join(', ')}.`
+      );
+    }
     return result;
   }
 
@@ -453,29 +529,33 @@ export async function provisionWaTaskForManageTasksCaseWithDeps(
   }
 
   const newContext = deps.newContext ?? request.newContext.bind(request);
-  const roleContext = await newContext({
-    baseURL: stripTrailingSlash(roleAssignmentApiUrl as string),
-    extraHTTPHeaders: {
-      Accept: 'application/json',
-      Authorization: withBearerPrefix(stripBearerPrefix(adminBearerToken as string)),
-      ServiceAuthorization: withBearerPrefix(serviceToken),
-      'Content-Type': 'application/json',
-    },
-  });
-  const workflowContext = await newContext({
-    baseURL: stripTrailingSlash(workflowApiUrl as string),
-    extraHTTPHeaders: {
-      Accept: 'application/json',
-      Authorization: withBearerPrefix(userBearerToken),
-      ServiceAuthorization: withBearerPrefix(serviceToken),
-      'Content-Type': 'application/json',
-    },
-  });
-
   const now = deps.now?.() ?? new Date();
   const taskId = deps.uuid?.() ?? randomUUID();
+  let roleContext: APIRequestContext | undefined;
+  let workflowContext: APIRequestContext | undefined;
+  let createdRoleAssignmentIds: string[] = [];
+  let createdRoleAssignmentReference: string | undefined;
 
   try {
+    roleContext = await newContext({
+      baseURL: stripTrailingSlash(roleAssignmentApiUrl as string),
+      extraHTTPHeaders: {
+        Accept: 'application/json',
+        Authorization: withBearerPrefix(stripBearerPrefix(adminBearerToken as string)),
+        ServiceAuthorization: withBearerPrefix(serviceToken),
+        'Content-Type': 'application/json',
+      },
+    });
+    workflowContext = await newContext({
+      baseURL: stripTrailingSlash(workflowApiUrl as string),
+      extraHTTPHeaders: {
+        Accept: 'application/json',
+        Authorization: withBearerPrefix(userBearerToken),
+        ServiceAuthorization: withBearerPrefix(serviceToken),
+        'Content-Type': 'application/json',
+      },
+    });
+
     const roleAssignment = await postRoleAssignments({
       context: roleContext,
       actorId: user.id ?? user.email,
@@ -484,6 +564,8 @@ export async function provisionWaTaskForManageTasksCaseWithDeps(
       caseNumber,
       beginTime: now.toISOString(),
     });
+    createdRoleAssignmentIds = roleAssignment.ids;
+    createdRoleAssignmentReference = roleAssignment.reference;
     const workflowStatus = await postWorkflowMessage({
       context: workflowContext,
       taskId,
@@ -496,7 +578,8 @@ export async function provisionWaTaskForManageTasksCaseWithDeps(
     const result = {
       attempted: true,
       taskId,
-      roleAssignmentIds: roleAssignment.ids,
+      roleAssignmentIds: createdRoleAssignmentIds,
+      roleAssignmentReference: createdRoleAssignmentReference,
       diagnostics: {
         ...baseDiagnostics,
         roleAssignmentStatus: roleAssignment.status,
@@ -508,16 +591,96 @@ export async function provisionWaTaskForManageTasksCaseWithDeps(
       contentType: 'application/json',
     });
     return result;
+  } catch (error) {
+    if (roleContext && (createdRoleAssignmentIds.length > 0 || createdRoleAssignmentReference)) {
+      const cleanup = await deleteRoleAssignments(roleContext, createdRoleAssignmentIds, createdRoleAssignmentReference);
+      await attachRoleAssignmentCleanup(testInfo, cleanup);
+      const failedCleanup = cleanup.filter((entry) => !entry.ok);
+      if (failedCleanup.length > 0) {
+        throw new Error(
+          `${error instanceof Error ? error.message : String(error)}; ` +
+            `WA role assignment cleanup failed for ${failedCleanup
+              .map((entry) => entry.reference ?? entry.assignmentId)
+              .join(', ')}.`
+        );
+      }
+    }
+    throw error;
+  } finally {
+    await roleContext?.dispose();
+    await workflowContext?.dispose();
+  }
+}
+
+export async function cleanupWaTaskRoleAssignmentsForManageTasksCase({
+  roleAssignmentIds,
+  roleAssignmentReference,
+  testInfo,
+}: {
+  roleAssignmentIds: readonly string[];
+  roleAssignmentReference?: string;
+  testInfo: TestInfo;
+}): Promise<WaRoleAssignmentCleanupResult[]> {
+  if (roleAssignmentIds.length === 0 && !roleAssignmentReference?.trim()) {
+    const cleanup = [
+      {
+        status: 'skipped',
+        ok: true,
+        note: 'no role assignments were created',
+      },
+    ] satisfies WaRoleAssignmentCleanupResult[];
+    await attachRoleAssignmentCleanup(testInfo, cleanup);
+    return cleanup;
+  }
+
+  const env = process.env;
+  const roleAssignmentApiUrl = resolveRoleAssignmentApiUrl(env);
+  const adminBearerToken = resolveAdminBearerToken(env);
+  const missing = [
+    roleAssignmentApiUrl ? undefined : 'SERVICES_ROLE_ASSIGNMENT_API',
+    adminBearerToken ? undefined : 'ORG_USER_ASSIGNMENT_BEARER_TOKEN or PW_E2E_MANAGE_TASKS_ROLE_ASSIGNMENT_BEARER_TOKEN',
+  ].filter((value): value is string => Boolean(value));
+  if (missing.length > 0) {
+    throw new Error(`WA role assignment cleanup prerequisites missing: ${missing.join(', ')}.`);
+  }
+
+  const serviceToken = await resolveServiceToken();
+  if (!serviceToken) {
+    throw new Error('WA role assignment cleanup requires an S2S token. Set S2S_TOKEN or S2S service auth configuration.');
+  }
+
+  const roleContext = await request.newContext({
+    baseURL: stripTrailingSlash(roleAssignmentApiUrl as string),
+    extraHTTPHeaders: {
+      Accept: 'application/json',
+      Authorization: withBearerPrefix(stripBearerPrefix(adminBearerToken as string)),
+      ServiceAuthorization: withBearerPrefix(serviceToken),
+      'Content-Type': 'application/json',
+    },
+  });
+
+  try {
+    const cleanup = await deleteRoleAssignments(roleContext, roleAssignmentIds, roleAssignmentReference);
+    await attachRoleAssignmentCleanup(testInfo, cleanup);
+    const failedCleanup = cleanup.filter((entry) => !entry.ok);
+    if (failedCleanup.length > 0) {
+      throw new Error(
+        `WA role assignment cleanup failed for ${failedCleanup.map((entry) => entry.reference ?? entry.assignmentId).join(', ')}.`
+      );
+    }
+    return cleanup;
   } finally {
     await roleContext.dispose();
-    await workflowContext.dispose();
   }
 }
 
 export const __test__ = {
   buildWaCreateTaskMessage,
   buildWaRoleAssignmentRequest,
+  buildRoleAssignmentReference,
+  deleteRoleAssignments,
   extractRoleAssignmentIds,
+  requiresProvisioning,
   resolveProvisioningMode,
   resolveWorkflowApiUrl,
   resolveRoleAssignmentApiUrl,

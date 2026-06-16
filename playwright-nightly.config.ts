@@ -2,7 +2,12 @@ import { defineConfig, devices } from '@playwright/test';
 
 import { cpus, totalmem } from 'node:os';
 import { version as appVersion } from './package.json';
-import { logResolvedTagFilters, resolveTagFilters, resolveWorkerCount } from './playwright-config-utils';
+import {
+  logResolvedTagFilters,
+  resolveLocalWorktreeTestIgnorePatterns,
+  resolveTagFilters,
+  resolveWorkerCount,
+} from './playwright-config-utils';
 
 type EnvMap = NodeJS.ProcessEnv;
 
@@ -49,6 +54,7 @@ const resolveAgentHardware = () => {
 
 const buildConfig = (env: EnvMap = process.env) => {
   const headlessMode = resolveHeadlessMode(env);
+  const localWorktreeTestIgnorePatterns = resolveLocalWorktreeTestIgnorePatterns();
   const baseUrl = resolveBaseUrl(env);
   const workerCount = resolveWorkerCount(env);
   const targetEnv = env.TEST_TYPE ?? resolveEnvironmentFromUrl(baseUrl);
@@ -72,8 +78,8 @@ const buildConfig = (env: EnvMap = process.env) => {
     testMatch: ['**/test/**/*.spec.ts'],
     testIgnore:
       env.PLAYWRIGHT_INCLUDE_A11Y === 'true'
-        ? ['**/test/smoke/smokeTest.spec.ts']
-        : ['**/test/smoke/smokeTest.spec.ts', '**/*.a11y.spec.ts'],
+        ? ['**/test/smoke/smokeTest.spec.ts', ...localWorktreeTestIgnorePatterns]
+        : ['**/test/smoke/smokeTest.spec.ts', '**/*.a11y.spec.ts', ...localWorktreeTestIgnorePatterns],
     use: {
       baseURL: baseUrl,
     },

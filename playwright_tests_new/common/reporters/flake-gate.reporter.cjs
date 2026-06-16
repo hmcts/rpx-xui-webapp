@@ -4,7 +4,6 @@ class FlakeGateReporter {
     this.finalOutcomesByTest = new Map();
     this.maxFlakyTests = Number.isFinite(Number(process.env.PW_MAX_FLAKY_TESTS)) ? Number(process.env.PW_MAX_FLAKY_TESTS) : 20;
     this.maxFlakyRate = Number.isFinite(Number(process.env.PW_MAX_FLAKY_RATE)) ? Number(process.env.PW_MAX_FLAKY_RATE) : 0.2;
-    this.reportOnly = true;
   }
 
   projectName(test) {
@@ -59,6 +58,7 @@ class FlakeGateReporter {
     ).length;
     const denominator = uniqueFinalTests > 0 ? uniqueFinalTests : 1;
     const flakyRate = flakyCount / denominator;
+
     const summary = [
       `[flake-gate] finished=${uniqueFinalTests}`,
       `[flake-gate] attempts=${this.totalAttempts}`,
@@ -67,12 +67,10 @@ class FlakeGateReporter {
       `[flake-gate] failed=${failedCount}`,
       `[flake-gate] flaky-rate=${(flakyRate * 100).toFixed(2)}%`,
       `[flake-gate] thresholds: maxFlakyTests=${this.maxFlakyTests}, maxFlakyRate=${(this.maxFlakyRate * 100).toFixed(2)}%`,
-      `[flake-gate] mode=${this.reportOnly ? 'report-only' : 'enforce'}`,
-      '[flake-gate] result=passed',
+      `[flake-gate] mode=report-only`,
     ].join('\n');
 
     process.stdout.write(`${summary}\n`);
-    return undefined;
   }
 }
 

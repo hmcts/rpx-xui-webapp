@@ -74,13 +74,23 @@ test.describe('Odhin reporter unit tests', { tag: '@svc-internal' }, () => {
         },
         { status: 'passed', retry: 1 }
       );
+      reporter.onTestEnd(
+        {
+          id: 'failed-test',
+          outcome: () => 'unexpected',
+        },
+        { status: 'failed', retry: 2 }
+      );
       const result = reporter.onEnd();
 
       expect(result).toBeUndefined();
       const output = writes.join('');
+      expect(output).toContain('[flake-gate] flaky=1');
+      expect(output).toContain('[flake-gate] passed-on-retry=1');
+      expect(output).toContain('[flake-gate] failed=1');
       expect(output).toContain('[flake-gate] thresholds: maxFlakyTests=20, maxFlakyRate=20.00%');
       expect(output).toContain('[flake-gate] mode=report-only');
-      expect(output).toContain('[flake-gate] result=passed');
+      expect(output).not.toContain('[flake-gate] result=');
     } finally {
       for (const [key, value] of Object.entries(originalEnv)) {
         if (value === undefined) {

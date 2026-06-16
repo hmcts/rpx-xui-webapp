@@ -6,7 +6,7 @@ import { config } from './utils/apiTestRuntimeConfig';
 import { ensureStorageState } from './utils/auth';
 import { test, expect } from './fixtures';
 import { ROLE_ACCESS_CASE_ID, resolveRoleAccessCaseId } from './data/testIds';
-import { expectStatus, StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
+import { expectStatus, guardedRequest, StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
 import { AuthenticationError } from './utils/errors';
 import { seedRoleAccessCaseId } from './utils/role-access';
 import { RoleAssignmentContainer } from './utils/types';
@@ -136,13 +136,11 @@ test.describe('Role access / AM', { tag: '@svc-role-assignment' }, () => {
   });
 
   test('get-my-access-new-count', async ({ apiClient }) => {
-    const res = await withRetry(
-      () =>
-        apiClient.get<{ count?: number } | number>('api/role-access/roles/get-my-access-new-count', {
-          timeoutMs: MY_ACCESS_NEW_COUNT_TIMEOUT_MS,
-          throwOnError: false,
-        }),
-      { retries: 1, retryStatuses: [500, 502, 504] }
+    const res = await guardedRequest(() =>
+      apiClient.get<{ count?: number } | number>('api/role-access/roles/get-my-access-new-count', {
+        timeoutMs: MY_ACCESS_NEW_COUNT_TIMEOUT_MS,
+        throwOnError: false,
+      })
     );
     expectStatus(res.status, StatusSets.roleAccessRead);
     assertMyAccessCount(res.status, res.data);

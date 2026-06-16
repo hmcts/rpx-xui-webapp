@@ -226,6 +226,25 @@ type CleanupIdamAccountOptions = {
   idamApiPath?: string;
 };
 
+export function buildCreatedUserLogSummary(params: {
+  user: ProfessionalUserInfo;
+  roleSelection?: SolicitorRoleSelectionResolution;
+  createPath: 'idam-testing-support' | 'idam-update-existing' | 'idam-api-testing-support';
+}) {
+  return {
+    username: params.user.email,
+    forename: params.user.forename,
+    surname: params.user.surname,
+    roles: params.user.roleNames,
+    createPath: params.createPath,
+    roleSource: params.roleSelection?.source,
+    roleProfile: params.roleSelection?.roleProfile,
+    jurisdiction: params.roleSelection?.context.jurisdiction,
+    testType: params.roleSelection?.context.testType,
+    caseType: params.roleSelection?.context.caseType,
+  };
+}
+
 const logger = createLogger({
   serviceName: 'professional-user-utils',
   format: 'pretty',
@@ -924,20 +943,7 @@ export class ProfessionalUserUtils {
     if (!shouldOutputCreatedUserData(params.outputCreatedUserData)) {
       return;
     }
-    const summary = {
-      username: params.user.email,
-      password: params.user.password,
-      forename: params.user.forename,
-      surname: params.user.surname,
-      roles: params.user.roleNames,
-      createPath: params.createPath,
-      roleSource: params.roleSelection?.source,
-      roleProfile: params.roleSelection?.roleProfile,
-      jurisdiction: params.roleSelection?.context.jurisdiction,
-      testType: params.roleSelection?.context.testType,
-      caseType: params.roleSelection?.context.caseType,
-    };
-    // Intentional: plain log keeps credentials visible for AAT debug sessions.
+    const summary = buildCreatedUserLogSummary(params);
     logger.info('[provisioned-user-data]', { data: summary });
   }
 

@@ -1,9 +1,10 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type APIRequestContext } from '@playwright/test';
 
-import { expectStatus, withRetry, __test__ as apiTestUtilsTest } from './utils/apiTestUtils';
+import { expectStatus, guardedRequest, withRetry, __test__ as apiTestUtilsTest } from './utils/apiTestUtils';
 import { resolveRoleAccessCaseId } from './data/testIds';
 import { __test__ as fixturesTest } from './fixtures';
 import { buildTaskSearchRequest, seedTaskId } from './utils/work-allocation';
+import { fetchFirstTask, guardedTaskSearch, resolveWaCancellationTask } from './utils/workAllocationUtils';
 import { seedRoleAccessCaseId } from './utils/role-access';
 
 test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () => {
@@ -38,6 +39,38 @@ test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () =
     expect(defaultRes.status).toBe(200);
 
     await expect(withRetry(async () => ({ status: 200 }), { retries: -1 })).rejects.toThrow('withRetry failed unexpectedly');
+  });
+
+  test('guardedRequest converts request timeouts into guarded downstream status', async () => {
+    let timeoutAnnotations = 0;
+    const timeoutResult = await guardedRequest(
+      async () => {
+        throw new Error('Timeout 30000ms exceeded');
+      },
+      {
+        onRequestTimeout: () => {
+          timeoutAnnotations += 1;
+        },
+      }
+    );
+
+    expect(timeoutResult).toEqual({ data: undefined, status: 504 });
+    expect(timeoutAnnotations).toBe(1);
+
+    await expect(
+      guardedRequest(
+        async () => {
+          throw new Error('Timeout 30000ms exceeded');
+        },
+        { failOnRequestError: true }
+      )
+    ).rejects.toThrow('Timeout 30000ms exceeded');
+
+    await expect(
+      guardedRequest(async () => {
+        throw new Error('invalid payload');
+      })
+    ).rejects.toThrow('invalid payload');
   });
 
   test('buildXsrfHeadersWith covers token present and missing', async () => {
@@ -123,17 +156,173 @@ test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () =
     expect(noId).toBeUndefined();
   });
 
+  test('fetchFirstTask degrades to undefined on request timeout unless strict mode is requested', async () => {
+    const timeoutClient = {
+      post: async () => {
+        throw new Error('Timeout 30000ms exceeded');
+      },
+    };
+
+    await expect(fetchFirstTask(timeoutClient)).resolves.toBeUndefined();
+    await expect(fetchFirstTask(timeoutClient, undefined, ['assigned'], 'AllWork', { failOnRequestError: true })).rejects.toThrow(
+      'Timeout 30000ms exceeded'
+    );
+
+    const observedOptions: Array<{ timeoutMs?: number }> = [];
+    const successfulClient = {
+      post: async (_endpoint: string, options: { timeoutMs?: number }) => {
+        observedOptions.push(options);
+        return { status: 200, data: { tasks: [{ id: 'task-1' }] } };
+      },
+    };
+
+    await expect(fetchFirstTask(successfulClient, undefined, ['assigned'], 'AllWork', { timeoutMs: 7_500 })).resolves.toEqual({
+      id: 'task-1',
+    });
+    expect(observedOptions[0]?.timeoutMs).toBe(7_500);
+
+    let retryCalls = 0;
+    const retryClient = {
+      post: async () => {
+        retryCalls += 1;
+        return { status: 502, data: { tasks: [] } };
+      },
+    };
+    await expect(fetchFirstTask(retryClient, undefined, ['assigned'], 'AllWork', { retries: 0 })).resolves.toBeUndefined();
+    expect(retryCalls).toBe(1);
+  });
+
+  test('guardedTaskSearch returns guarded timeout status after bounded retries', async () => {
+    let timeoutAnnotations = 0;
+    let timeoutCalls = 0;
+    const timeoutClient = {
+      post: async () => {
+        timeoutCalls += 1;
+        throw new Error('Timeout 10000ms exceeded');
+      },
+    };
+
+    const timeoutResult = await guardedTaskSearch(
+      timeoutClient,
+      { view: 'AvailableTasks' },
+      {
+        onRequestTimeout: () => {
+          timeoutAnnotations += 1;
+        },
+        retries: 2,
+        timeoutMs: 10_000,
+      }
+    );
+
+    expect(timeoutResult).toEqual({ data: undefined, status: 504 });
+    expect(timeoutAnnotations).toBe(1);
+    expect(timeoutCalls).toBe(3);
+
+    await expect(
+      guardedTaskSearch(timeoutClient, { view: 'AvailableTasks' }, { failOnRequestError: true, retries: 0 })
+    ).rejects.toThrow('Timeout 10000ms exceeded');
+
+    const observedOptions: Array<{ timeoutMs?: number; throwOnError?: boolean }> = [];
+    const successClient = {
+      post: async (_endpoint: string, options: { timeoutMs?: number; throwOnError?: boolean }) => {
+        observedOptions.push(options);
+        return { status: 200, data: { tasks: [] } };
+      },
+    };
+
+    const successResult = await guardedTaskSearch(successClient, { view: 'AllWork' }, { timeoutMs: 7_500 });
+    expect(successResult.status).toBe(200);
+    expect(observedOptions[0]).toEqual(expect.objectContaining({ throwOnError: false, timeoutMs: 7_500 }));
+  });
+
+  test('resolveWaCancellationTask enforces strict live lookup only for dedicated WA solicitor runs', async () => {
+    const timeoutClient = {
+      post: async () => {
+        throw new Error('Timeout 10000ms exceeded');
+      },
+    };
+
+    await expect(
+      resolveWaCancellationTask(timeoutClient, {
+        envAssignedTaskId: 'env-assigned-task',
+        envTaskId: 'env-unassigned-task',
+        fallbackTaskId: 'fallback-task',
+        hasDedicatedWaSolicitor: true,
+        lookupLiveTask: true,
+      })
+    ).rejects.toThrow('Timeout 10000ms exceeded');
+
+    await expect(
+      resolveWaCancellationTask(timeoutClient, {
+        envAssignedTaskId: 'env-assigned-task',
+        envTaskId: 'env-unassigned-task',
+        fallbackTaskId: 'fallback-task',
+        hasDedicatedWaSolicitor: false,
+        lookupLiveTask: true,
+      })
+    ).resolves.toEqual({
+      liveLookupRequired: false,
+      liveLookupUsed: true,
+      taskId: 'env-assigned-task',
+      taskSource: 'env-assigned',
+    });
+  });
+
+  test('resolveWaCancellationTask keeps no-lookup and successful dynamic lookup paths explicit', async () => {
+    const noLookupClient = {
+      post: async () => {
+        throw new Error('Live lookup should not run when lookupLiveTask is false');
+      },
+    };
+
+    await expect(
+      resolveWaCancellationTask(noLookupClient, {
+        envTaskId: 'env-unassigned-task',
+        fallbackTaskId: 'fallback-task',
+        hasDedicatedWaSolicitor: false,
+        lookupLiveTask: false,
+      })
+    ).resolves.toEqual({
+      liveLookupRequired: false,
+      liveLookupUsed: false,
+      taskId: 'env-unassigned-task',
+      taskSource: 'env-unassigned',
+    });
+
+    const dynamicClient = {
+      post: async () => ({ status: 200, data: { tasks: [{ id: 'dynamic-task' }] } }),
+    };
+
+    await expect(
+      resolveWaCancellationTask(dynamicClient, {
+        envAssignedTaskId: 'env-assigned-task',
+        envTaskId: 'env-unassigned-task',
+        fallbackTaskId: 'fallback-task',
+        hasDedicatedWaSolicitor: true,
+        lookupLiveTask: true,
+      })
+    ).resolves.toEqual({
+      liveLookupRequired: true,
+      liveLookupUsed: true,
+      taskId: 'dynamic-task',
+      taskSource: 'dynamic',
+    });
+  });
+
   test('seedRoleAccessCaseId covers success and failure paths', async () => {
     const headers = { 'X-XSRF-TOKEN': 'token' };
     const withXsrfFn = async <T>(_role: string, fn: (h: Record<string, string>) => Promise<T>) => fn(headers);
 
     const apiClient = {
-      get: async () => ({
-        data: { cases: [{ caseId: 'case-1' }, { case_id: 'case-2' }] },
-      }),
+      get: async (_path: string, options?: { query?: Record<string, string> }) => {
+        expect(options?.query?.case_ids).toBe('1234567890123456');
+        return {
+          data: { cases: [{ caseId: 'case-1' }, { case_id: 'case-2' }] },
+        };
+      },
     };
 
-    const resolved = await seedRoleAccessCaseId(apiClient, { withXsrfFn });
+    const resolved = await seedRoleAccessCaseId(apiClient, { withXsrfFn, caseId: '1234567890123456' });
     expect(resolved).toBe('case-1');
 
     const apiClientCaseId = {
@@ -141,7 +330,7 @@ test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () =
         data: { cases: [{ case_id: 'case-2' }] },
       }),
     };
-    const resolvedCaseId = await seedRoleAccessCaseId(apiClientCaseId, { withXsrfFn });
+    const resolvedCaseId = await seedRoleAccessCaseId(apiClientCaseId, { withXsrfFn, caseId: '1234567890123456' });
     expect(resolvedCaseId).toBe('case-2');
 
     const apiClientEmpty = {
@@ -149,10 +338,14 @@ test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () =
         data: { cases: [{}] },
       }),
     };
-    const resolvedEmpty = await seedRoleAccessCaseId(apiClientEmpty, { withXsrfFn });
+    const resolvedEmpty = await seedRoleAccessCaseId(apiClientEmpty, { withXsrfFn, caseId: '1234567890123456' });
     expect(resolvedEmpty).toBeUndefined();
 
+    const resolvedWithoutCandidate = await seedRoleAccessCaseId(apiClient, { withXsrfFn });
+    expect(resolvedWithoutCandidate).toBeUndefined();
+
     const failing = await seedRoleAccessCaseId(apiClient, {
+      caseId: '1234567890123456',
       withXsrfFn: async () => {
         throw new Error('boom');
       },
@@ -180,7 +373,7 @@ test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () =
     expect(anonymous['X-XSRF-TOKEN']).toBeUndefined();
 
     let calls = 0;
-    const fakeContext: any = {};
+    const fakeContext = {} as APIRequestContext;
     const requestFactory = async () => {
       calls += 1;
       if (calls === 1) {

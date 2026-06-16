@@ -14,6 +14,27 @@ import { UserUtils } from '../../utils/user.utils';
 
 const logger = createLogger({ serviceName: 'document-upload-tests', format: 'pretty' });
 const DOCUMENT_UPLOAD_SUBMIT_TIMEOUT_MS = 60_000;
+const CANCEL_UPLOAD_LABEL = 'Cancel upload';
+const DOCUMENT_UPLOAD_V2_SCENARIOS = [
+  {
+    title: 'file chooser upload works in English',
+    language: 'English',
+    uploadMode: 'file-input',
+    cancelUploadLabel: CANCEL_UPLOAD_LABEL,
+  },
+  {
+    title: 'browser file drag-and-drop upload works in English',
+    language: 'English',
+    uploadMode: 'drag-drop',
+    cancelUploadLabel: CANCEL_UPLOAD_LABEL,
+  },
+  {
+    title: 'browser file drag-and-drop upload works in Cymraeg',
+    language: 'Cymraeg',
+    uploadMode: 'drag-drop',
+    cancelUploadLabel: CANCEL_UPLOAD_LABEL,
+  },
+] as const;
 
 // Document upload journeys combine case creation, multi-step CCD wizard navigation,
 // file upload + ClamAV scan, and submit polling. The 5 minute envelope covers the
@@ -42,7 +63,7 @@ function assertAliasCredentialsPresent(alias: string): void {
     }
 
     throw new Error(
-      `Document upload tests require credentials for alias '${alias}' via static config or env vars '${mapping.username}' and '${mapping.password}'.`,
+      `Document upload tests require credentials for alias '${alias}' via env vars '${mapping.username}' and '${mapping.password}'.`,
       { cause: error }
     );
   }
@@ -53,6 +74,13 @@ function assertRuntimeAliasConfigured(alias: string): void {
   if (!mapping) {
     throw new Error(`Document upload tests require runtime alias '${alias}' to be configured.`);
   }
+}
+
+async function resolveLabelFromTranslationResponse(response: Response, sourceLabel: string): Promise<string> {
+  const body = (await response.json()) as {
+    translations?: Record<string, { translation?: string }>;
+  };
+  return body.translations?.[sourceLabel]?.translation ?? sourceLabel;
 }
 
 test.beforeAll(async ({ browserName: _browserName }, testInfo) => {
@@ -99,117 +127,152 @@ test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, (
     logger.info('Created divorce case', { caseNumber, testValue });
   });
 
-  test('Check the documentV2 upload works as expected', async ({ createCasePage, caseDetailsPage }) => {
-    let caseDetailsUrl = '';
+  for (const scenario of DOCUMENT_UPLOAD_V2_SCENARIOS) {
+    test(`Check the documentV2 ${scenario.title}`, async ({ createCasePage, caseDetailsPage }) => {
+      let caseDetailsUrl = '';
 
-    await test.step('Verify case details tab does not contain an uploaded file', async () => {
-      caseDetailsUrl = await caseDetailsPage.getCurrentPageUrl();
-      await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
-      await caseDetailsPage.caseViewerTable.waitFor({ state: 'visible' });
-      const textFieldRow = caseDetailsPage.caseViewerRow(TEST_DATA.V2.TEXT_FIELD_LABEL);
-      await expect(textFieldRow).toContainText(testValue);
-    });
+      await test.step('Verify case details tab does not contain an uploaded file', async () => {
+        caseDetailsUrl = await caseDetailsPage.getCurrentPageUrl();
+        await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
+        await caseDetailsPage.caseViewerTable.waitFor({ state: 'visible' });
+        const textFieldRow = caseDetailsPage.caseViewerRow(TEST_DATA.V2.TEXT_FIELD_LABEL);
+        await expect(textFieldRow).toContainText(testValue);
+      });
 
-    await test.step('Upload a document to the case', async () => {
-      let successfulUpdateEventPosts = 0;
-      const updateEventEndpointPattern = new RegExp(`/data/cases/${caseNumber}/events(?:\\?|$)`);
-      const onResponse = (response: Response) => {
-        if (response.request().method() !== 'POST') {
-          return;
-        }
-        if (!updateEventEndpointPattern.test(response.url())) {
-          return;
-        }
-        if (response.status() < 400) {
-          successfulUpdateEventPosts += 1;
-        }
-      };
-      caseDetailsPage.page.on('response', onResponse);
-      try {
-        await retryOnTransientFailure(
-          async () => {
-            await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
-            await caseDetailsPage.selectCaseAction(TEST_DATA.V2.ACTION);
-            await createCasePage.uploadFile(
-              TEST_DATA.V2.FILE_NAME,
-              TEST_DATA.V2.FILE_TYPE,
-              TEST_DATA.V2.FILE_CONTENT,
-              createCasePage.fileUploadInput
-            );
-            await createCasePage.clickContinueMultipleTimes(3);
-            await createCasePage.uploadFile(
-              'complex-type-required-document.pdf',
-              'application/pdf',
-              '%PDF-1.4\n%test\n%%EOF',
-              createCasePage.complexType3FileUploadInput
-            );
-            await createCasePage.clickSubmitAndWait('after uploading V2 document', {
-              timeoutMs: DOCUMENT_UPLOAD_SUBMIT_TIMEOUT_MS,
-              maxAutoAdvanceAttempts: 3,
-            });
-            await expect(caseDetailsPage.caseAlertSuccessMessage).toBeVisible({ timeout: 30_000 });
-          },
-          {
-            maxAttempts: 2,
-            onRetry: async () => {
-              try {
-                await caseDetailsPage.reopenCaseDetails(caseDetailsUrl);
-              } catch (reopenError) {
-                logger.warn('Failed to reopen case details during V2 document upload retry; trying direct goto', {
-                  reopenError,
-                  caseDetailsUrl,
-                });
-                await caseDetailsPage.page.goto(caseDetailsUrl);
-              }
-            },
+      await test.step(`Upload a document to the case in ${scenario.language}`, async () => {
+        let successfulUpdateEventPosts = 0;
+        const updateEventEndpointPattern = new RegExp(`/data/cases/${caseNumber}/events(?:\\?|$)`);
+        const onResponse = (response: Response) => {
+          if (response.request().method() !== 'POST') {
+            return;
           }
-        );
-      } finally {
-        caseDetailsPage.page.off('response', onResponse);
-      }
-      expect(successfulUpdateEventPosts).toBe(1);
-    });
-
-    await test.step('Verify the document upload was successful', async () => {
-      await expect
-        .poll(
-          async () => {
-            const bannerVisible = await caseDetailsPage.caseAlertSuccessMessage.isVisible().catch(() => false);
-            if (bannerVisible) {
-              const bannerText = await caseDetailsPage.caseAlertSuccessMessage.innerText().catch(() => '');
-              if (bannerText.includes(caseNumber) && bannerText.includes(`has been updated with event: ${TEST_DATA.V2.ACTION}`)) {
-                return true;
+          if (!updateEventEndpointPattern.test(response.url())) {
+            return;
+          }
+          if (response.status() < 400) {
+            successfulUpdateEventPosts += 1;
+          }
+        };
+        caseDetailsPage.page.on('response', onResponse);
+        try {
+          await retryOnTransientFailure(
+            async () => {
+              await createCasePage.exuiHeader.switchLanguage('English');
+              await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
+              await caseDetailsPage.selectCaseAction(TEST_DATA.V2.ACTION);
+              const welshTranslationResponse =
+                scenario.language === 'Cymraeg'
+                  ? caseDetailsPage.page.waitForResponse(
+                      (response) => response.url().includes('/api/translation/cy') && response.status() === 200
+                    )
+                  : undefined;
+              await createCasePage.exuiHeader.switchLanguage(scenario.language, {
+                waitForTranslatedContent: scenario.language === 'English',
+              });
+              const cancelUploadLabel = welshTranslationResponse
+                ? await resolveLabelFromTranslationResponse(await welshTranslationResponse, CANCEL_UPLOAD_LABEL)
+                : scenario.cancelUploadLabel;
+              await expect(createCasePage.fileUploadCancelButton).toContainText(cancelUploadLabel);
+              await expect(createCasePage.fileUploadComponent).not.toContainText(TEST_DATA.V2.FILE_NAME);
+              const uploadFormUrl = caseDetailsPage.page.url();
+              if (scenario.uploadMode === 'drag-drop') {
+                await createCasePage.dragAndDropFile(
+                  TEST_DATA.V2.FILE_NAME,
+                  TEST_DATA.V2.FILE_TYPE,
+                  TEST_DATA.V2.FILE_CONTENT,
+                  createCasePage.fileUploadInput,
+                  { dropTarget: createCasePage.fileUploadComponent }
+                );
+                await expect(
+                  caseDetailsPage.page,
+                  'Document drag-and-drop should not navigate away or open the file in the browser'
+                ).toHaveURL(uploadFormUrl);
+              } else {
+                await createCasePage.uploadFile(
+                  TEST_DATA.V2.FILE_NAME,
+                  TEST_DATA.V2.FILE_TYPE,
+                  TEST_DATA.V2.FILE_CONTENT,
+                  createCasePage.fileUploadInput
+                );
               }
+              await createCasePage.clickContinueMultipleTimes(3);
+              await createCasePage.uploadFile(
+                'complex-type-required-document.pdf',
+                'application/pdf',
+                '%PDF-1.4\n%test\n%%EOF',
+                createCasePage.complexType3FileUploadInput
+              );
+              await createCasePage.clickSubmitAndWait('after uploading V2 document', {
+                timeoutMs: DOCUMENT_UPLOAD_SUBMIT_TIMEOUT_MS,
+                maxAutoAdvanceAttempts: 3,
+              });
+              await expect(caseDetailsPage.caseAlertSuccessMessage).toBeVisible({ timeout: 30_000 });
+            },
+            {
+              maxAttempts: 2,
+              onRetry: async () => {
+                try {
+                  await caseDetailsPage.reopenCaseDetails(caseDetailsUrl);
+                } catch (reopenError) {
+                  logger.warn('Failed to reopen case details during V2 document upload retry; trying direct goto', {
+                    reopenError,
+                    caseDetailsUrl,
+                  });
+                  await caseDetailsPage.page.goto(caseDetailsUrl);
+                }
+              },
             }
+          );
+        } finally {
+          caseDetailsPage.page.off('response', onResponse);
+        }
+        expect(successfulUpdateEventPosts).toBe(1);
+      });
 
-            await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME).catch(() => undefined);
-            const tableVisible = await caseDetailsPage.caseViewerTable.isVisible().catch(() => false);
-            if (!tableVisible) {
-              return false;
-            }
-            const documentRow = caseDetailsPage.caseViewerRow(TEST_DATA.V2.DOCUMENT_FIELD_LABEL);
-            const documentText = await documentRow.innerText().catch(() => '');
-            return documentText.includes(TEST_DATA.V2.FILE_NAME);
-          },
-          { timeout: 45_000, intervals: [1_000, 2_000, 3_000] }
-        )
-        .toBe(true);
+      await test.step('Verify the document upload was successful', async () => {
+        await expect
+          .poll(
+            async () => {
+              const bannerVisible = await caseDetailsPage.caseAlertSuccessMessage.isVisible().catch(() => false);
+              if (bannerVisible) {
+                const bannerText = await caseDetailsPage.caseAlertSuccessMessage.innerText().catch(() => '');
+                if (
+                  bannerText.includes(caseNumber) &&
+                  bannerText.includes(`has been updated with event: ${TEST_DATA.V2.ACTION}`)
+                ) {
+                  return true;
+                }
+              }
 
-      const bannerVisible = await caseDetailsPage.caseAlertSuccessMessage.isVisible().catch(() => false);
-      if (bannerVisible) {
-        const bannerText = await caseDetailsPage.caseAlertSuccessMessage.innerText();
-        expectCaseBanner(bannerText, caseNumber, `has been updated with event: ${TEST_DATA.V2.ACTION}`);
-      }
+              await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME).catch(() => undefined);
+              const tableVisible = await caseDetailsPage.caseViewerTable.isVisible().catch(() => false);
+              if (!tableVisible) {
+                return false;
+              }
+              const documentRow = caseDetailsPage.caseViewerRow(TEST_DATA.V2.DOCUMENT_FIELD_LABEL);
+              const documentText = await documentRow.innerText().catch(() => '');
+              return documentText.includes(TEST_DATA.V2.FILE_NAME);
+            },
+            { timeout: 45_000, intervals: [1_000, 2_000, 3_000] }
+          )
+          .toBe(true);
 
-      await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
-      await caseDetailsPage.caseViewerTable.waitFor({ state: 'visible' });
-      const textFieldRow = caseDetailsPage.caseViewerRow(TEST_DATA.V2.TEXT_FIELD_LABEL);
-      await expect(textFieldRow).toContainText(testValue);
+        const bannerVisible = await caseDetailsPage.caseAlertSuccessMessage.isVisible().catch(() => false);
+        if (bannerVisible) {
+          const bannerText = await caseDetailsPage.caseAlertSuccessMessage.innerText();
+          expectCaseBanner(bannerText, caseNumber, `has been updated with event: ${TEST_DATA.V2.ACTION}`);
+        }
 
-      const documentRow = caseDetailsPage.caseViewerRow(TEST_DATA.V2.DOCUMENT_FIELD_LABEL);
-      await expect(documentRow).toContainText(TEST_DATA.V2.FILE_NAME);
+        await caseDetailsPage.selectCaseDetailsTab(TEST_DATA.V2.TAB_NAME);
+        await caseDetailsPage.caseViewerTable.waitFor({ state: 'visible' });
+        const textFieldRow = caseDetailsPage.caseViewerRow(TEST_DATA.V2.TEXT_FIELD_LABEL);
+        await expect(textFieldRow).toContainText(testValue);
+
+        const documentRow = caseDetailsPage.caseViewerRow(TEST_DATA.V2.DOCUMENT_FIELD_LABEL);
+        await expect(documentRow).toContainText(TEST_DATA.V2.FILE_NAME);
+      });
     });
-  });
+  }
 });
 
 test.describe('Document upload V1', { tag: ['@e2e', '@e2e-document-upload', '@e2e-document-upload-v1'] }, () => {

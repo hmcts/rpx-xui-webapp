@@ -10,7 +10,7 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
     expect(resolveSearchCaseSessionUsers({} as NodeJS.ProcessEnv)).toEqual(['FPL_GLOBAL_SEARCH']);
   });
 
-  test('supports env-driven pool overrides and lets explicit warmup users narrow the prewarmed set', () => {
+  test('supports env-driven pool overrides and explicit warmup users', () => {
     const env = {
       PW_SEARCH_CASE_SESSION_USERS: 'SOLICITOR, STAFF_ADMIN',
       PW_INTEGRATION_SESSION_WARMUP_USERS: 'STAFF_ADMIN, FPL_GLOBAL_SEARCH, STAFF_ADMIN',
@@ -20,19 +20,68 @@ test.describe('search case session helper', { tag: '@svc-internal' }, () => {
     expect(resolveIntegrationSessionWarmupUsers(env)).toEqual(['STAFF_ADMIN', 'FPL_GLOBAL_SEARCH']);
   });
 
-  test('falls back to the default integration warmup pool when no explicit warmup override is provided', () => {
+  test('does not prewarm sessions by default', () => {
+    expect(resolveIntegrationSessionWarmupUsers({} as NodeJS.ProcessEnv)).toEqual([]);
+  });
+
+  test('prewarms sessions for selected integration tags when no explicit override is provided', () => {
     const env = {
       PW_SEARCH_CASE_SESSION_USERS: 'FPL_GLOBAL_SEARCH, SEARCH_EMPLOYMENT_CASE',
+    } as NodeJS.ProcessEnv;
+
+    expect(
+      resolveIntegrationSessionWarmupUsers(env, {
+        includeTags: ['@integration-case-file-view', '@integration-search-case'],
+        excludedTags: [],
+        availableTags: ['@integration', '@integration-case-file-view', '@integration-search-case', '@integration-manage-tasks'],
+        suiteTag: '@integration',
+      })
+    ).toEqual(['RESTRICTED_CASE_FILE_VIEW_ON', 'FPL_GLOBAL_SEARCH', 'SEARCH_EMPLOYMENT_CASE']);
+  });
+
+  test('prewarms only the shared contention sessions for full integration runs', () => {
+    expect(
+      resolveIntegrationSessionWarmupUsers({} as NodeJS.ProcessEnv, {
+        includeTags: [],
+        excludedTags: ['@integration-manage-tasks'],
+        availableTags: ['@integration', '@integration-case-file-view', '@integration-hearings', '@integration-manage-tasks'],
+        suiteTag: '@integration',
+      })
+    ).toEqual(['FPL_GLOBAL_SEARCH', 'SOLICITOR', 'STAFF_ADMIN', 'RESTRICTED_CASE_FILE_VIEW_ON']);
+  });
+
+  test('does not prewarm case-file-view session when the full run excludes that tag', () => {
+    expect(
+      resolveIntegrationSessionWarmupUsers({} as NodeJS.ProcessEnv, {
+        includeTags: ['@integration'],
+        excludedTags: ['@integration-case-file-view'],
+        availableTags: ['@integration', '@integration-case-file-view', '@integration-hearings', '@integration-manage-tasks'],
+        suiteTag: '@integration',
+      })
+    ).toEqual(['FPL_GLOBAL_SEARCH', 'SOLICITOR', 'STAFF_ADMIN']);
+  });
+
+  test('supports explicit default integration warmup pool when requested', () => {
+    const env = {
+      PW_SEARCH_CASE_SESSION_USERS: 'FPL_GLOBAL_SEARCH, SEARCH_EMPLOYMENT_CASE',
+      PW_INTEGRATION_SESSION_WARMUP_USERS: '@default,RESTRICTED_CASE_FILE_VIEW_ON',
     } as NodeJS.ProcessEnv;
 
     expect(resolveIntegrationSessionWarmupUsers(env)).toEqual([
       'FPL_GLOBAL_SEARCH',
       'SOLICITOR',
       'STAFF_ADMIN',
-      'RESTRICTED_CASE_FILE_VIEW_ON',
-      'RESTRICTED_CASE_FILE_VIEW_OFF',
       'SEARCH_EMPLOYMENT_CASE',
+      'RESTRICTED_CASE_FILE_VIEW_ON',
     ]);
+  });
+
+  test('supports explicit no-op warmup sentinel', () => {
+    const env = {
+      PW_INTEGRATION_SESSION_WARMUP_USERS: '@none,RESTRICTED_CASE_FILE_VIEW_ON',
+    } as NodeJS.ProcessEnv;
+
+    expect(resolveIntegrationSessionWarmupUsers(env)).toEqual([]);
   });
 
   test('assigns workers across the configured shared user pool', () => {

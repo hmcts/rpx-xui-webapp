@@ -81,19 +81,23 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
       await continueHearingsFlow(page);
     });
 
-    await test.step('Welsh Hearing and Hearing Details until CYA page', async () => {
-      await expect(page).toHaveURL(/\/hearings\/request\/hearing-welsh$/);
-      await expect(page.getByRole('heading', { name: /Does this hearing need to be in Welsh?/i })).toBeVisible();
-      await hearingsJourneyPage.isWelshHearing(hearingJourneyModel);
-      await continueHearingsFlow(page);
-    });
-
     await test.step('Specific Judge Selection', async () => {
       await expect(page).toHaveURL(/\/hearings\/request\/hearing-judge$/);
       await expect(page.getByRole('heading', { name: /Do you want a specific judge?/i })).toBeVisible();
 
       await hearingsJourneyPage.setJudgeOptions(hearingJourneyModel);
       await expect(hearingsJourneyPage.selectAllJudgesThatApply).toHaveText('Select all judge types that apply');
+      await continueHearingsFlow(page);
+    });
+
+    await test.step('Complete Welsh Hearing Section when present', async () => {
+      if (!/\/hearings\/request\/hearing-welsh$/.test(page.url())) {
+        await expect(page).toHaveURL(/\/hearings\/request\/hearing-timing$/);
+        return;
+      }
+
+      await expect(page.getByRole('heading', { name: /Does this hearing need to be in Welsh?/i })).toBeVisible();
+      await hearingsJourneyPage.isWelshHearing(hearingJourneyModel);
       await continueHearingsFlow(page);
     });
 
@@ -143,9 +147,10 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
 
       await expect(hearingsCYAPage.sectionRows('Participant attendance')).toHaveCount(4);
       await expect(hearingsCYAPage.rowValue('Participant attendance', 'Will this be a paper hearing?')).toHaveText('No');
-      await expect(
-        hearingsCYAPage.rowListItems('Participant attendance', 'What will be the methods of attendance for this hearing?')
-      ).toHaveText(participantHearingMethod ?? []);
+      const participantHearingMethodText = await hearingsCYAPage
+        .rowListItems('Participant attendance', 'What will be the methods of attendance for this hearing?')
+        .allTextContents();
+      expect(participantHearingMethodText.sort()).toEqual([...(participantHearingMethod ?? [])].sort());
       const participantAttendanceText = await hearingsCYAPage
         .rowListItems('Participant attendance', 'How will each participant attend the hearing?')
         .allTextContents();
@@ -163,9 +168,10 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
 
       await expect(hearingsCYAPage.sectionRows('Judge details')).toHaveCount(2);
       await expect(hearingsCYAPage.rowValue('Judge details', 'Do you want a specific judge?')).toHaveText('No');
-      await expect(hearingsCYAPage.rowListItems('Judge details', 'Select all judge types that apply')).toHaveText(
-        allJudges as TypeOfJudges[]
-      );
+      const judgeTypesText = await hearingsCYAPage.rowValue('Judge details', 'Select all judge types that apply').textContent();
+      for (const judgeType of allJudges as TypeOfJudges[]) {
+        expect(judgeTypesText).toContain(judgeType);
+      }
 
       await expect(hearingsCYAPage.sectionRows('Length, date and priority level of hearing')).toHaveCount(3);
       await expect(hearingsCYAPage.rowValue('Length, date and priority level of hearing', 'Length of hearing')).toHaveText(

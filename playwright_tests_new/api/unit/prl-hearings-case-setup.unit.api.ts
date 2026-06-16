@@ -72,9 +72,13 @@ test.describe('PRL hearings case setup', () => {
     ]);
   });
 
-  test('keeps dynamic PRL setup opt-in so the resolver can fall back to global search by default', () => {
+  test('enables dynamic PRL setup in CI unless explicitly disabled', () => {
     expect(__test__.isPrlHearingsCaseSetupEnabled({})).toBe(false);
+    expect(__test__.isPrlHearingsCaseSetupEnabled({ CI: 'true' })).toBe(true);
+    expect(__test__.isPrlHearingsCaseSetupEnabled({ JENKINS_URL: 'https://build.hmcts.net' })).toBe(true);
+    expect(__test__.isPrlHearingsCaseSetupEnabled({ BUILD_NUMBER: '5075' })).toBe(true);
     expect(__test__.isPrlHearingsCaseSetupEnabled({ PRL_HEARINGS_CASE_SETUP: 'false' })).toBe(false);
+    expect(__test__.isPrlHearingsCaseSetupEnabled({ CI: 'true', PRL_HEARINGS_CASE_SETUP: 'false' })).toBe(false);
     expect(__test__.isPrlHearingsCaseSetupEnabled({ PRL_HEARINGS_CASE_SETUP: ' TRUE ' })).toBe(true);
   });
 

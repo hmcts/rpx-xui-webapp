@@ -25,6 +25,8 @@ export type PrlHearingsCaseSetupConfig = {
   citizenPassword?: string;
   courtAdminUsername?: string;
   courtAdminPassword?: string;
+  courtLocationCode?: string;
+  courtLocationLabel?: string;
 };
 
 type CaseCreateResponse = {
@@ -47,21 +49,9 @@ const DEFAULT_SERVICE_MICROSERVICE = 'ccd_data';
 const REQUIRED_ENV_MESSAGE =
   'PRL hearings setup requires CCD_DATA_STORE_URL, PRL_COS_API_URL, CCD_DATA_STORE_CLIENT_ID, IDAM_SECRET, ' +
   'S2S_URL, a redirect URI, citizen credentials, and court admin credentials.';
-const ISSUE_AND_SEND_TO_SWANSEA_EVENT_DATA = {
-  data: {
-    courtList: {
-      value: {
-        code: '234946:',
-        label: 'Swansea Civil Justice Centre - Quay West, Quay Parade - SA1 1SP',
-      },
-      list_items: [
-        {
-          code: '234946:',
-          label: 'Swansea Civil Justice Centre - Quay West, Quay Parade - SA1 1SP',
-        },
-      ],
-    },
-  },
+const DEFAULT_HEARING_MANAGER_COURT_LOCATION = {
+  code: '898213:',
+  label: 'East London Family Court',
 };
 
 function firstNonEmpty(...values: Array<string | undefined>): string | undefined {
@@ -98,6 +88,8 @@ export function resolvePrlHearingsCaseSetupConfig(env: NodeJS.ProcessEnv = proce
     citizenPassword: firstNonEmpty(env.CITIZEN_PASSWORD),
     courtAdminUsername: firstNonEmpty(env.COURT_ADMIN_STOKE_USERNAME, env.PRL_HEARINGS_SETUP_USERNAME),
     courtAdminPassword: firstNonEmpty(env.COURT_ADMIN_STOKE_PASSWORD, env.PRL_HEARINGS_SETUP_PASSWORD),
+    courtLocationCode: firstNonEmpty(env.PRL_HEARINGS_COURT_LOCATION_CODE, DEFAULT_HEARING_MANAGER_COURT_LOCATION.code),
+    courtLocationLabel: firstNonEmpty(env.PRL_HEARINGS_COURT_LOCATION_LABEL, DEFAULT_HEARING_MANAGER_COURT_LOCATION.label),
   };
 }
 
@@ -119,7 +111,12 @@ export function validatePrlHearingsCaseSetupConfig(config: PrlHearingsCaseSetupC
 }
 
 export function isPrlHearingsCaseSetupEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
-  return env.PRL_HEARINGS_CASE_SETUP?.trim().toLowerCase() === 'true';
+  const configuredValue = env.PRL_HEARINGS_CASE_SETUP?.trim().toLowerCase();
+  if (configuredValue) {
+    return configuredValue === 'true';
+  }
+
+  return Boolean(env.CI || env.JENKINS_URL || env.BUILD_NUMBER);
 }
 
 function formatHttpFailure(action: string, status: number): Error {
@@ -128,6 +125,26 @@ function formatHttpFailure(action: string, status: number): Error {
 
 function normalizeBaseUrl(url: string): string {
   return url.replace(/\/+$/, '');
+}
+
+function normalizeCourtLocationCode(code: string): string {
+  return code.endsWith(':') ? code : `${code}:`;
+}
+
+function buildIssueAndSendToLocalCourtEventData(config: Required<PrlHearingsCaseSetupConfig>): Record<string, unknown> {
+  const courtLocation = {
+    code: normalizeCourtLocationCode(config.courtLocationCode),
+    label: config.courtLocationLabel,
+  };
+
+  return {
+    data: {
+      courtList: {
+        value: courtLocation,
+        list_items: [courtLocation],
+      },
+    },
+  };
 }
 
 function normalizeIdamApiUrl(url: string): string {
@@ -403,7 +420,7 @@ export async function createPrlHearingsCase(): Promise<string> {
       serviceToken,
       caseReference,
       ISSUE_AND_SEND_TO_LOCAL_COURT_EVENT_ID,
-      ISSUE_AND_SEND_TO_SWANSEA_EVENT_DATA
+      buildIssueAndSendToLocalCourtEventData(config)
     );
     await getCaseInfo(apiContext, config, courtAdminToken, serviceToken, caseReference);
     return caseReference;
@@ -423,7 +440,9 @@ export async function createPrlHearingsCaseIfEnabled(): Promise<string | undefin
 export const __test__ = {
   extractCaseReference,
   formatHttpFailure,
+  buildIssueAndSendToLocalCourtEventData,
   isPrlHearingsCaseSetupEnabled,
+  normalizeCourtLocationCode,
   resolvePrlHearingsCaseSetupConfig,
   validatePrlHearingsCaseSetupConfig,
 };

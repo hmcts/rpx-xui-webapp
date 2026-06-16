@@ -43,7 +43,7 @@ const integrationWarmupUsersByTag: Record<string, IntegrationWarmupResolver> = {
       ...(offUsers.length > 0 ? offUsers : [HEARING_MANAGER_CR84_OFF_USER]),
     ];
   },
-  '@integration-manage-tasks': () => ['STAFF_ADMIN', 'IAC_CaseOfficer_R2', 'IAC_Judge_WA_R1'],
+  '@integration-manage-tasks': () => ['STAFF_ADMIN'],
   '@integration-restricted-case': () => ['FPL_GLOBAL_SEARCH'],
   '@integration-search-case': (env) => resolveSearchCaseSessionUsers(env),
   '@integration-welsh-language': (env) => resolveWelshLanguageSessionUsers(env),
@@ -90,6 +90,11 @@ function isFullIntegrationRun(selection: IntegrationTagSelection): boolean {
   return selection.includeTags.length === 0 || (selection.includeTags.length === 1 && selection.includeTags[0] === suiteTag);
 }
 
+function resolveFullIntegrationTags(selection: IntegrationTagSelection): string[] {
+  const suiteTag = selection.suiteTag ?? integrationSuiteTag;
+  return selection.availableTags.filter((tag) => tag !== suiteTag && !selection.excludedTags.includes(tag));
+}
+
 export function resolveSearchCaseSessionUsers(env: NodeJS.ProcessEnv = process.env): string[] {
   const configured = parseUserList(env.PW_SEARCH_CASE_SESSION_USERS);
   return configured.length > 0 ? configured : [...defaultSearchCaseSessionUsers];
@@ -121,6 +126,7 @@ export function resolveIntegrationSessionWarmupUsers(
       ...defaultIntegrationWarmupUsers,
       ...(tagSelection.excludedTags.includes(caseFileViewIntegrationTag) ? [] : [caseFileViewUser]),
       ...resolveSearchCaseSessionUsers(env),
+      ...resolveFullIntegrationTags(tagSelection).flatMap((tag) => integrationWarmupUsersByTag[tag]?.(env) ?? []),
     ]);
   }
 

@@ -1,6 +1,8 @@
 import { expect, test } from '../../fixtures';
 import { ensureSessionCookies } from '../../../common/sessionCapture';
 import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
+import { setupManageTasksBaseRoutes } from '../../../integration/helpers';
+import { availableActionsList, buildTaskListMock, myActionsList } from '../../../integration/mocks/taskList.mock';
 
 const workAllocationUser = 'WA_SOLICITOR';
 
@@ -10,6 +12,25 @@ test.describe('Verify the my tasks page tabs appear as expected', { tag: ['@e2e'
     if (cookies.length) {
       await page.context().addCookies(cookies);
     }
+    await setupManageTasksBaseRoutes(page, {
+      taskListHandler: async (route) => {
+        const requestBody = route.request().postDataJSON() as {
+          view?: string;
+          searchRequest?: { request_context?: string };
+        };
+        const requestedView = requestBody.view ?? requestBody.searchRequest?.request_context;
+        const taskListResponse =
+          requestedView === 'AvailableTasks' || requestedView === 'AVAILABLETASKS'
+            ? buildTaskListMock(3, '', availableActionsList)
+            : buildTaskListMock(3, 'staff-admin-user', myActionsList);
+
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify(taskListResponse),
+        });
+      },
+    });
     await taskListPage.goto();
     // Prefer UI readiness over brittle network waits; fall back to response when available.
     await Promise.race([

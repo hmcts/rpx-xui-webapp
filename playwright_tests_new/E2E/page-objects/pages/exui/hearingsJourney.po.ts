@@ -24,6 +24,7 @@ export class HearingsJourneyPage {
   // how will each participatn attend the wedding
   readonly firstParty = this.page.locator('#partyChannel0');
   readonly secondParty = this.page.locator('#partyChannel1');
+  readonly participantAttendanceSelects = this.page.locator('select[id^="partyChannel"]');
 
   // How Many attending
   // attendance-number
@@ -74,6 +75,7 @@ export class HearingsJourneyPage {
     .filter({ has: this.page.locator('.mat-autocomplete-panel[role="listbox"]') });
 
   readonly addLocationsButton = this.page.locator('.search-location').getByRole('link', { name: ' Add location ' });
+  readonly selectedVenueTags = this.page.getByRole('link', { name: /^Click to remove:/ });
 
   // hearingsTable
   readonly hearingsTable = this.page.locator('exui-case-hearings-ce exui-case-hearings-list table.govuk-table');
@@ -125,18 +127,28 @@ export class HearingsJourneyPage {
     }
 
     const howIsHearingAttended = model.get('hearingAttendance', 'attendHearingHow') as string[];
+    await this.participantAttendanceSelects.first().waitFor({ state: 'visible' });
 
-    const party1Select = this.firstParty;
-    await party1Select.selectOption(howIsHearingAttended[0] as string);
-
-    const party2Select = this.secondParty;
-    await party2Select.selectOption(howIsHearingAttended[1] as string);
+    const participantCount = await this.participantAttendanceSelects.count();
+    for (let index = 0; index < participantCount; index += 1) {
+      await this.participantAttendanceSelects.nth(index).selectOption(howIsHearingAttended[index] ?? 'Not in Attendance');
+    }
 
     const noOfPeopleAttending = model.get('hearingAttendance', 'numberOfPeopleAttendingHearing') as string;
     await this.numberAttendingHearing.fill(noOfPeopleAttending);
   }
 
   async setHearingVenue(model: HearingJourneyModel): Promise<string> {
+    const selectedVenue = await this.selectedVenueTags
+      .first()
+      .textContent({ timeout: 1_000 })
+      .then((text) => text?.replace('Click to remove:', '').replace(/\s+/g, ' ').trim())
+      .catch(() => undefined);
+
+    if (selectedVenue) {
+      return selectedVenue;
+    }
+
     const hearingVenue = model.get('hearingVenue', 'name') as string[];
     const venueSearchTerm = hearingVenue?.[0];
 
@@ -146,14 +158,14 @@ export class HearingsJourneyPage {
 
     await this.hearingVenue.fill(venueSearchTerm);
     const venueOption = this.page.getByRole('option').filter({ hasText: venueSearchTerm }).first();
-    await venueOption.waitFor({ state: 'visible' });
-    const selectedVenue = (await venueOption.textContent())?.replace(/\s+/g, ' ').trim();
-    if (!selectedVenue) {
+    await venueOption.waitFor({ state: 'visible', timeout: 30_000 });
+    const newSelectedVenue = (await venueOption.textContent())?.replace(/\s+/g, ' ').trim();
+    if (!newSelectedVenue) {
       throw new Error(`Venue option matching "${venueSearchTerm}" did not expose visible text.`);
     }
     await venueOption.click();
     await this.addLocationsButton.click();
-    return selectedVenue;
+    return newSelectedVenue;
   }
 
   async isWelshHearing(model: HearingJourneyModel): Promise<void> {

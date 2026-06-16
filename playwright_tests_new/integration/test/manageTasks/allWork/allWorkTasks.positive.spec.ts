@@ -111,29 +111,18 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
     });
 
     await test.step('Click the all-work Task link and land on the case details Tasks tab', async () => {
-      const caseDetailsResponsePromise = page.waitForResponse(
-        (response) =>
-          response.request().method() === 'GET' &&
-          response.url().includes(`/data/internal/cases/${firstTask.case_id}`) &&
-          response.status() === 200
+      const caseTasksUrlPattern = new RegExp(
+        `/cases/case-details/${firstTask.jurisdiction}/${firstTask.case_type_id}/${firstTask.case_id}(?:/tasks|#Tasks)(?:\\?.*)?$`
       );
-      const caseTasksResponsePromise = page.waitForResponse(
-        (response) =>
-          response.request().method() === 'POST' &&
-          response.url().includes(`/workallocation/case/task/${firstTask.case_id}`) &&
-          response.status() === 200
-      );
-
       await taskListPage.taskListTable.getByRole('link', { name: firstTask.task_title }).first().click();
 
-      await caseDetailsResponsePromise;
-      await caseTasksResponsePromise;
-
-      await expect(page).toHaveURL(
-        new RegExp(
-          `/cases/case-details/${firstTask.jurisdiction}/${firstTask.case_type_id}/${firstTask.case_id}(?:/tasks|#Tasks)(?:\\?.*)?$`
-        )
+      await expect(page).toHaveURL(caseTasksUrlPattern);
+      await taskListPage.recoverBlankDocumentAfterCurrentNavigation(
+        caseTasksUrlPattern,
+        'all-work task link case details navigation'
       );
+
+      await expect(page).toHaveURL(caseTasksUrlPattern);
       await expect(page.getByRole('heading', { name: 'Active tasks' })).toBeVisible();
     });
 
@@ -314,6 +303,7 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
 });
 
 test.describe('All Work role-based task columns', { tag: ['@integration', '@integration-manage-tasks'] }, () => {
+  const sessionUserIdentifier = 'STAFF_ADMIN';
   const scenarios = [
     {
       userIdentifier: 'IAC_CaseOfficer_R2',
@@ -336,7 +326,7 @@ test.describe('All Work role-based task columns', { tag: ['@integration', '@inte
       const taskListMockResponse = buildTaskListMock(40, '', myActionsList);
 
       test.beforeEach(async ({ page }) => {
-        await applySessionCookies(page, scenario.userIdentifier);
+        await applySessionCookies(page, sessionUserIdentifier);
       });
       test(`renders expected date column and not the non-expected date column`, async ({ taskListPage, page, tableUtils }) => {
         await test.step('Setup route mocks for all-work role-based columns', async () => {

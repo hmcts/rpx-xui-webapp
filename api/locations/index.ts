@@ -49,9 +49,10 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   try {
     const headers = setHeaders(req);
     const response: AxiosResponse<any> = await http.get(markupPath, { headers });
-    const containsServiceID = response.data.some((item) => Object.prototype.hasOwnProperty.call(item, 'service_id'));
-    trackTrace(`POFCC-138 - containse service id new api -->: ${containsServiceID}`, { functionCall: 'getLocations' });
-    logger.info(`POFCC-138 - containse service id new api -->: ${containsServiceID}`);
+    const containsServiceCode = response.data.some((item) => Object.prototype.hasOwnProperty.call(item, 'service_code'));
+    trackTrace(`POFCC-138 - containse service id new api -->: ${containsServiceCode}`, { functionCall: 'getLocations' });
+    logger.info(`POFCC-138 - containse service id new api -->: ${containsServiceCode}`);
+    logger.info('response data --> ', response.data);
     let results: LocationModel[] = response.data;
     if (locationType === LocationTypeEnum.HEARING) {
       results = results.filter((location) => location.is_hearing_location === 'Y');
@@ -65,14 +66,14 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
       const locationIds = getLocationIdsFromLocationList(userLocation.locations);
       const regionIds = getRegionIdsFromLocationList(userLocation.locations);
       // when we are trying to filter out locations when booking location is present - my work
-      if (containsServiceID) {
+      if (containsServiceCode) {
         results = filterOutResultsWhenServiceIdPresent(results, locationIds, regionIds);
       } else {
         results = filterOutResults(results, locationIds, regionIds, courtTypes);
       }
     });
     // Legacy API ignores service_code, so keep the court type cleanup for that response shape only.
-    if (!containsServiceID) {
+    if (!containsServiceCode) {
       results = results.filter((location) => courtTypeIds.includes(location.court_type_id));
     }
     response.data.results = results.filter(

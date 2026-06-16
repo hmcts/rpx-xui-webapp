@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test';
+import { acceptAccessCookiesIfPresent } from '../../../common/sessionCapture';
 import { caseDetailsUrl } from '../../../integration/helpers/hearingJourneySetup.helper';
 import { createPrlHearingsCaseIfEnabled } from './prlHearingsCaseSetup';
 
@@ -84,11 +85,24 @@ async function isUsableCaseDetailsPage(page: Page): Promise<boolean> {
   );
 }
 
-export async function openEligibleHearingsCase(page: Page, route: HearingCaseRoute): Promise<string> {
-  if (route.caseReference) {
-    await page.goto(caseDetailsUrl(route.jurisdictionId, route.caseTypeId, route.caseReference), {
+async function openCaseDetailsProbe(page: Page, route: HearingCaseRoute, caseReference: string): Promise<void> {
+  const targetUrl = caseDetailsUrl(route.jurisdictionId, route.caseTypeId, caseReference);
+
+  await page.goto(targetUrl, {
+    waitUntil: 'domcontentloaded',
+  });
+  const acceptedCookies = await acceptAccessCookiesIfPresent(page);
+
+  if (acceptedCookies && !page.url().includes(targetUrl)) {
+    await page.goto(targetUrl, {
       waitUntil: 'domcontentloaded',
     });
+  }
+}
+
+export async function openEligibleHearingsCase(page: Page, route: HearingCaseRoute): Promise<string> {
+  if (route.caseReference) {
+    await openCaseDetailsProbe(page, route, route.caseReference);
     if (await isUsableCaseDetailsPage(page)) {
       return route.caseReference;
     }
@@ -99,9 +113,7 @@ export async function openEligibleHearingsCase(page: Page, route: HearingCaseRou
 
   const createdCaseReference = await createPrlHearingsCaseIfEnabled();
   if (createdCaseReference) {
-    await page.goto(caseDetailsUrl(route.jurisdictionId, route.caseTypeId, createdCaseReference), {
-      waitUntil: 'domcontentloaded',
-    });
+    await openCaseDetailsProbe(page, route, createdCaseReference);
     if (await isUsableCaseDetailsPage(page)) {
       return createdCaseReference;
     }
@@ -113,9 +125,7 @@ export async function openEligibleHearingsCase(page: Page, route: HearingCaseRou
   const candidateCaseReferences = await resolveCandidateCaseReferences(page, route);
 
   for (const caseReference of candidateCaseReferences) {
-    await page.goto(caseDetailsUrl(route.jurisdictionId, route.caseTypeId, caseReference), {
-      waitUntil: 'domcontentloaded',
-    });
+    await openCaseDetailsProbe(page, route, caseReference);
 
     if (await isUsableCaseDetailsPage(page)) {
       return caseReference;

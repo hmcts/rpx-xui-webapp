@@ -26,6 +26,9 @@ import { ActionBindingModel } from '../../models/create-case-actions.model';
 import * as fromCasesFeature from '../../store';
 import * as fromCaseList from '../../store/reducers';
 
+const SAVED_QUERY_PARAM_LOC_STORAGE = 'savedQueryParams';
+const FORM_GROUP_VAL_LOC_STORAGE = 'workbasket-filter-form-group-value';
+
 /**
  * Entry component wrapper for Case List
  * Smart Component
@@ -186,13 +189,10 @@ export class CaseListComponent implements OnInit, OnDestroy {
   public setCaseListFilterDefaults = () => {
     this.jurisdictionsBehaviourSubject$.asObservable().subscribe((jurisdictions) => {
       if (jurisdictions.length > 0) {
-        this.savedQueryParams = safeJsonParse(localStorage.getItem('savedQueryParams'), null);
-        if (
-          this.savedQueryParams &&
-          this.savedQueryParams.jurisdiction &&
-          !this.doesIdExist(this.jurisdictions, this.savedQueryParams.jurisdiction)
-        ) {
-          this.windowService.removeLocalStorage('savedQueryParams');
+        this.savedQueryParams = safeJsonParse(localStorage.getItem(SAVED_QUERY_PARAM_LOC_STORAGE), null);
+        if (this.savedQueryParams && !this.areSavedQueryParamsValid(jurisdictions, this.savedQueryParams)) {
+          this.clearSavedCaseListFilters();
+          this.savedQueryParams = null;
         }
         if (this.savedQueryParams) {
           this.defaults = {
@@ -210,6 +210,21 @@ export class CaseListComponent implements OnInit, OnDestroy {
       }
     });
   };
+
+  public areSavedQueryParamsValid(jurisdictions: Jurisdiction[], savedQueryParams): boolean {
+    const jurisdiction = jurisdictions.find((item) => item.id === savedQueryParams?.jurisdiction);
+
+    if (!jurisdiction) {
+      return false;
+    }
+
+    return jurisdiction.caseTypes?.some((caseType) => caseType.id === savedQueryParams['case-type']) || false;
+  }
+
+  public clearSavedCaseListFilters(): void {
+    this.windowService.removeLocalStorage(SAVED_QUERY_PARAM_LOC_STORAGE);
+    this.windowService.removeLocalStorage(FORM_GROUP_VAL_LOC_STORAGE);
+  }
 
   /**
    * result
@@ -302,8 +317,8 @@ export class CaseListComponent implements OnInit, OnDestroy {
       caseTypeGroupFromLS = { id: this.selected.caseType.id };
       caseStateGroupFromLS = { id: this.selected.caseState ? this.selected.caseState.id : null };
     } else if (this.savedQueryParams) {
-      this.savedQueryParams = safeJsonParse(localStorage.getItem('savedQueryParams'), null);
-      formGroupFromLS = safeJsonParse(localStorage.getItem('workbasket-filter-form-group-value'), null);
+      this.savedQueryParams = safeJsonParse(localStorage.getItem(SAVED_QUERY_PARAM_LOC_STORAGE), null);
+      formGroupFromLS = safeJsonParse(localStorage.getItem(FORM_GROUP_VAL_LOC_STORAGE), null);
       jurisdictionFromLS = { id: this.savedQueryParams.jurisdiction };
       caseTypeGroupFromLS = { id: this.savedQueryParams['case-type'] };
       caseStateGroupFromLS = { id: this.savedQueryParams['case-state'] };

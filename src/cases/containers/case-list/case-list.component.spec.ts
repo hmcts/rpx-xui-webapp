@@ -443,6 +443,54 @@ describe('CaseListComponent', () => {
   });
 
   describe('setCaseListFilterDefaults()', () => {
+    it('should return false when saved query params reference a case type outside the saved jurisdiction.', () => {
+      const jurisdictions = [
+        {
+          id: 'DIVORCE',
+          caseTypes: [{ id: 'DIVORCE_CASE_TYPE' }],
+        },
+      ] as any;
+
+      const isValid = component.areSavedQueryParamsValid(jurisdictions, {
+        jurisdiction: 'DIVORCE',
+        'case-type': 'PROBATE_CASE_TYPE',
+      });
+
+      expect(isValid).toEqual(false);
+    });
+
+    it('should clear saved query params and stored dynamic filters when saved defaults are invalid.', () => {
+      const localStorageGetItemSpy = spyOn(localStorage, 'getItem');
+      localStorageGetItemSpy.and.returnValue(JSON.stringify({
+        jurisdiction: 'DIVORCE',
+        'case-type': 'PROBATE_CASE_TYPE',
+        'case-state': null,
+      }));
+      mockWindowService.removeLocalStorage.calls.reset();
+
+      component.jurisdictionsBehaviourSubject$.next([
+        {
+          id: 'DIVORCE',
+          name: 'Divorce',
+          description: '',
+          caseTypes: [
+            {
+              id: 'DIVORCE_CASE_TYPE',
+              events: null,
+              name: 'Divorce case type',
+              description: '',
+              states: [{ id: 'state', name: 'state', description: '' }],
+            },
+          ],
+        },
+      ]);
+
+      component.setCaseListFilterDefaults();
+
+      expect(mockWindowService.removeLocalStorage).toHaveBeenCalledWith('savedQueryParams');
+      expect(mockWindowService.removeLocalStorage).toHaveBeenCalledWith('workbasket-filter-form-group-value');
+    });
+
     it('should set the defaults.', async () => {
       component.jurisdictionsBehaviourSubject$.next([
         {

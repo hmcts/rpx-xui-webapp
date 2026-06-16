@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 
 import { __test__ as caseSetupTest } from '../../E2E/utils/test-setup/caseSetup.js';
 import { buildCasePayloadFromTemplate } from '../../E2E/utils/test-setup/payloads/registry.js';
+import { buildCreatedUserLogSummary } from '../../E2E/utils/professional-user.utils.js';
 import {
   DIVORCE_EXTERNAL_NOC_SOLICITOR_ROLE_NAMES,
   EMPLOYMENT_EXTERNAL_CORE_SOLICITOR_ROLE_NAMES,
@@ -105,6 +106,31 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
       }
     }
     clearRuntimeUserCredentials('dynamic-user');
+  });
+
+  test('created-user log summary never includes generated passwords', () => {
+    const summary = buildCreatedUserLogSummary({
+      user: {
+        id: '123',
+        email: 'dynamic@example.test',
+        forename: 'Dynamic',
+        surname: 'User',
+        password: 'secret-password-that-must-not-leak',
+        roleNames: ['caseworker-divorce'],
+      },
+      createPath: 'idam-testing-support',
+    });
+
+    expect(summary).toEqual(
+      expect.objectContaining({
+        username: 'dynamic@example.test',
+        forename: 'Dynamic',
+        surname: 'User',
+        roles: ['caseworker-divorce'],
+        createPath: 'idam-testing-support',
+      })
+    );
+    expect(JSON.stringify(summary)).not.toContain('secret-password-that-must-not-leak');
   });
 
   test('resolveSolicitorRoleStrategy prefers explicit roles and deduplicates them', () => {

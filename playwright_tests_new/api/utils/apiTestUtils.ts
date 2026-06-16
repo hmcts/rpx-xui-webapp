@@ -36,22 +36,6 @@ export function isRequestTimeoutError(error: unknown): boolean {
   return /timeout|timed out|ETIMEDOUT|ECONNRESET|socket hang up|Request context disposed/i.test(message);
 }
 
-export async function guardedRequest<T extends { data?: unknown; status: number }>(
-  fn: () => Promise<T>,
-  opts: { onRequestTimeout?: (message: string) => void; timeoutStatus?: number } = {}
-): Promise<T> {
-  try {
-    return await fn();
-  } catch (error) {
-    if (!isRequestTimeoutError(error)) {
-      throw error;
-    }
-    const message = error instanceof Error ? error.message : String(error);
-    opts.onRequestTimeout?.(message);
-    return { data: undefined, status: opts.timeoutStatus ?? 504 } as T;
-  }
-}
-
 export async function buildXsrfHeaders(role: ApiUserRole): Promise<Record<string, string>> {
   return buildXsrfHeadersWith(role);
 }
@@ -100,6 +84,31 @@ export async function withRetry<T extends { status: number }>(
     attempt++;
   }
   throw lastError ?? new Error('withRetry failed unexpectedly');
+}
+
+export type GuardedRequestOptions = {
+  failOnRequestError?: boolean;
+  onRequestTimeout?: (message: string) => void;
+  timeoutStatus?: number;
+};
+
+export async function guardedRequest<T extends { status: number; data?: unknown }>(
+  fn: () => Promise<T>,
+  options: GuardedRequestOptions = {}
+): Promise<T | { data: undefined; status: number }> {
+  try {
+    return await fn();
+  } catch (error) {
+    if (!isRequestTimeoutError(error)) {
+      throw error;
+    }
+    if (options.failOnRequestError === true) {
+      throw error;
+    }
+    const message = error instanceof Error ? error.message : String(error);
+    options.onRequestTimeout?.(message);
+    return { data: undefined, status: options.timeoutStatus ?? 504 };
+  }
 }
 
 type BuildXsrfDeps = {

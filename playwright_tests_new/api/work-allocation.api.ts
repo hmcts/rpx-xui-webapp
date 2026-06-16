@@ -275,11 +275,12 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
     const endpoints = ['workallocation/my-work/cases', 'workallocation/my-work/myaccess'];
     for (const endpoint of endpoints) {
       test(`${endpoint} returns data or guarded status`, async ({ apiClient }) => {
-        const response = await guardedRequest(() =>
-          withXsrf('solicitor', (headers) =>
+        const response = await withXsrf('solicitor', (headers) =>
+          guardedRequest(() =>
             apiClient.get(endpoint, {
               headers,
               throwOnError: false,
+              timeoutMs: TASK_SEARCH_REQUEST_TIMEOUT_MS,
             })
           )
         );

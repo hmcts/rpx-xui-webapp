@@ -90,7 +90,7 @@ export function filterOutResults(
  */
 export async function getLocationsById(req: EnhancedRequest, res: Response, next: NextFunction) {
   const locations = req.body.locations;
-  logger.info(`getLocationsById: ${JSON.stringify(locations)}`);
+  logger.info(`pofcc-137 - getLocationById`);
   try {
     const locationModels = [];
     let responseStatus;
@@ -98,8 +98,9 @@ export async function getLocationsById(req: EnhancedRequest, res: Response, next
       const id = location.locationId;
       const basePath = getConfigValue(SERVICES_LOCATION_API_PATH);
       const serviceCode = getFirstServiceCode(location.services);
-      logger.info(`serviceCode: ${serviceCode}`);
+      logger.info(`pofcc-137 - getLocationsById - serviceCode used -->: ${serviceCode}`);
       const path: string = prepareGetSpecificLocationUrl(basePath, id, serviceCode);
+      logger.info(`pofcc-137 - getLocationsById - markupPath used -->: ${path}`);
       // no longer LocationResponse but CourtVenue
       const response: AxiosResponse<CourtVenue[]> = await handleLocationGet(path, req);
       const filteredResults = response.data.filter((courtVenue) => courtVenue.epimms_id === id.toString());

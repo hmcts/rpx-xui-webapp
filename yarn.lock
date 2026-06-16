@@ -3064,12 +3064,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.55-marked-package-update":
-  version: 7.3.55-marked-package-update
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.55-marked-package-update"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.58-marked-package-update":
+  version: 7.3.58-marked-package-update
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.58-marked-package-update"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/8cb74c408c3a0dc0e654df734082382350f4fdefc306dc27c9d2a971783c23e49180956829840420e3375ce64cf11b1f0d9ea4e98bdc9675185ee6cb6b4439b6
+  checksum: 10/da07a31979a6e88a2e7d710da8e5b094f7bcb922fa482c2678399ee1f56f8a8523949f970770c3a59c1c16b7a3186b8c938235fc20e6e1c636ea62d1dfd77e39
   languageName: node
   linkType: hard
 
@@ -19655,7 +19655,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.55-marked-package-update"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.58-marked-package-update"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.18"

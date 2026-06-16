@@ -3,15 +3,21 @@ import { defineConfig, devices } from '@playwright/test';
 import { cpus, totalmem } from 'node:os';
 import { version as appVersion } from './package.json';
 import { logResolvedTagFilters, resolveTagFilters, resolveWorkerCount } from './playwright-config-utils';
-import {
-  includesWaveLikeA11y,
-  waveLikeA11ySpecPattern,
-} from './playwright_tests_new/E2E/utils/accessibility/waveLikeAccessibility';
 
 type EnvMap = NodeJS.ProcessEnv;
 
 const withPlaywrightTagsAlias = (env: EnvMap): EnvMap =>
   env.E2E_PW_INCLUDE_TAGS || !env.PLAYWRIGHT_TAGS ? env : { ...env, E2E_PW_INCLUDE_TAGS: env.PLAYWRIGHT_TAGS };
+
+const waveLikeA11ySpecPattern = '**/*.wave-a11y.spec.ts';
+const splitTags = (raw: string | undefined): string[] =>
+  (raw ?? '')
+    .split(',')
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+const includesWaveLikeA11y = (env: EnvMap): boolean =>
+  env.PLAYWRIGHT_INCLUDE_WAVE_A11Y === 'true' ||
+  [...splitTags(env.E2E_PW_INCLUDE_TAGS), ...splitTags(env.PLAYWRIGHT_TAGS)].includes('@wave-a11y');
 
 const defaultBaseUrl = 'https://manage-case.aat.platform.hmcts.net';
 const defaultOdhinOutputFolder = 'functional-output/tests/playwright-e2e/odhin-report';

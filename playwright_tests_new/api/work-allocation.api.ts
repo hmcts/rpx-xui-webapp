@@ -3,7 +3,7 @@ import type { TestInfo } from '@playwright/test';
 import { test, expect } from './fixtures';
 import { ensureStorageState } from './utils/auth';
 import { WA_SAMPLE_ASSIGNED_TASK_ID, WA_SAMPLE_TASK_ID } from './data/testIds';
-import { expectStatus, StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
+import { expectStatus, guardedRequest, StatusSets, withRetry, withXsrf } from './utils/apiTestUtils';
 import type { UserDetailsResponse } from './utils/types';
 import { buildTaskSearchRequest, seedTaskId } from './utils/work-allocation';
 import {
@@ -276,10 +276,13 @@ test.describe('Work allocation (read-only)', { tag: '@svc-work-allocation' }, ()
     for (const endpoint of endpoints) {
       test(`${endpoint} returns data or guarded status`, async ({ apiClient }) => {
         const response = await withXsrf('solicitor', (headers) =>
-          apiClient.get(endpoint, {
-            headers,
-            throwOnError: false,
-          })
+          guardedRequest(() =>
+            apiClient.get(endpoint, {
+              headers,
+              throwOnError: false,
+              timeoutMs: TASK_SEARCH_REQUEST_TIMEOUT_MS,
+            })
+          )
         );
         expectStatus(response.status, StatusSets.guardedExtended);
         assertMyWorkDashboardResponse(response.status, response.data);

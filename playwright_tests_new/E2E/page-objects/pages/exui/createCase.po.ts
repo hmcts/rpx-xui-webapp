@@ -1,3 +1,6 @@
+import { mkdtemp, rm, writeFile } from 'fs/promises';
+import os from 'os';
+import path from 'path';
 import { Page, Locator, expect } from '@playwright/test';
 import { faker } from '@faker-js/faker';
 import { createLogger } from '@hmcts/playwright-common';
@@ -32,6 +35,11 @@ export type DivorcePoCData = PersonData & {
 type CreateDivorceCaseOptions = {
   maxAttempts?: number;
   createCaseMaxAttempts?: number;
+};
+
+type DocumentDragDropPoint = {
+  x: number;
+  y: number;
 };
 
 const logger = createLogger({
@@ -128,6 +136,7 @@ export class CreateCasePage extends Base {
   readonly doYouAgreeYesRadio!: Locator;
   readonly doYouAgreeNoRadio!: Locator;
 
+  readonly fileUploadComponent!: Locator;
   readonly fileUploadInput!: Locator;
   readonly fileUploadStatusLabel!: Locator;
   readonly textField0Input!: Locator;
@@ -167,6 +176,7 @@ export class CreateCasePage extends Base {
   readonly employmentDocumentCollectionButton!: Locator;
   readonly employmentDocumentTypeSelect!: Locator;
   readonly employmentDocumentMiscTypeSelect!: Locator;
+  readonly fileUploadCancelButton!: Locator;
   readonly employmentRespondentCollectionItem!: Locator;
   readonly employmentClaimantRepresentationGroup!: Locator;
 
@@ -812,6 +822,100 @@ export class CreateCasePage extends Base {
     fileContentEncoding?: BufferEncoding
   ) {
     const resolvedFileInput = fileInput ?? this.page.locator('input[type="file"]').first();
+    await this.runDocumentUploadWithRetry('file input upload', async () => {
+      await resolvedFileInput.setInputFiles({
+        name: fileName,
+        mimeType,
+        buffer: Buffer.from(fileContent, fileContentEncoding ?? 'utf8'),
+      });
+    });
+  }
+
+  async dragAndDropFile(
+    fileName: string,
+    mimeType: string,
+    fileContent: string,
+    fileInput?: Locator,
+    options: {
+      fileContentEncoding?: BufferEncoding;
+      dropTarget?: Locator;
+    } = {}
+  ) {
+    const resolvedFileInput = fileInput ?? this.page.locator('input[type="file"]').first();
+    const resolvedDropTarget = options.dropTarget ?? resolvedFileInput;
+    await resolvedFileInput.waitFor({ state: 'visible' });
+    await resolvedDropTarget.waitFor({ state: 'visible' });
+    await resolvedFileInput.scrollIntoViewIfNeeded();
+    await resolvedDropTarget.scrollIntoViewIfNeeded();
+
+    const tempDirectory = await mkdtemp(path.join(os.tmpdir(), 'xui-document-drag-drop-'));
+    const filePath = path.join(tempDirectory, path.basename(fileName));
+    await writeFile(filePath, Buffer.from(fileContent, options.fileContentEncoding ?? 'utf8'));
+
+    try {
+      await this.runDocumentUploadWithRetry('browser file drag-and-drop upload', async () => {
+        const { x, y } = await this.resolveDocumentDragDropPoint(resolvedFileInput, resolvedDropTarget, fileName);
+        let cdpSession;
+        try {
+          cdpSession = await this.page.context().newCDPSession(this.page);
+        } catch (error) {
+          throw new Error('Document browser drag-and-drop upload requires a Chromium-backed Playwright project.', {
+            cause: error,
+          });
+        }
+        const dragData = {
+          items: [
+            {
+              mimeType,
+              data: '',
+              title: fileName,
+            },
+          ],
+          files: [filePath],
+          dragOperationsMask: 1,
+        };
+
+        try {
+          await cdpSession.send('Input.dispatchDragEvent', { type: 'dragEnter', x, y, data: dragData });
+          await cdpSession.send('Input.dispatchDragEvent', { type: 'dragOver', x, y, data: dragData });
+          await cdpSession.send('Input.dispatchDragEvent', { type: 'drop', x, y, data: dragData });
+        } finally {
+          await cdpSession.detach().catch(() => undefined);
+        }
+      });
+    } finally {
+      await rm(tempDirectory, { recursive: true, force: true });
+    }
+  }
+
+  private async resolveDocumentDragDropPoint(
+    fileInput: Locator,
+    dropTarget: Locator,
+    fileName: string
+  ): Promise<DocumentDragDropPoint> {
+    const targetBox = await dropTarget.boundingBox();
+    if (!targetBox) {
+      throw new Error(`Document drag-and-drop target for "${fileName}" has no visible bounding box`);
+    }
+
+    const inputBox = await fileInput.boundingBox();
+    if (!inputBox) {
+      throw new Error(`Document drag-and-drop file input for "${fileName}" has no visible bounding box`);
+    }
+
+    const x = inputBox.x + inputBox.width / 2;
+    const y = inputBox.y + inputBox.height / 2;
+    const isInsideDropTarget =
+      x >= targetBox.x && x <= targetBox.x + targetBox.width && y >= targetBox.y && y <= targetBox.y + targetBox.height;
+
+    if (!isInsideDropTarget) {
+      throw new Error(`Document drag-and-drop file input for "${fileName}" is not inside the requested drop target`);
+    }
+
+    return { x, y };
+  }
+
+  private async runDocumentUploadWithRetry(uploadActionDescription: string, uploadAction: () => Promise<void>) {
     const maxRetries = 3;
     const baseDelayMs = 1000;
     const uploadResponseTimeoutMs = this.getRecommendedTimeoutMs({
@@ -822,14 +926,14 @@ export class CreateCasePage extends Base {
     });
     const safeBackoff = async (attempt: number) => {
       if (this.page.isClosed()) {
-        throw new Error('Page closed during upload retry backoff');
+        throw new Error(`Page closed during ${uploadActionDescription} retry backoff`);
       }
       await this.page.waitForTimeout(baseDelayMs * Math.pow(2, attempt - 1));
     };
 
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       if (this.page.isClosed()) {
-        throw new Error('Page closed before upload retry attempt');
+        throw new Error(`Page closed before ${uploadActionDescription} retry attempt`);
       }
       const responsePromise = this.page
         .waitForResponse((r) => r.url().includes('/document') && r.request().method() === 'POST', {
@@ -837,11 +941,7 @@ export class CreateCasePage extends Base {
         })
         .catch((error: Error) => error);
 
-      await resolvedFileInput.setInputFiles({
-        name: fileName,
-        mimeType,
-        buffer: Buffer.from(fileContent, fileContentEncoding ?? 'utf8'),
-      });
+      await uploadAction();
 
       const uploadResponse = await responsePromise;
 
@@ -850,7 +950,7 @@ export class CreateCasePage extends Base {
           throw uploadResponse;
         }
         if (attempt < maxRetries) {
-          logger.warn('Document upload response was not observed; retrying upload', {
+          logger.warn(`Document ${uploadActionDescription} response was not observed; retrying upload`, {
             attempt,
             maxRetries,
             timeoutMs: uploadResponseTimeoutMs,
@@ -859,12 +959,12 @@ export class CreateCasePage extends Base {
           await safeBackoff(attempt);
           continue;
         }
-        throw new Error(`Upload timed out after ${maxRetries} attempts: ${uploadResponse.message}`);
+        throw new Error(`Document ${uploadActionDescription} timed out after ${maxRetries} attempts: ${uploadResponse.message}`);
       }
 
       if (uploadResponse.status() !== 200) {
         if (attempt < maxRetries) {
-          logger.warn('Document upload returned non-200 response; retrying upload', {
+          logger.warn(`Document ${uploadActionDescription} returned non-200 response; retrying upload`, {
             attempt,
             maxRetries,
             status: uploadResponse.status(),
@@ -872,7 +972,9 @@ export class CreateCasePage extends Base {
           await safeBackoff(attempt);
           continue;
         }
-        throw new Error(`Upload failed: server returned status ${uploadResponse.status()} after ${maxRetries} attempts`);
+        throw new Error(
+          `Document ${uploadActionDescription} failed: server returned status ${uploadResponse.status()} after ${maxRetries} attempts`
+        );
       }
 
       break;

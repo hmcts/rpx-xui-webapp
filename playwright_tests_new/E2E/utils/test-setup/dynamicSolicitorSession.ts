@@ -86,6 +86,7 @@ type ProvisionDynamicSolicitorFlowDeps = {
   runEmploymentAssignmentPreflight: (params: {
     professionalUserUtils: ProfessionalUserUtils;
     organisationId: string;
+    mode: 'internal' | 'external' | 'auto';
     testInfo: TestInfo;
   }) => Promise<void>;
   provisionUserWithRetries: typeof provisionUserWithRetries;
@@ -710,6 +711,7 @@ async function provisionDynamicSolicitorForAliasFlow(
     await deps.runEmploymentAssignmentPreflight({
       professionalUserUtils,
       organisationId: organisationId,
+      mode,
       testInfo,
     });
   } else if (assertEmploymentAssignmentPayloadAccepted) {
@@ -843,10 +845,12 @@ function assertDynamicUserRoleContract({
 async function runEmploymentAssignmentPreflight({
   professionalUserUtils,
   organisationId,
+  mode,
   testInfo,
 }: {
   professionalUserUtils: ProfessionalUserUtils;
   organisationId: string;
+  mode: 'internal' | 'external' | 'auto';
   testInfo: TestInfo;
 }): Promise<void> {
   const preflight = await professionalUserUtils.createSolicitorUserForOrganisation({
@@ -856,7 +860,7 @@ async function runEmploymentAssignmentPreflight({
       jurisdiction: 'employment',
       testType: 'case-create',
     },
-    mode: 'external',
+    mode,
     resendInvite: false,
     outputCreatedUserData: false,
   });
@@ -879,11 +883,6 @@ async function runEmploymentAssignmentPreflight({
   const status = preflight.organisationAssignment.status;
   if (![200, 201, 202, 409].includes(status)) {
     throw new Error(`Employment assignment preflight failed: unexpected assignment status ${status}.`);
-  }
-  if (preflight.organisationAssignment.mode !== 'external') {
-    throw new Error(
-      `Employment assignment preflight failed: expected external mode, got ${preflight.organisationAssignment.mode}.`
-    );
   }
   for (const filteredRole of EMPLOYMENT_FILTERED_ASSIGNMENT_ROLES) {
     if (preflight.organisationAssignment.roles.includes(filteredRole)) {

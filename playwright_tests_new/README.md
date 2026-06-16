@@ -164,8 +164,21 @@ Dynamic-user keys now available in Key Vault (`rpx-aat`, `rpx-demo`) and populat
 - `PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY`
 - `PW_DYNAMIC_ORGANISATION_ACTIVE_TIMEOUT_MS`
 - `PW_DYNAMIC_ORGANISATION_ACTIVE_POLL_INTERVAL_MS`
+- `PW_E2E_MANAGE_TASKS_WA_PROVISIONING`
+- `PW_E2E_MANAGE_TASKS_ROLE_ASSIGNMENT_BEARER_TOKEN`
+- `PW_E2E_MANAGE_TASKS_IDAM_CLIENT_ID`
+- `PW_E2E_MANAGE_TASKS_IDAM_SECRET`
+- `PW_E2E_MANAGE_TASKS_IDAM_SCOPE`
+- `SERVICES_WA_WORKFLOW_API_URL`
+- `SERVICES_ROLE_ASSIGNMENT_API`
 - `PW_APPROVE_ORG_API_BASE_URL`
 - `PW_APPROVE_ORG_API_STORAGE_STATE`
+- `PW_APPROVE_ORG_API_SESSION_MAX_AGE_MS`
+- `PW_APPROVE_ORG_API_SESSION_HEADLESS`
+- `APPROVE_ORG_ADMIN_USERNAME`
+- `APPROVE_ORG_ADMIN_PASSWORD`
+- `AO_ADMIN_USERNAME`
+- `AO_ADMIN_PASSWORD`
 - `MANAGE_ORG_API_PATH`
 - `RD_PROFESSIONAL_API_PATH`
 - `WA_SOLICITOR_USERNAME`
@@ -180,17 +193,19 @@ These are populated from Key Vault using the same `e2e=<ENV_VAR_NAME>` tag conve
 Notes:
 
 - Local dynamic-user creation requires F5 VPN (AAT/DEMO private services).
-- Value added: dynamic solicitor-style setup now provisions an approved organisation for the framework run, creates the solicitor users inside that organisation, validates the role/readiness contract, and records setup timings. This removes the shared static-organisation capacity risk while keeping one approved organisation reused across parallel workers in the same run.
+- Value added: dynamic solicitor-style setup now provisions an approved organisation for the framework run, creates the solicitor users inside that organisation, validates the role/readiness contract, and records setup timings. This removes the shared static-organisation capacity risk while keeping one approved organisation reused across parallel workers in the same run. Manage Tasks E2E setup also has a live Work Allocation provisioning layer: when the WA workflow API, Role Assignment API, S2S token, dynamic-user IDAM password grant, and role-assignment bearer token are available, it creates legal-ops WA visibility roles and sends a `createTaskMessage` workflow event for the case created in that run. If those prerequisites are absent, the test records explicit diagnostics and still fails on the real missing-task condition rather than falling back to seeded static task IDs.
 - Dynamic solicitor-style users create or reuse one run-scoped approved organisation. The static `TEST_SOLICITOR_ORGANISATION_ID` fallback has been retired.
 - `PW_DYNAMIC_ORGANISATION_MODE` is optional and only supports `dynamic`. Deprecated `static` and `auto` values fail fast so CI cannot silently fall back to a shared organisation.
 - Set `PW_DYNAMIC_ORGANISATION_RUN_ID` in CI to keep parallel workers in the same framework run on one approved organisation. If it is unset, the resolver falls back to CI run identifiers where available and then to `local`.
 - `PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY` controls how the pending organisation is approved:
   - `rd-professional-api` uses the existing RD Professional internal approval endpoint.
-  - `approve-org-api` uses Administer Organisations API with `PW_APPROVE_ORG_API_STORAGE_STATE`.
+  - `approve-org-api` uses Administer Organisations API with a validated approval-capable session.
   - `auto` tries RD Professional first and falls back to Administer Organisations only when RD returns `403`.
     Unsupported values fail fast instead of silently changing the approval path.
-- `PW_APPROVE_ORG_API_STORAGE_STATE` must point to a Playwright storage state captured for an approval-capable Administer Organisations user when `approve-org-api` is used. This keeps approval credentials out of test code and avoids depending on a static organisation.
+- `PW_APPROVE_ORG_API_STORAGE_STATE` can point to a Playwright storage state captured for an approval-capable Administer Organisations user. If it is missing, stale, or unauthenticated, the framework refreshes it into `.sessions/approve-org-api.storage.json` using `APPROVE_ORG_ADMIN_USERNAME`/`APPROVE_ORG_ADMIN_PASSWORD`, the legacy approve-org `AO_ADMIN_USERNAME`/`AO_ADMIN_PASSWORD`, or the existing `TEST_EMAIL`/`TEST_PASSWORD` and `TEST_API_EMAIL_ADMIN`/`TEST_API_PASSWORD_ADMIN` fallbacks used by the approve-org tests. `PW_APPROVE_ORG_API_SESSION_MAX_AGE_MS` controls the freshness window and `PW_APPROVE_ORG_API_SESSION_HEADLESS=false` can be used for supervised local login debugging.
+- Approval is still a real environment capability: if neither RD Professional approval nor an authenticated approve-org admin session is available, setup fails before dynamic users are created.
 - Dynamic organisation resolution only reuses a cached entry when its cache key matches the current run. The cache records `approvalStrategy`, per-stage timings, `totalElapsedMs`, create/approve statuses, and poll attempts, so a run that enables this feature records the setup-time impact alongside the existing dynamic user provisioning attempts.
+- `PW_E2E_MANAGE_TASKS_WA_PROVISIONING` defaults to `auto`; set it to `workflow` to require the live WA provisioning path locally or in Jenkins. The provisioner uses `SERVICES_ROLE_ASSIGNMENT_API` to create `tribunal-caseworker` and `task-supervisor` organisation role assignments for the dynamic actor, then uses `SERVICES_WA_WORKFLOW_API_URL/workflow/message` to create the task for the current case. The setup attaches `manage-tasks-wa-provisioning.json`, `manage-tasks-live-task-poll.json`, and role-access diagnostics to distinguish missing permissions from missing WA task materialisation.
 - Do not commit `.env`.
 
 ---
@@ -712,7 +727,7 @@ test.describe('My Test Suite', () => {
 
 - `SOLICITOR` - Standard solicitor user for Private Law / civil cases
 - `DIVORCE_SOLICITOR` - Divorce-entitled solicitor user for divorce create/update journeys
-- `WA_SOLICITOR` - Work Allocation solicitor user for low-assignment live task lookup coverage
+- `WA_SOLICITOR` - Legacy Work Allocation solicitor user for low-assignment live task lookup coverage; retained for non-migrated coverage only. New Manage Tasks E2E setup should use dynamic organisation/user plus live WA task provisioning.
 - `SEARCH_EMPLOYMENT_CASE` - Employment tribunal case user
 - `STAFF_ADMIN` - Administrative staff user
 - `USER_WITH_FLAGS` - User with case flags enabled

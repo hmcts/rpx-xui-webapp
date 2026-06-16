@@ -1,4 +1,6 @@
-import { request, type APIRequestContext } from '@playwright/test';
+import { chromium, request, type APIRequestContext, type Browser, type Page } from '@playwright/test';
+import * as fs from 'node:fs';
+import * as path from 'node:path';
 
 type OrganisationStatus = 'PENDING' | 'ACTIVE';
 
@@ -75,6 +77,13 @@ type CreateApprovedOrganisationDeps = {
   sleep: (ms: number) => Promise<void>;
 };
 
+type CreatedOrganisation = {
+  organisationId: string;
+  status: number;
+  existingStatus?: OrganisationStatus;
+  reusedExisting?: boolean;
+};
+
 export class DynamicOrganisationProvisioningError extends Error {
   timings?: DynamicOrganisationProvisioningStageTiming[];
   totalElapsedMs?: number;
@@ -102,6 +111,8 @@ const DEFAULT_DYNAMIC_ORG_SUPER_USER_DOMAIN = 'example.test';
 const RD_PROFESSIONAL_SRA_ID_MAX_LENGTH = 15;
 const RD_PROFESSIONAL_DX_NUMBER_MAX_LENGTH = 13;
 const DEFAULT_APPROVE_ORG_API_BASE_URL = 'https://administer-orgs.aat.platform.hmcts.net';
+const DEFAULT_APPROVE_ORG_SESSION_MAX_AGE_MS = 60 * 60_000;
+const APPROVE_ORG_AUTH_COOKIE_NAMES = new Set(['__auth__', 'Idam.Session', 'ao-webapp']);
 
 function firstNonEmpty(...values: Array<string | undefined>): string | undefined {
   for (const value of values) {
@@ -174,6 +185,193 @@ function resolveApproveOrgApiBaseUrl(): string {
   return firstNonEmpty(process.env.PW_APPROVE_ORG_API_BASE_URL) ?? DEFAULT_APPROVE_ORG_API_BASE_URL;
 }
 
+function resolveApproveOrgStorageStatePath(): string {
+  return (
+    firstNonEmpty(process.env.PW_APPROVE_ORG_API_STORAGE_STATE) ??
+    path.join(process.cwd(), '.sessions', 'approve-org-api.storage.json')
+  );
+}
+
+function resolveApproveOrgAdminCredential(kind: 'username' | 'password'): string | undefined {
+  if (kind === 'username') {
+    return firstNonEmpty(
+      process.env.APPROVE_ORG_ADMIN_USERNAME,
+      process.env.AO_ADMIN_USERNAME,
+      process.env.TEST_EMAIL,
+      process.env.TEST_API_EMAIL_ADMIN
+    );
+  }
+  return firstNonEmpty(
+    process.env.APPROVE_ORG_ADMIN_PASSWORD,
+    process.env.AO_ADMIN_PASSWORD,
+    process.env.TEST_PASSWORD,
+    process.env.TEST_API_PASSWORD_ADMIN
+  );
+}
+
+function resolveApproveOrgSessionMaxAgeMs(): number {
+  const configured = Number.parseInt(process.env.PW_APPROVE_ORG_API_SESSION_MAX_AGE_MS ?? '', 10);
+  return Number.isFinite(configured) && configured > 0 ? configured : DEFAULT_APPROVE_ORG_SESSION_MAX_AGE_MS;
+}
+
+function hasUnexpiredApproveOrgAuthCookie(storageStatePath: string): boolean {
+  try {
+    const state = JSON.parse(fs.readFileSync(storageStatePath, 'utf8')) as {
+      cookies?: Array<{ name?: string; expires?: number }>;
+    };
+    const nowSeconds = Date.now() / 1000;
+    return (state.cookies ?? []).some((cookie) => {
+      if (!cookie.name || !APPROVE_ORG_AUTH_COOKIE_NAMES.has(cookie.name)) {
+        return false;
+      }
+      if (cookie.expires === undefined || cookie.expires === -1) {
+        return true;
+      }
+      return cookie.expires > nowSeconds + 30;
+    });
+  } catch {
+    return false;
+  }
+}
+
+function isApproveOrgStorageStateFresh(storageStatePath: string): boolean {
+  if (!fs.existsSync(storageStatePath)) {
+    return false;
+  }
+  const stats = fs.statSync(storageStatePath);
+  if (Date.now() - stats.mtimeMs > resolveApproveOrgSessionMaxAgeMs()) {
+    return false;
+  }
+  return hasUnexpiredApproveOrgAuthCookie(storageStatePath);
+}
+
+async function isApproveOrgApiContextAuthenticated(apiContext: APIRequestContext): Promise<boolean> {
+  try {
+    const response = await apiContext.get('auth/isAuthenticated', { failOnStatusCode: false });
+    if (response.status() !== 200) {
+      return false;
+    }
+    const body = (await response.text()).trim().toLowerCase();
+    if (body === 'true') {
+      return true;
+    }
+    if (!body || body === 'false') {
+      return false;
+    }
+    try {
+      return JSON.parse(body) === true;
+    } catch {
+      return false;
+    }
+  } catch {
+    return false;
+  }
+}
+
+async function launchApproveOrgSessionBrowser(): Promise<Browser> {
+  const headless = process.env.PW_APPROVE_ORG_API_SESSION_HEADLESS !== 'false';
+  try {
+    return await chromium.launch({ headless, channel: 'chrome' });
+  } catch {
+    return chromium.launch({ headless });
+  }
+}
+
+async function completeApproveOrgLogin(page: Page, baseURL: string, username: string, password: string): Promise<void> {
+  await page.goto(baseURL, { waitUntil: 'networkidle' });
+
+  const requestContext = await request.newContext({
+    baseURL,
+    ignoreHTTPSErrors: true,
+    storageState: await page.context().storageState(),
+  });
+  try {
+    if (await isApproveOrgApiContextAuthenticated(requestContext)) {
+      return;
+    }
+  } finally {
+    await requestContext.dispose();
+  }
+
+  for (let attempt = 1; attempt <= 4; attempt += 1) {
+    const namedUsernameInput = page.locator('input[name="username"]');
+    const roleEmailInput = page.getByRole('textbox', { name: /Email address|Enter your work email address/i });
+    const fallbackEmailInput = page.locator('input[type="email"]').first();
+    const hasNamedUsernameInput = await namedUsernameInput.isVisible().catch(() => false);
+    const hasRoleEmailInput = await roleEmailInput.isVisible().catch(() => false);
+    const hasFallbackEmailInput = await fallbackEmailInput.isVisible().catch(() => false);
+    const isOnLoginSurface =
+      page.url().includes('idam') ||
+      page.url().includes('/login') ||
+      hasNamedUsernameInput ||
+      hasRoleEmailInput ||
+      hasFallbackEmailInput;
+
+    if (isOnLoginSurface) {
+      if (hasNamedUsernameInput) {
+        await namedUsernameInput.fill(username);
+        await page.locator('input[name="password"]').fill(password);
+        await page.locator('#login-submit-btn').click();
+      } else if (hasRoleEmailInput || hasFallbackEmailInput) {
+        const emailInput = hasRoleEmailInput ? roleEmailInput : fallbackEmailInput;
+        await emailInput.fill(username);
+        await page.locator('input[type="password"], input[name="password"]').first().fill(password);
+        await page.getByRole('button', { name: 'Sign in' }).click();
+      } else {
+        await page.waitForTimeout(500 * attempt);
+      }
+      await page.waitForLoadState('networkidle', { timeout: 15_000 }).catch(() => undefined);
+    }
+
+    const authCheckContext = await request.newContext({
+      baseURL,
+      ignoreHTTPSErrors: true,
+      storageState: await page.context().storageState(),
+    });
+    try {
+      if (await isApproveOrgApiContextAuthenticated(authCheckContext)) {
+        return;
+      }
+    } finally {
+      await authCheckContext.dispose();
+    }
+
+    await page.waitForTimeout(1000 * attempt);
+  }
+
+  throw new Error(`Unable to authenticate approve-org admin user "${username}" for API approval.`);
+}
+
+async function captureApproveOrgStorageState(baseURL: string, storageStatePath: string): Promise<string> {
+  const username = resolveApproveOrgAdminCredential('username');
+  const password = resolveApproveOrgAdminCredential('password');
+  if (!username || !password) {
+    throw new Error(
+      'Approve-org API approval requires a fresh storage state or approval-capable credentials. Set PW_APPROVE_ORG_API_STORAGE_STATE to a valid authenticated storage state, or set APPROVE_ORG_ADMIN_USERNAME/APPROVE_ORG_ADMIN_PASSWORD (fallbacks: AO_ADMIN_USERNAME/AO_ADMIN_PASSWORD, TEST_EMAIL/TEST_PASSWORD, or TEST_API_EMAIL_ADMIN/TEST_API_PASSWORD_ADMIN).'
+    );
+  }
+
+  fs.mkdirSync(path.dirname(storageStatePath), { recursive: true });
+  const browser = await launchApproveOrgSessionBrowser();
+  const context = await browser.newContext();
+  const page = await context.newPage();
+  try {
+    await completeApproveOrgLogin(page, baseURL, username, password);
+    await context.storageState({ path: storageStatePath });
+    return storageStatePath;
+  } finally {
+    await browser.close();
+  }
+}
+
+async function createApproveOrgContextFromStorageState(baseURL: string, storageStatePath: string): Promise<APIRequestContext> {
+  return request.newContext({
+    baseURL,
+    ignoreHTTPSErrors: true,
+    storageState: storageStatePath,
+  });
+}
+
 function buildBoundedIdentifier(prefix: string, runId: string, maxLength: number, fallback: string): string {
   const compactRunId = runId.replaceAll(/[^A-Za-z0-9]/g, '');
   const maxRunIdLength = Math.max(0, maxLength - prefix.length);
@@ -240,6 +438,33 @@ function readOrganisationIdentifier(body: unknown): string | undefined {
   return undefined;
 }
 
+function readStringField(record: Record<string, unknown>, ...keys: string[]): string | undefined {
+  for (const key of keys) {
+    const value = record[key];
+    if (typeof value === 'string' && value.trim()) {
+      return value.trim();
+    }
+  }
+  return undefined;
+}
+
+function readOrganisationStatus(record: Record<string, unknown>): OrganisationStatus | undefined {
+  const status = readStringField(record, 'status')?.toUpperCase();
+  return status === 'ACTIVE' || status === 'PENDING' ? status : undefined;
+}
+
+function isDuplicateSraCreateResponse(body: unknown, payload: DynamicOrganisationPayload): boolean {
+  const preview = typeof body === 'string' ? body : JSON.stringify(body ?? {});
+  const normalizedPreview = preview.toLowerCase();
+  const mentionsSra = normalizedPreview.includes('sra_id') || normalizedPreview.includes('sra id');
+  return (
+    (normalizedPreview.includes(payload.sraId.toLowerCase()) || mentionsSra) &&
+    (normalizedPreview.includes('already exists') ||
+      normalizedPreview.includes('duplicate key') ||
+      normalizedPreview.includes('sra_id'))
+  );
+}
+
 function extractOrganisationEntries(body: unknown): Record<string, unknown>[] {
   if (Array.isArray(body)) {
     return body.filter((entry): entry is Record<string, unknown> => Boolean(entry) && typeof entry === 'object');
@@ -262,6 +487,62 @@ function extractSingleOrganisation(body: unknown, organisationId: string): Recor
   return extractOrganisationEntries(body).find((entry) => readOrganisationIdentifier(entry) === organisationId);
 }
 
+function cookieMatchesHost(cookieDomain: string | undefined, hostName: string): boolean {
+  if (!cookieDomain) {
+    return false;
+  }
+  const normalizedDomain = cookieDomain.replace(/^\./, '').toLowerCase();
+  const normalizedHost = hostName.toLowerCase();
+  return normalizedHost === normalizedDomain || normalizedHost.endsWith(`.${normalizedDomain}`);
+}
+
+async function getApproveOrgXsrfHeaders(apiContext: APIRequestContext): Promise<Record<string, string>> {
+  const maybeStorageState = (apiContext as { storageState?: APIRequestContext['storageState'] }).storageState;
+  if (!maybeStorageState) {
+    return {};
+  }
+
+  let apiHostName: string | undefined;
+  const environmentResponse = await apiContext.get('/api/environment', { failOnStatusCode: false });
+  try {
+    apiHostName = new URL(environmentResponse.url()).hostname;
+  } catch {
+    apiHostName = undefined;
+  }
+
+  const state = await maybeStorageState.call(apiContext);
+  const xsrfCookies = state.cookies.filter((cookie) => cookie.name === 'XSRF-TOKEN');
+  if (xsrfCookies.length === 0) {
+    return {};
+  }
+
+  const xsrfToken =
+    (apiHostName ? xsrfCookies.find((cookie) => cookieMatchesHost(cookie.domain, apiHostName))?.value : undefined) ??
+    xsrfCookies[xsrfCookies.length - 1]?.value;
+
+  return xsrfToken ? { 'x-xsrf-token': xsrfToken } : {};
+}
+
+function findMatchingOrganisationEntry(
+  body: unknown,
+  payload: DynamicOrganisationPayload
+): { organisationId: string; status?: OrganisationStatus } | undefined {
+  const match = extractOrganisationEntries(body)
+    .map((entry) => ({
+      organisationId: readOrganisationIdentifier(entry),
+      name: readStringField(entry, 'name', 'organisationName'),
+      sraId: readStringField(entry, 'sraId', 'sra_id', 'sra'),
+      status: readOrganisationStatus(entry),
+    }))
+    .find(({ organisationId, name, sraId }) => {
+      return Boolean(
+        organisationId &&
+        (sraId?.toLowerCase() === payload.sraId.toLowerCase() || name?.toLowerCase() === payload.name.toLowerCase())
+      );
+    });
+  return match?.organisationId ? { organisationId: match.organisationId, status: match.status } : undefined;
+}
+
 function isActiveOrganisation(body: unknown, organisationId: string): boolean {
   return extractOrganisationEntries(body).some((entry) => {
     const id = readOrganisationIdentifier(entry);
@@ -273,7 +554,7 @@ function isActiveOrganisation(body: unknown, organisationId: string): boolean {
 async function createOrganisation(
   apiContext: APIRequestContext,
   payload: DynamicOrganisationPayload
-): Promise<{ organisationId: string; status: number }> {
+): Promise<CreatedOrganisation> {
   const endpoint = '/refdata/internal/v1/organisations';
   const response = await apiContext.post(endpoint, {
     data: payload,
@@ -281,6 +562,16 @@ async function createOrganisation(
   });
   const body = await parseResponseBody(response);
   if (!response.ok()) {
+    if (isDuplicateSraCreateResponse(body, payload)) {
+      const existing = await findExistingOrganisation(apiContext, payload);
+      if (existing) {
+        return {
+          ...existing,
+          status: response.status(),
+          reusedExisting: true,
+        };
+      }
+    }
     throw new DynamicOrganisationProvisioningError('create', endpoint, response.status(), payload.name, body);
   }
   const organisationId = readOrganisationIdentifier(body);
@@ -288,6 +579,28 @@ async function createOrganisation(
     throw new DynamicOrganisationProvisioningError('create', endpoint, response.status(), payload.name, body);
   }
   return { organisationId, status: response.status() };
+}
+
+async function findExistingOrganisation(
+  apiContext: APIRequestContext,
+  payload: DynamicOrganisationPayload
+): Promise<{ organisationId: string; existingStatus?: OrganisationStatus } | undefined> {
+  for (const status of ['Active', 'Pending']) {
+    const endpoint = `/refdata/internal/v1/organisations?status=${status}`;
+    const response = await apiContext.get(endpoint, { failOnStatusCode: false });
+    if (!response.ok()) {
+      continue;
+    }
+    const body = await parseResponseBody(response);
+    const existing = findMatchingOrganisationEntry(body, payload);
+    if (existing?.organisationId) {
+      return {
+        organisationId: existing.organisationId,
+        existingStatus: existing.status,
+      };
+    }
+  }
+  return undefined;
 }
 
 async function approveOrganisation(
@@ -312,17 +625,22 @@ async function approveOrganisation(
 }
 
 async function createDefaultApproveOrgApiContext(baseURL: string): Promise<APIRequestContext> {
-  const storageState = firstNonEmpty(process.env.PW_APPROVE_ORG_API_STORAGE_STATE);
-  if (!storageState) {
-    throw new Error(
-      'PW_APPROVE_ORG_API_STORAGE_STATE is required when PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY uses approve-org-api. Capture an authenticated approve-org storage state for an approval-capable user before this flow runs.'
-    );
+  const storageStatePath = resolveApproveOrgStorageStatePath();
+  if (isApproveOrgStorageStateFresh(storageStatePath)) {
+    const existingContext = await createApproveOrgContextFromStorageState(baseURL, storageStatePath);
+    if (await isApproveOrgApiContextAuthenticated(existingContext)) {
+      return existingContext;
+    }
+    await existingContext.dispose();
   }
-  return request.newContext({
-    baseURL,
-    ignoreHTTPSErrors: true,
-    storageState,
-  });
+
+  const refreshedStorageStatePath = await captureApproveOrgStorageState(baseURL, storageStatePath);
+  const refreshedContext = await createApproveOrgContextFromStorageState(baseURL, refreshedStorageStatePath);
+  if (await isApproveOrgApiContextAuthenticated(refreshedContext)) {
+    return refreshedContext;
+  }
+  await refreshedContext.dispose();
+  throw new Error(`Captured approve-org storage state is not authenticated: ${refreshedStorageStatePath}`);
 }
 
 async function approveOrganisationViaApproveOrgApi(
@@ -357,12 +675,14 @@ async function approveOrganisationViaApproveOrgApi(
         responsePreview: readBody,
       });
     }
+    const xsrfHeaders = await getApproveOrgXsrfHeaders(apiContext);
     const approveResponse = await apiContext.put(approveEndpoint, {
       data: {
         ...organisation,
         organisationIdentifier: organisationId,
         status: 'ACTIVE',
       },
+      headers: xsrfHeaders,
       failOnStatusCode: false,
     });
     const approveBody = await parseResponseBody(approveResponse);
@@ -491,13 +811,10 @@ export async function createApprovedOrganisationFlow(
     const approveStartedAt = deps.now();
     let approved: Awaited<ReturnType<typeof approveOrganisationWithStrategy>>;
     try {
-      approved = await approveOrganisationWithStrategy(
-        apiContext,
-        deps,
-        created.organisationId,
-        pendingPayload,
-        approvalStrategy
-      );
+      approved =
+        created.reusedExisting && created.existingStatus === 'ACTIVE'
+          ? { status: 200, strategy: 'rd-professional-api' }
+          : await approveOrganisationWithStrategy(apiContext, deps, created.organisationId, pendingPayload, approvalStrategy);
       timings.push({
         stage: 'approve',
         elapsedMs: deps.now() - approveStartedAt,

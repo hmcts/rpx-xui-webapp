@@ -12,12 +12,22 @@ type ApiCall = {
   method: 'GET' | 'POST' | 'PUT';
   url: string;
   data?: unknown;
+  headers?: Record<string, string>;
 };
 
 type DynamicOrganisationEnvSnapshot = {
   PW_DYNAMIC_ORGANISATION_MODE?: string;
   PW_DYNAMIC_ORGANISATION_RUN_ID?: string;
   PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY?: string;
+  PW_APPROVE_ORG_API_STORAGE_STATE?: string;
+  APPROVE_ORG_ADMIN_USERNAME?: string;
+  APPROVE_ORG_ADMIN_PASSWORD?: string;
+  AO_ADMIN_USERNAME?: string;
+  AO_ADMIN_PASSWORD?: string;
+  TEST_EMAIL?: string;
+  TEST_PASSWORD?: string;
+  TEST_API_EMAIL_ADMIN?: string;
+  TEST_API_PASSWORD_ADMIN?: string;
 };
 
 function response(status: number, body: unknown) {
@@ -33,6 +43,15 @@ function snapshotDynamicOrganisationEnv(): DynamicOrganisationEnvSnapshot {
     PW_DYNAMIC_ORGANISATION_MODE: process.env.PW_DYNAMIC_ORGANISATION_MODE,
     PW_DYNAMIC_ORGANISATION_RUN_ID: process.env.PW_DYNAMIC_ORGANISATION_RUN_ID,
     PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY: process.env.PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY,
+    PW_APPROVE_ORG_API_STORAGE_STATE: process.env.PW_APPROVE_ORG_API_STORAGE_STATE,
+    APPROVE_ORG_ADMIN_USERNAME: process.env.APPROVE_ORG_ADMIN_USERNAME,
+    APPROVE_ORG_ADMIN_PASSWORD: process.env.APPROVE_ORG_ADMIN_PASSWORD,
+    AO_ADMIN_USERNAME: process.env.AO_ADMIN_USERNAME,
+    AO_ADMIN_PASSWORD: process.env.AO_ADMIN_PASSWORD,
+    TEST_EMAIL: process.env.TEST_EMAIL,
+    TEST_PASSWORD: process.env.TEST_PASSWORD,
+    TEST_API_EMAIL_ADMIN: process.env.TEST_API_EMAIL_ADMIN,
+    TEST_API_PASSWORD_ADMIN: process.env.TEST_API_PASSWORD_ADMIN,
   };
 }
 
@@ -188,14 +207,30 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
     const approveOrgApiContext = {
       get: async (url: string) => {
         approveOrgCalls.push({ method: 'GET', url });
+        if (url === '/api/environment') {
+          return {
+            ...response(200, { featureFlags: {} }),
+            url: () => 'https://administer-orgs.aat.platform.hmcts.net/api/environment',
+          };
+        }
         return response(200, {
           organisations: [{ organisationIdentifier: 'ORG-AUTO', name: 'PW Dynamic Org auto-approval' }],
         });
       },
-      put: async (url: string, options: { data?: unknown }) => {
-        approveOrgCalls.push({ method: 'PUT', url, data: options.data });
+      put: async (url: string, options: { data?: unknown; headers?: Record<string, string> }) => {
+        approveOrgCalls.push({ method: 'PUT', url, data: options.data, headers: options.headers });
         return response(200, { organisationIdentifier: 'ORG-AUTO', status: 'ACTIVE' });
       },
+      storageState: async () => ({
+        cookies: [
+          {
+            name: 'XSRF-TOKEN',
+            value: 'xsrf-token-for-put',
+            domain: 'administer-orgs.aat.platform.hmcts.net',
+          },
+        ],
+        origins: [],
+      }),
       dispose: async () => undefined,
     };
 
@@ -235,18 +270,157 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
     ]);
     expect(approveOrgCalls.map((call) => `${call.method} ${call.url}`)).toEqual([
       'GET /api/organisations?organisationId=ORG-AUTO&version=v1',
+      'GET /api/environment',
       'PUT /api/organisations/ORG-AUTO',
     ]);
-    expect(approveOrgCalls[1].data).toMatchObject({
+    expect(approveOrgCalls[2].headers).toEqual({ 'x-xsrf-token': 'xsrf-token-for-put' });
+    expect(approveOrgCalls[2].data).toMatchObject({
       organisationIdentifier: 'ORG-AUTO',
       name: 'PW Dynamic Org auto-approval',
       status: 'ACTIVE',
     });
-    expect(approveOrgCalls[1].data).not.toHaveProperty('organisations');
+    expect(approveOrgCalls[2].data).not.toHaveProperty('organisations');
     expect(result.timings).toMatchObject([
       { stage: 'create', status: 201 },
       { stage: 'approve', status: 200, strategy: 'approve-org-api' },
       { stage: 'poll-active', status: 200 },
+    ]);
+  });
+
+  test('recovers a pending organisation after a duplicate SRA create response', async () => {
+    const calls: ApiCall[] = [];
+    let approved = false;
+    const apiContext = {
+      post: async (url: string, options: { data?: unknown }) => {
+        calls.push({ method: 'POST', url, data: options.data });
+        return response(400, {
+          errorMessage: '6 : SRA_ID Invalid or already exists',
+          errorDescription: 'ERROR: duplicate key value violates unique constraint "sra_id_uq1"',
+        });
+      },
+      get: async (url: string) => {
+        calls.push({ method: 'GET', url });
+        if (url.includes('status=Active')) {
+          return response(
+            200,
+            approved
+              ? [
+                  {
+                    organisationIdentifier: 'ORG-PARTIAL',
+                    name: 'PW Dynamic Org partial-run',
+                    sraId: 'PWpartialrun',
+                    status: 'ACTIVE',
+                  },
+                ]
+              : []
+          );
+        }
+        return response(200, [
+          {
+            organisationIdentifier: 'ORG-PARTIAL',
+            name: 'PW Dynamic Org partial-run',
+            sraId: 'PWpartialrun',
+            status: 'PENDING',
+          },
+        ]);
+      },
+      put: async (url: string, options: { data?: unknown }) => {
+        calls.push({ method: 'PUT', url, data: options.data });
+        approved = true;
+        return response(200, { organisationIdentifier: 'ORG-PARTIAL', status: 'ACTIVE' });
+      },
+      dispose: async () => undefined,
+    };
+
+    const result = await organisationProvisioningTest.createApprovedOrganisationFlow(
+      {
+        runId: 'partial-run',
+        timeoutMs: 1_000,
+        pollIntervalMs: 1,
+      },
+      {
+        resolvePrerequisites: async () => ({
+          rdProfessionalApiPath: 'https://rd-professional-api.example.test',
+          headers: {},
+        }),
+        createApiContext: async () => apiContext as never,
+        now: () => Date.now(),
+        sleep: async () => undefined,
+      }
+    );
+
+    expect(result).toMatchObject({
+      organisationId: 'ORG-PARTIAL',
+      status: 'ACTIVE',
+      createStatus: 400,
+      approveStatus: 200,
+      pollAttempts: 1,
+    });
+    expect(calls.map((call) => `${call.method} ${call.url}`)).toEqual([
+      'POST /refdata/internal/v1/organisations',
+      'GET /refdata/internal/v1/organisations?status=Active',
+      'GET /refdata/internal/v1/organisations?status=Pending',
+      'PUT /refdata/internal/v1/organisations/ORG-PARTIAL',
+      'GET /refdata/internal/v1/organisations?status=Active',
+    ]);
+  });
+
+  test('reuses an active organisation after a duplicate SRA create response without re-approval', async () => {
+    const calls: ApiCall[] = [];
+    const apiContext = {
+      post: async (url: string, options: { data?: unknown }) => {
+        calls.push({ method: 'POST', url, data: options.data });
+        return response(400, {
+          errorMessage: '6 : SRA_ID Invalid or already exists',
+          errorDescription: 'ERROR: duplicate key value violates unique constraint "sra_id_uq1"',
+        });
+      },
+      get: async (url: string) => {
+        calls.push({ method: 'GET', url });
+        return response(200, [
+          {
+            organisationIdentifier: 'ORG-ACTIVE',
+            name: 'PW Dynamic Org active-run',
+            sraId: 'PWactiverun',
+            status: 'ACTIVE',
+          },
+        ]);
+      },
+      put: async (url: string, options: { data?: unknown }) => {
+        calls.push({ method: 'PUT', url, data: options.data });
+        return response(500, { message: 'should not approve active existing organisation' });
+      },
+      dispose: async () => undefined,
+    };
+
+    const result = await organisationProvisioningTest.createApprovedOrganisationFlow(
+      {
+        runId: 'active-run',
+        timeoutMs: 1_000,
+        pollIntervalMs: 1,
+      },
+      {
+        resolvePrerequisites: async () => ({
+          rdProfessionalApiPath: 'https://rd-professional-api.example.test',
+          headers: {},
+        }),
+        createApiContext: async () => apiContext as never,
+        now: () => Date.now(),
+        sleep: async () => undefined,
+      }
+    );
+
+    expect(result).toMatchObject({
+      organisationId: 'ORG-ACTIVE',
+      status: 'ACTIVE',
+      createStatus: 400,
+      approveStatus: 200,
+      pollAttempts: 1,
+    });
+    expect(calls.map((call) => `${call.method} ${call.url}`)).toEqual([
+      'POST /refdata/internal/v1/organisations',
+      'GET /refdata/internal/v1/organisations?status=Active',
+      'GET /refdata/internal/v1/organisations?status=Active',
     ]);
   });
 
@@ -268,9 +442,17 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
     }
   });
 
-  test('requires an approve-org storage state when approve-org approval strategy has no injected context', async () => {
-    const originalStorageState = process.env.PW_APPROVE_ORG_API_STORAGE_STATE;
-    delete process.env.PW_APPROVE_ORG_API_STORAGE_STATE;
+  test('requires approve-org storage state or admin credentials when approve-org approval strategy has no injected context', async () => {
+    const originalEnv = snapshotDynamicOrganisationEnv();
+    process.env.PW_APPROVE_ORG_API_STORAGE_STATE = '/tmp/non-existent-approve-org-api.storage.json';
+    delete process.env.APPROVE_ORG_ADMIN_USERNAME;
+    delete process.env.APPROVE_ORG_ADMIN_PASSWORD;
+    delete process.env.AO_ADMIN_USERNAME;
+    delete process.env.AO_ADMIN_PASSWORD;
+    delete process.env.TEST_EMAIL;
+    delete process.env.TEST_PASSWORD;
+    delete process.env.TEST_API_EMAIL_ADMIN;
+    delete process.env.TEST_API_PASSWORD_ADMIN;
     const apiContext = {
       post: async () => response(201, { organisationIdentifier: 'ORG-NO-STATE' }),
       dispose: async () => undefined,
@@ -305,15 +487,11 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
         ],
         responsePreview: {
           message:
-            'PW_APPROVE_ORG_API_STORAGE_STATE is required when PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY uses approve-org-api. Capture an authenticated approve-org storage state for an approval-capable user before this flow runs.',
+            'Approve-org API approval requires a fresh storage state or approval-capable credentials. Set PW_APPROVE_ORG_API_STORAGE_STATE to a valid authenticated storage state, or set APPROVE_ORG_ADMIN_USERNAME/APPROVE_ORG_ADMIN_PASSWORD (fallbacks: AO_ADMIN_USERNAME/AO_ADMIN_PASSWORD, TEST_EMAIL/TEST_PASSWORD, or TEST_API_EMAIL_ADMIN/TEST_API_PASSWORD_ADMIN).',
         },
       });
     } finally {
-      if (typeof originalStorageState === 'string') {
-        process.env.PW_APPROVE_ORG_API_STORAGE_STATE = originalStorageState;
-      } else {
-        delete process.env.PW_APPROVE_ORG_API_STORAGE_STATE;
-      }
+      restoreDynamicOrganisationEnv(originalEnv);
     }
   });
 

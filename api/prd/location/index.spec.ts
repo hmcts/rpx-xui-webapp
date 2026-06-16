@@ -56,7 +56,7 @@ describe('prd Locations', () => {
   });
 
   describe('getLocationById', () => {
-    it('should return a location based on epimms_id filtered by court type when service_id is not present', async () => {
+    it('should return a location based on epimms_id filtered by court type when service_code is not present', async () => {
       spy = sandbox.stub(http, GET).resolves(getLocationByIdRes);
       const req = mockReq({
         query: {
@@ -78,14 +78,14 @@ describe('prd Locations', () => {
       }
     });
 
-    it('should not filter by court type when service_id is present in the location response', async () => {
-      const locationsWithServiceId = mockLocations
+    it('should not filter by court type when service_code is present in the location response', async () => {
+      const locationsWithServiceCode = mockLocations
         .filter((location) => location.epimms_id === '2345')
         .map((location) => ({
           ...location,
-          service_id: 'ABA1',
+          service_code: 'ABA1',
         }));
-      spy = sandbox.stub(http, GET).resolves(mockRes({ status: 200, data: locationsWithServiceId }));
+      spy = sandbox.stub(http, GET).resolves(mockRes({ status: 200, data: locationsWithServiceCode }));
       const req = mockReq({
         query: {
           epimms_id: '2345',

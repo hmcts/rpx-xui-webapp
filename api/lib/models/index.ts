@@ -29,6 +29,7 @@ export interface EnhancedRequest extends express.Request {
   };
   body;
   headers;
+  params: Record<string, string>;
   session;
   url: string;
 }

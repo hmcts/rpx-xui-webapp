@@ -10,7 +10,17 @@ properties([
         [$class: 'GitHubPushTrigger']
     ]),
     parameters([
-        choice(name: 'ENVIRONMENT', choices: 'saat\nsandbox\nsprod', description: 'Environment where code should be build and deployed')
+        choice(name: 'ENVIRONMENT', choices: 'saat\nsandbox\nsprod', description: 'Environment where code should be build and deployed'),
+        booleanParam(
+            name: 'RUN_PLAYWRIGHT_A11Y',
+            defaultValue: false,
+            description: 'Manual-only: run the non-blocking Playwright axe accessibility pack.'
+        ),
+        booleanParam(
+            name: 'RUN_PLAYWRIGHT_WAVE_A11Y',
+            defaultValue: false,
+            description: 'Manual-only: run the non-blocking Playwright WAVE-like accessibility pack.'
+        )
     ])
 ])
 
@@ -42,6 +52,104 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
   ]
 }
 
+def ensureHtmlReportForPublishing = { String reportDir, String reportFile, String suiteName ->
+    withEnv([
+        "PW_ODHIN_ENSURE_REPORT_DIR=${reportDir}",
+        "PW_ODHIN_ENSURE_REPORT_FILE=${reportFile}",
+        "PW_ODHIN_ENSURE_SUITE_NAME=${suiteName}"
+    ]) {
+        sh '''
+            node scripts/ensure-odhin-report.js \
+              --report-dir "$PW_ODHIN_ENSURE_REPORT_DIR" \
+              --report-file "$PW_ODHIN_ENSURE_REPORT_FILE" \
+              --suite-name "$PW_ODHIN_ENSURE_SUITE_NAME"
+        '''
+    }
+}
+
+def publishPlaywrightReport = { String reportDir, String reportFile, String reportName, String artifacts ->
+    ensureHtmlReportForPublishing(reportDir, reportFile, reportName)
+    publishHTML([
+        allowMissing         : true,
+        alwaysLinkToLastBuild: true,
+        keepAll              : true,
+        reportDir            : reportDir,
+        reportFiles          : reportFile,
+        reportName           : reportName
+    ])
+    junit(allowEmptyResults: false, testResults: artifacts.replace('**', '**/*junit.xml'))
+    archiveArtifacts allowEmptyArchive: true, artifacts: artifacts
+}
+
+def runManualPlaywrightAccessibility = { String environmentName ->
+    if (!params.RUN_PLAYWRIGHT_A11Y && !params.RUN_PLAYWRIGHT_WAVE_A11Y) {
+        echo '[playwright-a11y] Manual accessibility packs disabled for this parameterized build.'
+        return
+    }
+
+    stage("${environmentName} Manual Playwright Accessibility") {
+        if (params.RUN_PLAYWRIGHT_A11Y) {
+            stage('Playwright Accessibility Tests') {
+                try {
+                    withEnv([
+                        "ORG_USER_ASSIGNMENT_MODE=external",
+                        "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
+                        "PW_A11Y_WORKERS=6",
+                        "FUNCTIONAL_TESTS_WORKERS=6",
+                        "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
+                        "PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-a11y/playwright-a11y-junit.xml"
+                    ]) {
+                        sh 'yarn test:a11y:playwright'
+                    }
+                } catch (Exception e) {
+                    echo "[playwright-a11y] Accessibility failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
+                } finally {
+                    try {
+                        publishPlaywrightReport(
+                            'functional-output/tests/playwright-a11y/odhin-report',
+                            'xui-playwright-a11y.html',
+                            "${environmentName} Playwright Accessibility",
+                            'functional-output/tests/playwright-a11y/**'
+                        )
+                    } catch (Exception publishException) {
+                        echo "[playwright-a11y] Report/evidence publish failed but is non-blocking: ${publishException.getClass().getName()}: ${publishException.getMessage()}"
+                    }
+                }
+            }
+        }
+
+        if (params.RUN_PLAYWRIGHT_WAVE_A11Y) {
+            stage('Playwright WAVE-like Accessibility Tests') {
+                try {
+                    withEnv([
+                        "ORG_USER_ASSIGNMENT_MODE=external",
+                        "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
+                        "PW_WAVE_A11Y_WORKERS=6",
+                        "FUNCTIONAL_TESTS_WORKERS=6",
+                        "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
+                        "PLAYWRIGHT_JUNIT_OUTPUT=functional-output/tests/playwright-wave-a11y/playwright-wave-a11y-junit.xml"
+                    ]) {
+                        sh 'yarn test:wave-a11y:playwright'
+                    }
+                } catch (Exception e) {
+                    echo "[playwright-wave-a11y] WAVE-like Accessibility failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
+                } finally {
+                    try {
+                        publishPlaywrightReport(
+                            'functional-output/tests/playwright-wave-a11y/odhin-report',
+                            'xui-playwright-wave-a11y.html',
+                            "${environmentName} Playwright WAVE-like Accessibility",
+                            'functional-output/tests/playwright-wave-a11y/**'
+                        )
+                    } catch (Exception publishException) {
+                        echo "[playwright-wave-a11y] Report/evidence publish failed but is non-blocking: ${publishException.getClass().getName()}: ${publishException.getMessage()}"
+                    }
+                }
+            }
+        }
+    }
+}
+
 withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox') {
   enableSlackNotifications(channel)
   enableDockerBuild()
@@ -51,6 +159,12 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
 
 
     after('checkout') {sh 'yarn cache clean'}
+    after('checkout') {
+        if (params.RUN_PLAYWRIGHT_A11Y || params.RUN_PLAYWRIGHT_WAVE_A11Y) {
+            sh 'yarn test:setup:playwright-install-chromium'
+            sh 'yarn test:setup:playwright-verify-chromium'
+        }
+    }
 
     after('build') {
         sh 'npm run build'
@@ -145,6 +259,7 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
             reportFiles          : 'index.html',
             reportName           : 'PREVIEW Functional Test'
         ])
+        runManualPlaywrightAccessibility('PREVIEW')
     }
 
     after('smoketest:aat') {
@@ -167,6 +282,7 @@ withParameterizedPipeline(type, product, component, params.ENVIRONMENT, 'sandbox
             reportFiles          : 'index.html',
             reportName           : 'AAT Functional Test'
         ])
+        runManualPlaywrightAccessibility('AAT')
     }
 
     after('smoketest:prod'){

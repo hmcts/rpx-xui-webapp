@@ -2,6 +2,8 @@ import { chromium, request, type APIRequestContext, type Browser, type Page } fr
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
+import { firstNonEmpty, resolveDynamicOrganisationRunId } from '../dynamicOrganisationRunId.js';
+
 type OrganisationStatus = 'PENDING' | 'ACTIVE';
 
 type DynamicOrganisationPayload = {
@@ -114,35 +116,12 @@ const DEFAULT_APPROVE_ORG_API_BASE_URL = 'https://administer-orgs.aat.platform.h
 const DEFAULT_APPROVE_ORG_SESSION_MAX_AGE_MS = 60 * 60_000;
 const APPROVE_ORG_AUTH_COOKIE_NAMES = new Set(['__auth__', 'Idam.Session', 'ao-webapp']);
 
-function firstNonEmpty(...values: Array<string | undefined>): string | undefined {
-  for (const value of values) {
-    const trimmed = value?.trim();
-    if (trimmed) return trimmed;
-  }
-  return undefined;
-}
-
 function sanitizeRunToken(value: string): string {
-  return value
-    .trim()
-    .replaceAll(/[^a-zA-Z0-9-]/g, '-')
-    .replaceAll(/-+/g, '-')
-    .replace(/^-|-$/g, '')
-    .slice(0, 32);
+  return resolveDynamicOrganisationRunId({ explicitRunId: value, maxLength: 32 });
 }
 
 function resolveRunId(options: DynamicOrganisationProvisioningOptions): string {
-  return sanitizeRunToken(
-    firstNonEmpty(
-      options.runId,
-      process.env.PW_DYNAMIC_ORGANISATION_RUN_ID,
-      process.env.GITHUB_RUN_ID,
-      process.env.BUILD_BUILDID,
-      process.env.BUILD_BUILDNUMBER,
-      process.env.CI_PIPELINE_ID,
-      'local'
-    ) ?? 'local'
-  );
+  return resolveDynamicOrganisationRunId({ explicitRunId: options.runId, maxLength: 32 });
 }
 
 function resolveOrganisationName(options: DynamicOrganisationProvisioningOptions, runId: string): string {
@@ -877,4 +856,6 @@ export const __test__ = {
   isActiveOrganisation,
   readOrganisationIdentifier,
   resolveApprovalStrategy,
+  resolveRunId,
+  sanitizeRunToken,
 };

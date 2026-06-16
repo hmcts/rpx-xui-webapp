@@ -8,6 +8,7 @@ import type {
   DynamicOrganisationProvisioningResult,
 } from '../professional-user/organisationProvisioning.js';
 import type { ProfessionalUserUtils } from '../professional-user.utils';
+import { firstNonEmpty, resolveDynamicOrganisationRunId } from '../dynamicOrganisationRunId.js';
 
 export type DynamicOrganisationMode = 'dynamic';
 
@@ -59,14 +60,6 @@ type DynamicOrganisationResolverDeps = {
 const DEFAULT_LOCK_TIMEOUT_MS = 60_000;
 const DEFAULT_LOCK_POLL_INTERVAL_MS = 250;
 
-function firstNonEmpty(...values: Array<string | undefined>): string | undefined {
-  for (const value of values) {
-    const trimmed = value?.trim();
-    if (trimmed) return trimmed;
-  }
-  return undefined;
-}
-
 function resolveDynamicOrganisationMode(): 'dynamic' {
   const mode = firstNonEmpty(process.env.PW_DYNAMIC_ORGANISATION_MODE)?.toLowerCase();
   if (!mode || mode === 'dynamic') {
@@ -78,28 +71,11 @@ function resolveDynamicOrganisationMode(): 'dynamic' {
 }
 
 function sanitizeCacheKey(value: string): string {
-  return (
-    value
-      .trim()
-      .replaceAll(/[^a-zA-Z0-9_.-]/g, '-')
-      .replaceAll(/-+/g, '-')
-      .replace(/^-|-$/g, '')
-      .slice(0, 80) || 'local'
-  );
+  return resolveDynamicOrganisationRunId({ explicitRunId: value, maxLength: 80 });
 }
 
 function resolveDynamicOrganisationCacheKey(): string {
-  return sanitizeCacheKey(
-    firstNonEmpty(
-      process.env.PW_DYNAMIC_ORGANISATION_RUN_ID,
-      process.env.GITHUB_RUN_ID,
-      process.env.BUILD_BUILDID,
-      process.env.BUILD_BUILDNUMBER,
-      process.env.CI_PIPELINE_ID,
-      process.env.PW_TEST_RUN_ID,
-      'local'
-    ) ?? 'local'
-  );
+  return resolveDynamicOrganisationRunId({ maxLength: 80 });
 }
 
 function resolveCacheDir(): string {
@@ -292,5 +268,6 @@ export async function resolveDynamicOrganisationId(
 export const __test__ = {
   resolveDynamicOrganisationId,
   resolveDynamicOrganisationMode,
+  resolveDynamicOrganisationCacheKey,
   sanitizeCacheKey,
 };

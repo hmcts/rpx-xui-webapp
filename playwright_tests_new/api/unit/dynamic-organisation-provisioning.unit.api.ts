@@ -20,6 +20,22 @@ type DynamicOrganisationEnvSnapshot = {
   PW_DYNAMIC_ORGANISATION_RUN_ID?: string;
   PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY?: string;
   PW_APPROVE_ORG_API_STORAGE_STATE?: string;
+  GITHUB_RUN_ID?: string;
+  BUILD_TAG?: string;
+  JOB_NAME?: string;
+  JOB_BASE_NAME?: string;
+  BUILD_NUMBER?: string;
+  BUILD_ID?: string;
+  BUILD_BUILDID?: string;
+  BUILD_BUILDNUMBER?: string;
+  CI_PIPELINE_ID?: string;
+  PW_TEST_RUN_ID?: string;
+  CI?: string;
+  JENKINS_URL?: string;
+  BUILD_URL?: string;
+  GITHUB_ACTIONS?: string;
+  TF_BUILD?: string;
+  GITLAB_CI?: string;
   APPROVE_ORG_ADMIN_USERNAME?: string;
   APPROVE_ORG_ADMIN_PASSWORD?: string;
   AO_ADMIN_USERNAME?: string;
@@ -44,6 +60,22 @@ function snapshotDynamicOrganisationEnv(): DynamicOrganisationEnvSnapshot {
     PW_DYNAMIC_ORGANISATION_RUN_ID: process.env.PW_DYNAMIC_ORGANISATION_RUN_ID,
     PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY: process.env.PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY,
     PW_APPROVE_ORG_API_STORAGE_STATE: process.env.PW_APPROVE_ORG_API_STORAGE_STATE,
+    GITHUB_RUN_ID: process.env.GITHUB_RUN_ID,
+    BUILD_TAG: process.env.BUILD_TAG,
+    JOB_NAME: process.env.JOB_NAME,
+    JOB_BASE_NAME: process.env.JOB_BASE_NAME,
+    BUILD_NUMBER: process.env.BUILD_NUMBER,
+    BUILD_ID: process.env.BUILD_ID,
+    BUILD_BUILDID: process.env.BUILD_BUILDID,
+    BUILD_BUILDNUMBER: process.env.BUILD_BUILDNUMBER,
+    CI_PIPELINE_ID: process.env.CI_PIPELINE_ID,
+    PW_TEST_RUN_ID: process.env.PW_TEST_RUN_ID,
+    CI: process.env.CI,
+    JENKINS_URL: process.env.JENKINS_URL,
+    BUILD_URL: process.env.BUILD_URL,
+    GITHUB_ACTIONS: process.env.GITHUB_ACTIONS,
+    TF_BUILD: process.env.TF_BUILD,
+    GITLAB_CI: process.env.GITLAB_CI,
     APPROVE_ORG_ADMIN_USERNAME: process.env.APPROVE_ORG_ADMIN_USERNAME,
     APPROVE_ORG_ADMIN_PASSWORD: process.env.APPROVE_ORG_ADMIN_PASSWORD,
     AO_ADMIN_USERNAME: process.env.AO_ADMIN_USERNAME,
@@ -62,6 +94,30 @@ function restoreDynamicOrganisationEnv(snapshot: DynamicOrganisationEnvSnapshot)
     } else {
       delete process.env[key];
     }
+  }
+}
+
+function clearDynamicOrganisationRunEnv(): void {
+  for (const key of [
+    'PW_DYNAMIC_ORGANISATION_RUN_ID',
+    'GITHUB_RUN_ID',
+    'BUILD_TAG',
+    'JOB_NAME',
+    'JOB_BASE_NAME',
+    'BUILD_NUMBER',
+    'BUILD_ID',
+    'BUILD_BUILDID',
+    'BUILD_BUILDNUMBER',
+    'CI_PIPELINE_ID',
+    'PW_TEST_RUN_ID',
+    'CI',
+    'JENKINS_URL',
+    'BUILD_URL',
+    'GITHUB_ACTIONS',
+    'TF_BUILD',
+    'GITLAB_CI',
+  ]) {
+    delete process.env[key];
   }
 }
 
@@ -583,6 +639,7 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
   test('resolver creates a dynamic organisation by default without a static organisation id', async () => {
     const originalEnv = snapshotDynamicOrganisationEnv();
     delete process.env.PW_DYNAMIC_ORGANISATION_MODE;
+    clearDynamicOrganisationRunEnv();
     let createCount = 0;
 
     try {
@@ -618,6 +675,100 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
         reusedFromCache: false,
       });
       expect(createCount).toBe(1);
+    } finally {
+      restoreDynamicOrganisationEnv(originalEnv);
+    }
+  });
+
+  test('resolver uses standard Jenkins build identity before falling back to local', async () => {
+    const originalEnv = snapshotDynamicOrganisationEnv();
+    delete process.env.PW_DYNAMIC_ORGANISATION_MODE;
+    clearDynamicOrganisationRunEnv();
+    process.env.JENKINS_URL = 'https://build.hmcts.example.test';
+    process.env.BUILD_TAG = 'jenkins-rpx-xui-webapp-5217-42';
+    process.env.JOB_NAME = 'rpx-xui-webapp/PR-5217';
+    process.env.BUILD_NUMBER = '42';
+
+    try {
+      expect(organisationResolverTest.resolveDynamicOrganisationCacheKey()).toBe('jenkins-rpx-xui-webapp-5217-42');
+      expect(organisationProvisioningTest.resolveRunId({})).toBe('jenkins-rpx-xui-webapp-5217-42');
+    } finally {
+      restoreDynamicOrganisationEnv(originalEnv);
+    }
+  });
+
+  test('resolver composes Jenkins job and build number when BUILD_TAG is unavailable', async () => {
+    const originalEnv = snapshotDynamicOrganisationEnv();
+    delete process.env.PW_DYNAMIC_ORGANISATION_MODE;
+    clearDynamicOrganisationRunEnv();
+    process.env.JENKINS_URL = 'https://build.hmcts.example.test';
+    process.env.JOB_NAME = 'rpx-xui-webapp/PR-5217';
+    process.env.BUILD_NUMBER = '43';
+
+    try {
+      expect(organisationResolverTest.resolveDynamicOrganisationCacheKey()).toBe('rpx-xui-webapp-PR-5217-43');
+      expect(organisationProvisioningTest.resolveRunId({})).toBe('rpx-xui-webapp-PR-5217-43');
+    } finally {
+      restoreDynamicOrganisationEnv(originalEnv);
+    }
+  });
+
+  test('resolver fails clearly in CI when no unique dynamic organisation run id is available', async () => {
+    const originalEnv = snapshotDynamicOrganisationEnv();
+    delete process.env.PW_DYNAMIC_ORGANISATION_MODE;
+    clearDynamicOrganisationRunEnv();
+    process.env.CI = 'true';
+
+    try {
+      expect(() => organisationResolverTest.resolveDynamicOrganisationCacheKey()).toThrow(/requires a unique run id in CI/);
+      expect(() => organisationProvisioningTest.resolveRunId({})).toThrow(/requires a unique run id in CI/);
+    } finally {
+      restoreDynamicOrganisationEnv(originalEnv);
+    }
+  });
+
+  test('resolver supports the documented CI fallback chain without sharing local cache keys', async () => {
+    const originalEnv = snapshotDynamicOrganisationEnv();
+    delete process.env.PW_DYNAMIC_ORGANISATION_MODE;
+
+    const cases: Array<{ name: string; env: Record<string, string>; expected: string }> = [
+      {
+        name: 'GitHub run id',
+        env: { CI: 'true', GITHUB_RUN_ID: 'github run 987' },
+        expected: 'github-run-987',
+      },
+      {
+        name: 'Jenkins build id',
+        env: { JENKINS_URL: 'https://build.hmcts.example.test', BUILD_ID: 'jenkins-build-44' },
+        expected: 'jenkins-build-44',
+      },
+      {
+        name: 'Azure build id',
+        env: { TF_BUILD: 'True', BUILD_BUILDID: 'azure build 555' },
+        expected: 'azure-build-555',
+      },
+      {
+        name: 'GitLab pipeline id',
+        env: { GITLAB_CI: 'true', CI_PIPELINE_ID: 'pipeline 666' },
+        expected: 'pipeline-666',
+      },
+      {
+        name: 'Playwright test run id',
+        env: { CI: 'true', PW_TEST_RUN_ID: 'playwright run 777' },
+        expected: 'playwright-run-777',
+      },
+    ];
+
+    try {
+      for (const scenario of cases) {
+        clearDynamicOrganisationRunEnv();
+        for (const [key, value] of Object.entries(scenario.env)) {
+          process.env[key] = value;
+        }
+
+        expect.soft(organisationResolverTest.resolveDynamicOrganisationCacheKey(), scenario.name).toBe(scenario.expected);
+        expect.soft(organisationProvisioningTest.resolveRunId({}), scenario.name).toBe(scenario.expected);
+      }
     } finally {
       restoreDynamicOrganisationEnv(originalEnv);
     }

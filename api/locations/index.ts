@@ -50,8 +50,8 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
     const headers = setHeaders(req);
     const response: AxiosResponse<any> = await http.get(markupPath, { headers });
     const containsServiceCode = response.data.some((item) => Object.prototype.hasOwnProperty.call(item, 'service_code'));
-    trackTrace(`POFCC-138 - containse service id new api -->: ${containsServiceCode}`, { functionCall: 'getLocations' });
-    logger.info(`POFCC-138 - containse service id new api -->: ${containsServiceCode}`);
+    trackTrace(`POFCC-138 - containse service code new api -->: ${containsServiceCode}`, { functionCall: 'getLocations' });
+    logger.info(`POFCC-138 - containse service code new api -->: ${containsServiceCode}`);
     let results: LocationModel[] = response.data;
     if (locationType === LocationTypeEnum.HEARING) {
       results = results.filter((location) => location.is_hearing_location === 'Y');
@@ -66,7 +66,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
       const regionIds = getRegionIdsFromLocationList(userLocation.locations);
       // when we are trying to filter out locations when booking location is present - my work
       if (containsServiceCode) {
-        results = filterOutResultsWhenServiceIdPresent(results, locationIds, regionIds);
+        results = filterOutResultsWhenServiceCodePresent(results, locationIds, regionIds);
       } else {
         results = filterOutResults(results, locationIds, regionIds, courtTypes);
       }
@@ -103,15 +103,15 @@ export function filterOutResults(
   );
 }
 
-export function filterOutResultsWhenServiceIdPresent(
+export function filterOutResultsWhenServiceCodePresent(
   locations: LocationModel[],
   locationIds: string[],
   regions: string[]
 ): LocationModel[] {
-  trackTrace(`POFCC-138 - in new filter method filterOutResultsWhenServiceIdPresent`, {
+  trackTrace(`POFCC-138 - in new filter method filterOutResultsWhenServiceCodePresent`, {
     functionCall: 'filterOutResultsWhenServiceIdPresent',
   });
-  logger.info('POFCC-138 - in new filter method filterOutResultsWhenServiceIdPresent');
+  logger.info('POFCC-138 - in new filter method filterOutResultsWhenServiceCodePresent');
   return locations.filter((location) => locationIds.includes(location.epimms_id) || regions.includes(location.region_id));
 }
 

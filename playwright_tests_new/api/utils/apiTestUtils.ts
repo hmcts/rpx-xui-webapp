@@ -81,6 +81,31 @@ export async function withRetry<T extends { status: number }>(
   throw lastError ?? new Error('withRetry failed unexpectedly');
 }
 
+export type GuardedRequestOptions = {
+  failOnRequestError?: boolean;
+  onRequestTimeout?: (message: string) => void;
+  timeoutStatus?: number;
+};
+
+export async function guardedRequest<T extends { status: number; data?: unknown }>(
+  fn: () => Promise<T>,
+  options: GuardedRequestOptions = {}
+): Promise<T | { data: undefined; status: number }> {
+  try {
+    return await fn();
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (/timeout|timed out|ETIMEDOUT|ECONNRESET|socket hang up/i.test(message)) {
+      if (options.failOnRequestError === true) {
+        throw error;
+      }
+      options.onRequestTimeout?.(message);
+      return { data: undefined, status: options.timeoutStatus ?? 504 };
+    }
+    throw error;
+  }
+}
+
 type BuildXsrfDeps = {
   ensureStorageState?: typeof ensureStorageState;
   getStoredCookie?: typeof getStoredCookie;

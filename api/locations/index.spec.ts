@@ -214,12 +214,12 @@ describe('Fee Pay Judge', () => {
       }
     });
 
-    it('should use the service_id response path when the new API response includes service_id', async () => {
-      const locationsWithServiceId = cloneLocations().map((location) => ({
+    it('should use the service_code response path when the new API response includes service_code', async () => {
+      const locationsWithServiceCode = cloneLocations().map((location) => ({
         ...location,
-        service_id: 'BFA1',
+        service_code: 'BFA1',
       }));
-      spy = sandbox.stub(http, GET).resolves(mockHttpResponse(locationsWithServiceId));
+      spy = sandbox.stub(http, GET).resolves(mockHttpResponse(locationsWithServiceCode));
       const req = mockReq({
         body: {
           searchTerm: 'Gla',
@@ -241,12 +241,12 @@ describe('Fee Pay Judge', () => {
       }
     });
 
-    it('should not remove service_id results using the legacy court type cleanup', async () => {
+    it('should not remove service_code results using the legacy court type cleanup', async () => {
       const serviceFilteredLocations = [
         {
           ...mockLocations[2],
           court_type_id: '99',
-          service_id: 'ABA1',
+          service_code: 'ABA1',
         },
       ];
       spy = sandbox.stub(http, GET).resolves(mockHttpResponse(serviceFilteredLocations));

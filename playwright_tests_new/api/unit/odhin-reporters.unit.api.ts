@@ -44,10 +44,11 @@ test.describe('Odhin reporter unit tests', { tag: '@svc-internal' }, () => {
     FlakeGateReporter = (flakeGateModule.default ?? flakeGateModule) as typeof FlakeGateReporter;
   });
 
-  test('flake gate remains report-only by default with documented thresholds', () => {
+  test('flake gate remains report-only with documented thresholds', () => {
     const originalEnv = {
       PW_ENABLE_FLAKE_GATE: process.env.PW_ENABLE_FLAKE_GATE,
       PW_FLAKE_GATE_MODE: process.env.PW_FLAKE_GATE_MODE,
+      PW_FLAKE_GATE_REPORT_ONLY: process.env.PW_FLAKE_GATE_REPORT_ONLY,
       PW_MAX_FLAKY_RATE: process.env.PW_MAX_FLAKY_RATE,
       PW_MAX_FLAKY_TESTS: process.env.PW_MAX_FLAKY_TESTS,
     };
@@ -59,8 +60,9 @@ test.describe('Odhin reporter unit tests', { tag: '@svc-internal' }, () => {
     }) as typeof process.stdout.write;
 
     try {
-      delete process.env.PW_ENABLE_FLAKE_GATE;
-      delete process.env.PW_FLAKE_GATE_MODE;
+      process.env.PW_ENABLE_FLAKE_GATE = 'true';
+      process.env.PW_FLAKE_GATE_MODE = 'enforce';
+      process.env.PW_FLAKE_GATE_REPORT_ONLY = 'false';
       delete process.env.PW_MAX_FLAKY_RATE;
       delete process.env.PW_MAX_FLAKY_TESTS;
 
@@ -72,50 +74,31 @@ test.describe('Odhin reporter unit tests', { tag: '@svc-internal' }, () => {
         },
         { status: 'passed', retry: 1 }
       );
+      reporter.onTestEnd(
+        {
+          id: 'failed-test',
+          outcome: () => 'unexpected',
+        },
+        { status: 'failed', retry: 2 }
+      );
       const result = reporter.onEnd();
 
       expect(result).toBeUndefined();
       const output = writes.join('');
+      expect(output).toContain('[flake-gate] flaky=1');
+      expect(output).toContain('[flake-gate] passed-on-retry=1');
+      expect(output).toContain('[flake-gate] failed=1');
       expect(output).toContain('[flake-gate] thresholds: maxFlakyTests=20, maxFlakyRate=20.00%');
       expect(output).toContain('[flake-gate] mode=report-only');
-      expect(output).toContain('[flake-gate] result=passed');
+      expect(output).not.toContain('[flake-gate] result=');
     } finally {
-      process.env.PW_ENABLE_FLAKE_GATE = originalEnv.PW_ENABLE_FLAKE_GATE;
-      process.env.PW_FLAKE_GATE_MODE = originalEnv.PW_FLAKE_GATE_MODE;
-      process.env.PW_MAX_FLAKY_RATE = originalEnv.PW_MAX_FLAKY_RATE;
-      process.env.PW_MAX_FLAKY_TESTS = originalEnv.PW_MAX_FLAKY_TESTS;
-      process.stdout.write = originalWrite;
-    }
-  });
-
-  test('flake gate fails only when explicit enforcement exceeds configured threshold', () => {
-    const originalEnv = {
-      PW_ENABLE_FLAKE_GATE: process.env.PW_ENABLE_FLAKE_GATE,
-      PW_MAX_FLAKY_RATE: process.env.PW_MAX_FLAKY_RATE,
-      PW_MAX_FLAKY_TESTS: process.env.PW_MAX_FLAKY_TESTS,
-    };
-    const originalWrite = process.stdout.write.bind(process.stdout);
-    process.stdout.write = (() => true) as typeof process.stdout.write;
-
-    try {
-      process.env.PW_ENABLE_FLAKE_GATE = 'true';
-      process.env.PW_MAX_FLAKY_RATE = '0';
-      process.env.PW_MAX_FLAKY_TESTS = '0';
-
-      const reporter = new FlakeGateReporter();
-      reporter.onTestEnd(
-        {
-          id: 'flaky-test',
-          outcome: () => 'flaky',
-        },
-        { status: 'passed', retry: 1 }
-      );
-
-      expect(reporter.onEnd()).toEqual({ status: 'failed' });
-    } finally {
-      process.env.PW_ENABLE_FLAKE_GATE = originalEnv.PW_ENABLE_FLAKE_GATE;
-      process.env.PW_MAX_FLAKY_RATE = originalEnv.PW_MAX_FLAKY_RATE;
-      process.env.PW_MAX_FLAKY_TESTS = originalEnv.PW_MAX_FLAKY_TESTS;
+      for (const [key, value] of Object.entries(originalEnv)) {
+        if (value === undefined) {
+          delete process.env[key];
+        } else {
+          process.env[key] = value;
+        }
+      }
       process.stdout.write = originalWrite;
     }
   });

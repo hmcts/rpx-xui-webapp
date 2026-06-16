@@ -52,7 +52,9 @@ export async function getLocationById(req: EnhancedRequest, res: Response, next:
   delete req.query.serviceCode;
   const serviceCodeParam = serviceCode ? `&service_code=${serviceCode}` : '';
   const markupPath: string = `${url}/refdata/location/court-venues?epimms_id=${epimmsID}${serviceCodeParam}`;
-  trackTrace(`pofcc-137 - prd (hearings) getLocationById, markupPath used -->: ${markupPath}`, { functionCall: 'getLocationById' });
+  trackTrace(`pofcc-137 - prd (hearings) getLocationById, markupPath used -->: ${markupPath}`, {
+    functionCall: 'getLocationById',
+  });
   logger.info(`pofcc-137 - prd (hearings) getLocationById, markupPath used -->: ${markupPath}`);
   try {
     const { status, data }: { status: number; data: LocationModel[] } = await handleGet(markupPath, req);

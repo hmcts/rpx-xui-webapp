@@ -30,6 +30,15 @@ test.describe('PRL hearings case setup', () => {
     expect(__test__.validatePrlHearingsCaseSetupConfig(config)).toEqual([]);
   });
 
+  test('prefers the PRL hearings IDAM secret alias without overwriting the app IDAM secret', () => {
+    const config = __test__.resolvePrlHearingsCaseSetupConfig({
+      IDAM_SECRET: 'xui-webapp-secret',
+      PRL_HEARINGS_IDAM_SECRET: 'prl-cos-secret',
+    });
+
+    expect(config.idamSecret).toBe('prl-cos-secret');
+  });
+
   test('ignores unrelated caseworker credentials because the PRL setup flow does not use that actor', () => {
     const config = __test__.resolvePrlHearingsCaseSetupConfig({
       IDAM_TESTING_SUPPORT_URL: 'https://idam-testing-support-api.aat.platform.hmcts.net',

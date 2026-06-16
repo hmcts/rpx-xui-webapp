@@ -76,7 +76,7 @@ export function resolvePrlHearingsCaseSetupConfig(env: NodeJS.ProcessEnv = proce
     ccdDataStoreUrl: firstNonEmpty(env.CCD_DATA_STORE_URL),
     prlCosApiUrl: firstNonEmpty(env.PRL_COS_API_URL, env.PRL_HEARINGS_PRL_COS_API_URL, env.PRL_COS_API),
     ccdClientId: firstNonEmpty(env.IDAM_CLIENT_ID, env.CCD_DATA_STORE_CLIENT_ID),
-    idamSecret: firstNonEmpty(env.IDAM_SECRET),
+    idamSecret: firstNonEmpty(env.PRL_HEARINGS_IDAM_SECRET, env.IDAM_SECRET),
     redirectUri: firstNonEmpty(
       env.MANAGE_CASE_REDIRECT_URI,
       env.ORG_USER_ASSIGNMENT_REDIRECT_URI,

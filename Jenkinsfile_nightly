@@ -364,6 +364,18 @@ def secrets = [
     secret('e2e-restricted-case-file-view-v1-1-off-username', 'RESTRICTED_CASE_FILE_VIEW_V1_1_OFF_USERNAME'),
     secret('e2e-restricted-case-file-view-v1-1-off-password', 'RESTRICTED_CASE_FILE_VIEW_V1_1_OFF_PASSWORD'),
     secret('xui-playwright-global-excluded-tags', 'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS'),
+    secret('citizen-user', 'CITIZEN_USERNAME'),
+    secret('citizen-password', 'CITIZEN_PASSWORD'),
+    secret('court-admin-stoke-username', 'COURT_ADMIN_STOKE_USERNAME'),
+    secret('court-admin-stoke-password', 'COURT_ADMIN_STOKE_PASSWORD'),
+    secret('s2s-token-url', 'S2S_URL'),
+    secret('ccd-datastore-client-id', 'CCD_DATA_STORE_CLIENT_ID'),
+    secret('ccd-datastore-url', 'CCD_DATA_STORE_URL'),
+    secret('manage-case-redirect-uri', 'MANAGE_CASE_REDIRECT_URI'),
+    secret('idam-api-url', 'IDAM_API_URL'),
+    secret('idam-testing-support-url', 'IDAM_TESTING_SUPPORT_URL'),
+    secret('prl-cos-aat-url', 'PRL_COS_API_URL'),
+    secret('prl-cos-idam-client-secret', 'PRL_HEARINGS_IDAM_SECRET'),
   ],
 ]
 

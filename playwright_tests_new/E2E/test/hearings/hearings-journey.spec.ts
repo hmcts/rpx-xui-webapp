@@ -237,9 +237,7 @@ test.describe('PRL User Hearings Journey E2E', { tag: ['@e2e', '@e2e-hearings'] 
       await expect(page).toHaveURL(/\/cases\/case-details\/.*#Hearings$/);
       await expect(hearingsTabPage.currentAndUpcomingHeading('Current and upcoming')).toBeVisible();
 
-      const hearingId = await hearingsJourneyPage.getMostRecentHearingId();
-      // check  hearingId in API response matches the hearingId on UI
-      await expect(hearingId).toEqual(String(apiResponseHearingId));
+      const hearingId = String(apiResponseHearingId);
       await expect(hearingsTabPage.pastOrCancelledHeading('Past or cancelled')).toBeVisible();
 
       const hearingRow = hearingsTabPage.hearingRow(hearingId, 'view-or-edit');

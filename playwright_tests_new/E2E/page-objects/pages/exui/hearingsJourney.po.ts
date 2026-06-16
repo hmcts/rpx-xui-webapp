@@ -77,10 +77,6 @@ export class HearingsJourneyPage {
   readonly addLocationsButton = this.page.locator('.search-location').getByRole('link', { name: ' Add location ' });
   readonly selectedVenueTags = this.page.getByRole('link', { name: /^Click to remove:/ });
 
-  // hearingsTable
-  readonly hearingsTable = this.page.locator('exui-case-hearings-ce exui-case-hearings-list table.govuk-table');
-  readonly hearingsTableHeader = this.page.locator('th.govuk-table__header');
-
   // hearingConfirmationPAge
   readonly hearingPanel = this.page.locator('.govuk-panel.govuk-panel--confirmation');
 
@@ -244,31 +240,5 @@ export class HearingsJourneyPage {
 
   async clickLinkToViewHearings(): Promise<void> {
     await this.hearingsTabStatusLink().click();
-  }
-
-  /**
-   * Returns the Hearing Id of the most recently created hearing from the "Current and upcoming" section.
-   * The table is sorted with the latest hearing in the first data row, so we read the Hearing Id cell (2nd column)
-   * of the first row.
-   */
-
-  async getMostRecentHearingId(): Promise<string> {
-    // Scope  to the "Current and upcoming" table only
-    const currentTable: Locator = this.hearingsTable.filter({
-      has: this.hearingsTableHeader.filter({ hasText: 'Current and upcoming' }),
-    });
-
-    const firstDataRow = currentTable.locator('tbody tr.govuk-table__row').first();
-    await firstDataRow.waitFor({ state: 'visible' });
-
-    // Column layout: [Stage, Hearing Id, Hearing date, Status, Actions]
-    // Hearing Id is the 2nd cell (index 1).
-    const hearingIdCell = firstDataRow.locator('td').nth(1);
-    const hearingId = (await hearingIdCell.textContent())?.trim() ?? '';
-
-    if (!/^\d+$/.test(hearingId)) {
-      throw new Error(`Expected a numeric Hearing Id, got: "${hearingId}"`);
-    }
-    return hearingId;
   }
 }

@@ -70,7 +70,7 @@ test.describe('PRL hearings case setup', () => {
       'CCD_DATA_STORE_URL',
       'PRL_COS_API_URL',
       'CCD_DATA_STORE_CLIENT_ID',
-      'IDAM_SECRET',
+      'PRL_HEARINGS_IDAM_SECRET or IDAM_SECRET',
       'MANAGE_CASE_REDIRECT_URI or ORG_USER_ASSIGNMENT_REDIRECT_URI',
       'S2S_URL',
       'PRL_HEARINGS_SERVICE_MICROSERVICE',
@@ -81,11 +81,11 @@ test.describe('PRL hearings case setup', () => {
     ]);
   });
 
-  test('enables dynamic PRL setup in CI unless explicitly disabled', () => {
+  test('enables dynamic PRL setup only when explicitly enabled', () => {
     expect(__test__.isPrlHearingsCaseSetupEnabled({})).toBe(false);
-    expect(__test__.isPrlHearingsCaseSetupEnabled({ CI: 'true' })).toBe(true);
-    expect(__test__.isPrlHearingsCaseSetupEnabled({ JENKINS_URL: 'https://build.hmcts.net' })).toBe(true);
-    expect(__test__.isPrlHearingsCaseSetupEnabled({ BUILD_NUMBER: '5075' })).toBe(true);
+    expect(__test__.isPrlHearingsCaseSetupEnabled({ CI: 'true' })).toBe(false);
+    expect(__test__.isPrlHearingsCaseSetupEnabled({ JENKINS_URL: 'https://build.hmcts.net' })).toBe(false);
+    expect(__test__.isPrlHearingsCaseSetupEnabled({ BUILD_NUMBER: '5075' })).toBe(false);
     expect(__test__.isPrlHearingsCaseSetupEnabled({ PRL_HEARINGS_CASE_SETUP: 'false' })).toBe(false);
     expect(__test__.isPrlHearingsCaseSetupEnabled({ CI: 'true', PRL_HEARINGS_CASE_SETUP: 'false' })).toBe(false);
     expect(__test__.isPrlHearingsCaseSetupEnabled({ PRL_HEARINGS_CASE_SETUP: ' TRUE ' })).toBe(true);

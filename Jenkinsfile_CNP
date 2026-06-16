@@ -418,6 +418,11 @@ def secrets = [
     secret('xui-dynamic-manage-org-api-path', 'MANAGE_ORG_API_PATH'),
     secret('xui-dynamic-rd-professional-api-path', 'RD_PROFESSIONAL_API_PATH'),
     secret('xui-playwright-global-excluded-tags', 'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS'),
+  ],
+]
+
+def prlHearingsSecrets = [
+  'rpx-${env}': [
     secret('citizen-user', 'CITIZEN_USERNAME'),
     secret('citizen-password', 'CITIZEN_PASSWORD'),
     secret('court-admin-stoke-username', 'COURT_ADMIN_STOKE_USERNAME'),
@@ -440,6 +445,22 @@ static LinkedHashMap<String, Object> secret(String secretName, String envVar) {
       version: '',
       envVariable: envVar
     ]
+}
+
+static List<String> splitPlaywrightTags(String tags) {
+    (tags ?: '')
+        .split(/[,\s]+/)
+        .collect { it.trim() }
+        .findAll { it }
+}
+
+static boolean shouldEnablePrlHearingsSetup(String includeTags, String excludedTags) {
+    def included = splitPlaywrightTags(includeTags)
+    def excluded = splitPlaywrightTags(excludedTags)
+    if (excluded.contains('@e2e-hearings')) {
+        return false
+    }
+    included.isEmpty() || included.contains('@e2e') || included.contains('@e2e-hearings')
 }
 
 withPipeline(type, product, component) {
@@ -609,15 +630,23 @@ withPipeline(type, product, component) {
                         stage('Playwright E2E') {
                             try {
                                 recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'E2E', 'start')
+                                def enablePrlHearingsSetup = shouldEnablePrlHearingsSetup(
+                                    params.E2E_PW_INCLUDE_TAGS ?: '',
+                                    params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''
+                                )
                                 withEnv([
                                     "ORG_USER_ASSIGNMENT_MODE=external",
                                     "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                     "FUNCTIONAL_TESTS_WORKERS=6",
                                     "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
+                                    "PRL_HEARINGS_CASE_SETUP=${enablePrlHearingsSetup ? 'true' : 'false'}",
                                     "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
                                     "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                                     "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
                                 ]) {
+                                    if (enablePrlHearingsSetup) {
+                                        loadVaultSecrets(prlHearingsSecrets)
+                                    }
                                     yarnBuilder.yarn('test:playwrightE2E:raw')
                                 }
                             } catch (Exception e) {
@@ -740,15 +769,23 @@ withPipeline(type, product, component) {
                         stage('Playwright E2E') {
                             try {
                                 recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('aat'), 'E2E', 'start')
+                                def enablePrlHearingsSetup = shouldEnablePrlHearingsSetup(
+                                    params.E2E_PW_INCLUDE_TAGS ?: '',
+                                    params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''
+                                )
                                 withEnv([
                                     "ORG_USER_ASSIGNMENT_MODE=external",
                                     "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
                                     "FUNCTIONAL_TESTS_WORKERS=6",
                                     "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
+                                    "PRL_HEARINGS_CASE_SETUP=${enablePrlHearingsSetup ? 'true' : 'false'}",
                                     "E2E_PW_INCLUDE_TAGS=${params.E2E_PW_INCLUDE_TAGS ?: ''}",
                                     "E2E_PW_EXCLUDED_TAGS_OVERRIDE=${params.E2E_PW_EXCLUDED_TAGS_OVERRIDE ?: ''}",
                                     "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
                                 ]) {
+                                    if (enablePrlHearingsSetup) {
+                                        loadVaultSecrets(prlHearingsSecrets)
+                                    }
                                     yarnBuilder.yarn('test:playwrightE2E:raw')
                                 }
                             } catch (Exception e) {

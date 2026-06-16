@@ -5,6 +5,7 @@ import { version as appVersion } from './package.json';
 import {
   logResolvedTagFilters,
   parseNonNegativeInt,
+  resolveLocalWorktreeTestIgnorePatterns,
   resolveApiProjectWorkerCount,
   resolveDefaultReporter,
   resolveTagFilters,
@@ -143,6 +144,7 @@ const resolveE2eTagFilters = (env: EnvMap = process.env) =>
 const buildConfig = (env: EnvMap = process.env) => {
   const e2eEnv = withPlaywrightTagsAlias(env);
   const temporaryProbePattern = '**/_tmp_*.spec.ts';
+  const localWorktreeTestIgnorePatterns = resolveLocalWorktreeTestIgnorePatterns();
   const workerCount = resolveWorkerCount(env);
   const headlessMode = resolveHeadlessMode(env);
   const odhinOutputFolder = resolveOdhinOutputFolder(env);
@@ -163,7 +165,11 @@ const buildConfig = (env: EnvMap = process.env) => {
       'playwright_tests_new/E2E/**/*.spec.ts',
       'playwright_tests_new/integration/**/*.spec.ts',
     ],
-    testIgnore: [temporaryProbePattern, ...(includesWaveLikeA11y(e2eEnv) ? [] : [waveLikeA11ySpecPattern])],
+    testIgnore: [
+      temporaryProbePattern,
+      ...localWorktreeTestIgnorePatterns,
+      ...(includesWaveLikeA11y(e2eEnv) ? [] : [waveLikeA11ySpecPattern]),
+    ],
     fullyParallel: true,
     forbidOnly: !!env.CI,
     retries: 2,
@@ -199,6 +205,7 @@ const buildConfig = (env: EnvMap = process.env) => {
           'playwright_tests_new/api/**',
           'playwright_tests_new/E2E/test/smoke/smokeTest.spec.ts',
           temporaryProbePattern,
+          ...localWorktreeTestIgnorePatterns,
         ],
         use: {
           baseURL: resolveBaseUrl(env),

@@ -1,4 +1,3 @@
-import { NextFunction } from 'express';
 import { createGuardrails, generate, ScureBase32Plugin } from 'otplib';
 
 import { getConfigValue } from '../configuration';
@@ -39,6 +38,8 @@ import {
 
 // 10 minutes
 const TTL = 600;
+const WA_DEPENDENCY_UNAVAILABLE_CODE = 'WA_DEPENDENCY_UNAVAILABLE';
+const WA_DEPENDENCY_UNAVAILABLE_MESSAGE = 'Work Allocation dependency is temporarily unavailable';
 
 let timestamp: Date;
 let refreshRoles: boolean;
@@ -48,11 +49,71 @@ let initialAuthToken: string;
 let cachedUsers: StaffUserDetails[];
 let cachedUsersWithRoles: CachedCaseworker[];
 
+export type WADependencyUnavailableError = Error & {
+  status: number;
+  diagnostics: {
+    code: string;
+    message: string;
+    upstream: string;
+  };
+};
+
+export function createWADependencyUnavailableError(upstream: string): WADependencyUnavailableError {
+  const error = new Error(WA_DEPENDENCY_UNAVAILABLE_MESSAGE) as WADependencyUnavailableError;
+  error.name = 'WADependencyUnavailableError';
+  error.status = 503;
+  error.diagnostics = {
+    code: WA_DEPENDENCY_UNAVAILABLE_CODE,
+    message: WA_DEPENDENCY_UNAVAILABLE_MESSAGE,
+    upstream,
+  };
+  return error;
+}
+
+export function isWADependencyUnavailableError(error: unknown): error is WADependencyUnavailableError {
+  const dependencyError = error as Partial<WADependencyUnavailableError>;
+  return dependencyError?.status === 503 && dependencyError?.diagnostics?.code === WA_DEPENDENCY_UNAVAILABLE_CODE;
+}
+
+function isKnownDependencyFailure(error: unknown): boolean {
+  if (isWADependencyUnavailableError(error)) {
+    return true;
+  }
+  if (!error || typeof error !== 'object') {
+    return false;
+  }
+
+  const dependencyError = error as {
+    code?: string;
+    isAxiosError?: boolean;
+    request?: unknown;
+    response?: { status?: number };
+  };
+  const dependencyErrorCodes = ['ECONNABORTED', 'ECONNRESET', 'ENOTFOUND', 'ECONNREFUSED', 'ETIMEDOUT'];
+
+  return Boolean(
+    dependencyError.isAxiosError ||
+    dependencyError.response?.status ||
+    dependencyError.request ||
+    (dependencyError.code && dependencyErrorCodes.includes(dependencyError.code))
+  );
+}
+
+function handleCacheRefreshError<T>(error: unknown, cachedFallback: T[] | undefined, upstream: string): T[] {
+  if (isKnownDependencyFailure(error)) {
+    if (cachedFallback?.length > 0) {
+      return cachedFallback;
+    }
+    throw createWADependencyUnavailableError(upstream);
+  }
+  throw error;
+}
+
 function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export async function fetchUserData(req: EnhancedRequest, next: NextFunction): Promise<StaffUserDetails[]> {
+export async function fetchUserData(req: EnhancedRequest): Promise<StaffUserDetails[]> {
   try {
     // cache needs refreshing if TTl expired or cache empty
     const shouldRefreshCache = hasTTLExpired() || !cachedUsers || cachedUsers.length === 0;
@@ -66,10 +127,7 @@ export async function fetchUserData(req: EnhancedRequest, next: NextFunction): P
     // always return cached users (even if error)
     return cachedUsers;
   } catch (error) {
-    if (cachedUsers) {
-      return cachedUsers;
-    }
-    next(error);
+    return handleCacheRefreshError(error, cachedUsers, 'rd-caseworker-ref-api');
   }
 }
 
@@ -94,8 +152,7 @@ export async function fetchNewUserData(): Promise<StaffUserDetails[]> {
 
 export async function fetchRoleAssignments(
   cachedUserData: StaffUserDetails[],
-  req: EnhancedRequest,
-  next: NextFunction
+  req: EnhancedRequest
 ): Promise<CachedCaseworker[]> {
   // note: this has been done to cache role categories
   // it is separate from the above as above caching will be done by backend
@@ -105,12 +162,10 @@ export async function fetchRoleAssignments(
       // cachedUsersWithRoles to ensure rerun if user restarts request early
       cachedUsersWithRoles = await getOrRefreshCachedUsersWithRoles(cachedUserData, req);
     }
-    return FullUserDetailCache.getAllUserDetails();
+    return FullUserDetailCache.getAllUserDetails() || [];
   } catch (error) {
-    if (FullUserDetailCache.getAllUserDetails()) {
-      return FullUserDetailCache.getAllUserDetails();
-    }
-    next(error);
+    const cachedUserDetails = FullUserDetailCache.getAllUserDetails();
+    return handleCacheRefreshError(error, cachedUserDetails, 'am-role-assignment-service');
   }
 }
 

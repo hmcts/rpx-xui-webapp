@@ -59,13 +59,13 @@ export async function getLocationById(req: EnhancedRequest, res: Response, next:
   try {
     const { status, data }: { status: number; data: LocationModel[] } = await handleGet(markupPath, req);
 
-    const containsServiceID = data.some((item) => Object.prototype.hasOwnProperty.call(item, 'service_id'));
-    trackTrace(`pofcc-137 - new api called, containsServiceID -->: ${containsServiceID}`, {
+    const containsServiceCode = data.some((item) => Object.prototype.hasOwnProperty.call(item, 'service_code'));
+    trackTrace(`pofcc-137 - new api called, containsServiceCode -->: ${containsServiceCode}`, {
       functionCall: 'getLocationById',
     });
-    logger.info(`pofcc-137 - new api called, containsServiceID -->: ${containsServiceID}`);
+    logger.info(`pofcc-137 - new api called, containsServiceCode -->: ${containsServiceCode}`);
     const courtLocations =
-      serviceCode && !containsServiceID ? getLocationsByCourtType(data, getCourtTypeIdsByServices([serviceCode])) : data;
+      serviceCode && !containsServiceCode ? getLocationsByCourtType(data, getCourtTypeIdsByServices([serviceCode])) : data;
 
     const identicalLocationByEpimmsId = getIdenticalLocationByEpimmsId(courtLocations);
     res.status(status).send(identicalLocationByEpimmsId);

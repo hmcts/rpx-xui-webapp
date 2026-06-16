@@ -14441,26 +14441,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"govuk-elements-sass@npm:^3.1.3":
-  version: 3.1.3
-  resolution: "govuk-elements-sass@npm:3.1.3"
-  dependencies:
-    govuk_frontend_toolkit: "npm:^7.1.0"
-  checksum: 10/eb18df760b16f4af404148ed58be423e89288e9f96caa236014a296d55b132078a669504acc997060b30964e37ed37dfb1fd7cb0b3f622cb45059433a611e576
-  languageName: node
-  linkType: hard
-
 "govuk-frontend@npm:5.13.0":
   version: 5.13.0
   resolution: "govuk-frontend@npm:5.13.0"
   checksum: 10/6eca01260e4eb8740c805c58a7bac034041e0190226c7ef200e49a715f630f304a5816dfea3c0c6b0cfabe30995b05b024df2824546e8dd00066059c0f8d1bdb
-  languageName: node
-  linkType: hard
-
-"govuk_frontend_toolkit@npm:^7.1.0":
-  version: 7.6.0
-  resolution: "govuk_frontend_toolkit@npm:7.6.0"
-  checksum: 10/8cf196a5138a66a21c00e7c5743b0338bfbaa0a3a14fd23ef0b5f2a9a9356e28a70eabd677506bf1371a883ab68922a390ad90f1b91747559fe8e8ff065f5e66
   languageName: node
   linkType: hard
 
@@ -20607,7 +20591,6 @@ __metadata:
     get-port: "npm:^7.0.0"
     git-rev-sync: "npm:^3.0.2"
     global-agent: "npm:^4.1.3"
-    govuk-elements-sass: "npm:^3.1.3"
     govuk-frontend: "npm:5.13.0"
     govuk_frontend_toolkit: "npm:^9.0.0"
     helmet: "npm:^7.2.0"

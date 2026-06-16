@@ -32,7 +32,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   const userLocations = req.body.userLocations ? req.body.userLocations : [];
   // stops locations from being gathered if they are base locations passed in without relevant services
   if ((!serviceIds || serviceIds.length === 0) && userLocations) {
-    res.status(200).send([]);
+    return res.status(200).send([]);
   }
   if (typeof serviceIds === 'string') {
     serviceIds = serviceIds.split(',');
@@ -93,7 +93,7 @@ export async function getLocationsById(req: EnhancedRequest, res: Response, next
   logger.info(`pofcc-137 - getLocationById`);
   try {
     const locationModels = [];
-    let responseStatus;
+    let responseStatus = 200;
     for (const location of locations) {
       const id = location.locationId;
       const basePath = getConfigValue(SERVICES_LOCATION_API_PATH);
@@ -108,7 +108,7 @@ export async function getLocationsById(req: EnhancedRequest, res: Response, next
       locationModels.push(mappedLocationModel);
       responseStatus = response.status;
     }
-    res.send(locationModels).status(responseStatus);
+    res.status(responseStatus).send(locationModels);
   } catch (error) {
     next(error);
   }

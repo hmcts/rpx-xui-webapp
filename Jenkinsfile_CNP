@@ -579,7 +579,7 @@ withPipeline(type, product, component) {
             try {
                 recordPlaywrightLoadEvent(previewLoadProfileEvents, 'PREVIEW functional tests', 'start')
                 // Keep suites parallel for fast feedback, but let sibling suites publish reports when one branch fails.
-                parallel(
+                def previewFunctionalSuites = [
                     failFast: false,
                     api: {
                         stage('API Tests') {
@@ -655,74 +655,78 @@ withPipeline(type, product, component) {
                                 ])
                             }
                         }
-                    },
-                    playwrightA11y: {
+                    }
+                ]
+
+                if (params.RUN_PLAYWRIGHT_A11Y) {
+                    previewFunctionalSuites.playwrightA11y = {
                         stage('Playwright Accessibility Tests') {
-                            if (!params.RUN_PLAYWRIGHT_A11Y) {
-                                echo '[playwright-a11y] Skipping on CNP by default. Set RUN_PLAYWRIGHT_A11Y=true on a manual parameterized build to run this pack.'
-                            } else {
-                                try {
-                                    recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'A11y', 'start')
-                                    withEnv([
-                                        "ORG_USER_ASSIGNMENT_MODE=external",
-                                        "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                                        "PW_A11Y_WORKERS=6",
-                                        "FUNCTIONAL_TESTS_WORKERS=6",
-                                        "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
-                                        "PLAYWRIGHT_SKIP_INSTALL=true",
-                                        "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
-                                    ]) {
-                                        yarnBuilder.yarn('test:a11y:playwright')
-                                    }
-                                    assertHtmlReportExists(
-                                        playwrightA11yReportDir,
-                                        playwrightA11yReportFile
-                                    )
-                                } catch (Exception e) {
-                                    echo "[parallel-report-gathering] Playwright Accessibility failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
-                                } finally {
-                                    recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'A11y', 'finish')
-                                    publishPlaywrightA11yReport('PREVIEW Playwright Accessibility')
+                            try {
+                                recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'A11y', 'start')
+                                withEnv([
+                                    "ORG_USER_ASSIGNMENT_MODE=external",
+                                    "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
+                                    "PW_A11Y_WORKERS=6",
+                                    "FUNCTIONAL_TESTS_WORKERS=6",
+                                    "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
+                                    "PLAYWRIGHT_SKIP_INSTALL=true",
+                                    "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
+                                ]) {
+                                    yarnBuilder.yarn('test:a11y:playwright')
                                 }
+                                assertHtmlReportExists(
+                                    playwrightA11yReportDir,
+                                    playwrightA11yReportFile
+                                )
+                            } catch (Exception e) {
+                                echo "[parallel-report-gathering] Playwright Accessibility failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
+                            } finally {
+                                recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'A11y', 'finish')
+                                publishPlaywrightA11yReport('PREVIEW Playwright Accessibility')
                             }
                         }
-                    },
-                    playwrightWaveA11y: {
+                    }
+                } else {
+                    echo '[playwright-a11y] CNP stage omitted by default. Set RUN_PLAYWRIGHT_A11Y=true on a manual build to include this pack.'
+                }
+
+                if (params.RUN_PLAYWRIGHT_WAVE_A11Y) {
+                    previewFunctionalSuites.playwrightWaveA11y = {
                         stage('Playwright WAVE-like Accessibility Tests') {
-                            if (!params.RUN_PLAYWRIGHT_WAVE_A11Y) {
-                                echo '[playwright-wave-a11y] Skipping on CNP by default. Set RUN_PLAYWRIGHT_WAVE_A11Y=true on a manual parameterized build to run this pack.'
-                            } else {
+                            try {
+                                recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'WAVE-like A11y', 'start')
+                                withEnv([
+                                    "ORG_USER_ASSIGNMENT_MODE=external",
+                                    "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
+                                    "PW_WAVE_A11Y_WORKERS=6",
+                                    "FUNCTIONAL_TESTS_WORKERS=6",
+                                    "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
+                                    "PLAYWRIGHT_SKIP_INSTALL=true",
+                                    "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
+                                ]) {
+                                    yarnBuilder.yarn('test:wave-a11y:playwright')
+                                }
+                                assertHtmlReportExists(
+                                    playwrightWaveA11yReportDir,
+                                    playwrightWaveA11yReportFile
+                                )
+                            } catch (Exception e) {
+                                echo "[parallel-report-gathering] Playwright WAVE-like Accessibility failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
+                            } finally {
+                                recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'WAVE-like A11y', 'finish')
                                 try {
-                                    recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'WAVE-like A11y', 'start')
-                                    withEnv([
-                                        "ORG_USER_ASSIGNMENT_MODE=external",
-                                        "ORG_USER_ASSIGNMENT_MODE_ORDER=external,internal",
-                                        "PW_WAVE_A11Y_WORKERS=6",
-                                        "FUNCTIONAL_TESTS_WORKERS=6",
-                                        "PW_SESSION_CAPTURE_FAILURE_TTL_MS=0",
-                                        "PLAYWRIGHT_SKIP_INSTALL=true",
-                                        "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
-                                    ]) {
-                                        yarnBuilder.yarn('test:wave-a11y:playwright')
-                                    }
-                                    assertHtmlReportExists(
-                                        playwrightWaveA11yReportDir,
-                                        playwrightWaveA11yReportFile
-                                    )
-                                } catch (Exception e) {
-                                    echo "[parallel-report-gathering] Playwright WAVE-like Accessibility failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
-                                } finally {
-                                    recordPlaywrightLoadEvent(playwrightLoadProfileEventsFile('preview'), 'WAVE-like A11y', 'finish')
-                                    try {
-                                        publishPlaywrightWaveA11yReport('PREVIEW Playwright WAVE-like Accessibility')
-                                    } catch (Exception publishException) {
-                                        echo "[playwright-wave-a11y] Report publish wrapper failed but is non-blocking: ${publishException.getClass().getName()}: ${publishException.getMessage()}"
-                                    }
+                                    publishPlaywrightWaveA11yReport('PREVIEW Playwright WAVE-like Accessibility')
+                                } catch (Exception publishException) {
+                                    echo "[playwright-wave-a11y] Report publish wrapper failed but is non-blocking: ${publishException.getClass().getName()}: ${publishException.getMessage()}"
                                 }
                             }
                         }
                     }
-                )
+                } else {
+                    echo '[playwright-wave-a11y] CNP stage omitted by default. Set RUN_PLAYWRIGHT_WAVE_A11Y=true on a manual build to include this pack.'
+                }
+
+                parallel(previewFunctionalSuites)
             } finally {
                 recordPlaywrightLoadEvent(previewLoadProfileEvents, 'PREVIEW functional tests', 'finish')
                 archivePlaywrightDiagnostics()

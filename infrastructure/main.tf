@@ -58,6 +58,7 @@ module "application_insights" {
   location            = var.location
   application_type    = var.application_type
   resource_group_name = azurerm_resource_group.rg.name
+  sampling_percentage = var.sampling_percentage
 
   common_tags = var.common_tags
 }
@@ -113,4 +114,3 @@ data "azurerm_key_vault_secret" "welsh_report_email" {
 locals {
   welsh_emails = var.welsh_reporting_enabled ? split(",", trimspace(data.azurerm_key_vault_secret.welsh_report_email.0.value)) : []
 }
-

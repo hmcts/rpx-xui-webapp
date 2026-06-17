@@ -5,7 +5,7 @@ import { acceptAccessCookiesIfPresent, applySessionCookies, ensureSession } from
 import { CaseFileViewPage } from '../../page-objects/pages/exui/caseFileView.po';
 import { buildCasePayloadFromTemplate } from '../../utils/test-setup/payloads/registry';
 import { setupCaseForJourney } from '../../utils/test-setup/caseSetup';
-import { CcdDocumentValue, uploadDocumentViaApi } from '../../utils/test-setup/uploadDocumentViaApi';
+import { uploadDocumentViaApi } from '../../utils/test-setup/uploadDocumentViaApi';
 import { RuntimeUserAlias } from '../../utils/runtimeUserCredentials';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
@@ -23,36 +23,6 @@ const MEDIA_VIEWER_TEST_TIMEOUT_MS = Number.parseInt(process.env.PW_MEDIA_VIEWER
 const SESSION_BOOTSTRAP_TIMEOUT_MS =
   Number.parseInt(process.env.PW_MEDIA_VIEWER_SESSION_BOOTSTRAP_TIMEOUT_MS ?? '', 10) || 300_000;
 
-function buildSameOriginBinaryUrl(page: Page, uploadedDocument: CcdDocumentValue): string {
-  const binaryPath = new URL(uploadedDocument.document_binary_url).pathname;
-  return new URL(binaryPath, page.url()).toString();
-}
-
-async function openUploadedDocumentInMediaViewer(
-  page: Page,
-  uploadedDocument: CcdDocumentValue,
-  options: {
-    caseId?: string;
-    jurisdiction: string;
-  }
-): Promise<Page> {
-  const token = `media-viewer-${Date.now()}-${faker.string.alphanumeric(8)}`;
-  const mediaViewerData = {
-    document_binary_url: buildSameOriginBinaryUrl(page, uploadedDocument),
-    document_filename: uploadedDocument.document_filename,
-    content_type: 'pdf',
-    case_id: options.caseId,
-    case_jurisdiction: options.jurisdiction,
-  };
-
-  await page.evaluate(({ storageKey, storageValue }) => window.localStorage.setItem(storageKey, storageValue), {
-    storageKey: `media-viewer-info:${token}`,
-    storageValue: JSON.stringify(mediaViewerData),
-  });
-  await page.goto(`/media-viewer?mvToken=${encodeURIComponent(token)}`);
-  return page;
-}
-
 test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] }, () => {
   test.describe.configure({ timeout: MEDIA_VIEWER_TEST_TIMEOUT_MS });
 
@@ -66,7 +36,6 @@ test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] },
     const uniqueSuffix = `${Date.now()}-w${testInfo.workerIndex}-r${testInfo.retry}`;
     const documentFileName = `media-viewer-${uniqueSuffix}.pdf`;
     const caseMarker = `media-viewer-${faker.string.alphanumeric(8)}-${uniqueSuffix}`;
-    let uploadedDocument: CcdDocumentValue;
 
     await test.step('Apply solicitor session and open the app shell', async () => {
       await applySessionCookies(page, RuntimeUserAlias.DIVORCE_SOLICITOR);
@@ -76,7 +45,7 @@ test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] },
     });
 
     await test.step('Create a case with a document for this test run', async () => {
-      uploadedDocument = await uploadDocumentViaApi({
+      const uploadedDocument = await uploadDocumentViaApi({
         page,
         jurisdictionId: JURISDICTION,
         caseTypeId: CASE_TYPE,
@@ -126,10 +95,7 @@ test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] },
       page.context().on('response', onResponse);
       let mediaPage: Page | undefined;
       try {
-        mediaPage = await openUploadedDocumentInMediaViewer(page, uploadedDocument, {
-          caseId: page.url().match(/\/(\d{16})(?:#|$)/)?.[1],
-          jurisdiction: JURISDICTION,
-        });
+        mediaPage = await caseDetailsPage.openDocumentOneInMediaViewer();
         await mediaPage.waitForLoadState('domcontentloaded').catch(() => undefined);
 
         await expect.poll(() => binaryResponses.length).toBeGreaterThan(0);

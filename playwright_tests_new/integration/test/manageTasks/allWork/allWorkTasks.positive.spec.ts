@@ -303,7 +303,6 @@ test.describe(`All Work Tasks as ${userIdentifier}`, { tag: ['@integration', '@i
 });
 
 test.describe('All Work role-based task columns', { tag: ['@integration', '@integration-manage-tasks'] }, () => {
-  const sessionUserIdentifier = 'STAFF_ADMIN';
   const scenarios = [
     {
       userIdentifier: 'IAC_CaseOfficer_R2',
@@ -326,7 +325,7 @@ test.describe('All Work role-based task columns', { tag: ['@integration', '@inte
       const taskListMockResponse = buildTaskListMock(40, '', myActionsList);
 
       test.beforeEach(async ({ page }) => {
-        await applySessionCookies(page, sessionUserIdentifier);
+        await applySessionCookies(page, scenario.userIdentifier);
       });
       test(`renders expected date column and not the non-expected date column`, async ({ taskListPage, page, tableUtils }) => {
         await test.step('Setup route mocks for all-work role-based columns', async () => {

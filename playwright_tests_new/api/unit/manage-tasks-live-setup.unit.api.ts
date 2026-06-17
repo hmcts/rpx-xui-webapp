@@ -130,6 +130,17 @@ test.describe('Manage Tasks live setup unit tests', { tag: '@svc-internal' }, ()
     expect(completedSteps).toEqual(['wa-task-cancel', 'wa-role-assignment-delete']);
   });
 
+  test('keeps the original setup failure visible when cleanup also fails', () => {
+    const setupError = new Error('Created Employment case 1234567890123456 did not produce a claimable WA task');
+    const cleanupError = new Error('WA task cleanup failed for task-123: cancel returned HTTP 403');
+
+    const combinedError = manageTasksLiveSetupTest.buildSetupFailureWithCleanupFailure(setupError, cleanupError);
+
+    expect(combinedError.message).toContain('Setup failure: Created Employment case 1234567890123456');
+    expect(combinedError.message).toContain('Cleanup failure: WA task cleanup failed for task-123');
+    expect(combinedError.cause).toBe(setupError);
+  });
+
   test('attaches role access diagnostics when no claimable task appears', async () => {
     const envSnapshot = {
       PW_E2E_MANAGE_TASKS_TASK_READY_TIMEOUT_MS: process.env.PW_E2E_MANAGE_TASKS_TASK_READY_TIMEOUT_MS,

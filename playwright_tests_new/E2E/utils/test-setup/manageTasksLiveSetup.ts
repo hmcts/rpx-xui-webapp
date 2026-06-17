@@ -106,6 +106,18 @@ function asTrimmedString(value: unknown): string | undefined {
   return undefined;
 }
 
+function describeError(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+function buildSetupFailureWithCleanupFailure(setupError: unknown, cleanupError: unknown): Error {
+  return new Error(
+    `Manage Tasks live setup failed before cleanup completed. ` +
+      `Setup failure: ${describeError(setupError)}. Cleanup failure: ${describeError(cleanupError)}.`,
+    { cause: setupError }
+  );
+}
+
 function normalizeActions(value: unknown): string[] {
   if (!Array.isArray(value)) {
     return [];
@@ -467,7 +479,11 @@ export async function setupClaimableManageTasksCase({
       testInfo,
     });
   } catch (error) {
-    await cleanup();
+    try {
+      await cleanup();
+    } catch (cleanupError) {
+      throw buildSetupFailureWithCleanupFailure(error, cleanupError);
+    }
     throw error;
   }
 
@@ -501,7 +517,9 @@ export async function setupClaimableManageTasksCase({
 
 export const __test__ = {
   buildXsrfHeadersFromPage,
+  buildSetupFailureWithCleanupFailure,
   cleanupWaTaskForManageTasksCase,
+  describeError,
   extractTasks,
   fetchRoleAccessDiagnostics,
   normalizeTask,

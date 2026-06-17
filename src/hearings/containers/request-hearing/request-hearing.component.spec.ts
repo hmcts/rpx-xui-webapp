@@ -415,7 +415,7 @@ describe('RequestHearingComponent', () => {
     component.submitRequest(ACTION.SUBMIT);
 
     expect(appConfig.logMessage).toHaveBeenCalledWith(
-      'Hearing public name mismatch detected. HRM: Public Name SHV: Different Public Name for caseId: 1234123412341234 and hearingId: 1000000 at 2021-11-30T09:00:00.000Z with status LISTED'
+      'Hearing public name mismatch detected. HRM: Public Name SHV: Different Public Name for caseId: 1234567890 and hearingId: 1000000 at 2021-11-30T09:00:00.000Z with status LISTED'
     );
     expect(component.showMismatchErrorMessage).toBeFalsy();
     expect(hearingsService.navigateAction).toHaveBeenCalledWith(ACTION.SUBMIT);

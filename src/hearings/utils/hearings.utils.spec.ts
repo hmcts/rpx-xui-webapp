@@ -649,6 +649,7 @@ describe('HearingsUtils', () => {
 
       const serviceHearingValuesModel: ServiceHearingValuesModel = {
         ...initialState.hearings.hearingValues.serviceHearingValuesModel,
+        caseId: '1234567890123456',
         hmctsServiceID: 'ABA5',
         hmctsInternalCaseName: 'Internal Name',
         publicCaseName: 'Public Name B',

@@ -463,6 +463,18 @@ static boolean shouldEnablePrlHearingsSetup(String includeTags, String excludedT
     included.isEmpty() || included.contains('@e2e') || included.contains('@e2e-hearings')
 }
 
+def withPrlHearingsSecrets = { String environmentName, Closure body ->
+    def vaultEnv = environmentName == 'preview' ? 'aat' : environmentName
+    withAzureKeyvault(
+        azureKeyVaultSecrets: prlHearingsSecrets['rpx-${env}'],
+        keyVaultURLOverride: "https://rpx-${vaultEnv}.vault.azure.net/",
+        applicationIDOverride: env.AZURE_CLIENT_ID,
+        applicationSecretOverride: env.AZURE_CLIENT_SECRET
+    ) {
+        body.call()
+    }
+}
+
 withPipeline(type, product, component) {
 
     enableSlackNotifications(channel)
@@ -645,9 +657,12 @@ withPipeline(type, product, component) {
                                     "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
                                 ]) {
                                     if (enablePrlHearingsSetup) {
-                                        loadVaultSecrets(prlHearingsSecrets)
+                                        withPrlHearingsSecrets('preview') {
+                                            yarnBuilder.yarn('test:playwrightE2E:raw')
+                                        }
+                                    } else {
+                                        yarnBuilder.yarn('test:playwrightE2E:raw')
                                     }
-                                    yarnBuilder.yarn('test:playwrightE2E:raw')
                                 }
                             } catch (Exception e) {
                                 echo "[parallel-report-gathering] Playwright E2E failed: ${e.getClass().getName()}: ${e.getMessage()}"
@@ -784,9 +799,12 @@ withPipeline(type, product, component) {
                                     "PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES=${params.PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES ? 'true' : 'false'}"
                                 ]) {
                                     if (enablePrlHearingsSetup) {
-                                        loadVaultSecrets(prlHearingsSecrets)
+                                        withPrlHearingsSecrets('aat') {
+                                            yarnBuilder.yarn('test:playwrightE2E:raw')
+                                        }
+                                    } else {
+                                        yarnBuilder.yarn('test:playwrightE2E:raw')
                                     }
-                                    yarnBuilder.yarn('test:playwrightE2E:raw')
                                 }
                             } catch (Exception e) {
                                 echo "[parallel-report-gathering] Playwright E2E failed: ${e.getClass().getName()}: ${e.getMessage()}"

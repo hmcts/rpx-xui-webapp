@@ -302,7 +302,7 @@ export async function setupClaimableManageTasksCase({
   professionalUserUtils,
   testInfo,
 }: ManageTasksSetupRequest): Promise<ManageTasksLiveSetup> {
-  const waReadiness = resolveWaTaskProvisioningReadiness(process.env, { requireBearerToken: false });
+  const waReadiness = resolveWaTaskProvisioningReadiness(process.env);
   if (!waReadiness.ready) {
     throw new Error(`Manage Tasks live E2E requires WA task provisioning. ${waReadiness.skipped}`);
   }

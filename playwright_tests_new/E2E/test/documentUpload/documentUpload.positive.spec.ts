@@ -9,7 +9,12 @@ import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
 import { uploadEmploymentDraftDocument } from '../../utils/test-setup/journeys/employmentJourneys';
 import { buildCasePayloadFromTemplate } from '../../utils/test-setup/payloads/registry';
 import { setupCaseForJourney } from '../../utils/test-setup/caseSetup';
-import { RuntimeUserAlias, getRuntimeUserCredentialEnvMapping } from '../../utils/runtimeUserCredentials';
+import { RuntimeUserAlias } from '../../utils/runtimeUserCredentials';
+import {
+  assertDocumentUploadRuntimeAliasConfigured,
+  createDocumentUploadUpdateEventTracker,
+  resolveDocumentUploadTranslatedLabel,
+} from '../../utils/test-setup/documentUploadLiveSupport';
 
 const logger = createLogger({ serviceName: 'document-upload-tests', format: 'pretty' });
 const DOCUMENT_UPLOAD_SUBMIT_TIMEOUT_MS = 60_000;
@@ -51,24 +56,10 @@ const SESSION_BOOTSTRAP_TIMEOUT_MS =
 // when both aliases bootstrap concurrently in the same worker.
 test.describe.configure({ mode: 'serial', timeout: DOCUMENT_UPLOAD_TEST_TIMEOUT_MS });
 
-function assertRuntimeAliasConfigured(alias: string): void {
-  const mapping = getRuntimeUserCredentialEnvMapping(alias);
-  if (!mapping) {
-    throw new Error(`Document upload tests require runtime alias '${alias}' to be configured.`);
-  }
-}
-
-async function resolveLabelFromTranslationResponse(response: Response, sourceLabel: string): Promise<string> {
-  const body = (await response.json()) as {
-    translations?: Record<string, { translation?: string }>;
-  };
-  return body.translations?.[sourceLabel]?.translation ?? sourceLabel;
-}
-
 test.beforeAll(async ({ browserName: _browserName }, testInfo) => {
   testInfo.setTimeout(SESSION_BOOTSTRAP_TIMEOUT_MS);
-  assertRuntimeAliasConfigured(RuntimeUserAlias.DIVORCE_SOLICITOR);
-  assertRuntimeAliasConfigured(RuntimeUserAlias.SEARCH_EMPLOYMENT_CASE);
+  assertDocumentUploadRuntimeAliasConfigured(RuntimeUserAlias.DIVORCE_SOLICITOR);
+  assertDocumentUploadRuntimeAliasConfigured(RuntimeUserAlias.SEARCH_EMPLOYMENT_CASE);
   await ensureSession(RuntimeUserAlias.DIVORCE_SOLICITOR);
   await ensureSession(RuntimeUserAlias.SEARCH_EMPLOYMENT_CASE);
 });
@@ -120,20 +111,8 @@ test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, (
       });
 
       await test.step(`Upload a document to the case in ${scenario.language}`, async () => {
-        let successfulUpdateEventPosts = 0;
-        const updateEventEndpointPattern = new RegExp(`/data/cases/${caseNumber}/events(?:\\?|$)`);
-        const onResponse = (response: Response) => {
-          if (response.request().method() !== 'POST') {
-            return;
-          }
-          if (!updateEventEndpointPattern.test(response.url())) {
-            return;
-          }
-          if (response.status() < 400) {
-            successfulUpdateEventPosts += 1;
-          }
-        };
-        caseDetailsPage.page.on('response', onResponse);
+        const updateEventTracker = createDocumentUploadUpdateEventTracker(caseNumber);
+        caseDetailsPage.page.on('response', updateEventTracker.onResponse);
         try {
           await retryOnTransientFailure(
             async () => {
@@ -150,7 +129,7 @@ test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, (
                 waitForTranslatedContent: scenario.language === 'English',
               });
               const cancelUploadLabel = welshTranslationResponse
-                ? await resolveLabelFromTranslationResponse(await welshTranslationResponse, CANCEL_UPLOAD_LABEL)
+                ? await resolveDocumentUploadTranslatedLabel(await welshTranslationResponse, CANCEL_UPLOAD_LABEL)
                 : scenario.cancelUploadLabel;
               await expect(createCasePage.fileUploadCancelButton).toContainText(cancelUploadLabel);
               await expect(createCasePage.fileUploadComponent).not.toContainText(TEST_DATA.V2.FILE_NAME);
@@ -204,9 +183,9 @@ test.describe('Document upload V2', { tag: ['@e2e', '@e2e-document-upload'] }, (
             }
           );
         } finally {
-          caseDetailsPage.page.off('response', onResponse);
+          caseDetailsPage.page.off('response', updateEventTracker.onResponse);
         }
-        expect(successfulUpdateEventPosts).toBe(1);
+        expect(updateEventTracker.successfulPosts()).toBe(1);
       });
 
       await test.step('Verify the document upload was successful', async () => {

@@ -2,9 +2,11 @@ import { expect, test } from '../../fixtures';
 import { ensureSessionCookies } from '../../../common/sessionCapture';
 import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
 
+const workAllocationUser = 'WA_SOLICITOR';
+
 test.describe('Verify the my tasks page tabs appear as expected', { tag: ['@e2e', '@e2e-manage-tasks'] }, () => {
   test.beforeEach(async ({ page, taskListPage }) => {
-    const { cookies } = await ensureSessionCookies('STAFF_ADMIN');
+    const { cookies } = await ensureSessionCookies(workAllocationUser);
     if (cookies.length) {
       await page.context().addCookies(cookies);
     }

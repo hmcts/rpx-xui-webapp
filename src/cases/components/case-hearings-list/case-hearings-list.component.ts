@@ -167,21 +167,24 @@ export class CaseHearingsListComponent implements OnInit {
         this.loadHearingRequestAndRedirect(
           hearing.hearingID,
           `/hearings/view/hearing-cancelled-summary/${hearing.hearingID}`,
-          this.caseId
+          this.caseId,
+          this.canEditHearingActuals()
         );
         break;
       case EXUIDisplayStatusEnum.COMPLETED:
         this.loadHearingRequestAndRedirect(
           hearing.hearingID,
           `/hearings/view/hearing-completed-summary/${hearing.hearingID}`,
-          this.caseId
+          this.caseId,
+          this.canEditHearingActuals()
         );
         break;
       case EXUIDisplayStatusEnum.ADJOURNED:
         this.loadHearingRequestAndRedirect(
           hearing.hearingID,
           `/hearings/view/hearing-adjourned-summary/${hearing.hearingID}`,
-          this.caseId
+          this.caseId,
+          this.canEditHearingActuals()
         );
         break;
       case EXUIDisplayStatusEnum.AWAITING_ACTUALS:
@@ -204,7 +207,11 @@ export class CaseHearingsListComponent implements OnInit {
     }
   }
 
-  public loadHearingRequestAndRedirect(hearingID: string, targetURL: string, caseRef?: string) {
-    this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest({ hearingID, targetURL, caseRef }));
+  public loadHearingRequestAndRedirect(hearingID: string, targetURL: string, caseRef?: string, showEditButton?: boolean) {
+    this.hearingStore.dispatch(new fromHearingStore.LoadHearingRequest({ hearingID, targetURL, caseRef, showEditButton }));
+  }
+
+  private canEditHearingActuals(): boolean {
+    return !!this.actions?.includes(Actions.UPDATE);
   }
 }

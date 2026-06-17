@@ -1002,7 +1002,8 @@ describe('CaseHearingsListComponent', () => {
     expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith(
       'h100008',
       '/hearings/view/hearing-cancelled-summary/h100008',
-      '1111222233334444'
+      '1111222233334444',
+      false
     );
     // COMPLETED
     component.viewDetails(PAST_HEARING_LIST[1]);
@@ -1010,7 +1011,8 @@ describe('CaseHearingsListComponent', () => {
     expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith(
       'h100010',
       '/hearings/view/hearing-completed-summary/h100010',
-      '1111222233334444'
+      '1111222233334444',
+      false
     );
     component.viewDetails(UPCOMING_HEARING_LIST[7]);
     fixture.detectChanges();
@@ -1025,7 +1027,8 @@ describe('CaseHearingsListComponent', () => {
     expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith(
       'h100011',
       '/hearings/view/hearing-adjourned-summary/h100011',
-      '1111222233334444'
+      '1111222233334444',
+      false
     );
     // FAILURE
     component.viewDetails(UPCOMING_HEARING_LIST[5]);
@@ -1034,6 +1037,48 @@ describe('CaseHearingsListComponent', () => {
       'h100006',
       '/hearings/view/hearing-request-failed-summary/h100006',
       '1111222233334444'
+    );
+  });
+
+  it('should pass the edit flag for completed hearing details when user can update hearings', () => {
+    const loadHearingRequestAndRedirect = spyOn(component, 'loadHearingRequestAndRedirect');
+    component.actions = [Actions.READ, Actions.UPDATE];
+
+    component.viewDetails(PAST_HEARING_LIST[1]);
+
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith(
+      'h100010',
+      '/hearings/view/hearing-completed-summary/h100010',
+      '1111222233334444',
+      true
+    );
+  });
+
+  it('should pass the edit flag for cancelled hearing details when user can update hearings', () => {
+    const loadHearingRequestAndRedirect = spyOn(component, 'loadHearingRequestAndRedirect');
+    component.actions = [Actions.READ, Actions.UPDATE];
+
+    component.viewDetails(PAST_HEARING_LIST[0]);
+
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith(
+      'h100008',
+      '/hearings/view/hearing-cancelled-summary/h100008',
+      '1111222233334444',
+      true
+    );
+  });
+
+  it('should pass the edit flag for adjourned hearing details when user can update hearings', () => {
+    const loadHearingRequestAndRedirect = spyOn(component, 'loadHearingRequestAndRedirect');
+    component.actions = [Actions.READ, Actions.UPDATE];
+
+    component.viewDetails(PAST_HEARING_LIST[2]);
+
+    expect(loadHearingRequestAndRedirect).toHaveBeenCalledWith(
+      'h100011',
+      '/hearings/view/hearing-adjourned-summary/h100011',
+      '1111222233334444',
+      true
     );
   });
 

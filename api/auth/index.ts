@@ -30,6 +30,14 @@ import * as log4jui from '../lib/log4jui';
 import { EnhancedRequest } from '../lib/models';
 
 const logger = log4jui.getLogger('auth');
+const POST_AUTH_ROLE_DENIED_EVENT = 'ManageCasePostAuthRoleDenied';
+
+interface AccessDeniedDetails {
+  allowRolesRegex: string;
+  userinfo?: {
+    roleCategory?: string;
+  };
+}
 
 export const successCallback = (req: EnhancedRequest, res: Response, next: NextFunction) => {
   const { user } = req.session.passport;
@@ -60,8 +68,25 @@ export const failureCallback = (req: EnhancedRequest, res: Response) => {
   }
 };
 
+export const accessDeniedCallback = (_req: EnhancedRequest, _res: Response, _next: NextFunction, details: AccessDeniedDetails) => {
+  logger.warn(
+    `Post-auth role denied: user has no role matching ${details.allowRolesRegex}`
+  );
+
+  if (client) {
+    client.trackEvent({
+      name: POST_AUTH_ROLE_DENIED_EVENT,
+      properties: {
+        requiredRoleMatcher: details.allowRolesRegex,
+        roleCategory: details.userinfo?.roleCategory || '',
+      },
+    });
+  }
+};
+
 xuiNode.on(AUTH.EVENT.AUTHENTICATE_SUCCESS, successCallback);
 xuiNode.on(AUTH.EVENT.AUTHENTICATE_FAILURE, failureCallback);
+xuiNode.on(AUTH.EVENT.AUTHENTICATE_ACCESS_DENIED, accessDeniedCallback);
 
 export const getXuiNodeMiddleware = () => {
   const idamWebUrl = getConfigValue(SERVICES_IDAM_LOGIN_URL);

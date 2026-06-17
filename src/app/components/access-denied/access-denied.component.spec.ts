@@ -45,9 +45,7 @@ describe('AccessDeniedComponent', () => {
     expect(bodyElements[0].nativeElement.textContent).toContain(
       'You signed in successfully, but this account is not authorised to use Manage Case.'
     );
-    expect(bodyElements[1].nativeElement.textContent).toContain(
-      'Sign in with a different account'
-    );
+    expect(bodyElements[1].nativeElement.textContent).toContain('Sign in with a different account');
     expect(bodyElements[1].nativeElement.textContent).toContain(
       'or contact your organisation administrator or support team if you need access.'
     );

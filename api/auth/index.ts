@@ -68,10 +68,13 @@ export const failureCallback = (req: EnhancedRequest, res: Response) => {
   }
 };
 
-export const accessDeniedCallback = (_req: EnhancedRequest, _res: Response, _next: NextFunction, details: AccessDeniedDetails) => {
-  logger.warn(
-    `Post-auth role denied: user has no role matching ${details.allowRolesRegex}`
-  );
+export const accessDeniedCallback = (
+  _req: EnhancedRequest,
+  _res: Response,
+  _next: NextFunction,
+  details: AccessDeniedDetails
+) => {
+  logger.warn(`Post-auth role denied: user has no role matching ${details.allowRolesRegex}`);
 
   if (client) {
     client.trackEvent({

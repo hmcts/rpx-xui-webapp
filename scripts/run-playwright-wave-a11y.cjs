@@ -10,6 +10,9 @@ if (extraArgs[0] === '--') {
 
 const env = {
   ...process.env,
+  A11Y_ENGINES: process.env.A11Y_ENGINES || 'wave-like',
+  PLAYWRIGHT_A11Y_ENGINES: process.env.PLAYWRIGHT_A11Y_ENGINES || process.env.A11Y_ENGINES || 'wave-like',
+  PLAYWRIGHT_INCLUDE_A11Y: 'true',
   PLAYWRIGHT_INCLUDE_WAVE_A11Y: 'true',
   E2E_PW_INCLUDE_TAGS: process.env.E2E_PW_INCLUDE_TAGS || '@wave-a11y',
   PLAYWRIGHT_TAGS: process.env.PLAYWRIGHT_TAGS || '@wave-a11y',

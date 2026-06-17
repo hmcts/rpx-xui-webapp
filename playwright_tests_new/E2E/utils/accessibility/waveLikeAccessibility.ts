@@ -33,6 +33,13 @@ type PublishedEvidenceEntry = {
   targets: string[];
 };
 
+type WaveLikePageSnapshot = {
+  title: string;
+  headings: Array<{ level: number; text: string }>;
+  landmarks: Array<{ role: string; text: string }>;
+  order: Array<{ type: string; name: string; selector: string }>;
+};
+
 const EVIDENCE_MANIFEST_FILE = 'manifest.json';
 const EVIDENCE_ENTRY_PREFIX = 'manifest-entry-';
 
@@ -217,11 +224,8 @@ export async function attachWaveLikeAccessibilityEvidence(
     body: json,
     contentType: 'application/json',
   });
-  await testInfo.attach(`${attachmentPrefix}.html`, {
-    body: buildIssueSummaryHtml(page.url(), violations),
-    contentType: 'text/html',
-  });
 
+  const pageSnapshot = await collectWaveLikePageSnapshot(page);
   const cleanup = await markViolationsOnPage(page, violations);
   let screenshot: Buffer;
   try {
@@ -234,10 +238,154 @@ export async function attachWaveLikeAccessibilityEvidence(
     await cleanup();
   }
 
-  await writePublishedEvidence(testInfo, page.url(), violations, screenshot, attachmentPrefix);
+  await testInfo.attach(`${attachmentPrefix}.html`, {
+    body: buildIssueSummaryHtml(page.url(), violations, pageSnapshot, screenshot),
+    contentType: 'text/html',
+  });
+
+  await writePublishedEvidence(testInfo, page.url(), violations, pageSnapshot, screenshot, attachmentPrefix);
 }
 
-function buildIssueSummaryHtml(url: string, violations: WaveLikeViolation[]): string {
+async function collectWaveLikePageSnapshot(page: Page): Promise<WaveLikePageSnapshot> {
+  return page.evaluate<WaveLikePageSnapshot>(() => {
+    const visible = (element: Element): element is HTMLElement => {
+      if (!(element instanceof HTMLElement)) {
+        return false;
+      }
+      if (element.hidden || element.getAttribute('aria-hidden') === 'true') {
+        return false;
+      }
+      if (element instanceof HTMLInputElement && element.type === 'hidden') {
+        return false;
+      }
+      const style = window.getComputedStyle(element);
+      return style.visibility !== 'hidden' && style.display !== 'none' && element.getClientRects().length > 0;
+    };
+    const text = (element: Element | null): string => element?.textContent?.replace(/\s+/g, ' ').trim() ?? '';
+    const selectorFor = (element: Element): string => {
+      const id = element.getAttribute('id');
+      if (id) {
+        return `#${id}`;
+      }
+      const testId = element.getAttribute('data-testid') ?? element.getAttribute('data-test-id');
+      if (testId) {
+        return `[data-testid="${testId}"]`;
+      }
+      return element.tagName.toLowerCase();
+    };
+    const labelledByText = (element: Element): string =>
+      (element.getAttribute('aria-labelledby') ?? '')
+        .split(/\s+/)
+        .filter(Boolean)
+        .map((id) => text(document.getElementById(id)))
+        .filter(Boolean)
+        .join(' ');
+    const controlLabels = (element: Element): string => {
+      if (
+        element instanceof HTMLInputElement ||
+        element instanceof HTMLSelectElement ||
+        element instanceof HTMLTextAreaElement ||
+        element instanceof HTMLButtonElement ||
+        element instanceof HTMLOutputElement
+      ) {
+        return Array.from(element.labels ?? [])
+          .map((label) => text(label))
+          .filter(Boolean)
+          .join(' ');
+      }
+      return '';
+    };
+    const accessibleName = (element: Element): string => {
+      const ariaLabel = element.getAttribute('aria-label')?.trim() ?? '';
+      const labelledBy = labelledByText(element);
+      const labelText = controlLabels(element);
+      const title = element.getAttribute('title')?.trim() ?? '';
+      const value =
+        element instanceof HTMLInputElement && ['button', 'submit', 'reset'].includes(element.type) ? element.value.trim() : '';
+      const imageAlt = Array.from(element.querySelectorAll('img'))
+        .map((image) => image.getAttribute('alt')?.trim() ?? '')
+        .filter(Boolean)
+        .join(' ');
+      return [ariaLabel, labelledBy, labelText, title, value, imageAlt, text(element)].filter(Boolean).join(' ').trim();
+    };
+
+    const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6'))
+      .filter(visible)
+      .map((heading) => ({ level: Number(heading.tagName.slice(1)), text: text(heading).slice(0, 160) }));
+    const landmarks = Array.from(document.querySelectorAll('header, nav, main, aside, footer, [role]'))
+      .filter(visible)
+      .map((landmark) => ({
+        role: landmark.getAttribute('role') || landmark.tagName.toLowerCase(),
+        text: (landmark.getAttribute('aria-label') || text(landmark)).slice(0, 160),
+      }))
+      .filter((landmark) =>
+        ['banner', 'navigation', 'main', 'complementary', 'contentinfo', 'header', 'nav', 'main', 'aside', 'footer'].includes(
+          landmark.role
+        )
+      );
+    const order = Array.from(document.querySelectorAll('a[href], button, input, select, textarea, [tabindex]'))
+      .filter(visible)
+      .filter((element) => element.getAttribute('tabindex') !== '-1')
+      .map((element) => ({
+        type:
+          element instanceof HTMLInputElement
+            ? `${element.type || 'input'} input`
+            : element.tagName.toLowerCase() === 'a'
+              ? 'link'
+              : element.tagName.toLowerCase(),
+        name: accessibleName(element).slice(0, 160) || '(no accessible name)',
+        selector: selectorFor(element),
+      }));
+
+    return {
+      title: document.title.trim(),
+      headings,
+      landmarks,
+      order,
+    };
+  });
+}
+
+function buildIssueSummaryHtml(
+  url: string,
+  violations: WaveLikeViolation[],
+  pageSnapshot: WaveLikePageSnapshot,
+  screenshot: Buffer
+): string {
+  const screenshotDataUrl = `data:image/png;base64,${screenshot.toString('base64')}`;
+  const ruleCounts = new Map<string, number>();
+  for (const violation of violations) {
+    ruleCounts.set(violation.rule, (ruleCounts.get(violation.rule) ?? 0) + 1);
+  }
+  const ruleRows = Array.from(ruleCounts.entries())
+    .sort((a, b) => a[0].localeCompare(b[0]))
+    .map(
+      ([rule, count]) => `
+        <li><span class="count">${count}</span>${escapeHtml(rule)}</li>
+      `
+    )
+    .join('');
+  const orderRows = pageSnapshot.order
+    .map(
+      (item, index) => `
+        <li>
+          <span class="marker">${index + 1}</span>
+          <strong>${escapeHtml(item.type)}</strong>: ${escapeHtml(item.name)}
+          <code>${escapeHtml(item.selector)}</code>
+        </li>
+      `
+    )
+    .join('');
+  const structureRows = [
+    ...pageSnapshot.headings.map(
+      (heading) =>
+        `<li><span class="structure-token">h${heading.level}</span>${escapeHtml(heading.text || '(empty heading)')}</li>`
+    ),
+    ...pageSnapshot.landmarks.map(
+      (landmark) =>
+        `<li><span class="structure-token">${escapeHtml(landmark.role)}</span>${escapeHtml(landmark.text || '(unlabelled)')}</li>`
+    ),
+  ].join('');
   const cards = violations
     .map(
       (violation, index) => `
@@ -256,19 +404,78 @@ function buildIssueSummaryHtml(url: string, violations: WaveLikeViolation[]): st
       <head>
         <title>WAVE-like Accessibility Issues</title>
         <style>
-          body { font-family: Arial, sans-serif; margin: 24px; color: #0b0c0c; }
+          body { font-family: Arial, sans-serif; margin: 0; color: #0b0c0c; background: #f3f2f1; }
+          .layout { display: grid; grid-template-columns: minmax(280px, 360px) 1fr; min-height: 100vh; }
+          .panel { background: #d5dce0; border-right: 1px solid #b1b4b6; padding: 12px; position: sticky; top: 0; height: 100vh; overflow: auto; }
+          .panel h1 { font-size: 22px; margin: 0 0 12px; }
+          .toolbar { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 12px; }
+          .toolbar span { background: #fff; border-bottom: 3px solid #1d70b8; padding: 8px 4px; text-align: center; font-weight: bold; font-size: 12px; }
+          .scorecard { background: #fff; border-radius: 4px; padding: 12px; margin-bottom: 12px; }
+          .metric-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+          .metric { border-left: 6px solid #f47738; padding-left: 8px; font-size: 14px; }
+          .metric strong { display: block; font-size: 26px; }
+          .count { display: inline-block; min-width: 24px; margin-right: 8px; background: #1d70b8; color: #fff; border-radius: 3px; text-align: center; font-weight: bold; }
+          .marker { display: inline-block; min-width: 24px; margin-right: 8px; background: #1d70b8; color: #fff; border-radius: 3px; text-align: center; font-weight: bold; }
+          .structure-token { display: inline-block; min-width: 42px; margin-right: 8px; background: #4c2c92; color: #fff; border-radius: 3px; text-align: center; font-weight: bold; }
+          .content { background: #fff; padding: 24px; overflow: auto; }
           .banner { background: #d4351c; color: #fff; padding: 16px; margin-bottom: 24px; }
-          .issue { border: 4px solid #d4351c; padding: 16px; margin-bottom: 18px; }
+          .visual { border: 1px solid #b1b4b6; margin-bottom: 24px; background: #f3f2f1; }
+          .visual img { display: block; max-width: 100%; height: auto; }
+          .issue { border: 4px solid #d4351c; padding: 16px; margin-bottom: 18px; background: #fff; }
           .issue h2 { margin-top: 0; }
           code, pre { background: #f3f2f1; padding: 4px; white-space: pre-wrap; }
+          li { margin-bottom: 8px; }
+          details { background: #fff; border: 1px solid #b1b4b6; margin-bottom: 12px; padding: 8px; }
+          summary { cursor: pointer; font-weight: bold; }
         </style>
       </head>
       <body>
-        <div class="banner">
-          <h1>WAVE-LIKE ACCESSIBILITY ISSUES FOUND</h1>
-          <p>${violations.length} issue(s) on ${escapeHtml(url)}. Match marker numbers here to the highlighted screenshot.</p>
+        <div class="layout">
+          <aside class="panel">
+            <h1>WAVE-like panel</h1>
+            <div class="toolbar">
+              <span>Details</span>
+              <span>Order</span>
+              <span>Structure</span>
+              <span>Contrast</span>
+            </div>
+            <div class="scorecard">
+              <p><strong>${escapeHtml(pageSnapshot.title || 'Untitled page')}</strong></p>
+              <div class="metric-grid">
+                <div class="metric"><strong>${violations.length}</strong>Issues</div>
+                <div class="metric"><strong>${ruleCounts.size}</strong>Rules</div>
+                <div class="metric"><strong>${pageSnapshot.order.length}</strong>Order</div>
+                <div class="metric"><strong>${pageSnapshot.headings.length}</strong>Headings</div>
+              </div>
+            </div>
+            <details open>
+              <summary>Details</summary>
+              <ol>${ruleRows || '<li>No WAVE-like issues found.</li>'}</ol>
+            </details>
+            <details open>
+              <summary>Order</summary>
+              <ol>${orderRows || '<li>No keyboard-order items detected.</li>'}</ol>
+            </details>
+            <details open>
+              <summary>Structure</summary>
+              <ol>${structureRows || '<li>No headings or landmarks detected.</li>'}</ol>
+            </details>
+            <details>
+              <summary>Contrast</summary>
+              <p>Contrast signal is provided by axe and Lighthouse in the unified pack. This WAVE-like panel focuses on structure, order, names, labels, and target evidence.</p>
+            </details>
+          </aside>
+          <main class="content">
+            <div class="banner">
+              <h1>WAVE-like accessibility evidence</h1>
+              <p>${violations.length} issue(s) on ${escapeHtml(url)}. Match marker numbers here to the highlighted page image.</p>
+            </div>
+            <section class="visual">
+              <img alt="Highlighted page screenshot with WAVE-like issue markers" src="${screenshotDataUrl}" />
+            </section>
+            ${cards}
+          </main>
         </div>
-        ${cards}
       </body>
     </html>
   `;
@@ -341,6 +548,7 @@ async function writePublishedEvidence(
   testInfo: TestInfo,
   url: string,
   violations: WaveLikeViolation[],
+  pageSnapshot: WaveLikePageSnapshot,
   screenshot: Buffer,
   attachmentPrefix: string
 ): Promise<void> {
@@ -368,10 +576,10 @@ async function writePublishedEvidence(
   };
 
   await fs.mkdir(evidenceDir, { recursive: true });
-  await fs.writeFile(path.join(evidenceDir, htmlFileName), buildIssueSummaryHtml(url, violations));
+  await fs.writeFile(path.join(evidenceDir, htmlFileName), buildIssueSummaryHtml(url, violations, pageSnapshot, screenshot));
   await fs.writeFile(
     path.join(evidenceDir, jsonFileName),
-    JSON.stringify({ url, violationCount: violations.length, violations }, null, 2)
+    JSON.stringify({ url, violationCount: violations.length, pageSnapshot, violations }, null, 2)
   );
   await fs.writeFile(path.join(evidenceDir, screenshotFileName), screenshot);
   await writeEvidenceEntry(evidenceDir, baseName, entry);
@@ -487,7 +695,7 @@ async function writeEvidenceIndex(evidenceDir: string): Promise<void> {
         <body>
           <div class="banner">
             <h1>WAVE-LIKE ACCESSIBILITY EVIDENCE</h1>
-            <p>Open each item for rule, DOM selector, failing HTML, and a red highlighted screenshot.</p>
+            <p>Open each item for a WAVE-style visual panel, order and structure summaries, DOM selector, failing HTML, and a highlighted screenshot.</p>
           </div>
           <ol>${rows}</ol>
         </body>

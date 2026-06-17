@@ -12,7 +12,11 @@ const isListOnlyRun = extraArgs.includes('--list');
 
 const env = {
   ...process.env,
+  A11Y_ENGINES: process.env.A11Y_ENGINES || 'axe',
+  PLAYWRIGHT_A11Y_ENGINES: process.env.PLAYWRIGHT_A11Y_ENGINES || process.env.A11Y_ENGINES || 'axe',
   PLAYWRIGHT_INCLUDE_A11Y: 'true',
+  E2E_PW_INCLUDE_TAGS: process.env.E2E_PW_INCLUDE_TAGS || '@a11y',
+  PLAYWRIGHT_TAGS: process.env.PLAYWRIGHT_TAGS || '@a11y',
   PLAYWRIGHT_JUNIT_OUTPUT:
     process.env.PLAYWRIGHT_JUNIT_OUTPUT || 'functional-output/tests/playwright-a11y/playwright-a11y-junit.xml',
   PLAYWRIGHT_REPORT_FOLDER: process.env.PLAYWRIGHT_REPORT_FOLDER || 'functional-output/tests/playwright-a11y/odhin-report',
@@ -34,6 +38,8 @@ const result = run('npx', [
   '--config=playwright.e2e.config.ts',
   '--grep',
   '@a11y',
+  '--grep-invert',
+  '@lighthouse-a11y',
   ...extraArgs,
   '--retries=0',
 ]);

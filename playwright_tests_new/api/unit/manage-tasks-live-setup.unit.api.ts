@@ -37,6 +37,99 @@ test.describe('Manage Tasks live setup unit tests', { tag: '@svc-internal' }, ()
     });
   });
 
+  test('cancels the created WA task during cleanup with the current XSRF token', async () => {
+    const attachments: Array<{ name: string; body: string }> = [];
+    const posts: Array<{ url: string; data?: unknown; headers?: Record<string, string> }> = [];
+    const fakePage = {
+      url: () => 'https://xui-webapp.example.test/work/my-work/list',
+      context: () => ({
+        cookies: async (url?: string) => (url ? [{ name: 'XSRF-TOKEN', value: 'xsrf-token-123' }] : []),
+      }),
+      request: {
+        post: async (url: string, options: { data?: unknown; headers?: Record<string, string> }) => {
+          posts.push({ url, data: options.data, headers: options.headers });
+          return response(204, '');
+        },
+      },
+    };
+
+    await manageTasksLiveSetupTest.cleanupWaTaskForManageTasksCase({
+      page: fakePage as never,
+      taskId: 'task-123',
+      testInfo: {
+        attach: async (name: string, payload: { body: string | Buffer }) => {
+          attachments.push({ name, body: String(payload.body) });
+        },
+      } as never,
+    });
+
+    expect(posts).toEqual([
+      {
+        url: 'workallocation/task/task-123/cancel',
+        data: { hasNoAssigneeOnComplete: false },
+        headers: { 'X-XSRF-TOKEN': 'xsrf-token-123' },
+      },
+    ]);
+    expect(attachments[0].name).toBe('manage-tasks-wa-task-cleanup.json');
+    expect(attachments[0].body).toContain('"ok": true');
+    expect(attachments[0].body).toContain('"hasXsrfToken": true');
+    expect(attachments[0].body).not.toContain('xsrf-token-123');
+    expect(attachments[0].body).toContain('"taskId": "task-123"');
+  });
+
+  test('fails cleanup when task cancellation is rejected by auth or downstream services', async () => {
+    const attachments: Array<{ name: string; body: string }> = [];
+    const fakePage = {
+      url: () => 'https://xui-webapp.example.test/work/my-work/list',
+      context: () => ({
+        cookies: async () => [{ name: 'XSRF-TOKEN', value: 'xsrf-token-123' }],
+      }),
+      request: {
+        post: async () => response(403, { error: 'forbidden' }),
+      },
+    };
+
+    await expect(
+      manageTasksLiveSetupTest.cleanupWaTaskForManageTasksCase({
+        page: fakePage as never,
+        taskId: 'task-123',
+        testInfo: {
+          attach: async (name: string, payload: { body: string | Buffer }) => {
+            attachments.push({ name, body: String(payload.body) });
+          },
+        } as never,
+      })
+    ).rejects.toThrow(/WA task cleanup failed for task-123: cancel returned HTTP 403/);
+
+    expect(attachments[0].name).toBe('manage-tasks-wa-task-cleanup.json');
+    expect(attachments[0].body).toContain('"status": 403');
+    expect(attachments[0].body).toContain('"ok": false');
+  });
+
+  test('runs every cleanup step before reporting cleanup failures', async () => {
+    const completedSteps: string[] = [];
+
+    await expect(
+      manageTasksLiveSetupTest.runManageTasksCleanupSteps([
+        {
+          name: 'wa-task-cancel',
+          action: async () => {
+            completedSteps.push('wa-task-cancel');
+            throw new Error('cancel returned HTTP 403');
+          },
+        },
+        {
+          name: 'wa-role-assignment-delete',
+          action: async () => {
+            completedSteps.push('wa-role-assignment-delete');
+          },
+        },
+      ])
+    ).rejects.toThrow(/wa-task-cancel: cancel returned HTTP 403/);
+
+    expect(completedSteps).toEqual(['wa-task-cancel', 'wa-role-assignment-delete']);
+  });
+
   test('attaches role access diagnostics when no claimable task appears', async () => {
     const envSnapshot = {
       PW_E2E_MANAGE_TASKS_TASK_READY_TIMEOUT_MS: process.env.PW_E2E_MANAGE_TASKS_TASK_READY_TIMEOUT_MS,

@@ -63,12 +63,20 @@ type CaseTaskPollAttempt = {
   note?: string;
 };
 
+type ManageTasksCleanupStep = {
+  name: string;
+  action: () => Promise<void>;
+};
+
 const CLAIMABLE_ACTION = 'claim';
 const EMPLOYMENT_JURISDICTION = 'EMPLOYMENT';
 const EMPLOYMENT_CASE_TYPE = 'ET_EnglandWales';
 const CASE_ROLE_ACCESS_ENDPOINT = 'api/role-access/roles/access-get-by-caseId';
+const XSRF_COOKIE_NAME = 'XSRF-TOKEN';
+const TASK_CANCEL_ENDPOINT_SUFFIX = 'cancel';
 const DEFAULT_TASK_READY_TIMEOUT_MS = 90_000;
 const DEFAULT_TASK_READY_POLL_INTERVAL_MS = 2_000;
+const ACCEPTED_TASK_CLEANUP_STATUSES = new Set([200, 204, 404, 409]);
 
 function parsePositiveInteger(value: string | undefined, fallback: number): number {
   const parsed = Number.parseInt(value ?? '', 10);
@@ -223,6 +231,82 @@ async function fetchTasksForCase(page: Page, caseNumber: string): Promise<{ stat
   };
 }
 
+async function readResponsePreview(response: { json: () => Promise<unknown>; text: () => Promise<string> }): Promise<unknown> {
+  return response.json().catch(async () => response.text().catch(() => ''));
+}
+
+async function buildXsrfHeadersFromPage(page: Page): Promise<Record<string, string>> {
+  const currentUrl = page.url();
+  const cookies = currentUrl.startsWith('http') ? await page.context().cookies(currentUrl) : await page.context().cookies();
+  const xsrf = cookies.find((cookie) => cookie.name === XSRF_COOKIE_NAME)?.value?.trim();
+  return xsrf ? { 'X-XSRF-TOKEN': xsrf } : {};
+}
+
+async function runManageTasksCleanupSteps(steps: ManageTasksCleanupStep[]): Promise<void> {
+  const failures: Array<{ name: string; error: Error }> = [];
+
+  for (const step of steps) {
+    try {
+      await step.action();
+    } catch (error) {
+      failures.push({ name: step.name, error: error instanceof Error ? error : new Error(String(error)) });
+    }
+  }
+
+  if (failures.length > 0) {
+    throw new Error(
+      `Manage Tasks live cleanup failed: ${failures.map((failure) => `${failure.name}: ${failure.error.message}`).join('; ')}`
+    );
+  }
+}
+
+async function cleanupWaTaskForManageTasksCase({
+  page,
+  taskId,
+  testInfo,
+}: {
+  page: Page;
+  taskId?: string;
+  testInfo: TestInfo;
+}): Promise<void> {
+  if (!taskId?.trim()) {
+    await testInfo.attach('manage-tasks-wa-task-cleanup.json', {
+      body: JSON.stringify({ status: 'skipped', ok: true, note: 'no WA task id was created' }, null, 2),
+      contentType: 'application/json',
+    });
+    return;
+  }
+
+  const endpoint = `workallocation/task/${encodeURIComponent(taskId)}/${TASK_CANCEL_ENDPOINT_SUFFIX}`;
+  const requestPayload = { hasNoAssigneeOnComplete: false };
+  const headers = await buildXsrfHeadersFromPage(page);
+  const response = await page.request.post(endpoint, {
+    data: requestPayload,
+    headers,
+    failOnStatusCode: false,
+  });
+  const status = response.status();
+  const cleanup = {
+    taskId,
+    endpoint,
+    action: TASK_CANCEL_ENDPOINT_SUFFIX,
+    requestPayload,
+    hasXsrfToken: Boolean(headers['X-XSRF-TOKEN']),
+    status,
+    ok: ACCEPTED_TASK_CLEANUP_STATUSES.has(status),
+    responsePreview: await readResponsePreview(response),
+  };
+
+  await testInfo.attach('manage-tasks-wa-task-cleanup.json', {
+    body: JSON.stringify(cleanup, null, 2),
+    contentType: 'application/json',
+  });
+
+  if (!cleanup.ok) {
+    throw new Error(`WA task cleanup failed for ${taskId}: cancel returned HTTP ${status}.`);
+  }
+}
+
 async function waitForClaimableTaskForCase({
   page,
   caseNumber,
@@ -353,11 +437,26 @@ export async function setupClaimableManageTasksCase({
   }
 
   const cleanup = async (): Promise<void> => {
-    await cleanupWaTaskRoleAssignmentsForManageTasksCase({
-      roleAssignmentIds: waProvisioning.roleAssignmentIds,
-      roleAssignmentReference: waProvisioning.roleAssignmentReference,
-      testInfo,
-    });
+    await runManageTasksCleanupSteps([
+      {
+        name: 'wa-task-cancel',
+        action: () =>
+          cleanupWaTaskForManageTasksCase({
+            page,
+            taskId: waProvisioning.taskId,
+            testInfo,
+          }),
+      },
+      {
+        name: 'wa-role-assignment-delete',
+        action: () =>
+          cleanupWaTaskRoleAssignmentsForManageTasksCase({
+            roleAssignmentIds: waProvisioning.roleAssignmentIds,
+            roleAssignmentReference: waProvisioning.roleAssignmentReference,
+            testInfo,
+          }),
+      },
+    ]);
   };
 
   let task: ManageTasksLiveTask;
@@ -401,9 +500,12 @@ export async function setupClaimableManageTasksCase({
 }
 
 export const __test__ = {
+  buildXsrfHeadersFromPage,
+  cleanupWaTaskForManageTasksCase,
   extractTasks,
   fetchRoleAccessDiagnostics,
   normalizeTask,
+  runManageTasksCleanupSteps,
   summarizeRoleAccessPayload,
   waitForClaimableTaskForCase,
 };

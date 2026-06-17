@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { HearingConditions } from '../../../hearings/models/hearingConditions';
@@ -42,13 +42,10 @@ export class CaseHearingsListComponent implements OnInit {
 
   constructor(
     private readonly hearingStore: Store<fromHearingStore.State>,
-    private readonly activatedRoute: ActivatedRoute,
     private readonly router: Router,
     private readonly hearingsFeatureService: HearingsFeatureService,
     private readonly hearingsService: HearingsService
-  ) {
-    this.caseId = this.activatedRoute.snapshot.params.cid;
-  }
+  ) {}
 
   public ngOnInit(): void {
     if (this.status === EXUISectionStatusEnum.PAST_OR_CANCELLED) {

@@ -1,6 +1,6 @@
 import { test, expect, type APIRequestContext } from '@playwright/test';
 
-import { expectStatus, withRetry, __test__ as apiTestUtilsTest } from './utils/apiTestUtils';
+import { expectStatus, guardedRequest, withRetry, __test__ as apiTestUtilsTest } from './utils/apiTestUtils';
 import { resolveRoleAccessCaseId } from './data/testIds';
 import { __test__ as fixturesTest } from './fixtures';
 import { buildTaskSearchRequest, seedTaskId } from './utils/work-allocation';
@@ -39,6 +39,38 @@ test.describe('Helper utilities and retry logic', { tag: '@svc-internal' }, () =
     expect(defaultRes.status).toBe(200);
 
     await expect(withRetry(async () => ({ status: 200 }), { retries: -1 })).rejects.toThrow('withRetry failed unexpectedly');
+  });
+
+  test('guardedRequest converts request timeouts into guarded downstream status', async () => {
+    let timeoutAnnotations = 0;
+    const timeoutResult = await guardedRequest(
+      async () => {
+        throw new Error('Timeout 30000ms exceeded');
+      },
+      {
+        onRequestTimeout: () => {
+          timeoutAnnotations += 1;
+        },
+      }
+    );
+
+    expect(timeoutResult).toEqual({ data: undefined, status: 504 });
+    expect(timeoutAnnotations).toBe(1);
+
+    await expect(
+      guardedRequest(
+        async () => {
+          throw new Error('Timeout 30000ms exceeded');
+        },
+        { failOnRequestError: true }
+      )
+    ).rejects.toThrow('Timeout 30000ms exceeded');
+
+    await expect(
+      guardedRequest(async () => {
+        throw new Error('invalid payload');
+      })
+    ).rejects.toThrow('invalid payload');
   });
 
   test('buildXsrfHeadersWith covers token present and missing', async () => {

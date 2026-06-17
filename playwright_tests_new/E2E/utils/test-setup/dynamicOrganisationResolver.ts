@@ -59,6 +59,7 @@ type DynamicOrganisationResolverDeps = {
 
 const DEFAULT_LOCK_TIMEOUT_MS = 60_000;
 const DEFAULT_LOCK_POLL_INTERVAL_MS = 250;
+const DEFAULT_LOCK_STALE_MS = 15 * 60_000;
 
 function resolveDynamicOrganisationMode(): 'dynamic' {
   const mode = firstNonEmpty(process.env.PW_DYNAMIC_ORGANISATION_MODE)?.toLowerCase();
@@ -107,6 +108,11 @@ function resolveLockPollIntervalMs(): number {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : DEFAULT_LOCK_POLL_INTERVAL_MS;
 }
 
+function resolveLockStaleMs(): number {
+  const parsed = Number.parseInt(process.env.PW_DYNAMIC_ORGANISATION_LOCK_STALE_MS ?? '', 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : DEFAULT_LOCK_STALE_MS;
+}
+
 async function sleep(ms: number): Promise<void> {
   await new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -131,9 +137,42 @@ async function writeCache(cachePath: string, entry: DynamicOrganisationCacheEntr
   await fs.writeFile(cachePath, `${JSON.stringify(entry, null, 2)}\n`, 'utf8');
 }
 
+async function tryRetireStaleLock(lockPath: string, staleMs: number): Promise<boolean> {
+  let stats;
+  try {
+    stats = await fs.stat(lockPath);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+      return true;
+    }
+    throw error;
+  }
+
+  if (Date.now() - stats.mtimeMs < staleMs) {
+    return false;
+  }
+
+  const retiredPath = `${lockPath}.stale-${process.pid}-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  try {
+    await fs.rename(lockPath, retiredPath);
+  } catch (error) {
+    const code = (error as NodeJS.ErrnoException).code;
+    if (code === 'ENOENT') {
+      return true;
+    }
+    if (code === 'EEXIST') {
+      return false;
+    }
+    throw error;
+  }
+  await fs.rm(retiredPath, { recursive: true, force: true });
+  return true;
+}
+
 async function withDirectoryLock<T>(lockPath: string, action: () => Promise<T>): Promise<T> {
   const timeoutMs = resolveLockTimeoutMs();
   const pollIntervalMs = resolveLockPollIntervalMs();
+  const staleMs = resolveLockStaleMs();
   const deadline = Date.now() + timeoutMs;
   await fs.mkdir(path.dirname(lockPath), { recursive: true });
   while (true) {
@@ -144,8 +183,14 @@ async function withDirectoryLock<T>(lockPath: string, action: () => Promise<T>):
       if ((error as NodeJS.ErrnoException).code !== 'EEXIST') {
         throw error;
       }
+      if (await tryRetireStaleLock(lockPath, staleMs)) {
+        continue;
+      }
       if (Date.now() >= deadline) {
-        throw new Error(`Timed out after ${timeoutMs}ms waiting for dynamic organisation lock: ${lockPath}`);
+        throw new Error(
+          `Timed out after ${timeoutMs}ms waiting for dynamic organisation lock: ${lockPath}. ` +
+            `Existing lock was not stale; stale threshold is ${staleMs}ms.`
+        );
       }
       await sleep(pollIntervalMs);
     }
@@ -269,5 +314,7 @@ export const __test__ = {
   resolveDynamicOrganisationId,
   resolveDynamicOrganisationMode,
   resolveDynamicOrganisationCacheKey,
+  resolveLockStaleMs,
   sanitizeCacheKey,
+  withDirectoryLock,
 };

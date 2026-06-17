@@ -1,4 +1,7 @@
 import { expect, test } from '@playwright/test';
+import { promises as fs } from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
 
 import {
   DynamicOrganisationProvisioningError,
@@ -44,6 +47,9 @@ type DynamicOrganisationEnvSnapshot = {
   TEST_PASSWORD?: string;
   TEST_API_EMAIL_ADMIN?: string;
   TEST_API_PASSWORD_ADMIN?: string;
+  PW_DYNAMIC_ORGANISATION_LOCK_TIMEOUT_MS?: string;
+  PW_DYNAMIC_ORGANISATION_LOCK_POLL_INTERVAL_MS?: string;
+  PW_DYNAMIC_ORGANISATION_LOCK_STALE_MS?: string;
 };
 
 function response(status: number, body: unknown) {
@@ -84,6 +90,9 @@ function snapshotDynamicOrganisationEnv(): DynamicOrganisationEnvSnapshot {
     TEST_PASSWORD: process.env.TEST_PASSWORD,
     TEST_API_EMAIL_ADMIN: process.env.TEST_API_EMAIL_ADMIN,
     TEST_API_PASSWORD_ADMIN: process.env.TEST_API_PASSWORD_ADMIN,
+    PW_DYNAMIC_ORGANISATION_LOCK_TIMEOUT_MS: process.env.PW_DYNAMIC_ORGANISATION_LOCK_TIMEOUT_MS,
+    PW_DYNAMIC_ORGANISATION_LOCK_POLL_INTERVAL_MS: process.env.PW_DYNAMIC_ORGANISATION_LOCK_POLL_INTERVAL_MS,
+    PW_DYNAMIC_ORGANISATION_LOCK_STALE_MS: process.env.PW_DYNAMIC_ORGANISATION_LOCK_STALE_MS,
   };
 }
 
@@ -869,6 +878,106 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
       expect(createCount).toBe(1);
     } finally {
       restoreDynamicOrganisationEnv(originalEnv);
+    }
+  });
+
+  test('resolver directory lock retires stale lock directories before creating a dynamic organisation', async () => {
+    const originalEnv = snapshotDynamicOrganisationEnv();
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'dynamic-org-lock-stale-'));
+    const lockPath = path.join(tempDir, 'EXUI-4767-run-1.json.lock');
+    await fs.mkdir(lockPath);
+    const staleTime = new Date(Date.now() - 10_000);
+    await fs.utimes(lockPath, staleTime, staleTime);
+    process.env.PW_DYNAMIC_ORGANISATION_LOCK_TIMEOUT_MS = '100';
+    process.env.PW_DYNAMIC_ORGANISATION_LOCK_POLL_INTERVAL_MS = '1';
+    process.env.PW_DYNAMIC_ORGANISATION_LOCK_STALE_MS = '1';
+
+    try {
+      const result = await organisationResolverTest.withDirectoryLock(lockPath, async () => {
+        const activeLock = await fs.stat(lockPath);
+        expect(activeLock.isDirectory()).toBe(true);
+        return 'created-after-stale-lock';
+      });
+
+      expect(result).toBe('created-after-stale-lock');
+      await expect(fs.stat(lockPath)).rejects.toMatchObject({ code: 'ENOENT' });
+      const remainingEntries = await fs.readdir(tempDir);
+      expect(remainingEntries).toEqual([]);
+    } finally {
+      restoreDynamicOrganisationEnv(originalEnv);
+      await fs.rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('resolver directory lock times out without removing a fresh active lock', async () => {
+    const originalEnv = snapshotDynamicOrganisationEnv();
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'dynamic-org-lock-fresh-'));
+    const lockPath = path.join(tempDir, 'EXUI-4767-run-1.json.lock');
+    await fs.mkdir(lockPath);
+    process.env.PW_DYNAMIC_ORGANISATION_LOCK_TIMEOUT_MS = '5';
+    process.env.PW_DYNAMIC_ORGANISATION_LOCK_POLL_INTERVAL_MS = '1';
+    process.env.PW_DYNAMIC_ORGANISATION_LOCK_STALE_MS = String(15 * 60_000);
+
+    try {
+      await expect(
+        organisationResolverTest.withDirectoryLock(lockPath, async () => {
+          throw new Error('fresh lock should not be acquired');
+        })
+      ).rejects.toThrow(/Existing lock was not stale; stale threshold is 900000ms/);
+
+      const freshLock = await fs.stat(lockPath);
+      expect(freshLock.isDirectory()).toBe(true);
+    } finally {
+      restoreDynamicOrganisationEnv(originalEnv);
+      await fs.rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('resolver directory lock serialises contenders after stale lock retirement', async () => {
+    const originalEnv = snapshotDynamicOrganisationEnv();
+    const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'dynamic-org-lock-serial-'));
+    const lockPath = path.join(tempDir, 'EXUI-4767-run-1.json.lock');
+    await fs.mkdir(lockPath);
+    const staleTime = new Date(Date.now() - 10_000);
+    await fs.utimes(lockPath, staleTime, staleTime);
+    process.env.PW_DYNAMIC_ORGANISATION_LOCK_TIMEOUT_MS = '1000';
+    process.env.PW_DYNAMIC_ORGANISATION_LOCK_POLL_INTERVAL_MS = '1';
+    process.env.PW_DYNAMIC_ORGANISATION_LOCK_STALE_MS = '1';
+
+    let first: Promise<string> | undefined;
+    let second: Promise<string> | undefined;
+    let releaseFirst: () => void = () => undefined;
+
+    try {
+      const entered: string[] = [];
+      const firstEntered = new Promise<void>((resolve) => {
+        first = organisationResolverTest.withDirectoryLock(lockPath, async () => {
+          entered.push('first');
+          resolve();
+          await new Promise<void>((release) => {
+            releaseFirst = release;
+          });
+          return 'first-result';
+        });
+      });
+
+      await firstEntered;
+
+      second = organisationResolverTest.withDirectoryLock(lockPath, async () => {
+        entered.push('second');
+        return 'second-result';
+      });
+
+      await expect.poll(() => entered, { timeout: 100 }).toEqual(['first']);
+      releaseFirst();
+
+      await expect(Promise.all([first, second])).resolves.toEqual(['first-result', 'second-result']);
+      expect(entered).toEqual(['first', 'second']);
+    } finally {
+      releaseFirst();
+      await Promise.allSettled([first, second].filter((promise): promise is Promise<string> => Boolean(promise)));
+      restoreDynamicOrganisationEnv(originalEnv);
+      await fs.rm(tempDir, { recursive: true, force: true });
     }
   });
 

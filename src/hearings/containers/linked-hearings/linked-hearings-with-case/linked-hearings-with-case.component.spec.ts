@@ -242,6 +242,90 @@ describe('LinkedHearingsWithCaseComponent', () => {
     expect(component.linkHearingForm.valid).toBe(true);
   });
 
+  describe('onSubmit', () => {
+    const setLinkedHearingForm = (caseSelections: boolean[][]) => {
+      component.linkHearingForm = component['fb'].group(
+        {
+          linkedCasesWithHearings: component['fb'].array(
+            caseSelections.map((selectedValues, caseIndex) =>
+              component['fb'].group({
+                caseRef: `case-${caseIndex}`,
+                caseName: 'Smith vs Peterson',
+                reasonsForLink: component['fb'].array([]),
+                caseHearings: component['fb'].array(
+                  selectedValues.map((isSelected, hearingIndex) =>
+                    component['fb'].group({
+                      hearingID: `hearing-${caseIndex}-${hearingIndex}`,
+                      isSelected,
+                    })
+                  )
+                ),
+              })
+            )
+          ),
+        },
+        { validator: component['validators'].validateLinkedHearings() }
+      );
+
+      component.linkHearingForm.updateValueAndValidity();
+    };
+
+    it('should save linked hearing info in manage mode when more than one hearing is selected', () => {
+      component.isManageLink = true;
+      setLinkedHearingForm([[true], [true]]);
+
+      spyOn(component, 'saveLinkedHearingInfo');
+      spyOn(component, 'onUnlinkHearings');
+
+      component.onSubmit();
+
+      expect(component.saveLinkedHearingInfo).toHaveBeenCalled();
+      expect(component.onUnlinkHearings).not.toHaveBeenCalled();
+    });
+
+    it('should unlink hearings in manage mode when no hearings are selected', () => {
+      component.isManageLink = true;
+      setLinkedHearingForm([[false], [false]]);
+
+      spyOn(component, 'saveLinkedHearingInfo');
+      spyOn(component, 'onUnlinkHearings');
+
+      component.onSubmit();
+
+      expect(component.onUnlinkHearings).toHaveBeenCalled();
+      expect(component.saveLinkedHearingInfo).not.toHaveBeenCalled();
+    });
+
+    it('should save linked hearing info in link mode when the form is valid and more than one hearing is selected', () => {
+      component.isManageLink = false;
+      setLinkedHearingForm([[true], [true]]);
+
+      spyOn(component, 'saveLinkedHearingInfo');
+
+      component.onSubmit();
+
+      expect(component.linkedHearingSelectionError).toBeNull();
+      expect(component.errors).toEqual([]);
+      expect(component.saveLinkedHearingInfo).toHaveBeenCalled();
+    });
+
+    it('should show valid selection error in link mode when no hearings are selected', () => {
+      component.isManageLink = false;
+      setLinkedHearingForm([[false], [false]]);
+
+      spyOn(component, 'saveLinkedHearingInfo');
+
+      component.onSubmit();
+
+      expect(component.linkedHearingSelectionError).toBe(component.linkedHearingEnum.ValidSelectionError);
+      expect(component.errors).toContain({
+        id: 'linked-form',
+        message: component.linkedHearingEnum.ValidSelectionError,
+      });
+      expect(component.saveLinkedHearingInfo).not.toHaveBeenCalled();
+    });
+  });
+
   it('should navigate to previous page', () => {
     component.caseId = '8254902572336147';
     component.hearingId = 'h1000002';
@@ -304,6 +388,49 @@ describe('LinkedHearingsWithCaseComponent', () => {
   it('should check update linked cases', () => {
     component.updateLinkedCase(0, 0);
     expect(component.getHearingsFormValue(0).controls[0].get('isSelected').value).toBe(true);
+  });
+
+  describe('showClear', () => {
+    const setLinkedHearingForm = (selectedValues: boolean[]) => {
+      component.linkHearingForm = component['fb'].group({
+        linkedCasesWithHearings: component['fb'].array([
+          component['fb'].group({
+            caseRef: '4652724902696213',
+            caseName: 'Smith vs Peterson',
+            reasonsForLink: component['fb'].array([]),
+            caseHearings: component['fb'].array(
+              selectedValues.map((isSelected) =>
+                component['fb'].group({
+                  hearingID: 'h100010',
+                  isSelected,
+                })
+              )
+            ),
+          }),
+        ]),
+      });
+    };
+
+    it('should return true when in manage link mode', () => {
+      component.isManageLink = true;
+      setLinkedHearingForm([false]);
+
+      expect(component.showClear(0)).toBe(true);
+    });
+
+    it('should return true when a hearing is selected', () => {
+      component.isManageLink = false;
+      setLinkedHearingForm([false, true]);
+
+      expect(component.showClear(0)).toBe(true);
+    });
+
+    it('should return false when no hearings are selected', () => {
+      component.isManageLink = false;
+      setLinkedHearingForm([false, false]);
+
+      expect(component.showClear(0)).toBe(false);
+    });
   });
 
   it('should check navigate', () => {
@@ -392,6 +519,86 @@ describe('LinkedHearingsWithCaseComponent', () => {
   it('should check update linked cases when hearing position is mentioned', () => {
     component.updateLinkedCase(0, 0);
     expect(component.getHearingsFormValue(0, 0).controls[0].get('isSelected').value).toBe(true);
+  });
+
+  it('should return the caseHearings form array when the control exists', () => {
+    const expectedFormArray = component['fb'].array([
+      component['fb'].group({
+        hearingID: 'h100010',
+        isSelected: true,
+      }),
+    ]);
+
+    const casesFormArray = component['fb'].array([
+      component['fb'].group({
+        caseRef: '4652724902696213',
+        caseName: 'X vs Y',
+        reasonsForLink: component['fb'].array([]),
+        caseHearings: expectedFormArray,
+      }),
+    ]);
+
+    spyOnProperty(component, 'getCasesFormValue', 'get').and.returnValue(casesFormArray);
+
+    const result = component.getHearingsFormValue(0);
+
+    expect(result).toBe(expectedFormArray);
+    expect(result.length).toBe(1);
+
+    const nextResult = component.getHearingsFormValue(0, 0);
+    expect(nextResult).toBe(expectedFormArray);
+    expect(nextResult.length).toBe(1);
+  });
+
+  it('should return an empty form array when caseHearings control is missing', () => {
+    const casesFormArray = component['fb'].array([
+      component['fb'].group({
+        caseRef: '4652724902696213',
+        caseName: 'X vs Y',
+        reasonsForLink: component['fb'].array([]),
+      }),
+    ]);
+
+    spyOnProperty(component, 'getCasesFormValue', 'get').and.returnValue(casesFormArray);
+
+    const result = component.getHearingsFormValue(0, 0);
+
+    expect(result).toBeTruthy();
+    expect(result.length).toBe(0);
+  });
+
+  it('should return an empty form array when there are no case controls', () => {
+    spyOnProperty(component, 'getCasesFormValue', 'get').and.returnValue(component['fb'].array([]));
+
+    const result = component.getHearingsFormValue(0);
+
+    expect(result).toBeTruthy();
+    expect(result.length).toBe(0);
+  });
+
+  it('should return an empty form array when case position is out of bounds', () => {
+    const casesFormArray = component['fb'].array([
+      component['fb'].group({
+        caseRef: '4652724902696213',
+        caseName: 'X vs Y',
+        reasonsForLink: component['fb'].array([]),
+        caseHearings: component['fb'].array([]),
+      }),
+    ]);
+
+    spyOnProperty(component, 'getCasesFormValue', 'get').and.returnValue(casesFormArray);
+
+    expect(component.getHearingsFormValue(-1).length).toBe(0);
+    expect(component.getHearingsFormValue(1).length).toBe(0);
+  });
+
+  it('should return an empty form array when linkedCases is undefined', () => {
+    component.linkedCases = undefined;
+
+    const result = component.getCasesFormArray;
+
+    expect(result).toBeTruthy();
+    expect(result.length).toBe(0);
   });
 
   afterEach(() => {

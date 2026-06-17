@@ -1,5 +1,5 @@
 {
-  "excludedTags": ["@e2e-manage-tasks"],
+  "excludedTags": [],
   "availableTags": [
     "@a11y",
     "@e2e",

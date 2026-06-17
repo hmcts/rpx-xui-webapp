@@ -5,7 +5,6 @@ import type { CreateCasePage } from '../../page-objects/pages/exui/createCase.po
 import type { ProfessionalUserUtils } from '../professional-user.utils';
 import type { SessionIdentity } from '../../../common/sessionIdentity';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
-import { buildCasePayloadFromTemplate } from './payloads/registry';
 import { setupCaseForJourney } from './caseSetup';
 import { provisionDynamicSolicitorForAlias } from './dynamicSolicitorSession';
 import {
@@ -68,15 +67,9 @@ type ManageTasksCleanupStep = {
 };
 
 const CLAIMABLE_ACTION = 'claim';
-const EMPLOYMENT_JURISDICTION = 'EMPLOYMENT';
-const EMPLOYMENT_CASE_TYPE = 'ET_EnglandWales';
-const MANAGE_TASKS_WA_CASEWORKER_ROLES = [
-  'caseworker',
-  'caseworker-employment',
-  'caseworker-employment-api',
-  'caseworker-wa',
-  'caseworker-wa-task-configuration',
-] as const;
+const WA_JURISDICTION = 'WA';
+const WA_CASE_TYPE = 'WaCaseType';
+const MANAGE_TASKS_WA_CASEWORKER_ROLES = ['caseworker', 'caseworker-wa', 'caseworker-wa-task-configuration'] as const;
 const CASE_ROLE_ACCESS_ENDPOINT = 'api/role-access/roles/access-get-by-caseId';
 const XSRF_COOKIE_NAME = 'XSRF-TOKEN';
 const TASK_CANCEL_ENDPOINT_SUFFIX = 'cancel';
@@ -87,6 +80,21 @@ const ACCEPTED_TASK_CLEANUP_STATUSES = new Set([200, 204, 404, 409]);
 function parsePositiveInteger(value: string | undefined, fallback: number): number {
   const parsed = Number.parseInt(value ?? '', 10);
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+function buildManageTasksWaCasePayload(): { fieldValues: Record<string, unknown> } {
+  return {
+    fieldValues: {
+      TextField: 'EXUI automated Manage Tasks case',
+      caseAccessCategory: 'categoryA,categoryC',
+      appellantGivenNames: 'EXUI',
+      appellantFamilyName: 'Automated',
+      appealType: 'protection',
+      nextHearingId: 'exui-auto-next-hearing',
+      nextHearingDate: new Date(Date.now() + 2 * 24 * 60 * 60_000).toISOString(),
+      urgent: 'Yes',
+    },
+  };
 }
 
 function resolveTaskReadyTimeoutMs(): number {
@@ -391,7 +399,7 @@ async function waitForClaimableTaskForCase({
   });
 
   throw new Error(
-    `Created Employment case ${caseNumber} did not produce a claimable WA task within ${timeoutMs}ms. ` +
+    `Created WA case ${caseNumber} did not produce a claimable WA task within ${timeoutMs}ms. ` +
       `Last tasks: ${JSON.stringify(lastTasks)}. ` +
       `Role access status: ${roleAccess.status ?? 'unknown'}, roles visible: ${roleAccess.roleCount}.`
   );
@@ -410,27 +418,27 @@ export async function setupClaimableManageTasksCase({
   }
 
   const { user: caseCreator, sessionIdentity: caseCreatorSessionIdentity } = await provisionDynamicSolicitorForAlias({
-    alias: 'EMPLOYMENT_DYNAMIC_SOLICITOR',
+    alias: 'WA_DYNAMIC_SOLICITOR',
     professionalUserUtils,
+    roleNames: MANAGE_TASKS_WA_CASEWORKER_ROLES,
     roleContext: {
-      jurisdiction: 'employment',
-      caseType: EMPLOYMENT_CASE_TYPE,
+      jurisdiction: WA_JURISDICTION,
+      caseType: WA_CASE_TYPE,
       testType: 'case-create',
     },
     testInfo,
     mode: 'auto',
-    assertEmploymentAssignmentPayloadAccepted: true,
   });
 
   await ensureAuthenticatedPage(page, caseCreatorSessionIdentity, { waitForSelector: 'exui-header' });
 
   const setup = await setupCaseForJourney({
     scenario: 'manage-tasks-dynamic-org-dynamic-user',
-    jurisdiction: EMPLOYMENT_JURISDICTION,
-    caseType: EMPLOYMENT_CASE_TYPE,
-    apiEventId: 'initiateCase',
+    jurisdiction: WA_JURISDICTION,
+    caseType: WA_CASE_TYPE,
+    apiEventId: 'CREATE',
     mode: 'api-required',
-    apiPayload: buildCasePayloadFromTemplate('employment.et-england-wales.initiate-case'),
+    apiPayload: buildManageTasksWaCasePayload(),
     page,
     createCasePage,
     caseDetailsPage,
@@ -438,12 +446,12 @@ export async function setupClaimableManageTasksCase({
   });
 
   const { user: taskActor, sessionIdentity: taskActorSessionIdentity } = await provisionDynamicSolicitorForAlias({
-    alias: 'EMPLOYMENT_DYNAMIC_CASEWORKER',
+    alias: 'WA_DYNAMIC_CASEWORKER',
     professionalUserUtils,
     roleNames: MANAGE_TASKS_WA_CASEWORKER_ROLES,
     roleContext: {
-      jurisdiction: 'employment',
-      caseType: EMPLOYMENT_CASE_TYPE,
+      jurisdiction: WA_JURISDICTION,
+      caseType: WA_CASE_TYPE,
     },
     testInfo,
     mode: 'auto',
@@ -454,8 +462,8 @@ export async function setupClaimableManageTasksCase({
   const waProvisioning = await provisionWaTaskForManageTasksCase({
     user: taskActor,
     caseNumber: setup.caseNumber,
-    jurisdiction: EMPLOYMENT_JURISDICTION,
-    caseType: EMPLOYMENT_CASE_TYPE,
+    jurisdiction: WA_JURISDICTION,
+    caseType: WA_CASE_TYPE,
     testInfo,
   });
 

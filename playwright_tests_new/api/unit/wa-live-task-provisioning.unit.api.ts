@@ -143,6 +143,40 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
     });
   });
 
+  test('uses the built-in processApplication fallback only for the WA synthetic jurisdiction', async () => {
+    const attachments: Array<{ name: string; body: string }> = [];
+    const emptyTaskTypeContext = {
+      get: async () => response(200, { task_types: [] }),
+    };
+    const testInfo = {
+      attach: async (name: string, payload: { body: string | Buffer }) => {
+        attachments.push({ name, body: String(payload.body) });
+      },
+    };
+
+    await expect(
+      waLiveTaskProvisioningTest.resolveConfiguredTaskType({
+        context: emptyTaskTypeContext,
+        env: {},
+        jurisdiction: 'EMPLOYMENT',
+        testInfo,
+      })
+    ).rejects.toThrow(/WA task type discovery returned no configured task types for jurisdiction EMPLOYMENT/);
+
+    await expect(
+      waLiveTaskProvisioningTest.resolveConfiguredTaskType({
+        context: emptyTaskTypeContext,
+        env: {},
+        jurisdiction: 'WA',
+        testInfo,
+      })
+    ).resolves.toEqual({
+      taskName: 'process application',
+      taskType: 'processApplication',
+    });
+    expect(attachments.at(-1)?.body).toContain('"source": "wa-default"');
+  });
+
   test('attaches missing prerequisite diagnostics without calling live services', async () => {
     const attachments: Array<{ name: string; body: string }> = [];
     const result = await provisionWaTaskForManageTasksCaseWithDeps(
@@ -408,6 +442,12 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
 
   test('uses an exclusive WA S2S identity for direct task initiation', () => {
     expect(waLiveTaskProvisioningTest.resolveTaskInitiationS2sMicroservice({})).toBe('wa_task_management_api');
+    expect(
+      waLiveTaskProvisioningTest.resolveTaskInitiationS2sMicroservice({
+        S2S_MICROSERVICE_NAME: 'xui_webapp',
+        MICROSERVICE: 'xui_webapp',
+      })
+    ).toBe('wa_task_management_api');
     expect(
       waLiveTaskProvisioningTest.resolveTaskInitiationS2sMicroservice({
         PW_E2E_MANAGE_TASKS_TASK_INITIATION_S2S_MICROSERVICE: 'wa_workflow_api',

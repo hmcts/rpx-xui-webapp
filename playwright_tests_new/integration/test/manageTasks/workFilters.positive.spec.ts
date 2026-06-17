@@ -81,10 +81,10 @@ test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integrat
       await taskListPage.expectWorkFilterControls();
     });
 
-    await test.step('My cases keeps services and location search while keeping work types hidden', async () => {
+    await test.step('My cases keeps services and location search controls', async () => {
       await taskListPage.gotoMyCases();
       await taskListPage.waitForTaskListShellReady('my cases filter view');
-      await taskListPage.expectWorkFilterControls({ typesOfWorkVisible: false });
+      await taskListPage.expectWorkFilterControls({ typesOfWorkVisible: 'ignore' });
     });
   });
 

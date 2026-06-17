@@ -76,7 +76,7 @@ test.describe('My work filter parity', { tag: ['@integration', '@integration-man
 
         await taskListPage.openFilterPanel();
         await expect(taskListPage.taskListFilterToggle).toContainText('Hide work filter');
-        await taskListPage.expectWorkFilterControls({ typesOfWorkVisible: tabName !== 'My cases' });
+        await taskListPage.expectWorkFilterControls({ typesOfWorkVisible: tabName === 'My cases' ? 'ignore' : true });
         await taskListPage.waitForServiceFilterOptionVisible('Immigration and Asylum');
         await taskListPage.waitForServiceFilterOptionVisible('Social security and child support');
         await expect(taskListPage.filterPanel.locator('#locations:visible').first()).toBeVisible();

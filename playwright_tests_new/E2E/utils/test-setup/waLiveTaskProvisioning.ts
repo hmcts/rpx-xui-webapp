@@ -109,8 +109,8 @@ type WaConfiguredTaskType = {
 const DEFAULT_LOCATION_ID = '765324';
 const DEFAULT_LOCATION_NAME = 'Taylor House';
 const DEFAULT_REGION_ID = '1';
-const DEFAULT_TASK_NAME = 'Review dynamic Manage Tasks case';
-const DEFAULT_TASK_TYPE = 'reviewDynamicManageTasksCase';
+const DEFAULT_TASK_NAME = 'process application';
+const DEFAULT_TASK_TYPE = 'processApplication';
 const DEFAULT_TASK_CATEGORY = 'Case Progression';
 const DEFAULT_SECURITY_CLASSIFICATION = 'PUBLIC';
 const DEFAULT_CASE_MANAGEMENT_CATEGORY = 'Protection';
@@ -435,12 +435,8 @@ async function resolveServiceToken(deps: TokenDeps = {}): Promise<string | undef
 
 function resolveTaskInitiationS2sMicroservice(env: Env = process.env): string {
   return (
-    firstNonEmpty(
-      env.PW_E2E_MANAGE_TASKS_TASK_INITIATION_S2S_MICROSERVICE,
-      env.WA_TASK_INITIATION_S2S_MICROSERVICE,
-      env.S2S_MICROSERVICE_NAME,
-      env.MICROSERVICE
-    ) ?? DEFAULT_TASK_INITIATION_SERVICE_AUTH_MICROSERVICE
+    firstNonEmpty(env.PW_E2E_MANAGE_TASKS_TASK_INITIATION_S2S_MICROSERVICE, env.WA_TASK_INITIATION_S2S_MICROSERVICE) ??
+    DEFAULT_TASK_INITIATION_SERVICE_AUTH_MICROSERVICE
   );
 }
 
@@ -538,16 +534,32 @@ async function resolveConfiguredTaskType(params: {
   const status = response.status();
   const payload = await readPayload(response);
   const configuredTaskTypes = extractConfiguredTaskTypes(payload);
-  const selected =
-    (override
-      ? (configuredTaskTypes.find((taskType) => taskType.taskType === override.taskType) ?? override)
-      : configuredTaskTypes[0]) ?? undefined;
+  const fallback =
+    params.jurisdiction.toUpperCase() === 'WA'
+      ? {
+          taskType: DEFAULT_TASK_TYPE,
+          taskName: DEFAULT_TASK_NAME,
+        }
+      : undefined;
+  const selected = override
+    ? (configuredTaskTypes.find((taskType) => taskType.taskType === override.taskType) ?? override)
+    : (configuredTaskTypes[0] ?? fallback);
+  const source = override
+    ? configuredTaskTypes.some((taskType) => taskType.taskType === override.taskType)
+      ? 'override-discovered'
+      : 'override'
+    : configuredTaskTypes.length > 0
+      ? 'discovered'
+      : fallback
+        ? 'wa-default'
+        : 'unresolved';
 
   await params.testInfo.attach('manage-tasks-wa-task-types.json', {
     body: JSON.stringify(
       {
         jurisdiction: params.jurisdiction,
         status,
+        source,
         selected,
         override,
         configuredTaskTypes,
@@ -568,7 +580,6 @@ async function resolveConfiguredTaskType(params: {
         'Set PW_E2E_MANAGE_TASKS_TASK_TYPE/PW_E2E_MANAGE_TASKS_TASK_NAME to a WA-configured task contract.'
     );
   }
-
   return selected;
 }
 
@@ -1278,6 +1289,7 @@ export const __test__ = {
   extractRoleAssignments,
   requiresProvisioning,
   resolveConfiguredTaskTypeOverride,
+  resolveConfiguredTaskType,
   resolveHmctsEnvironment,
   resolveProvisioningMode,
   resolveRoleAssignmentReadyPollIntervalMs,

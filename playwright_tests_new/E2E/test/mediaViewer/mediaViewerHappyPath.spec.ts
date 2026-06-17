@@ -1,8 +1,12 @@
 import { faker } from '@faker-js/faker';
-import { Page, Response } from '@playwright/test';
+import { Page } from '@playwright/test';
 import { expect, test } from '../../fixtures';
 import { acceptAccessCookiesIfPresent, applySessionCookies, ensureSession } from '../../../common/sessionCapture';
 import { CaseFileViewPage } from '../../page-objects/pages/exui/caseFileView.po';
+import {
+  MEDIA_VIEWER_DOCUMENT_BINARY_ROUTE_PATTERN,
+  MediaViewerBackendMonitor,
+} from '../../utils/test-setup/mediaViewerBackendMonitor';
 import { buildCasePayloadFromTemplate } from '../../utils/test-setup/payloads/registry';
 import { setupCaseForJourney } from '../../utils/test-setup/caseSetup';
 import { uploadDocumentViaApi } from '../../utils/test-setup/uploadDocumentViaApi';
@@ -13,68 +17,14 @@ import path from 'node:path';
 const JURISDICTION = 'DIVORCE';
 const CASE_TYPE = 'xuiTestCaseType';
 const MEDIA_VIEWER_ROUTE_PATTERN = /\/media-viewer(?:\?|$)/;
-const DOCUMENT_BINARY_ROUTE_PATTERN = /\/documents(?:v2)?\/[^/]+\/binary$/;
 const MEDIA_VIEWER_FIXTURE_PATH = path.resolve(
   process.cwd(),
   'playwright_tests_new/integration/testData/documents/case-file-view-document-delivery.pdf'
 );
 const MEDIA_VIEWER_FIXTURE_CONTENT = readFileSync(MEDIA_VIEWER_FIXTURE_PATH, 'latin1');
-const MEDIA_VIEWER_TEST_TIMEOUT_MS = Number.parseInt(process.env.PW_MEDIA_VIEWER_TEST_TIMEOUT_MS ?? '', 10) || 180_000;
+const MEDIA_VIEWER_TEST_TIMEOUT_MS = Number.parseInt(process.env.PW_MEDIA_VIEWER_TEST_TIMEOUT_MS ?? '', 10) || 120_000;
 const SESSION_BOOTSTRAP_TIMEOUT_MS =
-  Number.parseInt(process.env.PW_MEDIA_VIEWER_SESSION_BOOTSTRAP_TIMEOUT_MS ?? '', 10) || 300_000;
-const DOCUMENT_BINARY_WAIT_TIMEOUT_MS = 30_000;
-const CRITICAL_BACKEND_ROUTE_PATTERNS = [
-  DOCUMENT_BINARY_ROUTE_PATTERN,
-  /\/data\/internal\/cases\/[^/]+$/,
-  /\/aggregated\/caseworkers\/[^/]+\/jurisdictions(?:\/|$)/,
-];
-
-function isCriticalMediaViewerBackendResponse(response: Response): boolean {
-  if (response.request().method() !== 'GET') {
-    return false;
-  }
-
-  const pathname = new URL(response.url()).pathname;
-  return CRITICAL_BACKEND_ROUTE_PATTERNS.some((pattern) => pattern.test(pathname));
-}
-
-function recordCriticalBackendFailure(response: Response, blockingFailures: string[]): void {
-  if (response.status() < 500 || !isCriticalMediaViewerBackendResponse(response)) {
-    return;
-  }
-
-  const failure = `${response.status()} ${response.url()}`;
-  if (!blockingFailures.includes(failure)) {
-    blockingFailures.push(failure);
-  }
-}
-
-function failIfCriticalBackendFailure(stage: string, blockingFailures: string[]): void {
-  if (blockingFailures.length === 0) {
-    return;
-  }
-
-  throw new Error(`Media Viewer ${stage} hit a downstream 5xx before the document could be opened: ${blockingFailures[0]}`);
-}
-
-async function waitForDocumentBinaryResponse(page: Page, binaryResponses: string[], blockingFailures: string[]): Promise<void> {
-  const deadline = Date.now() + DOCUMENT_BINARY_WAIT_TIMEOUT_MS;
-
-  while (Date.now() < deadline) {
-    failIfCriticalBackendFailure('load', blockingFailures);
-
-    if (binaryResponses.length > 0) {
-      return;
-    }
-
-    await page.waitForTimeout(250);
-  }
-
-  throw new Error(
-    `Media Viewer did not request the uploaded document binary within ${DOCUMENT_BINARY_WAIT_TIMEOUT_MS}ms. ` +
-      `Observed blocking failures: ${blockingFailures.join(' | ') || 'none'}`
-  );
-}
+  Number.parseInt(process.env.PW_MEDIA_VIEWER_SESSION_BOOTSTRAP_TIMEOUT_MS ?? '', 10) || 120_000;
 
 test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] }, () => {
   test.describe.configure({ timeout: MEDIA_VIEWER_TEST_TIMEOUT_MS });
@@ -89,25 +39,21 @@ test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] },
     const uniqueSuffix = `${Date.now()}-w${testInfo.workerIndex}-r${testInfo.retry}`;
     const documentFileName = `media-viewer-${uniqueSuffix}.pdf`;
     const caseMarker = `media-viewer-${faker.string.alphanumeric(8)}-${uniqueSuffix}`;
-    const binaryResponses: string[] = [];
-    const blockingFailures: string[] = [];
-    const onResponse = (response: Response) => {
-      recordCriticalBackendFailure(response, blockingFailures);
-
-      if (DOCUMENT_BINARY_ROUTE_PATTERN.test(new URL(response.url()).pathname)) {
-        binaryResponses.push(response.url());
-      }
-    };
+    const backendMonitor = new MediaViewerBackendMonitor();
     let mediaPage: Page | undefined;
 
-    page.context().on('response', onResponse);
+    page.context().on('response', backendMonitor.onResponse);
     try {
       await test.step('Apply solicitor session and open the app shell', async () => {
-        await applySessionCookies(page, RuntimeUserAlias.DIVORCE_SOLICITOR);
-        await page.goto('/');
-        await acceptAccessCookiesIfPresent(page);
-        await expect(caseDetailsPage.exuiHeader.header).toBeVisible();
-        failIfCriticalBackendFailure('app-shell setup', blockingFailures);
+        await backendMonitor.failFastOnCriticalBackendFailure(
+          'app-shell setup',
+          (async () => {
+            await applySessionCookies(page, RuntimeUserAlias.DIVORCE_SOLICITOR);
+            await page.goto('/');
+            await acceptAccessCookiesIfPresent(page);
+            await expect(caseDetailsPage.exuiHeader.header).toBeVisible();
+          })()
+        );
       });
 
       await test.step('Create a case with a document for this test run', async () => {
@@ -120,39 +66,46 @@ test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] },
           fileContent: MEDIA_VIEWER_FIXTURE_CONTENT,
         });
 
-        await setupCaseForJourney({
-          scenario: 'media-viewer-divorce',
-          jurisdiction: JURISDICTION,
-          caseType: CASE_TYPE,
-          apiEventId: 'createCase',
-          mode: 'api-required',
-          apiPayload: buildCasePayloadFromTemplate('divorce.xui-test-case-type.create-case', {
-            overrides: {
-              TextField: caseMarker,
-              DocumentUrl: uploadedDocument,
-            },
-          }),
-          page,
-          createCasePage,
-          caseDetailsPage,
-          testInfo,
-        });
-        failIfCriticalBackendFailure('case setup', blockingFailures);
+        await backendMonitor.failFastOnCriticalBackendFailure(
+          'case setup',
+          setupCaseForJourney({
+            scenario: 'media-viewer-divorce',
+            jurisdiction: JURISDICTION,
+            caseType: CASE_TYPE,
+            apiEventId: 'createCase',
+            mode: 'api-required',
+            apiPayload: buildCasePayloadFromTemplate('divorce.xui-test-case-type.create-case', {
+              overrides: {
+                TextField: caseMarker,
+                DocumentUrl: uploadedDocument,
+              },
+            }),
+            page,
+            createCasePage,
+            caseDetailsPage,
+            testInfo,
+          })
+        );
       });
 
       await test.step('Open the uploaded document from the case details tab', async () => {
-        await caseDetailsPage.waitForDocumentOneRowToContain(documentFileName);
-        failIfCriticalBackendFailure('case-details setup', blockingFailures);
+        await backendMonitor.failFastOnCriticalBackendFailure(
+          'case-details setup',
+          caseDetailsPage.waitForDocumentOneRowToContain(documentFileName)
+        );
         await expect(caseDetailsPage.caseViewerTable).toBeVisible();
         await expect(caseDetailsPage.documentOneAction).toBeVisible();
       });
 
       await test.step('Validate the Media Viewer end-to-end happy path', async () => {
-        mediaPage = await caseDetailsPage.openDocumentOneInMediaViewer();
+        mediaPage = await backendMonitor.failFastOnCriticalBackendFailure(
+          'open document',
+          caseDetailsPage.openDocumentOneInMediaViewer()
+        );
         await mediaPage.waitForLoadState('domcontentloaded').catch(() => undefined);
 
-        await waitForDocumentBinaryResponse(mediaPage, binaryResponses, blockingFailures);
-        await expect.poll(() => binaryResponses.at(-1) ?? '').toMatch(DOCUMENT_BINARY_ROUTE_PATTERN);
+        await backendMonitor.waitForDocumentBinaryResponse(mediaPage);
+        await expect.poll(() => backendMonitor.lastDocumentBinaryUrl).toMatch(MEDIA_VIEWER_DOCUMENT_BINARY_ROUTE_PATTERN);
 
         const resolvedMediaViewerPage = new CaseFileViewPage(mediaPage);
         await expect(mediaPage).toHaveURL(MEDIA_VIEWER_ROUTE_PATTERN);
@@ -162,7 +115,7 @@ test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] },
         await expect(resolvedMediaViewerPage.standaloneMediaViewPanel).toBeVisible();
       });
     } finally {
-      page.context().off('response', onResponse);
+      page.context().off('response', backendMonitor.onResponse);
       if (mediaPage && !mediaPage.isClosed()) {
         if (mediaPage === page) {
           await mediaPage.goto('about:blank').catch(() => undefined);

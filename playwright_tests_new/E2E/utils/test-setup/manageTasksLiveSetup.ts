@@ -9,7 +9,11 @@ import { buildCasePayloadFromTemplate } from './payloads/registry';
 import { setupCaseForJourney } from './caseSetup';
 import { provisionDynamicSolicitorForAlias } from './dynamicSolicitorSession';
 import { createEmploymentCase } from './journeys/employmentJourneys';
-import { cleanupWaTaskRoleAssignmentsForManageTasksCase, provisionWaTaskForManageTasksCase } from './waLiveTaskProvisioning';
+import {
+  cleanupWaTaskRoleAssignmentsForManageTasksCase,
+  provisionWaTaskForManageTasksCase,
+  resolveWaTaskProvisioningReadiness,
+} from './waLiveTaskProvisioning';
 
 export type ManageTasksLiveTask = {
   id: string;
@@ -63,8 +67,8 @@ const CLAIMABLE_ACTION = 'claim';
 const EMPLOYMENT_JURISDICTION = 'EMPLOYMENT';
 const EMPLOYMENT_CASE_TYPE = 'ET_EnglandWales';
 const CASE_ROLE_ACCESS_ENDPOINT = 'api/role-access/roles/access-get-by-caseId';
-const DEFAULT_TASK_READY_TIMEOUT_MS = 120_000;
-const DEFAULT_TASK_READY_POLL_INTERVAL_MS = 5_000;
+const DEFAULT_TASK_READY_TIMEOUT_MS = 90_000;
+const DEFAULT_TASK_READY_POLL_INTERVAL_MS = 2_000;
 
 function parsePositiveInteger(value: string | undefined, fallback: number): number {
   const parsed = Number.parseInt(value ?? '', 10);
@@ -298,6 +302,11 @@ export async function setupClaimableManageTasksCase({
   professionalUserUtils,
   testInfo,
 }: ManageTasksSetupRequest): Promise<ManageTasksLiveSetup> {
+  const waReadiness = resolveWaTaskProvisioningReadiness(process.env, { requireBearerToken: false });
+  if (!waReadiness.ready) {
+    throw new Error(`Manage Tasks live E2E requires WA task provisioning. ${waReadiness.skipped}`);
+  }
+
   const { user, sessionIdentity } = await provisionDynamicSolicitorForAlias({
     alias: 'EMPLOYMENT_DYNAMIC_SOLICITOR',
     professionalUserUtils,
@@ -335,6 +344,13 @@ export async function setupClaimableManageTasksCase({
     caseType: EMPLOYMENT_CASE_TYPE,
     testInfo,
   });
+
+  if (!waProvisioning.attempted) {
+    throw new Error(
+      `Manage Tasks live E2E requires WA task provisioning for case ${setup.caseNumber}. ` +
+        `${waProvisioning.diagnostics.skipped ?? 'Provisioning was not attempted.'}`
+    );
+  }
 
   const cleanup = async (): Promise<void> => {
     await cleanupWaTaskRoleAssignmentsForManageTasksCase({

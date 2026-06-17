@@ -1,43 +1,19 @@
 import { expect, test } from '../../fixtures';
 import { applySessionCookies } from '../../../common/sessionCapture';
-import type { ManageTasksLiveSetup, ManageTasksLiveTask } from '../../utils/test-setup/manageTasksLiveSetup';
+import type { ManageTasksLiveSetup } from '../../utils/test-setup/manageTasksLiveSetup';
 import { setupClaimableManageTasksCase } from '../../utils/test-setup/manageTasksLiveSetup';
+import {
+  buildManageTasksLiveTaskRowFailureMessage,
+  findManageTasksLiveTaskRowIndex,
+} from '../../utils/test-setup/manageTasksLiveTaskRows';
 import { retryOnTransientFailure } from '../../utils/transient-failure.utils';
 
-const MANAGE_TASKS_DYNAMIC_E2E_TIMEOUT_MS = 420_000;
-
-function normalizeText(value: string | undefined): string {
-  return (value ?? '').replaceAll(/\s+/g, ' ').trim().toLowerCase();
-}
-
-function findTaskRowIndex(rows: Array<Record<string, string>>, task: ManageTasksLiveTask): number {
-  const expectedCaseName = normalizeText(task.caseName);
-  const expectedTaskTitle = normalizeText(task.taskTitle);
-
-  return rows.findIndex((row) => {
-    return normalizeText(row['Case name']).includes(expectedCaseName) && normalizeText(row.Task).includes(expectedTaskTitle);
-  });
-}
-
-async function expectCreatedTaskRow({
-  rows,
-  task,
-  viewName,
-}: {
-  rows: Array<Record<string, string>>;
-  task: ManageTasksLiveTask;
-  viewName: string;
-}): Promise<number> {
-  const rowIndex = findTaskRowIndex(rows, task);
-  expect(
-    rowIndex,
-    `${viewName} should show created case task "${task.taskTitle}" for case "${task.caseName}". ` +
-      `Visible rows: ${JSON.stringify(rows.slice(0, 5))}`
-  ).toBeGreaterThanOrEqual(0);
-  return rowIndex;
-}
+const MANAGE_TASKS_DYNAMIC_E2E_TIMEOUT_MS =
+  Number.parseInt(process.env.PW_E2E_MANAGE_TASKS_DYNAMIC_TIMEOUT_MS ?? '', 10) || 300_000;
+const TASK_LIST_VIEW_TIMEOUT_MS = 30_000;
 
 test.describe('Manage Tasks with dynamic organisation and user', { tag: ['@e2e', '@e2e-manage-tasks'] }, () => {
+  test.describe.configure({ retries: 0 });
   test.setTimeout(MANAGE_TASKS_DYNAMIC_E2E_TIMEOUT_MS);
 
   test('created case task is visible and claimable in Available tasks, then actionable in My tasks', async ({
@@ -61,7 +37,7 @@ test.describe('Manage Tasks with dynamic organisation and user', { tag: ['@e2e',
         });
         await applySessionCookies(page, liveSetup.sessionIdentity);
         await taskListPage.goto();
-        await taskListPage.taskListTable.waitFor({ state: 'visible', timeout: 60_000 });
+        await taskListPage.taskListTable.waitFor({ state: 'visible', timeout: TASK_LIST_VIEW_TIMEOUT_MS });
       });
 
       if (!liveSetup) {
@@ -77,10 +53,10 @@ test.describe('Manage Tasks with dynamic organisation and user', { tag: ['@e2e',
               'AvailableTasks',
               'opening dynamic case available task',
               {
-                timeoutMs: 60_000,
+                timeoutMs: TASK_LIST_VIEW_TIMEOUT_MS,
               }
             );
-            await taskListPage.waitForTaskRowReady('dynamic case available task', { timeoutMs: 60_000 });
+            await taskListPage.waitForTaskRowReady('dynamic case available task', { timeoutMs: TASK_LIST_VIEW_TIMEOUT_MS });
           },
           {
             maxAttempts: 2,
@@ -91,11 +67,11 @@ test.describe('Manage Tasks with dynamic organisation and user', { tag: ['@e2e',
         );
 
         const rows = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
-        const rowIndex = await expectCreatedTaskRow({
-          rows,
-          task: liveSetup.task,
-          viewName: 'Available tasks',
-        });
+        const rowIndex = findManageTasksLiveTaskRowIndex(rows, liveSetup.task);
+        expect(
+          rowIndex,
+          buildManageTasksLiveTaskRowFailureMessage({ rows, task: liveSetup.task, viewName: 'Available tasks' })
+        ).toBeGreaterThanOrEqual(0);
 
         await taskListPage.openManageActionsForRow(rowIndex, 'dynamic case available task');
         await expect(taskListPage.getTaskActionForRow(rowIndex, 'claim')).toBeVisible();
@@ -104,18 +80,18 @@ test.describe('Manage Tasks with dynamic organisation and user', { tag: ['@e2e',
 
       await test.step('Claim the created task and verify the success message', async () => {
         const rows = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
-        const rowIndex = await expectCreatedTaskRow({
-          rows,
-          task: liveSetup.task,
-          viewName: 'Available tasks before claim',
-        });
+        const rowIndex = findManageTasksLiveTaskRowIndex(rows, liveSetup.task);
+        expect(
+          rowIndex,
+          buildManageTasksLiveTaskRowFailureMessage({ rows, task: liveSetup.task, viewName: 'Available tasks before claim' })
+        ).toBeGreaterThanOrEqual(0);
 
         await taskListPage.openManageActionsForRow(rowIndex, 'dynamic case claim task');
         await Promise.all([
           page.waitForResponse(
             (response) => response.url().includes(`/workallocation/task/${liveSetup.task.id}/claim`) && response.ok(),
             {
-              timeout: 60_000,
+              timeout: TASK_LIST_VIEW_TIMEOUT_MS,
             }
           ),
           taskListPage.clickTaskActionForRow(rowIndex, 'claim', 'dynamic case claim task', { timeoutMs: 30_000 }),
@@ -132,9 +108,9 @@ test.describe('Manage Tasks with dynamic organisation and user', { tag: ['@e2e',
           async () => {
             taskListPage.clearApiCalls();
             await taskListPage.clickTaskTabAndWaitForView('My tasks', 'MyTasks', 'opening dynamic case claimed task', {
-              timeoutMs: 60_000,
+              timeoutMs: TASK_LIST_VIEW_TIMEOUT_MS,
             });
-            await taskListPage.waitForTaskRowReady('dynamic case claimed task', { timeoutMs: 60_000 });
+            await taskListPage.waitForTaskRowReady('dynamic case claimed task', { timeoutMs: TASK_LIST_VIEW_TIMEOUT_MS });
           },
           {
             maxAttempts: 2,
@@ -145,11 +121,11 @@ test.describe('Manage Tasks with dynamic organisation and user', { tag: ['@e2e',
         );
 
         const rows = await tableUtils.parseWorkAllocationTable(taskListPage.taskListTable);
-        const rowIndex = await expectCreatedTaskRow({
-          rows,
-          task: liveSetup.task,
-          viewName: 'My tasks',
-        });
+        const rowIndex = findManageTasksLiveTaskRowIndex(rows, liveSetup.task);
+        expect(
+          rowIndex,
+          buildManageTasksLiveTaskRowFailureMessage({ rows, task: liveSetup.task, viewName: 'My tasks' })
+        ).toBeGreaterThanOrEqual(0);
 
         await taskListPage.openManageActionsForRow(rowIndex, 'dynamic case my task');
         await expect(taskListPage.getTaskActionForRow(rowIndex, 'go')).toBeVisible();

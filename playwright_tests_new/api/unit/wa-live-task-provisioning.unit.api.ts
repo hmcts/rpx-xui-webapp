@@ -108,6 +108,50 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
     expect(attachments[0].body).toContain('WA task provisioning prerequisites missing');
   });
 
+  test('reports readiness before dynamic user and case setup consume live resources', () => {
+    expect(
+      waLiveTaskProvisioningTest.resolveWaTaskProvisioningReadiness({
+        PW_E2E_MANAGE_TASKS_WA_PROVISIONING: 'auto',
+        PW_E2E_MANAGE_TASKS_ROLE_ASSIGNMENT_BEARER_TOKEN: 'admin-token',
+      })
+    ).toEqual({
+      ready: false,
+      mode: 'auto',
+      missing: ['SERVICES_WA_WORKFLOW_API_URL', 'SERVICES_ROLE_ASSIGNMENT_API'],
+      skipped: 'WA task provisioning prerequisites missing: SERVICES_WA_WORKFLOW_API_URL, SERVICES_ROLE_ASSIGNMENT_API.',
+    });
+
+    expect(
+      waLiveTaskProvisioningTest.resolveWaTaskProvisioningReadiness({
+        PW_E2E_MANAGE_TASKS_WA_PROVISIONING: 'workflow',
+        SERVICES_WA_WORKFLOW_API_URL: 'http://wa-workflow.test',
+        SERVICES_ROLE_ASSIGNMENT_API: 'http://am-role-assignment.test',
+        PW_E2E_MANAGE_TASKS_ROLE_ASSIGNMENT_BEARER_TOKEN: 'admin-token',
+      })
+    ).toEqual({
+      ready: true,
+      mode: 'workflow',
+      missing: [],
+    });
+  });
+
+  test('allows early setup preflight to defer bearer token validation until token hydration has run', () => {
+    expect(
+      waLiveTaskProvisioningTest.resolveWaTaskProvisioningReadiness(
+        {
+          PW_E2E_MANAGE_TASKS_WA_PROVISIONING: 'workflow',
+          SERVICES_WA_WORKFLOW_API_URL: 'http://wa-workflow.test',
+          SERVICES_ROLE_ASSIGNMENT_API: 'http://am-role-assignment.test',
+        },
+        { requireBearerToken: false }
+      )
+    ).toEqual({
+      ready: true,
+      mode: 'workflow',
+      missing: [],
+    });
+  });
+
   test('fails early when workflow mode is required but live prerequisites are missing', async () => {
     const attachments: Array<{ name: string; body: string }> = [];
 

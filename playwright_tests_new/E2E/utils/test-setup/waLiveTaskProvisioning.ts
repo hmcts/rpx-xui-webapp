@@ -45,6 +45,13 @@ export type WaTaskProvisioningResult = {
   };
 };
 
+export type WaTaskProvisioningReadiness = {
+  ready: boolean;
+  mode: string;
+  missing: string[];
+  skipped?: string;
+};
+
 type WaProvisioningInput = {
   user: Pick<ProfessionalUserInfo, 'id' | 'email' | 'password'>;
   caseNumber: string;
@@ -134,6 +141,45 @@ function resolveAdminBearerToken(env: Env = process.env): string | undefined {
     env.ORG_USER_ASSIGNMENT_BEARER_TOKEN,
     env.CREATE_USER_BEARER_TOKEN
   );
+}
+
+export function resolveWaTaskProvisioningReadiness(
+  env: Env = process.env,
+  options: { requireBearerToken?: boolean } = {}
+): WaTaskProvisioningReadiness {
+  const requireBearerToken = options.requireBearerToken ?? true;
+  const mode = resolveProvisioningMode(env);
+  const missing = [
+    resolveWorkflowApiUrl(env) ? undefined : 'SERVICES_WA_WORKFLOW_API_URL',
+    resolveRoleAssignmentApiUrl(env) ? undefined : 'SERVICES_ROLE_ASSIGNMENT_API',
+    !requireBearerToken || resolveAdminBearerToken(env)
+      ? undefined
+      : 'ORG_USER_ASSIGNMENT_BEARER_TOKEN or PW_E2E_MANAGE_TASKS_ROLE_ASSIGNMENT_BEARER_TOKEN',
+  ].filter((value): value is string => Boolean(value));
+
+  if (!shouldProvision(mode)) {
+    return {
+      ready: false,
+      mode,
+      missing: [],
+      skipped: 'WA task provisioning disabled by PW_E2E_MANAGE_TASKS_WA_PROVISIONING.',
+    };
+  }
+
+  if (missing.length > 0) {
+    return {
+      ready: false,
+      mode,
+      missing,
+      skipped: `WA task provisioning prerequisites missing: ${missing.join(', ')}.`,
+    };
+  }
+
+  return {
+    ready: true,
+    mode,
+    missing: [],
+  };
 }
 
 function resolveClientSecret(env: Env = process.env): string | undefined {
@@ -465,17 +511,13 @@ export async function provisionWaTaskForManageTasksCaseWithDeps(
   const workflowApiUrl = resolveWorkflowApiUrl(env);
   const roleAssignmentApiUrl = resolveRoleAssignmentApiUrl(env);
   const adminBearerToken = resolveAdminBearerToken(env);
-  const missing = [
-    workflowApiUrl ? undefined : 'SERVICES_WA_WORKFLOW_API_URL',
-    roleAssignmentApiUrl ? undefined : 'SERVICES_ROLE_ASSIGNMENT_API',
-    adminBearerToken ? undefined : 'ORG_USER_ASSIGNMENT_BEARER_TOKEN or PW_E2E_MANAGE_TASKS_ROLE_ASSIGNMENT_BEARER_TOKEN',
-  ].filter((value): value is string => Boolean(value));
+  const readiness = resolveWaTaskProvisioningReadiness(env);
 
   const baseDiagnostics = {
     mode,
     workflowApiUrl,
     roleAssignmentApiUrl,
-    missing,
+    missing: readiness.missing,
   };
 
   if (!shouldProvision(mode)) {
@@ -494,13 +536,13 @@ export async function provisionWaTaskForManageTasksCaseWithDeps(
     return result;
   }
 
-  if (missing.length > 0) {
+  if (readiness.missing.length > 0) {
     const result = {
       attempted: false,
       roleAssignmentIds: [],
       diagnostics: {
         ...baseDiagnostics,
-        skipped: `WA task provisioning prerequisites missing: ${missing.join(', ')}.`,
+        skipped: readiness.skipped,
       },
     };
     await testInfo.attach('manage-tasks-wa-provisioning.json', {
@@ -510,7 +552,7 @@ export async function provisionWaTaskForManageTasksCaseWithDeps(
     if (requiresProvisioning(mode)) {
       throw new Error(
         `WA task provisioning is required by PW_E2E_MANAGE_TASKS_WA_PROVISIONING='${mode}', ` +
-          `but prerequisites are missing: ${missing.join(', ')}.`
+          `but prerequisites are missing: ${readiness.missing.join(', ')}.`
       );
     }
     return result;
@@ -684,5 +726,6 @@ export const __test__ = {
   resolveProvisioningMode,
   resolveWorkflowApiUrl,
   resolveRoleAssignmentApiUrl,
+  resolveWaTaskProvisioningReadiness,
   shouldProvision,
 };

@@ -3499,12 +3499,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.59-message-interpolation-01":
-  version: 7.3.59-message-interpolation-01
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.59-message-interpolation-01"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.61-message-interpolation-01":
+  version: 7.3.61-message-interpolation-01
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.61-message-interpolation-01"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/dffa8885eb14be2de197f6cebb3a9ce35ea53a9ce7939e4ef73a764343845266215b576d09d69966f352889ccdb13c31d080abd533609661812ce8b24b3d5dff
+  checksum: 10/c1a733995316babfbbe2b2403c7ec0d7a0a4d550148d6b42642dbad332f53ee694cb3ddfad4a6af33cd6c29bf7f562da961bd83c604ed92edaf81cc40b0b4b4e
   languageName: node
   linkType: hard
 
@@ -21244,7 +21244,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.59-message-interpolation-01"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.61-message-interpolation-01"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.19"

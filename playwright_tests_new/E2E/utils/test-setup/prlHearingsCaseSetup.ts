@@ -14,12 +14,15 @@ type UserCredentials = {
 
 export type PrlHearingsCaseSetupConfig = {
   idamApiUrl?: string;
+  idamWebUrl?: string;
+  idamTestingSupportUrl?: string;
   ccdDataStoreUrl?: string;
   prlCosApiUrl?: string;
   ccdClientId?: string;
   idamSecret?: string;
   redirectUri?: string;
   s2sUrl?: string;
+  s2sToken?: string;
   serviceMicroservice?: string;
   citizenUsername?: string;
   citizenPassword?: string;
@@ -49,7 +52,7 @@ const DEFAULT_SERVICE_MICROSERVICE = 'ccd_data';
 const REQUIRED_ENV_MESSAGE =
   'PRL hearings setup requires CCD_DATA_STORE_URL, PRL_COS_API_URL, CCD_DATA_STORE_CLIENT_ID, ' +
   'PRL_HEARINGS_IDAM_SECRET or IDAM_SECRET, ' +
-  'S2S_URL, a redirect URI, citizen credentials, and court admin credentials.';
+  'S2S_URL or PRL_HEARINGS_S2S_TOKEN, a redirect URI, citizen credentials, and court admin credentials.';
 const DEFAULT_HEARING_MANAGER_COURT_LOCATION = {
   code: '898213:',
   label: 'East London Family Court',
@@ -73,7 +76,14 @@ function resolveManageCaseRedirectUri(testUrl?: string): string | undefined {
 
 export function resolvePrlHearingsCaseSetupConfig(env: NodeJS.ProcessEnv = process.env): PrlHearingsCaseSetupConfig {
   return {
-    idamApiUrl: firstNonEmpty(env.IDAM_API_URL, env.IDAM_TESTING_SUPPORT_URL),
+    idamApiUrl: firstNonEmpty(
+      env.IDAM_API_URL,
+      env.IDAM_TESTING_SUPPORT_URL,
+      env.IDAM_TESTING_SUPPORT_USERS_URL,
+      env.IDAM_WEB_URL
+    ),
+    idamWebUrl: firstNonEmpty(env.IDAM_WEB_URL),
+    idamTestingSupportUrl: firstNonEmpty(env.IDAM_TESTING_SUPPORT_URL, env.IDAM_TESTING_SUPPORT_USERS_URL),
     ccdDataStoreUrl: firstNonEmpty(env.CCD_DATA_STORE_URL),
     prlCosApiUrl: firstNonEmpty(env.PRL_COS_API_URL, env.PRL_HEARINGS_PRL_COS_API_URL, env.PRL_COS_API),
     ccdClientId: firstNonEmpty(env.IDAM_CLIENT_ID, env.CCD_DATA_STORE_CLIENT_ID),
@@ -83,7 +93,8 @@ export function resolvePrlHearingsCaseSetupConfig(env: NodeJS.ProcessEnv = proce
       env.ORG_USER_ASSIGNMENT_REDIRECT_URI,
       resolveManageCaseRedirectUri(env.TEST_URL)
     ),
-    s2sUrl: firstNonEmpty(env.S2S_URL),
+    s2sUrl: firstNonEmpty(env.PRL_HEARINGS_S2S_URL, env.S2S_URL),
+    s2sToken: firstNonEmpty(env.PRL_HEARINGS_S2S_TOKEN),
     serviceMicroservice: firstNonEmpty(env.PRL_HEARINGS_SERVICE_MICROSERVICE, DEFAULT_SERVICE_MICROSERVICE),
     citizenUsername: firstNonEmpty(env.CITIZEN_USERNAME),
     citizenPassword: firstNonEmpty(env.CITIZEN_PASSWORD),
@@ -96,13 +107,17 @@ export function resolvePrlHearingsCaseSetupConfig(env: NodeJS.ProcessEnv = proce
 
 export function validatePrlHearingsCaseSetupConfig(config: PrlHearingsCaseSetupConfig): string[] {
   const missing: string[] = [];
-  if (!config.idamApiUrl?.trim()) missing.push('IDAM_API_URL or IDAM_TESTING_SUPPORT_URL');
+  if (!config.idamApiUrl?.trim()) {
+    missing.push('IDAM_API_URL, IDAM_TESTING_SUPPORT_URL, or IDAM_TESTING_SUPPORT_USERS_URL');
+  }
+  if (!config.idamWebUrl?.trim()) missing.push('IDAM_WEB_URL');
+  if (!config.idamTestingSupportUrl?.trim()) missing.push('IDAM_TESTING_SUPPORT_URL or IDAM_TESTING_SUPPORT_USERS_URL');
   if (!config.ccdDataStoreUrl?.trim()) missing.push('CCD_DATA_STORE_URL');
   if (!config.prlCosApiUrl?.trim()) missing.push('PRL_COS_API_URL');
   if (!config.ccdClientId?.trim()) missing.push('CCD_DATA_STORE_CLIENT_ID');
   if (!config.idamSecret?.trim()) missing.push('PRL_HEARINGS_IDAM_SECRET or IDAM_SECRET');
   if (!config.redirectUri?.trim()) missing.push('MANAGE_CASE_REDIRECT_URI or ORG_USER_ASSIGNMENT_REDIRECT_URI');
-  if (!config.s2sUrl?.trim()) missing.push('S2S_URL');
+  if (!config.s2sUrl?.trim() && !config.s2sToken?.trim()) missing.push('S2S_URL or PRL_HEARINGS_S2S_TOKEN');
   if (!config.serviceMicroservice?.trim()) missing.push('PRL_HEARINGS_SERVICE_MICROSERVICE');
   if (!config.citizenUsername?.trim()) missing.push('CITIZEN_USERNAME');
   if (!config.citizenPassword?.trim()) missing.push('CITIZEN_PASSWORD');
@@ -147,12 +162,29 @@ function buildIssueAndSendToLocalCourtEventData(config: Required<PrlHearingsCase
 function normalizeIdamApiUrl(url: string): string {
   try {
     const parsed = new URL(url);
-    parsed.hostname = parsed.hostname.replace(/^idam-testing-support-api\./i, 'idam-api.');
+    parsed.hostname = parsed.hostname
+      .replace(/^idam-testing-support-api\./i, 'idam-api.')
+      .replace(/^idam-web-public\./i, 'idam-api.');
     parsed.pathname = parsed.pathname
       .replace(/\/+$/, '')
       .replace(/\/testing-support\/accounts$/i, '')
       .replace(/\/test\/idam\/users$/i, '')
       .replace(/\/o\/token$/i, '');
+    parsed.search = '';
+    parsed.hash = '';
+    return normalizeBaseUrl(parsed.toString());
+  } catch {
+    return normalizeBaseUrl(url);
+  }
+}
+
+function normalizeIdamTestingSupportUrl(url: string): string {
+  try {
+    const parsed = new URL(url);
+    parsed.pathname = parsed.pathname
+      .replace(/\/+$/, '')
+      .replace(/\/test\/idam\/burner\/users$/i, '')
+      .replace(/\/test\/idam\/users$/i, '');
     parsed.search = '';
     parsed.hash = '';
     return normalizeBaseUrl(parsed.toString());
@@ -171,15 +203,32 @@ function extractCaseReference(response: CaseCreateResponse): string {
 }
 
 async function getBearerToken(credentials: UserCredentials, config: Required<PrlHearingsCaseSetupConfig>): Promise<string> {
-  return new IdamUtils().generateIdamToken({
-    grantType: 'password',
-    username: credentials.username,
-    password: credentials.password,
-    scope: 'openid profile roles',
-    clientId: config.ccdClientId,
-    clientSecret: config.idamSecret,
-    redirectUri: config.redirectUri,
-  });
+  const previousIdamWebUrl = process.env.IDAM_WEB_URL;
+  const previousTestingSupportUrl = process.env.IDAM_TESTING_SUPPORT_URL;
+  process.env.IDAM_WEB_URL = normalizeBaseUrl(config.idamWebUrl);
+  process.env.IDAM_TESTING_SUPPORT_URL = normalizeIdamTestingSupportUrl(config.idamTestingSupportUrl);
+  try {
+    return await new IdamUtils().generateIdamToken({
+      grantType: 'password',
+      username: credentials.username,
+      password: credentials.password,
+      scope: 'openid profile roles',
+      clientId: config.ccdClientId,
+      clientSecret: config.idamSecret,
+      redirectUri: config.redirectUri,
+    });
+  } finally {
+    if (previousIdamWebUrl === undefined) {
+      delete process.env.IDAM_WEB_URL;
+    } else {
+      process.env.IDAM_WEB_URL = previousIdamWebUrl;
+    }
+    if (previousTestingSupportUrl === undefined) {
+      delete process.env.IDAM_TESTING_SUPPORT_URL;
+    } else {
+      process.env.IDAM_TESTING_SUPPORT_URL = previousTestingSupportUrl;
+    }
+  }
 }
 
 async function getUserId(
@@ -212,6 +261,11 @@ async function getServiceToken(
   config: Required<PrlHearingsCaseSetupConfig>,
   microservice: string
 ): Promise<string> {
+  const configuredToken = firstNonEmpty(config.s2sToken);
+  if (configuredToken) {
+    return configuredToken;
+  }
+
   const response = await apiContext.post(config.s2sUrl, {
     data: {
       microservice,

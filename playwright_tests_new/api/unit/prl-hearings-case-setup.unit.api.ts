@@ -6,6 +6,7 @@ test.describe('PRL hearings case setup', () => {
   test('resolves required setup config with redirect fallback', () => {
     const config = __test__.resolvePrlHearingsCaseSetupConfig({
       IDAM_TESTING_SUPPORT_URL: 'https://idam-testing-support-api.aat.platform.hmcts.net',
+      IDAM_WEB_URL: 'https://idam-web-public.aat.platform.hmcts.net',
       CCD_DATA_STORE_URL: 'https://ccd-data-store-api.aat.platform.hmcts.net',
       PRL_COS_API_URL: 'https://prl-cos-api.aat.platform.hmcts.net',
       IDAM_CLIENT_ID: 'xuiwebapp',
@@ -20,10 +21,13 @@ test.describe('PRL hearings case setup', () => {
 
     expect(config).toMatchObject({
       idamApiUrl: 'https://idam-testing-support-api.aat.platform.hmcts.net',
+      idamWebUrl: 'https://idam-web-public.aat.platform.hmcts.net',
+      idamTestingSupportUrl: 'https://idam-testing-support-api.aat.platform.hmcts.net',
       prlCosApiUrl: 'https://prl-cos-api.aat.platform.hmcts.net',
       ccdClientId: 'xuiwebapp',
       redirectUri: 'https://manage-case.aat.platform.hmcts.net/oauth2/callback',
       serviceMicroservice: 'ccd_data',
+      s2sUrl: 'http://service-auth/testing-support/lease',
       citizenUsername: 'citizen@example.test',
       courtAdminUsername: 'court-admin@example.test',
     });
@@ -39,9 +43,49 @@ test.describe('PRL hearings case setup', () => {
     expect(config.idamSecret).toBe('prl-cos-secret');
   });
 
+  test('allows a PRL-specific pre-issued S2S token instead of requiring a locally reachable S2S URL', () => {
+    const config = __test__.resolvePrlHearingsCaseSetupConfig({
+      IDAM_TESTING_SUPPORT_URL: 'https://idam-testing-support-api.aat.platform.hmcts.net',
+      IDAM_WEB_URL: 'https://idam-web-public.aat.platform.hmcts.net',
+      CCD_DATA_STORE_URL: 'https://ccd-data-store-api.aat.platform.hmcts.net',
+      PRL_COS_API_URL: 'https://prl-cos-api.aat.platform.hmcts.net',
+      IDAM_CLIENT_ID: 'xuiwebapp',
+      IDAM_SECRET: 'secret',
+      ORG_USER_ASSIGNMENT_REDIRECT_URI: 'https://manage-case.aat.platform.hmcts.net/oauth2/callback',
+      PRL_HEARINGS_S2S_TOKEN: 'pre-issued-s2s-token',
+      CITIZEN_USERNAME: 'citizen@example.test',
+      CITIZEN_PASSWORD: 'citizen-password',
+      COURT_ADMIN_STOKE_USERNAME: 'court-admin@example.test',
+      COURT_ADMIN_STOKE_PASSWORD: 'court-admin-password',
+    });
+
+    expect(config.s2sToken).toBe('pre-issued-s2s-token');
+    expect(__test__.validatePrlHearingsCaseSetupConfig(config)).toEqual([]);
+  });
+
+  test('does not use the generic app S2S token for PRL setup', () => {
+    const config = __test__.resolvePrlHearingsCaseSetupConfig({
+      S2S_TOKEN: 'generic-app-token',
+      S2S_URL: 'http://service-auth/testing-support/lease',
+    });
+
+    expect(config.s2sToken).toBeUndefined();
+    expect(config.s2sUrl).toBe('http://service-auth/testing-support/lease');
+  });
+
+  test('accepts the Key Vault IDAM testing-support users URL alias', () => {
+    const config = __test__.resolvePrlHearingsCaseSetupConfig({
+      IDAM_TESTING_SUPPORT_USERS_URL: 'https://idam-testing-support-api.aat.platform.hmcts.net/test/idam/users',
+    });
+
+    expect(config.idamApiUrl).toBe('https://idam-testing-support-api.aat.platform.hmcts.net/test/idam/users');
+    expect(config.idamTestingSupportUrl).toBe('https://idam-testing-support-api.aat.platform.hmcts.net/test/idam/users');
+  });
+
   test('ignores unrelated caseworker credentials because the PRL setup flow does not use that actor', () => {
     const config = __test__.resolvePrlHearingsCaseSetupConfig({
       IDAM_TESTING_SUPPORT_URL: 'https://idam-testing-support-api.aat.platform.hmcts.net',
+      IDAM_WEB_URL: 'https://idam-web-public.aat.platform.hmcts.net',
       CCD_DATA_STORE_URL: 'https://ccd-data-store-api.aat.platform.hmcts.net',
       PRL_COS_API_URL: 'https://prl-cos-api.aat.platform.hmcts.net',
       IDAM_CLIENT_ID: 'xuiwebapp',
@@ -66,13 +110,15 @@ test.describe('PRL hearings case setup', () => {
 
   test('reports missing setup inputs before calling downstream services', () => {
     expect(__test__.validatePrlHearingsCaseSetupConfig({})).toEqual([
-      'IDAM_API_URL or IDAM_TESTING_SUPPORT_URL',
+      'IDAM_API_URL, IDAM_TESTING_SUPPORT_URL, or IDAM_TESTING_SUPPORT_USERS_URL',
+      'IDAM_WEB_URL',
+      'IDAM_TESTING_SUPPORT_URL or IDAM_TESTING_SUPPORT_USERS_URL',
       'CCD_DATA_STORE_URL',
       'PRL_COS_API_URL',
       'CCD_DATA_STORE_CLIENT_ID',
       'PRL_HEARINGS_IDAM_SECRET or IDAM_SECRET',
       'MANAGE_CASE_REDIRECT_URI or ORG_USER_ASSIGNMENT_REDIRECT_URI',
-      'S2S_URL',
+      'S2S_URL or PRL_HEARINGS_S2S_TOKEN',
       'PRL_HEARINGS_SERVICE_MICROSERVICE',
       'CITIZEN_USERNAME',
       'CITIZEN_PASSWORD',

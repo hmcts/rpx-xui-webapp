@@ -42,7 +42,7 @@ nodejs:
         - mc-idam-client-secret
         - system-user-name
         - system-user-password
-        - name: launch-darkly-client-id-preview
+        - name: launch-darkly-client-id-onboarding
           alias: launch-darkly-client-id
         - mc-session-secret
   autoscaling:

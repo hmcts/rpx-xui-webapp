@@ -8,7 +8,6 @@ import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 import { buildCasePayloadFromTemplate } from './payloads/registry';
 import { setupCaseForJourney } from './caseSetup';
 import { provisionDynamicSolicitorForAlias } from './dynamicSolicitorSession';
-import { createEmploymentCase } from './journeys/employmentJourneys';
 import {
   cleanupWaTaskRoleAssignmentsForManageTasksCase,
   provisionWaTaskForManageTasksCase,
@@ -430,11 +429,8 @@ export async function setupClaimableManageTasksCase({
     jurisdiction: EMPLOYMENT_JURISDICTION,
     caseType: EMPLOYMENT_CASE_TYPE,
     apiEventId: 'initiateCase',
-    mode: 'api-first',
-    allowUiFallback: true,
+    mode: 'api-required',
     apiPayload: buildCasePayloadFromTemplate('employment.et-england-wales.initiate-case'),
-    uiCreate: () =>
-      createEmploymentCase(createCasePage, EMPLOYMENT_JURISDICTION, EMPLOYMENT_CASE_TYPE, { allowDraftClaimFallback: true }),
     page,
     createCasePage,
     caseDetailsPage,

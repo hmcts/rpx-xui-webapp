@@ -22,6 +22,28 @@ const MEDIA_VIEWER_FIXTURE_CONTENT = readFileSync(MEDIA_VIEWER_FIXTURE_PATH, 'la
 const MEDIA_VIEWER_TEST_TIMEOUT_MS = Number.parseInt(process.env.PW_MEDIA_VIEWER_TEST_TIMEOUT_MS ?? '', 10) || 300_000;
 const SESSION_BOOTSTRAP_TIMEOUT_MS =
   Number.parseInt(process.env.PW_MEDIA_VIEWER_SESSION_BOOTSTRAP_TIMEOUT_MS ?? '', 10) || 300_000;
+const DOCUMENT_BINARY_WAIT_TIMEOUT_MS = 60_000;
+
+async function waitForDocumentBinaryResponse(page: Page, binaryResponses: string[], blockingFailures: string[]): Promise<void> {
+  const deadline = Date.now() + DOCUMENT_BINARY_WAIT_TIMEOUT_MS;
+
+  while (Date.now() < deadline) {
+    if (blockingFailures.length > 0) {
+      throw new Error(`Media Viewer could not load the document because an upstream request failed: ${blockingFailures[0]}`);
+    }
+
+    if (binaryResponses.length > 0) {
+      return;
+    }
+
+    await page.waitForTimeout(250);
+  }
+
+  throw new Error(
+    `Media Viewer did not request the uploaded document binary within ${DOCUMENT_BINARY_WAIT_TIMEOUT_MS}ms. ` +
+      `Observed blocking failures: ${blockingFailures.join(' | ') || 'none'}`
+  );
+}
 
 test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] }, () => {
   test.describe.configure({ timeout: MEDIA_VIEWER_TEST_TIMEOUT_MS });
@@ -81,12 +103,20 @@ test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] },
 
     await test.step('Validate the Media Viewer end-to-end happy path', async () => {
       const binaryResponses: string[] = [];
+      const blockingFailures: string[] = [];
       const onResponse = (response: Response) => {
         if (response.request().method() !== 'GET') {
           return;
         }
 
         const pathname = new URL(response.url()).pathname;
+        const isBlockingMediaViewerRequest =
+          DOCUMENT_BINARY_ROUTE_PATTERN.test(pathname) || /\/data\/internal\/cases\/[^/]+$/.test(pathname);
+        if (isBlockingMediaViewerRequest && response.status() >= 500) {
+          blockingFailures.push(`${response.status()} ${response.url()}`);
+          return;
+        }
+
         if (DOCUMENT_BINARY_ROUTE_PATTERN.test(pathname)) {
           binaryResponses.push(response.url());
         }
@@ -98,7 +128,7 @@ test.describe('Media Viewer happy path', { tag: ['@e2e', '@e2e-media-viewer'] },
         mediaPage = await caseDetailsPage.openDocumentOneInMediaViewer();
         await mediaPage.waitForLoadState('domcontentloaded').catch(() => undefined);
 
-        await expect.poll(() => binaryResponses.length).toBeGreaterThan(0);
+        await waitForDocumentBinaryResponse(mediaPage, binaryResponses, blockingFailures);
         await expect.poll(() => binaryResponses.at(-1) ?? '').toMatch(DOCUMENT_BINARY_ROUTE_PATTERN);
 
         const resolvedMediaViewerPage = new CaseFileViewPage(mediaPage);

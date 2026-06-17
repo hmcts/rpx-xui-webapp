@@ -6,6 +6,7 @@ const myWorkFilterTabs = [
   {
     name: 'Available tasks',
     urlPattern: /\/work\/my-work\/available(?:\?.*)?$/,
+    view: 'AvailableTasks',
   },
   {
     name: 'My cases',
@@ -14,8 +15,9 @@ const myWorkFilterTabs = [
   {
     name: 'My tasks',
     urlPattern: /\/work\/my-work\/list(?:\?.*)?$/,
+    view: 'MyTasks',
   },
-];
+] as const;
 
 test.describe('My work filter parity', { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   test.beforeEach(async ({ page }) => {
@@ -43,38 +45,44 @@ test.describe('My work filter parity', { tag: ['@integration', '@integration-man
     });
 
     await test.step('Open the My tasks view and verify the initial work filter state', async () => {
-      await taskListPage.goto();
-      await expect(taskListPage.taskListFilterToggle).toHaveText('Show work filter');
+      await taskListPage.gotoAndWaitForTaskRow('opening My tasks filter parity');
+      await expect(taskListPage.taskListFilterToggle).toContainText('Show work filter');
       await expect(taskListPage.filterPanel).toBeHidden();
 
       await taskListPage.openFilterPanel();
-      await expect(taskListPage.taskListFilterToggle).toHaveText('Hide work filter');
+      await expect(taskListPage.taskListFilterToggle).toContainText('Hide work filter');
+      await taskListPage.expectWorkFilterControls();
       await taskListPage.waitForServiceFilterOptionVisible('Immigration and Asylum');
       await taskListPage.waitForServiceFilterOptionVisible('Social security and child support');
       await expect(taskListPage.filterPanel.locator('#locations:visible').first()).toBeVisible();
 
       await taskListPage.applyCurrentFilters();
-      await expect(taskListPage.taskListFilterToggle).toHaveText('Show work filter');
+      await expect(taskListPage.taskListFilterToggle).toContainText('Show work filter');
       await expect(taskListPage.filterPanel).toBeHidden();
     });
 
     await test.step('Verify the same Services and Locations filter surface on Available tasks, My cases, and My tasks', async () => {
-      for (const { name: tabName, urlPattern } of myWorkFilterTabs) {
-        await Promise.all([
-          page.waitForURL(urlPattern, { timeout: 30_000 }),
-          taskListPage.taskTableTabs.filter({ hasText: tabName }).first().click(),
-        ]);
+      for (const { name: tabName, urlPattern, view } of myWorkFilterTabs) {
+        if (view) {
+          await taskListPage.clickTaskTabAndWaitForView(tabName, view, `${tabName} filter parity`);
+        } else {
+          await Promise.all([
+            page.waitForURL(urlPattern, { timeout: 30_000 }),
+            taskListPage.taskTableTabs.filter({ hasText: tabName }).first().click(),
+          ]);
+        }
         await taskListPage.waitForTaskListShellReady(`${tabName} filter parity`);
-        await expect(taskListPage.taskListFilterToggle).toHaveText('Show work filter');
+        await expect(taskListPage.taskListFilterToggle).toContainText('Show work filter');
 
         await taskListPage.openFilterPanel();
-        await expect(taskListPage.taskListFilterToggle).toHaveText('Hide work filter');
+        await expect(taskListPage.taskListFilterToggle).toContainText('Hide work filter');
+        await taskListPage.expectWorkFilterControls({ typesOfWorkVisible: tabName !== 'My cases' });
         await taskListPage.waitForServiceFilterOptionVisible('Immigration and Asylum');
         await taskListPage.waitForServiceFilterOptionVisible('Social security and child support');
         await expect(taskListPage.filterPanel.locator('#locations:visible').first()).toBeVisible();
 
         await taskListPage.applyCurrentFilters();
-        await expect(taskListPage.taskListFilterToggle).toHaveText('Show work filter');
+        await expect(taskListPage.taskListFilterToggle).toContainText('Show work filter');
         await expect(taskListPage.filterPanel).toBeHidden();
       }
     });

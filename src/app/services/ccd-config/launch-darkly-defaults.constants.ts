@@ -73,6 +73,14 @@ export class LaunchDarklyDefaultsConstants {
       ],
       "releaseVersion": "4",
       "serviceName": "ST_CIC"
+    },
+    {
+      "caseTypes": [
+        "FinancialRemedyContested",
+        "FinancialRemedyMVP2"
+      ],
+      "releaseVersion": "4",
+      "serviceName": "DIVORCE"
     }
   ]
   }`;

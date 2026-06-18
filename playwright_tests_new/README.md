@@ -171,6 +171,9 @@ Dynamic-user keys now available in Key Vault (`rpx-aat`, `rpx-demo`) and populat
 - `PW_IAC_CASEOFFICER_R1_PASSWORD`
 - `PW_IAC_JUDGE_WA_R1_EMAIL`
 - `PW_IAC_JUDGE_WA_R1_PASSWORD`
+- `PW_E2E_MANAGE_TASKS_USER`
+- `PW_E2E_MANAGE_TASKS_EMAIL`
+- `PW_E2E_MANAGE_TASKS_PASSWORD`
 
 These are populated from Key Vault using the same `e2e=<ENV_VAR_NAME>` tag convention.
 
@@ -179,6 +182,7 @@ Notes:
 - Local dynamic-user creation requires F5 VPN (AAT/DEMO private services).
 - Value added: dynamic solicitor-style setup now provisions an approved organisation for the framework run, creates solicitor users inside that organisation, validates the role/readiness contract, and records setup timings. This removes the shared static-organisation capacity risk while keeping one approved organisation reused across parallel workers in the same run.
 - This framework does not create live Work Allocation tasks. A previous experimental `@e2e-live-wa` lane was removed because local validation failed before the browser journey when Manage Org invite returned `403` with `{"message":"Internal Server Error"}`. Reintroduce live WA task materialisation only in a separate PR with direct AAT proof.
+- `@e2e-manage-tasks` now covers only the live Available Tasks lane with an internal WA-capable user. Override the user with `PW_E2E_MANAGE_TASKS_USER` or with `PW_E2E_MANAGE_TASKS_EMAIL` and `PW_E2E_MANAGE_TASKS_PASSWORD`. Assigned My Tasks action coverage remains under `@e2e-manage-tasks-assigned` until a seeded assigned-task user or supported task materialisation flow exists.
 - Dynamic solicitor-style users create or reuse one run-scoped approved organisation. The static `TEST_SOLICITOR_ORGANISATION_ID` fallback has been retired.
 - `PW_DYNAMIC_ORGANISATION_MODE` is optional and only supports `dynamic`. Deprecated `static` and `auto` values fail fast so CI cannot silently fall back to a shared organisation.
 - Set `PW_DYNAMIC_ORGANISATION_RUN_ID` in CI to keep parallel workers in the same framework run on one approved organisation. If it is unset, the resolver falls back to standard CI run identifiers in this order: `GITHUB_RUN_ID`, Jenkins `BUILD_TAG`, Jenkins `JOB_NAME` + `BUILD_NUMBER`, Jenkins `JOB_BASE_NAME` + `BUILD_NUMBER`, `BUILD_ID`, `BUILD_NUMBER`, Azure `BUILD_BUILDID`/`BUILD_BUILDNUMBER`, `CI_PIPELINE_ID`, then `PW_TEST_RUN_ID`. Local runs without CI markers fall back to `local`; CI runs with no recognised unique identifier fail fast instead of sharing a `local` organisation.
@@ -490,6 +494,7 @@ rm -rf .sessions && npx playwright test
 ### E2E Tag Filtering
 
 - E2E suites are tagged with `@e2e` plus feature tags such as `@e2e-search-case` and `@e2e-manage-tasks`.
+- `@e2e-manage-tasks-assigned` is reserved for live assigned My Tasks coverage and should stay excluded unless the run has a seeded assigned-task user.
 - Accessibility specs use `@a11y` and are excluded from default E2E unless `PLAYWRIGHT_INCLUDE_A11Y=true` or `yarn test:a11y:playwright` is used.
 - Accessibility runs default to 6 workers; override with `PW_A11Y_WORKERS` when a lower local worker count is needed.
 - Default excluded tags are read from `playwright_tests_new/E2E/tag-filter.json` (`excludedTags` array).
@@ -712,7 +717,8 @@ test.describe('My Test Suite', () => {
 
 - `SOLICITOR` - Standard solicitor user for Private Law / civil cases
 - `DIVORCE_SOLICITOR` - Divorce-entitled solicitor user for divorce create/update journeys
-- `WA_SOLICITOR` - Legacy Work Allocation solicitor user for low-assignment live task lookup coverage; retained until live WA task materialisation can be proved separately.
+- `WA_SOLICITOR` - Legacy solicitor-style user. Do not use it for live Work Allocation task-list E2E; local AAT evidence showed it authenticates without `roleAssignmentInfo` and lands on Case list.
+- `IAC_CASEOFFICER_R1` - Internal Work Allocation-capable user for live Available Tasks E2E when `PW_IAC_CASEOFFICER_R1_EMAIL` and `PW_IAC_CASEOFFICER_R1_PASSWORD` are populated.
 - `SEARCH_EMPLOYMENT_CASE` - Employment tribunal case user
 - `STAFF_ADMIN` - Administrative staff user
 - `USER_WITH_FLAGS` - User with case flags enabled

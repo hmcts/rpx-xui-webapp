@@ -3051,9 +3051,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.19":
-  version: 4.2.19
-  resolution: "@hmcts/media-viewer@npm:4.2.19"
+"@hmcts/media-viewer@npm:4.2.20":
+  version: 4.2.20
+  resolution: "@hmcts/media-viewer@npm:4.2.20"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3073,7 +3073,7 @@ __metadata:
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
     rpx-xui-translation: 1.2.3
-  checksum: 10/d503cae67871679f5071b97233d6d756eeb95f0da81cc92d81ef9b959cc4ab7dec9e0cefbe1034ea453b1d03b4f6b5a8b18fd11e82f5676e80650c5ce8a43313
+  checksum: 10/1f431b18e5f90966f1abcfe1be8d9f0a4af5119c38a25845cd24fae65d3cd6f251fef626ef41932df92f145773bd0190ba996322042f2e326dd1b924491fa584
   languageName: node
   linkType: hard
 
@@ -17144,23 +17144,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ngx-markdown@npm:^18.1.0":
-  version: 18.1.0
-  resolution: "ngx-markdown@npm:18.1.0"
+"ngx-markdown@npm:20":
+  version: 20.1.0
+  resolution: "ngx-markdown@npm:20.1.0"
   dependencies:
     clipboard: "npm:^2.0.11"
     emoji-toolkit: "npm:>= 8.0.0 < 10.0.0"
     katex: "npm:^0.16.0"
     mermaid: "npm:>= 10.6.0 < 12.0.0"
-    prismjs: "npm:^1.28.0"
+    prismjs: "npm:^1.30.0"
     tslib: "npm:^2.3.0"
   peerDependencies:
-    "@angular/common": ^18.0.0
-    "@angular/core": ^18.0.0
-    "@angular/platform-browser": ^18.0.0
-    marked: ">= 9.0.0 < 13.0.0"
+    "@angular/common": ^20.0.0
+    "@angular/core": ^20.0.0
+    "@angular/platform-browser": ^20.0.0
+    marked: ^15.0.0 || ^16.0.0
     rxjs: ^6.5.3 || ^7.4.0
-    zone.js: ~0.14.0
+    zone.js: ~0.15.0
   dependenciesMeta:
     clipboard:
       optional: true
@@ -17172,7 +17172,7 @@ __metadata:
       optional: true
     prismjs:
       optional: true
-  checksum: 10/e0c418e489066c079b17b2c86e0e8f9d0899e2d8f1582d303d5ce75028488b6cd76a693e2ea328f223dbc8c42dc63e29cd61460507ae2c7d82af078e6581e58f
+  checksum: 10/e63550b8b561ddcc29445de5edf034ea0fff6089fbaef5377bdffda3d5632cc829f0b55edbeb9235dfe30935e2a5ee4eb0e6dbd3b476a92f1313fa743cfc2f91
   languageName: node
   linkType: hard
 
@@ -18651,7 +18651,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prismjs@npm:^1.28.0, prismjs@npm:^1.29.0":
+"prismjs@npm:^1.29.0, prismjs@npm:^1.30.0":
   version: 1.30.0
   resolution: "prismjs@npm:1.30.0"
   checksum: 10/6b48a2439a82e5c6882f48ebc1564c3890e16463ba17ac10c3ad4f62d98dea5b5c915b172b63b83023a70ad4f5d7be3e8a60304420db34a161fae69dd4e3e2da
@@ -19687,7 +19687,7 @@ __metadata:
     "@hmcts/ccd-case-ui-toolkit": "npm:7.3.54-exui-4666-rc-3"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.2.19"
+    "@hmcts/media-viewer": "npm:4.2.20"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.3.1"
@@ -19783,7 +19783,7 @@ __metadata:
     ngrx-store-freeze: "npm:^0.2.4"
     ngx-chips: "npm:3.0.0"
     ngx-logger: "npm:^5.0.12"
-    ngx-markdown: "npm:^18.1.0"
+    ngx-markdown: "npm:20"
     ngx-pagination: "npm:^6.0.3"
     node-html-parser: "npm:^7.0.0"
     nodemon: "npm:^2.0.19"

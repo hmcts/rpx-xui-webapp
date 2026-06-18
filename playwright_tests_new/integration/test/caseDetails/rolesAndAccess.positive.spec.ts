@@ -52,7 +52,7 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
     tableUtils,
   }) => {
     const judicialLookupRequestPromise = page.waitForRequest('**/api/role-access/roles/getJudicialUsers*');
-    const caseworkerLookupRequestPromise = page.waitForRequest('**/workallocation/caseworker/getUsersByIdamIds*');
+    const caseworkerLookupRequestPromise = page.waitForRequest('**/workallocation/caseworker/getUsersByServiceName*');
     const judiciarySection = caseDetailsPage.getRoleAccessSection('Judiciary');
     const legalOpsSection = caseDetailsPage.getRoleAccessSection('Legal Ops');
 
@@ -77,7 +77,6 @@ test.describe(`Roles and access as ${userIdentifier}`, { tag: ['@integration', '
         services: ['IA'],
       });
       expect(caseworkerLookupRequest.postDataJSON()).toEqual({
-        idamIds: ['user-alice'],
         services: ['IA'],
       });
 

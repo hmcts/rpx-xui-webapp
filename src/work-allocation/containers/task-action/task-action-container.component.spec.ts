@@ -86,9 +86,9 @@ describe('WorkAllocation', () => {
             useValue: {
               snapshot: {
                 data: {
-                  taskAndCaseworker: {
+                  taskAndCaseworkers: {
                     task: { task: mockTasks[0] },
-                    caseworker: {},
+                    caseworkers: [],
                   },
                   ...TaskActionConstants.Unassign,
                 },
@@ -313,9 +313,9 @@ describe('WorkAllocation', () => {
             useValue: {
               snapshot: {
                 data: {
-                  taskAndCaseworker: {
+                  taskAndCaseworkers: {
                     task: { task: mockTask[0] },
-                    caseworker: {},
+                    caseworkers: [],
                   },
                   ...TaskActionConstants.Unassign,
                 },
@@ -400,9 +400,9 @@ describe('WorkAllocation', () => {
             useValue: {
               snapshot: {
                 data: {
-                  taskAndCaseworker: {
+                  taskAndCaseworkers: {
                     task: { task: mockTask[0] },
-                    caseworker: {},
+                    caseworkers: [],
                   },
                   ...TaskActionConstants.Unassign,
                 },
@@ -482,9 +482,9 @@ describe('WorkAllocation', () => {
             useValue: {
               snapshot: {
                 data: {
-                  taskAndCaseworker: {
+                  taskAndCaseworkers: {
                     task: { task: mockTask[0] },
-                    caseworker: {},
+                    caseworkers: [],
                   },
                   ...TaskActionConstants.Unassign,
                 },
@@ -563,9 +563,9 @@ describe('WorkAllocation', () => {
             useValue: {
               snapshot: {
                 data: {
-                  taskAndCaseworker: {
+                  taskAndCaseworkers: {
                     task: { task: mockTask[0] },
-                    caseworker: {},
+                    caseworkers: [],
                   },
                   ...TaskActionConstants.Unassign,
                 },

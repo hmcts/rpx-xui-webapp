@@ -113,7 +113,7 @@ export const ROUTES: Routes = [
       },
       {
         path: ':taskId',
-        resolve: { taskAndCaseworker: TaskResolver, roles: TaskRoleResolverService },
+        resolve: { taskAndCaseworkers: TaskResolver, roles: TaskRoleResolverService },
         children: [
           {
             path: 'assign',

@@ -1,4 +1,4 @@
-import { setupBookableBookingUiRoutesForTest, warmBookableBookingUiSessionForWorker } from '../../helpers';
+import { setupBookableBookingUiRoutesForTest } from '../../helpers';
 import { expect, test } from '../../../E2E/fixtures';
 import {
   type CreateBookingRequest,
@@ -11,13 +11,6 @@ import { formatUiDate, normalizeUiDateValue } from '../../utils/tableUtils';
 const defaultBookingLocation = singleLocationMock[0];
 const bookingPageUrlPattern = /\/booking$/;
 const casesPageUrlPattern = /\/cases(?:$|[/?#])/;
-const sessionWarmupTimeoutMs = 3 * 60_000;
-
-test.beforeAll(async ({}, workerInfo) => {
-  test.setTimeout(sessionWarmupTimeoutMs);
-  await warmBookableBookingUiSessionForWorker(workerInfo);
-});
-
 const createBookingErrorCases = [
   { status: 400, expectedUrlPattern: /\/booking-service-down$/ },
   { status: 500, expectedUrlPattern: /\/service-down$/ },

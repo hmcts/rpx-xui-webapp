@@ -3,6 +3,7 @@ import path from 'node:path';
 
 import { IdamPage } from '@hmcts/playwright-common';
 import { chromium, request, type BrowserContext, type Page } from '@playwright/test';
+import * as lockfile from 'proper-lockfile';
 
 import config from './config.utils.js';
 import { readUiStorageMetadata, resolveUiStoragePathForUser, writeUiStorageMetadata } from './storage-state.utils.js';
@@ -11,6 +12,76 @@ import { UserUtils } from './user.utils.js';
 type EnsureStorageOptions = {
   strict?: boolean;
   baseUrl?: string;
+};
+
+const DEFAULT_UI_LOGIN_TIMEOUT_MS = 60_000;
+const UI_STORAGE_REFRESH_LOCK_MIN_RETRIES = 30;
+const UI_STORAGE_REFRESH_LOCK_RETRY_BASE = {
+  factor: 1.2,
+  minTimeout: 1_000,
+  maxTimeout: 5_000,
+} as const;
+
+const buildStorageRefreshLockPath = (storagePath: string): string => `${storagePath}.refresh.lock`;
+
+const resolveLoginTimeoutMs = (): number => {
+  const raw = process.env.PW_UI_LOGIN_TIMEOUT_MS;
+  if (!raw) {
+    return DEFAULT_UI_LOGIN_TIMEOUT_MS;
+  }
+  const parsed = Number.parseInt(raw, 10);
+  return Number.isNaN(parsed) ? DEFAULT_UI_LOGIN_TIMEOUT_MS : Math.max(5_000, parsed);
+};
+
+const calculateRetryBudgetMs = (retryOptions: {
+  retries: number;
+  factor: number;
+  minTimeout: number;
+  maxTimeout: number;
+}): number =>
+  Array.from({ length: retryOptions.retries }, (_unused, attemptIndex) =>
+    Math.min(retryOptions.minTimeout * retryOptions.factor ** attemptIndex, retryOptions.maxTimeout)
+  ).reduce((total, retryDelayMs) => total + retryDelayMs, 0);
+
+const resolveRetryCountForBudget = (minimumBudgetMs: number): number => {
+  let retries = UI_STORAGE_REFRESH_LOCK_MIN_RETRIES;
+  while (
+    calculateRetryBudgetMs({
+      ...UI_STORAGE_REFRESH_LOCK_RETRY_BASE,
+      retries,
+    }) <= minimumBudgetMs
+  ) {
+    retries += 1;
+  }
+  return retries;
+};
+
+const resolveStorageRefreshLockOptions = (loginTimeoutMs = resolveLoginTimeoutMs()) => {
+  const requiredWaitBudgetMs = loginTimeoutMs * 2;
+  return {
+    staleMs: loginTimeoutMs,
+    retries: {
+      ...UI_STORAGE_REFRESH_LOCK_RETRY_BASE,
+      retries: resolveRetryCountForBudget(requiredWaitBudgetMs),
+    },
+  };
+};
+
+const withUiStorageStateRefreshLock = async <T>(storagePath: string, action: () => Promise<T>): Promise<T> => {
+  const lockPath = buildStorageRefreshLockPath(storagePath);
+  fs.mkdirSync(path.dirname(lockPath), { recursive: true });
+  fs.closeSync(fs.openSync(lockPath, 'a'));
+  const lockOptions = resolveStorageRefreshLockOptions();
+  const release = await lockfile.lock(lockPath, {
+    retries: lockOptions.retries,
+    stale: lockOptions.staleMs,
+    realpath: false,
+  });
+  try {
+    return await action();
+  } finally {
+    await release();
+  }
 };
 
 const resolveStorageTtlMs = (): number => {
@@ -23,15 +94,6 @@ const resolveStorageTtlMs = (): number => {
     return 15 * 60_000;
   }
   return Math.max(0, parsed) * 60_000;
-};
-
-const resolveLoginTimeoutMs = (): number => {
-  const raw = process.env.PW_UI_LOGIN_TIMEOUT_MS;
-  if (!raw) {
-    return 60_000;
-  }
-  const parsed = Number.parseInt(raw, 10);
-  return Number.isNaN(parsed) ? 60_000 : Math.max(5_000, parsed);
 };
 
 const hasRequiredAuthCookies = (cookies: { name: string }[]) => {
@@ -200,42 +262,57 @@ export async function ensureUiStorageStateForUser(userIdentifier: string, option
     return storagePath;
   }
 
-  fs.mkdirSync(path.dirname(storagePath), { recursive: true });
-
-  const browser = await chromium.launch();
-  const context = await browser.newContext({ ignoreHTTPSErrors: true });
-  const page = await context.newPage();
-
-  try {
-    await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
-
-    const loginLocators = await waitForIdamLogin(page);
-    if (loginLocators) {
-      await loginLocators.usernameInput.fill(credentials.email);
-      await loginLocators.passwordInput.fill(credentials.password);
-      await loginLocators.submitButton.first().click();
-      const idamPage = new IdamPage(page);
-      if (typeof (idamPage as unknown as { waitForSpinner?: () => Promise<void> }).waitForSpinner === 'function') {
-        await (idamPage as unknown as { waitForSpinner: () => Promise<void> }).waitForSpinner();
-      } else {
-        await page.waitForLoadState('networkidle', { timeout: resolveLoginTimeoutMs() }).catch(() => undefined);
-      }
-    }
-
-    const authCookies = await waitForAuthCookies(context);
-    if (!authCookies.ok) {
-      throw new Error(`UI login failed for ${userIdentifier}: ${authCookies.reason ?? 'unknown reason'}`);
-    }
-
-    await context.storageState({ path: storagePath });
-    writeUiStorageMetadata(storagePath, {
-      userIdentifier,
-      email: credentials.email,
+  await withUiStorageStateRefreshLock(storagePath, async () => {
+    const refreshStillRequired = await shouldRefreshStorageState(storagePath, baseUrl, {
+      ignoreTtl: strict,
+      expectedIdentity: {
+        userIdentifier,
+        email: credentials.email,
+      },
     });
-  } finally {
-    await closeContextSafely(context);
-    await browser.close();
-  }
+    if (!refreshStillRequired) {
+      return;
+    }
+
+    fs.mkdirSync(path.dirname(storagePath), { recursive: true });
+
+    const browser = await chromium.launch();
+    const context = await browser.newContext({ ignoreHTTPSErrors: true });
+    const page = await context.newPage();
+
+    try {
+      await page.goto(baseUrl, { waitUntil: 'domcontentloaded' });
+
+      const loginLocators = await waitForIdamLogin(page);
+      if (loginLocators) {
+        await loginLocators.usernameInput.fill(credentials.email);
+        await loginLocators.passwordInput.fill(credentials.password);
+        await loginLocators.submitButton.first().click();
+        const idamPage = new IdamPage(page);
+        if (typeof (idamPage as unknown as { waitForSpinner?: () => Promise<void> }).waitForSpinner === 'function') {
+          await (idamPage as unknown as { waitForSpinner: () => Promise<void> }).waitForSpinner();
+        } else {
+          await page.waitForLoadState('networkidle', { timeout: resolveLoginTimeoutMs() }).catch(() => undefined);
+        }
+      }
+
+      const authCookies = await waitForAuthCookies(context);
+      if (!authCookies.ok) {
+        throw new Error(`UI login failed for ${userIdentifier}: ${authCookies.reason ?? 'unknown reason'}`);
+      }
+
+      const tempStoragePath = `${storagePath}.${process.pid}.${Date.now()}.tmp`;
+      await context.storageState({ path: tempStoragePath });
+      fs.renameSync(tempStoragePath, storagePath);
+      writeUiStorageMetadata(storagePath, {
+        userIdentifier,
+        email: credentials.email,
+      });
+    } finally {
+      await closeContextSafely(context);
+      await browser.close();
+    }
+  });
 
   if (strict) {
     const authenticated = await isStorageStateAuthenticated(storagePath, baseUrl);
@@ -248,5 +325,13 @@ export async function ensureUiStorageStateForUser(userIdentifier: string, option
 }
 
 export const __test__ = {
+  buildStorageRefreshLockPath,
+  calculateRetryBudgetMs,
+  defaultUiLoginTimeoutMs: DEFAULT_UI_LOGIN_TIMEOUT_MS,
+  resolveLoginTimeoutMs,
+  resolveStorageRefreshLockOptions,
   shouldRefreshStorageState,
+  uiStorageRefreshLockRetries: resolveStorageRefreshLockOptions(DEFAULT_UI_LOGIN_TIMEOUT_MS).retries,
+  uiStorageRefreshLockStaleMs: resolveStorageRefreshLockOptions(DEFAULT_UI_LOGIN_TIMEOUT_MS).staleMs,
+  withUiStorageStateRefreshLock,
 };

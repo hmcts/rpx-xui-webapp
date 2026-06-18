@@ -1,8 +1,5 @@
 @import '_typography';
 @import 'govuk-frontend/dist/govuk/all';
-@import 'shims';
-@import 'conditionals';
-@import 'measurements';
 @import 'material-design-icons/iconfont/material-icons.css';
 
 $black: #323232;
@@ -10,15 +7,7 @@ $black: #323232;
 $path: '/assets/';
 
 $fa-font-path: '/node_modules/font-awesome/fonts';
-$govuk-frontend-toolkit-image-path: '/assets';
 $govuk-template-image-path: '/assets';
-
-@import 'node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_buttons.scss';
-// @import 'node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_breadcrumbs.scss';
-
-// @import 'node_modules/govuk_frontend_toolkit/stylesheets/_grid_layout.scss';
-// govuk-elements-sass is incompatible with govuk-frontend v5 — styles removed in migration
-// @import 'govuk-elements';
 
 // Organise SASS (TODO / TS)
 @import './buttons';

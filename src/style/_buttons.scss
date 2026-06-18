@@ -1,47 +1,13 @@
-// TODO - needs to be clarified wehre the css is coming form
-
-/*
-Buttons
-*/
-
-$module: 'button';
-
-// Base .button class — was provided by govuk-elements before removal
 .button {
-  @include button($button-colour);
-  @include box-sizing(border-box);
-  color: $white;
-  vertical-align: top;
-
-  @include media(mobile) {
-    width: 100%;
-    text-align: center;
-  }
+  @extend .govuk-button;
 }
 
-.button::-moz-focus-inner {
-  border: 0;
-  padding: 0;
+.button-secondary {
+  @extend .govuk-button;
+  @extend .govuk-button--secondary;
 }
 
-.button:focus {
-  outline: 3px solid $focus-colour;
-}
-
-.button[disabled='disabled'] {
-  background: $button-colour;
-}
-
-.button[disabled='disabled']:focus {
-  outline: none;
-}
-
-.#{$module} {
-  &-secondary {
-    @include button($grey-3);
-  }
-
-  &-tertiary {
-    @include button($grey-4);
-  }
+.button-tertiary {
+  @extend .govuk-button;
+  @extend .govuk-button--secondary;
 }

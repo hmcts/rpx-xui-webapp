@@ -113,7 +113,11 @@
     "@angular/ssr": "^20.3.21",
     "@dr.pogodin/csurf": "^1.16.5",
     "@edium/fsm": "^2.1.2",
+<<<<<<< exui-3229-event-triggers-cause-duplicate-requests
     "@hmcts/ccd-case-ui-toolkit": "7.3.54-exui-3229",
+=======
+    "@hmcts/ccd-case-ui-toolkit": "7.3.62",
+>>>>>>> master
     "@hmcts/ccpay-web-component": "6.5.17",
     "@hmcts/frontend": "0.0.50-alpha",
     "@hmcts/media-viewer": "4.2.19",

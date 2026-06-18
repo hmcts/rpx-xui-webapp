@@ -1,4 +1,4 @@
-import * as exceptionFormatter from 'exception-formatter';
+import exceptionFormatter from 'exception-formatter';
 import { getConfigValue } from '../configuration';
 import { MAX_LOG_LINE } from '../configuration/references';
 

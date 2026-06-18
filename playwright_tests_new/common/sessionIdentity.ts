@@ -1,4 +1,5 @@
 import { UserUtils } from '../E2E/utils/user.utils.js';
+import { resolveStaffAdminUserIdentifier } from './staffAdminUserPool.js';
 
 export type SessionIdentity = {
   userIdentifier: string;
@@ -28,9 +29,10 @@ export function resolveSessionIdentity(input: SessionIdentityInput, deps: Sessio
   }
 
   const userUtils = deps.userUtils ?? new UserUtils();
-  const credentials = userUtils.getUserCredentials(input);
+  const userIdentifier = resolveStaffAdminUserIdentifier(input);
+  const credentials = userUtils.getUserCredentials(userIdentifier);
   return {
-    userIdentifier: input,
+    userIdentifier,
     email: credentials.email,
     password: credentials.password,
   };

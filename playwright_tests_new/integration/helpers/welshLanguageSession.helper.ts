@@ -15,7 +15,6 @@ type SolicitorCredentialMapping = {
 const defaultWelshLanguageSessionMappings: readonly SolicitorCredentialMapping[] = [
   { userIdentifier: 'SOLICITOR', usernameEnv: 'SOLICITOR_USERNAME', passwordEnv: 'SOLICITOR_PASSWORD' },
   { userIdentifier: 'PRL_SOLICITOR', usernameEnv: 'PRL_SOLICITOR_USERNAME', passwordEnv: 'PRL_SOLICITOR_PASSWORD' },
-  { userIdentifier: 'WA_SOLICITOR', usernameEnv: 'WA_SOLICITOR_USERNAME', passwordEnv: 'WA_SOLICITOR_PASSWORD' },
   { userIdentifier: 'NOC_SOLICITOR', usernameEnv: 'NOC_SOLICITOR_USERNAME', passwordEnv: 'NOC_SOLICITOR_PASSWORD' },
 ] as const;
 const WELSH_LANGUAGE_LEASE_ROOT = path.join(process.cwd(), '.sessions', 'welsh-language-leases');
@@ -66,41 +65,64 @@ function getWelshLanguageLeaseKey(userIdentifier: SessionIdentityInput): string 
   return identityKey.toLowerCase().replace(/[^a-z0-9._-]+/g, '_');
 }
 
-async function acquireWelshLanguageLease(userIdentifier: SessionIdentityInput): Promise<() => Promise<void>> {
+function getWelshLanguageLeaseFilePath(userIdentifier: SessionIdentityInput): string {
   ensureDirectory(WELSH_LANGUAGE_LEASE_ROOT);
   const leaseFilePath = path.join(WELSH_LANGUAGE_LEASE_ROOT, `${getWelshLanguageLeaseKey(userIdentifier)}.lock`);
   if (!fs.existsSync(leaseFilePath)) {
     fs.writeFileSync(leaseFilePath, '', 'utf8');
   }
 
+  return leaseFilePath;
+}
+
+async function tryAcquireWelshLanguageLease(userIdentifier: SessionIdentityInput): Promise<(() => Promise<void>) | undefined> {
+  const leaseFilePath = getWelshLanguageLeaseFilePath(userIdentifier);
+
+  try {
+    return await lockfile.lock(leaseFilePath, {
+      retries: 0,
+      stale: WELSH_LANGUAGE_LEASE_STALE_MS,
+    });
+  } catch (error) {
+    const candidate = error as { code?: string; message?: string };
+    const lockHeld =
+      candidate?.code === 'ELOCKED' ||
+      candidate?.message?.includes('already being held') === true ||
+      candidate?.message?.includes('Lock file is already being held') === true;
+
+    if (lockHeld) {
+      return undefined;
+    }
+
+    throw error;
+  }
+}
+
+async function acquireWelshLanguageLeaseFromPool(
+  users: readonly SessionIdentityInput[],
+  preferredStartIndex: number
+): Promise<{ release: () => Promise<void>; userIdentifier: SessionIdentityInput }> {
   const startedAt = Date.now();
 
   while (true) {
-    try {
-      return await lockfile.lock(leaseFilePath, {
-        retries: 0,
-        stale: WELSH_LANGUAGE_LEASE_STALE_MS,
-      });
-    } catch (error) {
-      const candidate = error as { code?: string; message?: string };
-      const lockHeld =
-        candidate?.code === 'ELOCKED' ||
-        candidate?.message?.includes('already being held') === true ||
-        candidate?.message?.includes('Lock file is already being held') === true;
+    for (let offset = 0; offset < users.length; offset += 1) {
+      const userIdentifier = users[(preferredStartIndex + offset) % users.length];
+      const release = await tryAcquireWelshLanguageLease(userIdentifier);
 
-      if (!lockHeld) {
-        throw error;
+      if (release) {
+        return { release, userIdentifier };
       }
-
-      const elapsedMs = Date.now() - startedAt;
-      if (elapsedMs >= WELSH_LANGUAGE_LEASE_MAX_WAIT_MS) {
-        throw new Error(`Timed out waiting for Welsh language session lease after ${elapsedMs}ms (${leaseFilePath})`);
-      }
-
-      await new Promise<void>((resolve) =>
-        setTimeout(resolve, Math.min(WELSH_LANGUAGE_LEASE_RETRY_MS, WELSH_LANGUAGE_LEASE_MAX_WAIT_MS - elapsedMs))
-      );
     }
+
+    const elapsedMs = Date.now() - startedAt;
+    if (elapsedMs >= WELSH_LANGUAGE_LEASE_MAX_WAIT_MS) {
+      const leaseKeys = users.map(getWelshLanguageLeaseKey).join(', ');
+      throw new Error(`Timed out waiting for Welsh language session lease after ${elapsedMs}ms (${leaseKeys})`);
+    }
+
+    await new Promise<void>((resolve) =>
+      setTimeout(resolve, Math.min(WELSH_LANGUAGE_LEASE_RETRY_MS, WELSH_LANGUAGE_LEASE_MAX_WAIT_MS - elapsedMs))
+    );
   }
 }
 
@@ -140,8 +162,8 @@ export async function setupWelshLanguageSession(
   testInfo: Pick<TestInfo, 'workerIndex' | 'annotations'>,
   env: NodeJS.ProcessEnv = process.env
 ): Promise<WelshLanguageSessionLease> {
-  const userIdentifier = resolveWelshLanguageSessionUser(testInfo, env);
-  const release = await acquireWelshLanguageLease(userIdentifier);
+  const users = resolveWelshLanguageSessionUsers(env);
+  const { release, userIdentifier } = await acquireWelshLanguageLeaseFromPool(users, testInfo.workerIndex % users.length);
 
   try {
     await applySessionCookies(page, userIdentifier);

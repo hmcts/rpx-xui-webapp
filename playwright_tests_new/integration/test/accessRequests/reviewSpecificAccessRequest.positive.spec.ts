@@ -28,7 +28,7 @@ test.describe(
     }) => {
       await setupReviewSpecificAccessMockRoutes(page);
 
-      await page.goto(ACCESS_REQUEST_REVIEW_PATH, { waitUntil: 'domcontentloaded' });
+      await accessRequestPage.gotoReviewSpecificRequest(ACCESS_REQUEST_REVIEW_PATH);
 
       await expect(accessRequestPage.reviewSpecificHeading).toBeVisible();
       await expect(page.getByText(ACCESS_REQUEST_CASE_NAME)).toBeVisible();
@@ -39,7 +39,7 @@ test.describe(
 
     test('User sees the correct fields for each access duration option', async ({ accessRequestPage, page }) => {
       await setupReviewSpecificAccessMockRoutes(page);
-      await page.goto(ACCESS_REQUEST_REVIEW_PATH, { waitUntil: 'domcontentloaded' });
+      await accessRequestPage.gotoReviewSpecificRequest(ACCESS_REQUEST_REVIEW_PATH);
 
       await accessRequestPage.approveRequestRadio.check();
       await accessRequestPage.continueButton.click();
@@ -61,7 +61,7 @@ test.describe(
 
     test('User can approve a specific access request and reach the success page', async ({ accessRequestPage, page }) => {
       await setupReviewSpecificAccessMockRoutes(page);
-      await page.goto(ACCESS_REQUEST_REVIEW_PATH, { waitUntil: 'domcontentloaded' });
+      await accessRequestPage.gotoReviewSpecificRequest(ACCESS_REQUEST_REVIEW_PATH);
 
       await accessRequestPage.approveRequestRadio.check();
       await accessRequestPage.continueButton.click();
@@ -101,7 +101,7 @@ test.describe(
       page,
     }) => {
       await setupReviewSpecificAccessMockRoutes(page);
-      await page.goto(ACCESS_REQUEST_REVIEW_PATH, { waitUntil: 'domcontentloaded' });
+      await accessRequestPage.gotoReviewSpecificRequest(ACCESS_REQUEST_REVIEW_PATH);
 
       await accessRequestPage.approveRequestRadio.check();
       await accessRequestPage.continueButton.click();
@@ -135,7 +135,7 @@ test.describe(
 
     test('User can choose Request more information and complete that path', async ({ accessRequestPage, page }) => {
       await setupReviewSpecificAccessMockRoutes(page);
-      await page.goto(ACCESS_REQUEST_REVIEW_PATH, { waitUntil: 'domcontentloaded' });
+      await accessRequestPage.gotoReviewSpecificRequest(ACCESS_REQUEST_REVIEW_PATH);
 
       await accessRequestPage.requestMoreInformationRadio.check();
       await accessRequestPage.continueButton.click();

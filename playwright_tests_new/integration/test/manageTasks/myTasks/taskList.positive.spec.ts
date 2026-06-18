@@ -131,8 +131,6 @@ test.describe(`Task List as ${userIdentifier}`, { tag: ['@integration', '@integr
 
   test(`Column sort persists when navigating away from and back to My tasks`, async ({ taskListPage, page }) => {
     const myTasksMockResponse = buildTaskListMock(30, userId?.toString() || '', myActionsList);
-    const caseNameSortHeaderCell = taskListPage.sortByCaseNameTableHeader.locator('xpath=ancestor::th[1]');
-
     await test.step('Setup route mocks', async () => {
       await setupManageTasksBaseRoutes(page, { taskListResponse: myTasksMockResponse });
     });
@@ -144,7 +142,7 @@ test.describe(`Task List as ${userIdentifier}`, { tag: ['@integration', '@integr
 
       await taskListPage.sortByCaseNameTableHeader.click();
       await taskListPage.exuiSpinnerComponent.wait();
-      await expect(caseNameSortHeaderCell).toHaveAttribute('aria-sort', 'ascending');
+      await expect(taskListPage.sortByCaseNameColumnHeader).toHaveAttribute('aria-sort', 'ascending');
     });
 
     await test.step('Navigate away and return to My tasks', async () => {
@@ -180,7 +178,7 @@ test.describe(`Task List as ${userIdentifier}`, { tag: ['@integration', '@integr
     });
 
     await test.step('Verify Case name sort remains selected', async () => {
-      await expect(caseNameSortHeaderCell).toHaveAttribute('aria-sort', 'ascending');
+      await expect(taskListPage.sortByCaseNameColumnHeader).toHaveAttribute('aria-sort', 'ascending');
     });
   });
 });

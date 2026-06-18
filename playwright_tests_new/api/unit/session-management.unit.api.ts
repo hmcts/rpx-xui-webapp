@@ -8,19 +8,38 @@ import { __test__ as sessionStorageTest } from '../../E2E/utils/session-storage.
 import { __test__ as sessionCaptureTest } from '../../common/sessionCapture.js';
 import { resolveUiStoragePathForUser, writeUiStorageMetadata } from '../../E2E/utils/storage-state.utils.js';
 
+function fakeSessionPage() {
+  const locator = {
+    first: () => locator,
+    textContent: async () => '',
+  };
+
+  return {
+    locator: () => locator,
+    url: () => 'https://idam-web-public.aat.platform.hmcts.net/login',
+  };
+}
+
 test.describe('Session management hardening unit tests', { tag: '@svc-internal' }, () => {
   test('confirmAuthenticatedLogin accepts auth-cookie based success for fallback IDAM login', async () => {
     const infoCalls: Array<Record<string, unknown>> = [];
 
     await expect(
-      sessionCaptureTest.confirmAuthenticatedLogin({} as never, 'DYNAMIC_SOLICITOR', 'dynamic@example.test', '/login', 1, {
-        acceptCookies: async () => undefined,
-        waitForShell: async () => null,
-        waitForAuthCookies: async () => true,
-        info: (_message, meta) => {
-          infoCalls.push(meta);
-        },
-      })
+      sessionCaptureTest.confirmAuthenticatedLogin(
+        fakeSessionPage() as never,
+        'DYNAMIC_SOLICITOR',
+        'dynamic@example.test',
+        '/login',
+        1,
+        {
+          acceptCookies: async () => undefined,
+          waitForShell: async () => null,
+          waitForAuthCookies: async () => true,
+          info: (_message, meta) => {
+            infoCalls.push(meta);
+          },
+        }
+      )
     ).resolves.toBeUndefined();
 
     expect(infoCalls).toEqual([
@@ -33,12 +52,19 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
 
   test('confirmAuthenticatedLogin rejects when login establishes neither shell nor auth cookies', async () => {
     await expect(
-      sessionCaptureTest.confirmAuthenticatedLogin({} as never, 'DYNAMIC_SOLICITOR', 'dynamic@example.test', '/login', 1, {
-        acceptCookies: async () => undefined,
-        waitForShell: async () => null,
-        waitForAuthCookies: async () => false,
-        info: () => undefined,
-      })
+      sessionCaptureTest.confirmAuthenticatedLogin(
+        fakeSessionPage() as never,
+        'DYNAMIC_SOLICITOR',
+        'dynamic@example.test',
+        '/login',
+        1,
+        {
+          acceptCookies: async () => undefined,
+          waitForShell: async () => null,
+          waitForAuthCookies: async () => false,
+          info: () => undefined,
+        }
+      )
     ).rejects.toThrow(/did not establish authenticated session/i);
   });
 
@@ -107,6 +133,134 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
 
       expect(shouldRefresh).toBe(true);
     } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('storage refresh lock serialises concurrent refresh writers', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-storage-lock-unit-'));
+    const storagePath = path.join(tempDir, 'storage.json');
+    const entries: string[] = [];
+    let firstCanFinish: (() => void) | undefined;
+
+    try {
+      const first = sessionStorageTest.withUiStorageStateRefreshLock(storagePath, async () => {
+        entries.push('first:start');
+        await new Promise<void>((resolve) => {
+          firstCanFinish = resolve;
+        });
+        entries.push('first:end');
+      });
+
+      await expect.poll(() => entries.join(','), { timeout: 5_000 }).toBe('first:start');
+
+      const second = sessionStorageTest.withUiStorageStateRefreshLock(storagePath, async () => {
+        entries.push('second:start');
+      });
+
+      firstCanFinish?.();
+      await Promise.all([first, second]);
+
+      expect(entries).toEqual(['first:start', 'first:end', 'second:start']);
+      expect(sessionStorageTest.buildStorageRefreshLockPath(storagePath)).toBe(`${storagePath}.refresh.lock`);
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('storage refresh lock wait budget covers slow UI login contention', () => {
+    const retryBudgetMs = sessionStorageTest.calculateRetryBudgetMs(sessionStorageTest.uiStorageRefreshLockRetries);
+
+    expect(sessionStorageTest.uiStorageRefreshLockStaleMs).toBe(sessionStorageTest.defaultUiLoginTimeoutMs);
+    expect(retryBudgetMs).toBeGreaterThan(sessionStorageTest.defaultUiLoginTimeoutMs * 2);
+  });
+
+  test('storage refresh lock budget follows configured UI login timeout', () => {
+    const previousTimeout = process.env.PW_UI_LOGIN_TIMEOUT_MS;
+
+    try {
+      process.env.PW_UI_LOGIN_TIMEOUT_MS = '180000';
+      const lockOptions = sessionStorageTest.resolveStorageRefreshLockOptions();
+      const retryBudgetMs = sessionStorageTest.calculateRetryBudgetMs(lockOptions.retries);
+
+      expect(sessionStorageTest.resolveLoginTimeoutMs()).toBe(180_000);
+      expect(lockOptions.staleMs).toBe(180_000);
+      expect(retryBudgetMs).toBeGreaterThan(180_000 * 2);
+    } finally {
+      if (previousTimeout === undefined) {
+        delete process.env.PW_UI_LOGIN_TIMEOUT_MS;
+      } else {
+        process.env.PW_UI_LOGIN_TIMEOUT_MS = previousTimeout;
+      }
+    }
+  });
+
+  test('session capture reuses a fresh session instead of failing on a recent failure marker', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-capture-unit-'));
+    const previousCwd = process.cwd();
+    const sessionsDir = path.join(tempDir, '.sessions');
+    const sessionPath = path.join(sessionsDir, 'booking-ui-user-example.test.storage.json');
+    const failurePath = path.join(sessionsDir, 'booking-ui-user-example.test.capture-failed.json');
+    let lockCalled = false;
+    let freshnessMaxAgeMs: number | undefined;
+
+    try {
+      fs.mkdirSync(sessionsDir, { recursive: true });
+      fs.writeFileSync(
+        sessionPath,
+        JSON.stringify({
+          cookies: [
+            { name: 'Idam.Session', value: 'session', expires: Math.floor(Date.now() / 1_000) + 600 },
+            { name: '__auth__', value: 'auth', expires: Math.floor(Date.now() / 1_000) + 600 },
+          ],
+        })
+      );
+      fs.writeFileSync(
+        failurePath,
+        JSON.stringify({
+          timestamp: Date.now(),
+          message: 'Login failed for BOOKING_UI-FT-ON-4',
+        })
+      );
+
+      process.chdir(tempDir);
+
+      await expect(
+        sessionCaptureTest.sessionCaptureWith(['BOOKING_UI-FT-ON-4'], {
+          chromiumLauncher: {
+            launch: async () => {
+              throw new Error('should not launch browser when a fresh session exists');
+            },
+          } as never,
+          config: {
+            urls: {
+              exuiDefaultUrl: 'https://manage-case.aat.platform.hmcts.net',
+            },
+          } as never,
+          env: { PW_SESSION_MAX_AGE_MS: '1234' },
+          isSessionFresh: (_sessionPath, maxAgeMs) => {
+            freshnessMaxAgeMs = maxAgeMs;
+            return true;
+          },
+          lockfile: {
+            lock: async () => {
+              lockCalled = true;
+              throw new Error('should not acquire lock when a fresh session exists');
+            },
+          } as never,
+          resolveSessionIdentity: () => ({
+            userIdentifier: 'BOOKING_UI-FT-ON-4',
+            email: 'booking-ui-user@example.test',
+            password: 'not-used',
+          }),
+        })
+      ).resolves.toBeUndefined();
+
+      expect(lockCalled).toBe(false);
+      expect(freshnessMaxAgeMs).toBe(1234);
+      expect(fs.existsSync(failurePath)).toBe(false);
+    } finally {
+      process.chdir(previousCwd);
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
   });

@@ -160,7 +160,7 @@ test.describe(
       });
     }
 
-    test('Case details Tasks tab manual cancellation path', async ({ page, taskListPage }) => {
+    test('Case details Tasks tab manual cancellation path', async ({ caseDetailsPage, page, taskListPage }) => {
       const scenario = cancellationMatrix[0];
       const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier, {
         fallbackUserId: 'test-user-id',
@@ -183,7 +183,7 @@ test.describe(
       await routeCaseDetailsTaskCancellationFlow(page, taskId, scenario, task, caseDetailsTemplate);
 
       await test.step('Open case-details task cancellation action', async () => {
-        await page.goto(`/cases/case-details/${scenario.jurisdiction}/${scenario.caseTypeId}/${scenario.caseId}/tasks`);
+        await caseDetailsPage.openTasksTab(scenario.jurisdiction, scenario.caseTypeId, scenario.caseId);
         await expect(page.getByRole('heading', { name: 'Active tasks' })).toBeVisible();
         const caseDetailsCancelAction = taskListPage.caseDetailsTaskActionCancel.first();
         await expect(caseDetailsCancelAction).toBeVisible();

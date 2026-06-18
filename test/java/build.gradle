@@ -1,0 +1,35 @@
+
+plugins {
+    id 'application'
+}
+
+sourceCompatibility = 21
+targetCompatibility = 21
+
+// tag::repositories[]
+repositories {
+    mavenLocal()
+    maven {
+        url = 'https://pkgs.dev.azure.com/hmcts/Artifacts/_packaging/hmcts-lib/maven/v1'
+    }
+    mavenCentral()
+}
+// end::repositories[]
+
+// tag::dependencies[]
+dependencies {
+    testImplementation 'com.github.hmcts:fortify-client:1.4.10:all@jar'
+}
+// end::dependencies[]
+
+tasks.register('resolveFortifyDependencies') {
+    doLast {
+        configurations.testRuntimeClasspath.resolve()
+    }
+}
+
+task fortifyScan(type: JavaExec)  {
+    main = "uk.gov.hmcts.fortifyclient.FortifyClientMainApp"
+    classpath += sourceSets.test.runtimeClasspath
+    jvmArgs = ['--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
+}

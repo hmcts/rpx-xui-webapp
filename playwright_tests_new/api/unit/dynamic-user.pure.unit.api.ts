@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 
 import { __test__ as caseSetupTest } from '../../E2E/utils/test-setup/caseSetup.js';
 import { buildCasePayloadFromTemplate } from '../../E2E/utils/test-setup/payloads/registry.js';
+import { buildCreatedUserLogSummary } from '../../E2E/utils/professional-user.utils.js';
 import {
   DIVORCE_EXTERNAL_NOC_SOLICITOR_ROLE_NAMES,
   EMPLOYMENT_EXTERNAL_CORE_SOLICITOR_ROLE_NAMES,
@@ -12,6 +13,7 @@ import {
   getRuntimeUserCredentials,
   getRuntimeUserCredentialEnvMapping,
   publishRuntimeUserCredentialsToEnv,
+  resolveRuntimeUserCredentialsForIdentifier,
   restoreRuntimeUserCredentialsInEnv,
   resolveRuntimeUserCredentialsFromEnv,
   setRuntimeUserCredentials,
@@ -32,8 +34,55 @@ const ENV_KEYS = [
   'DYNAMIC_SOLICITOR_TEMPLATE_ROLES',
   'DIVORCE_SOLICITOR_USERNAME',
   'DIVORCE_SOLICITOR_PASSWORD',
+  'BOOKING_UI_FT_ON_USERNAME',
+  'BOOKING_UI_FT_ON_PASSWORD',
+  'BOOKING_UI_FT_ON_1_USERNAME',
+  'BOOKING_UI_FT_ON_1_PASSWORD',
+  'BOOKING_UI_FT_ON_2_USERNAME',
+  'BOOKING_UI_FT_ON_2_PASSWORD',
+  'BOOKING_UI_FT_ON_3_USERNAME',
+  'BOOKING_UI_FT_ON_3_PASSWORD',
+  'BOOKING_UI_FT_ON_4_USERNAME',
+  'BOOKING_UI_FT_ON_4_PASSWORD',
+  'STAFF_ADMIN_USERNAME',
+  'STAFF_ADMIN_PASSWORD',
+  'STAFF_ADMIN_1_USERNAME',
+  'STAFF_ADMIN_1_PASSWORD',
+  'STAFF_ADMIN_2_USERNAME',
+  'STAFF_ADMIN_2_PASSWORD',
+  'STAFF_ADMIN_3_USERNAME',
+  'STAFF_ADMIN_3_PASSWORD',
+  'STAFF_ADMIN_4_USERNAME',
+  'STAFF_ADMIN_4_PASSWORD',
+  'HEARING_MANAGER_CR84_OFF_USERNAME',
+  'HEARING_MANAGER_CR84_OFF_PASSWORD',
+  'HEARING_MANAGER_CR84_OFF_1_USERNAME',
+  'HEARING_MANAGER_CR84_OFF_1_PASSWORD',
+  'HEARING_MANAGER_CR84_OFF_4_USERNAME',
+  'HEARING_MANAGER_CR84_OFF_4_PASSWORD',
+  'HEARING_MANAGER_CR84_ON_USERNAME',
+  'HEARING_MANAGER_CR84_ON_PASSWORD',
+  'HEARING_MANAGER_CR84_ON_1_USERNAME',
+  'HEARING_MANAGER_CR84_ON_1_PASSWORD',
+  'HEARING_MANAGER_CR84_ON_4_USERNAME',
+  'HEARING_MANAGER_CR84_ON_4_PASSWORD',
+  'FPL_GLOBAL_SEARCH_USERNAME',
+  'FPL_GLOBAL_SEARCH_PASSWORD',
+  'USER_WITH_FLAGS_USERNAME',
+  'USER_WITH_FLAGS_PASSWORD',
+  'PW_IAC_JUDGE_WA_R1_EMAIL',
+  'PW_IAC_JUDGE_WA_R1_PASSWORD',
+  'PW_IAC_CASEOFFICER_R1_EMAIL',
+  'PW_IAC_CASEOFFICER_R1_PASSWORD',
+  'PW_IAC_CASEOFFICER_R2_EMAIL',
+  'PW_IAC_CASEOFFICER_R2_PASSWORD',
+  'SEARCH_EMPLOYMENT_CASE_USERNAME',
+  'SEARCH_EMPLOYMENT_CASE_PASSWORD',
   'EMPLOYMENT_DYNAMIC_CASEWORKER_USERNAME',
   'EMPLOYMENT_DYNAMIC_CASEWORKER_PASSWORD',
+  'STAFF_ADMIN_POOL_ENABLED',
+  'TEST_PARALLEL_INDEX',
+  'TEST_WORKER_INDEX',
 ] as const;
 
 let originalEnvValues: Record<string, string | undefined> = {};
@@ -57,6 +106,31 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
       }
     }
     clearRuntimeUserCredentials('dynamic-user');
+  });
+
+  test('created-user log summary never includes generated passwords', () => {
+    const summary = buildCreatedUserLogSummary({
+      user: {
+        id: '123',
+        email: 'dynamic@example.test',
+        forename: 'Dynamic',
+        surname: 'User',
+        password: 'secret-password-that-must-not-leak',
+        roleNames: ['caseworker-divorce'],
+      },
+      createPath: 'idam-testing-support',
+    });
+
+    expect(summary).toEqual(
+      expect.objectContaining({
+        username: 'dynamic@example.test',
+        forename: 'Dynamic',
+        surname: 'User',
+        roles: ['caseworker-divorce'],
+        createPath: 'idam-testing-support',
+      })
+    );
+    expect(JSON.stringify(summary)).not.toContain('secret-password-that-must-not-leak');
   });
 
   test('resolveSolicitorRoleStrategy prefers explicit roles and deduplicates them', () => {
@@ -118,6 +192,47 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
       username: 'DIVORCE_SOLICITOR_USERNAME',
       password: 'DIVORCE_SOLICITOR_PASSWORD',
     });
+    const bookingUiFtOnMapping = getRuntimeUserCredentialEnvMapping(' booking_ui-ft-on ');
+    expect(bookingUiFtOnMapping).toEqual({
+      username: 'BOOKING_UI_FT_ON_USERNAME',
+      password: 'BOOKING_UI_FT_ON_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' booking_ui-ft-on-1 ')).toEqual({
+      username: 'BOOKING_UI_FT_ON_1_USERNAME',
+      password: 'BOOKING_UI_FT_ON_1_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' booking_ui-ft-on-4 ')).toEqual({
+      username: 'BOOKING_UI_FT_ON_4_USERNAME',
+      password: 'BOOKING_UI_FT_ON_4_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' staff_admin ')).toEqual({
+      username: 'STAFF_ADMIN_USERNAME',
+      password: 'STAFF_ADMIN_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' staff_admin-1 ')).toEqual({
+      username: 'STAFF_ADMIN_1_USERNAME',
+      password: 'STAFF_ADMIN_1_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' staff_admin-4 ')).toEqual({
+      username: 'STAFF_ADMIN_4_USERNAME',
+      password: 'STAFF_ADMIN_4_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' hearing_manager_cr84_off ')).toEqual({
+      username: 'HEARING_MANAGER_CR84_OFF_USERNAME',
+      password: 'HEARING_MANAGER_CR84_OFF_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' hearing_manager_cr84_off-1 ')).toEqual({
+      username: 'HEARING_MANAGER_CR84_OFF_1_USERNAME',
+      password: 'HEARING_MANAGER_CR84_OFF_1_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' hearing_manager_cr84_on ')).toEqual({
+      username: 'HEARING_MANAGER_CR84_ON_USERNAME',
+      password: 'HEARING_MANAGER_CR84_ON_PASSWORD',
+    });
+    expect(getRuntimeUserCredentialEnvMapping(' hearing_manager_cr84_on-4 ')).toEqual({
+      username: 'HEARING_MANAGER_CR84_ON_4_USERNAME',
+      password: 'HEARING_MANAGER_CR84_ON_4_PASSWORD',
+    });
 
     process.env.DIVORCE_SOLICITOR_USERNAME = 'divorce@example.test';
     process.env.DIVORCE_SOLICITOR_PASSWORD = 'divorce-secret';
@@ -138,6 +253,50 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
 
     expect(process.env.EMPLOYMENT_DYNAMIC_CASEWORKER_USERNAME).toBe('previous@example.test');
     expect(process.env.EMPLOYMENT_DYNAMIC_CASEWORKER_PASSWORD).toBe('previous-secret');
+  });
+
+  test('runtime credential resolution supports CI fallback aliases', () => {
+    process.env.STAFF_ADMIN_2_USERNAME = 'staff-admin-2@example.test';
+    process.env.STAFF_ADMIN_2_PASSWORD = 'staff-admin-2-secret';
+    process.env.STAFF_ADMIN_POOL_ENABLED = 'true';
+    process.env.TEST_PARALLEL_INDEX = '1';
+
+    expect(resolveRuntimeUserCredentialsForIdentifier('STAFF_ADMIN')).toEqual({
+      email: 'staff-admin-2@example.test',
+      password: 'staff-admin-2-secret',
+    });
+
+    process.env.DIVORCE_SOLICITOR_USERNAME = 'divorce-flags@example.test';
+    process.env.DIVORCE_SOLICITOR_PASSWORD = 'divorce-flags-secret';
+    process.env.SEARCH_EMPLOYMENT_CASE_USERNAME = 'search-employment@example.test';
+    process.env.SEARCH_EMPLOYMENT_CASE_PASSWORD = 'search-employment-secret';
+    expect(resolveRuntimeUserCredentialsForIdentifier('USER_WITH_FLAGS')).toBeUndefined();
+
+    expect(resolveRuntimeUserCredentialsForIdentifier('FPL_GLOBAL_SEARCH')).toBeUndefined();
+
+    expect(resolveRuntimeUserCredentialsForIdentifier('IAC_Judge_WA_R1')).toBeUndefined();
+    expect(resolveRuntimeUserCredentialsForIdentifier('IAC_CaseOfficer_R1')).toBeUndefined();
+
+    process.env.PW_IAC_CASEOFFICER_R1_EMAIL = 'iac-caseofficer-r1@example.test';
+    process.env.PW_IAC_CASEOFFICER_R1_PASSWORD = 'iac-caseofficer-r1-secret';
+    expect(resolveRuntimeUserCredentialsForIdentifier('IAC_Judge_WA_R1')).toEqual({
+      email: 'iac-caseofficer-r1@example.test',
+      password: 'iac-caseofficer-r1-secret',
+    });
+
+    process.env.PW_IAC_CASEOFFICER_R2_EMAIL = 'iac-caseofficer-r2@example.test';
+    process.env.PW_IAC_CASEOFFICER_R2_PASSWORD = 'iac-caseofficer-r2-secret';
+    expect(resolveRuntimeUserCredentialsForIdentifier('IAC_CaseOfficer_R2')).toEqual({
+      email: 'iac-caseofficer-r2@example.test',
+      password: 'iac-caseofficer-r2-secret',
+    });
+
+    delete process.env.PW_IAC_CASEOFFICER_R2_EMAIL;
+    delete process.env.PW_IAC_CASEOFFICER_R2_PASSWORD;
+    expect(resolveRuntimeUserCredentialsForIdentifier('IAC_CaseOfficer_R2')).toEqual({
+      email: 'iac-caseofficer-r1@example.test',
+      password: 'iac-caseofficer-r1-secret',
+    });
   });
 
   test('payload registry builds seeded payloads and setup helpers resolve defaults', () => {
@@ -178,7 +337,9 @@ test.describe('Dynamic user support unit tests: pure modules', { tag: '@svc-inte
     expect(
       isTransientWorkflowFailure(new Error('Case event failed after PoC personal details: The event could not be created'))
     ).toBe(true);
+    expect(isTransientWorkflowFailure(new Error('Task list showed service down while waiting for task row'))).toBe(true);
     expect(isTransientWorkflowFailure(new Error('read ECONNRESET while calling api/user/details'))).toBe(true);
+    expect(isTransientWorkflowFailure(new Error('Upload failed: server returned status 429 after 3 attempts'))).toBe(true);
     expect(() => buildCasePayloadFromTemplate('unsupported.template' as never)).toThrow(
       "Unsupported payload template 'unsupported.template'."
     );

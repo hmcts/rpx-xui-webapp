@@ -20,6 +20,7 @@ import {
   CASE_LINKING_TRIGGER_ID,
   type CaseLinkingLinkedCase,
 } from '../mocks/caseLinking.mock';
+import { setupCaseworkerJurisdictionsRoute } from './caseworkerJurisdictionMockRoutes.helper';
 
 type RouteAbortCode = Parameters<Route['abort']>[0];
 
@@ -122,6 +123,8 @@ export async function setupCaseLinkingMockRoutes(page: Page, config: CaseLinking
     window.sessionStorage.setItem('userDetails', JSON.stringify(seededUserInfo));
   }, userDetails.userInfo);
 
+  await setupCaseworkerJurisdictionsRoute(page, [CASE_LINKING_JURISDICTION]);
+
   await page.route(`**/data/internal/cases/${CASE_LINKING_CASE_REFERENCE}*`, async (route) => {
     await fulfillRoute(route, undefined, currentCaseDetails);
   });
@@ -205,8 +208,6 @@ export async function openCaseLinkingJourney(
 ): Promise<void> {
   await applySessionCookies(page, config.userIdentifier ?? DEFAULT_CASE_LINKING_USER_IDENTIFIER);
   await setupCaseLinkingMockRoutes(page, config);
-  await page.goto(`/cases/case-details/${CASE_LINKING_JURISDICTION}/${CASE_LINKING_CASE_TYPE}/${CASE_LINKING_CASE_REFERENCE}`, {
-    waitUntil: 'domcontentloaded',
-  });
+  await caseDetailsPage.openCaseDetails(CASE_LINKING_JURISDICTION, CASE_LINKING_CASE_TYPE, CASE_LINKING_CASE_REFERENCE);
   await caseDetailsPage.caseActionsDropdown.waitFor({ state: 'visible' });
 }

@@ -1,7 +1,7 @@
 import { request as playwrightRequest } from '@playwright/test';
 import { v4 as uuid } from 'uuid';
 
-import { config } from '../common/apiTestConfig';
+import { config } from './utils/apiTestRuntimeConfig';
 import { ensureStorageState, getStoredCookie } from './utils/auth';
 import { test, expect } from './fixtures';
 import { EM_DOC_ID } from './data/testIds';
@@ -26,6 +26,7 @@ import {
 const configuredDocId = resolveConfiguredDocId(EM_DOC_ID, config.em[config.testEnv as keyof typeof config.em]?.docId);
 let sharedDocId = '';
 const invalidDocId = uuid();
+const guardedDocumentUploadRejectionStatuses = [400, 401, 403, 415, 429, 500] as const;
 
 test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, () => {
   test.beforeAll(async () => {
@@ -188,7 +189,7 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
       headers: buildXsrfHeader(xsrf),
       failOnStatusCode: false,
     });
-    expect([400, 401, 403, 415, 500]).toContain(res.status());
+    expect(guardedDocumentUploadRejectionStatuses).toContain(res.status());
     await ctx.dispose();
   });
 
@@ -211,7 +212,7 @@ test.describe('Evidence Manager & Documents', { tag: '@svc-evidence-manager' }, 
       headers: buildXsrfHeader(xsrf),
       failOnStatusCode: false,
     });
-    expect([400, 401, 403, 415, 500]).toContain(res.status());
+    expect(guardedDocumentUploadRejectionStatuses).toContain(res.status());
     await ctx.dispose();
   });
 

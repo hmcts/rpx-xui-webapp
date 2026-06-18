@@ -13,7 +13,7 @@ test.describe(
   () => {
     test('User cannot continue review flow without selecting an action', async ({ accessRequestPage, page }) => {
       await setupReviewSpecificAccessMockRoutes(page);
-      await page.goto(ACCESS_REQUEST_REVIEW_PATH, { waitUntil: 'domcontentloaded' });
+      await accessRequestPage.gotoReviewSpecificRequest(ACCESS_REQUEST_REVIEW_PATH);
 
       await accessRequestPage.continueButton.click();
 
@@ -21,17 +21,15 @@ test.describe(
       await expect(accessRequestPage.reviewSpecificHeading).toBeVisible();
     });
 
-    test('Review flow shows the service down page when task data cannot be loaded', async ({ page }) => {
+    test('Review flow shows the service down page when task data cannot be loaded', async ({ accessRequestPage, page }) => {
       await setupReviewSpecificAccessMockRoutes(page, { taskStatus: 500, taskBody: { message: 'task load failed' } });
 
-      await page.goto(ACCESS_REQUEST_REVIEW_PATH, { waitUntil: 'domcontentloaded' });
-
-      await page.waitForURL(/\/service-down$/);
+      await accessRequestPage.gotoReviewSpecificRequestServiceDown(ACCESS_REQUEST_REVIEW_PATH);
     });
 
     test('Approve submit failures show the service down page', async ({ accessRequestPage, page }) => {
       await setupReviewSpecificAccessMockRoutes(page, { approvalStatus: 500, approvalBody: { message: 'approval failed' } });
-      await page.goto(ACCESS_REQUEST_REVIEW_PATH, { waitUntil: 'domcontentloaded' });
+      await accessRequestPage.gotoReviewSpecificRequest(ACCESS_REQUEST_REVIEW_PATH);
 
       await accessRequestPage.approveRequestRadio.check();
       await accessRequestPage.continueButton.click();
@@ -46,7 +44,7 @@ test.describe(
         requestMoreInformationStatus: 500,
         requestMoreInformationBody: { message: 'request more info failed' },
       });
-      await page.goto(ACCESS_REQUEST_REVIEW_PATH, { waitUntil: 'domcontentloaded' });
+      await accessRequestPage.gotoReviewSpecificRequest(ACCESS_REQUEST_REVIEW_PATH);
 
       await accessRequestPage.requestMoreInformationRadio.check();
       await accessRequestPage.continueButton.click();

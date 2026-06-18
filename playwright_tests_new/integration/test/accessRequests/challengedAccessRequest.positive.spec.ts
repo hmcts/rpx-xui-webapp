@@ -21,7 +21,7 @@ test.describe(`Challenged Access Request as ${userIdentifier}`, { tag: ['@integr
   test('User can open Challenged Access Request from case details', async ({ accessRequestPage, page }) => {
     await setupChallengedAccessMockRoutes(page);
 
-    await page.goto(ACCESS_REQUEST_CASE_DETAILS_PATH, { waitUntil: 'domcontentloaded' });
+    await accessRequestPage.gotoChallengedAccessCaseDetails(ACCESS_REQUEST_CASE_DETAILS_PATH);
 
     await expect(page.getByText('This case requires challenged access.')).toBeVisible();
     await expect(summaryRow(page, 'Service')).toContainText(ACCESS_REQUEST_SERVICE_NAME);
@@ -36,7 +36,7 @@ test.describe(`Challenged Access Request as ${userIdentifier}`, { tag: ['@integr
 
   test('User sees the correct conditional inputs for each challenged access reason', async ({ accessRequestPage, page }) => {
     await setupChallengedAccessMockRoutes(page);
-    await page.goto(CHALLENGED_ACCESS_PATH, { waitUntil: 'domcontentloaded' });
+    await accessRequestPage.gotoChallengedAccessRequest(CHALLENGED_ACCESS_PATH);
 
     await expectChallengedAccessConditionalFields(accessRequestPage, { caseReferenceVisible: false, otherReasonVisible: false });
 
@@ -59,7 +59,7 @@ test.describe(`Challenged Access Request as ${userIdentifier}`, { tag: ['@integr
 
   test('User can submit a challenged access request with case reference', async ({ accessRequestPage, page }) => {
     await setupChallengedAccessMockRoutes(page);
-    await page.goto(CHALLENGED_ACCESS_PATH, { waitUntil: 'domcontentloaded' });
+    await accessRequestPage.gotoChallengedAccessRequest(CHALLENGED_ACCESS_PATH);
 
     await accessRequestPage.linkedCaseReasonRadio.check();
     await accessRequestPage.challengedCaseReferenceInput.fill('2222333344445555');
@@ -83,7 +83,7 @@ test.describe(`Challenged Access Request as ${userIdentifier}`, { tag: ['@integr
 
   test('User can submit a challenged access request with other reason', async ({ accessRequestPage, page }) => {
     await setupChallengedAccessMockRoutes(page);
-    await page.goto(CHALLENGED_ACCESS_PATH, { waitUntil: 'domcontentloaded' });
+    await accessRequestPage.gotoChallengedAccessRequest(CHALLENGED_ACCESS_PATH);
 
     await accessRequestPage.otherReasonRadio.check();
     await accessRequestPage.challengedOtherReasonInput.fill('Urgent safeguarding review required before hearing.');

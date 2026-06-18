@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test';
+import { setupCaseworkerJurisdictionsRoute } from './caseworkerJurisdictionMockRoutes.helper';
 import { faker } from '@faker-js/faker';
 
 export const DEFAULT_ROLE_ACCESS_USERS_OPS = [
@@ -141,6 +142,8 @@ export async function setupRestrictedAccessMocks(page: Page, overrides: Restrict
     judicialUsersStatus = 200,
     judicialUsersBody = DEFAULT_JUDICIAL_USERS,
   } = overrides;
+
+  await setupCaseworkerJurisdictionsRoute(page, supportedJurisdictions, undefined, supportedJurisdictionsStatus);
 
   await page.route('**/api/role-access/roles/access-get-by-caseId*', async (route) => {
     await route.fulfill({

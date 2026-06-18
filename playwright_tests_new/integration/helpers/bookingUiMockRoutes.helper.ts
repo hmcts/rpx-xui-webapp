@@ -1,6 +1,15 @@
 import type { Page, Route } from '@playwright/test';
+import { buildExistingBookingsMock, singleLocationMock } from '../mocks/bookingUI.mock';
+import { buildMyTaskListMock } from '../mocks/taskList.mock';
+import { resolveBookingUiUserIdentifier } from './bookingUiUserPool.helper';
+import { ensureSession } from '../../common/sessionCapture';
+import { applySessionCookiesAndExtractUserId } from './sessionUser.helper';
+import { setupTaskListMockRoutes, type TaskListBootstrapUserOptions } from './taskListMockRoutes.helper';
 
 type RouteHandler = (route: Route) => Promise<void>;
+type ParallelIndexSource = {
+  parallelIndex: number;
+};
 
 type BookingUiMockRoutesOptions = {
   locationResponseBody: unknown;
@@ -9,6 +18,32 @@ type BookingUiMockRoutesOptions = {
   onCreateBooking?: RouteHandler;
   onRefreshRoleAssignments?: RouteHandler;
 };
+
+type BookingUiTestRoutesOptions = {
+  onCreateBooking?: RouteHandler;
+  onRefreshRoleAssignments?: RouteHandler;
+};
+
+export type BookingUiTestRouteState = {
+  existingBookingsMock: ReturnType<typeof buildExistingBookingsMock>;
+  getBookingsCalled: () => boolean;
+  sessionUserId: string;
+};
+
+export const buildBookingUiBootstrapUser = (userId: string): TaskListBootstrapUserOptions => ({
+  userId,
+  roleCategory: 'JUDICIAL',
+  roles: ['caseworker-judge'],
+  roleAssignments: [
+    {
+      bookable: true,
+      jurisdiction: 'IA',
+      roleName: 'fee-paid-judge',
+      roleType: 'ORGANISATION',
+      substantive: 'Y',
+    },
+  ],
+});
 
 export async function setupBookingUiMockRoutes(page: Page, options: BookingUiMockRoutesOptions): Promise<void> {
   const { locationResponseBody, getBookingsResponseBody, onGetBookings, onCreateBooking, onRefreshRoleAssignments } = options;
@@ -53,4 +88,38 @@ export async function setupBookingUiMockRoutes(page: Page, options: BookingUiMoc
       body: JSON.stringify({}),
     });
   });
+}
+
+export async function setupBookableBookingUiRoutesForTest(
+  page: Page,
+  testInfo: ParallelIndexSource,
+  options: BookingUiTestRoutesOptions = {}
+): Promise<BookingUiTestRouteState> {
+  let getBookingsCalled = false;
+  const userIdentifier = resolveBookingUiUserIdentifier(testInfo);
+  const userId = await applySessionCookiesAndExtractUserId(page, userIdentifier);
+  const existingBookingsMock = buildExistingBookingsMock(userId);
+
+  await setupTaskListMockRoutes(page, buildMyTaskListMock(userId, 3), {
+    bootstrapUser: buildBookingUiBootstrapUser(userId),
+  });
+  await setupBookingUiMockRoutes(page, {
+    locationResponseBody: singleLocationMock,
+    getBookingsResponseBody: existingBookingsMock,
+    onGetBookings: () => {
+      getBookingsCalled = true;
+    },
+    onCreateBooking: options.onCreateBooking,
+    onRefreshRoleAssignments: options.onRefreshRoleAssignments,
+  });
+
+  return {
+    existingBookingsMock,
+    getBookingsCalled: () => getBookingsCalled,
+    sessionUserId: userId,
+  };
+}
+
+export async function warmBookableBookingUiSessionForWorker(testInfo: ParallelIndexSource): Promise<void> {
+  await ensureSession(resolveBookingUiUserIdentifier(testInfo));
 }

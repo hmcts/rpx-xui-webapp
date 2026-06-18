@@ -15,6 +15,9 @@ const logger = createLogger({ serviceName: 'session-capture', format: 'pretty' }
 
 const CHROME_ERROR_URL_PREFIX = 'chrome-error://chromewebdata/';
 const DEFAULT_SESSION_MAX_AGE_MS = 3_600_000;
+const DEFAULT_SESSION_CAPTURE_FAILURE_TTL_MS = 120_000;
+const IDAM_LOGIN_SURFACE_TIMEOUT_MS = 20_000;
+const POST_LOGIN_AUTH_TIMEOUT_MS = 15_000;
 
 function getIdamUsernameCandidates(page: Page, idamPage: IdamPage): Locator[] {
   return new SessionCapturePage(page).idamUsernameCandidates(idamPage);
@@ -42,6 +45,84 @@ async function waitForFirstVisibleLocator(page: Page, candidates: Locator[], tim
   }
 
   return null;
+}
+
+function ignoreRejectedSurfaceDetector<T>(promise: Promise<T>): Promise<T> {
+  return promise.catch(
+    () =>
+      new Promise<T>(() => {
+        // Keep the race open so the alternate surface detector owns the result.
+      })
+  );
+}
+
+async function getIdamLoginErrorText(page: Page): Promise<string | null> {
+  for (const candidate of new SessionCapturePage(page).idamLoginErrorCandidates()) {
+    const text = await candidate
+      .textContent({ timeout: 500 })
+      .catch(() => '')
+      .then((value) => value?.replace(/\s+/g, ' ').trim() ?? '');
+    if (text) {
+      return text.slice(0, 500);
+    }
+  }
+  return null;
+}
+
+function resolveSessionCaptureFailureTtlMs(env: NodeJS.ProcessEnv = process.env): number {
+  const configured = Number(env.PW_SESSION_CAPTURE_FAILURE_TTL_MS);
+  return Number.isFinite(configured) && configured >= 0 ? configured : DEFAULT_SESSION_CAPTURE_FAILURE_TTL_MS;
+}
+
+function recentSessionCaptureFailureMessage(
+  fsApi: typeof fs,
+  failurePath: string,
+  ttlMs: number,
+  now: number = Date.now()
+): string | null {
+  if (ttlMs === 0 || !fsApi.existsSync(failurePath)) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(fsApi.readFileSync(failurePath, 'utf8')) as { timestamp?: number; message?: string };
+    if (!parsed.timestamp || now - parsed.timestamp > ttlMs) {
+      return null;
+    }
+    return parsed.message?.trim() || 'previous session capture failed';
+  } catch {
+    return null;
+  }
+}
+
+function writeSessionCaptureFailure(fsApi: typeof fs, failurePath: string, error: Error): void {
+  try {
+    fsApi.writeFileSync(
+      failurePath,
+      JSON.stringify({
+        timestamp: Date.now(),
+        message: error.message,
+      })
+    );
+  } catch {
+    // Best-effort only: the original login failure is the actionable error.
+  }
+}
+
+function clearSessionCaptureFailure(fsApi: typeof fs, failurePath: string): void {
+  try {
+    if (fsApi.existsSync(failurePath)) {
+      fsApi.rmSync(failurePath, { force: true });
+    }
+  } catch {
+    // Best-effort only.
+  }
+}
+
+function isIdamLoginRejection(error: Error): boolean {
+  return (
+    error.message.includes('IDAM login did not establish authenticated session') && error.message.includes('idam-web-public')
+  );
 }
 
 function currentPageUrl(page: Page): string {
@@ -639,6 +720,42 @@ export function isSessionFresh(
   }
 }
 
+function clearSessionCaptureFailureIfReusableSession({
+  fsApi,
+  failurePath,
+  force,
+  isFresh,
+  maxAgeMs,
+  sessionPath,
+  targetUrl,
+  userIdentifier,
+  waitContext,
+}: {
+  fsApi: typeof fs;
+  failurePath: string;
+  force: boolean;
+  isFresh: typeof isSessionFresh;
+  maxAgeMs: number;
+  sessionPath: string;
+  targetUrl: string;
+  userIdentifier: string;
+  waitContext: 'before-lock' | 'after-lock';
+}): boolean {
+  if (force || !isFresh(sessionPath, maxAgeMs, { targetUrl })) {
+    return false;
+  }
+
+  logger.warn('Clearing session capture failure marker because a reusable session is already present', {
+    userIdentifier,
+    sessionPath,
+    failurePath,
+    waitContext,
+    operation: 'session-capture',
+  });
+  clearSessionCaptureFailure(fsApi, failurePath);
+  return true;
+}
+
 // local helper to persist session: write session file, add cookies to context and save storageState
 async function persistSession(
   localSessionPath: string,
@@ -797,8 +914,12 @@ async function executeLoginAttempt(
 
   const usernameCandidates = getIdamUsernameCandidates(page, idamPage);
   const loginSurface = await Promise.race([
-    waitForFirstVisibleLocator(page, usernameCandidates, 60_000).then((locator) => (locator ? 'login' : null)),
-    new SessionCapturePage(page).waitForAppSurface(60_000).then(() => 'app'),
+    waitForFirstVisibleLocator(page, usernameCandidates, IDAM_LOGIN_SURFACE_TIMEOUT_MS).then((locator) =>
+      locator ? 'login' : null
+    ),
+    ignoreRejectedSurfaceDetector(
+      new SessionCapturePage(page).waitForAppSurface(IDAM_LOGIN_SURFACE_TIMEOUT_MS).then(() => 'app')
+    ),
   ]).catch(() => null);
 
   if (loginSurface === 'app') return;
@@ -843,10 +964,16 @@ async function confirmAuthenticatedLogin(
   const info = deps.info ?? ((message: string, meta: Record<string, unknown>) => logger.info(message, meta));
 
   await acceptCookies(page);
-  const postLoginShell = await waitForShell(page, userIdentifier, undefined, 15_000).catch(() => null);
-  const hasAuthCookies = await waitForAuthCookies(page, 15_000);
+  const [postLoginShell, hasAuthCookies] = await Promise.all([
+    waitForShell(page, userIdentifier, undefined, POST_LOGIN_AUTH_TIMEOUT_MS).catch(() => null),
+    waitForAuthCookies(page, POST_LOGIN_AUTH_TIMEOUT_MS),
+  ]);
   if (!postLoginShell && !hasAuthCookies) {
-    throw new Error(`IDAM login did not establish authenticated session for ${userIdentifier} (url=${currentPageUrl(page)}).`);
+    const idamErrorText = await getIdamLoginErrorText(page);
+    const idamMessage = idamErrorText ? ` IDAM page message: ${idamErrorText}` : '';
+    throw new Error(
+      `IDAM login did not establish authenticated session for ${userIdentifier} (url=${currentPageUrl(page)}).${idamMessage}`
+    );
   }
   info('IDAM login successful', {
     userIdentifier,
@@ -915,6 +1042,9 @@ async function loginAndPersistSession({
             error: loginError.message,
             operation: 'session-capture',
           });
+          if (isIdamLoginRejection(loginError)) {
+            break;
+          }
         }
       }
 
@@ -993,6 +1123,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
   const lockfileApi = deps.lockfile ?? lockfile;
   const force = deps.force ?? false;
   const targetUrl = env.TEST_URL || activeConfig.urls.exuiDefaultUrl;
+  const sessionMaxAgeMs = resolveSessionMaxAgeMs(env);
 
   const sessionsDir = path.join(process.cwd(), '.sessions');
   ensureDirectory(fsApi, sessionsDir);
@@ -1002,6 +1133,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
     const sessionStorageKey = resolveSessionStorageKey(identity);
     const sessionPath = path.join(sessionsDir, `${sessionStorageKey}.storage.json`);
     const lockFilePath = path.join(sessionsDir, `${sessionStorageKey}.lock`);
+    const failurePath = path.join(sessionsDir, `${sessionStorageKey}.capture-failed.json`);
 
     ensureDirectory(fsApi, sessionsDir);
     ensureLockFile(fsApi, lockFilePath);
@@ -1009,6 +1141,30 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
     // Acquire filesystem lock (blocks across all workers)
     let release: (() => Promise<void>) | null = null;
     try {
+      const recentFailureMessage = recentSessionCaptureFailureMessage(fsApi, failurePath, resolveSessionCaptureFailureTtlMs(env));
+      if (recentFailureMessage) {
+        if (
+          clearSessionCaptureFailureIfReusableSession({
+            fsApi,
+            failurePath,
+            force,
+            isFresh,
+            maxAgeMs: sessionMaxAgeMs,
+            sessionPath,
+            targetUrl,
+            userIdentifier: identity.userIdentifier,
+            waitContext: 'before-lock',
+          })
+        ) {
+          continue;
+        }
+        throw new SessionCaptureError(
+          `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${recentFailureMessage}`,
+          identity.userIdentifier,
+          { sessionPath }
+        );
+      }
+
       logger.info('Attempting to acquire lock for user', {
         userIdentifier: identity.userIdentifier,
         lockFilePath,
@@ -1020,7 +1176,7 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
         lockfileApi,
         lockFilePath,
         userIdentifier: identity.userIdentifier,
-        isSessionReusable: () => isFresh(sessionPath, DEFAULT_SESSION_MAX_AGE_MS, { targetUrl }),
+        isSessionReusable: () => isFresh(sessionPath, sessionMaxAgeMs, { targetUrl }),
         force,
       });
 
@@ -1039,8 +1195,36 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
         operation: 'session-capture',
       });
 
+      const lockedRecentFailureMessage = recentSessionCaptureFailureMessage(
+        fsApi,
+        failurePath,
+        resolveSessionCaptureFailureTtlMs(env)
+      );
+      if (lockedRecentFailureMessage) {
+        if (
+          clearSessionCaptureFailureIfReusableSession({
+            fsApi,
+            failurePath,
+            force,
+            isFresh,
+            maxAgeMs: sessionMaxAgeMs,
+            sessionPath,
+            targetUrl,
+            userIdentifier: identity.userIdentifier,
+            waitContext: 'after-lock',
+          })
+        ) {
+          continue;
+        }
+        throw new SessionCaptureError(
+          `Recent session capture failed for ${identity.userIdentifier}; refusing repeated login attempt for now: ${lockedRecentFailureMessage}`,
+          identity.userIdentifier,
+          { sessionPath }
+        );
+      }
+
       // Recheck freshness after acquiring lock (another worker may have logged in)
-      if (!force && isFresh(sessionPath, DEFAULT_SESSION_MAX_AGE_MS, { targetUrl })) {
+      if (!force && isFresh(sessionPath, sessionMaxAgeMs, { targetUrl })) {
         logger.info('Session became fresh while waiting for lock', {
           userIdentifier: identity.userIdentifier,
           email: identity.email,
@@ -1060,7 +1244,12 @@ async function sessionCaptureWith(identifiers: SessionIdentityInput[], deps: Ses
         sessionPath,
         persist,
         userIdentifier: identity.userIdentifier,
-      });
+      })
+        .then(() => clearSessionCaptureFailure(fsApi, failurePath))
+        .catch((error: Error) => {
+          writeSessionCaptureFailure(fsApi, failurePath, error);
+          throw error;
+        });
     } finally {
       // Always release lock
       if (release) {

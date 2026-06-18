@@ -84,6 +84,7 @@ export class FindCasePage extends Base {
   public async fillSearchCriteria(caseNumber: string, caseType: string, jurisdiction: string): Promise<void> {
     await this.jurisdictionSelect.selectOption({ label: jurisdiction });
     await this.caseTypeSelect.selectOption({ label: caseType });
+    await this.ccdCaseReference.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
     await this.ccdCaseReference.fill(caseNumber);
   }
 
@@ -150,7 +151,6 @@ export class FindCasePage extends Base {
 
     await this.jurisdictionSelect.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
     await this.caseTypeSelect.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
-    await this.ccdCaseReference.waitFor({ state: 'visible', timeout: EXUI_TIMEOUTS.SEARCH_FIELD_VISIBLE });
     await this.exuiCaseListComponent.filters.applyFilterBtn.waitFor({ state: 'visible' });
   }
 
@@ -168,7 +168,9 @@ export class FindCasePage extends Base {
 
   private isFindCaseFilterTimeout(error: unknown): boolean {
     const message = error instanceof Error ? error.message : (JSON.stringify(error) ?? '');
-    return /locator\('#s-jurisdiction, #wb-jurisdiction, #cc-jurisdiction'\).*to be visible/i.test(message);
+    return /locator\('#s-jurisdiction, #wb-jurisdiction, #cc-jurisdiction'\).*to be visible|CASE_REFERENCE.*to be visible/i.test(
+      message
+    );
   }
 
   private async openFindCaseVia(link: Locator): Promise<void> {

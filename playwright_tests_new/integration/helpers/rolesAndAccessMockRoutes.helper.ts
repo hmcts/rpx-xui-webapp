@@ -2,6 +2,7 @@ import type { Page } from '@playwright/test';
 import nodeAppDataModels from '../../api/data/nodeAppDataModels';
 import { buildAsylumCaseMock } from '../mocks/cases/asylumCase.mock';
 import { buildEntityToUsersAccessView, type WorkAllocationAccessScenarioRecord } from './workAllocationAccessScenarios.helper';
+import { setupCaseworkerJurisdictionsRoute } from './caseworkerJurisdictionMockRoutes.helper';
 
 type RolesAndAccessMockRouteOptions = {
   caseId: string;
@@ -42,6 +43,9 @@ export async function setupRolesAndAccessMockRoutes(
     jurisdiction: options.jurisdiction,
     isCaseAllocator: options.isCaseAllocator,
   });
+  const jurisdiction = options.jurisdiction ?? 'IA';
+
+  await setupCaseworkerJurisdictionsRoute(page, [jurisdiction]);
 
   await page.route(`**data/internal/cases/${options.caseId}*`, async (route) => {
     await route.fulfill({
@@ -62,7 +66,7 @@ export async function setupRolesAndAccessMockRoutes(
   await page.route('**/workallocation/caseworker/getUsersByServiceName*', async (route) => {
     const requestBody = (route.request().postDataJSON() as { services?: string[] }) ?? {};
     const requestedServices = Array.isArray(requestBody.services) ? requestBody.services : [];
-    const filteredCaseworkers = requestedServices.includes(options.jurisdiction ?? 'IA')
+    const filteredCaseworkers = requestedServices.includes(jurisdiction)
       ? entityView.caseworkers.filter((caseworker) => requestedServices.includes(caseworker.service))
       : [];
 

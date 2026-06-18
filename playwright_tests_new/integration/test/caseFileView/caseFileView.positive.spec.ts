@@ -1,11 +1,22 @@
 import { expect, test } from '../../../E2E/fixtures';
-import { setupCaseFileViewDocumentBinaryMockRoutes, setupCaseFileViewMockRoutes } from '../../helpers';
+import {
+  setupCaseFileViewDocumentBinaryMockRoutes,
+  setupCaseFileViewMockRoutes,
+  setupCaseFileViewUserDetailsRoute,
+} from '../../helpers';
 import { CASE_FILE_VIEW_DOC_IDS, CASE_FILE_VIEW_DOCUMENT_DELIVERY_PDF } from '../../mocks/caseFileView.mock';
 import { applySessionCookies } from '../../../common/sessionCapture';
 
 const caseId = '1690807693531270';
 const fileViewOnUser = 'RESTRICTED_CASE_FILE_VIEW_ON';
-const fileViewOffUser = 'RESTRICTED_CASE_FILE_VIEW_OFF';
+const sortedDocumentOrderTimeoutMs = 15_000;
+const evidenceDocumentsAscending = ['Alpha evidence.pdf', 'Middle evidence.pdf', 'Zeta evidence.pdf'];
+const evidenceDocumentsDescending = ['Zeta evidence.pdf', 'Middle evidence.pdf', 'Alpha evidence.pdf'];
+const orderDocumentsOldestFirst = ['Approved order.pdf', 'Root order.pdf'];
+const fileViewV1ModeUser = {
+  idamId: '6bd95a7f-9065-42a0-af4b-c0b6ed84e960',
+  email: 'xui_casefileview_v11_off@mailinator.com',
+};
 
 test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@integration-case-file-view'] }, () => {
   test('V1.1 shows tree view, media viewer, document count, folder hierarchy and upload stamps', async ({
@@ -19,7 +30,7 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
     });
 
     await test.step('Open the Case File View tab', async () => {
-      await page.goto(`/cases/case-details/PRIVATELAW/PRLAPPS/${caseId}`);
+      await caseDetailsPage.openCaseDetails('PRIVATELAW', 'PRLAPPS', caseId);
       await caseDetailsPage.selectCaseDetailsTab('Case File View');
       await caseFileViewPage.waitForReady();
     });
@@ -69,7 +80,7 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
     });
 
     await test.step('Open the Case File View tab', async () => {
-      await page.goto(`/cases/case-details/PRIVATELAW/PRLAPPS/${caseId}`);
+      await caseDetailsPage.openCaseDetails('PRIVATELAW', 'PRLAPPS', caseId);
       await caseDetailsPage.selectCaseDetailsTab('Case File View');
       await caseFileViewPage.waitForReady();
       await expect(caseFileViewPage.documentHeader).toContainText('Documents (6)');
@@ -109,7 +120,7 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
     });
 
     await test.step('Open the Case File View tab', async () => {
-      await page.goto(`/cases/case-details/PRIVATELAW/PRLAPPS/${caseId}`);
+      await caseDetailsPage.openCaseDetails('PRIVATELAW', 'PRLAPPS', caseId);
       await caseDetailsPage.selectCaseDetailsTab('Case File View');
       await caseFileViewPage.waitForReady();
       await expect(caseFileViewPage.documentHeader).toContainText('Documents (6)');
@@ -126,49 +137,55 @@ test.describe(`Case file view as ${fileViewOnUser}`, { tag: ['@integration', '@i
 
     await test.step('Sort evidence documents A to Z', async () => {
       await caseFileViewPage.sortByAscending();
+      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Evidence', evidenceDocumentsAscending.length);
       await expect
-        .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'))
-        .toEqual(['Alpha evidence.pdf', 'Middle evidence.pdf', 'Zeta evidence.pdf']);
+        .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'), { timeout: sortedDocumentOrderTimeoutMs })
+        .toEqual(evidenceDocumentsAscending);
     });
 
     await test.step('Sort evidence documents Z to A', async () => {
       await caseFileViewPage.sortByDescending();
+      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Evidence', evidenceDocumentsDescending.length);
       await expect
-        .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'))
-        .toEqual(['Zeta evidence.pdf', 'Middle evidence.pdf', 'Alpha evidence.pdf']);
+        .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'), { timeout: sortedDocumentOrderTimeoutMs })
+        .toEqual(evidenceDocumentsDescending);
     });
 
     await test.step('Sort evidence documents by most recent first', async () => {
       await caseFileViewPage.sortByRecentFirst();
+      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Evidence', evidenceDocumentsDescending.length);
       await expect
-        .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'))
-        .toEqual(['Zeta evidence.pdf', 'Middle evidence.pdf', 'Alpha evidence.pdf']);
+        .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'), { timeout: sortedDocumentOrderTimeoutMs })
+        .toEqual(evidenceDocumentsDescending);
     });
 
     await test.step('Sort evidence documents by oldest first', async () => {
       await caseFileViewPage.getFolderNode('Orders.Approved orders');
       await caseFileViewPage.sortByOldestFirst();
+      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Evidence', evidenceDocumentsAscending.length);
       await expect
-        .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'))
-        .toEqual(['Alpha evidence.pdf', 'Middle evidence.pdf', 'Zeta evidence.pdf']);
+        .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Evidence'), { timeout: sortedDocumentOrderTimeoutMs })
+        .toEqual(evidenceDocumentsAscending);
 
+      await caseFileViewPage.waitForVisibleFileCountUnderFolder('Orders', orderDocumentsOldestFirst.length);
       await expect
-        .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Orders'))
-        .toEqual(['Approved order.pdf', 'Root order.pdf']);
+        .poll(() => caseFileViewPage.getVisibleFileNamesUnderFolder('Orders'), { timeout: sortedDocumentOrderTimeoutMs })
+        .toEqual(orderDocumentsOldestFirst);
     });
   });
 });
 
-test.describe(`Case file view as ${fileViewOffUser}`, { tag: ['@integration', '@integration-case-file-view'] }, () => {
-  test('V1 mode User still sees core case file view content', async ({ caseDetailsPage, caseFileViewPage, page }) => {
+test.describe('Case file view V1 mode', { tag: ['@integration', '@integration-case-file-view'] }, () => {
+  test('V1 mode user still sees core case file view content', async ({ caseDetailsPage, caseFileViewPage, page }) => {
     await test.step('Set up V1 case file view mocks', async () => {
-      await applySessionCookies(page, fileViewOffUser);
+      await applySessionCookies(page, fileViewOnUser);
+      await setupCaseFileViewUserDetailsRoute(page, fileViewV1ModeUser);
       await setupCaseFileViewMockRoutes(page, caseId);
       await setupCaseFileViewDocumentBinaryMockRoutes(page);
     });
 
     await test.step('Open the Case File View tab in V1 mode', async () => {
-      await page.goto(`/cases/case-details/PRIVATELAW/PRLAPPS/${caseId}`);
+      await caseDetailsPage.openCaseDetails('PRIVATELAW', 'PRLAPPS', caseId);
       await caseDetailsPage.selectCaseDetailsTab('Case File View');
       await caseFileViewPage.waitForReady();
     });

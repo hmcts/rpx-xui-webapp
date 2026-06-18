@@ -1,4 +1,4 @@
-/* global process, setInterval, setTimeout, clearInterval, clearTimeout, module */
+/* global process, setInterval, setTimeout, setImmediate, clearInterval, clearTimeout, module */
 
 class OdhinProgressReporter {
   constructor(options = {}) {
@@ -15,10 +15,17 @@ class OdhinProgressReporter {
     this.tick = 0;
     this.totalPlannedTests = 0;
     this.progressStarted = false;
+    this.finalStatus = undefined;
     this.timeoutExitCode =
       Number.isFinite(Number(options.timeoutExitCode)) && Number(options.timeoutExitCode) >= 0
         ? Number(options.timeoutExitCode)
         : 1;
+    this.completionExitDelayMs =
+      Number.isFinite(Number(options.completionExitDelayMs)) && Number(options.completionExitDelayMs) >= 0
+        ? Number(options.completionExitDelayMs)
+        : 0;
+    this.forceExitOnCompletion = Boolean(options.forceExitOnCompletion);
+    this.exitProcess = typeof options.exitProcess === 'function' ? options.exitProcess : process.exit.bind(process);
   }
 
   onBegin(_config, suite) {
@@ -28,10 +35,11 @@ class OdhinProgressReporter {
     this.totalPlannedTests = suite.allTests().length;
   }
 
-  onEnd() {
+  onEnd(result) {
     if (!this.enabled) {
       return;
     }
+    this.finalStatus = result?.status;
     this.startedAt = Date.now();
     if (this.graceMs <= 0) {
       this.startProgress();
@@ -99,6 +107,33 @@ class OdhinProgressReporter {
       const elapsedSeconds = this.startedAt ? Math.max(0, Math.floor((Date.now() - this.startedAt) / 1000)) : 0;
       process.stdout.write(`[odhin-progress] Odhin report completed in ${elapsedSeconds}s.\n`);
     }
+
+    if (this.forceExitOnCompletion) {
+      setImmediate(() => {
+        const exitCode = this.resolveCompletionExitCode();
+        process.stderr.write(`[odhin-progress] Forcing process exit after Odhin completion with code ${exitCode}.\n`);
+        this.exitProcess(exitCode);
+      });
+      return;
+    }
+
+    if (this.completionExitDelayMs > 0) {
+      setTimeout(() => {
+        const exitCode = this.resolveCompletionExitCode();
+        process.stderr.write(
+          `[odhin-progress] Process still alive ${this.completionExitDelayMs}ms after Odhin completion. Forcing exit with code ${exitCode}.\n`
+        );
+        this.exitProcess(exitCode);
+      }, this.completionExitDelayMs);
+    }
+  }
+
+  resolveCompletionExitCode() {
+    const processExitCode = Number(process.exitCode);
+    if (Number.isFinite(processExitCode)) {
+      return processExitCode;
+    }
+    return this.finalStatus === 'passed' ? 0 : 1;
   }
 }
 

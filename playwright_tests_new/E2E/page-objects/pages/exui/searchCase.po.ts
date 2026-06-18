@@ -46,7 +46,8 @@ export class SearchCasePage extends Base {
       if (!errorMsg.includes('intercepts pointer events')) {
         throw error;
       }
-      await findButton.click({ force: true, timeout: EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK });
+      await this.waitForPostSearchSpinnerCycle();
+      await findButton.click({ timeout: EXUI_TIMEOUTS.SEARCH_BUTTON_CLICK });
     }
     await this.waitForPostSearchSpinnerCycle();
     const immediateOutcomeReached = await this.waitForImmediateSearchOutcome(SearchCasePage.QUICK_SEARCH_OUTCOME_PROBE_MS);

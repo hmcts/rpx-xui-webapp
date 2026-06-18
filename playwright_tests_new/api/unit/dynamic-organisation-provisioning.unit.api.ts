@@ -421,10 +421,10 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
         {
           createApprovedOrganisation: async (_utils, options) => {
             createCount += 1;
-            expect(options.superUser?.email).toBe('pw-dynamic-org-local@example.test');
+            expect(options.superUser?.email).toBe(`pw-dynamic-org-${options.runId}@example.test`);
             return {
               organisationId: 'ORG-DEFAULT',
-              name: 'PW Dynamic Org local',
+              name: `PW Dynamic Org ${options.runId}`,
               status: 'ACTIVE',
               superUser: options.superUser,
               createStatus: 201,
@@ -446,7 +446,7 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
         source: 'dynamic',
         organisationId: 'ORG-DEFAULT',
         mode: 'dynamic',
-        cacheKey: 'local',
+        cacheKey: expect.stringMatching(/^local-\d+$/),
         reusedFromCache: false,
       });
       expect(createCount).toBe(1);

@@ -5,9 +5,6 @@ import { ensureSessionCookies } from '../../../common/sessionCapture';
 import type { TaskListPage } from '../../page-objects/pages/exui/taskList.po';
 
 const DEFAULT_WORK_ALLOCATION_USER = 'IAC_CASEOFFICER_R1';
-const LOCAL_INTERNAL_WA_EMAIL = 'xui_auto_co_r1@justice.gov.uk';
-const LOCAL_INTERNAL_WA_SESSION_KEY = 'xui_auto_co_r1-justice.gov.uk';
-
 export function resolveWorkAllocationUser(): SessionIdentityInput {
   const explicitEmail = process.env.PW_E2E_MANAGE_TASKS_EMAIL?.trim();
   const explicitPassword = process.env.PW_E2E_MANAGE_TASKS_PASSWORD;
@@ -33,15 +30,10 @@ export function resolveWorkAllocationUser(): SessionIdentityInput {
     return DEFAULT_WORK_ALLOCATION_USER;
   }
 
-  return {
-    userIdentifier: DEFAULT_WORK_ALLOCATION_USER,
-    email: LOCAL_INTERNAL_WA_EMAIL,
-    password: process.env.PW_IAC_CASEOFFICER_R1_PASSWORD ?? '',
-    sessionKey: LOCAL_INTERNAL_WA_SESSION_KEY,
-  };
+  throw new Error(
+    'Live Work Allocation E2E requires either PW_E2E_MANAGE_TASKS_USER, both PW_E2E_MANAGE_TASKS_EMAIL/PW_E2E_MANAGE_TASKS_PASSWORD, or both PW_IAC_CASEOFFICER_R1_EMAIL/PW_IAC_CASEOFFICER_R1_PASSWORD. The @e2e-manage-tasks lane is excluded by default until seeded live WA data is available.'
+  );
 }
-
-export const workAllocationUser = resolveWorkAllocationUser();
 
 function describeWorkAllocationUser(identity: SessionIdentityInput): string {
   if (typeof identity === 'string') {
@@ -51,15 +43,16 @@ function describeWorkAllocationUser(identity: SessionIdentityInput): string {
   return `${identity.userIdentifier} (${identity.email})`;
 }
 
-export async function applyWorkAllocationSession(page: Page) {
-  const { cookies } = await ensureSessionCookies(workAllocationUser);
+export async function applyWorkAllocationSession(page: Page, identity: SessionIdentityInput = resolveWorkAllocationUser()) {
+  const { cookies } = await ensureSessionCookies(identity);
   if (cookies.length) {
     await page.context().addCookies(cookies);
   }
 }
 
 export async function bootstrapWorkAllocationShell({ page, taskListPage }: { page: Page; taskListPage: TaskListPage }) {
-  await applyWorkAllocationSession(page);
+  const workAllocationUser = resolveWorkAllocationUser();
+  await applyWorkAllocationSession(page, workAllocationUser);
   await taskListPage.goto();
 
   const hasMyWorkNavigation = await page

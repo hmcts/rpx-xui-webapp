@@ -4,21 +4,12 @@ import {
   getEnglishTranslationChecks,
   getWelshTranslationChecks,
   setupWelshLanguageSession,
-  warmWelshLanguageSessionForWorker,
   type WelshLanguageSessionLease,
 } from '../../helpers';
 import { welshTranslationsSmall } from '../../mocks/welshLanguage';
 
-const WELSH_LANGUAGE_SESSION_BOOTSTRAP_TIMEOUT_MS =
-  Number.parseInt(process.env.PW_WELSH_LANGUAGE_SESSION_BOOTSTRAP_TIMEOUT_MS ?? '', 10) || 180_000;
-
 test.describe('Verify users can switch the language', { tag: ['@integration', '@integration-welsh-language'] }, () => {
   let welshSessionLease: WelshLanguageSessionLease | undefined;
-
-  test.beforeAll(async ({}, testInfo) => {
-    testInfo.setTimeout(WELSH_LANGUAGE_SESSION_BOOTSTRAP_TIMEOUT_MS);
-    await warmWelshLanguageSessionForWorker(testInfo);
-  });
 
   test.beforeEach(async ({ page }, testInfo) => {
     welshSessionLease = await setupWelshLanguageSession(page, testInfo);

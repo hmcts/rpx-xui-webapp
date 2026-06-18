@@ -419,13 +419,13 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(filters.grepInvert?.test('@e2e-search-case')).toBe(true);
   });
 
-  test('E2E tag defaults exclude only assigned browser Work Allocation until a seeded task user exists', () => {
+  test('E2E tag defaults exclude browser Work Allocation until seeded task data exists', () => {
     const filters = resolveE2eTagFilters({});
 
-    expect(filters.excludedTags).toEqual(['@e2e-manage-tasks-assigned']);
+    expect(filters.excludedTags).toEqual(['@e2e-manage-tasks']);
     expect(filters.grepInvert).toBeInstanceOf(RegExp);
+    expect(filters.grepInvert?.test('@e2e-manage-tasks')).toBe(true);
     expect(filters.grepInvert?.test('@e2e-manage-tasks-assigned')).toBe(true);
-    expect(filters.grepInvert?.test('@e2e-manage-tasks')).toBe(false);
     expect(filters.grepInvert?.test('@e2e-search-case')).toBe(false);
     expect(filters.availableTags).toEqual(
       expect.arrayContaining([

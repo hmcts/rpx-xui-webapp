@@ -7,6 +7,7 @@ export type DynamicOrganisationRunIdOptions = {
 
 const DEFAULT_MAX_RUN_ID_LENGTH = 80;
 const DEFAULT_LOCAL_FALLBACK = 'local';
+const localProcessRunId = `local-${process.ppid}`;
 
 export function firstNonEmpty(...values: Array<string | undefined>): string | undefined {
   for (const value of values) {
@@ -67,9 +68,5 @@ export function resolveDynamicOrganisationRunId(options: DynamicOrganisationRunI
     );
   }
 
-  return sanitizeDynamicOrganisationRunId(
-    options.localFallback ?? DEFAULT_LOCAL_FALLBACK,
-    options.maxLength,
-    DEFAULT_LOCAL_FALLBACK
-  );
+  return sanitizeDynamicOrganisationRunId(options.localFallback ?? localProcessRunId, options.maxLength, DEFAULT_LOCAL_FALLBACK);
 }

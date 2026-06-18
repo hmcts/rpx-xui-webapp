@@ -1,6 +1,6 @@
 import { welshTranslationsSmall } from 'playwright_tests_new/integration/mocks/welshLanguage';
 import { expect, test } from '../../../E2E/fixtures';
-import { setupWelshLanguageSession, warmWelshLanguageSessions, type WelshLanguageSessionLease } from '../../helpers';
+import { setupWelshLanguageSession, warmWelshLanguageSessionForWorker, type WelshLanguageSessionLease } from '../../helpers';
 
 const WELSH_LANGUAGE_SESSION_BOOTSTRAP_TIMEOUT_MS =
   Number.parseInt(process.env.PW_WELSH_LANGUAGE_SESSION_BOOTSTRAP_TIMEOUT_MS ?? '', 10) || 180_000;
@@ -10,7 +10,7 @@ test.describe('Verify users can switch the language', { tag: ['@integration', '@
 
   test.beforeAll(async ({}, testInfo) => {
     testInfo.setTimeout(WELSH_LANGUAGE_SESSION_BOOTSTRAP_TIMEOUT_MS);
-    await warmWelshLanguageSessions();
+    await warmWelshLanguageSessionForWorker(testInfo);
   });
 
   test.beforeEach(async ({ page }, testInfo) => {

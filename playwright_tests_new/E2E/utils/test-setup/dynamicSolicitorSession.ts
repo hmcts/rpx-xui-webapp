@@ -6,7 +6,7 @@ import type { ProfessionalUserInfo, ProvisionedProfessionalUser } from '../profe
 import type { ProfessionalUserUtils } from '../professional-user.utils';
 import { type SessionIdentity } from '../../../common/sessionIdentity.js';
 import config from '../config.utils';
-import { ensureSessionCookies } from '../../../common/sessionCapture';
+import { ensureSessionCookies, sessionCapture } from '../../../common/sessionCapture';
 import { ensureUiStorageStateForIdentity } from '../session-storage.utils.js';
 import { resolveManageOrgApiPath } from '../professional-user/runtime.js';
 import { DynamicProvisionTimeoutError, DynamicProvisioningError, provisionUserWithRetries } from './dynamicProvisioningFlow.js';
@@ -807,7 +807,7 @@ async function provisionDynamicSolicitorForAliasFlow(
     await deps.runEmploymentAssignmentPreflight({
       professionalUserUtils,
       organisationId: organisationId,
-      mode,
+      mode: assignmentMode,
       testInfo,
     });
   } else if (assertEmploymentAssignmentPayloadAccepted) {

@@ -161,6 +161,13 @@ export async function warmWelshLanguageSessions(env: NodeJS.ProcessEnv = process
   await Promise.all(resolveWelshLanguageSessionUsers(env).map((userIdentifier) => ensureSession(userIdentifier)));
 }
 
+export async function warmWelshLanguageSessionForWorker(
+  testInfo: Pick<TestInfo, 'workerIndex'>,
+  env: NodeJS.ProcessEnv = process.env
+): Promise<void> {
+  await ensureSession(resolveWelshLanguageSessionUser(testInfo, env));
+}
+
 export async function setupWelshLanguageSession(
   page: Page,
   testInfo: Pick<TestInfo, 'workerIndex' | 'annotations'>,

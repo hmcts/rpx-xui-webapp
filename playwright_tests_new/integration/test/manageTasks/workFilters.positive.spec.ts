@@ -19,6 +19,7 @@ import {
   workFiltersSupportedJurisdictions,
   workFiltersUserId,
   workFiltersUserIdentifier,
+  warmWorkFiltersSession,
 } from './workFilters.setup';
 
 type SearchParameter = {
@@ -32,6 +33,14 @@ type SearchRequestPayload = {
   };
   view?: string;
 };
+
+const WORK_FILTERS_SESSION_BOOTSTRAP_TIMEOUT_MS =
+  Number.parseInt(process.env.PW_WORK_FILTERS_SESSION_BOOTSTRAP_TIMEOUT_MS ?? '', 10) || 180_000;
+
+test.beforeAll(async ({}, testInfo) => {
+  testInfo.setTimeout(WORK_FILTERS_SESSION_BOOTSTRAP_TIMEOUT_MS);
+  await warmWorkFiltersSession();
+});
 
 test.describe(`Work filters as ${workFiltersUserIdentifier}`, { tag: ['@integration', '@integration-manage-tasks'] }, () => {
   test('show and hide work filters across My tasks, Available tasks, and My cases', async ({ taskListPage, page }) => {

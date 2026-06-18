@@ -419,12 +419,13 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(filters.grepInvert?.test('@e2e-search-case')).toBe(true);
   });
 
-  test('E2E tag defaults exclude browser Work Allocation until a valid UI user is restored', () => {
+  test('E2E tag defaults exclude only assigned browser Work Allocation until a seeded task user exists', () => {
     const filters = resolveE2eTagFilters({});
 
-    expect(filters.excludedTags).toEqual(['@e2e-manage-tasks']);
+    expect(filters.excludedTags).toEqual(['@e2e-manage-tasks-assigned']);
     expect(filters.grepInvert).toBeInstanceOf(RegExp);
-    expect(filters.grepInvert?.test('@e2e-manage-tasks')).toBe(true);
+    expect(filters.grepInvert?.test('@e2e-manage-tasks-assigned')).toBe(true);
+    expect(filters.grepInvert?.test('@e2e-manage-tasks')).toBe(false);
     expect(filters.grepInvert?.test('@e2e-search-case')).toBe(false);
     expect(filters.availableTags).toEqual(
       expect.arrayContaining([
@@ -435,6 +436,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
         '@e2e-document-upload',
         '@e2e-document-upload-v1',
         '@e2e-manage-tasks',
+        '@e2e-manage-tasks-assigned',
         '@e2e-media-viewer',
         '@e2e-search-case',
         '@e2e-update-case',

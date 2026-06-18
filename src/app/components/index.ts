@@ -15,6 +15,7 @@ import { PhaseBannerComponent } from './phase-banner/phase-banner.component';
 import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 import { ApplicationRoutingComponent } from './routing/application-routing.component';
 import { ServiceDownComponent } from './service-down/service-down.component';
+import { SessionErrorWrapperComponent } from './session-error-wrapper/session-error-wrapper.component';
 import { SignedOutComponent } from './signed-out/signed-out.component';
 
 export const components: any[] = [
@@ -27,6 +28,7 @@ export const components: any[] = [
   AccessibilityComponent,
   PhaseBannerComponent,
   ServiceDownComponent,
+  SessionErrorWrapperComponent,
   ErrorMessageComponent,
   MediaViewerWrapperComponent,
   GetHelpComponent,
@@ -43,6 +45,7 @@ export * from './header/header.component';
 export * from './hmcts-global-header/hmcts-global-header.component';
 export * from './phase-banner/phase-banner.component';
 export * from './service-down/service-down.component';
+export * from './session-error-wrapper/session-error-wrapper.component';
 export * from './error-message/error-message.component';
 export * from './cookie-policy/cookie-policy.component';
 export * from './privacy-policy/privacy-policy.component';

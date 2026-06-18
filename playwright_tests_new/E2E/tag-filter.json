@@ -1,5 +1,8 @@
 {
-  "excludedTags": ["@nightly"],
+  "excludedTags": [
+    "@nightly",
+    "@e2e-manage-tasks"
+  ],
   "availableTags": [
     "@a11y",
     "@e2e",
@@ -10,6 +13,7 @@
     "@e2e-case-list",
     "@e2e-case-flags",
     "@e2e-create-case",
+    "@e2e-data-loss",
     "@e2e-document-upload",
     "@e2e-document-upload-v1",
     "@e2e-footer",

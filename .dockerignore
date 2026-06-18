@@ -41,7 +41,6 @@ playwright-report/
 trace
 trace/
 mochawesome-report/
-test_codecept/
 test/
 **/test
 dummy.pdf

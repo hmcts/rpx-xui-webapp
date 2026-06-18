@@ -130,10 +130,42 @@ export class CaseFileViewPage extends Base {
     return folderNode.locator('.document-tree-container__node--document > button .node-name-document').evaluateAll((nodes) =>
       nodes
         .map((node) => {
-          const firstTextNode = Array.from(node.childNodes).find((child) => child.nodeType === Node.TEXT_NODE);
-          return (firstTextNode?.textContent || '').trim();
+          const directText = Array.from(node.childNodes)
+            .filter((child) => child.nodeType === Node.TEXT_NODE)
+            .map((child) => child.textContent?.trim() || '')
+            .filter(Boolean)
+            .join(' ')
+            .trim();
+
+          if (directText) {
+            return directText;
+          }
+
+          const clone = node.cloneNode(true) as HTMLElement;
+          clone.querySelectorAll('.node__document-upload-timestamp').forEach((child) => child.remove());
+          return (clone.textContent || '').trim();
         })
         .filter(Boolean)
+    );
+  }
+
+  public async waitForVisibleFileCountUnderFolder(folderPath: string, expectedFileCount: number): Promise<string[]> {
+    const deadline = Date.now() + CASE_FILE_VIEW_DOCUMENT_TIMEOUT_MS;
+    let lastFileNames: string[] = [];
+
+    while (Date.now() < deadline) {
+      lastFileNames = await this.getVisibleFileNamesUnderFolder(folderPath);
+      if (lastFileNames.length === expectedFileCount) {
+        return lastFileNames;
+      }
+
+      await this.page.waitForTimeout(CASE_FILE_VIEW_FOLDER_POLL_INTERVAL_MS);
+    }
+
+    throw new Error(
+      `Case file view folder "${folderPath}" did not show ${expectedFileCount} visible documents before timeout. Last observed: ${
+        lastFileNames.join(', ') || 'none'
+      }`
     );
   }
 

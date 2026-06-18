@@ -23,6 +23,12 @@ let OdhinAdaptiveReporter: {
     };
   };
 };
+let FlakeGateReporter: {
+  new (): {
+    onTestEnd: (test: unknown, result: { status: string; retry: number }) => void;
+    onEnd: () => { status: string } | undefined;
+  };
+};
 
 test.describe.configure({ mode: 'serial' });
 
@@ -33,6 +39,68 @@ test.describe('Odhin reporter unit tests', { tag: '@svc-internal' }, () => {
 
     const adaptiveModule = await import('../../common/reporters/odhin-adaptive.reporter.cjs');
     OdhinAdaptiveReporter = (adaptiveModule.default ?? adaptiveModule) as typeof OdhinAdaptiveReporter;
+
+    const flakeGateModule = await import('../../common/reporters/flake-gate.reporter.cjs');
+    FlakeGateReporter = (flakeGateModule.default ?? flakeGateModule) as typeof FlakeGateReporter;
+  });
+
+  test('flake gate remains report-only with documented thresholds', () => {
+    const originalEnv = {
+      PW_ENABLE_FLAKE_GATE: process.env.PW_ENABLE_FLAKE_GATE,
+      PW_FLAKE_GATE_MODE: process.env.PW_FLAKE_GATE_MODE,
+      PW_FLAKE_GATE_REPORT_ONLY: process.env.PW_FLAKE_GATE_REPORT_ONLY,
+      PW_MAX_FLAKY_RATE: process.env.PW_MAX_FLAKY_RATE,
+      PW_MAX_FLAKY_TESTS: process.env.PW_MAX_FLAKY_TESTS,
+    };
+    const writes: string[] = [];
+    const originalWrite = process.stdout.write.bind(process.stdout);
+    process.stdout.write = ((chunk: string | Uint8Array) => {
+      writes.push(String(chunk));
+      return true;
+    }) as typeof process.stdout.write;
+
+    try {
+      process.env.PW_ENABLE_FLAKE_GATE = 'true';
+      process.env.PW_FLAKE_GATE_MODE = 'enforce';
+      process.env.PW_FLAKE_GATE_REPORT_ONLY = 'false';
+      delete process.env.PW_MAX_FLAKY_RATE;
+      delete process.env.PW_MAX_FLAKY_TESTS;
+
+      const reporter = new FlakeGateReporter();
+      reporter.onTestEnd(
+        {
+          id: 'flaky-test',
+          outcome: () => 'flaky',
+        },
+        { status: 'passed', retry: 1 }
+      );
+      reporter.onTestEnd(
+        {
+          id: 'failed-test',
+          outcome: () => 'unexpected',
+        },
+        { status: 'failed', retry: 2 }
+      );
+      const result = reporter.onEnd();
+
+      expect(result).toBeUndefined();
+      const output = writes.join('');
+      expect(output).toContain('[flake-gate] flaky=1');
+      expect(output).toContain('[flake-gate] passed-on-retry=1');
+      expect(output).toContain('[flake-gate] failed=1');
+      expect(output).toContain('[flake-gate] thresholds: maxFlakyTests=20, maxFlakyRate=20.00%');
+      expect(output).toContain('[flake-gate] mode=report-only');
+      expect(output).not.toContain('[flake-gate] result=');
+    } finally {
+      for (const [key, value] of Object.entries(originalEnv)) {
+        if (value === undefined) {
+          delete process.env[key];
+        } else {
+          process.env[key] = value;
+        }
+      }
+      process.stdout.write = originalWrite;
+    }
   });
 
   test('adaptive reporter trims passed-test output and heavy artifacts in lightweight mode', () => {

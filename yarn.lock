@@ -3487,12 +3487,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.60-fix-case-filter-issue":
-  version: 7.3.60-fix-case-filter-issue
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.60-fix-case-filter-issue"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.62-fix-case-filter-issue":
+  version: 7.3.62-fix-case-filter-issue
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.62-fix-case-filter-issue"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/13ce1936d97e2684d65f0e4ac8270743e93c9cba01e870bcbb9c942c8034d5107cf310fd5aaff18aaa7d2ac0183c40d020e3535e90b727bda047e12784b561e0
+  checksum: 10/2f06a8712408d27b6b85f7ec252895e23ca255d16a4d8c110c49659e2e727dfc557b003991152f4515913ca8745f46563091dfd8cd09202cc56a16c9ffa4627f
   languageName: node
   linkType: hard
 
@@ -20800,7 +20800,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.60-fix-case-filter-issue"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.62-fix-case-filter-issue"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.19"

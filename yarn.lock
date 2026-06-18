@@ -3023,12 +3023,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.54-exui-3229":
-  version: 7.3.54-exui-3229
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.54-exui-3229"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.63":
+  version: 7.3.63
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.63"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/0e68ba809a73ef12bc8143954fd9ff9dbd232ad22d23d19764e6931a1f7334e15fc84d23777da4e735224094fac330593202b235ae837a4dff2fe190218e8c85
+  checksum: 10/3280b29ae8bf94c325dfc67dbf08dea0ab6208dfe7c6be5077c7caeff1e2a797803fd3ffb677116d72b75a2239ce1e4d4e463f8370a4a7b05cc38e766e8a66c0
   languageName: node
   linkType: hard
 
@@ -19684,11 +19684,7 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-<<<<<<< exui-3229-event-triggers-cause-duplicate-requests
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.54-exui-3229"
-=======
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.62"
->>>>>>> master
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.63"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.19"

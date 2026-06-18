@@ -2,6 +2,7 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
 import type {
+  DynamicOrganisationSuperUser,
   DynamicOrganisationProvisioningStageTiming,
   DynamicOrganisationResolvedApprovalStrategy,
   DynamicOrganisationProvisioningOptions,
@@ -17,6 +18,11 @@ export type DynamicOrganisationResolution = {
   organisationId: string;
   name: string;
   status: 'ACTIVE';
+  superUser?: {
+    email: string;
+    firstName: string;
+    lastName: string;
+  };
   mode: DynamicOrganisationMode;
   cacheKey: string;
   createStatus?: number;
@@ -32,6 +38,11 @@ type DynamicOrganisationCacheEntry = {
   organisationId: string;
   name: string;
   status: 'ACTIVE';
+  superUser?: {
+    email: string;
+    firstName: string;
+    lastName: string;
+  };
   cacheKey: string;
   createdAt: string;
   createStatus?: number;
@@ -47,6 +58,10 @@ type ResolveDynamicOrganisationArgs = {
 };
 
 type DynamicOrganisationResolverDeps = {
+  ensureSuperUserAccount?: (
+    professionalUserUtils: ProfessionalUserUtils,
+    superUser: DynamicOrganisationSuperUser
+  ) => Promise<void>;
   createApprovedOrganisation: (
     professionalUserUtils: ProfessionalUserUtils,
     options: DynamicOrganisationProvisioningOptions
@@ -60,6 +75,7 @@ type DynamicOrganisationResolverDeps = {
 const DEFAULT_LOCK_TIMEOUT_MS = 60_000;
 const DEFAULT_LOCK_POLL_INTERVAL_MS = 250;
 const DEFAULT_LOCK_STALE_MS = 15 * 60_000;
+const DEFAULT_DYNAMIC_ORG_SUPER_USER_DOMAIN = 'example.test';
 
 function resolveDynamicOrganisationMode(): 'dynamic' {
   const mode = firstNonEmpty(process.env.PW_DYNAMIC_ORGANISATION_MODE)?.toLowerCase();
@@ -95,6 +111,16 @@ function resolveDynamicOrganisationOptions(cacheKey: string): DynamicOrganisatio
     runId: cacheKey,
     name: firstNonEmpty(process.env.PW_DYNAMIC_ORGANISATION_NAME),
     superUserEmail: firstNonEmpty(process.env.PW_DYNAMIC_ORGANISATION_SUPER_USER_EMAIL),
+  };
+}
+
+function resolveDynamicOrganisationSuperUser(cacheKey: string): DynamicOrganisationSuperUser {
+  const domain = firstNonEmpty(process.env.PW_DYNAMIC_ORGANISATION_SUPER_USER_DOMAIN) ?? DEFAULT_DYNAMIC_ORG_SUPER_USER_DOMAIN;
+  return {
+    email:
+      firstNonEmpty(process.env.PW_DYNAMIC_ORGANISATION_SUPER_USER_EMAIL) ?? `pw-dynamic-org-${cacheKey.toLowerCase()}@${domain}`,
+    firstName: 'Playwright',
+    lastName: 'Dynamic',
   };
 }
 
@@ -203,6 +229,14 @@ async function withDirectoryLock<T>(lockPath: string, action: () => Promise<T>):
 }
 
 const DEFAULT_DEPS: DynamicOrganisationResolverDeps = {
+  ensureSuperUserAccount: async (professionalUserUtils, superUser) => {
+    await professionalUserUtils.createOrganisationAssignmentAdminUser({
+      email: superUser.email,
+      forename: superUser.firstName,
+      surname: superUser.lastName,
+      outputCreatedUserData: process.env.PW_DYNAMIC_USER_OUTPUT_CREATED_DATA === '1',
+    });
+  },
   createApprovedOrganisation: (professionalUserUtils, options) =>
     professionalUserUtils.createApprovedOrganisationForTest(options),
   readCache,
@@ -222,6 +256,7 @@ function toDynamicResolution(
     organisationId: created.organisationId,
     name: created.name,
     status: created.status,
+    superUser: created.superUser,
     mode,
     cacheKey,
     createStatus: created.createStatus,
@@ -244,6 +279,7 @@ function toCachedDynamicResolution(
     organisationId: entry.organisationId,
     name: entry.name,
     status: entry.status,
+    superUser: entry.superUser,
     mode,
     cacheKey,
     createStatus: entry.createStatus,
@@ -282,14 +318,18 @@ async function createOrReuseDynamicOrganisation(
       return toCachedDynamicResolution(cachedAfterLock, cacheKey, mode);
     }
 
-    const created = await deps.createApprovedOrganisation(
-      args.professionalUserUtils,
-      resolveDynamicOrganisationOptions(cacheKey)
-    );
+    const superUser = resolveDynamicOrganisationSuperUser(cacheKey);
+    await deps.ensureSuperUserAccount?.(args.professionalUserUtils, superUser);
+    const organisationOptions = {
+      ...resolveDynamicOrganisationOptions(cacheKey),
+      superUser,
+    };
+    const created = await deps.createApprovedOrganisation(args.professionalUserUtils, organisationOptions);
     await deps.writeCache(cachePath, {
       organisationId: created.organisationId,
       name: created.name,
       status: created.status,
+      superUser: created.superUser,
       cacheKey,
       createdAt: deps.nowIso(),
       createStatus: created.createStatus,

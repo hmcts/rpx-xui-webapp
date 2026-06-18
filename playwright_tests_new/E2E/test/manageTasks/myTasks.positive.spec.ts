@@ -1,5 +1,4 @@
 import { expect, test } from '../../fixtures';
-import { applySessionCookies } from '../../../common/sessionCapture';
 import type { ManageTasksLiveSetup } from '../../utils/test-setup/manageTasksLiveSetup';
 import { setupClaimableManageTasksCase } from '../../utils/test-setup/manageTasksLiveSetup';
 import {
@@ -12,7 +11,7 @@ const MANAGE_TASKS_DYNAMIC_E2E_TIMEOUT_MS =
   Number.parseInt(process.env.PW_E2E_MANAGE_TASKS_DYNAMIC_TIMEOUT_MS ?? '', 10) || 300_000;
 const TASK_LIST_VIEW_TIMEOUT_MS = 30_000;
 
-test.describe('Manage Tasks with dynamic organisation and user', { tag: ['@e2e', '@e2e-manage-tasks'] }, () => {
+test.describe('Manage Tasks with dynamic organisation and user', { tag: ['@e2e', '@e2e-manage-tasks', '@e2e-live-wa'] }, () => {
   test.describe.configure({ retries: 0 });
   test.setTimeout(MANAGE_TASKS_DYNAMIC_E2E_TIMEOUT_MS);
 
@@ -35,8 +34,7 @@ test.describe('Manage Tasks with dynamic organisation and user', { tag: ['@e2e',
           professionalUserUtils,
           testInfo,
         });
-        await applySessionCookies(page, liveSetup.sessionIdentity);
-        await taskListPage.goto();
+        await taskListPage.waitForTaskListShellReady('dynamic setup handoff', TASK_LIST_VIEW_TIMEOUT_MS);
         await taskListPage.taskListTable.waitFor({ state: 'visible', timeout: TASK_LIST_VIEW_TIMEOUT_MS });
       });
 

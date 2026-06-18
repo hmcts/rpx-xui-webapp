@@ -352,6 +352,82 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
     ]);
   });
 
+  test('retries transient approve-org API gateway failures without retrying organisation creation @svc-internal', async () => {
+    const rdCalls: ApiCall[] = [];
+    const approveOrgCalls: ApiCall[] = [];
+    const sleepDelays: number[] = [];
+    let approveOrgReadAttempts = 0;
+    const rdApiContext = {
+      post: async (url: string, options: { data?: unknown }) => {
+        rdCalls.push({ method: 'POST', url, data: options.data });
+        return response(201, { organisationIdentifier: 'ORG-RETRY' });
+      },
+      put: async (url: string, options: { data?: unknown }) => {
+        rdCalls.push({ method: 'PUT', url, data: options.data });
+        return response(403, { error: 'forbidden' });
+      },
+      get: async (url: string) => {
+        rdCalls.push({ method: 'GET', url });
+        return response(200, [{ organisationIdentifier: 'ORG-RETRY', status: 'ACTIVE' }]);
+      },
+      dispose: async () => undefined,
+    };
+    const approveOrgApiContext = {
+      get: async (url: string) => {
+        approveOrgCalls.push({ method: 'GET', url });
+        approveOrgReadAttempts += 1;
+        if (approveOrgReadAttempts === 1) {
+          return response(504, '<html><h1>504 Gateway Time-out</h1></html>');
+        }
+        return response(200, {
+          organisations: [{ organisationIdentifier: 'ORG-RETRY', name: 'PW Dynamic Org retry approval' }],
+        });
+      },
+      put: async (url: string, options: { data?: unknown; headers?: Record<string, string> }) => {
+        approveOrgCalls.push({ method: 'PUT', url, data: options.data, headers: options.headers });
+        return response(200, { organisationIdentifier: 'ORG-RETRY', status: 'ACTIVE' });
+      },
+      storageState: async () => ({
+        cookies: [
+          {
+            name: 'XSRF-TOKEN',
+            value: 'xsrf-token-for-put',
+            domain: 'administer-orgs.aat.platform.hmcts.net',
+          },
+        ],
+        origins: [],
+      }),
+      dispose: async () => undefined,
+    };
+
+    const result = await organisationProvisioningTest.createApprovedOrganisationFlow(
+      {
+        runId: 'retry-approval',
+        approvalStrategy: 'auto',
+        timeoutMs: 1_000,
+        pollIntervalMs: 1,
+      },
+      {
+        resolvePrerequisites: async () => ({
+          rdProfessionalApiPath: 'https://rd-professional-api.example.test',
+          headers: {},
+        }),
+        createApiContext: async () => rdApiContext as never,
+        createApproveOrgApiContext: async () => approveOrgApiContext as never,
+        now: () => Date.now(),
+        sleep: async (delayMs) => {
+          sleepDelays.push(delayMs);
+        },
+      }
+    );
+
+    expect(result.approveStatus).toBe(200);
+    expect(rdCalls.filter((call) => call.method === 'POST')).toHaveLength(1);
+    expect(approveOrgCalls.filter((call) => call.method === 'GET' && call.url.startsWith('/api/organisations'))).toHaveLength(2);
+    expect(approveOrgCalls.some((call) => call.method === 'PUT')).toBe(true);
+    expect(sleepDelays).toEqual([2_000]);
+  });
+
   test('recovers a pending organisation after a duplicate SRA create response', async () => {
     const calls: ApiCall[] = [];
     let approved = false;
@@ -655,12 +731,14 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
       const result = await organisationResolverTest.resolveDynamicOrganisationId(
         { professionalUserUtils: {} as never },
         {
-          createApprovedOrganisation: async () => {
+          createApprovedOrganisation: async (_utils, options) => {
             createCount += 1;
+            expect(options.superUser?.email).toBe('pw-dynamic-org-local@example.test');
             return {
               organisationId: 'ORG-DEFAULT',
               name: 'PW Dynamic Org local',
               status: 'ACTIVE',
+              superUser: options.superUser,
               createStatus: 201,
               approveStatus: 200,
               pollAttempts: 1,
@@ -792,18 +870,25 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
     let createCount = 0;
     const locks: string[] = [];
     const writes: unknown[] = [];
+    const observedCallOrder: string[] = [];
 
     try {
       const result = await organisationResolverTest.resolveDynamicOrganisationId(
         { professionalUserUtils: {} as never },
         {
+          ensureSuperUserAccount: async (_utils, superUser) => {
+            observedCallOrder.push(`create-super-user:${superUser.email}`);
+          },
           createApprovedOrganisation: async (_utils, options) => {
+            observedCallOrder.push(`create-org:${options.superUser?.email}`);
             createCount += 1;
             expect(options.runId).toBe('EXUI-4767-run-1');
+            expect(options.superUser?.email).toBe('pw-dynamic-org-exui-4767-run-1@example.test');
             return {
               organisationId: 'ORG-456',
               name: 'PW Dynamic Org EXUI-4767-run-1',
               status: 'ACTIVE',
+              superUser: options.superUser,
               createStatus: 201,
               approveStatus: 200,
               pollAttempts: 2,
@@ -845,9 +930,18 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
       });
       expect(result.source === 'dynamic' ? result.timings : []).toHaveLength(3);
       expect(createCount).toBe(1);
+      expect(observedCallOrder).toEqual([
+        'create-super-user:pw-dynamic-org-exui-4767-run-1@example.test',
+        'create-org:pw-dynamic-org-exui-4767-run-1@example.test',
+      ]);
       expect(locks[0]).toContain('EXUI-4767-run-1.json.lock');
       expect(writes).toHaveLength(1);
       expect(writes[0]).toMatchObject({
+        superUser: {
+          email: 'pw-dynamic-org-exui-4767-run-1@example.test',
+          firstName: 'Playwright',
+          lastName: 'Dynamic',
+        },
         approvalStrategy: 'rd-professional-api',
         totalElapsedMs: 60,
       });
@@ -991,12 +1085,13 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
       const result = await organisationResolverTest.resolveDynamicOrganisationId(
         { professionalUserUtils: {} as never },
         {
-          createApprovedOrganisation: async () => {
+          createApprovedOrganisation: async (_utils, options) => {
             createCount += 1;
             return {
               organisationId: 'ORG-CURRENT',
               name: 'PW Dynamic Org EXUI-4767-current-run',
               status: 'ACTIVE',
+              superUser: options.superUser,
               createStatus: 201,
               approveStatus: 200,
               pollAttempts: 1,
@@ -1112,6 +1207,7 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
               organisationId: 'ORG-DYNAMIC',
               name: 'PW Dynamic Org EXUI-4767-dynamic',
               status: 'ACTIVE',
+              superUser: options.superUser,
               createStatus: 201,
               approveStatus: 200,
               pollAttempts: 1,

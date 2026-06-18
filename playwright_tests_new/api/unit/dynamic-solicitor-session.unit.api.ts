@@ -182,6 +182,24 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
     expect(attachedBodies[attachedBodies.length - 1]).toContain('"userDetailsStatus":200');
   });
 
+  test('buildDynamicSessionIdentity supports the dynamic WA caseworker actor without organisation assignment', () => {
+    expect(
+      dynamicSessionTest.buildDynamicSessionIdentity('WA_DYNAMIC_CASEWORKER', {
+        id: 'caseworker-123',
+        email: 'wa.caseworker@example.test',
+        password: 'secret',
+        forename: 'Case',
+        surname: 'Worker',
+        roleNames: ['caseworker', 'caseworker-ia-caseofficer'],
+      })
+    ).toEqual({
+      userIdentifier: 'WA_DYNAMIC_CASEWORKER',
+      email: 'wa.caseworker@example.test',
+      password: 'secret',
+      sessionKey: 'dynamic-wa_dynamic_caseworker-caseworker-123',
+    });
+  });
+
   test('provisionDynamicSolicitorForAliasFlow returns explicit session identity and runs readiness checks without global runtime mutation', async () => {
     const attachmentNames: string[] = [];
     const observedCallOrder: string[] = [];
@@ -212,6 +230,7 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
           observedCallOrder.push('provision');
           expect(args.alias).toBe('SOLICITOR');
           expect(args.organisationId).toBe('org-123');
+          expect(args.mode).toBe('internal');
           return {
             user: {
               id: 'user-123',
@@ -248,9 +267,22 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
             organisationId: 'org-123',
             name: 'PW Dynamic Org unit',
             status: 'ACTIVE',
+            superUser: {
+              email: 'dynamic-org-admin@example.test',
+              firstName: 'Playwright',
+              lastName: 'Dynamic',
+            },
             mode: 'dynamic',
             cacheKey: 'unit',
             reusedFromCache: false,
+          };
+        },
+        resolveAssignmentAdmin: async ({ organisationResolution }) => {
+          observedCallOrder.push(`resolve-assignment-admin:${organisationResolution.organisationId}`);
+          return {
+            email: 'assignment-principal@example.test',
+            mode: 'internal',
+            principalSource: 'configured-assignment-principal',
           };
         },
         outputCreatedUserData: false,
@@ -302,6 +334,7 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
     expect(observedCallOrder).toEqual([
       'resolve-org',
       'attach-org:SOLICITOR',
+      'resolve-assignment-admin:org-123',
       'provision',
       'attach-provision:SOLICITOR',
       'assert-contract',
@@ -366,9 +399,23 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
               organisationId: 'org-123',
               name: 'PW Dynamic Org unit',
               status: 'ACTIVE',
+              superUser: {
+                email: 'dynamic-org-admin@example.test',
+                firstName: 'Playwright',
+                lastName: 'Dynamic',
+              },
               mode: 'dynamic',
               cacheKey: 'unit',
               reusedFromCache: false,
+            };
+          },
+          resolveAssignmentAdmin: async ({ organisationResolution }) => {
+            observedCallOrder.push(`resolve-assignment-admin:${organisationResolution.organisationId}`);
+            return {
+              email: 'dynamic-org-admin@example.test',
+              assignmentBearerToken: 'dynamic-org-admin-token',
+              principalSource: 'dynamic-super-user',
+              storageState: '/tmp/dynamic-org-admin.storage.json',
             };
           },
           outputCreatedUserData: false,
@@ -405,7 +452,13 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
       )
     ).rejects.toThrow(/Dynamic user provisioning failed/);
 
-    expect(observedCallOrder).toEqual(['resolve-org', 'attach-org:SOLICITOR', 'provision', 'attach-provision:SOLICITOR']);
+    expect(observedCallOrder).toEqual([
+      'resolve-org',
+      'attach-org:SOLICITOR',
+      'resolve-assignment-admin:org-123',
+      'provision',
+      'attach-provision:SOLICITOR',
+    ]);
     expect(attachmentNames).toEqual(['solicitor-dynamic-organisation.json', 'solicitor-attempts.json']);
   });
 

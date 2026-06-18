@@ -519,6 +519,16 @@ async function isIdamLoginPage(page: Page): Promise<boolean> {
   return usernameVisible && passwordVisible;
 }
 
+async function isServiceDownPage(page: Page): Promise<boolean> {
+  return (
+    page.url().includes('/service-down') ||
+    (await page
+      .locator('exui-service-down')
+      .isVisible()
+      .catch(() => false))
+  );
+}
+
 function getAppShellMarkers(page: Page, preferredSelector?: string): Array<{ name: string; locator: Locator }> {
   return new SessionCapturePage(page).appShellMarkers(preferredSelector);
 }
@@ -539,6 +549,18 @@ async function waitForAuthenticatedShell(
         currentUrl: page.url(),
         preferredSelector: preferredSelector ?? 'none',
       });
+    }
+
+    if (await isServiceDownPage(page)) {
+      setSetupMarker(page, 'service-down');
+      throw new SessionCaptureError(
+        `Service down page detected while waiting for app shell for ${userIdentifier}`,
+        userIdentifier,
+        {
+          currentUrl: page.url(),
+          preferredSelector: preferredSelector ?? 'none',
+        }
+      );
     }
 
     for (const marker of markers) {
@@ -1282,4 +1304,5 @@ export const __test__ = {
   confirmAuthenticatedLogin,
   loginAndPersistSession,
   requirePersistableSessionCookies,
+  waitForAuthenticatedShell,
 };

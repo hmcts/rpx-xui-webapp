@@ -4,13 +4,7 @@ import { IdamUtils, ServiceAuthUtils } from '@hmcts/playwright-common';
 import { request, type APIRequestContext, type TestInfo } from '@playwright/test';
 
 import type { ProfessionalUserInfo } from '../professional-user/types';
-import {
-  DEFAULT_ASSIGNMENT_SCOPE,
-  DEFAULT_PASSWORD_GRANT_SCOPE,
-  isInvalidScopeError,
-  uniqueScopes,
-} from '../professional-user/runtime.js';
-import { tryGenerateAssignmentBearerTokenFromCredentialsFlow } from '../professional-user/tokenHydration.js';
+import { DEFAULT_PASSWORD_GRANT_SCOPE } from '../professional-user/runtime.js';
 
 type Env = NodeJS.ProcessEnv;
 
@@ -39,18 +33,22 @@ export type WaRoleAssignmentCleanupResult = {
 export type WaTaskProvisioningResult = {
   attempted: boolean;
   taskId?: string;
+  workflowIdempotencyKey?: string;
   roleAssignmentIds: string[];
   roleAssignmentReference?: string;
   diagnostics: {
     mode: string;
     workflowApiUrl?: string;
     taskManagementApiUrl?: string;
+    camundaApiUrl?: string;
     roleAssignmentApiUrl?: string;
+    roleAssignmentS2sMicroservice?: string;
     taskInitiationS2sMicroservice?: string;
     missing: string[];
     roleAssignmentStatus?: number;
     roleAssignmentVisibilityStatus?: number;
     workflowStatus?: number;
+    camundaTaskVisibilityStatus?: number;
     taskInitiationStatus?: number;
     skipped?: string;
   };
@@ -92,10 +90,26 @@ type WaTaskVariablesInput = {
   dueDate: string;
 };
 
+type WaWorkflowTaskMessageInput = Omit<WaTaskVariablesInput, 'taskId'> & {
+  idempotencyKey: string;
+  roleAssignmentId?: string;
+  delayUntil: string;
+};
+
+type WaCamundaTaskVisibilityAttempt = {
+  attempt: number;
+  elapsedMs: number;
+  status: number;
+  taskCount: number;
+  matchingTaskIds: string[];
+  selectedTaskId?: string;
+  ok: boolean;
+  responsePreview?: unknown;
+};
+
 type RoleAssignmentInput = {
   actorId: string;
   jurisdiction: string;
-  caseType: string;
   roleNames?: readonly string[];
   beginTime: string;
   reference: string;
@@ -115,9 +129,15 @@ const DEFAULT_TASK_CATEGORY = 'Case Progression';
 const DEFAULT_SECURITY_CLASSIFICATION = 'PUBLIC';
 const DEFAULT_CASE_MANAGEMENT_CATEGORY = 'Protection';
 const DEFAULT_ROLE_CATEGORY = 'LEGAL_OPERATIONS';
+const DEFAULT_WORK_TYPE = 'decision_making_work';
+const DEFAULT_EXECUTION_TYPE = 'Manual';
 const DEFAULT_ROLE_NAMES = ['tribunal-caseworker'] as const;
 const DEFAULT_ROLE_ASSIGNMENT_READY_TIMEOUT_MS = 30_000;
 const DEFAULT_ROLE_ASSIGNMENT_READY_POLL_INTERVAL_MS = 2_000;
+const DEFAULT_CAMUNDA_TASK_READY_TIMEOUT_MS = 60_000;
+const DEFAULT_CAMUNDA_TASK_READY_POLL_INTERVAL_MS = 1_000;
+const DEFAULT_TASK_INITIATION_MAX_ATTEMPTS = 3;
+const DEFAULT_TASK_INITIATION_RETRY_DELAY_MS = 1_000;
 const ROLE_ASSIGNMENT_PROCESS = 'staff-organisational-role-mapping';
 const ROLE_ASSIGNMENT_BEGIN_TIME = '2020-01-01T00:00:00Z';
 const ROLE_ASSIGNMENT_CREATE_ACCEPT = 'application/vnd.uk.gov.hmcts.role-assignment-service.create-assignments+json';
@@ -125,9 +145,8 @@ const ROLE_ASSIGNMENT_GET_ACCEPT =
   'application/vnd.uk.gov.hmcts.role-assignment-service.get-assignments+json;charset=UTF-8;version=1.0';
 const DEFAULT_TEST_ENV = 'aat';
 const DEFAULT_SERVICE_AUTH_MICROSERVICE = 'xui_webapp';
+const DEFAULT_ROLE_ASSIGNMENT_SERVICE_AUTH_MICROSERVICE = 'wa_task_management_api';
 const DEFAULT_TASK_INITIATION_SERVICE_AUTH_MICROSERVICE = 'wa_task_management_api';
-const ADMIN_TOKEN_PREREQUISITE =
-  'ORG_USER_ASSIGNMENT_BEARER_TOKEN or PW_E2E_MANAGE_TASKS_ROLE_ASSIGNMENT_BEARER_TOKEN or ORG_USER_ASSIGNMENT_USERNAME/ORG_USER_ASSIGNMENT_PASSWORD with IDAM client secret';
 
 function firstNonEmpty(...values: Array<string | undefined>): string | undefined {
   return values.map((value) => value?.trim()).find((value): value is string => Boolean(value));
@@ -143,6 +162,16 @@ function withBearerPrefix(value: string): string {
 
 function stripTrailingSlash(value: string): string {
   return value.replace(/\/+$/, '');
+}
+
+function ensureTrailingSlash(value: string): string {
+  return `${stripTrailingSlash(value)}/`;
+}
+
+function normalizeCamundaApiUrl(value: string): string {
+  const normalized = stripTrailingSlash(value);
+  const engineRestUrl = /\/engine-rest(?:\/|$)/.test(normalized) ? normalized : `${normalized}/engine-rest`;
+  return ensureTrailingSlash(engineRestUrl);
 }
 
 function addDays(date: Date, days: number): Date {
@@ -204,6 +233,34 @@ function resolveRoleAssignmentReadyPollIntervalMs(env: Env = process.env): numbe
   );
 }
 
+function resolveCamundaTaskReadyTimeoutMs(env: Env = process.env): number {
+  return resolvePositiveIntegerEnv(
+    env,
+    'PW_E2E_MANAGE_TASKS_CAMUNDA_TASK_READY_TIMEOUT_MS',
+    DEFAULT_CAMUNDA_TASK_READY_TIMEOUT_MS
+  );
+}
+
+function resolveCamundaTaskReadyPollIntervalMs(env: Env = process.env): number {
+  return resolvePositiveIntegerEnv(
+    env,
+    'PW_E2E_MANAGE_TASKS_CAMUNDA_TASK_READY_POLL_INTERVAL_MS',
+    DEFAULT_CAMUNDA_TASK_READY_POLL_INTERVAL_MS
+  );
+}
+
+function resolveTaskInitiationMaxAttempts(env: Env = process.env): number {
+  return resolvePositiveIntegerEnv(env, 'PW_E2E_MANAGE_TASKS_TASK_INITIATION_MAX_ATTEMPTS', DEFAULT_TASK_INITIATION_MAX_ATTEMPTS);
+}
+
+function resolveTaskInitiationRetryDelayMs(env: Env = process.env): number {
+  return resolvePositiveIntegerEnv(
+    env,
+    'PW_E2E_MANAGE_TASKS_TASK_INITIATION_RETRY_DELAY_MS',
+    DEFAULT_TASK_INITIATION_RETRY_DELAY_MS
+  );
+}
+
 function resolveHmctsEnvironment(env: Env = process.env): string {
   const configured = firstNonEmpty(env.PW_E2E_MANAGE_TASKS_ENV, env.TEST_ENV, env.ENVIRONMENT, env.HMCTS_ENV);
   if (configured) {
@@ -258,51 +315,24 @@ function resolveTaskManagementApiUrl(env: Env = process.env): string | undefined
   );
 }
 
-function resolveConfiguredAdminBearerToken(env: Env = process.env): string | undefined {
-  return firstNonEmpty(
-    env.PW_E2E_MANAGE_TASKS_ROLE_ASSIGNMENT_BEARER_TOKEN,
-    env.ORG_USER_ASSIGNMENT_BEARER_TOKEN,
-    env.CREATE_USER_BEARER_TOKEN
-  );
-}
-
-function resolveAssignmentUsername(env: Env = process.env): string | undefined {
-  return firstNonEmpty(
-    env.ORG_USER_ASSIGNMENT_USERNAME,
-    env.SOLICITOR_USERNAME,
-    env.PRL_SOLICITOR_USERNAME,
-    env.WA_SOLICITOR_USERNAME,
-    env.NOC_SOLICITOR_USERNAME
-  );
-}
-
-function resolveAssignmentPassword(env: Env = process.env): string | undefined {
-  return firstNonEmpty(
-    env.ORG_USER_ASSIGNMENT_PASSWORD,
-    env.SOLICITOR_PASSWORD,
-    env.PRL_SOLICITOR_PASSWORD,
-    env.WA_SOLICITOR_PASSWORD,
-    env.NOC_SOLICITOR_PASSWORD
-  );
-}
-
-function canHydrateAdminBearerToken(env: Env = process.env): boolean {
-  return Boolean(resolveAssignmentUsername(env) && resolveAssignmentPassword(env) && resolveClientSecret(env));
+function resolveCamundaApiUrl(env: Env = process.env): string | undefined {
+  const configured = firstNonEmpty(env.CAMUNDA_URL, env.SERVICES_CAMUNDA_URL, env.WA_CAMUNDA_API_URL, env.CAMUNDA_API_URL);
+  if (configured) {
+    return normalizeCamundaApiUrl(configured);
+  }
+  return normalizeCamundaApiUrl(buildInternalServiceUrl('camunda-api', env));
 }
 
 export function resolveWaTaskProvisioningReadiness(
   env: Env = process.env,
-  options: { requireBearerToken?: boolean } = {}
+  _options: { requireBearerToken?: boolean } = {}
 ): WaTaskProvisioningReadiness {
-  const requireBearerToken = options.requireBearerToken ?? true;
   const mode = resolveProvisioningMode(env);
   const missing = [
     resolveWorkflowApiUrl(env) ? undefined : 'SERVICES_WA_WORKFLOW_API_URL',
     resolveTaskManagementApiUrl(env) ? undefined : 'SERVICES_WORK_ALLOCATION_TASK_API',
+    resolveCamundaApiUrl(env) ? undefined : 'CAMUNDA_URL',
     resolveRoleAssignmentApiUrl(env) ? undefined : 'SERVICES_ROLE_ASSIGNMENT_API',
-    !requireBearerToken || resolveConfiguredAdminBearerToken(env) || canHydrateAdminBearerToken(env)
-      ? undefined
-      : ADMIN_TOKEN_PREREQUISITE,
   ].filter((value): value is string => Boolean(value));
 
   if (!shouldProvision(mode)) {
@@ -366,60 +396,6 @@ function resolveScope(env: Env = process.env): string {
   );
 }
 
-function resolveAssignmentScopesToTry(env: Env = process.env): string[] {
-  return uniqueScopes([
-    firstNonEmpty(env.ORG_USER_ASSIGNMENT_OAUTH2_SCOPE),
-    DEFAULT_ASSIGNMENT_SCOPE,
-    firstNonEmpty(env.IDAM_OAUTH2_SCOPE),
-    firstNonEmpty(env.CREATE_USER_SCOPE),
-    DEFAULT_PASSWORD_GRANT_SCOPE,
-    'profile roles',
-  ]);
-}
-
-async function resolveAdminBearerToken(deps: TokenDeps = {}): Promise<string | undefined> {
-  const env = deps.env ?? process.env;
-  const configured = resolveConfiguredAdminBearerToken(env);
-  if (configured) {
-    return stripBearerPrefix(configured);
-  }
-
-  const idamUtils = deps.idamUtils ?? new IdamUtils();
-  const generated = await tryGenerateAssignmentBearerTokenFromCredentialsFlow(
-    {
-      configuredAssignmentUsername: env.ORG_USER_ASSIGNMENT_USERNAME?.trim(),
-      configuredAssignmentPassword: env.ORG_USER_ASSIGNMENT_PASSWORD,
-      fallbackUsername: firstNonEmpty(
-        env.SOLICITOR_USERNAME,
-        env.PRL_SOLICITOR_USERNAME,
-        env.WA_SOLICITOR_USERNAME,
-        env.NOC_SOLICITOR_USERNAME
-      ),
-      fallbackPassword: firstNonEmpty(
-        env.SOLICITOR_PASSWORD,
-        env.PRL_SOLICITOR_PASSWORD,
-        env.WA_SOLICITOR_PASSWORD,
-        env.NOC_SOLICITOR_PASSWORD
-      ),
-      clientId: resolveClientId(env),
-      clientSecret: resolveClientSecret(env),
-      redirectUri: resolveRedirectUri(env),
-      scopesToTry: resolveAssignmentScopesToTry(env),
-    },
-    {
-      generateIdamToken: (params) => idamUtils.generateIdamToken(params),
-      isInvalidScopeError,
-      warn: () => undefined,
-    }
-  );
-  if (generated) {
-    env.ORG_USER_ASSIGNMENT_BEARER_TOKEN = generated;
-    return stripBearerPrefix(generated);
-  }
-
-  return undefined;
-}
-
 async function resolveServiceToken(deps: TokenDeps = {}): Promise<string | undefined> {
   const env = deps.env ?? process.env;
   const fromEnv = firstNonEmpty(env.S2S_TOKEN);
@@ -430,7 +406,27 @@ async function resolveServiceToken(deps: TokenDeps = {}): Promise<string | undef
   const serviceAuthUtils = deps.serviceAuthUtils ?? new ServiceAuthUtils();
   const microservice = firstNonEmpty(env.S2S_MICROSERVICE_NAME, env.MICROSERVICE) ?? DEFAULT_SERVICE_AUTH_MICROSERVICE;
   const token = await serviceAuthUtils.retrieveToken({ microservice });
-  return stripBearerPrefix(token);
+  return token ? stripBearerPrefix(token) : undefined;
+}
+
+function resolveRoleAssignmentS2sMicroservice(env: Env = process.env): string {
+  return (
+    firstNonEmpty(env.PW_E2E_MANAGE_TASKS_ROLE_ASSIGNMENT_S2S_MICROSERVICE, env.WA_ROLE_ASSIGNMENT_S2S_MICROSERVICE) ??
+    DEFAULT_ROLE_ASSIGNMENT_SERVICE_AUTH_MICROSERVICE
+  );
+}
+
+async function resolveRoleAssignmentServiceToken(deps: TokenDeps = {}): Promise<string | undefined> {
+  const env = deps.env ?? process.env;
+  const fromEnv = firstNonEmpty(env.PW_E2E_MANAGE_TASKS_ROLE_ASSIGNMENT_S2S_TOKEN, env.WA_ROLE_ASSIGNMENT_S2S_TOKEN);
+  if (fromEnv) {
+    return stripBearerPrefix(fromEnv);
+  }
+
+  const serviceAuthUtils = deps.serviceAuthUtils ?? new ServiceAuthUtils();
+  const microservice = resolveRoleAssignmentS2sMicroservice(env);
+  const token = await serviceAuthUtils.retrieveToken({ microservice });
+  return token ? stripBearerPrefix(token) : undefined;
 }
 
 function resolveTaskInitiationS2sMicroservice(env: Env = process.env): string {
@@ -450,7 +446,7 @@ async function resolveTaskInitiationServiceToken(deps: TokenDeps = {}): Promise<
   const serviceAuthUtils = deps.serviceAuthUtils ?? new ServiceAuthUtils();
   const microservice = resolveTaskInitiationS2sMicroservice(env);
   const token = await serviceAuthUtils.retrieveToken({ microservice });
-  return stripBearerPrefix(token);
+  return token ? stripBearerPrefix(token) : undefined;
 }
 
 async function resolveUserBearerToken(
@@ -514,8 +510,11 @@ function extractConfiguredTaskTypes(payload: unknown): WaConfiguredTaskType[] {
   return candidates
     .filter((candidate): candidate is Record<string, unknown> => Boolean(candidate && typeof candidate === 'object'))
     .map((candidate) => {
-      const taskType = readString(candidate, 'task_type_id', 'taskTypeId', 'taskType', 'id');
-      const taskName = readString(candidate, 'task_type_name', 'taskTypeName', 'taskName', 'name') ?? taskType;
+      const nestedTaskType = candidate.task_type;
+      const source =
+        nestedTaskType && typeof nestedTaskType === 'object' ? (nestedTaskType as Record<string, unknown>) : candidate;
+      const taskType = readString(source, 'task_type_id', 'taskTypeId', 'taskType', 'id');
+      const taskName = readString(source, 'task_type_name', 'taskTypeName', 'taskName', 'name') ?? taskType;
       return taskType && taskName ? { taskType, taskName } : undefined;
     })
     .filter((candidate): candidate is WaConfiguredTaskType => Boolean(candidate));
@@ -583,57 +582,71 @@ async function resolveConfiguredTaskType(params: {
   return selected;
 }
 
-function processVariable(value: string | boolean) {
-  return { value };
+function processVariable(value: string | boolean | number) {
+  if (typeof value === 'boolean') {
+    return { value, type: 'Boolean' };
+  }
+  if (typeof value === 'number') {
+    return { value, type: 'Integer' };
+  }
+  return { value, type: 'String' };
 }
 
 export function buildWaCreateTaskMessage({
-  taskId,
+  idempotencyKey,
+  roleAssignmentId,
   caseNumber,
   jurisdiction,
   caseType,
   taskName,
   taskType,
   dueDate,
-}: WaTaskVariablesInput) {
+  delayUntil,
+}: WaWorkflowTaskMessageInput) {
+  const processVariables: Record<string, ReturnType<typeof processVariable>> = {
+    jurisdiction: processVariable(jurisdiction),
+    caseTypeId: processVariable(caseType),
+    caseType: processVariable(caseType),
+    region: processVariable(DEFAULT_REGION_ID),
+    location: processVariable(DEFAULT_LOCATION_ID),
+    locationName: processVariable(DEFAULT_LOCATION_NAME),
+    staffLocation: processVariable(DEFAULT_LOCATION_NAME),
+    securityClassification: processVariable(DEFAULT_SECURITY_CLASSIFICATION),
+    name: processVariable(taskName),
+    taskId: processVariable(taskType),
+    taskType: processVariable(taskType),
+    taskCategory: processVariable(DEFAULT_TASK_CATEGORY),
+    taskState: processVariable('unconfigured'),
+    roleCategory: processVariable(DEFAULT_ROLE_CATEGORY),
+    workType: processVariable(DEFAULT_WORK_TYPE),
+    caseId: processVariable(caseNumber),
+    idempotencyKey: processVariable(idempotencyKey),
+    dueDate: processVariable(dueDate),
+    delayUntil: processVariable(delayUntil),
+    workingDaysAllowed: processVariable(2),
+    hasWarnings: processVariable(false),
+    warningList: processVariable(''),
+    caseManagementCategory: processVariable(DEFAULT_CASE_MANAGEMENT_CATEGORY),
+    description: processVariable(`Dynamic Manage Tasks E2E task for EXUI automated case ${caseNumber}`),
+    'task-supervisor': processVariable('Read,Refer,Manage,Cancel'),
+    'tribunal-caseworker': processVariable('Read,Refer,Own,Manage,Cancel'),
+    'senior-tribunal-caseworker': processVariable('Read,Refer,Own,Manage,Cancel'),
+  };
+  if (roleAssignmentId) {
+    processVariables.roleAssignmentId = processVariable(roleAssignmentId);
+  }
+
   return {
     messageName: 'createTaskMessage',
-    processVariables: {
-      caseId: processVariable(caseNumber),
-      jurisdiction: processVariable(jurisdiction),
-      caseTypeId: processVariable(caseType),
-      caseType: processVariable(caseType),
-      region: processVariable(DEFAULT_REGION_ID),
-      location: processVariable(DEFAULT_LOCATION_ID),
-      locationName: processVariable(DEFAULT_LOCATION_NAME),
-      staffLocation: processVariable(DEFAULT_LOCATION_NAME),
-      securityClassification: processVariable(DEFAULT_SECURITY_CLASSIFICATION),
-      name: processVariable(taskName),
-      taskId: processVariable(taskId),
-      taskType: processVariable(taskType),
-      taskCategory: processVariable(DEFAULT_TASK_CATEGORY),
-      taskState: processVariable('unconfigured'),
-      roleCategory: processVariable(DEFAULT_ROLE_CATEGORY),
-      dueDate: processVariable(dueDate),
-      delayUntil: processVariable(''),
-      workingDaysAllowed: processVariable('2'),
-      hasWarnings: processVariable(false),
-      warningList: processVariable(''),
-      caseManagementCategory: processVariable(DEFAULT_CASE_MANAGEMENT_CATEGORY),
-      description: processVariable(`Dynamic Manage Tasks E2E task for case ${caseNumber}`),
-      'task-supervisor': processVariable('Read,Refer,Manage,Cancel'),
-      'tribunal-caseworker': processVariable('Read,Refer,Own,Manage,Cancel'),
-      'senior-tribunal-caseworker': processVariable('Read,Refer,Own,Manage,Cancel'),
-    },
-    caseId: caseNumber,
+    processVariables,
+    correlationKeys: null,
+    all: false,
   };
 }
 
 export function buildWaRoleAssignmentRequest({
   actorId,
-  caseNumber,
   jurisdiction,
-  caseType,
   roleNames = DEFAULT_ROLE_NAMES,
   beginTime,
   reference,
@@ -643,7 +656,7 @@ export function buildWaRoleAssignmentRequest({
       assignerId: actorId,
       process: ROLE_ASSIGNMENT_PROCESS,
       reference,
-      replaceExisting: true,
+      replaceExisting: false,
     },
     requestedRoles: roleNames.map((roleName) => ({
       actorId,
@@ -657,10 +670,10 @@ export function buildWaRoleAssignmentRequest({
       beginTime,
       attributes: {
         jurisdiction,
-        caseType,
         region: DEFAULT_REGION_ID,
         primaryLocation: DEFAULT_LOCATION_ID,
         baseLocation: DEFAULT_LOCATION_ID,
+        workTypes: DEFAULT_WORK_TYPE,
       },
       authorisations: [],
     })),
@@ -668,6 +681,7 @@ export function buildWaRoleAssignmentRequest({
 }
 
 export function buildWaTaskInitiationRequest({
+  taskId,
   caseNumber,
   jurisdiction,
   caseType,
@@ -681,29 +695,27 @@ export function buildWaTaskInitiationRequest({
     task_attributes: {
       taskType,
       name: taskName,
+      taskId,
       caseId: caseNumber,
-      caseName: `EXUI automated Manage Tasks case ${caseNumber}`,
       caseTypeId: caseType,
+      caseName: `EXUI automated Manage Tasks case ${caseNumber}`,
+      caseCategory: DEFAULT_CASE_MANAGEMENT_CATEGORY,
       jurisdiction,
       region: DEFAULT_REGION_ID,
       location: DEFAULT_LOCATION_ID,
       locationName: DEFAULT_LOCATION_NAME,
-      staffLocation: DEFAULT_LOCATION_NAME,
       securityClassification: DEFAULT_SECURITY_CLASSIFICATION,
+      title: taskName,
+      description: `Dynamic Manage Tasks E2E task for EXUI automated case ${caseNumber}`,
+      roleCategory: DEFAULT_ROLE_CATEGORY,
+      workType: DEFAULT_WORK_TYPE,
+      executionType: DEFAULT_EXECUTION_TYPE,
+      caseManagementCategory: DEFAULT_CASE_MANAGEMENT_CATEGORY,
+      taskCategory: DEFAULT_TASK_CATEGORY,
       created,
       dueDate,
       hasWarnings: false,
       warningList: { values: [] },
-      caseCategory: DEFAULT_CASE_MANAGEMENT_CATEGORY,
-      caseManagementCategory: DEFAULT_CASE_MANAGEMENT_CATEGORY,
-      taskCategory: DEFAULT_TASK_CATEGORY,
-      taskState: 'unconfigured',
-      roleCategory: DEFAULT_ROLE_CATEGORY,
-      workType: 'hearing_work',
-      description: `Dynamic Manage Tasks E2E task for case ${caseNumber}`,
-      'task-supervisor': 'Read,Refer,Manage,Cancel',
-      'tribunal-caseworker': 'Read,Refer,Own,Manage,Cancel',
-      'senior-tribunal-caseworker': 'Read,Refer,Own,Manage,Cancel',
       __processCategory__Protection: true,
     },
   };
@@ -762,6 +774,14 @@ async function readPayload(response: { json: () => Promise<unknown>; text: () =>
   }
 }
 
+function isWaDatabaseConflict(status: number, payload: unknown): boolean {
+  if (status !== 503 || !payload || typeof payload !== 'object') {
+    return false;
+  }
+  const record = payload as Record<string, unknown>;
+  return record.type === 'https://github.com/hmcts/wa-task-management-api/problem/database-conflict';
+}
+
 async function postRoleAssignments(params: {
   context: APIRequestContext;
   actorId: string;
@@ -775,7 +795,6 @@ async function postRoleAssignments(params: {
     data: buildWaRoleAssignmentRequest({
       actorId: params.actorId,
       jurisdiction: params.jurisdiction,
-      caseType: params.caseType,
       beginTime: params.beginTime,
       reference,
     }),
@@ -878,6 +897,98 @@ async function waitForRoleAssignmentsVisible(params: {
   );
 }
 
+function extractCamundaTasks(payload: unknown): Array<Record<string, unknown>> {
+  if (Array.isArray(payload)) {
+    return payload.filter((task): task is Record<string, unknown> => Boolean(task && typeof task === 'object'));
+  }
+  if (!payload || typeof payload !== 'object') {
+    return [];
+  }
+  const record = payload as Record<string, unknown>;
+  const embeddedTasks = record.tasks ?? record.data ?? record.results;
+  return Array.isArray(embeddedTasks)
+    ? embeddedTasks.filter((task): task is Record<string, unknown> => Boolean(task && typeof task === 'object'))
+    : [];
+}
+
+function summarizeCamundaTask(task: Record<string, unknown>): Record<string, unknown> {
+  return {
+    id: task.id,
+    name: task.name,
+    taskDefinitionKey: task.taskDefinitionKey,
+    processInstanceId: task.processInstanceId,
+  };
+}
+
+async function waitForCamundaTaskVisible(params: {
+  context: APIRequestContext;
+  caseNumber: string;
+  taskName: string;
+  taskType: string;
+  env: Env;
+  testInfo: TestInfo;
+}): Promise<WaCamundaTaskVisibilityAttempt> {
+  const timeoutMs = resolveCamundaTaskReadyTimeoutMs(params.env);
+  const pollIntervalMs = resolveCamundaTaskReadyPollIntervalMs(params.env);
+  const startedAt = Date.now();
+  const deadline = startedAt + timeoutMs;
+  const attempts: WaCamundaTaskVisibilityAttempt[] = [];
+  let lastAttempt: WaCamundaTaskVisibilityAttempt | undefined;
+  const filter = `task?processVariables=caseId_eq_${encodeURIComponent(params.caseNumber)}`;
+
+  for (let attempt = 1; Date.now() < deadline; attempt += 1) {
+    const response = await params.context.get(filter, {
+      failOnStatusCode: false,
+    });
+    const status = response.status();
+    const payload = await readPayload(response);
+    const tasks = extractCamundaTasks(payload);
+    const matchingTasks = tasks.filter((task) => {
+      const name = readString(task, 'name');
+      const taskDefinitionKey = readString(task, 'taskDefinitionKey', 'task_type', 'taskType');
+      return name === params.taskName || taskDefinitionKey === params.taskType;
+    });
+    const matchingTaskIds = matchingTasks.map((task) => readString(task, 'id')).filter((id): id is string => Boolean(id));
+    const selectedTaskId = matchingTaskIds.length === 1 ? matchingTaskIds[0] : undefined;
+    lastAttempt = {
+      attempt,
+      elapsedMs: Date.now() - startedAt,
+      status,
+      taskCount: tasks.length,
+      matchingTaskIds,
+      selectedTaskId,
+      ok: status >= 200 && status < 300 && Boolean(selectedTaskId),
+      responsePreview: {
+        tasks: tasks.slice(0, 10).map(summarizeCamundaTask),
+      },
+    };
+    attempts.push(lastAttempt);
+
+    if (lastAttempt.ok) {
+      await params.testInfo.attach('manage-tasks-wa-camunda-task-readiness.json', {
+        body: JSON.stringify({ caseNumber: params.caseNumber, attempts, selectedAttempt: lastAttempt }, null, 2),
+        contentType: 'application/json',
+      });
+      return lastAttempt;
+    }
+
+    const remainingMs = deadline - Date.now();
+    await new Promise((resolve) => setTimeout(resolve, Math.min(pollIntervalMs, Math.max(0, remainingMs))));
+  }
+
+  await params.testInfo.attach('manage-tasks-wa-camunda-task-readiness.json', {
+    body: JSON.stringify({ caseNumber: params.caseNumber, attempts, selectedAttempt: lastAttempt }, null, 2),
+    contentType: 'application/json',
+  });
+
+  throw new Error(
+    `WA workflow created no unique Camunda task for case ${params.caseNumber} within ${timeoutMs}ms. ` +
+      `Expected task '${params.taskName}' (${params.taskType}). ` +
+      `Last Camunda status: ${lastAttempt?.status ?? 'none'}, tasks: ${lastAttempt?.taskCount ?? 0}, ` +
+      `matching ids: ${lastAttempt?.matchingTaskIds.join(', ') || 'none'}.`
+  );
+}
+
 async function deleteRoleAssignments(
   context: APIRequestContext,
   roleAssignmentIds: readonly string[],
@@ -922,23 +1033,27 @@ async function attachRoleAssignmentCleanup(testInfo: TestInfo, cleanup: readonly
 
 async function postWorkflowMessage(params: {
   context: APIRequestContext;
-  taskId: string;
+  idempotencyKey: string;
+  roleAssignmentId?: string;
   caseNumber: string;
   jurisdiction: string;
   caseType: string;
   taskName: string;
   taskType: string;
   dueDate: string;
+  delayUntil: string;
 }) {
   const response = await params.context.post('/workflow/message', {
     data: buildWaCreateTaskMessage({
-      taskId: params.taskId,
+      idempotencyKey: params.idempotencyKey,
+      roleAssignmentId: params.roleAssignmentId,
       caseNumber: params.caseNumber,
       jurisdiction: params.jurisdiction,
       caseType: params.caseType,
       taskName: params.taskName,
       taskType: params.taskType,
       dueDate: params.dueDate,
+      delayUntil: params.delayUntil,
     }),
     failOnStatusCode: false,
   });
@@ -952,6 +1067,7 @@ async function postWorkflowMessage(params: {
 
 async function postTaskInitiation(params: {
   context: APIRequestContext;
+  env: Env;
   taskId: string;
   caseNumber: string;
   jurisdiction: string;
@@ -959,25 +1075,64 @@ async function postTaskInitiation(params: {
   taskName: string;
   taskType: string;
   dueDate: string;
+  testInfo: TestInfo;
 }) {
-  const response = await params.context.post(`/task/${encodeURIComponent(params.taskId)}/initiation`, {
-    data: buildWaTaskInitiationRequest({
-      taskId: params.taskId,
-      caseNumber: params.caseNumber,
-      jurisdiction: params.jurisdiction,
-      caseType: params.caseType,
-      taskName: params.taskName,
-      taskType: params.taskType,
-      dueDate: params.dueDate,
-    }),
-    failOnStatusCode: false,
+  const requestPayload = buildWaTaskInitiationRequest({
+    taskId: params.taskId,
+    caseNumber: params.caseNumber,
+    jurisdiction: params.jurisdiction,
+    caseType: params.caseType,
+    taskName: params.taskName,
+    taskType: params.taskType,
+    dueDate: params.dueDate,
   });
-  const payload = await readPayload(response);
-  const status = response.status();
-  if (status < 200 || status >= 300) {
+  const maxAttempts = resolveTaskInitiationMaxAttempts(params.env);
+  const retryDelayMs = resolveTaskInitiationRetryDelayMs(params.env);
+  const attempts: Array<{ attempt: number; status: number; retryable: boolean; response: unknown }> = [];
+
+  for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+    const response = await params.context.post(`/task/${encodeURIComponent(params.taskId)}/initiation`, {
+      data: requestPayload,
+      failOnStatusCode: false,
+    });
+    const payload = await readPayload(response);
+    const status = response.status();
+    const retryable = isWaDatabaseConflict(status, payload) && attempt < maxAttempts;
+    attempts.push({ attempt, status, retryable, response: payload });
+
+    if (status >= 200 && status < 300) {
+      if (attempts.length > 1) {
+        await params.testInfo.attach('manage-tasks-wa-task-initiation-attempts.json', {
+          body: JSON.stringify({ taskId: params.taskId, attempts }, null, 2),
+          contentType: 'application/json',
+        });
+      }
+      return status;
+    }
+
+    if (retryable) {
+      await new Promise((resolve) => setTimeout(resolve, retryDelayMs));
+      continue;
+    }
+
+    await params.testInfo.attach('manage-tasks-wa-task-initiation-failure.json', {
+      body: JSON.stringify(
+        {
+          taskId: params.taskId,
+          status,
+          request: requestPayload,
+          response: payload,
+          attempts,
+        },
+        null,
+        2
+      ),
+      contentType: 'application/json',
+    });
     throw new Error(`WA task initiation failed with HTTP ${status}: ${summarizeErrorPayload(payload)}`);
   }
-  return status;
+
+  throw new Error(`WA task initiation did not complete after ${maxAttempts} attempts for task ${params.taskId}.`);
 }
 
 export async function provisionWaTaskForManageTasksCase({
@@ -1007,6 +1162,7 @@ export async function provisionWaTaskForManageTasksCaseWithDeps(
   const mode = resolveProvisioningMode(env);
   const workflowApiUrl = resolveWorkflowApiUrl(env);
   const taskManagementApiUrl = resolveTaskManagementApiUrl(env);
+  const camundaApiUrl = resolveCamundaApiUrl(env);
   const roleAssignmentApiUrl = resolveRoleAssignmentApiUrl(env);
   const readiness = resolveWaTaskProvisioningReadiness(env);
 
@@ -1014,7 +1170,9 @@ export async function provisionWaTaskForManageTasksCaseWithDeps(
     mode,
     workflowApiUrl,
     taskManagementApiUrl,
+    camundaApiUrl,
     roleAssignmentApiUrl,
+    roleAssignmentS2sMicroservice: resolveRoleAssignmentS2sMicroservice(env),
     taskInitiationS2sMicroservice: resolveTaskInitiationS2sMicroservice(env),
     missing: readiness.missing,
   };
@@ -1062,6 +1220,15 @@ export async function provisionWaTaskForManageTasksCaseWithDeps(
     throw new Error('WA task provisioning requires an S2S token. Set S2S_TOKEN or S2S service auth configuration.');
   }
 
+  const roleAssignmentServiceToken = await resolveRoleAssignmentServiceToken(deps);
+  if (!roleAssignmentServiceToken) {
+    throw new Error(
+      'WA role assignment provisioning requires a WA role-assignment S2S token. Set ' +
+        'PW_E2E_MANAGE_TASKS_ROLE_ASSIGNMENT_S2S_TOKEN or configure S2S for ' +
+        `${resolveRoleAssignmentS2sMicroservice(env)}.`
+    );
+  }
+
   const taskInitiationServiceToken = await resolveTaskInitiationServiceToken(deps);
   if (!taskInitiationServiceToken) {
     throw new Error(
@@ -1077,17 +1244,13 @@ export async function provisionWaTaskForManageTasksCaseWithDeps(
     );
   }
 
-  const adminBearerToken = await resolveAdminBearerToken(deps);
-  if (!adminBearerToken) {
-    throw new Error(`WA task provisioning requires a role-assignment admin bearer token. Configure ${ADMIN_TOKEN_PREREQUISITE}.`);
-  }
-
   const newContext = deps.newContext ?? request.newContext.bind(request);
   const now = deps.now?.() ?? new Date();
-  const taskId = deps.uuid?.() ?? randomUUID();
+  const workflowIdempotencyKey = deps.uuid?.() ?? randomUUID();
   let roleContext: APIRequestContext | undefined;
   let workflowContext: APIRequestContext | undefined;
   let taskManagementContext: APIRequestContext | undefined;
+  let camundaContext: APIRequestContext | undefined;
   let taskTypeContext: APIRequestContext | undefined;
   let createdRoleAssignmentIds: string[] = [];
   let createdRoleAssignmentReference: string | undefined;
@@ -1097,8 +1260,8 @@ export async function provisionWaTaskForManageTasksCaseWithDeps(
     roleContext = await newContext({
       baseURL: stripTrailingSlash(roleAssignmentApiUrl as string),
       extraHTTPHeaders: {
-        Authorization: withBearerPrefix(adminBearerToken),
-        ServiceAuthorization: withBearerPrefix(serviceToken),
+        Authorization: withBearerPrefix(userBearerToken),
+        ServiceAuthorization: withBearerPrefix(roleAssignmentServiceToken),
         'Content-Type': 'application/json',
       },
     });
@@ -1117,6 +1280,14 @@ export async function provisionWaTaskForManageTasksCaseWithDeps(
         Accept: 'application/json',
         Authorization: withBearerPrefix(userBearerToken),
         ServiceAuthorization: withBearerPrefix(serviceToken),
+        'Content-Type': 'application/json',
+      },
+    });
+    camundaContext = await newContext({
+      baseURL: ensureTrailingSlash(camundaApiUrl as string),
+      extraHTTPHeaders: {
+        Accept: 'application/json',
+        ServiceAuthorization: withBearerPrefix(taskInitiationServiceToken),
         'Content-Type': 'application/json',
       },
     });
@@ -1147,6 +1318,7 @@ export async function provisionWaTaskForManageTasksCaseWithDeps(
       testInfo,
     });
     const dueDate = formatCamundaDateTime(addDays(now, 2));
+    const delayUntil = formatCamundaDateTime(now);
     const taskTypeSelection = await resolveConfiguredTaskType({
       context: taskTypeContext,
       env,
@@ -1155,16 +1327,28 @@ export async function provisionWaTaskForManageTasksCaseWithDeps(
     });
     const workflowStatus = await postWorkflowMessage({
       context: workflowContext,
-      taskId,
+      idempotencyKey: workflowIdempotencyKey,
+      roleAssignmentId: createdRoleAssignmentIds[0],
       caseNumber,
       jurisdiction,
       caseType,
       taskName: taskTypeSelection.taskName,
       taskType: taskTypeSelection.taskType,
       dueDate,
+      delayUntil,
     });
+    const camundaTaskVisibility = await waitForCamundaTaskVisible({
+      context: camundaContext,
+      caseNumber,
+      taskName: taskTypeSelection.taskName,
+      taskType: taskTypeSelection.taskType,
+      env,
+      testInfo,
+    });
+    const taskId = camundaTaskVisibility.selectedTaskId as string;
     const taskInitiationStatus = await postTaskInitiation({
       context: taskManagementContext,
+      env,
       taskId,
       caseNumber,
       jurisdiction,
@@ -1172,11 +1356,13 @@ export async function provisionWaTaskForManageTasksCaseWithDeps(
       taskName: taskTypeSelection.taskName,
       taskType: taskTypeSelection.taskType,
       dueDate,
+      testInfo,
     });
 
     const result = {
       attempted: true,
       taskId,
+      workflowIdempotencyKey,
       roleAssignmentIds: createdRoleAssignmentIds,
       roleAssignmentReference: createdRoleAssignmentReference,
       diagnostics: {
@@ -1186,6 +1372,7 @@ export async function provisionWaTaskForManageTasksCaseWithDeps(
         roleAssignmentStatus: roleAssignment.status,
         roleAssignmentVisibilityStatus: roleAssignmentVisibility.status,
         workflowStatus,
+        camundaTaskVisibilityStatus: camundaTaskVisibility.status,
         taskInitiationStatus,
       },
     };
@@ -1213,6 +1400,7 @@ export async function provisionWaTaskForManageTasksCaseWithDeps(
     await roleContext?.dispose();
     await workflowContext?.dispose();
     await taskManagementContext?.dispose();
+    await camundaContext?.dispose();
     await taskTypeContext?.dispose();
   }
 }
@@ -1220,10 +1408,12 @@ export async function provisionWaTaskForManageTasksCaseWithDeps(
 export async function cleanupWaTaskRoleAssignmentsForManageTasksCase({
   roleAssignmentIds,
   roleAssignmentReference,
+  user,
   testInfo,
 }: {
   roleAssignmentIds: readonly string[];
   roleAssignmentReference?: string;
+  user: Pick<ProfessionalUserInfo, 'id' | 'email' | 'password'>;
   testInfo: TestInfo;
 }): Promise<WaRoleAssignmentCleanupResult[]> {
   if (roleAssignmentIds.length === 0 && !roleAssignmentReference?.trim()) {
@@ -1240,25 +1430,33 @@ export async function cleanupWaTaskRoleAssignmentsForManageTasksCase({
 
   const env = process.env;
   const roleAssignmentApiUrl = resolveRoleAssignmentApiUrl(env);
-  const adminBearerToken = await resolveAdminBearerToken({ env });
-  const missing = [
-    roleAssignmentApiUrl ? undefined : 'SERVICES_ROLE_ASSIGNMENT_API',
-    adminBearerToken ? undefined : ADMIN_TOKEN_PREREQUISITE,
-  ].filter((value): value is string => Boolean(value));
+  const missing = [roleAssignmentApiUrl ? undefined : 'SERVICES_ROLE_ASSIGNMENT_API'].filter((value): value is string =>
+    Boolean(value)
+  );
   if (missing.length > 0) {
     throw new Error(`WA role assignment cleanup prerequisites missing: ${missing.join(', ')}.`);
   }
 
-  const serviceToken = await resolveServiceToken();
-  if (!serviceToken) {
-    throw new Error('WA role assignment cleanup requires an S2S token. Set S2S_TOKEN or S2S service auth configuration.');
+  const roleAssignmentServiceToken = await resolveRoleAssignmentServiceToken();
+  if (!roleAssignmentServiceToken) {
+    throw new Error(
+      'WA role assignment cleanup requires a WA role-assignment S2S token. Set ' +
+        `PW_E2E_MANAGE_TASKS_ROLE_ASSIGNMENT_S2S_TOKEN or configure S2S for ${resolveRoleAssignmentS2sMicroservice()}.`
+    );
+  }
+
+  const userBearerToken = await resolveUserBearerToken(user);
+  if (!userBearerToken) {
+    throw new Error(
+      'WA role assignment cleanup requires a password-grant token for the dynamic user. Set IDAM_SECRET or PW_E2E_MANAGE_TASKS_IDAM_SECRET.'
+    );
   }
 
   const roleContext = await request.newContext({
     baseURL: stripTrailingSlash(roleAssignmentApiUrl as string),
     extraHTTPHeaders: {
-      Authorization: withBearerPrefix(stripBearerPrefix(adminBearerToken as string)),
-      ServiceAuthorization: withBearerPrefix(serviceToken),
+      Authorization: withBearerPrefix(userBearerToken),
+      ServiceAuthorization: withBearerPrefix(roleAssignmentServiceToken),
       'Content-Type': 'application/json',
     },
   });
@@ -1285,6 +1483,7 @@ export const __test__ = {
   buildRoleAssignmentReference,
   deleteRoleAssignments,
   extractConfiguredTaskTypes,
+  extractCamundaTasks,
   extractRoleAssignmentIds,
   extractRoleAssignments,
   requiresProvisioning,
@@ -1294,11 +1493,16 @@ export const __test__ = {
   resolveProvisioningMode,
   resolveRoleAssignmentReadyPollIntervalMs,
   resolveRoleAssignmentReadyTimeoutMs,
+  resolveCamundaApiUrl,
+  resolveCamundaTaskReadyPollIntervalMs,
+  resolveCamundaTaskReadyTimeoutMs,
+  resolveRoleAssignmentS2sMicroservice,
   resolveWorkflowApiUrl,
   resolveRoleAssignmentApiUrl,
   resolveTaskManagementApiUrl,
   resolveTaskInitiationS2sMicroservice,
   resolveWaTaskProvisioningReadiness,
+  waitForCamundaTaskVisible,
   waitForRoleAssignmentsVisible,
   shouldProvision,
 };

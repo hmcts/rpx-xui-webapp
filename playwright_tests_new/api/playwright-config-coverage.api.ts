@@ -8,7 +8,6 @@ import {
   type EnvMap,
   type TestableConfigModule,
 } from './utils/playwrightConfigUtils';
-import * as playwrightConfigUtils from '../../playwright-config-utils';
 
 const require = createRequire(import.meta.url);
 const integrationConfigSupport = require('../../playwright.integration.config.support.cjs') as {
@@ -22,7 +21,6 @@ const smokeRunner = require('../../scripts/run-playwright-smoke.cjs') as {
   buildSmokePlaywrightArgs: (env: EnvMap, extraArgs?: string[]) => string[];
 };
 
-const { resolveTagFilters } = playwrightConfigUtils;
 const {
   resolveOdhinConsoleCapture,
   resolveOdhinForceExitOnCompletion,
@@ -56,9 +54,11 @@ const resolveE2eTagFilters = (env: EnvMap) =>
   (
     configModule.__test__ as TestableConfigModule['__test__'] & { resolveE2eTagFilters: (env: EnvMap) => unknown }
   ).resolveE2eTagFilters(env) as {
+    includeTags: string[];
     excludedTags: string[];
     globalExcludedTags: string[];
     ignoredGlobalExcludedTags: string[];
+    availableTags: string[];
     grep?: RegExp;
     grepInvert?: RegExp;
   };
@@ -410,15 +410,8 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
   });
 
   test('shared tag filter helper keeps explicit excludes when @none is combined with E2E tags', () => {
-    const filters = resolveTagFilters({
-      env: {
-        E2E_PW_EXCLUDED_TAGS_OVERRIDE: '@none,@e2e-search-case',
-      },
-      includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
-      excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
-      configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
-      defaultConfigPath: 'playwright_tests_new/E2E/tag-filter.json',
-      suiteTag: '@e2e',
+    const filters = resolveE2eTagFilters({
+      E2E_PW_EXCLUDED_TAGS_OVERRIDE: '@none,@e2e-search-case',
     });
 
     expect(filters.excludedTags).toEqual(['@e2e-search-case']);
@@ -426,18 +419,13 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
     expect(filters.grepInvert?.test('@e2e-search-case')).toBe(true);
   });
 
-  test('E2E tag defaults include browser Work Allocation after dynamic setup migration', () => {
-    const filters = resolveTagFilters({
-      env: {},
-      includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
-      excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
-      configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
-      defaultConfigPath: 'playwright_tests_new/E2E/tag-filter.json',
-      suiteTag: '@e2e',
-    });
+  test('E2E tag defaults exclude the live Work Allocation browser lane', () => {
+    const filters = resolveE2eTagFilters({});
 
-    expect(filters.excludedTags).toEqual([]);
-    expect(filters.grepInvert).toBeUndefined();
+    expect(filters.excludedTags).toEqual(['@e2e-live-wa']);
+    expect(filters.grepInvert).toBeInstanceOf(RegExp);
+    expect(filters.grepInvert?.test('@e2e-live-wa')).toBe(true);
+    expect(filters.grepInvert?.test('@e2e-manage-tasks')).toBe(false);
     expect(filters.availableTags).toEqual(
       expect.arrayContaining([
         '@e2e-case-file-view',
@@ -446,6 +434,7 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
         '@e2e-data-loss',
         '@e2e-document-upload',
         '@e2e-document-upload-v1',
+        '@e2e-live-wa',
         '@e2e-manage-tasks',
         '@e2e-media-viewer',
         '@e2e-search-case',
@@ -455,15 +444,8 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
   });
 
   test('shared tag filter helper treats suite plus feature includes as feature-only selection', () => {
-    const filters = resolveTagFilters({
-      env: {
-        E2E_PW_INCLUDE_TAGS: '@e2e @e2e-search-case',
-      },
-      includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
-      excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
-      configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
-      defaultConfigPath: 'playwright_tests_new/E2E/tag-filter.json',
-      suiteTag: '@e2e',
+    const filters = resolveE2eTagFilters({
+      E2E_PW_INCLUDE_TAGS: '@e2e @e2e-search-case',
     });
 
     expect(filters.includeTags).toEqual(['@e2e-search-case']);
@@ -473,15 +455,8 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
   });
 
   test('shared tag filter helper selects the data-loss E2E feature tag', () => {
-    const filters = resolveTagFilters({
-      env: {
-        E2E_PW_INCLUDE_TAGS: '@e2e-data-loss',
-      },
-      includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
-      excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
-      configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
-      defaultConfigPath: 'playwright_tests_new/E2E/tag-filter.json',
-      suiteTag: '@e2e',
+    const filters = resolveE2eTagFilters({
+      E2E_PW_INCLUDE_TAGS: '@e2e-data-loss',
     });
 
     expect(filters.includeTags).toEqual(['@e2e-data-loss']);
@@ -492,34 +467,17 @@ test.describe('Playwright config coverage', { tag: '@svc-internal' }, () => {
 
   test('shared tag filter helper rejects suite-plus-feature includes that are fully excluded after normalization', () => {
     expect(() =>
-      resolveTagFilters({
-        env: {
-          E2E_PW_INCLUDE_TAGS: '@e2e @e2e-search-case',
-          E2E_PW_EXCLUDED_TAGS_OVERRIDE: '@none,@e2e-search-case',
-        },
-        includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
-        excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
-        configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
-        defaultConfigPath: 'playwright_tests_new/E2E/tag-filter.json',
-        suiteTag: '@e2e',
+      resolveE2eTagFilters({
+        E2E_PW_INCLUDE_TAGS: '@e2e @e2e-search-case',
+        E2E_PW_EXCLUDED_TAGS_OVERRIDE: '@none,@e2e-search-case',
       })
     ).toThrow(/leave no tagged functional tests/i);
   });
 
   test('shared tag filter helper applies only suite-scoped global exclusions', () => {
-    const filters = resolveTagFilters({
-      env: {
-        E2E_PW_EXCLUDED_TAGS_OVERRIDE: '@none',
-        PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@svc-work-allocation @e2e-search-case @integration-manage-tasks',
-      },
-      includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
-      excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
-      configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
-      defaultConfigPath: 'playwright_tests_new/E2E/tag-filter.json',
-      suiteTag: '@e2e',
-      globalExcludedTagsEnvVar: 'PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS',
-      ignoreGlobalExcludesEnvVar: 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES',
-      globalExcludedTagsPattern: /^@e2e(?:-.+)?$/,
+    const filters = resolveE2eTagFilters({
+      E2E_PW_EXCLUDED_TAGS_OVERRIDE: '@none',
+      PLAYWRIGHT_GLOBAL_EXCLUDED_TAGS: '@svc-work-allocation @e2e-search-case @integration-manage-tasks',
     });
 
     expect(filters.excludedTags).toEqual(['@e2e-search-case']);

@@ -2,11 +2,13 @@ import { createLogger } from '@hmcts/playwright-common';
 import { request, type TestInfo } from '@playwright/test';
 
 import { type SolicitorRoleContext } from '../professional-user/roleStrategy.js';
-import type { ProvisionedProfessionalUser } from '../professional-user/types.js';
+import type { ProfessionalUserInfo, ProvisionedProfessionalUser } from '../professional-user/types.js';
 import type { ProfessionalUserUtils } from '../professional-user.utils';
-import type { SessionIdentity } from '../../../common/sessionIdentity.js';
+import { type SessionIdentity } from '../../../common/sessionIdentity.js';
 import config from '../config.utils';
-import { ensureSessionCookies, sessionCapture } from '../../../common/sessionCapture';
+import { ensureSessionCookies } from '../../../common/sessionCapture';
+import { ensureUiStorageStateForIdentity } from '../session-storage.utils.js';
+import { resolveManageOrgApiPath } from '../professional-user/runtime.js';
 import { DynamicProvisionTimeoutError, DynamicProvisioningError, provisionUserWithRetries } from './dynamicProvisioningFlow.js';
 import type { DynamicProvisionAttempt } from './dynamicProvisioningFlow.js';
 import { resolveDynamicOrganisationId, type DynamicOrganisationResolution } from './dynamicOrganisationResolver.js';
@@ -26,6 +28,13 @@ type DynamicProvisionHandle = {
   user: ProvisionedProfessionalUser;
   sessionIdentity: SessionIdentity;
 };
+
+type DynamicIdamUserHandle = {
+  user: ProfessionalUserInfo;
+  sessionIdentity: SessionIdentity;
+};
+
+type DynamicExuiUserAlias = DynamicSolicitorAlias | 'WA_DYNAMIC_CASEWORKER';
 
 type DynamicExuiReadinessAttempt = {
   attempt: number;
@@ -63,6 +72,15 @@ type ProvisionDynamicSolicitorArgs = {
   assertEmploymentAssignmentPayloadAccepted?: boolean;
 };
 
+type ProvisionDynamicIdamUserArgs = {
+  alias: DynamicExuiUserAlias;
+  professionalUserUtils: ProfessionalUserUtils;
+  roleContext?: SolicitorRoleContext;
+  roleNames: readonly string[];
+  testInfo: TestInfo;
+  emailPrefix?: string;
+};
+
 type ExuiApiContext = Awaited<ReturnType<typeof request.newContext>>;
 
 type WaitForExuiUserPropagationDeps = {
@@ -74,7 +92,7 @@ type WaitForExuiUserPropagationDeps = {
   createApiContext: (params: { baseURL: string; storageState: string }) => Promise<ExuiApiContext>;
   attachAttempts: (
     testInfo: TestInfo,
-    alias: DynamicSolicitorAlias,
+    alias: DynamicExuiUserAlias,
     attempts: readonly DynamicExuiReadinessAttempt[]
   ) => Promise<void>;
   sleep: (ms: number) => Promise<void>;
@@ -102,6 +120,11 @@ type ProvisionDynamicSolicitorFlowDeps = {
     professionalUserUtils: ProfessionalUserUtils;
     testInfo: TestInfo;
   }) => Promise<DynamicOrganisationResolution>;
+  resolveAssignmentAdmin: (params: {
+    professionalUserUtils: ProfessionalUserUtils;
+    organisationResolution: DynamicOrganisationResolution;
+    outputCreatedUserData: boolean;
+  }) => Promise<DynamicOrganisationAssignmentAdmin>;
   outputCreatedUserData: boolean;
   attachOrganisationResolution: (
     testInfo: TestInfo,
@@ -142,6 +165,15 @@ const DEFAULT_DYNAMIC_SOLICITOR_PROVISION_MAX_ATTEMPTS = 2;
 const DEFAULT_DYNAMIC_SOLICITOR_PROVISION_RETRY_DELAY_MS = 5_000;
 const DEFAULT_DYNAMIC_SOLICITOR_EXUI_READY_TIMEOUT_MS = 90_000;
 const DEFAULT_DYNAMIC_SOLICITOR_EXUI_READY_POLL_INTERVAL_MS = 3_000;
+type DynamicOrganisationAssignmentAdmin = {
+  email?: string;
+  assignmentBearerToken?: string;
+  mode?: 'internal' | 'external' | 'auto';
+  principalSource: 'configured-assignment-principal' | 'dynamic-super-user';
+  serviceAuthMicroservice?: string;
+  storageState?: string;
+};
+const dynamicOrganisationAssignmentAdmins = new Map<string, DynamicOrganisationAssignmentAdmin>();
 const DYNAMIC_PROVISION_RETRY_PATTERNS: RegExp[] = [
   /timed out after \d+ms/i,
   /timeout/i,
@@ -235,7 +267,7 @@ function shouldForceSessionRecapture(readinessAttempt: DynamicExuiReadinessAttem
   return readinessAttempt.authenticated === true && readinessAttempt.userDetailsStatus === 401;
 }
 
-function buildDynamicSessionIdentity(alias: DynamicSolicitorAlias, user: ProvisionedProfessionalUser): SessionIdentity {
+function buildDynamicSessionIdentity(alias: DynamicExuiUserAlias, user: ProfessionalUserInfo): SessionIdentity {
   const stableSuffix = user.id?.trim() || user.email.trim().toLowerCase();
   return {
     userIdentifier: alias,
@@ -243,6 +275,68 @@ function buildDynamicSessionIdentity(alias: DynamicSolicitorAlias, user: Provisi
     password: user.password,
     sessionKey: `dynamic-${alias.toLowerCase()}-${stableSuffix}`,
   };
+}
+
+async function resolveDynamicOrganisationAssignmentAdmin(
+  professionalUserUtils: ProfessionalUserUtils,
+  organisationResolution: DynamicOrganisationResolution,
+  outputCreatedUserData: boolean
+): Promise<DynamicOrganisationAssignmentAdmin> {
+  const cached = dynamicOrganisationAssignmentAdmins.get(organisationResolution.organisationId);
+  if (cached) {
+    return cached;
+  }
+  const assignmentPrincipal = process.env.PW_DYNAMIC_ORGANISATION_ASSIGNMENT_PRINCIPAL?.trim().toLowerCase() || 'super-user';
+  if (assignmentPrincipal === 'configured') {
+    const resolved = {
+      email:
+        process.env.ORG_USER_ASSIGNMENT_EXPECTED_EMAIL?.trim() || process.env.ORG_USER_ASSIGNMENT_USERNAME?.trim() || undefined,
+      mode: 'internal' as const,
+      principalSource: 'configured-assignment-principal' as const,
+      serviceAuthMicroservice:
+        process.env.PW_PROFESSIONAL_USER_ASSIGNMENT_S2S_MICROSERVICE?.trim() ||
+        process.env.PW_DYNAMIC_ORGANISATION_ASSIGNMENT_S2S_MICROSERVICE?.trim() ||
+        undefined,
+    };
+    dynamicOrganisationAssignmentAdmins.set(organisationResolution.organisationId, resolved);
+    return resolved;
+  }
+  if (assignmentPrincipal !== 'super-user') {
+    throw new Error(
+      `Unsupported PW_DYNAMIC_ORGANISATION_ASSIGNMENT_PRINCIPAL value '${assignmentPrincipal}'. Use 'super-user' or 'configured'.`
+    );
+  }
+  const superUser = organisationResolution.superUser;
+  if (!superUser?.email) {
+    throw new Error(
+      `Dynamic organisation ${organisationResolution.organisationId} does not expose a super-user email for user assignment.`
+    );
+  }
+  const created = await professionalUserUtils.createOrganisationAssignmentAdminUser({
+    email: superUser.email,
+    forename: superUser.firstName,
+    surname: superUser.lastName,
+    outputCreatedUserData,
+  });
+  const storageState = await ensureUiStorageStateForIdentity(
+    {
+      userIdentifier: `DYNAMIC_ORG_ADMIN_${organisationResolution.organisationId}`,
+      email: created.user.email,
+      password: created.user.password,
+    },
+    {
+      baseUrl: resolveManageOrgApiPath(),
+    }
+  );
+  const resolved = {
+    email: created.user.email,
+    assignmentBearerToken: created.assignmentBearerToken,
+    mode: 'external' as const,
+    principalSource: 'dynamic-super-user' as const,
+    storageState,
+  };
+  dynamicOrganisationAssignmentAdmins.set(organisationResolution.organisationId, resolved);
+  return resolved;
 }
 
 function resolveDynamicProvisionTimeoutMs(): number {
@@ -344,7 +438,7 @@ async function sleep(ms: number): Promise<void> {
 
 async function attachProvisionAttempts(
   testInfo: TestInfo,
-  alias: DynamicSolicitorAlias,
+  alias: DynamicExuiUserAlias,
   attempts: readonly DynamicProvisionAttempt[]
 ): Promise<void> {
   await testInfo.attach(`${alias.toLowerCase()}-dynamic-user-provision-attempts.json`, {
@@ -355,7 +449,7 @@ async function attachProvisionAttempts(
 
 async function attachOrganisationResolution(
   testInfo: TestInfo,
-  alias: DynamicSolicitorAlias,
+  alias: DynamicExuiUserAlias,
   resolution: DynamicOrganisationResolution
 ): Promise<void> {
   await testInfo.attach(`${alias.toLowerCase()}-dynamic-organisation.json`, {
@@ -366,7 +460,7 @@ async function attachOrganisationResolution(
 
 async function attachExuiReadinessAttempts(
   testInfo: TestInfo,
-  alias: DynamicSolicitorAlias,
+  alias: DynamicExuiUserAlias,
   attempts: readonly DynamicExuiReadinessAttempt[]
 ): Promise<void> {
   await testInfo.attach(`${alias.toLowerCase()}-dynamic-user-exui-readiness.json`, {
@@ -560,8 +654,8 @@ async function waitForExuiUserPropagation(
     roleContext,
     testInfo,
   }: {
-    alias: DynamicSolicitorAlias;
-    user: ProvisionedProfessionalUser;
+    alias: DynamicExuiUserAlias;
+    user: ProfessionalUserInfo;
     sessionIdentity: SessionIdentity;
     roleContext?: SolicitorRoleContext;
     testInfo: TestInfo;
@@ -658,6 +752,8 @@ export async function provisionDynamicSolicitorForAlias({
       sleep,
       now: () => Date.now(),
       resolveOrganisationId: ({ professionalUserUtils: utils }) => resolveDynamicOrganisationId({ professionalUserUtils: utils }),
+      resolveAssignmentAdmin: ({ professionalUserUtils: utils, organisationResolution, outputCreatedUserData }) =>
+        resolveDynamicOrganisationAssignmentAdmin(utils, organisationResolution, outputCreatedUserData),
       outputCreatedUserData: process.env.PW_DYNAMIC_USER_OUTPUT_CREATED_DATA === '1',
       attachOrganisationResolution,
       attachProvisionAttempts,
@@ -686,6 +782,50 @@ export async function provisionDynamicSolicitorForAlias({
   );
 }
 
+export async function provisionDynamicIdamUserForExui({
+  alias,
+  professionalUserUtils,
+  roleContext,
+  roleNames,
+  testInfo,
+  emailPrefix = 'caseworker',
+}: ProvisionDynamicIdamUserArgs): Promise<DynamicIdamUserHandle> {
+  const user = await professionalUserUtils.createUser({
+    roleNames,
+    emailPrefix,
+    outputCreatedUserData: process.env.PW_DYNAMIC_USER_OUTPUT_CREATED_DATA === '1',
+  });
+  const sessionIdentity = buildDynamicSessionIdentity(alias, user);
+
+  await waitForExuiUserPropagation({
+    alias,
+    user,
+    sessionIdentity,
+    roleContext,
+    testInfo,
+  });
+
+  await testInfo.attach(`${alias.toLowerCase()}-dynamic-idam-user.json`, {
+    body: JSON.stringify(
+      {
+        alias,
+        email: user.email,
+        forename: user.forename,
+        surname: user.surname,
+        roleNames: user.roleNames,
+      },
+      null,
+      2
+    ),
+    contentType: 'application/json',
+  });
+
+  return {
+    user,
+    sessionIdentity,
+  };
+}
+
 async function provisionDynamicSolicitorForAliasFlow(
   {
     alias,
@@ -701,6 +841,20 @@ async function provisionDynamicSolicitorForAliasFlow(
   const organisationResolution = await deps.resolveOrganisationId({ professionalUserUtils, testInfo });
   const organisationId = organisationResolution.organisationId;
   await deps.attachOrganisationResolution(testInfo, alias, organisationResolution);
+  const assignmentAdmin = await deps.resolveAssignmentAdmin({
+    professionalUserUtils,
+    organisationResolution,
+    outputCreatedUserData: deps.outputCreatedUserData,
+  });
+  const assignmentMode = assignmentAdmin.mode ?? mode;
+  deps.info('Resolved dynamic organisation assignment principal.', {
+    alias,
+    organisationId,
+    principalSource: assignmentAdmin.principalSource,
+    assignmentMode,
+    assignmentPrincipalEmail: assignmentAdmin.email ?? 'environment-resolved',
+    hasExplicitAssignmentBearerToken: Boolean(assignmentAdmin.assignmentBearerToken),
+  });
   const resolvedRoleNames = resolveProvisionRoleNamesForAlias({
     alias,
     roleContext,
@@ -733,13 +887,20 @@ async function provisionDynamicSolicitorForAliasFlow(
         organisationId,
         roleContext,
         roleNames: resolvedRoleNames,
-        mode,
+        mode: assignmentMode,
         timeoutMs: provisionTimeoutMs,
         maxAttempts: provisionMaxAttempts,
         retryDelayMs: provisionRetryDelayMs,
       },
       {
-        createSolicitorUserForOrganisation: (params) => professionalUserUtils.createSolicitorUserForOrganisation(params),
+        createSolicitorUserForOrganisation: (params) =>
+          professionalUserUtils.createSolicitorUserForOrganisation({
+            ...params,
+            assignmentBearerToken: assignmentAdmin.assignmentBearerToken,
+            expectedAssignmentPrincipalEmail: assignmentAdmin.email,
+            assignmentStorageState: assignmentAdmin.storageState,
+            serviceAuthMicroservice: assignmentAdmin.serviceAuthMicroservice,
+          }),
         withTimeout: deps.withTimeout,
         shouldRetry: deps.shouldRetryDynamicProvision,
         describeError: deps.describeUnknownError,
@@ -894,8 +1055,8 @@ async function runEmploymentAssignmentPreflight({
 export const __test__ = {
   waitForExuiUserPropagation: (
     params: {
-      alias: DynamicSolicitorAlias;
-      user: ProvisionedProfessionalUser;
+      alias: DynamicExuiUserAlias;
+      user: ProfessionalUserInfo;
       sessionIdentity: SessionIdentity;
       roleContext?: SolicitorRoleContext;
       testInfo: TestInfo;
@@ -904,6 +1065,7 @@ export const __test__ = {
   ) => waitForExuiUserPropagation(params, deps),
   provisionDynamicSolicitorForAliasFlow: (args: ProvisionDynamicSolicitorArgs, deps: ProvisionDynamicSolicitorFlowDeps) =>
     provisionDynamicSolicitorForAliasFlow(args, deps),
+  buildDynamicSessionIdentity,
   assertDynamicUserRoleContract: (args: {
     alias: DynamicSolicitorAlias;
     roleContext?: SolicitorRoleContext;

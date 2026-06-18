@@ -349,6 +349,9 @@ export class TaskListPage extends Base {
           attempt === 1 ? context : `${context} after blank-page reload`,
           shellReadyAttemptTimeoutMs
         );
+        if (!urlPattern.test(this.page.url())) {
+          throw new Error(`Task list navigation for ${context} landed on ${this.page.url()} after shell bootstrap.`);
+        }
         return;
       } catch (error) {
         lastError = error;

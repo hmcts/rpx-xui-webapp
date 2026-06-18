@@ -37,10 +37,13 @@ type OrganisationProvisioningPrerequisites = {
   headers: Record<string, string>;
 };
 
+export type DynamicOrganisationSuperUser = DynamicOrganisationPayload['superUser'];
+
 export type DynamicOrganisationProvisioningOptions = {
   name?: string;
   runId?: string;
   superUserEmail?: string;
+  superUser?: DynamicOrganisationSuperUser;
   timeoutMs?: number;
   pollIntervalMs?: number;
   approvalStrategy?: DynamicOrganisationApprovalStrategy;
@@ -63,6 +66,7 @@ export type DynamicOrganisationProvisioningResult = {
   organisationId: string;
   name: string;
   status: 'ACTIVE';
+  superUser: DynamicOrganisationPayload['superUser'];
   createStatus: number;
   approveStatus: number;
   pollAttempts: number;
@@ -114,6 +118,8 @@ const RD_PROFESSIONAL_SRA_ID_MAX_LENGTH = 15;
 const RD_PROFESSIONAL_DX_NUMBER_MAX_LENGTH = 13;
 const DEFAULT_APPROVE_ORG_API_BASE_URL = 'https://administer-orgs.aat.platform.hmcts.net';
 const DEFAULT_APPROVE_ORG_SESSION_MAX_AGE_MS = 60 * 60_000;
+const DEFAULT_APPROVE_ORG_API_MAX_ATTEMPTS = 3;
+const DEFAULT_APPROVE_ORG_API_RETRY_DELAY_MS = 2_000;
 const APPROVE_ORG_AUTH_COOKIE_NAMES = new Set(['__auth__', 'Idam.Session', 'ao-webapp']);
 
 function sanitizeRunToken(value: string): string {
@@ -132,6 +138,8 @@ function resolveOrganisationName(options: DynamicOrganisationProvisioningOptions
 }
 
 function resolveSuperUserEmail(options: DynamicOrganisationProvisioningOptions, runId: string): string {
+  const preCreatedSuperUserEmail = firstNonEmpty(options.superUser?.email);
+  if (preCreatedSuperUserEmail) return preCreatedSuperUserEmail;
   const explicit = firstNonEmpty(options.superUserEmail, process.env.PW_DYNAMIC_ORGANISATION_SUPER_USER_EMAIL);
   if (explicit) return explicit;
   const domain = firstNonEmpty(process.env.PW_DYNAMIC_ORGANISATION_SUPER_USER_DOMAIN) ?? DEFAULT_DYNAMIC_ORG_SUPER_USER_DOMAIN;
@@ -144,6 +152,26 @@ function resolvePositiveInt(value: number | undefined, envValue: string | undefi
   }
   const parsed = Number.parseInt(envValue ?? '', 10);
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+function resolveApproveOrgApiMaxAttempts(): number {
+  return resolvePositiveInt(
+    undefined,
+    process.env.PW_DYNAMIC_ORGANISATION_APPROVE_ORG_API_MAX_ATTEMPTS,
+    DEFAULT_APPROVE_ORG_API_MAX_ATTEMPTS
+  );
+}
+
+function resolveApproveOrgApiRetryDelayMs(): number {
+  return resolvePositiveInt(
+    undefined,
+    process.env.PW_DYNAMIC_ORGANISATION_APPROVE_ORG_API_RETRY_DELAY_MS,
+    DEFAULT_APPROVE_ORG_API_RETRY_DELAY_MS
+  );
+}
+
+function isRetryableApproveOrgApiStatus(status: number | 'timeout' | 'unknown'): boolean {
+  return typeof status === 'number' && (status === 429 || status >= 500);
 }
 
 function resolveApprovalStrategy(options: DynamicOrganisationProvisioningOptions): DynamicOrganisationApprovalStrategy {
@@ -364,16 +392,17 @@ function buildDynamicOrganisationPayload(
 ): DynamicOrganisationPayload {
   const runId = resolveRunId(options);
   const name = resolveOrganisationName(options, runId);
+  const superUser = options.superUser ?? {
+    email: resolveSuperUserEmail(options, runId),
+    firstName: 'Playwright',
+    lastName: 'Dynamic',
+  };
   return {
     name,
     status,
     sraId: buildBoundedIdentifier('PW', runId, RD_PROFESSIONAL_SRA_ID_MAX_LENGTH, 'PWLOCAL'),
     sraRegulated: true,
-    superUser: {
-      email: resolveSuperUserEmail(options, runId),
-      firstName: 'Playwright',
-      lastName: 'Dynamic',
-    },
+    superUser,
     paymentAccount: [],
     contactInformation: [
       {
@@ -639,42 +668,61 @@ async function approveOrganisationViaApproveOrgApi(
   }
 
   try {
-    const readEndpoint = `/api/organisations?organisationId=${encodeURIComponent(organisationId)}&version=v1`;
-    const readResponse = await apiContext.get(readEndpoint, { failOnStatusCode: false });
-    const readBody = await parseResponseBody(readResponse);
-    if (!readResponse.ok()) {
-      throw new DynamicOrganisationProvisioningError('approve', readEndpoint, readResponse.status(), payload.name, readBody);
+    const maxAttempts = resolveApproveOrgApiMaxAttempts();
+    const retryDelayMs = resolveApproveOrgApiRetryDelayMs();
+    let lastError: DynamicOrganisationProvisioningError | undefined;
+
+    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
+      try {
+        const readEndpoint = `/api/organisations?organisationId=${encodeURIComponent(organisationId)}&version=v1`;
+        const readResponse = await apiContext.get(readEndpoint, { failOnStatusCode: false });
+        const readBody = await parseResponseBody(readResponse);
+        if (!readResponse.ok()) {
+          throw new DynamicOrganisationProvisioningError('approve', readEndpoint, readResponse.status(), payload.name, readBody);
+        }
+
+        const approveEndpoint = `/api/organisations/${encodeURIComponent(organisationId)}`;
+        const organisation = extractSingleOrganisation(readBody, organisationId);
+        if (!organisation) {
+          throw new DynamicOrganisationProvisioningError('approve', readEndpoint, readResponse.status(), payload.name, {
+            message: `Approve-org API did not return organisation '${organisationId}'.`,
+            responsePreview: readBody,
+          });
+        }
+        const xsrfHeaders = await getApproveOrgXsrfHeaders(apiContext);
+        const approveResponse = await apiContext.put(approveEndpoint, {
+          data: {
+            ...organisation,
+            organisationIdentifier: organisationId,
+            status: 'ACTIVE',
+          },
+          headers: xsrfHeaders,
+          failOnStatusCode: false,
+        });
+        const approveBody = await parseResponseBody(approveResponse);
+        if (!approveResponse.ok()) {
+          throw new DynamicOrganisationProvisioningError(
+            'approve',
+            approveEndpoint,
+            approveResponse.status(),
+            payload.name,
+            approveBody
+          );
+        }
+        return approveResponse.status();
+      } catch (error) {
+        if (!(error instanceof DynamicOrganisationProvisioningError)) {
+          throw error;
+        }
+        lastError = error;
+        if (attempt >= maxAttempts || !isRetryableApproveOrgApiStatus(error.status)) {
+          throw error;
+        }
+        await deps.sleep(retryDelayMs * attempt);
+      }
     }
 
-    const approveEndpoint = `/api/organisations/${encodeURIComponent(organisationId)}`;
-    const organisation = extractSingleOrganisation(readBody, organisationId);
-    if (!organisation) {
-      throw new DynamicOrganisationProvisioningError('approve', readEndpoint, readResponse.status(), payload.name, {
-        message: `Approve-org API did not return organisation '${organisationId}'.`,
-        responsePreview: readBody,
-      });
-    }
-    const xsrfHeaders = await getApproveOrgXsrfHeaders(apiContext);
-    const approveResponse = await apiContext.put(approveEndpoint, {
-      data: {
-        ...organisation,
-        organisationIdentifier: organisationId,
-        status: 'ACTIVE',
-      },
-      headers: xsrfHeaders,
-      failOnStatusCode: false,
-    });
-    const approveBody = await parseResponseBody(approveResponse);
-    if (!approveResponse.ok()) {
-      throw new DynamicOrganisationProvisioningError(
-        'approve',
-        approveEndpoint,
-        approveResponse.status(),
-        payload.name,
-        approveBody
-      );
-    }
-    return approveResponse.status();
+    throw lastError ?? new DynamicOrganisationProvisioningError('approve', baseURL, 'unknown', payload.name);
   } finally {
     await apiContext.dispose();
   }
@@ -838,6 +886,7 @@ export async function createApprovedOrganisationFlow(
       organisationId: created.organisationId,
       name: pendingPayload.name,
       status: 'ACTIVE',
+      superUser: pendingPayload.superUser,
       createStatus: created.status,
       approveStatus: approved.status,
       pollAttempts,

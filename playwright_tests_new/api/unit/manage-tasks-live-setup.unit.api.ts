@@ -17,6 +17,75 @@ function response(status: number, payload: unknown): FakeResponse {
 }
 
 test.describe('Manage Tasks live setup unit tests', { tag: '@svc-internal' }, () => {
+  test('keeps professional organisation roles on the dynamic case creator only', () => {
+    expect(manageTasksLiveSetupTest.MANAGE_TASKS_CASE_CREATOR_ROLES).toEqual(
+      expect.arrayContaining([
+        'caseworker',
+        'caseworker-ia',
+        'caseworker-ia-caseofficer',
+        'caseworker-wa',
+        'caseworker-wa-task-configuration',
+        'pui-case-manager',
+      ])
+    );
+  });
+
+  test('provisions the Manage Tasks actor without solicitor menu roles', () => {
+    expect(manageTasksLiveSetupTest.MANAGE_TASKS_WA_CASEWORKER_ROLES).toEqual(
+      expect.arrayContaining([
+        'caseworker',
+        'caseworker-ia',
+        'caseworker-ia-caseofficer',
+        'caseworker-wa',
+        'caseworker-wa-task-configuration',
+      ])
+    );
+    expect(manageTasksLiveSetupTest.MANAGE_TASKS_WA_CASEWORKER_ROLES).not.toContain('pui-case-manager');
+  });
+
+  test('clears XUI browser state before switching Manage Tasks dynamic users', async () => {
+    const calls: string[] = [];
+    const fakePage = {
+      evaluate: async () => {
+        calls.push('evaluate');
+      },
+      context: () => ({
+        clearCookies: async () => {
+          calls.push('clearCookies');
+        },
+      }),
+      goto: async (url: string, options: { waitUntil: string }) => {
+        calls.push(`goto:${url}:${options.waitUntil}`);
+      },
+    };
+
+    await manageTasksLiveSetupTest.resetManageCaseBrowserSessionForNextUser(fakePage as never);
+
+    expect(calls).toEqual(['evaluate', 'clearCookies', 'goto:about:blank:commit']);
+  });
+
+  test('still clears cookies when browser storage cannot be read during Manage Tasks user switch', async () => {
+    const calls: string[] = [];
+    const fakePage = {
+      evaluate: async () => {
+        calls.push('evaluate');
+        throw new Error('execution context unavailable');
+      },
+      context: () => ({
+        clearCookies: async () => {
+          calls.push('clearCookies');
+        },
+      }),
+      goto: async (url: string, options: { waitUntil: string }) => {
+        calls.push(`goto:${url}:${options.waitUntil}`);
+      },
+    };
+
+    await manageTasksLiveSetupTest.resetManageCaseBrowserSessionForNextUser(fakePage as never);
+
+    expect(calls).toEqual(['evaluate', 'clearCookies', 'goto:about:blank:commit']);
+  });
+
   test('normalizes task payloads from case task search responses', () => {
     const normalized = manageTasksLiveSetupTest.normalizeTask({
       id: 'task-123',

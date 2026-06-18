@@ -20,33 +20,63 @@ function response(status: number, payload: unknown): FakeResponse {
 }
 
 test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
-  test('builds the workflow message with WA-visible case and permission variables', () => {
+  test('builds the workflow API create-task message using the WA standalone-process contract', () => {
+    const booleanVariable = (value: boolean) => ({ value, type: 'Boolean' });
+    const integerVariable = (value: number) => ({ value, type: 'Integer' });
+    const stringVariable = (value: string) => ({ value, type: 'String' });
     const payload = waLiveTaskProvisioningTest.buildWaCreateTaskMessage({
-      taskId: 'task-123',
+      idempotencyKey: 'idempotency-123',
+      roleAssignmentId: 'role-assignment-123',
       caseNumber: '1781628830476801',
       jurisdiction: 'EMPLOYMENT',
       caseType: 'ET_EnglandWales',
       taskName: 'Review dynamic Manage Tasks case',
       taskType: 'reviewDynamicManageTasksCase',
       dueDate: '2026-06-18T00:00:00.000+0000',
+      delayUntil: '2026-06-16T00:00:00.000+0000',
     });
 
-    expect(payload.messageName).toBe('createTaskMessage');
-    expect(payload.caseId).toBe('1781628830476801');
-    expect(payload.processVariables.caseId.value).toBe('1781628830476801');
-    expect(payload.processVariables.jurisdiction.value).toBe('EMPLOYMENT');
-    expect(payload.processVariables.caseTypeId.value).toBe('ET_EnglandWales');
-    expect(payload.processVariables.location.value).toBe('765324');
-    expect(payload.processVariables.roleCategory.value).toBe('LEGAL_OPERATIONS');
-    expect(payload.processVariables['tribunal-caseworker'].value).toBe('Read,Refer,Own,Manage,Cancel');
-    expect(payload.processVariables['task-supervisor'].value).toBe('Read,Refer,Manage,Cancel');
+    expect(payload).toEqual({
+      messageName: 'createTaskMessage',
+      processVariables: {
+        jurisdiction: stringVariable('EMPLOYMENT'),
+        caseTypeId: stringVariable('ET_EnglandWales'),
+        caseType: stringVariable('ET_EnglandWales'),
+        region: stringVariable('1'),
+        location: stringVariable('765324'),
+        locationName: stringVariable('Taylor House'),
+        staffLocation: stringVariable('Taylor House'),
+        securityClassification: stringVariable('PUBLIC'),
+        name: stringVariable('Review dynamic Manage Tasks case'),
+        taskId: stringVariable('reviewDynamicManageTasksCase'),
+        taskType: stringVariable('reviewDynamicManageTasksCase'),
+        taskCategory: stringVariable('Case Progression'),
+        taskState: stringVariable('unconfigured'),
+        roleCategory: stringVariable('LEGAL_OPERATIONS'),
+        workType: stringVariable('decision_making_work'),
+        caseId: stringVariable('1781628830476801'),
+        idempotencyKey: stringVariable('idempotency-123'),
+        roleAssignmentId: stringVariable('role-assignment-123'),
+        dueDate: stringVariable('2026-06-18T00:00:00.000+0000'),
+        delayUntil: stringVariable('2026-06-16T00:00:00.000+0000'),
+        workingDaysAllowed: integerVariable(2),
+        hasWarnings: booleanVariable(false),
+        warningList: stringVariable(''),
+        caseManagementCategory: stringVariable('Protection'),
+        description: stringVariable('Dynamic Manage Tasks E2E task for EXUI automated case 1781628830476801'),
+        'task-supervisor': stringVariable('Read,Refer,Manage,Cancel'),
+        'tribunal-caseworker': stringVariable('Read,Refer,Own,Manage,Cancel'),
+        'senior-tribunal-caseworker': stringVariable('Read,Refer,Own,Manage,Cancel'),
+      },
+      correlationKeys: null,
+      all: false,
+    });
   });
 
   test('builds legal-ops organisational role assignments for WA task visibility', () => {
     const payload = waLiveTaskProvisioningTest.buildWaRoleAssignmentRequest({
       actorId: 'dynamic-user-id',
-      jurisdiction: 'EMPLOYMENT',
-      caseType: 'ET_EnglandWales',
+      jurisdiction: 'WA',
       beginTime: '2026-06-16T10:00:00.000Z',
       reference: '1781628830476801/tribunal-caseworker/dynamic-manage-tasks',
     });
@@ -55,7 +85,7 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
       assignerId: 'dynamic-user-id',
       process: 'staff-organisational-role-mapping',
       reference: '1781628830476801/tribunal-caseworker/dynamic-manage-tasks',
-      replaceExisting: true,
+      replaceExisting: false,
     });
     expect(payload.requestedRoles.map((role) => role.roleName)).toEqual(['tribunal-caseworker']);
     expect(payload.requestedRoles[0]).toMatchObject({
@@ -66,19 +96,19 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
       roleCategory: 'LEGAL_OPERATIONS',
       roleType: 'ORGANISATION',
       attributes: {
-        jurisdiction: 'EMPLOYMENT',
-        caseType: 'ET_EnglandWales',
+        jurisdiction: 'WA',
         region: '1',
         primaryLocation: '765324',
         baseLocation: '765324',
+        workTypes: 'decision_making_work',
       },
       authorisations: [],
     });
   });
 
-  test('builds the WA direct initiation payload for the generated task id', () => {
+  test('builds the WA direct initiation payload for the resolved Camunda task id', () => {
     const payload = waLiveTaskProvisioningTest.buildWaTaskInitiationRequest({
-      taskId: 'task-123',
+      taskId: 'camunda-task-1',
       caseNumber: '1781628830476801',
       jurisdiction: 'EMPLOYMENT',
       caseType: 'ET_EnglandWales',
@@ -91,16 +121,29 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
     expect(payload.task_attributes).toMatchObject({
       taskType: 'reviewDynamicManageTasksCase',
       name: 'Review dynamic Manage Tasks case',
+      taskId: 'camunda-task-1',
       caseId: '1781628830476801',
       caseTypeId: 'ET_EnglandWales',
+      caseName: 'EXUI automated Manage Tasks case 1781628830476801',
+      caseCategory: 'Protection',
       jurisdiction: 'EMPLOYMENT',
+      region: '1',
       location: '765324',
       locationName: 'Taylor House',
+      created: expect.any(String),
       dueDate: '2026-06-18T00:00:00.000+0000',
+      securityClassification: 'PUBLIC',
+      title: 'Review dynamic Manage Tasks case',
       roleCategory: 'LEGAL_OPERATIONS',
-      workType: 'hearing_work',
-      'tribunal-caseworker': 'Read,Refer,Own,Manage,Cancel',
+      workType: 'decision_making_work',
+      executionType: 'Manual',
+      caseManagementCategory: 'Protection',
+      taskCategory: 'Case Progression',
+      hasWarnings: false,
+      warningList: { values: [] },
+      __processCategory__Protection: true,
     });
+    expect(payload.task_attributes.created).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}\+0000$/);
   });
 
   test('extracts configured WA task types and supports explicit task type overrides', () => {
@@ -112,8 +155,14 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
             task_type_name: 'Review the case',
           },
           {
-            taskTypeId: 'processApplication',
-            taskTypeName: 'Process Application',
+            task_type: {
+              task_type_id: 'processApplication',
+              task_type_name: 'Process Application',
+            },
+          },
+          {
+            taskTypeId: 'reviewAppeal',
+            taskTypeName: 'Review appeal',
           },
           {
             task_type_id: '',
@@ -129,6 +178,10 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
       {
         taskType: 'processApplication',
         taskName: 'Process Application',
+      },
+      {
+        taskType: 'reviewAppeal',
+        taskName: 'Review appeal',
       },
     ]);
 
@@ -177,7 +230,7 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
     expect(attachments.at(-1)?.body).toContain('"source": "wa-default"');
   });
 
-  test('attaches missing prerequisite diagnostics without calling live services', async () => {
+  test('skips provisioning cleanly when live WA provisioning is disabled', async () => {
     const attachments: Array<{ name: string; body: string }> = [];
     const result = await provisionWaTaskForManageTasksCaseWithDeps(
       {
@@ -197,29 +250,27 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
       },
       {
         env: {
-          PW_E2E_MANAGE_TASKS_WA_PROVISIONING: 'auto',
+          PW_E2E_MANAGE_TASKS_WA_PROVISIONING: 'off',
         },
       }
     );
 
     expect(result.attempted).toBe(false);
-    expect(result.diagnostics.missing).toEqual([
-      'ORG_USER_ASSIGNMENT_BEARER_TOKEN or PW_E2E_MANAGE_TASKS_ROLE_ASSIGNMENT_BEARER_TOKEN or ORG_USER_ASSIGNMENT_USERNAME/ORG_USER_ASSIGNMENT_PASSWORD with IDAM client secret',
-    ]);
+    expect(result.diagnostics.missing).toEqual([]);
     expect(result.diagnostics.workflowApiUrl).toBe('http://wa-workflow-api-aat.service.core-compute-aat.internal');
     expect(result.diagnostics.taskManagementApiUrl).toBe('http://wa-task-management-api-aat.service.core-compute-aat.internal');
+    expect(result.diagnostics.camundaApiUrl).toBe('http://camunda-api-aat.service.core-compute-aat.internal/engine-rest/');
     expect(result.diagnostics.roleAssignmentApiUrl).toBe(
       'http://am-role-assignment-service-aat.service.core-compute-aat.internal'
     );
     expect(attachments[0].name).toBe('manage-tasks-wa-provisioning.json');
-    expect(attachments[0].body).toContain('WA task provisioning prerequisites missing');
+    expect(attachments[0].body).toContain('WA task provisioning disabled');
   });
 
   test('reports readiness before dynamic user and case setup consume live resources', () => {
     expect(
       waLiveTaskProvisioningTest.resolveWaTaskProvisioningReadiness({
         PW_E2E_MANAGE_TASKS_WA_PROVISIONING: 'auto',
-        PW_E2E_MANAGE_TASKS_ROLE_ASSIGNMENT_BEARER_TOKEN: 'admin-token',
       })
     ).toEqual({
       ready: true,
@@ -232,8 +283,8 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
         PW_E2E_MANAGE_TASKS_WA_PROVISIONING: 'workflow',
         SERVICES_WA_WORKFLOW_API_URL: 'http://wa-workflow.test',
         SERVICES_WORK_ALLOCATION_TASK_API: 'http://wa-task-management.test',
+        CAMUNDA_URL: 'http://camunda.test/engine-rest/',
         SERVICES_ROLE_ASSIGNMENT_API: 'http://am-role-assignment.test',
-        PW_E2E_MANAGE_TASKS_ROLE_ASSIGNMENT_BEARER_TOKEN: 'admin-token',
       })
     ).toEqual({
       ready: true,
@@ -242,7 +293,7 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
     });
   });
 
-  test('derives preview service URLs and accepts hydratable assignment credentials', () => {
+  test('derives preview service URLs without requiring a separate role-assignment principal', () => {
     expect(
       waLiveTaskProvisioningTest.resolveWorkflowApiUrl({
         TEST_URL: 'https://xui-webapp-pr-5217.preview.platform.hmcts.net',
@@ -260,6 +311,11 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
       })
     ).toBe('http://wa-task-management-api-aat.service.core-compute-aat.internal');
     expect(
+      waLiveTaskProvisioningTest.resolveCamundaApiUrl({
+        TEST_URL: 'https://xui-webapp-pr-5217.preview.platform.hmcts.net',
+      })
+    ).toBe('http://camunda-api-aat.service.core-compute-aat.internal/engine-rest/');
+    expect(
       waLiveTaskProvisioningTest.resolveHmctsEnvironment({
         TEST_URL: 'https://manage-case.platform.hmcts.net',
       })
@@ -269,9 +325,6 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
       waLiveTaskProvisioningTest.resolveWaTaskProvisioningReadiness({
         PW_E2E_MANAGE_TASKS_WA_PROVISIONING: 'workflow',
         TEST_URL: 'https://xui-webapp-pr-5217.preview.platform.hmcts.net',
-        ORG_USER_ASSIGNMENT_USERNAME: 'assignment@example.test',
-        ORG_USER_ASSIGNMENT_PASSWORD: 'password',
-        ORG_USER_ASSIGNMENT_CLIENT_SECRET: 'secret',
       })
     ).toEqual({
       ready: true,
@@ -280,28 +333,25 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
     });
   });
 
-  test('reports missing admin token source before dynamic user and case setup consume live resources', () => {
+  test('normalises configured Camunda root URLs to the engine-rest API base', () => {
     expect(
-      waLiveTaskProvisioningTest.resolveWaTaskProvisioningReadiness({
-        PW_E2E_MANAGE_TASKS_WA_PROVISIONING: 'workflow',
-        SERVICES_WA_WORKFLOW_API_URL: 'http://wa-workflow.test',
-        SERVICES_WORK_ALLOCATION_TASK_API: 'http://wa-task-management.test',
-        SERVICES_ROLE_ASSIGNMENT_API: 'http://am-role-assignment.test',
+      waLiveTaskProvisioningTest.resolveCamundaApiUrl({
+        CAMUNDA_URL: 'http://camunda-api-aat.service.core-compute-aat.internal',
       })
-    ).toEqual({
-      ready: false,
-      mode: 'workflow',
-      missing: [
-        'ORG_USER_ASSIGNMENT_BEARER_TOKEN or PW_E2E_MANAGE_TASKS_ROLE_ASSIGNMENT_BEARER_TOKEN or ORG_USER_ASSIGNMENT_USERNAME/ORG_USER_ASSIGNMENT_PASSWORD with IDAM client secret',
-      ],
-      skipped:
-        'WA task provisioning prerequisites missing: ORG_USER_ASSIGNMENT_BEARER_TOKEN or PW_E2E_MANAGE_TASKS_ROLE_ASSIGNMENT_BEARER_TOKEN or ORG_USER_ASSIGNMENT_USERNAME/ORG_USER_ASSIGNMENT_PASSWORD with IDAM client secret.',
-    });
+    ).toBe('http://camunda-api-aat.service.core-compute-aat.internal/engine-rest/');
+    expect(
+      waLiveTaskProvisioningTest.resolveCamundaApiUrl({
+        CAMUNDA_URL: 'http://camunda-api-aat.service.core-compute-aat.internal/',
+      })
+    ).toBe('http://camunda-api-aat.service.core-compute-aat.internal/engine-rest/');
+    expect(
+      waLiveTaskProvisioningTest.resolveCamundaApiUrl({
+        CAMUNDA_URL: 'http://camunda-api-aat.service.core-compute-aat.internal/engine-rest/',
+      })
+    ).toBe('http://camunda-api-aat.service.core-compute-aat.internal/engine-rest/');
   });
 
-  test('fails early when workflow mode is required but live prerequisites are missing', async () => {
-    const attachments: Array<{ name: string; body: string }> = [];
-
+  test('fails early when workflow mode is required but S2S cannot be resolved', async () => {
     await expect(
       provisionWaTaskForManageTasksCaseWithDeps(
         {
@@ -314,24 +364,25 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
           jurisdiction: 'EMPLOYMENT',
           caseType: 'ET_EnglandWales',
           testInfo: {
-            attach: async (name: string, payload: { body: string | Buffer }) => {
-              attachments.push({ name, body: String(payload.body) });
-            },
+            attach: async () => undefined,
           } as never,
         },
         {
           env: {
             PW_E2E_MANAGE_TASKS_WA_PROVISIONING: 'workflow',
+            SERVICES_WA_WORKFLOW_API_URL: 'http://wa-workflow.test',
+            SERVICES_WORK_ALLOCATION_TASK_API: 'http://wa-task-management.test',
+            SERVICES_ROLE_ASSIGNMENT_API: 'http://am-role-assignment.test',
+          },
+          serviceAuthUtils: {
+            retrieveToken: async () => undefined,
           },
         }
       )
-    ).rejects.toThrow(/WA task provisioning is required.*prerequisites are missing/);
-
-    expect(attachments[0].name).toBe('manage-tasks-wa-provisioning.json');
-    expect(attachments[0].body).toContain('WA task provisioning prerequisites missing');
+    ).rejects.toThrow(/WA task provisioning requires an S2S token/);
   });
 
-  test('hydrates the role-assignment admin token when Jenkins provides credentials but no bearer token', async () => {
+  test('uses a WA S2S identity for role assignment without mutating workflow service auth', async () => {
     const contexts: Array<{ accept?: string; baseURL: string; authorization?: string; serviceAuthorization?: string }> = [];
     const generatedTokenRequests: Array<{ username?: string; scope: string }> = [];
     const serviceTokenRequests: string[] = [];
@@ -354,14 +405,12 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
         env: {
           PW_E2E_MANAGE_TASKS_WA_PROVISIONING: 'workflow',
           TEST_URL: 'https://xui-webapp-pr-5217.preview.platform.hmcts.net',
-          ORG_USER_ASSIGNMENT_USERNAME: 'assignment@example.test',
-          ORG_USER_ASSIGNMENT_PASSWORD: 'assignment-password',
-          ORG_USER_ASSIGNMENT_CLIENT_SECRET: 'idam-secret',
+          PW_E2E_MANAGE_TASKS_IDAM_SECRET: 'idam-secret',
         },
         idamUtils: {
           generateIdamToken: async ({ username, scope }) => {
             generatedTokenRequests.push({ username, scope });
-            return username === 'assignment@example.test' ? 'generated-admin-token' : 'dynamic-user-token';
+            return 'dynamic-user-token';
           },
         },
         serviceAuthUtils: {
@@ -396,6 +445,9 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
                   task_types: [{ task_type_id: 'reviewTheCase', task_type_name: 'Review the case' }],
                 });
               }
+              if (url.startsWith('task?processVariables=')) {
+                return response(200, [{ id: 'camunda-task-1', name: 'Review the case' }]);
+              }
               return response(200, {
                 roleAssignmentResponse: [{ id: 'assignment-1', roleName: 'tribunal-caseworker' }],
               });
@@ -409,15 +461,14 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
     expect(result.attempted).toBe(true);
     expect(generatedTokenRequests).toEqual([
       { username: 'dynamic@example.test', scope: 'openid profile roles manage-user search-user' },
-      { username: 'assignment@example.test', scope: 'openid profile roles' },
     ]);
-    expect(serviceTokenRequests).toEqual(['xui_webapp', 'wa_task_management_api']);
+    expect(serviceTokenRequests).toEqual(['xui_webapp', 'wa_task_management_api', 'wa_task_management_api']);
     expect(contexts).toEqual([
       {
         accept: undefined,
         baseURL: 'http://am-role-assignment-service-aat.service.core-compute-aat.internal',
-        authorization: 'Bearer generated-admin-token',
-        serviceAuthorization: 'Bearer xui_webapp-token',
+        authorization: 'Bearer dynamic-user-token',
+        serviceAuthorization: 'Bearer wa_task_management_api-token',
       },
       {
         accept: 'application/json',
@@ -433,6 +484,12 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
       },
       {
         accept: 'application/json',
+        baseURL: 'http://camunda-api-aat.service.core-compute-aat.internal/engine-rest/',
+        authorization: undefined,
+        serviceAuthorization: 'Bearer wa_task_management_api-token',
+      },
+      {
+        accept: 'application/json',
         baseURL: 'http://wa-task-management-api-aat.service.core-compute-aat.internal',
         authorization: undefined,
         serviceAuthorization: 'Bearer wa_task_management_api-token',
@@ -441,6 +498,19 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
   });
 
   test('uses an exclusive WA S2S identity for direct task initiation', () => {
+    expect(waLiveTaskProvisioningTest.resolveRoleAssignmentS2sMicroservice({})).toBe('wa_task_management_api');
+    expect(
+      waLiveTaskProvisioningTest.resolveRoleAssignmentS2sMicroservice({
+        S2S_MICROSERVICE_NAME: 'xui_webapp',
+        MICROSERVICE: 'xui_webapp',
+      })
+    ).toBe('wa_task_management_api');
+    expect(
+      waLiveTaskProvisioningTest.resolveRoleAssignmentS2sMicroservice({
+        PW_E2E_MANAGE_TASKS_ROLE_ASSIGNMENT_S2S_MICROSERVICE: 'am_role_assignment_service',
+        S2S_MICROSERVICE_NAME: 'xui_webapp',
+      })
+    ).toBe('am_role_assignment_service');
     expect(waLiveTaskProvisioningTest.resolveTaskInitiationS2sMicroservice({})).toBe('wa_task_management_api');
     expect(
       waLiveTaskProvisioningTest.resolveTaskInitiationS2sMicroservice({
@@ -483,7 +553,6 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
           SERVICES_WA_WORKFLOW_API_URL: 'http://wa-workflow.test',
           SERVICES_WORK_ALLOCATION_TASK_API: 'http://wa-task-management.test',
           SERVICES_ROLE_ASSIGNMENT_API: 'http://am-role-assignment.test',
-          PW_E2E_MANAGE_TASKS_ROLE_ASSIGNMENT_BEARER_TOKEN: 'admin-token',
           S2S_TOKEN: 's2s-token',
           PW_E2E_MANAGE_TASKS_TASK_INITIATION_S2S_TOKEN: 'wa-exclusive-s2s-token',
           PW_E2E_MANAGE_TASKS_IDAM_SECRET: 'idam-secret',
@@ -519,6 +588,9 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
                   task_types: [{ task_type_id: 'reviewTheCase', task_type_name: 'Review the case' }],
                 });
               }
+              if (url.startsWith('task?processVariables=')) {
+                return response(200, [{ id: 'camunda-task-1', name: 'Review the case' }]);
+              }
               return response(200, {
                 roleAssignmentResponse: [
                   { id: 'assignment-1', roleName: 'tribunal-caseworker' },
@@ -536,13 +608,15 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
 
     expect(result).toMatchObject({
       attempted: true,
-      taskId: 'task-123',
+      taskId: 'camunda-task-1',
+      workflowIdempotencyKey: 'task-123',
       roleAssignmentIds: ['assignment-1', 'assignment-2'],
       roleAssignmentReference: '1781628830476801/tribunal-caseworker/dynamic-manage-tasks',
       diagnostics: {
         roleAssignmentStatus: 201,
         roleAssignmentVisibilityStatus: 200,
         workflowStatus: 204,
+        camundaTaskVisibilityStatus: 200,
         taskInitiationStatus: 204,
       },
     });
@@ -551,16 +625,21 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
       '/am/role-assignments/actors/dynamic-user-id',
       '/task/task-types?jurisdiction=EMPLOYMENT',
       '/workflow/message',
-      '/task/task-123/initiation',
+      'task?processVariables=caseId_eq_1781628830476801',
+      '/task/camunda-task-1/initiation',
     ]);
     expect(calls[0].baseURL).toBe('http://am-role-assignment.test');
     expect(calls[1].baseURL).toBe('http://am-role-assignment.test');
     expect(calls[2].baseURL).toBe('http://wa-task-management.test');
     expect(calls[3].baseURL).toBe('http://wa-workflow.test');
-    expect(calls[4].baseURL).toBe('http://wa-task-management.test');
+    expect(calls[4].baseURL).toBe('http://camunda-api-aat.service.core-compute-aat.internal/engine-rest/');
+    expect(calls[5].baseURL).toBe('http://wa-task-management.test');
     expect(contexts.every((context) => context.disposed)).toBe(true);
     expect(attachments.find((attachment) => attachment.name === 'manage-tasks-wa-provisioning.json')?.body).toContain(
-      '"taskId": "task-123"'
+      '"taskId": "camunda-task-1"'
+    );
+    expect(attachments.find((attachment) => attachment.name === 'manage-tasks-wa-provisioning.json')?.body).toContain(
+      '"workflowIdempotencyKey": "task-123"'
     );
   });
 
@@ -591,8 +670,8 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
             SERVICES_WA_WORKFLOW_API_URL: 'http://wa-workflow.test',
             SERVICES_WORK_ALLOCATION_TASK_API: 'http://wa-task-management.test',
             SERVICES_ROLE_ASSIGNMENT_API: 'http://am-role-assignment.test',
-            PW_E2E_MANAGE_TASKS_ROLE_ASSIGNMENT_BEARER_TOKEN: 'admin-token',
             S2S_TOKEN: 's2s-token',
+            PW_E2E_MANAGE_TASKS_ROLE_ASSIGNMENT_S2S_TOKEN: 'wa-role-assignment-s2s-token',
             PW_E2E_MANAGE_TASKS_TASK_INITIATION_S2S_TOKEN: 'wa-exclusive-s2s-token',
             PW_E2E_MANAGE_TASKS_IDAM_SECRET: 'idam-secret',
           },
@@ -620,6 +699,9 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
                   return response(200, {
                     task_types: [{ task_type_id: 'reviewTheCase', task_type_name: 'Review the case' }],
                   });
+                }
+                if (url.startsWith('task?processVariables=')) {
+                  return response(200, [{ id: 'camunda-task-1', name: 'Review the case' }]);
                 }
                 return response(200, {
                   roleAssignmentResponse: [
@@ -650,6 +732,208 @@ test.describe('WA live task provisioning', { tag: '@svc-internal' }, () => {
     expect(attachments.find((attachment) => attachment.name === 'manage-tasks-wa-role-assignment-cleanup.json')?.body).toContain(
       '"assignmentId": "assignment-1"'
     );
+  });
+
+  test('attaches task initiation diagnostics and cleans up role assignments when direct initiation fails', async () => {
+    const calls: Array<{ method: string; baseURL: string; url: string }> = [];
+    const attachments: Array<{ name: string; body: string }> = [];
+
+    await expect(
+      provisionWaTaskForManageTasksCaseWithDeps(
+        {
+          user: {
+            id: 'dynamic-user-id',
+            email: 'dynamic@example.test',
+            password: 'password',
+          },
+          caseNumber: '1781628830476801',
+          jurisdiction: 'EMPLOYMENT',
+          caseType: 'ET_EnglandWales',
+          testInfo: {
+            attach: async (name: string, payload: { body: string | Buffer }) => {
+              attachments.push({ name, body: String(payload.body) });
+            },
+          } as never,
+        },
+        {
+          env: {
+            PW_E2E_MANAGE_TASKS_WA_PROVISIONING: 'workflow',
+            SERVICES_WA_WORKFLOW_API_URL: 'http://wa-workflow.test',
+            SERVICES_WORK_ALLOCATION_TASK_API: 'http://wa-task-management.test',
+            SERVICES_ROLE_ASSIGNMENT_API: 'http://am-role-assignment.test',
+            S2S_TOKEN: 's2s-token',
+            PW_E2E_MANAGE_TASKS_ROLE_ASSIGNMENT_S2S_TOKEN: 'wa-role-assignment-s2s-token',
+            PW_E2E_MANAGE_TASKS_TASK_INITIATION_S2S_TOKEN: 'wa-exclusive-s2s-token',
+            PW_E2E_MANAGE_TASKS_IDAM_SECRET: 'idam-secret',
+          },
+          idamUtils: {
+            generateIdamToken: async () => 'dynamic-user-token',
+          },
+          now: () => new Date('2026-06-16T10:00:00.000Z'),
+          uuid: () => 'task-123',
+          newContext: (async ({ baseURL }: { baseURL?: string }) => {
+            return {
+              post: async (url: string) => {
+                calls.push({ method: 'POST', baseURL: baseURL ?? '', url });
+                if (url === '/am/role-assignments') {
+                  return response(201, {
+                    roleAssignmentResponse: {
+                      requestedRoles: [{ id: 'assignment-1' }, { id: 'assignment-2' }],
+                    },
+                  });
+                }
+                if (url === '/workflow/message') {
+                  return response(204, '');
+                }
+                return response(500, { error: 'task initiation unavailable' });
+              },
+              get: async (url: string) => {
+                calls.push({ method: 'GET', baseURL: baseURL ?? '', url });
+                if (url.startsWith('/task/task-types')) {
+                  return response(200, {
+                    task_types: [{ task_type_id: 'reviewTheCase', task_type_name: 'Review the case' }],
+                  });
+                }
+                if (url.startsWith('task?processVariables=')) {
+                  return response(200, [{ id: 'camunda-task-1', name: 'Review the case' }]);
+                }
+                return response(200, {
+                  roleAssignmentResponse: [
+                    { id: 'assignment-1', roleName: 'tribunal-caseworker' },
+                    { id: 'assignment-2', roleName: 'tribunal-caseworker' },
+                  ],
+                });
+              },
+              delete: async (url: string) => {
+                calls.push({ method: 'DELETE', baseURL: baseURL ?? '', url });
+                return response(204, '');
+              },
+              dispose: async () => undefined,
+            };
+          }) as never,
+        }
+      )
+    ).rejects.toThrow(/WA task initiation failed with HTTP 500/);
+
+    expect(calls).toEqual([
+      { method: 'POST', baseURL: 'http://am-role-assignment.test', url: '/am/role-assignments' },
+      { method: 'GET', baseURL: 'http://am-role-assignment.test', url: '/am/role-assignments/actors/dynamic-user-id' },
+      { method: 'GET', baseURL: 'http://wa-task-management.test', url: '/task/task-types?jurisdiction=EMPLOYMENT' },
+      { method: 'POST', baseURL: 'http://wa-workflow.test', url: '/workflow/message' },
+      {
+        method: 'GET',
+        baseURL: 'http://camunda-api-aat.service.core-compute-aat.internal/engine-rest/',
+        url: 'task?processVariables=caseId_eq_1781628830476801',
+      },
+      { method: 'POST', baseURL: 'http://wa-task-management.test', url: '/task/camunda-task-1/initiation' },
+      { method: 'DELETE', baseURL: 'http://am-role-assignment.test', url: '/am/role-assignments/assignment-1' },
+      { method: 'DELETE', baseURL: 'http://am-role-assignment.test', url: '/am/role-assignments/assignment-2' },
+    ]);
+    const initiationDiagnostics = attachments.find(
+      (attachment) => attachment.name === 'manage-tasks-wa-task-initiation-failure.json'
+    )?.body;
+    expect(initiationDiagnostics).toContain('"taskId": "camunda-task-1"');
+    expect(initiationDiagnostics).toContain('"status": 500');
+    expect(initiationDiagnostics).toContain('"error": "task initiation unavailable"');
+    expect(attachments.find((attachment) => attachment.name === 'manage-tasks-wa-role-assignment-cleanup.json')?.body).toContain(
+      '"assignmentId": "assignment-1"'
+    );
+  });
+
+  test('retries WA task initiation once when WA reports a database conflict lock', async () => {
+    const calls: Array<{ method: string; baseURL: string; url: string }> = [];
+    const attachments: Array<{ name: string; body: string }> = [];
+    let initiationCalls = 0;
+
+    const result = await provisionWaTaskForManageTasksCaseWithDeps(
+      {
+        user: {
+          id: 'dynamic-user-id',
+          email: 'dynamic@example.test',
+          password: 'password',
+        },
+        caseNumber: '1781628830476801',
+        jurisdiction: 'EMPLOYMENT',
+        caseType: 'ET_EnglandWales',
+        testInfo: {
+          attach: async (name: string, payload: { body: string | Buffer }) => {
+            attachments.push({ name, body: String(payload.body) });
+          },
+        } as never,
+      },
+      {
+        env: {
+          PW_E2E_MANAGE_TASKS_WA_PROVISIONING: 'workflow',
+          PW_E2E_MANAGE_TASKS_TASK_INITIATION_RETRY_DELAY_MS: '1',
+          SERVICES_WA_WORKFLOW_API_URL: 'http://wa-workflow.test',
+          SERVICES_WORK_ALLOCATION_TASK_API: 'http://wa-task-management.test',
+          SERVICES_ROLE_ASSIGNMENT_API: 'http://am-role-assignment.test',
+          S2S_TOKEN: 's2s-token',
+          PW_E2E_MANAGE_TASKS_ROLE_ASSIGNMENT_S2S_TOKEN: 'wa-role-assignment-s2s-token',
+          PW_E2E_MANAGE_TASKS_TASK_INITIATION_S2S_TOKEN: 'wa-exclusive-s2s-token',
+          PW_E2E_MANAGE_TASKS_IDAM_SECRET: 'idam-secret',
+        },
+        idamUtils: {
+          generateIdamToken: async () => 'dynamic-user-token',
+        },
+        now: () => new Date('2026-06-16T10:00:00.000Z'),
+        uuid: () => 'task-123',
+        newContext: (async ({ baseURL }: { baseURL?: string }) => {
+          return {
+            post: async (url: string) => {
+              calls.push({ method: 'POST', baseURL: baseURL ?? '', url });
+              if (url === '/am/role-assignments') {
+                return response(201, {
+                  roleAssignmentResponse: {
+                    requestedRoles: [{ id: 'assignment-1' }],
+                  },
+                });
+              }
+              if (url === '/workflow/message') {
+                return response(204, '');
+              }
+              if (url === '/task/camunda-task-1/initiation') {
+                initiationCalls += 1;
+                return initiationCalls === 1
+                  ? response(503, {
+                      type: 'https://github.com/hmcts/wa-task-management-api/problem/database-conflict',
+                      title: 'Database Conflict Error',
+                    })
+                  : response(204, '');
+              }
+              return response(500, { error: 'unexpected post' });
+            },
+            get: async (url: string) => {
+              calls.push({ method: 'GET', baseURL: baseURL ?? '', url });
+              if (url.startsWith('/task/task-types')) {
+                return response(200, {
+                  task_types: [{ task_type_id: 'reviewTheCase', task_type_name: 'Review the case' }],
+                });
+              }
+              if (url.startsWith('task?processVariables=')) {
+                return response(200, [{ id: 'camunda-task-1', name: 'Review the case' }]);
+              }
+              return response(200, {
+                roleAssignmentResponse: [{ id: 'assignment-1', roleName: 'tribunal-caseworker' }],
+              });
+            },
+            delete: async (url: string) => {
+              calls.push({ method: 'DELETE', baseURL: baseURL ?? '', url });
+              return response(204, '');
+            },
+            dispose: async () => undefined,
+          };
+        }) as never,
+      }
+    );
+
+    expect(result.taskId).toBe('camunda-task-1');
+    expect(result.diagnostics.taskInitiationStatus).toBe(204);
+    expect(calls.filter((call) => call.url === '/task/camunda-task-1/initiation')).toHaveLength(2);
+    expect(attachments.find((attachment) => attachment.name === 'manage-tasks-wa-task-initiation-attempts.json')?.body).toContain(
+      '"status": 503'
+    );
+    expect(attachments.find((attachment) => attachment.name === 'manage-tasks-wa-role-assignment-cleanup.json')).toBeUndefined();
   });
 
   test('reports unsupported cleanup when AM does not return assignment ids', async () => {

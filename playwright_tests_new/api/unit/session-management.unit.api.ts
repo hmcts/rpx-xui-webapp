@@ -68,6 +68,31 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
     ).rejects.toThrow(/did not establish authenticated session/i);
   });
 
+  test('waitForAuthenticatedShell rejects service-down even when the app header is visible', async () => {
+    const locatorFor = (selector: string) => {
+      const visible = selector === 'exui-header' || selector === 'exui-service-down';
+      const locator = {
+        first: () => locator,
+        isVisible: async () => visible,
+      };
+      return locator;
+    };
+    const hiddenRoleLocator = {
+      first: () => hiddenRoleLocator,
+      isVisible: async () => false,
+    };
+    const page = {
+      url: () => 'https://manage-case.aat.platform.hmcts.net/service-down',
+      locator: (selector: string) => locatorFor(selector),
+      getByRole: () => hiddenRoleLocator,
+      waitForTimeout: async () => undefined,
+    };
+
+    await expect(
+      sessionCaptureTest.waitForAuthenticatedShell(page as never, 'WA_DYNAMIC_CASEWORKER', 'exui-header', 1)
+    ).rejects.toThrow(/Service down page detected while waiting for app shell/);
+  });
+
   test('strict storage reuse refreshes when the cached state is no longer authenticated server-side', async () => {
     const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-storage-unit-'));
     const storagePath = path.join(tempDir, 'storage.json');

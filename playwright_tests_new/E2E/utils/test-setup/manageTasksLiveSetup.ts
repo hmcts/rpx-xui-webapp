@@ -6,7 +6,7 @@ import type { ProfessionalUserUtils } from '../professional-user.utils';
 import type { SessionIdentity } from '../../../common/sessionIdentity';
 import { ensureAuthenticatedPage } from '../../../common/sessionCapture';
 import { setupCaseForJourney } from './caseSetup';
-import { provisionDynamicSolicitorForAlias } from './dynamicSolicitorSession';
+import { provisionDynamicIdamUserForExui, provisionDynamicSolicitorForAlias } from './dynamicSolicitorSession';
 import {
   cleanupWaTaskRoleAssignmentsForManageTasksCase,
   provisionWaTaskForManageTasksCase,
@@ -69,17 +69,40 @@ type ManageTasksCleanupStep = {
 const CLAIMABLE_ACTION = 'claim';
 const WA_JURISDICTION = 'WA';
 const WA_CASE_TYPE = 'WaCaseType';
-const MANAGE_TASKS_WA_CASEWORKER_ROLES = ['caseworker', 'caseworker-wa', 'caseworker-wa-task-configuration'] as const;
+const MANAGE_TASKS_CASE_CREATOR_ROLES = [
+  'caseworker',
+  'caseworker-ia',
+  'caseworker-ia-caseofficer',
+  'caseworker-wa',
+  'caseworker-wa-task-configuration',
+  'pui-case-manager',
+] as const;
+const MANAGE_TASKS_WA_CASEWORKER_ROLES = [
+  'caseworker',
+  'caseworker-ia',
+  'caseworker-ia-caseofficer',
+  'caseworker-wa',
+  'caseworker-wa-task-configuration',
+] as const;
 const CASE_ROLE_ACCESS_ENDPOINT = 'api/role-access/roles/access-get-by-caseId';
 const XSRF_COOKIE_NAME = 'XSRF-TOKEN';
 const TASK_CANCEL_ENDPOINT_SUFFIX = 'cancel';
 const DEFAULT_TASK_READY_TIMEOUT_MS = 90_000;
 const DEFAULT_TASK_READY_POLL_INTERVAL_MS = 2_000;
 const ACCEPTED_TASK_CLEANUP_STATUSES = new Set([200, 204, 404, 409]);
+const MANAGE_TASKS_ROUTE = '/work/my-work/list';
 
 function parsePositiveInteger(value: string | undefined, fallback: number): number {
   const parsed = Number.parseInt(value ?? '', 10);
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+function buildManageTasksRouteUrl(): string {
+  const baseUrl = process.env.TEST_URL;
+  if (!baseUrl?.trim()) {
+    return MANAGE_TASKS_ROUTE;
+  }
+  return new URL(MANAGE_TASKS_ROUTE, baseUrl).toString();
 }
 
 function buildManageTasksWaCasePayload(): { fieldValues: Record<string, unknown> } {
@@ -286,6 +309,17 @@ async function runManageTasksCleanupSteps(steps: ManageTasksCleanupStep[]): Prom
   }
 }
 
+async function resetManageCaseBrowserSessionForNextUser(page: Page): Promise<void> {
+  await page
+    .evaluate(() => {
+      window.sessionStorage.clear();
+      window.localStorage.clear();
+    })
+    .catch(() => undefined);
+  await page.context().clearCookies();
+  await page.goto('about:blank', { waitUntil: 'commit' }).catch(() => undefined);
+}
+
 async function cleanupWaTaskForManageTasksCase({
   page,
   taskId,
@@ -420,7 +454,7 @@ export async function setupClaimableManageTasksCase({
   const { user: caseCreator, sessionIdentity: caseCreatorSessionIdentity } = await provisionDynamicSolicitorForAlias({
     alias: 'WA_DYNAMIC_SOLICITOR',
     professionalUserUtils,
-    roleNames: MANAGE_TASKS_WA_CASEWORKER_ROLES,
+    roleNames: MANAGE_TASKS_CASE_CREATOR_ROLES,
     roleContext: {
       jurisdiction: WA_JURISDICTION,
       caseType: WA_CASE_TYPE,
@@ -445,7 +479,7 @@ export async function setupClaimableManageTasksCase({
     testInfo,
   });
 
-  const { user: taskActor, sessionIdentity: taskActorSessionIdentity } = await provisionDynamicSolicitorForAlias({
+  const { user: taskActor, sessionIdentity: taskActorSessionIdentity } = await provisionDynamicIdamUserForExui({
     alias: 'WA_DYNAMIC_CASEWORKER',
     professionalUserUtils,
     roleNames: MANAGE_TASKS_WA_CASEWORKER_ROLES,
@@ -454,10 +488,14 @@ export async function setupClaimableManageTasksCase({
       caseType: WA_CASE_TYPE,
     },
     testInfo,
-    mode: 'auto',
   });
 
-  await ensureAuthenticatedPage(page, taskActorSessionIdentity, { waitForSelector: 'exui-header' });
+  await resetManageCaseBrowserSessionForNextUser(page);
+  const manageTasksRouteUrl = buildManageTasksRouteUrl();
+  await ensureAuthenticatedPage(page, taskActorSessionIdentity, {
+    targetUrl: manageTasksRouteUrl,
+    waitForSelector: 'exui-header',
+  });
 
   const waProvisioning = await provisionWaTaskForManageTasksCase({
     user: taskActor,
@@ -473,6 +511,11 @@ export async function setupClaimableManageTasksCase({
         `${waProvisioning.diagnostics.skipped ?? 'Provisioning was not attempted.'}`
     );
   }
+
+  await ensureAuthenticatedPage(page, taskActorSessionIdentity, {
+    targetUrl: manageTasksRouteUrl,
+    waitForSelector: 'exui-header',
+  });
 
   const cleanup = async (): Promise<void> => {
     await runManageTasksCleanupSteps([
@@ -491,6 +534,7 @@ export async function setupClaimableManageTasksCase({
           cleanupWaTaskRoleAssignmentsForManageTasksCase({
             roleAssignmentIds: waProvisioning.roleAssignmentIds,
             roleAssignmentReference: waProvisioning.roleAssignmentReference,
+            user: taskActor,
             testInfo,
           }),
       },
@@ -533,7 +577,7 @@ export async function setupClaimableManageTasksCase({
         },
         dynamicTaskActor: {
           email: taskActor.email,
-          organisationId: taskActor.organisationAssignment.organisationId,
+          roles: taskActor.roleNames,
         },
       },
       null,
@@ -552,7 +596,10 @@ export const __test__ = {
   describeError,
   extractTasks,
   fetchRoleAccessDiagnostics,
+  MANAGE_TASKS_CASE_CREATOR_ROLES,
   normalizeTask,
+  MANAGE_TASKS_WA_CASEWORKER_ROLES,
+  resetManageCaseBrowserSessionForNextUser,
   runManageTasksCleanupSteps,
   summarizeRoleAccessPayload,
   waitForClaimableTaskForCase,

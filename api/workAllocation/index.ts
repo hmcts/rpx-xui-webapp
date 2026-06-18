@@ -78,6 +78,10 @@ export const baseUrl: string = 'http://localhost:8080';
 
 const logger: JUILogger = log4jui.getLogger('workallocation');
 
+type RouteParam = string | string[];
+
+const getRouteParam = (param: RouteParam): string => (Array.isArray(param) ? param[0] : param);
+
 /**
  * getTask
  */
@@ -147,7 +151,7 @@ export async function searchTypesOfWork(req: EnhancedRequest, res: Response, nex
  */
 export async function getTaskRoles(req: EnhancedRequest, res: Response, next: NextFunction) {
   try {
-    const taskId = req.params.taskId;
+    const taskId = getRouteParam(req.params.taskId);
     const path = `${baseWorkAllocationTaskUrl}/task/${taskId}/roles`;
     const { status, data } = await handleTaskRolesGet(path, req);
     res.status(status);
@@ -196,7 +200,7 @@ export async function searchTask(req: EnhancedRequest, res: Response, next: Next
 }
 
 export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
-  const caseId = req.params.caseId;
+  const caseId = getRouteParam(req.params.caseId);
   const basePath: string = prepareSearchTaskUrl(baseWorkAllocationTaskUrl);
   const searchRequest = {
     search_parameters: [
@@ -230,10 +234,10 @@ export async function getTasksByCaseId(req: EnhancedRequest, res: Response, next
 }
 
 export async function getTasksByCaseIdAndEventId(req: EnhancedRequest, res: Response, next: NextFunction): Promise<Response> {
-  const caseId = req.params.caseId;
-  const eventId = req.params.eventId;
-  const caseType = req.params.caseType;
-  const jurisdiction = req.params.jurisdiction;
+  const caseId = getRouteParam(req.params.caseId);
+  const eventId = getRouteParam(req.params.eventId);
+  const caseType = getRouteParam(req.params.caseType);
+  const jurisdiction = getRouteParam(req.params.jurisdiction);
   const traceProps = { functionCall: 'getTasksByCaseIdAndEventId' };
   try {
     const payload = { case_id: caseId, event_id: eventId, case_jurisdiction: jurisdiction, case_type: caseType };

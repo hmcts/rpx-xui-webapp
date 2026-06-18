@@ -1,4 +1,4 @@
-import * as express from 'express';
+import express from 'express';
 import { approveSpecificAccessRequest, createBooking, getBookings, refreshRoleAssignments } from '.';
 import authInterceptor from '../lib/middleware/auth';
 

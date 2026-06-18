@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
-import * as config from 'config';
+import config from 'config';
 import { getConfigValue } from './index';
 
 describe('configuration', () => {

@@ -1,4 +1,4 @@
-import * as express from 'express';
+import express from 'express';
 import { handleGetOrganisationsRoute as organisationsRoute } from '../organisations/index';
 import * as restAPI from './index';
 

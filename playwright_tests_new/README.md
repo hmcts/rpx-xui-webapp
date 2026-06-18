@@ -58,6 +58,9 @@ TEST_URL=http://localhost:3000 yarn test:playwrightE2E --project=chromium --work
 
 # Direct E2E run without the load-profile wrapper
 yarn test:playwrightE2E:raw
+
+# Dedicated accessibility suite. Produces functional-output/tests/playwright-a11y/odhin-report/xui-playwright-a11y.html.
+yarn test:a11y:playwright
 ```
 
 ### API commands
@@ -159,6 +162,12 @@ Dynamic-user keys now available in Key Vault (`rpx-aat`, `rpx-demo`) and populat
 - `RD_PROFESSIONAL_API_PATH`
 - `WA_SOLICITOR_USERNAME`
 - `WA_SOLICITOR_PASSWORD`
+- `PW_IAC_CASEOFFICER_R1_EMAIL`
+- `PW_IAC_CASEOFFICER_R1_PASSWORD`
+- `PW_IAC_JUDGE_WA_R1_EMAIL`
+- `PW_IAC_JUDGE_WA_R1_PASSWORD`
+
+These are populated from Key Vault using the same `e2e=<ENV_VAR_NAME>` tag convention.
 
 Notes:
 
@@ -246,6 +255,7 @@ sequenceDiagram
 - Dynamic-user provisioning starts in `dynamicSolicitorSession.ts` and delegates most heavy lifting into `dynamicProvisioningFlow.ts`, `professional-user.utils.ts`, and the extracted `professional-user/` collaborators.
 - API case setup starts in `caseSetup.ts` and uses `payloads/registry.ts` plus the journey templates under `E2E/utils/test-setup/payloads/templates/`.
 - The returned case number or runtime user credentials are then consumed by the spec or fixture layer, not hidden inside the page objects.
+- Provisioning failures should be triaged from the recorded attempt diagnostics before changing retry policy. The terminal `DynamicProvisioningError` includes every attempt, duration, retryability decision, and last error, and the fixture attaches the same attempt history to the test evidence.
 
 ---
 
@@ -256,6 +266,7 @@ Unit-style tests for Playwright support code live under `playwright_tests_new/ap
 Current files:
 
 - `playwright_tests_new/api/unit/create-case.flow.unit.api.ts`
+- `playwright_tests_new/api/unit/data-loss-scenarios.unit.api.ts`
 - `playwright_tests_new/api/unit/dynamic-solicitor-session.unit.api.ts`
 - `playwright_tests_new/api/unit/dynamic-user.pure.unit.api.ts`
 - `playwright_tests_new/api/unit/dynamic-user.orchestration.unit.api.ts`
@@ -273,6 +284,14 @@ PLAYWRIGHT_SKIP_INSTALL=true yarn playwright test --project=node-api playwright_
 # Run one unit test by title
 PLAYWRIGHT_SKIP_INSTALL=true yarn playwright test --project=node-api playwright_tests_new/api/unit -g "resolveSolicitorRoleStrategy"
 ```
+
+### Data Loss Scenario Coverage
+
+The historical data-loss coverage map for `EXUI-848`, `EXUI-811`, `EXUI-433`, `EXUI-942`, and `EXUI-702` lives in `E2E/utils/test-setup/dataLossScenarioMatrix.ts`.
+
+- `EXUI-848`, `EXUI-811`, `EXUI-433`, and `EXUI-942` are covered by the tagged create-case E2E journey `@e2e-data-loss`, which creates a fresh Divorce PoC case and asserts the Data and History tab values after submit.
+- `EXUI-702` is deliberately marked as follow-up until the NoC owning mock contract is agreed, because closing that path needs an API-required NoC route-backed scenario rather than a looser UI-only assertion.
+- `playwright_tests_new/api/unit/data-loss-scenarios.unit.api.ts` fails if any historical ticket loses its case type, setup route, protected tabs, protected fields, or assertion layer mapping.
 
 ### Placement Rules
 
@@ -293,7 +312,7 @@ API tests are located in `api/` and replace the legacy Mocha `yarn test:api` run
   - `TEST_URL` (e.g. `https://manage-case.aat.platform.hmcts.net/`)
   - `TEST_ENV` (`aat`/`demo`)
   - IDAM/S2S endpoints used by `@hmcts/playwright-common`: `IDAM_WEB_URL`, `IDAM_TESTING_SUPPORT_URL`, `S2S_URL`, optional `S2S_SECRET`
-- User credentials are read from `common/apiTestConfig.ts` for the selected `TEST_ENV`
+- User credentials are resolved from `api/utils/apiTestRuntimeConfig.ts` for the selected `TEST_ENV`
 
 ### Running API Tests
 
@@ -332,10 +351,10 @@ API_PW_EXCLUDED_TAGS_OVERRIDE=@none yarn test:api:pw
 
 ### API Test Parallelism
 
-- E2E defaults to **2 workers** unless `FUNCTIONAL_TESTS_WORKERS` is set
-- API and integration default to **4 workers** unless `FUNCTIONAL_TESTS_WORKERS` is set
-- Jenkins pins `FUNCTIONAL_TESTS_WORKERS=4` for API and integration suites, and `FUNCTIONAL_TESTS_WORKERS=2` for browser-heavy E2E and cross-browser suites
-- Keeping E2E below the Jenkins agent core count avoids saturating the preview/AAT backends while API and integration stages run in parallel
+- API, E2E, and local integration defaults are controlled by each Playwright config unless `FUNCTIONAL_TESTS_WORKERS` is set
+- Jenkins pins `FUNCTIONAL_TESTS_WORKERS=6` for API, E2E, and cross-browser E2E, and CNP/nightly integration profiles default to 7 workers
+- The worker defaults keep the XUI 8CPU Jenkins agent below full per-suite saturation while leaving integration as the longest lane; monitor preview/AAT backend behaviour through the published Odhín and CI System Load reports
+- Jenkins runs API, integration, and E2E in parallel report-gathering mode: a failed suite fails its branch, but sibling suites continue so their Odhín and load reports are still published
 - Locally, the same suite defaults apply; override with `FUNCTIONAL_TESTS_WORKERS` or the Playwright `--workers` flag
 
 ### Playwright Load Profiling
@@ -344,14 +363,10 @@ The standard API, E2E, cross-browser E2E, and integration commands run through t
 
 ```bash
 # Run integration with a host-load profile and explicit workers
-yarn test:playwright:integration -- --workers=4
-
-# Compare a sharded run
-yarn test:playwright:integration -- --workers=4 --shard=1/2
-yarn test:playwright:integration -- --workers=4 --shard=2/2
+yarn test:playwright:integration -- --workers=7
 
 # Backwards-compatible alias
-yarn test:playwright:integration:profile -- --workers=4
+yarn test:playwright:integration:profile -- --workers=7
 ```
 
 Artifacts:
@@ -374,10 +389,10 @@ Useful controls:
 Jenkins CNP and nightly integration stages use `INTEGRATION_PW_PROFILE_RUNS` to control the integration worker profile. The default is:
 
 ```text
-workers=4
+workers=7
 ```
 
-Use `INTEGRATION_PW_WORKERS=<n>` and optional `INTEGRATION_PW_SHARD=<index/total>` on Jenkins to run a targeted integration profile instead of the default `INTEGRATION_PW_PROFILE_RUNS` value. CNP and nightly publish one **CI System Load** HTML report for the Jenkins run after checkout. They write checkout, install, build, browser install, report publishing, API, E2E, and integration stage markers to the profile event file so the report can show which stage was running when CPU, load, or memory changed.
+Use `INTEGRATION_PW_WORKERS=<n>` on Jenkins to run a targeted integration profile instead of the default `INTEGRATION_PW_PROFILE_RUNS` value. CNP and nightly publish one **CI System Load** HTML report for the Jenkins run after checkout. They write checkout, install, build, browser install, report publishing, API, E2E, and integration stage markers to the profile event file so the report can show which stage was running when CPU, load, or memory changed. Functional suite fan-out is parallel with `failFast=false` so one failed suite does not prevent the remaining suite reports from being collected. Jenkins defaults do not shard integration because split shard reports make diagnosis harder.
 
 The wrapper always marks the wrapped command start and finish on the chart. To show API, E2E, and integration boundaries on one timeline, run a monitor across the parent pipeline window or write shared JSONL events into `PW_LOAD_PROFILE_EVENTS_FILE`:
 
@@ -447,6 +462,8 @@ rm -rf .sessions && npx playwright test
 ### E2E Tag Filtering
 
 - E2E suites are tagged with `@e2e` plus feature tags such as `@e2e-search-case` and `@e2e-manage-tasks`.
+- Accessibility specs use `@a11y` and are excluded from default E2E unless `PLAYWRIGHT_INCLUDE_A11Y=true` or `yarn test:a11y:playwright` is used.
+- Accessibility runs default to 6 workers; override with `PW_A11Y_WORKERS` when a lower local worker count is needed.
 - Default excluded tags are read from `playwright_tests_new/E2E/tag-filter.json` (`excludedTags` array).
 - E2E default exclusions are currently empty so the full non-smoke E2E suite runs by default; smoke remains a separate Playwright project and Jenkins smoke stage.
 - Override excludes at runtime with `E2E_PW_EXCLUDED_TAGS_OVERRIDE`.
@@ -527,7 +544,7 @@ Notes:
 
 - Search-case integration specs now run in the main `chromium` project and can be isolated with `INTEGRATION_PW_INCLUDE_TAGS=@integration-search-case`
 - Integration session warmup is opt-in through `PW_INTEGRATION_SESSION_WARMUP_USERS`; use a comma-separated user list for targeted pre-capture, `@default` for the legacy shared pool, or `@none` to force no warmup
-- Integration specs continue to run on the default 4-worker `chromium` project unless `FUNCTIONAL_TESTS_WORKERS` is pinned explicitly
+- Integration specs continue to run on the default 7-worker `chromium` project unless `FUNCTIONAL_TESTS_WORKERS` is pinned explicitly
 - Odhin remains enabled by default for integration runs, including local runs
 - Local integration Odhin uses a lightweight profile by default and emits explicit finalization timing so post-test report generation is visible and bounded
 - Local integration Odhin also bounds runtime reporter hooks by default; override with `PW_ODHIN_RUNTIME_HOOK_TIMEOUT_MS=<ms>` or set `0` to disable the local safeguard
@@ -634,8 +651,8 @@ expect(visibleRows.length).toBeGreaterThan(0);
 
 - Multiple workers can safely request the same user session
 - **Filesystem-based lock mechanism** prevents concurrent logins for the same user
-- Locks coordinate across **all Playwright worker processes** (API + E2E) using `proper-lockfile`
-- Jenkins currently runs E2E with **2 workers**, and API and integration with **4 workers** on both Preview and AAT
+- Locks coordinate across **all Playwright worker processes** (API + E2E + integration) using `proper-lockfile`
+- Jenkins currently runs API and E2E with **6 workers** and integration with **7 workers** on both Preview and AAT
 - When one worker logs in user X, the remaining workers **and parallel API tests** wait for lock release and reuse the session
 - After acquiring lock, workers recheck freshness to ensure session is still valid
 - `ensureSession()` intentionally avoids forced recapture so lock waiters can reuse the newly refreshed session instead of logging in again
@@ -695,7 +712,7 @@ When **API and E2E tests run in parallel** (common in CI pipelines):
 │                                                                  │
 │  ┌──────────────────────┐        ┌──────────────────────┐      │
 │  │  E2E Tests            │        │  API Tests            │      │
-│  │  (2-4 workers)        │        │  (2-4 workers)        │      │
+│  │  (up to 6 workers)    │        │  (up to 6 workers)    │      │
 │  │  Need: solicitor      │        │  Need: solicitor      │      │
 │  └──────────┬────────────┘        └──────────┬────────────┘     │
 │             │                                 │                  │
@@ -769,24 +786,24 @@ npx playwright test documentUpload.spec.ts --project chromium --workers=1
 - Logs in SEARCH_EMPLOYMENT_CASE once (~30s)
 - Total login time: ~60s
 
-#### 2 Workers (Preview Jenkins Pipeline)
+#### 6 Workers (Parallel Jenkins API/E2E Suites)
 
 ```bash
-npx playwright test --project chromium --workers=2
+npx playwright test --project chromium --workers=6
 ```
 
 - Worker 1 logs in SOLICITOR → stores session
-- Worker 2 waits for lock → reuse SOLICITOR session
+- Workers 2-6 wait for lock → reuse SOLICITOR session
 - Total login time per user: ~30-45s (shared across all workers)
 
-#### 4 Workers (AAT Jenkins Pipeline)
+#### 7 Workers (Integration Jenkins Suite)
 
 ```bash
-npx playwright test --project chromium --workers=4
+npx playwright test --project chromium --workers=7
 ```
 
 - Worker 1 logs in SOLICITOR → stores session
-- Workers 2-4 wait for lock → reuse SOLICITOR session
+- Workers 2-7 wait for lock → reuse SOLICITOR session
 - Total login time per user: ~30-45s (shared across all workers)
 
 #### Auto-Sized Workers (Local or Unpinned CI)
@@ -803,12 +820,14 @@ npx playwright test --project chromium
 
 ```bash
 # Running simultaneously:
-npx playwright test --project chromium --workers=2  # Preview E2E tests
-npx playwright test --project node-api --workers=4  # Preview API tests
+npx playwright test --project chromium --workers=6  # Preview E2E tests
+npx playwright test --project node-api --workers=6  # Preview API tests
+npx playwright test --project chromium --workers=7  # Preview integration tests
 
 # AAT:
-npx playwright test --project chromium --workers=2  # AAT E2E tests
-npx playwright test --project node-api --workers=4  # AAT API tests
+npx playwright test --project chromium --workers=6  # AAT E2E tests
+npx playwright test --project node-api --workers=6  # AAT API tests
+npx playwright test --project chromium --workers=7  # AAT integration tests
 
 # Local or unpinned CI:
 npx playwright test --project chromium  # E2E tests
@@ -817,7 +836,7 @@ npx playwright test --project node-api  # API tests
 
 - E2E Worker 1 logs in solicitor → stores session
 - API workers detect fresh session → reuse IDAM token
-- **Total login time: ~30s (not 60s!)** ⚡
+- Total login time is about 30 seconds instead of about 60 seconds where sessions are compatible.
 
 ### Session Storage
 
@@ -896,6 +915,15 @@ try {
 
 ### Troubleshooting
 
+#### Dynamic Provisioning Failures
+
+When a run fails before the browser journey starts, check the setup evidence first:
+
+1. Open the Playwright failure attachment named `<alias>-dynamic-user-provision-attempts.json`.
+2. In the Playwright HTML/Odhín artifacts, open the `failure-data.json` attachment for the failed test.
+3. Read the terminal `DynamicProvisioningError` attempt diagnostics. It should show each provisioning attempt, whether it was retryable, and the final downstream error.
+4. Keep the default retry policy unless the failure evidence proves that the retry budget itself is the problem.
+
 #### Session Expired During Test
 
 If tests fail with authentication errors:
@@ -925,7 +953,7 @@ If a session appears stale but isn't refreshing:
 
 ### Best Practices
 
-1. **Always use `ensureSession()` in `beforeAll`** - Not in `beforeEach` to avoid redundant checks
+1. **Always use `ensureSession()` in `beforeAll`** - Not in `beforeEach` to avoid redundant checks.
 2. **Load cookies in `beforeEach`** - Ensures each test starts with valid session
 3. **Specify only required users** - Don't capture sessions you won't use
 4. **Let sessions expire naturally** - Don't manually refresh unless necessary
@@ -1009,4 +1037,4 @@ export function isSessionFresh(
 
 - `api/utils/auth.ts` - API authentication helper
 - `api/data/testIds.ts` - Environment-driven test IDs
-- `common/apiTestConfig.ts` - User credentials and configuration
+- `api/utils/apiTestRuntimeConfig.ts` - Runtime user credential and environment configuration

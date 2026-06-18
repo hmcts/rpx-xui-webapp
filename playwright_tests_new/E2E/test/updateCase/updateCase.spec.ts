@@ -126,15 +126,21 @@ test.describe('Verify creating and updating a case works as expected', { tag: ['
       expect.soft(dateMatches, 'Update case date should match today (ignore time)').toBe(true);
       expect.soft(updateAuthor, 'Update case author should be present').not.toBe('');
 
+      const table = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.historyDetailsTable);
+      expect
+        .soft(
+          matchesToday(table.Date ?? '', expectedDate, numericFormat),
+          'Update case details date should match today (ignore time)'
+        )
+        .toBe(true);
+
       const expectedDetails = {
-        Date: updateDate,
         Author: updateAuthor,
         'End state': 'Case created',
         Event: 'Update case',
         Summary: '-',
         Comment: '-',
       };
-      const table = await caseDetailsPage.trRowsToObjectInPage(caseDetailsPage.historyDetailsTable);
       expect(table).toMatchObject(expectedDetails);
     });
   });

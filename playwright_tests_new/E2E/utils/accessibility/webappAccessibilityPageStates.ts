@@ -5,11 +5,13 @@ import {
   CHALLENGED_ACCESS_PATH,
   HEARING_MANAGER_CR84_OFF_USER,
   SPECIFIC_ACCESS_PATH,
+  applySearchCaseSessionCookies,
   applySessionCookies,
-  caseDetailsUrl,
   continueHearingsFlow,
+  createGlobalSearchResultsRouteHandler,
   hearingManagerRoles,
   openHearingsTab,
+  setupFastCaseRetrievalConfigRoute,
   setupAllWorkCasesRoutes,
   setupBookableBookingUiRoutesForTest,
   setupCaseFileViewMockRoutes,
@@ -20,13 +22,34 @@ import {
   setupMyAccessRoutes,
   setupMyCasesRoutes,
   setupReviewSpecificAccessMockRoutes,
+  setupRestrictedAccessMocks,
   setupSpecificAccessRequestMockRoutes,
+  setupGlobalSearchMockRoutes,
+  submitGlobalSearchFromMenu,
+  submitHeaderQuickSearch,
 } from '../../../integration/helpers';
 import { buildCaseListMock } from '../../../integration/mocks/caseList.mock';
+import {
+  buildGlobalSearchCaseDetailsMock,
+  buildGlobalSearchJurisdictionsMock,
+  buildGlobalSearchMenuResultsMock,
+  buildGlobalSearchNoResultsMock as buildGlobalSearchMenuNoResultsMock,
+  buildGlobalSearchServicesMock as buildGlobalSearchMenuServicesMock,
+  GLOBAL_SEARCH_CASE_REFERENCE,
+  GLOBAL_SEARCH_NON_EXISTENT_CASE_REFERENCE,
+} from '../../../integration/mocks/globalSearch.mock';
 import { LISTED_HEARING_SCENARIO } from '../../../integration/mocks/hearings.mock';
 import { pagedAllWorkCases } from '../../../integration/mocks/manageTasksAllWork.mock';
 import { buildMyAccessCases } from '../../../integration/mocks/myAccess.mock';
 import { buildMyCaseMock } from '../../../integration/mocks/myCases.mock';
+import {
+  buildGlobalSearchNoResultsMock,
+  buildGlobalSearchResultsMock,
+  buildGlobalSearchServicesMock,
+  buildSearchCaseJurisdictionsMock,
+  VALID_SEARCH_CASE_REFERENCE,
+} from '../../../integration/mocks/search.mock';
+import { TEST_USERS } from '../../../integration/testData';
 import { buildMyTaskListMock } from '../../../integration/mocks/taskList.mock';
 import type { AccessibilityEngine } from './accessibilityAudit';
 import type { KnownAxeViolation } from './axeKnownViolations';
@@ -43,7 +66,7 @@ export type AccessibilityPageState = {
   setup: (fixtures: AccessibilityFixtures, testInfo: TestInfo) => Promise<void>;
 };
 
-const defaultEngines: AccessibilityEngine[] = ['axe', 'wave-like'];
+const defaultEngines: AccessibilityEngine[] = ['axe', 'wave-like', 'screen-reader'];
 
 const knownFormLabelViolation: KnownAxeViolation = {
   id: 'label',
@@ -78,6 +101,16 @@ const staticAndErrorPages = [
 ];
 
 const mainContent = (page: Page) => page.locator('main').first();
+const globalSearchMenuResultsHandler = createGlobalSearchResultsRouteHandler({
+  matchingCaseReference: GLOBAL_SEARCH_CASE_REFERENCE,
+  successResponse: buildGlobalSearchMenuResultsMock(),
+  noResultsResponse: buildGlobalSearchMenuNoResultsMock(),
+});
+const restrictedAccessSearchResultsHandler = createGlobalSearchResultsRouteHandler({
+  matchingCaseReference: VALID_SEARCH_CASE_REFERENCE,
+  successResponse: buildGlobalSearchResultsMock(VALID_SEARCH_CASE_REFERENCE),
+  noResultsResponse: buildGlobalSearchNoResultsMock(),
+});
 
 async function expectMainContent(page: Page): Promise<void> {
   await expect(mainContent(page)).toBeVisible();
@@ -198,6 +231,74 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
       await setupCaseListMocks(page, { searchResponse: buildCaseListMock(3) });
       await page.goto('/cases/case-search');
       await expect(caseListPage.filtersContainer).toBeVisible();
+    },
+  },
+  {
+    title: 'global search results from mocked menu search',
+    feature: 'global search',
+    engines: defaultEngines,
+    setup: async ({ page, caseListPage, globalSearchPage }, testInfo) => {
+      await applySearchCaseSessionCookies(page, testInfo);
+      await setupGlobalSearchMockRoutes(page, {
+        jurisdictions: buildGlobalSearchJurisdictionsMock(),
+        services: buildGlobalSearchMenuServicesMock(),
+        searchResultsHandler: globalSearchMenuResultsHandler,
+        caseDetailsHandler: async (route) => {
+          const requestUrl = route.request().url();
+          const caseReference = requestUrl.split('/').pop() ?? GLOBAL_SEARCH_CASE_REFERENCE;
+          await route.fulfill({
+            status: 200,
+            contentType: 'application/json',
+            body: JSON.stringify(buildGlobalSearchCaseDetailsMock(caseReference)),
+          });
+        },
+      });
+      await caseListPage.navigateTo();
+      await globalSearchPage.performGlobalSearchWithCase(GLOBAL_SEARCH_CASE_REFERENCE, 'PUBLICLAW');
+      await expect(globalSearchPage.searchResultsHeader).toHaveText('Search results');
+      await expect(globalSearchPage.searchResultsTable).toBeVisible();
+    },
+  },
+  {
+    title: 'global search no-results state',
+    feature: 'global search',
+    engines: defaultEngines,
+    setup: async ({ page, globalSearchPage }, testInfo) => {
+      await applySearchCaseSessionCookies(page, testInfo);
+      await setupGlobalSearchMockRoutes(page, {
+        jurisdictions: buildGlobalSearchJurisdictionsMock(),
+        services: buildGlobalSearchMenuServicesMock(),
+        searchResultsHandler: globalSearchMenuResultsHandler,
+      });
+      await submitGlobalSearchFromMenu(GLOBAL_SEARCH_NON_EXISTENT_CASE_REFERENCE, globalSearchPage, page);
+      await expect(page).toHaveURL(/\/search\/noresults/);
+      await expect(page.getByRole('heading', { level: 1, name: 'No results found' })).toBeVisible();
+    },
+  },
+  {
+    title: 'restricted case access users table',
+    feature: 'restricted access',
+    engines: defaultEngines,
+    setup: async ({ page, caseDetailsPage, searchCasePage }) => {
+      await applySessionCookies(page, TEST_USERS.FPL_GLOBAL_SEARCH);
+      await setupFastCaseRetrievalConfigRoute(page);
+      await setupGlobalSearchMockRoutes(page, {
+        jurisdictions: buildSearchCaseJurisdictionsMock(),
+        services: buildGlobalSearchServicesMock(),
+        searchResultsHandler: restrictedAccessSearchResultsHandler,
+      });
+      await page.route('**/data/internal/cases/**', async (route) => {
+        await route.fulfill({
+          status: 403,
+          contentType: 'application/json',
+          body: JSON.stringify({ message: 'Restricted case access' }),
+        });
+      });
+      await setupRestrictedAccessMocks(page);
+      await submitHeaderQuickSearch(VALID_SEARCH_CASE_REFERENCE, searchCasePage);
+      await expect(page).toHaveURL(new RegExp(`/cases/restricted-case-access/${VALID_SEARCH_CASE_REFERENCE}`));
+      await expect(caseDetailsPage.restrictedAccessContainer).toBeVisible();
+      await expect(page.getByRole('heading', { level: 2, name: 'Users with access' })).toBeVisible();
     },
   },
   {
@@ -383,30 +484,40 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
 
 export const lighthouseAccessibilityPageStates: AccessibilityPageState[] = [
   {
-    title: 'accessibility statement lighthouse smoke',
-    feature: 'lighthouse',
+    title: 'authenticated case list lighthouse smoke',
+    feature: 'case list',
     engines: ['lighthouse'],
     setup: async ({ page }) => {
-      await page.goto('/accessibility');
-      await expectMainContent(page);
+      await applySessionCookies(page, 'SOLICITOR');
+      await setupCaseListMocks(page, { searchResponse: buildCaseListMock(3) });
+      await page.goto('/cases');
+      await expect(mainContent(page)).toBeVisible();
+      await expect(page.locator('exui-case-list, ccd-case-list, .case-list, .govuk-table').first()).toBeVisible();
     },
   },
   {
-    title: 'cookies page lighthouse smoke',
-    feature: 'lighthouse',
+    title: 'authenticated task list lighthouse smoke',
+    feature: 'work allocation',
     engines: ['lighthouse'],
     setup: async ({ page }) => {
-      await page.goto('/cookies');
+      await applySessionCookies(page, 'STAFF_ADMIN');
+      await setupManageTasksBaseRoutes(page, { taskListResponse: buildMyTaskListMock('a11y-staff-admin', 3) });
+      await page.goto('/work/my-work/list');
       await expectMainContent(page);
+      await expect(page.locator('table, exui-task-list').first()).toBeVisible();
     },
   },
   {
-    title: 'service down page lighthouse smoke',
-    feature: 'lighthouse',
+    title: 'authenticated case sharing validation lighthouse smoke',
+    feature: 'case sharing',
     engines: ['lighthouse'],
     setup: async ({ page }) => {
-      await page.goto('/service-down');
+      await applySessionCookies(page, 'STAFF_ADMIN');
+      await setupCaseShareMockRoutes(page);
+      await page.goto('/cases/case-share?init=true');
+      await page.locator('#share-case-nav button').first().click();
       await expectMainContent(page);
+      await expect(page.locator('.govuk-error-summary')).toBeVisible();
     },
   },
 ];

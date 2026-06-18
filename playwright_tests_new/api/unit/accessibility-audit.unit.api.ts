@@ -6,7 +6,7 @@ import {
   type AccessibilityEngine,
 } from '../../E2E/utils/accessibility/accessibilityAudit';
 
-const defaultEngines: AccessibilityEngine[] = ['axe', 'wave-like', 'lighthouse'];
+const defaultEngines: AccessibilityEngine[] = ['axe', 'wave-like', 'screen-reader', 'lighthouse'];
 
 test.describe('Unified accessibility audit contract', { tag: '@svc-internal' }, () => {
   const previousEngines = process.env.A11Y_ENGINES;
@@ -33,6 +33,18 @@ test.describe('Unified accessibility audit contract', { tag: '@svc-internal' }, 
 
     process.env.A11Y_ENGINES = 'all';
     expect(resolveAccessibilityEngines(defaultEngines)).toEqual(defaultEngines);
+
+    process.env.A11Y_ENGINES = 'jaws,nvda,screenreader';
+    expect(resolveAccessibilityEngines(defaultEngines)).toEqual(['screen-reader']);
+  });
+
+  test('filters requested engines to the page-state engines', () => {
+    process.env.A11Y_ENGINES = 'axe,wave-like,screen-reader';
+    expect(resolveAccessibilityEngines(['lighthouse'])).toEqual([]);
+
+    process.env.A11Y_ENGINES = 'lighthouse';
+    expect(resolveAccessibilityEngines(['axe', 'wave-like', 'screen-reader'])).toEqual([]);
+    expect(resolveAccessibilityEngines(['lighthouse'])).toEqual(['lighthouse']);
   });
 
   test('uses report-only mode unless strict mode is explicitly enabled', () => {

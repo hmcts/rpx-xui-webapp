@@ -273,6 +273,9 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
       [],
       [
         {
+          engine: 'axe',
+          feature: 'static pages',
+          pageState: 'privacy policy',
           testTitle: 'privacy policy page has no automatically detectable accessibility violations',
           htmlFileName: 'privacy-policy-accessibility-issues.html',
           jsonFileName: 'privacy-policy-accessibility-issues.json',
@@ -329,16 +332,19 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     );
 
     expect(nextHtml).toContain('data-a11y-test-evidence-link="privacy-policy-accessibility-issues.html"');
-    expect(nextHtml).toContain('Accessibility evidence for this test');
+    expect(nextHtml).toContain('axe accessibility evidence for this test');
     expect(nextHtml).toContain('Open highlighted issue report');
     expect(nextHtml).toContain('Open screenshot');
-    expect(nextHtml).toContain('Open DOM JSON');
-    expect(nextHtml.indexOf('Accessibility evidence for this test')).toBeLessThan(nextHtml.indexOf('run info'));
+    expect(nextHtml).toContain('Open DOM and axe JSON');
+    expect(nextHtml.indexOf('axe accessibility evidence for this test')).toBeLessThan(nextHtml.indexOf('run info'));
   });
 
   test('normalizes accessibility evidence entries and drops incomplete records', () => {
     const entries = enhancerTest.normalizeEvidenceEntries([
       {
+        engine: 'screen-reader',
+        feature: 'case list',
+        pageState: 'results',
         testTitle: 'valid a11y evidence',
         htmlFileName: 'issue.html',
         jsonFileName: 'issue.json',
@@ -357,11 +363,16 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
 
     expect(entries).toHaveLength(1);
     expect(entries[0]).toEqual({
+      engine: 'screen-reader',
+      feature: 'case list',
+      pageState: 'results',
       testTitle: 'valid a11y evidence',
       htmlFileName: 'issue.html',
       jsonFileName: 'issue.json',
       screenshotFileName: 'issue.png',
       violationCount: 2,
+      status: '',
+      summary: '',
       rules: ['label'],
       targets: ['#reason'],
     });
@@ -374,6 +385,9 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     fs.writeFileSync(
       path.join(evidenceDir, 'manifest-entry-case-list-accessibility-issues.json'),
       JSON.stringify({
+        engine: 'wave-like',
+        feature: 'case list',
+        pageState: 'search results',
         testTitle: 'case list page has no automatically detectable accessibility violations',
         htmlFileName: 'case-list-accessibility-issues.html',
         jsonFileName: 'case-list-accessibility-issues.json',
@@ -388,11 +402,16 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
 
     expect(entries).toEqual([
       {
+        engine: 'wave-like',
+        feature: 'case list',
+        pageState: 'search results',
         testTitle: 'case list page has no automatically detectable accessibility violations',
         htmlFileName: 'case-list-accessibility-issues.html',
         jsonFileName: 'case-list-accessibility-issues.json',
         screenshotFileName: 'case-list-accessibility-issues.png',
         violationCount: 1,
+        status: '',
+        summary: '',
         rules: ['label'],
         targets: ['#case-reference'],
       },

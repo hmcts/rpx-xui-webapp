@@ -8,15 +8,24 @@ export type LighthouseAuditEvidence = {
 };
 
 type LighthouseEvidenceEntry = {
+  engine: 'lighthouse';
   testTitle: string;
   feature: string;
   pageState: string;
   url: string;
+  htmlFileName: string;
+  jsonFileName: string;
+  screenshotFileName: string;
+  violationCount: number;
+  rules: string[];
+  targets: string[];
   summaryFileName: string;
   reportFileName: string;
 };
 
 const LIGHTHOUSE_ENTRY_PREFIX = 'lighthouse-entry-';
+const EVIDENCE_ENTRY_PREFIX = 'manifest-entry-';
+const EVIDENCE_MANIFEST_FILE = 'manifest.json';
 const LIGHTHOUSE_REPORT_DIR = 'test-results';
 
 export async function runLighthouseAuditWithEvidence(
@@ -26,7 +35,8 @@ export async function runLighthouseAuditWithEvidence(
     feature: string;
     pageState: string;
     url: string;
-  }
+  },
+  screenshot?: Buffer
 ): Promise<LighthouseAuditEvidence> {
   const beforeReports = new Set(await listLighthouseReports());
   await audit();
@@ -46,12 +56,21 @@ export async function runLighthouseAuditWithEvidence(
   const safeTitle = sanitiseFileName(testInfo.title);
   const reportFileName = `${safeTitle}-lighthouse-report.html`;
   const summaryFileName = `${safeTitle}-lighthouse-summary.html`;
+  const jsonFileName = `${safeTitle}-lighthouse-summary.json`;
+  const screenshotFileName = `${safeTitle}-lighthouse-screenshot.png`;
   const summaryHtml = buildSummaryHtml(context, reportFileName);
   const entry: LighthouseEvidenceEntry = {
+    engine: 'lighthouse',
     testTitle: testInfo.title,
     feature: context.feature,
     pageState: context.pageState,
     url: context.url,
+    htmlFileName: summaryFileName,
+    jsonFileName,
+    screenshotFileName,
+    violationCount: 0,
+    rules: ['accessibility-threshold'],
+    targets: [context.url],
     summaryFileName,
     reportFileName,
   };
@@ -59,7 +78,13 @@ export async function runLighthouseAuditWithEvidence(
   await fs.mkdir(evidenceDir, { recursive: true });
   await fs.writeFile(path.join(evidenceDir, reportFileName), rawReport);
   await fs.writeFile(path.join(evidenceDir, summaryFileName), summaryHtml);
+  await fs.writeFile(path.join(evidenceDir, jsonFileName), JSON.stringify(entry, null, 2));
+  if (screenshot) {
+    await fs.writeFile(path.join(evidenceDir, screenshotFileName), screenshot);
+  }
   await fs.writeFile(path.join(evidenceDir, `${LIGHTHOUSE_ENTRY_PREFIX}${safeTitle}.json`), JSON.stringify(entry, null, 2));
+  await writeEvidenceEntry(evidenceDir, safeTitle, entry);
+  await writeEvidenceManifest(evidenceDir, entry);
   await writeLighthouseIndex(evidenceDir);
 
   await testInfo.attach('lighthouse-accessibility-summary.html', {
@@ -75,6 +100,32 @@ export async function runLighthouseAuditWithEvidence(
     message: `Lighthouse report published: accessibility-evidence/${summaryFileName}`,
     evidenceFiles: [summaryFileName, reportFileName],
   };
+}
+
+async function writeEvidenceEntry(evidenceDir: string, baseName: string, entry: LighthouseEvidenceEntry): Promise<void> {
+  await fs.writeFile(
+    path.join(evidenceDir, `${EVIDENCE_ENTRY_PREFIX}${baseName}-lighthouse.json`),
+    JSON.stringify(entry, null, 2)
+  );
+}
+
+async function writeEvidenceManifest(evidenceDir: string, entry: LighthouseEvidenceEntry): Promise<void> {
+  const manifestPath = path.join(evidenceDir, EVIDENCE_MANIFEST_FILE);
+  const existingEntries = await readEvidenceManifest(evidenceDir);
+  const retainedEntries = existingEntries.filter(
+    (existingEntry) => existingEntry.testTitle !== entry.testTitle || existingEntry.htmlFileName !== entry.htmlFileName
+  );
+
+  await fs.writeFile(manifestPath, JSON.stringify([...retainedEntries, entry], null, 2));
+}
+
+async function readEvidenceManifest(evidenceDir: string): Promise<LighthouseEvidenceEntry[]> {
+  try {
+    const manifest = JSON.parse(await fs.readFile(path.join(evidenceDir, EVIDENCE_MANIFEST_FILE), 'utf8'));
+    return Array.isArray(manifest) ? manifest : [];
+  } catch {
+    return [];
+  }
 }
 
 async function listLighthouseReports(): Promise<string[]> {

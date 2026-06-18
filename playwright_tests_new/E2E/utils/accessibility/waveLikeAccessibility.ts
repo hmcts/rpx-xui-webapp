@@ -23,6 +23,9 @@ type WaveLikeViolation = {
 };
 
 type PublishedEvidenceEntry = {
+  engine: 'wave-like';
+  feature?: string;
+  pageState?: string;
   testTitle: string;
   attachmentPrefix: string;
   htmlFileName: string;
@@ -31,6 +34,12 @@ type PublishedEvidenceEntry = {
   violationCount: number;
   rules: string[];
   targets: string[];
+};
+
+type PublishedEvidenceMetadata = {
+  engine: 'wave-like';
+  feature: string;
+  pageState: string;
 };
 
 type WaveLikePageSnapshot = {
@@ -213,7 +222,8 @@ export async function attachWaveLikeAccessibilityEvidence(
   page: Page,
   testInfo: TestInfo | undefined,
   violations: WaveLikeViolation[],
-  attachmentPrefix = 'wave-accessibility-issues'
+  attachmentPrefix = 'wave-accessibility-issues',
+  metadata?: PublishedEvidenceMetadata
 ): Promise<void> {
   if (!testInfo || violations.length === 0) {
     return;
@@ -243,7 +253,7 @@ export async function attachWaveLikeAccessibilityEvidence(
     contentType: 'text/html',
   });
 
-  await writePublishedEvidence(testInfo, page.url(), violations, pageSnapshot, screenshot, attachmentPrefix);
+  await writePublishedEvidence(testInfo, page.url(), violations, pageSnapshot, screenshot, attachmentPrefix, metadata);
 }
 
 async function collectWaveLikePageSnapshot(page: Page): Promise<WaveLikePageSnapshot> {
@@ -550,7 +560,8 @@ async function writePublishedEvidence(
   violations: WaveLikeViolation[],
   pageSnapshot: WaveLikePageSnapshot,
   screenshot: Buffer,
-  attachmentPrefix: string
+  attachmentPrefix: string,
+  metadata?: PublishedEvidenceMetadata
 ): Promise<void> {
   const evidenceDir = path.resolve(
     process.env.PW_A11Y_EVIDENCE_DIR ||
@@ -565,6 +576,9 @@ async function writePublishedEvidence(
   const jsonFileName = `${baseName}.json`;
   const screenshotFileName = `${baseName}-highlighted-screenshot.png`;
   const entry: PublishedEvidenceEntry = {
+    engine: 'wave-like',
+    feature: metadata?.feature,
+    pageState: metadata?.pageState,
     testTitle: testInfo.title,
     attachmentPrefix,
     htmlFileName,

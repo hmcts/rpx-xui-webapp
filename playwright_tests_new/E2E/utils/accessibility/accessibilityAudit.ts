@@ -7,9 +7,14 @@ import {
   type KnownAxeViolation,
 } from './axeKnownViolations';
 import type { LighthouseAuditEvidence } from './lighthouseEvidence';
+import {
+  attachAccessibilityPageSummaryEvidence,
+  attachScreenReaderLikeAccessibilityEvidence,
+  collectScreenReaderLikeAccessibilityViolations,
+} from './screenReaderLikeAccessibility';
 import { attachWaveLikeAccessibilityEvidence, collectWaveLikeAccessibilityViolations } from './waveLikeAccessibility';
 
-export type AccessibilityEngine = 'axe' | 'wave-like' | 'lighthouse';
+export type AccessibilityEngine = 'axe' | 'wave-like' | 'screen-reader' | 'lighthouse';
 
 export interface AccessibilityAuditOptions {
   defaultEngines: AccessibilityEngine[];
@@ -37,6 +42,12 @@ const engineAliases: Record<string, AccessibilityEngine> = {
   'wave-like': 'wave-like',
   wave: 'wave-like',
   waveLike: 'wave-like',
+  'screen-reader': 'screen-reader',
+  screenreader: 'screen-reader',
+  screenReader: 'screen-reader',
+  sr: 'screen-reader',
+  jaws: 'screen-reader',
+  nvda: 'screen-reader',
   lighthouse: 'lighthouse',
 };
 
@@ -55,7 +66,14 @@ export function resolveAccessibilityEngines(defaultEngines: AccessibilityEngine[
     return defaultEngines;
   }
 
-  return Array.from(new Set(requested.map((engine) => engineAliases[engine]).filter(Boolean)));
+  const supportedEngines = new Set(defaultEngines);
+  return Array.from(
+    new Set(
+      requested
+        .map((engine) => engineAliases[engine])
+        .filter((engine): engine is AccessibilityEngine => Boolean(engine) && supportedEngines.has(engine))
+    )
+  );
 }
 
 export function isAccessibilityStrictMode(): boolean {
@@ -75,11 +93,22 @@ export async function auditAccessibilityPage(page: Page, testInfo: TestInfo, opt
     outcomes.push(await runWaveLikeEngine(page, testInfo, options));
   }
 
+  if (engines.includes('screen-reader')) {
+    outcomes.push(await runScreenReaderLikeEngine(page, testInfo, options));
+  }
+
   if (engines.includes('lighthouse') && options.runLighthouse) {
     outcomes.push(await runLighthouseEngine(options.runLighthouse));
   }
 
   await attachAccessibilityAuditSummary(testInfo, {
+    feature: options.feature,
+    pageState: options.pageState,
+    strict,
+    url: page.url(),
+    outcomes,
+  });
+  await attachAccessibilityPageSummaryEvidence(page, testInfo, {
     feature: options.feature,
     pageState: options.pageState,
     strict,
@@ -104,7 +133,11 @@ export async function auditAccessibilityPage(page: Page, testInfo: TestInfo, opt
 
 async function runAxeEngine(page: Page, testInfo: TestInfo, options: AccessibilityAuditOptions): Promise<EngineOutcome> {
   const results = await runAxeAudit(page);
-  await attachAccessibilityEvidence(page, testInfo, results, `${evidencePrefix(options)}-axe`);
+  await attachAccessibilityEvidence(page, testInfo, results, `${evidencePrefix(options)}-axe`, {
+    engine: 'axe',
+    feature: options.feature,
+    pageState: options.pageState,
+  });
   const summary = summarizeAxeViolations(results.violations);
   const unexpected = findUnexpectedAxeViolations(summary, options.axeKnownViolations ?? []);
   const knownIssueCount = countKnownAxeIssues(summary, unexpected);
@@ -121,7 +154,11 @@ async function runAxeEngine(page: Page, testInfo: TestInfo, options: Accessibili
 
 async function runWaveLikeEngine(page: Page, testInfo: TestInfo, options: AccessibilityAuditOptions): Promise<EngineOutcome> {
   const violations = await collectWaveLikeAccessibilityViolations(page);
-  await attachWaveLikeAccessibilityEvidence(page, testInfo, violations, `${evidencePrefix(options)}-wave-like`);
+  await attachWaveLikeAccessibilityEvidence(page, testInfo, violations, `${evidencePrefix(options)}-wave-like`, {
+    engine: 'wave-like',
+    feature: options.feature,
+    pageState: options.pageState,
+  });
 
   return {
     engine: 'wave-like',
@@ -129,6 +166,27 @@ async function runWaveLikeEngine(page: Page, testInfo: TestInfo, options: Access
     issueCount: violations.length,
     unexpectedIssueCount: violations.length,
     rules: Array.from(new Set(violations.map((violation) => violation.rule))),
+  };
+}
+
+async function runScreenReaderLikeEngine(
+  page: Page,
+  testInfo: TestInfo,
+  options: AccessibilityAuditOptions
+): Promise<EngineOutcome> {
+  const evidence = await collectScreenReaderLikeAccessibilityViolations(page);
+  await attachScreenReaderLikeAccessibilityEvidence(page, testInfo, evidence, `${evidencePrefix(options)}-screen-reader`, {
+    engine: 'screen-reader',
+    feature: options.feature,
+    pageState: options.pageState,
+  });
+
+  return {
+    engine: 'screen-reader',
+    status: evidence.violations.length > 0 ? 'issues-found' : 'passed',
+    issueCount: evidence.violations.length,
+    unexpectedIssueCount: evidence.violations.length,
+    rules: Array.from(new Set(evidence.violations.map((violation) => violation.rule))),
   };
 }
 

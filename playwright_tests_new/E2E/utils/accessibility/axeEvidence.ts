@@ -19,6 +19,9 @@ interface StoredAxeResults {
 }
 
 interface PublishedEvidenceEntry {
+  engine: 'axe';
+  feature?: string;
+  pageState?: string;
   testTitle: string;
   attachmentPrefix: string;
   htmlFileName: string;
@@ -27,6 +30,12 @@ interface PublishedEvidenceEntry {
   violationCount: number;
   rules: string[];
   targets: string[];
+}
+
+interface PublishedEvidenceMetadata {
+  engine: 'axe';
+  feature: string;
+  pageState: string;
 }
 
 const EVIDENCE_MANIFEST_FILE = 'manifest.json';
@@ -126,7 +135,8 @@ export async function attachAccessibilityEvidence(
   page: Page,
   testInfo: TestInfo | undefined,
   results: AxeResults,
-  attachmentPrefix = 'accessibility-issues'
+  attachmentPrefix = 'accessibility-issues',
+  metadata?: PublishedEvidenceMetadata
 ): Promise<void> {
   if (!testInfo || results.violations.length === 0) {
     return;
@@ -154,7 +164,7 @@ export async function attachAccessibilityEvidence(
     await cleanup();
   }
 
-  await writePublishedEvidence(testInfo, results, screenshot, attachmentPrefix);
+  await writePublishedEvidence(testInfo, results, screenshot, attachmentPrefix, metadata);
 }
 
 function formatViolationMessage(violations: Result[]): string {
@@ -249,7 +259,8 @@ async function writePublishedEvidence(
   testInfo: TestInfo,
   results: AxeResults,
   screenshot: Buffer,
-  attachmentPrefix: string
+  attachmentPrefix: string,
+  metadata?: PublishedEvidenceMetadata
 ): Promise<void> {
   const evidenceDir = path.resolve(
     process.env.PW_A11Y_EVIDENCE_DIR ||
@@ -264,6 +275,9 @@ async function writePublishedEvidence(
   const jsonFileName = `${baseName}.json`;
   const screenshotFileName = `${baseName}-highlighted-screenshot.png`;
   const entry: PublishedEvidenceEntry = {
+    engine: 'axe',
+    feature: metadata?.feature,
+    pageState: metadata?.pageState,
     testTitle: testInfo.title,
     attachmentPrefix,
     htmlFileName,

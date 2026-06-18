@@ -88,9 +88,9 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       waitForTimeout: async () => undefined,
     };
 
-    await expect(
-      sessionCaptureTest.waitForAuthenticatedShell(page as never, 'WA_DYNAMIC_CASEWORKER', 'exui-header', 1)
-    ).rejects.toThrow(/Service down page detected while waiting for app shell/);
+    await expect(sessionCaptureTest.waitForAuthenticatedShell(page as never, 'SOLICITOR', 'exui-header', 1)).rejects.toThrow(
+      /Service down page detected while waiting for app shell/
+    );
   });
 
   test('strict storage reuse refreshes when the cached state is no longer authenticated server-side', async () => {

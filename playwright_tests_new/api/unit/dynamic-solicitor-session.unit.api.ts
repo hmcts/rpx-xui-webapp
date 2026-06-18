@@ -182,24 +182,6 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
     expect(attachedBodies[attachedBodies.length - 1]).toContain('"userDetailsStatus":200');
   });
 
-  test('buildDynamicSessionIdentity supports the dynamic WA caseworker actor without organisation assignment', () => {
-    expect(
-      dynamicSessionTest.buildDynamicSessionIdentity('WA_DYNAMIC_CASEWORKER', {
-        id: 'caseworker-123',
-        email: 'wa.caseworker@example.test',
-        password: 'secret',
-        forename: 'Case',
-        surname: 'Worker',
-        roleNames: ['caseworker', 'caseworker-ia-caseofficer'],
-      })
-    ).toEqual({
-      userIdentifier: 'WA_DYNAMIC_CASEWORKER',
-      email: 'wa.caseworker@example.test',
-      password: 'secret',
-      sessionKey: 'dynamic-wa_dynamic_caseworker-caseworker-123',
-    });
-  });
-
   test('provisionDynamicSolicitorForAliasFlow returns explicit session identity and runs readiness checks without global runtime mutation', async () => {
     const attachmentNames: string[] = [];
     const observedCallOrder: string[] = [];

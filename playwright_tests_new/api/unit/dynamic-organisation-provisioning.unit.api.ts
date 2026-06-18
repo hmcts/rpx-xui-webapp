@@ -21,8 +21,6 @@ type ApiCall = {
 type DynamicOrganisationEnvSnapshot = {
   PW_DYNAMIC_ORGANISATION_MODE?: string;
   PW_DYNAMIC_ORGANISATION_RUN_ID?: string;
-  PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY?: string;
-  PW_APPROVE_ORG_API_STORAGE_STATE?: string;
   GITHUB_RUN_ID?: string;
   BUILD_TAG?: string;
   JOB_NAME?: string;
@@ -39,10 +37,6 @@ type DynamicOrganisationEnvSnapshot = {
   GITHUB_ACTIONS?: string;
   TF_BUILD?: string;
   GITLAB_CI?: string;
-  APPROVE_ORG_ADMIN_USERNAME?: string;
-  APPROVE_ORG_ADMIN_PASSWORD?: string;
-  AO_ADMIN_USERNAME?: string;
-  AO_ADMIN_PASSWORD?: string;
   TEST_EMAIL?: string;
   TEST_PASSWORD?: string;
   TEST_API_EMAIL_ADMIN?: string;
@@ -64,8 +58,6 @@ function snapshotDynamicOrganisationEnv(): DynamicOrganisationEnvSnapshot {
   return {
     PW_DYNAMIC_ORGANISATION_MODE: process.env.PW_DYNAMIC_ORGANISATION_MODE,
     PW_DYNAMIC_ORGANISATION_RUN_ID: process.env.PW_DYNAMIC_ORGANISATION_RUN_ID,
-    PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY: process.env.PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY,
-    PW_APPROVE_ORG_API_STORAGE_STATE: process.env.PW_APPROVE_ORG_API_STORAGE_STATE,
     GITHUB_RUN_ID: process.env.GITHUB_RUN_ID,
     BUILD_TAG: process.env.BUILD_TAG,
     JOB_NAME: process.env.JOB_NAME,
@@ -82,10 +74,6 @@ function snapshotDynamicOrganisationEnv(): DynamicOrganisationEnvSnapshot {
     GITHUB_ACTIONS: process.env.GITHUB_ACTIONS,
     TF_BUILD: process.env.TF_BUILD,
     GITLAB_CI: process.env.GITLAB_CI,
-    APPROVE_ORG_ADMIN_USERNAME: process.env.APPROVE_ORG_ADMIN_USERNAME,
-    APPROVE_ORG_ADMIN_PASSWORD: process.env.APPROVE_ORG_ADMIN_PASSWORD,
-    AO_ADMIN_USERNAME: process.env.AO_ADMIN_USERNAME,
-    AO_ADMIN_PASSWORD: process.env.AO_ADMIN_PASSWORD,
     TEST_EMAIL: process.env.TEST_EMAIL,
     TEST_PASSWORD: process.env.TEST_PASSWORD,
     TEST_API_EMAIL_ADMIN: process.env.TEST_API_EMAIL_ADMIN,
@@ -251,183 +239,6 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
     expect(createPayload.contactInformation[0].dxAddress[0].dxNumber).toBe('DX60615144212');
   });
 
-  test('falls back from RD Professional approval to approve-org API when auto strategy receives 403', async () => {
-    const rdCalls: ApiCall[] = [];
-    const approveOrgCalls: ApiCall[] = [];
-    const rdApiContext = {
-      post: async (url: string, options: { data?: unknown }) => {
-        rdCalls.push({ method: 'POST', url, data: options.data });
-        return response(201, { organisationIdentifier: 'ORG-AUTO' });
-      },
-      put: async (url: string, options: { data?: unknown }) => {
-        rdCalls.push({ method: 'PUT', url, data: options.data });
-        return response(403, { error: 'forbidden' });
-      },
-      get: async (url: string) => {
-        rdCalls.push({ method: 'GET', url });
-        return response(200, [{ organisationIdentifier: 'ORG-AUTO', status: 'ACTIVE' }]);
-      },
-      dispose: async () => undefined,
-    };
-    const approveOrgApiContext = {
-      get: async (url: string) => {
-        approveOrgCalls.push({ method: 'GET', url });
-        if (url === '/api/environment') {
-          return {
-            ...response(200, { featureFlags: {} }),
-            url: () => 'https://administer-orgs.aat.platform.hmcts.net/api/environment',
-          };
-        }
-        return response(200, {
-          organisations: [{ organisationIdentifier: 'ORG-AUTO', name: 'PW Dynamic Org auto-approval' }],
-        });
-      },
-      put: async (url: string, options: { data?: unknown; headers?: Record<string, string> }) => {
-        approveOrgCalls.push({ method: 'PUT', url, data: options.data, headers: options.headers });
-        return response(200, { organisationIdentifier: 'ORG-AUTO', status: 'ACTIVE' });
-      },
-      storageState: async () => ({
-        cookies: [
-          {
-            name: 'XSRF-TOKEN',
-            value: 'xsrf-token-for-put',
-            domain: 'administer-orgs.aat.platform.hmcts.net',
-          },
-        ],
-        origins: [],
-      }),
-      dispose: async () => undefined,
-    };
-
-    const result = await organisationProvisioningTest.createApprovedOrganisationFlow(
-      {
-        runId: 'auto-approval',
-        approvalStrategy: 'auto',
-        timeoutMs: 1_000,
-        pollIntervalMs: 1,
-      },
-      {
-        resolvePrerequisites: async () => ({
-          rdProfessionalApiPath: 'https://rd-professional-api.example.test',
-          headers: {},
-        }),
-        createApiContext: async () => rdApiContext as never,
-        createApproveOrgApiContext: async (baseURL) => {
-          expect(baseURL).toBe('https://administer-orgs.aat.platform.hmcts.net');
-          return approveOrgApiContext as never;
-        },
-        now: () => Date.now(),
-        sleep: async () => undefined,
-      }
-    );
-
-    expect(result).toMatchObject({
-      organisationId: 'ORG-AUTO',
-      status: 'ACTIVE',
-      approveStatus: 200,
-      approvalStrategy: 'approve-org-api',
-      pollAttempts: 1,
-    });
-    expect(rdCalls.map((call) => `${call.method} ${call.url}`)).toEqual([
-      'POST /refdata/internal/v1/organisations',
-      'PUT /refdata/internal/v1/organisations/ORG-AUTO',
-      'GET /refdata/internal/v1/organisations?status=Active',
-    ]);
-    expect(approveOrgCalls.map((call) => `${call.method} ${call.url}`)).toEqual([
-      'GET /api/organisations?organisationId=ORG-AUTO&version=v1',
-      'GET /api/environment',
-      'PUT /api/organisations/ORG-AUTO',
-    ]);
-    expect(approveOrgCalls[2].headers).toEqual({ 'x-xsrf-token': 'xsrf-token-for-put' });
-    expect(approveOrgCalls[2].data).toMatchObject({
-      organisationIdentifier: 'ORG-AUTO',
-      name: 'PW Dynamic Org auto-approval',
-      status: 'ACTIVE',
-    });
-    expect(approveOrgCalls[2].data).not.toHaveProperty('organisations');
-    expect(result.timings).toMatchObject([
-      { stage: 'create', status: 201 },
-      { stage: 'approve', status: 200, strategy: 'approve-org-api' },
-      { stage: 'poll-active', status: 200 },
-    ]);
-  });
-
-  test('retries transient approve-org API gateway failures without retrying organisation creation @svc-internal', async () => {
-    const rdCalls: ApiCall[] = [];
-    const approveOrgCalls: ApiCall[] = [];
-    const sleepDelays: number[] = [];
-    let approveOrgReadAttempts = 0;
-    const rdApiContext = {
-      post: async (url: string, options: { data?: unknown }) => {
-        rdCalls.push({ method: 'POST', url, data: options.data });
-        return response(201, { organisationIdentifier: 'ORG-RETRY' });
-      },
-      put: async (url: string, options: { data?: unknown }) => {
-        rdCalls.push({ method: 'PUT', url, data: options.data });
-        return response(403, { error: 'forbidden' });
-      },
-      get: async (url: string) => {
-        rdCalls.push({ method: 'GET', url });
-        return response(200, [{ organisationIdentifier: 'ORG-RETRY', status: 'ACTIVE' }]);
-      },
-      dispose: async () => undefined,
-    };
-    const approveOrgApiContext = {
-      get: async (url: string) => {
-        approveOrgCalls.push({ method: 'GET', url });
-        approveOrgReadAttempts += 1;
-        if (approveOrgReadAttempts === 1) {
-          return response(504, '<html><h1>504 Gateway Time-out</h1></html>');
-        }
-        return response(200, {
-          organisations: [{ organisationIdentifier: 'ORG-RETRY', name: 'PW Dynamic Org retry approval' }],
-        });
-      },
-      put: async (url: string, options: { data?: unknown; headers?: Record<string, string> }) => {
-        approveOrgCalls.push({ method: 'PUT', url, data: options.data, headers: options.headers });
-        return response(200, { organisationIdentifier: 'ORG-RETRY', status: 'ACTIVE' });
-      },
-      storageState: async () => ({
-        cookies: [
-          {
-            name: 'XSRF-TOKEN',
-            value: 'xsrf-token-for-put',
-            domain: 'administer-orgs.aat.platform.hmcts.net',
-          },
-        ],
-        origins: [],
-      }),
-      dispose: async () => undefined,
-    };
-
-    const result = await organisationProvisioningTest.createApprovedOrganisationFlow(
-      {
-        runId: 'retry-approval',
-        approvalStrategy: 'auto',
-        timeoutMs: 1_000,
-        pollIntervalMs: 1,
-      },
-      {
-        resolvePrerequisites: async () => ({
-          rdProfessionalApiPath: 'https://rd-professional-api.example.test',
-          headers: {},
-        }),
-        createApiContext: async () => rdApiContext as never,
-        createApproveOrgApiContext: async () => approveOrgApiContext as never,
-        now: () => Date.now(),
-        sleep: async (delayMs) => {
-          sleepDelays.push(delayMs);
-        },
-      }
-    );
-
-    expect(result.approveStatus).toBe(200);
-    expect(rdCalls.filter((call) => call.method === 'POST')).toHaveLength(1);
-    expect(approveOrgCalls.filter((call) => call.method === 'GET' && call.url.startsWith('/api/organisations'))).toHaveLength(2);
-    expect(approveOrgCalls.some((call) => call.method === 'PUT')).toBe(true);
-    expect(sleepDelays).toEqual([2_000]);
-  });
-
   test('recovers a pending organisation after a duplicate SRA create response', async () => {
     const calls: ApiCall[] = [];
     let approved = false;
@@ -562,129 +373,6 @@ test.describe('Dynamic organisation provisioning unit tests', { tag: '@svc-inter
       'POST /refdata/internal/v1/organisations',
       'GET /refdata/internal/v1/organisations?status=Active',
       'GET /refdata/internal/v1/organisations?status=Active',
-    ]);
-  });
-
-  test('approval strategy parsing accepts case-insensitive supported values and rejects invalid values', () => {
-    const originalEnv = snapshotDynamicOrganisationEnv();
-    try {
-      process.env.PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY = 'AUTO';
-      expect(organisationProvisioningTest.resolveApprovalStrategy({})).toBe('auto');
-
-      process.env.PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY = 'approve-org-api';
-      expect(organisationProvisioningTest.resolveApprovalStrategy({})).toBe('approve-org-api');
-
-      process.env.PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY = 'approve-org';
-      expect(() => organisationProvisioningTest.resolveApprovalStrategy({})).toThrow(
-        /Unsupported PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY='approve-org'/
-      );
-    } finally {
-      restoreDynamicOrganisationEnv(originalEnv);
-    }
-  });
-
-  test('requires approve-org storage state or admin credentials when approve-org approval strategy has no injected context', async () => {
-    const originalEnv = snapshotDynamicOrganisationEnv();
-    process.env.PW_APPROVE_ORG_API_STORAGE_STATE = '/tmp/non-existent-approve-org-api.storage.json';
-    delete process.env.APPROVE_ORG_ADMIN_USERNAME;
-    delete process.env.APPROVE_ORG_ADMIN_PASSWORD;
-    delete process.env.AO_ADMIN_USERNAME;
-    delete process.env.AO_ADMIN_PASSWORD;
-    delete process.env.TEST_EMAIL;
-    delete process.env.TEST_PASSWORD;
-    delete process.env.TEST_API_EMAIL_ADMIN;
-    delete process.env.TEST_API_PASSWORD_ADMIN;
-    const apiContext = {
-      post: async () => response(201, { organisationIdentifier: 'ORG-NO-STATE' }),
-      dispose: async () => undefined,
-    };
-
-    try {
-      await expect(
-        organisationProvisioningTest.createApprovedOrganisationFlow(
-          {
-            runId: 'missing-state',
-            approvalStrategy: 'approve-org-api',
-            timeoutMs: 1_000,
-            pollIntervalMs: 1,
-          },
-          {
-            resolvePrerequisites: async () => ({
-              rdProfessionalApiPath: 'https://rd-professional-api.example.test',
-              headers: {},
-            }),
-            createApiContext: async () => apiContext as never,
-            now: () => Date.now(),
-            sleep: async () => undefined,
-          }
-        )
-      ).rejects.toMatchObject<Partial<DynamicOrganisationProvisioningError>>({
-        stage: 'approve',
-        endpoint: 'https://administer-orgs.aat.platform.hmcts.net',
-        status: 'unknown',
-        timings: [
-          { stage: 'create', status: 201 },
-          { stage: 'approve', status: 'unknown' },
-        ],
-        responsePreview: {
-          message:
-            'Approve-org API approval requires a fresh storage state or approval-capable credentials. Set PW_APPROVE_ORG_API_STORAGE_STATE to a valid authenticated storage state, or set APPROVE_ORG_ADMIN_USERNAME/APPROVE_ORG_ADMIN_PASSWORD (fallbacks: AO_ADMIN_USERNAME/AO_ADMIN_PASSWORD, TEST_EMAIL/TEST_PASSWORD, or TEST_API_EMAIL_ADMIN/TEST_API_PASSWORD_ADMIN).',
-        },
-      });
-    } finally {
-      restoreDynamicOrganisationEnv(originalEnv);
-    }
-  });
-
-  test('approve-org approval fails before PUT when read response has no matching organisation', async () => {
-    const approveOrgCalls: ApiCall[] = [];
-    const rdApiContext = {
-      post: async () => response(201, { organisationIdentifier: 'ORG-MISSING' }),
-      dispose: async () => undefined,
-    };
-    const approveOrgApiContext = {
-      get: async (url: string) => {
-        approveOrgCalls.push({ method: 'GET', url });
-        return response(200, {
-          organisations: [{ organisationIdentifier: 'ORG-OTHER', name: 'Other org' }],
-        });
-      },
-      put: async (url: string, options: { data?: unknown }) => {
-        approveOrgCalls.push({ method: 'PUT', url, data: options.data });
-        return response(200, { organisationIdentifier: 'ORG-MISSING', status: 'ACTIVE' });
-      },
-      dispose: async () => undefined,
-    };
-
-    await expect(
-      organisationProvisioningTest.createApprovedOrganisationFlow(
-        {
-          runId: 'missing-approve-org-match',
-          approvalStrategy: 'approve-org-api',
-          timeoutMs: 1_000,
-          pollIntervalMs: 1,
-        },
-        {
-          resolvePrerequisites: async () => ({
-            rdProfessionalApiPath: 'https://rd-professional-api.example.test',
-            headers: {},
-          }),
-          createApiContext: async () => rdApiContext as never,
-          createApproveOrgApiContext: async () => approveOrgApiContext as never,
-          now: () => Date.now(),
-          sleep: async () => undefined,
-        }
-      )
-    ).rejects.toMatchObject<Partial<DynamicOrganisationProvisioningError>>({
-      stage: 'approve',
-      endpoint: '/api/organisations?organisationId=ORG-MISSING&version=v1',
-      status: 200,
-      responsePreview: {
-        message: "Approve-org API did not return organisation 'ORG-MISSING'.",
-      },
-    });
-    expect(approveOrgCalls.map((call) => `${call.method} ${call.url}`)).toEqual([
-      'GET /api/organisations?organisationId=ORG-MISSING&version=v1',
     ]);
   });
 

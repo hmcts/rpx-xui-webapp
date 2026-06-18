@@ -1,6 +1,4 @@
-import { chromium, request, type APIRequestContext, type Browser, type Page } from '@playwright/test';
-import * as fs from 'node:fs';
-import * as path from 'node:path';
+import { type APIRequestContext } from '@playwright/test';
 
 import { firstNonEmpty, resolveDynamicOrganisationRunId } from '../dynamicOrganisationRunId.js';
 
@@ -46,12 +44,10 @@ export type DynamicOrganisationProvisioningOptions = {
   superUser?: DynamicOrganisationSuperUser;
   timeoutMs?: number;
   pollIntervalMs?: number;
-  approvalStrategy?: DynamicOrganisationApprovalStrategy;
 };
 
-export type DynamicOrganisationApprovalStrategy = 'rd-professional-api' | 'approve-org-api' | 'auto';
-
-export type DynamicOrganisationResolvedApprovalStrategy = Exclude<DynamicOrganisationApprovalStrategy, 'auto'>;
+export type DynamicOrganisationApprovalStrategy = 'rd-professional-api';
+export type DynamicOrganisationResolvedApprovalStrategy = DynamicOrganisationApprovalStrategy;
 
 export type DynamicOrganisationProvisioningStageName = 'create' | 'approve' | 'poll-active';
 
@@ -59,7 +55,7 @@ export type DynamicOrganisationProvisioningStageTiming = {
   stage: DynamicOrganisationProvisioningStageName;
   elapsedMs: number;
   status?: number | 'timeout' | 'unknown';
-  strategy?: DynamicOrganisationResolvedApprovalStrategy;
+  strategy?: DynamicOrganisationApprovalStrategy;
 };
 
 export type DynamicOrganisationProvisioningResult = {
@@ -70,7 +66,7 @@ export type DynamicOrganisationProvisioningResult = {
   createStatus: number;
   approveStatus: number;
   pollAttempts: number;
-  approvalStrategy: DynamicOrganisationResolvedApprovalStrategy;
+  approvalStrategy: DynamicOrganisationApprovalStrategy;
   timings: DynamicOrganisationProvisioningStageTiming[];
   totalElapsedMs: number;
 };
@@ -78,7 +74,6 @@ export type DynamicOrganisationProvisioningResult = {
 type CreateApprovedOrganisationDeps = {
   resolvePrerequisites: () => Promise<OrganisationProvisioningPrerequisites>;
   createApiContext: (baseURL: string, headers: Record<string, string>) => Promise<APIRequestContext>;
-  createApproveOrgApiContext?: (baseURL: string) => Promise<APIRequestContext>;
   now: () => number;
   sleep: (ms: number) => Promise<void>;
 };
@@ -116,11 +111,6 @@ const DEFAULT_DYNAMIC_ORG_POLL_INTERVAL_MS = 2_000;
 const DEFAULT_DYNAMIC_ORG_SUPER_USER_DOMAIN = 'example.test';
 const RD_PROFESSIONAL_SRA_ID_MAX_LENGTH = 15;
 const RD_PROFESSIONAL_DX_NUMBER_MAX_LENGTH = 13;
-const DEFAULT_APPROVE_ORG_API_BASE_URL = 'https://administer-orgs.aat.platform.hmcts.net';
-const DEFAULT_APPROVE_ORG_SESSION_MAX_AGE_MS = 60 * 60_000;
-const DEFAULT_APPROVE_ORG_API_MAX_ATTEMPTS = 3;
-const DEFAULT_APPROVE_ORG_API_RETRY_DELAY_MS = 2_000;
-const APPROVE_ORG_AUTH_COOKIE_NAMES = new Set(['__auth__', 'Idam.Session', 'ao-webapp']);
 
 function sanitizeRunToken(value: string): string {
   return resolveDynamicOrganisationRunId({ explicitRunId: value, maxLength: 32 });
@@ -152,231 +142,6 @@ function resolvePositiveInt(value: number | undefined, envValue: string | undefi
   }
   const parsed = Number.parseInt(envValue ?? '', 10);
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
-}
-
-function resolveApproveOrgApiMaxAttempts(): number {
-  return resolvePositiveInt(
-    undefined,
-    process.env.PW_DYNAMIC_ORGANISATION_APPROVE_ORG_API_MAX_ATTEMPTS,
-    DEFAULT_APPROVE_ORG_API_MAX_ATTEMPTS
-  );
-}
-
-function resolveApproveOrgApiRetryDelayMs(): number {
-  return resolvePositiveInt(
-    undefined,
-    process.env.PW_DYNAMIC_ORGANISATION_APPROVE_ORG_API_RETRY_DELAY_MS,
-    DEFAULT_APPROVE_ORG_API_RETRY_DELAY_MS
-  );
-}
-
-function isRetryableApproveOrgApiStatus(status: number | 'timeout' | 'unknown'): boolean {
-  return typeof status === 'number' && (status === 429 || status >= 500);
-}
-
-function resolveApprovalStrategy(options: DynamicOrganisationProvisioningOptions): DynamicOrganisationApprovalStrategy {
-  const rawValue = firstNonEmpty(options.approvalStrategy, process.env.PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY);
-  if (!rawValue) {
-    return 'rd-professional-api';
-  }
-  const value = rawValue.toLowerCase();
-  if (value === 'rd-professional-api' || value === 'approve-org-api' || value === 'auto') {
-    return value;
-  }
-  throw new Error(
-    `Unsupported PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY='${rawValue}'. Supported values: rd-professional-api, approve-org-api, auto.`
-  );
-}
-
-function resolveApproveOrgApiBaseUrl(): string {
-  return firstNonEmpty(process.env.PW_APPROVE_ORG_API_BASE_URL) ?? DEFAULT_APPROVE_ORG_API_BASE_URL;
-}
-
-function resolveApproveOrgStorageStatePath(): string {
-  return (
-    firstNonEmpty(process.env.PW_APPROVE_ORG_API_STORAGE_STATE) ??
-    path.join(process.cwd(), '.sessions', 'approve-org-api.storage.json')
-  );
-}
-
-function resolveApproveOrgAdminCredential(kind: 'username' | 'password'): string | undefined {
-  if (kind === 'username') {
-    return firstNonEmpty(
-      process.env.APPROVE_ORG_ADMIN_USERNAME,
-      process.env.AO_ADMIN_USERNAME,
-      process.env.TEST_EMAIL,
-      process.env.TEST_API_EMAIL_ADMIN
-    );
-  }
-  return firstNonEmpty(
-    process.env.APPROVE_ORG_ADMIN_PASSWORD,
-    process.env.AO_ADMIN_PASSWORD,
-    process.env.TEST_PASSWORD,
-    process.env.TEST_API_PASSWORD_ADMIN
-  );
-}
-
-function resolveApproveOrgSessionMaxAgeMs(): number {
-  const configured = Number.parseInt(process.env.PW_APPROVE_ORG_API_SESSION_MAX_AGE_MS ?? '', 10);
-  return Number.isFinite(configured) && configured > 0 ? configured : DEFAULT_APPROVE_ORG_SESSION_MAX_AGE_MS;
-}
-
-function hasUnexpiredApproveOrgAuthCookie(storageStatePath: string): boolean {
-  try {
-    const state = JSON.parse(fs.readFileSync(storageStatePath, 'utf8')) as {
-      cookies?: Array<{ name?: string; expires?: number }>;
-    };
-    const nowSeconds = Date.now() / 1000;
-    return (state.cookies ?? []).some((cookie) => {
-      if (!cookie.name || !APPROVE_ORG_AUTH_COOKIE_NAMES.has(cookie.name)) {
-        return false;
-      }
-      if (cookie.expires === undefined || cookie.expires === -1) {
-        return true;
-      }
-      return cookie.expires > nowSeconds + 30;
-    });
-  } catch {
-    return false;
-  }
-}
-
-function isApproveOrgStorageStateFresh(storageStatePath: string): boolean {
-  if (!fs.existsSync(storageStatePath)) {
-    return false;
-  }
-  const stats = fs.statSync(storageStatePath);
-  if (Date.now() - stats.mtimeMs > resolveApproveOrgSessionMaxAgeMs()) {
-    return false;
-  }
-  return hasUnexpiredApproveOrgAuthCookie(storageStatePath);
-}
-
-async function isApproveOrgApiContextAuthenticated(apiContext: APIRequestContext): Promise<boolean> {
-  try {
-    const response = await apiContext.get('auth/isAuthenticated', { failOnStatusCode: false });
-    if (response.status() !== 200) {
-      return false;
-    }
-    const body = (await response.text()).trim().toLowerCase();
-    if (body === 'true') {
-      return true;
-    }
-    if (!body || body === 'false') {
-      return false;
-    }
-    try {
-      return JSON.parse(body) === true;
-    } catch {
-      return false;
-    }
-  } catch {
-    return false;
-  }
-}
-
-async function launchApproveOrgSessionBrowser(): Promise<Browser> {
-  const headless = process.env.PW_APPROVE_ORG_API_SESSION_HEADLESS !== 'false';
-  try {
-    return await chromium.launch({ headless, channel: 'chrome' });
-  } catch {
-    return chromium.launch({ headless });
-  }
-}
-
-async function completeApproveOrgLogin(page: Page, baseURL: string, username: string, password: string): Promise<void> {
-  await page.goto(baseURL, { waitUntil: 'networkidle' });
-
-  const requestContext = await request.newContext({
-    baseURL,
-    ignoreHTTPSErrors: true,
-    storageState: await page.context().storageState(),
-  });
-  try {
-    if (await isApproveOrgApiContextAuthenticated(requestContext)) {
-      return;
-    }
-  } finally {
-    await requestContext.dispose();
-  }
-
-  for (let attempt = 1; attempt <= 4; attempt += 1) {
-    const namedUsernameInput = page.locator('input[name="username"]');
-    const roleEmailInput = page.getByRole('textbox', { name: /Email address|Enter your work email address/i });
-    const fallbackEmailInput = page.locator('input[type="email"]').first();
-    const hasNamedUsernameInput = await namedUsernameInput.isVisible().catch(() => false);
-    const hasRoleEmailInput = await roleEmailInput.isVisible().catch(() => false);
-    const hasFallbackEmailInput = await fallbackEmailInput.isVisible().catch(() => false);
-    const isOnLoginSurface =
-      page.url().includes('idam') ||
-      page.url().includes('/login') ||
-      hasNamedUsernameInput ||
-      hasRoleEmailInput ||
-      hasFallbackEmailInput;
-
-    if (isOnLoginSurface) {
-      if (hasNamedUsernameInput) {
-        await namedUsernameInput.fill(username);
-        await page.locator('input[name="password"]').fill(password);
-        await page.locator('#login-submit-btn').click();
-      } else if (hasRoleEmailInput || hasFallbackEmailInput) {
-        const emailInput = hasRoleEmailInput ? roleEmailInput : fallbackEmailInput;
-        await emailInput.fill(username);
-        await page.locator('input[type="password"], input[name="password"]').first().fill(password);
-        await page.getByRole('button', { name: 'Sign in' }).click();
-      } else {
-        await page.waitForTimeout(500 * attempt);
-      }
-      await page.waitForLoadState('networkidle', { timeout: 15_000 }).catch(() => undefined);
-    }
-
-    const authCheckContext = await request.newContext({
-      baseURL,
-      ignoreHTTPSErrors: true,
-      storageState: await page.context().storageState(),
-    });
-    try {
-      if (await isApproveOrgApiContextAuthenticated(authCheckContext)) {
-        return;
-      }
-    } finally {
-      await authCheckContext.dispose();
-    }
-
-    await page.waitForTimeout(1000 * attempt);
-  }
-
-  throw new Error(`Unable to authenticate approve-org admin user "${username}" for API approval.`);
-}
-
-async function captureApproveOrgStorageState(baseURL: string, storageStatePath: string): Promise<string> {
-  const username = resolveApproveOrgAdminCredential('username');
-  const password = resolveApproveOrgAdminCredential('password');
-  if (!username || !password) {
-    throw new Error(
-      'Approve-org API approval requires a fresh storage state or approval-capable credentials. Set PW_APPROVE_ORG_API_STORAGE_STATE to a valid authenticated storage state, or set APPROVE_ORG_ADMIN_USERNAME/APPROVE_ORG_ADMIN_PASSWORD (fallbacks: AO_ADMIN_USERNAME/AO_ADMIN_PASSWORD, TEST_EMAIL/TEST_PASSWORD, or TEST_API_EMAIL_ADMIN/TEST_API_PASSWORD_ADMIN).'
-    );
-  }
-
-  fs.mkdirSync(path.dirname(storageStatePath), { recursive: true });
-  const browser = await launchApproveOrgSessionBrowser();
-  const context = await browser.newContext();
-  const page = await context.newPage();
-  try {
-    await completeApproveOrgLogin(page, baseURL, username, password);
-    await context.storageState({ path: storageStatePath });
-    return storageStatePath;
-  } finally {
-    await browser.close();
-  }
-}
-
-async function createApproveOrgContextFromStorageState(baseURL: string, storageStatePath: string): Promise<APIRequestContext> {
-  return request.newContext({
-    baseURL,
-    ignoreHTTPSErrors: true,
-    storageState: storageStatePath,
-  });
 }
 
 function buildBoundedIdentifier(prefix: string, runId: string, maxLength: number, fallback: string): string {
@@ -488,49 +253,6 @@ function extractOrganisationEntries(body: unknown): Record<string, unknown>[] {
   return [];
 }
 
-function extractSingleOrganisation(body: unknown, organisationId: string): Record<string, unknown> | undefined {
-  if (body && typeof body === 'object' && readOrganisationIdentifier(body) === organisationId) {
-    return body as Record<string, unknown>;
-  }
-  return extractOrganisationEntries(body).find((entry) => readOrganisationIdentifier(entry) === organisationId);
-}
-
-function cookieMatchesHost(cookieDomain: string | undefined, hostName: string): boolean {
-  if (!cookieDomain) {
-    return false;
-  }
-  const normalizedDomain = cookieDomain.replace(/^\./, '').toLowerCase();
-  const normalizedHost = hostName.toLowerCase();
-  return normalizedHost === normalizedDomain || normalizedHost.endsWith(`.${normalizedDomain}`);
-}
-
-async function getApproveOrgXsrfHeaders(apiContext: APIRequestContext): Promise<Record<string, string>> {
-  const maybeStorageState = (apiContext as { storageState?: APIRequestContext['storageState'] }).storageState;
-  if (!maybeStorageState) {
-    return {};
-  }
-
-  let apiHostName: string | undefined;
-  const environmentResponse = await apiContext.get('/api/environment', { failOnStatusCode: false });
-  try {
-    apiHostName = new URL(environmentResponse.url()).hostname;
-  } catch {
-    apiHostName = undefined;
-  }
-
-  const state = await maybeStorageState.call(apiContext);
-  const xsrfCookies = state.cookies.filter((cookie) => cookie.name === 'XSRF-TOKEN');
-  if (xsrfCookies.length === 0) {
-    return {};
-  }
-
-  const xsrfToken =
-    (apiHostName ? xsrfCookies.find((cookie) => cookieMatchesHost(cookie.domain, apiHostName))?.value : undefined) ??
-    xsrfCookies[xsrfCookies.length - 1]?.value;
-
-  return xsrfToken ? { 'x-xsrf-token': xsrfToken } : {};
-}
-
 function findMatchingOrganisationEntry(
   body: unknown,
   payload: DynamicOrganisationPayload
@@ -632,132 +354,6 @@ async function approveOrganisation(
   return response.status();
 }
 
-async function createDefaultApproveOrgApiContext(baseURL: string): Promise<APIRequestContext> {
-  const storageStatePath = resolveApproveOrgStorageStatePath();
-  if (isApproveOrgStorageStateFresh(storageStatePath)) {
-    const existingContext = await createApproveOrgContextFromStorageState(baseURL, storageStatePath);
-    if (await isApproveOrgApiContextAuthenticated(existingContext)) {
-      return existingContext;
-    }
-    await existingContext.dispose();
-  }
-
-  const refreshedStorageStatePath = await captureApproveOrgStorageState(baseURL, storageStatePath);
-  const refreshedContext = await createApproveOrgContextFromStorageState(baseURL, refreshedStorageStatePath);
-  if (await isApproveOrgApiContextAuthenticated(refreshedContext)) {
-    return refreshedContext;
-  }
-  await refreshedContext.dispose();
-  throw new Error(`Captured approve-org storage state is not authenticated: ${refreshedStorageStatePath}`);
-}
-
-async function approveOrganisationViaApproveOrgApi(
-  deps: CreateApprovedOrganisationDeps,
-  organisationId: string,
-  payload: DynamicOrganisationPayload
-): Promise<number> {
-  const baseURL = resolveApproveOrgApiBaseUrl();
-  const createContext = deps.createApproveOrgApiContext ?? createDefaultApproveOrgApiContext;
-  let apiContext: APIRequestContext;
-  try {
-    apiContext = await createContext(baseURL);
-  } catch (error) {
-    throw new DynamicOrganisationProvisioningError('approve', baseURL, 'unknown', payload.name, {
-      message: error instanceof Error ? error.message : String(error),
-    });
-  }
-
-  try {
-    const maxAttempts = resolveApproveOrgApiMaxAttempts();
-    const retryDelayMs = resolveApproveOrgApiRetryDelayMs();
-    let lastError: DynamicOrganisationProvisioningError | undefined;
-
-    for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
-      try {
-        const readEndpoint = `/api/organisations?organisationId=${encodeURIComponent(organisationId)}&version=v1`;
-        const readResponse = await apiContext.get(readEndpoint, { failOnStatusCode: false });
-        const readBody = await parseResponseBody(readResponse);
-        if (!readResponse.ok()) {
-          throw new DynamicOrganisationProvisioningError('approve', readEndpoint, readResponse.status(), payload.name, readBody);
-        }
-
-        const approveEndpoint = `/api/organisations/${encodeURIComponent(organisationId)}`;
-        const organisation = extractSingleOrganisation(readBody, organisationId);
-        if (!organisation) {
-          throw new DynamicOrganisationProvisioningError('approve', readEndpoint, readResponse.status(), payload.name, {
-            message: `Approve-org API did not return organisation '${organisationId}'.`,
-            responsePreview: readBody,
-          });
-        }
-        const xsrfHeaders = await getApproveOrgXsrfHeaders(apiContext);
-        const approveResponse = await apiContext.put(approveEndpoint, {
-          data: {
-            ...organisation,
-            organisationIdentifier: organisationId,
-            status: 'ACTIVE',
-          },
-          headers: xsrfHeaders,
-          failOnStatusCode: false,
-        });
-        const approveBody = await parseResponseBody(approveResponse);
-        if (!approveResponse.ok()) {
-          throw new DynamicOrganisationProvisioningError(
-            'approve',
-            approveEndpoint,
-            approveResponse.status(),
-            payload.name,
-            approveBody
-          );
-        }
-        return approveResponse.status();
-      } catch (error) {
-        if (!(error instanceof DynamicOrganisationProvisioningError)) {
-          throw error;
-        }
-        lastError = error;
-        if (attempt >= maxAttempts || !isRetryableApproveOrgApiStatus(error.status)) {
-          throw error;
-        }
-        await deps.sleep(retryDelayMs * attempt);
-      }
-    }
-
-    throw lastError ?? new DynamicOrganisationProvisioningError('approve', baseURL, 'unknown', payload.name);
-  } finally {
-    await apiContext.dispose();
-  }
-}
-
-async function approveOrganisationWithStrategy(
-  apiContext: APIRequestContext,
-  deps: CreateApprovedOrganisationDeps,
-  organisationId: string,
-  payload: DynamicOrganisationPayload,
-  strategy: DynamicOrganisationApprovalStrategy
-): Promise<{ status: number; strategy: DynamicOrganisationResolvedApprovalStrategy }> {
-  if (strategy === 'approve-org-api') {
-    return {
-      status: await approveOrganisationViaApproveOrgApi(deps, organisationId, payload),
-      strategy: 'approve-org-api',
-    };
-  }
-
-  try {
-    return {
-      status: await approveOrganisation(apiContext, organisationId, payload),
-      strategy: 'rd-professional-api',
-    };
-  } catch (error) {
-    if (strategy !== 'auto' || !(error instanceof DynamicOrganisationProvisioningError) || error.status !== 403) {
-      throw error;
-    }
-    return {
-      status: await approveOrganisationViaApproveOrgApi(deps, organisationId, payload),
-      strategy: 'approve-org-api',
-    };
-  }
-}
-
 async function waitForActiveOrganisation(
   apiContext: APIRequestContext,
   organisationId: string,
@@ -813,7 +409,6 @@ export async function createApprovedOrganisationFlow(
     process.env.PW_DYNAMIC_ORGANISATION_ACTIVE_POLL_INTERVAL_MS,
     DEFAULT_DYNAMIC_ORG_POLL_INTERVAL_MS
   );
-  const approvalStrategy = resolveApprovalStrategy(options);
   const prereqs = await deps.resolvePrerequisites();
   const apiContext = await deps.createApiContext(prereqs.rdProfessionalApiPath, prereqs.headers);
   try {
@@ -836,24 +431,24 @@ export async function createApprovedOrganisationFlow(
     }
 
     const approveStartedAt = deps.now();
-    let approved: Awaited<ReturnType<typeof approveOrganisationWithStrategy>>;
+    let approveStatus: number;
     try {
-      approved =
+      approveStatus =
         created.reusedExisting && created.existingStatus === 'ACTIVE'
-          ? { status: 200, strategy: 'rd-professional-api' }
-          : await approveOrganisationWithStrategy(apiContext, deps, created.organisationId, pendingPayload, approvalStrategy);
+          ? 200
+          : await approveOrganisation(apiContext, created.organisationId, pendingPayload);
       timings.push({
         stage: 'approve',
         elapsedMs: deps.now() - approveStartedAt,
-        status: approved.status,
-        strategy: approved.strategy,
+        status: approveStatus,
+        strategy: 'rd-professional-api',
       });
     } catch (error) {
       timings.push({
         stage: 'approve',
         elapsedMs: deps.now() - approveStartedAt,
         status: error instanceof DynamicOrganisationProvisioningError ? error.status : 'unknown',
-        strategy: approvalStrategy === 'auto' ? undefined : approvalStrategy,
+        strategy: 'rd-professional-api',
       });
       enrichProvisioningError(error, timings, deps.now() - flowStartedAt);
     }
@@ -888,9 +483,9 @@ export async function createApprovedOrganisationFlow(
       status: 'ACTIVE',
       superUser: pendingPayload.superUser,
       createStatus: created.status,
-      approveStatus: approved.status,
+      approveStatus,
       pollAttempts,
-      approvalStrategy: approved.strategy,
+      approvalStrategy: 'rd-professional-api',
       timings,
       totalElapsedMs: deps.now() - flowStartedAt,
     };
@@ -904,7 +499,6 @@ export const __test__ = {
   createApprovedOrganisationFlow,
   isActiveOrganisation,
   readOrganisationIdentifier,
-  resolveApprovalStrategy,
   resolveRunId,
   sanitizeRunToken,
 };

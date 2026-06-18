@@ -161,24 +161,8 @@ Dynamic-user keys now available in Key Vault (`rpx-aat`, `rpx-demo`) and populat
 - `PW_DYNAMIC_ORGANISATION_RUN_ID`
 - `PW_DYNAMIC_ORGANISATION_NAME_PREFIX`
 - `PW_DYNAMIC_ORGANISATION_CACHE_DIR`
-- `PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY`
 - `PW_DYNAMIC_ORGANISATION_ACTIVE_TIMEOUT_MS`
 - `PW_DYNAMIC_ORGANISATION_ACTIVE_POLL_INTERVAL_MS`
-- `PW_E2E_MANAGE_TASKS_WA_PROVISIONING`
-- `PW_E2E_MANAGE_TASKS_IDAM_CLIENT_ID`
-- `PW_E2E_MANAGE_TASKS_IDAM_SECRET`
-- `PW_E2E_MANAGE_TASKS_IDAM_SCOPE`
-- `SERVICES_WA_WORKFLOW_API_URL`
-- `SERVICES_WORK_ALLOCATION_TASK_API`
-- `SERVICES_ROLE_ASSIGNMENT_API`
-- `PW_APPROVE_ORG_API_BASE_URL`
-- `PW_APPROVE_ORG_API_STORAGE_STATE`
-- `PW_APPROVE_ORG_API_SESSION_MAX_AGE_MS`
-- `PW_APPROVE_ORG_API_SESSION_HEADLESS`
-- `APPROVE_ORG_ADMIN_USERNAME`
-- `APPROVE_ORG_ADMIN_PASSWORD`
-- `AO_ADMIN_USERNAME`
-- `AO_ADMIN_PASSWORD`
 - `MANAGE_ORG_API_PATH`
 - `RD_PROFESSIONAL_API_PATH`
 - `WA_SOLICITOR_USERNAME`
@@ -193,19 +177,13 @@ These are populated from Key Vault using the same `e2e=<ENV_VAR_NAME>` tag conve
 Notes:
 
 - Local dynamic-user creation requires F5 VPN (AAT/DEMO private services).
-- Value added: dynamic solicitor-style setup now provisions an approved organisation for the framework run, creates the solicitor users inside that organisation, validates the role/readiness contract, and records setup timings. This removes the shared static-organisation capacity risk while keeping one approved organisation reused across parallel workers in the same run. Manage Tasks also has an explicit live Work Allocation diagnostic lane: when the WA workflow API, Role Assignment API, S2S token, dynamic-user IDAM password grant, and role-assignment bearer token are available, it creates legal-ops WA visibility roles, sends a `createTaskMessage` workflow event for the case created in that run, cancels the generated WA task during cleanup, and removes the temporary role assignments after the test or setup failure. That live browser journey is tagged `@e2e-live-wa` and excluded from the default E2E lane because it depends on multiple AAT Work Allocation services and role-assignment propagation; run it deliberately when validating the WA contract. In optional `auto` mode, absent prerequisites are recorded as diagnostics and the test still fails on the real missing-task condition rather than falling back to seeded static task IDs; in required `workflow` mode, missing prerequisites fail early before the task poll starts.
+- Value added: dynamic solicitor-style setup now provisions an approved organisation for the framework run, creates solicitor users inside that organisation, validates the role/readiness contract, and records setup timings. This removes the shared static-organisation capacity risk while keeping one approved organisation reused across parallel workers in the same run.
+- This framework does not create live Work Allocation tasks. A previous experimental `@e2e-live-wa` lane was removed because local validation failed before the browser journey when Manage Org invite returned `403` with `{"message":"Internal Server Error"}`. Reintroduce live WA task materialisation only in a separate PR with direct AAT proof.
 - Dynamic solicitor-style users create or reuse one run-scoped approved organisation. The static `TEST_SOLICITOR_ORGANISATION_ID` fallback has been retired.
 - `PW_DYNAMIC_ORGANISATION_MODE` is optional and only supports `dynamic`. Deprecated `static` and `auto` values fail fast so CI cannot silently fall back to a shared organisation.
 - Set `PW_DYNAMIC_ORGANISATION_RUN_ID` in CI to keep parallel workers in the same framework run on one approved organisation. If it is unset, the resolver falls back to standard CI run identifiers in this order: `GITHUB_RUN_ID`, Jenkins `BUILD_TAG`, Jenkins `JOB_NAME` + `BUILD_NUMBER`, Jenkins `JOB_BASE_NAME` + `BUILD_NUMBER`, `BUILD_ID`, `BUILD_NUMBER`, Azure `BUILD_BUILDID`/`BUILD_BUILDNUMBER`, `CI_PIPELINE_ID`, then `PW_TEST_RUN_ID`. Local runs without CI markers fall back to `local`; CI runs with no recognised unique identifier fail fast instead of sharing a `local` organisation.
-- `PW_DYNAMIC_ORGANISATION_APPROVAL_STRATEGY` controls how the pending organisation is approved:
-  - `rd-professional-api` uses the existing RD Professional internal approval endpoint.
-  - `approve-org-api` uses Administer Organisations API with a validated approval-capable session.
-  - `auto` tries RD Professional first and falls back to Administer Organisations only when RD returns `403`.
-    Unsupported values fail fast instead of silently changing the approval path.
-- `PW_APPROVE_ORG_API_STORAGE_STATE` can point to a Playwright storage state captured for an approval-capable Administer Organisations user. If it is missing, stale, or unauthenticated, the framework refreshes it into `.sessions/approve-org-api.storage.json` using `APPROVE_ORG_ADMIN_USERNAME`/`APPROVE_ORG_ADMIN_PASSWORD`, the legacy approve-org `AO_ADMIN_USERNAME`/`AO_ADMIN_PASSWORD`, or the existing `TEST_EMAIL`/`TEST_PASSWORD` and `TEST_API_EMAIL_ADMIN`/`TEST_API_PASSWORD_ADMIN` fallbacks used by the approve-org tests. `PW_APPROVE_ORG_API_SESSION_MAX_AGE_MS` controls the freshness window and `PW_APPROVE_ORG_API_SESSION_HEADLESS=false` can be used for supervised local login debugging.
-- Approval is still a real environment capability: if neither RD Professional approval nor an authenticated approve-org admin session is available, setup fails before dynamic users are created.
+- Approval uses the existing RD Professional internal approval endpoint. If RD Professional approval is unavailable, setup fails before dynamic users are created.
 - Dynamic organisation resolution only reuses a cached entry when its cache key matches the current run. The cache records `approvalStrategy`, per-stage timings, `totalElapsedMs`, create/approve statuses, and poll attempts, so a run that enables this feature records the setup-time impact alongside the existing dynamic user provisioning attempts.
-- `PW_E2E_MANAGE_TASKS_WA_PROVISIONING` defaults to `auto`; set it to `workflow` to require the live WA provisioning path locally or in a supervised Jenkins validation. The setup creates a `WA` / `WaCaseType` case with a dynamic solicitor in the run-scoped approved organisation, then creates a second dynamic WA caseworker in the same organisation for Manage Tasks visibility and actions. The provisioner uses `SERVICES_ROLE_ASSIGNMENT_API` to create a temporary `tribunal-caseworker` case role assignment for that WA caseworker, then uses `SERVICES_WA_WORKFLOW_API_URL/workflow/message` to create the task for the current case. Required mode fails before polling when the live provisioning prerequisites are missing. The setup attaches `manage-tasks-wa-provisioning.json`, `manage-tasks-wa-task-cleanup.json`, `manage-tasks-wa-role-assignment-cleanup.json`, `manage-tasks-live-task-poll.json`, and role-access diagnostics to distinguish missing permissions from missing WA task materialisation and to prove generated-task cancellation plus temporary role-assignment cleanup. The full live WA browser test is tagged `@e2e-live-wa`, excluded from default E2E, and should be enabled only for targeted validation of Work Allocation task materialisation and actions.
 - Do not commit `.env`.
 
 ---
@@ -504,7 +482,6 @@ rm -rf .sessions && npx playwright test
 - Accessibility specs use `@a11y` and are excluded from default E2E unless `PLAYWRIGHT_INCLUDE_A11Y=true` or `yarn test:a11y:playwright` is used.
 - Accessibility runs default to 6 workers; override with `PW_A11Y_WORKERS` when a lower local worker count is needed.
 - Default excluded tags are read from `playwright_tests_new/E2E/tag-filter.json` (`excludedTags` array).
-- The full live Work Allocation Manage Tasks browser journey is also tagged `@e2e-live-wa` and is excluded from default E2E. It creates a dynamic organisation, dynamic solicitor, dynamic case, dynamic WA caseworker, and live WA task, so run it only when the WA services and role-assignment propagation are being deliberately validated. Smoke remains a separate Playwright project and Jenkins smoke stage.
 - Override excludes at runtime with `E2E_PW_EXCLUDED_TAGS_OVERRIDE`.
 - Optionally run only selected E2E tags with `E2E_PW_INCLUDE_TAGS`.
 - Tag inputs accept comma or space separated values, with or without `@`.
@@ -515,12 +492,6 @@ rm -rf .sessions && npx playwright test
 ```bash
 # Run only search-case E2E tests
 E2E_PW_INCLUDE_TAGS=@e2e-search-case yarn test:playwrightE2E
-
-# Temporarily switch off live WA and document-upload E2E tests
-E2E_PW_EXCLUDED_TAGS_OVERRIDE=@e2e-live-wa,@e2e-document-upload yarn test:playwrightE2E
-
-# Run the live WA Manage Tasks journey deliberately
-E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none E2E_PW_INCLUDE_TAGS=@e2e-live-wa PW_E2E_MANAGE_TASKS_WA_PROVISIONING=workflow yarn test:playwrightE2E
 
 # Re-enable the V1 document-upload test for a targeted run
 E2E_PW_EXCLUDED_TAGS_OVERRIDE=@none E2E_PW_INCLUDE_TAGS=@e2e-document-upload-v1 yarn test:playwrightE2E
@@ -730,7 +701,7 @@ test.describe('My Test Suite', () => {
 
 - `SOLICITOR` - Standard solicitor user for Private Law / civil cases
 - `DIVORCE_SOLICITOR` - Divorce-entitled solicitor user for divorce create/update journeys
-- `WA_SOLICITOR` - Legacy Work Allocation solicitor user for low-assignment live task lookup coverage; retained for non-migrated coverage only. New Manage Tasks E2E setup should use dynamic organisation/user plus live WA task provisioning.
+- `WA_SOLICITOR` - Legacy Work Allocation solicitor user for low-assignment live task lookup coverage; retained until live WA task materialisation can be proved separately.
 - `SEARCH_EMPLOYMENT_CASE` - Employment tribunal case user
 - `STAFF_ADMIN` - Administrative staff user
 - `USER_WITH_FLAGS` - User with case flags enabled

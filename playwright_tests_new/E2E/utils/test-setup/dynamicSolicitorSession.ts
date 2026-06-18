@@ -29,12 +29,7 @@ type DynamicProvisionHandle = {
   sessionIdentity: SessionIdentity;
 };
 
-type DynamicIdamUserHandle = {
-  user: ProfessionalUserInfo;
-  sessionIdentity: SessionIdentity;
-};
-
-type DynamicExuiUserAlias = DynamicSolicitorAlias | 'WA_DYNAMIC_CASEWORKER';
+type DynamicExuiUserAlias = DynamicSolicitorAlias;
 
 type DynamicExuiReadinessAttempt = {
   attempt: number;
@@ -70,15 +65,6 @@ type ProvisionDynamicSolicitorArgs = {
   testInfo: TestInfo;
   mode?: 'internal' | 'external' | 'auto';
   assertEmploymentAssignmentPayloadAccepted?: boolean;
-};
-
-type ProvisionDynamicIdamUserArgs = {
-  alias: DynamicExuiUserAlias;
-  professionalUserUtils: ProfessionalUserUtils;
-  roleContext?: SolicitorRoleContext;
-  roleNames: readonly string[];
-  testInfo: TestInfo;
-  emailPrefix?: string;
 };
 
 type ExuiApiContext = Awaited<ReturnType<typeof request.newContext>>;
@@ -780,50 +766,6 @@ export async function provisionDynamicSolicitorForAlias({
       warn: (message, meta) => logger.warn(message, meta),
     }
   );
-}
-
-export async function provisionDynamicIdamUserForExui({
-  alias,
-  professionalUserUtils,
-  roleContext,
-  roleNames,
-  testInfo,
-  emailPrefix = 'caseworker',
-}: ProvisionDynamicIdamUserArgs): Promise<DynamicIdamUserHandle> {
-  const user = await professionalUserUtils.createUser({
-    roleNames,
-    emailPrefix,
-    outputCreatedUserData: process.env.PW_DYNAMIC_USER_OUTPUT_CREATED_DATA === '1',
-  });
-  const sessionIdentity = buildDynamicSessionIdentity(alias, user);
-
-  await waitForExuiUserPropagation({
-    alias,
-    user,
-    sessionIdentity,
-    roleContext,
-    testInfo,
-  });
-
-  await testInfo.attach(`${alias.toLowerCase()}-dynamic-idam-user.json`, {
-    body: JSON.stringify(
-      {
-        alias,
-        email: user.email,
-        forename: user.forename,
-        surname: user.surname,
-        roleNames: user.roleNames,
-      },
-      null,
-      2
-    ),
-    contentType: 'application/json',
-  });
-
-  return {
-    user,
-    sessionIdentity,
-  };
 }
 
 async function provisionDynamicSolicitorForAliasFlow(

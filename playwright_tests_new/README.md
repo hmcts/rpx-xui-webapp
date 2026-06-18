@@ -424,6 +424,17 @@ The wrapper always marks the wrapped command start and finish on the chart. To s
 
 Treat the profile as capacity evidence. If failures appear while CPU, load/core, or memory are saturated, reduce workers or shard. If load is healthy, investigate the test/app contract instead of masking the failure with more retries.
 
+### Flake gate
+
+Integration runs include `playwright_tests_new/common/reporters/flake-gate.reporter.cjs`. The gate fails by default when any test only passes after retry:
+
+- `PW_MAX_FLAKY_TESTS` defaults to `0`
+- `PW_MAX_FLAKY_RATE` defaults to `0`
+- `PW_FLAKE_GATE_MODE=report-only` logs the same breach without failing, for diagnostics only
+- `PW_ENABLE_FLAKE_GATE=false` disables the gate for local investigation only
+
+Treat `passed-on-retry` as a setup or test determinism failure. Fix the underlying contract before raising thresholds or using report-only mode.
+
 ### API Authentication Model
 
 - **Default behavior**: `utils/auth.ts` attempts token/S2S login using `IdamUtils.generateIdamToken` (password grant) plus `ServiceAuthUtils.retrieveToken`

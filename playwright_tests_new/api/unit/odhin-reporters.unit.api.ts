@@ -44,7 +44,7 @@ test.describe('Odhin reporter unit tests', { tag: '@svc-internal' }, () => {
     FlakeGateReporter = (flakeGateModule.default ?? flakeGateModule) as typeof FlakeGateReporter;
   });
 
-  test('flake gate remains report-only with documented thresholds', () => {
+  test('flake gate fails by default when any test only passes after retry', () => {
     const originalEnv = {
       PW_ENABLE_FLAKE_GATE: process.env.PW_ENABLE_FLAKE_GATE,
       PW_FLAKE_GATE_MODE: process.env.PW_FLAKE_GATE_MODE,
@@ -83,14 +83,64 @@ test.describe('Odhin reporter unit tests', { tag: '@svc-internal' }, () => {
       );
       const result = reporter.onEnd();
 
-      expect(result).toBeUndefined();
+      expect(result).toEqual({ status: 'failed' });
       const output = writes.join('');
       expect(output).toContain('[flake-gate] flaky=1');
       expect(output).toContain('[flake-gate] passed-on-retry=1');
       expect(output).toContain('[flake-gate] failed=1');
-      expect(output).toContain('[flake-gate] thresholds: maxFlakyTests=20, maxFlakyRate=20.00%');
+      expect(output).toContain('[flake-gate] thresholds: maxFlakyTests=0, maxFlakyRate=0.00%');
+      expect(output).toContain('[flake-gate] mode=enforce');
+      expect(output).toContain('[flake-gate] result=failed');
+    } finally {
+      for (const [key, value] of Object.entries(originalEnv)) {
+        if (value === undefined) {
+          delete process.env[key];
+        } else {
+          process.env[key] = value;
+        }
+      }
+      process.stdout.write = originalWrite;
+    }
+  });
+
+  test('flake gate report-only mode logs threshold breaches without failing the run', () => {
+    const originalEnv = {
+      PW_ENABLE_FLAKE_GATE: process.env.PW_ENABLE_FLAKE_GATE,
+      PW_FLAKE_GATE_MODE: process.env.PW_FLAKE_GATE_MODE,
+      PW_FLAKE_GATE_REPORT_ONLY: process.env.PW_FLAKE_GATE_REPORT_ONLY,
+      PW_MAX_FLAKY_RATE: process.env.PW_MAX_FLAKY_RATE,
+      PW_MAX_FLAKY_TESTS: process.env.PW_MAX_FLAKY_TESTS,
+    };
+    const writes: string[] = [];
+    const originalWrite = process.stdout.write.bind(process.stdout);
+    process.stdout.write = ((chunk: string | Uint8Array) => {
+      writes.push(String(chunk));
+      return true;
+    }) as typeof process.stdout.write;
+
+    try {
+      process.env.PW_ENABLE_FLAKE_GATE = 'true';
+      process.env.PW_FLAKE_GATE_MODE = 'report-only';
+      delete process.env.PW_FLAKE_GATE_REPORT_ONLY;
+      delete process.env.PW_MAX_FLAKY_RATE;
+      delete process.env.PW_MAX_FLAKY_TESTS;
+
+      const reporter = new FlakeGateReporter();
+      reporter.onTestEnd(
+        {
+          id: 'flaky-test',
+          outcome: () => 'flaky',
+        },
+        { status: 'passed', retry: 1 }
+      );
+      const result = reporter.onEnd();
+
+      expect(result).toBeUndefined();
+      const output = writes.join('');
+      expect(output).toContain('[flake-gate] flaky=1');
+      expect(output).toContain('[flake-gate] thresholds: maxFlakyTests=0, maxFlakyRate=0.00%');
       expect(output).toContain('[flake-gate] mode=report-only');
-      expect(output).not.toContain('[flake-gate] result=');
+      expect(output).toContain('[flake-gate] result=failed');
     } finally {
       for (const [key, value] of Object.entries(originalEnv)) {
         if (value === undefined) {

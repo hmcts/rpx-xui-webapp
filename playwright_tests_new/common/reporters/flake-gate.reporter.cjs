@@ -1,9 +1,20 @@
 class FlakeGateReporter {
-  constructor() {
+  constructor(options = {}) {
     this.totalAttempts = 0;
     this.finalOutcomesByTest = new Map();
-    this.maxFlakyTests = Number.isFinite(Number(process.env.PW_MAX_FLAKY_TESTS)) ? Number(process.env.PW_MAX_FLAKY_TESTS) : 20;
-    this.maxFlakyRate = Number.isFinite(Number(process.env.PW_MAX_FLAKY_RATE)) ? Number(process.env.PW_MAX_FLAKY_RATE) : 0.2;
+    this.enabled = resolveBoolean(process.env.PW_ENABLE_FLAKE_GATE, options.enabled ?? true);
+    this.reportOnly =
+      normalizeMode(process.env.PW_FLAKE_GATE_MODE, options.mode) === 'report-only' ||
+      resolveBoolean(process.env.PW_FLAKE_GATE_REPORT_ONLY, options.reportOnly ?? false);
+    this.maxFlakyTests = resolveNumber(process.env.PW_MAX_FLAKY_TESTS, options.maxFlakyTests ?? 0);
+    this.maxFlakyRate = resolveNumber(process.env.PW_MAX_FLAKY_RATE, options.maxFlakyRate ?? 0);
+  }
+
+  mode() {
+    if (!this.enabled) {
+      return 'disabled';
+    }
+    return this.reportOnly ? 'report-only' : 'enforce';
   }
 
   projectName(test) {
@@ -58,6 +69,8 @@ class FlakeGateReporter {
     ).length;
     const denominator = uniqueFinalTests > 0 ? uniqueFinalTests : 1;
     const flakyRate = flakyCount / denominator;
+    const thresholdBreached = this.enabled && (flakyCount > this.maxFlakyTests || flakyRate > this.maxFlakyRate);
+    const result = thresholdBreached ? 'failed' : 'passed';
 
     const summary = [
       `[flake-gate] finished=${uniqueFinalTests}`,
@@ -67,11 +80,44 @@ class FlakeGateReporter {
       `[flake-gate] failed=${failedCount}`,
       `[flake-gate] flaky-rate=${(flakyRate * 100).toFixed(2)}%`,
       `[flake-gate] thresholds: maxFlakyTests=${this.maxFlakyTests}, maxFlakyRate=${(this.maxFlakyRate * 100).toFixed(2)}%`,
-      `[flake-gate] mode=report-only`,
+      `[flake-gate] mode=${this.mode()}`,
+      `[flake-gate] result=${result}`,
     ].join('\n');
 
     process.stdout.write(`${summary}\n`);
+
+    if (thresholdBreached && !this.reportOnly) {
+      return { status: 'failed' };
+    }
+
+    return undefined;
   }
+}
+
+function resolveBoolean(rawValue, defaultValue) {
+  if (rawValue === undefined) {
+    return defaultValue;
+  }
+  const normalized = String(rawValue).trim().toLowerCase();
+  if (['1', 'true', 'yes', 'on'].includes(normalized)) {
+    return true;
+  }
+  if (['0', 'false', 'no', 'off'].includes(normalized)) {
+    return false;
+  }
+  return defaultValue;
+}
+
+function normalizeMode(rawValue, defaultValue) {
+  const normalized = String(rawValue ?? defaultValue ?? 'enforce')
+    .trim()
+    .toLowerCase();
+  return normalized === 'report-only' ? 'report-only' : 'enforce';
+}
+
+function resolveNumber(rawValue, defaultValue) {
+  const parsed = Number(rawValue);
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : defaultValue;
 }
 
 module.exports = FlakeGateReporter;

@@ -672,18 +672,14 @@ export async function ensureAuthenticatedPage(
     try {
       await waitForAppShell();
     } catch (error) {
-      markSetup('waiting-shell');
-      logger.warn('App shell not detected; retrying once', {
+      logger.warn('App shell not detected after navigation', {
         userIdentifier: identity.userIdentifier,
         selector: selectors,
         timeoutMs,
         error: (error as Error).message,
         operation: 'wait-for-shell',
       });
-      await gotoAppTarget(page, identity.userIdentifier, targetUrl);
-      await acceptAccessCookiesIfPresent(page);
-      markSetup('navigated-app');
-      await waitForAppShell();
+      throw error;
     }
   } else {
     markSetup('setup-ready');
@@ -1302,6 +1298,7 @@ export const __test__ = {
   sessionCaptureWith,
   persistSession,
   confirmAuthenticatedLogin,
+  ensureAuthenticatedPage,
   loginAndPersistSession,
   requirePersistableSessionCookies,
   waitForAuthenticatedShell,

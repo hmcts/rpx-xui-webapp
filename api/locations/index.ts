@@ -1,19 +1,16 @@
 import { AxiosResponse } from 'axios';
 import { NextFunction, Response } from 'express';
 import { getConfigValue } from '../configuration';
-import { SERVICE_REF_DATA_MAPPING, SERVICES_LOCATION_API_PATH } from '../configuration/references';
+import { SERVICES_LOCATION_API_PATH } from '../configuration/references';
 import { http } from '../lib/http';
-import { EnhancedRequest, JUILogger } from '../lib/models';
+import { EnhancedRequest } from '../lib/models';
 import { setHeaders } from '../lib/proxy';
-import { Service } from '../staff-ref-data/models/staff-filter-option.model';
 import { CourtVenue } from '../workAllocation/interfaces/location';
 import { handleLocationGet } from '../workAllocation/locationService';
 import { prepareGetSpecificLocationUrl } from '../workAllocation/util';
 import { LocationTypeEnum } from './data/locationType.enum';
 import { SERVICES_COURT_TYPE_MAPPINGS } from './data/serviceCourtType.mapping';
 import { LocationModel } from './models/location.model';
-import * as log4jui from '../lib/log4jui';
-const logger: JUILogger = log4jui.getLogger('location work allocation');
 
 // const url: string = getConfigValue(SERVICES_PRD_API_URL);
 const url: string = getConfigValue(SERVICES_LOCATION_API_PATH);
@@ -32,7 +29,7 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   const userLocations = req.body.userLocations ? req.body.userLocations : [];
   // stops locations from being gathered if they are base locations passed in without relevant services
   if ((!serviceIds || serviceIds.length === 0) && userLocations) {
-    return res.status(200).send([]);
+    res.status(200).send([]);
   }
   if (typeof serviceIds === 'string') {
     serviceIds = serviceIds.split(',');
@@ -90,17 +87,13 @@ export function filterOutResults(
  */
 export async function getLocationsById(req: EnhancedRequest, res: Response, next: NextFunction) {
   const locations = req.body.locations;
-  logger.info(`pofcc-137 - getLocationById`);
   try {
     const locationModels = [];
-    let responseStatus = 200;
+    let responseStatus;
     for (const location of locations) {
       const id = location.locationId;
       const basePath = getConfigValue(SERVICES_LOCATION_API_PATH);
-      const serviceCode = getFirstServiceCode(location.services);
-      logger.info(`pofcc-137 - getLocationsById - serviceCode used -->: ${serviceCode}`);
-      const path: string = prepareGetSpecificLocationUrl(basePath, id, serviceCode);
-      logger.info(`pofcc-137 - getLocationsById - markupPath used -->: ${path}`);
+      const path: string = prepareGetSpecificLocationUrl(basePath, id);
       // no longer LocationResponse but CourtVenue
       const response: AxiosResponse<CourtVenue[]> = await handleLocationGet(path, req);
       const filteredResults = response.data.filter((courtVenue) => courtVenue.epimms_id === id.toString());
@@ -108,7 +101,7 @@ export async function getLocationsById(req: EnhancedRequest, res: Response, next
       locationModels.push(mappedLocationModel);
       responseStatus = response.status;
     }
-    res.status(responseStatus).send(locationModels);
+    res.send(locationModels).status(responseStatus);
   } catch (error) {
     next(error);
   }
@@ -150,33 +143,7 @@ function getCourtTypeIdsByService(serviceIdArray: string[]): string[] {
   return [''];
 }
 
-export function getServiceIdsByService(serviceIdArray: string[]): string[] {
-  const serviceRefDataMappings = getConfigValue<Service[]>(SERVICE_REF_DATA_MAPPING) || [];
-  const serviceCodesArray = serviceIdArray
-    .map((serviceId) => serviceRefDataMappings.find((serviceMapping) => serviceMapping.service === serviceId)?.serviceCodes)
-    .reduce(concatCourtTypeWithoutDuplicates, []);
-  if (serviceCodesArray.length) {
-    return serviceCodesArray;
-  }
-  return [''];
-}
-
-export function isValidServiceId(serviceId: string): boolean {
-  return /^[A-Za-z]{3}\d$/.test(serviceId?.trim());
-}
-
-function getFirstServiceCode(serviceIds: string[] = []): string {
-  const firstServiceId = serviceIds.find((serviceId) => !!serviceId);
-  if (!firstServiceId) {
-    return '';
-  }
-  if (isValidServiceId(firstServiceId)) {
-    return firstServiceId;
-  }
-  return getServiceIdsByService(serviceIds)[0] || '';
-}
-
-function concatCourtTypeWithoutDuplicates<T>(array1: T[], array2: T[]) {
+function concatCourtTypeWithoutDuplicates(array1: number[], array2: number[]) {
   array1 = array1 ? array1 : [];
   array2 = array2 ? array2 : [];
   return array1.concat(array2.filter((item) => !array1.includes(item)));

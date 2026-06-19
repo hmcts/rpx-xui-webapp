@@ -3021,9 +3021,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.65":
-  version: 7.3.65
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.65"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.65-exui-4216":
+  version: 7.3.65-exui-4216
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.65-exui-4216"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
@@ -3032,7 +3032,7 @@ __metadata:
     govuk-frontend: "npm:^4.9.0"
     lz-string: "npm:^1.5.0"
     marked: "npm:^17.0.3"
-    pegjs: "npm:^0.10.0"
+    peggy: "npm:^1.2.0"
     tslib: "npm:^2.3.0"
     yargs: "npm:17.7.2"
     yargs-parser: "npm:^21.1.1"
@@ -3065,7 +3065,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/662e1287e4928bc5a3c45b11594baf3e5f62cb86d8732f230369ae46c2820624bdb9824e090286867f1006556fef1fb93704803732a3f78a3f029a4db0f14468
+  checksum: 10/250512220a2a7b60178fe69a03dc12224088c27a64ed19b339ee7ab09c41e51dca6206c8dd60c5094d5035a6bed074a9e616ad40553426409355a234ad992b8a
   languageName: node
   linkType: hard
 
@@ -18249,6 +18249,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"peggy@npm:^1.2.0":
+  version: 1.2.0
+  resolution: "peggy@npm:1.2.0"
+  bin:
+    peggy: bin/peggy
+  checksum: 10/91d59ffd53f0d0cd0a8e880f9fddc09c413035e2fef96534b52ddda0b08acc1d70f7c081c76a7b2bb8478552bc1092df685735b319f2c84ae84edc762a9d9147
+  languageName: node
+  linkType: hard
+
 "pegjs@npm:^0.10.0":
   version: 0.10.0
   resolution: "pegjs@npm:0.10.0"
@@ -19694,7 +19703,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.65"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.65-exui-4216"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.20"

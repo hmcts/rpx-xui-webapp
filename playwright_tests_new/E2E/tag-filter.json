@@ -2,6 +2,9 @@
   "excludedTags": ["@e2e-manage-tasks"],
   "availableTags": [
     "@a11y",
+    "@accessibility",
+    "@lighthouse-a11y",
+    "@wave-a11y",
     "@e2e",
     "@nightly",
     "@validation",

@@ -20,6 +20,15 @@ function fakeSessionPage() {
   };
 }
 
+function hiddenLocator() {
+  const locator = {
+    first: () => locator,
+    click: async () => undefined,
+    isVisible: async () => false,
+  };
+  return locator;
+}
+
 test.describe('Session management hardening unit tests', { tag: '@svc-internal' }, () => {
   test('confirmAuthenticatedLogin accepts auth-cookie based success for fallback IDAM login', async () => {
     const infoCalls: Array<Record<string, unknown>> = [];
@@ -66,6 +75,31 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
         }
       )
     ).rejects.toThrow(/did not establish authenticated session/i);
+  });
+
+  test('waitForAuthenticatedShell rejects service-down even when the app header is visible', async () => {
+    const locatorFor = (selector: string) => {
+      const visible = selector === 'exui-header' || selector === 'exui-service-down';
+      const locator = {
+        first: () => locator,
+        isVisible: async () => visible,
+      };
+      return locator;
+    };
+    const hiddenRoleLocator = {
+      first: () => hiddenRoleLocator,
+      isVisible: async () => false,
+    };
+    const page = {
+      url: () => 'https://manage-case.aat.platform.hmcts.net/service-down',
+      locator: (selector: string) => locatorFor(selector),
+      getByRole: () => hiddenRoleLocator,
+      waitForTimeout: async () => undefined,
+    };
+
+    await expect(sessionCaptureTest.waitForAuthenticatedShell(page as never, 'SOLICITOR', 'exui-header', 1)).rejects.toThrow(
+      /Service down page detected while waiting for app shell/
+    );
   });
 
   test('strict storage reuse refreshes when the cached state is no longer authenticated server-side', async () => {
@@ -261,6 +295,82 @@ test.describe('Session management hardening unit tests', { tag: '@svc-internal' 
       expect(fs.existsSync(failurePath)).toBe(false);
     } finally {
       process.chdir(previousCwd);
+      fs.rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('ensureAuthenticatedPage does not retry navigation when the app shell is missing', async () => {
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'session-shell-unit-'));
+    const previousCwd = process.cwd();
+    const previousTestUrl = process.env.TEST_URL;
+    const sessionPath = path.join(tempDir, '.sessions', 'unit-shell-user.storage.json');
+    let gotoCount = 0;
+
+    try {
+      fs.mkdirSync(path.dirname(sessionPath), { recursive: true });
+      fs.writeFileSync(
+        sessionPath,
+        JSON.stringify({
+          cookies: [
+            {
+              name: 'Idam.Session',
+              value: 'session',
+              domain: 'manage-case.aat.platform.hmcts.net',
+              path: '/',
+              expires: Math.floor(Date.now() / 1_000) + 600,
+            },
+            {
+              name: '__auth__',
+              value: 'auth',
+              domain: 'manage-case.aat.platform.hmcts.net',
+              path: '/',
+              expires: Math.floor(Date.now() / 1_000) + 600,
+            },
+          ],
+        })
+      );
+      process.chdir(tempDir);
+      process.env.TEST_URL = 'https://manage-case.aat.platform.hmcts.net';
+
+      const page = {
+        context: () => ({
+          addCookies: async () => undefined,
+        }),
+        getByRole: () => hiddenLocator(),
+        goto: async () => {
+          gotoCount += 1;
+        },
+        locator: () => hiddenLocator(),
+        url: () => 'https://manage-case.aat.platform.hmcts.net',
+        waitForLoadState: async () => undefined,
+        waitForTimeout: async () => undefined,
+      };
+
+      await expect(
+        sessionCaptureTest.ensureAuthenticatedPage(
+          page as never,
+          {
+            userIdentifier: 'UNIT_SHELL_USER',
+            email: 'unit-shell-user@example.test',
+            password: 'not-used',
+            sessionKey: 'unit-shell-user',
+          },
+          {
+            targetUrl: 'https://manage-case.aat.platform.hmcts.net',
+            waitForSelector: 'exui-header',
+            timeoutMs: 1,
+          }
+        )
+      ).rejects.toThrow(/App shell not detected within 1ms/);
+
+      expect(gotoCount).toBe(1);
+    } finally {
+      process.chdir(previousCwd);
+      if (previousTestUrl === undefined) {
+        delete process.env.TEST_URL;
+      } else {
+        process.env.TEST_URL = previousTestUrl;
+      }
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
   });

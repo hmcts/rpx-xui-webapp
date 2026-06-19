@@ -1,5 +1,6 @@
 import type { Page } from '@playwright/test';
 import { applySessionCookies } from '../../helpers';
+import { ensureSession } from '../../../common/sessionCapture';
 import { buildHearingsUserDetailsMock } from '../../mocks/hearings.mock';
 import { extractUserIdFromCookies } from '../../utils/extractUserIdFromCookies';
 import {
@@ -44,6 +45,10 @@ export const workFiltersDefaultLocations = [
     is_hearing_location: 'Y',
   },
 ];
+
+export async function warmWorkFiltersSession(): Promise<void> {
+  await ensureSession(workFiltersUserIdentifier);
+}
 
 export type WorkFilterRoleAssignment = {
   jurisdiction: string;

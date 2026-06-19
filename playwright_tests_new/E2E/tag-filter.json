@@ -18,6 +18,7 @@
     "@e2e-document-upload-v1",
     "@e2e-footer",
     "@e2e-manage-tasks",
+    "@e2e-manage-tasks-assigned",
     "@e2e-media-viewer",
     "@e2e-search-case",
     "@e2e-system",

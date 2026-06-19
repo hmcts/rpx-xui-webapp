@@ -28,6 +28,8 @@ import workAllocationRouter from './workAllocation/routes';
 import { idamCheck } from './idamCheck';
 import { MC_CSP } from './interfaces/csp-config';
 
+const PERMISSIONS_POLICY = 'geolocation=(), camera=(), microphone=()';
+
 function resolveStaticRoot(): string {
   const buildRoot = path.join(__dirname, '..');
   const browserRoot = path.join(buildRoot, 'browser');
@@ -73,11 +75,9 @@ export async function createApp() {
     }) as unknown as express.RequestHandler;
     app.use(cspMiddleware);
     app.use((req, res, next) => {
-      res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-      res.header('Access-Control-Allow-Credentials', 'true');
-      res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
       res.setHeader('X-Robots-Tag', 'noindex');
       res.setHeader('Cache-Control', 'no-cache, no-store, max-age=0, must-revalidate, proxy-revalidate');
+      res.setHeader('Permissions-Policy', PERMISSIONS_POLICY);
       next();
     });
     app.get('/robots.txt', (req, res) => {
@@ -134,7 +134,7 @@ export async function createApp() {
   // runs for every incoming request in the order middleware are declared
   app.use(express.static(staticRoot, { index: false }));
   // Catch-all handler for every URL that the static middleware didn’t serve
-  app.use('/*', (req, res) => {
+  app.use('/{*splat}', (req, res) => {
     const html = injectNonce(indexHtmlRaw, res.locals.cspNonce as string);
     res.type('html').set('Cache-Control', 'no-store, max-age=0').send(html);
   });

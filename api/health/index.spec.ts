@@ -119,6 +119,7 @@ describe('Health Check', (): void => {
         timeout: 6000,
       };
 
+      healthCheckWebStub.resetHistory();
       const result = checkServiceHealth(serviceUrl);
 
       expect(healthCheckWebStub).to.have.been.calledOnceWith(expectedUrl, expectedOptions);

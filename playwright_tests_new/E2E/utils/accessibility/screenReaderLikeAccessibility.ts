@@ -451,11 +451,22 @@ export async function attachAccessibilityPageSummaryEvidence(
   }
 
   const snapshot = await collectScreenReaderLikePageSnapshot(page);
-  const screenshot = await page.screenshot({ fullPage: true });
   const unexpectedCount = summary.outcomes.reduce(
     (count, outcome) => count + (outcome.unexpectedIssueCount ?? outcome.issueCount),
     0
   );
+  const screenshot =
+    unexpectedCount > 0
+      ? await captureOptionalScreenshot(
+          page,
+          summary.outcomes
+            .filter((outcome) => (outcome.unexpectedIssueCount ?? outcome.issueCount) > 0)
+            .map(
+              (outcome) =>
+                `${outcome.engine}: ${outcome.unexpectedIssueCount ?? outcome.issueCount} unexpected (${outcome.rules.join(', ')})`
+            )
+        )
+      : await page.screenshot({ fullPage: true });
   const summaryEvidence = {
     ...summary,
     snapshot,
@@ -510,8 +521,8 @@ export async function attachAccessibilityReachabilityFailureEvidence(
 
   const url = page.url();
   const snapshot = await collectOptionalPageSnapshot(page, context);
-  const screenshot = await captureOptionalScreenshot(page);
   const message = context.error instanceof Error ? context.error.message : String(context.error);
+  const screenshot = await captureOptionalScreenshot(page, [`page-state-reachability: ${message}`]);
   const evidence = {
     feature: context.feature,
     pageState: context.pageState,
@@ -610,14 +621,20 @@ async function collectOptionalPageSnapshot(
   }
 }
 
-async function captureOptionalScreenshot(page: Page): Promise<Buffer> {
+async function captureOptionalScreenshot(page: Page, pageLevelFindings: string[] = []): Promise<Buffer> {
+  let cleanup: (() => Promise<void>) | undefined;
   try {
+    if (pageLevelFindings.length > 0) {
+      cleanup = await markPageLevelFindingsOnPage(page, pageLevelFindings);
+    }
     return await page.screenshot({ fullPage: true });
   } catch {
     return Buffer.from(
       'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAFgwJ/l8hS+QAAAABJRU5ErkJggg==',
       'base64'
     );
+  } finally {
+    await cleanup?.();
   }
 }
 
@@ -797,8 +814,11 @@ async function markViolationsOnPage(page: Page, violations: ScreenReaderLikeViol
       overlayRoot.style.pointerEvents = 'none';
       document.body.appendChild(overlayRoot);
 
+      const unresolved: Array<{ index: number; rule: string; selector?: string }> = [];
+
       for (const item of items) {
         if (!item.selector) {
+          unresolved.push(item);
           continue;
         }
         let element: Element | null = null;
@@ -808,6 +828,7 @@ async function markViolationsOnPage(page: Page, violations: ScreenReaderLikeViol
           element = null;
         }
         if (!element) {
+          unresolved.push(item);
           continue;
         }
         const rect = element.getBoundingClientRect();
@@ -835,6 +856,25 @@ async function markViolationsOnPage(page: Page, violations: ScreenReaderLikeViol
         marker.appendChild(label);
         overlayRoot.appendChild(marker);
       }
+
+      if (unresolved.length > 0) {
+        const banner = document.createElement('div');
+        banner.style.position = 'absolute';
+        banner.style.left = `${window.scrollX + 16}px`;
+        banner.style.top = `${window.scrollY + 16}px`;
+        banner.style.maxWidth = '760px';
+        banner.style.background = '#4c2c92';
+        banner.style.color = '#fff';
+        banner.style.border = '6px solid #ffdd00';
+        banner.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.35)';
+        banner.style.font = 'bold 18px Arial, sans-serif';
+        banner.style.padding = '12px 16px';
+        banner.textContent = `Page-level screen-reader finding(s): ${unresolved
+          .slice(0, 5)
+          .map((item) => `${item.index + 1} ${item.rule}${item.selector ? ` (${item.selector})` : ''}`)
+          .join('; ')}${unresolved.length > 5 ? '; ...' : ''}`;
+        overlayRoot.appendChild(banner);
+      }
     },
     violations.map((violation, index) => ({ ...violation, index }))
   );
@@ -842,6 +882,41 @@ async function markViolationsOnPage(page: Page, violations: ScreenReaderLikeViol
   return async () => {
     await page.evaluate(() => {
       document.querySelector('[data-testid="screen-reader-violation-overlays"]')?.remove();
+    });
+  };
+}
+
+async function markPageLevelFindingsOnPage(page: Page, findings: string[]): Promise<() => Promise<void>> {
+  await page.evaluate((items) => {
+    const overlayRoot = document.createElement('div');
+    overlayRoot.setAttribute('data-testid', 'accessibility-page-summary-overlays');
+    overlayRoot.style.position = 'absolute';
+    overlayRoot.style.left = '0';
+    overlayRoot.style.top = '0';
+    overlayRoot.style.width = '0';
+    overlayRoot.style.height = '0';
+    overlayRoot.style.zIndex = '2147483647';
+    overlayRoot.style.pointerEvents = 'none';
+    document.body.appendChild(overlayRoot);
+
+    const banner = document.createElement('div');
+    banner.style.position = 'absolute';
+    banner.style.left = `${window.scrollX + 16}px`;
+    banner.style.top = `${window.scrollY + 16}px`;
+    banner.style.maxWidth = '820px';
+    banner.style.background = '#d4351c';
+    banner.style.color = '#fff';
+    banner.style.border = '6px solid #ffdd00';
+    banner.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.35)';
+    banner.style.font = 'bold 18px Arial, sans-serif';
+    banner.style.padding = '12px 16px';
+    banner.textContent = `Accessibility finding(s): ${items.slice(0, 5).join('; ')}${items.length > 5 ? '; ...' : ''}`;
+    overlayRoot.appendChild(banner);
+  }, findings);
+
+  return async () => {
+    await page.evaluate(() => {
+      document.querySelector('[data-testid="accessibility-page-summary-overlays"]')?.remove();
     });
   };
 }

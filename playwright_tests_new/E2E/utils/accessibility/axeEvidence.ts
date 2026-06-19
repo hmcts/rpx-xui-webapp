@@ -437,6 +437,8 @@ async function markViolationsOnPage(page: Page, violations: Result[]): Promise<(
     overlayRoot.style.pointerEvents = 'none';
     document.body.appendChild(overlayRoot);
 
+    const unresolved: Array<{ label: string; rule: string; target: string }> = [];
+
     for (const item of items) {
       let element: Element | null = null;
       try {
@@ -446,6 +448,7 @@ async function markViolationsOnPage(page: Page, violations: Result[]): Promise<(
       }
 
       if (!element) {
+        unresolved.push(item);
         continue;
       }
 
@@ -473,6 +476,25 @@ async function markViolationsOnPage(page: Page, violations: Result[]): Promise<(
 
       marker.appendChild(label);
       overlayRoot.appendChild(marker);
+    }
+
+    if (unresolved.length > 0) {
+      const banner = document.createElement('div');
+      banner.style.position = 'absolute';
+      banner.style.left = `${window.scrollX + 16}px`;
+      banner.style.top = `${window.scrollY + 16}px`;
+      banner.style.maxWidth = '760px';
+      banner.style.background = '#d4351c';
+      banner.style.color = '#fff';
+      banner.style.border = '6px solid #ffdd00';
+      banner.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.35)';
+      banner.style.font = 'bold 18px Arial, sans-serif';
+      banner.style.padding = '12px 16px';
+      banner.textContent = `Page-level axe finding(s): ${unresolved
+        .slice(0, 5)
+        .map((item) => `${item.label} ${item.rule} (${item.target})`)
+        .join('; ')}${unresolved.length > 5 ? '; ...' : ''}`;
+      overlayRoot.appendChild(banner);
     }
   }, markers);
 

@@ -505,8 +505,11 @@ async function markViolationsOnPage(page: Page, violations: WaveLikeViolation[])
       overlayRoot.style.pointerEvents = 'none';
       document.body.appendChild(overlayRoot);
 
+      const unresolved: Array<{ index: number; rule: string; selector?: string }> = [];
+
       for (const item of items) {
         if (!item.selector) {
+          unresolved.push(item);
           continue;
         }
         let element: Element | null = null;
@@ -516,6 +519,7 @@ async function markViolationsOnPage(page: Page, violations: WaveLikeViolation[])
           element = null;
         }
         if (!element) {
+          unresolved.push(item);
           continue;
         }
         const rect = element.getBoundingClientRect();
@@ -542,6 +546,25 @@ async function markViolationsOnPage(page: Page, violations: WaveLikeViolation[])
 
         marker.appendChild(label);
         overlayRoot.appendChild(marker);
+      }
+
+      if (unresolved.length > 0) {
+        const banner = document.createElement('div');
+        banner.style.position = 'absolute';
+        banner.style.left = `${window.scrollX + 16}px`;
+        banner.style.top = `${window.scrollY + 16}px`;
+        banner.style.maxWidth = '760px';
+        banner.style.background = '#d4351c';
+        banner.style.color = '#fff';
+        banner.style.border = '6px solid #ffdd00';
+        banner.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.35)';
+        banner.style.font = 'bold 18px Arial, sans-serif';
+        banner.style.padding = '12px 16px';
+        banner.textContent = `Page-level WAVE-like finding(s): ${unresolved
+          .slice(0, 5)
+          .map((item) => `${item.index + 1} ${item.rule}${item.selector ? ` (${item.selector})` : ''}`)
+          .join('; ')}${unresolved.length > 5 ? '; ...' : ''}`;
+        overlayRoot.appendChild(banner);
       }
     },
     violations.map((violation, index) => ({ ...violation, index }))

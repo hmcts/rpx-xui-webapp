@@ -4,12 +4,9 @@ import { Base } from '../../base';
 const CASE_FILE_VIEW_FOLDER_TIMEOUT_MS = 10_000;
 const CASE_FILE_VIEW_FOLDER_POLL_INTERVAL_MS = 200;
 const CASE_FILE_VIEW_DOCUMENT_TIMEOUT_MS = 15_000;
-const DIRECT_CHILD_FOLDER_NODE =
-  'xpath=./cdk-nested-tree-node[contains(concat(" ", normalize-space(@class), " "), " document-tree-container__folder ")]';
-const DIRECT_CHILD_FOLDER_LABEL =
-  'xpath=./button//*[contains(concat(" ", normalize-space(@class), " "), " node__name--folder ") and not(contains(concat(" ", normalize-space(@class), " "), " document-tree-invisible "))]';
-const ROOT_DIRECT_CHILD_FOLDER_LABEL =
-  'xpath=./cdk-nested-tree-node[contains(concat(" ", normalize-space(@class), " "), " document-tree-container__folder ")]/button//*[contains(concat(" ", normalize-space(@class), " "), " node__name--folder ") and not(contains(concat(" ", normalize-space(@class), " "), " document-tree-invisible "))]';
+const DIRECT_CHILD_FOLDER_NODE = ':scope > cdk-nested-tree-node.document-tree-container__folder';
+const DIRECT_CHILD_FOLDER_LABEL = ':scope > button .node__name--folder:not(.document-tree-invisible)';
+const ROOT_DIRECT_CHILD_FOLDER_LABEL = `${DIRECT_CHILD_FOLDER_NODE} > button .node__name--folder:not(.document-tree-invisible)`;
 
 export class CaseFileViewPage extends Base {
   readonly container = this.page.locator('#case-file-view');

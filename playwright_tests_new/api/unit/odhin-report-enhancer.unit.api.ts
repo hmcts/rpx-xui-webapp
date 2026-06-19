@@ -358,7 +358,9 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
 
     expect(nextHtml).toContain('data-a11y-test-evidence-link="privacy-policy-accessibility-issues.html"');
     expect(nextHtml).toContain('axe accessibility findings for this test');
-    expect(nextHtml).toContain('this test can still pass when <code>A11Y_STRICT</code> is not enabled');
+    expect(nextHtml).toContain(
+      'Playwright can mark this test red, but the accessibility wrapper exits successfully unless <code>A11Y_STRICT</code> is enabled'
+    );
     expect(nextHtml).toContain('Open highlighted issue report');
     expect(nextHtml).toContain('Open screenshot');
     expect(nextHtml).toContain('Open DOM and axe JSON');

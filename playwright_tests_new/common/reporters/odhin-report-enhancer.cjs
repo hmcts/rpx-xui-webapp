@@ -641,7 +641,7 @@ function buildTestEvidencePanel(entry) {
   return `
     <div class="odhin-a11y-test-evidence" data-a11y-test-evidence-link="${escapeAttribute(entry.htmlFileName)}">
       <h2>${escapeHtml(engineLabel(entry.engine))} accessibility findings for this test</h2>
-      <p><strong>Report-only:</strong> this test can still pass when <code>A11Y_STRICT</code> is not enabled.</p>
+      <p><strong>Pipeline non-blocking:</strong> Playwright can mark this test red, but the accessibility wrapper exits successfully unless <code>A11Y_STRICT</code> is enabled.</p>
       <p><strong>${escapeHtml(issueLabel(entry.engine, entry.violationCount))}:</strong> ${escapeHtml(ruleSummary)}</p>
       <p><strong>DOM target(s):</strong> <code>${escapeHtml(targetSummary)}</code></p>
       <a href="${escapeAttribute(`./accessibility-evidence/${entry.htmlFileName}`)}">Open highlighted issue report</a>

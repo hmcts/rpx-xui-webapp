@@ -119,16 +119,17 @@ export async function auditAccessibilityPage(page: Page, testInfo: TestInfo, opt
   const unexpectedIssues = outcomes.filter(
     (outcome) => outcome.status !== 'passed' && (outcome.unexpectedIssueCount ?? outcome.issueCount) > 0
   );
-  if (strict) {
-    expect(
-      unexpectedIssues,
-      [
-        `Strict accessibility mode found issue(s) for ${options.feature}: ${options.pageState}.`,
-        `Current URL: ${page.url()}`,
-        JSON.stringify(outcomes, null, 2),
-      ].join('\n')
-    ).toEqual([]);
-  }
+  expect(
+    unexpectedIssues,
+    [
+      `Accessibility issue(s) found for ${options.feature}: ${options.pageState}.`,
+      strict
+        ? 'A11Y_STRICT is enabled, so the test and wrapper command are blocking.'
+        : 'A11Y_STRICT is disabled, so Playwright marks this test red but the accessibility wrapper keeps Jenkins non-blocking.',
+      `Current URL: ${page.url()}`,
+      JSON.stringify(outcomes, null, 2),
+    ].join('\n')
+  ).toEqual([]);
 }
 
 async function runAxeEngine(page: Page, testInfo: TestInfo, options: AccessibilityAuditOptions): Promise<EngineOutcome> {

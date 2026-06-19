@@ -129,10 +129,7 @@ async function setupPageStateOrReport(
       strict,
       error,
     });
-    if (strict) {
-      throw error;
-    }
-    return !accessibilityFixtures.page.isClosed() && !isPageStateSetupTimeout(error);
+    throw error;
   }
 }
 
@@ -158,10 +155,6 @@ async function withSetupTimeout(setup: Promise<void>, pageState: AccessibilityPa
       clearTimeout(timeout);
     }
   }
-}
-
-function isPageStateSetupTimeout(error: unknown): boolean {
-  return error instanceof Error && error.message.includes('did not reach its ready state');
 }
 
 async function withLighthousePage(

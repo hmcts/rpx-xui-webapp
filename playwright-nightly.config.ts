@@ -11,6 +11,9 @@ import {
 
 type EnvMap = NodeJS.ProcessEnv;
 
+const withPlaywrightTagsAlias = (env: EnvMap): EnvMap =>
+  env.E2E_PW_INCLUDE_TAGS || !env.PLAYWRIGHT_TAGS ? env : { ...env, E2E_PW_INCLUDE_TAGS: env.PLAYWRIGHT_TAGS };
+
 const defaultBaseUrl = 'https://manage-case.aat.platform.hmcts.net';
 const defaultOdhinOutputFolder = 'functional-output/tests/playwright-e2e/odhin-report';
 const defaultOdhinIndexFilename = 'xui-playwright-e2e.html';
@@ -53,6 +56,7 @@ const resolveAgentHardware = () => {
 };
 
 const buildConfig = (env: EnvMap = process.env) => {
+  const e2eEnv = withPlaywrightTagsAlias(env);
   const headlessMode = resolveHeadlessMode(env);
   const localWorktreeTestIgnorePatterns = resolveLocalWorktreeTestIgnorePatterns();
   const baseUrl = resolveBaseUrl(env);
@@ -61,7 +65,7 @@ const buildConfig = (env: EnvMap = process.env) => {
   const runContext = env.CI ? 'ci' : 'local-run';
   const testEnvironment = `${targetEnv} | ${runContext} | workers=${workerCount} | ${resolveAgentHardware()}`;
   const e2eTagFilters = resolveTagFilters({
-    env,
+    env: e2eEnv,
     includeTagsEnvVar: 'E2E_PW_INCLUDE_TAGS',
     excludedTagsEnvVar: 'E2E_PW_EXCLUDED_TAGS_OVERRIDE',
     configPathEnvVar: 'E2E_PW_TAG_FILTER_CONFIG',
@@ -71,15 +75,16 @@ const buildConfig = (env: EnvMap = process.env) => {
     ignoreGlobalExcludesEnvVar: 'PLAYWRIGHT_IGNORE_GLOBAL_EXCLUDES',
     globalExcludedTagsPattern: /^@e2e(?:-.+)?$/,
   });
-  logResolvedTagFilters('Cross-browser E2E', e2eTagFilters, env);
+  logResolvedTagFilters('Cross-browser E2E', e2eTagFilters, e2eEnv);
 
   return defineConfig({
     testDir: 'playwright_tests_new/E2E',
     testMatch: ['**/test/**/*.spec.ts'],
-    testIgnore:
-      env.PLAYWRIGHT_INCLUDE_A11Y === 'true'
-        ? ['**/test/smoke/smokeTest.spec.ts', ...localWorktreeTestIgnorePatterns]
-        : ['**/test/smoke/smokeTest.spec.ts', '**/*.a11y.spec.ts', ...localWorktreeTestIgnorePatterns],
+    testIgnore: [
+      '**/test/smoke/smokeTest.spec.ts',
+      ...localWorktreeTestIgnorePatterns,
+      ...(env.PLAYWRIGHT_INCLUDE_A11Y === 'true' || env.PLAYWRIGHT_INCLUDE_WAVE_A11Y === 'true' ? [] : ['**/*.a11y.spec.ts']),
+    ],
     use: {
       baseURL: baseUrl,
     },

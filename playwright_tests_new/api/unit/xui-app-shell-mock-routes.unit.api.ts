@@ -113,6 +113,7 @@ test.describe('XUI app shell mock routes helper', { tag: '@svc-internal' }, () =
       /\/external\/config\/ui(?:\/|\?|$)/,
       '**/api/role-access/roles/manageLabellingRoleAssignment/**',
       '**/api/role-access/roles/access-get-by-caseId*',
+      '**/api/role-access/allocate-role/valid-roles*',
       '**/api/wa-supported-jurisdiction/get*',
       '**/workallocation/caseworker/getUsersByServiceName*',
       '**/api/prd/judicial/searchJudicialUserByIdamId*',
@@ -138,7 +139,7 @@ test.describe('XUI app shell mock routes helper', { tag: '@svc-internal' }, () =
         roles: ['caseworker-ia'],
       })
     );
-    expect(fulfilledBodies[9]).toEqual([
+    expect(fulfilledBodies[10]).toEqual([
       {
         status: 200,
         contentType: 'application/json',

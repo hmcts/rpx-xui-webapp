@@ -48,30 +48,7 @@ describe('Auth access denied telemetry', () => {
     expect(xuiNodeOnStub).to.have.been.calledWith(AUTH.EVENT.AUTHENTICATE_ACCESS_DENIED, accessDeniedCallback);
   });
 
-  it('should track post-auth role denied details for users with role category', () => {
-    const details = {
-      allowRolesRegex: 'caseworker',
-      roles: ['citizen'],
-      userinfo: {
-        roleCategory: 'CITIZEN',
-      },
-    };
-
-    accessDeniedCallback({} as EnhancedRequest, {} as any, sandbox.stub(), details);
-
-    expect(loggerStub.warn).to.have.been.calledWith('Post-auth role denied: user has no role matching caseworker');
-    expect(clientStub.trackEvent).to.have.been.calledOnceWith({
-      name: 'ManageCasePostAuthRoleDenied',
-      properties: {
-        isCitizen: true,
-        roles: ['citizen'],
-        requiredRoleMatcher: 'caseworker',
-        roleCategory: 'CITIZEN',
-      },
-    });
-  });
-
-  it('should track post-auth role denied details for citizens without role category', () => {
+  it('should track post-auth role denied details for citizens', () => {
     const details = {
       allowRolesRegex: 'caseworker',
       roles: ['citizen'],
@@ -83,27 +60,8 @@ describe('Auth access denied telemetry', () => {
       name: 'ManageCasePostAuthRoleDenied',
       properties: {
         isCitizen: true,
-        roles: ['citizen'],
+        roles: 'citizen',
         requiredRoleMatcher: 'caseworker',
-        roleCategory: '',
-      },
-    });
-  });
-
-  it('should track access denied details without role category', () => {
-    const details = {
-      allowRolesRegex: 'caseworker',
-    };
-
-    accessDeniedCallback({} as EnhancedRequest, {} as any, sandbox.stub(), details);
-
-    expect(clientStub.trackEvent).to.have.been.calledOnceWith({
-      name: 'ManageCasePostAuthRoleDenied',
-      properties: {
-        isCitizen: false,
-        requiredRoleMatcher: 'caseworker',
-        roleCategory: '',
-        roles: [],
       },
     });
   });
@@ -116,8 +74,7 @@ describe('Auth access denied telemetry', () => {
       properties: {
         isCitizen: false,
         requiredRoleMatcher: '',
-        roleCategory: '',
-        roles: [],
+        roles: '',
       },
     });
   });

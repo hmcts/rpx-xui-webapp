@@ -7,7 +7,6 @@ import * as HealthCheck from '@hmcts/nodejs-healthcheck';
 import { SESSION, xuiNode } from '@hmcts/rpx-xui-node-lib';
 import * as configuration from '../configuration';
 import * as log4jui from '../lib/log4jui';
-import { checkServiceHealth } from './index';
 import {
   FEATURE_REDIS_ENABLED,
   FEATURE_TERMS_AND_CONDITIONS_ENABLED,
@@ -119,6 +118,8 @@ describe('Health Check', (): void => {
         timeout: 6000,
       };
 
+      delete require.cache[require.resolve('./index')];
+      const { checkServiceHealth } = require('./index');
       healthCheckWebStub.resetHistory();
       const result = checkServiceHealth(serviceUrl);
 
@@ -445,6 +446,8 @@ describe('Health Check', (): void => {
     });
 
     it('should handle HealthCheck.web errors gracefully', () => {
+      delete require.cache[require.resolve('./index')];
+      const { checkServiceHealth } = require('./index');
       healthCheckWebStub.throws(new Error('HealthCheck web error'));
 
       expect(() => checkServiceHealth('http://test-service')).to.throw('HealthCheck web error');

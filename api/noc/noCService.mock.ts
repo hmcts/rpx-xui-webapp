@@ -1,4 +1,4 @@
-import MockAdapter from 'axios-mock-adapter';
+import * as MockAdapter from 'axios-mock-adapter';
 import { fakerEN_GB as faker } from '@faker-js/faker';
 import { httpMock } from './httpMock';
 import { NoCQuestion } from './models/noCQuestion.interface';

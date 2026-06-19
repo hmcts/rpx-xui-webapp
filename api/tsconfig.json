@@ -4,7 +4,6 @@
     "outDir": "../dist/rpx-exui/api",
     "target": "esnext",
     "module": "commonjs",
-    "esModuleInterop": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
     "types": ["node", "mocha", "rxjs"],

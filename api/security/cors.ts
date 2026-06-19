@@ -1,4 +1,4 @@
-import cors from 'cors';
+import * as cors from 'cors';
 
 const list = (process.env.CORS_ALLOWED_ORIGINS || '').split(',').filter(Boolean);
 

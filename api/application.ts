@@ -1,7 +1,7 @@
 import * as bodyParser from 'body-parser';
 import * as compression from 'compression';
-import cookieParser from 'cookie-parser';
-import express from 'express';
+import * as cookieParser from 'cookie-parser';
+import * as express from 'express';
 import { existsSync, readFileSync } from 'fs';
 import helmet from 'helmet';
 import * as path from 'path';

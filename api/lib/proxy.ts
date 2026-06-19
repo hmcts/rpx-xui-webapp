@@ -6,7 +6,7 @@
 // TODO: remove this entire file in favour of middleware/proxy.ts
 // EXUI-3967 - the above ask is a larger task requiring investigation and testing
 import * as express from 'express';
-import striptags from 'striptags';
+import * as striptags from 'striptags';
 import { getConfigValue } from '../configuration';
 import { SERVICES_CCD_COMPONENT_API_PATH, SERVICES_HEARINGS_ENABLE_DATA_SOURCE_HEADERS } from '../configuration/references';
 

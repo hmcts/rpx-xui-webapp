@@ -1,31 +1,13 @@
 import type { TestInfo } from '@playwright/test';
 import * as fs from 'fs/promises';
 import * as path from 'path';
+import { escapeAttribute, escapeHtml, publishAccessibilityEvidence, sanitiseFileName } from './accessibilityEvidencePublisher';
 
 export type LighthouseAuditEvidence = {
   message: string;
   evidenceFiles: string[];
 };
 
-type LighthouseEvidenceEntry = {
-  engine: 'lighthouse';
-  testTitle: string;
-  feature: string;
-  pageState: string;
-  url: string;
-  htmlFileName: string;
-  jsonFileName: string;
-  screenshotFileName: string;
-  violationCount: number;
-  rules: string[];
-  targets: string[];
-  summaryFileName: string;
-  reportFileName: string;
-};
-
-const LIGHTHOUSE_ENTRY_PREFIX = 'lighthouse-entry-';
-const EVIDENCE_ENTRY_PREFIX = 'manifest-entry-';
-const EVIDENCE_MANIFEST_FILE = 'manifest.json';
 const LIGHTHOUSE_REPORT_DIR = 'test-results';
 
 export async function runLighthouseAuditWithEvidence(
@@ -52,40 +34,39 @@ export async function runLighthouseAuditWithEvidence(
   }
 
   const rawReport = await fs.readFile(lighthouseReportPath);
-  const evidenceDir = getEvidenceDir();
   const safeTitle = sanitiseFileName(testInfo.title);
+  const attachmentPrefix = 'lighthouse-accessibility';
   const reportFileName = `${safeTitle}-lighthouse-report.html`;
-  const summaryFileName = `${safeTitle}-lighthouse-summary.html`;
-  const jsonFileName = `${safeTitle}-lighthouse-summary.json`;
-  const screenshotFileName = `${safeTitle}-lighthouse-screenshot.png`;
+  const summaryFileName = `${safeTitle}-${attachmentPrefix}.html`;
   const summaryHtml = buildSummaryHtml(context, reportFileName);
-  const entry: LighthouseEvidenceEntry = {
-    engine: 'lighthouse',
-    testTitle: testInfo.title,
-    feature: context.feature,
-    pageState: context.pageState,
-    url: context.url,
-    htmlFileName: summaryFileName,
-    jsonFileName,
-    screenshotFileName,
-    violationCount: 0,
-    rules: ['accessibility-threshold'],
-    targets: [context.url],
-    summaryFileName,
-    reportFileName,
-  };
-
-  await fs.mkdir(evidenceDir, { recursive: true });
-  await fs.writeFile(path.join(evidenceDir, reportFileName), rawReport);
-  await fs.writeFile(path.join(evidenceDir, summaryFileName), summaryHtml);
-  await fs.writeFile(path.join(evidenceDir, jsonFileName), JSON.stringify(entry, null, 2));
-  if (screenshot) {
-    await fs.writeFile(path.join(evidenceDir, screenshotFileName), screenshot);
-  }
-  await fs.writeFile(path.join(evidenceDir, `${LIGHTHOUSE_ENTRY_PREFIX}${safeTitle}.json`), JSON.stringify(entry, null, 2));
-  await writeEvidenceEntry(evidenceDir, safeTitle, entry);
-  await writeEvidenceManifest(evidenceDir, entry);
-  await writeLighthouseIndex(evidenceDir);
+  await publishAccessibilityEvidence(testInfo, {
+    attachmentPrefix,
+    entry: {
+      engine: 'lighthouse',
+      feature: context.feature,
+      pageState: context.pageState,
+      url: context.url,
+      violationCount: 0,
+      rules: ['accessibility-threshold'],
+      targets: [context.url],
+      summaryFileName,
+      reportFileName,
+    },
+    html: summaryHtml,
+    json: {
+      engine: 'lighthouse',
+      feature: context.feature,
+      pageState: context.pageState,
+      url: context.url,
+      violationCount: 0,
+      rules: ['accessibility-threshold'],
+      targets: [context.url],
+      summaryFileName,
+      reportFileName,
+    },
+    screenshot,
+    extraFiles: [{ fileName: reportFileName, body: rawReport }],
+  });
 
   await testInfo.attach('lighthouse-accessibility-summary.html', {
     body: summaryHtml,
@@ -100,32 +81,6 @@ export async function runLighthouseAuditWithEvidence(
     message: `Lighthouse report published: accessibility-evidence/${summaryFileName}`,
     evidenceFiles: [summaryFileName, reportFileName],
   };
-}
-
-async function writeEvidenceEntry(evidenceDir: string, baseName: string, entry: LighthouseEvidenceEntry): Promise<void> {
-  await fs.writeFile(
-    path.join(evidenceDir, `${EVIDENCE_ENTRY_PREFIX}${baseName}-lighthouse.json`),
-    JSON.stringify(entry, null, 2)
-  );
-}
-
-async function writeEvidenceManifest(evidenceDir: string, entry: LighthouseEvidenceEntry): Promise<void> {
-  const manifestPath = path.join(evidenceDir, EVIDENCE_MANIFEST_FILE);
-  const existingEntries = await readEvidenceManifest(evidenceDir);
-  const retainedEntries = existingEntries.filter(
-    (existingEntry) => existingEntry.testTitle !== entry.testTitle || existingEntry.htmlFileName !== entry.htmlFileName
-  );
-
-  await fs.writeFile(manifestPath, JSON.stringify([...retainedEntries, entry], null, 2));
-}
-
-async function readEvidenceManifest(evidenceDir: string): Promise<LighthouseEvidenceEntry[]> {
-  try {
-    const manifest = JSON.parse(await fs.readFile(path.join(evidenceDir, EVIDENCE_MANIFEST_FILE), 'utf8'));
-    return Array.isArray(manifest) ? manifest : [];
-  } catch {
-    return [];
-  }
 }
 
 async function listLighthouseReports(): Promise<string[]> {
@@ -151,16 +106,6 @@ async function findGeneratedLighthouseReport(beforeReports: Set<string>): Promis
   );
 
   return stats.sort((a, b) => b.mtimeMs - a.mtimeMs)[0]?.report;
-}
-
-function getEvidenceDir(): string {
-  return path.resolve(
-    process.env.PW_A11Y_EVIDENCE_DIR ||
-      path.join(
-        process.env.PLAYWRIGHT_REPORT_FOLDER || 'functional-output/tests/playwright-accessibility/odhin-report',
-        'accessibility-evidence'
-      )
-  );
 }
 
 function buildSummaryHtml(
@@ -232,105 +177,4 @@ function buildMissingReportHtml(
       </body>
     </html>
   `;
-}
-
-async function writeLighthouseIndex(evidenceDir: string): Promise<void> {
-  const entries = await readLighthouseEntries(evidenceDir);
-  const rows = entries
-    .sort((a, b) => a.testTitle.localeCompare(b.testTitle))
-    .map(
-      (entry) => `
-        <li>
-          <a class="issue-link" href="./${escapeAttribute(entry.summaryFileName)}">${escapeHtml(entry.testTitle)}</a>
-          <p>${escapeHtml(entry.feature)} / ${escapeHtml(entry.pageState)}</p>
-          <p><code>${escapeHtml(entry.url)}</code></p>
-          <a href="./${escapeAttribute(entry.reportFileName)}">full Lighthouse report</a>
-        </li>
-      `
-    )
-    .join('');
-
-  await fs.writeFile(
-    path.join(evidenceDir, 'lighthouse-index.html'),
-    `
-      <html>
-        <head>
-          <title>Lighthouse Accessibility Evidence</title>
-          <style>
-            body { font-family: Arial, sans-serif; margin: 24px; color: #0b0c0c; }
-            .banner { background: #1d70b8; color: #fff; padding: 16px; margin-bottom: 24px; }
-            .issue-link { font-weight: bold; font-size: 18px; }
-            li { margin-bottom: 16px; }
-            code { background: #f3f2f1; padding: 2px 4px; }
-          </style>
-        </head>
-        <body>
-          <div class="banner">
-            <h1>LIGHTHOUSE ACCESSIBILITY EVIDENCE</h1>
-            <p>Open each item for the scoped Lighthouse accessibility card and direct link to the native Lighthouse HTML report.</p>
-          </div>
-          <ol>${rows}</ol>
-        </body>
-      </html>
-    `
-  );
-}
-
-async function readLighthouseEntries(evidenceDir: string): Promise<LighthouseEvidenceEntry[]> {
-  try {
-    const fileNames = await fs.readdir(evidenceDir);
-    const entries = await Promise.all(
-      fileNames
-        .filter((fileName) => fileName.startsWith(LIGHTHOUSE_ENTRY_PREFIX) && fileName.endsWith('.json'))
-        .map(async (fileName) => {
-          try {
-            return JSON.parse(await fs.readFile(path.join(evidenceDir, fileName), 'utf8'));
-          } catch {
-            return undefined;
-          }
-        })
-    );
-
-    return entries.filter(isLighthouseEvidenceEntry);
-  } catch {
-    return [];
-  }
-}
-
-function isLighthouseEvidenceEntry(value: unknown): value is LighthouseEvidenceEntry {
-  if (!value || typeof value !== 'object') {
-    return false;
-  }
-
-  const candidate = value as Partial<LighthouseEvidenceEntry>;
-  return (
-    typeof candidate.testTitle === 'string' &&
-    typeof candidate.feature === 'string' &&
-    typeof candidate.pageState === 'string' &&
-    typeof candidate.url === 'string' &&
-    typeof candidate.summaryFileName === 'string' &&
-    typeof candidate.reportFileName === 'string'
-  );
-}
-
-function escapeHtml(value: string): string {
-  return value
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
-}
-
-function escapeAttribute(value: string): string {
-  return escapeHtml(value).replaceAll('`', '&#96;');
-}
-
-function sanitiseFileName(value: string): string {
-  return (
-    value
-      .replace(/[^a-z0-9._-]+/gi, '-')
-      .replace(/^-+|-+$/g, '')
-      .slice(0, 120) || 'lighthouse-accessibility'
-  );
 }

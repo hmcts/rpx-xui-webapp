@@ -7,6 +7,7 @@ import {
   type KnownAxeViolation,
 } from './axeKnownViolations';
 import type { LighthouseAuditEvidence } from './lighthouseEvidence';
+import { escapeAttribute, escapeHtml, sanitiseFileName } from './accessibilityEvidencePublisher';
 import {
   attachAccessibilityPageSummaryEvidence,
   attachScreenReaderLikeAccessibilityEvidence,
@@ -223,7 +224,7 @@ function countKnownAxeIssues(summary: AxeViolationSummary[], unexpected: AxeViol
 }
 
 function evidencePrefix(options: AccessibilityAuditOptions): string {
-  return `${sanitiseFileName(options.feature)}-${sanitiseFileName(options.pageState)}`;
+  return `${sanitiseFileName(options.feature)}-${sanitiseFileName(options.pageState)}`.slice(0, 80);
 }
 
 async function attachAccessibilityAuditSummary(
@@ -322,27 +323,4 @@ function formatEvidenceLinks(fileNames: string[] | undefined): string {
   return fileNames
     .map((fileName) => `<a href="./accessibility-evidence/${escapeAttribute(fileName)}">${escapeHtml(fileName)}</a>`)
     .join('<br />');
-}
-
-function sanitiseFileName(value: string): string {
-  return (
-    value
-      .toLowerCase()
-      .replace(/[^a-z0-9._-]+/g, '-')
-      .replace(/^-+|-+$/g, '')
-      .slice(0, 80) || 'accessibility'
-  );
-}
-
-function escapeHtml(value: string): string {
-  return value
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
-}
-
-function escapeAttribute(value: string): string {
-  return escapeHtml(value).replaceAll('`', '&#96;');
 }

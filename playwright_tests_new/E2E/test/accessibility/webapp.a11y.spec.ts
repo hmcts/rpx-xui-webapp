@@ -6,6 +6,7 @@ import { chromium, type Page } from 'playwright/test';
 import { test } from '../../fixtures';
 import {
   auditAccessibilityPage,
+  type AccessibilityEngine,
   isAccessibilityStrictMode,
   resolveAccessibilityEngines,
 } from '../../utils/accessibility/accessibilityAudit';
@@ -20,10 +21,12 @@ import {
 } from '../../utils/accessibility/webappAccessibilityPageStates';
 
 const pageStateSetupTimeoutMs = Number(process.env.A11Y_PAGE_STATE_TIMEOUT_MS ?? 45_000);
+const defaultAccessibilityEngines: AccessibilityEngine[] = ['axe', 'wave-like', 'screen-reader'];
+const defaultLighthouseEngines: AccessibilityEngine[] = ['lighthouse'];
 
 test.describe('webapp unified accessibility audit @accessibility @a11y @wave-a11y', () => {
   for (const pageState of accessibilityPageStates) {
-    const activeEngines = resolveAccessibilityEngines(pageState.engines ?? ['axe', 'wave-like']);
+    const activeEngines = resolveAccessibilityEngines(pageState.engines ?? defaultAccessibilityEngines);
     if (activeEngines.length === 0) {
       continue;
     }
@@ -59,7 +62,7 @@ test.describe('webapp unified accessibility audit @accessibility @a11y @wave-a11
       }
 
       await auditAccessibilityPage(accessibilityFixtures.page, testInfo, {
-        defaultEngines: pageState.engines ?? ['axe', 'wave-like'],
+        defaultEngines: pageState.engines ?? defaultAccessibilityEngines,
         feature: pageState.feature,
         pageState: pageState.title,
         axeKnownViolations: pageState.axeKnownViolations,
@@ -70,7 +73,7 @@ test.describe('webapp unified accessibility audit @accessibility @a11y @wave-a11
 
 test.describe('webapp scoped Lighthouse accessibility audit @accessibility @a11y @lighthouse-a11y @performance', () => {
   for (const pageState of lighthouseAccessibilityPageStates) {
-    const activeEngines = resolveAccessibilityEngines(pageState.engines ?? ['lighthouse']);
+    const activeEngines = resolveAccessibilityEngines(pageState.engines ?? defaultLighthouseEngines);
     if (activeEngines.length === 0) {
       continue;
     }
@@ -88,7 +91,7 @@ test.describe('webapp scoped Lighthouse accessibility audit @accessibility @a11y
 
         const lighthouseScreenshot = await lighthousePage.screenshot({ fullPage: true });
         await auditAccessibilityPage(lighthousePage, testInfo, {
-          defaultEngines: pageState.engines ?? ['lighthouse'],
+          defaultEngines: pageState.engines ?? defaultLighthouseEngines,
           feature: pageState.feature,
           pageState: pageState.title,
           runLighthouse: () =>

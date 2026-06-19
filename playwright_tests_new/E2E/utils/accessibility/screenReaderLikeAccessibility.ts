@@ -1,6 +1,5 @@
 import type { Page, TestInfo } from '@playwright/test';
-import * as fs from 'fs/promises';
-import * as path from 'path';
+import { escapeHtml, publishAccessibilityEvidence, sanitiseFileName } from './accessibilityEvidencePublisher';
 import type { AccessibilityEngine } from './accessibilityAudit';
 
 export type ScreenReaderLikeViolation = {
@@ -44,25 +43,6 @@ type EngineOutcomeSummary = {
   message?: string;
   evidenceFiles?: string[];
 };
-
-type PublishedEvidenceEntry = {
-  engine: AccessibilityEngine | 'summary';
-  feature: string;
-  pageState: string;
-  testTitle: string;
-  attachmentPrefix: string;
-  htmlFileName: string;
-  jsonFileName: string;
-  screenshotFileName: string;
-  violationCount: number;
-  status?: string;
-  summary?: string;
-  rules: string[];
-  targets: string[];
-};
-
-const EVIDENCE_MANIFEST_FILE = 'manifest.json';
-const EVIDENCE_ENTRY_PREFIX = 'manifest-entry-';
 
 export async function collectScreenReaderLikeAccessibilityViolations(page: Page): Promise<ScreenReaderLikeEvidence> {
   const snapshot = await collectScreenReaderLikePageSnapshot(page);
@@ -934,101 +914,20 @@ async function writePublishedEvidence(
     targets: string[];
   }
 ): Promise<void> {
-  const evidenceDir = getEvidenceDir();
-  const safeTitle = sanitiseFileName(testInfo.title);
-  const baseName = `${safeTitle}-${evidence.attachmentPrefix}`;
-  const htmlFileName = `${baseName}.html`;
-  const jsonFileName = `${baseName}.json`;
-  const screenshotFileName = `${baseName}-screenshot.png`;
-  const entry: PublishedEvidenceEntry = {
-    engine: evidence.metadata.engine,
-    feature: evidence.metadata.feature,
-    pageState: evidence.metadata.pageState,
-    testTitle: testInfo.title,
+  await publishAccessibilityEvidence(testInfo, {
     attachmentPrefix: evidence.attachmentPrefix,
-    htmlFileName,
-    jsonFileName,
-    screenshotFileName,
-    violationCount: evidence.violationCount,
-    status: evidence.metadata.status,
-    summary: evidence.metadata.summary,
-    rules: evidence.rules,
-    targets: evidence.targets,
-  };
-
-  await fs.mkdir(evidenceDir, { recursive: true });
-  await fs.writeFile(path.join(evidenceDir, htmlFileName), evidence.html);
-  await fs.writeFile(path.join(evidenceDir, jsonFileName), JSON.stringify(evidence.json, null, 2));
-  await fs.writeFile(path.join(evidenceDir, screenshotFileName), evidence.screenshot);
-  await writeEvidenceEntry(evidenceDir, baseName, entry);
-  await writeEvidenceManifest(evidenceDir, entry);
-}
-
-async function writeEvidenceEntry(evidenceDir: string, baseName: string, entry: PublishedEvidenceEntry): Promise<void> {
-  await fs.writeFile(path.join(evidenceDir, `${EVIDENCE_ENTRY_PREFIX}${baseName}.json`), JSON.stringify(entry, null, 2));
-}
-
-async function writeEvidenceManifest(evidenceDir: string, entry: PublishedEvidenceEntry): Promise<void> {
-  const manifestPath = path.join(evidenceDir, EVIDENCE_MANIFEST_FILE);
-  const existingEntries = await readEvidenceManifest(evidenceDir);
-  const retainedEntries = existingEntries.filter(
-    (existingEntry) => existingEntry.testTitle !== entry.testTitle || existingEntry.attachmentPrefix !== entry.attachmentPrefix
-  );
-
-  await fs.writeFile(manifestPath, JSON.stringify([...retainedEntries, entry], null, 2));
-}
-
-async function readEvidenceManifest(evidenceDir: string): Promise<PublishedEvidenceEntry[]> {
-  try {
-    const manifest = JSON.parse(await fs.readFile(path.join(evidenceDir, EVIDENCE_MANIFEST_FILE), 'utf8'));
-    return Array.isArray(manifest) ? manifest.filter(isPublishedEvidenceEntry) : [];
-  } catch {
-    return [];
-  }
-}
-
-function isPublishedEvidenceEntry(value: unknown): value is PublishedEvidenceEntry {
-  if (!value || typeof value !== 'object') {
-    return false;
-  }
-  const candidate = value as Partial<PublishedEvidenceEntry>;
-  return (
-    typeof candidate.testTitle === 'string' &&
-    typeof candidate.attachmentPrefix === 'string' &&
-    typeof candidate.htmlFileName === 'string' &&
-    typeof candidate.jsonFileName === 'string' &&
-    typeof candidate.screenshotFileName === 'string' &&
-    typeof candidate.violationCount === 'number' &&
-    Array.isArray(candidate.rules) &&
-    Array.isArray(candidate.targets)
-  );
-}
-
-function getEvidenceDir(): string {
-  return path.resolve(
-    process.env.PW_A11Y_EVIDENCE_DIR ||
-      path.join(
-        process.env.PLAYWRIGHT_REPORT_FOLDER || 'functional-output/tests/playwright-accessibility/odhin-report',
-        'accessibility-evidence'
-      )
-  );
-}
-
-function escapeHtml(value: string): string {
-  return value
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
-}
-
-function sanitiseFileName(value: string): string {
-  return (
-    value
-      .toLowerCase()
-      .replace(/[^a-z0-9._-]+/g, '-')
-      .replace(/^-+|-+$/g, '')
-      .slice(0, 120) || 'accessibility'
-  );
+    entry: {
+      engine: evidence.metadata.engine,
+      feature: evidence.metadata.feature,
+      pageState: evidence.metadata.pageState,
+      violationCount: evidence.violationCount,
+      status: evidence.metadata.status,
+      summary: evidence.metadata.summary,
+      rules: evidence.rules,
+      targets: evidence.targets,
+    },
+    html: evidence.html,
+    json: evidence.json,
+    screenshot: evidence.screenshot,
+  });
 }

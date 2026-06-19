@@ -70,8 +70,6 @@ export type AccessibilityPageState = {
   setup: (fixtures: AccessibilityFixtures, testInfo: TestInfo) => Promise<void>;
 };
 
-const defaultEngines: AccessibilityEngine[] = ['axe', 'wave-like', 'screen-reader'];
-
 const knownFormLabelViolation: KnownAxeViolation = {
   id: 'label',
   description: 'Ensure every form element has a label',
@@ -188,7 +186,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'task list with mocked assigned work',
     feature: 'work allocation',
-    engines: defaultEngines,
     setup: async ({ page, taskListPage }) => {
       await setupManageTasksBaseRoutes(page, { taskListResponse: buildMyTaskListMock('a11y-staff-admin', 3) });
       await taskListPage.goto();
@@ -198,7 +195,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'all work tasks with mocked filters and table',
     feature: 'work allocation',
-    engines: defaultEngines,
     axeKnownViolations: allWorkKnownViolations,
     setup: async ({ page, taskListPage }) => {
       await setupManageTasksBaseRoutes(page, { taskListResponse: buildMyTaskListMock('a11y-staff-admin', 5) });
@@ -209,7 +205,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'all work cases with mocked results',
     feature: 'work allocation',
-    engines: defaultEngines,
     setup: async ({ page, taskListPage }) => {
       await setupAllWorkCasesRoutes(page, {
         cases: pagedAllWorkCases.slice(0, 4),
@@ -223,7 +218,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'my cases with mocked results',
     feature: 'work allocation',
-    engines: defaultEngines,
     setup: async ({ page, taskListPage }) => {
       await setupMyCasesRoutes(page, [
         buildMyCaseMock({ id: 'a11y-my-case-1', case_id: '1800000000001001', case_name: 'A11y my case 1' }),
@@ -236,7 +230,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'my access with mocked results',
     feature: 'work allocation',
-    engines: defaultEngines,
     setup: async ({ page, taskListPage }) => {
       await setupMyAccessRoutes(
         page,
@@ -253,7 +246,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'case list with mocked search results',
     feature: 'case list',
-    engines: defaultEngines,
     setup: async ({ page, caseListPage }) => {
       await setupSolicitorAccessibilitySession(page);
       await setupCaseListMocks(page, { searchResponse: buildCaseListMock(5) });
@@ -264,7 +256,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'case list empty state',
     feature: 'case list',
-    engines: defaultEngines,
     setup: async ({ page, caseListPage }) => {
       await setupSolicitorAccessibilitySession(page);
       await setupCaseListMocks(page, {
@@ -281,7 +272,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'case search filter shell',
     feature: 'case search',
-    engines: defaultEngines,
     axeKnownViolations: [
       {
         id: 'aria-valid-attr-value',
@@ -299,7 +289,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'global search results from mocked menu search',
     feature: 'global search',
-    engines: defaultEngines,
     setup: async ({ page, globalSearchPage }, testInfo) => {
       testInfo.annotations.push({ type: 'session-user', description: globalSearchUser.userId });
       await setupAccessibilityMockSession(page, { userDetails: globalSearchUser });
@@ -325,7 +314,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'global search no-results state',
     feature: 'global search',
-    engines: defaultEngines,
     setup: async ({ page }, testInfo) => {
       testInfo.annotations.push({ type: 'session-user', description: solicitorUser.userId });
       await setupSolicitorAccessibilitySession(page);
@@ -342,7 +330,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'restricted case access users table',
     feature: 'restricted access',
-    engines: defaultEngines,
     setup: async ({ page, caseDetailsPage, searchCasePage }) => {
       await setupAccessibilityMockSession(page, {
         userDetails: {
@@ -374,7 +361,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'case share validation state',
     feature: 'case sharing',
-    engines: defaultEngines,
     setup: async ({ page }) => {
       await setupStaffAccessibilitySession(page);
       await setupCaseShareMockRoutes(page);
@@ -386,7 +372,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'specific access request validation state',
     feature: 'access requests',
-    engines: defaultEngines,
     axeKnownViolations: [knownFormLabelViolation],
     setup: async ({ page, accessRequestPage }) => {
       await setupStaffAccessibilitySession(page);
@@ -399,7 +384,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'specific access request submission failure state',
     feature: 'access requests',
-    engines: defaultEngines,
     axeKnownViolations: [knownFormLabelViolation],
     setup: async ({ page, accessRequestPage }) => {
       await setupStaffAccessibilitySession(page);
@@ -416,7 +400,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'challenged access request validation state',
     feature: 'access requests',
-    engines: defaultEngines,
     setup: async ({ page, accessRequestPage }) => {
       await setupStaffAccessibilitySession(page);
       await setupChallengedAccessMockRoutes(page);
@@ -428,7 +411,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'challenged access linked-case validation state',
     feature: 'access requests',
-    engines: defaultEngines,
     setup: async ({ page, accessRequestPage }) => {
       await setupStaffAccessibilitySession(page);
       await setupChallengedAccessMockRoutes(page);
@@ -441,7 +423,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'review specific access validation state',
     feature: 'access requests',
-    engines: defaultEngines,
     axeKnownViolations: [knownFormLabelViolation],
     setup: async ({ page, accessRequestPage }) => {
       await setupStaffAccessibilitySession(page);
@@ -454,7 +435,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'review specific access service-down state',
     feature: 'access requests',
-    engines: defaultEngines,
     setup: async ({ page, accessRequestPage }) => {
       await setupStaffAccessibilitySession(page);
       await setupReviewSpecificAccessMockRoutes(page, { taskStatus: 500, taskBody: { message: 'task load failed' } });
@@ -466,7 +446,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'case file view tree and media viewer',
     feature: 'case file view',
-    engines: defaultEngines,
     setup: async ({ page, caseDetailsPage, caseFileViewPage }) => {
       const caseId = '1690807693531270';
       await setupStaffAccessibilitySession(page);
@@ -479,7 +458,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'hearings tab listed state',
     feature: 'hearings',
-    engines: defaultEngines,
     setup: async ({ page, caseDetailsPage, hearingsTabPage }) => {
       await setupHearingAccessibilitySession(page);
       const routeConfig = {
@@ -495,7 +473,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'hearings create request first validation step',
     feature: 'hearings',
-    engines: defaultEngines,
     setup: async ({ page, caseDetailsPage, hearingsTabPage }) => {
       await setupHearingAccessibilitySession(page);
       const routeConfig = {
@@ -514,7 +491,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'booking UI work access page',
     feature: 'booking',
-    engines: defaultEngines,
     setup: async ({ page, bookingUiPage }) => {
       const userId = 'a11y-booking-user';
       await setupTaskListMockRoutes(page, buildMyTaskListMock(userId, 3), {
@@ -531,7 +507,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'role access delete exclusion shell',
     feature: 'role access',
-    engines: defaultEngines,
     setup: async ({ page }) => {
       const caseId = '1620409659381330';
       await setupStaffAccessibilitySession(page);
@@ -543,7 +518,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'role access allocate route shell',
     feature: 'role access',
-    engines: defaultEngines,
     setup: async ({ page }) => {
       const caseId = '1546883526751282';
       await setupStaffAccessibilitySession(page);
@@ -557,7 +531,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
   ...staticAndErrorPages.map<AccessibilityPageState>((staticPage) => ({
     title: `${staticPage.title} static/error page`,
     feature: 'static and error pages',
-    engines: defaultEngines,
     setup: async ({ page }) => {
       await setupStaffAccessibilitySession(page);
       await page.goto(staticPage.path);
@@ -570,7 +543,6 @@ export const lighthouseAccessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'authenticated case list lighthouse smoke',
     feature: 'case list',
-    engines: ['lighthouse'],
     setup: async ({ page }) => {
       await setupSolicitorAccessibilitySession(page);
       await setupCaseListMocks(page, { searchResponse: buildCaseListMock(3) });
@@ -582,7 +554,6 @@ export const lighthouseAccessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'authenticated task list lighthouse smoke',
     feature: 'work allocation',
-    engines: ['lighthouse'],
     setup: async ({ page }) => {
       await setupManageTasksBaseRoutes(page, { taskListResponse: buildMyTaskListMock('a11y-staff-admin', 3) });
       await page.goto('/work/my-work/list');
@@ -593,7 +564,6 @@ export const lighthouseAccessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'authenticated case sharing validation lighthouse smoke',
     feature: 'case sharing',
-    engines: ['lighthouse'],
     setup: async ({ page }) => {
       await setupStaffAccessibilitySession(page);
       await setupCaseShareMockRoutes(page);

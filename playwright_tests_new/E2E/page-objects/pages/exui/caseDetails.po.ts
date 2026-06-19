@@ -811,18 +811,25 @@ export class CaseDetailsPage extends Base {
   }
 
   async openDocumentOneInMediaViewer(): Promise<Page> {
+    const timeout = this.getRecommendedTimeoutMs();
+    const popupPromise = this.page.waitForEvent('popup', { timeout }).catch(() => undefined);
+    const samePagePromise = this.page
+      .waitForURL(MEDIA_VIEWER_ROUTE_PATTERN, { timeout })
+      .then(() => this.page)
+      .catch(() => undefined);
+
     await this.openDocumentOne();
 
-    await this.page
-      .waitForFunction(
-        (routePatternSource) => {
-          const routePattern = new RegExp(routePatternSource);
-          return window.location.href.match(routePattern) !== null;
-        },
-        MEDIA_VIEWER_ROUTE_PATTERN.source,
-        { timeout: this.getRecommendedTimeoutMs() }
-      )
-      .catch(() => undefined);
+    const popup = await popupPromise;
+    if (popup) {
+      await popup.waitForURL(MEDIA_VIEWER_ROUTE_PATTERN, { timeout }).catch(() => undefined);
+      return popup;
+    }
+
+    const samePage = await samePagePromise;
+    if (samePage) {
+      return samePage;
+    }
 
     const matchingPage = this.page
       .context()

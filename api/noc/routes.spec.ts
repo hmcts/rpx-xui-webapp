@@ -2,10 +2,11 @@ import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
 import * as sinon from 'sinon';
-import express from 'express';
+import * as express from 'express';
 import authInterceptor from '../lib/middleware/auth';
-import sinonChai from 'sinon-chai';
 
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 
 describe('NoC Routes', () => {

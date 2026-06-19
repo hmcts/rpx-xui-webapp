@@ -1,17 +1,19 @@
 import * as chai from 'chai';
 import { expect } from 'chai';
 import 'mocha';
-import { createRequire } from 'module';
 import * as sinon from 'sinon';
 import { mockReq, mockRes } from 'sinon-express-mock';
 import * as configIndex from './index';
 import * as menuConfigs from './menuConfigs/configs';
 import * as hearingConfigs from './hearingConfigs/configs';
 import { router } from './uiConfigRouter';
-import chaiAsPromised from 'chai-as-promised';
-import sinonChai from 'sinon-chai';
+import * as chaiAsPromised from 'chai-as-promised';
 
-const moduleRequire = createRequire(__filename);
+// Access the module to clear cache
+const uiConfigModule = require('./uiConfigRouter');
+
+// Import sinon-chai using require to avoid ES module issues
+const sinonChai = require('sinon-chai');
 chai.use(sinonChai);
 chai.use(chaiAsPromised);
 
@@ -40,7 +42,7 @@ describe('uiConfigRouter', () => {
     originalPreviewId = process.env.PREVIEW_DEPLOYMENT_ID;
 
     // Clear module cache to reset cached configs before each test
-    delete moduleRequire.cache[moduleRequire.resolve('./uiConfigRouter')];
+    delete require.cache[require.resolve('./uiConfigRouter')];
 
     getConfigValueStub = sandbox.stub(configIndex, 'getConfigValue');
     showFeatureStub = sandbox.stub(configIndex, 'showFeature');
@@ -78,7 +80,7 @@ describe('uiConfigRouter', () => {
 
     beforeEach(() => {
       // Get the fresh route handler after cache clear
-      const freshRouter = moduleRequire('./uiConfigRouter').router;
+      const freshRouter = require('./uiConfigRouter').router;
       routeHandler = freshRouter.stack[0].route.stack[0].handle;
     });
 
@@ -175,7 +177,7 @@ describe('uiConfigRouter', () => {
     let routeHandler: any;
 
     beforeEach(() => {
-      const freshRouter = moduleRequire('./uiConfigRouter').router;
+      const freshRouter = require('./uiConfigRouter').router;
       routeHandler = freshRouter.stack[0].route.stack[0].handle;
     });
 
@@ -259,7 +261,7 @@ describe('uiConfigRouter', () => {
 
   describe('caching behavior', () => {
     it('should cache menu and hearing configs after first call', async () => {
-      const freshRouter = moduleRequire('./uiConfigRouter').router;
+      const freshRouter = require('./uiConfigRouter').router;
       const routeHandler = freshRouter.stack[0].route.stack[0].handle;
 
       delete process.env.PREVIEW_DEPLOYMENT_ID;

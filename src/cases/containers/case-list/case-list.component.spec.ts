@@ -467,7 +467,7 @@ describe('CaseListComponent', () => {
       });
       mockWindowService.removeLocalStorage.calls.reset();
 
-      component.jurisdictionsBehaviourSubject$.next([
+      component.applyCaseListFilterDefaults([
         {
           id: 'DIVORCE',
           name: 'Divorce',
@@ -483,8 +483,6 @@ describe('CaseListComponent', () => {
           ],
         },
       ]);
-
-      component.setCaseListFilterDefaults();
 
       expect(mockWindowService.removeLocalStorage).toHaveBeenCalledWith('savedQueryParams');
       expect(mockWindowService.removeLocalStorage).toHaveBeenCalledWith('workbasket-filter-form-group-value');

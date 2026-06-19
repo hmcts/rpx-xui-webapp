@@ -15,7 +15,7 @@ import { FeatureToggleService } from '@hmcts/rpx-xui-common-lib';
 import { SharedCase } from '@hmcts/rpx-xui-common-lib';
 import { Store, select } from '@ngrx/store';
 import { BehaviorSubject, Observable, Subject, Subscription, combineLatest, of } from 'rxjs';
-import { mergeMap, takeUntil } from 'rxjs/operators';
+import { filter, mergeMap, take, takeUntil } from 'rxjs/operators';
 import { AppConfig } from '../../../app/services/ccd-config/ccd-case.config';
 import { safeJsonParse } from '@hmcts/ccd-case-ui-toolkit';
 import * as fromRoot from '../../../app/store';
@@ -187,28 +187,34 @@ export class CaseListComponent implements OnInit, OnDestroy {
   }
 
   public setCaseListFilterDefaults = () => {
-    const jurisdictions = this.jurisdictionsBehaviourSubject$.getValue();
-    if (jurisdictions.length > 0) {
-      this.savedQueryParams = this.getSavedQueryParams();
-      if (this.savedQueryParams && !this.areSavedQueryParamsValid(jurisdictions, this.savedQueryParams)) {
-        this.clearSavedCaseListFilters();
-        this.savedQueryParams = null;
-      }
-      if (this.savedQueryParams) {
-        this.defaults = {
-          jurisdiction_id: this.savedQueryParams.jurisdiction,
-          case_type_id: this.savedQueryParams['case-type'],
-          state_id: null,
-        };
-      } else if (jurisdictions[0]?.id && jurisdictions[0].caseTypes[0]?.states[0]) {
-        this.defaults = {
-          jurisdiction_id: jurisdictions[0].id,
-          case_type_id: jurisdictions[0].caseTypes[0].id,
-          state_id: null,
-        };
-      }
-    }
+    this.jurisdictionsBehaviourSubject$
+      .pipe(
+        filter((jurisdictions) => jurisdictions.length > 0),
+        take(1)
+      )
+      .subscribe((jurisdictions) => this.applyCaseListFilterDefaults(jurisdictions));
   };
+
+  public applyCaseListFilterDefaults(jurisdictions: Jurisdiction[]): void {
+    this.savedQueryParams = this.getSavedQueryParams();
+    if (this.savedQueryParams && !this.areSavedQueryParamsValid(jurisdictions, this.savedQueryParams)) {
+      this.clearSavedCaseListFilters();
+      this.savedQueryParams = null;
+    }
+    if (this.savedQueryParams) {
+      this.defaults = {
+        jurisdiction_id: this.savedQueryParams.jurisdiction,
+        case_type_id: this.savedQueryParams['case-type'],
+        state_id: null,
+      };
+    } else if (jurisdictions[0]?.id && jurisdictions[0].caseTypes[0]?.states[0]) {
+      this.defaults = {
+        jurisdiction_id: jurisdictions[0].id,
+        case_type_id: jurisdictions[0].caseTypes[0].id,
+        state_id: null,
+      };
+    }
+  }
 
   public getSavedQueryParams(): any {
     return safeJsonParse(localStorage.getItem(SAVED_QUERY_PARAM_LOC_STORAGE), null);

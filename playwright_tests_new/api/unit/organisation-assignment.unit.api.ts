@@ -5,6 +5,7 @@ import {
   assignUserToOrganisationFlow,
   shouldPreferManageOrgInvitePrimaryForPrincipal,
 } from '../../E2E/utils/professional-user/organisationAssignment.js';
+import { canUseDirectAssignmentBearerInvite } from '../../E2E/utils/professional-user.utils.js';
 import {
   buildHeaders,
   filterSupportedOrganisationAssignmentRoles,
@@ -236,6 +237,94 @@ test.describe('Organisation assignment path selection unit tests', { tag: '@svc-
       assignmentPath: 'manage-org-invite-primary',
       payload: { ok: true },
     });
+  });
+
+  test('explicit assignment storage state uses manage-org invite before resolving RD prerequisites', async () => {
+    let prerequisitesResolved = false;
+    const inviteCalls: Array<{ assignmentStorageState?: string; assignmentBearerToken?: string }> = [];
+
+    const result = await assignUserToOrganisationFlow(
+      {
+        ...baseArgs,
+        options: {
+          ...baseArgs.options,
+          assignmentBearerToken: undefined,
+          expectedAssignmentPrincipalEmail: 'dynamic-org-admin@example.test',
+          assignmentStorageState: '/tmp/dynamic-org-admin.storage.json',
+        },
+      },
+      {
+        inviteUserViaManageOrgApi: async (params) => {
+          inviteCalls.push({
+            assignmentStorageState: params.assignmentStorageState,
+            assignmentBearerToken: params.assignmentBearerToken,
+          });
+          return {
+            status: 201,
+            responseBody: { ok: true },
+          };
+        },
+        isUserVisibleInOrganisationAssignment: async () => true,
+        resolveAssignmentPrerequisites: async () => {
+          prerequisitesResolved = true;
+          throw new Error('RD prerequisites should not be resolved for explicit assignment storage state');
+        },
+        waitForUserPropagation: async () => ({
+          verified: true,
+          degraded: false,
+          reason: 'ready',
+        }),
+        reconcileExistingOrganisationAssignment: async () => ({
+          status: 200,
+        }),
+        collectAssignmentFailureDiagnostics: async () => ({}),
+      }
+    );
+
+    expect(prerequisitesResolved).toBe(false);
+    expect(inviteCalls).toEqual([
+      {
+        assignmentStorageState: '/tmp/dynamic-org-admin.storage.json',
+        assignmentBearerToken: undefined,
+      },
+    ]);
+    expect(result.responseBody).toEqual({
+      assignmentPath: 'manage-org-invite-primary',
+      payload: { ok: true },
+    });
+  });
+
+  test('manage-org invite skips UI storage when assignment credentials can hydrate a bearer token', () => {
+    const originalUsername = process.env.ORG_USER_ASSIGNMENT_USERNAME;
+    const originalPassword = process.env.ORG_USER_ASSIGNMENT_PASSWORD;
+    const originalSecret = process.env.ORG_USER_ASSIGNMENT_CLIENT_SECRET;
+    const originalBearer = process.env.ORG_USER_ASSIGNMENT_BEARER_TOKEN;
+    const originalIdamSecret = process.env.IDAM_SECRET;
+    const originalCreateUserSecret = process.env.CREATE_USER_CLIENT_SECRET;
+    const originalCcdSecret = process.env.CCD_DATA_STORE_SECRET;
+    const originalOauthSecret = process.env.IDAM_OAUTH2_CLIENT_SECRET;
+
+    delete process.env.ORG_USER_ASSIGNMENT_BEARER_TOKEN;
+    delete process.env.IDAM_SECRET;
+    delete process.env.CREATE_USER_CLIENT_SECRET;
+    delete process.env.CCD_DATA_STORE_SECRET;
+    delete process.env.IDAM_OAUTH2_CLIENT_SECRET;
+    process.env.ORG_USER_ASSIGNMENT_USERNAME = 'assignment@example.test';
+    process.env.ORG_USER_ASSIGNMENT_PASSWORD = 'password';
+    process.env.ORG_USER_ASSIGNMENT_CLIENT_SECRET = 'secret';
+
+    try {
+      expect(canUseDirectAssignmentBearerInvite({})).toBe(true);
+    } finally {
+      restoreEnvValue('ORG_USER_ASSIGNMENT_USERNAME', originalUsername);
+      restoreEnvValue('ORG_USER_ASSIGNMENT_PASSWORD', originalPassword);
+      restoreEnvValue('ORG_USER_ASSIGNMENT_CLIENT_SECRET', originalSecret);
+      restoreEnvValue('ORG_USER_ASSIGNMENT_BEARER_TOKEN', originalBearer);
+      restoreEnvValue('IDAM_SECRET', originalIdamSecret);
+      restoreEnvValue('CREATE_USER_CLIENT_SECRET', originalCreateUserSecret);
+      restoreEnvValue('CCD_DATA_STORE_SECRET', originalCcdSecret);
+      restoreEnvValue('IDAM_OAUTH2_CLIENT_SECRET', originalOauthSecret);
+    }
   });
 
   test('auto mode falls back to RD assignment when manage-org primary fails', async () => {
@@ -652,3 +741,11 @@ test.describe('Organisation assignment path selection unit tests', { tag: '@svc-
     }
   });
 });
+
+function restoreEnvValue(key: string, value: string | undefined): void {
+  if (typeof value === 'string') {
+    process.env[key] = value;
+  } else {
+    delete process.env[key];
+  }
+}

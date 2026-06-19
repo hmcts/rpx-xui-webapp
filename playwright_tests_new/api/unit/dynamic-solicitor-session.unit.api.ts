@@ -183,14 +183,159 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
   });
 
   test('provisionDynamicSolicitorForAliasFlow returns explicit session identity and runs readiness checks without global runtime mutation', async () => {
-    const originalOrganisationId = process.env.TEST_SOLICITOR_ORGANISATION_ID;
-    process.env.TEST_SOLICITOR_ORGANISATION_ID = 'org-123';
-
     const attachmentNames: string[] = [];
     const observedCallOrder: string[] = [];
 
-    try {
-      const handle = await dynamicSessionTest.provisionDynamicSolicitorForAliasFlow(
+    const handle = await dynamicSessionTest.provisionDynamicSolicitorForAliasFlow(
+      {
+        alias: 'SOLICITOR',
+        professionalUserUtils: {
+          createSolicitorUserForOrganisation: async () => {
+            throw new Error('should be stubbed via provisionUserWithRetries');
+          },
+        } as never,
+        roleContext: {
+          jurisdiction: 'employment',
+        },
+        testInfo: {
+          attach: async (name: string) => {
+            attachmentNames.push(name);
+          },
+        } as never,
+      },
+      {
+        shouldRunEmploymentAssignmentPreflight: () => false,
+        runEmploymentAssignmentPreflight: async () => {
+          observedCallOrder.push('preflight');
+        },
+        provisionUserWithRetries: async (args) => {
+          observedCallOrder.push('provision');
+          expect(args.alias).toBe('SOLICITOR');
+          expect(args.organisationId).toBe('org-123');
+          expect(args.mode).toBe('internal');
+          return {
+            user: {
+              id: 'user-123',
+              email: 'dynamic@example.test',
+              password: 'secret',
+              forename: 'Dynamic',
+              surname: 'User',
+              roleNames: ['caseworker', 'pui-case-manager'],
+              organisationAssignment: {
+                status: 201,
+                organisationId: 'org-123',
+                userIdentifier: 'user-123',
+                roles: ['caseworker', 'pui-case-manager'],
+                mode: 'external',
+                requestedMode: 'auto',
+                attemptedModes: ['external'],
+              },
+            },
+            attempts: [{ attempt: 1, durationMs: 5, outcome: 'success' }],
+          };
+        },
+        resolveProvisionTimeoutMs: () => 5_000,
+        resolveProvisionMaxAttempts: () => 2,
+        resolveProvisionRetryDelayMs: () => 1,
+        withTimeout: async (operation) => operation,
+        shouldRetryDynamicProvision: () => false,
+        describeUnknownError: (error) => (error instanceof Error ? error.message : String(error)),
+        sleep: async () => undefined,
+        now: () => 100,
+        resolveOrganisationId: async () => {
+          observedCallOrder.push('resolve-org');
+          return {
+            source: 'dynamic',
+            organisationId: 'org-123',
+            name: 'PW Dynamic Org unit',
+            status: 'ACTIVE',
+            superUser: {
+              email: 'dynamic-org-admin@example.test',
+              firstName: 'Playwright',
+              lastName: 'Dynamic',
+            },
+            mode: 'dynamic',
+            cacheKey: 'unit',
+            reusedFromCache: false,
+          };
+        },
+        resolveAssignmentAdmin: async ({ organisationResolution }) => {
+          observedCallOrder.push(`resolve-assignment-admin:${organisationResolution.organisationId}`);
+          return {
+            email: 'assignment-principal@example.test',
+            mode: 'internal',
+            principalSource: 'configured-assignment-principal',
+          };
+        },
+        outputCreatedUserData: false,
+        attachOrganisationResolution: async (testInfo, alias) => {
+          observedCallOrder.push(`attach-org:${alias}`);
+          await testInfo.attach(`${alias.toLowerCase()}-dynamic-organisation.json`, {
+            body: '{}',
+            contentType: 'application/json',
+          });
+        },
+        attachProvisionAttempts: async (testInfo, alias) => {
+          observedCallOrder.push(`attach-provision:${alias}`);
+          await testInfo.attach(`${alias.toLowerCase()}-attempts.json`, {
+            body: '{}',
+            contentType: 'application/json',
+          });
+        },
+        assertDynamicUserRoleContract: () => {
+          observedCallOrder.push('assert-contract');
+        },
+        waitForExuiUserPropagation: async ({ sessionIdentity }) => {
+          observedCallOrder.push('wait-exui');
+          expect(sessionIdentity).toEqual({
+            userIdentifier: 'SOLICITOR',
+            email: 'dynamic@example.test',
+            password: 'secret',
+            sessionKey: 'dynamic-solicitor-user-123',
+          });
+        },
+        attachDynamicUser: async (testInfo, alias) => {
+          observedCallOrder.push(`attach-user:${alias}`);
+          await testInfo.attach(`${alias.toLowerCase()}-dynamic-user.json`, {
+            body: '{}',
+            contentType: 'application/json',
+          });
+        },
+        info: () => undefined,
+        warn: () => undefined,
+      }
+    );
+
+    expect(handle.sessionIdentity).toEqual({
+      userIdentifier: 'SOLICITOR',
+      email: 'dynamic@example.test',
+      password: 'secret',
+      sessionKey: 'dynamic-solicitor-user-123',
+    });
+
+    expect(observedCallOrder).toEqual([
+      'resolve-org',
+      'attach-org:SOLICITOR',
+      'resolve-assignment-admin:org-123',
+      'provision',
+      'attach-provision:SOLICITOR',
+      'assert-contract',
+      'wait-exui',
+      'attach-user:SOLICITOR',
+    ]);
+    expect(attachmentNames).toEqual([
+      'solicitor-dynamic-organisation.json',
+      'solicitor-attempts.json',
+      'solicitor-dynamic-user.json',
+    ]);
+  });
+
+  test('provisionDynamicSolicitorForAliasFlow attaches failed provisioning attempts before rethrowing', async () => {
+    const attachmentNames: string[] = [];
+    const observedCallOrder: string[] = [];
+
+    await expect(
+      dynamicSessionTest.provisionDynamicSolicitorForAliasFlow(
         {
           alias: 'SOLICITOR',
           professionalUserUtils: {
@@ -209,43 +354,60 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
         },
         {
           shouldRunEmploymentAssignmentPreflight: () => false,
-          runEmploymentAssignmentPreflight: async () => {
-            observedCallOrder.push('preflight');
-          },
-          provisionUserWithRetries: async (args) => {
+          runEmploymentAssignmentPreflight: async () => undefined,
+          provisionUserWithRetries: async () => {
             observedCallOrder.push('provision');
-            expect(args.alias).toBe('SOLICITOR');
-            expect(args.organisationId).toBe('org-123');
-            return {
-              user: {
-                id: 'user-123',
-                email: 'dynamic@example.test',
-                password: 'secret',
-                forename: 'Dynamic',
-                surname: 'User',
-                roleNames: ['caseworker', 'pui-case-manager'],
-                organisationAssignment: {
-                  status: 201,
-                  organisationId: 'org-123',
-                  userIdentifier: 'user-123',
-                  roles: ['caseworker', 'pui-case-manager'],
-                  mode: 'external',
-                  requestedMode: 'auto',
-                  attemptedModes: ['external'],
-                },
-              },
-              attempts: [{ attempt: 1, durationMs: 5, outcome: 'success' }],
-            };
+            throw new DynamicProvisioningError(
+              "Dynamic user provisioning failed for alias 'SOLICITOR' after 2 attempt(s).",
+              [
+                { attempt: 1, durationMs: 5, outcome: 'failed', error: 'HTTP 503' },
+                { attempt: 2, durationMs: 7, outcome: 'failed', error: 'HTTP 503' },
+              ],
+              'HTTP 503'
+            );
           },
           resolveProvisionTimeoutMs: () => 5_000,
           resolveProvisionMaxAttempts: () => 2,
           resolveProvisionRetryDelayMs: () => 1,
           withTimeout: async (operation) => operation,
-          shouldRetryDynamicProvision: () => false,
+          shouldRetryDynamicProvision: () => true,
           describeUnknownError: (error) => (error instanceof Error ? error.message : String(error)),
           sleep: async () => undefined,
           now: () => 100,
+          resolveOrganisationId: async () => {
+            observedCallOrder.push('resolve-org');
+            return {
+              source: 'dynamic',
+              organisationId: 'org-123',
+              name: 'PW Dynamic Org unit',
+              status: 'ACTIVE',
+              superUser: {
+                email: 'dynamic-org-admin@example.test',
+                firstName: 'Playwright',
+                lastName: 'Dynamic',
+              },
+              mode: 'dynamic',
+              cacheKey: 'unit',
+              reusedFromCache: false,
+            };
+          },
+          resolveAssignmentAdmin: async ({ organisationResolution }) => {
+            observedCallOrder.push(`resolve-assignment-admin:${organisationResolution.organisationId}`);
+            return {
+              email: 'dynamic-org-admin@example.test',
+              assignmentBearerToken: 'dynamic-org-admin-token',
+              principalSource: 'dynamic-super-user',
+              storageState: '/tmp/dynamic-org-admin.storage.json',
+            };
+          },
           outputCreatedUserData: false,
+          attachOrganisationResolution: async (testInfo, alias) => {
+            observedCallOrder.push(`attach-org:${alias}`);
+            await testInfo.attach(`${alias.toLowerCase()}-dynamic-organisation.json`, {
+              body: '{}',
+              contentType: 'application/json',
+            });
+          },
           attachProvisionAttempts: async (testInfo, alias) => {
             observedCallOrder.push(`attach-provision:${alias}`);
             await testInfo.attach(`${alias.toLowerCase()}-attempts.json`, {
@@ -256,14 +418,8 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
           assertDynamicUserRoleContract: () => {
             observedCallOrder.push('assert-contract');
           },
-          waitForExuiUserPropagation: async ({ sessionIdentity }) => {
+          waitForExuiUserPropagation: async () => {
             observedCallOrder.push('wait-exui');
-            expect(sessionIdentity).toEqual({
-              userIdentifier: 'SOLICITOR',
-              email: 'dynamic@example.test',
-              password: 'secret',
-              sessionKey: 'dynamic-solicitor-user-123',
-            });
           },
           attachDynamicUser: async (testInfo, alias) => {
             observedCallOrder.push(`attach-user:${alias}`);
@@ -275,116 +431,17 @@ test.describe('Dynamic solicitor session unit tests', { tag: '@svc-internal' }, 
           info: () => undefined,
           warn: () => undefined,
         }
-      );
+      )
+    ).rejects.toThrow(/Dynamic user provisioning failed/);
 
-      expect(handle.sessionIdentity).toEqual({
-        userIdentifier: 'SOLICITOR',
-        email: 'dynamic@example.test',
-        password: 'secret',
-        sessionKey: 'dynamic-solicitor-user-123',
-      });
-
-      expect(observedCallOrder).toEqual([
-        'provision',
-        'attach-provision:SOLICITOR',
-        'assert-contract',
-        'wait-exui',
-        'attach-user:SOLICITOR',
-      ]);
-      expect(attachmentNames).toEqual(['solicitor-attempts.json', 'solicitor-dynamic-user.json']);
-    } finally {
-      if (typeof originalOrganisationId === 'string') {
-        process.env.TEST_SOLICITOR_ORGANISATION_ID = originalOrganisationId;
-      } else {
-        delete process.env.TEST_SOLICITOR_ORGANISATION_ID;
-      }
-    }
-  });
-
-  test('provisionDynamicSolicitorForAliasFlow attaches failed provisioning attempts before rethrowing', async () => {
-    const originalOrganisationId = process.env.TEST_SOLICITOR_ORGANISATION_ID;
-    process.env.TEST_SOLICITOR_ORGANISATION_ID = 'org-123';
-
-    const attachmentNames: string[] = [];
-    const observedCallOrder: string[] = [];
-
-    try {
-      await expect(
-        dynamicSessionTest.provisionDynamicSolicitorForAliasFlow(
-          {
-            alias: 'SOLICITOR',
-            professionalUserUtils: {
-              createSolicitorUserForOrganisation: async () => {
-                throw new Error('should be stubbed via provisionUserWithRetries');
-              },
-            } as never,
-            roleContext: {
-              jurisdiction: 'employment',
-            },
-            testInfo: {
-              attach: async (name: string) => {
-                attachmentNames.push(name);
-              },
-            } as never,
-          },
-          {
-            shouldRunEmploymentAssignmentPreflight: () => false,
-            runEmploymentAssignmentPreflight: async () => undefined,
-            provisionUserWithRetries: async () => {
-              observedCallOrder.push('provision');
-              throw new DynamicProvisioningError(
-                "Dynamic user provisioning failed for alias 'SOLICITOR' after 2 attempt(s).",
-                [
-                  { attempt: 1, durationMs: 5, outcome: 'failed', error: 'HTTP 503' },
-                  { attempt: 2, durationMs: 7, outcome: 'failed', error: 'HTTP 503' },
-                ],
-                'HTTP 503'
-              );
-            },
-            resolveProvisionTimeoutMs: () => 5_000,
-            resolveProvisionMaxAttempts: () => 2,
-            resolveProvisionRetryDelayMs: () => 1,
-            withTimeout: async (operation) => operation,
-            shouldRetryDynamicProvision: () => true,
-            describeUnknownError: (error) => (error instanceof Error ? error.message : String(error)),
-            sleep: async () => undefined,
-            now: () => 100,
-            outputCreatedUserData: false,
-            attachProvisionAttempts: async (testInfo, alias) => {
-              observedCallOrder.push(`attach-provision:${alias}`);
-              await testInfo.attach(`${alias.toLowerCase()}-attempts.json`, {
-                body: '{}',
-                contentType: 'application/json',
-              });
-            },
-            assertDynamicUserRoleContract: () => {
-              observedCallOrder.push('assert-contract');
-            },
-            waitForExuiUserPropagation: async () => {
-              observedCallOrder.push('wait-exui');
-            },
-            attachDynamicUser: async (testInfo, alias) => {
-              observedCallOrder.push(`attach-user:${alias}`);
-              await testInfo.attach(`${alias.toLowerCase()}-dynamic-user.json`, {
-                body: '{}',
-                contentType: 'application/json',
-              });
-            },
-            info: () => undefined,
-            warn: () => undefined,
-          }
-        )
-      ).rejects.toThrow(/Dynamic user provisioning failed/);
-
-      expect(observedCallOrder).toEqual(['provision', 'attach-provision:SOLICITOR']);
-      expect(attachmentNames).toEqual(['solicitor-attempts.json']);
-    } finally {
-      if (typeof originalOrganisationId === 'string') {
-        process.env.TEST_SOLICITOR_ORGANISATION_ID = originalOrganisationId;
-      } else {
-        delete process.env.TEST_SOLICITOR_ORGANISATION_ID;
-      }
-    }
+    expect(observedCallOrder).toEqual([
+      'resolve-org',
+      'attach-org:SOLICITOR',
+      'resolve-assignment-admin:org-123',
+      'provision',
+      'attach-provision:SOLICITOR',
+    ]);
+    expect(attachmentNames).toEqual(['solicitor-dynamic-organisation.json', 'solicitor-attempts.json']);
   });
 
   test('assertDynamicUserRoleContract rejects filtered employment assignment roles', () => {

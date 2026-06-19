@@ -1,8 +1,5 @@
 {
-  "excludedTags": [
-    "@nightly",
-    "@e2e-manage-tasks"
-  ],
+  "excludedTags": ["@nightly", "@e2e-manage-tasks"],
   "availableTags": [
     "@a11y",
     "@e2e",

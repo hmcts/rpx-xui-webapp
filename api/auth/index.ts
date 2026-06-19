@@ -93,6 +93,7 @@ export const accessDeniedCallback = (
       properties: {
         isCitizen: isCitizenUser(details),
         requiredRoleMatcher,
+        roles: details?.roles || details?.userinfo?.roles || [],
         roleCategory: details?.userinfo?.roleCategory || '',
       },
     });

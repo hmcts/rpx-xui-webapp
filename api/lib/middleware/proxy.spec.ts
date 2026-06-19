@@ -49,7 +49,7 @@ describe('Proxy Middleware', () => {
     sandbox.stub(configModule, 'getConfigValue').returns('info');
 
     const mockProxyMiddleware = () => {};
-    proxyMiddlewareStub = sandbox.stub(httpProxyMiddleware, 'legacyCreateProxyMiddleware').returns(mockProxyMiddleware as any);
+    proxyMiddlewareStub = sandbox.stub(httpProxyMiddleware, 'createProxyMiddleware').returns(mockProxyMiddleware as any);
 
     const proxyModule = require('./proxy');
     onProxyError = proxyModule.onProxyError;

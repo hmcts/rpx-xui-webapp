@@ -51,6 +51,7 @@ describe('Auth access denied telemetry', () => {
   it('should track post-auth role denied details for users with role category', () => {
     const details = {
       allowRolesRegex: 'caseworker',
+      roles: ['citizen'],
       userinfo: {
         roleCategory: 'CITIZEN',
       },
@@ -63,6 +64,7 @@ describe('Auth access denied telemetry', () => {
       name: 'ManageCasePostAuthRoleDenied',
       properties: {
         isCitizen: true,
+        roles: ['citizen'],
         requiredRoleMatcher: 'caseworker',
         roleCategory: 'CITIZEN',
       },
@@ -81,6 +83,7 @@ describe('Auth access denied telemetry', () => {
       name: 'ManageCasePostAuthRoleDenied',
       properties: {
         isCitizen: true,
+        roles: ['citizen'],
         requiredRoleMatcher: 'caseworker',
         roleCategory: '',
       },
@@ -100,6 +103,7 @@ describe('Auth access denied telemetry', () => {
         isCitizen: false,
         requiredRoleMatcher: 'caseworker',
         roleCategory: '',
+        roles: [],
       },
     });
   });
@@ -113,6 +117,7 @@ describe('Auth access denied telemetry', () => {
         isCitizen: false,
         requiredRoleMatcher: '',
         roleCategory: '',
+        roles: [],
       },
     });
   });

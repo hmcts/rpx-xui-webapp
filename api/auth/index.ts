@@ -85,9 +85,6 @@ export const accessDeniedCallback = (
   _next: NextFunction,
   details?: AccessDeniedDetails
 ) => {
-  console.log('details:  ', details);
-  console.log("getUserRoles(details).join(','): ", getUserRoles(details).join(','));
-  console.log('details?.userinfo?.roleCategory: ', details?.userinfo?.roleCategory);
   const requiredRoleMatcher = details?.allowRolesRegex || '';
 
   logger.warn(`Post-auth role denied: user has no role matching ${requiredRoleMatcher}`);

@@ -3,31 +3,34 @@ import type { CustomFixtures } from '../../fixtures';
 import {
   ACCESS_REQUEST_REVIEW_PATH,
   CHALLENGED_ACCESS_PATH,
-  HEARING_MANAGER_CR84_OFF_USER,
   SPECIFIC_ACCESS_PATH,
-  applySearchCaseSessionCookies,
-  applySessionCookies,
+  buildBookingUiBootstrapUser,
+  caseDetailsUrl,
   continueHearingsFlow,
   createGlobalSearchResultsRouteHandler,
+  gotoCaseDetailsWithRetry,
   hearingManagerRoles,
-  openHearingsTab,
   setupFastCaseRetrievalConfigRoute,
   setupAllWorkCasesRoutes,
-  setupBookableBookingUiRoutesForTest,
+  setupBookingUiMockRoutes,
   setupCaseFileViewMockRoutes,
   setupCaseListMocks,
   setupCaseShareMockRoutes,
   setupChallengedAccessMockRoutes,
+  setupHearingsMockRoutes,
   setupManageTasksBaseRoutes,
   setupMyAccessRoutes,
   setupMyCasesRoutes,
   setupReviewSpecificAccessMockRoutes,
   setupRestrictedAccessMocks,
+  setupRolesAndAccessMockRoutes,
   setupSpecificAccessRequestMockRoutes,
+  setupTaskListMockRoutes,
   setupGlobalSearchMockRoutes,
   submitGlobalSearchFromMenu,
   submitHeaderQuickSearch,
 } from '../../../integration/helpers';
+import { buildExistingBookingsMock, singleLocationMock } from '../../../integration/mocks/bookingUI.mock';
 import { buildCaseListMock } from '../../../integration/mocks/caseList.mock';
 import {
   buildGlobalSearchCaseDetailsMock,
@@ -52,6 +55,7 @@ import {
 import { TEST_USERS } from '../../../integration/testData';
 import { buildMyTaskListMock } from '../../../integration/mocks/taskList.mock';
 import type { AccessibilityEngine } from './accessibilityAudit';
+import { setupAccessibilityMockSession } from './accessibilityMockSession';
 import type { KnownAxeViolation } from './axeKnownViolations';
 
 export type AccessibilityFixtures = CustomFixtures & {
@@ -101,6 +105,58 @@ const staticAndErrorPages = [
 ];
 
 const mainContent = (page: Page) => page.locator('main').first();
+const staffUser = {
+  userId: 'a11y-staff-admin',
+  roles: ['caseworker', 'pui-case-manager', 'caseworker-ia-caseofficer', 'task-supervisor', 'case-allocator'],
+  roleCategory: 'LEGAL_OPERATIONS',
+  roleAssignmentInfo: [
+    {
+      jurisdiction: 'IA',
+      roleName: 'task-supervisor',
+      roleType: 'ORGANISATION',
+      substantive: true,
+    },
+  ],
+};
+const solicitorUser = {
+  userId: 'a11y-solicitor',
+  roles: ['caseworker', 'caseworker-ia', 'caseworker-ia-caseofficer', 'caseworker-publiclaw', 'pui-case-manager'],
+  roleCategory: 'PROFESSIONAL',
+  roleAssignmentInfo: [
+    {
+      jurisdiction: 'IA',
+      roleName: 'caseworker-ia',
+      roleType: 'ORGANISATION',
+      substantive: true,
+    },
+  ],
+};
+const globalSearchUser = {
+  userId: 'a11y-global-search',
+  roles: ['caseworker', 'caseworker-publiclaw', 'caseworker-ia-caseofficer'],
+  roleCategory: 'LEGAL_OPERATIONS',
+  roleAssignmentInfo: [
+    {
+      jurisdiction: 'PUBLICLAW',
+      roleName: 'caseworker-publiclaw',
+      roleType: 'ORGANISATION',
+      substantive: true,
+    },
+  ],
+};
+const hearingUser = {
+  userId: 'a11y-hearing-manager',
+  roles: hearingManagerRoles,
+  roleCategory: 'LEGAL_OPERATIONS',
+  roleAssignmentInfo: [
+    {
+      jurisdiction: 'PRIVATELAW',
+      roleName: 'hearing-manager',
+      roleType: 'ORGANISATION',
+      substantive: true,
+    },
+  ],
+};
 const globalSearchMenuResultsHandler = createGlobalSearchResultsRouteHandler({
   matchingCaseReference: GLOBAL_SEARCH_CASE_REFERENCE,
   successResponse: buildGlobalSearchMenuResultsMock(),
@@ -116,13 +172,24 @@ async function expectMainContent(page: Page): Promise<void> {
   await expect(mainContent(page)).toBeVisible();
 }
 
+async function setupStaffAccessibilitySession(page: Page): Promise<void> {
+  await setupAccessibilityMockSession(page, { userDetails: staffUser });
+}
+
+async function setupSolicitorAccessibilitySession(page: Page): Promise<void> {
+  await setupAccessibilityMockSession(page, { userDetails: solicitorUser });
+}
+
+async function setupHearingAccessibilitySession(page: Page): Promise<void> {
+  await setupAccessibilityMockSession(page, { userDetails: hearingUser });
+}
+
 export const accessibilityPageStates: AccessibilityPageState[] = [
   {
     title: 'task list with mocked assigned work',
     feature: 'work allocation',
     engines: defaultEngines,
     setup: async ({ page, taskListPage }) => {
-      await applySessionCookies(page, 'STAFF_ADMIN');
       await setupManageTasksBaseRoutes(page, { taskListResponse: buildMyTaskListMock('a11y-staff-admin', 3) });
       await taskListPage.goto();
       await expect(taskListPage.taskListTable).toBeVisible();
@@ -134,7 +201,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     engines: defaultEngines,
     axeKnownViolations: allWorkKnownViolations,
     setup: async ({ page, taskListPage }) => {
-      await applySessionCookies(page, 'STAFF_ADMIN');
       await setupManageTasksBaseRoutes(page, { taskListResponse: buildMyTaskListMock('a11y-staff-admin', 5) });
       await taskListPage.gotoAllWorkTasks();
       await expect(taskListPage.taskListTable).toBeVisible();
@@ -145,7 +211,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     feature: 'work allocation',
     engines: defaultEngines,
     setup: async ({ page, taskListPage }) => {
-      await applySessionCookies(page, 'STAFF_ADMIN');
       await setupAllWorkCasesRoutes(page, {
         cases: pagedAllWorkCases.slice(0, 4),
         total_records: 4,
@@ -160,7 +225,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     feature: 'work allocation',
     engines: defaultEngines,
     setup: async ({ page, taskListPage }) => {
-      await applySessionCookies(page, 'STAFF_ADMIN');
       await setupMyCasesRoutes(page, [
         buildMyCaseMock({ id: 'a11y-my-case-1', case_id: '1800000000001001', case_name: 'A11y my case 1' }),
         buildMyCaseMock({ id: 'a11y-my-case-2', case_id: '1800000000001002', case_name: 'A11y my case 2' }),
@@ -174,7 +238,6 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     feature: 'work allocation',
     engines: defaultEngines,
     setup: async ({ page, taskListPage }) => {
-      await applySessionCookies(page, 'STAFF_ADMIN');
       await setupMyAccessRoutes(
         page,
         buildMyAccessCases(2, (index) => ({
@@ -192,7 +255,7 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     feature: 'case list',
     engines: defaultEngines,
     setup: async ({ page, caseListPage }) => {
-      await applySessionCookies(page, 'SOLICITOR');
+      await setupSolicitorAccessibilitySession(page);
       await setupCaseListMocks(page, { searchResponse: buildCaseListMock(5) });
       await caseListPage.navigateTo();
       await expect(caseListPage.container).toBeVisible();
@@ -203,7 +266,7 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     feature: 'case list',
     engines: defaultEngines,
     setup: async ({ page, caseListPage }) => {
-      await applySessionCookies(page, 'SOLICITOR');
+      await setupSolicitorAccessibilitySession(page);
       await setupCaseListMocks(page, {
         searchResponse: {
           columns: [],
@@ -227,7 +290,7 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
       },
     ],
     setup: async ({ page, caseListPage }) => {
-      await applySessionCookies(page, 'SOLICITOR');
+      await setupSolicitorAccessibilitySession(page);
       await setupCaseListMocks(page, { searchResponse: buildCaseListMock(3) });
       await page.goto('/cases/case-search');
       await expect(caseListPage.filtersContainer).toBeVisible();
@@ -237,8 +300,9 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     title: 'global search results from mocked menu search',
     feature: 'global search',
     engines: defaultEngines,
-    setup: async ({ page, caseListPage, globalSearchPage }, testInfo) => {
-      await applySearchCaseSessionCookies(page, testInfo);
+    setup: async ({ page, globalSearchPage }, testInfo) => {
+      testInfo.annotations.push({ type: 'session-user', description: globalSearchUser.userId });
+      await setupAccessibilityMockSession(page, { userDetails: globalSearchUser });
       await setupGlobalSearchMockRoutes(page, {
         jurisdictions: buildGlobalSearchJurisdictionsMock(),
         services: buildGlobalSearchMenuServicesMock(),
@@ -253,8 +317,7 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
           });
         },
       });
-      await caseListPage.navigateTo();
-      await globalSearchPage.performGlobalSearchWithCase(GLOBAL_SEARCH_CASE_REFERENCE, 'PUBLICLAW');
+      await submitGlobalSearchFromMenu(GLOBAL_SEARCH_CASE_REFERENCE, globalSearchPage, page);
       await expect(globalSearchPage.searchResultsHeader).toHaveText('Search results');
       await expect(globalSearchPage.searchResultsTable).toBeVisible();
     },
@@ -263,14 +326,15 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     title: 'global search no-results state',
     feature: 'global search',
     engines: defaultEngines,
-    setup: async ({ page, globalSearchPage }, testInfo) => {
-      await applySearchCaseSessionCookies(page, testInfo);
+    setup: async ({ page }, testInfo) => {
+      testInfo.annotations.push({ type: 'session-user', description: solicitorUser.userId });
+      await setupSolicitorAccessibilitySession(page);
       await setupGlobalSearchMockRoutes(page, {
         jurisdictions: buildGlobalSearchJurisdictionsMock(),
         services: buildGlobalSearchMenuServicesMock(),
         searchResultsHandler: globalSearchMenuResultsHandler,
       });
-      await submitGlobalSearchFromMenu(GLOBAL_SEARCH_NON_EXISTENT_CASE_REFERENCE, globalSearchPage, page);
+      await page.goto(`/search/noresults?caseReference=${GLOBAL_SEARCH_NON_EXISTENT_CASE_REFERENCE}&service=PUBLICLAW`);
       await expect(page).toHaveURL(/\/search\/noresults/);
       await expect(page.getByRole('heading', { level: 1, name: 'No results found' })).toBeVisible();
     },
@@ -280,7 +344,13 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     feature: 'restricted access',
     engines: defaultEngines,
     setup: async ({ page, caseDetailsPage, searchCasePage }) => {
-      await applySessionCookies(page, TEST_USERS.FPL_GLOBAL_SEARCH);
+      await setupAccessibilityMockSession(page, {
+        userDetails: {
+          userId: TEST_USERS.FPL_GLOBAL_SEARCH,
+          roles: ['caseworker', 'caseworker-publiclaw'],
+          roleCategory: 'LEGAL_OPERATIONS',
+        },
+      });
       await setupFastCaseRetrievalConfigRoute(page);
       await setupGlobalSearchMockRoutes(page, {
         jurisdictions: buildSearchCaseJurisdictionsMock(),
@@ -306,7 +376,7 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     feature: 'case sharing',
     engines: defaultEngines,
     setup: async ({ page }) => {
-      await applySessionCookies(page, 'STAFF_ADMIN');
+      await setupStaffAccessibilitySession(page);
       await setupCaseShareMockRoutes(page);
       await page.goto('/cases/case-share?init=true');
       await page.locator('#share-case-nav button').first().click();
@@ -319,7 +389,7 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     engines: defaultEngines,
     axeKnownViolations: [knownFormLabelViolation],
     setup: async ({ page, accessRequestPage }) => {
-      await applySessionCookies(page, 'STAFF_ADMIN');
+      await setupStaffAccessibilitySession(page);
       await setupSpecificAccessRequestMockRoutes(page);
       await accessRequestPage.gotoSpecificAccessRequest(SPECIFIC_ACCESS_PATH);
       await accessRequestPage.submitButton.click();
@@ -332,7 +402,7 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     engines: defaultEngines,
     axeKnownViolations: [knownFormLabelViolation],
     setup: async ({ page, accessRequestPage }) => {
-      await applySessionCookies(page, 'STAFF_ADMIN');
+      await setupStaffAccessibilitySession(page);
       await setupSpecificAccessRequestMockRoutes(page, {
         specificAccessStatus: 500,
         specificAccessBody: { message: 'specific access request failed' },
@@ -348,7 +418,7 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     feature: 'access requests',
     engines: defaultEngines,
     setup: async ({ page, accessRequestPage }) => {
-      await applySessionCookies(page, 'STAFF_ADMIN');
+      await setupStaffAccessibilitySession(page);
       await setupChallengedAccessMockRoutes(page);
       await accessRequestPage.gotoChallengedAccessRequest(CHALLENGED_ACCESS_PATH);
       await accessRequestPage.submitButton.click();
@@ -360,7 +430,7 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     feature: 'access requests',
     engines: defaultEngines,
     setup: async ({ page, accessRequestPage }) => {
-      await applySessionCookies(page, 'STAFF_ADMIN');
+      await setupStaffAccessibilitySession(page);
       await setupChallengedAccessMockRoutes(page);
       await accessRequestPage.gotoChallengedAccessRequest(CHALLENGED_ACCESS_PATH);
       await accessRequestPage.linkedCaseReasonRadio.check();
@@ -374,7 +444,7 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     engines: defaultEngines,
     axeKnownViolations: [knownFormLabelViolation],
     setup: async ({ page, accessRequestPage }) => {
-      await applySessionCookies(page, 'STAFF_ADMIN');
+      await setupStaffAccessibilitySession(page);
       await setupReviewSpecificAccessMockRoutes(page);
       await accessRequestPage.gotoReviewSpecificRequest(ACCESS_REQUEST_REVIEW_PATH);
       await accessRequestPage.continueButton.click();
@@ -386,7 +456,7 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     feature: 'access requests',
     engines: defaultEngines,
     setup: async ({ page, accessRequestPage }) => {
-      await applySessionCookies(page, 'STAFF_ADMIN');
+      await setupStaffAccessibilitySession(page);
       await setupReviewSpecificAccessMockRoutes(page, { taskStatus: 500, taskBody: { message: 'task load failed' } });
       await accessRequestPage.gotoReviewSpecificRequestServiceDown(ACCESS_REQUEST_REVIEW_PATH);
       await expect(page).toHaveURL(/\/service-down$/);
@@ -399,7 +469,7 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     engines: defaultEngines,
     setup: async ({ page, caseDetailsPage, caseFileViewPage }) => {
       const caseId = '1690807693531270';
-      await applySessionCookies(page, 'RESTRICTED_CASE_FILE_VIEW_ON');
+      await setupStaffAccessibilitySession(page);
       await setupCaseFileViewMockRoutes(page, caseId);
       await caseDetailsPage.openCaseDetails('PRIVATELAW', 'PRLAPPS', caseId);
       await caseDetailsPage.selectCaseDetailsTab('Case File View');
@@ -411,13 +481,14 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     feature: 'hearings',
     engines: defaultEngines,
     setup: async ({ page, caseDetailsPage, hearingsTabPage }) => {
-      await openHearingsTab(page, caseDetailsPage, {
-        userIdentifier: HEARING_MANAGER_CR84_OFF_USER,
-        routeConfig: {
-          userRoles: hearingManagerRoles,
-          hearings: [LISTED_HEARING_SCENARIO],
-        },
-      });
+      await setupHearingAccessibilitySession(page);
+      const routeConfig = {
+        userRoles: hearingManagerRoles,
+        hearings: [LISTED_HEARING_SCENARIO],
+      };
+      await setupHearingsMockRoutes(page, routeConfig);
+      await gotoCaseDetailsWithRetry(page, caseDetailsUrl());
+      await caseDetailsPage.selectCaseDetailsTab('Hearings');
       await expect(hearingsTabPage.requestHearingButton).toBeVisible();
     },
   },
@@ -426,13 +497,14 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     feature: 'hearings',
     engines: defaultEngines,
     setup: async ({ page, caseDetailsPage, hearingsTabPage }) => {
-      await openHearingsTab(page, caseDetailsPage, {
-        userIdentifier: HEARING_MANAGER_CR84_OFF_USER,
-        routeConfig: {
-          userRoles: hearingManagerRoles,
-          hearings: [LISTED_HEARING_SCENARIO],
-        },
-      });
+      await setupHearingAccessibilitySession(page);
+      const routeConfig = {
+        userRoles: hearingManagerRoles,
+        hearings: [LISTED_HEARING_SCENARIO],
+      };
+      await setupHearingsMockRoutes(page, routeConfig);
+      await gotoCaseDetailsWithRetry(page, caseDetailsUrl());
+      await caseDetailsPage.selectCaseDetailsTab('Hearings');
       await hearingsTabPage.openRequestHearing();
       await expect(page.getByRole('heading', { name: /hearing requirements/i })).toBeVisible();
       await continueHearingsFlow(page);
@@ -443,8 +515,15 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     title: 'booking UI work access page',
     feature: 'booking',
     engines: defaultEngines,
-    setup: async ({ page, bookingUiPage }, testInfo) => {
-      await setupBookableBookingUiRoutesForTest(page, testInfo);
+    setup: async ({ page, bookingUiPage }) => {
+      const userId = 'a11y-booking-user';
+      await setupTaskListMockRoutes(page, buildMyTaskListMock(userId, 3), {
+        bootstrapUser: buildBookingUiBootstrapUser(userId),
+      });
+      await setupBookingUiMockRoutes(page, {
+        locationResponseBody: singleLocationMock,
+        getBookingsResponseBody: buildExistingBookingsMock(userId),
+      });
       await bookingUiPage.goto();
       await expect(bookingUiPage.heading).toBeVisible();
     },
@@ -454,8 +533,10 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     feature: 'role access',
     engines: defaultEngines,
     setup: async ({ page }) => {
-      await applySessionCookies(page, 'STAFF_ADMIN');
-      await page.goto('/role-access/delete-exclusion?caseId=1620409659381330&exclusionId=123');
+      const caseId = '1620409659381330';
+      await setupStaffAccessibilitySession(page);
+      await setupRolesAndAccessMockRoutes(page, { caseId, jurisdiction: 'IA', isCaseAllocator: true });
+      await page.goto(`/role-access/delete-exclusion?caseId=${caseId}&exclusionId=123`);
       await expectMainContent(page);
     },
   },
@@ -464,9 +545,11 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     feature: 'role access',
     engines: defaultEngines,
     setup: async ({ page }) => {
-      await applySessionCookies(page, 'STAFF_ADMIN');
+      const caseId = '1546883526751282';
+      await setupStaffAccessibilitySession(page);
+      await setupRolesAndAccessMockRoutes(page, { caseId, jurisdiction: 'IA', isCaseAllocator: true });
       await page.goto(
-        '/role-access/allocate-role/allocate?caseId=1546883526751282&roleCategory=JUDICIAL&assignmentId=cc311b32-5aea-4cd1-8b72-911fb47c8a2e&actorId=38eb0c5e-29c7-453e-b92d-f2029aaed6c3&userName=Judge%20Beech&typeOfRole=Lead%20judge'
+        `/role-access/allocate-role/allocate?caseId=${caseId}&roleCategory=JUDICIAL&assignmentId=cc311b32-5aea-4cd1-8b72-911fb47c8a2e&actorId=38eb0c5e-29c7-453e-b92d-f2029aaed6c3&userName=Judge%20Beech&typeOfRole=Lead%20judge`
       );
       await expectMainContent(page);
     },
@@ -476,6 +559,7 @@ export const accessibilityPageStates: AccessibilityPageState[] = [
     feature: 'static and error pages',
     engines: defaultEngines,
     setup: async ({ page }) => {
+      await setupStaffAccessibilitySession(page);
       await page.goto(staticPage.path);
       await expectMainContent(page);
     },
@@ -488,7 +572,7 @@ export const lighthouseAccessibilityPageStates: AccessibilityPageState[] = [
     feature: 'case list',
     engines: ['lighthouse'],
     setup: async ({ page }) => {
-      await applySessionCookies(page, 'SOLICITOR');
+      await setupSolicitorAccessibilitySession(page);
       await setupCaseListMocks(page, { searchResponse: buildCaseListMock(3) });
       await page.goto('/cases');
       await expect(mainContent(page)).toBeVisible();
@@ -500,7 +584,6 @@ export const lighthouseAccessibilityPageStates: AccessibilityPageState[] = [
     feature: 'work allocation',
     engines: ['lighthouse'],
     setup: async ({ page }) => {
-      await applySessionCookies(page, 'STAFF_ADMIN');
       await setupManageTasksBaseRoutes(page, { taskListResponse: buildMyTaskListMock('a11y-staff-admin', 3) });
       await page.goto('/work/my-work/list');
       await expectMainContent(page);
@@ -512,7 +595,7 @@ export const lighthouseAccessibilityPageStates: AccessibilityPageState[] = [
     feature: 'case sharing',
     engines: ['lighthouse'],
     setup: async ({ page }) => {
-      await applySessionCookies(page, 'STAFF_ADMIN');
+      await setupStaffAccessibilitySession(page);
       await setupCaseShareMockRoutes(page);
       await page.goto('/cases/case-share?init=true');
       await page.locator('#share-case-nav button').first().click();

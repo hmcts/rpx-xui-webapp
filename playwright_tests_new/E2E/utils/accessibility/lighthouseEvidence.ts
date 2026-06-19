@@ -26,11 +26,41 @@ export async function runLighthouseAuditWithEvidence(
   const lighthouseReportPath = await findGeneratedLighthouseReport(beforeReports);
   if (!lighthouseReportPath) {
     const message = 'Lighthouse audit passed, but no generated Lighthouse HTML report was found under test-results.';
+    const safeTitle = sanitiseFileName(testInfo.title);
+    const attachmentPrefix = 'lighthouse-accessibility';
+    const summaryFileName = `${safeTitle}-${attachmentPrefix}.html`;
+    const summaryHtml = buildMissingReportHtml(context, message);
+    await publishAccessibilityEvidence(testInfo, {
+      attachmentPrefix,
+      entry: {
+        engine: 'lighthouse',
+        feature: context.feature,
+        pageState: context.pageState,
+        url: context.url,
+        violationCount: 1,
+        rules: ['lighthouse-report-missing'],
+        targets: [context.url],
+        summaryFileName,
+      },
+      html: summaryHtml,
+      json: {
+        engine: 'lighthouse',
+        feature: context.feature,
+        pageState: context.pageState,
+        url: context.url,
+        violationCount: 1,
+        rules: ['lighthouse-report-missing'],
+        targets: [context.url],
+        summaryFileName,
+        message,
+      },
+      screenshot,
+    });
     await testInfo.attach('lighthouse-accessibility-summary.html', {
-      body: buildMissingReportHtml(context, message),
+      body: summaryHtml,
       contentType: 'text/html',
     });
-    return { message, evidenceFiles: [] };
+    throw new Error(message);
   }
 
   const rawReport = await fs.readFile(lighthouseReportPath);

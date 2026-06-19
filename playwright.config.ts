@@ -16,16 +16,6 @@ type EnvMap = NodeJS.ProcessEnv;
 const withPlaywrightTagsAlias = (env: EnvMap): EnvMap =>
   env.E2E_PW_INCLUDE_TAGS || !env.PLAYWRIGHT_TAGS ? env : { ...env, E2E_PW_INCLUDE_TAGS: env.PLAYWRIGHT_TAGS };
 
-const waveLikeA11ySpecPattern = '**/*.wave-a11y.spec.ts';
-const splitTags = (raw: string | undefined): string[] =>
-  (raw ?? '')
-    .split(',')
-    .map((tag) => tag.trim())
-    .filter(Boolean);
-const includesWaveLikeA11y = (env: EnvMap): boolean =>
-  env.PLAYWRIGHT_INCLUDE_WAVE_A11Y === 'true' ||
-  [...splitTags(env.E2E_PW_INCLUDE_TAGS), ...splitTags(env.PLAYWRIGHT_TAGS)].includes('@wave-a11y');
-
 const defaultBaseUrl = 'https://manage-case.aat.platform.hmcts.net';
 const defaultApiTagFilterConfigPath = 'playwright_tests_new/api/service-tag-filter.json';
 const defaultE2eTagFilterConfigPath = 'playwright_tests_new/E2E/tag-filter.json';
@@ -165,11 +155,7 @@ const buildConfig = (env: EnvMap = process.env) => {
       'playwright_tests_new/E2E/**/*.spec.ts',
       'playwright_tests_new/integration/**/*.spec.ts',
     ],
-    testIgnore: [
-      temporaryProbePattern,
-      ...localWorktreeTestIgnorePatterns,
-      ...(includesWaveLikeA11y(e2eEnv) ? [] : [waveLikeA11ySpecPattern]),
-    ],
+    testIgnore: [temporaryProbePattern, ...localWorktreeTestIgnorePatterns],
     fullyParallel: true,
     forbidOnly: !!env.CI,
     retries: 2,
@@ -264,7 +250,6 @@ const buildConfig = (env: EnvMap = process.env) => {
 const config = buildConfig(process.env);
 
 (config as { __test__?: unknown }).__test__ = {
-  includesWaveLikeA11y,
   resolveBaseUrl,
   resolveWorkerCount,
   resolveApiProjectWorkerCount,

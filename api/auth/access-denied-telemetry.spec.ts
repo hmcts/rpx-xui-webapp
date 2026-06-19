@@ -62,8 +62,27 @@ describe('Auth access denied telemetry', () => {
     expect(clientStub.trackEvent).to.have.been.calledOnceWith({
       name: 'ManageCasePostAuthRoleDenied',
       properties: {
+        isCitizen: true,
         requiredRoleMatcher: 'caseworker',
         roleCategory: 'CITIZEN',
+      },
+    });
+  });
+
+  it('should track post-auth role denied details for citizens without role category', () => {
+    const details = {
+      allowRolesRegex: 'caseworker',
+      roles: ['citizen'],
+    };
+
+    accessDeniedCallback({} as EnhancedRequest, {} as any, sandbox.stub(), details);
+
+    expect(clientStub.trackEvent).to.have.been.calledOnceWith({
+      name: 'ManageCasePostAuthRoleDenied',
+      properties: {
+        isCitizen: true,
+        requiredRoleMatcher: 'caseworker',
+        roleCategory: '',
       },
     });
   });
@@ -78,7 +97,21 @@ describe('Auth access denied telemetry', () => {
     expect(clientStub.trackEvent).to.have.been.calledOnceWith({
       name: 'ManageCasePostAuthRoleDenied',
       properties: {
+        isCitizen: false,
         requiredRoleMatcher: 'caseworker',
+        roleCategory: '',
+      },
+    });
+  });
+
+  it('should track access denied details when event details are missing', () => {
+    accessDeniedCallback({} as EnhancedRequest, {} as any, sandbox.stub());
+
+    expect(clientStub.trackEvent).to.have.been.calledOnceWith({
+      name: 'ManageCasePostAuthRoleDenied',
+      properties: {
+        isCitizen: false,
+        requiredRoleMatcher: '',
         roleCategory: '',
       },
     });

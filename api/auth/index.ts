@@ -33,11 +33,20 @@ const logger = log4jui.getLogger('auth');
 const POST_AUTH_ROLE_DENIED_EVENT = 'ManageCasePostAuthRoleDenied';
 
 interface AccessDeniedDetails {
-  allowRolesRegex: string;
+  allowRolesRegex?: string;
+  roles?: string[];
   userinfo?: {
     roleCategory?: string;
+    roles?: string[];
   };
 }
+
+const isCitizenUser = (details?: AccessDeniedDetails): boolean => {
+  const roleCategory = details?.userinfo?.roleCategory?.toLowerCase();
+  const roles = details?.roles || details?.userinfo?.roles || [];
+
+  return roleCategory === 'citizen' || roles.some((role) => role.toLowerCase() === 'citizen');
+};
 
 export const successCallback = (req: EnhancedRequest, res: Response, next: NextFunction) => {
   const { user } = req.session.passport;
@@ -72,16 +81,19 @@ export const accessDeniedCallback = (
   _req: EnhancedRequest,
   _res: Response,
   _next: NextFunction,
-  details: AccessDeniedDetails
+  details?: AccessDeniedDetails
 ) => {
-  logger.warn(`Post-auth role denied: user has no role matching ${details.allowRolesRegex}`);
+  const requiredRoleMatcher = details?.allowRolesRegex || '';
+
+  logger.warn(`Post-auth role denied: user has no role matching ${requiredRoleMatcher}`);
 
   if (client) {
     client.trackEvent({
       name: POST_AUTH_ROLE_DENIED_EVENT,
       properties: {
-        requiredRoleMatcher: details.allowRolesRegex,
-        roleCategory: details.userinfo?.roleCategory || '',
+        isCitizen: isCitizenUser(details),
+        requiredRoleMatcher,
+        roleCategory: details?.userinfo?.roleCategory || '',
       },
     });
   }

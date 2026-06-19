@@ -33,21 +33,21 @@ describe('AccessDeniedComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should show the Manage Case access denied message', () => {
+  it('should show the Manage Cases access denied message', () => {
     const translatePipeSpy = spyOn(RpxTranslateMockPipe.prototype, 'transform').and.callThrough();
     fixture.detectChanges();
 
     const headingElement = fixture.debugElement.query(By.css('.govuk-heading-xl')).nativeElement;
-    expect(headingElement.textContent).toContain('You cannot use Manage Case with this account');
-    expect(translatePipeSpy).toHaveBeenCalledWith('You cannot use Manage Case with this account');
+    expect(headingElement.textContent).toContain('You cannot use Manage Cases with this account');
+    expect(translatePipeSpy).toHaveBeenCalledWith('You cannot use Manage Cases with this account');
 
     const bodyElements = fixture.debugElement.queryAll(By.css('.govuk-body'));
     expect(bodyElements[0].nativeElement.textContent).toContain(
-      'You signed in successfully, but this account is not authorised to use Manage Case.'
+      'You signed in successfully, but this account is not authorised to use Manage Cases.'
     );
     expect(bodyElements[1].nativeElement.textContent).toContain('Sign in with a different account');
     expect(bodyElements[1].nativeElement.textContent).toContain(
-      'or contact your organisation administrator or support team if you need access.'
+      'or contact your service/onboarding support team if you need access.'
     );
   });
 });

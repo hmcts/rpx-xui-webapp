@@ -18,7 +18,6 @@ const TRANSIENT_FAILURE_PATTERNS: RegExp[] = [
   /Exceeded \d+ auto-advance attempts before submit/i,
   /Submit button did not become available/i,
   /Submit button not visible/i,
-  /Failed to extract valid case number from URL/i,
   /Continue button not visible while retrying wizard advance/i,
   /Critical wizard endpoint failure/i,
   /Transient dependency instability after submit/i,

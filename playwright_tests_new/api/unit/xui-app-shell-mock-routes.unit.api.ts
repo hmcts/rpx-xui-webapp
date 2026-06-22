@@ -130,6 +130,7 @@ test.describe('XUI app shell mock routes helper', { tag: '@svc-internal' }, () =
       /\/external\/config\/ui(?:\/|\?|$)/,
       '**/api/role-access/roles/manageLabellingRoleAssignment/**',
       '**/api/role-access/roles/access-get-by-caseId*',
+      '**/api/role-access/allocate-role/valid-roles*',
       '**/api/wa-supported-jurisdiction/get*',
       '**/api/wa-supported-role-details/getRoleCategories*',
       '**/api/wa-supported-role-details/getRoleTypes*',

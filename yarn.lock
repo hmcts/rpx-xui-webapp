@@ -816,13 +816,13 @@ __metadata:
   linkType: hard
 
 "@axe-core/playwright@npm:^4.11.0":
-  version: 4.11.3
-  resolution: "@axe-core/playwright@npm:4.11.3"
+  version: 4.11.0
+  resolution: "@axe-core/playwright@npm:4.11.0"
   dependencies:
-    axe-core: "npm:~4.11.4"
+    axe-core: "npm:~4.11.0"
   peerDependencies:
     playwright-core: ">= 1.0.0"
-  checksum: 10/6da87fce93d3fd67db2629d77cb623b63816e9dbea4449be261e67ec8884cd58a3cec57be73074b82e2a0ca47a30369514c56e2d455e3aaf7c192e4a76f1d1bf
+  checksum: 10/54de38082deeb1d9022b47f1412ebba7c9b93aa09a0dbc5b1609d35b4f5d05f43840968aeeea913b340b4d89ab1ec0c8bb18aeb1f4c609751ae95e7b8ae2b724
   languageName: node
   linkType: hard
 
@@ -3457,12 +3457,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.54-pofcc-131":
-  version: 7.3.54-pofcc-131
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.54-pofcc-131"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.54-pofcc-75-v1":
+  version: 7.3.54-pofcc-75-v1
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.54-pofcc-75-v1"
   dependencies:
     tslib: "npm:^2.3.0"
-  checksum: 10/a75e071432ce1e7ece7dc2690eb32050b40f91b2849a896a1c3c1b14d8ae354e2ac3b2399b8b5c74d03ee32ace3ec355d6998f30293c2ea0e6cee1b0f0bffe70
+  checksum: 10/7a771cbec3eda989581476e5dbf1aa88a338a15054dbd1490c79a590886e0c5dc4691f315aff38aa24382fdbdc89b9445504dd34e9b8ccfbed9391fa360ee2d0
   languageName: node
   linkType: hard
 
@@ -3485,9 +3485,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/media-viewer@npm:4.2.19":
-  version: 4.2.19
-  resolution: "@hmcts/media-viewer@npm:4.2.19"
+"@hmcts/media-viewer@npm:4.2.20":
+  version: 4.2.20
+  resolution: "@hmcts/media-viewer@npm:4.2.20"
   dependencies:
     "@swimlane/ngx-datatable": "npm:^20.0.0"
     mutable-div: "npm:^2.0.0"
@@ -3507,7 +3507,7 @@ __metadata:
     "@ngrx/store": ^20
     "@ngrx/store-devtools": ^20
     rpx-xui-translation: 1.2.3
-  checksum: 10/d503cae67871679f5071b97233d6d756eeb95f0da81cc92d81ef9b959cc4ab7dec9e0cefbe1034ea453b1d03b4f6b5a8b18fd11e82f5676e80650c5ce8a43313
+  checksum: 10/1f431b18e5f90966f1abcfe1be8d9f0a4af5119c38a25845cd24fae65d3cd6f251fef626ef41932df92f145773bd0190ba996322042f2e326dd1b924491fa584
   languageName: node
   linkType: hard
 
@@ -10008,7 +10008,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axe-core@npm:^4.9.1, axe-core@npm:~4.11.4":
+"axe-core@npm:^4.9.1":
   version: 4.11.4
   resolution: "axe-core@npm:4.11.4"
   checksum: 10/49095daa422d05d99a90b39301a3b5c971e234a4593403dfd6701df637a3e550bcfd7bd096709c5643564dd069208513247791f367790e0605d15386fb2a7bfe
@@ -10019,6 +10019,13 @@ __metadata:
   version: 4.10.3
   resolution: "axe-core@npm:4.10.3"
   checksum: 10/9ff51ad0fd0fdec5c0247ea74e8ace5990b54c7f01f8fa3e5cd8ba98b0db24d8ebd7bab4a9bd4d75c28c4edcd1eac455b44c8c6c258c6a98f3d2f88bc60af4cc
+  languageName: node
+  linkType: hard
+
+"axe-core@npm:~4.11.0":
+  version: 4.11.0
+  resolution: "axe-core@npm:4.11.0"
+  checksum: 10/18254ee95bc328aec9a909b22e4b22e8ff14a21363fdbd1a5227267e66bf1d2fc1425c186e9001759aab5827cf4ee9dc30f7ea57e8200cbf7a1cd555ed21a908
   languageName: node
   linkType: hard
 
@@ -10065,7 +10072,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.12.1, axios@npm:^1.13.5, axios@npm:^1.16.0, axios@npm:^1.8.4":
+"axios@npm:^1.12.1, axios@npm:^1.13.5, axios@npm:^1.8.4":
   version: 1.17.0
   resolution: "axios@npm:1.17.0"
   dependencies:
@@ -10085,6 +10092,17 @@ __metadata:
     form-data: "npm:^4.0.5"
     proxy-from-env: "npm:^2.1.0"
   checksum: 10/d39a2c0ebc7ff4739401b282e726cc2673377949d6c46d60eb619458f8d7a2f7eadbcada7097f4dbc7d5c59abb4d3bf6fac33d474412bc3415d3f5aa7ed45530
+  languageName: node
+  linkType: hard
+
+"axios@npm:^1.16.0":
+  version: 1.16.0
+  resolution: "axios@npm:1.16.0"
+  dependencies:
+    follow-redirects: "npm:^1.16.0"
+    form-data: "npm:^4.0.5"
+    proxy-from-env: "npm:^2.1.0"
+  checksum: 10/cf8b521ff732c21550b38c8739aef556ea5e14b268468bb89e4307416ab262b462e582474e810963a3d61c2392ab47ad35c11d05eff027de7c97113bc7411623
   languageName: node
   linkType: hard
 
@@ -10170,14 +10188,14 @@ __metadata:
   linkType: hard
 
 "bare-events@npm:^2.5.4":
-  version: 2.9.1
-  resolution: "bare-events@npm:2.9.1"
+  version: 2.8.0
+  resolution: "bare-events@npm:2.8.0"
   peerDependencies:
     bare-abort-controller: "*"
   peerDependenciesMeta:
     bare-abort-controller:
       optional: true
-  checksum: 10/0692be1767f4f326e39c8b1ec76f88e9f566d96fce4fe23ff10c1a6e69843237d1eee0d14a52d9aa4b89c8efa6511fe6c0e640d96fa8586241bfa877c4f7bb46
+  checksum: 10/3b3330593daa5bcbae9d62696cc6b77883c99f551412bd03cc7aee6ff5e5a8ea1a442069642b3c45c3dcdadbb732028f173ea2aaf9d418a19df3262b681bf9b6
   languageName: node
   linkType: hard
 
@@ -10471,7 +10489,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"brace-expansion@npm:^2.0.1, brace-expansion@npm:^2.0.2":
+"brace-expansion@npm:^2.0.1":
   version: 2.0.2
   resolution: "brace-expansion@npm:2.0.2"
   dependencies:
@@ -10480,12 +10498,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"brace-expansion@npm:^5.0.2":
-  version: 5.0.4
-  resolution: "brace-expansion@npm:5.0.4"
+"brace-expansion@npm:^2.0.2":
+  version: 2.1.0
+  resolution: "brace-expansion@npm:2.1.0"
   dependencies:
-    balanced-match: "npm:^4.0.2"
-  checksum: 10/cfd57e20d8ded9578149e47ae4d3fff2b2f78d06b54a32a73057bddff65c8e9b930613f0cbcfefedf12dd117151e19d4da16367d5127c54f3bff02d8a4479bb2
+    balanced-match: "npm:^1.0.0"
+  checksum: 10/c77a7a64aabf94b8d5913955adb4f36957917565374461355bb4276830c027a313d981f32410cea9e38f52573e7eb776d02fe05091c3a79a061958d97e4d2b43
   languageName: node
   linkType: hard
 
@@ -17071,10 +17089,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lru-cache@npm:^11.2.1, lru-cache@npm:^11.2.4":
+"lru-cache@npm:^11.2.1":
   version: 11.2.5
   resolution: "lru-cache@npm:11.2.5"
   checksum: 10/be50f66c6e23afeaab9c7eefafa06344dd13cde7b3528809c2660c4ad70d93b9ba537366634623cbb2eb411671f526b5a4af2c602507b9258aead0fa8d713f6c
+  languageName: node
+  linkType: hard
+
+"lru-cache@npm:^11.2.4":
+  version: 11.3.5
+  resolution: "lru-cache@npm:11.3.5"
+  checksum: 10/3701b77e87765a3aea453402a7850bdbf7e02445210f35bd5ba1561f601f605f488bf9932be4a3851a6664073924f671a1ec99c4a1a98c457e0d126872a3e04f
   languageName: node
   linkType: hard
 
@@ -17501,12 +17526,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^10.0.1, minimatch@npm:^10.2.2":
-  version: 10.2.4
-  resolution: "minimatch@npm:10.2.4"
+"minimatch@npm:^10.0.1, minimatch@npm:^10.2.2, minimatch@npm:~10.2.4":
+  version: 10.2.5
+  resolution: "minimatch@npm:10.2.5"
   dependencies:
-    brace-expansion: "npm:^5.0.2"
-  checksum: 10/aea4874e521c55bb60744685bbffe3d152e5460f84efac3ea936e6bbe2ceba7deb93345fec3f9bb17f7b6946776073a64d40ae32bf5f298ad690308121068a1f
+    brace-expansion: "npm:^5.0.5"
+  checksum: 10/19e87a931aff60ee7b9d80f39f817b8bfc54f61f8356ee3549fbf636dbccacacfec8d803eac73293955c4527cd085247dfc064bce4a5e349f8f3b85e2bf5da0f
   languageName: node
   linkType: hard
 
@@ -17561,15 +17586,6 @@ __metadata:
   dependencies:
     brace-expansion: "npm:^2.0.1"
   checksum: 10/dd6a8927b063aca6d910b119e1f2df6d2ce7d36eab91de83167dd136bb85e1ebff97b0d3de1cb08bd1f7e018ca170b4962479fefab5b2a69e2ae12cb2edc8348
-  languageName: node
-  linkType: hard
-
-"minimatch@npm:~10.2.4":
-  version: 10.2.5
-  resolution: "minimatch@npm:10.2.5"
-  dependencies:
-    brace-expansion: "npm:^5.0.5"
-  checksum: 10/19e87a931aff60ee7b9d80f39f817b8bfc54f61f8356ee3549fbf636dbccacacfec8d803eac73293955c4527cd085247dfc064bce4a5e349f8f3b85e2bf5da0f
   languageName: node
   linkType: hard
 
@@ -18123,23 +18139,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ngx-markdown@npm:^18.1.0":
-  version: 18.1.0
-  resolution: "ngx-markdown@npm:18.1.0"
+"ngx-markdown@npm:20":
+  version: 20.1.0
+  resolution: "ngx-markdown@npm:20.1.0"
   dependencies:
     clipboard: "npm:^2.0.11"
     emoji-toolkit: "npm:>= 8.0.0 < 10.0.0"
     katex: "npm:^0.16.0"
     mermaid: "npm:>= 10.6.0 < 12.0.0"
-    prismjs: "npm:^1.28.0"
+    prismjs: "npm:^1.30.0"
     tslib: "npm:^2.3.0"
   peerDependencies:
-    "@angular/common": ^18.0.0
-    "@angular/core": ^18.0.0
-    "@angular/platform-browser": ^18.0.0
-    marked: ">= 9.0.0 < 13.0.0"
+    "@angular/common": ^20.0.0
+    "@angular/core": ^20.0.0
+    "@angular/platform-browser": ^20.0.0
+    marked: ^15.0.0 || ^16.0.0
     rxjs: ^6.5.3 || ^7.4.0
-    zone.js: ~0.14.0
+    zone.js: ~0.15.0
   dependenciesMeta:
     clipboard:
       optional: true
@@ -18151,7 +18167,7 @@ __metadata:
       optional: true
     prismjs:
       optional: true
-  checksum: 10/e0c418e489066c079b17b2c86e0e8f9d0899e2d8f1582d303d5ce75028488b6cd76a693e2ea328f223dbc8c42dc63e29cd61460507ae2c7d82af078e6581e58f
+  checksum: 10/e63550b8b561ddcc29445de5edf034ea0fff6089fbaef5377bdffda3d5632cc829f0b55edbeb9235dfe30935e2a5ee4eb0e6dbd3b476a92f1313fa743cfc2f91
   languageName: node
   linkType: hard
 
@@ -19712,7 +19728,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prismjs@npm:^1.28.0, prismjs@npm:^1.29.0":
+"prismjs@npm:^1.29.0, prismjs@npm:^1.30.0":
   version: 1.30.0
   resolution: "prismjs@npm:1.30.0"
   checksum: 10/6b48a2439a82e5c6882f48ebc1564c3890e16463ba17ac10c3ad4f62d98dea5b5c915b172b63b83023a70ad4f5d7be3e8a60304420db34a161fae69dd4e3e2da
@@ -20771,10 +20787,10 @@ __metadata:
     "@edium/fsm": "npm:^2.1.2"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.54-pofcc-131"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.54-pofcc-75-v1"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
-    "@hmcts/media-viewer": "npm:4.2.19"
+    "@hmcts/media-viewer": "npm:4.2.20"
     "@hmcts/nodejs-healthcheck": "npm:1.8.5"
     "@hmcts/playwright-common": "npm:^1.1.2"
     "@hmcts/properties-volume": "npm:^1.3.1"
@@ -20871,7 +20887,7 @@ __metadata:
     ngrx-store-freeze: "npm:^0.2.4"
     ngx-chips: "npm:3.0.0"
     ngx-logger: "npm:^5.0.12"
-    ngx-markdown: "npm:^18.1.0"
+    ngx-markdown: "npm:20"
     ngx-pagination: "npm:^6.0.3"
     node-html-parser: "npm:^7.0.0"
     nodemon: "npm:^2.0.19"
@@ -22231,15 +22247,15 @@ __metadata:
   linkType: hard
 
 "tar@npm:^7.4.3":
-  version: 7.5.16
-  resolution: "tar@npm:7.5.16"
+  version: 7.5.7
+  resolution: "tar@npm:7.5.7"
   dependencies:
     "@isaacs/fs-minipass": "npm:^4.0.0"
     chownr: "npm:^3.0.0"
     minipass: "npm:^7.1.2"
     minizlib: "npm:^3.1.0"
     yallist: "npm:^5.0.0"
-  checksum: 10/fafa22efceb9f056bf29ddc47d9bd90bb82fe3ce57b8d1242fc45771251741964cebba69d4e14a24fd1643f3c7f68478e945a19def534703cf370c2d9dca2e09
+  checksum: 10/0d6938dd32fe5c0f17c8098d92bd9889ee0ed9d11f12381b8146b6e8c87bb5aa49feec7abc42463f0597503d8e89e4c4c0b42bff1a5a38444e918b4878b7fd21
   languageName: node
   linkType: hard
 

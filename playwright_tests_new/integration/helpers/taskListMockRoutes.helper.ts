@@ -205,6 +205,19 @@ export async function setupTaskListBootstrapRoutes(
     });
   });
 
+  await page.route('**/api/role-access/allocate-role/valid-roles*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([
+        {
+          serviceId: 'IA',
+          roles: [{ roleId: 'lead-judge', roleName: 'Lead judge' }],
+        },
+      ]),
+    });
+  });
+
   await page.route('**/workallocation/caseworker/getUsersByServiceName*', async (route) => {
     await route.fulfill({
       status: 200,

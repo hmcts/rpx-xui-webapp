@@ -248,11 +248,12 @@ export async function refreshUsersWithRolesFromBackend(
   const payload = prepareRoleApiRequest(jurisdictions);
   const roleAssignments = req
     ? (await handlePostRoleAssignments(roleApiPath, payload, req)).data.roleAssignmentResponse
-    : (
+    : // Note - Along with other new functionality not actually used
+      (
         await handlePostRoleAssignmentsWithNewUsers(roleApiPath, payload, {
           ...getRequestHeaders(),
           pageNumber: 0,
-          size: 10000,
+          size: 100000,
         })
       ).data.roleAssignmentResponse;
 
@@ -261,7 +262,6 @@ export async function refreshUsersWithRolesFromBackend(
 
 export function setLocalCachedUsersWithRoles(usersWithRoles: CachedCaseworker[]): CachedCaseworker[] {
   cachedUsersWithRoles = usersWithRoles;
-  console.log(`Setting local cached users with roles with ${usersWithRoles.length} users`);
   FullUserDetailCache.setUserDetails(cachedUsersWithRoles);
   return cachedUsersWithRoles;
 }

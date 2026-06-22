@@ -105,8 +105,7 @@ export class TaskAssignmentContainerComponent implements OnInit, OnDestroy {
       if (!userInfo) {
         return false;
       }
-      // EXUI-2907 - Role category is used instead of roles
-      return userInfo.roleCategory === RoleCategory.JUDICIAL;
+      return !!userInfo.roleCategories?.includes(RoleCategory.JUDICIAL);
     }
     return false;
   }

@@ -1,7 +1,7 @@
 import { UserInfo } from '../auth/interfaces/UserInfo';
 import { allContainOnlySafeCharacters, containsDangerousCode } from '../utils';
 import { CASE_ALLOCATOR_ROLE, ORGANISATION_ROLE_TYPE } from './constants';
-import { RoleAssignment } from './interfaces/roleAssignment';
+import { RoleAssignment, RoleCategoryRule } from './interfaces/roleAssignment';
 
 export const JUDGE_ROLE = 'judge';
 export const JUDGE_ROLE_CATEGORY = 'JUDICIAL';
@@ -26,9 +26,39 @@ export const CTSC_ROLE = 'ctsc';
 export const CTSC_ROLE_CATEGORY = 'CTSC';
 export const CTSC_ROLE_NAME = 'ctsc';
 export const OTHER_GOV_DEPARTMENT_ROLE = 'other_gov_department';
+export const OTHER_GOV_DEPARTMENT_ROLE_CATEGORY = 'OTHER_GOV_DEPARTMENT';
 export const SSCS_DWP_RESPONSE_WRITER = 'caseworker-sscs-dwpresponsewriter';
 export const SSCS_HMRC_RESPONSE_WRITER = 'caseworker-sscs-hmrcresponsewriter';
 export const SSCS_IBCA_RESPONSE_WRITER = 'caseworker-sscs-ibcaresponsewriter';
+
+// EXUI-4758 - Actually use RoleCateogry instead of non-capitalized name
+const roleCategoryRules: RoleCategoryRule[] = [
+  { matches: (roles) => hasRoleCategory(roles, CITIZEN_ROLE), result: CITIZEN_ROLE_CATEGORY },
+  {
+    matches: (roles) => includesRoleCategory(roles, JUDGE_ROLE) || includesRoleCategory(roles, JUDICIARY_ROLE_NAME),
+    result: JUDGE_ROLE_CATEGORY,
+  },
+  { matches: (roles) => includesRoleCategory(roles, ADMIN_ROLE), result: ADMIN_ROLE_CATEGORY },
+  { matches: (roles) => includesRoleCategory(roles, CTSC_ROLE_NAME), result: CTSC_ROLE_CATEGORY },
+  {
+    matches: (roles) =>
+      hasRoleCategory(roles, LEGAL_OPERATIONS_ROLE_NAME) ||
+      hasRoleCategory(roles, TASK_SUPERVISOR) ||
+      hasRoleCategory(roles, PUI_CASE_MANAGER) ||
+      hasRoleCategory(roles, PUI_ORG_MANAGER),
+      // EXUI-4758 - Unsure whether this is correct but it is the current implementation.
+      // Looks like legal-operations has been bundled in with solicitor
+      // may just not have been noticed as is a fallback
+    result: PROFESSIONAL_ROLE_CATEGORY,
+  },
+  {
+    matches: (roles) =>
+      hasRoleCategory(roles, SSCS_DWP_RESPONSE_WRITER) ||
+      hasRoleCategory(roles, SSCS_HMRC_RESPONSE_WRITER) ||
+      hasRoleCategory(roles, SSCS_IBCA_RESPONSE_WRITER),
+    result: OTHER_GOV_DEPARTMENT_ROLE_CATEGORY,
+  },
+];
 
 // Util Method takes the roleAssignment and returns true if it has case allocator
 // If current jurisdiction is passed it checks if the RoleAssignment is for jurisdiction
@@ -61,41 +91,25 @@ export function getOrganisationRoles(roleAssignments: RoleAssignment[]): string[
   return roles;
 }
 
-export function getRoleCategoryFromRoleAssignments(roleAssignments: string[]): string {
+export function getRoleCategoriesFromRoleAssignments(roleAssignments: string[]): string[] {
   const roleCategories = [JUDGE_ROLE_CATEGORY, LEGAL_OPERATIONS_ROLE_CATEGORY, CTSC_ROLE_CATEGORY, ADMIN_ROLE_CATEGORY];
+  const userRoleCategories = [];
   for (const roleCategory of roleCategories) {
     if (hasRoleCategory(roleAssignments, roleCategory)) {
-      return roleCategory;
+      userRoleCategories.push(roleCategory);
     }
   }
-  return undefined;
+  return userRoleCategories;
 }
 
-export function getUserRoleCategory(roles: string[]): string {
-  if (hasRoleCategory(roles, CITIZEN_ROLE)) {
-    return CITIZEN_ROLE_NAME;
-  } else if (includesRoleCategory(roles, JUDGE_ROLE) || includesRoleCategory(roles, JUDICIARY_ROLE_NAME)) {
-    return JUDGE_ROLE_NAME;
-  } else if (includesRoleCategory(roles, ADMIN_ROLE)) {
-    return ADMIN_ROLE_NAME;
-  } else if (includesRoleCategory(roles, CTSC_ROLE_NAME)) {
-    return CTSC_ROLE_NAME;
-  } else if (
-    hasRoleCategory(roles, LEGAL_OPERATIONS_ROLE_NAME) ||
-    hasRoleCategory(roles, TASK_SUPERVISOR) ||
-    hasRoleCategory(roles, PUI_CASE_MANAGER) ||
-    hasRoleCategory(roles, PUI_ORG_MANAGER)
-  ) {
-    return PROFESSIONAL_ROLE;
-  } else if (
-    hasRoleCategory(roles, SSCS_DWP_RESPONSE_WRITER) ||
-    hasRoleCategory(roles, SSCS_HMRC_RESPONSE_WRITER) ||
-    hasRoleCategory(roles, SSCS_IBCA_RESPONSE_WRITER)
-  ) {
-    return OTHER_GOV_DEPARTMENT_ROLE;
+// EXUI-4758 - get all unique role categories from userInfo.roles for the user, not just the first one found
+export function getUserRoleCategories(roles: string[]): string[] {
+  const userRoleCategories = roleCategoryRules.filter((rule) => rule.matches(roles)).map((rule) => rule.result);
+  // as previous, default to legal operations if no role category found
+  if (userRoleCategories.length === 0) {
+    return [LEGAL_OPERATIONS_ROLE_CATEGORY];
   }
-
-  return LEGAL_OPERATIONS_ROLE_NAME;
+  return userRoleCategories;
 }
 
 export function userDetailsValid(userInfo: UserInfo): boolean {

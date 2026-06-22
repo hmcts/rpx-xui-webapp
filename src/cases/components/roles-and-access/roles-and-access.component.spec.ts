@@ -27,7 +27,7 @@ describe('RolesAndAccessComponent', () => {
       lastName: 'Doe',
       email: 'john.doe@test.com',
       location: null,
-      roleCategory: RoleCategory.LEGAL_OPERATIONS,
+      roleCategories: [RoleCategory.LEGAL_OPERATIONS],
     },
     {
       idamId: 'user2',
@@ -35,7 +35,7 @@ describe('RolesAndAccessComponent', () => {
       lastName: 'Smith',
       email: 'jane.smith@test.com',
       location: null,
-      roleCategory: RoleCategory.ADMIN,
+      roleCategories: [RoleCategory.ADMIN],
     },
     {
       idamId: 'user3',
@@ -43,7 +43,7 @@ describe('RolesAndAccessComponent', () => {
       lastName: 'Johnson',
       email: 'bob.johnson@test.com',
       location: null,
-      roleCategory: RoleCategory.CTSC,
+      roleCategories: [RoleCategory.CTSC],
     },
   ];
 

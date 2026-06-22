@@ -3021,9 +3021,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hmcts/ccd-case-ui-toolkit@npm:7.3.67":
-  version: 7.3.67
-  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.67"
+"@hmcts/ccd-case-ui-toolkit@npm:7.3.65-exui-3740":
+  version: 7.3.65-exui-3740
+  resolution: "@hmcts/ccd-case-ui-toolkit@npm:7.3.65-exui-3740"
   dependencies:
     "@edium/fsm": "npm:^3.0.2"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
@@ -3051,8 +3051,8 @@ __metadata:
     "@angular/platform-browser-dynamic": ^20.3.18
     "@angular/router": ^20.3.18
     "@angular/upgrade": ^20.3.18
-    "@ngrx/effects": ^20.1.0
-    "@ngrx/store": ^20.1.0
+    "@ngrx/effects": 17.2.0
+    "@ngrx/store": ^17.2.0
     "@nicky-lenaers/ngx-scroll-to": ^14.0.0
     govuk-elements-sass: ^3.1.2
     moment: ^2.30.1
@@ -3065,7 +3065,7 @@ __metadata:
     rxjs-compat: ^6.6.7
     underscore: ^1.9.1
     zone.js: ^0.15.1
-  checksum: 10/f10433881719394b4a457b3b25d60d1a59f16354e5d63d22169bdc77b2de21aa12daf114ebea2550b10b03f592d08767e16b515b2c4e49ff2c5fc65a2fed635f
+  checksum: 10/6961e601e7e2286b89e7cf508f991a39cb93d006f343591836dba4c6668efeb111e97a33f12f555ad9c6fb1e0c70519a68343267c91735d35b6f5539d89f3904
   languageName: node
   linkType: hard
 
@@ -19694,7 +19694,7 @@ __metadata:
     "@dr.pogodin/csurf": "npm:^1.16.5"
     "@eslint/js": "npm:^9.39.2"
     "@faker-js/faker": "npm:^9.2.0"
-    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.67"
+    "@hmcts/ccd-case-ui-toolkit": "npm:7.3.65-exui-3740"
     "@hmcts/ccpay-web-component": "npm:6.5.17"
     "@hmcts/frontend": "npm:0.0.50-alpha"
     "@hmcts/media-viewer": "npm:4.2.20"

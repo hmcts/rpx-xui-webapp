@@ -519,6 +519,16 @@ async function isIdamLoginPage(page: Page): Promise<boolean> {
   return usernameVisible && passwordVisible;
 }
 
+async function isServiceDownPage(page: Page): Promise<boolean> {
+  return (
+    page.url().includes('/service-down') ||
+    (await page
+      .locator('exui-service-down')
+      .isVisible()
+      .catch(() => false))
+  );
+}
+
 function getAppShellMarkers(page: Page, preferredSelector?: string): Array<{ name: string; locator: Locator }> {
   return new SessionCapturePage(page).appShellMarkers(preferredSelector);
 }
@@ -539,6 +549,18 @@ async function waitForAuthenticatedShell(
         currentUrl: page.url(),
         preferredSelector: preferredSelector ?? 'none',
       });
+    }
+
+    if (await isServiceDownPage(page)) {
+      setSetupMarker(page, 'service-down');
+      throw new SessionCaptureError(
+        `Service down page detected while waiting for app shell for ${userIdentifier}`,
+        userIdentifier,
+        {
+          currentUrl: page.url(),
+          preferredSelector: preferredSelector ?? 'none',
+        }
+      );
     }
 
     for (const marker of markers) {
@@ -650,18 +672,14 @@ export async function ensureAuthenticatedPage(
     try {
       await waitForAppShell();
     } catch (error) {
-      markSetup('waiting-shell');
-      logger.warn('App shell not detected; retrying once', {
+      logger.warn('App shell not detected after navigation', {
         userIdentifier: identity.userIdentifier,
         selector: selectors,
         timeoutMs,
         error: (error as Error).message,
         operation: 'wait-for-shell',
       });
-      await gotoAppTarget(page, identity.userIdentifier, targetUrl);
-      await acceptAccessCookiesIfPresent(page);
-      markSetup('navigated-app');
-      await waitForAppShell();
+      throw error;
     }
   } else {
     markSetup('setup-ready');
@@ -1280,6 +1298,8 @@ export const __test__ = {
   sessionCaptureWith,
   persistSession,
   confirmAuthenticatedLogin,
+  ensureAuthenticatedPage,
   loginAndPersistSession,
   requirePersistableSessionCookies,
+  waitForAuthenticatedShell,
 };

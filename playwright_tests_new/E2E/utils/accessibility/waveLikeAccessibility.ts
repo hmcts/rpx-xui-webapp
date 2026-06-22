@@ -562,7 +562,7 @@ function buildDeveloperAdviceHtml(url: string, violation: WaveLikeViolation): st
         <dd>${escapeHtml(violation.rule)}: ${escapeHtml(violation.message)}</dd>
         <dt>What to fix</dt>
         <dd>${escapeHtml(violation.advice ?? adviceForRule(violation.rule))}</dd>
-        <dt>Fix path</dt>
+        <dt>DOM hints</dt>
         <dd>${buildFixPathHtml(violation)}</dd>
         <dt>Evidence</dt>
         <dd>Use this DOM snippet with the numbered highlighted screenshot marker for the same issue.</dd>
@@ -603,7 +603,7 @@ function buildFixPathHtml(violation: WaveLikeViolation): string {
   ].filter(Boolean);
 
   return escapeHtml(
-    hints.length > 0 ? hints.join('; ') : 'Start with the route component/template that renders this page state.'
+    hints.length > 0 ? hints.join('; ') : 'Start with the route component or template that renders this page state.'
   );
 }
 

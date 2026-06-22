@@ -752,6 +752,7 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
     stripLegacyFileChartArtifacts(root);
   }
 
+  injectAccessibilityEvidence(root, normalizedEvidenceEntries);
   injectAccessibilityEvidenceIntoTestModals(root, normalizedEvidenceEntries);
 
   return root.toString();

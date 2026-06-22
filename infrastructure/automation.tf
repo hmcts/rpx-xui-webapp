@@ -895,7 +895,7 @@ resource "azurerm_automation_job_schedule" "welsh_report_job" {
   count                   = var.welsh_reporting_enabled ? 1 : 0
   resource_group_name     = azurerm_resource_group.rg.name
   automation_account_name = azurerm_automation_account.welsh_reporting.0.name
-  schedule_name           = azurerm_automation_schedule.welsh_monthly_schedule.0.name
+  schedule_name           = azur fverm_automation_schedule.welsh_monthly_schedule.0.name
   runbook_name            = azurerm_automation_runbook.welsh_report_runbook.0.name
 
   parameters = {

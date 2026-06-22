@@ -17,6 +17,7 @@ import { GoActionParams } from '../../../cases/models/go-action-params.model';
 import { HeaderComponent } from '../../../app/components';
 import * as fromRoot from '../../../app/store';
 import * as fromFeature from '../../store';
+import { DecentralisedRedirectService } from '../../services/decentralised-redirect.service';
 
 @Component({
   standalone: false,
@@ -42,7 +43,8 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
     private readonly commonLibLoadingService: CommonLibLoadingService,
     private readonly ccdLibLoadingService: CCDLoadingService,
     private readonly focusService: FocusService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly decentralisedRedirectService: DecentralisedRedirectService
   ) {}
 
   /**
@@ -54,7 +56,21 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
    */
   public ngOnInit(): void {
     this.navigationSubscription = this.navigationNotifier.navigation.subscribe((navigation) => {
-      if (navigation.action) {
+      if (!navigation.action) {
+        return;
+      }
+
+      const isRedirected =
+        navigation.action === NavigationOrigin.EVENT_TRIGGERED &&
+        this.decentralisedRedirectService.tryEventRedirect({
+          caseType: navigation.relativeTo.snapshot.params.caseType ?? navigation.relativeTo.snapshot.data?.case?.case_type?.id,
+          eventId: navigation.etid,
+          caseId: navigation.relativeTo.snapshot.params.cid,
+          queryParams: navigation.queryParams,
+          isCaseCreate: false,
+        });
+
+      if (!isRedirected) {
         this.actionDispatcher(this.paramHandler(navigation));
       }
     }) as any;
@@ -117,8 +133,8 @@ export class CaseHomeComponent implements OnInit, OnDestroy {
             'cases',
             'case-details',
             navigation.relativeTo.snapshot.params.jurisdiction ??
-              navigation.relativeTo.data?.value?.case?.case_type?.jurisdiction?.id,
-            navigation.relativeTo.snapshot.params.caseType ?? navigation.relativeTo.data?.value?.case?.case_type?.id,
+              navigation.relativeTo.snapshot.data?.case?.case_type?.jurisdiction?.id,
+            navigation.relativeTo.snapshot.params.caseType ?? navigation.relativeTo.snapshot.data?.case?.case_type?.id,
             navigation.relativeTo.snapshot.params.cid,
             'trigger',
             navigation.etid,

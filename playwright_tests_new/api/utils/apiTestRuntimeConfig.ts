@@ -135,7 +135,7 @@ export const config = {
     ],
   },
   jurisdictionNames: {
-    aat: ['Family Divorce', 'Public Law', 'Immigration & Asylum', 'Manage probate application'],
+    aat: ['Family Divorce', 'Family Private Law', 'Public Law', 'Immigration & Asylum', 'Manage probate application'],
     demo: ['Family Divorce - v104-26.1', 'Public Law', 'Immigration & Asylum'],
   },
   em: {

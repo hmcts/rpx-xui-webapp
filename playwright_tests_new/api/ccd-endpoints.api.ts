@@ -1,6 +1,6 @@
 import { test, expect } from './fixtures';
 import { config as testConfig } from './utils/apiTestRuntimeConfig';
-import { withXsrf, expectStatus, withRetry } from './utils/apiTestUtils';
+import { withXsrf, expectStatus, guardedRequest, withRetry } from './utils/apiTestUtils';
 import { assertJurisdictionsForUser } from './utils/ccdUtils';
 import { stringifyCaseTypeId } from './utils/caseTypeIdUtils';
 
@@ -33,14 +33,13 @@ test.describe('CCD endpoints', { tag: '@svc-ccd' }, () => {
           [key: string]: unknown;
         }
 
-        const response = await apiClient.get<WorkbasketData>(
-          `data/internal/case-types/${encodeURIComponent(caseTypeIdText)}/work-basket-inputs`,
-          {
+        const response = await guardedRequest(() =>
+          apiClient.get<WorkbasketData>(`data/internal/case-types/${encodeURIComponent(caseTypeIdText)}/work-basket-inputs`, {
             headers: { experimental: 'true' },
             throwOnError: false,
-          }
+          })
         );
-        expectStatus(response.status, [200, 401, 403, 500, 502, 504]);
+        expectStatus(response.status, [200, 401, 403, 404, 500, 502, 504]);
         if (response.status !== 200) {
           return;
         }

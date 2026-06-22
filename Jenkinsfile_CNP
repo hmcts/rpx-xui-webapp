@@ -142,7 +142,8 @@ def publishPlaywrightAccessibilityReport = { String reportName ->
             reportName           : reportName
         ])
     } catch (Exception e) {
-        echo "[playwright-accessibility] Report publish failed but is non-blocking: ${e.getClass().getName()}: ${e.getMessage()}"
+        currentBuild.result = 'UNSTABLE'
+        echo "[playwright-accessibility] Report publish failed; marking build unstable because this pack must publish Odhín evidence: ${e.getClass().getName()}: ${e.getMessage()}"
     }
 }
 

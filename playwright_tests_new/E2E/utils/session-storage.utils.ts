@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import { IdamPage } from '@hmcts/playwright-common';
-import { chromium, request, type BrowserContext, type Page } from '@playwright/test';
+import { chromium, request, type Browser, type BrowserContext, type Page } from '@playwright/test';
 import * as lockfile from 'proper-lockfile';
 
 import config from './config.utils.js';
@@ -14,7 +14,15 @@ type EnsureStorageOptions = {
   baseUrl?: string;
 };
 
+type UiStorageIdentity = {
+  userIdentifier: string;
+  email: string;
+  password: string;
+};
+
 const DEFAULT_UI_LOGIN_TIMEOUT_MS = 60_000;
+const DEFAULT_UI_STORAGE_VALIDATION_TIMEOUT_MS = 15_000;
+const DEFAULT_UI_BROWSER_CLOSE_TIMEOUT_MS = 5_000;
 const UI_STORAGE_REFRESH_LOCK_MIN_RETRIES = 30;
 const UI_STORAGE_REFRESH_LOCK_RETRY_BASE = {
   factor: 1.2,
@@ -31,6 +39,24 @@ const resolveLoginTimeoutMs = (): number => {
   }
   const parsed = Number.parseInt(raw, 10);
   return Number.isNaN(parsed) ? DEFAULT_UI_LOGIN_TIMEOUT_MS : Math.max(5_000, parsed);
+};
+
+const resolveStorageValidationTimeoutMs = (): number => {
+  const raw = process.env.PW_UI_STORAGE_VALIDATION_TIMEOUT_MS;
+  if (!raw) {
+    return DEFAULT_UI_STORAGE_VALIDATION_TIMEOUT_MS;
+  }
+  const parsed = Number.parseInt(raw, 10);
+  return Number.isNaN(parsed) ? DEFAULT_UI_STORAGE_VALIDATION_TIMEOUT_MS : Math.max(1_000, parsed);
+};
+
+const resolveBrowserCloseTimeoutMs = (): number => {
+  const raw = process.env.PW_UI_BROWSER_CLOSE_TIMEOUT_MS;
+  if (!raw) {
+    return DEFAULT_UI_BROWSER_CLOSE_TIMEOUT_MS;
+  }
+  const parsed = Number.parseInt(raw, 10);
+  return Number.isNaN(parsed) ? DEFAULT_UI_BROWSER_CLOSE_TIMEOUT_MS : Math.max(1_000, parsed);
 };
 
 const calculateRetryBudgetMs = (retryOptions: {
@@ -226,6 +252,7 @@ const isStorageStateAuthenticated = async (storagePath: string, baseUrl: string)
   try {
     const response = await requestContext.get('/api/user/details', {
       failOnStatusCode: false,
+      timeout: resolveStorageValidationTimeoutMs(),
     });
     return response.ok();
   } catch {
@@ -243,10 +270,30 @@ const closeContextSafely = async (context: BrowserContext): Promise<void> => {
   }
 };
 
-export async function ensureUiStorageStateForUser(userIdentifier: string, options?: EnsureStorageOptions): Promise<string> {
-  const userUtils = new UserUtils();
-  const credentials = userUtils.getUserCredentials(userIdentifier);
-  const storagePath = resolveUiStoragePathForUser(userIdentifier, { email: credentials.email });
+const closeBrowserSafely = async (browser: Browser): Promise<void> => {
+  const timeoutMs = resolveBrowserCloseTimeoutMs();
+  let timer: NodeJS.Timeout | undefined;
+  try {
+    await Promise.race([
+      browser.close(),
+      new Promise<void>((resolve) => {
+        timer = setTimeout(resolve, timeoutMs);
+      }),
+    ]);
+  } catch {
+    // no-op
+  } finally {
+    if (timer) {
+      clearTimeout(timer);
+    }
+  }
+};
+
+export async function ensureUiStorageStateForIdentity(
+  identity: UiStorageIdentity,
+  options?: EnsureStorageOptions
+): Promise<string> {
+  const storagePath = resolveUiStoragePathForUser(identity.userIdentifier, { email: identity.email });
   const baseUrl =
     options?.baseUrl ?? config.urls.baseURL ?? config.urls.exuiDefaultUrl ?? 'https://manage-case.aat.platform.hmcts.net';
   const strict = options?.strict ?? false;
@@ -254,8 +301,8 @@ export async function ensureUiStorageStateForUser(userIdentifier: string, option
   const shouldRefresh = await shouldRefreshStorageState(storagePath, baseUrl, {
     ignoreTtl: strict,
     expectedIdentity: {
-      userIdentifier,
-      email: credentials.email,
+      userIdentifier: identity.userIdentifier,
+      email: identity.email,
     },
   });
   if (!shouldRefresh) {
@@ -266,8 +313,8 @@ export async function ensureUiStorageStateForUser(userIdentifier: string, option
     const refreshStillRequired = await shouldRefreshStorageState(storagePath, baseUrl, {
       ignoreTtl: strict,
       expectedIdentity: {
-        userIdentifier,
-        email: credentials.email,
+        userIdentifier: identity.userIdentifier,
+        email: identity.email,
       },
     });
     if (!refreshStillRequired) {
@@ -285,43 +332,56 @@ export async function ensureUiStorageStateForUser(userIdentifier: string, option
 
       const loginLocators = await waitForIdamLogin(page);
       if (loginLocators) {
-        await loginLocators.usernameInput.fill(credentials.email);
-        await loginLocators.passwordInput.fill(credentials.password);
+        await loginLocators.usernameInput.fill(identity.email);
+        await loginLocators.passwordInput.fill(identity.password);
         await loginLocators.submitButton.first().click();
         const idamPage = new IdamPage(page);
         if (typeof (idamPage as unknown as { waitForSpinner?: () => Promise<void> }).waitForSpinner === 'function') {
           await (idamPage as unknown as { waitForSpinner: () => Promise<void> }).waitForSpinner();
         } else {
-          await page.waitForLoadState('networkidle', { timeout: resolveLoginTimeoutMs() }).catch(() => undefined);
+          await page.waitForLoadState('domcontentloaded', { timeout: 10_000 }).catch(() => undefined);
         }
       }
 
       const authCookies = await waitForAuthCookies(context);
       if (!authCookies.ok) {
-        throw new Error(`UI login failed for ${userIdentifier}: ${authCookies.reason ?? 'unknown reason'}`);
+        throw new Error(`UI login failed for ${identity.userIdentifier}: ${authCookies.reason ?? 'unknown reason'}`);
       }
 
       const tempStoragePath = `${storagePath}.${process.pid}.${Date.now()}.tmp`;
       await context.storageState({ path: tempStoragePath });
       fs.renameSync(tempStoragePath, storagePath);
       writeUiStorageMetadata(storagePath, {
-        userIdentifier,
-        email: credentials.email,
+        userIdentifier: identity.userIdentifier,
+        email: identity.email,
       });
     } finally {
       await closeContextSafely(context);
-      await browser.close();
+      await closeBrowserSafely(browser);
     }
   });
 
   if (strict) {
     const authenticated = await isStorageStateAuthenticated(storagePath, baseUrl);
     if (!authenticated) {
-      throw new Error(`Storage state validation failed for ${userIdentifier} at ${baseUrl}`);
+      throw new Error(`Storage state validation failed for ${identity.userIdentifier} at ${baseUrl}`);
     }
   }
 
   return storagePath;
+}
+
+export async function ensureUiStorageStateForUser(userIdentifier: string, options?: EnsureStorageOptions): Promise<string> {
+  const userUtils = new UserUtils();
+  const credentials = userUtils.getUserCredentials(userIdentifier);
+  return ensureUiStorageStateForIdentity(
+    {
+      userIdentifier,
+      email: credentials.email,
+      password: credentials.password,
+    },
+    options
+  );
 }
 
 export const __test__ = {
@@ -329,6 +389,7 @@ export const __test__ = {
   calculateRetryBudgetMs,
   defaultUiLoginTimeoutMs: DEFAULT_UI_LOGIN_TIMEOUT_MS,
   resolveLoginTimeoutMs,
+  resolveBrowserCloseTimeoutMs,
   resolveStorageRefreshLockOptions,
   shouldRefreshStorageState,
   uiStorageRefreshLockRetries: resolveStorageRefreshLockOptions(DEFAULT_UI_LOGIN_TIMEOUT_MS).retries,

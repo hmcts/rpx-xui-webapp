@@ -2,8 +2,7 @@ import { AxeBuilder } from '@axe-core/playwright';
 import { expect, type Page, type TestInfo } from '@playwright/test';
 import type { AxeResults, Result } from 'axe-core';
 import { createHtmlReport } from 'axe-html-reporter';
-import * as fs from 'fs/promises';
-import * as path from 'path';
+import { escapeAttribute, escapeHtml, publishAccessibilityEvidence } from './accessibilityEvidencePublisher';
 
 const WCAG_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22a', 'wcag22aa'];
 
@@ -18,19 +17,11 @@ interface StoredAxeResults {
   results: AxeResults;
 }
 
-interface PublishedEvidenceEntry {
-  testTitle: string;
-  attachmentPrefix: string;
-  htmlFileName: string;
-  jsonFileName: string;
-  screenshotFileName: string;
-  violationCount: number;
-  rules: string[];
-  targets: string[];
+interface PublishedEvidenceMetadata {
+  engine: 'axe';
+  feature: string;
+  pageState: string;
 }
-
-const EVIDENCE_MANIFEST_FILE = 'manifest.json';
-const EVIDENCE_ENTRY_PREFIX = 'manifest-entry-';
 
 const normaliseArray = <T>(value?: T | T[]): T[] => {
   if (!value) {
@@ -126,7 +117,8 @@ export async function attachAccessibilityEvidence(
   page: Page,
   testInfo: TestInfo | undefined,
   results: AxeResults,
-  attachmentPrefix = 'accessibility-issues'
+  attachmentPrefix = 'accessibility-issues',
+  metadata?: PublishedEvidenceMetadata
 ): Promise<void> {
   if (!testInfo || results.violations.length === 0) {
     return;
@@ -154,7 +146,7 @@ export async function attachAccessibilityEvidence(
     await cleanup();
   }
 
-  await writePublishedEvidence(testInfo, results, screenshot, attachmentPrefix);
+  await writePublishedEvidence(testInfo, results, screenshot, attachmentPrefix, metadata);
 }
 
 function formatViolationMessage(violations: Result[]): string {
@@ -249,155 +241,24 @@ async function writePublishedEvidence(
   testInfo: TestInfo,
   results: AxeResults,
   screenshot: Buffer,
-  attachmentPrefix: string
+  attachmentPrefix: string,
+  metadata?: PublishedEvidenceMetadata
 ): Promise<void> {
-  const evidenceDir = path.resolve(
-    process.env.PW_A11Y_EVIDENCE_DIR ||
-      path.join(
-        process.env.PLAYWRIGHT_REPORT_FOLDER || 'functional-output/tests/playwright-a11y/odhin-report',
-        'accessibility-evidence'
-      )
-  );
-  const safeTitle = sanitiseFileName(testInfo.title);
-  const baseName = `${safeTitle}-${attachmentPrefix}`;
-  const htmlFileName = `${baseName}.html`;
-  const jsonFileName = `${baseName}.json`;
-  const screenshotFileName = `${baseName}-highlighted-screenshot.png`;
-  const entry: PublishedEvidenceEntry = {
-    testTitle: testInfo.title,
+  await publishAccessibilityEvidence(testInfo, {
     attachmentPrefix,
-    htmlFileName,
-    jsonFileName,
-    screenshotFileName,
-    violationCount: results.violations.length,
-    rules: results.violations.map((violation) => violation.id),
-    targets: results.violations.flatMap((violation) => violation.nodes.flatMap((node) => node.target)),
-  };
-
-  await fs.mkdir(evidenceDir, { recursive: true });
-  await fs.writeFile(path.join(evidenceDir, htmlFileName), buildIssueSummaryHtml(results));
-  await fs.writeFile(path.join(evidenceDir, jsonFileName), JSON.stringify(toEvidenceSummary(results), null, 2));
-  await fs.writeFile(path.join(evidenceDir, screenshotFileName), screenshot);
-  await writeEvidenceEntry(evidenceDir, baseName, entry);
-  await writeEvidenceManifest(evidenceDir, entry);
-  await writeEvidenceIndex(evidenceDir);
-}
-
-async function writeEvidenceEntry(evidenceDir: string, baseName: string, entry: PublishedEvidenceEntry): Promise<void> {
-  await fs.writeFile(path.join(evidenceDir, `${EVIDENCE_ENTRY_PREFIX}${baseName}.json`), JSON.stringify(entry, null, 2));
-}
-
-async function writeEvidenceManifest(evidenceDir: string, entry: PublishedEvidenceEntry): Promise<void> {
-  const manifestPath = path.join(evidenceDir, EVIDENCE_MANIFEST_FILE);
-  const existingEntries = await readEvidenceManifest(evidenceDir);
-  const retainedEntries = existingEntries.filter(
-    (existingEntry) => existingEntry.testTitle !== entry.testTitle || existingEntry.attachmentPrefix !== entry.attachmentPrefix
-  );
-
-  await fs.writeFile(manifestPath, JSON.stringify([...retainedEntries, entry], null, 2));
-}
-
-async function readEvidenceManifest(evidenceDir: string): Promise<PublishedEvidenceEntry[]> {
-  const manifestPath = path.join(evidenceDir, EVIDENCE_MANIFEST_FILE);
-  const entriesByKey = new Map<string, PublishedEvidenceEntry>();
-
-  try {
-    const manifest = JSON.parse(await fs.readFile(manifestPath, 'utf8'));
-    if (Array.isArray(manifest)) {
-      for (const entry of manifest.filter(isPublishedEvidenceEntry)) {
-        entriesByKey.set(evidenceEntryKey(entry), entry);
-      }
-    }
-  } catch {
-    // Missing or partially written aggregate manifests are tolerated; per-test entry files are the source of truth.
-  }
-
-  try {
-    const fileNames = await fs.readdir(evidenceDir);
-    await Promise.all(
-      fileNames
-        .filter((fileName) => fileName.startsWith(EVIDENCE_ENTRY_PREFIX) && fileName.endsWith('.json'))
-        .map(async (fileName) => {
-          try {
-            const entry = JSON.parse(await fs.readFile(path.join(evidenceDir, fileName), 'utf8'));
-            if (isPublishedEvidenceEntry(entry)) {
-              entriesByKey.set(evidenceEntryKey(entry), entry);
-            }
-          } catch {
-            // Ignore a single corrupt entry so one failed write does not break the whole report.
-          }
-        })
-    );
-  } catch {
-    return Array.from(entriesByKey.values());
-  }
-
-  return Array.from(entriesByKey.values());
-}
-
-function evidenceEntryKey(entry: PublishedEvidenceEntry): string {
-  return `${entry.testTitle}\u0000${entry.attachmentPrefix}`;
-}
-
-function isPublishedEvidenceEntry(value: unknown): value is PublishedEvidenceEntry {
-  if (!value || typeof value !== 'object') {
-    return false;
-  }
-
-  const candidate = value as Partial<PublishedEvidenceEntry>;
-  return (
-    typeof candidate.testTitle === 'string' &&
-    typeof candidate.attachmentPrefix === 'string' &&
-    typeof candidate.htmlFileName === 'string' &&
-    typeof candidate.jsonFileName === 'string' &&
-    typeof candidate.screenshotFileName === 'string' &&
-    typeof candidate.violationCount === 'number' &&
-    Array.isArray(candidate.rules) &&
-    Array.isArray(candidate.targets)
-  );
-}
-
-async function writeEvidenceIndex(evidenceDir: string): Promise<void> {
-  const manifestEntries = await readEvidenceManifest(evidenceDir);
-  const rows = manifestEntries
-    .sort((a, b) => a.testTitle.localeCompare(b.testTitle) || a.attachmentPrefix.localeCompare(b.attachmentPrefix))
-    .map((entry) => {
-      return `
-        <li>
-          <a class="issue-link" href="./${escapeAttribute(entry.htmlFileName)}">${escapeHtml(entry.testTitle)}</a>
-          <p>${entry.violationCount} axe rule violation(s): ${escapeHtml(entry.rules.join(', '))}</p>
-          <br />
-          <a href="./${escapeAttribute(entry.screenshotFileName)}">highlighted screenshot</a>
-          |
-          <a href="./${escapeAttribute(entry.jsonFileName)}">DOM and axe JSON</a>
-        </li>
-      `;
-    })
-    .join('');
-
-  await fs.writeFile(
-    path.join(evidenceDir, 'index.html'),
-    `
-      <html>
-        <head>
-          <title>Accessibility Evidence</title>
-          <style>
-            body { font-family: Arial, sans-serif; margin: 24px; color: #0b0c0c; }
-            .banner { background: #d4351c; color: #fff; padding: 16px; margin-bottom: 24px; }
-            .issue-link { font-weight: bold; font-size: 18px; }
-            li { margin-bottom: 16px; }
-          </style>
-        </head>
-        <body>
-          <div class="banner">
-            <h1>ACCESSIBILITY EVIDENCE</h1>
-            <p>Open each item for rule, impact, DOM selector, failing HTML, and a red highlighted screenshot.</p>
-          </div>
-          <ol>${rows}</ol>
-        </body>
-      </html>
-    `
-  );
+    entry: {
+      engine: 'axe',
+      feature: metadata?.feature,
+      pageState: metadata?.pageState,
+      violationCount: results.violations.length,
+      rules: results.violations.map((violation) => violation.id),
+      targets: results.violations.flatMap((violation) => violation.nodes.flatMap((node) => node.target)),
+    },
+    html: buildIssueSummaryHtml(results),
+    json: toEvidenceSummary(results),
+    screenshot,
+    screenshotSuffix: '-highlighted-screenshot.png',
+  });
 }
 
 async function markViolationsOnPage(page: Page, violations: Result[]): Promise<() => Promise<void>> {
@@ -423,6 +284,8 @@ async function markViolationsOnPage(page: Page, violations: Result[]): Promise<(
     overlayRoot.style.pointerEvents = 'none';
     document.body.appendChild(overlayRoot);
 
+    const unresolved: Array<{ label: string; rule: string; target: string }> = [];
+
     for (const item of items) {
       let element: Element | null = null;
       try {
@@ -432,6 +295,7 @@ async function markViolationsOnPage(page: Page, violations: Result[]): Promise<(
       }
 
       if (!element) {
+        unresolved.push(item);
         continue;
       }
 
@@ -460,6 +324,25 @@ async function markViolationsOnPage(page: Page, violations: Result[]): Promise<(
       marker.appendChild(label);
       overlayRoot.appendChild(marker);
     }
+
+    if (unresolved.length > 0) {
+      const banner = document.createElement('div');
+      banner.style.position = 'absolute';
+      banner.style.left = `${window.scrollX + 16}px`;
+      banner.style.top = `${window.scrollY + 16}px`;
+      banner.style.maxWidth = '760px';
+      banner.style.background = '#d4351c';
+      banner.style.color = '#fff';
+      banner.style.border = '6px solid #ffdd00';
+      banner.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.35)';
+      banner.style.font = 'bold 18px Arial, sans-serif';
+      banner.style.padding = '12px 16px';
+      banner.textContent = `Page-level axe finding(s): ${unresolved
+        .slice(0, 5)
+        .map((item) => `${item.label} ${item.rule} (${item.target})`)
+        .join('; ')}${unresolved.length > 5 ? '; ...' : ''}`;
+      overlayRoot.appendChild(banner);
+    }
   }, markers);
 
   return async () => {
@@ -467,25 +350,4 @@ async function markViolationsOnPage(page: Page, violations: Result[]): Promise<(
       document.querySelector('[data-testid="axe-violation-overlays"]')?.remove();
     });
   };
-}
-
-function escapeHtml(value: string): string {
-  return value
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;');
-}
-
-function escapeAttribute(value: string): string {
-  return escapeHtml(value).replaceAll('`', '&#96;');
-}
-
-function sanitiseFileName(value: string): string {
-  return value
-    .toLowerCase()
-    .replace(/[^a-z0-9._-]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .slice(0, 120);
 }

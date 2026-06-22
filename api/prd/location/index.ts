@@ -2,13 +2,15 @@ import { NextFunction, Response } from 'express';
 import { handleGet } from '../../common/crudService';
 import { getConfigValue } from '../../configuration';
 import { SERVICES_PRD_LOCATION_API } from '../../configuration/references';
-import { EnhancedRequest } from '../../lib/models';
+import * as log4jui from '../../lib/log4jui';
+import { EnhancedRequest, JUILogger } from '../../lib/models';
+import { trackTrace } from '../../lib/appInsights';
 import { getCourtTypeIdsByServices } from '../mappings.utils';
 import { LocationTypeEnum } from './data/locationType.enum';
 import { LocationByEpimmsModel, LocationModel, toEpimmsLocation } from './models/location.model';
 
 const url: string = getConfigValue(SERVICES_PRD_LOCATION_API);
-
+const logger: JUILogger = log4jui.getLogger('location hearings');
 /**
  * @description getLocations from service ID/location type/search term
  * @overview API sample: /api/locations/getLocations?serviceIds=BBA3,BFA1&locationType=hearing&searchTerm=CT91RL
@@ -48,11 +50,23 @@ export async function getLocationById(req: EnhancedRequest, res: Response, next:
   const epimmsID = req.query.epimms_id;
   const serviceCode = req.query.serviceCode && req.query.serviceCode !== '' ? (req.query.serviceCode as string) : null;
   delete req.query.serviceCode;
-  const courtTypeIdsArray: string[] = getCourtTypeIdsByServices([serviceCode]);
-  const markupPath: string = `${url}/refdata/location/court-venues?epimms_id=${epimmsID}`;
+  const serviceCodeParam = serviceCode ? `&service_code=${serviceCode}` : '';
+  const markupPath: string = `${url}/refdata/location/court-venues?epimms_id=${epimmsID}${serviceCodeParam}`;
+  trackTrace(`pofcc-137 - prd (hearings) getLocationById, markupPath used -->: ${markupPath}`, {
+    functionCall: 'getLocationById',
+  });
+  logger.info(`pofcc-137 - prd (hearings) getLocationById, markupPath used -->: ${markupPath}`);
   try {
     const { status, data }: { status: number; data: LocationModel[] } = await handleGet(markupPath, req);
-    const courtLocations = serviceCode && courtTypeIdsArray?.length > 0 ? getLocationsByCourtType(data, courtTypeIdsArray) : data;
+
+    const containsServiceCode = data.some((item) => Object.prototype.hasOwnProperty.call(item, 'service_code'));
+    trackTrace(`pofcc-137 - new api called, containsServiceCode -->: ${containsServiceCode}`, {
+      functionCall: 'getLocationById',
+    });
+    logger.info(`pofcc-137 - new api called, containsServiceCode -->: ${containsServiceCode}`);
+    const courtLocations =
+      serviceCode && !containsServiceCode ? getLocationsByCourtType(data, getCourtTypeIdsByServices([serviceCode])) : data;
+
     const identicalLocationByEpimmsId = getIdenticalLocationByEpimmsId(courtLocations);
     res.status(status).send(identicalLocationByEpimmsId);
   } catch (error) {

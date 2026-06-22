@@ -5,7 +5,15 @@ import {
   buildHearingsEnvironmentConfigMock,
   buildHearingsUserDetailsMock,
 } from '../mocks/hearings.mock';
-import { applySessionCookies } from '../../common/sessionCapture';
+import {
+  buildSupportedAMRoleAssignments,
+  defaultAMSupportedJurisdictions,
+  defaultAMSupportedRoleCategories,
+  defaultAMSupportedRoleTypes,
+  judicialAMMenuRole,
+  resolveAMRoleCategory,
+  type AMMenuRoleName,
+} from './amRoleAssignmentMock.helper';
 import {
   buildCaseLinkingCaseDetailsMock,
   buildCaseLinkingEventTriggerMock,
@@ -24,7 +32,6 @@ import { setupCaseworkerJurisdictionsRoute } from './caseworkerJurisdictionMockR
 
 type RouteAbortCode = Parameters<Route['abort']>[0];
 
-const DEFAULT_CASE_LINKING_USER_IDENTIFIER = 'STAFF_ADMIN';
 const DEFAULT_CASE_LINKING_USER_ROLES = ['hmcts-staff'];
 
 interface CaseLinkingApiOverride {
@@ -35,7 +42,7 @@ interface CaseLinkingApiOverride {
 }
 
 export interface CaseLinkingMockRoutesConfig {
-  userIdentifier?: string;
+  amMenuRole?: AMMenuRoleName;
   userRoles?: string[];
   submitCaseLinks?: CaseLinkingApiOverride;
   validateCaseLinks?: CaseLinkingApiOverride;
@@ -109,6 +116,11 @@ function buildValidationResponse(route: Route): Record<string, unknown> {
 
 export async function setupCaseLinkingMockRoutes(page: Page, config: CaseLinkingMockRoutesConfig): Promise<void> {
   const userDetails = buildHearingsUserDetailsMock(config.userRoles ?? DEFAULT_CASE_LINKING_USER_ROLES);
+  if (config.amMenuRole) {
+    userDetails.userInfo.roleCategory = resolveAMRoleCategory(config.amMenuRole);
+    userDetails.userInfo.roles = Array.from(new Set([...userDetails.userInfo.roles, config.amMenuRole]));
+    userDetails.roleAssignmentInfo = buildSupportedAMRoleAssignments([config.amMenuRole], defaultAMSupportedJurisdictions);
+  }
   const appConfig = buildHearingsAppConfigMock();
   const environmentConfig = buildHearingsEnvironmentConfigMock();
   const eventTrigger = buildCaseLinkingEventTriggerMock();
@@ -122,6 +134,10 @@ export async function setupCaseLinkingMockRoutes(page: Page, config: CaseLinking
   await page.addInitScript((seededUserInfo) => {
     window.sessionStorage.setItem('userDetails', JSON.stringify(seededUserInfo));
   }, userDetails.userInfo);
+
+  await page.route('**/auth/isAuthenticated*', async (route) => {
+    await fulfillRoute(route, undefined, true);
+  });
 
   await setupCaseworkerJurisdictionsRoute(page, [CASE_LINKING_JURISDICTION]);
 
@@ -197,7 +213,15 @@ export async function setupCaseLinkingMockRoutes(page: Page, config: CaseLinking
   });
 
   await page.route('**/api/wa-supported-jurisdiction/get*', async (route) => {
-    await fulfillRoute(route, undefined, []);
+    await fulfillRoute(route, undefined, defaultAMSupportedJurisdictions);
+  });
+
+  await page.route('**/api/wa-supported-role-details/getRoleCategories*', async (route) => {
+    await fulfillRoute(route, undefined, defaultAMSupportedRoleCategories);
+  });
+
+  await page.route('**/api/wa-supported-role-details/getRoleTypes*', async (route) => {
+    await fulfillRoute(route, undefined, defaultAMSupportedRoleTypes);
   });
 }
 
@@ -206,8 +230,10 @@ export async function openCaseLinkingJourney(
   caseDetailsPage: CaseDetailsPage,
   config: CaseLinkingMockRoutesConfig = {}
 ): Promise<void> {
-  await applySessionCookies(page, config.userIdentifier ?? DEFAULT_CASE_LINKING_USER_IDENTIFIER);
-  await setupCaseLinkingMockRoutes(page, config);
+  await setupCaseLinkingMockRoutes(page, {
+    ...config,
+    amMenuRole: config.amMenuRole ?? (config.userRoles?.includes(judicialAMMenuRole) ? judicialAMMenuRole : undefined),
+  });
   await caseDetailsPage.openCaseDetails(CASE_LINKING_JURISDICTION, CASE_LINKING_CASE_TYPE, CASE_LINKING_CASE_REFERENCE);
   await caseDetailsPage.caseActionsDropdown.waitFor({ state: 'visible' });
 }

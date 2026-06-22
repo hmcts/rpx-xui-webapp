@@ -1,5 +1,6 @@
 import { expect, test } from '../../../../E2E/fixtures';
 import { applySessionCookies, setupManageTasksBaseRoutes, taskListRoutePattern } from '../../../helpers';
+import { defaultStaffAMMenuRole, judicialAMMenuRole } from '../../../helpers/amRoleAssignmentMock.helper';
 import { buildTaskListMock, myActionsList } from '../../../mocks/taskList.mock';
 import { buildMyCases } from '../../../mocks/myCases.mock';
 import {
@@ -317,6 +318,7 @@ test.describe('All Work role-based task columns', { tag: ['@integration', '@inte
   const scenarios = [
     {
       userIdentifier: 'IAC_CaseOfficer_R2',
+      amMenuRole: defaultStaffAMMenuRole,
       roleCategory: 'LEGAL_OPERATIONS',
       roles: ['caseworker', 'caseworker-ia', 'caseworker-ia-caseofficer'],
       expectedDateHeader: 'Due date',
@@ -324,6 +326,7 @@ test.describe('All Work role-based task columns', { tag: ['@integration', '@inte
     },
     {
       userIdentifier: 'IAC_Judge_WA_R1',
+      amMenuRole: judicialAMMenuRole,
       roleCategory: 'JUDICIAL',
       roles: ['caseworker', 'caseworker-ia', 'caseworker-ia-iacjudge'],
       expectedDateHeader: 'Task created',
@@ -335,9 +338,6 @@ test.describe('All Work role-based task columns', { tag: ['@integration', '@inte
     test.describe(`All-work columns render correctly for ${scenario.userIdentifier}`, () => {
       const taskListMockResponse = buildTaskListMock(40, '', myActionsList);
 
-      test.beforeEach(async ({ page }) => {
-        await applySessionCookies(page, scenario.userIdentifier);
-      });
       test(`renders expected date column and not the non-expected date column`, async ({ taskListPage, page, tableUtils }) => {
         await test.step('Setup route mocks for all-work role-based columns', async () => {
           await setupManageTasksBaseRoutes(page, {
@@ -345,6 +345,7 @@ test.describe('All Work role-based task columns', { tag: ['@integration', '@inte
             supportedJurisdictions: allWorkTasksSupportedJurisdictions,
             supportedJurisdictionDetails: allWorkTasksSupportedJurisdictionDetails,
             user: {
+              amMenuRole: scenario.amMenuRole,
               roleCategory: scenario.roleCategory,
               roles: scenario.roles,
             },

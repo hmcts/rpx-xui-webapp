@@ -1,5 +1,12 @@
 import type { Locator, Page } from '@playwright/test';
 import { buildCaseListJurisdictionsMock, buildCaseListMock } from '../mocks/caseList.mock';
+import {
+  buildSupportedAMRoleAssignments,
+  defaultStaffAMMenuRole,
+  judicialAMMenuRole,
+  resolveAMRoleCategory,
+  type AMMenuRoleName,
+} from './amRoleAssignmentMock.helper';
 import { setupCaseListMocks } from './caseList.helper';
 import { setupXuiAppShellBaseRoutes, type XuiAppShellUserDetailsOptions } from './xuiAppShellMockRoutes.helper';
 
@@ -7,6 +14,7 @@ type HeaderScenario = {
   name: string;
   userIdentifier: string;
   roles: string[];
+  amMenuRole?: AMMenuRoleName;
   expectedLeft: string[];
   expectedRight: string[];
   quickSearchVisible: boolean;
@@ -25,6 +33,7 @@ export const platformServicesHeaderScenarios: HeaderScenario[] = [
     name: 'caseworker work-allocation navigation',
     userIdentifier: 'IAC_CaseOfficer_R2',
     roles: ['caseworker-ia', 'caseworker-ia-caseofficer', 'caseworker-ia-admofficer', 'task-supervisor'],
+    amMenuRole: defaultStaffAMMenuRole,
     expectedLeft: ['My work', 'All work', 'Case list', 'Create case', 'Search'],
     expectedRight: [],
     quickSearchVisible: true,
@@ -41,6 +50,7 @@ export const platformServicesHeaderScenarios: HeaderScenario[] = [
     name: 'judicial work-allocation navigation',
     userIdentifier: 'IAC_Judge_WA_R2',
     roles: ['caseworker-ia-iacjudge', 'task-supervisor'],
+    amMenuRole: judicialAMMenuRole,
     expectedLeft: ['My work', 'All work', 'Case list', 'Search'],
     expectedRight: [],
     quickSearchVisible: true,
@@ -67,8 +77,24 @@ export async function visibleNavigationTexts(locator: Locator): Promise<string[]
   return (await locator.allTextContents()).map((text) => text.trim()).filter(Boolean);
 }
 
-export async function setupPlatformServicesCaseListRoutes(page: Page, userDetails: XuiAppShellUserDetailsOptions): Promise<void> {
-  await setupXuiAppShellBaseRoutes(page, { userDetails });
+function buildScenarioUserDetails(scenario: HeaderScenario): XuiAppShellUserDetailsOptions {
+  const baseUserDetails = {
+    userId: scenario.userIdentifier,
+    roles: [...scenario.roles],
+  };
+
+  return scenario.amMenuRole
+    ? {
+        ...baseUserDetails,
+        roleCategory: resolveAMRoleCategory(scenario.amMenuRole),
+        roles: Array.from(new Set([...scenario.roles, scenario.amMenuRole])),
+        roleAssignmentInfo: buildSupportedAMRoleAssignments([scenario.amMenuRole]),
+      }
+    : baseUserDetails;
+}
+
+export async function setupPlatformServicesCaseListRoutes(page: Page, scenario: HeaderScenario): Promise<void> {
+  await setupXuiAppShellBaseRoutes(page, { userDetails: buildScenarioUserDetails(scenario) });
   await page.route('**/auth/isAuthenticated*', async (route) => {
     await route.fulfill({
       status: 200,

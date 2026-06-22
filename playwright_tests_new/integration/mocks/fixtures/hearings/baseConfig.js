@@ -256,4 +256,4 @@ const menuConfig = {
   ],
 };
 
-module.exports = menuConfig;
+export default menuConfig;

@@ -17,6 +17,7 @@ import {
   defaultAMSupportedRoleTypes,
   defaultStaffAMMenuRole,
   ensureSupportedAMRoleAssignment,
+  judicialAMMenuRole,
   uniqueRoles,
 } from './amRoleAssignmentMock.helper';
 
@@ -85,6 +86,14 @@ const defaultTaskListLocationMock = {
 };
 const defaultStaffWorkAllocationRoles = ['caseworker', 'caseworker-ia', 'caseworker-ia-caseofficer', 'caseworker-ia-admofficer'];
 
+function resolveTaskListAMMenuRole(userOptions: TaskListBootstrapUserOptions): AMMenuRoleName {
+  if (userOptions.amMenuRole) {
+    return userOptions.amMenuRole;
+  }
+
+  return userOptions.roleCategory === 'JUDICIAL' ? judicialAMMenuRole : defaultStaffAMMenuRole;
+}
+
 export async function setupTaskListBootstrapRoutes(
   page: Page,
   supportedJurisdictions: string[] = defaultSupportedJurisdictionsMock,
@@ -107,7 +116,7 @@ export async function setupTaskListBootstrapRoutes(
     userDetails.userInfo.id = userOptions.userId;
     userDetails.userInfo.uid = userOptions.userId;
   }
-  const amMenuRole = userOptions.amMenuRole ?? defaultStaffAMMenuRole;
+  const amMenuRole = resolveTaskListAMMenuRole(userOptions);
   userDetails.userInfo.roles = uniqueRoles([
     ...(userOptions.roles ?? defaultStaffWorkAllocationRoles),
     'task-supervisor',

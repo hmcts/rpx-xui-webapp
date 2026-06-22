@@ -271,6 +271,47 @@ export class HearingsUtils {
     return dataMatches;
   }
 
+  public static getHearingConsistencyLogMessages(
+    hearingRequestMainModel: HearingRequestMainModel,
+    serviceHearingValuesModel: ServiceHearingValuesModel
+  ): string[] {
+    const logMessages: string[] = [];
+    const hrmCaseDetails = hearingRequestMainModel?.caseDetails;
+    const shv = serviceHearingValuesModel;
+    const caseId = hrmCaseDetails?.caseRef;
+    if (!hrmCaseDetails || !shv) {
+      return logMessages;
+    }
+
+    const hrmInternalName = hrmCaseDetails.hmctsInternalCaseName;
+    const shvInternalName = shv.hmctsInternalCaseName;
+    const hrmPublicName = hrmCaseDetails.publicCaseName;
+    const shvPublicName = shv.publicCaseName;
+    const status = hearingRequestMainModel?.requestDetails?.status;
+    const hearingId = hearingRequestMainModel?.requestDetails?.hearingRequestID;
+    const timeStamp = hearingRequestMainModel?.requestDetails?.timestamp;
+
+    if (hrmInternalName && shvInternalName && hrmInternalName !== shvInternalName) {
+      logMessages.push(
+        `Hearing internal name mismatch detected. HRM: ${hrmInternalName} SHV: ${shvInternalName} for caseId: ${caseId} and hearingId: ${hearingId} at ${timeStamp} with status ${status}`
+      );
+      console.log(
+        `Hearing internal name mismatch detected. HRM: ${hrmInternalName} SHV: ${shvInternalName} for caseId: ${caseId} and hearingId: ${hearingId} at ${timeStamp} with status ${status}`
+      );
+    }
+
+    if (hrmPublicName && shvPublicName && hrmPublicName !== shvPublicName) {
+      logMessages.push(
+        `Hearing public name mismatch detected. HRM: ${hrmPublicName} SHV: ${shvPublicName} for caseId: ${caseId} and hearingId: ${hearingId} at ${timeStamp} with status ${status}`
+      );
+      console.log(
+        `Hearing public name mismatch detected. HRM: ${hrmPublicName} SHV: ${shvPublicName} for caseId: ${caseId} and hearingId: ${hearingId} at ${timeStamp} with status ${status}`
+      );
+    }
+
+    return logMessages;
+  }
+
   // EXUI-4080 - Ensure case data is also checked for consistency
   public static checkHearingCaseConsistency(
     hearingRequestMainModel: HearingRequestMainModel,
@@ -282,9 +323,11 @@ export class HearingsUtils {
 
     const hrmCaseRef = hrmCaseDetails?.caseRef;
     const itemCaseRef = caseReference;
+    const shvCaseRef = shv?.caseId;
 
-    // Check against case reference if present
-    if (itemCaseRef && hrmCaseRef && itemCaseRef !== hrmCaseRef) {
+    // Check against case reference
+    // EXUI-4529 - shv is source of truth for case reference
+    if (hrmCaseRef && ((itemCaseRef && itemCaseRef !== hrmCaseRef) || (shvCaseRef && shvCaseRef !== hrmCaseRef))) {
       return false;
     }
 

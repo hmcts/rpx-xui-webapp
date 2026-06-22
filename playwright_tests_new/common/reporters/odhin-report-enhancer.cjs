@@ -548,13 +548,6 @@ function buildAccessibilityEvidenceBlock(entries) {
   const cards = normalizedEntries
     .map((entry) => {
       const screenshotPath = entry.screenshotFileName ? `./accessibility-evidence/${entry.screenshotFileName}` : '';
-      const screenshotHtml = screenshotPath
-        ? `
-          <a href="${escapeAttribute(screenshotPath)}">
-            <img class="odhin-a11y-evidence-screenshot" src="${escapeAttribute(screenshotPath)}" alt="${escapeAttribute(engineLabel(entry.engine))} accessibility screenshot for ${escapeAttribute(entry.testTitle)}" />
-          </a>
-        `
-        : '';
       const evidenceLinks = [
         `<a href="${escapeAttribute(`./accessibility-evidence/${entry.htmlFileName}`)}">${entry.engine === 'summary' ? 'open page summary' : 'issue detail'}</a>`,
         entry.reportFileName
@@ -569,7 +562,6 @@ function buildAccessibilityEvidenceBlock(entries) {
         .join('\n');
       return `
         <article class="odhin-a11y-evidence-card" data-engine="${escapeAttribute(entry.engine)}">
-          ${screenshotHtml}
           <div class="odhin-a11y-evidence-card-body">
             <span class="odhin-a11y-evidence-engine">${escapeHtml(engineLabel(entry.engine))}</span>
             <div class="odhin-a11y-evidence-title">${escapeHtml(entry.testTitle)}</div>
@@ -752,7 +744,6 @@ function enhanceDashboardHtml(html, featureStats, evidenceEntries = []) {
     stripLegacyFileChartArtifacts(root);
   }
 
-  injectAccessibilityEvidence(root, normalizedEvidenceEntries);
   injectAccessibilityEvidenceIntoTestModals(root, normalizedEvidenceEntries);
 
   return root.toString();

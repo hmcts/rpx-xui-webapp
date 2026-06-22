@@ -260,7 +260,7 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
     expect(nextHtml).not.toContain('DataTable({})');
   });
 
-  test('adds accessibility evidence to the generated Odhín dashboard', () => {
+  test('keeps accessibility evidence off the generated Odhín dashboard', () => {
     const html = `
       <html>
         <head></head>
@@ -290,10 +290,10 @@ test.describe('odhin report enhancer', { tag: '@svc-internal' }, () => {
       ]
     );
 
-    expect(nextHtml).toContain('Accessibility Evidence');
-    expect(nextHtml).toContain('odhin-accessibility-evidence');
-    expect(nextHtml).toContain('odhin-a11y-evidence-grid');
-    expect(nextHtml).toContain('./accessibility-evidence/privacy-policy-highlighted-screenshot.png');
+    expect(nextHtml).not.toContain('Accessibility Evidence');
+    expect(nextHtml).not.toContain('odhin-accessibility-evidence');
+    expect(nextHtml).not.toContain('odhin-a11y-evidence-grid');
+    expect(nextHtml).not.toContain('./accessibility-evidence/privacy-policy-highlighted-screenshot.png');
   });
 
   test('removes previously injected accessibility evidence from the generated Odhín dashboard', () => {

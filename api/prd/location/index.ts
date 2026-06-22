@@ -2,12 +2,12 @@ import { NextFunction, Response } from 'express';
 import { handleGet } from '../../common/crudService';
 import { getConfigValue } from '../../configuration';
 import { SERVICES_PRD_LOCATION_API } from '../../configuration/references';
-import * as log4jui from '../../lib/log4jui';
 import { EnhancedRequest, JUILogger } from '../../lib/models';
-import { trackTrace } from '../../lib/appInsights';
 import { getCourtTypeIdsByServices } from '../mappings.utils';
 import { LocationTypeEnum } from './data/locationType.enum';
 import { LocationByEpimmsModel, LocationModel, toEpimmsLocation } from './models/location.model';
+import { trackTrace } from '../../lib/appInsights';
+import * as log4jui from '../../lib/log4jui';
 
 const url: string = getConfigValue(SERVICES_PRD_LOCATION_API);
 const logger: JUILogger = log4jui.getLogger('location hearings');
@@ -25,7 +25,9 @@ export async function getLocations(req: EnhancedRequest, res: Response, next: Ne
   const serviceIdArray = serviceIds.split(',');
   const courtTypeIdsArray: string[] = getCourtTypeIdsByServices(serviceIdArray);
   const strCourtTypeIds = courtTypeIdsArray ? courtTypeIdsArray.join(',') : '';
-  const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${strCourtTypeIds}`;
+  const markupPath: string = `${url}/refdata/location/court-venues/venue-search?search-string=${searchTerm}&court-type-id=${strCourtTypeIds}&service_code=${serviceIds}`;
+  trackTrace(`POFCC-138 - prd (hearings) getLocations, markupPath used -->: ${markupPath}`, { functionCall: 'getLocations' });
+  logger.info(`POFCC-138 - prd (hearings) getLocations, markupPath used -->: ${markupPath}`);
   try {
     const { status, data }: { status: number; data: LocationModel[] } = await handleGet(markupPath, req);
     let result: LocationModel[] = data;

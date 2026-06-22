@@ -151,6 +151,24 @@ export async function setupXuiAppShellBaseRoutes(page: Page, options?: XuiAppShe
     });
   });
 
+  await page.route('**/api/role-access/allocate-role/valid-roles*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify([
+        {
+          serviceId: 'IA',
+          roles: [
+            {
+              roleId: 'lead-judge',
+              roleName: 'Lead judge',
+            },
+          ],
+        },
+      ]),
+    });
+  });
+
   await page.route('**/api/wa-supported-jurisdiction/get*', async (route) => {
     await route.fulfill({
       status: 200,

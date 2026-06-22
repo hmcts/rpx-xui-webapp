@@ -811,25 +811,36 @@ export class CaseDetailsPage extends Base {
   }
 
   async openDocumentOneInMediaViewer(): Promise<Page> {
-    await this.openDocumentOne();
+    const timeout = this.getRecommendedTimeoutMs({ max: 45_000, fallback: 45_000 });
+    const maxAttempts = 2;
 
-    await this.page
-      .waitForFunction(
-        (routePatternSource) => {
-          const routePattern = new RegExp(routePatternSource);
-          return window.location.href.match(routePattern) !== null;
-        },
-        MEDIA_VIEWER_ROUTE_PATTERN.source,
-        { timeout: this.getRecommendedTimeoutMs() }
-      )
-      .catch(() => undefined);
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+      const popupPromise = this.page.waitForEvent('popup', { timeout }).then(async (popup) => {
+        await popup.waitForURL(MEDIA_VIEWER_ROUTE_PATTERN, { timeout });
+        return popup;
+      });
+      const samePagePromise = this.page.waitForURL(MEDIA_VIEWER_ROUTE_PATTERN, { timeout }).then(() => this.page);
 
-    const matchingPage = this.page
-      .context()
-      .pages()
-      .find((candidate) => MEDIA_VIEWER_ROUTE_PATTERN.test(candidate.url()));
+      await this.openDocumentOne();
 
-    return matchingPage ?? this.page;
+      const openedPage = await Promise.any([popupPromise, samePagePromise]).catch(() => undefined);
+      if (openedPage) {
+        return openedPage;
+      }
+
+      const matchingPage = this.page
+        .context()
+        .pages()
+        .find((candidate) => MEDIA_VIEWER_ROUTE_PATTERN.test(candidate.url()));
+
+      if (matchingPage) {
+        return matchingPage;
+      }
+    }
+
+    throw new Error(
+      `Media Viewer did not open within ${timeout}ms after selecting Document 1 across ${maxAttempts} attempts. Current URL: ${this.page.url()}`
+    );
   }
 
   async waitForDocumentOneRowToContain(expectedText: string, timeoutMs = 45_000): Promise<void> {

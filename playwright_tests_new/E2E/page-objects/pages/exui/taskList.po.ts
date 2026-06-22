@@ -349,6 +349,9 @@ export class TaskListPage extends Base {
           attempt === 1 ? context : `${context} after blank-page reload`,
           shellReadyAttemptTimeoutMs
         );
+        if (!urlPattern.test(this.page.url())) {
+          throw new Error(`Task list navigation for ${context} landed on ${this.page.url()} after shell bootstrap.`);
+        }
         return;
       } catch (error) {
         lastError = error;
@@ -521,6 +524,7 @@ export class TaskListPage extends Base {
     const targetCheckbox = checkbox.first();
     const timeoutMs = this.resolveInteractionTimeout(deadlineMs, FILTER_CONTROL_READY_TIMEOUT_MS);
     const targetDeadlineMs = Date.now() + timeoutMs;
+    let checkboxWasVisible = false;
 
     while (Date.now() < targetDeadlineMs) {
       this.assertFilterInteractionAlive(`waiting for checkbox "${description}"`, deadlineMs);
@@ -528,16 +532,23 @@ export class TaskListPage extends Base {
         await this.openFilterPanel(deadlineMs);
       }
       if (await targetCheckbox.isVisible().catch(() => false)) {
-        await expect(targetCheckbox).toBeEnabled({
-          timeout: this.resolveInteractionTimeout(deadlineMs, FILTER_CHECKBOX_STATE_TIMEOUT_MS),
-        });
-        return targetCheckbox;
+        checkboxWasVisible = true;
+        const stateTimeoutMs = Math.min(
+          this.resolveInteractionTimeout(deadlineMs, FILTER_CHECKBOX_STATE_TIMEOUT_MS),
+          Math.max(targetDeadlineMs - Date.now(), 0)
+        );
+        if (stateTimeoutMs > 0 && (await targetCheckbox.isEnabled({ timeout: stateTimeoutMs }).catch(() => false))) {
+          return targetCheckbox;
+        }
       }
       await this.assertTaskListInteractive(`waiting for ${description}`);
       await this.page.waitForTimeout(250);
     }
 
     await this.assertTaskListInteractive(`waiting for ${description}`);
+    if (checkboxWasVisible) {
+      throw new Error(`Task list filter checkbox "${description}" did not become enabled within ${timeoutMs}ms.`);
+    }
     throw new Error(`Task list filter checkbox "${description}" did not become visible within ${timeoutMs}ms.`);
   }
 
@@ -750,22 +761,25 @@ export class TaskListPage extends Base {
     await this.allWorkPersonSearchInput.waitFor({ state: 'visible', timeout: FILTER_CONTROL_READY_TIMEOUT_MS });
   }
 
-  async expectWorkFilterControls(options: { typesOfWorkVisible?: boolean } = {}) {
+  async expectWorkFilterControls(options: { typesOfWorkVisible?: boolean | 'ignore' } = {}) {
     const typesOfWorkVisible = options.typesOfWorkVisible ?? true;
     const deadlineMs = Date.now() + FILTER_CONTROL_READY_TIMEOUT_MS;
     const servicesHeading = this.filterPanel.getByText('Services', { exact: true }).first();
     const locationsFilter = this.filterPanel.locator('#locations:visible').first();
-    const typesOfWorkHeading = this.filterPanel.getByText('Types of work', { exact: true }).first();
     const visibleTypesOfWorkFilter = this.filterPanel.locator('#types-of-work:visible');
+    const visibleTypesOfWorkHeading = visibleTypesOfWorkFilter.getByText('Types of work', { exact: true }).first();
 
     while (Date.now() < deadlineMs) {
       await this.openFilterPanel(deadlineMs);
 
       const servicesVisible = await servicesHeading.isVisible().catch(() => false);
       const locationsVisible = await locationsFilter.isVisible().catch(() => false);
-      const typeOfWorkStateMatches = typesOfWorkVisible
-        ? await typesOfWorkHeading.isVisible().catch(() => false)
-        : (await visibleTypesOfWorkFilter.count().catch(() => 0)) === 0;
+      const typeOfWorkStateMatches =
+        typesOfWorkVisible === 'ignore'
+          ? true
+          : typesOfWorkVisible
+            ? await visibleTypesOfWorkHeading.isVisible().catch(() => false)
+            : (await visibleTypesOfWorkFilter.count().catch(() => 0)) === 0;
 
       if (servicesVisible && locationsVisible && typeOfWorkStateMatches) {
         return;
@@ -778,8 +792,12 @@ export class TaskListPage extends Base {
     await expect(servicesHeading).toBeVisible();
     await expect(locationsFilter).toBeVisible();
 
+    if (typesOfWorkVisible === 'ignore') {
+      return;
+    }
+
     if (typesOfWorkVisible) {
-      await expect(typesOfWorkHeading).toBeVisible();
+      await expect(visibleTypesOfWorkHeading).toBeVisible();
     } else {
       await expect(visibleTypesOfWorkFilter).toHaveCount(0);
     }
